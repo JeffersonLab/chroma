@@ -1,4 +1,4 @@
-// $Id: baryon_w.cc,v 1.13 2004-04-22 01:34:51 edwards Exp $ 
+// $Id: baryon_w.cc,v 1.14 2004-04-22 01:38:46 edwards Exp $ 
 /*! \file
  *  \brief Baryon 2-pt functions
  */
@@ -252,6 +252,8 @@ void baryon(LatticePropagator& quark_propagator,
       // Lambda_1 = 3*Proton_1 (for compatibility with heavy-light routine)
       // |L_1, s_z=1/2> = 2*(u C gamma_5 d) "s_up" + (s C gamma_5 d) "u_up"
       //                  + (u C gamma_5 s) "d_up" , see comments at top   
+      // C gamma_5 = Gamma(5)
+      // Polarized:
       // S_proj = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
       //            = (1 + Gamma(8) - i G(3) - i G(11)) / 2
       b_prop *= 3.0;
@@ -260,6 +262,7 @@ void baryon(LatticePropagator& quark_propagator,
     case 2:
       // Delta^+_1
       // |D_1, s_z=3/2> = 2*(d C gamma_- u) "u_up" + (u C gamma_- u) "d_up"
+      // Polarized:
       // S_proj = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
       //            = (1 + Gamma(8) - i G(3) - i G(11)) / 2
       di_quark = quarkContract13(quark_propagator * Cgm, 
@@ -275,6 +278,7 @@ void baryon(LatticePropagator& quark_propagator,
       // Proton_2; use also for Lambda_2!
       // |P_2, s_z=1/2> = (d C gamma_4 gamma_5 u) "u_up" 
       // C gamma_5 gamma_4 = - Gamma(13)
+      // Polarized:
       // S_proj = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
       //            = (1 + Gamma(8) - i G(3) - i G(11)) / 2
       di_quark = quarkContract13(quark_propagator * Gamma(13),
@@ -288,6 +292,7 @@ void baryon(LatticePropagator& quark_propagator,
       // |L_2, s_z=1/2> = 2*(u C gamma_4 gamma_5 d) "s_up"
       //                  + (s C gamma_4 gamma_5 d) "u_up"
       //                  + (u C gamma_4 gamma_5 s) "d_up"
+      // Polarized:
       // S_proj = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
       //            = (1 + Gamma(8) - i G(3) - i G(11)) / 2
       b_prop *= 3.0;
@@ -297,6 +302,7 @@ void baryon(LatticePropagator& quark_propagator,
       // Sigma^{*+}_2
       // |D_2, s_z=3/2> = 2*(d C gamma_4 gamma_- u) "u_up" 
       //                  + (u C gamma_4 gamma_- u) "d_up" 
+      // Polarized:
       // S_proj = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
       //            = (1 + Gamma(8) - i G(3) - i G(11)) / 2
       di_quark = quarkContract13(quark_propagator * Cg4m,
@@ -312,6 +318,7 @@ void baryon(LatticePropagator& quark_propagator,
       // Proton^+_3; use also for Lambda_3!
       // |P_3, s_z=1/2> = (d C (1/2)(1 + gamma_4) gamma_5 u) "u_up" 
       // C gamma_5 - C gamma_5 gamma_4 = Gamma(5) + Gamma(13)
+      // Polarized:
       // S_proj = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
       //            = (1 + Gamma(8) - i G(3) - i G(11)) / 2
       di_quark = quarkContract13(quark_propagator * Gamma(5) + quark_propagator * Gamma(13),  
@@ -325,6 +332,7 @@ void baryon(LatticePropagator& quark_propagator,
       // |L_3, s_z=1/2> = 2*(u C (1/2)(1 + gamma_4) gamma_5 d) "s_up"
       //                  + (s C (1/2)(1 + gamma_4) gamma_5 d) "u_up"
       //                  + (u C (1/2)(1 + gamma_4) gamma_5 s) "d_up"
+      // Polarized:
       // S_proj = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
       //            = (1 + Gamma(8) - i G(3) - i G(11)) / 2
       b_prop *= 3.0;
@@ -334,6 +342,7 @@ void baryon(LatticePropagator& quark_propagator,
       // Sigma^{*+}_3
       // |D_3, s_z=3/2> = 2*(d C (1/2)(1 + gamma_4) gamma_- d) u) "u_up"
       //                  + (u C (1/2)(1 + gamma_4) gamma_- d) u) "d_up"
+      // Polarized:
       // S_proj = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
       //            = (1 + Gamma(8) - i G(3) - i G(11)) / 2
       di_quark = quarkContract13(quark_propagator * CgmNR,
