@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.5 2003-04-04 18:09:06 edwards Exp $
+// $Id: propagator.cc,v 1.6 2003-04-04 18:20:57 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -12,8 +12,8 @@
 
 using namespace QDP;
 
-//! Main propagator generation code
-/*! \defgroup propagator Main code for propagator generation
+//! Main program for propagator generation
+/*! \defgroup propagator Propagator generation
  *  \ingroup main
  */
 
