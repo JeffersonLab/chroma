@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linearop.h,v 1.11 2005-01-20 03:08:38 edwards Exp $
+// $Id: linearop.h,v 1.12 2005-01-20 19:21:39 edwards Exp $
 
 /*! @file
  * @brief Linear Operators
@@ -342,17 +342,18 @@ namespace Chroma
       T   tmp1, tmp2;  // if an array is used here, the space is not reserved
       P   ds_tmp;  // deriv routines should resize
 
-      /*  Chi   =   A    Psi   +    D    Psi   */
-      /*     E       E,E    O        E,O    O  */
+      //  ds_u  =  chi^dag * A'_ee * psi
       derivEvenEvenLinOp(ds_u, chi, psi, isign);
+
+      //  ds_u +=  chi^dag * D'_eo * psi
       derivEvenOddLinOp(ds_tmp, chi, psi, isign);
       ds_u += ds_tmp;
 
-      /*  Chi   =  A    Psi  -  Tmp1  */
-      /*     O      O,O    O        O */
+      //  ds_u +=  chi^dag * D'_oe * psi
       derivOddEvenLinOp(ds_tmp, chi, psi, isign);
       ds_u += ds_tmp;
 
+      //  ds_u +=  chi^dag * A'_oo * psi
       derivOddOddLinOp(ds_tmp, chi, psi, isign);
       ds_u += ds_tmp;
     }
@@ -589,17 +590,18 @@ namespace Chroma
       T   tmp1, tmp2;  // if an array is used here, the space is not reserved
       P   ds_tmp;  // deriv routines should resize
 
-      /*  Chi   =   A    Psi   +    D    Psi   */
-      /*     E       E,E    O        E,O    O  */
+      //  ds_u  =  chi^dag * A'_ee * psi
       derivEvenEvenLinOp(ds_u, chi, psi, isign);
+
+      //  ds_u +=  chi^dag * D'_eo * psi
       derivEvenOddLinOp(ds_tmp, chi, psi, isign);
       ds_u += ds_tmp;
 
-      /*  Chi   =  A    Psi  -  Tmp1  */
-      /*     O      O,O    O        O */
+      //  ds_u +=  chi^dag * D'_oe * psi
       derivOddEvenLinOp(ds_tmp, chi, psi, isign);
       ds_u += ds_tmp;
 
+      //  ds_u +=  chi^dag * A'_oo * psi
       derivOddOddLinOp(ds_tmp, chi, psi, isign);
       ds_u += ds_tmp;
     }
