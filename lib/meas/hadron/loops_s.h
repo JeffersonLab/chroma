@@ -3,6 +3,7 @@
 
 
 #include "chromabase.h"
+#include "meas/hadron/stoch_var.h"
 
 /*
 

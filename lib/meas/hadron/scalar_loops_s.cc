@@ -1,5 +1,5 @@
 
-#include "chroma.h"
+#include "chromabase.h"
 #include"scalar_loops_s.h"
 #include "util/gauge/stag_phases_s.h"
 

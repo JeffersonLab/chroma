@@ -1,6 +1,6 @@
 
-#include "chroma.h"
-#include"pseudoscalar_loops_s.h"
+#include "chromabase.h"
+#include "pseudoscalar_loops_s.h"
 #include "util/gauge/stag_phases_s.h"
 
 // Standard Time Slicery

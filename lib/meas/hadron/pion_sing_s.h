@@ -1,7 +1,9 @@
+// $Id: pion_sing_s.h,v 1.3 2005-01-06 17:28:37 edwards Exp $
 #ifndef PION_SING_S_H
 #define PION_SING_S_H
 
-#include "chroma.h"
+#include "chromabase.h"
+#include "meas/hadron/hadron_corr_s.h"
 
 class staggered_hadron_corr ; 
 

@@ -2,7 +2,9 @@
  *  an index for the array of propagators. 
  */
 
-#include "chroma.h"
+#include "chromabase.h"
+#include "meas/hadron/stag_propShift_s.h"
+#include "meas/smear/displacement.h"
 
 int deltaToPropIndex(multi1d<int>& delta)
 {

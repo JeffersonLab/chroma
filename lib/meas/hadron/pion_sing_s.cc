@@ -10,7 +10,7 @@
  *
  * YOU HAVE BEEN WARNED.
  */
-#include "chroma.h"
+#include "chromabase.h"
 #include "pion_sing_s.h"
 #include "util/gauge/stag_phases_s.h"
 

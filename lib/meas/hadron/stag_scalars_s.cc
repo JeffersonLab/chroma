@@ -1,3 +1,4 @@
+// $Id: stag_scalars_s.cc,v 1.5 2005-01-06 17:28:37 edwards Exp $
 /*! File: stag_scalars_s.cc 
  *
  * The routines in this file compute all 16 staggered scalars.
