@@ -1,4 +1,4 @@
-// $Id: mesplq.cc,v 1.5 2003-02-16 04:14:37 edwards Exp $
+// $Id: mesplq.cc,v 1.6 2003-03-06 03:34:34 edwards Exp $
 /*! \file
  *  \brief Plaquette measurement
  */
@@ -24,6 +24,8 @@ static int tDir() {return Nd-1;}
 void MesPlq(const multi1d<LatticeColorMatrix>& u, Double& w_plaq, Double& s_plaq, 
 	    Double& t_plaq, Double& link)
 {
+  START_CODE("MesPlq");
+
   s_plaq = t_plaq = w_plaq = link = 0.0;
 
   // Compute the average plaquettes
@@ -71,4 +73,6 @@ void MesPlq(const multi1d<LatticeColorMatrix>& u, Double& w_plaq, Double& s_plaq
     link += sum(real(trace(u[mu])));
 
   link /= double(Layout::vol()*Nd*Nc);
+
+  END_CODE("MesPlq");
 }
