@@ -3,6 +3,11 @@
 
 <propagator>
   <ProgramInfo>
+    <code_version>
+      <chroma>1.19</chroma>
+      <qdp>1.11.8</qdp>
+    </code_version>
+    <run_date>17 Feb 05 21:33:33 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -13,7 +18,7 @@
   </ProgramInfo>
   <Input><propagator>
 <annotation>
-; $Id: propagator_prec_dwf_v7.linux-scalar-intel.xml,v 1.1 2005-01-06 16:14:20 edwards Exp $
+; $Id: propagator_prec_dwf_v7.linux-scalar-intel.xml,v 1.2 2005-02-18 02:35:18 edwards Exp $
 ;
 ; PROPAGATOR input file
 </annotation>
@@ -211,7 +216,7 @@
       <t_dir>3</t_dir>
     </time_direction>
     <DWF_ConservedAxial>
-      <mesprop>-0.0364543 -0.0146558 -0.00729888 -0.00227992 0.00235699 0.00748355 0.0148226 0.0364334</mesprop>
+      <mesprop>-0.0364543 -0.0146558 -0.00729887 -0.00227992 0.00235699 0.00748355 0.0148226 0.0364334</mesprop>
     </DWF_ConservedAxial>
     <DWF_LocalAxial>
       <mesprop>0.00010002 -0.0234604 -0.0106427 -0.00418088 1.18915e-05 0.0043886 0.0107881 0.0233482</mesprop>
