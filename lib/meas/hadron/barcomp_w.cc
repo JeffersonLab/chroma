@@ -1,4 +1,4 @@
-//  $Id: barcomp_w.cc,v 1.8 2003-12-16 03:48:42 edwards Exp $
+//  $Id: barcomp_w.cc,v 1.9 2004-01-05 01:00:33 edwards Exp $
 /*! \file
  *  \brief Construct all components of a baryon propagator
  */
@@ -31,17 +31,18 @@ private:
  *
  * This routine is specific to Wilson fermions!
  *
- * quark_propagator_{1,2,3} -- quark propagators (read)
- * header_{1,2,3} -- second quark propagator ( Read )
- * quark_propagator_3 -- third quark propagator  ( Read )
- * barprop -- baryon correlation function (in real space) ( Write )
- * num_mom -- number of non-zero momenta ( Read )
- * t0      -- cartesian coordinates of the source in the j_decay direction( Read )
- * j_decay -- direction of the exponential decay ( Read )
- * bc_spec  -- boundary condition for spectroscopy ( Read )
- * file - the filename of the binary output file
  * In all baryons the colour components are contracted with the totally
  * antisymmetric 'tensor' eps(a,b,c) = antisym_tensor(a,b,c).
+ *
+ * \param quark_propagator_{1,2,3} quark propagators (read)
+ * \param header_{1,2,3}           second quark propagator ( Read )
+ * \param quark_propagator_3       third quark propagator  ( Read )
+ * \param barprop                  baryon correlation function (in real space) ( Write )
+ * \param num_mom                  number of non-zero momenta ( Read )
+ * \param t0       cartesian coordinates of the source in the j_decay direction ( Read )
+ * \param j_decay                  direction of the exponential decay ( Read )
+ * \param bc_spec                  boundary condition for spectroscopy ( Read )
+ * \param file                     the filename of the binary output file
  */
 
 void barcomp(const LatticePropagator& quark_propagator_1, 
