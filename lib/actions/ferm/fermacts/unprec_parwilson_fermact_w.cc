@@ -1,4 +1,4 @@
-// $Id: unprec_parwilson_fermact_w.cc,v 1.8 2005-01-11 19:45:36 edwards Exp $
+// $Id: unprec_parwilson_fermact_w.cc,v 1.9 2005-01-25 19:29:12 mcneile Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action with parity breaking term
  */
@@ -52,8 +52,32 @@ namespace Chroma
   {
     XMLReader paramtop(xml, path);
 
-    read(paramtop, "Mass", Mass);
     read(paramtop, "H", H);
+
+
+    // Read the stuff for the action
+    if (paramtop.count("Mass") != 0) 
+    {
+      read(paramtop, "Mass", Mass);
+      if (paramtop.count("Kappa") != 0) 
+      {
+	QDPIO::cerr << "Error: found both a Kappa and a Mass tag" << endl;
+	QDP_abort(1);
+      }
+    }
+    else if (paramtop.count("Kappa") != 0)
+    {
+      Real Kappa;
+      read(paramtop, "Kappa", Kappa);
+      Mass = kappaToMass(Kappa);    // Convert Kappa to Mass
+    }
+    else
+    {
+      QDPIO::cerr << "Error: neither Mass or Kappa found" << endl;
+      QDP_abort(1);
+    }
+
+
   }
 
   //! Read parameters
