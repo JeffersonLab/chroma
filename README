@@ -1,0 +1,44 @@
+Quick installations instructions for CHROMA
+=================================
+
+It is assumed that QDP++ is compiled and **installed** somewhere. You
+can read the INSTALL file in this directory for more details on the
+building of chroma.
+
+To build CHROMA, it is recommended you make a subdirectory for the
+build and keep the build tree separate from the source tree. E.g., say
+the "scalar" version of QDP++ is installed in
+/usr/local/share/qdp++/scalar
+
+Then to build, you would execute:
+
+% cd chroma
+% mkdir ./scalar-build
+% cd ./scalar-build
+% ../configure --with-qdp=/usr/local/qdp++/scalar
+% make
+
+which should build the CHROMA library using a scalar version 
+of QDP++. 
+
+To build a main program
+
+% cd chroma/scalar-build/mainprogs/tests/t_mesplq
+% make t_mesplq
+
+which will build the executable "t_mesplq" using "t_mesplq.cc" as
+the main program file and linking against the library in
+chroma/scalar/lib .
+
+You can execute the program simply by
+
+% ./t_mesplq
+
+which will compute the average plaquette on a random gauge
+field and write the result into  "t_mespl.nml" .
+
+
+ 
+
+
+
