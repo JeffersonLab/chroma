@@ -1,4 +1,4 @@
-// $Id: walldeltaff_w.cc,v 1.2 2004-06-02 03:34:13 edwards Exp $
+// $Id: walldeltaff_w.cc,v 1.3 2004-06-02 03:50:59 edwards Exp $
 /*! \file
  *  \brief Wall-sink delta^+ -> gamma+delta^+ form-factors 
  *
@@ -104,7 +104,7 @@ LatticeSpinMatrix deltaContract(const T1& u1,
   + 2*deltaContract132( d, u1, u2, sigma, tau) + 2*deltaContract132(u1,  d, u2, sigma, tau)
   + 2*deltaContract132(u1, u2,  d, sigma, tau);
 
-  S *= 2;
+  S *= -2;
 
   return S;
 }
