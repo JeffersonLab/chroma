@@ -24,7 +24,7 @@ namespace Chroma {
 
     // Do the HMC trajectory
     virtual void operator()(AbsFieldState<P,Q>& s,
-			    const bool doAccept)
+			    const bool WarmUpP)
       
     {
       AbsMDIntegrator<P,Q>& MD = getMDIntegrator();
@@ -65,7 +65,7 @@ namespace Chroma {
 
       // If we intend to do an accept reject step
       // (ie we are not warming up)
-      if( doAccept ) { 
+      if( ! WarmUpP ) { 
 	
 	// Measure Acceptance
 	bool acceptTestResult = acceptReject(DeltaH);
