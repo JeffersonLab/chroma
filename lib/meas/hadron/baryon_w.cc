@@ -1,4 +1,4 @@
-// $Id: baryon_w.cc,v 1.14 2004-04-22 01:38:46 edwards Exp $ 
+// $Id: baryon_w.cc,v 1.15 2004-04-22 17:01:15 edwards Exp $ 
 /*! \file
  *  \brief Baryon 2-pt functions
  */
@@ -110,9 +110,15 @@ void baryon(LatticePropagator& quark_propagator,
 	  int t_eff = (length - t + t0) % length;
 	
 	  if ( bc_spec < 0 && (t_eff-t0) > 0)
+	  {
 	    barprop[t_eff] -= bardisp2[baryons][sink_mom_num][t];
+	    barprop[t_eff] *= 0.5;
+	  }
 	  else
+	  {
 	    barprop[t_eff] += bardisp2[baryons][sink_mom_num][t];
+	    barprop[t_eff] *= 0.5;
+	  }
 	}
       }
 
@@ -321,8 +327,8 @@ void baryon(LatticePropagator& quark_propagator,
       // Polarized:
       // S_proj = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
       //            = (1 + Gamma(8) - i G(3) - i G(11)) / 2
-      di_quark = quarkContract13(quark_propagator * Gamma(5) + quark_propagator * Gamma(13),  
-				 Gamma(5) * quark_propagator + Gamma(13) * quark_propagator);
+      di_quark = quarkContract13(quark_propagator * Cg5NR,  
+				 Cg5NR * quark_propagator);
       b_prop = trace(S_proj * traceColor(quark_propagator * traceSpin(di_quark)))
 	     + trace(S_proj * traceColor(quark_propagator * di_quark));
       break;
@@ -362,8 +368,8 @@ void baryon(LatticePropagator& quark_propagator,
       // S_proj_unpol = T = (1/2)(1 + gamma_4)
       di_quark = quarkContract13(quark_propagator * Gamma(5),
 				 Gamma(5) * quark_propagator);
-      b_prop = trace(S_proj_unpol * trace(quark_propagator * trace(di_quark)));
-             + trace(S_proj_unpol * trace(quark_propagator * di_quark));
+      b_prop = trace(S_proj_unpol * traceColor(quark_propagator * traceSpin(di_quark)))
+	     + trace(S_proj_unpol * traceColor(quark_propagator * di_quark));
       break;
 
     case 10:
@@ -374,8 +380,8 @@ void baryon(LatticePropagator& quark_propagator,
       // S_proj_unpol = T = (1/2)(1 + gamma_4)
       di_quark = quarkContract13(quark_propagator * Gamma(13),
 				 Gamma(13) * quark_propagator);
-      b_prop = trace(S_proj_unpol * trace(quark_propagator * trace(di_quark)));
-             + trace(S_proj_unpol * trace(quark_propagator * di_quark));
+      b_prop = trace(S_proj_unpol * traceColor(quark_propagator * traceSpin(di_quark)))
+	     + trace(S_proj_unpol * traceColor(quark_propagator * di_quark));
       break;
     
     case 11:
@@ -386,8 +392,8 @@ void baryon(LatticePropagator& quark_propagator,
       // S_proj_unpol = T = (1/2)(1 + gamma_4)
       di_quark = quarkContract13(quark_propagator * Cg5NR,
 				 Cg5NR * quark_propagator);
-      b_prop = trace(S_proj_unpol * trace(quark_propagator * trace(di_quark)));
-             + trace(S_proj_unpol * trace(quark_propagator * di_quark));
+      b_prop = trace(S_proj_unpol * traceColor(quark_propagator * traceSpin(di_quark)))
+	     + trace(S_proj_unpol * traceColor(quark_propagator * di_quark));
       break;
 
     default:
@@ -400,7 +406,10 @@ void baryon(LatticePropagator& quark_propagator,
 
     for(int sink_mom_num=0; sink_mom_num < num_mom; ++sink_mom_num) 
       for(int t = 0; t < length; ++t)
-	barprop[baryons][sink_mom_num][t] = 0.5 * hsum[sink_mom_num][t];
+      {
+	// NOTE: there is NO  1/2  multiplying hsum
+	barprop[baryons][sink_mom_num][t] = hsum[sink_mom_num][t];
+      }
 
   } // end loop over baryons
 
