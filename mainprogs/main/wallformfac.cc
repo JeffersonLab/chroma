@@ -1,4 +1,4 @@
-// $Id: wallformfac.cc,v 1.14 2004-04-18 20:16:30 edwards Exp $
+// $Id: wallformfac.cc,v 1.15 2004-04-18 20:39:33 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions with a wall sink
  *
@@ -301,10 +301,17 @@ main(int argc, char *argv[])
   push(xml_out, "Wilson_3Pt_fn_measurements");
   write(xml_out, "formfac_type", input.param.formfac_type);
 
+  XMLArrayWriter  xml_seq_src(xml_out, input.prop.formfac_type.size());
+  push(xml_seq_src, "Formfac_contractions");
+
   // Loop over types of form-factor
   for (int formfac_ctr = 0; formfac_ctr < input.param.formfac_type.size(); ++formfac_ctr) 
   {
     int formfac_value = input.param.formfac_type[formfac_ctr];
+
+    push(xml_seq_src);
+    write(xml_seq_src, "formfac_ctr", formfac_ctr);
+    write(xml_seq_src, "formfac_value", formfac_value);
 
     QDPIO::cout << "Measurements for formfac_value = " << formfac_value << endl;
 
@@ -330,8 +337,11 @@ main(int argc, char *argv[])
       QDPIO::cerr << "Unknown value of formfac_ctr " << formfac_ctr << endl;
       QDP_abort(1);
     }
-  }
-  
+
+    pop(xml_seq_src);   // elem
+  } // end loop over formfac_contractions
+
+  pop(xml_seq_src);  // formfac_contractions
   pop(xml_out);  // Wilson_3Pt_fn_measurements
 
   // Close the output file XMLDAT

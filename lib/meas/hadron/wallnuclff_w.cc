@@ -1,4 +1,4 @@
-// $Id: wallnuclff_w.cc,v 1.7 2004-04-18 20:15:48 edwards Exp $
+// $Id: wallnuclff_w.cc,v 1.8 2004-04-18 20:39:33 edwards Exp $
 /*! \file
  *  \brief Wall-sink nucleon form-factors 
  *
@@ -56,7 +56,7 @@ void wallNuclFormFac(XMLWriter& xml,
 
   // Loop over appropriate form-factor contractions for this system
   XMLArrayWriter xml_seq_src(xml, 4);
-  push(xml_seq_src, "WallNuclFormFac");
+  push(xml_seq_src, "FormFac");
 
   for (int seq_src = 0; seq_src < 4; ++seq_src) 
   {
@@ -67,7 +67,7 @@ void wallNuclFormFac(XMLWriter& xml,
 
     // Loop over gamma matrices of the insertion current of insertion current
     XMLArrayWriter xml_array(xml_seq_src, Nd);
-    push(xml_array, "FormFac");
+    push(xml_array, "Insertions");
 
     for(int mu = 0; mu < Nd; ++mu)
     {

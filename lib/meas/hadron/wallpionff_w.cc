@@ -1,4 +1,4 @@
-// $Id: wallpionff_w.cc,v 1.9 2004-04-18 20:17:46 edwards Exp $
+// $Id: wallpionff_w.cc,v 1.10 2004-04-18 20:39:33 edwards Exp $
 /*! \file
  *  \brief Wall-sink pion form-factors 
  *
@@ -44,7 +44,7 @@ void wallPionFormFac(XMLWriter& xml,
   // Start new array group
   // Loop over appropriate form-factor contractions for this system
   XMLArrayWriter xml_seq_src(xml, 1);
-  push(xml_seq_src, "WallPionFormFac");
+  push(xml_seq_src, "FormFac");
 
   for (int seq_src = 0; seq_src < 1; ++seq_src) 
   {
@@ -53,7 +53,7 @@ void wallPionFormFac(XMLWriter& xml,
 
     // Loop over gamma matrices of the insertion current of insertion current
     XMLArrayWriter xml_array(xml_seq_src, Nd);
-    push(xml_array, "FormFac");
+    push(xml_array, "Insertions");
 
     for(int mu = 0; mu < Nd; ++mu)
     {
