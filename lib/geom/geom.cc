@@ -1,4 +1,4 @@
-// $Id: geom.cc,v 1.1 2002-12-16 06:53:33 edwards Exp $
+// $Id: geom.cc,v 1.2 2003-01-04 05:10:56 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -6,35 +6,40 @@
 
 #include <szin.h>
 
-namespace QDP
+namespace Geometry
 {
-  /*! Main geometry object */
-  Geometry geom;
+  bool _aniso = false;;
+  int  _t_dir = Nd-1;
+  float _xi_0 = 1.0;
+
+  //! Is anisotropy enabled?
+  bool anisoP() {return _aniso;}
+
+  //! Time direction
+  int tDir() {return _t_dir;}
+
+  //! Anisotropy factor
+  float xi_0() {return _xi_0;}
 
   //! Initializer for geometry
-  void Geometry::Init(const multi1d<int>& nrows)
+  void init()
   {
-    Layout::initialize(nrows);
-
-    aniso = false;   // No anisotropy by default
-    xi_0 = 1.0;       // Anisotropy factor
+    _xi_0 = 1.0;       // Anisotropy factor
     // By default, what is called the time direction is Nd-1
     // NOTE: nothing really depends on this except when aniso is turn on
     // The user can use any nrow direction for time
-    t_dir = Nd - 1;
+    _t_dir = Nd - 1;
   }
 
 
   //! Initializer for geometry
-  void Geometry::InitAniso(const multi1d<int>& nrows, int aniso_dir, float xx)
+  void initAniso(int aniso_dir, float xx)
   {
-    Geometry::Init(nrows);
+    _aniso = true;   // No anisotropy by default
+    _xi_0 = xx;       // Anisotropy factor
+    _t_dir = aniso_dir;
 
-    aniso = true;   // No anisotropy by default
-    xi_0 = xx;       // Anisotropy factor
-    t_dir = aniso_dir;
-
-    if (t_dir < 0 || xi_0 <= 0.0)
-      QDP_error_exit("anisotropy values not set");
+    if (_t_dir < 0 || _xi_0 <= 0.0)
+      QDP_error_exit("anisotropy values not set properly");
   }
 };
