@@ -1,4 +1,4 @@
-// $Id: t_ovlap5d_bj.cc,v 1.2 2004-01-13 17:52:15 bjoo Exp $
+// $Id: t_ovlap5d_bj.cc,v 1.3 2004-01-14 12:45:18 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -12,8 +12,6 @@
 #include <math.h>
 
 #include "chroma.h"
-#include "actions/ferm/fermacts/zolotarev5d_fermact_array_w.h"
-#include "actions/ferm/linop/zolotarev5d_linop_array_w.h"
 
 //#include "state.h"
 //#include "actions/ferm/linop/lovlapms_w.h"
@@ -442,7 +440,6 @@ int main(int argc, char **argv)
    const ConnectState* connect_state_ptr;
   multi1d<LatticeFermion> eigen_vecs;
 
-
   if( params.lambda.size() == 0 ) { 
 
     // Connect State with no eigenvectors
@@ -471,11 +468,11 @@ int main(int argc, char **argv)
 				      eigen_vecs,
 				      params.lambda_max);
   }
-
+  
 
   // Stuff the pointer into a handle. Now, the handle owns the data.
   Handle<const ConnectState> connect_state(connect_state_ptr);
-    
+  
   // Make me a linop (this callls the initialise function)
   Handle<const LinearOperator< multi1d< LatticeFermion > > > D_op(S.linOp(connect_state));
 
@@ -487,9 +484,13 @@ int main(int argc, char **argv)
 
   LatticeFermion chi4;
   LatticeFermion psi4;
+  LatticeFermion tmp;
+  int n_count;
+
+
   gaussian(chi4);
 
-
+ 
   // We solve M_5d psi = gamma_5 chi
   multi1d<LatticeFermion> psi( N5 );
   multi1d<LatticeFermion> chi( N5 );
@@ -498,12 +499,11 @@ int main(int argc, char **argv)
     psi[i] = zero;
     chi[i] = zero;
   }
-  LatticeFermion tmp = Gamma(G5)*chi4;
-  chi[N5-1] = tmp;                       // 4D source in last component
+  
+  chi[N5-1] = Gamma(G5)*chi4;             // 4D source in last component
                                          // is gamma5 chi
 
   multi1d<LatticeFermion> tmp5_1( N5 );
-  int n_count;
 
   // CGNE
   //
@@ -513,23 +513,14 @@ int main(int argc, char **argv)
   //
   // hence tmp5_1 = M^{-dag} M^{-1} chi
   
-  /*
-  InvCG2( *D_op, chi, tmp5_1, params.rsd_cg, params.max_cg, n_count);
-
-  // Put solution into psi  check inverse
-  (*D_op)(psi, tmp5_1, MINUS);
-  
-  // Multiply back to check inverse
-  (*D_op)(tmp5_1, psi, PLUS);
-  */
-
  // Put solution into psi  check inverse
   (*D_op)(tmp5_1, chi, MINUS);
- 
   InvCG2( *D_op, tmp5_1, psi, params.rsd_cg, params.max_cg, n_count);
-  
+
+ 
   // Multiply back to check inverse
   (*D_op)(tmp5_1, psi, PLUS);
+
   
   multi1d<LatticeFermion> tmp5_2( N5 );
   Double dnorm = Double(0);
@@ -553,6 +544,7 @@ int main(int argc, char **argv)
   // Scale to get right normalsation. 
   // Note this only works because we gamma_5-d the source initially
   psi4 *= Real(2)/(Real(1)-params.quark_mass);
+  
 
   // This is the residuum in 4D
   LatticeFermion r;
@@ -577,17 +569,20 @@ int main(int argc, char **argv)
   push(xml_out, "Inv4Dcheck");
   write(xml_out, "r_norm", r_norm4);
   pop(xml_out);
+ 
 
   // Qprop Test
   multi1d<int> coord(Nd);
   coord[0]=0; coord[1] = 0; coord[2] = 0; coord[3] = 0;
 
+
   chi4 = zero;
+  tmp = zero;
 
   // Point source
   srcfil(chi4, coord, 0, 0);
   psi4 = zero;
-
+  
   S4.qprop(psi4, connect_state, chi4, CG_INVERTER, params.rsd_cg, params.max_cg, n_count);
 
   // Check original solution. psi4 contains 1/(1-m)[D^{-1} - 1 ]
@@ -595,9 +590,12 @@ int main(int argc, char **argv)
   psi4 += chi4; // add back contact term  psi4 = D^{-1} chi4
   (*D_op4)(r, psi4, PLUS);         // r = D psi4
   r -= chi4;                       // r = D psi4 - chi4
-  
-  QDPIO::cout << "4D Qprop || r || = " << sqrt(norm2(r)) << endl;
 
+  r_norm4 = sqrt(norm2(r)/norm2(chi4));
+  QDPIO::cout << "4D Qprop || r || = " << r_norm4 << endl;
+  push(xml_out, "Consistency4D");
+  write(xml_out, "r_norm", r_norm4);
+  pop(xml_out);
 
   LatticeFermion psi4_2=zero;
   S.qprop(psi4_2, connect_state, chi4, CG_INVERTER, params.rsd_cg, params.max_cg, n_count);
@@ -607,8 +605,28 @@ int main(int argc, char **argv)
   (*D_op4)(r, psi4_2, PLUS);         // r = D psi4
   r -= chi4;                       // r = D psi4 - chi4
 
-  QDPIO::cout << "5D Qprop || r || = " << sqrt(norm2(r)) << endl;
+  r_norm4 = sqrt(norm2(r)/norm2(chi4));
+ 
+  QDPIO::cout << "5D Qprop || r || = " << r_norm4 << endl;
+  push(xml_out, "Consistency5D");
+  write(xml_out, "r_norm", r_norm4);
+  pop(xml_out);
 
+
+  // Remove contact_term
+  psi4 -= chi4;
+  psi4_2 -= chi4;
+  //  Overlall normalisation
+  psi4 *= Real(1)/( Real(1) - params.quark_mass);
+  psi4_2 *= Real(1)/( Real(1) - params.quark_mass);
+
+  r = psi4 - psi4_2;
+  r_norm4 = sqrt(norm2(r)/norm2(chi4));
+
+  QDPIO::cout << "|| 4D Qprop - 5D Qprop || = " << r_norm4 << endl;
+  push(xml_out, "Qprop4D5Ddiff");
+  write(xml_out, "r_norm", r_norm4);
+  pop(xml_out);
 
   pop(xml_out);
   QDP_finalize();

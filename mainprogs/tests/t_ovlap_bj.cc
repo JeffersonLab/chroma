@@ -1,4 +1,4 @@
-// $Id: t_ovlap_bj.cc,v 1.17 2004-01-13 10:00:57 bjoo Exp $
+// $Id: t_ovlap_bj.cc,v 1.18 2004-01-14 12:45:18 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -488,7 +488,7 @@ int main(int argc, char **argv)
 
   LatticeFermion psi;
   gaussian(psi);
-  Double n2 = norm2(psi);
+  Double n2 = sqrt(norm2(psi));
   psi /= n2;
 
   LatticeFermion s1, s2, s3, tmp2;
