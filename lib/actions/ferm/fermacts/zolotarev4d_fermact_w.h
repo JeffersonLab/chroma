@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev4d_fermact_w.h,v 1.10 2003-12-04 02:57:42 edwards Exp $
+// $Id: zolotarev4d_fermact_w.h,v 1.11 2003-12-09 10:33:42 bjoo Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -28,7 +28,8 @@ class Zolotarev4DFermAct : public OverlapFermActBase
 {
 public:
   //! Full constructor
-  Zolotarev4DFermAct(const UnprecWilsonTypeFermAct<LatticeFermion>& Mact_, const Real& m_q_,
+  Zolotarev4DFermAct(const UnprecWilsonTypeFermAct<LatticeFermion>& Mact_, 
+		     const Real& m_q_,
 		     int RatPolyDeg_) :
     Mact(Mact_), m_q(m_q_), RatPolyDeg(RatPolyDeg_)
     {}
@@ -40,16 +41,20 @@ public:
   /*! HACK - NEED TO FIX THIS */
   bool isChiral() const {return false;}
 
-  //! Default version, given links create the state needed for the linear operators
-  /*! Covariant Return Rule - overload base class virtual function with new return type */
-  const EVConnectStateBase<LatticeFermion>* createState(const multi1d<LatticeColorMatrix>& u) const;
+  //! Default version, given links create the state needed for the linear 
+  //  operators
+  /*! Covariant Return Rule - overload base class virtual function with new
+    return type */
+  const EVConnectStateBase<LatticeFermion>* 
+    createState(const multi1d<LatticeColorMatrix>& u) const;
 
   //! Full version, given links create the state needed for the linear operators
   /*! New function */
-  const EVConnectStateBase<LatticeFermion>* createState(const multi1d<LatticeColorMatrix>& u, 
-							const multi1d<LatticeFermion>& eigVec, 
-							const multi1d<Real>& eigVal,
-							const Real& eigValMax) const;
+  const EVConnectStateBase<LatticeFermion>* 
+    createState(const multi1d<LatticeColorMatrix>& u, 
+		const multi1d<LatticeFermion>& eigVec, 
+		const multi1d<Real>& eigVal,
+		const Real& eigValMax) const;
 
   //! Produce a linear operator for this action
   /*! 
@@ -70,7 +75,10 @@ public:
 
 protected:
   //! Helper in construction
-  void init(int& numroot, Real& coeffP, multi1d<Real>& resP, multi1d<Real>& rootQ, 
+  void init(int& numroot, 
+	    Real& coeffP, 
+	    multi1d<Real>& resP, 
+	    multi1d<Real>& rootQ, 
 	    int& NEig, 
 	    multi1d<Real>& EigValFunc,
 	    const EVConnectState<LatticeFermion>& state,

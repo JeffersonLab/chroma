@@ -1,4 +1,4 @@
-// $Id: zolotarev4d_linop_w.cc,v 1.8 2003-12-03 06:13:03 edwards Exp $
+// $Id: zolotarev4d_linop_w.cc,v 1.9 2003-12-09 10:33:42 bjoo Exp $
 /*! \file
  *  \brief 4D Zolotarev operator
  */
@@ -6,7 +6,7 @@
 #include "chromabase.h"
 #include "actions/ferm/linop/lmdagm_w.h"
 #include "actions/ferm/linop/zolotarev4d_linop_w.h"
-#include "actions/ferm/linop/zolotarev.h"
+#include <zolotarev.h>
 
 // #include "primitives.h"
 //#include "common_declarations.h"
