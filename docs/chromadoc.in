@@ -51,7 +51,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = @top_srcdir@/lib @top_srcdir@/include @top_srcdir@/mainprogs
+INPUT                  = @top_srcdir@/lib @top_srcdir@/mainprogs
 FILE_PATTERNS          =  
 RECURSIVE              = YES
 EXCLUDE                = @top_srcdir@/config @top_srcdir@/docs
