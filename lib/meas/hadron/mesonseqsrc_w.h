@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: mesonseqsrc_w.h,v 1.5 2005-03-15 04:06:34 edwards Exp $
+// $Id: mesonseqsrc_w.h,v 1.6 2005-03-18 05:12:37 edwards Exp $
 /*! \file
  *  \brief Construct meson sequential sources.
  */
@@ -253,6 +253,22 @@ namespace Chroma
   LatticePropagator mesPionA1X1SeqSrc(const LatticePropagator& quark_propagator_1, 
 				      const LatticePropagator& quark_propagator_2,
 				      const LatticePropagator& quark_propagator_3);
+
+
+  //! Construct pion sequential source
+  /*!
+   * \ingroup hadron
+   *
+   * \param quark_propagator_1   first (u) quark propagator ( Read )
+   * \param quark_propagator_2   second (d) quark propagator ( Read )
+   * \param quark_propagator_3   third (s) quark propagator ( Read )
+   *
+   * \return \gamma_5 * (gamma_5)^dag * gamma_5 * G * \gamma_5
+   */
+
+  LatticePropagator mesPion1Pion1SeqSrc(const LatticePropagator& quark_propagator_1, 
+					const LatticePropagator& quark_propagator_2,
+					const LatticePropagator& quark_propagator_3);
 
 }  // end namespace Chroma
 

@@ -1,4 +1,4 @@
-// $Id: seqsrc_funcmap_w.cc,v 1.2 2005-03-15 04:06:34 edwards Exp $
+// $Id: seqsrc_funcmap_w.cc,v 1.3 2005-03-18 05:12:37 edwards Exp $
 /*! \file
  *  \brief Sequential source function map
  */
@@ -51,12 +51,6 @@ namespace Chroma
       success &= TheSeqSourceFuncMap::Instance().registerFunction(string("NUCL_D_MIXED_NONREL"),   
 								  barNuclDMixedNR);
 
-      success &= TheSeqSourceFuncMap::Instance().registerFunction(string("PION"),
-								  mesPionSeqSrc);
-      
-      success &= TheSeqSourceFuncMap::Instance().registerFunction(string("PION_1"),  // same as PION
-								  mesPionSeqSrc);
-      
       success &= TheSeqSourceFuncMap::Instance().registerFunction(string("PION-A0_1"),
 								  mesPionA01SeqSrc);
       
@@ -105,6 +99,12 @@ namespace Chroma
       success &= TheSeqSourceFuncMap::Instance().registerFunction(string("PION-A1_X_1"),
 								  mesPionA1X1SeqSrc);
        
+      success &= TheSeqSourceFuncMap::Instance().registerFunction(string("PION"),
+								  mesPion1Pion1SeqSrc);
+
+      success &= TheSeqSourceFuncMap::Instance().registerFunction(string("PION_1"), // same as PION
+								  mesPion1Pion1SeqSrc);
+      
       return success;
     }
 

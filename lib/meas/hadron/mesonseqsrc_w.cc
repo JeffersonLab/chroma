@@ -1,4 +1,4 @@
-// $Id: mesonseqsrc_w.cc,v 1.7 2005-03-15 04:06:34 edwards Exp $
+// $Id: mesonseqsrc_w.cc,v 1.8 2005-03-18 05:12:37 edwards Exp $
 /*! \file
  *  \brief Construct meson sequential sources.
  */
@@ -416,6 +416,28 @@ namespace Chroma
 			  quark_propagator_2,
 			  quark_propagator_3,
 			  14);   // a1_x_1 = gamma_2*gamma_3*gamma_4
+  }
+
+
+  //! Construct pion sequential source
+  /*!
+   * \ingroup hadron
+   *
+   * \param quark_propagator_1   first (u) quark propagator ( Read )
+   * \param quark_propagator_2   second (d) quark propagator ( Read )
+   * \param quark_propagator_3   third (s) quark propagator ( Read )
+   *
+   * \return \gamma_5 * (gamma_5)^dag * gamma_5 * G * \gamma_5
+   */
+
+  LatticePropagator mesPion1Pion1SeqSrc(const LatticePropagator& quark_propagator_1, 
+					const LatticePropagator& quark_propagator_2,
+					const LatticePropagator& quark_propagator_3)
+  {
+    return mesPionXSeqSrc(quark_propagator_1,
+			  quark_propagator_2,
+			  quark_propagator_3,
+			  15);   // pion_1 = gamma_5
   }
 
 }  // end namespace Chroma
