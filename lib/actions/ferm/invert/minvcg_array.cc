@@ -1,4 +1,4 @@
-// $Id: minvcg_array.cc,v 1.1 2005-01-28 02:14:28 edwards Exp $
+// $Id: minvcg_array.cc,v 1.2 2005-01-28 05:09:12 edwards Exp $
 
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator
@@ -8,6 +8,20 @@
 #include "actions/ferm/invert/minvcg_array.h"
 
 namespace Chroma {
+
+
+  // ********************* HACK ********************
+  // Provide this till QDP has an equiv version
+  Double innerProductReal(const multi1d<LatticeFermion>& s1, const multi1d<LatticeFermion>& s2,
+			  const OrderedSubset& sub)
+  {
+    Double s = zero;
+    for(int n=0; n < s1.size(); ++n)
+      s += innerProductReal(s1[n], s2[n], sub);
+
+    return s;
+  }
+
 
 
 //! Multishift Conjugate-Gradient (CG1) algorithm for a  Linear Operator
@@ -70,7 +84,7 @@ namespace Chroma {
 
 template<typename T>
 void MInvCG_a(const LinearOperator< multi1d<T> >& A, 
-	      const T& chi, 
+	      const multi1d<T>& chi, 
 	      multi1d< multi1d<T> >& psi,
 	      const multi1d<Real>& shifts, 
 	      const multi1d<Real>& RsdCG, 
@@ -82,6 +96,7 @@ void MInvCG_a(const LinearOperator< multi1d<T> >& A,
   const OrderedSubset& sub = A.subset();
 
   int n_shift = shifts.size();
+  int N = A.size();
 
   if (n_shift == 0) {
     QDP_error_exit("MinvCG: You must supply at least 1 mass: mass.size() = %d",
@@ -100,17 +115,15 @@ void MInvCG_a(const LinearOperator< multi1d<T> >& A,
   QDPIO::cout << "n_shift = " << n_shift << " isz = " << isz << " shift = " << shifts[0] << endl;
 #endif
 
-  // We need to make sure, that psi is at least as big as the number
-  // of shifts. We resize it if it is not big enough.
-  // However, it is allowed to be bigger.
-  if( psi.size() <  n_shift ) { 
-      psi.resize(n_shift);
-  }
+  // The outer size of the multi1d is n_shift
+  psi.resize(n_shift);
 
   // For this algorithm, all the psi have to be 0 to start
   // Only is that way the initial residuum r = chi
   for(int i= 0; i < n_shift; ++i) { 
-    psi[i][sub] = zero;
+    psi[i].resize(N);
+    for(int n=0; n < N; ++n)
+      psi[i][n][sub] = zero;
   }
   
   // If chi has zero norm then the result is zero
@@ -131,33 +144,36 @@ void MInvCG_a(const LinearOperator< multi1d<T> >& A,
   multi1d<Double> rsdcg_sq(n_shift);
 
   Double cp = chi_norm_sq;
-  int s;
-  for(s = 0; s < n_shift; ++s)  {
+  for(int s = 0; s < n_shift; ++s)  {
     rsdcg_sq[s] = RsdCG[s] * RsdCG[s];  // RsdCG^2
     rsd_sq[s] = Real(cp) * rsdcg_sq[s]; // || chi ||^2 RsdCG^2
   }
 
   
   // r[0] := p[0] := Chi 
-  T r;
-  r[sub] = chi;
+  multi1d<T> r(N);
+  for(int n=0; n < N; ++n)
+    r[n][sub] = chi[n];
 
   // Psi[0] := 0;
-  multi1d<T> p(n_shift);
-  for(s = 0; s < n_shift; ++s) {
-    p[s][sub] = chi;
+  multi1d< multi1d<T> > p(n_shift);
+  for(int s = 0; s < n_shift; ++s) {
+    p[s].resize(N); 
+    for(int n=0; n < N; ++n)
+      p[s][n][sub] = chi[n];
   }
 
 
   //  b[0] := - | r[0] |**2 / < p[0], Ap[0] > ;/
   //  First compute  d  =  < p, A.p > 
   //  Ap = A . p  */
-  LatticeFermion Ap;
+  multi1d<T> Ap(N);
   A(Ap, p[isz], PLUS);
-  Ap[sub] += p[isz] * shifts[isz];
+  for(int n=0; n < N; ++n)
+    Ap[n][sub] += p[isz][n] * shifts[isz];
 
   /*  d =  < p, A.p >  */
-  Double d = real(innerProduct(p[isz], Ap, sub)); // 2Nc Ns flops 
+  Double d = innerProductReal(p[isz], Ap, sub); // 2Nc Ns flops 
 
  
   
@@ -173,7 +189,7 @@ void MInvCG_a(const LinearOperator< multi1d<T> >& A,
   bs[isz] = b;
   iz = 1;
 
-  for(s = 0; s < n_shift; ++s)
+  for(int s = 0; s < n_shift; ++s)
   {
     if( s != isz ) {
       z[1-iz][s] = Double(1);
@@ -183,11 +199,13 @@ void MInvCG_a(const LinearOperator< multi1d<T> >& A,
   }
 
   //  r[1] += b[0] A . p[0]; 
-  r[sub] += Ap * Real(b);	                        // 2 Nc Ns  flops
+  for(int n=0; n < N; ++n)
+    r[n][sub] += Ap[n] * Real(b);	                        // 2 Nc Ns  flops
 
   //  Psi[1] -= b[0] p[0] = - b[0] chi;
-  for(s = 0; s < n_shift; ++s) {
-    psi[s][sub] = - Real(bs[s])*chi;                      //  2 Nc Ns  flops 
+  for(int s = 0; s < n_shift; ++s) {
+    for(int n=0; n < N; ++n)
+      psi[s][n][sub] = - Real(bs[s])*chi[n];                    //  2 Nc Ns  flops 
   }
   
   //  c = |r[1]|^2   
@@ -195,7 +213,7 @@ void MInvCG_a(const LinearOperator< multi1d<T> >& A,
 
   // Check convergence of first solution
   multi1d<bool> convsP(n_shift);
-  for(s = 0; s < n_shift; ++s) {
+  for(int s = 0; s < n_shift; ++s) {
     convsP[s] = false;
   }
 
@@ -223,21 +241,25 @@ void MInvCG_a(const LinearOperator< multi1d<T> >& A,
     //  p[k+1] := r[k+1] + a[k+1] p[k]; 
     //  Compute the shifted as */
     //  ps[k+1] := zs[k+1] r[k+1] + a[k+1] ps[k];
-    for(s = 0; s < n_shift; ++s) {
+    for(int s = 0; s < n_shift; ++s) {
 
       // Always update p[isz] even if isz is converged
       // since the other p-s depend on it.
       if (s == isz) {
-	p[s][sub] *= Real(a);	                              // Nc Ns  flops 
-	p[s][sub] += r;	                              // Nc Ns  flops 
+	for(int n=0; n < N; ++n) {
+	  p[s][n][sub] *= Real(a);	                              // Nc Ns  flops 
+	  p[s][n][sub] += r[n];	                              // Nc Ns  flops 
+	}
       }
       else {
 	// Don't update other p-s if converged.
 	if( ! convsP[s] ) { 
 	  as = a * z[iz][s]*bs[s] / (z[1-iz][s]*b);
 	  
-	  p[s][sub] *= Real(as);	                             // Nc Ns  flops 
-	  p[s][sub] += r * Real(z[iz][s]);	                     // Nc Ns  flops 
+	  for(int n=0; n < N; ++n) {
+	    p[s][n][sub] *= Real(as);	                             // Nc Ns  flops 
+	    p[s][n][sub] += r[n] * Real(z[iz][s]);	                     // Nc Ns  flops 
+	  }
 	}
       }
 
@@ -250,10 +272,11 @@ void MInvCG_a(const LinearOperator< multi1d<T> >& A,
     //  First compute  d  =  < p, A.p >  
     //  Ap = A . p 
     A(Ap, p[isz], PLUS);
-    Ap[sub] += p[isz] * shifts[isz];
+    for(int n=0; n < N; ++n)
+      Ap[n][sub] += p[isz][n] * shifts[isz];
 
     /*  d =  < p, A.p >  */
-    d = real(innerProduct(p[isz], Ap, sub));                   //  2 Nc Ns  flops
+    d = innerProductReal(p[isz], Ap, sub);                   //  2 Nc Ns  flops
     
     bp = b;
     b = -cp/d;
@@ -261,8 +284,7 @@ void MInvCG_a(const LinearOperator< multi1d<T> >& A,
     // Compute the shifted bs and z 
     bs[isz] = b;
     iz = 1 - iz;
-    for(s = 0; s < n_shift; s++) {
-      
+    for(int s = 0; s < n_shift; s++) {
       
       if (s != isz && !convsP[s] ) {
 	z0 = z[1-iz][s];
@@ -274,13 +296,15 @@ void MInvCG_a(const LinearOperator< multi1d<T> >& A,
     }
 
     //  r[k+1] += b[k] A . p[k] ; 
-    r[sub] += Ap * Real(b);	        // 2 Nc Ns  flops
+    for(int n=0; n < N; ++n)
+      r[n][sub] += Ap[n] * Real(b);	        // 2 Nc Ns  flops
 
 
     //  Psi[k+1] -= b[k] p[k] ; 
-    for(s = 0; s < n_shift; ++s) {
+    for(int s = 0; s < n_shift; ++s) {
       if (! convsP[s] ) {
-	psi[s][sub] -= p[s] * Real(bs[s]);	// 2 Nc Ns  flops 
+	for(int n=0; n < N; ++n)
+	  psi[s][n][sub] -= p[s][n] * Real(bs[s]);	// 2 Nc Ns  flops 
       }
     }
 
@@ -290,7 +314,7 @@ void MInvCG_a(const LinearOperator< multi1d<T> >& A,
     //    IF |psi[k+1] - psi[k]| <= RsdCG |psi[k+1]| THEN RETURN;
     // or IF |r[k+1]| <= RsdCG |chi| THEN RETURN;
     convP = true;
-    for(s = 0; s < n_shift; s++) {
+    for(int s = 0; s < n_shift; s++) {
       if (! convsP[s] ) {
 
 
@@ -339,12 +363,14 @@ void MInvCG_a(const LinearOperator< multi1d<T> >& A,
 
 #if 1
   // Expicitly check the ALL solutions
-  for(s = 0; s < n_shift; ++s)
+  for(int s = 0; s < n_shift; ++s)
   {
     A(Ap, psi[s], PLUS);
-    Ap[sub] += psi[s] * shifts[s];
+    for(int n=0; n < N; ++n) {
+      Ap[n][sub] += psi[s][n] * shifts[s];
 
-    Ap[sub] -= chi;
+      Ap[n][sub] -= chi[n];
+    }
 
     c = norm2(Ap,sub);	                /* 2 Nc Ns  flops */
 
@@ -369,9 +395,9 @@ void MInvCG_a(const LinearOperator< multi1d<T> >& A,
 
 
 template<>
-void MInvCG(const LinearOperator<LatticeFermion>& M,
-	    const LatticeFermion& chi, 
-	    multi1d<LatticeFermion>& psi, 
+void MInvCG(const LinearOperator< multi1d<LatticeFermion> >& M,
+	    const multi1d<LatticeFermion>& chi, 
+	    multi1d< multi1d<LatticeFermion> >& psi, 
 	    const multi1d<Real>& shifts,
 	    const multi1d<Real>& RsdCG, 
 	    int MaxCG,
