@@ -1,4 +1,4 @@
-// $Id: wallformfac.cc,v 1.1 2004-01-12 03:07:55 edwards Exp $
+// $Id: wallformfac.cc,v 1.2 2004-01-13 04:02:06 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions with a wall sink
  *
@@ -303,10 +303,12 @@ main(int argc, char *argv[])
   // Now the 3pt contractions
   SftMom phases(input.param.mom2_max, false, input.param.j_decay);
 
-#if 0
+#if 1
   wallPionFormFac(xml_out,
-		  u, forward_quark_prop, backward_quark_prop, phases, 
-		  input.param.t_srce[input.param.j_decay]);
+		  u, forward_quark_prop, backward_quark_prop, 
+		  phases, 
+		  input.param.t_srce[input.param.j_decay],
+		  input.param.t_sink);
 #else
   wallNucleonFormFac(xml_out,
 		     u, forward_quark_prop, backward_quark_prop, phases, 
