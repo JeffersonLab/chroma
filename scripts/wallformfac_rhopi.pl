@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: wallformfac_rhopi.pl,v 1.13 2004-09-17 20:24:28 edwards Exp $
+# $Id: wallformfac_rhopi.pl,v 1.14 2004-09-17 20:36:24 edwards Exp $
 #
 # Usage
 #   wallformfac_rhopi.pl
@@ -379,14 +379,17 @@ foreach $h ('RHO_PI')
 		&ensbc("foo_0_${s}s${k}m${j}q${qx}${qy}${qz} = foo0");
 		&ensbc("foo_1_${s}s${k}m${j}q${qx}${qy}${qz} = foo1");
 		
+		&ensbc("foo4 = - foo0 * foo1");
+		&ensbc("foo3 = sqrt(foo4) * foo4/abs(foo4)"); # make sure to sqrt a pos number - fold sign into result
+
 		if (! defined($rhopi_cnt{$h}{$k}{$j}{$qsq_int}))
 		{
-		  &ensbc("${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int} = sqrt(- foo0 * foo1)");
+		  &ensbc("${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int} = foo3");
 		  $rhopi_cnt{$h}{$k}{$j}{$qsq_int} = 1;
 		}
 		else
 		{
-		  &ensbc("${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int} = ${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int} + sqrt(- foo0 * foo1)");
+		  &ensbc("${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int} = ${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int} + foo3");
 		  ++$rhopi_cnt{$h}{$k}{$j}{$qsq_int};
 		}
 
