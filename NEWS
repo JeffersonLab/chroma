@@ -1,3 +1,8 @@
+01/14/2005 -- Robert Edwards
+
+	Version 1.17.1. Some code cleanups/namespaces. Logging in HMC.
+        Merged in Al Hart's changes.
+
 01/13/2005 -- Balint Joo
 
 	Version 1.17.0. Major reorg of molecdyn dir. Files split and
