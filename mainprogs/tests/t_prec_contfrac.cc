@@ -1,4 +1,4 @@
-// $Id: t_prec_contfrac.cc,v 1.3 2005-01-31 13:06:47 bjoo Exp $
+// $Id: t_prec_contfrac.cc,v 1.4 2005-01-31 16:43:49 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -12,8 +12,8 @@ struct App_input_t {
   multi1d<int> nrow;
   multi1d<int> boundary;
  //  UnprecOvlapContFrac5DFermActParams p_unprec;
-  UnprecHTContFrac5DFermActParams p_unprec;
-  EvenOddPrecHtContFrac5DFermActParams p_prec;
+  UnprecZoloNEFFermActArrayParams p_unprec;
+  EvenOddPrecZoloNEFFermActArrayParams p_prec;
 };
 
 // Reader for input parameters
@@ -88,8 +88,8 @@ int main(int argc, char **argv)
   Handle< FermBC< multi1d< LatticeFermion> > >  fbc(new SimpleFermBC< multi1d< LatticeFermion> >(input.boundary));
  
   // Initialize fermion actions
-  UnprecHTContFrac5DFermActArray S_unprec(fbc, input.p_unprec);
-  EvenOddPrecHtContFrac5DFermActArray S_prec(fbc, input.p_prec);
+  UnprecZoloNEFFermActArray S_unprec(fbc, input.p_unprec);
+  EvenOddPrecZoloNEFFermActArray S_prec(fbc, input.p_prec);
 
 
   // Create an overlap state

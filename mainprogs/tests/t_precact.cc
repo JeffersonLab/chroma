@@ -1,4 +1,4 @@
-// $Id: t_precact.cc,v 1.12 2005-01-21 17:47:04 edwards Exp $
+// $Id: t_precact.cc,v 1.13 2005-01-31 16:43:49 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -33,8 +33,42 @@ bool linkage_hack()
   foo &= UnprecZoloNEFFermActArrayEnv::registered;
   foo &= EvenOddPrecZoloNEFFermActArrayEnv::registered;
   foo &= UnprecDWFTransfFermActEnv::registered;
-
+  foo &= UnprecHTContFrac5DFermActArrayEnv::registered;
+  foo &= EvenOddPrecHtContFrac5DFermActArrayEnv::registered;
   return foo;
+}
+
+//! Check Qprop
+void check_qprop(XMLWriter& xml_out, const string& prefix, 
+		 const SystemSolver< LatticeFermion >& PP,
+		 const SystemSolver< LatticeFermion >& UP)
+{
+  LatticeFermion source;
+  LatticeFermion sol_unprec;
+  LatticeFermion sol_prec;
+
+  // Make some kind of source
+  gaussian(source);
+  Double s_norm = sqrt(norm2(source));
+  Real factor = Real(1)/Real(s_norm);
+  source *= factor;
+
+  sol_prec=zero;
+  sol_unprec=zero;
+
+  // Do solution one;
+  int n_count1 = PP(sol_prec, source);
+  int n_count2 = UP(sol_unprec, source);
+
+  LatticeFermion diff = sol_prec - sol_unprec;
+  Double norm_diff = sqrt(norm2(diff));
+
+  QDPIO::cout << "Prop Diff: " << norm_diff << endl;
+  push(xml_out, prefix);
+  write(xml_out, "n_count1", n_count1);
+  write(xml_out, "n_count2", n_count2);
+  write(xml_out, "prop_diff", norm_diff);
+  pop(xml_out);
 }
 
 
@@ -438,6 +472,16 @@ int main(int argc, char **argv)
       
       QDPIO::cout << "Check bulk linops" << endl;
       check_linops(xml_out, "Bulk", *AP, *AU);
+
+
+      Handle< const SystemSolver<LatticeFermion> > PP = S_f_eo->qprop(state_eo,
+								      input.param.invParam);
+      Handle< const SystemSolver<LatticeFermion> > UP = S_f_un->qprop(state_un,
+								      input.param.invParam);
+
+      QDPIO::cout << "Check qprop" << endl;
+      check_qprop(xml_out, "Qprop", *PP, *UP);
+
 
       QDPIO::cout << "Check bulk derivatives" << endl;
       check_derivs(xml_out, "Bulk", *AP, *AU);
