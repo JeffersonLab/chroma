@@ -1,4 +1,4 @@
-// $Id: t_precact.cc,v 1.6 2004-09-09 15:52:52 edwards Exp $
+// $Id: t_precact.cc,v 1.7 2004-12-12 21:14:56 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -52,7 +52,7 @@ int main(int argc, char **argv)
     Handle<const LinearOperator<LatticeFermion> > A_uwil(S_uwil.linOp(state));
   
     EvenOddPrecWilsonFermAct S_pwil(fbc, WilsonMass);
-    Handle<const EvenOddPrecLinearOperator<LatticeFermion> > A_pwil(S_pwil.linOp(state));
+    Handle<const EvenOddPrecLinearOperatorBase<LatticeFermion> > A_pwil(S_pwil.linOp(state));
   
     LatticeFermion  psi, chi, tmp1, tmp2;
     random(psi);
@@ -100,7 +100,7 @@ int main(int argc, char **argv)
     Handle<const LinearOperator< multi1d<LatticeFermion> > > A_udwf(S_udwf.linOp(state));
   
     EvenOddPrecDWFermActArray S_pdwf(fbc,WilsonMass,m_q,N5);
-    Handle<const EvenOddPrecLinearOperator< multi1d<LatticeFermion> > > A_pdwf(S_pdwf.linOp(state));
+    Handle<const EvenOddPrecLinearOperatorBase< multi1d<LatticeFermion> > > A_pdwf(S_pdwf.linOp(state));
   
     multi1d<LatticeFermion>  psi(N5), chi(N5), tmp1(N5), tmp2(N5);
     for(int m=0; m < N5; ++m)
