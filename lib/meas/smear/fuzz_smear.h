@@ -1,4 +1,4 @@
-// $Id: fuzz_smear.h,v 1.1 2004-01-20 13:45:02 mcneile Exp $
+// $Id: fuzz_smear.h,v 1.2 2004-02-08 14:35:07 mcneile Exp $
 
 #ifndef __fuzz_smear__
 #define __fuzz_smear__
@@ -18,5 +18,11 @@ void fuzz_smear(const multi1d<LatticeColorMatrix>& ufuzz,
 		const LatticePropagator  & psi, 
 		LatticePropagator& psifuzz, 
 		int length, int j_decay) ;
+
+void fuzz_smear(const multi1d<LatticeColorMatrix>& ufuzz, 
+		const LatticeFermion  & psi, 
+		LatticeFermion& psifuzz, 
+		int length, int j_decay) ; 
+
 
 #endif
