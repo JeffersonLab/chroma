@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: param_io.h,v 1.10 2004-01-30 04:21:56 edwards Exp $
+// $Id: param_io.h,v 1.11 2004-02-23 03:09:39 edwards Exp $
 /*! \file
  *  \brief Reunitarize (to a SU(N)) inplace the matrix A under some option
  */
@@ -81,13 +81,9 @@ enum FermActType {
 /*
  * Input 
  */
-struct IO_version_t
-{
-  int version;
-};
-
 struct Cfg_t
 {
+  CfgType      cfg_type;   // storage order for stored gauge configuration
   string       cfg_file;
 };
 
@@ -115,9 +111,9 @@ struct AnisoParam_t
 //! Parameters for sources and sinks
 struct SmearingParam_t
 {
-  WvfKind       Wvf_kind;
-  multi1d<Real> wvf_param;
-  multi1d<int>  WvfIntPar;
+  WvfKind       wvf_kind;
+  Real          wvf_param;
+  int           wvfIntPar;
 };
 
 
@@ -130,6 +126,21 @@ struct InvertParam_t
   int           MaxCG;	   // Iteration parameters
 };
 
+
+//---------------------------- Initializers -----------------------------
+//! Initialize a smearing param struct
+void initHeader(SmearingParam_t& param);
+
+//! Initialize a anisotropy param struct
+void initHeader(AnisoParam_t& param);
+
+//! Initialize a chiral param struct
+void initHeader(ChiralParam_t& param);
+
+
+//---------------------------- Readers -----------------------------
+//! Read a QDP volume format type
+void read(XMLReader& xml, const string& path, QDP_volfmt_t& param);
 
 //! Read a fermion type enum
 void read(XMLReader& xml, const string& path, FermType& param);
@@ -158,14 +169,8 @@ void read(XMLReader& xml, const string& path, SinkType& param);
 //! Read a wave type enum
 void read(XMLReader& xml, const string& path, WaveStateType& param);
 
-//! Read the input version
-void read(XMLReader& xml, const string& path, IO_version_t& param);
-
 //! Configuration input
 void read(XMLReader& xml, const string& path, Cfg_t& input);
-
-//! Initialize a anisotropy param struct
-void anisoParamInit(AnisoParam_t& param);
 
 //! Read a anisotropy param struct
 void read(XMLReader& xml, const string& path, AnisoParam_t& param);
@@ -178,6 +183,53 @@ void read(XMLReader& xml, const string& path, ChiralParam_t& param);
 
 //! Read inverter parameters
 void read(XMLReader& xml, const string& path, InvertParam_t& param);
+
+
+//---------------------------- Writers -----------------------------
+//! Write a QDP volume format type
+void write(XMLWriter& xml, const string& path, QDP_volfmt_t param);
+
+//! Read a fermion type enum
+void write(XMLWriter& xml, const string& path, FermType param);
+
+//! Read a fermion action type enum
+void write(XMLWriter& xml, const string& path, FermActType param);
+
+//! Read a configuration type enum
+void write(XMLWriter& xml, const string& path, CfgType param);
+
+//! Read a propagator type enum
+void write(XMLWriter& xml, const string& path, PropType param);
+
+//! Read a wave-function type enum
+void write(XMLWriter& xml, const string& path, WvfKind param);
+
+//! Read a inverter type enum
+void write(XMLWriter& xml, const string& path, InvType param);
+
+//! Read a source type enum
+void write(XMLWriter& xml, const string& path, SourceType param);
+
+//! Read a sink type enum
+void write(XMLWriter& xml, const string& path, SinkType param);
+
+//! Read a wave type enum
+void write(XMLWriter& xml, const string& path, WaveStateType param);
+
+//! Configuration input
+void write(XMLWriter& xml, const string& path, const Cfg_t& input);
+
+//! Read a anisotropy param struct
+void write(XMLWriter& xml, const string& path, const AnisoParam_t& param);
+
+//! Read a smearing param struct
+void write(XMLWriter& xml, const string& path, const SmearingParam_t& param);
+
+//! Read chiral action like parameters
+void write(XMLWriter& xml, const string& path, const ChiralParam_t& param);
+
+//! Read inverter parameters
+void write(XMLWriter& xml, const string& path, const InvertParam_t& param);
 
 /*! @} */  // end of group io
 

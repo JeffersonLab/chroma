@@ -1,4 +1,4 @@
-// $Id: param_io.cc,v 1.12 2004-01-30 04:21:56 edwards Exp $
+// $Id: param_io.cc,v 1.13 2004-02-23 03:09:39 edwards Exp $
 /*! \file
  *  \brief Various parameter readers/writers for main programs
  */
@@ -45,6 +45,22 @@ multi1d<Real> massToKappa(const multi1d<Real>& Mass)
   return Kappa;
 }
 
+
+//! Read a QDP volume format type
+void read(XMLReader& xml, const string& path, QDP_volfmt_t& param)
+{
+  string volfmt_str;
+  read(xml, path, volfmt_str);
+  if (volfmt_str == "SINGLEFILE")
+    param = QDPIO_SINGLEFILE;
+  else if (volfmt_str == "MULTIFILE")
+    param = QDPIO_MULTIFILE;
+  else 
+  {
+    QDPIO::cerr << "Unsupported QDP volume format type" << endl;
+    QDP_abort(1);
+  }
+}
 
 //! Read a fermion type enum
 void read(XMLReader& xml, const string& path, FermType& param)
@@ -247,32 +263,42 @@ void read(XMLReader& xml, const string& path, WaveStateType& param)
 }
 
 
-//! Read the input version
-void read(XMLReader& xml, const string& path, IO_version_t& param)
-{
-  XMLReader paramtop(xml, path);
-
-  read(paramtop, "version", param.version);
-}
-
-
 //! Configuration input
 void read(XMLReader& xml, const string& path, Cfg_t& input)
 {
   XMLReader inputtop(xml, path);
 
+  read(inputtop, "cfg_type", input.cfg_type);
   read(inputtop, "cfg_file", input.cfg_file);
 }
 
 
+//! Initialize a smearing param struct
+void initHeader(SmearingParam_t& param)
+{
+  param.wvf_kind    = WVF_KIND_GAUSSIAN;
+  param.wvf_param   = 0;
+  param.wvfIntPar   = 0;
+}
+
 //! Initialize a anisotropy param struct
-void anisoParamInit(AnisoParam_t& param)
+void initHeader(AnisoParam_t& param)
 {
   param.anisoP = false;
   param.t_dir  = Nd-1;   // doesn't matter - should not be used
   param.xi_0   = 1;
   param.nu     = 1;
 }
+
+//! Initialize a chiral param struct
+void initHeader(ChiralParam_t& param)
+{
+  param.OverMass = 0;
+  param.N5       = 0;
+  param.a5       = 1;
+  param.NWilsVec = 0;
+}
+
 
 //! Read a anisotropy param struct
 void read(XMLReader& xml, const string& path, AnisoParam_t& param)
@@ -291,9 +317,9 @@ void read(XMLReader& xml, const string& path, SmearingParam_t& param)
 {
   XMLReader paramtop(xml, path);
 
-  read(paramtop, "Wvf_kind", param.Wvf_kind);
+  read(paramtop, "wvf_kind", param.wvf_kind);
   read(paramtop, "wvf_param", param.wvf_param);
-  read(paramtop, "WvfIntPar", param.WvfIntPar);
+  read(paramtop, "wvfIntPar", param.wvfIntPar);
 }
 
 
@@ -330,6 +356,279 @@ void read(XMLReader& xml, const string& path, InvertParam_t& param)
   read(paramtop, "MaxCG", param.MaxCG);
 
   param.MROver = 1;
+}
+
+
+//---------------------------- Writers -----------------------------
+//! Write a QDP volume format type
+void write(XMLWriter& xml, const string& path, QDP_volfmt_t param)
+{
+  string volfmt_str;
+  if (param == QDPIO_SINGLEFILE)
+    volfmt_str = "SINGLEFILE";
+  else if (param == QDPIO_MULTIFILE)
+    volfmt_str = "MULTIFILE";
+  else 
+  {
+    QDPIO::cerr << "Unsupported QDP volume format type" << endl;
+    QDP_abort(1);
+  }
+  write(xml, path, volfmt_str);
+}
+
+//! Write a fermion type enum
+void write(XMLWriter& xml, const string& path, FermType param)
+{
+  string ferm_type_str;
+  if (param == FERM_TYPE_WILSON)
+    ferm_type_str = "WILSON";
+  else if (param == FERM_TYPE_STAGGERED)
+    ferm_type_str = "STAGGERED";
+  else 
+  {
+    QDPIO::cerr << "Unsupported fermion type" << endl;
+    QDP_abort(1);
+  }
+  write(xml, path, ferm_type_str);
+}
+
+//! Write a fermion action type enum
+void write(XMLWriter& xml, const string& path, FermActType param)
+{
+  string ferm_type_str;
+  if (param == FERM_ACT_WILSON)
+    ferm_type_str = "WILSON";
+  else if (param == FERM_ACT_UNPRECONDITIONED_WILSON)
+    ferm_type_str = "UNPRECONDITIONED_WILSON";
+  else if (param == FERM_ACT_PARITY_BREAKING_WILSON)
+    ferm_type_str = "PARITY_BREAKING_WILSON";
+  else if (param == FERM_ACT_CLOVER)
+    ferm_type_str = "CLOVER";
+  else if (param == FERM_ACT_UNPRECONDITIONED_CLOVER)
+    ferm_type_str = "UNPRECONDITONED_CLOVER";
+  else if (param == FERM_ACT_DWF)
+    ferm_type_str = "DWF";
+  else if (param == FERM_ACT_UNPRECONDITIONED_DWF)
+    ferm_type_str = "UNPRECONDITIONED_DWF";
+  else if (param == FERM_ACT_PROJECTED_DWF)
+    ferm_type_str = "PROJECTED_DWF";
+  else if (param == FERM_ACT_ZOLOTAREV_4D)
+    ferm_type_str = "ZOLOTAREV_4D";
+  else if (param == FERM_ACT_OVERLAP_DWF)
+    ferm_type_str = "OVERLAP_DWF";
+  else if (param == FERM_ACT_EXTENDED_OVERLAP)
+    ferm_type_str = "EXTENDED_OVERLAP";
+  else if (param == FERM_ACT_UNPRECONDITIONED_EXTENDED_OVERLAP)
+    ferm_type_str = "UNPRECONDITIONED_EXTENDED_OVERLAP";
+  else if (param == FERM_ACT_SMEARED_LAPLACIAN_WILSON)
+    ferm_type_str = "SMEARED_LAPLACIAN_WILSON";
+  else if (param == FERM_ACT_PLANAR_WILSON)
+    ferm_type_str = "PLANAR_WILSON";
+  else if (param == FERM_ACT_HAMBER_WU)
+    ferm_type_str = "HAMBER_WU";
+  else if (param == FERM_ACT_STAGGERED)
+    ferm_type_str = "STAGGERED";
+  else if (param == FERM_ACT_NAIK)
+    ferm_type_str = "NAIK";
+  else if (param == FERM_ACT_ASQTAD)
+    ferm_type_str = "ASQTAD";
+  else 
+  {
+    QDPIO::cerr << "Unsupported fermion action type" << endl;
+    QDP_abort(1);
+  }
+  write(xml, path, ferm_type_str);
+}
+
+//! Write a configuration type enum
+void write(XMLWriter& xml, const string& path, CfgType param)
+{
+  string cfg_type_str;
+  if (param == CFG_TYPE_SZIN)
+    cfg_type_str = "SZIN";
+  else if (param == CFG_TYPE_NERSC)
+    cfg_type_str = "NERSC";
+  else 
+  {
+    QDPIO::cerr << "Unsupported configuration type" << endl;
+    QDP_abort(1);
+  }
+  write(xml, path, cfg_type_str);
+}
+
+
+//! Write a propagator type enum
+void write(XMLWriter& xml, const string& path, PropType param)
+{
+  string prop_type_str;
+  if (param == PROP_TYPE_SZIN)
+    prop_type_str = "SZIN";
+  else if (param == PROP_TYPE_SCIDAC)
+    prop_type_str = "SCIDAC";
+  else 
+  {
+    QDPIO::cerr << "Unsupported propagator type" << endl;
+    QDP_abort(1);
+  }
+  write(xml, path, prop_type_str);
+}
+
+
+//! Write a wave-function type enum
+void write(XMLWriter& xml, const string& path, WvfKind param)
+{
+  string wvf_kind_str;
+  if (param == WVF_KIND_GAUSSIAN)
+    wvf_kind_str = "GAUSSIAN";
+  else if (param == WVF_KIND_EXPONENTIAL)
+    wvf_kind_str = "EXPONENTIAL";
+  else if (param == WVF_KIND_GAUGE_INV_GAUSSIAN)
+    wvf_kind_str = "GAUGE_INV_GAUSSIAN";
+  else if (param == WVF_KIND_WUPPERTAL)
+    wvf_kind_str = "WUPPERTAL";
+  else if (param == WVF_KIND_JACOBI)
+    wvf_kind_str = "JACOBI";
+  else 
+  {
+    QDPIO::cerr << "Unsupported gauge-invariant wvf_kind" << endl;
+    QDP_abort(1);
+  }
+  write(xml, path, wvf_kind_str);
+}
+
+
+//! Write a inverter type enum
+void write(XMLWriter& xml, const string& path, InvType param)
+{
+  string inv_type_str;
+  if (param == CG_INVERTER)
+    inv_type_str = "CG_INVERTER";
+  else if (param == MR_INVERTER)
+    inv_type_str = "MR_INVERTER";
+  else if (param == BICG_INVERTER)
+    inv_type_str = "BICG_INVERTER";
+  else 
+  {
+    QDPIO::cerr << "Unsupported inverter type" << endl;
+    QDP_abort(1);
+  }
+  write(xml, path, inv_type_str);
+}
+
+
+//! Write a source type enum
+void write(XMLWriter& xml, const string& path, SourceType param)
+{
+  string src_type_str;
+  if (param == SRC_TYPE_POINT_SOURCE)
+    src_type_str = "POINT_SOURCE";
+  else if (param == SRC_TYPE_WALL_SOURCE)
+    src_type_str = "WALL_SOURCE";
+  else if (param == SRC_TYPE_SHELL_SOURCE)
+    src_type_str = "SHELL_SOURCE";
+  else if (param == SRC_TYPE_BNDST_SOURCE)
+    src_type_str = "BNDST_SOURCE";
+  else 
+  {
+    QDPIO::cerr << "Unsupported SourceType" << endl;
+    QDP_abort(1);
+  }
+  write(xml, path, src_type_str);
+}
+
+
+//! Write a sink type enum
+void write(XMLWriter& xml, const string& path, SinkType param)
+{
+  string src_type_str;
+  if (param == SNK_TYPE_POINT_SINK)
+    src_type_str = "POINT_SINK";
+  else if (param == SNK_TYPE_WALL_SINK)
+    src_type_str = "WALL_SINK";
+  else if (param == SNK_TYPE_SHELL_SINK)
+    src_type_str = "SHELL_SINK";
+  else if (param == SNK_TYPE_BNDST_SINK)
+    src_type_str = "BNDST_SINK";
+  else 
+  {
+    QDPIO::cerr << "Unsupported SinkType" << endl;
+    QDP_abort(1);
+  }
+  write(xml, path, src_type_str);
+}
+
+
+//! Write a wave type enum
+void write(XMLWriter& xml, const string& path, WaveStateType param)
+{
+  string wave_type_str;
+  if (param == WAVE_TYPE_S_WAVE)
+    wave_type_str = "S_WAVE";
+  else if (param == WAVE_TYPE_P_WAVE)
+    wave_type_str = "P_WAVE";
+  else if (param == WAVE_TYPE_D_WAVE)
+    wave_type_str = "D_WAVE";
+  else 
+  {
+    QDPIO::cerr << "Unsupported particle wave-state type" << endl;
+    QDP_abort(1);
+  }
+  write(xml, path, wave_type_str);
+}
+
+
+//! Write a anisotropy param struct
+void write(XMLWriter& xml, const string& path, const AnisoParam_t& param)
+{
+  push(xml, path);
+
+  write(xml, "anisoP", param.anisoP);
+  write(xml, "t_dir", param.t_dir);
+  write(xml, "xi_0", param.xi_0);
+  write(xml, "nu", param.nu);
+
+  pop(xml);
+}
+
+
+//! Write a smearing param struct
+void write(XMLWriter& xml, const string& path, const SmearingParam_t& param)
+{
+  push(xml, path);
+
+  write(xml, "wvf_kind", param.wvf_kind);
+  write(xml, "wvf_param", param.wvf_param);
+  write(xml, "wvfIntPar", param.wvfIntPar);
+
+  pop(xml);
+}
+
+
+//! Write chiral action like parameters
+void write(XMLWriter& xml, const string& path, const ChiralParam_t& param)
+{
+  push(xml, path);
+
+  write(xml, "OverMass", param.OverMass);
+  write(xml, "N5", param.N5);
+  write(xml, "a5", param.a5);
+  write(xml, "NWilsVec", param.NWilsVec);
+
+  pop(xml);
+}
+
+
+//! Write inverter parameters
+void write(XMLWriter& xml, const string& path, const InvertParam_t& param)
+{
+  push(xml, path);
+
+  write(xml, "invType", param.invType);
+  write(xml, "RsdCG", param.RsdCG);
+  write(xml, "MaxCG", param.MaxCG);
+  write(xml, "MROver", param.MROver);
+
+  pop(xml);
 }
 
 
