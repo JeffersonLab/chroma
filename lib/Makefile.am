@@ -1,9 +1,10 @@
-# $Id: Makefile.am,v 1.37 2003-09-11 11:12:21 bjoo Exp $
+# $Id: Makefile.am,v 1.38 2003-09-11 16:34:48 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
 
 TOPDIR=@top_srcdir@
+BUILDDIR=@top_builddir@
 VPATH := $(TOPDIR)
 VPATH += $(TOPDIR)/lib
 VPATH += $(TOPDIR)/lib/actions
@@ -59,7 +60,7 @@ INCFLAGS = -I$(TOPDIR)/include
 AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDPXX_CXXFLAGS@
 
 if BUILD_SSE_WILSON_DSLASH
-AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include
+AM_CXXFLAGS += -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
 endif
 
 lib_LIBRARIES = libchroma.a
