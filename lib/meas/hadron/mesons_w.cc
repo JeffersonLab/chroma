@@ -1,6 +1,9 @@
-//  $Id: mesons_w.cc,v 1.5 2003-03-06 00:30:14 flemingg Exp $
+//  $Id: mesons_w.cc,v 1.6 2003-03-06 02:07:12 flemingg Exp $
 //  $Log: mesons_w.cc,v $
-//  Revision 1.5  2003-03-06 00:30:14  flemingg
+//  Revision 1.6  2003-03-06 02:07:12  flemingg
+//  Changed the MomList class to eliminate an unneeded class member.
+//
+//  Revision 1.5  2003/03/06 00:30:14  flemingg
 //  Complete rewrite of lib/meas/hadron/mesons_w.cc, including a simple test
 //  program in mainprogs/tests built with 'make check' and various other
 //  changes to autoconf/make files to support this rewrite.
@@ -37,7 +40,7 @@ public:
 
   int numMom() {return num_mom ;}
 
-  multi1d<int>& numToMom(int num);
+  multi1d<int> numToMom(int num);
 
   ~MomList() ;
 
@@ -45,8 +48,6 @@ private:
   MomList() {} // hide default constructor
 
   multi2d<int> *mom_list ;
-
-  multi1d<int> *mom ;
 
   int num_mom;
 };
@@ -200,7 +201,6 @@ void mesons(const LatticePropagator& quark_prop_1,
 MomList::MomList(int mom2_max)
 {
   int Ndm1 = Nd - 1;
-  mom = new multi1d<int>(Ndm1) ;
 
   // determine the number of unique momenta with mom^2 <= (mom_max)^2
   multi1d<int> mom_size(Ndm1);
@@ -219,12 +219,12 @@ MomList::MomList(int mom2_max)
 
   for(int n=0; n < mom_vol; ++n)
   {
-    *mom = crtesn(n, mom_size);
+    multi1d<int> mom = crtesn(n, mom_size);
 
     int mom2 = 0 ;
 
     for(int mu=0; mu<Ndm1; ++mu)
-      mom2 += (*mom)[mu]*(*mom)[mu];
+      mom2 += mom[mu]*mom[mu];
 
     if (mom2 > mom2_max) {
       continue;
@@ -233,7 +233,7 @@ MomList::MomList(int mom2_max)
       int skip=0;
       for(int mu=0; mu<Ndm1-1; ++mu)
         for(int nu=mu+1; nu<Ndm1; ++nu)
-          if ((*mom)[nu] > (*mom)[mu]) skip=1;
+          if (mom[nu] > mom[mu]) skip=1;
 
       if (!skip) num_mom++ ;
     }
@@ -248,12 +248,12 @@ MomList::MomList(int mom2_max)
 
   for(int n=0; n < mom_vol; ++n)
   {
-    *mom = crtesn(n, mom_size);
+    multi1d<int> mom = crtesn(n, mom_size);
 
     int mom2 = 0 ;
 
     for(int mu=0; mu<Ndm1; ++mu)
-      mom2 += (*mom)[mu]*(*mom)[mu];
+      mom2 += mom[mu]*mom[mu];
 
     if (mom2 > mom2_max) {
       continue;
@@ -262,9 +262,9 @@ MomList::MomList(int mom2_max)
       int skip=0;
       for(int mu=0; mu<Ndm1-1; ++mu)
         for(int nu=mu+1; nu<Ndm1; ++nu)
-          if ((*mom)[nu] > (*mom)[mu]) skip=1;
+          if (mom[nu] > mom[mu]) skip=1;
 
-      if (!skip) (*mom_list)[mom_num++] = *mom;
+      if (!skip) (*mom_list)[mom_num++] = mom;
     }
   }
 }
@@ -274,34 +274,34 @@ int
 MomList::momToNum(const multi1d<int>& mom_in)
 {
   int Ndm1 = Nd-1;
-  *mom = mom_in ;
+  multi1d<int> mom = mom_in ;
 
   // make all the compontents positive
   for (int mu=0; mu<Ndm1; ++mu)
-    if ((*mom)[mu] < 0) (*mom)[mu] = -(*mom)[mu];
+    if (mom[mu] < 0) mom[mu] = -mom[mu];
 
   // sort the components (Insertion sort: hope Ndm1 <~ 10)
-  // Initially, the first item is considered sorted.  mu divides (*mom)
+  // Initially, the first item is considered sorted.  mu divides mom
   // into a sorted region (<mu) and an unsorted one (>=mu)
   for (int mu=1; mu<Ndm1; ++mu) {
     // Select the item at the beginning of the unsorted region
-    int v = (*mom)[mu];
+    int v = mom[mu];
     // Work backwards, finding where v should go
     int nu = mu;
     // If this element is less than v, move it up one
-    while ((*mom)[nu-1] < v) {
-      (*mom)[nu] = (*mom)[nu-1] ;
+    while (mom[nu-1] < v) {
+      mom[nu] = mom[nu-1] ;
       --nu ;
       if (nu < 1) break ;
     }
-    // Stopped when (*mom)[nu-1] >= v, so put v at postion nu
-    (*mom)[nu] = v ;
+    // Stopped when mom[nu-1] >= v, so put v at postion nu
+    mom[nu] = v ;
   }
 
   for(int mom_num=0; mom_num<num_mom; ++mom_num) {
     int match=1;
     for (int mu=0; mu<Ndm1; ++mu)
-      if ((*mom_list)[mom_num][mu] != (*mom)[mu]) {
+      if ((*mom_list)[mom_num][mu] != mom[mu]) {
         match=0;
         break;
       }
@@ -311,16 +311,14 @@ MomList::momToNum(const multi1d<int>& mom_in)
 }
 
 
-multi1d<int>&
+multi1d<int>
 MomList::numToMom(int mom_num)
 {
-  *mom = (*mom_list)[mom_num] ;
-  return *mom ;
+  return (*mom_list)[mom_num] ;
 }
 
 
 MomList::~MomList()
 {
   delete mom_list ;
-  delete mom ;
 }
