@@ -54,7 +54,7 @@ bin_PROGRAMS = propagator \
 
 # Wilson specific programs
 bin_PROGRAMS += spectrum_w qqq_w bar3ptfn qproptransf wallformfac mres \
-        propagator_hack
+        propagator_hack qpropqio
 
 # Staggered specific programs
 #check_PROGRAMS += 
@@ -140,6 +140,9 @@ stoutsmear_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 
 qproptransf_SOURCES= qproptransf.cc
 qproptransf_DEPENDENCIES= build_chroma_libs rebuild_other_libs
+
+qpropqio_SOURCES= qpropqio.cc
+qpropqio_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 
 qpropadd_SOURCES= qpropadd.cc
 qpropadd_DEPENDENCIES= build_chroma_libs rebuild_other_libs
