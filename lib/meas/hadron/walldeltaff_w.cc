@@ -1,4 +1,4 @@
-// $Id: walldeltaff_w.cc,v 1.7 2004-06-11 01:56:02 edwards Exp $
+// $Id: walldeltaff_w.cc,v 1.8 2004-06-11 02:08:54 edwards Exp $
 /*! \file
  *  \brief Wall-sink delta^+ -> gamma+delta^+ form-factors 
  *
@@ -227,7 +227,7 @@ void wallDeltaFormFac(WallFormFac_formfacs_t& form,
   }
 
   swatch.stop();
-  QDPIO::cout << "Time(init): " << swatch.getTimeInSeconds() << " s" << endl;
+  QDPIO::cout << "Time(init): " << swatch.getTimeInMicroseconds() << " s" << endl;
   swatch.start();
 
   // For calculational purpose, loop over insertions first.
@@ -236,7 +236,7 @@ void wallDeltaFormFac(WallFormFac_formfacs_t& form,
   for(int gamma_ctr = 0; gamma_ctr < gamma_list.size(); ++gamma_ctr)
   {
     swatch.stop();
-    QDPIO::cout << "Time(gamma_ctr=" << gamma_ctr << "): " << swatch.getTimeInSeconds() << " s" << endl;
+    QDPIO::cout << "Time(gamma_ctr=" << gamma_ctr << "): " << swatch.getTimeInMicroseconds() << " s" << endl;
     swatch.start();
 
     int gamma_value = gamma_list[gamma_ctr];
@@ -247,7 +247,7 @@ void wallDeltaFormFac(WallFormFac_formfacs_t& form,
     for(int ud = 0; ud < form.quark.size(); ++ud)
     {
       swatch.stop();
-      QDPIO::cout << "Time(ud=" << ud << "): " << swatch.getTimeInSeconds() << " s" << endl;
+      QDPIO::cout << "Time(ud=" << ud << "): " << swatch.getTimeInMicroseconds() << " s" << endl;
       swatch.start();
 
       WallFormFac_quark_t& quark = form.quark[ud];
@@ -296,7 +296,7 @@ void wallDeltaFormFac(WallFormFac_formfacs_t& form,
       for(int dp = 0; dp < quark.formfac.size(); ++dp)
       {
 	swatch.stop();
-	QDPIO::cout << "Time(dp=" << dp << "): " << swatch.getTimeInSeconds() << " s" << endl;
+	QDPIO::cout << "Time(dp=" << dp << "): " << swatch.getTimeInMicroseconds() << " s" << endl;
 	swatch.start();
 
 	WallFormFac_formfac_t& formfac = quark.formfac[dp];
@@ -310,7 +310,7 @@ void wallDeltaFormFac(WallFormFac_formfacs_t& form,
 	for(int lorz = 0; lorz < formfac.lorentz.size(); ++lorz)
 	{
 	  swatch.stop();
-	  QDPIO::cout << "Time(lorz=" << lorz << "): " << swatch.getTimeInSeconds() << " s" << endl;
+	  QDPIO::cout << "Time(lorz=" << lorz << "): " << swatch.getTimeInMicroseconds() << " s" << endl;
 	  swatch.start();
 
 	  WallFormFac_lorentz_t& lorentz = formfac.lorentz[lorz];
@@ -376,7 +376,7 @@ void wallDeltaFormFac(WallFormFac_formfacs_t& form,
 	  for (int proj = 0; proj < lorentz.projector.size(); ++proj) 
 	  {
 	    swatch.stop();
-	    QDPIO::cout << "Time(proj=" << proj << "): " << swatch.getTimeInSeconds() << " s" << endl;
+	    QDPIO::cout << "Time(proj=" << proj << "): " << swatch.getTimeInMicroseconds() << " s" << endl;
 	    swatch.start();
 
 	    WallFormFac_projector_t& projector = lorentz.projector[proj];
@@ -397,11 +397,14 @@ void wallDeltaFormFac(WallFormFac_formfacs_t& form,
 	
 	    multi1d<WallFormFac_momenta_t>& momenta = insertion.momenta;
 
-	    QDPIO::cout << "Time(before sft): " << swatch.getTimeInSeconds() << " s" << endl;
+            swatch.stop();
+	    QDPIO::cout << "Time(before sft): " << swatch.getTimeInMicroseconds() << " s" << endl;
+            swatch.start();
 	    wallFormFacSft(momenta, corr_local_fn, corr_nonlocal_fn, phases,
 			   compute_nonlocal, t0, t_sink);
-	    QDPIO::cout << "Time(after sft): " << swatch.getTimeInSeconds() << " s" << endl;
-
+            swatch.stop();
+	    QDPIO::cout << "Time(after sft): " << swatch.getTimeInMicroseconds() << " s" << endl;
+            swatch.start();
 	  } // end for(proj)
 	}  // end for(dp)
       } // end for(lorz)
@@ -409,7 +412,7 @@ void wallDeltaFormFac(WallFormFac_formfacs_t& form,
   } // end for(gamma_ctr)
 
   swatch.stop();
-  QDPIO::cout << "Time(wallDeltaFormFac): " << swatch.getTimeInSeconds() << " s" << endl;
+  QDPIO::cout << "Time(wallDeltaFormFac): " << swatch.getTimeInMicroseconds() << " s" << endl;
   QDPIO::cout << "Exiting wallDeltaFormFac" << endl;
 
   END_CODE("wallDeltaFormFac");
