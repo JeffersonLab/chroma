@@ -33,7 +33,7 @@
 //#####################################################################################
 
 static const char* const CVSExampleBuildingBlocks_hh =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/mainprogs/main/ExampleBuildingBlocks.cc,v 1.11 2004-05-27 18:00:36 dru Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/mainprogs/main/ExampleBuildingBlocks.cc,v 1.12 2004-05-27 20:20:08 dru Exp $";
 
 //#####################################################################################
 //#####################################################################################
@@ -468,7 +468,10 @@ int main( int argc, char** argv )
 
   Out << "calculating building blocks ..." << "\n";  Out.flush();
 
-  BuildingBlocks( *B, *F, *U, MaxNLinks, AllLinkPatterns, Phases, Files );
+  T1 = 0;
+  T2 = NT - 1;
+
+  BuildingBlocks( *B, *F, *U, MaxNLinks, AllLinkPatterns, Phases, Files, T1, T2 );
 
   Out << "finished calculating building blocks" << "\n";  Out.flush();
 
