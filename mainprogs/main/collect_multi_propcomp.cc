@@ -1,6 +1,6 @@
-// $Id: collect_propcomp.cc,v 1.3 2004-04-23 11:23:38 bjoo Exp $
-// $Log: collect_propcomp.cc,v $
-// Revision 1.3  2004-04-23 11:23:38  bjoo
+// $Id: collect_multi_propcomp.cc,v 1.1 2004-04-23 11:23:38 bjoo Exp $
+// $Log: collect_multi_propcomp.cc,v $
+// Revision 1.1  2004-04-23 11:23:38  bjoo
 // Added component based propagator (non multishift) and added Zolotarev5D operator to propagator and propagator_comp. Reworked propagator collection scripts
 //
 // Revision 1.2  2004/04/22 16:25:25  bjoo
@@ -90,7 +90,7 @@ struct Component_t {
 
 struct PropagatorComponent_input_t
 {
-  ChromaProp_t     param;
+  ChromaMultiProp_t     param;
   Cfg_t            cfg;
   Prop_t           prop;
   multi1d<Component_t> components;
@@ -184,19 +184,13 @@ int main(int argc, char **argv)
   XMLReader xml_in("DATA");
 
   // Read data
-  try { 
-    read(xml_in, "/propagatorComp", input);
-  }
-  catch ( const string& e ) { 
-    QDPIO::cerr << "Caught exception " << e << endl;
-    QDP_abort(1);
-  }
+  read(xml_in, "/multiPropagatorComp", input);
 
   // Specify lattice size, shape, etc.
   Layout::setLattSize(input.param.nrow);
   Layout::create();
 
-  QDPIO::cout << "propagatorComp" << endl;
+  QDPIO::cout << "multiPropagatorComp" << endl;
 
   // Read in the configuration along with relevant information.
   multi1d<LatticeColorMatrix> u(Nd);
@@ -301,74 +295,80 @@ int main(int argc, char **argv)
   // and calling the relevant propagator routines. The QDP
   // terminology is that a propagator is a matrix in color
   // and spin space
-  //  
+  //
+  int num_mass = input.param.MultiMasses.size();
+
   LatticeFermion psi;
   LatticePropagator quark_prop;
 
-  XMLReader file_xml_in;
-  XMLReader record_xml_in;
+  XMLReader file_xml;
+  XMLReader record_xml;
 
-  for(int spin=0; spin < Ns; spin++) { 
-    for(int color=0; color < Nc; color++) {
-      ostringstream filename ;
-      filename << input.prop.prop_file << "_component_s" << spin
-	       << "_c" << color ;
-      
-      QDPIO::cout << "Attempting to read " << filename.str() << endl;
-      
-      // Write the source
-      readFermion(file_xml_in, record_xml_in, psi,
-		  filename.str(), QDPIO_SERIAL);
-      
-      FermToProp(psi, quark_prop, color, spin);
+  for(int m =0; m < num_mass; m++) { 
+    for(int spin=0; spin < Ns; spin++) { 
+      for(int color=0; color < Nc; color++) {
+	ostringstream filename ;
+	filename << input.prop.prop_file << "_component_s" << spin
+		 << "_c" << color << "_" 
+		 << setw(3) << setfill('0') << m;
+	  
+	QDPIO::cout << "Attempting to read " << filename.str() << endl;
+	  
+	// Write the source
+	readFermion(file_xml, record_xml, psi,
+		    filename.str(), QDPIO_SERIAL);
+	
+	FermToProp(psi, quark_prop, color, spin);
+      }
     }
-  }
 
-  SftMom phases(0, true, Nd-1);
+    SftMom phases(0, true, Nd-1);
 
-  multi1d<Double> prop_corr = sumMulti(localNorm2(quark_prop), 
+    multi1d<Double> prop_corr = sumMulti(localNorm2(quark_prop), 
 					 phases.getSet());
     
-  push(xml_out, "Prop_correlator");
-  write(xml_out, "Mass", input.param.FermActHandle->getMass());
-  write(xml_out, "prop_corr", prop_corr);
-  pop(xml_out);
-  
-  
-  xml_out.flush();
-  
-  XMLBufferWriter file_xml;
-  push(file_xml, "propagator");
-  int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
-  write(file_xml, "id", id);
-  pop(file_xml);
-  
+    push(xml_out, "Prop_correlator");
+    write(xml_out, "Number", m);
+    write(xml_out, "Mass", input.param.MultiMasses[m]);
+    write(xml_out, "prop_corr", prop_corr);
+    pop(xml_out);
     
-  
-  XMLBufferWriter record_xml;
-  push(record_xml, "Propagator");
-  
-  // Jiggery pokery. Substitute the ChromaMultiProp_t with a 
-  // ChromaProp. This is a pisser because of the FermActParams
-  // THIS IS NOT TOTALLY KOSHER AS IT CHANGES THE MASS IN INPUT
-  // PARAM as well. However, at this stage we have no further need
-  // for input param.
-  // I Will eventually write Copy Constructors.
+    
+    xml_out.flush();
 
-  
-  write(record_xml, "ForwardProp", input.param);
-  write(record_xml, "PropSource", source_header);
-  write(record_xml, "Config_info", gauge_xml);
-  pop(record_xml);
-  
-  ostringstream outfile;
-  outfile << input.prop.prop_file ;
+    XMLBufferWriter file_xml;
+    push(file_xml, "propagator");
+    int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
+    write(file_xml, "id", id);
+    pop(file_xml);
 
-  QDPIO::cout << "Attempting to write " << outfile.str() << endl;
-  
-  // Write the source
-  writeQprop(file_xml, record_xml, quark_prop,
-	     outfile.str(), input.prop.prop_volfmt, QDPIO_SERIAL);
+    
+
+    XMLBufferWriter record_xml;
+    push(record_xml, "Propagator");
+
+    // Jiggery pokery. Substitute the ChromaMultiProp_t with a 
+    // ChromaProp. This is a pisser because of the FermActParams
+    // THIS IS NOT TOTALLY KOSHER AS IT CHANGES THE MASS IN INPUT
+    // PARAM as well. However, at this stage we have no further need
+    // for input param.
+    // I Will eventually write Copy Constructors.
+
+    ChromaProp_t out_param(input.param, m);
+    write(record_xml, "ForwardProp", out_param);
+    write(record_xml, "PropSource", source_header);
+    write(record_xml, "Config_info", gauge_xml);
+    pop(record_xml);
+
+    ostringstream outfile;
+    outfile << input.prop.prop_file << "_" << setw(3) << setfill('0') << m;
+
+    QDPIO::cout << "Attempting to write " << outfile.str() << endl;
+   
+    // Write the source
+    writeQprop(file_xml, record_xml, quark_prop,
+	       outfile.str(), input.prop.prop_volfmt, QDPIO_SERIAL);
+  }
 
 
     

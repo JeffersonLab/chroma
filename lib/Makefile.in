@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.176 2004-04-22 16:25:24 bjoo Exp $
+# $Id: Makefile.in,v 1.177 2004-04-23 11:23:37 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -82,6 +82,8 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/qprop/unprec_qprop_w.h \
 @BUILD_WILSON_LIBS_TRUE@	io/io_w.h io/barcomp_io.h io/readszinferm_w.h io/readszinqprop_w.h \
 @BUILD_WILSON_LIBS_TRUE@	io/writeszinqprop_w.h \
+@BUILD_WILSON_LIBS_TRUE@        io/overlap_state_info.h io/zolotarev4d_fermact_paramio_w.h \
+@BUILD_WILSON_LIBS_TRUE@	io/zolotarev5d_fermact_paramio_w.h \
 @BUILD_WILSON_LIBS_TRUE@	meas/eig/eig_w.h meas/eig/ischiral_w.h \
 @BUILD_WILSON_LIBS_TRUE@	meas/hadron/barcomp_w.h \
 @BUILD_WILSON_LIBS_TRUE@	meas/hadron/barseqsrc_w.h meas/hadron/baryon_w.h \
@@ -119,7 +121,8 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@              curcor2_w.cc lwldslash_w.cc formfac_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              sink_smear2_w.cc barcomp_io.cc barcomp_w.cc walfil_w.cc \
-@BUILD_WILSON_LIBS_TRUE@              overlap_state_info.cc zolotarev4d_fermact_paramio.cc \
+@BUILD_WILSON_LIBS_TRUE@              overlap_state_info.cc zolotarev4d_fermact_paramio_w.cc \
+@BUILD_WILSON_LIBS_TRUE@	      zolotarev5d_fermact_paramio_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              fermact_qprop.cc prec_fermact_qprop.cc \
 @BUILD_WILSON_LIBS_TRUE@              unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              prec_wilson_fermact_w.cc prec_wilson_linop_w.cc \
@@ -282,7 +285,7 @@ nobase_include_HEADERS = \
 	actions/ferm/linop/partrat.h actions/ferm/qprop/qprop.h \
 	actions/gauge/gauge.h \
 	io/io.h io/eigen_io.h io/fermact_paramio.h \
-	io/overlap_state_info.h io/zolotarev4d_fermact_paramio.h io/gauge_io.h io/kyugauge_io.h io/kyuqprop_io.h \
+	io/gauge_io.h io/kyugauge_io.h io/kyuqprop_io.h \
         io/milc_io.h io/param_io.h io/qprop_io.h io/readmilc.h \
 	io/readszin.h io/szin_io.h io/writemilc.h io/writeszin.h \
 	meas/eig/eig.h meas/eig/gramschm.h meas/eig/gramschm_array.h \
@@ -366,7 +369,8 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc rgauge.cc taproj.cc \
 	curcor2_w.cc lwldslash_w.cc formfac_w.cc mesonseqsrc_w.cc \
 	barseqsrc_w.cc seqpiontest_w.cc sink_smear2_w.cc barcomp_io.cc \
 	barcomp_w.cc walfil_w.cc overlap_state_info.cc \
-	zolotarev4d_fermact_paramio.cc fermact_qprop.cc \
+	zolotarev4d_fermact_paramio_w.cc \
+	zolotarev5d_fermact_paramio_w.cc fermact_qprop.cc \
 	prec_fermact_qprop.cc unprec_wilson_fermact_w.cc \
 	unprec_wilson_linop_w.cc prec_wilson_fermact_w.cc \
 	prec_wilson_linop_w.cc unprec_parwilson_fermact_w.cc \
@@ -406,7 +410,8 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc rgauge.cc taproj.cc \
 @BUILD_WILSON_LIBS_TRUE@	barcomp_io.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	barcomp_w.$(OBJEXT) walfil_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	overlap_state_info.$(OBJEXT) \
-@BUILD_WILSON_LIBS_TRUE@	zolotarev4d_fermact_paramio.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	zolotarev4d_fermact_paramio_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	zolotarev5d_fermact_paramio_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	fermact_qprop.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	prec_fermact_qprop.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	unprec_wilson_fermact_w.$(OBJEXT) \
@@ -606,9 +611,10 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/writemilc.Po ./$(DEPDIR)/writeszin.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/writeszinqprop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/z2_src.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/zolotarev4d_fermact_paramio.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/zolotarev4d_fermact_paramio_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/zolotarev4d_fermact_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/zolotarev5d_fermact_array_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/zolotarev5d_fermact_paramio_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/zolotarev5d_linop_array_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/zolotarev_coeffs.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
@@ -811,9 +817,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writeszin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writeszinqprop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/z2_src.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zolotarev4d_fermact_paramio.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zolotarev4d_fermact_paramio_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zolotarev4d_fermact_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zolotarev5d_fermact_array_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zolotarev5d_fermact_paramio_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zolotarev5d_linop_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zolotarev_coeffs.Po@am__quote@
 

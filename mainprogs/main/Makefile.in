@@ -161,7 +161,7 @@ LDADD = -lchroma @QDPXX_LIBS@ @LIBS@ $(am__append_3)
 HDRS = 
 
 #noinst_PROGRAMS = propagator
-check_PROGRAMS = propagator multi_propagator multi_propagator_comp collect_propcomp spectrum_w qqq_w seqprop \
+check_PROGRAMS = propagator propagator_comp multi_propagator multi_propagator_comp collect_propcomp collect_multi_propcomp spectrum_w qqq_w seqprop \
         dwf_seqprop bar3ptfn make_source \
         ExampleBuildingBlocks hypsmear cfgtransf sink_smearing qproptransf \
         wallformfac
@@ -175,6 +175,9 @@ EXTRA_PROGRAMS = qpropadd
 propagator_SOURCES = propagator.cc
 propagator_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
+propagator_comp_SOURCES = propagator_comp.cc
+propagator_comp_DEPENDENCIES = build_chroma_libs rebuild_other_libs
+
 multi_propagator_SOURCES = multi_propagator.cc
 multi_propagator_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
@@ -183,6 +186,9 @@ multi_propagator_comp_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 collect_propcomp_SOURCES = collect_propcomp.cc
 collect_propcomp_DEPENDENCIES = build_chroma_libs rebuild_other_libs
+
+collect_multi_propcomp_SOURCES = collect_multi_propcomp.cc
+collect_multi_propcomp_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 spectrum_w_SOURCES = spectrum_w.cc
 spectrum_w_DEPENDENCIES = build_chroma_libs rebuild_other_libs
@@ -226,8 +232,9 @@ subdir = mainprogs/main
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
 CONFIG_CLEAN_FILES =
 EXTRA_PROGRAMS = qpropadd$(EXEEXT)
-check_PROGRAMS = propagator$(EXEEXT) multi_propagator$(EXEEXT) \
-	multi_propagator_comp$(EXEEXT) collect_propcomp$(EXEEXT) \
+check_PROGRAMS = propagator$(EXEEXT) propagator_comp$(EXEEXT) \
+	multi_propagator$(EXEEXT) multi_propagator_comp$(EXEEXT) \
+	collect_propcomp$(EXEEXT) collect_multi_propcomp$(EXEEXT) \
 	spectrum_w$(EXEEXT) qqq_w$(EXEEXT) seqprop$(EXEEXT) \
 	dwf_seqprop$(EXEEXT) bar3ptfn$(EXEEXT) make_source$(EXEEXT) \
 	ExampleBuildingBlocks$(EXEEXT) hypsmear$(EXEEXT) \
@@ -245,6 +252,10 @@ am_cfgtransf_OBJECTS = cfgtransf.$(OBJEXT)
 cfgtransf_OBJECTS = $(am_cfgtransf_OBJECTS)
 cfgtransf_LDADD = $(LDADD)
 cfgtransf_LDFLAGS =
+am_collect_multi_propcomp_OBJECTS = collect_multi_propcomp.$(OBJEXT)
+collect_multi_propcomp_OBJECTS = $(am_collect_multi_propcomp_OBJECTS)
+collect_multi_propcomp_LDADD = $(LDADD)
+collect_multi_propcomp_LDFLAGS =
 am_collect_propcomp_OBJECTS = collect_propcomp.$(OBJEXT)
 collect_propcomp_OBJECTS = $(am_collect_propcomp_OBJECTS)
 collect_propcomp_LDADD = $(LDADD)
@@ -273,6 +284,10 @@ am_propagator_OBJECTS = propagator.$(OBJEXT)
 propagator_OBJECTS = $(am_propagator_OBJECTS)
 propagator_LDADD = $(LDADD)
 propagator_LDFLAGS =
+am_propagator_comp_OBJECTS = propagator_comp.$(OBJEXT)
+propagator_comp_OBJECTS = $(am_propagator_comp_OBJECTS)
+propagator_comp_LDADD = $(LDADD)
+propagator_comp_LDFLAGS =
 am_qpropadd_OBJECTS = qpropadd.$(OBJEXT)
 qpropadd_OBJECTS = $(am_qpropadd_OBJECTS)
 qpropadd_LDADD = $(LDADD)
@@ -307,14 +322,17 @@ depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/ExampleBuildingBlocks.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/bar3ptfn.Po ./$(DEPDIR)/cfgtransf.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/collect_multi_propcomp.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/collect_propcomp.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/dwf_seqprop.Po ./$(DEPDIR)/hypsmear.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/make_source.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/multi_propagator.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/multi_propagator_comp.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/propagator.Po ./$(DEPDIR)/qpropadd.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/qproptransf.Po ./$(DEPDIR)/qqq_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/seqprop.Po ./$(DEPDIR)/sink_smearing.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/propagator.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/propagator_comp.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/qpropadd.Po ./$(DEPDIR)/qproptransf.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/qqq_w.Po ./$(DEPDIR)/seqprop.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/sink_smearing.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/spectrum_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/wallformfac.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
@@ -323,15 +341,16 @@ CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
 DIST_SOURCES = $(ExampleBuildingBlocks_SOURCES) $(bar3ptfn_SOURCES) \
-	$(cfgtransf_SOURCES) $(collect_propcomp_SOURCES) \
-	$(dwf_seqprop_SOURCES) $(hypsmear_SOURCES) \
-	$(make_source_SOURCES) $(multi_propagator_SOURCES) \
-	$(multi_propagator_comp_SOURCES) $(propagator_SOURCES) \
+	$(cfgtransf_SOURCES) $(collect_multi_propcomp_SOURCES) \
+	$(collect_propcomp_SOURCES) $(dwf_seqprop_SOURCES) \
+	$(hypsmear_SOURCES) $(make_source_SOURCES) \
+	$(multi_propagator_SOURCES) $(multi_propagator_comp_SOURCES) \
+	$(propagator_SOURCES) $(propagator_comp_SOURCES) \
 	$(qpropadd_SOURCES) $(qproptransf_SOURCES) $(qqq_w_SOURCES) \
 	$(seqprop_SOURCES) $(sink_smearing_SOURCES) \
 	$(spectrum_w_SOURCES) $(wallformfac_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(ExampleBuildingBlocks_SOURCES) $(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) $(collect_propcomp_SOURCES) $(dwf_seqprop_SOURCES) $(hypsmear_SOURCES) $(make_source_SOURCES) $(multi_propagator_SOURCES) $(multi_propagator_comp_SOURCES) $(propagator_SOURCES) $(qpropadd_SOURCES) $(qproptransf_SOURCES) $(qqq_w_SOURCES) $(seqprop_SOURCES) $(sink_smearing_SOURCES) $(spectrum_w_SOURCES) $(wallformfac_SOURCES)
+SOURCES = $(ExampleBuildingBlocks_SOURCES) $(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) $(collect_multi_propcomp_SOURCES) $(collect_propcomp_SOURCES) $(dwf_seqprop_SOURCES) $(hypsmear_SOURCES) $(make_source_SOURCES) $(multi_propagator_SOURCES) $(multi_propagator_comp_SOURCES) $(propagator_SOURCES) $(propagator_comp_SOURCES) $(qpropadd_SOURCES) $(qproptransf_SOURCES) $(qqq_w_SOURCES) $(seqprop_SOURCES) $(sink_smearing_SOURCES) $(spectrum_w_SOURCES) $(wallformfac_SOURCES)
 
 all: all-am
 
@@ -354,6 +373,9 @@ bar3ptfn$(EXEEXT): $(bar3ptfn_OBJECTS) $(bar3ptfn_DEPENDENCIES)
 cfgtransf$(EXEEXT): $(cfgtransf_OBJECTS) $(cfgtransf_DEPENDENCIES) 
 	@rm -f cfgtransf$(EXEEXT)
 	$(CXXLINK) $(cfgtransf_LDFLAGS) $(cfgtransf_OBJECTS) $(cfgtransf_LDADD) $(LIBS)
+collect_multi_propcomp$(EXEEXT): $(collect_multi_propcomp_OBJECTS) $(collect_multi_propcomp_DEPENDENCIES) 
+	@rm -f collect_multi_propcomp$(EXEEXT)
+	$(CXXLINK) $(collect_multi_propcomp_LDFLAGS) $(collect_multi_propcomp_OBJECTS) $(collect_multi_propcomp_LDADD) $(LIBS)
 collect_propcomp$(EXEEXT): $(collect_propcomp_OBJECTS) $(collect_propcomp_DEPENDENCIES) 
 	@rm -f collect_propcomp$(EXEEXT)
 	$(CXXLINK) $(collect_propcomp_LDFLAGS) $(collect_propcomp_OBJECTS) $(collect_propcomp_LDADD) $(LIBS)
@@ -375,6 +397,9 @@ multi_propagator_comp$(EXEEXT): $(multi_propagator_comp_OBJECTS) $(multi_propaga
 propagator$(EXEEXT): $(propagator_OBJECTS) $(propagator_DEPENDENCIES) 
 	@rm -f propagator$(EXEEXT)
 	$(CXXLINK) $(propagator_LDFLAGS) $(propagator_OBJECTS) $(propagator_LDADD) $(LIBS)
+propagator_comp$(EXEEXT): $(propagator_comp_OBJECTS) $(propagator_comp_DEPENDENCIES) 
+	@rm -f propagator_comp$(EXEEXT)
+	$(CXXLINK) $(propagator_comp_LDFLAGS) $(propagator_comp_OBJECTS) $(propagator_comp_LDADD) $(LIBS)
 qpropadd$(EXEEXT): $(qpropadd_OBJECTS) $(qpropadd_DEPENDENCIES) 
 	@rm -f qpropadd$(EXEEXT)
 	$(CXXLINK) $(qpropadd_LDFLAGS) $(qpropadd_OBJECTS) $(qpropadd_LDADD) $(LIBS)
@@ -406,6 +431,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ExampleBuildingBlocks.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bar3ptfn.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cfgtransf.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/collect_multi_propcomp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/collect_propcomp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dwf_seqprop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hypsmear.Po@am__quote@
@@ -413,6 +439,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/multi_propagator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/multi_propagator_comp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/propagator.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/propagator_comp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qpropadd.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qproptransf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qqq_w.Po@am__quote@

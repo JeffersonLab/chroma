@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev5d_fermact_array_w.h,v 1.5 2004-01-28 16:04:42 bjoo Exp $
+// $Id: zolotarev5d_fermact_array_w.h,v 1.6 2004-04-23 11:23:37 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -10,6 +10,8 @@
 #include "fermact.h"
 #include "actions/ferm/fermacts/overlap_state.h"
 #include "actions/ferm/linop/lgherm_w.h"
+#include "io/zolotarev5d_fermact_paramio_w.h"
+#include "io/overlap_state_info.h"
 
 using namespace QDP;
 
@@ -30,7 +32,7 @@ public:
 			  Handle<UnprecWilsonTypeFermAct<LatticeFermion> > S_aux_,
 			  Real& m_q_,
 	 		  int RatPolyDeg_,
-			  XMLBufferWriter& writer_) :
+			  XMLWriter& writer_) :
     fbc(fbc_), S_aux(S_aux_), m_q(m_q_), RatPolyDeg(RatPolyDeg_), writer(writer_)  {
     
     if ( RatPolyDeg_ % 2 == 0 ) { 
@@ -39,7 +41,12 @@ public:
     N5 = RatPolyDeg_;
   }
 
-
+  // Construct the action out of a parameter structure
+  Zolotarev5DFermActArray(Handle< FermBC< multi1d< LatticeFermion> > > fbc_a_,
+			  Handle< FermBC< LatticeFermion > > fbc_,
+			  const Zolotarev5DFermActParams& param,
+			  XMLWriter& writer_);
+  
 
   //! Copy constructor
   Zolotarev5DFermActArray(const Zolotarev5DFermActArray& a) : 
@@ -123,6 +130,13 @@ public:
 	      const Real& lambda_hi_) const;
 
 
+  // Gauge field and whatever (min/max, e-vectors)
+  const OverlapConnectState<LatticeFermion>*
+  createState(const multi1d<LatticeColorMatrix>& u_,
+	      const OverlapStateInfo& state_info,
+	      XMLWriter& xml_out) const;
+
+
 protected:
   //! Helper in construction
   void init(Real& scale_fac,
@@ -143,7 +157,7 @@ private:
   int RatPolyDeg;
   int  N5;
   
-  XMLBufferWriter& writer;
+  XMLWriter& writer;
 };
 
 #endif

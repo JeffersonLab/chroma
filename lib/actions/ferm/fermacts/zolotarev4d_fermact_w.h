@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev4d_fermact_w.h,v 1.19 2004-04-22 16:25:24 bjoo Exp $
+// $Id: zolotarev4d_fermact_w.h,v 1.20 2004-04-23 11:23:37 bjoo Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -12,7 +12,7 @@
 #include "actions/ferm/fermacts/overlap_fermact_base_w.h"
 #include "actions/ferm/fermacts/overlap_state.h"
 #include "meas/eig/eig_w.h"
-#include "io/zolotarev4d_fermact_paramio.h"
+#include "io/zolotarev4d_fermact_paramio_w.h"
 #include "io/overlap_state_info.h"
 
 using namespace QDP;

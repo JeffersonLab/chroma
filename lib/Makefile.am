@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.125 2004-04-22 16:25:24 bjoo Exp $
+# $Id: Makefile.am,v 1.126 2004-04-23 11:23:37 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -71,7 +71,7 @@ nobase_include_HEADERS = \
 	actions/ferm/linop/partrat.h actions/ferm/qprop/qprop.h \
 	actions/gauge/gauge.h \
 	io/io.h io/eigen_io.h io/fermact_paramio.h \
-	io/overlap_state_info.h io/zolotarev4d_fermact_paramio.h io/gauge_io.h io/kyugauge_io.h io/kyuqprop_io.h \
+	io/gauge_io.h io/kyugauge_io.h io/kyuqprop_io.h \
         io/milc_io.h io/param_io.h io/qprop_io.h io/readmilc.h \
 	io/readszin.h io/szin_io.h io/writemilc.h io/writeszin.h \
 	meas/eig/eig.h meas/eig/gramschm.h meas/eig/gramschm_array.h \
@@ -145,6 +145,8 @@ nobase_include_HEADERS += \
 	actions/ferm/qprop/unprec_qprop_w.h \
 	io/io_w.h io/barcomp_io.h io/readszinferm_w.h io/readszinqprop_w.h \
 	io/writeszinqprop_w.h \
+        io/overlap_state_info.h io/zolotarev4d_fermact_paramio_w.h \
+	io/zolotarev5d_fermact_paramio_w.h \
 	meas/eig/eig_w.h meas/eig/ischiral_w.h \
 	meas/hadron/barcomp_w.h \
 	meas/hadron/barseqsrc_w.h meas/hadron/baryon_w.h \
@@ -231,7 +233,8 @@ libchroma_a_SOURCES += baryon_w.cc mesons_w.cc hybmeson_w.cc \
               curcor2_w.cc lwldslash_w.cc formfac_w.cc \
               mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
               sink_smear2_w.cc barcomp_io.cc barcomp_w.cc walfil_w.cc \
-              overlap_state_info.cc zolotarev4d_fermact_paramio.cc \
+              overlap_state_info.cc zolotarev4d_fermact_paramio_w.cc \
+	      zolotarev5d_fermact_paramio_w.cc \
               fermact_qprop.cc prec_fermact_qprop.cc \
               unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
               prec_wilson_fermact_w.cc prec_wilson_linop_w.cc \

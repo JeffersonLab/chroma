@@ -1,16 +1,22 @@
-// $Id: propagator.cc,v 1.53 2004-04-23 11:23:38 bjoo Exp $
-// $Log: propagator.cc,v $
-// Revision 1.53  2004-04-23 11:23:38  bjoo
+// $Id: propagator_comp.cc,v 1.1 2004-04-23 11:23:38 bjoo Exp $
+// $Log: propagator_comp.cc,v $
+// Revision 1.1  2004-04-23 11:23:38  bjoo
 // Added component based propagator (non multishift) and added Zolotarev5D operator to propagator and propagator_comp. Reworked propagator collection scripts
 //
-// Revision 1.52  2004/04/22 16:25:25  bjoo
+// Revision 1.2  2004/04/22 16:49:23  bjoo
 // Added overlap_state_info Param struct and gauge startup convenience function. Tidyed up propagator zolo4d case
 //
-// Revision 1.51  2004/04/16 22:03:59  bjoo
+// Revision 1.1  2004/04/20 13:08:12  bjoo
+// Added multi mass component based solves and propagator collection program
+//
+// Revision 1.3  2004/04/16 22:03:59  bjoo
 // Added Zolo 4D test files and tidyed up
 //
-// Revision 1.50  2004/04/16 14:58:30  bjoo
-// Propagator now does Zolo4D
+// Revision 1.2  2004/04/16 20:18:03  bjoo
+// Zolo seems to work now
+//
+// Revision 1.1  2004/04/16 17:04:49  bjoo
+// Added multi_propagator for Zolo4D multi massery. Seems to work even
 //
 // Revision 1.49  2004/04/15 14:43:25  bjoo
 // Added generalised qprop_io FermAct reading
@@ -58,7 +64,8 @@
 
 #include <iostream>
 #include <cstdio>
-
+#include <iomanip>
+using namespace std;
 #include "chroma.h"
 
 using namespace QDP;
@@ -78,12 +85,53 @@ struct Prop_t
   QDP_volfmt_t    prop_volfmt;
 };
 
-struct Propagator_input_t
+
+struct Component_t { 
+  int color;
+  int spin;
+};
+
+struct PropagatorComponent_input_t
 {
   ChromaProp_t     param;
   Cfg_t            cfg;
   Prop_t           prop;
+  multi1d<Component_t> components;
 };
+
+
+void read(XMLReader& xml, const string& path, Component_t &comp)
+{
+  XMLReader top(xml,path);
+  try {
+    read(top, "color", comp.color);
+    read(top, "spin",  comp.spin);
+  }
+  catch( const string& e ) {
+    QDPIO::cerr << "Caught Exception : " << e << endl;
+    QDP_abort(1);
+  }  
+  if( comp.color < 0 || comp.color >= Nc ) { 
+    QDPIO::cerr << "Component color >= Nc. color = " << comp.color << endl;
+    QDP_abort(1);
+  }
+
+  if( comp.spin < 0 || comp.spin >= Ns ) { 
+    QDPIO::cerr << "Component spin >= Ns.  spin = " << comp.spin << endl;
+    QDP_abort(1);
+  }
+}
+
+void write(XMLWriter& xml, const string& path, const Component_t &comp)
+{
+  
+  push( xml, path );
+
+  write(xml, "color", comp.color);
+  write(xml, "spin",  comp.spin);
+  
+  pop( xml );
+}
 
 
 // Propagator parameters
@@ -98,7 +146,7 @@ void read(XMLReader& xml, const string& path, Prop_t& input)
 
 
 // Reader for input parameters
-void read(XMLReader& xml, const string& path, Propagator_input_t& input)
+void read(XMLReader& xml, const string& path, PropagatorComponent_input_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -113,6 +161,8 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
 
     // Read in the source/propagator info
     read(inputtop, "Prop", input.prop);
+
+    read(inputtop, "Components", input.components);
   }
   catch (const string& e) 
   {
@@ -121,6 +171,14 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
   }
 }
 
+// Forward declaration
+void saveComponent(const ChromaProp_t& param, 
+		   const Prop_t& prop,
+		   const PropSource_t& source_header,
+		   const Component_t& component,
+		    XMLReader& gauge_xml,
+		    XMLWriter& xml_out,
+		    const LatticeFermion& psi);
 //! Propagator generation
 /*! \defgroup propagator Propagator generation
  *  \ingroup main
@@ -134,28 +192,25 @@ int main(int argc, char **argv)
   QDP_initialize(&argc, &argv);
 
   // Input parameter structure
-  Propagator_input_t  input;
+  PropagatorComponent_input_t  input;
 
   // Instantiate xml reader for DATA
   XMLReader xml_in("DATA");
 
   // Read data
-  read(xml_in, "/propagator", input);
+  read(xml_in, "/propagatorComp", input);
 
   // Specify lattice size, shape, etc.
   Layout::setLattSize(input.param.nrow);
   Layout::create();
 
-  QDPIO::cout << "Propagator" << endl;
+  QDPIO::cout << "propagatorComp" << endl;
 
   // Read in the configuration along with relevant information.
   multi1d<LatticeColorMatrix> u(Nd);
   XMLReader gauge_file_xml, gauge_xml;
 
-
-  // Start up the gauge field
   gaugeStartup(gauge_file_xml, gauge_xml, u, input.cfg);
-
 
   // Read in the source along with relevant information.
   LatticePropagator quark_prop_source;
@@ -183,7 +238,7 @@ int main(int argc, char **argv)
 
   // Instantiate XML writer for XMLDAT
   XMLFileWriter xml_out("XMLDAT");
-  push(xml_out, "propagator");
+  push(xml_out, "multiPropagatorComp");
 
   proginfo(xml_out);    // Print out basic program info
 
@@ -247,142 +302,21 @@ int main(int argc, char **argv)
   // terminology is that a propagator is a matrix in color
   // and spin space
   //
-  LatticePropagator quark_propagator;
+
+  
+  LatticeFermion psi;
   int ncg_had = 0;
 
   //
   // Initialize fermion action
   //
-  switch (input.param.FermActHandle->getFermActType())
-  {
-  case FERM_ACT_WILSON:
-  {
-    QDPIO::cout << "FERM_ACT_WILSON" << endl;
-
-    const WilsonFermActParams& wilson_params=dynamic_cast<const WilsonFermActParams &>(*(input.param.FermActHandle));
-
-    EvenOddPrecWilsonFermAct S_f(fbc,wilson_params.Mass,
-				 wilson_params.anisoParam);
-    Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
-
-    quarkProp4(quark_propagator, xml_out, quark_prop_source,
-  	       S_f, state, 
-	       input.param.invParam.invType, 
-	       input.param.invParam.RsdCG, 
-	       input.param.invParam.MaxCG, 
-	       false,
-	       ncg_had);
-  }
-  break;
-
-  case FERM_ACT_UNPRECONDITIONED_WILSON:
-  {
-    QDPIO::cout << "FERM_ACT_UNPRECONDITIONED_WILSON" << endl;
-
-    const WilsonFermActParams& wilson_params=dynamic_cast<const WilsonFermActParams &>(*(input.param.FermActHandle));
+  switch (input.param.FermActHandle->getFermActType()) {
 
 
-    UnprecWilsonFermAct S_f(fbc,wilson_params.Mass);
-    Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
+    /***********************************************************************/
+    /* 4D ZOlotarev                                                        */
+    /***********************************************************************/
 
-    quarkProp4(quark_propagator, xml_out, quark_prop_source,
-  	       S_f, state, 
-	       input.param.invParam.invType, 
-	       input.param.invParam.RsdCG, 
-	       input.param.invParam.MaxCG, 
-	       false,
-	       ncg_had);
-  }
-  break;
-
-  case FERM_ACT_DWF:
-  {
-    QDPIO::cout << "FERM_ACT_DWF" << endl;
-
-
-    const DWFFermActParams& dwf_params=dynamic_cast<const DWFFermActParams &>(*(input.param.FermActHandle));
-
-    EvenOddPrecDWFermActArray S_f(fbc_a,
-				  dwf_params.chiralParam.OverMass, 
-				  dwf_params.Mass, 
-				  dwf_params.chiralParam.N5);
-    Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
-
-#ifndef MRES_CALCULATION
-    quarkProp4(quark_propagator, xml_out, quark_prop_source,
-	       S_f, state, 
-	       input.param.invParam.invType, 
-	       input.param.invParam.RsdCG, 
-	       input.param.invParam.MaxCG, 
-	       false,
-	       ncg_had);
-#else
-    dwf_quarkProp4(quark_propagator, xml_out, quark_prop_source,
-		   source_header.t_source[source_header.j_decay],
-		   source_header.j_decay,
-		   S_f, state, 
-		   input.param.invParam.invType, 
-		   input.param.invParam.RsdCG, 
-		   input.param.invParam.MaxCG, 
-		   ncg_had);
-#endif
-  }
-  break;
-
-  case FERM_ACT_UNPRECONDITIONED_DWF:
-  {
-    QDPIO::cout << "FERM_ACT_UNPRECONDITONED_DWF" << endl;
-
-    const DWFFermActParams& dwf_params=dynamic_cast<const DWFFermActParams &>(*(input.param.FermActHandle));
-
-    UnprecDWFermActArray S_f(fbc_a,
-			     dwf_params.chiralParam.OverMass, 
-			     dwf_params.Mass, 
-			     dwf_params.chiralParam.N5);
-    Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
-#ifndef MRES_CALCULATION
-    quarkProp4(quark_propagator, xml_out, quark_prop_source,
-  	       S_f, state, 
-	       input.param.invParam.invType, 
-	       input.param.invParam.RsdCG, 
-	       input.param.invParam.MaxCG, 
-	       false,
-	       ncg_had);
-#else
-    dwf_quarkProp4(quark_propagator, xml_out, quark_prop_source,
-		   source_header.t_source[source_header.j_decay],
-		   source_header.j_decay,
-		   S_f, state, 
-		   input.param.invParam.invType, 
-		   input.param.invParam.RsdCG, 
-		   input.param.invParam.MaxCG, 
-		   ncg_had);
-#endif
-  }
-  break;
-
-
-  case FERM_ACT_OVERLAP_DWF:
-  {
-    QDPIO::cout << "FERM_ACT_OVERLAP_DWF" << endl;
-    const DWFFermActParams& dwf_params=dynamic_cast<const DWFFermActParams &>(*(input.param.FermActHandle));
-
-    UnprecOvDWFermActArray S_f(fbc_a,
-			       dwf_params.chiralParam.OverMass, 
-			       dwf_params.Mass, 
-			       dwf_params.chiralParam.N5);
-    Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
-
-    quarkProp4(quark_propagator, xml_out, quark_prop_source,
-  	       S_f, state, 
-	       input.param.invParam.invType, 
-	       input.param.invParam.RsdCG, 
-	       input.param.invParam.MaxCG, 
-	       false,
-	       ncg_had);
-  }
-  break;
-  
   case FERM_ACT_ZOLOTAREV_4D:
     {
       QDPIO::cout << "FERM_ACT_ZOLOTAREV_4D" << endl;
@@ -397,18 +331,52 @@ int main(int argc, char **argv)
       // params struct. Loads Evalues etc if needed, will in the 
       // future recompute them as needed
       Handle<const ConnectState> state(S.createState(u, zolo4d.StateInfo, xml_out));
-  
-      // Call the propagator... Hooray.
-      quarkProp4(quark_propagator, xml_out, quark_prop_source,
-		 S, state, 
-		 input.param.invParam.invType, 
-		 input.param.invParam.RsdCG, 
-		 input.param.invParam.MaxCG, 
-		 false,
-		 ncg_had);	  
-		      
+      
+
+      for(int comp = 0; comp < input.components.size(); comp++) { 
+	
+	LatticeFermion chi;
+	PropToFerm(quark_prop_source, chi, input.components[comp].color,
+		   input.components[comp].spin);
+
+
+	// Zero out initial guess
+	psi = zero;
+
+	// Normalise source
+	Real fact = Real(1) / sqrt(norm2(chi));
+	chi *= fact;
+
+	int n_count = 0;
+	S.qprop(psi, 
+		state, 
+		chi, 
+		input.param.invParam.invType, 
+		input.param.invParam.RsdCG, 
+		input.param.invParam.MaxCG, 
+		n_count);
+	
+
+	// Remove source normalisation
+	fact = Real(1) / fact;
+	psi *= fact;
+	  
+	push(xml_out,"Relaxation_Iterations");
+	write(xml_out, "ncg_had", n_count);
+	pop(xml_out);
+
+	saveComponent( input.param,
+			input.prop,
+			source_header,
+			input.components[comp],
+			gauge_xml,
+			xml_out,
+			psi );
+
+      }
     }
     break;
+
   case FERM_ACT_ZOLOTAREV_5D:
     {
       QDPIO::cout << "FERM_ACT_ZOLOTAREV_5D" << endl;
@@ -423,73 +391,115 @@ int main(int argc, char **argv)
       // params struct. Loads Evalues etc if needed, will in the 
       // future recompute them as needed
       Handle<const ConnectState> state(S.createState(u, zolo5d.StateInfo, xml_out));
-  
-      // Call the propagator... Hooray.
-      quarkProp4(quark_propagator, xml_out, quark_prop_source,
-		 S, state, 
-		 input.param.invParam.invType, 
-		 input.param.invParam.RsdCG, 
-		 input.param.invParam.MaxCG, 
-		 false,
-		 ncg_had);	  
-		      
+      
+
+      for(int comp = 0; comp < input.components.size(); comp++) { 
+	
+	LatticeFermion chi;
+	PropToFerm(quark_prop_source, chi, input.components[comp].color,
+		   input.components[comp].spin);
+
+
+	// Zero out initial guess
+	psi = zero;
+	
+
+	// Normalise source
+	Real fact = Real(1) / sqrt(norm2(chi));
+	chi *= fact;
+
+	int n_count = 0;
+	S.qprop(psi, 
+		state, 
+		chi, 
+		input.param.invParam.invType, 
+		input.param.invParam.RsdCG, 
+		input.param.invParam.MaxCG, 
+		n_count);
+	
+
+	// Remove source normalisation
+	fact = Real(1) / fact;
+	psi *= fact;
+	  
+	push(xml_out,"Relaxation_Iterations");
+	write(xml_out, "ncg_had", n_count);
+	pop(xml_out);
+
+	saveComponent( input.param,
+			input.prop,
+		       source_header,
+			input.components[comp],
+			gauge_xml,
+			xml_out,
+			psi );
+
+      }
     }
     break;
-
   default:
     QDPIO::cerr << "Unsupported fermion action" << endl;
     QDP_abort(1);
   }
 
-  push(xml_out,"Relaxation_Iterations");
-  write(xml_out, "ncg_had", ncg_had);
-  pop(xml_out);
-
-  // Sanity check - write out the propagator (pion) correlator in the Nd-1 direction
-  {
-    // Initialize the slow Fourier transform phases
-    SftMom phases(0, true, Nd-1);
-
-    multi1d<Double> prop_corr = sumMulti(localNorm2(quark_propagator), 
-					 phases.getSet());
-
-    push(xml_out, "Prop_correlator");
-    write(xml_out, "prop_corr", prop_corr);
-    pop(xml_out);
-  }
-
-  xml_out.flush();
-
-  // Save the propagator
-  // ONLY SciDAC output format is supported!
-  {
-    XMLBufferWriter file_xml;
-    push(file_xml, "propagator");
-    int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
-    write(file_xml, "id", id);
-    pop(file_xml);
-
-    XMLBufferWriter record_xml;
-    push(record_xml, "Propagator");
-    write(record_xml, "ForwardProp", input.param);
-    write(record_xml, "PropSource", source_header);
-//    record_xml << source_file_xml;
-//    record_xml << source_record_xml;
-    write(record_xml, "Config_info", gauge_xml);
-    pop(record_xml);
-
-    // Write the source
-    writeQprop(file_xml, record_xml, quark_propagator,
-	       input.prop.prop_file, input.prop.prop_volfmt, QDPIO_SERIAL);
-  }
 
   pop(xml_out);  // propagator
-
+  
   xml_out.close();
   xml_in.close();
-
+  
   // Time to bolt
   QDP_finalize();
-
+  
   exit(0);
+}
+
+void saveComponent(const ChromaProp_t& param, 
+		   const Prop_t& prop,
+		   const PropSource_t& source_header,
+		   const Component_t& component,
+		   XMLReader& gauge_xml,
+		   XMLWriter& xml_out,
+		   const LatticeFermion& psi)
+{
+
+  SftMom phases(0, true, Nd-1);
+  multi1d<Double> prop_corr = sumMulti(localNorm2(psi), 
+				       phases.getSet());
+	    
+  push(xml_out, "PropComp_correlator");
+  write(xml_out, "Mass", param.FermActHandle->getMass());
+  write(xml_out, "prop_corr", prop_corr);
+  pop(xml_out);
+
+  XMLBufferWriter file_xml;
+  push(file_xml, "propagatorComponent");
+  int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
+  write(file_xml, "id", id);
+  pop(file_xml);
+  
+    
+
+  XMLBufferWriter record_xml;
+  push(record_xml, "PropagatorComponent");
+    
+  write(record_xml, "ForwardProp", param);
+  write(record_xml, "PropSource", source_header);
+  write(record_xml, "Config_info", gauge_xml);
+  write(record_xml, "Component", component);
+    
+  pop(record_xml);
+    
+  ostringstream outfile;
+
+  // Zero suffix for compatibility with multi mass version
+  outfile << prop.prop_file << "_component_s" << component.spin
+	  << "_c" << component.color ;
+	  
+	  
+  QDPIO::cout << "Attempting to write " << outfile.str() << endl;
+  
+  // Write the source
+  writeFermion(file_xml, record_xml, psi,
+	       outfile.str(), prop.prop_volfmt, QDPIO_SERIAL);
 }

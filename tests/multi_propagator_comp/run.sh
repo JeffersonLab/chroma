@@ -12,4 +12,4 @@ cp multi_propagator_comp_zolo4_c2.xml.ini DATA
 cp XMLDAT XMLDAT_c2
 
 # Re use same data file
-./collect_propcomp
+./collect_multi_propcomp
