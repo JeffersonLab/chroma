@@ -22,11 +22,11 @@
   </Cfg>
   <quarkMass>0.1</quarkMass>
   <eig>
-     <RsdR>1.0e-5</RsdR>
-     <RsdA>1.0e-7</RsdA>
+     <RsdR>1.0e-4</RsdR>
+     <RsdA>1.0e-6</RsdA>
      <RsdZero>5.0e-6</RsdZero>
      <ProjApsiP>false</ProjApsiP>    
-     <Neig>4</Neig>
+     <Neig>2</Neig>
      <Ndummy>2</Ndummy>
      <gammaFactor>0.1</gammaFactor>
      <MaxKS>100</MaxKS>
@@ -34,7 +34,7 @@
   </eig>
 
   <zolotarev>
-	<approxOrder>11</approxOrder>
+	<approxOrder>15</approxOrder>
 	<approxMin>0.668</approxMin>
 	<approxMax>6.9</approxMax>
 	<wilsonMass>-1.4</wilsonMass>
