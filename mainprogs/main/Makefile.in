@@ -160,10 +160,10 @@ HDRS =
 
 #noinst_PROGRAMS = propagator
 check_PROGRAMS = propagator spectrum_w qqq_w seqprop bar3ptfn make_source \
-        ExampleBuildingBlocks hypsmear cfgtransf 
+        ExampleBuildingBlocks hypsmear cfgtransf
 
 
-EXTRA_PROGRAMS = wallformfac
+EXTRA_PROGRAMS = wallformfac sink_smearing
 
 #
 # The program and its dependencies
@@ -197,10 +197,13 @@ ExampleBuildingBlocks_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 cfgtransf_SOURCES = cfgtransf.cc
 cfgtransf_DEPENDENCIES = build_chroma_libs rebuild_other_libs
+
+sink_smearing_SOURCES = sink_smearing.cc
+sink_smearing_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 subdir = mainprogs/main
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
 CONFIG_CLEAN_FILES =
-EXTRA_PROGRAMS = wallformfac$(EXEEXT)
+EXTRA_PROGRAMS = wallformfac$(EXEEXT) sink_smearing$(EXEEXT)
 check_PROGRAMS = propagator$(EXEEXT) spectrum_w$(EXEEXT) qqq_w$(EXEEXT) \
 	seqprop$(EXEEXT) bar3ptfn$(EXEEXT) make_source$(EXEEXT) \
 	ExampleBuildingBlocks$(EXEEXT) hypsmear$(EXEEXT) \
@@ -237,6 +240,10 @@ am_seqprop_OBJECTS = seqprop.$(OBJEXT)
 seqprop_OBJECTS = $(am_seqprop_OBJECTS)
 seqprop_LDADD = $(LDADD)
 seqprop_LDFLAGS =
+am_sink_smearing_OBJECTS = sink_smearing.$(OBJEXT)
+sink_smearing_OBJECTS = $(am_sink_smearing_OBJECTS)
+sink_smearing_LDADD = $(LDADD)
+sink_smearing_LDFLAGS =
 am_spectrum_w_OBJECTS = spectrum_w.$(OBJEXT)
 spectrum_w_OBJECTS = $(am_spectrum_w_OBJECTS)
 spectrum_w_LDADD = $(LDADD)
@@ -253,7 +260,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/bar3ptfn.Po ./$(DEPDIR)/cfgtransf.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/hypsmear.Po ./$(DEPDIR)/make_source.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/propagator.Po ./$(DEPDIR)/qqq_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/seqprop.Po ./$(DEPDIR)/spectrum_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/seqprop.Po ./$(DEPDIR)/sink_smearing.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/spectrum_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/wallformfac.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -263,9 +271,10 @@ CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 DIST_SOURCES = $(ExampleBuildingBlocks_SOURCES) $(bar3ptfn_SOURCES) \
 	$(cfgtransf_SOURCES) $(hypsmear_SOURCES) $(make_source_SOURCES) \
 	$(propagator_SOURCES) $(qqq_w_SOURCES) $(seqprop_SOURCES) \
-	$(spectrum_w_SOURCES) $(wallformfac_SOURCES)
+	$(sink_smearing_SOURCES) $(spectrum_w_SOURCES) \
+	$(wallformfac_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(ExampleBuildingBlocks_SOURCES) $(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) $(hypsmear_SOURCES) $(make_source_SOURCES) $(propagator_SOURCES) $(qqq_w_SOURCES) $(seqprop_SOURCES) $(spectrum_w_SOURCES) $(wallformfac_SOURCES)
+SOURCES = $(ExampleBuildingBlocks_SOURCES) $(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) $(hypsmear_SOURCES) $(make_source_SOURCES) $(propagator_SOURCES) $(qqq_w_SOURCES) $(seqprop_SOURCES) $(sink_smearing_SOURCES) $(spectrum_w_SOURCES) $(wallformfac_SOURCES)
 
 all: all-am
 
@@ -303,6 +312,9 @@ qqq_w$(EXEEXT): $(qqq_w_OBJECTS) $(qqq_w_DEPENDENCIES)
 seqprop$(EXEEXT): $(seqprop_OBJECTS) $(seqprop_DEPENDENCIES) 
 	@rm -f seqprop$(EXEEXT)
 	$(CXXLINK) $(seqprop_LDFLAGS) $(seqprop_OBJECTS) $(seqprop_LDADD) $(LIBS)
+sink_smearing$(EXEEXT): $(sink_smearing_OBJECTS) $(sink_smearing_DEPENDENCIES) 
+	@rm -f sink_smearing$(EXEEXT)
+	$(CXXLINK) $(sink_smearing_LDFLAGS) $(sink_smearing_OBJECTS) $(sink_smearing_LDADD) $(LIBS)
 spectrum_w$(EXEEXT): $(spectrum_w_OBJECTS) $(spectrum_w_DEPENDENCIES) 
 	@rm -f spectrum_w$(EXEEXT)
 	$(CXXLINK) $(spectrum_w_LDFLAGS) $(spectrum_w_OBJECTS) $(spectrum_w_LDADD) $(LIBS)
@@ -324,6 +336,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/propagator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qqq_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seqprop.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sink_smearing.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/spectrum_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wallformfac.Po@am__quote@
 

@@ -1,4 +1,4 @@
-// $Id: make_source.cc,v 1.22 2004-02-04 19:37:37 edwards Exp $
+// $Id: make_source.cc,v 1.23 2004-02-06 21:54:40 sbasak Exp $
 /*! \file
  *  \brief Main code for source generation
  */
@@ -160,11 +160,15 @@ int main(int argc, char **argv)
     QDP_error_exit("Configuration type is unsupported.");
   }
 
+  QDPIO::cout << "Gauge field read!" << endl;
+
 
   multi1d<LatticeColorMatrix> u_smr(Nd);
   u_smr = u;
+
   for(int i=0; i < sm_numb; ++i)
   {
+
     multi1d<LatticeColorMatrix> u_tmp(Nd);
 
     for(int mu = 0; mu < Nd; ++mu)
@@ -175,6 +179,8 @@ int main(int argc, char **argv)
 
     u_smr = u_tmp;
   }
+
+  QDPIO::cout << "Gauge field APE-smeared!" << endl;
 
 
 
