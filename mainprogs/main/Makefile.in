@@ -161,13 +161,15 @@ LDADD = -lchroma @QDPXX_LIBS@ @LIBS@ $(am__append_3)
 HDRS = 
 
 #noinst_PROGRAMS = propagator
-check_PROGRAMS = propagator propagator_comp multi_propagator multi_propagator_comp collect_propcomp collect_multi_propcomp spectrum_w qqq_w seqprop seqprop_comp seqprop_collect\
+check_PROGRAMS = propagator propagator_comp multi_propagator \
+        multi_propagator_comp collect_propcomp collect_multi_propcomp \
+        spectrum_w qqq_w seqprop seqprop_comp seqprop_collect\
         dwf_seqprop bar3ptfn make_source \
         ExampleBuildingBlocks hypsmear cfgtransf sink_smearing qproptransf \
         wallformfac
 
 
-EXTRA_PROGRAMS = qpropadd
+EXTRA_PROGRAMS = qpropadd seqsource
 
 #
 # The program and its dependencies
@@ -198,6 +200,9 @@ qqq_w_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 seqprop_SOURCES = seqprop.cc
 seqprop_DEPENDENCIES = build_chroma_libs rebuild_other_libs
+
+seqsource_SOURCES = seqsource.cc
+seqsource_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 seqprop_comp_SOURCES = seqprop_comp.cc
 seqprop_comp_DEPENDENCIES = build_chroma_libs rebuild_other_libs
@@ -237,7 +242,7 @@ sink_smearing_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 subdir = mainprogs/main
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
 CONFIG_CLEAN_FILES =
-EXTRA_PROGRAMS = qpropadd$(EXEEXT)
+EXTRA_PROGRAMS = qpropadd$(EXEEXT) seqsource$(EXEEXT)
 check_PROGRAMS = propagator$(EXEEXT) propagator_comp$(EXEEXT) \
 	multi_propagator$(EXEEXT) multi_propagator_comp$(EXEEXT) \
 	collect_propcomp$(EXEEXT) collect_multi_propcomp$(EXEEXT) \
@@ -319,6 +324,10 @@ am_seqprop_comp_OBJECTS = seqprop_comp.$(OBJEXT)
 seqprop_comp_OBJECTS = $(am_seqprop_comp_OBJECTS)
 seqprop_comp_LDADD = $(LDADD)
 seqprop_comp_LDFLAGS =
+am_seqsource_OBJECTS = seqsource.$(OBJEXT)
+seqsource_OBJECTS = $(am_seqsource_OBJECTS)
+seqsource_LDADD = $(LDADD)
+seqsource_LDFLAGS =
 am_sink_smearing_OBJECTS = sink_smearing.$(OBJEXT)
 sink_smearing_OBJECTS = $(am_sink_smearing_OBJECTS)
 sink_smearing_LDADD = $(LDADD)
@@ -349,6 +358,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/qqq_w.Po ./$(DEPDIR)/seqprop.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/seqprop_collect.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/seqprop_comp.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/seqsource.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/sink_smearing.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/spectrum_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/wallformfac.Po
@@ -365,10 +375,11 @@ DIST_SOURCES = $(ExampleBuildingBlocks_SOURCES) $(bar3ptfn_SOURCES) \
 	$(propagator_SOURCES) $(propagator_comp_SOURCES) \
 	$(qpropadd_SOURCES) $(qproptransf_SOURCES) $(qqq_w_SOURCES) \
 	$(seqprop_SOURCES) $(seqprop_collect_SOURCES) \
-	$(seqprop_comp_SOURCES) $(sink_smearing_SOURCES) \
-	$(spectrum_w_SOURCES) $(wallformfac_SOURCES)
+	$(seqprop_comp_SOURCES) $(seqsource_SOURCES) \
+	$(sink_smearing_SOURCES) $(spectrum_w_SOURCES) \
+	$(wallformfac_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(ExampleBuildingBlocks_SOURCES) $(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) $(collect_multi_propcomp_SOURCES) $(collect_propcomp_SOURCES) $(dwf_seqprop_SOURCES) $(hypsmear_SOURCES) $(make_source_SOURCES) $(multi_propagator_SOURCES) $(multi_propagator_comp_SOURCES) $(propagator_SOURCES) $(propagator_comp_SOURCES) $(qpropadd_SOURCES) $(qproptransf_SOURCES) $(qqq_w_SOURCES) $(seqprop_SOURCES) $(seqprop_collect_SOURCES) $(seqprop_comp_SOURCES) $(sink_smearing_SOURCES) $(spectrum_w_SOURCES) $(wallformfac_SOURCES)
+SOURCES = $(ExampleBuildingBlocks_SOURCES) $(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) $(collect_multi_propcomp_SOURCES) $(collect_propcomp_SOURCES) $(dwf_seqprop_SOURCES) $(hypsmear_SOURCES) $(make_source_SOURCES) $(multi_propagator_SOURCES) $(multi_propagator_comp_SOURCES) $(propagator_SOURCES) $(propagator_comp_SOURCES) $(qpropadd_SOURCES) $(qproptransf_SOURCES) $(qqq_w_SOURCES) $(seqprop_SOURCES) $(seqprop_collect_SOURCES) $(seqprop_comp_SOURCES) $(seqsource_SOURCES) $(sink_smearing_SOURCES) $(spectrum_w_SOURCES) $(wallformfac_SOURCES)
 
 all: all-am
 
@@ -436,6 +447,9 @@ seqprop_collect$(EXEEXT): $(seqprop_collect_OBJECTS) $(seqprop_collect_DEPENDENC
 seqprop_comp$(EXEEXT): $(seqprop_comp_OBJECTS) $(seqprop_comp_DEPENDENCIES) 
 	@rm -f seqprop_comp$(EXEEXT)
 	$(CXXLINK) $(seqprop_comp_LDFLAGS) $(seqprop_comp_OBJECTS) $(seqprop_comp_LDADD) $(LIBS)
+seqsource$(EXEEXT): $(seqsource_OBJECTS) $(seqsource_DEPENDENCIES) 
+	@rm -f seqsource$(EXEEXT)
+	$(CXXLINK) $(seqsource_LDFLAGS) $(seqsource_OBJECTS) $(seqsource_LDADD) $(LIBS)
 sink_smearing$(EXEEXT): $(sink_smearing_OBJECTS) $(sink_smearing_DEPENDENCIES) 
 	@rm -f sink_smearing$(EXEEXT)
 	$(CXXLINK) $(sink_smearing_LDFLAGS) $(sink_smearing_OBJECTS) $(sink_smearing_LDADD) $(LIBS)
@@ -470,6 +484,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seqprop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seqprop_collect.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seqprop_comp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seqsource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sink_smearing.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/spectrum_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wallformfac.Po@am__quote@
