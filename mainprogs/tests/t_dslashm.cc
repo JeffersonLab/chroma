@@ -1,4 +1,4 @@
-// $Id: t_dslashm.cc,v 1.4 2003-02-16 04:14:37 edwards Exp $
+// $Id: t_dslashm.cc,v 1.5 2003-02-16 20:06:08 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -20,7 +20,7 @@ int main(int argc, char **argv)
   Layout::setLattSize(nrow);
   Layout::create();
 
-  //! Test out propagators
+  //! Test out dslash
   multi1d<LatticeColorMatrix> u(Nd);
   for(int m=0; m < u.size(); ++m)
     gaussian(u[m]);
