@@ -50,7 +50,7 @@ bin_PROGRAMS = propagator \
         seqsource \
 	make_source \
         ExampleBuildingBlocks hypsmear cfgtransf sink_smearing qpropgfix \
-        qproptrev apesmear stoutsmear hmc hypsmear3d hypsmear4d
+        qproptrev apesmear stoutsmear hmc hypsmear3d hypsmear4d chroma
 
 # Wilson specific programs
 bin_PROGRAMS += spectrum_w qqq_w bar3ptfn qproptransf wallformfac mres \
@@ -78,6 +78,9 @@ EXTRA_PROGRAMS += propagator_comp multi_propagator multi_propagator_comp \
 #
 # The program and its dependencies
 #
+chroma_SOURCES= chroma.cc
+chroma_DEPENDENCIES= build_chroma_libs rebuild_other_libs
+
 propagator_SOURCES= propagator.cc
 propagator_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 
