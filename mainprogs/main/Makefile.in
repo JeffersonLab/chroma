@@ -163,7 +163,7 @@ check_PROGRAMS = propagator spectrum_w qqq_w seqprop bar3ptfn make_source \
         ExampleBuildingBlocks hypsmear cfgtransf 
 
 
-EXTRA_PROGRAMS = 
+EXTRA_PROGRAMS = wallformfac
 
 #
 # The program and its dependencies
@@ -183,6 +183,9 @@ seqprop_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 bar3ptfn_SOURCES = bar3ptfn.cc
 bar3ptfn_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
+wallformfac_SOURCES = wallformfac.cc
+wallformfac_DEPENDENCIES = build_chroma_libs rebuild_other_libs
+
 make_source_SOURCES = make_source.cc
 make_source_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
@@ -197,7 +200,7 @@ cfgtransf_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 subdir = mainprogs/main
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
 CONFIG_CLEAN_FILES =
-EXTRA_PROGRAMS =
+EXTRA_PROGRAMS = wallformfac$(EXEEXT)
 check_PROGRAMS = propagator$(EXEEXT) spectrum_w$(EXEEXT) qqq_w$(EXEEXT) \
 	seqprop$(EXEEXT) bar3ptfn$(EXEEXT) make_source$(EXEEXT) \
 	ExampleBuildingBlocks$(EXEEXT) hypsmear$(EXEEXT) \
@@ -238,6 +241,10 @@ am_spectrum_w_OBJECTS = spectrum_w.$(OBJEXT)
 spectrum_w_OBJECTS = $(am_spectrum_w_OBJECTS)
 spectrum_w_LDADD = $(LDADD)
 spectrum_w_LDFLAGS =
+am_wallformfac_OBJECTS = wallformfac.$(OBJEXT)
+wallformfac_OBJECTS = $(am_wallformfac_OBJECTS)
+wallformfac_LDADD = $(LDADD)
+wallformfac_LDFLAGS =
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
@@ -246,7 +253,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/bar3ptfn.Po ./$(DEPDIR)/cfgtransf.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/hypsmear.Po ./$(DEPDIR)/make_source.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/propagator.Po ./$(DEPDIR)/qqq_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/seqprop.Po ./$(DEPDIR)/spectrum_w.Po
+@AMDEP_TRUE@	./$(DEPDIR)/seqprop.Po ./$(DEPDIR)/spectrum_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/wallformfac.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -255,9 +263,9 @@ CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 DIST_SOURCES = $(ExampleBuildingBlocks_SOURCES) $(bar3ptfn_SOURCES) \
 	$(cfgtransf_SOURCES) $(hypsmear_SOURCES) $(make_source_SOURCES) \
 	$(propagator_SOURCES) $(qqq_w_SOURCES) $(seqprop_SOURCES) \
-	$(spectrum_w_SOURCES)
+	$(spectrum_w_SOURCES) $(wallformfac_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(ExampleBuildingBlocks_SOURCES) $(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) $(hypsmear_SOURCES) $(make_source_SOURCES) $(propagator_SOURCES) $(qqq_w_SOURCES) $(seqprop_SOURCES) $(spectrum_w_SOURCES)
+SOURCES = $(ExampleBuildingBlocks_SOURCES) $(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) $(hypsmear_SOURCES) $(make_source_SOURCES) $(propagator_SOURCES) $(qqq_w_SOURCES) $(seqprop_SOURCES) $(spectrum_w_SOURCES) $(wallformfac_SOURCES)
 
 all: all-am
 
@@ -298,6 +306,9 @@ seqprop$(EXEEXT): $(seqprop_OBJECTS) $(seqprop_DEPENDENCIES)
 spectrum_w$(EXEEXT): $(spectrum_w_OBJECTS) $(spectrum_w_DEPENDENCIES) 
 	@rm -f spectrum_w$(EXEEXT)
 	$(CXXLINK) $(spectrum_w_LDFLAGS) $(spectrum_w_OBJECTS) $(spectrum_w_LDADD) $(LIBS)
+wallformfac$(EXEEXT): $(wallformfac_OBJECTS) $(wallformfac_DEPENDENCIES) 
+	@rm -f wallformfac$(EXEEXT)
+	$(CXXLINK) $(wallformfac_LDFLAGS) $(wallformfac_OBJECTS) $(wallformfac_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
@@ -314,6 +325,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qqq_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seqprop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/spectrum_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wallformfac.Po@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
