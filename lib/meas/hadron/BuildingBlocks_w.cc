@@ -1,38 +1,32 @@
-//#####################################################################################
-//#####################################################################################
-//
-// BuildingBlocks.cc
-//
-//#####################################################################################
-//#####################################################################################
-//
-// description:
-//
-// Read BuildingBlocks.hh.
-//
-// history:
-//
-// There were at least four versions of "MIT" code.  Andrew Pochinsky has a c version.
-// Dmitri Dolgov has a c++ version.  Dru B. Renner has c and c++ versions.  All were
-// independent and checked against one another.  Of course, all were developed under 
-// the guidance of John W. Negele.  This code here is just the "Building Blocks" 
-// portion of the MIT code.
-//
-// authors:
-//
-// Dru B. Renner, dru@mit.edu, 2002 - port of Building Blocks (MIT) code to qdp++
-//
-// There are others who have contributed since the code has been migrated to qdp++.
-// The cvs log entries indicate these other authors.
-//
-//#####################################################################################
-//#####################################################################################
-
-static const char* const CVSBuildingBlocks_cc =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 1.9 2004-05-27 21:16:51 dru Exp $";
-
-//#####################################################################################
-//#####################################################################################
+//###################################################################################//
+//###################################################################################//
+//                                                                                   //
+// BuildingBlocks.cc                                                                 //
+//                                                                                   //
+//###################################################################################//
+//###################################################################################//
+//                                                                                   //
+// description:                                                                      //
+//                                                                                   //
+// Read BuildingBlocks.hh.                                                           //
+//                                                                                   //
+// history:                                                                          //
+//                                                                                   //
+// There were at least four versions of "MIT" code.  Andrew Pochinsky has a c        //
+// version. Dmitri Dolgov has a c++ version.  Dru B. Renner has c and c++ versions.  //
+// All were independent and checked against one another.  Of course, all were        //
+// developed under the guidance of John W. Negele.  The code here is just the        //
+// "Building Blocks" portion of the MIT code.                                        //
+//                                                                                   //
+// authors:                                                                          //
+//                                                                                   //
+// Dru B. Renner, dru@mit.edu, 2002 - port of Building Blocks (MIT) code to qdp++    //
+//                                                                                   //
+// There are others who have contributed since the code has been migrated to qdp++.  //
+// The cvs log entries indicate these other authors.                                 //
+//                                                                                   //
+//###################################################################################//
+//###################################################################################//
 
 #include <iostream>
 #include "chromabase.h"
@@ -41,11 +35,22 @@ static const char* const CVSBuildingBlocks_cc =
 
 using namespace QDP;
 
+//###################################################################################//
+// debug flag                                                                        //
+//###################################################################################//
+
 #define _DEBUG_BB_C_ 0
 
-//#####################################################################################
-// record the CVS info
-//#####################################################################################
+//###################################################################################//
+// cvs header                                                                        //
+//###################################################################################//
+
+static const char* const CVSBuildingBlocks_cc =
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 1.10 2004-05-27 21:21:35 dru Exp $";
+
+//###################################################################################//
+// record the CVS info                                                               //
+//###################################################################################//
 
 void CVSBuildingBlocks( TextWriter & Out )
 {
@@ -53,9 +58,9 @@ void CVSBuildingBlocks( TextWriter & Out )
   Out << "CVSBuildingBlocks_cc = " << CVSBuildingBlocks_cc << "\n";
 }
 
-//#####################################################################################
-// backward forward trace
-//#####################################################################################
+//###################################################################################//
+// backward forward trace                                                            //
+//###################################################################################//
 
 static int GBB_NLinkPatterns = 0;
 
@@ -70,13 +75,11 @@ void BkwdFrwdTr( const LatticePropagator &             B,
 {
   const unsigned short int NLinks = LinkDirs.size();
   unsigned short int Link;
-  //const int T1 = 0;
-  //const int T2 = 7;
   const int NQ = Phases.numMom();
 
-  //###################################################################################
-  // add a tag to identify the link pattern
-  //###################################################################################
+  //#################################################################################//
+  // add a tag to identify the link pattern                                          //
+  //#################################################################################//
 
   for( int q = 0; q < NQ; q ++ )
   {
@@ -144,9 +147,9 @@ void BkwdFrwdTr( const LatticePropagator &             B,
   return;
 }
 
-//#####################################################################################
-// accumulate link operators
-//#####################################################################################
+//###################################################################################//
+// accumulate link operators                                                         //
+//###################################################################################//
 
 void AddLinks( const multi1d< LatticePropagator > &  B,
                const LatticePropagator &             F,
@@ -253,9 +256,9 @@ void AddLinks( const multi1d< LatticePropagator > &  B,
   return;
 }
 
-//#####################################################################################
-// construct building blocks
-//#####################################################################################
+//###################################################################################//
+// construct building blocks                                                         //
+//###################################################################################//
 
 void BuildingBlocks( const multi1d< LatticePropagator > &  B,
                      const LatticePropagator &             F,
@@ -267,9 +270,9 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
                      const int T1,
                      const int T2 )
 {
-  //###################################################################################
-  // open building blocks data files
-  //###################################################################################
+  //#################################################################################//
+  // open building blocks data files                                                 //
+  //#################################################################################//
 
   const int NF = B.size();
   const int NQ = Phases.numMom();
@@ -283,9 +286,9 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
   }
   }
 
-  //###################################################################################
-  // calculate building blocks
-  //###################################################################################
+  //#################################################################################//
+  // calculate building blocks                                                       //
+  //#################################################################################//
 
   const unsigned short int NLinks = 0;
   multi1d< unsigned short int > LinkDirs( 0 );
@@ -297,9 +300,9 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
 
   AddLinks( B, F, U, Phases, LinkDirs, MaxNLinks, LinkPattern, 0, -1, BinaryWriters, T1, T2 );
 
-  //###################################################################################
-  // add footer and close files
-  //###################################################################################
+  //#################################################################################//
+  // add footer and close files                                                      //
+  //#################################################################################//
 
   const unsigned short int Id = 0;  // indicates building blocks
   const unsigned short int Version = 1;  // building blocks version
@@ -372,10 +375,10 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
   return;
 }
 
-//#####################################################################################
-//#####################################################################################
+//###################################################################################//
+//###################################################################################//
 
 #undef _DEBUG_BB_C_
 
-//#####################################################################################
-//#####################################################################################
+//###################################################################################//
+//###################################################################################//
