@@ -136,4 +136,5 @@ AC_CONFIG_FILES(lib/Makefile)
 AC_CONFIG_FILES(mainprogs/Makefile)
 AC_CONFIG_FILES(mainprogs/tests/Makefile)
 AC_CONFIG_FILES(mainprogs/main/Makefile)
+AC_CONFIG_FILES(docs/Makefile)
 AC_OUTPUT
