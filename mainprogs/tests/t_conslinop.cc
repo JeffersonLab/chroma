@@ -1,4 +1,4 @@
-// $Id: t_conslinop.cc,v 1.13 2003-11-20 05:43:41 edwards Exp $
+// $Id: t_conslinop.cc,v 1.14 2003-12-06 22:13:10 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -56,7 +56,8 @@ int main(int argc, char *argv[])
   QDPIO::cout << "after wilson call" << endl;
   
   UnprecWilsonFermAct S(Mass);
-  const LinearOperator<LatticeFermion>* A = S.linOp(u);
+  const ConnectStateProxy state(S.createState(u));
+  const LinearOperatorProxy<LatticeFermion> A(S.linOp(state));
 
   LatticeFermion   tmp;
   D(tmp, psi, PLUS);
@@ -68,8 +69,6 @@ int main(int argc, char *argv[])
   Write(nml,np);
   Write(nml,nm);
   pop(nml);
-
-  delete A;
 
   // Time to bolt
   QDP_finalize();
