@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_fermact_base_array_w.cc,v 1.4 2003-11-20 05:43:41 edwards Exp $
+// $Id: unprec_dwf_fermact_base_array_w.cc,v 1.5 2003-11-23 05:57:30 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned domain-wall-like fermion actions
  */
@@ -108,36 +108,5 @@ UnprecDWFermActBaseArray::qprop(LatticeFermion& psi,
   delete A;
 
   END_CODE("UnprecDWTypeFermActBaseArray::qprop");
-}
-
-
-//! Computes the derivative of the fermionic action respect to the link field
-/*!
- *         |  dS      dS_f
- * ds_u -- | ----   + -----   ( Write )
- *         |  dU       dU
- *
- * psi -- [1./(M_dag*M)]*chi_  ( read ) 
- *
- * \param u        gauge field ( Read )
- * \param psi      solution to linear system ( Read )
- */
-
-void
-UnprecDWFermActBaseArray::dsdu(multi1d<LatticeColorMatrix>& ds_u,
-			       const multi1d<LatticeColorMatrix>& u, 
-			       const multi1d<LatticeFermion>& psi) const
-{
-//  multi1d<LatticeColorMatrix> ds_u(Nd);
-
-  START_CODE("UnprecDWFermActBaseArray::dsdu");
-
-  // hack
-  ds_u = 0;
-
-  QDPIO::cerr << "UnprecDWFermActBaseArray::dsdu not implemented" << endl;
-  QDP_abort(1);
-
-  END_CODE("UnprecDWFermActBaseArray::dsdu");
 }
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_fermact_base_array_w.h,v 1.3 2003-11-20 05:43:41 edwards Exp $
+// $Id: unprec_dwf_fermact_base_array_w.h,v 1.4 2003-11-23 05:57:30 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned domain-wall-like fermion actions
  */
@@ -7,7 +7,7 @@
 #ifndef __unprec_dwf_fermact_base_array_w_h__
 #define __unprec_dwf_fermact_base_array_w_h__
 
-#include "fermact_array.h"
+#include "fermact.h"
 
 using namespace QDP;
 
@@ -18,7 +18,7 @@ using namespace QDP;
  * are specified in Phys.Rev.D63:094505,2001 (hep-lat/0005002).
  */
 
-class UnprecDWFermActBaseArray : public UnprecWilsonTypeFermActArray<LatticeFermion>
+class UnprecDWFermActBaseArray : public UnprecWilsonTypeFermAct< multi1d<LatticeFermion> >
 {
 public:
   //! Return the quark mass
@@ -34,11 +34,6 @@ public:
 	     enum InvType invType,
 	     const Real& RsdCG, 
 	     int MaxCG, int& ncg_had) const;
-
-  //! Compute dS_f/dU
-  void dsdu(multi1d<LatticeColorMatrix>& result,
-	    const multi1d<LatticeColorMatrix>& u,
-	    const multi1d<LatticeFermion>& psi) const;
 };
 
 #endif
