@@ -1,3 +1,8 @@
+11/14/2003 -- Robert Edwards
+
+	Version 1.1.0. Added array versions of fermacts. Now have functioning
+        unprecondition DWF operator.
+
 10/09/2003 -- Robert Edwards
 
 	Version 1.0.1. Changed all cout/cerr/QDP_info to use QDPIO::cout/cerr.
