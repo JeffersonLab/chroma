@@ -1,4 +1,4 @@
-// $Id: bar3ptfn.cc,v 1.28 2004-02-23 03:13:58 edwards Exp $
+// $Id: bar3ptfn.cc,v 1.29 2004-04-02 22:14:34 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions
  *
@@ -267,7 +267,6 @@ main(int argc, char *argv[])
     readQprop(prop_file_xml, 
 	      prop_record_xml, quark_propagator,
 	      input.prop.prop_file, QDPIO_SERIAL);
-    QDPIO::cout << "Forward propagator successfully read" << endl;
    
     // Try to invert this record XML into a ChromaProp struct
     // Also pull out the id of this source
@@ -282,6 +281,7 @@ main(int argc, char *argv[])
       throw;
     }
   }
+  QDPIO::cout << "Forward propagator successfully read" << endl;
 
   // Derived from input prop
   int  j_decay = source_header.j_decay;
@@ -356,6 +356,7 @@ main(int argc, char *argv[])
 	throw;
       }
     }
+    QDPIO::cout << "Sequential propagator successfully read" << endl;
 
     // Save seqprop input
     write(xml_seq_src, "SequentialProp", seqprop_header);
