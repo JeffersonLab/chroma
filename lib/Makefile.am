@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.216 2005-01-06 11:21:30 bjoo Exp $
+# $Id: Makefile.am,v 1.217 2005-01-06 16:50:35 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -133,7 +133,7 @@ nobase_include_HEADERS = \
 	update/molecdyn/unprec_two_flavor_wilson5d_monomial_w.h \
 	update/molecdyn/prec_two_flavor_wilson5d_monomial_w.h \
 	update/molecdyn/global_metropolis_accrej.h
-	
+
 nodist_include_HEADERS=chroma_config_internal.h
 
 # Wilson specific headers
@@ -256,6 +256,7 @@ nobase_include_HEADERS += \
 	meas/hadron/scalar_loops_s.h \
 	meas/hadron/pseudoscalar_loops_s.h \
 	meas/hadron/stag_scalars_s.h meas/sources/sources_s.h \
+	meas/hadron/pion_sing_s.h \
 	meas/hadron/stag_propShift_s.h \
 	meas/hadron/vector_meson_s.h \
 	util/ferm/ferm_s.h \
@@ -499,6 +500,7 @@ libchroma_a_SOURCES += \
 	meas/hadron/stag_propShift_s.cc meas/hadron/stag_scalars_s.cc \
 	meas/hadron/vector_meson_s.cc meas/hadron/walfil_s.cc \
 	util/gauge/stag_phases_s.cc\
+	meas/hadron/pion_sing_s.cc \
         meas/hadron/scalar_loops_s.cc\
         meas/hadron/pseudoscalar_loops_s.cc 
 
