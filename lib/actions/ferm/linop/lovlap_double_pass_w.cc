@@ -1,4 +1,4 @@
-// $Id: lovlap_double_pass_w.cc,v 1.1 2004-05-03 11:21:43 bjoo Exp $
+// $Id: lovlap_double_pass_w.cc,v 1.2 2004-05-03 18:03:43 bjoo Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -85,8 +85,14 @@ void lovlap_double_pass::operator() (LatticeFermion& chi, const LatticeFermion& 
   tmp1 = Gamma(G5) * tmp2;
   
  
+  // Effectively the multi mass solve is on tmp1 
+  // *******************************************************************
+  // Solve  (MdagM + rootQ_n) chi_n = H * tmp1
 
   Double c = norm2(tmp1);
+  Double rsd_sq = c * RsdCG*RsdCG; // || tmp 1 ||^2 * epsilon^2
+  Double cp;
+  Double d; // InnerProduct
 
   /* If exactly 0 norm, then solution must be 0 (for pos. def. operator) */
   if (toBool(c == 0))
@@ -96,41 +102,15 @@ void lovlap_double_pass::operator() (LatticeFermion& chi, const LatticeFermion& 
   }
 
 
-  // *******************************************************************
-  // Solve  (MdagM + rootQ_n) chi_n = H * tmp1
   LatticeFermion Ap;
   LatticeFermion r;
-  multi1d<LatticeFermion> p(numroot);
+  LatticeFermion p;
 
-  Real a;              // Alpha for unshifted (isz) system
-  Real as;             // alpha for current shifted system
-  Real b;              // Beta for unshifted system
-  Real bp;             // Beta previous for unshifted system
+  Double a[MaxCG+1];              // Alpha for unshifted (isz) system
+  Double b[MaxCG+1];              // Beta for unshifted system
 
-  Double ztmp;           // Assorted reals (shifted residues)
-  Double cp;
-  Double d;
-  Real z0;                    // temporary value for zeta previous
-  Real z1;                    // temporary value for zeta current
-
-  multi1d<Real> bs(numroot);  // beta for shifted system
-  multi2d<Real> z(2,numroot); // zeta for shifted system
-
-  Double chi_sq_new;              // sgn() convergence criterion
-  Double chi_sq_diff;
-  multi1d<bool> convsP(numroot);  // convergence mask for shifted system
-  bool convP;                     // overall convergence mask
-  
-  int iz;                     //  Temporary index for getting at 
-                              //  zeta values in z array 
-
-  int s;                      // Counter for loops over shifts
-
-    
-  Real rsdcg_sq = RsdCG * RsdCG;   // Target residuum squared
-  Real rsd_sq = c * rsdcg_sq;      // Used for relative residue comparisons
-                                   // r_t^2 * || r ||^2
-
+  bool convP;
+  int  iters_taken;
 
   // By default, rootQ(isz) is considered the smallest shift 
   int isz = numroot-1;             // isz identifies system with smalles shift
@@ -158,40 +138,30 @@ void lovlap_double_pass::operator() (LatticeFermion& chi, const LatticeFermion& 
 
   // r[0] := p[0] := tmp1 
   r = tmp1;
+  p = tmp1;
 
-  // Initialise search vectors for shifted systems
-  for(s = 0; s < numroot; ++s){
-    p[s] = tmp1;
-  }
 
-  // Set convergence masks to false
-  convsP = false;
+  cp = 0;
   convP = false;
 
   
-  iz = 1;  // z_index  z[ iz , s ] holds zeta(s)
-           //          z[ 1-iz, s ] holds zeta_minus(s)
+  Double alpha_minus_one=1;
+  b[0] = 0;         // b[0] -- do we ever use ?
+  
 
-  z = 1;   // This fills both zeta and zeta_minus
-
-  a = 0;   // Alpha for unshifted
-  b = 1;   // beta for unshifted 
 
   int k;
+  Double c_iter[MaxCG+1];
+
   // Do the iterations proper 
-  for(k = 0; k <= MaxCG && ! convP ; ++k) {
+  // first pass
+  for(k = 0; k < MaxCG && ! convP ; ++k) {
 
-    //  Unshifted beta value: b[k] -- k is iteration index
-    //  b[k] := | r[k] |**2 / < p[k], Ap[k] > ; 
-    //  First compute  d  =  < p, A.p >  
-    //  Ap = A . p 
+    // Keep hold of the residuum
+    c_iter[k] = c;
 
-    // This bit computes 
-    // Ap = [  M^dag M + rootQ(isz)  ] p_isz
-    
-
-    (*MdagM)(Ap, p[isz], PLUS);
-    Ap += p[isz] * rootQ[isz];
+    (*MdagM)(Ap, p, PLUS);
+    Ap += p * rootQ[isz];
 
     // Project out eigenvectors
     if (k % ReorthFreq == 0) {
@@ -199,220 +169,136 @@ void lovlap_double_pass::operator() (LatticeFermion& chi, const LatticeFermion& 
     }
 
     //  d =  < p, A.p >
-    d = innerProductReal(p[isz], Ap);                       // 2 Nc Ns  flops 
-    
-    bp = b;                        // Store previous unshifted beta
-    b = -Real(c/d);                // New unshifted beta
-
-    // Compute the shifted bs and z 
-    bs[isz] = b;
-
-    // iz now points to previous z's
-    iz = 1 - iz;
-    
-    // Compute new shifted beta and zeta values
-    // as per Beat Jegerlehner's paper: hep-lat/9612014
-    // eqns 2.42, 2.44 on page 7
-    for(s = 0; s < numroot; s++)
-    {
-
-      // Do this to avoid mitsmp compiler bug !!
-      z0 = z[1-iz][s];  // The current z for the system under considerstion
-      z1 = z[iz][s] ;   // The previous z for the system under consideration
-  
-      // We only compute beta and z factors if
-      //   i) The system is not yet converged
-      //   ii) The system is shifted
-      if (s != isz &&  !convsP[s]) {
-
-
-	// We write the new z-s in the place of the previous ones. 
-	// Our ones will become previous next time around
-	z[iz][s]  = z0*z1*bp ; 
-	z[iz][s] /=  b*a*(z1 - z0) + z1*bp*(1 - (rootQ[s] - rootQ[isz])*b);
-	bs[s] = b * z[iz][s] / z0;
-
-      }
-    }
+    d = innerProductReal(p, Ap);                       // 2 Nc Ns  flops 
     
 
-    // New residual of system with smallest shift
-    // r[k+1] += b[k] A . p[k] ; 
-    r += b * Ap;	        // 2 Nc Ns  flops 
-
+    // k+1 because a[0] corresponds to a_{-1}
+    a[k] = c/d;
+    r -= Real(a[k])*Ap;
 
     // Project out eigenvectors 
     if (k % ReorthFreq == 0) {
       GramSchm (r, EigVec, NEig);
     }
     
-    // Work out new iterate for sgn(H).
-    //
-    // This in effect updates all x vectors and performs
-    // immediately the linear sum.
-    // However, the x's are never explicitly computed. Rather
-    // the changes they would get get rolled onto the chi immediately
-    //
-    //  chi[k+1] -= sum_{shifts} resP_{shift} b_{shift}[k] p_{shift}[k] ; 
-    //
-    // since we are doing the linear combinations we multiply in the 
-    // constant in the numerator too.
+    cp = c;
+    c = norm2(r);
 
-    // smallest shift first
-    Real(rtmp);
-    rtmp = resP[isz] * b;      
-    tmp1 = p[isz] * rtmp;	// 2 Nc Ns  flops 
+    b[k+1] = c/cp;
 
-    // Now the other shifts. 
-    // Converged systems haven' changed, so we only add results
-    // from the unconverged systems
-    for(s = 0; s < numroot; ++s) {
-      if(s != isz  &&  !convsP[s]) {
+    p = r + Real(b[k+1])*p;
+ 
+    convP = toBool( c < rsd_sq );
+  }
 
-	rtmp = bs[s] * resP[s];
-	tmp1 += p[s] * rtmp;	// 2 Nc Ns  flops
+
+  int niters = k;
+
+  // OK First pass done. I now need to compute gamma_j and c_j
+  multi2d<Double> gamma(niters+1,numroot);
+  for(int s = 0; s < numroot; s++) { 
+    gamma[0][s] = 1;                     // Really gamma_0
+  }
+  
+  for(int j=0; j < niters; j++) {
+    for(int s =0; s < numroot; s++) {
+
+      if( s != isz ) { 
+	Double a_minus;
+
+	if( j == 0 ) { 
+	  // alpha_minus_one -- no need to store. Only need alpha_0,...
+	  // in second pass
+	  a_minus = alpha_minus_one;
+	}
+	else {
+	  a_minus = a[j-1];
+	}
+
+	Double ga = gamma[j][s];
+	Double ga_minus;
+	if( j == 0 ) { 
+	  // gamma[-1][s] -- no need to store. Only need gamma[0][s]...
+	  // in second pass
+	  ga_minus =1;
+	}
+	else{ 
+	  ga_minus = gamma[j-1][s];
+	}
+
+	Double tmp_num = ga*ga_minus*a_minus;
+	Double tmp_den = ga_minus*a_minus*(Double(1) + a[j]*(rootQ[s] - rootQ[isz]));
+        tmp_den += a[j]*b[j]*(ga_minus - ga);
+
+	gamma[j+1][s] = tmp_num/tmp_den;
+ 
       }
     }
 
-    // Now update the sgn(H) with the above accumulated linear sum
-    chi -= tmp1;                   // 2 Nc Ns  flops
+  } 
 
-    // Store in cp the previous value of c
-    // cp  =  | r[k] |**2 
-    cp = c;
+  multi1d<Double> sumC(niters+1);
 
-    // And compute the current norm of r into the (now saved) c
-    //  c  =  | r[k] |**2 
-    c = norm2(r);	                // 2 Nc Ns  flops
+  for(int j=0; j<=niters; j++) { 
 
-    // Work out the alpha factor for the system with smallest shift.
-    //  a[k+1] := |r[k]|**2 / |r[k-1]|**2 ; 
-    a = Real(c/cp);
+    sumC[j] = 0;
 
-    // Now update search vectors p_{shift}[k]
-    // the system with smallest shift gets updated as
-    //
-    //  p[k+1] := r[k+1] + a[k+1] p[k];
+    for(int m=0; m <= niters-j; m++) { 
+      
+      Double qsum=resP[isz];
 
-    // The updated systems get updated as
-    //  
-    //  ps[k+1] := zs[k+1] r[k+1] + as[k+1] ps[k]; 
-    //
-    // where the as[]-s are the shifted versions of alpha. 
-    // we must first computed these as per Beat's paper hep-lat/9612014
-    // eq 2.43 on page 7.
-    // 
-    // As usual we only update the unconverged systems
-    for(s = 0; s < numroot; ++s)
-    {
+      for(int s =0; s < numroot; s++) { 
 
-      if (s == isz) {
-	// Smallest shift 	  
-	// p[k+1] = r[k+1] + a[k+1] p[k]
-	// 
-	// k is iteration index
-	p[s] *= a;	        // Nc Ns  flops 
-	p[s] += r;		// Nc Ns  flops 
-      }
-      else {
-	if (! convsP[s]) {
-	  // Unshifted systems
-	  // First compute shifted alpha
-	  as = a * z[iz][s]*bs[s] / (z[1-iz][s]*b);
+	if( s != isz ) { 
 	  
-	  // Then update
-	  //    ps[k+1] := zs[k+1] r[k+1] + as[k+1] ps[k]; 
-	  //
-	  // k is iteration index
-	  p[s] *= as;	        // Nc Ns  flops 
-	  p[s] += r * z[iz][s];	// Nc Ns  flops 
+	  qsum += resP[s]*gamma[m+j+1][s]*gamma[m+j][s]/gamma[j][s];
 	  
 	}
       }
-    }
 
-#if 0
-    // Project out eigenvectors 
-    if (k % ReorthFreq == 0)
-      GramSchm (p, numroot, EigVec, NEig);
-#endif
-    
-    // Convergence tests start here.
-    //
-    // These are two steps:
-    //
-    // i) Check that the shifted vectors have converged 
-    //    by checking their accumulated residues
-    //
-    // ii) Check that the sign function itself has converged
-    //
-    // 
-    // We set the global convergence flag to true, and then if 
-    // any vectors are unconverged this will flip the global flag back
-    // to false
-    convP = true;                          // Assume convergence and prove
-                                           // otherwise
-
-    for(s = 0; s < numroot; ++s) {
-
-      // Only deal with unconverged systems
-      if (! convsP[s]) {
-	
-	// Compute the shifted residuum squared
-	//
-	//  r_{shift} = || r || * zeta(shift)
-	//
-	//  hence || r_shift ||^2 = || r ||^2 * zeta_shift^2
-	//
-	// || r^2 || is already computed in c
-	//
-	// Store  || r_shift ||^2 in ztmp
-        ztmp = Real(c) * z[iz][s]*z[iz][s];	
-
-	// Check ztmp is smaller than the target residuum
-	bool btmp = toBool(ztmp < rsd_sq);
-	convP = convP & btmp;
-	convsP[s] = btmp;
-      }
-    }
-    
-
-    // Now check convergence of the sgn() itself.
-    // It was updated with 
-    //               sum resP(shift) beta(shift) p_shift
-    // and this quantity is still in tmp1.
-    //
-    // So norm tmp1 is like an abolute error in sgn() aka: Delta sgn()
-    //
-    // Here we ensure Delta sgn() < target r^2 || sgn H[k-1] ||
-    //
-    // ie that  the relative error in sgn() is smaller than the target.
-    // sgn H is kept in chi
-    //
-    // Only converge if chi is converged. If vectors converge first, then error
-    
-   
-    if (k > 0 &&  !convP) {
-
-      // Get target r^2 * || sgn (H) ||^2
-      chi_sq_new = rsdcg_sq * norm2(chi);
-
-      // Get || Delta sgn()
-      chi_sq_diff = norm2(tmp1);      // the diff of old and new soln
-
-      // Check convergence
-      bool btmp = toBool(chi_sq_diff < chi_sq_new);
-
-      // If we havent converged globally but the vectors have then error
-      if (! btmp && convP) {
-	QDP_error_exit("vectors converged but not final chi");
+          
+      Double delta_m = Double(1);
+      
+      if( m > 0 ) { 
+	for(int k=1; k <= m; k++) { 
+	  delta_m *= b[j+k];
+	}
       }
       
-      // cnvP = convP & btmp; 
-      convP = btmp;
+      sumC[j] += a[j+m]*delta_m*qsum;
     }
-    
   }
+    
+
+  // Second pass Lanczos
+
+  // Initialise r_0, p_0
+  r=tmp1;
+  p=tmp1;
+
+  for(k=0; k < niters;k++) { 
+    (*MdagM)(Ap, p, PLUS);
+    Ap += p * rootQ[isz];
+
+    // Project out eigenvectors
+    if (k % ReorthFreq == 0) {
+      GramSchm(Ap, EigVec, NEig);
+    }
+
+    // Update chi
+    chi += Real(sumC[k])*r;
+
+    // Update r
+    r -= Real(a[k])*Ap;
+
+    // Project out eigenvectors 
+    if (k % ReorthFreq == 0) {
+      GramSchm (r, EigVec, NEig);
+    }
+
+    p = r + Real(b[k+1])*p;
+  }
+
 
   QDPIO::cout << "Overlap Inner Solve (lovlap_double_pass): " << k << " iterations " << endl;
   // End of MULTI SHIFTERY 

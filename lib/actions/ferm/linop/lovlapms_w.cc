@@ -1,4 +1,4 @@
-// $Id: lovlapms_w.cc,v 1.13 2004-04-27 09:34:36 bjoo Exp $
+// $Id: lovlapms_w.cc,v 1.14 2004-05-03 18:03:43 bjoo Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -207,6 +207,7 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
     // Compute the shifted bs and z 
     bs[isz] = b;
 
+
     // iz now points to previous z's
     iz = 1 - iz;
     
@@ -219,22 +220,21 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
       // Do this to avoid mitsmp compiler bug !!
       z0 = z[1-iz][s];  // The current z for the system under considerstion
       z1 = z[iz][s] ;   // The previous z for the system under consideration
-  
+      
       // We only compute beta and z factors if
       //   i) The system is not yet converged
       //   ii) The system is shifted
       if (s != isz &&  !convsP[s]) {
-
-
+	  
 	// We write the new z-s in the place of the previous ones. 
 	// Our ones will become previous next time around
 	z[iz][s]  = z0*z1*bp ; 
 	z[iz][s] /=  b*a*(z1 - z0) + z1*bp*(1 - (rootQ[s] - rootQ[isz])*b);
 	bs[s] = b * z[iz][s] / z0;
-
+	
       }
     }
-    
+
 
     // New residual of system with smallest shift
     // r[k+1] += b[k] A . p[k] ; 
@@ -400,6 +400,9 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
       // Get || Delta sgn()
       chi_sq_diff = norm2(tmp1);      // the diff of old and new soln
 
+#if 0
+      QDPIO::cout << "Iter " << k << " || delta Sgn() || " << sqrt(chi_sq_diff) << endl;
+#endif 
       // Check convergence
       bool btmp = toBool(chi_sq_diff < chi_sq_new);
 

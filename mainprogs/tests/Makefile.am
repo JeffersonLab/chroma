@@ -45,7 +45,7 @@ check_PROGRAMS  = t_mesplq t_io t_mesons_w t_conslinop t_hypsmear \
 ## 'make t_dslashm' and 'make t_lwldslash' are still there for further
 ## development
 
-EXTRA_PROGRAMS  = t_dslashm t_lwldslash t_spprod t_lwldslash_sse t_follana_io_s t_formfac  t_follana_pion_s t_dwflinop t_precdwf t_ovlap_bj t_propagator_s t_propagator_w t_gfix t_ovlap5d_bj t_ritz t_ritz_KS t_ritz5d_KS  t_fermion_loop_w t_propagator_fuzz_s t_disc_loop_s t_ov_pbp t_lwldslash_pab t_propagator_nrqcd t_dwflocality t_invert3_precwilson t_invert4_precwilson t_read_eigen t_fuzwilp
+EXTRA_PROGRAMS  = t_dslashm t_lwldslash t_spprod t_lwldslash_sse t_follana_io_s t_formfac  t_follana_pion_s t_dwflinop t_precdwf t_ovlap_bj t_propagator_s t_propagator_w t_gfix t_ovlap5d_bj t_ritz t_ritz_KS t_ritz5d_KS  t_fermion_loop_w t_propagator_fuzz_s t_disc_loop_s t_ov_pbp t_lwldslash_pab t_propagator_nrqcd t_dwflocality t_invert3_precwilson t_invert4_precwilson t_read_eigen t_fuzwilp t_ovlap_double_pass
 
 
 ## DEPENDENCIES = build_chroma_libs
@@ -121,6 +121,9 @@ t_lwldslash_pab_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_ovlap_bj_SOURCES = t_ovlap_bj.cc
 t_ovlap_bj_DEPENDENCIES = build_chroma_libs rebuild_other_libs
+
+t_ovlap_double_pass_SOURCES = t_ovlap_double_pass.cc
+t_ovlap_double_pass_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_ovlap5d_bj_SOURCES = t_ovlap5d_bj.cc
 t_ovlap5d_bj_DEPENDENCIES = build_chroma_libs rebuild_other_libs
