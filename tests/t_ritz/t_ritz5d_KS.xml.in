@@ -13,12 +13,8 @@
 
   <!-- Start up config details -->
   <Cfg>
-     <!-- This will probably soon be standardised. 2 means from file  -->
-     <startType>2</startType>
-     <gaugeFilename>../test_purgaug.cfg1</gaugeFilename>
-
-     <!-- Format = 0 means SZIN format -->
-     <gaugeFileFormat>0</gaugeFileFormat>
+    <cfg_type>SZIN</cfg_type>
+    <cfg_file>../test_purgaug.cfg1</cfg_file>
   </Cfg>
   <quarkMass>0.1</quarkMass>
   <eig>
