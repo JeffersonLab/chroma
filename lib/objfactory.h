@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: objfactory.h,v 1.2 2004-09-08 02:45:51 edwards Exp $
+// $Id: objfactory.h,v 1.3 2004-09-18 17:12:22 edwards Exp $
 
 /*! @file
  * @brief Factory class for objects from XML input
@@ -33,6 +33,22 @@ namespace Chroma
       {
 	cerr << "Factory error: unknown identifier: id = " << id << endl;
 	throw Exception();
+      }
+  };
+
+////////////////////////////////////////////////////////////////////////////////
+// class template StringFactoryError
+// Manages the "Unknown Type" error in an object factory
+////////////////////////////////////////////////////////////////////////////////
+
+  template <typename IdentifierType, class AbstractProduct>
+  struct StringFactoryError
+  {
+    static AbstractProduct* OnUnknownType(const IdentifierType& id)
+      {
+	std::ostringstream os;
+	os << "Factory error: unknown identifier: id = " << id << endl;
+	throw os.str();
       }
   };
 
