@@ -1,4 +1,4 @@
-// $Id: seqprop_comp.cc,v 1.2 2004-04-26 11:19:13 bjoo Exp $
+// $Id: seqprop_comp.cc,v 1.3 2004-04-27 21:29:32 edwards Exp $
 /*! \file
  *  \brief Main code for sequential propagator generation
  */
@@ -24,7 +24,7 @@ struct Param_t
   InvertParam_t    invParam;
 
   bool             nonRelSeqProp;
-  multi1d<int>     Seq_src;    // integer array holding sequential source numbers
+  multi1d<SeqSourceType>     seq_src;    // integer array holding sequential source numbers
   multi1d<int>     sink_mom;
   int              t_sink;
 
@@ -104,16 +104,27 @@ void read(XMLReader& xml, const string& path, Param_t& param)
   int version;
   read(paramtop, "version", version);
 
+  int Seq_src;
   switch (version) 
   {
     /**************************************************************************/
   case 2:
     param.nonRelSeqProp = false;
+    read(paramtop, "Seq_src", Seq_src);
+    param.seq_src = SeqSourceType(Seq_src);
     break;
 
     /**************************************************************************/
   case 3:
     read(paramtop, "nonRelSeqProp", param.nonRelSeqProp);
+    read(paramtop, "Seq_src", Seq_src);
+    param.seq_src = SeqSourceType(Seq_src);
+    break;
+
+    /**************************************************************************/
+  case 4:
+    read(paramtop, "nonRelSeqProp", param.nonRelSeqProp);
+    read(paramtop, "seq_src", param.seq_src);
     break;
 
   default:
@@ -123,7 +134,6 @@ void read(XMLReader& xml, const string& path, Param_t& param)
     QDP_abort(1);
   }
 
-  read(paramtop, "Seq_src", param.Seq_src);
   read(paramtop, "InvertParam", param.invParam);
 
   read(paramtop, "t_sink", param.t_sink);
@@ -206,9 +216,9 @@ int main(int argc, char **argv)
   // Sanity checks
   QDPIO::cout << endl << "     Gauge group: SU(" << Nc << ")" << endl;
 
-  for(int seq_src_ctr = 0; seq_src_ctr < input.param.Seq_src.size(); seq_src_ctr++)
+  for(int seq_src_ctr = 0; seq_src_ctr < input.param.seq_src.size(); seq_src_ctr++)
     QDPIO::cout << "     Computing sequential source of type "
-		<< input.param.Seq_src[seq_src_ctr] << endl;
+		<< input.param.seq_src[seq_src_ctr] << endl;
   
   QDPIO::cout << "     Volume: " << input.param.nrow[0];
   for (int i=1; i<Nd; ++i) {
@@ -441,11 +451,11 @@ int main(int argc, char **argv)
   //
   // Loop over the sequential propagators
   //
-  XMLArrayWriter  xml_seq_src(xml_out, input.param.Seq_src.size());
+  XMLArrayWriter  xml_seq_src(xml_out, input.param.seq_src.size());
   push(xml_seq_src, "Sequential_source");
 
   int ncg_had = 0;			// Initialise iteration counter
-  for(int seq_src_ctr = 0; seq_src_ctr < input.param.Seq_src.size(); seq_src_ctr++)
+  for(int seq_src_ctr = 0; seq_src_ctr < input.param.seq_src.size(); seq_src_ctr++)
   {
     push(xml_seq_src);
     write(xml_seq_src, "seq_src_ctr", seq_src_ctr);
@@ -465,7 +475,7 @@ int main(int argc, char **argv)
      *
      */
 
-    int seq_src_value = input.param.Seq_src[seq_src_ctr]; /* Assign the particular 
+    int seq_src_value = input.param.seq_src[seq_src_ctr]; /* Assign the particular 
 							     source type */
 
 
@@ -651,7 +661,7 @@ int main(int argc, char **argv)
 	ChromaSeqProp_t seqprop_header;
 	seqprop_header.invParam = input.param.invParam;
 	seqprop_header.nonRelSeqProp  = input.param.nonRelSeqProp;
-	seqprop_header.Seq_src  = seq_src_value;
+	seqprop_header.seq_src  = SeqSourceType(seq_src_value);
 	seqprop_header.sink_mom = input.param.sink_mom;
 	seqprop_header.t_sink   = input.param.t_sink;
 	seqprop_header.nrow     = input.param.nrow;
