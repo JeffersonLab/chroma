@@ -1,34 +1,10 @@
-// $Id: invcg2_array.cc,v 1.5 2003-12-02 15:43:03 edwards Exp $
+// $Id: invcg2_array.cc,v 1.6 2003-12-15 21:57:42 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
 
 #include "chromabase.h"
 #include "actions/ferm/invert/invcg2_array.h"
-
-
-//---------------- HACK ----------------------------
-// WARNING - Inefficient; improve later - move into QDP
-#if 1
-namespace QDP {
-
-template<class T>
-inline typename UnaryReturn<OLattice<T>, FnNorm2>::Type_t
-norm2(const multi1d< OLattice<T> >& s1, const Subset& s)
-{
-  typename UnaryReturn<OLattice<T>, FnNorm2>::Type_t  d;
-
-  d = norm2(s1[0],s);
-  for(int n=1; n < s1.size(); ++n)
-    d += norm2(s1[n],s);
-
-  return d;
-}
-}
-#endif
-//---------------------------------------------------
-
-
 
 //! Conjugate-Gradient (CGNE) algorithm for a generic Linear Operator
 /*! \ingroup invert
