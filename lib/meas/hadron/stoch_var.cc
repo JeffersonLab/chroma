@@ -1,25 +1,33 @@
-/*! File: stoch_var.cc
+// -*- C++ -*-
+// $Id: stoch_var.cc,v 1.2 2004-04-05 19:28:57 edwards Exp $
+/*! \file
+ *  \brief Stochastic variable construction
+ *
+ */
+
+#include "chromabase.h"
+#include "meas/hadron/stoch_var.h"
+
+using namespace QDP;
+
+//! Stochastic variable construction
+/*!
+ * \ingroup hadron
  *
  * This routine averages timeslice sums of fermion disconnected loop 
  * operators over the number of stochastic sources.
  * It also calculates the standard deviation on the mean of the real
  * and imaginary parts of these operators.
- * 
- * Params:
  *
- *      ferm_loop_sum -- sum over stochastice samples of timeslice 
- *                       disconnected fermion loop operators
- *      ferm_loop     -- The timeslice operators for EACH stochastic sample
- *      sigma         -- standard deviation on the mean of the real part
- *                       of the operator
- *      im_sigma      -- same as above for imaginary part
- *      t_length      -- length of lattice in time dir
- *      Nsamp         -- Number of stochastic samples.
+ * \param ferm_loop_sum    sum over stochastice samples of timeslice 
+ *                         disconnected fermion loop operators
+ * \param ferm_loop        The timeslice operators for EACH stochastic sample
+ * \param sigma            standard deviation on the mean of the real part
+ *                         of the operator
+ * \param im_sigma         same as above for imaginary part
+ * \param t_length         length of lattice in time dir
+ * \param Nsamp            Number of stochastic samples.
  */
-
-#include "chroma.h"
-
-using namespace QDP;
 
 void 
 stoch_var(multi1d<DComplex>& ferm_loop_sum, multi2d<DComplex>& ferm_loop, 
