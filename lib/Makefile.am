@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.203 2004-12-12 21:15:23 edwards Exp $
+# $Id: Makefile.am,v 1.204 2004-12-20 03:56:46 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -170,6 +170,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/lg5eps_w.h \
 	actions/ferm/linop/lg5eps_double_pass_w.h \
 	actions/ferm/linop/lDeltaLs_w.h \
+	actions/ferm/linop/lwldslash_base_w.h \
 	actions/ferm/linop/lwldslash_w.h \
 	actions/ferm/linop/overlapbu_linop_w.h \
 	actions/ferm/linop/prec_dwf_linop_base_array_w.h \
@@ -377,6 +378,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/linop/lovddag_double_pass_w.cc \
 	actions/ferm/linop/lovddag_w.cc actions/ferm/linop/lovlapms_w.cc \
 	actions/ferm/linop/lovlap_double_pass_w.cc \
+	actions/ferm/linop/lwldslash_base_w.cc \
 	actions/ferm/linop/lwldslash_w.cc \
 	actions/ferm/linop/overlapbu_linop_w.cc \
 	actions/ferm/linop/prec_dwf_linop_array_w.cc \
