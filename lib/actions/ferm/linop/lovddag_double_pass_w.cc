@@ -1,4 +1,4 @@
-// $Id: lovddag_double_pass_w.cc,v 1.6 2004-07-08 01:16:44 edwards Exp $
+// $Id: lovddag_double_pass_w.cc,v 1.7 2004-07-08 01:17:35 edwards Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -198,8 +198,8 @@ void lovddag_double_pass::operator() (LatticeFermion& chi,
   LatticeFermion r;
   LatticeFermion p;
 
-  multi1d<Double> a[MaxCG+1];              // Alpha for unshifted (isz) system
-  multi1d<Double> b[MaxCG+1];              // Beta for unshifted system
+  multi1d<Double> a(MaxCG+1);              // Alpha for unshifted (isz) system
+  multi1d<Double> b(MaxCG+1);              // Beta for unshifted system
 
   bool convP;
   int  iters_taken;
