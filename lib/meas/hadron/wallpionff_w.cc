@@ -1,4 +1,4 @@
-// $Id: wallpionff_w.cc,v 1.2 2004-01-13 03:57:54 edwards Exp $
+// $Id: wallpionff_w.cc,v 1.3 2004-01-22 22:51:08 edwards Exp $
 /*! \file
  *  \brief Wall-sink pion form-factors 
  *
@@ -36,7 +36,7 @@ void wallPionFormFac(XMLWriter& xml,
   // Length of lattice in j_decay direction and 3pt correlations fcns
   int length = phases.numSubsets();
 
-  int G5 = Ns*Ns-1;
+  const int G5 = Ns*Ns-1;
   
   // Project propagator onto zero momentum: Do a slice-wise sum.
   Propagator q_x2 = sum(forw_prop, phases.getSubset()[t_sink]);
@@ -55,7 +55,7 @@ void wallPionFormFac(XMLWriter& xml,
 
     // The local non-conserved vector-current matrix element 
     LatticeComplex corr_local_fn =
-      trace(back_prop*Gamma(G5)*q_x2*adj(forw_prop)*Gamma(15)*Gamma(gamma_value));
+      trace(back_prop*Gamma(G5)*q_x2*adj(forw_prop)*Gamma(G5)*Gamma(gamma_value));
 
     multi2d<DComplex> hsum;
 //    multi2d<DComplex> hsum_nonlocal;
@@ -73,8 +73,8 @@ void wallPionFormFac(XMLWriter& xml,
 
 //      form.formFac[gamma_value].momenta[inser_mom_num].inser_mom = phases.numToMom(inser_mom_num);
 
-      multi1d<Complex> local_cur3ptfn(length); // always compute
-//      multi1d<Complex> nonlocal_cur3ptfn;
+      multi1d<Real> local_cur3ptfn(length); // always compute
+//      multi1d<Real> nonlocal_cur3ptfn;
 //      if (compute_nonlocal)
 //	nonlocal_cur3ptfn.resize(length);      // possibly compute
 
@@ -82,9 +82,9 @@ void wallPionFormFac(XMLWriter& xml,
       {
         int t_eff = (t - t0 + length) % length;
 
-        local_cur3ptfn[t_eff] = Complex(hsum[inser_mom_num][t]);
+        local_cur3ptfn[t_eff] = real(hsum[inser_mom_num][t]);
 //        if (compute_nonlocal)
-//          nonlocal_cur3ptfn[t_eff] = 0.5 * Complex(hsum_nonlocal[inser_mom_num][t]);
+//          nonlocal_cur3ptfn[t_eff] = 0.5 * real(hsum_nonlocal[inser_mom_num][t]);
 
       } // end for(t)
 
