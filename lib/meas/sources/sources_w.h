@@ -3,10 +3,10 @@
  *  P-wave, D-wave etc
  */
 
-#ifndef __sources_h__
-#define __sources_h__
+#ifndef __sources_w_h__
+#define __sources_w_h__
 
-#include "p_src.h"
-#include "d_src.h"
+#include "p_src_w.h"
+#include "d_src_w.h"
 
 #endif

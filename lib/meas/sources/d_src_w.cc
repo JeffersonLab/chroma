@@ -1,4 +1,4 @@
-// $Id: d_src.cc,v 1.1 2003-06-19 17:46:00 ikuro Exp $
+// $Id: d_src_w.cc,v 1.1 2003-08-19 17:19:36 bjoo Exp $
 
 #include "chromabase.h"
 #include "meas/sources/p_src.h"
