@@ -167,7 +167,7 @@ check_PROGRAMS = t_mesplq t_io t_mesons_w t_conslinop t_hypsmear \
                   t_overbu t_ape_smear t_precact
 
 
-EXTRA_PROGRAMS = t_dslashm t_lwldslash t_spprod t_lwldslash_sse t_follana_io_s t_formfac  t_follana_pion_s t_dwflinop t_precdwf t_ovlap_bj t_propagator_s t_propagator_w t_gfix t_ovlap5d_bj t_ritz t_ritz_KS t_ritz5d_KS  t_fermion_loop_w t_propagator_fuzz_s t_disc_loop_s t_ov_pbp t_lwldslash_pab t_propagator_nrqcd t_dwflocality t_invert3_precwilson t_invert4_precwilson
+EXTRA_PROGRAMS = t_dslashm t_lwldslash t_spprod t_lwldslash_sse t_follana_io_s t_formfac  t_follana_pion_s t_dwflinop t_precdwf t_ovlap_bj t_propagator_s t_propagator_w t_gfix t_ovlap5d_bj t_ritz t_ritz_KS t_ritz5d_KS  t_fermion_loop_w t_propagator_fuzz_s t_disc_loop_s t_ov_pbp t_lwldslash_pab t_propagator_nrqcd t_dwflocality t_invert3_precwilson t_invert4_precwilson t_read_eigen
 
 
 #
@@ -274,6 +274,9 @@ t_invert3_precwilson_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_invert4_precwilson_SOURCES = t_invert4_precwilson.cc invcg2_timing_hacks_2.h invcg2_timing_hacks_2.cc invcg2_prec_wilson.h invcg2_prec_wilson.cc
 t_invert4_precwilson_DEPENDENCIES = build_chroma_libs rebuild_other_libs
+
+t_read_eigen_SOURCES = t_read_eigen.cc
+t_read_eigen_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 subdir = mainprogs/tests
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
 CONFIG_CLEAN_FILES =
@@ -288,7 +291,7 @@ EXTRA_PROGRAMS = t_dslashm$(EXEEXT) t_lwldslash$(EXEEXT) \
 	t_disc_loop_s$(EXEEXT) t_ov_pbp$(EXEEXT) \
 	t_lwldslash_pab$(EXEEXT) t_propagator_nrqcd$(EXEEXT) \
 	t_dwflocality$(EXEEXT) t_invert3_precwilson$(EXEEXT) \
-	t_invert4_precwilson$(EXEEXT)
+	t_invert4_precwilson$(EXEEXT) t_read_eigen$(EXEEXT)
 check_PROGRAMS = t_mesplq$(EXEEXT) t_io$(EXEEXT) t_mesons_w$(EXEEXT) \
 	t_conslinop$(EXEEXT) t_hypsmear$(EXEEXT) t_overbu$(EXEEXT) \
 	t_ape_smear$(EXEEXT) t_precact$(EXEEXT)
@@ -413,6 +416,10 @@ am_t_propagator_w_OBJECTS = t_propagator_w.$(OBJEXT)
 t_propagator_w_OBJECTS = $(am_t_propagator_w_OBJECTS)
 t_propagator_w_LDADD = $(LDADD)
 t_propagator_w_LDFLAGS =
+am_t_read_eigen_OBJECTS = t_read_eigen.$(OBJEXT)
+t_read_eigen_OBJECTS = $(am_t_read_eigen_OBJECTS)
+t_read_eigen_LDADD = $(LDADD)
+t_read_eigen_LDFLAGS =
 am_t_ritz_OBJECTS = t_ritz.$(OBJEXT)
 t_ritz_OBJECTS = $(am_t_ritz_OBJECTS)
 t_ritz_LDADD = $(LDADD)
@@ -458,7 +465,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/t_propagator_fuzz_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_propagator_nrqcd.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_propagator_s.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_propagator_w.Po ./$(DEPDIR)/t_ritz.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_propagator_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_read_eigen.Po ./$(DEPDIR)/t_ritz.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_ritz5d_KS.Po ./$(DEPDIR)/t_ritz_KS.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_spprod.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
@@ -484,10 +492,10 @@ DIST_SOURCES = $(t_ape_smear_SOURCES) $(t_conslinop_SOURCES) \
 	$(t_ovlap_bj_SOURCES) $(t_precact_SOURCES) $(t_precdwf_SOURCES) \
 	$(t_propagator_fuzz_s_SOURCES) $(t_propagator_nrqcd_SOURCES) \
 	$(t_propagator_s_SOURCES) $(t_propagator_w_SOURCES) \
-	$(t_ritz_SOURCES) $(t_ritz5d_KS_SOURCES) $(t_ritz_KS_SOURCES) \
-	$(t_spprod_SOURCES)
+	$(t_read_eigen_SOURCES) $(t_ritz_SOURCES) \
+	$(t_ritz5d_KS_SOURCES) $(t_ritz_KS_SOURCES) $(t_spprod_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(t_ape_smear_SOURCES) $(t_conslinop_SOURCES) $(t_disc_loop_s_SOURCES) $(t_dslashm_SOURCES) $(t_dwflinop_SOURCES) $(t_dwflocality_SOURCES) $(t_fermion_loop_w_SOURCES) $(t_follana_io_s_SOURCES) $(t_follana_pion_s_SOURCES) $(t_formfac_SOURCES) $(t_gfix_SOURCES) $(t_hypsmear_SOURCES) $(t_invert3_precwilson_SOURCES) $(t_invert4_precwilson_SOURCES) $(t_io_SOURCES) $(t_lwldslash_SOURCES) $(t_lwldslash_pab_SOURCES) $(t_lwldslash_sse_SOURCES) $(t_mesons_w_SOURCES) $(t_mesplq_SOURCES) $(t_ov_pbp_SOURCES) $(t_overbu_SOURCES) $(t_ovlap5d_bj_SOURCES) $(t_ovlap_bj_SOURCES) $(t_precact_SOURCES) $(t_precdwf_SOURCES) $(t_propagator_fuzz_s_SOURCES) $(t_propagator_nrqcd_SOURCES) $(t_propagator_s_SOURCES) $(t_propagator_w_SOURCES) $(t_ritz_SOURCES) $(t_ritz5d_KS_SOURCES) $(t_ritz_KS_SOURCES) $(t_spprod_SOURCES)
+SOURCES = $(t_ape_smear_SOURCES) $(t_conslinop_SOURCES) $(t_disc_loop_s_SOURCES) $(t_dslashm_SOURCES) $(t_dwflinop_SOURCES) $(t_dwflocality_SOURCES) $(t_fermion_loop_w_SOURCES) $(t_follana_io_s_SOURCES) $(t_follana_pion_s_SOURCES) $(t_formfac_SOURCES) $(t_gfix_SOURCES) $(t_hypsmear_SOURCES) $(t_invert3_precwilson_SOURCES) $(t_invert4_precwilson_SOURCES) $(t_io_SOURCES) $(t_lwldslash_SOURCES) $(t_lwldslash_pab_SOURCES) $(t_lwldslash_sse_SOURCES) $(t_mesons_w_SOURCES) $(t_mesplq_SOURCES) $(t_ov_pbp_SOURCES) $(t_overbu_SOURCES) $(t_ovlap5d_bj_SOURCES) $(t_ovlap_bj_SOURCES) $(t_precact_SOURCES) $(t_precdwf_SOURCES) $(t_propagator_fuzz_s_SOURCES) $(t_propagator_nrqcd_SOURCES) $(t_propagator_s_SOURCES) $(t_propagator_w_SOURCES) $(t_read_eigen_SOURCES) $(t_ritz_SOURCES) $(t_ritz5d_KS_SOURCES) $(t_ritz_KS_SOURCES) $(t_spprod_SOURCES)
 
 all: all-am
 
@@ -591,6 +599,9 @@ t_propagator_s$(EXEEXT): $(t_propagator_s_OBJECTS) $(t_propagator_s_DEPENDENCIES
 t_propagator_w$(EXEEXT): $(t_propagator_w_OBJECTS) $(t_propagator_w_DEPENDENCIES) 
 	@rm -f t_propagator_w$(EXEEXT)
 	$(CXXLINK) $(t_propagator_w_LDFLAGS) $(t_propagator_w_OBJECTS) $(t_propagator_w_LDADD) $(LIBS)
+t_read_eigen$(EXEEXT): $(t_read_eigen_OBJECTS) $(t_read_eigen_DEPENDENCIES) 
+	@rm -f t_read_eigen$(EXEEXT)
+	$(CXXLINK) $(t_read_eigen_LDFLAGS) $(t_read_eigen_OBJECTS) $(t_read_eigen_LDADD) $(LIBS)
 t_ritz$(EXEEXT): $(t_ritz_OBJECTS) $(t_ritz_DEPENDENCIES) 
 	@rm -f t_ritz$(EXEEXT)
 	$(CXXLINK) $(t_ritz_LDFLAGS) $(t_ritz_OBJECTS) $(t_ritz_LDADD) $(LIBS)
@@ -642,6 +653,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_propagator_nrqcd.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_propagator_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_propagator_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_read_eigen.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_ritz.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_ritz5d_KS.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_ritz_KS.Po@am__quote@
@@ -844,7 +856,6 @@ uninstall-am: uninstall-info-am
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
 	uninstall-am uninstall-info-am
-
 
 # build lib is a target that goes to the build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order

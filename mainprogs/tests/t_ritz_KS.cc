@@ -1,4 +1,4 @@
-// $Id: t_ritz_KS.cc,v 1.8 2004-03-29 21:34:13 edwards Exp $
+// $Id: t_ritz_KS.cc,v 1.9 2004-04-14 12:53:22 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -12,104 +12,13 @@
 #include <math.h>
 
 #include "chroma.h"
+#include "io/param_io.h"
+#include "io/eigen_io.h"
 
 
 using namespace QDP;
 using namespace std;
 
-enum GaugeStartType { HOT_START = 0, COLD_START = 1, FILE_START = 2 };
-enum GaugeFormat { SZIN_GAUGE_FORMAT = 0, NERSC_GAUGE_FORMAT = 1 };
-
-
-
-// Struct for test parameters
-//
-typedef struct {
-  multi1d<int> nrow;
-  multi1d<int> boundary;
-  multi1d<int> rng_seed;
-  int gauge_start_type;
-  int gauge_file_format;
-  string gauge_filename;
-  
-  Real quark_mass;
-  Real rsd_r;
-  Real rsd_a;
-  Real rsd_zero;
-  Real gamma_factor;
-  bool projApsiP;  
-  int  n_eig;
-  int n_dummy;
-  int max_cg;
-  int max_KS;
-} Param_t;
-
-// Declare routine to read the parameters
-void readParams(const string& filename, Param_t& params)
-{
-  XMLReader reader(filename);
-
-  try {
-    // Read Params
-    read(reader, "/params/lattice/nrow", params.nrow);
-    read(reader, "/params/lattice/boundary", params.boundary);
-    read(reader, "/params/RNG/seed", params.rng_seed);
-    read(reader, "/params/quarkMass", params.quark_mass);
-
-    read(reader, "/params/Cfg/startType", params.gauge_start_type);
-    if( params.gauge_start_type == FILE_START ) { 
-      read(reader, "/params/Cfg/gaugeFilename", params.gauge_filename);
-      read(reader, "/params/Cfg/gaugeFileFormat", params.gauge_file_format);
-    }
-   
-   read(reader, "/params/eig/RsdR", params.rsd_r);
-   read(reader, "/params/eig/RsdA", params.rsd_a);
-   read(reader, "/params/eig/RsdZero", params.rsd_zero);
-   read(reader, "/params/eig/gammaFactor", params.gamma_factor);
-   read(reader, "/params/eig/ProjApsiP",  params.projApsiP);
-   read(reader, "/params/eig/MaxKS", params.max_KS);
-   read(reader, "/params/eig/MaxCG", params.max_cg);
-   read(reader, "/params/eig/Neig", params.n_eig);
-   read(reader, "/params/eig/Ndummy", params.n_dummy);
-  }
-  catch(const string& e) { 
-    throw e;
-  }
-}
-
-void dumpParams(XMLWriter& writer, Param_t& params)
-{
-  push(writer, "params");
-  push(writer, "lattice");
-  write(writer, "nrow", params.nrow);
-  write(writer, "boundary", params.boundary);
-  pop(writer); // lattice
-  push(writer, "RNG");
-  write(writer, "seed", params.rng_seed);
-  pop(writer); // RNG
-
-  write(writer, "quarkMass", params.quark_mass);
-  push(writer, "Cfg");
-  write(writer, "startType", params.gauge_start_type);
-  if( params.gauge_start_type == FILE_START ) { 
-    write(writer, "gaugeFileFormat", params.gauge_file_format);
-    write(writer, "gaugeFilename", params.gauge_filename);
-  }
-  pop(writer); // Cfg
-
-  push(writer, "eig");
-  write(writer, "RsdR", params.rsd_r);
-  write(writer, "MaxCG", params.max_cg);
-  write(writer, "Neig", params.n_eig);
-  write(writer, "Ndummy", params.n_dummy);
-  write(writer, "RsdA", params.rsd_a);
-  write(writer, "RsdZero", params.rsd_zero);
-  write(writer, "ProjApsiP",  params.projApsiP);
-  write(writer, "gammaParam", params.gamma_factor);
-  pop(writer); // Eig
-
-  pop(writer); // params
-}
 
   
 int main(int argc, char **argv)
@@ -117,98 +26,53 @@ int main(int argc, char **argv)
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
 
-  // Read the parameters 
-  Param_t params;
+  ChromaWilsonRitz_t input;
+  XMLReader xml_in("DATA");
 
   try { 
-    readParams("./DATA", params);
+    read(xml_in, "/WilsonRitzEigen", input);
   }
-  catch(const string& s) { 
-    QDPIO::cerr << "Caught exception " << s << endl;
-    exit(1);
+  catch( const string& e ) { 
+    QDPIO::cerr << "Caught Exception: " << e << endl;
+    QDP_error_exit("Exiting\n");
   }
-
 
   // Setup the lattice
-  Layout::setLattSize(params.nrow);
+  Layout::setLattSize(input.nrow);
   Layout::create();
 
-  // Write out the params
-  XMLFileWriter xml_out("t_ritz.xml");
-  push(xml_out, "ritzTest");
 
-  dumpParams(xml_out, params);
+  QDP::RNG::setrn(input.seed);
 
+  QDPIO::cout << "WilsonRitzEigen" << endl;
 
-  // Create a FermBC
-  Handle<FermBC<LatticeFermion> >  fbc(new SimpleFermBC<LatticeFermion>(params.boundary));
-  
-  // The Gauge Field
   multi1d<LatticeColorMatrix> u(Nd);
-  
-  switch ((GaugeStartType)params.gauge_start_type) { 
-  case COLD_START:
-    for(int j = 0; j < Nd; j++) { 
-      u(j) = Real(1);
-    }
+  XMLReader gauge_file_xml, gauge_xml;
+
+  switch (input.cfg.cfg_type) 
+  {
+  case CFG_TYPE_SZIN :
+    QDPIO::cout << "Reading SZIN Gauge config" << endl;
+    readSzin(gauge_xml, u, input.cfg.cfg_file);
     break;
-  case HOT_START:
-    // Hot (disordered) start
-    for(int j=0; j < Nd; j++) { 
-      random(u(j));
-      reunit(u(j));
-    }
+
+  case CFG_TYPE_SZINQIO:
+    QDPIO::cout << "Reading SZIN QIO gauge config" << endl;
+    readGauge(gauge_file_xml, gauge_xml, u, input.cfg.cfg_file, QDPIO_SERIAL);
     break;
-  case FILE_START:
 
-    // Start from File 
-    switch( (GaugeFormat)params.gauge_file_format) { 
-    case SZIN_GAUGE_FORMAT:
-      {
-	XMLReader szin_xml;
-	readSzin(szin_xml, u, params.gauge_filename);
-	try { 
-	  push(xml_out, "GaugeInfo");
-	  xml_out << szin_xml;
-	  pop(xml_out);
-
-	}
-	catch(const string& e) {
-	  cerr << "Error: " << e << endl;
-	}
-	
-      }
-      break;
-
-    case NERSC_GAUGE_FORMAT:
-      {
-	XMLReader nersc_xml;
-	readArchiv(nersc_xml, u, params.gauge_filename);
-
-	try { 
-	  push(xml_out, "GaugeInfo");
-	  xml_out << nersc_xml;
-	  pop(xml_out);
-
-	}
-	catch(const string& e) {
-	  cerr << "Error: " << e << endl;
-	}
-      }
-      break;
-
-    default:
-      ostringstream file_read_error;
-      file_read_error << "Unknown gauge file format" << params.gauge_file_format ;
-      throw file_read_error.str();
-    }
+  case CFG_TYPE_NERSC:
+    QDPIO::cout << "Reading NERSC gauge config" << endl;
+    readArchiv(gauge_xml, u, input.cfg.cfg_file);
     break;
-  default:
-    ostringstream startup_error;
-    startup_error << "Unknown start type " << params.gauge_start_type <<endl;
-    throw startup_error.str();
+  default :
+    QDP_error_exit("Configuration type is unsupported.");
   }
 
+  XMLFileWriter xml_out("XMLDAT");
+  push(xml_out, "WilsonRitzEigen");
+
+  write((XMLWriter &)xml_out, "InputParams", input);
 
   // Measure the plaquette on the gauge
   Double w_plaq, s_plaq, t_plaq, link;
@@ -224,65 +88,65 @@ int main(int argc, char **argv)
   // Put this puppy into a handle to allow Zolo to copy it around as a **BASE** class
   // WARNING: the handle now owns the data. The use of a bare S_w below is legal,
   // but just don't delete it.
-  UnprecWilsonFermAct  S_w(fbc, params.quark_mass);
+  // Create a FermBC
+  Handle<FermBC<LatticeFermion> >  fbc(new SimpleFermBC<LatticeFermion>(input.boundary));
+  UnprecWilsonFermAct  S_w(fbc, input.Mass);
 
   Handle< const ConnectState > connect_state = S_w.createState(u);
-
   Handle< const LinearOperator<LatticeFermion> > MM = S_w.lMdagM(connect_state);
-  int n_dummy = 2;
+
+ 
   // Try and get lowest eigenvalue of MM
-  multi1d<Real> lambda(params.n_eig+params.n_dummy);
-  multi1d<Real> check_norm(params.n_eig);
-  multi1d<LatticeFermion> psi(params.n_eig+params.n_dummy);
-  
-  int n_renorm = 10;
-  int n_min = 5;
-  bool ProjApsiP = true;
-  int n_CG_count;
+  multi1d<Real> lambda(input.ritz_params.Neig+input.ritz_params.Ndummy);
+  multi1d<Real> check_norm(input.ritz_params.Neig);
+  multi1d<LatticeFermion> psi(input.ritz_params.Neig+input.ritz_params.Ndummy);
 
-
-  Real delta_cycle = Real(1);
-  Real gamma_factor = Real(1);
-
-
-  XMLBufferWriter eig_spec_xml;
-
-  for(int i =0; i < params.n_eig+ params.n_dummy; i++) { 
+  // Initialise evecs to noise
+  for(int i =0; i < input.ritz_params.Neig + input.ritz_params.Ndummy; i++) { 
     gaussian(psi[i]);
     lambda[i] = Real(1);
   }
 
+ 
+  int n_CG_count;
+  Real delta_cycle = Real(1);
+  XMLBufferWriter eig_spec_xml;
   int n_KS_count = 0;
   int n_jacob_count = 0;
   EigSpecRitzKS(*MM, 
 		lambda, 
 		psi, 
-		params.n_eig,
-		params.n_dummy,                // No of dummies
-		n_renorm, 
-		n_min, 
-		200,             // Max iters / KS cycle
-		params.max_KS,            // Max no of KS cycles
-		params.gamma_factor,       // Gamma factor
-		params.max_cg,
-		params.rsd_r,
-		params.rsd_a,  
-		params.rsd_zero,
-		params.projApsiP,
+		input.ritz_params.Neig,
+		input.ritz_params.Ndummy,                // No of dummies
+		input.ritz_params.Nrenorm, 
+		input.ritz_params.MinKSIter, 
+		input.ritz_params.MaxKSIter,             // Max iters / KS cycle
+		input.ritz_params.MaxKS,            // Max no of KS cycles
+		input.ritz_params.GammaFactor,       // Gamma factor
+		input.ritz_params.MaxCG,
+		input.ritz_params.RsdR,
+		input.ritz_params.RsdA,  
+		input.ritz_params.RsdZero,
+		input.ritz_params.ProjApsiP,
 		n_CG_count,
 		n_KS_count,
 		n_jacob_count,
 		eig_spec_xml);
 
+  // Dump output
   xml_out << eig_spec_xml;
   write(xml_out, "lambda", lambda); 
 
   // Check norms
-  for(int i=0; i < params.n_eig; i++) { 
+  for(int i=0; i < input.ritz_params.Neig; i++) { 
+
     LatticeFermion Me;
     LatticeFermion lambda_e;
+
     (*MM)(Me, psi[i], PLUS);
+
     lambda_e = lambda[i]*psi[i];
+
     LatticeFermion r_norm = Me - lambda_e;
     check_norm[i] = sqrt(norm2(r_norm))/fabs(lambda[i]);
   }
@@ -292,22 +156,31 @@ int main(int argc, char **argv)
   // Try to get one:
   Handle< const LinearOperator<LatticeFermion> > H = S_w.gamma5HermLinOp(connect_state);  
 
-  multi1d<bool> valid_eig(params.n_eig);
+  multi1d<bool> valid_eig(input.ritz_params.Neig);
   int n_valid;
   int n_jacob;
 
-  fixMMev2Mev(*H, lambda, psi, params.n_eig, params.rsd_r,
-	       params.rsd_a, params.rsd_zero, valid_eig, n_valid, n_jacob);
+  fixMMev2Mev(*H, 
+	      lambda, 
+	      psi, 
+	      input.ritz_params.Neig, 
+	      input.ritz_params.RsdR,
+	      input.ritz_params.RsdA, 
+	      input.ritz_params.RsdZero, 
+	      valid_eig, 
+	      n_valid, 
+	      n_jacob);
 
   push(xml_out, "eigFix");
   write(xml_out, "lambda", lambda);
   write(xml_out, "n_valid", n_valid);
   write(xml_out, "valid_eig", valid_eig);
-  for(int i=0; i < params.n_eig; i++) { 
+
+  for(int i=0; i < input.ritz_params.Neig; i++) { 
     LatticeFermion Me;
     (*H)(Me, psi[i], PLUS);
 
-    bool zeroP = toBool( fabs(lambda[i]) < params.rsd_zero );
+    bool zeroP = toBool( fabs(lambda[i]) < input.ritz_params.RsdZero );
     if( zeroP ) {
       check_norm[i] = sqrt(norm2(Me));
     }
@@ -325,14 +198,53 @@ int main(int argc, char **argv)
   pop(xml_out);
 
 
-  for(int i=0; i < params.n_eig;i++ ) {
-    lambda[i] /= (Nd + params.quark_mass);
+  multi1d<Real> szin_lambda(lambda);
+
+  for(int i=0; i < input.ritz_params.Neig;i++ ) {
+    szin_lambda[i] /= (Nd + input.Mass);
   }
-  write(xml_out, "szinLamda", lambda);
+  write(xml_out, "szinLamda", szin_lambda);
+
+  // Now get the highest e-value
+  // Negate H
+  Handle<const LinearOperator<LatticeFermion> > MinusH = new lopscl<LatticeFermion, Real>(H, Real(-1.0));
+
+  multi1d<Real> lambda_high_aux(1);
+  multi1d<LatticeFermion> lambda_high_vec(1);
+  int n_cg_high;
+  XMLBufferWriter high_xml;
+  push(high_xml, "LambdaHighRitz");
+
+  // Minus MM ought to produce a negative e-value
+  // since MM is herm_pos_def
+  // ie minus MM is hermitian -ve definite
+  EigSpecRitzCG( *MinusH,
+		 lambda_high_aux,
+		 lambda_high_vec,
+		 1,
+		 input.ritz_params.Nrenorm,
+		 input.ritz_params.MinKSIter,
+		 input.ritz_params.MaxCG,
+		 input.ritz_params.RsdR,
+		 input.ritz_params.RsdA,
+		 input.ritz_params.RsdZero,
+		 input.ritz_params.ProjApsiP,
+		 n_cg_high,
+		 high_xml);
+
+  lambda_high_aux[0] = -lambda_high_aux[0];
+  xml_out << high_xml;
+
+  push(xml_out, "Highest");
+  write(xml_out, "lambda_hi", lambda_high_aux[0]);
+  write(xml_out, "lambda_hi_szin", Real(lambda_high_aux[0]/(Real(Nd) + input.Mass)));
+  pop(xml_out);
 
   pop(xml_out);
   xml_out.close();
 
+  QDPIO::cout << "Writing eigenvalues/vectors" << endl;
+  writeEigen(input, lambda, psi, lambda_high_aux[0], QDPIO_SERIAL);
   QDP_finalize();
     
   exit(0);

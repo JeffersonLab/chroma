@@ -1,4 +1,4 @@
-// $Id: param_io.cc,v 1.17 2004-04-05 16:37:02 edwards Exp $
+// $Id: param_io.cc,v 1.18 2004-04-14 12:53:21 bjoo Exp $
 /*! \file
  *  \brief Various parameter readers/writers for main programs
  */
@@ -475,6 +475,15 @@ void write(XMLWriter& xml, const string& path, CfgType param)
     QDP_abort(1);
   }
   write(xml, path, cfg_type_str);
+}
+
+//! Write a config struct
+void write(XMLWriter& xml, const string& path, const Cfg_t& cfg)
+{
+  push(xml, "Cfg");
+  write(xml, "cfg_type", cfg.cfg_type);
+  write(xml, "cfg_file", cfg.cfg_file);
+  pop(xml);
 }
 
 

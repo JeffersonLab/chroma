@@ -1,4 +1,4 @@
-// $Id: sn_jacob_array.cc,v 1.1 2004-01-28 15:34:41 bjoo Exp $
+// $Id: sn_jacob_array.cc,v 1.2 2004-04-14 12:53:21 bjoo Exp $
 /*! \file
  *  \brief Single-node Jacobi routine
  */
@@ -69,7 +69,7 @@ void SN_Jacob_Array_t(multi2d<T>& psi,
 
   Real tol_sq = tolerance * tolerance;
             
-  for(k = 0; k <= N_max; k++) {
+  for(k = 1; k <= N_max; k++) {
     
     i_rot = 0;
     ij = 0;

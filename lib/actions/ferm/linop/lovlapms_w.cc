@@ -1,4 +1,4 @@
-// $Id: lovlapms_w.cc,v 1.10 2003-12-17 14:54:34 bjoo Exp $
+// $Id: lovlapms_w.cc,v 1.11 2004-04-14 12:53:21 bjoo Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -141,7 +141,10 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
   {
     //  chi  :=  gamma_5 * (gamma_5 * mass + eps(H)) * Psi 
     // Final mult by gamma_5 is at end 
-    chi += Gamma(G5) * psi * mass;
+    tmp2 = Gamma(G5) * psi;
+
+    // This will be an axpy
+    chi += tmp2 * mass;
   }
   else
   {

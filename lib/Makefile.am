@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.119 2004-04-14 04:42:34 edwards Exp $
+# $Id: Makefile.am,v 1.120 2004-04-14 12:53:21 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -70,7 +70,8 @@ nobase_include_HEADERS = \
 	actions/ferm/linop/lmdagm.h actions/ferm/linop/lopscl.h \
 	actions/ferm/linop/partrat.h actions/ferm/qprop/qprop.h \
 	actions/gauge/gauge.h \
-	io/io.h io/gauge_io.h io/milc_io.h io/param_io.h io/qprop_io.h io/readmilc.h \
+	io/io.h io/gauge_io.h io/milc_io.h io/param_io.h io/qprop_io.h \
+	io/eigen_io.h io/readmilc.h \
 	io/readszin.h io/szin_io.h io/writemilc.h io/writeszin.h \
 	meas/eig/eig.h meas/eig/gramschm.h meas/eig/gramschm_array.h \
 	meas/eig/ritz.h meas/eig/ritz_array.h meas/eig/sn_jacob.h \
@@ -209,7 +210,7 @@ libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
                gaus_smear.cc hyp_smear.cc ape_smear.cc fuzz_smear.cc \
                klein_gord.cc laplacian.cc displacement.cc \
                su2extract.cc sunfill.cc invcg1.cc invcg2.cc invcg2_array.cc \
-	       invcg2_timing_hacks.cc minvcg.cc qprop_io.cc stoch_var.cc \
+	       invcg2_timing_hacks.cc minvcg.cc qprop_io.cc eigen_io.cc stoch_var.cc \
 	       z2_src.cc gauge_io.cc milc_io.cc readmilc.cc writemilc.cc \
                axgauge.cc coulgauge.cc grelax.cc polar_dec.cc rot_colvec.cc \
 	       transf.cc param_io.cc gramschm.cc gramschm_array.cc \

@@ -1,4 +1,4 @@
-// $Id: ritz.cc,v 1.8 2004-01-28 15:34:41 bjoo Exp $
+// $Id: ritz.cc,v 1.9 2004-04-14 12:53:21 bjoo Exp $
 /*! \file
  *  \brief Ritz code for eigenvalues
  */
@@ -320,7 +320,7 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
     }
 
     // mu[k] = mu[k-1] - 2 a d^2
-    mu -= two * a * d * d;
+    mu -= (two * a * d * d);
     lambda = Real(mu);
 
     // del_lamb is the change in lambda 
