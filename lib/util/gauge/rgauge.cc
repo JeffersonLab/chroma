@@ -1,4 +1,4 @@
-// $Id: rgauge.cc,v 1.1 2003-09-10 01:25:55 edwards Exp $
+// $Id: rgauge.cc,v 1.2 2003-09-10 01:33:12 edwards Exp $
 /*! \file
  *  \brief Do a random gauge transformation on the u fields
  */
@@ -38,7 +38,7 @@ void rgauge(multi1d<LatticeColorMatrix>& u, LatticeColorMatrix& g)
   expm12(g);
   reunit(g);
     
-  for(mu = 0; mu < Nd; ++mu)
+  for(int mu = 0; mu < Nd; ++mu)
   {
     LatticeColorMatrix u_tmp = g * u[mu];
     u[mu] = u_tmp * shift(adj(g), FORWARD, mu);
