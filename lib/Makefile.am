@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.206 2004-12-21 18:01:05 bjoo Exp $
+# $Id: Makefile.am,v 1.207 2004-12-24 04:20:02 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -25,6 +25,8 @@ nobase_include_HEADERS = \
 	actions/ferm/fermacts/fermacts.h \
 	actions/ferm/fermacts/zolotarev.h \
 	actions/ferm/fermacts/overlap_state.h \
+	actions/ferm/fermbcs/fermbcs.h \
+	actions/ferm/fermbcs/simple_fermbc.h \
 	actions/ferm/invert/invcg1.h actions/ferm/invert/invcg2.h \
 	actions/ferm/invert/inv_rel_cg1.h actions/ferm/invert/inv_rel_cg2.h \
 	actions/ferm/invert/invcg1_array.h \
@@ -138,7 +140,7 @@ nodist_include_HEADERS=chroma_config_internal.h
 # Wilson specific headers
 nobase_include_HEADERS += \
 	actions/ferm/fermacts/fermacts_w.h \
-	actions/ferm/fermacts/fermfactory_w.h \
+	actions/ferm/fermacts/fermact_factory_w.h \
 	actions/ferm/fermacts/overlap_fermact_base_w.h \
 	actions/ferm/fermacts/prec_clover_fermact_w.h \
 	actions/ferm/fermacts/prec_dwf_fermact_array_w.h \
@@ -162,6 +164,9 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/unprec_ovlap_contfrac5d_fermact_array_w.h \
 	actions/ferm/fermacts/prec_ovlap_contfrac5d_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_dwftransf_fermact_w.h \
+	actions/ferm/fermbcs/fermbcs_w.h \
+	actions/ferm/fermbcs/fermbc_factory_w.h \
+	actions/ferm/fermbcs/simple_fermbc_w.h \
 	actions/ferm/invert/inv_borici_w.h \
 	actions/ferm/linop/lgherm_w.h \
 	actions/ferm/linop/unprec_ovlap_contfrac5d_linop_array_w.h \
@@ -229,6 +234,9 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/asqtad_fermact_s.h \
 	actions/ferm/fermacts/fermacts_s.h \
 	actions/ferm/fermacts/stag_fermact_s.h \
+	actions/ferm/fermbcs/fermbcs_s.h \
+	actions/ferm/fermbcs/fermbc_factory_s.h \
+	actions/ferm/fermbcs/simple_fermbc_s.h \
 	actions/ferm/linop/asqtad_linop_s.h \
 	actions/ferm/linop/asqtad_mdagm_s.h \
 	actions/ferm/linop/asq_dsl_s.h \
@@ -279,6 +287,7 @@ libchroma_a_SOURCES = \
 	actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/overlap_state.cc \
 	actions/ferm/fermacts/zolotarev_coeffs.cc \
+	actions/ferm/fermbcs/simple_fermbc.cc \
 	actions/ferm/invert/invbicgstab.cc \
 	actions/ferm/invert/invbicgstab_array.cc \
 	actions/ferm/invert/invcg1.cc \
@@ -376,6 +385,8 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermacts/unprec_parwilson_fermact_w.cc \
 	actions/ferm/fermacts/unprec_wilson_fermact_w.cc \
 	actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.cc \
+	actions/ferm/fermbcs/fermbcs_w.cc \
+	actions/ferm/fermbcs/simple_fermbc_w.cc \
 	actions/ferm/invert/inv_borici_w.cc \
 	actions/ferm/linop/dwffld_w.cc actions/ferm/linop/lDeltaLs_w.cc \
 	actions/ferm/linop/lg5eps_double_pass_w.cc \
@@ -461,6 +472,8 @@ endif
 # Staggered specific sources
 libchroma_a_SOURCES += \
 	actions/ferm/fermacts/asqtad_fermact_s.cc \
+	actions/ferm/fermbcs/fermbcs_s.cc \
+	actions/ferm/fermbcs/simple_fermbc_s.cc \
 	actions/ferm/linop/asqtad_linop_s.cc \
 	actions/ferm/linop/asqtad_mdagm_s.cc \
 	actions/ferm/linop/asq_dsl_s.cc \
@@ -475,7 +488,6 @@ libchroma_a_SOURCES += \
 	util/gauge/stag_phases_s.cc\
         meas/hadron/scalar_loops_s.cc\
         meas/hadron/pseudoscalar_loops_s.cc 
-        
 
 #	actions/ferm/fermacts/stag_fermact_s.cc
 #	
