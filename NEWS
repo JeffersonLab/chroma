@@ -1,5 +1,15 @@
 02/22/2004 -- Robert Edwards
 
+	Version 1.5.0. Major change in propagator model in main programs. ONLY
+        support SciDAC format of propagators. Now, the "Param" group on input is the
+        header of some propagator. There are XML and binary parts of propagators
+        (SciDAC format). The XML part is used in subsequent calculations, thus removing
+        potentially erroneous use of input params in calcs.
+        All test files changed to match
+
+
+02/22/2004 -- Robert Edwards
+
 	Version 1.4.4. Some new programs added. Fixed make_source/propagator/seqprop/spectrum
         chain of tests to be consistent and give reasonable output. Cross-checked against
         new (un-committed) XML driven input/output model.
