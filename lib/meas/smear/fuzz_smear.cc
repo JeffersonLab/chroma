@@ -1,11 +1,13 @@
-// $Id: fuzz_smear.cc,v 1.2 2004-02-08 14:35:07 mcneile Exp $
+// $Id: fuzz_smear.cc,v 1.3 2004-02-09 19:24:50 mcneile Exp $
 
 #include "chromabase.h"
+#include "meas/smear/displacement.h"
 #include "meas/smear/fuzz_smear.h"
 
 using namespace QDP;
 
 // mcneile: this routine is still being checked **
+// mcneile: I have now checked that it is gauge invariant
 
 //! apply a fuzz_smear operator to a lattice field
 /*!
@@ -51,6 +53,9 @@ using namespace QDP;
  * 
  *  (Documentation from Peter Boyle's Fortran code). 
  * 
+ *  For smearing at the source the input is a local source.
+ *
+ *
  * 
  * Reference:
  * 
@@ -72,7 +77,7 @@ void fuzz_smear(const multi1d<LatticeColorMatrix>& ufuzz,
 
   // if staggered then direction must be even
   // or else an error
-  if( Ns == 0 &&  length % 2 == 1)
+  if( Ns == 1 &&  length % 2 == 1)
     {
       cout << "fuzz_smear::Error fuzzing length =  " << length << endl ; 
       cout << "Fuzzing length must be even for staggered fermions" << endl ; 
@@ -86,19 +91,14 @@ void fuzz_smear(const multi1d<LatticeColorMatrix>& ufuzz,
   //
   bool is_initial = true ;
 
-  for(int mu = 0 ; mu < Nd ; ++mu)
+   for(int mu = 0 ; mu < Nd ; ++mu)
     { 
       if( mu != j_decay )
 	{
 
 	  // positive direction
 	  psi_dir = psi ; 
-	  for(int n = 0; n < length; ++n)
-	    {
-	      T tmp = shift(psi_dir, FORWARD, mu);
-	      psi_dir = ufuzz[mu] * tmp;
-	    }
-
+	  displacement(ufuzz,psi_dir,length,mu);
 	  if( is_initial )
 	    {
 	      psifuzz = psi_dir ;
@@ -106,23 +106,20 @@ void fuzz_smear(const multi1d<LatticeColorMatrix>& ufuzz,
 	    }
 	  else
 	    {
-	      psifuzz = psifuzz + psi_dir ;
+	      psifuzz +=  psi_dir ;
 	    }
 
 
 	  // negative direction
 	  psi_dir = psi ; 
-	  for(int n = 0; n < length; ++n)
-	    {
-	      T tmp = shift(psi_dir, BACKWARD, mu);
-	      psi_dir = adj(ufuzz[mu]) * tmp;
-	    }
-	      psifuzz = psifuzz + psi_dir ;
-
+	  int neg_length = -length ; 
+	  displacement(ufuzz,psi_dir,neg_length,mu);
+	  psifuzz +=  psi_dir ;
 
 	} // end of x,y,z direction
 
     } // loop over directions
+
 
 }
 
