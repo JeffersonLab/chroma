@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev4d_fermact_w.h,v 1.27 2004-09-09 15:51:31 edwards Exp $
+// $Id: zolotarev4d_fermact_w.h,v 1.28 2004-09-11 16:37:07 edwards Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -29,6 +29,7 @@ namespace Chroma
   //! Params for overlap ferm acts
   struct Zolotarev4DFermActParams
   {
+    Zolotarev4DFermActParams() {ReorthFreqInner=10;inner_solver_type=OVERLAP_INNER_CG_SINGLE_PASS;}
     Zolotarev4DFermActParams(XMLReader& in, const std::string& path);
     
     Real Mass;
@@ -37,7 +38,7 @@ namespace Chroma
     int ReorthFreqInner;
 
     InvertParam_t invParamInner;
-    OverlapInnerSolverType InnerSolverType;
+    OverlapInnerSolverType inner_solver_type;
     
     std::string AuxFermAct;
     std::string AuxFermActGrp;
@@ -71,16 +72,19 @@ namespace Chroma
 		       XMLWriter& writer_,
 		       const int ReorthFreqInner_=10,
 		       const OverlapInnerSolverType inner_solver_type_=OVERLAP_INNER_CG_SINGLE_PASS
-      ) :
-      fbc(fbc_), Mact(Mact_), params.Mass(Mass_), 
-      params.RatPolyDeg(RatPolyDeg_), 
-      params.invParamInner.RsdCG(RsdCGinner_), 
-      params.invParamInner.MaxCGi(MaxCGinner_),
-      params.ReorthFreqInner(ReorthFreqInner_), 
-      params.inner_solver_type(inner_solver_type_)
+      ) : writer(writer_)
       {
+	fbc = fbc_;
+	Mact = Mact_;
+	params.Mass = Mass_;
+	params.RatPolyDeg = RatPolyDeg_; 
+	params.invParamInner.RsdCG = RsdCGinner_; 
+	params.invParamInner.MaxCG = MaxCGinner_;
+	params.ReorthFreqInner = ReorthFreqInner_; 
+	params.inner_solver_type = inner_solver_type_;
+
 	// Default Preconditioner degree is RatPolyDeg
-	RatPolyDegPrecond = RatPolyDeg_;
+	params.RatPolyDegPrecond = RatPolyDeg_;
       }
 
     Zolotarev4DFermAct(Handle<FermBC<LatticeFermion> > fbc_,
@@ -93,11 +97,14 @@ namespace Chroma
 		       XMLWriter& writer_,
 		       const int ReorthFreqInner_=10,
 		       const OverlapInnerSolverType inner_solver_type_=OVERLAP_INNER_CG_SINGLE_PASS
-      ) :
-      fbc(fbc_), Mact(Mact_), Mass(Mass_), RatPolyDeg(RatPolyDeg_), RatPolyDegPrecond(RatPolyDegPrecond_),
-      RsdCGinner(RsdCGinner_), MaxCGinner(MaxCGinner_), writer(writer_),
-      ReorthFreqInner(ReorthFreqInner_), inner_solver_type(inner_solver_type_)
-      {}
+      ) : writer(writer_)
+      {
+	fbc = fbc_; Mact = Mact_; params.Mass = Mass_; params.RatPolyDeg = RatPolyDeg_; 
+	params.RatPolyDegPrecond = RatPolyDegPrecond_;
+	params.invParamInner.RsdCG = RsdCGinner_; 
+	params.invParamInner.MaxCG = MaxCGinner_;
+	params.ReorthFreqInner = ReorthFreqInner_; params.inner_solver_type = inner_solver_type_;
+      }
 
     //! Construct from param struct
     Zolotarev4DFermAct(Handle<FermBC<LatticeFermion> > fbc_,
@@ -105,12 +112,9 @@ namespace Chroma
 		       XMLWriter& xml_out);
 
     //! Copy Constructor
-    Zolotarev4DFermAct(const Zolotarev4DFermAct& a) :
-      fbc(a.fbc), Mact(a.Mact), Mass(a.Mass), RatPolyDeg(a.RatPolyDeg), 
-      RatPolyDegPrecond(a.RatPolyDegPrecond),
-      RsdCGinner(a.RsdCGinner), MaxCGinner(a.MaxCGinner), writer(a.writer),
-      ReorthFreqInner(a.ReorthFreqInner), inner_solver_type(a.inner_solver_type)
-      {};
+    Zolotarev4DFermAct(const Zolotarev4DFermAct& a) : 
+      fbc(a.fbc), writer(a.writer), params(a.params)
+      {}
   
 
     // Assignment
@@ -132,7 +136,7 @@ namespace Chroma
     const FermBC<LatticeFermion>& getFermBC() const {return *fbc;}
 
     //! Return the quark mass
-    Real quark_mass() const {return Mass;}
+    Real quark_mass() const {return params.Mass;}
 
 
     //! Is the operator Chiral 
@@ -258,6 +262,7 @@ namespace Chroma
     Handle<FermBC<LatticeFermion> >  fbc;   // fermion BC
     // Auxilliary action used for kernel of operator
     Handle<UnprecWilsonTypeFermAct<LatticeFermion> > Mact;
+    XMLWriter& writer;
     Zolotarev4DFermActParams params;
   };
 

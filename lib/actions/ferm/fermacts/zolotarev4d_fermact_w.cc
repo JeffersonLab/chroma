@@ -1,4 +1,4 @@
-// $Id: zolotarev4d_fermact_w.cc,v 1.27 2004-09-09 15:51:31 edwards Exp $
+// $Id: zolotarev4d_fermact_w.cc,v 1.28 2004-09-11 16:37:07 edwards Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -35,7 +35,8 @@ namespace Chroma
 						     XMLReader& xml_in,
 						     const std::string& path)
     {
-      return new Zolotarev4DFermAct(fbc, Zolotarev4DFermActParams(xml_in, path));
+      XMLBufferWriter xml_out;   // THIS IS ***BAD****
+      return new Zolotarev4DFermAct(fbc, Zolotarev4DFermActParams(xml_in, path), xml_out);
     }
 
     //! Name to be used
@@ -102,7 +103,7 @@ namespace Chroma
     { 
       if(in.count("AuxFermAct") == 1 )
       { 
-	XMLReader xml_tmp(paramtop, "AuxFermAct");
+	XMLReader xml_tmp(xml, "AuxFermAct");
 	std::ostringstream os;
 	xml_tmp.print(os);
 	AuxFermAct = os.str();
@@ -122,8 +123,8 @@ namespace Chroma
 	RatPolyDegPrecond = RatPolyDeg;
       }
 
-      read(in, "InnerSolve/MaxCG", MaxCGInner);
-      read(in, "InnerSolve/RsdCG", RsdCGInner);
+      read(in, "InnerSolve/MaxCG", invParamInner.MaxCG);
+      read(in, "InnerSolve/RsdCG", invParamInner.RsdCG);
       if( in.count("InnerSolve/ReorthFreq") == 1 ) {
 	read(in, "InnerSolve/ReorthFreq", ReorthFreqInner);
       }
@@ -132,13 +133,13 @@ namespace Chroma
       }
 
       if( in.count("InnerSolve/SolverType") == 1 ) { 
-	read(in, "InnerSolve/SolverType", InnerSolverType);
+	read(in, "InnerSolve/SolverType", inner_solver_type);
       }
       else {
-	InnerSolverType = OVERLAP_INNER_CG_SINGLE_PASS;
+	inner_solver_type = OVERLAP_INNER_CG_SINGLE_PASS;
       }
 	
-      read(in, "StateInfo", StateInfo);
+//      read(in, "StateInfo", state_info);
     }
     catch( const string &e ) {
       QDPIO::cerr << "Caught Exception reading Zolo4D Fermact params: " << e << endl;
@@ -152,19 +153,18 @@ namespace Chroma
       push( xml_out, path);
     }
   
-    write(xml_out, "FermAct", p.getFermActType());
-    xml_out << AuxFermAct;
+    xml_out << p.AuxFermAct;
     write(xml_out, "Mass", p.Mass);
     write(xml_out, "RatPolyDeg", p.RatPolyDeg);
     write(xml_out, "RatPolyDegPrecond", p.RatPolyDegPrecond);
     push(xml_out, "InnerSolve");
-    write(xml_out, "MaxCG", p.MaxCGInner);
-    write(xml_out, "RsdCG", p.RsdCGInner);
+    write(xml_out, "MaxCG", p.invParamInner.MaxCG);
+    write(xml_out, "RsdCG", p.invParamInner.RsdCG);
     write(xml_out, "ReorthFreq", p.ReorthFreqInner);
-    write(xml_out, "SolverType", p.InnerSolverType);
+    write(xml_out, "SolverType", p.inner_solver_type);
     pop(xml_out);
 
-    write(xml_out, "StateInfo", p.StateInfo);
+//    write(xml_out, "StateInfo", p.state_info);
 
     if( path != "." ) { 
       pop(xml_out);
@@ -182,8 +182,8 @@ namespace Chroma
 
   //! Constructor
   Zolotarev4DFermAct::Zolotarev4DFermAct(Handle<FermBC<LatticeFermion> > fbc_,
-					 const Zolotarev4DFermActParams& params,
-					 XMLWriter& writer_) : fbc(fbc_), Mass( params.Mass), RatPolyDeg(params.RatPolyDeg), RatPolyDegPrecond(params.RatPolyDegPrecond), RsdCGinner(params.RsdCGInner), MaxCGinner(params.MaxCGInner), writer(writer_), ReorthFreqInner(params.ReorthFreqInner), inner_solver_type(params.InnerSolverType)
+					 const Zolotarev4DFermActParams& params_,
+					 XMLWriter& writer_) : fbc(fbc_), writer(writer_), params(params_)
   {
 
     std::istringstream  xml_s(params.AuxFermAct);
@@ -203,7 +203,7 @@ namespace Chroma
 							     fermacttop,
 							     fermact_path);
 
-      S_aux = dynamic_cast<UnprecWilsonFermAct<LatticeFermion>*>S_f;
+      S_aux = dynamic_cast<UnprecWilsonTypeFermAct<LatticeFermion>*>(S_f);
     }
     catch (const std::exception& e) 
     {
@@ -218,8 +218,8 @@ namespace Chroma
   }
 
 
-//! Creation routine
-/*! */
+  //! Creation routine
+  /*! */
   void 
   Zolotarev4DFermAct::init(int& numroot, 
 			   Real& coeffP, 
@@ -284,8 +284,8 @@ namespace Chroma
 
 
     push(my_writer, "Zolotarev4D");
-    write(my_writer, "MaxCGinner", MaxCGinner);
-    write(my_writer, "RsdCGinner", RsdCGinner);
+    write(my_writer, "MaxCGinner", params.invParamInner.MaxCG);
+    write(my_writer, "RsdCGinner", params.invParamInner.RsdCG);
     write(my_writer, "NEigVal", NEigVal);
     write(my_writer, "NEig", NEig);
 
@@ -308,16 +308,16 @@ namespace Chroma
        where da = dd for type 0 and da = dd + 1 with ap[dd] = 0 for type 1. 
     */
     type = 0;
-    rdata = zolotarev(toFloat(eps), RatPolyDeg, type);
+    rdata = zolotarev(toFloat(eps), params.RatPolyDeg, type);
     maxerr = (Real)(rdata -> Delta);
   
     push(my_writer, "ZolotarevApprox");
     write(my_writer, "eps", eps);
     write(my_writer, "scale_fac", scale_fac);
-    write(my_writer, "RatPolyDeg", RatPolyDeg);
+    write(my_writer, "RatPolyDeg", params.RatPolyDeg);
     write(my_writer, "type", type);
     write(my_writer, "maxerr", maxerr);
-    write(my_writer, "InnerSolverType", inner_solver_type);
+    write(my_writer, "InnerSolverType", params.inner_solver_type);
     pop(my_writer);
   
     /* The number of residuals and poles */
@@ -379,9 +379,9 @@ namespace Chroma
     pop(my_writer);
   
   
-    QDPIO::cout << "ZOLOTAREV 4d n=" << RatPolyDeg << " scale=" << scale_fac
+    QDPIO::cout << "ZOLOTAREV 4d n=" << params.RatPolyDeg << " scale=" << scale_fac
 		<< " coeff=" << coeffP << " Nwils= " << NEigVal <<" Mass="
-		<< Mass << " Rsd=" << RsdCGinner << endl;
+		<< params.Mass << " Rsd=" << params.invParamInner.RsdCG << endl;
   
     QDPIO::cout << "Approximation on [-1,-eps] U [eps,1] with eps = " << eps <<
       endl;
@@ -395,7 +395,7 @@ namespace Chroma
       QDPIO::cout << "Approximation type " << type << " with R(0) =  infinity"                    << endl;
     }
 
-    switch(inner_solver_type) { 
+    switch(params.inner_solver_type) { 
     case OVERLAP_INNER_CG_SINGLE_PASS:
       QDPIO::cout << "Using Single Pass Inner Solver" << endl;
       break;
@@ -497,8 +497,8 @@ namespace Chroma
 
 
     push(my_writer, "Zolotarev4DPreconditioner");
-    write(my_writer, "MaxCGinner", MaxCGinner);
-    write(my_writer, "RsdCGinner", RsdCGinner);
+    write(my_writer, "MaxCGinner", params.invParamInner.MaxCG);
+    write(my_writer, "RsdCGinner", params.invParamInner.RsdCG);
     write(my_writer, "NEigVal", NEigVal);
     write(my_writer, "NEig", NEig);
 
@@ -522,18 +522,18 @@ namespace Chroma
     */
     type = 0;
 
-    QDPIO::cout << "Calling zolotarev with " << toFloat(eps) << ", " << RatPolyDegPrecond <<", " << type << endl << flush;
+    QDPIO::cout << "Calling zolotarev with " << toFloat(eps) << ", " << params.RatPolyDegPrecond <<", " << type << endl << flush;
 
-    rdata = zolotarev(toFloat(eps), RatPolyDegPrecond, type);
+    rdata = zolotarev(toFloat(eps), params.RatPolyDegPrecond, type);
     maxerr = (Real)(rdata -> Delta);
   
     push(my_writer, "ZolotarevPreconditionerApprox");
     write(my_writer, "eps", eps);
     write(my_writer, "scale_fac", scale_fac);
-    write(my_writer, "RatPolyDeg", RatPolyDeg);
+    write(my_writer, "RatPolyDeg", params.RatPolyDeg);
     write(my_writer, "type", type);
     write(my_writer, "maxerr", maxerr);
-    write(my_writer, "InnerSolverType", inner_solver_type);
+    write(my_writer, "InnerSolverType", params.inner_solver_type);
     pop(my_writer);
   
     /* The number of residuals and poles */
@@ -595,9 +595,9 @@ namespace Chroma
     pop(my_writer);
   
   
-    QDPIO::cout << "ZOLOTAREV Preconditioner 4d n=" << RatPolyDegPrecond << " scale=" << scale_fac
+    QDPIO::cout << "ZOLOTAREV Preconditioner 4d n=" << params.RatPolyDegPrecond << " scale=" << scale_fac
 		<< " coeff=" << coeffP << " Nwils= " << NEigVal <<" Mass="
-		<< Mass << " Rsd=" << RsdCGinner << endl;
+		<< params.Mass << " Rsd=" << params.invParamInner.RsdCG << endl;
   
     QDPIO::cout << "Approximation on [-1,-eps] U [eps,1] with eps = " << eps <<
       endl;
@@ -611,7 +611,7 @@ namespace Chroma
       QDPIO::cout << "Approximation type " << type << " with R(0) =  infinity"                    << endl;
     }
 
-    switch(inner_solver_type) { 
+    switch(params.inner_solver_type) { 
     case OVERLAP_INNER_CG_SINGLE_PASS:
       QDPIO::cout << "Using Single Pass Inner Solver" << endl;
       break;
@@ -694,21 +694,21 @@ namespace Chroma
   
     /* Finally construct and pack the operator */
     /* This is the operator of the form (1/2)*[(1+mu) + (1-mu)*gamma_5*eps] */
-    switch( inner_solver_type ) {
+    switch( params.inner_solver_type ) {
     case OVERLAP_INNER_CG_SINGLE_PASS:
-      return new lovlapms(*Mact, state_, Mass,
+      return new lovlapms(*Mact, state_, params.Mass,
 			  numroot, coeffP, resP, rootQ, 
 			  NEig, EigValFunc, state.getEigVec(),
-			  MaxCGinner, RsdCGinner, ReorthFreqInner);
+			  params.invParamInner.MaxCG, params.invParamInner.RsdCG, params.ReorthFreqInner);
       break;
     case OVERLAP_INNER_CG_DOUBLE_PASS:
-      return new lovlap_double_pass(*Mact, state_, Mass,
+      return new lovlap_double_pass(*Mact, state_, params.Mass,
 				    numroot, coeffP, resP, rootQ, 
 				    NEig, EigValFunc, state.getEigVec(),
-				    MaxCGinner, RsdCGinner, ReorthFreqInner);
+				    params.invParamInner.MaxCG, params.invParamInner.RsdCG, params.ReorthFreqInner);
       break;
     default:
-      QDPIO::cerr << "Unknown OverlapInnerSolverType " << inner_solver_type << endl;
+      QDPIO::cerr << "Unknown OverlapInnerSolverType " << params.inner_solver_type << endl;
       QDP_abort(1);
     }
   
@@ -762,21 +762,21 @@ namespace Chroma
   
     /* Finally construct and pack the operator */
     /* This is the operator of the form (1/2)*[(1+mu) + (1-mu)*gamma_5*eps] */
-    switch( inner_solver_type ) {
+    switch( params.inner_solver_type ) {
     case OVERLAP_INNER_CG_SINGLE_PASS:
-      return new lovlapms(*Mact, state_, Mass,
+      return new lovlapms(*Mact, state_, params.Mass,
 			  numroot, coeffP, resP, rootQ, 
 			  NEig, EigValFunc, state.getEigVec(),
-			  MaxCGinner, RsdCGinner, ReorthFreqInner);
+			  params.invParamInner.MaxCG, params.invParamInner.RsdCG, params.ReorthFreqInner);
       break;
     case OVERLAP_INNER_CG_DOUBLE_PASS:
-      return new lovlap_double_pass(*Mact, state_, Mass,
+      return new lovlap_double_pass(*Mact, state_, params.Mass,
 				    numroot, coeffP, resP, rootQ, 
 				    NEig, EigValFunc, state.getEigVec(),
-				    MaxCGinner, RsdCGinner, ReorthFreqInner);
+				    params.invParamInner.MaxCG, params.invParamInner.RsdCG, params.ReorthFreqInner);
       break;
     default:
-      QDPIO::cerr << "Unknown OverlapInnerSolverType " << inner_solver_type << endl;
+      QDPIO::cerr << "Unknown OverlapInnerSolverType " << params.inner_solver_type << endl;
       QDP_abort(1);
     }
   
@@ -830,21 +830,21 @@ namespace Chroma
   
     /* Finally construct and pack the operator */
     /* This is the operator of the form (1/2)*[(1+mu) + (1-mu)*gamma_5*eps] */
-    switch( inner_solver_type ) { 
+    switch( params.inner_solver_type ) { 
     case OVERLAP_INNER_CG_SINGLE_PASS:
       return new lg5eps(*Mact, state_,
 			numroot, coeffP, resP, rootQ, 
 			NEig, EigValFunc, state.getEigVec(),
-			MaxCGinner, RsdCGinner, ReorthFreqInner);
+			params.invParamInner.MaxCG, params.invParamInner.RsdCG, params.ReorthFreqInner);
       break;
     case OVERLAP_INNER_CG_DOUBLE_PASS:
       return new lg5eps_double_pass(*Mact, state_,
 				    numroot, coeffP, resP, rootQ, 
 				    NEig, EigValFunc, state.getEigVec(),
-				    MaxCGinner, RsdCGinner, ReorthFreqInner);
+				    params.invParamInner.MaxCG, params.invParamInner.RsdCG, params.ReorthFreqInner);
       break;
     default:
-      QDPIO::cerr << "Unknown OverlapInnerSolverType " << inner_solver_type << endl;
+      QDPIO::cerr << "Unknown OverlapInnerSolverType " << params.inner_solver_type << endl;
       QDP_abort(1);
     }
   
@@ -898,21 +898,21 @@ namespace Chroma
   
     /* Finally construct and pack the operator */
     /* This is the operator of the form (1/2)*[(1+mu) + (1-mu)*gamma_5*eps] */
-    switch( inner_solver_type ) { 
+    switch( params.inner_solver_type ) { 
     case OVERLAP_INNER_CG_SINGLE_PASS:
       return new lg5eps(*Mact, state_,
 			numroot, coeffP, resP, rootQ, 
 			NEig, EigValFunc, state.getEigVec(),
-			MaxCGinner, RsdCGinner, ReorthFreqInner);
+			params.invParamInner.MaxCG, params.invParamInner.RsdCG, params.ReorthFreqInner);
       break;
     case OVERLAP_INNER_CG_DOUBLE_PASS:
       return new lg5eps_double_pass(*Mact, state_,
 				    numroot, coeffP, resP, rootQ, 
 				    NEig, EigValFunc, state.getEigVec(),
-				    MaxCGinner, RsdCGinner, ReorthFreqInner);
+				    params.invParamInner.MaxCG, params.invParamInner.RsdCG, params.ReorthFreqInner);
       break;
     default:
-      QDPIO::cerr << "Unknown OverlapInnerSolverType " << inner_solver_type << endl;
+      QDPIO::cerr << "Unknown OverlapInnerSolverType " << params.inner_solver_type << endl;
       QDP_abort(1);
     }
   
@@ -970,21 +970,21 @@ namespace Chroma
   
       // Finally construct and pack the operator 
       // This is the operator of the form (1/2)*[(1+mu) + (1-mu)*gamma_5*eps]
-      switch( inner_solver_type ) { 
+      switch( params.inner_solver_type ) { 
       case OVERLAP_INNER_CG_SINGLE_PASS:
-	return new lovddag(*Mact, state_, Mass,
+	return new lovddag(*Mact, state_, params.Mass,
 			   numroot, coeffP, resP, rootQ, 
 			   NEig, EigValFunc, state.getEigVec(),
-			   MaxCGinner, RsdCGinner, ReorthFreqInner, ichiral);
+			   params.invParamInner.MaxCG, params.invParamInner.RsdCG, params.ReorthFreqInner, ichiral);
 	break;
       case OVERLAP_INNER_CG_DOUBLE_PASS:
-	return new lovddag_double_pass(*Mact, state_, Mass,
+	return new lovddag_double_pass(*Mact, state_, params.Mass,
 				       numroot, coeffP, resP, rootQ, 
 				       NEig, EigValFunc, state.getEigVec(),
-				       MaxCGinner, RsdCGinner, ReorthFreqInner, ichiral);
+				       params.invParamInner.MaxCG, params.invParamInner.RsdCG, params.ReorthFreqInner, ichiral);
 	break;
       default:
-	QDPIO::cerr << "Unknown OverlapInnerSolverType " << inner_solver_type << endl;
+	QDPIO::cerr << "Unknown OverlapInnerSolverType " << params.inner_solver_type << endl;
 	QDP_abort(1);
       }
 
@@ -1062,21 +1062,21 @@ namespace Chroma
   
       // Finally construct and pack the operator 
       // This is the operator of the form (1/2)*[(1+mu) + (1-mu)*gamma_5*eps]
-      switch( inner_solver_type ) { 
+      switch( params.inner_solver_type ) { 
       case OVERLAP_INNER_CG_SINGLE_PASS:
-	return new lovddag(*Mact, state_, Mass,
+	return new lovddag(*Mact, state_, params.Mass,
 			   numroot, coeffP, resP, rootQ, 
 			   NEig, EigValFunc, state.getEigVec(),
-			   MaxCGinner, RsdCGinner, ReorthFreqInner, ichiral);
+			   params.invParamInner.MaxCG, params.invParamInner.RsdCG, params.ReorthFreqInner, ichiral);
 	break;
       case OVERLAP_INNER_CG_DOUBLE_PASS:
-	return new lovddag_double_pass(*Mact, state_, Mass,
+	return new lovddag_double_pass(*Mact, state_, params.Mass,
 				       numroot, coeffP, resP, rootQ, 
 				       NEig, EigValFunc, state.getEigVec(),
-				       MaxCGinner, RsdCGinner, ReorthFreqInner, ichiral);
+				       params.invParamInner.MaxCG, params.invParamInner.RsdCG, params.ReorthFreqInner, ichiral);
 	break;
       default:
-	QDPIO::cerr << "Unknown OverlapInnerSolverType " << inner_solver_type << endl;
+	QDPIO::cerr << "Unknown OverlapInnerSolverType " << params.inner_solver_type << endl;
 	QDP_abort(1);
       }
 
