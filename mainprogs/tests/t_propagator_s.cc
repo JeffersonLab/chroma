@@ -1,4 +1,4 @@
-// $Id: t_propagator_s.cc,v 1.20 2004-11-06 14:21:04 mcneile Exp $
+// $Id: t_propagator_s.cc,v 1.21 2004-11-12 11:00:58 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -272,7 +272,7 @@ int main(int argc, char **argv)
   }
 
   // Read in the source along with relevant information.
-  LatticePropagator quark_prop_source;
+  LatticeStaggeredPropagator quark_prop_source;
   XMLReader source_xml;
 
   switch (input.param.prop_type) 
@@ -359,7 +359,7 @@ int main(int argc, char **argv)
   // terminology is that a staggered propagator is a matrix in color space
   // 
   //
-  LatticePropagator quark_propagator;
+  LatticeStaggeredPropagator quark_propagator;
   XMLBufferWriter xml_buf;
   int ncg_had = 0;
   int n_count;
@@ -410,7 +410,7 @@ int main(int argc, char **argv)
          * Move the solution to the appropriate components
          * of quark propagator.
         */
-        FermToProp(psi, quark_propagator, color_source, spin_source);
+        FermToProp(psi, quark_propagator, color_source);
       }  //color_source
     
       stag_prop[src_ind] = quark_propagator;
