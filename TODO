@@ -1,7 +1,4 @@
-      Laundry List   -  19 Feb 2005
-
-\item Change check_PROGRAMS to bin_PROGRAMS and install binaries
-in chroma/mainprogs/main
+      Laundry List   -  22 Feb 2005
 
 \item (*) Implement full Chrono predictor for HMC. This could win
 a factor of 2 based on comparisons of CG counts for linear pred.
@@ -27,7 +24,24 @@ to the factory calls.
 \item Aniso precond. and even-odd aniso precond. for linops
 \item Aniso precond. and even-odd aniso precond. for HMC
 
-\item Simple aniso for DWF - fix weirdness
+\item Aniso support in GaugeActs - its nearly there, only IO.
+
+\item Make generic update "harness" that also works for pure-gauge
+heatbath.
+
+\item Make heat-bath production ready. Need over-relaxation. Need I/O !
+
+\item Need some kind of reader/writer (??) for ILDG meta-data conventions???
+BJ points out management stuff not workable. Could do physics portion.
 
 \item A. Hart says the subset-ted reunit is slow - should use
 QDP's profile and isolate.
+
+
+DONE:
+
+\item Change check_PROGRAMS to bin_PROGRAMS and install binaries
+in chroma/mainprogs/main
+
+\item Simple aniso for DWF - fix weirdness
+
