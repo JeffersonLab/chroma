@@ -1,4 +1,4 @@
-// $Id: t_ritz_KS.cc,v 1.3 2004-01-21 15:34:52 bjoo Exp $
+// $Id: t_ritz_KS.cc,v 1.4 2004-01-28 15:48:01 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -12,7 +12,6 @@
 #include <math.h>
 
 #include "chroma.h"
-#include "meas/eig/eig_spec_bj_w.h"
 
 
 using namespace QDP;
@@ -35,8 +34,14 @@ typedef struct {
   
   Real quark_mass;
   Real rsd_r;
+  Real rsd_a;
+  Real rsd_zero;
+  Real gamma_factor;
+  bool projApsiP;  
   int  n_eig;
+  int n_dummy;
   int max_cg;
+  int max_KS;
 } Param_t;
 
 // Declare routine to read the parameters
@@ -58,9 +63,14 @@ void readParams(const string& filename, Param_t& params)
     }
    
    read(reader, "/params/eig/RsdR", params.rsd_r);
+   read(reader, "/params/eig/RsdA", params.rsd_a);
+   read(reader, "/params/eig/RsdZero", params.rsd_zero);
+   read(reader, "/params/eig/gammaFactor", params.gamma_factor);
+   read(reader, "/params/eig/ProjApsiP",  params.projApsiP);
+   read(reader, "/params/eig/MaxKS", params.max_KS);
    read(reader, "/params/eig/MaxCG", params.max_cg);
    read(reader, "/params/eig/Neig", params.n_eig);
-
+   read(reader, "/params/eig/Ndummy", params.n_dummy);
   }
   catch(const string& e) { 
     throw e;
@@ -91,6 +101,11 @@ void dumpParams(XMLWriter& writer, Param_t& params)
   write(writer, "RsdR", params.rsd_r);
   write(writer, "MaxCG", params.max_cg);
   write(writer, "Neig", params.n_eig);
+  write(writer, "Ndummy", params.n_dummy);
+  write(writer, "RsdA", params.rsd_a);
+  write(writer, "RsdZero", params.rsd_zero);
+  write(writer, "ProjApsiP",  params.projApsiP);
+  write(writer, "gammaParam", params.gamma_factor);
   pop(writer); // Eig
 
   pop(writer); // params
@@ -216,9 +231,9 @@ int main(int argc, char **argv)
   Handle< const LinearOperator<LatticeFermion> > MM = S_w.lMdagM(connect_state);
   int n_dummy = 2;
   // Try and get lowest eigenvalue of MM
-  multi1d<Real> lambda(params.n_eig+n_dummy);
+  multi1d<Real> lambda(params.n_eig+params.n_dummy);
   multi1d<Real> check_norm(params.n_eig);
-  multi1d<LatticeFermion> psi(params.n_eig+n_dummy);
+  multi1d<LatticeFermion> psi(params.n_eig+params.n_dummy);
   
   int n_renorm = 10;
   int n_min = 5;
@@ -232,8 +247,9 @@ int main(int argc, char **argv)
 
   XMLBufferWriter eig_spec_xml;
 
-  for(int i =0; i < params.n_eig+ n_dummy; i++) { 
+  for(int i =0; i < params.n_eig+ params.n_dummy; i++) { 
     gaussian(psi[i]);
+    lambda[i] = Real(1);
   }
 
   int n_KS_count = 0;
@@ -242,16 +258,17 @@ int main(int argc, char **argv)
 		lambda, 
 		psi, 
 		params.n_eig,
-		n_dummy,                // No of dummies
+		params.n_dummy,                // No of dummies
 		n_renorm, 
 		n_min, 
 		200,             // Max iters / KS cycle
-		1000,            // Max no of KS cycles
-		Real(0.1),       // Gamma factor
+		params.max_KS,            // Max no of KS cycles
+		params.gamma_factor,       // Gamma factor
 		params.max_cg,
 		params.rsd_r,
-		Real(1.0e-3),   // Zero cutoff value
-		ProjApsiP,
+		params.rsd_a,  
+		params.rsd_zero,
+		params.projApsiP,
 		n_CG_count,
 		n_KS_count,
 		n_jacob_count,
@@ -279,8 +296,8 @@ int main(int argc, char **argv)
   int n_valid;
   int n_jacob;
 
-  fixMMev2Mev(*H, lambda, psi, params.n_eig+n_dummy, Real(10)*params.rsd_r, 
-	      Real(1.0e-3), valid_eig, n_valid, params.rsd_r, n_jacob);
+  fixMMev2Mev(*H, lambda, psi, params.n_eig, params.rsd_r,
+	       sqrt(params.rsd_a), params.rsd_zero, valid_eig, n_valid, n_jacob);
 
   push(xml_out, "eigFix");
   write(xml_out, "lambda", lambda);
@@ -288,15 +305,30 @@ int main(int argc, char **argv)
   write(xml_out, "valid_eig", valid_eig);
   for(int i=0; i < params.n_eig; i++) { 
     LatticeFermion Me;
-    LatticeFermion lambda_e;
     (*H)(Me, psi[i], PLUS);
-    lambda_e = lambda[i]*psi[i];
-    LatticeFermion r_norm = Me - lambda_e;
-    check_norm[i] = sqrt(norm2(r_norm))/fabs(lambda[i]);
+
+    bool zeroP = toBool( fabs(lambda[i]) < params.rsd_zero );
+    if( zeroP ) {
+      check_norm[i] = sqrt(norm2(Me));
+    }
+    else {
+      LatticeFermion lambda_e;
+   
+      lambda_e = lambda[i]*psi[i];
+      LatticeFermion r_norm = Me - lambda_e;
+      check_norm[i] = sqrt(norm2(r_norm))/fabs(lambda[i]);
+    }
+
     QDPIO::cout << "check_norm["<<i+1<<"] = " << check_norm[i] << endl;
   }
-  write(xml_out, "check_norm_rel", check_norm);
+  write(xml_out, "check_norm", check_norm);
   pop(xml_out);
+
+
+  for(int i=0; i < params.n_eig;i++ ) {
+    lambda[i] /= (Nd + params.quark_mass);
+  }
+  write(xml_out, "szinLamda", lambda);
 
   pop(xml_out);
   QDP_finalize();
