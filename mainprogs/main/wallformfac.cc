@@ -1,4 +1,4 @@
-// $Id: wallformfac.cc,v 1.19 2004-05-10 00:22:34 edwards Exp $
+// $Id: wallformfac.cc,v 1.20 2004-05-13 00:17:13 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions with a wall sink
  *
@@ -332,10 +332,8 @@ main(int argc, char *argv[])
     {
       /* Time-charge reverse the quark propagators */
       /* S_{CT} = gamma_5 gamma_4 = gamma_1 gamma_2 gamma_3 = Gamma(7) */
-//      LatticePropagator qf_tmp = - (Gamma(7) * forward_quark_prop * Gamma(7));
-//      LatticePropagator qb_tmp = - (Gamma(7) * backward_quark_prop * Gamma(7));
-      LatticePropagator qf_tmp = conj(Gamma(5) * forward_quark_prop * Gamma(5));
-      LatticePropagator qb_tmp = conj(Gamma(5) * backward_quark_prop * Gamma(5));
+      LatticePropagator qf_tmp = - (Gamma(7) * forward_quark_prop * Gamma(7));
+      LatticePropagator qb_tmp = - (Gamma(7) * backward_quark_prop * Gamma(7));
 
       wallNuclFormFac(xml_out,
 		      u, 
