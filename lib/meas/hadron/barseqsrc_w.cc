@@ -1,4 +1,4 @@
-// $Id: barseqsrc_w.cc,v 1.9 2005-03-07 02:55:20 edwards Exp $
+// $Id: barseqsrc_w.cc,v 1.10 2005-03-12 18:38:31 edwards Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */
@@ -30,7 +30,6 @@ namespace Chroma
     LatticePropagator q1_tmp;
     LatticePropagator q2_tmp;
     LatticePropagator di_quark;
-    LatticeColorMatrix col_mat;
   
     SpinMatrix g_one = 1.0;
 
@@ -39,9 +38,8 @@ namespace Chroma
     /* C gamma_5 = Gamma(5) = - (C gamma_5)^T */
     di_quark = quarkContract24(quark_propagator_1 * Gamma(5), 
 			       Gamma(5) * quark_propagator_2);
-    q1_tmp = 1;
     src_prop_tmp = (di_quark + Gamma(8)*di_quark) 
-      + traceSpin(di_quark)*(q1_tmp + Gamma(8)*q1_tmp);
+      + traceSpin(di_quark)*(g_one + Gamma(8)*g_one);
 
     q1_tmp = Gamma(5) * quark_propagator_2 * Gamma(5);
     q2_tmp = quark_propagator_1 + quark_propagator_1*Gamma(8);
@@ -60,8 +58,6 @@ namespace Chroma
     LatticePropagator src_prop_tmp;
     LatticePropagator q1_tmp;
     LatticePropagator q2_tmp;
-    LatticePropagator di_quark;
-    LatticeColorMatrix col_mat;
   
     SpinMatrix g_one = 1.0;
 
@@ -102,14 +98,10 @@ namespace Chroma
     q1_tmp = quark_propagator_1 * Gamma(5);
     q2_tmp = Gamma(5) * quark_propagator_2;
     di_quark = quarkContract24(q1_tmp, q2_tmp);
-    src_prop_tmp = Gamma(3) * di_quark;
-    src_prop_tmp += Gamma(11) * di_quark;
+    src_prop_tmp = (Gamma(3) * di_quark  +  Gamma(11) * di_quark);
 
     col_mat = traceSpin(di_quark);
-    q1_tmp = 1;
-    di_quark = Gamma(3) * q1_tmp;
-    di_quark += Gamma(11) * q1_tmp;
-    src_prop_tmp += col_mat * di_quark;
+    src_prop_tmp += col_mat * (Gamma(3) * g_one + Gamma(11) * g_one);
 
     q1_tmp = q2_tmp * Gamma(5);
     q2_tmp = quark_propagator_1 * Gamma(3);
@@ -131,8 +123,6 @@ namespace Chroma
     LatticePropagator src_prop_tmp;
     LatticePropagator q1_tmp;
     LatticePropagator q2_tmp;
-    LatticePropagator di_quark;
-    LatticeColorMatrix col_mat;
   
     SpinMatrix g_one = 1.0;
 
@@ -310,8 +300,6 @@ namespace Chroma
     LatticePropagator src_prop_tmp;
     LatticePropagator q1_tmp;
     LatticePropagator q2_tmp;
-    LatticePropagator di_quark;
-    LatticeColorMatrix col_mat;
   
     SpinMatrix g_one = 1.0;
 
@@ -390,8 +378,6 @@ namespace Chroma
     LatticePropagator src_prop_tmp;
     LatticePropagator q1_tmp;
     LatticePropagator q2_tmp;
-    LatticePropagator di_quark;
-    LatticeColorMatrix col_mat;
   
     SpinMatrix g_one = 1.0;
 
@@ -528,7 +514,6 @@ namespace Chroma
     LatticePropagator q1_tmp;
     LatticePropagator q2_tmp;
     LatticePropagator di_quark;
-    LatticeColorMatrix col_mat;
   
     SpinMatrix g_one = 1.0;
 
