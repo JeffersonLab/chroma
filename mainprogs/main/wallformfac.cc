@@ -1,4 +1,4 @@
-// $Id: wallformfac.cc,v 1.8 2004-04-04 03:54:40 edwards Exp $
+// $Id: wallformfac.cc,v 1.9 2004-04-04 03:57:14 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions with a wall sink
  *
@@ -49,7 +49,7 @@ void read(XMLReader& xml, const string& path, Prop_t& input)
 
 
 //! Parameter input
-void read(XMLReader& xml, const string& path, Param_t& input)
+void read(XMLReader& xml, const string& path, Param_t& param)
 {
   XMLReader paramtop(xml, path);
 
@@ -137,7 +137,7 @@ main(int argc, char *argv[])
   multi1d<LatticeColorMatrix> u(Nd);
   XMLReader gauge_xml;
 
-  switch (input.param.cfg_type) 
+  switch (input.cfg.cfg_type) 
   {
   case CFG_TYPE_SZIN :
     readSzin(gauge_xml, u, input.cfg.cfg_file);
@@ -275,18 +275,18 @@ main(int argc, char *argv[])
   //
   // Now the 3pt contractions
   //
-  SftMom phases(input.param.mom2_max, false, input.param.j_decay);
+  SftMom phases(input.param.mom2_max, false, j_decay);
 
 #if 1
   wallPionFormFac(xml_out,
 		  u, forward_quark_prop, backward_quark_prop, 
 		  phases, 
-		  input.param.t_srce[input.param.j_decay],
+		  t_source[j_decay],
 		  input.param.t_sink);
 #else
   wallNucleonFormFac(xml_out,
 		     u, forward_quark_prop, backward_quark_prop, phases, 
-		     input.param.t_srce[input.param.j_decay]);
+		     t_source[j_decay]);
 #endif
 
   
