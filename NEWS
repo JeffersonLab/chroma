@@ -1,3 +1,6 @@
+01/27/2004 -- Robert Edwards
+	Version 1.4.3. Overhauled SSE Wilson dslash support. New index tables.
+
 01/26/2004 -- Robert Edwards
 	Version 1.4.2. More eigenvalue stuff. Tagging pre-release of the
         new SSE Wilson dslash support.
