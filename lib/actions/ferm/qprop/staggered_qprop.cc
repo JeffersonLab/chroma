@@ -1,4 +1,4 @@
-// $Id: staggered_qprop.cc,v 1.4 2004-01-08 11:53:09 bjoo Exp $
+// $Id: staggered_qprop.cc,v 1.5 2004-02-17 17:52:56 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *
@@ -59,7 +59,7 @@ EvenOddStaggeredTypeFermAct<LatticeFermion>::qprop(LatticeFermion& psi,
 
     M->evenEvenLinOp(tmp, chi, PLUS);
     M->evenOddLinOp(tmp2, chi, MINUS);
-    tmp += tmp2;
+    tmp[rb[0]] += tmp2;
     
 
     /* psi = (M^dag * M)^(-1) chi  = A^{-1} chi*/
