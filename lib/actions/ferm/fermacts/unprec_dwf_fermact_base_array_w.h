@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_fermact_base_array_w.h,v 1.5 2003-12-02 15:45:04 edwards Exp $
+// $Id: unprec_dwf_fermact_base_array_w.h,v 1.6 2003-12-04 02:57:16 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned domain-wall-like fermion actions
  */
@@ -16,6 +16,9 @@ using namespace QDP;
  *
  * Unprecondition domain-wall fermion action. The conventions used here
  * are specified in Phys.Rev.D63:094505,2001 (hep-lat/0005002).
+ *
+ * NOTE: for now we assume the kernel is a fund. rep. fermion type,
+ * but that is not necessary
  */
 
 class UnprecDWFermActBaseArray : public UnprecWilsonTypeFermAct< multi1d<LatticeFermion> >
