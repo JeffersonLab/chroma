@@ -1,4 +1,4 @@
-// $Id: t_lwldslash_sse.cc,v 1.11 2003-09-23 18:07:26 edwards Exp $
+// $Id: t_lwldslash_sse.cc,v 1.12 2003-09-23 18:28:38 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -84,7 +84,7 @@ int main(int argc, char **argv)
       if( Layout::primaryNode() ) { 
 	cout << "cb = " << cb << " isign = " << isign << endl;
 	cout << "The time per lattice point is "<< mydt 
-	     << " micro sec (" <<  (double)(1392.0f/mydt) << ") Mflops " << endl;
+	     << " micro sec (" <<  (double)(1320.0f/mydt) << ") Mflops " << endl;
 	
 	
       }
@@ -125,7 +125,7 @@ int main(int argc, char **argv)
       if( Layout::primaryNode() ) { 
 	cout << "cb = " << cb << " isign = " << isign << endl;
 	cout << "The time per lattice point is "<< mydt 
-	     << " micro sec (" <<  (double)(1392.0f/mydt) << ") Mflops " << endl;
+	     << " micro sec (" <<  (double)(1320.0f/mydt) << ") Mflops " << endl;
 	
 	
       }
