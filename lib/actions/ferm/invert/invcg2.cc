@@ -1,4 +1,4 @@
-// $Id: invcg2.cc,v 1.9 2004-07-28 03:47:26 edwards Exp $
+// $Id: invcg2.cc,v 1.10 2004-08-10 13:21:28 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -74,7 +74,10 @@ void InvCG2_a(const LinearOperator<T>& M,
 //  Real rsd_sq = (RsdCG * RsdCG) * Real(norm2(chi,s));
   Real chi_sq =  Real(norm2(chi,s));
 
+#if 0
   QDPIO::cout << "chi_norm = " << sqrt(chi_sq) << endl;
+#endif
+
   Real rsd_sq = (RsdCG * RsdCG) * chi_sq;
 
   //                                            +
@@ -94,7 +97,9 @@ void InvCG2_a(const LinearOperator<T>& M,
   //  Cp = |r[0]|^2
   Double cp = norm2(r, s);   	       	   /* 2 Nc Ns  flops */
 
+#if 0
   QDPIO::cout << "InvCG: k = 0  cp = " << cp << "  rsd_sq = " << rsd_sq << endl;
+#endif
 
   //  IF |r[0]| <= RsdCG |Chi| THEN RETURN;
   if ( toBool(cp  <=  rsd_sq) )
@@ -140,7 +145,9 @@ void InvCG2_a(const LinearOperator<T>& M,
     //  cp  =  | r[k] |**2
     cp = norm2(r, s);	                /* 2 Nc Ns  flops */
 
+#if 0
     QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << endl;
+#endif
 
     if ( toBool(cp  <=  rsd_sq) )
     {

@@ -1,4 +1,4 @@
-// $Id: invcg1.cc,v 1.7 2004-07-28 03:47:26 edwards Exp $
+// $Id: invcg1.cc,v 1.8 2004-08-10 13:21:28 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -98,8 +98,10 @@ void InvCG1_a(const LinearOperator<T>& A,
   //  Cp = |r[0]|^2
   Double cp = norm2(r, s);   	       	   /* 2 Nc Ns  flops */
 
+#if 0
   QDPIO::cout << "InvCG1: k = 0  cp = " << cp << "  rsd_sq = " << rsd_sq 
 << endl;
+#endif
 
   //  IF |r[0]| <= RsdCG |Chi| THEN RETURN;
   if ( toBool(cp  <=  rsd_sq) )
