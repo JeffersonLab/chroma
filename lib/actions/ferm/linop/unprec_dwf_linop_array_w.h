@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_linop_array_w.h,v 1.5 2003-11-22 21:28:11 edwards Exp $
+// $Id: unprec_dwf_linop_array_w.h,v 1.6 2003-11-23 06:15:59 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion linear operator
  */
@@ -33,6 +33,9 @@ public:
   //! Creation routine
   void create(const multi1d<LatticeColorMatrix>& u_, 
 	      const Real& WilsonMass_, const Real& m_q_, int N5_);
+
+  //! Length of DW flavor index/space
+  inline int size() const {return N5;}
 
   //! Destructor is automatic
   ~UnprecDWLinOpArray() {}

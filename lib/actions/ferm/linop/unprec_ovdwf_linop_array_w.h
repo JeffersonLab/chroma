@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovdwf_linop_array_w.h,v 1.2 2003-11-20 05:43:41 edwards Exp $
+// $Id: unprec_ovdwf_linop_array_w.h,v 1.3 2003-11-23 06:16:24 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Overlap-DWF (Borici) linear operator
  */
@@ -31,6 +31,9 @@ public:
 
   //! Creation routine
   void create(const multi1d<LatticeColorMatrix>& u_, const Real& WilsonMass_, const Real& m_q_, int N5_);
+
+  //! Length of DW flavor index/space
+  int size() const {return N5;}
 
   //! Destructor is automatic
   ~UnprecOvDWLinOpArray() {}
