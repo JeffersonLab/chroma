@@ -29,3 +29,5 @@ to the factory calls.
 
 \item Simple aniso for DWF - fix weirdness
 
+\item A. Hart says the subset-ted reunit is slow - should use
+QDP's profile and isolate.
