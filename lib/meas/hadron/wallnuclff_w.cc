@@ -1,4 +1,4 @@
-// $Id: wallnuclff_w.cc,v 1.13 2004-04-29 21:07:58 edwards Exp $
+// $Id: wallnuclff_w.cc,v 1.14 2004-05-04 19:54:03 edwards Exp $
 /*! \file
  *  \brief Wall-sink nucleon form-factors 
  *
@@ -66,13 +66,13 @@ LatticeSpinMatrix wallNuclUContract(const LatticePropagator& insert_prop,
   LatticeSpinMatrix  S;
 
   // Term 1
-  S  = traceColor(insert_prop * Gamma(5) * quarkContract13(Gamma(5)*d_x2, u_x2));
-  // Term 2
-  S += traceColor(u_x2 * traceSpin(quarkContract13(insert_prop*Gamma(5), Gamma(5)*d_x2)));
+  S  = traceColor(insert_prop * quarkContract13(d_x2*Gamma(5), Gamma(5)*u_x2));
   // Term 3
-  S += traceColor(insert_prop * traceSpin(quarkContract13(Gamma(5)*d_x2, u_x2*Gamma(5))));
+  S += traceColor(insert_prop * traceSpin(quarkContract13(d_x2*Gamma(5), Gamma(5)*u_x2)));
   // Term 4
-  S += traceColor(u_x2*Gamma(5) * quarkContract13(Gamma(5)*d_x2, insert_prop));
+  S += traceColor(u_x2 * quarkContract13(d_x2*Gamma(5), Gamma(5)*insert_prop));
+  // Term 2
+  S += traceColor(u_x2 * traceSpin(quarkContract13(d_x2*Gamma(5), Gamma(5)*insert_prop)));
 
   return S;
 }
@@ -100,10 +100,10 @@ LatticeSpinMatrix wallNuclDContract(const LatticePropagator& insert_prop,
   LatticeSpinMatrix  S; 
 
   // Term 5
-  S  = traceColor(u_x2 * Gamma(5) * quarkContract13(Gamma(5)*insert_prop, u_x2));
+  S  = traceColor(u_x2 * quarkContract13(insert_prop*Gamma(5), Gamma(5)*u_x2));
 
   // Term 6
-  S += traceColor(u_x2 * traceSpin(quarkContract13(u_x2*Gamma(5), Gamma(5)*insert_prop)));
+  S += traceColor(u_x2 * traceSpin(quarkContract13(insert_prop*Gamma(5), Gamma(5)*u_x2)));
 
   return S;
 }
