@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_fermact_w.cc,v 1.2 2003-11-08 04:21:47 edwards Exp $
+// $Id: unprec_dwf_fermact_w.cc,v 1.3 2003-11-09 22:33:01 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion action
  */
@@ -51,87 +51,17 @@ UnprecDWFermAct::lMdagM(const multi1d<LatticeColorMatrix>& u) const
   return mdagm;
 }
 
-
-
-//-------------------------------------------------------------------------------------
-#include "actions/ferm/invert/invcg2.h"
-
-//! Propagator of an un-preconditioned DWF linear operator
-/*! \ingroup qprop
+//! Produce a linear operator for this action but with quark mass 1
+/*!
+ * \ingroup fermact
  *
- * \param psi      quark propagator ( Modify )
- * \param u        gauge field ( Read )
- * \param chi      source ( Read )
- * \param invType  inverter type ( Read (
- * \param RsdCG    CG (or MR) residual used here ( Read )
- * \param MaxCG    maximum number of CG iterations ( Read )
- * \param ncg_had  number of CG iterations ( Write )
+ * The operator acts on the entire lattice
+ *
+ * \param u 	    gauge field     	       (Read)
  */
-
-void UnprecDWFermAct::qprop(LatticeFermion& psi, 
-			    const multi1d<LatticeColorMatrix>& u, 
-			    const LatticeFermion& chi, 
-			    enum InvType invType,
-			    const Real& RsdCG, 
-			    int MaxCG, int& ncg_had) const
+const LinearOperator<LatticeDWFermion>* 
+UnprecDWFermAct::linOpPV(const multi1d<LatticeColorMatrix>& u) const
 {
-  START_CODE("UnprecDWTypeFermAct::qprop");
-
-  int n_count;
-  
-  QDPIO::cout << "|psi|^2 = " << norm2(psi) << endl;
-  QDPIO::cout << "|chi|^2 = " << norm2(chi) << endl;
-
-  /* Construct the linear operator */
-  /* This allocates field for the appropriate action */
-  const LinearOperator<LatticeDWFermion>* A = linOp(u);
-
-  LatticeDWFermion tmp, psi_tmp, chi_tmp;
-
-  psi_tmp = zero;
-  pokeDW(psi_tmp, psi, 0);
-
-  chi_tmp = zero;
-  pokeDW(chi_tmp, chi, 0);     // WRONG!!!
-
-  QDPIO::cout << "|psi_tmp|^2 = " << norm2(psi_tmp) << endl;
-  QDPIO::cout << "|chi_tmp|^2 = " << norm2(chi_tmp) << endl;
-
-  switch(invType)
-  {
-  case CG_INVERTER: 
-    /* chi_tmp = M_dag(u) * chi_tmp */
-    tmp = (*A)(chi_tmp, MINUS);
-    
-    /* psi_tmp = (M^dag * M)^(-1) chi_tmp */
-    InvCG2 (*A, tmp, psi_tmp, RsdCG, MaxCG, n_count);
-    break;
-  
-#if 0
-  case MR_INVERTER:
-    /* psi_tmp = M^(-1) chi_tmp */
-    InvMR (*A, chi_tmp, psi_tmp, MRover, RsdCG, MaxCG, n_count);
-    break;
-
-  case BICG_INVERTER:
-    /* psi_tmp = M^(-1) chi_tmp */
-    InvBiCG (*A, chi_tmp, psi_tmp, RsdCG, MaxCG, n_count);
-    break;
-#endif
-  
-  default:
-    QDP_error_exit("Unknown inverter type", invType);
-  }
-  
-  if ( n_count == MaxCG )
-    QDP_error_exit("no convergence in the inverter", n_count);
-  
-  ncg_had = n_count;
-  
-  psi = peekDW(psi_tmp, 0);    // WRONG!!!
-
-  // Call the virtual destructor of A
-  delete A;
-
-  END_CODE("UnprecDWTypeFermAct::qprop");
+  return new UnprecDWLinOp(u,WilsonMass,1.0);  // fixed to quark mass 1
 }
+
