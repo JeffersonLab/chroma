@@ -1,4 +1,4 @@
-// $Id: io.h,v 1.11 2004-01-07 13:50:08 bjoo Exp $
+// $Id: io.h,v 1.12 2004-02-23 03:07:25 edwards Exp $
 
 #ifndef __io_h__
 #define __io_h__
@@ -16,13 +16,10 @@
  */
 
 #include "readszin.h"
-#include "readszinqprop_w.h"
-#include "readszinferm_w.h"
 #include "qprop_io.h"
 #include "szin_io.h"
 
 #include "writeszin.h"
-#include "writeszinqprop_w.h"
 
 #include "milc_io.h"
 #include "readmilc.h"
