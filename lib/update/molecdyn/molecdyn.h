@@ -2,7 +2,13 @@
 #define molecdyn_h
 
 
-#include "update/field_state.h"
+#include "update/molecdyn/field_state.h"
+#include "update/molecdyn/abs_monomial.h"
+
+
+#include "update/molecdyn/molecdyn_w.h"
+
+// #include "update/molecdyn/abs_hamiltonian.h"
 /*
 #include "update/molecdyn/abs_hamiltonian.h"
 #include "update/molecdyn/exact_pg_hamiltonian.h"

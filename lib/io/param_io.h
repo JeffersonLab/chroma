@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: param_io.h,v 1.25 2004-09-22 17:24:59 bjoo Exp $
+// $Id: param_io.h,v 1.26 2004-12-21 15:42:21 bjoo Exp $
 /*! \file
  *  \brief Reunitarize (to a SU(N)) inplace the matrix A under some option
  */
@@ -13,6 +13,8 @@
 
 // ! now needed
 using namespace Chroma;
+
+namespace Chroma { 
 
 //! Convert a Kappa to a mass
 Real kappaToMass(const Real& Kappa);
@@ -130,8 +132,7 @@ void write(XMLWriter& xml, const string& path, const InvertParam_t& param);
 
 //! Write inverter parameters
 void write(XMLWriter& xml, const string& path, const MultiInvertParam_t& param);
-
-
 /*! @} */  // end of group io
 
+}; //end namespace chroma
 #endif

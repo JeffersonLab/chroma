@@ -16,6 +16,7 @@ void PseudoFermionHeatbath_t(AbsPFFieldState< multi1d<LatticeColorMatrix>,
   const multi1d<LatticeColorMatrix>& u = mc_state.getQ();
   
   // Heatbath all the fields
+
   for(int pf = 0; pf < mc_state.getPhi().size(); pf++) { 
     
     // Get at the ferion action for piece i

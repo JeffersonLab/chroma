@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_monomial.h,v 1.1 2004-12-13 22:41:00 edwards Exp $
+// $Id: abs_monomial.h,v 1.2 2004-12-21 15:42:22 bjoo Exp $
 
 /*! @file
  * @brief Monomials - gauge action or fermion binlinear contributions for HMC
@@ -10,6 +10,8 @@
 
 #include "fermact.h"
 #include "gaugeact.h"
+
+#include "update/molecdyn/field_state.h"
 
 namespace Chroma
 {
@@ -43,9 +45,6 @@ namespace Chroma
     //! virtual destructor:
     virtual ~Monomial() {}
 
-    //! clone function for virtual copy constructs
-    virtual Monomial<P,Q>* clone(void) const = 0;
-
     //! Compute dsdq for the system... 
     /*! Not specified how to actually do this s is the state, F is the computed force */
     virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) const = 0;
@@ -68,9 +67,6 @@ namespace Chroma
     //! virtual destructor:
     virtual ~ExactMonomial() {}
 
-    //! clone function for virtual copy constructs
-    virtual ExactMonomial<P,Q>* clone(void) const = 0;
-
     //! Compute dsdq for the system... Not specified how to actually do this
     //  s is the state, F is the computed force
     virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) const = 0;
@@ -78,25 +74,34 @@ namespace Chroma
     // Compute the energies 
 
     //! Compute the total action
-    virtual Double S(const AbsFieldState<P,Q>& s) const
-    {
-      return mesKE(s) + mesPE(s);
-    }
-
-    //! The total energy
-    virtual void mesE(Double& KE, Double& PE, const AbsFieldState<P,Q>& s) const 
-    {
-      KE = mesKE(s);
-      PE = mesPE(s);
-    }
-
-    //! The Kinetic Energy
-    virtual Double mesKE(const AbsFieldState<P,Q>& s) const = 0;
-
-    //! The Potential Energy 
-    virtual Double mesPE(const AbsFieldState<P,Q>& s) const = 0;
+    virtual Double S(const AbsFieldState<P,Q>& s) const = 0;
   };
 
+  //! Fermionic monomials (binlinears in fermion fields)
+  /*! @ingroup actions
+   *
+   * The fermion hierachy would splits at the very top into
+   * inexact and exact monomials. An exact monomial can be used
+   * for an inexact algorithm, but not vice-versa.
+   */
+ 
+  /* Unfortunately we need to template on the Phi-s because
+     we need that template for the FermActs */
+  template<typename P, typename Q, typename Phi>
+  class FermMonomial : public Monomial<P,Q>
+  {
+  public:
+    //! virtual destructor:
+    ~FermMonomial() {}
+
+    //! Compute dsdq for the system... Not specified how to actually do this
+    //  s is the state, F is the computed force
+    virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) const = 0;
+
+
+    // Refresh all pseudofermions
+    virtual void refresh(const AbsFieldState<P,Q>& field_state) = 0;
+  };
 
 
   //! Fermionic monomials (binlinears in fermion fields)
@@ -106,6 +111,9 @@ namespace Chroma
    * inexact and exact monomials. An exact monomial can be used
    * for an inexact algorithm, but not vice-versa.
    */
+  
+  /* Unfortunately we need to template on the Phi-s because
+     we need that template for the FermActs */
   template<typename P, typename Q, typename Phi>
   class ExactFermMonomial : public ExactMonomial<P,Q>
   {
@@ -113,11 +121,15 @@ namespace Chroma
     //! virtual destructor:
     ~ExactFermMonomial() {}
 
-    //! Refresh any pseudo fermions
-    virtual void refresh(const AbsFieldState<P,Q>& s) = 0;
+    //! Compute the total action
+    virtual Double S(const AbsFieldState<P,Q>& s) const = 0;
 
-    //! clone function for virtual copy constructs
-    virtual ExactFermMonomial<P,Q,Phi>* clone(void) const = 0;
+    //! Compute dsdq for the system... Not specified how to actually do this
+    //  s is the state, F is the computed force
+    virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) const = 0;
+
+    //! Refresh pseudofermions
+    virtual void refresh(const AbsFieldState<P,Q>& field_state) = 0;
   };
 
 
@@ -134,41 +146,18 @@ namespace Chroma
      //! virtual destructor:
     ~ExactWilsonTypeFermMonomial() {}
 
-    //! clone function for virtual copy constructs
-    virtual ExactWilsonTypeFermMonomial<P,Q>* clone(void) const = 0;
-
-    //! Problem here, the dsdq cannot be defined yet - fermact derivs not yet defined
-    /*! It is not possible to define a generic function yet */
+    //! Compute dsdq for the system... Not specified how to actually do this
+    //  s is the state, F is the computed force
     virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) const = 0;
 
-    //! Get at fermion action
-    virtual const WilsonTypeFermAct<Phi>& getFermAct() const = 0;
-
-    // Compute the energies. The fermionic energy can now finally be computed
-
     //! Compute the total action
-    virtual Double S(const AbsFieldState<P,Q>& s) const
-    {
-      return mesKE(s) + mesPE(s) + mesFE(s);
-    }
+    virtual Double S(const AbsFieldState<P,Q>& s) const = 0;
+    virtual void refresh(const AbsFieldState<P,Q>& field_state) = 0;
 
-    //! The total energy
-    virtual void mesE(Double& KE, Double& GE, Double& FE,
-		      const AbsFieldState<P,Q>& s) const 
-    {
-      KE = mesKE(s);
-      GE = mesGE(s);
-      FE = mesFE(s);
-    }
+  protected:
+    //! Get at fermion action for pseudofermion field i
+    virtual const WilsonTypeFermAct<Phi>& getFermAct(void) const = 0;
 
-    //! The Kinetic Energy
-    virtual Double mesKE(const AbsFieldState<P,Q>& s) const = 0;
-
-    //! The Potential Energy 
-    virtual Double mesGE(const AbsFieldState<P,Q>& s) const = 0;
-
-    //! The Fermionic Energy 
-    virtual Double mesFE(const AbsFieldState<P,Q>& s) const = 0;
   };
 
 
@@ -184,15 +173,21 @@ namespace Chroma
      //! virtual destructor:
     ~ExactUnprecWilsonTypeFermMonomial() {}
 
-    //! clone function for virtual copy constructs
-    virtual ExactUnprecWilsonTypeFermMonomial<P,Q,Phi>* clone(void) const = 0;
+
+    //! Compute dsdq for the system... Not specified how to actually do this
+    //  s is the state, F is the computed force
+    virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) const = 0;
+
+    //! Compute the total action
+    virtual Double S(const AbsFieldState<P,Q>& s) const = 0;
+
+    virtual void refresh(const AbsFieldState<P,Q>& field_state) = 0;
+
+  protected:
 
     //! Get at fermion action
-    virtual const UnprecWilsonTypeFermAct<Phi,P>& getFermAct() const = 0;
-
-    //! Compute dsdq for the system... 
-    /*! Now can define forces in terms of fermacts */
-    virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) const = 0;
+    virtual const UnprecWilsonTypeFermAct<Phi,P>& getFermAct(void) const = 0;
+    
   };
 
 
@@ -203,23 +198,28 @@ namespace Chroma
    * Even-odd preconditioned Wilson-like fermion monomials. 
    */
   template<typename P, typename Q, typename Phi>
-  class ExactEvenOddPrecWilsonTypeFermMonomial : public ExactWilsonTypeFermMonomial<P,Q>
+  class ExactEvenOddPrecWilsonTypeFermMonomial : public ExactWilsonTypeFermMonomial<P,Q, Phi>
   {
   public:
      //! virtual destructor:
     ~ExactEvenOddPrecWilsonTypeFermMonomial() {}
 
-    //! clone function for virtual copy constructs
-    virtual ExactEvenOddPrecWilsonTypeFermMonomial<P,Q,Phi>* clone(void) const = 0;
 
-    //! Get at fermion action
-    virtual const EvenOddPrecWilsonTypeFermAct<Phi,P>& getFermAct() const = 0;
-
-    //! Compute dsdq for the system... 
-    /*! Now can define forces in terms of fermacts */
+    //! Compute dsdq for the system... Not specified how to actually do this
+    //  s is the state, F is the computed force
     virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) const = 0;
-  };
 
+    //! Compute the total action
+    virtual Double S(const AbsFieldState<P,Q>& s) const = 0;
+
+
+    virtual void refresh(const AbsFieldState<P,Q>& field_state) = 0;
+
+  protected:
+    //! Get at fermion action
+    virtual const EvenOddPrecWilsonTypeFermAct<Phi,P>& getFermAct(void) const = 0;
+
+  };
 
 
   //! Exact 2 degen flavor unpreconditioned fermact monomial
@@ -227,30 +227,24 @@ namespace Chroma
    *
    * Exact 2 degen flavor unpreconditioned fermact monomial.
    * Can supply a default dsdq algorithm
+   * 
+   * CAVEAT: I assume there is only 1 pseudofermion field in the following
+   * so called TwoFlavorExact actions.
    */
   template<typename P, typename Q, typename Phi>
   class TwoFlavorExactUnprecWilsonTypeFermMonomial : public ExactUnprecWilsonTypeFermMonomial<P,Q,Phi>
   {
   public:
      //! virtual destructor:
-    ~ExactUnprecWilsonTypeFermMonomial() {}
+    ~TwoFlavorExactUnprecWilsonTypeFermMonomial() {}
 
-    //! clone function for virtual copy constructs
-    virtual ExactUnprecWilsonTypeFermMonomial<P,Q,Phi>* clone(void) const = 0;
-
-    //! Get at fermion action
-    virtual const UnprecWilsonTypeFermAct<Phi,P>& getFermAct() const = 0;
-
-    //! Refresh any pseudo fermions
-    /*! Can generically implement this method */
-    virtual void refresh(const AbsFieldState<P,Q>& s) = 0;
 
     //! Compute dsdq for the system... 
     /*! Actions of the form  chi^dag*(M^dag*M)*chi */
     virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) const
     {
       /**** Identical code to even-odd prec case *****/
-
+      
       // S_f  chi^dag*(M^dag*M)*chi     
       // Here, M is unprecond. operator.
       //
@@ -263,29 +257,82 @@ namespace Chroma
       //    X = (M^dag*M)^(-1)*chi   Y = M*X = (M^dag)^(-1)*chi
       // In Robert's notation,  X -> psi .
       //
-      const EvenOddPrecWilsonTypeFermAct<Phi,P>& FA = getFermAct();
-
+      const UnprecWilsonTypeFermAct<Phi,P>& FA = getFermAct();
+      
+      // Create a state for linop
+      Handle< const ConnectState> state(FA.createState(s.getQ()));
+	
       // Need way to get gauge state from AbsFieldState<P,Q>
-      Handle< const EvenOddPrecLinearOperator<T,P> > lin(FA->linOp(s));
+      Handle< const UnprecLinearOperator<Phi,P> > lin(FA.linOp(state));
+	
+      Phi X, Y;
+      getX(X,s);
+      
+      (*lin)(Y, X, PLUS);
 
-      // .....
-      // Do something to get  X  and chi
-      // .....
-      Phi X, chi;
-      chi = X = zero;
-
-      // Assume we have X and chi
-      Phi Y;
-      lin(Y, X, PLUS);
       lin->deriv(F, X, Y, MINUS);
-
+      
       // fold M^dag into X^dag ->  Y  !!
       P F_tmp;
       lin->deriv(F_tmp, Y, X, PLUS);
       F += F_tmp;
-
-      F *= -1;   // This is problematic. Need convention on where to put minus
+      
+      for(int mu=0; mu < Nd; mu++) { 
+      F[mu] *= Real(-1);   // This is problematic. Need convention on where to put minus
+      }
     }
+  
+    //! Compute the total action
+    virtual Double S(const AbsFieldState<P,Q>& s) const {
+      Phi X;
+      getX(X,s);
+
+      Double action = innerProductReal(getPhi(), X);
+      return action;
+    }
+
+    
+    virtual void refresh(const AbsFieldState<P,Q>& field_state) {
+      // Get at the gauge field
+      const Q& u = field_state.getQ();
+      
+      // Heatbath all the fields
+      
+      // Get at the ferion action for piece i
+      const FermionAction<Phi>& S_f = getFermAct();
+      
+      // Create a Connect State, apply fermionic boundaries
+      Handle< const ConnectState > f_state(S_f.createState(field_state.getQ()));
+      
+      // Create a linear operator
+      Handle< const LinearOperator<Phi> > M(S_f.linOp(f_state));
+      
+      Phi eta=zero;
+      
+      // Fill the eta field with gaussian noise
+      gaussian(eta, M->subset());
+      
+      // Temporary: Move to correct normalisation
+      eta *= sqrt(0.5);
+      
+      // Now HIT IT with the ROCK!!!! (Or in this case M^{dagger})
+      (*M)(getPhi(), eta, MINUS);
+    }				    
+  
+
+  protected:
+    //! Accessor for pseudofermion with Pf index i (read only)
+    virtual const Phi& getPhi(void) const = 0;
+
+    //! mutator for pseudofermion with Pf index i 
+    virtual Phi& getPhi(void) = 0;    
+
+    //! Get at fermion action
+    virtual const UnprecWilsonTypeFermAct<Phi,P>& getFermAct(void) const = 0;
+
+    //! Get (M^dagM)^{-1} phi
+    virtual void getX(Phi& X, const AbsFieldState<P,Q>& s) const = 0;
+
   };
 
 
@@ -300,24 +347,65 @@ namespace Chroma
   {
   public:
      //! virtual destructor:
-    ~ExactEvenOddPrecWilsonTypeFermMonomial() {}
+    ~TwoFlavorExactEvenOddPrecWilsonTypeFermMonomial() {}
 
-    //! clone function for virtual copy constructs
-    virtual ExactEvenOddPrecWilsonTypeFermMonomial<P,Q,Phi>* clone(void) const = 0;
+    //! Even even contribution (eg ln det Clover)
+    virtual Double S_even_even(const AbsFieldState<P,Q>& s) const = 0;
 
-    //! Get at fermion action
-    virtual const EvenOddPrecWilsonTypeFermAct<Phi,P>& getFermAct() const = 0;
+    //! Compute the odd odd contribution (eg
+    virtual Double S_odd_odd(const AbsFieldState<P,Q>& s) const 
+    {
+      const EvenOddPrecWilsonTypeFermAct<Phi,P>& FA = getFermAct();
+
+      Handle<const ConnectState> bc_g_state = FA.createState(s.getQ());
+
+      // Need way to get gauge state from AbsFieldState<P,Q>
+      Handle< const EvenOddPrecLinearOperator<Phi,P> > lin(FA.linOp(bc_g_state));
+      // Get the X fields
+      Phi X;
+      getX(X, s);
+      Double action = innerProductReal(getPhi, X, lin->subset());
+      return action;
+    }
+
+    Double S(const AbsFieldState<P,Q>& s) const {
+      return S_even_even + S_odd_odd;
+    }
 
     //! Refresh any pseudo fermions
     /*! Can generically implement this method */
-    virtual void refresh(const AbsFieldState<P,Q>& s) = 0;
+    virtual void refresh(const AbsFieldState<P,Q>& s) { 
+      
+      // Get at the gauge field
+      const Q& u = mc_state.getQ();
+      
+      // Get at the ferion action for piece i
+      const FermionAction<Phi>& S_f = getFermAct();
+      
+      // Create a Connect State, apply fermionic boundaries
+      Handle< const ConnectState > f_state(S_f.createState(s.getQ()));
+      
+      // Create a linear operator
+      Handle< const LinearOperator<Phi> > M(S_f.linOp(f_state));
+      
+      Phi eta=zero;
+      
+      // Fill the eta field with gaussian noise
+      gaussian(eta, M->subset());
+      
+      // Temporary: Move to correct normalisation
+      eta *= sqrt(0.5);
+      
+      // Now HIT IT with the ROCK!!!! (Or in this case M^{dagger})
+      (*M)(getPhi(), eta, MINUS);
+    }				    
 
     //! Compute dsdq for the system... 
     /*! Actions of the form  chi^dag*(M^dag*M)*chi */
     virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) const
     {
       /**** Identical code to unprec case *****/
-
+      
       // S_f  chi^dag*(M^dag*M)*chi
       // Here, M is precond. operator such that
       //   M*psi_o = [A_oo - D_eo*A_ee^(-1)*D_oe]*psi_o
@@ -334,14 +422,14 @@ namespace Chroma
       //
       const EvenOddPrecWilsonTypeFermAct<Phi,P>& FA = getFermAct();
 
-      // Need way to get gauge state from AbsFieldState<P,Q>
-      Handle< const EvenOddPrecLinearOperator<T,P> > lin(FA->linOp(s));
+      Handle<const ConnectState> bc_g_state = FA->createState(s.getQ());
 
-      // .....
-      // Do something to get  X  and chi
-      // .....
-      Phi X, chi;
-      chi = X = zero;
+      // Need way to get gauge state from AbsFieldState<P,Q>
+      Handle< const EvenOddPrecLinearOperator<Phi,P> > lin(FA->linOp(bc_g_state));
+      // Get the X fields
+      Phi X;
+      getX(X, s);
+
 
       // Assume we have X and chi
       Phi Y;
@@ -353,10 +441,22 @@ namespace Chroma
       lin->deriv(F_tmp, Y, X, PLUS);
       F += F_tmp;
 
-      F *= -1;   // This is problematic. Need convention on where to put minus
+      F *= -Real(1);   // This is problematic. Need convention on where to put minus
     }
-  };
+  protected:
+    //! Get at fermion action
+    virtual const EvenOddPrecWilsonTypeFermAct<Phi,P>& getFermAct() const = 0;
 
+    //! Accessor for pseudofermion with Pf index i (read only)
+    virtual const Phi& getPhi(void) const = 0;
+
+    //! mutator for pseudofermion with Pf index i 
+    virtual Phi& getPhi(void) const = 0;    
+
+    //! Get (M^dagM)^{-1} phi
+    virtual void getX(Phi& X, AbsFieldState<P,Q> s) const = 0;
+
+  };
 }
 
 using namespace Chroma;

@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.278 2004-12-20 03:58:02 edwards Exp $
+# $Id: Makefile.in,v 1.279 2004-12-21 15:42:21 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -226,7 +226,9 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/hadron/wallpionff_w.cc meas/hadron/wallrhoff_w.cc \
 	meas/hadron/wallrhopiff_w.cc meas/hadron/wall_qprop_w.cc \
 	meas/sources/d_src_w.cc meas/sources/p_src_w.cc \
-	util/ferm/gammasgn_w.cc actions/ferm/linop/lwldslash_w_sse.cc \
+	util/ferm/gammasgn_w.cc \
+	update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.cc \
+	actions/ferm/linop/lwldslash_w_sse.cc \
 	actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc \
 	actions/ferm/linop/lwldslash_w_pab.cc \
 	actions/ferm/fermacts/asqtad_fermact_s.cc \
@@ -355,6 +357,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	wallpionff_w.$(OBJEXT) wallrhoff_w.$(OBJEXT) \
 	wallrhopiff_w.$(OBJEXT) wall_qprop_w.$(OBJEXT) \
 	d_src_w.$(OBJEXT) p_src_w.$(OBJEXT) gammasgn_w.$(OBJEXT) \
+	unprec_two_flavor_wilson_ferm_monomial_w.$(OBJEXT) \
 	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
 	asqtad_fermact_s.$(OBJEXT) asqtad_linop_s.$(OBJEXT) \
 	asqtad_mdagm_s.$(OBJEXT) asq_dsl_s.$(OBJEXT) \
@@ -451,11 +454,14 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	util/gauge/sunfill.h util/gauge/sun_proj.h util/gauge/taproj.h \
 	util/gauge/unit_check.h util/info/info.h util/info/proginfo.h \
 	util/info/printgeom.h util/util.h update/update.h \
-	update/field_state.h update/heatbath/heatbath.h \
-	update/heatbath/su3over.h update/heatbath/su3hb.h \
-	update/heatbath/u_staple.h update/heatbath/hb_params.h \
-	update/heatbath/su2_hb_update.h update/heatbath/su3_hb_sweep.h \
-	update/molecdyn/molecdyn.h update/molecdyn/abs_hamiltonian.h \
+	update/heatbath/heatbath.h update/heatbath/su3over.h \
+	update/heatbath/su3hb.h update/heatbath/u_staple.h \
+	update/heatbath/hb_params.h update/heatbath/su2_hb_update.h \
+	update/heatbath/su3_hb_sweep.h update/molecdyn/molecdyn.h \
+	update/molecdyn/molecdyn_w.h update/molecdyn/field_state.h \
+	update/molecdyn/abs_monomial.h \
+	update/molecdyn/monomial_factory_w.h \
+	update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.h \
 	update/molecdyn/exact_pg_hamiltonian.h \
 	update/molecdyn/degen_two_flavor_ferm_hamiltonian.h \
 	update/molecdyn/abs_symp_updates.h \
@@ -763,11 +769,14 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	util/gauge/sunfill.h util/gauge/sun_proj.h util/gauge/taproj.h \
 	util/gauge/unit_check.h util/info/info.h util/info/proginfo.h \
 	util/info/printgeom.h util/util.h update/update.h \
-	update/field_state.h update/heatbath/heatbath.h \
-	update/heatbath/su3over.h update/heatbath/su3hb.h \
-	update/heatbath/u_staple.h update/heatbath/hb_params.h \
-	update/heatbath/su2_hb_update.h update/heatbath/su3_hb_sweep.h \
-	update/molecdyn/molecdyn.h update/molecdyn/abs_hamiltonian.h \
+	update/heatbath/heatbath.h update/heatbath/su3over.h \
+	update/heatbath/su3hb.h update/heatbath/u_staple.h \
+	update/heatbath/hb_params.h update/heatbath/su2_hb_update.h \
+	update/heatbath/su3_hb_sweep.h update/molecdyn/molecdyn.h \
+	update/molecdyn/molecdyn_w.h update/molecdyn/field_state.h \
+	update/molecdyn/abs_monomial.h \
+	update/molecdyn/monomial_factory_w.h \
+	update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.h \
 	update/molecdyn/exact_pg_hamiltonian.h \
 	update/molecdyn/degen_two_flavor_ferm_hamiltonian.h \
 	update/molecdyn/abs_symp_updates.h \
@@ -1053,8 +1062,10 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/hadron/wallpionff_w.cc meas/hadron/wallrhoff_w.cc \
 	meas/hadron/wallrhopiff_w.cc meas/hadron/wall_qprop_w.cc \
 	meas/sources/d_src_w.cc meas/sources/p_src_w.cc \
-	util/ferm/gammasgn_w.cc $(am__append_4) $(am__append_6) \
-	$(am__append_8) actions/ferm/fermacts/asqtad_fermact_s.cc \
+	util/ferm/gammasgn_w.cc \
+	update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.cc \
+	$(am__append_4) $(am__append_6) $(am__append_8) \
+	actions/ferm/fermacts/asqtad_fermact_s.cc \
 	actions/ferm/linop/asqtad_linop_s.cc \
 	actions/ferm/linop/asqtad_mdagm_s.cc \
 	actions/ferm/linop/asq_dsl_s.cc \
@@ -1360,6 +1371,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_parwilson_linop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_pdwf4d_linop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_ppdwf4d_linop_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_two_flavor_wilson_ferm_monomial_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_wilson_fermact_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_wilson_linop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_zolo_nef_fermact_array_w.Po@am__quote@
@@ -4224,6 +4236,20 @@ gammasgn_w.obj: util/ferm/gammasgn_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/ferm/gammasgn_w.cc' object='gammasgn_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o gammasgn_w.obj `if test -f 'util/ferm/gammasgn_w.cc'; then $(CYGPATH_W) 'util/ferm/gammasgn_w.cc'; else $(CYGPATH_W) '$(srcdir)/util/ferm/gammasgn_w.cc'; fi`
+
+unprec_two_flavor_wilson_ferm_monomial_w.o: update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_two_flavor_wilson_ferm_monomial_w.o -MD -MP -MF "$(DEPDIR)/unprec_two_flavor_wilson_ferm_monomial_w.Tpo" -c -o unprec_two_flavor_wilson_ferm_monomial_w.o `test -f 'update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/unprec_two_flavor_wilson_ferm_monomial_w.Tpo" "$(DEPDIR)/unprec_two_flavor_wilson_ferm_monomial_w.Po"; else rm -f "$(DEPDIR)/unprec_two_flavor_wilson_ferm_monomial_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.cc' object='unprec_two_flavor_wilson_ferm_monomial_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_two_flavor_wilson_ferm_monomial_w.o `test -f 'update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.cc
+
+unprec_two_flavor_wilson_ferm_monomial_w.obj: update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_two_flavor_wilson_ferm_monomial_w.obj -MD -MP -MF "$(DEPDIR)/unprec_two_flavor_wilson_ferm_monomial_w.Tpo" -c -o unprec_two_flavor_wilson_ferm_monomial_w.obj `if test -f 'update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/unprec_two_flavor_wilson_ferm_monomial_w.Tpo" "$(DEPDIR)/unprec_two_flavor_wilson_ferm_monomial_w.Po"; else rm -f "$(DEPDIR)/unprec_two_flavor_wilson_ferm_monomial_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.cc' object='unprec_two_flavor_wilson_ferm_monomial_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_two_flavor_wilson_ferm_monomial_w.obj `if test -f 'update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.cc'; fi`
 
 lwldslash_w_sse.o: actions/ferm/linop/lwldslash_w_sse.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lwldslash_w_sse.o -MD -MP -MF "$(DEPDIR)/lwldslash_w_sse.Tpo" -c -o lwldslash_w_sse.o `test -f 'actions/ferm/linop/lwldslash_w_sse.cc' || echo '$(srcdir)/'`actions/ferm/linop/lwldslash_w_sse.cc; \
