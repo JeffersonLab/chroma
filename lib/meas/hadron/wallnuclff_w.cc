@@ -1,4 +1,4 @@
-// $Id: wallnuclff_w.cc,v 1.9 2004-04-19 14:36:19 edwards Exp $
+// $Id: wallnuclff_w.cc,v 1.10 2004-04-21 03:14:30 edwards Exp $
 /*! \file
  *  \brief Wall-sink nucleon form-factors 
  *
@@ -63,8 +63,6 @@ void wallNuclFormFac(XMLWriter& xml,
     push(xml_seq_src);
     write(xml_seq_src, "seq_src", seq_src);
 
-    QDPIO::cout << "WallNuclFormFac: seq_src " << seq_src << endl;
-
     // Loop over gamma matrices of the insertion current of insertion current
     XMLArrayWriter xml_array(xml_seq_src, Nd);
     push(xml_array, "Insertions");
@@ -77,8 +75,6 @@ void wallNuclFormFac(XMLWriter& xml,
       write(xml_array, "mu", mu);
       write(xml_array, "gamma_value", gamma_value);
 
-      QDPIO::cout << "WallNuclFormFac: gamma_value " << gamma_value << endl;
-    
       LatticeComplex corr_local_fn;
       LatticeComplex corr_nonlocal_fn;
 
@@ -101,12 +97,12 @@ void wallNuclFormFac(XMLWriter& xml,
 	corr_local_fn = -trace(anti_u_prop*Gamma(gamma_value)*forw_u_prop*Gamma(5)*
 			       quarkContract13(Gamma(5)*d_x2, u_x2+u_x2*Gamma(8)));
 	// Term 2
-	corr_local_fn += -trace(traceSpin(u_x2+Gamma(8)*u_x2) *
-				quarkContract13(anti_u_prop*Gamma(gamma_value)*forw_u_prop*Gamma(5),
-						Gamma(5)*d_x2));
+	corr_local_fn -= trace(traceSpin(u_x2+Gamma(8)*u_x2) *
+			       traceSpin(quarkContract13(anti_u_prop*Gamma(gamma_value)*forw_u_prop*Gamma(5),
+							 Gamma(5)*d_x2)));
 	// Term 3
-	corr_local_fn += trace(traceSpin(anti_u_prop*Gamma(gamma_value)*(forw_u_prop+forw_u_prop*Gamma(8)))*
-			       quarkContract13(Gamma(5)*d_x2, u_x2*Gamma(5)));
+	corr_local_fn -= trace(traceSpin(anti_u_prop*Gamma(gamma_value)*(forw_u_prop+forw_u_prop*Gamma(8)))*
+			       traceSpin(quarkContract13(Gamma(5)*d_x2, u_x2*Gamma(5))));
 	// Term 4
 	corr_local_fn += trace(anti_u_prop*Gamma(gamma_value)*(forw_u_prop+forw_u_prop*Gamma(8))*
 			       quarkContract13(u_x2*Gamma(5), Gamma(5)*d_x2));
@@ -121,12 +117,12 @@ void wallNuclFormFac(XMLWriter& xml,
 	corr_nonlocal_fn = -trace(tmp_prop2 * Gamma(5) * 
 				  quarkContract13(Gamma(5)*d_x2, u_x2+u_x2*Gamma(8)));
 	// Term 2
-	corr_nonlocal_fn += -trace(traceSpin(u_x2+Gamma(8)*u_x2) *
-				   quarkContract13(tmp_prop2*Gamma(5), 
-						Gamma(5)*d_x2));
+	corr_nonlocal_fn -= trace(traceSpin(u_x2+Gamma(8)*u_x2) *
+				  traceSpin(quarkContract13(tmp_prop2*Gamma(5), 
+							    Gamma(5)*d_x2)));
 	// Term 3
-	corr_nonlocal_fn += trace(traceSpin(tmp_prop2 + tmp_prop2*Gamma(8))*
-				  quarkContract13(Gamma(5)*d_x2, u_x2*Gamma(5)));
+	corr_nonlocal_fn -= trace(traceSpin(tmp_prop2 + tmp_prop2*Gamma(8))*
+				  traceSpin(quarkContract13(Gamma(5)*d_x2, u_x2*Gamma(5))));
 	// Term 4
 	corr_nonlocal_fn += trace((tmp_prop2 + tmp_prop2*Gamma(8))*
 				  quarkContract13(u_x2*Gamma(5), Gamma(5)*d_x2));
@@ -140,20 +136,20 @@ void wallNuclFormFac(XMLWriter& xml,
 
 	// The local non-conserved vector-current matrix element 
 	// Term 5
-	corr_local_fn = trace(Gamma(5)*anti_d_prop*Gamma(gamma_value)*forw_d_prop * 
-			      quarkContract14(u_x2*Gamma(5), u_x2+u_x2*Gamma(8)));
+	corr_local_fn = -trace(Gamma(5)*anti_d_prop*Gamma(gamma_value)*forw_d_prop * 
+			       quarkContract14(u_x2*Gamma(5), u_x2+u_x2*Gamma(8)));
 	// Term 6
-	corr_local_fn += trace(traceSpin(u_x2+Gamma(8)*u_x2) * 
-			       quarkContract13(u_x2*Gamma(5), 
-					       Gamma(5)*anti_d_prop*Gamma(gamma_value)*forw_d_prop));
+	corr_local_fn -= trace(traceSpin(u_x2+Gamma(8)*u_x2) * 
+			       traceSpin(quarkContract13(u_x2*Gamma(5), 
+							 Gamma(5)*anti_d_prop*Gamma(gamma_value)*forw_d_prop)));
 
 	// Construct the non-local current matrix element 
 	// Term 5
-	corr_local_fn = trace(Gamma(5)*tmp_prop2*
-			      quarkContract14(u_x2*Gamma(5), u_x2+u_x2*Gamma(8)));
+	corr_local_fn = -trace(Gamma(5)*tmp_prop2*
+			       quarkContract14(u_x2*Gamma(5), u_x2+u_x2*Gamma(8)));
 	// Term 6
-	corr_local_fn += trace(traceSpin(u_x2+Gamma(8)*u_x2) * 
-			       quarkContract13(u_x2*Gamma(5), Gamma(5)*tmp_prop2));
+	corr_local_fn -= trace(traceSpin(u_x2+Gamma(8)*u_x2) * 
+			       traceSpin(quarkContract13(u_x2*Gamma(5), Gamma(5)*tmp_prop2)));
       }
       break;
 	
@@ -170,12 +166,12 @@ void wallNuclFormFac(XMLWriter& xml,
 	local_tmp = -trace(anti_u_prop*Gamma(gamma_value)*forw_u_prop*Gamma(5)*
 			   quarkContract13(Gamma(5)*d_x2, u_x2*Gamma(3)+u_x2*Gamma(11)));
 	// Term 2
-	local_tmp += -trace(traceSpin(Gamma(3)*u_x2+Gamma(11)*u_x2) *
-			    quarkContract13(anti_u_prop*Gamma(gamma_value)*forw_u_prop*Gamma(5),
-					    Gamma(5)*d_x2));
+	local_tmp -= trace(traceSpin(Gamma(3)*u_x2+Gamma(11)*u_x2) *
+			   traceSpin(quarkContract13(anti_u_prop*Gamma(gamma_value)*forw_u_prop*Gamma(5),
+						     Gamma(5)*d_x2)));
 	// Term 3
-	local_tmp += trace(traceSpin(anti_u_prop*Gamma(gamma_value)*(forw_u_prop*Gamma(3)+forw_u_prop*Gamma(11)))*
-			   quarkContract13(Gamma(5)*d_x2, u_x2*Gamma(5)));
+	local_tmp -= trace(traceSpin(anti_u_prop*Gamma(gamma_value)*(forw_u_prop*Gamma(3)+forw_u_prop*Gamma(11)))*
+			   traceSpin(quarkContract13(Gamma(5)*d_x2, u_x2*Gamma(5))));
 	// Term 4
 	local_tmp += trace(anti_u_prop*Gamma(gamma_value)*(forw_u_prop*Gamma(3)+forw_u_prop*Gamma(11))*
 			   quarkContract13(u_x2*Gamma(5), Gamma(5)*d_x2));
@@ -192,12 +188,11 @@ void wallNuclFormFac(XMLWriter& xml,
 	nonlocal_tmp = -trace(tmp_prop2 * Gamma(5) * 
 			      quarkContract13(Gamma(5)*d_x2, u_x2*Gamma(3)+u_x2*Gamma(11)));
 	// Term 2
-	nonlocal_tmp += -trace(traceSpin(Gamma(3)*u_x2+Gamma(11)*u_x2) *
-			       quarkContract13(tmp_prop2*Gamma(5), 
-					       Gamma(5)*d_x2));
+	nonlocal_tmp -= trace(traceSpin(Gamma(3)*u_x2+Gamma(11)*u_x2) *
+			      traceSpin(quarkContract13(tmp_prop2*Gamma(5), Gamma(5)*d_x2)));
 	// Term 3
-	nonlocal_tmp += trace(traceSpin(tmp_prop2*Gamma(3) + tmp_prop2*Gamma(11))*
-			      quarkContract13(Gamma(5)*d_x2, u_x2*Gamma(5)));
+	nonlocal_tmp -= trace(traceSpin(tmp_prop2*Gamma(3) + tmp_prop2*Gamma(11))*
+			      traceSpin(quarkContract13(Gamma(5)*d_x2, u_x2*Gamma(5))));
 	// Term 4
 	nonlocal_tmp += trace((tmp_prop2*Gamma(3) + tmp_prop2*Gamma(11))*
 			      quarkContract13(u_x2*Gamma(5), Gamma(5)*d_x2));
@@ -215,23 +210,23 @@ void wallNuclFormFac(XMLWriter& xml,
 	// NOTE: extract the common  "-i" piece
 	LatticeComplex local_tmp;
 	// Term 5
-	local_tmp = trace(Gamma(5)*anti_d_prop*Gamma(gamma_value)*forw_d_prop * 
-			  quarkContract14(u_x2*Gamma(5), u_x2*Gamma(3)+u_x2*Gamma(11)));
+	local_tmp = -trace(Gamma(5)*anti_d_prop*Gamma(gamma_value)*forw_d_prop * 
+			   quarkContract14(u_x2*Gamma(5), u_x2*Gamma(3)+u_x2*Gamma(11)));
 	// Term 6
-	local_tmp += trace(traceSpin(Gamma(3)*u_x2+Gamma(11)*u_x2) * 
-			   quarkContract13(u_x2*Gamma(5), 
-					   Gamma(5)*anti_d_prop*Gamma(gamma_value)*forw_d_prop));
+	local_tmp -= trace(traceSpin(Gamma(3)*u_x2+Gamma(11)*u_x2) * 
+			   traceSpin(quarkContract13(u_x2*Gamma(5), 
+						     Gamma(5)*anti_d_prop*Gamma(gamma_value)*forw_d_prop)));
 	corr_local_fn = timesMinusI(local_tmp); 
 
 	// Construct the non-local current matrix element 
 	// NOTE: extract the common  "-i" piece
 	LatticeComplex nonlocal_tmp;
 	// Term 5
-	nonlocal_tmp = trace(Gamma(5)*tmp_prop2*
-			     quarkContract14(u_x2*Gamma(5), u_x2*Gamma(3)+u_x2*Gamma(11)));
+	nonlocal_tmp = -trace(Gamma(5)*tmp_prop2*
+			      quarkContract14(u_x2*Gamma(5), u_x2*Gamma(3)+u_x2*Gamma(11)));
 	// Term 6
-	nonlocal_tmp += trace(traceSpin(Gamma(3)*u_x2+Gamma(11)*u_x2) * 
-			      quarkContract13(u_x2*Gamma(5), Gamma(5)*tmp_prop2));
+	nonlocal_tmp -= trace(traceSpin(Gamma(3)*u_x2+Gamma(11)*u_x2) * 
+			      traceSpin(quarkContract13(u_x2*Gamma(5), Gamma(5)*tmp_prop2)));
 	corr_nonlocal_fn = timesMinusI(nonlocal_tmp);
       }
       break;
@@ -240,8 +235,6 @@ void wallNuclFormFac(XMLWriter& xml,
 	QDP_error_exit("Unknown sequential source type", seq_src);
       }
 
-      QDPIO::cout << "WallNuclFormFac: here" << endl;
-    
       corr_local_fn *= 0.5;
       multi2d<DComplex> hsum_local = phases.sft(corr_local_fn);
 
