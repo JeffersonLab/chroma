@@ -1,10 +1,10 @@
-// $Id: diractodr.cc,v 1.4 2004-06-16 14:51:34 dgr Exp $
+// $Id: tdiractodr.cc,v 1.1 2004-06-16 14:51:34 dgr Exp $
 /*! \file
  *  \brief Basis rotation matrix from Dirac to Degrand-Rossi (and reverse)
  */
 
 #include "chromabase.h"
-#include "util/ferm/diractodr.h"
+#include "util/ferm/tdiractodr.h"
 
 using namespace QDP;
 
@@ -18,28 +18,28 @@ using namespace QDP;
  * \returns The U in   Gamma_{Degrand-Rossi} = U Gamma_Dirac U^dag
  */
 
-SpinMatrixD DiracToDRMat()
+SpinMatrixD TDiracToDRMat()
 {
   /*
    * The magic basis transf is found from
    *
    * NOTE: DR = Degrand-Rossi - the spin basis of QDP
-   *
-   *  psi_DR = U psi_Dirac
-   *  psibar_DR Gamma_DR psi_DR = psibar_Dirac Gamma_Dirac psi_Dirac
+   * NOTE: TDiract = "twisted" Dirac, in which sign of spatial cpts reversed
+   *  psi_DR = U psi_TDirac
+   *  psibar_DR Gamma_DR psi_DR = psibar_Dirac Gamma_TDirac psi_Dirac
    *
    * implies
-   *  Gamma_DR = U Gamma_Dirac U^dag
+   *  Gamma_DR = U Gamma_TDirac U^dag
    *
    * and the magic formula is
    *
    *   U = (1/sqrt(2)) | i*sigma_2    i*sigma_2 |
-   *                   | -i*sigma_2   i*sigma_2 |
+   *                   | i*sigma_2   -i*sigma_2 |
    *
    *     = (1/sqrt(2)) |   0   1        0   1   |
    *                   |  -1   0       -1   0   |
-   *                   |   0  -1        0   1   |
-   *                   |   1   0       -1   0   |
+   *                   |   0   1        0  -1   |
+   *                   |  -1   0        1   0   |
    *
    *   U^dag = -U = U^transpose
    */
@@ -57,10 +57,10 @@ SpinMatrixD DiracToDRMat()
   pokeSpin(U,  one, 0, 3);
   pokeSpin(U, mone, 1, 0);
   pokeSpin(U, mone, 1, 2);
-  pokeSpin(U, mone, 2, 1);
-  pokeSpin(U,  one, 2, 3);
-  pokeSpin(U,  one, 3, 0);
-  pokeSpin(U, mone, 3, 2);
+  pokeSpin(U,  one, 2, 1);
+  pokeSpin(U, mone, 2, 3);
+  pokeSpin(U, mone, 3, 0);
+  pokeSpin(U,  one, 3, 2);
 
   return U;
 }

@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.150 2004-06-11 20:40:19 edwards Exp $
+# $Id: Makefile.am,v 1.151 2004-06-16 14:51:33 dgr Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -187,6 +187,7 @@ nobase_include_HEADERS += \
 	meas/smear/sink_smear2_w.h meas/sources/d_src_w.h \
 	meas/sources/p_src_w.h meas/sources/sources_w.h \
 	util/ferm/ferm_w.h util/ferm/diractodr.h util/ferm/gammasgn_w.h \
+	util/ferm/tdiractodr.h \
         util/ferm/paulitodr.h 
 
 # Deprecated
@@ -266,7 +267,8 @@ libchroma_a_SOURCES = gauge_startup.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
 #
 if BUILD_WILSON_LIBS
 libchroma_a_SOURCES += baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
-              loops_w.cc diractodr.cc paulitodr.cc gammasgn_w.cc \
+              loops_w.cc tdiractodr.cc diractodr.cc paulitodr.cc \
+	      gammasgn_w.cc \
               curcor2_w.cc lwldslash_w.cc formfac_w.cc \
               mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
               sink_smear2_w.cc barcomp_io.cc barcomp_w.cc walfil_w.cc \
