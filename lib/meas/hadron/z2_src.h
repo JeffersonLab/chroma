@@ -1,12 +1,11 @@
 // -*- C++ -*-
-// $Id: z2_src.h,v 1.1 2004-02-08 11:31:22 mcneile Exp $
+// $Id: z2_src.h,v 1.2 2004-03-03 10:41:52 mcneile Exp $
 /*! \file
  *  \brief Volume source of Z2 noise
  */
 
 
 //
-/ 
 //
 //
 
