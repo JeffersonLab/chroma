@@ -1,4 +1,4 @@
-// $Id: rect_gaugeact.cc,v 1.1 2005-01-12 04:44:53 edwards Exp $
+// $Id: rect_gaugeact.cc,v 1.2 2005-01-12 20:03:38 edwards Exp $
 /*! \file
  *  \brief Rectangle gauge action
  */
@@ -15,6 +15,7 @@ namespace Chroma
  
   namespace RectGaugeActEnv 
   {
+    //! Callback
     GaugeAction* createGaugeAct(XMLReader& xml, const std::string& path) 
     {
       return new RectGaugeAct(GaugeTypeGaugeBCEnv::reader(xml, path), 
@@ -27,6 +28,7 @@ namespace Chroma
   };
 
 
+  // Param constructor/reader
   RectGaugeActParams::RectGaugeActParams(XMLReader& xml_in, const std::string& path) {
     XMLReader paramtop(xml_in, path);
 
@@ -39,7 +41,9 @@ namespace Chroma
     }
   }
 
-  void read(XMLReader& xml, const string& path, RectGaugeActParams& p) {
+  // Read params
+  void read(XMLReader& xml, const string& path, RectGaugeActParams& p) 
+  {
     RectGaugeActParams tmp(xml, path);
     p=tmp;
   }
@@ -82,7 +86,6 @@ namespace Chroma
 
     ds_u.resize(Nd);
 
-    LatticeColorMatrix tmp_0;
     LatticeColorMatrix tmp_1;
     LatticeColorMatrix tmp_2;
     LatticeColorMatrix tmp_3;
@@ -208,11 +211,11 @@ namespace Chroma
 	  tmp_1[rb[1-cb]] = shift(u[mu], FORWARD, nu);
 
 	  /* tmp_0 = tmp_2 * tmp_1_dag = u(x+mu-nu,nu)*u(x+mu,nu)*u_dag(x+nu,mu) */
-	  tmp_0[rb[cb]] = tmp_2 * adj(tmp_1);
+	  tmp_0[rb[1-cb]] = tmp_2 * adj(tmp_1);
 
 	  /* tmp_1 = tmp_0 * u_dag(x,nu) */
 	  /*       = u(x+mu-nu,nu)*u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu) */
-	  tmp_1[rb[cb]] = tmp_0 * adj(u[nu]);
+	  tmp_1[rb[1-cb]] = tmp_0 * adj(u[nu]);
 
 	  /* tmp_2(x) = tmp_1(x+nu) */
 	  tmp_2[rb[cb]] = shift(tmp_1, FORWARD, nu);

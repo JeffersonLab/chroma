@@ -1,4 +1,4 @@
-// $Id: pg_gaugeact.cc,v 1.1 2005-01-12 04:44:53 edwards Exp $
+// $Id: pg_gaugeact.cc,v 1.2 2005-01-12 20:03:38 edwards Exp $
 /*! \file
  *  \brief Parallelogram gauge action
  */
@@ -15,6 +15,7 @@ namespace Chroma
  
   namespace PgGaugeActEnv 
   {
+    //! Callback
     GaugeAction* createGaugeAct(XMLReader& xml, const std::string& path) 
     {
       return new PgGaugeAct(GaugeTypeGaugeBCEnv::reader(xml, path), 
@@ -27,6 +28,7 @@ namespace Chroma
   };
 
 
+  // Param constructor/reader
   PgGaugeActParams::PgGaugeActParams(XMLReader& xml_in, const std::string& path) 
   {
     XMLReader paramtop(xml_in, path);
@@ -40,7 +42,9 @@ namespace Chroma
     }
   }
 
-  void read(XMLReader& xml, const string& path, PgGaugeActParams& p) {
+  // Read params
+  void read(XMLReader& xml, const string& path, PgGaugeActParams& p) 
+  {
     PgGaugeActParams tmp(xml, path);
     p=tmp;
   }
@@ -87,7 +91,6 @@ namespace Chroma
     LatticeColorMatrix tmp_3;
     LatticeColorMatrix tmp_4;
     LatticeColorMatrix tmp_5;
-    LatticeColorMatrix tmp_6;
     LatticeColorMatrix tmp_tot;
     multi1d<int> fdir(Nd);  
 
@@ -141,7 +144,7 @@ namespace Chroma
 
 	  /* _| piece */
 	  tmp_0[rb[cb]] = u[nu] * shift(u[mu], FORWARD, nu);
-	  tmp_5 = tmp_0 * coeff_tmp;
+	  tmp_5[rb[cb]] = tmp_0 * coeff_tmp;
 	  for(int k=0; k < Nd-2; k++)
 	  {
 	    int eta = fdir[k];
@@ -165,14 +168,14 @@ namespace Chroma
 	  for(int k=0; k < Nd-2; k++)
 	  {
 	    int eta = fdir[k];
-	    tmp_2[rb[cb]] = u[eta] * shift(tmp_5, FORWARD, eta);
+	    tmp_2[rb[1-cb]] = u[eta] * shift(tmp_5, FORWARD, eta);
 	    if(k==0)
 	    {
-	      tmp_4[rb[cb]] = shift(tmp_2, BACKWARD, mu) * shift(adj(u[eta]), BACKWARD, nu);
+	      tmp_4[rb[cb]] = shift(tmp_2, BACKWARD, mu) * adj(shift(u[eta], BACKWARD, nu));
 	    }
 	    else
 	    {
-	      tmp_4[rb[cb]] += shift(tmp_2, BACKWARD, mu) * shift(adj(u[eta]), BACKWARD, nu);
+	      tmp_4[rb[cb]] += shift(tmp_2, BACKWARD, mu) * adj(shift(u[eta], BACKWARD, nu));
 	    }
 	  }
 
