@@ -1,4 +1,4 @@
-// $Id: staggered_qprop.cc,v 1.5 2004-02-17 17:52:56 edwards Exp $
+// $Id: staggered_qprop.cc,v 1.6 2004-03-03 10:50:43 mcneile Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *
@@ -49,6 +49,7 @@ EvenOddStaggeredTypeFermAct<LatticeFermion>::qprop(LatticeFermion& psi,
   Handle<const LinearOperator<LatticeFermion> > A(lMdagM(state));
 
   LatticeFermion tmp, tmp1, tmp2;
+  tmp = tmp1 = tmp2 = zero;
   Real invm;
 
   switch(invType)
