@@ -7,5 +7,5 @@
 #include "update/molecdyn/predictor/last_solution_predictor.h"
 
 #include "update/molecdyn/predictor/circular_buffer.h"
-
+#include "update/molecdyn/predictor/linear_extrap_predictor.h"
 #endif

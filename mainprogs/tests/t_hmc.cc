@@ -383,7 +383,8 @@ namespace Chroma {
     foo &= ZeroGuess5DChronoPredictorEnv::registered;
     foo &= LastSolution4DChronoPredictorEnv::registered;  
     foo &= LastSolution5DChronoPredictorEnv::registered;
-
+    foo &= LinearExtrapolation4DChronoPredictorEnv::registered;
+    foo &= LinearExtrapolation5DChronoPredictorEnv::registered;
     // Inline Measurements
     foo &= InlinePlaquetteEnv::registered;
     foo &= InlinePolyakovLoopEnv::registered;
