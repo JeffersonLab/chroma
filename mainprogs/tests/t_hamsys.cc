@@ -4,6 +4,9 @@
 #include "update/abs_symp_updates.h"
 #include "update/symp_updates.h"
 #include "update/hyb_int.h"
+#include "update/hmc_classes.h"
+#include "update/pg_hmc.h"
+
 #include <iostream>
 
 using namespace QDP;
@@ -16,7 +19,7 @@ int main(int argc, char *argv[])
   QDP_initialize(&argc, &argv);
 
   // Setup a small lattice
-  const int nrow_arr[] = {4, 4, 4, 8};
+  const int nrow_arr[] = {4, 4, 4, 4};
   multi1d<int> nrow(Nd);
   nrow=nrow_arr;
   Layout::setLattSize(nrow);
@@ -26,7 +29,7 @@ int main(int argc, char *argv[])
   {
     XMLReader file_xml;
     XMLReader config_xml;
-    Cfg_t foo; foo.cfg_type=CFG_TYPE_DISORDERED;
+    Cfg_t foo; foo.cfg_type=CFG_TYPE_UNIT;
     gaugeStartup(file_xml, config_xml, u, foo);
   }
    
@@ -44,53 +47,45 @@ int main(int argc, char *argv[])
   // Get Periodic Gauge Boundaries
   Handle<GaugeBC> gbc(new PeriodicGaugeBC);
 
-  Real betaMC = 5.9;
-  Real betaMD = 6.0;
+  Real betaMC = Real(5.7);
+  Real betaMD = Real(5.7);
 
   // Get a Wilson Gauge Action
+  // For the Monte Carlo
   WilsonGaugeAct S_pg_MC(gbc, betaMC);
+
+  // For the MD
   WilsonGaugeAct S_pg_MD(gbc, betaMD);
 
+  // Generate Hamiltonians 
   ExactPureGaugeHamiltonian<WilsonGaugeAct> H_MC(S_pg_MC);
   ExactPureGaugeHamiltonian<WilsonGaugeAct> H_MD(S_pg_MD);
 
-  Double KE, PE;
-  H_MC.mesE(mc_state, KE, PE);
-  QDPIO::cout << "MesE_MC: KE= " << KE << " PE=" << PE << endl;
-
-  // Instantiate a SympUpdates class
-  // Same Hamiltonian as HMC for now.
-  PureGaugeSympUpdates leaps(H_MC);
+  // Generate the symplectic updates with respect to H_MD
+  PureGaugeSympUpdates leaps(H_MD);
 
   // Step Sizes
-  Real dt = 0.1;
-  Real dtby2 = dt/Real(2);
+  Real dt = Real(0.01);
+  Real tau = Real(0.1);
 
-  
-  // Prototyp HMC Step
+  PureGaugePQPLeapFrog leapfrog(leaps, dt, tau);
 
-  // Refresh Momenta
-  H_MC.refreshP(mc_state);
+  // Create the HMC 
+  PureGaugeHMCTraj HMC(H_MC, leapfrog);
 
-  // Save State
-  PureGaugeFieldState old_state(mc_state);
-  PureGaugePQPLeapFrog<PureGaugeSympUpdates> leapfrog(leaps, Real(0.1), Real(1));
+  XMLFileWriter monitorHMC("FOO");
+  push(monitorHMC, "HMCTest");
 
-  XMLBufferWriter foo;
-  leapfrog(mc_state, foo);
+  // Thermalise the HMC always accepting
+  for(int i=0; i < 100; i++) { 
+    HMC(mc_state, true, monitorHMC);
+    MesPlq(mc_state.getQ(), w_plaq, s_plaq, t_plaq, link);
+    QDPIO::cout << "Traj: " << HMC.getTrajNum() << " w_plaq=" << w_plaq << endl;
+  }
 
 
-  Double KE_old, PE_old;
-  H_MC.mesE(old_state, KE_old, PE_old);
-  H_MC.mesE(mc_state,  KE, PE);
 
-  QDPIO::cout << "OLD   KE: " << KE_old << " PE: " << PE_old << endl;
-  QDPIO::cout << "NEW   KE: " << KE     << " PE: " << PE << endl;
-  QDPIO::cout << "Delta KE: " << KE - KE_old << " PE: " << PE - PE_old << endl;
-
-  XMLFileWriter jim("OUT");
-  jim << foo;
-
+  pop(monitorHMC);
   // Finish
   QDP_finalize();
   exit(0);
