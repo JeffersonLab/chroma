@@ -1,4 +1,4 @@
-// $Id: wallformfac.cc,v 1.4 2004-01-13 05:10:01 edwards Exp $
+// $Id: wallformfac.cc,v 1.5 2004-01-14 21:42:09 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions with a wall sink
  *
@@ -13,6 +13,13 @@ using namespace QDP;
 /*
  * Input 
  */
+struct Prop_t
+{
+  string       forwprop_file;
+  string       backprop_file;
+};
+
+
 // Parameters which must be determined from the XML input
 // and written to the XML output
 struct Param_t
@@ -43,6 +50,7 @@ struct WallFormFac_input_t
   IO_version_t     io_version;
   Param_t          param;
   Cfg_t            cfg;
+  Prop_t           prop;
 };
 
 
@@ -155,9 +163,12 @@ void read(XMLReader& xml, const string& path, WallFormFac_input_t& input)
 
 
   // Read in the gauge configuration file name
+  // Also read in props
   try
   {
     read(inputtop, "Cfg/cfg_file",input.cfg.cfg_file);
+    read(inputtop, "Prop/forwprop_file",input.prop.forwprop_file);
+    read(inputtop, "Prop/backprop_file",input.prop.backprop_file);
   }
   catch (const string& e) 
   {
@@ -269,15 +280,15 @@ main(int argc, char *argv[])
   QDPIO::cout << "Attempt to read forward propagator" << endl;
   
   LatticePropagator forward_quark_prop;
-  XMLReader forwprop_xml;
   {
-    stringstream prop_file;
-    prop_file << "propagator_0";
-    readSzinQprop(forwprop_xml, forward_quark_prop, prop_file.str());
+    XMLReader forwprop_xml;
+//    stringstream prop_file;
+//    prop_file << "propagator_0";
+//    readSzinQprop(forwprop_xml, forward_quark_prop, prop_file.str());
+    readSzinQprop(forwprop_xml, forward_quark_prop, input.prop.forwprop_file);
     
     write(xml_out, "Forward_prop_info", forwprop_xml);
   }
-
   QDPIO::cout << "Forward propagator successfully read" << endl;
    
 
@@ -285,15 +296,15 @@ main(int argc, char *argv[])
   QDPIO::cout << "Attempt to read backward propagator" << endl;
 
   LatticePropagator backward_quark_prop;
-  XMLReader backprop_xml;
   {
-    stringstream prop_file;
-    prop_file << "backprop_0";
-    readSzinQprop(backprop_xml, backward_quark_prop, prop_file.str());
+    XMLReader backprop_xml;
+//    stringstream prop_file;
+//    prop_file << "backprop_0";
+//    readSzinQprop(backprop_xml, backward_quark_prop, prop_file.str());
+    readSzinQprop(backprop_xml, backward_quark_prop, input.prop.backprop_file);
     
     write(xml_out, "Backward_prop_info", backprop_xml);
   }
-
   QDPIO::cout << "Backward propagator successfully read" << endl;
    
   
