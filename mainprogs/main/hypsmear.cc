@@ -1,8 +1,9 @@
 /*
- *  $Id: hypsmear.cc,v 1.18 2005-02-06 22:37:46 edwards Exp $
+ *  $Id: hypsmear.cc,v 1.19 2005-02-10 03:17:56 edwards Exp $
  *
  *  This is the top-level routine for HYP smearing.
- *  Reading in gauge fields and writing out hyp-smear gauge fields
+ *  It is a wrapper for Urs' and Robert's implmenetation of the HYP
+ *  smearing algorithm
  */
 
 
@@ -15,23 +16,39 @@
 
 using namespace Chroma;
 
+/*
+ *  This is the reader for the input parameters
+ */
+
+/*
+ * Input 
+ */
+
+// Parameters which must be determined from the XML input
+// and written to the XML output
 struct Param_t
 {
   Real alpha1;			// Smearing parameters
   Real alpha2;
   Real alpha3;
 
-  int link_smear_num;           // Number of smearing iterations
+  int num_smear;                // Number of smearing iterations
 
   multi1d<int> nrow;		// Lattice dimension
+  int j_decay;			// Direction corresponding to time
 
+  /*
+   *  Now some various rules for truncating the configuration
+   */
+  int trunc;			// Whether to truncate the output
+  int t_start;			// Starting time slice
+  int t_end;			// Ending time slice
 };
 
 struct Hyp_t
 {
-  QDP_volfmt_t  volfmt;	   // single or multi file volume format
-  CfgType  hyp_type;       // storage type for hyp config
-  string   hyp_file;	   // storage for hyp config
+  CfgType  cfg_type;       // storage order for stored gauge configuration
+  string   hyp_file;
 };
 
 struct Hypsmear_input_t
@@ -43,12 +60,12 @@ struct Hypsmear_input_t
 
 
 
-// Reader for out gauge file
+//! Target file
 void read(XMLReader& xml, const string& path, Hyp_t& input)
 {
   XMLReader inputtop(xml, path);
-  read(inputtop, "volfmt", input.volfmt);
-  read(inputtop, "hyp_type", input.hyp_type);
+
+  read(inputtop, "cfg_type", input.cfg_type);
   read(inputtop, "hyp_file", input.hyp_file);
 }
 
@@ -64,23 +81,30 @@ void read(XMLReader& xml, const string& path, Param_t& param)
   switch (version) 
   {
   case 3:
+    /**************************************************************************/
 
-    read(paramtop, "link_smear_num", param.link_smear_num);
+    /* this version allows a variable num_smear */
+    read(paramtop, "num_smear", param.num_smear);
 
-    if( param.link_smear_num < 0 )
+    if( param.num_smear < 0 )
     {
-      QDP_error_exit( "hypsmear.cc: invalid number of hyp smearing iterations, link_smear_num = %d", param.link_smear_num );
+      QDP_error_exit( "hypsmear.cc: invalid number of hyp smearing iterations, num_smear = %d", param.num_smear );
     }
+
     break;
 
   case 2:
+    /**************************************************************************/
 
-    param.link_smear_num = 1;
+    /* this version only allows num_smear = 1 */
+    param.num_smear = 1;
+
     break;
 
   default :
+    /**************************************************************************/
 
-    QDPIO::cerr << "Input version " << version << " unsupported." << endl;
+    QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
     QDP_abort(1);
   }
 
@@ -89,6 +113,20 @@ void read(XMLReader& xml, const string& path, Param_t& param)
   read(paramtop, "alpha3", param.alpha3);
 
   read(paramtop, "nrow", param.nrow);
+
+  /*
+   *  Now information about whether to truncate the configuration
+   */
+  read(paramtop, "trunc", param.trunc);
+  switch(param.trunc){
+  case 1:
+    read(paramtop, "t_start", param.t_start);
+    read(paramtop, "t_end", param.t_end);
+    read(paramtop, "j_decay", param.j_decay);
+    break;
+  default:
+    break;
+  }
 }
 
 
@@ -106,7 +144,7 @@ void read(XMLReader& xml, const string& path, Hypsmear_input_t& input)
     // Read in the gauge configuration info
     read(inputtop, "Cfg", input.cfg);
 
-    // Read in the hyp outfile info
+    // Read in the hyp file info
     read(inputtop, "Hyp", input.hyp);
   }
   catch (const string& e) 
@@ -115,6 +153,7 @@ void read(XMLReader& xml, const string& path, Hypsmear_input_t& input)
     throw;
   }
 }
+
 
 
 int main(int argc, char *argv[])
@@ -142,17 +181,19 @@ int main(int argc, char *argv[])
   multi1d<LatticeColorMatrix> u(Nd);
   XMLReader gauge_file_xml, gauge_xml;
 
-  SzinGauge_t  szin_gauge_header;
-  initHeader(szin_gauge_header);
+  clock_t t1 = clock();
 
   // Startup gauge
   gaugeStartup(gauge_file_xml, gauge_xml, u, input.cfg);
 
-  read(gauge_xml, "/szin", szin_gauge_header);
+  clock_t t2 = clock();
+  QDPIO::cout << "Gauge read took " << (double)((int)(t2)-(int)(t1))/(double)(CLOCKS_PER_SEC) << " secs" << endl;
+
 
   // Instantiate XML writer for XMLDAT
   XMLFileWriter& xml_out = TheXMLOutputWriter::Instance();
   push(xml_out, "hypsmear");
+
   proginfo(xml_out);    // Print out basic program info
 
   // Write out the input
@@ -160,63 +201,62 @@ int main(int argc, char *argv[])
 
   // Write out the config header
   write(xml_out, "Config_info", gauge_xml);
+
   push(xml_out, "Output_version");
   write(xml_out, "out_version", 1);
-
   pop(xml_out);
+
   xml_out.flush();
 
 
   // Check if the gauge field configuration is unitarized
+  t1 = clock();
   unitarityCheck(u);
+  t2 = clock();
+  QDPIO::cout << "Unitarity took " << (double)((int)(t2)-(int)(t1))/(double)(CLOCKS_PER_SEC) << " secs" << endl;
+  
 
-  // Calculate some gauge invariant observables
+  // Calculate some gauge invariant observables just for info.
   Double w_plaq, s_plaq, t_plaq, link;
+  t1 = clock();
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
+  t2 = clock();
+  QDPIO::cout << "Plaquette took " << (double)((int)(t2)-(int)(t1))/(double)(CLOCKS_PER_SEC) << " secs" << endl;
 
   push(xml_out, "Observables");
   write(xml_out, "w_plaq",w_plaq);
   write(xml_out, "s_plaq", s_plaq);
   write(xml_out, "t_plaq", t_plaq);
   write(xml_out, "link", link);
-
   pop(xml_out);
+
   xml_out.flush();
 
 
   // Now hyp smear
   multi1d<LatticeColorMatrix> u_hyp(Nd);
-  u_hyp = u;
 
   Real BlkAccu = 1.0e-5;
   int BlkMax = 100;
 
-  if (input.param.link_smear_num > 0)
+
+  t1 = clock();
+  for( int n = 0; n < input.param.num_smear; n ++ )
   {
-
-    QDPIO::cout << "HYP Smear gauge field" << endl;
-
-    for(int i=0; i < input.param.link_smear_num; i++)
-    {
     Hyp_Smear(u, u_hyp, 
 	      input.param.alpha1, input.param.alpha2, input.param.alpha3, 
 	      BlkAccu, BlkMax);
     u = u_hyp;
-    }
-    QDPIO::cout << "Gauge field HYP-smeared!" << endl;
-
-    // Write out what is done
-    push(xml_out, "Gauge field HYP-smeared!");
-    push(xml_out,"Smearing_parameters");
-    write(xml_out, "link_smear_num",input.param.link_smear_num);
-    write(xml_out, "alpha1",input.param.alpha1);
-    write(xml_out, "alpha2",input.param.alpha2);
-    write(xml_out, "alpha3",input.param.alpha3);
-    pop(xml_out);
-    xml_out.flush();
   }
+  if( input.param.num_smear == 0 )
+  {
+    u_hyp = u;
+  }
+  t2 = clock();
+  QDPIO::cout << "Hypsmear took " << (double)((int)(t2)-(int)(t1))/(double)(CLOCKS_PER_SEC) << " secs" << endl;
 
-  // Again calculate some gauge invariant observables
+  // Calculate some gauge invariant observables just for info.
+
   MesPlq(u_hyp, w_plaq, s_plaq, t_plaq, link);
 
   push(xml_out, "HYP_observables");
@@ -224,19 +264,45 @@ int main(int argc, char *argv[])
   write(xml_out, "s_plaq", s_plaq);
   write(xml_out, "t_plaq", t_plaq);
   write(xml_out, "link", link);
-
   pop(xml_out);
-  xml_out.flush();
 
   // Now write the configuration to disk
-  XMLBufferWriter gauge_file_xml_out, gauge_xml_out;
-  push(gauge_file_xml_out, "gauge");
-  write(gauge_file_xml_out, "id", int(0));
-  pop(gauge_file_xml_out);
-  write(gauge_xml_out, "szin", szin_gauge_header);
-  writeGauge(gauge_file_xml_out, gauge_xml_out, u_hyp,
-             input.hyp.hyp_file,input.hyp.volfmt, QDPIO_SERIAL);
-  // writeSzin(szin_gauge_header, u_hyp, input.hyp.hyp_file);
+
+  QDPIO::cout << "call szin trunc-er" << endl;
+
+  t1 = clock();
+
+  switch (input.hyp.cfg_type) 
+  {
+  case CFG_TYPE_SZIN :
+  {
+    SzinGauge_t szin_out;
+    initHeader(szin_out);
+
+    switch(input.param.trunc)
+    {
+    case 1:
+      QDPIO::cout << "Call writeSzinTrunc" << endl;
+      writeSzinTrunc(szin_out, u_hyp, input.param.j_decay,
+		     input.param.t_start, input.param.t_end,
+		     input.hyp.hyp_file);
+      break;
+    default:
+      QDPIO::cout << "Call writeSzin" << endl;
+      writeSzin(szin_out, u_hyp,
+		input.hyp.hyp_file);
+      break;
+    }
+    break;
+  }
+  default :
+    QDP_error_exit("Configuration type is unsupported.");
+  }
+
+  t2 = clock();
+  QDPIO::cout << "Gauge write took " << (double)((int)(t2)-(int)(t1))/(double)(CLOCKS_PER_SEC) << " secs" << endl;
+
+  pop(xml_out);
 
   END_CODE();
 
