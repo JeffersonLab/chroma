@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<assertions>
+
+<assertion xpath="/collection_of_unit_tests/gauge_observables/w_plaq"
+type="real" comparison="relative_comparison" tolerance="0.001"/>
+
+<assertion xpath="/collection_of_unit_tests/simple_test/sum"
+type="real" comparison="relative_comparison" tolerance="0.001"/>
+
+</assertions>
