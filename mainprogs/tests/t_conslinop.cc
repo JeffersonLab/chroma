@@ -1,4 +1,4 @@
-// $Id: t_conslinop.cc,v 1.1 2003-03-30 18:34:34 edwards Exp $
+// $Id: t_conslinop.cc,v 1.2 2003-03-31 16:50:04 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -37,7 +37,9 @@ int main(int argc, char *argv[])
 
 
   Real Kappa = 0.1;
-  LinearOperator* A = ConsLinOp(u, Kappa, UNPRECONDITIONED_WILSON);
+//  LinearOperator* A = ConsLinOp(u, Kappa, UNPRECONDITIONED_WILSON);
+//  WilsonDslash D(u);
+  WilsonDslash D;
 
   // Time to bolt
   QDP_finalize();
