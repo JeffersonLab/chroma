@@ -1,4 +1,4 @@
-// $Id: wallnuclff_w.cc,v 1.8 2004-04-18 20:39:33 edwards Exp $
+// $Id: wallnuclff_w.cc,v 1.9 2004-04-19 14:36:19 edwards Exp $
 /*! \file
  *  \brief Wall-sink nucleon form-factors 
  *
@@ -51,8 +51,8 @@ void wallNuclFormFac(XMLWriter& xml,
   // Project propagator onto zero momentum: Do a slice-wise sum.
   Propagator u_x2 = sum(forw_u_prop, phases.getSet()[t_sink]);
   Propagator d_x2 = sum(forw_d_prop, phases.getSet()[t_sink]);
-  LatticePropagator anti_u_prop = Gamma(G5)*back_u_prop*Gamma(G5);
-  LatticePropagator anti_d_prop = Gamma(G5)*back_d_prop*Gamma(G5);
+  LatticePropagator anti_u_prop = adj(Gamma(G5)*back_u_prop*Gamma(G5));
+  LatticePropagator anti_d_prop = adj(Gamma(G5)*back_d_prop*Gamma(G5));
 
   // Loop over appropriate form-factor contractions for this system
   XMLArrayWriter xml_seq_src(xml, 4);
@@ -82,11 +82,11 @@ void wallNuclFormFac(XMLWriter& xml,
       LatticeComplex corr_local_fn;
       LatticeComplex corr_nonlocal_fn;
 
-      // For conserved current
+      // For non-local (possibly) conserved current
       LatticePropagator tmp_prop1 = u[mu] * shift(forw_u_prop, FORWARD, mu);
-      LatticePropagator tmp_prop2 = adj(u[mu] * shift(anti_u_prop, FORWARD, mu))
+      LatticePropagator tmp_prop2 = shift(anti_u_prop, FORWARD, mu) * adj(u[mu])
 	* (forw_u_prop + Gamma(gamma_value)*forw_u_prop)
-	- adj(anti_u_prop) * (tmp_prop1 - Gamma(gamma_value)*tmp_prop1);
+	- anti_u_prop * (tmp_prop1 - Gamma(gamma_value)*tmp_prop1);
 
       switch (seq_src)
       {
