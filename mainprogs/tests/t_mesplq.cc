@@ -1,4 +1,4 @@
-// $Id: t_mesplq.cc,v 1.3 2003-01-04 05:09:27 edwards Exp $
+// $Id: t_mesplq.cc,v 1.4 2003-01-31 18:41:47 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -18,7 +18,8 @@ int main(int argc, char *argv[])
   const int foo[] = {4,4,4,4};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
-  Layout::create(nrow);
+  Layout::setLattSize(nrow);
+  Layout::create();
 
   nml.open("t_mesplq.nml");
 
