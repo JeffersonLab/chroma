@@ -1,4 +1,4 @@
-// $Id: walfil_s.cc,v 1.6 2004-07-28 02:38:04 edwards Exp $
+// $Id: walfil_s.cc,v 1.7 2004-11-12 10:24:02 mcneile Exp $
 /*! \file
  *  \brief Wall source construction
  */
@@ -34,7 +34,7 @@ using namespace QDP;
  * careful to call this routine with the right index.   
  */
 
-void walfil(LatticeFermion& a, int slice, int mu, int color_index, int src_index)
+void walfil(LatticeStaggeredFermion& a, int slice, int mu, int color_index, int src_index)
 {
   START_CODE();
 
@@ -135,10 +135,10 @@ void walfil(LatticeFermion& a, int slice, int mu, int color_index, int src_index
   };
 
   // Write onto the appropriate slice
-  LatticeFermion tmp;
+  LatticeStaggeredFermion tmp;
   tmp = sitefield;  // QDP (not installed version) now supports   construct OLattice = OScalar
 
-  a = where(ltest, tmp, LatticeFermion(zero));
+  a = where(ltest, tmp, LatticeStaggeredFermion(zero));
 
   END_CODE();
 }

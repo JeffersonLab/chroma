@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: walfil_s.h,v 1.2 2004-01-21 13:37:49 mcneile Exp $
+// $Id: walfil_s.h,v 1.3 2004-11-12 10:24:02 mcneile Exp $
 /*! \file
  *  \brief Wall source construction
  */
@@ -30,6 +30,6 @@
 
  */
 
-void walfil(LatticeFermion& a, int slice, int mu, int color_index, int src_index);
+void walfil(LatticeStaggeredFermion& a, int slice, int mu, int color_index, int src_index);
 
 #endif
