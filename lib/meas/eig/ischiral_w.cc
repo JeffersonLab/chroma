@@ -2,7 +2,7 @@
 #include <chromabase.h>
 #include "meas/eig/eig_w.h"
 
-const Chirality isChiralVector(const LatticeFermion& chi)
+Chirality isChiralVector(const LatticeFermion& chi)
 {
 
   Chirality ret_val;

@@ -5,6 +5,6 @@
 
 enum Chirality { CH_MINUS=-1, CH_NONE=0, CH_PLUS=1};
 
-const Chirality isChiralVector( const LatticeFermion& chi);
+Chirality isChiralVector( const LatticeFermion& chi);
 
 #endif
