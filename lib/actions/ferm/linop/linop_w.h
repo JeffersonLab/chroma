@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linop_w.h,v 1.14 2004-11-17 16:53:11 edwards Exp $
+// $Id: linop_w.h,v 1.15 2004-12-07 20:21:59 edwards Exp $
 
 /*! \file
  * \brief Linear operators
@@ -43,6 +43,8 @@
 #include "prec_ovdwf_linop_array_w.h"
 
 #include "dwffld_w.h"
+
+#include "lDeltaLs_w.h"
 
 #include "lovddag_w.h"
 #include "lovddag_double_pass_w.h"
