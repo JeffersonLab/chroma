@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: wallformfac_rhopi.pl,v 1.8 2004-06-24 08:02:00 edwards Exp $
+# $Id: wallformfac_rhopi.pl,v 1.9 2004-06-30 19:42:38 edwards Exp $
 #
 # Usage
 #   wallformfac_rhopi.pl
@@ -168,7 +168,7 @@ foreach $qx ( -$mommax_int .. $mommax_int ) {
       {
 	# Average the rho
 	&ensbc("$rho_sp{$qx,$qy,$qz} = ($rho_x_sp{$qx,$qy,$qz} + $rho_y_sp{$qx,$qy,$qz} + $rho_z_sp{$qx,$qy,$qz})/3");
-	&ensbc("$rho_sw{$qx,$qy,$qz} = ($rho_x_sw{$qx,$qy,$qz} + $rho_y_sw{$qx,$qy,$qz} + $rho_z_sw{$qx,$qy,$qz})/3");
+#	&ensbc("$rho_sw{$qx,$qy,$qz} = ($rho_x_sw{$qx,$qy,$qz} + $rho_y_sw{$qx,$qy,$qz} + $rho_z_sw{$qx,$qy,$qz})/3");
       }
 	
       if (-f $pion_sp{$qx,$qy,$qz})
@@ -329,12 +329,12 @@ foreach $h ('RHO_PI')
 		
 		if (! defined($rhopi_cnt{$h}{$k}{$j}{$qsq_int}))
 		{
-		  &ensbc("${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int} = foo0 * foo1");
+		  &ensbc("${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int} = sqrt(- foo0 * foo1)");
 		  $rhopi_cnt{$h}{$k}{$j}{$qsq_int} = 1;
 		}
 		else
 		{
-		  &ensbc("${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int} = ${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int} + foo0 * foo1");
+		  &ensbc("${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int} = ${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int} + sqrt(- foo0 * foo1)");
 		  ++$rhopi_cnt{$h}{$k}{$j}{$qsq_int};
 		}
 
@@ -430,14 +430,14 @@ foreach $h (keys %rhopi_cnt)
 	    printf FOO "%g  %g %g\n", $qsq, $ff, $ff_err;
 	    close(FOO);
 
-	    $f = "${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int}_ff";
-	    &ensbc("$f = extract(${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int} * Z_V,$t_ins - 1, $t_ins + 1)");
-	    system("~/bin/i386-linux/polyfit -t 0 -T 2 -p 0 -E eig.jknf -i $f -o foo.jknf");
-	    &ensbc("${f}_fit = extract(foo.jknf, 0)");
-	    ($ff, $ff_err) = &calc("${f}_fit");
-	    open(FOO,"> ${f}_fit.ax");
-	    printf FOO "%g  %g %g\n", $qsq, $ff, $ff_err;
-	    close(FOO);
+  	    $f = "${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int}_ff";
+  	    &ensbc("$f = extract(${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int} * Z_V,$t_ins - 1, $t_ins + 1)");
+# 	    system("~/bin/i386-linux/polyfit -t 0 -T 2 -p 0 -E eig.jknf -i $f -o foo.jknf");
+# 	    &ensbc("${f}_fit = extract(foo.jknf, 0)");
+# 	    ($ff, $ff_err) = &calc("${f}_fit");
+# 	    open(FOO,"> ${f}_fit.ax");
+# 	    printf FOO "%g  %g %g\n", $qsq, $ff, $ff_err;
+# 	    close(FOO);
 	  }
 	}
       }
