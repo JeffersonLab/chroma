@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.237 2005-01-25 02:17:28 edwards Exp $
+# $Id: Makefile.am,v 1.238 2005-01-25 16:16:36 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -155,7 +155,8 @@ nobase_include_HEADERS = \
 	update/molecdyn/predictor/chrono_predictor.h \
 	update/molecdyn/predictor/chrono_predictor_factory.h \
 	update/molecdyn/predictor/zero_guess_predictor.h \
-	update/molecdyn/predictor/last_solution_predictor.h
+	update/molecdyn/predictor/last_solution_predictor.h \
+	update/molecdyn/predictor/circular_buffer.h
 
 nodist_include_HEADERS=chroma_config_internal.h
 

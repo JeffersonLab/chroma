@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.318 2005-01-25 02:17:50 edwards Exp $
+# $Id: Makefile.in,v 1.319 2005-01-25 16:16:36 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -555,6 +555,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	update/molecdyn/predictor/chrono_predictor_factory.h \
 	update/molecdyn/predictor/zero_guess_predictor.h \
 	update/molecdyn/predictor/last_solution_predictor.h \
+	update/molecdyn/predictor/circular_buffer.h \
 	actions/ferm/fermacts/fermacts_w.h \
 	actions/ferm/fermacts/fermact_factory_w.h \
 	actions/ferm/fermacts/overlap_fermact_base_w.h \
@@ -925,6 +926,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	update/molecdyn/predictor/chrono_predictor_factory.h \
 	update/molecdyn/predictor/zero_guess_predictor.h \
 	update/molecdyn/predictor/last_solution_predictor.h \
+	update/molecdyn/predictor/circular_buffer.h \
 	actions/ferm/fermacts/fermacts_w.h \
 	actions/ferm/fermacts/fermact_factory_w.h \
 	actions/ferm/fermacts/overlap_fermact_base_w.h \

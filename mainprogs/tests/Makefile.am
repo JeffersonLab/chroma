@@ -63,7 +63,8 @@ EXTRA_PROGRAMS  = t_dslashm t_lwldslash t_spprod t_lwldslash_sse \
     t_unprec_wilson_force t_prec_wilson_force t_unprec_twoflav_wilson_monomial \
     t_prec_twoflav_wilson_monomial t_hamiltonian t_leapfrog t_hmc \
     t_propagator_twisted \
-    t_gauge_force
+    t_gauge_force \
+    t_circular_buffer
 
 ## DEPENDENCIES = build_chroma_libs
 
@@ -276,6 +277,9 @@ t_hmc_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_gauge_force_SOURCES = t_gauge_force.cc
 t_gauge_force_DEPENDENCIES = build_chroma_libs rebuild_other_libs
+
+t_circular_buffer_SOURCES = t_circular_buffer.cc
+t_circular_buffer_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 # build lib is a target that goes to the build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order
