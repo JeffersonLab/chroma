@@ -66,4 +66,5 @@ typedef struct {
  * epsilon > 0, n > 0, and type = 0 or 1. */
 
 ZOLOTAREV_DATA* zolotarev(PRECISION epsilon, int n, int type);
+ZOLOTAREV_DATA* higham(PRECISION epsilon, int n);
 #endif

@@ -1,6 +1,9 @@
-// $Id: propagator_comp.cc,v 1.7 2004-07-28 03:08:04 edwards Exp $
+// $Id: propagator_comp.cc,v 1.8 2004-09-27 12:00:18 bjoo Exp $
 // $Log: propagator_comp.cc,v $
-// Revision 1.7  2004-07-28 03:08:04  edwards
+// Revision 1.8  2004-09-27 12:00:18  bjoo
+// Renamed Zolotarev4D to OverlapPartFrac4D. Moved files to ovlap_partfrac4d_fermact.xx
+//
+// Revision 1.7  2004/07/28 03:08:04  edwards
 // Added START/END_CODE to all routines. Changed some to not pass an
 // argument.
 //
@@ -403,14 +406,14 @@ int main(int argc, char **argv)
     }
     break;
     
-  case FERM_ACT_ZOLOTAREV_4D:
+  case FERM_ACT_OVLAP_PARTFRAC_4D:
     {
       QDPIO::cout << "FERM_ACT_ZOLOTAREV_4D" << endl;
-      const Zolotarev4DFermActParams& zolo4d = dynamic_cast<const Zolotarev4DFermActParams& > (*(input.param.FermActHandle));
+      const OvlapPartFrac4DFermActParams& zolo4d = dynamic_cast<const Zolotarev4DFermActParams& > (*(input.param.FermActHandle));
       
       // Construct Fermact -- now uses constructor from the zolo4d params
       // struct
-      S_f_ptr = new Zolotarev4DFermAct(fbc, zolo4d, xml_out);
+      S_f_ptr = new OvlapPartFrac4DFermAct(fbc, zolo4d, xml_out);
     }
     break;
   

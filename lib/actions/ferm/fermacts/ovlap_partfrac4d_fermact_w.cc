@@ -1,4 +1,4 @@
-// $Id: zolotarev4d_fermact_w.cc,v 1.30 2004-09-24 16:22:00 bjoo Exp $
+// $Id: ovlap_partfrac4d_fermact_w.cc,v 1.1 2004-09-27 12:00:18 bjoo Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -6,7 +6,7 @@
 #include <sstream>
 #include <chromabase.h>
 #include <linearop.h>
-
+#include <string>
 #include "io/enum_io/enum_io.h"  // Read/Write OverlapInnerSolver Type
 #include "io/overlap_state_info.h"
 
@@ -14,7 +14,7 @@
 #include "actions/ferm/fermacts/unprec_wilson_fermact_w.h"
 
 // My defs
-#include "actions/ferm/fermacts/zolotarev4d_fermact_w.h"
+#include "actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.h"
 
 // the zolo coeffs
 #include "actions/ferm/fermacts/zolotarev.h"
@@ -38,26 +38,27 @@ namespace Chroma
 {
 
   //! Hooks to register the class with the fermact factory
-  namespace Zolotarev4DFermActEnv
+  namespace OvlapPartFrac4DFermActEnv
   {
     //! Callback function
     WilsonTypeFermAct<LatticeFermion>* createFermAct(Handle< FermBC<LatticeFermion> > fbc,
 						     XMLReader& xml_in,
 						     const std::string& path)
     {
-      return new Zolotarev4DFermAct(fbc, Zolotarev4DFermActParams(xml_in, path));
+      return new OvlapPartFrac4DFermAct(fbc, OvlapPartFrac4DFermActParams(xml_in, path));
     }
 
     //! Name to be used
-    const std::string name = "ZOLOTAREV_4D";
+    const std::string name = "OVERLAP_PARTIAL_FRACTION_4D";
 
     //! Register the Wilson fermact
-    const bool registered = TheWilsonTypeFermActFactory::Instance().registerObject(name, createFermAct);
+    const bool registered = TheWilsonTypeFermActFactory::Instance().registerObject(name, createFermAct) && TheWilsonTypeFermActFactory::Instance().registerObject("ZOLOTAREV_4D", createFermAct);
+
   }
 
 
 
-  Zolotarev4DFermActParams::Zolotarev4DFermActParams(XMLReader& xml, const std::string& path) : ReorthFreqInner(10), inner_solver_type(OVERLAP_INNER_CG_SINGLE_PASS)
+  OvlapPartFrac4DFermActParams::OvlapPartFrac4DFermActParams(XMLReader& xml, const std::string& path) : ReorthFreqInner(10), inner_solver_type(OVERLAP_INNER_CG_SINGLE_PASS)
   {
     XMLReader in(xml, path);
 
@@ -83,6 +84,14 @@ namespace Chroma
       }
       else {
 	RatPolyDegPrecond = RatPolyDeg;
+      }
+
+      if( in.count("ApproximationType") == 1 ) { 
+	read(in, "ApproximationType", approximation_type);
+      }
+      else { 
+	// Default coeffs are Zolotarev
+	approximation_type = COEFF_TYPE_ZOLOTAREV;
       }
 
       read(in, "InnerSolve/MaxCG", invParamInner.MaxCG);
@@ -111,7 +120,7 @@ namespace Chroma
     }
   }
 
-  void write(XMLWriter& xml_out, const string& path, const Zolotarev4DFermActParams& p)
+  void write(XMLWriter& xml_out, const string& path, const OvlapPartFrac4DFermActParams& p)
   {
     if ( path != "." ) { 
       push( xml_out, path);
@@ -126,6 +135,8 @@ namespace Chroma
     write(xml_out, "RsdCG", p.invParamInner.RsdCG);
     write(xml_out, "ReorthFreq", p.ReorthFreqInner);
     write(xml_out, "SolverType", p.inner_solver_type);
+    write(xml_out, "ApproximationType", p.approximation_type);
+ 
     pop(xml_out);
 
 //    write(xml_out, "StateInfo", p.state_info);
@@ -136,21 +147,21 @@ namespace Chroma
   }
 
   //! Read parameters
-  void read(XMLReader& xml, const string& path, Zolotarev4DFermActParams& param)
+  void read(XMLReader& xml, const string& path, OvlapPartFrac4DFermActParams& param)
   {
-    Zolotarev4DFermActParams tmp(xml, path);
+    OvlapPartFrac4DFermActParams tmp(xml, path);
     param = tmp;
   }
 
 
 
   //! Constructor
-  Zolotarev4DFermAct::Zolotarev4DFermAct(Handle<FermBC<LatticeFermion> > fbc_,
-					 const Zolotarev4DFermActParams& params_) : fbc(fbc_), 
+  OvlapPartFrac4DFermAct::OvlapPartFrac4DFermAct(Handle<FermBC<LatticeFermion> > fbc_,
+					 const OvlapPartFrac4DFermActParams& params_) : fbc(fbc_), 
 									       params(params_)
   {
 
-    QDPIO::cout << "Constructing Zolotarev4D FermAct from params" << endl;
+    QDPIO::cout << "Constructing OvlapPartFrac4D FermAct from params" << endl;
     std::istringstream  xml_s(params.AuxFermAct);
     XMLReader  fermacttop(xml_s);
     const string fermact_path = "/AuxFermAct";
@@ -193,7 +204,7 @@ namespace Chroma
       // Breakage Scenario
       QDPIO::cerr << "Unable to upcast auxiliary fermion action to "
 		  << "UnprecWilsonTypeFermAct " << endl;
-      QDPIO::cerr << Zolotarev4DFermActEnv::name << " does not support even-odd preconditioned "
+      QDPIO::cerr << OvlapPartFrac4DFermActEnv::name << " does not support even-odd preconditioned "
 		  << "auxiliary FermActs" << endl;
       QDPIO::cerr << "You passed : " << endl;
       QDPIO::cerr << e.auxfermact << endl;
@@ -211,7 +222,7 @@ namespace Chroma
   //! Creation routine
   /*! */
   void 
-  Zolotarev4DFermAct::init(int& numroot, 
+  OvlapPartFrac4DFermAct::init(int& numroot, 
 			   Real& coeffP, 
 			   multi1d<Real>& resP,
 			   multi1d<Real>& rootQ, 
@@ -271,46 +282,79 @@ namespace Chroma
     scale_fac = Real(1) / state.getApproxMax();
     eps = state.getApproxMin() * scale_fac;
 
-    QDPIO::cout << "Initing Zolotarev4D Linop" << endl;
-    QDPIO::cout << "  MaxCGInner =  " << params.invParamInner.MaxCG << endl;
-    QDPIO::cout << "  RsdCGInner =  " << params.invParamInner.RsdCG << endl;
-    QDPIO::cout << "  NEigVal    =  " << NEigVal << endl;
+    switch(params.approximation_type) { 
+    case COEFF_TYPE_ZOLOTAREV:
+      QDPIO::cout << "Initing Linop with Zolotarev Coefficients" << endl;
+      QDPIO::cout << "  MaxCGInner =  " << params.invParamInner.MaxCG << endl;
+      QDPIO::cout << "  RsdCGInner =  " << params.invParamInner.RsdCG << endl;
+      QDPIO::cout << "  NEigVal    =  " << NEigVal << endl;
+      
+      /* Below, when we fill in the coefficents for the partial fraction, 
+	 we include this factor, say t, appropriately, i.e.
+	 R(x) = alpha[da] * t * x + sum(alpha[j] * t * x / (t^2 * x^2 - ap[j]), 
+	 j = 0 .. da-1)
+	 = (alpha[da] + + sum(alpha[j] / (x^2 - ap[j] / t^2) ) / t^2 ) * t * x 
+      */
+      
+      /* ZOLOTAREV_4D uses Zolotarev's formula for the coefficients. 
+	 The coefficents produced are for an optimal uniform approximation
+	 to the sign-function in the interval [-1,-eps] U [eps,1] and of order n. 
+	 type can be set to 0 or 1 corresponding to an approximation which is 
+	 is zero or infinite at x = 0, respectively. 
+	 Here we are interested in the partial fraction form 
+	 
+	 R(x) = alpha[da] * x + sum(alpha[j] * x / (x^2 - ap[j]), j = 0 .. da-1) 
+	 
+	 where da = dd for type 0 and da = dd + 1 with ap[dd] = 0 for type 1. 
+      */
+      type = 0;
+      rdata = zolotarev(toFloat(eps), params.RatPolyDeg, type);
+      maxerr = (Real)(rdata -> Delta);
+      break;
 
-    /* Below, when we fill in the coefficents for the partial fraction, 
-       we include this factor, say t, appropriately, i.e.
-       R(x) = alpha[da] * t * x + sum(alpha[j] * t * x / (t^2 * x^2 - ap[j]), 
-       j = 0 .. da-1)
-       = (alpha[da] + + sum(alpha[j] / (x^2 - ap[j] / t^2) ) / t^2 ) * t * x 
-    */
-  
-    /* ZOLOTAREV_4D uses Zolotarev's formula for the coefficients. 
-       The coefficents produced are for an optimal uniform approximation
-       to the sign-function in the interval [-1,-eps] U [eps,1] and of order n. 
-       type can be set to 0 or 1 corresponding to an approximation which is 
-       is zero or infinite at x = 0, respectively. 
-       Here we are interested in the partial fraction form 
-     
-       R(x) = alpha[da] * x + sum(alpha[j] * x / (x^2 - ap[j]), j = 0 .. da-1) 
-     
-       where da = dd for type 0 and da = dd + 1 with ap[dd] = 0 for type 1. 
-    */
-    type = 0;
-    rdata = zolotarev(toFloat(eps), params.RatPolyDeg, type);
-    maxerr = (Real)(rdata -> Delta);
+    case COEFF_TYPE_TANH:
+      QDPIO::cout << "Initing Linop with Higham Rep tanh Coefficients" << endl;
+      QDPIO::cout << "  MaxCGInner =  " << params.invParamInner.MaxCG << endl;
+      QDPIO::cout << "  RsdCGInner =  " << params.invParamInner.RsdCG << endl;
+      QDPIO::cout << "  NEigVal    =  " << NEigVal << endl;
+      
+      /* Below, when we fill in the coefficents for the partial fraction, 
+	 we include this factor, say t, appropriately, i.e.
+	 R(x) = alpha[da] * t * x + sum(alpha[j] * t * x / (t^2 * x^2 - ap[j]), 
+	 j = 0 .. da-1)
+	 = (alpha[da] + + sum(alpha[j] / (x^2 - ap[j] / t^2) ) / t^2 ) * t * x 
+      */
+      
+      /*  use the tanh formula (Higham Rep) for the coefficients. 
+	 The coefficents produced are for the tanh approximation
+	 to the sign-function in the interval [-1,-eps] U [eps,1] and of order n.	 R(x) = alpha[da] * x + sum(alpha[j] * x / (x^2 - ap[j]), j = 0 .. da-1) 
+	 where da = dd for type 0 and da = dd + 1 with ap[dd] = 0 for type 1. 
+      */
+      rdata = higham(toFloat(eps), params.RatPolyDeg);
+      maxerr = (Real)(rdata -> Delta);
+      break;
+    default:
+      // The map system should ensure that we never get here but 
+      // just for style
+      QDPIO::cerr << "Unknown coefficient type: " << params.approximation_type
+		  << endl;
+      QDP_abort(1);
+    }
+    
+    
+      /*
+	push(my_writer, "ZolotarevApprox");
+	write(my_writer, "eps", eps);
+	write(my_writer, "scale_fac", scale_fac);
+	write(my_writer, "RatPolyDeg", params.RatPolyDeg);
+	write(my_writer, "type", type);
+	write(my_writer, "maxerr", maxerr);
+	write(my_writer, "InnerSolverType", params.inner_solver_type);
+	pop(my_writer);
+      */
 
-    /*
-    push(my_writer, "ZolotarevApprox");
-    write(my_writer, "eps", eps);
-    write(my_writer, "scale_fac", scale_fac);
-    write(my_writer, "RatPolyDeg", params.RatPolyDeg);
-    write(my_writer, "type", type);
-    write(my_writer, "maxerr", maxerr);
-    write(my_writer, "InnerSolverType", params.inner_solver_type);
-    pop(my_writer);
-    */
-
-    /* The number of residuals and poles */
-    /* Allocate the roots and residua */
+      /* The number of residuals and poles */
+      /* Allocate the roots and residua */
     numroot = rdata -> dd;
     /* The roots, i.e., the shifts in the partial fraction expansion */
     rootQ.resize(numroot);
@@ -367,7 +411,7 @@ namespace Chroma
     pop(my_writer);
     */
   
-    QDPIO::cout << "ZOLOTAREV 4d n=" << params.RatPolyDeg << " scale=" << scale_fac
+    QDPIO::cout << "PartFracApprox 4d n=" << params.RatPolyDeg << " scale=" << scale_fac
 		<< " coeff=" << coeffP << " Nwils= " << NEigVal <<" Mass="
 		<< params.Mass << " Rsd=" << params.invParamInner.RsdCG << endl;
   
@@ -375,13 +419,28 @@ namespace Chroma
       endl;
     QDPIO::cout << "Maximum error |R(x) - sqn(x)| <= " << maxerr << endl;
   
-    if(type == 0) {
-      QDPIO::cout << "Approximation type " << type << " with R(0) = 0"
+    switch( params.approximation_type) {
+    case COEFF_TYPE_ZOLOTAREV:
+      QDPIO::cout << "Coefficients from Zolotarev" << endl;
+
+      if(type == 0) {
+	QDPIO::cout << "Approximation type " << type << " with R(0) = 0"
+		    << endl;
+      }
+      else {
+	QDPIO::cout << "Approximation type " << type << " with R(0) =  infinity"                    << endl;
+      }
+
+      break;
+    case COEFF_TYPE_TANH:
+      QDPIO::cout << "Coefficients from Higham Tanh representation" << endl;
+      break;
+    default:
+      QDPIO::cerr << "Unknown coefficient type " << params.approximation_type 
 		  << endl;
+      break;
     }
-    else {
-      QDPIO::cout << "Approximation type " << type << " with R(0) =  infinity"                    << endl;
-    }
+
 
     switch(params.inner_solver_type) { 
     case OVERLAP_INNER_CG_SINGLE_PASS:
@@ -421,7 +480,7 @@ namespace Chroma
   }
 
   void 
-  Zolotarev4DFermAct::initPrec(int& numroot, 
+  OvlapPartFrac4DFermAct::initPrec(int& numroot, 
 			       Real& coeffP, 
 			       multi1d<Real>& resP,
 			       multi1d<Real>& rootQ, 
@@ -482,38 +541,67 @@ namespace Chroma
     scale_fac = Real(1) / state.getApproxMax();
     eps = state.getApproxMin() * scale_fac;
 
-
-
-    /* Below, when we fill in the coefficents for the partial fraction, 
-       we include this factor, say t, appropriately, i.e.
-       R(x) = alpha[da] * t * x + sum(alpha[j] * t * x / (t^2 * x^2 - ap[j]), 
-       j = 0 .. da-1)
-       = (alpha[da] + + sum(alpha[j] / (x^2 - ap[j] / t^2) ) / t^2 ) * t * x 
-    */
-  
-    /* ZOLOTAREV_4D uses Zolotarev's formula for the coefficients. 
-       The coefficents produced are for an optimal uniform approximation
-       to the sign-function in the interval [-1,-eps] U [eps,1] and of order n. 
-       type can be set to 0 or 1 corresponding to an approximation which is 
-       is zero or infinite at x = 0, respectively. 
-       Here we are interested in the partial fraction form 
-     
-       R(x) = alpha[da] * x + sum(alpha[j] * x / (x^2 - ap[j]), j = 0 .. da-1) 
-     
-       where da = dd for type 0 and da = dd + 1 with ap[dd] = 0 for type 1. 
-    */
-    type = 0;
-
-    QDPIO::cout << "Calling zolotarev with " << toFloat(eps) << ", " << params.RatPolyDegPrecond <<", " << type << endl << flush;
-
-    rdata = zolotarev(toFloat(eps), params.RatPolyDegPrecond, type);
-    maxerr = (Real)(rdata -> Delta);
-
-
-    QDPIO::cout << "Initing Zolotarev4D Preconditioning Linop" << endl;
-    QDPIO::cout << "  MaxCGInner =  " << params.invParamInner.MaxCG << endl;
-    QDPIO::cout << "  RsdCGInner =  " << params.invParamInner.RsdCG << endl;
-    QDPIO::cout << "  NEigVal    =  " << NEigVal << endl;
+    switch(params.approximation_type) { 
+    case COEFF_TYPE_ZOLOTAREV:
+      
+      QDPIO::cout << "Initing Linop with Zolotarev Coefficients" << endl;
+      
+      QDPIO::cout << "  MaxCGInner =  " << params.invParamInner.MaxCG << endl;
+      QDPIO::cout << "  RsdCGInner =  " << params.invParamInner.RsdCG << endl;
+      QDPIO::cout << "  NEigVal    =  " << NEigVal << endl;
+      
+      /* Below, when we fill in the coefficents for the partial fraction, 
+	 we include this factor, say t, appropriately, i.e.
+	 R(x) = alpha[da] * t * x + sum(alpha[j] * t * x / (t^2 * x^2 - ap[j]), 
+	 j = 0 .. da-1)
+	 = (alpha[da] + + sum(alpha[j] / (x^2 - ap[j] / t^2) ) / t^2 ) * t * x 
+      */
+      
+      /* ZOLOTAREV_4D uses Zolotarev's formula for the coefficients. 
+	 The coefficents produced are for an optimal uniform approximation
+	 to the sign-function in the interval [-1,-eps] U [eps,1] and of order n. 
+	 type can be set to 0 or 1 corresponding to an approximation which is 
+	 is zero or infinite at x = 0, respectively. 
+	 Here we are interested in the partial fraction form 
+	 
+	 R(x) = alpha[da] * x + sum(alpha[j] * x / (x^2 - ap[j]), j = 0 .. da-1) 
+	 
+	 where da = dd for type 0 and da = dd + 1 with ap[dd] = 0 for type 1. 
+      */
+      type = 0;
+      rdata = zolotarev(toFloat(eps), params.RatPolyDeg, type);
+      maxerr = (Real)(rdata -> Delta);
+      break;
+    case COEFF_TYPE_TANH:
+      
+      QDPIO::cout << "Initing Linop with Higham Rep tanh Coefficients" << endl;
+      
+      QDPIO::cout << "  MaxCGInner =  " << params.invParamInner.MaxCG << endl;
+      QDPIO::cout << "  RsdCGInner =  " << params.invParamInner.RsdCG << endl;
+      QDPIO::cout << "  NEigVal    =  " << NEigVal << endl;
+      
+      /* Below, when we fill in the coefficents for the partial fraction, 
+	 we include this factor, say t, appropriately, i.e.
+	 R(x) = alpha[da] * t * x + sum(alpha[j] * t * x / (t^2 * x^2 - ap[j]), 
+	 j = 0 .. da-1)
+	 = (alpha[da] + + sum(alpha[j] / (x^2 - ap[j] / t^2) ) / t^2 ) * t * x 
+      */
+      
+      /*  use the tanh formula (Higham Rep) for the coefficients. 
+	 The coefficents produced are for the tanh approximation
+	 to the sign-function in the interval [-1,-eps] U [eps,1] and of order n.	 R(x) = alpha[da] * x + sum(alpha[j] * x / (x^2 - ap[j]), j = 0 .. da-1) 
+	 where da = dd for type 0 and da = dd + 1 with ap[dd] = 0 for type 1. 
+      */
+      rdata = higham(toFloat(eps), params.RatPolyDeg);
+      maxerr = (Real)(rdata -> Delta);
+      break;
+    default:
+      // The map system should ensure that we never get here but 
+      // just for style
+      QDPIO::cerr << "Unknown coefficient type: " << params.approximation_type
+		  << endl;
+      QDP_abort(1);
+    }
   
     /* The number of residuals and poles */
     /* Allocate the roots and residua */
@@ -574,21 +662,36 @@ namespace Chroma
     */
 
   
-    QDPIO::cout << "ZOLOTAREV Preconditioner 4d n=" << params.RatPolyDegPrecond << " scale=" << scale_fac
+    QDPIO::cout << "PartFrac Preconditioner 4d n=" << params.RatPolyDegPrecond << " scale=" << scale_fac
 		<< " coeff=" << coeffP << " Nwils= " << NEigVal <<" Mass="
 		<< params.Mass << " Rsd=" << params.invParamInner.RsdCG << endl;
   
     QDPIO::cout << "Approximation on [-1,-eps] U [eps,1] with eps = " << eps <<
       endl;
     QDPIO::cout << "Maximum error |R(x) - sqn(x)| <= " << maxerr << endl;
-  
-    if(type == 0) {
-      QDPIO::cout << "Approximation type " << type << " with R(0) = 0"
+
+    switch( params.approximation_type) {
+    case COEFF_TYPE_ZOLOTAREV:
+      QDPIO::cout << "Coefficients from Zolotarev" << endl;
+
+      if(type == 0) {
+	QDPIO::cout << "Approximation type " << type << " with R(0) = 0"
+		    << endl;
+      }
+      else {
+	QDPIO::cout << "Approximation type " << type << " with R(0) =  infinity"                    << endl;
+      }
+      break;
+    case COEFF_TYPE_TANH:
+
+      QDPIO::cout << "Coefficients from Higham Tanh representation" << endl;
+      break;
+    default:
+      QDPIO::cerr << "Unknown coefficient type " << params.approximation_type 
 		  << endl;
+      break;
     }
-    else {
-      QDPIO::cout << "Approximation type " << type << " with R(0) =  infinity"                    << endl;
-    }
+  
 
     switch(params.inner_solver_type) { 
     case OVERLAP_INNER_CG_SINGLE_PASS:
@@ -635,7 +738,7 @@ namespace Chroma
    * \param state_	 gauge field state  	 (Read)
    */
   const LinearOperator<LatticeFermion>* 
-  Zolotarev4DFermAct::linOp(Handle<const ConnectState> state_) const
+  OvlapPartFrac4DFermAct::linOp(Handle<const ConnectState> state_) const
   {
     START_CODE();
 
@@ -643,7 +746,7 @@ namespace Chroma
 
  
     if (state.getEigVec().size() != state.getEigVal().size())
-      QDP_error_exit("Zolotarev4DLinOp: inconsistent sizes of eigenvectors and values");
+      QDP_error_exit("OvlapPartFrac4DLinOp: inconsistent sizes of eigenvectors and values");
 
     int NEigVal = state.getEigVal().size();
 
@@ -705,14 +808,14 @@ namespace Chroma
    * \param state_	 gauge field state  	 (Read)
    */
   const LinearOperator<LatticeFermion>* 
-  Zolotarev4DFermAct::linOpPrecondition(Handle<const ConnectState> state_) const
+  OvlapPartFrac4DFermAct::linOpPrecondition(Handle<const ConnectState> state_) const
   {
     START_CODE();
 
     const OverlapConnectState<LatticeFermion>& state = dynamic_cast<const OverlapConnectState<LatticeFermion>&>(*state_);
 
     if (state.getEigVec().size() != state.getEigVal().size())
-      QDP_error_exit("Zolotarev4DLinOp: inconsistent sizes of eigenvectors and values");
+      QDP_error_exit("OvlapPartFrac4DLinOp: inconsistent sizes of eigenvectors and values");
 
     int NEigVal = state.getEigVal().size();
 
@@ -773,14 +876,14 @@ namespace Chroma
    * \param state_	 gauge field state  	 (Read)
    */
   const LinearOperator<LatticeFermion>* 
-  Zolotarev4DFermAct::lgamma5epsH(Handle<const ConnectState> state_) const
+  OvlapPartFrac4DFermAct::lgamma5epsH(Handle<const ConnectState> state_) const
   {
     START_CODE();
 
     const OverlapConnectState<LatticeFermion>& state = dynamic_cast<const OverlapConnectState<LatticeFermion>&>(*state_);
 
     if (state.getEigVec().size() != state.getEigVal().size())
-      QDP_error_exit("Zolotarev4DLinOp: inconsistent sizes of eigenvectors and values");
+      QDP_error_exit("OvlapPartFrac4DLinOp: inconsistent sizes of eigenvectors and values");
 
     int NEigVal = state.getEigVal().size();
 
@@ -841,14 +944,14 @@ namespace Chroma
    * \param state_	 gauge field state  	 (Read)
    */
   const LinearOperator<LatticeFermion>* 
-  Zolotarev4DFermAct::lgamma5epsHPrecondition(Handle<const ConnectState> state_) const
+  OvlapPartFrac4DFermAct::lgamma5epsHPrecondition(Handle<const ConnectState> state_) const
   {
     START_CODE();
   
     const OverlapConnectState<LatticeFermion>& state = dynamic_cast<const OverlapConnectState<LatticeFermion>&>(*state_);
 
     if (state.getEigVec().size() != state.getEigVal().size())
-      QDP_error_exit("Zolotarev4DLinOp: inconsistent sizes of eigenvectors and values");
+      QDP_error_exit("OvlapPartFrac4DLinOp: inconsistent sizes of eigenvectors and values");
 
     int NEigVal = state.getEigVal().size();
 
@@ -909,7 +1012,7 @@ namespace Chroma
    * \param state_	 gauge field state  	 (Read)
    */
   const LinearOperator<LatticeFermion>* 
-  Zolotarev4DFermAct::lMdagM(Handle<const ConnectState> state_, const Chirality& ichiral) const
+  OvlapPartFrac4DFermAct::lMdagM(Handle<const ConnectState> state_, const Chirality& ichiral) const
   {
 
     // If chirality is none, return traditional MdagM
@@ -920,7 +1023,7 @@ namespace Chroma
       const OverlapConnectState<LatticeFermion>& state = dynamic_cast<const OverlapConnectState<LatticeFermion>&>(*state_);
     
       if (state.getEigVec().size() != state.getEigVal().size())
-	QDP_error_exit("Zolotarev4DLinOp: inconsistent sizes of eigenvectors and values");
+	QDP_error_exit("OvlapPartFrac4DLinOp: inconsistent sizes of eigenvectors and values");
 
       int NEigVal = state.getEigVal().size();
 
@@ -983,7 +1086,7 @@ namespace Chroma
    * \param state_	 gauge field state  	 (Read)
    */
   const LinearOperator<LatticeFermion>* 
-  Zolotarev4DFermAct::lMdagM(Handle<const ConnectState> state_) const
+  OvlapPartFrac4DFermAct::lMdagM(Handle<const ConnectState> state_) const
   {
     // linOp news the linear operator and gives back pointer, 
     // We call lmdagm with this pointer.
@@ -1001,7 +1104,7 @@ namespace Chroma
    * \param state_	 gauge field state  	 (Read)
    */
   const LinearOperator<LatticeFermion>* 
-  Zolotarev4DFermAct::lMdagMPrecondition(Handle<const ConnectState> state_, const Chirality& ichiral) const
+  OvlapPartFrac4DFermAct::lMdagMPrecondition(Handle<const ConnectState> state_, const Chirality& ichiral) const
   {
 
     // If chirality is none, return traditional MdagM
@@ -1012,7 +1115,7 @@ namespace Chroma
       const OverlapConnectState<LatticeFermion>& state = dynamic_cast<const OverlapConnectState<LatticeFermion>&>(*state_);
     
       if (state.getEigVec().size() != state.getEigVal().size())
-	QDP_error_exit("Zolotarev4DLinOp: inconsistent sizes of eigenvectors and values");
+	QDP_error_exit("OvlapPartFrac4DLinOp: inconsistent sizes of eigenvectors and values");
 
       int NEigVal = state.getEigVal().size();
 
@@ -1075,7 +1178,7 @@ namespace Chroma
    * \param state_	 gauge field state  	 (Read)
    */
   const LinearOperator<LatticeFermion>* 
-  Zolotarev4DFermAct::lMdagMPrecondition(Handle<const ConnectState> state_) const
+  OvlapPartFrac4DFermAct::lMdagMPrecondition(Handle<const ConnectState> state_) const
   {
     // linOp news the linear operator and gives back pointer, 
     // We call lmdagm with this pointer.
@@ -1086,7 +1189,7 @@ namespace Chroma
 
 
   const OverlapConnectState<LatticeFermion>*
-  Zolotarev4DFermAct::createState(const multi1d<LatticeColorMatrix>& u_) const
+  OvlapPartFrac4DFermAct::createState(const multi1d<LatticeColorMatrix>& u_) const
   {
     multi1d<LatticeColorMatrix> u_tmp = u_;
     getFermBC().modifyU(u_tmp);
@@ -1098,12 +1201,12 @@ namespace Chroma
 
 
   const OverlapConnectState<LatticeFermion>*
-  Zolotarev4DFermAct::createState(const multi1d<LatticeColorMatrix>& u_,
+  OvlapPartFrac4DFermAct::createState(const multi1d<LatticeColorMatrix>& u_,
 				  const Real& approxMin_) const 
   {
     if ( toBool( approxMin_ < Real(0) )) { 
       ostringstream error_str;
-      error_str << "Zolotarev4DFermAct: approxMin_ has to be positive" << endl;
+      error_str << "OvlapPartFrac4DFermAct: approxMin_ has to be positive" << endl;
       throw error_str.str();
     }
  
@@ -1118,7 +1221,7 @@ namespace Chroma
 
 
   const OverlapConnectState<LatticeFermion>*
-  Zolotarev4DFermAct::createState(const multi1d<LatticeColorMatrix>& u_,
+  OvlapPartFrac4DFermAct::createState(const multi1d<LatticeColorMatrix>& u_,
 				  const Real& approxMin_,
 				  const Real& approxMax_) const
   {
@@ -1126,12 +1229,12 @@ namespace Chroma
   
  
     if ( toBool(approxMin_ < 0 )) { 
-      error_str << "Zolotarev4DFermAct: approxMin_ has to be positive" << endl;
+      error_str << "OvlapPartFrac4DFermAct: approxMin_ has to be positive" << endl;
       throw error_str.str();
     }
 
     if ( toBool(approxMax_ < approxMin_) ) { 
-      error_str << "Zolotarev4DFermAct: approxMax_ has to be larger than approxMin_" << endl;
+      error_str << "OvlapPartFrac4DFermAct: approxMax_ has to be larger than approxMin_" << endl;
       throw error_str.str();
     }
  
@@ -1146,7 +1249,7 @@ namespace Chroma
 
 
   const OverlapConnectState<LatticeFermion>*
-  Zolotarev4DFermAct::createState(const multi1d<LatticeColorMatrix>& u_,
+  OvlapPartFrac4DFermAct::createState(const multi1d<LatticeColorMatrix>& u_,
 				  const multi1d<Real>& lambda_lo_, 
 				  const multi1d<LatticeFermion>& evecs_lo_,
 				  const Real& lambda_hi_) const
@@ -1175,7 +1278,7 @@ namespace Chroma
 
 
   const ConnectState* 
-  Zolotarev4DFermAct::createState(const multi1d<LatticeColorMatrix>& u_,
+  OvlapPartFrac4DFermAct::createState(const multi1d<LatticeColorMatrix>& u_,
 				  XMLReader& state_info_xml,
 				  const string& state_info_path) const
   {
@@ -1186,7 +1289,7 @@ namespace Chroma
   }
 
   const OverlapConnectState<LatticeFermion>*
-  Zolotarev4DFermAct::createState(const multi1d<LatticeColorMatrix>& u_,
+  OvlapPartFrac4DFermAct::createState(const multi1d<LatticeColorMatrix>& u_,
 				  const OverlapStateInfo& state_info,
 				  XMLWriter& xml_out) const
   {

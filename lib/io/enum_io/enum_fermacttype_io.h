@@ -31,7 +31,7 @@ namespace Chroma {
       FERM_ACT_DWF,                           // Precond. Shamir DWF
       FERM_ACT_UNPRECONDITIONED_DWF,          // Unprec. Shamir DWF
       FERM_ACT_PROJECTED_DWF,                 // Shamir precond. DWF with E&H projection
-      FERM_ACT_ZOLOTAREV_4D,                  // Overlap pole with Zolotarev coeffs
+      FERM_ACT_OVLAP_PARTFRAC_4D,                  // Overlap pole with Zolotarev coeffs
       FERM_ACT_ZOLOTAREV_5D,                  // 5D overlap op. ZOlotarev coeffs
       FERM_ACT_OVERLAP_DWF,                   // Borici
       FERM_ACT_EXTENDED_OVERLAP,              // Unprecond. N&N 5D overlap

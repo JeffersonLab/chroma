@@ -1,5 +1,5 @@
 /* -*- Mode: C; comment-column: 22; fill-column: 79; compile-command: "gcc -o zolotarev zolotarev.c -ansi -pedantic -lm -DTEST"; -*- */
-#define ZOLOTAREV_VERSION Source Time-stamp: <05-APR-2002 11:01:25.00 adk@grubb.ph.ed.ac.uk>
+#define VERSION Source Time-stamp: <06-SEP-2004 18:59:26.00 adk@MISSCONTRARY>
 
 /* These C routines evalute the optimal rational approximation to the signum
  * function for epsilon < |x| < 1 using Zolotarev's theorem.
@@ -16,12 +16,7 @@
  * have been written in a precision-independent form. */
 
 #include <math.h>
-#ifndef DMALLOC
 #include <stdlib.h>
-#else
-#include <dmalloc.h>
-#endif
-
 #include <stdio.h>
 
 #define MAX(a,b) ((a) > (b) ? (a) : (b))
@@ -31,8 +26,7 @@
 #define INTERNAL_PRECISION long double
 #endif
 
-#include "actions/ferm/fermacts/zolotarev.h"
-
+#include "zolotarev.h"
 #define ZOLOTAREV_INTERNAL
 #undef ZOLOTAREV_DATA
 #define ZOLOTAREV_DATA izd
@@ -264,7 +258,7 @@ static void sncndnK(INTERNAL_PRECISION z, INTERNAL_PRECISION k,
   *sn = arithgeom(z, ONE, sqrt(ONE - k*k), &agm);
   *K = M_PI / (TWO * agm);
   sgn = ((int) (fabs(z) / *K)) % 4; /* sgn = 0, 1, 2, 3 */
-  sgn ^= sgn >> 1;    /* sgn = 0, 1, 1, 0 */
+  sgn ^= sgn >> 1;    /* (sgn & 1) = 0, 1, 1, 0 */
   sgn = 1 - ((sgn & 1) << 1);	/* sgn = 1, -1, -1, 1 */
   *cn = ((INTERNAL_PRECISION) sgn) * sqrt(ONE - *sn * *sn);
   *dn = sqrt(ONE - k*k* *sn * *sn);
@@ -275,7 +269,7 @@ static void sncndnK(INTERNAL_PRECISION z, INTERNAL_PRECISION k,
  * formula. 
  *
  * Set type = 0 for the Zolotarev approximation, which is zero at x = 0, and
- * type = 1 for the approximation which is infinite at x = 0*/
+ * type = 1 for the approximation which is infinite at x = 0. */
 
 zolotarev_data* zolotarev(PRECISION epsilon, int n, int type) {
   INTERNAL_PRECISION A, c, cp, kp, ksq, sn, cn, dn, Kp, z, z0, t, M,
@@ -309,7 +303,7 @@ zolotarev_data* zolotarev(PRECISION epsilon, int n, int type) {
   invlambda = xi;
 
   for (m = 0; m < d -> dd; m++) {
-    czero = 2 * (m + 1) == n; /* n even and m = dd */
+    czero = 2 * (m + 1) == n; /* n even and m = dd -1 */
 
     z = z0 * ((INTERNAL_PRECISION) m + ONE);
     sncndnK(z, kp, &sn, &cn, &dn, &Kp);
@@ -341,6 +335,89 @@ zolotarev_data* zolotarev(PRECISION epsilon, int n, int type) {
     ts = d -> dn; d -> dn = d -> dd; d -> dd = ts;
     ts = d -> deg_num; d -> deg_num = d -> deg_denom; d -> deg_denom = ts;
   }
+
+  construct_partfrac(d);
+  construct_contfrac(d);
+
+  /* Converting everything to PRECISION for external use only */
+
+  zd = (zolotarev_data*) malloc(sizeof(zolotarev_data));
+  zd -> A = (PRECISION) d -> A;
+  zd -> Delta = (PRECISION) d -> Delta;
+  zd -> epsilon = (PRECISION) d -> epsilon;
+  zd -> n = d -> n;
+  zd -> type = d -> type;
+  zd -> dn = d -> dn;
+  zd -> dd = d -> dd;
+  zd -> da = d -> da;
+  zd -> db = d -> db;
+  zd -> deg_num = d -> deg_num;
+  zd -> deg_denom = d -> deg_denom;
+
+  zd -> a = (PRECISION*) malloc(zd -> dn * sizeof(PRECISION));
+  for (m = 0; m < zd -> dn; m++) zd -> a[m] = (PRECISION) d -> a[m];
+  free(d -> a);
+
+  zd -> ap = (PRECISION*) malloc(zd -> dd * sizeof(PRECISION));
+  for (m = 0; m < zd -> dd; m++) zd -> ap[m] = (PRECISION) d -> ap[m];
+  free(d -> ap);
+
+  zd -> alpha = (PRECISION*) malloc(zd -> da * sizeof(PRECISION));
+  for (m = 0; m < zd -> da; m++) zd -> alpha[m] = (PRECISION) d -> alpha[m];
+  free(d -> alpha);
+
+  zd -> beta = (PRECISION*) malloc(zd -> db * sizeof(PRECISION));
+  for (m = 0; m < zd -> db; m++) zd -> beta[m] = (PRECISION) d -> beta[m];
+  free(d -> beta);
+
+  free(d);
+  return zd;
+}
+
+zolotarev_data* higham(PRECISION epsilon, int n) {
+  INTERNAL_PRECISION A, M, c, cp, z, z0, t, epssq;
+  int m, czero;
+  zolotarev_data *zd;
+  izd *d = (izd*) malloc(sizeof(izd));
+
+  d -> type = 0;
+  d -> epsilon = (INTERNAL_PRECISION) epsilon;
+  d -> n = n;
+  d -> dd = n / 2;
+  d -> dn = d -> dd - 1 + n % 2; /* n even: dn = dd - 1, n odd: dn = dd */
+  d -> deg_denom = 2 * d -> dd;
+  d -> deg_num = 2 * d -> dn + 1;
+
+  d -> a = (INTERNAL_PRECISION*) malloc((1 + d -> dn) *
+					sizeof(INTERNAL_PRECISION));
+  d -> ap = (INTERNAL_PRECISION*) malloc(d -> dd *
+					 sizeof(INTERNAL_PRECISION));
+  A = (INTERNAL_PRECISION) n;
+  z0 = M_PI / A;
+  A = n % 2 == 0 ? A : ONE / A;
+  M = d -> epsilon * A;
+  epssq = d -> epsilon * d -> epsilon;
+
+  for (m = 0; m < d -> dd; m++) {
+    czero = 2 * (m + 1) == n; /* n even and m = dd - 1*/
+
+    if (!czero) {
+      z = z0 * ((INTERNAL_PRECISION) m + ONE);
+      t = tan(z);
+      c = - t*t;
+      (d -> a)[d -> dn - 1 - m] = c;
+      M *= epssq - c;
+    }
+
+    z = z0 * ((INTERNAL_PRECISION) m + HALF);
+    t = tan(z);
+    cp = - t*t;
+    (d -> ap)[d -> dd - 1 - m] = cp;
+    M /= epssq - cp;
+  }
+
+  d -> A = A;
+  d -> Delta = ONE - M;
 
   construct_partfrac(d);
   construct_contfrac(d);
@@ -465,7 +542,9 @@ int main(int argc, char** argv) {
   sscanf(argv[2], "%d", &n);	/* Second argument is n */
   if (argc == 4) sscanf(argv[3], "%d", &type); /* Third argument is type */
 
-  rdata = zolotarev((PRECISION) eps, n, type);
+  rdata = type == 2 
+    ? higham((PRECISION) eps, n) 
+    : zolotarev((PRECISION) eps, n, type);
 
   printf("Zolotarev Test: R(epsilon = %g, n = %d, type = %d)\n\t" 
 	 STRINGIFY(VERSION) "\n\t" STRINGIFY(HVERSION)
@@ -474,9 +553,9 @@ int main(int argc, char** argv) {
 	 "\n\n\tRational approximation of degree (%d,%d), %s at x = 0\n"
 	 "\tDelta = %g (maximum error)\n\n"
 	 "\tA = %g (overall factor)\n",
-	 (float) rdata -> epsilon, rdata -> n, rdata -> type,
+	 (float) rdata -> epsilon, rdata -> n, type,
 	 rdata -> deg_num, rdata -> deg_denom,
-	 rdata -> type == 0 ? "zero" : "infinite",
+	 rdata -> type == 1 ? "infinite" : "zero",
 	 (float) rdata -> Delta, (float) rdata -> A);
   for (m = 0; m < MIN(rdata -> dd, rdata -> dn); m++)
     printf("\ta[%2d] = %14.8g\t\ta'[%2d] = %14.8g\n",

@@ -1,25 +1,26 @@
 // -*- C++ -*-
-// $Id: zolotarev4d_fermact_w.h,v 1.30 2004-09-24 16:22:01 bjoo Exp $
+// $Id: ovlap_partfrac4d_fermact_w.h,v 1.1 2004-09-27 12:00:18 bjoo Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
 
-#ifndef __zolotarev4d_fermact_w_h__
-#define __zolotarev4d_fermact_w_h__
+#ifndef __ovlap_partfrac4d_fermact_w_h__
+#define __ovlap_partfrac4d__fermact_w_h__
 
 #include "fermact.h"
 #include "actions/ferm/fermacts/overlap_fermact_base_w.h"
 #include "actions/ferm/fermacts/overlap_state.h"
 #include "meas/eig/eig_w.h"
 #include "io/overlap_state_info.h"
+#include "io/enum_io/enum_io.h"
 
 using namespace QDP;
 
 namespace Chroma
 {
   //! Name and registration
-  namespace Zolotarev4DFermActEnv
+  namespace OvlapPartFrac4DFermActEnv
   {
     extern const std::string name;
     extern const bool registered;
@@ -27,16 +28,19 @@ namespace Chroma
 
 
   //! Params for overlap ferm acts
-  struct Zolotarev4DFermActParams
+  struct OvlapPartFrac4DFermActParams
   {
-    Zolotarev4DFermActParams() : ReorthFreqInner(10), inner_solver_type(OVERLAP_INNER_CG_SINGLE_PASS) {};
-    Zolotarev4DFermActParams(XMLReader& in, const std::string& path);
+    OvlapPartFrac4DFermActParams() : ReorthFreqInner(10), inner_solver_type(OVERLAP_INNER_CG_SINGLE_PASS) {};
+    OvlapPartFrac4DFermActParams(XMLReader& in, const std::string& path);
     
     Real Mass;
     Real AuxMass;  // Filled when AuxFermAct is processed
     int RatPolyDeg;
     int RatPolyDegPrecond;
     int ReorthFreqInner;
+
+    //! Type of approximation ZOLOTAREV or TANH
+    CoeffType approximation_type;
 
     InvertParam_t invParamInner;
     OverlapInnerSolverType inner_solver_type;
@@ -47,8 +51,8 @@ namespace Chroma
 
 
   // Reader/writers
-  void read(XMLReader& xml, const string& path, Zolotarev4DFermActParams& param);
-  void write(XMLReader& xml, const string& path, const Zolotarev4DFermActParams& param);
+  void read(XMLReader& xml, const string& path, OvlapPartFrac4DFermActParams& param);
+  void write(XMLReader& xml, const string& path, const OvlapPartFrac4DFermActParams& param);
 
 
   //! 4D Zolotarev variant of Overlap-Dirac operator
@@ -60,12 +64,12 @@ namespace Chroma
    * NOTE: for now we assume the kernel is a fund. rep. fermion type,
    * but that is not necessary
    */
-  class Zolotarev4DFermAct : public OverlapFermActBase
+  class OvlapPartFrac4DFermAct : public OverlapFermActBase
   {
   public:
     //! Full constructor
     /*
-    Zolotarev4DFermAct(Handle<FermBC<LatticeFermion> > fbc_,
+    OvlapPartFrac4DFermAct(Handle<FermBC<LatticeFermion> > fbc_,
 		       Handle<UnprecWilsonTypeFermAct<LatticeFermion> > Mact_, 		       const Real& Mass_,
 		       const int RatPolyDeg_,
 		       const Real& RsdCGinner_,
@@ -90,7 +94,7 @@ namespace Chroma
     */
 
     /*
-    Zolotarev4DFermAct(Handle<FermBC<LatticeFermion> > fbc_,
+    OvlapPartFrac4DFermAct(Handle<FermBC<LatticeFermion> > fbc_,
 		       Handle<UnprecWilsonTypeFermAct<LatticeFermion> > Mact_, 
 		       const Real& Mass_,
 		       const int RatPolyDeg_,
@@ -111,12 +115,12 @@ namespace Chroma
     */
 
     //! Construct from param struct
-    Zolotarev4DFermAct(Handle<FermBC<LatticeFermion> > fbc_,
-		       const Zolotarev4DFermActParams& params);
+    OvlapPartFrac4DFermAct(Handle<FermBC<LatticeFermion> > fbc_,
+		       const OvlapPartFrac4DFermActParams& params);
 
 
     //! Copy Constructor
-    Zolotarev4DFermAct(const Zolotarev4DFermAct& a) : 
+    OvlapPartFrac4DFermAct(const OvlapPartFrac4DFermAct& a) : 
       fbc(a.fbc), params(a.params)
       {
 	Mact = a.Mact;
@@ -124,7 +128,7 @@ namespace Chroma
   
 
     // Assignment
-    Zolotarev4DFermAct& operator=(const Zolotarev4DFermAct& a) 
+    OvlapPartFrac4DFermAct& operator=(const OvlapPartFrac4DFermAct& a) 
     {
       fbc = a.fbc;
       Mact = a.Mact;
@@ -236,7 +240,7 @@ namespace Chroma
     lgamma5epsHPrecondition(Handle<const ConnectState> state) const;
     
     //! Destructor is automatic
-    ~Zolotarev4DFermAct() {}
+    ~OvlapPartFrac4DFermAct() {}
 
   protected:
     //! Helper in construction
@@ -260,13 +264,13 @@ namespace Chroma
 
   private:
     //!  Partial constructor not allowed
-    Zolotarev4DFermAct();
+    OvlapPartFrac4DFermAct();
 
   private:
     Handle<FermBC<LatticeFermion> >  fbc;   // fermion BC
     // Auxilliary action used for kernel of operator
     Handle<UnprecWilsonTypeFermAct<LatticeFermion> > Mact;   
-    Zolotarev4DFermActParams params;
+    OvlapPartFrac4DFermActParams params;
   };
 
 }

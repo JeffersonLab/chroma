@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.170 2004-09-24 16:22:00 bjoo Exp $
+# $Id: Makefile.am,v 1.171 2004-09-27 12:00:18 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -184,7 +184,7 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/unprec_ovext_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_wilson_fermact_w.h \
 	actions/ferm/fermacts/unprec_parwilson_fermact_w.h \
-	actions/ferm/fermacts/zolotarev4d_fermact_w.h \
+	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.h \
 	actions/ferm/fermacts/zolotarev5d_fermact_array_w.h \
 	actions/ferm/invert/inv_borici_w.h \
 	actions/ferm/linop/lgherm_w.h \
@@ -375,10 +375,9 @@ libchroma_a_SOURCES += baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
               walldeltaff_w.cc walldeltapff_w.cc \
 	      inv_borici_w.cc \
 	      ferm_refresh.cc mom_refresh.cc global_metropolis_accrej.cc \
-	      zolotarev4d_fermact_w.cc overlap_state_info.cc
+	      ovlap_partfrac4d_fermact_w.cc overlap_state_info.cc
 
 # These need to be reworked for new instantiation 
-#	zolotarev4d_fermact_w.cc 
 #	zolotarev5d_fermact_array_w.cc 
 
 # Deprecated

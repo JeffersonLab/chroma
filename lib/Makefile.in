@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.235 2004-09-24 16:22:00 bjoo Exp $
+# $Id: Makefile.in,v 1.236 2004-09-27 12:00:18 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -58,7 +58,7 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/unprec_ovext_fermact_array_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/unprec_wilson_fermact_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/unprec_parwilson_fermact_w.h \
-@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/zolotarev4d_fermact_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/zolotarev5d_fermact_array_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/invert/inv_borici_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/lgherm_w.h \
@@ -176,7 +176,7 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@              walldeltaff_w.cc walldeltapff_w.cc \
 @BUILD_WILSON_LIBS_TRUE@	      inv_borici_w.cc \
 @BUILD_WILSON_LIBS_TRUE@	      ferm_refresh.cc mom_refresh.cc global_metropolis_accrej.cc \
-@BUILD_WILSON_LIBS_TRUE@	      zolotarev4d_fermact_w.cc overlap_state_info.cc
+@BUILD_WILSON_LIBS_TRUE@	      ovlap_partfrac4d_fermact_w.cc overlap_state_info.cc
 
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_6 = actions/ferm/linop/lwldslash_w_sse.h
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_7 = lwldslash_w_sse.cc
@@ -535,7 +535,7 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc gaugebc_utils.cc \
 	wallrhoff_w.cc wallrhopiff_w.cc wallpionff_w.cc wallnuclff_w.cc \
 	walldeltaff_w.cc walldeltapff_w.cc inv_borici_w.cc \
 	ferm_refresh.cc mom_refresh.cc global_metropolis_accrej.cc \
-	zolotarev4d_fermact_w.cc overlap_state_info.cc \
+	ovlap_partfrac4d_fermact_w.cc overlap_state_info.cc \
 	lwldslash_w_sse.cc \
 	actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc \
 	lwldslash_w_pab.cc mesphas_s.cc mesphas_follana_s.cc \
@@ -623,7 +623,7 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc gaugebc_utils.cc \
 @BUILD_WILSON_LIBS_TRUE@	ferm_refresh.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	mom_refresh.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	global_metropolis_accrej.$(OBJEXT) \
-@BUILD_WILSON_LIBS_TRUE@	zolotarev4d_fermact_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	ovlap_partfrac4d_fermact_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	overlap_state_info.$(OBJEXT)
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__objects_2 = lwldslash_w_sse.$(OBJEXT)
 @BUILD_SSE_DWF_CG_TRUE@am__objects_3 = \
@@ -786,6 +786,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/overlap_fermact_base_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/overlap_state_info.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/overlapbu_linop_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ovlap_partfrac4d_fermact_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/p_src_w.Po ./$(DEPDIR)/param_io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/paulitodr.Po ./$(DEPDIR)/pg_hmc_io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/pions_follana_s.Po \
@@ -854,7 +855,6 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/writemilc.Po ./$(DEPDIR)/writeszin.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/writeszinqprop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/z2_src.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/zolotarev4d_fermact_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/zolotarev5d_linop_array_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/zolotarev5d_nonhermop_array_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/zolotarev_coeffs.Po
@@ -1061,6 +1061,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/overlap_fermact_base_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/overlap_state_info.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/overlapbu_linop_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ovlap_partfrac4d_fermact_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/p_src_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/param_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paulitodr.Po@am__quote@
@@ -1149,7 +1150,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writeszin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writeszinqprop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/z2_src.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zolotarev4d_fermact_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zolotarev5d_linop_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zolotarev5d_nonhermop_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zolotarev_coeffs.Po@am__quote@
