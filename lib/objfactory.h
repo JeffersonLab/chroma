@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: objfactory.h,v 1.1 2004-08-23 04:04:44 edwards Exp $
+// $Id: objfactory.h,v 1.2 2004-09-08 02:45:51 edwards Exp $
 
 /*! @file
  * @brief Factory class for objects from XML input
@@ -29,9 +29,9 @@ namespace Chroma
       const char* what() const throw() { return "Unknown Type"; }
     };
         
-    static AbstractProduct* OnUnknownType(IdentifierType)
+    static AbstractProduct* OnUnknownType(const IdentifierType& id)
       {
-	cerr << "Factor error: unknown identifier" << endl;
+	cerr << "Factory error: unknown identifier: id = " << id << endl;
 	throw Exception();
       }
   };
@@ -44,7 +44,7 @@ namespace Chroma
   template <typename IdentifierType, class AbstractProduct>
   struct NullFactoryError
   {
-    static AbstractProduct* OnUnknownType(IdentifierType)
+    static AbstractProduct* OnUnknownType(const IdentifierType&)
       {
 	return 0;
       }
@@ -82,6 +82,8 @@ namespace Chroma
      */
     bool registerObject(const IdentifierType& id, ProductCreator creator)
       {
+	cerr << "Factory: registering id=" << id << endl;
+
 	return associations_.insert(
 	  IdToProductMap::value_type(id, creator)).second;
       }
@@ -103,6 +105,8 @@ namespace Chroma
      */
     AbstractProduct* createObject(const IdentifierType& id)
       {
+	cerr << "Factory(1): create id=" << id << endl;
+
 	typename IdToProductMap::const_iterator i = associations_.find(id);
 	if (i == associations_.end())
 	  return OnUnknownType(id);
@@ -127,6 +131,8 @@ namespace Chroma
         
     AbstractProduct* createObject(const IdentifierType& id, Parm1 p1, Parm2 p2)
       {
+	cerr << "Factory(3): create id=" << id << endl;
+
 	typename IdToProductMap::const_iterator i = associations_.find(id);
 	if (i == associations_.end())
 	  return OnUnknownType(id);
@@ -136,6 +142,8 @@ namespace Chroma
         
     AbstractProduct* createObject(const IdentifierType& id, Parm1 p1, Parm2 p2, Parm3 p3)
       {
+	cerr << "Factory(4): create id=" << id << endl;
+
 	typename IdToProductMap::const_iterator i = associations_.find(id);
 	if (i == associations_.end())
 	  return OnUnknownType(id);

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: handle.h,v 1.1 2004-01-08 03:11:47 edwards Exp $
+// $Id: handle.h,v 1.2 2004-09-08 02:45:50 edwards Exp $
 /*! @file
  * @brief  Class for counted reference semantics
  *
@@ -17,56 +17,62 @@
 #ifndef __handle_h__
 #define __handle_h__
 
-//! Class for counted reference semantics
-/*!
- * Holds and object, and deletes it when the last Handle to it
- * is destroyed
- */
-template <class T>
-class Handle
+namespace Chroma
 {
-public:
-  //! Initialize pointer with existing pointer
-  /*! Requires that the pointer p is a return value of new */
-  Handle(T* p=0) : ptr(p), count(new int(1)) {}
+  //! Class for counted reference semantics
+  /*!
+   * Holds and object, and deletes it when the last Handle to it
+   * is destroyed
+   */
+  template <class T>
+  class Handle
+  {
+  public:
+    //! Initialize pointer with existing pointer
+    /*! Requires that the pointer p is a return value of new */
+    Handle(T* p=0) : ptr(p), count(new int(1)) {}
 
-  //! Copy pointer (one more owner)
-  Handle(const Handle& p) : ptr(p.ptr), count(p.count) 
-    {++*count;}
+    //! Copy pointer (one more owner)
+    Handle(const Handle& p) : ptr(p.ptr), count(p.count) 
+      {++*count;}
 
-  //! Destructor (delete value if this was the last owner)
-  ~Handle() {dispose();}
+    //! Destructor (delete value if this was the last owner)
+    ~Handle() {dispose();}
 
-  //! Assignment (unshare old and share new value)
-  Handle& operator=(const Handle& p) 
-    {
-      if (this != &p) 
+    //! Assignment (unshare old and share new value)
+    Handle& operator=(const Handle& p) 
       {
-	dispose();
-	ptr = p.ptr;
-	count = p.count;
-	++*count;
+	if (this != &p) 
+	{
+	  dispose();
+	  ptr = p.ptr;
+	  count = p.count;
+	  ++*count;
+	}
+	return *this;
       }
-      return *this;
-    }
 
-  //! Access the value to which the pointer refers
-  T& operator*() const {return *ptr;}
-  T* operator->() const {return ptr;}
+    //! Access the value to which the pointer refers
+    T& operator*() const {return *ptr;}
+    T* operator->() const {return ptr;}
 
-private:
-  void dispose() 
-    {
-      if (--*count == 0) 
+  private:
+    void dispose() 
       {
-	delete count;
-	delete ptr;
+	if (--*count == 0) 
+	{
+	  delete count;
+	  delete ptr;
+	}
       }
-    }
 
-private:
-  T* ptr;        // pointer to the value
-  int* count;    // shared number of owners
-};
+  private:
+    T* ptr;        // pointer to the value
+    int* count;    // shared number of owners
+  };
+
+}
+
+using namespace Chroma;
 
 #endif
