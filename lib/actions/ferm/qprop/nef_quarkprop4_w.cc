@@ -1,6 +1,9 @@
-// $Id: nef_quarkprop4_w.cc,v 1.6 2004-10-03 01:21:19 edwards Exp $
+// $Id: nef_quarkprop4_w.cc,v 1.7 2004-10-21 16:43:20 bjoo Exp $
 // $Log: nef_quarkprop4_w.cc,v $
-// Revision 1.6  2004-10-03 01:21:19  edwards
+// Revision 1.7  2004-10-21 16:43:20  bjoo
+// UNPRECONDITIONED_ZOLO_NEF
+//
+// Revision 1.6  2004/10/03 01:21:19  edwards
 // Removed Dminus on array. Changed Dminus to also require N5 slice.
 // Changed NEF linop to require an array of b5/c5. Changed NEF fermact to
 // possibly except an array or scalar for b5/c5.
@@ -257,6 +260,40 @@ void UnprecNEFFermActArray::dwf_quarkProp4(LatticePropagator& q_sol,
 					  state, 
 					  invParam,
 					  ncg_had);
+}
+
+//! Given a complete propagator as a source, this does all the inversions needed
+/*! \ingroup qprop
+ *
+ * This routine is actually generic to Domain Wall fermions (Array) fermions
+ *
+ * \param q_sol    quark propagator ( Write )
+ * \param q_src    source ( Read )
+ * \param t_src    time slice of source ( Read )
+ * \param j_decay  direction of decay ( Read )
+ * \param invType  inverter type ( Read )
+ * \param RsdCG    CG (or MR) residual used here ( Read )
+ * \param MaxCG    maximum number of CG iterations ( Read )
+ * \param ncg_had  number of CG iterations ( Write )
+ */
+
+void UnprecZoloNEFFermActArray::dwf_quarkProp4(LatticePropagator& q_sol, 
+					   XMLWriter& xml_out,
+					   const LatticePropagator& q_src,
+					   int t_src, int j_decay,
+					   Handle<const ConnectState> state,
+					   const InvertParam_t& invParam,
+					   int& ncg_had)
+{
+  nef_quarkProp4_a<UnprecZoloNEFFermActArray>(q_sol, 
+					      xml_out, 
+					      q_src, 
+					      t_src, 
+					      j_decay, 
+					      *this, 
+					      state, 
+					      invParam,
+					      ncg_had);
 }
 
 //! Given a complete propagator as a source, this does all the inversions needed

@@ -1,4 +1,4 @@
-// $Id: ovlap_partfrac4d_fermact_w.cc,v 1.6 2004-09-28 17:39:55 bjoo Exp $
+// $Id: ovlap_partfrac4d_fermact_w.cc,v 1.7 2004-10-21 16:43:20 bjoo Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -517,6 +517,7 @@ namespace Chroma
     free( rdata->ap );
     free( rdata->alpha );
     free( rdata->beta );
+    free( rdata->gamma );
     free( rdata );
 
   }
@@ -810,6 +811,7 @@ namespace Chroma
     free( rdata->ap );
     free( rdata->alpha );
     free( rdata->beta );
+    free( rdata->gamma );
     free( rdata );
 
     QDPIO::cout << "Leaving Init!" << endl << flush;
