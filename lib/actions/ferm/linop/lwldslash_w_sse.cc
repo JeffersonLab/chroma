@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_sse.cc,v 1.2 2003-09-12 16:21:26 bjoo Exp $
+// $Id: lwldslash_w_sse.cc,v 1.3 2003-09-13 09:48:50 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -49,7 +49,7 @@ typedef PColorMatrix < RComplex <REAL>, Nc > PrimitiveSU3Matrix;
 void my_pack_gauge(const multi1d<LatticeColorMatrix>&_u, multi1d<PrimitiveSU3Matrix>& u_tmp)
 {
   int ix, mu, cb, row, col;
-  multi1d<PrimitiveSU3Matrix> v(8);;
+  multi1d<PrimitiveSU3Matrix> v(8);
   int volume = Layout::sitesOnNode()/2;
   
   
@@ -57,8 +57,8 @@ void my_pack_gauge(const multi1d<LatticeColorMatrix>&_u, multi1d<PrimitiveSU3Mat
     for(ix = 0; ix < volume; ix+=2) {
       for(mu = 0; mu < 4; mu++) { 
 
-	v[2*mu] = _u[mu].elem(ix + volume*cb).elem();
-	v[2*mu+1] = _u[mu].elem(ix + 1 + volume*cb).elem();
+	v[2*mu] = transpose(_u[mu].elem(ix + volume*cb).elem());
+	v[2*mu+1] = transpose(_u[mu].elem(ix + 1 + volume*cb).elem());
       }
 
       for(mu = 0; mu < 4; mu++) {
@@ -135,8 +135,8 @@ LatticeFermion SSEWilsonDslash::apply (const LatticeFermion& psi, enum LinOpSign
    *
    */
   sse_su3dslash_wilson((SSEREAL *)&(packed_gauge[0]),
-		       (SSEREAL *)&(psi.elem((1-cb)*Layout::sitesOnNode()/2).elem(0).elem(0).real()),
-		       (SSEREAL *)&(chi.elem((cb)*Layout::sitesOnNode()/2).elem(0).elem(0).real()),
+		       (SSEREAL *)&(psi.elem((1-cb)*(Layout::sitesOnNode()/2)).elem(0).elem(0).real()),
+		       (SSEREAL *)&(chi.elem(cb*(Layout::sitesOnNode()/2)).elem(0).elem(0).real()),
 		       (int)isign, (1-cb));
   
   return chi;

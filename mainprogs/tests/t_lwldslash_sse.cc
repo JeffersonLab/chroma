@@ -1,4 +1,4 @@
-// $Id: t_lwldslash_sse.cc,v 1.4 2003-09-12 16:21:26 bjoo Exp $
+// $Id: t_lwldslash_sse.cc,v 1.5 2003-09-13 09:48:50 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -17,7 +17,7 @@ int main(int argc, char **argv)
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {2,2,2,2};
+  const int foo[] = {4,4,4,8};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -34,7 +34,7 @@ int main(int argc, char **argv)
   gaussian(psi);
   chi = zero;
 
-  int iter = 100;
+  int iter = 1000;
   cout << "Iters is " << iter << endl;
 
   //! Create a linear operator
@@ -124,7 +124,7 @@ int main(int argc, char **argv)
   
   // Correctness and consistency test
   // chi = D.apply(psi, PLUS, 0);
-
+  gaussian(psi);
   Double n2;
   // Fill chi1 and make chi2 equal to it.
   LatticeFermion chi3;
