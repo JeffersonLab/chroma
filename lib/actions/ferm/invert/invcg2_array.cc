@@ -1,4 +1,4 @@
-// $Id: invcg2_array.cc,v 1.3 2003-11-14 16:02:27 edwards Exp $
+// $Id: invcg2_array.cc,v 1.4 2003-11-20 05:43:41 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -104,10 +104,11 @@ void InvCG2_a(const LinearOperator< multi1d<T> >& M,
     
   //                      +
   //  r  :=  [ Chi  -  M(u)  . M(u) . psi ]
-  multi1d<T> r(N);
-  multi1d<T> tmp = M(M(psi, PLUS), MINUS);   // extra memory traversal
+  multi1d<T> r(N), mp(N), mmp(N);
+  M(mp, psi, PLUS);
+  M(mmp, mp, MINUS);
   for(int n=0; n < N; ++n)
-    r[n][s] = chi[n] - tmp[n];
+    r[n][s] = chi[n] - mmp[n];
 
   //  p[1]  :=  r[0]
   multi1d<T> p(N);
@@ -129,7 +130,6 @@ void InvCG2_a(const LinearOperator< multi1d<T> >& M,
   //
   //  FOR k FROM 1 TO MaxCG DO
   //
-  multi1d<T>  mp(N);
   Real a, b;
   Double c, d;
   
@@ -143,8 +143,7 @@ void InvCG2_a(const LinearOperator< multi1d<T> >& M,
     //  First compute  d  =  < p, A.p >  =  < p, M . M . p >  =  < M.p, M.p >
     //  Mp = M(u) * p
 
-//    mp[s] = M(p, PLUS);
-    mp = M(p, PLUS);       // WARNING - removed subset here 
+    M(mp, p, PLUS);
 
     //  d = | mp | ** 2
     d = norm2(mp, s);	/* 2 Nc Ns  flops */
@@ -159,9 +158,9 @@ void InvCG2_a(const LinearOperator< multi1d<T> >& M,
     //      	       +            +
     //  r  =  r  -  M(u)  . Mp  =  M  . M . p  =  A . p
 
-    tmp = M(mp, MINUS);            // WARNING - removed subset here
+    M(mmp, mp, MINUS);
     for(int n=0; n < N; ++n)
-      r[n][s] -= a * tmp[n];       // WARNING - extra memory traversal
+      r[n][s] -= a * mmp[n];
 
     //  IF |r[k]| <= RsdCG |Chi| THEN RETURN;
 

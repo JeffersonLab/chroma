@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_fermact_base_w.h,v 1.1 2003-11-15 04:25:02 edwards Exp $
+// $Id: unprec_dwf_fermact_base_w.h,v 1.2 2003-11-20 05:43:41 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned domain-wall fermion action
  */
@@ -36,8 +36,9 @@ public:
 	     int MaxCG, int& ncg_had) const;
 
   //! Compute dS_f/dU
-  multi1d<LatticeColorMatrix> dsdu(const multi1d<LatticeColorMatrix>& u,
-				   const LatticeDWFermion& psi) const;
+  void dsdu(multi1d<LatticeColorMatrix>& result,
+	    const multi1d<LatticeColorMatrix>& u,
+	    const LatticeDWFermion& psi) const;
 };
 
 #endif

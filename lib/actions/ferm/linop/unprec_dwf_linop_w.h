@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_linop_w.h,v 1.3 2003-11-09 22:35:19 edwards Exp $
+// $Id: unprec_dwf_linop_w.h,v 1.4 2003-11-20 05:43:41 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion linear operator
  */
@@ -8,7 +8,6 @@
 #define __unprec_dwf_linop_w_h__
 
 #include "linearop.h"
-#include "actions/ferm/linop/ldwfdslash_w.h"
 
 using namespace QDP;
 
@@ -39,7 +38,7 @@ public:
   const OrderedSubset& subset() const {return all;}
 
   //! Apply the operator onto a source vector
-  LatticeDWFermion operator() (const LatticeDWFermion& psi, enum PlusMinus isign) const;
+  void operator() (LatticeDWFermion& chi, const LatticeDWFermion& psi, enum PlusMinus isign) const;
 
 private:
   Real WilsonMass;

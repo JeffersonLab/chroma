@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovext_fermact_array_w.h,v 1.1 2003-11-16 06:20:39 edwards Exp $
+// $Id: unprec_ovext_fermact_array_w.h,v 1.2 2003-11-20 05:43:41 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -68,8 +68,9 @@ public:
 
   //! Compute dS_f/dU
   /*! NOTE: maybe this should produce a derivative foundry class object */
-  multi1d<LatticeColorMatrix> dsdu(const multi1d<LatticeColorMatrix>& u,
-				   const multi1d<LatticeFermion>& psi) const;
+  void dsdu(multi1d<LatticeColorMatrix>& result,
+	    const multi1d<LatticeColorMatrix>& u,
+	    const multi1d<LatticeFermion>& psi) const;
 
   //! Destructor is automatic
   ~UnprecOvExtFermActArray() {}

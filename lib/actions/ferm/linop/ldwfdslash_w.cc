@@ -1,4 +1,4 @@
-// $Id: ldwfdslash_w.cc,v 1.2 2003-11-09 22:35:19 edwards Exp $
+// $Id: ldwfdslash_w.cc,v 1.3 2003-11-20 05:43:41 edwards Exp $
 /*! \file
  *  \brief DWF Dslash linear operator
  */
@@ -34,15 +34,16 @@ void DWDslash::create(const multi1d<LatticeColorMatrix>& u_, const Real& WilsonM
  *
  * Arguments:
  *
- *  \param psi	      Pseudofermion field				(Read)
+ *  \param chi	      result				                (Write)
+ *  \param psi	      source				                (Read)
  *  \param isign      D'^dag or D' ( MINUS | PLUS ) resp.		(Read)
  *  \param cb	      Checkerboard of OUTPUT vector			(Read) 
  */
-LatticeDWFermion DWDslash::apply (const LatticeDWFermion& psi, enum PlusMinus isign, int cb) const
+void
+DWDslash::apply (LatticeDWFermion& chi, const LatticeDWFermion& psi, 
+		 enum PlusMinus isign, int cb) const
 {
   START_CODE("lDWDslash");
-
-  LatticeDWFermion chi;
 
   /*     F 
    *   a2  (x)  :=  U  (x) (1 - isign gamma  ) psi(x)
@@ -112,7 +113,5 @@ LatticeDWFermion DWDslash::apply (const LatticeDWFermion& psi, enum PlusMinus is
   }
 
   END_CODE("lDWDslash");
-
-  return chi;
 }
 

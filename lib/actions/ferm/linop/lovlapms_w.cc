@@ -1,4 +1,4 @@
-// $Id: lovlapms_w.cc,v 1.3 2003-11-09 22:35:19 edwards Exp $
+// $Id: lovlapms_w.cc,v 1.4 2003-11-20 05:43:41 edwards Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -16,10 +16,9 @@ using namespace QDP;
  * \param psi 	  Pseudofermion field     	       (Read)
  * \param isign   Flag ( PLUS | MINUS )   	       (Read)
  */
-LatticeFermion lovlapms::operator() (const LatticeFermion& psi, enum PlusMinus isign) const
+void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi, 
+			   enum PlusMinus isign) const
 {
-  LatticeFermion chi;
-
   LatticeFermion Ap;
   LatticeFermion ltmp;
   multi1d<LatticeFermion> p(numroot);
@@ -297,7 +296,5 @@ LatticeFermion lovlapms::operator() (const LatticeFermion& psi, enum PlusMinus i
 #endif
                 
   END_CODE("lovlapms");
-
-  return chi;
 }
 

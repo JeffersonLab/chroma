@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_wilson_fermact_w.h,v 1.10 2003-11-16 06:20:21 edwards Exp $
+// $Id: unprec_wilson_fermact_w.h,v 1.11 2003-11-20 05:43:41 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -49,8 +49,9 @@ public:
 #endif
 
   //! Compute dS_f/dU
-  multi1d<LatticeColorMatrix> dsdu(const multi1d<LatticeColorMatrix>& u,
-				   const LatticeFermion& psi) const;
+  void dsdu(multi1d<LatticeColorMatrix>& result,
+	    const multi1d<LatticeColorMatrix>& u,
+	    const LatticeFermion& psi) const;
 
   //! Destructor is automatic
   ~UnprecWilsonFermAct() {}

@@ -1,4 +1,4 @@
-// $Id: t_mesplq.cc,v 1.10 2003-10-09 20:36:49 edwards Exp $
+// $Id: t_mesplq.cc,v 1.11 2003-11-20 05:43:41 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {4,4,4,4};
+  const int foo[] = {20,20,20,32};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -33,6 +33,7 @@ int main(int argc, char *argv[])
   multi1d<LatticeColorMatrix> u(Nd);
   Double w_plaq, s_plaq, t_plaq, link;
 
+#if 1
   QDPIO::cout << "Start gaussian\n";
   for(int m=0; m < u.size(); ++m)
     gaussian(u[m]);
@@ -40,6 +41,15 @@ int main(int argc, char *argv[])
   // Reunitarize the gauge field
   for(int m=0; m < u.size(); ++m)
     reunit(u[m]);
+#else
+  {
+    XMLReader gauge_xml;
+    readSzin(gauge_xml, u, string("CFGIN"));
+    xml << gauge_xml;
+  }
+
+  unitarityCheck(u);
+#endif
 
   // Try out the plaquette routine
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);

@@ -1,4 +1,4 @@
-// $Id: unprec_wilson_fermact_w.cc,v 1.7 2003-11-16 06:20:22 edwards Exp $
+// $Id: unprec_wilson_fermact_w.cc,v 1.8 2003-11-20 05:43:41 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -57,17 +57,19 @@ UnprecWilsonFermAct::lMdagM(const multi1d<LatticeColorMatrix>& u) const
  *
  * psi -- [1./(M_dag*M)]*chi_  ( read ) 
  *
+ * \param ds_u     result      ( Write )
  * \param u        gauge field ( Read )
  * \param psi      solution to linear system ( Read )
  */
 
-multi1d<LatticeColorMatrix> 
-UnprecWilsonFermAct::dsdu(const multi1d<LatticeColorMatrix>& u, 
+void
+UnprecWilsonFermAct::dsdu(multi1d<LatticeColorMatrix> & ds_u,
+			  const multi1d<LatticeColorMatrix>& u, 
 			  const LatticeFermion& psi) const
 {
   START_CODE("UnprecWilsonFermAct::dsdu");
   
-  multi1d<LatticeColorMatrix> ds_u(Nd);
+//  multi1d<LatticeColorMatrix> ds_u(Nd);
 
   // hack
   ds_u = 0;
@@ -139,6 +141,4 @@ UnprecWilsonFermAct::dsdu(const multi1d<LatticeColorMatrix>& u,
 #endif
 
   END_CODE("UnprecWilsonFermAct::dsdu");
-
-  return ds_u;
 }

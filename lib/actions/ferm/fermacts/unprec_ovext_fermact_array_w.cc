@@ -1,4 +1,4 @@
-// $Id: unprec_ovext_fermact_array_w.cc,v 1.1 2003-11-16 06:20:39 edwards Exp $
+// $Id: unprec_ovext_fermact_array_w.cc,v 1.2 2003-11-20 05:43:41 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -100,8 +100,8 @@ UnprecOvExtFermActArray::qprop(LatticeFermion& psi,
     // psi5 = (H_o)^(-2) chi5
     InvCG2 (*A, chi5, psi5, RsdCG, MaxCG, n_count);
 
-    // psi = H_o * (H_o)^(-2) * gamma_5 * chi
-    chi5 = (*A)(psi5, MINUS);
+    // chi5 = H_o * (H_o)^(-2) * gamma_5 * chi
+    (*A)(chi5, psi5, MINUS);
     break;
   
   case MR_INVERTER:
@@ -139,17 +139,19 @@ UnprecOvExtFermActArray::qprop(LatticeFermion& psi,
  *
  * psi -- [1./(M_dag*M)]*chi_  ( read ) 
  *
+ * \param ds_u     result      ( Write )
  * \param u        gauge field ( Read )
  * \param psi      solution to linear system ( Read )
  */
 
-multi1d<LatticeColorMatrix> 
-UnprecOvExtFermActArray::dsdu(const multi1d<LatticeColorMatrix>& u, 
+void
+UnprecOvExtFermActArray::dsdu(multi1d<LatticeColorMatrix>& ds_u,
+			      const multi1d<LatticeColorMatrix>& u, 
 			      const multi1d<LatticeFermion>& psi) const
 {
   START_CODE("UnprecWilsonFermAct::dsdu");
   
-  multi1d<LatticeColorMatrix> ds_u(Nd);
+//  multi1d<LatticeColorMatrix> ds_u(Nd);
 
   ds_u = 0;
 
@@ -157,6 +159,4 @@ UnprecOvExtFermActArray::dsdu(const multi1d<LatticeColorMatrix>& u,
   QDP_abort(1);
 
   END_CODE("UnprecWilsonFermAct::dsdu");
-  
-  return ds_u;
 }

@@ -1,4 +1,4 @@
-// $Id: t_lwldslash_sse.cc,v 1.15 2003-10-09 20:36:49 edwards Exp $
+// $Id: t_lwldslash_sse.cc,v 1.16 2003-11-20 05:43:41 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -64,7 +64,7 @@ int main(int argc, char **argv)
 
 	  myt1=clock();
 	  for(int i=iter; i-- > 0; ) {
-	    D.apply(psi, (isign == 1 ? PLUS : MINUS ) , cb); // NOTE: for timings throw away return value
+	    D.apply(chi, psi, (isign == 1 ? PLUS : MINUS), cb);
 	  }
 	  myt2=clock();
 
@@ -80,7 +80,7 @@ int main(int argc, char **argv)
       
       myt1=clock();
       for(int i=iter; i-- > 0; ) {
-	D.apply(psi, (isign == 1 ? PLUS : MINUS ) , cb); // NOTE: for timings throw away return value
+	D.apply(chi, psi, (isign == 1 ? PLUS : MINUS), cb);
       }
       myt2=clock();
       
@@ -117,7 +117,7 @@ int main(int argc, char **argv)
 
 	  myt1=clock();
 	  for(int i=iter; i-- > 0; ) {
-	    D_opt.apply(psi, (isign == 1 ? PLUS : MINUS ) , cb); // NOTE: for timings throw away return value
+	    D_opt.apply(chi, psi, (isign == 1 ? PLUS : MINUS ) , cb); // NOTE: for timings throw away return value
 	  }
 	  myt2=clock();
 
@@ -133,7 +133,7 @@ int main(int argc, char **argv)
       
       myt1=clock();
       for(int i=iter; i-- > 0; ) {
-	D_opt.apply(psi, (isign == 1 ? PLUS : MINUS ) , cb); // NOTE: for timings throw away return value
+	D_opt.apply(chi, psi, (isign == 1 ? PLUS : MINUS ) , cb); // NOTE: for timings throw away return value
       }
       myt2=clock();
       
@@ -157,8 +157,8 @@ int main(int argc, char **argv)
 
       chi = chi3;
       chi2 = chi3;
-      chi[ rb[cb] ] = D.apply(psi, (isign > 0 ? PLUS : MINUS), cb);
-      chi2[ rb[cb] ] = D.apply(psi, (isign > 0 ? PLUS : MINUS), cb);
+      D.apply(chi, psi, (isign > 0 ? PLUS : MINUS), cb);
+      D.apply(chi2, psi, (isign > 0 ? PLUS : MINUS), cb);
       
       n2 = norm2( chi2 - chi );
 
@@ -177,8 +177,8 @@ int main(int argc, char **argv)
 
       chi = chi3;
       chi2 = chi3;
-      chi[ rb[ cb ] ] = D_opt.apply(psi, (isign > 0 ? PLUS : MINUS), cb);
-      chi2[ rb[ cb ] ] = D.apply(psi, (isign > 0 ? PLUS : MINUS), cb);
+      D_opt.apply(chi, psi, (isign > 0 ? PLUS : MINUS), cb);
+      D.apply(chi2, psi, (isign > 0 ? PLUS : MINUS), cb);
       
       n2 = norm2( chi2 - chi );
 

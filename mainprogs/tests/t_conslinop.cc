@@ -1,4 +1,4 @@
-// $Id: t_conslinop.cc,v 1.12 2003-10-09 20:36:49 edwards Exp $
+// $Id: t_conslinop.cc,v 1.13 2003-11-20 05:43:41 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -38,29 +38,31 @@ int main(int argc, char *argv[])
     gaussian(u[m]);
 
 
-  Real Kappa = 0.1;
-  InvType = CG_INVERTER;
+  Real Mass = 0.1;
   WilsonDslash D(u);
 //  WilsonDslash D;
 
   LatticeFermion psi, chi;
   gaussian(psi);
   QDPIO::cout << "before dslash call" << endl;
-  chi[rb[0]] = D.apply(psi, PLUS, 0); 
-  chi[rb[1]] = D.apply(psi, PLUS, 0); 
+  D.apply(chi, psi, PLUS, 0); 
+  D.apply(chi, psi, PLUS, 1); 
   QDPIO::cout << "after dslash call" << endl;
 
   QDPIO::cout << "before wilson construct" << endl;
-  UnprecWilsonLinOp M(u,Kappa);
+  UnprecWilsonLinOp M(u,Mass);
   QDPIO::cout << "after wilson construct" << endl;
-  chi = M(psi, PLUS); 
+  M(chi, psi, PLUS); 
   QDPIO::cout << "after wilson call" << endl;
   
-  UnprecWilsonFermAct S(Kappa);
-  const LinearOperator* A = S.linOp(u);
+  UnprecWilsonFermAct S(Mass);
+  const LinearOperator<LatticeFermion>* A = S.linOp(u);
 
-  DComplex np = innerProduct(psi,D(psi,PLUS));
-  DComplex nm = innerProduct(psi,D(psi,MINUS));
+  LatticeFermion   tmp;
+  D(tmp, psi, PLUS);
+  DComplex np = innerProduct(psi,tmp);
+  D(tmp, psi, MINUS);
+  DComplex nm = innerProduct(psi,tmp);
 
   push(nml,"norm_check");
   Write(nml,np);

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_wilson_linop_w.h,v 1.7 2003-11-16 06:21:49 edwards Exp $
+// $Id: unprec_wilson_linop_w.h,v 1.8 2003-11-20 05:43:41 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -56,7 +56,7 @@ public:
   void create(const multi1d<LatticeColorMatrix>& u_, const Real& Mass_);
 
   //! Apply the operator onto a source vector
-  LatticeFermion operator() (const LatticeFermion& psi, enum PlusMinus isign) const;
+  void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const;
 
 private:
   Real Mass;

@@ -1,4 +1,4 @@
-// $Id: t_dwflinop.cc,v 1.2 2003-11-16 19:51:25 edwards Exp $
+// $Id: t_dwflinop.cc,v 1.3 2003-11-20 05:43:41 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -84,7 +84,7 @@ int main(int argc, char **argv)
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {2,2,2,2};
+  const int foo[] = {4,4,4,4};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -95,7 +95,7 @@ int main(int argc, char **argv)
 
   //! Test out dslash
   multi1d<LatticeColorMatrix> u(Nd);
-#if 0
+#if 1
   for(int m=0; m < u.size(); ++m)
     gaussian(u[m]);
 #else
@@ -105,8 +105,8 @@ int main(int argc, char **argv)
 
   Real WilsonMass = 1.5;
   Real m_q = 0.1;
-  int  N5  = 8;
-  UnprecOvDWFermActArray S_f(WilsonMass, m_q, N5);
+  int  N5  = 9;
+  UnprecOvExtFermActArray S_f(WilsonMass, m_q, N5);
 
   const  LinearOperator< multi1d<LatticeFermion> >* A = S_f.linOp(u);
 
@@ -123,12 +123,14 @@ int main(int argc, char **argv)
   readSzinFerm(chi, "t_invert.chi0");
 #endif
 
-  multi1d<LatticeFermion> tmp1 = (*A)(psi, PLUS);
+  multi1d<LatticeFermion> tmp1(N5);
+  (*A)(tmp1, psi, PLUS);
   DComplex nn1 = innerProduct(chi[0], tmp1[0]);
   for(int m=1; m < N5; ++m)
     nn1 += innerProduct(chi[m], tmp1[m]);
 
-  multi1d<LatticeFermion> tmp2 = (*A)(chi, MINUS);
+  multi1d<LatticeFermion> tmp2(N5);
+  (*A)(tmp2, chi, MINUS);
   DComplex nn2 = innerProduct(tmp2[0], psi[0]);
   for(int m=1; m < N5; ++m)
     nn2 += innerProduct(tmp2[m], psi[m]);
@@ -157,10 +159,12 @@ int main(int argc, char **argv)
 
   const  LinearOperator<LatticeDWFermion>* B = S_f_dwf.linOp(u);
 
-  LatticeDWFermion tmp5a = (*B)(psi5, PLUS);
+  LatticeDWFermion tmp5a;
+  (*B)(tmp5a, psi5, PLUS);
   DComplex nd1 = innerProduct(chi5, tmp5a);
 
-  LatticeDWFermion tmp5b = (*B)(chi5, MINUS);
+  LatticeDWFermion tmp5b;
+  (*B)(tmp5b, chi5, MINUS);
   DComplex nd2 = innerProduct(tmp5b, psi5);
 
   push(xml,"innerprods_dwf");

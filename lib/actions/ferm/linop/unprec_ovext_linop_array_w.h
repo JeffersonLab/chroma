@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovext_linop_array_w.h,v 1.1 2003-11-16 06:21:34 edwards Exp $
+// $Id: unprec_ovext_linop_array_w.h,v 1.2 2003-11-20 05:43:41 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
  */
@@ -45,7 +45,8 @@ public:
   const OrderedSubset& subset() const {return all;}
 
   //! Apply the operator onto a source vector
-  multi1d<LatticeFermion> operator() (const multi1d<LatticeFermion>& psi, enum PlusMinus isign) const;
+  void operator() (multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
+		   enum PlusMinus isign) const;
 
 private:
   Real WilsonMass;

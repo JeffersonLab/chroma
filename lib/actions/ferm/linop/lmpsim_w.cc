@@ -1,4 +1,4 @@
-// $Id: lmpsim_w.cc,v 1.3 2003-11-09 22:35:19 edwards Exp $
+// $Id: lmpsim_w.cc,v 1.4 2003-11-20 05:43:41 edwards Exp $
 /*! \file
  *  \brief Preconditioned Wilson linear operator
  */
@@ -26,13 +26,13 @@ void PreconditionedWilson::create(const multi1d<LatticeColorMatrix>& _u, const R
 /*!
  * \ingroup linop
  *
+ * \param chi 	  Pseudofermion field     	       (Write)
  * \param psi 	  Pseudofermion field     	       (Read)
  * \param isign   Flag ( PLUS | MINUS )   	       (Read)
  */
-LatticeFermion PreconditionedWilson::operator() (const LatticeFermion& psi, enum PlusMinus isign) const
+void PreconditionedWilson::operator() (LatticeFermion& chi, const LatticeFermion& psi, 
+				       enum PlusMinus isign) const
 {
-  LatticeFermion chi;
-
   START_CODE("lmpsi");
 
   Real Kappa_sq = Kappa * Kappa;
@@ -43,6 +43,4 @@ LatticeFermion PreconditionedWilson::operator() (const LatticeFermion& psi, enum
   chi[rb[1]] = psi - Kappa_sq * D.apply(D.apply(psi, isign, 0), isign, 1);
   
   END_CODE("lmpsi");
-
-  return chi;
 }

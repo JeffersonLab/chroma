@@ -1,4 +1,4 @@
-// $Id: t_overbu.cc,v 1.5 2003-10-09 20:36:49 edwards Exp $
+// $Id: t_overbu.cc,v 1.6 2003-11-20 05:43:41 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -54,11 +54,14 @@ int main(int argc, char **argv)
   int  n_count;
 
   // Solve   D^dag.D*psi = D^dag*chi
-  LatticeFermion chi_tmp = over(chi, MINUS);
+  LatticeFermion chi_tmp;
+  over(chi_tmp, chi, MINUS);
   InvCG2(over, chi_tmp, psi, RsdCG, MaxCG, n_count);
 
   // Check solution
-  Double solnorm = sqrt(norm2(over(psi,PLUS)-chi));
+  LatticeFermion  tmp;
+  over(tmp, psi, PLUS);
+  Double solnorm = sqrt(norm2(tmp-chi));
   Double ratio = solnorm / sqrt(norm2(chi));
   QDPIO::cout << "|solution| / |source| = " << ratio << endl;
 

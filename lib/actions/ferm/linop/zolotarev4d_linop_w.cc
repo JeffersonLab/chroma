@@ -1,4 +1,4 @@
-// $Id: zolotarev4d_linop_w.cc,v 1.4 2003-11-09 22:35:19 edwards Exp $
+// $Id: zolotarev4d_linop_w.cc,v 1.5 2003-11-20 05:43:41 edwards Exp $
 /*! \file
  *  \brief 4D Zolotarev operator
  */
@@ -313,20 +313,18 @@ void Zolotarev4D::~Zolotarev()
  *
  * The operator acts on the entire lattice
  *
+ * \param chi 	  Pseudofermion field     	       (Write)
  * \param psi 	  Pseudofermion field     	       (Read)
  * \param isign   Flag ( PLUS | MINUS )   	       (Read)
  */
-LatticeFermion Zolotarev4D::operator() (const LatticeFermion& psi, enum PlusMinus isign) const
+void Zolotarev4D::operator() (LatticeFermion& chi, const LatticeFermion& psi, 
+			      enum PlusMinus isign) const
 {
-  LatticeFermion chi;
-
   START_CODE("Zolotarev4D");
 
   // Call underlying lovlapms operator
-  chi = (*A)(psi, isign);
+  (*A)(chi, psi, isign);
 
   END_CODE("Zolotarev4D");
-
-  return chi;
 }
 

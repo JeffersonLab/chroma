@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact_array.h,v 1.1 2003-11-13 04:10:36 edwards Exp $
+// $Id: fermact_array.h,v 1.2 2003-11-20 05:43:40 edwards Exp $
 
 /*! @file
  * @brief Class structures for bi-local matter actions - here in array form
@@ -84,8 +84,9 @@ public:
 
   //! Compute dS_f/dU
   /*! NOTE: maybe this should produce a derivative foundry class object */
-  virtual multi1d<LatticeColorMatrix> dsdu(const multi1d<LatticeColorMatrix>& u,
-					   const multi1d<T>& psi) const = 0;
+  virtual void dsdu(multi1d<LatticeColorMatrix>& result,
+		    const multi1d<LatticeColorMatrix>& u,
+		    const multi1d<T>& psi) const = 0;
 
   //! Virtual destructor to help with cleanup;
   virtual ~FermionActionArray() {}

@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_sse.cc,v 1.8 2003-11-09 22:35:19 edwards Exp $
+// $Id: lwldslash_w_sse.cc,v 1.9 2003-11-20 05:43:41 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -98,16 +98,16 @@ SSEWilsonDslash::~SSEWilsonDslash(void) {
  *
  * Arguments:
  *
+ *  \param chi	      Result				                (Write)
  *  \param psi	      Pseudofermion field				(Read)
  *  \param isign      D'^dag or D' ( MINUS | PLUS ) resp.		(Read)
  *  \param cb	      Checkerboard of OUTPUT vector			(Read) 
  */
-LatticeFermion SSEWilsonDslash::apply (const LatticeFermion& psi, enum PlusMinus isign, int cb) const
+void
+SSEWilsonDslash::apply (LatticeFermion& chi, const LatticeFermion& psi, 
+			enum PlusMinus isign, int cb) const
 {
   START_CODE("lWlDslash");
-
-  LatticeFermion chi;
-
 
   /* Pass the right parities. 
    *
@@ -128,8 +128,5 @@ LatticeFermion SSEWilsonDslash::apply (const LatticeFermion& psi, enum PlusMinus
 		       (SSEREAL *)&(chi.elem(cb*(Layout::sitesOnNode()/2)).elem(0).elem(0).real()),
 		       (int)isign, (1-cb));
   
- 
-  
-  return chi;
 }
 

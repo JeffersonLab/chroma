@@ -1,4 +1,4 @@
-// $Id: t_lwldslash.cc,v 1.11 2003-10-20 20:26:25 edwards Exp $
+// $Id: t_lwldslash.cc,v 1.12 2003-11-20 05:43:41 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -58,7 +58,7 @@ int main(int argc, char **argv)
       
       myt1=clock();
       for(i=0; i < iter; i++) { 
-	D.apply(psi, (isign == 1 ? PLUS : MINUS ) , cb);   // throw away the result
+	D.apply(chi, psi, (isign == 1 ? PLUS : MINUS), cb);
       }
       myt2=clock();
       
@@ -76,7 +76,7 @@ int main(int argc, char **argv)
   /* Real Kappa = 0.1;
   PreconditionedWilson  M(u,Kappa);
   LatticeFermion eta;
-  eta = M(psi, PLUS);
+  M(eta, psi, PLUS);
 
   Write(nml,eta);
   */

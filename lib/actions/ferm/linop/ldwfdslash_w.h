@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ldwfdslash_w.h,v 1.2 2003-11-09 22:35:19 edwards Exp $
+// $Id: ldwfdslash_w.h,v 1.3 2003-11-20 05:43:41 edwards Exp $
 /*! \file
  *  \brief DW Dslash linear operator
  */
@@ -38,13 +38,15 @@ public:
   /**
    * Apply a dslash
    *
+   * \param chi     rsult                                       (Write)
    * \param psi     source                                      (Read)
    * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
    * \param cb	    Checkerboard of OUTPUT vector               (Read) 
    *
-   * \return The output of applying dslash on dslash
+   * \return The output of applying dslash on psi
    */
-  LatticeDWFermion apply (const LatticeDWFermion& psi, enum PlusMinus isign, int cb) const;
+  void apply (LatticeDWFermion& chi, const LatticeDWFermion& psi, 
+	      enum PlusMinus isign, int cb) const;
 
   //! Subset is all here
   const OrderedSubset& subset() const {return all;}

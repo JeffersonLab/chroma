@@ -1,4 +1,4 @@
-// $Id: t_ldwfdslash.cc,v 1.1 2003-10-20 20:34:04 edwards Exp $
+// $Id: t_ldwfdslash.cc,v 1.2 2003-11-20 05:43:41 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -54,7 +54,7 @@ int main(int argc, char **argv)
       
       clock_t myt1=clock();
       for(int i=0; i < iter; i++)
-	D.apply(psi, (isign == 1 ? PLUS : MINUS), cb);  // throw away the result
+	D.apply(chi, psi, (isign == 1 ? PLUS : MINUS), cb);
       clock_t myt2=clock();
       
       double mydt = (double)(myt2-myt1)/((double)(CLOCKS_PER_SEC));

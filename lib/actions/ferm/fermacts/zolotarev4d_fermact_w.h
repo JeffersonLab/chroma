@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev4d_fermact_w.h,v 1.3 2003-10-20 20:31:50 edwards Exp $
+// $Id: zolotarev4d_fermact_w.h,v 1.4 2003-11-20 05:43:41 edwards Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -47,7 +47,7 @@ public:
   const LinearOperator<LatticeFermion>* lMdagM(const multi1d<LatticeColorMatrix>& u) const;
 
   //! Compute dS_f/dU
-  multi1d<LatticeColorMatrix> dsdu(const multi1d<LatticeColorMatrix>& u) const;
+  void dsdu(multi1d<LatticeColorMatrix>& result, const multi1d<LatticeColorMatrix>& u) const;
 
   //! Destructor is automatic
   ~Zolotarev4DFermAct() {}

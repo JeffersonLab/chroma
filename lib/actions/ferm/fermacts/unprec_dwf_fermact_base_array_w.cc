@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_fermact_base_array_w.cc,v 1.3 2003-11-15 04:23:50 edwards Exp $
+// $Id: unprec_dwf_fermact_base_array_w.cc,v 1.4 2003-11-20 05:43:41 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned domain-wall-like fermion actions
  */
@@ -51,7 +51,7 @@ UnprecDWFermActBaseArray::qprop(LatticeFermion& psi,
     // Create a Pauli-Villars linop and use it for just this part
     const LinearOperator< multi1d<LatticeFermion> >* B = linOpPV(u);
 
-    tmp5 = (*B)(chi5, PLUS);
+    (*B)(tmp5, chi5, PLUS);
 
     delete B;
   }
@@ -68,7 +68,7 @@ UnprecDWFermActBaseArray::qprop(LatticeFermion& psi,
   {
   case CG_INVERTER: 
     // chi5 = D5^\dagger(m) . tmp5 =  D5^dagger(m) . D5(1) . P . (chi,0,0,..,0)^T
-    chi5 = (*A)(tmp5, MINUS);
+    (*A)(chi5, tmp5, MINUS);
     
     // psi5 = (D^dag * D)^(-1) chi5
     InvCG2 (*A, chi5, psi5, RsdCG, MaxCG, n_count);
@@ -123,11 +123,12 @@ UnprecDWFermActBaseArray::qprop(LatticeFermion& psi,
  * \param psi      solution to linear system ( Read )
  */
 
-multi1d<LatticeColorMatrix> 
-UnprecDWFermActBaseArray::dsdu(const multi1d<LatticeColorMatrix>& u, 
+void
+UnprecDWFermActBaseArray::dsdu(multi1d<LatticeColorMatrix>& ds_u,
+			       const multi1d<LatticeColorMatrix>& u, 
 			       const multi1d<LatticeFermion>& psi) const
 {
-  multi1d<LatticeColorMatrix> ds_u(Nd);
+//  multi1d<LatticeColorMatrix> ds_u(Nd);
 
   START_CODE("UnprecDWFermActBaseArray::dsdu");
 
@@ -138,7 +139,5 @@ UnprecDWFermActBaseArray::dsdu(const multi1d<LatticeColorMatrix>& u,
   QDP_abort(1);
 
   END_CODE("UnprecDWFermActBaseArray::dsdu");
-
-  return ds_u;
 }
 

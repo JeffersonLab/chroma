@@ -1,4 +1,4 @@
-// $Id: lwldslash_w.cc,v 1.5 2003-11-09 22:35:19 edwards Exp $
+// $Id: lwldslash_w.cc,v 1.6 2003-11-20 05:43:41 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -52,15 +52,16 @@ void QDPWilsonDslash::create(const multi1d<LatticeColorMatrix>& _u)
  *
  * Arguments:
  *
+ *  \param chi	      Result				                (Write)
  *  \param psi	      Pseudofermion field				(Read)
  *  \param isign      D'^dag or D' ( MINUS | PLUS ) resp.		(Read)
  *  \param cb	      Checkerboard of OUTPUT vector			(Read) 
  */
-LatticeFermion QDPWilsonDslash::apply (const LatticeFermion& psi, enum PlusMinus isign, int cb) const
+void 
+QDPWilsonDslash::apply (LatticeFermion& chi, const LatticeFermion& psi, 
+			enum PlusMinus isign, int cb) const
 {
   START_CODE("lWlDslash");
-
-  LatticeFermion chi;
 
   /*     F 
    *   a2  (x)  :=  U  (x) (1 - isign gamma  ) psi(x)
@@ -127,7 +128,5 @@ LatticeFermion QDPWilsonDslash::apply (const LatticeFermion& psi, enum PlusMinus
   }
 
   END_CODE("lWlDslash");
-
-  return chi;
 }
 

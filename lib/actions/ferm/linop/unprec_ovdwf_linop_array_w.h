@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovdwf_linop_array_w.h,v 1.1 2003-11-15 03:55:26 edwards Exp $
+// $Id: unprec_ovdwf_linop_array_w.h,v 1.2 2003-11-20 05:43:41 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Overlap-DWF (Borici) linear operator
  */
@@ -39,7 +39,8 @@ public:
   const OrderedSubset& subset() const {return all;}
 
   //! Apply the operator onto a source vector
-  multi1d<LatticeFermion> operator() (const multi1d<LatticeFermion>& psi, enum PlusMinus isign) const;
+  void operator() (multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
+		   enum PlusMinus isign) const;
 
 private:
   Real WilsonMass;

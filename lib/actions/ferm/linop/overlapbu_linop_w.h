@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: overlapbu_linop_w.h,v 1.5 2003-11-09 22:35:19 edwards Exp $
+// $Id: overlapbu_linop_w.h,v 1.6 2003-11-20 05:43:41 edwards Exp $
 /*! \file
  *  \brief A variant of the 4D overlap operator
  */
@@ -55,7 +55,7 @@ public:
   void create(const multi1d<LatticeColorMatrix>& _u, const Real& _OverMass, const Real& _m_q);
 
   //! Apply the operator onto a source vector
-  LatticeFermion operator() (const LatticeFermion& psi, enum PlusMinus isign) const;
+  void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const;
 
 private:
   Real OverMass;

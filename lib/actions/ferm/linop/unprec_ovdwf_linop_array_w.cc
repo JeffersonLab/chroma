@@ -1,4 +1,4 @@
-// $Id: unprec_ovdwf_linop_array_w.cc,v 1.4 2003-11-16 01:36:12 edwards Exp $
+// $Id: unprec_ovdwf_linop_array_w.cc,v 1.5 2003-11-20 05:43:41 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Overlap-DWF (Borici) linear operator
  */
@@ -54,11 +54,12 @@ chiralProjectMinus(const LatticeFermion& l)
  * \param psi 	  Pseudofermion field     	       (Read)
  * \param isign   Flag ( PLUS | MINUS )   	       (Read)
  */
-multi1d<LatticeFermion> 
-UnprecOvDWLinOpArray::operator() (const multi1d<LatticeFermion>& psi, 
+void
+UnprecOvDWLinOpArray::operator() (multi1d<LatticeFermion>& chi,
+				  const multi1d<LatticeFermion>& psi, 
 				  enum PlusMinus isign) const
 {
-  multi1d<LatticeFermion> chi(N5);   // probably should check psi.size() == N5
+//  multi1d<LatticeFermion> chi(N5);   // probably should check psi.size() == N5
 
   START_CODE("UnprecOvDWLinOpArray");
 
@@ -70,26 +71,29 @@ UnprecOvDWLinOpArray::operator() (const multi1d<LatticeFermion>& psi,
 
   if (isign == PLUS)
   {
-    LatticeFermion  tmp;
+    LatticeFermion  tmp1, tmp2;
 
     for(int n=0; n < N5; ++n)
     {
       if (n == 0)
       {
-	tmp    = psi[n] - m_q*chiralProjectPlus(psi[N5-1]) + chiralProjectMinus(psi[1]);
-	chi[n] = fact1*tmp + fact2*D(tmp, isign) + psi[n] 
+	tmp1   = psi[n] - m_q*chiralProjectPlus(psi[N5-1]) + chiralProjectMinus(psi[1]);
+	D(tmp2, tmp1, isign);
+	chi[n] = fact1*tmp1 + fact2*tmp2 + psi[n] 
 	       + m_q*chiralProjectPlus(psi[N5-1]) - chiralProjectMinus(psi[1]);
       }
       else if (n == N5-1)
       {
-	tmp    = psi[n] + chiralProjectPlus(psi[N5-2]) - m_q*chiralProjectMinus(psi[0]);
-	chi[n] = fact1*tmp + fact2*D(tmp, isign) + psi[n] 
+	tmp1   = psi[n] + chiralProjectPlus(psi[N5-2]) - m_q*chiralProjectMinus(psi[0]);
+	D(tmp2, tmp1, isign);
+	chi[n] = fact1*tmp1 + fact2*tmp2 + psi[n] 
 	       - chiralProjectPlus(psi[N5-2]) + m_q*chiralProjectMinus(psi[0]);
       }
       else
       {
-	tmp    = psi[n] + chiralProjectPlus(psi[n-1]) + chiralProjectMinus(psi[n+1]);
-	chi[n] = fact1*tmp + fact2*D(tmp, isign) + psi[n] 
+	tmp1   = psi[n] + chiralProjectPlus(psi[n-1]) + chiralProjectMinus(psi[n+1]);
+	D(tmp2, tmp1, isign);
+	chi[n] = fact1*tmp1 + fact2*tmp2 + psi[n] 
 	       - chiralProjectPlus(psi[n-1]) - chiralProjectMinus(psi[n+1]);
       }
     }          
@@ -97,9 +101,13 @@ UnprecOvDWLinOpArray::operator() (const multi1d<LatticeFermion>& psi,
   else   // isign = MINUS   case
   {
     multi1d<LatticeFermion>  tmp(N5);   // should be more clever and reduce temporaries
+    LatticeFermion  tmp1;
 
     for(int n=0; n < N5; ++n)
-      tmp[n] = fact1*psi[n] + fact2*D(psi[n], isign);
+    {
+      D(tmp1, psi[n], isign);
+      tmp[n] = fact1*psi[n] + fact2*tmp1;
+    }
 
     for(int n=0; n < N5; ++n)
     {
@@ -122,6 +130,4 @@ UnprecOvDWLinOpArray::operator() (const multi1d<LatticeFermion>& psi,
   }
 
   END_CODE("UnprecOvDWLinOpArray");
-
-  return chi;
 }

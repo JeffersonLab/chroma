@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_linop_array_w.h,v 1.3 2003-11-13 18:17:15 edwards Exp $
+// $Id: unprec_dwf_linop_array_w.h,v 1.4 2003-11-20 05:43:41 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion linear operator
  */
@@ -39,7 +39,8 @@ public:
   const OrderedSubset& subset() const {return all;}
 
   //! Apply the operator onto a source vector
-  multi1d<LatticeFermion> operator() (const multi1d<LatticeFermion>& psi, enum PlusMinus isign) const;
+  void operator() (multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
+		   enum PlusMinus isign) const;
 
 private:
   Real WilsonMass;

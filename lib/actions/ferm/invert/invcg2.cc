@@ -1,4 +1,4 @@
-// $Id: invcg2.cc,v 1.5 2003-11-14 22:02:49 edwards Exp $
+// $Id: invcg2.cc,v 1.6 2003-11-20 05:43:41 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -80,8 +80,10 @@ void InvCG2_a(const LinearOperator<T>& M,
     
   //                      +
   //  r  :=  [ Chi  -  M(u)  . M(u) . psi ]
-  T r;
-  r[s] = chi - M(M(psi, PLUS), MINUS);
+  T  r, mp, mmp;
+  M(mp, psi, PLUS);
+  M(mmp, mp, MINUS);
+  r[s] = chi - mmp;
 
   //  p[1]  :=  r[0]
   T p;
@@ -102,7 +104,6 @@ void InvCG2_a(const LinearOperator<T>& M,
   //
   //  FOR k FROM 1 TO MaxCG DO
   //
-  T    mp;
   Real a, b;
   Double c, d;
   
@@ -115,7 +116,7 @@ void InvCG2_a(const LinearOperator<T>& M,
     //      	       	       	       	       	  +
     //  First compute  d  =  < p, A.p >  =  < p, M . M . p >  =  < M.p, M.p >
     //  Mp = M(u) * p
-    mp[s] = M(p, PLUS);
+    M(mp, p, PLUS);
 
     //  d = | mp | ** 2
     d = norm2(mp, s);	/* 2 Nc Ns  flops */
@@ -128,7 +129,8 @@ void InvCG2_a(const LinearOperator<T>& M,
     //  r[k] -= a[k] A . p[k] ;
     //      	       +            +
     //  r  =  r  -  M(u)  . Mp  =  M  . M . p  =  A . p
-    r[s] -= a * M(mp, MINUS);
+    M(mmp, mp, MINUS);
+    r[s] -= a * mmp;
 
     //  IF |r[k]| <= RsdCG |Chi| THEN RETURN;
 

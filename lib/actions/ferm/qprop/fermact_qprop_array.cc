@@ -1,4 +1,4 @@
-// $Id: fermact_qprop_array.cc,v 1.2 2003-11-13 04:15:00 edwards Exp $
+// $Id: fermact_qprop_array.cc,v 1.3 2003-11-20 05:43:41 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *
@@ -53,7 +53,8 @@ void qprop_t(const FermionActionArray<T>& me,
   case CG_INVERTER: 
   {
     /* chi_1 = M_dag(u) * chi_1 */
-    multi1d<T> tmp = (*A)(chi, MINUS);
+    multi1d<T> tmp(me.size());
+    (*A)(tmp, chi, MINUS);
     
     /* psi = (M^dag * M)^(-1) chi */
     InvCG2 (*A, tmp, psi, RsdCG, MaxCG, n_count);

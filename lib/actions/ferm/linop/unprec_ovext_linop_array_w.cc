@@ -1,4 +1,4 @@
-/* $Id: unprec_ovext_linop_array_w.cc,v 1.2 2003-11-16 20:04:55 edwards Exp $
+/* $Id: unprec_ovext_linop_array_w.cc,v 1.3 2003-11-20 05:43:41 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
  */
@@ -54,17 +54,20 @@ UnprecOvExtLinOpArray::create(const multi1d<LatticeColorMatrix>& u_,
  * \param psi 	  Pseudofermion field     	       (Read)
  * \param isign   Flag ( PLUS | MINUS )   	       (Read)
  */
-multi1d<LatticeFermion> 
-UnprecOvExtLinOpArray::operator() (const multi1d<LatticeFermion>& psi, 
+void
+UnprecOvExtLinOpArray::operator() (multi1d<LatticeFermion>& chi,
+				   const multi1d<LatticeFermion>& psi, 
 				   enum PlusMinus isign) const
 {
-  multi1d<LatticeFermion> chi(N5);
+//  multi1d<LatticeFermion> chi(N5);
 
   START_CODE("UnprecOvExtLinOpArray");
 
   int G5 = Ns*Ns - 1;
 
   // Run through all the pseudofermion fields
+  LatticeFermion  tmp;
+
   for(int n=0; n < N5; ++n)
   {
     if (n == 0)
@@ -76,17 +79,17 @@ UnprecOvExtLinOpArray::operator() (const multi1d<LatticeFermion>& psi,
     else if ((n & 1) == 1)
     {
       int nn = (n-1) >> 1;
-      chi[n] = fact2*psi[0] + (a5*cc[nn])*(Gamma(G5)*D(psi[n],PLUS)) + ss[nn]*psi[n+1];
+      D(tmp, psi[n], PLUS);
+      chi[n] = fact2*psi[0] + (a5*cc[nn])*(Gamma(G5)*tmp) + ss[nn]*psi[n+1];
     }
     else
     {
       int nn = (n-1) >> 1;
-      chi[n] = ss[nn]*psi[n-1] - a5*(Gamma(G5)*D(psi[n],PLUS));
+      D(tmp, psi[n], PLUS);
+      chi[n] = ss[nn]*psi[n-1] - a5*(Gamma(G5)*tmp);
     }
   }
 
   END_CODE("UnprecOvExtLinOpArray");
-
-  return chi;
 }
 
