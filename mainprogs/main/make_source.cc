@@ -1,4 +1,4 @@
-// $Id: make_source.cc,v 1.1 2003-06-20 20:47:35 dgr Exp $
+// $Id: make_source.cc,v 1.2 2003-06-20 21:23:29 ikuro Exp $
 /*! \file
  *  \brief Main code for source generation
  */
@@ -17,6 +17,7 @@
 // First the source type
 #define S_WAVE 0
 #define P_WAVE 1
+#define D_WAVE 2    /*added*/
 
 #define MAXLINE 80
 
@@ -57,9 +58,9 @@ int main(int argc, char **argv)
 
   Real kappa_fake = 0.0;			// Kappa value
   
-  int source_type, source_direction; // S-wave, P-wave etc, and direction
+  int source_type, source_direction; // S-wave(0), P-wave(1), D-wave(2)and direction
 
-  int wf_type;			// Point (0) or Smeared (1)
+  int wf_type;			// Point (0) or Smeared (2)
   Real wvf_param;		// Parameter for the wave function
   int WvfIntPar;
 
@@ -142,7 +143,20 @@ int main(int argc, char **argv)
   case P_WAVE:
     nml_filename = "p_source.nml";
     source_filename = "p_source_0";
-
+    break;
+  case D_WAVE:    /* added */
+    if (source_direction == 12) {
+      nml_filename = "dydz_propagator.nml";
+      source_filename = "dydz_source_0";
+    }
+    if (source_direction == 22) {
+      nml_filename = "dzdz_propagator.nml";
+      source_filename = "dzdz_source_0";
+    }
+    break;
+  default: 
+    cerr<<"invaid source_type\n";
+    break;
   }
 
 
@@ -195,9 +209,11 @@ int main(int argc, char **argv)
 
     // Smear the colour source if specified
 
-    if(wf_type == SHELL_SOURCE)
+    if(wf_type == SHELL_SOURCE) {
       gausSmear(u, src_color_vec, wvf_param, WvfIntPar, j_decay);
-
+      //laplacian(u, src_color_vec, j_decay, power);
+      //power = 1 for one laplacian operator
+    }
 
     for(int spin_source = 0; spin_source < Ns; ++spin_source)
     {
@@ -215,6 +231,8 @@ int main(int argc, char **argv)
       if(source_type == P_WAVE)
 	p_src(u, chi, source_direction);
 
+      if(source_type == D_WAVE)   /* added */
+	d_src(u, chi, source_direction);
 
       // primitive initial guess for the linear sys solution
       

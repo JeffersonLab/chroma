@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.15 2003-06-19 17:34:25 ikuro Exp $
+// $Id: propagator.cc,v 1.16 2003-06-20 21:23:29 ikuro Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -63,7 +63,7 @@ int main(int argc, char **argv)
   
   int source_type, source_direction; // S-wave(0), P-wave(1), D-wave(2), and direction
 
-  int wf_type;			// Point (0) or Smeared (1)
+  int wf_type;			// Point (0) or Smeared (2)
   Real wvf_param;		// Parameter for the wave function
   int WvfIntPar;
 
