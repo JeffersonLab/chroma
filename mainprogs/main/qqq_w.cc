@@ -1,4 +1,4 @@
-// $Id: qqq_w.cc,v 1.13 2004-04-28 14:34:43 edwards Exp $
+// $Id: qqq_w.cc,v 1.14 2004-05-14 00:24:21 edwards Exp $
 /*! \file
  *  \brief Main code for generalized quark propagator
  *
@@ -25,6 +25,7 @@ using namespace QDP;
 // and written to the XML output
 struct Param_t
 {
+  bool         Dirac_basis;     // Use the Dirac basis for output?
   multi1d<int> nrow;		// Lattice dimension
 };
 
@@ -79,13 +80,18 @@ void read(XMLReader& xml, const string& path, Param_t& param)
 
   switch (version) 
   {
-  case 2:
     /**************************************************************************/
+  case 2:
+    param.Dirac_basis = false;
+    break;
+    
+    /**************************************************************************/
+  case 3:
+    read(paramtop, "Dirac_basis", param.Dirac_basis);
     break;
 
-  default :
+  default:
     /**************************************************************************/
-
     QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
     QDP_abort(1);
   }
@@ -177,8 +183,18 @@ int main(int argc, char **argv)
   XMLFileWriter xml_out("XMLDAT");
   push(xml_out,"qqq");
 
-  xml_out << xml_in;  // save a copy of the input
-  write(xml_out, "config_info", gauge_xml);
+  proginfo(xml_out);    // Print out basic program info
+
+  // Write out the input
+  write(xml_out, "Input", xml_in);
+
+  // Write out the config info
+  write(xml_out, "Config_info", gauge_xml);
+
+  push(xml_out, "Output_version");
+  write(xml_out, "out_version", 2);
+  pop(xml_out);
+
   xml_out.flush();
 
 
@@ -199,9 +215,9 @@ int main(int argc, char **argv)
    * For now, only 1 propagator is supported.
    */
   multi1d<LatticePropagator> quark_propagator(Nprops);
-  multi1d<ChromaProp_t> prop_header(Nprops);
-  multi1d<PropSource_t> source_header(Nprops);
-  multi1d<PropSink_t>   sink_header(Nprops);
+  QQQBarcomp_t  qqq;
+  qqq.Dirac_basis = false;
+  qqq.forward_props.resize(Nprops);
   for(int i=0; i < Nprops; ++i)
   {
     XMLReader prop_file_xml, prop_record_xml;
@@ -216,9 +232,9 @@ int main(int argc, char **argv)
     // Also pull out the id of this source
     try
     {
-      read(prop_record_xml, "/SinkSmear/PropSink", sink_header[i]);
-      read(prop_record_xml, "/SinkSmear/ForwardProp", prop_header[i]);
-      read(prop_record_xml, "/SinkSmear/PropSource", source_header[i]);
+      read(prop_record_xml, "/SinkSmear/PropSink", qqq.forward_props[i].sink_header);
+      read(prop_record_xml, "/SinkSmear/ForwardProp", qqq.forward_props[i].prop_header);
+      read(prop_record_xml, "/SinkSmear/PropSource", qqq.forward_props[i].source_header);
     }
     catch (const string& e) 
     {
@@ -228,14 +244,12 @@ int main(int argc, char **argv)
   }
 
   // Save prop input
-  write(xml_out, "PropSource", source_header);
-  write(xml_out, "ForwardProp", prop_header);
-  write(xml_out, "PropSink", sink_header);
+  write(xml_out, "Propagator_input", qqq);
 
   // Derived from input prop
-  int j_decay = source_header[0].j_decay;
-  multi1d<int> boundary = prop_header[0].boundary;
-  multi1d<int> t_source = source_header[0].t_source;
+  int j_decay = qqq[0].source_header.j_decay;
+  multi1d<int> boundary = qqq[0].prop_header.boundary;
+  multi1d<int> t_source = qqq[0].source_header.t_source;
   int t0      = t_source[j_decay];
   int bc_spec = boundary[j_decay];
 
@@ -259,9 +273,25 @@ int main(int argc, char **argv)
    */
   multiNd<Complex> barprop;
 
-  //
-  // quark_propagator = quark_prop * 1.0e10;
-  //
+  // Switch to Dirac-basis unless specifically requested not to 
+  // by input file
+  if (input.param.Dirac_basis)
+  {
+    qqq.Dirac_basis = true;
+
+    // The spin basis matrix
+    SpinMatrix U;
+    initDiracToDRMat(U);
+
+    LatticePropagator q_tmp;
+    for(int i=0; i < Nprops; ++i)
+    {
+      q_tmp = adj(U) * quark_propagator[i] * U;   // note, adj(U) = -U
+      quark_propagator[i] = q_tmp;
+    }
+  }
+
+  // Compute generation propagator
   barcomp(barprop,
 	  quark_propagator[0],
 	  quark_propagator[1],
@@ -283,29 +313,9 @@ int main(int argc, char **argv)
 
     XMLBufferWriter record_xml;
     push(record_xml, "QQQ");
-
-    // For the moment, the single propagator header is replicated.
-    // However, 3 distinct propagators are supported
-    push(record_xml, "Propagator1");
-    write(record_xml, "PropSink", sink_header[0]);
-    write(record_xml, "ForwardProp", prop_header[0]);
-    write(record_xml, "PropSource", source_header[0]);
-    pop(record_xml);
-
-    push(record_xml, "Propagator2");
-    write(record_xml, "PropSink", sink_header[1]);
-    write(record_xml, "ForwardProp", prop_header[1]);
-    write(record_xml, "PropSource", source_header[1]);
-    pop(record_xml);
-
-    push(record_xml, "Propagator3");
-    write(record_xml, "PropSink", sink_header[2]);
-    write(record_xml, "ForwardProp", prop_header[2]);
-    write(record_xml, "PropSource", source_header[2]);
-    pop(record_xml);
-
+    write(record_xml, ".", qqq);  // do not write the outer group
     write(record_xml, "Config_info", gauge_xml);
-    pop(record_xml);
+    pop(record_xml);  // QQQ
 
     // Write the scalar data
     QDPFileWriter to(file_xml, input.barcomp.qqq_file, 
