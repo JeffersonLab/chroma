@@ -1,4 +1,4 @@
-// $Id: t_lwldslash.cc,v 1.7 2003-09-12 13:03:48 bjoo Exp $
+// $Id: t_lwldslash.cc,v 1.8 2003-09-13 10:30:54 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -68,7 +68,7 @@ int main(int argc, char **argv)
       myt2=clock();
       
       mydt=(double)(myt2-myt1)/((double)(CLOCKS_PER_SEC));
-      mydt=1.0e6*mydt/((double)(iter*(Layout::vol())));
+      mydt=1.0e6*mydt/((double)(iter*(Layout::vol()/2)));
       
       if( Layout::primaryNode() ) { 
 	cout << "cb = " << cb << " isign = " << isign << endl;
