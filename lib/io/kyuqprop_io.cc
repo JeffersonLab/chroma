@@ -1,4 +1,4 @@
-// $Id: kyuqprop_io.cc,v 1.3 2004-05-14 00:21:46 edwards Exp $
+// $Id: kyuqprop_io.cc,v 1.4 2004-05-14 00:27:35 edwards Exp $
 /*!
  * @file
  * @brief  Read/write a Kentucky quark propagator
@@ -6,6 +6,7 @@
 
 #include "chromabase.h"
 #include "io/kyuqprop_io.h"
+#include "util/ferm/transf.h"
 #include "util/ferm/diractodr.h"
 
 using namespace QDP;
