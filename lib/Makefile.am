@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.114 2004-03-09 20:43:12 bjoo Exp $
+# $Id: Makefile.am,v 1.115 2004-03-22 12:48:30 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -65,6 +65,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/invcg1.h actions/ferm/invert/invcg2.h \
 	actions/ferm/invert/invcg2_array.h actions/ferm/invert/invert.h \
 	actions/ferm/invert/invmr.h actions/ferm/invert/minvcg.h \
+	actions/ferm/invert/invcg2_timing_hacks.h \
 	actions/ferm/linop/asqtad_dslash.h actions/ferm/linop/linop.h \
 	actions/ferm/linop/lmdagm.h actions/ferm/linop/lopscl.h \
 	actions/ferm/linop/partrat.h actions/ferm/qprop/qprop.h \
@@ -208,8 +209,8 @@ libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
                gaus_smear.cc hyp_smear.cc ape_smear.cc fuzz_smear.cc \
                klein_gord.cc laplacian.cc displacement.cc \
                su2extract.cc sunfill.cc invcg1.cc invcg2.cc invcg2_array.cc \
-	       minvcg.cc qprop_io.cc stoch_var.cc z2_src.cc \
-               milc_io.cc readmilc.cc writemilc.cc \
+	       invcg2_timing_hacks.cc minvcg.cc qprop_io.cc stoch_var.cc \
+	       z2_src.cc milc_io.cc readmilc.cc writemilc.cc \
                axgauge.cc coulgauge.cc grelax.cc polar_dec.cc rot_colvec.cc \
 	       transf.cc param_io.cc gramschm.cc gramschm_array.cc \
 	       ritz.cc ritz_array.cc sn_jacob.cc sn_jacob_array.cc \
