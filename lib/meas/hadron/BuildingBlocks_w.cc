@@ -47,7 +47,7 @@ namespace Chroma {
 //###################################################################################//
 
 static const char* const CVSBuildingBlocks_cc =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 1.12 2005-01-14 18:42:35 edwards Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 1.13 2005-03-12 18:41:49 edwards Exp $";
 
 //###################################################################################//
 // record the CVS info                                                               //
@@ -67,8 +67,9 @@ static int GBB_NLinkPatterns = 0;
 
 void BkwdFrwdTr( const LatticePropagator &             B,
                  const LatticePropagator &             F,
+		 int                                   GammaInsertion,
                  const SftMom &                        Phases,
-                 const multi2d< BinaryWriter* > &      BinaryWriters,
+                 multi2d< BinaryWriter > &             BinaryWriters,
                  const int                             f,
                  const multi1d< unsigned short int > & LinkDirs,
                  const signed short int T1, 
@@ -84,7 +85,7 @@ void BkwdFrwdTr( const LatticePropagator &             B,
 
   for( int q = 0; q < NQ; q ++ )
   {
-    BinaryWriters[f][q]->write( NLinks );
+    BinaryWriters(f,q).write( NLinks );
 
     #if _DEBUG_BB_C_ == 1
     {
@@ -97,7 +98,7 @@ void BkwdFrwdTr( const LatticePropagator &             B,
 
     for( Link = 0; Link < NLinks; Link ++ )
     {
-      BinaryWriters[f][q]->write( LinkDirs[ Link ] );
+      BinaryWriters(f,q).write( LinkDirs[ Link ] );
 
       #if _DEBUG_BB_C_ == 1
       {
@@ -115,7 +116,8 @@ void BkwdFrwdTr( const LatticePropagator &             B,
 
   for( int i = 0; i < Ns * Ns; i ++ )
   {
-    LatticeComplex Trace = trace( adj( B ) * Gamma( i ) * F );  // assumes any Gamma5 matrices have already been absorbed
+    // assumes any Gamma5 matrices have already been absorbed
+    LatticeComplex Trace = trace( adj( B ) * Gamma( i ) * F * Gamma( GammaInsertion ) );
 
     multi2d< DComplex > Projections = Phases.sft( Trace );
 
@@ -128,8 +130,8 @@ void BkwdFrwdTr( const LatticePropagator &             B,
         float r = toFloat( real( Projection[ t ] ) );
         float i = toFloat( imag( Projection[ t ] ) );
 
-        BinaryWriters[f][q]->write( r );
-        BinaryWriters[f][q]->write( i );
+        BinaryWriters(f,q).write( r );
+        BinaryWriters(f,q).write( i );
 
         #if _DEBUG_BB_C_ == 1
         {
@@ -155,13 +157,14 @@ void BkwdFrwdTr( const LatticePropagator &             B,
 void AddLinks( const multi1d< LatticePropagator > &  B,
                const LatticePropagator &             F,
                const multi1d< LatticeColorMatrix > & U,
+	       const multi1d< int > &                GammaInsertions,
                const SftMom &                        Phases,
                multi1d< unsigned short int > &       LinkDirs,
                const unsigned short int              MaxNLinks,
                BBLinkPattern                         LinkPattern,
                const short int                       PreviousDir,
                const short int                       PreviousMu,
-               const multi2d< BinaryWriter* > &      BinaryWriters,
+               multi2d< BinaryWriter > &             BinaryWriters,
                const signed short int T1, 
                const signed short int T2 )
 {
@@ -206,14 +209,15 @@ void AddLinks( const multi1d< LatticePropagator > &  B,
         // form correlation functions
         for( int f = 0; f < NF; f ++ )
         {
-          BkwdFrwdTr( B[ f ], F_mu, Phases, BinaryWriters, f, NextLinkDirs, T1, T2 );
+          BkwdFrwdTr( B[ f ], F_mu, GammaInsertions[ f ], Phases, BinaryWriters, f, NextLinkDirs, T1, T2 );
         }
       }
 
       if( DoFurtherPatterns == true )
       {
         // add another link
-        AddLinks( B, F_mu, U, Phases, NextLinkDirs, MaxNLinks, LinkPattern, 1, mu, BinaryWriters, T1, T2 );
+        AddLinks( B, F_mu, U, GammaInsertions, 
+		  Phases, NextLinkDirs, MaxNLinks, LinkPattern, 1, mu, BinaryWriters, T1, T2 );
       }
     }
   }
@@ -242,14 +246,15 @@ void AddLinks( const multi1d< LatticePropagator > &  B,
         // form correlation functions
         for( int f = 0; f < NF; f ++ )
         {
-          BkwdFrwdTr( B[ f ], F_mu, Phases, BinaryWriters, f, NextLinkDirs, T1, T2 );
+          BkwdFrwdTr( B[ f ], F_mu, GammaInsertions[ f ], Phases, BinaryWriters, f, NextLinkDirs, T1, T2 );
         }
       }
 
       if( DoFurtherPatterns == true )
       {
         // add another link
-        AddLinks( B, F_mu, U, Phases, NextLinkDirs, MaxNLinks, LinkPattern, -1, mu, BinaryWriters, T1, T2 );
+        AddLinks( B, F_mu, U, GammaInsertions, Phases, 
+		  NextLinkDirs, MaxNLinks, LinkPattern, -1, mu, BinaryWriters, T1, T2 );
       }
     }
   }
@@ -264,10 +269,11 @@ void AddLinks( const multi1d< LatticePropagator > &  B,
 void BuildingBlocks( const multi1d< LatticePropagator > &  B,
                      const LatticePropagator &             F,
                      const multi1d< LatticeColorMatrix > & U,
+                     const multi1d< int > &                GammaInsertions,
                      const unsigned short int              MaxNLinks,
                      const BBLinkPattern                   LinkPattern,
                      const SftMom &                        Phases,
-	             const multi2d< const char* > &        BinaryDataFileNames,
+	             const multi2d< string > &             BinaryDataFileNames,
                      const signed short int T1,
                      const signed short int T2 )
 {
@@ -277,13 +283,13 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
 
   const int NF = B.size();
   const int NQ = Phases.numMom();
-  multi2d< BinaryWriter* > BinaryWriters( NF, NQ );
+  multi2d< BinaryWriter > BinaryWriters( NF, NQ );
 
   for( int f = 0; f < NF; f ++ )
   {
   for( int q = 0; q < NQ; q ++ )
   {
-    BinaryWriters[ f ][ q ] = new BinaryWriter( BinaryDataFileNames[ f ][ q ] );
+    BinaryWriters(f,q).open( BinaryDataFileNames(f,q) );
   }
   }
 
@@ -296,10 +302,11 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
 
   for( int f = 0; f < NF; f ++ )
   {
-    BkwdFrwdTr( B[ f ], F, Phases, BinaryWriters, f, LinkDirs, T1, T2 );
+    BkwdFrwdTr( B[ f ], F, GammaInsertions[ f ], Phases, BinaryWriters, f, LinkDirs, T1, T2 );
   }
 
-  AddLinks( B, F, U, Phases, LinkDirs, MaxNLinks, LinkPattern, 0, -1, BinaryWriters, T1, T2 );
+  AddLinks( B, F, U, GammaInsertions, 
+	    Phases, LinkDirs, MaxNLinks, LinkPattern, 0, -1, BinaryWriters, T1, T2 );
 
   //#################################################################################//
   // add footer and close files                                                      //
@@ -351,25 +358,24 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
     #endif
 
     // possibly specific to this version
-    BinaryWriters[f][q]->write( Flavor );
-    BinaryWriters[f][q]->write( Contraction );
-    BinaryWriters[f][q]->write( NX );
-    BinaryWriters[f][q]->write( NY );
-    BinaryWriters[f][q]->write( NZ );
-    BinaryWriters[f][q]->write( NT );
-    BinaryWriters[f][q]->write( T1 );
-    BinaryWriters[f][q]->write( T2 );
-    BinaryWriters[f][q]->write( MaxNLinks );
-    BinaryWriters[f][q]->write( NLinkPatterns );
-    BinaryWriters[f][q]->write( QX );
-    BinaryWriters[f][q]->write( QY );
-    BinaryWriters[f][q]->write( QZ );
+    BinaryWriters(f,q).write( Flavor );
+    BinaryWriters(f,q).write( Contraction );
+    BinaryWriters(f,q).write( NX );
+    BinaryWriters(f,q).write( NY );
+    BinaryWriters(f,q).write( NZ );
+    BinaryWriters(f,q).write( NT );
+    BinaryWriters(f,q).write( T1 );
+    BinaryWriters(f,q).write( T2 );
+    BinaryWriters(f,q).write( MaxNLinks );
+    BinaryWriters(f,q).write( NLinkPatterns );
+    BinaryWriters(f,q).write( QX );
+    BinaryWriters(f,q).write( QY );
+    BinaryWriters(f,q).write( QZ );
     // generic to any building blocks file
-    BinaryWriters[f][q]->write( Id );
-    BinaryWriters[f][q]->write( Version );
+    BinaryWriters(f,q).write( Id );
+    BinaryWriters(f,q).write( Version );
     // close file
-    BinaryWriters[f][q]->close();
-    delete BinaryWriters[f][q];
+    BinaryWriters(f,q).close();
   }
   }
 
