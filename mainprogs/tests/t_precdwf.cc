@@ -1,4 +1,4 @@
-// $Id: t_precdwf.cc,v 1.14 2005-03-18 13:26:42 bjoo Exp $
+// $Id: t_precdwf.cc,v 1.15 2005-03-30 11:26:55 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -121,12 +121,17 @@ int main(int argc, char **argv)
 
 //    int Ndiag  = (N5-2)*(5*24) + 2*(8*24);
     // int Ndiag  = N5*(4*24) + (N5-1)*(8*24) + 3*24;   // this is what I get counting flops in code
-    int Ndiag  = (4*(N5-2)+10)*Nc*Ns; // This is my count with the blas / chiral proj ops
+    int Ndiag  = 4*(N5+2)*Nc*Ns; // This is my count with the blas / chiral proj ops
+    int NdiagInv = (12*N5-11)*Nc*Ns;
     int Neo    = N5*(1320+24);
     int Nflops = 2*Ndiag + 2*Neo + N5*24;
 
     // even-even-inv piece
     mydt = time_func(D_pdwf, &EvenOddPrecLinearOperator<MLF,LCM>::evenEvenInvLinOp, chi, psi, is);
+    QDPIO::cout << "EvenEvenInv: The time per lattice point is "<< mydt << " micro sec" 
+		<< " (" <<  ((double)(NdiagInv)/mydt) << ") Mflops " << endl;
+
+    mydt = time_func(D_pdwf, &EvenOddPrecLinearOperator<MLF,LCM>::evenEvenLinOp, chi, psi, is);
     QDPIO::cout << "EvenEven: The time per lattice point is "<< mydt << " micro sec" 
 		<< " (" <<  ((double)(Ndiag)/mydt) << ") Mflops " << endl;
       
