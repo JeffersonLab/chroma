@@ -1,4 +1,4 @@
-// $Id: t_precdwf.cc,v 1.9 2005-03-01 19:09:10 edwards Exp $
+// $Id: t_precdwf.cc,v 1.10 2005-03-01 19:12:53 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -34,6 +34,8 @@ double time_func(const EvenOddPrecLinearOperator< MLF, LCM > *p, EO_mem A,
     myt2=clock();
 
     mydt=double(myt2-myt1)/double(CLOCKS_PER_SEC);
+    Internal::broadcast(mydt);
+
     if (mydt > 1)
       break;
   }
