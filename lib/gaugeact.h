@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gaugeact.h,v 1.3 2004-07-23 12:37:11 bjoo Exp $
+// $Id: gaugeact.h,v 1.4 2004-08-10 13:27:37 bjoo Exp $
 
 /*! @file
  * @brief Class structure for gauge actions
@@ -52,16 +52,12 @@ public:
   //! Compute dS/dU
   /*! Default version. Derived class should override this if needed. */
   virtual void dsdu(multi1d<LatticeColorMatrix>& result,
-		    Handle<const ConnectState> state) const {
-    dsdu(result, state->getLinks());
+		    const Handle<const ConnectState> state) const {
+    QDPIO::cerr << "GaugeAction::dsdu not implemented" << endl;
+    QDP_abort(1);
   }
 
     
-  //! Compute dS/dU
-  //! Takes a simple matrix as an input -- BC's may already be applied
-  virtual void dsdu(multi1d<LatticeColorMatrix>& result,
-		    const multi1d<LatticeColorMatrix>& u) const = 0;
-
   //! Virtual destructor to help with cleanup;
   virtual ~GaugeAction() {}
 
@@ -69,7 +65,7 @@ public:
   virtual GaugeAction* clone(void) const = 0;
 
   //! Compute the action on a gauge configuration
-  virtual Double S(const multi1d<LatticeColorMatrix>& u) const = 0;
+  virtual Double S(const Handle<const ConnectState> state) const = 0;
 
 };
 

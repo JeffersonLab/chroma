@@ -1,4 +1,4 @@
-// $Id: wilson_gaugeact.cc,v 1.5 2004-07-28 02:38:02 edwards Exp $
+// $Id: wilson_gaugeact.cc,v 1.6 2004-08-10 13:27:37 bjoo Exp $
 /*! \file
  *  \brief Wilson gauge action
  */
@@ -91,13 +91,15 @@ WilsonGaugeAct::staple(LatticeColorMatrix& u_staple,
 
 void
 WilsonGaugeAct::dsdu(multi1d<LatticeColorMatrix>& ds_u,
-		     const multi1d<LatticeColorMatrix>& u) const
+		     const Handle< const ConnectState> state) const
 {
   START_CODE();
 
   LatticeColorMatrix tmp_0;
   LatticeColorMatrix tmp_1;
   LatticeColorMatrix tmp_2;
+
+  const multi1d<LatticeColorMatrix>& u = state->getLinks();
 
   for(int mu = 0; mu < Nd; mu++) {
     ds_u[mu] = zero;
@@ -130,19 +132,7 @@ WilsonGaugeAct::dsdu(multi1d<LatticeColorMatrix>& ds_u,
     ds_u[mu] *= Double(beta)/(Real(2*Nc));
   }
 
-  // Debugging
-  /*
-  Double tr = Double(0);
-  for(int mu = 0; mu<Nd; mu++) { 
-    
-    tr += sum(real(trace(ds_u[mu])));
-  }
 
-  Double S_act = S(u);
-
-  QDPIO::cout << "dsdu: S = " << S_act << " Re Tr U dsdu = " << tr << endl;
-  QDPIO::cout << "      Ratio = " << tr/S_act << endl;
-  */
   END_CODE();
 }
 
@@ -160,17 +150,16 @@ WilsonGaugeAct::dsdu(multi1d<LatticeColorMatrix>& ds_u,
 //   = -beta * (1/(Nc)) * Sum Re Tr Plaq
 
 Double
-WilsonGaugeAct::S(const multi1d<LatticeColorMatrix>& u) const
+WilsonGaugeAct::S(const Handle<const ConnectState> state) const
 {
   Double S_pg;
 
   // Handle< const ConnectState> u_bc(createState(u));
   // Apply boundaries
-  //Handle<const ConnectState> u_bc(createState(u));
   Double w_plaq, s_plaq, t_plaq, link;
 
   // Measure the plaquette
-  MesPlq(u, w_plaq, s_plaq, t_plaq, link);
+  MesPlq(state->getLinks(), w_plaq, s_plaq, t_plaq, link);
 
   // Undo Mes Plaq Normalisation
   S_pg = Double(Layout::vol()*Nd*(Nd-1))/Double(2);

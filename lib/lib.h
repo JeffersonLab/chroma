@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lib.h,v 1.5 2004-07-23 12:37:11 bjoo Exp $
+// $Id: lib.h,v 1.6 2004-08-10 13:27:37 bjoo Exp $
 
 /*! \file
  * \brief Chroma Lattice Field Theory library
@@ -31,7 +31,7 @@
 
 /* This causes bother with installations. Not functional yet so 
    I comment it out */
-/* #include "update/update.h" */
+#include "update/update.h"
 #include "io/io.h"
 
 #endif

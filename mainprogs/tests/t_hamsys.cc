@@ -57,7 +57,6 @@ int main(int argc, char *argv[])
   // Generate the symplectic updates with respect to H_MD
   PureGaugeSympUpdates leaps(H_MD);
 
-
   // Test the integrator -- for energy conservation, and reversibility 
 
   XMLFileWriter lf_xml("./LEAPFROG_TESTS");
@@ -102,7 +101,7 @@ int main(int argc, char *argv[])
     Double deltaH  = deltaKE + deltaPE;
     Double ddKE = KE_new2 - KE_old;
     Double ddPE = PE_new2 - PE_old;
-    Double ddH  = ddKE + ddPE;
+    Double ddH  = ddKE - ddPE;
     
     push(lf_xml, "elem");
     write(lf_xml, "tau", tau);
@@ -127,7 +126,6 @@ int main(int argc, char *argv[])
   pop(lf_xml);
   lf_xml.close();
   
-
   // Step Sizes
   Real tau = Real(1);
   Real dt = Real(0.1);

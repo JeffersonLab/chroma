@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wilson_gaugeact.h,v 1.3 2004-07-23 12:37:12 bjoo Exp $
+// $Id: wilson_gaugeact.h,v 1.4 2004-08-10 13:27:37 bjoo Exp $
 /*! \file
  *  \brief Wilson gauge action
  */
@@ -69,10 +69,10 @@ public:
 
   //! Compute dS/dU
   void dsdu(multi1d<LatticeColorMatrix>& result,
-	    const multi1d<LatticeColorMatrix>& u) const;
+	    const Handle<const ConnectState> state) const;
 
   //! Compute the actions
-  Double S(const multi1d<LatticeColorMatrix>& u) const;
+  Double S(const Handle<const ConnectState> state) const;
 
   //! Destructor is automatic
   ~WilsonGaugeAct() {}

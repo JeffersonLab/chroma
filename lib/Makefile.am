@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.157 2004-08-07 03:25:43 edwards Exp $
+# $Id: Makefile.am,v 1.158 2004-08-10 13:27:37 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -121,13 +121,20 @@ nobase_include_HEADERS = \
         update/heatbath/su3over.h update/heatbath/su3hb.h \
 	update/molecdyn/molecdyn.h \
 	update/molecdyn/abs_hamiltonian.h \
-	update/molecdyn/abs_hmc.h \
-	update/molecdyn/abs_hyb_int.h \
-	update/molecdyn/abs_symp_updates.h \
 	update/molecdyn/exact_pg_hamiltonian.h \
-	update/molecdyn/pg_hmc.h \
+	update/molecdyn/degen_two_flavor_ferm_hamiltonian.h \
+	update/molecdyn/abs_symp_updates.h \
+	update/molecdyn/pg_symp_updates.h \
+	update/molecdyn/ferm_symp_updates.h \
+	update/molecdyn/abs_hyb_int.h \
 	update/molecdyn/pg_leapfrog.h \
-	update/molecdyn/pg_symp_updates.h
+	update/molecdyn/ferm_leapfrog.h \
+	update/molecdyn/ferm_refresh.h \
+	update/molecdyn/mom_refresh.h \
+	update/molecdyn/global_metropolis_accrej.h \
+	update/molecdyn/abs_hmc.h \
+	update/molecdyn/pg_hmc.h \
+	update/molecdyn/ferm_hmc.h
 
 nodist_include_HEADERS=chroma_config_internal.h
 
@@ -321,7 +328,8 @@ libchroma_a_SOURCES += baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
               wallff_w.cc wallrhoff_w.cc wallrhopiff_w.cc \
               wallpionff_w.cc wallnuclff_w.cc \
               walldeltaff_w.cc walldeltapff_w.cc \
-	      inv_borici_w.cc
+	      inv_borici_w.cc \
+	      ferm_refresh.cc mom_refresh.cc global_metropolis_accrej.cc
 
 # zolotarev4d_linop_w.cc 
 

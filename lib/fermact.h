@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 1.7 2004-07-08 03:06:29 edwards Exp $
+// $Id: fermact.h,v 1.8 2004-08-10 13:27:37 bjoo Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -116,6 +116,7 @@ public:
       QDP_abort(1);
     }
 
+  
   //! Virtual destructor to help with cleanup;
   virtual ~FermionAction() {}
 };
