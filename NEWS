@@ -1,3 +1,8 @@
+11/22/2004 -- Robert Edwards
+
+	Version 1.9.0. Big merge of Wilson and Staggered builds - now all
+        the same. Cleaned up automake files so make distcheck  should work.
+
 11/20/2004 -- Robert Edwards
 
 	Version 1.8.2. More changes within Zolo Ferm support. 
