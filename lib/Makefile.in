@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.327 2005-02-02 22:48:45 edwards Exp $
+# $Id: Makefile.in,v 1.328 2005-02-03 03:15:50 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -175,6 +175,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	util/gauge/taproj.cc util/gauge/unit_check.cc \
 	util/info/printgeom.cc util/info/proginfo.cc \
 	update/molecdyn/monomial/gauge_monomial.cc \
+	update/molecdyn/monomial/genapprox.cc \
 	update/molecdyn/integrator/lcm_pqp_leapfrog.cc \
 	update/molecdyn/hmc/global_metropolis_accrej.cc \
 	update/molecdyn/predictor/zero_guess_predictor.cc \
@@ -353,7 +354,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	su3proj.$(OBJEXT) sunfill.$(OBJEXT) sun_proj.$(OBJEXT) \
 	taproj.$(OBJEXT) unit_check.$(OBJEXT) printgeom.$(OBJEXT) \
 	proginfo.$(OBJEXT) gauge_monomial.$(OBJEXT) \
-	lcm_pqp_leapfrog.$(OBJEXT) global_metropolis_accrej.$(OBJEXT) \
+	genapprox.$(OBJEXT) lcm_pqp_leapfrog.$(OBJEXT) \
+	global_metropolis_accrej.$(OBJEXT) \
 	zero_guess_predictor.$(OBJEXT) \
 	last_solution_predictor.$(OBJEXT) \
 	linear_extrap_predictor.$(OBJEXT) $(am__objects_1) \
@@ -556,10 +558,6 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	update/heatbath/hb_params.h update/heatbath/su2_hb_update.h \
 	update/heatbath/su3_hb_sweep.h update/molecdyn/molecdyn.h \
 	update/molecdyn/field_state.h \
-	update/molecdyn/monomial/monomial.h \
-	update/molecdyn/monomial/abs_monomial.h \
-	update/molecdyn/monomial/monomial_factory.h \
-	update/molecdyn/monomial/gauge_monomial.h \
 	update/molecdyn/hamiltonian/hamiltonian.h \
 	update/molecdyn/hamiltonian/abs_hamiltonian.h \
 	update/molecdyn/hamiltonian/exact_hamiltonian.h \
@@ -570,6 +568,11 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	update/molecdyn/hmc/hmc.h update/molecdyn/hmc/abs_hmc.h \
 	update/molecdyn/hmc/lcm_hmc.h \
 	update/molecdyn/hmc/global_metropolis_accrej.h \
+	update/molecdyn/monomial/monomial.h \
+	update/molecdyn/monomial/abs_monomial.h \
+	update/molecdyn/monomial/monomial_factory.h \
+	update/molecdyn/monomial/gauge_monomial.h \
+	update/molecdyn/monomial/genapprox.h \
 	update/molecdyn/predictor/predictor.h \
 	update/molecdyn/predictor/chrono_predictor.h \
 	update/molecdyn/predictor/chrono_predictor_factory.h \
@@ -838,6 +841,7 @@ BUILDDIR = @top_builddir@
 #
 
 # Wilson specific headers
+
 # Staggered specific headers
 
 #
@@ -944,10 +948,6 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	update/heatbath/hb_params.h update/heatbath/su2_hb_update.h \
 	update/heatbath/su3_hb_sweep.h update/molecdyn/molecdyn.h \
 	update/molecdyn/field_state.h \
-	update/molecdyn/monomial/monomial.h \
-	update/molecdyn/monomial/abs_monomial.h \
-	update/molecdyn/monomial/monomial_factory.h \
-	update/molecdyn/monomial/gauge_monomial.h \
 	update/molecdyn/hamiltonian/hamiltonian.h \
 	update/molecdyn/hamiltonian/abs_hamiltonian.h \
 	update/molecdyn/hamiltonian/exact_hamiltonian.h \
@@ -959,6 +959,10 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	update/molecdyn/hmc/lcm_hmc.h \
 	update/molecdyn/hmc/global_metropolis_accrej.h \
 	update/molecdyn/monomial/monomial.h \
+	update/molecdyn/monomial/abs_monomial.h \
+	update/molecdyn/monomial/monomial_factory.h \
+	update/molecdyn/monomial/gauge_monomial.h \
+	update/molecdyn/monomial/genapprox.h \
 	update/molecdyn/predictor/predictor.h \
 	update/molecdyn/predictor/chrono_predictor.h \
 	update/molecdyn/predictor/chrono_predictor_factory.h \
@@ -1227,6 +1231,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	util/gauge/taproj.cc util/gauge/unit_check.cc \
 	util/info/printgeom.cc util/info/proginfo.cc \
 	update/molecdyn/monomial/gauge_monomial.cc \
+	update/molecdyn/monomial/genapprox.cc \
 	update/molecdyn/integrator/lcm_pqp_leapfrog.cc \
 	update/molecdyn/hmc/global_metropolis_accrej.cc \
 	update/molecdyn/predictor/zero_guess_predictor.cc \
@@ -1499,6 +1504,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gaugebc_periodic.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gaugebc_simple.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gaus_smear.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/genapprox.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/global_metropolis_accrej.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gramschm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gramschm_array.Po@am__quote@
@@ -3487,6 +3493,20 @@ gauge_monomial.obj: update/molecdyn/monomial/gauge_monomial.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/gauge_monomial.cc' object='gauge_monomial.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o gauge_monomial.obj `if test -f 'update/molecdyn/monomial/gauge_monomial.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/gauge_monomial.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/gauge_monomial.cc'; fi`
+
+genapprox.o: update/molecdyn/monomial/genapprox.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT genapprox.o -MD -MP -MF "$(DEPDIR)/genapprox.Tpo" -c -o genapprox.o `test -f 'update/molecdyn/monomial/genapprox.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/genapprox.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/genapprox.Tpo" "$(DEPDIR)/genapprox.Po"; else rm -f "$(DEPDIR)/genapprox.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/genapprox.cc' object='genapprox.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o genapprox.o `test -f 'update/molecdyn/monomial/genapprox.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/genapprox.cc
+
+genapprox.obj: update/molecdyn/monomial/genapprox.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT genapprox.obj -MD -MP -MF "$(DEPDIR)/genapprox.Tpo" -c -o genapprox.obj `if test -f 'update/molecdyn/monomial/genapprox.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/genapprox.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/genapprox.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/genapprox.Tpo" "$(DEPDIR)/genapprox.Po"; else rm -f "$(DEPDIR)/genapprox.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/genapprox.cc' object='genapprox.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o genapprox.obj `if test -f 'update/molecdyn/monomial/genapprox.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/genapprox.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/genapprox.cc'; fi`
 
 lcm_pqp_leapfrog.o: update/molecdyn/integrator/lcm_pqp_leapfrog.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lcm_pqp_leapfrog.o -MD -MP -MF "$(DEPDIR)/lcm_pqp_leapfrog.Tpo" -c -o lcm_pqp_leapfrog.o `test -f 'update/molecdyn/integrator/lcm_pqp_leapfrog.cc' || echo '$(srcdir)/'`update/molecdyn/integrator/lcm_pqp_leapfrog.cc; \
