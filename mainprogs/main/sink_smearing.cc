@@ -1,4 +1,4 @@
-// $Id: sink_smearing.cc,v 1.4 2004-02-23 21:20:27 edwards Exp $
+// $Id: sink_smearing.cc,v 1.5 2004-02-26 05:07:40 edwards Exp $
 /*! \file
  * \brief Main program for sink-smearing quark propagators
  *
@@ -138,6 +138,7 @@ int main(int argc, char **argv)
   write(xml_out, "s_plaq", s_plaq);
   write(xml_out, "t_plaq", t_plaq);
   write(xml_out, "link", link);
+  pop(xml_out);
 
   //
   // Read the quark propagator and extract headers
