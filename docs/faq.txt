@@ -1,0 +1,38 @@
+$Id: faq.txt,v 1.1 2004-01-25 12:58:49 mcneile Exp $
+Chroma FAQ
+-------------
+Tue Jan 20 12:02:27 GMT 2004
+
+1) Where is the main web page for Chroma?
+   http://www.jlab.org/~edwards/chroma/
+
+
+2)  How do I add a new library routine to Chroma?
+
+    The name of the application and its header should be added
+    to the appropriate macro in lib/Makefile.am.
+    Typing "make" should then compile the new routine
+    into the libraries.
+
+    The compile system is clever enough to know
+    that it has to rerun the automake/autoconf 
+    system. If you have out of date versions 
+    of these programs on your system then this will fail.
+    You then have to install your own versions of automake/autoconf
+    and put them at the top of your path.
+
+3) Is there a mailing list for Chroma and QDP++?
+
+   Yes:
+   http://forge.nesc.ac.uk/mailman/listinfo/qcd-measure-qdp++
+
+
+4) Chroma doesn't have application XYZ. What should I do?
+
+   First you should check in the SZIN library. 
+   (http://www.jlab.org/~edwards/szin/). If the 
+   application exists there, you can use the
+   recode utility (http://www.jlab.org/~edwards/lattice_cvs.html).
+
+   The code produced by recode is not perfect
+   QDP++/Chrma code, however it is a good starting point.
