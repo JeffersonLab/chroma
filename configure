@@ -274,7 +274,7 @@ PACKAGE_BUGREPORT='edwards@jlab.org'
 
 ac_subdirs_all="$ac_subdirs_all other_libs/intel_sse_wilson_dslash"
 ac_subdirs_all="$ac_subdirs_all other_libs/intel_sse_dwf_cg"
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE RANLIB ac_ct_RANLIB QDPXX_CONFIG CXX QDPXX_CXXFLAGS QDPXX_LDFLAGS QDPXX_LIBS QDPXX_ND QDPXX_NC QDPXX_NS QDPXX_PARALLEL_ARCH QDPXX_PRECISION subdirs SSE_DSLASH_DIR SSE_DSLASH_ENABLED BUILD_SSE_WILSON_DSLASH_TRUE BUILD_SSE_WILSON_DSLASH_FALSE SSE_DWF_CG_DIR BUILD_SSE_DWF_CG_TRUE BUILD_SSE_DWF_CG_FALSE BUILD_PAB_WILSON_DSLASH_TRUE BUILD_PAB_WILSON_DSLASH_FALSE BUILD_STAGGERED_LIBS_TRUE BUILD_STAGGERED_LIBS_FALSE BUILD_WILSON_LIBS_TRUE BUILD_WILSON_LIBS_FALSE CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE LATEX DVIPS DVIPDF DOXYGEN LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE RANLIB ac_ct_RANLIB QDPXX_CONFIG CXX QDPXX_CXXFLAGS QDPXX_LDFLAGS QDPXX_LIBS QDPXX_ND QDPXX_NC QDPXX_NS QDPXX_PARALLEL_ARCH QDPXX_PRECISION subdirs SSE_DSLASH_DIR SSE_DSLASH_ENABLED BUILD_SSE_WILSON_DSLASH_TRUE BUILD_SSE_WILSON_DSLASH_FALSE SSE_DWF_CG_DIR BUILD_SSE_DWF_CG_TRUE BUILD_SSE_DWF_CG_FALSE BUILD_PAB_WILSON_DSLASH_TRUE BUILD_PAB_WILSON_DSLASH_FALSE CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE LATEX DVIPS DVIPDF DOXYGEN LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -812,9 +812,6 @@ if test -n "$ac_init_help"; then
 Optional Features:
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
-  --enable-fermion-type=<fermion type>
-                          Set the fermion type (wilson or staggered) default
-                          is wilson
   --enable-sse-wilson-dslash
                           Build and Use the SSE2 Wilson Dslash Library
 
@@ -1793,29 +1790,6 @@ fi
 
 
 
-# Check whether --enable-fermion-type or --disable-fermion-type was given.
-if test "${enable_fermion_type+set}" = set; then
-  enableval="$enable_fermion_type"
-
-    case "$enable_fermion_type" in
-      STAG*) ac_fermion_type="staggered" ;;
-      Stag*) ac_fermion_type="staggered" ;;
-      stag*) ac_fermion_type="staggered" ;;
-
-      WIL*)  ac_fermion_type="wilson" ;;
-      Wil*)  ac_fermion_type="wilson" ;;
-      wil*)  ac_fermion_type="wilson" ;;
-
-      *)     ac_fermion_type="$enable_fermion_type" ;;
-    esac
-
-else
-  ac_fermion_type="wilson"
-
-fi;
-
-
-
 # Check whether --with-qdp or --without-qdp was given.
 if test "${with_qdp+set}" = set; then
   withval="$with_qdp"
@@ -1983,38 +1957,8 @@ QDPXX_PRECISION="`${QDPXX_CONFIG} --precision`"
 { echo "$as_me:$LINENO: QDP++ precision: ${QDPXX_PRECISION}" >&5
 echo "$as_me: QDP++ precision: ${QDPXX_PRECISION}" >&6;}
 
-case $ac_fermion_type in
-  staggered)
-
-cat >>confdefs.h <<\_ACEOF
-#define CHROMA_BUILD_STAGGERED
-_ACEOF
-
-    ;;
-  wilson)
-    { echo "$as_me:$LINENO: Configuring QDP++ Apps with WILSON-like fermions" >&5
-echo "$as_me: Configuring QDP++ Apps with WILSON-like fermions" >&6;}
-
-cat >>confdefs.h <<\_ACEOF
-#define CHROMA_BUILD_WILSON
-_ACEOF
-
-    ;;
-  *)
-    { { echo "$as_me:$LINENO: error: ${ac_fermion_type}-like fermions not supported yet." >&5
-echo "$as_me: error: ${ac_fermion_type}-like fermions not supported yet." >&2;}
-   { (exit 1); exit 1; }; }
-    ;;
-esac
-
 case "$enable_sse_wilson_dslash" in
   yes)
-        if test "x$ac_fermion_type" != "xwilson";
-	then
-	    { { echo "$as_me:$LINENO: error:  Attempting to build Assembler Wilson Dslash with NON Wilson fermion type " >&5
-echo "$as_me: error:  Attempting to build Assembler Wilson Dslash with NON Wilson fermion type " >&2;}
-   { (exit 1); exit 1; }; }
-	fi
         { echo "$as_me:$LINENO: Configuring SSE Wilson Dslash  " >&5
 echo "$as_me: Configuring SSE Wilson Dslash  " >&6;}
 
@@ -2053,12 +1997,6 @@ fi
 
 case "$enable_sse_dwf_cg" in
   yes)
-        if test "x$ac_fermion_type" != "xwilson";
-	then
-	    { { echo "$as_me:$LINENO: error: Attempting to build SSE DWF CG inverter with NON Wilson fermion type" >&5
-echo "$as_me: error: Attempting to build SSE DWF CG inverter with NON Wilson fermion type" >&2;}
-   { (exit 1); exit 1; }; }
-	fi
         { echo "$as_me:$LINENO: Configuring SSE DWF CG" >&5
 echo "$as_me: Configuring SSE DWF CG" >&6;}
 
@@ -2097,12 +2035,6 @@ fi
 case "$enable_pab_wilson_dslash" in
   noarch)
 	ac_build_pab_wilson_dslash="yes"
-        if test "x$ac_fermion_type" != "xwilson";
-	then
-	    { { echo "$as_me:$LINENO: error:  Attempting to build Assembler Wilson Dslash with NON Wilson fermion type " >&5
-echo "$as_me: error:  Attempting to build Assembler Wilson Dslash with NON Wilson fermion type " >&2;}
-   { (exit 1); exit 1; }; }
-	fi
         { echo "$as_me:$LINENO: Configuring PAB Wilson Dslash  " >&5
 echo "$as_me: Configuring PAB Wilson Dslash  " >&6;}
 
@@ -2129,27 +2061,6 @@ else
   BUILD_PAB_WILSON_DSLASH_FALSE=
 fi
 
-
-
-
-
-if test "X${ac_fermion_type}X" = "XstaggeredX"; then
-  BUILD_STAGGERED_LIBS_TRUE=
-  BUILD_STAGGERED_LIBS_FALSE='#'
-else
-  BUILD_STAGGERED_LIBS_TRUE='#'
-  BUILD_STAGGERED_LIBS_FALSE=
-fi
-
-
-
-if test "X${ac_fermion_type}X" = "XwilsonX"; then
-  BUILD_WILSON_LIBS_TRUE=
-  BUILD_WILSON_LIBS_FALSE='#'
-else
-  BUILD_WILSON_LIBS_TRUE='#'
-  BUILD_WILSON_LIBS_FALSE=
-fi
 
 
 echo "$as_me:$LINENO: checking if we can compile/link a simple QDP++ program" >&5
@@ -3221,20 +3132,6 @@ echo "$as_me: error: conditional \"BUILD_PAB_WILSON_DSLASH\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
-if test -z "${BUILD_STAGGERED_LIBS_TRUE}" && test -z "${BUILD_STAGGERED_LIBS_FALSE}"; then
-  { { echo "$as_me:$LINENO: error: conditional \"BUILD_STAGGERED_LIBS\" was never defined.
-Usually this means the macro was only invoked conditionally." >&5
-echo "$as_me: error: conditional \"BUILD_STAGGERED_LIBS\" was never defined.
-Usually this means the macro was only invoked conditionally." >&2;}
-   { (exit 1); exit 1; }; }
-fi
-if test -z "${BUILD_WILSON_LIBS_TRUE}" && test -z "${BUILD_WILSON_LIBS_FALSE}"; then
-  { { echo "$as_me:$LINENO: error: conditional \"BUILD_WILSON_LIBS\" was never defined.
-Usually this means the macro was only invoked conditionally." >&5
-echo "$as_me: error: conditional \"BUILD_WILSON_LIBS\" was never defined.
-Usually this means the macro was only invoked conditionally." >&2;}
-   { (exit 1); exit 1; }; }
-fi
 if test -z "${AMDEP_TRUE}" && test -z "${AMDEP_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"AMDEP\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
@@ -3836,10 +3733,6 @@ s,@BUILD_SSE_DWF_CG_TRUE@,$BUILD_SSE_DWF_CG_TRUE,;t t
 s,@BUILD_SSE_DWF_CG_FALSE@,$BUILD_SSE_DWF_CG_FALSE,;t t
 s,@BUILD_PAB_WILSON_DSLASH_TRUE@,$BUILD_PAB_WILSON_DSLASH_TRUE,;t t
 s,@BUILD_PAB_WILSON_DSLASH_FALSE@,$BUILD_PAB_WILSON_DSLASH_FALSE,;t t
-s,@BUILD_STAGGERED_LIBS_TRUE@,$BUILD_STAGGERED_LIBS_TRUE,;t t
-s,@BUILD_STAGGERED_LIBS_FALSE@,$BUILD_STAGGERED_LIBS_FALSE,;t t
-s,@BUILD_WILSON_LIBS_TRUE@,$BUILD_WILSON_LIBS_TRUE,;t t
-s,@BUILD_WILSON_LIBS_FALSE@,$BUILD_WILSON_LIBS_FALSE,;t t
 s,@CXXFLAGS@,$CXXFLAGS,;t t
 s,@LDFLAGS@,$LDFLAGS,;t t
 s,@CPPFLAGS@,$CPPFLAGS,;t t
