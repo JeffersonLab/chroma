@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: wallformfac_pion.pl,v 1.12 2004-09-12 20:18:39 edwards Exp $
+# $Id: wallformfac_pion.pl,v 1.13 2004-09-13 03:25:59 edwards Exp $
 #
 # Usage
 #   formfact.pl
@@ -10,33 +10,13 @@ $[ = 0;			# set array base to 1
 $, = ' ';		# set output field separator
 $\ = "\n";		# set output record separator
 
-#die "Usage: formfact.pl\n" unless scalar($@ARGV) == 1;
+#die "Usage: formfact.pl\n" unless (scalar($@ARGV) == 1);
 
 die "config.pl does not exist\n" unless -f "config.pl";
 
 do './config.pl';
 
-#### Example input
-#$mom2_max = 5
-#@sink_mom = (0,0,0);
-#$a = 0.1;
-#$L_s = 8;
-
-#$nam = 'nonlocal';
-#$cur = 'n';
-#$nam = 'local';
-#$cur = 'l';
-
-#$t_src = 7;
-#$t_snk = 25;
-#$apext = 'D600.DG2p5_1.P_1.SP';
-#$norm = '1';
-
-#$t_src = 5;
-#$t_snk = 20;
-#$apext = 'D1480.DG3_1.P_1.SP';
-#$norm = '(2*0.1480)';
-
+# Examples
 # example of smearing names
 # Mass
 # $Mass = "D-7104";
@@ -54,15 +34,25 @@ die "Put the lattice spacing \'a\' in the config.pl file\n" unless defined(a);
 $pi = 3.14159265359;
 $fmtoGeV = 0.200;
 
-# Check if source or sink momenta set
-die "Cannot fix source and sink momenta" if defined(source_mom) && defined(sink_mom); 
-die "Neither source nor sink momenta set" if (! defined(source_mom)) && (! defined(sink_mom)); 
+#printf "source_mom=[%d,%d,%d]\n",$source_mom[0], $source_mom[1], $source_mom[2];
+#printf "sink_mom=[%d,%d,%d]\n",$sink_mom[0], $sink_mom[1], $sink_mom[2];
 
-$which_mom = 1 if (defined(source_mom));
-$which_mom = 2 if (defined(sink_mom));
+print "source_mom=[$source_mom[0],$source_mom[1],$source_mom[2]]";
+print "sink_mom=[$sink_mom[0],$sink_mom[1],$sink_mom[2]]";
+
+# Check if source or sink momenta set
+#die "Cannot fix source and sink momenta" if (defined(source_mom) && defined(sink_mom)); 
+#die "Neither source nor sink momenta set" if ((! defined(source_mom)) && (! defined(sink_mom))); 
+
+#$which_mom = 1 if (defined(source_mom));
+#$which_mom = 2 if (defined(sink_mom));
+
+die "momenta not set" if ($which_mom == 0);
+print "which_mom = $which_mom";
 
 if ($which_mom == 1)
 {
+  print "Source mom is fixed\n";
   foreach $i (0 .. 2)
   {
     $p_i[$i] = $source_mom[$i];
@@ -72,6 +62,7 @@ if ($which_mom == 1)
 }
 else
 {
+  print "Sink mom is fixed\n";
   foreach $i (0 .. 2)
   {
     $p_f[$i] = $sink_mom[$i];
@@ -81,11 +72,11 @@ else
 }
 
 # Extensions
-# $abext = "${Aext}_${L}.${Bext}_${L}.${A}${B}";   # not used
-$apext = "${Aext}_${L}.P_${L}.${A}P";
-$cpext = "${Cext}_${L}.P_${L}.${C}P";
-$cbext = "${Cext}_${L}.${Bext}_${L}.${C}${B}";
-$xpext = "${Xext}_${L}.P_${L}.${X}P";
+# $abext = "${Mass}.${Aext}_${L}.${Bext}_${L}.${A}${B}";   # not used
+$apext = "${Mass}.${Aext}_${L}.P_${L}.${A}P";
+$cpext = "${Mass}.${Cext}_${L}.P_${L}.${C}P";
+$cbext = "${Mass}.${Cext}_${L}.${Bext}_${L}.${C}${B}";
+$xpext = "${Mass}.${Xext}_${L}.P_${L}.${X}P";
 
 
 # Vector form factors
@@ -149,8 +140,6 @@ print "Pion Electric form-factor";
 # Assume zero momenta pion exist
 if (-f pion.$cbext) {exit(1);}
 
-&ensbc("pion_norm=extract($pion_cb{$p_f[0],$p_f[1],$p_f[2]}, $t_snk - $t_src)");
-
 # Use this as the insertion point - it is midway
 $t_ins = int(($t_snk - $t_src) / 2);
 print "t_ins = $t_ins";
@@ -168,6 +157,8 @@ foreach $qx ( -$mommax_int .. $mommax_int ) {
       $mom2 = $qx*$qx + $qy*$qy + $qz*$qz ;
 
       next if ($mom2 > $mom2_max) ;
+
+      print "q=[$qx,$qy,$qz], qsq = $mom2   $pion_xp{$qx,$qy,$qz}";
 
       if (-f $pion_xp{$qx,$qy,$qz})
       {
@@ -216,8 +207,9 @@ foreach $qz (-$mommax_int .. $mommax_int)
 
       if ($qsq > $mom2_max) {next;}
 
-      if ($source_mom == 1)
+      if ($which_mom == 1)
       {
+        print "Reconstruct p_f";
 	# Construct p_f using mom. conservation
 	foreach $i (0 .. 2)
 	{
@@ -227,6 +219,7 @@ foreach $qz (-$mommax_int .. $mommax_int)
       }
       else
       {
+        print "Reconstruct p_i";
 	# Construct p_i using mom. conservation
 	foreach $i (0 .. 2)
 	{
@@ -236,6 +229,7 @@ foreach $qz (-$mommax_int .. $mommax_int)
       }
 
       print "q=[$q[0],$q[1],$q[2]], qsq = $qsq,  p_i=[$p_i[0],$p_i[1],$p_i[2]], p_f=[$p_f[0],$p_f[1],$p_f[2]]";
+      print "q=[$q[0],$q[1],$q[2]], qsq = $qsq,  cp_i=[$cp_i[0],$cp_i[1],$cp_i[2]], cp_f=[$cp_f[0],$cp_f[1],$cp_f[2]]";
 
       printf "Looking for file %s\n","${nam}_cur3ptfn_${s}_snk15_g8_src_15_qx$q[0]_qy$q[1]_qz$q[2]";
       if (! -f "${nam}_cur3ptfn_${s}_snk15_g8_src15_qx$q[0]_qy$q[1]_qz$q[2]") {next;}
@@ -255,6 +249,7 @@ foreach $qz (-$mommax_int .. $mommax_int)
       $pion_disp;
 
       &realpart("${nam}_cur3ptfn_${s}_snk15_g8_src15_qx$q[0]_qy$q[1]_qz$q[2]","${cur}_${s}_mu3_$q[0]$q[1]$q[2]");
+      &ensbc("pion_norm=extract($pion_cb{$p_f[0],$p_f[1],$p_f[2]}, $t_snk - $t_src)");
 
       $var = "$norm*(${cur}_${s}_mu3_$q[0]$q[1]$q[2] * $pion_cp{$cp_f[0],$cp_f[1],$cp_f[2]}) * (2 * $pion_energy{$cp_f[0],$cp_f[1],$cp_f[2]} / ($pion_energy{$cp_i[0],$cp_i[1],$cp_i[2]} + $pion_energy{$cp_f[0],$cp_f[1],$cp_f[2]}))/ ($pion_ap{$cp_i[0],$cp_i[1],$cp_i[2]} * pion_norm)";
 
