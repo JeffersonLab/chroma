@@ -1,4 +1,4 @@
-// $Id: hybmeson_w.cc,v 1.5 2005-01-14 18:42:36 edwards Exp $
+// $Id: hybmeson_w.cc,v 1.6 2005-02-17 02:51:01 edwards Exp $
 /*! \file
  *  \brief Hybrid meson 2-pt functions
  */
@@ -79,9 +79,6 @@ void hybmeson(const multi1d<LatticeColorMatrix>& f,
 	      XMLWriter& xml,
 	      const string& xml_group)
 {
-  QDP_error_exit("hybmeson not tested!!");   // NEED TO CHECK THIS ROUTINE
-
-
   START_CODE();
 
   // Group
