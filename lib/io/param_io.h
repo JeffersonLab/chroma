@@ -1,7 +1,7 @@
 // -*- C++ -*-
-// $Id: param_io.h,v 1.28 2005-02-21 19:28:59 edwards Exp $
+// $Id: param_io.h,v 1.29 2005-02-23 19:26:41 edwards Exp $
 /*! \file
- *  \brief Reunitarize (to a SU(N)) inplace the matrix A under some option
+ *  \brief Various parameter structs and reader/writers
  */
 
 #ifndef __param_io_h__
@@ -13,123 +13,89 @@
 
 // ! now needed
 
-namespace Chroma { 
-
-//! Convert a Kappa to a mass
-Real kappaToMass(const Real& Kappa);
-
-//! Convert a Kappa to a mass
-multi1d<Real> kappaToMass(const multi1d<Real>& Kappa);
-
-//! Convert a Kappa to a mass
-Real massToKappa(const Real& Mass);
-
-//! Convert a mass to a Kappa
-multi1d<Real> massToKappa(const multi1d<Real>& Mass);
-
-
-/*!
- * Types and structures
- *
- * \ingroup io
- *
- * @{
- */
-
-
-/*
- * Input 
- */
-struct IO_version_t
+namespace Chroma 
 {
-  int version;
-};
+
+  /*!
+   * Types and structures
+   *
+   * \ingroup io
+   *
+   * @{
+   */
+
+  //! Convert a Kappa to a mass
+  Real kappaToMass(const Real& Kappa);
+
+  //! Convert a Kappa to a mass
+  multi1d<Real> kappaToMass(const multi1d<Real>& Kappa);
+
+  //! Convert a Kappa to a mass
+  Real massToKappa(const Real& Mass);
+
+  //! Convert a mass to a Kappa
+  multi1d<Real> massToKappa(const multi1d<Real>& Mass);
 
 
-struct Cfg_t
-{
-  CfgType      cfg_type;   // storage order for stored gauge configuration
-  string       cfg_file;
-};
+
+  /*
+   * Input 
+   */
+  struct IO_version_t
+  {
+    int version;
+  };
 
 
-//! Parameters for chiral fermion actions
-struct ChiralParam_t
-{
-  ChiralParam_t();  // default constructor
-  ~ChiralParam_t() {}
-
-  Real       OverMass;
-  int        N5;
-  Real       a5;
-  int        NWilsVec;
-};
+  struct Cfg_t
+  {
+    CfgType      cfg_type;   // storage order for stored gauge configuration
+    string       cfg_file;
+  };
 
 
-//! Parameters for anisotropy
-struct AnisoParam_t
-{
-  AnisoParam_t();  // default constructor
-  ~AnisoParam_t() {}
+  //! Parameters for chiral fermion actions
+  struct ChiralParam_t
+  {
+    ChiralParam_t();  // default constructor
+    ~ChiralParam_t() {}
 
-  bool       anisoP;
-  int        t_dir;
-  Real       xi_0;
-  Real       nu;
-};
-
-
-//! Parameters for sources and sinks
-struct SmearingParam_t
-{
-  SmearingParam_t();  // default constructor
-  ~SmearingParam_t() {}
-  
-  WvfKind       wvf_kind;
-  Real          wvf_param;
-  int           wvfIntPar;
-};
+    Real       OverMass;
+    int        N5;
+    Real       a5;
+    int        NWilsVec;
+  };
 
 
-//---------------------------- Readers -----------------------------
-//! Configuration input
-void read(XMLReader& xml, const string& path, Cfg_t& input);
+  //---------------------------- Readers -----------------------------
+  //! Configuration input
+  void read(XMLReader& xml, const string& path, Cfg_t& input);
 
-//! Read a anisotropy param struct
-void read(XMLReader& xml, const string& path, AnisoParam_t& param);
+  //! Read chiral action like parameters
+  void read(XMLReader& xml, const string& path, ChiralParam_t& param);
 
-//! Read a smearing param struct
-void read(XMLReader& xml, const string& path, SmearingParam_t& param);
+  //! Read inverter parameters
+  void read(XMLReader& xml, const string& path, InvertParam_t& param);
 
-//! Read chiral action like parameters
-void read(XMLReader& xml, const string& path, ChiralParam_t& param);
-
-//! Read inverter parameters
-void read(XMLReader& xml, const string& path, InvertParam_t& param);
-
-//! Read inverter parameters
-void read(XMLReader& xml, const string& path, MultiInvertParam_t& param);
+  //! Read inverter parameters
+  void read(XMLReader& xml, const string& path, MultiInvertParam_t& param);
 
 
-//---------------------------- Writers -----------------------------
-//! Configuration input
-void write(XMLWriter& xml, const string& path, const Cfg_t& input);
+  //---------------------------- Writers -----------------------------
+  //! Configuration input
+  void write(XMLWriter& xml, const string& path, const Cfg_t& input);
 
-//! Write a anisotropy param struct
-void write(XMLWriter& xml, const string& path, const AnisoParam_t& param);
+  //! Write chiral action like parameters
+  void write(XMLWriter& xml, const string& path, const ChiralParam_t& param);
 
-//! Write a smearing param struct
-void write(XMLWriter& xml, const string& path, const SmearingParam_t& param);
+  //! Write inverter parameters
+  void write(XMLWriter& xml, const string& path, const InvertParam_t& param);
 
-//! Write chiral action like parameters
-void write(XMLWriter& xml, const string& path, const ChiralParam_t& param);
+  //! Write inverter parameters
+  void write(XMLWriter& xml, const string& path, const MultiInvertParam_t& param);
 
-//! Write inverter parameters
-void write(XMLWriter& xml, const string& path, const InvertParam_t& param);
+  /*! @} */  // end of group io
 
-//! Write inverter parameters
-void write(XMLWriter& xml, const string& path, const MultiInvertParam_t& param);
-/*! @} */  // end of group io
+} //end namespace chroma
 
-}; //end namespace chroma
 #endif

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qprop_io.h,v 1.25 2005-02-21 19:28:59 edwards Exp $
+// $Id: qprop_io.h,v 1.26 2005-02-23 19:26:41 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -7,7 +7,7 @@
 #ifndef __qprop_io_h__
 #define __qprop_io_h__
 
-#include "io/param_io.h"
+#include "io/smearing_io.h"
 #include "io/enum_io/enum_io.h"
 #include "meas/sources/srcsnktype.h"
 #include "meas/sources/wavetype.h"

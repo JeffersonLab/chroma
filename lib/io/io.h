@@ -1,5 +1,5 @@
 
-// $Id: io.h,v 1.22 2005-01-13 12:40:13 bjoo Exp $
+// $Id: io.h,v 1.23 2005-02-23 19:26:41 edwards Exp $
 
 #ifndef __io_h__
 #define __io_h__
@@ -31,6 +31,8 @@
 #include "writemilc.h"
 
 #include "param_io.h"
+#include "aniso_io.h"
+#include "smearing_io.h"
 #include "io_w.h"
 #include "io_s.h"
 
