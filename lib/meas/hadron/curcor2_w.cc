@@ -1,4 +1,4 @@
-// $Id: curcor2_w.cc,v 1.2 2003-09-30 21:01:04 edwards Exp $
+// $Id: curcor2_w.cc,v 1.3 2003-10-01 03:02:12 edwards Exp $
 /*! \file
  *  \brief Mesonic current correlators
  */
@@ -110,7 +110,7 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
 	/* Do a slice-wise sum. */
 
 //	Real dummy1 = Real(meson_eta[n]) / Real(2);
-	Real dummy1 = Real(1) / Real(2);
+	Real dummy1 = 0.5;
 
 	/* The nonconserved vector current first */
 
