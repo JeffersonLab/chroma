@@ -1,13 +1,14 @@
 #
 # VPATH
 #
+TOPDIR=@top_srcdir@
 VPATH = @top_srcdir@/mainprogs/main
 VPATH += @top_srcdir@/include
 
 #
 # Include Path
 #
-INCFLAGS=-I@top_srcdir@/include -I@top_builddir@/include
+INCFLAGS=-I@top_srcdir@/include -I@top_builddir@/include -I${TOPDIR}/lib
 
 #
 # Any other compiler flags
@@ -24,6 +25,12 @@ HDRS =
 #
 # add the programs to build in here
 # 
+noinst_PROGRAMS= propagator
+
+propagator_SOURCES= propagator.cc
+propagator_DEPENDENCIES= build_chroma_libs
+
+
 ## NOTE: if you want the programs to be build by default when 'make' is run
 ##   add them to bin_PROGRAMS.  But, if you don't want them to be installed
 ##   in @prefix@/bin by 'make install' then add them to nodist_PROGRAMS.
