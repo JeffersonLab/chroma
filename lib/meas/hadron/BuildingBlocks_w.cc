@@ -19,7 +19,7 @@
 //#####################################################################################
 
 static const char* const CVSBuildingBlocks_cc =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 1.4 2003-09-11 01:24:34 edwards Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 1.5 2003-10-18 03:21:24 edwards Exp $";
 
 //#####################################################################################
 //#####################################################################################
@@ -158,7 +158,7 @@ void AddLinks( const multi1d< LatticePropagator > &  B,
   }
 
   // add link in forward mu direction
-  for( int mu = 0; mu < ND; mu ++ )
+  for( int mu = 0; mu < Nd; mu ++ )
   {
     // skip the double back
     if( ( PreviousDir != -1 ) || ( PreviousMu != mu ) )
@@ -194,7 +194,7 @@ void AddLinks( const multi1d< LatticePropagator > &  B,
   }
 
   // add link in backward mu direction
-  for( int mu = 0; mu < ND; mu ++ )
+  for( int mu = 0; mu < Nd; mu ++ )
   {
     // skip the double back
     if( ( PreviousDir != 1 ) || ( PreviousMu != mu ) )
@@ -202,7 +202,7 @@ void AddLinks( const multi1d< LatticePropagator > &  B,
       bool DoThisPattern = true;
       bool DoFurtherPatterns = true;
 
-      NextLinkDirs[ NLinks ] = mu + ND;
+      NextLinkDirs[ NLinks ] = mu + Nd;
 
       LinkPattern( DoThisPattern, DoFurtherPatterns, NextLinkDirs );
 
