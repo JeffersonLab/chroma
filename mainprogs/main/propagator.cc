@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.80 2004-12-08 21:48:09 edwards Exp $
+// $Id: propagator.cc,v 1.81 2004-12-24 04:19:23 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -95,14 +95,14 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     if( inputtop.count("StateInfo") == 1 ) {
       XMLReader xml_state_info(inputtop, "StateInfo");
       std::ostringstream os;
-      xml_state_info.print(os);
+      xml_state_info.printCurrentContext(os);
       input.stateInfo = os.str();
     }
     else { 
       XMLBufferWriter s_i_xml;
       push(s_i_xml, "StateInfo");
       pop(s_i_xml);
-      input.stateInfo = s_i_xml.str();
+      input.stateInfo = s_i_xml.printCurrentContext();
     }
 
     // Read in the source/propagator info
@@ -162,7 +162,6 @@ int main(int argc, char **argv)
   XMLReader source_file_xml, source_record_xml;
   int t0;
   int j_decay;
-  multi1d<int> boundary;
   bool make_sourceP = false;
   bool seqsourceP = false;
   {
@@ -184,7 +183,6 @@ int main(int argc, char **argv)
 	read(source_record_xml, "/MakeSource/PropSource", source_header);
 	j_decay = source_header.j_decay;
 	t0 = source_header.t_source[j_decay];
-	boundary = input.param.boundary;
 	make_sourceP = true;
       }
       else if (source_record_xml.count("/SequentialSource") != 0)
@@ -201,7 +199,6 @@ int main(int argc, char **argv)
 	     source_header);
 	j_decay = source_header.j_decay;
 	t0 = seqsource_header.t_sink;
-	boundary = prop_header.boundary;
 	seqsourceP = true;
       }
       else
@@ -213,17 +210,6 @@ int main(int argc, char **argv)
       QDP_abort(1);
     }
   }    
-
-  // Sanity check
-  if (seqsourceP)
-  {
-    for(int i=0; i < boundary.size(); ++i)
-      if (boundary[i] != input.param.boundary[i])
-      {
-	QDPIO::cerr << "Incompatible boundary between input and seqsource" << endl;
-	QDP_abort(1);
-      }
-  }
 
   // Instantiate XML writer for XMLDAT
   XMLFileWriter xml_out("XMLDAT");
@@ -277,13 +263,6 @@ int main(int argc, char **argv)
   }
 
   xml_out.flush();
-
-  /*
-   * Construct fermionic BC. Need one for LatticeFermion and multi1d<LatticeFermion>
-   * Note, the handle is on an ABSTRACT type
-   */
-  Handle< FermBC<LatticeFermion> >  fbc(new SimpleFermBC<LatticeFermion>(input.param.boundary));
-  Handle< FermBC<multi1d<LatticeFermion> > >  fbc_a(new SimpleFermBC<multi1d<LatticeFermion> >(input.param.boundary));
 
   //
   // Loop over the source color and spin, creating the source
@@ -341,7 +320,6 @@ int main(int argc, char **argv)
       // DWF-like 5D Wilson-Type stuff
       Handle< UnprecDWFermActBaseArray<LatticeFermion> >
 	S_f(TheUnprecDWFermActBaseArrayFactory::Instance().createObject(fermact,
-									fbc_a,
 									fermacttop,
 									fermact_path));
 
@@ -373,7 +351,6 @@ int main(int argc, char **argv)
       // DWF-like 5D Wilson-Type stuff
       Handle< EvenOddPrecDWFermActBaseArray<LatticeFermion> >
 	S_f(TheEvenOddPrecDWFermActBaseArrayFactory::Instance().createObject(fermact,
-									     fbc_a,
 									     fermacttop,
 									     fermact_path));
 
@@ -405,7 +382,6 @@ int main(int argc, char **argv)
       // Generic Wilson-Type stuff
       Handle< WilsonTypeFermAct<LatticeFermion> >
 	S_f(TheWilsonTypeFermActFactory::Instance().createObject(fermact,
-								 fbc,
 								 fermacttop,
 								 fermact_path));
 
@@ -438,7 +414,6 @@ int main(int argc, char **argv)
       // Generic 5D Wilson-Type stuff
       Handle< WilsonTypeFermAct< multi1d<LatticeFermion> > >
 	S_f(TheWilsonTypeFermActArrayFactory::Instance().createObject(fermact,
-								      fbc_a,
 								      fermacttop,
 								      fermact_path));
 

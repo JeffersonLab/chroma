@@ -1,4 +1,4 @@
-// $Id: qpropadd.cc,v 1.3 2004-07-28 03:08:04 edwards Exp $
+// $Id: qpropadd.cc,v 1.4 2004-12-24 04:19:23 edwards Exp $
 /*! \file
  * \brief Add two quark propagators
  *
@@ -255,23 +255,6 @@ main(int argc, char *argv[])
       QDP_abort(1);
     }
 
-  for(int i=0; i < prop_header1.boundary.size(); ++i)
-  {
-    if ((i == source_header1.j_decay) && 
-	(prop_header1.boundary[i] != -prop_header2.boundary[i]))
-    {
-      QDPIO::cerr << "Expect two props to have opposite BC" << endl;
-      QDP_abort(1);
-    }
-
-    if ((i != source_header1.j_decay) && 
-	(prop_header1.boundary[i] != prop_header2.boundary[i]))
-    {
-      QDPIO::cerr << "Prop boundary mismatch" << endl;
-      QDP_abort(1);
-    }
-  }
-
 
   /*
    * Add the props and be done...
@@ -279,7 +262,6 @@ main(int argc, char *argv[])
   LatticePropagator  quark_propagator = 0.5*(quark_propagator1 + quark_propagator2);
   ChromaProp_t prop_header = prop_header1;
   PropSource_t source_header = source_header1;
-  prop_header.boundary[source_header1.j_decay] = 0;
 
 
   // Save the propagator

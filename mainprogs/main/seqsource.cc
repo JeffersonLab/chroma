@@ -1,4 +1,4 @@
-// $Id: seqsource.cc,v 1.5 2004-07-28 03:08:05 edwards Exp $
+// $Id: seqsource.cc,v 1.6 2004-12-24 04:19:23 edwards Exp $
 /*! \file
  *  \brief Main code for sequential source construction
  */
@@ -197,7 +197,6 @@ int main(int argc, char **argv)
 
   // Derived from input prop
   int  j_decay = source_header.j_decay;
-// multi1d<int> boundary = prop_header.boundary;   // not currently needed
   multi1d<int> t_source = source_header.t_source;
 
   // Initialize the slow Fourier transform phases

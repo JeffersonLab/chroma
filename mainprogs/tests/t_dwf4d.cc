@@ -1,4 +1,4 @@
-// $Id: t_dwf4d.cc,v 1.5 2004-12-10 02:52:31 edwards Exp $
+// $Id: t_dwf4d.cc,v 1.6 2004-12-24 04:19:23 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -52,7 +52,6 @@ bool linkage_hack()
 struct Param_t
 {
   multi1d<int> nrow;		// Lattice dimension
-  multi1d<int> boundary;
   InvertParam_t   invParam;   // Inverter parameters
 };
 
@@ -70,7 +69,6 @@ void read(XMLReader& xml, const string& path, Param_t& param)
 {
   XMLReader paramtop(xml, path);
   read(paramtop, "nrow", param.nrow);
-  read(paramtop, "boundary", param.boundary);
   read(paramtop, "InvertParam", param.invParam);
 }
 
@@ -171,10 +169,6 @@ int main(int argc, char **argv)
   pop(xml_out);
 
 
-  // Create a FermBC
-  Handle< FermBC<LatticeFermion> >  fbc(new SimpleFermBC<LatticeFermion>(input.param.boundary));
-  Handle< FermBC<multi1d<LatticeFermion> > >  fbc_a(new SimpleFermBC<multi1d<LatticeFermion> >(input.param.boundary));
-
   //
   // Initialize fermion action
   //
@@ -227,19 +221,17 @@ int main(int argc, char **argv)
 
   Handle< EvenOddPrecDWFermActBaseArray<LatticeFermion> >
     S_f_5d(TheEvenOddPrecDWFermActBaseArrayFactory::Instance().createObject(fermact_5d,
-								       fbc_a,
 								       fermacttop_5d,
 								       fermact_path_5d));
   
   Handle<const ConnectState> state_5d(S_f_5d->createState(u,
 							  state_info_xml_5d,
-							    state_info_path_5d));
+							  state_info_path_5d));
   
     // Overlap-like stuff
   QDPIO::cerr << "create overlap" << endl;
   Handle< WilsonTypeFermAct<LatticeFermion> >
     S_f_4d(TheWilsonTypeFermActFactory::Instance().createObject(fermact_4d,
-								fbc,
 								fermacttop_4d,
 								fermact_path_4d));
   

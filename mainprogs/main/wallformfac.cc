@@ -1,4 +1,4 @@
-// $Id: wallformfac.cc,v 1.28 2004-08-21 01:40:13 edwards Exp $
+// $Id: wallformfac.cc,v 1.29 2004-12-24 04:19:23 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions with a wall sink
  *
@@ -411,6 +411,7 @@ main(int argc, char *argv[])
   pop(xml_out);
 
   
+#if 0
   /*
    * Construct fermionic BC.
    * The BC is used to modify the U fields used for the CONSERVERED currents
@@ -420,6 +421,7 @@ main(int argc, char *argv[])
     SimpleFermBC<LatticeFermion>  fbc(forward_prop_header.boundary);
     fbc.modifyU(u);   // modify the U fields
   }
+#endif
 
 
   // Phase factors

@@ -1,6 +1,9 @@
-// $Id: collect_multi_propcomp.cc,v 1.5 2004-11-17 15:23:00 bjoo Exp $
+// $Id: collect_multi_propcomp.cc,v 1.6 2004-12-24 04:19:22 edwards Exp $
 // $Log: collect_multi_propcomp.cc,v $
-// Revision 1.5  2004-11-17 15:23:00  bjoo
+// Revision 1.6  2004-12-24 04:19:22  edwards
+// Removed explict FermBC args to FermAct factory functions.
+//
+// Revision 1.5  2004/11/17 15:23:00  bjoo
 // t_su3 removed from make check. Throws stringified
 //
 // Revision 1.4  2004/07/28 03:08:04  edwards
@@ -224,7 +227,6 @@ int main(int argc, char **argv)
   // Also pull out the id of this source
   int t0;
   int j_decay;
-  multi1d<int> boundary;
   bool make_sourceP = false;;
   bool seqsourceP = false;
   {
@@ -246,7 +248,6 @@ int main(int argc, char **argv)
 	read(source_record_xml, "/MakeSource/PropSource", source_header);
 	j_decay = source_header.j_decay;
 	t0 = source_header.t_source[j_decay];
-	boundary = input.param.boundary;
 	make_sourceP = true;
       }
       else if (source_record_xml.count("/SequentialSource") != 0)
@@ -263,7 +264,6 @@ int main(int argc, char **argv)
 	     source_header);
 	j_decay = source_header.j_decay;
 	t0 = seqsource_header.t_sink;
-	boundary = prop_header.boundary;
 	seqsourceP = true;
       }
       else

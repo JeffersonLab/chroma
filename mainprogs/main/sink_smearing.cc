@@ -1,4 +1,4 @@
-// $Id: sink_smearing.cc,v 1.10 2004-07-28 03:08:05 edwards Exp $
+// $Id: sink_smearing.cc,v 1.11 2004-12-24 04:19:23 edwards Exp $
 /*! \file
  * \brief Main program for sink-smearing quark propagators
  *
@@ -164,7 +164,6 @@ int main(int argc, char **argv)
 
   // Derived from input prop
   int  j_decay = source_header.j_decay;
-  multi1d<int> boundary = prop_header.boundary;
   multi1d<int> t_source = source_header.t_source;
 
   // Sanity check - write out the norm2 of the forward prop in the j_decay direction

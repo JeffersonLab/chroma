@@ -100,7 +100,6 @@ int main(int argc, char *argv[])
   push(xml_out, "t_monomial");
 
   // Read Parameters
-  multi1d<int> boundary(Nd);           // Ferm BC's
   std::string monomial_name;           // String for Factory
   XMLReader param_in("DATA");
   try { 

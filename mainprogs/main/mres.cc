@@ -1,4 +1,4 @@
-// $Id: mres.cc,v 1.3 2004-12-10 05:48:36 edwards Exp $
+// $Id: mres.cc,v 1.4 2004-12-24 04:19:22 edwards Exp $
 
 #include <iostream>
 #include <sstream>
@@ -205,11 +205,9 @@ int main(int argc, char **argv)
 
   // Basic parameters
   int j_decay = source_header.j_decay;
-  multi1d<int> boundary = prop_header.boundary;
   multi1d<int> t_source = source_header.t_source;
   // Flags
   int t0      = t_source[j_decay];
-  int bc_spec = boundary[j_decay];
 
   // Initialize the slow Fourier transform phases
   SftMom phases(0, true, j_decay);
@@ -222,10 +220,6 @@ int main(int argc, char **argv)
     pop(xml_out);
   }
 
-
-  // Create a FermBC
-  Handle<FermBC<LatticeFermion> >  fbc(new SimpleFermBC<LatticeFermion>(boundary));
-  Handle< FermBC<multi1d<LatticeFermion> > >  fbc_a(new SimpleFermBC<multi1d<LatticeFermion> >(boundary));
 
   //
   // Initialize fermion action
@@ -268,7 +262,6 @@ int main(int argc, char **argv)
       // Generic Wilson-Type stuff
       Handle< WilsonTypeFermAct<LatticeFermion> >
 	S_f(TheWilsonTypeFermActFactory::Instance().createObject(fermact,
-								 fbc,
 								 fermacttop,
 								 fermact_path));
     
@@ -316,7 +309,6 @@ int main(int argc, char **argv)
       // Generic Wilson-Type Array stuff
       WilsonTypeFermAct< multi1d<LatticeFermion> >* S_f =
 	TheWilsonTypeFermActArrayFactory::Instance().createObject(fermact,
-								  fbc_a,
 								  fermacttop,
 								  fermact_path);
     

@@ -1,4 +1,4 @@
-// $Id: t_mres_4d.cc,v 1.4 2004-11-20 03:49:46 edwards Exp $
+// $Id: t_mres_4d.cc,v 1.5 2004-12-24 04:19:23 edwards Exp $
 
 #include <iostream>
 #include <sstream>
@@ -21,7 +21,6 @@ struct Prop_t
 struct AppInput_t 
 {
   multi1d<int> nrow;
-  multi1d<int> boundary;
   std::string  fermact;
   Cfg_t cfg;
   std::string stateInfo;
@@ -73,7 +72,6 @@ void read(XMLReader& xml, const string& path, AppInput_t& input)
   {
     // The parameters holds the version number
     read(inputtop, "nrow", input.nrow);
-    read(inputtop, "boundary", input.boundary);
 
     //
     XMLReader xml_tmp(inputtop, "FermionAction");
@@ -181,11 +179,9 @@ int main(int argc, char **argv)
   }
 
   int j_decay = source_header.j_decay;
-  multi1d<int> boundary = prop_header.boundary;
   multi1d<int> t_source = source_header.t_source;
   // Flags
   int t0      = t_source[j_decay];
-  int bc_spec = boundary[j_decay];
 
   // Initialize the slow Fourier transform phases
   SftMom phases(0, true, j_decay);
@@ -199,8 +195,6 @@ int main(int argc, char **argv)
   }
 
 
-  // Create a FermBC
-  Handle<FermBC<LatticeFermion> >  fbc(new SimpleFermBC<LatticeFermion>(input.boundary));
   //
   // Initialize fermion action
   //
@@ -236,7 +230,6 @@ int main(int argc, char **argv)
           // Generic Wilson-Type stuff
       Handle< WilsonTypeFermAct<LatticeFermion> >
 	S_f(TheWilsonTypeFermActFactory::Instance().createObject(fermact,
-								 fbc,
 								 fermacttop,
 								 fermact_path));
 

@@ -1,6 +1,9 @@
-// $Id: multi_propagator.cc,v 1.11 2004-11-17 15:23:00 bjoo Exp $
+// $Id: multi_propagator.cc,v 1.12 2004-12-24 04:19:22 edwards Exp $
 // $Log: multi_propagator.cc,v $
-// Revision 1.11  2004-11-17 15:23:00  bjoo
+// Revision 1.12  2004-12-24 04:19:22  edwards
+// Removed explict FermBC args to FermAct factory functions.
+//
+// Revision 1.11  2004/11/17 15:23:00  bjoo
 // t_su3 removed from make check. Throws stringified
 //
 // Revision 1.10  2004/10/15 16:37:20  bjoo
@@ -209,7 +212,6 @@ int main(int argc, char **argv)
 
   int t0;
   int j_decay;
-  multi1d<int> boundary;
   bool make_sourceP = false;
   bool seqsourceP = false;
   {
@@ -231,7 +233,6 @@ int main(int argc, char **argv)
 	read(source_record_xml, "/MakeSource/PropSource", source_header);
 	j_decay = source_header.j_decay;
 	t0 = source_header.t_source[j_decay];
-	boundary = input.param.boundary;
 	make_sourceP = true;
       }
       else if (source_record_xml.count("/SequentialSource") != 0)
@@ -248,7 +249,6 @@ int main(int argc, char **argv)
 	     source_header);
 	j_decay = source_header.j_decay;
 	t0 = seqsource_header.t_sink;
-	boundary = prop_header.boundary;
 	seqsourceP = true;
       }
       else
@@ -324,13 +324,6 @@ int main(int argc, char **argv)
 
   xml_out.flush();
 
-  /*
-   * Construct fermionic BC. Need one for LatticeFermion and multi1d<LatticeFermion>
-   * Note, the handle is on an ABSTRACT type
-   */
-  Handle< FermBC<LatticeFermion> >  fbc(new SimpleFermBC<LatticeFermion>(input.param.boundary));
-  Handle< FermBC<multi1d<LatticeFermion> > >  fbc_a(new SimpleFermBC<multi1d<LatticeFermion> >(input.param.boundary));
-
   //
   // Loop over the source color and spin, creating the source
   // and calling the relevant propagator routines. The QDP
@@ -378,7 +371,6 @@ int main(int argc, char **argv)
     // Generic Wilson-Type stuff
     Handle< WilsonTypeFermAct<LatticeFermion> >
       S_f(TheWilsonTypeFermActFactory::Instance().createObject(fermact,
-							       fbc,
 							       fermacttop,
 							       fermact_path));
     
@@ -457,14 +449,12 @@ int main(int argc, char **argv)
     // ChromaProp_t out_param(input.param, m);
  
     ChromaProp_t out_param;
-    out_param.FermTypeP = input.param.FermTypeP;
     out_param.nonRelProp = input.param.nonRelProp;
     out_param.fermact = input.param.fermact;
     out_param.invParam.invType = input.param.invParam.invType;
     out_param.invParam.MROver = input.param.invParam.MROver;
     out_param.invParam.MaxCG = input.param.invParam.MaxCG;
     out_param.invParam.RsdCG = input.param.invParam.RsdCG[m];
-    out_param.boundary = input.param.boundary;
     out_param.nrow =input.param.nrow ;
 
 

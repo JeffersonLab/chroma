@@ -1,10 +1,13 @@
-// $Id: spectrum_w.cc,v 1.40 2004-11-17 15:23:00 bjoo Exp $
+// $Id: spectrum_w.cc,v 1.41 2004-12-24 04:19:23 edwards Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.40  2004-11-17 15:23:00  bjoo
+//  Revision 1.41  2004-12-24 04:19:23  edwards
+//  Removed explict FermBC args to FermAct factory functions.
+//
+//  Revision 1.40  2004/11/17 15:23:00  bjoo
 //  t_su3 removed from make check. Throws stringified
 //
 //  Revision 1.39  2004/09/09 04:01:44  edwards
@@ -402,7 +405,7 @@ int main(int argc, char **argv)
 
     // Derived from input prop
     int j_decay = source_header.j_decay;
-    multi1d<int> boundary = prop_header.boundary;
+    multi1d<int> boundary = getFermActBoundary(prop_header.fermact);
     multi1d<int> t_source = source_header.t_source;
 
     // Hunt around to find the mass

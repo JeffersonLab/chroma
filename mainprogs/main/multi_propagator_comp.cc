@@ -1,6 +1,9 @@
-// $Id: multi_propagator_comp.cc,v 1.5 2004-07-28 03:08:04 edwards Exp $
+// $Id: multi_propagator_comp.cc,v 1.6 2004-12-24 04:19:22 edwards Exp $
 // $Log: multi_propagator_comp.cc,v $
-// Revision 1.5  2004-07-28 03:08:04  edwards
+// Revision 1.6  2004-12-24 04:19:22  edwards
+// Removed explict FermBC args to FermAct factory functions.
+//
+// Revision 1.5  2004/07/28 03:08:04  edwards
 // Added START/END_CODE to all routines. Changed some to not pass an
 // argument.
 //
@@ -298,12 +301,6 @@ int main(int argc, char **argv)
 
   xml_out.flush();
 
-  /*
-   * Construct fermionic BC. Need one for LatticeFermion and multi1d<LatticeFermion>
-   * Note, the handle is on an ABSTRACT type
-   */
-  Handle< FermBC<LatticeFermion> >  fbc(new SimpleFermBC<LatticeFermion>(input.param.boundary));
-  Handle< FermBC<multi1d<LatticeFermion> > >  fbc_a(new SimpleFermBC<multi1d<LatticeFermion> >(input.param.boundary));
   //
   // Initialize fermion action
   //
@@ -337,7 +334,7 @@ int main(int argc, char **argv)
       
       // Construct Fermact -- now uses constructor from the zolo4d params
       // struct
-      S_f_ptr = new Zolotarev4DFermAct(fbc, zolo4d, xml_out);
+      S_f_ptr = new Zolotarev4DFermAct(zolo4d, xml_out);
     }
     break;
   default:

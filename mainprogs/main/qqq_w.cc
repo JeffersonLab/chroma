@@ -1,4 +1,4 @@
-// $Id: qqq_w.cc,v 1.18 2004-08-12 21:36:40 ikuro Exp $
+// $Id: qqq_w.cc,v 1.19 2004-12-24 04:19:23 edwards Exp $
 /*! \file
  *  \brief Main code for generalized quark propagator
  *
@@ -250,7 +250,7 @@ int main(int argc, char **argv)
 
   // Derived from input prop
   int j_decay = qqq.forward_props[0].source_header.j_decay;
-  multi1d<int> boundary = qqq.forward_props[0].prop_header.boundary;
+  multi1d<int> boundary = getFermActBoundary(qqq.forward_props[0].prop_header.fermact);
   multi1d<int> t_source = qqq.forward_props[0].source_header.t_source;
   int t0      = t_source[j_decay];
   int bc_spec = boundary[j_decay];
