@@ -1,5 +1,5 @@
 #ifndef abs_hyb_int_h
-#define asb_hyb_int_h
+#define abs_hyb_int_h
 
 #include "chromabase.h"
 #include "update/field_state.h"

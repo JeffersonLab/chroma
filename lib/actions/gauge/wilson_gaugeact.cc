@@ -1,4 +1,4 @@
-// $Id: wilson_gaugeact.cc,v 1.3 2004-07-19 16:02:59 bjoo Exp $
+// $Id: wilson_gaugeact.cc,v 1.4 2004-07-23 12:37:12 bjoo Exp $
 /*! \file
  *  \brief Wilson gauge action
  */
@@ -20,7 +20,8 @@ WilsonGaugeAct::staple(LatticeColorMatrix& u_staple,
 		       Handle<const ConnectState> state,
 		       int mu, int cb) const
 {
-  START_CODE("WilsonGaugeAct::staple");
+  QDPIO::cout << "WilsonGaugeAct::staple() --- Is this tested ? BJ" << endl;
+  QDPIO::cout << "Use at own risk" << endl;
 
   const multi1d<LatticeColorMatrix>& u = state->getLinks();
 				 
@@ -90,12 +91,10 @@ WilsonGaugeAct::staple(LatticeColorMatrix& u_staple,
 
 void
 WilsonGaugeAct::dsdu(multi1d<LatticeColorMatrix>& ds_u,
-		     Handle<const ConnectState> state) const
+		     const multi1d<LatticeColorMatrix>& u) const
 {
   START_CODE("WilsonGaugeAct::dsdu");
 
-  const multi1d<LatticeColorMatrix>& u = state->getLinks();
-				 
   LatticeColorMatrix tmp_0;
   LatticeColorMatrix tmp_1;
   LatticeColorMatrix tmp_2;
@@ -108,59 +107,74 @@ WilsonGaugeAct::dsdu(multi1d<LatticeColorMatrix>& ds_u,
   {
     for(int nu=mu+1; nu<Nd; nu++)
     {
-      tmp_0 = shift(u[mu], FORWARD, nu) * adj(shift(u[nu], FORWARD, mu));
-      tmp_1 = tmp_0 * adj(u[mu]);
-      tmp_2 = u[nu] * tmp_1;
-      
-      ds_u[nu] += tmp_2;
-      ds_u[mu] += adj(tmp_2);
+      for(int cb=0; cb < 2; cb++) { 
+	
+	tmp_0[rb[cb]] = shift(u[mu], FORWARD, nu)*shift(adj(u[nu]), FORWARD, mu);
+	tmp_1[rb[cb]] = tmp_0*adj(u[mu]);
+	tmp_2[rb[cb]] = u[nu]*tmp_1;
+	ds_u[nu][rb[cb]] += tmp_2;
+	ds_u[mu][rb[cb]] += adj(tmp_2);
+	ds_u[mu][rb[1-cb]] += shift(tmp_1, BACKWARD, nu)*shift(u[nu], BACKWARD, nu);
+	tmp_1[rb[cb]] = adj(u[nu])*u[mu];
+	ds_u[nu][rb[1-cb]] += shift(adj(tmp_0),BACKWARD,mu)*shift(tmp_1, BACKWARD, mu);
+	
+      }
+    }
 
-      ds_u[mu] += shift(tmp_1, BACKWARD, nu)*shift(u[nu], BACKWARD, nu);
-
-      tmp_1 = adj(u[nu])*u[mu];
-
-      ds_u[nu] += shift(adj(tmp_0), BACKWARD, mu)*shift(tmp_1, BACKWARD, mu);
-    }      
   }
 
 
-  // Pure Gauge factor
-  /*for(int mu=0; mu < Nd; ++mu) { 
-    ds_u[mu] *= beta/(Double(2*Nc));
-    }*/
+  // Pure Gauge factor (-beta/Nc and a factor of 2 because of the forward
+  // and backward staple of the force)
+  for(int mu=0; mu < Nd; mu++) { 
+    ds_u[mu] *= Double(beta)/(Real(2*Nc));
+  }
 
+  // Debugging
+  /*
+  Double tr = Double(0);
+  for(int mu = 0; mu<Nd; mu++) { 
+    
+    tr += sum(real(trace(ds_u[mu])));
+  }
+
+  Double S_act = S(u);
+
+  QDPIO::cout << "dsdu: S = " << S_act << " Re Tr U dsdu = " << tr << endl;
+  QDPIO::cout << "      Ratio = " << tr/S_act << endl;
+  */
   END_CODE("WilsonGaugeAct::dsdu");
 }
 
 // Get the gauge action
 //
-// S = (beta/(2Nc) Sum Re Tr Plaq
+// S = -(beta/(Nc) Sum Re Tr Plaq
 //
 // w_plaq is defined in MesPlq as
 //
 // w_plaq =( 2/(V*Nd*(Nd-1)*Nc)) * Sum Re Tr Plaq
 //
 // so 
-// S = beta/(2) * (V*Nd*(Nd-1)/2) w_plaq 
-//   = beta/(2) * (V*Nd*(Nd-1)/2)*(2/(V*Nd*(Nd-1)*Nc))* Sum Re Tr Plaq
-//   = beta * (1/(Nc)) * Sum Re Tr Plaq
+// S = -beta * (V*Nd*(Nd-1)/2) w_plaq 
+//   = -beta * (V*Nd*(Nd-1)/2)*(2/(V*Nd*(Nd-1)*Nc))* Sum Re Tr Plaq
+//   = -beta * (1/(Nc)) * Sum Re Tr Plaq
 
 Double
 WilsonGaugeAct::S(const multi1d<LatticeColorMatrix>& u) const
 {
   Double S_pg;
 
-  Handle< const ConnectState> u_bc(createState(u));
+  // Handle< const ConnectState> u_bc(createState(u));
   // Apply boundaries
   //Handle<const ConnectState> u_bc(createState(u));
   Double w_plaq, s_plaq, t_plaq, link;
 
   // Measure the plaquette
-  MesPlq(u_bc->getLinks(), w_plaq, s_plaq, t_plaq, link);
+  MesPlq(u, w_plaq, s_plaq, t_plaq, link);
 
   // Undo Mes Plaq Normalisation
-  S_pg = Double( Layout::vol()*Nd*(Nd-1) ) / Double(2);
-  S_pg *= beta*w_plaq;
+  S_pg = Double(Layout::vol()*Nd*(Nd-1))/Double(2);
+  S_pg *= -Double(beta)*w_plaq;
     
   return S_pg;
 } 

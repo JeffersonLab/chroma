@@ -5,6 +5,7 @@
 #include "chromabase.h"
 #include "update/field_state.h"
 #include "update/molecdyn/abs_hamiltonian.h"
+#include "util/gauge/taproj.h"
 #include "util/gauge/reunit.h"
 #include "util/gauge/expmat.h"
 

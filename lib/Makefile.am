@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.152 2004-07-09 09:50:56 bjoo Exp $
+# $Id: Makefile.am,v 1.153 2004-07-23 12:37:11 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -57,6 +57,8 @@ nobase_include_HEADERS = \
 	linearop.h primitives.h state.h \
 	actions/actions.h actions/boson/boson.h \
 	actions/boson/operator/klein_gord.h \
+	actions/gauge/gauge.h \
+	actions/gauge/wilson_gaugeact.h \
 	actions/ferm/ferm.h actions/ferm/fermacts/asqtad_state.h \
 	actions/ferm/fermacts/fermacts.h \
 	actions/ferm/fermacts/zolotarev.h \
@@ -104,14 +106,26 @@ nobase_include_HEADERS = \
 	meas/sources/wavetype.h \
 	util/ferm/ferm.h util/ferm/transf.h util/ft/ft.h \
 	util/ft/sftmom.h util/gauge/eesu2.h util/gauge/eeu1.h \
-	util/gauge/expm12.h util/gauge/expmat.h util/gauge/gauge.h \
+	util/gauge/expm12.h util/gauge/expmat.h util/gauge/expsu3.h \
+	util/gauge/gauge.h \
 	util/gauge/gauge_startup.h \
 	util/gauge/hotst.h util/gauge/phfctr.h util/gauge/reunit.h \
 	util/gauge/rgauge.h util/gauge/su2extract.h util/gauge/su3proj.h \
 	util/gauge/sunfill.h util/gauge/sun_proj.h util/gauge/taproj.h \
 	util/gauge/unit_check.h \
         util/info/info.h util/info/proginfo.h util/info/printgeom.h \
-        util/util.h
+        util/util.h \
+	update/update.h update/field_state.h \
+	update/heatbath/heatbath.h \
+	update/molecdyn/molecdyn.h \
+	update/molecdyn/abs_hamiltonian.h \
+	update/molecdyn/abs_hmc.h \
+	update/molecdyn/abs_hyb_int.h \
+	update/molecdyn/abs_symp_updates.h \
+	update/molecdyn/exact_pg_hamiltonian.h \
+	update/molecdyn/pg_hmc.h \
+	update/molecdyn/pg_leapfrog.h \
+	update/molecdyn/pg_symp_updates.h
 
 nodist_include_HEADERS=chroma_config_internal.h
 
@@ -188,7 +202,7 @@ nobase_include_HEADERS += \
 	meas/sources/p_src_w.h meas/sources/sources_w.h \
 	util/ferm/ferm_w.h util/ferm/diractodr.h util/ferm/gammasgn_w.h \
 	util/ferm/tdiractodr.h \
-        util/ferm/paulitodr.h 
+        util/ferm/paulitodr.h
 
 # Deprecated
 #	actions/ferm/fermacts/prec_dwf_fermact_base_w.h \
@@ -239,7 +253,7 @@ lib_LIBRARIES = libchroma.a
 # Fermion independent sources
 #
 libchroma_a_SOURCES = gauge_startup.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
-               mesplq.cc polylp.cc reunit.cc unit_check.cc sftmom.cc srcfil.cc \
+               expmat.cc expsu3.cc mesplq.cc polylp.cc reunit.cc unit_check.cc sftmom.cc srcfil.cc \
                szin_io.cc readszin.cc writeszin.cc su3proj.cc sun_proj.cc \
                gaus_smear.cc hyp_smear.cc ape_smear.cc fuzz_smear.cc \
                klein_gord.cc laplacian.cc displacement.cc \
@@ -257,7 +271,7 @@ libchroma_a_SOURCES = gauge_startup.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
 	       invsumr.cc minvsumr.cc inv_rel_sumr.cc minv_rel_sumr.cc \
 	       invbicgstab.cc invbicgstab_array.cc inv_rel_gmresr_sumr.cc \
 	       inv_rel_gmresr_cg.cc inv_gmresr_cg_array.cc \
-	       inv_minres_array.cc
+	       inv_minres_array.cc wilson_gaugeact.cc
 
 # 
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gauge.h,v 1.2 2003-10-10 03:46:46 edwards Exp $
+// $Id: gauge.h,v 1.3 2004-07-23 12:37:12 bjoo Exp $
 
 /*! \file
  * \brief Gauge action support
@@ -16,6 +16,8 @@
 
 #ifndef __actgaugee_h__
 #define __actgaugee_h__
+
+#include "actions/gauge/wilson_gaugeact.h"
 
 #endif
 

@@ -2,8 +2,8 @@
 #define symp_updates_h
 
 #include "update/field_state.h"
-#include "update/abs_hamiltonian.h"
-#include "update/abs_symp_updates.h"
+#include "update/molecdyn/abs_hamiltonian.h"
+#include "update/molecdyn/abs_symp_updates.h"
 
 // A Concrete SymplecticUpdates class for pure gauge systems
 // template it on GA so that I can use the relevant copy functions etc.

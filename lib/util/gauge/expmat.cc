@@ -1,4 +1,4 @@
-// $Id: expmat.cc,v 1.2 2004-01-05 00:47:20 edwards Exp $
+// $Id: expmat.cc,v 1.3 2004-07-23 12:37:13 bjoo Exp $
 /*! \file
  *  \brief Exponentiate a SU(n) lie algebra element by some method,
  */
@@ -6,8 +6,10 @@
 #include "chromabase.h"
 #include "util/gauge/expmat.h"
 #include "util/gauge/expm12.h"
+#include "util/gauge/expsu3.h"
 #include "util/gauge/eeu1.h"
 #include "util/gauge/eesu2.h"
+#include "util/gauge/reunit.h"
 //#include "util/gauge/eesu3.h"
 
 using namespace QDP;
@@ -26,7 +28,7 @@ using namespace QDP;
  */
 
 void expmat(LatticeColorMatrix& a,
-	    enum Expmat_t opt)
+	    enum ExpMat_t opt)
 {
   START_CODE("expmat");
 
@@ -46,11 +48,11 @@ void expmat(LatticeColorMatrix& a,
   default:
     switch (opt)
     {
-    case EXP_TWELTH_ORDER:
+    case EXP_TWELFTH_ORDER:
       switch (Nc)
       {
       case 3:
-	expsu3(a, EXP_TWELTH_ORDER);
+	expsu3(a, REUNITARIZE_LABEL);
 	break;
 	
       default:

@@ -1,4 +1,4 @@
-// $Id: readmilc.cc,v 1.5 2004-03-23 20:17:16 kostas Exp $
+// $Id: readmilc.cc,v 1.6 2004-07-23 12:37:12 bjoo Exp $
 
 /*! \file
  *  \brief Read a MILC gauge configuration written in the 1997 format
@@ -78,7 +78,7 @@ void readMILC(MILCGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
     QDPUtil::byte_swap((void *)&sum29,sizeof(int),1);
     QDPUtil::byte_swap((void *)&sum31,sizeof(int),1);
   }
-  QDPIO::cout<<"Golbal sums (sum29, sum31): "<<sum29<<" "<<sum31<<endl; 
+  QDPIO::cout<<"Global sums (sum29, sum31): "<<sum29<<" "<<sum31<<endl; 
 
   /*
    * Read away...

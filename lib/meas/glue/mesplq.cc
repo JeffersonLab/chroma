@@ -1,4 +1,4 @@
-// $Id: mesplq.cc,v 1.8 2003-12-06 20:58:34 edwards Exp $
+// $Id: mesplq.cc,v 1.9 2004-07-23 12:37:12 bjoo Exp $
 /*! \file
  *  \brief Plaquette measurement
  */
@@ -60,14 +60,14 @@ void MesPlq(const multi1d<LatticeColorMatrix>& u, Double& w_plaq, Double& s_plaq
 	s_plaq += tmp;
     }
   }
-  
+
   // Normalize
-  w_plaq *= 2.0 / double(Layout::vol()*Nd*(Nd-1)*Nc);
+  w_plaq *= 2.0 / Double(Layout::vol()*Nd*(Nd-1)*Nc);
   
   if (Nd > 2) 
-    s_plaq *= 2.0 / double(Layout::vol()*(Nd-1)*(Nd-2)*Nc);
+    s_plaq *= 2.0 / Double(Layout::vol()*(Nd-1)*(Nd-2)*Nc);
   
-  t_plaq /= double(Layout::vol()*(Nd-1)*Nc);
+  t_plaq /= Double(Layout::vol()*(Nd-1)*Nc);
   
 
   // Compute the average link

@@ -1,4 +1,4 @@
-// $Id: taproj.cc,v 1.5 2003-03-31 19:46:08 edwards Exp $
+// $Id: taproj.cc,v 1.6 2004-07-23 12:37:13 bjoo Exp $
 // TAPROJ
 
 /*! \file
@@ -31,17 +31,20 @@ void taproj(LatticeColorMatrix& a)
   LatticeColorMatrix aux_1 = a;
   a -= adj(aux_1);
  
-  if (Nc > 1)
-  {
-    // tmp = Tr[ a ] * (1/Nc)
-    LatticeReal tmp = imag(trace(a))*Real(1/Real(Nc));
+  if (Nc > 1) {
+    // tmp = Im Tr[ a ]
+    LatticeReal tmp = imag(trace(a));
+    
+    // a = a - (1/Nc) * Im Tr[ a] = a - (1/Nc)*tmp
+    tmp *= (Real(1)/Real(Nc));
 
-    // a = a - (1/Nc) * Tr[ a] --- a -> traceless matrix
-    a -= cmplx(0,tmp);
+    // Is this a fill or a UnitMatrix*I?
+    LatticeColorMatrix aux = cmplx(0, tmp);
+    a -= aux;
   }
 
   // Normalisation to make taproj idempotent
-  a *= 0.5;
+  a *= (Real(1)/Real(2));
   
   END_CODE("taproj");
 }

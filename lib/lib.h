@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lib.h,v 1.4 2004-04-29 13:41:21 bjoo Exp $
+// $Id: lib.h,v 1.5 2004-07-23 12:37:11 bjoo Exp $
 
 /*! \file
  * \brief Chroma Lattice Field Theory library
@@ -25,6 +25,7 @@
 #include "state.h"
 
 #include "actions/actions.h"
+#include "update/update.h"
 #include "util/util.h"
 #include "meas/meas.h"
 

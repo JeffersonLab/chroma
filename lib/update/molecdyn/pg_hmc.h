@@ -2,8 +2,8 @@
 #define pg_hmc_h
 
 #include "update/field_state.h"
-#include "update/hamiltonian.h"
-#include "update/hyb_int.h"
+#include "update/molecdyn/abs_hamiltonian.h"
+#include "update/molecdyn/abs_hyb_int.h"
 
 
 class PureGaugeHMCTraj : 
