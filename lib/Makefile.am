@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.212 2004-12-31 17:17:03 bjoo Exp $
+# $Id: Makefile.am,v 1.213 2005-01-02 05:02:26 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -197,7 +197,6 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/unprec_pdwf4d_linop_w.h \
 	actions/ferm/linop/unprec_ppdwf4d_linop_w.h \
 	actions/ferm/qprop/qprop_w.h \
-	actions/ferm/qprop/unprec_qprop_w.h \
 	actions/ferm/qprop/quarkprop4_w.h \
 	actions/ferm/qprop/dwf_quarkprop4_w.h \
 	actions/ferm/qprop/nef_quarkprop4_w.h \
@@ -457,8 +456,8 @@ libchroma_a_SOURCES += actions/ferm/linop/lwldslash_w_sse.cc
 endif
 
 if BUILD_SSE_DWF_CG
-nobase_include_HEADERS += actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.h
-libchroma_a_SOURCES += actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc
+nobase_include_HEADERS += actions/ferm/qprop/prec_dwf_qprop_array_sse_w.h
+libchroma_a_SOURCES += actions/ferm/qprop/prec_dwf_qprop_array_sse_w.cc
 endif
 
 if BUILD_PAB_WILSON_DSLASH
