@@ -14,7 +14,7 @@ INCFLAGS=-I@top_srcdir@/include -I@top_builddir@/include
 #
 AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDPXX_CXXFLAGS@
 AM_LDFLAGS = -L@top_builddir@/lib @LDFLAGS@ @QDPXX_LDFLAGS@
-LDADD = -lszin @QDPXX_LIBS@ @LIBS@
+LDADD = -lchroma @QDPXX_LIBS@ @LIBS@
 
 #
 # Local Headers
@@ -36,14 +36,14 @@ HDRS =
 # The program and its dependencies
 #
 #example_SOURCES =  example.cc $(HDRS)
-#example_DEPENDENCIES = build_szin_libs
+#example_DEPENDENCIES = build_chroma_libs
 #
-# The latter rule will always try to rebuild libszin.a when you 
+# The latter rule will always try to rebuild libchroma.a when you 
 # try to compile example
 
 # build lib is a target that goes to the build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order
 # for it to be done every time, we have to make it a 'phony' target
-.PHONY: build_szin_libs
-build_szin_libs:
+.PHONY: build_chroma_libs
+build_chroma_libs:
 	cd @top_builddir@/lib ; $(MAKE)

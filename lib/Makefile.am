@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.6 2003-02-15 22:40:19 flemingg Exp $
+# $Id: Makefile.am,v 1.7 2003-02-16 04:07:14 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -58,7 +58,7 @@ AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDPXX_CXXFLAGS@
 #
 # Various header files. 
 #
-HDRS =  szin.h primitives.h defs.h common_declarations.h geom.h
+HDRS =  chroma.h primitives.h defs.h common_declarations.h geom.h
 
 #
 # Object files to add if building the Wilson Builds...
@@ -72,7 +72,7 @@ WILSON_SRCS = dslashm_w.cc baryon_w.cc mesons_w.cc
 #
 STAGGERED_SRCS = 
 
-lib_LIBRARIES = libszin.a
+lib_LIBRARIES = libchroma.a
 
 #
 # These are the permanent source files
@@ -83,18 +83,18 @@ GENERIC_SRCS = $(HDRS) mesplq.cc reunit.cc geom.cc
 # This may need to be substituted depending on arch but
 # for example on the QCDOC
 # 
-libszin_a_LIBADD = stand_main.o
-libszin_a_DEPENDENCIES = stand_main.o
+libchroma_a_LIBADD = stand_main.o
+libchroma_a_DEPENDENCIES = stand_main.o
 
 #
 # An AM_CONDITIONAL if statement to decide which fermion type
 #
 if BUILD_WILSON_LIBS
-  libszin_a_SOURCES = $(GENERIC_SRCS) $(WILSON_SRCS)
-  EXTRA_libszin_a_SOURCES = $(STAGGERED_SRCS)
+  libchroma_a_SOURCES = $(GENERIC_SRCS) $(WILSON_SRCS)
+  EXTRA_libchroma_a_SOURCES = $(STAGGERED_SRCS)
 endif
 
 if BUILD_STAGGERED_LIBS
-  libszin_a_SOURCES = $(GENERIC_SRCS) $(STAGGERED_SRCS)
-  EXTRA_libszin_a_SOURCES = $(WILSON_SRCS)
+  libchroma_a_SOURCES = $(GENERIC_SRCS) $(STAGGERED_SRCS)
+  EXTRA_libchroma_a_SOURCES = $(WILSON_SRCS)
 endif
