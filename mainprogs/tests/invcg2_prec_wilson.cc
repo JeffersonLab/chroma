@@ -1,4 +1,4 @@
-// $Id: invcg2_timing_hacks_2.cc,v 1.4 2004-03-25 14:31:20 bjoo Exp $
+// $Id: invcg2_prec_wilson.cc,v 1.1 2004-03-25 14:31:20 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -64,7 +64,7 @@
  *  2 A + 2 Nc Ns + N_Count ( 2 A + 10 Nc Ns )
  */
 
-void InvCG2EvenOddPrecWilsLinOpTHack(const WilsonDslash &D,
+void InvCG2EvenOddPrecWilsLinOp(const WilsonDslash &D,
 			   const LFerm& chi,
 			   LFerm& psi,
 			   const LScal& mass,
@@ -96,7 +96,7 @@ void InvCG2EvenOddPrecWilsLinOpTHack(const WilsonDslash &D,
 
   // Initial norm -- could be passed in I suppose
   REAL chi_sq =(REAL)AT_REAL(norm2(chi,s));
-  //QDPIO::cout << "chi_norm = " << sqrt(chi_sq) << endl;
+  QDPIO::cout << "chi_norm = " << sqrt(chi_sq) << endl;
 
   // ( Target residuum * || chi || )^2. Ignored in this test
   REAL rsd_sq = (AT_REAL(RsdCG) * AT_REAL(RsdCG)) * chi_sq;
@@ -146,10 +146,10 @@ void InvCG2EvenOddPrecWilsLinOpTHack(const WilsonDslash &D,
   p[s] = r;
   
 
-  //QDPIO::cout << "InvCG: k = 0  cp = " << cp << "  rsd_sq = " << rsd_sq << endl;
+  QDPIO::cout << "InvCG: k = 0  cp = " << cp << "  rsd_sq = " << rsd_sq << endl;
   
   // Disable early termination
-#if 0
+#if 1
   //  IF |r[0]| <= RsdCG |Chi| THEN RETURN;
   // cp is now a REAL so no need for the Chroma toBool() ism
   if ( cp  <=  rsd_sq )
@@ -168,7 +168,7 @@ void InvCG2EvenOddPrecWilsLinOpTHack(const WilsonDslash &D,
   REAL ma;
 
   // Go to n_count iters
-  for(int k = 1; k <= n_count; ++k)
+  for(int k = 1; k <= MaxCG; ++k)
   {
     //  c  =  | r[k-1] |**2
     c = cp;
@@ -198,7 +198,7 @@ void InvCG2EvenOddPrecWilsLinOpTHack(const WilsonDslash &D,
      d = (REAL)AT_REAL(sum);
 
     // Disable this. Set a = 1 to stop convergence
-#if 0
+#if 1
     a = c/d;
 #else 
     a = 1/1;
@@ -231,10 +231,10 @@ void InvCG2EvenOddPrecWilsLinOpTHack(const WilsonDslash &D,
      cp = (REAL)AT_REAL(sum);
 
 
-     //QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << endl;
+     QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << endl;
 
     // Disable termination
-#if 0
+#if 1
     // cp and rsd_sq are now REAL so no need for Chroma toBool() ism
     if ( cp  <=  rsd_sq )
     {
@@ -244,7 +244,7 @@ void InvCG2EvenOddPrecWilsLinOpTHack(const WilsonDslash &D,
 #endif
 
     // Disable convergence
-#if 0
+#if 1
     //  b[k+1] := |r[k]|**2 / |r[k-1]|**2
     b = cp / c;
 #else
@@ -256,7 +256,7 @@ void InvCG2EvenOddPrecWilsLinOpTHack(const WilsonDslash &D,
     //  p[k+1] := r[k] + b[k+1] p[k]
     p[s] = r + bs*p;	/* Nc Ns  flops */
   }
-  // n_count = MaxCG;
-  // QDP_error_exit("too many CG iterations: count = %d", n_count);
+  n_count = MaxCG;
+  QDP_error_exit("too many CG iterations: count = %d", n_count);
 }
 

@@ -1,11 +1,11 @@
 // -*- C++ -*-
-// $Id: invcg2_timing_hacks_2.h,v 1.4 2004-03-25 14:31:20 bjoo Exp $
+// $Id: invcg2_prec_wilson.h,v 1.1 2004-03-25 14:31:20 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
 
-#ifndef __invcg2_timing_hacks_2_h__
-#define __invcg2_timing_hacks_2_h__
+#ifndef __invcg2_prec_wils_linop_h__
+#define __invcg2_prec_wils_linop_h__
 
 #include "chromabase.h"
 #include "linearop.h"
@@ -24,7 +24,7 @@ typedef OScalar< PScalar < PScalar < RScalar< PScalar < DOUBLE > > > > > LDble;
 // Get the first element of a vector over a subset
 #define FIRST_ELEM(a,s) (&(a.elem(s.start()).elem(0).elem(0).real().elem()))
                                                                                
-void InvCG2EvenOddPrecWilsLinOpTHack(const WilsonDslash &D,
+void InvCG2EvenOddPrecWilsLinOp(const WilsonDslash &D,
                                 const LFerm& chi,
                                 LFerm& psi,
                                 const LScal& mass,

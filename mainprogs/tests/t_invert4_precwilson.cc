@@ -1,4 +1,4 @@
-// $Id: t_invert4_precwilson.cc,v 1.3 2004-03-25 11:42:49 bjoo Exp $
+// $Id: t_invert4_precwilson.cc,v 1.4 2004-03-25 14:31:20 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -13,6 +13,7 @@
 
 #include "chroma.h"
 #include "invcg2_timing_hacks_2.h"
+#include "invcg2_prec_wilson.h"
 
 using namespace QDP;
 using namespace std;
@@ -25,7 +26,68 @@ struct Params_t {
   GaugeStartType gauge_start_type;
 };
 
+void checkInverter(multi1d<LatticeColorMatrix>& u)
+{
+  LatticeFermion psi;
+  LatticeFermion psi2;
+  LatticeFermion chi;
+
+  psi=zero;
+  psi2=zero;
+
+  multi1d<int> boundary(4);
+  boundary[0] = 1; 
+  boundary[1] = 1;
+  boundary[2] = 1;
+  boundary[3] = -1;
+
+  Real mass = 0.5;
+  Handle<FermBC<LatticeFermion> >  
+    fbc(new SimpleFermBC<LatticeFermion>(boundary));
   
+  EvenOddPrecWilsonFermAct  S_w(fbc, mass);
+  
+  // Apply boundary to u
+  Handle<const ConnectState> connect_state(S_w.createState(u));
+  Handle<const EvenOddPrecWilsonLinOp > D_op( dynamic_cast<const EvenOddPrecWilsonLinOp *> (S_w.linOp(connect_state)) );
+
+  // Get Initial Vector 
+  gaussian(chi);
+
+  int n_count;
+  QDPIO::cout << "Running General Solver with LinOp from FermAct" << endl;
+  InvCG2(*D_op,
+	 chi,
+	 psi,
+	 Real(1.0e-7),
+	 100000,
+	 n_count);
+  
+ 
+
+  // Get packed gauge field from connect state
+  int n_count2;
+  const multi1d<LatticeColorMatrix> gauge_with_bc=(*connect_state).getLinks();
+  WilsonDslash dsl(gauge_with_bc);
+  QDPIO::cout << "Running SuperSpecialised Solver with Dslash" << endl;
+  InvCG2EvenOddPrecWilsLinOp(dsl,
+                             chi,
+                             psi2,
+                             mass,
+                             Real(1.0e-7),
+                             16,
+                             n_count2);
+
+  QDPIO::cout << "General Solver took " << n_count << " iters" << endl;
+  QDPIO::cout << "Super   Solver took " << n_count2 << " iters " << endl;
+
+  LatticeFermion r;
+  r[rb[1]] = psi2 - psi;
+  Double chi_norm_diff = norm2(r, rb[1]);
+  QDPIO::cout << " || chi2 - chi || = " << chi_norm_diff << endl;
+
+}
+
 int main(int argc, char **argv)
 {
   // Put the machine into a known state
@@ -121,10 +183,9 @@ int main(int argc, char **argv)
   write(xml, "link", link);
   pop(xml);
 
-  //! Wilsoniums;
-  // Put this puppy into a handle to allow Zolo to copy it around as a **BASE** class
-  // WARNING: the handle now owns the data. The use of a bare S_w below is legal,
-  // but just don't delete it.
+
+  checkInverter(u);
+
   WilsonDslash D(u);
 
   LatticeFermion chi;
@@ -142,7 +203,7 @@ int main(int argc, char **argv)
     swatch.reset();
     swatch.start();
 
-    InvCG2EvenOddPrecWilsLinOp(D,
+    InvCG2EvenOddPrecWilsLinOpTHack(D,
 			       chi,
 			       psi,
 			       mass, 
@@ -182,13 +243,13 @@ int main(int argc, char **argv)
     swatch.reset();
     swatch.start();
 
-    InvCG2EvenOddPrecWilsLinOp(D,
-                               chi,
-                               psi,
-                               mass,
-                               Real(1.0e-6),
-                               10000,
-                               iter);
+    InvCG2EvenOddPrecWilsLinOpTHack(D,
+                                    chi,
+                                    psi,
+                                    mass,
+                                    Real(1.0e-6),
+                                    10000,
+                                    iter);
 
     swatch.stop();
 										    mydt=Double(swatch.getTimeInSeconds());
