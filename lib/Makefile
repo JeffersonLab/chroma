@@ -14,7 +14,7 @@
 
 
 
-# $Id: Makefile,v 1.5 2003-08-11 21:47:21 dru Exp $
+# $Id: Makefile,v 1.6 2003-09-02 15:40:54 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -41,13 +41,13 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_triplet = i686-pc-linux-gnu
 VPATH = $(TOPDIR) $(TOPDIR)/lib $(TOPDIR)/lib/actions $(TOPDIR)/lib/actions/boson $(TOPDIR)/lib/actions/boson/operator $(TOPDIR)/lib/actions/ferm $(TOPDIR)/lib/actions/ferm/fermacts $(TOPDIR)/lib/actions/ferm/invert $(TOPDIR)/lib/actions/ferm/linop $(TOPDIR)/lib/actions/ferm/qprop $(TOPDIR)/lib/actions/gauge $(TOPDIR)/lib/geom $(TOPDIR)/lib/info $(TOPDIR)/lib/io $(TOPDIR)/lib/meas $(TOPDIR)/lib/meas/eig $(TOPDIR)/lib/meas/gfix $(TOPDIR)/lib/meas/glue $(TOPDIR)/lib/meas/hadron $(TOPDIR)/lib/meas/pbp $(TOPDIR)/lib/meas/schrfun $(TOPDIR)/lib/meas/smear $(TOPDIR)/lib/meas/sources $(TOPDIR)/lib/update $(TOPDIR)/lib/update/heatbath $(TOPDIR)/lib/update/molecdyn $(TOPDIR)/lib/update/molecdyn/dsdu $(TOPDIR)/lib/update/molecdyn/est $(TOPDIR)/lib/update/molecdyn/mese $(TOPDIR)/lib/update/molecdyn/noise $(TOPDIR)/lib/update/molecdyn/step $(TOPDIR)/lib/util $(TOPDIR)/lib/util/comm $(TOPDIR)/lib/util/ferm $(TOPDIR)/lib/util/ft $(TOPDIR)/lib/util/gauge $(TOPDIR)/lib/util/misc $(TOPDIR)/lib/util/random $(TOPDIR)/include $(TOPDIR)/mainprogs $(TOPDIR)/mainprogs/main $(TOPDIR)/mainprogs/tests $(TOPDIR)/root
-ACLOCAL = ${SHELL} /home/ikuro/chroma/config/missing --run aclocal-1.7
+ACLOCAL = ${SHELL} /home/bj/Devel/SciDAC/packages/tmp/chroma/config/missing --run aclocal-1.7
 AMDEP_FALSE = #
 AMDEP_TRUE = 
-AMTAR = ${SHELL} /home/ikuro/chroma/config/missing --run tar
-AUTOCONF = ${SHELL} /home/ikuro/chroma/config/missing --run autoconf
-AUTOHEADER = ${SHELL} /home/ikuro/chroma/config/missing --run autoheader
-AUTOMAKE = ${SHELL} /home/ikuro/chroma/config/missing --run automake-1.7
+AMTAR = ${SHELL} /home/bj/Devel/SciDAC/packages/tmp/chroma/config/missing --run tar
+AUTOCONF = ${SHELL} /home/bj/Devel/SciDAC/packages/tmp/chroma/config/missing --run autoconf
+AUTOHEADER = ${SHELL} /home/bj/Devel/SciDAC/packages/tmp/chroma/config/missing --run autoheader
+AUTOMAKE = ${SHELL} /home/bj/Devel/SciDAC/packages/tmp/chroma/config/missing --run automake-1.7
 AWK = gawk
 BUILD_STAGGERED_LIBS_FALSE = 
 BUILD_STAGGERED_LIBS_TRUE = #
@@ -56,13 +56,13 @@ BUILD_WILSON_LIBS_TRUE =
 CPPFLAGS = 
 CXX = g++
 CXXDEPMODE = depmode=gcc3
-CXXFLAGS = -g -O2
+CXXFLAGS = -O2 -finline-limit=50000
 CYGPATH_W = echo
 DEFS = -DPACKAGE_NAME=\"chroma\" -DPACKAGE_TARNAME=\"chroma\" -DPACKAGE_VERSION=\"0.2\" -DPACKAGE_STRING=\"chroma\ 0.2\" -DPACKAGE_BUGREPORT=\"edwards@jlab.org\" -DPACKAGE=\"chroma\" -DVERSION=\"0.2\" 
 DEPDIR = .deps
 DOXYGEN = doxygen
 DVIPDF = dvipdf
-DVIPS = true
+DVIPS = dvips
 ECHO_C = 
 ECHO_N = -n
 ECHO_T = 
@@ -71,12 +71,12 @@ INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = ${SHELL} $(install_sh) -c -s
-LATEX = true
+LATEX = latex
 LDFLAGS = 
 LIBOBJS = 
 LIBS = 
 LTLIBOBJS = 
-MAKEINFO = ${SHELL} /home/ikuro/chroma/config/missing --run makeinfo
+MAKEINFO = ${SHELL} /home/bj/Devel/SciDAC/packages/tmp/chroma/config/missing --run makeinfo
 OBJEXT = o
 PACKAGE = chroma
 PACKAGE_BUGREPORT = edwards@jlab.org
@@ -85,16 +85,19 @@ PACKAGE_STRING = chroma 0.2
 PACKAGE_TARNAME = chroma
 PACKAGE_VERSION = 0.2
 PATH_SEPARATOR = :
-QDPXX_CONFIG = /usr/local/qdp++/scalar/bin/qdp++-config
-QDPXX_CXXFLAGS = -I/usr/local/qdp++/scalar/include -I/usr/include/libxml2
-QDPXX_LDFLAGS = -static -L/usr/local/qdp++/scalar/lib
-QDPXX_LIBS = -lqdp -lnml -lXPathReader -lxmlWriter -lqio -ldime -L/usr/lib -lxml2 -lz -lm
+QDPXX_CONFIG = /home/bj/Devel/SciDAC/install/qdp++-parscalar-32bit/bin/qdp++-config
+QDPXX_CXXFLAGS = -O2 -finline-limit=50000 -I/home/bj/Devel/SciDAC/install/qdp++-parscalar-32bit/include -I/usr/include/libxml2 -I/home/bj/Devel/SciDAC/install/qmp/include
+QDPXX_LDFLAGS = -L/home/bj/Devel/SciDAC/install/qdp++-parscalar-32bit/lib -L/home/bj/Devel/SciDAC/install/qmp/lib -L/usr/local/mpich-1.2.5/lib
+QDPXX_LIBS = -lqdp -lnml -lXPathReader -lxmlWriter -lqio -ldime -L/usr/lib -lxml2 -lz -lm -lqmp -lmpich -lpmpich
 QDPXX_NC = 3
 QDPXX_ND = 4
 QDPXX_NS = 4
+QDPXX_PARALLEL_ARCH = parscalar
+QDPXX_PRECISION = single
 RANLIB = ranlib
 SET_MAKE = 
 SHELL = /bin/sh
+SSE_DSLASH = other_libs/intel_sse_dslash
 STRIP = 
 VERSION = 0.2
 ac_ct_CXX = 
@@ -119,7 +122,7 @@ host_os = linux-gnu
 host_vendor = pc
 includedir = ${prefix}/include
 infodir = ${prefix}/info
-install_sh = /home/ikuro/chroma/config/install-sh
+install_sh = /home/bj/Devel/SciDAC/packages/tmp/chroma/config/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localstatedir = ${prefix}/var
@@ -129,12 +132,9 @@ prefix = /usr/local
 program_transform_name = s,x,x,
 sbindir = ${exec_prefix}/sbin
 sharedstatedir = ${prefix}/com
+subdirs =  other_libs/intel_sse_dslash
 sysconfdir = ${prefix}/etc
-target = i686-pc-linux-gnu
 target_alias = 
-target_cpu = i686
-target_os = linux-gnu
-target_vendor = pc
 
 TOPDIR = ..
 
@@ -145,7 +145,7 @@ INCFLAGS = -I$(TOPDIR)/include
 #
 # Any other compiler flags
 # 
-AM_CXXFLAGS = $(INCFLAGS) -g -O2 -I/usr/local/qdp++/scalar/include -I/usr/include/libxml2
+AM_CXXFLAGS = $(INCFLAGS) -O2 -finline-limit=50000 -O2 -finline-limit=50000 -I/home/bj/Devel/SciDAC/install/qdp++-parscalar-32bit/include -I/usr/include/libxml2 -I/home/bj/Devel/SciDAC/install/qmp/include
 
 lib_LIBRARIES = libchroma.a
 
@@ -163,8 +163,7 @@ HDRS = chroma.h chromabase.h chromainc.h primitives.h common_declarations.h \
 GENERIC_SRCS = $(HDRS) gaus_smear.cc taproj.cc hotst.cc expm12.cc \
                klein_gord.cc mesplq.cc reunit.cc sftmom.cc srcfil.cc \
                readszin.cc su3proj.cc sun_proj.cc hyp_smear.cc laplacian.cc\
-               su2extract.cc sunfill.cc invcg2.cc qprop_io.cc p_src.cc \
-               d_src.cc D_j.cc DjDk.cc laplacian.cc BuildingBlocks.cc
+               su2extract.cc sunfill.cc invcg2.cc qprop_io.cc
 
 #
 # Object files to add if building the Wilson Builds...
@@ -175,7 +174,8 @@ WILSON_SRCS = baryon_w.cc mesons_w.cc lwldslash_w.cc formfac_w.cc \
               unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
               unprec_wilson_dsdu_w.cc  unprec_qprop_w.cc readszinqprop_w.cc \
               readszinferm_w.cc \
-              overlapbu_linop_w.cc
+              overlapbu_linop_w.cc \
+	      p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc
 
 #              zolotarev4d_fermact_w.cc zolotarev4d_linop_w.cc lovlapms_w.cc
 
@@ -208,12 +208,12 @@ am__libchroma_a_SOURCES_DIST = chroma.h chromabase.h chromainc.h \
 	taproj.cc hotst.cc expm12.cc klein_gord.cc mesplq.cc reunit.cc \
 	sftmom.cc srcfil.cc readszin.cc su3proj.cc sun_proj.cc \
 	hyp_smear.cc laplacian.cc su2extract.cc sunfill.cc invcg2.cc \
-	qprop_io.cc p_src.cc d_src.cc D_j.cc DjDk.cc baryon_w.cc \
-	mesons_w.cc lwldslash_w.cc formfac_w.cc sink_smear2_w.cc \
-	barcomp_w.cc transf_w.cc unprec_wilson_fermact_w.cc \
-	unprec_wilson_linop_w.cc unprec_wilson_dsdu_w.cc \
-	unprec_qprop_w.cc readszinqprop_w.cc readszinferm_w.cc \
-	overlapbu_linop_w.cc BuildingBlocks.cc
+	qprop_io.cc baryon_w.cc mesons_w.cc lwldslash_w.cc formfac_w.cc \
+	sink_smear2_w.cc barcomp_w.cc transf_w.cc \
+	unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
+	unprec_wilson_dsdu_w.cc unprec_qprop_w.cc readszinqprop_w.cc \
+	readszinferm_w.cc overlapbu_linop_w.cc p_src_w.cc d_src_w.cc \
+	D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc
 am__objects_1 =
 am__objects_2 = $(am__objects_1) gaus_smear.$(OBJEXT) taproj.$(OBJEXT) \
 	hotst.$(OBJEXT) expm12.$(OBJEXT) klein_gord.$(OBJEXT) \
@@ -221,15 +221,16 @@ am__objects_2 = $(am__objects_1) gaus_smear.$(OBJEXT) taproj.$(OBJEXT) \
 	srcfil.$(OBJEXT) readszin.$(OBJEXT) su3proj.$(OBJEXT) \
 	sun_proj.$(OBJEXT) hyp_smear.$(OBJEXT) laplacian.$(OBJEXT) \
 	su2extract.$(OBJEXT) sunfill.$(OBJEXT) invcg2.$(OBJEXT) \
-	qprop_io.$(OBJEXT) p_src.$(OBJEXT) d_src.$(OBJEXT) \
-	D_j.$(OBJEXT) DjDk.$(OBJEXT) laplacian.$(OBJEXT) BuildingBlocks.$(OBJEXT)
+	qprop_io.$(OBJEXT)
 am__objects_3 = baryon_w.$(OBJEXT) mesons_w.$(OBJEXT) \
 	lwldslash_w.$(OBJEXT) formfac_w.$(OBJEXT) \
 	sink_smear2_w.$(OBJEXT) barcomp_w.$(OBJEXT) transf_w.$(OBJEXT) \
 	unprec_wilson_fermact_w.$(OBJEXT) \
 	unprec_wilson_linop_w.$(OBJEXT) unprec_wilson_dsdu_w.$(OBJEXT) \
 	unprec_qprop_w.$(OBJEXT) readszinqprop_w.$(OBJEXT) \
-	readszinferm_w.$(OBJEXT) overlapbu_linop_w.$(OBJEXT)
+	readszinferm_w.$(OBJEXT) overlapbu_linop_w.$(OBJEXT) \
+	p_src_w.$(OBJEXT) d_src_w.$(OBJEXT) D_j_w.$(OBJEXT) \
+	DjDk_w.$(OBJEXT) BuildingBlocks_w.$(OBJEXT)
 #am_libchroma_a_OBJECTS = $(am__objects_2) \
 #	$(am__objects_1)
 am_libchroma_a_OBJECTS = $(am__objects_2) \
@@ -238,7 +239,8 @@ am__EXTRA_libchroma_a_SOURCES_DIST = baryon_w.cc mesons_w.cc \
 	lwldslash_w.cc formfac_w.cc sink_smear2_w.cc barcomp_w.cc \
 	transf_w.cc unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
 	unprec_wilson_dsdu_w.cc unprec_qprop_w.cc readszinqprop_w.cc \
-	readszinferm_w.cc overlapbu_linop_w.cc
+	readszinferm_w.cc overlapbu_linop_w.cc p_src_w.cc d_src_w.cc \
+	D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc
 nodist_libchroma_a_OBJECTS = $(am__objects_1)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS) \
 	$(nodist_libchroma_a_OBJECTS)
@@ -246,17 +248,17 @@ libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS) \
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
 am__depfiles_maybe = depfiles
-DEP_FILES = ./$(DEPDIR)/D_j.Po ./$(DEPDIR)/DjDk.Po \
-        ./$(DEPDIR)/BuildingBlocks.Po \
+DEP_FILES = ./$(DEPDIR)/BuildingBlocks_w.Po \
+	./$(DEPDIR)/D_j_w.Po ./$(DEPDIR)/DjDk_w.Po \
 	./$(DEPDIR)/barcomp_w.Po ./$(DEPDIR)/baryon_w.Po \
-	./$(DEPDIR)/d_src.Po ./$(DEPDIR)/expm12.Po \
+	./$(DEPDIR)/d_src_w.Po ./$(DEPDIR)/expm12.Po \
 	./$(DEPDIR)/formfac_w.Po ./$(DEPDIR)/gaus_smear.Po \
 	./$(DEPDIR)/hotst.Po ./$(DEPDIR)/hyp_smear.Po \
 	./$(DEPDIR)/invcg2.Po ./$(DEPDIR)/klein_gord.Po \
 	./$(DEPDIR)/laplacian.Po ./$(DEPDIR)/lwldslash_w.Po \
 	./$(DEPDIR)/mesons_w.Po ./$(DEPDIR)/mesplq.Po \
 	./$(DEPDIR)/overlapbu_linop_w.Po \
-	./$(DEPDIR)/p_src.Po ./$(DEPDIR)/qprop_io.Po \
+	./$(DEPDIR)/p_src_w.Po ./$(DEPDIR)/qprop_io.Po \
 	./$(DEPDIR)/readszin.Po \
 	./$(DEPDIR)/readszinferm_w.Po \
 	./$(DEPDIR)/readszinqprop_w.Po \
@@ -335,12 +337,12 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-include ./$(DEPDIR)/D_j.Po
-include ./$(DEPDIR)/DjDk.Po
-include ./$(DEPDIR)/BuildingBlocks.Po
+include ./$(DEPDIR)/BuildingBlocks_w.Po
+include ./$(DEPDIR)/D_j_w.Po
+include ./$(DEPDIR)/DjDk_w.Po
 include ./$(DEPDIR)/barcomp_w.Po
 include ./$(DEPDIR)/baryon_w.Po
-include ./$(DEPDIR)/d_src.Po
+include ./$(DEPDIR)/d_src_w.Po
 include ./$(DEPDIR)/expm12.Po
 include ./$(DEPDIR)/formfac_w.Po
 include ./$(DEPDIR)/gaus_smear.Po
@@ -353,7 +355,7 @@ include ./$(DEPDIR)/lwldslash_w.Po
 include ./$(DEPDIR)/mesons_w.Po
 include ./$(DEPDIR)/mesplq.Po
 include ./$(DEPDIR)/overlapbu_linop_w.Po
-include ./$(DEPDIR)/p_src.Po
+include ./$(DEPDIR)/p_src_w.Po
 include ./$(DEPDIR)/qprop_io.Po
 include ./$(DEPDIR)/readszin.Po
 include ./$(DEPDIR)/readszinferm_w.Po

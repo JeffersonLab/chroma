@@ -2,7 +2,7 @@ AC_INIT(chroma,0.2,edwards@jlab.org)
 AC_PREREQ([2.57])
 AC_CONFIG_AUX_DIR(./config)
 AC_CANONICAL_HOST
-AC_CANONICAL_TARGET
+AC_CANONICAL_BUILD
 
 AM_INIT_AUTOMAKE
 # AC_PRO_MAKE_SET        # (RGE) Causes error: do not find in autoconf docs
@@ -49,6 +49,14 @@ AC_ARG_WITH(qdp,
   [QDPXX_HOME="$with_qdp"]
 )
 
+AC_ARG_ENABLE(sse_wilson_dslash,
+  AC_HELP_STRING( 
+    [--enable-sse-wilson-dslash],
+    [Build and Use the SSE2 Wilson Dslash Library ]),
+    [ BUILD_SSE_WILSON_DSLASH="${enableval}" ],
+    [ BUILD_SSE_WILSON_DSLASH="no" ]
+)
+
 if test "X${QDPXX_HOME}X" = "XX" ; then
   AC_PATH_PROG(QDPXX_CONFIG, [qdp++-config], [])
 else
@@ -83,7 +91,37 @@ else
   AC_MSG_NOTICE([QDP++ number of spin components: ${QDPXX_NS}])
 fi
 
+AC_SUBST(QDPXX_PARALLEL_ARCH, "`${QDPXX_CONFIG} --parallel-arch`")
+AC_MSG_NOTICE([QDP++ parallel arch: ${QDPXX_PARALLEL_ARCH}])
 
+AC_SUBST(QDPXX_PRECISION, "`${QDPXX_CONFIG} --precision`")
+AC_MSG_NOTICE([QDP++ precision: ${QDPXX_PRECISION}])
+
+case $BUILD_SSE_WILSON_DSLASH in
+  yes) 
+        AC_MSG_NOTICE( [ Configuring SSE Dslash ] )
+       	PARALLEL_ARCH="${QDPXX_PARALLEL_ARCH}"
+	PRECISION="${QDPXX_PRECISION}"
+	QMP_CFLAGS="${QDPXX_CXXFLAGS}"
+	QMP_LDFLAGS="${QDPXX_LDFLAGS}"
+	QMP_LIBS="${QDPXX_LIBS}"
+	export PARALLEL_ARCH
+	export PRECISION 
+	export QMP_CFLAGS 
+	export QMP_LDFLAGS 
+	export QMP_LIBS
+	AC_SUBST(SSE_DSLASH, [other_libs/intel_sse_dslash])
+
+	AC_CONFIG_SUBDIRS(other_libs/intel_sse_dslash)
+	;;
+  no)
+	AC_SUBST(SSE_DSLASH)
+	AC_MSG_NOTICE( [ Not building SSE Dslash ] )
+        ;;
+  *)
+	AC_MSG_ERROR( [ Unknown value for --enable-sse-wilson-dslash ] )
+  ;;
+esac 
 dnl
 dnl
 case $ac_fermion_type in
