@@ -1,4 +1,4 @@
-// $Id: io.h,v 1.12 2004-02-23 03:07:25 edwards Exp $
+// $Id: io.h,v 1.13 2004-04-05 19:48:09 edwards Exp $
 
 #ifndef __io_h__
 #define __io_h__
@@ -21,6 +21,7 @@
 
 #include "writeszin.h"
 
+#include "gauge_io.h"
 #include "milc_io.h"
 #include "readmilc.h"
 #include "writemilc.h"
