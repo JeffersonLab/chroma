@@ -1,9 +1,8 @@
-#include "gaugebc_schroedinger.h"
+#include "chromabase.h"
+#include "gaugebc.h"
 
-using namespace QDP;
-using namespace Chroma;
-using namespace std;
- 
+#include "actions/gauge/gaugebcs/gaugebc_schroedinger.h"
+#include "actions/gauge/gaugebcs/gaugebc_factory.h"
 
 namespace Chroma {
 

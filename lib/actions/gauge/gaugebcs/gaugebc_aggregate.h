@@ -1,11 +1,11 @@
 // -*- C++ -*-
-// $Id: gaugebc_aggregate.h,v 1.1 2005-01-13 02:27:42 edwards Exp $
+// $Id: gaugebc_aggregate.h,v 1.2 2005-01-13 02:51:51 edwards Exp $
 /*! \file
- *  \brief All gauge boundary conditions
+ *  \brief Gauge boundary condition aggregator
  */
 
-#ifndef __gaugebcs_h__
-#define __gaugebcs_h__
+#ifndef __gaugebc_aggregate_h__
+#define __gaugebc_aggregate_h__
 
 #include "chromabase.h"
 #include "handle.h"

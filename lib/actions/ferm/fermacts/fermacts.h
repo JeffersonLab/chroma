@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermacts.h,v 1.12 2004-11-20 21:18:08 edwards Exp $
+// $Id: fermacts.h,v 1.13 2005-01-13 02:51:51 edwards Exp $
 
 /*! \file
  * \brief Fermion actions
@@ -7,8 +7,8 @@
  * Various fermion actions
  */
 
-/*! \defgroup fermact Fermion actions
- * \ingroup actions
+/*! \defgroup fermacts Fermion actions
+ * \ingroup fermact
  *
  * Various fermion actions
  */

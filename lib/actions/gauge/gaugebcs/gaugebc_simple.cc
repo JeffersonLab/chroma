@@ -1,13 +1,8 @@
 #include "chromabase.h"
 #include "gaugebc.h"
 
-#include "actions/gauge/gaugebc_simple.h"
-#include "actions/gauge/gaugebc_factory.h"
-
-
-using namespace QDP;
-using namespace Chroma;
-using namespace std;
+#include "actions/gauge/gaugebcs/gaugebc_simple.h"
+#include "actions/gauge/gaugebcs/gaugebc_factory.h"
 
 
 namespace Chroma {

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gauge_monomial.h,v 1.1 2005-01-12 04:43:33 edwards Exp $
+// $Id: gauge_monomial.h,v 1.2 2005-01-13 02:51:51 edwards Exp $
 /*! \file
  *  \brief Generic gauge action monomial wrapper
  */
@@ -11,7 +11,6 @@
 
 #include "update/molecdyn/field_state.h"
 #include "update/molecdyn/abs_monomial.h"
-#include "actions/gauge/gaugeact_factory.h"
 
 namespace Chroma 
 {

@@ -1,14 +1,14 @@
 // -*- C++ -*-
-// $Id: linop.h,v 1.19 2004-12-07 20:21:48 edwards Exp $
+// $Id: linop.h,v 1.20 2005-01-13 02:51:51 edwards Exp $
 
 /*! \file
- * \brief Linear operators
+ * \brief Fermion linear operators
  *
  * Various fermion linear operators
  */
 
-/*! \defgroup linop Linear operators
- * \ingroup actions
+/*! \defgroup linop Fermion linear operators
+ * \ingroup fermact
  *
  * Various fermion linear operators
  */

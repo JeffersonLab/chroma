@@ -1,8 +1,8 @@
 #include "chromabase.h"
 #include "gaugebc.h"
 
-#include "actions/gauge/gaugebc_periodic.h"
-#include "actions/gauge/gaugebc_factory.h"
+#include "actions/gauge/gaugebcs/gaugebc_periodic.h"
+#include "actions/gauge/gaugebcs/gaugebc_factory.h"
 
 
 using namespace QDP;

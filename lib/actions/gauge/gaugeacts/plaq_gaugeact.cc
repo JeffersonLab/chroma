@@ -1,13 +1,12 @@
-// $Id: plaq_gaugeact.cc,v 1.1 2005-01-13 02:02:38 edwards Exp $
+// $Id: plaq_gaugeact.cc,v 1.2 2005-01-13 02:51:51 edwards Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */
 
 #include "chromabase.h"
-#include "actions/gauge/gaugeact_factory.h"
-#include "actions/gauge/gaugebcs.h"
-
-#include "actions/gauge/plaq_gaugeact.h"
+#include "actions/gauge/gaugeacts/plaq_gaugeact.h"
+#include "actions/gauge/gaugeacts/gaugeact_factory.h"
+#include "actions/gauge/gaugebcs/gaugebc_aggregate.h"
 #include "meas/glue/mesplq.h"
 
 

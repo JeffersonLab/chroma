@@ -1,5 +1,5 @@
 //
-// $Id: qprop.h,v 1.7 2004-12-29 22:13:41 edwards Exp $
+// $Id: qprop.h,v 1.8 2005-01-13 02:51:51 edwards Exp $
 
 /*! \file
  * \brief Quark propagator solution routines
@@ -8,7 +8,7 @@
  */
 
 /*! \defgroup qprop Quark propagator solution routines
- * \ingroup actions
+ * \ingroup fermact
  *
  * Routines for computing a quark propagator with various fermion actions
  */

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gaugebcs.h,v 1.2 2005-01-13 02:27:42 edwards Exp $
+// $Id: gaugebcs.h,v 1.3 2005-01-13 02:51:51 edwards Exp $
 /*! \file
  *  \brief All gauge boundary conditions
  */
@@ -14,10 +14,10 @@
 #ifndef __gaugebcsss_h__
 #define __gaugebcsss_h__
 
-#include "actions/gauge/gaugebc_factory.h"
-#include "actions/gauge/gaugebc_periodic.h"
-#include "actions/gauge/gaugebc_simple.h"
-#include "actions/gauge/gaugebc_schroedinger.h"
-#include "actions/gauge/gaugebcs_aggregate.h"
+#include "gaugebc_factory.h"
+#include "gaugebc_periodic.h"
+#include "gaugebc_simple.h"
+#include "gaugebc_schroedinger.h"
+#include "gaugebc_aggregate.h"
 
 #endif

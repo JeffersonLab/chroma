@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermbcs.h,v 1.1 2004-12-24 04:23:20 edwards Exp $
+// $Id: fermbcs.h,v 1.2 2005-01-13 02:51:51 edwards Exp $
 
 /*! \file
  * \brief Fermion Boundary conditions
@@ -8,7 +8,7 @@
  */
 
 /*! \defgroup fermbc Fermion Boundary Conditions
- * \ingroup actions
+ * \ingroup fermact
  *
  * Support for fermion boundary conditions
  */

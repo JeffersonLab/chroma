@@ -1,16 +1,16 @@
 // -*- C++ -*-
-// $Id: invert.h,v 1.6 2004-05-19 00:21:23 bjoo Exp $
+// $Id: invert.h,v 1.7 2005-01-13 02:51:51 edwards Exp $
 
 /*! \file
  * \brief Inverters
  *
- * Various inverter for fermion linear operators
+ * Various inverters for fermion linear operators
  */
 
 /*! \defgroup invert Inverters
  * \ingroup fermact
  *
- * Various inverter for fermion linear operators
+ * Various inverters for fermion linear operators
  */
 
 #ifndef __invert_h__

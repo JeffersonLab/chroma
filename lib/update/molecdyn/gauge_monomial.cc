@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gauge_monomial.cc,v 1.1 2005-01-12 04:43:33 edwards Exp $
+// $Id: gauge_monomial.cc,v 1.2 2005-01-13 02:51:51 edwards Exp $
 /*! \file
  *  \brief Generic gauge action monomial wrapper
  */
@@ -9,10 +9,11 @@
 #include "update/molecdyn/gauge_monomial.h"
 #include "update/molecdyn/monomial_factory.h"
 
-#include "actions/gauge/wilson_gaugeact.h"
-#include "actions/gauge/plaq_gaugeact.h"
-#include "actions/gauge/rect_gaugeact.h"
-#include "actions/gauge/pg_gaugeact.h"
+#include "actions/gauge/gaugeacts/gaugeact_factory.h"
+#include "actions/gauge/gaugeacts/wilson_gaugeact.h"
+#include "actions/gauge/gaugeacts/plaq_gaugeact.h"
+#include "actions/gauge/gaugeacts/rect_gaugeact.h"
+#include "actions/gauge/gaugeacts/pg_gaugeact.h"
 
 #include <string>
 

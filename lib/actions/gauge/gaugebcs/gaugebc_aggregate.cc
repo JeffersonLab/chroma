@@ -1,14 +1,12 @@
-// $Id: gaugebc_aggregate.cc,v 1.1 2005-01-13 02:27:42 edwards Exp $
+// $Id: gaugebc_aggregate.cc,v 1.2 2005-01-13 02:51:51 edwards Exp $
 /*! \file
- *  \brief All gauge BC
+ *  \brief Gauge boundary condition aggregator
  */
 
-#include "actions/gauge/gaugebcs.h"
-
-#warning "OTHER STUFF"
-#include "actions/gauge/gaugebc_factory.h"
-#include "actions/gauge/gaugebc_simple.h"
-#include "actions/gauge/gaugebc_periodic.h"
+#include "actions/gauge/gaugebcs/gaugebc_factory.h"
+#include "actions/gauge/gaugebcs/gaugebc_aggregate.h"
+#include "actions/gauge/gaugebcs/gaugebc_simple.h"
+#include "actions/gauge/gaugebcs/gaugebc_periodic.h"
 
 namespace Chroma
 {

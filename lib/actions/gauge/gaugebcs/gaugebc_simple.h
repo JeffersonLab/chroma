@@ -4,11 +4,8 @@
 #include "chromabase.h"
 #include "gaugebc.h"
 
-using namespace std;
-using namespace QDP;
-using namespace Chroma;
-
-namespace Chroma { 
+namespace Chroma 
+{ 
   
   namespace SimpleGaugeBCEnv { 
     extern const std::string name;
