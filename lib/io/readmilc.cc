@@ -1,4 +1,4 @@
-// $Id: readmilc.cc,v 1.1 2003-10-09 15:45:14 edwards Exp $
+// $Id: readmilc.cc,v 1.2 2003-10-09 16:07:57 edwards Exp $
 
 /*! \file
  *  \brief Read a MILC gauge configuration written in the 1997 format
@@ -17,11 +17,6 @@ using namespace QDP;
 //! Read a MILC configuration file
 /*!
  * \ingroup io
- *
- *   Gauge field layout is (fortran ordering)
- *     u(real/imag,color_row,color_col,site,cb,Nd)
- *         = u(2,Nc,Nc,VOL_CB,2,4)
- *
  *
  * \param header     structure holding config info ( Modify )
  * \param u          gauge configuration ( Modify )
