@@ -1,7 +1,9 @@
-// $Id: t_conslinop.cc,v 1.8 2003-04-09 19:56:11 edwards Exp $
+// $Id: t_conslinop.cc,v 1.9 2003-04-09 20:49:26 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
+
+#define MAIN
 
 #include "chroma.h"
 
