@@ -1,4 +1,4 @@
-/* $Id: zolotarev5d_nonhermop_array_w.cc,v 1.2 2004-05-19 00:21:23 bjoo Exp $
+/* $Id: zolotarev5d_nonhermop_array_w.cc,v 1.3 2004-05-19 11:43:19 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
  */
@@ -71,6 +71,7 @@ Zolotarev5DNonHermOpArray::operator() (multi1d<LatticeFermion>& chi,
     
     
     chi[n] = pmscale*tmp;
+
 
     if( isign == PLUS ) { 
       chi[n] -= alpha[n] * psi[n+1];

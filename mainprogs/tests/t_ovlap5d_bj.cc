@@ -1,4 +1,4 @@
-// $Id: t_ovlap5d_bj.cc,v 1.7 2004-05-19 00:21:23 bjoo Exp $
+// $Id: t_ovlap5d_bj.cc,v 1.8 2004-05-19 11:43:19 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -476,9 +476,9 @@ int main(int argc, char **argv)
   // Make me a linop (this callls the initialise function)
   // Handle<const LinearOperator< multi1d< LatticeFermion > > > D_op(S.lnonHermLinOp(connect_state));
 
-  Handle<const LinearOperator< multi1d< LatticeFermion > > > D_op(S.linOp(connect_state));
+  Handle<const LinearOperator< multi1d< LatticeFermion > > > D_op(S.lnonHermLinOp(connect_state));
 
-  Handle<const LinearOperator< multi1d< LatticeFermion > > > D_MM(S.lMdagM(connect_state));
+  //  Handle<const LinearOperator< multi1d< LatticeFermion > > > D_MM(S.lMdagM(connect_state));
 
 
   push(xml_out, "Zolotarev5DInternal");
@@ -520,8 +520,8 @@ int main(int argc, char **argv)
   // hence tmp5_1 = M^{-dag} M^{-1} chi
   
   // Put solution into psi  check inverse
-  (*D_op)(tmp5_1, chi, MINUS);
-  InvCG1( *D_MM, tmp5_1, psi, params.rsd_cg, params.max_cg, n_count);
+  // (*D_op)(tmp5_1, chi, MINUS);
+  InvBiCGStab( *D_op, chi, psi, params.rsd_cg, params.max_cg, n_count);
 
  
   // Multiply back to check inverse

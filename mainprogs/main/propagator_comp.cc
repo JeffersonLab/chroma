@@ -1,6 +1,9 @@
-// $Id: propagator_comp.cc,v 1.4 2004-05-11 13:29:29 bjoo Exp $
+// $Id: propagator_comp.cc,v 1.5 2004-05-19 11:43:19 bjoo Exp $
 // $Log: propagator_comp.cc,v $
-// Revision 1.4  2004-05-11 13:29:29  bjoo
+// Revision 1.5  2004-05-19 11:43:19  bjoo
+// BiCGStab now works for 4D and 5D but seems not to converge for DWF or ZOLOTAREV5D
+//
+// Revision 1.4  2004/05/11 13:29:29  bjoo
 // Tested lg5eps_w.cc
 //
 // Revision 1.3  2004/04/28 14:04:17  bjoo
@@ -458,10 +461,10 @@ int main(int argc, char **argv)
     state_ptr = S_f->createState(u);
     break;
   case FERM_ACT_DWF:
-    state_ptr = S_f->createState(u);
+    state_ptr = S_f_a->createState(u);
     break;
   case FERM_ACT_UNPRECONDITIONED_DWF:
-    state_ptr = S_f->createState(u);
+    state_ptr = S_f_a->createState(u);
     break;
     
   case FERM_ACT_ZOLOTAREV_4D:

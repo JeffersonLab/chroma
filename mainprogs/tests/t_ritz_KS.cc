@@ -1,4 +1,4 @@
-// $Id: t_ritz_KS.cc,v 1.10 2004-04-15 14:43:25 bjoo Exp $
+// $Id: t_ritz_KS.cc,v 1.11 2004-05-19 11:43:19 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -218,34 +218,48 @@ int main(int argc, char **argv)
   }
   write(xml_out, "szinLamda", szin_lambda);
 
-  // Now get the highest e-value
-  // Negate H
-  Handle<const LinearOperator<LatticeFermion> > MinusH = new lopscl<LatticeFermion, Real>(H, Real(-1.0));
+ 
+  // Now get the absolute value of the  highest e-value
+  // Work with H^{dag}H = M^{dag}M
+  Handle<const LinearOperator<LatticeFermion> > MinusMM = new lopscl<LatticeFermion, Real>(MM, Real(-1.0));
 
+
+  Real hi_RsdR = 1.0e-4;
+  Real hi_RsdA = 1.0e-4;
+  
   multi1d<Real> lambda_high_aux(1);
   multi1d<LatticeFermion> lambda_high_vec(1);
+  gaussian(lambda_high_vec[0]);
+  lambda_high_vec[0] /= sqrt(norm2(lambda_high_vec[0]));
   int n_cg_high;
   XMLBufferWriter high_xml;
+
+  // Initial guess -- upper bound on spectrum
+  lambda_high_aux[0] = Real(8);
+
+
   push(high_xml, "LambdaHighRitz");
 
   // Minus MM ought to produce a negative e-value
   // since MM is herm_pos_def
   // ie minus MM is hermitian -ve definite
-  EigSpecRitzCG( *MinusH,
+  EigSpecRitzCG( *MinusMM,
 		 lambda_high_aux,
 		 lambda_high_vec,
 		 1,
 		 input.ritz_params.Nrenorm,
 		 input.ritz_params.MinKSIter,
 		 input.ritz_params.MaxCG,
-		 input.ritz_params.RsdR,
-		 input.ritz_params.RsdA,
+		 hi_RsdR,
+		 hi_RsdA,
 		 input.ritz_params.RsdZero,
 		 input.ritz_params.ProjApsiP,
 		 n_cg_high,
 		 high_xml);
 
-  lambda_high_aux[0] = -lambda_high_aux[0];
+  lambda_high_aux[0] = sqrt(fabs(lambda_high_aux[0]));
+  QDPIO::cout << "|| lambda_hi || = " << lambda_high_aux[0]  << " hi_Rsd_r = " << hi_RsdR << endl;
+
   xml_out << high_xml;
 
   push(xml_out, "Highest");
@@ -253,11 +267,11 @@ int main(int argc, char **argv)
   write(xml_out, "lambda_hi_szin", Real(lambda_high_aux[0]/(Real(Nd) + input.Mass)));
   pop(xml_out);
 
+  QDPIO::cout << "Writing low eigenvalues/vectors" << endl;
+  writeEigen(input, lambda, psi, lambda_high_aux[0], QDPIO_SERIAL);
+
   pop(xml_out);
   xml_out.close();
-
-  QDPIO::cout << "Writing eigenvalues/vectors" << endl;
-  writeEigen(input, lambda, psi, lambda_high_aux[0], QDPIO_SERIAL);
   QDP_finalize();
     
   exit(0);
