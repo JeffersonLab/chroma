@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.226 2005-01-13 02:49:03 edwards Exp $
+# $Id: Makefile.am,v 1.227 2005-01-13 04:31:42 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -49,10 +49,13 @@ nobase_include_HEADERS = \
 	actions/gauge/gauge.h \
 	actions/gauge/gaugeacts/gaugeacts.h \
 	actions/gauge/gaugeacts/gaugeact_factory.h \
-	actions/gauge/gaugeacts/wilson_gaugeact.h \
 	actions/gauge/gaugeacts/plaq_gaugeact.h \
 	actions/gauge/gaugeacts/rect_gaugeact.h \
 	actions/gauge/gaugeacts/pg_gaugeact.h \
+	actions/gauge/gaugeacts/wilson_gaugeact.h \
+	actions/gauge/gaugeacts/lw_tree_gaugeact.h \
+	actions/gauge/gaugeacts/lw_1loop_gaugeact.h \
+	actions/gauge/gaugeacts/rg_gaugeact.h \
 	actions/gauge/gaugebcs/gaugebcs.h \
 	actions/gauge/gaugebcs/gaugebc_aggregate.h \
 	actions/gauge/gaugebcs/gaugebc_factory.h \
@@ -332,10 +335,13 @@ libchroma_a_SOURCES = \
 	actions/gauge/gaugebcs/gaugebc_aggregate.cc \
 	actions/gauge/gaugebcs/gaugebc_periodic.cc \
 	actions/gauge/gaugebcs/gaugebc_simple.cc \
-	actions/gauge/gaugeacts/wilson_gaugeact.cc \
 	actions/gauge/gaugeacts/plaq_gaugeact.cc \
 	actions/gauge/gaugeacts/rect_gaugeact.cc \
 	actions/gauge/gaugeacts/pg_gaugeact.cc \
+	actions/gauge/gaugeacts/wilson_gaugeact.cc \
+	actions/gauge/gaugeacts/lw_tree_gaugeact.cc \
+	actions/gauge/gaugeacts/lw_1loop_gaugeact.cc \
+	actions/gauge/gaugeacts/rg_gaugeact.cc \
 	io/barcomp_io.cc io/eigen_io.cc io/enum_io/enum_cfgtype_io.cc \
 	io/enum_io/enum_coeffs_io.cc io/enum_io/enum_eigenvectype_io.cc \
 	io/enum_io/enum_fermtype_io.cc \

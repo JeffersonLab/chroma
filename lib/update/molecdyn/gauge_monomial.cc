@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gauge_monomial.cc,v 1.2 2005-01-13 02:51:51 edwards Exp $
+// $Id: gauge_monomial.cc,v 1.3 2005-01-13 04:31:42 edwards Exp $
 /*! \file
  *  \brief Generic gauge action monomial wrapper
  */
@@ -10,10 +10,13 @@
 #include "update/molecdyn/monomial_factory.h"
 
 #include "actions/gauge/gaugeacts/gaugeact_factory.h"
-#include "actions/gauge/gaugeacts/wilson_gaugeact.h"
 #include "actions/gauge/gaugeacts/plaq_gaugeact.h"
 #include "actions/gauge/gaugeacts/rect_gaugeact.h"
 #include "actions/gauge/gaugeacts/pg_gaugeact.h"
+#include "actions/gauge/gaugeacts/wilson_gaugeact.h"
+#include "actions/gauge/gaugeacts/lw_tree_gaugeact.h"
+#include "actions/gauge/gaugeacts/lw_1loop_gaugeact.h"
+#include "actions/gauge/gaugeacts/rg_gaugeact.h"
 
 #include <string>
 
@@ -21,17 +24,6 @@ namespace Chroma
 { 
   namespace GaugeMonomialEnv 
   {
-    //! Callback function for the factory
-    Monomial< multi1d<LatticeColorMatrix>,
-	      multi1d<LatticeColorMatrix> >*
-    createMonomialWilson(XMLReader& xml, const string& path) 
-    {
-      QDPIO::cout << "Create Monomial: " << WilsonGaugeActEnv::name << endl;
-
-      return new GaugeMonomial(WilsonGaugeActEnv::name,
-			       GaugeMonomialParams(xml, path));
-    }
-    
     //! Callback function for the factory
     Monomial< multi1d<LatticeColorMatrix>,
 	      multi1d<LatticeColorMatrix> >*
@@ -65,6 +57,50 @@ namespace Chroma
 			       GaugeMonomialParams(xml, path));
     }
     
+    //! Callback function for the factory
+    Monomial< multi1d<LatticeColorMatrix>,
+	      multi1d<LatticeColorMatrix> >*
+    createMonomialWilson(XMLReader& xml, const string& path) 
+    {
+      QDPIO::cout << "Create Monomial: " << WilsonGaugeActEnv::name << endl;
+
+      return new GaugeMonomial(WilsonGaugeActEnv::name,
+			       GaugeMonomialParams(xml, path));
+    }
+    
+    //! Callback function for the factory
+    Monomial< multi1d<LatticeColorMatrix>,
+	      multi1d<LatticeColorMatrix> >*
+    createMonomialLWTree(XMLReader& xml, const string& path) 
+    {
+      QDPIO::cout << "Create Monomial: " << LWTreeGaugeActEnv::name << endl;
+
+      return new GaugeMonomial(LWTreeGaugeActEnv::name,
+			       GaugeMonomialParams(xml, path));
+    }
+    
+    //! Callback function for the factory
+    Monomial< multi1d<LatticeColorMatrix>,
+	      multi1d<LatticeColorMatrix> >*
+    createMonomialLW1Loop(XMLReader& xml, const string& path) 
+    {
+      QDPIO::cout << "Create Monomial: " << LW1LoopGaugeActEnv::name << endl;
+
+      return new GaugeMonomial(LW1LoopGaugeActEnv::name,
+			       GaugeMonomialParams(xml, path));
+    }
+    
+    //! Callback function for the factory
+    Monomial< multi1d<LatticeColorMatrix>,
+	      multi1d<LatticeColorMatrix> >*
+    createMonomialRG(XMLReader& xml, const string& path) 
+    {
+      QDPIO::cout << "Create Monomial: " << RGGaugeActEnv::name << endl;
+
+      return new GaugeMonomial(RGGaugeActEnv::name,
+			       GaugeMonomialParams(xml, path));
+    }
+    
     //! Register all the objects
     bool registerAll()
     {
@@ -72,9 +108,6 @@ namespace Chroma
       const std::string suffix("_MONOMIAL");
 
       // Use a pattern to register all the qualifying gaugeacts
-      foo &= WilsonGaugeActEnv::registered;
-      foo &= TheMonomialFactory::Instance().registerObject(WilsonGaugeActEnv::name+suffix, 
-							   createMonomialWilson);
       foo &= PlaqGaugeActEnv::registered;
       foo &= TheMonomialFactory::Instance().registerObject(PlaqGaugeActEnv::name+suffix, 
 							   createMonomialPlaq);
@@ -84,6 +117,18 @@ namespace Chroma
       foo &= PgGaugeActEnv::registered;
       foo &= TheMonomialFactory::Instance().registerObject(PgGaugeActEnv::name+suffix, 
 							   createMonomialPg);
+      foo &= WilsonGaugeActEnv::registered;
+      foo &= TheMonomialFactory::Instance().registerObject(WilsonGaugeActEnv::name+suffix, 
+							   createMonomialWilson);
+      foo &= LWTreeGaugeActEnv::registered;
+      foo &= TheMonomialFactory::Instance().registerObject(LWTreeGaugeActEnv::name+suffix, 
+							   createMonomialLWTree);
+      foo &= LW1LoopGaugeActEnv::registered;
+      foo &= TheMonomialFactory::Instance().registerObject(LW1LoopGaugeActEnv::name+suffix, 
+							   createMonomialLW1Loop);
+      foo &= RGGaugeActEnv::registered;
+      foo &= TheMonomialFactory::Instance().registerObject(RGGaugeActEnv::name+suffix, 
+							   createMonomialRG);
       return foo;
     }
 
