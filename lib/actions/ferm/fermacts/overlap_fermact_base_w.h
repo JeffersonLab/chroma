@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: overlap_fermact_base_w.h,v 1.7 2004-05-03 11:21:43 bjoo Exp $
+// $Id: overlap_fermact_base_w.h,v 1.8 2004-05-12 15:45:10 bjoo Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -47,6 +47,9 @@ public:
   virtual const LinearOperator<LatticeFermion>* gamma5HermLinOp(Handle< const ConnectState> state) const { 
     return new lgherm<LatticeFermion>(linOp(state));
   }
+
+  //! Produce a linear operator that gives back gamma_5 eps(H)
+  virtual const LinearOperator<LatticeFermion>* lgamma5epsH(Handle<const ConnectState> state) const = 0;
 
   //! Redefine quark propagator routine for 4D fermions
   /*! 

@@ -1,4 +1,4 @@
-// $Id: overlap_fermact_base_w.cc,v 1.7 2004-04-16 22:03:58 bjoo Exp $
+// $Id: overlap_fermact_base_w.cc,v 1.8 2004-05-12 15:45:10 bjoo Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -8,6 +8,7 @@
 #include "actions/ferm/fermacts/overlap_fermact_base_w.h"
 #include "actions/ferm/invert/invcg1.h"
 #include "actions/ferm/invert/invcg2.h"
+#include "actions/ferm/invert/invsumr.h"
 #include "actions/ferm/invert/minvcg.h"
 #include "actions/ferm/linop/lmdagm.h"
 #include "actions/ferm/linop/lopscl.h"
@@ -80,7 +81,44 @@ OverlapFermActBase::qprop(LatticeFermion& psi,
     InvBiCG (*M, chi, psi, RsdCG, MaxCG, n_count);
     break;
 #endif
-  
+
+  case SUMR_INVERTER:
+    {
+      // Solve by SUMR solver -- for shifted unitary matrices
+      //
+      // Solve zeta I + rho gamma_5 eps(H)
+      // where gamma_5 eps(H) is unitary
+      //
+      // zeta = (1 + mu)/(1-mu)
+      // rho  = 1
+      Real rho = Real(1);
+      Real mu = quark_mass();
+      Complex zeta = cmplx(( Real(1) + mu ) / (Real(1) - mu),0);
+      {
+	Handle<const LinearOperator<LatticeFermion> > U(lgamma5epsH(state));
+	
+	// Now solve:
+	InvSUMR(*U, chi, psi, zeta, rho, RsdCG, MaxCG, n_count);
+	
+	// Restore to normal scaling
+	Real fact = Real(2)/(Real(1) - mu);
+	psi *= fact;
+	
+	
+      }
+
+      // Check back:
+      // Get a proper operator and compute chi- Dpsi
+      Handle<const LinearOperator<LatticeFermion> > D(linOp(state));
+      LatticeFermion Dpsi;
+      (*D)(Dpsi, psi, PLUS);
+      Dpsi = chi - Dpsi;
+      Dpsi /= sqrt(norm2(chi));
+      QDPIO::cout << "OvQprop || chi - D psi || = " << sqrt(norm2(Dpsi))
+		  << "  n_count = " << n_count << " iters" << endl;
+    }
+    break;
+
   default:
     QDP_error_exit("Zolotarev4DFermActBj::qprop Solver Type not implemented\n");
     break;
