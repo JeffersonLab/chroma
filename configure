@@ -272,7 +272,7 @@ PACKAGE_VERSION='0.2'
 PACKAGE_STRING='chroma 0.2'
 PACKAGE_BUGREPORT='edwards@jlab.org'
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE RANLIB ac_ct_RANLIB CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE QDPXX_CONFIG QDPXX_CXXFLAGS QDPXX_LDFLAGS QDPXX_LIBS QDPXX_ND QDPXX_NC QDPXX_NS BUILD_STAGGERED_LIBS_TRUE BUILD_STAGGERED_LIBS_FALSE BUILD_WILSON_LIBS_TRUE BUILD_WILSON_LIBS_FALSE LATEX DVIPS DVIPDF DOXYGEN LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE RANLIB ac_ct_RANLIB QDPXX_CONFIG CXX QDPXX_CXXFLAGS QDPXX_LDFLAGS QDPXX_LIBS QDPXX_ND QDPXX_NC QDPXX_NS BUILD_STAGGERED_LIBS_TRUE BUILD_STAGGERED_LIBS_FALSE BUILD_WILSON_LIBS_TRUE BUILD_WILSON_LIBS_FALSE CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE LATEX DVIPS DVIPDF DOXYGEN LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -811,11 +811,11 @@ if test -n "$ac_init_help"; then
 Optional Features:
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
-  --disable-dependency-tracking Speeds up one-time builds
-  --enable-dependency-tracking  Do not reject slow dependency extractors
   --enable-fermion-type=<fermion type>
                           Set the fermion type (wilson or staggered) default
                           is wilson
+  --disable-dependency-tracking Speeds up one-time builds
+  --enable-dependency-tracking  Do not reject slow dependency extractors
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -1803,13 +1803,300 @@ else
   RANLIB="$ac_cv_prog_RANLIB"
 fi
 
+
+
+
+
+# Check whether --enable-fermion-type or --disable-fermion-type was given.
+if test "${enable_fermion_type+set}" = set; then
+  enableval="$enable_fermion_type"
+
+    case "$enable_fermion_type" in
+      STAG*) ac_fermion_type="staggered" ;;
+      Stag*) ac_fermion_type="staggered" ;;
+      stag*) ac_fermion_type="staggered" ;;
+
+      WIL*)  ac_fermion_type="wilson" ;;
+      Wil*)  ac_fermion_type="wilson" ;;
+      wil*)  ac_fermion_type="wilson" ;;
+
+      *)     ac_fermion_type="$enable_fermion_type" ;;
+    esac
+
+else
+  ac_fermion_type="wilson"
+
+fi;
+
+
+
+# Check whether --with-qdp or --without-qdp was given.
+if test "${with_qdp+set}" = set; then
+  withval="$with_qdp"
+  QDPXX_HOME="$with_qdp"
+
+fi;
+
+if test "X${QDPXX_HOME}X" = "XX" ; then
+  # Extract the first word of "qdp++-config", so it can be a program name with args.
+set dummy qdp++-config; ac_word=$2
+echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
+if test "${ac_cv_path_QDPXX_CONFIG+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  case $QDPXX_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_QDPXX_CONFIG="$QDPXX_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_QDPXX_CONFIG="$as_dir/$ac_word$ac_exec_ext"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+
+  ;;
+esac
+fi
+QDPXX_CONFIG=$ac_cv_path_QDPXX_CONFIG
+
+if test -n "$QDPXX_CONFIG"; then
+  echo "$as_me:$LINENO: result: $QDPXX_CONFIG" >&5
+echo "${ECHO_T}$QDPXX_CONFIG" >&6
+else
+  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+fi
+
+else
+  # Extract the first word of "qdp++-config", so it can be a program name with args.
+set dummy qdp++-config; ac_word=$2
+echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
+if test "${ac_cv_path_QDPXX_CONFIG+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  case $QDPXX_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_QDPXX_CONFIG="$QDPXX_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+as_dummy="${QDPXX_HOME}/bin:${PATH}"
+for as_dir in $as_dummy
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_QDPXX_CONFIG="$as_dir/$ac_word$ac_exec_ext"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+
+  ;;
+esac
+fi
+QDPXX_CONFIG=$ac_cv_path_QDPXX_CONFIG
+
+if test -n "$QDPXX_CONFIG"; then
+  echo "$as_me:$LINENO: result: $QDPXX_CONFIG" >&5
+echo "${ECHO_T}$QDPXX_CONFIG" >&6
+else
+  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+fi
+
+fi
+
+if test "X${QDPXX_CONFIG}X" = "XX" ; then
+  { { echo "$as_me:$LINENO: error: QDP++ configuration program qdp++-config not found." >&5
+echo "$as_me: error: QDP++ configuration program qdp++-config not found." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+{ echo "$as_me:$LINENO: Found QDP++ configuration program ${QDPXX_CONFIG}" >&5
+echo "$as_me: Found QDP++ configuration program ${QDPXX_CONFIG}" >&6;}
+CXX="`${QDPXX_CONFIG} --cxx`"
+
+{ echo "$as_me:$LINENO: QDP++ compiler: ${CXX}" >&5
+echo "$as_me: QDP++ compiler: ${CXX}" >&6;}
+QDPXX_CXXFLAGS="`${QDPXX_CONFIG} --cxxflags`"
+
+{ echo "$as_me:$LINENO: QDP++ compile flags: ${QDPXX_CXXFLAGS}" >&5
+echo "$as_me: QDP++ compile flags: ${QDPXX_CXXFLAGS}" >&6;}
+QDPXX_LDFLAGS="`${QDPXX_CONFIG} --ldflags`"
+
+{ echo "$as_me:$LINENO: QDP++ linking flags: ${QDPXX_LDFLAGS}" >&5
+echo "$as_me: QDP++ linking flags: ${QDPXX_LDFLAGS}" >&6;}
+QDPXX_LIBS="`${QDPXX_CONFIG} --libs`"
+
+{ echo "$as_me:$LINENO: QDP++ libraries flags: ${QDPXX_LIBS}" >&5
+echo "$as_me: QDP++ libraries flags: ${QDPXX_LIBS}" >&6;}
+QDPXX_ND="`${QDPXX_CONFIG} --Nd`"
+
+if test "X${QDPXX_ND}X" = "XX" ; then
+  { { echo "$as_me:$LINENO: error: Cannot determine QDP++ spacetime dimension" >&5
+echo "$as_me: error: Cannot determine QDP++ spacetime dimension" >&2;}
+   { (exit 1); exit 1; }; }
+else
+  { echo "$as_me:$LINENO: QDP++ spacetime dimension: ${QDPXX_ND}" >&5
+echo "$as_me: QDP++ spacetime dimension: ${QDPXX_ND}" >&6;}
+fi
+QDPXX_NC="`${QDPXX_CONFIG} --Nc`"
+
+{ echo "$as_me:$LINENO: QDP++ number of colors: ${QDPXX_NC}" >&5
+echo "$as_me: QDP++ number of colors: ${QDPXX_NC}" >&6;}
+QDPXX_NS="`${QDPXX_CONFIG} --Ns`"
+
+if test "X${QDPXX_NS}X" = "XX" ; then
+  { { echo "$as_me:$LINENO: error: Cannot determine number of spin components in QDP++" >&5
+echo "$as_me: error: Cannot determine number of spin components in QDP++" >&2;}
+   { (exit 1); exit 1; }; }
+else
+  { echo "$as_me:$LINENO: QDP++ number of spin components: ${QDPXX_NS}" >&5
+echo "$as_me: QDP++ number of spin components: ${QDPXX_NS}" >&6;}
+fi
+
+
+case $ac_fermion_type in
+  staggered)
+    if test $QDPXX_NS -ne 1 ; then
+      { { echo "$as_me:$LINENO: error: STAGGERED-like fermions should have Ns=1. Check QDP++" >&5
+echo "$as_me: error: STAGGERED-like fermions should have Ns=1. Check QDP++" >&2;}
+   { (exit 1); exit 1; }; }
+    else
+      { echo "$as_me:$LINENO: Configuring QDP++ Apps with STAGGERED-like fermions" >&5
+echo "$as_me: Configuring QDP++ Apps with STAGGERED-like fermions" >&6;}
+    fi
+    ;;
+  wilson)
+    { echo "$as_me:$LINENO: Configuring QDP++ Apps with WILSON-like fermions" >&5
+echo "$as_me: Configuring QDP++ Apps with WILSON-like fermions" >&6;}
+    ;;
+  *)
+    { { echo "$as_me:$LINENO: error: ${ac_fermion_type}-like fermions not supported yet." >&5
+echo "$as_me: error: ${ac_fermion_type}-like fermions not supported yet." >&2;}
+   { (exit 1); exit 1; }; }
+    ;;
+esac
+
+
+
+if test "X${ac_fermion_type}X" = "XstaggeredX"; then
+  BUILD_STAGGERED_LIBS_TRUE=
+  BUILD_STAGGERED_LIBS_FALSE='#'
+else
+  BUILD_STAGGERED_LIBS_TRUE='#'
+  BUILD_STAGGERED_LIBS_FALSE=
+fi
+
+
+
+if test "X${ac_fermion_type}X" = "XwilsonX"; then
+  BUILD_WILSON_LIBS_TRUE=
+  BUILD_WILSON_LIBS_FALSE='#'
+else
+  BUILD_WILSON_LIBS_TRUE='#'
+  BUILD_WILSON_LIBS_FALSE=
+fi
+
+
+
+echo "$as_me:$LINENO: checking if we can compile/link a simple QDP++ program" >&5
+echo $ECHO_N "checking if we can compile/link a simple QDP++ program... $ECHO_C" >&6
+
+rm -f .deps 2>/dev/null
+mkdir .deps 2>/dev/null
+if test -d .deps; then
+  DEPDIR=.deps
+else
+  # MS-DOS does not allow filenames that begin with a dot.
+  DEPDIR=_deps
+fi
+rmdir .deps 2>/dev/null
+
+
+          ac_config_commands="$ac_config_commands depfiles"
+
+
+am_make=${MAKE-make}
+cat > confinc << 'END'
+doit:
+	@echo done
+END
+# If we don't find an include directive, just comment out the code.
+echo "$as_me:$LINENO: checking for style of include used by $am_make" >&5
+echo $ECHO_N "checking for style of include used by $am_make... $ECHO_C" >&6
+am__include="#"
+am__quote=
+_am_result=none
+# First try GNU make style include.
+echo "include confinc" > confmf
+# We grep out `Entering directory' and `Leaving directory'
+# messages which can occur if `w' ends up in MAKEFLAGS.
+# In particular we don't look at `^make:' because GNU make might
+# be invoked under some other name (usually "gmake"), in which
+# case it prints its new name instead of `make'.
+if test "`$am_make -s -f confmf 2> /dev/null | grep -v 'ing directory'`" = "done"; then
+   am__include=include
+   am__quote=
+   _am_result=GNU
+fi
+# Now try BSD make style include.
+if test "$am__include" = "#"; then
+   echo '.include "confinc"' > confmf
+   if test "`$am_make -s -f confmf 2> /dev/null`" = "done"; then
+      am__include=.include
+      am__quote="\""
+      _am_result=BSD
+   fi
+fi
+
+
+echo "$as_me:$LINENO: result: $_am_result" >&5
+echo "${ECHO_T}$_am_result" >&6
+rm -f confinc confmf
+
+# Check whether --enable-dependency-tracking or --disable-dependency-tracking was given.
+if test "${enable_dependency_tracking+set}" = set; then
+  enableval="$enable_dependency_tracking"
+
+fi;
+if test "x$enable_dependency_tracking" != xno; then
+  am_depcomp="$ac_aux_dir/depcomp"
+  AMDEPBACKSLASH='\'
+fi
+
+
+if test "x$enable_dependency_tracking" != xno; then
+  AMDEP_TRUE=
+  AMDEP_FALSE='#'
+else
+  AMDEP_TRUE='#'
+  AMDEP_FALSE=
+fi
+
+
+
 ac_ext=cc
 ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 if test -n "$ac_tool_prefix"; then
-  for ac_prog in $CCC g++ CC
+  for ac_prog in $CCC g++ c++ gpp aCC CC cxx cc++ cl FCC KCC RCC xlC_r xlC
   do
     # Extract the first word of "$ac_tool_prefix$ac_prog", so it can be a program name with args.
 set dummy $ac_tool_prefix$ac_prog; ac_word=$2
@@ -1851,7 +2138,7 @@ fi
 fi
 if test -z "$CXX"; then
   ac_ct_CXX=$CXX
-  for ac_prog in $CCC g++ CC
+  for ac_prog in $CCC g++ c++ gpp aCC CC cxx cc++ cl FCC KCC RCC xlC_r xlC
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
@@ -2320,84 +2607,11 @@ if test -n "$ac_declaration"; then
   echo '#endif'             >>confdefs.h
 fi
 
-ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-rm -f .deps 2>/dev/null
-mkdir .deps 2>/dev/null
-if test -d .deps; then
-  DEPDIR=.deps
-else
-  # MS-DOS does not allow filenames that begin with a dot.
-  DEPDIR=_deps
-fi
-rmdir .deps 2>/dev/null
-
-
-          ac_config_commands="$ac_config_commands depfiles"
-
-
-am_make=${MAKE-make}
-cat > confinc << 'END'
-doit:
-	@echo done
-END
-# If we don't find an include directive, just comment out the code.
-echo "$as_me:$LINENO: checking for style of include used by $am_make" >&5
-echo $ECHO_N "checking for style of include used by $am_make... $ECHO_C" >&6
-am__include="#"
-am__quote=
-_am_result=none
-# First try GNU make style include.
-echo "include confinc" > confmf
-# We grep out `Entering directory' and `Leaving directory'
-# messages which can occur if `w' ends up in MAKEFLAGS.
-# In particular we don't look at `^make:' because GNU make might
-# be invoked under some other name (usually "gmake"), in which
-# case it prints its new name instead of `make'.
-if test "`$am_make -s -f confmf 2> /dev/null | grep -v 'ing directory'`" = "done"; then
-   am__include=include
-   am__quote=
-   _am_result=GNU
-fi
-# Now try BSD make style include.
-if test "$am__include" = "#"; then
-   echo '.include "confinc"' > confmf
-   if test "`$am_make -s -f confmf 2> /dev/null`" = "done"; then
-      am__include=.include
-      am__quote="\""
-      _am_result=BSD
-   fi
-fi
-
-
-echo "$as_me:$LINENO: result: $_am_result" >&5
-echo "${ECHO_T}$_am_result" >&6
-rm -f confinc confmf
-
-# Check whether --enable-dependency-tracking or --disable-dependency-tracking was given.
-if test "${enable_dependency_tracking+set}" = set; then
-  enableval="$enable_dependency_tracking"
-
-fi;
-if test "x$enable_dependency_tracking" != xno; then
-  am_depcomp="$ac_aux_dir/depcomp"
-  AMDEPBACKSLASH='\'
-fi
-
-
-if test "x$enable_dependency_tracking" != xno; then
-  AMDEP_TRUE=
-  AMDEP_FALSE='#'
-else
-  AMDEP_TRUE='#'
-  AMDEP_FALSE=
-fi
-
-
-
+ac_ext=cc
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 depcc="$CXX"  am_compiler_list=
 
@@ -2479,216 +2693,6 @@ else
   am__fastdepCXX_FALSE=
 fi
 
-
-
-
-
-
-# Check whether --enable-fermion-type or --disable-fermion-type was given.
-if test "${enable_fermion_type+set}" = set; then
-  enableval="$enable_fermion_type"
-
-    case "$enable_fermion_type" in
-      STAG*) ac_fermion_type="staggered" ;;
-      Stag*) ac_fermion_type="staggered" ;;
-      stag*) ac_fermion_type="staggered" ;;
-
-      WIL*)  ac_fermion_type="wilson" ;;
-      Wil*)  ac_fermion_type="wilson" ;;
-      wil*)  ac_fermion_type="wilson" ;;
-
-      *)     ac_fermion_type="$enable_fermion_type" ;;
-    esac
-
-else
-  ac_fermion_type="wilson"
-
-fi;
-
-
-
-# Check whether --with-qdp or --without-qdp was given.
-if test "${with_qdp+set}" = set; then
-  withval="$with_qdp"
-  QDPXX_HOME="$with_qdp"
-
-fi;
-
-if test "X${QDPXX_HOME}X" = "XX" ; then
-  # Extract the first word of "qdp++-config", so it can be a program name with args.
-set dummy qdp++-config; ac_word=$2
-echo "$as_me:$LINENO: checking for $ac_word" >&5
-echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
-if test "${ac_cv_path_QDPXX_CONFIG+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  case $QDPXX_CONFIG in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_QDPXX_CONFIG="$QDPXX_CONFIG" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-  for ac_exec_ext in '' $ac_executable_extensions; do
-  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_QDPXX_CONFIG="$as_dir/$ac_word$ac_exec_ext"
-    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-done
-
-  ;;
-esac
-fi
-QDPXX_CONFIG=$ac_cv_path_QDPXX_CONFIG
-
-if test -n "$QDPXX_CONFIG"; then
-  echo "$as_me:$LINENO: result: $QDPXX_CONFIG" >&5
-echo "${ECHO_T}$QDPXX_CONFIG" >&6
-else
-  echo "$as_me:$LINENO: result: no" >&5
-echo "${ECHO_T}no" >&6
-fi
-
-else
-  # Extract the first word of "qdp++-config", so it can be a program name with args.
-set dummy qdp++-config; ac_word=$2
-echo "$as_me:$LINENO: checking for $ac_word" >&5
-echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
-if test "${ac_cv_path_QDPXX_CONFIG+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  case $QDPXX_CONFIG in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_QDPXX_CONFIG="$QDPXX_CONFIG" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-as_dummy="${QDPXX_HOME}/bin:${PATH}"
-for as_dir in $as_dummy
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-  for ac_exec_ext in '' $ac_executable_extensions; do
-  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_QDPXX_CONFIG="$as_dir/$ac_word$ac_exec_ext"
-    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-done
-
-  ;;
-esac
-fi
-QDPXX_CONFIG=$ac_cv_path_QDPXX_CONFIG
-
-if test -n "$QDPXX_CONFIG"; then
-  echo "$as_me:$LINENO: result: $QDPXX_CONFIG" >&5
-echo "${ECHO_T}$QDPXX_CONFIG" >&6
-else
-  echo "$as_me:$LINENO: result: no" >&5
-echo "${ECHO_T}no" >&6
-fi
-
-fi
-
-if test "X${QDPXX_CONFIG}X" = "XX" ; then
-  { { echo "$as_me:$LINENO: error: QDP++ configuration program qdp++-config not found." >&5
-echo "$as_me: error: QDP++ configuration program qdp++-config not found." >&2;}
-   { (exit 1); exit 1; }; }
-fi
-
-{ echo "$as_me:$LINENO: Found QDP++ configuration program ${QDPXX_CONFIG}" >&5
-echo "$as_me: Found QDP++ configuration program ${QDPXX_CONFIG}" >&6;}
-QDPXX_CXXFLAGS="`${QDPXX_CONFIG} --cxxflags`"
-
-{ echo "$as_me:$LINENO: QDP++ compile flags: ${QDPXX_CXXFLAGS}" >&5
-echo "$as_me: QDP++ compile flags: ${QDPXX_CXXFLAGS}" >&6;}
-QDPXX_LDFLAGS="`${QDPXX_CONFIG} --ldflags`"
-
-{ echo "$as_me:$LINENO: QDP++ linking flags: ${QDPXX_LDFLAGS}" >&5
-echo "$as_me: QDP++ linking flags: ${QDPXX_LDFLAGS}" >&6;}
-QDPXX_LIBS="`${QDPXX_CONFIG} --libs`"
-
-{ echo "$as_me:$LINENO: QDP++ libraries flags: ${QDPXX_LIBS}" >&5
-echo "$as_me: QDP++ libraries flags: ${QDPXX_LIBS}" >&6;}
-QDPXX_ND="`${QDPXX_CONFIG} --Nd`"
-
-if test "X${QDPXX_ND}X" = "XX" ; then
-  { { echo "$as_me:$LINENO: error: Cannot determine QDP++ spacetime dimension" >&5
-echo "$as_me: error: Cannot determine QDP++ spacetime dimension" >&2;}
-   { (exit 1); exit 1; }; }
-else
-  { echo "$as_me:$LINENO: QDP++ spacetime dimension: ${QDPXX_ND}" >&5
-echo "$as_me: QDP++ spacetime dimension: ${QDPXX_ND}" >&6;}
-fi
-QDPXX_NC="`${QDPXX_CONFIG} --Nc`"
-
-{ echo "$as_me:$LINENO: QDP++ number of colors: ${QDPXX_NC}" >&5
-echo "$as_me: QDP++ number of colors: ${QDPXX_NC}" >&6;}
-QDPXX_NS="`${QDPXX_CONFIG} --Ns`"
-
-if test "X${QDPXX_NS}X" = "XX" ; then
-  { { echo "$as_me:$LINENO: error: Cannot determine number of spin components in QDP++" >&5
-echo "$as_me: error: Cannot determine number of spin components in QDP++" >&2;}
-   { (exit 1); exit 1; }; }
-else
-  { echo "$as_me:$LINENO: QDP++ number of spin components: ${QDPXX_NS}" >&5
-echo "$as_me: QDP++ number of spin components: ${QDPXX_NS}" >&6;}
-fi
-
-
-case $ac_fermion_type in
-  staggered)
-    if test $QDPXX_NS -ne 1 ; then
-      { { echo "$as_me:$LINENO: error: STAGGERED-like fermions should have Ns=1. Check QDP++" >&5
-echo "$as_me: error: STAGGERED-like fermions should have Ns=1. Check QDP++" >&2;}
-   { (exit 1); exit 1; }; }
-    else
-      { echo "$as_me:$LINENO: Configuring QDP++ Apps with STAGGERED-like fermions" >&5
-echo "$as_me: Configuring QDP++ Apps with STAGGERED-like fermions" >&6;}
-    fi
-    ;;
-  wilson)
-    { echo "$as_me:$LINENO: Configuring QDP++ Apps with WILSON-like fermions" >&5
-echo "$as_me: Configuring QDP++ Apps with WILSON-like fermions" >&6;}
-    ;;
-  *)
-    { { echo "$as_me:$LINENO: error: ${ac_fermion_type}-like fermions not supported yet." >&5
-echo "$as_me: error: ${ac_fermion_type}-like fermions not supported yet." >&2;}
-   { (exit 1); exit 1; }; }
-    ;;
-esac
-
-
-
-if test "X${ac_fermion_type}X" = "XstaggeredX"; then
-  BUILD_STAGGERED_LIBS_TRUE=
-  BUILD_STAGGERED_LIBS_FALSE='#'
-else
-  BUILD_STAGGERED_LIBS_TRUE='#'
-  BUILD_STAGGERED_LIBS_FALSE=
-fi
-
-
-
-if test "X${ac_fermion_type}X" = "XwilsonX"; then
-  BUILD_WILSON_LIBS_TRUE=
-  BUILD_WILSON_LIBS_FALSE='#'
-else
-  BUILD_WILSON_LIBS_TRUE='#'
-  BUILD_WILSON_LIBS_FALSE=
-fi
-
-
-
-echo "$as_me:$LINENO: checking if we can compile/link a simple QDP++ program" >&5
-echo $ECHO_N "checking if we can compile/link a simple QDP++ program... $ECHO_C" >&6
 
 
 
@@ -3087,20 +3091,6 @@ LIBOBJS=$ac_libobjs
 LTLIBOBJS=$ac_ltlibobjs
 
 
-if test -z "${AMDEP_TRUE}" && test -z "${AMDEP_FALSE}"; then
-  { { echo "$as_me:$LINENO: error: conditional \"AMDEP\" was never defined.
-Usually this means the macro was only invoked conditionally." >&5
-echo "$as_me: error: conditional \"AMDEP\" was never defined.
-Usually this means the macro was only invoked conditionally." >&2;}
-   { (exit 1); exit 1; }; }
-fi
-if test -z "${am__fastdepCXX_TRUE}" && test -z "${am__fastdepCXX_FALSE}"; then
-  { { echo "$as_me:$LINENO: error: conditional \"am__fastdepCXX\" was never defined.
-Usually this means the macro was only invoked conditionally." >&5
-echo "$as_me: error: conditional \"am__fastdepCXX\" was never defined.
-Usually this means the macro was only invoked conditionally." >&2;}
-   { (exit 1); exit 1; }; }
-fi
 if test -z "${BUILD_STAGGERED_LIBS_TRUE}" && test -z "${BUILD_STAGGERED_LIBS_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"BUILD_STAGGERED_LIBS\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
@@ -3112,6 +3102,20 @@ if test -z "${BUILD_WILSON_LIBS_TRUE}" && test -z "${BUILD_WILSON_LIBS_FALSE}"; 
   { { echo "$as_me:$LINENO: error: conditional \"BUILD_WILSON_LIBS\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 echo "$as_me: error: conditional \"BUILD_WILSON_LIBS\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${AMDEP_TRUE}" && test -z "${AMDEP_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"AMDEP\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"AMDEP\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${am__fastdepCXX_TRUE}" && test -z "${am__fastdepCXX_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"am__fastdepCXX\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"am__fastdepCXX\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -3678,7 +3682,18 @@ s,@AWK@,$AWK,;t t
 s,@SET_MAKE@,$SET_MAKE,;t t
 s,@RANLIB@,$RANLIB,;t t
 s,@ac_ct_RANLIB@,$ac_ct_RANLIB,;t t
+s,@QDPXX_CONFIG@,$QDPXX_CONFIG,;t t
 s,@CXX@,$CXX,;t t
+s,@QDPXX_CXXFLAGS@,$QDPXX_CXXFLAGS,;t t
+s,@QDPXX_LDFLAGS@,$QDPXX_LDFLAGS,;t t
+s,@QDPXX_LIBS@,$QDPXX_LIBS,;t t
+s,@QDPXX_ND@,$QDPXX_ND,;t t
+s,@QDPXX_NC@,$QDPXX_NC,;t t
+s,@QDPXX_NS@,$QDPXX_NS,;t t
+s,@BUILD_STAGGERED_LIBS_TRUE@,$BUILD_STAGGERED_LIBS_TRUE,;t t
+s,@BUILD_STAGGERED_LIBS_FALSE@,$BUILD_STAGGERED_LIBS_FALSE,;t t
+s,@BUILD_WILSON_LIBS_TRUE@,$BUILD_WILSON_LIBS_TRUE,;t t
+s,@BUILD_WILSON_LIBS_FALSE@,$BUILD_WILSON_LIBS_FALSE,;t t
 s,@CXXFLAGS@,$CXXFLAGS,;t t
 s,@LDFLAGS@,$LDFLAGS,;t t
 s,@CPPFLAGS@,$CPPFLAGS,;t t
@@ -3694,17 +3709,6 @@ s,@AMDEPBACKSLASH@,$AMDEPBACKSLASH,;t t
 s,@CXXDEPMODE@,$CXXDEPMODE,;t t
 s,@am__fastdepCXX_TRUE@,$am__fastdepCXX_TRUE,;t t
 s,@am__fastdepCXX_FALSE@,$am__fastdepCXX_FALSE,;t t
-s,@QDPXX_CONFIG@,$QDPXX_CONFIG,;t t
-s,@QDPXX_CXXFLAGS@,$QDPXX_CXXFLAGS,;t t
-s,@QDPXX_LDFLAGS@,$QDPXX_LDFLAGS,;t t
-s,@QDPXX_LIBS@,$QDPXX_LIBS,;t t
-s,@QDPXX_ND@,$QDPXX_ND,;t t
-s,@QDPXX_NC@,$QDPXX_NC,;t t
-s,@QDPXX_NS@,$QDPXX_NS,;t t
-s,@BUILD_STAGGERED_LIBS_TRUE@,$BUILD_STAGGERED_LIBS_TRUE,;t t
-s,@BUILD_STAGGERED_LIBS_FALSE@,$BUILD_STAGGERED_LIBS_FALSE,;t t
-s,@BUILD_WILSON_LIBS_TRUE@,$BUILD_WILSON_LIBS_TRUE,;t t
-s,@BUILD_WILSON_LIBS_FALSE@,$BUILD_WILSON_LIBS_FALSE,;t t
 s,@LATEX@,$LATEX,;t t
 s,@DVIPS@,$DVIPS,;t t
 s,@DVIPDF@,$DVIPDF,;t t
