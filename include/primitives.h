@@ -1,4 +1,4 @@
-// $Id: primitives.h,v 1.3 2003-03-26 22:08:14 dgr Exp $
+// $Id: primitives.h,v 1.4 2003-03-29 05:54:15 edwards Exp $
 
 #ifndef PRIMITIVES_INCLUDE
 #define PRIMITIVES_INCLUDE
@@ -78,8 +78,6 @@
 #define RUN_CONT  -1
 #define STAT_CONT  2
 #define STAT_RESTART  3
-#define PLUS  1
-#define MINUS  -1
 #define FORWARD  1
 #define BACKWARD  -1
 #define YES  1
