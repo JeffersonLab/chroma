@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.7 2003-02-16 04:07:14 edwards Exp $
+# $Id: Makefile.am,v 1.8 2003-02-16 20:03:32 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -55,36 +55,33 @@ INCFLAGS = -I$(TOPDIR)/include
 # 
 AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDPXX_CXXFLAGS@
 
+lib_LIBRARIES = libchroma.a
+
 #
 # Various header files. 
 #
-HDRS =  chroma.h primitives.h defs.h common_declarations.h geom.h
+HDRS =  chroma.h chromabase.h chromainc.h primitives.h defs.h common_declarations.h geom.h
+
+#
+# Fermion independent sources
+#
+GENERIC_SRCS = $(HDRS) gaus_smear.cc taproj.cc hotst.cc expm12.cc \
+               klein_gord.cc \
+               mesplq.cc \
+               reunit.cc \
+               srcfil.cc
 
 #
 # Object files to add if building the Wilson Builds...
 # This is OK, since Ns is determined at configure time
 #
-WILSON_SRCS = dslashm_w.cc baryon_w.cc mesons_w.cc
+WILSON_SRCS = dslashm_w.cc baryon_w.cc mesons_w.cc lwldslash_w.cc
 
 #
 # This is the list of files to be used in Staggered Builds
 # This is OK since Ns is determined at configure time 
 #
 STAGGERED_SRCS = 
-
-lib_LIBRARIES = libchroma.a
-
-#
-# These are the permanent source files
-# 
-GENERIC_SRCS = $(HDRS) mesplq.cc reunit.cc geom.cc
-
-#
-# This may need to be substituted depending on arch but
-# for example on the QCDOC
-# 
-libchroma_a_LIBADD = stand_main.o
-libchroma_a_DEPENDENCIES = stand_main.o
 
 #
 # An AM_CONDITIONAL if statement to decide which fermion type
