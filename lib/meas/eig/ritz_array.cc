@@ -1,11 +1,11 @@
-// $Id: ritz.cc,v 1.8 2004-01-28 15:34:41 bjoo Exp $
+// $Id: ritz_array.cc,v 1.1 2004-01-28 15:34:41 bjoo Exp $
 /*! \file
  *  \brief Ritz code for eigenvalues
  */
 
 #include "chromabase.h"
-#include "meas/eig/ritz.h"
-#include "meas/eig/gramschm.h"
+#include "meas/eig/ritz_array.h"
+#include "meas/eig/gramschm_array.h"
 
 using namespace QDP;
 
@@ -101,17 +101,17 @@ using namespace QDP;
  */
 
 template < typename T >
-void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
+void RitzArray_t(const LinearOperator< multi1d<T> >& A, // Herm Pos Def
 	    Real& lambda,               // Current E-value
-	    multi1d<T>& psi_all,        // E-vector array
+	    multi2d<T>& psi_all,        // E-vector array
 	    int N_eig,                  // Current evec index
 	    const Real& Rsd_r,          // Target relative residue
 	    const Real& Rsd_a,          // Target absolute residue
 	    const Real& zero_cutoff,    // if ev-slips below this 
-	    // we consider it to be a zero
+	                                // we consider it to be a zero
 	    int n_renorm,               // Renormalise frequency
 	    int n_min, int n_max,       // minimum / maximum no of iters to do
-		 int MaxCG,                  // Max iters after which we bomb
+	    int MaxCG,                  // Max iters after which we bomb
 	    bool ProjApsiP,             // Project A (?) -- user option
 	    int& n_count,               // No of iters actually taken
 	    Real& final_grad,           // || g || at the end
@@ -121,10 +121,13 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
 {
   START_CODE("Ritz");
   
-  T psi;
-  T p;
-  T Apsi;
-  T Ap;
+  int N5 = psi_all.size1();
+  int n;
+
+  multi1d<T> psi(N5);
+  multi1d<T> p(N5);
+  multi1d<T> Apsi(N5);
+  multi1d<T> Ap(N5);
 
   const OrderedSubset& s = A.subset(); // Subset over which A acts
 
@@ -134,47 +137,68 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
   int N_eig_minus_one = N_eig_index;
 
   // For now equate worry about concrete subsetting later
-  psi = psi_all[N_eig_index];
+  for(n=0; n < N5; n++) { 
+    psi[n] = psi_all[N_eig_index][n];
+  }
 
   // Project out subspace of previous 
-  if( N_eig_minus_one > 0 )
-    GramSchm (psi, psi_all, N_eig_minus_one );
+  if( N_eig_minus_one > 0 ) {
+    GramSchmArray(psi, psi_all, N_eig_minus_one );
+  }
 
   // Normalize
-  Double d = sqrt(norm2(psi));
-  psi /= d;
+  Double dd = norm2(psi[0]);
+  for(n=1; n < N5; n++) {
+    dd += norm2(psi[n]);
+  }
+  dd = sqrt(dd);
+
+  Real d = Real(dd);
+
+  for(n=0; n < N5; n++) { 
+    psi[n] /= dd;
+  }
 
   // Now we can start
   //  Apsi[0]   :=  A . Psi[0]
+  // A expects multi1d.
   A(Apsi, psi, PLUS);
 
   // Project to orthogonal subspace, if wanted 
   // Should not be necessary, following Kalkreuter-Simma **/
   if( N_eig_minus_one > 0 ) {
     if (ProjApsiP) {
-      GramSchm(Apsi, psi_all, N_eig_index);
+      GramSchmArray(Apsi, psi_all, N_eig_index);
     }
   }
   
   //  mu  := < Psi[0] | A Psi[0] > 
-  Double mu = innerProductReal(psi, Apsi);
+  Double mu = innerProductReal(psi[0], Apsi[0]);
+  for(n=1; n < N5; n++) { 
+    mu += innerProductReal(psi[n], Apsi[n]);
+  }
 
   //  p[0] = g[0]   :=  ( A - mu[0] ) Psi[0]  =  Apsi - mu psi */
   lambda = Real(mu);
 
 
   // Psi and Apsi are both projected so p should also be (?)
-  p  = Apsi;
-  p -= lambda * psi;
-    
+  for(n=0; n < N5; n++) { 
+    p[n] = Apsi[n];
+    p[n] -= lambda * psi[n];
+  }
+
   //  g2 = p2 = |g[0]|^2 = |p[0]|^2
   Double g2;
   Double p2;
   Double g2_0;
   Double g2_p;
 
-  g2 = norm2(p);
-  
+  g2 = norm2(p[0]);
+  for(n=1; n < N5; n++) { 
+    g2 += norm2(p[n]);
+  }
+
   // Keep hold of initial g2
   g2_0 = g2;
   p2 = g2;
@@ -256,6 +280,7 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
   const Double two = Double(2);
   const Double half = Double(0.5);
   Complex xp;
+  DComplex dxp;
 
   Double st, ct; // Sin theta, cos theta
   
@@ -270,19 +295,22 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
     //  Project to orthogonal subspace, if wanted 
     if( N_eig_minus_one > 0 ) { 
       if (ProjApsiP) {
-	GramSchm(Ap, psi_all, N_eig_minus_one);
+	GramSchmArray(Ap, psi_all, N_eig_minus_one);
       }
     }
 
     //  d = < p | A p > 
-    d = Double(innerProductReal(p, Ap));
+    dd = Double(innerProductReal(p[0], Ap[0]));
+    for(n=1; n < N5; n++) { 
+      dd += Double(innerProductReal(p[n], Ap[n]));
+    }
 
     // Minimise Ritz functional along circle.
     // Work out cos theta and sin theta
     // See internal report cited above for details
-    d = d / p2;
-    s1 = half * (mu+d);
-    s2 = half * (mu-d);
+    dd = dd / p2;
+    s1 = half * (mu+dd);
+    s2 = half * (mu-dd);
     p2 = sqrt(p2);
     p2 = one / p2;
     s3 = g2 * p2;
@@ -290,17 +318,17 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
 
     if( toBool (a >= s3) )
     {
-      d = s3 / s2;
-      d = one + d*d;
-      d = sqrt(d);
-      a *= d;
+      dd = s3 / s2;
+      dd = one + dd*dd;
+      dd = sqrt(dd);
+      a *= dd;
     }
     else
     {
-      d = s2 / s3;
-      d = one + d*d;
-      d = sqrt(d);
-      a = s3 * d;
+      dd = s2 / s3;
+      dd = one + dd*dd;
+      dd = sqrt(dd);
+      a = s3 * dd;
     }
 
     s2 /= a;			// Now s2 is cos(delta) 
@@ -309,18 +337,18 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
     if( toBool( s2 > 0)  )
     {
       s2 = half * (one+s2);
-      d  = -sqrt(s2);		// Now d is sin(theta) 
-      s2 = -half * s3 / d;	// Now s2 is cos(theta)
+      dd  = -sqrt(s2);		// Now d is sin(theta) 
+      s2 = -half * s3 / dd;	// Now s2 is cos(theta)
     }
     else
     {
       s2 = half * (one-s2);
       s2 = sqrt(s2);		// Now s2 is cos(theta)
-      d = -half * s3 / s2;	// Now d is sin(theta)
+      dd = -half * s3 / s2;	// Now d is sin(theta)
     }
 
     // mu[k] = mu[k-1] - 2 a d^2
-    mu -= two * a * d * d;
+    mu -= two * a * dd * dd;
     lambda = Real(mu);
 
     // del_lamb is the change in lambda 
@@ -328,25 +356,30 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
     // we may have to revisit
     // del_lam = Real(s1);
 
-    st = d*p2;		       // Now st is sin(theta)/|p|
+    st = dd*p2;		       // Now st is sin(theta)/|p|
     ct = s2;	               // Now ct is cos(theta)
 
     //  Psi[k] = ct Psi[k-1] + st p[k-1] 
     //  Apsi[k] = ct Apsi[k-1] + st Ap
-    psi  *= Real(ct);
-    psi  += p * Real(st);
-    Apsi *= Real(ct);
-    Apsi += Ap * Real(st);
-    
+    for(n=0; n < N5; n++) { 
+      psi[n]  *= Real(ct);
+      psi[n]  += p[n] * Real(st);
+      Apsi[n] *= Real(ct);
+      Apsi[n] += Ap[n] * Real(st);
+    }
 
     //  Ap = g[k] = Apsi[k] - mu[k] Psi[k]
-    Ap = Apsi - psi*lambda;
-    
+    for(n=0; n < N5; n++) { 
+      Ap[n] = Apsi[n] - psi[n]*lambda;
+    }
 
     //  g2  =  |g[k]|**2 = |Ap|**2
     s1 = g2;			// Now s1 is |g[k-1]|^2
     g2_p = g2;                  // g2_p is g2 "previous" 
-    g2 = norm2(Ap);
+    g2 = norm2(Ap[0]);
+    for(n=1; n < N5; n++) {
+      g2 += norm2(Ap[n]);
+    }
 
     // Convergence test
     // Check for min_KS / max_KS iters done
@@ -413,13 +446,21 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
 
       // Project onto orthog subspace
       if( N_eig_minus_one > 0 ) { 
-	GramSchm(psi, psi_all, N_eig_minus_one);
+	GramSchmArray(psi, psi_all, N_eig_minus_one);
       }
 
       // Renormalise
-      d = sqrt(norm2(psi));
-      psi /= d;
-      d -= one;
+      dd = norm2(psi[0]);
+      for(n=0; n < N5; n++) { 
+	dd += norm2(psi[n]);
+      }
+      dd = sqrt(dd);
+
+      for(n=0; n < N5; n++) { 
+	psi[n] /= Real(dd);
+      }
+
+      dd -= one;
       
 
       // Print out info about convergence 
@@ -440,18 +481,33 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
       // Apsi = A psi 
       A( Apsi, psi, PLUS);
       s1 = mu;
-      mu = innerProductReal(psi, Apsi);
+      mu = innerProductReal(psi[0], Apsi[0]);
+      for(n=1; n < N5; n++) { 
+	mu += innerProductReal(psi[n], Apsi[n]);
+      }
+
       lambda = Real(mu);
 #if 0
       QDPIO::cout << "Mu-s at convergence: old " << s1 << " vs " << mu << endl;
 
 #endif
       // Copy vector back into psi array.
-      psi_all[N_eig_index] = psi;
+      for(n=0; n < N5; n++) { 
+	psi_all[N_eig_index][n] = psi[n];
+      }
 
       // Work out final gradient 
-      Ap = Apsi - psi*lambda;
-      final_grad = sqrt(norm2(Ap));
+      for(n=0; n < N5; n++) { 
+	Ap[n] = Apsi[n] - psi[n]*lambda;
+      }
+
+      dd = norm2(Ap[0]);
+      for(n=1; n < N5; n++) { 
+	dd += norm2(Ap[n]);
+      }
+      dd = sqrt(dd);
+      final_grad = Real(dd);
+
       END_CODE("Ritz");
       return;
 
@@ -463,94 +519,128 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
     b = ct * g2/g2_p;
 
     ct *= 0.05 * b;
-    d = sqrt(g2);
-    ct /= p2*d;
+    dd = sqrt(g2);
+    ct /= p2*dd;
 
     // If beta gets very big, 
     if( toBool( ct > Double(1))  ) {
+      
       /* Restart: p[k] = g[k] = Ap */
       QDPIO::cout << "Restart at iter " << k << " since beta = " << b << endl;
-      p = Ap;
+      for(n=0; n < N5; n++) { 
+	p[n] = Ap[n];
+      }
     }
-    else    {
+    else {
       /* xp = < Psi[k] | p[k-1] > */
-      xp = innerProduct(psi, p);
+      dxp = innerProduct(psi[0], p[0]);
+      for(n=1; n < N5; n++) { 
+	dxp += innerProduct(psi[n], p[n]);
+      }
+
+      xp = cmplx(Real(real(dxp)), Real(imag(dxp)));
 
       /* p[k] = g[k] + b (p[k-1] - xp psi[k]) */
-      p -= psi * xp;
-      p *= b;
-      p += Ap;
+      for(n=0; n < N5; n++) { 
+        p[n] -= psi[n] * xp;
+	p[n] *= Real(b);
+	p[n] += Ap[n];
+      }
     }
 
-    if( k % n_renorm == 0 )
-    {
+    if( k % n_renorm == 0 ) {
       /* Renormalize, and re-orthogonalize */
       /*  Project to orthogonal subspace  */
       if( N_eig_minus_one > 0 ) {
-	GramSchm (psi, psi_all, N_eig_minus_one);
+	GramSchmArray(psi, psi_all, N_eig_minus_one);
       }
+
       /* Normalize */
-      d = sqrt(norm2(psi));
-
-      ct = Double(1)/d;
-      psi *= ct;
-      d -= one;
-
+      dd = norm2(psi[0]);
+      for(n=1; n < N5; n++) { 
+	dd += norm2(psi[n]);
+      }
+      
+      dd = sqrt(dd);
+      ct = Double(1)/dd;
+      for(n=0; n < N5; n++) { 
+	psi[n] /= Real(dd);
+      }
+      dd -= one;
+	
       //  Apsi  :=  A . Psi 
       A(Apsi, psi, PLUS);
-
+	
       // Project to orthogonal subspace, if wanted 
       // Should not be necessary, following Kalkreuter-Simma
       if (ProjApsiP) {
-	GramSchm (Apsi, psi_all, N_eig_index);
+	GramSchmArray(Apsi, psi_all, N_eig_index);
       }
-
+	
       //  mu  := < Psi | A Psi > 
-      mu = innerProductReal(psi, Apsi);
-
+      mu = innerProductReal(psi[0], Apsi[0]);
+      for(n=1; n < N5; n++) { 
+	mu += innerProductReal(psi[n], Apsi[n]);
+      }
+	
       /*  g[k] = Ap = ( A - mu ) Psi  */
       lambda = Real(mu);
-      Ap = Apsi;
-      Ap -= psi * lambda;
-      
-
+      for(n=0; n < N5; n++) {
+	Ap[n] = Apsi[n];
+	Ap[n] -= psi[n] * lambda;
+      }
+	
       /*  g2  =  |g[k]|**2 = |Ap|**2 */
-      g2 = norm2(Ap);
-
+      g2 = norm2(Ap[0]);
+      for(n=1; n < N5; n++) { 
+	g2 += norm2(Ap[n]);
+      }
+	
       /*  Project p[k] to orthogonal subspace  */
       if( N_eig_minus_one > 0 ) { 
-	GramSchm (p, psi_all, N_eig_minus_one);
+	GramSchmArray(p, psi_all, N_eig_minus_one);
       }
       
       /*  Make p[k] orthogonal to Psi[k]  */
-      GramSchm (p, psi);
+      GramSchmArray(p, psi);
 
       /*  Make < g[k] | p[k] > = |g[k]|**2: p[k] = p_old[k] + xp g[k],
 	  xp = (g2 - < g | p_old >) / g2; g[k] = Ap */
       p2 = 0;
       ct = Double(1) / g2;
-      xp =  Real(ct)*(cmplx(Real(g2),Real(0)) - innerProduct(Ap, p));
 
+      dxp = innerProduct(Ap[0], p[0]);
+      for(n=1; n < N5; n++) { 
+	dxp += innerProduct(Ap[n], p[n]);
+      }
 
-      p += Ap * xp;
+      dxp = ct*(cmplx(g2, Double(0))  - dxp);
+      xp =  cmplx(Real(real(dxp)), Real(imag(dxp)));
+	
+      for(n=0; n < N5; n++) { 
+	p[n] += Ap[n] * xp;
+      }
     }
-    else if (ProjApsiP && N_eig_minus_one > 0)
-    {
+    else if (ProjApsiP && N_eig_minus_one > 0) {
       /*  Project psi and p to orthogonal subspace  */
       if( N_eig_minus_one > 0 ) { 
-	GramSchm (psi,  psi_all, N_eig_minus_one);
-	GramSchm (p, psi_all, N_eig_minus_one);
+	GramSchmArray(psi,  psi_all, N_eig_minus_one);
+	GramSchmArray(p, psi_all, N_eig_minus_one);
       }
     }
 
     /*  p2  =  |p[k]|**2 */
-    p2 = norm2(p);
-
+    p2 = norm2(p[0]);
+    for( n=1; n < N5; n++) { 
+      p2 = norm2(p[n]);
+    }
   }
 
   /*  Copy psi back into psi_all(N_eig-1)  */
- 
-  psi_all[N_eig_index] = psi;
+  for(n=0; n < N5; n++) { 
+    psi_all[N_eig_index][n] = psi[n];
+  }
+  
   n_count = MaxCG;
   final_grad = sqrt(g2);
   QDPIO::cerr << "too many CG/Ritz iterations: n_count=" << n_count
@@ -563,9 +653,9 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
 
 
 
-void Ritz(const LinearOperator<LatticeFermion>& A,   // Herm Pos Def
+void Ritz(const LinearOperator<multi1d<LatticeFermion> >& A,   // Herm Pos Def
 	  Real& lambda,                            // Current E-value
-	  multi1d<LatticeFermion>& psi_all,        // E-vector array
+	  multi2d<LatticeFermion>& psi_all,        // E-vector array
 	  int N_eig,                  // Current evec index
 	  const Real& Rsd_r,          // Target relative residue
 	  const Real& Rsd_a,          // Absolute target residue
@@ -581,8 +671,8 @@ void Ritz(const LinearOperator<LatticeFermion>& A,   // Herm Pos Def
 	  const Real& delta_cycle,    // Initial error estimate (KS mode)
 	  const Real& gamma_factor)   // Convergence factor Gamma
 {
-  Ritz_t(A, lambda, psi_all, N_eig, Rsd_r, Rsd_a, zero_cutoff, 
-	      n_renorm, n_min, n_max, MaxCG,
-	      ProjApsiP, n_count, final_grad, 
-	      Kalk_Sim, delta_cycle, gamma_factor);
+  RitzArray_t(A, lambda, psi_all, N_eig, Rsd_r, Rsd_a, zero_cutoff, 
+	 n_renorm, n_min, n_max, MaxCG,
+	 ProjApsiP, n_count, final_grad, 
+	 Kalk_Sim, delta_cycle, gamma_factor);
 }

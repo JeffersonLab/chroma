@@ -1,14 +1,14 @@
-/* ! $Id: eig_spec_bj_w.h,v 1.7 2004-01-27 11:50:08 bjoo Exp $ */
+/* ! $Id: eig_spec_array.h,v 1.1 2004-01-28 15:34:41 bjoo Exp $ */
 
-#ifndef __eig_spec_bj_w_h__
-#define __eig_spec_bj_w_h__
+#ifndef __eig_spec_bj_array_w_h__
+#define __eig_spec_bj_array_w_h__
 
 #include "chromabase.h"
 #include "linearop.h"
 
-void EigSpecRitzCG(const LinearOperator<LatticeFermion>& H, // Herm pos def operator
+void EigSpecRitzCG(const LinearOperator< multi1d<LatticeFermion> >& H, // Herm pos def operator
 		   multi1d<Real>& lambda_H,          // E-values
-		   multi1d<LatticeFermion>& psi,     // E-vectors
+		   multi2d<LatticeFermion>& psi,     // E-vectors
 		   int n_eig,                       // no of eig wanted
 		   int n_renorm,                    // renorm frequency
 		   int n_min,                       // minimum iters / e_value
@@ -25,9 +25,9 @@ void EigSpecRitzCG(const LinearOperator<LatticeFermion>& H, // Herm pos def oper
 		   XMLBufferWriter& xml_out         // Diagnostics
 	      );
 
-void EigSpecRitzKS(const LinearOperator<LatticeFermion>& H, // Herm pos def operator
+void EigSpecRitzKS(const LinearOperator<multi1d<LatticeFermion> >& H, // Herm pos def operator
 		   multi1d<Real>& lambda_H,          // E-values
-		   multi1d<LatticeFermion>& psi,     // E-vectors
+		   multi2d<LatticeFermion>& psi,     // E-vectors
 		   int n_eig,                       // no of eig wanted
 		   int n_dummy,                     // No of Dummy e-vals to use
 
@@ -52,10 +52,10 @@ void EigSpecRitzKS(const LinearOperator<LatticeFermion>& H, // Herm pos def oper
 	      );
 
 
-void fixMMev2Mev(const LinearOperator<LatticeFermion>& M,  // The Op to fix to
+void fixMMev2Mev(const LinearOperator<multi1d<LatticeFermion> >& M,  // The Op to fix to
 		 multi1d<Real>& lambda,                    // The Evals of M^{dag}M on input
 		                                           // The Evals of M on output        
-		 multi1d<LatticeFermion>& ev_psi,          // The Evecs corresponding to lambda
+		 multi2d<LatticeFermion>& ev_psi,          // The Evecs corresponding to lambda
 		 const int n_eig,                          // The no of evals/evecs to deal with
 		 const Real& Rsd_r,                       // Relative error
 		 const Real& Rsd_a,                       // Absolute error

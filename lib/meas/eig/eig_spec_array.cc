@@ -1,4 +1,4 @@
-// $Id: eig_spec_bj_w.cc,v 1.7 2004-01-27 11:50:08 bjoo Exp $
+// $Id: eig_spec_array.cc,v 1.1 2004-01-28 15:34:41 bjoo Exp $
 /*! \file
  *  \brief Compute low lying eigenvalues of the hermitian H
  */
@@ -10,9 +10,9 @@
 
 using namespace std;
 
-#include "meas/eig/eig_spec_bj_w.h"
-#include "meas/eig/ritz.h"
-#include "meas/eig/sn_jacob.h"
+#include "meas/eig/eig_spec_bj_array_w.h"
+#include "meas/eig/ritz_array.h"
+#include "meas/eig/sn_jacob_array.h"
 
 
 using namespace QDP;
@@ -42,9 +42,9 @@ using namespace QDP;
  */
 
 
-void EigSpecRitzCG(const LinearOperator<LatticeFermion>& M, // Herm pos def operator
+void EigSpecRitzCG(const LinearOperator<multi1d<LatticeFermion> >& M, // Herm pos def operator
 		   multi1d<Real>& lambda_H,          // E-values
-		   multi1d<LatticeFermion>& psi,     // E-vectors
+		   multi2d<LatticeFermion>& psi,     // E-vectors
 		   int n_eig,                        // No of e-values to find
 		   int n_renorm,                     // renorm frequency
 		   int n_min,                        // minimum iters / e_value
@@ -97,16 +97,6 @@ void EigSpecRitzCG(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
     if( toBool( fabs(lambda_H[i]) < zero_cutoff ) ) { 
       QDPIO::cout << "Evalue["<< n << "] = " << lambda_H[i] << " is considered zero" << endl;
     }
-    else {
-      LatticeFermion   D_e;
-      LatticeFermion  lambda_e;
-      M(D_e, psi[i], PLUS);
-      lambda_e = lambda_H[i]*psi[i];
-      D_e -= lambda_e;
-      Double r_norm = sqrt(norm2(D_e));
-      resid_rel[i] = Real(r_norm)/lambda_H[i];
-      QDPIO::cout << "Evalue["<<n<<"]: eigen_norm = " << r_norm << " resid_rel = " << resid_rel[i] << endl << endl;
-    }
   }
 
   // All EV-s done. Dump-em
@@ -122,9 +112,9 @@ void EigSpecRitzCG(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
 }
 
 
-void EigSpecRitzKS(const LinearOperator<LatticeFermion>& M, // Herm pos def operator
+void EigSpecRitzKS(const LinearOperator<multi1d<LatticeFermion> >& M, // Herm pos def operator
 		   multi1d<Real>& lambda_H,          // E-values
-		   multi1d<LatticeFermion>& psi,     // E-vectors
+		   multi2d<LatticeFermion>& psi,     // E-vectors
 		   int n_eig,                       // no of eig wanted
 		   int n_dummy,                     // No of Dummy e-vals to use
 
@@ -157,7 +147,7 @@ void EigSpecRitzKS(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
   }
 
   // Make sure psi is large enough
-  if( psi.size() < (n_eig + n_dummy) ) {
+  if( psi.size2() < (n_eig + n_dummy) ) {
     QDP_error_exit("psi is too small to hold n_eig + n_dummy values\n");
   }
 
@@ -165,6 +155,7 @@ void EigSpecRitzKS(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
     QDP_error_exit("n_eig must be > 0. it is %d\n", n_eig);
   }
 
+  int N5 = psi.size1();
 
   if( n_eig ==1 ) { 
     // if n_eig is one, KS algorithm is not applicable. We revert to the 
@@ -235,11 +226,14 @@ void EigSpecRitzKS(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
 
     // M_ij = (psi_j, M psi_i )
     //
-    LatticeFermion tmp;
+    multi1d<LatticeFermion> tmp(N5);
     for(i=0, ij=0; i < n_working_eig; i++) { 
       M(tmp, psi[i], PLUS);
       for(j=0; j < i; j++) { 
-	off_diag[ij] = innerProduct(psi[j], tmp);
+	off_diag[ij] = innerProduct(psi[j][0], tmp[0]);
+	for(int n = 1; n < N5; n++) { 
+	  off_diag[ij] += innerProduct(psi[j][n], tmp[n]);
+	}
 	ij++;
       }
     }
@@ -249,7 +243,7 @@ void EigSpecRitzKS(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
     // Now diagonalise it, rotate evecs, and sort
     // 
     // Jacobi at the moment works with the absolute error
-    SN_Jacob(psi, n_working_eig, lambda_intern, off_diag, Rsd_a, 50, n_jacob);
+    SN_Jacob_Array(psi, n_working_eig, lambda_intern, off_diag, Rsd_a, 50, n_jacob);
     n_jacob_tot += n_jacob;
 
     write(xml_out, "n_jacob", n_jacob);
@@ -283,13 +277,16 @@ void EigSpecRitzKS(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
       for(i=0, ij=0; i < n_eig; i++) { 
 	M(tmp, psi[i], PLUS);
 	for(j=0; j < i; j++) { 
-	  off_diag[ij] = innerProduct(psi[j], tmp);
+	  off_diag[ij] = innerProduct(psi[j][0], tmp[0]);
+	  for(int n=1; n < N5; n++) { 
+	    off_diag[ij] += innerProduct(psi[j][n], tmp[n]);
+	  }
 	  ij++;
 	}
       }
 
       // Diagonalise, rotate, sort
-      SN_Jacob(psi, n_eig, lambda_intern, off_diag, Rsd_a, 50, n_jacob);
+      SN_Jacob_Array(psi, n_eig, lambda_intern, off_diag, Rsd_a, 50, n_jacob);
       write(xml_out, "final_n_jacob", n_jacob);
       write(xml_out, "n_cg_tot", n_cg_tot);
       write(xml_out, "n_KS", n_KS);
@@ -318,10 +315,10 @@ void EigSpecRitzKS(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
 }
 
 
-void fixMMev2Mev(const LinearOperator<LatticeFermion>& M,  // The Op to fix to
+void fixMMev2Mev(const LinearOperator< multi1d<LatticeFermion> >& M,  // The Op to fix to
 		 multi1d<Real>& lambda,       // The Evals of M^{dag}M on input
 		                             // The Evals of M on output 
-		 multi1d<LatticeFermion>& ev_psi,  // The Evecs 
+		 multi2d<LatticeFermion>& ev_psi,  // The Evecs 
 		 const int n_eig,             // The no of evals/evecs 
 		 const Real& Rsd_r,           // Relative error for validity
 		 const Real& Rsd_a,           // Absolute error for validity
@@ -337,15 +334,17 @@ void fixMMev2Mev(const LinearOperator<LatticeFermion>& M,  // The Op to fix to
     QDP_error_exit("n_eig greater than size of lambda array\n");
   }
 
-  if( lambda.size() != ev_psi.size() ) { 
+  if( lambda.size() != ev_psi.size2() ) { 
     QDP_error_exit("lambda and ev_psi arrays must have same size\n");
   }
 
   // Make the valid eig the right size
   valid_eig.resize(n_eig);
 
+  int N5 = ev_psi.size1();
+
   // Temporaries 
-  LatticeFermion tmp;
+  multi1d<LatticeFermion> tmp(N5);
   Double lambda_H_sq;
   Double delta_lambda;
   bool zeroMatchedP;
@@ -354,8 +353,10 @@ void fixMMev2Mev(const LinearOperator<LatticeFermion>& M,  // The Op to fix to
 
   if( n_eig == 1 ) {                  // only one eigenvalue
     M(tmp, ev_psi[0], PLUS);
-    Double lambda_fix_single = innerProductReal(ev_psi[0], tmp);
-    
+    Double lambda_fix_single = innerProductReal(ev_psi[0][0], tmp[0]);
+    for(int n=1; n < N5; n++) { 
+      lambda_fix_single += innerProductReal(ev_psi[0][n], tmp[n]);
+    }
     // No diagonalisation needed -- only 1 eval
 
     // We square lambda_fix_single.
@@ -416,16 +417,22 @@ void fixMMev2Mev(const LinearOperator<LatticeFermion>& M,  // The Op to fix to
 
   for(int i=0, ij=0; i < n_eig; i++) { 
     M(tmp, ev_psi[i], PLUS); 
-    lambda_fix[i] = innerProductReal(ev_psi[i], tmp);
-    
+    lambda_fix[i] = innerProductReal(ev_psi[i][0], tmp[0]);
+    for(int n=1; n < N5; n++) { 
+      lambda_fix[i] += innerProductReal(ev_psi[i][n], tmp[n]);
+    }
+
     for(int j=0; j < i; j++) { 
-      off_diag[ij] = innerProduct(ev_psi[j], tmp);
+      off_diag[ij] = innerProduct(ev_psi[j][0], tmp[0]);
+      for(int n=1; n < N5; n++) { 
+	off_diag[ij] += innerProduct(ev_psi[j][n], tmp[n]);
+      }
       ij++;
     }
   }
     
   // Diagonalise and sort according to size
-  SN_Jacob(ev_psi, n_eig, lambda_fix, off_diag, Rsd_a, 50, n_jacob);
+  SN_Jacob_Array(ev_psi, n_eig, lambda_fix, off_diag, Rsd_a, 50, n_jacob);
 
   // Now the tricky business of matching up with ev-s of H^2
   n_valid = 0;
@@ -478,9 +485,9 @@ void fixMMev2Mev(const LinearOperator<LatticeFermion>& M,  // The Op to fix to
 	  
 	  // swap lambda[j] with lambda[valid_eig];
 	  // so we don't search it again
-	  Real tmp = lambda[j];
+	  Real ftmp = lambda[j];
 	  lambda[j] = lambda[n_valid];
-	  lambda[n_valid] = tmp;
+	  lambda[n_valid] = ftmp;
 
 	  // Increase the validity count
 	  n_valid++;
