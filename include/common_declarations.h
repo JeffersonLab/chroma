@@ -1,4 +1,4 @@
-// $Id: common_declarations.h,v 1.5 2003-04-07 04:47:49 edwards Exp $
+// $Id: common_declarations.h,v 1.6 2003-10-02 17:19:28 edwards Exp $
 
 #ifndef COMMON_DECLS_INCLUDE
 #define COMMON_DECLS_INCLUDE
@@ -99,7 +99,7 @@ int FftInitP =0;
 int SchrFun=0;
 int SftInitP=0;
 
-int InvType=0;  /* Type of fermion inverter */
+int InvType=21;  /* Type of fermion inverter */
 int GaugeAct=0; /* Type of Gauge action (Wilson,Symanzik,...) */
 int GlueImp=0;  /* Level of Symanzik improvement in dsdu */
 int FermAct=0; /* Type of Fermion action (Wilson,Clover,...) */
