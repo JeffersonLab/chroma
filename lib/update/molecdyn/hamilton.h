@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hamilton.h,v 1.7 2004-01-02 02:57:26 edwards Exp $
+// $Id: hamilton.h,v 1.8 2004-01-07 20:54:29 edwards Exp $
 /*! \file
  *  \brief Hamiltonian systems
  */
@@ -167,6 +167,7 @@ protected:
   //! Access u fields
   virtual const multi1d<LatticeColorMatrix>& getU() const = 0;
   virtual multi1d<LatticeColorMatrix>& getU() = 0;
+
 };
 
 
@@ -226,8 +227,33 @@ protected:
 	LatticeFermion chi;
 	A(chi, eta, MINUS);
 
+	// Insert into the HamSys
+	getPF()[i] = chi;
+      }
+    }
+
+  //! Compute new Psi fields
+  /*! 
+   * This may be called lazily and the result cached, 
+   * e.g., only if the U fields change 
+   */
+  virtual void newPsi()
+    {
+      // The connection state (of the gauge field) includes any fermion BC
+      Handle<const ConnectState> state(getFermAct().createState(getU()));
+
+      // Get the linop
+      /*! WARNING: need a generic template param here */
+      Handle<const LinearOperator<LatticeFermion> > A(getFermAct().linOp(state));
+
+      // Solve the linear system for the psi fields
+      for(int i=0; i < numPF(); ++i)
+      {
+	// Initialize psi
+	LatticeFermion psi = zero;
+
 	// psi = (1/(M_dag*M))*chi
-	InvCG2(*A, chi, psi, RsdCG(), MaxCG(), n_count);
+	InvCG2(*A, getPF()[i], psi, getRsdCG(), getMaxCG(), n_count);
 
 	// Out of paranoia, zero out the boundaries here
 	/* NOTE: This may not be needed */
