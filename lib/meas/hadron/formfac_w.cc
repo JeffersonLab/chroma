@@ -1,11 +1,14 @@
-// $Id: formfac_w.cc,v 1.8 2003-04-01 02:38:26 edwards Exp $
+// $Id: formfac_w.cc,v 1.9 2003-04-01 03:01:28 edwards Exp $
 /*! \file
  *  \brief Form-factors 
  *
  *  Form factors constructed from a quark and a sequential quark propagator
  */
 // $Log: formfac_w.cc,v $
-// Revision 1.8  2003-04-01 02:38:26  edwards
+// Revision 1.9  2003-04-01 03:01:28  edwards
+// Fixed doxygen comments.
+//
+// Revision 1.8  2003/04/01 02:38:26  edwards
 // Added doxygen comments.
 //
 // Revision 1.7  2003/03/31 19:54:15  edwards
@@ -33,6 +36,7 @@ using namespace QDP;
  * \param u        -- gauge fields (used for non-local currents) ( Read )
  * \param quark_propagator -- quark propagator ( Read )
  * \param seq_quark_prop -- sequential quark propagator ( Read )
+ * \param phases   -- fourier transofmr phase factors ( Read )
  * \param t0       -- cartesian coordinates of the source ( Read )
  * \param nml      -- namelist file object ( Read )
  */
