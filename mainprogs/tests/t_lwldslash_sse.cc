@@ -1,4 +1,4 @@
-// $Id: t_lwldslash_sse.cc,v 1.20 2004-02-11 12:51:35 bjoo Exp $
+// $Id: t_lwldslash_sse.cc,v 1.21 2004-03-22 12:42:02 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -32,7 +32,7 @@ int main(int argc, char **argv)
   // Setup the layout
   Layout::setLattSize(nrow);
   Layout::create();
-w
+
   XMLFileWriter xml(root+"t_lwldslash.xml");
 
   push(xml,"t_lwldslash");
