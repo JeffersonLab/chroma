@@ -1,6 +1,9 @@
-// $Id: propagator.cc,v 1.42 2004-02-06 17:39:05 edwards Exp $
+// $Id: propagator.cc,v 1.43 2004-02-06 22:31:00 edwards Exp $
 // $Log: propagator.cc,v $
-// Revision 1.42  2004-02-06 17:39:05  edwards
+// Revision 1.43  2004-02-06 22:31:00  edwards
+// Put in sse hack for the short term.
+//
+// Revision 1.42  2004/02/06 17:39:05  edwards
 // Added a flush to xml_out.
 //
 // Revision 1.41  2004/02/05 04:18:56  edwards
@@ -25,6 +28,19 @@
 #include "chroma.h"
 
 using namespace QDP;
+
+
+
+//***********HACK************************
+#define SSE_HACK
+
+#if defined(SSE_HACK)
+extern "C" {
+  void init_sse_su3dslash(const int latt_size[]);   // latt_size not used, here for scalar version
+}
+#endif
+//***********UN HACK************************
+
 
 // define MRES_CALCULATION in order to run the code computing the residual mass
 // and the pseudoscalar to concerved axial current correlator
@@ -238,6 +254,14 @@ int main(int argc, char **argv)
   // Specify lattice size, shape, etc.
   Layout::setLattSize(input.param.nrow);
   Layout::create();
+
+
+#if defined(SSE_HACK)
+  //****** HACK ***********
+  for(int i=0; i < 100; ++i)
+    init_sse_su3dslash(Layout::lattSize().slice());
+  //****** UN HACK ***********
+#endif
 
   QDPIO::cout << "Propagator" << endl;
 
