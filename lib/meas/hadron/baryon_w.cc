@@ -1,4 +1,4 @@
-// $Id: baryon_w.cc,v 1.17 2004-06-08 03:39:55 edwards Exp $ 
+// $Id: baryon_w.cc,v 1.18 2004-06-08 15:10:46 edwards Exp $ 
 /*! \file
  *  \brief Baryon 2-pt functions
  */
@@ -430,11 +430,11 @@ void baryon(LatticePropagator& quark_propagator,
     case 14:
       // Delta_z^+_4 -- unpolarised with explicit gamma_k interpolation
       // |D_4, s_z=3/2> = 2*(d C gamma_3 u) "u_up" + (u C gamma_3 u) "d_up"
-      // C gamma_3 = Gamma(10) * Gamma(3) = Gamma(11)
+      // C gamma_3 = Gamma(10) * Gamma(4) = Gamma(14)
       // Unpolarized:
       // S_proj_unpol = T = (1/2)(1 + gamma_4)
-      di_quark = quarkContract13(quark_propagator * Gamma(11),
-				 Gamma(11) * quark_propagator);
+      di_quark = quarkContract13(quark_propagator * Gamma(14),
+				 Gamma(14) * quark_propagator);
       b_prop = trace(S_proj * traceColor(quark_propagator * traceSpin(di_quark)))
 	   + 2*trace(S_proj * traceColor(quark_propagator * di_quark));
       
@@ -475,11 +475,11 @@ void baryon(LatticePropagator& quark_propagator,
     case 17:
       // Delta_z^+_5 -- unpolarised with explicit gamma_k interpolation
       // |D_4, s_z=3/2> = 2*(d C gamma_4 gamma_3 u) "u_up" + (u C gamma_4 gamma_3 u) "d_up"
-      // C gamma_4 gamma_3 = Gamma(10) * Gamma(8) * Gamma(3) = Gamma(1)
+      // C gamma_4 gamma_3 = Gamma(10) * Gamma(8) * Gamma(4) = Gamma(6)
       // Unpolarized:
       // S_proj_unpol = T = (1/2)(1 + gamma_4)
-      di_quark = quarkContract13(quark_propagator * Gamma(1),
-				 Gamma(1) * quark_propagator);
+      di_quark = quarkContract13(quark_propagator * Gamma(6),
+				 Gamma(6) * quark_propagator);
       b_prop = trace(S_proj * traceColor(quark_propagator * traceSpin(di_quark)))
 	   + 2*trace(S_proj * traceColor(quark_propagator * di_quark));
       
