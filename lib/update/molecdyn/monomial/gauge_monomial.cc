@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gauge_monomial.cc,v 1.2 2005-01-13 16:10:30 bjoo Exp $
+// $Id: gauge_monomial.cc,v 1.3 2005-01-25 02:19:02 edwards Exp $
 /*! \file
  *  \brief Generic gauge action monomial wrapper
  */
@@ -17,6 +17,7 @@
 #include "actions/gauge/gaugeacts/lw_tree_gaugeact.h"
 #include "actions/gauge/gaugeacts/lw_1loop_gaugeact.h"
 #include "actions/gauge/gaugeacts/rg_gaugeact.h"
+#include "actions/gauge/gaugeacts/rbc_gaugeact.h"
 
 #include <string>
 
@@ -101,6 +102,17 @@ namespace Chroma
 			       GaugeMonomialParams(xml, path));
     }
     
+    //! Callback function for the factory
+    Monomial< multi1d<LatticeColorMatrix>,
+	      multi1d<LatticeColorMatrix> >*
+    createMonomialRBC(XMLReader& xml, const string& path) 
+    {
+      QDPIO::cout << "Create Monomial: " << RBCGaugeActEnv::name << endl;
+
+      return new GaugeMonomial(RBCGaugeActEnv::name,
+			       GaugeMonomialParams(xml, path));
+    }
+    
     //! Register all the objects
     bool registerAll()
     {
@@ -129,6 +141,9 @@ namespace Chroma
       foo &= RGGaugeActEnv::registered;
       foo &= TheMonomialFactory::Instance().registerObject(RGGaugeActEnv::name+suffix, 
 							   createMonomialRG);
+      foo &= RBCGaugeActEnv::registered;
+      foo &= TheMonomialFactory::Instance().registerObject(RBCGaugeActEnv::name+suffix, 
+							   createMonomialRBC);
       return foo;
     }
 

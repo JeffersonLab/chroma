@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gaugeacts.h,v 1.3 2005-01-13 04:30:51 edwards Exp $
+// $Id: gaugeacts.h,v 1.4 2005-01-25 02:19:02 edwards Exp $
 
 /*! \file
  * \brief Gauge actions
@@ -26,6 +26,7 @@
 #include "lw_tree_gaugeact.h"
 #include "lw_1loop_gaugeact.h"
 #include "rg_gaugeact.h"
+#include "rbc_gaugeact.h"
 
 #endif
 
