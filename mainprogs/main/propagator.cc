@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.33 2004-01-08 20:59:12 kostas Exp $
+// $Id: propagator.cc,v 1.34 2004-01-09 03:53:00 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -236,8 +236,8 @@ int main(int argc, char **argv)
   switch (input.param.prop_type) 
   {
   case PROP_TYPE_SZIN :
-//    readSzinQprop(source_xml, quark_prop_source, input.prop.source_file);
-    quark_prop_source = 1;
+    readSzinQprop(source_xml, quark_prop_source, input.prop.source_file);
+//    quark_prop_source = 1;
     break;
   default :
     QDP_error_exit("Propagator type is unsupported.");
@@ -277,6 +277,20 @@ int main(int argc, char **argv)
   Write(xml_out, t_plaq);
   Write(xml_out, link);
   pop(xml_out);
+
+  // Sanity check - write out the norm2 of the source in the Nd-1 direction
+  // Use this for any possible verification
+  {
+    // Initialize the slow Fourier transform phases
+    SftMom phases(0, true, Nd-1);
+
+    multi1d<Double> source_corr = sumMulti(localNorm2(quark_prop_source), 
+					   phases.getSubset());
+
+    push(xml_out, "Source_correlator");
+    Write(xml_out, source_corr);
+    pop(xml_out);
+  }
 
   xml_out.flush();
 
