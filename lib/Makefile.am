@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.251 2005-02-10 18:03:51 edwards Exp $
+# $Id: Makefile.am,v 1.252 2005-02-17 02:49:44 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -103,7 +103,8 @@ nobase_include_HEADERS = \
 	meas/eig/eig_spec.h meas/eig/eig_spec_array.h \
 	meas/gfix/axgauge.h meas/gfix/coulgauge.h \
 	meas/gfix/gfix.h meas/gfix/grelax.h meas/gfix/polar_dec.h \
-	meas/gfix/rot_colvec.h meas/glue/glue.h meas/glue/mesplq.h \
+	meas/gfix/rot_colvec.h meas/glue/glue.h meas/glue/mesfield.h \
+        meas/glue/mesplq.h \
 	meas/glue/polylp.h meas/hadron/hadron.h meas/hadron/srcfil.h \
 	meas/glue/fuzwilp.h meas/glue/wilslp.h \
 	meas/hadron/stoch_var.h meas/hadron/z2_src.h \
@@ -424,7 +425,8 @@ libchroma_a_SOURCES = \
 	meas/eig/sn_jacob_array.cc meas/gfix/axgauge.cc \
 	meas/gfix/coulgauge.cc meas/gfix/grelax.cc \
 	meas/gfix/polar_dec.cc meas/gfix/rot_colvec.cc \
-	meas/glue/fuzwilp.cc meas/glue/mesplq.cc meas/glue/polylp.cc \
+	meas/glue/fuzwilp.cc meas/glue/mesfield.cc \
+        meas/glue/mesplq.cc meas/glue/polylp.cc \
 	meas/glue/wilslp.cc meas/hadron/srcfil.cc \
 	meas/hadron/stoch_var.cc meas/hadron/z2_src.cc \
 	meas/smear/ape_smear.cc meas/smear/displacement.cc \
