@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: formfac_w.h,v 1.5 2003-04-01 01:56:19 edwards Exp $
+// $Id: formfac_w.h,v 1.6 2003-06-25 16:11:44 edwards Exp $
 
 #ifndef __formfac_h__
 #define __formfac_h__
@@ -19,6 +19,6 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
              const LatticePropagator& seq_quark_prop, 
              const SftMom& phases,
              int t0,
-             NmlWriter& nml);
+             XMLWriter& nml);
 
 #endif

@@ -1,7 +1,10 @@
-// $Id: bar3ptfn.cc,v 1.10 2003-06-08 05:02:27 edwards Exp $
+// $Id: bar3ptfn.cc,v 1.11 2003-06-25 16:12:04 edwards Exp $
 //
 // $Log: bar3ptfn.cc,v $
-// Revision 1.10  2003-06-08 05:02:27  edwards
+// Revision 1.11  2003-06-25 16:12:04  edwards
+// Changed from nml to xml.
+//
+// Revision 1.10  2003/06/08 05:02:27  edwards
 // Added some flush to nml_out.
 //
 // Revision 1.9  2003/05/30 02:37:40  flemingg
@@ -43,6 +46,7 @@ main(int argc, char *argv[])
   // and written to the namelist output
 
   int version ;              // input parameter version
+  int out_version = 5;       // output version
 
   FermType FermTypeP ;
 
@@ -83,12 +87,12 @@ main(int argc, char *argv[])
   Seed seed ; // Random number seed (see SETRN for meaning)
 
   // Instantiate namelist reader for DATA
-  NmlReader nml_in("DATA") ;
+  XMLReader xml_in("DATA") ;
+  string xml_in_root = "/bar3ptfn";
 
   // Read in the IO_version
-  push(nml_in, "IO_version") ;
-  Read(nml_in, version) ;
-  pop(nml_in) ;
+  string path = xml_in_root + "/IO_version";
+  ReadPath(xml_in, path, version) ;
 
   switch (version) {
 
@@ -96,11 +100,11 @@ main(int argc, char *argv[])
   case 3 :
   /**************************************************************************/
 
-    push(nml_in, "param") ; // push into 'param' group
+    path = xml_in_root + "/param"; // push into 'param' group
 
     {
       int input_Nc ;
-      read(nml_in, "Nc", input_Nc) ;
+      read(xml_in, path + "/Nc", input_Nc) ;
 
       if (input_Nc != Nc) {
         cerr << "Input parameter Nc=" << input_Nc \
@@ -109,7 +113,7 @@ main(int argc, char *argv[])
       }
 
       int input_Nd ;
-      read(nml_in, "Nd", input_Nd) ;
+      read(xml_in, path + "/Nd", input_Nd) ;
 
       if (input_Nd != Nd) {
         cerr << "Input parameter Nd=" << input_Nd \
@@ -118,7 +122,7 @@ main(int argc, char *argv[])
       }
 
       int ferm_type_int ;
-      read(nml_in, "FermTypeP", ferm_type_int) ;
+      read(xml_in, path + "/FermTypeP", ferm_type_int) ;
       switch (ferm_type_int) {
       case 1 :
         FermTypeP = FERM_TYPE_WILSON ;
@@ -135,10 +139,10 @@ main(int argc, char *argv[])
 
       cout << " FORMFAC: Baryon form factors for Wilson fermions" << endl ;
 
-      Read(nml_in, numKappa) ;
+      ReadPath(xml_in, path, numKappa) ;
 
       Kappa.resize(numKappa) ;
-      Read(nml_in, Kappa) ;
+      ReadPath(xml_in, path, Kappa) ;
 
       for (i=0; i < numKappa; ++i) {
         if (toBool(Kappa[i] < 0.0)) {
@@ -162,7 +166,7 @@ main(int argc, char *argv[])
 
     {
       int input_cfg_type ;
-      read(nml_in, "cfg_type", input_cfg_type) ;
+      read(xml_in, path + "/cfg_type", input_cfg_type) ;
       switch (input_cfg_type) {
       case 1 :
         cfg_type = CFG_TYPE_SZIN ;
@@ -172,24 +176,23 @@ main(int argc, char *argv[])
       }
     }
 
-    Read(nml_in, j_decay) ;
+    ReadPath(xml_in, path, j_decay) ;
     if (j_decay < 0 || j_decay >= Nd) {
       cerr << "Bad value: j_decay = " << j_decay << endl ;
       QDP_abort(1) ;
     }
 
-    Read(nml_in, Pt_src) ;
-    Read(nml_in, Sl_src) ;
-    Read(nml_in, Pt_snk) ;
-    Read(nml_in, Sl_snk) ;
+    ReadPath(xml_in, path, Pt_src) ;
+    ReadPath(xml_in, path, Sl_src) ;
+    ReadPath(xml_in, path, Pt_snk) ;
+    ReadPath(xml_in, path, Sl_snk) ;
 
-    Read(nml_in, t_sink) ;
-
-    Read(nml_in, sink_mom) ;
+    ReadPath(xml_in, path, t_sink) ;
+    ReadPath(xml_in, path, sink_mom) ;
 
     {
       int input_wvf_kind ;
-      read(nml_in, "Wvf_kind", input_wvf_kind) ;
+      read(xml_in, path + "/Wvf_kind", input_wvf_kind) ;
       switch (input_wvf_kind) {
       case 3 :
         Wvf_kind = WVF_KIND_GAUGE_INV_GAUSSIAN ;
@@ -202,41 +205,32 @@ main(int argc, char *argv[])
     }
 
     wvf_param.resize(numKappa) ;
-    Read(nml_in, wvf_param) ;
+    ReadPath(xml_in, path, wvf_param) ;
 
     WvfIntPar.resize(numKappa) ;
-    Read(nml_in, WvfIntPar) ;
+    ReadPath(xml_in, path, WvfIntPar) ;
 
     // Now we read in the information associated with the sequential sources
-    Read(nml_in, numSeq_src) ;
+    ReadPath(xml_in, path, numSeq_src) ;
 
     // Now read in the particular Sequential Sources we are evaluating
     Seq_src.resize(numSeq_src) ;
-    Read(nml_in, Seq_src) ;
+    ReadPath(xml_in, path, Seq_src) ;
 
-    {
-      int seq_src_ctr ;
-      for (seq_src_ctr=0; seq_src_ctr<numSeq_src; ++seq_src_ctr) {
+    for (int seq_src_ctr=0; seq_src_ctr<numSeq_src; ++seq_src_ctr) {
         cout << "Computing sequential source of type "
-          << Seq_src[seq_src_ctr] << endl ;
-      }
+	     << Seq_src[seq_src_ctr] << endl ;
     }
 
-    Read(nml_in, nrow) ;
-
-    Read(nml_in, boundary) ;
-
-    Read(nml_in, t_srce) ;
+    ReadPath(xml_in, path, nrow) ;
+    ReadPath(xml_in, path, boundary) ;
+    ReadPath(xml_in, path, t_srce) ;
 
     // default value in SZIN
     mom2_max = 7 ;
 
-    pop(nml_in) ;
-
     // Read in the gauge configuration file name
-    push(nml_in, "Cfg") ;
-    Read(nml_in, cfg_file) ;
-    pop(nml_in) ;
+    ReadPath(xml_in, xml_in_root + "/Cfg", cfg_file) ;
 
     break ;
 
@@ -244,11 +238,11 @@ main(int argc, char *argv[])
   case 4 :
   /**************************************************************************/
 
-    push(nml_in, "param") ; // push into 'param' group
+    path = xml_in_root + "/param"; // push into 'param' group
 
     {
       int input_Nc ;
-      read(nml_in, "Nc", input_Nc) ;
+      read(xml_in, path + "/Nc", input_Nc) ;
 
       if (input_Nc != Nc) {
         cerr << "Input parameter Nc=" << input_Nc \
@@ -257,7 +251,7 @@ main(int argc, char *argv[])
       }
 
       int input_Nd ;
-      read(nml_in, "Nd", input_Nd) ;
+      read(xml_in, path + "/Nd", input_Nd) ;
 
       if (input_Nd != Nd) {
         cerr << "Input parameter Nd=" << input_Nd \
@@ -266,7 +260,7 @@ main(int argc, char *argv[])
       }
 
       string ferm_type_str ;
-      read(nml_in, "FermTypeP", ferm_type_str) ;
+      read(xml_in, path + "/FermTypeP", ferm_type_str) ;
       if (ferm_type_str == "WILSON") {
         FermTypeP = FERM_TYPE_WILSON ;
       } else {
@@ -281,10 +275,10 @@ main(int argc, char *argv[])
 
       cout << " FORMFAC: Baryon form factors for Wilson fermions" << endl ;
 
-      Read(nml_in, numKappa) ;
+      ReadPath(xml_in, path, numKappa) ;
 
       Kappa.resize(numKappa) ;
-      Read(nml_in, Kappa) ;
+      ReadPath(xml_in, path, Kappa) ;
 
       for (i=0; i < numKappa; ++i) {
         if (toBool(Kappa[i] < 0.0)) {
@@ -308,7 +302,7 @@ main(int argc, char *argv[])
 
     {
       string cfg_type_str ;
-      read(nml_in, "cfg_type", cfg_type_str) ;
+      read(xml_in, path + "/cfg_type", cfg_type_str) ;
       if (cfg_type_str == "SZIN") {
         cfg_type = CFG_TYPE_SZIN ;
       } else {
@@ -316,24 +310,23 @@ main(int argc, char *argv[])
       }
     }
 
-    Read(nml_in, j_decay) ;
+    ReadPath(xml_in, path, j_decay) ;
     if (j_decay < 0 || j_decay >= Nd) {
       cerr << "Bad value: j_decay = " << j_decay << endl ;
       QDP_abort(1) ;
     }
 
-    Read(nml_in, Pt_src) ;
-    Read(nml_in, Sl_src) ;
-    Read(nml_in, Pt_snk) ;
-    Read(nml_in, Sl_snk) ;
+    ReadPath(xml_in, path, Pt_src) ;
+    ReadPath(xml_in, path, Sl_src) ;
+    ReadPath(xml_in, path, Pt_snk) ;
+    ReadPath(xml_in, path, Sl_snk) ;
 
-    Read(nml_in, t_sink) ;
-
-    Read(nml_in, sink_mom) ;
+    ReadPath(xml_in, path, t_sink) ;
+    ReadPath(xml_in, path, sink_mom) ;
 
     {
       string wvf_kind_str ;
-      read(nml_in, "Wvf_kind", wvf_kind_str) ;
+      read(xml_in, path + "/Wvf_kind", wvf_kind_str) ;
       if (wvf_kind_str == "GAUGE_INV_GAUSSIAN") {
         Wvf_kind = WVF_KIND_GAUGE_INV_GAUSSIAN ;
       } else {
@@ -344,40 +337,31 @@ main(int argc, char *argv[])
     }
 
     wvf_param.resize(numKappa) ;
-    Read(nml_in, wvf_param) ;
+    ReadPath(xml_in, path, wvf_param) ;
 
     WvfIntPar.resize(numKappa) ;
-    Read(nml_in, WvfIntPar) ;
+    ReadPath(xml_in, path, WvfIntPar) ;
 
     // Now we read in the information associated with the sequential sources
-    Read(nml_in, numSeq_src) ;
+    ReadPath(xml_in, path, numSeq_src) ;
 
     // Now read in the particular Sequential Sources we are evaluating
     Seq_src.resize(numSeq_src) ;
-    Read(nml_in, Seq_src) ;
+    ReadPath(xml_in, path, Seq_src) ;
 
+    for (int seq_src_ctr=0; seq_src_ctr<numSeq_src; ++seq_src_ctr) 
     {
-      int seq_src_ctr ;
-      for (seq_src_ctr=0; seq_src_ctr<numSeq_src; ++seq_src_ctr) {
-        cout << "Computing sequential source of type "
-          << Seq_src[seq_src_ctr] << endl ;
-      }
+      cout << "Computing sequential source of type "
+	   << Seq_src[seq_src_ctr] << endl ;
     }
 
-    Read(nml_in, nrow) ;
-
-    Read(nml_in, boundary) ;
-
-    Read(nml_in, t_srce) ;
-
-    Read(nml_in, mom2_max) ;
-
-    pop(nml_in) ;
+    ReadPath(xml_in, path, nrow) ;
+    ReadPath(xml_in, path, boundary) ;
+    ReadPath(xml_in, path, t_srce) ;
+    ReadPath(xml_in, path, mom2_max) ;
 
     // Read in the gauge configuration file name
-    push(nml_in, "Cfg") ;
-    Read(nml_in, cfg_file) ;
-    pop(nml_in) ;
+    ReadPath(xml_in, xml_in_root + "/Cfg", cfg_file) ;
 
   break ;
 
@@ -390,7 +374,7 @@ main(int argc, char *argv[])
   }
 
   // GTF: ALL NAMELIST INPUT COMPLETED
-  nml_in.close() ;
+  xml_in.close() ;
 
   // Specify lattice size, shape, etc.
   Layout::setLattSize(nrow) ;
@@ -484,103 +468,111 @@ main(int argc, char *argv[])
   RNG::setrn(seed) ;
 
   // Instantiate namelist writer for NMLDAT
-  NmlWriter nml_out("NMLDAT") ;
+  XMLFileWriter xml_out("XMLDAT") ;
+  push(xml_out, "bar3ptfn");
 
   // Write out configuration data to namelist output
-  push(nml_out, "IO_version") ;
-  Write(nml_out, version) ;
-  pop(nml_out) ;
+  push(xml_out, "IO_version") ;
+  Write(xml_out, version) ;
+  pop(xml_out) ;
 
-  push(nml_out, "Output_version") ;
-  write(nml_out, "out_version", 4) ;
-  pop(nml_out) ;
+  push(xml_out, "Output_version") ;
+  Write(xml_out, out_version) ;
+  pop(xml_out) ;
 
-  push(nml_out, "param") ;
+  push(xml_out, "param") ;
 
   switch (FermTypeP) {
   case FERM_TYPE_WILSON :
-    write(nml_out, "FermTypeP", "WILSON") ;
+    write(xml_out, "FermTypeP", "WILSON") ;
     break ;
   default :
-    write(nml_out, "FermTypeP", "UNKNOWN") ;
+    write(xml_out, "FermTypeP", "UNKNOWN") ;
   }
-  Write(nml_out, Nd) ;
-  Write(nml_out, Nc) ;
-  Write(nml_out, Ns) ;
-  Write(nml_out, numKappa) ;
-  Write(nml_out, Kappa) ;
+  Write(xml_out, Nd) ;
+  Write(xml_out, Nc) ;
+  Write(xml_out, Ns) ;
+  Write(xml_out, numKappa) ;
+  Write(xml_out, Kappa) ;
 
   switch (cfg_type) {
   case CFG_TYPE_SZIN :
-    write(nml_out, "cfg_type", "SZIN") ;
+    write(xml_out, "cfg_type", "SZIN") ;
     break ;
   default :
-    write(nml_out, "cfg_type", "UNKNOWN") ;
+    write(xml_out, "cfg_type", "UNKNOWN") ;
   }
-  Write(nml_out, j_decay) ;
+  Write(xml_out, j_decay) ;
 
-  Write(nml_out, Pt_src) ;
-  Write(nml_out, Sl_src) ;
-  Write(nml_out, Pt_snk) ;
-  Write(nml_out, Sl_snk) ;
+  Write(xml_out, Pt_src) ;
+  Write(xml_out, Sl_src) ;
+  Write(xml_out, Pt_snk) ;
+  Write(xml_out, Sl_snk) ;
 
-  Write(nml_out, t_sink) ;
-  Write(nml_out, sink_mom) ;
+  Write(xml_out, t_sink) ;
+  Write(xml_out, sink_mom) ;
 
   switch (Wvf_kind) {
   case WVF_KIND_GAUGE_INV_GAUSSIAN :
-    write(nml_out, "Wvf_kind", "GAUGE_INV_GAUSSIAN") ;
+    write(xml_out, "Wvf_kind", "GAUGE_INV_GAUSSIAN") ;
     break ;
   default :
-    write(nml_out, "Wvf_kind", "UNKNOWN") ;
+    write(xml_out, "Wvf_kind", "UNKNOWN") ;
   }
-  Write(nml_out, wvf_param) ;
-  Write(nml_out, WvfIntPar) ;
+  Write(xml_out, wvf_param) ;
+  Write(xml_out, WvfIntPar) ;
 
-  Write(nml_out, numSeq_src) ;
-  Write(nml_out, Seq_src) ;
+  Write(xml_out, numSeq_src) ;
+  Write(xml_out, Seq_src) ;
 
-  Write(nml_out, mom2_max) ;
+  Write(xml_out, mom2_max) ;
 
-  Write(nml_out, seed) ;
+  Write(xml_out, seed) ;
 
-  pop(nml_out) ;
+  pop(xml_out) ;
 
-  push(nml_out, "lattis") ;
-  Write(nml_out, nrow) ;
-  Write(nml_out, boundary) ;
-  Write(nml_out, t_srce) ;
-  pop(nml_out) ;
+  push(xml_out, "lattis") ;
+  Write(xml_out, nrow) ;
+  Write(xml_out, boundary) ;
+  Write(xml_out, t_srce) ;
+  pop(xml_out) ;
 
-  nml_out.flush();
+//  xml_out.flush();
 
   // First calculate some gauge invariant observables just for info.
   // This is really cheap.
   Double w_plaq, s_plaq, t_plaq, link ;
   MesPlq(u, w_plaq, s_plaq, t_plaq, link) ;
 
-  push(nml_out, "Observables") ;
-  Write(nml_out, w_plaq) ;
-  Write(nml_out, s_plaq) ;
-  Write(nml_out, t_plaq) ;
-  Write(nml_out, link) ;
-  pop(nml_out) ;
+  push(xml_out, "Observables") ;
+  Write(xml_out, w_plaq) ;
+  Write(xml_out, s_plaq) ;
+  Write(xml_out, t_plaq) ;
+  Write(xml_out, link) ;
+  pop(xml_out) ;
 
-  nml_out.flush();
+//  xml_out.flush();
 
   // Next check the gauge field configuration by reunitarizing.
   multi1d<LatticeColorMatrix> u_tmp(Nd) ;
   u_tmp = u ;
-  LatticeBoolean lbad = true ;
-  int numbad ;
-  int mu ;
-  for (mu=0; mu < Nd; ++mu) {
-    reunit(u_tmp[mu], lbad, numbad, REUNITARIZE_ERROR) ;
+  {
+    LatticeBoolean lbad = true ;
+    int numbad ;
+    for (int mu=0; mu < Nd; ++mu) 
+    {
+      reunit(u_tmp[mu], lbad, numbad, REUNITARIZE_ERROR) ;
+    }
   }
 
+  XMLArrayWriter xml_array(xml_out, numKappa);
+  push(xml_array, "Wilson_3Pt_fn_measurements") ;
+
   // Now loop over the various kappas
-  int loop ;
-  for (loop=0; loop < numKappa; ++loop) {
+  for (int loop=0; loop < numKappa; ++loop) 
+  {
+    push(xml_array);
+    Write(xml_array, loop);
 
     // Read the quark propagator
     LatticePropagator quark_propagator ;
@@ -590,8 +582,13 @@ main(int argc, char *argv[])
       readSzinQprop(quark_propagator, prop_file.str()) ;
     }
 
-    int seq_src_ctr ;
-    for (seq_src_ctr = 0; seq_src_ctr < numSeq_src; ++seq_src_ctr) {
+    XMLArrayWriter  xml_seq_src(xml_array, numSeq_src);
+    push(xml_seq_src, "Sequential_source");
+
+    for (int seq_src_ctr = 0; seq_src_ctr < numSeq_src; ++seq_src_ctr) 
+    {
+      push(xml_seq_src);
+      Write(xml_seq_src, seq_src_ctr);
 
       LatticePropagator seq_quark_prop ;
       int seq_src_value = Seq_src[seq_src_ctr] ;
@@ -604,24 +601,19 @@ main(int argc, char *argv[])
       }
 
       if ((0 <= seq_src_value) && (seq_src_value <= 9)) {
-        push(nml_out, "Wilson_Baryon_3Pt_fn_measurements") ;
-        Write(nml_out, seq_src_value) ;
-        Write(nml_out, t_srce) ;
-        Write(nml_out, t_sink) ;
-        Write(nml_out, sink_mom) ;
-        pop(nml_out) ;
+        write(xml_seq_src, "hadron_type", "BARYON") ;
       } else if ((10 <= seq_src_value) && (seq_src_value <= 20)) {
-        push(nml_out, "Wilson_Meson_3Pt_fn_measurements") ;
-        Write(nml_out, seq_src_value) ;
-        Write(nml_out, t_srce) ;
-        Write(nml_out, t_sink) ;
-        Write(nml_out, sink_mom) ;
-        pop(nml_out) ;
+        write(xml_seq_src, "hadron_type", "MESON") ;
       } else {
         QDP_error_exit("Unknown sequential source type", seq_src_value) ;
       }
 
-      nml_out.flush();
+      Write(xml_seq_src, seq_src_value) ;
+      Write(xml_seq_src, t_srce) ;
+      Write(xml_seq_src, t_sink) ;
+      Write(xml_seq_src, sink_mom) ;
+	
+//      xml_seq_src.flush();
 
       // Construct the two-pt function from the source point to the sink
       // using only the seq. quark prop.
@@ -651,31 +643,28 @@ main(int argc, char *argv[])
       Complex seq_hadron_0 = peekSite(seq_hadron, t_srce) ;
 #endif
 
-      push(nml_out,"Wilson_hadron_2Pt_fn") ;
-      Write(nml_out, t_srce) ;
-      Write(nml_out, t_sink) ;
-      Write(nml_out, sink_mom) ;
-      Write(nml_out, seq_hadron_0) ;
-      pop(nml_out) ;
+      Write(xml_seq_src, seq_hadron_0) ;
 
-      nml_out.flush();
+//      xml_seq_src.flush();
 
       // Now the 3pt contractions
       SftMom phases(mom2_max, sink_mom, false, j_decay) ;
       FormFac(u, quark_propagator, seq_quark_prop, phases, t_srce[j_decay],
-              nml_out) ;
+              xml_seq_src) ;
 
-      nml_out.flush();
-
+      pop(xml_seq_src);   // elem
+//      xml_seq_src.flush();
     } // end loop over sequential sources
+
+    pop(xml_seq_src) ;  // Sequential_source
+    pop(xml_array);     // elem
   } // end loop over the kappa value
 
-  push(nml_out, "End_Wilson_3Pt_fn_measurements") ;
-  Write(nml_out, numSeq_src) ;
-  pop(nml_out) ;
+  pop(xml_array) ;  // Wilson_3Pt_fn_measurements
 
   // Close the namelist output file NMLDAT
-  nml_out.close() ;
+  pop(xml_out);     // bar3ptfn
+  xml_out.close() ;
 
   // Time to bolt
   QDP_finalize() ;
