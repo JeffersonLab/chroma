@@ -1,4 +1,4 @@
-// $Id: unprec_one_flavor_rat_monomial5d_w.cc,v 1.1 2005-01-28 02:15:33 edwards Exp $
+// $Id: unprec_one_flavor_rat_monomial5d_w.cc,v 1.2 2005-01-28 05:09:37 edwards Exp $
 /*! @file
  * @brief One-flavor collection of unpreconditioned 5D ferm monomials
  */
@@ -82,8 +82,8 @@ namespace Chroma
     bool registerAll()
     {
       bool foo = true;
-      const std::string prefix = "TWO_FLAVOR_";
-      const std::string suffix = "_FERM_MONOMIAL";
+      const std::string prefix = "ONE_FLAVOR_";
+      const std::string suffix = "_FERM_RAT_MONOMIAL";
 
       // Use a pattern to register all the qualifying fermacts
       foo &= UnprecDWFermActArrayEnv::registered;

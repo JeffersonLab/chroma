@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial_w.h,v 1.1 2005-01-28 02:15:32 edwards Exp $
+// $Id: one_flavor_rat_monomial_w.h,v 1.2 2005-01-28 05:09:37 edwards Exp $
 
 /*! @file
  * @brief One flavor monomials using RHMC
@@ -151,7 +151,7 @@ namespace Chroma
       // Weight solns to make final PF field
       getPhi() = zero;
       for(int i=0; i < X.size(); ++i)
-	getPhi() += getHBPartFracCoeff()[i] * X[i];
+	getPhi()[M->subset()] += getHBPartFracCoeff()[i] * X[i];
 
       write(xml_out, "n_count", n_count);
       pop(xml_out);

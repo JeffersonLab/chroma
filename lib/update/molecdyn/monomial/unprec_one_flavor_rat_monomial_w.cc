@@ -1,4 +1,4 @@
-// $Id: unprec_one_flavor_rat_monomial_w.cc,v 1.1 2005-01-28 02:15:33 edwards Exp $
+// $Id: unprec_one_flavor_rat_monomial_w.cc,v 1.2 2005-01-28 05:09:37 edwards Exp $
 /*! @file
  * @brief One-flavor collection of unpreconditioned 4D ferm monomials
  */
@@ -183,7 +183,7 @@ namespace Chroma
     {
       // Solve MdagM X = eta
       MInvCG(*MdagM, chi, X, shifts, RsdCG, inv_param.MaxCG, n_count);
-      QDPIO::cout << "2Flav::invert, n_count = " << n_count << endl;
+      QDPIO::cout << "1Flav::invert, n_count = " << n_count << endl;
     }
     break;
     default:
