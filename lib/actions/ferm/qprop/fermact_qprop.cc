@@ -1,4 +1,4 @@
-// $Id: fermact_qprop.cc,v 1.11 2004-10-08 13:20:15 bjoo Exp $
+// $Id: fermact_qprop.cc,v 1.12 2004-11-12 18:50:25 mcneile Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *
@@ -95,6 +95,17 @@ void FermionAction<LatticeFermion>::qpropT(LatticeFermion& psi,
   qprop_t(*this, psi, state, chi, invParam, ncg_had);
 }
 
+
+void FermionAction<LatticeStaggeredFermion>::qpropT(LatticeStaggeredFermion& psi, 
+					   Handle<const ConnectState> state, 
+					   const LatticeStaggeredFermion& chi, 
+					   const InvertParam_t& invParam,
+					   int& ncg_had) const
+{
+  qprop_t(*this, psi, state, chi, invParam, ncg_had);
+}
+
+
 template<>
 void FermionAction<LatticeFermion>::qprop(LatticeFermion& psi, 
 					  Handle<const ConnectState> state, 
@@ -104,6 +115,19 @@ void FermionAction<LatticeFermion>::qprop(LatticeFermion& psi,
 {
   qprop_t(*this, psi, state, chi, invParam, ncg_had);
 }
+
+
+
+template<>
+void FermionAction<LatticeStaggeredFermion>::qprop(LatticeStaggeredFermion& psi, 
+					  Handle<const ConnectState> state, 
+					  const LatticeStaggeredFermion& chi, 
+					  const InvertParam_t& invParam,
+					  int& ncg_had) const
+{
+  qprop_t(*this, psi, state, chi, invParam, ncg_had);
+}
+
 
 }; // namespace Chroma
 
