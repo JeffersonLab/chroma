@@ -1,4 +1,4 @@
-// $Id: prec_ovdwf_linop_array_w.cc,v 1.1 2004-02-13 20:57:11 edwards Exp $
+// $Id: prec_ovdwf_linop_array_w.cc,v 1.2 2004-02-14 18:49:01 edwards Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned Overlap-DWF (Borici) linear operator
  */
@@ -196,7 +196,7 @@ EvenOddPrecOvDWLinOpArray::applyDiagInv(multi1d<LatticeFermion>& chi,
  * \param cb      checkerboard ( 0 | 1 )               (Read)
  */
 void 
-EvenOddPrecOvDWLinOpArray::applyOddDiag(multi1d<LatticeFermion>& chi, 
+EvenOddPrecOvDWLinOpArray::applyOffDiag(multi1d<LatticeFermion>& chi, 
 					const multi1d<LatticeFermion>& psi, 
 					enum PlusMinus isign,
 					const int cb) const
