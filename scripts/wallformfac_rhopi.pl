@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: wallformfac_rhopi.pl,v 1.2 2004-06-24 07:21:53 edwards Exp $
+# $Id: wallformfac_rhopi.pl,v 1.3 2004-06-24 07:23:51 edwards Exp $
 #
 # Usage
 #   wallformfac_rhopi.pl
@@ -124,10 +124,10 @@ foreach $x (-$mommax_int .. $mommax_int)
       else
       {
 	$mom_name = "_px" . $p[0] . "_py" . $p[1] . "_pz" . $p[2];
-	$pion_sp{$x, $y, $z} = $mom_name . ".$spext" ;
-	$pion_sw{$x, $y, $z} = $mom_name . ".$swext" ;
-	$pion_wp{$x, $y, $z} = $mom_name . ".$ssext" ;
-	$pion_ws{$x, $y, $z} = $mom_name . ".$ssext" ;
+	$pion_sp{$x, $y, $z} = "pion" . $mom_name . ".$spext" ;
+	$pion_sw{$x, $y, $z} = "pion" . $mom_name . ".$swext" ;
+	$pion_wp{$x, $y, $z} = "pion" . $mom_name . ".$ssext" ;
+	$pion_ws{$x, $y, $z} = "pion" . $mom_name . ".$ssext" ;
 
 	$rho_sp{$x, $y, $z} = "rho" . $mom_name . ".$spext" ;
 	$rho_sw{$x, $y, $z} = "rho" . $mom_name . ".$swext" ;
