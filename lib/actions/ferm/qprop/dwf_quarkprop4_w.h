@@ -1,4 +1,8 @@
-// $Id: dwf_quarkprop4_w.h,v 1.1 2004-01-07 03:02:24 edwards Exp $
+// $Id: dwf_quarkprop4_w.h,v 1.2 2004-01-30 20:21:32 kostas Exp $
+// $Log: dwf_quarkprop4_w.h,v $
+// Revision 1.2  2004-01-30 20:21:32  kostas
+// fixed the prototype
+// 
 /*! \file
  * \brief Full quark propagator solver for domain wall fermions
  *
@@ -30,6 +34,7 @@ using namespace QDP;
 void dwf_quarkProp4(LatticePropagator& q_sol, 
 		    XMLWriter& xml_out,
 		    const LatticePropagator& q_src,
+		    const int t_src,
 		    const EvenOddPrecDWFermActBaseArray<LatticeFermion>& S_f,
 		    Handle<const ConnectState> state,
 		    enum InvType invType,
