@@ -29,7 +29,7 @@
 //#####################################################################################
 
 static const char* const CVSBuildingBlocks_cc =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 1.8 2004-05-27 20:17:20 dru Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 1.9 2004-05-27 21:16:51 dru Exp $";
 
 //#####################################################################################
 //#####################################################################################
@@ -308,8 +308,8 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
   const unsigned short int NY = Layout::lattSize()[1];
   const unsigned short int NZ = Layout::lattSize()[2];
   const unsigned short int NT = Layout::lattSize()[3];
-  const signed short int T1 = 0;
-  const signed short int T2 = NT - 1;
+  //const signed short int T1 = 0;
+  //const signed short int T2 = NT - 1;
   const unsigned short int NLinkPatterns = GBB_NLinkPatterns / NQ;
 
   for( int f = 0; f < NF; f ++ )

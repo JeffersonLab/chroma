@@ -1,54 +1,62 @@
-//#####################################################################################
-//#####################################################################################
-//
-// BuildingBlocks.hh
-//
-//#####################################################################################
-//#####################################################################################
-//
-// description:
-//
-// BuildingBlocks combines a gauge field, a forward propagator, and seqential
-// (or backward) propagators to form the corresponding building blocks (three point
-// functions).
-//
-// authors:
-//
-// Dru B. Renner, dru@mit.edu, 2002 - port of "MIT" code to qdp++
-// Dru B. Renner, dru@mit.edu, July 2003 - analyze MILC configurations
-//
-//#####################################################################################
-//#####################################################################################
+//###################################################################################//
+//###################################################################################//
+//                                                                                   //
+// BuildingBlocks.hh                                                                 //
+//                                                                                   //
+//###################################################################################//
+//###################################################################################//
+//                                                                                   //
+// description:                                                                      //
+//                                                                                   //
+// BuildingBlocks combines a gauge field, a forward propagator, and backward (or     //
+// sequential) propagators to form the corresponding building blocks (three point    //
+// functions).                                                                       //
+//                                                                                   //
+// history:                                                                          //
+//                                                                                   //
+// There were at least four versions of "MIT" code.  Andrew Pochinsky has a c        //
+// version. Dmitri Dolgov has a c++ version.  Dru B. Renner has c and c++ versions.  //
+// All were independent and checked against one another.  Of course, all were        //
+// developed under the guidance of John W. Negele.  The code here is just the        //
+// "Building Blocks" portion of the MIT code.                                        //
+//                                                                                   //
+// authors:                                                                          //
+//                                                                                   //
+// Dru B. Renner, dru@mit.edu, 2002 - port of Building Blocks (MIT) code to qdp++    //
+//                                                                                   //
+// There are others who have contributed since the code has been migrated to qdp++.  //
+// The cvs log entries indicate these other authors.                                 //
+//                                                                                   //
+//###################################################################################//
+//###################################################################################//
 
 #ifndef INCLUDE_BuildingBlocks_hh
 #define INCLUDE_BuildingBlocks_hh
 
-//#####################################################################################
-//#####################################################################################
+//###################################################################################//
+// CVS Header                                                                        //
+//###################################################################################//
 
 static const char* const CVSBuildingBlocks_hh =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.h,v 1.2 2003-09-11 01:21:34 edwards Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.h,v 1.3 2004-05-27 21:16:51 dru Exp $";
 
-//#####################################################################################
-//#####################################################################################
+//###################################################################################//
+// Record CVS Info for BuildingBlocks.hh and BuildingBlocks.cc                       //
+//###################################################################################//
 
-//#####################################################################################
-// Used to Set Requested Link Patterns
-//#####################################################################################
+void CVSBuildingBlocks( TextWriter & Out );
+
+//###################################################################################//
+// Used to Set Requested Link Patterns                                               //
+//###################################################################################//
 
 typedef void (*BBLinkPattern)( bool &                          DoThisPattern,
                                bool &                          DoFurtherPatterns,
                                multi1d< unsigned short int > & LinkPattern );
 
-//#####################################################################################
-// Record CVS Info for BuildingBlocks.hh and BuildingBlocks.cc
-//#####################################################################################
-
-void CVSBuildingBlocks( TextWriter & Out );
-
-//#####################################################################################
-// Construct Building Blocks
-//#####################################################################################
+//###################################################################################//
+// Construct Building Blocks                                                         //
+//###################################################################################//
 
 void BuildingBlocks( const multi1d< LatticePropagator > &  B,
                      const LatticePropagator &             F,
@@ -56,31 +64,38 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
                      const unsigned short int              MaxNLinks,
                      const BBLinkPattern                   LinkPattern,
                      const SftMom &                        Phases,
-	             const multi2d< const char* > &        BinaryDataFileNames );
+	             const multi2d< const char* > &        BinaryDataFileNames,
+                     const int T1,
+                     const int T2 );
 
-//#####################################################################################
-//#####################################################################################
-//
-// B is an array of several backward propagators.
-//
-// F is a forward propagator.
-//
-// U is the gauge field.
-//
-// MaxNLinks is the maximum number of links to include in operators.
-//
-// LinkPattern is a pointer to a function specifing which link patterns to include.
-//
-// BinaryDataFileNames is an array of file name patterns with an order corresponding
-// to B.
-//
-// This function will fill many files with the operators corresponding to each
-// element of B.
-//
-//#####################################################################################
-//#####################################################################################
+//###################################################################################//
+// Arguments                                                                         //
+//###################################################################################//
+//                                                                                   //
+// B is an array of several backward propagators.                                    //
+//                                                                                   //
+// F is a forward propagator.                                                        //
+//                                                                                   //
+// U is a gauge field.                                                               //
+//                                                                                   //
+// MaxNLinks is the maximum number of links to include in operators.                 //
+//                                                                                   //
+// LinkPattern is a pointer to a function specifing which link patterns to include.  //
+//                                                                                   //
+// BinaryDataFileNames is an array of file name patterns with an order corresponding //
+// to B.                                                                             //
+//                                                                                   //
+// T1 is the earliest time slice for which building blocks will be calculated.       //
+//                                                                                   //
+// T2 is the latest time slice for which building blocks will be calculated.         //
+//                                                                                   //
+// This function will fill many files with the operators corresponding to each       //
+// element of B.                                                                     //
+//                                                                                   //
+//###################################################################################//
+//###################################################################################//
 
 #endif
 
-//#####################################################################################
-//#####################################################################################
+//###################################################################################//
+//###################################################################################//
