@@ -1,4 +1,4 @@
-// $Id: wallpionff_w.cc,v 1.10 2004-04-18 20:39:33 edwards Exp $
+// $Id: wallpionff_w.cc,v 1.11 2004-04-29 17:33:00 edwards Exp $
 /*! \file
  *  \brief Wall-sink pion form-factors 
  *
@@ -67,6 +67,9 @@ void wallPionFormFac(XMLWriter& xml,
       LatticeComplex corr_local_fn =
 	trace(back_prop*Gamma(G5)*q_x2*adj(forw_prop)*Gamma(G5)*Gamma(gamma_value));
 
+      // Not sure why this minus sign is arising...
+      corr_local_fn *= -1;
+
       multi2d<DComplex> hsum_local = phases.sft(corr_local_fn);
 
       // Construct the non-local current matrix element 
@@ -81,6 +84,9 @@ void wallPionFormFac(XMLWriter& xml,
 	      (tmp_prop1 + Gamma(gamma_value) * tmp_prop1)) -
 	trace(adj(forw_prop) * u[mu] * Gamma(15) *
 	      (tmp_prop2 - Gamma(gamma_value) * tmp_prop2));
+
+      // Not sure why this minus sign is arising...
+      corr_nonlocal_fn *= -1;
 
       multi2d<DComplex> hsum_nonlocal = phases.sft(corr_nonlocal_fn);
 
