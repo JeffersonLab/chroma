@@ -1,4 +1,4 @@
-// $Id: unprec_ovdwf_linop_array_w.cc,v 1.5 2003-11-20 05:43:41 edwards Exp $
+// $Id: unprec_ovdwf_linop_array_w.cc,v 1.6 2003-12-15 22:30:34 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Overlap-DWF (Borici) linear operator
  */
@@ -25,26 +25,6 @@ UnprecOvDWLinOpArray::create(const multi1d<LatticeColorMatrix>& u_,
   D.create(u_);
 //    CoeffWilsr_s = (AnisoP) ? Wilsr_s / xiF_0 : 1;
 }
-
-
-//-----------------------------------------------------------------------------
-// HACK
-/* Terrible implementation just to get the silly thing going */
-static inline LatticeFermion 
-chiralProjectPlus(const LatticeFermion& l)
-{
-  return 0.5*(l + Gamma(15)*l);
-}
-
-static inline LatticeFermion 
-chiralProjectMinus(const LatticeFermion& l)
-{
-  return 0.5*(l - Gamma(15)*l);
-}
-
-
-//-----------------------------------------------------------------------------
-
 
 
 //! Apply the operator onto a source vector

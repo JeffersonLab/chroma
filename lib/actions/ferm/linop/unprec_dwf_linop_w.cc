@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_linop_w.cc,v 1.6 2003-11-20 05:43:41 edwards Exp $
+// $Id: unprec_dwf_linop_w.cc,v 1.7 2003-12-15 22:30:34 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall linear operator
  */
@@ -50,34 +50,6 @@ cycleDownDW(const LatticeDWFermion& l)
     pokeDW(d, peekDW(l,i-1), i);
 
   return d;
-}
-
-
-// HACK
-/* Terrible implementation just to get the silly thing going */
-static inline LatticeDWFermion 
-chiralProjectPlus(const LatticeDWFermion& l)
-{
-  return 0.5*(l + Gamma(15)*l);
-}
-
-static inline LatticeDWFermion 
-chiralProjectMinus(const LatticeDWFermion& l)
-{
-  return 0.5*(l - Gamma(15)*l);
-}
-
-
-static inline LatticeFermion 
-chiralProjectPlus(const LatticeFermion& l)
-{
-  return 0.5*(l + Gamma(15)*l);
-}
-
-static inline LatticeFermion 
-chiralProjectMinus(const LatticeFermion& l)
-{
-  return 0.5*(l - Gamma(15)*l);
 }
 
 
