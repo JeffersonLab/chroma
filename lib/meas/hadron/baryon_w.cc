@@ -1,4 +1,4 @@
-// $Id: baryon_w.cc,v 1.11 2004-04-21 18:48:12 edwards Exp $ 
+// $Id: baryon_w.cc,v 1.12 2004-04-22 01:27:06 edwards Exp $ 
 /*! \file
  *  \brief Baryon 2-pt functions
  */
@@ -235,8 +235,9 @@ void baryon(LatticePropagator& quark_propagator,
     switch (baryons)
     {
     case 0:
-      /* Proton_1; use also for Lambda_1! */
-      /* C gamma_5 = Gamma(5) */
+      // Proton_1; use also for Lambda_1!
+      // |P_1, s_z=1/2> = (d C gamma_5 u) "u_up", see comments at top
+      // C gamma_5 = Gamma(5)
       // Polarized:
       // S_proj = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
       //            = (1 + Gamma(8) - i G(3) - i G(11)) / 2
@@ -244,78 +245,111 @@ void baryon(LatticePropagator& quark_propagator,
       di_quark = quarkContract13(quark_propagator * Gamma(5),
 				 Gamma(5) * quark_propagator);
       b_prop = trace(S_proj * traceColor(quark_propagator * traceSpin(di_quark)))
-	+ trace(S_proj * traceColor(quark_propagator * di_quark));
+	     + trace(S_proj * traceColor(quark_propagator * di_quark));
       break;
 		  
     case 1:
-      /* Lambda_1 = 3*Proton_1 (for compatibility with heavy-light routine) */
+      // Lambda_1 = 3*Proton_1 (for compatibility with heavy-light routine)
+      // |L_1, s_z=1/2> = 2*(u C gamma_5 d) "s_up" + (s C gamma_5 d) "u_up"
+      //                  + (u C gamma_5 s) "d_up" , see comments at top   
+      // S_proj = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
+      //            = (1 + Gamma(8) - i G(3) - i G(11)) / 2
       b_prop *= 3.0;
       break;
 
     case 2:
-      /* Delta^+_1 */
+      // Delta^+_1
+      // |D_1, s_z=3/2> = 2*(d C gamma_- u) "u_up" + (u C gamma_- u) "d_up"
+      // S_proj = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
+      //            = (1 + Gamma(8) - i G(3) - i G(11)) / 2
       di_quark = quarkContract13(quark_propagator * Cgm, 
 				 Cgm * quark_propagator);
       b_prop = trace(S_proj * traceColor(quark_propagator * traceSpin(di_quark)))
-	+ 2*trace(S_proj * traceColor(quark_propagator * di_quark));
-
-      /* Multiply by 3 for compatibility with heavy-light routine */
+	   + 2*trace(S_proj * traceColor(quark_propagator * di_quark));
+      
+      // Multiply by 3 for compatibility with heavy-light routine
       b_prop *= 3.0;
       break;
 
     case 3:
-      /* Proton_2; use also for Lambda_2! */
-      /* C gamma_5 gamma_4 = - Gamma(13) */
+      // Proton_2; use also for Lambda_2!
+      // |P_2, s_z=1/2> = (d C gamma_4 gamma_5 u) "u_up" 
+      // C gamma_5 gamma_4 = - Gamma(13)
+      // S_proj = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
+      //            = (1 + Gamma(8) - i G(3) - i G(11)) / 2
       di_quark = quarkContract13(quark_propagator * Gamma(13),
 				 Gamma(13) * quark_propagator);
       b_prop = trace(S_proj * traceColor(quark_propagator * traceSpin(di_quark)))
-	+ trace(S_proj * traceColor(quark_propagator * di_quark));
+	     + trace(S_proj * traceColor(quark_propagator * di_quark));
       break;
 
     case 4:
-      /* Lambda_2 = 3*Proton_2 (for compatibility with heavy-light routine) */
+      // Lambda_2 = 3*Proton_2 (for compatibility with heavy-light routine)
+      // |L_2, s_z=1/2> = 2*(u C gamma_4 gamma_5 d) "s_up"
+      //                  + (s C gamma_4 gamma_5 d) "u_up"
+      //                  + (u C gamma_4 gamma_5 s) "d_up"
+      // S_proj = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
+      //            = (1 + Gamma(8) - i G(3) - i G(11)) / 2
       b_prop *= 3.0;
       break;
 
     case 5:
-      /* Sigma^{*+}_2 */
+      // Sigma^{*+}_2
+      // |D_2, s_z=3/2> = 2*(d C gamma_4 gamma_- u) "u_up" 
+      //                  + (u C gamma_4 gamma_- u) "d_up" 
+      // S_proj = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
+      //            = (1 + Gamma(8) - i G(3) - i G(11)) / 2
       di_quark = quarkContract13(quark_propagator * Cg4m,
 				 Cg4m * quark_propagator);
       b_prop = trace(S_proj * traceColor(quark_propagator * traceSpin(di_quark)))
-	+ 2*trace(S_proj * traceColor(quark_propagator * di_quark));
+	   + 2*trace(S_proj * traceColor(quark_propagator * di_quark));
 
-      /* Multiply by 3 for compatibility with heavy-light routine */
+      // Multiply by 3 for compatibility with heavy-light routine
       b_prop *= 3.0;
       break;
 
     case 6:
-      /* Proton^+_3; use also for Lambda_3! */
-      /* C gamma_5 - C gamma_5 gamma_4 = Gamma(5) + Gamma(13) */
+      // Proton^+_3; use also for Lambda_3!
+      // |P_3, s_z=1/2> = (d C gamma_5 (1/2)(1 + gamma_4) u) "u_up" 
+      // C gamma_5 - C gamma_5 gamma_4 = Gamma(5) + Gamma(13)
+      // S_proj = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
+      //            = (1 + Gamma(8) - i G(3) - i G(11)) / 2
       di_quark = quarkContract13(quark_propagator * Gamma(5) + quark_propagator * Gamma(13),  
 				 Gamma(5) * quark_propagator + Gamma(13) * quark_propagator);
       b_prop = trace(S_proj * traceColor(quark_propagator * traceSpin(di_quark)))
-	+ trace(S_proj * traceColor(quark_propagator * di_quark));
+	     + trace(S_proj * traceColor(quark_propagator * di_quark));
       break;
 
     case 7:
-      /* Lambda_3 = 3*Proton_3 (for compatibility with heavy-light routine) */
+      // Lambda_3 = 3*Proton_3 (for compatibility with heavy-light routine)
+      // |L_3, s_z=1/2> = 2*(u C gamma_5 (1/2)(1 + gamma_4) d) "s_up"
+      //                  + (s C gamma_5 (1/2)(1 + gamma_4) d) "u_up"
+      //                  + (u C gamma_5 (1/2)(1 + gamma_4) s) "d_up"
+      // S_proj = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
+      //            = (1 + Gamma(8) - i G(3) - i G(11)) / 2
       b_prop *= 3.0;
       break;
 
     case 8:
-      /* Sigma^{*+}_3 */
+      // Sigma^{*+}_3
+      // |D_3, s_z=3/2> = 2*(d C gamma_- (1/2)(1 + gamma_4) d) u) "u_up"
+      //                  + (u C gamma_- (1/2)(1 + gamma_4) d) u) "d_up"
+      // S_proj = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
+      //            = (1 + Gamma(8) - i G(3) - i G(11)) / 2
       di_quark = quarkContract13(quark_propagator * CgmNR,
 				 CgmNR * quark_propagator);
       b_prop = trace(S_proj * traceColor(quark_propagator * traceSpin(di_quark)))
-	+ 2*trace(S_proj * traceColor(quark_propagator * di_quark));
+	   + 2*trace(S_proj * traceColor(quark_propagator * di_quark));
 
-      /* Multiply by 3 for compatibility with heavy-light routine */
+      // Multiply by 3 for compatibility with heavy-light routine
       b_prop *= 3.0;
       break;
 
     case 9:
-      /* Proton_1 -- but unpolarised ; use also for Lambda_1! */
-      /* C gamma_5 = Gamma(5) */
+      // Proton_4 -- but unpolarised ; use also for Lambda_4!
+      // |P_4, s_z=1/2> = (d C gamma_5 u) "u_up", see comments at top
+      // C gamma_5 = Gamma(5)
+      // Unpolarized:
       // S_proj_unpol = T = (1/2)(1 + gamma_4)
       di_quark = quarkContract13(quark_propagator * Gamma(5),
 				 Gamma(5) * quark_propagator);
@@ -324,8 +358,11 @@ void baryon(LatticePropagator& quark_propagator,
       break;
 
     case 10:
-      /* Proton_2; use also for Lambda_2! */
-      /* C gamma_5 gamma_4 = - Gamma(13) */
+      // Proton_5; use also for Lambda_5!
+      // |P_5, s_z=1/2> = (d C gamma_4 gamma_5 u) "u_up", see comments at top
+      // C gamma_5 gamma_4 = - Gamma(13)
+      // Unpolarized:
+      // S_proj_unpol = T = (1/2)(1 + gamma_4)
       di_quark = quarkContract13(quark_propagator * Gamma(13),
 				 Gamma(13) * quark_propagator);
       b_prop = trace(S_proj_unpol * trace(quark_propagator * trace(di_quark)));
@@ -333,8 +370,11 @@ void baryon(LatticePropagator& quark_propagator,
       break;
     
     case 11:
-      /* Proton^+_3; use also for Lambda_3! */
-      /* C gamma_5 = Gamma(5) */
+      // Proton^+_6; use also for Lambda_6!
+      // |P_6, s_z=1/2> = (d C gamma_5 (1/2)(1 + gamma_4) u) "u_up", see comments at top
+      // C gamma_5 = Gamma(5)
+      // Unpolarized:
+      // S_proj_unpol = T = (1/2)(1 + gamma_4)
       di_quark = quarkContract13(quark_propagator * Cg5NR,
 				 Cg5NR * quark_propagator);
       b_prop = trace(S_proj_unpol * trace(quark_propagator * trace(di_quark)));
@@ -353,7 +393,7 @@ void baryon(LatticePropagator& quark_propagator,
       for(int t = 0; t < length; ++t)
 	barprop[baryons][sink_mom_num][t] = 0.5 * hsum[sink_mom_num][t];
 
-  } /* end loop over baryons */
+  } // end loop over baryons
 
   END_CODE("baryon");
 }
