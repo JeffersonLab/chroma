@@ -1,4 +1,4 @@
-// $Id: mesonseqsrc_w.cc,v 1.6 2005-03-07 02:55:20 edwards Exp $
+// $Id: mesonseqsrc_w.cc,v 1.7 2005-03-15 04:06:34 edwards Exp $
 /*! \file
  *  \brief Construct meson sequential sources.
  */
@@ -50,6 +50,372 @@ namespace Chroma
     END_CODE();
 
     return src_prop_tmp;
+  }
+
+
+
+  //! Construct pion_1-source something-sink sequential source
+  /*!
+   * \ingroup hadron
+   *
+   * \param quark_propagator_1   first (u) quark propagator ( Read )
+   * \param quark_propagator_2   second (d) quark propagator ( Read )
+   * \param quark_propagator_3   third (s) quark propagator ( Read )
+   * \param insertion            gamma insertion ( Read )
+   *
+   * \return \gamma_5 * GAMMA^dag * \gamma_5 * G * \gamma_5
+   */
+
+  LatticePropagator mesPionXSeqSrc(const LatticePropagator& quark_propagator_1, 
+				   const LatticePropagator& quark_propagator_2,
+				   const LatticePropagator& quark_propagator_3,
+				   int insertion)
+  {
+    START_CODE();
+
+    LatticePropagator fin;
+    int G5 = Ns*Ns-1;
+
+    // src_prop_tmp = Gamma(G5) * Gamma(insertion)^dag * Gamma(G5) * quark_propagator_1 * Gamma(G5)
+    // final = adj(Gamma(G5) * src_prop_tmp * Gamma(G5))
+    //       = adj(Gamma(insertion)^dag * Gamma(G5) * quark_propagator_1)
+    //       = adj(quark_propagator_1) * Gamma(G5) * Gamma(insertion)
+
+    fin = adj(quark_propagator_1) * Gamma(G5) * Gamma(insertion);
+
+    END_CODE();
+
+    return fin;
+  }
+
+
+  //! Construct pion-source a0_1-sink sequential source
+  /*!
+   * \ingroup hadron
+   *
+   * \param quark_propagator_1   first (u) quark propagator ( Read )
+   * \param quark_propagator_2   second (d) quark propagator ( Read )
+   * \param quark_propagator_3   third (s) quark propagator ( Read )
+   *
+   * \return \gamma_5 * 1 * gamma_5 * G * \gamma_5
+   */
+
+  LatticePropagator mesPionA01SeqSrc(const LatticePropagator& quark_propagator_1, 
+				     const LatticePropagator& quark_propagator_2,
+				     const LatticePropagator& quark_propagator_3)
+  {
+    return mesPionXSeqSrc(quark_propagator_1,
+			  quark_propagator_2,
+			  quark_propagator_3,
+			  0);   // a0_1 = 1
+  }
+
+
+  //! Construct pion-source rho_x_1-sink sequential source
+  /*!
+   * \ingroup hadron
+   *
+   * \param quark_propagator_1   first (u) quark propagator ( Read )
+   * \param quark_propagator_2   second (d) quark propagator ( Read )
+   * \param quark_propagator_3   third (s) quark propagator ( Read )
+   *
+   * \return \gamma_5 * gamma_1^dag * gamma_5 * G * \gamma_5
+   */
+
+  LatticePropagator mesPionRhoX1SeqSrc(const LatticePropagator& quark_propagator_1, 
+				       const LatticePropagator& quark_propagator_2,
+				       const LatticePropagator& quark_propagator_3)
+  {
+    return mesPionXSeqSrc(quark_propagator_1,
+			  quark_propagator_2,
+			  quark_propagator_3,
+			  1);   // rho_x_1 = gamma_1
+  }
+
+
+  //! Construct pion-source rho_y_1-sink sequential source
+  /*!
+   * \ingroup hadron
+   *
+   * \param quark_propagator_1   first (u) quark propagator ( Read )
+   * \param quark_propagator_2   second (d) quark propagator ( Read )
+   * \param quark_propagator_3   third (s) quark propagator ( Read )
+   *
+   * \return \gamma_5 * gamma_2^dag * gamma_5 * G * \gamma_5
+   */
+
+  LatticePropagator mesPionRhoY1SeqSrc(const LatticePropagator& quark_propagator_1, 
+				       const LatticePropagator& quark_propagator_2,
+				       const LatticePropagator& quark_propagator_3)
+  {
+    return mesPionXSeqSrc(quark_propagator_1,
+			  quark_propagator_2,
+			  quark_propagator_3,
+			  2);   // rho_y_1 = gamma_2
+  }
+
+
+  //! Construct pion-source b1_z_1-sink sequential source
+  /*!
+   * \ingroup hadron
+   *
+   * \param quark_propagator_1   first (u) quark propagator ( Read )
+   * \param quark_propagator_2   second (d) quark propagator ( Read )
+   * \param quark_propagator_3   third (s) quark propagator ( Read )
+   *
+   * \return \gamma_5 * (gamma_1*gamma_2)^dag * gamma_2  * gamma_5 * G * \gamma_5
+   */
+
+  LatticePropagator mesPionB1Z1SeqSrc(const LatticePropagator& quark_propagator_1, 
+				      const LatticePropagator& quark_propagator_2,
+				      const LatticePropagator& quark_propagator_3)
+  {
+    return mesPionXSeqSrc(quark_propagator_1,
+			  quark_propagator_2,
+			  quark_propagator_3,
+			  3);   // b1_z_1 = gamma_1*gamma_2
+  }
+
+
+  //! Construct pion-source rho_z_1-sink sequential source
+  /*!
+   * \ingroup hadron
+   *
+   * \param quark_propagator_1   first (u) quark propagator ( Read )
+   * \param quark_propagator_2   second (d) quark propagator ( Read )
+   * \param quark_propagator_3   third (s) quark propagator ( Read )
+   *
+   * \return \gamma_5 * gamma_3^dag * gamma_5 * G * \gamma_5
+   */
+
+  LatticePropagator mesPionRhoZ1SeqSrc(const LatticePropagator& quark_propagator_1, 
+				       const LatticePropagator& quark_propagator_2,
+				       const LatticePropagator& quark_propagator_3)
+  {
+    return mesPionXSeqSrc(quark_propagator_1,
+			  quark_propagator_2,
+			  quark_propagator_3,
+			  4);   // rho_z_1 = gamma_3
+  }
+
+
+  //! Construct pion_1-source b1_y_1-sink sequential source
+  /*!
+   * \ingroup hadron
+   *
+   * \param quark_propagator_1   first (u) quark propagator ( Read )
+   * \param quark_propagator_2   second (d) quark propagator ( Read )
+   * \param quark_propagator_3   third (s) quark propagator ( Read )
+   *
+   * \return \gamma_5 * (gamma_1*gamma_3)^dag * gamma_5 * G * \gamma_5
+   */
+
+  LatticePropagator mesPion1B1Y1SeqSrc(const LatticePropagator& quark_propagator_1, 
+				       const LatticePropagator& quark_propagator_2,
+				       const LatticePropagator& quark_propagator_3)
+  {
+    return mesPionXSeqSrc(quark_propagator_1,
+			  quark_propagator_2,
+			  quark_propagator_3,
+			  5);   // b1_y_1 =  gamma_1*gamma_3
+  }
+
+
+  //! Construct pion_1-source b1_x_1-sink sequential source
+  /*!
+   * \ingroup hadron
+   *
+   * \param quark_propagator_1   first (u) quark propagator ( Read )
+   * \param quark_propagator_2   second (d) quark propagator ( Read )
+   * \param quark_propagator_3   third (s) quark propagator ( Read )
+   *
+   * \return \gamma_5 * (gamma_2*gamma_3)^dag * gamma_5 * G * \gamma_5
+   */
+
+  LatticePropagator mesPion1B1X1SeqSrc(const LatticePropagator& quark_propagator_1, 
+				       const LatticePropagator& quark_propagator_2,
+				       const LatticePropagator& quark_propagator_3)
+  {
+    return mesPionXSeqSrc(quark_propagator_1,
+			  quark_propagator_2,
+			  quark_propagator_3,
+			  6);   // b1_x_1 =  gamma_2*gamma_3
+  }
+
+
+  //! Construct pion_1-source pion_2-sink sequential source
+  /*!
+   * \ingroup hadron
+   *
+   * \param quark_propagator_1   first (u) quark propagator ( Read )
+   * \param quark_propagator_2   second (d) quark propagator ( Read )
+   * \param quark_propagator_3   third (s) quark propagator ( Read )
+   *
+   * \return \gamma_5 * (gamma_4*gamma_5)^dag * gamma_5 * G * \gamma_5
+   */
+
+  LatticePropagator mesPion1Pion2SeqSrc(const LatticePropagator& quark_propagator_1, 
+					const LatticePropagator& quark_propagator_2,
+					const LatticePropagator& quark_propagator_3)
+  {
+    return mesPionXSeqSrc(quark_propagator_1,
+			  quark_propagator_2,
+			  quark_propagator_3,
+			  7);   // pion_2 =  gamma_4*gamma_5
+  }
+
+
+  //! Construct pion-source a0_2-sink sequential source
+  /*!
+   * \ingroup hadron
+   *
+   * \param quark_propagator_1   first (u) quark propagator ( Read )
+   * \param quark_propagator_2   second (d) quark propagator ( Read )
+   * \param quark_propagator_3   third (s) quark propagator ( Read )
+   *
+   * \return \gamma_5 * (gamma_4)^dag * gamma_5 * G * \gamma_5
+   */
+
+  LatticePropagator mesPionA02SeqSrc(const LatticePropagator& quark_propagator_1, 
+				     const LatticePropagator& quark_propagator_2,
+				     const LatticePropagator& quark_propagator_3)
+  {
+    return mesPionXSeqSrc(quark_propagator_1,
+			  quark_propagator_2,
+			  quark_propagator_3,
+			  8);   // a0_2 = gamma_4
+  }
+
+
+  //! Construct pion-source rho_x_2-sink sequential source
+  /*!
+   * \ingroup hadron
+   *
+   * \param quark_propagator_1   first (u) quark propagator ( Read )
+   * \param quark_propagator_2   second (d) quark propagator ( Read )
+   * \param quark_propagator_3   third (s) quark propagator ( Read )
+   *
+   * \return \gamma_5 * (gamma_4*gamma_1)^dag * gamma_5 * G * \gamma_5
+   */
+
+  LatticePropagator mesPionRhoX2SeqSrc(const LatticePropagator& quark_propagator_1, 
+				       const LatticePropagator& quark_propagator_2,
+				       const LatticePropagator& quark_propagator_3)
+  {
+    return mesPionXSeqSrc(quark_propagator_1,
+			  quark_propagator_2,
+			  quark_propagator_3,
+			  9);   // rho_x_2 = gamma_4 * gamma_1
+  }
+
+
+  //! Construct pion-source rho_y_2-sink sequential source
+  /*!
+   * \ingroup hadron
+   *
+   * \param quark_propagator_1   first (u) quark propagator ( Read )
+   * \param quark_propagator_2   second (d) quark propagator ( Read )
+   * \param quark_propagator_3   third (s) quark propagator ( Read )
+   *
+   * \return \gamma_5 * (gamma_4*gamma_2)^dag * gamma_5 * G * \gamma_5
+   */
+
+  LatticePropagator mesPionRhoY2SeqSrc(const LatticePropagator& quark_propagator_1, 
+				       const LatticePropagator& quark_propagator_2,
+				       const LatticePropagator& quark_propagator_3)
+  {
+    return mesPionXSeqSrc(quark_propagator_1,
+			  quark_propagator_2,
+			  quark_propagator_3,
+			  10);   // rho_y_2 = gamma_4 * gamma_2
+  }
+
+
+  //! Construct pion-source a1_z_1-sink sequential source
+  /*!
+   * \ingroup hadron
+   *
+   * \param quark_propagator_1   first (u) quark propagator ( Read )
+   * \param quark_propagator_2   second (d) quark propagator ( Read )
+   * \param quark_propagator_3   third (s) quark propagator ( Read )
+   *
+   * \return \gamma_5 * (gamma_1*gamma_2*gamma_4)^dag * gamma_5 * G * \gamma_5
+   */
+
+  LatticePropagator mesPionA1Z1SeqSrc(const LatticePropagator& quark_propagator_1, 
+				      const LatticePropagator& quark_propagator_2,
+				      const LatticePropagator& quark_propagator_3)
+  {
+    return mesPionXSeqSrc(quark_propagator_1,
+			  quark_propagator_2,
+			  quark_propagator_3,
+			  11);   // a1_z_1 = gamma_1 * gamma_2 * gamma_4
+  }
+
+
+  //! Construct pion-source rho_z_2-sink sequential source
+  /*!
+   * \ingroup hadron
+   *
+   * \param quark_propagator_1   first (u) quark propagator ( Read )
+   * \param quark_propagator_2   second (d) quark propagator ( Read )
+   * \param quark_propagator_3   third (s) quark propagator ( Read )
+   *
+   * \return \gamma_5 * (gamma_4*gamma_3)^dag * gamma_5 * G * \gamma_5
+   */
+
+  LatticePropagator mesPionRhoZ2SeqSrc(const LatticePropagator& quark_propagator_1, 
+				       const LatticePropagator& quark_propagator_2,
+				       const LatticePropagator& quark_propagator_3)
+  {
+    return mesPionXSeqSrc(quark_propagator_1,
+			  quark_propagator_2,
+			  quark_propagator_3,
+			  12);   // rho_z_2 = gamma_4 * gamma_3
+  }
+
+
+  //! Construct pion-source a1_y_1-sink sequential source
+  /*!
+   * \ingroup hadron
+   *
+   * \param quark_propagator_1   first (u) quark propagator ( Read )
+   * \param quark_propagator_2   second (d) quark propagator ( Read )
+   * \param quark_propagator_3   third (s) quark propagator ( Read )
+   *
+   * \return \gamma_5 * (gamma_1*gamma_3*gamma_4)^dag * gamma_5 * G * \gamma_5
+   */
+
+  LatticePropagator mesPionA1Y1SeqSrc(const LatticePropagator& quark_propagator_1, 
+				       const LatticePropagator& quark_propagator_2,
+				       const LatticePropagator& quark_propagator_3)
+  {
+    return mesPionXSeqSrc(quark_propagator_1,
+			  quark_propagator_2,
+			  quark_propagator_3,
+			  13);   // a1_y_1 = gamma_1 * gamma_3 * gamma_4
+  }
+
+
+  //! Construct pion-source a1_x_1-sink sequential source
+  /*!
+   * \ingroup hadron
+   *
+   * \param quark_propagator_1   first (u) quark propagator ( Read )
+   * \param quark_propagator_2   second (d) quark propagator ( Read )
+   * \param quark_propagator_3   third (s) quark propagator ( Read )
+   *
+   * \return \gamma_5 * (gamma_2*gamma_3*gamma_4)^dag * gamma_5 * G * \gamma_5
+   */
+
+  LatticePropagator mesPionA1X1SeqSrc(const LatticePropagator& quark_propagator_1, 
+				      const LatticePropagator& quark_propagator_2,
+				      const LatticePropagator& quark_propagator_3)
+  {
+    return mesPionXSeqSrc(quark_propagator_1,
+			  quark_propagator_2,
+			  quark_propagator_3,
+			  14);   // a1_x_1 = gamma_2*gamma_3*gamma_4
   }
 
 }  // end namespace Chroma
