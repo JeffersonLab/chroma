@@ -3,6 +3,9 @@
 /* Build Peters Dslash Op */
 #undef BUILD_PAB_WILSON_DSLASH
 
+/* Build SSE DWF CG */
+#undef BUILD_SSE_DWF_CG
+
 /* Build SSE Dslash Op */
 #undef BUILD_SSE_WILSON_DSLASH
 
