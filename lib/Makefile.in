@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.54 2003-09-10 18:15:05 bjoo Exp $
+# $Id: Makefile.in,v 1.55 2003-09-11 01:50:46 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -41,6 +41,16 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_triplet = @host@
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_1 = -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include
+@BUILD_WILSON_LIBS_TRUE@am__append_2 = baryon_w.cc mesons_w.cc lwldslash_w.cc formfac_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              sink_smear2_w.cc barcomp_w.cc transf_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              unprec_wilson_dsdu_w.cc  unprec_qprop_w.cc readszinqprop_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              readszinferm_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              overlapbu_linop_w.cc \
+@BUILD_WILSON_LIBS_TRUE@	      p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc 
+
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_3 = lwldslash_w_sse.cc
+@BUILD_STAGGERED_LIBS_TRUE@am__append_4 = 
 VPATH = $(TOPDIR) $(TOPDIR)/lib $(TOPDIR)/lib/actions $(TOPDIR)/lib/actions/boson $(TOPDIR)/lib/actions/boson/operator $(TOPDIR)/lib/actions/ferm $(TOPDIR)/lib/actions/ferm/fermacts $(TOPDIR)/lib/actions/ferm/invert $(TOPDIR)/lib/actions/ferm/linop $(TOPDIR)/lib/actions/ferm/qprop $(TOPDIR)/lib/actions/gauge $(TOPDIR)/lib/geom $(TOPDIR)/lib/info $(TOPDIR)/lib/io $(TOPDIR)/lib/meas $(TOPDIR)/lib/meas/eig $(TOPDIR)/lib/meas/gfix $(TOPDIR)/lib/meas/glue $(TOPDIR)/lib/meas/hadron $(TOPDIR)/lib/meas/pbp $(TOPDIR)/lib/meas/schrfun $(TOPDIR)/lib/meas/smear $(TOPDIR)/lib/meas/sources $(TOPDIR)/lib/update $(TOPDIR)/lib/update/heatbath $(TOPDIR)/lib/update/molecdyn $(TOPDIR)/lib/update/molecdyn/dsdu $(TOPDIR)/lib/update/molecdyn/est $(TOPDIR)/lib/update/molecdyn/mese $(TOPDIR)/lib/update/molecdyn/noise $(TOPDIR)/lib/update/molecdyn/step $(TOPDIR)/lib/util $(TOPDIR)/lib/util/comm $(TOPDIR)/lib/util/ferm $(TOPDIR)/lib/util/ft $(TOPDIR)/lib/util/gauge $(TOPDIR)/lib/util/misc $(TOPDIR)/lib/util/random $(TOPDIR)/include $(TOPDIR)/mainprogs $(TOPDIR)/mainprogs/main $(TOPDIR)/mainprogs/tests $(TOPDIR)/root
 ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
@@ -156,7 +166,6 @@ lib_LIBRARIES = libchroma.a
 #
 # Various header files. 
 #
-QDPXX_HDRS = defs.h
 HDRS = chroma.h chromabase.h chromainc.h primitives.h common_declarations.h \
         geom.h
 
@@ -164,43 +173,14 @@ HDRS = chroma.h chromabase.h chromainc.h primitives.h common_declarations.h \
 #
 # Fermion independent sources
 #
-GENERIC_SRCS = $(HDRS) gaus_smear.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
+libchroma_a_SOURCES = gaus_smear.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
                klein_gord.cc mesplq.cc reunit.cc sftmom.cc srcfil.cc \
                readszin.cc su3proj.cc sun_proj.cc hyp_smear.cc laplacian.cc\
-               su2extract.cc sunfill.cc invcg2.cc qprop_io.cc
+               su2extract.cc sunfill.cc invcg2.cc qprop_io.cc\
+$(am__append_2) $(am__append_3) $(am__append_4)
 
-#
-# Object files to add if building the Wilson Builds...
-# This is OK, since Ns is determined at configure time
-#
-WILSON_SRCS = baryon_w.cc mesons_w.cc lwldslash_w.cc formfac_w.cc \
-              sink_smear2_w.cc barcomp_w.cc transf_w.cc \
-              unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
-              unprec_wilson_dsdu_w.cc  unprec_qprop_w.cc readszinqprop_w.cc \
-              readszinferm_w.cc \
-              overlapbu_linop_w.cc \
-	      p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc \
-	      lwldslash_w_sse.cc
-
-#              zolotarev4d_fermact_w.cc zolotarev4d_linop_w.cc lovlapms_w.cc
-
-# dslashm_w.cc 
-
-#
-# This is the list of files to be used in Staggered Builds
-# This is OK since Ns is determined at configure time 
-#
-STAGGERED_SRCS = 
-
-#
-# An AM_CONDITIONAL if statement to decide which fermion type
-#
-nodist_libchroma_a_SOURCES = $(QDPXX_HDRS)
-@BUILD_WILSON_LIBS_TRUE@libchroma_a_SOURCES = $(GENERIC_SRCS) $(WILSON_SRCS)
-
-@BUILD_STAGGERED_LIBS_TRUE@libchroma_a_SOURCES = $(GENERIC_SRCS) $(STAGGERED_SRCS)
-@BUILD_WILSON_LIBS_TRUE@EXTRA_libchroma_a_SOURCES = $(STAGGERED_SRCS)
-@BUILD_STAGGERED_LIBS_TRUE@EXTRA_libchroma_a_SOURCES = $(WILSON_SRCS)
+# Need this header as part of libchroma_a_sources
+nodist_libchroma_a_SOURCES = $(HDRS)
 subdir = lib
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
 CONFIG_CLEAN_FILES =
@@ -208,46 +188,44 @@ LIBRARIES = $(lib_LIBRARIES)
 
 libchroma_a_AR = $(AR) cru
 libchroma_a_LIBADD =
-am__libchroma_a_SOURCES_DIST = chroma.h chromabase.h chromainc.h \
-	primitives.h common_declarations.h geom.h gaus_smear.cc \
-	rgauge.cc taproj.cc hotst.cc expm12.cc klein_gord.cc mesplq.cc \
-	reunit.cc sftmom.cc srcfil.cc readszin.cc su3proj.cc \
-	sun_proj.cc hyp_smear.cc laplacian.cc su2extract.cc sunfill.cc \
-	invcg2.cc qprop_io.cc baryon_w.cc mesons_w.cc lwldslash_w.cc \
-	formfac_w.cc sink_smear2_w.cc barcomp_w.cc transf_w.cc \
+am__libchroma_a_SOURCES_DIST = gaus_smear.cc rgauge.cc taproj.cc \
+	hotst.cc expm12.cc klein_gord.cc mesplq.cc reunit.cc sftmom.cc \
+	srcfil.cc readszin.cc su3proj.cc sun_proj.cc hyp_smear.cc \
+	laplacian.cc su2extract.cc sunfill.cc invcg2.cc qprop_io.cc \
+	baryon_w.cc mesons_w.cc lwldslash_w.cc formfac_w.cc \
+	sink_smear2_w.cc barcomp_w.cc transf_w.cc \
 	unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
 	unprec_wilson_dsdu_w.cc unprec_qprop_w.cc readszinqprop_w.cc \
 	readszinferm_w.cc overlapbu_linop_w.cc p_src_w.cc d_src_w.cc \
 	D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc lwldslash_w_sse.cc
-am__objects_1 =
-am__objects_2 = $(am__objects_1) gaus_smear.$(OBJEXT) rgauge.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@am__objects_1 = baryon_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	mesons_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	lwldslash_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	formfac_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	sink_smear2_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	barcomp_w.$(OBJEXT) transf_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	unprec_wilson_fermact_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	unprec_wilson_linop_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	unprec_wilson_dsdu_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	unprec_qprop_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	readszinqprop_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	readszinferm_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	overlapbu_linop_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	p_src_w.$(OBJEXT) d_src_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	D_j_w.$(OBJEXT) DjDk_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	BuildingBlocks_w.$(OBJEXT)
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__objects_2 = lwldslash_w_sse.$(OBJEXT)
+@BUILD_STAGGERED_LIBS_TRUE@am__objects_3 =
+am_libchroma_a_OBJECTS = gaus_smear.$(OBJEXT) rgauge.$(OBJEXT) \
 	taproj.$(OBJEXT) hotst.$(OBJEXT) expm12.$(OBJEXT) \
 	klein_gord.$(OBJEXT) mesplq.$(OBJEXT) reunit.$(OBJEXT) \
 	sftmom.$(OBJEXT) srcfil.$(OBJEXT) readszin.$(OBJEXT) \
 	su3proj.$(OBJEXT) sun_proj.$(OBJEXT) hyp_smear.$(OBJEXT) \
 	laplacian.$(OBJEXT) su2extract.$(OBJEXT) sunfill.$(OBJEXT) \
-	invcg2.$(OBJEXT) qprop_io.$(OBJEXT)
-am__objects_3 = baryon_w.$(OBJEXT) mesons_w.$(OBJEXT) \
-	lwldslash_w.$(OBJEXT) formfac_w.$(OBJEXT) \
-	sink_smear2_w.$(OBJEXT) barcomp_w.$(OBJEXT) transf_w.$(OBJEXT) \
-	unprec_wilson_fermact_w.$(OBJEXT) \
-	unprec_wilson_linop_w.$(OBJEXT) unprec_wilson_dsdu_w.$(OBJEXT) \
-	unprec_qprop_w.$(OBJEXT) readszinqprop_w.$(OBJEXT) \
-	readszinferm_w.$(OBJEXT) overlapbu_linop_w.$(OBJEXT) \
-	p_src_w.$(OBJEXT) d_src_w.$(OBJEXT) D_j_w.$(OBJEXT) \
-	DjDk_w.$(OBJEXT) BuildingBlocks_w.$(OBJEXT) \
-	lwldslash_w_sse.$(OBJEXT)
-@BUILD_STAGGERED_LIBS_TRUE@am_libchroma_a_OBJECTS = $(am__objects_2) \
-@BUILD_STAGGERED_LIBS_TRUE@	$(am__objects_1)
-@BUILD_WILSON_LIBS_TRUE@am_libchroma_a_OBJECTS = $(am__objects_2) \
-@BUILD_WILSON_LIBS_TRUE@	$(am__objects_3)
-am__EXTRA_libchroma_a_SOURCES_DIST = baryon_w.cc mesons_w.cc \
-	lwldslash_w.cc formfac_w.cc sink_smear2_w.cc barcomp_w.cc \
-	transf_w.cc unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
-	unprec_wilson_dsdu_w.cc unprec_qprop_w.cc readszinqprop_w.cc \
-	readszinferm_w.cc overlapbu_linop_w.cc p_src_w.cc d_src_w.cc \
-	D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc lwldslash_w_sse.cc
-nodist_libchroma_a_OBJECTS = $(am__objects_1)
+	invcg2.$(OBJEXT) qprop_io.$(OBJEXT) $(am__objects_1) \
+	$(am__objects_2) $(am__objects_3)
+am__objects_4 =
+nodist_libchroma_a_OBJECTS = $(am__objects_4)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS) \
 	$(nodist_libchroma_a_OBJECTS)
 
@@ -288,10 +266,9 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-DIST_SOURCES = $(am__libchroma_a_SOURCES_DIST) \
-	$(am__EXTRA_libchroma_a_SOURCES_DIST)
+DIST_SOURCES = $(am__libchroma_a_SOURCES_DIST)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(libchroma_a_SOURCES) $(EXTRA_libchroma_a_SOURCES) $(nodist_libchroma_a_SOURCES)
+SOURCES = $(libchroma_a_SOURCES) $(nodist_libchroma_a_SOURCES)
 
 all: all-am
 
