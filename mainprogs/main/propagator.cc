@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.8 2003-04-04 18:37:55 edwards Exp $
+// $Id: propagator.cc,v 1.9 2003-04-09 21:00:47 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -43,6 +43,8 @@ int main(int argc, char **argv)
   int  WvfIntPar = 10;   // number of hits for smearing
 
   Real Kappa = 0.1480;
+
+  UnprecWilsonFermAct S_f(Kappa);
 
   FermAct = UNPRECONDITIONED_WILSON;  // global
   InvType = CG_INVERTER;  // global
@@ -139,7 +141,7 @@ int main(int argc, char **argv)
 	int n_count;
 
 	cerr << "DEBUG before NPQprop " << endl;
-	NPQprop(u, chi, Kappa, RsdCG, psi, MaxCG, n_count);
+	S_f.Qprop(psi, u, chi, RsdCG, MaxCG, n_count);
 	cerr << "DEBUG after NPQprop " << endl;
 	ncg_had += n_count;
 	
