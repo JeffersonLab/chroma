@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.153 2004-07-23 12:37:11 bjoo Exp $
+# $Id: Makefile.am,v 1.154 2004-07-27 05:53:16 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -51,7 +51,7 @@ VPATH += $(TOPDIR)/root
 #     chroma/scripts/build_include_headers.pl
 #
 nobase_include_HEADERS = \
-	chroma_config.h chroma.h chroma_scalarsite_defs.h chroma_scalarsite_dwdefs.h \
+	chroma_config.h chroma.h \
 	chromabase.h chromainc.h common_declarations.h fermact.h \
 	fermbc.h gaugeact.h gaugebc.h handle.h invtype.h lib.h \
 	linearop.h primitives.h state.h \
@@ -295,11 +295,11 @@ libchroma_a_SOURCES += baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
               prec_parwilson_fermact_w.cc prec_parwilson_linop_w.cc \
               dwffld_w.cc \
               fermact_qprop_array.cc prec_fermact_qprop_array.cc \
-              unprec_dwf_fermact_base_w.cc unprec_dwf_fermact_qprop_array_w.cc \
+              unprec_dwf_fermact_qprop_array_w.cc \
               unprec_dwf_fermact_array_w.cc unprec_dwf_linop_array_w.cc \
               unprec_ovdwf_fermact_array_w.cc unprec_ovdwf_linop_array_w.cc \
               unprec_ovext_fermact_array_w.cc unprec_ovext_linop_array_w.cc \
-              prec_dwf_fermact_base_w.cc prec_dwf_fermact_qprop_array_w.cc \
+              prec_dwf_fermact_qprop_array_w.cc \
               prec_dwf_fermact_array_w.cc prec_dwf_linop_array_w.cc \
               prec_ovdwf_fermact_array_w.cc prec_ovdwf_linop_array_w.cc \
               kyugauge_io.cc kyuqprop_io.cc \
