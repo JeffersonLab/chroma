@@ -1,4 +1,4 @@
-// $Id: kyuqprop_io.h,v 1.2 2004-04-21 17:25:22 edwards Exp $
+// $Id: kyuqprop_io.h,v 1.3 2004-05-03 20:28:27 edwards Exp $
 /*! \file
  *  \brief Read/write a KYU propagator
  */
@@ -22,6 +22,8 @@ void initDiracToDRMat(SpinMatrix& U);
 
 //! Read a KYU propagator file
 /*!
+ * \ingroup io
+ *
  * \param q          propagator ( Read )
  * \param file       path ( Read )
  */    
