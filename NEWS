@@ -1,3 +1,12 @@
+12/12/2004 -- Robert Edwards
+
+	Version 1.11.0. Major overhaul of fermact and linearop class
+        structure. Removed dsdu stuff - now in linops. Introduced
+        levels of fermacts (base or not) that have derivs. All low
+        level fermacts/linops have an additional template param for
+        type of conjugate momenta in derivative. Made all fermacts and
+        linops within chroma namespace.
+
 12/09/2004 -- Robert Edwards
 
 	Version 1.10.2. Changed prec. DWF-base to have linOp4D only
