@@ -1,4 +1,4 @@
-// $Id: t_precdwf.cc,v 1.8 2005-03-01 19:04:50 edwards Exp $
+// $Id: t_precdwf.cc,v 1.9 2005-03-01 19:09:10 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -106,26 +106,26 @@ int main(int argc, char **argv)
 
     // even-even-inv piece
     mydt = time_func(D_pdwf, &EvenOddPrecLinearOperator<MLF,LCM>::evenEvenInvLinOp, chi, psi, is);
-    QDPIO::cout << "The time per lattice point is "<< mydt << " micro sec" 
+    QDPIO::cout << "EvenEven: The time per lattice point is "<< mydt << " micro sec" 
 		<< " (" <<  ((double)(Ndiag)/mydt) << ") Mflops " << endl;
       
     // odd-odd piece
     mydt = time_func(D_pdwf, &EvenOddPrecLinearOperator<MLF,LCM>::oddOddLinOp, chi, psi, is);
-    QDPIO::cout << "The time per lattice point is "<< mydt << " micro sec" 
+    QDPIO::cout << "OddOdd: The time per lattice point is "<< mydt << " micro sec" 
 		<< " (" <<  ((double)(Ndiag)/mydt) << ") Mflops " << endl;
       
     // even-odd
     mydt = time_func(D_pdwf, &EvenOddPrecLinearOperator<MLF,LCM>::evenOddLinOp, chi, psi, is);
-    QDPIO::cout << "The time per lattice point is "<< mydt << " micro sec" 
+    QDPIO::cout << "EvenOdd: The time per lattice point is "<< mydt << " micro sec" 
 		<< " (" <<  ((double)(Neo)/mydt) << ") Mflops " << endl;
     // odd-even
     mydt = time_func(D_pdwf, &EvenOddPrecLinearOperator<MLF,LCM>::oddEvenLinOp, chi, psi, (isign == 1 ? PLUS : MINUS));
-    QDPIO::cout << "The time per lattice point is "<< mydt << " micro sec" 
+    QDPIO::cout << "Odd-Even: The time per lattice point is "<< mydt << " micro sec" 
 		<< " (" <<  ((double)(Neo)/mydt) << ") Mflops " << endl;
 
     // Total thing
     mydt = time_func(D_pdwf, &EvenOddPrecLinearOperator<MLF,LCM>::operator(), chi, psi, is);
-    QDPIO::cout << "The time per lattice point is "<< mydt << " micro sec" 
+    QDPIO::cout << "Total: The time per lattice point is "<< mydt << " micro sec" 
 		<< " (" <<  ((double)(Nflops)/mydt) << ") Mflops " << endl;
   }
   
