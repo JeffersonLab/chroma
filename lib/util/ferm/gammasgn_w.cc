@@ -1,10 +1,10 @@
-// $Id: gammasgn_w.cc,v 1.1 2004-06-11 20:31:25 edwards Exp $
+// $Id: gammasgn_w.cc,v 1.2 2004-06-11 20:40:03 edwards Exp $
 /*! \file
  *  \brief Compute gamma matrix multiplication table factors
  */
 
 #include "chromabase.h"
-#include "util/ferm/gammasgn.h"
+#include "util/ferm/gammasgn_w.h"
 
 using namespace QDP;
 
@@ -23,13 +23,8 @@ static void gammaSgn_init()
 {
   START_CODE("gammasgn_init");
 
-  sgnn.resize(Ns*Ns,Ns*Ns);
+  meson_eta2.resize(Ns*Ns,Ns*Ns);
 
-  multi1d sgnn(2);
-  
-  sgnn[0] =  1;
-  sgnn[1] = -1;
-  
   for(int n = 0; n < Ns*Ns; ++n)
   {
     int nn = n;
@@ -44,16 +39,16 @@ static void gammaSgn_init()
 
     for(int m = 0; m < Ns*Ns; ++m)
     {
-      int mm;
+      int mm = m;
       int m1 = mm & 1;
       mm >>= 1;
-      m2 = mm & 1;
+      int m2 = mm & 1;
       mm >>= 1;
-      m3 = mm & 1;
-      m4 = mm >> 1;
+      int m3 = mm & 1;
+      int m4 = mm >> 1;
 
       ssum = ((n2+n3+n4)*m1 + (n3+n4)*m2 + n4*m3) & 1;
-      meson_eta2(n,m) = sgnn[ssum];
+      meson_eta2(n,m) = (ssum == 0) ? 1 : -1;
     }
   }
   
