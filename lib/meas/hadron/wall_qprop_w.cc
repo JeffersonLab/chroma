@@ -1,4 +1,4 @@
-// $Id: wall_qprop_w.cc,v 1.2 2003-12-18 04:05:36 edwards Exp $
+// $Id: wall_qprop_w.cc,v 1.3 2003-12-22 02:18:56 edwards Exp $
 /*! \file
  *  \brief Construct a wall-sink propagator
  */
@@ -34,16 +34,19 @@ void wall_qprop(LatticePropagator& wall_quark_prop,
   int j_decay = phases.getDir();
 
   // Project propagator onto zero momentum: Do a slice-wise sum.
-  multi1d<Propagator> dprop_slice = sumMulti(quark_propagator, phases.getSubset());
+  multi1d<DPropagator> dprop_slice = sumMulti(quark_propagator, phases.getSubset());
   
   // Now create the mask for 1 site per time slice
-  LatticeBoolean lbtmp1 = true;
+  LatticeBoolean lbmask = true;
   for(int mu = 0; mu < Nd; ++mu)
     if( mu != j_decay )
-      lbtmp1 &= (Layout::latticeCoordinate(mu) == 0);
+      lbmask &= (Layout::latticeCoordinate(mu) == 0);
+
+  // Now copy onto the lattice
+  LatticeInteger my_coord = Layout::latticeCoordinate(j_decay);
 
   for(int t = 0; t < length; ++t)
-    wall_quark_prop = where(lbtmp1 & (Layout::latticeCoordinate(j_decay) == t),
+    wall_quark_prop = where(lbmask & (my_coord == t),
 			    LatticePropagator(dprop_slice[t]),
 			    LatticePropagator(zero));
             
