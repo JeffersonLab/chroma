@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.164 2004-03-25 14:31:20 bjoo Exp $
+# $Id: Makefile.in,v 1.165 2004-04-05 04:13:39 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -140,7 +140,7 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@	      zolotarev_coeffs.cc overlap_fermact_base_w.cc lovlapms_w.cc  \
 @BUILD_WILSON_LIBS_TRUE@	      zolotarev4d_fermact_w.cc ischiral_w.cc lovddag_w.cc \
 @BUILD_WILSON_LIBS_TRUE@	      zolotarev5d_fermact_array_w.cc zolotarev5d_linop_array_w.cc \
-@BUILD_WILSON_LIBS_TRUE@              wallpionff_w.cc 
+@BUILD_WILSON_LIBS_TRUE@              wallpionff_w.cc wall_qprop_w.cc
 
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_5 = lwldslash_w_sse.cc
 @BUILD_PAB_WILSON_DSLASH_TRUE@am__append_6 = lwldslash_w_pab.cc
@@ -380,11 +380,11 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	overlap_fermact_base_w.cc lovlapms_w.cc \
 	zolotarev4d_fermact_w.cc ischiral_w.cc lovddag_w.cc \
 	zolotarev5d_fermact_array_w.cc zolotarev5d_linop_array_w.cc \
-	wallpionff_w.cc lwldslash_w_sse.cc lwldslash_w_pab.cc \
-	mesphas_s.cc mesphas_follana_s.cc pions_follana_s.cc \
-	follana_io_s.cc walfil_s.cc baryon_s.cc stag_scalars_s.cc \
-	stag_propShift_s.cc asqtad_linop_s.cc asq_dsl_s.cc \
-	fat7_links_s.cc naik_term_s.cc asqtad_fermact_s.cc \
+	wallpionff_w.cc wall_qprop_w.cc lwldslash_w_sse.cc \
+	lwldslash_w_pab.cc mesphas_s.cc mesphas_follana_s.cc \
+	pions_follana_s.cc follana_io_s.cc walfil_s.cc baryon_s.cc \
+	stag_scalars_s.cc stag_propShift_s.cc asqtad_linop_s.cc \
+	asq_dsl_s.cc fat7_links_s.cc naik_term_s.cc asqtad_fermact_s.cc \
 	asqtad_mdagm_s.cc staggered_qprop.cc stag_phases_s.cc
 @BUILD_WILSON_LIBS_TRUE@am__objects_1 = baryon_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	mesons_w.$(OBJEXT) hybmeson_w.$(OBJEXT) \
@@ -442,7 +442,8 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 @BUILD_WILSON_LIBS_TRUE@	lovddag_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	zolotarev5d_fermact_array_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	zolotarev5d_linop_array_w.$(OBJEXT) \
-@BUILD_WILSON_LIBS_TRUE@	wallpionff_w.$(OBJEXT)
+@BUILD_WILSON_LIBS_TRUE@	wallpionff_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	wall_qprop_w.$(OBJEXT)
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__objects_2 = lwldslash_w_sse.$(OBJEXT)
 @BUILD_PAB_WILSON_DSLASH_TRUE@am__objects_3 = lwldslash_w_pab.$(OBJEXT)
 @BUILD_STAGGERED_LIBS_TRUE@am__objects_4 = mesphas_s.$(OBJEXT) \
@@ -577,6 +578,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_wilson_fermact_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_wilson_linop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/walfil_s.Po ./$(DEPDIR)/walfil_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/wall_qprop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/wallpionff_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/writemilc.Po ./$(DEPDIR)/writeszin.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/writeszinqprop_w.Po \
@@ -771,6 +773,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_wilson_linop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/walfil_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/walfil_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wall_qprop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wallpionff_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writemilc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writeszin.Po@am__quote@
