@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lovddag_w.h,v 1.8 2004-04-16 14:58:29 bjoo Exp $
+// $Id: lovddag_w.h,v 1.9 2004-05-14 15:08:43 bjoo Exp $
 /*! \file
  *  \brief Internal Overlap-pole operator
  */
@@ -33,7 +33,7 @@ using namespace QDP;
  *                           = gamma_5 * (1 + gamma_5 * B) * gamma_5 
  */
 
-class lovddag : public LinearOperator<LatticeFermion>
+class lovddag : public ApproxLinearOperator<LatticeFermion>
 {
 public:
   //! Creation routine
@@ -51,7 +51,7 @@ public:
    * \param _EigValFunc     eigenvalues      	               (Read)
    * \param _NEig           number of eigenvalues              (Read)
    * \param _MaxCG          MaxCG inner CG                     (Read)
-   * \param _RsdCG          residual for inner CG              (Read)
+   * \param _RsdCG          default residual for inner CG      (Read)
    */
   lovddag(const UnprecWilsonTypeFermAct<LatticeFermion>& S_aux,
 	   Handle<const ConnectState> state,
@@ -79,6 +79,10 @@ public:
 
   //! Apply the operator onto a source vector
   void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const;
+
+  //! Apply the operator onto a source vector, with user supplied epsilon
+  //  for RsdCG
+  void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign, Real epsilon) const;
 
 private:
   Handle<const LinearOperator<LatticeFermion> > M;

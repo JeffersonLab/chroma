@@ -1,4 +1,4 @@
-// $Id: lovddag_w.cc,v 1.8 2004-05-11 13:29:28 bjoo Exp $
+// $Id: lovddag_w.cc,v 1.9 2004-05-14 15:08:43 bjoo Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -15,6 +15,17 @@ using namespace QDP;
  */
 void lovddag::operator() (LatticeFermion& chi, const LatticeFermion& psi, 
 			   enum PlusMinus isign) const
+{
+  operator()(chi, psi, isign, RsdCG);
+}
+
+//! Apply the GW operator onto a source vector
+//  epsilon specifies desired precision
+/*! \ingroup linop
+ *
+ */
+void lovddag::operator() (LatticeFermion& chi, const LatticeFermion& psi, 
+			   enum PlusMinus isign, Real epsilon) const
 {
  
 
@@ -148,7 +159,7 @@ void lovddag::operator() (LatticeFermion& chi, const LatticeFermion& psi,
   int s;                      // Counter for loops over shifts
 
     
-  Real rsdcg_sq = RsdCG * RsdCG;   // Target residuum squared
+  Real rsdcg_sq = epsilon * epsilon;   // Target residuum squared
   Real rsd_sq = c * rsdcg_sq;      // Used for relative residue comparisons
                                    // r_t^2 * || r ||^2
 

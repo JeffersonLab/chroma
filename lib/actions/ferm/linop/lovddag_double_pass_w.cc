@@ -1,4 +1,4 @@
-// $Id: lovddag_double_pass_w.cc,v 1.3 2004-05-04 11:43:26 bjoo Exp $
+// $Id: lovddag_double_pass_w.cc,v 1.4 2004-05-14 15:08:42 bjoo Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -8,6 +8,37 @@
 #include "meas/eig/gramschm.h"
 
 using namespace QDP;
+//! Apply the GW operator onto a source vector
+/*! \ingroup linop
+ *
+ */
+
+// We are evaluating 
+//
+//    init_fac*psi + (gamma_5 +/- 1) eps(H) psi_{+/-}
+//
+// Split psi  as  P_evec psi + (1 - P_evec) psi
+// 
+// and 
+//
+//    apply eps(H, P_evec psi) + eps(H, (1-P_evec)psi)
+//
+//     P_evec psi = Sum_i lambda_i | e_i >< e_i | psi>
+// so  eps(H, P_evec psi ) = Sum_i eps(lambda_i) | e_i >< e_i | psi >
+//
+//   and ( 1 - P_evec ) psi = psi - P_evec_psi 
+//                          = psi - Sum_i lambda_i | e_i >< e_i | psi >
+//
+// so  eps(H, (1-P_evec) psi )) = eps(H, Y) 
+//                              = [ p_0 + sum_r p_r * (H^2 + q)^{-1} ] Y
+
+void lovddag_double_pass::operator() (LatticeFermion& chi, 
+				      const LatticeFermion& psi, 
+				      enum PlusMinus isign) const
+{
+  operator()(chi,psi,isign,RsdCG);
+}
+
 
 //! Apply the GW operator onto a source vector
 /*! \ingroup linop
@@ -33,8 +64,10 @@ using namespace QDP;
 // so  eps(H, (1-P_evec) psi )) = eps(H, Y) 
 //                              = [ p_0 + sum_r p_r * (H^2 + q)^{-1} ] Y
 
-void lovddag_double_pass::operator() (LatticeFermion& chi, const LatticeFermion& psi, 
-			   enum PlusMinus isign) const
+void lovddag_double_pass::operator() (LatticeFermion& chi, 
+				      const LatticeFermion& psi, 
+				      enum PlusMinus isign, 
+				      Real epsilon) const
 {
  
 
@@ -151,7 +184,7 @@ void lovddag_double_pass::operator() (LatticeFermion& chi, const LatticeFermion&
   // We put this part of the solution into ltmp (which we don't need
   // elsewhere
 
-  Double rsd_sq = c * RsdCG*RsdCG; // || tmp 1 ||^2 * epsilon^2
+  Double rsd_sq = c * epsilon*epsilon; // || tmp 1 ||^2 * epsilon^2
   Double cp;
   Double d; // InnerProduct
   
@@ -360,7 +393,7 @@ void lovddag_double_pass::operator() (LatticeFermion& chi, const LatticeFermion&
       GramSchm (r, EigVec, NEig);
     }
 
-    Double ltmp_norm_new = RsdCG*RsdCG*norm2(ltmp);
+    Double ltmp_norm_new = epsilon*epsilon*norm2(ltmp);
 
     // Convergence criterion for total signum. Might be good enough
     // without running to full niters

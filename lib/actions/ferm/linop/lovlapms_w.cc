@@ -1,4 +1,4 @@
-// $Id: lovlapms_w.cc,v 1.15 2004-05-11 13:29:29 bjoo Exp $
+// $Id: lovlapms_w.cc,v 1.16 2004-05-14 15:08:43 bjoo Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -8,6 +8,12 @@
 #include "meas/eig/gramschm.h"
 
 using namespace QDP;
+
+void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi, 
+			   enum PlusMinus isign) const
+{
+  operator()(chi, psi, isign, RsdCG);
+}
 
 //! Apply the GW operator onto a source vector
 /*! \ingroup linop
@@ -28,7 +34,7 @@ using namespace QDP;
  *                ( PLUS = no dagger| MINUS = dagger )       (Read)
  */
 void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi, 
-			   enum PlusMinus isign) const
+			   enum PlusMinus isign, Real epsilon) const
 {
 
   LatticeFermion tmp1, tmp2;
@@ -145,7 +151,7 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
   int s;                      // Counter for loops over shifts
 
     
-  Real rsdcg_sq = RsdCG * RsdCG;   // Target residuum squared
+  Real rsdcg_sq = epsilon * epsilon;   // Target residuum squared
   Real rsd_sq = c * rsdcg_sq;      // Used for relative residue comparisons
                                    // r_t^2 * || r ||^2
 

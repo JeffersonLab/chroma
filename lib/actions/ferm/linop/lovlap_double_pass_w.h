@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lovlap_double_pass_w.h,v 1.1 2004-05-03 11:21:43 bjoo Exp $
+// $Id: lovlap_double_pass_w.h,v 1.2 2004-05-14 15:08:43 bjoo Exp $
 /*! \file
  *  \brief Internal Overlap-pole operator
  */
@@ -31,7 +31,7 @@ using namespace QDP;
  *                           = gamma_5 * (1 + gamma_5 * B) * gamma_5 
  */
 
-class lovlap_double_pass : public LinearOperator<LatticeFermion>
+class lovlap_double_pass : public ApproxLinearOperator<LatticeFermion>
 {
 public:
   //! Creation routine
@@ -76,6 +76,11 @@ public:
 
   //! Apply the operator onto a source vector
   void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const;
+
+  //! Apply the operator onto a source vector to given epsilon
+  //  Here epsilon is the RsdCG for the inner solve
+  //
+  void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign, Real epsilon) const;
 
 private:
   Handle<const LinearOperator<LatticeFermion> > M;

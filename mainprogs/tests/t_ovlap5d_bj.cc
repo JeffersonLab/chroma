@@ -1,4 +1,4 @@
-// $Id: t_ovlap5d_bj.cc,v 1.5 2004-03-29 21:34:13 edwards Exp $
+// $Id: t_ovlap5d_bj.cc,v 1.6 2004-05-14 15:08:43 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -533,7 +533,7 @@ int main(int argc, char **argv)
   
   
   Double r_norm5 = sqrt(dnorm/g5chi_norm);
-  QDPIO::cout << "|| chi - D psi || = " << r_norm5 << endl;
+  QDPIO::cout << "|| chi - D psi ||/ || chi || = " << r_norm5 << endl;
   push(xml_out, "Inv5DCheck");
   write(xml_out, "r_norm", r_norm5);
   pop(xml_out);

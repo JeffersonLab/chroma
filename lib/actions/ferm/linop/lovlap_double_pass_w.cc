@@ -1,4 +1,4 @@
-// $Id: lovlap_double_pass_w.cc,v 1.3 2004-05-04 11:43:26 bjoo Exp $
+// $Id: lovlap_double_pass_w.cc,v 1.4 2004-05-14 15:08:43 bjoo Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -27,8 +27,35 @@ using namespace QDP;
  * \param isign   Hermitian Conjugation Flag 
  *                ( PLUS = no dagger| MINUS = dagger )       (Read)
  */
-void lovlap_double_pass::operator() (LatticeFermion& chi, const LatticeFermion& psi, 
-			   enum PlusMinus isign) const
+void lovlap_double_pass::operator() (LatticeFermion& chi, 
+				     const LatticeFermion& psi, 
+				     enum PlusMinus isign) const
+{
+  operator()(chi, psi, isign, RsdCG);
+}
+
+
+//! Apply the GW operator onto a source vector
+/*! \ingroup linop
+ *
+ * This routine applies the 4D GW operator onto a source
+ * vector. The coeffiecients for the approximation get 
+ * wired into the class by the constructor and should
+ * come fromt fermion action.
+ *
+ * The operator applied is:
+ *       D       =    (1/2)[  (1+m) + (1-m)gamma_5 sgn(H_w) ] psi
+ * or    D^{dag} =    (1/2)[  (1+m) + (1-m) sgn(H_w) gamma_5 psi
+ * 
+ * 
+ * \param chi     result vector                              (Write)  
+ * \param psi 	  source vector         	             (Read)
+ * \param isign   Hermitian Conjugation Flag 
+ *                ( PLUS = no dagger| MINUS = dagger )       (Read)
+ */
+void lovlap_double_pass::operator() (LatticeFermion& chi, 
+				     const LatticeFermion& psi, 
+				     enum PlusMinus isign, Real epsilon) const
 {
 
   LatticeFermion tmp1, tmp2;
@@ -90,7 +117,7 @@ void lovlap_double_pass::operator() (LatticeFermion& chi, const LatticeFermion& 
   // Solve  (MdagM + rootQ_n) chi_n = H * tmp1
 
   Double c = norm2(tmp1);
-  Double rsd_sq = c * RsdCG*RsdCG; // || tmp 1 ||^2 * epsilon^2
+  Double rsd_sq = c * epsilon*epsilon; // || tmp 1 ||^2 * epsilon^2
   Double cp;
   Double d; // InnerProduct
 
@@ -324,7 +351,7 @@ void lovlap_double_pass::operator() (LatticeFermion& chi, const LatticeFermion& 
       GramSchm (r, EigVec, NEig);
     }
 
-    Double chi_norm_new = RsdCG*RsdCG*norm2(chi);
+    Double chi_norm_new = epsilon*epsilon*norm2(chi);
 
     // Convergence criterion for total signum. Might be good enough
     // without running to full niters

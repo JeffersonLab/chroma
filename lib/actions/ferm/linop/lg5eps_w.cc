@@ -1,4 +1,4 @@
-// $Id: lg5eps_w.cc,v 1.2 2004-05-11 13:29:28 bjoo Exp $
+// $Id: lg5eps_w.cc,v 1.3 2004-05-14 15:08:42 bjoo Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -8,6 +8,24 @@
 #include "meas/eig/gramschm.h"
 
 using namespace QDP;
+
+//! Internal Overlap-pole operator
+/*!
+ * \ingroup linop
+ *
+ * This routine is specific to Wilson fermions!
+ *
+ *   Chi  =   gamma_5 * B . Psi 
+ *  where  B  is the pole approx. to eps(H(m)) 
+ *
+ *  We note that gamma_5*B is unitary.
+ */
+void lg5eps::operator() (LatticeFermion& chi, const LatticeFermion& psi, 
+			   enum PlusMinus isign) const
+{
+  operator()(chi,psi, isign, RsdCG);
+}
+
 //! Internal Overlap-pole operator
 /*!
  * \ingroup linop
@@ -21,7 +39,7 @@ using namespace QDP;
  */
 
 void lg5eps::operator() (LatticeFermion& chi, const LatticeFermion& psi, 
-			   enum PlusMinus isign) const
+			   enum PlusMinus isign, Real epsilon) const
 {
 
   LatticeFermion tmp1, tmp2;
@@ -124,7 +142,7 @@ void lg5eps::operator() (LatticeFermion& chi, const LatticeFermion& psi,
   int s;                      // Counter for loops over shifts
 
     
-  Real rsdcg_sq = RsdCG * RsdCG;   // Target residuum squared
+  Real rsdcg_sq = epsilon * epsilon;   // Target residuum squared
   Real rsd_sq = c * rsdcg_sq;      // Used for relative residue comparisons
                                    // r_t^2 * || r ||^2
 

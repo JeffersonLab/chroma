@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linearop.h,v 1.1 2004-01-08 03:11:47 edwards Exp $
+// $Id: linearop.h,v 1.2 2004-05-14 15:08:42 bjoo Exp $
 
 /*! @file
  * @brief Linear Operators
@@ -55,6 +55,46 @@ public:
 
   //! Virtual destructor to help with cleanup;
   virtual ~LinearOperator() {}
+};
+
+
+//! Approximate Linear Operator
+//
+// THese are linear operators that in some way require an accuracy
+// parameter in their operator() for some solvers. Examples are
+// the multi-pole approximated sign function. Where the epsilon
+// would refer to the accuracy of the multi shift solver
+/*! @ingroup linop */
+template<typename T>
+class ApproxLinearOperator : public LinearOperator<T>
+{
+public:
+  //! Apply the operator onto a source vector
+  virtual void operator() (T& chi, const T& psi, enum PlusMinus isign, Real epsilon) const = 0;  
+
+  virtual ~ApproxLinearOperator() {}
+};
+
+//! Approximate Linear Operator
+//
+// THese are linear operators that in some way require an accuracy
+// parameter in their operator() for some solvers. Examples are
+// the multi-pole approximated sign function. Where the epsilon
+// would refer to the accuracy of the multi shift solver
+//
+// THis is a multi1d<T> version -- ie for potential 5D ops...
+// will we ever use this?
+
+/*! @ingroup linop */
+template<typename T>
+class ApproxLinearOperator< multi1d<T> >: public LinearOperator< multi1d<T> >
+{
+public:
+  //! Apply the operator onto a source vector
+  virtual void operator() (multi1d<T>& chi, const multi1d<T>& psi, 
+			   enum PlusMinus isign, Real epsilon) const = 0;  
+
+  virtual ~ApproxLinearOperator() {}
 };
 
 

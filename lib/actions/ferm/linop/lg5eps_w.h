@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lg5eps_w.h,v 1.2 2004-05-11 13:29:28 bjoo Exp $
+// $Id: lg5eps_w.h,v 1.3 2004-05-14 15:08:42 bjoo Exp $
 /*! \file
  *  \brief Internal pole epsilon operator. Just the unitary part
  *
@@ -33,7 +33,7 @@ using namespace QDP;
  *                           = gamma_5 * (1 + gamma_5 * B) * gamma_5 
  */
 
-class lg5eps : public LinearOperator<LatticeFermion>
+class lg5eps : public ApproxLinearOperator<LatticeFermion>
 {
 public:
   //! Creation routine
@@ -77,6 +77,10 @@ public:
 
   //! Apply the operator onto a source vector
   void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const;
+
+  //! Apply the operator onto a source vector. Here epsilon is the
+  //  RsdCG for the multi shift solve in evaluating the sign function.
+  void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign, Real epsilon) const;
 
 private:
   Handle<const LinearOperator<LatticeFermion> > M;

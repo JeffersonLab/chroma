@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lovlapms_w.h,v 1.15 2004-04-16 14:58:29 bjoo Exp $
+// $Id: lovlapms_w.h,v 1.16 2004-05-14 15:08:43 bjoo Exp $
 /*! \file
  *  \brief Internal Overlap-pole operator
  */
@@ -31,7 +31,7 @@ using namespace QDP;
  *                           = gamma_5 * (1 + gamma_5 * B) * gamma_5 
  */
 
-class lovlapms : public LinearOperator<LatticeFermion>
+class lovlapms : public ApproxLinearOperator<LatticeFermion>
 {
 public:
   //! Creation routine
@@ -76,6 +76,11 @@ public:
 
   //! Apply the operator onto a source vector
   void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const;
+
+  //! Apply the operator onto a source vector
+  //! but to specified accuracy. In this case epsilon is the accuracy
+  //! (RsdCG) for the multi shift solve
+  void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign, Real epsilon) const;
 
 private:
   Handle<const LinearOperator<LatticeFermion> > M;
