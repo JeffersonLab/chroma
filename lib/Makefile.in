@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.16 2003-03-07 05:24:48 edwards Exp $
+# $Id: Makefile.in,v 1.17 2003-03-07 05:43:25 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -165,7 +165,7 @@ GENERIC_SRCS = $(HDRS) gaus_smear.cc taproj.cc hotst.cc expm12.cc \
 # This is OK, since Ns is determined at configure time
 #
 WILSON_SRCS = dslashm_w.cc baryon_w.cc mesons_w.cc lwldslash_w.cc lmpsim_w.cc \
-	      formfac_w.cc
+	      formfac_w.cc sink_smear2_w.cc 
 
 
 #
@@ -193,20 +193,21 @@ am__libchroma_a_SOURCES_DIST = chroma.h chromabase.h chromainc.h \
 	primitives.h defs.h common_declarations.h geom.h gaus_smear.cc \
 	taproj.cc hotst.cc expm12.cc klein_gord.cc mesplq.cc reunit.cc \
 	srcfil.cc dslashm_w.cc baryon_w.cc mesons_w.cc lwldslash_w.cc \
-	lmpsim_w.cc formfac_w.cc
+	lmpsim_w.cc formfac_w.cc sink_smear2_w.cc
 am__objects_1 =
 am__objects_2 = $(am__objects_1) gaus_smear.$(OBJEXT) taproj.$(OBJEXT) \
 	hotst.$(OBJEXT) expm12.$(OBJEXT) klein_gord.$(OBJEXT) \
 	mesplq.$(OBJEXT) reunit.$(OBJEXT) srcfil.$(OBJEXT)
 am__objects_3 = dslashm_w.$(OBJEXT) baryon_w.$(OBJEXT) \
 	mesons_w.$(OBJEXT) lwldslash_w.$(OBJEXT) lmpsim_w.$(OBJEXT) \
-	formfac_w.$(OBJEXT)
+	formfac_w.$(OBJEXT) sink_smear2_w.$(OBJEXT)
 @BUILD_STAGGERED_LIBS_TRUE@am_libchroma_a_OBJECTS = $(am__objects_2) \
 @BUILD_STAGGERED_LIBS_TRUE@	$(am__objects_1)
 @BUILD_WILSON_LIBS_TRUE@am_libchroma_a_OBJECTS = $(am__objects_2) \
 @BUILD_WILSON_LIBS_TRUE@	$(am__objects_3)
 am__EXTRA_libchroma_a_SOURCES_DIST = dslashm_w.cc baryon_w.cc \
-	mesons_w.cc lwldslash_w.cc lmpsim_w.cc formfac_w.cc
+	mesons_w.cc lwldslash_w.cc lmpsim_w.cc formfac_w.cc \
+	sink_smear2_w.cc
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
@@ -218,7 +219,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/klein_gord.Po ./$(DEPDIR)/lmpsim_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/lwldslash_w.Po ./$(DEPDIR)/mesons_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/mesplq.Po ./$(DEPDIR)/reunit.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/srcfil.Po ./$(DEPDIR)/taproj.Po
+@AMDEP_TRUE@	./$(DEPDIR)/sink_smear2_w.Po ./$(DEPDIR)/srcfil.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/taproj.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -297,6 +299,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesons_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesplq.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/reunit.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sink_smear2_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/srcfil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/taproj.Po@am__quote@
 

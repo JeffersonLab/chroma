@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.10 2003-03-02 02:30:31 flemingg Exp $
+# $Id: Makefile.am,v 1.11 2003-03-07 05:43:25 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -76,7 +76,7 @@ GENERIC_SRCS = $(HDRS) gaus_smear.cc taproj.cc hotst.cc expm12.cc \
 # This is OK, since Ns is determined at configure time
 #
 WILSON_SRCS = dslashm_w.cc baryon_w.cc mesons_w.cc lwldslash_w.cc lmpsim_w.cc \
-	      formfac_w.cc
+	      formfac_w.cc sink_smear2_w.cc 
 
 #
 # This is the list of files to be used in Staggered Builds
