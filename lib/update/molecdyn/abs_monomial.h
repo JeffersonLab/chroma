@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_monomial.h,v 1.9 2005-01-04 15:57:14 bjoo Exp $
+// $Id: abs_monomial.h,v 1.10 2005-01-04 21:17:37 edwards Exp $
 
 /*! @file
  * @brief Monomials - gauge action or fermion binlinear contributions for HMC
@@ -429,7 +429,7 @@ namespace Chroma
     {
       /**** Identical code for unprec and even-odd prec case *****/
       
-      // S_f  chi^dag*V*(M^dag*M)^(-1)*V^dag*chi     
+      // S_f = chi^dag*V*(M^dag*M)^(-1)*V^dag*chi     
       // Here, M is some 5D operator and V is the Pauli-Villars field
       //
       // Need
@@ -483,6 +483,9 @@ namespace Chroma
       F += F_tmp;   // NOTE SIGN
 
       // ANY REMAINING SIGNS???
+      for(int mu=0; mu < Nd; mu++) { 
+	 F[mu] *= Real(-1);   // IS THIS SIGN CORRECT???
+      }
     }
   
     //! Refresh pseudofermions
