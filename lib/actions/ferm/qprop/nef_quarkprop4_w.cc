@@ -1,6 +1,9 @@
-// $Id: nef_quarkprop4_w.cc,v 1.2 2004-09-03 14:24:36 kostas Exp $
+// $Id: nef_quarkprop4_w.cc,v 1.3 2004-09-16 15:20:55 kostas Exp $
 // $Log: nef_quarkprop4_w.cc,v $
-// Revision 1.2  2004-09-03 14:24:36  kostas
+// Revision 1.3  2004-09-16 15:20:55  kostas
+// fixed up mres for NEF
+//
+// Revision 1.2  2004/09/03 14:24:36  kostas
 // added mres measurement for NEF fermions
 //
 /*! \file
@@ -41,9 +44,8 @@ void nef_quarkProp4_a(LatticePropagator& q_sol,
 		      int t_src, int j_decay,
 		      const C<T>& S_f,
 		      Handle<const ConnectState> state,
-		      enum InvType invType,
-		      const Real& RsdCG, 
-		      int MaxCG, int& ncg_had)
+		      const InvertParam_t& invParam,
+		      int& ncg_had)
 {
   START_CODE();
 
@@ -97,7 +99,7 @@ void nef_quarkProp4_a(LatticePropagator& q_sol,
 
       int n_count;
       // Compute the propagator for given source color/spin.	   
-      S_f.qpropT(psi, state, chi, invType, RsdCG, MaxCG, n_count);
+      S_f.qpropT(psi, state, chi, invParam, n_count);
       ncg_had += n_count;
 
       push(xml_out,"Qprop");
@@ -225,18 +227,23 @@ void nef_quarkProp4_a(LatticePropagator& q_sol,
  * \param ncg_had  number of CG iterations ( Write )
  */
 
-void nef_quarkProp4(LatticePropagator& q_sol, 
-		    XMLWriter& xml_out,
-		    const LatticePropagator& q_src,
-		    int t_src, int j_decay,
-		    const EvenOddPrecNEFDWFermActArray<LatticeFermion>& S_f,
-		    Handle<const ConnectState> state,
-		    enum InvType invType,
-		    const Real& RsdCG, 
-		    int MaxCG, int& ncg_had)
+void UnprecNEFFermActArray::dwf_quarkProp4(LatticePropagator& q_sol, 
+					   XMLWriter& xml_out,
+					   const LatticePropagator& q_src,
+					   int t_src, int j_decay,
+					   Handle<const ConnectState> state,
+					   const InvertParam_t& invParam,
+					   int& ncg_had)
 {
-  nef_quarkProp4_a(q_sol, xml_out, q_src, t_src, j_decay, S_f, state, 
-		   invType, RsdCG, MaxCG, ncg_had);
+  nef_quarkProp4_a<LatticeFermion,UnprecNEFFermActArray>(q_sol, 
+							 xml_out, 
+							 q_src, 
+							 t_src, 
+							 j_decay, 
+							 *this, 
+							 state, 
+							 invParam,
+							 ncg_had);
 }
 
 //! Given a complete propagator as a source, this does all the inversions needed
@@ -253,18 +260,23 @@ void nef_quarkProp4(LatticePropagator& q_sol,
  * \param MaxCG    maximum number of CG iterations ( Read )
  * \param ncg_had  number of CG iterations ( Write )
  */
-
-void nef_quarkProp4(LatticePropagator& q_sol, 
-		    XMLWriter& xml_out,
-		    const LatticePropagator& q_src,
-		    int t_src, int j_decay,
-		    const UnprecNEFDWFermActArray<LatticeFermion>& S_f,
-		    Handle<const ConnectState> state,
-		    enum InvType invType,
-		    const Real& RsdCG, 
-		    int MaxCG, int& ncg_had)
+void 
+EvenOddPrecNEFFermActArray::dwf_quarkProp4(LatticePropagator& q_sol, 
+					   XMLWriter& xml_out,
+					   const LatticePropagator& q_src,
+					   int t_src, int j_decay,
+					   Handle<const ConnectState> state,
+					   const InvertParam_t& invParam,
+					   int& ncg_had)
 {
-  nef_quarkProp4_a(q_sol, xml_out, q_src, t_src, j_decay, S_f, state, 
-		   invType, RsdCG, MaxCG, ncg_had);
+  nef_quarkProp4_a<LatticeFermion,EvenOddPrecNEFFermActArray>(q_sol, 
+							      xml_out, 
+							      q_src, 
+							      t_src, 
+							      j_decay, 
+							      *this, 
+							      state, 
+							      invParam, 
+							      ncg_had);
 }
 

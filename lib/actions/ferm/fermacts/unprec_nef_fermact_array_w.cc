@@ -1,4 +1,4 @@
-// $Id: unprec_nef_fermact_array_w.cc,v 1.4 2004-09-09 15:51:31 edwards Exp $
+// $Id: unprec_nef_fermact_array_w.cc,v 1.5 2004-09-16 15:20:54 kostas Exp $
 /*! \file
  *  \brief Unpreconditioned NEF fermion action
  */
@@ -97,4 +97,22 @@ namespace Chroma
     return new UnprecNEFDWLinOpArray(state->getLinks(),OverMass,b5,c5,1.0,N5);  // fixed to quark mass 1
   }
 
+}
+
+//! Apply the Dminus operator on a vector in Ls. See my notes ;-)
+void UnprecNEFFermActArray::Dminus(multi1d<LatticeFermion>& chi,
+				   const multi1d<LatticeFermion>& psi,
+				   Handle<const ConnectState> state,
+				   enum PlusMinus isign){
+  UnprecNEFDWLinOpArray lo(state->getLinks(),OverMass,b5,c5,Mass,N5) ;
+  lo.Dminus(chi,psi,isign);
+}
+
+//! Apply the Dminus operator on a lattice fermion. See my notes ;-)
+void UnprecNEFFermActArray::Dminus(LatticeFermion chi,
+				   const LatticeFermion& psi,
+				   Handle<const ConnectState> state,
+				   enum PlusMinus isign){
+  UnprecNEFDWLinOpArray lo(state->getLinks(),OverMass,b5,c5,Mass,N5) ;
+  lo.Dminus(chi,psi,isign);
 }

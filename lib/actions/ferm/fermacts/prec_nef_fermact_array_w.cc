@@ -1,4 +1,4 @@
-// $Id: prec_nef_fermact_array_w.cc,v 1.4 2004-09-09 15:51:31 edwards Exp $
+// $Id: prec_nef_fermact_array_w.cc,v 1.5 2004-09-16 15:20:54 kostas Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned NEF fermion action
  */
@@ -98,3 +98,21 @@ namespace Chroma
 
 }
 
+
+//! Apply the Dminus operator on a vector in Ls. See my notes ;-)
+void EvenOddPrecNEFFermActArray::Dminus(multi1d<LatticeFermion>& chi,
+					const multi1d<LatticeFermion>& psi,
+					Handle<const ConnectState> state,
+					enum PlusMinus isign){
+  EvenOddPrecNEFDWLinOpArray lo(state->getLinks(),OverMass,b5,c5,Mass,N5) ;
+  lo.Dminus(chi,psi,isign);
+}
+
+//! Apply the Dminus operator on a lattice fermion. See my notes ;-)
+void EvenOddPrecNEFFermActArray::Dminus(LatticeFermion chi,
+					const LatticeFermion& psi,
+					Handle<const ConnectState> state,
+					enum PlusMinus isign){
+  EvenOddPrecNEFDWLinOpArray lo(state->getLinks(),OverMass,b5,c5,Mass,N5) ;
+  lo.Dminus(chi,psi,isign);
+}
