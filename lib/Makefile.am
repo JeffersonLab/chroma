@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.13 2003-03-14 05:06:06 flemingg Exp $
+# $Id: Makefile.am,v 1.14 2003-03-26 22:05:56 dgr Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -17,6 +17,7 @@ VPATH += $(TOPDIR)/lib/actions/qprop
 VPATH += $(TOPDIR)/lib/geom
 VPATH += $(TOPDIR)/lib/info
 VPATH += $(TOPDIR)/lib/io
+VPATH += ${TOPDIR}/lib/io/ioqprop
 VPATH += $(TOPDIR)/lib/meas
 VPATH += $(TOPDIR)/lib/meas/eig
 VPATH += $(TOPDIR)/lib/meas/gfix
@@ -66,14 +67,16 @@ HDRS =  chroma.h chromabase.h chromainc.h primitives.h defs.h common_declaration
 # Fermion independent sources
 #
 GENERIC_SRCS = $(HDRS) gaus_smear.cc taproj.cc hotst.cc expm12.cc \
-               klein_gord.cc mesplq.cc reunit.cc sftmom.cc srcfil.cc
+               klein_gord.cc mesplq.cc reunit.cc sftmom.cc srcfil.cc \
+               qprop_io.cc
 
 #
 # Object files to add if building the Wilson Builds...
 # This is OK, since Ns is determined at configure time
 #
 WILSON_SRCS = dslashm_w.cc baryon_w.cc mesons_w.cc lwldslash_w.cc lmpsim_w.cc \
-	      formfac_w.cc sink_smear2_w.cc barcomp_w.cc
+	      formfac_w.cc sink_smear2_w.cc barcomp_w.cc transf_w.cc npqprop_w.cc \
+              wilson_unprec_w.cc conslinop_w.cc
 
 #
 # This is the list of files to be used in Staggered Builds
