@@ -29,23 +29,6 @@ public:
   virtual void leapQ(AbsFieldState<P,Q>& s, Real eps) const = 0;
 };
 
-// One for pseudofermions
-template< typename P, typename Q, typename Phi >
-class PFSymplecticUpdates {
-public:
-  // Virtual destructor 
-  virtual ~PFSymplecticUpdates() {}
-
-  virtual PFSymplecticUpdates* clone() const = 0;
-
-  // Get but not mutate the Hamiltonian 
-  virtual const AbsPFHamiltonian<P,Q,Phi>& getHam(void) const = 0;
-  // Integrate the momenta a step of length eps
-  virtual void leapP(AbsPFFieldState<P,Q,Phi>& s, Real eps) const = 0;
-
-  // Integrate the coordinates forward a step of length eps
-  virtual void leapQ(AbsPFFieldState<P,Q,Phi>& s, Real eps) const = 0;
-};
 
 // Now something a little more concrete so that we can work
 class AbsPureGaugeSympUpdates

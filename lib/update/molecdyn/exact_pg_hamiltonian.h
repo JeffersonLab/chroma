@@ -57,32 +57,6 @@ public:
     // ConnectState now gets freed
   }
 
-  virtual void refreshP(AbsFieldState<multi1d<LatticeColorMatrix>,
-			multi1d<LatticeColorMatrix> >& s) const
-  {
-     
-    // Generate new momenta
-    for(int mu = 0; mu < Nd; mu++) {
-      gaussian(s.getP()[mu]);
-      
-      //Destroy Linear Congruential correlators
-       Real foo;
-       random(foo);
-      
-      taproj(s.getP()[mu]);
-
-      // Really I need Gaussians with a sigma^2 of (1/2)
-      // but gaussian throws them with a variance of 1
-      // I scale everything by sigma~ = sqrt(sigma~^2)
-      // where sigma~^2 is the sigma^2 I want, ie 0.5
-      s.getP()[mu] *= Real(sqrt(0.5));
-    }
-
-    // Zero out the momenta on boundaries where the gauge fields
-    // are held fixed.
-    //applyPBoundary(s.getP());
-  }
-
   //! Measure the kinetic energy
   //! I am not going to normalise here, as it lets me
   //! define acceptReject in the HMC without having to know

@@ -5,11 +5,10 @@
 #include "update/molecdyn/abs_hamiltonian.h"
 #include "update/molecdyn/abs_hyb_int.h"
 #include "update/molecdyn/abs_hmc.h" 
+#include "update/molecdyn/mom_refresh.h"
 
 class PureGaugeHMCTraj : 
-  public HMCTraj< ExactAbsHamiltonian<multi1d<LatticeColorMatrix>,multi1d<LatticeColorMatrix> >, 
-		  AbsHybInt< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >, 
-		  AbsFieldState< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >
+public HMCTraj< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
 {
  public:
   ~PureGaugeHMCTraj() {};
@@ -32,6 +31,10 @@ class PureGaugeHMCTraj :
     return *MD_integrator;
   }
 
+  const AbsMomGaussianHeatbath< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& getMomRefresh(void) const {
+    return mom_refresh;
+  }
+
   const int& getTrajNum(void) const { 
     return traj_done;
   }
@@ -46,7 +49,7 @@ private:
   int traj_done;
   Handle< const ExactAbsHamiltonian<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > H_MC;
   Handle< const AbsHybInt<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > MD_integrator;
-  
+  const su3MomGaussianHeatbath mom_refresh;
 		   
 };
 

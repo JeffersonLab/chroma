@@ -17,10 +17,15 @@
 // however, this may be frustrated by the fact that I never include
 // the fermionic update.
 
+#include "update/field_state.h"
+#include "update/molecdyn/abs_mom_refresh.h"
+#include "update/molecdyn/abs_hamiltonian.h"
+#include "update/molecdyn/abs_hyb_int.h"
+
 using namespace QDP;
 using namespace std;
 
-template<class EHS, class HI, class FS>
+template<typename P, typename Q>
 class HMCTraj {
 public: 
   
@@ -30,12 +35,15 @@ public:
   // Get at the Exact Hamiltonian -- It would be great if I could
   // enforce this to be exact. Perhaps I should request that it be
   // an AbsExactHamiltonian<P,Q> 
-  virtual const EHS& getMCHamiltonian(void) const = 0;
+  virtual const ExactAbsHamiltonian<P,Q>& getMCHamiltonian(void) const = 0;
 	   
   // Get at the HybridIntegrator -- Again I could ask for this
   // to come from a base class but this one may be a complex beastie
   // with monitoring and such so it is bes to template this
-  virtual const HI& getMDIntegrator(void)  const = 0;
+  virtual const AbsHybInt<P,Q>& getMDIntegrator(void)  const = 0;
+
+  // Get the momentum refreshment 
+  virtual const AbsMomGaussianHeatbath<P,Q>& getMomRefresh(void) const = 0;
 
   // Traj accessor
   virtual const int& getTrajNum(void) const = 0;
@@ -45,41 +53,42 @@ public:
 
   
   // Do the HMC trajectory
-  virtual void operator()(FS& mc_state,
+  virtual void operator()(AbsFieldState<P,Q>& mc_state,
 			  const bool doAccept,
 			  XMLWriter& monitor)
   {
-    const HI& integrator=getMDIntegrator();
-    const EHS& H=getMCHamiltonian();
+    const AbsHybInt<P,Q>& MD = getMDIntegrator();
+    const ExactAbsHamiltonian<P,Q>& H_MC = getMCHamiltonian();
+    const AbsMomGaussianHeatbath<P,Q>& MomRefresh = getMomRefresh();
 
-    
     // HMC Algorithm.
     // 1) Refresh momenta
-    H.refreshP(mc_state);
+    MomRefresh(mc_state, H_MC);
 
     // 2) SaveState
-    Handle< FS > old_state(mc_state.clone());
+    Handle< AbsFieldState<P,Q> > old_state(mc_state.clone());
     
     // Info for user:
     push(monitor, "HMCTraj");
     write(monitor, "TrajNum", getTrajNum());
 
-    // 4) Integrate MD trajectory
-    integrator(mc_state, monitor);
+    // 3) Integrate MD trajectory
+    MD(mc_state, monitor);
 
-    // 5) Measure energy of the new state
-
-    // 3) Measure energy of the old state
+    // 4) Measure energy of the old state
     Double KE_old, PE_old;
-    H.mesE(*old_state, KE_old, PE_old);
+    H_MC.mesE(*old_state, KE_old, PE_old);
 
+    // 5) Measure the energy of the new state
     Double KE, PE;
-    H.mesE(mc_state, KE, PE);
+    H_MC.mesE(mc_state, KE, PE);
 
+    // Work out energy differences
     Double DeltaKE = KE - KE_old;
     Double DeltaPE = PE - PE_old;
     Double DeltaH  = DeltaKE + DeltaPE;
 
+    // Write output
     write(monitor, "start_KE", KE_old);
     write(monitor, "end_KE", KE);
     write(monitor, "start_PE", PE_old);
@@ -107,6 +116,7 @@ public:
 
     pop(monitor);
 
+    // Increase trajectory count
     getTrajNum()++;
 
   }

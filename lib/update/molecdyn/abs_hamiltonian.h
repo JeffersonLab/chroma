@@ -41,9 +41,6 @@ public:
   //  s is the state, F is the computed force
   virtual void dsdq(const AbsFieldState<P,Q>& s, Q& F) const = 0;
 
-  //! Refresh the momenta in a state somehow
-  virtual void refreshP(AbsFieldState<P,Q>& s) const = 0;
-
   //! Apply any BC's to Q
   virtual void applyQBoundary(Q& q) const = 0;
 
@@ -52,37 +49,6 @@ public:
 
 };
 
-/* Now do the following for a fermionic system. 
-   This expands the interface by including the fermionic refresh. 
-   Again. It is not specified how this is done */
-template<typename P, typename Q, typename Phi>
-class AbsPFHamiltonian { 
-public:
-  //! virtual destructor
-  virtual ~AbsPFHamiltonian() {}
-
-  //! Clone function for virtual copy constructors
-  virtual AbsPFHamiltonian<P,Q,Phi>* clone(void) const = 0;
-
-  //! Compute dsdq for the system... Not specified how to actually do this
-  //  s is the state, F is the computed force
-  virtual void dsdq(const AbsPFFieldState<P,Q,Phi>& s, Q& F) const = 0;
-
-  //! Refresh the momenta in a state somehow
-  virtual void refreshP(AbsPFFieldState<P,Q,Phi>& s) const = 0;
-
-  //! Refresh the pseudofermions in a state somehow
-  virtual void refreshPF(AbsPFFieldState<P,Q,Phi>& s) const = 0;
-
-  //! Apply Boundaries to Q
-  virtual void applyQBoundary(Q& q) const = 0;
-
-  //! Apply Boundaries to P
-  virtual void applyPBoundary(P& p) const = 0;
-
-  //! Apply Pseudofermion boundaries to Q!!!!
-  virtual void applyPFBoundary(Q& q) const = 0;
-};
 
 /*! Now define similar classes for exact algorithms.
  * These are basically the same as before but they can compute
@@ -105,9 +71,6 @@ public:
   //  s is the state, F is the computed force
   virtual void dsdq(const AbsFieldState<P,Q>& s, Q& F) const = 0;
 
-  //! Refresh the momenta in a state somehow
-  virtual void refreshP(AbsFieldState<P,Q>& s) const = 0;
-
   //! Apply any BC's to Q
   virtual void applyQBoundary(Q& q) const = 0;
 
@@ -128,58 +91,6 @@ public:
 
   //! The Potential Energy 
   virtual Double mesPE(AbsFieldState<P,Q>& s) const = 0;
-};
-
-/* Now do the following for a fermionic system. 
-   This expands the interface by including the fermionic refresh. 
-   Again. It is not specified how this is done */
-template<typename P, typename Q, typename Phi>
-class ExactAbsPFHamiltonian : public AbsPFHamiltonian<P,Q,Phi> { 
-public:
-  //! virtual destructor
-  virtual ~ExactAbsPFHamiltonian() {}
-
-  //! Clone function for virtual copy constructors
-  virtual ExactAbsPFHamiltonian<P,Q,Phi>* clone(void) const = 0;
-
-  //! Compute dsdq for the system... Not specified how to actually do this
-  //  s is the state, F is the computed force
-  virtual void dsdq(const AbsPFFieldState<P,Q,Phi>& s, Q& F) const = 0;
-
-  //! Refresh the momenta in a state somehow
-  virtual void refreshP(AbsPFFieldState<P,Q,Phi>& s) const = 0;
-
-  //! Refresh the pseudofermions in a state somehow
-  virtual void refreshPF(AbsPFFieldState<P,Q,Phi>& s) const = 0;
-
-  //! Apply Boundaries to Q
-  virtual void applyQBoundary(Q& q) const = 0;
-
-  //! Apply Boundaries to P
-  virtual void applyPBoundary(P& p) const = 0;
-
-  //! Apply Pseudofermion boundaries to Q!!!!
-  virtual void applyPFBoundary(Q& q) const = 0;
-
-
-  //! The total energy
-  virtual void mesE(AbsPFFieldState<P,Q,Phi>& s, 
-		    Double& KE, 
-		    Double& PE, 
-		    Double &FE) const {
-    KE=mesKE(s);
-    PE=mesPE(s);
-    FE=mesFE(s);
-  }
-
-  //! The Kinetic Energy
-  virtual Double mesKE(AbsPFFieldState<P,Q,Phi>& s) const = 0;
-
-  //! The Potential Energy  (From the Q only)
-  virtual Double mesPE(AbsPFFieldState<P,Q,Phi>& s) const = 0;
-
-  //! The Fermionic Energy  (from the Phi only)
-  virtual Double mesFE(AbsPFFieldState<P,Q,Phi>& s) const = 0;
 };
 
 #endif
