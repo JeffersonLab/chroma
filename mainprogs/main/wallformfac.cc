@@ -1,4 +1,4 @@
-// $Id: wallformfac.cc,v 1.12 2004-04-06 04:20:33 edwards Exp $
+// $Id: wallformfac.cc,v 1.13 2004-04-07 04:39:21 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions with a wall sink
  *
@@ -298,20 +298,41 @@ main(int argc, char *argv[])
   //
   SftMom phases(input.param.mom2_max, false, j_decay);
 
-#if 1
-  wallPionFormFac(xml_out,
-		  u, forward_quark_prop, backward_quark_prop, 
-		  phases, 
-		  t_source[j_decay],
-		  t_sink);
-#else
-  wallNucleonFormFac(xml_out,
-		     u, forward_quark_prop, backward_quark_prop, phases, 
-		     t_source[j_decay]);
+  push(xml_out, "Wilson_3Pt_fn_measurements");
+  write(xml_out, "formfac_type", input.param.formfac_type);
+
+  // Loop over types of form-factor
+  for (int formfac_ctr = 0; formfac_ctr < input.param.formfac_type.size(); ++formfac_ctr) 
+  {
+    int formfac_value = input.param.formfac_type[formfac_ctr];
+
+    switch (formfac_value)
+    {
+    case 0:
+      wallPionFormFac(xml_out,
+		      u, forward_quark_prop, backward_quark_prop, 
+		      phases, 
+		      t_source[j_decay],
+		      t_sink);
+      break;
+
+#if 0
+    case 1:
+      wallNucleonFormFac(xml_out,
+			 u, forward_quark_prop, backward_quark_prop, phases, 
+			 t_source[j_decay]);
+      break;
 #endif
 
+    default:
+      QDPIO::cerr << "Unknown value of " << endl;
+      QDP_abort(1);
+    }
+  }
   
-  // Close the namelist output file XMLDAT
+  pop(xml_out);  // Wilson_3Pt_fn_measurements
+
+  // Close the output file XMLDAT
   pop(xml_out);     // wallFormFac
 
   xml_in.close();
