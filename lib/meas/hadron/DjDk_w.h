@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: DjDk.h,v 1.1 2003-06-19 17:45:26 ikuro Exp $
+// $Id: DjDk_w.h,v 1.1 2003-08-19 17:15:24 bjoo Exp $
 
 #ifndef __DjDk_h__
 #define __DjDk_h__
