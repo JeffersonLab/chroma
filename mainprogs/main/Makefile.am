@@ -45,7 +45,7 @@ check_PROGRAMS = propagator \
         seqsource \
 	make_source \
         ExampleBuildingBlocks hypsmear cfgtransf sink_smearing qpropgfix \
-        qproptrev
+        qproptrev hmc
 
 # Wilson specific programs
 check_PROGRAMS += spectrum_w qqq_w bar3ptfn qproptransf wallformfac mres
@@ -95,6 +95,9 @@ collect_multi_propcomp_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 spectrum_w_SOURCES= spectrum_w.cc
 spectrum_w_DEPENDENCIES= build_chroma_libs rebuild_other_libs
+
+hmc_SOURCES= hmc.cc
+hmc_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 
 mres_SOURCES= mres.cc
 mres_DEPENDENCIES= build_chroma_libs rebuild_other_libs
