@@ -1,4 +1,4 @@
-// $Id: unprec_parwilson_fermact_w.cc,v 1.7 2005-01-02 05:21:10 edwards Exp $
+// $Id: unprec_parwilson_fermact_w.cc,v 1.8 2005-01-11 19:45:36 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action with parity breaking term
  */
@@ -33,7 +33,7 @@ namespace Chroma
     }
 
     //! Name to be used
-    const std::string name = "PARWILSON";
+    const std::string name = "UNPRECONDITIONED_PARWILSON";
 
     //! Register all the factories
     bool registerAll()
