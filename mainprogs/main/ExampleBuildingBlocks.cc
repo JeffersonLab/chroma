@@ -24,7 +24,7 @@
 //#####################################################################################
 
 static const char* const CVSExampleBuildingBlocks_hh =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/mainprogs/main/ExampleBuildingBlocks.cc,v 1.9 2003-11-20 05:33:53 edwards Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/mainprogs/main/ExampleBuildingBlocks.cc,v 1.10 2004-02-24 20:26:03 dru Exp $";
 
 //#####################################################################################
 //#####################################################################################
@@ -55,6 +55,12 @@ void AllLinkPatterns( bool &                          DoThisPattern,
 
 int main( int argc, char** argv )
 {
+  //#####################################################################################
+  // Initialize qdp
+  //#####################################################################################
+
+  QDP_initialize( & argc, & argv );
+
   //#####################################################################################
   // Check Arguments
   //#####################################################################################
@@ -105,12 +111,6 @@ int main( int argc, char** argv )
   const char* const UBBFileNamePattern   = argv[14];
   const char* const DBBFileNamePattern   = argv[15];
   const char* const OutFileName          = argv[16];
-
-  //#####################################################################################
-  // Initialize qdp
-  //#####################################################################################
-
-  QDP_initialize( & argc, & argv );
 
   //#####################################################################################
   // Echo Arguments
