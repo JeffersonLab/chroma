@@ -1,4 +1,4 @@
-// $Id: wallformfac.cc,v 1.27 2004-07-28 03:08:05 edwards Exp $
+// $Id: wallformfac.cc,v 1.28 2004-08-21 01:40:13 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions with a wall sink
  *
@@ -38,7 +38,8 @@ struct Prop_t
 // and written to the XML output
 struct Param_t
 {
-  int mom2_max;            // (mom)^2 <= mom2_max. mom2_max=7 in szin.
+  int   mom2_max;            // (mom)^2 <= mom2_max. mom2_max=7 in szin.
+  bool  wall_source;         // use wall source or wall sink
 
   multi1d<WallFormFacType> formfac_type;
   multi1d<int> nrow;
@@ -65,6 +66,7 @@ struct WallFormFac_output_t
   int          out_version;
 
   int          mom2_max;            // (mom)^2 <= mom2_max. mom2_max=7 in szin.
+  bool         wall_source;         // use wall source or wall sink
   multi1d<int> nrow;
 
   multi1d<WallFormFac_bar_t> bar;
@@ -148,6 +150,12 @@ void read(XMLReader& xml, const string& path, Param_t& param)
   {
     /**************************************************************************/
   case 2:
+    param.wall_source = false;
+    break;
+
+    /**************************************************************************/
+  case 3:
+    read(paramtop, "wall_source", param.wall_source);
     break;
 
   default:
@@ -201,6 +209,7 @@ void write(BinaryWriter& bin, const WallFormFac_output_t& header)
 {
   write(bin, header.out_version);
   write(bin, header.mom2_max);
+  write(bin, header.wall_source);
   write(bin, header.nrow);
   write(bin, header.bar);
 }
@@ -266,7 +275,7 @@ main(int argc, char *argv[])
   write(xml_out, "Config_info", gauge_xml);
 
   push(xml_out, "Output_version");
-  write(xml_out, "out_version", 3);
+  write(xml_out, "out_version", 4);
   pop(xml_out);
 
   // First calculate some gauge invariant observables just for info.
@@ -284,9 +293,10 @@ main(int argc, char *argv[])
   xml_out.flush();
 
 
-  //
-  // Read the quark propagator and extract headers
-  //
+  /*
+   * Read the quark propagator and extract headers
+   */
+  // Read the forward prop
   XMLReader forwprop_file_xml, forwprop_record_xml;
   LatticePropagator forward_quark_prop;
   ChromaProp_t forward_prop_header;
@@ -310,6 +320,13 @@ main(int argc, char *argv[])
       QDPIO::cerr << "Error extracting forward_prop header: " << e << endl;
       throw;
     }
+  }
+
+  // Sanity check
+  if (input.param.wall_source && forward_source_header.source_type != SRC_TYPE_WALL_SOURCE)
+  {
+    QDPIO::cerr << "Wallformfac: wall_source flag set but not a wall source forward prop" << endl;
+    QDP_abort(1);
   }
 
   // Derived from input prop
@@ -363,8 +380,15 @@ main(int argc, char *argv[])
   }
   QDPIO::cout << "Backward propagator successfully read" << endl;
    
+  // Sanity check
+  if (! input.param.wall_source && backward_source_header.source_type != SRC_TYPE_WALL_SOURCE)
+  {
+    QDPIO::cerr << "Wallformfac: wall_source flag false but not a wall source backward prop" << endl;
+    QDP_abort(1);
+  }
+
   // Derived from input prop
-  int t_sink = backward_source_header.t_source[j_decay];
+  multi1d<int> t_sink = backward_source_header.t_source;
 
   // Sanity check - write out the norm2 of the backward prop in the j_decay direction
   // Use this for any possible verification
@@ -402,15 +426,62 @@ main(int argc, char *argv[])
   SftMom phases(input.param.mom2_max, false, j_decay);
 
 
+  /*
+   * Construct the forward propagator evaluated at the sink.
+   * In the case of wall-sinks, simply wall-sink smear. This is a slice-sum.
+   * For a wall-source, then use the smearing of the backward 
+   * sink propagator and apply it to the forward propagator. In this
+   * latter case, one evaluates the smeared prop at the sink location.
+   */
+  Propagator forward_quark_x2;
+
+  if (input.param.wall_source)
+  {
+    // Source is a wall, so sink smear according to what was
+    // used for the backward prop
+    LatticePropagator forward_quark_tmp = forward_quark_prop;
+
+    switch (backward_source_header.source_type)
+    {
+    case SRC_TYPE_POINT_SOURCE:
+      // Do nothing
+      break;
+
+    case SRC_TYPE_SHELL_SOURCE:
+      sink_smear2(u, forward_quark_tmp, 
+		  backward_source_header.sourceSmearParam.wvf_kind, 
+		  backward_source_header.sourceSmearParam.wvf_param, 
+		  backward_source_header.sourceSmearParam.wvfIntPar, 
+		  j_decay);
+      break;
+
+    default:
+      QDPIO::cerr << "wallFormFac: unsupported smearing of sink prop" << endl;
+      QDP_abort(1);
+      break;
+    }
+
+    // Grab the smeared forward prop at the sink location
+    forward_quark_x2 = peekSite(forward_quark_tmp, t_sink);
+  }
+  else
+  {
+    // Sink is a wall
+    // Project forward propagator onto zero momentum: Do a slice-wise sum.
+    forward_quark_x2 = sum(forward_quark_prop, phases.getSet()[t_sink[phases.getDir()]]);
+  }
+    
+
   //
   // Big nested structure that is image of entire file
   //
   WallFormFac_output_t  form;
   form.bar.resize(input.param.formfac_type.size());
 
-  form.out_version = 3;  // bump this up everytime something changes
+  form.out_version = 4;  // bump this up everytime something changes
   form.nrow = input.param.nrow;
   form.mom2_max = input.param.mom2_max;
+  form.wall_source = input.param.wall_source;
 
   multi1d<string> wallformfac_names(7);
   wallformfac_names[0] = "PION";
@@ -427,6 +498,9 @@ main(int argc, char *argv[])
   //
   XMLArrayWriter  xml_seq_src(xml_out, input.param.formfac_type.size());
   push(xml_seq_src, "Wilson_3Pt_fn_measurements");
+
+  QDPIO::cout << "Looping over " << input.param.formfac_type.size() 
+	      << " kinds of form-factors" << endl;
 
   // Loop over types of form-factor
   for (int formfac_ctr = 0; formfac_ctr < input.param.formfac_type.size(); ++formfac_ctr) 
@@ -451,8 +525,9 @@ main(int argc, char *argv[])
 		      u, 
 		      forward_quark_prop, backward_quark_prop, 
 		      forward_quark_prop, backward_quark_prop, 
+		      forward_quark_x2, forward_quark_x2,
 		      phases, 
-		      t_source[j_decay], t_sink);
+		      t_source, input.param.wall_source);
       break;
 
     case WALLFF_NUCL:
@@ -460,10 +535,12 @@ main(int argc, char *argv[])
 		      u, 
 		      forward_quark_prop, backward_quark_prop, 
 		      forward_quark_prop, backward_quark_prop, 
+		      forward_quark_x2, forward_quark_x2,
 		      phases, 
-		      t_source[j_decay], t_sink);
+		      t_source, input.param.wall_source);
       break;
 
+#if 0
     case WALLFF_NUCL_CT:
     {
       /* Time-charge reverse the quark propagators */
@@ -475,18 +552,21 @@ main(int argc, char *argv[])
 		      u, 
 		      qf_tmp, qb_tmp,
 		      qf_tmp, qb_tmp,
+		      forward_quark_x2, forward_quark_x2,
 		      phases, 
-		      t_source[j_decay], t_sink);
+		      t_source, input.param.wall_source);
     }
     break;
+#endif
 
     case WALLFF_DELTA:
       wallDeltaFormFac(form.bar[formfac_ctr].formfacs,
 	 	       u, 
 		       forward_quark_prop, backward_quark_prop, 
 		       forward_quark_prop, backward_quark_prop, 
+		       forward_quark_x2, forward_quark_x2,
 		       phases, 
-		       t_source[j_decay], t_sink);
+		       t_source, input.param.wall_source);
       break;
 
     case WALLFF_DELTA_P:
@@ -494,8 +574,9 @@ main(int argc, char *argv[])
 			u, 
 			forward_quark_prop, backward_quark_prop, 
 			forward_quark_prop, backward_quark_prop, 
+			forward_quark_x2, forward_quark_x2,
 			phases, 
-			t_source[j_decay], t_sink);
+			t_source, input.param.wall_source);
       break;
 
     case WALLFF_RHO:
@@ -503,8 +584,9 @@ main(int argc, char *argv[])
 		     u, 
 		     forward_quark_prop, backward_quark_prop, 
 		     forward_quark_prop, backward_quark_prop, 
+		     forward_quark_x2, forward_quark_x2,
 		     phases, 
-		     t_source[j_decay], t_sink);
+		     t_source, input.param.wall_source);
       break;
 
     case WALLFF_RHO_PI:
@@ -512,8 +594,9 @@ main(int argc, char *argv[])
 		       u, 
 		       forward_quark_prop, backward_quark_prop, 
 		       forward_quark_prop, backward_quark_prop, 
+		       forward_quark_x2, forward_quark_x2,
 		       phases, 
-		       t_source[j_decay], t_sink);
+		       t_source, input.param.wall_source);
       break;
 
     default:

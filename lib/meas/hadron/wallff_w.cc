@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wallff_w.cc,v 1.5 2004-07-28 02:38:04 edwards Exp $
+// $Id: wallff_w.cc,v 1.6 2004-08-21 01:40:12 edwards Exp $
 /*! \file
  *  \brief Structures for wall-sink/source form-factors
  *
@@ -50,21 +50,21 @@ LatticePropagator nonlocalCurrentProp(const multi1d<LatticeColorMatrix>& u,
  * \param corr_nonlocal_fn   contracted nonlocal current insertion ( Read )
  * \param phases             fourier transform phase factors ( Read )
  * \param compute_nonlocal   compute the nonlocal current stuff?? ( Read )
- * \param t0                 time coordinates of the source ( Read )
- * \param t_sink             time coordinates of the sink ( Read )
+ * \param t_source           coordinates of the source ( Read )
  */
 void wallFormFacSft(multi1d<WallFormFac_momenta_t>& momenta,
 		    const LatticeComplex& corr_local_fn,
 		    const LatticeComplex& corr_nonlocal_fn,
 		    const SftMom& phases,
 		    bool compute_nonlocal,
-		    int t0, int t_sink)
+		    const multi1d<int>& t_source)
 {
   START_CODE();
 
   momenta.resize(phases.numMom());  // hold momenta output
 
-  // Length of lattice in j_decay direction and 3pt correlations fcns
+  // Length of lattice in decay direction and 3pt correlations fcns
+  int t0 = t_source[phases.getDir()];
   int length = phases.numSubsets();
 
   multi2d<DComplex> hsum_local = phases.sft(corr_local_fn);
@@ -99,8 +99,6 @@ void wallFormFacSft(multi1d<WallFormFac_momenta_t>& momenta,
 
   END_CODE();
 }
-
-
 
 
 // Writers

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wallnuclff_w.h,v 1.3 2004-06-04 21:13:15 edwards Exp $
+// $Id: wallnuclff_w.h,v 1.4 2004-08-21 01:40:13 edwards Exp $
 /*! \file
  *  \brief Wall-sink nucleon form-factors 
  *
@@ -24,9 +24,11 @@
  * \param back_u_prop        backward D quark propagator ( Read )
  * \param forw_d_prop        forward U quark propagator ( Read )
  * \param back_d_prop        backward D quark propagator ( Read )
+ * \param u_x2               forward U quark propagator evaluated at sink  ( Read )
+ * \param d_x2               forward D quark propagator evaluated at sink  ( Read )
  * \param phases             fourier transform phase factors ( Read )
- * \param t0                 time coordinates of the source ( Read )
- * \param t_sink             time coordinates of the sink ( Read )
+ * \param t_source           coordinates of the source ( Read )
+ * \param wall_source        true if using a wall source ( Read )
  */
 
 void wallNuclFormFac(WallFormFac_formfacs_t& form,
@@ -35,7 +37,10 @@ void wallNuclFormFac(WallFormFac_formfacs_t& form,
 		     const LatticePropagator& back_u_prop, 
 		     const LatticePropagator& forw_d_prop,
 		     const LatticePropagator& back_d_prop, 
+		     const Propagator& u_x2,
+		     const Propagator& d_x2,
 		     const SftMom& phases,
-		     int t0, int t_sink);
+		     const multi1d<int>& t_source,
+		     bool wall_source);
 
 #endif

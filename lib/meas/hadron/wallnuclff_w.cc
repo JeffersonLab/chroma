@@ -1,4 +1,4 @@
-// $Id: wallnuclff_w.cc,v 1.20 2004-07-28 02:38:04 edwards Exp $
+// $Id: wallnuclff_w.cc,v 1.21 2004-08-21 01:40:12 edwards Exp $
 /*! \file
  *  \brief Wall-sink nucleon form-factors 
  *
@@ -50,9 +50,11 @@ LatticeSpinMatrix baryonContract(const T1& q1,
  * \param back_u_prop        backward D quark propagator ( Read )
  * \param forw_d_prop        forward U quark propagator ( Read )
  * \param back_d_prop        backward D quark propagator ( Read )
+ * \param u_x2               forward U quark propagator evaluated at sink  ( Read )
+ * \param d_x2               forward D quark propagator evaluated at sink  ( Read )
  * \param phases             fourier transform phase factors ( Read )
- * \param t0                 time coordinates of the source ( Read )
- * \param t_sink             time coordinates of the sink ( Read )
+ * \param t_source           coordinates of the source ( Read )
+ * \param wall_source        true if using a wall source ( Read )
  */
 
 void wallNuclFormFac(WallFormFac_formfacs_t& form,
@@ -61,8 +63,11 @@ void wallNuclFormFac(WallFormFac_formfacs_t& form,
 		     const LatticePropagator& back_u_prop, 
 		     const LatticePropagator& forw_d_prop,
 		     const LatticePropagator& back_d_prop, 
+		     const Propagator& u_x2,
+		     const Propagator& d_x2,
 		     const SftMom& phases,
-		     int t0, int t_sink)
+		     const multi1d<int>& t_source,
+		     bool wall_source)
 {
   START_CODE();
 
@@ -71,7 +76,7 @@ void wallNuclFormFac(WallFormFac_formfacs_t& form,
 
   form.subroutine = "wallNuclFormFac";
 
-  // Length of lattice in j_decay direction and 3pt correlations fcns
+  // Length of lattice in decay direction and 3pt correlations fcns
   int length = phases.numSubsets();
 
   int G5 = Ns*Ns-1;
@@ -130,9 +135,7 @@ void wallNuclFormFac(WallFormFac_formfacs_t& form,
   proj_name[3] = "sigma_3";
 
 
-  // Project propagator onto zero momentum: Do a slice-wise sum.
-  Propagator u_x2 = sum(forw_u_prop, phases.getSet()[t_sink]);
-  Propagator d_x2 = sum(forw_d_prop, phases.getSet()[t_sink]);
+  // Antiquarks
   LatticePropagator anti_u_prop = adj(Gamma(G5)*back_u_prop*Gamma(G5));
   LatticePropagator anti_d_prop = adj(Gamma(G5)*back_d_prop*Gamma(G5));
 
@@ -298,7 +301,7 @@ void wallNuclFormFac(WallFormFac_formfacs_t& form,
 	    multi1d<WallFormFac_momenta_t>& momenta = insertion.momenta;
 
 	    wallFormFacSft(momenta, corr_local_fn, corr_nonlocal_fn, phases,
-			   compute_nonlocal, t0, t_sink);
+			   compute_nonlocal, t_source);
 
 	  } // end for(proj)
 	}  // end for(dp)
