@@ -1,4 +1,4 @@
-// $Id: bar3ptfn.cc,v 1.21 2003-10-14 17:43:13 edwards Exp $
+// $Id: bar3ptfn.cc,v 1.22 2003-12-17 17:35:08 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions
  *
@@ -381,16 +381,16 @@ main(int argc, char *argv[])
   Layout::setLattSize(input.param.nrow);
   Layout::create();
 
-  // Figure out what to do about boundary conditions
-  // GTF HACK: only allow periodic boundary conditions
-  for (int i=0; i<Nd; ++i) {
-    if (input.param.boundary[i] != 1) {
-      QDPIO::cerr << "Only periodic input.param.boundary conditions supported." << endl;
-      QDPIO::cerr << "  input.param.boundary[" << i << "] = " << input.param.boundary[i] << endl;
-      QDP_abort(1);
-    }
-  }
+  /*
+   * Turn on the boundary conditions through the phase factors.
+   *
+   * NOTE: this is not an optimal solution: this factor stuff should be
+   * set some other way
+   */
+  setph(input.param.boundary);              // initialize the BC factors
 
+
+  // Sanity checks
   for (int i=0; i<Nd; ++i) {
     if (input.param.t_srce[i] < 0 || input.param.t_srce[i] >= input.param.nrow[i]) {
       QDPIO::cerr << "Quark propagator source coordinate incorrect." << endl;
