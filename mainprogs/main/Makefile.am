@@ -68,7 +68,7 @@ EXTRA_PROGRAMS = qpropadd
 # Wilson specific programs
 # Temporarily moved here while fixing codes.
 EXTRA_PROGRAMS += propagator_comp multi_propagator multi_propagator_comp \
-       collect_multi_propcomp
+       collect_multi_propcomp propagator_hack
 
 # Staggered specific programs
 #EXTRA_PROGRAMS += 
@@ -82,6 +82,9 @@ propagator_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 
 propagator_comp_SOURCES= propagator_comp.cc
 propagator_comp_DEPENDENCIES= build_chroma_libs rebuild_other_libs
+
+propagator_hack_SOURCES= propagator_hack.cc
+propagator_hack_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 
 seqsource_SOURCES= seqsource.cc
 seqsource_DEPENDENCIES= build_chroma_libs rebuild_other_libs
