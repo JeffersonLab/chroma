@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev5d_fermact_array_w.h,v 1.2 2004-01-13 10:00:57 bjoo Exp $
+// $Id: zolotarev5d_fermact_array_w.h,v 1.3 2004-01-13 13:14:49 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -23,13 +23,19 @@ using namespace QDP;
 class Zolotarev5DFermActArray : public UnprecWilsonTypeFermAct< multi1d<LatticeFermion> >
 {
 public:
-  //! General FermBC
+
   Zolotarev5DFermActArray(Handle< FermBC< multi1d< LatticeFermion> > > fbc_, 
 			  Handle<UnprecWilsonTypeFermAct<LatticeFermion> > S_aux_,
-			  const Real& m_q_,
-			  const int RatPolyDeg_,
+			  Real& m_q_,
+	 		  int RatPolyDeg_,
 			  XMLBufferWriter& writer_) :
-    fbc(fbc_), S_aux(S_aux_), m_q(m_q_), RatPolyDeg(RatPolyDeg_), writer(writer_), N5( RatPolyDeg_ + 1 ) {}
+    fbc(fbc_), S_aux(S_aux_), m_q(m_q_), RatPolyDeg(RatPolyDeg_), writer(writer_)  {
+    
+    if ( RatPolyDeg_ % 2 == 0 ) { 
+      QDP_error_exit("For Now (and possibly forever), 5D Operators can only be constructed with ODD approximation order. You gave an even one: =%d\n", RatPolyDeg_);
+    }
+    N5 = RatPolyDeg_;
+  }
 
 
 
@@ -77,14 +83,14 @@ public:
    *
    * NOTE: maybe this should produce a quark prop foundry class object 
    */
-  /*
+
   void qprop(LatticeFermion& psi, 
 	     Handle<const ConnectState> state, 
 	     const LatticeFermion& chi, 
 	     enum InvType invType,
 	     const Real& RsdCG, 
-	     int MaxCG, int& ncg_had) const;
-  */
+    int MaxCG, int& ncg_had) const {}
+
   //! Destructor is automatic
   ~Zolotarev5DFermActArray() {}
 

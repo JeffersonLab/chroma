@@ -1,4 +1,4 @@
-/* $Id: zolotarev5d_linop_array_w.cc,v 1.1 2004-01-13 10:00:57 bjoo Exp $
+/* $Id: zolotarev5d_linop_array_w.cc,v 1.2 2004-01-13 13:14:49 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
  */
@@ -27,10 +27,13 @@ Zolotarev5DLinOpArray::operator() (multi1d<LatticeFermion>& chi,
   int G5 = Ns*Ns - 1;
 
   // This is the upper limit for the index of the 5th dimension, i.e.
-  //  it runs from 0 to TwoN 
-  int Max5D = N5 - 1;
+  //  it runs from 0 to TwoN. (altogether TwoN + 1 numbers. This
+  // makes sense since N5 is meant to be odd)
+  int TwoN = N5 - 1;
 
-
+  // This is our scaling: we evaluate 
+  //  ( 1 + m_q ) / ( 1 - m_q ) gamma5 + eps
+  //
   Real mass = ( Real(1) + m_q ) / (Real(1) - m_q);
 
   // The sign of the diagonal terms.
@@ -53,7 +56,7 @@ Zolotarev5DLinOpArray::operator() (multi1d<LatticeFermion>& chi,
   LatticeFermion tmp1, tmp2;
   Real pmscale;
 
-  for(int n = 0; n < Max5D; ++n) {
+  for(int n = 0; n < TwoN; ++n) {
     (*M)(tmp1, psi[n], PLUS);      // tmp1 = M psi[n]
     tmp2 = Gamma(G5)*tmp1;        // tmp2 = gamma_5 M psi
 
@@ -73,9 +76,9 @@ Zolotarev5DLinOpArray::operator() (multi1d<LatticeFermion>& chi,
 
   // Last Component
   // chi[N] = mass*gamma5*psi[N] + alpha[N-1]*psi[N-1]
-  chi[Max5D] = Gamma(G5)*psi[Max5D];
-  chi[Max5D] *= mass;
-  chi[Max5D] += alpha[Max5D-1]*psi[ Max5D-1 ];
+  tmp1 = Gamma(G5)*psi[TwoN];
+  chi[TwoN] = mass*tmp1;;
+  chi[TwoN] += alpha[TwoN-1]*psi[ TwoN -1 ];
 
   // Project out eigenvectors from Source if desired 
   //
@@ -88,19 +91,19 @@ Zolotarev5DLinOpArray::operator() (multi1d<LatticeFermion>& chi,
     for(int i = 0 ; i < NEig; i++) {
       
       // Project out eigenvectors in psi_{2N} */
-      cconsts = innerProduct(EigVec[i],psi[Max5D]);
+      cconsts = innerProduct(EigVec[i],psi[TwoN]);
       psi_proj -= EigVec[i]*cconsts;
 
-      // The vectors are added into chi_N
-      chi[Max5D] += cconsts*EigValFunc[i]*EigVec[i];
+      // The vectors are added into chi_2N
+      chi[TwoN] += cconsts*EigValFunc[i]*EigVec[i];
 
-      // Project out the eigenvectors from psi_{N-1} and subtract from chi[N]
-      cconsts = innerProduct(EigVec[i],psi[Max5D-1]);
-      chi[Max5D] -= alpha[Max5D-1]*cconsts*EigVec[i];
+      // Project out the eigenvectors from psi_{2N-1} and subtract from chi[N]
+      cconsts = innerProduct(EigVec[i],psi[TwoN-1]);
+      chi[TwoN] -= alpha[TwoN-1]*cconsts*EigVec[i];
     }
 
     // Subtract out projected psi_{N} from chi_{N-1} */
-    chi[Max5D-1] += psi_proj * alpha[Max5D-1];
+    chi[TwoN-1] += psi_proj * alpha[TwoN-1];
   }
                             
   // Complete the last component
@@ -113,14 +116,15 @@ Zolotarev5DLinOpArray::operator() (multi1d<LatticeFermion>& chi,
   //   caluclated only if betaa_{N} != 0 */
 
 
-  if( toBool( beta[Max5D] != Real(0) ) ) {
+  if( toBool( beta[TwoN] != Real(0) ) ) {
+    
     // Complete psi_proj
-    psi_proj += psi[Max5D];
+    psi_proj += psi[TwoN];
 
     (*M)(tmp1, psi_proj, PLUS);
-    pmscale = beta[Max5D]*scale_fac;
+    pmscale = beta[TwoN]*scale_fac;
     tmp2 = Gamma(G5)*tmp1;
-    chi[Max5D] += pmscale*tmp2;
+    chi[TwoN] += pmscale*tmp2;
 
   }
 

@@ -1,4 +1,4 @@
-// $Id: zolotarev5d_fermact_array_w.cc,v 1.2 2004-01-13 10:00:57 bjoo Exp $
+// $Id: zolotarev5d_fermact_array_w.cc,v 1.3 2004-01-13 13:14:49 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -51,19 +51,29 @@ Zolotarev5DFermActArray::init(Real& scale_fac,
     beta[i] = rdata->beta[i];
   }
 
+
   push(my_writer, "ZoloContFracCoeff");
   Write(my_writer, beta);
   pop(my_writer);
 
+  QDPIO::cout << "Did Beta" << endl;
+
+  alpha.resize(N5);
   for(int i = 0; i < N5; i++) {
     alpha[i] = Real(1);
   }
+
   alpha[N5-1] = rdata->beta[N5-1];
 
+  QDPIO::cout << "Did alpha" << endl;
+
+  // For the moment choose gamma = 1/sqrt(beta) */
+  // except for gamma(N5-1) which always has to be set to 1 */
   multi1d<Real> gamma(N5);
   for(int i=0; i < N5-1; i++) { 
     gamma[i] = Real(1)/ sqrt( rdata->beta[i] );
   }
+  gamma[N5-1] = Real(1);
 
   // Now perform the equivalence transformation on the off diagonal
   // elements 
@@ -73,8 +83,10 @@ Zolotarev5DFermActArray::init(Real& scale_fac,
 
   // and the off diagonal ones
   for(int i=0; i < N5-1; i++) {
-    alpha[i] = alpha[i]*gamma[i]*gamma[i];
+    alpha[i] = alpha[i]*gamma[i]*gamma[i+1];
   }
+
+  QDPIO::cout << "Did alpha2 " << endl;
 
   push(my_writer, "ZoloEquivTransCoeff");
   Write(my_writer, beta);
