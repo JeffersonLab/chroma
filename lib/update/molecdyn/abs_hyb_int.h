@@ -30,9 +30,9 @@ public:
 };
 
 template<typename FS, typename H>
-class AbsLatColMatHybInt : AbsHybInt< multi1d<LatticeColorMatrix>,
-                                multi1d<LatticeColorMatrix>,
-                                FS, H > {
+class AbsLatColMatHybInt : public AbsHybInt< multi1d<LatticeColorMatrix>,
+                                             multi1d<LatticeColorMatrix>,
+                                             FS, H > {
 public:
   //virtual destructor
   virtual ~AbsLatColMatHybInt() {};
