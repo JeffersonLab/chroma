@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.96 2004-01-16 15:38:37 bjoo Exp $
+# $Id: Makefile.am,v 1.97 2004-01-20 20:51:10 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -71,7 +71,6 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/invmr.h actions/ferm/invert/minvcg.h \
 	actions/ferm/linop/asqtad_dslash.h actions/ferm/linop/linop.h \
 	actions/ferm/linop/lmdagm.h actions/ferm/linop/lopscl.h \
-	actions/ferm/linop/lwldslash_w_sse.h \
 	actions/ferm/linop/partrat.h actions/ferm/qprop/qprop.h \
 	actions/gauge/gauge.h \
 	io/io.h io/milc_io.h io/param_io.h io/qprop_io.h io/readmilc.h \
@@ -93,8 +92,8 @@ nobase_include_HEADERS = \
 	util/gauge/hotst.h util/gauge/phfctr.h util/gauge/reunit.h \
 	util/gauge/rgauge.h util/gauge/su2extract.h util/gauge/su3proj.h \
 	util/gauge/sunfill.h util/gauge/sun_proj.h util/gauge/taproj.h \
-	util/gauge/unit_check.h util/util.h \
-	meas/eig/eig_spec_bj_w.h
+	util/gauge/unit_check.h util/util.h
+
 
 if BUILD_WILSON_LIBS
 nobase_include_HEADERS += \
@@ -118,6 +117,8 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/unprec_parwilson_fermact_w.h \
 	actions/ferm/fermacts/zolotarev4d_fermact_w.h \
 	actions/ferm/fermacts/zolotarev5d_fermact_array_w.h \
+	actions/ferm/linop/lwldslash_w_sse.h \
+	actions/ferm/linop/lgherm_w.h \
 	actions/ferm/linop/zolotarev5d_linop_array_w.h \
 	actions/ferm/linop/dslash_w.h actions/ferm/linop/dwffld_w.h \
 	actions/ferm/linop/ldwfdslash_w.h actions/ferm/linop/linop_w.h \
@@ -139,7 +140,8 @@ nobase_include_HEADERS += \
 	actions/ferm/qprop/unprec_qprop_w.h \
 	io/io_w.h io/readszinferm_w.h io/readszinqprop_w.h \
 	io/writeszinqprop_w.h \
-	meas/eig/eig_w.h meas/eig/ischiral_w.h meas/hadron/barcomp_w.h \
+	meas/eig/eig_w.h meas/eig/ischiral_w.h \
+	meas/eig/eig_spec_bj_w.h meas/hadron/barcomp_w.h \
 	meas/hadron/barseqsrc_w.h meas/hadron/baryon_w.h \
 	meas/hadron/BuildingBlocks_w.h meas/hadron/curcor2_w.h \
 	meas/hadron/DjDk_w.h meas/hadron/D_j_w.h meas/hadron/formfac_w.h \

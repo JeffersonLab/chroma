@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 1.1 2004-01-08 03:11:47 edwards Exp $
+// $Id: fermact.h,v 1.2 2004-01-20 20:51:10 bjoo Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -213,10 +213,15 @@ public:
  *
  * Wilson-like fermion actions
  */
+#include "actions/ferm/linop/lgherm_w.h"
+
 template<typename T>
 class WilsonTypeFermAct : public FermionAction<T>
 {
 public:
+  const LinearOperator<T>* gamma5HermLinOp(Handle<const ConnectState> state) const {
+    return new lgherm<T>(linOp(state));
+  }
 };
 
 

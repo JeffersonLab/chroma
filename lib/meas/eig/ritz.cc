@@ -1,4 +1,4 @@
-// $Id: ritz.cc,v 1.4 2004-01-19 17:58:26 bjoo Exp $
+// $Id: ritz.cc,v 1.5 2004-01-20 20:51:10 bjoo Exp $
 /*! \file
  *  \brief Ritz code for eigenvalues
  */
@@ -368,6 +368,7 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
 
 
       // Print out info about convergence 
+#if 0
       QDPIO::cout << "Converged at iter=" << k << ", lambda = " << lambda
 		  << ",  rsd | mu | = " << rsd << ",  || g || = "
 		  << sqrt(g2) << " || x || - 1 = " << d << endl;
@@ -379,7 +380,7 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
 		    << ",  delta_cycle_err=" << delta_cycle_err << endl;
 	QDPIO::cout << "KS: CGConvP = " << CGConvP << ",  KSConvP = " << KSConvP << " deltaCycleConvP = " << deltaCycleConvP << endl;
       }
-
+#endif
       // Recompute lambda
       // Apsi = A psi 
       A( Apsi, psi, PLUS);

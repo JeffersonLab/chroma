@@ -1,4 +1,4 @@
-// $Id: eig_spec_bj_w.cc,v 1.4 2004-01-19 17:58:26 bjoo Exp $
+// $Id: eig_spec_bj_w.cc,v 1.5 2004-01-20 20:51:10 bjoo Exp $
 /*! \file
  *  \brief Compute low lying eigenvalues of the hermitian H
  */
@@ -130,7 +130,6 @@ void EigSpecRitzKS(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
 		   int MaxCG,                       // Max no of CG iters
 		   const Real& Rsd_r,               // relative residuum of each 
 		                                  // e-value
-		   const Real& Rsd_jacobi,          // Separate tolerance for Jacobi
 		   const bool ProjApsiP,            // Project in Ritz?
 		   
 		   int& n_cg_tot,                   // Total no of CG iters
@@ -231,7 +230,7 @@ void EigSpecRitzKS(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
 
     // Now diagonalise it, rotate evecs, and sort
     // 
-    SN_Jacob(psi, n_working_eig, lambda_intern, off_diag, Rsd_jacobi, 50, n_jacob);
+    SN_Jacob(psi, n_working_eig, lambda_intern, off_diag, Rsd_r, 50, n_jacob);
     n_jacob_tot += n_jacob;
 
     write(xml_out, "n_jacob", n_jacob);
@@ -271,7 +270,7 @@ void EigSpecRitzKS(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
       }
 
       // Diagonalise, rotate, sort
-      SN_Jacob(psi, n_eig, lambda_intern, off_diag, Rsd_jacobi, 50, n_jacob);
+      SN_Jacob(psi, n_eig, lambda_intern, off_diag, Rsd_r, 50, n_jacob);
       write(xml_out, "final_n_jacob", n_jacob);
       write(xml_out, "n_cg_tot", n_cg_tot);
       write(xml_out, "n_KS", n_KS);
@@ -297,4 +296,128 @@ void EigSpecRitzKS(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
   // If we reached here then we have done more than n_max KS
   QDP_error_exit("n_max_KS reached with no convergence");
   END_CODE("EigSpecRitzKS");
+}
+
+
+void fixMMev2Mev(const LinearOperator<LatticeFermion>& M,  // The Op to fix to
+		 multi1d<Real>& lambda,                    // The Evals of M^{dag}M on input
+		                                           // The Evals of M on output        
+		 multi1d<LatticeFermion>& ev_psi,          // The Evecs corresponding to lambda
+		 const int n_eig,                          // The no of evals/evecs to deal with
+		 const Real& validity_tolerance,           // Tolerance for validity
+		 multi1d<bool>& valid_eig,                 // Validity mask (Write)
+		 int& n_valid,                             // No of valids  (Write)
+		 const Real& jacobi_tolerance,             // How far to run the Jacobi
+		 int& n_jacob                              // How many Jacobis were done
+		 )
+{
+
+  // Sanity checking
+  if( n_eig > lambda.size() ) { 
+    QDP_error_exit("n_eig greater than size of lambda array\n");
+  }
+
+  if( lambda.size() != ev_psi.size() ) { 
+    QDP_error_exit("lambda and ev_psi arrays must have same size\n");
+  }
+
+  // Make the valid eig the right size
+  valid_eig.resize(n_eig);
+
+  // Temporaries 
+  LatticeFermion tmp;
+  Double lambda_H_sq;
+  Double delta_lambda;
+
+  // We are all set -- lets do it
+
+  if( n_eig == 1 ) {                  // only one eigenvalue
+    M(tmp, ev_psi[0], PLUS);
+    Double lambda_fix_single = innerProductReal(ev_psi[0], tmp);
+    
+    // No diagonalisation needed -- only 1 eval
+    lambda_H_sq = lambda_fix_single*lambda_fix_single;
+    delta_lambda = fabs( lambda_H_sq - Double( lambda[0] )*Double( lambda[0] ) );
+    
+    lambda[0] = Real(lambda_fix_single);
+
+    // Check relative error is satisfied
+    if ( toBool( delta_lambda < Double(validity_tolerance) * fabs(Double(lambda[0])) ) ) { 
+      // Condition is satisfied
+      valid_eig[0] = true;
+      n_valid = 1;
+    } else {
+      // Condition is not satisfied
+      valid_eig[0] = false;
+      n_valid = 0;
+    }
+    
+    return;
+  }
+  else { 
+    
+    // Interesting case multiple ev-s
+    // Construct new ev-s and off diagonal matrix
+    multi1d<Complex> off_diag(n_eig*(n_eig-1)/2 );
+    multi1d<Real>    lambda_fix(n_eig);
+    for(int i = 0; i < n_eig; i++) { 
+      valid_eig[i] = false;
+    }
+
+    for(int i=0, ij=0; i < n_eig; i++) { 
+      M(tmp, ev_psi[i], PLUS); 
+      lambda_fix[i] = innerProductReal(ev_psi[i], tmp);
+
+      for(int j=0; j < i; j++) { 
+	off_diag[ij] = innerProduct(ev_psi[j], tmp);
+	ij++;
+      }
+    }
+    
+    // Diagonalise and sort according to size
+    SN_Jacob(ev_psi, n_eig, lambda_fix, off_diag, jacobi_tolerance, 50, n_jacob);
+
+    // Now the tricky business of matching up with ev-s of H^2
+    n_valid = 0;
+    
+    for(int i=0; i < n_eig; i++) { 
+      lambda_H_sq = Double(lambda_fix[i])*Double(lambda_fix[i]);
+
+      // Now compare with all the invalid ev-s
+      for(int j = n_valid; ( j < n_eig ) && ( valid_eig[i] == false ); j++ ) {
+	delta_lambda = fabs( lambda_H_sq - Double(lambda[j])*Double(lambda[j]) );
+	
+	if( toBool( delta_lambda < Double(validity_tolerance)*fabs(Double(lambda[j])) ) ) {
+
+	  // lambda_fix[i] matches lambda[j] 
+	  valid_eig[i] = true;
+	  
+	  // swap lambda[j] with lambda[valid_eig];
+	  // so we don't search it again
+	  Real tmp = lambda[j];
+	  lambda[j] = lambda[n_valid];
+	  lambda[n_valid] = tmp;
+
+	  // Increase the validity count
+	  n_valid++;
+	}
+
+	// Else compare with next j
+      }
+      // At this point either valid_eig[i] is true, or we were unable to match
+      // in which case valid_eig[i] is false from initialisation
+      // in any case time for next_eig
+
+    } // We are done
+
+    // Now we can overwrite lambda with lambda_fix
+    // A desirable feature would be to move the invalid ev-s to the end
+    // but I cannot be bothered
+    for(int i = 0; i < n_eig; i++ ) { 
+      lambda[i] = lambda_fix[i];
+    }
+  } // End of if( n_eig == 1 ) .. else { } 
+
+  // we are done 
+  return;
 }

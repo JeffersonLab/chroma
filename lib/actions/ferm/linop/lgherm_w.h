@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lgherm_w.h,v 1.1 2004-01-20 10:11:03 bjoo Exp $
+// $Id: lgherm_w.h,v 1.2 2004-01-20 20:51:10 bjoo Exp $
 
 #ifndef __lgherm_h__
 #define __lgherm_h__
@@ -17,7 +17,7 @@ using namespace QDP;
  *
  * This operator scales its input operator
  */
-template<typename T, class C>
+template<typename T>
 class lgherm : public LinearOperator<T>
 {
 public:
@@ -26,7 +26,7 @@ public:
   lgherm(const LinearOperator<T>* p) : A(p) {}
 
   //! Copy pointer (one more owner)
-  lherm(Handle<const LinearOperator<T> > p): A(p) {}
+  lgherm(Handle<const LinearOperator<T> > p): A(p) {}
 
   //! Destructor
   ~lgherm() {}
@@ -64,8 +64,8 @@ private:
  *
  * Linear operator forming M^dag.M from an operator M
  */
-template<typename T, class C>
-class lopscl< multi1d<T>, C > : public LinearOperator< multi1d<T> >
+template<typename T>
+class lgherm< multi1d<T> > : public LinearOperator< multi1d<T> >
 {
 public:
   //! Initialize pointer with existing pointer

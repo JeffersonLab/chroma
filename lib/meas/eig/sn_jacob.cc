@@ -1,4 +1,4 @@
-// $Id: sn_jacob.cc,v 1.2 2004-01-16 15:38:37 bjoo Exp $
+// $Id: sn_jacob.cc,v 1.3 2004-01-20 20:51:10 bjoo Exp $
 /*! \file
  *  \brief Single-node Jacobi routine
  */
@@ -191,13 +191,15 @@ void SN_Jacob_t(multi1d<T>& psi,
       n_count = k;
       QDPIO::cout << "Jacobi converged after " << k << " iters" << endl;
       
-      /* Sort the eigenvalues */
+      // Sort the eigenvalues
+      // In order of increasing modulus
       for(j = 1; j < N_eig; j++) {
 	for(i = 0; i < j; i++) {
 	  
 	  ftmp = fabs(lambda[j]);
 	  dd = fabs(lambda[i]);
-	  /* if( lambda[j] < lambda[i] ) */
+
+	  // if( | lambda[j] | < | lambda[i] | )
 	  if( toBool( ftmp < dd ) ) {
 	  
 	    ftmp = lambda[i];

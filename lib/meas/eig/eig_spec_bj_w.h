@@ -1,4 +1,4 @@
-/* ! $Id: eig_spec_bj_w.h,v 1.4 2004-01-19 17:58:26 bjoo Exp $ */
+/* ! $Id: eig_spec_bj_w.h,v 1.5 2004-01-20 20:51:10 bjoo Exp $ */
 
 #ifndef __eig_spec_bj_w_h__
 #define __eig_spec_bj_w_h__
@@ -36,7 +36,6 @@ void EigSpecRitzKS(const LinearOperator<LatticeFermion>& H, // Herm pos def oper
 		   int MaxCG,                       // Max no of CG iters
 		   const Real& Rsd_r,               // relative residuum of each 
 		                                  // e-value
-		   const Real& Rsd_jacobi,          // Separate tolerance for Jacobi
 		   const bool ProjApsiP,            // Project in Ritz?
 		   
 		   int& n_cg_tot,                   // Total no of CG iters
@@ -44,5 +43,18 @@ void EigSpecRitzKS(const LinearOperator<LatticeFermion>& H, // Herm pos def oper
 		   int& n_jacob_tot,                // No of Jacobi Diag
 		   XMLBufferWriter& xml_out         // Diagnostics
 	      );
+
+
+void fixMMev2Mev(const LinearOperator<LatticeFermion>& M,  // The Op to fix to
+		 multi1d<Real>& lambda,                    // The Evals of M^{dag}M on input
+		                                           // The Evals of M on output        
+		 multi1d<LatticeFermion>& ev_psi,          // The Evecs corresponding to lambda
+		 const int n_eig,                          // The no of evals/evecs to deal with
+		 const Real& validity_tolerance,           // Tolerance for validity
+		 multi1d<bool>& valid_eig,                 // Validity mask (Write)
+		 int& n_valid,                             // No of valids  (Write)
+		 const Real& jacobi_tolerance,             // How far to run the Jacobi
+		 int& n_jacob                              // How many Jacobis were done
+		 );
 
 #endif

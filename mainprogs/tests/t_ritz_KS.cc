@@ -1,4 +1,4 @@
-// $Id: t_ritz_KS.cc,v 1.1 2004-01-19 17:58:27 bjoo Exp $
+// $Id: t_ritz_KS.cc,v 1.2 2004-01-20 20:51:10 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -250,7 +250,6 @@ int main(int argc, char **argv)
 		Real(0.1),       // Gamma factor
 		params.max_cg,
 		params.rsd_r,
-		Real(1.0e-7),    // Jacobi to machine prec
 		ProjApsiP,
 		n_CG_count,
 		n_KS_count,
@@ -270,11 +269,45 @@ int main(int argc, char **argv)
     check_norm[i] = sqrt(norm2(r_norm))/fabs(lambda[i]);
     QDPIO::cout << "check_norm["<<i+1<<"] = " << check_norm[i] << endl;
   }
-  
- 
-
   write(xml_out, "check_norm_rel", check_norm);
-  
+
+  // Fix to ev-s of gamma_5 wilson...
+  // Try to get one:
+  Handle< const LinearOperator<LatticeFermion> > H = S_w.gamma5HermLinOp(connect_state);  
+
+  multi1d<bool> valid_eig(params.n_eig);
+  int n_valid;
+  int n_jacob;
+
+  fixMMev2Mev(*H, lambda, psi, params.n_eig+n_dummy, sqrt(params.rsd_r), 
+	      valid_eig, n_valid, params.rsd_r, n_jacob);
+
+  push(xml_out, "eigFix");
+  write(xml_out, "lambda", lambda);
+  write(xml_out, "n_valid", n_valid);
+  write(xml_out, "valid_eig", valid_eig);
+  for(int i=0; i < params.n_eig; i++) { 
+    LatticeFermion Me;
+    LatticeFermion lambda_e;
+    (*H)(Me, psi[i], PLUS);
+    lambda_e = lambda[i]*psi[i];
+    LatticeFermion r_norm = Me - lambda_e;
+    check_norm[i] = sqrt(norm2(r_norm))/fabs(lambda[i]);
+    QDPIO::cout << "check_norm["<<i+1<<"] = " << check_norm[i] << endl;
+  }
+  write(xml_out, "check_norm_rel", check_norm);
+  pop(xml_out);
+
+
+  for(int i=0; i < params.n_eig; i++) { 
+    lambda[i] /= (Real(Nd) + params.quark_mass);
+  }
+
+  push(xml_out, "SZINEv");
+  write(xml_out, "lambda_szin", lambda);
+  pop(xml_out);
+
+
   pop(xml_out);
   QDP_finalize();
     
