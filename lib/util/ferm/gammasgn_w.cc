@@ -1,4 +1,4 @@
-// $Id: gammasgn_w.cc,v 1.3 2004-06-11 20:42:36 edwards Exp $
+// $Id: gammasgn_w.cc,v 1.4 2004-06-11 20:44:16 edwards Exp $
 /*! \file
  *  \brief Compute gamma matrix multiplication table factors
  */
@@ -41,7 +41,7 @@ static void gammaSgn_init()
     int n3 = nn & 1;
     int n4 = nn >> 1;
 
-    int ssum = (n1 + n2 + n3 + n4) & 1;
+//    int ssum = (n1 + n2 + n3 + n4) & 1;
 
     for(int m = 0; m < Ns*Ns; ++m)
     {
@@ -53,7 +53,7 @@ static void gammaSgn_init()
       int m3 = mm & 1;
       int m4 = mm >> 1;
 
-      ssum = ((n2+n3+n4)*m1 + (n3+n4)*m2 + n4*m3) & 1;
+      int ssum = ((n2+n3+n4)*m1 + (n3+n4)*m2 + n4*m3) & 1;
       meson_eta2(n,m) = (ssum == 0) ? 1 : -1;
     }
   }
