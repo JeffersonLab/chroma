@@ -1,4 +1,4 @@
-// $Id: mres.cc,v 1.1 2004-12-08 21:35:55 edwards Exp $
+// $Id: mres.cc,v 1.2 2004-12-09 05:14:31 edwards Exp $
 
 #include <iostream>
 #include <sstream>
@@ -21,7 +21,7 @@ struct Prop_t
 struct AppInput_t 
 {
   multi1d<int> nrow;
-  InvertParam_t  invParam;   // Inverter parameters
+  std::string  stateInfo;
   Cfg_t cfg;
   Prop_t prop;
 };
@@ -74,6 +74,20 @@ void read(XMLReader& xml, const string& path, AppInput_t& input)
 
     // Read in the gauge configuration info
     read(inputtop, "Cfg", input.cfg);
+
+    // Read any auxiliary state information
+    if( inputtop.count("StateInfo") == 1 ) {
+      XMLReader xml_state_info(inputtop, "StateInfo");
+      std::ostringstream os;
+      xml_state_info.print(os);
+      input.stateInfo = os.str();
+    }
+    else { 
+      XMLBufferWriter s_i_xml;
+      push(s_i_xml, "StateInfo");
+      pop(s_i_xml);
+      input.stateInfo = s_i_xml.str();
+    }
 
     // Read in the source/propagator info
     read(inputtop, "Prop", input.prop);
@@ -143,10 +157,8 @@ int main(int argc, char **argv)
       }
       else 
       { 
-	XMLBufferWriter s_i_xml;
-	push(s_i_xml, "StateInfo");
-	pop(s_i_xml);
-	stateInfo = s_i_xml.str();
+	// The user better have supplied something
+	stateInfo = input.stateInfo;
       }
     }
     catch (const string& e) {
