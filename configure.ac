@@ -24,6 +24,24 @@ AC_ARG_ENABLE(fermion-type,
 	      [ ac_fermion_type="wilson" ] ) 
 
 
+dnl --with-qdp=DIR
+AC_ARG_WITH(qdp,
+  AC_HELP_STRING([--with-qdp=DIR],
+    [ Build SZIN++ on top of QDP++ where QDP++ is installed in DIR]),
+    [ QDP_HOME="$with_qdp"
+      AC_MSG_CHECKING([if $QDP_HOME/config/qdp_build_env.sh exists])
+      if test -f $QDP_HOME/config/qdp_build_env.sh ;
+      then
+	      AC_MSG_RESULT([yes])
+	      AC_MSG_NOTICE([ Sourcing qdp_build_env.sh in $QDP_HOME/config ])
+	      source $QDP_HOME/config/qdp_build_env.sh
+      else
+	      AC_MSG_RESULT([no])
+	      AC_MSG_NOTICE([ configuration may still work if you set the ])
+	      AC_MSG_NOTICE([ --with-xxxx switches or environment variables])
+      fi]
+)
+	      
 dnl --with-qdp-cxxflags
 AC_ARG_WITH( qdp-cxxflags,
   AC_HELP_STRING([--with-qdp-cxxflags=QDP_CXXFLAGS],

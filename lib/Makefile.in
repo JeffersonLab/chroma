@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.1 2002-12-16 06:53:33 edwards Exp $
+# $Id: Makefile.in,v 1.2 2003-01-04 01:00:09 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
