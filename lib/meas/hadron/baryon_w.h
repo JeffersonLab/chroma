@@ -1,5 +1,8 @@
 // -*- C++ -*-
-// $Id: baryon_w.h,v 1.5 2003-10-10 03:46:46 edwards Exp $
+// $Id: baryon_w.h,v 1.6 2004-05-01 19:58:15 edwards Exp $
+/*! \file
+ *  \brief Baryon 2-pt functions
+ */
 
 #ifndef __baryon_h__
 #define __baryon_h__
