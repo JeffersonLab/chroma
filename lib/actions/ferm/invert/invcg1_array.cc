@@ -1,10 +1,10 @@
-// $Id: invcg2_array.cc,v 1.7 2004-05-19 00:21:23 bjoo Exp $
+// $Id: invcg1_array.cc,v 1.1 2004-05-19 00:21:23 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
 
 #include "chromabase.h"
-#include "actions/ferm/invert/invcg2_array.h"
+#include "actions/ferm/invert/invcg1_array.h"
 
 
 //! Conjugate-Gradient (CGNE) algorithm for a generic Linear Operator
@@ -14,7 +14,7 @@
  *
  *   	    Chi  =  A . Psi
  *
- * where       A = M^dag . M
+ * where       A is hermitian
  *
  * Algorithm:
 
@@ -60,9 +60,9 @@
  *  2 A + 2 Nc Ns + N_Count ( 2 A + 10 Nc Ns )
  */
 
-#define PRINT_5D_RESID
+#undef PRINT_5D_RESID
 template<typename T>
-void InvCG2_a(const LinearOperator< multi1d<T> >& M,
+void InvCG1_a(const LinearOperator< multi1d<T> >& A,
 	      const multi1d<T> & chi,
 	      multi1d<T>& psi,
 	      const Real& RsdCG, 
@@ -70,23 +70,22 @@ void InvCG2_a(const LinearOperator< multi1d<T> >& M,
 	      int& n_count)
 {
   const int N = psi.size();
-  const OrderedSubset& s = M.subset();
+  const OrderedSubset& s = A.subset();
 
   Real chi_sq =  Real(norm2(chi,s));
 
   QDPIO::cout << "chi_norm = " << sqrt(chi_sq) << endl;
   Real rsd_sq = (RsdCG * RsdCG) * chi_sq;
 
-  //                                            +
-  //  r[0]  :=  Chi - A . Psi[0]    where  A = M  . M
+  //                                            
+  //  r[0]  :=  Chi - A . Psi[0]    where  A is hermitian
     
-  //                      +
-  //  r  :=  [ Chi  -  M(u)  . M(u) . psi ]
-  multi1d<T> r(N), mp(N), mmp(N);
-  M(mp, psi, PLUS);
-  M(mmp, mp, MINUS);
+  //                     
+  //  r  :=  [ Chi  -  A. psi ]
+  multi1d<T> r(N), Ap(N);
+  A(Ap, psi, PLUS);
   for(int n=0; n < N; ++n)
-    r[n][s] = chi[n] - mmp[n];
+    r[n][s] = chi[n] - Ap[n];
 
 #ifdef PRINT_5D_RESID 
   for(int n=0; n < N; n++) {
@@ -100,9 +99,10 @@ void InvCG2_a(const LinearOperator< multi1d<T> >& M,
 
   //  p[1]  :=  r[0]
   multi1d<T> p(N);
-  for(int n=0; n < N; ++n)
+  for(int n=0; n < N; ++n) {
     p[n][s] = r[n];
-  
+  }
+
   //  Cp = |r[0]|^2
   Double cp = norm2(r, s);   	       	   /* 2 Nc Ns  flops */
 
@@ -127,28 +127,35 @@ void InvCG2_a(const LinearOperator< multi1d<T> >& M,
     c = cp;
 
     //  a[k] := | r[k-1] |**2 / < p[k], Ap[k] > ;
-    //      	       	       	       	       	  +
-    //  First compute  d  =  < p, A.p >  =  < p, M . M . p >  =  < M.p, M.p >
+    //      	       	       	       	       	  
+    //  First compute  d  =  < p, A.p > 
     //  Mp = M(u) * p
 
-    M(mp, p, PLUS);
+    A(Ap, p, PLUS);
 
     //  d = | mp | ** 2
-    d = norm2(mp, s);	/* 2 Nc Ns  flops */
+    d=Double(0);
+
+    // This is probably inefficient. It would be nice
+    // to have an inner product real with multi1d<>
+    // the best way is to have a local inner product 
+    // and then do one big global sum at the end.
+    for(int n=0; n < N; ++n) {
+      d += innerProductReal(p[n], Ap[n], s);	/* 2 Nc Ns  flops */
+    }
 
     a = Real(c)/Real(d);
 
     //  Psi[k] += a[k] p[k]
-    for(int n=0; n < N; ++n)
+    for(int n=0; n < N; ++n) {
       psi[n][s] += a * p[n];	/* 2 Nc Ns  flops */
+    }
 
     //  r[k] -= a[k] A . p[k] ;
-    //      	       +            +
-    //  r  =  r  -  M(u)  . Mp  =  M  . M . p  =  A . p
-
-    M(mmp, mp, MINUS);
-    for(int n=0; n < N; ++n)
-      r[n][s] -= a * mmp[n];
+    //      	      
+    for(int n=0; n < N; ++n) {
+      r[n][s] -= a * Ap[n];
+    }
 
 #ifdef PRINT_5D_RESID
     for(int n=0; n < N; n++) {
@@ -185,13 +192,13 @@ void InvCG2_a(const LinearOperator< multi1d<T> >& M,
 
 // Fix here for now
 template<>
-void InvCG2(const LinearOperator< multi1d<LatticeFermion> >& M,
+void InvCG1(const LinearOperator< multi1d<LatticeFermion> >& A,
 	    const multi1d<LatticeFermion>& chi,
 	    multi1d<LatticeFermion>& psi,
 	    const Real& RsdCG, 
 	    int MaxCG, 
 	    int& n_count)
 {
-  InvCG2_a(M, chi, psi, RsdCG, MaxCG, n_count);
+  InvCG1_a(A, chi, psi, RsdCG, MaxCG, n_count);
 }
 

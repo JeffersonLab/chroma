@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev5d_fermact_array_w.h,v 1.7 2004-04-26 11:19:12 bjoo Exp $
+// $Id: zolotarev5d_fermact_array_w.h,v 1.8 2004-05-19 00:21:23 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -75,8 +75,14 @@ public:
   //! Produce a linear operator for this action
   const LinearOperator< multi1d<LatticeFermion> >* linOp(Handle<const ConnectState> state) const;
 
+  //! Produce a linear operator for this action
+  const LinearOperator< multi1d<LatticeFermion> >* lnonHermLinOp(Handle<const ConnectState> state) const;
+
   //! Produce a linear operator M^dag.M for this action
   const LinearOperator< multi1d<LatticeFermion> >* lMdagM(Handle<const ConnectState> state) const;
+
+  //! Produce a linear operator M^dag.M for this action
+  const LinearOperator< multi1d<LatticeFermion> >* lnonHermMdagM(Handle<const ConnectState> state) const;
 
   //! produce gamma_5 times M 
   const LinearOperator< multi1d<LatticeFermion> >* gamma5HermLinOp(Handle<const ConnectState> state) const {

@@ -1,4 +1,4 @@
-// $Id: t_ovlap5d_bj.cc,v 1.6 2004-05-14 15:08:43 bjoo Exp $
+// $Id: t_ovlap5d_bj.cc,v 1.7 2004-05-19 00:21:23 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -474,7 +474,12 @@ int main(int argc, char **argv)
   Handle<const ConnectState> connect_state(connect_state_ptr);
   
   // Make me a linop (this callls the initialise function)
+  // Handle<const LinearOperator< multi1d< LatticeFermion > > > D_op(S.lnonHermLinOp(connect_state));
+
   Handle<const LinearOperator< multi1d< LatticeFermion > > > D_op(S.linOp(connect_state));
+
+  Handle<const LinearOperator< multi1d< LatticeFermion > > > D_MM(S.lMdagM(connect_state));
+
 
   push(xml_out, "Zolotarev5DInternal");
   xml_out << my_writer;
@@ -489,6 +494,7 @@ int main(int argc, char **argv)
 
 
   gaussian(chi4);
+  chi4 /= sqrt(norm2(chi4));
 
  
   // We solve M_5d psi = gamma_5 chi
@@ -513,9 +519,9 @@ int main(int argc, char **argv)
   //
   // hence tmp5_1 = M^{-dag} M^{-1} chi
   
- // Put solution into psi  check inverse
+  // Put solution into psi  check inverse
   (*D_op)(tmp5_1, chi, MINUS);
-  InvCG2( *D_op, tmp5_1, psi, params.rsd_cg, params.max_cg, n_count);
+  InvCG1( *D_MM, tmp5_1, psi, params.rsd_cg, params.max_cg, n_count);
 
  
   // Multiply back to check inverse
@@ -571,6 +577,7 @@ int main(int argc, char **argv)
   pop(xml_out);
  
 
+#if 0 
   // Qprop Test
   multi1d<int> coord(Nd);
   coord[0]=0; coord[1] = 0; coord[2] = 0; coord[3] = 0;
@@ -628,6 +635,7 @@ int main(int argc, char **argv)
   write(xml_out, "r_norm", r_norm4);
   pop(xml_out);
 
+#endif
   pop(xml_out);
   QDP_finalize();
     

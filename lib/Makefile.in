@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.193 2004-05-18 12:40:14 bjoo Exp $
+# $Id: Makefile.in,v 1.194 2004-05-19 00:21:22 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -291,10 +291,13 @@ nobase_include_HEADERS = \
 	actions/ferm/fermacts/overlap_state.h \
 	actions/ferm/invert/invcg1.h actions/ferm/invert/invcg2.h \
 	actions/ferm/invert/inv_rel_cg1.h actions/ferm/invert/inv_rel_cg2.h \
+	actions/ferm/invert/invcg1_array.h \
 	actions/ferm/invert/invcg2_array.h actions/ferm/invert/invert.h \
 	actions/ferm/invert/invmr.h actions/ferm/invert/minvcg.h \
 	actions/ferm/invert/invcg2_timing_hacks.h \
 	actions/ferm/invert/invsumr.h actions/ferm/invert/minvsumr.h \
+	actions/ferm/invert/invbicgstab.h \
+	actions/ferm/invert/invbicgstab_array.h \
 	actions/ferm/linop/asqtad_dslash.h actions/ferm/linop/linop.h \
 	actions/ferm/linop/lmdagm.h actions/ferm/linop/lopscl.h \
 	actions/ferm/linop/partrat.h actions/ferm/qprop/qprop.h \
@@ -355,8 +358,8 @@ libchroma_a_SOURCES = gauge_startup.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
                gaus_smear.cc hyp_smear.cc ape_smear.cc fuzz_smear.cc \
                klein_gord.cc laplacian.cc displacement.cc \
                su2extract.cc sunfill.cc invcg1.cc inv_rel_cg1.cc \
-	       invcg2.cc inv_rel_cg2.cc \
-	       invcg2_array.cc invcg2_timing_hacks.cc minvcg.cc qprop_io.cc \
+	       invcg2.cc inv_rel_cg2.cc invcg1_array.cc \
+	       invcg2_array.cc invcg2_timing_hacks.cc minvcg.cc  qprop_io.cc \
 	       eigen_io.cc stoch_var.cc \
 	       z2_src.cc gauge_io.cc milc_io.cc readmilc.cc writemilc.cc \
                axgauge.cc coulgauge.cc grelax.cc polar_dec.cc rot_colvec.cc \
@@ -364,8 +367,8 @@ libchroma_a_SOURCES = gauge_startup.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
 	       gramschm.cc \
 	       gramschm_array.cc ritz.cc ritz_array.cc sn_jacob.cc \
 	       sn_jacob_array.cc eig_spec.cc eig_spec_array.cc \
-               proginfo.cc printgeom.cc fuzwilp.cc \
-	       invsumr.cc minvsumr.cc\
+               proginfo.cc printgeom.cc fuzwilp.cc wilslp.cc \
+	       invsumr.cc minvsumr.cc invbicgstab.cc invbicgstab_array.cc\
 $(am__append_4) $(am__append_5) $(am__append_6) $(am__append_7)
 subdir = lib
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
@@ -381,15 +384,16 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc rgauge.cc taproj.cc \
 	su3proj.cc sun_proj.cc gaus_smear.cc hyp_smear.cc ape_smear.cc \
 	fuzz_smear.cc klein_gord.cc laplacian.cc displacement.cc \
 	su2extract.cc sunfill.cc invcg1.cc inv_rel_cg1.cc invcg2.cc \
-	inv_rel_cg2.cc invcg2_array.cc invcg2_timing_hacks.cc minvcg.cc \
-	qprop_io.cc eigen_io.cc stoch_var.cc z2_src.cc gauge_io.cc \
-	milc_io.cc readmilc.cc writemilc.cc axgauge.cc coulgauge.cc \
-	grelax.cc polar_dec.cc rot_colvec.cc transf.cc param_io.cc \
-	fermact_paramio.cc gramschm.cc gramschm_array.cc ritz.cc \
-	ritz_array.cc sn_jacob.cc sn_jacob_array.cc eig_spec.cc \
-	eig_spec_array.cc proginfo.cc printgeom.cc fuzwilp.cc \
-	invsumr.cc minvsumr.cc baryon_w.cc barhqlq_w.cc mesons_w.cc \
-	hybmeson_w.cc loops_w.cc diractodr.cc curcor2_w.cc \
+	inv_rel_cg2.cc invcg1_array.cc invcg2_array.cc \
+	invcg2_timing_hacks.cc minvcg.cc qprop_io.cc eigen_io.cc \
+	stoch_var.cc z2_src.cc gauge_io.cc milc_io.cc readmilc.cc \
+	writemilc.cc axgauge.cc coulgauge.cc grelax.cc polar_dec.cc \
+	rot_colvec.cc transf.cc param_io.cc fermact_paramio.cc \
+	gramschm.cc gramschm_array.cc ritz.cc ritz_array.cc sn_jacob.cc \
+	sn_jacob_array.cc eig_spec.cc eig_spec_array.cc proginfo.cc \
+	printgeom.cc fuzwilp.cc wilslp.cc invsumr.cc minvsumr.cc \
+	invbicgstab.cc invbicgstab_array.cc baryon_w.cc barhqlq_w.cc \
+	mesons_w.cc hybmeson_w.cc loops_w.cc diractodr.cc curcor2_w.cc \
 	lwldslash_w.cc formfac_w.cc mesonseqsrc_w.cc barseqsrc_w.cc \
 	seqpiontest_w.cc sink_smear2_w.cc barcomp_io.cc barcomp_w.cc \
 	walfil_w.cc overlap_state_info.cc \
@@ -521,19 +525,21 @@ am_libchroma_a_OBJECTS = gauge_startup.$(OBJEXT) rgauge.$(OBJEXT) \
 	klein_gord.$(OBJEXT) laplacian.$(OBJEXT) displacement.$(OBJEXT) \
 	su2extract.$(OBJEXT) sunfill.$(OBJEXT) invcg1.$(OBJEXT) \
 	inv_rel_cg1.$(OBJEXT) invcg2.$(OBJEXT) inv_rel_cg2.$(OBJEXT) \
-	invcg2_array.$(OBJEXT) invcg2_timing_hacks.$(OBJEXT) \
-	minvcg.$(OBJEXT) qprop_io.$(OBJEXT) eigen_io.$(OBJEXT) \
-	stoch_var.$(OBJEXT) z2_src.$(OBJEXT) gauge_io.$(OBJEXT) \
-	milc_io.$(OBJEXT) readmilc.$(OBJEXT) writemilc.$(OBJEXT) \
-	axgauge.$(OBJEXT) coulgauge.$(OBJEXT) grelax.$(OBJEXT) \
-	polar_dec.$(OBJEXT) rot_colvec.$(OBJEXT) transf.$(OBJEXT) \
-	param_io.$(OBJEXT) fermact_paramio.$(OBJEXT) gramschm.$(OBJEXT) \
+	invcg1_array.$(OBJEXT) invcg2_array.$(OBJEXT) \
+	invcg2_timing_hacks.$(OBJEXT) minvcg.$(OBJEXT) \
+	qprop_io.$(OBJEXT) eigen_io.$(OBJEXT) stoch_var.$(OBJEXT) \
+	z2_src.$(OBJEXT) gauge_io.$(OBJEXT) milc_io.$(OBJEXT) \
+	readmilc.$(OBJEXT) writemilc.$(OBJEXT) axgauge.$(OBJEXT) \
+	coulgauge.$(OBJEXT) grelax.$(OBJEXT) polar_dec.$(OBJEXT) \
+	rot_colvec.$(OBJEXT) transf.$(OBJEXT) param_io.$(OBJEXT) \
+	fermact_paramio.$(OBJEXT) gramschm.$(OBJEXT) \
 	gramschm_array.$(OBJEXT) ritz.$(OBJEXT) ritz_array.$(OBJEXT) \
 	sn_jacob.$(OBJEXT) sn_jacob_array.$(OBJEXT) eig_spec.$(OBJEXT) \
 	eig_spec_array.$(OBJEXT) proginfo.$(OBJEXT) printgeom.$(OBJEXT) \
-	fuzwilp.$(OBJEXT) invsumr.$(OBJEXT) minvsumr.$(OBJEXT) \
-	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
-	$(am__objects_4)
+	fuzwilp.$(OBJEXT) wilslp.$(OBJEXT) invsumr.$(OBJEXT) \
+	minvsumr.$(OBJEXT) invbicgstab.$(OBJEXT) \
+	invbicgstab_array.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
+	$(am__objects_3) $(am__objects_4)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I.
@@ -568,7 +574,10 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/gramschm_array.Po ./$(DEPDIR)/grelax.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/hotst.Po ./$(DEPDIR)/hybmeson_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/hyp_smear.Po ./$(DEPDIR)/inv_rel_cg1.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/inv_rel_cg2.Po ./$(DEPDIR)/invcg1.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/inv_rel_cg2.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/invbicgstab.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/invbicgstab_array.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/invcg1.Po ./$(DEPDIR)/invcg1_array.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/invcg2.Po ./$(DEPDIR)/invcg2_array.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/invcg2_timing_hacks.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/invsumr.Po ./$(DEPDIR)/ischiral_w.Po \
@@ -645,7 +654,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/walfil_s.Po ./$(DEPDIR)/walfil_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/wall_qprop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/wallnuclff_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/wallpionff_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/wallpionff_w.Po ./$(DEPDIR)/wilslp.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/writemilc.Po ./$(DEPDIR)/writeszin.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/writeszinqprop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/z2_src.Po \
@@ -783,7 +792,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyp_smear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inv_rel_cg1.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inv_rel_cg2.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/invbicgstab.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/invbicgstab_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/invcg1.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/invcg1_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/invcg2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/invcg2_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/invcg2_timing_hacks.Po@am__quote@
@@ -881,6 +893,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wall_qprop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wallnuclff_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wallpionff_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wilslp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writemilc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writeszin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writeszinqprop_w.Po@am__quote@

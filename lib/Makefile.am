@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.138 2004-05-18 12:40:14 bjoo Exp $
+# $Id: Makefile.am,v 1.139 2004-05-19 00:21:22 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -63,10 +63,13 @@ nobase_include_HEADERS = \
 	actions/ferm/fermacts/overlap_state.h \
 	actions/ferm/invert/invcg1.h actions/ferm/invert/invcg2.h \
 	actions/ferm/invert/inv_rel_cg1.h actions/ferm/invert/inv_rel_cg2.h \
+	actions/ferm/invert/invcg1_array.h \
 	actions/ferm/invert/invcg2_array.h actions/ferm/invert/invert.h \
 	actions/ferm/invert/invmr.h actions/ferm/invert/minvcg.h \
 	actions/ferm/invert/invcg2_timing_hacks.h \
 	actions/ferm/invert/invsumr.h actions/ferm/invert/minvsumr.h \
+	actions/ferm/invert/invbicgstab.h \
+	actions/ferm/invert/invbicgstab_array.h \
 	actions/ferm/linop/asqtad_dslash.h actions/ferm/linop/linop.h \
 	actions/ferm/linop/lmdagm.h actions/ferm/linop/lopscl.h \
 	actions/ferm/linop/partrat.h actions/ferm/qprop/qprop.h \
@@ -227,8 +230,8 @@ libchroma_a_SOURCES = gauge_startup.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
                gaus_smear.cc hyp_smear.cc ape_smear.cc fuzz_smear.cc \
                klein_gord.cc laplacian.cc displacement.cc \
                su2extract.cc sunfill.cc invcg1.cc inv_rel_cg1.cc \
-	       invcg2.cc inv_rel_cg2.cc \
-	       invcg2_array.cc invcg2_timing_hacks.cc minvcg.cc qprop_io.cc \
+	       invcg2.cc inv_rel_cg2.cc invcg1_array.cc \
+	       invcg2_array.cc invcg2_timing_hacks.cc minvcg.cc  qprop_io.cc \
 	       eigen_io.cc stoch_var.cc \
 	       z2_src.cc gauge_io.cc milc_io.cc readmilc.cc writemilc.cc \
                axgauge.cc coulgauge.cc grelax.cc polar_dec.cc rot_colvec.cc \
@@ -237,7 +240,7 @@ libchroma_a_SOURCES = gauge_startup.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
 	       gramschm_array.cc ritz.cc ritz_array.cc sn_jacob.cc \
 	       sn_jacob_array.cc eig_spec.cc eig_spec_array.cc \
                proginfo.cc printgeom.cc fuzwilp.cc wilslp.cc \
-	       invsumr.cc minvsumr.cc
+	       invsumr.cc minvsumr.cc invbicgstab.cc invbicgstab_array.cc
 
 # 
 

@@ -1,4 +1,4 @@
-/* $Id: zolotarev5d_nonhermop_array_w.cc,v 1.1 2004-05-18 12:40:15 bjoo Exp $
+/* $Id: zolotarev5d_nonhermop_array_w.cc,v 1.2 2004-05-19 00:21:23 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
  */
@@ -21,7 +21,7 @@ Zolotarev5DNonHermOpArray::operator() (multi1d<LatticeFermion>& chi,
 				   const multi1d<LatticeFermion>& psi, 
 				   enum PlusMinus isign) const
 {
-  START_CODE("Zolotarev5DNonHermOpArray");
+  START_CODE("Zolotarev5DLinOpArray");
 
 
   int G5 = Ns*Ns - 1;
@@ -36,6 +36,17 @@ Zolotarev5DNonHermOpArray::operator() (multi1d<LatticeFermion>& chi,
   //
   Real mass = ( Real(1) + m_q ) / (Real(1) - m_q);
 
+  // The sign of the diagonal terms.
+  enum PlusMinus  Hsign = isign;
+
+  /*
+  if( N5%2 == 0 ) {
+    Hsign = 1;
+  }
+  else {
+    Hsign = -1;
+  }
+  */
 
   // Run through all the pseudofermion fields:
   //   chi(0) = beta(0)*H*psi(0) + alpha(0)*psi(1)
@@ -46,31 +57,56 @@ Zolotarev5DNonHermOpArray::operator() (multi1d<LatticeFermion>& chi,
     
   LatticeFermion tmp;
   Real pmscale;
-  
-  enum PlusMinus Hsign = PLUS;
-  for(int n = 0; n < TwoN; ++n) {
-    (*M)(tmp, psi[n], Hsign);      // tmp = M psi[n]
-    
-    // Swap PLUS with MINUS and vice versa
-    Hsign == PLUS ? MINUS : PLUS;
 
+  for(int n = 0; n < TwoN; ++n) {
+    (*M)(tmp, psi[n], Hsign);      // tmp1 = M psi[n]
+  
     // Scale factor and sign for the diagonal term proportional to H
     // The scale factor should be chosen in conszolotarev5d_w.m such
     //  that scale_fac * gamma5 * M has eigenvalues between -1 and 1 
+
+    //    Hsign = -Hsign;
+
     pmscale = beta[n]*scale_fac;
     
-    chi[n] = pmscale*tmp;
-    chi[n] += alpha[n] * psi[n+1];
     
-    if( n > 0 ) {
-      chi[n] += alpha[n-1]*psi[n-1];
+    chi[n] = pmscale*tmp;
+
+    if( isign == PLUS ) { 
+      chi[n] -= alpha[n] * psi[n+1];
+
+      if( n > 0 ) {
+	chi[n] += alpha[n-1]*psi[n-1];
+      }
+
     }
+    else {
+      chi[n] += alpha[n] * psi[n+1];
+
+      if( n > 0 ) {
+	chi[n] -= alpha[n-1]*psi[n-1];
+      }
+    }
+
+    if( Hsign == PLUS ) { 
+      Hsign = MINUS;
+    }
+    else { 
+      Hsign = PLUS;
+    }
+
   }
 
   // Last Component
   // chi[N] = mass*gamma5*psi[N] + alpha[N-1]*psi[N-1]
   chi[TwoN] = mass*psi[TwoN];
-  chi[TwoN] += alpha[TwoN-1]*psi[ TwoN -1 ];
+
+  if( isign == PLUS ) { 
+    chi[TwoN] += alpha[TwoN-1]*psi[ TwoN -1 ];
+  }
+  else {
+    chi[TwoN] -= alpha[TwoN-1]*psi[ TwoN -1 ];
+  }
 
   // Project out eigenvectors from Source if desired 
   //
@@ -87,15 +123,11 @@ Zolotarev5DNonHermOpArray::operator() (multi1d<LatticeFermion>& chi,
       psi_proj -= EigVec[i]*cconsts;
 
       // The vectors are added into chi_2N
-      Complex ctmp = cconsts*EigValFunc[i];
-
-      chi[TwoN] += ctmp*EigVec[i];
+      chi[TwoN] += cconsts*EigValFunc[i]*EigVec[i];
 
       // Project out the eigenvectors from psi_{2N-1} and subtract from chi[N]
       cconsts = innerProduct(EigVec[i],psi[TwoN-1]);
-
-      ctmp = alpha[TwoN-1]*cconsts;
-      chi[TwoN] -= ctmp * EigVec[i];
+      chi[TwoN] -= alpha[TwoN-1]*cconsts*EigVec[i];
     }
 
     // Subtract out projected psi_{N} from chi_{N-1} */
@@ -117,16 +149,12 @@ Zolotarev5DNonHermOpArray::operator() (multi1d<LatticeFermion>& chi,
     // Complete psi_proj
     psi_proj += psi[TwoN];
 
-    (*M)(tmp, psi_proj, PLUS);
-    LatticeFermion tmp2;
-    tmp2 = Gamma(G5)*tmp;
-
+    (*M)(tmp, psi_proj, isign);
     pmscale = beta[TwoN]*scale_fac;
-
-    chi[TwoN] += pmscale*tmp2;
+    chi[TwoN] += pmscale*tmp;
 
   }
 
-  END_CODE("Zolotarev5DNonHermOpArray");
+  END_CODE("Zolotarev5DLinOpArray");
 }
 

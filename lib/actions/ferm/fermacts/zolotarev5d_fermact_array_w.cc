@@ -1,4 +1,4 @@
-// $Id: zolotarev5d_fermact_array_w.cc,v 1.8 2004-04-26 11:19:12 bjoo Exp $
+// $Id: zolotarev5d_fermact_array_w.cc,v 1.9 2004-05-19 00:21:23 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -8,6 +8,7 @@
 #include "actions/ferm/fermacts/unprec_wilson_fermact_w.h"
 #include "actions/ferm/fermacts/zolotarev5d_fermact_array_w.h"
 #include "actions/ferm/linop/zolotarev5d_linop_array_w.h"
+#include "actions/ferm/linop/zolotarev5d_nonhermop_array_w.h"
 #include "actions/ferm/linop/lmdagm.h"
 #include "actions/ferm/invert/invcg2_array.h"
 #include "zolotarev.h"
@@ -219,6 +220,46 @@ Zolotarev5DFermActArray::linOp(Handle<const ConnectState> state_) const
 
 }
 
+//! Produce a linear operator for this action
+/*!
+ * The operator acts on the entire lattice
+ *
+ * \param state	    gauge field     	       (Read)
+ */
+const LinearOperator<multi1d<LatticeFermion> >* 
+Zolotarev5DFermActArray::lnonHermLinOp(Handle<const ConnectState> state_) const
+{
+  START_CODE("Zolotarev5DFermActArray::linOp");
+   const OverlapConnectState<LatticeFermion>& state = dynamic_cast<const OverlapConnectState<LatticeFermion>&>(*state_);
+
+  if (state.getEigVec().size() != state.getEigVal().size())
+    QDP_error_exit("Zolotarev5DFermActArray: inconsistent sizes of eigenvectors and values");
+
+  int NEigVal = state.getEigVal().size();
+  int NEig;
+
+  multi1d<Real> alpha;
+  multi1d<Real> beta;
+  Real scale_factor;
+  multi1d<Real> EigValFunc(NEigVal);
+
+  init(scale_factor, alpha, beta, NEig, EigValFunc, state);
+
+  return new Zolotarev5DNonHermOpArray( *S_aux,
+					state_,
+					m_q,
+					N5,
+					scale_factor,
+					alpha,
+					beta,
+					NEig,
+					EigValFunc,
+					state.getEigVec() );
+				   
+  
+
+}
+
 
 //! Produce a M^dag.M linear operator for this action
 /*!
@@ -229,6 +270,17 @@ const LinearOperator<multi1d<LatticeFermion> >*
 Zolotarev5DFermActArray::lMdagM(Handle<const ConnectState> state) const
 {
   return new lmdagm<multi1d<LatticeFermion> >(linOp(state));
+}
+
+//! Produce a M^dag.M linear operator for this action
+/*!
+ * The operator acts on the entire lattice *
+ * \param state	    gauge field     	       (Read)
+ */
+const LinearOperator<multi1d<LatticeFermion> >* 
+Zolotarev5DFermActArray::lnonHermMdagM(Handle<const ConnectState> state) const
+{
+  return new lmdagm<multi1d<LatticeFermion> >(lnonHermLinOp(state));
 }
 
 
