@@ -1,11 +1,11 @@
-// $Id: unprec_dwf_fermact_array_w.cc,v 1.2 2003-11-13 04:12:08 edwards Exp $
+// $Id: unprec_dwf_fermact_array_w.cc,v 1.3 2003-11-15 03:54:40 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion action
  */
 
 #include "chromabase.h"
-#include "actions/ferm/linop/unprec_dwf_linop_array_w.h"
 #include "actions/ferm/fermacts/unprec_dwf_fermact_array_w.h"
+#include "actions/ferm/linop/unprec_dwf_linop_array_w.h"
 #include "actions/ferm/linop/lmdagm_w.h"
 
 //! Creation routine
@@ -25,6 +25,7 @@ void UnprecDWFermActArray::create(const Real& WilsonMass_, const Real& m_q_, int
 
 //    CoeffWilsr_s = (AnisoP) ? Wilsr_s / xiF_0 : 1;
 }
+
 
 //! Produce a linear operator for this action
 /*!
