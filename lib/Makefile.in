@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.218 2004-07-28 02:56:39 edwards Exp $
+# $Id: Makefile.in,v 1.219 2004-08-01 20:28:36 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -59,8 +59,6 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/zolotarev4d_fermact_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/zolotarev5d_fermact_array_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/invert/inv_borici_w.h \
-@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/lwldslash_w_sse.h \
-@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/lwldslash_w_pab.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/lgherm_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/zolotarev5d_linop_array_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/zolotarev5d_nonhermop_array_w.h \
@@ -134,7 +132,8 @@ host_triplet = @host@
 @BUILD_STAGGERED_LIBS_TRUE@	util/gauge/gauge_s.h util/gauge/stag_phases_s.h
 
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_3 = -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
-@BUILD_WILSON_LIBS_TRUE@am__append_4 = baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
+@BUILD_SSE_DWF_CG_TRUE@am__append_4 = -I$(TOPDIR)/other_libs/@SSE_DWF_CG_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DWF_CG_DIR@/include
+@BUILD_WILSON_LIBS_TRUE@am__append_5 = baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              loops_w.cc tdiractodr.cc diractodr.cc paulitodr.cc \
 @BUILD_WILSON_LIBS_TRUE@	      gammasgn_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              curcor2_w.cc lwldslash_w.cc formfac_w.cc \
@@ -172,9 +171,13 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@              walldeltaff_w.cc walldeltapff_w.cc \
 @BUILD_WILSON_LIBS_TRUE@	      inv_borici_w.cc
 
-@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_5 = lwldslash_w_sse.cc
-@BUILD_PAB_WILSON_DSLASH_TRUE@am__append_6 = lwldslash_w_pab.cc
-@BUILD_STAGGERED_LIBS_TRUE@am__append_7 = mesphas_s.cc mesphas_follana_s.cc pions_follana_s.cc \
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_6 = actions/ferm/linop/lwldslash_w_sse.h
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_7 = lwldslash_w_sse.cc
+@BUILD_SSE_DWF_CG_TRUE@am__append_8 = actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.h
+@BUILD_SSE_DWF_CG_TRUE@am__append_9 = actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc
+@BUILD_PAB_WILSON_DSLASH_TRUE@am__append_10 = actions/ferm/linop/lwldslash_w_pab.h
+@BUILD_PAB_WILSON_DSLASH_TRUE@am__append_11 = lwldslash_w_pab.cc
+@BUILD_STAGGERED_LIBS_TRUE@am__append_12 = mesphas_s.cc mesphas_follana_s.cc pions_follana_s.cc \
 @BUILD_STAGGERED_LIBS_TRUE@	follana_io_s.cc fermact_qprop.cc walfil_s.cc baryon_s.cc \
 @BUILD_STAGGERED_LIBS_TRUE@	stag_scalars_s.cc stag_propShift_s.cc \
 @BUILD_STAGGERED_LIBS_TRUE@	asqtad_linop_s.cc asq_dsl_s.cc fat7_links_s.cc naik_term_s.cc  \
@@ -192,6 +195,8 @@ AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 BUILD_PAB_WILSON_DSLASH_FALSE = @BUILD_PAB_WILSON_DSLASH_FALSE@
 BUILD_PAB_WILSON_DSLASH_TRUE = @BUILD_PAB_WILSON_DSLASH_TRUE@
+BUILD_SSE_DWF_CG_FALSE = @BUILD_SSE_DWF_CG_FALSE@
+BUILD_SSE_DWF_CG_TRUE = @BUILD_SSE_DWF_CG_TRUE@
 BUILD_SSE_WILSON_DSLASH_FALSE = @BUILD_SSE_WILSON_DSLASH_FALSE@
 BUILD_SSE_WILSON_DSLASH_TRUE = @BUILD_SSE_WILSON_DSLASH_TRUE@
 BUILD_STAGGERED_LIBS_FALSE = @BUILD_STAGGERED_LIBS_FALSE@
@@ -244,6 +249,7 @@ SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 SSE_DSLASH_DIR = @SSE_DSLASH_DIR@
 SSE_DSLASH_ENABLED = @SSE_DSLASH_ENABLED@
+SSE_DWF_CG_DIR = @SSE_DWF_CG_DIR@
 STRIP = @STRIP@
 VERSION = @VERSION@
 ac_ct_CXX = @ac_ct_CXX@
@@ -367,7 +373,7 @@ nobase_include_HEADERS = \
 	update/molecdyn/pg_hmc.h \
 	update/molecdyn/pg_leapfrog.h \
 	update/molecdyn/pg_symp_updates.h\
-$(am__append_1) $(am__append_2)
+$(am__append_1) $(am__append_2) $(am__append_6) $(am__append_8) $(am__append_10)
 
 nodist_include_HEADERS = chroma_config_internal.h
 
@@ -379,7 +385,7 @@ INCFLAGS = -I$(TOPDIR)/lib -I$(BUILDDIR)/lib
 #
 # Any other compiler flags
 # 
-AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDPXX_CXXFLAGS@ $(am__append_3)
+AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDPXX_CXXFLAGS@ $(am__append_3) $(am__append_4)
 
 lib_LIBRARIES = libchroma.a
 
@@ -407,7 +413,7 @@ libchroma_a_SOURCES = gauge_startup.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
 	       invbicgstab.cc invbicgstab_array.cc inv_rel_gmresr_sumr.cc \
 	       inv_rel_gmresr_cg.cc inv_gmresr_cg_array.cc \
 	       inv_minres_array.cc wilson_gaugeact.cc\
-$(am__append_4) $(am__append_5) $(am__append_6) $(am__append_7)
+$(am__append_5) $(am__append_7) $(am__append_9) $(am__append_11) $(am__append_12)
 subdir = lib
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
 CONFIG_HEADER = chroma_config_internal.h
@@ -465,6 +471,7 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc rgauge.cc taproj.cc \
 	wall_qprop_w.cc wallff_w.cc wallrhoff_w.cc wallrhopiff_w.cc \
 	wallpionff_w.cc wallnuclff_w.cc walldeltaff_w.cc \
 	walldeltapff_w.cc inv_borici_w.cc lwldslash_w_sse.cc \
+	actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc \
 	lwldslash_w_pab.cc mesphas_s.cc mesphas_follana_s.cc \
 	pions_follana_s.cc follana_io_s.cc walfil_s.cc baryon_s.cc \
 	stag_scalars_s.cc stag_propShift_s.cc asqtad_linop_s.cc \
@@ -547,8 +554,10 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc rgauge.cc taproj.cc \
 @BUILD_WILSON_LIBS_TRUE@	walldeltapff_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	inv_borici_w.$(OBJEXT)
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__objects_2 = lwldslash_w_sse.$(OBJEXT)
-@BUILD_PAB_WILSON_DSLASH_TRUE@am__objects_3 = lwldslash_w_pab.$(OBJEXT)
-@BUILD_STAGGERED_LIBS_TRUE@am__objects_4 = mesphas_s.$(OBJEXT) \
+@BUILD_SSE_DWF_CG_TRUE@am__objects_3 = \
+@BUILD_SSE_DWF_CG_TRUE@	prec_dwf_fermact_array_sse_w.$(OBJEXT)
+@BUILD_PAB_WILSON_DSLASH_TRUE@am__objects_4 = lwldslash_w_pab.$(OBJEXT)
+@BUILD_STAGGERED_LIBS_TRUE@am__objects_5 = mesphas_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	mesphas_follana_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	pions_follana_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	follana_io_s.$(OBJEXT) \
@@ -595,7 +604,7 @@ am_libchroma_a_OBJECTS = gauge_startup.$(OBJEXT) rgauge.$(OBJEXT) \
 	inv_rel_gmresr_cg.$(OBJEXT) inv_gmresr_cg_array.$(OBJEXT) \
 	inv_minres_array.$(OBJEXT) wilson_gaugeact.$(OBJEXT) \
 	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
-	$(am__objects_4)
+	$(am__objects_4) $(am__objects_5)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I.
@@ -672,6 +681,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/paulitodr.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/pions_follana_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/polar_dec.Po ./$(DEPDIR)/polylp.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/prec_dwf_fermact_array_sse_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/prec_dwf_fermact_array_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/prec_dwf_fermact_qprop_array_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/prec_dwf_linop_array_w.Po \
@@ -914,6 +924,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pions_follana_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/polar_dec.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/polylp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_dwf_fermact_array_sse_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_dwf_fermact_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_dwf_fermact_qprop_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_dwf_linop_array_w.Po@am__quote@
@@ -1018,6 +1029,28 @@ distclean-depend:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ `if test -f '$<'; then $(CYGPATH_W) '$<'; else $(CYGPATH_W) '$(srcdir)/$<'; fi`
+
+prec_dwf_fermact_array_sse_w.o: actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT prec_dwf_fermact_array_sse_w.o -MD -MP -MF "$(DEPDIR)/prec_dwf_fermact_array_sse_w.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o prec_dwf_fermact_array_sse_w.o `test -f 'actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/prec_dwf_fermact_array_sse_w.Tpo" "$(DEPDIR)/prec_dwf_fermact_array_sse_w.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/prec_dwf_fermact_array_sse_w.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc' object='prec_dwf_fermact_array_sse_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/prec_dwf_fermact_array_sse_w.Po' tmpdepfile='$(DEPDIR)/prec_dwf_fermact_array_sse_w.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o prec_dwf_fermact_array_sse_w.o `test -f 'actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc
+
+prec_dwf_fermact_array_sse_w.obj: actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT prec_dwf_fermact_array_sse_w.obj -MD -MP -MF "$(DEPDIR)/prec_dwf_fermact_array_sse_w.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o prec_dwf_fermact_array_sse_w.obj `if test -f 'actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/prec_dwf_fermact_array_sse_w.Tpo" "$(DEPDIR)/prec_dwf_fermact_array_sse_w.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/prec_dwf_fermact_array_sse_w.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc' object='prec_dwf_fermact_array_sse_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/prec_dwf_fermact_array_sse_w.Po' tmpdepfile='$(DEPDIR)/prec_dwf_fermact_array_sse_w.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o prec_dwf_fermact_array_sse_w.obj `if test -f 'actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc'; fi`
 uninstall-info-am:
 nobase_includeHEADERS_INSTALL = $(install_sh_DATA)
 install-nobase_includeHEADERS: $(nobase_include_HEADERS)

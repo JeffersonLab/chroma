@@ -35,10 +35,13 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_triplet = @host@
-@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_1 = -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include -I@top_builddir@/other_libs/@SSE_DSLASH_DIR@/include
-@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_2 = -L@top_builddir@/other_libs/@SSE_DSLASH_DIR@/lib
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_1 = -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_2 = -L$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/lib
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_3 = -llevel3 @QDPXX_LIBS@
-@BUILD_WILSON_LIBS_TRUE@am__append_4 = spectrum_w qqq_w bar3ptfn qproptransf wallformfac
+@BUILD_SSE_DWF_CG_TRUE@am__append_4 = -I$(TOPDIR)/other_libs/@SSE_DWF_CG_DIR@/include
+@BUILD_SSE_DWF_CG_TRUE@am__append_5 = -L$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/lib
+@BUILD_SSE_DWF_CG_TRUE@am__append_6 = -lsse_dwf_cg 
+@BUILD_WILSON_LIBS_TRUE@am__append_7 = spectrum_w qqq_w bar3ptfn qproptransf wallformfac
 VPATH = @top_srcdir@/mainprogs/main
 ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
@@ -50,6 +53,8 @@ AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 BUILD_PAB_WILSON_DSLASH_FALSE = @BUILD_PAB_WILSON_DSLASH_FALSE@
 BUILD_PAB_WILSON_DSLASH_TRUE = @BUILD_PAB_WILSON_DSLASH_TRUE@
+BUILD_SSE_DWF_CG_FALSE = @BUILD_SSE_DWF_CG_FALSE@
+BUILD_SSE_DWF_CG_TRUE = @BUILD_SSE_DWF_CG_TRUE@
 BUILD_SSE_WILSON_DSLASH_FALSE = @BUILD_SSE_WILSON_DSLASH_FALSE@
 BUILD_SSE_WILSON_DSLASH_TRUE = @BUILD_SSE_WILSON_DSLASH_TRUE@
 BUILD_STAGGERED_LIBS_FALSE = @BUILD_STAGGERED_LIBS_FALSE@
@@ -102,6 +107,7 @@ SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 SSE_DSLASH_DIR = @SSE_DSLASH_DIR@
 SSE_DSLASH_ENABLED = @SSE_DSLASH_ENABLED@
+SSE_DWF_CG_DIR = @SSE_DWF_CG_DIR@
 STRIP = @STRIP@
 VERSION = @VERSION@
 ac_ct_CXX = @ac_ct_CXX@
@@ -154,9 +160,9 @@ INCFLAGS = -I$(TOPDIR)/mainprogs/main -I$(TOPDIR)/lib -I$(BUILDDIR)/lib
 #
 # Any other compiler flags
 #
-AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDPXX_CXXFLAGS@ $(am__append_1)
-AM_LDFLAGS = -L@top_builddir@/lib @LDFLAGS@ @QDPXX_LDFLAGS@ $(am__append_2)
-LDADD = -lchroma @QDPXX_LIBS@ @LIBS@ $(am__append_3)
+AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDPXX_CXXFLAGS@ $(am__append_1) $(am__append_4)
+AM_LDFLAGS = -L$(BUILDDIR)/lib @LDFLAGS@ @QDPXX_LDFLAGS@ $(am__append_2) $(am__append_5)
+LDADD = -lchroma @QDPXX_LIBS@ @LIBS@ $(am__append_3) $(am__append_6)
 
 #
 # Local Headers
@@ -170,7 +176,7 @@ check_PROGRAMS = propagator propagator_comp multi_propagator \
 	make_source \
         ExampleBuildingBlocks hypsmear cfgtransf sink_smearing qpropgfix \
         qproptrev\
-$(am__append_4)
+$(am__append_7)
 
 
 # Currently empty
@@ -707,11 +713,11 @@ uninstall-am: uninstall-info-am
 # for it to be done every time, we have to make it a 'phony' target
 .PHONY: build_chroma_libs
 build_chroma_libs:
-	cd @top_builddir@/lib ; $(MAKE)
+	cd $(BUILDDIR)/lib ; $(MAKE)
 
 .PHONY: rebuild_other_libs
 rebuild_other_libs:
-	cd @top_builddir@/other_libs ; $(MAKE)
+	cd $(BUILDDIR)/other_libs ; $(MAKE)
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
