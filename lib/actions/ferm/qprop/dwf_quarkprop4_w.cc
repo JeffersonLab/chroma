@@ -1,6 +1,9 @@
-// $Id: dwf_quarkprop4_w.cc,v 1.22 2005-01-02 05:21:10 edwards Exp $
+// $Id: dwf_quarkprop4_w.cc,v 1.23 2005-01-07 04:53:53 edwards Exp $
 // $Log: dwf_quarkprop4_w.cc,v $
-// Revision 1.22  2005-01-02 05:21:10  edwards
+// Revision 1.23  2005-01-07 04:53:53  edwards
+// Some debugging output added.
+//
+// Revision 1.22  2005/01/02 05:21:10  edwards
 // Rearranged top-level fermion actions and linear operators.
 // The deriv is pushed up much higher. This has the effect that
 // now the "P" type (conjugate momentum type) is carried around
@@ -197,6 +200,8 @@ namespace Chroma
   {
     START_CODE();
 
+    QDPIO::cout << "entering DWF_QuarkProp4" << endl;
+
     push(xml_out, "DWF_QuarkProp4");
 
     ncg_had = 0;
@@ -345,6 +350,8 @@ namespace Chroma
 			    q_sol,q_mp,S_f.getQuarkMass(),
 			    j_decay);
 
+
+    QDPIO::cout << "exiting DWF_QuarkProp4" << endl;
 
     END_CODE();
   }
