@@ -16,7 +16,9 @@
 typedef SSEWilsonDslash WilsonDslash;
 
 // Many #elif clauses could come in here for other opotimised Dslash-es
-
+#elif defined BUILD_PAB_WILSON_DSLASH
+# include "lwldslash_w_pab.h"
+typedef PABWilsonDslash WilsonDslash;
 #else
 
 // Bottom line, if no optimised Dslash-s exist then the naive QDP Dslash
