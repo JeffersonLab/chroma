@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.144 2004-01-29 20:45:52 edwards Exp $
+# $Id: Makefile.in,v 1.145 2004-01-29 20:55:01 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -40,7 +40,63 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_triplet = @host@
-@BUILD_STAGGERED_LIBS_TRUE@am__append_1 = \
+@BUILD_WILSON_LIBS_TRUE@am__append_1 = \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/dslash/dslashm_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/fermacts_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/overlap_fermact_base_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/prec_clover_fermact_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/prec_dwf_fermact_array_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/prec_dwf_fermact_base_array_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/prec_dwf_fermact_base_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/prec_wilson_fermact_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/prec_parwilson_fermact_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/unprec_clover_fermact_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/unprec_dwf_fermact_array_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/unprec_dwf_fermact_base_array_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/unprec_dwf_fermact_base_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/unprec_dwf_fermact_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/unprec_ovdwf_fermact_array_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/unprec_ovext_fermact_array_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/unprec_wilson_fermact_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/unprec_parwilson_fermact_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/zolotarev4d_fermact_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/zolotarev5d_fermact_array_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/lwldslash_w_sse.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/lgherm_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/zolotarev5d_linop_array_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/dslash_w.h actions/ferm/linop/dwffld_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/ldwfdslash_w.h actions/ferm/linop/linop_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/lmpsim_w.h actions/ferm/linop/lovddag_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/lovlapms_w.h actions/ferm/linop/lwldslash_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/overlapbu_linop_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/prec_dwf_linop_array_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/prec_wilson_linop_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/prec_parwilson_linop_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/unprec_dwf_linop_array_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/unprec_dwf_linop_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/unprec_ovdwf_linop_array_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/unprec_ovext_linop_array_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/unprec_wilson_linop_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/unprec_parwilson_linop_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/qprop/dwf_quarkprop4_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/qprop/quarkprop4_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/qprop/quarkprop4_multi_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/qprop/unprec_qprop_w.h \
+@BUILD_WILSON_LIBS_TRUE@	io/io_w.h io/readszinferm_w.h io/readszinqprop_w.h \
+@BUILD_WILSON_LIBS_TRUE@	io/writeszinqprop_w.h \
+@BUILD_WILSON_LIBS_TRUE@	meas/eig/eig_w.h meas/eig/ischiral_w.h \
+@BUILD_WILSON_LIBS_TRUE@	meas/hadron/barcomp_w.h \
+@BUILD_WILSON_LIBS_TRUE@	meas/hadron/barseqsrc_w.h meas/hadron/baryon_w.h \
+@BUILD_WILSON_LIBS_TRUE@	meas/hadron/BuildingBlocks_w.h meas/hadron/curcor2_w.h \
+@BUILD_WILSON_LIBS_TRUE@	meas/hadron/DjDk_w.h meas/hadron/D_j_w.h meas/hadron/formfac_w.h \
+@BUILD_WILSON_LIBS_TRUE@	meas/hadron/hadron_w.h meas/hadron/mesonseqsrc_w.h \
+@BUILD_WILSON_LIBS_TRUE@	meas/hadron/mesons_w.h meas/hadron/seqpiontest_w.h \
+@BUILD_WILSON_LIBS_TRUE@	meas/hadron/walfil_w.h meas/hadron/wall_qprop_w.h \
+@BUILD_WILSON_LIBS_TRUE@	meas/hadron/wallpionff_w.h \
+@BUILD_WILSON_LIBS_TRUE@	meas/smear/sink_smear2_w.h meas/sources/d_src_w.h \
+@BUILD_WILSON_LIBS_TRUE@	meas/sources/p_src_w.h meas/sources/sources_w.h
+
+@BUILD_STAGGERED_LIBS_TRUE@am__append_2 = \
 @BUILD_STAGGERED_LIBS_TRUE@	actions/ferm/fermacts/asqtad_fermact_s.h \
 @BUILD_STAGGERED_LIBS_TRUE@	actions/ferm/fermacts/fermacts_s.h \
 @BUILD_STAGGERED_LIBS_TRUE@	actions/ferm/fermacts/stag_fermact_s.h \
@@ -56,8 +112,8 @@ host_triplet = @host@
 @BUILD_STAGGERED_LIBS_TRUE@	meas/sources/sources_s.h \
 @BUILD_STAGGERED_LIBS_TRUE@	util/gauge/gauge_s.h util/gauge/stag_phases_s.h
 
-@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_2 = -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
-@BUILD_WILSON_LIBS_TRUE@am__append_3 = baryon_w.cc mesons_w.cc curcor2_w.cc lwldslash_w.cc formfac_w.cc \
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_3 = -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
+@BUILD_WILSON_LIBS_TRUE@am__append_4 = baryon_w.cc mesons_w.cc curcor2_w.cc lwldslash_w.cc formfac_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              sink_smear2_w.cc barcomp_w.cc ldwfdslash_w.cc walfil_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              fermact_qprop.cc prec_fermact_qprop.cc \
@@ -80,10 +136,11 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@              p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc \
 @BUILD_WILSON_LIBS_TRUE@	      zolotarev_coeffs.cc overlap_fermact_base_w.cc lovlapms_w.cc  \
 @BUILD_WILSON_LIBS_TRUE@	      zolotarev4d_fermact_w.cc ischiral_w.cc lovddag_w.cc \
-@BUILD_WILSON_LIBS_TRUE@	      zolotarev5d_fermact_array_w.cc zolotarev5d_linop_array_w.cc 
+@BUILD_WILSON_LIBS_TRUE@	      zolotarev5d_fermact_array_w.cc zolotarev5d_linop_array_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              wallpionff_w.cc
 
-@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_4 = lwldslash_w_sse.cc
-@BUILD_STAGGERED_LIBS_TRUE@am__append_5 = mesphas_s.cc mesphas_follana_s.cc pions_follana_s.cc \
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_5 = lwldslash_w_sse.cc
+@BUILD_STAGGERED_LIBS_TRUE@am__append_6 = mesphas_s.cc mesphas_follana_s.cc pions_follana_s.cc \
 @BUILD_STAGGERED_LIBS_TRUE@	follana_io_s.cc fermact_qprop.cc walfil_s.cc \
 @BUILD_STAGGERED_LIBS_TRUE@	asqtad_linop_s.cc asq_dsl_s.cc fat7_links_s.cc naik_term_s.cc  \
 @BUILD_STAGGERED_LIBS_TRUE@	asqtad_fermact_s.cc asqtad_mdagm_s.cc staggered_qprop.cc stag_phases_s.cc
@@ -239,7 +296,7 @@ nobase_include_HEADERS = \
 	util/gauge/unit_check.h \
         util/info.h util/info/proginfo.h util/info/printgeom.h \
         util/util.h\
-$(am__append_1)
+$(am__append_1) $(am__append_2)
 
 #
 # Include Path
@@ -249,7 +306,7 @@ INCFLAGS = -I$(TOPDIR)/lib
 #
 # Any other compiler flags
 # 
-AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDPXX_CXXFLAGS@ $(am__append_2)
+AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDPXX_CXXFLAGS@ $(am__append_3)
 
 lib_LIBRARIES = libchroma.a
 
@@ -269,7 +326,7 @@ libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	       ritz.cc ritz_array.cc sn_jacob.cc sn_jacob_array.cc \
 	       eig_spec.cc eig_spec_array.cc \
                proginfo.cc printgeom.cc\
-$(am__append_3) $(am__append_4) $(am__append_5)
+$(am__append_4) $(am__append_5) $(am__append_6)
 subdir = lib
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
 CONFIG_CLEAN_FILES =
@@ -311,11 +368,11 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	overlap_fermact_base_w.cc lovlapms_w.cc \
 	zolotarev4d_fermact_w.cc ischiral_w.cc lovddag_w.cc \
 	zolotarev5d_fermact_array_w.cc zolotarev5d_linop_array_w.cc \
-	lwldslash_w_sse.cc mesphas_s.cc mesphas_follana_s.cc \
-	pions_follana_s.cc follana_io_s.cc walfil_s.cc \
-	asqtad_linop_s.cc asq_dsl_s.cc fat7_links_s.cc naik_term_s.cc \
-	asqtad_fermact_s.cc asqtad_mdagm_s.cc staggered_qprop.cc \
-	stag_phases_s.cc
+	wallpionff_w.cc lwldslash_w_sse.cc mesphas_s.cc \
+	mesphas_follana_s.cc pions_follana_s.cc follana_io_s.cc \
+	walfil_s.cc asqtad_linop_s.cc asq_dsl_s.cc fat7_links_s.cc \
+	naik_term_s.cc asqtad_fermact_s.cc asqtad_mdagm_s.cc \
+	staggered_qprop.cc stag_phases_s.cc
 @BUILD_WILSON_LIBS_TRUE@am__objects_1 = baryon_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	mesons_w.$(OBJEXT) curcor2_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	lwldslash_w.$(OBJEXT) \
@@ -371,7 +428,8 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 @BUILD_WILSON_LIBS_TRUE@	ischiral_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	lovddag_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	zolotarev5d_fermact_array_w.$(OBJEXT) \
-@BUILD_WILSON_LIBS_TRUE@	zolotarev5d_linop_array_w.$(OBJEXT)
+@BUILD_WILSON_LIBS_TRUE@	zolotarev5d_linop_array_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	wallpionff_w.$(OBJEXT)
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__objects_2 = lwldslash_w_sse.$(OBJEXT)
 @BUILD_STAGGERED_LIBS_TRUE@am__objects_3 = mesphas_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	mesphas_follana_s.$(OBJEXT) \
@@ -495,6 +553,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_wilson_fermact_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_wilson_linop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/walfil_s.Po ./$(DEPDIR)/walfil_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/wallpionff_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/writemilc.Po ./$(DEPDIR)/writeszin.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/writeszinqprop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/zolotarev4d_fermact_w.Po \
@@ -678,6 +737,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_wilson_linop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/walfil_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/walfil_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wallpionff_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writemilc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writeszin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writeszinqprop_w.Po@am__quote@
