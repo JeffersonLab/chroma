@@ -2,12 +2,13 @@
 # VPATH
 #
 TOPDIR=@top_srcdir@
+BUILDDIR=@top_builddir@
 VPATH = @top_srcdir@/mainprogs/main
 
 #
 # Include Path
 #
-INCFLAGS=-I$(TOPDIR)/mainprogs/main -I${TOPDIR}/lib
+INCFLAGS=-I$(TOPDIR)/mainprogs/main -I$(TOPDIR)/lib -I$(BUILDDIR)/lib
 
 #
 # Any other compiler flags

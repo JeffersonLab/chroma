@@ -97,6 +97,7 @@ RANLIB = @RANLIB@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 SSE_DSLASH_DIR = @SSE_DSLASH_DIR@
+SSE_DSLASH_ENABLED = @SSE_DSLASH_ENABLED@
 STRIP = @STRIP@
 VERSION = @VERSION@
 ac_ct_CXX = @ac_ct_CXX@
@@ -137,6 +138,7 @@ target_alias = @target_alias@
 SUBDIRS = @SSE_DSLASH_DIR@
 subdir = other_libs
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
+CONFIG_HEADER = $(top_builddir)/lib/chroma_config_internal.h
 CONFIG_CLEAN_FILES =
 DIST_SOURCES =
 

@@ -4,6 +4,15 @@ AC_CONFIG_AUX_DIR(./config)
 AC_CANONICAL_HOST
 
 AM_INIT_AUTOMAKE
+
+dnl stupid templates to shut up stupid autoheader
+dnl AC_DEFINE([BUILD_PAB_WILSON_DSLASH],[],[Build Pab Wilson Dslash])
+dnl AC_DEFINE([BUILD_SSE_WILSON_DSLASH],[],[Build SSE wilson Dslash])
+dnl AC_DEFINE([CHROMA_BUILD_STAGGERED],[], [Build Staggered version of Chroma])
+dnl AC_DEFINE([CHROMA_BUILD_WILSON],[],[Build Wilson version of Chroma])
+
+AC_CONFIG_HEADERS([lib/chroma_config_internal.h])
+
 # AC_PRO_MAKE_SET        # (RGE) Causes error: do not find in autoconf docs
 AC_PROG_RANLIB
 
@@ -109,11 +118,11 @@ case $ac_fermion_type in
     else 
       AC_MSG_NOTICE([Configuring QDP++ Apps with STAGGERED-like fermions])
     fi
-    AC_DEFINE(CHROMA_BUILD_STAGGERED)
+    AC_DEFINE(CHROMA_BUILD_STAGGERED,[],[ Build Staggered Chroma ])
     ;;
   wilson)
     AC_MSG_NOTICE([Configuring QDP++ Apps with WILSON-like fermions])
-    AC_DEFINE(CHROMA_BUILD_WILSON)
+    AC_DEFINE(CHROMA_BUILD_WILSON,[],[ Build Wilson Chroma ])
     ;;
   *)
     AC_MSG_ERROR([${ac_fermion_type}-like fermions not supported yet.])
@@ -129,7 +138,7 @@ case "$enable_sse_wilson_dslash" in
         AC_MSG_NOTICE( [Configuring SSE Wilson Dslash ] )
 	AC_CONFIG_SUBDIRS(other_libs/intel_sse_wilson_dslash)
 	AC_SUBST(SSE_DSLASH_DIR, [intel_sse_wilson_dslash])
-	AC_DEFINE(BUILD_SSE_WILSON_DSLASH)
+	AC_DEFINE([BUILD_SSE_WILSON_DSLASH],[],[ Build SSE Dslash Op ])
 
 	;;
   *)
@@ -150,7 +159,7 @@ case "$enable_pab_wilson_dslash" in
 	    AC_MSG_ERROR([ Attempting to build Assembler Wilson Dslash with NON Wilson fermion type ])
 	fi
         AC_MSG_NOTICE( [Configuring PAB Wilson Dslash ] )
-	AC_DEFINE(BUILD_PAB_WILSON_DSLASH)
+	AC_DEFINE([BUILD_PAB_WILSON_DSLASH],[],[ Build Peters Dslash Op])
 	;;
   *)
 	ac_build_pab_wilson_dslash="no"

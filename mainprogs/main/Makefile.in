@@ -100,6 +100,7 @@ RANLIB = @RANLIB@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 SSE_DSLASH_DIR = @SSE_DSLASH_DIR@
+SSE_DSLASH_ENABLED = @SSE_DSLASH_ENABLED@
 STRIP = @STRIP@
 VERSION = @VERSION@
 ac_ct_CXX = @ac_ct_CXX@
@@ -142,11 +143,12 @@ target_alias = @target_alias@
 # VPATH
 #
 TOPDIR = @top_srcdir@
+BUILDDIR = @top_builddir@
 
 #
 # Include Path
 #
-INCFLAGS = -I$(TOPDIR)/mainprogs/main -I${TOPDIR}/lib
+INCFLAGS = -I$(TOPDIR)/mainprogs/main -I$(TOPDIR)/lib -I$(BUILDDIR)/lib
 
 #
 # Any other compiler flags
@@ -241,6 +243,7 @@ sink_smearing_SOURCES = sink_smearing.cc
 sink_smearing_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 subdir = mainprogs/main
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
+CONFIG_HEADER = $(top_builddir)/lib/chroma_config_internal.h
 CONFIG_CLEAN_FILES =
 EXTRA_PROGRAMS = qpropadd$(EXEEXT) seqprop$(EXEEXT) dwf_seqprop$(EXEEXT) \
 	seqprop_comp$(EXEEXT) seqprop_collect$(EXEEXT)
@@ -341,7 +344,7 @@ wallformfac_OBJECTS = $(am_wallformfac_OBJECTS)
 wallformfac_LDADD = $(LDADD)
 wallformfac_LDFLAGS =
 
-DEFAULT_INCLUDES =  -I. -I$(srcdir)
+DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)/lib
 depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/ExampleBuildingBlocks.Po \

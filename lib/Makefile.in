@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.180 2004-04-27 21:26:08 edwards Exp $
+# $Id: Makefile.in,v 1.181 2004-04-29 13:41:21 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -76,6 +76,7 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/unprec_ovext_linop_array_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/unprec_wilson_linop_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/unprec_parwilson_linop_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/qprop/qprop_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/qprop/dwf_quarkprop4_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/qprop/quarkprop4_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/qprop/quarkprop4_multi_w.h \
@@ -115,7 +116,7 @@ host_triplet = @host@
 @BUILD_STAGGERED_LIBS_TRUE@	meas/hadron/stag_propShift_s.h \
 @BUILD_STAGGERED_LIBS_TRUE@	util/gauge/gauge_s.h util/gauge/stag_phases_s.h
 
-@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_3 = -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_3 = -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
 @BUILD_WILSON_LIBS_TRUE@am__append_4 = baryon_w.cc mesons_w.cc hybmeson_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              loops_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              curcor2_w.cc lwldslash_w.cc formfac_w.cc \
@@ -218,6 +219,7 @@ RANLIB = @RANLIB@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 SSE_DSLASH_DIR = @SSE_DSLASH_DIR@
+SSE_DSLASH_ENABLED = @SSE_DSLASH_ENABLED@
 STRIP = @STRIP@
 VERSION = @VERSION@
 ac_ct_CXX = @ac_ct_CXX@
@@ -258,7 +260,6 @@ target_alias = @target_alias@
 
 TOPDIR = @top_srcdir@
 BUILDDIR = @top_builddir@
-
 #
 # All the include files - avoid flattening of dirs by using nobase
 #
@@ -266,7 +267,7 @@ BUILDDIR = @top_builddir@
 #     chroma/scripts/build_include_headers.pl
 #
 nobase_include_HEADERS = \
-	chroma.h chroma_scalarsite_defs.h chroma_scalarsite_dwdefs.h \
+	chroma_config.h chroma.h chroma_scalarsite_defs.h chroma_scalarsite_dwdefs.h \
 	chromabase.h chromainc.h common_declarations.h fermact.h \
 	fermbc.h gaugeact.h gaugebc.h handle.h invtype.h lib.h \
 	linearop.h primitives.h state.h \
@@ -317,10 +318,12 @@ nobase_include_HEADERS = \
         util/util.h\
 $(am__append_1) $(am__append_2)
 
+nodist_include_HEADERS = chroma_config_internal.h
+
 #
 # Include Path
 #
-INCFLAGS = -I$(TOPDIR)/lib
+INCFLAGS = -I$(TOPDIR)/lib -I$(BUILDDIR)/lib
 
 #
 # Any other compiler flags
@@ -349,6 +352,7 @@ libchroma_a_SOURCES = gauge_startup.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
 $(am__append_4) $(am__append_5) $(am__append_6) $(am__append_7)
 subdir = lib
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
+CONFIG_HEADER = chroma_config_internal.h
 CONFIG_CLEAN_FILES =
 LIBRARIES = $(lib_LIBRARIES)
 
@@ -506,7 +510,7 @@ am_libchroma_a_OBJECTS = gauge_startup.$(OBJEXT) rgauge.$(OBJEXT) \
 	$(am__objects_3) $(am__objects_4)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS)
 
-DEFAULT_INCLUDES =  -I. -I$(srcdir)
+DEFAULT_INCLUDES =  -I. -I$(srcdir) -I.
 depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/BuildingBlocks_w.Po \
@@ -624,12 +628,14 @@ CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
 DIST_SOURCES = $(am__libchroma_a_SOURCES_DIST)
-HEADERS = $(nobase_include_HEADERS)
+HEADERS = $(nobase_include_HEADERS) $(nodist_include_HEADERS)
 
-DIST_COMMON = $(nobase_include_HEADERS) Makefile.am Makefile.in
+DIST_COMMON = $(nobase_include_HEADERS) Makefile.am Makefile.in \
+	chroma_config_internal.h.in
 SOURCES = $(libchroma_a_SOURCES)
 
-all: all-am
+all: chroma_config_internal.h
+	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
 .SUFFIXES: .cc .o .obj
@@ -638,6 +644,23 @@ $(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.ac $(ACLOCAL_M4)
 	  $(AUTOMAKE) --gnu  lib/Makefile
 Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
+
+chroma_config_internal.h: stamp-h1
+	@if test ! -f $@; then \
+	  rm -f stamp-h1; \
+	  $(MAKE) stamp-h1; \
+	else :; fi
+
+stamp-h1: $(srcdir)/chroma_config_internal.h.in $(top_builddir)/config.status
+	@rm -f stamp-h1
+	cd $(top_builddir) && $(SHELL) ./config.status lib/chroma_config_internal.h
+
+$(srcdir)/chroma_config_internal.h.in:  $(top_srcdir)/configure.ac $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOHEADER)
+	touch $(srcdir)/chroma_config_internal.h.in
+
+distclean-hdr:
+	-rm -f chroma_config_internal.h stamp-h1
 
 AR = ar
 libLIBRARIES_INSTALL = $(INSTALL_DATA)
@@ -869,6 +892,24 @@ uninstall-nobase_includeHEADERS:
 	  echo " rm -f $(DESTDIR)$(includedir)/$$f"; \
 	  rm -f $(DESTDIR)$(includedir)/$$f; \
 	done
+nodist_includeHEADERS_INSTALL = $(INSTALL_HEADER)
+install-nodist_includeHEADERS: $(nodist_include_HEADERS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(includedir)
+	@list='$(nodist_include_HEADERS)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " $(nodist_includeHEADERS_INSTALL) $$d$$p $(DESTDIR)$(includedir)/$$f"; \
+	  $(nodist_includeHEADERS_INSTALL) $$d$$p $(DESTDIR)$(includedir)/$$f; \
+	done
+
+uninstall-nodist_includeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(nodist_include_HEADERS)'; for p in $$list; do \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " rm -f $(DESTDIR)$(includedir)/$$f"; \
+	  rm -f $(DESTDIR)$(includedir)/$$f; \
+	done
 
 ETAGS = etags
 ETAGSFLAGS =
@@ -887,11 +928,11 @@ ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	       END { for (i in files) print i; }'`; \
 	mkid -fID $$unique
 
-TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
+TAGS:  $(HEADERS) $(SOURCES) chroma_config_internal.h.in $(TAGS_DEPENDENCIES) \
 		$(TAGS_FILES) $(LISP)
 	tags=; \
 	here=`pwd`; \
-	list='$(SOURCES) $(HEADERS)  $(LISP) $(TAGS_FILES)'; \
+	list='$(SOURCES) $(HEADERS) chroma_config_internal.h.in $(LISP) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
 	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
 	  done | \
@@ -902,11 +943,11 @@ TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
 	     $$tags $$unique
 
 ctags: CTAGS
-CTAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
+CTAGS:  $(HEADERS) $(SOURCES) chroma_config_internal.h.in $(TAGS_DEPENDENCIES) \
 		$(TAGS_FILES) $(LISP)
 	tags=; \
 	here=`pwd`; \
-	list='$(SOURCES) $(HEADERS)  $(LISP) $(TAGS_FILES)'; \
+	list='$(SOURCES) $(HEADERS) chroma_config_internal.h.in $(LISP) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
 	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
 	  done | \
@@ -958,10 +999,10 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LIBRARIES) $(HEADERS)
+all-am: Makefile $(LIBRARIES) $(HEADERS) chroma_config_internal.h
 
 installdirs:
-	$(mkinstalldirs) $(DESTDIR)$(libdir) $(DESTDIR)$(includedir)
+	$(mkinstalldirs) $(DESTDIR)$(libdir) $(DESTDIR)$(includedir) $(DESTDIR)$(includedir)
 
 install: install-am
 install-exec: install-exec-am
@@ -994,7 +1035,7 @@ clean-am: clean-generic clean-libLIBRARIES mostlyclean-am
 distclean: distclean-am
 
 distclean-am: clean-am distclean-compile distclean-depend \
-	distclean-generic distclean-tags
+	distclean-generic distclean-hdr distclean-tags
 
 dvi: dvi-am
 
@@ -1004,7 +1045,8 @@ info: info-am
 
 info-am:
 
-install-data-am: install-nobase_includeHEADERS
+install-data-am: install-nobase_includeHEADERS \
+	install-nodist_includeHEADERS
 
 install-exec-am: install-libLIBRARIES
 
@@ -1031,20 +1073,21 @@ ps: ps-am
 ps-am:
 
 uninstall-am: uninstall-info-am uninstall-libLIBRARIES \
-	uninstall-nobase_includeHEADERS
+	uninstall-nobase_includeHEADERS uninstall-nodist_includeHEADERS
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
 	clean-libLIBRARIES ctags distclean distclean-compile \
-	distclean-depend distclean-generic distclean-tags distdir dvi \
-	dvi-am info info-am install install-am install-data \
+	distclean-depend distclean-generic distclean-hdr distclean-tags \
+	distdir dvi dvi-am info info-am install install-am install-data \
 	install-data-am install-exec install-exec-am install-info \
 	install-info-am install-libLIBRARIES install-man \
-	install-nobase_includeHEADERS install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
-	uninstall-am uninstall-info-am uninstall-libLIBRARIES \
-	uninstall-nobase_includeHEADERS
+	install-nobase_includeHEADERS install-nodist_includeHEADERS \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-compile mostlyclean-generic pdf pdf-am ps ps-am \
+	tags uninstall uninstall-am uninstall-info-am \
+	uninstall-libLIBRARIES uninstall-nobase_includeHEADERS \
+	uninstall-nodist_includeHEADERS
 
 
 # Need this header as part of libchroma_a_sources

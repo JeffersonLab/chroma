@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.128 2004-04-27 20:31:34 edwards Exp $
+# $Id: Makefile.am,v 1.129 2004-04-29 13:41:20 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -44,7 +44,6 @@ VPATH += $(TOPDIR)/mainprogs
 VPATH += $(TOPDIR)/mainprogs/main
 VPATH += $(TOPDIR)/mainprogs/tests
 VPATH += $(TOPDIR)/root
-
 #
 # All the include files - avoid flattening of dirs by using nobase
 #
@@ -52,7 +51,7 @@ VPATH += $(TOPDIR)/root
 #     chroma/scripts/build_include_headers.pl
 #
 nobase_include_HEADERS = \
-	chroma.h chroma_scalarsite_defs.h chroma_scalarsite_dwdefs.h \
+	chroma_config.h chroma.h chroma_scalarsite_defs.h chroma_scalarsite_dwdefs.h \
 	chromabase.h chromainc.h common_declarations.h fermact.h \
 	fermbc.h gaugeact.h gaugebc.h handle.h invtype.h lib.h \
 	linearop.h primitives.h state.h \
@@ -102,6 +101,7 @@ nobase_include_HEADERS = \
         util/info/info.h util/info/proginfo.h util/info/printgeom.h \
         util/util.h
 
+nodist_include_HEADERS=chroma_config_internal.h
 
 if BUILD_WILSON_LIBS
 nobase_include_HEADERS += \
@@ -140,6 +140,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/unprec_ovext_linop_array_w.h \
 	actions/ferm/linop/unprec_wilson_linop_w.h \
 	actions/ferm/linop/unprec_parwilson_linop_w.h \
+	actions/ferm/qprop/qprop_w.h \
 	actions/ferm/qprop/dwf_quarkprop4_w.h \
 	actions/ferm/qprop/quarkprop4_w.h \
 	actions/ferm/qprop/quarkprop4_multi_w.h \
@@ -193,7 +194,7 @@ endif
 #
 # Include Path
 #
-INCFLAGS = -I$(TOPDIR)/lib
+INCFLAGS = -I$(TOPDIR)/lib -I$(BUILDDIR)/lib
 
 #
 # Any other compiler flags
@@ -201,7 +202,7 @@ INCFLAGS = -I$(TOPDIR)/lib
 AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDPXX_CXXFLAGS@
 
 if BUILD_SSE_WILSON_DSLASH
-AM_CXXFLAGS += -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
+AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
 endif
 
 lib_LIBRARIES = libchroma.a

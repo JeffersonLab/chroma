@@ -1,4 +1,4 @@
-// $Id: chromabase.h,v 1.1 2004-01-08 03:11:47 edwards Exp $
+// $Id: chromabase.h,v 1.2 2004-04-29 13:41:21 bjoo Exp $
 //
 // Absolute basic stuff to use chroma
 //
@@ -13,6 +13,7 @@
 #define CHROMABASE_INCLUDE
 
 #include "qdp.h"
+#include "chroma_config.h"
 
 #if defined(ARCH_SCALAR) || defined(ARCH_PARSCALAR)
 #include "chroma_scalarsite_dwdefs.h"

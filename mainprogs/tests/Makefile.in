@@ -100,6 +100,7 @@ RANLIB = @RANLIB@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 SSE_DSLASH_DIR = @SSE_DSLASH_DIR@
+SSE_DSLASH_ENABLED = @SSE_DSLASH_ENABLED@
 STRIP = @STRIP@
 VERSION = @VERSION@
 ac_ct_CXX = @ac_ct_CXX@
@@ -142,11 +143,12 @@ target_alias = @target_alias@
 # VPATH
 #
 TOPDIR = @top_srcdir@
+BUILDDIR = @top_builddir@
 
 #
 # Include Path
 #
-INCFLAGS = -I$(TOPDIR)/include -I@top_builddir@/include -I$(TOPDIR)/lib
+INCFLAGS = -I$(TOPDIR)/include -I$(BUILDDIR)/lib -I$(TOPDIR)/lib
 
 #
 # Any other compiler flags
@@ -282,6 +284,7 @@ t_read_eigen_SOURCES = t_read_eigen.cc
 t_read_eigen_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 subdir = mainprogs/tests
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
+CONFIG_HEADER = $(top_builddir)/lib/chroma_config_internal.h
 CONFIG_CLEAN_FILES =
 EXTRA_PROGRAMS = t_dslashm$(EXEEXT) t_lwldslash$(EXEEXT) \
 	t_spprod$(EXEEXT) t_lwldslash_sse$(EXEEXT) \
@@ -445,7 +448,7 @@ t_spprod_OBJECTS = $(am_t_spprod_OBJECTS)
 t_spprod_LDADD = $(LDADD)
 t_spprod_LDFLAGS =
 
-DEFAULT_INCLUDES =  -I. -I$(srcdir)
+DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)/lib
 depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/invcg2_prec_wilson.Po \
