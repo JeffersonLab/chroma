@@ -1,4 +1,4 @@
-// $Id: io.h,v 1.8 2003-10-09 15:45:14 edwards Exp $
+// $Id: io.h,v 1.9 2003-10-09 16:08:08 edwards Exp $
 
 #ifndef __io_h__
 #define __io_h__
@@ -26,5 +26,6 @@
 
 #include "milc_io.h"
 #include "readmilc.h"
+#include "writemilc.h"
 
 #endif
