@@ -14,8 +14,10 @@ class threelink_pseudoscalar_loop  : public staggered_loops
     void compute(LatticeStaggeredFermion & q_source, 
 		 LatticeStaggeredFermion & psi, int isample) ; 
 
-  threelink_pseudoscalar_loop(int t_len, int nsample)  
-    : staggered_loops(t_len,nsample)
+  threelink_pseudoscalar_loop(int t_len, 
+			      int nsample, 
+			      multi1d<LatticeColorMatrix> & uin)  
+    : staggered_loops(t_len,nsample,uin)
     {
       outer_tag = "loop_gamma5_cross_one"  ; 
       inner_tag = "loop" ; 
@@ -41,8 +43,9 @@ class fourlink_pseudoscalar_loop  : public staggered_loops
     void compute(LatticeStaggeredFermion & q_source, 
 		 LatticeStaggeredFermion & psi, int isample) ; 
 
-  fourlink_pseudoscalar_loop(int t_len, int nsample)  
-    : staggered_loops(t_len,nsample)
+  fourlink_pseudoscalar_loop(int t_len, int nsample,
+			     multi1d<LatticeColorMatrix> & uin)  
+    : staggered_loops(t_len,nsample,uin)
     {
       outer_tag = "loop_gamma3gamma5_cross_one"  ; 
       inner_tag = "loop" ; 

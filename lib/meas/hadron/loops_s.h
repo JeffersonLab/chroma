@@ -39,19 +39,65 @@ class staggered_loops
 
     }
 
-  staggered_loops(int t_len, int t_sample) : t_length(t_len) ,
+  staggered_loops(int t_len, int t_sample, 
+		  multi1d<LatticeColorMatrix> & uin) : t_length(t_len) ,
     no_sample(t_sample)
     {
       corr_fn.resize(no_sample, t_length);
       corr_fn = zero ; 
       corr.resize(t_length);
       corr = zero ; 
+
+      u.resize(4) ; 
+      if( uin.size() != 4 ) { 
+	QDPIO::cerr << "staggered_hadron_corr: input guage config has wrong number of dimensions " << uin.size() << endl;
+	QDP_abort(1);
+  };
+
+      u = uin ; 
+       type_of_shift = GAUGE_INVAR ; 
+
     }
 
   ~staggered_loops()
     {
       corr_fn.resize(1, 1);
     }
+
+
+
+  LatticeStaggeredPropagator shift_deltaProp(multi1d<int>& delta, 
+					     const 
+					     LatticeStaggeredPropagator& src)
+
+    {
+
+    switch (type_of_shift)
+      {
+      case NON_GAUGE_INVAR :
+	return shiftDeltaProp(delta,src) ;
+	break ;
+      case GAUGE_INVAR :
+	return shiftDeltaPropCov(delta,src,u,false) ;
+    	break ;
+      case SYM_GAUGE_INVAR :
+	return shiftDeltaPropCov(delta,src,u,true) ; // symm shifting
+	break ;
+      case SYM_NON_GAUGE_INVAR:
+	return shiftDeltaProp(delta,src,true) ; // symm shifting
+    	break ;
+      default :
+	/**************************************************************************/
+ 
+	QDPIO::cerr << "Shift type " << type_of_shift << " unsupported." << endl;
+	QDP_abort(1);
+      }
+
+  }
+
+
+  void use_gauge_invar() { type_of_shift = GAUGE_INVAR ; } 
+  void use_NON_gauge_invar() { type_of_shift = NON_GAUGE_INVAR ; } 
 
 
  protected:
@@ -61,12 +107,13 @@ class staggered_loops
   
   string outer_tag ; 
   string inner_tag ; 
+  multi1d<LatticeColorMatrix> u ; // this should handle or state
 
   private :
     int no_sample ; 
   int t_length ; 
 
-
+  Stag_shift_option type_of_shift; 
 
 } ;
 
