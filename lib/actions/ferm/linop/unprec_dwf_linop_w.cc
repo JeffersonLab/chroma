@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_linop_w.cc,v 1.2 2003-11-08 04:21:47 edwards Exp $
+// $Id: unprec_dwf_linop_w.cc,v 1.3 2003-11-08 16:11:55 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall linear operator
  */
@@ -13,7 +13,8 @@
  * \param WilsonMass_   DWF height    (Read)
  * \param m_q_          quark mass    (Read)
  */
-void UnprecDWLinOp::create(const multi1d<LatticeColorMatrix>& u_, const Real& WilsonMass_, const Real& m_q_)
+void UnprecDWLinOp::create(const multi1d<LatticeColorMatrix>& u_, 
+			   const Real& WilsonMass_, const Real& m_q_)
 {
   u = u_;
   WilsonMass = WilsonMass_;
@@ -55,29 +56,31 @@ cycleDownDW(const LatticeDWFermion& l)
 // HACK
 /* Terrible implementation just to get the silly thing going */
 static inline LatticeDWFermion 
-spinProjectDir5Plus(const LatticeDWFermion& l)
+chiralProjectPlus(const LatticeDWFermion& l)
 {
-  return l + Gamma(15)*l;
+  return 0.5*(l + Gamma(15)*l);
 }
 
 static inline LatticeDWFermion 
-spinProjectDir5Minus(const LatticeDWFermion& l)
+chiralProjectMinus(const LatticeDWFermion& l)
 {
-  return l - Gamma(15)*l;
+  return 0.5*(l - Gamma(15)*l);
 }
 
 
-static inline LatticeDWFermion 
-spinReconstructDir5Plus(const LatticeDWFermion& l)
+static inline LatticeFermion 
+chiralProjectPlus(const LatticeFermion& l)
 {
-  return l;
+  return 0.5*(l + Gamma(15)*l);
 }
 
-static inline LatticeDWFermion 
-spinReconstructDir5Minus(const LatticeDWFermion& l)
+static inline LatticeFermion 
+chiralProjectMinus(const LatticeFermion& l)
 {
-  return l;
+  return 0.5*(l - Gamma(15)*l);
 }
+
+
 //-----------------------------------------------------------------------------
 
 
@@ -103,8 +106,11 @@ LatticeDWFermion UnprecDWLinOp::operator() (const LatticeDWFermion& psi, enum Li
   //
   //  Chi   =  D' Psi
   //
-  LatticeDWFermion  tmp1 = zero, tmp2 = zero;   // YUK!!
-  
+  LatticeDWFermion tmp1, tmp2;
+
+  Real fact1 = a5*(2*Nd - WilsonMass) + 1;
+  Real fact2 = -0.5*a5;
+
   /* Why are these lines split? An array syntax would help, but the problem is deeper.
    * The expression templates require NO variable args (like int's) to a function
    * and all args must be known at compile time. Hence, the function names carry
@@ -113,41 +119,38 @@ LatticeDWFermion UnprecDWLinOp::operator() (const LatticeDWFermion& psi, enum Li
   switch (isign)
   {
   case PLUS:
-    tmp1 = cycleDownDW(psi);
-    pokeDW(tmp1, -m_q*peekDW(psi,Ls-1), 0);
-    tmp2 = cycleUpDW(psi);
-    pokeDW(tmp2, -m_q*peekDW(psi,0), Ls-1);
+    tmp1 = chiralProjectMinus(cycleDownDW(psi));
+    pokeDW(tmp1, -m_q*chiralProjectPlus(LatticeFermion(peekDW(psi,Ls-1))), 0);
+    tmp2 = chiralProjectPlus(cycleUpDW(psi));
+    pokeDW(tmp2, -m_q*chiralProjectMinus(LatticeFermion(peekDW(psi,0))), Ls-1);
 
-    chi = a5*(spinReconstructDir0Minus(u[0] * shift(spinProjectDir0Minus(psi), FORWARD, 0)) +
-	      spinReconstructDir0Plus(shift(adj(u[0]) * spinProjectDir0Plus(psi), BACKWARD, 0)) +
-	      spinReconstructDir1Minus(u[1] * shift(spinProjectDir1Minus(psi), FORWARD, 1)) +
-	      spinReconstructDir1Plus(shift(adj(u[1]) * spinProjectDir1Plus(psi), BACKWARD, 1)) +
-	      spinReconstructDir2Minus(u[2] * shift(spinProjectDir2Minus(psi), FORWARD, 2)) +
-	      spinReconstructDir2Plus(shift(adj(u[2]) * spinProjectDir2Plus(psi), BACKWARD, 2)) +
-	      spinReconstructDir3Minus(u[3] * shift(spinProjectDir3Minus(psi), FORWARD, 3)) +
-	      spinReconstructDir3Plus(shift(adj(u[3]) * spinProjectDir3Plus(psi), BACKWARD, 3)))
-        + psi 
-        - spinReconstructDir5Plus(spinProjectDir5Plus(tmp1))
-        - spinReconstructDir5Minus(spinProjectDir5Minus(tmp2));
+    chi = fact1*psi + tmp1 + tmp2
+        + fact2*(spinReconstructDir0Minus(u[0] * shift(spinProjectDir0Minus(psi), FORWARD, 0)) +
+		 spinReconstructDir0Plus(shift(adj(u[0]) * spinProjectDir0Plus(psi), BACKWARD, 0)) +
+		 spinReconstructDir1Minus(u[1] * shift(spinProjectDir1Minus(psi), FORWARD, 1)) +
+		 spinReconstructDir1Plus(shift(adj(u[1]) * spinProjectDir1Plus(psi), BACKWARD, 1)) +
+		 spinReconstructDir2Minus(u[2] * shift(spinProjectDir2Minus(psi), FORWARD, 2)) +
+		 spinReconstructDir2Plus(shift(adj(u[2]) * spinProjectDir2Plus(psi), BACKWARD, 2)) +
+		 spinReconstructDir3Minus(u[3] * shift(spinProjectDir3Minus(psi), FORWARD, 3)) +
+		 spinReconstructDir3Plus(shift(adj(u[3]) * spinProjectDir3Plus(psi), BACKWARD, 3)));
+          
     break;
 
   case MINUS:
-    tmp1 = cycleDownDW(psi);
-    pokeDW(tmp1, -m_q*peekDW(psi,Ls-1), 0);
-    tmp2 = cycleUpDW(psi);
-    pokeDW(tmp2, -m_q*peekDW(psi,0), Ls-1);
+    tmp1 = chiralProjectPlus(cycleDownDW(psi));
+    pokeDW(tmp1, -m_q*chiralProjectMinus(LatticeFermion(peekDW(psi,Ls-1))), 0);
+    tmp2 = chiralProjectMinus(cycleUpDW(psi));
+    pokeDW(tmp2, -m_q*chiralProjectPlus(LatticeFermion(peekDW(psi,0))), Ls-1);
 
-    chi = a5*(spinReconstructDir0Plus(u[0] * shift(spinProjectDir0Plus(psi), FORWARD, 0)) +
-	      spinReconstructDir0Minus(shift(adj(u[0]) * spinProjectDir0Minus(psi), BACKWARD, 0)) +
-	      spinReconstructDir1Plus(u[1] * shift(spinProjectDir1Plus(psi), FORWARD, 1)) +
-	      spinReconstructDir1Minus(shift(adj(u[1]) * spinProjectDir1Minus(psi), BACKWARD, 1)) +
-	      spinReconstructDir2Plus(u[2] * shift(spinProjectDir2Plus(psi), FORWARD, 2)) +
-	      spinReconstructDir2Minus(shift(adj(u[2]) * spinProjectDir2Minus(psi), BACKWARD, 2)) +
-	      spinReconstructDir3Plus(u[3] * shift(spinProjectDir3Plus(psi), FORWARD, 3)) +
-	      spinReconstructDir3Minus(shift(adj(u[3]) * spinProjectDir3Minus(psi), BACKWARD, 3)))
-        + psi 
-        - spinReconstructDir5Minus(spinProjectDir5Minus(tmp1))
-        - spinReconstructDir5Plus(spinProjectDir5Plus(tmp2));
+    chi = fact1*psi + tmp1 + tmp2
+        + fact2*(spinReconstructDir0Plus(u[0] * shift(spinProjectDir0Plus(psi), FORWARD, 0)) +
+		 spinReconstructDir0Minus(shift(adj(u[0]) * spinProjectDir0Minus(psi), BACKWARD, 0)) +
+		 spinReconstructDir1Plus(u[1] * shift(spinProjectDir1Plus(psi), FORWARD, 1)) +
+		 spinReconstructDir1Minus(shift(adj(u[1]) * spinProjectDir1Minus(psi), BACKWARD, 1)) +
+		 spinReconstructDir2Plus(u[2] * shift(spinProjectDir2Plus(psi), FORWARD, 2)) +
+		 spinReconstructDir2Minus(shift(adj(u[2]) * spinProjectDir2Minus(psi), BACKWARD, 2)) +
+		 spinReconstructDir3Plus(u[3] * shift(spinProjectDir3Plus(psi), FORWARD, 3)) +
+		 spinReconstructDir3Minus(shift(adj(u[3]) * spinProjectDir3Minus(psi), BACKWARD, 3)));
     break;
   }
 
