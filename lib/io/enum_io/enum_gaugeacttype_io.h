@@ -6,7 +6,11 @@
 #include "singleton.h"
 #include "io/enum_io/enum_type_map.h"
 
-
+/* *********!!!!!!!!!!!!!!!!!!! WARNING WARNING !!!!!!!!!!!!!!!! *********** */
+// These actions are only relevant to Al Hart's topological code.
+// The production HMC etc does not use these enums but works off its
+// own factory
+/* *********!!!!!!!!!!!!!!!!!!! WARNING WARNING !!!!!!!!!!!!!!!! *********** */
 using namespace std;
 using namespace Chroma;
 
@@ -21,11 +25,22 @@ namespace Chroma {
    */
   //! GaugeAct type
   enum GaugeActType {
-    GAUGE_ACT_TYPE_WILSON
+    GAUGE_ACT_WILSON = 0,
+    GAUGE_ACT_SYMZK_1X2,
+    GAUGE_ACT_IWASAKI,
+    GAUGE_ACT_DBW2,
+    GAUGE_ACT_5_LOOP_IMP,
+    GAUGE_ACT_4_LOOP_IMP,
+    GAUGE_ACT_3_LOOP_IMP
+    
   };
 
+  
 
-  namespace GaugeActTypeEnv { 
+  namespace GaugeActTypeEnv {
+    //!  The number of different shaped loops in largest action
+    extern const int No_fmn;  // Al's own private definition
+
     extern const string typeIDString;
     extern bool registered; 
     bool registerAll(void);   // Forward declaration

@@ -252,6 +252,7 @@ namespace Chroma {
 	     multi1d< Handle<AbsInlineMeasurement> >& user_measurements) {
 
     XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+    push(xml_out, "doHMC");
 
     multi1d< Handle< AbsInlineMeasurement > > default_measurements(1);
     InlinePlaquetteParams plaq_params;
@@ -263,7 +264,6 @@ namespace Chroma {
 
       // Initialise the RNG
       QDP::RNG::setrn(mc_control.rng_seed);
-      push(xml_out, "t_hmc");
       
       // Fictitious momenta for now
       multi1d<LatticeColorMatrix> p(Nd);
@@ -287,28 +287,38 @@ namespace Chroma {
       }
       
       QDPIO::cout << "MC Control: About to do " << to_do << " updates" << endl;
-      for(int i=0; i < to_do; i++) {
 
+      // XML Output
+      push(xml_out, "MCUpdates");
+
+      for(int i=0; i < to_do; i++) {
+	push(xml_out, "elem"); // Caller writes elem rule
+
+	push(xml_out, "Update");
 	// Increase current update counter
 	cur_update++;
-	push(xml_out, "MCUpdate");
-	write(xml_out, "update_no", cur_update);
 	
 	// Decide if the next update is a warm up or not
-	
 	bool warm_up_p = cur_update  <= mc_control.n_warm_up_updates;
 	QDPIO::cout << "Doing Update: " << cur_update << " warm_up_p = " << warm_up_p << endl;
-	
+
+	// Log
+	write(xml_out, "update_no", cur_update);
+	write(xml_out, "WarmUpP", warm_up_p);
+
 	// Do the trajectory without accepting 
 	theHMCTrj( gauge_state, warm_up_p );
 
 	// Measure inline observables 
 	push(xml_out, "InlineObservables");
-
 	// Always measure defaults
 	for(int m=0; m < default_measurements.size(); m++) {
+	  
+	  // Caller writes elem rule 
 	  AbsInlineMeasurement& the_meas = *(default_measurements[m]);
+	  push(xml_out, "elem");
 	  the_meas( gauge_state.getQ(), cur_update, xml_out);
+	  pop(xml_out);
 	}
 	
 	// Only measure user measurements after warm up
@@ -318,34 +328,37 @@ namespace Chroma {
 	  for(int m=0; m < user_measurements.size(); m++) {
 	    AbsInlineMeasurement& the_meas = *(user_measurements[m]);
 	    if( cur_update % the_meas.getFrequency() == 0 ) { 
+
+	      // Caller writes elem rule
+	      push(xml_out, "elem");
 	      the_meas( gauge_state.getQ(), cur_update, xml_out );
+	      pop(xml_out); 
 	    }
 	  }
 	}
 	pop(xml_out); // pop("InlineObservables");
 
-
-
-	pop(xml_out); // pop("MCUpdate");
-	
 	if( cur_update % mc_control.save_interval == 0 ) {
 	  // Save state
 	  saveState<UpdateParams>(update_params, mc_control, cur_update, gauge_state.getQ());
 	  
 	}
-	
+
+	pop(xml_out); // pop("Update");
+	pop(xml_out); // pop("elem");
       }   
-      pop(xml_out); // pop("t_hmc")
       
       // Save state
       saveState<UpdateParams>(update_params, mc_control, cur_update, gauge_state.getQ());
       
-      
+      pop(xml_out); // pop("MCUpdates")
     }
     catch( const std::string& e) { 
       QDPIO::cerr << "Caught Exception: " << e << endl;
       QDP_abort(1);
     }
+
+    pop(xml_out);
   }
   
   bool linkageHack(void)

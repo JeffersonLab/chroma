@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: objfactory.h,v 1.4 2004-10-04 21:41:22 edwards Exp $
+// $Id: objfactory.h,v 1.5 2005-01-14 17:16:50 bjoo Exp $
 
 /*! @file
  * @brief Factory class for objects from XML input
@@ -8,10 +8,14 @@
 #ifndef __objfact_h__
 #define __objfact_h__
 
+#include "chromabase.h"
+
 #include "typeinfo.h"
 #include "typelist.h"
 #include <map>
 #include <exception>
+
+using namespace QDP;
 
 namespace Chroma
 {
@@ -117,13 +121,24 @@ namespace Chroma
      * \return returns pointer to the object
      */
     AbstractProduct* createObject(const IdentifierType& id)
-      {
-	typename IdToProductMap::const_iterator i = associations_.find(id);
-	if (i == associations_.end())
-	  return OnUnknownType(id);
-	else
-	  return (i->second)();
+    {
+      typename IdToProductMap::const_iterator i = associations_.find(id);
+      if (i == associations_.end()) {
+	
+	typedef typename IdToProductMap::const_iterator CI;
+	QDPIO::cerr << "Couldnt find key " << id << " in the map: " << endl;
+	QDPIO::cerr << "Available Keys are : " << endl;
+	for( CI j = associations_.begin();
+	     j != associations_.end(); j++) {
+	  QDPIO::cerr << j->first << endl << flush;
+	}
+	
+	return OnUnknownType(id);
       }
+      else {
+	return (i->second)();
+      }
+    }
         
     //! Create the object
     /*! 
@@ -132,52 +147,108 @@ namespace Chroma
      * \return returns pointer to the object
      */
     AbstractProduct* createObject(const IdentifierType& id, Parm1 p1)
-      {
-	typename IdToProductMap::const_iterator i = associations_.find(id);
-	if (i == associations_.end())
-	  return OnUnknownType(id);
-	else
-	  return (i->second)(p1);
+    {
+      typename IdToProductMap::const_iterator i = associations_.find(id);
+      if (i == associations_.end()) {
+	
+	typedef typename IdToProductMap::const_iterator CI;
+	QDPIO::cerr << "Couldnt find key " << id << " in the map: " << endl;
+	QDPIO::cerr << "Available Keys are : " << endl;
+	for( CI j = associations_.begin();
+	     j != associations_.end(); j++) {
+	  QDPIO::cerr << j->first << endl << flush;
+	}
+
+	return OnUnknownType(id);
       }
+      else {
+	return (i->second)(p1);
+      }
+    }
         
     AbstractProduct* createObject(const IdentifierType& id, Parm1 p1, Parm2 p2)
-      {
-	typename IdToProductMap::const_iterator i = associations_.find(id);
-	if (i == associations_.end())
-	  return OnUnknownType(id);
-	else
+    {
+      typename IdToProductMap::const_iterator i = associations_.find(id);
+      if (i == associations_.end()) {
+
+	typedef typename IdToProductMap::const_iterator CI;
+	QDPIO::cerr << "Couldnt find key " << id << " in the map: " << endl;
+	QDPIO::cerr << "Available Keys are : " << endl;
+	for( CI j = associations_.begin();
+	     j != associations_.end(); j++) {
+	  QDPIO::cerr << j->first << endl << flush;
+	}
+	
+	return OnUnknownType(id);
+      }
+      else {
 	  return (i->second)(p1, p2);
       }
-        
+    }
+    
     AbstractProduct* createObject(const IdentifierType& id, Parm1 p1, Parm2 p2, Parm3 p3)
-      {
-	typename IdToProductMap::const_iterator i = associations_.find(id);
-	if (i == associations_.end())
-	  return OnUnknownType(id);
-	else
+    {
+      typename IdToProductMap::const_iterator i = associations_.find(id);
+      if (i == associations_.end()) {
+	
+	typedef typename IdToProductMap::const_iterator CI;
+	QDPIO::cerr << "Couldnt find key " << id << " in the map: " << endl;
+	QDPIO::cerr << "Available Keys are : " << endl;
+	for( CI j = associations_.begin();
+	     j != associations_.end(); j++) {
+	  QDPIO::cerr << j->first << endl << flush;
+	}
+	
+	return OnUnknownType(id);
+      }
+      else {
 	  return (i->second)(p1, p2, p3);
       }
+    }
         
     AbstractProduct* createObject(const IdentifierType& id, Parm1 p1, Parm2 p2, Parm3 p3,
 				  Parm4 p4)
-      {
-	typename IdToProductMap::const_iterator i = associations_.find(id);
-	if (i == associations_.end())
-	  return OnUnknownType(id);
-	else
-	  return (i->second)(p1, p2, p3, p4);
+    {
+      typename IdToProductMap::const_iterator i = associations_.find(id);
+      if (i == associations_.end()) {
+	
+	typedef typename IdToProductMap::const_iterator CI;
+	QDPIO::cerr << "Couldnt find key " << id << " in the map: " << endl;
+	QDPIO::cerr << "Available Keys are : " << endl;
+	for( CI j = associations_.begin();
+	     j != associations_.end(); j++) {
+	  QDPIO::cerr << j->first << endl << flush;
+	}
+	
+	return OnUnknownType(id);
       }
+      else {
+	return (i->second)(p1, p2, p3, p4);
+      }
+    }
         
     AbstractProduct* createObject(const IdentifierType& id, Parm1 p1, Parm2 p2, Parm3 p3,
 				  Parm4 p4, Parm5 p5)
-      {
-	typename IdToProductMap::const_iterator i = associations_.find(id);
-	if (i == associations_.end())
-	  return OnUnknownType(id);
-	else
-	  return (i->second)(p1, p2, p3, p4, p5);
+    {
+      typename IdToProductMap::const_iterator i = associations_.find(id);
+      if (i == associations_.end()) {
+	
+	typedef typename IdToProductMap::const_iterator CI;
+	QDPIO::cerr << "Couldnt find key " << id << " in the map: " << endl;
+	QDPIO::cerr << "Available Keys are : " << endl;
+	for( CI j = associations_.begin();
+	     j != associations_.end(); j++) {
+	  QDPIO::cerr << j->first << endl << flush;
+	}
+	
+	return OnUnknownType(id);
       }
-        
+      else {
+	return (i->second)(p1, p2, p3, p4, p5);
+      }
+    }
+
+  
   private:
     typedef std::map<IdentifierType, ProductCreator> IdToProductMap;
     IdToProductMap associations_;
