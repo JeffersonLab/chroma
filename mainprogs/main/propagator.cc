@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.79 2004-11-24 04:16:57 kostas Exp $
+// $Id: propagator.cc,v 1.80 2004-12-08 21:48:09 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -503,6 +503,7 @@ int main(int argc, char **argv)
 
       push(record_xml, "Propagator");
       write(record_xml, "ForwardProp", input.param);
+      record_xml << input.stateInfo;  // write out the stateinfo - might be empty
       record_xml << xml_tmp;  // write out all the stuff under MakeSource
       pop(record_xml);
     } 
