@@ -1,4 +1,4 @@
-// $Id: seqprop.cc,v 1.9 2004-01-07 21:59:19 edwards Exp $
+// $Id: seqprop.cc,v 1.10 2004-01-09 04:26:00 edwards Exp $
 /*! \file
  *  \brief Main code for sequential propagator generation
  */
@@ -406,6 +406,20 @@ int main(int argc, char **argv)
 
     QDPIO::cout << "Forward propagator successfully read" << endl;
    
+    // Sanity check - write out the norm2 of the forward prop in the Nd-1 direction
+    // Use this for any possible verification
+    {
+      // Initialize the slow Fourier transform phases
+      SftMom phases(0, true, Nd-1);
+
+      multi1d<Double> forward_prop_corr = sumMulti(localNorm2(quark_propagator), 
+						   phases.getSubset());
+
+      push(xml_array, "Forward_prop_correlator");
+      Write(xml_array, forward_prop_corr);
+      pop(xml_array);
+    }
+
 
     if (input.param.srceSinkParam.Sl_snk)
     {
@@ -496,14 +510,21 @@ int main(int argc, char **argv)
 	ncg_had += n_count;
       }
 
-      xml_out << xml_buf;
+      xml_seq_src << xml_buf;
 
-      // Sanity check - write out the norm of this propagator
-      // One can think of this as the pion susceptibility for this prop
-      push(xml_out, "Propagator_norm");
-      write(xml_out, "prop_norm", norm2(quark_propagator));
-      pop(xml_out);
+      // Sanity check - write out the norm2 of the forward prop in the Nd-1 direction
+      // Use this for any possible verification
+      {
+	// Initialize the slow Fourier transform phases
+	SftMom phases(0, true, Nd-1);
 
+	multi1d<Double> backward_prop_corr = sumMulti(localNorm2(seq_quark_prop), 
+						      phases.getSubset());
+	
+	push(xml_seq_src, "Backward_prop_correlator");
+	Write(xml_seq_src, backward_prop_corr);
+	pop(xml_seq_src);
+      }
 
       /*
        *  Write the sequential propagator out to disk

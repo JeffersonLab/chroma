@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.34 2004-01-09 03:53:00 edwards Exp $
+// $Id: propagator.cc,v 1.35 2004-01-09 04:25:41 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -420,16 +420,16 @@ int main(int argc, char **argv)
   Write(xml_out, ncg_had);
   pop(xml_out);
 
-  // Sanity check - write out the pion propagator in the Nd-1 direction
+  // Sanity check - write out the propagator (pion) correlator in the Nd-1 direction
   {
     // Initialize the slow Fourier transform phases
     SftMom phases(0, true, Nd-1);
 
-    multi1d<Double> pion_corr = sumMulti(localNorm2(quark_propagator), 
+    multi1d<Double> prop_corr = sumMulti(localNorm2(quark_propagator), 
 					 phases.getSubset());
 
-    push(xml_out, "Pion_correlator");
-    Write(xml_out, pion_corr);
+    push(xml_out, "Prop_correlator");
+    Write(xml_out, prop_corr);
     pop(xml_out);
   }
 
