@@ -1,4 +1,4 @@
-// $Id: prec_dwf_fermact_base_w.cc,v 1.1 2003-11-23 05:52:20 edwards Exp $
+// $Id: prec_dwf_fermact_base_w.cc,v 1.2 2003-11-25 04:40:50 edwards Exp $
 /*! \file
  *  \brief Base class for even-odd preconditioned domain-wall-like fermion actions
  */
@@ -71,6 +71,7 @@ EvenOddPrecDWFermActBase::qprop(LatticeFermion& psi,
 
     A->evenEvenInvLinOp(tmp1, tmp5, PLUS);
     A->oddEvenLinOp(tmp2, tmp1, PLUS);
+    chi5[rb[0]] = tmp5;
     chi5[rb[1]] = tmp5 - tmp2;
   }
 
