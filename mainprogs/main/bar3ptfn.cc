@@ -1,7 +1,11 @@
-// $Id: bar3ptfn.cc,v 1.8 2003-05-14 06:07:03 flemingg Exp $
+// $Id: bar3ptfn.cc,v 1.9 2003-05-30 02:37:40 flemingg Exp $
 //
 // $Log: bar3ptfn.cc,v $
-// Revision 1.8  2003-05-14 06:07:03  flemingg
+// Revision 1.9  2003-05-30 02:37:40  flemingg
+// A message printed to stdout was printing the wrong thing cut and pasted
+// from spectrum_w.cc.  Replaced with the intended thing from szin bar3ptfn.m
+//
+// Revision 1.8  2003/05/14 06:07:03  flemingg
 // Should be done playing around with the input and output formats
 // for bar3ptfn with this version.
 //
@@ -41,7 +45,7 @@ main(int argc, char *argv[])
 
   // GTF GRIPE: I would prefer masses rather than kappa values here,
   //   but I'll save that for another day.
-    int numKappa ;            // number of Wilson masses
+  int numKappa ;            // number of Wilson masses
   multi1d<Real> Kappa ;     // array of Wilson mass values
 
   CfgType cfg_type ;        // storage order for stored gauge configuration
@@ -126,7 +130,7 @@ main(int argc, char *argv[])
     switch (FermTypeP) {
     case FERM_TYPE_WILSON :
 
-      cout << " SPECTRUM_W: Spectroscopy for Wilson fermions" << endl ;
+      cout << " FORMFAC: Baryon form factors for Wilson fermions" << endl ;
 
       Read(nml_in, numKappa) ;
 
@@ -272,7 +276,7 @@ main(int argc, char *argv[])
     switch (FermTypeP) {
     case FERM_TYPE_WILSON :
 
-      cout << " SPECTRUM_W: Spectroscopy for Wilson fermions" << endl ;
+      cout << " FORMFAC: Baryon form factors for Wilson fermions" << endl ;
 
       Read(nml_in, numKappa) ;
 
