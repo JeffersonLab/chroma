@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_asqtad_linop_s.h,v 1.1 2003-12-10 14:27:08 bjoo Exp $
+// $Id: prec_asqtad_linop_s.h,v 1.2 2003-12-10 16:21:00 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -10,8 +10,6 @@
 #define __asqtad_linop_s_h__
 
 #include "linearop.h"
-// #include "actions/ferm/linop/dslash_s.h"
-#include "actions/ferm/dslash/dslash_s.h"
 
 using namespace QDP;
 
@@ -43,29 +41,51 @@ using namespace QDP;
  *
  */
 
-class AsqtadLinOp : public LinearOperator<LatticeFermion>
+class EvenOddPrecAsqtadLinOp : public EvenOddPrecLinearOperator<LatticeFermion>
 {
 public:
-  //! Partial constructor
-  AsqtadLinOp() {}
+  //! Partial constructor - Must use create later
+  EvenOddPrecAsqtadLinOp() {}
 
   //! Full constructor
-  AsqtadLinOp(const multi1d<LatticeColorMatrix>& u_fat_, const multi1d<LatticeColorMatrix>& u_triple_, const Real& Mass_) : u_fat(u_fat_), u_triple(u_triple_), Mass(Mass_) {};
+  EvenOddPrecAsqtadLinOp(const multi1d<LatticeColorMatrix>& u_fat_, const multi1d<LatticeColorMatrix>& u_triple_, const Real& Mass_) 
+  {
+    create(u_fat_, u_triple_, Mass_);
+  }
 
+
+  void create(const multi1d<LatticeColorMatrix>& u_fat_, const multi1d<LatticeColorMatrix>& u_triple_, const Real& Mass_) {
+    u_fat = u_fat_;
+    u_triple = u_triple_;
+    Mass = Mass_;
+
+  };
   //! Destructor is automatic
-  ~AsqtadLinOp() {}
+  ~EvenOddPrecAsqtadLinOp() {}
 
-  //! Only defined on the odd subset
-  const OrderedSubset& subset() const {return all;}
+  //! Apply the the even-even block onto a source vector
+  void evenEvenLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
+		     enum PlusMinus isign) const;
+  
+  //! Apply the the even-odd block onto a source vector
+  void evenOddLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
+		    enum PlusMinus isign) const;
 
-  //! Apply the operator onto a source vector
-  void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const;
+  //! Apply the the odd-even block onto a source vector
+  void oddEvenLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
+		    enum PlusMinus isign) const;
+
+  //! Apply the the odd-odd block onto a source vector
+  void oddOddLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
+		   enum PlusMinus isign) const;
+
+  void evenEvenInvLinOp(LatticeFermion& chi, const LatticeFermion& psi,
+                   enum PlusMinus isign) const { };
 
 private:
   Real Mass;
-  multi1d<LatticeColorMatrix>& u_fat;
-  multi1d<LatticeColorMatrix>& u_triple;
-  //AsqtadDslash D;
+  multi1d<LatticeColorMatrix> u_fat;
+  multi1d<LatticeColorMatrix> u_triple;
 };
 
 #endif

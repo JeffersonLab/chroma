@@ -2,6 +2,7 @@
 #define __zolotarev_state_h__
 
 #include "handle.h"
+#include "actions/ferm/linop/improvement_terms_s.h"
 
 using namespace QDP;
 
@@ -33,13 +34,13 @@ public:
   const AsqtadConnectStateBase<T>* operator->() const {return state.operator->();}
 
   //! Return the link fields needed in constructing linear operators
-  const multi1d<LatticeColorMatrix>& getLinks() const 
-    {state->getLinks();}
+  const multi1d<LatticeColorMatrix>& getLinks() const
+    {state->getLinks(); }
 
   const multi1d<LatticeColorMatrix>& getFatLinks() const 
     {state->getFatLinks(); }
 
-  virtual const multi1d<LatticeColorMatrix>& getTripleLinks() const 
+  const multi1d<LatticeColorMatrix>& getTripleLinks() const 
     { state->getTripleLinks(); }
   
  protected:
@@ -62,14 +63,14 @@ class AsqtadConnectState : public AsqtadConnectStateBase<T>
   //! Full Constructor
   AsqtadConnectState(const multi1d<LatticeColorMatrix>& u_,
 		     const WordBase_t& u0,
-		     const multi1d<LatticeInteger>& phases)
+		     const multi1d<LatticeInteger>& phases) : u(u_)
     {
 
       // Compute fat and triple links. Multiply in K-S Phases.
       u_fat.resize(Nd);
       u_triple.resize(Nd);
-      Fat7_Links(u_, u_fat, u0);
-      Triple_Links(u_, u_triple, u0);
+      Fat7_Links(u, u_fat, u0);
+      Triple_Links(u, u_triple, u0);
 
       int mu;
       for(mu=0; mu < Nd; mu++) { 
@@ -84,8 +85,7 @@ class AsqtadConnectState : public AsqtadConnectStateBase<T>
   ~AsqtadConnectState() {};
 
   //! Return the link fields needed in constructing linear operators
-  const multi1d<LatticeColorMatrix>& getLinks() const {return u;}
-  
+  const multi1d<LatticeColorMatrix>& getLinks() const { return u; }
   const multi1d<LatticeColorMatrix>& getFatLinks() const { return u_fat; }
 
   const multi1d<LatticeColorMatrix>& getTripleLinks() const { return u_triple; }
@@ -94,6 +94,7 @@ class AsqtadConnectState : public AsqtadConnectStateBase<T>
   void operator=(const AsqtadConnectState&) {} // hide =
 
 private:
+  multi1d<LatticeColorMatrix> u;
   multi1d<LatticeColorMatrix> u_fat;
   multi1d<LatticeColorMatrix> u_triple;
 };

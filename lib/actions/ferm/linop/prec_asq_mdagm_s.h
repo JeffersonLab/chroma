@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_asq_mdagm_s.h,v 1.1 2003-12-10 12:38:14 bjoo Exp $
+// $Id: prec_asq_mdagm_s.h,v 1.2 2003-12-10 16:21:00 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -10,8 +10,8 @@
 #define __asqtad_mdagm_s_h__
 
 #include "linearop.h"
-// #include "actions/ferm/linop/dslash_s.h"
-#include "dslash_s.h"
+#include "actions/ferm/linop/dslash_s.h"
+
 
 using namespace QDP;
 
@@ -42,21 +42,21 @@ using namespace QDP;
  * 	     E             EO OE
  */
 
-class AsqtadMdagM : public LinearOperator<LatticeFermion>
+class PrecAsqtadMdagM : public LinearOperator<LatticeFermion>
 {
 public:
   //! Partial constructor
-  AsqtadMdagM() {}
+  PrecAsqtadMdagM() {}
 
   //! Full constructor
-  AsqtadMdagM(const multi1d<LatticeColorMatrix>& _u_fat, const multi1d<LatticeColorMatrix>& _u_triple, const Real& _Mass)
+  PrecAsqtadMdagM(const multi1d<LatticeColorMatrix>& _u_fat, const multi1d<LatticeColorMatrix>& _u_triple, const Real& _Mass)
     {create(_u_fat,_u_triple,_Mass);}
 
   //! Creation routine
   void create(const multi1d<LatticeColorMatrix>& _u_fat,const multi1d<LatticeColorMatrix>& _u_triple, const Real& _Mass);
     
   //! Destructor is automatic
-  ~AsqtadMdagM() {}
+  ~PrecAsqtadMdagM() {}
 
   //! Only defined on the even subset
   const OrderedSubset& subset() const {return rb[0];}

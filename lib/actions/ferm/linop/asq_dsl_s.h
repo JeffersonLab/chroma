@@ -1,4 +1,4 @@
-/*  $Id: asq_dsl_s.h,v 1.1 2003-12-10 12:38:13 bjoo Exp $  */
+/*  $Id: asq_dsl_s.h,v 1.1 2003-12-10 16:20:59 bjoo Exp $  */
 
 /* This routine is specific to staggered fermions! */
 

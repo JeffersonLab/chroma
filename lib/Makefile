@@ -14,7 +14,7 @@
 
 
 
-# $Id: Makefile,v 1.16 2003-12-09 10:33:42 bjoo Exp $
+# $Id: Makefile,v 1.17 2003-12-10 16:20:59 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -41,44 +41,46 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_triplet = i686-pc-linux-gnu
 #am__append_1 = -I$(BUILDDIR)/other_libs//include
-am__append_2 = baryon_w.cc mesons_w.cc curcor2_w.cc lwldslash_w.cc formfac_w.cc \
-              sink_smear2_w.cc barcomp_w.cc transf_w.cc ldwfdslash_w.cc \
-              fermact_qprop.cc prec_fermact_qprop.cc \
-              unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
-              prec_wilson_fermact_w.cc prec_wilson_linop_w.cc \
-              unprec_dwf_fermact_w.cc unprec_dwf_linop_w.cc \
-              dwffld_w.cc \
-              fermact_qprop_array.cc prec_fermact_qprop_array.cc \
-              unprec_dwf_fermact_base_w.cc unprec_dwf_fermact_base_array_w.cc \
-              unprec_dwf_fermact_array_w.cc unprec_dwf_linop_array_w.cc \
-              unprec_ovdwf_fermact_array_w.cc unprec_ovdwf_linop_array_w.cc \
-              unprec_ovext_fermact_array_w.cc unprec_ovext_linop_array_w.cc \
-              prec_dwf_fermact_base_w.cc prec_dwf_fermact_base_array_w.cc \
-              prec_dwf_fermact_array_w.cc prec_dwf_linop_array_w.cc \
-              readszinqprop_w.cc readszinferm_w.cc writeszinqprop_w.cc quarkprop4_w.cc \
-              overlapbu_linop_w.cc \
-              p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc \
-	      zolotarev_coeffs.cc overlap_fermact_base_w.cc zolotarev4d_fermact_w.cc lovlapms_w.cc 
+#am__append_2 = baryon_w.cc mesons_w.cc curcor2_w.cc lwldslash_w.cc formfac_w.cc \
+#              sink_smear2_w.cc barcomp_w.cc transf_w.cc ldwfdslash_w.cc \
+#              fermact_qprop.cc prec_fermact_qprop.cc \
+#              unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
+#              prec_wilson_fermact_w.cc prec_wilson_linop_w.cc \
+#              unprec_dwf_fermact_w.cc unprec_dwf_linop_w.cc \
+#              dwffld_w.cc \
+#              fermact_qprop_array.cc prec_fermact_qprop_array.cc \
+#              unprec_dwf_fermact_base_w.cc unprec_dwf_fermact_base_array_w.cc \
+#              unprec_dwf_fermact_array_w.cc unprec_dwf_linop_array_w.cc \
+#              unprec_ovdwf_fermact_array_w.cc unprec_ovdwf_linop_array_w.cc \
+#              unprec_ovext_fermact_array_w.cc unprec_ovext_linop_array_w.cc \
+#              prec_dwf_fermact_base_w.cc prec_dwf_fermact_base_array_w.cc \
+#              prec_dwf_fermact_array_w.cc prec_dwf_linop_array_w.cc \
+#              readszinqprop_w.cc readszinferm_w.cc writeszinqprop_w.cc quarkprop4_w.cc \
+#              overlapbu_linop_w.cc \
+#              p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc \
+#	      zolotarev_coeffs.cc overlap_fermact_base_w.cc zolotarev4d_fermact_w.cc lovlapms_w.cc  zolotarev4d_fermact_bj_w.cc
 
 #am__append_3 = lwldslash_w_sse.cc
-#am__append_4 = mesphas_s.cc mesphas_follana_s.cc pions_follana_s.cc follana_io_s.cc \
-#              fermact_qprop.cc 
+am__append_4 = mesphas_s.cc mesphas_follana_s.cc pions_follana_s.cc \
+	follana_io_s.cc fermact_qprop.cc \
+	prec_asqtad_linop_s.cc asq_dsl_s.cc fat7_links_s.cc naik_term_s.cc  \
+	prec_asqtad_fermact_s.cc
 
 VPATH = $(TOPDIR) $(TOPDIR)/lib $(TOPDIR)/lib/actions $(TOPDIR)/lib/actions/boson $(TOPDIR)/lib/actions/boson/operator $(TOPDIR)/lib/actions/ferm $(TOPDIR)/lib/actions/ferm/dsdu $(TOPDIR)/lib/actions/ferm/fermacts $(TOPDIR)/lib/actions/ferm/invert $(TOPDIR)/lib/actions/ferm/linop $(TOPDIR)/lib/actions/ferm/qprop $(TOPDIR)/lib/actions/gauge $(TOPDIR)/lib/geom $(TOPDIR)/lib/info $(TOPDIR)/lib/io $(TOPDIR)/lib/meas $(TOPDIR)/lib/meas/eig $(TOPDIR)/lib/meas/gfix $(TOPDIR)/lib/meas/glue $(TOPDIR)/lib/meas/hadron $(TOPDIR)/lib/meas/pbp $(TOPDIR)/lib/meas/schrfun $(TOPDIR)/lib/meas/smear $(TOPDIR)/lib/meas/sources $(TOPDIR)/lib/update $(TOPDIR)/lib/update/heatbath $(TOPDIR)/lib/update/molecdyn $(TOPDIR)/lib/update/molecdyn/est $(TOPDIR)/lib/update/molecdyn/mese $(TOPDIR)/lib/update/molecdyn/noise $(TOPDIR)/lib/update/molecdyn/step $(TOPDIR)/lib/util $(TOPDIR)/lib/util/comm $(TOPDIR)/lib/util/ferm $(TOPDIR)/lib/util/ft $(TOPDIR)/lib/util/gauge $(TOPDIR)/lib/util/misc $(TOPDIR)/lib/util/random $(TOPDIR)/include $(TOPDIR)/mainprogs $(TOPDIR)/mainprogs/main $(TOPDIR)/mainprogs/tests $(TOPDIR)/root
-ACLOCAL = ${SHELL} /home/bj/Devel/SciDAC/packages/chroma/config/missing --run aclocal-1.7
+ACLOCAL = ${SHELL} /phys/linux/bj/Devel/SciDAC/packages/chroma/config/missing --run aclocal-1.7
 AMDEP_FALSE = #
 AMDEP_TRUE = 
-AMTAR = ${SHELL} /home/bj/Devel/SciDAC/packages/chroma/config/missing --run tar
-AUTOCONF = ${SHELL} /home/bj/Devel/SciDAC/packages/chroma/config/missing --run autoconf
-AUTOHEADER = ${SHELL} /home/bj/Devel/SciDAC/packages/chroma/config/missing --run autoheader
-AUTOMAKE = ${SHELL} /home/bj/Devel/SciDAC/packages/chroma/config/missing --run automake-1.7
+AMTAR = ${SHELL} /phys/linux/bj/Devel/SciDAC/packages/chroma/config/missing --run tar
+AUTOCONF = ${SHELL} /phys/linux/bj/Devel/SciDAC/packages/chroma/config/missing --run autoconf
+AUTOHEADER = ${SHELL} /phys/linux/bj/Devel/SciDAC/packages/chroma/config/missing --run autoheader
+AUTOMAKE = ${SHELL} /phys/linux/bj/Devel/SciDAC/packages/chroma/config/missing --run automake-1.7
 AWK = gawk
 BUILD_SSE_WILSON_DSLASH_FALSE = 
 BUILD_SSE_WILSON_DSLASH_TRUE = #
-BUILD_STAGGERED_LIBS_FALSE = 
-BUILD_STAGGERED_LIBS_TRUE = #
-BUILD_WILSON_LIBS_FALSE = #
-BUILD_WILSON_LIBS_TRUE = 
+BUILD_STAGGERED_LIBS_FALSE = #
+BUILD_STAGGERED_LIBS_TRUE = 
+BUILD_WILSON_LIBS_FALSE = 
+BUILD_WILSON_LIBS_TRUE = #
 CPPFLAGS = 
 CXX = g++
 CXXDEPMODE = depmode=gcc3
@@ -88,7 +90,7 @@ DEFS = -DPACKAGE_NAME=\"chroma\" -DPACKAGE_TARNAME=\"chroma\" -DPACKAGE_VERSION=
 DEPDIR = .deps
 DOXYGEN = doxygen
 DVIPDF = dvipdf
-DVIPS = dvips
+DVIPS = true
 ECHO_C = 
 ECHO_N = -n
 ECHO_T = 
@@ -97,12 +99,12 @@ INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = ${SHELL} $(install_sh) -c -s
-LATEX = latex
+LATEX = true
 LDFLAGS = 
 LIBOBJS = 
 LIBS = 
 LTLIBOBJS = 
-MAKEINFO = ${SHELL} /home/bj/Devel/SciDAC/packages/chroma/config/missing --run makeinfo
+MAKEINFO = ${SHELL} /phys/linux/bj/Devel/SciDAC/packages/chroma/config/missing --run makeinfo
 OBJEXT = o
 PACKAGE = chroma
 PACKAGE_BUGREPORT = edwards@jlab.org
@@ -111,13 +113,13 @@ PACKAGE_STRING = chroma 1.0
 PACKAGE_TARNAME = chroma
 PACKAGE_VERSION = 1.0
 PATH_SEPARATOR = :
-QDPXX_CONFIG = /home/bj/Devel/SciDAC/install/qdp++-scalar-sse2/bin/qdp++-config
-QDPXX_CXXFLAGS = -msse2 -msse -O2 -finline-limit=50000 -march=pentium -I/home/bj/Devel/SciDAC/install/qdp++-scalar-sse2/include -I/usr/include/libxml2
-QDPXX_LDFLAGS = -L/home/bj/Devel/SciDAC/install/qdp++-scalar-sse2/lib
-QDPXX_LIBS = -lqdp -lnml -lXPathReader -lxmlWriter -lqio -ldime -L/usr/lib -lxml2 -lz -lpthread -lm
+QDPXX_CONFIG = /Home/bj/Devel/SciDAC/install/qdp_stag_sse/bin/qdp++-config
+QDPXX_CXXFLAGS = -O2 -finline-limit=50000 -march=pentium4 -msse -msse2 -I/Home/bj/Devel/SciDAC/install/qdp_stag_sse/include -I/usr/include/libxml2
+QDPXX_LDFLAGS = -L/Home/bj/Devel/SciDAC/install/qdp_stag_sse/lib
+QDPXX_LIBS = -lqdp -lnml -lXPathReader -lxmlWriter -lqio -ldime -L/usr/lib -lxml2 -lz -lm
 QDPXX_NC = 3
 QDPXX_ND = 4
-QDPXX_NS = 4
+QDPXX_NS = 1
 QDPXX_PARALLEL_ARCH = scalar
 QDPXX_PRECISION = single
 RANLIB = ranlib
@@ -149,7 +151,7 @@ host_os = linux-gnu
 host_vendor = pc
 includedir = ${prefix}/include
 infodir = ${prefix}/info
-install_sh = /home/bj/Devel/SciDAC/packages/chroma/config/install-sh
+install_sh = /phys/linux/bj/Devel/SciDAC/packages/chroma/config/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localstatedir = ${prefix}/var
@@ -174,7 +176,7 @@ INCFLAGS = -I$(TOPDIR)/include
 #
 # Any other compiler flags
 # 
-AM_CXXFLAGS = $(INCFLAGS)  -msse2 -msse -O2 -finline-limit=50000 -march=pentium -I/home/bj/Devel/SciDAC/install/qdp++-scalar-sse2/include -I/usr/include/libxml2 $(am__append_1)
+AM_CXXFLAGS = $(INCFLAGS)  -O2 -finline-limit=50000 -march=pentium4 -msse -msse2 -I/Home/bj/Devel/SciDAC/install/qdp_stag_sse/include -I/usr/include/libxml2 $(am__append_1)
 
 lib_LIBRARIES = libchroma.a
 
@@ -232,56 +234,64 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	quarkprop4_w.cc overlapbu_linop_w.cc p_src_w.cc d_src_w.cc \
 	D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc zolotarev_coeffs.cc \
 	overlap_fermact_base_w.cc zolotarev4d_fermact_w.cc \
-	lovlapms_w.cc lwldslash_w_sse.cc mesphas_s.cc \
-	mesphas_follana_s.cc pions_follana_s.cc follana_io_s.cc
-am__objects_1 = baryon_w.$(OBJEXT) \
-	mesons_w.$(OBJEXT) curcor2_w.$(OBJEXT) \
-	lwldslash_w.$(OBJEXT) \
-	formfac_w.$(OBJEXT) \
-	sink_smear2_w.$(OBJEXT) \
-	barcomp_w.$(OBJEXT) transf_w.$(OBJEXT) \
-	ldwfdslash_w.$(OBJEXT) \
-	fermact_qprop.$(OBJEXT) \
-	prec_fermact_qprop.$(OBJEXT) \
-	unprec_wilson_fermact_w.$(OBJEXT) \
-	unprec_wilson_linop_w.$(OBJEXT) \
-	prec_wilson_fermact_w.$(OBJEXT) \
-	prec_wilson_linop_w.$(OBJEXT) \
-	unprec_dwf_fermact_w.$(OBJEXT) \
-	unprec_dwf_linop_w.$(OBJEXT) \
-	dwffld_w.$(OBJEXT) \
-	fermact_qprop_array.$(OBJEXT) \
-	prec_fermact_qprop_array.$(OBJEXT) \
-	unprec_dwf_fermact_base_w.$(OBJEXT) \
-	unprec_dwf_fermact_base_array_w.$(OBJEXT) \
-	unprec_dwf_fermact_array_w.$(OBJEXT) \
-	unprec_dwf_linop_array_w.$(OBJEXT) \
-	unprec_ovdwf_fermact_array_w.$(OBJEXT) \
-	unprec_ovdwf_linop_array_w.$(OBJEXT) \
-	unprec_ovext_fermact_array_w.$(OBJEXT) \
-	unprec_ovext_linop_array_w.$(OBJEXT) \
-	prec_dwf_fermact_base_w.$(OBJEXT) \
-	prec_dwf_fermact_base_array_w.$(OBJEXT) \
-	prec_dwf_fermact_array_w.$(OBJEXT) \
-	prec_dwf_linop_array_w.$(OBJEXT) \
-	readszinqprop_w.$(OBJEXT) \
-	readszinferm_w.$(OBJEXT) \
-	writeszinqprop_w.$(OBJEXT) \
-	quarkprop4_w.$(OBJEXT) \
-	overlapbu_linop_w.$(OBJEXT) \
-	p_src_w.$(OBJEXT) d_src_w.$(OBJEXT) \
-	D_j_w.$(OBJEXT) DjDk_w.$(OBJEXT) \
-	BuildingBlocks_w.$(OBJEXT) \
-	zolotarev_coeffs.$(OBJEXT) \
-	overlap_fermact_base_w.$(OBJEXT) \
-	zolotarev4d_fermact_w.$(OBJEXT) \
-	lovlapms_w.$(OBJEXT)
+	lovlapms_w.cc zolotarev4d_fermact_bj_w.cc lwldslash_w_sse.cc \
+	mesphas_s.cc mesphas_follana_s.cc pions_follana_s.cc \
+	follana_io_s.cc prec_asqtad_linop_s.cc asq_dsl_s.cc \
+	fat7_links_s.cc naik_term_s.cc prec_asqtad_fermact_s.cc
+#am__objects_1 = baryon_w.$(OBJEXT) \
+#	mesons_w.$(OBJEXT) curcor2_w.$(OBJEXT) \
+#	lwldslash_w.$(OBJEXT) \
+#	formfac_w.$(OBJEXT) \
+#	sink_smear2_w.$(OBJEXT) \
+#	barcomp_w.$(OBJEXT) transf_w.$(OBJEXT) \
+#	ldwfdslash_w.$(OBJEXT) \
+#	fermact_qprop.$(OBJEXT) \
+#	prec_fermact_qprop.$(OBJEXT) \
+#	unprec_wilson_fermact_w.$(OBJEXT) \
+#	unprec_wilson_linop_w.$(OBJEXT) \
+#	prec_wilson_fermact_w.$(OBJEXT) \
+#	prec_wilson_linop_w.$(OBJEXT) \
+#	unprec_dwf_fermact_w.$(OBJEXT) \
+#	unprec_dwf_linop_w.$(OBJEXT) \
+#	dwffld_w.$(OBJEXT) \
+#	fermact_qprop_array.$(OBJEXT) \
+#	prec_fermact_qprop_array.$(OBJEXT) \
+#	unprec_dwf_fermact_base_w.$(OBJEXT) \
+#	unprec_dwf_fermact_base_array_w.$(OBJEXT) \
+#	unprec_dwf_fermact_array_w.$(OBJEXT) \
+#	unprec_dwf_linop_array_w.$(OBJEXT) \
+#	unprec_ovdwf_fermact_array_w.$(OBJEXT) \
+#	unprec_ovdwf_linop_array_w.$(OBJEXT) \
+#	unprec_ovext_fermact_array_w.$(OBJEXT) \
+#	unprec_ovext_linop_array_w.$(OBJEXT) \
+#	prec_dwf_fermact_base_w.$(OBJEXT) \
+#	prec_dwf_fermact_base_array_w.$(OBJEXT) \
+#	prec_dwf_fermact_array_w.$(OBJEXT) \
+#	prec_dwf_linop_array_w.$(OBJEXT) \
+#	readszinqprop_w.$(OBJEXT) \
+#	readszinferm_w.$(OBJEXT) \
+#	writeszinqprop_w.$(OBJEXT) \
+#	quarkprop4_w.$(OBJEXT) \
+#	overlapbu_linop_w.$(OBJEXT) \
+#	p_src_w.$(OBJEXT) d_src_w.$(OBJEXT) \
+#	D_j_w.$(OBJEXT) DjDk_w.$(OBJEXT) \
+#	BuildingBlocks_w.$(OBJEXT) \
+#	zolotarev_coeffs.$(OBJEXT) \
+#	overlap_fermact_base_w.$(OBJEXT) \
+#	zolotarev4d_fermact_w.$(OBJEXT) \
+#	lovlapms_w.$(OBJEXT) \
+#	zolotarev4d_fermact_bj_w.$(OBJEXT)
 #am__objects_2 = lwldslash_w_sse.$(OBJEXT)
-#am__objects_3 = mesphas_s.$(OBJEXT) \
-#	mesphas_follana_s.$(OBJEXT) \
-#	pions_follana_s.$(OBJEXT) \
-#	follana_io_s.$(OBJEXT) \
-#	fermact_qprop.$(OBJEXT)
+am__objects_3 = mesphas_s.$(OBJEXT) \
+	mesphas_follana_s.$(OBJEXT) \
+	pions_follana_s.$(OBJEXT) \
+	follana_io_s.$(OBJEXT) \
+	fermact_qprop.$(OBJEXT) \
+	prec_asqtad_linop_s.$(OBJEXT) \
+	asq_dsl_s.$(OBJEXT) \
+	fat7_links_s.$(OBJEXT) \
+	naik_term_s.$(OBJEXT) \
+	prec_asqtad_fermact_s.$(OBJEXT)
 am_libchroma_a_OBJECTS = rgauge.$(OBJEXT) taproj.$(OBJEXT) \
 	hotst.$(OBJEXT) expm12.$(OBJEXT) mesplq.$(OBJEXT) \
 	polylp.$(OBJEXT) reunit.$(OBJEXT) unit_check.$(OBJEXT) \
@@ -305,11 +315,13 @@ depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
 am__depfiles_maybe = depfiles
 DEP_FILES = ./$(DEPDIR)/BuildingBlocks_w.Po \
 	./$(DEPDIR)/D_j_w.Po ./$(DEPDIR)/DjDk_w.Po \
-	./$(DEPDIR)/ape_smear.Po ./$(DEPDIR)/axgauge.Po \
-	./$(DEPDIR)/barcomp_w.Po ./$(DEPDIR)/baryon_w.Po \
-	./$(DEPDIR)/coulgauge.Po ./$(DEPDIR)/curcor2_w.Po \
-	./$(DEPDIR)/d_src_w.Po ./$(DEPDIR)/dwffld_w.Po \
-	./$(DEPDIR)/expm12.Po ./$(DEPDIR)/fermact_qprop.Po \
+	./$(DEPDIR)/ape_smear.Po ./$(DEPDIR)/asq_dsl_s.Po \
+	./$(DEPDIR)/axgauge.Po ./$(DEPDIR)/barcomp_w.Po \
+	./$(DEPDIR)/baryon_w.Po ./$(DEPDIR)/coulgauge.Po \
+	./$(DEPDIR)/curcor2_w.Po ./$(DEPDIR)/d_src_w.Po \
+	./$(DEPDIR)/dwffld_w.Po ./$(DEPDIR)/expm12.Po \
+	./$(DEPDIR)/fat7_links_s.Po \
+	./$(DEPDIR)/fermact_qprop.Po \
 	./$(DEPDIR)/fermact_qprop_array.Po \
 	./$(DEPDIR)/follana_io_s.Po \
 	./$(DEPDIR)/formfac_w.Po ./$(DEPDIR)/gaus_smear.Po \
@@ -324,12 +336,14 @@ DEP_FILES = ./$(DEPDIR)/BuildingBlocks_w.Po \
 	./$(DEPDIR)/mesons_w.Po \
 	./$(DEPDIR)/mesphas_follana_s.Po \
 	./$(DEPDIR)/mesphas_s.Po ./$(DEPDIR)/mesplq.Po \
-	./$(DEPDIR)/milc_io.Po \
+	./$(DEPDIR)/milc_io.Po ./$(DEPDIR)/naik_term_s.Po \
 	./$(DEPDIR)/overlap_fermact_base_w.Po \
 	./$(DEPDIR)/overlapbu_linop_w.Po \
 	./$(DEPDIR)/p_src_w.Po \
 	./$(DEPDIR)/pions_follana_s.Po \
 	./$(DEPDIR)/polar_dec.Po ./$(DEPDIR)/polylp.Po \
+	./$(DEPDIR)/prec_asqtad_fermact_s.Po \
+	./$(DEPDIR)/prec_asqtad_linop_s.Po \
 	./$(DEPDIR)/prec_dwf_fermact_array_w.Po \
 	./$(DEPDIR)/prec_dwf_fermact_base_array_w.Po \
 	./$(DEPDIR)/prec_dwf_fermact_base_w.Po \
@@ -363,6 +377,7 @@ DEP_FILES = ./$(DEPDIR)/BuildingBlocks_w.Po \
 	./$(DEPDIR)/unprec_wilson_linop_w.Po \
 	./$(DEPDIR)/writemilc.Po ./$(DEPDIR)/writeszin.Po \
 	./$(DEPDIR)/writeszinqprop_w.Po \
+	./$(DEPDIR)/zolotarev4d_fermact_bj_w.Po \
 	./$(DEPDIR)/zolotarev4d_fermact_w.Po \
 	./$(DEPDIR)/zolotarev_coeffs.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
@@ -434,6 +449,7 @@ include ./$(DEPDIR)/BuildingBlocks_w.Po
 include ./$(DEPDIR)/D_j_w.Po
 include ./$(DEPDIR)/DjDk_w.Po
 include ./$(DEPDIR)/ape_smear.Po
+include ./$(DEPDIR)/asq_dsl_s.Po
 include ./$(DEPDIR)/axgauge.Po
 include ./$(DEPDIR)/barcomp_w.Po
 include ./$(DEPDIR)/baryon_w.Po
@@ -442,6 +458,7 @@ include ./$(DEPDIR)/curcor2_w.Po
 include ./$(DEPDIR)/d_src_w.Po
 include ./$(DEPDIR)/dwffld_w.Po
 include ./$(DEPDIR)/expm12.Po
+include ./$(DEPDIR)/fat7_links_s.Po
 include ./$(DEPDIR)/fermact_qprop.Po
 include ./$(DEPDIR)/fermact_qprop_array.Po
 include ./$(DEPDIR)/follana_io_s.Po
@@ -463,12 +480,15 @@ include ./$(DEPDIR)/mesphas_follana_s.Po
 include ./$(DEPDIR)/mesphas_s.Po
 include ./$(DEPDIR)/mesplq.Po
 include ./$(DEPDIR)/milc_io.Po
+include ./$(DEPDIR)/naik_term_s.Po
 include ./$(DEPDIR)/overlap_fermact_base_w.Po
 include ./$(DEPDIR)/overlapbu_linop_w.Po
 include ./$(DEPDIR)/p_src_w.Po
 include ./$(DEPDIR)/pions_follana_s.Po
 include ./$(DEPDIR)/polar_dec.Po
 include ./$(DEPDIR)/polylp.Po
+include ./$(DEPDIR)/prec_asqtad_fermact_s.Po
+include ./$(DEPDIR)/prec_asqtad_linop_s.Po
 include ./$(DEPDIR)/prec_dwf_fermact_array_w.Po
 include ./$(DEPDIR)/prec_dwf_fermact_base_array_w.Po
 include ./$(DEPDIR)/prec_dwf_fermact_base_w.Po
@@ -512,6 +532,7 @@ include ./$(DEPDIR)/unprec_wilson_linop_w.Po
 include ./$(DEPDIR)/writemilc.Po
 include ./$(DEPDIR)/writeszin.Po
 include ./$(DEPDIR)/writeszinqprop_w.Po
+include ./$(DEPDIR)/zolotarev4d_fermact_bj_w.Po
 include ./$(DEPDIR)/zolotarev4d_fermact_w.Po
 include ./$(DEPDIR)/zolotarev_coeffs.Po
 

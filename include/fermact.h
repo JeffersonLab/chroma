@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 1.13 2003-12-02 15:40:51 edwards Exp $
+// $Id: fermact.h,v 1.14 2003-12-10 16:20:59 bjoo Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -388,5 +388,40 @@ class EvenOddPrecStaggeredTypeFermAct : public StaggeredTypeFermAct<T>
 public:
 };
 
+
+// Asqtad Fermion Action.
+// Have a seperate class for now due to the linop's dependance on
+// u_fat and u_triple rather than just u!
+template<typename T>
+class EvenOddPrecAsqtadFermTypeAction : 
+  public EvenOddPrecStaggeredTypeFermAct<T>
+{
+public:
+                                                                                                                                                 
+  //! Produce a linear operator for this action
+  /*! NOTE: maybe this should be abstracted to a foundry class object */
+  virtual const LinearOperator<T>* linOp(const ConnectState& state) const = 0;
+                                                                                                                                                 
+  //! Produce a linear operator M^dag.M for this action
+  /*! NOTE: maybe this should be abstracted to a foundry class object */
+  virtual const LinearOperator<T>* lMdagM(const ConnectState& state) const = 0;
+                                                                                                                                                 
+  //! Compute quark propagator
+  /*! NOTE: maybe this should produce a quark prop foundry */
+
+#if 0
+  void qprop(T& psi,
+             const multi1d<LatticeColorMatrix>& u_fat,
+             const multi1d<LatticeColorMatrix>& u_triple,
+             const T& chi,
+             int invType,
+             const Real& RsdCG,
+             int MaxCG, const Real& mass, int& ncg_had) const;
+#endif                                                                                                                                            
+  //! Virtual destructor to help with cleanup;
+  virtual ~EvenOddPrecAsqtadFermTypeAction() {}
+                                                                                                                                                 
+                                                                                                                                                 
+};
 
 #endif

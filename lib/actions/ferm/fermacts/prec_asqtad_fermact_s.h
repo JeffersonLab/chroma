@@ -2,7 +2,7 @@
 #define __asqtad_fermact_s_h__
 
 #include <fermact.h>
-
+#include "actions/ferm/fermacts/asqtad_state.h"
 
 using namespace QDP;
 
@@ -43,23 +43,24 @@ public:
   
 
   //! Produce a linear operator for this action
-  const LinearOperator<LatticeFermion>* linOp(const ConnectState& state) const;
+  const EvenOddPrecLinearOperator<LatticeFermion>* linOp(const ConnectState& state_) const;
 
   //! Produce a linear operator M^dag.M for this action
-  const LinearOperator<LatticeFermion>* lMdagM(const ConnectState& state) const;
+  
+  const EvenOddPrecLinearOperator<LatticeFermion>* lMdagM(const ConnectState& state_) const {} ;
   //! accessors 
-  Real quarkMass() { 
+  Real getQuarkMass() { 
     return Mass;
   }
 
   
-  Real u0() { 
+  Real getU0() { 
     return u0;
   }
 
   //! Create Connect State from u
   const AsqtadConnectStateBase<LatticeFermion>* createState(const multi1d<LatticeColorMatrix>& u) {
-    return new AsqtadConnectState(u, u0, phases);
+    return new AsqtadConnectState<LatticeFermion>(u, u0, phases);
   }
 
 #if 0

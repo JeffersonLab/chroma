@@ -1,4 +1,4 @@
-/*  $Id: fat7_links_s.cc,v 1.1 2003-12-10 12:38:14 bjoo Exp $  */
+/*  $Id: fat7_links_s.cc,v 1.1 2003-12-10 16:20:59 bjoo Exp $  */
 
 /* FAT7_LINKS */
 

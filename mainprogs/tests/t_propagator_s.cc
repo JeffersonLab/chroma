@@ -1,4 +1,4 @@
-// $Id: t_propagator_s.cc,v 1.1 2003-12-10 12:38:14 bjoo Exp $
+// $Id: t_propagator_s.cc,v 1.2 2003-12-10 16:21:00 bjoo Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -9,11 +9,9 @@
 #define MAIN
 
 #include "chroma.h"
-#include "mesphas_follana_s.h"
-#include "improvement_terms_s.h"
-#include "qprop.h"
-#include "asqtad_fermact_s.h"
 #include "util/ferm/transf_w.h"
+#include "actions/ferm/fermacts/prec_asqtad_fermact_s.h"
+#include "actions/ferm/linop/prec_asqtad_linop_s.h"
 
 /*
  *  Here we have various temporary definitions
@@ -275,10 +273,6 @@ int main(int argc, char **argv)
   // Input parameter structure
   Propagator_input_t  input;
 
-  // Phases
-  multi1d<LatticeInteger> alpha(Nd); // KS Phases
-  multi1d<LatticeInteger> beta(Nd);  // Auxiliary phases for this work (not needed here)
-
   // Instantiate xml reader for DATA
   XMLReader xml_in("DATA");
 
@@ -291,8 +285,7 @@ int main(int argc, char **argv)
 
   // Read in the configuration along with relevant information.
   multi1d<LatticeColorMatrix> u(Nd);
-  multi1d<LatticeColorMatrix> u_fat(Nd);
-  multi1d<LatticeColorMatrix> u_triple(Nd);
+  
   XMLReader gauge_xml;
 
   switch (input.param.cfg_type) 
@@ -340,24 +333,6 @@ int main(int argc, char **argv)
   xml_out.flush();
 
 
-  // Check if the gauge field configuration is unitarized
-//  unitarityCheck(u);   worry about this some other time
-
-
-// Test to see if the phases are working!
-// Turn them on and then off again and calculate plaq
-//
-//  mesPhasFollana(alpha, beta);
-//  for(int mu=0; mu < Nd; ++mu){
-//   u[mu] *= alpha[mu];
-//  }
-//
-//  for(int mu=0; mu < Nd; ++mu){
-//   u[mu] *= alpha[mu];  
-//  }
-//  WORKS FINE!
-
-
   // Calculate some gauge invariant observables just for info.
   Double w_plaq, s_plaq, t_plaq, link;
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
@@ -375,37 +350,29 @@ int main(int argc, char **argv)
 
   xml_out.flush();
 
-
-// Turn on KS phases
-// first get them!
-  mesPhasFollana(alpha, beta);
-  for(int mu=0; mu<Nd; mu++) {
-    u[mu] *= alpha[mu];
-  }
-
-// Make fat7 and triple links
-
-  Fat7_Links(u, u_fat, input.param.u0);
-  Triple_Links(u, u_triple, input.param.u0);
-
-  push(xml_out, "U_FAT");
-  Write(xml_out, u_fat);
-  pop(xml_out);
-
-  push(xml_out, "U_TRIPLE");
-  Write(xml_out, u_triple);
-  pop(xml_out);
-     
-  xml_out.flush();
-
   //
   // Initialize fermion action
   //
-  AsqtadFermAct S_f(input.param.Mass);
+  EvenOddPrecAsqtadFermAct S_f(input.param.Mass, input.param.u0);
 
-//  FermAct = ASQTAD;  // global
-//  input.param.invType = CG_INVERTER;  // enum
+  // Set up a state for the current u,
+  // (compute fat & triple links)
+  // Use S_f.createState so that S_f can pass in u0
+  // Use ConnectStateProxy to reference count and avoid pointer notation
 
+  AsqtadConnectStateProxy<LatticeFermion> state(S_f.createState(u));
+  EvenOddPrecLinearOperatorProxy<LatticeFermion> D_asqtad(S_f.linOp((ConnectState &)state));
+
+  // Create a fermion to apply linop to.
+  LatticeFermion psi;
+  random(psi);
+
+  // Create a result vector 
+  LatticeFermion chi;
+  chi  =  zero;
+
+  // Apply Linop
+  D_asqtad.evenOddLinOp(chi, psi, PLUS); 
 
   //
   // Loop over the source color, creating the source
@@ -413,9 +380,9 @@ int main(int argc, char **argv)
   // terminology is that a staggered propagator is a matrix in color space
   // 
   //
-  LatticePropagator quark_propagator;
-//  XMLBufferWriter xml_buf;
-  int ncg_had = 0;
+  // LatticePropagator quark_propagator;
+  //  XMLBufferWriter xml_buf;
+  // int ncg_had = 0;
 
 //  quarkprop4 is generic to Wilson not staggered, so explicitly
 //  call qprop from here as in the past.
@@ -423,74 +390,74 @@ int main(int argc, char **argv)
 //  quarkProp4(quark_propagator, xml_buf, quark_prop_source,
 //	     S_f, u, input.param.invType, input.param.RsdCG, input.param.MaxCG, ncg_had);
 
-  LatticeFermion psi = zero;   // note this is ``zero'' and not 0
+  // LatticeFermion psi = zero;   // note this is ``zero'' and not 0
 
-  for(int color_source = 0; color_source < Nc; ++color_source)
-  {
-    int spin_source = 0;
-    LatticeFermion chi;
+  // for(int color_source = 0; color_source < Nc; ++color_source)
+  // {
+  //  int spin_source = 0;
+  //  LatticeFermion chi;
 
     // Extract a fermion source
-    PropToFerm(quark_prop_source, chi, color_source, spin_source);
+   // PropToFerm(quark_prop_source, chi, color_source, spin_source);
 
-    push(xml_out, "SOURCE");
-    Write(xml_out, psi);
-    Write(xml_out, chi);
-    pop(xml_out);
+    // push(xml_out, "SOURCE");
+   //  Write(xml_out, psi);
+   //  Write(xml_out, chi);
+   //  pop(xml_out);
 
     // Use the last initial guess as the current guess
 
     // Compute the propagator for given source color/spin 
-    int n_count;
+    // int n_count;
 
-    S_f.qprop(psi, u_fat, u_triple, chi, CG_INVERTER, 
-              input.param.RsdCG, input.param.MaxCG, input.param.Mass, n_count);
-    ncg_had += n_count;
+    // S_f.qprop(psi, u_fat, u_triple, chi, CG_INVERTER, 
+    //           input.param.RsdCG, input.param.MaxCG, input.param.Mass, n_count);
+    // ncg_had += n_count;
       
-    push(xml_out,"Qprop");
-    write(xml_out, "Mass" , input.param.Mass);
-    write(xml_out, "RsdCG", input.param.RsdCG);
-    Write(xml_out, n_count);
-    pop(xml_out);
+    // push(xml_out,"Qprop");
+    // write(xml_out, "Mass" , input.param.Mass);
+    // write(xml_out, "RsdCG", input.param.RsdCG);
+    // Write(xml_out, n_count);
+    // pop(xml_out);
 
     /*
      * Move the solution to the appropriate components
      * of quark propagator.
      */
-    FermToProp(psi, quark_propagator, color_source, spin_source);
-  }
+    // FermToProp(psi, quark_propagator, color_source, spin_source);
+ //  }
 
 
   // Instantiate XML buffer to make the propagator header
-  XMLBufferWriter prop_xml;
-  push(prop_xml, "propagator");
+  // XMLBufferWriter prop_xml;
+  // push(prop_xml, "propagator");
 
   // Write out the input
-  write(prop_xml, "Input", xml_in);
+  // write(prop_xml, "Input", xml_in);
 
   // Write out the config header
-  write(prop_xml, "Config_info", gauge_xml);
+  // write(prop_xml, "Config_info", gauge_xml);
 
   // Write out the source header
-  write(prop_xml, "Source_info", source_xml);
+  // write(prop_xml, "Source_info", source_xml);
 
-  pop(prop_xml);
+  // pop(prop_xml);
 
 
   // Save the propagator
-  switch (input.param.prop_type) 
-  {
-  case PROP_TYPE_SZIN:
-    writeSzinQprop(quark_propagator, input.prop.prop_file, input.param.Mass);
-    break;
+//   switch (input.param.prop_type) 
+//   {
+//   case PROP_TYPE_SZIN:
+//     writeSzinQprop(quark_propagator, input.prop.prop_file, input.param.Mass);
+  //   break;
 
 //  case PROP_TYPE_SCIDAC:
 //    writeQprop(prop_xml, quark_propagator, input.prop.prop_file);
 //    break;
-
-  default :
-    QDP_error_exit("Propagator type is unsupported.");
-  }
+// 
+//   default :
+  //   QDP_error_exit("Propagator type is unsupported.");
+//   }
 
 
   xml_out.close();

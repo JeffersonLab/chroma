@@ -1,4 +1,4 @@
-/*  $Id: asq_dsl_s.cc,v 1.1 2003-12-10 12:38:13 bjoo Exp $  */
+/*  $Id: asq_dsl_s.cc,v 1.1 2003-12-10 16:20:59 bjoo Exp $  */
 
 #include "chromabase.h"
 //#include "actions/ferm/fermacts/linop/asq_dsl_s.h
