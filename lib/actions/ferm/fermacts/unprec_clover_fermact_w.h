@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_clover_fermact_w.h,v 1.5 2004-01-02 03:19:40 edwards Exp $
+// $Id: unprec_clover_fermact_w.h,v 1.6 2004-01-23 10:35:36 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Clover fermion action
  */
@@ -8,6 +8,7 @@
 #define __unprec_clover_fermact_w_h__
 
 #include "fermact.h"
+#include "actions/ferm/linop/lgherm_w.h"
 
 using namespace QDP;
 
@@ -42,6 +43,12 @@ public:
 
   //! Produce a linear operator M^dag.M for this action
   const LinearOperator<LatticeFermion> lMdagM(Handle<const ConnectState> state) const;
+
+  const LinearOperator<LatticeFermion>* gamma5HermLinOp(Handle< const ConnectState> state) const { 
+    return new lgherm<LatticeFermion>(linOp(state));
+  }
+
+
 
   //! Destructor is automatic
   ~UnprecCloverFermAct() {}

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_fermact_w.h,v 1.8 2004-01-02 03:19:40 edwards Exp $
+// $Id: unprec_dwf_fermact_w.h,v 1.9 2004-01-23 10:35:36 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion action
  */
@@ -50,6 +50,7 @@ public:
   //! Produce a linear operator for this action but with quark mass 1
   const LinearOperator<LatticeDWFermion>* linOpPV(Handle<const ConnectState> state) const;
 
+  
   //! Destructor is automatic
   ~UnprecDWFermAct() {}
 

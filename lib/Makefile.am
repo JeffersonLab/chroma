@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.98 2004-01-22 22:49:44 edwards Exp $
+# $Id: Makefile.am,v 1.99 2004-01-23 10:35:36 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -148,7 +148,7 @@ nobase_include_HEADERS += \
 	meas/hadron/hadron_w.h meas/hadron/mesonseqsrc_w.h \
 	meas/hadron/mesons_w.h meas/hadron/seqpiontest_w.h \
 	meas/hadron/walfil_w.h meas/hadron/wall_qprop_w.h \
-	meas/hadron/wallpionff_w.h \
+#	meas/hadron/wallpionff_w.h \
 	meas/smear/sink_smear2_w.h meas/sources/d_src_w.h \
 	meas/sources/p_src_w.h meas/sources/sources_w.h
 endif
@@ -236,9 +236,8 @@ libchroma_a_SOURCES += baryon_w.cc mesons_w.cc curcor2_w.cc lwldslash_w.cc formf
               p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc \
 	      zolotarev_coeffs.cc overlap_fermact_base_w.cc lovlapms_w.cc  \
 	      zolotarev4d_fermact_w.cc ischiral_w.cc lovddag_w.cc \
-	      zolotarev5d_fermact_array_w.cc zolotarev5d_linop_array_w.cc \
-              wallpionff_w.cc
-
+	      zolotarev5d_fermact_array_w.cc zolotarev5d_linop_array_w.cc 
+#              wallpionff_w.cc
 # wall_qprop_w.cc
 # zolotarev4d_linop_w.cc 
 # dslashm_w.cc 

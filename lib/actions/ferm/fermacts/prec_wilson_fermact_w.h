@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_wilson_fermact_w.h,v 1.4 2004-01-02 03:19:40 edwards Exp $
+// $Id: prec_wilson_fermact_w.h,v 1.5 2004-01-23 10:35:36 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action
  */
@@ -8,6 +8,7 @@
 #define __prec_wilson_fermact_w_h__
 
 #include "fermact.h"
+#include "actions/ferm/linop/lgherm_w.h"
 
 using namespace QDP;
 
@@ -42,6 +43,11 @@ public:
 
   //! Produce a linear operator M^dag.M for this action
   const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state) const;
+
+  //! Produce the gamma_5 hermitian operator H_w
+  const LinearOperator<LatticeFermion>* gamma5HermLinOp(Handle< const ConnectState> state) const { 
+    return new lgherm<LatticeFermion>(linOp(state));
+  }
 
   //! Override - compute dS_f/dU
   void dsdu(multi1d<LatticeColorMatrix>& result,

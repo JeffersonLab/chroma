@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_parwilson_fermact_w.h,v 1.1 2004-01-12 04:48:00 edwards Exp $
+// $Id: unprec_parwilson_fermact_w.h,v 1.2 2004-01-23 10:35:36 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action with parity breaking term
  */
@@ -45,6 +45,14 @@ public:
 
   //! Produce a linear operator M^dag.M for this action
   const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state) const;
+
+ //! Produce the gamma_5 hermitin op gamma_5 M
+  const LinearOperator<LatticeFermion>* gamma5HermLinOp(Handle<const ConnectState> state) const {
+
+    QDP_error_exit("gamma5HermLinOp not implemented yet for this action\n");
+    return 0;
+  }
+
 
   //! Compute dS_f/dU
   void dsdu(multi1d<LatticeColorMatrix>& result,

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: overlap_fermact_base_w.h,v 1.5 2004-01-12 18:09:29 bjoo Exp $
+// $Id: overlap_fermact_base_w.h,v 1.6 2004-01-23 10:35:36 bjoo Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -9,7 +9,7 @@
 
 #include "fermact.h"
 #include "meas/eig/ischiral_w.h"
-
+#include "actions/ferm/linop/lgherm_w.h"
 using namespace QDP;
 
 //! Base class for unpreconditioned overlap-like fermion actions
@@ -38,6 +38,10 @@ public:
   virtual const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state) const = 0;
 
   virtual const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state, const Chirality& chirality) const = 0;
+
+  virtual const LinearOperator<LatticeFermion>* gamma5HermLinOp(Handle< const ConnectState> state) const { 
+    return new lgherm<LatticeFermion>(linOp(state));
+  }
 
   //! Redefine quark propagator routine for 4D fermions
   /*! 
