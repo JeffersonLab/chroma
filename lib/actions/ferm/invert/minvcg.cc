@@ -1,4 +1,4 @@
-// $Id: minvcg.cc,v 1.12 2005-01-14 20:13:05 edwards Exp $
+// $Id: minvcg.cc,v 1.13 2005-01-28 05:09:01 edwards Exp $
 
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator
@@ -152,7 +152,7 @@ void MInvCG_a(const LinearOperator<T>& A,
   //  b[0] := - | r[0] |**2 / < p[0], Ap[0] > ;/
   //  First compute  d  =  < p, A.p > 
   //  Ap = A . p  */
-  LatticeFermion Ap;
+  T Ap;
   A(Ap, p[isz], PLUS);
   Ap[sub] += p[isz] * shifts[isz];
 
