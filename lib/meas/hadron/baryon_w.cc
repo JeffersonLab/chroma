@@ -1,4 +1,4 @@
-// $Id: baryon_w.cc,v 1.10 2004-02-11 12:51:34 bjoo Exp $ 
+// $Id: baryon_w.cc,v 1.11 2004-04-21 18:48:12 edwards Exp $ 
 /*! \file
  *  \brief Baryon 2-pt functions
  */
@@ -206,20 +206,22 @@ void baryon(LatticePropagator& quark_propagator,
   SpinMatrix g_one = 1.0;
   SpinMatrix g_tmp1;
 
-  /* C = Gamma(10) */
+  // C = Gamma(10)
   g_tmp1 = 0.5 * (Gamma(2) * g_one  +  timesI(Gamma(1) * g_one));
   Cgm = Gamma(10) * g_tmp1;
 
   Cg4m = Gamma(10) * (Gamma(8) * g_tmp1);
   CgmNR = Cgm - Cg4m;
 
+  // S_proj = (1 + \Sigma_3)*(1 + gamma_4) / 2 
+  //        = (1 + Gamma(8) - i G(3) - i G(11)) / 2
   SpinMatrix S_proj = 
     0.5*((g_one + Gamma(8) * g_one) - timesI(Gamma(3) * g_one  +  Gamma(11) * g_one));
 
-  /* S_proj_unpol = (1/2)(1 + gamma_4) */
+  // S_proj_unpol = (1/2)(1 + gamma_4)
   SpinMatrix S_proj_unpol = 0.5 * (g_one + (g_one * Gamma(8)));
 
-  /* C g_5 NR = (1/2)*C gamma_5 * ( 1 + g_4 ) */ 
+  // C g_5 NR = (1/2)*C gamma_5 * ( 1 + g_4 )
   SpinMatrix Cg5NR = Gamma(5) * S_proj_unpol;
 
 
@@ -235,6 +237,10 @@ void baryon(LatticePropagator& quark_propagator,
     case 0:
       /* Proton_1; use also for Lambda_1! */
       /* C gamma_5 = Gamma(5) */
+      // Polarized:
+      // S_proj = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
+      //            = (1 + Gamma(8) - i G(3) - i G(11)) / 2
+
       di_quark = quarkContract13(quark_propagator * Gamma(5),
 				 Gamma(5) * quark_propagator);
       b_prop = trace(S_proj * traceColor(quark_propagator * traceSpin(di_quark)))
@@ -310,6 +316,7 @@ void baryon(LatticePropagator& quark_propagator,
     case 9:
       /* Proton_1 -- but unpolarised ; use also for Lambda_1! */
       /* C gamma_5 = Gamma(5) */
+      // S_proj_unpol = T = (1/2)(1 + gamma_4)
       di_quark = quarkContract13(quark_propagator * Gamma(5),
 				 Gamma(5) * quark_propagator);
       b_prop = trace(S_proj_unpol * trace(quark_propagator * trace(di_quark)));
