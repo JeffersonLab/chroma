@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: srcfil.h,v 1.4 2003-12-16 02:06:57 edwards Exp $
+// $Id: srcfil.h,v 1.5 2004-11-20 15:11:50 mcneile Exp $
 /*! \file
  *  \brief Point source construction
  */
@@ -31,5 +31,16 @@ void srcfil(LatticeFermion& a, multi1d<int>& coord, int color_index, int spin_in
  */
 
 void srcfil(LatticeColorVector& a, multi1d<int>& coord, int color_index);
+
+//! Fill a specific color index with 1.0
+/*!
+ * This routine is specific to Staggered fermions! 
+ *
+ * \param a      Source lattice Color Vector
+ * \param coord  Lattice coordinate
+ * \param color_index  Color index
+ */
+
+void srcfil(LatticeStaggeredFermion& a, multi1d<int>& coord, int color_index) ;
 
 #endif
