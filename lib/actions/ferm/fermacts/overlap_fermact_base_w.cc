@@ -1,4 +1,4 @@
-// $Id: overlap_fermact_base_w.cc,v 1.12 2004-05-18 12:40:15 bjoo Exp $
+// $Id: overlap_fermact_base_w.cc,v 1.13 2004-05-21 12:03:13 bjoo Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -12,6 +12,7 @@
 #include "actions/ferm/invert/inv_rel_cg2.h"
 
 #include "actions/ferm/invert/invsumr.h"
+#include "actions/ferm/invert/inv_rel_sumr.h"
 #include "actions/ferm/invert/minvsumr.h"
 #include "actions/ferm/invert/minvcg.h"
 #include "actions/ferm/linop/lmdagm.h"
@@ -151,6 +152,44 @@ OverlapFermActBase::qprop(LatticeFermion& psi,
 	
 	// Restore to normal scaling
 	Real fact = Real(2)/(Real(1) - mu);
+	psi *= fact;
+	
+	
+      }
+
+      // Check back:
+      // Get a proper operator and compute chi- Dpsi
+      Handle<const LinearOperator<LatticeFermion> > D(linOp(state));
+      LatticeFermion Dpsi;
+      (*D)(Dpsi, psi, PLUS);
+      Dpsi = chi - Dpsi;
+      Dpsi /= sqrt(norm2(chi));
+      QDPIO::cout << "OvQprop || chi - D psi || = " << sqrt(norm2(Dpsi))
+		  << "  n_count = " << n_count << " iters" << endl;
+    }
+    break;
+
+  case REL_SUMR_INVERTER:
+    {
+      // Solve by Relaxed SUMR solver -- for shifted unitary matrices
+      //
+      // Solve zeta I + rho gamma_5 eps(H)
+      // where gamma_5 eps(H) is unitary
+      //
+      // zeta = (1 + mu)/(1-mu)
+      // rho  = 1
+      Real rho = Real(1);
+      Real mu = quark_mass();
+      Complex zeta = cmplx(( Real(1) + mu ) / (Real(1) - mu),0);
+      {
+	Handle<const ApproxLinearOperator<LatticeFermion> > U( dynamic_cast<const ApproxLinearOperator<LatticeFermion>* >(lgamma5epsH(state)) );
+
+	Real fact = Real(2)/(Real(1) - mu);
+	
+	// Now solve:
+	InvRelSUMR(*U, chi, psi, zeta, rho, RsdCG, MaxCG, n_count);
+	
+	// Restore to normal scaling
 	psi *= fact;
 	
 	

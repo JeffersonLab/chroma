@@ -1,4 +1,4 @@
-// $Id: invbicgstab_array.cc,v 1.2 2004-05-19 11:43:19 bjoo Exp $
+// $Id: invbicgstab_array.cc,v 1.3 2004-05-21 12:03:13 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -73,12 +73,12 @@ void InvBiCGStab_a(const LinearOperator< multi1d<T> >& A,
   for(int k = 1; k <= MaxCG && !convP ; k++) { 
     
     // rho_{k+1} = < r_0 | r >
-    rho = Real(0);
-
+    rho = Double(0);
     for(int n=0; n < N; n++) {
       rho += innerProduct(r0[n],r[n],s);
     }
 
+    
     if( toBool( real(rho) == 0 ) && toBool( imag(rho) == 0 ) ) {
       QDPIO::cout << "BiCGStab breakdown: rho = 0" << endl;
       QDP_abort(1);
@@ -87,6 +87,7 @@ void InvBiCGStab_a(const LinearOperator< multi1d<T> >& A,
     // beta = ( rho_{k+1}/rho_{k})(alpha/omega)
     Complex beta;
     beta = ( rho / rho_prev ) * (alpha/omega);
+    
     
     // p = r + beta(p - omega v)
 

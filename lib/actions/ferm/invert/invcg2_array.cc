@@ -1,4 +1,4 @@
-// $Id: invcg2_array.cc,v 1.7 2004-05-19 00:21:23 bjoo Exp $
+// $Id: invcg2_array.cc,v 1.8 2004-05-21 12:03:13 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -60,7 +60,7 @@
  *  2 A + 2 Nc Ns + N_Count ( 2 A + 10 Nc Ns )
  */
 
-#define PRINT_5D_RESID
+#undef PRINT_5D_RESID
 template<typename T>
 void InvCG2_a(const LinearOperator< multi1d<T> >& M,
 	      const multi1d<T> & chi,

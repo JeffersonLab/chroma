@@ -1,4 +1,4 @@
-// $Id: t_ovlap5d_bj.cc,v 1.8 2004-05-19 11:43:19 bjoo Exp $
+// $Id: t_ovlap5d_bj.cc,v 1.9 2004-05-21 12:03:14 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -12,16 +12,6 @@
 #include <math.h>
 
 #include "chroma.h"
-
-//#include "state.h"
-//#include "actions/ferm/linop/lovlapms_w.h"
-//#include "actions/ferm/fermacts/zolotarev_state.h"
-//#include "actions/ferm/fermacts/zolotarev4d_fermact_bj_w.h"
-//#include "actions/ferm/linop/lovlapms_w.h"
-//#include "meas/eig/eig_w.h"
-//#include "meas/hadron/srcfil.h"
-//#include "actions/ferm/invert/invcg1.h"
-//#include "util/ft/sftmom.h"
 
 using namespace QDP;
 using namespace std;
@@ -474,11 +464,7 @@ int main(int argc, char **argv)
   Handle<const ConnectState> connect_state(connect_state_ptr);
   
   // Make me a linop (this callls the initialise function)
-  // Handle<const LinearOperator< multi1d< LatticeFermion > > > D_op(S.lnonHermLinOp(connect_state));
-
-  Handle<const LinearOperator< multi1d< LatticeFermion > > > D_op(S.lnonHermLinOp(connect_state));
-
-  //  Handle<const LinearOperator< multi1d< LatticeFermion > > > D_MM(S.lMdagM(connect_state));
+  Handle<const LinearOperator< multi1d< LatticeFermion > > > D_op(S.linOp(connect_state));
 
 
   push(xml_out, "Zolotarev5DInternal");
@@ -505,7 +491,7 @@ int main(int argc, char **argv)
     psi[i] = zero;
     chi[i] = zero;
   }
-  
+ 
   chi[N5-1] = Gamma(G5)*chi4;             // 4D source in last component
                                          // is gamma5 chi
 
@@ -520,8 +506,9 @@ int main(int argc, char **argv)
   // hence tmp5_1 = M^{-dag} M^{-1} chi
   
   // Put solution into psi  check inverse
-  // (*D_op)(tmp5_1, chi, MINUS);
-  InvBiCGStab( *D_op, chi, psi, params.rsd_cg, params.max_cg, n_count);
+  (*D_op)(tmp5_1, chi, MINUS);
+
+  InvCG2( *D_op, tmp5_1, psi, params.rsd_cg, params.max_cg, n_count);
 
  
   // Multiply back to check inverse

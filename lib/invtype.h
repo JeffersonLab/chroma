@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: invtype.h,v 1.3 2004-05-14 18:10:20 bjoo Exp $
+// $Id: invtype.h,v 1.4 2004-05-21 12:03:13 bjoo Exp $
 
 /*! @file
  * @brief Types of inverters
@@ -14,7 +14,8 @@ enum InvType {
   BICG_INVERTER = 23,
   CR_INVERTER = 24,
   SUMR_INVERTER = 25,
-  REL_CG_INVERTER = 26
+  REL_CG_INVERTER = 26,
+  REL_SUMR_INVERTER = 27
 };
 
 #endif

@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.139 2004-05-19 00:21:22 bjoo Exp $
+# $Id: Makefile.am,v 1.140 2004-05-21 12:03:13 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -68,6 +68,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/invmr.h actions/ferm/invert/minvcg.h \
 	actions/ferm/invert/invcg2_timing_hacks.h \
 	actions/ferm/invert/invsumr.h actions/ferm/invert/minvsumr.h \
+	actions/ferm/invert/inv_rel_sumr.h \
 	actions/ferm/invert/invbicgstab.h \
 	actions/ferm/invert/invbicgstab_array.h \
 	actions/ferm/linop/asqtad_dslash.h actions/ferm/linop/linop.h \
@@ -139,6 +140,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/lovlap_double_pass_w.h \
 	actions/ferm/linop/lovddag_double_pass_w.h \
 	actions/ferm/linop/lg5eps_w.h \
+	actions/ferm/linop/lg5eps_double_pass_w.h \
 	actions/ferm/linop/lwldslash_w.h \
 	actions/ferm/linop/overlapbu_linop_w.h \
 	actions/ferm/linop/prec_dwf_linop_array_w.h \
@@ -240,7 +242,7 @@ libchroma_a_SOURCES = gauge_startup.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
 	       gramschm_array.cc ritz.cc ritz_array.cc sn_jacob.cc \
 	       sn_jacob_array.cc eig_spec.cc eig_spec_array.cc \
                proginfo.cc printgeom.cc fuzwilp.cc wilslp.cc \
-	       invsumr.cc minvsumr.cc invbicgstab.cc invbicgstab_array.cc
+	       invsumr.cc minvsumr.cc inv_rel_sumr.cc invbicgstab.cc invbicgstab_array.cc
 
 # 
 
@@ -278,7 +280,7 @@ libchroma_a_SOURCES += baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
 	      zolotarev_coeffs.cc overlap_fermact_base_w.cc lovlapms_w.cc  \
 	      zolotarev4d_fermact_w.cc ischiral_w.cc lovddag_w.cc \
 	      lovlap_double_pass_w.cc lovddag_double_pass_w.cc \
-	      lg5eps_w.cc \
+	      lg5eps_w.cc lg5eps_double_pass_w.cc \
 	      zolotarev5d_fermact_array_w.cc zolotarev5d_linop_array_w.cc \
 	      zolotarev5d_nonhermop_array_w.cc \
               wallpionff_w.cc wallnuclff_w.cc wall_qprop_w.cc

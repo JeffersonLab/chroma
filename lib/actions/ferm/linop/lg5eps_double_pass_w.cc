@@ -1,10 +1,10 @@
-// $Id: lovlap_double_pass_w.cc,v 1.5 2004-05-21 12:03:13 bjoo Exp $
+// $Id: lg5eps_double_pass_w.cc,v 1.1 2004-05-21 12:03:13 bjoo Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
 #include <math.h>
 #include "chromabase.h"
-#include "actions/ferm/linop/lovlap_double_pass_w.h"
+#include "actions/ferm/linop/lg5eps_double_pass_w.h"
 #include "meas/eig/gramschm.h"
 
 using namespace QDP;
@@ -27,7 +27,7 @@ using namespace QDP;
  * \param isign   Hermitian Conjugation Flag 
  *                ( PLUS = no dagger| MINUS = dagger )       (Read)
  */
-void lovlap_double_pass::operator() (LatticeFermion& chi, 
+void lg5eps_double_pass::operator() (LatticeFermion& chi, 
 				     const LatticeFermion& psi, 
 				     enum PlusMinus isign) const
 {
@@ -53,7 +53,7 @@ void lovlap_double_pass::operator() (LatticeFermion& chi,
  * \param isign   Hermitian Conjugation Flag 
  *                ( PLUS = no dagger| MINUS = dagger )       (Read)
  */
-void lovlap_double_pass::operator() (LatticeFermion& chi, 
+void lg5eps_double_pass::operator() (LatticeFermion& chi, 
 				     const LatticeFermion& psi, 
 				     enum PlusMinus isign, Real epsilon) const
 {
@@ -63,9 +63,7 @@ void lovlap_double_pass::operator() (LatticeFermion& chi,
   // Gamma_5 
   int G5 = Ns*Ns - 1;
 
-  // Mass for shifted system
-  Real mass = Real(1 + m_q) / Real(1 - m_q);
-  
+  chi = zero;
 
   switch (isign)
   {
@@ -86,7 +84,6 @@ void lovlap_double_pass::operator() (LatticeFermion& chi,
   }
 
 
-  chi = zero;
 
   // Project out eigenvectors of source if desired 
   // chi  +=  func(lambda) * EigVec * <EigVec, psi>  
@@ -110,19 +107,8 @@ void lovlap_double_pass::operator() (LatticeFermion& chi,
   //      <- gamma_5 * M * psi 
   (*M)(tmp2, tmp1, PLUS);
   tmp1 = Gamma(G5) * tmp2;
-  
- 
-  // Effectively the multi mass solve is on tmp1 
-  // *******************************************************************
-  // Solve  (MdagM + rootQ_n) chi_n = H * tmp1
 
   Double c = norm2(tmp1);
-  Double rsd_sq = norm2(psi) * epsilon*epsilon; // || psi ||^2 * epsilon^2
-
-  // We are solving 2/(1-m) Q so rescale target residuum by ((1-m)/2)^2
-  rsd_sq *=  (Real(1) - m_q)*(Real(1)-m_q)/Real(4);
-  Double cp;
-  Double d; // InnerProduct
 
   /* If exactly 0 norm, then solution must be 0 (for pos. def. operator) */
   if (toBool(c == 0))
@@ -131,10 +117,25 @@ void lovlap_double_pass::operator() (LatticeFermion& chi,
     return;
   }
 
-
+  // Multiply in P(0) -- this may well be 0 for type 0 rational approximations
+  chi += tmp1 * constP;
+  
+ 
+  // Effectively the multi mass solve is on tmp1 
+  // *******************************************************************
+  // Solve  (MdagM + rootQ_n) chi_n = H * tmp1
   LatticeFermion Ap;
   LatticeFermion r;
   LatticeFermion p;
+
+  
+  Double rsd_sq = norm2(psi) * epsilon*epsilon; // || psi ||^2 * epsilon^2
+
+  Double cp;
+  Double d; // InnerProduct
+
+
+
 
   Double a[MaxCG+1];              // Alpha for unshifted (isz) system
   Double b[MaxCG+1];              // Beta for unshifted system
@@ -146,24 +147,6 @@ void lovlap_double_pass::operator() (LatticeFermion& chi,
   int isz = numroot-1;             // isz identifies system with smalles shift
   
 
-  // chi[0] := mass*psi + c0*H*tmp1 + Eigvecs; 
-  if (isign == PLUS)
-  {
-    //  chi  :=  gamma_5 * (gamma_5 * mass + eps(H)) * Psi 
-    // Final mult by gamma_5 is at end 
-    tmp2 = Gamma(G5) * psi;
-
-    // This will be an axpy
-    chi += tmp2 * mass;
-  }
-  else
-  {
-    // chi  :=  (mass + eps(H) * gamma_5) . Psi  
-    chi += psi * mass;
-  }
-
-  // Multiply in P(0) -- this may well be 0 for type 0 rational approximations
-  chi += tmp1 * constP;
 
 
   // r[0] := p[0] := tmp1 
@@ -368,20 +351,20 @@ void lovlap_double_pass::operator() (LatticeFermion& chi,
   }
 
 
-  QDPIO::cout << "Overlap Inner Solve (lovlap_double_pass): " << k << " iterations " << endl;
   // End of MULTI SHIFTERY 
 
   // Now fix up the thing. Multiply in gamma5 if needed 
   // and then rescale to correct normalisation.
 
   if (isign == PLUS)
-  {
+  {   
     // chi  :=  gamma_5 * (gamma_5 * mass + eps(H)) * Psi  
     tmp1 = Gamma(G5) * chi;
     chi = tmp1;
   }
 
-  // Rescale to the correct normalization 
-  chi *= 0.5 * (1 - m_q);
+  QDPIO::cout << "Overlap Inner Solve (lg5eps_double_pass): " << k << " iterations " << endl;
+
+
 }
 

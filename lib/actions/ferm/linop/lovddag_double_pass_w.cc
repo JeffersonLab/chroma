@@ -1,4 +1,4 @@
-// $Id: lovddag_double_pass_w.cc,v 1.4 2004-05-14 15:08:42 bjoo Exp $
+// $Id: lovddag_double_pass_w.cc,v 1.5 2004-05-21 12:03:13 bjoo Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -184,7 +184,13 @@ void lovddag_double_pass::operator() (LatticeFermion& chi,
   // We put this part of the solution into ltmp (which we don't need
   // elsewhere
 
-  Double rsd_sq = c * epsilon*epsilon; // || tmp 1 ||^2 * epsilon^2
+  Double rsd_sq = norm2(psi) * epsilon*epsilon; // || psi ||^2 * epsilon^2
+  
+  // Actually we are solving 4/( 1 - m_q^2 ) so need to rescale
+  // target residue by (1-m_q^2)/4
+  // (squared of course for rsd_sq)
+  rsd_sq *= ( 1 - m_q*m_q)*(1 - m_q*m_q)/Real(16);
+
   Double cp;
   Double d; // InnerProduct
   
@@ -393,11 +399,16 @@ void lovddag_double_pass::operator() (LatticeFermion& chi,
       GramSchm (r, EigVec, NEig);
     }
 
+#if 0
+    // I have to abandon this stopping criterion 
+    // when using relaxed solver
     Double ltmp_norm_new = epsilon*epsilon*norm2(ltmp);
 
     // Convergence criterion for total signum. Might be good enough
     // without running to full niters
     convP = toBool( c_iter[k+1]*sumC[k+1]*sumC[k+1] < ltmp_norm_new );
+#endif
+
     p = r + Real(b[k+1])*p;
   }
 

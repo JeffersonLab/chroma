@@ -1,4 +1,4 @@
-// $Id: t_sumr.cc,v 1.3 2004-05-13 15:36:07 bjoo Exp $
+// $Id: t_sumr.cc,v 1.4 2004-05-21 12:03:14 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -12,7 +12,6 @@
 #include <math.h>
 
 #include "chroma.h"
-#include "actions/ferm/invert/invsumr.h"
 
 using namespace QDP;
 using namespace std;
@@ -121,7 +120,7 @@ int main(int argc, char **argv)
   S.qprop(psi,
 	  connect_state,
 	  chi,
-	  CG_INVERTER,
+	  SUMR_INVERTER,
 	  input.param.invParam.RsdCG,
 	  input.param.invParam.MaxCG,
 	  n_count);
@@ -143,7 +142,7 @@ int main(int argc, char **argv)
   S.qprop(psi,
 	  connect_state,
 	  chi,
-	  SUMR_INVERTER,
+	  REL_SUMR_INVERTER,
 	  input.param.invParam.RsdCG,
 	  input.param.invParam.MaxCG,
 	  n_count);
@@ -156,7 +155,7 @@ int main(int argc, char **argv)
   write(xml_out, "t",       t);
   pop(xml_out);
 
-
+#if 0
   // Solve on non chiral sources
   gaussian(chi);
   chi /= sqrt(norm2(chi));
@@ -200,7 +199,7 @@ int main(int argc, char **argv)
   write(xml_out, "n_count", n_count);
   write(xml_out, "t",       t);
   pop(xml_out);
-
+#endif
 
   pop(xml_out);
   QDP_finalize();

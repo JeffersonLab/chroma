@@ -1,4 +1,4 @@
-// $Id: zolotarev4d_fermact_w.cc,v 1.20 2004-05-11 13:29:28 bjoo Exp $
+// $Id: zolotarev4d_fermact_w.cc,v 1.21 2004-05-21 12:03:13 bjoo Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -16,6 +16,7 @@
 #include "actions/ferm/linop/lovddag_double_pass_w.h"
 #include "actions/ferm/linop/lmdagm.h"
 #include "actions/ferm/linop/lg5eps_w.h"
+#include "actions/ferm/linop/lg5eps_double_pass_w.h"
 #include "meas/eig/ischiral_w.h"
 
 using namespace std;
@@ -380,11 +381,24 @@ Zolotarev4DFermAct::lgamma5epsH(Handle<const ConnectState> state_) const
   
   /* Finally construct and pack the operator */
   /* This is the operator of the form (1/2)*[(1+mu) + (1-mu)*gamma_5*eps] */
-  return new lg5eps(*Mact, state_,
-			numroot, coeffP, resP, rootQ, 
-			NEig, EigValFunc, state.getEigVec(),
-			MaxCGinner, RsdCGinner, ReorthFreqInner);
-    
+  switch( inner_solver_type ) { 
+  case OVERLAP_INNER_CG_SINGLE_PASS:
+    return new lg5eps(*Mact, state_,
+		      numroot, coeffP, resP, rootQ, 
+		      NEig, EigValFunc, state.getEigVec(),
+		      MaxCGinner, RsdCGinner, ReorthFreqInner);
+    break;
+  case OVERLAP_INNER_CG_DOUBLE_PASS:
+    return new lg5eps_double_pass(*Mact, state_,
+				  numroot, coeffP, resP, rootQ, 
+				  NEig, EigValFunc, state.getEigVec(),
+				  MaxCGinner, RsdCGinner, ReorthFreqInner);
+    break;
+  default:
+    QDPIO::cerr << "Unknown OverlapInnerSolverType " << inner_solver_type << endl;
+    QDP_abort(1);
+  }
+  
   END_CODE("Zolotarev4DLinOp::create");
 }
 

@@ -1,4 +1,4 @@
-// $Id: lg5eps_w.cc,v 1.3 2004-05-14 15:08:42 bjoo Exp $
+// $Id: lg5eps_w.cc,v 1.4 2004-05-21 12:03:13 bjoo Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -48,7 +48,6 @@ void lg5eps::operator() (LatticeFermion& chi, const LatticeFermion& psi,
   int G5 = Ns*Ns - 1;
   
   chi = zero;
-
 
   switch (isign)
   {
@@ -143,7 +142,7 @@ void lg5eps::operator() (LatticeFermion& chi, const LatticeFermion& psi,
 
     
   Real rsdcg_sq = epsilon * epsilon;   // Target residuum squared
-  Real rsd_sq = c * rsdcg_sq;      // Used for relative residue comparisons
+  Real rsd_sq = norm2(psi) * rsdcg_sq;      // Used for relative residue comparisons
                                    // r_t^2 * || r ||^2
 
 
@@ -388,7 +387,7 @@ void lg5eps::operator() (LatticeFermion& chi, const LatticeFermion& psi,
     //
     // Only converge if chi is converged. If vectors converge first, then error
     
-   
+#if 0   
     if (k > 0 &&  !convP) {
 
       // Get target r^2 * || sgn (H) ||^2
@@ -411,7 +410,7 @@ void lg5eps::operator() (LatticeFermion& chi, const LatticeFermion& psi,
       // cnvP = convP & btmp; 
       convP = btmp;
     }
-    
+#endif
   }
 
 
