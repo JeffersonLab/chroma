@@ -1,4 +1,4 @@
-// $Id: t_lwldslash_sse.cc,v 1.18 2004-01-29 19:04:55 edwards Exp $
+// $Id: t_lwldslash_sse.cc,v 1.19 2004-02-05 20:09:34 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -56,7 +56,7 @@ int main(int argc, char **argv)
 
 #undef DEBUG
 
-  int isign, cb, loop;
+  int isign, cb, loop, iter=1;
   bool first = true;
   for(isign = 1; isign >= -1; isign -= 2) {
     for(cb = 0; cb < 2; ++cb) { 
@@ -64,7 +64,6 @@ int main(int argc, char **argv)
       clock_t myt1;
       clock_t myt2;
       double mydt;
-      int iter=1; 
      
 #ifndef DEBUG
       if (first) 
@@ -119,7 +118,6 @@ int main(int argc, char **argv)
       clock_t myt1;
       clock_t myt2;
       double mydt;
-      int iter=1; 
       
 #ifndef DEBUG
       if (first) 
@@ -155,7 +153,7 @@ int main(int argc, char **argv)
       mydt=1.0e6*mydt/double(iter*(Layout::sitesOnNode()/2));
       
       QDPIO::cout << "cb = " << cb << " isign = " << isign << endl;
-      QDPIO::cout << "The time per lattice point is "<< mydt 
+      QDPIO::cout << "After " << iter << " calls, the time per lattice point is "<< mydt 
 		  << " micro sec (" <<  double(1320.0f/mydt) << ") Mflops " << endl;
     }
   }
