@@ -1,6 +1,9 @@
-//  $Id: mesons_w.cc,v 1.14 2003-06-24 03:25:27 edwards Exp $
+//  $Id: mesons_w.cc,v 1.15 2003-09-29 21:31:36 edwards Exp $
 //  $Log: mesons_w.cc,v $
-//  Revision 1.14  2003-06-24 03:25:27  edwards
+//  Revision 1.15  2003-09-29 21:31:36  edwards
+//  Tiny cosmetic change.
+//
+//  Revision 1.14  2003/06/24 03:25:27  edwards
 //  Changed from nml to xml.
 //
 //  Revision 1.13  2003/04/02 22:28:22  edwards
@@ -118,8 +121,8 @@ void mesons(const LatticePropagator& quark_prop_1,
       Write(xml_sink_mom, sink_mom_num) ;
       write(xml_sink_mom, "sink_mom", phases.numToMom(sink_mom_num)) ;
 
-      multi1d<Real> mesprop(phases.numSubsets());
-      for (int t=0; t < phases.numSubsets(); ++t) 
+      multi1d<Real> mesprop(length);
+      for (int t=0; t < length; ++t) 
       {
         int t_eff = (t - t0 + length) % length ;
 	mesprop[t_eff] = real(hsum[sink_mom_num][t]) ;
