@@ -39,20 +39,20 @@ namespace Chroma {
       // Refresh Pseudofermions
       H_MC.refreshInternalFields(s);
       
-      // 2) SaveState -- Perhaps this could be done better?
+      // SaveState -- Perhaps this could be done better?
       Handle< AbsFieldState<P,Q> >  s_old(s.clone());
       
-      // 3) Set fields in the MD Hamiltonian
-      MD.getHamiltonian().setInternalFields(H_MC);
-
-      // 3) Integrate MD trajectory
-      MD(s);
-      
-      // 4) Measure energy of the old state
+      // Measure energy of the old state
       Double KE_old, PE_old;
       H_MC.mesE(*s_old, KE_old, PE_old);
-      
-      // 5) Measure the energy of the new state
+ 
+      // Set fields in the MD Hamiltonian
+      MD.getHamiltonian().setInternalFields(H_MC);
+
+      // Integrate MD trajectory
+      MD(s);
+           
+      //  Measure the energy of the new state
       Double KE, PE;
       H_MC.mesE(s, KE, PE);
       
