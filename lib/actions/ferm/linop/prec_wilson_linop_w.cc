@@ -1,4 +1,4 @@
-// $Id: prec_wilson_linop_w.cc,v 1.1 2003-11-22 21:34:01 edwards Exp $
+// $Id: prec_wilson_linop_w.cc,v 1.2 2003-11-23 06:15:42 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson linear operator
  */
@@ -18,7 +18,7 @@ void EvenOddPrecWilsonLinOp::create(const multi1d<LatticeColorMatrix>& u_,
   u = u_;
   D.create(u);
 
-  fact = Nd + mass;
+  fact = Nd + Mass;
   invfact = 1/fact;
 }
 
@@ -38,11 +38,10 @@ EvenOddPrecWilsonLinOp::evenOddLinOp(LatticeFermion& chi,
 {
   START_CODE("EvenOddPrecWilsonLinOp::evenOddLinOp");
 
-  LatticeFermion tmp;
-  Real fact1 = -0.5;
+  Real mhalf = -0.5;
 
-  D.apply(tmp, psi, isign, 0);
-  chi[rb[0]] = fact1*tmp;
+  D.apply(chi, psi, isign, 0);
+  chi[rb[0]] *= mhalf;
   
   END_CODE("EvenOddPrecWilsonLinOp::evenOddLinOp");
 }
@@ -60,14 +59,13 @@ EvenOddPrecWilsonLinOp::oddEvenLinOp(LatticeFermion& chi,
 				     const LatticeFermion& psi, 
 				     enum PlusMinus isign) const
 {
-  START_CODE("EvenOddPrecWilsonLinOp::evenOddLinOp");
+  START_CODE("EvenOddPrecWilsonLinOp::oddEvenLinOp");
 
-  LatticeFermion tmp;
-  Real fact1 = -0.5;
+  Real mhalf = -0.5;
 
-  D.apply(tmp, psi, isign, 1);
-  chi[rb[1]] = fact1*tmp;
+  D.apply(chi, psi, isign, 1);
+  chi[rb[1]] *= mhalf;
   
-  END_CODE("EvenOddPrecWilsonLinOp::evenOddLinOp");
+  END_CODE("EvenOddPrecWilsonLinOp::oddEvenLinOp");
 }
 
