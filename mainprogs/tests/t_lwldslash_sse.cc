@@ -1,4 +1,4 @@
-// $Id: t_lwldslash_sse.cc,v 1.17 2004-01-27 22:28:36 edwards Exp $
+// $Id: t_lwldslash_sse.cc,v 1.18 2004-01-29 19:04:55 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -37,12 +37,8 @@ int main(int argc, char **argv)
 
   // Make up a random gauge field.
   multi1d<LatticeColorMatrix> u(Nd);
-#if 1
   for(int m=0; m < u.size(); ++m)
     gaussian(u[m]);
-#else
-  u = 1;
-#endif
 
 
   // Make up a gaussian source and a zero result vector
@@ -58,7 +54,7 @@ int main(int argc, char **argv)
 
   QDPIO::cout << "Done" << endl;
 
-#define DEBUG
+#undef DEBUG
 
   int isign, cb, loop;
   bool first = true;
