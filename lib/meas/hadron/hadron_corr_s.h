@@ -16,13 +16,6 @@ This is generic code to compute staggered correlators.
 
 */
 
-enum Stag_shift_option {
-   NON_GAUGE_INVAR  = 0,
-   GAUGE_INVAR ,
-   SYM_NON_GAUGE_INVAR , 
-   SYM_GAUGE_INVAR
-};
-
 
 
 class staggered_hadron_corr
@@ -99,7 +92,7 @@ class staggered_hadron_corr
   string outer_tag ; 
   string inner_tag ; 
   multi1d<string> tag_names ; 
-  multi1d<LatticeColorMatrix> u ; // this should handle or state
+   multi1d<LatticeColorMatrix> u ; // this should handle or state
 
   LatticeStaggeredPropagator shift_deltaProp(multi1d<int>& delta, 
 					    const LatticeStaggeredPropagator& src)
