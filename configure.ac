@@ -1,4 +1,4 @@
-AC_INIT(chroma,1.0,edwards@jlab.org)
+AC_INIT(chroma,0.1,edwards@jlab.org)
 AC_CONFIG_AUX_DIR(./config)
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
