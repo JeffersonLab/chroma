@@ -1,4 +1,4 @@
-// $Id: prec_nef_general_linop_array_w.cc,v 1.4 2005-01-03 04:23:09 edwards Exp $
+// $Id: prec_nef_general_linop_array_w.cc,v 1.5 2005-01-17 17:44:22 bjoo Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned NEF domain-wall linear operator
  */
@@ -522,113 +522,181 @@ namespace Chroma
     ds_u.resize(Nd);
     multi1d<LatticeColorMatrix> ds_tmp(Nd);
 						   
-#if 1
     ds_u = zero;
-    QDP_error_exit("NEF deriv stuff not working correctly yet");
-#else
-#warning "The MINUS PART IS NOT CORRECT"
 
-    switch ( isign ) 
-    {
+    switch ( isign ) {
     case PLUS:
-    {
-      LatticeFermion tmp;
-      LatticeFermion tmp1;
-      LatticeFermion tmp2;
-      Real fact1;
-      Real fact2;
-      int otherCB = (cb + 1)%2 ;
- 
-      fact1 = -Real(0.5)*b5[0];
-      fact2 = -Real(0.25)*c5[0];
-      tmp1[rb[otherCB]] = psi[1] - m_q*psi[N5-1];
-      tmp2[rb[otherCB]] = psi[1] + m_q*psi[N5-1];
-      
-      tmp[rb[otherCB]] = fact1*psi[0] 
-	+ fact2*(tmp1 - GammaConst<Ns, Ns*Ns-1>()*tmp2);
-
-      D.deriv(ds_u, chi[0], tmp, isign, cb);
-      
-      
-      fact1 = -Real(0.5)*b5[N5-1];
-      fact2 = -Real(0.25)*c5[N5-1];
-
-      tmp1[rb[otherCB]]=psi[N5-2]-m_q*psi[0];
-      tmp2[rb[otherCB]]=psi[N5-2]+m_q*psi[0];
-
-      tmp[rb[otherCB]] = fact1*psi[N5-1]
-	+ fact2*(tmp1 + GammaConst<Ns,Ns*Ns-1>()*tmp2 );
-
-      D.deriv(ds_tmp, chi[N5-1], tmp, isign, cb);
-      ds_u += ds_tmp;
-      
-
-      for(int s=1; s < N5-1; s++) { 
-	fact1 = -Real(0.5)*b5[s];
-	fact2 = -Real(0.25)*c5[s];
-
-	tmp1[rb[otherCB]]=psi[s-1] + psi[s+1];
-	tmp2[rb[otherCB]]=psi[s-1] - psi[s+1];
+      {
+	LatticeFermion tmp;
+	LatticeFermion tmp1;
+	LatticeFermion tmp2;
+	Real fact1;
+	Real fact2;
+	int otherCB = (cb + 1)%2 ;
 	
-	tmp[rb[otherCB]]= fact1*psi[s] 
-	  + fact2*(tmp1 + GammaConst<Ns,Ns*Ns-1>()*tmp2) ;
+	fact1 = -Real(0.5)*b5[0];
+	fact2 = -Real(0.25)*c5[0];
+	tmp1[rb[otherCB]] = psi[1] - m_q*psi[N5-1];
+	tmp2[rb[otherCB]] = psi[1] + m_q*psi[N5-1];
 	
-	D.deriv(ds_tmp, chi[s], tmp, isign, cb);
+	tmp[rb[otherCB]] = fact1*psi[0] 
+	  + fact2*(tmp1 - GammaConst<Ns, Ns*Ns-1>()*tmp2);
+	
+	D.deriv(ds_u, chi[0], tmp, isign, cb);
+	
+	
+	fact1 = -Real(0.5)*b5[N5-1];
+	fact2 = -Real(0.25)*c5[N5-1];
+	
+	tmp1[rb[otherCB]]=psi[N5-2]-m_q*psi[0];
+	tmp2[rb[otherCB]]=psi[N5-2]+m_q*psi[0];
+	
+	tmp[rb[otherCB]] = fact1*psi[N5-1]
+	  + fact2*(tmp1 + GammaConst<Ns,Ns*Ns-1>()*tmp2 );
+	
+	D.deriv(ds_tmp, chi[N5-1], tmp, isign, cb);
 	ds_u += ds_tmp;
+	
+	
+	for(int s=1; s < N5-1; s++) { 
+	  fact1 = -Real(0.5)*b5[s];
+	  fact2 = -Real(0.25)*c5[s];
+	  
+	  tmp1[rb[otherCB]]=psi[s-1] + psi[s+1];
+	  tmp2[rb[otherCB]]=psi[s-1] - psi[s+1];
+	  
+	  tmp[rb[otherCB]]= fact1*psi[s] 
+	    + fact2*(tmp1 + GammaConst<Ns,Ns*Ns-1>()*tmp2) ;
+	  
+	  D.deriv(ds_tmp, chi[s], tmp, isign, cb);
+	  ds_u += ds_tmp;
+	}
       }
-    }
-    break ;
-    
+      break ;
+      
     case MINUS:
-    { 
-      multi1d<LatticeFermion> tmp_d(N5) ;
+      { 
+	
+	// New Minus case by Balint
+	// There are 3 cases which are summed over.
+	// Best way to compute them is to go back to basics.
+	
+	// s=0:
+	// 
+	//  F = -(b_5[0]/2) chi(0,cb)^dag Ddot(dagger, cb) psi(0, 1-cb)
+	//      -(c_5[1]/2) chi(0,cb)^dag P_{+} Ddot(dagger, cb) psi(1, 1-cb)
+	// +( m c_5[N-1]/2) chi(0,cb)^dag P_{-} Ddot(dagger, cb) psi(N-1, 1-cb)
+	
+	// General 0 < s < N-1:
+	//
+	//  F = -(b_5[s]/2) chi(s,cb)^dag Ddot(dagger, cb) psi(s, 1-cb) 
+	//    -(c_5[s-1]/2) chi(s,cb)^dag P_{-} Ddot(dagger, cb) psi(s-1, 1-cb)
+	//    -(c_5[s+1]/2) chi(s,cb)^dag P_{+} Ddot(dagger, cb) psi(s+1, 1-cb)
+	
+	// and for s = N-1
+	//
+	// F = -(b_5[N-1]/2) chi(N-1,cb)^dag Ddot(dagger,cb) psi(N-1, 1-cb)
+	//     -(c_5[N-2]/2) chi(N-1,cb)^dag P_{-} Ddot(dagger,cb) psi(N-2, 1-cb)
+	//   +( m c_5[0] /2) chi(N-1,cb)^dag P_{+} Ddot(dagger,cb) psi(0, 1-cb)
+	//
+	//
+	// If we compute X, P_{+}X, and P_{-}X up front then we need to 
+	// evaluate 3 force terms for each i. If we multiply out the projections	// and do gamma_5's etc it brings the number of terms up to 6.
+	// 
+	// We also fold the coefficients into the right hand (chi) vectors
+	// as needed
 
-      ds_u = zero;
+	// Storage for P_{+} X
+	multi1d<LatticeFermion> chi_plus(N5);
+	multi1d<LatticeFermion> chi_minus(N5);
+	
+	for(int s=0; s < N5; s++) { 
+	  chi_plus[s][rb[cb]]  = chi[s] + GammaConst<Ns,Ns*Ns-1>()*chi[s];
+	  chi_plus[s][rb[cb]] *= Real(0.5);
+	  
+	  chi_minus[s][rb[cb]] = chi[s] - GammaConst<Ns,Ns*Ns-1>()*chi[s];
+	  chi_minus[s][rb[cb]]*= Real(0.5);
+	  
+	  // Zero out unwanted checkerboard... May remove this later
+	  chi_plus[s][rb[1-cb]] = zero;
+	  chi_minus[s][rb[1-cb]] = zero;
+	}
+	
+	
+	ds_u = zero;
+	LatticeFermion chi_tmp = zero;
 
-      for(int s=0; s<N5; s++){
-	D.deriv(ds_tmp, tmp_d[s], psi[s], isign, cb);
+
+	Real ftmp;
+
+	// First term:
+	// -(b5[0]/2) chi[0]^dag Ddot^dag psi[0]
+	ftmp=Real(0.5)*b5[0];
+	chi_tmp[rb[cb]] = ftmp*chi[0];
+	D.deriv(ds_tmp, chi_tmp, psi[0], isign, cb);
+	ds_u -= ds_tmp;
+	
+
+	// -(c5[1]/2) chi[0]^dag P+  Ddot^dag psi[1]
+	ftmp=Real(0.5)*c5[1];
+	chi_tmp[rb[cb]] = ftmp*chi_plus[0];
+	D.deriv(ds_tmp, chi_tmp, psi[1], isign, cb);
+	ds_u -= ds_tmp;
+	
+	// +(m c5[N-1]) chi[0]^dag P_- Ddot^dag psi[N-1]
+	ftmp=Real(0.5)*c5[N5-1]*m_q;
+	chi_tmp[rb[cb]] = ftmp*chi_minus[0];
+	D.deriv(ds_tmp, chi_tmp, psi[N5-1], isign, cb);
 	ds_u += ds_tmp;
-      }
-
-      LatticeFermion tmp1;
-      LatticeFermion tmp2;
-
-
-      Real one_quarter = Real(0.25);
-
-      Real factb= -Real(0.5)*b5[0];
-      Real fact  = m_q*c5[N5-1];
-      tmp1[rb[cb]] = c5[1]*tmp_d[1] - fact*tmp_d[N5-1];
-      tmp2[rb[cb]] = c5[1]*tmp_d[1] + fact*tmp_d[N5-1];
-
-      chi[0][rb[cb]] = factb*tmp_d[0]
-	- one_quarter*( tmp1 + GammaConst<Ns,Ns*Ns-1>()*tmp2 );
-
-
-
-      factb = -Real(0.5)*b5[N5-1];
-      fact = m_q * c5[0];
-      
-      tmp1[rb[cb]] = c5[N5-2]*tmp_d[N5-2] - fact * tmp_d[0];
-      tmp2[rb[cb]] = c5[N5-2]*tmp_d[N5-2] + fact * tmp_d[0];
-
-      chi[N5-1][rb[cb]] = factb * tmp_d[N5-1]
-	- one_quarter * ( tmp1 - GammaConst<Ns, Ns*Ns-1>()*tmp2 );
-
-      for(int s=1; s<N5-1; s++){
-	factb = -Real(0.5) * b5[s];
 	
-	tmp1[rb[cb]] = c5[s-1]*tmp_d[s-1] + c5[s+1]*tmp_d[s+1];
-	tmp2[rb[cb]] = c5[s-1]*tmp_d[s-1] - c5[s+1]*tmp_d[s+1];
-
-	chi[s][rb[cb]] = factb*tmp_d[s] 
-	  - one_quarter*( tmp1 - GammaConst<Ns, Ns*Ns-1>()*tmp2 );
+	
+	// Middle bits
+	for(int s=1; s < N5-1; s++) { 
+	
+	  //    -(b5[s]/2) chi[s] Ddot^dag psi[s]	
+	  ftmp = Real(0.5)*b5[s];
+	  chi_tmp[rb[cb]] = ftmp*chi[s];
+	  D.deriv(ds_tmp, chi_tmp, psi[s], isign, cb);
+	  ds_u -= ds_tmp;
+	  
+	  //    -(c5[s-1]/2) chi[s]^dag P- Ddot^dag psi[s-1]
+	  ftmp = Real(0.5)*c5[s-1];
+	  chi_tmp[rb[cb]] = ftmp*chi_minus[s];
+	  D.deriv(ds_tmp, chi_tmp, psi[s-1], isign,cb);
+	  ds_u -= ds_tmp;
+	  
+	  //   -(c5[s+1]/2) chi[s]^dag P+ Ddot^dag psi[s+1]
+	  ftmp = Real(0.5)*c5[s+1];
+	  chi_tmp[rb[cb]] = ftmp*chi_plus[s];
+	  D.deriv(ds_tmp, chi_tmp, psi[s+1], isign, cb);
+	  ds_u -= ds_tmp;
+	  
+	}
+	
+	
+	// Lat bit
+	//  - (b5[N5-1]/2) chi[N5-1] Ddot^dagger psi[N5-1]
+	ftmp = Real(0.5)*b5[N5-1];
+	chi_tmp[rb[cb]] = ftmp * chi[N5-1];
+	D.deriv(ds_tmp, chi_tmp, psi[N5-1], isign, cb);
+	ds_u -= ds_tmp;
+	
+	//  -(c5[N5-2]/2) chi[N5-1] P_ Ddot^dagger psi[N5-2]
+	ftmp = Real(0.5)*c5[N5-2];
+	chi_tmp[rb[cb]] = ftmp*chi_minus[N5-1];
+	D.deriv(ds_tmp, chi_tmp, psi[N5-2], isign, cb);
+	ds_u -= ds_tmp;
+	
+	//  +(m c5[0]/2) chi[N5-1] P+ Ddot^dagger psi[0]
+	ftmp = Real(0.5)*c5[0]*m_q;
+	chi_tmp[rb[cb]] = ftmp * chi_plus[N5-1];
+	D.deriv(ds_tmp, chi_tmp, psi[0], isign, cb);
+	ds_u += ds_tmp;
 	
       }
+      break ;
     }
-    break ;
-    }
-#endif
+
 
     END_CODE();
   }
