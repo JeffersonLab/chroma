@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: update.h,v 1.2 2003-04-02 06:59:20 edwards Exp $
+// $Id: update.h,v 1.3 2003-04-09 01:25:32 edwards Exp $
 
 /*! \file
  * \brief Gauge field update routines
@@ -15,6 +15,9 @@
 
 #ifndef __update_h__
 #define __update_h__
+
+#include "molecdyn/molecdyn.h"
+#include "heatbath/heatbath.h"
 
 #endif
 
