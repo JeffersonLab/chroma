@@ -1,4 +1,4 @@
-// $Id: lovlapms_w.cc,v 1.4 2003-11-20 05:43:41 edwards Exp $
+// $Id: lovlapms_w.cc,v 1.5 2003-12-03 04:56:13 edwards Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -19,35 +19,15 @@ using namespace QDP;
 void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi, 
 			   enum PlusMinus isign) const
 {
-  LatticeFermion Ap;
-  LatticeFermion ltmp;
-  multi1d<LatticeFermion> p(numroot);
-  LatticeFermion r;
-  LatticeFermion tmp1;
-
-  Real a;
-  Real as;
-  Real b;
-  Real bp;
-  Real ztmp;
-  Real z0;
-  Real z1;   
-  Double cp;
-  Double d;
-  multi1d<Real> bs(numroot);
-  multi2d<Real> z(2, numroot);
-  Double chi_sq_new;
-  Double chi_sq_diff;
-
-  Boolean btmp;
-
   START_CODE("lovlapms");
 
   int G5 = Ns*Ns - 1;
 
-  Real mass = TO_REAL(1 + m_q) / TO_REAL(1 - m_q);
+  Real mass = Real(1 + m_q) / Real(1 - m_q);
       
   /* First part of application of D.psi */
+  LatticeFermion tmp1;
+
   switch (isign)
   {
   case PLUS:
@@ -66,7 +46,7 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
     QDP_error_exit("unknown isign value", isign);
   }
 
-  chi = 0;
+  chi = zero;
 
   /* Project out eigenvectors of source if desired */
   /* chi  +=  func(lambda) * EigVec * <EigVec, psi>  */
@@ -87,14 +67,18 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
 
   /* tmp1 <- H * Projected psi */
   /*      <- gamma_5 * M * psi */
-  tmp1 = Gamma(G5) * M(tmp1, PLUS);
+  {
+    LatticeFermion tmp2;
+    M(tmp2, tmp1, PLUS);
+    tmp1 = Gamma(G5) * tmp2;
+  }
 
   Double c = norm2(tmp1);
 
   /* If exactly 0 norm, then solution must be 0 (for pos. def. operator) */
-  if (c == 0.0)
+  if (toBool(c == 0.0))
   {
-    chi = 0;
+    chi = zero;
 
     END_CODE("lovlapms");
     return;
@@ -106,7 +90,7 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
   Real rsd_sq = c * rsdcg_sq;
 
   /* By default (could change), rootQ(isz) is considered the smallest shift */
-  isz = numroot-1;
+  int isz = numroot-1;
 
           
   /* chi[0] := mass*psi + c0*H*tmp1 + Eigvecs; */
@@ -124,18 +108,37 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
 
   chi += tmp1 * constP;
 
+  LatticeFermion r;
+  multi1d<LatticeFermion> p(numroot);
+
   /* r[0] := p[0] := tmp1 */
   r = tmp1;
   for(int s = 0; s < numroot; ++s)
     p[s] = tmp1;
 
+  multi1d<bool> convsP(numroot);
+  convsP = false;
+  bool convP = false;
+  int iz = 1;
+
+  LatticeFermion Ap;
+  Real a;
+  Real as;
+  Real b;
+  Real bp;
+  Real ztmp;
+  Double cp;
+  Double d;
+  Real z0;
+  Real z1;   
+  multi1d<Real> bs(numroot);
+  multi2d<Real> z(2, numroot);
+  Real chi_sq_new;
+  Real chi_sq_diff;
+
   z = 1;
   a = 0;
   b = 1;
-  multi1d<Boolean> convsP(numroot);
-  convsP = false;
-  Boolean convP = false;
-  int iz = 1;
 
   int n_count;
   for(int k = 0; k <= MaxCG && ! convP ; ++k)
@@ -145,26 +148,25 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
     /*  b[k] := | r[k] |**2 / < p[k], Ap[k] > ; */
     /*  First compute  d  =  < p, A.p >  */
     /*  Ap = A . p  */
-    ltmp = p[isz];
-    Ap = MdagM(ltmp, PLUS);
+    MdagM(Ap, p[isz], PLUS);
     Ap += p[isz] * rootQ[isz];
 
-#if 1
+#if 000000
     /* Project out eigenvectors */
     if (k % 2 == 0)
       GramSchm (Ap, 1, EigVec, NEig);
 #endif
 
     /*  d =  < p, A.p >  */
-    d = innerProduct(Ap, ltmp);                       /* 2 Nc Ns  flops */
+    d = innerProductReal(p[isz], Ap);                       /* 2 Nc Ns  flops */
     
     bp = b;
-    b = -TO_REAL(c/d);
+    b = -Real(c/d);
 
     /* Compute the shifted bs and z */
     bs[isz] = b;
     iz = 1 - iz;
-    for(s = 0; s < numroot; ++s)
+    for(int s = 0; s < numroot; ++s)
     {
       /* Do this to avoid mitsmp compiler bug !! */
       z0 = z[s][1-iz];
@@ -180,7 +182,7 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
     /*  r[k+1] += b[k] A . p[k] ; */
     r += Ap * b;	        /* 2 Nc Ns  flops */
 
-#if 1
+#if 000000
     /* Project out eigenvectors */
     if (k % 2 == 0)
       GramSchm (r, 1, EigVec, NEig);
@@ -190,7 +192,7 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
     ztmp = b * resP[isz];
     tmp1 = p[isz] * ztmp;	/* 2 Nc Ns  flops */
 
-    for(s = 0; s < numroot; ++s)
+    for(int s = 0; s < numroot; ++s)
     {
       if (s == isz || convsP[s]) continue;
 
@@ -207,25 +209,25 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
     c = norm2(r);	                /* 2 Nc Ns  flops */
 
     /*  a[k+1] := |r[k]|**2 / |r[k-1]|**2 ; */
-    a = TO_REAL(c/cp);
+    a = Real(c/cp);
 
     /*  p[k+1] := r[k+1] + a[k+1] p[k]; */
     /*  Compute the shifted as */
     /*  ps[k+1] := zs[k+1] r[k+1] + a[k+1] ps[k]; */
-    for(s = 0; s < numroot; ++s)
+    for(int s = 0; s < numroot; ++s)
     {
       if (convsP[s]) continue;
 
       if (s == isz)
       {
-	p[s] = p[s] * a;	/* Nc Ns  flops */
+	p[s] *= a;	        /* Nc Ns  flops */
 	p[s] += r;		/* Nc Ns  flops */
       }
       else
       {
 	as = a * z[s][iz]*bs[s] / (z[s][1-iz]*b);
 
-	p[s] = p[s] * as;	/* Nc Ns  flops */
+	p[s] *= as;	        /* Nc Ns  flops */
 	p[s] += r * z[s][iz];	/* Nc Ns  flops */
       }
     }
@@ -238,13 +240,13 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
     
     /*  IF |r[k]| <= RsdCG |chi| THEN RETURN; */
     convP = true;
-    for(s = 0; s < numroot; ++s)
+    for(int s = 0; s < numroot; ++s)
     {
       if (convsP[s]) continue;
 
-      ztmp = TO_REAL(c) * z[s][iz]*z[s][iz];
+      ztmp = Real(c) * z[s][iz]*z[s][iz];
 
-      btmp = ztmp < rsd_sq;
+      bool btmp = toBool(ztmp < rsd_sq);
       convP = convP & btmp;
       convsP[s] = btmp;
     }
@@ -256,11 +258,10 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
     /* Only converge if chi is converged. If vectors converge first, then error */
     if (k > 0 && ! convP)
     {
-      chi_sq_new = norm2(chi);
+      chi_sq_new = Real(rsdcg_sq) * Real(norm2(chi));
       chi_sq_diff = norm2(tmp1);      /* the diff of old and new soln */
 
-      chi_sq_new *= Double(rsdcg_sq);
-      btmp = chi_sq_diff < chi_sq_new;
+      bool btmp = toBool(chi_sq_diff < chi_sq_new);
 
 #if 0
       QDP_info("Lovlapms (chi): k = %d  diff = %g  new = %g  rsdcg = %g",
