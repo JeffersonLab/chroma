@@ -162,7 +162,7 @@ HDRS =
 # add the programs to build in here
 # 
 check_PROGRAMS = t_mesplq t_io t_formfac t_mesons_w t_conslinop t_hypsmear \
-                  t_overbu
+                  t_overbu t_ape_smear
 
 
 EXTRA_PROGRAMS = t_dslashm t_lwldslash t_spprod t_lwldslash_sse t_follana_io_s
@@ -173,6 +173,9 @@ EXTRA_PROGRAMS = t_dslashm t_lwldslash t_spprod t_lwldslash_sse t_follana_io_s
 #
 t_mesplq_SOURCES = t_mesplq.cc
 t_mesplq_DEPENDENCIES = build_chroma_libs rebuild_other_libs
+
+t_ape_smear_SOURCES = t_ape_smear.cc
+t_ape_smear_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_hypsmear_SOURCES = t_hypsmear.cc
 t_hypsmear_DEPENDENCIES = build_chroma_libs rebuild_other_libs
@@ -214,7 +217,11 @@ EXTRA_PROGRAMS = t_dslashm$(EXEEXT) t_lwldslash$(EXEEXT) \
 	t_follana_io_s$(EXEEXT)
 check_PROGRAMS = t_mesplq$(EXEEXT) t_io$(EXEEXT) t_formfac$(EXEEXT) \
 	t_mesons_w$(EXEEXT) t_conslinop$(EXEEXT) t_hypsmear$(EXEEXT) \
-	t_overbu$(EXEEXT)
+	t_overbu$(EXEEXT) t_ape_smear$(EXEEXT)
+am_t_ape_smear_OBJECTS = t_ape_smear.$(OBJEXT)
+t_ape_smear_OBJECTS = $(am_t_ape_smear_OBJECTS)
+t_ape_smear_LDADD = $(LDADD)
+t_ape_smear_LDFLAGS =
 am_t_conslinop_OBJECTS = t_conslinop.$(OBJEXT)
 t_conslinop_OBJECTS = $(am_t_conslinop_OBJECTS)
 t_conslinop_LDADD = $(LDADD)
@@ -267,8 +274,8 @@ t_spprod_LDFLAGS =
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/t_conslinop.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_dslashm.Po \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/t_ape_smear.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_conslinop.Po ./$(DEPDIR)/t_dslashm.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_follana_io_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_formfac.Po ./$(DEPDIR)/t_hypsmear.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_io.Po ./$(DEPDIR)/t_lwldslash.Po \
@@ -280,13 +287,14 @@ CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
-DIST_SOURCES = $(t_conslinop_SOURCES) $(t_dslashm_SOURCES) \
-	$(t_follana_io_s_SOURCES) $(t_formfac_SOURCES) \
-	$(t_hypsmear_SOURCES) $(t_io_SOURCES) $(t_lwldslash_SOURCES) \
-	$(t_lwldslash_sse_SOURCES) $(t_mesons_w_SOURCES) \
-	$(t_mesplq_SOURCES) $(t_overbu_SOURCES) $(t_spprod_SOURCES)
+DIST_SOURCES = $(t_ape_smear_SOURCES) $(t_conslinop_SOURCES) \
+	$(t_dslashm_SOURCES) $(t_follana_io_s_SOURCES) \
+	$(t_formfac_SOURCES) $(t_hypsmear_SOURCES) $(t_io_SOURCES) \
+	$(t_lwldslash_SOURCES) $(t_lwldslash_sse_SOURCES) \
+	$(t_mesons_w_SOURCES) $(t_mesplq_SOURCES) $(t_overbu_SOURCES) \
+	$(t_spprod_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(t_conslinop_SOURCES) $(t_dslashm_SOURCES) $(t_follana_io_s_SOURCES) $(t_formfac_SOURCES) $(t_hypsmear_SOURCES) $(t_io_SOURCES) $(t_lwldslash_SOURCES) $(t_lwldslash_sse_SOURCES) $(t_mesons_w_SOURCES) $(t_mesplq_SOURCES) $(t_overbu_SOURCES) $(t_spprod_SOURCES)
+SOURCES = $(t_ape_smear_SOURCES) $(t_conslinop_SOURCES) $(t_dslashm_SOURCES) $(t_follana_io_s_SOURCES) $(t_formfac_SOURCES) $(t_hypsmear_SOURCES) $(t_io_SOURCES) $(t_lwldslash_SOURCES) $(t_lwldslash_sse_SOURCES) $(t_mesons_w_SOURCES) $(t_mesplq_SOURCES) $(t_overbu_SOURCES) $(t_spprod_SOURCES)
 
 all: all-am
 
@@ -300,6 +308,9 @@ Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
 
 clean-checkPROGRAMS:
 	-test -z "$(check_PROGRAMS)" || rm -f $(check_PROGRAMS)
+t_ape_smear$(EXEEXT): $(t_ape_smear_OBJECTS) $(t_ape_smear_DEPENDENCIES) 
+	@rm -f t_ape_smear$(EXEEXT)
+	$(CXXLINK) $(t_ape_smear_LDFLAGS) $(t_ape_smear_OBJECTS) $(t_ape_smear_LDADD) $(LIBS)
 t_conslinop$(EXEEXT): $(t_conslinop_OBJECTS) $(t_conslinop_DEPENDENCIES) 
 	@rm -f t_conslinop$(EXEEXT)
 	$(CXXLINK) $(t_conslinop_LDFLAGS) $(t_conslinop_OBJECTS) $(t_conslinop_LDADD) $(LIBS)
@@ -343,6 +354,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_ape_smear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_conslinop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_dslashm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_follana_io_s.Po@am__quote@
