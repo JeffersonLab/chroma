@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_sse.cc,v 1.14 2003-12-17 14:54:34 bjoo Exp $
+// $Id: lwldslash_w_sse.cc,v 1.15 2004-01-27 22:25:16 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -37,10 +37,9 @@ using namespace QDP;
  */
 extern "C" {
   
-  void init_sse_su3dslash(int *);
+  void init_sse_su3dslash(const int* latt_size);
   void free_sse_su3dslash(void);
   void sse_su3dslash_wilson(SSEREAL* u, SSEREAL *psi, SSEREAL *res, int isign, int cb);
-  void make_shift_tables(int *shift, int subgrid_vol_cb, int nrow[], int subgrid_cb_nrow[], int bound[], int Nd);
 
 }
 
@@ -55,22 +54,12 @@ void SSEWilsonDslash::create(const multi1d<LatticeColorMatrix>& _u)
   QDPIO::cout << "Calling init_sse_su3dslash()... " << endl;
 #endif
 
-  const multi1d<int>& subgrid_size = Layout::subgridLattSize();
+  // Make a copy of the lattice size
+  int lat_size[Nd];
+  for(int i=0; i < Nd; i++) 
+    lat_size[i] = Layout::lattSize()[i];
 
-  // Subgrid size after checkerboarding
-  int s_size[4];
-
-  int i;
-  for(i=0 ; i < Nd; i++) { 
-    if ( subgrid_size[i] % 2 != 0 ) { 
-      QDP_error_exit("This SSE Dslash does not work for odd sublattice. Here the sublattice is odd in dimension %d with length %d\n", i, subgrid_size[i]);
-    }
-    s_size[i]= subgrid_size[i];
-  }
-
-  s_size[0] /= 2;
-
-  init_sse_su3dslash(s_size);
+  init_sse_su3dslash(lat_size);
 
   packed_gauge.resize( Nd * Layout::sitesOnNode() );
 
@@ -123,14 +112,16 @@ SSEWilsonDslash::apply (LatticeFermion& chi, const LatticeFermion& psi,
    
    *
    *
-   * SZIN usually passes 1 cb worth of fermions. Instead I have to 
-   * Pass the right part of a full fermion.  CB is CB of output 
-   * so pass cb*Layout::sitesOnNode()/2 for output and (1-cb)*Layout::sitesOnNode()/2 for input 
+   * Pass all the fermion and all the gauge pieces
+   *
+   * NOTE: this breaks usage from SZIN. However, Chroma and SSE dslash can handle 
+   * odd subgrid lattice sizes, whereas SZIN cannot. Thus, I must pass all fermion
+   * cbs to support such flexibility.
    *
    */
   sse_su3dslash_wilson((SSEREAL *)&(packed_gauge[0]),
-		       (SSEREAL *)&(psi.elem((1-cb)*(Layout::sitesOnNode()/2)).elem(0).elem(0).real()),
-		       (SSEREAL *)&(chi.elem(cb*(Layout::sitesOnNode()/2)).elem(0).elem(0).real()),
+		       (SSEREAL *)&(psi.elem(0).elem(0).elem(0).real()),
+		       (SSEREAL *)&(chi.elem(0).elem(0).elem(0).real()),
 		       (int)isign, (1-cb));
   
 }
