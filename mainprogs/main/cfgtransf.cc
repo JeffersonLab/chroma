@@ -1,4 +1,4 @@
-// $Id: cfgtransf.cc,v 1.2 2003-10-10 04:13:38 edwards Exp $
+// $Id: cfgtransf.cc,v 1.3 2003-10-10 04:30:44 edwards Exp $
 /*! \file
  *  \brief Many-to-many gauge transformation routine
  */
@@ -22,6 +22,14 @@ int main(int argc, char **argv)
   START_CODE("cfgtransf");
   
   multi1d<LatticeColorMatrix> u(Nd);
+
+  multi1d<int> nrow(Nd);
+  QDPIO::cout << "Enter lattice size\n";
+  QDPIO::cin >> nrow;
+  
+  // Setup QDP
+  Layout::setLattSize(nrow);
+  Layout::create();
 
   XMLFileWriter xml_out("cfgtransf.xml");
   push(xml_out, "cfgtransf");
@@ -133,10 +141,6 @@ int main(int argc, char **argv)
 	      << "  (6) Kentucky config on FE\n";
   QDPIO::cin >> output_type;
   
-  multi1d<int> nrow(Nd);
-  QDPIO::cout << "Enter lattice size\n";
-  QDPIO::cin >> nrow;
-  
   string cfg_input_file;
   QDPIO::cout << "Enter input file name\n";
   QDPIO::cin >> cfg_input_file;
@@ -224,10 +228,6 @@ int main(int argc, char **argv)
 
   QDPIO::cout << "I am working on it...\n";
   
-  // Setup QDP
-  Layout::setLattSize(nrow);
-  Layout::create();
-
   push(xml_out,"Lattis");
   Write(xml_out, Nd);
   Write(xml_out, Nc);
