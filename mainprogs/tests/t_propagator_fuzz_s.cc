@@ -1,4 +1,4 @@
-// $Id: t_propagator_fuzz_s.cc,v 1.2 2004-02-08 14:29:27 mcneile Exp $
+// $Id: t_propagator_fuzz_s.cc,v 1.3 2004-02-09 19:34:56 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  *
@@ -290,8 +290,8 @@ int main(int argc, char **argv)
 
   // this parameter will be read from the input file
   bool do_gauge_transform ;
-  //    do_gauge_transform = false ;
-  do_gauge_transform = true ;
+        do_gauge_transform = false ;
+  //    do_gauge_transform = true ;
 
 
   if( do_gauge_transform )
@@ -451,7 +451,8 @@ int main(int argc, char **argv)
 
 	//  Start to develop fuzzed source code
 	enum stag_src_type { LOCAL_SRC , FUZZED_SRC } ;
-	enum stag_src_type type_of_src = FUZZED_SRC  ;
+		enum stag_src_type type_of_src = FUZZED_SRC  ;
+	//	enum stag_src_type type_of_src = LOCAL_SRC  ;
 
 	if( type_of_src == LOCAL_SRC )
 	  {
@@ -464,7 +465,7 @@ int main(int argc, char **argv)
 	  }
 	else if( type_of_src == FUZZED_SRC )
 	  {
-	    int fuzz_width = 4 ; 
+	    int fuzz_width = 2 ; 
 	    QDPIO::cout << "***> FUZZED SOURCE ****" << endl;
 	    QDPIO::cout << "fuzz width = " << fuzz_width  << endl;
 
@@ -474,7 +475,7 @@ int main(int argc, char **argv)
 	    srcfil(q_source, coord,color_source , 0) ;
 
 
-	    fuzz_smear(u, q_source,q_source_fuzz, 
+	    fuzz_smear(u_smr, q_source,q_source_fuzz, 
 		       fuzz_width, j_decay) ; 
 
 	    q_source = q_source_fuzz  ;
