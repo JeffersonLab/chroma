@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_fermact_array_sse_w.h,v 1.7 2004-10-20 03:22:03 edwards Exp $
+// $Id: prec_dwf_fermact_array_sse_w.h,v 1.8 2004-10-22 03:35:18 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -97,18 +97,9 @@ namespace Chroma
     //! Produce a linear operator for this action but with quark mass 1
     const UnprecDWLinOpBaseArray<LatticeFermion>* linOpPV(Handle<const ConnectState> state) const;
 
-    //! Redefine quark propagator routine for 4D fermions
-    void qprop(LatticeFermion& psi, 
-	       Handle<const ConnectState> state, 
-	       const LatticeFermion& chi, 
-	       const InvertParam_t& invParam,
-	       int& ncg_had) const;
-
     //! Redefine quark propagator routine for 5D fermions
     /*! 
      * Solves  M.psi = chi
-     *
-     * Optimized inverter - will rename to qpropT
      *
      * \param psi      quark propagator ( Modify )
      * \param state    gauge connection state ( Read )
