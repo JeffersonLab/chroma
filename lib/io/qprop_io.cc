@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 1.18 2004-05-03 20:06:39 edwards Exp $
+// $Id: qprop_io.cc,v 1.19 2004-05-12 01:14:32 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -412,6 +412,17 @@ void read(XMLReader& xml, const string& path, ForwardProp_t& param)
 }
 
 
+//! SequentialSource header reader
+void read(XMLReader& xml, const string& path, SequentialSource_t& param)
+{
+  XMLReader paramtop(xml, path);
+
+  read(paramtop, "SeqSourceSinkSmear", param.sink_header);
+  read(paramtop, "SeqSource", param.seqsource_header);
+  read(paramtop, "ForwardProps", param.forward_props);
+}
+
+
 //! SequentialProp header reader
 void read(XMLReader& xml, const string& path, SequentialProp_t& param)
 {
@@ -581,27 +592,46 @@ void write(XMLWriter& xml, const string& path, const SeqSource_t& param)
 //! SeqPropagator header writer
 void write(XMLWriter& xml, const string& path, const ForwardProp_t& param)
 {
-  push(xml, path);
+  if( path != "." )
+    push(xml, path);
 
   write(xml, "PropSink", param.sink_header);
   write(xml, "ForwardProp", param.prop_header);
   write(xml, "PropSource", param.source_header);
 
-  pop(xml);
+  if( path != "." )
+    pop(xml);
+}
+
+
+//! SequentialSource header writer
+void write(XMLWriter& xml, const string& path, const SequentialSource_t& param)
+{
+  if( path != "." )
+    push(xml, path);
+
+  write(xml, "SeqSourceSinkSmear", param.sink_header);
+  write(xml, "SeqSource", param.seqsource_header);
+  write(xml, "ForwardProps", param.forward_props);
+
+  if( path != "." )
+    pop(xml);
 }
 
 
 //! SequentialProp header writer
 void write(XMLWriter& xml, const string& path, const SequentialProp_t& param)
 {
-  push(xml, path);
+  if( path != "." )
+    push(xml, path);
 
   write(xml, "SeqProp", param.seqprop_header);
   write(xml, "SeqSourceSinkSmear", param.sink_header);
   write(xml, "SeqSource", param.seqsource_header);
   write(xml, "ForwardProps", param.forward_props);
 
-  pop(xml);
+  if( path != "." )
+    pop(xml);
 }
 
 
