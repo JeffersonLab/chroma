@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eig_w.h,v 1.1 2004-01-06 10:42:36 bjoo Exp $
+// $Id: eig_w.h,v 1.2 2004-01-16 14:16:14 bjoo Exp $
 
 /*! \file
  * \brief Eigenvalue measurements
@@ -18,5 +18,4 @@
 #define __eig_w_h__
 
 #include "meas/eig/ischiral_w.h"
-
 #endif

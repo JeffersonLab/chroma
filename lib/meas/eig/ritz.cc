@@ -1,4 +1,4 @@
-// $Id: ritz.cc,v 1.2 2004-01-16 12:26:39 bjoo Exp $
+// $Id: ritz.cc,v 1.3 2004-01-16 14:16:14 bjoo Exp $
 /*! \file
  *  \brief Ritz code for eigenvalues
  */
@@ -177,8 +177,8 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
 
 
   // Debugging
-  QDPIO::cout << "Ritz. N_eig=" << N_eig << " mu = " << mu
-	      << " g2_0 = " << g2_0 << endl;
+  QDPIO::cout << "Starting Ritz: N_eig=" << N_eig << ", mu = " << mu
+	      << ", g2_0 = " << g2_0 << endl;
 
   // Check whether we have converged
   bool convP;
@@ -324,7 +324,7 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
     rsd =fabs(Rsd_r * mu);
     CGConvP = toBool( g2 < rsd*rsd );
 
-    if( Kalk_Sim = false ) {
+    if( Kalk_Sim == false ) {
 
       // Non Kalk Sim criteria. We have done the minimum 
       // Number of iterations, and we have either done the maximum
@@ -361,16 +361,16 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
       d -= one;
 
       // Print out info about convergence 
-      QDPIO::cout << "Converged at iter" << k << " lambda = " << lambda
-		  << " rsd | mu | = " << rsd << " || g || = "
+      QDPIO::cout << "Converged at iter=" << k << ", lambda = " << lambda
+		  << ",  rsd | mu | = " << rsd << ",  || g || = "
 		  << sqrt(g2) << " || x || - 1 = " << d << endl;
       
       if(Kalk_Sim) { 
 	// Extra info for KalkSimma Mode
-	QDPIO::cout << "KS: gamma = "<< gamma_factor << " || g ||^2/|| g_0 ||^2="
+	QDPIO::cout << "KS: gamma = "<< gamma_factor << ",  || g ||^2/|| g_0 ||^2="
 		    << g2/g2_0 
-		    << " delta_cycle_err=" << delta_cycle_err << endl;
-	QDPIO::cout << "KS: CGConvP = " << CGConvP << " KSConvP = " << KSConvP << endl;
+		    << ",  delta_cycle_err=" << delta_cycle_err << endl;
+	QDPIO::cout << "KS: CGConvP = " << CGConvP << ",  KSConvP = " << KSConvP << endl;
       }
 
       // Recompute lambda
@@ -486,7 +486,7 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
   psi_all[N_eig_index] = psi;
   n_count = MaxCG;
   QDPIO::cerr << "too many CG/Ritz iterations: n_count=" << n_count
-	      << ", rsd=" << rsd << ", g2" << g2 << ", p2" << p2
+	      << ", rsd=" << rsd << ", ||g||=" << sqrt(g2) << ", p2=" << p2
 	      << ", lambda" << lambda << endl;
   QDP_abort(1);
   END_CODE("Ritz");

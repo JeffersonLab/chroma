@@ -1,4 +1,4 @@
-// $Id: gramschm.cc,v 1.2 2004-01-16 12:26:39 bjoo Exp $
+// $Id: gramschm.cc,v 1.3 2004-01-16 14:16:14 bjoo Exp $
 /*! \file
  *  \brief Gramm-Schmidt orthogonolization
  */
@@ -20,8 +20,8 @@
  */
 
 template< typename T>
-void GramSchm_T(multi1d<T>& psi, int Npsi,
-	      const multi1d<T>& vec, int Nvec) {
+void GramSchm_T(multi1d<T>& psi, const int Npsi,
+	      const multi1d<T>& vec, const int Nvec) {
 
   START_CODE("GramSchm");
 
@@ -59,7 +59,7 @@ void GramSchm_T(multi1d<T>& psi, int Npsi,
 template <typename T>
 void GramSchm_T(T& psi, 
 		const multi1d<T>& vec, 
-		int Nvec)
+		const int Nvec)
 {
 
   START_CODE("GramSchm");
@@ -115,8 +115,8 @@ void GramSchm_T(T& psi,
  *  \param Npsi        Number of source vectors        (Read) 
  */
 
-void GramSchm(multi1d<LatticeFermion>& psi, int Npsi, 
-	      const multi1d<LatticeFermion>& vec, int Nvec)
+void GramSchm(multi1d<LatticeFermion>& psi, const int Npsi, 
+	      const multi1d<LatticeFermion>& vec, const int Nvec)
 {
   GramSchm_T(psi, Npsi, vec, Nvec);
 }
@@ -134,8 +134,8 @@ void GramSchm(multi1d<LatticeFermion>& psi, int Npsi,
  *  \param Nvec        no of vectors to orthog against (Read)
  */
 void GramSchm(LatticeFermion& psi, 
-	      multi1d<LatticeFermion>& vec, 
-	      int Nvec)
+	      const multi1d<LatticeFermion>& vec, 
+	      const int Nvec)
 {
 
   GramSchm_T(psi, vec, Nvec);
@@ -156,7 +156,7 @@ void GramSchm(LatticeFermion& psi,
  *  \param Nvec        Number of vectors               (Read)
  */
 void GramSchm(multi1d<LatticeFermion>& psi, 
-		multi1d<LatticeFermion>& vec, int Nvec)
+	      const multi1d<LatticeFermion>& vec, const int Nvec)
 {
   GramSchm_T(psi, psi.size(), vec, Nvec);
 }
@@ -175,7 +175,7 @@ void GramSchm(multi1d<LatticeFermion>& psi,
  *  \param vec         subspace wrt orthog     	       (Read)
  */
 void GramSchm(multi1d<LatticeFermion>& psi, 
-		multi1d<LatticeFermion>& vec)
+	      const multi1d<LatticeFermion>& vec)
 {
   GramSchm_T(psi, psi.size(), vec, vec.size());
 }
