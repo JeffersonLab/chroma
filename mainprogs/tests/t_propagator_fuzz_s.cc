@@ -1,4 +1,4 @@
-// $Id: t_propagator_fuzz_s.cc,v 1.9 2004-12-05 18:31:20 mcneile Exp $
+// $Id: t_propagator_fuzz_s.cc,v 1.10 2004-12-30 12:27:15 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  *
@@ -242,6 +242,53 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
   }
 }
 
+
+enum stag_src_enum { LOCAL_SRC  , FUZZED_SRC , GAUGE_INVAR_LOCAL_SOURCE } ;
+typedef   stag_src_enum stag_src_type ;
+
+/*
+  Function to return the type of staggered
+  source.
+*/
+
+stag_src_type get_stag_src(XMLReader& xml, const string& path)
+{
+  stag_src_type ans ; 
+
+  try
+    {
+      string src_name;
+      read(xml, path, src_name);
+      if (src_name == "LOCAL_SRC") 
+	{
+	  ans = LOCAL_SRC ; 
+	} 
+      else if (src_name == "GAUGE_INVAR_LOCAL_SOURCE") 
+	{
+	  ans = GAUGE_INVAR_LOCAL_SOURCE ; 
+	} 
+      else if (src_name == "FUZZED_SRC") 
+	{
+	  ans = FUZZED_SRC ; 
+	} 
+
+      else
+	{
+	  QDPIO::cerr << "src_name " << src_name << " out of range " << endl;
+	  QDP_abort(1);
+	}
+    }
+  catch (const string& e) 
+  {
+    QDPIO::cerr << "Error reading data: " << e << endl;
+    throw;
+  }
+
+  return ans ; 
+}
+
+
+
 //! Propagator generation
 /*! \defgroup propagator Propagator generation
  *  \ingroup main
@@ -291,8 +338,7 @@ int main(int argc, char **argv)
   // this parameter will be read from the input file
   bool do_gauge_transform ;
   do_gauge_transform = false ;
-  // do_gauge_transform = true ;
-
+  read(xml_in, "/propagator/param/do_gauge_transform",do_gauge_transform );
 
   if( do_gauge_transform )
     {
@@ -437,10 +483,21 @@ int main(int argc, char **argv)
     stag_prop[src_ind] = zero ;
 
 
+  // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG 
+  multi1d<int> Coord(Nd);
+
+  for(int src_ind = 0; src_ind < 16; ++src_ind)
+    {
+      PropIndexTodelta(src_ind, Coord) ; 
+      cout << src_ind << " [] " << Coord[0] << " " << Coord[1] << " " << Coord[2] << " " ;
+      cout << Coord[3] << " ===> " <<  deltaToPropIndex(Coord)  << endl ; 
+    }
+
+
   int t_source = 0;
 
   // just look at the local pion
-  for(int src_ind = 0; src_ind < 1; ++src_ind){
+  for(int src_ind = 0; src_ind < 8 ; ++src_ind){
     psi = zero;   // note this is ``zero'' and not 0
     
 
@@ -453,18 +510,40 @@ int main(int argc, char **argv)
         
 
 	//  Start to develop fuzzed source code
-	enum stag_src_type { LOCAL_SRC , FUZZED_SRC } ;
+	//	enum stag_src_type { LOCAL_SRC , FUZZED_SRC , GAUGE_INVAR_LOCAL_SOURCE } ;
 	//		enum stag_src_type type_of_src = FUZZED_SRC  ;
-	enum stag_src_type type_of_src = LOCAL_SRC  ;
+	//	enum stag_src_type type_of_src = LOCAL_SRC  ;
+	 stag_src_type type_of_src = 
+	   get_stag_src(xml_in,"/propagator/param/src_type")   ;
 
 	if( type_of_src == LOCAL_SRC )
 	  {
-        QDPIO::cout << "****> LOCAL SOURCE <****" << endl;
+	    QDPIO::cout << "****> LOCAL SOURCE <****" << endl;
+	
+	    q_source = zero ;
+	    multi1d<int> coord(Nd);
+	    //	    coord[0]=0; coord[1] = 0; coord[2] = 0; coord[3] = 0;
+	    PropIndexTodelta(src_ind, coord) ; 
+	    srcfil(q_source, coord,color_source ) ;
+	  }
+	else if( type_of_src == GAUGE_INVAR_LOCAL_SOURCE  )
+	  {
+	    QDPIO::cout << "****> GAUGE INVARIANT LOCAL SOURCE <****" << endl;
 
 	    q_source = zero ;
 	    multi1d<int> coord(Nd);
+
+	    // start with local source 
 	    coord[0]=0; coord[1] = 0; coord[2] = 0; coord[3] = 0;
 	    srcfil(q_source, coord,color_source ) ;
+
+	    // now do the shift
+	    PropIndexTodelta(src_ind, coord) ; 
+	    q_source_fuzz = q_source  ;
+	    q_source = shiftDeltaPropCov(coord,q_source_fuzz,u,
+					 false); 
+
+	    // MORE WORK
 	  }
 	else if( type_of_src == FUZZED_SRC )
 	  {
@@ -474,7 +553,8 @@ int main(int argc, char **argv)
 
 	    q_source = zero ;
 	    multi1d<int> coord(Nd);
-	    coord[0]=0; coord[1] = 0; coord[2] = 0; coord[3] = 0;
+	    //	    coord[0]=0; coord[1] = 0; coord[2] = 0; coord[3] = 0;
+	    PropIndexTodelta(src_ind, coord) ; 
 	    srcfil(q_source, coord,color_source ) ;
 
 
@@ -494,12 +574,15 @@ int main(int argc, char **argv)
         S_f.qprop(psi, state, q_source, input.param.invParam, n_count);
     
         ncg_had += n_count;
-      
-        push(xml_out,"Qprop");
-        write(xml_out, "Mass" , input.param.Mass);
-        write(xml_out, "RsdCG", input.param.invParam.RsdCG);
-        write(xml_out, "n_count", n_count);
-        pop(xml_out);
+
+	if( src_ind == 0 )
+	  {
+	    push(xml_out,"Qprop");
+	    write(xml_out, "Mass" , input.param.Mass);
+	    write(xml_out, "RsdCG", input.param.invParam.RsdCG);
+	    write(xml_out, "n_count", n_count);
+	    pop(xml_out);
+	  }
 
         /*
          * Move the solution to the appropriate components
@@ -511,13 +594,27 @@ int main(int argc, char **argv)
       stag_prop[src_ind] = quark_propagator;
       } // end src_ind
   
-  
-
-  int t_length = input.param.nrow[3];
+      int t_length = input.param.nrow[3];
       push(xml_out, "Hadrons_from_time_source");
       write(xml_out, "source_time", t_source);
 
-      staggered_pions pseudoscalar(t_length) ; 
+      staggered_pions pseudoscalar(t_length,u) ; 
+
+  bool use_gauge_invar_oper ;
+  use_gauge_invar_oper = false ;
+  read(xml_in, "/propagator/param/use_gauge_invar_oper",use_gauge_invar_oper );
+
+  if( use_gauge_invar_oper )
+    {
+      cout << "Using gauge invariant operators "  << endl ; 
+      pseudoscalar.use_gauge_invar() ;
+    }
+  else
+    {
+      cout << "Using NON-gauge invariant operators "  << endl ; 
+      pseudoscalar.use_NON_gauge_invar()  ;
+    }
+
       pseudoscalar.compute(stag_prop, j_decay);
       pseudoscalar.dump(t_source,xml_out);
       pop(xml_out);
