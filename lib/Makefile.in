@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.5 2003-02-15 04:07:37 edwards Exp $
+# $Id: Makefile.in,v 1.6 2003-02-15 05:53:48 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -137,7 +137,7 @@ TOPDIR = @top_srcdir@
 #
 # Include Path
 #
-INCFLAGS = -I$(TOPDIR)/include
+INCFLAGS = -I$(TOPDIR)/include -I$(TOPDIR)/lib
 #
 # Any other compiler flags
 # 

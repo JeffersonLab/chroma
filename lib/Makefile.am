@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.4 2003-02-15 04:07:37 edwards Exp $
+# $Id: Makefile.am,v 1.5 2003-02-15 05:53:48 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -48,7 +48,7 @@ VPATH += $(TOPDIR)/mainprogs/tests
 #
 # Include Path
 #
-INCFLAGS = -I$(TOPDIR)/include
+INCFLAGS = -I$(TOPDIR)/include -I$(TOPDIR)/lib
 #
 # Any other compiler flags
 # 
@@ -59,7 +59,7 @@ lib_LIBRARIES = libszin.a
 #
 # Various header files. 
 #
-HDRS =  szin.h primitives.h defs.h common_declarations.h geom.h
+HDRS =  szin.h szinbase.h szininc.h primitives.h defs.h common_declarations.h geom.h
 
 #
 # Fermion independent sources
