@@ -1,4 +1,4 @@
-// $Id: t_ovlap_bj.cc,v 1.16 2004-01-12 18:09:30 bjoo Exp $
+// $Id: t_ovlap_bj.cc,v 1.17 2004-01-13 10:00:57 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -614,10 +614,11 @@ int main(int argc, char **argv)
   s3 = s1 - s2;
   cout << "Non Chiral Source: || M dag M - MdagM(chi=0)  || = " << sqrt(norm2(s3)) << endl;
 
-  /*
+
   cout << "Beginning qprop test" << endl;
   cout << "Chiral Sources" << endl;
-  
+
+  /*
   try { 
     push(xml_out, "QpropTest");
   } catch( string& e) { 

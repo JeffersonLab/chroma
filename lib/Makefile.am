@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.91 2004-01-13 03:54:06 edwards Exp $
+# $Id: Makefile.am,v 1.92 2004-01-13 10:00:57 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -115,6 +115,8 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/unprec_wilson_fermact_w.h \
 	actions/ferm/fermacts/unprec_parwilson_fermact_w.h \
 	actions/ferm/fermacts/zolotarev4d_fermact_w.h \
+	actions/ferm/fermacts/zolotarev5d_fermact_array_w.h \
+	actions/ferm/linop/zolotarev5d_linop_array_w.h \
 	actions/ferm/linop/dslash_w.h actions/ferm/linop/dwffld_w.h \
 	actions/ferm/linop/ldwfdslash_w.h actions/ferm/linop/linop_w.h \
 	actions/ferm/linop/lmpsim_w.h actions/ferm/linop/lovddag_w.h \
@@ -229,7 +231,8 @@ libchroma_a_SOURCES += baryon_w.cc mesons_w.cc curcor2_w.cc lwldslash_w.cc formf
               p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc \
 	      zolotarev_coeffs.cc overlap_fermact_base_w.cc lovlapms_w.cc  \
 	      zolotarev4d_fermact_w.cc ischiral_w.cc lovddag_w.cc \
-              wallpionff_w.cc
+	      zolotarev5d_fermact_array_w.cc zolotarev5d_linop_array_w.cc
+#	      wallpionff_w.cc
 #	      wall_qprop_w.cc
 # zolotarev4d_linop_w.cc 
 # dslashm_w.cc 

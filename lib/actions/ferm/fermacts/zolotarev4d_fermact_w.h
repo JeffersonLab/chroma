@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev4d_fermact_w.h,v 1.16 2004-01-08 11:53:08 bjoo Exp $
+// $Id: zolotarev4d_fermact_w.h,v 1.17 2004-01-13 10:00:57 bjoo Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -33,13 +33,35 @@ public:
   Zolotarev4DFermAct(Handle<FermBC<LatticeFermion> > fbc_,
 		       Handle<UnprecWilsonTypeFermAct<LatticeFermion> > Mact_, 
 		       const Real& m_q_,
-		       int RatPolyDeg_,
+		       const int RatPolyDeg_,
 		       const Real& RsdCGinner_,
 		       int MaxCGinner_,
 		       XMLBufferWriter& writer_) :
     fbc(fbc_), Mact(Mact_), m_q(m_q_), RatPolyDeg(RatPolyDeg_), 
     RsdCGinner(RsdCGinner_), MaxCGinner(MaxCGinner_), writer(writer_)
     {}
+
+  //! Copy Constructor
+  Zolotarev4DFermAct(const Zolotarev4DFermAct& a) :
+    fbc(a.fbc), Mact(a.Mact), m_q(a.m_q), RatPolyDeg(a.RatPolyDeg),
+    RsdCGinner(a.RsdCGinner), MaxCGinner(a.MaxCGinner), writer(a.writer)
+  {};
+  
+
+  // Assignment
+  /* The writer makes this duff not supporting copying or assignment
+  Zolotarev4DFermAct& operator=(const Zolotarev4DFermAct& a) 
+  {
+    fbc = a.fbc;
+    Mact = a.Mact;
+    m_q = a.m_q;
+    RatPolyDeg=a.RatPolyDeg;
+    RsdCGinner=a.RsdCGinner;
+    MaxCGinner=a.MaxCGinner;
+    writer = a.writer;
+    return *this;
+  }
+  */
 
   //! Return the fermion BC object for this action
   const FermBC<LatticeFermion>& getFermBC() const {return *fbc;}

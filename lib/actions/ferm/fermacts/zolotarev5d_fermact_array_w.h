@@ -1,46 +1,58 @@
 // -*- C++ -*-
-// $Id: zolotarev5d_fermact_array_w.h,v 1.1 2004-01-12 19:24:32 bjoo Exp $
+// $Id: zolotarev5d_fermact_array_w.h,v 1.2 2004-01-13 10:00:57 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
 
-#ifndef __unprec_ovext_fermact_array_w_h__
-#define __unprec_ovext_fermact_array_w_h__
+#ifndef __zolotarev5d_fermact_array_w_h__
+#define __zolotarev5d_fermact_array_w_h__
 
 #include "fermact.h"
-
+#include "actions/ferm/fermacts/overlap_state.h"
 using namespace QDP;
 
-//! Unpreconditioned Extended-Overlap (N&N) linear operator
+//! 5D continued fraction overlap action (Borici,Wenger, Edwards)
 /*!
  * \ingroup fermact
  *
  * This operator applies the extended version of the hermitian overlap operator
  *   Chi  =   ((1+m_q)/(1-m_q)*gamma_5 + B) . Psi
- *  where  B  is the continued fraction of the pole approx. to eps(H(m))
+ *  where  B  is the continued fraction of the zolotarev approx. to eps(H(m))
  */
 
-class UnprecOvExtFermActArray : public UnprecWilsonTypeFermAct< multi1d<LatticeFermion> >
+class Zolotarev5DFermActArray : public UnprecWilsonTypeFermAct< multi1d<LatticeFermion> >
 {
 public:
   //! General FermBC
-  UnprecOvExtFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
-		       const Real& WilsonMass_, const Real& m_q_, int N5_) : 
-    fbc(fbc_), WilsonMass(WilsonMass_), m_q(m_q_), N5(N5_) {a5=1;}
+  Zolotarev5DFermActArray(Handle< FermBC< multi1d< LatticeFermion> > > fbc_, 
+			  Handle<UnprecWilsonTypeFermAct<LatticeFermion> > S_aux_,
+			  const Real& m_q_,
+			  const int RatPolyDeg_,
+			  XMLBufferWriter& writer_) :
+    fbc(fbc_), S_aux(S_aux_), m_q(m_q_), RatPolyDeg(RatPolyDeg_), writer(writer_), N5( RatPolyDeg_ + 1 ) {}
+
+
 
   //! Copy constructor
-  UnprecOvExtFermActArray(const UnprecOvExtFermActArray& a) : 
-    fbc(a.fbc), WilsonMass(a.WilsonMass), m_q(a.m_q), a5(a.a5), N5(a.N5) {}
+  Zolotarev5DFermActArray(const Zolotarev5DFermActArray& a) : 
+    fbc(a.fbc), S_aux(a.S_aux), m_q(a.m_q), RatPolyDeg(a.RatPolyDeg), writer(a.writer), N5(a.N5) {};
 
   //! Assignment
-  UnprecOvExtFermActArray& operator=(const UnprecOvExtFermActArray& a)
-    {fbc=a.fbc; WilsonMass=a.WilsonMass; m_q=a.m_q; a5=a.a5; N5=a.N5; return *this;}
+  /* Writer screws this up -- I might get rid of that 
+  Zolotarev5DFermActArray& operator=(const Zolotarev5DFermActArray& a) {
+    fbc=a.fbc; 
+    S_aux=a.S_aux;
+    m_q=a.m_q;
+    RatPolyDeg = a.RatPolyDeg;
+    writer=a.writer;
+    return *this;
+  }
+  */
 
   //! Return the fermion BC object for this action
-  const FermBC< multi1d<LatticeFermion> >& getFermBC() const {return *fbc;}
+  const FermBC< multi1d< LatticeFermion> >& getFermBC() const {return *fbc;}
 
-  //! Length of DW flavor index/space
-  int size() const {return N5;}
+  int size(void) const { return N5; }
 
   //! Return the quark mass
   Real quark_mass() const {return m_q;}
@@ -65,26 +77,61 @@ public:
    *
    * NOTE: maybe this should produce a quark prop foundry class object 
    */
+  /*
   void qprop(LatticeFermion& psi, 
 	     Handle<const ConnectState> state, 
 	     const LatticeFermion& chi, 
 	     enum InvType invType,
 	     const Real& RsdCG, 
 	     int MaxCG, int& ncg_had) const;
-
+  */
   //! Destructor is automatic
-  ~UnprecOvExtFermActArray() {}
+  ~Zolotarev5DFermActArray() {}
 
+
+  // Create state functions
+
+  // Just gauge field and epsilon -- Approx Max is 2*Nd 
+  const OverlapConnectState<LatticeFermion>*
+  createState(const multi1d<LatticeColorMatrix>& u_, 
+	      const Real& approxMin_) const ;
+ 
+  // Gauge field, epsilon, approx min, approx max
+  const OverlapConnectState<LatticeFermion>*
+  createState(const multi1d<LatticeColorMatrix>& u_, 
+	      const Real& approxMin_, 
+	      const Real& approxMax_) const;
+
+
+  // Gauge field, e-values, e-vectors
+  const OverlapConnectState<LatticeFermion>*
+  createState(const multi1d<LatticeColorMatrix>& u_,
+	      const multi1d<Real>& lambda_lo_,
+	      const multi1d<LatticeFermion>& evecs_lo_, 
+	      const Real& lambda_hi_) const;
+
+
+protected:
+  //! Helper in construction
+  void init(Real& scale_fac,
+	    multi1d<Real>& alpha,
+	    multi1d<Real>& beta,
+	    int& NEig,
+	    multi1d<Real>& EigValFunc,
+	    const OverlapConnectState<LatticeFermion>& state) const;
 private:
   // Hide partial constructor
-  UnprecOvExtFermActArray() {}
+  Zolotarev5DFermActArray();
 
 private:
   Handle< FermBC< multi1d<LatticeFermion> > >  fbc;
-  Real WilsonMass;
+  Handle< UnprecWilsonTypeFermAct<LatticeFermion> > S_aux;
+
   Real m_q;
-  Real a5;
+  int RatPolyDeg;
   int  N5;
+  
+  XMLBufferWriter& writer;
 };
 
 #endif

@@ -1,4 +1,4 @@
-// $Id: zolotarev4d_fermact_w.cc,v 1.12 2004-01-12 18:09:29 bjoo Exp $
+// $Id: zolotarev4d_fermact_w.cc,v 1.13 2004-01-13 10:00:57 bjoo Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -76,7 +76,7 @@ Zolotarev4DFermAct::init(int& numroot,
       NEig = NEigVal - 1;
   }
 
-  scale_fac = 1 / state.getApproxMax();
+  scale_fac = Real(1) / state.getApproxMax();
   eps = state.getApproxMin() * scale_fac;
 
 
