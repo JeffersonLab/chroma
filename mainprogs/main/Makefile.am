@@ -25,7 +25,7 @@ endif
 
 if BUILD_SSE_DWF_CG
 AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@SSE_DWF_CG_DIR@/include
-AM_LDFLAGS += -L$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/lib
+AM_LDFLAGS += -L$(BUILDDIR)/other_libs/@SSE_DWF_CG_DIR@/lib
 LDADD += -lsse_dwf_cg 
 endif
 
