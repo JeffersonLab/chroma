@@ -390,7 +390,6 @@ int main(int argc, char **argv)
 
 
   // Timeslice sums of fermion loops.
-<<<<<<< t_disc_loop_s.cc
   // G_s is local scalar 
   LatticeComplex TrG_s0 ;
   LatticeComplex corr_fn_s, corr_fn_p ;
@@ -400,39 +399,10 @@ int main(int argc, char **argv)
 
   multi1d<DComplex> sca0_loop(t_length), sca1_loop(t_length), 
                     conn_corr_s(t_length), conn_corr_p(t_length);
-=======
-  // G_s is local scalar 
-  LatticeComplex TrG_s0 ;
-  LatticeComplex corr_fn_s, corr_fn_p ;
 
-
-  multi2d<DComplex> loop_s0(Nsamp, t_length) ;
->>>>>>> 1.9
-
-<<<<<<< t_disc_loop_s.cc
-=======
-  multi1d<DComplex> sca0_loop(t_length), sca1_loop(t_length), 
-                    conn_corr_s(t_length), conn_corr_p(t_length);
->>>>>>> 1.9
-
-<<<<<<< t_disc_loop_s.cc
-  sca0_loop = sca1_loop =  zero;
-=======
-
-  sca0_loop = sca1_loop =  zero;
->>>>>>> 1.9
 
   using namespace StagPhases;
 
-<<<<<<< t_disc_loop_s.cc
-  // the wrapped disconnected loops
-  local_scalar_loop scalar_one_loop(t_length,Nsamp) ; 
-  non_local_scalar_loop scalar_two_loop(t_length,Nsamp) ; 
-  threelink_pseudoscalar_loop eta3_loop(t_length,Nsamp) ; 
-  fourlink_pseudoscalar_loop eta4_loop(t_length,Nsamp) ; 
-
-  // Connected Correlator, use a point source at:  0000
-=======
   // the wrapped disconnected loops
   local_scalar_loop scalar_one_loop(t_length,Nsamp) ; 
   non_local_scalar_loop scalar_two_loop(t_length,Nsamp) ; 
@@ -443,7 +413,6 @@ int main(int argc, char **argv)
   // THIS IS ONLY FOR THE SCALAR AT THE MOMENT.
   Handle<const SystemSolver<LatticeStaggeredFermion> > qprop(S_f.qprop(state,input.param.invParam));
 
->>>>>>> 1.9
   psi = zero;
   for(int color_source = 0; color_source < Nc; ++color_source) {
     int spin_source = 0;
@@ -489,7 +458,8 @@ int main(int argc, char **argv)
     coord[0]=1; coord[1] = 1; coord[2] = 1; coord[3] = 1;
     srcfil(q_source, coord,color_source ) ;
 
-    S_f.qprop(psi, state, q_source, input.param.invParam, n_count);
+    //    S_f.qprop(psi, state, q_source, input.param.invParam, n_count);
+    int n_count = (*qprop)(psi, q_source);
 
     ncg_had += n_count;
 #ifdef NNNNNNNNNNNNNN
@@ -524,14 +494,7 @@ int main(int argc, char **argv)
   seed = input.param.CFGNO;
   RNG::setrn(seed);
 
-<<<<<<< t_disc_loop_s.cc
 
-
-
-=======
-
-
->>>>>>> 1.9
   for(int i = 0; i < Nsamp; ++i){
     psi = zero;   // note this is ``zero'' and not 0
 
