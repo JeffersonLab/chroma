@@ -1,4 +1,4 @@
-// $Id: unprec_dwftransf_linop_w.cc,v 1.9 2005-01-14 20:13:06 edwards Exp $
+// $Id: unprec_dwftransf_linop_w.cc,v 1.10 2005-02-25 03:01:55 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -20,17 +20,17 @@ namespace Chroma
     Mass = Mass_;
     b5 = b5_;
     c5 = c5_;
-    inv_param = invParam_;
+    invParam = invParam_;
 
     // Need to create a handle for a wilson linop
     QDPIO::cout << "Creating UnprecDWFTransfLinOp with ";
     QDPIO::cout << " b5=" << b5 << " c5=" << c5 << " Mass=" << Mass;
-    QDPIO::cout << " RsdCG=" << inv_param.RsdCG << endl;
+    QDPIO::cout << " RsdCG=" << invParam.RsdCG << endl;
 
 
     Real b5_minus_c5 = b5 - c5;
     D_w = new UnprecWilsonLinOp(u_, Mass_);
-    D_denum = new UnprecDWFTransfDenLinOp(u, b5_minus_c5, D_w);
+    D_denum = new UnprecDWFTransfDenLinOp(u_, b5_minus_c5, D_w);
   }
 
 
@@ -53,8 +53,8 @@ namespace Chroma
       InvCG2<LatticeFermion>(*D_denum, 
 			     chi, 
 			     tmp,
-			     inv_param.RsdCG,
-			     inv_param.MaxCG,
+			     invParam.RsdCG,
+			     invParam.MaxCG,
 			     n_count);
       (*D_w)(chi, tmp, PLUS);
    
@@ -70,8 +70,8 @@ namespace Chroma
       InvCG2<LatticeFermion>(*D_denum, 
 			     tmp, 
 			     chi,
-			     inv_param.RsdCG,
-			     inv_param.MaxCG,
+			     invParam.RsdCG,
+			     invParam.MaxCG,
 			     n_count);
       
       (*D_w)(tmp, chi, PLUS);
@@ -88,6 +88,61 @@ namespace Chroma
     
     chi *= (b5 + c5);
     QDPIO::cout << "UnprecDWFTransfLinOp: ncount= " << n_count << endl;
+    END_CODE();
+  }
+
+
+
+  //------------------------------------------------------------------------
+
+  void UnprecDWFTransfMdagMLinOp::create(const multi1d<LatticeColorMatrix>& u_, 
+					 const Real& Mass_,
+					 const Real& b5_,
+					 const Real& c5_,
+					 const InvertParam_t& invParam_)
+  {
+    Mass = Mass_;
+    b5 = b5_;
+    c5 = c5_;
+    invParam = invParam_;
+
+    // Need to create a handle for a wilson linop
+    QDPIO::cout << "Creating UnprecDWFTransfMdagMLinOp with ";
+    QDPIO::cout << " b5=" << b5 << " c5=" << c5 << " Mass=" << Mass;
+    QDPIO::cout << " RsdCG=" << invParam.RsdCG << endl;
+
+    Real b5_minus_c5 = b5 - c5;
+    D_w = new UnprecWilsonLinOp(u_, Mass_);
+    D_denum = new UnprecDWFTransfDenLinOp(u_, b5_minus_c5, D_w);
+  }
+
+
+
+  void UnprecDWFTransfMdagMLinOp::operator() (LatticeFermion& chi, const LatticeFermion& psi, 
+					      enum PlusMinus isign) const
+  {
+    START_CODE();
+
+    int n_count;
+
+    // Apply chi = (b5+c5)^2 * gamma_5 * D_w * [ D_denum^dag * D_denum ]^{-1} * gamma_5 * D_w * psi
+    LatticeFermion tmp;
+    (*D_w)(chi, psi, PLUS);
+    tmp = GammaConst<Ns,Ns*Ns-1>()*chi;
+
+    chi = tmp;
+    InvCG2<LatticeFermion>(*D_denum, 
+			   tmp,
+			   chi, 
+			   invParam.RsdCG,
+			   invParam.MaxCG,
+			   n_count);
+
+    (*D_w)(tmp, chi, PLUS);
+    chi = GammaConst<Ns,Ns*Ns-1>()*tmp;
+    chi *= Real((b5 + c5)*(b5 + c5));
+
+    QDPIO::cout << "UnprecDWFTransfMdagMLinOp: ncount= " << n_count << endl;
     END_CODE();
   }
 

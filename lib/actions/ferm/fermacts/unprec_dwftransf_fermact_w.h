@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwftransf_fermact_w.h,v 1.7 2005-02-23 19:29:20 edwards Exp $
+// $Id: unprec_dwftransf_fermact_w.h,v 1.8 2005-02-25 03:01:55 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -83,9 +83,7 @@ namespace Chroma
     const UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* linOp(Handle<const ConnectState> state) const;
 
     //! Produce a linear operator M^dag.M for this action
-    const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state) const {
-      return new lmdagm<LatticeFermion>(linOp(state));
-    }
+    const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state) const;
 
     //! Produce the gamma_5 hermitian operator H_w
     //  Actually, this operator is already Hermitian, so just return
