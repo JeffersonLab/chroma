@@ -1,4 +1,4 @@
-// $Id: sink_smear2_w.cc,v 1.7 2004-01-05 21:47:20 edwards Exp $
+// $Id: sink_smear2_w.cc,v 1.8 2004-01-06 04:56:47 edwards Exp $
 /*! \file
  *  \brief Control routine for types of propagator smearing
  */
@@ -20,7 +20,7 @@ using namespace QDP;
  *
  *  \param u                   gauge field ( Read )
  *  \param quark_propagator    quark propagator ( Modify )
- *  \param wvf_type            wave function kind: Gaussian or exponential
+ *  \param Wvf_kind            wave function kind: Gaussian or exponential
  *                             ( Read )
  *  \param wvf_param           wvf_param of "shell" wave function ( Read )
  *  \param wvfIntPar           number of iterations to approximate Gaussian
@@ -31,26 +31,26 @@ using namespace QDP;
 
 void sink_smear2(const multi1d<LatticeColorMatrix>& u,
                  LatticePropagator& quark_propagator, 
-		 WvfType wvf_type, const Real& wvf_param, int wvfIntPar, 
+		 WvfKind Wvf_kind, const Real& wvf_param, int wvfIntPar, 
 		 int j_decay)
 {
   Real RsdCG;
 
   START_CODE("sink_smear2");
 
-  switch (wvf_type) 
+  switch (Wvf_kind) 
   {
-  case WVF_TYPE_GAUGE_INV_GAUSSIAN:
+  case WVF_KIND_GAUGE_INV_GAUSSIAN:
     gausSmear(u, quark_propagator, wvf_param, wvfIntPar, j_decay);
     break;
 
 #if 0
-  case WVF_TYPE_WUPPERTAL:
+  case WVF_KIND_WUPPERTAL:
     RsdCG = fuzz;
     wupp_smear(u, quark_propagator, wvf_param, wvfIntPar, j_decay, RsdCG);
     break;
 
-  case WVF_TYPE_JACOBI:
+  case WVF_KIND_JACOBI:
     RsdCG = fuzz;
     jacobi_smear(u, quark_propagator, wvf_param, wvfIntPar, j_decay);
     break;
