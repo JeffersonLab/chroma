@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.188 2004-11-08 05:41:50 edwards Exp $
+# $Id: Makefile.am,v 1.189 2004-11-16 23:08:27 velytsky Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -146,6 +146,9 @@ nobase_include_HEADERS = \
 	update/update.h update/field_state.h \
 	update/heatbath/heatbath.h \
         update/heatbath/su3over.h update/heatbath/su3hb.h \
+	update/heatbath/u_staple.h update/heatbath/hb_params.h \
+	update/heatbath/su2_hb_update.h \
+	update/heatbath/su3_hb_sweep.h \
 	update/molecdyn/molecdyn.h \
 	update/molecdyn/abs_hamiltonian.h \
 	update/molecdyn/exact_pg_hamiltonian.h \
@@ -337,6 +340,8 @@ libchroma_a_SOURCES = gauge_startup.cc gaugebc_utils.cc gaugeact_utils.cc \
 	       inv_rel_gmresr_cg.cc inv_gmresr_cg_array.cc \
 	       inv_minres_array.cc wilson_gaugeact.cc \
                su3over.cc su3hb.cc \
+	       u_staple.cc su2_hb_update.cc \
+	       su3_hb_sweep.cc \
 	       gaugebc_io.cc gaugeact_io.cc wilson_gaugeact_io.cc \
 	       mc_io.cc md_io.cc pg_hmc_io.cc
 

@@ -43,7 +43,7 @@ HDRS =
 ##   Another option is to add it to check_PROGRAMS, which means it will only
 ##   be built by 'make check' and is not installed.
 check_PROGRAMS  = t_mesplq t_io t_mesons_w t_conslinop t_hypsmear \
-                  t_overbu t_ape_smear t_precact
+                  t_overbu t_ape_smear t_precact t_su3
 
 ## Moved t_dslashm and t_lwldslash to EXTRA_PROGRAMS because they currently
 ## do not compile.  This way, they don't break 'make check' but the targets
@@ -65,6 +65,9 @@ EXTRA_PROGRAMS  = t_dslashm t_lwldslash t_spprod t_lwldslash_sse t_follana_io_s 
 ##   Worth investigating.
 ##
 ## check_DEPENDENCIES = build_chroma_libs
+
+t_su3_SOURCES = t_su3.cc
+t_su3_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_mesplq_SOURCES = t_mesplq.cc
 t_mesplq_DEPENDENCIES = build_chroma_libs rebuild_other_libs
