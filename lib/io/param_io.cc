@@ -1,4 +1,4 @@
-// $Id: param_io.cc,v 1.15 2004-03-23 20:17:16 kostas Exp $
+// $Id: param_io.cc,v 1.16 2004-04-04 03:02:17 edwards Exp $
 /*! \file
  *  \brief Various parameter readers/writers for main programs
  */
@@ -131,12 +131,14 @@ void read(XMLReader& xml, const string& path, CfgType& param)
 {
   string cfg_type_str;
   read(xml, path, cfg_type_str);
-  if (cfg_type_str == "SZIN")
-    param = CFG_TYPE_SZIN;
+  if (cfg_type_str == "MILC")
+    param = CFG_TYPE_MILC;
   else if (cfg_type_str == "NERSC")
     param = CFG_TYPE_NERSC;
-  else if (cfg_type_str == "MILC")
-    param = CFG_TYPE_MILC;
+  else if (cfg_type_str == "SCIDAC")
+    param = CFG_TYPE_SCIDAC;
+  else if (cfg_type_str == "SZIN")
+    param = CFG_TYPE_SZIN;
   else 
   {
     QDPIO::cerr << "Unsupported configuration type" << endl;
@@ -455,10 +457,14 @@ void write(XMLWriter& xml, const string& path, FermActType param)
 void write(XMLWriter& xml, const string& path, CfgType param)
 {
   string cfg_type_str;
-  if (param == CFG_TYPE_SZIN)
-    cfg_type_str = "SZIN";
+  if (param == CFG_TYPE_MILC)
+    cfg_type_str = "MILC";
   else if (param == CFG_TYPE_NERSC)
     cfg_type_str = "NERSC";
+  else if (param == CFG_TYPE_SCIDAC)
+    cfg_type_str = "SCIDAC";
+  else if (param == CFG_TYPE_SZIN)
+    cfg_type_str = "SZIN";
   else 
   {
     QDPIO::cerr << "Unsupported configuration type" << endl;
