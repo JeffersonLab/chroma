@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<assertions>
+
+<assertion xpath="/DISCONNECTED/CONNECTED/local_scalar/elen/re" type="real" comparison="relative_comparison" tolerance="0.001"/>
+
+<assertion xpath="/DISCONNECTED/CONNECTED/goldstone_pion/elen/re" type="real" comparison="relative_comparison" tolerance="0.001"/>
+
+</assertions>
