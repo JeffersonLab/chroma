@@ -1,4 +1,4 @@
-/* $Id: unprec_ovext_linop_array_w.cc,v 1.1 2003-11-16 06:21:34 edwards Exp $
+/* $Id: unprec_ovext_linop_array_w.cc,v 1.2 2003-11-16 20:04:55 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
  */
@@ -35,6 +35,7 @@ UnprecOvExtLinOpArray::create(const multi1d<LatticeColorMatrix>& u_,
   fact1 = -0.5*(1 + m_q);
   fact2 = sqrt((1 - m_q)/(2*NN5));
   cc.resize(NN5);
+  ss.resize(NN5);
 
   // Use polar form for coeff. for now - can generalize
   for(int n=1; n <= NN5; ++n)
