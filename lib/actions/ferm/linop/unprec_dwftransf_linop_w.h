@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwftransf_linop_w.h,v 1.5 2004-12-12 21:22:16 edwards Exp $
+// $Id: unprec_dwftransf_linop_w.h,v 1.6 2005-01-05 05:39:35 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -16,8 +16,12 @@ using namespace QDP;
 
 namespace Chroma 
 { 
-  // Apply   H_t =  (b5 + c5) H_w / ( 2 + (b5 + c5) D_w )
-  //
+  //! Apply   gamma_5 * H_t 
+  /*!
+   * where
+   *    H_T  =  (b5 + c5) H_w * ( 2 + (b5 + c5) D_w )^(-1)
+   *         =  (b5 + c5) ( 2 + (b5 + c5) D_w^dag )^(-1) * H_w
+   */
   class UnprecDWFTransfLinOp : public UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >
   {
   public:
@@ -35,7 +39,7 @@ namespace Chroma
     //! Destructor is automatic
     ~UnprecDWFTransfLinOp() {}
 
-    //! Only defined on the odd subset
+    //! Only defined on the entire lattice
     const OrderedSubset& subset() const {return all;}
 
     //! Creation routine
@@ -80,7 +84,7 @@ namespace Chroma
     //! Destructor is automatic
     ~UnprecDWFTransfDenLinOp() {}
 
-    //! Only defined on the odd subset
+    //! Only defined on the entire lattice
     const OrderedSubset& subset() const {return all;}
 
     //! Apply the operator onto a source vector
