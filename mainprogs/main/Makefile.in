@@ -41,10 +41,6 @@ host_triplet = @host@
 @BUILD_SSE_DWF_CG_TRUE@am__append_4 = -I$(TOPDIR)/other_libs/@SSE_DWF_CG_DIR@/include
 @BUILD_SSE_DWF_CG_TRUE@am__append_5 = -L$(BUILDDIR)/other_libs/@SSE_DWF_CG_DIR@/lib
 @BUILD_SSE_DWF_CG_TRUE@am__append_6 = -lsse_dwf_cg 
-@BUILD_WILSON_LIBS_TRUE@am__append_7 = spectrum_w qqq_w bar3ptfn qproptransf wallformfac
-@BUILD_WILSON_LIBS_TRUE@am__append_8 = propagator_comp multi_propagator multi_propagator_comp \
-@BUILD_WILSON_LIBS_TRUE@       collect_multi_propcomp 
-
 VPATH = @top_srcdir@/mainprogs/main
 ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
@@ -60,10 +56,6 @@ BUILD_SSE_DWF_CG_FALSE = @BUILD_SSE_DWF_CG_FALSE@
 BUILD_SSE_DWF_CG_TRUE = @BUILD_SSE_DWF_CG_TRUE@
 BUILD_SSE_WILSON_DSLASH_FALSE = @BUILD_SSE_WILSON_DSLASH_FALSE@
 BUILD_SSE_WILSON_DSLASH_TRUE = @BUILD_SSE_WILSON_DSLASH_TRUE@
-BUILD_STAGGERED_LIBS_FALSE = @BUILD_STAGGERED_LIBS_FALSE@
-BUILD_STAGGERED_LIBS_TRUE = @BUILD_STAGGERED_LIBS_TRUE@
-BUILD_WILSON_LIBS_FALSE = @BUILD_WILSON_LIBS_FALSE@
-BUILD_WILSON_LIBS_TRUE = @BUILD_WILSON_LIBS_TRUE@
 CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
 CXXDEPMODE = @CXXDEPMODE@
@@ -173,23 +165,28 @@ LDADD = -lchroma @QDPXX_LIBS@ @LIBS@ $(am__append_3) $(am__append_6)
 HDRS = 
 
 #noinst_PROGRAMS = propagator
+
+# Wilson specific programs
 check_PROGRAMS = propagator \
         collect_propcomp \
         seqsource \
 	make_source \
         ExampleBuildingBlocks hypsmear cfgtransf sink_smearing qpropgfix \
         qproptrev\
-$(am__append_7)
+spectrum_w qqq_w bar3ptfn qproptransf wallformfac
 
 
-# Currently empty
-#if BUILD_STAGGERED_LIBS
-#endif
-EXTRA_PROGRAMS = qpropadd  $(am__append_8)
+# Staggered specific programs
+#check_PROGRAMS += 
 
-# Currently empty
-#if BUILD_STAGGERED_LIBS
-#endif
+# Wilson specific programs
+# Temporarily moved here while fixing codes.
+EXTRA_PROGRAMS = qpropadd  propagator_comp multi_propagator multi_propagator_comp \
+       collect_multi_propcomp 
+
+
+# Staggered specific programs
+#EXTRA_PROGRAMS += 
 
 #
 # The program and its dependencies
@@ -257,30 +254,15 @@ subdir = mainprogs/main
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/lib/chroma_config_internal.h
 CONFIG_CLEAN_FILES =
-@BUILD_WILSON_LIBS_TRUE@EXTRA_PROGRAMS = qpropadd$(EXEEXT) \
-@BUILD_WILSON_LIBS_TRUE@	propagator_comp$(EXEEXT) \
-@BUILD_WILSON_LIBS_TRUE@	multi_propagator$(EXEEXT) \
-@BUILD_WILSON_LIBS_TRUE@	multi_propagator_comp$(EXEEXT) \
-@BUILD_WILSON_LIBS_TRUE@	collect_multi_propcomp$(EXEEXT)
-@BUILD_WILSON_LIBS_FALSE@EXTRA_PROGRAMS = qpropadd$(EXEEXT)
-@BUILD_WILSON_LIBS_TRUE@check_PROGRAMS = propagator$(EXEEXT) \
-@BUILD_WILSON_LIBS_TRUE@	collect_propcomp$(EXEEXT) \
-@BUILD_WILSON_LIBS_TRUE@	seqsource$(EXEEXT) make_source$(EXEEXT) \
-@BUILD_WILSON_LIBS_TRUE@	ExampleBuildingBlocks$(EXEEXT) \
-@BUILD_WILSON_LIBS_TRUE@	hypsmear$(EXEEXT) cfgtransf$(EXEEXT) \
-@BUILD_WILSON_LIBS_TRUE@	sink_smearing$(EXEEXT) \
-@BUILD_WILSON_LIBS_TRUE@	qpropgfix$(EXEEXT) qproptrev$(EXEEXT) \
-@BUILD_WILSON_LIBS_TRUE@	spectrum_w$(EXEEXT) qqq_w$(EXEEXT) \
-@BUILD_WILSON_LIBS_TRUE@	bar3ptfn$(EXEEXT) qproptransf$(EXEEXT) \
-@BUILD_WILSON_LIBS_TRUE@	wallformfac$(EXEEXT)
-@BUILD_WILSON_LIBS_FALSE@check_PROGRAMS = propagator$(EXEEXT) \
-@BUILD_WILSON_LIBS_FALSE@	collect_propcomp$(EXEEXT) \
-@BUILD_WILSON_LIBS_FALSE@	seqsource$(EXEEXT) \
-@BUILD_WILSON_LIBS_FALSE@	make_source$(EXEEXT) \
-@BUILD_WILSON_LIBS_FALSE@	ExampleBuildingBlocks$(EXEEXT) \
-@BUILD_WILSON_LIBS_FALSE@	hypsmear$(EXEEXT) cfgtransf$(EXEEXT) \
-@BUILD_WILSON_LIBS_FALSE@	sink_smearing$(EXEEXT) \
-@BUILD_WILSON_LIBS_FALSE@	qpropgfix$(EXEEXT) qproptrev$(EXEEXT)
+EXTRA_PROGRAMS = qpropadd$(EXEEXT) propagator_comp$(EXEEXT) \
+	multi_propagator$(EXEEXT) multi_propagator_comp$(EXEEXT) \
+	collect_multi_propcomp$(EXEEXT)
+check_PROGRAMS = propagator$(EXEEXT) collect_propcomp$(EXEEXT) \
+	seqsource$(EXEEXT) make_source$(EXEEXT) \
+	ExampleBuildingBlocks$(EXEEXT) hypsmear$(EXEEXT) \
+	cfgtransf$(EXEEXT) sink_smearing$(EXEEXT) qpropgfix$(EXEEXT) \
+	qproptrev$(EXEEXT) spectrum_w$(EXEEXT) qqq_w$(EXEEXT) \
+	bar3ptfn$(EXEEXT) qproptransf$(EXEEXT) wallformfac$(EXEEXT)
 am_ExampleBuildingBlocks_OBJECTS = ExampleBuildingBlocks.$(OBJEXT)
 ExampleBuildingBlocks_OBJECTS = $(am_ExampleBuildingBlocks_OBJECTS)
 ExampleBuildingBlocks_LDADD = $(LDADD)
