@@ -1,4 +1,4 @@
-// $Id: qprop_io.h,v 1.14 2004-05-03 20:24:13 edwards Exp $
+// $Id: qprop_io.h,v 1.15 2004-05-12 01:13:51 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -149,6 +149,15 @@ struct ForwardProp_t
 };
 
 
+//! Mega structure holding a full sequential source (except gauge)
+struct SequentialSource_t
+{
+  PropSink_t       sink_header;
+  SeqSource_t      seqsource_header;
+  multi1d<ForwardProp_t> forward_props;
+};
+
+
 //! Mega structure holding a full sequential prop (except gauge)
 struct SequentialProp_t
 {
@@ -222,6 +231,13 @@ void read(XMLReader& xml, const std::string& path, ForwardProp_t& header);
 
 //! ForwardProp writer
 void write(XMLWriter& xml, const std::string& path, const ForwardProp_t& header);
+
+
+//! SequentialSource reader
+void read(XMLReader& xml, const std::string& path, SequentialSource_t& header);
+
+//! SequentialSource writer
+void write(XMLWriter& xml, const std::string& path, const SequentialSource_t& header);
 
 
 //! SequentialProp reader
