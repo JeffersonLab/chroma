@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.228 2005-01-13 12:40:13 bjoo Exp $
+# $Id: Makefile.am,v 1.229 2005-01-13 15:10:51 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -483,19 +483,20 @@ libchroma_a_SOURCES += \
 # Inline measurement headers
 #
 nobase_include_HEADERS += \
+	io/inline_io.h
 	meas/inline/inline.h \
 	meas/inline/abs_inline_measurement.h \
 	meas/inline/abs_inline_measurement_factory.h \
 	meas/inline/glue/glue.h \
 	meas/inline/glue/inline_plaquette.h \
-	io/inline_io.h
+	meas/inline/glue/inline_polylp.h
 
 # Inline measurement sources 
 
 libchroma_a_SOURCES += \
 	io/inline_io.cc \
-	meas/inline/glue/inline_plaquette.cc
-
+	meas/inline/glue/inline_plaquette.cc \
+	meas/inline/glue/inline_polylp.cc
 #	actions/ferm/fermacts/unprec_clover_fermact_w.cc
 #	actions/ferm/fermacts/prec_clover_fermact_w.cc
 #	meas/pbp/mespbg5p_w.cc meas/pbp/mespbp_w.cc

@@ -51,11 +51,12 @@ namespace Chroma {
     {
 
       // may need to loop over the indices of P?
+      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
       Double KE=Double(0);
       for(int mu=0; mu < s.getP().size(); mu++) { 
 	KE += norm2((s.getP())[mu]);
       }
-
+      
       return KE;
     }
     

@@ -33,12 +33,22 @@ namespace Chroma {
       read(paramtop, "./SaveInterval", p.save_interval);
       read(paramtop, "./SavePrefix", p.save_prefix);
       read(paramtop, "./SaveVolfmt", p.save_volfmt);
-      
-      XMLReader measurements_xml(paramtop, "./InlineMeasurements");
-      std::ostringstream inline_os;
-      measurements_xml.print(inline_os);
-      p.inline_measurement_xml = inline_os.str();
 
+      if( paramtop.count("./InlineMeasurements") == 0 ) {
+	XMLBufferWriter dummy;
+	push(dummy, "InlineMeasurements");
+	pop(dummy); // InlineMeasurements
+	p.inline_measurement_xml = dummy.printCurrentContext();
+
+      }
+      else {
+	XMLReader measurements_xml(paramtop, "./InlineMeasurements");
+	std::ostringstream inline_os;
+	measurements_xml.print(inline_os);
+	p.inline_measurement_xml = inline_os.str();
+	QDPIO::cout << "InlineMeasurements are: " << endl;
+	QDPIO::cout << p.inline_measurement_xml << endl;
+      }
     }
     catch(const std::string& e ) { 
       QDPIO::cerr << "Caught Exception: " << e << endl;
@@ -231,15 +241,24 @@ namespace Chroma {
 	       QDPIO_SERIAL);    
   }
 
+ 
+
   template<typename UpdateParams>
   void doHMC(multi1d<LatticeColorMatrix>& u,
 	     AbsHMCTrj<multi1d<LatticeColorMatrix>,
 	               multi1d<LatticeColorMatrix> >& theHMCTrj,
 	     MCControl& mc_control, 
 	     const UpdateParams& update_params,
-	     multi1d< Handle<AbsInlineMeasurement> >& measurements) {
+	     multi1d< Handle<AbsInlineMeasurement> >& user_measurements) {
 
     XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+
+    multi1d< Handle< AbsInlineMeasurement > > default_measurements(1);
+    InlinePlaquetteParams plaq_params;
+    plaq_params.frequency = 1;
+    // It is a handle
+    default_measurements[0] = new InlinePlaquette(plaq_params);
+
     try {
 
       // Initialise the RNG
@@ -283,11 +302,24 @@ namespace Chroma {
 	// Do the trajectory without accepting 
 	theHMCTrj( gauge_state, warm_up_p );
 
-	push(xml_out, "InlineObservables");	
-	for(int m=0; m < measurements.size(); m++) {
-	  AbsInlineMeasurement& the_meas = *(measurements[m]);
-	  if( cur_update % the_meas.getFrequency() == 0 ) { 
-	    the_meas( gauge_state.getQ(), cur_update, xml_out );
+	// Measure inline observables 
+	push(xml_out, "InlineObservables");
+
+	// Always measure defaults
+	for(int m=0; m < default_measurements.size(); m++) {
+	  AbsInlineMeasurement& the_meas = *(default_measurements[m]);
+	  the_meas( gauge_state.getQ(), cur_update, xml_out);
+	}
+	
+	// Only measure user measurements after warm up
+	if( ! warm_up_p ) {
+	  QDPIO::cout << "Doing " << user_measurements.size() 
+		      <<" user measurements" << endl;
+	  for(int m=0; m < user_measurements.size(); m++) {
+	    AbsInlineMeasurement& the_meas = *(user_measurements[m]);
+	    if( cur_update % the_meas.getFrequency() == 0 ) { 
+	      the_meas( gauge_state.getQ(), cur_update, xml_out );
+	    }
 	  }
 	}
 	pop(xml_out); // pop("InlineObservables");
@@ -343,7 +375,7 @@ namespace Chroma {
 
     // Inline Measurements
     foo &= InlinePlaquetteEnv::registered;
-    
+    foo &= InlinePolyakovLoopEnv::registered;
     return foo;
   }
 };
@@ -418,7 +450,8 @@ int main(int argc, char *argv[])
   XMLReader MeasXML(Measurements_is);
   multi1d < Handle< AbsInlineMeasurement > > the_measurements;
   read(MeasXML, "/InlineMeasurements", the_measurements);
-  
+
+  QDPIO::cout << "There are " << the_measurements.size() << " user measurements " << endl;
   // Run
   doHMC<HMCTrjParams>(u, theHMCTrj, mc_control, trj_params, the_measurements);
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_monomial.h,v 1.15 2005-01-11 15:28:02 bjoo Exp $
+// $Id: abs_monomial.h,v 1.16 2005-01-13 15:10:51 bjoo Exp $
 
 /*! @file
  * @brief Monomials - gauge action or fermion binlinear contributions for HMC
@@ -333,7 +333,7 @@ namespace Chroma
 
       // Get X out here
       (getMDSolutionPredictor())(X);
-      getX(X,s);
+      int n_count = getX(X,s);
       (getMDSolutionPredictor()).newVector(X);
 
       (*lin)(Y, X, PLUS);
@@ -405,7 +405,7 @@ namespace Chroma
     virtual const WilsonTypeFermAct<Phi,P>& getFermAct(void) const = 0;
 
     //! Get (M^dagM)^{-1} phi
-    virtual void getX(Phi& X, const AbsFieldState<P,Q>& s) const = 0;
+    virtual int getX(Phi& X, const AbsFieldState<P,Q>& s) const = 0;
 
     //! Get the initial guess predictor
     virtual AbsChronologicalPredictor4D<Phi>& getMDSolutionPredictor(void) = 0;
@@ -474,7 +474,7 @@ namespace Chroma
       multi1d<Phi> X(FA.size()), Y(FA.size());
 
       (getMDSolutionPredictor())(X);
-      getX(X,s);
+      int n_count = getX(X,s);
       (getMDSolutionPredictor()).newVector(X);
 
       (*M)(Y, X, PLUS);
@@ -531,7 +531,7 @@ namespace Chroma
       (*M)(tmp, eta, MINUS);
 
       // Solve  (V^dag*V)*eta = tmp
-      getXPV(eta, tmp, field_state);
+      int n_pv_count = getXPV(eta, tmp, field_state);
 
       // Finally, get phi
       (*PV)(getPhi(), eta, PLUS);
@@ -573,10 +573,10 @@ namespace Chroma
     virtual const WilsonTypeFermAct5D<Phi,P>& getFermAct(void) const = 0;
 
     //! Get (M^dagM)^{-1} phi
-    virtual void getX(multi1d<Phi>& X, const AbsFieldState<P,Q>& s) const = 0;
+    virtual int getX(multi1d<Phi>& X, const AbsFieldState<P,Q>& s) const = 0;
 
     //! Get X = (PV^dag*PV)^{-1} eta
-    virtual void getXPV(multi1d<Phi>& X, const multi1d<Phi>& eta, const AbsFieldState<P,Q>& s) const = 0;
+    virtual int getXPV(multi1d<Phi>& X, const multi1d<Phi>& eta, const AbsFieldState<P,Q>& s) const = 0;
 
     virtual AbsChronologicalPredictor5D<Phi>& getMDSolutionPredictor(void) = 0;
    };
@@ -606,7 +606,7 @@ namespace Chroma
       // Energy calc doesnt use Chrono Predictor
       X = zero;
 
-      getX(X,s);
+      int n_count = getX(X,s);
 
       // Action on the entire lattice
       Double action = innerProductReal(getPhi(), X);
@@ -625,7 +625,7 @@ namespace Chroma
     virtual const UnprecWilsonTypeFermAct<Phi,P>& getFermAct(void) const = 0;
 
     //! Get (M^dagM)^{-1} phi
-    virtual void getX(Phi& X, const AbsFieldState<P,Q>& s) const = 0;
+    virtual int  getX(Phi& X, const AbsFieldState<P,Q>& s) const = 0;
     
     //! Get at the chronological predcitor
     virtual AbsChronologicalPredictor4D<Phi>& getMDSolutionPredictor(void) = 0;
@@ -663,7 +663,7 @@ namespace Chroma
       // Action calc doesnt use chrono predictor use zero guess
       X[ lin->subset() ] = zero;
 
-      getX(X, s);
+      int n_count = getX(X, s);
       Double action = innerProductReal(getPhi(), X, lin->subset());
       return action;
     }
@@ -684,7 +684,7 @@ namespace Chroma
     virtual Phi& getPhi(void) = 0;    
 
     //! Get (M^dagM)^{-1} phi
-    virtual void getX(Phi& X, const AbsFieldState<P,Q>& s) const  = 0;
+    virtual int getX(Phi& X, const AbsFieldState<P,Q>& s) const  = 0;
 
     virtual AbsChronologicalPredictor4D<Phi>& getMDSolutionPredictor(void) = 0;
   };
@@ -726,7 +726,7 @@ namespace Chroma
       // Energy calc does not use chrono predictor
       X = zero;
       // X is now (M^dagM)^{-1} V^{dag} phi
-      getX(X,s);
+      int n_count = getX(X,s);
 
       // tmp is now V (M^dag M)^{-1} V^{dag} phi
       (*PV)(tmp, X, PLUS);
@@ -750,10 +750,10 @@ namespace Chroma
     virtual const UnprecWilsonTypeFermAct5D<Phi,P>& getFermAct(void) const = 0;
 
     //! Get (M^dagM)^{-1} phi
-    virtual void getX(multi1d<Phi>& X, const AbsFieldState<P,Q>& s) const  = 0;
+    virtual int getX(multi1d<Phi>& X, const AbsFieldState<P,Q>& s) const  = 0;
 
     //! Get X = (PV^dag*PV)^{-1} eta
-    virtual void getXPV(multi1d<Phi>& X, const multi1d<Phi>& eta, const AbsFieldState<P,Q>& s) const = 0;
+    virtual int getXPV(multi1d<Phi>& X, const multi1d<Phi>& eta, const AbsFieldState<P,Q>& s) const = 0;
 
     virtual AbsChronologicalPredictor5D<Phi>& getMDSolutionPredictor(void) = 0;
   };
@@ -793,7 +793,7 @@ namespace Chroma
 
       // Chrono predictor not used in energy calculation
       X = zero;
-      getX(X, s);
+      int n_count = getX(X, s);
 
       multi1d<Phi> tmp(FA.size());
       (*PV)(tmp, X, PLUS);
@@ -821,10 +821,10 @@ namespace Chroma
     virtual multi1d<Phi>& getPhi(void) = 0;    
 
     //! Get (M^dagM)^{-1} phi
-    virtual void getX(multi1d<Phi>& X, const AbsFieldState<P,Q>& s) const  = 0;
+    virtual int getX(multi1d<Phi>& X, const AbsFieldState<P,Q>& s) const  = 0;
 
     //! Get X = (PV^dag*PV)^{-1} eta
-    virtual void getXPV(multi1d<Phi>& X, const multi1d<Phi>& eta, const AbsFieldState<P,Q>& s) const  = 0;
+    virtual int getXPV(multi1d<Phi>& X, const multi1d<Phi>& eta, const AbsFieldState<P,Q>& s) const  = 0;
   };
 
 

@@ -1,4 +1,4 @@
-// $Id: unprec_two_flavor_wilson5d_monomial_w.cc,v 1.6 2005-01-11 16:22:42 bjoo Exp $
+// $Id: unprec_two_flavor_wilson5d_monomial_w.cc,v 1.7 2005-01-13 15:10:51 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 5D ferm monomials
  */
@@ -191,7 +191,7 @@ namespace Chroma
   // Do inversion M^dag M X = V^dag phi ?
 
   // X allocated and pased in...
-  void
+  int
   UnprecTwoFlavorWilsonTypeFermMonomial5D::getX(
     multi1d<LatticeFermion>& X, 
     const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const
@@ -218,11 +218,12 @@ namespace Chroma
     int n_count = invert(X, *M, getPhi());
     */
     int n_count = invert(X, *M, VdagPhi);
+    return n_count;
   }
 
   
   // Get X = (PV^dag*PV)^{-1} eta
-  void
+  int
   UnprecTwoFlavorWilsonTypeFermMonomial5D::getXPV(
     multi1d<LatticeFermion>& X, 
     const multi1d<LatticeFermion>& eta, 
@@ -243,6 +244,7 @@ namespace Chroma
 
     // Do the inversion...
     int n_count = invert(X, *M, eta);
+    return n_count;
   }
 
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_two_flavor_wilson_monomial_w.h,v 1.2 2005-01-11 15:28:02 bjoo Exp $
+// $Id: prec_two_flavor_wilson_monomial_w.h,v 1.3 2005-01-13 15:10:51 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -95,7 +95,7 @@ namespace Chroma
       }
 
       // Do inversion M^dag M X = phi
-      void getX(LatticeFermion& X, const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const;
+      int getX(LatticeFermion& X, const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const;
 
 
       //! Get X = (A^dag*A)^{-1} eta

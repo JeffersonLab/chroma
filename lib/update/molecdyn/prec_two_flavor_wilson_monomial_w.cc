@@ -1,4 +1,4 @@
-// $Id: prec_two_flavor_wilson_monomial_w.cc,v 1.4 2005-01-11 19:44:50 edwards Exp $
+// $Id: prec_two_flavor_wilson_monomial_w.cc,v 1.5 2005-01-13 15:10:51 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -190,7 +190,7 @@ namespace Chroma
 
 
   // Do inversion M^dag M X = phi
-  void
+  int
   EvenOddPrecTwoFlavorWilsonTypeFermMonomial::getX(
     LatticeFermion& X, 
     const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const
@@ -208,6 +208,7 @@ namespace Chroma
 
     // Do the inversion...
     int n_count = invert(X, *M, getPhi());
+    return n_count;
   }
 
 

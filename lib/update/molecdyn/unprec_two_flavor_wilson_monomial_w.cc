@@ -1,4 +1,4 @@
-// $Id: unprec_two_flavor_wilson_monomial_w.cc,v 1.3 2005-01-11 16:22:42 bjoo Exp $
+// $Id: unprec_two_flavor_wilson_monomial_w.cc,v 1.4 2005-01-13 15:10:51 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 4D ferm monomials
  */
@@ -185,7 +185,7 @@ namespace Chroma
 
 
   // Do inversion M^dag M X = phi ?
-  void
+  int
   UnprecTwoFlavorWilsonTypeFermMonomial::getX(
     LatticeFermion& X, 
     const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const
@@ -203,7 +203,7 @@ namespace Chroma
 
   
     int n_count = invert(X, *M, getPhi());
-
+    return n_count;
   }
 
   

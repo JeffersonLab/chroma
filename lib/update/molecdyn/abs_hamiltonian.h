@@ -4,7 +4,7 @@
 #include "chromabase.h"
 #include "update/molecdyn/field_state.h"
 #include "update/molecdyn/abs_monomial.h"
-
+#include "io/xmllog_io.h"
 
 namespace Chroma { 
 
@@ -26,9 +26,9 @@ namespace Chroma {
     virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) const {
       int num_terms = numMonomials();
       
-      if( num_terms > 0 ) {
+       if( num_terms > 0 ) {
 	getMonomial(0).dsdq(F, s);
-	
+
 	for(int i=1; i < num_terms; i++) { 
 	  P cur_F;
 	  getMonomial(i).dsdq(cur_F, s);
@@ -103,9 +103,10 @@ namespace Chroma {
     virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) const {
       int num_terms = numMonomials();
       
+
       if( num_terms > 0 ) {
 	getMonomial(0).dsdq(F, s);
-	
+
 	for(int i=1; i < num_terms; i++) { 
 	  P cur_F;
 	  getMonomial(i).dsdq(cur_F, s);
@@ -113,6 +114,7 @@ namespace Chroma {
 	}
       }
     }
+
 
     //! Refresh pseudofermsions (if any)
     virtual void refreshInternalFields(const AbsFieldState<P,Q>& s) {
@@ -126,8 +128,10 @@ namespace Chroma {
     //! The total energy
     virtual void  mesE(const AbsFieldState<P,Q>& s, Double& KE, Double& PE) const 
     {
+    
       KE = mesKE(s);
       PE = mesPE(s);
+      
     }
     
     //! The Kinetic Energy
@@ -136,6 +140,7 @@ namespace Chroma {
       // Return 1/2 sum pi^2
       // may need to loop over the indices of P?
       Double KE=norm2(s.getP());
+      
       return KE;
     }
     
@@ -145,15 +150,12 @@ namespace Chroma {
 	
       // Cycle through all the monomials and compute their contribution
       int num_terms = numMonomials();
-      
-      
-      Double PE=Double(0);
-      if( num_terms > 0 ) {
-	PE = getMonomial(0).S(s);
-	for(int i=1; i < num_terms; i++) { 
-	  Double tmp = getMonomial(i).S(s);
-	  PE += tmp;
-	}
+
+      multi1d<Double> PE_terms(num_terms);
+      Double PE = Double(0);
+      for(int i=0; i < num_terms; i++) {
+	Double tmp = getMonomial(i).S(s);
+	PE += tmp;
       }
       return PE;
     }
