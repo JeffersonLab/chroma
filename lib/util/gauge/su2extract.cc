@@ -1,4 +1,4 @@
-// $Id: su2extract.cc,v 1.4 2003-08-09 03:57:19 edwards Exp $
+// $Id: su2extract.cc,v 1.5 2003-12-06 20:59:21 edwards Exp $
 /*! \file
  *  \brief  Extract an unnormalized SU(2) matrix from a GL(3,C) matrix
  */
@@ -22,23 +22,27 @@ using namespace QDP;
  *
  * Arguments:
  *
+ * \param r           su(2) matrix represented in the O(4) rep. - an array of LatticeReal 
  * \param source      extract the su2 matrix from this su(n) gauge field
  * \param su2_index   int lying in [0, Nc*(Nc-1)/2)
  * \param s           subset for operations       (Read)
- *
- * \return su2 matrix represented in the O(4) rep. - an array of LatticeReal 
  */
 
 template<typename S>
 inline
-multi1d<LatticeReal> 
-su2Extract_t(const LatticeColorMatrix& source, 
+void
+su2Extract_t(multi1d<LatticeReal>& r,
+	     const LatticeColorMatrix& source, 
 	     int su2_index, 
 	     const S& s)
 {
   START_CODE("su2Extract");
 
-  multi1d<LatticeReal> r(4);
+  if (r.size() != 4)
+  {
+    QDPIO::cerr << "su2Extract: return result invalid size" << endl;
+    QDP_abort(1);
+  }
 
   /* Determine the SU(N) indices corresponding to the SU(2) indices */
   /* of the SU(2) subgroup $3 */
@@ -72,26 +76,25 @@ su2Extract_t(const LatticeColorMatrix& source,
   r[3][s] = imag(peekColor(source,i1,i1)) - imag(peekColor(source,i2,i2));
 
   END_CODE("su2Extract");
-
-  return r;
 }
 
 
-multi1d<LatticeReal> 
-su2Extract(const LatticeColorMatrix& source, 
+void
+su2Extract(multi1d<LatticeReal>& r,
+	   const LatticeColorMatrix& source, 
 	   int su2_index, 
 	   const UnorderedSubset& s)
 {
-  return su2Extract_t(source, su2_index, s);
+  su2Extract_t(r, source, su2_index, s);
 }
 
-
-multi1d<LatticeReal> 
-su2Extract(const LatticeColorMatrix& source, 
+void
+su2Extract(multi1d<LatticeReal>& r,
+	   const LatticeColorMatrix& source, 
 	   int su2_index, 
 	   const OrderedSubset& s)
 {
-  return su2Extract_t(source, su2_index, s);
+  su2Extract_t(r, source, su2_index, s);
 }
 
 

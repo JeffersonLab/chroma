@@ -1,4 +1,4 @@
-//  $Id: su3proj.cc,v 1.4 2003-10-10 03:46:47 edwards Exp $
+//  $Id: su3proj.cc,v 1.5 2003-12-06 20:59:21 edwards Exp $
 /*! \file
  *  \brief Project a complex Nc x Nc matrix W onto SU(Nc) by maximizing Tr(VW)
  */
@@ -33,7 +33,8 @@ void su3proj(LatticeColorMatrix& u, const LatticeColorMatrix& w, int su2_index)
    * from the "SU(3)" matrix V. The SU(2) matrix is parameterized in the
    * sigma matrix basis.
    */
-  multi1d<LatticeReal> r = su2Extract(v, su2_index, all);
+  multi1d<LatticeReal> r(4);
+  su2Extract(r, v, su2_index, all);
 
   /*
    * Now project onto SU(2)
@@ -56,7 +57,7 @@ void su3proj(LatticeColorMatrix& u, const LatticeColorMatrix& w, int su2_index)
    * Now fill an SU(3) matrix V with the SU(2) submatrix su2_index
    * paramtrized by a_k in the sigma matrix basis.
    */
-  v = sunFill(a, su2_index, all);
+  sunFill(v, a, su2_index, all);
 
   // U = V*U
   LatticeColorMatrix tmp = v * u;

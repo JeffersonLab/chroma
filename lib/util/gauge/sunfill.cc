@@ -1,4 +1,4 @@
-// $Id: sunfill.cc,v 1.4 2003-08-09 03:56:11 edwards Exp $
+// $Id: sunfill.cc,v 1.5 2003-12-06 20:59:21 edwards Exp $
 /*! \file
  *  \brief  Fill an SU(Nc) matrix with an SU(2) submatrix
  */
@@ -23,23 +23,21 @@ using namespace QDP;
  *
  * Arguments:
  *
+ * \param dest       su(n) matrix
  * \param r          su2 matrix represented in the O(4) rep. - an array of LatticeReal 
  * \param su2_index  int lying in [0, Nc*(Nc-1)/2)
  * \param s          subset for operations       (Read)
- *
- * \return su(n) matrix 
  */
 
 template<typename S>
 inline
-LatticeColorMatrix
-sunFill_t(const multi1d<LatticeReal>& r,
+void
+sunFill_t(LatticeColorMatrix& dest,
+	  const multi1d<LatticeReal>& r,
 	  int su2_index,
 	  const S& s)
 {
   START_CODE("sunFill");
-
-  LatticeColorMatrix dest;
 
   /* Determine the SU(N) indices corresponding to the SU(2) indices */
   /* of the SU(2) subgroup $3 */
@@ -78,26 +76,26 @@ sunFill_t(const multi1d<LatticeReal>& r,
   pokeColor(dest[s], cmplx( r[0],-r[3]), i2, i2);
 
   END_CODE("sunFill");
-
-  return dest;
 }
 
 
-LatticeColorMatrix
-sunFill(const multi1d<LatticeReal>& r,
+void
+sunFill(LatticeColorMatrix& d, 
+	const multi1d<LatticeReal>& r,
 	int su2_index,
 	const UnorderedSubset& s)
 {
-  return sunFill_t(r, su2_index, s);
+  sunFill_t(d, r, su2_index, s);
 }
 
 
-LatticeColorMatrix
-sunFill(const multi1d<LatticeReal>& r,
+void
+sunFill(LatticeColorMatrix& d,
+	const multi1d<LatticeReal>& r,
 	int su2_index,
 	const OrderedSubset& s)
 {
-  return sunFill_t(r, su2_index, s);
+  sunFill_t(d, r, su2_index, s);
 }
 
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: su2extract.h,v 1.3 2003-12-06 17:35:57 edwards Exp $
+// $Id: su2extract.h,v 1.4 2003-12-06 20:59:21 edwards Exp $
 /*! \file
  *  \brief  Extract an unnormalized SU(2) matrix from a GL(3,C) matrix
  */
@@ -21,15 +21,15 @@
  *
  * Arguments:
  *
+ * \param r           su(2) matrix represented in the O(4) rep. - an array of LatticeReal 
  * \param source      extract the su2 matrix from this su(n) gauge field
  * \param su2_index   int lying in [0, Nc*(Nc-1)/2)
  * \param s           subset for operations       (Read)
- *
- * \return su2 matrix represented in the O(4) rep. - an array of LatticeReal 
  */
 
-multi1d<LatticeReal> 
-su2Extract(const LatticeColorMatrix& source, 
+void
+su2Extract(multi1d<LatticeReal>& r,
+	   const LatticeColorMatrix& source, 
 	   int su2_index, 
 	   const UnorderedSubset& s);
 
@@ -48,15 +48,15 @@ su2Extract(const LatticeColorMatrix& source,
  *
  * Arguments:
  *
+ * \param r           su(2) matrix represented in the O(4) rep. - an array of LatticeReal 
  * \param source      extract the su2 matrix from this su(n) gauge field
  * \param su2_index   int lying in [0, Nc*(Nc-1)/2)
  * \param s           subset for operations       (Read)
- *
- * \return su2 matrix represented in the O(4) rep. - an array of LatticeReal 
  */
 
-multi1d<LatticeReal> 
-su2Extract(const LatticeColorMatrix& source, 
+void
+su2Extract(multi1d<LatticeReal>& r,
+	   const LatticeColorMatrix& source, 
 	   int su2_index, 
 	   const OrderedSubset& s);
 

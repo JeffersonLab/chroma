@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sunfill.h,v 1.4 2003-12-06 17:04:36 edwards Exp $
+// $Id: sunfill.h,v 1.5 2003-12-06 20:59:21 edwards Exp $
 /*! \file
  *  \brief  Fill an SU(Nc) matrix with an SU(2) submatrix
  */
@@ -22,14 +22,14 @@
  *
  * Arguments:
  *
+ * \param dest       su(n) matrix
  * \param r          su2 matrix represented in the O(4) rep. - an array of LatticeReal 
  * \param su2_index  int lying in [0, Nc*(Nc-1)/2)
  * \param s          subset for operations       (Read)
- *
- * \return su(n) matrix 
  */
-LatticeColorMatrix
-sunFill(const multi1d<LatticeReal>& r,
+void
+sunFill(LatticeColorMatrix& dest,
+	const multi1d<LatticeReal>& r,
 	int su2_index,
 	const UnorderedSubset& s);
 
@@ -54,8 +54,9 @@ sunFill(const multi1d<LatticeReal>& r,
  *
  * \return su(n) matrix 
  */
-LatticeColorMatrix
-sunFill(const multi1d<LatticeReal>& r,
+void
+sunFill(LatticeColorMatrix& dest,
+	const multi1d<LatticeReal>& r,
 	int su2_index,
 	const OrderedSubset& s);
 
