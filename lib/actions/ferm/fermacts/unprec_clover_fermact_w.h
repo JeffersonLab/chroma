@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_clover_fermact_w.h,v 1.1 2003-11-22 21:33:24 edwards Exp $
+// $Id: unprec_clover_fermact_w.h,v 1.2 2003-11-23 05:58:23 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Clover fermion action
  */
@@ -37,11 +37,6 @@ public:
 
   //! Produce a linear operator M^dag.M for this action
   const LinearOperator<LatticeFermion>* lMdagM(const multi1d<LatticeColorMatrix>& u) const;
-
-  //! Override - compute dS_f/dU
-  void dsdu(multi1d<LatticeColorMatrix>& result,
-	    const multi1d<LatticeColorMatrix>& u,
-	    const LatticeFermion& psi) const;
 
   //! Destructor is automatic
   ~UnprecCloverFermAct() {}

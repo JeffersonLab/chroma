@@ -1,4 +1,4 @@
-// $Id: unprec_clover_fermact_w.cc,v 1.1 2003-11-22 21:33:24 edwards Exp $
+// $Id: unprec_clover_fermact_w.cc,v 1.2 2003-11-23 05:58:23 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Clover fermion action
  */
@@ -47,29 +47,3 @@ UnprecCloverFermAct::lMdagM(const multi1d<LatticeColorMatrix>& u) const
   return mdagm;
 }
 
-
-//! Computes the derivative of the fermionic action respect to the link field
-/*!
- *         |  dS      dS_f
- * ds_u -- | ----   + -----   ( Write )
- *         |  dU       dU
- *
- * psi -- [1./(M_dag*M)]*chi_  ( read ) 
- *
- * \param ds_u     result      ( Write )
- * \param u        gauge field ( Read )
- * \param psi      solution to linear system ( Read )
- */
-
-void
-UnprecCloverFermAct::dsdu(multi1d<LatticeColorMatrix>& ds_u,
-			  const multi1d<LatticeColorMatrix>& u, 
-			  const LatticeFermion& psi) const
-{
-  START_CODE("UnprecCloverFermAct::dsdu");
-  
-  QDPIO::cerr << "UnprecCloverFermAct::dsdu not implemented" << endl;
-  QDP_abort(1);
-
-  END_CODE("UnprecCloverFermAct::dsdu");
-}
