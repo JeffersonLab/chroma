@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 1.2 2003-04-09 05:58:41 edwards Exp $
+// $Id: fermact.h,v 1.3 2003-04-09 20:47:16 edwards Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -56,7 +56,8 @@ public:
 
   //! Compute dS_f/dU
   /*! NOTE: maybe this should produce a derivative foundry class object */
-  virtual multi1d<LatticeColorMatrix> dsdu(const multi1d<LatticeColorMatrix>& u) const = 0;
+  virtual multi1d<LatticeColorMatrix> dsdu(const multi1d<LatticeColorMatrix>& u,
+					   const LatticeFermion& psi) const = 0;
 
   //! Virtual destructor to help with cleanup;
   virtual ~FermionAction() {}
