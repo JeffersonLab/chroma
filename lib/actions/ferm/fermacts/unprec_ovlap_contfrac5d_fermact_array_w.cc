@@ -1,4 +1,4 @@
-// $Id: unprec_ovlap_contfrac5d_fermact_array_w.cc,v 1.12 2005-01-17 03:57:57 edwards Exp $
+// $Id: unprec_ovlap_contfrac5d_fermact_array_w.cc,v 1.13 2005-01-19 03:29:32 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -311,9 +311,9 @@ namespace Chroma
 
     
     QDPIO::cout << "UnprecOvlapContfrac5d: " << endl
-                << "Degree=" << params.RatPolyDeg 
-		<< "N5=" << N5 << " scale=" << scale_fac
-		<< "Nwils = " << NEigVal << " Mass=" << params.Mass << endl ;
+                << "  Degree=" << params.RatPolyDeg 
+		<< "  N5=" << N5 << " scale=" << scale_fac
+		<< "  Nwils = " << NEigVal << " Mass=" << params.Mass << endl ;
     QDPIO::cout << "Approximation on [-1,eps] U [eps,1] with eps = " << eps <<endl;
     
     QDPIO::cout << "Maximum error | R(x) - sgn(x) | <= Delta = " << maxerr << endl;

@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_fermact_array_w.cc,v 1.11 2005-01-17 03:57:57 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_fermact_array_w.cc,v 1.12 2005-01-19 03:29:32 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -230,11 +230,11 @@ namespace Chroma
     alpha[N5-2] *= gamma[N5-2];
     
     QDPIO::cout << "EvenOddPrecOvlapContfrac5d: " << endl
-                << "Degree="<< params.RatPolyDeg
-		<< "N5=" << N5 << " scale=" << scale_fac
-		<< "Mass=" << params.Mass << endl
-		<< "OverMass=" << params.OverMass 
-		<< "IsLastZeroP=" << isLastZeroP << endl;
+                << "  Degree="<< params.RatPolyDeg
+		<< "  N5=" << N5 << " scale=" << scale_fac
+		<< "  Mass=" << params.Mass << endl
+		<< "  OverMass=" << params.OverMass 
+		<< "  IsLastZeroP=" << isLastZeroP << endl;
 
     QDPIO::cout << "Approximation on [-1,eps] U [eps,1] with eps = " << eps <<endl;
     
