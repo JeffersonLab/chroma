@@ -14,7 +14,7 @@
 
 
 
-# $Id: Makefile,v 1.12 2003-09-11 16:57:17 bjoo Exp $
+# $Id: Makefile,v 1.13 2003-09-11 17:02:12 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -40,7 +40,7 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_triplet = i686-pc-linux-gnu
-#am__append_1 = -I$(TOPDIR)/other_libs//include
+#am__append_1 = -I$(BUILDDIR)/other_libs//include
 #am__append_2 = baryon_w.cc mesons_w.cc lwldslash_w.cc formfac_w.cc \
 #              sink_smear2_w.cc barcomp_w.cc transf_w.cc \
 #              unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
@@ -151,6 +151,7 @@ sysconfdir = ${prefix}/etc
 target_alias = 
 
 TOPDIR = ..
+BUILDDIR = ../
 
 #
 # Include Path
