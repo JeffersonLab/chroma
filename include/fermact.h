@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 1.10 2003-11-20 05:43:40 edwards Exp $
+// $Id: fermact.h,v 1.11 2003-11-22 21:34:52 edwards Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -18,7 +18,6 @@ using namespace QDP;
  *
  * Supports creation and application for quadratic actions
  */
-
 template<typename T>
 class FermionAction
 {
@@ -83,7 +82,89 @@ public:
   /*! NOTE: maybe this should produce a derivative foundry class object */
   virtual void dsdu(multi1d<LatticeColorMatrix>& result,
 		    const multi1d<LatticeColorMatrix>& u,
-		    const T& psi) const = 0;
+		    const T& psi) const
+    {
+      QDPIO::cerr << "FermionAction::dsdu not implemented" << endl;
+      QDP_abort(1);
+    }
+
+  //! Virtual destructor to help with cleanup;
+  virtual ~FermionAction() {}
+};
+
+
+//! Partial specialization for base class of quadratic matter actions (e.g., fermions)
+/*! @ingroup actions
+ *
+ * Supports creation and application for quadratic actions, specialized
+ * to support arrays of matter fields
+ */
+template<typename T>
+class FermionAction< multi1d<T> >
+{
+public:
+  //! Expected length of array index
+  virtual int size() const = 0;
+
+  //! Produce a linear operator for this action
+  /*! NOTE: maybe this should be abstracted to a foundry class object */
+  virtual const LinearOperator< multi1d<T> >* linOp(const multi1d<LatticeColorMatrix>& u) const = 0;
+
+  //! Produce a linear operator M^dag.M for this action
+  /*! NOTE: maybe this should be abstracted to a foundry class object */
+  virtual const LinearOperator< multi1d<T> >* lMdagM(const multi1d<LatticeColorMatrix>& u) const = 0;
+
+  //! Compute quark propagator over base type
+  /*! 
+   * Solves  M.psi = chi
+   *
+   * \param psi      quark propagator ( Modify )
+   * \param u        gauge field ( Read )
+   * \param chi      source ( Modify )
+   * \param invType  inverter type ( Read (
+   * \param RsdCG    CG (or MR) residual used here ( Read )
+   * \param MaxCG    maximum number of CG iterations ( Read )
+   * \param ncg_had  number of CG iterations ( Write )
+   *
+   * NOTE: maybe this should produce a quark prop foundry class object 
+   */
+  virtual void qpropT(multi1d<T>& psi, 
+		      const multi1d<LatticeColorMatrix>& u, 
+		      const multi1d<T>& chi, 
+		      enum InvType invType,
+		      const Real& RsdCG, 
+		      int MaxCG, int& ncg_had) const;
+
+  //! Compute quark propagator over base type
+  /*! 
+   * Solves  M.psi = chi
+   *
+   * \param psi      quark propagator ( Modify )
+   * \param u        gauge field ( Read )
+   * \param chi      source ( Modify )
+   * \param invType  inverter type ( Read (
+   * \param RsdCG    CG (or MR) residual used here ( Read )
+   * \param MaxCG    maximum number of CG iterations ( Read )
+   * \param ncg_had  number of CG iterations ( Write )
+   *
+   * NOTE: maybe this should produce a quark prop foundry class object 
+   */
+  virtual void qprop(T& psi, 
+		     const multi1d<LatticeColorMatrix>& u, 
+		     const T& chi, 
+		     enum InvType invType,
+		     const Real& RsdCG, 
+		     int MaxCG, int& ncg_had) const = 0;
+
+  //! Compute dS_f/dU
+  /*! NOTE: maybe this should produce a derivative foundry class object */
+  virtual void dsdu(multi1d<LatticeColorMatrix>& result,
+		    const multi1d<LatticeColorMatrix>& u,
+		    const multi1d<T>& psi) const
+    {
+      QDPIO::cerr << "FermionAction::dsdu not implemented" << endl;
+      QDP_abort(1);
+    }
 
   //! Virtual destructor to help with cleanup;
   virtual ~FermionAction() {}
@@ -133,6 +214,52 @@ template<typename T>
 class EvenOddPrecWilsonTypeFermAct : public WilsonTypeFermAct<T>
 {
 public:
+  //! Override to produce an even-odd prec. linear operator for this action
+  /*! Covariant return rule - override base class function */
+  virtual const EvenOddPrecLinearOperator<T>* linOp(const multi1d<LatticeColorMatrix>& u) const = 0;
+
+  //! Compute quark propagator over base type
+  /*! 
+   * Solves  M.psi = chi
+   *
+   * Provides a default version
+   *
+   * \param psi      quark propagator ( Modify )
+   * \param u        gauge field ( Read )
+   * \param chi      source ( Modify )
+   * \param invType  inverter type ( Read (
+   * \param RsdCG    CG (or MR) residual used here ( Read )
+   * \param MaxCG    maximum number of CG iterations ( Read )
+   * \param ncg_had  number of CG iterations ( Write )
+   */
+  virtual void qpropT(T& psi, 
+		      const multi1d<LatticeColorMatrix>& u, 
+		      const T& chi, 
+		      enum InvType invType,
+		      const Real& RsdCG, 
+		      int MaxCG, int& ncg_had) const;
+
+  //! Compute quark propagator over simpler type
+  /*! 
+   * Solves  M.psi = chi
+   *
+   * Provides a default version
+   *
+   * \param psi      quark propagator ( Modify )
+   * \param u        gauge field ( Read )
+   * \param chi      source ( Modify )
+   * \param invType  inverter type ( Read (
+   * \param RsdCG    CG (or MR) residual used here ( Read )
+   * \param MaxCG    maximum number of CG iterations ( Read )
+   * \param ncg_had  number of CG iterations ( Write )
+   */
+  virtual void qprop(typename BaseType<T>::Type_t& psi, 
+		     const multi1d<LatticeColorMatrix>& u, 
+		     const typename BaseType<T>::Type_t& chi, 
+		     enum InvType invType,
+		     const Real& RsdCG, 
+		     int MaxCG, int& ncg_had) const;
+  
 };
 
 
