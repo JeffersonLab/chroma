@@ -1,5 +1,5 @@
 /*
- *  $Id: hypsmear.cc,v 1.7 2004-02-23 03:13:58 edwards Exp $
+ *  $Id: hypsmear.cc,v 1.8 2004-03-23 20:17:40 kostas Exp $
  *
  *  This is the top-level routine for HYP smearing.
  *  It is a wrapper for Urs' and Robert's implmenetation of the HYP
@@ -171,6 +171,10 @@ int main(int argc, char *argv[])
   case CFG_TYPE_NERSC:
     printf("About to read nersc gauge\n");
     readArchiv(gauge_xml, u, input.cfg.cfg_file);
+    break;
+  case CFG_TYPE_MILC:
+    printf("About to read nersc gauge\n");
+    readMILC(gauge_xml, u, input.cfg.cfg_file);
     break;
   default :
     QDP_error_exit("Configuration type is unsupported.");
