@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.21 2003-03-28 04:20:41 edwards Exp $
+# $Id: Makefile.in,v 1.22 2003-03-28 05:35:33 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -156,7 +156,7 @@ HDRS = chroma.h chromabase.h chromainc.h primitives.h defs.h common_declarations
 #
 GENERIC_SRCS = $(HDRS) gaus_smear.cc taproj.cc hotst.cc expm12.cc \
                klein_gord.cc mesplq.cc reunit.cc sftmom.cc srcfil.cc \
-               readszin.cc su3proj.cc hyp_smear.cc
+               readszin.cc su3proj.cc hyp_smear.cc su2extract.cc sunfill.cc
 
 
 #
@@ -193,16 +193,16 @@ am__libchroma_a_SOURCES_DIST = chroma.h chromabase.h chromainc.h \
 	primitives.h defs.h common_declarations.h geom.h gaus_smear.cc \
 	taproj.cc hotst.cc expm12.cc klein_gord.cc mesplq.cc reunit.cc \
 	sftmom.cc srcfil.cc readszin.cc su3proj.cc hyp_smear.cc \
-	dslashm_w.cc baryon_w.cc mesons_w.cc lwldslash_w.cc lmpsim_w.cc \
-	formfac_w.cc sink_smear2_w.cc barcomp_w.cc transf_w.cc \
-	npqprop_w.cc wilson_unprec_w.cc conslinop_w.cc \
-	readszinqprop_w.cc
+	su2extract.cc sunfill.cc dslashm_w.cc baryon_w.cc mesons_w.cc \
+	lwldslash_w.cc lmpsim_w.cc formfac_w.cc sink_smear2_w.cc \
+	barcomp_w.cc transf_w.cc npqprop_w.cc wilson_unprec_w.cc \
+	conslinop_w.cc readszinqprop_w.cc
 am__objects_1 =
 am__objects_2 = $(am__objects_1) gaus_smear.$(OBJEXT) taproj.$(OBJEXT) \
 	hotst.$(OBJEXT) expm12.$(OBJEXT) klein_gord.$(OBJEXT) \
 	mesplq.$(OBJEXT) reunit.$(OBJEXT) sftmom.$(OBJEXT) \
 	srcfil.$(OBJEXT) readszin.$(OBJEXT) su3proj.$(OBJEXT) \
-	hyp_smear.$(OBJEXT)
+	hyp_smear.$(OBJEXT) su2extract.$(OBJEXT) sunfill.$(OBJEXT)
 am__objects_3 = dslashm_w.$(OBJEXT) baryon_w.$(OBJEXT) \
 	mesons_w.$(OBJEXT) lwldslash_w.$(OBJEXT) lmpsim_w.$(OBJEXT) \
 	formfac_w.$(OBJEXT) sink_smear2_w.$(OBJEXT) barcomp_w.$(OBJEXT) \
@@ -233,7 +233,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/readszinqprop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/reunit.Po ./$(DEPDIR)/sftmom.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/sink_smear2_w.Po ./$(DEPDIR)/srcfil.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/su3proj.Po ./$(DEPDIR)/taproj.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/su2extract.Po ./$(DEPDIR)/su3proj.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/sunfill.Po ./$(DEPDIR)/taproj.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/transf_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/wilson_unprec_w.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
@@ -323,7 +324,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sftmom.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sink_smear2_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/srcfil.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/su2extract.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/su3proj.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sunfill.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/taproj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/transf_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wilson_unprec_w.Po@am__quote@
