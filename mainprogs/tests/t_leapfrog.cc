@@ -12,36 +12,21 @@ bool linkageHack(void)
   // Gauge Monomials
   foo &= GaugeMonomialEnv::registered;
     
-  // 4D Ferm Monomials
-  foo &= UnprecTwoFlavorWilsonTypeFermMonomialEnv::registered;
-  foo &= EvenOddPrecTwoFlavorWilsonTypeFermMonomialEnv::registered;
-    
-  // 4D Ferm Monomials
-  foo &= UnprecOneFlavorWilsonTypeFermRatMonomialEnv::registered;
-  foo &= EvenOddPrecOneFlavorWilsonTypeFermRatMonomialEnv::registered;
-    
-  // 5D Ferm Monomials
-  foo &= UnprecTwoFlavorWilsonTypeFermMonomial5DEnv::registered;
-  foo &= EvenOddPrecTwoFlavorWilsonTypeFermMonomial5DEnv::registered;
-    
-  // 5D Ferm Monomials
-  foo &= UnprecOneFlavorWilsonTypeFermRatMonomial5DEnv::registered;
-  foo &= EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5DEnv::registered;
+  // Ferm Monomials
+  foo &= WilsonTypeFermMonomialAggregrateEnv::registered;
     
   // MD Integrators
   foo &= LatColMatPQPLeapfrogIntegratorEnv::registered;
     
   // Chrono predictor
-  foo &= ZeroGuess4DChronoPredictorEnv::registered;
-  foo &= ZeroGuess5DChronoPredictorEnv::registered;
-  foo &= LastSolution4DChronoPredictorEnv::registered;  
-  foo &= LastSolution5DChronoPredictorEnv::registered;
+  foo &= ChronoPredictorAggregrateEnv::registered;
 
   // Inline Measurements
-  foo &= InlinePlaquetteEnv::registered;
-  foo &= InlinePolyakovLoopEnv::registered;
+  foo &= InlineAggregateEnv::registered;
+
   return foo;
 }
+
 
 
 int main(int argc, char *argv[]) 
