@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.240 2005-01-27 17:57:47 bjoo Exp $
+# $Id: Makefile.am,v 1.241 2005-01-28 02:13:11 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -30,6 +30,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/invcg1_array.h \
 	actions/ferm/invert/invcg2_array.h actions/ferm/invert/invert.h \
 	actions/ferm/invert/invmr.h actions/ferm/invert/minvcg.h \
+        actions/ferm/invert/minvcg_array.h \
 	actions/ferm/invert/minv_rel_cg.h \
 	actions/ferm/invert/invcg2_timing_hacks.h \
 	actions/ferm/invert/invsumr.h actions/ferm/invert/minvsumr.h \
@@ -131,7 +132,6 @@ nobase_include_HEADERS = \
 	update/molecdyn/molecdyn.h \
 	update/molecdyn/field_state.h \
 	update/molecdyn/monomial/monomial.h \
-	update/molecdyn/monomial/monomial_w.h \
 	update/molecdyn/monomial/abs_monomial.h \
 	update/molecdyn/monomial/monomial_factory.h \
 	update/molecdyn/monomial/gauge_monomial.h \
@@ -147,10 +147,6 @@ nobase_include_HEADERS = \
 	update/molecdyn/hmc/lcm_hmc.h \
 	update/molecdyn/hmc/global_metropolis_accrej.h \
 	update/molecdyn/monomial/monomial.h \
-	update/molecdyn/monomial/unprec_two_flavor_wilson_monomial_w.h \
-	update/molecdyn/monomial/prec_two_flavor_wilson_monomial_w.h \
-	update/molecdyn/monomial/unprec_two_flavor_wilson5d_monomial_w.h \
-	update/molecdyn/monomial/prec_two_flavor_wilson5d_monomial_w.h \
 	update/molecdyn/predictor/predictor.h \
 	update/molecdyn/predictor/chrono_predictor.h \
 	update/molecdyn/predictor/chrono_predictor_factory.h \
@@ -258,6 +254,17 @@ nobase_include_HEADERS += \
 	meas/hadron/wallrhoff_w.h meas/hadron/wallrhopiff_w.h \
 	meas/sources/d_src_w.h \
 	meas/sources/p_src_w.h meas/sources/sources_w.h \
+	update/molecdyn/monomial/monomial_w.h \
+	update/molecdyn/monomial/one_flavor_rat_monomial_w.h \
+	update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.h \
+	update/molecdyn/monomial/prec_one_flavor_rat_monomial_w.h \
+	update/molecdyn/monomial/unprec_one_flavor_rat_monomial5d_w.h \
+	update/molecdyn/monomial/prec_one_flavor_rat_monomial5d_w.h \
+	update/molecdyn/monomial/two_flavor_monomial_w.h \
+	update/molecdyn/monomial/unprec_two_flavor_monomial_w.h \
+	update/molecdyn/monomial/prec_two_flavor_monomial_w.h \
+	update/molecdyn/monomial/unprec_two_flavor_monomial5d_w.h \
+	update/molecdyn/monomial/prec_two_flavor_monomial5d_w.h \
 	util/ferm/ferm_w.h util/ferm/diractodr.h util/ferm/gammasgn_w.h \
 	util/ferm/tdiractodr.h \
         util/ferm/paulitodr.h
@@ -507,29 +514,31 @@ libchroma_a_SOURCES += \
 	meas/hadron/wallpionff_w.cc meas/hadron/wallrhoff_w.cc \
 	meas/hadron/wallrhopiff_w.cc meas/hadron/wall_qprop_w.cc \
 	meas/sources/d_src_w.cc meas/sources/p_src_w.cc \
-	util/ferm/gammasgn_w.cc \
-	update/molecdyn/monomial/unprec_two_flavor_wilson_monomial_w.cc \
-	update/molecdyn/monomial/prec_two_flavor_wilson_monomial_w.cc \
-	update/molecdyn/monomial/unprec_two_flavor_wilson5d_monomial_w.cc \
-	update/molecdyn/monomial/prec_two_flavor_wilson5d_monomial_w.cc
+	update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.cc \
+	update/molecdyn/monomial/prec_one_flavor_rat_monomial_w.cc \
+	update/molecdyn/monomial/unprec_one_flavor_rat_monomial5d_w.cc \
+	update/molecdyn/monomial/prec_one_flavor_rat_monomial5d_w.cc \
+	update/molecdyn/monomial/unprec_two_flavor_monomial_w.cc \
+	update/molecdyn/monomial/prec_two_flavor_monomial_w.cc \
+	update/molecdyn/monomial/unprec_two_flavor_monomial5d_w.cc \
+	update/molecdyn/monomial/prec_two_flavor_monomial5d_w.cc \
+	util/ferm/gammasgn_w.cc
 
-
-
-
-
-
-
-# Inline measurement sources 
-
-libchroma_a_SOURCES += \
-	io/inline_io.cc \
-	meas/inline/glue/inline_plaquette.cc \
-	meas/inline/glue/inline_polylp.cc
+# Stuff not yet incorporated but lying around
 #	actions/ferm/fermacts/unprec_clover_fermact_w.cc
 #	actions/ferm/fermacts/prec_clover_fermact_w.cc
 #	meas/pbp/mespbg5p_w.cc meas/pbp/mespbp_w.cc
 #	meas/pbp/ovpbg5p_w.cc meas/pbp/pbg5p_w.cc
 
+
+
+#
+# Inline measurement sources 
+#
+libchroma_a_SOURCES += \
+	io/inline_io.cc \
+	meas/inline/glue/inline_plaquette.cc \
+	meas/inline/glue/inline_polylp.cc
 
 
 #
