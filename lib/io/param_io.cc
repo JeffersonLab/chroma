@@ -1,4 +1,4 @@
-// $Id: param_io.cc,v 1.37 2005-02-22 02:49:59 edwards Exp $
+// $Id: param_io.cc,v 1.38 2005-02-22 02:50:20 edwards Exp $
 /*! \file
  *  \brief Various parameter readers/writers for main programs
  */
@@ -66,7 +66,6 @@ void read(XMLReader& xml, const string& path, Cfg_t& input)
 }
 
 
-#if 1
 //! Initialize a smearing param struct
 SmearingParam_t::SmearingParam_t()
 {
@@ -92,7 +91,6 @@ ChiralParam_t::ChiralParam_t()
   a5       = 1;
   NWilsVec = 0;
 }
-#endif
 
 
 //! Read a anisotropy param struct
