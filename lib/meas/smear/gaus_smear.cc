@@ -1,10 +1,10 @@
-// $Id: gaus_smear.cc,v 1.1 2003-02-15 04:08:02 edwards Exp $
+// $Id: gaus_smear.cc,v 1.2 2003-02-15 05:54:26 edwards Exp $
 /*! \file
  *  \brief Gaussian smearing of color vector
  */
 
-#include "qdp.h"
-#include "szin.h"
+#include "szinbase.h"
+#include "actions/dirac/klein_gord.h"
 
 using namespace QDP;
 

@@ -1,4 +1,4 @@
-// $Id: taproj.cc,v 1.2 2003-01-26 04:30:41 edwards Exp $
+// $Id: taproj.cc,v 1.3 2003-02-15 05:54:26 edwards Exp $
 // TAPROJ
 
 /*! \file
@@ -15,8 +15,8 @@
  *  \param a        LatticeColorMatrix          (Modify)
  */
 
-#include "qdp.h"
-#include "szin.h"
+#include "szinbase.h"
+#include "util/gauge/taproj.h"
 
 using namespace QDP;
 
