@@ -1,4 +1,4 @@
-// $Id: kyuqprop_io.cc,v 1.1 2004-04-14 20:59:24 edwards Exp $
+// $Id: kyuqprop_io.cc,v 1.2 2004-04-15 03:22:52 edwards Exp $
 /*!
  * @file
  * @brief  Read/write a Kentucky quark propagator
@@ -51,8 +51,9 @@ void initDiracToDRMat(SpinMatrix& U)
    * so I'll just hardwire it...
    */
   U = zero;
-  Complex  one = cmplx( Real(1),Real(0));
-  Complex mone = cmplx(-Real(1),Real(0));
+  Real     foo = 1 / sqrt(Real(2));
+  Complex  one = cmplx( foo,Real(0));
+  Complex mone = cmplx(-foo,Real(0));
   pokeSpin(U,  one, 0, 1);
   pokeSpin(U,  one, 0, 3);
   pokeSpin(U, mone, 1, 0);
@@ -75,41 +76,49 @@ void initDiracToDRMat(SpinMatrix& U)
 
 void readKYUQprop(LatticePropagator& q, const string& file)
 {
-  BinaryReader cfg_in(file);
+  START_CODE("readKYUQprop");
+
+  if (Nc != 3)
+  {
+    QDPIO::cerr << "readKYUQprop - only supports Nc=3" << endl;
+    QDP_abort(1);
+  }
+
+  BinaryReader bin(file);
 
   /* KY Indices: 
      x,y,z,t,snk_col,snk_spin,ri,src_col,src_spin 
      x is fastest (Fortran Order)
   */
   LatticePropagator q_old;
+  multi2d<LatticeReal> re(3,4);
+  multi2d<LatticeReal> im(3,4);
+  LatticeFermion f;
+  LatticeColorVector  cv;
+
+//  LatticeReal64  tmp;  // KYU always uses 64 bits
+  LatticeDouble  tmp;  // KYU always uses 64 bits
 
   for(int src_spin=0; src_spin < 4; ++src_spin)
     for(int src_color=0; src_color < 3; ++src_color)
     {
-//      LatticeReal64  tmp;  // KYU always uses 64 bits
-      LatticeDouble  tmp;  // KYU always uses 64 bits
-
-      multi2d<LatticeReal> re(3,4);
       for(int snk_spin=0; snk_spin < 4; ++snk_spin)
 	for(int snk_color=0; snk_color < 3; ++snk_color)
 	{
-	  read(cfg_in, tmp);
+	  read(bin, tmp);
 	  re(snk_color,snk_spin) = tmp;
 	}
 
-      multi2d<LatticeReal> im(3,4);
       for(int snk_spin=0; snk_spin < 4; ++snk_spin)
 	for(int snk_color=0; snk_color < 3; ++snk_color)
 	{
-	  read(cfg_in, tmp);
+	  read(bin, tmp);
 	  im(snk_color,snk_spin) = tmp;
 	}
 
       // Stuff into a fermion
-      LatticeFermion f;
       for(int snk_spin=0; snk_spin < 4; ++snk_spin)
       {
-	LatticeColorVector  cv;
 	for(int snk_color=0; snk_color < 3; ++snk_color)
 	{
 	  pokeColor(cv, 
@@ -124,7 +133,7 @@ void readKYUQprop(LatticePropagator& q, const string& file)
       FermToProp(f, q_old, src_color, src_spin);
     }
 
-  cfg_in.close();
+  bin.close();
 
   // Now that we have read the prop, need to change the spin basis
   SpinMatrix U;
@@ -133,5 +142,5 @@ void readKYUQprop(LatticePropagator& q, const string& file)
   // And finally...
   q = U * q_old * adj(U);   // note, adj(U) = -U
   
-  
+  END_CODE("readKYUQprop");
 }
