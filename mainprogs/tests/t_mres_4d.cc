@@ -1,4 +1,4 @@
-// $Id: t_mres_4d.cc,v 1.3 2004-11-18 03:15:56 bjoo Exp $
+// $Id: t_mres_4d.cc,v 1.4 2004-11-20 03:49:46 edwards Exp $
 
 #include <iostream>
 #include <sstream>
@@ -28,14 +28,31 @@ struct AppInput_t
   Prop_t prop;
 };
 
+//! To insure linking of code, place the registered code flags here
+/*! This is the bit of code that dictates what fermacts are in use */
 bool linkage_hack()
 {
   bool foo = true;
 
   // 4D actions
+  foo &= EvenOddPrecWilsonFermActEnv::registered;
   foo &= UnprecWilsonFermActEnv::registered;
   foo &= UnprecDWFTransfFermActEnv::registered;
   foo &= OvlapPartFrac4DFermActEnv::registered;
+  // 5D actions
+  foo &= EvenOddPrecDWFermActArrayEnv::registered;
+  foo &= UnprecDWFermActArrayEnv::registered;
+  foo &= EvenOddPrecNEFFermActArrayEnv::registered;
+  foo &= UnprecNEFFermActArrayEnv::registered;
+  foo &= UnprecOvlapContFrac5DFermActArrayEnv::registered;
+  foo &= EvenOddPrecOvlapContFrac5DFermActArrayEnv::registered;
+  foo &= UnprecOvDWFermActArrayEnv::registered;
+  foo &= EvenOddPrecOvDWFermActArrayEnv::registered;
+  foo &= UnprecOvExtFermActArrayEnv::registered;
+  foo &= UnprecZoloNEFFermActArrayEnv::registered;
+  foo &= EvenOddPrecZoloNEFFermActArrayEnv::registered;
+  foo &= UnprecDWFTransfFermActEnv::registered;
+
   return foo;
 }
 
