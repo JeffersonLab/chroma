@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev4d_fermact_w.h,v 1.17 2004-01-13 10:00:57 bjoo Exp $
+// $Id: zolotarev4d_fermact_w.h,v 1.18 2004-04-16 14:58:29 bjoo Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -31,20 +31,24 @@ class Zolotarev4DFermAct : public OverlapFermActBase
 public:
   //! Full constructor
   Zolotarev4DFermAct(Handle<FermBC<LatticeFermion> > fbc_,
-		       Handle<UnprecWilsonTypeFermAct<LatticeFermion> > Mact_, 
-		       const Real& m_q_,
-		       const int RatPolyDeg_,
-		       const Real& RsdCGinner_,
-		       int MaxCGinner_,
-		       XMLBufferWriter& writer_) :
+		     Handle<UnprecWilsonTypeFermAct<LatticeFermion> > Mact_, 
+		     const Real& m_q_,
+		     const int RatPolyDeg_,
+		     const Real& RsdCGinner_,
+		     int MaxCGinner_,
+		     XMLBufferWriter& writer_,
+		     const int ReorthFreqInner_=10
+		     ) :
     fbc(fbc_), Mact(Mact_), m_q(m_q_), RatPolyDeg(RatPolyDeg_), 
-    RsdCGinner(RsdCGinner_), MaxCGinner(MaxCGinner_), writer(writer_)
+    RsdCGinner(RsdCGinner_), MaxCGinner(MaxCGinner_), writer(writer_),
+    ReorthFreqInner(ReorthFreqInner_)
     {}
 
   //! Copy Constructor
   Zolotarev4DFermAct(const Zolotarev4DFermAct& a) :
     fbc(a.fbc), Mact(a.Mact), m_q(a.m_q), RatPolyDeg(a.RatPolyDeg),
-    RsdCGinner(a.RsdCGinner), MaxCGinner(a.MaxCGinner), writer(a.writer)
+    RsdCGinner(a.RsdCGinner), MaxCGinner(a.MaxCGinner), writer(a.writer),
+    ReorthFreqInner(a.ReorthFreqInner)
   {};
   
 
@@ -159,7 +163,9 @@ private:
   Real RsdCGinner;  // Residuum for inner iterations -- property of action
                     // not state. (eg 5D op has none of this)
   int MaxCGinner;
+
   XMLBufferWriter& writer;
+  const int ReorthFreqInner;  // How often should we reorthogonalize
 };
 
 #endif

@@ -1,11 +1,11 @@
-// $Id: lovlapms_w.cc,v 1.11 2004-04-14 12:53:21 bjoo Exp $
+// $Id: lovlapms_w.cc,v 1.12 2004-04-16 14:58:29 bjoo Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
 #include <math.h>
 #include "chromabase.h"
 #include "actions/ferm/linop/lovlapms_w.h"
-
+#include "meas/eig/gramschm.h"
 
 using namespace QDP;
 
@@ -193,11 +193,10 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
     (*MdagM)(Ap, p[isz], PLUS);
     Ap += p[isz] * rootQ[isz];
 
-#if 000000
     // Project out eigenvectors
-    if (k % 2 == 0)
-      GramSchm (Ap, 1, EigVec, NEig);
-#endif
+    if (k % ReorthFreq == 0) {
+      GramSchm(Ap, EigVec, NEig);
+    }
 
     //  d =  < p, A.p >
     d = innerProductReal(p[isz], Ap);                       // 2 Nc Ns  flops 
@@ -242,11 +241,10 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
     r += b * Ap;	        // 2 Nc Ns  flops 
 
 
-#if 000000
     // Project out eigenvectors 
-    if (k % 2 == 0)
-      GramSchm (r, 1, EigVec, NEig);
-#endif
+    if (k % ReorthFreq == 0) {
+      GramSchm (r, EigVec, NEig);
+    }
     
     // Work out new iterate for sgn(H).
     //
@@ -337,7 +335,7 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
 
 #if 0
     // Project out eigenvectors 
-    if (k % 10 == 0)
+    if (k % ReorthFreq == 0)
       GramSchm (p, numroot, EigVec, NEig);
 #endif
     

@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.123 2004-04-15 14:43:24 bjoo Exp $
+# $Id: Makefile.am,v 1.124 2004-04-16 14:58:28 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -70,7 +70,8 @@ nobase_include_HEADERS = \
 	actions/ferm/linop/lmdagm.h actions/ferm/linop/lopscl.h \
 	actions/ferm/linop/partrat.h actions/ferm/qprop/qprop.h \
 	actions/gauge/gauge.h \
-	io/io.h io/eigen_io.h io/fermact_paramio.h io/gauge_io.h io/kyugauge_io.h io/kyuqprop_io.h \
+	io/io.h io/eigen_io.h io/fermact_paramio.h \
+	io/zolotarev4d_fermact_paramio.h io/gauge_io.h io/kyugauge_io.h io/kyuqprop_io.h \
         io/milc_io.h io/param_io.h io/qprop_io.h io/readmilc.h \
 	io/readszin.h io/szin_io.h io/writemilc.h io/writeszin.h \
 	meas/eig/eig.h meas/eig/gramschm.h meas/eig/gramschm_array.h \
@@ -213,7 +214,8 @@ libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	       invcg2_timing_hacks.cc minvcg.cc qprop_io.cc eigen_io.cc stoch_var.cc \
 	       z2_src.cc gauge_io.cc milc_io.cc readmilc.cc writemilc.cc \
                axgauge.cc coulgauge.cc grelax.cc polar_dec.cc rot_colvec.cc \
-	       transf.cc param_io.cc fermact_paramio.cc gramschm.cc \
+	       transf.cc param_io.cc fermact_paramio.cc  \
+	       zolotarev4d_fermact_paramio.cc  gramschm.cc \
 	       gramschm_array.cc ritz.cc ritz_array.cc sn_jacob.cc \
 	       sn_jacob_array.cc eig_spec.cc eig_spec_array.cc \
                proginfo.cc printgeom.cc

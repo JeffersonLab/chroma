@@ -1,7 +1,7 @@
 #ifndef EIGEN_IO_H
 #define EIGEN_IO_H
 
-#include "chroma.h"
+#include "chromabase.h"
 #include "io/param_io.h"
 
 #include <iostream>

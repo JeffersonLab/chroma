@@ -1,4 +1,4 @@
-// $Id: qprop_io.h,v 1.8 2004-04-15 14:43:24 bjoo Exp $
+// $Id: qprop_io.h,v 1.9 2004-04-16 14:58:29 bjoo Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -81,6 +81,23 @@ class ChromaProp_t {
   ~ChromaProp_t(void) { if ( FermActHandle != 0x0 ) delete FermActHandle ; }
 };
 
+class ChromaMultiProp_t { 
+ public:
+  int             version;
+  FermType        FermTypeP;
+  
+  // Uninitialised to start with (should hold null pointer)
+  FermActParams* FermActHandle;
+  
+  InvertParam_t   invParam;   // Inverter parameters
+  multi1d<int>    boundary;
+  multi1d<int>    nrow;          // lattice size
+ 
+  multi1d<Real>   MultiMasses;
+  ChromaProp_t(void) { FermActHandle = 0x0 ; }
+  ~ChromaProp_t(void) { if ( FermActHandle != 0x0 ) delete FermActHandle ; }
+};
+
 
 //! Structure for writing to seqprop files
 struct ChromaSeqProp_t
@@ -108,6 +125,9 @@ void initHeader(PropSink_t& header, const PropSource_t& source);
 //! Initialize header with default values
 void initHeader(ChromaProp_t& header);
 
+//! Initialize header with default values
+void initHeader(ChromaMultiProp_t& header);
+
 //! Propagator source read
 void read(XMLReader& xml, const std::string& path, PropSource_t& header);
 
@@ -125,8 +145,15 @@ void write(XMLWriter& xml, const std::string& path, const PropSink_t& header);
 //! Propagator header read
 void read(XMLReader& xml, const std::string& path, ChromaProp_t& header);
 
+//! Multi Propagator header read
+void read(XMLReader& xml, const std::string& path, ChromaMultiProp_t& header);
+
+
 //! Propagator header writer
 void write(XMLWriter& xml, const std::string& path, const ChromaProp_t& header);
+
+//! Propagator header writer
+void write(XMLWriter& xml, const std::string& path, const ChromaMultiProp_t& header);
 
 
 //! SeqPropagator header read

@@ -1,4 +1,4 @@
-#include "chroma.h"
+#include "chromabase.h"
 #include "eigen_io.h"
 #include <iostream>
 #include <iomanip>

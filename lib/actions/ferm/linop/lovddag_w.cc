@@ -1,11 +1,11 @@
-// $Id: lovddag_w.cc,v 1.5 2004-01-06 10:42:36 bjoo Exp $
+// $Id: lovddag_w.cc,v 1.6 2004-04-16 14:58:29 bjoo Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
 #include <math.h>
 #include "chromabase.h"
 #include "actions/ferm/linop/lovddag_w.h"
-
+#include "meas/eig/gramschm.h"
 
 using namespace QDP;
 
@@ -188,11 +188,11 @@ void lovddag::operator() (LatticeFermion& chi, const LatticeFermion& psi,
     (*MdagM)(Ap, p[isz], PLUS);
     Ap += p[isz] * rootQ[isz];
 
-#if 0
+
     /* Project out eigenvectors */
-    if (k % OvlapInnerReorthFreq  == 0)
-      GramSchm (Ap, 1, EigVec, NEig, Ncb);
-#endif
+    if (k % ReorthFreq  == 0){
+      GramSchm(Ap, EigVec, NEig);
+    }
 
     /*  d =  < p, A.p >  */
     d = innerProductReal(p[isz], Ap);            /* 2 Nc Ns  flops */
@@ -235,11 +235,10 @@ void lovddag::operator() (LatticeFermion& chi, const LatticeFermion& psi,
     r += b * Ap;	        // 2 Nc Ns  flops 
 
 
-#if 0000000
     /* Project out eigenvectors */
-    if (k % OvlapInnerReorthFreq == 0)
-      GramSchm (r, 1, EigVec, NEig, Ncb);
-#endif
+    if (k % ReorthFreq == 0) {
+      GramSchm (r, EigVec, NEig);
+    }
     
     // Work out new iterate for sgn(H).
     //
@@ -328,8 +327,8 @@ void lovddag::operator() (LatticeFermion& chi, const LatticeFermion& psi,
 
 #if 0
     /* Project out eigenvectors */
-    if (k % OvlapInnerReorthFreq == 0)
-      GramSchm (p, numroot, EigVec, NEig, Ncb);
+    if (k % ReorthFreq == 0)
+      GramSchm (p, numroot, EigVec, NEig);
 #endif
 
     // Convergence tests start here.

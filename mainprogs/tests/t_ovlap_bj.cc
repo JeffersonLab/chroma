@@ -1,4 +1,4 @@
-// $Id: t_ovlap_bj.cc,v 1.23 2004-04-06 15:40:55 bjoo Exp $
+// $Id: t_ovlap_bj.cc,v 1.24 2004-04-16 14:58:30 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -788,9 +788,9 @@ int main(int argc, char **argv)
   */
 
   multi1d<Real> shifts(3);
-  shifts[0] = 0.01;
-  shifts[1] = 0.02;
-  shifts[2] = 0.03;
+  shifts[0] = 0.04;
+  shifts[1] = 0.05;
+  shifts[2] = 0.06;
 
   int multi_n_count=0;
 

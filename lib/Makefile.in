@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.172 2004-04-15 14:43:24 bjoo Exp $
+# $Id: Makefile.in,v 1.173 2004-04-16 14:58:28 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -280,7 +280,8 @@ nobase_include_HEADERS = \
 	actions/ferm/linop/lmdagm.h actions/ferm/linop/lopscl.h \
 	actions/ferm/linop/partrat.h actions/ferm/qprop/qprop.h \
 	actions/gauge/gauge.h \
-	io/io.h io/eigen_io.h io/fermact_paramio.h io/gauge_io.h io/kyugauge_io.h io/kyuqprop_io.h \
+	io/io.h io/eigen_io.h io/fermact_paramio.h \
+	io/zolotarev4d_fermact_paramio.h io/gauge_io.h io/kyugauge_io.h io/kyuqprop_io.h \
         io/milc_io.h io/param_io.h io/qprop_io.h io/readmilc.h \
 	io/readszin.h io/szin_io.h io/writemilc.h io/writeszin.h \
 	meas/eig/eig.h meas/eig/gramschm.h meas/eig/gramschm_array.h \
@@ -334,7 +335,8 @@ libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	       invcg2_timing_hacks.cc minvcg.cc qprop_io.cc eigen_io.cc stoch_var.cc \
 	       z2_src.cc gauge_io.cc milc_io.cc readmilc.cc writemilc.cc \
                axgauge.cc coulgauge.cc grelax.cc polar_dec.cc rot_colvec.cc \
-	       transf.cc param_io.cc fermact_paramio.cc gramschm.cc \
+	       transf.cc param_io.cc fermact_paramio.cc  \
+	       zolotarev4d_fermact_paramio.cc  gramschm.cc \
 	       gramschm_array.cc ritz.cc ritz_array.cc sn_jacob.cc \
 	       sn_jacob_array.cc eig_spec.cc eig_spec_array.cc \
                proginfo.cc printgeom.cc\
@@ -356,12 +358,13 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	stoch_var.cc z2_src.cc gauge_io.cc milc_io.cc readmilc.cc \
 	writemilc.cc axgauge.cc coulgauge.cc grelax.cc polar_dec.cc \
 	rot_colvec.cc transf.cc param_io.cc fermact_paramio.cc \
-	gramschm.cc gramschm_array.cc ritz.cc ritz_array.cc sn_jacob.cc \
-	sn_jacob_array.cc eig_spec.cc eig_spec_array.cc proginfo.cc \
-	printgeom.cc baryon_w.cc mesons_w.cc hybmeson_w.cc loops_w.cc \
-	curcor2_w.cc lwldslash_w.cc formfac_w.cc mesonseqsrc_w.cc \
-	barseqsrc_w.cc seqpiontest_w.cc sink_smear2_w.cc barcomp_io.cc \
-	barcomp_w.cc walfil_w.cc fermact_qprop.cc prec_fermact_qprop.cc \
+	zolotarev4d_fermact_paramio.cc gramschm.cc gramschm_array.cc \
+	ritz.cc ritz_array.cc sn_jacob.cc sn_jacob_array.cc eig_spec.cc \
+	eig_spec_array.cc proginfo.cc printgeom.cc baryon_w.cc \
+	mesons_w.cc hybmeson_w.cc loops_w.cc curcor2_w.cc \
+	lwldslash_w.cc formfac_w.cc mesonseqsrc_w.cc barseqsrc_w.cc \
+	seqpiontest_w.cc sink_smear2_w.cc barcomp_io.cc barcomp_w.cc \
+	walfil_w.cc fermact_qprop.cc prec_fermact_qprop.cc \
 	unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
 	prec_wilson_fermact_w.cc prec_wilson_linop_w.cc \
 	unprec_parwilson_fermact_w.cc unprec_parwilson_linop_w.cc \
@@ -484,7 +487,8 @@ am_libchroma_a_OBJECTS = rgauge.$(OBJEXT) taproj.$(OBJEXT) \
 	milc_io.$(OBJEXT) readmilc.$(OBJEXT) writemilc.$(OBJEXT) \
 	axgauge.$(OBJEXT) coulgauge.$(OBJEXT) grelax.$(OBJEXT) \
 	polar_dec.$(OBJEXT) rot_colvec.$(OBJEXT) transf.$(OBJEXT) \
-	param_io.$(OBJEXT) fermact_paramio.$(OBJEXT) gramschm.$(OBJEXT) \
+	param_io.$(OBJEXT) fermact_paramio.$(OBJEXT) \
+	zolotarev4d_fermact_paramio.$(OBJEXT) gramschm.$(OBJEXT) \
 	gramschm_array.$(OBJEXT) ritz.$(OBJEXT) ritz_array.$(OBJEXT) \
 	sn_jacob.$(OBJEXT) sn_jacob_array.$(OBJEXT) eig_spec.$(OBJEXT) \
 	eig_spec_array.$(OBJEXT) proginfo.$(OBJEXT) printgeom.$(OBJEXT) \
@@ -596,6 +600,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/writemilc.Po ./$(DEPDIR)/writeszin.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/writeszinqprop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/z2_src.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/zolotarev4d_fermact_paramio.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/zolotarev4d_fermact_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/zolotarev5d_fermact_array_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/zolotarev5d_linop_array_w.Po \
@@ -798,6 +803,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writeszin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writeszinqprop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/z2_src.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zolotarev4d_fermact_paramio.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zolotarev4d_fermact_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zolotarev5d_fermact_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zolotarev5d_linop_array_w.Po@am__quote@

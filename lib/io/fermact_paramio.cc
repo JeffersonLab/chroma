@@ -2,6 +2,7 @@
 
 #include "io/param_io.h"
 #include "io/fermact_paramio.h"
+#include "io/zolotarev4d_fermact_paramio.h"
 
 #include <iostream>
 #include <string>
@@ -41,6 +42,9 @@ FermActParams* read(XMLReader &reader, const string& path)
   case FERM_ACT_OVERLAP_DWF:
     return new DWFFermActParams(top);
     break;
+  case FERM_ACT_ZOLOTAREV_4D:
+    return new Zolotarev4DFermActParams(top);
+    break;
   default: 
     QDPIO::cerr << "As yet unsupported FermionAction " << f_a_type << endl;
     QDP_abort(1);
@@ -71,6 +75,14 @@ void write(XMLWriter &xml_out, const string& path, const FermActParams& p)
       write(xml_out, path, dwf);
     }
     break;
+    
+  case FERM_ACT_ZOLOTAREV_4D:
+    {
+      const Zolotarev4DFermActParams& zolo4d = dynamic_cast<const Zolotarev4DFermActParams&>(p);
+      write(xml_out, path, zolo4d);
+    }
+    break;
+
     defaule:
     QDPIO::cerr << "Unknown ferm action type : " << p.getFermActType() << endl;
     QDP_abort(1);

@@ -1,4 +1,4 @@
-// $Id: zolotarev4d_fermact_w.cc,v 1.14 2004-02-11 12:51:33 bjoo Exp $
+// $Id: zolotarev4d_fermact_w.cc,v 1.15 2004-04-16 14:58:29 bjoo Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -260,7 +260,7 @@ Zolotarev4DFermAct::linOp(Handle<const ConnectState> state_) const
   return new lovlapms(*Mact, state_, m_q,
 		      numroot, coeffP, resP, rootQ, 
 		      NEig, EigValFunc, state.getEigVec(),
-		      MaxCGinner, RsdCGinner);
+		      MaxCGinner, RsdCGinner, ReorthFreqInner);
   
   END_CODE("Zolotarev4DLinOp::create");
 }
@@ -317,7 +317,7 @@ Zolotarev4DFermAct::lMdagM(Handle<const ConnectState> state_, const Chirality& i
     return new lovddag(*Mact, state_, m_q,
 		       numroot, coeffP, resP, rootQ, 
 		       NEig, EigValFunc, state.getEigVec(),
-		       MaxCGinner, RsdCGinner, ichiral);
+		       MaxCGinner, RsdCGinner, ReorthFreqInner, ichiral);
   
   }
   END_CODE("Zolotarev4DlMdagM");
@@ -417,3 +417,4 @@ Zolotarev4DFermAct::createState(const multi1d<LatticeColorMatrix>& u_,
   return new OverlapConnectState<LatticeFermion>(u_tmp, lambda_lo_, evecs_lo_, lambda_hi_, approxMin, approxMax);
 }
 
+  

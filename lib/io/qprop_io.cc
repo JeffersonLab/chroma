@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 1.13 2004-04-15 14:43:24 bjoo Exp $
+// $Id: qprop_io.cc,v 1.14 2004-04-16 14:58:29 bjoo Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -113,6 +113,16 @@ void initHeader(PropSink_t& header, const PropSource_t& source)
 void initHeader(ChromaProp_t& header)
 {
   header.version     = 5;
+  header.nrow        = Layout::lattSize();
+
+  // initHeader(header.anisoParam);
+  // initHeader(header.chiralParam);
+}
+
+// Initialize header with default values
+void initHeader(ChromaMultiProp_t& header)
+{
+  header.version     = 1;
   header.nrow        = Layout::lattSize();
 
   // initHeader(header.anisoParam);
@@ -288,6 +298,37 @@ void read(XMLReader& xml, const string& path, ChromaProp_t& param)
 }
 
 
+// Forward propagator header read
+void read(XMLReader& xml, const string& path, ChromaMultiProp_t& param)
+{
+  XMLReader paramtop(xml, path);
+
+  initHeader(param);
+
+  read(paramtop, "version", param.version);
+
+  switch (param.version) 
+  {
+    /**************************************************************************/
+  case 1:
+    /**************************************************************************/
+    read(paramtop, "MultiMasses", param.MultiMasses);
+    read(paramtop, "FermTypeP", param.FermTypeP);
+    param.FermActHandle = read(paramtop, "FermionAction");
+    read(paramtop, "InvertParam", param.invParam);
+    read(paramtop, "boundary", param.boundary);
+    read(paramtop, "nrow", param.nrow);
+    
+    break;
+  default:
+    /**************************************************************************/
+    QDPIO::cerr << "ChromaMultiProp parameter version " << param.version 
+		<< " unsupported." << endl;
+    QDP_abort(1);
+  }
+}
+
+
 
 // Source header writer
 void write(XMLWriter& xml, const string& path, const PropSource_t& header)
@@ -387,6 +428,37 @@ void write(XMLWriter& xml, const string& path, const ChromaProp_t& header)
     break;
   default:
     QDPIO::cerr << "ChromaProp parameter version " << header.version 
+		<< " unsupported." << endl;
+    QDP_abort(1);
+  }
+
+  pop(xml);
+}
+
+// Write propagator inversion parameters
+void write(XMLWriter& xml, const string& path, const ChromaMultiProp_t& header)
+{
+  push(xml, path);
+
+  switch( header.version) { 
+  case 1:
+    write(xml, "version", header.version);
+    write(xml, "FermTypeP", header.FermTypeP);
+    write(xml, "MultiMasses", header.MultiMasses);
+    if( header.FermActHandle != 0x0 ) { 
+      write(xml, "FermionAction", *(header.FermActHandle));
+    }
+    else {
+      QDPIO::cerr << "Attempting to print Uninitialised FermActHandle" << endl;
+      QDP_abort(1);
+    }
+        
+    write(xml, "InvertParam", header.invParam);
+    write(xml, "boundary", header.boundary);
+    write(xml, "nrow", header.nrow);
+    break;
+  default:
+    QDPIO::cerr << "ChromaMultiProp parameter version " << header.version 
 		<< " unsupported." << endl;
     QDP_abort(1);
   }

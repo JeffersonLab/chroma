@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lovddag_w.h,v 1.7 2004-01-06 10:42:36 bjoo Exp $
+// $Id: lovddag_w.h,v 1.8 2004-04-16 14:58:29 bjoo Exp $
 /*! \file
  *  \brief Internal Overlap-pole operator
  */
@@ -64,10 +64,12 @@ public:
 	   const multi1d<LatticeFermion>& _EigVec,
 	   int _MaxCG,
 	   const Real& _RsdCG,
+	  const int _ReorthFreq,
 	   const Chirality _ichiral) :
-    m_q(_m_q), numroot(_numroot), constP(_constP),
+    M(S_aux.linOp(state)), MdagM(S_aux.lMdagM(state)), m_q(_m_q), 
+    numroot(_numroot), constP(_constP),
     resP(_resP), rootQ(_rootQ), EigVec(_EigVec), EigValFunc(_EigValFunc),
-    NEig(_NEig), MaxCG(_MaxCG), RsdCG(_RsdCG), ichiral(_ichiral), M(S_aux.linOp(state)), MdagM(S_aux.lMdagM(state)) {};
+    NEig(_NEig), MaxCG(_MaxCG), RsdCG(_RsdCG), ReorthFreq(_ReorthFreq), ichiral(_ichiral) {};
 
   //! Destructor is automatic
   ~lovddag() {}
@@ -93,6 +95,7 @@ private:
   int NEig;
   int MaxCG;
   const Real RsdCG;
+  const int  ReorthFreq;
   Chirality ichiral;
 };
 

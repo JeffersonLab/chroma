@@ -1,4 +1,4 @@
-// $Id: invcg1.cc,v 1.3 2004-03-03 10:48:17 mcneile Exp $
+// $Id: invcg1.cc,v 1.4 2004-04-16 14:58:29 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -34,7 +34,7 @@
  *  \param M       Linear Operator    	       (Read)
  *  \param chi     Source	               (Read)
  *  \param psi     Solution    	    	       (Modify)
- *  \param RsdCG   CG residual accuracy        (Read)
+ *  \param RsdCG   CG residual accuracy        (Rea/Write)
  *  \param MaxCG   Maximum CG iterations       (Read)
  *  \param n_count Number of CG iteration      (Write)
  *
@@ -150,7 +150,9 @@ void InvCG1_a(const LinearOperator<T>& A,
     //  cp  =  | r[k] |**2
     cp = norm2(r, s);	                /* 2 Nc Ns  flops */
 
+#if 0
     QDPIO::cout << "WlInvCG: k = " << k << "  cp = " << cp << endl;
+#endif
 
     if ( toBool(cp  <=  rsd_sq) )
     {

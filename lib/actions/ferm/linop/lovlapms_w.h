@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lovlapms_w.h,v 1.14 2004-01-02 03:10:37 edwards Exp $
+// $Id: lovlapms_w.h,v 1.15 2004-04-16 14:58:29 bjoo Exp $
 /*! \file
  *  \brief Internal Overlap-pole operator
  */
@@ -61,10 +61,12 @@ public:
 	   const multi1d<Real>& _EigValFunc,
 	   const multi1d<LatticeFermion>& _EigVec,
 	   int _MaxCG,
-	   const Real& _RsdCG) :
-    m_q(_m_q), numroot(_numroot), constP(_constP),
+	   const Real& _RsdCG,
+	   const int _ReorthFreq ) :
+    M(S_aux.linOp(state)), MdagM(S_aux.lMdagM(state)), m_q(_m_q), 
+    numroot(_numroot), constP(_constP),
     resP(_resP), rootQ(_rootQ), EigVec(_EigVec), EigValFunc(_EigValFunc),
-    NEig(_NEig), MaxCG(_MaxCG), RsdCG(_RsdCG), M(S_aux.linOp(state)), MdagM(S_aux.lMdagM(state)) {}
+    NEig(_NEig), MaxCG(_MaxCG), RsdCG(_RsdCG),  ReorthFreq(_ReorthFreq) {}
 
   //! Destructor is automatic
   ~lovlapms() {}
@@ -83,14 +85,14 @@ private:
   const Real m_q;
   int numroot;
   const Real constP;
-  const multi1d<Real> rootQ;
   const multi1d<Real> resP;
+  const multi1d<Real> rootQ;
   const multi1d<LatticeFermion> EigVec;
   const multi1d<Real> EigValFunc;
   int NEig;
   int MaxCG;
   const Real RsdCG;
-
+  const int   ReorthFreq;
 };
 
 #endif
