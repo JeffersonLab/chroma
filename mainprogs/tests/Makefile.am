@@ -42,7 +42,7 @@ check_PROGRAMS  = t_mesplq t_io t_formfac t_mesons_w t_conslinop t_hypsmear \
 ## do not compile.  This way, they don't break 'make check' but the targets
 ## 'make t_dslashm' and 'make t_lwldslash' are still there for further
 ## development
-EXTRA_PROGRAMS  = t_dslashm t_lwldslash t_spprod
+EXTRA_PROGRAMS  = t_dslashm t_lwldslash t_spprod t_lwldslash_sse
 
 ## DEPENDENCIES = build_chroma_libs
 
@@ -88,6 +88,8 @@ t_overbu_DEPENDENCIES = build_chroma_libs
 t_spprod_SOURCES = t_spprod.cc
 t_spprod_DEPENDENCIES = build_chroma_libs
 
+t_lwldslash_sse_SOURCES = t_lwldslash_sse.cc
+t_lwldslash_sse_DEPENDENCIES = build_chroma_libs
 
 # build lib is a target that goes to the build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order
