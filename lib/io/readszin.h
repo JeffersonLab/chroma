@@ -1,4 +1,4 @@
-// $Id: readszin.h,v 1.2 2003-03-28 03:54:40 edwards Exp $
+// $Id: readszin.h,v 1.3 2003-04-30 21:19:33 edwards Exp $
 
 #ifndef __readszin_h__
 #define __readszin_h__
@@ -19,6 +19,6 @@
  * \param seed_old   seed in configuration ( Modify )            
  */    
 
-void readSzin2(multi1d<LatticeColorMatrix>& u, char cfg_file[], Seed& seed_old);
+void readSzin(multi1d<LatticeColorMatrix>& u, const string& cfg_file, Seed& seed_old);
 
 #endif

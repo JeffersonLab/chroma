@@ -1,4 +1,4 @@
-// $Id: readszin.cc,v 1.5 2003-04-17 20:09:38 dgr Exp $
+// $Id: readszin.cc,v 1.6 2003-04-30 21:19:33 edwards Exp $
 
 /*! \file
  *  \brief Read in a configuration written by SZIN up to configuration version 7.
@@ -28,7 +28,7 @@ using namespace QDP;
  * \param seed_old   seed in configuration ( Modify )            
  */    
 
-void readSzin2(multi1d<LatticeColorMatrix>& u, char cfg_file[], Seed& seed_old)
+void readSzin(multi1d<LatticeColorMatrix>& u, const string& cfg_file, Seed& seed_old)
 {
   ColorMatrixF u_old;
   multi1d<int> nrow_old(Nd); /* Lattice size (from CFGIN) */
@@ -68,6 +68,7 @@ void readSzin2(multi1d<LatticeColorMatrix>& u, char cfg_file[], Seed& seed_old)
 
   int i;
   int j;
+
   string date;
   string banner;
 
@@ -93,23 +94,29 @@ void readSzin2(multi1d<LatticeColorMatrix>& u, char cfg_file[], Seed& seed_old)
    *  read (cfg_in) date(1:date_size), banner(1:banner_size), 
    *      cfg_version;
    */
+  char *old_date = new char[date_size+1];
 
-  cerr << "HACK - not assigning date" << endl;
   for(i=0; i < date_size; ++i)
   {
     read(cfg_in,j);
-    //    date[i] = j;
+    date[i] = j;
   }
-  date[date_size] = '\0';
 
-  cerr << "HACK - not assigning banner" << endl;
+  old_date[date_size] = '\0';
+  date = old_date;   // not being used at the moment
+  delete[] old_date;
+
+  char *old_banner = new char[banner_size+1];
+
   for(i=0; i < banner_size; ++i)
   {
     read(cfg_in,j);
     //    banner[i] = j;
     cerr << "HACK - not assigning banner" << endl;
   }
-  banner[banner_size] = '\0';
+  old_banner[banner_size] = '\0';
+  banner = old_banner;   // not being used at the moment
+  delete[] old_banner;
 
   read(cfg_in,cfg_version);
 
