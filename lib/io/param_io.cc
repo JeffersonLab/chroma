@@ -1,4 +1,4 @@
-// $Id: param_io.cc,v 1.32 2004-09-22 17:24:59 bjoo Exp $
+// $Id: param_io.cc,v 1.33 2004-10-30 02:06:32 edwards Exp $
 /*! \file
  *  \brief Various parameter readers/writers for main programs
  */
@@ -160,7 +160,7 @@ void read(XMLReader& xml, const string& path, InvertParam_t& param)
       read(paramtop, "MaxCGPrec", param.MaxCGPrec);
     }
     else {
-      param.RsdCGPrec = param.RsdCG;
+      param.MaxCGPrec = param.MaxCG;
     }
 
   }
