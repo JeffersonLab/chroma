@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.136 2004-05-14 18:10:19 bjoo Exp $
+# $Id: Makefile.am,v 1.137 2004-05-17 15:36:25 mcneile Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -235,10 +235,10 @@ libchroma_a_SOURCES = gauge_startup.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
 	       gramschm.cc \
 	       gramschm_array.cc ritz.cc ritz_array.cc sn_jacob.cc \
 	       sn_jacob_array.cc eig_spec.cc eig_spec_array.cc \
-               proginfo.cc printgeom.cc fuzwilp.cc \
+               proginfo.cc printgeom.cc fuzwilp.cc wilslp.cc \
 	       invsumr.cc minvsumr.cc
 
-# wilslp.cc
+# 
 
 #
 # Object files to add if building the Wilson Builds...
