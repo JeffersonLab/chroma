@@ -1,4 +1,4 @@
-// $Id: wallformfac.cc,v 1.23 2004-06-02 03:48:40 edwards Exp $
+// $Id: wallformfac.cc,v 1.24 2004-06-04 21:15:19 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions with a wall sink
  *
@@ -13,6 +13,73 @@ using namespace QDP;
 /*
  * Input 
  */
+
+//! Wall-Formfactor type
+enum WallFormFacType 
+{
+  WALLFF_PION,
+  WALLFF_RHO,
+  WALLFF_RHO_PI,
+  WALLFF_NUCL,
+  WALLFF_NUCL_CT,    // this will disappear
+  WALLFF_DELTA,
+  WALLFF_DELTA_P,
+};
+
+//! Read a Wall-formfactor enum
+void read(XMLReader& xml, const string& path, WallFormFacType& param)
+{
+  string wallff_str;
+  read(xml, path, wallff_str);
+  if (wallff_str == "PION")
+    param = WALLFF_PION;
+  else if (wallff_str == "RHO")
+    param = WALLFF_RHO;
+  else if (wallff_str == "RHO_PI")
+    param = WALLFF_RHO_PI;
+  else if (wallff_str == "NUCL")
+    param = WALLFF_NUCL;
+  else if (wallff_str == "NUCL_CT")   // this will disappear
+    param = WALLFF_NUCL_CT;
+  else if (wallff_str == "DELTA")
+    param = WALLFF_DELTA;
+  else if (wallff_str == "DELTA_P")
+    param = WALLFF_DELTA_P;
+  else 
+  {
+    QDPIO::cerr << "Unsupported wallformfac type" << endl;
+    QDP_abort(1);
+  }
+}
+
+
+//! Write a Wall-formfactor enum
+void write(XMLWriter& xml, const string& path, const WallFormFacType& param)
+{
+  string wallff_str;
+  if (param == WALLFF_PION)
+    wallff_str = "PION";
+  else if (param == WALLFF_RHO)
+    wallff_str = "RHO";
+  else if (param == WALLFF_RHO_PI)
+    wallff_str = "RHO_PI";
+  else if (param == WALLFF_NUCL)
+    wallff_str = "NUCL";
+  else if (param == WALLFF_NUCL_CT)   // this will disappear
+    wallff_str = "NUCL_CT";
+  else if (param == WALLFF_DELTA)
+    wallff_str = "DELTA";
+  else if (param == WALLFF_DELTA_P)
+    wallff_str = "DELTA_P";
+  else 
+  {
+    QDPIO::cerr << "Unsupported formfac type" << endl;
+    QDP_abort(1);
+  }
+  write(xml, path, wallff_str);
+}
+
+
 struct Prop_t
 {
   string       forwprop_file;
@@ -26,7 +93,7 @@ struct Param_t
 {
   int mom2_max;            // (mom)^2 <= mom2_max. mom2_max=7 in szin.
 
-  multi1d<int> formfac_type;
+  multi1d<WallFormFacType> formfac_type;
   multi1d<int> nrow;
 };
 
@@ -59,7 +126,7 @@ void read(XMLReader& xml, const string& path, Param_t& param)
   switch (version) 
   {
     /**************************************************************************/
-  case 1:
+  case 2:
     break;
 
   default:
@@ -302,25 +369,22 @@ main(int argc, char *argv[])
   // Loop over types of form-factor
   for (int formfac_ctr = 0; formfac_ctr < input.param.formfac_type.size(); ++formfac_ctr) 
   {
-    int formfac_value = input.param.formfac_type[formfac_ctr];
+    WallFormFacType formfac_type = input.param.formfac_type[formfac_ctr];
+    int formfac_value = int(formfac_type);
 
     push(xml_seq_src);
     write(xml_seq_src, "formfac_ctr", formfac_ctr);
     write(xml_seq_src, "formfac_value", formfac_value);
+    write(xml_seq_src, "formfac_type", formfac_type);
 
     QDPIO::cout << "Measurements for formfac_value = " << formfac_value << endl;
 
-    switch (formfac_value)
-    {
-    case 0:
-      wallPionFormFac(xml_seq_src,
-		      u, forward_quark_prop, backward_quark_prop, 
-		      phases, 
-		      t_source[j_decay], t_sink);
-      break;
+    WallFormFac_formfacs_t form;
 
-    case 1:
-      wallNuclFormFac(xml_seq_src,
+    switch (formfac_type)
+    {
+    case WALLFF_PION:
+      wallPionFormFac(form,
 		      u, 
 		      forward_quark_prop, backward_quark_prop, 
 		      forward_quark_prop, backward_quark_prop, 
@@ -328,14 +392,23 @@ main(int argc, char *argv[])
 		      t_source[j_decay], t_sink);
       break;
 
-    case 2:
+    case WALLFF_NUCL:
+      wallNuclFormFac(form,
+		      u, 
+		      forward_quark_prop, backward_quark_prop, 
+		      forward_quark_prop, backward_quark_prop, 
+		      phases, 
+		      t_source[j_decay], t_sink);
+      break;
+
+    case WALLFF_NUCL_CT:
     {
       /* Time-charge reverse the quark propagators */
       /* S_{CT} = gamma_5 gamma_4 = gamma_1 gamma_2 gamma_3 = Gamma(7) */
       LatticePropagator qf_tmp = - (Gamma(7) * forward_quark_prop * Gamma(7));
       LatticePropagator qb_tmp = - (Gamma(7) * backward_quark_prop * Gamma(7));
 
-      wallNuclFormFac(xml_seq_src,
+      wallNuclFormFac(form,
 		      u, 
 		      qf_tmp, qb_tmp,
 		      qf_tmp, qb_tmp,
@@ -344,8 +417,17 @@ main(int argc, char *argv[])
     }
     break;
 
-    case 3:
-      wallDeltaPFormFac(xml_seq_src,
+    case WALLFF_DELTA:
+      wallDeltaFormFac(form,
+	 	       u, 
+		       forward_quark_prop, backward_quark_prop, 
+		       forward_quark_prop, backward_quark_prop, 
+		       phases, 
+		       t_source[j_decay], t_sink);
+      break;
+
+    case WALLFF_DELTA_P:
+      wallDeltaPFormFac(form,
 			u, 
 			forward_quark_prop, backward_quark_prop, 
 			forward_quark_prop, backward_quark_prop, 
@@ -353,9 +435,18 @@ main(int argc, char *argv[])
 			t_source[j_decay], t_sink);
       break;
 
-    case 4:
-      wallDeltaFormFac(xml_seq_src,
-	 	       u, 
+    case WALLFF_RHO:
+      wallRhoFormFac(form,
+		     u, 
+		     forward_quark_prop, backward_quark_prop, 
+		     forward_quark_prop, backward_quark_prop, 
+		     phases, 
+		     t_source[j_decay], t_sink);
+      break;
+
+    case WALLFF_RHO_PI:
+      wallRhoPiFormFac(form,
+		       u, 
 		       forward_quark_prop, backward_quark_prop, 
 		       forward_quark_prop, backward_quark_prop, 
 		       phases, 
@@ -366,6 +457,8 @@ main(int argc, char *argv[])
       QDPIO::cerr << "Unknown value of formfac_ctr " << formfac_ctr << endl;
       QDP_abort(1);
     }
+
+    write(xml_seq_src, "WallFormFac", form);
 
     pop(xml_seq_src);   // elem
   } // end loop over formfac_ctr
