@@ -1,5 +1,6 @@
 
-#include "meas/hadron/scalar_loops_s.h"
+#include "chroma.h"
+#include"scalar_loops_s.h"
 #include "util/gauge/stag_phases_s.h"
 
 // Standard Time Slicery
@@ -28,5 +29,26 @@ void local_scalar_loop::compute(LatticeStaggeredFermion & q_source,
   TrG_s0 = localInnerProduct(q_source, psi);
 
   corr_fn[isample] = sumMulti(TrG_s0, timeslice);
+  corr += corr_fn[isample] ;
+
+}
+
+
+
+void non_local_scalar_loop::compute(LatticeStaggeredFermion & q_source, 
+				LatticeStaggeredFermion & psi, int isample)
+{
+  UnorderedSet timeslice;
+  timeslice.make(TimeSliceFunc(Nd-1));
+
+  LatticeStaggeredFermion psi_sca1 ;
+  psi_sca1 = shift(psi, FORWARD, 3);
+  LatticeComplex TrG_s1 ; 
+
+  using namespace StagPhases;
+  TrG_s1 = alpha(3)*localInnerProduct(q_source, psi_sca1);
+
+  corr_fn[isample] = sumMulti(TrG_s1, timeslice);
+  corr += corr_fn[isample] ;
 
 }

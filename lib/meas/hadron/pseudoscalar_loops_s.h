@@ -1,12 +1,12 @@
-#ifndef SCALAR_LOOPS_S_H
-#define SCALAR_LOOPS_S_H
+#ifndef PSEUDOSCALAR_LOOPS_S_H
+#define PSEUDOSCALAR_LOOPS_S_H
 
 
 #include "chroma.h"
 
 class staggered_loops ; 
 
-class local_scalar_loop  : public staggered_loops
+class threelink_pseudoscalar_loop  : public staggered_loops
 {
   public :
 
@@ -14,14 +14,14 @@ class local_scalar_loop  : public staggered_loops
     void compute(LatticeStaggeredFermion & q_source, 
 		 LatticeStaggeredFermion & psi, int isample) ; 
 
-  local_scalar_loop(int t_len, int nsample)  
+  threelink_pseudoscalar_loop(int t_len, int nsample)  
     : staggered_loops(t_len,nsample)
     {
-      outer_tag = "loop_one_cross_one"  ; 
+      outer_tag = "loop_gamma5_cross_one"  ; 
       inner_tag = "loop" ; 
     }
 
-  ~local_scalar_loop()
+  ~threelink_pseudoscalar_loop()
     {
     }
 
@@ -33,7 +33,7 @@ class local_scalar_loop  : public staggered_loops
 
 
 
-class non_local_scalar_loop  : public staggered_loops
+class fourlink_pseudoscalar_loop  : public staggered_loops
 {
   public :
 
@@ -41,14 +41,14 @@ class non_local_scalar_loop  : public staggered_loops
     void compute(LatticeStaggeredFermion & q_source, 
 		 LatticeStaggeredFermion & psi, int isample) ; 
 
-  non_local_scalar_loop(int t_len, int nsample)  
+  fourlink_pseudoscalar_loop(int t_len, int nsample)  
     : staggered_loops(t_len,nsample)
     {
-      outer_tag = "loop_gamma3_cross_one"  ; 
+      outer_tag = "loop_gamma3gamma5_cross_one"  ; 
       inner_tag = "loop" ; 
     }
 
-  ~non_local_scalar_loop()
+  ~fourlink_pseudoscalar_loop()
     {
     }
 
