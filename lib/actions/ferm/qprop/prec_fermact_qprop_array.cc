@@ -1,6 +1,9 @@
-// $Id: prec_fermact_qprop_array.cc,v 1.8 2004-10-08 13:20:15 bjoo Exp $
+// $Id: prec_fermact_qprop_array.cc,v 1.9 2004-11-17 16:52:24 edwards Exp $
 // $Log: prec_fermact_qprop_array.cc,v $
-// Revision 1.8  2004-10-08 13:20:15  bjoo
+// Revision 1.9  2004-11-17 16:52:24  edwards
+// Improved some comments
+//
+// Revision 1.8  2004/10/08 13:20:15  bjoo
 // IBM Fixes
 //
 // Revision 1.7  2004/09/08 02:48:26  edwards
@@ -102,11 +105,11 @@ void qprop_t(const EvenOddPrecWilsonTypeFermAct< multi1d<T> >& me,
   {
   case CG_INVERTER: 
   {
-    /* chi_1 = M_dag(u) * chi_1 */
+    /* tmp = M_dag(u) * chi_tmp */
     multi1d<T> tmp(me.size());
     (*A)(tmp, chi_tmp, MINUS);
 
-    /* psi = (M^dag * M)^(-1) chi */
+    /* psi = (M^dag * M)^(-1) chi_tmp */
     InvCG2 (*A, tmp, psi, invParam.RsdCG, invParam.MaxCG, n_count);
   }
   break;
