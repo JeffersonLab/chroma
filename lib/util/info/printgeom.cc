@@ -1,4 +1,4 @@
-//  $Id: printgeom.cc,v 1.2 2004-01-29 20:46:29 edwards Exp $
+//  $Id: printgeom.cc,v 1.3 2004-02-06 17:34:53 edwards Exp $
 /*! \file
  *  \brief Print out machine geometry and problem size info
  */
@@ -25,6 +25,8 @@ void printgeom(XMLWriter& xml)
   write(xml,"latt_size",Layout::lattSize());
   write(xml,"logical_size",Layout::logicalSize());
   write(xml,"subgrid_size",Layout::subgridLattSize());
+  write(xml,"total_volume",Layout::vol());
+  write(xml,"subgrid_volume",Layout::sitesOnNode());
   pop(xml);
 
   END_CODE("printgeom");
