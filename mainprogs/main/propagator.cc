@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.16 2003-06-20 21:23:29 ikuro Exp $
+// $Id: propagator.cc,v 1.17 2003-08-28 22:06:32 ikuro Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -64,8 +64,9 @@ int main(int argc, char **argv)
   int source_type, source_direction; // S-wave(0), P-wave(1), D-wave(2), and direction
 
   int wf_type;			// Point (0) or Smeared (2)
-  Real wvf_param;		// Parameter for the wave function
-  int WvfIntPar;
+  Real wvf_param;		// smearing width
+  int WvfIntPar;                // number of iteration for smearing
+  int source_laplace_power;     // power of laplacian operator: 0, 1, 2, etc.
 
   Real RsdCG;
   int MaxCG;			// Iteration parameters
@@ -85,6 +86,8 @@ int main(int argc, char **argv)
     params_in >> wvf_param;
     params_in >> WvfIntPar;
 
+    params_in >> source_laplace_power;
+
     params_in >> RsdCG;		// Target residue and maximum iterations
     params_in >> MaxCG;
     break;
@@ -103,7 +106,8 @@ int main(int argc, char **argv)
     break;
   case SHELL_SOURCE:  // 2
     cout << "Smeared source wvf_param= " << wvf_param <<": WvfIntPar= " 
-	 << WvfIntPar << endl;
+	 << WvfIntPar << endl
+         << "Power of Laplacian operator" << source_laplace_power << endl;
     break;
   default:
     QDP_error_exit("Unknown source_type", wf_type);
@@ -195,9 +199,11 @@ int main(int argc, char **argv)
   header.source_smearingparam=wf_type;     // local (0)  gaussian (2)
   header.source_type=source_type; // S-wave, P-wave or D-wave source
   header.source_direction=source_direction; 
+  header.source_laplace_power=source_laplace_power; 
   header.sink_smearingparam=0;	// Always to local sinks
   header.sink_type=0;
   header.sink_direction=0;   // dx(0) dy(1) dz(2) dydy(11) dydz(12) dzdz(22)
+  header.sink_laplace_power=0;
 #endif
 
   int ncg_had = 0;
@@ -218,9 +224,8 @@ int main(int argc, char **argv)
 
     if(wf_type == SHELL_SOURCE) {
       gausSmear(u, src_color_vec, wvf_param, WvfIntPar, j_decay);
-      //laplacian(u, src_color_vec, j_decay, power); 
+      laplacian(u, src_color_vec, j_decay, source_laplace_power); 
       // power = 1 for one laplacian operator
-      //         2 for two 
     }
 
 
