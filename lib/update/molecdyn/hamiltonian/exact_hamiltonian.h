@@ -4,6 +4,7 @@
 #include "chromabase.h"
 
 #include "update/molecdyn/hamiltonian/abs_hamiltonian.h"
+#include "io/xmllog_io.h"
 
 using namespace QDP;
 using namespace std;
@@ -49,14 +50,18 @@ namespace Chroma {
     Double mesKE(const AbsFieldState<multi1d<LatticeColorMatrix>,
 		                     multi1d<LatticeColorMatrix> >& s) const 
     {
+      // Self Description Rule
+      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      push(xml_out, "mesKE");
 
       // may need to loop over the indices of P?
-      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
       Double KE=Double(0);
       for(int mu=0; mu < s.getP().size(); mu++) { 
 	KE += norm2((s.getP())[mu]);
       }
-      
+
+      write(xml_out, "KE", KE);
+      pop(xml_out);
       return KE;
     }
     

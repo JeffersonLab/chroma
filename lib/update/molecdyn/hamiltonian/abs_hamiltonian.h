@@ -24,17 +24,32 @@ namespace Chroma {
     //
     //  s is the state, F is the computed force
     virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) const {
+      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      // Self description rule
+      push(xml_out, "AbsHamiltonianForce");
+
+
       int num_terms = numMonomials();
-      
-       if( num_terms > 0 ) {
+      write(xml_out, "num_terms", num_terms);
+
+      // Caller writes elem rule
+      push(xml_out, "ForcesByMonomial");
+
+      if( num_terms > 0 ) {
+	push(xml_out, "elem");
 	getMonomial(0).dsdq(F, s);
+	pop(xml_out);
 
 	for(int i=1; i < num_terms; i++) { 
+	  push(xml_out, "elem");
 	  P cur_F;
 	  getMonomial(i).dsdq(cur_F, s);
 	  F += cur_F;
+	  pop(xml_out);
 	}
       }
+      pop(xml_out); // pop("ForcesByMonomial"
+      pop(xml_out); // pop("AbsHamiltonianForce");
     }
     
     //! Refresh pseudofermsions (if any)
@@ -101,18 +116,31 @@ namespace Chroma {
     //
     //  s is the state, F is the computed force
     virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) const {
-      int num_terms = numMonomials();
-      
+      // Self Description rule
+      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      push(xml_out, "ExactAbsHamiltonianForce");
 
+
+      int num_terms = numMonomials();
+      write(xml_out, "num_terms", num_terms);
+      
+      // Caller writes elem rule
+      push(xml_out, "ForcesByMonomial");
       if( num_terms > 0 ) {
+	push(xml_out, "elem");
 	getMonomial(0).dsdq(F, s);
+	pop(xml_out);  // pop("elem");
 
 	for(int i=1; i < num_terms; i++) { 
+	  push(xml_out, "elem");
 	  P cur_F;
 	  getMonomial(i).dsdq(cur_F, s);
 	  F += cur_F;
+	  pop(xml_out);  // pop("elem");
 	}
       }
+      pop(xml_out); // Forces by Monomial
+      pop(xml_out);  // ExactAbsHamiltonian
     }
 
 
@@ -128,35 +156,57 @@ namespace Chroma {
     //! The total energy
     virtual void  mesE(const AbsFieldState<P,Q>& s, Double& KE, Double& PE) const 
     {
-    
+
+      // Self Description Rule
+      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      push(xml_out, "mesE");
+
       KE = mesKE(s);
       PE = mesPE(s);
-      
+
+      pop(xml_out);
+
     }
     
     //! The Kinetic Energy
     virtual Double mesKE(const AbsFieldState<P,Q>& s) const 
     {
+      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      push(xml_out, "mesKE");
+
       // Return 1/2 sum pi^2
       // may need to loop over the indices of P?
       Double KE=norm2(s.getP());
-      
+
+      write(xml_out, "KE", KE);
+      pop(xml_out);  // pop(mesKE);
       return KE;
     }
     
     //! The Potential Energy 
     virtual Double mesPE(const AbsFieldState<P,Q>& s) const 
     {
-	
+      // Self Encapsulation Rule
+      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      push(xml_out, "mesPE");
       // Cycle through all the monomials and compute their contribution
       int num_terms = numMonomials();
 
+      write(xml_out, "num_terms", num_terms);
       multi1d<Double> PE_terms(num_terms);
       Double PE = Double(0);
+      
+      // Caller writes elem rule
+      push(xml_out, "PEByMonomials");
       for(int i=0; i < num_terms; i++) {
+	push(xml_out, "elem");
+
 	Double tmp = getMonomial(i).S(s);
 	PE += tmp;
+	pop(xml_out);
       }
+      pop(xml_out); // PEByMonomials
+      pop(xml_out); // pop(mesPE);
       return PE;
     }
     

@@ -4,9 +4,11 @@
 #include "chromabase.h"
 #include "update/molecdyn/field_state.h"
 #include "update/molecdyn/hamiltonian/abs_hamiltonian.h"
+#include "io/xmllog_io.h"
 
 using namespace QDP;
 using namespace Chroma;
+using namespace std;
 
 namespace Chroma {
 
@@ -38,22 +40,38 @@ namespace Chroma {
 
     //! Perform a trajectory 
     virtual void operator()(AbsFieldState<P,Q>& s) {
+
+      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      // Self encapsulation rule
+      push(xml_out, "PQPLeapfrogIntegrator");
+
       Real dt = getStepSize(); 
       Real dtby2 = dt / Real(2);
       Real tau0 = getTrajLength();
+      
+      write(xml_out, "dt", dt);
+      write(xml_out, "dtby2", dtby2);
+      write(xml_out, "tau0", tau0);
 
       // Start time = 0
       Real t = Real(0);
 
       bool endP = false;
 
-      // First half step by leapP
-      leapP(dtby2, s);
-	
-      while(! endP ) { 
+      push(xml_out, "MDSteps");
 
+      // First half step by leapP
+      push(xml_out, "elem");
+
+      leapP(dtby2, s);
+
+      pop(xml_out); // pop("elem");
+      
+      while(! endP ) { 
+	push(xml_out, "elem");
 	leapQ(dt, s);
-	
+	pop(xml_out);
+
 	t += dt;
 	
 	// Check if this was the last gauge update
@@ -65,14 +83,21 @@ namespace Chroma {
 	if( toBool( fabs(tau0 - t) <  dtby2  ) ) {
 	  // Time left is less than dtby2
 	  // Finish with a half P leap and signal end
+	  push(xml_out, "elem");
 	  leapP(dtby2, s);
+	  pop(xml_out);
+
 	  endP = true;
 	  
 	}
 	else {
+	  push(xml_out, "elem");
 	  leapP(dt, s);
+	  pop(xml_out);
 	}
       } // end while
+      pop(xml_out); // pop("MDSteps");
+      pop(xml_out); // pop("PQPLeapfrogIntegrator")
     } // end function
 
     //! Get at the MD Hamiltonian

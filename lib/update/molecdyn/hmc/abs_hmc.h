@@ -34,6 +34,7 @@ namespace Chroma {
 
       XMLWriter& xml_out = TheXMLOutputWriter::Instance();
 
+      // Self encapsulation rule 
       push(xml_out, "HMCTrajectory");
       write(xml_out, "WarmUpP", WarmUpP);
 

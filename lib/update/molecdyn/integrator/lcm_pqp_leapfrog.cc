@@ -1,7 +1,7 @@
 #include "chromabase.h"
 #include "update/molecdyn/integrator/md_integrator_factory.h"
 #include "update/molecdyn/integrator/lcm_pqp_leapfrog.h"
-
+#include "io/xmllog_io.h"
 
 #include <string>
 #include "util/gauge/taproj.h"
@@ -64,7 +64,12 @@ namespace Chroma {
 
     AbsHamiltonian<multi1d<LatticeColorMatrix>,
       multi1d<LatticeColorMatrix> >& H = getHamiltonian();
-    
+
+    XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+    // Self Description rule
+    push(xml_out, "leapP");
+    write(xml_out, "dt",dt);
+
       // Force Term
     multi1d<LatticeColorMatrix> dsdQ(Nd);
     
@@ -85,6 +90,8 @@ namespace Chroma {
       // taproj it...
       taproj( (s.getP())[mu] );
     }
+    
+    pop(xml_out); // pop("leapP");
   }
 
   //! Leap with Q
@@ -93,7 +100,12 @@ namespace Chroma {
 					     multi1d<LatticeColorMatrix> >& s) {
     LatticeColorMatrix tmp_1;
     LatticeColorMatrix tmp_2;
-    
+
+    XMLWriter& xml_out= TheXMLOutputWriter::Instance();
+    // Self description rule
+    push(xml_out, "leapQ");
+    write(xml_out, "dt", dt);
+
     // Constant
     const multi1d<LatticeColorMatrix>& p_mom = s.getP();
     
@@ -118,9 +130,8 @@ namespace Chroma {
       int numbad;
       reunit((s.getQ())[mu], numbad, REUNITARIZE_ERROR);
     }
-    
-    // Do I need boundary conditions here?
-    // getHam().applyQBoundary(s.getQ());
+
+    pop(xml_out);
   }
 
 };
