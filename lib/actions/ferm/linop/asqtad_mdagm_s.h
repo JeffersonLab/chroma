@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: asqtad_mdagm_s.h,v 1.1 2003-12-12 13:56:40 bjoo Exp $
+// $Id: asqtad_mdagm_s.h,v 1.2 2003-12-12 14:28:27 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -10,7 +10,7 @@
 #define __asqtad_mdagm_s_h__
 
 #include "linearop.h"
-#include "actions/ferm/linop/dslash_s.h"
+#include "actions/ferm/linop/asqtad_dslash.h"
 
 
 using namespace QDP;
@@ -66,8 +66,8 @@ public:
 
 private:
   Real Mass;
-  multi1d<LatticeColorMatrix> u_fat;
-  multi1d<LatticeColorMatrix> u_triple;
+  // multi1d<LatticeColorMatrix> u_fat;
+  // multi1d<LatticeColorMatrix> u_triple;
 
   AsqtadDslash D;
 };

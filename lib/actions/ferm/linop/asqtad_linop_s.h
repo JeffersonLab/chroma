@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: asqtad_linop_s.h,v 1.3 2003-12-12 13:56:40 bjoo Exp $
+// $Id: asqtad_linop_s.h,v 1.4 2003-12-12 14:28:27 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -10,7 +10,7 @@
 #define __asqtad_linop_s_h__
 
 #include "linearop.h"
-
+#include "actions/ferm/linop/asqtad_dslash.h"
 using namespace QDP;
 
 //! Asqtad Staggered-Dirac operator
@@ -34,10 +34,10 @@ public:
 
 
   void create(const multi1d<LatticeColorMatrix>& u_fat_, const multi1d<LatticeColorMatrix>& u_triple_, const Real& Mass_) {
-    u_fat = u_fat_;
-    u_triple = u_triple_;
+    //u_fat = u_fat_;
+    // u_triple = u_triple_;
     Mass = Mass_;
-
+    D.create(u_fat_, u_triple_);
   };
   //! Destructor is automatic
   ~AsqtadLinOp() {}
@@ -66,8 +66,13 @@ public:
 
 private:
   Real Mass;
-  multi1d<LatticeColorMatrix> u_fat;
-  multi1d<LatticeColorMatrix> u_triple;
+
+  // These are really only needed for D. I bring back D here where
+  // Steve originally had it.  We don't need u_fat and u_triple here
+  // they are kept in the action now.
+  // multi1d<LatticeColorMatrix> u_fat;
+  // multi1d<LatticeColorMatrix> u_triple;
+  AsqtadDslash D;
 };
 
 #endif

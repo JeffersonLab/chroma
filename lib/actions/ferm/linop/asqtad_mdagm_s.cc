@@ -1,4 +1,4 @@
-// $Id: asqtad_mdagm_s.cc,v 1.1 2003-12-12 13:56:40 bjoo Exp $
+// $Id: asqtad_mdagm_s.cc,v 1.2 2003-12-12 14:28:27 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -15,12 +15,14 @@
  * \param _u_triple    triple links                        (Read)
  * \param _Mass        fermion mass   	                   (Read)
  */
-void AsqtadMdagM::create(const multi1d<LatticeColorMatrix>& _u_fat, const multi1d<LatticeColorMatrix>& _u_triple, const Real& _Mass)
+void AsqtadMdagM::create(const multi1d<LatticeColorMatrix>& u_fat_, const multi1d<LatticeColorMatrix>& u_triple_, const Real& Mass_)
 {
-  Mass = _Mass;
-  u_fat = _u_fat;
-  u_triple = _u_triple;
-  D.create(u_fat,u_triple);
+  Mass = Mass_;
+
+  // We wire them into D so we don't need to keep them
+  // u_fat = _u_fat;
+  // u_triple = _u_triple;
+  D.create(u_fat_,u_triple_);
 }
 
 

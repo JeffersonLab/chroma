@@ -1,4 +1,4 @@
-/*  $Id: asq_dsl_s.cc,v 1.1 2003-12-10 16:20:59 bjoo Exp $  */
+/*  $Id: asq_dsl_s.cc,v 1.2 2003-12-12 14:28:27 bjoo Exp $  */
 
 #include "chromabase.h"
 //#include "actions/ferm/fermacts/linop/asq_dsl_s.h
@@ -76,34 +76,27 @@ void QDPStaggeredDslash::apply (LatticeFermion& chi, const LatticeFermion& psi, 
 //  multi1d<LatticeColorMatrix> u_fat(Nd);
 //  multi1d<LatticeColorMatrix> u_triple(Nd);
 
-  XMLFileWriter xml_out("output2.xml");
-  push(xml_out, "more_tests");
-  Write(xml_out, u_fat);
-  Write(xml_out,u_triple);
-  pop(xml_out);
+
+// Commenting out the XML Output should considerably increase the speed
+// of execution :)
+// In any case fattening is done elsewhere and is done only once 
+//   XMLFileWriter xml_out("output2.xml");
+//  push(xml_out, "more_tests");
+//   Write(xml_out, u_fat);
+//  Write(xml_out,u_triple);
+//   pop(xml_out);
 //  LatticeFermion chi;
 
 //  need convention on isign
 //
-
-//void asq_dsl(
-//	     multi1d<LatticeColorMatrix> & u_fat,
-//	     multi1d<LatticeColorMatrix> & u_triple,
-//	     LatticeFermion & psi,
-//	     LatticeFermion & chi,
-//	     int isign, int cb)
-
+// isign == PLUS is normal isign == MINUS is daggered
+//
 
   LatticeFermion tmp_0;
   LatticeFermion tmp_1;
   LatticeFermion tmp_2;
 
   int mu;
-
-// get the fat7 and triple links
-
-//  Fat7_Links(u, u_fat, u0);         BAD IDEA!!!
-//  Triple_Links(u, u_triple, u0);
 
   /* Forward one-hop and three-hop neigbhors */
   /* Note the KS phase factors are already included in the U's! */
@@ -142,7 +135,8 @@ mu);
 
 
   // this requires more thought
-  const int MINUS = -1 ;
+  // No it doesnt
+  // const int MINUS = -1 ;
      
   if(isign == MINUS)
     chi = -chi;
