@@ -1,4 +1,4 @@
-// $Id: cfgtransf.cc,v 1.3 2003-10-10 04:30:44 edwards Exp $
+// $Id: cfgtransf.cc,v 1.4 2003-10-10 04:33:50 edwards Exp $
 /*! \file
  *  \brief Many-to-many gauge transformation routine
  */
@@ -21,8 +21,6 @@ int main(int argc, char **argv)
 
   START_CODE("cfgtransf");
   
-  multi1d<LatticeColorMatrix> u(Nd);
-
   multi1d<int> nrow(Nd);
   QDPIO::cout << "Enter lattice size\n";
   QDPIO::cin >> nrow;
@@ -260,8 +258,14 @@ int main(int argc, char **argv)
   }
 #endif
 
+
+  //
+  //  Have params, now find out the source for the gauge field 
+  //
+  multi1d<LatticeColorMatrix> u(Nd);
   XMLReader gauge_xml_in;
     
+
   switch (input_type)
   {
   case 1:
