@@ -1,4 +1,4 @@
-// $Id: zolotarev4d_fermact_w.cc,v 1.29 2004-09-23 15:20:13 bjoo Exp $
+// $Id: zolotarev4d_fermact_w.cc,v 1.30 2004-09-24 16:22:00 bjoo Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -8,6 +8,7 @@
 #include <linearop.h>
 
 #include "io/enum_io/enum_io.h"  // Read/Write OverlapInnerSolver Type
+#include "io/overlap_state_info.h"
 
 // For creating auxiliary actions
 #include "actions/ferm/fermacts/unprec_wilson_fermact_w.h"
@@ -44,8 +45,7 @@ namespace Chroma
 						     XMLReader& xml_in,
 						     const std::string& path)
     {
-      XMLBufferWriter xml_out;   // THIS IS ***BAD****
-      return new Zolotarev4DFermAct(fbc, Zolotarev4DFermActParams(xml_in, path), xml_out);
+      return new Zolotarev4DFermAct(fbc, Zolotarev4DFermActParams(xml_in, path));
     }
 
     //! Name to be used
@@ -54,6 +54,7 @@ namespace Chroma
     //! Register the Wilson fermact
     const bool registered = TheWilsonTypeFermActFactory::Instance().registerObject(name, createFermAct);
   }
+
 
 
   Zolotarev4DFermActParams::Zolotarev4DFermActParams(XMLReader& xml, const std::string& path) : ReorthFreqInner(10), inner_solver_type(OVERLAP_INNER_CG_SINGLE_PASS)
@@ -145,20 +146,28 @@ namespace Chroma
 
   //! Constructor
   Zolotarev4DFermAct::Zolotarev4DFermAct(Handle<FermBC<LatticeFermion> > fbc_,
-					 const Zolotarev4DFermActParams& params_,
-					 XMLWriter& writer_) : fbc(fbc_), writer(writer_), params(params_)
+					 const Zolotarev4DFermActParams& params_) : fbc(fbc_), 
+									       params(params_)
   {
 
+    QDPIO::cout << "Constructing Zolotarev4D FermAct from params" << endl;
     std::istringstream  xml_s(params.AuxFermAct);
     XMLReader  fermacttop(xml_s);
     const string fermact_path = "/AuxFermAct";
 
-    UnprecWilsonTypeFermAct<LatticeFermion>* S_aux;
+    struct UnprecCastFailure {
+      UnprecCastFailure(std::string e) : auxfermact(e) {};
+      const string auxfermact;
+    };
+
     try
     {
       string auxfermact;
       read(fermacttop, fermact_path + "/FermAct", auxfermact);
+      QDPIO::cout << "AuxFermAct: " << auxfermact << endl;
 
+      read(fermacttop, fermact_path + "/Mass", params.AuxMass);
+      QDPIO::cout << "AuxFermAct Mass: " << params.AuxMass << endl;
       // Generic Wilson-Type stuff
       WilsonTypeFermAct<LatticeFermion>* S_f =
 	TheWilsonTypeFermActFactory::Instance().createObject(auxfermact,
@@ -166,18 +175,36 @@ namespace Chroma
 							     fermacttop,
 							     fermact_path);
 
+      UnprecWilsonTypeFermAct<LatticeFermion>* S_aux; 
       S_aux = dynamic_cast<UnprecWilsonTypeFermAct<LatticeFermion>*>(S_f);
+
+      // Dumbass User specifies something that is not UnpreWilsonTypeFermAct
+      // dynamic_cast MUST be checked for 0
+      if( S_aux == 0 ) throw UnprecCastFailure(auxfermact);
+     
+
+      // Drop AuxFermAct into a Handle immediately.
+      // This should free things up at the end
+      Handle<UnprecWilsonTypeFermAct<LatticeFermion> >  S_w(S_aux);
+      Mact = S_w;
     }
-    catch (const std::exception& e) 
-    {
+    catch( const UnprecCastFailure& e) {
+
+      // Breakage Scenario
+      QDPIO::cerr << "Unable to upcast auxiliary fermion action to "
+		  << "UnprecWilsonTypeFermAct " << endl;
+      QDPIO::cerr << Zolotarev4DFermActEnv::name << " does not support even-odd preconditioned "
+		  << "auxiliary FermActs" << endl;
+      QDPIO::cerr << "You passed : " << endl;
+      QDPIO::cerr << e.auxfermact << endl;
+      QDP_abort(1);
+    }
+    catch (const std::exception& e) {
+      // General breakage Scenario
       QDPIO::cerr << "Error reading data: " << e.what() << endl;
       throw;
     }
 
-    // Drop AuxFermAct into a Handle immediately.
-    // This should free things up at the end
-    Handle<UnprecWilsonTypeFermAct<LatticeFermion> >  S_w(S_aux);
-    Mact = S_w;
   }
 
 
@@ -195,7 +222,6 @@ namespace Chroma
     /* A scale factor which should bring the spectrum of the hermitian
        Wilson Dirac operator H into |H| < 1. */
     Real scale_fac;
-    XMLBufferWriter my_writer;
   
     /* Contains all the data necessary for Zolotarev partial fraction */
     /* -------------------------------------------------------------- */
@@ -245,12 +271,10 @@ namespace Chroma
     scale_fac = Real(1) / state.getApproxMax();
     eps = state.getApproxMin() * scale_fac;
 
-
-    push(my_writer, "Zolotarev4D");
-    write(my_writer, "MaxCGinner", params.invParamInner.MaxCG);
-    write(my_writer, "RsdCGinner", params.invParamInner.RsdCG);
-    write(my_writer, "NEigVal", NEigVal);
-    write(my_writer, "NEig", NEig);
+    QDPIO::cout << "Initing Zolotarev4D Linop" << endl;
+    QDPIO::cout << "  MaxCGInner =  " << params.invParamInner.MaxCG << endl;
+    QDPIO::cout << "  RsdCGInner =  " << params.invParamInner.RsdCG << endl;
+    QDPIO::cout << "  NEigVal    =  " << NEigVal << endl;
 
     /* Below, when we fill in the coefficents for the partial fraction, 
        we include this factor, say t, appropriately, i.e.
@@ -273,7 +297,8 @@ namespace Chroma
     type = 0;
     rdata = zolotarev(toFloat(eps), params.RatPolyDeg, type);
     maxerr = (Real)(rdata -> Delta);
-  
+
+    /*
     push(my_writer, "ZolotarevApprox");
     write(my_writer, "eps", eps);
     write(my_writer, "scale_fac", scale_fac);
@@ -282,7 +307,8 @@ namespace Chroma
     write(my_writer, "maxerr", maxerr);
     write(my_writer, "InnerSolverType", params.inner_solver_type);
     pop(my_writer);
-  
+    */
+
     /* The number of residuals and poles */
     /* Allocate the roots and residua */
     numroot = rdata -> dd;
@@ -305,14 +331,15 @@ namespace Chroma
       rootQ[n] = -rootQ[n];
     }
   
-  
+    /*
     push(my_writer,"ZolotarevPartFrac");
     write(my_writer, "scale_fac", scale_fac);
     write(my_writer, "coeffP", coeffP);
     write(my_writer, "resP", resP);
     write(my_writer, "rootQ", rootQ);
     pop(my_writer);
-  
+    */
+
     /* Now fill in the coefficients for real, i.e., taking the rescaling
        into account */
     /* Fill in alpha[0] = alpha[da] if it is not zero*/
@@ -331,16 +358,14 @@ namespace Chroma
   
   
     /* Write them out into the namelist */
+    /*
     push(my_writer,"ZolotarevPartFracResc");
     write(my_writer, "scale_fac", scale_fac);
     write(my_writer, "coeffP", coeffP);
     write(my_writer, "resP", resP);
     write(my_writer, "rootQ", rootQ);
     pop(my_writer);
-  
-
-    pop(my_writer);
-  
+    */
   
     QDPIO::cout << "ZOLOTAREV 4d n=" << params.RatPolyDeg << " scale=" << scale_fac
 		<< " coeff=" << coeffP << " Nwils= " << NEigVal <<" Mass="
@@ -458,11 +483,6 @@ namespace Chroma
     eps = state.getApproxMin() * scale_fac;
 
 
-    push(my_writer, "Zolotarev4DPreconditioner");
-    write(my_writer, "MaxCGinner", params.invParamInner.MaxCG);
-    write(my_writer, "RsdCGinner", params.invParamInner.RsdCG);
-    write(my_writer, "NEigVal", NEigVal);
-    write(my_writer, "NEig", NEig);
 
     /* Below, when we fill in the coefficents for the partial fraction, 
        we include this factor, say t, appropriately, i.e.
@@ -488,15 +508,12 @@ namespace Chroma
 
     rdata = zolotarev(toFloat(eps), params.RatPolyDegPrecond, type);
     maxerr = (Real)(rdata -> Delta);
-  
-    push(my_writer, "ZolotarevPreconditionerApprox");
-    write(my_writer, "eps", eps);
-    write(my_writer, "scale_fac", scale_fac);
-    write(my_writer, "RatPolyDeg", params.RatPolyDeg);
-    write(my_writer, "type", type);
-    write(my_writer, "maxerr", maxerr);
-    write(my_writer, "InnerSolverType", params.inner_solver_type);
-    pop(my_writer);
+
+
+    QDPIO::cout << "Initing Zolotarev4D Preconditioning Linop" << endl;
+    QDPIO::cout << "  MaxCGInner =  " << params.invParamInner.MaxCG << endl;
+    QDPIO::cout << "  RsdCGInner =  " << params.invParamInner.RsdCG << endl;
+    QDPIO::cout << "  NEigVal    =  " << NEigVal << endl;
   
     /* The number of residuals and poles */
     /* Allocate the roots and residua */
@@ -520,14 +537,15 @@ namespace Chroma
       rootQ[n] = -rootQ[n];
     }
   
-  
+    /*
     push(my_writer,"ZolotarevPreconditionerPartFrac");
     write(my_writer, "scale_fac", scale_fac);
     write(my_writer, "coeffP", coeffP);
     write(my_writer, "resP", resP);
     write(my_writer, "rootQ", rootQ);
     pop(my_writer);
-  
+    */
+
     /* Now fill in the coefficients for real, i.e., taking the rescaling
        into account */
     /* Fill in alpha[0] = alpha[da] if it is not zero*/
@@ -546,16 +564,15 @@ namespace Chroma
   
   
     /* Write them out into the namelist */
+    /*
     push(my_writer,"ZolotarevPreconditionerPartFracResc");
     write(my_writer, "scale_fac", scale_fac);
     write(my_writer, "coeffP", coeffP);
     write(my_writer, "resP", resP);
     write(my_writer, "rootQ", rootQ);
     pop(my_writer);
-  
+    */
 
-    pop(my_writer);
-  
   
     QDPIO::cout << "ZOLOTAREV Preconditioner 4d n=" << params.RatPolyDegPrecond << " scale=" << scale_fac
 		<< " coeff=" << coeffP << " Nwils= " << NEigVal <<" Mass="
@@ -600,14 +617,14 @@ namespace Chroma
       }
     }
 
-    writer << my_writer;
-
     // Free the arrays allocate by Tony's zolo
     free( rdata->a );
     free( rdata->ap );
     free( rdata->alpha );
     free( rdata->beta );
     free( rdata );
+
+    QDPIO::cout << "Leaving Init!" << endl << flush;
 
   }
 
@@ -624,6 +641,7 @@ namespace Chroma
 
     const OverlapConnectState<LatticeFermion>& state = dynamic_cast<const OverlapConnectState<LatticeFermion>&>(*state_);
 
+ 
     if (state.getEigVec().size() != state.getEigVal().size())
       QDP_error_exit("Zolotarev4DLinOp: inconsistent sizes of eigenvectors and values");
 
@@ -670,12 +688,13 @@ namespace Chroma
 				    params.invParamInner.MaxCG, params.invParamInner.RsdCG, params.ReorthFreqInner);
       break;
     default:
-      QDPIO::cerr << "Unknown OverlapInnerSolverType " << params.inner_solver_type << endl;
+      QDPIO::cerr << "Unknown OverlapInnerSolverType " << params.inner_solver_type << flush << endl;
       QDP_abort(1);
     }
   
     END_CODE();
 
+    QDPIO::cout << "DANGER!!! About to return zero! " << endl;
     return 0;
   }
 
@@ -1154,13 +1173,22 @@ namespace Chroma
     return new OverlapConnectState<LatticeFermion>(u_tmp, lambda_lo_, evecs_lo_, lambda_hi_, approxMin, approxMax);
   }
 
-  
+
+  const ConnectState* 
+  Zolotarev4DFermAct::createState(const multi1d<LatticeColorMatrix>& u_,
+				  XMLReader& state_info_xml,
+				  const string& state_info_path) const
+  {
+    ZolotarevStateInfo z_info;
+    XMLBufferWriter create_state_out;
+    read(state_info_xml, state_info_path, z_info);
+    return createState(u_, z_info, create_state_out);
+  }
 
   const OverlapConnectState<LatticeFermion>*
   Zolotarev4DFermAct::createState(const multi1d<LatticeColorMatrix>& u_,
 				  const OverlapStateInfo& state_info,
-				  XMLWriter& xml_out,
-				  Real wilsonMass) const
+				  XMLWriter& xml_out) const
   {
     push(xml_out, "Zolo4DCreateState");
 
@@ -1195,7 +1223,7 @@ namespace Chroma
 	}
 	else if ( eigen_io.eigen_filefmt == EVEC_TYPE_SZIN ) { 
 
-	  if( toBool( fabs(wilsonMass) > 8 ) ){
+	  if( toBool( fabs(params.AuxMass) > 8 ) ){
 	    QDPIO::cerr << "OverMass unspecified, or | OverMass | > 8" << endl;
 	    QDPIO::cerr << "The wilson mass is needed to rescale the eigenvalues" << endl;
 	    QDP_abort(1);
@@ -1205,10 +1233,10 @@ namespace Chroma
 	
 	  // Now I need to scale things by the wilson mass (Nd + m)
 	  for(int i=0; i < lambda_lo.size(); i++) { 
-	    lambda_lo[i] *= (Real(Nd) + wilsonMass);
+	    lambda_lo[i] *= (Real(Nd) + params.AuxMass);
 	  }
 
-	  lambda_hi *= (Real(Nd) + wilsonMass);
+	  lambda_hi *= (Real(Nd) + params.AuxMass);
 
 	}
 	else {
@@ -1220,7 +1248,7 @@ namespace Chroma
 	write(xml_out, "lambda_high", lambda_hi);
       
 	Handle< const ConnectState > wils_connect_state = Mact->createState(u_);
-	Handle< const LinearOperator<LatticeFermion> > H = Mact->gamma5HermLinOp(wils_connect_state);
+	Handle< const LinearOperator<LatticeFermion> > H = Mact->gamma5HermLinOp(wils_connect_state); 
 
       	      
 	multi1d<Double> check_norm(state_info.getNWilsVec());

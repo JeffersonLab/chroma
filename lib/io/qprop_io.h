@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qprop_io.h,v 1.19 2004-09-22 17:24:59 bjoo Exp $
+// $Id: qprop_io.h,v 1.20 2004-09-24 16:22:01 bjoo Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -71,7 +71,7 @@ public:
 
   // String holding XML of the FermionAction section
   std::string     fermact;
-
+  std::string     stateInfo;   // String holding XML for auxiliary state information
   MultiInvertParam_t   invParam;   // Inverter parameters
   multi1d<int>    boundary;
   multi1d<int>    nrow;          // lattice size
@@ -89,10 +89,13 @@ public:
 
   // String holding XML of the FermionAction section
   std::string     fermact;
-
+  
+  // String holding XML for auxiliary state information
+  std::string     stateInfo;
   InvertParam_t   invParam;   // Inverter parameters
   multi1d<int>    boundary;
   multi1d<int>    nrow;          // lattice size
+
 };
 
 

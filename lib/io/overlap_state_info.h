@@ -131,7 +131,8 @@ namespace Chroma
   void read(XMLReader& xml_in, const std::string& path, ZolotarevStateInfo& info);
   void write(XMLWriter& xml_out, const std::string& path, const ZolotarevStateInfo& info);
 
-}
+};
 
+using namespace Chroma;
 
 #endif

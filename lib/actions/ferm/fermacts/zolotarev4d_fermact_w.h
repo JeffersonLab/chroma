@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev4d_fermact_w.h,v 1.29 2004-09-23 15:20:13 bjoo Exp $
+// $Id: zolotarev4d_fermact_w.h,v 1.30 2004-09-24 16:22:01 bjoo Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -33,6 +33,7 @@ namespace Chroma
     Zolotarev4DFermActParams(XMLReader& in, const std::string& path);
     
     Real Mass;
+    Real AuxMass;  // Filled when AuxFermAct is processed
     int RatPolyDeg;
     int RatPolyDegPrecond;
     int ReorthFreqInner;
@@ -65,8 +66,7 @@ namespace Chroma
     //! Full constructor
     /*
     Zolotarev4DFermAct(Handle<FermBC<LatticeFermion> > fbc_,
-		       Handle<UnprecWilsonTypeFermAct<LatticeFermion> > Mact_, 
-		       const Real& Mass_,
+		       Handle<UnprecWilsonTypeFermAct<LatticeFermion> > Mact_, 		       const Real& Mass_,
 		       const int RatPolyDeg_,
 		       const Real& RsdCGinner_,
 		       int MaxCGinner_,
@@ -112,29 +112,26 @@ namespace Chroma
 
     //! Construct from param struct
     Zolotarev4DFermAct(Handle<FermBC<LatticeFermion> > fbc_,
-		       const Zolotarev4DFermActParams& params,
-		       XMLWriter& xml_out);
+		       const Zolotarev4DFermActParams& params);
+
 
     //! Copy Constructor
     Zolotarev4DFermAct(const Zolotarev4DFermAct& a) : 
-      fbc(a.fbc), writer(a.writer), params(a.params)
-      {}
+      fbc(a.fbc), params(a.params)
+      {
+	Mact = a.Mact;
+      }
   
 
     // Assignment
-    /* The writer makes this duff not supporting copying or assignment
-       Zolotarev4DFermAct& operator=(const Zolotarev4DFermAct& a) 
-       {
-       fbc = a.fbc;
-       Mact = a.Mact;
-       Mass = a.Mass;
-       RatPolyDeg=a.RatPolyDeg;
-       RsdCGinner=a.RsdCGinner;
-       MaxCGinner=a.MaxCGinner;
-       writer = a.writer;
-       return *this;
-       }
-    */
+    Zolotarev4DFermAct& operator=(const Zolotarev4DFermAct& a) 
+    {
+      fbc = a.fbc;
+      Mact = a.Mact;
+      params = a.params;
+      return *this;
+    }
+   
 
     //! Return the fermion BC object for this action
     const FermBC<LatticeFermion>& getFermBC() const {return *fbc;}
@@ -152,11 +149,11 @@ namespace Chroma
      *  signifying intent */
     bool isChiral() const { return true; }
     
-    XMLWriter& getWriter() const { 
-      return writer;
-    }
-
     // Create state functions
+    //! Generic I/O Override...
+    const ConnectState* createState(const multi1d<LatticeColorMatrix>& u, 
+				    XMLReader& state_info_xml,
+				    const string& state_info_path) const;
 
     //! Given links, create the state needed for the linear operators
     /*! Override the parent */
@@ -187,54 +184,57 @@ namespace Chroma
     const OverlapConnectState<LatticeFermion>*
     createState(const multi1d<LatticeColorMatrix>& u_,
 		const OverlapStateInfo& state_info,
-		XMLWriter& xml_out,
-		Real wilsonMass = 16) const;
+		XMLWriter& xml_out) const;
 
     //! Produce a linear operator for this action
     /*! 
      * NOTE: the arg MUST be the original base because C++ requires it for a virtual func!
      * The function will have to downcast to get the correct state
      */
-    const LinearOperator<LatticeFermion>* linOp(Handle<const ConnectState> state) const;
+    const LinearOperator<LatticeFermion>* 
+    linOp(Handle<const ConnectState> state) const;
 
-    const LinearOperator<LatticeFermion>* linOpPrecondition(Handle<const ConnectState> state) const;
-
-    //! Produce a linear operator M^dag.M for this action
-    /*! 
-     * NOTE: the arg MUST be the original base because C++ requires it for a virtual func!
-     * The function will have to downcast to get the correct state
-     */
-    const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state) const;
-
-    //! Produce a linear operator M^dag.M for this action to be applied
-    //  to a vector of known chirality. Chirality is passed in
-    const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state, const Chirality& chirality) const;
+    const LinearOperator<LatticeFermion>* 
+    linOpPrecondition(Handle<const ConnectState> state) const;
 
     //! Produce a linear operator M^dag.M for this action
     /*! 
-     * NOTE: the arg MUST be the original base because C++ requires it for a virtual func!
+     * NOTE: the arg MUST be the original base because C++ requires it for a
+     * virtual func!
      * The function will have to downcast to get the correct state
      */
-    const LinearOperator<LatticeFermion>* lMdagMPrecondition(Handle<const ConnectState> state) const;
+    const LinearOperator<LatticeFermion>* 
+    lMdagM(Handle<const ConnectState> state) const;
 
     //! Produce a linear operator M^dag.M for this action to be applied
     //  to a vector of known chirality. Chirality is passed in
-    const LinearOperator<LatticeFermion>* lMdagMPrecondition(Handle<const ConnectState> state, const Chirality& chirality) const;
+    const LinearOperator<LatticeFermion>* 
+    lMdagM(Handle<const ConnectState> state, const Chirality& chirality) const;
+
+    //! Produce a linear operator M^dag.M for this action
+    /*! 
+     * NOTE: the arg MUST be the original base because C++ requires 
+     * it for a virtual func!
+     * The function will have to downcast to get the correct state
+     */
+    const LinearOperator<LatticeFermion>* 
+    lMdagMPrecondition(Handle<const ConnectState> state) const;
+
+    //! Produce a linear operator M^dag.M for this action to be applied
+    //  to a vector of known chirality. Chirality is passed in
+    const LinearOperator<LatticeFermion>* 
+    lMdagMPrecondition(Handle<const ConnectState> state, 
+		       const Chirality& chirality) const;
 
 
     //! Produce a linear operator that gives back gamma_5 eps(H)
-    const LinearOperator<LatticeFermion>* lgamma5epsH(Handle<const ConnectState> state) const;
+    const LinearOperator<LatticeFermion>* 
+    lgamma5epsH(Handle<const ConnectState> state) const;
 
     //! Produce a linear operator that gives back gamma_5 eps(H)
-    const LinearOperator<LatticeFermion>* lgamma5epsHPrecondition(Handle<const ConnectState> state) const;
-    // Special qprop for now
-    /*
-      void qprop(LatticeFermion& psi, 
-      Handle<const ConnectState> state, 
-      const LatticeFermion& chi, 
-      const InvertParam_t& invParam,
-      int& ncg_had) const;
-    */
+    const LinearOperator<LatticeFermion>* 
+    lgamma5epsHPrecondition(Handle<const ConnectState> state) const;
+    
     //! Destructor is automatic
     ~Zolotarev4DFermAct() {}
 
@@ -265,8 +265,7 @@ namespace Chroma
   private:
     Handle<FermBC<LatticeFermion> >  fbc;   // fermion BC
     // Auxilliary action used for kernel of operator
-    Handle<UnprecWilsonTypeFermAct<LatticeFermion> > Mact;
-    XMLWriter& writer;
+    Handle<UnprecWilsonTypeFermAct<LatticeFermion> > Mact;   
     Zolotarev4DFermActParams params;
   };
 

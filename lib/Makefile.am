@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.169 2004-09-23 15:20:12 bjoo Exp $
+# $Id: Makefile.am,v 1.170 2004-09-24 16:22:00 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -341,7 +341,6 @@ libchroma_a_SOURCES += baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
               curcor2_w.cc lwldslash_w.cc formfac_w.cc \
               mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
               barcomp_io.cc barcomp_w.cc walfil_w.cc \
-              overlap_state_info.cc \
               fermact_qprop.cc prec_fermact_qprop.cc \
               unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
               prec_wilson_fermact_w.cc prec_wilson_linop_w.cc \
@@ -376,7 +375,7 @@ libchroma_a_SOURCES += baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
               walldeltaff_w.cc walldeltapff_w.cc \
 	      inv_borici_w.cc \
 	      ferm_refresh.cc mom_refresh.cc global_metropolis_accrej.cc \
-	      zolotarev4d_fermact_w.cc
+	      zolotarev4d_fermact_w.cc overlap_state_info.cc
 
 # These need to be reworked for new instantiation 
 #	zolotarev4d_fermact_w.cc 

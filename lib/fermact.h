@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 1.10 2004-09-24 09:14:05 edwards Exp $
+// $Id: fermact.h,v 1.11 2004-09-24 16:22:00 bjoo Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -57,6 +57,16 @@ namespace Chroma
 	getFermBC().modifyU(u_tmp);
 	return new SimpleConnectState(u_tmp);
       }
+
+    //! Given the links create a state with additional info held by the XMLReader
+    /*! This is a default version, which ignores the reader and just calls the default
+      createState() function */
+    virtual const ConnectState* createState(const multi1d<LatticeColorMatrix>& u,
+					    XMLReader& reader,
+					    const string& path) const
+    {
+      return createState(u);
+    }
 
     //! Return the fermion BC object for this action
     /*! The user will supply the FermBC in a derived class */
@@ -140,6 +150,16 @@ namespace Chroma
 	return new SimpleConnectState(u_tmp);
       }
 
+    //! Given the links create a state with additional info held by the XMLReader
+    /*! This is a default version, which ignores the reader and just calls the default
+      createState() function */
+    virtual const ConnectState* createState(const multi1d<LatticeColorMatrix>& u,
+					    XMLReader& reader,
+					    const string& path) const
+    {
+      return createState(u);
+    }
+
     //! Return the fermion BC object for this action
     /*! The user will supply the FermBC in a derived class */
     virtual const FermBC< multi1d<T> >& getFermBC() const = 0;
@@ -209,6 +229,7 @@ namespace Chroma
   class WilsonTypeFermAct : public FermionAction<T>
   {
   public:
+
     //! Produce a hermitian version of the linear operator
     virtual const LinearOperator<T>* gamma5HermLinOp(Handle<const ConnectState> state) const = 0;
 
@@ -316,6 +337,8 @@ namespace Chroma
   class EvenOddPrecWilsonTypeFermAct< multi1d<T> > : public WilsonTypeFermAct< multi1d<T> >
   {
   public:
+
+
     //! Override to produce an even-odd prec. linear operator for this action
     /*! Covariant return rule - override base class function */
     virtual const EvenOddPrecLinearOperator< multi1d<T> >* linOp(Handle<const ConnectState> state) const = 0;
@@ -380,6 +403,8 @@ namespace Chroma
   class EvenOddStaggeredTypeFermAct : public StaggeredTypeFermAct<T>
   {
   public:
+
+
     //! Provide a default version of qprop
     void qprop(LatticeFermion& psi,
 	       Handle<const ConnectState> state,

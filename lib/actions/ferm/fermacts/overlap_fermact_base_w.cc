@@ -1,4 +1,4 @@
-// $Id: overlap_fermact_base_w.cc,v 1.20 2004-09-09 15:51:30 edwards Exp $
+// $Id: overlap_fermact_base_w.cc,v 1.21 2004-09-24 16:22:00 bjoo Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -52,8 +52,9 @@ OverlapFermActBase::qprop(LatticeFermion& psi,
 
     // We do our solve into tmp, so make sure this is the supplied initial guess
     LatticeFermion tmp = psi;
+
     Handle< const LinearOperator<LatticeFermion> > M(linOp(state));
-	
+    
     // Check whether the source is chiral.
     Chirality ichiral = isChiralVector(chi);
     if( ichiral == CH_NONE || ( isChiral() == false )) { 

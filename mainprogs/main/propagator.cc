@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.67 2004-09-23 15:20:13 bjoo Exp $
+// $Id: propagator.cc,v 1.68 2004-09-24 16:22:01 bjoo Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -289,6 +289,15 @@ int main(int argc, char **argv)
 
   QDPIO::cout << "FermAct = " << fermact << endl;
 
+
+  // Deal with auxiliary (and polymorphic) state information
+  // eigenvectors, eigenvalues etc. The XML for this should be
+  // stored as a string called "stateInfo" in the param struct.
+
+  // Make a reader for the stateInfo
+  std::istringstream state_info_is(input.param.stateInfo);
+  XMLReader state_info_xml(state_info_is);
+  string state_info_path="/StateInfo";
   //
   // Try each factory one-by-one
   //
@@ -311,7 +320,9 @@ int main(int argc, char **argv)
 									fermacttop,
 									fermact_path));
 
-      Handle<const ConnectState> state(S_f->createState(u));  // uses phase-multiplied u-fields
+      Handle<const ConnectState> state(S_f->createState(u,
+							state_info_xml,
+							state_info_path));  // uses phase-multiplied u-fields
 
       S_f->dwf_quarkProp4(quark_propagator, xml_out, quark_prop_source,
 			  t0, j_decay, 
@@ -341,7 +352,9 @@ int main(int argc, char **argv)
 									     fermacttop,
 									     fermact_path));
 
-      Handle<const ConnectState> state(S_f->createState(u));  // uses phase-multiplied u-fields
+      Handle<const ConnectState> state(S_f->createState(u,
+							state_info_xml,
+							state_info_path));  // uses phase-multiplied u-fields
 
       S_f->dwf_quarkProp4(quark_propagator, xml_out, quark_prop_source,
 			  t0, j_decay, 
@@ -371,7 +384,10 @@ int main(int argc, char **argv)
 								 fermacttop,
 								 fermact_path));
 
-      Handle<const ConnectState> state(S_f->createState(u));  // uses phase-multiplied u-fields
+
+      Handle<const ConnectState> state(S_f->createState(u,
+							state_info_xml,
+							state_info_path));  // uses phase-multiplied u-fields
 
       S_f->quarkProp4(quark_propagator, xml_out, quark_prop_source,
 		      state, 
@@ -401,7 +417,9 @@ int main(int argc, char **argv)
 								      fermacttop,
 								      fermact_path));
 
-      Handle<const ConnectState> state(S_f->createState(u));  // uses phase-multiplied u-fields
+      Handle<const ConnectState> state(S_f->createState(u, 
+							state_info_xml,
+							state_info_path));  // uses phase-multiplied u-fields
 
       S_f->quarkProp4(quark_propagator, xml_out, quark_prop_source,
 		      state, 

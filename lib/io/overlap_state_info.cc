@@ -6,6 +6,8 @@
 using namespace std;
 using namespace QDP;
 
+namespace Chroma { 
+
 ZolotarevStateInfo::ZolotarevStateInfo(void) 
 {
   initedP = false;
@@ -213,3 +215,5 @@ void write(XMLWriter& xml_out, const string& path, const ZolotarevStateInfo& inf
   }
 
 }
+
+};
