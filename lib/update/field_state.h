@@ -42,7 +42,7 @@ class AbsFieldState {
   Fermion and LatticeFermion<multi1d<>> construction 
 */
 template <typename P, typename Q, typename Phi>
-class AbsPFFieldState {
+class AbsPFFieldState : public AbsFieldState<P,Q> {
  public:
 
   //! Virtual destructor
@@ -51,15 +51,10 @@ class AbsPFFieldState {
   // Copy for later virtual copying 
   virtual AbsPFFieldState<P,Q,Phi>* clone(void) const = 0;
  
-  // Accessors
-  virtual const P&             getP(void)  const = 0;
-  virtual const Q&             getQ(void)  const = 0;
-  virtual const multi1d<Phi>&  getPF(void) const = 0;
+  virtual const multi1d<Phi>&  getPhi(void) const = 0;
 
   // Mutators
-  virtual P&                   getP(void) = 0;
-  virtual Q&                   getQ(void) = 0;
-  virtual multi1d<Phi>&        getPF(void) = 0;
+  virtual multi1d<Phi>&        getPhi(void) = 0;
 };
 
 /*! A pure Gauge field state
@@ -114,17 +109,17 @@ class PureGaugeFieldState : public AbsFieldState<multi1d<LatticeColorMatrix>,   
 
 /*! Try a gauge,latticeFermion type field state. */
 class GaugeFermFieldState : public AbsPFFieldState<multi1d<LatticeColorMatrix>,                                                    multi1d<LatticeColorMatrix>,
-                                                   LatticeFermion>
+			    LatticeFermion>
 {
  public: 
 
   // Constructor
   GaugeFermFieldState(multi1d<LatticeColorMatrix>& p_,
 		      multi1d<LatticeColorMatrix>& q_,
-		      multi1d<LatticeFermion>& pf_) : p(p_), q(q_), pf(pf_) {}
+		      multi1d<LatticeFermion>& phi_) : p(p_), q(q_), phi(phi_) {}
 
   // Copy Constructor
-  GaugeFermFieldState(const GaugeFermFieldState& s) : p(s.p), q(s.q), pf(s.pf) {}
+  GaugeFermFieldState(const GaugeFermFieldState& s) : p(s.p), q(s.q), phi(s.phi) {}
 
   // Destructor
   ~GaugeFermFieldState() {};
@@ -135,18 +130,18 @@ class GaugeFermFieldState : public AbsPFFieldState<multi1d<LatticeColorMatrix>, 
   }
 
   // Accessors
-  const multi1d<LatticeColorMatrix>& getP(void) const { return p; }
-  const multi1d<LatticeColorMatrix>& getQ(void) const { return q; }
-  const multi1d<LatticeFermion>&     getPF(void) const { return pf; }
+  const multi1d<LatticeColorMatrix>&  getP(void) const {  return p; }
+  const multi1d<LatticeColorMatrix>&  getQ(void) const {  return q; }
+  const multi1d<LatticeFermion>&     getPhi(void) const { return phi; }
 
   // Mutators
   multi1d<LatticeColorMatrix>& getP(void)  { return p; }
   multi1d<LatticeColorMatrix>& getQ(void)  { return q; }
-  multi1d<LatticeFermion>& getPF(void) { return pf; }
+  multi1d<LatticeFermion>& getPhi(void) { return phi; }
   
  private:
   multi1d<LatticeColorMatrix> p;
   multi1d<LatticeColorMatrix> q;
-  multi1d<LatticeFermion> pf;
+  multi1d<LatticeFermion> phi;
 };
 #endif
