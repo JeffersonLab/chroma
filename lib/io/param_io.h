@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: param_io.h,v 1.8 2004-01-07 21:58:27 edwards Exp $
+// $Id: param_io.h,v 1.9 2004-01-13 03:57:32 edwards Exp $
 /*! \file
  *  \brief Reunitarize (to a SU(N)) inplace the matrix A under some option
  */
@@ -7,8 +7,10 @@
 #ifndef __param_io_h__
 #define __param_io_h__
 
-#include "meas/smear/sink_smear2_w.h"
 #include "invtype.h"
+#include "meas/smear/wvfkind.h"
+#include "meas/sources/srcsnktype.h"
+#include "meas/sources/wavetype.h"
 
 //! Convert a Kappa to a mass
 Real kappaToMass(const Real& Kappa);
@@ -148,6 +150,15 @@ void read(XMLReader& xml, const string& path, WvfKind& param);
 
 //! Read a inverter type enum
 void read(XMLReader& xml, const string& path, InvType& param);
+
+//! Read a source type enum
+void read(XMLReader& xml, const string& path, SourceType& param);
+
+//! Read a sink type enum
+void read(XMLReader& xml, const string& path, SinkType& param);
+
+//! Read a wave type enum
+void read(XMLReader& xml, const string& path, WaveStateType& param);
 
 //! Read the input version
 void read(XMLReader& xml, const string& path, IO_version_t& param);

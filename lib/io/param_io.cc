@@ -1,4 +1,4 @@
-// $Id: param_io.cc,v 1.10 2004-01-09 04:26:34 edwards Exp $
+// $Id: param_io.cc,v 1.11 2004-01-13 03:57:32 edwards Exp $
 /*! \file
  *  \brief Various parameter readers/writers for main programs
  */
@@ -181,6 +181,67 @@ void read(XMLReader& xml, const string& path, InvType& param)
   else 
   {
     QDPIO::cerr << "Unsupported inverter type" << endl;
+    QDP_abort(1);
+  }
+}
+
+
+//! Read a source type enum
+void read(XMLReader& xml, const string& path, SourceType& param)
+{
+  string src_type_str;
+  read(xml, path, src_type_str);
+  if (src_type_str == "POINT_SOURCE")
+    param = SRC_TYPE_POINT_SOURCE;
+  else if (src_type_str == "WALL_SOURCE")
+    param = SRC_TYPE_WALL_SOURCE;
+  else if (src_type_str == "SHELL_SOURCE")
+    param = SRC_TYPE_SHELL_SOURCE;
+  else if (src_type_str == "BNDST_SOURCE")
+    param = SRC_TYPE_BNDST_SOURCE;
+  else 
+  {
+    QDPIO::cerr << "Unsupported SourceType" << endl;
+    QDP_abort(1);
+  }
+}
+
+
+//! Read a sink type enum
+void read(XMLReader& xml, const string& path, SinkType& param)
+{
+  string src_type_str;
+  read(xml, path, src_type_str);
+  if (src_type_str == "POINT_SINK")
+    param = SNK_TYPE_POINT_SINK;
+  else if (src_type_str == "WALL_SINK")
+    param = SNK_TYPE_WALL_SINK;
+  else if (src_type_str == "SHELL_SINK")
+    param = SNK_TYPE_SHELL_SINK;
+  else if (src_type_str == "BNDST_SINK")
+    param = SNK_TYPE_BNDST_SINK;
+  else 
+  {
+    QDPIO::cerr << "Unsupported SinkType" << endl;
+    QDP_abort(1);
+  }
+}
+
+
+//! Read a wave type enum
+void read(XMLReader& xml, const string& path, WaveStateType& param)
+{
+  string wave_type_str;
+  read(xml, path, wave_type_str);
+  if (wave_type_str == "S_WAVE")
+    param = WAVE_TYPE_S_WAVE;
+  else if (wave_type_str == "P_WAVE")
+    param = WAVE_TYPE_P_WAVE;
+  else if (wave_type_str == "D_WAVE")
+    param = WAVE_TYPE_D_WAVE;
+  else 
+  {
+    QDPIO::cerr << "Unsupported particle wave-state type" << endl;
     QDP_abort(1);
   }
 }
