@@ -1,4 +1,4 @@
-// $Id: unprec_wilson_linop_w.cc,v 1.1 2003-04-09 05:57:15 edwards Exp $
+// $Id: unprec_wilson_linop_w.cc,v 1.2 2003-04-24 17:45:09 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -37,7 +37,7 @@ LatticeFermion UnprecWilsonLinOp::operator() (const LatticeFermion& psi, enum Li
 
   START_CODE("UnprecWilsonLinOp");
 
-  //      	         2
+  //
   //  Chi   =  Psi  -  k   D' Psi
   //
   chi = psi - Kappa * D(psi, isign);
