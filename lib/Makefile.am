@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.20 2003-04-03 20:05:14 edwards Exp $
+# $Id: Makefile.am,v 1.21 2003-04-09 17:13:56 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -7,13 +7,14 @@ TOPDIR=@top_srcdir@
 VPATH := $(TOPDIR)
 VPATH += $(TOPDIR)/lib
 VPATH += $(TOPDIR)/lib/actions
-VPATH += $(TOPDIR)/lib/actions/construct
-VPATH += $(TOPDIR)/lib/actions/dirac
-VPATH += $(TOPDIR)/lib/actions/dslash
+VPATH += $(TOPDIR)/lib/actions/boson
+VPATH += $(TOPDIR)/lib/actions/boson/operator
+VPATH += $(TOPDIR)/lib/actions/ferm
+VPATH += $(TOPDIR)/lib/actions/ferm/fermacts
+VPATH += $(TOPDIR)/lib/actions/ferm/invert
+VPATH += $(TOPDIR)/lib/actions/ferm/linop
+VPATH += $(TOPDIR)/lib/actions/ferm/qprop
 VPATH += $(TOPDIR)/lib/actions/gauge
-VPATH += $(TOPDIR)/lib/actions/invert
-VPATH += $(TOPDIR)/lib/actions/linop
-VPATH += $(TOPDIR)/lib/actions/qprop
 VPATH += $(TOPDIR)/lib/geom
 VPATH += $(TOPDIR)/lib/info
 VPATH += $(TOPDIR)/lib/io
@@ -75,9 +76,13 @@ GENERIC_SRCS = $(HDRS) gaus_smear.cc taproj.cc hotst.cc expm12.cc \
 # Object files to add if building the Wilson Builds...
 # This is OK, since Ns is determined at configure time
 #
-WILSON_SRCS = dslashm_w.cc baryon_w.cc mesons_w.cc lwldslash_w.cc lmpsim_w.cc \
-	      formfac_w.cc sink_smear2_w.cc barcomp_w.cc transf_w.cc npqprop_w.cc \
-              wilson_unprec_w.cc conslinop_w.cc readszinqprop_w.cc
+WILSON_SRCS = baryon_w.cc mesons_w.cc lwldslash_w.cc\
+	      formfac_w.cc sink_smear2_w.cc barcomp_w.cc transf_w.cc \
+              unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc unprec_qprop_w.cc \
+              readszinqprop_w.cc 
+#              zolotarev4d_fermact_w.cc zolotarev4d_linop_w.cc lovlapms_w.cc
+
+# dslashm_w.cc 
 
 #
 # This is the list of files to be used in Staggered Builds
