@@ -5,7 +5,7 @@
 # Inspired by qdp++-config from George T. Fleming
 #
 # Tool for retrieving configuration information about the installed version
-# of QMP.
+# of QDP.
 #
 # This script was copied from the qdp++-config. The latter was
 # inspired by many similar scripts available in RedHat Linux,
