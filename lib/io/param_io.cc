@@ -1,4 +1,4 @@
-// $Id: param_io.cc,v 1.30 2004-05-25 21:47:39 bjoo Exp $
+// $Id: param_io.cc,v 1.31 2004-08-07 03:28:08 edwards Exp $
 /*! \file
  *  \brief Various parameter readers/writers for main programs
  */
@@ -338,6 +338,22 @@ void read(XMLReader& xml, const string& path, SeqSourceType& param)
   else 
   {
     QDPIO::cerr << "Unsupported sequential sorce type = " << seq_type_str << endl;
+    QDP_abort(1);
+  }
+}
+
+//! Read a heatbath algorithm type enum
+void read(XMLReader& xml, const string& path, HeatbathType& param)
+{
+  string heat_type_str;
+  read(xml, path, heat_type_str);
+  if (heat_type_str == "KPHB")
+    param = HEATBATH_TYPE_KPHB;
+  else if (heat_type_str == "CrHB")
+    param = HEATBATH_TYPE_CrHB;
+  else 
+  {
+    QDPIO::cerr << "Unsupported heatbath type" << endl;
     QDP_abort(1);
   }
 }
@@ -786,6 +802,23 @@ void write(XMLWriter& xml, const string& path, SeqSourceType param)
     QDP_abort(1);
   }
   write(xml, path, seq_type_str);
+}
+
+
+//! Write a wave type enum
+void write(XMLWriter& xml, const string& path, HeatbathType param)
+{
+  string heat_type_str;
+  if (param == HEATBATH_TYPE_KPHB)
+    heat_type_str = "KPHB";
+  else if (param == HEATBATH_TYPE_CrHB)
+    heat_type_str = "CrHB";
+  else
+  {
+    QDPIO::cerr << "Unsupported heatbath type" << endl;
+    QDP_abort(1);
+  }
+  write(xml, path, heat_type_str);
 }
 
 

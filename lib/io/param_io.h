@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: param_io.h,v 1.22 2004-05-25 21:47:39 bjoo Exp $
+// $Id: param_io.h,v 1.23 2004-08-07 03:28:08 edwards Exp $
 /*! \file
  *  \brief Reunitarize (to a SU(N)) inplace the matrix A under some option
  */
@@ -11,6 +11,7 @@
 #include "meas/smear/wvfkind.h"
 #include "meas/sources/srcsnktype.h"
 #include "meas/sources/wavetype.h"
+#include "update/heatbath/su3hb.h"
 
 //! Convert a Kappa to a mass
 Real kappaToMass(const Real& Kappa);
@@ -227,6 +228,9 @@ void read(XMLReader& xml, const string& path, WaveStateType& param);
 //! Read a sequential source type enum
 void read(XMLReader& xml, const string& path, SeqSourceType& param);
 
+//! Read a heatbath algorithm type enum
+void read(XMLReader& xml, const string& path, HeatbathType& param);
+
 //! Configuration input
 void read(XMLReader& xml, const string& path, Cfg_t& input);
 
@@ -283,6 +287,9 @@ void write(XMLWriter& xml, const string& path, WaveStateType param);
 //! Write a seqsource type enum
 void write(XMLWriter& xml, const string& path, SeqSourceType param);
 
+//! Write a heatbath algorithm type enum
+void write(XMLWriter& xml, const string& path, const HeatbathType& param);
+
 //! Configuration input
 void write(XMLWriter& xml, const string& path, const Cfg_t& input);
 
@@ -300,6 +307,7 @@ void write(XMLWriter& xml, const string& path, const InvertParam_t& param);
 
 //! Write inverter parameters
 void write(XMLWriter& xml, const string& path, const MultiInvertParam_t& param);
+
 
 /*! @} */  // end of group io
 
