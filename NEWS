@@ -1,3 +1,9 @@
+03/06/2005 -- Robert Edwards
+
+	Version 1.19.14. Bug fix in SzinGauge_t constructor. This was
+        introduced when the initHeader's were removed in favor of 
+        constructors.
+
 03/02/2005 -- Robert Edwards
 
 	Version 1.19.13. Bug fix in ZoloNef FermAct codes. Only showed 
