@@ -123,7 +123,7 @@ case "$enable_sse_dwf_cg" in
 	AC_MSG_NOTICE([Not building SSE DWF CG])
         ;;
 esac 
-AC_SUBST(SSE_DSLASH_ENABLED,[$enable_sse_dwf_cg]	)	
+AC_SUBST(SSE_DWF_CG_ENABLED,[$enable_sse_dwf_cg])
 
 AM_CONDITIONAL(BUILD_SSE_DWF_CG,
   [test "x${enable_sse_dwf_cg}x" = "xyesx" ])
