@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.253 2005-02-23 19:27:15 edwards Exp $
+# $Id: Makefile.am,v 1.254 2005-02-23 22:24:14 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -161,7 +161,9 @@ nobase_include_HEADERS = \
 	update/molecdyn/predictor/zero_guess_predictor.h \
 	update/molecdyn/predictor/last_solution_predictor.h \
 	update/molecdyn/predictor/circular_buffer.h \
-	update/molecdyn/predictor/linear_extrap_predictor.h
+	update/molecdyn/predictor/linear_extrap_predictor.h \
+	update/molecdyn/predictor/lu_solve.h \
+	update/molecdyn/predictor/mre_extrap_predictor.h
 
 nodist_include_HEADERS=chroma_config_internal.h
 
@@ -453,7 +455,9 @@ libchroma_a_SOURCES = \
 	update/molecdyn/predictor/predictor_aggregate.cc \
 	update/molecdyn/predictor/zero_guess_predictor.cc \
 	update/molecdyn/predictor/last_solution_predictor.cc \
-	update/molecdyn/predictor/linear_extrap_predictor.cc
+	update/molecdyn/predictor/linear_extrap_predictor.cc \
+	update/molecdyn/predictor/lu_solve.cc \
+	update/molecdyn/predictor/mre_extrap_predictor.cc
 #	actions/ferm/invert/invbicg.cc
 #       actions/ferm/invert/invmr.cc 
 #       util/gauge/eesu2.cc 

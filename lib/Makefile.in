@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.336 2005-02-23 19:27:39 edwards Exp $
+# $Id: Makefile.in,v 1.337 2005-02-23 22:24:14 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -183,6 +183,8 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/predictor/zero_guess_predictor.cc \
 	update/molecdyn/predictor/last_solution_predictor.cc \
 	update/molecdyn/predictor/linear_extrap_predictor.cc \
+	update/molecdyn/predictor/lu_solve.cc \
+	update/molecdyn/predictor/mre_extrap_predictor.cc \
 	actions/ferm/fermacts/remez_gmp.cc \
 	actions/ferm/fermacts/fermacts_aggregate_w.cc \
 	actions/ferm/fermacts/overlap_fermact_base_w.cc \
@@ -369,7 +371,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	global_metropolis_accrej.$(OBJEXT) \
 	predictor_aggregate.$(OBJEXT) zero_guess_predictor.$(OBJEXT) \
 	last_solution_predictor.$(OBJEXT) \
-	linear_extrap_predictor.$(OBJEXT) $(am__objects_1) \
+	linear_extrap_predictor.$(OBJEXT) lu_solve.$(OBJEXT) \
+	mre_extrap_predictor.$(OBJEXT) $(am__objects_1) \
 	fermacts_aggregate_w.$(OBJEXT) \
 	overlap_fermact_base_w.$(OBJEXT) \
 	ovlap_partfrac4d_fermact_w.$(OBJEXT) \
@@ -599,6 +602,8 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	update/molecdyn/predictor/last_solution_predictor.h \
 	update/molecdyn/predictor/circular_buffer.h \
 	update/molecdyn/predictor/linear_extrap_predictor.h \
+	update/molecdyn/predictor/lu_solve.h \
+	update/molecdyn/predictor/mre_extrap_predictor.h \
 	actions/ferm/fermacts/fermacts_w.h \
 	actions/ferm/fermacts/fermacts_aggregate_w.h \
 	actions/ferm/fermacts/fermact_factory_w.h \
@@ -1000,6 +1005,8 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	update/molecdyn/predictor/last_solution_predictor.h \
 	update/molecdyn/predictor/circular_buffer.h \
 	update/molecdyn/predictor/linear_extrap_predictor.h \
+	update/molecdyn/predictor/lu_solve.h \
+	update/molecdyn/predictor/mre_extrap_predictor.h \
 	actions/ferm/fermacts/fermacts_w.h \
 	actions/ferm/fermacts/fermacts_aggregate_w.h \
 	actions/ferm/fermacts/fermact_factory_w.h \
@@ -1276,6 +1283,8 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/predictor/zero_guess_predictor.cc \
 	update/molecdyn/predictor/last_solution_predictor.cc \
 	update/molecdyn/predictor/linear_extrap_predictor.cc \
+	update/molecdyn/predictor/lu_solve.cc \
+	update/molecdyn/predictor/mre_extrap_predictor.cc \
 	$(am__append_4) actions/ferm/fermacts/fermacts_aggregate_w.cc \
 	actions/ferm/fermacts/overlap_fermact_base_w.cc \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.cc \
@@ -1601,6 +1610,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lovddag_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lovlap_double_pass_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lovlapms_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lu_solve.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lw_1loop_gaugeact.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lw_tree_gaugeact.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_base_w.Po@am__quote@
@@ -1621,6 +1631,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minvsumr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/monomial_aggregate_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/monomial_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mre_extrap_predictor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/naik_term_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nef_quarkprop4_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/overlap_fermact_base_w.Po@am__quote@
@@ -3704,6 +3715,34 @@ linear_extrap_predictor.obj: update/molecdyn/predictor/linear_extrap_predictor.c
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/predictor/linear_extrap_predictor.cc' object='linear_extrap_predictor.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o linear_extrap_predictor.obj `if test -f 'update/molecdyn/predictor/linear_extrap_predictor.cc'; then $(CYGPATH_W) 'update/molecdyn/predictor/linear_extrap_predictor.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/predictor/linear_extrap_predictor.cc'; fi`
+
+lu_solve.o: update/molecdyn/predictor/lu_solve.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lu_solve.o -MD -MP -MF "$(DEPDIR)/lu_solve.Tpo" -c -o lu_solve.o `test -f 'update/molecdyn/predictor/lu_solve.cc' || echo '$(srcdir)/'`update/molecdyn/predictor/lu_solve.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/lu_solve.Tpo" "$(DEPDIR)/lu_solve.Po"; else rm -f "$(DEPDIR)/lu_solve.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/predictor/lu_solve.cc' object='lu_solve.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lu_solve.o `test -f 'update/molecdyn/predictor/lu_solve.cc' || echo '$(srcdir)/'`update/molecdyn/predictor/lu_solve.cc
+
+lu_solve.obj: update/molecdyn/predictor/lu_solve.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lu_solve.obj -MD -MP -MF "$(DEPDIR)/lu_solve.Tpo" -c -o lu_solve.obj `if test -f 'update/molecdyn/predictor/lu_solve.cc'; then $(CYGPATH_W) 'update/molecdyn/predictor/lu_solve.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/predictor/lu_solve.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/lu_solve.Tpo" "$(DEPDIR)/lu_solve.Po"; else rm -f "$(DEPDIR)/lu_solve.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/predictor/lu_solve.cc' object='lu_solve.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lu_solve.obj `if test -f 'update/molecdyn/predictor/lu_solve.cc'; then $(CYGPATH_W) 'update/molecdyn/predictor/lu_solve.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/predictor/lu_solve.cc'; fi`
+
+mre_extrap_predictor.o: update/molecdyn/predictor/mre_extrap_predictor.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT mre_extrap_predictor.o -MD -MP -MF "$(DEPDIR)/mre_extrap_predictor.Tpo" -c -o mre_extrap_predictor.o `test -f 'update/molecdyn/predictor/mre_extrap_predictor.cc' || echo '$(srcdir)/'`update/molecdyn/predictor/mre_extrap_predictor.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/mre_extrap_predictor.Tpo" "$(DEPDIR)/mre_extrap_predictor.Po"; else rm -f "$(DEPDIR)/mre_extrap_predictor.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/predictor/mre_extrap_predictor.cc' object='mre_extrap_predictor.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o mre_extrap_predictor.o `test -f 'update/molecdyn/predictor/mre_extrap_predictor.cc' || echo '$(srcdir)/'`update/molecdyn/predictor/mre_extrap_predictor.cc
+
+mre_extrap_predictor.obj: update/molecdyn/predictor/mre_extrap_predictor.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT mre_extrap_predictor.obj -MD -MP -MF "$(DEPDIR)/mre_extrap_predictor.Tpo" -c -o mre_extrap_predictor.obj `if test -f 'update/molecdyn/predictor/mre_extrap_predictor.cc'; then $(CYGPATH_W) 'update/molecdyn/predictor/mre_extrap_predictor.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/predictor/mre_extrap_predictor.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/mre_extrap_predictor.Tpo" "$(DEPDIR)/mre_extrap_predictor.Po"; else rm -f "$(DEPDIR)/mre_extrap_predictor.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/predictor/mre_extrap_predictor.cc' object='mre_extrap_predictor.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o mre_extrap_predictor.obj `if test -f 'update/molecdyn/predictor/mre_extrap_predictor.cc'; then $(CYGPATH_W) 'update/molecdyn/predictor/mre_extrap_predictor.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/predictor/mre_extrap_predictor.cc'; fi`
 
 remez_gmp.o: actions/ferm/fermacts/remez_gmp.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT remez_gmp.o -MD -MP -MF "$(DEPDIR)/remez_gmp.Tpo" -c -o remez_gmp.o `test -f 'actions/ferm/fermacts/remez_gmp.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/remez_gmp.cc; \

@@ -1,4 +1,4 @@
-// $Id: predictor_aggregate.cc,v 1.1 2005-02-07 04:11:55 edwards Exp $
+// $Id: predictor_aggregate.cc,v 1.2 2005-02-23 22:24:15 bjoo Exp $
 /*! \file
  *  \brief Chrono predictor aggregator
  */
@@ -24,6 +24,8 @@ namespace Chroma
       success &= LastSolution5DChronoPredictorEnv::registered;
       success &= LinearExtrapolation4DChronoPredictorEnv::registered;
       success &= LinearExtrapolation5DChronoPredictorEnv::registered;
+      success &= MinimalResidualExtrapolation4DChronoPredictorEnv::registered;
+
       return success;
     }
 
