@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.126 2004-04-23 11:23:37 bjoo Exp $
+# $Id: Makefile.am,v 1.127 2004-04-26 16:18:42 mcneile Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -82,10 +82,12 @@ nobase_include_HEADERS = \
 	meas/gfix/gfix.h meas/gfix/grelax.h meas/gfix/polar_dec.h \
 	meas/gfix/rot_colvec.h meas/glue/glue.h meas/glue/mesplq.h \
 	meas/glue/polylp.h meas/hadron/hadron.h meas/hadron/srcfil.h \
+	meas/glue/fuzwilp.h meas/glue/wilslp.h \
 	meas/hadron/stoch_var.h meas/hadron/z2_src.h \
 	meas/meas.h meas/pbp/pbp.h meas/schrfun/schrfun.h \
 	meas/smear/ape_smear.h meas/smear/displacement.h \
 	meas/smear/fuzz_smear.h \
+	fuzwilp.cc wilslp.cc\
 	meas/smear/gaus_smear.h meas/smear/hyp_smear.h \
 	meas/smear/laplacian.h meas/smear/smear.h meas/smear/wvfkind.h \
 	meas/sources/sources.h meas/sources/srcsnktype.h \
