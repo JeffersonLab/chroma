@@ -1,4 +1,4 @@
-// $Id: t_ritz_KS.cc,v 1.13 2004-10-15 10:54:48 bjoo Exp $
+// $Id: t_ritz_KS.cc,v 1.14 2004-10-23 11:29:31 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -277,6 +277,7 @@ int main(int argc, char **argv)
 
 
   pop(xml_out);
+  xml_out.flush();
   xml_out.close();
   QDP_finalize();
     
@@ -519,15 +520,17 @@ void RitzCode4DHw(Handle< const LinearOperator<LatticeFermion> >& MM,
       check_norm[i] = norm2(r_norm,s);
       check_norm[i] = sqrt(check_norm[i]);
     }
-    
-    QDPIO::cout << "check_norm["<<i+1<<"] = " << check_norm[i] << endl;
+   
+    QDPIO::cout << "lambda_lo[" << i << "] = " << lambda[i] << "  "; 
+    QDPIO::cout << "check_norm["<<i<<"] = " << check_norm[i] << endl;
   }
   write(xml_out, "check_norm", check_norm);
   
   for(int i=0; i < input.ritz_params.Neig; i++) { 
     check_norm[i] /= fabs(lambda[i]);
-    QDPIO::cout << "check_norm_rel["<< i+1 <<"] = " << check_norm[i] << endl;
+    QDPIO::cout << "check_norm_rel["<< i <<"] = " << check_norm[i] << endl;
   }
+  QDPIO::cout << flush ;
   write(xml_out, "check_norm_rel", check_norm);
   pop(xml_out);
   
