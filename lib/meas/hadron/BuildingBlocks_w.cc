@@ -10,16 +10,26 @@
 //
 // Read BuildingBlocks.hh.
 //
+// history:
+//
+// There were at least four versions of "MIT" code.  Andrew Pochinsky has a c version.
+// Dmitri Dolgov has a c++ version.  Dru B. Renner has c and c++ versions.  All were
+// independent and checked against one another.  Of course, all were developed under 
+// the guidance of John W. Negele.  This code here is just the "Building Blocks" 
+// portion of the MIT code.
+//
 // authors:
 //
-// Dru B. Renner, dru@mit.edu, 2002 - port of "MIT" code to qdp++
-// Dru B. Renner, dru@mit.edu, July 2003 - analyze MILC configurations
+// Dru B. Renner, dru@mit.edu, 2002 - port of Building Blocks (MIT) code to qdp++
+//
+// There are others who have contributed since the code has been migrated to qdp++.
+// The cvs log entries indicate these other authors.
 //
 //#####################################################################################
 //#####################################################################################
 
 static const char* const CVSBuildingBlocks_cc =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 1.6 2004-05-27 16:00:27 dru Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 1.7 2004-05-27 16:26:55 dru Exp $";
 
 //#####################################################################################
 //#####################################################################################
@@ -44,26 +54,6 @@ void CVSBuildingBlocks( TextWriter & Out )
 }
 
 //#####################################################################################
-// function object used for the time slice sums
-//#####################################################################################
-
-//class TimeSliceFunc : public SetFunc
-//{
-//  public:
-//
-//    TimeSliceFunc( int dir ): dir_decay( dir ) {}
-//
-//    int operator() ( const multi1d< int > & coordinate ) const { return coordinate[ dir_decay ]; }
-//    int numSubsets() const { return Layout::lattSize()[ dir_decay ]; }
-//
-//    int dir_decay;
-//
-//  private:
-//
-//    TimeSliceFunc() {}  // hide default constructor
-//};
-
-//#####################################################################################
 // backward forward trace
 //#####################################################################################
 
@@ -78,17 +68,13 @@ void BkwdFrwdTr( const LatticePropagator &             B,
 {
   const unsigned short int NLinks = LinkDirs.size();
   unsigned short int Link;
-  //TimeSliceFunc SetTimeSlice( Nd - 1 );
-  //const Set TimeSlice( SetTimeSlice );
-  //const int T = SetTimeSlice.numSubsets();
-  //const int T = Nd - 1;
   const int T1 = 0;
   const int T2 = 7;
   const int NQ = Phases.numMom();
 
-  //#####################################################################################
+  //###################################################################################
   // add a tag to identify the link pattern
-  //#####################################################################################
+  //###################################################################################
 
   for( int q = 0; q < NQ; q ++ )
   {
@@ -115,7 +101,7 @@ void BkwdFrwdTr( const LatticePropagator &             B,
       #endif
     }
 
-    if( f == 0 )  // counts number of link patterns per flavor - assumes that u quark is always present - problem
+    if( f == 0 )  // counts number of link patterns per flavor - assumes that u quark is always present - potential problem
     {
       GBB_NLinkPatterns ++;
     }
@@ -156,9 +142,9 @@ void BkwdFrwdTr( const LatticePropagator &             B,
   return;
 }
 
-//#######################################################################################
+//#####################################################################################
 // accumulate link operators
-//#######################################################################################
+//#####################################################################################
 
 void AddLinks( const multi1d< LatticePropagator > &  B,
                const LatticePropagator &             F,
@@ -275,9 +261,9 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
                      const SftMom &                        Phases,
 	             const multi2d< const char* > &        BinaryDataFileNames )
 {
-  //#####################################################################################
+  //###################################################################################
   // open building blocks data files
-  //#####################################################################################
+  //###################################################################################
 
   const int NF = B.size();
   const int NQ = Phases.numMom();
@@ -291,9 +277,9 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
   }
   }
 
-  //#####################################################################################
+  //###################################################################################
   // calculate building blocks
-  //#####################################################################################
+  //###################################################################################
 
   const unsigned short int NLinks = 0;
   multi1d< unsigned short int > LinkDirs( 0 );
@@ -305,9 +291,9 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
 
   AddLinks( B, F, U, Phases, LinkDirs, MaxNLinks, LinkPattern, 0, -1, BinaryWriters );
 
-  //#####################################################################################
+  //###################################################################################
   // add footer and close files
-  //#####################################################################################
+  //###################################################################################
 
   const unsigned short int Id = 0;  // indicates building blocks
   const unsigned short int Version = 1;  // building blocks version
@@ -332,23 +318,25 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
     const signed short int QY = Q[1];
     const signed short int QZ = Q[2];
 
-    #if 0
+    #if _DEBUG_BB_C_ == 1
     {
-      printf( "Id            = %i\n", Id );
-      printf( "Version       = %i\n", Version );
-      printf( "Flavor        = %i\n", Flavor );
-      printf( "Contraction   = %i\n", Contraction );
-      printf( "NX            = %i\n", NX );
-      printf( "NY            = %i\n", NY );
-      printf( "NZ            = %i\n", NZ );
-      printf( "NT            = %i\n", NT );
-      printf( "T1            = %i\n", T1 );
-      printf( "T2            = %i\n", T2 );
-      printf( "MaxNLinks     = %i\n", MaxNLinks );
-      printf( "NLinkPatterns = %i\n", NLinkPatterns );
-      printf( "QX            = %i\n", QX );
-      printf( "QY            = %i\n", QY );
-      printf( "QZ            = %i\n", QZ );
+      QDPIO::cout << "DEBUG: " << __FILE__ << " " << __LINE__ << "\n";
+
+      QDPIO::cout << "Id            = " << Id            << "\n";
+      QDPIO::cout << "Version       = " << Version       << "\n";
+      QDPIO::cout << "Flavor        = " << Flavor        << "\n";
+      QDPIO::cout << "Contraction   = " << Contraction   << "\n";
+      QDPIO::cout << "NX            = " << NX            << "\n";
+      QDPIO::cout << "NY            = " << NY            << "\n";
+      QDPIO::cout << "NZ            = " << NZ            << "\n";
+      QDPIO::cout << "NT            = " << NT            << "\n";
+      QDPIO::cout << "T1            = " << T1            << "\n";
+      QDPIO::cout << "T2            = " << T2            << "\n";
+      QDPIO::cout << "MaxNLinks     = " << MaxNLinks     << "\n";
+      QDPIO::cout << "NLinkPatterns = " << NLinkPatterns << "\n";
+      QDPIO::cout << "QX            = " << QX            << "\n";
+      QDPIO::cout << "QY            = " << QY            << "\n";
+      QDPIO::cout << "QZ            = " << QZ            << "\n";
     }
     #endif
 
@@ -382,3 +370,6 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
 //#####################################################################################
 
 #undef _DEBUG_BB_C_
+
+//#####################################################################################
+//#####################################################################################
