@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.49 2003-09-02 15:40:54 bjoo Exp $
+# $Id: Makefile.in,v 1.50 2003-09-04 15:05:33 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -49,6 +49,8 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
+BUILD_SSE_WILSON_DSLASH_FALSE = @BUILD_SSE_WILSON_DSLASH_FALSE@
+BUILD_SSE_WILSON_DSLASH_TRUE = @BUILD_SSE_WILSON_DSLASH_TRUE@
 BUILD_STAGGERED_LIBS_FALSE = @BUILD_STAGGERED_LIBS_FALSE@
 BUILD_STAGGERED_LIBS_TRUE = @BUILD_STAGGERED_LIBS_TRUE@
 BUILD_WILSON_LIBS_FALSE = @BUILD_WILSON_LIBS_FALSE@
@@ -97,7 +99,7 @@ QDPXX_PRECISION = @QDPXX_PRECISION@
 RANLIB = @RANLIB@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
-SSE_DSLASH = @SSE_DSLASH@
+SSE_DSLASH_DIR = @SSE_DSLASH_DIR@
 STRIP = @STRIP@
 VERSION = @VERSION@
 ac_ct_CXX = @ac_ct_CXX@
@@ -142,6 +144,7 @@ TOPDIR = @top_srcdir@
 # Include Path
 #
 INCFLAGS = -I$(TOPDIR)/include
+
 #
 # Any other compiler flags
 # 
@@ -573,6 +576,8 @@ uninstall-am: uninstall-info-am uninstall-libLIBRARIES
 	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
 	uninstall-am uninstall-info-am uninstall-libLIBRARIES
 
+
+@BUILD_SSE_WILSON_DSLASH_TRUE@	INCFLAGS += -I$(TOPDIR)/other_libs/intel_sse_dslash
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

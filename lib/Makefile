@@ -14,7 +14,7 @@
 
 
 
-# $Id: Makefile,v 1.6 2003-09-02 15:40:54 bjoo Exp $
+# $Id: Makefile,v 1.7 2003-09-04 15:05:33 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -49,6 +49,8 @@ AUTOCONF = ${SHELL} /home/bj/Devel/SciDAC/packages/tmp/chroma/config/missing --r
 AUTOHEADER = ${SHELL} /home/bj/Devel/SciDAC/packages/tmp/chroma/config/missing --run autoheader
 AUTOMAKE = ${SHELL} /home/bj/Devel/SciDAC/packages/tmp/chroma/config/missing --run automake-1.7
 AWK = gawk
+BUILD_SSE_WILSON_DSLASH_FALSE = #
+BUILD_SSE_WILSON_DSLASH_TRUE = 
 BUILD_STAGGERED_LIBS_FALSE = 
 BUILD_STAGGERED_LIBS_TRUE = #
 BUILD_WILSON_LIBS_FALSE = #
@@ -56,7 +58,7 @@ BUILD_WILSON_LIBS_TRUE =
 CPPFLAGS = 
 CXX = g++
 CXXDEPMODE = depmode=gcc3
-CXXFLAGS = -O2 -finline-limit=50000
+CXXFLAGS = -g -O2
 CYGPATH_W = echo
 DEFS = -DPACKAGE_NAME=\"chroma\" -DPACKAGE_TARNAME=\"chroma\" -DPACKAGE_VERSION=\"0.2\" -DPACKAGE_STRING=\"chroma\ 0.2\" -DPACKAGE_BUGREPORT=\"edwards@jlab.org\" -DPACKAGE=\"chroma\" -DVERSION=\"0.2\" 
 DEPDIR = .deps
@@ -97,7 +99,7 @@ QDPXX_PRECISION = single
 RANLIB = ranlib
 SET_MAKE = 
 SHELL = /bin/sh
-SSE_DSLASH = other_libs/intel_sse_dslash
+SSE_DSLASH_DIR = intel_sse_dslash
 STRIP = 
 VERSION = 0.2
 ac_ct_CXX = 
@@ -142,10 +144,11 @@ TOPDIR = ..
 # Include Path
 #
 INCFLAGS = -I$(TOPDIR)/include
+
 #
 # Any other compiler flags
 # 
-AM_CXXFLAGS = $(INCFLAGS) -O2 -finline-limit=50000 -O2 -finline-limit=50000 -I/home/bj/Devel/SciDAC/install/qdp++-parscalar-32bit/include -I/usr/include/libxml2 -I/home/bj/Devel/SciDAC/install/qmp/include
+AM_CXXFLAGS = $(INCFLAGS) -g -O2 -O2 -finline-limit=50000 -I/home/bj/Devel/SciDAC/install/qdp++-parscalar-32bit/include -I/usr/include/libxml2 -I/home/bj/Devel/SciDAC/install/qmp/include
 
 lib_LIBRARIES = libchroma.a
 
@@ -573,6 +576,8 @@ uninstall-am: uninstall-info-am uninstall-libLIBRARIES
 	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
 	uninstall-am uninstall-info-am uninstall-libLIBRARIES
 
+
+	INCFLAGS += -I$(TOPDIR)/other_libs/intel_sse_dslash
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

@@ -1,3 +1,4 @@
-SUBDIRS = include lib mainprogs @SSE_DSLASH@
+
+SUBDIRS = other_libs include lib mainprogs
 
 ## EXTRA_DIST=lib root mainprogs

@@ -273,7 +273,7 @@ PACKAGE_STRING='chroma 0.2'
 PACKAGE_BUGREPORT='edwards@jlab.org'
 
 ac_subdirs_all="$ac_subdirs_all other_libs/intel_sse_dslash"
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE RANLIB ac_ct_RANLIB QDPXX_CONFIG CXX QDPXX_CXXFLAGS QDPXX_LDFLAGS QDPXX_LIBS QDPXX_ND QDPXX_NC QDPXX_NS QDPXX_PARALLEL_ARCH QDPXX_PRECISION SSE_DSLASH subdirs BUILD_STAGGERED_LIBS_TRUE BUILD_STAGGERED_LIBS_FALSE BUILD_WILSON_LIBS_TRUE BUILD_WILSON_LIBS_FALSE CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE LATEX DVIPS DVIPDF DOXYGEN LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE RANLIB ac_ct_RANLIB QDPXX_CONFIG CXX QDPXX_CXXFLAGS QDPXX_LDFLAGS QDPXX_LIBS QDPXX_ND QDPXX_NC QDPXX_NS QDPXX_PARALLEL_ARCH QDPXX_PRECISION subdirs SSE_DSLASH_DIR BUILD_SSE_WILSON_DSLASH_TRUE BUILD_SSE_WILSON_DSLASH_FALSE BUILD_STAGGERED_LIBS_TRUE BUILD_STAGGERED_LIBS_FALSE BUILD_WILSON_LIBS_TRUE BUILD_WILSON_LIBS_FALSE CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE LATEX DVIPS DVIPDF DOXYGEN LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -1815,9 +1815,6 @@ fi;
 # Check whether --enable-sse_wilson_dslash or --disable-sse_wilson_dslash was given.
 if test "${enable_sse_wilson_dslash+set}" = set; then
   enableval="$enable_sse_wilson_dslash"
-   BUILD_SSE_WILSON_DSLASH="${enableval}"
-else
-   BUILD_SSE_WILSON_DSLASH="no"
 
 fi;
 
@@ -1963,39 +1960,41 @@ QDPXX_PRECISION="`${QDPXX_CONFIG} --precision`"
 { echo "$as_me:$LINENO: QDP++ precision: ${QDPXX_PRECISION}" >&5
 echo "$as_me: QDP++ precision: ${QDPXX_PRECISION}" >&6;}
 
-case $BUILD_SSE_WILSON_DSLASH in
+case "$enable_sse_wilson_dslash" in
   yes)
-        { echo "$as_me:$LINENO:  Configuring SSE Dslash  " >&5
-echo "$as_me:  Configuring SSE Dslash  " >&6;}
-       	PARALLEL_ARCH="${QDPXX_PARALLEL_ARCH}"
-	PRECISION="${QDPXX_PRECISION}"
-	QMP_CFLAGS="${QDPXX_CXXFLAGS}"
-	QMP_LDFLAGS="${QDPXX_LDFLAGS}"
-	QMP_LIBS="${QDPXX_LIBS}"
-	export PARALLEL_ARCH
-	export PRECISION
-	export QMP_CFLAGS
-	export QMP_LDFLAGS
-	export QMP_LIBS
-	SSE_DSLASH=other_libs/intel_sse_dslash
-
-
+        { echo "$as_me:$LINENO: Configuring SSE Dslash  " >&5
+echo "$as_me: Configuring SSE Dslash  " >&6;}
 
 
 subdirs="$subdirs other_libs/intel_sse_dslash"
 
+	SSE_DSLASH_DIR=intel_sse_dslash
+
 	;;
   no)
 
-	{ echo "$as_me:$LINENO:  Not building SSE Dslash  " >&5
-echo "$as_me:  Not building SSE Dslash  " >&6;}
+	{ echo "$as_me:$LINENO: Not building SSE Dslash  " >&5
+echo "$as_me: Not building SSE Dslash  " >&6;}
         ;;
   *)
-	{ { echo "$as_me:$LINENO: error:  Unknown value for --enable-sse-wilson-dslash  " >&5
-echo "$as_me: error:  Unknown value for --enable-sse-wilson-dslash  " >&2;}
+	{ { echo "$as_me:$LINENO: error: Unknown value for --enable-sse-wilson-dslash  " >&5
+echo "$as_me: error: Unknown value for --enable-sse-wilson-dslash  " >&2;}
    { (exit 1); exit 1; }; }
   ;;
 esac
+
+
+
+
+if test "x${enable_sse_wilson_dslash}x" = "xyesx" ; then
+  BUILD_SSE_WILSON_DSLASH_TRUE=
+  BUILD_SSE_WILSON_DSLASH_FALSE='#'
+else
+  BUILD_SSE_WILSON_DSLASH_TRUE='#'
+  BUILD_SSE_WILSON_DSLASH_FALSE=
+fi
+
+
 case $ac_fermion_type in
   staggered)
     if test $QDPXX_NS -ne 1 ; then
@@ -2037,7 +2036,6 @@ else
   BUILD_WILSON_LIBS_TRUE='#'
   BUILD_WILSON_LIBS_FALSE=
 fi
-
 
 
 echo "$as_me:$LINENO: checking if we can compile/link a simple QDP++ program" >&5
@@ -2995,6 +2993,8 @@ fi
 
           ac_config_files="$ac_config_files docs/Makefile"
 
+          ac_config_files="$ac_config_files other_libs/Makefile"
+
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -3117,6 +3117,13 @@ LIBOBJS=$ac_libobjs
 LTLIBOBJS=$ac_ltlibobjs
 
 
+if test -z "${BUILD_SSE_WILSON_DSLASH_TRUE}" && test -z "${BUILD_SSE_WILSON_DSLASH_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"BUILD_SSE_WILSON_DSLASH\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"BUILD_SSE_WILSON_DSLASH\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
 if test -z "${BUILD_STAGGERED_LIBS_TRUE}" && test -z "${BUILD_STAGGERED_LIBS_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"BUILD_STAGGERED_LIBS\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
@@ -3591,6 +3598,7 @@ do
   "mainprogs/tests/Makefile" ) CONFIG_FILES="$CONFIG_FILES mainprogs/tests/Makefile" ;;
   "mainprogs/main/Makefile" ) CONFIG_FILES="$CONFIG_FILES mainprogs/main/Makefile" ;;
   "docs/Makefile" ) CONFIG_FILES="$CONFIG_FILES docs/Makefile" ;;
+  "other_libs/Makefile" ) CONFIG_FILES="$CONFIG_FILES other_libs/Makefile" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
@@ -3714,8 +3722,10 @@ s,@QDPXX_NC@,$QDPXX_NC,;t t
 s,@QDPXX_NS@,$QDPXX_NS,;t t
 s,@QDPXX_PARALLEL_ARCH@,$QDPXX_PARALLEL_ARCH,;t t
 s,@QDPXX_PRECISION@,$QDPXX_PRECISION,;t t
-s,@SSE_DSLASH@,$SSE_DSLASH,;t t
 s,@subdirs@,$subdirs,;t t
+s,@SSE_DSLASH_DIR@,$SSE_DSLASH_DIR,;t t
+s,@BUILD_SSE_WILSON_DSLASH_TRUE@,$BUILD_SSE_WILSON_DSLASH_TRUE,;t t
+s,@BUILD_SSE_WILSON_DSLASH_FALSE@,$BUILD_SSE_WILSON_DSLASH_FALSE,;t t
 s,@BUILD_STAGGERED_LIBS_TRUE@,$BUILD_STAGGERED_LIBS_TRUE,;t t
 s,@BUILD_STAGGERED_LIBS_FALSE@,$BUILD_STAGGERED_LIBS_FALSE,;t t
 s,@BUILD_WILSON_LIBS_TRUE@,$BUILD_WILSON_LIBS_TRUE,;t t

@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.32 2003-08-20 11:33:51 bjoo Exp $
+# $Id: Makefile.am,v 1.33 2003-09-04 15:05:33 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -52,10 +52,15 @@ VPATH += $(TOPDIR)/root
 # Include Path
 #
 INCFLAGS = -I$(TOPDIR)/include
+ 
 #
 # Any other compiler flags
 # 
 AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDPXX_CXXFLAGS@
+
+if BUILD_SSE_WILSON_DSLASH
+AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include
+endif
 
 lib_LIBRARIES = libchroma.a
 

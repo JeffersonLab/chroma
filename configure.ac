@@ -53,8 +53,6 @@ AC_ARG_ENABLE(sse_wilson_dslash,
   AC_HELP_STRING( 
     [--enable-sse-wilson-dslash],
     [Build and Use the SSE2 Wilson Dslash Library ]),
-    [ BUILD_SSE_WILSON_DSLASH="${enableval}" ],
-    [ BUILD_SSE_WILSON_DSLASH="no" ]
 )
 
 if test "X${QDPXX_HOME}X" = "XX" ; then
@@ -97,31 +95,6 @@ AC_MSG_NOTICE([QDP++ parallel arch: ${QDPXX_PARALLEL_ARCH}])
 AC_SUBST(QDPXX_PRECISION, "`${QDPXX_CONFIG} --precision`")
 AC_MSG_NOTICE([QDP++ precision: ${QDPXX_PRECISION}])
 
-case $BUILD_SSE_WILSON_DSLASH in
-  yes) 
-        AC_MSG_NOTICE( [ Configuring SSE Dslash ] )
-       	PARALLEL_ARCH="${QDPXX_PARALLEL_ARCH}"
-	PRECISION="${QDPXX_PRECISION}"
-	QMP_CFLAGS="${QDPXX_CXXFLAGS}"
-	QMP_LDFLAGS="${QDPXX_LDFLAGS}"
-	QMP_LIBS="${QDPXX_LIBS}"
-	export PARALLEL_ARCH
-	export PRECISION 
-	export QMP_CFLAGS 
-	export QMP_LDFLAGS 
-	export QMP_LIBS
-	AC_SUBST(SSE_DSLASH, [other_libs/intel_sse_dslash])
-
-	AC_CONFIG_SUBDIRS(other_libs/intel_sse_dslash)
-	;;
-  no)
-	AC_SUBST(SSE_DSLASH)
-	AC_MSG_NOTICE( [ Not building SSE Dslash ] )
-        ;;
-  *)
-	AC_MSG_ERROR( [ Unknown value for --enable-sse-wilson-dslash ] )
-  ;;
-esac 
 dnl
 dnl
 case $ac_fermion_type in
@@ -140,11 +113,33 @@ case $ac_fermion_type in
     ;;
 esac
 
+case "$enable_sse_wilson_dslash" in
+  yes) 
+        if test "x$ac_fermion_type" != "xwilson";
+	then	
+	    AC_MSG_ERROR([ Attempting to build Assembler Wilson Dslash with NON Wilson fermion type ])
+	fi
+        AC_MSG_NOTICE( [Configuring SSE Wilson Dslash ] )
+	AC_CONFIG_SUBDIRS(other_libs/intel_sse_wilson_dslash)
+	AC_SUBST(SSE_DSLASH_DIR, [intel_sse_wilson_dslash])
+	;;
+  no)
+	AC_SUBST(SSE_DSLASH_DIR)
+	AC_MSG_NOTICE( [Not building SSE Dslash ] )
+        ;;
+  *)
+	AC_MSG_ERROR( [Unknown value for --enable-sse-wilson-dslash ] )
+  ;;
+esac 
+
+
+AM_CONDITIONAL(BUILD_SSE_WILSON_DSLASH,
+  [test "x${enable_sse_wilson_dslash}x" = "xyesx" ])
+
 AM_CONDITIONAL(BUILD_STAGGERED_LIBS,
   [test "X${ac_fermion_type}X" = "XstaggeredX"])
 AM_CONDITIONAL(BUILD_WILSON_LIBS,
   [test "X${ac_fermion_type}X" = "XwilsonX"])
-
 
 dnl Try to compile a QDP++ program to check the --with options
 AC_MSG_CHECKING([if we can compile/link a simple QDP++ program])
@@ -194,4 +189,5 @@ AC_CONFIG_FILES(mainprogs/Makefile)
 AC_CONFIG_FILES(mainprogs/tests/Makefile)
 AC_CONFIG_FILES(mainprogs/main/Makefile)
 AC_CONFIG_FILES(docs/Makefile)
+AC_CONFIG_FILES(other_libs/Makefile)
 AC_OUTPUT
