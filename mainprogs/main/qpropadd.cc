@@ -1,4 +1,4 @@
-// $Id: qpropadd.cc,v 1.1 2004-04-12 15:42:42 edwards Exp $
+// $Id: qpropadd.cc,v 1.2 2004-04-12 18:26:28 edwards Exp $
 /*! \file
  * \brief Add two quark propagators
  *
@@ -45,6 +45,8 @@ void read(XMLReader& xml, const string& path, Prop_t& input)
 
   read(inputtop, "prop_file1", input.prop_file1);
   read(inputtop, "prop_file2", input.prop_file2);
+  read(inputtop, "prop_file", input.prop_file);
+  read(inputtop, "prop_volfmt", input.prop_volfmt);  // singlefile or multifile
 }
 
 
@@ -114,7 +116,7 @@ main(int argc, char *argv[])
   XMLReader xml_in("DATA");
 
   // Read data
-  read(xml_in, "/Qpropadd", input);
+  read(xml_in, "/qpropadd", input);
 
   // Specify lattice size, shape, etc.
   Layout::setLattSize(input.param.nrow);
@@ -124,7 +126,7 @@ main(int argc, char *argv[])
 
   // Instantiate XML writer for XMLDAT
   XMLFileWriter xml_out("XMLDAT");
-  push(xml_out, "Qpropadd");
+  push(xml_out, "qpropadd");
 
   proginfo(xml_out);    // Print out basic program info
 
@@ -140,24 +142,22 @@ main(int argc, char *argv[])
   //
   // Read the first quark propagator and extract headers
   //
+  XMLReader prop_file_xml1, prop_record_xml1;
   LatticePropagator quark_propagator1;
   ChromaProp_t prop_header1;
   PropSource_t source_header1;
-  XMLReader gauge_xml1;
   {
-    XMLReader prop_file_xml, prop_record_xml;
     QDPIO::cout << "Attempt to read first forward propagator" << endl;
-    readQprop(prop_file_xml, 
-	      prop_record_xml, quark_propagator1,
+    readQprop(prop_file_xml1, 
+	      prop_record_xml1, quark_propagator1,
 	      input.prop.prop_file1, QDPIO_SERIAL);
    
     // Try to invert this record XML into a ChromaProp struct
     // Also pull out the id of this source
     try
     {
-      read(prop_record_xml, "/Propagator/ForwardProp", prop_header1);
-      read(prop_record_xml, "/Propagator/PropSource", source_header1);
-      read(prop_record_xml, "/Propagator/Config_info", gauge_xml1);
+      read(prop_record_xml1, "/Propagator/ForwardProp", prop_header1);
+      read(prop_record_xml1, "/Propagator/PropSource", source_header1);
     }
     catch (const string& e) 
     {
@@ -165,7 +165,7 @@ main(int argc, char *argv[])
       throw;
     }
   }
-  QDPIO::cout << "First forward propagator successfully read" << endl;
+  QDPIO::cout << "First forward propagator successfully read\n" << endl;
 
 
   // Sanity check - write out the norm2 of the forward prop in the j_decay direction
@@ -183,29 +183,31 @@ main(int argc, char *argv[])
   }
 
   // Save prop input
-  write(xml_out, "ForwardProp1", prop_header1);
-  write(xml_out, "PropSource1", source_header1);
-
+  push(xml_out, "Propagator1");
+  write(xml_out, "ForwardProp", prop_header1);
+  write(xml_out, "PropSource", source_header1);
+  pop(xml_out);
+  
 
   //
   // Read the second quark propagator and extract headers
   //
+  XMLReader prop_file_xml2, prop_record_xml2;
   LatticePropagator quark_propagator2;
   ChromaProp_t prop_header2;
   PropSource_t source_header2;
   {
-    XMLReader prop_file_xml, prop_record_xml;
-    QDPIO::cout << "Attempt to read first forward propagator" << endl;
-    readQprop(prop_file_xml, 
-	      prop_record_xml, quark_propagator2,
+    QDPIO::cout << "Attempt to read second forward propagator" << endl;
+    readQprop(prop_file_xml2, 
+	      prop_record_xml2, quark_propagator2,
 	      input.prop.prop_file2, QDPIO_SERIAL);
    
     // Try to invert this record XML into a ChromaProp struct
     // Also pull out the id of this source
     try
     {
-      read(prop_record_xml, "/Propagator/ForwardProp", prop_header2);
-      read(prop_record_xml, "/Propagator/PropSource", source_header2);
+      read(prop_record_xml2, "/Propagator/ForwardProp", prop_header2);
+      read(prop_record_xml2, "/Propagator/PropSource", source_header2);
     }
     catch (const string& e) 
     {
@@ -230,9 +232,11 @@ main(int argc, char *argv[])
   }
 
   // Save prop input
-  write(xml_out, "ForwardProp2", prop_header2);
-  write(xml_out, "PropSource2", source_header2);
-
+  push(xml_out, "Propagator2");
+  write(xml_out, "ForwardProp", prop_header2);
+  write(xml_out, "PropSource", source_header2);
+  pop(xml_out);
+  
 
 
   // More sanity checks
@@ -271,13 +275,14 @@ main(int argc, char *argv[])
    * Add the props and be done...
    */
   LatticePropagator  quark_propagator = 0.5*(quark_propagator1 + quark_propagator2);
-  ChromaProp_t prop_header = qprop_header1;
+  ChromaProp_t prop_header = prop_header1;
   PropSource_t source_header = source_header1;
-  prop_header.boundary[j_decay] = 0;
+  prop_header.boundary[source_header1.j_decay] = 0;
 
 
   // Save the propagator
   // ONLY SciDAC output format is supported!
+  QDPIO::cout << "Save the new forward propagator" << endl;
   {
     XMLBufferWriter file_xml;
     push(file_xml, "propagator");
@@ -289,14 +294,25 @@ main(int argc, char *argv[])
     push(record_xml, "Propagator");
     write(record_xml, "ForwardProp", prop_header);
     write(record_xml, "PropSource", source_header);
-    write(record_xml, "Config_info", gauge_xml1);
+#if 0
+    {
+      QDPIO::cout << "Create config info" << endl;
+      XMLReader gauge_xml(prop_record_xml1, "/Propagator/Config_info");
+      ostringstream gauge_str;
+      gauge_xml.print(gauge_str);
+      write(record_xml, "Config_info", gauge_str);
+      QDPIO::cout << "Done config info" << endl;
+    }
+#endif
     pop(record_xml);
+
 
     // Write the source
     writeQprop(file_xml, record_xml, quark_propagator,
 	       input.prop.prop_file, input.prop.prop_volfmt, 
 	       QDPIO_SERIAL);
   }
+  QDPIO::cout << "New forward propagator successfully written" << endl;
 
 
   // Close the namelist output file XMLDAT
