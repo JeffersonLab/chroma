@@ -1,4 +1,4 @@
-// $Id: t_propagator_fuzz_s.cc,v 1.5 2004-03-23 20:48:54 mcneile Exp $
+// $Id: t_propagator_fuzz_s.cc,v 1.6 2004-08-03 16:22:20 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  *
@@ -274,7 +274,7 @@ int main(int argc, char **argv)
   
   XMLReader gauge_xml;
 
-  string nersc = "t_nersc.cfg" ; 
+  string nersc = "../../tests/t_asqtad_prop/t_nersc.cfg" ; 
   switch (input.param.cfg_type) 
   {
   case CFG_TYPE_NERSC :
@@ -291,7 +291,7 @@ int main(int argc, char **argv)
   //  
 
   // this parameter will be read from the input file
-  // bool do_gauge_transform ;
+  bool do_gauge_transform ;
   do_gauge_transform = false ;
   // do_gauge_transform = true ;
 
@@ -320,7 +320,7 @@ int main(int argc, char **argv)
 
 
   // Instantiate XML writer for XMLDAT
-  XMLFileWriter xml_out("XMLDAT");
+  XMLFileWriter xml_out("t_propagator_fuzz_s.xml");
   push(xml_out, "fuzzed_hadron_corr");
 
   // Write out the input
