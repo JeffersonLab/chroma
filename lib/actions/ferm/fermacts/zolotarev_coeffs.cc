@@ -265,7 +265,7 @@ static void sncndnK(INTERNAL_PRECISION z, INTERNAL_PRECISION k,
   *K = M_PI / (TWO * agm);
   sgn = ((int) (fabs(z) / *K)) % 4; /* sgn = 0, 1, 2, 3 */
   sgn ^= sgn >> 1;    /* sgn = 0, 1, 1, 0 */
-  sgn = 1 - (sgn << 1);	/* sgn = 1, -1, -1, 1 */
+  sgn = 1 - ((sgn & 1) << 1);	/* sgn = 1, -1, -1, 1 */
   *cn = ((INTERNAL_PRECISION) sgn) * sqrt(ONE - *sn * *sn);
   *dn = sqrt(ONE - k*k* *sn * *sn);
 }
