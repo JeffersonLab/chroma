@@ -1,4 +1,4 @@
-// $Id: t_invert3_precwilson.cc,v 1.2 2004-03-22 17:19:29 bjoo Exp $
+// $Id: t_invert3_precwilson.cc,v 1.3 2004-03-22 17:34:43 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -164,10 +164,15 @@ int main(int argc, char **argv)
   mydt *= Double(1.0e6);
   mydt /= (Double(Layout::sitesOnNode())/Double(2));
 
- 
-  QDPIO::cout << "PrecWilsonOp perf: " << Double(1320+24+12) / mydt << endl;
-  
-    for(iter=1; ; iter <<= 1)
+  Double linop_flops = Double(1320+24+12) / mydt;
+
+  QDPIO::cout << "PrecWilsonOp perf: " << linop_flops << " Mflop/s/node" << endl;
+  push(xml, "TimeLinOp");
+  write(xml, "time", mydt);
+  write(xml, "flops", linop_flops);
+  pop(xml);
+
+  for(iter=1; ; iter <<= 1)
   {
     psi = zero;
     QDPIO::cout << "Let 0 action inverter iterate "<< iter << " times" << endl;
@@ -200,7 +205,7 @@ int main(int argc, char **argv)
 
   // Snarfed from SZIN
   int  N_dslash = 1320;
-  int  N_mpsi   = 12 + 2*24 + 2*N_dslash;
+  int  N_mpsi   = 2*12 + 2*24 + 2*N_dslash;
   int  Nflops_c = (24 + 2*N_mpsi) + (48);     
   int Nflops_s = (2*N_mpsi + (2*48+2*24));   
   Double Nflops;
@@ -208,7 +213,7 @@ int main(int argc, char **argv)
   multi1d<Double> mflops(10);
   multi1d<Double> mydt_a(10);
   
-  for (int j=0; j < 10; ++j)
+  for (j=0; j < 10; ++j)
   {
     psi = zero;
 
@@ -238,7 +243,7 @@ int main(int argc, char **argv)
 
   mydt=1.0e6f*mydt/((Double)(Layout::sitesOnNode())/Double(2));
 
-  push(xml, "Time");
+  push(xml, "TimeCG2");
   write(xml, "iter", iter);
   write(xml, "N_dslash", N_dslash);
   write(xml, "N_mpsi", N_mpsi);
