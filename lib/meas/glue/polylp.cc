@@ -1,10 +1,10 @@
-// $Id: polylp.cc,v 1.4 2005-01-14 18:42:35 edwards Exp $
+// $Id: polylp.cc,v 1.5 2005-02-28 04:03:56 edwards Exp $
 /*! \file
  *  \brief Calculate the global normalized sum of the Polyakov loop
  */
 
 #include "chromabase.h"
-#include "meas/glue/mesplq.h"
+#include "meas/glue/polylp.h"
 
 namespace Chroma {
 
