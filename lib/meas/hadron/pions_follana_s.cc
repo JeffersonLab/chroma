@@ -10,8 +10,9 @@
  * YOU HAVE BEEN WARNED.
  */
 #include "chroma.h"
-#include "mesphas_follana_s.h"
+// #include "mesphas_follana_s.h"
 #include "pions_follana_s.h"
+#include "util/gauge/stag_phases_s.h"
 
 
 // I cant forward declare this for some reason
@@ -68,7 +69,9 @@ shiftDeltaProp(multi1d<int>& delta, const LatticePropagator& src);
  */
  
 
- 
+// THis brings the staggered phases alpha and beta into the namespace
+using namespace StagPhases;
+
 void 
 staggeredPionsFollana(multi1d<LatticePropagator>& quark_props,
 		      multi2d<DComplex>& pion_corr_fn,
@@ -113,11 +116,11 @@ staggeredPionsFollana(multi1d<LatticePropagator>& quark_props,
   timeslice.make(TimeSliceFunc(Nd-1));
 
   // Phases
-  multi1d<LatticeInteger> alpha(Nd); // KS Phases
-  multi1d<LatticeInteger> beta(Nd);  // Auxiliary phases for this work
+  //multi1d<LatticeInteger> alpha(Nd); // KS Phases
+  //multi1d<LatticeInteger> beta(Nd);  // Auxiliary phases for this work
 
-  // Get the phases
-  mesPhasFollana(alpha, beta);
+  // Get the phases -- now done elsewhere
+  // mesPhasFollana(alpha, beta);
   
   // Counters/Indices
   int pion_index = 0;
@@ -141,7 +144,7 @@ staggeredPionsFollana(multi1d<LatticePropagator>& quark_props,
     delta = 0;
     delta[mu] = 1;
       
-    corr_fn = beta[mu]*trace(shiftDeltaProp(delta,quark_props[0])
+    corr_fn =  beta(mu)*trace(shiftDeltaProp(delta,quark_props[0])
 			     *adj(quark_props[ deltaToPropIndex(delta) ]));
     
     pion_corr_fn[ pion_index ] = sumMulti(corr_fn, timeslice);
@@ -149,7 +152,7 @@ staggeredPionsFollana(multi1d<LatticePropagator>& quark_props,
   }
     
   // One link temporal
-  corr_fn = -alpha[Nd-1]*trace(adj(quark_props[0])*quark_props[0]);
+  corr_fn = -  alpha(Nd-1)*trace(adj(quark_props[0])*quark_props[0]);
   pion_corr_fn[ pion_index ] = sumMulti(corr_fn, timeslice);
   pion_index++;
 
@@ -160,7 +163,7 @@ staggeredPionsFollana(multi1d<LatticePropagator>& quark_props,
       delta[mu] = 1;
       delta[nu] = 1;
 
-      corr_fn = -beta[mu]*beta[nu]
+      corr_fn = - beta(mu)* beta(nu)
 	                      *trace(adj(shiftDeltaProp(delta,quark_props[0]))
 				     *quark_props[ deltaToPropIndex(delta) ]);
     
@@ -174,7 +177,7 @@ staggeredPionsFollana(multi1d<LatticePropagator>& quark_props,
       delta = 0;
       delta[mu] = 1;
     
-      corr_fn = -beta[mu]*alpha[Nd-1]
+      corr_fn = - beta(mu)*  alpha(Nd-1)
 	                      *trace(adj(shiftDeltaProp(delta,quark_props[0]))
 				     *quark_props[ deltaToPropIndex(delta) ]);
     
@@ -193,7 +196,7 @@ staggeredPionsFollana(multi1d<LatticePropagator>& quark_props,
 	delta[rho] = 1;
 
 	
-	corr_fn = -beta[mu]*beta[nu]*beta[rho]
+	corr_fn = - beta(mu) * beta(nu)* beta(rho)
 	  *trace(adj(shiftDeltaProp(delta,quark_props[0]))
 		 *quark_props[ deltaToPropIndex(delta) ]);
 	
@@ -211,7 +214,7 @@ staggeredPionsFollana(multi1d<LatticePropagator>& quark_props,
 	delta[mu] = 1;
 	delta[nu] = 1;
 
-	corr_fn = beta[mu]*beta[nu]*alpha[Nd-1]
+	corr_fn =  beta(mu)* beta(nu)*  alpha(Nd-1)
 	  *trace(adj(shiftDeltaProp(delta,quark_props[0]))
 		 *quark_props[ deltaToPropIndex(delta) ]);
 	
@@ -223,7 +226,7 @@ staggeredPionsFollana(multi1d<LatticePropagator>& quark_props,
   // Four link temporal
   delta = 0;
   delta[0] = delta[1] = delta[2] = 1;
-  corr_fn = -alpha[3]*beta[0]*beta[1]*beta[2]
+  corr_fn = - alpha(3)* beta(0)* beta(1) * beta(2)
     *trace(adj(shiftDeltaProp(delta, quark_props[0]))
 	   *quark_props[ deltaToPropIndex(delta) ] );
   

@@ -1,4 +1,4 @@
-// $Id: walfil_s.cc,v 1.3 2003-12-16 02:34:55 edwards Exp $
+// $Id: walfil_s.cc,v 1.4 2003-12-30 17:27:15 bjoo Exp $
 /*! \file
  *  \brief Wall source construction
  */
@@ -54,7 +54,7 @@ void walfil(LatticeFermion& a, int slice, int mu, int color_index)
 
   for(int m = 0; m < Nd; ++m)
     if ( m != mu )
-      ltest &= (mod(Layout::latticeCoordinate(m), 2) == 0);
+      ltest &= (  (Layout::latticeCoordinate(m) % 2) == 0);
 
   // Write onto the appropriate slice
   LatticeFermion tmp;

@@ -82,52 +82,33 @@ class ZolotarevConnectState : public ZolotarevConnectStateBase<T>
 
   typedef Real WordBase_t;
   
-  //! Constructor with "Default" approx max
-  ZolotarevConnectState(const multi1d<LatticeColorMatrix>& u_,
-			const WordBase_t& approxMin_)
-    {
-      u = u_;
-      eigValMax = 0;
-      approxMin = approxMin_;
-      approxMax = Real(2)*Real(Nd);
-    }
-
-
   //! Constructor with no eigenvalues
   ZolotarevConnectState(const multi1d<LatticeColorMatrix>& u_,  // gauge field
 			const WordBase_t& approxMin_,          // epsilon
 			const WordBase_t& approxMax_           // approx max
-			)
-    {
-      u = u_;
-      eigValMax = 0;
-      approxMin = approxMin_ ;
-      approxMax = approxMax_ ;
-    }
+			)  {
+    u = u_;
+    eigValMax = 0;
+    approxMin = approxMin_ ;
+    approxMax = approxMax_ ;
+  }
 
   //! Constructor with e-values and e-vectors
   ZolotarevConnectState(const multi1d<LatticeColorMatrix>& u_,
 			const multi1d<WordBase_t>& val_, 
 			const multi1d<T>& vec_,
-			const WordBase_t& val_max_)
-    {
+			const WordBase_t& val_max_,
+			const WordBase_t& approxMin_,
+			const WordBase_t& approxMax_)  {
 
-      // hhmm, for now make a copy
-      u = u_;
-      eigVal = val_;
-      eigVec = vec_;
-      eigValMax = val_max_;
-
-      int n_val = val_.size();
-      if( n_val > 0 ) { 
-	approxMin = eigVal[ n_val - 1];
-	approxMax = eigValMax;
-      }
-      else {
-	//
-	QDP_error_exit("ZolotarevConnectState: E-vector based constructor called with no e-vectors");
-      }
-    }
+    // hhmm, for now make a copy
+    u = u_;
+    eigVal = val_;
+    eigVec = vec_;
+    eigValMax = val_max_;
+    approxMin = approxMin_;
+    approxMax = approxMax_;
+  }
 
   ZolotarevConnectState(const ZolotarevConnectState& a) : u(a.u), eigVal(a.eigVal), eigVec(a.eigVec), eigValMax(a.eigValMax), approxMin(a.approxMin), approxMax(a.approxMax) {}
 

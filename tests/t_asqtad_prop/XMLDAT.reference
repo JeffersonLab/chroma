@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+
+
+<propagator>
+  <Input><propagator>
+  <IO_version>
+    <version>1</version>
+  </IO_version>
+  <param>
+    <Nc>3</Nc>
+    <Nd>4</Nd>
+    <FermTypeP>STAGGERED</FermTypeP>
+    <Mass>0.00</Mass>
+    <u0>0.463032</u0>
+    <cfg_type>NERSC</cfg_type>
+    <prop_type>SZIN</prop_type>
+    <RsdCG>1.0e-5</RsdCG>
+    <MaxCG>1000</MaxCG>
+    <nrow>4 4 4 4</nrow>
+    <boundary>1 1 1 1</boundary>
+    <t_srce>0 0 0 0</t_srce>
+  </param>
+  <Cfg>
+    <cfg_file>./t_nersc.cfg</cfg_file>
+  </Cfg>
+  <Prop>
+    <prop_file>prop.out</prop_file>
+  </Prop>
+</propagator>
+
+  </Input>
+  <Config_info><NERSC>
+      <mat_size>12</mat_size>
+      <nrow>4 4 4 4</nrow>
+      <boundary>1 1 1 1</boundary>
+      <ensemble_id>X1072803362</ensemble_id>
+      <ensemble_label>SZIN</ensemble_label>
+      <creator>SZIN</creator>
+      <creator_hardware>(Tue</creator_hardware>
+      <creation_date>Fri</creation_date>
+      <archive_date>Fri</archive_date>
+    </NERSC>
+
+  </Config_info>
+  <Source_info>
+
+  </Source_info>
+  <Output_version>
+    <out_version>1</out_version>
+  </Output_version>
+  <Observables>
+    <w_plaq>0.0382423</w_plaq>
+    <s_plaq>0.0441657</s_plaq>
+    <t_plaq>0.0323189</t_plaq>
+    <link>0.463032</link>
+  </Observables>
+  <Point_Point_Staggered_Hadron>
+    <j_decay>3</j_decay>
+    <Ontology>
+      <paper_reference>Nucl.Phys.B284:299,1987, Bowler et al.</paper_reference>
+      <Equation>2.18</Equation>
+    </Ontology>
+    <Point_Point_Staggered_Meson>
+      <M_PS>
+        <meson_prop>0 0 0 0</meson_prop>
+      </M_PS>
+      <M_VT>
+        <meson_prop>0 0 0 0</meson_prop>
+      </M_VT>
+      <M_PV>
+        <meson_prop>0 0 0 0</meson_prop>
+      </M_PV>
+      <M_SC>
+        <meson_prop>0 0 0 0</meson_prop>
+      </M_SC>
+    </Point_Point_Staggered_Meson>
+  </Point_Point_Staggered_Hadron>

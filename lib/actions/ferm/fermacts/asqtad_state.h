@@ -60,24 +60,12 @@ class AsqtadConnectState : public AsqtadConnectStateBase<T>
   typedef Real WordBase_t;
   
   //! Full Constructor
+  // Make deep copies here
   AsqtadConnectState(const multi1d<LatticeColorMatrix>& u_,
-		     const WordBase_t& u0,
-		     const multi1d<LatticeInteger>& phases) : u(u_)
-    {
+		     const multi1d<LatticeColorMatrix>& u_fat_,
+		     const multi1d<LatticeColorMatrix>& u_triple_)
+    : u(u_), u_fat(u_fat_), u_triple(u_triple_)  { };
 
-      // Compute fat and triple links. Multiply in K-S Phases.
-      u_fat.resize(Nd);
-      u_triple.resize(Nd);
-      Fat7_Links(u, u_fat, u0);
-      Triple_Links(u, u_triple, u0);
-
-//      int mu;
-//      for(mu=0; mu < Nd; mu++) { 
-//	u_fat(mu) *= phases(mu);
-//	u_triple(mu) *= phases(mu);
-//      }
-
-    }
 
   AsqtadConnectState(const AsqtadConnectState& a) : u(a.u), u_fat(a.u_fat), u_triple(a.u_triple) {}
 

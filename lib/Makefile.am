@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.76 2003-12-22 02:19:50 edwards Exp $
+# $Id: Makefile.am,v 1.77 2003-12-30 17:27:15 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -90,7 +90,7 @@ libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
 #
 if BUILD_WILSON_LIBS
 libchroma_a_SOURCES += baryon_w.cc mesons_w.cc curcor2_w.cc lwldslash_w.cc formfac_w.cc \
-              mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc wall_qprop_w.cc \
+              mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
               sink_smear2_w.cc barcomp_w.cc ldwfdslash_w.cc walfil_w.cc \
               fermact_qprop.cc prec_fermact_qprop.cc \
               unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
@@ -109,6 +109,7 @@ libchroma_a_SOURCES += baryon_w.cc mesons_w.cc curcor2_w.cc lwldslash_w.cc formf
               overlapbu_linop_w.cc \
               p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc \
 	      zolotarev_coeffs.cc overlap_fermact_base_w.cc lovlapms_w.cc  zolotarev4d_fermact_bj_w.cc
+#	      wall_qprop_w.cc
 # zolotarev4d_linop_w.cc 
 # dslashm_w.cc 
 endif
@@ -129,7 +130,7 @@ if BUILD_STAGGERED_LIBS
 libchroma_a_SOURCES += mesphas_s.cc mesphas_follana_s.cc pions_follana_s.cc \
 	follana_io_s.cc fermact_qprop.cc walfil_s.cc \
 	asqtad_linop_s.cc asq_dsl_s.cc fat7_links_s.cc naik_term_s.cc  \
-	asqtad_fermact_s.cc asqtad_mdagm_s.cc staggered_qprop.cc
+	asqtad_fermact_s.cc asqtad_mdagm_s.cc staggered_qprop.cc stag_phases_s.cc
 endif
 
 

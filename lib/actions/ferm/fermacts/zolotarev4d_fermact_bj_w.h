@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev4d_fermact_bj_w.h,v 1.2 2003-12-15 17:52:51 bjoo Exp $
+// $Id: zolotarev4d_fermact_bj_w.h,v 1.3 2003-12-30 17:27:15 bjoo Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -30,9 +30,9 @@ public:
   //! Full constructor
   Zolotarev4DFermActBj(const UnprecWilsonTypeFermAct<LatticeFermion>& Mact_, 
 		       const Real& m_q_,
-		       int RatPolyDeg_,
-		       Real RsdCGinner_,
-		       int MaxCGinner_,
+		       int& RatPolyDeg_,
+		       Real& RsdCGinner_,
+		       int& MaxCGinner_,
 		       XMLBufferWriter& writer_) :
     Mact(Mact_), m_q(m_q_), RatPolyDeg(RatPolyDeg_), RsdCGinner(RsdCGinner_), MaxCGinner(MaxCGinner_), writer(writer_)
     {}
@@ -47,6 +47,38 @@ public:
   XMLBufferWriter& getWriter() const { 
     return writer;
   }
+
+  // Create state functions
+
+  // Just gauge field and epsilon -- Approx Max is 2*Nd 
+  const ZolotarevConnectStateBase<LatticeFermion>*
+  createState(const multi1d<LatticeColorMatrix>& u_, 
+	      const Real& approxMin_) const ;
+ 
+  // Gauge field, epsilon, approx min, approx max
+  const ZolotarevConnectStateBase<LatticeFermion>*
+  createState(const multi1d<LatticeColorMatrix>& u_, 
+	      const Real& approxMin_, 
+	      const Real& approxMax_) const;
+
+
+  // Gauge field, e-values, e-vectors
+  const ZolotarevConnectStateBase<LatticeFermion>*
+  createState(const multi1d<LatticeColorMatrix>& u_,
+	      const multi1d<Real>& lambda_lo_,
+	      const multi1d<LatticeFermion>& evecs_lo_, 
+	      const Real& lambda_hi_) const;
+
+  // Gauge field, e-values, e-vectors and explicit approx min and approx max
+  /*
+  const ZolotarevConnectStateBase<LatticeFermion>*
+  createState(const multi1d<LatticeColorMatrix>& u_, 
+	      const multi1d<Real>& lambda_lo_,
+	      const multi1d<LatticeFermion>& evecs_lo_,
+	      const Real& lambda_hi_, 
+	      const Real& approxMin_,
+	      const Real& approxMax_) const;
+  */
 
   //! Produce a linear operator for this action
   /*! 

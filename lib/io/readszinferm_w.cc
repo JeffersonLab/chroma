@@ -1,4 +1,4 @@
-// $Id: readszinferm_w.cc,v 1.4 2003-10-16 01:41:01 edwards Exp $: readszinqprop_w.cc,v 1.6 2003/04/30 21:19:33 edwards Exp $
+// $Id: readszinferm_w.cc,v 1.5 2003-12-30 17:27:15 bjoo Exp $: readszinqprop_w.cc,v 1.6 2003/04/30 21:19:33 edwards Exp $
 /*!
  * @file
  * @brief  Read an old SZIN-style (checkerboarded) lattice Dirac fermion
@@ -23,6 +23,8 @@ void readSzinFerm(LatticeFermion& q, const string& file)
 {
   BinaryReader cfg_in(file);
 
+  multi1d<Real64>  buffer(Ns*Nc*2);  // Buffer for a fermion
+
   //
   // Read propagator field
   //
@@ -44,7 +46,38 @@ void readSzinFerm(LatticeFermion& q, const string& file)
       // The true lattice x-coord
       coord[0] = 2*coord[0] + ((sum + cb) & 1);
 
-      read(cfg_in, q, coord); 	// Read in a site propagator
+
+      read(cfg_in, buffer, Nc*Ns*2);
+      Fermion q_tmp;
+      int bufindex = 0;
+      
+
+      for(int spin=0; spin < Ns; ++spin) {
+	ColorVector tmp_vec;
+	
+	for(int col = 0; col < Nc; ++col) {
+	  Complex tmp_cmpx;
+	  Real64 re, im;
+
+	  re = buffer[bufindex];
+	  bufindex++;
+	  im = buffer[bufindex];
+	  bufindex++;
+	  tmp_cmpx = cmplx((Real)re,(Real)im);
+
+	  pokeColor(tmp_vec, 
+		    tmp_cmpx,
+		    col);
+	}
+	pokeSpin(q_tmp, 
+		 tmp_vec, 
+		 spin);
+      }
+
+      pokeSite(q, q_tmp, coord);
+
+      //cout << q_tmp << endl;
+      //read(cfg_in, q, coord); 	// Read in a site propagator
     }
   }
 

@@ -1,14 +1,17 @@
-// $Id: zolotarev4d_fermact_bj_w.cc,v 1.5 2003-12-17 14:54:34 bjoo Exp $
+// $Id: zolotarev4d_fermact_bj_w.cc,v 1.6 2003-12-30 17:27:15 bjoo Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
-
+#include <sstream>
 #include "chromabase.h"
-#include "actions/ferm/fermacts/zolotarev4d_fermact_bj_w.h"
 #include <zolotarev.h>
 #include <linearop.h>
+
+#include "actions/ferm/fermacts/zolotarev_state.h"
+#include "actions/ferm/fermacts/zolotarev4d_fermact_bj_w.h"
 #include "actions/ferm/linop/lovlapms_w.h"
 
+using namespace std;
 // Replace this with special overlap M^dag*M version
 // #include "actions/ferm/linop/lmdagm_w.h"
 
@@ -255,3 +258,96 @@ Zolotarev4DFermActBj::linOp(const ConnectState& state_) const
 }
 
 
+const ZolotarevConnectStateBase<LatticeFermion>*
+Zolotarev4DFermActBj::createState(const multi1d<LatticeColorMatrix>& u_,
+				  const Real& approxMin_) const 
+{
+  /* if ( ! ( approxMin_ > Real(0) )) { 
+    ostringstream error_str;
+    error_str << "Zolotarev4DFermActBj: approxMin_ has to be positive" << endl;
+    throw error_str.str();
+  }
+  */
+
+  Real approxMax = Real(2)*Real(Nd);
+  return new ZolotarevConnectState<LatticeFermion>(u_, approxMin_, approxMax);
+}
+
+
+const ZolotarevConnectStateBase<LatticeFermion>*
+Zolotarev4DFermActBj::createState(const multi1d<LatticeColorMatrix>& u_,
+				  const Real& approxMin_,
+				  const Real& approxMax_) const
+{
+  ostringstream error_str;
+  
+  /*
+  if ( !(approxMin_ > 0 )) { 
+    error_str << "Zolotarev4DFermActBj: approxMin_ has to be positive" << endl;
+    throw error_str.str();
+  }
+
+  if ( ! (approxMax_ > approxMin_) ) { 
+    error_str << "Zolotarev4DFermActBj: approxMax_ has to be larger than approxMin_" << endl;
+    throw error_str.str();
+  }
+  */
+
+  return new ZolotarevConnectState<LatticeFermion>(u_, approxMin_, approxMax_);
+}
+
+
+
+const ZolotarevConnectStateBase<LatticeFermion>*
+Zolotarev4DFermActBj::createState(const multi1d<LatticeColorMatrix>& u_,
+				  const multi1d<Real>& lambda_lo_, 
+				  const multi1d<LatticeFermion>& evecs_lo_,
+				  const Real& lambda_hi_) const
+{
+  ostringstream error_str;
+
+  if ( lambda_lo_.size() == 0 ) {
+    error_str << "Attempt to createState with 0 e-values and no approxMin" << endl;
+    throw error_str.str();
+  }
+
+  if ( lambda_lo_.size() != evecs_lo_.size() ) {
+    error_str << "Attempt to createState with no of low eigenvalues != no of low eigenvectors" << endl;
+    throw error_str.str();
+  }
+
+  Real approxMax = lambda_hi_;
+  Real approxMin = fabs(lambda_lo_[ lambda_lo_.size() - 1 ]);
+
+  return new ZolotarevConnectState<LatticeFermion>(u_, lambda_lo_, evecs_lo_, lambda_hi_, approxMin, approxMax);
+}
+
+/*
+const ZolotarevConnectStateBase<LatticeFermion>*
+Zolotarev4DFermActBj::createState(const multi1d<LatticeColorMatrix>& u_,
+				  const multi1d<Real>& lambda_lo_, 
+				  const multi1d<LatticeFermion>& evecs_lo_,
+				  const Real& lambda_hi_,
+				  const Real& approxMin_,
+				  const Real& approxMax_) const
+{
+
+  if ( lambda_lo_.size() != evecs_lo_.size() ) {
+    ostringstream error_str;
+    error_str << "Attempt to createState with no of low eigenvalues != no of low eigenvectors" << endl;
+    throw error_str.str();
+  }
+
+  if ( approxMin_ <= 0 ) { 
+    error_str << "Zolotarev4DFermActBj: approxMin_ has to be positive" << endl;
+    throw error_str.str();
+  }
+
+  if ( approxMax_ <= approxMin ) { 
+    error_str << "Zolotarev4DFermActBj: approxMax_ has to be larger than approxMin_" << endl;
+    throw error_str.str();
+  }
+
+  return new ZolotarevConnectState<LatticeFermion>(u_, lambda_lo_, evecs_lo, lambda_hi, approxMin_, approxMax_);
+}
+*/

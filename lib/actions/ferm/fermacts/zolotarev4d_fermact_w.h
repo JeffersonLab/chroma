@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev4d_fermact_w.h,v 1.11 2003-12-09 10:33:42 bjoo Exp $
+// $Id: zolotarev4d_fermact_w.h,v 1.12 2003-12-30 17:27:15 bjoo Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -50,6 +50,7 @@ public:
 
   //! Full version, given links create the state needed for the linear operators
   /*! New function */
+
   const EVConnectStateBase<LatticeFermion>* 
     createState(const multi1d<LatticeColorMatrix>& u, 
 		const multi1d<LatticeFermion>& eigVec, 

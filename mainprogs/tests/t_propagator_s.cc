@@ -1,4 +1,4 @@
-// $Id: t_propagator_s.cc,v 1.5 2003-12-20 12:12:46 bjoo Exp $
+// $Id: t_propagator_s.cc,v 1.6 2003-12-30 17:27:16 bjoo Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -16,6 +16,7 @@
 #include "meas/hadron/mesphas_follana_s.h"
 #include "meas/hadron/srcfil.h"
 #include "util/gauge/phfctr.h"
+#include "util/gauge/stag_phases_s.h"
 #include "meas/hadron/mesphas_s.h"
 
 /*
@@ -481,18 +482,18 @@ int main(int argc, char **argv)
 
   xml_out.flush();
 
-    // Phases
-  multi1d<LatticeInteger> alpha(Nd); // KS Phases
-  multi1d<LatticeInteger> beta(Nd);  // Auxiliary phases for this work (not needed here)
+  // Phases
+  // multi1d<LatticeInteger> alpha(Nd); // KS Phases
+  // multi1d<LatticeInteger> beta(Nd);  // Auxiliary phases for this work (not needed here)
 
   // Turn on KS phases
-  // first get them!
-    mesPhasFollana(alpha, beta);
-    for(int mu=0; mu<Nd; mu++) {
-      u[mu] *= alpha[mu];
-    }
-  // Apply the boundary conditions
+  // New way to do this:
+  //
+  // for(int mu=0; mu < Nd; mu++) { 
+  //   u[mu] *= StagPhases::alpha(mu);
+  // }
 
+  // Apply the boundary conditions
   setph(input.param.boundary);
   phfctr(u);
   //

@@ -1,4 +1,4 @@
-// $Id: unprec_wilson_linop_w.cc,v 1.6 2003-12-17 13:22:59 bjoo Exp $
+// $Id: unprec_wilson_linop_w.cc,v 1.7 2003-12-30 17:27:15 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -41,13 +41,15 @@ void UnprecWilsonLinOp::operator() (LatticeFermion& chi, const LatticeFermion& p
   //  Chi   =  (Nd+Mass)*Psi  -  (1/2) * D' Psi
   //
   LatticeFermion tmp;
-  Real fact1 = Nd + Mass;
-  Real fact2 = -0.5;
+  // Real fact1 = Nd + Mass;
+  // Real fact2 = -0.5;
 
+  Real kappa = Real(1) / ( Real(2) * (Nd + Mass) );
   // D is a Dslash - must apply to both CB-s
   D(tmp, psi, isign);
 
-  chi = fact1*psi + fact2*tmp;
-  
+  // chi = fact1*psi + fact2*tmp;
+  chi = psi - kappa*tmp;
+
   END_CODE("UnprecWilsonLinOp");
 }

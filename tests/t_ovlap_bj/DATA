@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<params>
+  <lattice>
+    <nrow>4 4 4 8</nrow>
+    <boundary>1 1 1 -1</boundary>
+  </lattice>
+  <RNG>
+    <seed>11 0 0 0</seed>
+  </RNG>
+  <eValues>
+     <lambda> 
+	 -0.2571789 
+	  0.2578528
+	 -0.2590723
+	  0.260538
+	  0.2617994
+	 -0.2619597
+	 -0.2626921
+	  0.2629697
+	 -0.2645176
+	  0.2646132
+	 -0.2649786
+	  0.2656935
+     </lambda>
+     <lambdaMax> 2.486009 </lambdaMax>
+  </eValues>
+  <Cfg>
+     <startType>2</startType>
+     <gaugeFilename>./test_purgaug.cfg1</gaugeFilename>
+     <gaugeFileFormat>0</gaugeFileFormat>
+  </Cfg>
+  <zolotarev>
+     <approxOrder>14</approxOrder>
+     <wilsonMass>-1.4</wilsonMass>
+     <quarkMass>0</quarkMass>
+     <RsdCG>1.0e-7</RsdCG>
+     <MaxCG>500</MaxCG>
+  </zolotarev>   
+</params>
