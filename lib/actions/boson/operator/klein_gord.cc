@@ -1,10 +1,10 @@
-// $Id: klein_gord.cc,v 1.1 2003-04-09 05:57:56 edwards Exp $
+// $Id: klein_gord.cc,v 1.2 2003-04-09 19:42:42 edwards Exp $
 /*! \file
  *  \brief Apply Klein-Gordon operator
  */
 
 #include "qdp.h"
-#include "actions/dirac/klein_gord.h"
+#include "actions/boson/operator/klein_gord.h"
 
 using namespace QDP;
 
