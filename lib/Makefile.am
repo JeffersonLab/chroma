@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.77 2003-12-30 17:27:15 bjoo Exp $
+# $Id: Makefile.am,v 1.78 2004-01-02 02:55:52 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -53,7 +53,7 @@ VPATH += $(TOPDIR)/root
 # Include Path
 #
 INCFLAGS = -I$(TOPDIR)/include
- 
+
 #
 # Any other compiler flags
 # 
@@ -82,7 +82,7 @@ libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
                su2extract.cc sunfill.cc invcg1.cc invcg2.cc invcg2_array.cc qprop_io.cc \
                milc_io.cc readmilc.cc writemilc.cc \
                axgauge.cc coulgauge.cc grelax.cc polar_dec.cc rot_colvec.cc \
-	       transf.cc phfctr.cc
+	       transf.cc
 
 #
 # Object files to add if building the Wilson Builds...
