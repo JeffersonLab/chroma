@@ -282,7 +282,6 @@ namespace Chroma {
 	}
       }
 
-
       // Normalise v[i]
       Double norm = norm2(v[i][0], s);
 
