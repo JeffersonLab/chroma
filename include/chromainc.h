@@ -1,4 +1,4 @@
-// $Id: chromainc.h,v 1.10 2003-10-14 17:39:02 edwards Exp $
+// $Id: chromainc.h,v 1.11 2003-10-15 22:03:45 edwards Exp $
 //
 // Include file that includes all the include files.
 
@@ -6,6 +6,7 @@
 #define CHROMAINC_INCLUDE
 
 #include "qdp.h"
+#include "qdp_iogauge.h"
 
 #include "linearop.h"
 #include "primitives.h"
