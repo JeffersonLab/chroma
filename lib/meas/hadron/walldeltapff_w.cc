@@ -1,4 +1,4 @@
-// $Id: walldeltapff_w.cc,v 1.4 2004-06-01 04:12:49 edwards Exp $
+// $Id: walldeltapff_w.cc,v 1.5 2004-06-01 04:33:33 edwards Exp $
 /*! \file
  *  \brief Wall-sink delta^+ -> gamma+proton form-factors 
  *
@@ -368,7 +368,7 @@ void wallDeltaPFormFac(XMLWriter& xml,
     multi1d<LatticeSpinMatrix> nonlocal_contract(2);
 
     // Loop over "u"=0 or "d"=1 pieces
-    for(int ud; ud < 2; ++ud)
+    for(int ud = 0; ud < 2; ++ud)
     {
       switch (ud)
       {
@@ -432,7 +432,7 @@ void wallDeltaPFormFac(XMLWriter& xml,
 
 
       // Loop over "delta->p"=0 or "p->delta"=1 types of form-factors
-      for(int dp; dp < 2; ++dp)
+      for(int dp = 0; dp < 2; ++dp)
       {
 	// Loop over insertions types - these are the spin projectors
 	for (int proj = 0; proj < Nd; ++proj) 
