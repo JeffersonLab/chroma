@@ -1,34 +1,16 @@
-// $Id: t_ritz5d_KS.cc,v 1.4 2005-01-14 20:13:10 edwards Exp $
-
-#include <iostream>
-#include <sstream>
-#include <iomanip>
-#include <string>
-
-#include <cstdio>
-
-#include <stdlib.h>
-#include <sys/time.h>
-#include <math.h>
+// $Id: t_ritz5d_KS.cc,v 1.5 2005-02-11 16:06:14 edwards Exp $
 
 #include "chroma.h"
 
 using namespace Chroma;
 
-enum GaugeStartType { HOT_START = 0, COLD_START = 1, FILE_START = 2 };
-enum GaugeFormat { SZIN_GAUGE_FORMAT = 0, NERSC_GAUGE_FORMAT = 1 };
-
-
-
 // Struct for test parameters
 //
-typedef struct {
+struct Param_t {
   multi1d<int> nrow;
   multi1d<int> boundary;
   multi1d<int> rng_seed;
-  int gauge_start_type;
-  int gauge_file_format;
-  string gauge_filename;
+  Cfg_t        cfg;
   
   Real quark_mass;
   Real rsd_r;
@@ -46,39 +28,36 @@ typedef struct {
   Real approx_min;
   Real approx_max;
   
-} Param_t;
+};
 
 // Declare routine to read the parameters
 void readParams(const string& filename, Param_t& params)
 {
   XMLReader reader(filename);
 
-  try {
+  try 
+  {
     // Read Params
     read(reader, "/params/lattice/nrow", params.nrow);
     read(reader, "/params/lattice/boundary", params.boundary);
     read(reader, "/params/RNG/seed", params.rng_seed);
     read(reader, "/params/quarkMass", params.quark_mass);
 
-    read(reader, "/params/Cfg/startType", params.gauge_start_type);
-    if( params.gauge_start_type == FILE_START ) { 
-      read(reader, "/params/Cfg/gaugeFilename", params.gauge_filename);
-      read(reader, "/params/Cfg/gaugeFileFormat", params.gauge_file_format);
-    }
+    read(reader, "/params/Cfg", params.cfg);
    
-   read(reader, "/params/eig/RsdR", params.rsd_r);
-   read(reader, "/params/eig/RsdA", params.rsd_a);
-   read(reader, "/params/eig/RsdZero", params.rsd_zero);
-   read(reader, "/params/eig/gammaFactor", params.gamma_factor);
-   read(reader, "/params/eig/ProjApsiP",  params.projApsiP);
-   read(reader, "/params/eig/MaxKS", params.max_KS);
-   read(reader, "/params/eig/MaxCG", params.max_cg);
-   read(reader, "/params/eig/Neig", params.n_eig);
-   read(reader, "/params/eig/Ndummy", params.n_dummy);
-   read(reader, "/params/zolotarev/approxOrder", params.approx_order);
-   read(reader, "/params/zolotarev/approxMin", params.approx_min);
-   read(reader, "/params/zolotarev/approxMax", params.approx_max);
-   read(reader, "/params/zolotarev/wilsonMass", params.wilson_mass);
+    read(reader, "/params/eig/RsdR", params.rsd_r);
+    read(reader, "/params/eig/RsdA", params.rsd_a);
+    read(reader, "/params/eig/RsdZero", params.rsd_zero);
+    read(reader, "/params/eig/gammaFactor", params.gamma_factor);
+    read(reader, "/params/eig/ProjApsiP",  params.projApsiP);
+    read(reader, "/params/eig/MaxKS", params.max_KS);
+    read(reader, "/params/eig/MaxCG", params.max_cg);
+    read(reader, "/params/eig/Neig", params.n_eig);
+    read(reader, "/params/eig/Ndummy", params.n_dummy);
+    read(reader, "/params/zolotarev/approxOrder", params.approx_order);
+    read(reader, "/params/zolotarev/approxMin", params.approx_min);
+    read(reader, "/params/zolotarev/approxMax", params.approx_max);
+    read(reader, "/params/zolotarev/wilsonMass", params.wilson_mass);
 
   }
   catch(const string& e) { 
@@ -98,13 +77,7 @@ void dumpParams(XMLWriter& writer, Param_t& params)
   pop(writer); // RNG
 
   write(writer, "quarkMass", params.quark_mass);
-  push(writer, "Cfg");
-  write(writer, "startType", params.gauge_start_type);
-  if( params.gauge_start_type == FILE_START ) { 
-    write(writer, "gaugeFileFormat", params.gauge_file_format);
-    write(writer, "gaugeFilename", params.gauge_filename);
-  }
-  pop(writer); // Cfg
+  write(writer, "Cfg", params.cfg);
 
   push(writer, "eig");
   write(writer, "RsdR", params.rsd_r);
@@ -155,76 +128,10 @@ int main(int argc, char **argv)
 
   dumpParams(xml_out, params);
 
-
-  // Create a FermBC
-  Handle<FermBC<LatticeFermion> >  fbc(new SimpleFermBC<LatticeFermion>(params.boundary));
-  
   // The Gauge Field
   multi1d<LatticeColorMatrix> u(Nd);
-  
-  switch ((GaugeStartType)params.gauge_start_type) { 
-  case COLD_START:
-    for(int j = 0; j < Nd; j++) { 
-      u(j) = Real(1);
-    }
-    break;
-  case HOT_START:
-    // Hot (disordered) start
-    for(int j=0; j < Nd; j++) { 
-      random(u(j));
-      reunit(u(j));
-    }
-    break;
-  case FILE_START:
-
-    // Start from File 
-    switch( (GaugeFormat)params.gauge_file_format) { 
-    case SZIN_GAUGE_FORMAT:
-      {
-	XMLReader szin_xml;
-	readSzin(szin_xml, u, params.gauge_filename);
-	try { 
-	  push(xml_out, "GaugeInfo");
-	  xml_out << szin_xml;
-	  pop(xml_out);
-
-	}
-	catch(const string& e) {
-	  cerr << "Error: " << e << endl;
-	}
-	
-      }
-      break;
-
-    case NERSC_GAUGE_FORMAT:
-      {
-	XMLReader nersc_xml;
-	readArchiv(nersc_xml, u, params.gauge_filename);
-
-	try { 
-	  push(xml_out, "GaugeInfo");
-	  xml_out << nersc_xml;
-	  pop(xml_out);
-
-	}
-	catch(const string& e) {
-	  cerr << "Error: " << e << endl;
-	}
-      }
-      break;
-
-    default:
-      ostringstream file_read_error;
-      file_read_error << "Unknown gauge file format" << params.gauge_file_format ;
-      throw file_read_error.str();
-    }
-    break;
-  default:
-    ostringstream startup_error;
-    startup_error << "Unknown start type " << params.gauge_start_type <<endl;
-    throw startup_error.str();
-  }
-
+  XMLReader gauge_file_xml, gauge_xml;
+  gaugeStartup(gauge_file_xml, gauge_xml, u, params.cfg);
 
   // Measure the plaquette on the gauge
   Double w_plaq, s_plaq, t_plaq, link;
@@ -237,22 +144,21 @@ int main(int argc, char **argv)
   pop(xml_out);
 
   //! Wilsoniums;
-  // Put this puppy into a handle to allow Zolo to copy it around as a **BASE** class
-  // WARNING: the handle now owns the data. The use of a bare S_w below is legal,
-  // but just don't delete it.
 
+  // Create a FermBC
+  Handle<FermBC<LatticeFermion> >  fbc(new SimpleFermBC<LatticeFermion>(params.boundary));
 
   // Auxiliary action
-  Handle<UnprecWilsonTypeFermAct<LatticeFermion> > S_w(new UnprecWilsonFermAct(fbc, params.wilson_mass));
+  Handle<UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> > > S_w(new UnprecWilsonFermAct(fbc, params.wilson_mass));
 
   Handle< FermBC< multi1d<LatticeFermion> > >  fbc5(new SimpleFermBC<multi1d<LatticeFermion> >(params.boundary));
 
   XMLBufferWriter my_writer;
-  Zolotarev5DFermActArray   S(fbc5,
-			      S_w, 
-			      params.quark_mass,
-			      params.approx_order,
-			      my_writer);
+UnprecOvlapContFrac5DFermActArray S(fbc5,
+				    S_w, 
+				    params.quark_mass,
+				    params.approx_order,
+				    my_writer);
   
   Handle< const ConnectState > connect_state(S.createState(u, 
 							   Real(params.approx_min), 
