@@ -1,10 +1,11 @@
-// $Id: genapprox.cc,v 1.1 2005-02-03 03:16:41 edwards Exp $
+// $Id: genapprox.cc,v 1.2 2005-03-21 16:18:43 edwards Exp $
 /*! @file
  * @brief Wrapper for Remez code
  */
 
 #include "chromabase.h"
 #include "actions/ferm/fermacts/remez.h"
+#include "update/molecdyn/monomial/genapprox.h"
 
 namespace Chroma 
 { 
