@@ -1,4 +1,4 @@
-// $Id: prec_parwilson_linop_w.cc,v 1.3 2004-12-12 21:22:16 edwards Exp $
+// $Id: prec_parwilson_linop_w.cc,v 1.4 2005-01-11 19:02:55 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion linear operator with parity breaking term
  */
@@ -52,6 +52,7 @@ namespace Chroma
     END_CODE();
   }
 
+
   //! Apply odd-even linop component
   /*!
    * The operator acts on the entire odd sublattice
@@ -76,8 +77,55 @@ namespace Chroma
   }
 
 
-#if 0
+  //! Derivative of even-odd linop component
+  void 
+  EvenOddPrecParWilsonLinOp::derivEvenOddLinOp(multi1d<LatticeColorMatrix>& ds_u,
+					       const LatticeFermion& chi, 
+					       const LatticeFermion& psi, 
+					       enum PlusMinus isign) const
+  {
+    START_CODE();
 
+    ds_u.resize(Nd);
+
+    D.deriv(ds_u, chi, psi, isign, 0);
+    for(int mu=0; mu < Nd; mu++) {
+      ds_u[mu] *=  Real(-0.5);
+    }
+
+    END_CODE();
+  }
+
+
+  //! Derivative of odd-even linop component
+  void 
+  EvenOddPrecParWilsonLinOp::derivOddEvenLinOp(multi1d<LatticeColorMatrix>& ds_u,
+					       const LatticeFermion& chi, 
+					       const LatticeFermion& psi, 
+					       enum PlusMinus isign) const
+  {
+    START_CODE();
+
+    ds_u.resize(Nd);
+
+    D.deriv(ds_u, chi, psi, isign, 1);
+    for(int mu=0; mu < Nd; mu++) { 
+      ds_u[mu]  *= Real(-0.5);
+    }
+    END_CODE();
+  }
+
+
+
+#if 0
+// Code is here only as a reference. It should be deleted at some point.
+// This is converted szin code.
+// The above derivs will work, calling evenEvenInvLinOp to get that
+// contribution. 
+// However, for more performance, one should copy the regular Wilson
+// deriv() routine and modify it.
+
+#error "ANCIENT SZIN CODE"
 #error "Not quite correct implementation"
 
 
