@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.94 2005-03-03 04:05:18 edwards Exp $
+// $Id: propagator.cc,v 1.95 2005-03-06 17:21:18 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -263,7 +263,7 @@ int main(int argc, char **argv)
   catch (const std::string& e) 
   {
     QDPIO::cerr << "Error reading fermact: " << e << endl;
-    throw;
+    QDP_abort(1);
   }
 
   QDPIO::cout << "FermAct = " << fermact << endl;
