@@ -1,4 +1,4 @@
-// $Id: wallformfac.cc,v 1.10 2004-04-04 03:58:55 edwards Exp $
+// $Id: wallformfac.cc,v 1.11 2004-04-04 04:06:28 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions with a wall sink
  *
@@ -230,6 +230,12 @@ main(int argc, char *argv[])
     pop(xml_out);
   }
 
+  // Save forward prop input
+  push(xml_out, "ForwardPropHeaders");
+  write(xml_out, "ForwardProp", forward_prop_header);
+  write(xml_out, "PropSource", forward_source_header);
+  pop(xml_out);
+
 
   // Read the backward propagator
   XMLReader backprop_file_xml, backprop_record_xml;
@@ -273,6 +279,12 @@ main(int argc, char *argv[])
     write(xml_out, "backward_prop_corr", backward_prop_corr);
     pop(xml_out);
   }
+
+  // Save backward prop input
+  push(xml_out, "BackwardPropHeaders");
+  write(xml_out, "ForwardProp", backward_prop_header);
+  write(xml_out, "PropSource", backward_source_header);
+  pop(xml_out);
 
   
   //
