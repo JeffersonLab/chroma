@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: wallformfac_rhopi.pl,v 1.12 2004-09-16 19:28:46 edwards Exp $
+# $Id: wallformfac_rhopi.pl,v 1.13 2004-09-17 20:24:28 edwards Exp $
 #
 # Usage
 #   wallformfac_rhopi.pl
@@ -353,8 +353,8 @@ foreach $h ('RHO_PI')
 
 		$qsq_dim = &compute_pipf_sq($rho_mass{$cp_i[0],$cp_i[1],$cp_i[2]},*p_i,
 					    $pion_mass{$cp_f[0],$cp_f[1],$cp_f[2]},*p_f);
-#		$rhopi_disp = -(($fmtoGeV/$a)**2)*$qsq_dim;
-		$rhopi_disp =  (($fmtoGeV/$a)**2)*$qsq_dim;   # do not flip sign!!!!
+ 		$rhopi_disp = -(($fmtoGeV/$a)**2)*$qsq_dim;
+#		$rhopi_disp =  (($fmtoGeV/$a)**2)*$qsq_dim;   # do not flip sign!!!!
 		printf "pion mass = %g +- %g,  rho mass = %g +- %g,   qsq (via vector disp) = %g, qsq (GeV^2) = %g\n", 
 		$pion_mass{$cp_f[0],$cp_f[1],$cp_f[2]}, $pion_mass_err{$cp_f[0],$cp_f[1],$cp_f[2]}, 
 		$rho_mass{$cp_i[0],$cp_i[1],$cp_i[2]}, $rho_mass_err{$cp_i[0],$cp_i[1],$cp_i[2]}, 
