@@ -1,4 +1,4 @@
-// $Id: unprec_zolo_nef_fermact_array_w.cc,v 1.1 2004-10-21 16:43:20 bjoo Exp $
+// $Id: unprec_zolo_nef_fermact_array_w.cc,v 1.2 2004-10-22 03:16:31 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF fermion action
  */
@@ -80,8 +80,6 @@ namespace Chroma
 					     multi1d<Real>& c5,
 					     Handle<const ConnectState>& state) const
   {
-
-
     b5.resize(N5);
     c5.resize(N5);
 
@@ -115,12 +113,7 @@ namespace Chroma
       gamma[i] = Real(rdata->gamma[i]);
     }
 
-    free( rdata->a );
-    free( rdata->ap );
-    free( rdata->alpha );
-    free( rdata->beta );
-    free( rdata->gamma );
-    free( rdata );
+    zolotarev_free(rdata);
 
     for(int i=0; i < N5; i++) { 
       QDPIO::cout << "gamma[" << i << "] = " << gamma[i] << endl;
@@ -145,8 +138,8 @@ namespace Chroma
   const UnprecDWLinOpBaseArray<LatticeFermion>* 
   UnprecZoloNEFFermActArray::linOp(Handle<const ConnectState> state) const
   {
-    multi1d<Real> b5(N5);
-    multi1d<Real> c5(N5);
+    multi1d<Real> b5;
+    multi1d<Real> c5;
 
     // Cast the state up to an overlap state
     initCoeffs(b5,c5,state);
@@ -179,9 +172,12 @@ namespace Chroma
   const UnprecDWLinOpBaseArray<LatticeFermion>* 
   UnprecZoloNEFFermActArray::linOpPV(Handle<const ConnectState> state) const
   {
-    multi1d<Real> b5(N5);
-    multi1d<Real> c5(N5);
+    multi1d<Real> b5;
+    multi1d<Real> c5;
 
+    // Cast the state up to an overlap state
+    initCoeffs(b5,c5,state);
+    
     return new UnprecNEFDWLinOpArray(state->getLinks(),OverMass,b5,c5,1.0,N5);  // fixed to quark mass 1
   }
 
