@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_nef_linop_array_w.h,v 1.8 2004-09-19 02:37:06 edwards Exp $
+// $Id: unprec_nef_linop_array_w.h,v 1.9 2004-10-03 01:21:19 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF domain-wall fermion linear operator
  */
@@ -27,19 +27,21 @@ using namespace QDP;
     //! Partial constructor
     UnprecNEFDWLinOpArray() {}
 
+    //! Full constructor
     /*!
-      Full constructor
       Set b5 = 1.0 and c5=0.0 to get Shamir DWF with a5=1.
       Set b5 = 1.0 and c5=1.0 to get Borichi DWF.
     */
     UnprecNEFDWLinOpArray(const multi1d<LatticeColorMatrix>& u_, 
-			  const Real& WilsonMass_, const Real& b5_,
-			  const Real& c5_, const Real& m_q, int N5_)
-      {create(u_,WilsonMass_, b5_,c5_,m_q,N5_);}
+			  const Real& WilsonMass_, 
+			  const multi1d<Real>& b5_, const multi1d<Real>& c5_, 
+			  const Real& m_q_, int N5_)
+      {create(u_,WilsonMass_,b5_,c5_,m_q_,N5_);}
 
     //! Creation routine
     void create(const multi1d<LatticeColorMatrix>& u_, 
-		const Real& WilsonMass_, const Real& b5_, const Real& c5_,
+		const Real& WilsonMass_, 
+		const multi1d<Real>& b5_, const multi1d<Real>& c5_,
 		const Real& m_q_, int N5_);
 
     //! Length of DW flavor index/space
@@ -56,24 +58,23 @@ using namespace QDP;
 		     const multi1d<LatticeFermion>& psi, 
 		     enum PlusMinus isign) const;
 
-    //! Apply the Dminus operator on a vector in Ls. See my notes ;-)
-    void Dminus(multi1d<LatticeFermion>& chi,
-		const multi1d<LatticeFermion>& psi,
-		enum PlusMinus isign) const;
-  
     //! Apply the Dminus operator on a lattice fermion. See my notes ;-)
     void Dminus(LatticeFermion& chi,
 		const LatticeFermion& psi,
-		enum PlusMinus isign) const;
+		enum PlusMinus isign,
+		int s5) const;
 
 
   private:
     Real WilsonMass;
-    Real b5;
-    Real c5;
+    multi1d<Real> b5;
+    multi1d<Real> c5;
     Real m_q;
     int  N5;
     WilsonDslash  D;
+
+    multi1d<Real> fb5;
+    multi1d<Real> fc5;
   };
 
 //}

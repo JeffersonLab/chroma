@@ -1,4 +1,4 @@
-// $Id: prec_nef_linop_array_w.cc,v 1.5 2004-09-19 02:37:06 edwards Exp $
+// $Id: prec_nef_linop_array_w.cc,v 1.6 2004-10-03 01:21:19 edwards Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned NEF domain-wall linear operator
  */
@@ -303,26 +303,12 @@ EvenOddPrecNEFDWLinOpArray::applyOffDiag(multi1d<LatticeFermion>& chi,
 
 
 
-//! Apply the Dminus operator on a vector in Ls. See my notes ;-)
-void 
-EvenOddPrecNEFDWLinOpArray::Dminus(multi1d<LatticeFermion>& chi,
-				   const multi1d<LatticeFermion>& psi,
-				   enum PlusMinus isign) const
-{
-  Real fc5(-0.5*c5) ;
-  multi1d<LatticeFermion> tt(N5) ;
-  for(int s(0);s<N5;s++){
-    D.apply(tt[s],psi[s],isign,0);
-    D.apply(tt[s],psi[s],isign,1);
-    chi[s] = c5InvTwoKappa*psi[s] - fc5*tt[s] ;
-  }
-}
-
 //! Apply the Dminus operator on a lattice fermion. See my notes ;-)
 void 
 EvenOddPrecNEFDWLinOpArray::Dminus(LatticeFermion& chi,
 				   const LatticeFermion& psi,
-				   enum PlusMinus isign) const
+				   enum PlusMinus isign,
+				   int s5) const
 {
   LatticeFermion tt ;
   D.apply(tt,psi,isign,0);

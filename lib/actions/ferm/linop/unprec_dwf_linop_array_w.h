@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_linop_array_w.h,v 1.7 2004-09-19 02:37:06 edwards Exp $
+// $Id: unprec_dwf_linop_array_w.h,v 1.8 2004-10-03 01:21:19 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion linear operator
  */
@@ -50,21 +50,12 @@ using namespace QDP;
 		     const multi1d<LatticeFermion>& psi, 
 		     enum PlusMinus isign) const;
 
-    //! Apply the Dminus operator on a vector in Ls.
-    inline
-    void Dminus(multi1d<LatticeFermion>& chi,
-		const multi1d<LatticeFermion>& psi,
-		enum PlusMinus isign) const
-      {
-	QDPIO::cerr << "Dminus not implemented" << endl;
-	QDP_abort(1);
-      }
-
     //! Apply the Dminus operator on a lattice fermion.
     inline
     void Dminus(LatticeFermion& chi,
 		const LatticeFermion& psi,
-		enum PlusMinus isign) const
+		enum PlusMinus isign,
+		int s5) const
       {
 	QDPIO::cerr << "Dminus not implemented" << endl;
 	QDP_abort(1);

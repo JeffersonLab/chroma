@@ -1,6 +1,11 @@
-// $Id: nef_quarkprop4_w.cc,v 1.5 2004-09-19 02:41:02 edwards Exp $
+// $Id: nef_quarkprop4_w.cc,v 1.6 2004-10-03 01:21:19 edwards Exp $
 // $Log: nef_quarkprop4_w.cc,v $
-// Revision 1.5  2004-09-19 02:41:02  edwards
+// Revision 1.6  2004-10-03 01:21:19  edwards
+// Removed Dminus on array. Changed Dminus to also require N5 slice.
+// Changed NEF linop to require an array of b5/c5. Changed NEF fermact to
+// possibly except an array or scalar for b5/c5.
+//
+// Revision 1.5  2004/09/19 02:41:02  edwards
 // Only indented. NOTE: this routine could soon (?) be merged
 // as the general dwf_quarkProp4 routine. Needs, currents, etc.
 //
@@ -95,9 +100,9 @@ void nef_quarkProp4_a(LatticePropagator& q_sol,
       // Split the source to oposite walls according to chirality
       // and apply Dminus
       tt = chiralProjectPlus(tmp) ;
-      S_f.Dminus(chi[0   ],tt,state,PLUS);
+      S_f.Dminus(chi[0   ],tt,state,PLUS,0);
       tt = chiralProjectMinus(tmp) ; 
-      S_f.Dminus(chi[N5-1],tt,state,PLUS);
+      S_f.Dminus(chi[N5-1],tt,state,PLUS,N5-1);
 
       
 

@@ -1,4 +1,4 @@
-// $Id: prec_nef_fermact_array_w.cc,v 1.8 2004-09-19 02:39:45 edwards Exp $
+// $Id: prec_nef_fermact_array_w.cc,v 1.9 2004-10-03 01:21:19 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned NEF fermion action
  */
@@ -101,9 +101,16 @@ namespace Chroma
   const UnprecDWLinOpBaseArray<LatticeFermion>*
   EvenOddPrecNEFFermActArray::linOpPV(Handle<const ConnectState> state) const
   {
+    //*** HACK ****
+    multi1d<Real> bb5(N5);
+    multi1d<Real> cc5(N5);
+
+    bb5 = b5;
+    cc5 = c5;
+
     // For the PV operator, use the **unpreconditioned** one
     // fixed to quark mass 1
-    return new UnprecNEFDWLinOpArray(state->getLinks(),OverMass,b5,c5,1.0,N5);
+    return new UnprecNEFDWLinOpArray(state->getLinks(),OverMass,bb5,cc5,1.0,N5);
   }
 
 }

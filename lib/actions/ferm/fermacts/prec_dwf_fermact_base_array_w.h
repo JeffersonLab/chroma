@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_fermact_base_array_w.h,v 1.11 2004-09-19 02:39:45 edwards Exp $
+// $Id: prec_dwf_fermact_base_array_w.h,v 1.12 2004-10-03 01:21:19 edwards Exp $
 /*! \file
  *  \brief Base class for even-odd preconditioned domain-wall-like fermion actions
  */
@@ -80,21 +80,6 @@ namespace Chroma
 	quarkProp4(q_sol, xml_out, q_src, state, invParam, false, ncg_had);
       }
     
-    //! Apply the Dminus operator on a vector in Ls.
-    /*! 
-     * Slightly more than a convenience function, 
-     * it avoids specifying the type of the linOp. 
-     * Used in the dwf_quarkProp4 routine.
-     */
-    void Dminus(multi1d<T>& chi,
-		const multi1d<T>& psi,
-		Handle<const ConnectState> state,
-		enum PlusMinus isign) const
-      {
-	Handle< const EvenOddPrecDWLinOpBaseArray<T> > A(linOp(state));
-	A->Dminus(chi,psi,isign);
-      }
-
     //! Apply the Dminus operator on a fermion.
     /*! 
      * Slightly more than a convenience function, 
@@ -104,10 +89,11 @@ namespace Chroma
     void Dminus(T& chi,
 		const T& psi,
 		Handle<const ConnectState> state,
-		enum PlusMinus isign) const
+		enum PlusMinus isign,
+		int s5) const
       {
 	Handle< const EvenOddPrecDWLinOpBaseArray<T> > A(linOp(state));
-	A->Dminus(chi,psi,isign);
+	A->Dminus(chi,psi,isign,s5);
       }
 
   };

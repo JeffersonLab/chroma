@@ -1,4 +1,4 @@
-// $Id: unprec_ovdwf_linop_array_w.cc,v 1.8 2004-09-19 02:37:06 edwards Exp $
+// $Id: unprec_ovdwf_linop_array_w.cc,v 1.9 2004-10-03 01:21:19 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Overlap-DWF (Borici) linear operator
  */
@@ -112,26 +112,12 @@ UnprecOvDWLinOpArray::operator() (multi1d<LatticeFermion>& chi,
   END_CODE();
 }
 
-//! Apply the Dminus operator on a vector in Ls. See my notes ;-)
-void 
-UnprecOvDWLinOpArray::Dminus(multi1d<LatticeFermion>& chi,
-			     const multi1d<LatticeFermion>& psi,
-			     enum PlusMinus isign) const
-{
-  Real c5InvTwoKappa =  1.0 - (Nd-WilsonMass) ;
-  multi1d<LatticeFermion> tt(N5) ;
-  for(int s(0);s<N5;s++){
-    D.apply(tt[s],psi[s],isign,0);
-    D.apply(tt[s],psi[s],isign,1);
-    chi[s] = c5InvTwoKappa*psi[s] +0.5*tt[s] ;  //really -(-.5)D
-  }
-}
-  
 //! Apply the Dminus operator on a lattice fermion. See my notes ;-)
 void 
 UnprecOvDWLinOpArray::Dminus(LatticeFermion& chi,
 			     const LatticeFermion& psi,
-			     enum PlusMinus isign) const
+			     enum PlusMinus isign,
+			     int s5) const
 {
   LatticeFermion tt ;
   D.apply(tt,psi,isign,0);

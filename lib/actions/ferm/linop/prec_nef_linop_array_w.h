@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_nef_linop_array_w.h,v 1.11 2004-09-19 02:37:06 edwards Exp $
+// $Id: prec_nef_linop_array_w.h,v 1.12 2004-10-03 01:21:19 edwards Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned NEF domain-wall fermion linear operator
  */
@@ -105,15 +105,11 @@ using namespace QDP;
 	applyDiagInv(chi, psi, isign, 1);
       }
  
-    //! Apply the Dminus operator on a vector in Ls. See my notes ;-)
-    void Dminus(multi1d<LatticeFermion>& chi,
-		const multi1d<LatticeFermion>& psi,
-		enum PlusMinus isign) const;
-  
     //! Apply the Dminus operator on a lattice fermion. See my notes ;-)
     void Dminus(LatticeFermion& chi,
 		const LatticeFermion& psi,
-		enum PlusMinus isign) const;
+		enum PlusMinus isign,
+		int s5) const;
 
   protected:
 
