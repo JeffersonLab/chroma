@@ -1,4 +1,4 @@
-// $Id: bar3ptfn.cc,v 1.23 2004-01-05 21:50:23 edwards Exp $
+// $Id: bar3ptfn.cc,v 1.24 2004-01-06 04:59:14 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions
  *
@@ -9,28 +9,10 @@
 
 using namespace QDP;
 
-enum CfgType {
-  CFG_TYPE_MILC,
-  CFG_TYPE_NERSC,
-  CFG_TYPE_SCIDAC,
-  CFG_TYPE_SZIN,
-  CFG_TYPE_UNKNOWN
-};
-
-enum FermType {
-  FERM_TYPE_WILSON,
-  FERM_TYPE_UNKNOWN
-};
-
 
 /*
  * Input 
  */
-struct IO_version_t
-{
-  int version;
-};
-
 // Parameters which must be determined from the XML input
 // and written to the XML output
 struct Param_t
@@ -53,7 +35,7 @@ struct Param_t
 
   int mom2_max;            // (mom)^2 <= mom2_max. mom2_max=7 in szin.
 
-  WvfType       wvf_type;        // Wave function kind: gauge invariant
+  WvfKind       Wvf_kind;        // Wave function kind: gauge invariant
   multi1d<Real> wvf_param; // Array of width's or other parameters
   //   for "shell" source/sink wave function
   multi1d<int> WvfIntPar;  // Array of iter numbers to approx. Gaussian or
@@ -62,13 +44,7 @@ struct Param_t
   multi1d<int> Seq_src;
 
   multi1d<int> nrow;
-  multi1d<int> boundary;
   multi1d<int> t_srce;
-};
-
-struct Cfg_t
-{
-  string       cfg_file;
 };
 
 struct Bar3ptfn_input_t
@@ -154,13 +130,7 @@ void read(XMLReader& xml, const string& path, Bar3ptfn_input_t& input)
 	QDP_abort(1);
       }
 
-      string ferm_type_str;
-      read(paramtop, "FermTypeP", ferm_type_str);
-      if (ferm_type_str == "WILSON") {
-	input.param.FermTypeP = FERM_TYPE_WILSON;
-      } else {
-	input.param.FermTypeP = FERM_TYPE_UNKNOWN;
-      }
+      read(paramtop, "FermTypeP", input.param.FermTypeP);
     }
 
     // GTF NOTE: I'm going to switch on FermTypeP here because I want
@@ -187,22 +157,10 @@ void read(XMLReader& xml, const string& path, Bar3ptfn_input_t& input)
 
     default :
       QDPIO::cerr << "Fermion type not supported." << endl;
-      if (input.param.FermTypeP == FERM_TYPE_UNKNOWN) {
-	QDPIO::cerr << "  FermTypeP = UNKNOWN" << endl;
-      }
       QDP_abort(1);
     }
 
-    {
-      string cfg_type_str;
-      read(paramtop, "cfg_type", cfg_type_str);
-      if (cfg_type_str == "SZIN") {
-	input.param.cfg_type = CFG_TYPE_SZIN;
-      } else {
-	input.param.cfg_type = CFG_TYPE_UNKNOWN;
-      }
-    }
-
+    read(paramtop, "cfg_type", input.param.cfg_type);
     read(paramtop, "j_decay", input.param.j_decay);
     if (input.param.j_decay < 0 || input.param.j_decay >= Nd) {
       QDPIO::cerr << "Bad value: j_decay = " << input.param.j_decay << endl;
@@ -216,23 +174,11 @@ void read(XMLReader& xml, const string& path, Bar3ptfn_input_t& input)
 
     read(paramtop, "mom2_max", input.param.mom2_max);
 
-    {
-      string wvf_type_str;
-      read(paramtop, "wvf_type", wvf_type_str);
-      if (wvf_type_str == "GAUGE_INV_GAUSSIAN") {
-	input.param.wvf_type = WVF_TYPE_GAUGE_INV_GAUSSIAN;
-      } else {
-	QDPIO::cerr << "Unsupported gauge-invariant wvf_type." << endl;
-	QDPIO::cerr << "  wvf_type = " << wvf_type_str << endl;
-	QDP_abort(1);
-      }
-    }
-
+    read(paramtop, "Wvf_kind", input.param.Wvf_kind);
     read(paramtop, "wvf_param", input.param.wvf_param);
     read(paramtop, "WvfIntPar", input.param.WvfIntPar);
 
     read(paramtop, "nrow", input.param.nrow);
-    read(paramtop, "boundary", input.param.boundary);
     read(paramtop, "t_srce", input.param.t_srce);
 
     // Now we read in the information associated with the sequential sources
@@ -313,7 +259,7 @@ void write(BinaryWriter& bin, const Param_t& param)
   write(bin, param.Sl_src);
   write(bin, param.Pt_snk);
   write(bin, param.Sl_snk);
-  write(bin, param.wvf_type);
+  write(bin, param.Wvf_kind);
   
   write(bin, param.t_sink);
   write(bin, param.sink_mom);
@@ -380,15 +326,6 @@ main(int argc, char *argv[])
   // Specify lattice size, shape, etc.
   Layout::setLattSize(input.param.nrow);
   Layout::create();
-
-  /*
-   * Turn on the boundary conditions through the phase factors.
-   *
-   * NOTE: this is not an optimal solution: this factor stuff should be
-   * set some other way
-   */
-  setph(input.param.boundary);              // initialize the BC factors
-
 
   // Sanity checks
   for (int i=0; i<Nd; ++i) {
@@ -595,7 +532,7 @@ main(int argc, char *argv[])
       LatticePropagator seq_quark_prop_tmp = seq_quark_prop;
 
       if (input.param.Sl_src) {
-        sink_smear2(u, seq_quark_prop_tmp, input.param.wvf_type, input.param.wvf_param[loop],
+        sink_smear2(u, seq_quark_prop_tmp, input.param.Wvf_kind, input.param.wvf_param[loop],
                     input.param.WvfIntPar[loop], input.param.j_decay);
       }
 

@@ -1,4 +1,4 @@
-// $Id: make_source.cc,v 1.12 2003-10-15 22:03:02 edwards Exp $
+// $Id: make_source.cc,v 1.13 2004-01-06 04:59:14 edwards Exp $
 /*! \file
  *  \brief Main code for source generation
  */
@@ -11,21 +11,6 @@
 /*
  *  Here we have various temporary definitions
  */
-enum CfgType {
-  CFG_TYPE_MILC = 0,
-  CFG_TYPE_NERSC,
-  CFG_TYPE_SCIDAC,
-  CFG_TYPE_SZIN,
-  CFG_TYPE_UNKNOWN
-} ;
-
-enum PropType {
-  PROP_TYPE_SCIDAC = 2,
-  PROP_TYPE_SZIN,
-  PROP_TYPE_UNKNOWN
-} ;
-
-
 // First the source type
 #define S_WAVE 0
 #define P_WAVE 1
@@ -95,24 +80,8 @@ int main(int argc, char **argv)
     read(xml_in, path + "/LaplacePower", LaplacePower);
     read(xml_in, path + "/t_srce", t_source);
 
-    {
-      string input_cfg_type ;
-      read(xml_in, path + "/cfg_type", input_cfg_type) ;
-      if (input_cfg_type == "SZIN")
-        cfg_type = CFG_TYPE_SZIN ;
-      else 
-        cfg_type = CFG_TYPE_UNKNOWN ;
-    }
-    {
-      string input_prop_type ;
-      read(xml_in, path + "/prop_type", input_prop_type) ;
-      if (input_prop_type == "SZIN")
-        prop_type = PROP_TYPE_SZIN ;
-      else if (input_prop_type == "SCIDAC")
-        prop_type = PROP_TYPE_SCIDAC ;
-      else 
-        prop_type = PROP_TYPE_UNKNOWN ;
-    }
+    read(xml_in, path + "/cfg_type", cfg_type);
+    read(xml_in, path + "/prop_type", prop_type);
     break;
 
   default:

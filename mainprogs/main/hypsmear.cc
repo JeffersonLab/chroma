@@ -1,5 +1,5 @@
 /*
- *  $Id: hypsmear.cc,v 1.3 2003-10-10 17:04:29 edwards Exp $
+ *  $Id: hypsmear.cc,v 1.4 2004-01-06 04:59:14 edwards Exp $
  *
  *  This is the top-level routine for HYP smearing.
  *  It is a wrapper for Urs' and Robert's implmenetation of the HYP
@@ -10,19 +10,9 @@
 #include <iostream>
 #include <cstdio>
 
-#define MAIN
-
 #include "chroma.h"
 
 #include <sys/time.h>   // for timings
-
-enum CfgType {
-  CFG_TYPE_MILC = 0,
-  CFG_TYPE_NERSC,
-  CFG_TYPE_SCIDAC,
-  CFG_TYPE_SZIN,
-  CFG_TYPE_UNKNOWN
-} ;
 
 using namespace QDP;
 
@@ -33,11 +23,6 @@ using namespace QDP;
 /*
  * Input 
  */
-
-struct IO_version_t
-{
-  int version;
-};
 
 // Parameters which must be determined from the XML input
 // and written to the XML output
@@ -60,11 +45,6 @@ struct Param_t
   int trunc;			// Whether to truncate the output
   int t_start;			// Starting time slice
   int t_end;			// Ending time slice
-};
-
-struct Cfg_t
-{
-  string       cfg_file;
 };
 
 struct Hyp_t
@@ -94,7 +74,7 @@ void read(XMLReader& xml, const string& path, Hypsmear_input_t& input)
   // Read in the IO_version
   try
   {
-    read(inputtop, "IO_version/version", input.io_version.version);
+    read(inputtop, "IO_version", input.io_version);
   }
   catch (const string& e) 
   {
@@ -139,34 +119,10 @@ void read(XMLReader& xml, const string& path, Hypsmear_input_t& input)
 
     QDPIO::cout << " HYPSMEAR: HYP smearing of gauge config" << endl;
 
-    {
-      string cfg_type_str;
-
-      // First the input cfg type
-
-
-      read(paramtop, "cfg_type_in", cfg_type_str);
-      if (cfg_type_str == "SZIN") {
-	input.param.cfg_type_in = CFG_TYPE_SZIN;
-      } 
-      else if (cfg_type_str == "NERSC"){
-	input.param.cfg_type_in = CFG_TYPE_NERSC;
-      }
-      else{
-	input.param.cfg_type_in = CFG_TYPE_UNKNOWN;
-      }
-
-
-      read(paramtop, "cfg_type_out", cfg_type_str);
-      if (cfg_type_str == "SZIN") {
-	input.param.cfg_type_out = CFG_TYPE_SZIN;
-      } else {
-	input.param.cfg_type_out = CFG_TYPE_UNKNOWN;
-      }
-
-      // Now the output cfg type
-
-    }
+    // First the input cfg type
+    read(paramtop, "cfg_type_in", input.param.cfg_type_in);
+    // Now the output cfg type
+    read(paramtop, "cfg_type_out", input.param.cfg_type_out);
     
     read(paramtop, "alpha1", input.param.alpha1);
     read(paramtop, "alpha2", input.param.alpha2);
@@ -201,7 +157,7 @@ void read(XMLReader& xml, const string& path, Hypsmear_input_t& input)
   // Read in the gauge configuration file name
   try
   {
-    read(inputtop, "Cfg/cfg_file",input.cfg.cfg_file);
+    read(inputtop, "Cfg",input.cfg);
   }
   catch (const string& e) 
   {

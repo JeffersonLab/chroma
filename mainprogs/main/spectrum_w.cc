@@ -1,10 +1,13 @@
-// $Id: spectrum_w.cc,v 1.18 2004-01-05 21:48:36 edwards Exp $
+// $Id: spectrum_w.cc,v 1.19 2004-01-06 04:59:14 edwards Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.18  2004-01-05 21:48:36  edwards
+//  Revision 1.19  2004-01-06 04:59:14  edwards
+//  Standardized the IO.
+//
+//  Revision 1.18  2004/01/05 21:48:36  edwards
 //  Changed WVF_KIND to WVF_TYPE.
 //
 //  Revision 1.17  2003/12/17 17:34:36  edwards
@@ -72,28 +75,10 @@
 
 using namespace QDP;
 
-enum CfgType {
-  CFG_TYPE_MILC,
-  CFG_TYPE_NERSC,
-  CFG_TYPE_SCIDAC,
-  CFG_TYPE_SZIN,
-  CFG_TYPE_UNKNOWN
-};
-
-enum FermType {
-  FERM_TYPE_WILSON,
-  FERM_TYPE_UNKNOWN
-};
-
 
 /*
  * Input 
  */
-struct IO_version_t
-{
-  int version;
-};
-
 // Parameters which must be determined from the XML input
 // and written to the XML output
 struct Param_t
@@ -119,7 +104,7 @@ struct Param_t
 
   int mom2_max;            // (mom)^2 <= mom2_max. mom2_max=7 in szin.
   bool avg_equiv_mom;      // average over equivalent momenta
-  WvfType       Wvf_kind;        // Wave function kind: gauge invariant
+  WvfKind       Wvf_kind;  // Wave function kind: gauge invariant
   multi1d<Real> wvf_param; // Array of width's or other parameters
   //   for "shell" source/sink wave function
   multi1d<int> WvfIntPar;  // Array of iter numbers to approx. Gaussian or
@@ -128,11 +113,6 @@ struct Param_t
   multi1d<int> nrow;
   multi1d<int> boundary;
   multi1d<int> t_srce;
-};
-
-struct Cfg_t
-{
-  string       cfg_file;
 };
 
 struct Spectrum_input_t
@@ -230,13 +210,7 @@ void read(XMLReader& xml, const string& path, Spectrum_input_t& input)
 	QDP_abort(1);
       }
 
-      string ferm_type_str;
-      read(paramtop, "FermTypeP", ferm_type_str);
-      if (ferm_type_str == "WILSON") {
-	input.param.FermTypeP = FERM_TYPE_WILSON;
-      } else {
-	input.param.FermTypeP = FERM_TYPE_UNKNOWN;
-      }
+      read(paramtop, "FermTypeP", input.param.FermTypeP);
     }
 
     // GTF NOTE: I'm going to switch on FermTypeP here because I want
@@ -263,22 +237,10 @@ void read(XMLReader& xml, const string& path, Spectrum_input_t& input)
 
     default :
       QDPIO::cerr << "Fermion type not supported." << endl;
-      if (input.param.FermTypeP == FERM_TYPE_UNKNOWN) {
-	QDPIO::cerr << "  FermTypeP = UNKNOWN" << endl;
-      }
       QDP_abort(1);
     }
 
-    {
-      string cfg_type_str;
-      read(paramtop, "cfg_type", cfg_type_str);
-      if (cfg_type_str == "SZIN") {
-	input.param.cfg_type = CFG_TYPE_SZIN;
-      } else {
-	input.param.cfg_type = CFG_TYPE_UNKNOWN;
-      }
-    }
-
+    read(paramtop, "cfg_type", input.param.cfg_type);
     read(paramtop, "j_decay", input.param.j_decay);
     if (input.param.j_decay < 0 || input.param.j_decay >= Nd) {
       QDPIO::cerr << "Bad value: j_decay = " << input.param.j_decay << endl;
@@ -295,18 +257,7 @@ void read(XMLReader& xml, const string& path, Spectrum_input_t& input)
     read(paramtop, "mom2_max", input.param.mom2_max);
     read(paramtop, "avg_equiv_mom", input.param.avg_equiv_mom);
 
-    {
-      string wvf_kind_str;
-      read(paramtop, "Wvf_kind", wvf_kind_str);
-      if (wvf_kind_str == "GAUGE_INV_GAUSSIAN") {
-	input.param.Wvf_kind = WVF_TYPE_GAUGE_INV_GAUSSIAN;
-      } else {
-	QDPIO::cerr << "Unsupported gauge-invariant Wvf_kind." << endl;
-	QDPIO::cerr << "  Wvf_kind = " << wvf_kind_str << endl;
-	QDP_abort(1);
-      }
-    }
-
+    read(paramtop, "Wvf_kind", input.param.Wvf_kind);
     read(paramtop, "wvf_param", input.param.wvf_param);
     read(paramtop, "WvfIntPar", input.param.WvfIntPar);
 
@@ -486,8 +437,11 @@ int main(int argc, char **argv)
       {
 	LatticePropagator quark_prop_smr;
 	quark_prop_smr = quark_propagator;
-	sink_smear2(u, quark_prop_smr, input.param.Wvf_kind, input.param.wvf_param[loop],
-		    input.param.WvfIntPar[loop], input.param.j_decay);
+	sink_smear2(u, quark_prop_smr, 
+		    input.param.Wvf_kind, 
+		    input.param.wvf_param[loop],
+		    input.param.WvfIntPar[loop], 
+		    input.param.j_decay);
 
 	if (input.param.Pt_src)
 	  mesons(quark_prop_smr, quark_prop_smr, phases, t0,
@@ -541,8 +495,11 @@ int main(int argc, char **argv)
       {
 	LatticePropagator quark_prop_smr;
 	quark_prop_smr = quark_propagator;
-	sink_smear2(u, quark_prop_smr, input.param.Wvf_kind, input.param.wvf_param[loop],
-		    input.param.WvfIntPar[loop], input.param.j_decay);
+	sink_smear2(u, quark_prop_smr, 
+		    input.param.Wvf_kind, 
+		    input.param.wvf_param[loop],
+		    input.param.WvfIntPar[loop], 
+		    input.param.j_decay);
 	if (input.param.Pt_src)
 	  baryon(quark_propagator, phases, 
 		 t0, bc_spec, input.param.time_rev, 

@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.26 2004-01-02 03:19:41 edwards Exp $
+// $Id: propagator.cc,v 1.27 2004-01-06 04:59:14 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -6,34 +6,7 @@
 #include <iostream>
 #include <cstdio>
 
-#define MAIN
-
 #include "chroma.h"
-
-
-/*
- *  Here we have various temporary definitions
- */
-enum CfgType {
-  CFG_TYPE_MILC = 0,
-  CFG_TYPE_NERSC,
-  CFG_TYPE_SCIDAC,
-  CFG_TYPE_SZIN,
-  CFG_TYPE_UNKNOWN
-} ;
-
-enum PropType {
-  PROP_TYPE_SCIDAC = 2,
-  PROP_TYPE_SZIN,
-  PROP_TYPE_UNKNOWN
-} ;
-
-enum FermType {
-  FERM_TYPE_WILSON,
-  FERM_TYPE_UNKNOWN
-};
-
-
 
 using namespace QDP;
 
@@ -41,33 +14,25 @@ using namespace QDP;
 /*
  * Input 
  */
-struct IO_version_t
-{
-  int version;
-};
 
 // Parameters which must be determined from the XML input
 // and written to the XML output
 struct Param_t
 {
-  FermType     FermTypeP;
-  Real         Kappa;      // Wilson mass
+  FermType        FermTypeP;
+  FermActType     fermAct;
+  Real            mass;       // Wilson mass
  
-  CfgType  cfg_type;       // storage order for stored gauge configuration
-  PropType prop_type;      // storage order for stored propagator
+  ChiralParam_t   chiralParam;
 
-  enum InvType  invType;   // Inverter type
-  Real RsdCG;
-  int MaxCG;		   // Iteration parameters
+  CfgType         cfg_type;   // storage order for stored gauge configuration
+  PropType        prop_type;  // storage order for stored propagator
+
+  InvertParam_t   invParam;   // Inverter parameters
 
   multi1d<int> nrow;
   multi1d<int> boundary;
   multi1d<int> t_srce;
-};
-
-struct Cfg_t
-{
-  string       cfg_file;
 };
 
 struct Prop_t
@@ -83,15 +48,6 @@ struct Propagator_input_t
   Cfg_t            cfg;
   Prop_t           prop;
 };
-
-
-//
-void read(XMLReader& xml, const string& path, Cfg_t& input)
-{
-  XMLReader inputtop(xml, path);
-
-  read(inputtop, "cfg_file", input.cfg_file);
-}
 
 
 //
@@ -118,7 +74,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
   // Read in the IO_version
   try
   {
-    read(inputtop, "IO_version/version", input.io_version.version);
+    read(inputtop, "IO_version", input.io_version);
   }
   catch (const string& e) 
   {
@@ -161,15 +117,8 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
   {
     XMLReader paramtop(inputtop, "param"); // push into 'param' group
 
-    {
-      string ferm_type_str;
-      read(paramtop, "FermTypeP", ferm_type_str);
-      if (ferm_type_str == "WILSON") {
-	input.param.FermTypeP = FERM_TYPE_WILSON;
-      } else {
-	input.param.FermTypeP = FERM_TYPE_UNKNOWN;
-      }
-    }
+    read(paramtop, "FermTypeP", input.param.FermTypeP);
+    read(paramtop, "fermAct", input.param.fermAct);
 
     // GTF NOTE: I'm going to switch on FermTypeP here because I want
     // to leave open the option of treating masses differently.
@@ -178,11 +127,10 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
 
       QDPIO::cout << " PROPAGATOR: Propagator for Wilson fermions" << endl;
 
-//      read(paramtop, "numKappa", input.param.numKappa);
-      read(paramtop, "Kappa", input.param.Kappa);
+      read(paramtop, "mass", input.param.mass);
 
 #if 0
-      for (int i=0; i < input.param.numKappa; ++i) {
+      for (int i=0; i < input.param.mass.size(); ++i) {
 	if (toBool(input.param.Kappa[i] < 0.0)) {
 	  QDPIO::cerr << "Unreasonable value for Kappa." << endl;
 	  QDPIO::cerr << "  Kappa[" << i << "] = " << input.param.Kappa[i] << endl;
@@ -197,36 +145,16 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
 
     default :
       QDPIO::cerr << "Fermion type not supported." << endl;
-      if (input.param.FermTypeP == FERM_TYPE_UNKNOWN) {
-	QDPIO::cerr << "  FermTypeP = UNKNOWN" << endl;
-      }
       QDP_abort(1);
     }
 
-    {
-      string cfg_type_str;
-      read(paramtop, "cfg_type", cfg_type_str);
-      if (cfg_type_str == "SZIN") {
-	input.param.cfg_type = CFG_TYPE_SZIN;
-      } else {
-	input.param.cfg_type = CFG_TYPE_UNKNOWN;
-      }
-    }
+    if (paramtop.count("ChiralParam") != 0)
+      read(paramtop, "ChiralParam", input.param.chiralParam);
 
-    {
-      string prop_type_str;
-      read(paramtop, "prop_type", prop_type_str);
-      if (prop_type_str == "SZIN") {
-	input.param.prop_type = PROP_TYPE_SZIN;
-      } else {
-	input.param.prop_type = PROP_TYPE_UNKNOWN;
-      }
-    }
+    read(paramtop, "cfg_type", input.param.cfg_type);
+    read(paramtop, "prop_type", input.param.prop_type);
 
-//    read(paramtop, "invType", input.param.invType);
-//    input.param.invType = CG_INVERTER;   //need to fix this
-    read(paramtop, "RsdCG", input.param.RsdCG);
-    read(paramtop, "MaxCG", input.param.MaxCG);
+    read(paramtop, "InverterParam", input.param.invParam);
 
     read(paramtop, "nrow", input.param.nrow);
     read(paramtop, "boundary", input.param.boundary);
@@ -355,19 +283,14 @@ int main(int argc, char **argv)
   // Initialize fermion action
   //
 #if 1
-  Real Mass = 1/(2*input.param.Kappa) - Nd;
-  UnprecWilsonFermAct S_f(fbc,Mass);
+  UnprecWilsonFermAct S_f(fbc,input.param.mass);
 #else
-  Real WilsonMass = 1.5;
-  Real m_q = 0.1;
-  int  N5  = 8;
-  UnprecDWFermActArray S_f(fbc_a,WilsonMass, m_q, N5);
-//  UnprecDWFermAct S_f(fbc_a, WilsonMass, m_q);
+  UnprecDWFermActArray S_f(fbc_a,
+			   input.param.chiralParam.WilsonMass, 
+			   input.param.mass, 
+			   input.param.chiralParam.N5);
+//  UnprecDWFermAct S_f(fbc_a, overMass, mass);
 #endif
-
-//  FermAct = UNPRECONDITIONED_WILSON;  // global
-  input.param.invType = CG_INVERTER;  // enum
-
 
   //
   // Loop over the source color and spin, creating the source
@@ -383,7 +306,11 @@ int main(int argc, char **argv)
     Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
 
     quarkProp4(quark_propagator, xml_buf, quark_prop_source,
-  	       S_f, state, input.param.invType, input.param.RsdCG, input.param.MaxCG, ncg_had);
+  	       S_f, state, 
+	       input.param.invParam.invType, 
+	       input.param.invParam.RsdCG, 
+	       input.param.invParam.MaxCG, 
+	       ncg_had);
   }
 
   xml_out << xml_buf;
@@ -408,7 +335,7 @@ int main(int argc, char **argv)
   switch (input.param.prop_type) 
   {
   case PROP_TYPE_SZIN:
-    writeSzinQprop(quark_propagator, input.prop.prop_file, input.param.Kappa);
+    writeSzinQprop(quark_propagator, input.prop.prop_file, input.param.mass);
     break;
 
 //  case PROP_TYPE_SCIDAC:

@@ -1,4 +1,4 @@
-// $Id: seqprop.cc,v 1.6 2004-01-05 21:50:32 edwards Exp $
+// $Id: seqprop.cc,v 1.7 2004-01-06 04:59:14 edwards Exp $
 /*! \file
  *  \brief Main code for sequential propagator generation
  */
@@ -9,33 +9,7 @@
 #include <iostream>
 #include <cstdio>
 
-#define MAIN
-
 #include "chroma.h"
-
-/*
- *  Here we have various temporary definitions
- */
-enum CfgType {
-  CFG_TYPE_MILC = 0,
-  CFG_TYPE_NERSC,
-  CFG_TYPE_SCIDAC,
-  CFG_TYPE_SZIN,
-  CFG_TYPE_UNKNOWN
-} ;
-
-enum PropType {
-  PROP_TYPE_SCIDAC = 2,
-  PROP_TYPE_SZIN,
-  PROP_TYPE_UNKNOWN
-} ;
-
-enum FermType {
-  FERM_TYPE_WILSON,
-  FERM_TYPE_UNKNOWN
-};
-
-
 
 using namespace QDP;
 
@@ -43,38 +17,6 @@ using namespace QDP;
 /*
  * Input 
  */
-struct IO_version_t
-{
-  int version;
-};
-
-//! Parameters for chiral fermion actions
-struct ChiralParam_t
-{
-  Real       overMass;
-  Real       N5;
-  Real       a5;
-  int        nWilsVec;
-};
-
-//! Parameters for anisotropy
-/*! NOT USED YET */
-struct AnisoParam_t
-{
-  bool       anisoP;
-  int        t_dir;
-  Real       xi_0;
-  Real       xiF_0;
-  Real       Wilsr_s;
-};
-
-//! Parameters for sources and sinks
-struct SmearingParam_t
-{
-  WvfType       wvf_type;
-  multi1d<Real> wvf_param;
-  multi1d<int>  wvfIntPar;
-};
 
 //! Parameters for sources and sinks
 struct SrceSinkParam_t
@@ -91,21 +33,12 @@ struct SrceSinkParam_t
   int              t_sink;
 };
 
-//! Parameters for inverter
-struct InvertParam_t
-{
-  InvType       invType;   // Inverter type
-  Real          MROver;
-  Real          RsdCG;
-  int           MaxCG;	   // Iteration parameters
-};
-
 // Parameters which must be determined from the XML input
 // and written to the XML output
 struct Param_t
 {
   FermType         FermTypeP;
-  FermActType      FermAct;
+  FermActType      fermAct;
   multi1d<Real>    mass;       // Quark mass and **NOT** kappa
  
   ChiralParam_t    chiralParam;
@@ -121,11 +54,6 @@ struct Param_t
 
   multi1d<int>     nrow;
   multi1d<int>     boundary;
-};
-
-struct Cfg_t
-{
-  string       cfg_file;
 };
 
 struct Prop_t
@@ -144,15 +72,6 @@ struct Seqprop_input_t
 
 
 //
-void read(XMLReader& xml, const string& path, Cfg_t& input)
-{
-  XMLReader inputtop(xml, path);
-
-  read(inputtop, "cfg_file", input.cfg_file);
-}
-
-
-//
 void read(XMLReader& xml, const string& path, Prop_t& input)
 {
   XMLReader inputtop(xml, path);
@@ -160,42 +79,6 @@ void read(XMLReader& xml, const string& path, Prop_t& input)
   read(inputtop, "source_file", input.source_file);
   read(inputtop, "prop_file", input.prop_file);
 }
-
-
-//! Read a smearing param struct
-void read(XMLReader& xml, const string& path, SmearingParam_t& param)
-{
-  XMLReader paramtop(xml, path);
-
-  read(paramtop, "wvf_type", param.wvf_type);
-  read(paramtop, "wvf_param", param.wvf_param);
-  read(paramtop, "wvfIntPar", param.wvfIntPar);
-}
-
-
-
-//
-void read(XMLReader& xml, const string& path, ChiralParam_t& param)
-{
-  XMLReader paramtop(xml, path);
-
-  read(paramtop, "overMass", param.overMass);
-  read(paramtop, "N5", param.N5);
-
-  string xpath;
-  xpath = "a5";
-  if (paramtop.count(xpath) != 0)
-    read(paramtop, xpath, param.a5);
-  else
-    param.a5 = 1;
-
-  xpath = "nWilsVec";
-  if (paramtop.count(xpath) != 0)
-    read(paramtop, xpath, param.nWilsVec);
-  else
-    param.nWilsVec = 0;
-}
-
 
 
 //
@@ -216,25 +99,12 @@ void read(XMLReader& xml, const string& path, SrceSinkParam_t& param)
   read(paramtop, "sink_mom", param.sink_mom);
 }
 
-//
-void read(XMLReader& xml, const string& path, InvertParam_t& param)
-{
-  XMLReader paramtop(xml, path);
-
-  read(paramtop, "invType", param.invType);
-  read(paramtop, "RsdCG", param.RsdCG);
-  read(paramtop, "MaxCG", param.MaxCG);
-
-  param.MROver = 1;
-}
-
 
 
 // Reader for input parameters
 void read(XMLReader& xml, const string& path, Seqprop_input_t& input)
 {
   XMLReader inputtop(xml, path);
-
 
   // First, read the input parameter version.  Then, if this version
   // includes 'Nc' and 'Nd', verify they agree with values compiled
@@ -243,7 +113,7 @@ void read(XMLReader& xml, const string& path, Seqprop_input_t& input)
   // Read in the IO_version
   try
   {
-    read(inputtop, "IO_version/version", input.io_version.version);
+    read(inputtop, "IO_version", input.io_version);
   }
   catch (const string& e) 
   {
@@ -314,9 +184,6 @@ void read(XMLReader& xml, const string& path, Seqprop_input_t& input)
 
     default :
       QDPIO::cerr << "Fermion type not supported." << endl;
-      if (input.param.FermTypeP == FERM_TYPE_UNKNOWN) {
-	QDPIO::cerr << "  FermTypeP = UNKNOWN" << endl;
-      }
       QDP_abort(1);
     }
 
@@ -553,9 +420,9 @@ int main(int argc, char **argv)
     {
       // Do the sink smearing BEFORE the interpolating operator
       sink_smear2(u, quark_propagator, 
-		  input.param.srceSinkParam.smearParam.wvf_type, 
+		  input.param.srceSinkParam.smearParam.Wvf_kind, 
 		  input.param.srceSinkParam.smearParam.wvf_param[loop], 
-		  input.param.srceSinkParam.smearParam.wvfIntPar[loop], 
+		  input.param.srceSinkParam.smearParam.WvfIntPar[loop], 
 		  input.param.j_decay);
     }
 
@@ -607,9 +474,9 @@ int main(int argc, char **argv)
       {
 	// Do the sink smearing AFTER the interpolating operator
 	sink_smear2(u, quark_prop_src, 
-		    input.param.srceSinkParam.smearParam.wvf_type, 
+		    input.param.srceSinkParam.smearParam.Wvf_kind, 
 		    input.param.srceSinkParam.smearParam.wvf_param[loop], 
-		    input.param.srceSinkParam.smearParam.wvfIntPar[loop], 
+		    input.param.srceSinkParam.smearParam.WvfIntPar[loop], 
 		    input.param.j_decay);
       }
 
