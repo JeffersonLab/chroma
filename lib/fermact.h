@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 1.3 2004-01-23 10:35:36 bjoo Exp $
+// $Id: fermact.h,v 1.4 2004-01-23 17:59:22 edwards Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -218,6 +218,7 @@ template<typename T>
 class WilsonTypeFermAct : public FermionAction<T>
 {
 public:
+  //! Produce a hermitian version of the linear operator
   virtual const LinearOperator<T>* gamma5HermLinOp(Handle<const ConnectState> state) const = 0;
 
 };
