@@ -1,5 +1,12 @@
 02/21/2005 -- Robert Edwards
 
+	Version 1.19.7. Added aniso support for DWF and SSE DWF.
+        Changed all initHeader-s to appropriate default constructors
+        for the structs. Changed quarkProp routines to take SystemSolver
+        instead of FermAct.
+
+02/21/2005 -- Robert Edwards
+
 	Version 1.19.6. Moved stock mainprogs to bin_PROGRAMS. They
         are now installed.
 
