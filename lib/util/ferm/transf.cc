@@ -1,4 +1,4 @@
-// $Id: transf.cc,v 1.2 2004-05-23 21:44:09 edwards Exp $
+// $Id: transf.cc,v 1.3 2004-11-12 10:50:51 mcneile Exp $
 /*! \file
  *  \brief Insertion/Extraction utilities for vectors/fermions/propagators
  */
@@ -135,3 +135,30 @@ void PropToFerm(const LatticePropagatorD& b, LatticeFermionD& a,
 }
 
 
+
+
+//! Insert a LatticeStaggeredFermion into a LatticeStaggeredPropagator
+/*!
+ * \ingroup ferm
+ *
+ * \param a      Source fermion
+ * \param b      Destination propagator
+ * \param color_index  Color index
+ *
+ */
+void FermToProp(const LatticeStaggeredFermion& a, LatticeStaggeredPropagator& b, 
+		int color_index)
+{
+  const int spin_index = 0 ; 
+  const int j = 0; 
+
+  LatticeColorMatrix bb = peekSpin(b, j, spin_index);
+  LatticeColorVector aa = peekSpin(a, j);
+
+  for(int i = 0; i < Nc; ++i)
+    pokeColor(bb, peekColor(aa, i), i, color_index);
+
+  pokeSpin(b, bb, j, spin_index);
+
+
+}
