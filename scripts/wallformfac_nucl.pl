@@ -16,22 +16,17 @@ die "config.pl does not exist\n" unless -f "config.pl";
 do './config.pl';
 
 #### Example input
-#$nam = 'nonlocal';
-#$cur = 'n';
-#$nam = 'local';
-#$cur = 'l';
-
-#$t_src = 7;
-#$t_snk = 25;
-#$spext = 'D600.DG2p5_1.P_1.SP';
-#$ssext = 'D600.DG2p5_1.DG2p5_1.SS';
-#$norm = '1';
-
-#$t_src = 5;
-#$t_snk = 20;
-#$spext = 'D1480.DG3_1.P_1.SP';
-#$ssext = 'D1480.DG3_1.DG3_1.SS';
-#$norm = '(2*0.1480)';
+# Examples
+# example of smearing names
+# Mass
+# $Mass = "D-7104";
+# 3-pt is  AB
+# wave channel
+# $L = 1;
+# $A = 'W';  $Aext = 'W';
+# $B = 'S';  $Bext = "DG1p2";
+# $C = 'S';  $Cext = "DG1p2";
+# $X = 'W';  $Xext = $Aext  # used for energy only
 #### End of example
 
 die "Put the lattice spacing \'a\' in the config.pl file\n" unless defined(a);
@@ -39,17 +34,39 @@ die "Put the lattice spacing \'a\' in the config.pl file\n" unless defined(a);
 $pi = 3.14159265359;
 $fmtoGeV = 0.200;
 
-$p_f_sq = 0.0;
-foreach $i (0 .. 2)
-{
-  $p_f[$i] = $sink_mom[$i];
+print "source_mom=[$source_mom[0],$source_mom[1],$source_mom[2]]";
+print "sink_mom=[$sink_mom[0],$sink_mom[1],$sink_mom[2]]";
 
-  $p_f_sq += $p_f[$i]**2;
+die "momenta not set" if ($which_mom == 0);
+print "which_mom = $which_mom";
+
+if ($which_mom == 1)
+{
+  print "Source mom is fixed\n";
+  foreach $i (0 .. 2)
+  {
+    $p_i[$i] = $source_mom[$i];
+  }
+
+  @cp_i = &canonical_momenta(*p_i);
+}
+else
+{
+  print "Sink mom is fixed\n";
+  foreach $i (0 .. 2)
+  {
+    $p_f[$i] = $sink_mom[$i];
+  }
+
+  @cp_f = &canonical_momenta(*p_f);
 }
 
-@cp_f = &canonical_momenta(*p_f);
-
-$mommax_int = int(sqrt($mom2_max)+0.5) ;
+# Extensions
+# $abext = "${Mass}.${Aext}_${L}.${Bext}_${L}.${A}${B}";   # not used
+$apext = "${Mass}.${Aext}_${L}.P_${L}.${A}P";
+$cpext = "${Mass}.${Cext}_${L}.P_${L}.${C}P";
+$cbext = "${Mass}.${Cext}_${L}.${Bext}_${L}.${C}${B}";
+$xpext = "${Mass}.${Xext}_${L}.P_${L}.${X}P";
 
 # Vector form factors
 $numGamma = 4;
@@ -120,22 +137,19 @@ foreach $x (-$mommax_int .. $mommax_int)
 
       if ($mom2 == 0)
       {
-	$proton_sp{$x, $y, $z} = "proton.$spext" ;
-	$proton_ss{$x, $y, $z} = "proton.$ssext" ;
-	$proton_sw{$x, $y, $z} = "proton.$swext" ;  printf "proton_sw = %s\n", $proton_sw{0,0,0};
-	$proton_wp{$x, $y, $z} = "proton.$wpext" ;
-	$proton_ws{$x, $y, $z} = "proton.$wsext" ;
-	$proton_ww{$x, $y, $z} = "proton.$wwext" ;
+	$proton_ap{$x, $y, $z} = "proton.$apext" ;
+	$proton_cp{$x, $y, $z} = "proton.$cpext" ;
+	$proton_cb{$x, $y, $z} = "proton.$cbext" ;
+	$proton_xp{$x, $y, $z} = "proton.$xpext" ;
       }
       else
       {
 	$mom_name = "proton" . "_px" . $p[0] . "_py" . $p[1] . "_pz" . $p[2];
-	$proton_sp{$x, $y, $z} = $mom_name . ".$spext" ;
-	$proton_ss{$x, $y, $z} = $mom_name . ".$ssext" ;
-	$proton_sw{$x, $y, $z} = $mom_name . ".$swext" ;
-	$proton_wp{$x, $y, $z} = $mom_name . ".$wpext" ;
-	$proton_ws{$x, $y, $z} = $mom_name . ".$wsext" ;
-	$proton_ww{$x, $y, $z} = $mom_name . ".$wwext" ;
+
+	$proton_ap{$x, $y, $z} = "proton" . $mom_name . ".$apext" ;
+	$proton_cp{$x, $y, $z} = "proton" . $mom_name . ".$cpext" ;
+	$proton_cb{$x, $y, $z} = "proton" . $mom_name . ".$cbext" ;
+	$proton_xp{$x, $y, $z} = "proton" . $mom_name . ".$xpext" ;
       }
     }
   }
@@ -145,12 +159,6 @@ foreach $x (-$mommax_int .. $mommax_int)
 #
 # Normalizations
 print "Nucleon form-factor";
-
-# Assume zero momenta proton exist
-if (-f proton.$ssext) {exit(1);}
-if (-f proton.$swext) {exit(1);}
-
-&ensbc("proton_norm=extract($proton_sw{$p_f[0],$p_f[1],$p_f[2]}, $t_snk - $t_src)");
 
 # Use this as the insertion point - it is midway
 $t_ins = int(($t_snk - $t_src) / 2);
@@ -170,22 +178,22 @@ foreach $qx ( -$mommax_int .. $mommax_int ) {
 
       next if ($mom2 > $mom2_max) ;
 
-      if (-f $proton_sp{$qx,$qy,$qz})
+      if (-f $proton_xp{$qx,$qy,$qz})
       {
-	print "found for ", $proton_sp{$qx,$qy,$qz};
+	print "found for ", $proton_xp{$qx,$qy,$qz};
 
 	@q = ($qx, $qy, $qz);
 
-	$proton_energy{$qx, $qy, $qz} = "energy." . $proton_sp{$qx, $qy, $qz};
+	$proton_energy{$qx, $qy, $qz} = "energy." . $proton_xp{$qx, $qy, $qz};
 	if ($mom2 > 0)
 	{
 	  # Use dispersion relation
-	  &meff("foo","$proton_sp{0,0,0}",$t_ins);
+	  &meff("foo","$proton_xp{0,0,0}",$t_ins);
 	  &compute_2pt_ener_disp("$proton_energy{$qx,$qy,$qz}", "foo", *q);
 	}
 	else
 	{
-	  &meff("$proton_energy{$qx, $qy, $qz}","$proton_sp{$qx,$qy,$qz}",$t_ins);
+	  &meff("$proton_energy{$qx, $qy, $qz}","$proton_xp{$qx,$qy,$qz}",$t_ins);
 	}
 
 	($mass, $mass_err) = &calc("$proton_energy{$qx, $qy, $qz}");
@@ -228,25 +236,37 @@ foreach $h ('NUCL')
 
 	  if ($qsq > $mom2_max) {next;}
 
-	  # Construct p_i using mom. conservation
-	  foreach $i (0 .. 2)
+	  if ($which_mom == 1)
 	  {
-	    $p_i[$i] = -$q[$i] + $p_f[$i];     # note sign convention on q
+	    print "Reconstruct p_f";
+	    # Construct p_f using mom. conservation
+	    foreach $i (0 .. 2)
+	    {
+	      $p_f[$i] =  $q[$i] + $p_i[$i];     # note sign convention on q
+	    }
+	    @cp_f = &canonical_momenta(*p_f);
 	  }
-	  $p_i_sq = &compute_psq(*p_i);
-
-	  @cp_i = &canonical_momenta(*p_i);
+	  else
+	  {
+	    print "Reconstruct p_i";
+	    # Construct p_i using mom. conservation
+	    foreach $i (0 .. 2)
+	    {
+	      $p_i[$i] = -$q[$i] + $p_f[$i];     # note sign convention on q
+	    }
+	    @cp_i = &canonical_momenta(*p_i);
+	  }
 
 	  print "q=[$q[0],$q[1],$q[2]], qsq = $qsq,  p_i=[$p_i[0],$p_i[1],$p_i[2]], p_i_sq = $p_i_sq, p_f=[$p_f[0],$p_f[1],$p_f[2]]";
 
 	  printf "Looking for file %s\n","${nam}_cur3ptfn_${h}_f0_${s}_p0_snk15_g8_src_15_qx$q[0]_qy$q[1]_qz$q[2]";
 	  if (! -f "${nam}_cur3ptfn_${h}_f0_${s}_p0_snk15_g8_src15_qx$q[0]_qy$q[1]_qz$q[2]") {next;}
 
-	  printf "Looking for file %s\n", "$proton_sp{$cp_f[0],$cp_f[1],$cp_f[2]}";
-	  if (! -f "$proton_sp{$cp_f[0],$cp_f[1],$cp_f[2]}") {next;}
+	  printf "Looking for file %s\n", "$proton_cp{$cp_f[0],$cp_f[1],$cp_f[2]}";
+	  if (! -f "$proton_cp{$cp_f[0],$cp_f[1],$cp_f[2]}") {next;}
 
-	  printf "Looking for file %s\n", "$proton_sp{$cp_i[0],$cp_i[1],$cp_i[2]}";
-	  if (! -f "$proton_sp{$cp_i[0],$cp_i[1],$cp_i[2]}") {next;}
+	  printf "Looking for file %s\n", "$proton_ap{$cp_i[0],$cp_i[1],$cp_i[2]}";
+	  if (! -f "$proton_ap{$cp_i[0],$cp_i[1],$cp_i[2]}") {next;}
 
 	  &realpart("${nam}_cur3ptfn_${h}_f0_${s}_p0_snk15_g8_src15_qx$q[0]_qy$q[1]_qz$q[2]",
 		    "${cur}_${h}_f0_${s}_p0_mu3_$q[0]$q[1]$q[2]");
@@ -259,6 +279,9 @@ foreach $h ('NUCL')
 	  $proton_mass{$cp_i[0],$cp_i[1],$cp_i[2]}, $proton_mass_err{$cp_i[0],$cp_i[1],$cp_i[2]}, $qsq_dim, 
 	  $proton_disp;
 
+	  # Normalizations
+	  &ensbc("proton_norm=extract($proton_cb{$p_f[0],$p_f[1],$p_f[2]}, $t_snk - $t_src)");
+
 	  # Use some number of significant digits to uniquely identity the floating point qsq
 	  $qsq_int = int(10000*$proton_disp);
 
@@ -269,7 +292,7 @@ foreach $h ('NUCL')
 	  print "qsq_int = ", $qsq_int, "    tau = ", $tau;
 	  print "proton_cnt = ", $proton_cnt{$h}{0}{3}{$qsq_int};
 
-	  &ensbc("foo = $norm*(${cur}_${h}_f0_${s}_p0_mu3_$q[0]$q[1]$q[2] * $proton_sp{$cp_f[0],$cp_f[1],$cp_f[2]}) / ($proton_sp{$cp_i[0],$cp_i[1],$cp_i[2]} * proton_norm)");
+	  &ensbc("foo = $norm*(${cur}_${h}_f0_${s}_p0_mu3_$q[0]$q[1]$q[2] * $proton_cp{$cp_f[0],$cp_f[1],$cp_f[2]}) / ($proton_ap{$cp_i[0],$cp_i[1],$cp_i[2]} * proton_norm)");
 	  
 	  if (! defined($proton_cnt{$h}{0}{3}{$qsq_int}))
 	  {
@@ -332,15 +355,26 @@ foreach $h ('NUCL')
 		$qsq = &compute_psq(*q);
 		if ($qsq > $mom2_max) {next;}
 
-		# Construct p_i using mom. conservation
-		foreach $i (0 .. 2)
+		if ($which_mom == 1)
 		{
-		  $p_i[$i] = -$q[$i] + $p_f[$i];     # note sign convention on q
+		  print "Reconstruct p_f";
+		  # Construct p_f using mom. conservation
+		  foreach $i (0 .. 2)
+		  {
+		    $p_f[$i] =  $q[$i] + $p_i[$i];     # note sign convention on q
+		  }
+		  @cp_f = &canonical_momenta(*p_f);
 		}
-		$p_i_sq = &compute_psq(*p_i);
-
-		@cp_i = &canonical_momenta(*p_i);
-
+		else
+		{
+		  print "Reconstruct p_i";
+		  # Construct p_i using mom. conservation
+		  foreach $i (0 .. 2)
+		  {
+		    $p_i[$i] = -$q[$i] + $p_f[$i];     # note sign convention on q
+		  }
+		  @cp_i = &canonical_momenta(*p_i);
+		}
 
 		$proton_disp = -(($fmtoGeV/$a)**2)*&compute_disp_pipf_sq($proton_mass{0,0,0},*p_i,*p_f);
 		$qsq_int = int(10000*$proton_disp);
@@ -356,11 +390,11 @@ foreach $h ('NUCL')
 		printf "Looking for file %s\n","${nam}_cur3ptfn_${h}_f0_${s}_p${proj}_snk15_g${g}_src_15_qx$q[0]_qy$q[1]_qz$q[2]";
 		if (! -f "${nam}_cur3ptfn_${h}_f0_${s}_p${proj}_snk15_g${g}_src15_qx$q[0]_qy$q[1]_qz$q[2]") {next;}
 
-		printf "Looking for file %s\n", "$proton_sp{$cp_f[0],$cp_f[1],$cp_f[2]}";
-		if (! -f "$proton_sp{$cp_f[0],$cp_f[1],$cp_f[2]}") {next;}
+		printf "Looking for file %s\n", "$proton_cp{$cp_f[0],$cp_f[1],$cp_f[2]}";
+		if (! -f "$proton_cp{$cp_f[0],$cp_f[1],$cp_f[2]}") {next;}
 
-		printf "Looking for file %s\n", "$proton_sp{$cp_i[0],$cp_i[1],$cp_i[2]}";
-		if (! -f "$proton_sp{$cp_i[0],$cp_i[1],$cp_i[2]}") {next;}
+		printf "Looking for file %s\n", "$proton_ap{$cp_i[0],$cp_i[1],$cp_i[2]}";
+		if (! -f "$proton_ap{$cp_i[0],$cp_i[1],$cp_i[2]}") {next;}
 
 
 		&realpart("${nam}_cur3ptfn_${h}_f0_${s}_p${proj}_snk15_g${g}_src15_qx$q[0]_qy$q[1]_qz$q[2]",
@@ -373,12 +407,15 @@ foreach $h ('NUCL')
 		$e = (-$eps{$j,$k,$l} / $p_i[$l]);
 #		$e = $proj_sign[$proj] * $DR_sign[$j] * (-$eps{$j,$k,$l} / $p_i[$l]);
 
+		# Normalizations
+		&ensbc("proton_norm=extract($proton_cb{$p_f[0],$p_f[1],$p_f[2]}, $t_snk - $t_src)");
+
 		# Use some number of significant digits to uniquely identity the floating point qsq
 		$qsq_int = int(10000*$proton_disp);
 
 		print "qsq_int = $qsq_int,  qx=$qx, qy=$qy, qz=$qz, e=$e";
 
-		&ensbc("foo = ($e) * ($norm)*(${cur}_${h}_f0_${s}_p${proj}_mu${j}_$q[0]$q[1]$q[2] * $proton_sp{$cp_f[0],$cp_f[1],$cp_f[2]}) * ($proton_energy{$cp_i[0],$cp_i[1],$cp_i[2]} + $proton_energy{0,0,0}) / ($proton_sp{$cp_i[0],$cp_i[1],$cp_i[2]} * proton_norm)");
+		&ensbc("foo = ($e) * ($norm)*(${cur}_${h}_f0_${s}_p${proj}_mu${j}_$q[0]$q[1]$q[2] * $proton_cp{$cp_f[0],$cp_f[1],$cp_f[2]}) * ($proton_energy{$cp_i[0],$cp_i[1],$cp_i[2]} + $proton_energy{0,0,0}) / ($proton_ap{$cp_i[0],$cp_i[1],$cp_i[2]} * proton_norm)");
 		
 		#------------- HACK -------------
 		&ensbc("foo = 2 * foo");
