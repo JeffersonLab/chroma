@@ -1,4 +1,4 @@
-// $Id: wallrhoff_w.cc,v 1.1 2004-06-04 04:02:38 edwards Exp $
+// $Id: wallrhoff_w.cc,v 1.2 2004-06-04 21:13:15 edwards Exp $
 /*! \file
  *  \brief Wall-sink rho-> gamma+rho form-factors 
  *
@@ -6,8 +6,6 @@
  */
 
 #include "chromabase.h"
-#include "util/ft/sftmom.h"
-#include "meas/hadron/wallff_w.h"
 #include "meas/hadron/wallrhoff_w.h"
 
 using namespace QDP;
@@ -44,6 +42,8 @@ void wallRhoFormFac(WallFormFac_formfacs_t& form,
   if ( Ns != 4 || Nc != 3 || Nd != 4 )	// Code is specific to Ns=4, Nc=3, Nd=4
     return;
 
+  form.subroutine = "wallRhoFormFac";
+
   // Length of lattice in j_decay direction and 3pt correlations fcns
   int length = phases.numSubsets();
 
@@ -73,6 +73,20 @@ void wallRhoFormFac(WallFormFac_formfacs_t& form,
   gamma_list[6] = 11;
   gamma_list[7] = 7;
 
+  // Quark names
+  multi1d<string> quark_name(2);
+  quark_name[0] = "u";
+  quark_name[1] = "d";
+
+  // Formfac names
+  multi1d<string> formfac_name(1);
+  formfac_name[0] = "rho->gamma+rho";
+
+  // Projector names
+  multi1d<string> proj_name(1);
+  proj_name[0] = "none";
+
+
   // Project propagator onto zero momentum: Do a slice-wise sum.
   Propagator u_x2 = sum(forw_u_prop, phases.getSet()[t_sink]);
   Propagator d_x2 = sum(forw_d_prop, phases.getSet()[t_sink]);
@@ -82,19 +96,19 @@ void wallRhoFormFac(WallFormFac_formfacs_t& form,
 
   // Resize some things - this is needed upfront because I traverse the 
   // structure in a non-recursive scheme
-  form.quark.resize(2);
+  form.quark.resize(quark_name.size());
   for (int ud=0; ud < form.quark.size(); ++ud) 
   {
-    form.quark[ud].lorentz.resize(Nd*Nd);
-    for(int lorz = 0; lorz < form.quark[ud].lorentz.size(); ++lorz)
+    form.quark[ud].formfac.resize(formfac_name.size());
+    for(int dp = 0; dp < form.quark[ud].formfac.size(); ++dp)
     {
-      form.quark[ud].lorentz[lorz].formfac.resize(1);
-      for(int dp = 0; dp < form.quark[ud].lorentz[lorz].formfac.size(); ++dp)
+      form.quark[ud].formfac[dp].lorentz.resize(Nd*Nd);
+      for(int lorz = 0; lorz < form.quark[ud].formfac[dp].lorentz.size(); ++lorz)
       {
-	form.quark[ud].lorentz[lorz].formfac[dp].projector.resize(1);
-	for (int proj = 0; proj < form.quark[ud].lorentz[lorz].formfac[dp].projector.size(); ++proj) 
+	form.quark[ud].formfac[dp].lorentz[lorz].projector.resize(proj_name.size());
+	for (int proj = 0; proj < form.quark[ud].formfac[dp].lorentz[lorz].projector.size(); ++proj) 
 	{
-	  form.quark[ud].lorentz[lorz].formfac[dp].projector[proj].insertion.resize(gamma_list.size());
+	  form.quark[ud].formfac[dp].lorentz[lorz].projector[proj].insertion.resize(gamma_list.size());
 	}
       }
     }
@@ -107,15 +121,17 @@ void wallRhoFormFac(WallFormFac_formfacs_t& form,
   for(int gamma_ctr = 0; gamma_ctr < gamma_list.size(); ++gamma_ctr)
   {
     int gamma_value = gamma_list[gamma_ctr];
-    int mu = gamma_value % Nd;
+    int mu = gamma_ctr % Nd;
     bool compute_nonlocal = (gamma_ctr < Nd) ? true : false;
-
-    LatticePropagator local_insert_prop, nonlocal_insert_prop;
 
     // Loop over "u"=0 or "d"=1 pieces
     for(int ud = 0; ud < form.quark.size(); ++ud)
     {
       WallFormFac_quark_t& quark = form.quark[ud];
+      quark.quark_ctr = ud;
+      quark.quark_name = quark_name[ud];
+
+      LatticePropagator local_insert_prop, nonlocal_insert_prop;
 
       switch (ud)
       {
@@ -154,93 +170,98 @@ void wallRhoFormFac(WallFormFac_formfacs_t& form,
       }
 
 
-      // Loop over Lorentz indices of source and sink hadron operators
-      for(int lorz = 0; lorz < quark.lorentz.size(); ++lorz)
+      // Loop over "rho->rho"=0 types of form-factors
+      for(int dp = 0; dp < quark.formfac.size(); ++dp)
       {
-	WallFormFac_lorentz_t& lorentz = quark.lorentz[lorz];
+	WallFormFac_formfac_t& formfac = quark.formfac[dp];
+	formfac.formfac_ctr  = dp;
+	formfac.formfac_name = formfac_name[dp];
 
-	int sigma;  // Lorentz index at sink
-	int tau;    // Lorentz index at source
+	LatticeComplex local_contract, nonlocal_contract;
 
-	// Encoding of lorentz indices
-	sigma = lorz % Nd;      
-	tau   = int(lorz / Nd);
 
-	int gamma_value1 = 1 << sigma;
-	int gamma_value2 = 1 << tau;
-
-	lorentz.snk_gamma = gamma_value1;
-	lorentz.src_gamma = gamma_value2;
-
-	multi1d<LatticeComplex> local_contract(lorentz.formfac.size());
-	multi1d<LatticeComplex> nonlocal_contract(lorentz.formfac.size());
-
-	// Contractions depend on "ud" (u or d quark contribution)
-	// and source/sink operators
-	switch (ud)
+	// Loop over Lorentz indices of source and sink hadron operators
+	for(int lorz = 0; lorz < formfac.lorentz.size(); ++lorz)
 	{
-	case 0:
-	{
-	  // "\bar u O u" insertion in rho
-	  // The local non-conserved current contraction
-	  local_contract[0] = 
-	    trace(Gamma(gamma_value1)*local_insert_prop*Gamma(gamma_value2)*
-		  Gamma(G5)*adj(d_x2)*Gamma(G5));
+	  WallFormFac_lorentz_t& lorentz = formfac.lorentz[lorz];
+	  lorentz.lorentz_ctr = lorz;
 
-	  if (compute_nonlocal)
+	  int sigma;  // Lorentz index at sink
+	  int tau;    // Lorentz index at source
+
+	  // Encoding of lorentz indices
+	  sigma = lorz % Nd;      
+	  tau   = int(lorz / Nd);
+
+	  int gamma_value1 = 1 << sigma;
+	  int gamma_value2 = 1 << tau;
+
+	  lorentz.snk_gamma = gamma_value1;
+	  lorentz.src_gamma = gamma_value2;
+
+	  // Contractions depend on "ud" (u or d quark contribution)
+	  // and source/sink operators
+	  switch (ud)
 	  {
-	    // Construct the non-local (possibly conserved) current contraction
-	    nonlocal_contract[0] = 
-	      trace(Gamma(gamma_value1)*nonlocal_insert_prop*Gamma(gamma_value2)*
+	  case 0:
+	  {
+	    // "\bar u O u" insertion in rho
+	    // The local non-conserved current contraction
+	    local_contract = 
+	      trace(Gamma(gamma_value1)*local_insert_prop*Gamma(gamma_value2)*
 		    Gamma(G5)*adj(d_x2)*Gamma(G5));
+
+	    if (compute_nonlocal)
+	    {
+	      // Construct the non-local (possibly conserved) current contraction
+	      nonlocal_contract = 
+		trace(Gamma(gamma_value1)*nonlocal_insert_prop*Gamma(gamma_value2)*
+		      Gamma(G5)*adj(d_x2)*Gamma(G5));
+	    }
 	  }
-	}
-	break;
+	  break;
 
-	case 1:
-	{
-	  // "\bar d O d" insertion in rho
-	  // The local non-conserved current contraction
-	  local_contract[0] =
-	    trace(Gamma(gamma_value1)*u_x2*Gamma(gamma_value2)*
-		  Gamma(G5)*adj(local_insert_prop)*Gamma(G5));
-
-	  if (compute_nonlocal)
+	  case 1:
 	  {
-	    // Construct the non-local (possibly conserved) current contraction
-	    nonlocal_contract[0] =
+	    // "\bar d O d" insertion in rho
+	    // The local non-conserved current contraction
+	    local_contract =
 	      trace(Gamma(gamma_value1)*u_x2*Gamma(gamma_value2)*
-		    Gamma(G5)*adj(nonlocal_insert_prop)*Gamma(G5));
+		    Gamma(G5)*adj(local_insert_prop)*Gamma(G5));
+
+	    if (compute_nonlocal)
+	    {
+	      // Construct the non-local (possibly conserved) current contraction
+	      nonlocal_contract =
+		trace(Gamma(gamma_value1)*u_x2*Gamma(gamma_value2)*
+		      Gamma(G5)*adj(nonlocal_insert_prop)*Gamma(G5));
+	    }
 	  }
-	}
-	break;
+	  break;
 
-	default:
-	  QDP_error_exit("Unknown ud type", ud);
-	}
+	  default:
+	    QDP_error_exit("Unknown ud type", ud);
+	  }
 
-
-	// Loop over "rho->rho"=0 types of form-factors
-	for(int dp = 0; dp < lorentz.formfac.size(); ++dp)
-	{
-	  WallFormFac_formfac_t& formfac = lorentz.formfac[dp];
 
 	  // Loop over the spin projectors - none here
-	  for (int proj = 0; proj < formfac.projector.size(); ++proj) 
+	  for (int proj = 0; proj < lorentz.projector.size(); ++proj) 
 	  {
-	    WallFormFac_projector_t& projector = formfac.projector[proj];
+	    WallFormFac_projector_t& projector = lorentz.projector[proj];
+	    projector.proj_ctr  = proj;
+	    projector.proj_name = proj_name[proj];
+
 	    WallFormFac_insertion_t& insertion = projector.insertion[gamma_ctr];
 
 	    insertion.gamma_ctr   = gamma_ctr;
 	    insertion.mu          = mu;
 	    insertion.gamma_value = gamma_value;
-	    insertion.momenta.resize(phases.numMom());  // hold momenta output
 
 	    // The local non-conserved vector-current matrix element 
-	    LatticeComplex corr_local_fn = local_contract[0];
+	    LatticeComplex corr_local_fn = local_contract;
 
 	    // The nonlocal (possibly conserved) current matrix element 
-	    LatticeComplex corr_nonlocal_fn = nonlocal_contract[0];
+	    LatticeComplex corr_nonlocal_fn = nonlocal_contract;
 	
 	    multi1d<WallFormFac_momenta_t>& momenta = insertion.momenta;
 
@@ -248,8 +269,8 @@ void wallRhoFormFac(WallFormFac_formfacs_t& form,
 			   compute_nonlocal, t0, t_sink);
 
 	  } // end for(proj)
-	}  // end for(dp)
-      } // end for(lorz)
+	} // end for(lorz)
+      }  // end for(dp)
     } // end for(ud)
   } // end for(gamma_ctr)
 

@@ -1,4 +1,4 @@
-// $Id: walldeltaff_w.cc,v 1.3 2004-06-02 03:50:59 edwards Exp $
+// $Id: walldeltaff_w.cc,v 1.4 2004-06-04 21:13:15 edwards Exp $
 /*! \file
  *  \brief Wall-sink delta^+ -> gamma+delta^+ form-factors 
  *
@@ -6,12 +6,9 @@
  */
 
 #include "chromabase.h"
-#include "util/ft/sftmom.h"
-#include "meas/hadron/wallff_w.h"
 #include "meas/hadron/walldeltaff_w.h"
 
 using namespace QDP;
-
 
 
 //! Compute the 123-123 contraction of a delta and P
@@ -23,8 +20,8 @@ using namespace QDP;
  * \param q1        first quark ( Read )
  * \param q2        second quark ( Read )
  * \param q3        third quark ( Read )
- * \param sigma     Lorentz index of delta ( Read )
- * \param tau       Lorentz index of delta ( Read )
+ * \param n         Lorentz index of delta ( Read )
+ * \param m         Lorentz index of delta ( Read )
  *
  * \return color-contracted spin object
  */
@@ -33,15 +30,21 @@ static
 LatticeSpinMatrix deltaContract123(const T1& q1,
 				   const T2& q2, 
 				   const T3& q3,
-				   int sigma, int tau)
+				   int n, int m)
 {
-  int n = 1 << sigma;
-  int m = 1 << tau;
-
+#if 0
   /* C gamma_5 = Gamma(5) = - (C gamma_5)^T */
   /* C gamma_mu = Gamma(10) * Gamma(1 << mu) = + (C gamma_mu)^T */
   LatticeSpinMatrix  S =
     traceColor(q3 * traceSpin(quarkContract13((q1*Gamma(10))*Gamma(n), Gamma(10)*(Gamma(m)*q2))));
+#else
+  SpinMatrix g_one = 1.0;
+  SpinMatrix Cgm = 0.5 * (Gamma(10) * (Gamma(2) * g_one  +  timesI(Gamma(1) * g_one)));
+
+  LatticeSpinMatrix  S =
+    traceColor(q3 * traceSpin(quarkContract13(q1*Cgm, Cgm*q2)));
+#endif
+
 
   return S;
 }
@@ -55,8 +58,8 @@ LatticeSpinMatrix deltaContract123(const T1& q1,
  * \param q1        first quark ( Read )
  * \param q2        second quark ( Read )
  * \param q3        third quark ( Read )
- * \param sigma     Lorentz index of delta ( Read )
- * \param tau       Lorentz index of delta ( Read )
+ * \param n         Lorentz index of delta ( Read )
+ * \param m         Lorentz index of delta ( Read )
  *
  * \return color-contracted spin object
  */
@@ -65,16 +68,20 @@ static
 LatticeSpinMatrix deltaContract132(const T1& q1,
 				   const T2& q2, 
 				   const T3& q3,
-				   int sigma, int tau)
+				   int n, int m)
 {
-  int n = 1 << sigma;
-  int m = 1 << tau;
-
+#if 0
   /* C gamma_5 = Gamma(5) = - (C gamma_5)^T */
   /* C gamma_mu = Gamma(10) * Gamma(1 << mu) = + (C gamma_mu)^T */
   LatticeSpinMatrix  S = 
     traceColor(q3 * quarkContract13((q1*Gamma(10))*Gamma(n), Gamma(10)*(Gamma(m)*q2)));
+#else
+  SpinMatrix g_one = 1.0;
+  SpinMatrix Cgm = 0.5 * (Gamma(10) * (Gamma(2) * g_one  +  timesI(Gamma(1) * g_one)));
 
+  LatticeSpinMatrix  S = 
+    traceColor(q3 * quarkContract13(q1*Cgm, Cgm*q2));
+#endif
   return S;
 }
 
@@ -87,8 +94,8 @@ LatticeSpinMatrix deltaContract132(const T1& q1,
  * \param u1        first quark ( Read )
  * \param u2        second quark ( Read )
  * \param  d        third quark ( Read )
- * \param sigma     Lorentz index of delta ( Read )
- * \param tau       Lorentz index of delta ( Read )
+ * \param n         Lorentz index of delta ( Read )
+ * \param m         Lorentz index of delta ( Read )
  *
  * \return color-contracted spin object
  */
@@ -97,14 +104,14 @@ static
 LatticeSpinMatrix deltaContract(const T1& u1,
 				const T2& u2, 
 				const T3& d,
-				int sigma, int tau)
+				int n, int m)
 {
   LatticeSpinMatrix  S =
-    2*deltaContract123( d, u1, u2, sigma, tau) +   deltaContract123(u1, u2,  d, sigma, tau)
-  + 2*deltaContract132( d, u1, u2, sigma, tau) + 2*deltaContract132(u1,  d, u2, sigma, tau)
-  + 2*deltaContract132(u1, u2,  d, sigma, tau);
+    2*deltaContract123( d, u1, u2, n, m) +   deltaContract123(u1, u2,  d, n, m)
+    + 2*deltaContract132( d, u1, u2, n, m) + 2*deltaContract132(u1,  d, u2, n, m)
+    + 2*deltaContract132(u1, u2,  d, n, m);
 
-  S *= -2;
+  S *= 2;
 
   return S;
 }
@@ -117,7 +124,7 @@ LatticeSpinMatrix deltaContract(const T1& u1,
  *
  * This routine is specific to Wilson fermions!
  *
- * \param xml                buffer for writing the data ( Write )
+ * \param form               Mega-structure holding form-factors ( Write )
  * \param u                  gauge fields (used for non-local currents) ( Read )
  * \param forw_u_prop        forward U quark propagator ( Read )
  * \param back_u_prop        backward D quark propagator ( Read )
@@ -128,7 +135,7 @@ LatticeSpinMatrix deltaContract(const T1& u1,
  * \param t_sink             time coordinates of the sink ( Read )
  */
 
-void wallDeltaFormFac(XMLWriter& xml,
+void wallDeltaFormFac(WallFormFac_formfacs_t& form,
 		      const multi1d<LatticeColorMatrix>& u, 
 		      const LatticePropagator& forw_u_prop,
 		      const LatticePropagator& back_u_prop, 
@@ -142,14 +149,37 @@ void wallDeltaFormFac(XMLWriter& xml,
   if ( Ns != 4 || Nc != 3 || Nd != 4 )	// Code is specific to Ns=4, Nc=3, Nd=4
     return;
 
+  form.subroutine = "wallDeltaFormFac";
+
   // Length of lattice in j_decay direction and 3pt correlations fcns
   int length = phases.numSubsets();
 
-  // Mega-structure holding form-factors
-  WallFormFac_formfacs_t form;
-
   int G5 = Ns*Ns-1;
   
+  // The list of meaningful insertions
+  //   The gamma matrices specified correspond to 
+  // V_mu and A_mu = gamma_mu gamma_5, specificially
+  // where in the Chroma code gamma_5 = g_3 g_2 g_1 g_0
+  //
+  //               GAMMA              CURRENT
+  //                 1                  V_0
+  //                 2                  V_1
+  //                 4                  V_2
+  //                 8                  V_3
+  //                 14                -A_0
+  //                 13                 A_1
+  //                 11                -A_2
+  //                 7                  A_3
+  multi1d<int> gamma_list(2*Nd);
+  gamma_list[0] = 1;
+  gamma_list[1] = 2;
+  gamma_list[2] = 4;
+  gamma_list[3] = 8;
+  gamma_list[4] = 14;
+  gamma_list[5] = 13;
+  gamma_list[6] = 11;
+  gamma_list[7] = 7;
+
   // Spin projectors
   multi1d<SpinMatrix> S_proj(Nd);
   SpinMatrix  g_one = 1.0;
@@ -163,6 +193,23 @@ void wallDeltaFormFac(XMLWriter& xml,
   S_proj[3] = timesMinusI(Gamma(1 << 0) * (Gamma(1 << 1) * S_proj[0]));
 
 
+  // Quark names
+  multi1d<string> quark_name(2);
+  quark_name[0] = "u";
+  quark_name[1] = "d";
+
+  // Formfac names
+  multi1d<string> formfac_name(1);
+  formfac_name[0] = "nucleon->gamma+nucleon";
+
+  // Projector names
+  multi1d<string> proj_name(Nd);
+  proj_name[0] = "I";
+  proj_name[1] = "sigma_1";
+  proj_name[2] = "sigma_2";
+  proj_name[3] = "sigma_3";
+
+
   // Project propagator onto zero momentum: Do a slice-wise sum.
   Propagator u_x2 = sum(forw_u_prop, phases.getSet()[t_sink]);
   Propagator d_x2 = sum(forw_d_prop, phases.getSet()[t_sink]);
@@ -170,68 +217,75 @@ void wallDeltaFormFac(XMLWriter& xml,
   LatticePropagator anti_d_prop = adj(Gamma(G5)*back_d_prop*Gamma(G5));
 
 
-  // Resize some things
-  form.formFacs.resize(2*Nd*1);
-  for (int seq_src = 0; seq_src < form.formFacs.size(); ++seq_src) 
-    form.formFacs[seq_src].insertions.resize(Nd);
+  // Resize some things - this is needed upfront because I traverse the 
+  // structure in a non-recursive scheme
+  form.quark.resize(quark_name.size());
+  for (int ud=0; ud < form.quark.size(); ++ud) 
+  {
+    form.quark[ud].formfac.resize(formfac_name.size());
+    for(int dp = 0; dp < form.quark[ud].formfac.size(); ++dp)
+    {
+      form.quark[ud].formfac[dp].lorentz.resize(Nd*Nd);
+      for(int lorz = 0; lorz < form.quark[ud].formfac[dp].lorentz.size(); ++lorz)
+      {
+	form.quark[ud].formfac[dp].lorentz[lorz].projector.resize(proj_name.size());
+	for (int proj = 0; proj < form.quark[ud].formfac[dp].lorentz[lorz].projector.size(); ++proj) 
+	{
+	  form.quark[ud].formfac[dp].lorentz[lorz].projector[proj].insertion.resize(gamma_list.size());
+	}
+      }
+    }
+  }
 
 
   // For calculational purpose, loop over insertions first.
   // This is out-of-order from storage within the data structure
-  for(int mu = 0; mu < Nd; ++mu)
+  // Loop over gamma matrices of the insertion current of insertion current
+  for(int gamma_ctr = 0; gamma_ctr < gamma_list.size(); ++gamma_ctr)
   {
-    int gamma_value = 1 << mu;
-
-    // !!!!!!!!!!!!!!!! HACK !!!!!!!!!!!!!!!
-    int sigma = 0;    // NEED TO FIX THIS!!!!!
-    int tau   = 0;    // NEED TO FIX THIS!!!!!
-    // !!!!!!!!!!!!!!!! END-HACK !!!!!!!!!!!!!!!
-
-    multi1d<LatticeSpinMatrix> local_contract(1);
-    multi1d<LatticeSpinMatrix> nonlocal_contract(1);
+    int gamma_value = gamma_list[gamma_ctr];
+    int mu = gamma_ctr % Nd;
+    bool compute_nonlocal = (gamma_ctr < Nd) ? true : false;
 
     // Loop over "u"=0 or "d"=1 pieces
-    for(int ud = 0; ud < 2; ++ud)
+    for(int ud = 0; ud < form.quark.size(); ++ud)
     {
+      WallFormFac_quark_t& quark = form.quark[ud];
+      quark.quark_ctr = ud;
+      quark.quark_name = quark_name[ud];
+
+      LatticePropagator local_insert_prop, nonlocal_insert_prop;
+
+
       switch (ud)
       {
       case 0:
       {
-	// "\bar u O u" insertion in delta, ie. "(u C gamma_5 d) u"
+	// "\bar u O u" insertion in rho
 	// The local non-conserved current contraction
-	LatticePropagator local_insert_prop = 
-	  anti_u_prop*Gamma(gamma_value)*forw_u_prop;
+	local_insert_prop = anti_u_prop*Gamma(gamma_value)*forw_u_prop;
 
-	local_contract[0] = 
-	  deltaContract(local_insert_prop, u_x2, d_x2, sigma, tau) + 
-	  deltaContract(u_x2, local_insert_prop, d_x2, sigma, tau);
-
-	// Construct the non-local (possibly conserved) current contraction
-	LatticePropagator nonlocal_insert_prop = 
-	  nonlocalCurrentProp(u, mu, forw_u_prop, anti_u_prop);
-
-	nonlocal_contract[0] = 
-	  deltaContract(nonlocal_insert_prop, u_x2, d_x2, sigma, tau) + 
-	  deltaContract(u_x2, nonlocal_insert_prop, d_x2, sigma, tau);
+	if (compute_nonlocal)
+	{
+	  // Construct the non-local (possibly conserved) current contraction
+	  nonlocal_insert_prop = nonlocalCurrentProp(u, mu, forw_u_prop, anti_u_prop);
+	}
       }
       break;
 
       case 1:
       {
-	// "\bar d O d" insertion in delta, ie. "(u C gamma_5 d) u"
+	// "\bar d O d" insertion in rho
 	// The local non-conserved current contraction
 	LatticePropagator local_insert_prop = 
 	  anti_d_prop*Gamma(gamma_value)*forw_d_prop;
 
-	local_contract[0] =
-	  deltaContract(u_x2, u_x2, local_insert_prop, sigma, tau);
-
-	// Construct the non-local (possibly conserved) current contraction
-	LatticePropagator nonlocal_insert_prop = 
-	  nonlocalCurrentProp(u, mu, forw_d_prop, anti_d_prop);
-
-	nonlocal_contract[0] =
-	  deltaContract(u_x2, u_x2, nonlocal_insert_prop, sigma, tau);
+	if (compute_nonlocal)
+	{
+	  // Construct the non-local (possibly conserved) current contraction
+	  LatticePropagator nonlocal_insert_prop = 
+	    nonlocalCurrentProp(u, mu, forw_d_prop, anti_d_prop);
+	}
       }
       break;
 
@@ -240,64 +294,107 @@ void wallDeltaFormFac(XMLWriter& xml,
       }
 
 
-      // Loop over "delta->delta"=0 types of form-factors
-      for(int dp = 0; dp < 1; ++dp)
+      // Loop over "rho->rho"=0 types of form-factors
+      for(int dp = 0; dp < quark.formfac.size(); ++dp)
       {
-	// Loop over insertions types - these are the spin projectors
-	for (int proj = 0; proj < Nd; ++proj) 
+	WallFormFac_formfac_t& formfac = quark.formfac[dp];
+	formfac.formfac_ctr  = dp;
+	formfac.formfac_name = formfac_name[dp];
+
+	LatticeSpinMatrix local_contract, nonlocal_contract;
+
+
+	// Loop over Lorentz indices of source and sink hadron operators
+	for(int lorz = 0; lorz < formfac.lorentz.size(); ++lorz)
 	{
-	  int seq_src = ud + 2*(proj + Nd*(dp));   // encode which form-factor
-	  if (2*Nd*1 != form.formFacs.size())
+	  WallFormFac_lorentz_t& lorentz = formfac.lorentz[lorz];
+	  lorentz.lorentz_ctr = lorz;
+
+	  int sigma;  // Lorentz index at sink
+	  int tau;    // Lorentz index at source
+
+	  // Encoding of lorentz indices
+	  sigma = lorz % Nd;      
+	  tau   = int(lorz / Nd);
+
+	  int gamma_value1 = 1 << sigma;
+	  int gamma_value2 = 1 << tau;
+
+	  lorentz.snk_gamma = gamma_value1;
+	  lorentz.src_gamma = gamma_value2;
+
+	  // Contractions depend on "ud" (u or d quark contribution)
+	  // and source/sink operators
+	  switch (ud)
 	  {
-	    QDPIO::cerr << "wallDeltaff: internal sizing error" << endl;
-	    QDP_abort(1);
+	  case 0:
+	  {
+	    // "\bar u O u" insertion in delta
+	    // The local non-conserved current contraction
+	    local_contract = 
+	      deltaContract(local_insert_prop, u_x2, d_x2, gamma_value1, gamma_value2) + 
+	      deltaContract(u_x2, local_insert_prop, d_x2, gamma_value1, gamma_value2);
+
+	    if (compute_nonlocal)
+	    {
+	      // Construct the non-local (possibly conserved) current contraction
+	      nonlocal_contract = 
+		deltaContract(nonlocal_insert_prop, u_x2, d_x2, gamma_value1, gamma_value2) + 
+		deltaContract(u_x2, nonlocal_insert_prop, d_x2, gamma_value1, gamma_value2);
+	    }
+	  }
+	  break;
+
+	  case 1:
+	  {
+	    // "\bar d O d" insertion in delta
+	    // The local non-conserved current contraction
+	    local_contract =
+	      deltaContract(u_x2, u_x2, local_insert_prop, gamma_value1, gamma_value2);
+
+	    if (compute_nonlocal)
+	    {
+	      // Construct the non-local (possibly conserved) current contraction
+	      nonlocal_contract =
+		deltaContract(u_x2, u_x2, nonlocal_insert_prop, gamma_value1, gamma_value2);
+	    }
+	  }
+	  break;
+
+	  default:
+	    QDP_error_exit("Unknown ud type", ud);
 	  }
 
-	  form.formFacs[seq_src].seq_src = seq_src;
 
-	  // The local non-conserved vector-current matrix element 
-	  LatticeComplex corr_local_fn = traceSpin(S_proj[proj] * local_contract[0]);
-
-	  // The nonlocal (possibly conserved) current matrix element 
-	  LatticeComplex corr_nonlocal_fn = traceSpin(S_proj[proj] * nonlocal_contract[0]);
-	
-	  multi2d<DComplex> hsum_local = phases.sft(corr_local_fn);
-	  multi2d<DComplex> hsum_nonlocal = phases.sft(corr_nonlocal_fn);
- 
- 
-	  form.formFacs[seq_src].insertions[mu].gamma_value = gamma_value;
-	  form.formFacs[seq_src].insertions[mu].momenta.resize(phases.numMom());  // hold momenta output
-
-	  // Loop over insertion momenta
-	  for(int inser_mom_num=0; inser_mom_num < phases.numMom(); ++inser_mom_num) 
+	  // Loop over the spin projectors
+	  for (int proj = 0; proj < lorentz.projector.size(); ++proj) 
 	  {
-	    form.formFacs[seq_src].insertions[mu].momenta[inser_mom_num].inser_mom_num =
-	      inser_mom_num;
-	    form.formFacs[seq_src].insertions[mu].momenta[inser_mom_num].inser_mom = 
-	      phases.numToMom(inser_mom_num);
+	    WallFormFac_projector_t& projector = lorentz.projector[proj];
+	    projector.proj_ctr  = proj;
+	    projector.proj_name = proj_name[proj];
 
-	    multi1d<Complex> local_cur3ptfn(length); // always compute
-	    multi1d<Complex> nonlocal_cur3ptfn(length); // always compute
-	    
-	    for (int t=0; t < length; ++t) 
-	    {
-	      int t_eff = (t - t0 + length) % length;
+	    WallFormFac_insertion_t& insertion = projector.insertion[gamma_ctr];
 
-	      local_cur3ptfn[t_eff] = Complex(hsum_local[inser_mom_num][t]);
-	      nonlocal_cur3ptfn[t_eff] = Complex(hsum_nonlocal[inser_mom_num][t]);
-	    } // end for(t)
+	    insertion.gamma_ctr   = gamma_ctr;
+	    insertion.mu          = mu;
+	    insertion.gamma_value = gamma_value;
 
-	    form.formFacs[seq_src].insertions[mu].momenta[inser_mom_num].local_current    = local_cur3ptfn;
-	    form.formFacs[seq_src].insertions[mu].momenta[inser_mom_num].nonlocal_current = nonlocal_cur3ptfn;
-	  } // end for(inser_mom_num)
-	} // end for(proj)
-      }  // end for(dp)
+	    // The local non-conserved vector-current matrix element 
+	    LatticeComplex corr_local_fn = traceSpin(S_proj[proj] * local_contract);
+
+	    // The nonlocal (possibly conserved) current matrix element 
+	    LatticeComplex corr_nonlocal_fn = traceSpin(S_proj[proj] * nonlocal_contract);
+	
+	    multi1d<WallFormFac_momenta_t>& momenta = insertion.momenta;
+
+	    wallFormFacSft(momenta, corr_local_fn, corr_nonlocal_fn, phases,
+			   compute_nonlocal, t0, t_sink);
+
+	  } // end for(proj)
+	}  // end for(dp)
+      } // end for(lorz)
     } // end for(ud)
-  } // end for(mu)
-
-  // Finally, dump the structure
-  write(xml, "FormFac", form);
+  } // end for(gamma_ctr)
 
   END_CODE("wallDeltaFormFac");
 }
-

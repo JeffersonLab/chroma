@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wallff_w.h,v 1.2 2004-06-04 04:05:58 edwards Exp $
+// $Id: wallff_w.h,v 1.3 2004-06-04 21:13:15 edwards Exp $
 /*! \file
  *  \brief Structures for wall-sink/source form-factors
  *
@@ -8,6 +8,8 @@
 
 #ifndef __wallff_h__
 #define __wallff_h__
+
+#include "util/ft/sftmom.h"
 
 
 //! Structures to hold form-factors
@@ -29,28 +31,36 @@ struct WallFormFac_insertion_t
 
 struct WallFormFac_projector_t
 {
+  int              proj_ctr;
+  string           proj_name;
   multi1d<WallFormFac_insertion_t>  insertion;
-};
-
-struct WallFormFac_formfac_t
-{
-  multi1d<WallFormFac_projector_t>  projector;
 };
 
 struct WallFormFac_lorentz_t
 {
+  int              lorentz_ctr;
   int              snk_gamma;
   int              src_gamma;
-  multi1d<WallFormFac_formfac_t>  formfac;
+  multi1d<WallFormFac_projector_t>  projector;
+};
+
+struct WallFormFac_formfac_t
+{
+  int              formfac_ctr;
+  string           formfac_name;
+  multi1d<WallFormFac_lorentz_t>  lorentz;
 };
 
 struct WallFormFac_quark_t
 {
-  multi1d<WallFormFac_lorentz_t>  lorentz;
+  int              quark_ctr;
+  string           quark_name;
+  multi1d<WallFormFac_formfac_t>  formfac;
 };
 
 struct WallFormFac_formfacs_t
 {
+  string           subroutine;
   multi1d<WallFormFac_quark_t>  quark;
 };
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wallrhopiff_w.h,v 1.1 2004-06-04 04:02:57 edwards Exp $
+// $Id: wallrhopiff_w.h,v 1.2 2004-06-04 21:13:15 edwards Exp $
 /*! \file
  *  \brief Wall-sink rho^+ -> gamma+pi^+ form-factors 
  *
@@ -10,14 +10,15 @@
 #define __wallrhopiff_h__
 
 #include "util/ft/sftmom.h"
+#include "meas/hadron/wallff_w.h"
 
-//! Wall-sink rho^+ -> gamma+pi^+ form-factors 
+//! Wall-sink rho^+ <-> gamma+pi^+ form-factors 
 /*!
  * \ingroup hadron
  *
  * This routine is specific to Wilson fermions!
  *
- * \param xml                buffer for writing the data ( Write )
+ * \param form               Mega-structure holding form-factors ( Write )
  * \param u                  gauge fields (used for non-local currents) ( Read )
  * \param forw_u_prop        forward U quark propagator ( Read )
  * \param back_u_prop        backward D quark propagator ( Read )
@@ -28,7 +29,7 @@
  * \param t_sink             time coordinates of the sink ( Read )
  */
 
-void wallRhoPiFormFac(XMLWriter& xml,
+void wallRhoPiFormFac(WallFormFac_formfacs_t& form,
 		      const multi1d<LatticeColorMatrix>& u, 
 		      const LatticePropagator& forw_u_prop,
 		      const LatticePropagator& back_u_prop, 

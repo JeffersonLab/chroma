@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wallff_w.cc,v 1.2 2004-06-04 04:05:58 edwards Exp $
+// $Id: wallff_w.cc,v 1.3 2004-06-04 21:13:15 edwards Exp $
 /*! \file
  *  \brief Structures for wall-sink/source form-factors
  *
@@ -62,11 +62,7 @@ void wallFormFacSft(multi1d<WallFormFac_momenta_t>& momenta,
 {
   START_CODE("wallFormFacSft");
 
-  if ( momenta.size() != phases.numMom() )
-  {
-    QDPIO::cerr << "wallFormFacSft: momenta array size incorrect" << endl;
-    QDP_abort(1);
-  }
+  momenta.resize(phases.numMom());  // hold momenta output
 
   // Length of lattice in j_decay direction and 3pt correlations fcns
   int length = phases.numSubsets();
@@ -79,8 +75,8 @@ void wallFormFacSft(multi1d<WallFormFac_momenta_t>& momenta,
   // Loop over insertion momenta
   for(int inser_mom_num=0; inser_mom_num < phases.numMom(); ++inser_mom_num) 
   {
-    momenta[insert_mom_num].inser_mom_num = inser_mom_num;
-    momenta[insert_mom_num].inser_mom     = phases.numToMom(inser_mom_num);
+    momenta[inser_mom_num].inser_mom_num = inser_mom_num;
+    momenta[inser_mom_num].inser_mom     = phases.numToMom(inser_mom_num);
     
     multi1d<Complex> local_cur3ptfn(length); // always compute
     multi1d<Complex> nonlocal_cur3ptfn;
@@ -96,8 +92,8 @@ void wallFormFacSft(multi1d<WallFormFac_momenta_t>& momenta,
 	nonlocal_cur3ptfn[t_eff] = Complex(hsum_nonlocal[inser_mom_num][t]);
     } // end for(t)
 
-    momenta[insert_mom_num].local_current    = local_cur3ptfn;
-    momenta[insert_mom_num].nonlocal_current = nonlocal_cur3ptfn;
+    momenta[inser_mom_num].local_current    = local_cur3ptfn;
+    momenta[inser_mom_num].nonlocal_current = nonlocal_cur3ptfn;
     
   } // end for(inser_mom_num)
 
@@ -128,19 +124,59 @@ void write(XMLWriter& xml, const string& path, const WallFormFac_insertion_t& he
 {
   push(xml, path);
 
+  write(xml, "gamma_ctr", header.gamma_ctr);
+  write(xml, "mu", header.mu);
   write(xml, "gamma_value", header.gamma_value);
   write(xml, "Momenta", header.momenta);
 
   pop(xml);
 }
 
-//! Wallformfac insertions writer
-void write(XMLWriter& xml, const string& path, const WallFormFac_insertions_t& header)
+//! Wallformfac projector writer
+void write(XMLWriter& xml, const string& path, const WallFormFac_projector_t& header)
 {
   push(xml, path);
 
-  write(xml, "seq_src", header.seq_src);
-  write(xml, "Insertions", header.insertions);
+  write(xml, "proj_ctr", header.proj_ctr);
+  write(xml, "proj_name", header.proj_name);
+  write(xml, "Insertion", header.insertion);
+
+  pop(xml);
+}
+
+//! Wallformfac lorentz writer
+void write(XMLWriter& xml, const string& path, const WallFormFac_lorentz_t& header)
+{
+  push(xml, path);
+
+  write(xml, "lorentz_ctr", header.lorentz_ctr);
+  write(xml, "snk_gamma", header.snk_gamma);
+  write(xml, "src_gamma", header.src_gamma);
+  write(xml, "Projector", header.projector);
+
+  pop(xml);
+}
+
+//! Wallformfac formfac writer
+void write(XMLWriter& xml, const string& path, const WallFormFac_formfac_t& header)
+{
+  push(xml, path);
+
+  write(xml, "formfac_ctr", header.formfac_ctr);
+  write(xml, "formfac_name", header.formfac_name);
+  write(xml, "Lorentz", header.lorentz);
+
+  pop(xml);
+}
+
+//! Wallformfac quark writer
+void write(XMLWriter& xml, const string& path, const WallFormFac_quark_t& header)
+{
+  push(xml, path);
+
+  write(xml, "quark_ctr", header.quark_ctr);
+  write(xml, "quark_name", header.quark_name);
+  write(xml, "FormFac", header.formfac);
 
   pop(xml);
 }
@@ -148,6 +184,11 @@ void write(XMLWriter& xml, const string& path, const WallFormFac_insertions_t& h
 //! WallFormFac writer
 void write(XMLWriter& xml, const string& path, const WallFormFac_formfacs_t& header)
 {
-  write(xml, path, header.formFacs);
+  push(xml, path);
+
+  write(xml, "subroutine", header.subroutine);
+  write(xml, "Quark", header.quark);
+
+  pop(xml);
 }
 

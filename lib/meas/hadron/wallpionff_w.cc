@@ -1,4 +1,4 @@
-// $Id: wallpionff_w.cc,v 1.11 2004-04-29 17:33:00 edwards Exp $
+// $Id: wallpionff_w.cc,v 1.12 2004-06-04 21:13:15 edwards Exp $
 /*! \file
  *  \brief Wall-sink pion form-factors 
  *
@@ -16,120 +16,250 @@ using namespace QDP;
  *
  * This routine is specific to Wilson fermions!
  *
- * \param xml                xml output ( Modify )
+ * \param form               Mega-structure holding form-factors ( Write )
  * \param u                  gauge fields (used for non-local currents) ( Read )
- * \param forw_prop          forward quark propagator ( Read )
- * \param back_prop          backward quark propagator ( Read )
+ * \param forw_u_prop        forward U quark propagator ( Read )
+ * \param back_u_prop        backward D quark propagator ( Read )
+ * \param forw_d_prop        forward U quark propagator ( Read )
+ * \param back_d_prop        backward D quark propagator ( Read )
  * \param phases             fourier transform phase factors ( Read )
  * \param t0                 cartesian coordinates of the source ( Read )
  */
 
-void wallPionFormFac(XMLWriter& xml,
+void wallPionFormFac(WallFormFac_formfacs_t& form,
 		     const multi1d<LatticeColorMatrix>& u, 
-		     const LatticePropagator& forw_prop,
-		     const LatticePropagator& back_prop, 
+		     const LatticePropagator& forw_u_prop,
+		     const LatticePropagator& back_u_prop, 
+		     const LatticePropagator& forw_d_prop,
+		     const LatticePropagator& back_d_prop, 
 		     const SftMom& phases,
 		     int t0, int t_sink)
 {
   START_CODE("wallPionFormFac");
+
+  form.subroutine = "wallPionFormFac";
 
   // Length of lattice in j_decay direction and 3pt correlations fcns
   int length = phases.numSubsets();
 
   const int G5 = Ns*Ns-1;
   
+  // The list of meaningful insertions
+  //   The gamma matrices specified correspond to 
+  // V_mu and A_mu = gamma_mu gamma_5, specificially
+  // where in the Chroma code gamma_5 = g_3 g_2 g_1 g_0
+  //
+  //               GAMMA              CURRENT
+  //                 1                  V_0
+  //                 2                  V_1
+  //                 4                  V_2
+  //                 8                  V_3
+  //                 14                -A_0
+  //                 13                 A_1
+  //                 11                -A_2
+  //                 7                  A_3
+  multi1d<int> gamma_list(2*Nd);
+  gamma_list[0] = 1;
+  gamma_list[1] = 2;
+  gamma_list[2] = 4;
+  gamma_list[3] = 8;
+  gamma_list[4] = 14;
+  gamma_list[5] = 13;
+  gamma_list[6] = 11;
+  gamma_list[7] = 7;
+
+  // Quark names
+  multi1d<string> quark_name(2);
+  quark_name[0] = "u";
+  quark_name[1] = "d";
+
+  // Formfac names
+  multi1d<string> formfac_name(1);
+  formfac_name[0] = "pi->gamma+pi";
+
+  // Projector names
+  multi1d<string> proj_name(1);
+  proj_name[0] = "none";
+
   // Project propagator onto zero momentum: Do a slice-wise sum.
-  Propagator q_x2 = sum(forw_prop, phases.getSet()[t_sink]);
+  Propagator u_x2 = sum(forw_u_prop, phases.getSet()[t_sink]);
+  Propagator d_x2 = sum(forw_d_prop, phases.getSet()[t_sink]);
+  LatticePropagator anti_u_prop = adj(Gamma(G5)*back_u_prop*Gamma(G5));
+  LatticePropagator anti_d_prop = adj(Gamma(G5)*back_d_prop*Gamma(G5));
 
-  // Start new array group
-  // Loop over appropriate form-factor contractions for this system
-  XMLArrayWriter xml_seq_src(xml, 1);
-  push(xml_seq_src, "FormFac");
-
-  for (int seq_src = 0; seq_src < 1; ++seq_src) 
+  // Resize some things - this is needed upfront because I traverse the 
+  // structure in a non-recursive scheme
+  form.quark.resize(quark_name.size());
+  for (int ud=0; ud < form.quark.size(); ++ud) 
   {
-    push(xml_seq_src);
-    write(xml_seq_src, "seq_src", seq_src);
-
-    // Loop over gamma matrices of the insertion current of insertion current
-    XMLArrayWriter xml_array(xml_seq_src, Nd);
-    push(xml_array, "Insertions");
-
-    for(int mu = 0; mu < Nd; ++mu)
+    form.quark[ud].formfac.resize(formfac_name.size());
+    for(int dp = 0; dp < form.quark[ud].formfac.size(); ++dp)
     {
-      int gamma_value = 1 << mu;
-
-      push(xml_array);
-      write(xml_array, "mu", mu);
-      write(xml_array, "gamma_value", gamma_value);
-
-      // The local non-conserved vector-current matrix element 
-      LatticeComplex corr_local_fn =
-	trace(back_prop*Gamma(G5)*q_x2*adj(forw_prop)*Gamma(G5)*Gamma(gamma_value));
-
-      // Not sure why this minus sign is arising...
-      corr_local_fn *= -1;
-
-      multi2d<DComplex> hsum_local = phases.sft(corr_local_fn);
-
-      // Construct the non-local current matrix element 
-      //
-      // The form of J_mu = (1/2)*[psibar(x+mu)*U^dag_mu*(1+gamma_mu)*psi(x) -
-      //                           psibar(x)*U_mu*(1-gamma_mu)*psi(x+mu)]
-      // NOTE: the 1/2  is included down below in the sumMulti stuff
-      LatticePropagator tmp_prop1 = back_prop * Gamma(15) * q_x2;
-      LatticePropagator tmp_prop2 = shift(tmp_prop1, FORWARD, mu);
-      LatticeComplex corr_nonlocal_fn =
-	trace(adj(u[mu] * shift(forw_prop, FORWARD, mu)) * Gamma(15) * 
-	      (tmp_prop1 + Gamma(gamma_value) * tmp_prop1)) -
-	trace(adj(forw_prop) * u[mu] * Gamma(15) *
-	      (tmp_prop2 - Gamma(gamma_value) * tmp_prop2));
-
-      // Not sure why this minus sign is arising...
-      corr_nonlocal_fn *= -1;
-
-      multi2d<DComplex> hsum_nonlocal = phases.sft(corr_nonlocal_fn);
-
-  
-      XMLArrayWriter xml_inser_mom(xml_array, phases.numMom());
-      push(xml_inser_mom, "Momenta");
-
-      // Loop over insertion momenta and print out results
-      for(int inser_mom_num=0; inser_mom_num<phases.numMom(); ++inser_mom_num) 
+      form.quark[ud].formfac[dp].lorentz.resize(1);
+      for(int lorz = 0; lorz < form.quark[ud].formfac[dp].lorentz.size(); ++lorz)
       {
-	push(xml_inser_mom);
-	write(xml_inser_mom, "inser_mom_num", inser_mom_num);
-	write(xml_inser_mom, "inser_mom", phases.numToMom(inser_mom_num)) ;
-
-//      form.formFac[gamma_value].momenta[inser_mom_num].inser_mom = phases.numToMom(inser_mom_num);
-
-	multi1d<Complex> local_cur3ptfn(length);
-	multi1d<Complex> nonlocal_cur3ptfn(length);
-
-	for (int t=0; t < length; ++t) 
+	form.quark[ud].formfac[dp].lorentz[lorz].projector.resize(proj_name.size());
+	for (int proj = 0; proj < form.quark[ud].formfac[dp].lorentz[lorz].projector.size(); ++proj) 
 	{
-	  int t_eff = (t - t0 + length) % length;
+	  form.quark[ud].formfac[dp].lorentz[lorz].projector[proj].insertion.resize(gamma_list.size());
+	}
+      }
+    }
+  }
 
-	  local_cur3ptfn[t_eff] = hsum_local[inser_mom_num][t];
-	  nonlocal_cur3ptfn[t_eff] = 0.5 * hsum_nonlocal[inser_mom_num][t];
-	} // end for(t)
 
-	// Print out the results
-	write(xml_inser_mom, "local_cur3ptfn", local_cur3ptfn);
-	write(xml_inser_mom, "nonlocal_cur3ptfn", nonlocal_cur3ptfn);
 
-	pop(xml_inser_mom);  // elem
-      } // end for(inser_mom_num)
+  // For calculational purpose, loop over insertions first.
+  // This is out-of-order from storage within the data structure
+  // Loop over gamma matrices of the insertion current of insertion current
+  for(int gamma_ctr = 0; gamma_ctr < gamma_list.size(); ++gamma_ctr)
+  {
+    int gamma_value = gamma_list[gamma_ctr];
+    int mu = gamma_ctr % Nd;
+    bool compute_nonlocal = (gamma_ctr < Nd) ? true : false;
 
-      pop(xml_inser_mom);    // Momenta
-      pop(xml_array);        // elem
-    } // end for(gamma_value)
-                            
-    pop(xml_array);          // FormFac
-    pop(xml_seq_src);        // elem
-  } // end for(seq_src)
-                            
-  pop(xml_seq_src);          // WallPionFormFac
+    // Loop over "u"=0 or "d"=1 pieces
+    for(int ud = 0; ud < form.quark.size(); ++ud)
+    {
+      WallFormFac_quark_t& quark = form.quark[ud];
+      quark.quark_ctr = ud;
+      quark.quark_name = quark_name[ud];
 
-  END_CODE("FormFac");
+      LatticePropagator local_insert_prop, nonlocal_insert_prop;
+
+      switch (ud)
+      {
+      case 0:
+      {
+	// "\bar u O u" insertion in pion
+	// The local non-conserved current contraction
+	local_insert_prop = anti_u_prop*Gamma(gamma_value)*forw_u_prop;
+
+	if (compute_nonlocal)
+	{
+	  // Construct the non-local (possibly conserved) current contraction
+	  nonlocal_insert_prop = nonlocalCurrentProp(u, mu, forw_u_prop, anti_u_prop);
+	}
+      }
+      break;
+
+      case 1:
+      {
+	// "\bar d O d" insertion in pion
+	// The local non-conserved current contraction
+	LatticePropagator local_insert_prop = 
+	  anti_d_prop*Gamma(gamma_value)*forw_d_prop;
+
+	if (compute_nonlocal)
+	{
+	  // Construct the non-local (possibly conserved) current contraction
+	  LatticePropagator nonlocal_insert_prop = 
+	    nonlocalCurrentProp(u, mu, forw_d_prop, anti_d_prop);
+	}
+      }
+      break;
+
+      default:
+	QDP_error_exit("Unknown ud type", ud);
+      }
+
+
+      // Loop over "pion->pion"=0 types of form-factors
+      for(int dp = 0; dp < quark.formfac.size(); ++dp)
+      {
+	WallFormFac_formfac_t& formfac = quark.formfac[dp];
+	formfac.formfac_ctr  = dp;
+	formfac.formfac_name = formfac_name[dp];
+
+	LatticeComplex local_contract, nonlocal_contract;
+
+
+	// Loop over Lorentz indices of source and sink hadron operators
+	for(int lorz = 0; lorz < formfac.lorentz.size(); ++lorz)
+	{
+	  WallFormFac_lorentz_t& lorentz = formfac.lorentz[lorz];
+	  lorentz.lorentz_ctr = lorz;
+
+	  int gamma_value1 = G5;
+	  int gamma_value2 = G5;
+
+	  lorentz.snk_gamma = gamma_value1;
+	  lorentz.src_gamma = gamma_value2;
+
+	  // Contractions depend on "ud" (u or d quark contribution)
+	  // and source/sink operators
+	  switch (ud)
+	  {
+	  case 0:
+	  {
+	    // "\bar u O u" insertion in pion
+	    // The local non-conserved current contraction
+	    local_contract = 
+	      trace(Gamma(gamma_value1)*local_insert_prop*Gamma(gamma_value2)*
+		    Gamma(G5)*adj(d_x2)*Gamma(G5));
+
+	    if (compute_nonlocal)
+	    {
+	      // Construct the non-local (possibly conserved) current contraction
+	      nonlocal_contract = 
+		trace(Gamma(gamma_value1)*nonlocal_insert_prop*Gamma(gamma_value2)*
+		      Gamma(G5)*adj(d_x2)*Gamma(G5));
+	    }
+	  }
+	  break;
+
+	  case 1:
+	  {
+	    // "\bar d O d" insertion in pion
+	    // The local non-conserved current contraction
+	    local_contract =
+	      trace(Gamma(gamma_value1)*u_x2*Gamma(gamma_value2)*
+		    Gamma(G5)*adj(local_insert_prop)*Gamma(G5));
+
+	    if (compute_nonlocal)
+	    {
+	      // Construct the non-local (possibly conserved) current contraction
+	      nonlocal_contract =
+		trace(Gamma(gamma_value1)*u_x2*Gamma(gamma_value2)*
+		      Gamma(G5)*adj(nonlocal_insert_prop)*Gamma(G5));
+	    }
+	  }
+	  break;
+
+	  default:
+	    QDP_error_exit("Unknown ud type", ud);
+	  }
+
+
+	  // Loop over the spin projectors - none here
+	  for (int proj = 0; proj < lorentz.projector.size(); ++proj) 
+	  {
+	    WallFormFac_projector_t& projector = lorentz.projector[proj];
+	    projector.proj_ctr  = proj;
+	    projector.proj_name = proj_name[proj];
+
+	    WallFormFac_insertion_t& insertion = projector.insertion[gamma_ctr];
+
+	    insertion.gamma_ctr   = gamma_ctr;
+	    insertion.mu          = mu;
+	    insertion.gamma_value = gamma_value;
+
+	    // The local non-conserved vector-current matrix element 
+	    LatticeComplex corr_local_fn = local_contract;
+
+	    // The nonlocal (possibly conserved) current matrix element 
+	    LatticeComplex corr_nonlocal_fn = nonlocal_contract;
+	
+	    multi1d<WallFormFac_momenta_t>& momenta = insertion.momenta;
+
+	    wallFormFacSft(momenta, corr_local_fn, corr_nonlocal_fn, phases,
+			   compute_nonlocal, t0, t_sink);
+
+	  } // end for(proj)
+	} // end for(lorz)
+      }  // end for(dp)
+    } // end for(ud)
+  } // end for(gamma_ctr)
+
+  END_CODE("wallPionFormFac");
 }
