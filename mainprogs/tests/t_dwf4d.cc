@@ -1,4 +1,4 @@
-// $Id: t_dwf4d.cc,v 1.3 2004-11-16 06:09:10 bjoo Exp $
+// $Id: t_dwf4d.cc,v 1.4 2004-12-09 04:04:08 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -258,18 +258,29 @@ int main(int argc, char **argv)
   random(psi);
   random(chi);
     
-  LatticeFermion tmp1;
+  LatticeFermion tmp1,tmp2;
+  QDPIO::cout << "A5 plus" << endl;
   (*A5)(tmp1, psi, PLUS);
-  DComplex nn5 = innerProduct(chi, tmp1);
+  DComplex nn5_plus  = innerProduct(chi, tmp1);
+  QDPIO::cout << "A5 minus" << endl;
+  (*A5)(tmp2, chi, MINUS);
+  DComplex nn5_minus = innerProduct(tmp2, psi);
   
-  LatticeFermion tmp2;
-  (*A4)(tmp2, psi, PLUS);
-  DComplex nn4 = innerProduct(chi, tmp2);
+  LatticeFermion tmp3,tmp4;
+  QDPIO::cout << "A4 plus" << endl;
+  (*A4)(tmp3, psi, PLUS);
+  DComplex nn4_plus  = innerProduct(chi, tmp3);
+  QDPIO::cout << "A4 minus" << endl;
+  (*A4)(tmp4, chi, MINUS);
+  DComplex nn4_minus = innerProduct(tmp4, psi);
   
-  push(xml_out,"innerprods");
-  write(xml_out, "nn5", nn5);
-  write(xml_out, "nn4", nn4);
-  write(xml_out, "norm_diff", Real(norm2(tmp1-tmp2)));
+  push(xml_out,"Innerprods");
+  write(xml_out, "nn5_plus", nn5_plus);
+  write(xml_out, "nn4_plus", nn4_plus);
+  write(xml_out, "norm_diff_plus", Real(norm2(tmp1-tmp3)));
+  write(xml_out, "nn5_minus", nn5_minus);
+  write(xml_out, "nn4_minus", nn4_minus);
+  write(xml_out, "norm_diff_minus", Real(norm2(tmp2-tmp4)));
   pop(xml_out);
   
   }
