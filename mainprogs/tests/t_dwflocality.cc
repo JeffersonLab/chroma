@@ -1,4 +1,4 @@
-// $Id: t_dwflocality.cc,v 1.2 2004-03-17 15:33:03 kostas Exp $
+// $Id: t_dwflocality.cc,v 1.3 2004-03-18 21:57:37 kostas Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -127,7 +127,7 @@ QDPIO::cout << "5D source norm :" << norm2(chi)<< endl;
 
   LatticeReal mag ;
   
-  mag = sqrt(localNorm2(chi4 - 0.5*res4)) ;
+  mag = sqrt(localNorm2(chi4 - res4)) ;
   //mag = localNorm2(chi4) ;
   multi1d<int> c(4) ;
   {
