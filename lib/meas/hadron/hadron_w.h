@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hadron_w.h,v 1.12 2004-06-01 03:58:47 edwards Exp $
+// $Id: hadron_w.h,v 1.13 2004-06-02 01:57:34 edwards Exp $
 
 /*! \file
  * \brief Hadronic observables
@@ -30,8 +30,10 @@
 #include "seqpiontest_w.h"
 #include "barseqsrc_w.h"
 
+#include "wallff_w.h"
 #include "wallpionff_w.h"
 #include "wallnuclff_w.h"
+#include "walldeltaff_w.h"
 #include "walldeltapff_w.h"
 #include "wall_qprop_w.h"
 
