@@ -4,10 +4,10 @@
 <propagator>
   <ProgramInfo>
     <code_version>
-      <chroma>1.18</chroma>
-      <qdp++>1.11.4</qdp++>
+      <chroma>1.19</chroma>
+      <qdp>1.11.8</qdp>
     </code_version>
-    <run_date>31 Jan 05 13:46:16 GMT</run_date>
+    <run_date>13 Feb 05 20:42:33 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -18,7 +18,7 @@
   </ProgramInfo>
   <Input><propagator>
 <annotation>
-; $Id: propagator_unprec_ht_contfrac5d_zolo_v7.linux-scalar-intel.xml,v 1.2 2005-01-31 15:05:25 bjoo Exp $
+; $Id: propagator_unprec_ht_contfrac5d_zolo_v7.linux-scalar-intel.xml,v 1.3 2005-02-14 02:02:12 edwards Exp $
 ;
 ; PROPAGATOR input file.
 ;
@@ -34,6 +34,7 @@
     <c5>0</c5>
     <OverMass>1.4</OverMass>
     <boundary>1 1 1 -1</boundary>
+    <!-- The ApproxMin and ApproxMax are superceded by StateInfo if NWilsVec &gt 0 -->
     <ApproxMin>0.21</ApproxMin>
     <ApproxMax>1.5</ApproxMax>
   </FermionAction>
@@ -52,8 +53,8 @@
 </Cfg>
 <StateInfo>
   <!-- The ApproxMin and ApproxMax are ignored if NWilsVec &gt 0 -->
- <ApproxMin>0.21</ApproxMin>
- <ApproxMax>1.5</ApproxMax>
+  <ApproxMin>0.21</ApproxMin>
+  <ApproxMax>1.5</ApproxMax>
   <NWilsVec>0</NWilsVec>
   <Eig>
     <eigen_file_stem>../t_ritz/g5_wils_eigen</eigen_file_stem>
@@ -190,11 +191,11 @@
     </Qprop>
     <Qprop>
       <RsdCG>1e-06</RsdCG>
-      <n_count>344</n_count>
+      <n_count>346</n_count>
     </Qprop>
     <Qprop>
       <RsdCG>1e-06</RsdCG>
-      <n_count>343</n_count>
+      <n_count>344</n_count>
     </Qprop>
     <Qprop>
       <RsdCG>1e-06</RsdCG>
@@ -230,9 +231,9 @@
     </Qprop>
   </QuarkProp4>
   <Relaxation_Iterations>
-    <ncg_had>4136</ncg_had>
+    <ncg_had>4139</ncg_had>
   </Relaxation_Iterations>
   <Prop_correlator>
-    <prop_corr>0.269643 0.154614 0.0547511 0.0406303 0.0381548 0.0414314 0.0543887 0.152665</prop_corr>
+    <prop_corr>0.269643 0.154614 0.0547511 0.0406303 0.0381547 0.0414314 0.0543887 0.152665</prop_corr>
   </Prop_correlator>
 </propagator>

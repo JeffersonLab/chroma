@@ -3,6 +3,11 @@
 
 <propagator>
   <ProgramInfo>
+    <code_version>
+      <chroma>1.19</chroma>
+      <qdp>1.11.8</qdp>
+    </code_version>
+    <run_date>13 Feb 05 20:38:29 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -13,7 +18,7 @@
   </ProgramInfo>
   <Input><propagator>
 <annotation>
-; $Id: propagator_unprec_ovlap_contfrac5d_tanh_v7.linux-scalar-intel.xml,v 1.1 2005-01-02 05:06:59 edwards Exp $
+; $Id: propagator_unprec_ovlap_contfrac5d_tanh_v7.linux-scalar-intel.xml,v 1.2 2005-02-14 02:02:12 edwards Exp $
 ;
 ; PROPAGATOR input file.
 ;
@@ -182,7 +187,7 @@
   <Source_correlator>
     <source_corr>12 0 0 0 0 0 0 0</source_corr>
   </Source_correlator>
-  <QuarkProp>
+  <QuarkProp4>
     <Qprop>
       <RsdCG>1e-06</RsdCG>
       <n_count>204</n_count>
@@ -231,7 +236,7 @@
       <RsdCG>1e-06</RsdCG>
       <n_count>208</n_count>
     </Qprop>
-  </QuarkProp>
+  </QuarkProp4>
   <Relaxation_Iterations>
     <ncg_had>2568</ncg_had>
   </Relaxation_Iterations>

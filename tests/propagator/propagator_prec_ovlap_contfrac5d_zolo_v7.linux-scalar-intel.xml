@@ -3,6 +3,11 @@
 
 <propagator>
   <ProgramInfo>
+    <code_version>
+      <chroma>1.19</chroma>
+      <qdp>1.11.8</qdp>
+    </code_version>
+    <run_date>13 Feb 05 20:55:30 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -13,21 +18,23 @@
   </ProgramInfo>
   <Input><propagator>
 <annotation>
-; $Id: propagator_prec_ovlap_contfrac5d_zolo_v7.linux-scalar-intel.xml,v 1.1 2005-01-05 22:01:43 edwards Exp $
+; $Id: propagator_prec_ovlap_contfrac5d_zolo_v7.linux-scalar-intel.xml,v 1.2 2005-02-14 02:02:12 edwards Exp $
 ;
 ; PROPAGATOR input file.
 ;
 </annotation>
 <Param>
   <version>7</version>
-  <FermTypeP>WILSON</FermTypeP>
   <FermionAction>
     <FermAct>OVERLAP_CONTINUED_FRACTION_5D</FermAct>
     <ApproximationType>ZOLOTAREV</ApproximationType>
     <Mass>0.06</Mass>
     <RatPolyDeg>6</RatPolyDeg>
-    <OverMass>-1.4</OverMass>
+    <OverMass>1.4</OverMass>
     <boundary>1 1 1 -1</boundary>
+    <!-- The ApproxMin and ApproxMax are superceded by StateInfo if NWilsVec &gt 0 -->
+    <ApproxMin>0.66</ApproxMin>
+    <ApproxMax>6.46357</ApproxMax>
   </FermionAction>
   <InvertParam>
     <invType>CG_INVERTER</invType>
@@ -224,6 +231,6 @@
     <ncg_had>1396</ncg_had>
   </Relaxation_Iterations>
   <Prop_correlator>
-    <prop_corr>1.23253 0.615397 0.279718 0.213999 0.200362 0.217929 0.276966 0.607376</prop_corr>
+    <prop_corr>1.23253 0.615397 0.279717 0.213999 0.200361 0.217929 0.276966 0.607376</prop_corr>
   </Prop_correlator>
 </propagator>

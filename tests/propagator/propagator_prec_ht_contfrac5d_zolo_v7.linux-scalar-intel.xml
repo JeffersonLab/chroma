@@ -4,10 +4,10 @@
 <propagator>
   <ProgramInfo>
     <code_version>
-      <chroma>1.18</chroma>
-      <qdp++>1.11.4</qdp++>
+      <chroma>1.19</chroma>
+      <qdp>1.11.8</qdp>
     </code_version>
-    <run_date>31 Jan 05 13:53:04 GMT</run_date>
+    <run_date>13 Feb 05 20:58:07 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -18,7 +18,7 @@
   </ProgramInfo>
   <Input><propagator>
 <annotation>
-; $Id: propagator_prec_ht_contfrac5d_zolo_v7.linux-scalar-intel.xml,v 1.2 2005-01-31 15:05:25 bjoo Exp $
+; $Id: propagator_prec_ht_contfrac5d_zolo_v7.linux-scalar-intel.xml,v 1.3 2005-02-14 02:02:12 edwards Exp $
 ;
 ; PROPAGATOR input file.
 ;
@@ -34,6 +34,9 @@
     <c5>0</c5>
     <OverMass>1.4</OverMass>
     <boundary>1 1 1 -1</boundary>
+    <!-- The ApproxMin and ApproxMax are superceded by StateInfo if NWilsVec &gt 0 -->
+    <ApproxMin>0.21</ApproxMin>
+    <ApproxMax>1.5</ApproxMax>
   </FermionAction>
   <InvertParam>
     <invType>CG_INVERTER</invType>
@@ -231,6 +234,6 @@
     <ncg_had>1869</ncg_had>
   </Relaxation_Iterations>
   <Prop_correlator>
-    <prop_corr>0.269643 0.154616 0.0547533 0.040632 0.0381565 0.041432 0.0543886 0.152663</prop_corr>
+    <prop_corr>0.269643 0.154616 0.0547532 0.040632 0.0381565 0.041432 0.0543885 0.152663</prop_corr>
   </Prop_correlator>
 </propagator>

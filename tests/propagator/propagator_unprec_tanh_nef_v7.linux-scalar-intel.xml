@@ -4,10 +4,10 @@
 <propagator>
   <ProgramInfo>
     <code_version>
-      <chroma>1.18</chroma>
-      <qdp++>1.11.4</qdp++>
+      <chroma>1.19</chroma>
+      <qdp>1.11.8</qdp>
     </code_version>
-    <run_date>31 Jan 05 16:47:05 GMT</run_date>
+    <run_date>13 Feb 05 20:34:37 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -18,7 +18,7 @@
   </ProgramInfo>
   <Input><propagator>
 <annotation>
-; $Id: propagator_unprec_tanh_nef_v7.linux-scalar-intel.xml,v 1.1 2005-01-31 16:52:23 bjoo Exp $
+; $Id: propagator_unprec_tanh_nef_v7.linux-scalar-intel.xml,v 1.2 2005-02-14 02:02:12 edwards Exp $
 ;
 ; PROPAGATOR input file.
 ;
