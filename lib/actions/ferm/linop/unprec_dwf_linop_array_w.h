@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_linop_array_w.h,v 1.2 2003-11-13 04:13:06 edwards Exp $
+// $Id: unprec_dwf_linop_array_w.h,v 1.3 2003-11-13 18:17:15 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion linear operator
  */
@@ -35,7 +35,7 @@ public:
   //! Destructor is automatic
   ~UnprecDWLinOpArray() {}
 
-  //! Only defined on the odd subset
+  //! Only defined on the entire lattice
   const OrderedSubset& subset() const {return all;}
 
   //! Apply the operator onto a source vector
