@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_fermact_array_w.h,v 1.3 2003-11-15 03:54:40 edwards Exp $
+// $Id: unprec_dwf_fermact_array_w.h,v 1.4 2003-11-23 05:58:03 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion action
  */
@@ -7,7 +7,7 @@
 #ifndef __unprec_dwf_fermact_array_w_h__
 #define __unprec_dwf_fermact_array_w_h__
 
-#include "fermact_array.h"
+#include "fermact.h"
 #include "actions/ferm/fermacts/unprec_dwf_fermact_base_array_w.h"
 
 using namespace QDP;
