@@ -2,7 +2,7 @@
 #define PSEUDOSCALAR_LOOPS_S_H
 
 
-#include "chroma.h"
+#include "meas/hadron/loops_s.h"
 
 class staggered_loops ; 
 
