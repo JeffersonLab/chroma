@@ -1,4 +1,4 @@
-// $Id: t_overbu.cc,v 1.1 2003-04-24 18:50:25 edwards Exp $
+// $Id: t_overbu.cc,v 1.2 2003-04-24 20:56:52 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -23,7 +23,14 @@ int main(int argc, char **argv)
   //! Test out overbu
   multi1d<LatticeColorMatrix> u(Nd);
   for(int m=0; m < u.size(); ++m)
-    gaussian(u[m]);
+  {
+//    gaussian(u[m]);
+    u[m] = 1.0;
+  }
+
+  // Reunitarize the gauge field
+  for(int m=0; m < u.size(); ++m)
+    reunit(u[m]);
 
   LatticeFermion psi, chi;
   random(psi);
@@ -46,7 +53,14 @@ int main(int argc, char **argv)
   int  MaxCG = 1000;
   int  n_count;
 
-  InvCG2(over, chi, psi, RsdCG, MaxCG, n_count);
+  // Solve   D^dag.D*psi = D^dag*chi
+  LatticeFermion chi_tmp = over(chi, MINUS);
+  InvCG2(over, chi_tmp, psi, RsdCG, MaxCG, n_count);
+
+  // Check solution
+  Double solnorm = sqrt(norm2(over(psi,PLUS)-chi));
+  Double ratio = solnorm / sqrt(norm2(chi));
+  cout << "|solution| / |source| = " << ratio << endl;
 
   // Time to bolt
   QDP_finalize();
