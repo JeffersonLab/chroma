@@ -7,7 +7,7 @@
       <chroma>1.19</chroma>
       <qdp>1.11.8</qdp>
     </code_version>
-    <run_date>15 Feb 05 13:13:51 EST</run_date>
+    <run_date>06 Mar 05 22:07:40 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -18,7 +18,7 @@
   </ProgramInfo>
   <Input><bar3ptfn>
 <annotation>
-; $Id: bar3ptfn_v6.linux-scalar-intel.xml,v 1.3 2005-02-15 18:14:03 edwards Exp $
+; $Id: bar3ptfn_v6.linux-scalar-intel.xml,v 1.4 2005-03-07 03:06:54 edwards Exp $
 ;
 ; BAR3PTFN input file.
 ;
@@ -45,6 +45,8 @@
    <elem>../seqsource/seqprop_0_NUCL_U_POL</elem>
    <elem>../seqsource/seqprop_0_NUCL_D_POL</elem>
    <elem>../seqsource/seqprop_0_PION</elem>
+   <elem>../seqsource/seqprop_0_NUCL_U_MIXED_NONREL</elem>
+   <elem>../seqsource/seqprop_0_NUCL_D_MIXED_NONREL</elem>
  </seqprop_files>
 </Prop>
 </bar3ptfn>
@@ -92,13 +94,31 @@
 
   </Config_info>
   <Output_version>
-    <out_version>9</out_version>
+    <out_version>10</out_version>
   </Output_version>
   <Observables>
     <w_plaq>0.902263</w_plaq>
     <s_plaq>0.862579</s_plaq>
     <t_plaq>0.941947</t_plaq>
     <link>0.734641</link>
+    <pollp>
+      <elem>
+        <re>0.790237</re>
+        <im>0.00288483</im>
+      </elem>
+      <elem>
+        <re>0.785869</re>
+        <im>-0.00015866</im>
+      </elem>
+      <elem>
+        <re>0.80393</re>
+        <im>0.00160447</im>
+      </elem>
+      <elem>
+        <re>0.864752</re>
+        <im>0.00215502</im>
+      </elem>
+    </pollp>
   </Observables>
   <Propagator_file_info><propagator>
       <id>0</id>
@@ -367,8 +387,8 @@
         <Backward_prop_correlator>
           <backward_prop_corr>7.79564e-11 1.53565e-10 4.16176e-10 1.18673e-09 3.42293e-09 1.05551e-08 2.53351e-10 1.00738e-10</backward_prop_corr>
         </Backward_prop_correlator>
-        <hadron_type>BARYON</hadron_type>
-        <seq_src_value>0</seq_src_value>
+        <hadron_type>HADRON</hadron_type>
+        <seq_src>NUCL_U_UNPOL</seq_src>
         <t_source>0 0 0 0</t_source>
         <t_sink>5</t_sink>
         <sink_mom>0 0 0</sink_mom>
@@ -542,8 +562,8 @@
         <Backward_prop_correlator>
           <backward_prop_corr>2.68958e-11 1.17774e-11 1.10657e-11 2.3911e-11 6.65047e-11 8.1138e-10 2.18228e-10 7.57263e-11</backward_prop_corr>
         </Backward_prop_correlator>
-        <hadron_type>BARYON</hadron_type>
-        <seq_src_value>1</seq_src_value>
+        <hadron_type>HADRON</hadron_type>
+        <seq_src>NUCL_D_UNPOL</seq_src>
         <t_source>0 0 0 0</t_source>
         <t_sink>5</t_sink>
         <sink_mom>0 0 0</sink_mom>
@@ -717,8 +737,8 @@
         <Backward_prop_correlator>
           <backward_prop_corr>4.31592e-11 1.19548e-10 3.41463e-10 9.80132e-10 2.82969e-09 8.24733e-09 3.05482e-11 2.14036e-11</backward_prop_corr>
         </Backward_prop_correlator>
-        <hadron_type>BARYON</hadron_type>
-        <seq_src_value>2</seq_src_value>
+        <hadron_type>HADRON</hadron_type>
+        <seq_src>NUCL_U_POL</seq_src>
         <t_source>0 0 0 0</t_source>
         <t_sink>5</t_sink>
         <sink_mom>0 0 0</sink_mom>
@@ -890,10 +910,10 @@
 
         </SequentialProp_record_info>
         <Backward_prop_correlator>
-          <backward_prop_corr>1.32342e-13 3.08118e-13 8.59194e-13 2.45931e-12 7.08728e-12 2.07357e-11 2.78397e-13 1.23597e-13</backward_prop_corr>
+          <backward_prop_corr>1.32342e-13 3.08118e-13 8.59194e-13 2.45931e-12 7.08728e-12 2.07357e-11 2.78396e-13 1.23597e-13</backward_prop_corr>
         </Backward_prop_correlator>
-        <hadron_type>BARYON</hadron_type>
-        <seq_src_value>3</seq_src_value>
+        <hadron_type>HADRON</hadron_type>
+        <seq_src>NUCL_D_POL</seq_src>
         <t_source>0 0 0 0</t_source>
         <t_sink>5</t_sink>
         <sink_mom>0 0 0</sink_mom>
@@ -1067,8 +1087,358 @@
         <Backward_prop_correlator>
           <backward_prop_corr>7.72964e-06 2.98709e-06 1.88429e-06 3.07738e-06 8.13737e-06 0.000204099 6.35869e-05 2.20921e-05</backward_prop_corr>
         </Backward_prop_correlator>
-        <hadron_type>MESON</hadron_type>
-        <seq_src_value>10</seq_src_value>
+        <hadron_type>HADRON</hadron_type>
+        <seq_src>PION</seq_src>
+        <t_source>0 0 0 0</t_source>
+        <t_sink>5</t_sink>
+        <sink_mom>0 0 0</sink_mom>
+      </elem>
+      <elem>
+        <seq_src_ctr>5</seq_src_ctr>
+        <SequentialProp_file_info><propagator>
+      <id>0</id>
+    </propagator>
+
+        </SequentialProp_file_info>
+        <SequentialProp_record_info><SequentialProp>
+      <SeqProp>
+        <version>7</version>
+        <nonRelProp>false</nonRelProp>
+        <FermionAction>
+          <FermAct>WILSON</FermAct>
+          <Kappa>0.11</Kappa>
+          <AnisoParam>
+            <anisoP>false</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>1</xi_0>
+            <nu>1</nu>
+          </AnisoParam>
+          <boundary>1 1 1 -1</boundary>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1e-10</RsdCG>
+          <MaxCG>1000</MaxCG>
+          <MROver>1</MROver>
+          <RsdCGPrec>1e-10</RsdCGPrec>
+          <MaxCGPrec>1000</MaxCGPrec>
+        </InvertParam>
+        <nrow>4 4 4 8</nrow>
+      </SeqProp>
+      <version>1</version>
+      <SeqSourceSinkSmear>
+        <version>4</version>
+        <wave_state>S_WAVE</wave_state>
+        <sink_type>SHELL_SINK</sink_type>
+        <ShellSink>
+          <SinkSmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+          </SinkSmearingParam>
+          <laplace_power>0</laplace_power>
+          <link_smear_fact>2.5</link_smear_fact>
+          <link_smear_num>0</link_smear_num>
+          <disp_length>0</disp_length>
+          <disp_dir>0</disp_dir>
+        </ShellSink>
+        <nrow>4 4 4 8</nrow>
+      </SeqSourceSinkSmear>
+      <SeqSource>
+        <version>1</version>
+        <seq_src>NUCL_U_MIXED_NONREL</seq_src>
+        <t_sink>5</t_sink>
+        <sink_mom>0 0 0</sink_mom>
+        <nrow>4 4 4 8</nrow>
+      </SeqSource>
+      <ForwardProps>
+        <elem>
+          <version>1</version>
+          <PropSink>
+            <version>4</version>
+            <wave_state>S_WAVE</wave_state>
+            <sink_type>SHELL_SINK</sink_type>
+            <ShellSink>
+              <SinkSmearingParam>
+                <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+                <wvf_param>2</wvf_param>
+                <wvfIntPar>5</wvfIntPar>
+              </SinkSmearingParam>
+              <laplace_power>0</laplace_power>
+              <link_smear_fact>2.5</link_smear_fact>
+              <link_smear_num>0</link_smear_num>
+              <disp_length>0</disp_length>
+              <disp_dir>0</disp_dir>
+            </ShellSink>
+            <nrow>4 4 4 8</nrow>
+          </PropSink>
+          <ForwardProp>
+            <version>7</version>
+            <nonRelProp>false</nonRelProp>
+            <FermionAction>
+              <FermAct>WILSON</FermAct>
+              <Kappa>0.11</Kappa>
+              <FermionBC>
+                <FermBC>SIMPLE_FERMBC</FermBC>
+                <boundary>1 1 1 -1</boundary>
+              </FermionBC>
+            </FermionAction>
+            <InvertParam>
+              <invType>CG_INVERTER</invType>
+              <RsdCG>1e-05</RsdCG>
+              <MaxCG>1000</MaxCG>
+              <MROver>1</MROver>
+              <RsdCGPrec>1e-05</RsdCGPrec>
+              <MaxCGPrec>1000</MaxCGPrec>
+            </InvertParam>
+            <nrow>4 4 4 8</nrow>
+          </ForwardProp>
+          <PropSource>
+            <version>5</version>
+            <wave_state>S_WAVE</wave_state>
+            <source_type>SHELL_SOURCE</source_type>
+            <ShellSource>
+              <SourceSmearingParam>
+                <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+                <wvf_param>2</wvf_param>
+                <wvfIntPar>5</wvfIntPar>
+              </SourceSmearingParam>
+              <laplace_power>0</laplace_power>
+              <link_smear_fact>2.5</link_smear_fact>
+              <link_smear_num>0</link_smear_num>
+              <disp_length>0</disp_length>
+              <disp_dir>0</disp_dir>
+            </ShellSource>
+            <j_decay>3</j_decay>
+            <t_source>0 0 0 0</t_source>
+            <nrow>4 4 4 8</nrow>
+          </PropSource>
+        </elem>
+      </ForwardProps>
+      <Config_info>
+        <szin>
+          <cfg_version>7</cfg_version>
+          <date>Sat Jun 16 00:35:57 2001</date>
+          <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
+          <FermTypeP>0</FermTypeP>
+          <Nd>4</Nd>
+          <Nc>3</Nc>
+          <BetaMC>20.1</BetaMC>
+          <BetaMD>0</BetaMD>
+          <KappaMC>0</KappaMC>
+          <KappaMD>0</KappaMD>
+          <MassMC>0</MassMC>
+          <MassMD>0</MassMD>
+          <dt>0</dt>
+          <MesTrj>1</MesTrj>
+          <TotalCG>0</TotalCG>
+          <TotalTrj>2</TotalTrj>
+          <spec_acc>0</spec_acc>
+          <NOver>2</NOver>
+          <TotalTry>12288</TotalTry>
+          <TotalFail>56</TotalFail>
+          <Nf>9.48851e+33</Nf>
+          <Npf>2</Npf>
+          <RefMomTrj>302059064</RefMomTrj>
+          <RefFnoiseTrj>36</RefFnoiseTrj>
+          <LamPl>9.45468e+33</LamPl>
+          <LamMi>0</LamMi>
+          <AlpLog>4.2039e-45</AlpLog>
+          <AlpExp>4.2039e-45</AlpExp>
+          <nrow>4 4 4 8</nrow>
+          <seed>
+            <Seed>
+              <elem>811</elem>
+              <elem>1073</elem>
+              <elem>1535</elem>
+              <elem>1310</elem>
+            </Seed>
+          </seed>
+        </szin>
+      </Config_info>
+    </SequentialProp>
+
+        </SequentialProp_record_info>
+        <Backward_prop_correlator>
+          <backward_prop_corr>5.70661e-12 1.56661e-11 4.46865e-11 1.28226e-10 3.69538e-10 1.05277e-09 4.48461e-12 2.9748e-12</backward_prop_corr>
+        </Backward_prop_correlator>
+        <hadron_type>HADRON</hadron_type>
+        <seq_src>NUCL_U_MIXED_NONREL</seq_src>
+        <t_source>0 0 0 0</t_source>
+        <t_sink>5</t_sink>
+        <sink_mom>0 0 0</sink_mom>
+      </elem>
+      <elem>
+        <seq_src_ctr>6</seq_src_ctr>
+        <SequentialProp_file_info><propagator>
+      <id>0</id>
+    </propagator>
+
+        </SequentialProp_file_info>
+        <SequentialProp_record_info><SequentialProp>
+      <SeqProp>
+        <version>7</version>
+        <nonRelProp>false</nonRelProp>
+        <FermionAction>
+          <FermAct>WILSON</FermAct>
+          <Kappa>0.11</Kappa>
+          <AnisoParam>
+            <anisoP>false</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>1</xi_0>
+            <nu>1</nu>
+          </AnisoParam>
+          <boundary>1 1 1 -1</boundary>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1e-10</RsdCG>
+          <MaxCG>1000</MaxCG>
+          <MROver>1</MROver>
+          <RsdCGPrec>1e-10</RsdCGPrec>
+          <MaxCGPrec>1000</MaxCGPrec>
+        </InvertParam>
+        <nrow>4 4 4 8</nrow>
+      </SeqProp>
+      <version>1</version>
+      <SeqSourceSinkSmear>
+        <version>4</version>
+        <wave_state>S_WAVE</wave_state>
+        <sink_type>SHELL_SINK</sink_type>
+        <ShellSink>
+          <SinkSmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+          </SinkSmearingParam>
+          <laplace_power>0</laplace_power>
+          <link_smear_fact>2.5</link_smear_fact>
+          <link_smear_num>0</link_smear_num>
+          <disp_length>0</disp_length>
+          <disp_dir>0</disp_dir>
+        </ShellSink>
+        <nrow>4 4 4 8</nrow>
+      </SeqSourceSinkSmear>
+      <SeqSource>
+        <version>1</version>
+        <seq_src>NUCL_D_MIXED_NONREL</seq_src>
+        <t_sink>5</t_sink>
+        <sink_mom>0 0 0</sink_mom>
+        <nrow>4 4 4 8</nrow>
+      </SeqSource>
+      <ForwardProps>
+        <elem>
+          <version>1</version>
+          <PropSink>
+            <version>4</version>
+            <wave_state>S_WAVE</wave_state>
+            <sink_type>SHELL_SINK</sink_type>
+            <ShellSink>
+              <SinkSmearingParam>
+                <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+                <wvf_param>2</wvf_param>
+                <wvfIntPar>5</wvfIntPar>
+              </SinkSmearingParam>
+              <laplace_power>0</laplace_power>
+              <link_smear_fact>2.5</link_smear_fact>
+              <link_smear_num>0</link_smear_num>
+              <disp_length>0</disp_length>
+              <disp_dir>0</disp_dir>
+            </ShellSink>
+            <nrow>4 4 4 8</nrow>
+          </PropSink>
+          <ForwardProp>
+            <version>7</version>
+            <nonRelProp>false</nonRelProp>
+            <FermionAction>
+              <FermAct>WILSON</FermAct>
+              <Kappa>0.11</Kappa>
+              <FermionBC>
+                <FermBC>SIMPLE_FERMBC</FermBC>
+                <boundary>1 1 1 -1</boundary>
+              </FermionBC>
+            </FermionAction>
+            <InvertParam>
+              <invType>CG_INVERTER</invType>
+              <RsdCG>1e-05</RsdCG>
+              <MaxCG>1000</MaxCG>
+              <MROver>1</MROver>
+              <RsdCGPrec>1e-05</RsdCGPrec>
+              <MaxCGPrec>1000</MaxCGPrec>
+            </InvertParam>
+            <nrow>4 4 4 8</nrow>
+          </ForwardProp>
+          <PropSource>
+            <version>5</version>
+            <wave_state>S_WAVE</wave_state>
+            <source_type>SHELL_SOURCE</source_type>
+            <ShellSource>
+              <SourceSmearingParam>
+                <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+                <wvf_param>2</wvf_param>
+                <wvfIntPar>5</wvfIntPar>
+              </SourceSmearingParam>
+              <laplace_power>0</laplace_power>
+              <link_smear_fact>2.5</link_smear_fact>
+              <link_smear_num>0</link_smear_num>
+              <disp_length>0</disp_length>
+              <disp_dir>0</disp_dir>
+            </ShellSource>
+            <j_decay>3</j_decay>
+            <t_source>0 0 0 0</t_source>
+            <nrow>4 4 4 8</nrow>
+          </PropSource>
+        </elem>
+      </ForwardProps>
+      <Config_info>
+        <szin>
+          <cfg_version>7</cfg_version>
+          <date>Sat Jun 16 00:35:57 2001</date>
+          <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
+          <FermTypeP>0</FermTypeP>
+          <Nd>4</Nd>
+          <Nc>3</Nc>
+          <BetaMC>20.1</BetaMC>
+          <BetaMD>0</BetaMD>
+          <KappaMC>0</KappaMC>
+          <KappaMD>0</KappaMD>
+          <MassMC>0</MassMC>
+          <MassMD>0</MassMD>
+          <dt>0</dt>
+          <MesTrj>1</MesTrj>
+          <TotalCG>0</TotalCG>
+          <TotalTrj>2</TotalTrj>
+          <spec_acc>0</spec_acc>
+          <NOver>2</NOver>
+          <TotalTry>12288</TotalTry>
+          <TotalFail>56</TotalFail>
+          <Nf>9.48851e+33</Nf>
+          <Npf>2</Npf>
+          <RefMomTrj>302059064</RefMomTrj>
+          <RefFnoiseTrj>36</RefFnoiseTrj>
+          <LamPl>9.45468e+33</LamPl>
+          <LamMi>0</LamMi>
+          <AlpLog>4.2039e-45</AlpLog>
+          <AlpExp>4.2039e-45</AlpExp>
+          <nrow>4 4 4 8</nrow>
+          <seed>
+            <Seed>
+              <elem>811</elem>
+              <elem>1073</elem>
+              <elem>1535</elem>
+              <elem>1310</elem>
+            </Seed>
+          </seed>
+        </szin>
+      </Config_info>
+    </SequentialProp>
+
+        </SequentialProp_record_info>
+        <Backward_prop_correlator>
+          <backward_prop_corr>1.09974e-12 3.01787e-12 8.60706e-12 2.47017e-11 7.12172e-11 2.02924e-10 8.7439e-13 5.74563e-13</backward_prop_corr>
+        </Backward_prop_correlator>
+        <hadron_type>HADRON</hadron_type>
+        <seq_src>NUCL_D_MIXED_NONREL</seq_src>
         <t_source>0 0 0 0</t_source>
         <t_sink>5</t_sink>
         <sink_mom>0 0 0</sink_mom>
