@@ -1,4 +1,4 @@
-// $Id: quarkprop4_w.cc,v 1.4 2003-11-23 06:18:07 edwards Exp $
+// $Id: quarkprop4_w.cc,v 1.5 2003-12-02 15:44:01 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -31,7 +31,7 @@ void quarkProp4_a(LatticePropagator& q_sol,
 		  XMLWriter& xml_out,
 		  const LatticePropagator& q_src,
 		  const C<T>& S_f,
-		  const multi1d<LatticeColorMatrix>& u,
+		  const ConnectState& state,
 		  enum InvType invType,
 		  const Real& RsdCG, 
 		  int MaxCG, int& ncg_had)
@@ -66,7 +66,7 @@ void quarkProp4_a(LatticePropagator& q_sol,
       // Compute the propagator for given source color/spin.
       int n_count;
 
-      S_f.qprop(psi, u, chi, invType, RsdCG, MaxCG, n_count);
+      S_f.qprop(psi, state, chi, invType, RsdCG, MaxCG, n_count);
       ncg_had += n_count;
 
       push(xml_out,"Qprop");
@@ -109,12 +109,12 @@ void quarkProp4(LatticePropagator& q_sol,
 		XMLWriter& xml_out,
 		const LatticePropagator& q_src,
 		const WilsonTypeFermAct<LatticeFermion>& S_f,
-		const multi1d<LatticeColorMatrix>& u,
+		const ConnectState& state,
 		enum InvType invType,
 		const Real& RsdCG, 
 		int MaxCG, int& ncg_had)
 {
-  quarkProp4_a(q_sol, xml_out, q_src, S_f, u, invType, RsdCG, MaxCG, ncg_had);
+  quarkProp4_a(q_sol, xml_out, q_src, S_f, state, invType, RsdCG, MaxCG, ncg_had);
 }
 
 //! Given a complete propagator as a source, this does all the inversions needed
@@ -134,12 +134,12 @@ void quarkProp4(LatticePropagator& q_sol,
 		XMLWriter& xml_out,
 		const LatticePropagator& q_src,
 		const WilsonTypeFermAct<LatticeDWFermion>& S_f,
-		const multi1d<LatticeColorMatrix>& u,
+		const ConnectState& state,
 		enum InvType invType,
 		const Real& RsdCG, 
 		int MaxCG, int& ncg_had)
 {
-  quarkProp4_a(q_sol, xml_out, q_src, S_f, u, invType, RsdCG, MaxCG, ncg_had);
+  quarkProp4_a(q_sol, xml_out, q_src, S_f, state, invType, RsdCG, MaxCG, ncg_had);
 }
 
 
@@ -160,11 +160,11 @@ void quarkProp4(LatticePropagator& q_sol,
 		XMLWriter& xml_out,
 		const LatticePropagator& q_src,
 		const WilsonTypeFermAct< multi1d<LatticeFermion> >& S_f,
-		const multi1d<LatticeColorMatrix>& u,
+		const ConnectState& state,
 		enum InvType invType,
 		const Real& RsdCG, 
 		int MaxCG, int& ncg_had)
 {
-  quarkProp4_a(q_sol, xml_out, q_src, S_f, u, invType, RsdCG, MaxCG, ncg_had);
+  quarkProp4_a(q_sol, xml_out, q_src, S_f, state, invType, RsdCG, MaxCG, ncg_had);
 }
 

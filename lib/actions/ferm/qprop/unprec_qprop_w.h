@@ -1,4 +1,4 @@
-// $Id: unprec_qprop_w.h,v 1.2 2003-10-20 20:30:32 edwards Exp $
+// $Id: unprec_qprop_w.h,v 1.3 2003-12-02 15:44:01 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *
@@ -26,7 +26,7 @@ using namespace QDP;
  * contains an initial guess for the solution.
 
  * \param psi      quark propagator ( Modify )
- * \param u        gauge field ( Read )
+ * \param state    gauge field ( Read )
  * \param chi      source ( Read )
  * \param invType  inverter type ( Read (
  * \param RsdCG    CG (or MR) residual used here ( Read )
@@ -36,7 +36,7 @@ using namespace QDP;
 
 template<typename T>
 void UnprecWilsonTypeFermAct<T>::qprop(T& psi, 
-				       const multi1d<LatticeColorMatrix>& u, 
+				       const ConnectionState& state, 
 				       const T& chi, 
 				       enum InvType invType,
 				       const Real& RsdCG, 
@@ -48,7 +48,7 @@ void UnprecWilsonTypeFermAct<T>::qprop(T& psi,
   
   /* Construct the linear operator */
   /* This allocates field for the appropriate action */
-  const LinearOperator<T>* A = linOp(u);
+  const LinearOperator<T>* A = linOp(state);
 
   T tmp;
 

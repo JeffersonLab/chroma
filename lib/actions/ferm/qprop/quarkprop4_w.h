@@ -1,4 +1,4 @@
-// $Id: quarkprop4_w.h,v 1.3 2003-11-23 06:18:07 edwards Exp $
+// $Id: quarkprop4_w.h,v 1.4 2003-12-02 15:44:01 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -27,7 +27,7 @@ void quarkProp4(LatticePropagator& q_sol,
 		XMLWriter& xml_out,
 		const LatticePropagator& q_src,
 		const WilsonTypeFermAct<LatticeFermion>& S_f,
-		const multi1d<LatticeColorMatrix>& u,
+		const ConnectState& state,
 		enum InvType invType,
 		const Real& RsdCG, 
 		int MaxCG, int& ncg_had);
@@ -49,7 +49,7 @@ void quarkProp4(LatticePropagator& q_sol,
 		XMLWriter& xml_out,
 		const LatticePropagator& q_src,
 		const WilsonTypeFermAct<LatticeDWFermion>& S_f,
-		const multi1d<LatticeColorMatrix>& u,
+		const ConnectState& state,
 		enum InvType invType,
 		const Real& RsdCG, 
 		int MaxCG, int& ncg_had);
@@ -72,7 +72,7 @@ void quarkProp4(LatticePropagator& q_sol,
 		XMLWriter& xml_out,
 		const LatticePropagator& q_src,
 		const WilsonTypeFermAct< multi1d<LatticeFermion> >& S_f,
-		const multi1d<LatticeColorMatrix>& u,
+		const ConnectState& state,
 		enum InvType invType,
 		const Real& RsdCG, 
 		int MaxCG, int& ncg_had);

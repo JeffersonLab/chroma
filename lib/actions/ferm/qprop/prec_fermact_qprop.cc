@@ -1,4 +1,4 @@
-// $Id: prec_fermact_qprop.cc,v 1.1 2003-11-23 06:17:28 edwards Exp $
+// $Id: prec_fermact_qprop.cc,v 1.2 2003-12-02 15:44:01 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic even-odd preconditioned fermion operator
  *
@@ -17,7 +17,7 @@ using namespace QDP;
  * This routine is actually generic to all even-odd preconditioned fermions
  *
  * \param psi      initial solution ( Modify )
- * \param u        gauge field ( Read )
+ * \param state    gauge field ( Read )
  * \param chi      source ( Read )
  * \param invType  inverter type ( Read (
  * \param RsdCG    CG (or MR) residual used here ( Read )
@@ -29,7 +29,7 @@ template<typename T>
 static 
 void qprop_t(const EvenOddPrecWilsonTypeFermAct<T>& me,
 	     T& psi, 
-	     const multi1d<LatticeColorMatrix>& u, 
+	     const ConnectState& state, 
 	     const T& chi, 
 	     enum InvType invType,
 	     const Real& RsdCG, 
@@ -41,7 +41,7 @@ void qprop_t(const EvenOddPrecWilsonTypeFermAct<T>& me,
   
   /* Construct the linear operator */
   /* This allocates field for the appropriate action */
-  const EvenOddPrecLinearOperator<T>* A = me.linOp(u);
+  const EvenOddPrecLinearOperatorProxy<T> A(me.linOp(state));
 
   /* Step (i) */
   /* chi_tmp =  chi_o - D_oe * A_ee^-1 * chi_o */
@@ -49,8 +49,8 @@ void qprop_t(const EvenOddPrecWilsonTypeFermAct<T>& me,
   {
     T tmp1, tmp2;
 
-    A->evenEvenInvLinOp(tmp1, chi, PLUS);
-    A->oddEvenLinOp(tmp2, tmp1, PLUS);
+    A.evenEvenInvLinOp(tmp1, chi, PLUS);
+    A.oddEvenLinOp(tmp2, tmp1, PLUS);
     chi_tmp[rb[1]] = chi - tmp2;
   }
 
@@ -60,22 +60,22 @@ void qprop_t(const EvenOddPrecWilsonTypeFermAct<T>& me,
   {
     /* tmp = A_dag(u) * chi_tmp */
     T  tmp;
-    (*A)(tmp, chi_tmp, MINUS);
+    A(tmp, chi_tmp, MINUS);
     
     /* psi = (M^dag * M)^(-1) chi */
-    InvCG2(*A, tmp, psi, RsdCG, MaxCG, n_count);
+    InvCG2(A, tmp, psi, RsdCG, MaxCG, n_count);
   }
   break;
   
 #if 0
   case MR_INVERTER:
     /* psi = M^(-1) chi_tmp */
-    InvMR(*A, chi_tmp, psi, MRover, RsdCG, MaxCG, n_count);
+    InvMR(A, chi_tmp, psi, MRover, RsdCG, MaxCG, n_count);
     break;
 
   case BICG_INVERTER:
     /* psi = M^(-1) chi_tmp */
-    InvBiCG(*A, chi_tmp, psi, RsdCG, MaxCG, n_count);
+    InvBiCG(A, chi_tmp, psi, RsdCG, MaxCG, n_count);
     break;
 #endif
   
@@ -93,14 +93,11 @@ void qprop_t(const EvenOddPrecWilsonTypeFermAct<T>& me,
   {
     T tmp1, tmp2;
 
-    A->evenOddLinOp(tmp1, psi, PLUS);
+    A.evenOddLinOp(tmp1, psi, PLUS);
     tmp2[rb[0]] = chi - tmp1;
-    A->evenEvenInvLinOp(psi, tmp2, PLUS);
+    A.evenEvenInvLinOp(psi, tmp2, PLUS);
   }
   
-  // Call the virtual destructor of A
-  delete A;
-
   END_CODE("EvenOddPrecWilsonTypeFermAct::qprop");
 }
 
@@ -108,25 +105,25 @@ void qprop_t(const EvenOddPrecWilsonTypeFermAct<T>& me,
 template<>
 void 
 EvenOddPrecWilsonTypeFermAct<LatticeFermion>::qpropT(LatticeFermion& psi, 
-						     const multi1d<LatticeColorMatrix>& u, 
+						     const ConnectState& state, 
 						     const LatticeFermion& chi, 
 						     enum InvType invType,
 						     const Real& RsdCG, 
 						     int MaxCG, int& ncg_had) const
 {
-  qprop_t(*this, psi, u, chi, invType, RsdCG, MaxCG, ncg_had);
+  qprop_t(*this, psi, state, chi, invType, RsdCG, MaxCG, ncg_had);
 }
 
 template<>
 void 
 EvenOddPrecWilsonTypeFermAct<LatticeFermion>::qprop(LatticeFermion& psi, 
-						    const multi1d<LatticeColorMatrix>& u, 
+						    const ConnectState& state, 
 						    const LatticeFermion& chi, 
 						    enum InvType invType,
 						    const Real& RsdCG, 
 						    int MaxCG, int& ncg_had) const
 {
-  qprop_t(*this, psi, u, chi, invType, RsdCG, MaxCG, ncg_had);
+  qprop_t(*this, psi, state, chi, invType, RsdCG, MaxCG, ncg_had);
 }
 
 
@@ -134,19 +131,19 @@ EvenOddPrecWilsonTypeFermAct<LatticeFermion>::qprop(LatticeFermion& psi,
 template<>
 void 
 EvenOddPrecWilsonTypeFermAct<LatticeDWFermion>::qpropT(LatticeDWFermion& psi, 
-						       const multi1d<LatticeColorMatrix>& u, 
+						       const ConnectState& state, 
 						       const LatticeDWFermion& chi, 
 						       enum InvType invType,
 						       const Real& RsdCG, 
 						       int MaxCG, int& ncg_had) const
 {
-  qprop_t(*this, psi, u, chi, invType, RsdCG, MaxCG, ncg_had);
+  qprop_t(*this, psi, state, chi, invType, RsdCG, MaxCG, ncg_had);
 }
 
 template<>
 void 
 EvenOddPrecWilsonTypeFermAct<LatticeDWFermion>::qprop(LatticeFermion& psi, 
-						      const multi1d<LatticeColorMatrix>& u, 
+						      const ConnectState& state, 
 						      const LatticeFermion& chi, 
 						      enum InvType invType,
 						      const Real& RsdCG, 
