@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lopscl.h,v 1.1 2004-01-12 15:59:45 bjoo Exp $
+// $Id: lopscl.h,v 1.2 2004-01-20 10:13:11 bjoo Exp $
 
 #ifndef __lopscl_h__
 #define __lopscl_h__
@@ -38,7 +38,6 @@ public:
   /*! For this operator, the sign is ignored */
   inline void operator() (T& chi, const T& psi, enum PlusMinus isign) const
     {
-      T  tmp;
       const OrderedSubset& sub = A->subset();
       (*A)(chi, psi, isign);
       chi[sub] *= scale_fact;
@@ -83,7 +82,6 @@ public:
   /*! For this operator, the sign is ignored */
   inline void operator() (multi1d<T>& chi, const multi1d<T>& psi, enum PlusMinus isign) const
     {
-      multi1d<T>  tmp(size());
       const OrderedSubset& sub = A->subset();
 
       (*A)(chi, psi, isign);

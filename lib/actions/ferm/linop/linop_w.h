@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linop_w.h,v 1.3 2004-01-14 12:45:18 bjoo Exp $
+// $Id: linop_w.h,v 1.4 2004-01-20 10:13:11 bjoo Exp $
 
 /*! \file
  * \brief Linear operators
@@ -39,6 +39,7 @@
 #include "lovddag_w.h"
 #include "lovlapms_w.h"
 #include "zolotarev5d_linop_array_w.h"
+#include "lgherm_w.h"
 
 #endif
 
