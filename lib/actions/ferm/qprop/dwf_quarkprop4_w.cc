@@ -1,6 +1,9 @@
-// $Id: dwf_quarkprop4_w.cc,v 1.12 2004-02-05 20:10:38 kostas Exp $
+// $Id: dwf_quarkprop4_w.cc,v 1.13 2004-02-05 21:15:05 kostas Exp $
 // $Log: dwf_quarkprop4_w.cc,v $
-// Revision 1.12  2004-02-05 20:10:38  kostas
+// Revision 1.13  2004-02-05 21:15:05  kostas
+// fixed all bugs. Needs some clean up still
+//
+// Revision 1.12  2004/02/05 20:10:38  kostas
 // Changed remaining getSubset to getSet
 //
 // Revision 1.11  2004/02/05 19:19:26  kostas
@@ -63,7 +66,7 @@ void check_dwf_ward_identity(const multi1d<LatticeColorMatrix>& u,
   for(int mu(0);mu<Nd;mu++){
     LatticeComplex tt ;
     dwf_conserved_axial_ps_corr(tt,u,p5d,mu);
-    divA += tt - shift(tt,BACKWARD,mu) ;
+    divA += tt - shift(tt,BACKWARD,mu) ; 
   }
 
   LatticeComplex mpps_ps, ps_ps, contact ;
@@ -76,6 +79,15 @@ void check_dwf_ward_identity(const multi1d<LatticeColorMatrix>& u,
 
   diff = divA - 2.0 * m_q * ps_ps - 2.0*mpps_ps ;
 
+  multi1d<Double> corr ;     
+  SftMom trick(0,false,3) ;
+  corr = sumMulti(localNorm2(diff), trick.getSet());
+  QDPIO::cout<<"check_dwf_ward_identity: Ward Identity violation per timeslice: "<<endl;
+  for(int t(0);t<corr.size(); t++){
+    QDPIO::cout<<"        "<<t<<"                "<< corr[t]<<endl ;
+  }
+  
+  
   QDPIO::cout<<"check_dwf_ward_identity: Ward Identity violation: ";
   QDPIO::cout<<norm2(diff)<<endl ;
 
@@ -83,12 +95,6 @@ void check_dwf_ward_identity(const multi1d<LatticeColorMatrix>& u,
   QDPIO::cout<<"check_dwf_ward_identity: |ps_ps|^2   : "<< norm2(ps_ps)<<endl;
   QDPIO::cout<<"check_dwf_ward_identity: |mpps_ps|^2 : "<< norm2(mpps_ps)<<endl;
 
-  QDPIO::cout<<"check_dwf_ward_identity: Sanity check: "<<endl;
-  
-  for(int s(0);s<p5d.size();s++){
-    QDPIO::cout<<"                                     "<<norm2(p5d[s])<<endl ;
-  }
-  
 }
 
 
@@ -126,20 +132,19 @@ void dwf_quarkProp4_a(LatticePropagator& q_sol,
   LatticePropagator q_mp  ;
 
   multi1d<LatticeFermion> psi(S_f.size()) ;
- 
-  psi = zero;  // note this is ``zero'' and not 0
-   
+    
   // This version loops over all color and spin indices
   for(int color_source = 0; color_source < Nc; ++color_source)
   {
     for(int spin_source = 0; spin_source < Ns; ++spin_source)
     {
-      psi = zero ;
+      QDPIO::cout<<"dwf_quarkProp4:: doing color  : "<< color_source;
+      QDPIO::cout<<" and spin : "<< spin_source<<endl  ;
+
+      psi = zero ;  // note this is ``zero'' and not 0
       LatticeFermion tmp ;
       tmp = zero ;
       PropToFerm(q_src, tmp, color_source, spin_source);
-
-      // Use the last initial guess as the current initial guess
 	   
       /* 
        * Normalize the source in case it is really huge or small - 
@@ -150,7 +155,7 @@ void dwf_quarkProp4_a(LatticePropagator& q_sol,
       Real fact = Real(1) / sqrt(norm2(tmp));
       tmp *= fact ;
 
-QDPIO::cout<<"Normalization Factor: "<< fact<<endl ;
+      //QDPIO::cout<<"Normalization Factor: "<< fact<<endl ;
 
       int N5(S_f.size());
       multi1d<LatticeFermion> chi(N5) ;
@@ -159,22 +164,15 @@ QDPIO::cout<<"Normalization Factor: "<< fact<<endl ;
       chi[0   ] = chiralProjectPlus(tmp) ;
       chi[N5-1] = chiralProjectMinus(tmp) ; 
 
-QDPIO::cout<<"|chi|^2 : "<< norm2(chi)<<endl  ;
-
-      // DwfFld(chi, tmp, PLUS); // It does not do what I thought it does
 
       // now we are ready invert
 	   
-      // Compute the propagator for given source color/spin.
+
       int n_count;
-	   
+      // Compute the propagator for given source color/spin.	   
       S_f.qpropT(psi, state, chi, invType, RsdCG, MaxCG, n_count);
       ncg_had += n_count;
-QDPIO::cout<<"psi.size() : "<< psi.size()<<endl  ;
-QDPIO::cout<<"color  : "<< color_source;
-QDPIO::cout<<" spin : "<< spin_source<<endl  ;
- for(int s(0);s<N5;s++)
-   QDPIO::cout<<"|psi["<<s<<"]|^2 : "<< norm2(psi[s])<<endl  ;
+
       push(xml_out,"Qprop");
       write(xml_out, "RsdCG", RsdCG);
       Write(xml_out, n_count);
@@ -252,7 +250,7 @@ QDPIO::cout<<" spin : "<< spin_source<<endl  ;
   tmp = sumMulti(localNorm2(q_mp), trick.getSet());
   for(int t(0);t<length; t++){
     int t_eff( (t - t_src + length) % length ) ;
-    mesprop[t_eff] = tmp[t] ; // only need the zero momentum
+    mesprop[t_eff] = tmp[t] ; 
   }
   
   push(xml_out, "DWF_MidPoint_Pseudo");
@@ -304,23 +302,28 @@ void dwf_conserved_axial_ps_corr(LatticeComplex& corr,
   int g5(Ns*Ns - 1) ;
 
   LatticeComplex  C(0.0) ;
- 
+  corr = 0.0 ;
+
   int N5(p5d.size());
+
+  multi1d<LatticePropagator> us_p5d(N5) ;
+  for(int s(0); s<N5;s++)
+    us_p5d[s] = u[mu]*shift(p5d[s],FORWARD,mu) ;
+  
   for(int s(0); s<N5;s++){
     // first the 1-gamma_mu term 
-    C=.5*(trace(adj(p5d[N5-1-s])*Gamma(g5)*Gamma(d)*u[mu]*shift(p5d[s],FORWARD,mu))-
-	  trace(adj(p5d[N5-1-s])*Gamma(g5)         *u[mu]*shift(p5d[s],FORWARD,mu))+
-	  //now the 1+gamma_mu term
-	  trace(shift(adj(p5d[N5-1-s]),FORWARD,mu)*Gamma(g5)*Gamma(d)*adj(u[mu])*p5d[s])+
-	  trace(shift(adj(p5d[N5-1-s]),FORWARD,mu)*Gamma(g5)         *adj(u[mu])*p5d[s])
-	  );
-	  
-      
+    C=0.5*(  trace(adj(   p5d[N5-1-s])*Gamma(g5)*Gamma(d)*us_p5d[s]) -
+	     trace(adj(   p5d[N5-1-s])*Gamma(g5)         *us_p5d[s]) +
+	     //now the 1+gamma_mu term
+	     trace(adj(us_p5d[N5-1-s])*Gamma(g5)*Gamma(d)*   p5d[s]) +
+	     trace(adj(us_p5d[N5-1-s])*Gamma(g5)         *   p5d[s])   );
+
     if(s<N5/2) 
       corr -= C ;
     else
       corr += C ;
   }  
+  
 }
 
 
