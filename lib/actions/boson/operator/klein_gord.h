@@ -1,17 +1,22 @@
 // -*- C++ -*-
-// $Id: klein_gord.h,v 1.2 2003-10-10 03:46:46 edwards Exp $
+// $Id: klein_gord.h,v 1.3 2004-12-15 04:49:03 edwards Exp $
 
 #ifndef KLEIN_GORD_INCLUDE
 #define KLEIN_GORD_INCLUDE
 
-void klein_gord(const multi1d<LatticeColorMatrix>& u, 
-		const LatticeColorVector& psi, 
-		LatticeColorVector& chi, 
-		const Real& mass_sq, int j_decay);
+namespace Chroma
+{
+  void klein_gord(const multi1d<LatticeColorMatrix>& u, 
+		  const LatticeColorVector& psi, 
+		  LatticeColorVector& chi, 
+		  const Real& mass_sq, int j_decay);
 
-void klein_gord(const multi1d<LatticeColorMatrix>& u, 
-		const LatticePropagator& psi, 
-		LatticePropagator& chi, 
-		const Real& mass_sq, int j_decay);
+  void klein_gord(const multi1d<LatticeColorMatrix>& u, 
+		  const LatticePropagator& psi, 
+		  LatticePropagator& chi, 
+		  const Real& mass_sq, int j_decay);
+}
+
+using namespace Chroma;
 
 #endif
