@@ -251,8 +251,8 @@ spectrum_w$(EXEEXT): $(spectrum_w_OBJECTS) $(spectrum_w_DEPENDENCIES)
 	@rm -f spectrum_w$(EXEEXT)
 	$(CXXLINK) $(spectrum_w_LDFLAGS) $(spectrum_w_OBJECTS) $(spectrum_w_LDADD) $(LIBS)
 ExampleBuildingBlocks$(EXEEXT): $(ExampleBuildingBlocks_OBJECTS) $(ExampleBuildingBlocks_DEPENDENCIES)
-        @rm -f ExampleBuildingBlocks$(EXEEXT)
-        $(CXXLINK) $(ExampleBuildingBlocks_LDFLAGS) $(ExampleBuildingBlocks_OBJECTS) $(ExampleBuildingBlocks_LDADD) $(LIBS)
+	@rm -f ExampleBuildingBlocks$(EXEEXT)
+	$(CXXLINK) $(ExampleBuildingBlocks_LDFLAGS) $(ExampleBuildingBlocks_OBJECTS) $(ExampleBuildingBlocks_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
