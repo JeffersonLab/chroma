@@ -1,4 +1,4 @@
-// $Id: t_propagator_s.cc,v 1.13 2004-02-11 12:51:35 bjoo Exp $
+// $Id: t_propagator_s.cc,v 1.14 2004-03-03 09:38:30 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -76,7 +76,6 @@ struct Prop_t
 
 struct Propagator_input_t
 {
-  IO_version_t     io_version;
   Param_t          param;
   Cfg_t            cfg;
   Prop_t           prop;
@@ -105,9 +104,10 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
   // into QDP++
 
   // Read in the IO_version
+  int version;
   try
   {
-    read(inputtop, "IO_version/version", input.io_version.version);
+    read(inputtop, "IO_version/version", version);
   }
   catch (const string& e) 
   {
@@ -124,17 +124,17 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
   {
     XMLReader paramtop(inputtop, "param"); // push into 'param' group
 
-    switch (input.io_version.version) 
+    switch (version) 
     {
       /**************************************************************************/
-    case 1 :
+    case 2 :
       /**************************************************************************/
       break;
 
     default :
       /**************************************************************************/
 
-      QDPIO::cerr << "Input parameter version " << input.io_version.version << " unsupported." << endl;
+      QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
       QDP_abort(1);
     }
   }
@@ -186,17 +186,8 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
       QDP_error_exit("Fermion type not supported\n.");
     }
 
-    {
-      string cfg_type_str;
-      read(paramtop, "cfg_type", cfg_type_str);
-      if (cfg_type_str == "NERSC") {
-	input.param.cfg_type = CFG_TYPE_NERSC;
-      } else {
-	QDP_error_exit("Dont know non NERSC files yet");
-      }
-
-    }
-
+    // This may need changing in the future but since the plan is
+    // not to write out propagators we'll leave alone for now.
     {
       string prop_type_str;
       read(paramtop, "prop_type", prop_type_str);
@@ -251,6 +242,10 @@ int main(int argc, char **argv)
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
 
+  // Force the machine into a ring for speed up purposes
+//  QMP_u32_t foo[] = {1,1,1,8};
+//  QMP_declare_logical_topology(foo, Nd);
+
   // Input parameter structure
   Propagator_input_t  input;
 
@@ -269,7 +264,7 @@ int main(int argc, char **argv)
   
   XMLReader gauge_xml;
 
-  switch (input.param.cfg_type) 
+  switch (input.cfg.cfg_type) 
   {
   case CFG_TYPE_NERSC :
     readArchiv(gauge_xml, u, input.cfg.cfg_file);
@@ -277,27 +272,6 @@ int main(int argc, char **argv)
   default :
     QDP_error_exit("Configuration type is unsupported.");
   }
-
-
-  // 
-  //  gauge invariance test
-  //  
-
-
-  // gauge transformed gauge fields
-//  multi1d<LatticeColorMatrix> u_trans(Nd);
-
-  // gauge transform
-//  LatticeColorMatrix v ;
-  
-//  gaussian(v);
-//  reunit(v) ; 
-
-//  for(int dir = 0 ; dir < Nd ; ++dir)
-//    {
-//      u_trans[dir] = v*u[dir]*adj(shift(v,FORWARD,dir)) ;
-//    }
-
 
   // Read in the source along with relevant information.
   LatticePropagator quark_prop_source;
@@ -316,7 +290,7 @@ int main(int argc, char **argv)
 
   // Instantiate XML writer for XMLDAT
   XMLFileWriter xml_out("XMLDAT");
-  push(xml_out, "propagator");
+  push(xml_out, "hadron_corr");
 
   // Write out the input
   write(xml_out, "Input", xml_in);
@@ -356,7 +330,7 @@ int main(int argc, char **argv)
 
   // Calcluate plaq on the gauge fixed field
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-  push(xml_out, "Is this gauge invariant?");
+  push(xml_out, "Is_this_gauge_invariant");
   write(xml_out, "w_plaq", w_plaq);
   write(xml_out, "s_plaq", s_plaq);
   write(xml_out, "t_plaq", t_plaq);
@@ -379,28 +353,7 @@ int main(int argc, char **argv)
 
   Handle<const ConnectState > state(S_f.createState(u));
   Handle<const EvenOddLinearOperator<LatticeFermion> > D_asqtad(S_f.linOp(state));
-
-  // Create a fermion to apply linop to.
-  LatticeFermion tmp1, tmp2;
-
-  tmp1 = zero;
-//  Test walfil code
-
-//  for(int src_ind = 0; src_ind < 8; ++src_ind){
-//    walfil(tmp1, 0, 3, 0, src_ind);
-
-//      tmp2  =  zero;
-
-      // Apply Linop
-//      (*D_asqtad).evenOddLinOp(tmp2, tmp1, PLUS); 
-//
-//       push(xml_out, "dslash");
-//       write(xml_out, "tmp1", tmp1);
-//       write(xml_out, "tmp2", tmp2);
-//       pop(xml_out);
-//    }
-
-   Handle<const LinearOperator<LatticeFermion> > MdagM_asqtad(S_f.lMdagM(state));
+  Handle<const LinearOperator<LatticeFermion> > MdagM_asqtad(S_f.lMdagM(state));
 
   //
   // Loop over the source color, creating the source
@@ -412,15 +365,23 @@ int main(int argc, char **argv)
   XMLBufferWriter xml_buf;
   int ncg_had = 0;
   int n_count;
+  int t_length = input.param.nrow[3];
 
   LatticeFermion q_source, psi;
   multi1d<LatticePropagator> stag_prop(8);
+  multi2d<Real> pi_corr(16, input.param.nrow[3]);
+  multi2d<Real> sc_corr(16, input.param.nrow[3]);
 
-//  for(int t_source = 0; t_source < 17; t_source += 16) {
+  pi_corr = zero;
+  sc_corr = zero;
+
+  for(int t_source = 0; t_source < 3; t_source += 2) {
 
     for(int src_ind = 0; src_ind < 8; ++src_ind){
       psi = zero;   // note this is ``zero'' and not 0
-      int t_source = 0;
+//      int t_source = 0;
+
+      QDPIO::cout << "Inversion for source " << src_ind << endl;
 
       for(int color_source = 0; color_source < Nc; ++color_source) {
         QDPIO::cout << "Inversion for Color =  " << color_source << endl;
@@ -429,7 +390,6 @@ int main(int argc, char **argv)
 
         q_source = zero ;
         
-
 //  Use a wall source
 	walfil(q_source, t_source, j_decay, color_source, src_ind);
 
@@ -457,19 +417,53 @@ int main(int argc, char **argv)
       }  //color_source
     
       stag_prop[src_ind] = quark_propagator;
-      } // end src_ind
+    } // end src_ind
   
-      multi2d<DComplex> pion(16, input.param.nrow[3]);
-      staggeredPionsFollana(stag_prop, pion, j_decay);
+    int t_eff;
 
-    push(xml_out, "Here are all 16 pions");
-      for(int i=0; i < NUM_STAG_PIONS; i++) {
-      ostringstream tag;
-      tag << "pion" << i;
-      push(xml_out, tag.str());
-      write(xml_out, "pion_i", pion[i]);
-      pop(xml_out);
+    multi2d<DComplex> pion(16, t_length);
+    multi2d<DComplex> scalar(16, t_length);
+
+    multi2d<Real> re_pion(16, t_length);
+    multi2d<Real> re_sc(16, t_length);
+     
+    staggeredPionsFollana(stag_prop, pion, j_decay);
+    staggeredScalars(stag_prop, scalar, j_decay);
+
+    // Take the real part of the correlator and average over the sources
+    for(int i=0; i < 16; i++){
+      for(int t=0; t < t_length; t++){
+        t_eff = (t - t_source + t_length)% t_length;
+        re_pion[i][t_eff] = real(pion[i][t]);
+        pi_corr[i][t_eff] += re_pion[i][t_eff]/2.0;
+        re_sc[i][t_eff] = real(scalar[i][t]);
+        sc_corr[i][t_eff] += re_sc[i][t_eff]/2.0;
       }
+    }
+  
+  multi1d<Real> Pi(t_length), Sc(t_length);
+
+  push(xml_out, "Here_are_all_16_pions");
+  for(int i=0; i < NUM_STAG_PIONS; i++) {
+    Pi = re_pion[i];
+    ostringstream tag;
+    tag << "re_pion" << i;
+    push(xml_out, tag.str());
+    write(xml_out, "Pi", Pi);
+    pop(xml_out);
+  }
+  pop(xml_out);
+
+  push(xml_out, "Here_are_all_16_scalars");
+  for(int i=0; i < NUM_STAG_PIONS; i++) {
+    Sc = re_sc[i];
+    ostringstream tag;
+    tag << "re_sc" << i;
+    push(xml_out, tag.str());
+    write(xml_out, "Sc", Sc);
+    pop(xml_out);
+  }
+  pop(xml_out);
 
     // Instantiate XML buffer to make the propagator header
     XMLBufferWriter prop_xml;
@@ -502,8 +496,33 @@ int main(int argc, char **argv)
 //     QDP_error_exit("Propagator type is unsupported.");
 //    }
 
-//  } //t_source;
+  } //t_source;
 
+  multi1d<Real> Pi(t_length), Sc(t_length);
+ 
+  push(xml_out, "Here_are_all_16_pions_averaged_over_the_2_sources");
+  for(int i=0; i < NUM_STAG_PIONS; i++) {
+    Pi = pi_corr[i];
+    ostringstream tag;
+    tag << "pi_corr" << i;
+    push(xml_out, tag.str());
+    write(xml_out, "Pi", Pi);
+    pop(xml_out);
+  }
+  pop(xml_out);
+
+  push(xml_out, "And_the_same_for_the_scalars");
+  for(int i=0; i < NUM_STAG_PIONS; i++) {
+    Sc = sc_corr[i];
+    ostringstream tag;
+    tag << "sc_corr" << i;
+    push(xml_out, tag.str());
+    write(xml_out, "Sc", Sc);
+    pop(xml_out);
+  }
+  pop(xml_out);
+
+  pop(xml_out);
   xml_out.close();
   xml_in.close();
 
