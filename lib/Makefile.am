@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.247 2005-02-02 22:47:40 edwards Exp $
+# $Id: Makefile.am,v 1.248 2005-02-03 03:15:29 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -135,10 +135,6 @@ nobase_include_HEADERS = \
 	update/heatbath/su3_hb_sweep.h \
 	update/molecdyn/molecdyn.h \
 	update/molecdyn/field_state.h \
-	update/molecdyn/monomial/monomial.h \
-	update/molecdyn/monomial/abs_monomial.h \
-	update/molecdyn/monomial/monomial_factory.h \
-	update/molecdyn/monomial/gauge_monomial.h \
 	update/molecdyn/hamiltonian/hamiltonian.h \
 	update/molecdyn/hamiltonian/abs_hamiltonian.h \
 	update/molecdyn/hamiltonian/exact_hamiltonian.h \
@@ -151,6 +147,10 @@ nobase_include_HEADERS = \
 	update/molecdyn/hmc/lcm_hmc.h \
 	update/molecdyn/hmc/global_metropolis_accrej.h \
 	update/molecdyn/monomial/monomial.h \
+	update/molecdyn/monomial/abs_monomial.h \
+	update/molecdyn/monomial/monomial_factory.h \
+	update/molecdyn/monomial/gauge_monomial.h \
+	update/molecdyn/monomial/genapprox.h \
 	update/molecdyn/predictor/predictor.h \
 	update/molecdyn/predictor/chrono_predictor.h \
 	update/molecdyn/predictor/chrono_predictor_factory.h \
@@ -158,6 +158,7 @@ nobase_include_HEADERS = \
 	update/molecdyn/predictor/last_solution_predictor.h \
 	update/molecdyn/predictor/circular_buffer.h \
 	update/molecdyn/predictor/linear_extrap_predictor.h
+
 nodist_include_HEADERS=chroma_config_internal.h
 
 # Wilson specific headers
@@ -274,6 +275,7 @@ nobase_include_HEADERS += \
 	util/ferm/ferm_w.h util/ferm/diractodr.h util/ferm/gammasgn_w.h \
 	util/ferm/tdiractodr.h \
         util/ferm/paulitodr.h
+
 # Staggered specific headers
 nobase_include_HEADERS += \
 	actions/ferm/fermacts/asqtad_fermact_s.h \
@@ -430,6 +432,7 @@ libchroma_a_SOURCES = \
 	util/gauge/taproj.cc util/gauge/unit_check.cc \
 	util/info/printgeom.cc util/info/proginfo.cc \
 	update/molecdyn/monomial/gauge_monomial.cc \
+	update/molecdyn/monomial/genapprox.cc \
 	update/molecdyn/integrator/lcm_pqp_leapfrog.cc \
 	update/molecdyn/hmc/global_metropolis_accrej.cc \
 	update/molecdyn/predictor/zero_guess_predictor.cc \
