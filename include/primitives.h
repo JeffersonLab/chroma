@@ -1,4 +1,4 @@
-// $Id: primitives.h,v 1.4 2003-03-29 05:54:15 edwards Exp $
+// $Id: primitives.h,v 1.5 2003-10-20 20:25:06 edwards Exp $
 
 #ifndef PRIMITIVES_INCLUDE
 #define PRIMITIVES_INCLUDE
@@ -54,10 +54,10 @@
 
 #define QUADRATIC_BOSON  30
 
-#define CG_INVERTER  21
-#define MR_INVERTER  22
-#define BICG_INVERTER  23
-#define CR_INVERTER  24
+// #define CG_INVERTER  21
+// #define MR_INVERTER  22
+// #define BICG_INVERTER  23
+// #define CR_INVERTER  24
 #define HMD  91
 #define HMC  92
 #define HMDC  94
