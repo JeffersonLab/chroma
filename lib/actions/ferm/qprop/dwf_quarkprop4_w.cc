@@ -1,6 +1,9 @@
-// $Id: dwf_quarkprop4_w.cc,v 1.7 2004-01-29 17:37:33 edwards Exp $
+// $Id: dwf_quarkprop4_w.cc,v 1.8 2004-01-29 19:48:26 kostas Exp $
 // $Log: dwf_quarkprop4_w.cc,v $
-// Revision 1.7  2004-01-29 17:37:33  edwards
+// Revision 1.8  2004-01-29 19:48:26  kostas
+// added the t_src as input parameter
+//
+// Revision 1.7  2004/01/29 17:37:33  edwards
 // Implemented some flop optimizations.
 //
 // Revision 1.6  2004/01/29 16:18:52  kostas
@@ -45,6 +48,7 @@ static
 void dwf_quarkProp4_a(LatticePropagator& q_sol, 
 		      XMLWriter& xml_out,
 		      const LatticePropagator& q_src,
+		      const int t_src,
 		      const C<T>& S_f,
 		      Handle<const ConnectState> state,
 		      enum InvType invType,
@@ -143,10 +147,12 @@ void dwf_quarkProp4_a(LatticePropagator& q_sol,
   corr = sumMulti(cfield, trick.getSubset());
   // Length of lattice in decay direction
   int length = trick.numSubsets();
-  multi1d<Double> mesprop(length);
+  multi1d<Real> mesprop(length);
   
-  for(int t(0);t<length; t++)
-    mesprop[t] = real(corr[t]) ; // only need the zero momentum
+  for(int t(0);t<length; t++){
+    int t_eff( (t - t_src + length) % length ) ;
+    mesprop[t_eff] = real(corr[t]) ; // only need the zero momentum
+  }
 
   //push(xml_out, "t_dir");
   //Write(xml_out, 3);
@@ -157,8 +163,13 @@ void dwf_quarkProp4_a(LatticePropagator& q_sol,
   pop(xml_out);
 
   //Now the midpoint Pseudoscalar correlator
-  mesprop = sumMulti(localNorm2(q_mp), trick.getSubset());
-
+  multi1d<Double> tmp(length);
+  tmp = sumMulti(localNorm2(q_mp), trick.getSubset());
+  for(int t(0);t<length; t++){
+    int t_eff( (t - t_src + length) % length ) ;
+    mesprop[t_eff] = tmp[t] ; // only need the zero momentum
+  }
+  
   push(xml_out, "DWF_MidPoint_Pseudo");
   Write(xml_out, mesprop);
   pop(xml_out);
@@ -231,12 +242,13 @@ void dwf_conserved_axial_ps_corr(LatticeComplex& corr,
 void dwf_quarkProp4(LatticePropagator& q_sol, 
 		    XMLWriter& xml_out,
 		    const LatticePropagator& q_src,
+		    const int t_src,
 		    const EvenOddPrecDWFermActBaseArray<LatticeFermion>& S_f,
 		    Handle<const ConnectState> state,
 		    enum InvType invType,
 		    const Real& RsdCG, 
 		    int MaxCG, int& ncg_had)
 {
-  dwf_quarkProp4_a(q_sol, xml_out, q_src, S_f, state, invType, RsdCG, MaxCG, ncg_had);
+  dwf_quarkProp4_a(q_sol, xml_out, q_src, t_src, S_f, state, invType, RsdCG, MaxCG, ncg_had);
 }
 
