@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.108 2004-02-08 11:33:30 mcneile Exp $
+# $Id: Makefile.am,v 1.109 2004-02-08 14:37:44 mcneile Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -81,6 +81,7 @@ nobase_include_HEADERS = \
 	meas/glue/polylp.h meas/hadron/hadron.h meas/hadron/srcfil.h \
 	meas/meas.h meas/pbp/pbp.h meas/schrfun/schrfun.h \
 	meas/smear/ape_smear.h meas/smear/displacement.h \
+	meas/smear/fuzz_smear.h \
 	meas/smear/gaus_smear.h meas/smear/hyp_smear.h \
 	meas/smear/laplacian.h meas/smear/smear.h meas/smear/wvfkind.h \
 	meas/sources/sources.h meas/sources/srcsnktype.h \
@@ -195,7 +196,7 @@ lib_LIBRARIES = libchroma.a
 libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
                mesplq.cc polylp.cc reunit.cc unit_check.cc sftmom.cc srcfil.cc \
                szin_io.cc readszin.cc writeszin.cc su3proj.cc sun_proj.cc \
-               gaus_smear.cc hyp_smear.cc ape_smear.cc \
+               gaus_smear.cc hyp_smear.cc ape_smear.cc fuzz_smear.cc \
                klein_gord.cc laplacian.cc displacement.cc \
                su2extract.cc sunfill.cc invcg1.cc invcg2.cc invcg2_array.cc \
 	       minvcg.cc qprop_io.cc \
