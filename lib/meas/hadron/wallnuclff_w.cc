@@ -1,4 +1,4 @@
-// $Id: wallnuclff_w.cc,v 1.12 2004-04-29 21:02:51 edwards Exp $
+// $Id: wallnuclff_w.cc,v 1.13 2004-04-29 21:07:58 edwards Exp $
 /*! \file
  *  \brief Wall-sink nucleon form-factors 
  *
@@ -66,13 +66,13 @@ LatticeSpinMatrix wallNuclUContract(const LatticePropagator& insert_prop,
   LatticeSpinMatrix  S;
 
   // Term 1
-  S  = -traceColor(insert_prop * Gamma(5) * quarkContract13(Gamma(5)*d_x2, u_x2));
+  S  = traceColor(insert_prop * Gamma(5) * quarkContract13(Gamma(5)*d_x2, u_x2));
   // Term 2
-  S -=  traceColor(u_x2 * traceSpin(quarkContract13(insert_prop*Gamma(5), Gamma(5)*d_x2)));
+  S += traceColor(u_x2 * traceSpin(quarkContract13(insert_prop*Gamma(5), Gamma(5)*d_x2)));
   // Term 3
-  S -=  traceColor(insert_prop * traceSpin(quarkContract13(Gamma(5)*d_x2, u_x2*Gamma(5))));
+  S += traceColor(insert_prop * traceSpin(quarkContract13(Gamma(5)*d_x2, u_x2*Gamma(5))));
   // Term 4
-  S -=  traceColor(u_x2*Gamma(5) * quarkContract13(Gamma(5)*d_x2, insert_prop));
+  S += traceColor(u_x2*Gamma(5) * quarkContract13(Gamma(5)*d_x2, insert_prop));
 
   return S;
 }
@@ -100,10 +100,10 @@ LatticeSpinMatrix wallNuclDContract(const LatticePropagator& insert_prop,
   LatticeSpinMatrix  S; 
 
   // Term 5
-  S  = -traceColor(u_x2 * Gamma(5) * quarkContract13(Gamma(5)*insert_prop, u_x2));
+  S  = traceColor(u_x2 * Gamma(5) * quarkContract13(Gamma(5)*insert_prop, u_x2));
 
   // Term 6
-  S -=  traceColor(u_x2 * traceSpin(quarkContract13(u_x2*Gamma(5), Gamma(5)*insert_prop)));
+  S += traceColor(u_x2 * traceSpin(quarkContract13(u_x2*Gamma(5), Gamma(5)*insert_prop)));
 
   return S;
 }
@@ -262,13 +262,7 @@ void wallNuclFormFac(XMLWriter& xml,
 	QDP_error_exit("Unknown sequential source type", seq_src);
       }
 
-      // Not sure why this minus sign is arising...
-      corr_local_fn *= -1;
-
       multi2d<DComplex> hsum_local = phases.sft(corr_local_fn);
-
-      // Not sure why this minus sign is arising...
-      corr_nonlocal_fn *= -1;
 
       multi2d<DComplex> hsum_nonlocal = phases.sft(corr_nonlocal_fn);
   
