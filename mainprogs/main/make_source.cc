@@ -1,4 +1,4 @@
-// $Id: make_source.cc,v 1.14 2004-01-09 03:35:04 edwards Exp $
+// $Id: make_source.cc,v 1.15 2004-01-09 03:52:19 edwards Exp $
 /*! \file
  *  \brief Main code for source generation
  */
@@ -41,7 +41,7 @@ int main(int argc, char **argv)
   int j_decay;
   int version; 		// The input-parameter version
 
-  Real kappa_fake = 0.0;			// Kappa value
+  Real kappa_fake = 3.14159265359;			// Kappa value
   
   int source_type, source_direction; // S-wave(0), P-wave(1), D-wave(2)and direction
 
@@ -268,7 +268,21 @@ int main(int argc, char **argv)
     }
   }
 
+  // Sanity check - write out the norm2 of the source in the Nd-1 direction
+  // Use this for any possible verification
+  {
+    // Initialize the slow Fourier transform phases
+    SftMom phases(0, true, Nd-1);
 
+    multi1d<Double> source_corr = sumMulti(localNorm2(quark_propagator), 
+					   phases.getSubset());
+
+    push(xml_out, "Source_correlator");
+    Write(xml_out, source_corr);
+    pop(xml_out);
+  }
+
+  // Now write the source
   switch (prop_type) 
   {
   case PROP_TYPE_SZIN:
