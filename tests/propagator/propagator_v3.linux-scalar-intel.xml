@@ -2,9 +2,18 @@
 
 
 <propagator>
+  <ProgramInfo>
+    <Setgeom>
+      <latt_size>4 4 4 8</latt_size>
+      <logical_size>1 1 1 1</logical_size>
+      <subgrid_size>4 4 4 8</subgrid_size>
+      <total_volume>512</total_volume>
+      <subgrid_volume>512</subgrid_volume>
+    </Setgeom>
+  </ProgramInfo>
   <Input><propagator>
 <annotation>
-; $Id: propagator_v3.linux-scalar-intel.xml,v 1.1 2004-01-30 04:21:20 edwards Exp $
+; $Id: propagator_v3.linux-scalar-intel.xml,v 1.2 2004-02-22 21:25:48 edwards Exp $
 ;
 ; PROPAGATOR input file.
 ;
@@ -28,7 +37,7 @@
  <FermAct>WILSON</FermAct>
  <Kappa>0.11</Kappa>
  <AnisoParam>
-   <anisoP>true</anisoP>
+   <anisoP>false</anisoP>
    <t_dir>3</t_dir>
    <xi_0>1</xi_0>
    <nu>1</nu>
@@ -48,7 +57,7 @@
  <cfg_file>../test_purgaug.cfg1</cfg_file>
 </Cfg>
 <Prop>
- <source_file>source_0</source_file>
+ <source_file>../make_source/source_0</source_file>
  <prop_file>propagator_0</prop_file>
 </Prop>
 </propagator>
@@ -112,61 +121,60 @@
   <Source_correlator>
     <source_corr>5.44616 0 0 0 0 0 0 0</source_corr>
   </Source_correlator>
-<QuarkProp4>
-  <Qprop>
-    <RsdCG>1e-05</RsdCG>
-    <n_count>18</n_count>
-  </Qprop>
-  <Qprop>
-    <RsdCG>1e-05</RsdCG>
-    <n_count>18</n_count>
-  </Qprop>
-  <Qprop>
-    <RsdCG>1e-05</RsdCG>
-    <n_count>18</n_count>
-  </Qprop>
-  <Qprop>
-    <RsdCG>1e-05</RsdCG>
-    <n_count>18</n_count>
-  </Qprop>
-  <Qprop>
-    <RsdCG>1e-05</RsdCG>
-    <n_count>18</n_count>
-  </Qprop>
-  <Qprop>
-    <RsdCG>1e-05</RsdCG>
-    <n_count>18</n_count>
-  </Qprop>
-  <Qprop>
-    <RsdCG>1e-05</RsdCG>
-    <n_count>18</n_count>
-  </Qprop>
-  <Qprop>
-    <RsdCG>1e-05</RsdCG>
-    <n_count>18</n_count>
-  </Qprop>
-  <Qprop>
-    <RsdCG>1e-05</RsdCG>
-    <n_count>18</n_count>
-  </Qprop>
-  <Qprop>
-    <RsdCG>1e-05</RsdCG>
-    <n_count>18</n_count>
-  </Qprop>
-  <Qprop>
-    <RsdCG>1e-05</RsdCG>
-    <n_count>18</n_count>
-  </Qprop>
-  <Qprop>
-    <RsdCG>1e-05</RsdCG>
-    <n_count>18</n_count>
-  </Qprop>
-</QuarkProp4>
-
+  <QuarkProp4>
+    <Qprop>
+      <RsdCG>1e-05</RsdCG>
+      <n_count>18</n_count>
+    </Qprop>
+    <Qprop>
+      <RsdCG>1e-05</RsdCG>
+      <n_count>18</n_count>
+    </Qprop>
+    <Qprop>
+      <RsdCG>1e-05</RsdCG>
+      <n_count>18</n_count>
+    </Qprop>
+    <Qprop>
+      <RsdCG>1e-05</RsdCG>
+      <n_count>18</n_count>
+    </Qprop>
+    <Qprop>
+      <RsdCG>1e-05</RsdCG>
+      <n_count>18</n_count>
+    </Qprop>
+    <Qprop>
+      <RsdCG>1e-05</RsdCG>
+      <n_count>18</n_count>
+    </Qprop>
+    <Qprop>
+      <RsdCG>1e-05</RsdCG>
+      <n_count>18</n_count>
+    </Qprop>
+    <Qprop>
+      <RsdCG>1e-05</RsdCG>
+      <n_count>18</n_count>
+    </Qprop>
+    <Qprop>
+      <RsdCG>1e-05</RsdCG>
+      <n_count>18</n_count>
+    </Qprop>
+    <Qprop>
+      <RsdCG>1e-05</RsdCG>
+      <n_count>18</n_count>
+    </Qprop>
+    <Qprop>
+      <RsdCG>1e-05</RsdCG>
+      <n_count>18</n_count>
+    </Qprop>
+    <Qprop>
+      <RsdCG>1e-05</RsdCG>
+      <n_count>18</n_count>
+    </Qprop>
+  </QuarkProp4>
   <Relaxation_Iterations>
     <ncg_had>216</ncg_had>
   </Relaxation_Iterations>
   <Prop_correlator>
-    <prop_corr>0.147564 0.00923145 0.0028872 0.00109399 0.00068348 0.00110199 0.00286503 0.00919643</prop_corr>
+    <prop_corr>0.147564 0.00923146 0.0028872 0.00109399 0.000683482 0.00110199 0.00286503 0.00919643</prop_corr>
   </Prop_correlator>
 </propagator>
