@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.112 2004-02-23 03:03:36 edwards Exp $
+# $Id: Makefile.am,v 1.113 2004-03-03 11:09:50 mcneile Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -79,6 +79,7 @@ nobase_include_HEADERS = \
 	meas/gfix/gfix.h meas/gfix/grelax.h meas/gfix/polar_dec.h \
 	meas/gfix/rot_colvec.h meas/glue/glue.h meas/glue/mesplq.h \
 	meas/glue/polylp.h meas/hadron/hadron.h meas/hadron/srcfil.h \
+	meas/hadron/stoch_var.h meas/hadron/z2_src.h \
 	meas/meas.h meas/pbp/pbp.h meas/schrfun/schrfun.h \
 	meas/smear/ape_smear.h meas/smear/displacement.h \
 	meas/smear/fuzz_smear.h \
@@ -147,7 +148,7 @@ nobase_include_HEADERS += \
 	meas/hadron/hadron_w.h meas/hadron/hybmeson_w.h \
 	meas/hadron/mesonseqsrc_w.h \
 	meas/hadron/mesons_w.h meas/hadron/seqpiontest_w.h \
-	meas/hadron/loops_w.h meas/hadron/z2_src.h \
+	meas/hadron/loops_w.h \
 	meas/hadron/walfil_w.h meas/hadron/wall_qprop_w.h \
 	meas/hadron/wallpionff_w.h \
 	meas/smear/sink_smear2_w.h meas/sources/d_src_w.h \
@@ -176,7 +177,8 @@ nobase_include_HEADERS += \
 	meas/eig/eig_s.h meas/hadron/hadron_s.h \
 	meas/hadron/mesphas_follana_s.h meas/hadron/mesphas_s.h \
 	meas/hadron/pions_follana_s.h meas/hadron/walfil_s.h \
-	meas/sources/sources_s.h \
+	meas/hadron/stag_scalars_s.h meas/sources/sources_s.h \
+	meas/hadron/stag_propShift_s.h \
 	util/gauge/gauge_s.h util/gauge/stag_phases_s.h
 endif
 
@@ -205,7 +207,7 @@ libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
                gaus_smear.cc hyp_smear.cc ape_smear.cc fuzz_smear.cc \
                klein_gord.cc laplacian.cc displacement.cc \
                su2extract.cc sunfill.cc invcg1.cc invcg2.cc invcg2_array.cc \
-	       minvcg.cc qprop_io.cc \
+	       minvcg.cc qprop_io.cc stoch_var.cc z2_src.cc \
                milc_io.cc readmilc.cc writemilc.cc \
                axgauge.cc coulgauge.cc grelax.cc polar_dec.cc rot_colvec.cc \
 	       transf.cc param_io.cc gramschm.cc gramschm_array.cc \
@@ -219,7 +221,7 @@ libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
 #
 if BUILD_WILSON_LIBS
 libchroma_a_SOURCES += baryon_w.cc mesons_w.cc hybmeson_w.cc \
-              loops_w.cc z2_src.cc \
+              loops_w.cc \
               curcor2_w.cc lwldslash_w.cc formfac_w.cc \
               mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
               sink_smear2_w.cc barcomp_io.cc barcomp_w.cc walfil_w.cc \
@@ -270,6 +272,7 @@ endif
 if BUILD_STAGGERED_LIBS
 libchroma_a_SOURCES += mesphas_s.cc mesphas_follana_s.cc pions_follana_s.cc \
 	follana_io_s.cc fermact_qprop.cc walfil_s.cc \
+	stag_scalars_s.cc stag_propShift_s.cc \
 	asqtad_linop_s.cc asq_dsl_s.cc fat7_links_s.cc naik_term_s.cc  \
 	asqtad_fermact_s.cc asqtad_mdagm_s.cc staggered_qprop.cc stag_phases_s.cc
 endif
