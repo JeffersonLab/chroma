@@ -73,7 +73,7 @@ GaugeActParamsBase* readGaugeActParams(XMLReader& xml, const string& path)
   }
 }
 
-void write(XMLWriter& xml, const string& path, GaugeActParamsBase& p) 
+void write(XMLWriter& xml, const string& path, const GaugeActParamsBase& p) 
 {
   GaugeActType_t my_type = p.getType();
 

@@ -10,17 +10,17 @@
 //! An exact pure gauge hamiltonian. 
 //! We template on the GaugeAction. If the template parameter does not
 //  conform to at least the base gauge action the compiler will scream
-template<typename GA>
+//template<typename GA>
 class ExactPureGaugeHamiltonian 
   : public ExactAbsHamiltonian<multi1d<LatticeColorMatrix>,
 			       multi1d<LatticeColorMatrix> >
 {
 public:
   //! Constructor -- takes the action as a parameter
-  ExactPureGaugeHamiltonian(const GA& S_g_) : S_g(S_g_) {}
+  ExactPureGaugeHamiltonian(const GaugeAction& S_g_) : S_g(S_g_.clone()) {}
 
   //! Copy Constructor
-  ExactPureGaugeHamiltonian(const ExactPureGaugeHamiltonian<GA>& H) : S_g(H.S_g) {}
+  ExactPureGaugeHamiltonian(const ExactPureGaugeHamiltonian& H) : S_g(H.S_g->clone()) {}
 
 
   // Destructor
@@ -35,13 +35,13 @@ public:
   // Apply boundaries to Q
   virtual void applyQBoundary(multi1d<LatticeColorMatrix>& q) const
   {
-    S_g.getGaugeBC().modify(q);
+    S_g->getGaugeBC().modify(q);
   }
 
   // Apply boundaries to P
   virtual void applyPBoundary(multi1d<LatticeColorMatrix>& p) const
   {
-    S_g.getGaugeBC().zero(p);
+    S_g->getGaugeBC().zero(p);
   }
 
   virtual void dsdq(const AbsFieldState<multi1d<LatticeColorMatrix>,
@@ -52,8 +52,8 @@ public:
     // Call CreateState to return a copy with BC's applied
 
     // Call dsdu from the gauge action
-    Handle< const ConnectState> g_state(S_g.createState(s.getQ()));
-    S_g.dsdu(F, g_state);
+    Handle< const ConnectState> g_state(S_g->createState(s.getQ()));
+    S_g->dsdu(F, g_state);
 
     // ConnectState now gets freed
   }
@@ -98,8 +98,8 @@ public:
     // There are too many S's in this line.
 
     // The S() function of S_g applies boundaries
-    Handle< const ConnectState> g_state(S_g.createState(s.getQ()));
-    Double PE = S_g.S(g_state);
+    Handle< const ConnectState> g_state(S_g->createState(s.getQ()));
+    Double PE = S_g->S(g_state);
     return PE;
   }
 
@@ -108,6 +108,6 @@ private:
   // Make the constructor inaccessible
   ExactPureGaugeHamiltonian() {};
 
-  GA S_g;          // Copy from input
+  Handle < GaugeAction> S_g;          // Copy from input
 };
 #endif

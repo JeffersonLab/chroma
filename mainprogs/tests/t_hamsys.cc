@@ -53,8 +53,8 @@ int main(int argc, char *argv[])
   WilsonGaugeAct S_pg_MD(gbc, betaMD);
 
   // Generate Hamiltonians 
-  ExactPureGaugeHamiltonian<WilsonGaugeAct> H_MC(S_pg_MC);
-  ExactPureGaugeHamiltonian<WilsonGaugeAct> H_MD(S_pg_MD);
+  ExactPureGaugeHamiltonian H_MC(S_pg_MC);
+  ExactPureGaugeHamiltonian H_MD(S_pg_MD);
 
   // Generate the symplectic updates with respect to H_MD
   PureGaugeSympUpdates leaps(H_MD);

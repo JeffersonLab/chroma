@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.159 2004-08-19 16:32:03 bjoo Exp $
+# $Id: Makefile.am,v 1.160 2004-08-20 13:45:35 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -88,6 +88,7 @@ nobase_include_HEADERS = \
         io/milc_io.h io/param_io.h io/qprop_io.h io/readmilc.h \
 	io/readszin.h io/szin_io.h io/writemilc.h io/writeszin.h \
 	io/bc_io.h io/gaugebc_io.h  io/gaugeact_io.h io/wilson_gaugeact_io.h \
+	io/mc_io.h io/md_io.h io/pg_hmc_io.h \
 	meas/eig/eig.h meas/eig/gramschm.h meas/eig/gramschm_array.h \
 	meas/eig/ritz.h meas/eig/ritz_array.h meas/eig/sn_jacob.h \
 	meas/eig/sn_jacob_array.h \
@@ -289,7 +290,8 @@ libchroma_a_SOURCES = gauge_startup.cc gaugebc_utils.cc rgauge.cc taproj.cc \
 	       inv_rel_gmresr_cg.cc inv_gmresr_cg_array.cc \
 	       inv_minres_array.cc wilson_gaugeact.cc \
                su3over.cc su3hb.cc \
-	       bc_io.cc gaugebc_io.cc gaugeact_io.cc wilson_gaugeact_io.cc
+	       bc_io.cc gaugebc_io.cc gaugeact_io.cc wilson_gaugeact_io.cc \
+	       mc_io.cc md_io.cc pg_hmc_io.cc
 
 #
 # Object files to add if building the Wilson Builds...

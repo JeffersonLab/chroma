@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.222 2004-08-19 16:32:03 bjoo Exp $
+# $Id: Makefile.in,v 1.223 2004-08-20 13:45:35 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -335,6 +335,7 @@ nobase_include_HEADERS = \
         io/milc_io.h io/param_io.h io/qprop_io.h io/readmilc.h \
 	io/readszin.h io/szin_io.h io/writemilc.h io/writeszin.h \
 	io/bc_io.h io/gaugebc_io.h  io/gaugeact_io.h io/wilson_gaugeact_io.h \
+	io/mc_io.h io/md_io.h io/pg_hmc_io.h \
 	meas/eig/eig.h meas/eig/gramschm.h meas/eig/gramschm_array.h \
 	meas/eig/ritz.h meas/eig/ritz_array.h meas/eig/sn_jacob.h \
 	meas/eig/sn_jacob_array.h \
@@ -426,7 +427,8 @@ libchroma_a_SOURCES = gauge_startup.cc gaugebc_utils.cc rgauge.cc taproj.cc \
 	       inv_rel_gmresr_cg.cc inv_gmresr_cg_array.cc \
 	       inv_minres_array.cc wilson_gaugeact.cc \
                su3over.cc su3hb.cc \
-	       bc_io.cc gaugebc_io.cc gaugeact_io.cc wilson_gaugeact_io.cc\
+	       bc_io.cc gaugebc_io.cc gaugeact_io.cc wilson_gaugeact_io.cc \
+	       mc_io.cc md_io.cc pg_hmc_io.cc\
 $(am__append_5) $(am__append_7) $(am__append_9) $(am__append_11) $(am__append_12)
 subdir = lib
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
@@ -455,11 +457,12 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc gaugebc_utils.cc \
 	invbicgstab.cc invbicgstab_array.cc inv_rel_gmresr_sumr.cc \
 	inv_rel_gmresr_cg.cc inv_gmresr_cg_array.cc inv_minres_array.cc \
 	wilson_gaugeact.cc su3over.cc su3hb.cc bc_io.cc gaugebc_io.cc \
-	gaugeact_io.cc wilson_gaugeact_io.cc baryon_w.cc barhqlq_w.cc \
-	mesons_w.cc hybmeson_w.cc loops_w.cc tdiractodr.cc diractodr.cc \
-	paulitodr.cc gammasgn_w.cc curcor2_w.cc lwldslash_w.cc \
-	formfac_w.cc mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
-	barcomp_io.cc barcomp_w.cc walfil_w.cc overlap_state_info.cc \
+	gaugeact_io.cc wilson_gaugeact_io.cc mc_io.cc md_io.cc \
+	pg_hmc_io.cc baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
+	loops_w.cc tdiractodr.cc diractodr.cc paulitodr.cc \
+	gammasgn_w.cc curcor2_w.cc lwldslash_w.cc formfac_w.cc \
+	mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc barcomp_io.cc \
+	barcomp_w.cc walfil_w.cc overlap_state_info.cc \
 	zolotarev4d_fermact_paramio_w.cc \
 	zolotarev5d_fermact_paramio_w.cc fermact_qprop.cc \
 	prec_fermact_qprop.cc unprec_wilson_fermact_w.cc \
@@ -624,7 +627,8 @@ am_libchroma_a_OBJECTS = gauge_startup.$(OBJEXT) gaugebc_utils.$(OBJEXT) \
 	inv_minres_array.$(OBJEXT) wilson_gaugeact.$(OBJEXT) \
 	su3over.$(OBJEXT) su3hb.$(OBJEXT) bc_io.$(OBJEXT) \
 	gaugebc_io.$(OBJEXT) gaugeact_io.$(OBJEXT) \
-	wilson_gaugeact_io.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
+	wilson_gaugeact_io.$(OBJEXT) mc_io.$(OBJEXT) md_io.$(OBJEXT) \
+	pg_hmc_io.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
 	$(am__objects_3) $(am__objects_4) $(am__objects_5)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS)
 
@@ -693,8 +697,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/lovlapms_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/lwldslash_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/lwldslash_w_pab.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/lwldslash_w_sse.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/mesons_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/lwldslash_w_sse.Po ./$(DEPDIR)/mc_io.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/md_io.Po ./$(DEPDIR)/mesons_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/mesonseqsrc_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/mesphas_follana_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/mesphas_s.Po ./$(DEPDIR)/mesplq.Po \
@@ -706,7 +710,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/overlap_state_info.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/overlapbu_linop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/p_src_w.Po ./$(DEPDIR)/param_io.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/paulitodr.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/paulitodr.Po ./$(DEPDIR)/pg_hmc_io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/pions_follana_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/polar_dec.Po ./$(DEPDIR)/polylp.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/prec_dwf_fermact_array_sse_w.Po \
@@ -940,6 +944,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_w_pab.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_w_sse.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mc_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/md_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesons_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesonseqsrc_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesphas_follana_s.Po@am__quote@
@@ -958,6 +964,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/p_src_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/param_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paulitodr.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pg_hmc_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pions_follana_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/polar_dec.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/polylp.Po@am__quote@
