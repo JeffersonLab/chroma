@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.127 2004-04-26 16:18:42 mcneile Exp $
+# $Id: Makefile.am,v 1.128 2004-04-27 20:31:34 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -87,7 +87,6 @@ nobase_include_HEADERS = \
 	meas/meas.h meas/pbp/pbp.h meas/schrfun/schrfun.h \
 	meas/smear/ape_smear.h meas/smear/displacement.h \
 	meas/smear/fuzz_smear.h \
-	fuzwilp.cc wilslp.cc\
 	meas/smear/gaus_smear.h meas/smear/hyp_smear.h \
 	meas/smear/laplacian.h meas/smear/smear.h meas/smear/wvfkind.h \
 	meas/sources/sources.h meas/sources/srcsnktype.h \
@@ -223,7 +222,9 @@ libchroma_a_SOURCES = gauge_startup.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
 	       gramschm.cc \
 	       gramschm_array.cc ritz.cc ritz_array.cc sn_jacob.cc \
 	       sn_jacob_array.cc eig_spec.cc eig_spec_array.cc \
-               proginfo.cc printgeom.cc
+               proginfo.cc printgeom.cc fuzwilp.cc 
+
+# wilslp.cc
 
 #
 # Object files to add if building the Wilson Builds...
