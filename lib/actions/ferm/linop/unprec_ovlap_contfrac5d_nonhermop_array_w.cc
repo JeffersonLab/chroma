@@ -1,4 +1,4 @@
-/* $Id: zolotarev5d_nonhermop_array_w.cc,v 1.4 2004-07-28 02:38:02 edwards Exp $
+/* $Id: unprec_ovlap_contfrac5d_nonhermop_array_w.cc,v 1.1 2004-09-29 21:48:34 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
  */
@@ -6,7 +6,7 @@
 #include "chromabase.h"
 #include "linearop.h"
 
-#include "actions/ferm/linop/zolotarev5d_nonhermop_array_w.h"
+#include "actions/ferm/linop/unprec_ovlap_contfrac5d_nonhermop_array_w.h"
 
 
 //! Apply the operator onto a source vector
@@ -17,7 +17,7 @@
  * \param isign   Flag ( PLUS | MINUS )   	       (Read)
  */
 void
-Zolotarev5DNonHermOpArray::operator() (multi1d<LatticeFermion>& chi,
+UnprecOvlapContFrac5DNonHermOpArray::operator() (multi1d<LatticeFermion>& chi,
 				   const multi1d<LatticeFermion>& psi, 
 				   enum PlusMinus isign) const
 {

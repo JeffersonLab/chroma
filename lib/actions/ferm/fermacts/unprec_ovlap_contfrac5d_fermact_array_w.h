@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovlap_contfrac5d_fermact_array_w.h,v 1.1 2004-09-27 14:58:43 bjoo Exp $
+// $Id: unprec_ovlap_contfrac5d_fermact_array_w.h,v 1.2 2004-09-29 21:48:34 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -17,7 +17,7 @@ using namespace QDP;
 namespace Chroma
 {
   //! Name and registration
-  namespace UnprecOvlapContFrac5DFermActEnv
+  namespace UnprecOvlapContFrac5DFermActArrayEnv
   {
     extern const std::string name;
     extern const bool registered;
@@ -35,7 +35,6 @@ namespace Chroma
   
     
     Real Mass;     //!< Fermion Mass
-    Real AuxMass;  //!< Auxiliary action mass: Filled in when the FermAct is processed
     int RatPolyDeg; //!<  Degree of the Rational Poly
     CoeffType approximation_type;  //!< ZOLOTAREV | TANH | Other approximation coeffs
     std::string AuxFermAct;        //!<  The auxiliary ferm act
@@ -65,31 +64,15 @@ namespace Chroma
   {
   public:
 
-    // Default construction
-    /*!
-    UnprecOvlapContFrac5DFermActArray(Handle< FermBC< multi1d< LatticeFermion> > > fbc_, 
-			    Handle<UnprecWilsonTypeFermAct<LatticeFermion> > S_aux_,
-			    Real& Mass_,
-			    int RatPolyDeg_,
-			    XMLWriter& writer_) :
-      fbc(fbc_), S_aux(S_aux_), Mass(Mass_), RatPolyDeg(RatPolyDeg_), writer(writer_)  {
-    
-      if ( RatPolyDeg_ % 2 == 0 ) { 
-	QDP_error_exit("For Now (and possibly forever), 5D Operators can only be constructed with ODD approximation order. You gave an even one: =%d\n", RatPolyDeg_);
-      }
-      N5 = RatPolyDeg_;
-    }
-    */
-
     // Construct the action out of a parameter structure
-    UnprecOvlapContFrac5DFermActArray(Handle< FermBC< multi1d< LatticeFermion> > > fbc_a_,
-				const UnprecOvlapContFrac5DFermActParams& param,
-				XMLWriter& writer_);
+    UnprecOvlapContFrac5DFermActArray(
+			     Handle< FermBC< multi1d< LatticeFermion> > > fbc_,
+			     const UnprecOvlapContFrac5DFermActParams& param);
   
 
     //! Copy constructor
     UnprecOvlapContFrac5DFermActArray(const UnprecOvlapContFrac5DFermActArray& a) : 
-      fbc(a.fbc), S_aux(a.S_aux), params(a.params), N5(a.N5) {};
+      fbc(a.fbc), S_aux(a.S_aux), params(a.params), N5(a.N5), isLastZeroP(a.isLastZeroP)  {};
 
     //! Assignment
     /* Writer screws this up -- I might get rid of that 
@@ -109,7 +92,7 @@ namespace Chroma
     int size(void) const { return N5; }
 
     //! Return the quark mass
-    Real quark_mass() const {return Mass;}
+    Real quark_mass() const {return params.Mass;}
 
     //! Produce a linear operator for this action
     const LinearOperator< multi1d<LatticeFermion> >* linOp(Handle<const ConnectState> state) const;
@@ -152,38 +135,45 @@ namespace Chroma
 
     // Create state functions
 
+    //! Create OverlapConnectState from XML
+    const OverlapConnectState* 
+    createState(const multi1d<LatticeColorMatrix>& u, 
+		XMLReader& state_info_xml,
+		const string& state_info_path) const;
+    
     //! Given links, create the state needed for the linear operators
     /*! Override the parent */
-    const OverlapConnectState<LatticeFermion>*
+    
+    //! Create a ConnectState with just the gauge fields
+    const OverlapConnectState*
     createState(const multi1d<LatticeColorMatrix>& u_) const ;
 
-
-    // Just gauge field and epsilon -- Approx Max is 2*Nd 
-    const OverlapConnectState<LatticeFermion>*
+    //! Create a ConnectState with just the gauge fields, and a lower
+    //!  approximation bound
+    const OverlapConnectState*
     createState(const multi1d<LatticeColorMatrix>& u_, 
 		const Real& approxMin_) const ;
  
-    // Gauge field, epsilon, approx min, approx max
-    const OverlapConnectState<LatticeFermion>*
+    
+    //! Create a connect State with just approximation range bounds
+    const OverlapConnectState*
     createState(const multi1d<LatticeColorMatrix>& u_, 
 		const Real& approxMin_, 
 		const Real& approxMax_) const;
 
 
-    // Gauge field, e-values, e-vectors
-    const OverlapConnectState<LatticeFermion>*
+    //! Create OverlapConnectState with eigenvalues/vectors 
+    const OverlapConnectState*
     createState(const multi1d<LatticeColorMatrix>& u_,
 		const multi1d<Real>& lambda_lo_,
 		const multi1d<LatticeFermion>& evecs_lo_, 
 		const Real& lambda_hi_) const;
 
 
-    // Gauge field and whatever (min/max, e-vectors)
-    const OverlapConnectState<LatticeFermion>*
+    //! Create from OverlapStateInfo Structure
+    const OverlapConnectState*
     createState(const multi1d<LatticeColorMatrix>& u_,
-		const OverlapStateInfo& state_info,
-		XMLWriter& xml_out,
-		Real wilsonMass=16) const;
+		const OverlapStateInfo& state_info) const;
 
 
   protected:
@@ -193,7 +183,7 @@ namespace Chroma
 	      multi1d<Real>& beta,
 	      int& NEig,
 	      multi1d<Real>& EigValFunc,
-	      const OverlapConnectState<LatticeFermion>& state) const;
+	      const OverlapConnectState& state) const;
   private:
     // Hide partial constructor
     UnprecOvlapContFrac5DFermActArray();
@@ -203,6 +193,7 @@ namespace Chroma
     Handle< UnprecWilsonTypeFermAct<LatticeFermion> > S_aux;
     UnprecOvlapContFrac5DFermActParams params;
     int  N5;
+    bool isLastZeroP;
   };
 
 }

@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.174 2004-09-28 17:39:55 bjoo Exp $
+# $Id: Makefile.am,v 1.175 2004-09-29 21:48:33 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -187,8 +187,8 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/unprec_ovlap_contfrac5d_fermact_array_w.h \
 	actions/ferm/invert/inv_borici_w.h \
 	actions/ferm/linop/lgherm_w.h \
-	actions/ferm/linop/zolotarev5d_linop_array_w.h \
-	actions/ferm/linop/zolotarev5d_nonhermop_array_w.h \
+	actions/ferm/linop/unprec_ovlap_contfrac5d_linop_array_w.h \
+	actions/ferm/linop/unprec_ovlap_contfrac5d_nonhermop_array_w.h \
 	actions/ferm/linop/dslash_w.h actions/ferm/linop/dwffld_w.h \
 	actions/ferm/linop/linop_w.h \
 	actions/ferm/linop/lmpsim_w.h actions/ferm/linop/lovddag_w.h \
@@ -365,15 +365,16 @@ libchroma_a_SOURCES += baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
 	      ischiral_w.cc lovddag_w.cc \
 	      lovlap_double_pass_w.cc lovddag_double_pass_w.cc \
 	      lg5eps_w.cc lg5eps_double_pass_w.cc \
-	      zolotarev5d_linop_array_w.cc \
-	      zolotarev5d_nonhermop_array_w.cc wall_qprop_w.cc \
+	      unprec_ovlap_contfrac5d_linop_array_w.cc \
+	      unprec_ovlap_contfrac5d_nonhermop_array_w.cc wall_qprop_w.cc \
 	      prec_contfrac_linop_array_w.cc \
               wallff_w.cc wallrhoff_w.cc wallrhopiff_w.cc \
               wallpionff_w.cc wallnuclff_w.cc \
               walldeltaff_w.cc walldeltapff_w.cc \
 	      inv_borici_w.cc \
 	      ferm_refresh.cc mom_refresh.cc global_metropolis_accrej.cc \
-	      ovlap_partfrac4d_fermact_w.cc overlap_state_info.cc
+	      ovlap_partfrac4d_fermact_w.cc overlap_state_info.cc \
+	      unprec_ovlap_contfrac5d_fermact_array_w.cc
 
 # These need to be reworked for new instantiation 
 #	zolotarev5d_fermact_array_w.cc 

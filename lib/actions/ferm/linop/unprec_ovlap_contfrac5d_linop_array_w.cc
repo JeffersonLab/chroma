@@ -1,4 +1,4 @@
-/* $Id: zolotarev5d_linop_array_w.cc,v 1.4 2004-07-28 03:47:27 edwards Exp $
+/* $Id: unprec_ovlap_contfrac5d_linop_array_w.cc,v 1.1 2004-09-29 21:48:34 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
  */
@@ -6,7 +6,7 @@
 #include "chromabase.h"
 #include "linearop.h"
 
-#include "actions/ferm/linop/zolotarev5d_linop_array_w.h"
+#include "actions/ferm/linop/unprec_ovlap_contfrac5d_linop_array_w.h"
 
 
 //! Apply the operator onto a source vector
@@ -17,17 +17,18 @@
  * \param isign   Flag ( PLUS | MINUS )   	       (Read)
  */
 void
-Zolotarev5DLinOpArray::operator() (multi1d<LatticeFermion>& chi,
+UnprecOvlapContFrac5DLinOpArray::operator() (multi1d<LatticeFermion>& chi,
 				   const multi1d<LatticeFermion>& psi, 
 				   enum PlusMinus isign) const
 {
   START_CODE();
 
+
   int G5 = Ns*Ns - 1;
 
   // This is the upper limit for the index of the 5th dimension, i.e.
   //  it runs from 0 to TwoN. (altogether TwoN + 1 numbers. This
-  // makes sense since N5 is meant to be odd)
+  // makes sense since N5 is ALWAYS odd. )
   int TwoN = N5 - 1;
 
   // This is our scaling: we evaluate 
@@ -36,14 +37,19 @@ Zolotarev5DLinOpArray::operator() (multi1d<LatticeFermion>& chi,
   Real mass = ( Real(1) + m_q ) / (Real(1) - m_q);
 
   // The sign of the diagonal terms.
-  int Hsign;
-  
+  // We flip Hsign BEFORE using it 
+  // This makes the first element always have a PLUS sign
+  int Hsign=-1;
+
+  /* N5 is ALWAYS ODD hence the explicit setting above */
+  /*
   if( N5%2 == 0 ) {
     Hsign = 1;
   }
   else {
     Hsign = -1;
   }
+  */
 
   // Run through all the pseudofermion fields:
   //   chi(0) = beta(0)*H*psi(0) + alpha(0)*psi(1)
@@ -115,7 +121,7 @@ Zolotarev5DLinOpArray::operator() (multi1d<LatticeFermion>& chi,
   //   caluclated only if betaa_{N} != 0 */
 
 
-  if( toBool( beta[TwoN] != Real(0) ) ) {
+  if( isLastZeroP ) {
     
     // Complete psi_proj
     psi_proj += psi[TwoN];
@@ -126,6 +132,7 @@ Zolotarev5DLinOpArray::operator() (multi1d<LatticeFermion>& chi,
     chi[TwoN] += pmscale*tmp2;
 
   }
+
 
   END_CODE();
 }

@@ -1,11 +1,11 @@
 // -*- C++ -*-
-// $Id: zolotarev5d_nonhermop_array_w.h,v 1.1 2004-05-18 12:40:15 bjoo Exp $
+// $Id: unprec_ovlap_contfrac5d_nonhermop_array_w.h,v 1.1 2004-09-29 21:48:34 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
  */
 
-#ifndef __zolotarev5d_nonhermop_array_w_h__
-#define __zolotarev5d_nonhermop_array_w_h__
+#ifndef __unprec_ovlap_contfrac5d_nonhermop_array_w_h__
+#define __unprec_ovlap_contfrac5d_nonhermop_array_w_h__
 
 #include "linearop.h"
 #include "fermact.h"
@@ -24,12 +24,12 @@ using namespace QDP;
  * This operator implements  hep-lat/0005004
  */
 
-class Zolotarev5DNonHermOpArray : public LinearOperator< multi1d<LatticeFermion> >
+class UnprecOvlapContFrac5DNonHermOpArray : public LinearOperator< multi1d<LatticeFermion> >
 {
 public:
 
   //! Full constructor
-  Zolotarev5DNonHermOpArray(const UnprecWilsonTypeFermAct<LatticeFermion>& S_aux,
+  UnprecOvlapContFrac5DNonHermOpArray(const UnprecWilsonTypeFermAct<LatticeFermion>& S_aux,
 			    Handle<const ConnectState> state,
 			    const Real& _m_q,
 			    int _N5,
@@ -47,7 +47,7 @@ public:
   int size() const {return N5;}
 
   //! Destructor is automatic
-  ~Zolotarev5DNonHermOpArray() {}
+  ~UnprecOvlapContFrac5DNonHermOpArray() {}
 
   //! Only defined on the entire lattice
   const OrderedSubset& subset() const {return all;}
