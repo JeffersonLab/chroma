@@ -1,10 +1,10 @@
-// $Id: diractodr.cc,v 1.2 2004-05-23 21:43:40 edwards Exp $
+// $Id: diractodr.cc,v 1.3 2004-05-25 16:17:19 edwards Exp $
 /*! \file
  *  \brief Basis rotation matrix from Dirac to Degrand-Rossi (and reverse)
  */
 
 #include "chromabase.h"
-#include "util/ferm/transf.h"
+#include "util/ferm/diractodr.h"
 
 using namespace QDP;
 
@@ -35,6 +35,7 @@ SpinMatrixD DiracToDRMat()
    *
    *   U = (1/sqrt(2)) | i*sigma_2    i*sigma_2 |
    *                   | i*sigma_2   -i*sigma_2 |
+   *
    *     = (1/sqrt(2)) |   0   1        0   1   |
    *                   |  -1   0       -1   0   |
    *                   |   0   1        0  -1   |
