@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: rot_colvec.h,v 1.1 2003-12-06 20:56:56 edwards Exp $
+// $Id: rot_colvec.h,v 1.2 2003-12-06 21:59:22 edwards Exp $
 /*! \file
  *  \brief Rotate a color vector
  */
@@ -22,8 +22,8 @@
  */
 
 void rot_colvec(LatticeColorMatrix& g, 
-		const LaticeColorVector& psi,
-		LaticeColorVector& chi,
+		const LatticeColorVector& psi,
+		LatticeColorVector& chi,
 		int s_index);
 
 #endif
