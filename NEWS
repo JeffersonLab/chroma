@@ -1,3 +1,7 @@
+04/01/2004 -- Robert Edwards
+
+	Version 1.5.1. Added non-relativistic support to seqprop.
+
 02/22/2004 -- Robert Edwards
 
 	Version 1.5.0. Major change in propagator model in main programs. ONLY
@@ -6,7 +10,6 @@
         (SciDAC format). The XML part is used in subsequent calculations, thus removing
         potentially erroneous use of input params in calcs.
         All test files changed to match
-
 
 02/22/2004 -- Robert Edwards
 
