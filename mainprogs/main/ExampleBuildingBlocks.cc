@@ -45,7 +45,7 @@ using namespace QDP;
 //###################################################################################//
 
 static const char* const CVSExampleBuildingBlocks_hh =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/mainprogs/main/ExampleBuildingBlocks.cc,v 1.15 2004-07-28 03:08:04 edwards Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/mainprogs/main/ExampleBuildingBlocks.cc,v 1.16 2004-11-06 20:04:09 edwards Exp $";
 
 //###################################################################################//
 // Accept All Link Patterns                                                          //
@@ -79,7 +79,7 @@ int main( int argc, char** argv )
   // Check Arguments                                                                 //
   //#################################################################################//
 
-  if( argc != 20 )
+  if( argc != 21 )
   {
     QDPIO::cout << ""                                                                                                  << endl;
     QDPIO::cout << "Arguments:"                                                                                        << endl;
@@ -103,6 +103,7 @@ int main( int argc, char** argv )
     QDPIO::cout << "(17) Proton U Building Blocks            - Output File Name Pattern (\"NULL\" if u not available)" << endl;
     QDPIO::cout << "(18) Proton D Building Blocks            - Output File Name Pattern (\"NULL\" if d not available)" << endl;
     QDPIO::cout << "(19) Text Output File Name               - Output File Name"                                       << endl;
+    QDPIO::cout << "(20) XML Output File Name                - XML Output File Name"                                   << endl;
     QDPIO::cout << ""                                                                                                  << endl;
 
     exit( 1 );
@@ -131,6 +132,7 @@ int main( int argc, char** argv )
   const char* const UBBFileNamePattern   = argv[17];
   const char* const DBBFileNamePattern   = argv[18];
   const char* const OutFileName          = argv[19];
+  const char* const XMLFileName          = argv[20];
 
   //#################################################################################//
   // Echo Arguments                                                                  //
@@ -159,6 +161,7 @@ int main( int argc, char** argv )
   Out << "(17) Proton U Building Blocks            = " << UBBFileNamePattern << "\n";
   Out << "(18) Proton D Building Blocks            = " << DBBFileNamePattern << "\n";
   Out << "(19) Text Output File Name               = " << OutFileName        << "\n";
+  Out << "(20) XML Output File Name                = " << XMLFileName        << "\n";
   Out <<                                                                        "\n";
   Out.flush();
 
@@ -183,6 +186,39 @@ int main( int argc, char** argv )
 
   Layout::setLattSize( N );
   Layout::create();
+
+  //#################################################################################//
+  // XML output
+  //#################################################################################//
+
+  // capture XML output
+  XMLFileWriter Xml( XMLFileName );
+  push(Xml, "ExampleBuildingBlocks");
+
+  proginfo(Xml);    // Print out basic program info
+
+  push(Xml, "Input");
+  write(Xml, "N", N);
+  write(Xml, "GaugeFieldFileName", GaugeFieldFileName);
+  write(Xml, "GaugeFieldFormat", GaugeFieldFormat);
+  write(Xml, "FrwdPropFileName", FrwdPropFileName);
+  write(Xml, "FrwdPropFormat", FrwdPropFormat);
+  write(Xml, "BkwdUPropFileName", BkwdUPropFileName);
+  write(Xml, "BkwdUPropFormat", BkwdUPropFormat);
+  write(Xml, "BkwdUPropG5Format", BkwdUPropG5Format);
+  write(Xml, "BkwdDPropFileName", BkwdDPropFileName);
+  write(Xml, "BkwdDPropFormat", BkwdDPropFormat);
+  write(Xml, "MaxNLinks", MaxNLinks);
+  write(Xml, "MaxQSquared", MaxQSquared);
+  write(Xml, "UBBFileNamePattern", UBBFileNamePattern);
+  write(Xml, "DBBFileNamePattern", DBBFileNamePattern);
+  write(Xml, "OutFileName", OutFileName);
+  write(Xml, "XMLFileName", XMLFileName);
+  pop(Xml);
+
+  push(Xml, "Output_version");
+  write(Xml, "out_version", 1);
+  pop(Xml);
 
   //###############################################################################//
   // Read Gauge Field                                                              //
@@ -214,6 +250,9 @@ int main( int argc, char** argv )
   Out << "average time-like plaquette  = " << ave_timelike_plaq  << "\n";
   Out << "average link trace           = " << ave_link_trace     << "\n";
 
+  // Write out the config header
+  write(Xml, "Config_info", GaugeFieldXML);
+
   //#################################################################################//
   // Read Forward Propagator                                                         //
   //#################################################################################//
@@ -241,6 +280,12 @@ int main( int argc, char** argv )
 
     Out << "forward propagator check = " << FrwdPropCheck[0] << "\n";  Out.flush();
   }
+
+  // Write out the forward propagator header
+  write(Xml, "FrwdPropXML", FrwdPropXML);
+  write(Xml, "FrwdPropRecordXML", FrwdPropRecordXML);
+
+  Xml.flush();
 
   //#################################################################################//
   // Read Backward (or Sequential) U Propagator                                      //
@@ -272,6 +317,7 @@ int main( int argc, char** argv )
   }
   Out << "finished reading backward u propagator " << BkwdUPropFileName << " ... " << "\n";  Out.flush();
 
+  if ( HasU == 1 )
   {
     SftMom phases( 0, true, Nd-1 );
 
@@ -279,6 +325,10 @@ int main( int argc, char** argv )
 
     Out << "backward u propagator check = " << BkwdUPropCheck[0] << "\n";  Out.flush();
   }
+
+  // Write out the forward propagator header
+  write(Xml, "BkwdUPropXML", BkwdUPropXML);
+  write(Xml, "BkwdUPropRecordXML", BkwdUPropRecordXML);
 
   //#################################################################################//
   // Read Backward (or Sequential) D Propagator                                      //
@@ -307,7 +357,8 @@ int main( int argc, char** argv )
     NF ++;
   }
   Out << "finished reading backward d propagator " << BkwdDPropFileName << " ... " << "\n";  Out.flush();
-
+ 
+  if ( HasD == 1 )
   {
     SftMom phases( 0, true, Nd-1 );
 
@@ -315,6 +366,10 @@ int main( int argc, char** argv )
 
     Out << "backward d propagator check = " << BkwdDPropCheck[0] << "\n";  Out.flush();
   }
+
+  // Write out the forward propagator header
+  write(Xml, "BkwdDPropXML", BkwdDPropXML);
+  write(Xml, "BkwdDPropRecordXML", BkwdDPropRecordXML);
 
   //#################################################################################//
   // Basic Information                                                               //
@@ -487,6 +542,9 @@ int main( int argc, char** argv )
   delete B;
   delete F;
   delete U;
+
+  pop(Xml);
+  Xml.close();
 
   Out << "\n" << "FINISHED" << "\n" << "\n";
   Out.close();
