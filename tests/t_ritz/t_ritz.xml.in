@@ -2,7 +2,7 @@
 <params>
   <!-- Lattice Dimensions etc -->
   <lattice>
-    <nrow>4 4 4 8</nrow>
+    <nrow>4 4 4 4</nrow>
     <boundary>1 1 1 -1</boundary>
   </lattice>
 
@@ -13,20 +13,19 @@
 
   <!-- Start up config details -->
   <Cfg>
-     <!-- This will probably soon be standardised. 2 means from file  -->
-     <startType>2</startType>
-     <gaugeFilename>../test_purgaug.cfg1</gaugeFilename>
-
-     <!-- Format = 0 means SZIN format -->
-     <gaugeFileFormat>0</gaugeFileFormat>
+    <cfg_type>SCIDAC</cfg_type>
+    <cfg_file>2flav_cfg_200.lime</cfg_file>
   </Cfg>
-  <quarkMass>-1.4</quarkMass>
+
+  <quarkMass>0.54545454545454545454</quarkMass>
   <eig>
      <RsdR>1.0e-5</RsdR>
-     <RsdA>1.0e-7</RsdA>
+     <RsdA>1.0e-6</RsdA>
      <RsdZero>5.0e-6</RsdZero>
      <ProjApsiP>false</ProjApsiP>    
-     <Neig>4</Neig>
+     <Nmin>5</Nmin>
+     <Nrenorm>10</Nrenorm>
+     <Neig>1</Neig>
      <MaxKS>100</MaxKS>
      <MaxCG>10000</MaxCG>
   </eig>
