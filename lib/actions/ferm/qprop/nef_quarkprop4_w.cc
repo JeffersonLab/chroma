@@ -1,6 +1,9 @@
-// $Id: nef_quarkprop4_w.cc,v 1.8 2004-10-29 13:36:13 bjoo Exp $
+// $Id: nef_quarkprop4_w.cc,v 1.9 2004-11-20 21:16:41 edwards Exp $
 // $Log: nef_quarkprop4_w.cc,v $
-// Revision 1.8  2004-10-29 13:36:13  bjoo
+// Revision 1.9  2004-11-20 21:16:41  edwards
+// Tried to simplify number of include lines.
+//
+// Revision 1.8  2004/10/29 13:36:13  bjoo
 // Added generalised preconditioned nef operator, and a zolotarev facade to it. Can now do Chiu! Which is just as well because I am just about to go down with the flu
 //
 // Revision 1.7  2004/10/21 16:43:20  bjoo
@@ -32,9 +35,8 @@
 
 
 #include "chromabase.h"
-#include "fermact.h"
-#include "actions/ferm/qprop/dwf_quarkprop4_w.h"
-#include "actions/ferm/linop/dwffld_w.h"
+#include "actions/ferm/fermacts/fermacts.h"
+// #include "actions/ferm/linop/dwffld_w.h"
 #include "util/ferm/transf.h"
 #include "util/ft/sftmom.h"
 
