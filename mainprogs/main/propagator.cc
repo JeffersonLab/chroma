@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.4 2003-04-04 05:30:28 edwards Exp $
+// $Id: propagator.cc,v 1.5 2003-04-04 18:09:06 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -11,6 +11,11 @@
 #include "chroma.h"
 
 using namespace QDP;
+
+//! Main propagator generation code
+/*! \defgroup propagator Main code for propagator generation
+ *  \ingroup main
+ */
 
 int main(int argc, char **argv)
 {
