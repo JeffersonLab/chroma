@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gauge.h,v 1.12 2004-05-06 16:48:22 bjoo Exp $
+// $Id: gauge.h,v 1.13 2004-07-23 15:20:50 bjoo Exp $
 
 /*! \file
  * \brief Include all gauge utility routines
@@ -18,6 +18,8 @@
 
 #include "gauge_startup.h"
 #include "expm12.h"
+#include "expsu3.h"
+#include "expmat.h"
 #include "hotst.h"
 #include "reunit.h"
 #include "unit_check.h"

@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
   // Energy conservation
   // Do trajectories of length 1, changing dtau from 0.01 to 0.2
   for(Real dtau=0.01; toBool(dtau < 0.2); dtau +=Real(0.01)) {
-    Real tau = Real(1);;
+    Real tau = Real(1);
     PureGaugePQPLeapFrog lf(leaps, dtau, tau);
     PureGaugeFieldState old_state(p, u);
     PureGaugeFieldState working_state(p, u);
@@ -129,19 +129,21 @@ int main(int argc, char *argv[])
   
 
   // Step Sizes
-  Real tau = 1;
-  Real dt = 0.1;
+  Real tau = Real(1);
+  Real dt = Real(0.1);
   PureGaugePQPLeapFrog leapfrog(leaps, dt, tau);
-
+  
 
   // Create the HMC 
   PureGaugeHMCTraj HMC(H_MC, leapfrog);
-
+  
   XMLFileWriter monitorHMC("HMC");
   push(monitorHMC, "HMCTest");
   PureGaugeFieldState mc_state(p, u);
+ 
 
-  for(int i=0; i < 1000; i++) { 
+
+  for(int i=0; i < 100000; i++) { 
 
     // Do trajectory
     HMC(mc_state, true, monitorHMC);

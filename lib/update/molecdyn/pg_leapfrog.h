@@ -58,12 +58,15 @@ class PureGaugePQPLeapFrog : public AbsHybInt< multi1d<LatticeColorMatrix>,
     }
   }
 
+ 
   // This is the dumb one with no monitoring...
   // One can override...
   virtual void operator()(AbsFieldState<multi1d<LatticeColorMatrix>, 
 			                multi1d<LatticeColorMatrix> > &s,
 			  XMLWriter& mon_traj) const
   {
+
+
     const SymplecticUpdates<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& leaps = getSympUpdates();
     Real dt = getStepSize();
     Real dtby2 = dt / Real(2);
@@ -74,8 +77,10 @@ class PureGaugePQPLeapFrog : public AbsHybInt< multi1d<LatticeColorMatrix>,
     // Initialise endP to false
     bool endP =false;
 
+
     // Fist Leap P 
     leaps.leapP(s, dtby2);
+
     while(!endP) {
      
       // Then leap Q
@@ -90,7 +95,7 @@ class PureGaugePQPLeapFrog : public AbsHybInt< multi1d<LatticeColorMatrix>,
       // However if the time remaining is substantially less than dt
       // ie dtby2 is less than dt and is less than dt by any reasonable
       // epsilon then we finish
-      if( toBool( tau  <  t + dt  ) ) {
+      if( toBool( fabs(tau0 - t) <  dtby2  ) ) {
 	// Time left is less than dtby2
 	// Finish with a half P leap and signal end
 	leaps.leapP(s,dtby2);
@@ -104,10 +109,11 @@ class PureGaugePQPLeapFrog : public AbsHybInt< multi1d<LatticeColorMatrix>,
 
       }
     }
+
   }
 
 
-  PureGaugePQPLeapFrog(const PureGaugePQPLeapFrog& f) : symp_updates(f.symp_updates->clone()), delta_tau(f.delta_tau), tau(tau) {}
+  PureGaugePQPLeapFrog(const PureGaugePQPLeapFrog& f) : symp_updates(f.symp_updates->clone()), delta_tau(f.delta_tau), tau(f.tau) {}
   
   virtual PureGaugePQPLeapFrog* clone(void) const {
     return new PureGaugePQPLeapFrog(*this);
@@ -115,7 +121,7 @@ class PureGaugePQPLeapFrog : public AbsHybInt< multi1d<LatticeColorMatrix>,
 
 protected:
   Handle<SymplecticUpdates<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > symp_updates;
-  Real delta_tau;
-  Real tau;
+  const Real delta_tau;
+  const Real tau;
 };
 #endif

@@ -47,7 +47,7 @@ public:
 
   // Get traj length
   //  virtual Real getTrajLength(void) const = 0;
-  virtual int getTrajLength(void) const = 0;
+  virtual Real getTrajLength(void) const = 0;
   
 
 };

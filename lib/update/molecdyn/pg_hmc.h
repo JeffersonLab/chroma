@@ -4,7 +4,7 @@
 #include "update/field_state.h"
 #include "update/molecdyn/abs_hamiltonian.h"
 #include "update/molecdyn/abs_hyb_int.h"
-
+#include "update/molecdyn/abs_hmc.h" 
 
 class PureGaugeHMCTraj : 
   public HMCTraj< ExactAbsHamiltonian<multi1d<LatticeColorMatrix>,multi1d<LatticeColorMatrix> >, 

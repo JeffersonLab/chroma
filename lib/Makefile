@@ -14,7 +14,7 @@
 
 
 
-# $Id: Makefile,v 1.20 2004-07-09 09:50:56 bjoo Exp $
+# $Id: Makefile,v 1.21 2004-07-23 15:20:49 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -40,144 +40,144 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_triplet = i686-pc-linux-gnu
-#am__append_1 = \
-#	actions/ferm/fermacts/fermacts_w.h \
-#	actions/ferm/fermacts/overlap_fermact_base_w.h \
-#	actions/ferm/fermacts/prec_clover_fermact_w.h \
-#	actions/ferm/fermacts/prec_dwf_fermact_array_w.h \
-#	actions/ferm/fermacts/prec_ovdwf_fermact_array_w.h \
-#	actions/ferm/fermacts/prec_dwf_fermact_base_array_w.h \
-#	actions/ferm/fermacts/prec_wilson_fermact_w.h \
-#	actions/ferm/fermacts/prec_parwilson_fermact_w.h \
-#	actions/ferm/fermacts/unprec_clover_fermact_w.h \
-#	actions/ferm/fermacts/unprec_dwf_fermact_array_w.h \
-#	actions/ferm/fermacts/unprec_dwf_fermact_base_array_w.h \
-#	actions/ferm/fermacts/unprec_ovdwf_fermact_array_w.h \
-#	actions/ferm/fermacts/unprec_ovext_fermact_array_w.h \
-#	actions/ferm/fermacts/unprec_wilson_fermact_w.h \
-#	actions/ferm/fermacts/unprec_parwilson_fermact_w.h \
-#	actions/ferm/fermacts/zolotarev4d_fermact_w.h \
-#	actions/ferm/fermacts/zolotarev5d_fermact_array_w.h \
-#	actions/ferm/invert/inv_borici_w.h \
-#	actions/ferm/linop/lwldslash_w_sse.h \
-#	actions/ferm/linop/lwldslash_w_pab.h \
-#	actions/ferm/linop/lgherm_w.h \
-#	actions/ferm/linop/zolotarev5d_linop_array_w.h \
-#	actions/ferm/linop/zolotarev5d_nonhermop_array_w.h \
-#	actions/ferm/linop/dslash_w.h actions/ferm/linop/dwffld_w.h \
-#	actions/ferm/linop/linop_w.h \
-#	actions/ferm/linop/lmpsim_w.h actions/ferm/linop/lovddag_w.h \
-#	actions/ferm/linop/lovlapms_w.h \
-#	actions/ferm/linop/lovlap_double_pass_w.h \
-#	actions/ferm/linop/lovddag_double_pass_w.h \
-#	actions/ferm/linop/lg5eps_w.h \
-#	actions/ferm/linop/lg5eps_double_pass_w.h \
-#	actions/ferm/linop/lwldslash_w.h \
-#	actions/ferm/linop/overlapbu_linop_w.h \
-#	actions/ferm/linop/prec_dwf_linop_array_w.h \
-#	actions/ferm/linop/prec_ovdwf_linop_array_w.h \
-#	actions/ferm/linop/prec_wilson_linop_w.h \
-#	actions/ferm/linop/prec_parwilson_linop_w.h \
-#	actions/ferm/linop/unprec_dwf_linop_array_w.h \
-#	actions/ferm/linop/unprec_ovdwf_linop_array_w.h \
-#	actions/ferm/linop/unprec_ovext_linop_array_w.h \
-#	actions/ferm/linop/unprec_wilson_linop_w.h \
-#	actions/ferm/linop/unprec_parwilson_linop_w.h \
-#	actions/ferm/qprop/qprop_w.h \
-#	actions/ferm/qprop/dwf_quarkprop4_w.h \
-#	actions/ferm/qprop/quarkprop4_w.h \
-#	actions/ferm/qprop/quarkprop4_multi_w.h \
-#	actions/ferm/qprop/unprec_qprop_w.h \
-#	io/io_w.h io/barcomp_io.h io/kyuqprop_io.h \
-#        io/readszinferm_w.h io/readszinqprop_w.h \
-#	io/writeszinqprop_w.h \
-#        io/overlap_state_info.h io/zolotarev4d_fermact_paramio_w.h \
-#	io/zolotarev5d_fermact_paramio_w.h \
-#	meas/eig/eig_w.h meas/eig/ischiral_w.h \
-#	meas/hadron/barcomp_w.h \
-#	meas/hadron/barseqsrc_w.h \
-#	meas/hadron/barhqlq_w.h meas/hadron/baryon_w.h \
-#	meas/hadron/BuildingBlocks_w.h meas/hadron/curcor2_w.h \
-#	meas/hadron/DjDk_w.h meas/hadron/D_j_w.h meas/hadron/formfac_w.h \
-#	meas/hadron/hadron_w.h meas/hadron/hybmeson_w.h \
-#	meas/hadron/mesonseqsrc_w.h \
-#	meas/hadron/mesons_w.h meas/hadron/seqpiontest_w.h \
-#	meas/hadron/loops_w.h \
-#	meas/hadron/walfil_w.h meas/hadron/wall_qprop_w.h \
-#	meas/hadron/wallff_w.h \
-#	meas/hadron/walldeltaff_w.h meas/hadron/walldeltapff_w.h \
-#	meas/hadron/wallpionff_w.h meas/hadron/wallnuclff_w.h \
-#	meas/hadron/wallrhoff_w.h meas/hadron/wallrhopiff_w.h \
-#	meas/smear/sink_smear2_w.h meas/sources/d_src_w.h \
-#	meas/sources/p_src_w.h meas/sources/sources_w.h \
-#	util/ferm/ferm_w.h util/ferm/diractodr.h util/ferm/gammasgn_w.h \
-#	util/ferm/tdiractodr.h \
-#        util/ferm/paulitodr.h 
+am__append_1 = \
+	actions/ferm/fermacts/fermacts_w.h \
+	actions/ferm/fermacts/overlap_fermact_base_w.h \
+	actions/ferm/fermacts/prec_clover_fermact_w.h \
+	actions/ferm/fermacts/prec_dwf_fermact_array_w.h \
+	actions/ferm/fermacts/prec_ovdwf_fermact_array_w.h \
+	actions/ferm/fermacts/prec_dwf_fermact_base_array_w.h \
+	actions/ferm/fermacts/prec_wilson_fermact_w.h \
+	actions/ferm/fermacts/prec_parwilson_fermact_w.h \
+	actions/ferm/fermacts/unprec_clover_fermact_w.h \
+	actions/ferm/fermacts/unprec_dwf_fermact_array_w.h \
+	actions/ferm/fermacts/unprec_dwf_fermact_base_array_w.h \
+	actions/ferm/fermacts/unprec_ovdwf_fermact_array_w.h \
+	actions/ferm/fermacts/unprec_ovext_fermact_array_w.h \
+	actions/ferm/fermacts/unprec_wilson_fermact_w.h \
+	actions/ferm/fermacts/unprec_parwilson_fermact_w.h \
+	actions/ferm/fermacts/zolotarev4d_fermact_w.h \
+	actions/ferm/fermacts/zolotarev5d_fermact_array_w.h \
+	actions/ferm/invert/inv_borici_w.h \
+	actions/ferm/linop/lwldslash_w_sse.h \
+	actions/ferm/linop/lwldslash_w_pab.h \
+	actions/ferm/linop/lgherm_w.h \
+	actions/ferm/linop/zolotarev5d_linop_array_w.h \
+	actions/ferm/linop/zolotarev5d_nonhermop_array_w.h \
+	actions/ferm/linop/dslash_w.h actions/ferm/linop/dwffld_w.h \
+	actions/ferm/linop/linop_w.h \
+	actions/ferm/linop/lmpsim_w.h actions/ferm/linop/lovddag_w.h \
+	actions/ferm/linop/lovlapms_w.h \
+	actions/ferm/linop/lovlap_double_pass_w.h \
+	actions/ferm/linop/lovddag_double_pass_w.h \
+	actions/ferm/linop/lg5eps_w.h \
+	actions/ferm/linop/lg5eps_double_pass_w.h \
+	actions/ferm/linop/lwldslash_w.h \
+	actions/ferm/linop/overlapbu_linop_w.h \
+	actions/ferm/linop/prec_dwf_linop_array_w.h \
+	actions/ferm/linop/prec_ovdwf_linop_array_w.h \
+	actions/ferm/linop/prec_wilson_linop_w.h \
+	actions/ferm/linop/prec_parwilson_linop_w.h \
+	actions/ferm/linop/unprec_dwf_linop_array_w.h \
+	actions/ferm/linop/unprec_ovdwf_linop_array_w.h \
+	actions/ferm/linop/unprec_ovext_linop_array_w.h \
+	actions/ferm/linop/unprec_wilson_linop_w.h \
+	actions/ferm/linop/unprec_parwilson_linop_w.h \
+	actions/ferm/qprop/qprop_w.h \
+	actions/ferm/qprop/dwf_quarkprop4_w.h \
+	actions/ferm/qprop/quarkprop4_w.h \
+	actions/ferm/qprop/quarkprop4_multi_w.h \
+	actions/ferm/qprop/unprec_qprop_w.h \
+	io/io_w.h io/barcomp_io.h io/kyuqprop_io.h \
+        io/readszinferm_w.h io/readszinqprop_w.h \
+	io/writeszinqprop_w.h \
+        io/overlap_state_info.h io/zolotarev4d_fermact_paramio_w.h \
+	io/zolotarev5d_fermact_paramio_w.h \
+	meas/eig/eig_w.h meas/eig/ischiral_w.h \
+	meas/hadron/barcomp_w.h \
+	meas/hadron/barseqsrc_w.h \
+	meas/hadron/barhqlq_w.h meas/hadron/baryon_w.h \
+	meas/hadron/BuildingBlocks_w.h meas/hadron/curcor2_w.h \
+	meas/hadron/DjDk_w.h meas/hadron/D_j_w.h meas/hadron/formfac_w.h \
+	meas/hadron/hadron_w.h meas/hadron/hybmeson_w.h \
+	meas/hadron/mesonseqsrc_w.h \
+	meas/hadron/mesons_w.h meas/hadron/seqpiontest_w.h \
+	meas/hadron/loops_w.h \
+	meas/hadron/walfil_w.h meas/hadron/wall_qprop_w.h \
+	meas/hadron/wallff_w.h \
+	meas/hadron/walldeltaff_w.h meas/hadron/walldeltapff_w.h \
+	meas/hadron/wallpionff_w.h meas/hadron/wallnuclff_w.h \
+	meas/hadron/wallrhoff_w.h meas/hadron/wallrhopiff_w.h \
+	meas/smear/sink_smear2_w.h meas/sources/d_src_w.h \
+	meas/sources/p_src_w.h meas/sources/sources_w.h \
+	util/ferm/ferm_w.h util/ferm/diractodr.h util/ferm/gammasgn_w.h \
+	util/ferm/tdiractodr.h \
+        util/ferm/paulitodr.h
 
-am__append_2 = \
-	actions/ferm/fermacts/asqtad_fermact_s.h \
-	actions/ferm/fermacts/fermacts_s.h \
-	actions/ferm/fermacts/stag_fermact_s.h \
-	actions/ferm/linop/asqtad_linop_s.h \
-	actions/ferm/linop/asqtad_mdagm_s.h \
-	actions/ferm/linop/asq_dsl_s.h \
-	actions/ferm/linop/improvement_terms_s.h \
-	actions/ferm/linop/linop_s.h \
-	io/follana_io_s.h io/io_s.h \
-	meas/eig/eig_s.h meas/hadron/hadron_s.h \
-	meas/hadron/mesphas_follana_s.h meas/hadron/mesphas_s.h \
-	meas/hadron/pions_follana_s.h meas/hadron/walfil_s.h \
-	meas/hadron/stag_scalars_s.h meas/sources/sources_s.h \
-	meas/hadron/stag_propShift_s.h \
-	util/ferm/ferm_s.h \
-	util/gauge/gauge_s.h util/gauge/stag_phases_s.h
+#am__append_2 = \
+#	actions/ferm/fermacts/asqtad_fermact_s.h \
+#	actions/ferm/fermacts/fermacts_s.h \
+#	actions/ferm/fermacts/stag_fermact_s.h \
+#	actions/ferm/linop/asqtad_linop_s.h \
+#	actions/ferm/linop/asqtad_mdagm_s.h \
+#	actions/ferm/linop/asq_dsl_s.h \
+#	actions/ferm/linop/improvement_terms_s.h \
+#	actions/ferm/linop/linop_s.h \
+#	io/follana_io_s.h io/io_s.h \
+#	meas/eig/eig_s.h meas/hadron/hadron_s.h \
+#	meas/hadron/mesphas_follana_s.h meas/hadron/mesphas_s.h \
+#	meas/hadron/pions_follana_s.h meas/hadron/walfil_s.h \
+#	meas/hadron/stag_scalars_s.h meas/sources/sources_s.h \
+#	meas/hadron/stag_propShift_s.h \
+#	util/ferm/ferm_s.h \
+#	util/gauge/gauge_s.h util/gauge/stag_phases_s.h
 
-#am__append_3 = -I$(TOPDIR)/other_libs//include -I$(BUILDDIR)/other_libs//include
-#am__append_4 = baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
-#              loops_w.cc tdiractodr.cc diractodr.cc paulitodr.cc \
-#	      gammasgn_w.cc \
-#              curcor2_w.cc lwldslash_w.cc formfac_w.cc \
-#              mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
-#              sink_smear2_w.cc barcomp_io.cc barcomp_w.cc walfil_w.cc \
-#              overlap_state_info.cc zolotarev4d_fermact_paramio_w.cc \
-#	      zolotarev5d_fermact_paramio_w.cc \
-#              fermact_qprop.cc prec_fermact_qprop.cc \
-#              unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
-#              prec_wilson_fermact_w.cc prec_wilson_linop_w.cc \
-#              unprec_parwilson_fermact_w.cc unprec_parwilson_linop_w.cc \
-#              prec_parwilson_fermact_w.cc prec_parwilson_linop_w.cc \
-#              dwffld_w.cc \
-#              fermact_qprop_array.cc prec_fermact_qprop_array.cc \
-#              unprec_dwf_fermact_base_w.cc unprec_dwf_fermact_qprop_array_w.cc \
-#              unprec_dwf_fermact_array_w.cc unprec_dwf_linop_array_w.cc \
-#              unprec_ovdwf_fermact_array_w.cc unprec_ovdwf_linop_array_w.cc \
-#              unprec_ovext_fermact_array_w.cc unprec_ovext_linop_array_w.cc \
-#              prec_dwf_fermact_base_w.cc prec_dwf_fermact_qprop_array_w.cc \
-#              prec_dwf_fermact_array_w.cc prec_dwf_linop_array_w.cc \
-#              prec_ovdwf_fermact_array_w.cc prec_ovdwf_linop_array_w.cc \
-#              kyugauge_io.cc kyuqprop_io.cc \
-#              readszinqprop_w.cc readszinferm_w.cc writeszinqprop_w.cc \
-#	      dwf_quarkprop4_w.cc quarkprop4_w.cc quarkprop4_multi_w.cc \
-#              overlapbu_linop_w.cc \
-#              p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc \
-#	      zolotarev_coeffs.cc overlap_fermact_base_w.cc lovlapms_w.cc  \
-#	      zolotarev4d_fermact_w.cc ischiral_w.cc lovddag_w.cc \
-#	      lovlap_double_pass_w.cc lovddag_double_pass_w.cc \
-#	      lg5eps_w.cc lg5eps_double_pass_w.cc \
-#	      zolotarev5d_fermact_array_w.cc zolotarev5d_linop_array_w.cc \
-#	      zolotarev5d_nonhermop_array_w.cc wall_qprop_w.cc \
-#              wallff_w.cc wallrhoff_w.cc wallrhopiff_w.cc \
-#              wallpionff_w.cc wallnuclff_w.cc \
-#              walldeltaff_w.cc walldeltapff_w.cc \
-#	      inv_borici_w.cc
+am__append_3 = -I$(TOPDIR)/other_libs/intel_sse_wilson_dslash/include -I$(BUILDDIR)/other_libs/intel_sse_wilson_dslash/include
+am__append_4 = baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
+              loops_w.cc tdiractodr.cc diractodr.cc paulitodr.cc \
+	      gammasgn_w.cc \
+              curcor2_w.cc lwldslash_w.cc formfac_w.cc \
+              mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
+              sink_smear2_w.cc barcomp_io.cc barcomp_w.cc walfil_w.cc \
+              overlap_state_info.cc zolotarev4d_fermact_paramio_w.cc \
+	      zolotarev5d_fermact_paramio_w.cc \
+              fermact_qprop.cc prec_fermact_qprop.cc \
+              unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
+              prec_wilson_fermact_w.cc prec_wilson_linop_w.cc \
+              unprec_parwilson_fermact_w.cc unprec_parwilson_linop_w.cc \
+              prec_parwilson_fermact_w.cc prec_parwilson_linop_w.cc \
+              dwffld_w.cc \
+              fermact_qprop_array.cc prec_fermact_qprop_array.cc \
+              unprec_dwf_fermact_base_w.cc unprec_dwf_fermact_qprop_array_w.cc \
+              unprec_dwf_fermact_array_w.cc unprec_dwf_linop_array_w.cc \
+              unprec_ovdwf_fermact_array_w.cc unprec_ovdwf_linop_array_w.cc \
+              unprec_ovext_fermact_array_w.cc unprec_ovext_linop_array_w.cc \
+              prec_dwf_fermact_base_w.cc prec_dwf_fermact_qprop_array_w.cc \
+              prec_dwf_fermact_array_w.cc prec_dwf_linop_array_w.cc \
+              prec_ovdwf_fermact_array_w.cc prec_ovdwf_linop_array_w.cc \
+              kyugauge_io.cc kyuqprop_io.cc \
+              readszinqprop_w.cc readszinferm_w.cc writeszinqprop_w.cc \
+	      dwf_quarkprop4_w.cc quarkprop4_w.cc quarkprop4_multi_w.cc \
+              overlapbu_linop_w.cc \
+              p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc \
+	      zolotarev_coeffs.cc overlap_fermact_base_w.cc lovlapms_w.cc  \
+	      zolotarev4d_fermact_w.cc ischiral_w.cc lovddag_w.cc \
+	      lovlap_double_pass_w.cc lovddag_double_pass_w.cc \
+	      lg5eps_w.cc lg5eps_double_pass_w.cc \
+	      zolotarev5d_fermact_array_w.cc zolotarev5d_linop_array_w.cc \
+	      zolotarev5d_nonhermop_array_w.cc wall_qprop_w.cc \
+              wallff_w.cc wallrhoff_w.cc wallrhopiff_w.cc \
+              wallpionff_w.cc wallnuclff_w.cc \
+              walldeltaff_w.cc walldeltapff_w.cc \
+	      inv_borici_w.cc
 
-#am__append_5 = lwldslash_w_sse.cc
+am__append_5 = lwldslash_w_sse.cc
 #am__append_6 = lwldslash_w_pab.cc
-am__append_7 = mesphas_s.cc mesphas_follana_s.cc pions_follana_s.cc \
-	follana_io_s.cc fermact_qprop.cc walfil_s.cc baryon_s.cc \
-	stag_scalars_s.cc stag_propShift_s.cc \
-	asqtad_linop_s.cc asq_dsl_s.cc fat7_links_s.cc naik_term_s.cc  \
-	asqtad_fermact_s.cc asqtad_mdagm_s.cc staggered_qprop.cc stag_phases_s.cc
+#am__append_7 = mesphas_s.cc mesphas_follana_s.cc pions_follana_s.cc \
+#	follana_io_s.cc fermact_qprop.cc walfil_s.cc baryon_s.cc \
+#	stag_scalars_s.cc stag_propShift_s.cc \
+#	asqtad_linop_s.cc asq_dsl_s.cc fat7_links_s.cc naik_term_s.cc  \
+#	asqtad_fermact_s.cc asqtad_mdagm_s.cc staggered_qprop.cc stag_phases_s.cc
 
 #VPATH += $(TOPDIR)/lib/geom
 VPATH = $(TOPDIR) $(TOPDIR)/lib $(TOPDIR)/lib/actions $(TOPDIR)/lib/actions/boson $(TOPDIR)/lib/actions/boson/operator $(TOPDIR)/lib/actions/ferm $(TOPDIR)/lib/actions/ferm/dsdu $(TOPDIR)/lib/actions/ferm/fermacts $(TOPDIR)/lib/actions/ferm/invert $(TOPDIR)/lib/actions/ferm/linop $(TOPDIR)/lib/actions/ferm/qprop $(TOPDIR)/lib/actions/gauge $(TOPDIR)/lib/io $(TOPDIR)/lib/meas $(TOPDIR)/lib/meas/eig $(TOPDIR)/lib/meas/gfix $(TOPDIR)/lib/meas/glue $(TOPDIR)/lib/meas/hadron $(TOPDIR)/lib/meas/pbp $(TOPDIR)/lib/meas/schrfun $(TOPDIR)/lib/meas/smear $(TOPDIR)/lib/meas/sources $(TOPDIR)/lib/update $(TOPDIR)/lib/update/heatbath $(TOPDIR)/lib/update/molecdyn $(TOPDIR)/lib/update/molecdyn/est $(TOPDIR)/lib/update/molecdyn/mese $(TOPDIR)/lib/update/molecdyn/noise $(TOPDIR)/lib/update/molecdyn/step $(TOPDIR)/lib/util $(TOPDIR)/lib/util/ferm $(TOPDIR)/lib/util/ft $(TOPDIR)/lib/util/gauge $(TOPDIR)/lib/util/info $(TOPDIR)/mainprogs $(TOPDIR)/mainprogs/main $(TOPDIR)/mainprogs/tests $(TOPDIR)/root
@@ -191,12 +191,12 @@ AUTOMAKE = ${SHELL} /Home/bj/Devel/SciDAC/packages/chroma/config/missing --run a
 AWK = gawk
 BUILD_PAB_WILSON_DSLASH_FALSE = 
 BUILD_PAB_WILSON_DSLASH_TRUE = #
-BUILD_SSE_WILSON_DSLASH_FALSE = 
-BUILD_SSE_WILSON_DSLASH_TRUE = #
-BUILD_STAGGERED_LIBS_FALSE = #
-BUILD_STAGGERED_LIBS_TRUE = 
-BUILD_WILSON_LIBS_FALSE = 
-BUILD_WILSON_LIBS_TRUE = #
+BUILD_SSE_WILSON_DSLASH_FALSE = #
+BUILD_SSE_WILSON_DSLASH_TRUE = 
+BUILD_STAGGERED_LIBS_FALSE = 
+BUILD_STAGGERED_LIBS_TRUE = #
+BUILD_WILSON_LIBS_FALSE = #
+BUILD_WILSON_LIBS_TRUE = 
 CPPFLAGS = 
 CXX = g++
 CXXDEPMODE = depmode=gcc3
@@ -229,20 +229,20 @@ PACKAGE_STRING = chroma 1.6
 PACKAGE_TARNAME = chroma
 PACKAGE_VERSION = 1.6
 PATH_SEPARATOR = :
-QDPXX_CONFIG = /Home/bj/Devel/SciDAC/install/qdp_scalar_stag_double/bin/qdp++-config
-QDPXX_CXXFLAGS = -msse2 -msse -O2 -finline-limit=50000 -I/Home/bj/Devel/SciDAC/install/qdp_scalar_stag_double/include -I/usr/include/libxml2
-QDPXX_LDFLAGS = -L/Home/bj/Devel/SciDAC/install/qdp_scalar_stag_double/lib
+QDPXX_CONFIG = /Home/bj/Devel/SciDAC/install/qdp_scalar_sse/bin/qdp++-config
+QDPXX_CXXFLAGS = -msse2 -msse -O2 -march=pentium4 -finline-limit=50000 -I/Home/bj/Devel/SciDAC/install/qdp_scalar_sse/include -I/usr/include/libxml2
+QDPXX_LDFLAGS = -L/Home/bj/Devel/SciDAC/install/qdp_scalar_sse/lib
 QDPXX_LIBS = -lqdp -lnml -lXPathReader -lxmlWriter -lqio -llime -L/usr/lib -lxml2 -lz -lpthread -lm
 QDPXX_NC = 3
 QDPXX_ND = 4
-QDPXX_NS = 1
+QDPXX_NS = 4
 QDPXX_PARALLEL_ARCH = scalar
 QDPXX_PRECISION = single
 RANLIB = ranlib
 SET_MAKE = 
 SHELL = /bin/sh
-SSE_DSLASH_DIR = 
-SSE_DSLASH_ENABLED = 
+SSE_DSLASH_DIR = intel_sse_wilson_dslash
+SSE_DSLASH_ENABLED = yes
 STRIP = 
 VERSION = 1.6
 ac_ct_CXX = 
@@ -251,7 +251,6 @@ ac_ct_STRIP =
 am__fastdepCXX_FALSE = #
 am__fastdepCXX_TRUE = 
 am__include = include
-am__leading_dot = .
 am__quote = 
 bindir = ${exec_prefix}/bin
 build = i686-pc-linux-gnu
@@ -274,11 +273,11 @@ libexecdir = ${exec_prefix}/libexec
 localstatedir = ${prefix}/var
 mandir = ${prefix}/man
 oldincludedir = /usr/include
-prefix = /Home/bj/Devel/SciDAC/install/chroma_stag_double
+prefix = /Home/bj/Devel/SciDAC/install/chroma_wils_single
 program_transform_name = s,x,x,
 sbindir = ${exec_prefix}/sbin
 sharedstatedir = ${prefix}/com
-subdirs = 
+subdirs =  other_libs/intel_sse_wilson_dslash
 sysconfdir = ${prefix}/etc
 target_alias = 
 
@@ -297,6 +296,8 @@ nobase_include_HEADERS = \
 	linearop.h primitives.h state.h \
 	actions/actions.h actions/boson/boson.h \
 	actions/boson/operator/klein_gord.h \
+	actions/gauge/gauge.h \
+	actions/gauge/wilson_gaugeact.h \
 	actions/ferm/ferm.h actions/ferm/fermacts/asqtad_state.h \
 	actions/ferm/fermacts/fermacts.h \
 	actions/ferm/fermacts/zolotarev.h \
@@ -344,14 +345,26 @@ nobase_include_HEADERS = \
 	meas/sources/wavetype.h \
 	util/ferm/ferm.h util/ferm/transf.h util/ft/ft.h \
 	util/ft/sftmom.h util/gauge/eesu2.h util/gauge/eeu1.h \
-	util/gauge/expm12.h util/gauge/expmat.h util/gauge/gauge.h \
+	util/gauge/expm12.h util/gauge/expmat.h util/gauge/expsu3.h \
+	util/gauge/gauge.h \
 	util/gauge/gauge_startup.h \
 	util/gauge/hotst.h util/gauge/phfctr.h util/gauge/reunit.h \
 	util/gauge/rgauge.h util/gauge/su2extract.h util/gauge/su3proj.h \
 	util/gauge/sunfill.h util/gauge/sun_proj.h util/gauge/taproj.h \
 	util/gauge/unit_check.h \
         util/info/info.h util/info/proginfo.h util/info/printgeom.h \
-        util/util.h\
+        util/util.h \
+	update/update.h update/field_state.h \
+	update/heatbath/heatbath.h \
+	update/molecdyn/molecdyn.h \
+	update/molecdyn/abs_hamiltonian.h \
+	update/molecdyn/abs_hmc.h \
+	update/molecdyn/abs_hyb_int.h \
+	update/molecdyn/abs_symp_updates.h \
+	update/molecdyn/exact_pg_hamiltonian.h \
+	update/molecdyn/pg_hmc.h \
+	update/molecdyn/pg_leapfrog.h \
+	update/molecdyn/pg_symp_updates.h\
 $(am__append_1) $(am__append_2)
 
 nodist_include_HEADERS = chroma_config_internal.h
@@ -364,7 +377,7 @@ INCFLAGS = -I$(TOPDIR)/lib -I$(BUILDDIR)/lib
 #
 # Any other compiler flags
 # 
-AM_CXXFLAGS = $(INCFLAGS)  -msse2 -msse -O2 -finline-limit=50000 -I/Home/bj/Devel/SciDAC/install/qdp_scalar_stag_double/include -I/usr/include/libxml2 $(am__append_3)
+AM_CXXFLAGS = $(INCFLAGS)  -msse2 -msse -O2 -march=pentium4 -finline-limit=50000 -I/Home/bj/Devel/SciDAC/install/qdp_scalar_sse/include -I/usr/include/libxml2 $(am__append_3)
 
 lib_LIBRARIES = libchroma.a
 
@@ -372,7 +385,7 @@ lib_LIBRARIES = libchroma.a
 # Fermion independent sources
 #
 libchroma_a_SOURCES = gauge_startup.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
-               mesplq.cc polylp.cc reunit.cc unit_check.cc sftmom.cc srcfil.cc \
+               expmat.cc expsu3.cc mesplq.cc polylp.cc reunit.cc unit_check.cc sftmom.cc srcfil.cc \
                szin_io.cc readszin.cc writeszin.cc su3proj.cc sun_proj.cc \
                gaus_smear.cc hyp_smear.cc ape_smear.cc fuzz_smear.cc \
                klein_gord.cc laplacian.cc displacement.cc \
@@ -390,7 +403,7 @@ libchroma_a_SOURCES = gauge_startup.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
 	       invsumr.cc minvsumr.cc inv_rel_sumr.cc minv_rel_sumr.cc \
 	       invbicgstab.cc invbicgstab_array.cc inv_rel_gmresr_sumr.cc \
 	       inv_rel_gmresr_cg.cc inv_gmresr_cg_array.cc \
-	       inv_minres_array.cc\
+	       inv_minres_array.cc wilson_gaugeact.cc\
 $(am__append_4) $(am__append_5) $(am__append_6) $(am__append_7)
 subdir = lib
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -402,28 +415,28 @@ LIBRARIES = $(lib_LIBRARIES)
 libchroma_a_AR = $(AR) cru
 libchroma_a_LIBADD =
 am__libchroma_a_SOURCES_DIST = gauge_startup.cc rgauge.cc taproj.cc \
-	hotst.cc expm12.cc mesplq.cc polylp.cc reunit.cc unit_check.cc \
-	sftmom.cc srcfil.cc szin_io.cc readszin.cc writeszin.cc \
-	su3proj.cc sun_proj.cc gaus_smear.cc hyp_smear.cc ape_smear.cc \
-	fuzz_smear.cc klein_gord.cc laplacian.cc displacement.cc \
-	su2extract.cc sunfill.cc invcg1.cc inv_rel_cg1.cc invcg2.cc \
-	inv_rel_cg2.cc invcg1_array.cc invcg2_array.cc \
-	invcg2_timing_hacks.cc minvcg.cc minv_rel_cg.cc qprop_io.cc \
-	eigen_io.cc stoch_var.cc z2_src.cc gauge_io.cc milc_io.cc \
-	readmilc.cc writemilc.cc axgauge.cc coulgauge.cc grelax.cc \
-	polar_dec.cc rot_colvec.cc transf.cc param_io.cc \
+	hotst.cc expm12.cc expmat.cc expsu3.cc mesplq.cc polylp.cc \
+	reunit.cc unit_check.cc sftmom.cc srcfil.cc szin_io.cc \
+	readszin.cc writeszin.cc su3proj.cc sun_proj.cc gaus_smear.cc \
+	hyp_smear.cc ape_smear.cc fuzz_smear.cc klein_gord.cc \
+	laplacian.cc displacement.cc su2extract.cc sunfill.cc invcg1.cc \
+	inv_rel_cg1.cc invcg2.cc inv_rel_cg2.cc invcg1_array.cc \
+	invcg2_array.cc invcg2_timing_hacks.cc minvcg.cc minv_rel_cg.cc \
+	qprop_io.cc eigen_io.cc stoch_var.cc z2_src.cc gauge_io.cc \
+	milc_io.cc readmilc.cc writemilc.cc axgauge.cc coulgauge.cc \
+	grelax.cc polar_dec.cc rot_colvec.cc transf.cc param_io.cc \
 	fermact_paramio.cc gramschm.cc gramschm_array.cc ritz.cc \
 	ritz_array.cc sn_jacob.cc sn_jacob_array.cc eig_spec.cc \
 	eig_spec_array.cc proginfo.cc printgeom.cc fuzwilp.cc wilslp.cc \
 	invsumr.cc minvsumr.cc inv_rel_sumr.cc minv_rel_sumr.cc \
 	invbicgstab.cc invbicgstab_array.cc inv_rel_gmresr_sumr.cc \
 	inv_rel_gmresr_cg.cc inv_gmresr_cg_array.cc inv_minres_array.cc \
-	baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc loops_w.cc \
-	tdiractodr.cc diractodr.cc paulitodr.cc gammasgn_w.cc \
-	curcor2_w.cc lwldslash_w.cc formfac_w.cc mesonseqsrc_w.cc \
-	barseqsrc_w.cc seqpiontest_w.cc sink_smear2_w.cc barcomp_io.cc \
-	barcomp_w.cc walfil_w.cc overlap_state_info.cc \
-	zolotarev4d_fermact_paramio_w.cc \
+	wilson_gaugeact.cc baryon_w.cc barhqlq_w.cc mesons_w.cc \
+	hybmeson_w.cc loops_w.cc tdiractodr.cc diractodr.cc \
+	paulitodr.cc gammasgn_w.cc curcor2_w.cc lwldslash_w.cc \
+	formfac_w.cc mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
+	sink_smear2_w.cc barcomp_io.cc barcomp_w.cc walfil_w.cc \
+	overlap_state_info.cc zolotarev4d_fermact_paramio_w.cc \
 	zolotarev5d_fermact_paramio_w.cc fermact_qprop.cc \
 	prec_fermact_qprop.cc unprec_wilson_fermact_w.cc \
 	unprec_wilson_linop_w.cc prec_wilson_fermact_w.cc \
@@ -455,132 +468,134 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc rgauge.cc taproj.cc \
 	stag_scalars_s.cc stag_propShift_s.cc asqtad_linop_s.cc \
 	asq_dsl_s.cc fat7_links_s.cc naik_term_s.cc asqtad_fermact_s.cc \
 	asqtad_mdagm_s.cc staggered_qprop.cc stag_phases_s.cc
-#am__objects_1 = baryon_w.$(OBJEXT) \
-#	barhqlq_w.$(OBJEXT) mesons_w.$(OBJEXT) \
-#	hybmeson_w.$(OBJEXT) loops_w.$(OBJEXT) \
-#	tdiractodr.$(OBJEXT) \
-#	diractodr.$(OBJEXT) paulitodr.$(OBJEXT) \
-#	gammasgn_w.$(OBJEXT) \
-#	curcor2_w.$(OBJEXT) \
-#	lwldslash_w.$(OBJEXT) \
-#	formfac_w.$(OBJEXT) \
-#	mesonseqsrc_w.$(OBJEXT) \
-#	barseqsrc_w.$(OBJEXT) \
-#	seqpiontest_w.$(OBJEXT) \
-#	sink_smear2_w.$(OBJEXT) \
-#	barcomp_io.$(OBJEXT) \
-#	barcomp_w.$(OBJEXT) walfil_w.$(OBJEXT) \
-#	overlap_state_info.$(OBJEXT) \
-#	zolotarev4d_fermact_paramio_w.$(OBJEXT) \
-#	zolotarev5d_fermact_paramio_w.$(OBJEXT) \
-#	fermact_qprop.$(OBJEXT) \
-#	prec_fermact_qprop.$(OBJEXT) \
-#	unprec_wilson_fermact_w.$(OBJEXT) \
-#	unprec_wilson_linop_w.$(OBJEXT) \
-#	prec_wilson_fermact_w.$(OBJEXT) \
-#	prec_wilson_linop_w.$(OBJEXT) \
-#	unprec_parwilson_fermact_w.$(OBJEXT) \
-#	unprec_parwilson_linop_w.$(OBJEXT) \
-#	prec_parwilson_fermact_w.$(OBJEXT) \
-#	prec_parwilson_linop_w.$(OBJEXT) \
-#	dwffld_w.$(OBJEXT) \
-#	fermact_qprop_array.$(OBJEXT) \
-#	prec_fermact_qprop_array.$(OBJEXT) \
-#	unprec_dwf_fermact_base_w.$(OBJEXT) \
-#	unprec_dwf_fermact_qprop_array_w.$(OBJEXT) \
-#	unprec_dwf_fermact_array_w.$(OBJEXT) \
-#	unprec_dwf_linop_array_w.$(OBJEXT) \
-#	unprec_ovdwf_fermact_array_w.$(OBJEXT) \
-#	unprec_ovdwf_linop_array_w.$(OBJEXT) \
-#	unprec_ovext_fermact_array_w.$(OBJEXT) \
-#	unprec_ovext_linop_array_w.$(OBJEXT) \
-#	prec_dwf_fermact_base_w.$(OBJEXT) \
-#	prec_dwf_fermact_qprop_array_w.$(OBJEXT) \
-#	prec_dwf_fermact_array_w.$(OBJEXT) \
-#	prec_dwf_linop_array_w.$(OBJEXT) \
-#	prec_ovdwf_fermact_array_w.$(OBJEXT) \
-#	prec_ovdwf_linop_array_w.$(OBJEXT) \
-#	kyugauge_io.$(OBJEXT) \
-#	kyuqprop_io.$(OBJEXT) \
-#	readszinqprop_w.$(OBJEXT) \
-#	readszinferm_w.$(OBJEXT) \
-#	writeszinqprop_w.$(OBJEXT) \
-#	dwf_quarkprop4_w.$(OBJEXT) \
-#	quarkprop4_w.$(OBJEXT) \
-#	quarkprop4_multi_w.$(OBJEXT) \
-#	overlapbu_linop_w.$(OBJEXT) \
-#	p_src_w.$(OBJEXT) d_src_w.$(OBJEXT) \
-#	D_j_w.$(OBJEXT) DjDk_w.$(OBJEXT) \
-#	BuildingBlocks_w.$(OBJEXT) \
-#	zolotarev_coeffs.$(OBJEXT) \
-#	overlap_fermact_base_w.$(OBJEXT) \
-#	lovlapms_w.$(OBJEXT) \
-#	zolotarev4d_fermact_w.$(OBJEXT) \
-#	ischiral_w.$(OBJEXT) \
-#	lovddag_w.$(OBJEXT) \
-#	lovlap_double_pass_w.$(OBJEXT) \
-#	lovddag_double_pass_w.$(OBJEXT) \
-#	lg5eps_w.$(OBJEXT) \
-#	lg5eps_double_pass_w.$(OBJEXT) \
-#	zolotarev5d_fermact_array_w.$(OBJEXT) \
-#	zolotarev5d_linop_array_w.$(OBJEXT) \
-#	zolotarev5d_nonhermop_array_w.$(OBJEXT) \
-#	wall_qprop_w.$(OBJEXT) \
-#	wallff_w.$(OBJEXT) \
-#	wallrhoff_w.$(OBJEXT) \
-#	wallrhopiff_w.$(OBJEXT) \
-#	wallpionff_w.$(OBJEXT) \
-#	wallnuclff_w.$(OBJEXT) \
-#	walldeltaff_w.$(OBJEXT) \
-#	walldeltapff_w.$(OBJEXT) \
-#	inv_borici_w.$(OBJEXT)
-#am__objects_2 = lwldslash_w_sse.$(OBJEXT)
-#am__objects_3 = lwldslash_w_pab.$(OBJEXT)
-am__objects_4 = mesphas_s.$(OBJEXT) \
-	mesphas_follana_s.$(OBJEXT) \
-	pions_follana_s.$(OBJEXT) \
-	follana_io_s.$(OBJEXT) \
+am__objects_1 = baryon_w.$(OBJEXT) \
+	barhqlq_w.$(OBJEXT) mesons_w.$(OBJEXT) \
+	hybmeson_w.$(OBJEXT) loops_w.$(OBJEXT) \
+	tdiractodr.$(OBJEXT) \
+	diractodr.$(OBJEXT) paulitodr.$(OBJEXT) \
+	gammasgn_w.$(OBJEXT) \
+	curcor2_w.$(OBJEXT) \
+	lwldslash_w.$(OBJEXT) \
+	formfac_w.$(OBJEXT) \
+	mesonseqsrc_w.$(OBJEXT) \
+	barseqsrc_w.$(OBJEXT) \
+	seqpiontest_w.$(OBJEXT) \
+	sink_smear2_w.$(OBJEXT) \
+	barcomp_io.$(OBJEXT) \
+	barcomp_w.$(OBJEXT) walfil_w.$(OBJEXT) \
+	overlap_state_info.$(OBJEXT) \
+	zolotarev4d_fermact_paramio_w.$(OBJEXT) \
+	zolotarev5d_fermact_paramio_w.$(OBJEXT) \
 	fermact_qprop.$(OBJEXT) \
-	walfil_s.$(OBJEXT) \
-	baryon_s.$(OBJEXT) \
-	stag_scalars_s.$(OBJEXT) \
-	stag_propShift_s.$(OBJEXT) \
-	asqtad_linop_s.$(OBJEXT) \
-	asq_dsl_s.$(OBJEXT) \
-	fat7_links_s.$(OBJEXT) \
-	naik_term_s.$(OBJEXT) \
-	asqtad_fermact_s.$(OBJEXT) \
-	asqtad_mdagm_s.$(OBJEXT) \
-	staggered_qprop.$(OBJEXT) \
-	stag_phases_s.$(OBJEXT)
+	prec_fermact_qprop.$(OBJEXT) \
+	unprec_wilson_fermact_w.$(OBJEXT) \
+	unprec_wilson_linop_w.$(OBJEXT) \
+	prec_wilson_fermact_w.$(OBJEXT) \
+	prec_wilson_linop_w.$(OBJEXT) \
+	unprec_parwilson_fermact_w.$(OBJEXT) \
+	unprec_parwilson_linop_w.$(OBJEXT) \
+	prec_parwilson_fermact_w.$(OBJEXT) \
+	prec_parwilson_linop_w.$(OBJEXT) \
+	dwffld_w.$(OBJEXT) \
+	fermact_qprop_array.$(OBJEXT) \
+	prec_fermact_qprop_array.$(OBJEXT) \
+	unprec_dwf_fermact_base_w.$(OBJEXT) \
+	unprec_dwf_fermact_qprop_array_w.$(OBJEXT) \
+	unprec_dwf_fermact_array_w.$(OBJEXT) \
+	unprec_dwf_linop_array_w.$(OBJEXT) \
+	unprec_ovdwf_fermact_array_w.$(OBJEXT) \
+	unprec_ovdwf_linop_array_w.$(OBJEXT) \
+	unprec_ovext_fermact_array_w.$(OBJEXT) \
+	unprec_ovext_linop_array_w.$(OBJEXT) \
+	prec_dwf_fermact_base_w.$(OBJEXT) \
+	prec_dwf_fermact_qprop_array_w.$(OBJEXT) \
+	prec_dwf_fermact_array_w.$(OBJEXT) \
+	prec_dwf_linop_array_w.$(OBJEXT) \
+	prec_ovdwf_fermact_array_w.$(OBJEXT) \
+	prec_ovdwf_linop_array_w.$(OBJEXT) \
+	kyugauge_io.$(OBJEXT) \
+	kyuqprop_io.$(OBJEXT) \
+	readszinqprop_w.$(OBJEXT) \
+	readszinferm_w.$(OBJEXT) \
+	writeszinqprop_w.$(OBJEXT) \
+	dwf_quarkprop4_w.$(OBJEXT) \
+	quarkprop4_w.$(OBJEXT) \
+	quarkprop4_multi_w.$(OBJEXT) \
+	overlapbu_linop_w.$(OBJEXT) \
+	p_src_w.$(OBJEXT) d_src_w.$(OBJEXT) \
+	D_j_w.$(OBJEXT) DjDk_w.$(OBJEXT) \
+	BuildingBlocks_w.$(OBJEXT) \
+	zolotarev_coeffs.$(OBJEXT) \
+	overlap_fermact_base_w.$(OBJEXT) \
+	lovlapms_w.$(OBJEXT) \
+	zolotarev4d_fermact_w.$(OBJEXT) \
+	ischiral_w.$(OBJEXT) \
+	lovddag_w.$(OBJEXT) \
+	lovlap_double_pass_w.$(OBJEXT) \
+	lovddag_double_pass_w.$(OBJEXT) \
+	lg5eps_w.$(OBJEXT) \
+	lg5eps_double_pass_w.$(OBJEXT) \
+	zolotarev5d_fermact_array_w.$(OBJEXT) \
+	zolotarev5d_linop_array_w.$(OBJEXT) \
+	zolotarev5d_nonhermop_array_w.$(OBJEXT) \
+	wall_qprop_w.$(OBJEXT) \
+	wallff_w.$(OBJEXT) \
+	wallrhoff_w.$(OBJEXT) \
+	wallrhopiff_w.$(OBJEXT) \
+	wallpionff_w.$(OBJEXT) \
+	wallnuclff_w.$(OBJEXT) \
+	walldeltaff_w.$(OBJEXT) \
+	walldeltapff_w.$(OBJEXT) \
+	inv_borici_w.$(OBJEXT)
+am__objects_2 = lwldslash_w_sse.$(OBJEXT)
+#am__objects_3 = lwldslash_w_pab.$(OBJEXT)
+#am__objects_4 = mesphas_s.$(OBJEXT) \
+#	mesphas_follana_s.$(OBJEXT) \
+#	pions_follana_s.$(OBJEXT) \
+#	follana_io_s.$(OBJEXT) \
+#	fermact_qprop.$(OBJEXT) \
+#	walfil_s.$(OBJEXT) \
+#	baryon_s.$(OBJEXT) \
+#	stag_scalars_s.$(OBJEXT) \
+#	stag_propShift_s.$(OBJEXT) \
+#	asqtad_linop_s.$(OBJEXT) \
+#	asq_dsl_s.$(OBJEXT) \
+#	fat7_links_s.$(OBJEXT) \
+#	naik_term_s.$(OBJEXT) \
+#	asqtad_fermact_s.$(OBJEXT) \
+#	asqtad_mdagm_s.$(OBJEXT) \
+#	staggered_qprop.$(OBJEXT) \
+#	stag_phases_s.$(OBJEXT)
 am_libchroma_a_OBJECTS = gauge_startup.$(OBJEXT) rgauge.$(OBJEXT) \
 	taproj.$(OBJEXT) hotst.$(OBJEXT) expm12.$(OBJEXT) \
-	mesplq.$(OBJEXT) polylp.$(OBJEXT) reunit.$(OBJEXT) \
-	unit_check.$(OBJEXT) sftmom.$(OBJEXT) srcfil.$(OBJEXT) \
-	szin_io.$(OBJEXT) readszin.$(OBJEXT) writeszin.$(OBJEXT) \
-	su3proj.$(OBJEXT) sun_proj.$(OBJEXT) gaus_smear.$(OBJEXT) \
-	hyp_smear.$(OBJEXT) ape_smear.$(OBJEXT) fuzz_smear.$(OBJEXT) \
-	klein_gord.$(OBJEXT) laplacian.$(OBJEXT) displacement.$(OBJEXT) \
-	su2extract.$(OBJEXT) sunfill.$(OBJEXT) invcg1.$(OBJEXT) \
-	inv_rel_cg1.$(OBJEXT) invcg2.$(OBJEXT) inv_rel_cg2.$(OBJEXT) \
-	invcg1_array.$(OBJEXT) invcg2_array.$(OBJEXT) \
-	invcg2_timing_hacks.$(OBJEXT) minvcg.$(OBJEXT) \
-	minv_rel_cg.$(OBJEXT) qprop_io.$(OBJEXT) eigen_io.$(OBJEXT) \
-	stoch_var.$(OBJEXT) z2_src.$(OBJEXT) gauge_io.$(OBJEXT) \
-	milc_io.$(OBJEXT) readmilc.$(OBJEXT) writemilc.$(OBJEXT) \
-	axgauge.$(OBJEXT) coulgauge.$(OBJEXT) grelax.$(OBJEXT) \
-	polar_dec.$(OBJEXT) rot_colvec.$(OBJEXT) transf.$(OBJEXT) \
-	param_io.$(OBJEXT) fermact_paramio.$(OBJEXT) gramschm.$(OBJEXT) \
-	gramschm_array.$(OBJEXT) ritz.$(OBJEXT) ritz_array.$(OBJEXT) \
-	sn_jacob.$(OBJEXT) sn_jacob_array.$(OBJEXT) eig_spec.$(OBJEXT) \
+	expmat.$(OBJEXT) expsu3.$(OBJEXT) mesplq.$(OBJEXT) \
+	polylp.$(OBJEXT) reunit.$(OBJEXT) unit_check.$(OBJEXT) \
+	sftmom.$(OBJEXT) srcfil.$(OBJEXT) szin_io.$(OBJEXT) \
+	readszin.$(OBJEXT) writeszin.$(OBJEXT) su3proj.$(OBJEXT) \
+	sun_proj.$(OBJEXT) gaus_smear.$(OBJEXT) hyp_smear.$(OBJEXT) \
+	ape_smear.$(OBJEXT) fuzz_smear.$(OBJEXT) klein_gord.$(OBJEXT) \
+	laplacian.$(OBJEXT) displacement.$(OBJEXT) su2extract.$(OBJEXT) \
+	sunfill.$(OBJEXT) invcg1.$(OBJEXT) inv_rel_cg1.$(OBJEXT) \
+	invcg2.$(OBJEXT) inv_rel_cg2.$(OBJEXT) invcg1_array.$(OBJEXT) \
+	invcg2_array.$(OBJEXT) invcg2_timing_hacks.$(OBJEXT) \
+	minvcg.$(OBJEXT) minv_rel_cg.$(OBJEXT) qprop_io.$(OBJEXT) \
+	eigen_io.$(OBJEXT) stoch_var.$(OBJEXT) z2_src.$(OBJEXT) \
+	gauge_io.$(OBJEXT) milc_io.$(OBJEXT) readmilc.$(OBJEXT) \
+	writemilc.$(OBJEXT) axgauge.$(OBJEXT) coulgauge.$(OBJEXT) \
+	grelax.$(OBJEXT) polar_dec.$(OBJEXT) rot_colvec.$(OBJEXT) \
+	transf.$(OBJEXT) param_io.$(OBJEXT) fermact_paramio.$(OBJEXT) \
+	gramschm.$(OBJEXT) gramschm_array.$(OBJEXT) ritz.$(OBJEXT) \
+	ritz_array.$(OBJEXT) sn_jacob.$(OBJEXT) \
+	sn_jacob_array.$(OBJEXT) eig_spec.$(OBJEXT) \
 	eig_spec_array.$(OBJEXT) proginfo.$(OBJEXT) printgeom.$(OBJEXT) \
 	fuzwilp.$(OBJEXT) wilslp.$(OBJEXT) invsumr.$(OBJEXT) \
 	minvsumr.$(OBJEXT) inv_rel_sumr.$(OBJEXT) \
 	minv_rel_sumr.$(OBJEXT) invbicgstab.$(OBJEXT) \
 	invbicgstab_array.$(OBJEXT) inv_rel_gmresr_sumr.$(OBJEXT) \
 	inv_rel_gmresr_cg.$(OBJEXT) inv_gmresr_cg_array.$(OBJEXT) \
-	inv_minres_array.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
-	$(am__objects_3) $(am__objects_4)
+	inv_minres_array.$(OBJEXT) wilson_gaugeact.$(OBJEXT) \
+	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
+	$(am__objects_4)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I.
@@ -603,6 +618,7 @@ DEP_FILES = ./$(DEPDIR)/BuildingBlocks_w.Po \
 	./$(DEPDIR)/dwffld_w.Po ./$(DEPDIR)/eig_spec.Po \
 	./$(DEPDIR)/eig_spec_array.Po \
 	./$(DEPDIR)/eigen_io.Po ./$(DEPDIR)/expm12.Po \
+	./$(DEPDIR)/expmat.Po ./$(DEPDIR)/expsu3.Po \
 	./$(DEPDIR)/fat7_links_s.Po \
 	./$(DEPDIR)/fermact_paramio.Po \
 	./$(DEPDIR)/fermact_qprop.Po \
@@ -711,6 +727,7 @@ DEP_FILES = ./$(DEPDIR)/BuildingBlocks_w.Po \
 	./$(DEPDIR)/wallpionff_w.Po \
 	./$(DEPDIR)/wallrhoff_w.Po \
 	./$(DEPDIR)/wallrhopiff_w.Po ./$(DEPDIR)/wilslp.Po \
+	./$(DEPDIR)/wilson_gaugeact.Po \
 	./$(DEPDIR)/writemilc.Po ./$(DEPDIR)/writeszin.Po \
 	./$(DEPDIR)/writeszinqprop_w.Po \
 	./$(DEPDIR)/z2_src.Po \
@@ -829,6 +846,8 @@ include ./$(DEPDIR)/eig_spec.Po
 include ./$(DEPDIR)/eig_spec_array.Po
 include ./$(DEPDIR)/eigen_io.Po
 include ./$(DEPDIR)/expm12.Po
+include ./$(DEPDIR)/expmat.Po
+include ./$(DEPDIR)/expsu3.Po
 include ./$(DEPDIR)/fat7_links_s.Po
 include ./$(DEPDIR)/fermact_paramio.Po
 include ./$(DEPDIR)/fermact_qprop.Po
@@ -967,6 +986,7 @@ include ./$(DEPDIR)/wallpionff_w.Po
 include ./$(DEPDIR)/wallrhoff_w.Po
 include ./$(DEPDIR)/wallrhopiff_w.Po
 include ./$(DEPDIR)/wilslp.Po
+include ./$(DEPDIR)/wilson_gaugeact.Po
 include ./$(DEPDIR)/writemilc.Po
 include ./$(DEPDIR)/writeszin.Po
 include ./$(DEPDIR)/writeszinqprop_w.Po
@@ -1097,7 +1117,7 @@ top_distdir = ..
 distdir = $(top_distdir)/$(PACKAGE)-$(VERSION)
 
 distdir: $(DISTFILES)
-	$(mkinstalldirs) $(distdir)/actions $(distdir)/actions/boson $(distdir)/actions/boson/operator $(distdir)/actions/ferm $(distdir)/actions/ferm/fermacts $(distdir)/actions/ferm/invert $(distdir)/actions/ferm/linop $(distdir)/actions/ferm/qprop $(distdir)/actions/gauge $(distdir)/io $(distdir)/meas $(distdir)/meas/eig $(distdir)/meas/gfix $(distdir)/meas/glue $(distdir)/meas/hadron $(distdir)/meas/pbp $(distdir)/meas/schrfun $(distdir)/meas/smear $(distdir)/meas/sources $(distdir)/util $(distdir)/util/ferm $(distdir)/util/ft $(distdir)/util/gauge $(distdir)/util/info
+	$(mkinstalldirs) $(distdir)/actions $(distdir)/actions/boson $(distdir)/actions/boson/operator $(distdir)/actions/ferm $(distdir)/actions/ferm/fermacts $(distdir)/actions/ferm/invert $(distdir)/actions/ferm/linop $(distdir)/actions/ferm/qprop $(distdir)/actions/gauge $(distdir)/io $(distdir)/meas $(distdir)/meas/eig $(distdir)/meas/gfix $(distdir)/meas/glue $(distdir)/meas/hadron $(distdir)/meas/pbp $(distdir)/meas/schrfun $(distdir)/meas/smear $(distdir)/meas/sources $(distdir)/update $(distdir)/update/heatbath $(distdir)/update/molecdyn $(distdir)/util $(distdir)/util/ferm $(distdir)/util/ft $(distdir)/util/gauge $(distdir)/util/info
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \

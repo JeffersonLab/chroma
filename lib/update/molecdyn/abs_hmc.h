@@ -1,5 +1,5 @@
-#ifndef hmc_classes_h
-#define hmc_classes_h
+#ifndef abs_hmc_h
+#define abs_hmc_h
 
 #include "chromabase.h"
 
@@ -16,6 +16,9 @@
 // also, as long as I define PE to include the fermions as well, 
 // however, this may be frustrated by the fact that I never include
 // the fermionic update.
+
+using namespace QDP;
+using namespace std;
 
 template<class EHS, class HI, class FS>
 class HMCTraj {
@@ -49,13 +52,13 @@ public:
     const HI& integrator=getMDIntegrator();
     const EHS& H=getMCHamiltonian();
 
+    
     // HMC Algorithm.
     // 1) Refresh momenta
     H.refreshP(mc_state);
-    
+
     // 2) SaveState
     Handle< FS > old_state(mc_state.clone());
-    
     
     // Info for user:
     push(monitor, "HMCTraj");
