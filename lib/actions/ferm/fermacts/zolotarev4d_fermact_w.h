@@ -1,12 +1,12 @@
 // -*- C++ -*-
-// $Id: zolotarev4d_fermact_bj_w.h,v 1.6 2004-01-06 14:12:51 bjoo Exp $
+// $Id: zolotarev4d_fermact_w.h,v 1.15 2004-01-08 10:42:43 bjoo Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
 
-#ifndef __zolotarev4d_fermact_w_bj_h__
-#define __zolotarev4d_fermact_w_bj_h__
+#ifndef __zolotarev4d_fermact_w_h__
+#define __zolotarev4d_fermact_w_h__
 
 #include "fermact.h"
 #include "actions/ferm/fermacts/overlap_fermact_base_w.h"

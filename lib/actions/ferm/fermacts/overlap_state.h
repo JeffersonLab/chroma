@@ -1,13 +1,13 @@
 // -*- C++ -*-
-// $Id: zolotarev_state.h,v 1.3 2004-01-02 03:19:41 edwards Exp $
+// $Id: overlap_state.h,v 1.1 2004-01-08 10:42:42 bjoo Exp $
 /*! @file
  * @brief Connection state holding eigenvectors
  *
  * Holds gauge fields and eigenvectors for overlap-ish thingies
  */
 
-#ifndef __zolotarev_state_h__
-#define __zolotarev_state_h__
+#ifndef __overlap_state_h__
+#define __overlap_state_h__
 
 #include "state.h"
 
