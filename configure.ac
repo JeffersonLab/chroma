@@ -63,6 +63,12 @@ AC_ARG_ENABLE(sse_wilson_dslash,
     [Build and Use the SSE2 Wilson Dslash Library ])
 )
 
+AC_ARG_ENABLE(sse_dwf_cg,
+  AC_HELP_STRING( 
+    [--enable-sse-dwf-cg],
+    [Build and Use the SSE DWF CG Library ])
+)
+
 AC_ARG_ENABLE(pab_wilson_dslash,
   AC_HELP_STRING(
     [--enable-pab-wilson-dslash],
@@ -129,6 +135,7 @@ case $ac_fermion_type in
     ;;
 esac
 
+dnl SSE Wilson Dslash stuff
 case "$enable_sse_wilson_dslash" in
   yes) 
         if test "x$ac_fermion_type" != "xwilson";
@@ -151,6 +158,31 @@ AC_SUBST(SSE_DSLASH_ENABLED,[$enable_sse_wilson_dslash]	)
 AM_CONDITIONAL(BUILD_SSE_WILSON_DSLASH,
   [test "x${enable_sse_wilson_dslash}x" = "xyesx" ])
 
+
+dnl SSE DWF CG stuff
+case "$enable_sse_dwf_cg" in
+  yes) 
+        if test "x$ac_fermion_type" != "xwilson";
+	then	
+	    AC_MSG_ERROR([Attempting to build SSE DWF CG inverter with NON Wilson fermion type])
+	fi
+        AC_MSG_NOTICE([Configuring SSE DWF CG])
+	AC_CONFIG_SUBDIRS(other_libs/intel_sse_dwf_cg)
+	AC_SUBST(SSE_DWF_CG_DIR, [intel_sse_dwf_cg])
+	AC_DEFINE([BUILD_SSE_DWF_CG],[],[Build SSE DWF CG])
+	;;
+  *)
+	AC_SUBST(SSE_DWF_CG_DIR)
+	AC_MSG_NOTICE([Not building SSE DWF CG])
+        ;;
+esac 
+AC_SUBST(SSE_DSLASH_ENABLED,[$enable_sse_dwf_cg]	)	
+
+AM_CONDITIONAL(BUILD_SSE_DWF_CG,
+  [test "x${enable_sse_dwf_cg}x" = "xyesx" ])
+
+
+dnl QCDOC Wilson Dslash stuff
 case "$enable_pab_wilson_dslash" in
   noarch)
 	ac_build_pab_wilson_dslash="yes" 
@@ -168,11 +200,11 @@ case "$enable_pab_wilson_dslash" in
         ;;
 esac 
 
-
 AM_CONDITIONAL(BUILD_PAB_WILSON_DSLASH,
   [test "x${ac_build_pab_wilson_dslash}x" = "xyesx" ])
 
 
+dnl Fermion specific stuff
 AM_CONDITIONAL(BUILD_STAGGERED_LIBS,
   [test "X${ac_fermion_type}X" = "XstaggeredX"])
 AM_CONDITIONAL(BUILD_WILSON_LIBS,
