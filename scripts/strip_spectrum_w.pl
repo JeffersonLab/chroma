@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: strip_spectrum_w.pl,v 1.2 2003-06-20 18:49:29 edwards Exp $
+# $Id: strip_spectrum_w.pl,v 1.3 2003-06-20 19:57:53 edwards Exp $
 #
 # SZIN-style stripper for namelist output of spectrum_w.  Namelist output
 # is presented to the stripper on the STDIN.
@@ -149,7 +149,7 @@ foreach $qx ( -$mommax_int .. $mommax_int ) {
       }
       else
       {
-	$mom_name{$qx, $qy, $qz} = "_qx" . $qx . "_qy" . $qy . "_qz" . $qz ;
+	$mom_name{$qx, $qy, $qz} = "_px" . $qx . "_py" . $qy . "_pz" . $qz ;
       }
     }
   }
