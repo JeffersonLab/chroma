@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linearop.h,v 1.13 2003-10-20 20:24:46 edwards Exp $
+// $Id: linearop.h,v 1.14 2003-11-09 22:36:45 edwards Exp $
 
 /*! @file
  * @brief Linear Operators
@@ -9,9 +9,6 @@
 #define __linearop_h__
 
 using namespace QDP;
-
-enum LinOpSign {PLUS = 1, MINUS = -1};
-
 
 //! Linear Operator
 /*! @ingroup linop
@@ -25,7 +22,7 @@ class LinearOperator
 {
 public:
   //! Apply the operator onto a source vector
-  virtual T operator() (const T& psi, enum LinOpSign isign) const = 0;
+  virtual T operator() (const T& psi, enum PlusMinus isign) const = 0;
 
   //! Return the subset on which the operator acts
   virtual const OrderedSubset& subset() const = 0;
@@ -45,7 +42,7 @@ class DslashLinearOperator : public LinearOperator<T>
 {
 public:
   //! Apply operator on both checkerboards (entire lattice)
-  virtual T operator() (const T& psi, enum LinOpSign isign) const
+  virtual T operator() (const T& psi, enum PlusMinus isign) const
     {
       T d;
 
@@ -60,7 +57,7 @@ public:
    * To avoid confusion (especially of the compilers!), call the checkerboarded
    * apply instead of operator()
    */
-  virtual T apply (const T& psi, enum LinOpSign isign, int cb) const = 0;
+  virtual T apply (const T& psi, enum PlusMinus isign, int cb) const = 0;
 
   //! Virtual destructor to help in cleanup
   virtual ~DslashLinearOperator() {}
