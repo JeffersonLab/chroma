@@ -1,4 +1,4 @@
-// $Id: t_ritz_KS.cc,v 1.4 2004-01-28 15:48:01 bjoo Exp $
+// $Id: t_ritz_KS.cc,v 1.5 2004-01-28 15:57:24 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -297,7 +297,7 @@ int main(int argc, char **argv)
   int n_jacob;
 
   fixMMev2Mev(*H, lambda, psi, params.n_eig, params.rsd_r,
-	       sqrt(params.rsd_a), params.rsd_zero, valid_eig, n_valid, n_jacob);
+	       params.rsd_a, params.rsd_zero, valid_eig, n_valid, n_jacob);
 
   push(xml_out, "eigFix");
   write(xml_out, "lambda", lambda);
