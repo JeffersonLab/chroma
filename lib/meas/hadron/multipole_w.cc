@@ -1,4 +1,4 @@
-// $Id: multipole_w.cc,v 1.1 2005-03-24 04:32:03 edwards Exp $
+// $Id: multipole_w.cc,v 1.2 2005-03-24 04:34:16 edwards Exp $
 /*! \file
  *  \brief Multipole moments
  *
@@ -97,6 +97,7 @@ namespace Chroma
    * \param quark_propagator   quark propagator ( Read )
    * \param seq_quark_prop     sequential quark propagator ( Read )
    * \param GammaInsertion     extra gamma matrix insertion ( Read )
+   * \param max_power          max value of L ( Read )
    * \param j_decay            direction of decay ( Read )
    * \param t0                 cartesian coordinates of the source ( Read )
    */
