@@ -134,10 +134,6 @@ int main(int argc, char *argv[])
     // Snarf it all
     XMLReader paramtop(param_in, "/MonomialTest");
     
-
-    // Get the BC's
-    read(paramtop, "boundary", boundary);
-
     // Get the string for the factory
     read(paramtop, "Monomial/Name", monomial_name);
   }
@@ -147,21 +143,18 @@ int main(int argc, char *argv[])
   }
 
   // Make the BC's
-  Handle< FermBC<LatticeFermion> >  fbc(new SimpleFermBC<LatticeFermion>(boundary));
-
   QDPIO::cout << "Monomial name = " << monomial_name << endl;
 
   // Get the monomial from the factory... Looks gross but is generic
-  Handle<ExactEvenOddPrecWilsonTypeFermMonomial<multi1d<LatticeColorMatrix>,
-                                                multi1d<LatticeColorMatrix>, 
-                                                LatticeFermion> > S_w(
+  Handle<ExactFermMonomial<multi1d<LatticeColorMatrix>,
+                           multi1d<LatticeColorMatrix>, 
+                           LatticeFermion> > S_w(
 
-     TheExactEvenOddPrecWilsonTypeFermMonomialFactory::Instance().createObject(
-                                              monomial_name, 
-					      fbc, 
-					      param_in, 
-					      "/MonomialTest/Monomial")
-  );
+     TheExactFermMonomialFactory::Instance().createObject(
+							  monomial_name, 
+							  param_in, 
+							  "/MonomialTest/Monomial")
+     );
 
   // Fictitious momenta for now
   multi1d<LatticeColorMatrix> p(Nd);

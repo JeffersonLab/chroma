@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: monomial_factory_w.h,v 1.2 2004-12-21 18:01:06 bjoo Exp $
+// $Id: monomial_factory_w.h,v 1.3 2004-12-23 14:55:35 bjoo Exp $
 /*! \file
  *  \brief Fermion action factories
  */
@@ -20,34 +20,17 @@ namespace Chroma
   //! A factory for exact UnprecWilsonTypeFermMonomials
   typedef SingletonHolder< 
   ObjectFactory<
-    ExactUnprecWilsonTypeFermMonomial< multi1d<LatticeColorMatrix>, 
-				       multi1d<LatticeColorMatrix>, 
-				       LatticeFermion>, 
+    ExactFermMonomial< multi1d<LatticeColorMatrix>, 
+		       multi1d<LatticeColorMatrix>,
+		       LatticeFermion>,
     std::string,
-    TYPELIST_3(Handle< FermBC<LatticeFermion> >, XMLReader&, const std::string&),
-
-      ExactUnprecWilsonTypeFermMonomial< multi1d<LatticeColorMatrix>, 
-					 multi1d<LatticeColorMatrix>,
-					 LatticeFermion>* (*)(Handle< FermBC<LatticeFermion> >, 
-							    XMLReader&,
-							    const std::string&), StringFactoryError> >
-  TheExactUnprecWilsonTypeFermMonomialFactory;
-
-  //! A factory for exact UnprecWilsonTypeFermMonomials
-  typedef SingletonHolder< 
-  ObjectFactory<
-    ExactEvenOddPrecWilsonTypeFermMonomial< multi1d<LatticeColorMatrix>, 
-				       multi1d<LatticeColorMatrix>, 
-				       LatticeFermion>, 
-    std::string,
-    TYPELIST_3(Handle< FermBC<LatticeFermion> >, XMLReader&, const std::string&),
-
-      ExactEvenOddPrecWilsonTypeFermMonomial< multi1d<LatticeColorMatrix>, 
-					      multi1d<LatticeColorMatrix>, 
-					      LatticeFermion>* (*)(Handle< FermBC<LatticeFermion> >, 
-							    XMLReader&,
-							    const std::string&), StringFactoryError> >
-  TheExactEvenOddPrecWilsonTypeFermMonomialFactory;
+    TYPELIST_2(XMLReader&, const std::string&),
+   
+    ExactFermMonomial< multi1d<LatticeColorMatrix>, 
+		       multi1d<LatticeColorMatrix>,
+		       LatticeFermion>* (*)(XMLReader&,
+					    const std::string&), StringFactoryError> >
+  TheExactFermMonomialFactory;
 
 }; // End namespace Chroma
 

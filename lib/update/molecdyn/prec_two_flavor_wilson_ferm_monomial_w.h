@@ -27,6 +27,7 @@ namespace Chroma {
     EvenOddPrecTwoFlavorWilsonFermMonomialParams(XMLReader& in, const std::string&  path);
     InvertParam_t inv_param; // Inverter Parameters
     string ferm_act;
+    multi1d<int> boundary;
   };
 
   void read(XMLReader& xml, const string& path, EvenOddPrecTwoFlavorWilsonFermMonomialParams& param);
@@ -42,8 +43,7 @@ namespace Chroma {
     {
     public: 
       // Construct out of a FermBC and a parameter struct
-      EvenOddPrecTwoFlavorWilsonFermMonomial(Handle< FermBC<LatticeFermion> > fbc_,
-					const EvenOddPrecTwoFlavorWilsonFermMonomialParams& param_);
+      EvenOddPrecTwoFlavorWilsonFermMonomial(const EvenOddPrecTwoFlavorWilsonFermMonomialParams& param_);
 
 
       // Construct from a fermact handle and inv params

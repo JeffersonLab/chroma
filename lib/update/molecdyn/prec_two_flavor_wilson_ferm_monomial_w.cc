@@ -19,16 +19,14 @@ namespace Chroma {
  
   namespace EvenOddPrecTwoFlavorWilsonFermMonomialEnv {
     //! Callback function for the factory
-    ExactEvenOddPrecWilsonTypeFermMonomial< multi1d<LatticeColorMatrix>,
-				       multi1d<LatticeColorMatrix>,
-				       LatticeFermion >* createMonomial(Handle<FermBC<LatticeFermion> > fbc, XMLReader& xml, const string& path) {
-
-      
-      return new EvenOddPrecTwoFlavorWilsonFermMonomial(fbc, EvenOddPrecTwoFlavorWilsonFermMonomialParams(xml, path));
+    ExactFermMonomial< multi1d<LatticeColorMatrix>,		   
+		       multi1d<LatticeColorMatrix>,
+		       LatticeFermion>* createMonomial(XMLReader& xml, const string& path) {
+      return new EvenOddPrecTwoFlavorWilsonFermMonomial(EvenOddPrecTwoFlavorWilsonFermMonomialParams(xml, path));
     }
     
     const std::string name="TWO_FLAVOR_WILSON_FERM_MONOMIAL";
-    const bool registered=TheExactEvenOddPrecWilsonTypeFermMonomialFactory::Instance().registerObject(name, createMonomial);
+    const bool registered=TheExactFermMonomialFactory::Instance().registerObject(name, createMonomial);
     
   }; //end namespace EvenOddPrec TwoFlavorWilsonFermMonomialEnv
 
@@ -45,6 +43,9 @@ namespace Chroma {
       std::ostringstream os;
       xml_tmp.print(os);
       ferm_act = os.str();
+
+      // Read the boundary -- this can get pushed down into fermact later
+      read(paramtop, "./boundary", boundary);
       
     }
     catch(const string& s) {
@@ -83,9 +84,10 @@ namespace Chroma {
     // Not implemented
   }
 
-  EvenOddPrecTwoFlavorWilsonFermMonomial::EvenOddPrecTwoFlavorWilsonFermMonomial(Handle< FermBC<LatticeFermion> > fbc_,
-								       const EvenOddPrecTwoFlavorWilsonFermMonomialParams& param_) {
+  EvenOddPrecTwoFlavorWilsonFermMonomial::EvenOddPrecTwoFlavorWilsonFermMonomial(const EvenOddPrecTwoFlavorWilsonFermMonomialParams& param_) {
     inv_param = param_.inv_param;
+
+    Handle< FermBC<LatticeFermion> > fbc( new SimpleFermBC<LatticeFermion>(param_.boundary));
 
     std::istringstream is(param_.ferm_act);
     XMLReader fermact_reader(is);
@@ -101,7 +103,7 @@ namespace Chroma {
       QDP_abort(1);
     }
 
-    const WilsonTypeFermAct<LatticeFermion>* tmp_act = TheWilsonTypeFermActFactory::Instance().createObject(fermact_string, fbc_, fermact_reader, "./FermionAction");
+    const WilsonTypeFermAct<LatticeFermion>* tmp_act = TheWilsonTypeFermActFactory::Instance().createObject(fermact_string, fbc, fermact_reader, "./FermionAction");
   
 
     const EvenOddPrecWilsonFermAct* downcast=dynamic_cast<const EvenOddPrecWilsonFermAct*>(tmp_act);

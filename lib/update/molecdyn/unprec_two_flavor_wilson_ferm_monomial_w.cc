@@ -19,16 +19,16 @@ namespace Chroma {
  
   namespace UnprecTwoFlavorWilsonFermMonomialEnv {
     //! Callback function for the factory
-    ExactUnprecWilsonTypeFermMonomial< multi1d<LatticeColorMatrix>,
-				       multi1d<LatticeColorMatrix>,
-				       LatticeFermion >* createMonomial(Handle<FermBC<LatticeFermion> > fbc, XMLReader& xml, const string& path) {
+    ExactFermMonomial< multi1d<LatticeColorMatrix>,
+		       multi1d<LatticeColorMatrix>,
+		       LatticeFermion>* createMonomial(XMLReader& xml, const string& path) {
 
       
-      return new UnprecTwoFlavorWilsonFermMonomial(fbc, UnprecTwoFlavorWilsonFermMonomialParams(xml, path));
+      return new UnprecTwoFlavorWilsonFermMonomial(UnprecTwoFlavorWilsonFermMonomialParams(xml, path));
     }
     
     const std::string name="UNPREC_TWO_FLAVOR_WILSON_FERM_MONOMIAL";
-    const bool registered=TheExactUnprecWilsonTypeFermMonomialFactory::Instance().registerObject(name, createMonomial);
+    const bool registered=TheExactFermMonomialFactory::Instance().registerObject(name, createMonomial);
     
   }; //end namespace Unprec TwoFlavorWilsonFermMonomialEnv
 
@@ -45,6 +45,11 @@ namespace Chroma {
       std::ostringstream os;
       xml_tmp.print(os);
       ferm_act = os.str();
+
+      // Fermionic Boundaries -- to be pushed down into the action
+      boundary.resize(Nd);
+      read(paramtop, "./boundary", boundary);
+
       
     }
     catch(const string& s) {
@@ -83,8 +88,12 @@ namespace Chroma {
     // Not implemented
   }
 
-  UnprecTwoFlavorWilsonFermMonomial::UnprecTwoFlavorWilsonFermMonomial(Handle< FermBC<LatticeFermion> > fbc_,
-								       const UnprecTwoFlavorWilsonFermMonomialParams& param_) {
+  UnprecTwoFlavorWilsonFermMonomial::UnprecTwoFlavorWilsonFermMonomial(const UnprecTwoFlavorWilsonFermMonomialParams& param_) {
+
+    // Get the boundaries -- this will in the fullness of time be pushed
+    // down into the FermAct
+    Handle< FermBC<LatticeFermion> > fbc(new SimpleFermBC<LatticeFermion>(param_.boundary));
+
     inv_param = param_.inv_param;
 
     std::istringstream is(param_.ferm_act);
@@ -101,7 +110,7 @@ namespace Chroma {
       QDP_abort(1);
     }
 
-    const WilsonTypeFermAct<LatticeFermion>* tmp_act = TheWilsonTypeFermActFactory::Instance().createObject(fermact_string, fbc_, fermact_reader, "./FermionAction");
+    const WilsonTypeFermAct<LatticeFermion>* tmp_act = TheWilsonTypeFermActFactory::Instance().createObject(fermact_string, fbc, fermact_reader, "./FermionAction");
   
 
     const UnprecWilsonFermAct* downcast=dynamic_cast<const UnprecWilsonFermAct*>(tmp_act);
