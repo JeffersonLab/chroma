@@ -2,13 +2,12 @@
 
 \item (*) H_T ContFrac cost-vs-mres tests
 
-\item (*) Add force monitoring for HMC. Currently, we have energy
-contributions for each monomial. More useful is contributions to force
-for each monomial. This monitor is simply  norm2(ds_u)
-
 \item (*) Bagel/QMP-2 tests for IBM Bluegene/L and NERSC SP. {\em B\'alint: BAGEL QMP2 Runs on BlueGene/L. QMP-2 is a big but fixed hit. NERSC Still to be Done}
 
 \item (*) PARTFILE I/O in QIO, for efficient I/O on QCDOC.
+
+\item Get prec and unprec clover fermacts working. Eventually get deriv
+working.
 
 Based on force monitoring tests:
   \item Fractional power monomials??? 
@@ -39,6 +38,10 @@ QDP's profile and isolate.
 
 
 DONE:
+
+\item (*) Add force monitoring for HMC. Currently, we have energy
+contributions for each monomial. More useful is contributions to force
+for each monomial. This monitor is simply  norm2(ds_u)
 
 \item Change check_PROGRAMS to bin_PROGRAMS and install binaries
 in chroma/mainprogs/main
