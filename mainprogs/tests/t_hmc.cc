@@ -371,9 +371,17 @@ namespace Chroma {
     foo &= UnprecTwoFlavorWilsonTypeFermMonomialEnv::registered;
     foo &= EvenOddPrecTwoFlavorWilsonTypeFermMonomialEnv::registered;
     
+    // 4D Ferm Monomials
+    foo &= UnprecOneFlavorWilsonTypeFermRatMonomialEnv::registered;
+    foo &= EvenOddPrecOneFlavorWilsonTypeFermRatMonomialEnv::registered;
+    
     // 5D Ferm Monomials
     foo &= UnprecTwoFlavorWilsonTypeFermMonomial5DEnv::registered;
     foo &= EvenOddPrecTwoFlavorWilsonTypeFermMonomial5DEnv::registered;
+    
+    // 5D Ferm Monomials
+    foo &= UnprecOneFlavorWilsonTypeFermRatMonomial5DEnv::registered;
+    foo &= EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5DEnv::registered;
     
     // MD Integrators
     foo &= LatColMatPQPLeapfrogIntegratorEnv::registered;
