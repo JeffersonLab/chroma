@@ -1,4 +1,4 @@
-// $Id: inline_eig_aggregate.cc,v 1.2 2005-02-07 15:54:53 edwards Exp $
+// $Id: inline_eig_aggregate.cc,v 1.3 2005-02-07 16:05:46 bjoo Exp $
 /*! \file
  *  \brief Inline glue measurement aggregator
  */
@@ -7,7 +7,7 @@
 #include "meas/inline/eig/inline_eigbnds.h"
 
 // Grab all fermacts to make sure they are registered
-#include "actions/ferm/fermacs/fermacts_aggregate_w.h"
+#include "actions/ferm/fermacts/fermacts_aggregate_w.h"
 
 namespace Chroma
 {
