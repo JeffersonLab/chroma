@@ -1,9 +1,10 @@
 <?xml version="1.0"?>
 
 
-<make_source><make_source>
+<make_source>
+  <Input><make_source>
 <annotation>
-; $Id: make_source_v5.linux-scalar-intel.xml,v 1.1 2004-02-23 03:02:46 edwards Exp $
+; $Id: make_source_v5.linux-scalar-intel.xml,v 1.2 2004-04-05 20:59:43 edwards Exp $
 ;
 ; MAKE_SOURCE input file.
 ;
@@ -45,7 +46,8 @@
 </Prop>
 </make_source>
 
-  <config_info><szin>
+  </Input>
+  <Config_info><szin>
       <cfg_version>7</cfg_version>
       <date>Sat Jun 16 00:35:57 2001</date>
       <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
@@ -85,7 +87,13 @@
       </seed>
     </szin>
 
-  </config_info>
+  </Config_info>
+  <Observables>
+    <w_plaq>0.902263</w_plaq>
+    <s_plaq>0.862579</s_plaq>
+    <t_plaq>0.941947</t_plaq>
+    <link>0.734641</link>
+  </Observables>
   <Source_correlator>
     <source_corr>5.44616 0 0 0 0 0 0 0</source_corr>
   </Source_correlator>
