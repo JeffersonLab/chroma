@@ -4,7 +4,7 @@
 #include "update/molecdyn/monomial_factory_w.h"
 
 #include "io/param_io.h"
-#include "actions/ferm/fermacts/fermfactory_w.h"
+#include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/fermacts/unprec_wilson_fermact_w.h"
 #include "linearop.h"
 #include "actions/ferm/invert/invcg2.h"
@@ -90,10 +90,6 @@ namespace Chroma {
 
   UnprecTwoFlavorWilsonFermMonomial::UnprecTwoFlavorWilsonFermMonomial(const UnprecTwoFlavorWilsonFermMonomialParams& param_) {
 
-    // Get the boundaries -- this will in the fullness of time be pushed
-    // down into the FermAct
-    Handle< FermBC<LatticeFermion> > fbc(new SimpleFermBC<LatticeFermion>(param_.boundary));
-
     inv_param = param_.inv_param;
 
     std::istringstream is(param_.ferm_act);
@@ -110,7 +106,7 @@ namespace Chroma {
       QDP_abort(1);
     }
 
-    const WilsonTypeFermAct<LatticeFermion>* tmp_act = TheWilsonTypeFermActFactory::Instance().createObject(fermact_string, fbc, fermact_reader, "./FermionAction");
+    const WilsonTypeFermAct<LatticeFermion>* tmp_act = TheWilsonTypeFermActFactory::Instance().createObject(fermact_string, fermact_reader, "./FermionAction");
   
 
     const UnprecWilsonFermAct* downcast=dynamic_cast<const UnprecWilsonFermAct*>(tmp_act);
