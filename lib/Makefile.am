@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.165 2004-09-16 16:40:53 kostas Exp $
+# $Id: Makefile.am,v 1.166 2004-09-19 02:33:42 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -178,11 +178,13 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/lg5eps_double_pass_w.h \
 	actions/ferm/linop/lwldslash_w.h \
 	actions/ferm/linop/overlapbu_linop_w.h \
+	actions/ferm/linop/prec_dwf_linop_base_array_w.h \
 	actions/ferm/linop/prec_dwf_linop_array_w.h \
 	actions/ferm/linop/prec_ovdwf_linop_array_w.h \
 	actions/ferm/linop/prec_nef_linop_array_w.h \
 	actions/ferm/linop/prec_wilson_linop_w.h \
 	actions/ferm/linop/prec_parwilson_linop_w.h \
+	actions/ferm/linop/unprec_dwf_linop_base_array_w.h \
 	actions/ferm/linop/unprec_dwf_linop_array_w.h \
 	actions/ferm/linop/unprec_ovdwf_linop_array_w.h \
 	actions/ferm/linop/unprec_nef_linop_array_w.h \
