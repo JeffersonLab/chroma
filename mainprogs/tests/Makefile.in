@@ -167,7 +167,7 @@ check_PROGRAMS = t_mesplq t_io t_mesons_w t_conslinop t_hypsmear \
                   t_overbu t_ape_smear t_precact
 
 
-EXTRA_PROGRAMS = t_dslashm t_lwldslash t_spprod t_lwldslash_sse t_follana_io_s t_formfac  t_follana_pion_s t_dwflinop t_precdwf t_ovlap_bj t_propagator_s t_propagator_w t_gfix t_ovlap5d_bj t_ritz t_ritz_KS t_ritz5d_KS  t_fermion_loop_w t_propagator_fuzz_s t_disc_loop_s t_ov_pbp t_lwldslash_pab
+EXTRA_PROGRAMS = t_dslashm t_lwldslash t_spprod t_lwldslash_sse t_follana_io_s t_formfac  t_follana_pion_s t_dwflinop t_precdwf t_ovlap_bj t_propagator_s t_propagator_w t_gfix t_ovlap5d_bj t_ritz t_ritz_KS t_ritz5d_KS  t_fermion_loop_w t_propagator_fuzz_s t_disc_loop_s t_ov_pbp t_lwldslash_pab t_propagator_nrqcd
 
 
 #
@@ -245,6 +245,9 @@ t_propagator_fuzz_s_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 t_propagator_w_SOURCES = t_propagator_w.cc
 t_propagator_w_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
+t_propagator_nrqcd_SOURCES = t_propagator_nrqcd.cc
+t_propagator_nrqcd_DEPENDENCIES = build_chroma_libs rebuild_other_libs
+
 t_fermion_loop_w_SOURCES = t_fermion_loop_w.cc
 t_fermion_loop_w_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
@@ -274,7 +277,7 @@ EXTRA_PROGRAMS = t_dslashm$(EXEEXT) t_lwldslash$(EXEEXT) \
 	t_ritz$(EXEEXT) t_ritz_KS$(EXEEXT) t_ritz5d_KS$(EXEEXT) \
 	t_fermion_loop_w$(EXEEXT) t_propagator_fuzz_s$(EXEEXT) \
 	t_disc_loop_s$(EXEEXT) t_ov_pbp$(EXEEXT) \
-	t_lwldslash_pab$(EXEEXT)
+	t_lwldslash_pab$(EXEEXT) t_propagator_nrqcd$(EXEEXT)
 check_PROGRAMS = t_mesplq$(EXEEXT) t_io$(EXEEXT) t_mesons_w$(EXEEXT) \
 	t_conslinop$(EXEEXT) t_hypsmear$(EXEEXT) t_overbu$(EXEEXT) \
 	t_ape_smear$(EXEEXT) t_precact$(EXEEXT)
@@ -374,6 +377,10 @@ am_t_propagator_fuzz_s_OBJECTS = t_propagator_fuzz_s.$(OBJEXT)
 t_propagator_fuzz_s_OBJECTS = $(am_t_propagator_fuzz_s_OBJECTS)
 t_propagator_fuzz_s_LDADD = $(LDADD)
 t_propagator_fuzz_s_LDFLAGS =
+am_t_propagator_nrqcd_OBJECTS = t_propagator_nrqcd.$(OBJEXT)
+t_propagator_nrqcd_OBJECTS = $(am_t_propagator_nrqcd_OBJECTS)
+t_propagator_nrqcd_LDADD = $(LDADD)
+t_propagator_nrqcd_LDFLAGS =
 am_t_propagator_s_OBJECTS = t_propagator_s.$(OBJEXT)
 t_propagator_s_OBJECTS = $(am_t_propagator_s_OBJECTS)
 t_propagator_s_LDADD = $(LDADD)
@@ -420,6 +427,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/t_ovlap_bj.Po ./$(DEPDIR)/t_precact.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_precdwf.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_propagator_fuzz_s.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_propagator_nrqcd.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_propagator_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_propagator_w.Po ./$(DEPDIR)/t_ritz.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_ritz5d_KS.Po ./$(DEPDIR)/t_ritz_KS.Po \
@@ -439,11 +447,12 @@ DIST_SOURCES = $(t_ape_smear_SOURCES) $(t_conslinop_SOURCES) \
 	$(t_mesons_w_SOURCES) $(t_mesplq_SOURCES) $(t_ov_pbp_SOURCES) \
 	$(t_overbu_SOURCES) $(t_ovlap5d_bj_SOURCES) \
 	$(t_ovlap_bj_SOURCES) $(t_precact_SOURCES) $(t_precdwf_SOURCES) \
-	$(t_propagator_fuzz_s_SOURCES) $(t_propagator_s_SOURCES) \
-	$(t_propagator_w_SOURCES) $(t_ritz_SOURCES) \
-	$(t_ritz5d_KS_SOURCES) $(t_ritz_KS_SOURCES) $(t_spprod_SOURCES)
+	$(t_propagator_fuzz_s_SOURCES) $(t_propagator_nrqcd_SOURCES) \
+	$(t_propagator_s_SOURCES) $(t_propagator_w_SOURCES) \
+	$(t_ritz_SOURCES) $(t_ritz5d_KS_SOURCES) $(t_ritz_KS_SOURCES) \
+	$(t_spprod_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(t_ape_smear_SOURCES) $(t_conslinop_SOURCES) $(t_disc_loop_s_SOURCES) $(t_dslashm_SOURCES) $(t_dwflinop_SOURCES) $(t_fermion_loop_w_SOURCES) $(t_follana_io_s_SOURCES) $(t_follana_pion_s_SOURCES) $(t_formfac_SOURCES) $(t_gfix_SOURCES) $(t_hypsmear_SOURCES) $(t_io_SOURCES) $(t_lwldslash_SOURCES) $(t_lwldslash_pab_SOURCES) $(t_lwldslash_sse_SOURCES) $(t_mesons_w_SOURCES) $(t_mesplq_SOURCES) $(t_ov_pbp_SOURCES) $(t_overbu_SOURCES) $(t_ovlap5d_bj_SOURCES) $(t_ovlap_bj_SOURCES) $(t_precact_SOURCES) $(t_precdwf_SOURCES) $(t_propagator_fuzz_s_SOURCES) $(t_propagator_s_SOURCES) $(t_propagator_w_SOURCES) $(t_ritz_SOURCES) $(t_ritz5d_KS_SOURCES) $(t_ritz_KS_SOURCES) $(t_spprod_SOURCES)
+SOURCES = $(t_ape_smear_SOURCES) $(t_conslinop_SOURCES) $(t_disc_loop_s_SOURCES) $(t_dslashm_SOURCES) $(t_dwflinop_SOURCES) $(t_fermion_loop_w_SOURCES) $(t_follana_io_s_SOURCES) $(t_follana_pion_s_SOURCES) $(t_formfac_SOURCES) $(t_gfix_SOURCES) $(t_hypsmear_SOURCES) $(t_io_SOURCES) $(t_lwldslash_SOURCES) $(t_lwldslash_pab_SOURCES) $(t_lwldslash_sse_SOURCES) $(t_mesons_w_SOURCES) $(t_mesplq_SOURCES) $(t_ov_pbp_SOURCES) $(t_overbu_SOURCES) $(t_ovlap5d_bj_SOURCES) $(t_ovlap_bj_SOURCES) $(t_precact_SOURCES) $(t_precdwf_SOURCES) $(t_propagator_fuzz_s_SOURCES) $(t_propagator_nrqcd_SOURCES) $(t_propagator_s_SOURCES) $(t_propagator_w_SOURCES) $(t_ritz_SOURCES) $(t_ritz5d_KS_SOURCES) $(t_ritz_KS_SOURCES) $(t_spprod_SOURCES)
 
 all: all-am
 
@@ -529,6 +538,9 @@ t_precdwf$(EXEEXT): $(t_precdwf_OBJECTS) $(t_precdwf_DEPENDENCIES)
 t_propagator_fuzz_s$(EXEEXT): $(t_propagator_fuzz_s_OBJECTS) $(t_propagator_fuzz_s_DEPENDENCIES) 
 	@rm -f t_propagator_fuzz_s$(EXEEXT)
 	$(CXXLINK) $(t_propagator_fuzz_s_LDFLAGS) $(t_propagator_fuzz_s_OBJECTS) $(t_propagator_fuzz_s_LDADD) $(LIBS)
+t_propagator_nrqcd$(EXEEXT): $(t_propagator_nrqcd_OBJECTS) $(t_propagator_nrqcd_DEPENDENCIES) 
+	@rm -f t_propagator_nrqcd$(EXEEXT)
+	$(CXXLINK) $(t_propagator_nrqcd_LDFLAGS) $(t_propagator_nrqcd_OBJECTS) $(t_propagator_nrqcd_LDADD) $(LIBS)
 t_propagator_s$(EXEEXT): $(t_propagator_s_OBJECTS) $(t_propagator_s_DEPENDENCIES) 
 	@rm -f t_propagator_s$(EXEEXT)
 	$(CXXLINK) $(t_propagator_s_LDFLAGS) $(t_propagator_s_OBJECTS) $(t_propagator_s_LDADD) $(LIBS)
@@ -578,6 +590,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_precact.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_precdwf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_propagator_fuzz_s.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_propagator_nrqcd.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_propagator_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_propagator_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_ritz.Po@am__quote@

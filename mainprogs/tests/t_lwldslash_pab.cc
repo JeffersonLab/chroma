@@ -1,4 +1,4 @@
-// $Id: t_lwldslash_pab.cc,v 1.1 2004-03-09 21:31:12 bjoo Exp $
+// $Id: t_lwldslash_pab.cc,v 1.2 2004-03-09 21:44:23 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -57,14 +57,14 @@ int main(int argc, char **argv)
   QDPIO::cout << "Done" << endl;
 
 #undef DEBUG
+  StopWatch swatch;
+
 
   int isign, cb, loop, iter=1;
   bool first = true;
   for(isign = 1; isign >= -1; isign -= 2) {
     for(cb = 0; cb < 2; ++cb) { 
 
-      clock_t myt1;
-      clock_t myt2;
       double mydt;
      
 #ifndef DEBUG
@@ -73,14 +73,14 @@ int main(int argc, char **argv)
 	for(iter=1; ; iter <<= 1)
 	{
 	  QDPIO::cout << "Applying D " << iter << " times" << endl;
-
-	  myt1=clock();
+	  swatch.reset();
+	  swatch.start();
 	  for(int i=iter; i-- > 0; ) {
 	    D.apply(chi, psi, (isign == 1 ? PLUS : MINUS), cb);
 	  }
-	  myt2=clock();
+	  swatch.stop();
 
-	  mydt=double(myt2-myt1)/double(CLOCKS_PER_SEC);
+	  mydt=swatch.getTimeInSeconds();
 	  if (mydt > 1) {
 	    first = false;
 	    break;
@@ -91,13 +91,14 @@ int main(int argc, char **argv)
 	
       QDPIO::cout << "Applying D for timings" << endl;
       
-      myt1=clock();
+      swatch.reset();
+      swatch.start();
       for(int i=iter; i-- > 0; ) {
 	D.apply(chi, psi, (isign == 1 ? PLUS : MINUS), cb);
       }
-      myt2=clock();
+      swatch.stop();
       
-      mydt=double(myt2-myt1)/double(CLOCKS_PER_SEC);
+      mydt=swatch.getTimeInSeconds();
       mydt=1.0e6*mydt/double(iter*(Layout::sitesOnNode()/2));
       
       QDPIO::cout << "cb = " << cb << " isign = " << isign << endl;
@@ -114,11 +115,10 @@ int main(int argc, char **argv)
   QDPIO::cout << "Done" << endl;
 
   first = true;
+  
   for(isign = 1; isign >= -1; isign -= 2) {
     for(cb = 0; cb < 2; ++cb) { 
 
-      clock_t myt1;
-      clock_t myt2;
       double mydt;
       
 #ifndef DEBUG
@@ -127,14 +127,14 @@ int main(int argc, char **argv)
 	for(iter=1; ; iter <<= 1)
 	{
 	  QDPIO::cout << "Applying D " << iter << " times" << endl;
-
-	  myt1=clock();
+	  swatch.reset();
+	  swatch.start();
 	  for(int i=iter; i-- > 0; ) {
 	    D_opt.apply(chi, psi, (isign == 1 ? PLUS : MINUS ) , cb); // NOTE: for timings throw away return value
 	  }
-	  myt2=clock();
+	  swatch.stop();
 
-	  mydt=double(myt2-myt1)/double(CLOCKS_PER_SEC);
+	  mydt=swatch.getTimeInSeconds();
 	  if (mydt > 1) {
 	    first = false;
 	    break;
@@ -145,13 +145,14 @@ int main(int argc, char **argv)
 
       QDPIO::cout << "Applying D for timings" << endl;
       
-      myt1=clock();
+      swatch.reset();
+      swatch.start();
       for(int i=iter; i-- > 0; ) {
 	D_opt.apply(chi, psi, (isign == 1 ? PLUS : MINUS ) , cb); // NOTE: for timings throw away return value
       }
-      myt2=clock();
+      swatch.stop();
       
-      mydt=double(myt2-myt1)/double(CLOCKS_PER_SEC);
+      mydt=swatch.getTimeInSeconds();
       mydt=1.0e6*mydt/double(iter*(Layout::sitesOnNode()/2));
       
       QDPIO::cout << "cb = " << cb << " isign = " << isign << endl;
