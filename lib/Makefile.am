@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.219 2005-01-10 19:53:04 edwards Exp $
+# $Id: Makefile.am,v 1.220 2005-01-11 15:28:02 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -132,7 +132,10 @@ nobase_include_HEADERS = \
 	update/molecdyn/prec_two_flavor_wilson_monomial_w.h \
 	update/molecdyn/unprec_two_flavor_wilson5d_monomial_w.h \
 	update/molecdyn/prec_two_flavor_wilson5d_monomial_w.h \
-	update/molecdyn/global_metropolis_accrej.h
+	update/molecdyn/global_metropolis_accrej.h \
+	update/molecdyn/chrono_predictor.h \
+	update/molecdyn/chrono_predictor_factory.h \
+	update/molecdyn/zero_guess_predictor.h
 
 nodist_include_HEADERS=chroma_config_internal.h
 
@@ -233,7 +236,6 @@ nobase_include_HEADERS += \
 	util/ferm/ferm_w.h util/ferm/diractodr.h util/ferm/gammasgn_w.h \
 	util/ferm/tdiractodr.h \
         util/ferm/paulitodr.h
-
 # Staggered specific headers
 nobase_include_HEADERS += \
 	actions/ferm/fermacts/asqtad_fermact_s.h \
@@ -365,7 +367,9 @@ libchroma_a_SOURCES = \
 	actions/gauge/wilson_gaugeact.cc \
 	update/molecdyn/wilson_gauge_monomial.cc \
 	update/molecdyn/lcm_pqp_leapfrog.cc \
-	update/molecdyn/global_metropolis_accrej.cc
+	update/molecdyn/global_metropolis_accrej.cc \
+	update/molecdyn/zero_guess_predictor.cc 
+
 #	actions/ferm/invert/invbicg.cc
 #       actions/ferm/invert/invmr.cc 
 #       util/gauge/eesu2.cc 

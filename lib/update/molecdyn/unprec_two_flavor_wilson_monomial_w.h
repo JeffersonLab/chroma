@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_two_flavor_wilson_monomial_w.h,v 1.1 2005-01-10 19:59:11 edwards Exp $
+// $Id: unprec_two_flavor_wilson_monomial_w.h,v 1.2 2005-01-11 15:28:03 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 4D ferm monomials
  */
@@ -11,6 +11,7 @@
 
 #include "update/molecdyn/field_state.h"
 #include "update/molecdyn/abs_monomial.h"
+#include "update/molecdyn/chrono_predictor.h"
 
 namespace Chroma 
 {
@@ -30,6 +31,7 @@ namespace Chroma
     UnprecTwoFlavorWilsonTypeFermMonomialParams(XMLReader& in, const std::string&  path);
     InvertParam_t inv_param; // Inverter Parameters
     string ferm_act;
+    std::string predictor_xml;  // ChronologicalPredictor XML
   };
 
   void read(XMLReader& xml, const string& path, UnprecTwoFlavorWilsonTypeFermMonomialParams& param);
@@ -51,21 +53,15 @@ namespace Chroma
       UnprecTwoFlavorWilsonTypeFermMonomial(const string& fermact_name, 
 					      const UnprecTwoFlavorWilsonTypeFermMonomialParams& param_);
 
-      // Construct from a fermact handle and inv params
-      // FermAct already holds BC-s
-//      UnprecTwoFlavorWilsonTypeFermMonomial(const std::string& FermAct, 
-//					      Handle< const UnprecWilsonTypeFermAct >& fermact_, 
-//					      const InvertParam_t& inv_param_) : 
-//	fermact(fermact_), inv_param(inv_param_) {init(FermAct);}
 
       // Copy Constructor
-      UnprecTwoFlavorWilsonTypeFermMonomial(const UnprecTwoFlavorWilsonTypeFermMonomial& m) : phi(m.phi), fermact((m.fermact)), inv_param(m.inv_param) {}
+      UnprecTwoFlavorWilsonTypeFermMonomial(const UnprecTwoFlavorWilsonTypeFermMonomial& m) : phi(m.phi), fermact((m.fermact)), inv_param(m.inv_param), chrono_predictor(m.chrono_predictor) {}
 
       const LatticeFermion& debugGetPhi(void) const {
 	return getPhi();
       }
 
-      void debugGetX(LatticeFermion& X, const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const {
+      void debugGetX(LatticeFermion& X, const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const  {
 	getX(X,s);
       }
 
@@ -77,6 +73,7 @@ namespace Chroma
     protected:
 
       LatticeFermion& getPhi(void) {
+	// If phi are changed we must reset the chrono predictor
 	return phi;
       }
 
@@ -90,13 +87,16 @@ namespace Chroma
 
       //! Do inversion M^dag M X = phi
       void getX(LatticeFermion& X, 
-		const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const;
+		const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const ;
 
       //! Get X = (A^dag*A)^{-1} eta
       int invert(LatticeFermion& X, 
 		 const LinearOperator<LatticeFermion>& A,
 		 const LatticeFermion& eta) const;
 
+      AbsChronologicalPredictor4D<LatticeFermion>& getMDSolutionPredictor(void) {
+	return *chrono_predictor;
+      }
 
     private:
       // Hide empty constructor and =
@@ -111,6 +111,11 @@ namespace Chroma
 
       // The parameters for the inversion
       InvertParam_t inv_param;
+      
+      // A handle for the chrono predictor
+      Handle< AbsChronologicalPredictor4D<LatticeFermion> > chrono_predictor;
+
+
     };
 
 

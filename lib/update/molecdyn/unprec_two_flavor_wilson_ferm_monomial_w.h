@@ -27,7 +27,8 @@ namespace Chroma {
     // Read monomial from some root path
     UnprecTwoFlavorWilsonTypeFermMonomialParams(XMLReader& in, const std::string&  path);
     InvertParam_t inv_param; // Inverter Parameters
-    string ferm_act;
+    std::string ferm_act;    // FermAct XML
+    std::string predictor_xml;  // ChronologicalPredictor XML
   };
 
   void read(XMLReader& xml, const string& path, UnprecTwoFlavorWilsonTypeFermMonomialParams& param);
@@ -48,10 +49,10 @@ namespace Chroma {
 
       // Construct from a fermact handle and inv params
       // FermAct already holds BC-s
-      UnprecTwoFlavorWilsonTypeFermMonomial(Handle< const UnprecWilsonTypeFermAct<LatticeFermion, multi1d<LatticeColorMatrix> >  >& fermact_, const InvertParam_t& inv_param_ ) : fermact(fermact_), inv_param(inv_param_) {}
+      UnprecTwoFlavorWilsonTypeFermMonomial(Handle< const UnprecWilsonTypeFermAct<LatticeFermion, multi1d<LatticeColorMatrix> >  >& fermact_, const InvertParam_t& inv_param_, Handle< AbsChronologicalInverter4D<LatticeFermion> >& chrono_predictor_ ) : fermact(fermact_), inv_param(inv_param_), chrono_predictor(chrono_predictor_) {}
 
       // Copy Constructor
-      UnprecTwoFlavorWilsonTypeFermMonomial(const UnprecTwoFlavorWilsonTypeFermMonomial& m) : fermact((m.fermact)), inv_param(m.inv_param) 
+      UnprecTwoFlavorWilsonTypeFermMonomial(const UnprecTwoFlavorWilsonTypeFermMonomial& m) : fermact((m.fermact)), inv_param(m.inv_param), chrono_predictor(m.chrono_predictor) 
 	{
 	  phi = m.phi;
 	}
@@ -73,8 +74,10 @@ namespace Chroma {
 
     protected:
 
-
+      // Mutable getPhi used in assignments 
       LatticeFermion& getPhi(void) {
+	// If phi are changed we must reset the chrono predictor
+	getChronoPredictor().reset();
 	return phi;
       }
 
@@ -87,10 +90,13 @@ namespace Chroma {
       }
 
       // Do inversion M^dag M X = phi
-      void getX(LatticeFermion& X, const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const;
+      void getX(LatticeFermion& X, const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s);
 
 
-      
+      AbsChronologicalPredictor4D<LatticeFermion>& getChronoPredictor(void) {
+	return *chrono_predictor;
+      }
+
     private:
  
       // Pseudofermion field phi
@@ -98,6 +104,9 @@ namespace Chroma {
 
       // A handle for the UnprecWilsonTypeFermAct
       Handle<const UnprecWilsonTypeFermAct<LatticeFermion, multi1d<LatticeColorMatrix> > > fermact;
+
+      // A handle for the chrono predictor
+      Handle< AbsChronologicalPredictor4D<LatticeFermion> > chrono_predictor;
 
       // The parameters for the inversion
       InvertParam_t inv_param;

@@ -32,6 +32,9 @@ bool linkage_hack()
 
   // MD Integrators
   foo &= LatColMatPQPLeapfrogIntegratorEnv::registered;
+
+  // Chrono predictor
+  foo &= ZeroGuess4DChronoPredictorEnv::registered;
   return foo;
 }
 

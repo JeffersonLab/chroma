@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_two_flavor_wilson5d_monomial_w.h,v 1.1 2005-01-04 06:53:42 edwards Exp $
+// $Id: unprec_two_flavor_wilson5d_monomial_w.h,v 1.2 2005-01-11 15:28:02 bjoo Exp $
 
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 5D ferm monomials
@@ -31,6 +31,7 @@ namespace Chroma
     UnprecTwoFlavorWilsonTypeFermMonomial5DParams(XMLReader& in, const std::string&  path);
     InvertParam_t inv_param; // Inverter Parameters
     string ferm_act;
+    string predictor_xml;
   };
 
   void read(XMLReader& xml, const string& path, UnprecTwoFlavorWilsonTypeFermMonomial5DParams& param);
@@ -60,7 +61,7 @@ namespace Chroma
 //	fermact(fermact_), inv_param(inv_param_) {init(FermAct);}
 
       // Copy Constructor
-      UnprecTwoFlavorWilsonTypeFermMonomial5D(const UnprecTwoFlavorWilsonTypeFermMonomial5D& m) : phi(m.phi), fermact((m.fermact)), inv_param(m.inv_param) {}
+      UnprecTwoFlavorWilsonTypeFermMonomial5D(const UnprecTwoFlavorWilsonTypeFermMonomial5D& m) : phi(m.phi), fermact(m.fermact), inv_param(m.inv_param), chrono_predictor(m.chrono_predictor) {}
 
       const multi1d<LatticeFermion>& debugGetPhi(void) const {
 	return getPhi();
@@ -91,7 +92,7 @@ namespace Chroma
 
       //! Do inversion M^dag M X = phi
       void getX(multi1d<LatticeFermion>& X, 
-		const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const;
+		const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const ;
 
       
       //! Get X = (PV^dag*PV)^{-1} eta
@@ -104,6 +105,10 @@ namespace Chroma
 		 const LinearOperator< multi1d<LatticeFermion> >& A,
 		 const multi1d<LatticeFermion>& eta) const;
 
+     
+      AbsChronologicalPredictor5D< LatticeFermion >& getMDSolutionPredictor(void) {
+	return *chrono_predictor;
+      }
 
     private:
       // Hide empty constructor and =
@@ -118,6 +123,9 @@ namespace Chroma
 
       // The parameters for the inversion
       InvertParam_t inv_param;
+
+      // Chrono Predictor
+      Handle < AbsChronologicalPredictor5D<LatticeFermion> > chrono_predictor;
     };
 
 

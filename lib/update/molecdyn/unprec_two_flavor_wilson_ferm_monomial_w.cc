@@ -15,6 +15,7 @@
 #include "update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.h"
 
 #include "actions/ferm/fermacts/unprec_wilson_fermact_w.h"
+#include "update/molecdyn/zero_guess_predictor.h"
 using namespace QDP;
 
 #include <string>
@@ -65,11 +66,23 @@ namespace Chroma {
     try {
       // Read the inverter Parameters
       read(paramtop, "./InvertParam", inv_param);
+  
+      // Read the fermact
       XMLReader xml_tmp(paramtop, "./FermionAction");
       std::ostringstream os;
       xml_tmp.print(os);
       ferm_act = os.str();
       
+
+      if( paramtop.count("./ChronologicalPredictor") == 0 ) {
+	predictor_xml="";
+      }
+      else {
+	XMLReader chrono_xml_reader(paramtop, "./ChronologicalPredictor");
+	std::ostringstream chrono_os;
+	chrono_xml_reader.print(chrono_os);
+	predictor_xml = chrono_os.str();
+      }
     }
     catch(const string& s) {
       QDPIO::cerr << "Caught Exception while reading parameters: " << s <<endl;
@@ -121,6 +134,39 @@ namespace Chroma {
     }
 
     fermact = downcast;    
+
+
+    // Get Chronological predictor
+    AbsChronologicalPredictor4D<LatticeFermion>* tmp=0x0;
+    if( param_.predictor_xml == "" ) {
+      // No predictor specified use zero guess
+       tmp = new ZeroGuess4DChronoPredictor();
+    }
+    else {
+
+      
+      try { 
+	std::string chrono_name;
+	std::istringstream chrono_is(param_.predictor_xml);
+	XMLReader chrono_xml(chrono_is);
+	read(chrono_xml, "./ChronologicalPredictor/Name", chrono_name);
+	tmp = The4DChronologicalFactory::Instance().createObject(chrono_name, 
+								 chrono_xml, 
+								 "./ChronologicalPredictor");
+      }
+      catch(const std::string& e ) { 
+	QDPIO::cerr << "Caught Exception Reading XML: " << e << endl;
+	QDP_abort(1);
+      }
+
+
+    }
+     
+    if( tmp == 0x0 ) { 
+      QDPIO::cerr << "Failed to create ZeroGuess4DChronoPredictor" << endl;
+      QDP_abort(1);
+    }
+    chrono_predictor = tmp;
   }
 
   void
@@ -143,8 +189,14 @@ namespace Chroma {
 	int n_count =0;
 
 	// Solve MdagM X = phi
-	X=zero;
+	// Get initial guess from predictor
+	*(getChronologicalPredictor())(X);
+
+	// do solve
 	InvCG2(*M, getPhi(), X, inv_param.RsdCG, inv_param.MaxCG, n_count);
+
+	// Register nwe vector with predictor
+	*(getChronologicalPredictor()).newVector(X);
       }
       break;
     default:

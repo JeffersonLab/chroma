@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_two_flavor_wilson5d_monomial_w.h,v 1.1 2005-01-04 06:53:42 edwards Exp $
+// $Id: prec_two_flavor_wilson5d_monomial_w.h,v 1.2 2005-01-11 15:28:02 bjoo Exp $
 
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 5D ferm monomials
@@ -30,6 +30,7 @@ namespace Chroma
     EvenOddPrecTwoFlavorWilsonTypeFermMonomial5DParams(XMLReader& in, const std::string&  path);
     InvertParam_t inv_param; // Inverter Parameters
     string ferm_act;
+    string predictor_xml;
   };
 
   void read(XMLReader& xml, const string& path, EvenOddPrecTwoFlavorWilsonTypeFermMonomial5DParams& param);
@@ -57,13 +58,13 @@ namespace Chroma
 //      EvenOddPrecTwoFlavorWilsonTypeFermMonomial5D(Handle< const EvenOddPrecWilsonFermAct >& fermact_, const InvertParam_t& inv_param_ ) : fermact(fermact_), inv_param(inv_param_) {}
 
       // Copy Constructor
-      EvenOddPrecTwoFlavorWilsonTypeFermMonomial5D(const EvenOddPrecTwoFlavorWilsonTypeFermMonomial5D& m) : phi(m.phi), fermact(m.fermact), inv_param(m.inv_param) {}
+      EvenOddPrecTwoFlavorWilsonTypeFermMonomial5D(const EvenOddPrecTwoFlavorWilsonTypeFermMonomial5D& m) : phi(m.phi), fermact(m.fermact), inv_param(m.inv_param), chrono_predictor(m.chrono_predictor) {}
 
       const multi1d<LatticeFermion>& debugGetPhi(void) const {
 	return getPhi();
       }
 
-      void debugGetX(multi1d<LatticeFermion>& X, const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const {
+      void debugGetX(multi1d<LatticeFermion>& X, const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s)  {
 	getX(X,s);
       }
 
@@ -94,7 +95,7 @@ namespace Chroma
       }
 
       // Do inversion M^dag M X = phi
-      void getX(multi1d<LatticeFermion>& X, const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const;
+      void getX(multi1d<LatticeFermion>& X, const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const ;
 
 
       //! Get X = (PV^dag*PV)^{-1} eta
@@ -106,6 +107,10 @@ namespace Chroma
       int invert(multi1d<LatticeFermion>& X, 
 		 const LinearOperator< multi1d<LatticeFermion> >& A,
 		 const multi1d<LatticeFermion>& eta) const;
+
+      AbsChronologicalPredictor5D<LatticeFermion>& getMDSolutionPredictor(void) { 
+	return *chrono_predictor;
+      }
 
       
     private:
@@ -122,6 +127,7 @@ namespace Chroma
 
       // The parameters for the inversion
       InvertParam_t inv_param;
+      Handle<AbsChronologicalPredictor5D<LatticeFermion> > chrono_predictor;
     };
 
 

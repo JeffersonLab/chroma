@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_two_flavor_wilson_monomial_w.h,v 1.1 2005-01-10 19:59:11 edwards Exp $
+// $Id: prec_two_flavor_wilson_monomial_w.h,v 1.2 2005-01-11 15:28:02 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -29,6 +29,8 @@ namespace Chroma
     EvenOddPrecTwoFlavorWilsonTypeFermMonomialParams(XMLReader& in, const std::string&  path);
     InvertParam_t inv_param; // Inverter Parameters
     string ferm_act;
+    string predictor_xml;   // The Chrono Predictor XML
+
   };
 
   void read(XMLReader& xml, const string& path, EvenOddPrecTwoFlavorWilsonTypeFermMonomialParams& param);
@@ -56,13 +58,13 @@ namespace Chroma
 //      EvenOddPrecTwoFlavorWilsonTypeFermMonomial(Handle< const EvenOddPrecWilsonFermAct >& fermact_, const InvertParam_t& inv_param_ ) : fermact(fermact_), inv_param(inv_param_) {}
 
       // Copy Constructor
-      EvenOddPrecTwoFlavorWilsonTypeFermMonomial(const EvenOddPrecTwoFlavorWilsonTypeFermMonomial& m) : phi(m.phi), fermact(m.fermact), inv_param(m.inv_param) {}
+      EvenOddPrecTwoFlavorWilsonTypeFermMonomial(const EvenOddPrecTwoFlavorWilsonTypeFermMonomial& m) : phi(m.phi), fermact(m.fermact), inv_param(m.inv_param), chrono_predictor(m.chrono_predictor) {}
 
       const LatticeFermion& debugGetPhi(void) const {
 	return getPhi();
       }
 
-      void debugGetX(LatticeFermion& X, const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const {
+      void debugGetX(LatticeFermion& X, const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s)  {
 	getX(X,s);
       }
 
@@ -101,6 +103,9 @@ namespace Chroma
 		 const LinearOperator<LatticeFermion>& A,
 		 const LatticeFermion& eta) const;
 
+      AbsChronologicalPredictor4D<LatticeFermion>& getMDSolutionPredictor(void) { 
+	return *chrono_predictor;
+      };
 
     private:
  
@@ -116,6 +121,8 @@ namespace Chroma
 
       // The parameters for the inversion
       InvertParam_t inv_param;
+
+      Handle<AbsChronologicalPredictor4D<LatticeFermion> > chrono_predictor;
     };
 
 

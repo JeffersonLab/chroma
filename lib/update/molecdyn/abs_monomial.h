@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_monomial.h,v 1.14 2005-01-07 12:14:29 bjoo Exp $
+// $Id: abs_monomial.h,v 1.15 2005-01-11 15:28:02 bjoo Exp $
 
 /*! @file
  * @brief Monomials - gauge action or fermion binlinear contributions for HMC
@@ -12,7 +12,7 @@
 #include "gaugeact.h"
 
 #include "update/molecdyn/field_state.h"
-
+#include "update/molecdyn/chrono_predictor.h"
 namespace Chroma
 {
   //! An abstract monomial class, for inexact algorithms
@@ -47,7 +47,7 @@ namespace Chroma
 
     //! Compute dsdq for the system... 
     /*! Not specified how to actually do this s is the state, F is the computed force */
-    virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) const = 0;
+    virtual void dsdq(P& F, const AbsFieldState<P,Q>& s)  = 0;
 
     //! Refresh pseudofermion fields if any
     virtual void refreshInternalFields(const AbsFieldState<P,Q>& field_state) =0 ;
@@ -76,12 +76,12 @@ namespace Chroma
 
     //! Compute dsdq for the system... Not specified how to actually do this
     //  s is the state, F is the computed force
-    virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) const = 0;
+    virtual void dsdq(P& F, const AbsFieldState<P,Q>& s)  = 0;
 
     // Compute the energies 
 
     //! Compute the total action
-    virtual Double S(const AbsFieldState<P,Q>& s) const = 0;
+    virtual Double S(const AbsFieldState<P,Q>& s) const  = 0;
 
     //! Refresh pseudofermion fields if any
     virtual void refreshInternalFields(const AbsFieldState<P,Q>& field_state) = 0;
@@ -110,7 +110,7 @@ namespace Chroma
 
     //! Compute dsdq for the system... Not specified how to actually do this
     //  s is the state, F is the computed force
-    virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) const = 0;
+    virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) = 0;
 
     // Refresh all pseudofermions
     virtual void refreshInternalFields(const AbsFieldState<P,Q>& field_state) = 0 ;
@@ -143,7 +143,7 @@ namespace Chroma
 
     //! Compute dsdq for the system... Not specified how to actually do this
     /*! s is the state, F is the computed force */
-    virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) const = 0;
+    virtual void dsdq(P& F, const AbsFieldState<P,Q>& s)  = 0;
 
     //! Refresh pseudofermions
     virtual void refreshInternalFields(const AbsFieldState<P,Q>& field_state) = 0;
@@ -173,7 +173,7 @@ namespace Chroma
 
     //! Compute dsdq for the system... Not specified how to actually do this
     /*! s is the state, F is the computed force */
-    virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) const = 0;
+    virtual void dsdq(P& F, const AbsFieldState<P,Q>& s)  = 0;
 
     //! Refresh pseudofermions
     virtual void refreshInternalFields(const AbsFieldState<P,Q>& field_state) = 0;
@@ -203,7 +203,7 @@ namespace Chroma
 
     //! Compute dsdq for the system... Not specified how to actually do this
     //  s is the state, F is the computed force
-    virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) const = 0;
+    virtual void dsdq(P& F, const AbsFieldState<P,Q>& s)  = 0;
 
     //! Refresh pseudofermions
     virtual void refreshInternalFields(const AbsFieldState<P,Q>& field_state) = 0;
@@ -232,7 +232,7 @@ namespace Chroma
 
     //! Compute dsdq for the system... Not specified how to actually do this
     /*! s is the state, F is the computed force */
-    virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) const = 0;
+    virtual void dsdq(P& F, const AbsFieldState<P,Q>& s)  = 0;
 
     //! Refresh pseudofermions
     virtual void refreshInternalFields(const AbsFieldState<P,Q>& field_state) = 0;
@@ -266,7 +266,7 @@ namespace Chroma
 
     //! Compute dsdq for the system... Not specified how to actually do this
     /*! s is the state, F is the computed force */
-    virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) const = 0;
+    virtual void dsdq(P& F, const AbsFieldState<P,Q>& s)  = 0;
 
     //! Refresh pseudofermions
     virtual void refreshInternalFields(const AbsFieldState<P,Q>& field_state) = 0;
@@ -305,7 +305,7 @@ namespace Chroma
 
     //! Compute dsdq for the system... 
     /*! Actions of the form  chi^dag*(M^dag*M)*chi */
-    virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) const
+    virtual void dsdq(P& F, const AbsFieldState<P,Q>& s)
     {
       /**** Identical code for unprec and even-odd prec case *****/
       
@@ -330,8 +330,12 @@ namespace Chroma
       Handle< const DiffLinearOperator<Phi,P> > lin(FA.linOp(state));
 	
       Phi X, Y;
+
+      // Get X out here
+      (getMDSolutionPredictor())(X);
       getX(X,s);
-      
+      (getMDSolutionPredictor()).newVector(X);
+
       (*lin)(Y, X, PLUS);
 
       lin->deriv(F, X, Y, MINUS);
@@ -372,6 +376,7 @@ namespace Chroma
       
       // Now HIT IT with the ROCK!!!! (Or in this case M^{dagger})
       (*M)(getPhi(), eta, MINUS);
+      getMDSolutionPredictor().reset();
     }				    
   
     //! Copy pseudofermions if any
@@ -385,6 +390,9 @@ namespace Chroma
 	QDPIO::cerr << "Failed to cast input Monomial to TwoFlavorExactWilsonTypeFermMonomial " << endl;
 	QDP_abort(1);
       }
+
+      // Resetting pseudofermion fields implies resetting the chrono predictor
+      getMDSolutionPredictor().reset();
     }
   protected:
     //! Accessor for pseudofermion with Pf index i (read only)
@@ -399,6 +407,8 @@ namespace Chroma
     //! Get (M^dagM)^{-1} phi
     virtual void getX(Phi& X, const AbsFieldState<P,Q>& s) const = 0;
 
+    //! Get the initial guess predictor
+    virtual AbsChronologicalPredictor4D<Phi>& getMDSolutionPredictor(void) = 0;
   };
 
 
@@ -425,7 +435,7 @@ namespace Chroma
 
     //! Compute dsdq for the system... 
     /*! Actions of the form  chi^dag*(M^dag*M)*chi */
-    virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) const
+    virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) 
     {
       /**** Identical code for unprec and even-odd prec case *****/
       
@@ -462,8 +472,11 @@ namespace Chroma
 	
       // Get/construct the pseudofermion solution
       multi1d<Phi> X(FA.size()), Y(FA.size());
+
+      (getMDSolutionPredictor())(X);
       getX(X,s);
-      
+      (getMDSolutionPredictor()).newVector(X);
+
       (*M)(Y, X, PLUS);
 
       // First PV contribution
@@ -522,6 +535,9 @@ namespace Chroma
 
       // Finally, get phi
       (*PV)(getPhi(), eta, PLUS);
+
+      // Reset the chronological predictor
+      getMDSolutionPredictor().reset();
     }				    
 
     virtual void setInternalFields(const Monomial<P,Q>& m) {
@@ -540,6 +556,9 @@ namespace Chroma
 	QDPIO::cerr << "Failed to cast input Monomial to TwoFlavorExactWilsonTypeFermMonomial5D" << endl;
 	QDP_abort(1);
       }
+
+      // Reset the chronological predictor
+      getMDSolutionPredictor().reset();
     }
   
 
@@ -559,7 +578,8 @@ namespace Chroma
     //! Get X = (PV^dag*PV)^{-1} eta
     virtual void getXPV(multi1d<Phi>& X, const multi1d<Phi>& eta, const AbsFieldState<P,Q>& s) const = 0;
 
-  };
+    virtual AbsChronologicalPredictor5D<Phi>& getMDSolutionPredictor(void) = 0;
+   };
 
 
   //-------------------------------------------------------------------------------------------
@@ -579,9 +599,13 @@ namespace Chroma
     ~TwoFlavorExactUnprecWilsonTypeFermMonomial() {}
 
     //! Compute the total action
-    virtual Double S(const AbsFieldState<P,Q>& s) const 
+    virtual Double S(const AbsFieldState<P,Q>& s)   const
     {
       Phi X;
+      
+      // Energy calc doesnt use Chrono Predictor
+      X = zero;
+
       getX(X,s);
 
       // Action on the entire lattice
@@ -602,7 +626,9 @@ namespace Chroma
 
     //! Get (M^dagM)^{-1} phi
     virtual void getX(Phi& X, const AbsFieldState<P,Q>& s) const = 0;
-
+    
+    //! Get at the chronological predcitor
+    virtual AbsChronologicalPredictor4D<Phi>& getMDSolutionPredictor(void) = 0;
   };
 
 
@@ -623,7 +649,7 @@ namespace Chroma
     virtual Double S_even_even(const AbsFieldState<P,Q>& s) const = 0;
 
     //! Compute the odd odd contribution (eg
-    virtual Double S_odd_odd(const AbsFieldState<P,Q>& s) const 
+    virtual Double S_odd_odd(const AbsFieldState<P,Q>& s) const
     {
       const EvenOddPrecWilsonTypeFermAct<Phi,P>& FA = getFermAct();
 
@@ -633,13 +659,17 @@ namespace Chroma
       Handle< const EvenOddPrecLinearOperator<Phi,P> > lin(FA.linOp(bc_g_state));
       // Get the X fields
       Phi X;
+
+      // Action calc doesnt use chrono predictor use zero guess
+      X[ lin->subset() ] = zero;
+
       getX(X, s);
       Double action = innerProductReal(getPhi(), X, lin->subset());
       return action;
     }
 
     //! Compute the total action
-    Double S(const AbsFieldState<P,Q>& s) const {
+    Double S(const AbsFieldState<P,Q>& s)  const {
       return S_even_even(s) + S_odd_odd(s);
     }
 
@@ -654,8 +684,9 @@ namespace Chroma
     virtual Phi& getPhi(void) = 0;    
 
     //! Get (M^dagM)^{-1} phi
-    virtual void getX(Phi& X, const AbsFieldState<P,Q>& s) const = 0;
+    virtual void getX(Phi& X, const AbsFieldState<P,Q>& s) const  = 0;
 
+    virtual AbsChronologicalPredictor4D<Phi>& getMDSolutionPredictor(void) = 0;
   };
 
 
@@ -677,7 +708,7 @@ namespace Chroma
     ~TwoFlavorExactUnprecWilsonTypeFermMonomial5D() {}
 
     //! Compute the total action
-    virtual Double S(const AbsFieldState<P,Q>& s) const 
+    virtual Double S(const AbsFieldState<P,Q>& s) const
     {
            // Get at the ferion action for piece i
       const WilsonTypeFermAct5D<Phi,P>& FA = getFermAct();
@@ -692,6 +723,8 @@ namespace Chroma
       // Paranoia -- to deal with subsets.
       tmp = zero; 
 
+      // Energy calc does not use chrono predictor
+      X = zero;
       // X is now (M^dagM)^{-1} V^{dag} phi
       getX(X,s);
 
@@ -717,10 +750,12 @@ namespace Chroma
     virtual const UnprecWilsonTypeFermAct5D<Phi,P>& getFermAct(void) const = 0;
 
     //! Get (M^dagM)^{-1} phi
-    virtual void getX(multi1d<Phi>& X, const AbsFieldState<P,Q>& s) const = 0;
+    virtual void getX(multi1d<Phi>& X, const AbsFieldState<P,Q>& s) const  = 0;
 
     //! Get X = (PV^dag*PV)^{-1} eta
     virtual void getXPV(multi1d<Phi>& X, const multi1d<Phi>& eta, const AbsFieldState<P,Q>& s) const = 0;
+
+    virtual AbsChronologicalPredictor5D<Phi>& getMDSolutionPredictor(void) = 0;
   };
 
 
@@ -741,7 +776,7 @@ namespace Chroma
     virtual Double S_even_even(const AbsFieldState<P,Q>& s) const = 0;
 
     //! Compute the odd odd contribution (eg
-    virtual Double S_odd_odd(const AbsFieldState<P,Q>& s) const 
+    virtual Double S_odd_odd(const AbsFieldState<P,Q>& s) const
     {
       const EvenOddPrecWilsonTypeFermAct5D<Phi,P>& FA = getFermAct();
 
@@ -755,6 +790,9 @@ namespace Chroma
       multi1d<Phi> X(FA.size());
 
       // X is now (M^dag M)^{-1} V^dag phi
+
+      // Chrono predictor not used in energy calculation
+      X = zero;
       getX(X, s);
 
       multi1d<Phi> tmp(FA.size());
@@ -768,7 +806,7 @@ namespace Chroma
     }
 
     //! Compute the total action
-    Double S(const AbsFieldState<P,Q>& s) const {
+    Double S(const AbsFieldState<P,Q>& s) const  {
       return S_even_even(s) + S_odd_odd(s);
     }
 
@@ -783,10 +821,10 @@ namespace Chroma
     virtual multi1d<Phi>& getPhi(void) = 0;    
 
     //! Get (M^dagM)^{-1} phi
-    virtual void getX(multi1d<Phi>& X, const AbsFieldState<P,Q>& s) const = 0;
+    virtual void getX(multi1d<Phi>& X, const AbsFieldState<P,Q>& s) const  = 0;
 
     //! Get X = (PV^dag*PV)^{-1} eta
-    virtual void getXPV(multi1d<Phi>& X, const multi1d<Phi>& eta, const AbsFieldState<P,Q>& s) const = 0;
+    virtual void getXPV(multi1d<Phi>& X, const multi1d<Phi>& eta, const AbsFieldState<P,Q>& s) const  = 0;
   };
 
 

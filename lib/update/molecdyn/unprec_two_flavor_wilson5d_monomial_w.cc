@@ -1,4 +1,4 @@
-// $Id: unprec_two_flavor_wilson5d_monomial_w.cc,v 1.4 2005-01-10 19:57:02 edwards Exp $
+// $Id: unprec_two_flavor_wilson5d_monomial_w.cc,v 1.5 2005-01-11 15:28:02 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 5D ferm monomials
  */
@@ -17,6 +17,11 @@
 #include "actions/ferm/fermacts/unprec_ovlap_contfrac5d_fermact_array_w.h"
 #include "actions/ferm/fermacts/unprec_nef_fermact_array_w.h"
 #include "actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.h"
+
+#include "update/molecdyn/chrono_predictor.h"
+#include "update/molecdyn/chrono_predictor_factory.h"
+
+#include "update/molecdyn/zero_guess_predictor.h"
 
 namespace Chroma 
 { 
@@ -77,7 +82,16 @@ namespace Chroma
       std::ostringstream os;
       xml_tmp.print(os);
       ferm_act = os.str();
-      
+
+      if( paramtop.count("./ChronologicalPredictor") == 0 ) {
+	predictor_xml="";
+      }
+      else {
+	XMLReader chrono_xml_reader(paramtop, "./ChronologicalPredictor");
+	std::ostringstream chrono_os;
+	chrono_xml_reader.print(chrono_os);
+	predictor_xml = chrono_os.str();
+      }
     }
     catch(const string& s) {
       QDPIO::cerr << "Caught Exception while reading parameters: " << s <<endl;
@@ -141,11 +155,42 @@ namespace Chroma
 
     fermact = downcast;    
 
+    // Get Chronological predictor
+    AbsChronologicalPredictor5D<LatticeFermion>* tmp=0x0;
+    if( param_.predictor_xml == "" ) {
+      // No predictor specified use zero guess
+       tmp = new ZeroGuess5DChronoPredictor(fermact->size());
+    }
+    else {
+      try { 
+	std::string chrono_name;
+	std::istringstream chrono_is(param_.predictor_xml);
+	XMLReader chrono_xml(chrono_is);
+	read(chrono_xml, "./ChronologicalPredictor/Name", chrono_name);
+	tmp = The5DChronologicalPredictorFactory::Instance().createObject(chrono_name, fermact->size(), chrono_xml, "./ChronologicalPredictor");
+      }
+      catch(const std::string& e ) { 
+	QDPIO::cerr << "Caught Exception Reading XML: " << e << endl;
+	QDP_abort(1);
+      }
+    }
+    
+    if( tmp == 0x0 ) { 
+      QDPIO::cerr << "Failed to create the 5D ChronoPredictor" << endl;
+      QDP_abort(1);
+    }
+    chrono_predictor = tmp;
+
+
     QDPIO::cout << "UnprecTwoFlavorWilsonTypeFermMonomial5D: finished " << fermact_string << endl;
+
+   
   }
 
 
   // Do inversion M^dag M X = V^dag phi ?
+
+  // X allocated and pased in...
   void
   UnprecTwoFlavorWilsonTypeFermMonomial5D::getX(
     multi1d<LatticeFermion>& X, 
@@ -157,9 +202,7 @@ namespace Chroma
     // Make the state
     Handle< const ConnectState > state(FA.createState(s.getQ()));
 
-    X.resize(FA.size());
-    X = zero;
-   
+    
     // Get linop
     Handle< const LinearOperator< multi1d<LatticeFermion> > > M(FA.linOp(state));
 
@@ -191,7 +234,7 @@ namespace Chroma
     // Make the state
     Handle< const ConnectState > state(FA.createState(s.getQ()));
 
-    X.resize(FA.size());
+    // X allocated and passed in
     X=zero;
    
     // Get linop

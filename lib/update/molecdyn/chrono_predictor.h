@@ -10,30 +10,41 @@ namespace Chroma {
   
   // Abstract interface for a Chronological Solution predictor
   template<typename T>
-  class AbsChronologicalPredictor {
+  class AbsChronologicalPredictor4D {
   public:
     
+    // Virtual destructor to help with cleanup
+    virtual ~AbsChronologicalPredictor4D(void) {}
+
     // Set psi to be the next initial guess
-    virtual void operator()(T& psi) const = 0;
-    
+    virtual void operator()(T& psi) = 0;
+
+    // Reset internal state (call this if the gauge field or 
+    // pseudofermion fields change)
+    virtual void reset(void) = 0;
+
     // Present new vector for use in future chronological
     // Predictors
     virtual void newVector(const T& psi) = 0;
   };
   
 
-  // A Special Chronological inverter that is not chronological
-  // at all but always provides a zero guess
-  template<typename T> 
-  class ZeroGuess : public AbsChronologicalPredictor<T> {
-  public:
-    // Set T to the next initial guess
-    void operator()(T& psi) const {
-      psi = zero;
-    }
+  template<typename T>
+    class AbsChronologicalPredictor5D {
+    public:
 
-    // This is just for form... Doesnt do anything
-    void newVector(const T& psi) {}
+    virtual ~AbsChronologicalPredictor5D(void) {}
+
+    // Set psi to be the next initial guess
+    virtual void operator()(multi1d<T>& psi) = 0;
+
+    // Reset internal state (call this if the gauge field or 
+    // pseudofermion fields change)
+    virtual void reset(void) = 0;
+    
+    // Present new vector for use in future chronological
+    // Predictors
+    virtual void newVector(const multi1d<T>& psi) = 0;
   };
 
 }; // End namespace

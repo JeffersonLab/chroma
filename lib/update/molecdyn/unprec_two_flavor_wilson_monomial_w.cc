@@ -1,4 +1,4 @@
-// $Id: unprec_two_flavor_wilson_monomial_w.cc,v 1.1 2005-01-10 19:59:11 edwards Exp $
+// $Id: unprec_two_flavor_wilson_monomial_w.cc,v 1.2 2005-01-11 15:28:03 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 4D ferm monomials
  */
@@ -14,6 +14,8 @@
 #include "actions/ferm/fermacts/unprec_wilson_fermact_w.h"
 #include "actions/ferm/fermacts/unprec_parwilson_fermact_w.h"
 
+#include "update/molecdyn/chrono_predictor_factory.h"
+#include "update/molecdyn/zero_guess_predictor.h"
 namespace Chroma 
 { 
  
@@ -74,6 +76,15 @@ namespace Chroma
       xml_tmp.print(os);
       ferm_act = os.str();
       
+      if( paramtop.count("./ChronologicalPredictor") == 0 ) {
+	predictor_xml="";
+      }
+      else {
+	XMLReader chrono_xml_reader(paramtop, "./ChronologicalPredictor");
+	std::ostringstream chrono_os;
+	chrono_xml_reader.print(chrono_os);
+	predictor_xml = chrono_os.str();
+      }
     }
     catch(const string& s) {
       QDPIO::cerr << "Caught Exception while reading parameters: " << s <<endl;
@@ -137,6 +148,38 @@ namespace Chroma
 
     fermact = downcast;    
 
+    // Get Chronological predictor
+    AbsChronologicalPredictor4D<LatticeFermion>* tmp=0x0;
+    if( param_.predictor_xml == "" ) {
+      // No predictor specified use zero guess
+       tmp = new ZeroGuess4DChronoPredictor();
+    }
+    else {
+
+      
+      try { 
+	std::string chrono_name;
+	std::istringstream chrono_is(param_.predictor_xml);
+	XMLReader chrono_xml(chrono_is);
+	read(chrono_xml, "./ChronologicalPredictor/Name", chrono_name);
+	tmp = The4DChronologicalPredictorFactory::Instance().createObject(chrono_name, 
+								 chrono_xml, 
+								 "./ChronologicalPredictor");
+      }
+      catch(const std::string& e ) { 
+	QDPIO::cerr << "Caught Exception Reading XML: " << e << endl;
+	QDP_abort(1);
+      }
+
+
+    }
+     
+    if( tmp == 0x0 ) { 
+      QDPIO::cerr << "Failed to create the 4D ChronoPredictor" << endl;
+      QDP_abort(1);
+    }
+    chrono_predictor = tmp;
+
     QDPIO::cout << "UnprecTwoFlavorWilsonTypeFermMonomial: finished " << fermact_string << endl;
   }
 
@@ -153,13 +196,14 @@ namespace Chroma
     // Make the state
     Handle< const ConnectState > state(FA.createState(s.getQ()));
 
-    // Need better guess...
-    X = zero;
-   
+    // Initial guess for X passed in
+    
     // Get linop
     Handle< const LinearOperator<LatticeFermion> > M(FA.linOp(state));
 
+  
     int n_count = invert(X, *M, getPhi());
+
   }
 
   

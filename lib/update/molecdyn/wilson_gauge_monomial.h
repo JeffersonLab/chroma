@@ -34,7 +34,7 @@ namespace Chroma {
 
 
       // Create a suitable state and compute F
-      void dsdq(multi1d<LatticeColorMatrix>& F, const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const {
+      void dsdq(multi1d<LatticeColorMatrix>& F, const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s)  {
 
 	// Make a gauge connect state
 	Handle< const ConnectState> g_state(getGaugeAct().createState(s.getQ()));
