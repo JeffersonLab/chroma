@@ -1,11 +1,11 @@
 // -*- C++ -*-
-// $Id: wilson_gaugeact.h,v 1.9 2005-01-12 04:44:53 edwards Exp $
+// $Id: plaq_gaugeact.h,v 1.1 2005-01-12 04:44:53 edwards Exp $
 /*! \file
- *  \brief Wilson gauge action
+ *  \brief Plaquette gauge action
  */
 
-#ifndef __wilson_gaugeact_h__
-#define __wilson_gaugeact_h__
+#ifndef __plaq_gaugeact_h__
+#define __plaq_gaugeact_h__
 
 #include "gaugeact.h"
 #include "gaugebc.h"
@@ -13,51 +13,53 @@
 namespace Chroma
 {
 
-  namespace WilsonGaugeActEnv { 
+  namespace PlaqGaugeActEnv 
+  { 
     extern const string name;
     extern const bool registered;
   }
 
   // Parameter structure
-  struct WilsonGaugeActParams {
+  struct PlaqGaugeActParams 
+  {
     // Base Constructor
-    WilsonGaugeActParams();
+    PlaqGaugeActParams();
     
     // Read params from some root path
-    WilsonGaugeActParams(XMLReader& xml_in, const std::string& path);
+    PlaqGaugeActParams(XMLReader& xml_in, const std::string& path);
 
-    Real beta;  
+    Real coeff;  
   };
   
-  void read(XMLReader& xml, const string& path, WilsonGaugeActParams& param);
+  void read(XMLReader& xml, const string& path, PlaqGaugeActParams& param);
   
 
-  //! Wilson gauge action
+  //! Plaquette gauge action
   /*! \ingroup gaugeact
    *
-   * The standard Wilson gauge action
+   * The standard Plaquette gauge action
    */
 
-  class WilsonGaugeAct : public GaugeAction
+  class PlaqGaugeAct : public GaugeAction
   {
   public:
     //! General GaugeBC
-    WilsonGaugeAct(Handle< GaugeBC > gbc_, 
-		   const Real& beta_) : 
-      gbc(gbc_), beta(beta_) {}
+    PlaqGaugeAct(Handle< GaugeBC > gbc_, 
+		 const Real& coeff_) : 
+      gbc(gbc_), coeff(coeff_) {}
 
-    //! Read beta from a param struct
-    WilsonGaugeAct(Handle< GaugeBC > gbc_, 
-		   const WilsonGaugeActParams& p) :
-      gbc(gbc_), beta(p.beta) {}
+    //! Read coeff from a param struct
+    PlaqGaugeAct(Handle< GaugeBC > gbc_, 
+		 const PlaqGaugeActParams& p) :
+      gbc(gbc_), coeff(p.coeff) {}
 
     //! Copy constructor
-    WilsonGaugeAct(const WilsonGaugeAct& a) : 
-      gbc(a.gbc), beta(a.beta) {}
+    PlaqGaugeAct(const PlaqGaugeAct& a) : 
+      gbc(a.gbc), coeff(a.coeff) {}
 
     //! Assignment
-    WilsonGaugeAct& operator=(const WilsonGaugeAct& a)
-    {gbc=a.gbc; beta=a.beta; return *this;}
+    PlaqGaugeAct& operator=(const PlaqGaugeAct& a)
+    {gbc=a.gbc; coeff=a.coeff; return *this;}
 
     //! Is anisotropy used?
     bool anisoP() const {return false;}
@@ -89,14 +91,14 @@ namespace Chroma
     Double S(const Handle<const ConnectState> state) const;
 
     //! Destructor is automatic
-    ~WilsonGaugeAct() {}
+    ~PlaqGaugeAct() {}
 
     // Accessors -- non mutable members.
-    const Real getBeta(void) const { return beta; }
+    const Real getCoeff(void) const { return coeff; }
 
   private:
     Handle< GaugeBC >  gbc;  // Gauge Boundary Condition
-    Real beta;               // The coupling Beta
+    Real coeff;              // The coupling coefficient
 
   };
 

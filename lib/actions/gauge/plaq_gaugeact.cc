@@ -1,37 +1,39 @@
-// $Id: wilson_gaugeact.cc,v 1.13 2005-01-12 04:44:53 edwards Exp $
+// $Id: plaq_gaugeact.cc,v 1.1 2005-01-12 04:44:53 edwards Exp $
 /*! \file
- *  \brief Wilson gauge action
+ *  \brief Plaquette gauge action
  */
 
 #include "chromabase.h"
 #include "actions/gauge/gaugeact_factory.h"
 #include "actions/gauge/gaugebcs.h"
 
-#include "actions/gauge/wilson_gaugeact.h"
+#include "actions/gauge/plaq_gaugeact.h"
 #include "meas/glue/mesplq.h"
+
 
 namespace Chroma
 {
  
-  namespace WilsonGaugeActEnv 
+  namespace PlaqGaugeActEnv 
   { 
     GaugeAction* createGaugeAct(XMLReader& xml, const std::string& path) 
     {
-      return new WilsonGaugeAct(GaugeTypeGaugeBCEnv::reader(xml, path), 
-				WilsonGaugeActParams(xml, path));
+      return new PlaqGaugeAct(GaugeTypeGaugeBCEnv::reader(xml, path), 
+			      PlaqGaugeActParams(xml, path));
     }
 
-    const std::string name = "WILSON_GAUGEACT";
+    const std::string name = "PLAQ_GAUGEACT";
     const bool registered = TheGaugeActFactory::Instance().registerObject(name, 
 									  createGaugeAct);
   };
 
 
-  WilsonGaugeActParams::WilsonGaugeActParams(XMLReader& xml_in, const std::string& path) {
+  PlaqGaugeActParams::PlaqGaugeActParams(XMLReader& xml_in, const std::string& path) 
+  {
     XMLReader paramtop(xml_in, path);
 
     try {
-      read(paramtop, "./beta", beta);
+      read(paramtop, "./coeff", coeff);
     }
     catch( const std::string& e ) { 
       QDPIO::cerr << "Error reading XML: " <<  e << endl;
@@ -39,8 +41,8 @@ namespace Chroma
     }
   }
 
-  void read(XMLReader& xml, const string& path, WilsonGaugeActParams& p) {
-    WilsonGaugeActParams tmp(xml, path);
+  void read(XMLReader& xml, const string& path, PlaqGaugeActParams& p) {
+    PlaqGaugeActParams tmp(xml, path);
     p=tmp;
   }
 
@@ -53,11 +55,11 @@ namespace Chroma
    * \param cb         subset on which to compute ( Read )
    */
   void
-  WilsonGaugeAct::staple(LatticeColorMatrix& u_staple,
-			 Handle<const ConnectState> state,
-			 int mu, int cb) const
+  PlaqGaugeAct::staple(LatticeColorMatrix& u_staple,
+		       Handle<const ConnectState> state,
+		       int mu, int cb) const
   {
-    QDPIO::cout << "WilsonGaugeAct::staple() --- Is this tested ? BJ" << endl;
+    QDPIO::cout << "PlaqGaugeAct::staple() --- Is this tested ? BJ" << endl;
     QDPIO::cout << "Use at own risk" << endl;
 
     const multi1d<LatticeColorMatrix>& u = state->getLinks();
@@ -70,7 +72,7 @@ namespace Chroma
     // Need to have Even/Odd checkerboarding of 2 subsets
     if (actionSet.numSubsets() != 2)
     {
-      QDPIO::cerr << "WilsonGaugeAct::staple  implemented only for even/odd" << endl;
+      QDPIO::cerr << "PlaqGaugeAct::staple  implemented only for even/odd" << endl;
       QDP_abort(1);
     }
 
@@ -126,7 +128,7 @@ namespace Chroma
    * \param state      gauge field ( Read )
    */
   void
-  WilsonGaugeAct::dsdu(multi1d<LatticeColorMatrix>& ds_u,
+  PlaqGaugeAct::dsdu(multi1d<LatticeColorMatrix>& ds_u,
 		       const Handle< const ConnectState> state) const
   {
     START_CODE();
@@ -163,7 +165,7 @@ namespace Chroma
       // It is 1/(4Nc) to account for normalisation relevant to fermions
       // in the taproj, which is a factor of 2 different from the 
       // one used here.
-      ds_u[mu] *= Real(-1)*Real(beta)/(Real(2*Nc));
+      ds_u[mu] *= Real(-1)*Real(coeff)/(Real(2*Nc));
     }
 
 
@@ -197,10 +199,10 @@ namespace Chroma
       ds_u[mu] = u[mu]*G;
     }
 
-    // Pure Gauge factor (-beta/Nc and a factor of 2 because of the forward
+    // Pure Gauge factor (-coeff/Nc and a factor of 2 because of the forward
     // and backward staple of the force)
     for(int mu=0; mu < Nd; mu++) { 
-      ds_u[mu] *= Real(-beta)/(Real(2*Nc));
+      ds_u[mu] *= Real(-coeff)/(Real(2*Nc));
     }
 #endif
 
@@ -209,19 +211,19 @@ namespace Chroma
 
   // Get the gauge action
   //
-  // S = -(beta/(Nc) Sum Re Tr Plaq
+  // S = -(coeff/(Nc) Sum Re Tr Plaq
   //
   // w_plaq is defined in MesPlq as
   //
   // w_plaq =( 2/(V*Nd*(Nd-1)*Nc)) * Sum Re Tr Plaq
   //
   // so 
-  // S = -beta * (V*Nd*(Nd-1)/2) w_plaq 
-  //   = -beta * (V*Nd*(Nd-1)/2)*(2/(V*Nd*(Nd-1)*Nc))* Sum Re Tr Plaq
-  //   = -beta * (1/(Nc)) * Sum Re Tr Plaq
+  // S = -coeff * (V*Nd*(Nd-1)/2) w_plaq 
+  //   = -coeff * (V*Nd*(Nd-1)/2)*(2/(V*Nd*(Nd-1)*Nc))* Sum Re Tr Plaq
+  //   = -coeff * (1/(Nc)) * Sum Re Tr Plaq
 
   Double
-  WilsonGaugeAct::S(const Handle<const ConnectState> state) const
+  PlaqGaugeAct::S(const Handle<const ConnectState> state) const
   {
     Double S_pg;
 
@@ -235,7 +237,7 @@ namespace Chroma
     // Undo Mes Plaq Normalisation
     S_pg = Double(Layout::vol()*Nd*(Nd-1)*Nc)/Double(2);
 
-    S_pg *= Double(-1)*Double(beta)/Double(Nc);
+    S_pg *= Double(-1)*Double(coeff)/Double(Nc);
 
     // Took out minus sign -- may need to put back in...
     S_pg *= w_plaq;
