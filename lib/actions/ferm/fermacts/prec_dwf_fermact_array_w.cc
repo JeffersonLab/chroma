@@ -1,10 +1,11 @@
-// $Id: prec_dwf_fermact_array_w.cc,v 1.1 2003-11-23 05:54:14 edwards Exp $
+// $Id: prec_dwf_fermact_array_w.cc,v 1.2 2003-11-25 03:30:49 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
 
 #include "chromabase.h"
 #include "actions/ferm/fermacts/prec_dwf_fermact_array_w.h"
+#include "actions/ferm/linop/unprec_dwf_linop_array_w.h"
 #include "actions/ferm/linop/prec_dwf_linop_array_w.h"
 #include "actions/ferm/linop/lmdagm_w.h"
 
@@ -31,7 +32,7 @@ void EvenOddPrecDWFermActArray::create(const Real& WilsonMass_, const Real& m_q_
 /*!
  * \ingroup fermact
  *
- * The operator acts on the entire lattice
+ * The operator acts on the odd sublattice
  *
  * \param u 	    gauge field     	       (Read)
  */
@@ -45,7 +46,7 @@ EvenOddPrecDWFermActArray::linOp(const multi1d<LatticeColorMatrix>& u) const
 /*!
  * \ingroup fermact
  *
- * The operator acts on the entire lattice
+ * The operator acts on the odd sublattice
  *
  * \param u 	    gauge field     	       (Read)
  */
@@ -68,6 +69,7 @@ EvenOddPrecDWFermActArray::lMdagM(const multi1d<LatticeColorMatrix>& u) const
 const LinearOperator<multi1d<LatticeFermion> >* 
 EvenOddPrecDWFermActArray::linOpPV(const multi1d<LatticeColorMatrix>& u) const
 {
-  return new EvenOddPrecDWLinOpArray(u,WilsonMass,1.0,N5);  // fixed to quark mass 1
+  // For the PV operator, use the **unpreconditioned** one
+  return new UnprecDWLinOpArray(u,WilsonMass,1.0,N5);  // fixed to quark mass 1
 }
 
