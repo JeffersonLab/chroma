@@ -1,4 +1,4 @@
-// $Id: hybmeson_w.cc,v 1.1 2004-02-03 21:13:35 edwards Exp $
+// $Id: hybmeson_w.cc,v 1.2 2004-02-03 21:50:13 edwards Exp $
 /*! \file
  *  \brief Hybrid meson 2-pt functions
  */
@@ -10,9 +10,11 @@
 using namespace QDP;
 
 
-static print_disp(XMLWriter& xml_hyb, const LatticeReal& corr_fn,
-		  const SftMom& phases)
+static void print_disp(XMLWriter& xml_hyb, const LatticeReal& corr_fn,
+		       const SftMom& phases, int t0)
 {
+  int length  = phases.numSubsets();
+
   multi2d<DComplex> hsum;
   hsum = phases.sft(corr_fn);
 
@@ -73,10 +75,13 @@ void hybmeson(const multi1d<LatticeColorMatrix>& f,
 	      const LatticePropagator& quark_prop_1,
 	      const LatticePropagator& quark_prop_2, 
 	      const SftMom& phases,
-	      int t0,
+	      multi1d<int> t_source,
 	      XMLWriter& xml,
 	      const string& xml_group)
 {
+  QDP_error_exit("hybmeson not tested!!");   // NEED TO CHECK THIS ROUTINE
+
+
   START_CODE("hybmeson");
 
   // Group
@@ -111,7 +116,7 @@ void hybmeson(const multi1d<LatticeColorMatrix>& f,
   {
     if( k != j_decay )
     {
-      n = k+1;
+      int n = k+1;
       if ( n == j_decay ) n++;
       if ( n == Nd ) n = 0;
       kp1[k] = n;
@@ -121,13 +126,13 @@ void hybmeson(const multi1d<LatticeColorMatrix>& f,
   }
 
   /* Index to F_{mu,nu} */
-  k = 0;
+  int icnt = 0;
   for(int m=0; m < Nd-1; ++m)
     for(int n=m+1; n < Nd; ++n)
     {
-      n_munu[n][m] = k;
-      n_munu[m][n] = k;
-      k++;
+      n_munu[n][m] = icnt;
+      n_munu[m][n] = icnt;
+      icnt++;
     }
 
   // Hybrid pion: \epsilon_{k,j,n} \bar \psi \gamma_k F_{j,n} \psi
@@ -141,32 +146,32 @@ void hybmeson(const multi1d<LatticeColorMatrix>& f,
     for(int k = 0; k < Nd; ++k)
       if( k != j_decay )
       {
-	jm = 1 << k;
-	j = kp1[k];
-	n = kp1[j];
-	m = n_munu[n][j];
+	int jm = 1 << k;
+	int j = kp1[k];
+	int n = kp1[j];
+	int m = n_munu[n][j];
 
 	if( j < n )
 	{
-	  q1_prop += f[m] * Gamma(jm) * quark_prop_1;
-	  q2_prop += anti_quark_prop * Gamma(jm) * f_source[m];
+	  q1_prop += f[m] * (Gamma(jm) * quark_prop_1);
+	  q2_prop += (anti_quark_prop * Gamma(jm)) * f_source[m];
 	}
 	else
 	{
-	  q1_prop -= f[m] * Gamma(jm) * quark_prop_1;
-	  q2_prop -= anti_quark_prop * Gamma(jm) * f_source[m];
+	  q1_prop -= f[m] * (Gamma(jm) * quark_prop_1);
+	  q2_prop -= (anti_quark_prop * Gamma(jm)) * f_source[m];
 	}
       }
 
     LatticeReal corr_fn = localInnerProductReal(q2_prop, q1_prop);
-    print_disp(xml_hyb, corr_fn, phases);
+    print_disp(xml_hyb, corr_fn, phases, t0);
 
     pop(xml_hyb);
   }
 
   // Hybrid rho: \epsilon_{k,j,n} \bar \psi \gamma_5 F_{j,n} \psi
   kv = 0;
-  for(k = 0; k < Nd; ++k)
+  for(int k = 0; k < Nd; ++k)
     if( k != j_decay )
     {
       kv++;
@@ -174,13 +179,13 @@ void hybmeson(const multi1d<LatticeColorMatrix>& f,
       push(xml_hyb);     // next array element
       Write(xml_hyb, kv);
 
-      j = kp1[k];
-      n = kp1[j];
-      m = n_munu[n][j];
+      int j = kp1[k];
+      int n = kp1[j];
+      int m = n_munu[n][j];
 
       LatticeReal corr_fn = localInnerProductReal(anti_quark_prop * f_source[m], 
-						  f[m] * Gamma(G5) * quark_prop_1 * Gamma(G5));
-      print_disp(xml_hyb, corr_fn, phases);
+						  f[m] * (Gamma(G5) * quark_prop_1 * Gamma(G5)));
+      print_disp(xml_hyb, corr_fn, phases, t0);
 
       pop(xml_hyb);
     }
@@ -196,26 +201,26 @@ void hybmeson(const multi1d<LatticeColorMatrix>& f,
     for(int k = 0; k < Nd; ++k)
       if( k != j_decay )
       {
-	m = 1 << k;
-	jm = m ^ G5;
-	j = kp1[k];
-	n = kp1[j];
+	int m = 1 << k;
+	int jm = m ^ G5;
+	int j = kp1[k];
+	int n = kp1[j];
 	m = n_munu[n][j];
 
 	if( j < n )
 	{
-	  q1_prop += f[m] * Gamma(jm) * quark_prop_1;
-	  q2_prop += anti_quark_prop * Gamma(jm) * f_source[m];
+	  q1_prop += f[m] * (Gamma(jm) * quark_prop_1);
+	  q2_prop += (anti_quark_prop * Gamma(jm)) * f_source[m];
 	}
 	else
 	{
-	  q1_prop -= f[m] * Gamma(jm) * quark_prop_1;
-	  q2_prop -= anti_quark_prop * Gamma(jm) * f_source[m];
+	  q1_prop -= f[m] * (Gamma(jm) * quark_prop_1);
+	  q2_prop -= (anti_quark_prop * Gamma(jm)) * f_source[m];
 	}
       }
  
     LatticeReal corr_fn = localInnerProductReal(q2_prop, q1_prop);
-    print_disp(xml_hyb, corr_fn, phases);
+    print_disp(xml_hyb, corr_fn, phases, t0);
 
     pop(xml_hyb);
   }
@@ -233,24 +238,24 @@ void hybmeson(const multi1d<LatticeColorMatrix>& f,
     for(int k = 0; k < Nd; ++k)
       if( k != j_decay )
       {
-	m = 1 << k;
-	jm = m ^ G5;
+	int m = 1 << k;
+	int jm = m ^ G5;
 	m = n_munu[k][j_decay];
 
 	if( j_decay < k )
 	{
-	  q1_prop += f[m] * Gamma(jm) * quark_prop_1;
-	  q2_prop += anti_quark_prop * Gamma(jm) * f_source[m];
+	  q1_prop += f[m] * (Gamma(jm) * quark_prop_1);
+	  q2_prop += (anti_quark_prop * Gamma(jm)) * f_source[m];
 	}
 	else
 	{
-	  q1_prop -= f[m] * Gamma(jm) * quark_prop_1;
-	  q2_prop -= anti_quark_prop * Gamma(jm) * f_source[m];
+	  q1_prop -= f[m] * (Gamma(jm) * quark_prop_1);
+	  q2_prop -= (anti_quark_prop * Gamma(jm)) * f_source[m];
 	}
       }
 
     LatticeReal corr_fn = localInnerProductReal(q2_prop, q1_prop);
-    print_disp(xml_hyb, corr_fn, phases);
+    print_disp(xml_hyb, corr_fn, phases, t0);
 
     pop(xml_hyb);
   }
@@ -272,23 +277,23 @@ void hybmeson(const multi1d<LatticeColorMatrix>& f,
       for(int j = 0; j < Nd; ++j)
 	if( j != j_decay && j != k )
 	{
-	  jm = 1 << j;
-	  m = n_munu[k][j];
+	  int jm = 1 << j;
+	  int m = n_munu[k][j];
 
 	  if( j < k )
 	  {
-	    q1_prop += f[m] * Gamma(jm) * quark_prop_1;
-	    q2_prop += anti_quark_prop * Gamma(jm) * f_source[m];
+	    q1_prop += f[m] * (Gamma(jm) * quark_prop_1);
+	    q2_prop += (anti_quark_prop * Gamma(jm)) * f_source[m];
 	  }
 	  else
 	  {
-	    q1_prop -= f[m] * Gamma(jm) * quark_prop_1;
-	    q2_prop -= anti_quark_prop * Gamma(jm) * f_source[m];
+	    q1_prop -= f[m] * (Gamma(jm) * quark_prop_1);
+	    q2_prop -= (anti_quark_prop * Gamma(jm)) * f_source[m];
 	  }
 	}
 
       LatticeReal corr_fn = localInnerProductReal(q2_prop, q1_prop);
-      print_disp(xml_hyb, corr_fn, phases);
+      print_disp(xml_hyb, corr_fn, phases, t0);
       
       pop(xml_hyb);
     }
@@ -296,7 +301,6 @@ void hybmeson(const multi1d<LatticeColorMatrix>& f,
 
   // Exotic 1^{-+}_2: \bar \psi \gamma_{j_decay} F_{j_decay,k} \psi
   kv = 8;
-  jm = 1 << j_decay;
   for(int k = 0; k < Nd; ++k)
     if( k != j_decay )
     {
@@ -305,11 +309,12 @@ void hybmeson(const multi1d<LatticeColorMatrix>& f,
       push(xml_hyb);     // next array element
       Write(xml_hyb, kv);
 
-      m = n_munu[k][j_decay];
+      int jm = 1 << j_decay;
+      int m = n_munu[k][j_decay];
 
       LatticeReal corr_fn = localInnerProductReal(anti_quark_prop * f_source[m],
-						  f[m] * Gamma(jm) * quark_prop_1 * Gamma(jm));
-      print_disp(xml_hyb, corr_fn, phases);
+						  f[m] * (Gamma(jm) * quark_prop_1 * Gamma(jm)));
+      print_disp(xml_hyb, corr_fn, phases, t0);
 
       pop(xml_hyb);
     }
@@ -357,10 +362,10 @@ void hybmeson(const multi1d<LatticeColorMatrix>& f,
 	  /*
 	   *  First we perform the gamma-matrix algebra
 	   */
-	  jm = 1 << j;
-	  m = n_munu[k][j];
+	  int jm = 1 << j;
+	  int m = n_munu[k][j];
 
-	  tmp_prop1 = Gamma(jm) * quark_prop_1;
+	  LatticePropagator tmp_prop1 = Gamma(jm) * quark_prop_1;
 	  
 	  /*
 	   *  Now the simple operation of multiplying by
@@ -368,11 +373,11 @@ void hybmeson(const multi1d<LatticeColorMatrix>& f,
 	   */
 	  if( j < k )
 	  {
-	    q2_prop += anti_quark_prop * Gamma(jm) * f_source[m];
+	    q2_prop += (anti_quark_prop * Gamma(jm)) * f_source[m];
 	  }
 	  else
 	  {
-	    q2_prop -= anti_quark_prop * Gamma(jm) * f_source[m];
+	    q2_prop -= (anti_quark_prop * Gamma(jm)) * f_source[m];
 	  }
 
 	  /*
@@ -420,7 +425,7 @@ void hybmeson(const multi1d<LatticeColorMatrix>& f,
 
 
       LatticeReal corr_fn = localInnerProductReal(q2_prop, q1_prop);
-      print_disp(xml_hyb, corr_fn, phases);
+      print_disp(xml_hyb, corr_fn, phases, t0);
 
       pop(xml_hyb);
     }
