@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.183 2004-10-29 13:36:13 bjoo Exp $
+# $Id: Makefile.am,v 1.184 2004-10-29 14:55:41 mcneile Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -269,7 +269,7 @@ nobase_include_HEADERS += \
 	meas/eig/eig_s.h meas/hadron/baryon_w.h \
 	meas/hadron/hadron_s.h \
 	meas/hadron/mesphas_follana_s.h meas/hadron/mesphas_s.h \
-	meas/hadron/pions_follana_s.h meas/hadron/walfil_s.h \
+	meas/hadron/pions_s.h  meas/hadron/walfil_s.h \
 	meas/hadron/stag_scalars_s.h meas/sources/sources_s.h \
 	meas/hadron/stag_propShift_s.h \
 	util/ferm/ferm_s.h \
@@ -419,7 +419,7 @@ endif
 # This is OK since Ns is determined at configure time 
 #
 if BUILD_STAGGERED_LIBS
-libchroma_a_SOURCES += mesphas_s.cc mesphas_follana_s.cc pions_follana_s.cc \
+libchroma_a_SOURCES += mesphas_s.cc mesphas_follana_s.cc pions_s.cc \
 	follana_io_s.cc fermact_qprop.cc walfil_s.cc baryon_s.cc \
 	stag_scalars_s.cc stag_propShift_s.cc \
 	asqtad_linop_s.cc asq_dsl_s.cc fat7_links_s.cc naik_term_s.cc  \
