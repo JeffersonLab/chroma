@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ev_state.h,v 1.4 2003-12-03 04:35:23 edwards Exp $
+// $Id: ev_state.h,v 1.5 2003-12-09 17:44:47 bjoo Exp $
 /*! @file
  * @brief Connection state holding eigenvectors
  *
@@ -32,7 +32,6 @@ public:
 
   //! Return the eigenvectors
   virtual const Real& getEigValMax() const = 0;
-
   //! Virtual destructor to help with cleanup;
   virtual ~EVConnectStateBase() {}
 };
@@ -136,6 +135,7 @@ public:
 
   //! Return the link fields needed in constructing linear operators
   const multi1d<LatticeColorMatrix>& getLinks() const {return u;}
+
 
   //! Return the eigenvalues
   const multi1d<WordBase_t>& getEigVal() const {return eigVal;}
