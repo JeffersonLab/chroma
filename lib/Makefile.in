@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.250 2004-10-24 21:39:56 bjoo Exp $
+# $Id: Makefile.in,v 1.251 2004-10-29 00:32:27 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -42,6 +42,7 @@ POST_UNINSTALL = :
 host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@am__append_1 = \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/fermacts_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/fermfactory_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/overlap_fermact_base_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/prec_clover_fermact_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/prec_dwf_fermact_array_w.h \
