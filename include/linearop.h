@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linearop.h,v 1.6 2003-03-30 17:14:58 edwards Exp $
+// $Id: linearop.h,v 1.7 2003-03-30 18:11:22 edwards Exp $
 
 /*! @file
  * @brief Linear Operators
@@ -45,6 +45,8 @@ public:
 
       d[rb[0]] = this->operator()(psi, isign, 0);
       d[rb[1]] = this->operator()(psi, isign, 1);
+
+      return d;
     }
 
   virtual LatticeFermion operator() (const LatticeFermion& psi, int isign, int cb) const;
