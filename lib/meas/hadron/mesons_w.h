@@ -1,5 +1,8 @@
 // -*- C++ -*-
-// $Id: mesons_w.h,v 1.8 2003-10-10 03:46:47 edwards Exp $
+// $Id: mesons_w.h,v 1.9 2004-02-03 21:13:23 edwards Exp $
+/*! \file
+ *  \brief Meson 2-pt functions
+ */
 
 #ifndef __mesons_h__
 #define __mesons_h__
