@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.106 2004-01-30 01:38:12 edwards Exp $
+# $Id: Makefile.am,v 1.107 2004-02-03 20:58:16 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -145,7 +145,8 @@ nobase_include_HEADERS += \
 	meas/hadron/barseqsrc_w.h meas/hadron/baryon_w.h \
 	meas/hadron/BuildingBlocks_w.h meas/hadron/curcor2_w.h \
 	meas/hadron/DjDk_w.h meas/hadron/D_j_w.h meas/hadron/formfac_w.h \
-	meas/hadron/hadron_w.h meas/hadron/mesonseqsrc_w.h \
+	meas/hadron/hadron_w.h meas/hadron/hybmeson_w.h \
+	meas/hadron/mesonseqsrc_w.h \
 	meas/hadron/mesons_w.h meas/hadron/seqpiontest_w.h \
 	meas/hadron/walfil_w.h meas/hadron/wall_qprop_w.h \
 	meas/hadron/wallpionff_w.h \
@@ -209,7 +210,8 @@ libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
 # This is OK, since Ns is determined at configure time
 #
 if BUILD_WILSON_LIBS
-libchroma_a_SOURCES += baryon_w.cc mesons_w.cc curcor2_w.cc lwldslash_w.cc formfac_w.cc \
+libchroma_a_SOURCES += baryon_w.cc mesons_w.cc hybmeson_w.cc \
+              curcor2_w.cc lwldslash_w.cc formfac_w.cc \
               mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
               sink_smear2_w.cc barcomp_w.cc ldwfdslash_w.cc walfil_w.cc \
               fermact_qprop.cc prec_fermact_qprop.cc \
