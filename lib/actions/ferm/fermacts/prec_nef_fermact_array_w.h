@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_nef_fermact_array_w.h,v 1.12 2005-01-14 20:13:04 edwards Exp $
+// $Id: prec_nef_fermact_array_w.h,v 1.13 2005-02-28 19:37:48 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned NEF fermion action
  */
@@ -55,38 +55,26 @@ namespace Chroma
   public:
     //! General FermBC
     EvenOddPrecNEFFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
-			       const Real& OverMass_, 
-			       const Real& b5_, const Real& c5_,
-			       const Real& Mass_, int N5_) : 
-      fbc(fbc_), OverMass(OverMass_),  b5(b5_),c5(c5_),  Mass(Mass_), N5(N5_) 
+			       const EvenOddPrecNEFFermActArrayParams& p) : 
+      fbc(fbc_), params(p)
       {
-	QDPIO::cout << "Construct EvenOddPrecNEFFermActArray: OverMass = " << OverMass 
-		    << "  Mass = " << Mass 
-		    << "  N5 = " << N5 
-		    << "  b5 = " << b5
-		    << "  c5 = " << c5
+	QDPIO::cout << "Construct EvenOddPrecNEFFermActArray: OverMass = " << params.OverMass 
+		    << "  Mass = " << params.Mass 
+		    << "  N5 = " << params.N5 
+		    << "  b5 = " << params.b5
+		    << "  c5 = " << params.c5
 		    << endl;
       }
 
-    //! General FermBC
-    EvenOddPrecNEFFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
-			       const EvenOddPrecNEFFermActArrayParams& param) :
-      fbc(fbc_), OverMass(param.OverMass), b5(param.b5), c5(param.c5), Mass(param.Mass), N5(param.N5) {}
-
     //! Copy constructor
     EvenOddPrecNEFFermActArray(const EvenOddPrecNEFFermActArray& a) : 
-      fbc(a.fbc), OverMass(a.OverMass),  b5(a.b5), c5(a.c5), 
-      Mass(a.Mass), N5(a.N5) {}
+      fbc(a.fbc), params(a.params) {}
 
     //! Assignment
     EvenOddPrecNEFFermActArray& operator=(const EvenOddPrecNEFFermActArray& a)
       {
-	fbc=a.fbc; 
-	OverMass=a.OverMass; 
-	b5=a.b5; 
-	c5=a.c5; 
-	Mass=a.Mass; 
-	N5=a.N5; 
+	fbc = a.fbc; 
+	params = a.params;
 	return *this;
       }
 
@@ -94,10 +82,10 @@ namespace Chroma
     const FermBC< multi1d<LatticeFermion> >& getFermBC() const {return *fbc;}
 
     //! Length of DW flavor index/space
-    int size() const {return N5;}
+    int size() const {return params.N5;}
 
     //! Return the quark mass
-    Real getQuarkMass() const {return Mass;}
+    Real getQuarkMass() const {return params.Mass;}
 
     //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
     const UnprecDWLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >* unprecLinOp(Handle<const ConnectState> state, 
@@ -136,11 +124,7 @@ namespace Chroma
 
   private:
     Handle< FermBC< multi1d<LatticeFermion> > >  fbc;
-    Real OverMass;
-    Real b5;
-    Real c5;
-    Real Mass;
-    int  N5;
+    EvenOddPrecNEFFermActArrayParams params;
   };
 
 }

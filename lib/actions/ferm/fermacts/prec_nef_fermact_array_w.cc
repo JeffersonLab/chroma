@@ -1,4 +1,4 @@
-// $Id: prec_nef_fermact_array_w.cc,v 1.15 2005-02-21 19:28:58 edwards Exp $
+// $Id: prec_nef_fermact_array_w.cc,v 1.16 2005-02-28 19:37:48 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned NEF fermion action
  */
@@ -80,7 +80,8 @@ namespace Chroma
   EvenOddPrecNEFFermActArray::precLinOp(Handle<const ConnectState> state,
 					const Real& m_q) const
   {
-    return new EvenOddPrecNEFDWLinOpArray(state->getLinks(),OverMass,b5,c5,m_q,N5);
+    return new EvenOddPrecNEFDWLinOpArray(state->getLinks(),params.OverMass,
+					  params.b5,params.c5,m_q,params.N5);
   }
 
   //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
@@ -88,13 +89,13 @@ namespace Chroma
   EvenOddPrecNEFFermActArray::unprecLinOp(Handle<const ConnectState> state,
 					  const Real& m_q) const
   {
-    multi1d<Real> bb5(N5);
-    multi1d<Real> cc5(N5);
+    multi1d<Real> bb5(params.N5);
+    multi1d<Real> cc5(params.N5);
 
-    bb5 = b5;
-    cc5 = c5;
+    bb5 = params.b5;
+    cc5 = params.c5;
 
-    return new UnprecNEFDWLinOpArray(state->getLinks(),OverMass,bb5,cc5,m_q,N5);
+    return new UnprecNEFDWLinOpArray(state->getLinks(),params.OverMass,bb5,cc5,m_q,params.N5);
   }
 
   
