@@ -1,6 +1,9 @@
-// $Id: dwf_quarkprop4_w.cc,v 1.6 2004-01-29 16:18:52 kostas Exp $
+// $Id: dwf_quarkprop4_w.cc,v 1.7 2004-01-29 17:37:33 edwards Exp $
 // $Log: dwf_quarkprop4_w.cc,v $
-// Revision 1.6  2004-01-29 16:18:52  kostas
+// Revision 1.7  2004-01-29 17:37:33  edwards
+// Implemented some flop optimizations.
+//
+// Revision 1.6  2004/01/29 16:18:52  kostas
 // Removed the if 1 directive
 //
 // Revision 1.5  2004/01/29 16:17:50  kostas
@@ -133,17 +136,17 @@ void dwf_quarkProp4_a(LatticePropagator& q_sol,
   LatticeComplex cfield ;
   dwf_conserved_axial_ps_corr(cfield,state->getLinks(),prop5d,3,S_f.size());
 			       
-  multi2d<DComplex> corr ;  
+  multi1d<DComplex> corr ;  
    
   SftMom trick(0,false,3) ;
    
-  corr = trick.sft(cfield);
+  corr = sumMulti(cfield, trick.getSubset());
   // Length of lattice in decay direction
-  int length = trick.numSubsets() ;
-  multi1d<Real> mesprop(length);
+  int length = trick.numSubsets();
+  multi1d<Double> mesprop(length);
   
   for(int t(0);t<length; t++)
-    mesprop[t] = real(corr[0][t]) ; // only need the zero momentum
+    mesprop[t] = real(corr[t]) ; // only need the zero momentum
 
   //push(xml_out, "t_dir");
   //Write(xml_out, 3);
@@ -154,11 +157,7 @@ void dwf_quarkProp4_a(LatticePropagator& q_sol,
   pop(xml_out);
 
   //Now the midpoint Pseudoscalar correlator
-  cfield = trace(q_mp * adj(q_mp));    
-
-  corr = trick.sft(cfield);
-  for(int t(0);t<length; t++)
-    mesprop[t] = real(corr[0][t]) ; // only need the zero momentum
+  mesprop = sumMulti(localNorm2(q_mp), trick.getSubset());
 
   push(xml_out, "DWF_MidPoint_Pseudo");
   Write(xml_out, mesprop);
