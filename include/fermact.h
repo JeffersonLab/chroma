@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 1.6 2003-10-20 20:24:27 edwards Exp $
+// $Id: fermact.h,v 1.7 2003-11-10 03:06:16 edwards Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -61,7 +61,7 @@ public:
 		     const T& chi, 
 		     enum InvType invType,
 		     const Real& RsdCG, 
-		     int MaxCG, int& ncg_had) const = 0;
+		     int MaxCG, int& ncg_had) const;
 
   //! Compute dS_f/dU
   /*! NOTE: maybe this should produce a derivative foundry class object */
@@ -94,6 +94,7 @@ template<typename T>
 class UnprecWilsonTypeFermAct : public WilsonTypeFermAct<T>
 {
 public:
+#if 0
   //! Compute quark propagator
   /*! NOTE: maybe this should produce a quark prop foundry */
   void qprop(T& psi, 
@@ -102,6 +103,7 @@ public:
 	     enum InvType invType,
 	     const Real& RsdCG, 
 	     int MaxCG, int& ncg_had) const;
+#endif
 };
 
 
@@ -126,6 +128,7 @@ template<typename T>
 class DiagEvenOddPrecWilsonTypeFermAct : public EvenOddPrecWilsonTypeFermAct<T>
 {
 public:
+#if 0
   //! Compute quark propagator
   /*! NOTE: maybe this should produce a quark prop foundry */
   void qprop(T& psi, 
@@ -134,6 +137,7 @@ public:
 	     enum InvType invType,
 	     const Real& RsdCG, 
 	     int MaxCG, int& ncg_had) const;
+#endif
 };
 
 
@@ -158,6 +162,7 @@ template<typename T>
 class UnprecStaggeredTypeFermAct : public StaggeredTypeFermAct<T>
 {
 public:
+#if 0
   //! Compute quark propagator
   /*! NOTE: maybe this should produce a quark prop foundry */
   void qprop(T& psi, 
@@ -166,6 +171,7 @@ public:
 	     enum InvType invType,
 	     const Real& RsdCG, 
 	     int MaxCG, int& ncg_had) const;
+#endif
 };
 
 
@@ -190,6 +196,7 @@ template<typename T>
 class DiagEvenOddPrecStaggeredTypeFermAct : public EvenOddPrecStaggeredTypeFermAct<T>
 {
 public:
+#if 0
   //! Compute quark propagator
   /*! NOTE: maybe this should produce a quark prop foundry */
   void qprop(T& psi, 
@@ -198,6 +205,7 @@ public:
 	     enum InvType invType,
 	     const Real& RsdCG, 
 	     int MaxCG, int& ncg_had) const;
+#endif
 };
 
 
