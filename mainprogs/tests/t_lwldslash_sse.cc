@@ -1,12 +1,9 @@
-// $Id: t_lwldslash_sse.cc,v 1.10 2003-09-17 15:15:00 bjoo Exp $
+// $Id: t_lwldslash_sse.cc,v 1.11 2003-09-23 18:07:26 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
 
 #include "chroma.h"
-#include "primitives.h" // GTF: for PLUS
-
-#include <lib.h>
 
 using namespace QDP;
 
