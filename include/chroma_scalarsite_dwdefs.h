@@ -1,11 +1,13 @@
 // -*- C++ -*-
-// $Id: chroma_scalarsite_dwdefs.h,v 1.1 2003-10-20 20:23:23 edwards Exp $
+// $Id: chroma_scalarsite_dwdefs.h,v 1.2 2003-10-22 03:22:09 edwards Exp $
 
 /*! \file
  * \brief Additional QDP type definitions
  */
 
 #include "qdp.h"
+
+#define CHROMA_USE_DWF
 
 QDP_BEGIN_NAMESPACE(QDP);
 
