@@ -1,6 +1,9 @@
-// $Id: multi_propagator_comp.cc,v 1.3 2004-04-26 11:19:13 bjoo Exp $
+// $Id: multi_propagator_comp.cc,v 1.4 2004-04-28 16:37:53 bjoo Exp $
 // $Log: multi_propagator_comp.cc,v $
-// Revision 1.3  2004-04-26 11:19:13  bjoo
+// Revision 1.4  2004-04-28 16:37:53  bjoo
+// Adheres to new propagator structure
+//
+// Revision 1.3  2004/04/26 11:19:13  bjoo
 // Added support for Reading EV-s in SZIN format. Must provide e-values in XML tho.
 //
 // Revision 1.2  2004/04/22 16:49:23  bjoo
@@ -174,7 +177,7 @@ void read(XMLReader& xml, const string& path, PropagatorComponent_input_t& input
 // Forward declaration
 void saveComponents(const ChromaMultiProp_t& param, 
 		    const Prop_t& prop,
-		    const PropSource_t& source_header,
+		    XMLReader& source_record_xml,
 		    const Component_t& component,
 		    XMLReader& gauge_xml,
 		    XMLWriter& xml_out,
@@ -295,6 +298,11 @@ int main(int argc, char **argv)
    */
   Handle< FermBC<LatticeFermion> >  fbc(new SimpleFermBC<LatticeFermion>(input.param.boundary));
   Handle< FermBC<multi1d<LatticeFermion> > >  fbc_a(new SimpleFermBC<multi1d<LatticeFermion> >(input.param.boundary));
+  //
+  // Initialize fermion action
+  //
+  FermionAction<LatticeFermion>* S_f_ptr = 0;
+  FermionAction< multi1d<LatticeFermion> >* S_f_a_ptr = 0;
 
   //
   // Loop over the source color and spin, creating the source
@@ -316,7 +324,6 @@ int main(int argc, char **argv)
     /***********************************************************************/
     /* 4D ZOlotarev                                                        */
     /***********************************************************************/
-
   case FERM_ACT_ZOLOTAREV_4D:
     {
       QDPIO::cout << "FERM_ACT_ZOLOTAREV_4D" << endl;
@@ -324,61 +331,7 @@ int main(int argc, char **argv)
       
       // Construct Fermact -- now uses constructor from the zolo4d params
       // struct
-      Zolotarev4DFermAct S(fbc, zolo4d, xml_out);
-
-      
-      // Make a state. Now calls create state with the state info 
-      // params struct. Loads Evalues etc if needed, will in the 
-      // future recompute them as needed
-      Handle<const ConnectState> state(S.createState(u, zolo4d.StateInfo, xml_out, zolo4d.AuxFermActHandle->getMass() ));
-      
-
-      for(int comp = 0; comp < input.components.size(); comp++) { 
-	
-	LatticeFermion chi;
-	PropToFerm(quark_prop_source, chi, input.components[comp].color,
-		   input.components[comp].spin);
-
-
-	// Zero out initial guess
-	for(int i=0; i < num_mass; i++) {
-	  psi[i] = zero;
-	}
-
-	// Normalise source
-	Real fact = Real(1) / sqrt(norm2(chi));
-	chi *= fact;
-
-	int n_count = 0;
-	S.multiQprop(psi, 
-		     input.param.MultiMasses, state, chi, 
-		     input.param.invParam.invType, 
-		     input.param.invParam.RsdCG, 
-		     1, 
-		     input.param.invParam.MaxCG, 
-		     n_count);
-	
-
-	// Remove source normalisation
-	fact = Real(1) / fact;
-	for(int i=0; i < num_mass; i++) { 
-	  psi[i] *= fact;
-	  
-	}
-
-	push(xml_out,"Relaxation_Iterations");
-	write(xml_out, "ncg_had", n_count);
-	pop(xml_out);
-
-	saveComponents( input.param,
-			input.prop,
-			source_header,
-			input.components[comp],
-			gauge_xml,
-			xml_out,
-			psi );
-
-      }
+      S_f_ptr = new Zolotarev4DFermAct(fbc, zolo4d, xml_out);
     }
     break;
   default:
@@ -386,6 +339,93 @@ int main(int argc, char **argv)
     QDP_abort(1);
   }
 
+    // Create a useable handle on the action
+  // The handle now owns the pointer
+  Handle< FermionAction<LatticeFermion> > S_f(S_f_ptr);
+  Handle< FermionAction< multi1d<LatticeFermion> > > S_f_a(S_f_a_ptr);
+      
+  // FIrst we have to set up the state -- this is fermact dependent
+  const ConnectState *state_ptr;
+
+  switch(input.param.FermActHandle->getFermActType()) {
+  case FERM_ACT_ZOLOTAREV_4D:
+    {    
+      const Zolotarev4DFermActParams& zolo4d = dynamic_cast<const Zolotarev4DFermActParams& > (*(input.param.FermActHandle));
+      const Zolotarev4DFermAct& S_zolo4 = dynamic_cast<const Zolotarev4DFermAct&>(*S_f);
+      
+      state_ptr = S_zolo4.createState(u, zolo4d.StateInfo, xml_out,zolo4d.AuxFermActHandle->getMass());
+      
+    }
+    break;
+  default:
+    QDPIO::cerr << "Unsupported fermion action (state creation)" << endl;
+    QDP_abort(1);
+  }
+  
+  // Now do the quarkprop here again depending on which of the
+  // action pointers is not null
+  Handle<const ConnectState> state(state_ptr);  // inserts any BC
+
+
+  for(int comp = 0; comp < input.components.size(); comp++) { 
+	
+    LatticeFermion chi;
+    PropToFerm(quark_prop_source, chi, input.components[comp].color,
+	       input.components[comp].spin);
+    
+
+    // Zero out initial guess
+    for(int i=0; i < num_mass; i++) {
+      psi[i] = zero;
+    }
+
+    // Normalise source
+    Real fact = Real(1) / sqrt(norm2(chi));
+    chi *= fact;
+
+    int n_count = 0;
+
+    // Do the appropriate inversion.
+    // Unfortunately Fermion action does not have multiQprop
+    // In it so its switch and Dynamic Cast again
+    switch(input.param.FermActHandle->getFermActType()) {
+    case FERM_ACT_ZOLOTAREV_4D:
+      {
+	const Zolotarev4DFermAct& S=dynamic_cast<const Zolotarev4DFermAct&>(*S_f);
+	S.multiQprop(psi, 
+		     input.param.MultiMasses, state, chi, 
+		     input.param.invParam.invType, 
+		     input.param.invParam.RsdCG, 
+		     1, 
+		     input.param.invParam.MaxCG, 
+		     n_count);
+      }
+      break;
+    default:
+      QDPIO::cerr << "Fermion action unsupported " << endl;
+      break;
+    }
+    
+    // Remove source normalisation
+    fact = Real(1) / fact;
+    for(int i=0; i < num_mass; i++) { 
+      psi[i] *= fact;
+      
+    }
+    
+    push(xml_out,"Relaxation_Iterations");
+    write(xml_out, "ncg_had", n_count);
+    pop(xml_out);
+    
+    saveComponents( input.param,
+		    input.prop,
+		    source_record_xml,
+		    input.components[comp],
+		    gauge_xml,
+		    xml_out,
+		    psi );
+    
+  }
 
   pop(xml_out);  // propagator
   
@@ -400,7 +440,7 @@ int main(int argc, char **argv)
 
 void saveComponents(const ChromaMultiProp_t& param, 
 		    const Prop_t& prop,
-		    const PropSource_t& source_header,
+		    XMLReader& source_record_xml,
 		    const Component_t& component,
 		    XMLReader& gauge_xml,
 		    XMLWriter& xml_out,
@@ -443,10 +483,10 @@ void saveComponents(const ChromaMultiProp_t& param,
     ChromaProp_t out_param(param, m);
  
     write(record_xml, "ForwardProp", out_param);
-    write(record_xml, "PropSource", source_header);
-    write(record_xml, "Config_info", gauge_xml);
+    XMLReader xml_tmp(source_record_xml, "/MakeSource");
+    record_xml << xml_tmp;
     write(record_xml, "Component", component);
-    
+   
     pop(record_xml);
     
     ostringstream outfile;

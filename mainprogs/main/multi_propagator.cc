@@ -1,6 +1,9 @@
-// $Id: multi_propagator.cc,v 1.7 2004-04-26 11:19:13 bjoo Exp $
+// $Id: multi_propagator.cc,v 1.8 2004-04-28 16:37:53 bjoo Exp $
 // $Log: multi_propagator.cc,v $
-// Revision 1.7  2004-04-26 11:19:13  bjoo
+// Revision 1.8  2004-04-28 16:37:53  bjoo
+// Adheres to new propagator structure
+//
+// Revision 1.7  2004/04/26 11:19:13  bjoo
 // Added support for Reading EV-s in SZIN format. Must provide e-values in XML tho.
 //
 // Revision 1.6  2004/04/22 16:49:23  bjoo
@@ -170,23 +173,67 @@ int main(int argc, char **argv)
   LatticePropagator quark_prop_source;
   XMLReader source_file_xml, source_record_xml;
 
-  // ONLY SciDAC mode is supported for propagators!!
-  readQprop(source_file_xml, 
-	    source_record_xml, quark_prop_source,
-	    input.prop.source_file, QDPIO_SERIAL);
-
-  // Try to invert this record XML into a source struct
-  // Also pull out the id of this source
-  PropSource_t source_header;
-
-  try
+  int t0;
+  int j_decay;
+  multi1d<int> boundary;
+  bool make_sourceP = false;
+  bool seqsourceP = false;
   {
-    read(source_record_xml, "/MakeSource/PropSource", source_header);
-  }
-  catch (const string& e) 
+    // ONLY SciDAC mode is supported for propagators!!
+    QDPIO::cout << "Attempt to read source" << endl;
+    readQprop(source_file_xml, 
+	      source_record_xml, quark_prop_source,
+	      input.prop.source_file, QDPIO_SERIAL);
+    QDPIO::cout << "Forward propagator successfully read" << endl;
+
+    // Try to invert this record XML into a source struct
+    try
+    {
+      // First identify what kind of source might be here
+      if (source_record_xml.count("/MakeSource") != 0)
+      {
+	PropSource_t source_header;
+
+	read(source_record_xml, "/MakeSource/PropSource", source_header);
+	j_decay = source_header.j_decay;
+	t0 = source_header.t_source[j_decay];
+	boundary = input.param.boundary;
+	make_sourceP = true;
+      }
+      else if (source_record_xml.count("/SequentialSource") != 0)
+      {
+	ChromaProp_t prop_header;
+	PropSource_t source_header;
+	SeqSource_t seqsource_header;
+
+	read(source_record_xml, "/SequentialSource/SeqSource", seqsource_header);
+	// Any source header will do for j_decay
+	read(source_record_xml, "/SequentialSource/ForwardProps/elem[1]/ForwardProp", 
+	     prop_header);
+	read(source_record_xml, "/SequentialSource/ForwardProps/elem[1]/PropSource", 
+	     source_header);
+	j_decay = source_header.j_decay;
+	t0 = seqsource_header.t_sink;
+	boundary = prop_header.boundary;
+	seqsourceP = true;
+      }
+      else
+	throw "No appropriate header found";
+    }
+    catch (const string& e) 
+    {
+      QDPIO::cerr << "Error extracting source_header: " << e << endl;
+      QDP_abort(1);
+    }
+  }    
+
+  // Sanity check
+  if (seqsourceP)
   {
-    QDPIO::cerr << "Error extracting source_header: " << e << endl;
-    throw;
+    QDPIO::cerr << "Sequential propagator not supportd under multi-mass " << endl;
+    QDPIO::cerr << "since source is not mass independent " << endl;
+    QDP_abort(1);
+
   }
 
 
@@ -344,8 +391,8 @@ int main(int argc, char **argv)
     ChromaProp_t out_param(input.param, m);
  
     write(record_xml, "ForwardProp", out_param);
-    write(record_xml, "PropSource", source_header);
-    write(record_xml, "Config_info", gauge_xml);
+    XMLReader xml_tmp(source_record_xml, "/MakeSource");
+    record_xml << xml_tmp;
     pop(record_xml);
 
     ostringstream outfile;
@@ -369,18 +416,4 @@ int main(int argc, char **argv)
   exit(0);
 }
 
-
-// This is too much and too ugly to be inlined
-void multiPropagatorZolotarev4D(multi1d<LatticeColorMatrix>& u,
-			   const Handle< FermBC<LatticeFermion> >&  fbc,
-			   const LatticePropagator& quark_prop_source,
-			   multi1d<LatticePropagator>& quark_propagator,
-			   const Zolotarev4DFermActParams& zolo4d,
-			   const MultiInvertParam_t& invParam,
-			   const multi1d<Real>& masses,
-			   int& ncg_had,
-			   XMLWriter& xml_out)
-{
-
 	  
-}
