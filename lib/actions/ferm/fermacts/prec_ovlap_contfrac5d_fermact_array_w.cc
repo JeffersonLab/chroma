@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_fermact_array_w.cc,v 1.1 2004-09-30 18:14:31 bjoo Exp $
+// $Id: prec_ovlap_contfrac5d_fermact_array_w.cc,v 1.2 2004-10-01 06:29:23 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -185,6 +185,9 @@ namespace Chroma
       beta[i] = rdata->beta[i];
     }
 
+    for(int i=0; i < N5; i++) { 
+      QDPIO::cout << "beta["<<i<<"] = " << beta[i] << endl;
+    }
 
     alpha.resize(N5);
     for(int i = 0; i < N5; i++) {
@@ -348,45 +351,52 @@ namespace Chroma
     // Construct the linear operator
     Handle<const EvenOddPrecLinearOperator< multi1d<LatticeFermion> > > A(linOp(state));
 
-    {
-      // Construct the source: 
-      for(int i=0; i < N5; i++) { 
-	chi5[i] = zero;
-	psi5[i] = zero;
-	tmp5_1[i] = zero;
-	tmp5_2[i] = zero;
-      }
-      
-      // Set both even and odd components of psi5[N5-1] = gamma_5 chi 
-      // -- use psi as temporary here.
-      psi5[N5-1] = Gamma(G5)*chi;
 
-      // Chi5[N5-1]_e = gamma_5 chi_e = psi5[N5-1]_e
-      chi5[N5-1][rb[0]] = psi5[N5-1];
-      
-      // Chi5[N5-1]_o = S_o - Q_oe Q_ee^{-1} S_e 
-      //              = gamma_5 chi_o - Q_oe Q_ee^{-1} gamma_5 chi_e
-      //              = psi5[N5-1]_o - Q_oe Q_ee^{-1} psi5[N5-1]_e
-
-      // Get  tmp5_2[N5-1]_o = Q_oe Q_ee^{-1} psi5[N5-1]_e
-      A->evenEvenInvLinOp(tmp5_1, psi5, PLUS);
-      A->oddEvenLinOp(tmp5_2, tmp5_1, PLUS);
-
-      // Now subtract psi5[N5-1]_o - tmp5_2[N5-1]_o
-      for(int i=0; i < N5; i++) { 
-	chi5[N5-1][rb[1]] = psi5[N5-1] - tmp5_2[N5-1];
-      }
-
-      // Set psi[N5-1] = psi
-      psi5[N5-1] = psi;     
+    // Construct the source: 
+    for(int i=0; i < N5; i++) { 
+      chi5[i] = zero;
+      psi5[i] = zero;
+      tmp5_1[i] = zero;
+      tmp5_2[i] = zero;
     }
+      
+    // Set both even and odd components of psi5[N5-1] = gamma_5 chi 
+    // -- use psi as temporary here.
+    psi5[N5-1] = Gamma(G5)*chi;
     
+    
+    // Chi5[N5-1]_e = gamma_5 chi_e = psi5[N5-1]_e
+    chi5[N5-1][rb[0]] = psi5[N5-1];
+
+    // Chi5[N5-1]_o = S_o - Q_oe Q_ee^{-1} S_e 
+    //              = gamma_5 chi_o - Q_oe Q_ee^{-1} gamma_5 chi_e
+    //              = psi5[N5-1]_o - Q_oe Q_ee^{-1} psi5[N5-1]_e
+    
+    // Get  tmp5_2[N5-1]_o = Q_oe Q_ee^{-1} psi5[N5-1]_e
+    A->evenEvenInvLinOp(tmp5_1, psi5, PLUS);
+    A->oddEvenLinOp(tmp5_2, tmp5_1, PLUS);
+
+    // Now subtract psi5[N5-1]_o - tmp5_2[N5-1]_o
+    for(int i=0; i < N5; i++) { 
+      chi5[i][rb[1]] = psi5[i] - tmp5_2[i];
+    }
+    QDPIO::cout << "|| chi5 || after source prec = " << sqrt(norm2(chi5[N5-1])) << endl;      
+    
+    // Set psi[N5-1] = psi
+    for(int i=0; i < N5-1; i++) { 
+      psi5[i]=zero;
+    }
+    psi5[N5-1] = psi;     
+  
     switch(invParam.invType) {
     case CG_INVERTER: 
       {
 
 	// Solve M^{+}M psi = M^{+} chi
-	(*A)(tmp5_1, chi5, MINUS);
+        (*A)(tmp5_1, chi5, MINUS);
+	QDPIO::cout << "|| chi5 || after source prec2 = " << sqrt(norm2(tmp5_1)) << endl;
+	QDPIO::cout << "|| psi5 || after source prec2 = " << sqrt(norm2(psi5)) << endl;
+
 	InvCG2(*A, tmp5_1, psi5, invParam.RsdCG, invParam.MaxCG, n_count);
 
 	// psi[N5-1]_odd now holds the desired piece.
