@@ -1,4 +1,4 @@
-// $Id: walfil_s.cc,v 1.7 2004-11-12 10:24:02 mcneile Exp $
+// $Id: walfil_s.cc,v 1.8 2004-11-12 14:49:09 mcneile Exp $
 /*! \file
  *  \brief Wall source construction
  */
@@ -53,7 +53,7 @@ void walfil(LatticeStaggeredFermion& a, int slice, int mu, int color_index, int 
   Real one = 1;
   Complex sitecomp = cmplx(one,0);
   ColorVector sitecolor = zero;
-  Fermion sitefield = zero;
+  StaggeredFermion sitefield = zero;
 
   pokeSpin(sitefield,
 	   pokeColor(sitecolor,sitecomp,color_index),
