@@ -1,4 +1,4 @@
-// $Id: dwffld_w.cc,v 1.7 2005-01-14 20:13:05 edwards Exp $
+// $Id: dwffld_w.cc,v 1.8 2005-02-28 19:38:07 edwards Exp $
 /*! \file
  *  \brief DWF parity/rotation operator
  *
@@ -27,6 +27,7 @@ void DwfFld(multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, en
   START_CODE();
     
   const int N5 = psi.size();
+  chi.resize(N5);
 
   switch (isign)
   {
