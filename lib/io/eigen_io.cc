@@ -346,9 +346,10 @@ void readEigenSzin(multi1d<Real>& lambda_lo,
     // Create filename
     ostringstream filename;
     filename << filename_stem << "_" <<  setw(3) << setfill('0') << evec;
-
+    QDPIO::cout << "Attempting to open " << filename.str() << endl;
     // read the evec
     try { 
+      
       readSzinFerm(eigv_lo[evec], filename.str());
     }
     catch (const string& e) { 

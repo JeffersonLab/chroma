@@ -1,4 +1,4 @@
-// $Id: zolotarev4d_fermact_w.cc,v 1.17 2004-04-26 11:19:12 bjoo Exp $
+// $Id: zolotarev4d_fermact_w.cc,v 1.18 2004-04-26 15:47:20 bjoo Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -122,104 +122,109 @@ Zolotarev4DFermAct::init(int& numroot,
   write(my_writer, "NEigVal", NEigVal);
   write(my_writer, "NEig", NEig);
 
-    /* Below, when we fill in the coefficents for the partial fraction, 
-       we include this factor, say t, appropriately, i.e.
-       R(x) = alpha[da] * t * x + sum(alpha[j] * t * x / (t^2 * x^2 - ap[j]), 
-       j = 0 .. da-1)
-       = (alpha[da] + + sum(alpha[j] / (x^2 - ap[j] / t^2) ) / t^2 ) * t * x 
-    */
+  /* Below, when we fill in the coefficents for the partial fraction, 
+     we include this factor, say t, appropriately, i.e.
+     R(x) = alpha[da] * t * x + sum(alpha[j] * t * x / (t^2 * x^2 - ap[j]), 
+     j = 0 .. da-1)
+     = (alpha[da] + + sum(alpha[j] / (x^2 - ap[j] / t^2) ) / t^2 ) * t * x 
+  */
+  
+  /* ZOLOTAREV_4D uses Zolotarev's formula for the coefficients. 
+     The coefficents produced are for an optimal uniform approximation
+     to the sign-function in the interval [-1,-eps] U [eps,1] and of order n. 
+     type can be set to 0 or 1 corresponding to an approximation which is 
+     is zero or infinite at x = 0, respectively. 
+     Here we are interested in the partial fraction form 
+     
+     R(x) = alpha[da] * x + sum(alpha[j] * x / (x^2 - ap[j]), j = 0 .. da-1) 
+     
+     where da = dd for type 0 and da = dd + 1 with ap[dd] = 0 for type 1. 
+  */
+  type = 0;
+  rdata = zolotarev(toFloat(eps), RatPolyDeg, type);
+  maxerr = (Real)(rdata -> Delta);
+  
+  push(my_writer, "ZolotarevApprox");
+  write(my_writer, "eps", eps);
+  write(my_writer, "scale_fac", scale_fac);
+  write(my_writer, "RatPolyDeg", RatPolyDeg);
+  write(my_writer, "type", type);
+  write(my_writer, "maxerr", maxerr);
+  pop(my_writer);
+  
+  /* The number of residuals and poles */
+  /* Allocate the roots and residua */
+  numroot = rdata -> dd;
+  /* The roots, i.e., the shifts in the partial fraction expansion */
+  rootQ.resize(numroot);
+  
+  /* The residuals in the partial fraction expansion */
+  resP.resize(numroot);
+  
+  /* Fill in alpha[0] = alpha[da] if it is not zero*/
+  coeffP = 0;
+  coeffP = rdata -> alpha[rdata -> da - 1];
+  /* The coefficients from the partial fraction.
+     Here, we write them out for the sake of bookkeeping. */
+  resP = 0;
+  rootQ = 0;
+  for(int n=0; n < numroot; ++n) {
+    resP[n] = rdata -> alpha[n];
+    rootQ[n] = rdata -> ap[n];
+    rootQ[n] = -rootQ[n];
+  }
+  
+  
+  push(my_writer,"ZolotarevPartFrac");
+  write(my_writer, "scale_fac", scale_fac);
+  write(my_writer, "coeffP", coeffP);
+  write(my_writer, "resP", resP);
+  write(my_writer, "rootQ", rootQ);
+  pop(my_writer);
+  
+  /* Now fill in the coefficients for real, i.e., taking the rescaling
+     into account */
+  /* Fill in alpha[0] = alpha[da] if it is not zero*/
+  coeffP = rdata -> alpha[rdata -> da - 1] * scale_fac;
+  /* Fill in the coefficients for the roots and the residua */
+  /* Make sure that the smallest shift is in the last value rootQ(numroot-1)*/
+  resP = 0;
+  rootQ = 0;
+  Real t = Real(1) / (scale_fac * scale_fac);
+  for(int n=0; n < numroot; ++n) {
     
-    /* ZOLOTAREV_4D uses Zolotarev's formula for the coefficients. 
-       The coefficents produced are for an optimal uniform approximation
-       to the sign-function in the interval [-1,-eps] U [eps,1] and of order n. 
-       type can be set to 0 or 1 corresponding to an approximation which is 
-       is zero or infinite at x = 0, respectively. 
-       Here we are interested in the partial fraction form 
-       
-       R(x) = alpha[da] * x + sum(alpha[j] * x / (x^2 - ap[j]), j = 0 .. da-1) 
-       
-       where da = dd for type 0 and da = dd + 1 with ap[dd] = 0 for type 1. 
-    */
-    type = 0;
-    rdata = zolotarev(toFloat(eps), RatPolyDeg, type);
-    maxerr = (Real)(rdata -> Delta);
-
-    push(my_writer, "ZolotarevApprox");
-    write(my_writer, "eps", eps);
-    write(my_writer, "scale_fac", scale_fac);
-    write(my_writer, "RatPolyDeg", RatPolyDeg);
-    write(my_writer, "type", type);
-    write(my_writer, "maxerr", maxerr);
-    pop(my_writer);
-
-    /* The number of residuals and poles */
-    /* Allocate the roots and residua */
-    numroot = rdata -> dd;
-    /* The roots, i.e., the shifts in the partial fraction expansion */
-    rootQ.resize(numroot);
-
-    /* The residuals in the partial fraction expansion */
-    resP.resize(numroot);
-
-    /* Fill in alpha[0] = alpha[da] if it is not zero*/
-    coeffP = 0;
-    coeffP = rdata -> alpha[rdata -> da - 1];
-    /* The coefficients from the partial fraction.
-       Here, we write them out for the sake of bookkeeping. */
-    resP = 0;
-    rootQ = 0;
-    for(int n=0; n < numroot; ++n) {
-      resP[n] = rdata -> alpha[n];
-      rootQ[n] = rdata -> ap[n];
-      rootQ[n] = -rootQ[n];
-    }
-
-
-    push(my_writer,"ZolotarevPartFrac");
-    write(my_writer, "scale_fac", scale_fac);
-    write(my_writer, "coeffP", coeffP);
-    write(my_writer, "resP", resP);
-    write(my_writer, "rootQ", rootQ);
-    pop(my_writer);
-
-    /* Now fill in the coefficients for real, i.e., taking the rescaling
-       into account */
-    /* Fill in alpha[0] = alpha[da] if it is not zero*/
-    coeffP = rdata -> alpha[rdata -> da - 1] * scale_fac;
-    /* Fill in the coefficients for the roots and the residua */
-    /* Make sure that the smallest shift is in the last value rootQ(numroot-1)*/
-    resP = 0;
-    rootQ = 0;
-    Real t = Real(1) / (scale_fac * scale_fac);
-    for(int n=0; n < numroot; ++n) {
-      
-      resP[n] = rdata -> alpha[n] / scale_fac;
-      rootQ[n] = rdata -> ap[n];
-      rootQ[n] = -(rootQ[n] * t);
-    }
-    
-
+    resP[n] = rdata -> alpha[n] / scale_fac;
+    rootQ[n] = rdata -> ap[n];
+    rootQ[n] = -(rootQ[n] * t);
+  }
+  
+  
   /* Write them out into the namelist */
-    push(my_writer,"ZolotarevPartFracResc");
-    write(my_writer, "scale_fac", scale_fac);
-    write(my_writer, "coeffP", coeffP);
-    write(my_writer, "resP", resP);
-    write(my_writer, "rootQ", rootQ);
-    pop(my_writer);
-
-    pop(my_writer);
-
-
-    QDP_info("ZOLOTAREV_4d: n= %d scale= %g coeff= %g  Nwils= %d  m_q= %g  Rsd= %g",
-	     RatPolyDeg,toFloat(scale_fac),toFloat(coeffP),NEigVal,
-	     toFloat(m_q),toFloat(RsdCGinner));
-
-//  QDP_info("Auxiliary fermion action: OverAuxAct = %d",OverAuxAct);
-    QDP_info("Approximation on [-1,-eps] U [eps,1] with eps = %g",toFloat(eps));
-    /* maxerr = rdata -> Delta; */
-    QDP_info("Maximum error |R(x) - sgn(x)| <= Delta = %g",toFloat(maxerr));
-    if(type == 0) {QDP_info("Approximation type %d with R(0) = 0",type);}
-    else {QDP_info("Approximation type %d with R(0) =  infinity",type);}
+  push(my_writer,"ZolotarevPartFracResc");
+  write(my_writer, "scale_fac", scale_fac);
+  write(my_writer, "coeffP", coeffP);
+  write(my_writer, "resP", resP);
+  write(my_writer, "rootQ", rootQ);
+  pop(my_writer);
+  
+  pop(my_writer);
+  
+  
+  QDPIO::cout << "ZOLOTAREV 4d n=" << RatPolyDeg << " scale=" << scale_fac
+	      << " coeff=" << coeffP << " Nwils= " << NEigVal <<" m_q="
+	      << m_q << " Rsd=" << RsdCGinner << endl;
+  
+  QDPIO::cout << "Approximation on [-1,-eps] U [eps,1] with eps = " << eps <<
+    endl;
+  QDPIO::cout << "Maximum error |R(x) - sqn(x)| <= " << maxerr << endl;
+  
+  if(type == 0) {
+    QDPIO::cout << "Approximation type " << type << " with R(0) = 0"
+		<< endl;
+  }
+  else {
+    QDPIO::cout << "Approximation type " << type << " with R(0) =  infinity"                    << endl;
+  }
   
   /* We will also compute the 'function' of the eigenvalues */
   /* for the Wilson vectors to be projected out. */
