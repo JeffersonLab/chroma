@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_fermact_array_w.cc,v 1.4 2004-10-21 16:43:20 bjoo Exp $
+// $Id: prec_ovlap_contfrac5d_fermact_array_w.cc,v 1.5 2004-10-22 03:36:43 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -259,12 +259,7 @@ namespace Chroma
     }
 
     // free the arrays allocated by Tony's Zolo
-    free( rdata->a );
-    free( rdata->ap );
-    free( rdata->alpha );
-    free( rdata->beta );
-    free( rdata->gamma );
-    free( rdata );
+    zolotarev_free(rdata);
   }
 
   //! Produce a linear operator for this action
