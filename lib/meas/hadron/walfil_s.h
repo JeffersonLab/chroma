@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: walfil_s.h,v 1.1 2003-12-16 02:15:47 edwards Exp $
+// $Id: walfil_s.h,v 1.2 2004-01-21 13:37:49 mcneile Exp $
 /*! \file
  *  \brief Wall source construction
  */
@@ -20,8 +20,16 @@
  * \param slice        time slice
  * \param mu           direction of slice
  * \param color_index  Color index
+ * \param src_index    Index which defines which corner of a cube on
+ *                     the source time slice you want your source to
+ *                     be on. The mapping from src_index to site is
+ *                     lexicographic, i.e: 0 is (0,0,0), 1 is (1,0,0),
+ *                     2 is (0,1,0), 3 is (1,1,0), 4 is (0,0,1),
+ *                     5 is (1,0,1), 6 is (0,1,1) and 7 is (1,1,1).
+ *
+
  */
 
-void walfil(LatticeFermion& a, int slice, int mu, int color_index);
+void walfil(LatticeFermion& a, int slice, int mu, int color_index, int src_index);
 
 #endif
