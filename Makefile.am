@@ -10,5 +10,7 @@ SUBDIRS = other_libs lib mainprogs
 # 
 bin_SCRIPTS = chroma-config
 
-
-## EXTRA_DIST=lib root mainprogs
+#
+# All the other goodies
+#
+EXTRA_DIST = install_scripts tests docs
