@@ -1,18 +1,18 @@
 // -*- C++ -*-
-// $Id: prec_dwf_linop_array_w.h,v 1.1 2003-11-22 21:34:01 edwards Exp $
+// $Id: prec_dwf_linop_array_w.h,v 1.2 2003-11-23 06:04:24 edwards Exp $
 /*! \file
- *  \brief Even-odd preconditioned domain-wall fermion linear operator
+ *  \brief 4D Even Odd preconditioned domain-wall fermion linear operator
  */
 
-#ifndef __unprec_dwf_linop_array_w_h__
-#define __unprec_dwf_linop_array_w_h__
+#ifndef __prec_dwf_linop_array_w_h__
+#define __prec_dwf_linop_array_w_h__
 
 #include "linearop.h"
 #include "actions/ferm/linop/dslash_w.h"
 
 using namespace QDP;
 
-//! Even-odd preconditioned domain-wall Dirac operator
+//! 4D Even Odd preconditioned domain-wall Dirac operator
 /*!
  * \ingroup linop
  *
@@ -37,36 +37,100 @@ public:
   //! Destructor is automatic
   ~EvenOddPrecDWLinOpArray() {}
 
-  //! Apply the the even-odd block onto a source vector
+  //! Length of DW flavor index/space
+  int size() const {return N5;}
+
+  //! Apply the even-even block onto a source vector
+  inline
+  void evenEvenLinOp(multi1d<LatticeFermion>& chi, 
+		     const multi1d<LatticeFermion>& psi, 
+		     enum PlusMinus isign) const
+    {
+      applyDiag(chi, psi, isign, 0);
+    }
+  
+  //! Apply the inverse of the even-even block onto a source vector
+  inline
   void evenEvenInvLinOp(multi1d<LatticeFermion>& chi, 
 			const multi1d<LatticeFermion>& psi, 
-			enum PlusMinus isign) const;
-
-  //! Apply the the odd-even block onto a source vector
+			enum PlusMinus isign) const
+    {
+      applyDiagInv(chi, psi, isign, 0);
+    }
+  
+  //! Apply the the even-odd block onto a source vector
   void evenOddLinOp(multi1d<LatticeFermion>& chi, 
 		    const multi1d<LatticeFermion>& psi, 
-		    enum PlusMinus isign) const;
+		    enum PlusMinus isign) const
+    {
+      for(int s(0);s<N5;s++)
+      {
+	D.apply(chi[s],psi[s],isign,0);
+	chi[s][rb[0]] *= 0.5;
+      }
+    }
 
-  //! Apply the the odd-odd block onto a source vector
+  //! Apply the the odd-even block onto a source vector
   void oddEvenLinOp(multi1d<LatticeFermion>& chi, 
 		    const multi1d<LatticeFermion>& psi, 
-		    enum PlusMinus isign) const;
+		    enum PlusMinus isign) const
+    {
+      for(int s(0);s<N5;s++)
+      {
+	D.apply(chi[s],psi[s],isign,1);
+	chi[s][rb[1]] *= 0.5;
+      }
+    }
 
-  //! Apply the operator onto a source vector
+  //! Apply the the odd-odd block onto a source vector
+  inline
   void oddOddLinOp(multi1d<LatticeFermion>& chi, 
 		   const multi1d<LatticeFermion>& psi, 
-		   enum PlusMinus isign) const;
+		   enum PlusMinus isign) const
+    {
+      applyDiag(chi, psi, isign, 1);
+    }
 
-  //! Apply the operator onto a source vector
-  void operator() (multi1d<LatticeFermion>& chi, 
-		   const multi1d<LatticeFermion>& psi, 
-		   enum PlusMinus isign) const;
+
+protected:
+
+  //! Apply the even-even (odd-odd) coupling piece of the domain-wall fermion operator
+  /*!
+   * \param chi     result     	                   (Modify)
+   * \param psi     source     	                   (Read)
+   * \param isign   Flag ( PLUS | MINUS )          (Read)
+   * \param cb      checkerboard ( 0 | 1 )         (Read)
+   */
+  void applyDiag(multi1d<LatticeFermion>& chi, 
+	     const multi1d<LatticeFermion>& psi, 
+	     enum PlusMinus isign,
+	     const int cb) const;
+
+  //! Apply the inverse even-even (odd-odd) coupling piece of the domain-wall fermion operator
+  /*!
+   * \param chi     result     	                   (Modify)
+   * \param psi     source     	                   (Read)
+   * \param isign   Flag ( PLUS | MINUS )   	   (Read)
+   * \param cb      checkerboard ( 0 | 1 )         (Read)
+   */
+  void applyDiagInv(multi1d<LatticeFermion>& chi, 
+		    const multi1d<LatticeFermion>& psi, 
+		    enum PlusMinus isign,
+		    const int cb) const;
+    
 
 private:
   Real WilsonMass;
   Real m_q;
   Real a5;
   int  N5;
+
+  Real InvTwoKappa ;
+  Real TwoKappa ;
+  Real Kappa;
+  Real m_f ;
+  Real invDfactor ;
+
   WilsonDslash  D;
 };
 
