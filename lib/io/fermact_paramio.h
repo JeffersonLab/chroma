@@ -13,7 +13,7 @@ using namespace std;
 // Base class for fermact params
 class FermActParams { 
  public:
-  virtual const enum FermActType getFermActType(void) const = 0;
+  virtual enum FermActType getFermActType(void) const = 0;
 
   // Virtual destructor
   virtual ~FermActParams() {}
@@ -50,7 +50,7 @@ class WilsonFermActParams : public FermActParams {
   WilsonFermActParams( const WilsonFermActParams& p) : my_fermact_type(p.my_fermact_type), Mass(p.Mass), anisoParam(p.anisoParam) {}
    
   // Satisfy virtual functions
-  const enum FermActType getFermActType(void) const { return my_fermact_type; }
+  enum FermActType getFermActType(void) const { return my_fermact_type; }
   Real& getMass(void) { return Mass;  }
   void setMass(const Real& m) { Mass = m ; }
 
@@ -84,7 +84,7 @@ class DWFFermActParams : public FermActParams {
   }
 
   // Satisfy virtual functions
-  const enum FermActType getFermActType(void) const { return my_fermact_type; }
+  enum FermActType getFermActType(void) const { return my_fermact_type; }
 
 
 };
