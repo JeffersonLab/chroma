@@ -1,0 +1,122 @@
+<?xml version="1.0"?>
+
+
+<cfgtransf>
+  <ProgramInfo>
+    <Setgeom>
+      <latt_size>4 4 4 8</latt_size>
+      <logical_size>1 1 1 1</logical_size>
+      <subgrid_size>4 4 4 8</subgrid_size>
+      <total_volume>512</total_volume>
+      <subgrid_volume>512</subgrid_volume>
+    </Setgeom>
+  </ProgramInfo>
+  <Lattis>
+    <Nd>4</Nd>
+    <Nc>3</Nc>
+    <nrow>4 4 4 8</nrow>
+  </Lattis>
+  <SZIN_configuration>
+    <input_type>4</input_type>
+    <cfg_input_file>../test_purgaug.cfg1</cfg_input_file>
+  </SZIN_configuration>
+  <input_gauge_header><szin>
+  <cfg_version>7</cfg_version>
+  <date>Sat Jun 16 00:35:57 2001</date>
+  <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
+  <FermTypeP>0</FermTypeP>
+  <Nd>4</Nd>
+  <Nc>3</Nc>
+  <BetaMC>20.1</BetaMC>
+  <BetaMD>0</BetaMD>
+  <KappaMC>0</KappaMC>
+  <KappaMD>0</KappaMD>
+  <MassMC>0</MassMC>
+  <MassMD>0</MassMD>
+  <dt>0</dt>
+  <MesTrj>1</MesTrj>
+  <TotalCG>0</TotalCG>
+  <TotalTrj>2</TotalTrj>
+  <spec_acc>0</spec_acc>
+  <NOver>2</NOver>
+  <TotalTry>12288</TotalTry>
+  <TotalFail>56</TotalFail>
+  <Nf>9.48851e+33</Nf>
+  <Npf>2</Npf>
+  <RefMomTrj>302059064</RefMomTrj>
+  <RefFnoiseTrj>36</RefFnoiseTrj>
+  <LamPl>9.45468e+33</LamPl>
+  <LamMi>0</LamMi>
+  <AlpLog>4.2039e-45</AlpLog>
+  <AlpExp>4.2039e-45</AlpExp>
+  <nrow>4 4 4 8</nrow>
+  <seed>
+    <Seed>
+      <elem>811</elem>
+      <elem>1073</elem>
+      <elem>1535</elem>
+      <elem>1310</elem>
+    </Seed>
+  </seed>
+</szin>
+
+  </input_gauge_header>
+  <Observables>
+    <w_plaq>0.902263</w_plaq>
+    <s_plaq>0.862579</s_plaq>
+    <t_plaq>0.941947</t_plaq>
+    <link>0.734641</link>
+    <pollp>
+      <elem>
+        <re>0.790237</re>
+        <im>0.00288483</im>
+      </elem>
+      <elem>
+        <re>0.785869</re>
+        <im>-0.00015866</im>
+      </elem>
+      <elem>
+        <re>0.80393</re>
+        <im>0.00160447</im>
+      </elem>
+      <elem>
+        <re>0.864752</re>
+        <im>0.00215502</im>
+      </elem>
+    </pollp>
+  </Observables>
+  <Gauge_fixing_parameters>
+    <j_decay>3</j_decay>
+    <GFAccu>1e-06</GFAccu>
+    <GFMax>1000</GFMax>
+    <OrlxDo>false</OrlxDo>
+    <OrPara>1</OrPara>
+  </Gauge_fixing_parameters>
+  <Gauge_fixed_observables>
+    <w_plaq>0.902263</w_plaq>
+    <s_plaq>0.862579</s_plaq>
+    <t_plaq>0.941947</t_plaq>
+    <link>0.971148</link>
+    <pollp>
+      <elem>
+        <re>0.790237</re>
+        <im>0.00288483</im>
+      </elem>
+      <elem>
+        <re>0.785869</re>
+        <im>-0.000158661</im>
+      </elem>
+      <elem>
+        <re>0.80393</re>
+        <im>0.00160447</im>
+      </elem>
+      <elem>
+        <re>0.864752</re>
+        <im>0.00215502</im>
+      </elem>
+    </pollp>
+  </Gauge_fixed_observables>
+  <Relaxation_iterations_in_GFIX>
+    <nrl_gf>8</nrl_gf>
+  </Relaxation_iterations_in_GFIX>
+</cfgtransf>
