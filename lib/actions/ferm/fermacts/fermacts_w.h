@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermacts_w.h,v 1.22 2005-01-27 17:57:48 bjoo Exp $
+// $Id: fermacts_w.h,v 1.23 2005-02-07 04:12:59 edwards Exp $
 
 /*! \file
  * \brief Fermion actions
@@ -17,6 +17,7 @@
 #define __fermacts_w_h__
 
 #include "fermact_factory_w.h"
+#include "fermacts_aggregate_w.h"
 
 #include "unprec_wilson_fermact_w.h"
 #include "prec_wilson_fermact_w.h"
