@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.64 2003-09-30 21:02:02 edwards Exp $
+# $Id: Makefile.in,v 1.65 2003-10-02 03:30:34 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -175,7 +175,7 @@ HDRS = chroma.h chromabase.h chromainc.h primitives.h common_declarations.h \
 # Fermion independent sources
 #
 libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
-               mesplq.cc reunit.cc sftmom.cc srcfil.cc \
+               mesplq.cc reunit.cc unit_check.cc sftmom.cc srcfil.cc \
                readszin.cc writeszin.cc su3proj.cc sun_proj.cc \
                gaus_smear.cc hyp_smear.cc ape_smear.cc \
                klein_gord.cc laplacian.cc  \
@@ -192,12 +192,12 @@ LIBRARIES = $(lib_LIBRARIES)
 libchroma_a_AR = $(AR) cru
 libchroma_a_LIBADD =
 am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
-	mesplq.cc reunit.cc sftmom.cc srcfil.cc readszin.cc \
-	writeszin.cc su3proj.cc sun_proj.cc gaus_smear.cc hyp_smear.cc \
-	ape_smear.cc klein_gord.cc laplacian.cc su2extract.cc \
-	sunfill.cc invcg2.cc qprop_io.cc follana_io.cc baryon_w.cc \
-	mesons_w.cc curcor2_w.cc lwldslash_w.cc formfac_w.cc \
-	sink_smear2_w.cc barcomp_w.cc transf_w.cc \
+	mesplq.cc reunit.cc unit_check.cc sftmom.cc srcfil.cc \
+	readszin.cc writeszin.cc su3proj.cc sun_proj.cc gaus_smear.cc \
+	hyp_smear.cc ape_smear.cc klein_gord.cc laplacian.cc \
+	su2extract.cc sunfill.cc invcg2.cc qprop_io.cc follana_io.cc \
+	baryon_w.cc mesons_w.cc curcor2_w.cc lwldslash_w.cc \
+	formfac_w.cc sink_smear2_w.cc barcomp_w.cc transf_w.cc \
 	unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
 	unprec_wilson_dsdu_w.cc unprec_qprop_w.cc readszinqprop_w.cc \
 	readszinferm_w.cc writeszinqprop_w.cc overlapbu_linop_w.cc \
@@ -224,13 +224,13 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 @BUILD_STAGGERED_LIBS_TRUE@am__objects_3 = mesphas_s.$(OBJEXT)
 am_libchroma_a_OBJECTS = rgauge.$(OBJEXT) taproj.$(OBJEXT) \
 	hotst.$(OBJEXT) expm12.$(OBJEXT) mesplq.$(OBJEXT) \
-	reunit.$(OBJEXT) sftmom.$(OBJEXT) srcfil.$(OBJEXT) \
-	readszin.$(OBJEXT) writeszin.$(OBJEXT) su3proj.$(OBJEXT) \
-	sun_proj.$(OBJEXT) gaus_smear.$(OBJEXT) hyp_smear.$(OBJEXT) \
-	ape_smear.$(OBJEXT) klein_gord.$(OBJEXT) laplacian.$(OBJEXT) \
-	su2extract.$(OBJEXT) sunfill.$(OBJEXT) invcg2.$(OBJEXT) \
-	qprop_io.$(OBJEXT) follana_io.$(OBJEXT) $(am__objects_1) \
-	$(am__objects_2) $(am__objects_3)
+	reunit.$(OBJEXT) unit_check.$(OBJEXT) sftmom.$(OBJEXT) \
+	srcfil.$(OBJEXT) readszin.$(OBJEXT) writeszin.$(OBJEXT) \
+	su3proj.$(OBJEXT) sun_proj.$(OBJEXT) gaus_smear.$(OBJEXT) \
+	hyp_smear.$(OBJEXT) ape_smear.$(OBJEXT) klein_gord.$(OBJEXT) \
+	laplacian.$(OBJEXT) su2extract.$(OBJEXT) sunfill.$(OBJEXT) \
+	invcg2.$(OBJEXT) qprop_io.$(OBJEXT) follana_io.$(OBJEXT) \
+	$(am__objects_1) $(am__objects_2) $(am__objects_3)
 am__objects_4 =
 nodist_libchroma_a_OBJECTS = $(am__objects_4)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS) \
@@ -262,7 +262,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/srcfil.Po ./$(DEPDIR)/su2extract.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/su3proj.Po ./$(DEPDIR)/sun_proj.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/sunfill.Po ./$(DEPDIR)/taproj.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/transf_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/transf_w.Po ./$(DEPDIR)/unit_check.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_qprop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_wilson_dsdu_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_wilson_fermact_w.Po \
@@ -373,6 +373,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sunfill.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/taproj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/transf_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unit_check.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_qprop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_wilson_dsdu_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_wilson_fermact_w.Po@am__quote@
