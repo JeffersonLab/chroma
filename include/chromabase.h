@@ -1,4 +1,4 @@
-// $Id: chromabase.h,v 1.10 2003-11-10 05:08:43 edwards Exp $
+// $Id: chromabase.h,v 1.11 2003-12-17 17:45:15 edwards Exp $
 //
 // Absolute basic stuff to use chroma
 
@@ -44,8 +44,8 @@ enum PlusMinus {PLUS = 1, MINUS = -1};
 
 
 // Useful constants
-const float fuzz = 1.0e-5;
-const float twopi = 6.283185307179586476925286;
+const Real fuzz = 1.0e-5;
+const Real twopi = 6.283185307179586476925286;
 
 #define TO_REAL(a) float(a)
 
