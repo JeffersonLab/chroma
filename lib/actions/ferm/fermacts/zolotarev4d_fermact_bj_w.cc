@@ -1,4 +1,4 @@
-// $Id: zolotarev4d_fermact_bj_w.cc,v 1.7 2004-01-02 03:19:41 edwards Exp $
+// $Id: zolotarev4d_fermact_bj_w.cc,v 1.8 2004-01-02 03:31:56 edwards Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -270,7 +270,7 @@ Zolotarev4DFermActBj::createState(const multi1d<LatticeColorMatrix>& u_,
   */
 
   // First put in the BC
-  multi1d<LatticeColorMatrix>& u_tmp = u_;
+  multi1d<LatticeColorMatrix> u_tmp = u_;
   getFermBC().modifyU(u_tmp);
 
   Real approxMax = Real(2)*Real(Nd);
@@ -298,7 +298,7 @@ Zolotarev4DFermActBj::createState(const multi1d<LatticeColorMatrix>& u_,
   */
 
   // First put in the BC
-  multi1d<LatticeColorMatrix>& u_tmp = u_;
+  multi1d<LatticeColorMatrix> u_tmp = u_;
   getFermBC().modifyU(u_tmp);
 
   return new ZolotarevConnectState<LatticeFermion>(u_tmp, approxMin_, approxMax_);
@@ -328,7 +328,7 @@ Zolotarev4DFermActBj::createState(const multi1d<LatticeColorMatrix>& u_,
   Real approxMin = fabs(lambda_lo_[ lambda_lo_.size() - 1 ]);
 
   // First put in the BC
-  multi1d<LatticeColorMatrix>& u_tmp = u_;
+  multi1d<LatticeColorMatrix> u_tmp = u_;
   getFermBC().modifyU(u_tmp);
 
   return new ZolotarevConnectState<LatticeFermion>(u_tmp, lambda_lo_, evecs_lo_, lambda_hi_, approxMin, approxMax);
@@ -361,7 +361,7 @@ Zolotarev4DFermActBj::createState(const multi1d<LatticeColorMatrix>& u_,
   }
 
   // First put in the BC
-  multi1d<LatticeColorMatrix>& u_tmp = u_;
+  multi1d<LatticeColorMatrix> u_tmp = u_;
   getFermBC().modifyU(u_tmp);
 
   return new ZolotarevConnectState<LatticeFermion>(u_tmp, lambda_lo_, evecs_lo, lambda_hi, approxMin_, approxMax_);
