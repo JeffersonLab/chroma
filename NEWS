@@ -1,3 +1,8 @@
+01/11/2005 -- Robert Edwards
+
+	Version 1.15.3. More hardeninng of HMC. Chrono prediction added.
+        Added ParWilson (Twisted Mass Wilson) support within HMC.
+
 01/10/2005 -- Robert Edwards
 
 	Version 1.15.2. Changed HMC monomial routines to more generic
