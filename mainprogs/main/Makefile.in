@@ -154,7 +154,7 @@ LDADD = -lchroma @QDPXX_LIBS@ @LIBS@
 HDRS = 
 
 #noinst_PROGRAMS = propagator
-check_PROGRAMS = propagator spectrum_w qqq_w bar3ptfn make_source
+check_PROGRAMS = propagator spectrum_w qqq_w bar3ptfn make_source ExampleBuildingBlocks
 
 #
 # The program and its dependencies
@@ -173,11 +173,14 @@ bar3ptfn_DEPENDENCIES = build_chroma_libs
 
 make_source_SOURCES = make_source.cc
 make_source_DEPENDENCIES = build_chroma_libs
+
+ExampleBuildingBlocks_SOURCES= ExampleBuildingBlocks.cc
+ExampleBuildingBlocks_DEPENDENCIES= build_chroma_libs
 subdir = mainprogs/main
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
 CONFIG_CLEAN_FILES =
 check_PROGRAMS = propagator$(EXEEXT) spectrum_w$(EXEEXT) qqq_w$(EXEEXT) \
-	bar3ptfn$(EXEEXT) make_source$(EXEEXT)
+	bar3ptfn$(EXEEXT) make_source$(EXEEXT) ExampleBuildingBlocks$(EXEEXT)
 am_bar3ptfn_OBJECTS = bar3ptfn.$(OBJEXT)
 bar3ptfn_OBJECTS = $(am_bar3ptfn_OBJECTS)
 bar3ptfn_LDADD = $(LDADD)
@@ -198,6 +201,10 @@ am_spectrum_w_OBJECTS = spectrum_w.$(OBJEXT)
 spectrum_w_OBJECTS = $(am_spectrum_w_OBJECTS)
 spectrum_w_LDADD = $(LDADD)
 spectrum_w_LDFLAGS =
+am_ExampleBuildingBlocks_OBJECTS = ExampleBuildingBlocks.$(OBJEXT)
+ExampleBuildingBlocks_OBJECTS = $(am_ExampleBuildingBlocks_OBJECTS)
+ExampleBuildingBlocks_LDADD = $(LDADD)
+ExampleBuildingBlocks_LDFLAGS =
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
@@ -205,16 +212,16 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/bar3ptfn.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/make_source.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/propagator.Po ./$(DEPDIR)/qqq_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/spectrum_w.Po
+@AMDEP_TRUE@	./$(DEPDIR)/spectrum_w.Po ./$(DEPDIR)/ExampleBuildingBlocks.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
 DIST_SOURCES = $(bar3ptfn_SOURCES) $(make_source_SOURCES) \
-	$(propagator_SOURCES) $(qqq_w_SOURCES) $(spectrum_w_SOURCES)
+	$(propagator_SOURCES) $(qqq_w_SOURCES) $(spectrum_w_SOURCES) $(ExampleBuildingBlocks_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(bar3ptfn_SOURCES) $(make_source_SOURCES) $(propagator_SOURCES) $(qqq_w_SOURCES) $(spectrum_w_SOURCES)
+SOURCES = $(bar3ptfn_SOURCES) $(make_source_SOURCES) $(propagator_SOURCES) $(qqq_w_SOURCES) $(spectrum_w_SOURCES) $(ExampleBuildingBlocks_SOURCES)
 
 all: all-am
 
@@ -243,6 +250,9 @@ qqq_w$(EXEEXT): $(qqq_w_OBJECTS) $(qqq_w_DEPENDENCIES)
 spectrum_w$(EXEEXT): $(spectrum_w_OBJECTS) $(spectrum_w_DEPENDENCIES) 
 	@rm -f spectrum_w$(EXEEXT)
 	$(CXXLINK) $(spectrum_w_LDFLAGS) $(spectrum_w_OBJECTS) $(spectrum_w_LDADD) $(LIBS)
+ExampleBuildingBlocks$(EXEEXT): $(ExampleBuildingBlocks_OBJECTS) $(ExampleBuildingBlocks_DEPENDENCIES)
+        @rm -f ExampleBuildingBlocks$(EXEEXT)
+        $(CXXLINK) $(ExampleBuildingBlocks_LDFLAGS) $(ExampleBuildingBlocks_OBJECTS) $(ExampleBuildingBlocks_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
@@ -255,6 +265,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/propagator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qqq_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/spectrum_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ExampleBuildingBlocks.Po@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
