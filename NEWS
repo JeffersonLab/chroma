@@ -1,3 +1,9 @@
+03/21/2005 -- Robert Edwards
+
+	Version 1.20.3. No major changes, but an improvement in qdp++ to the 
+        sumMulti to now use a QMP global sum on an array instead of individual
+        sums.
+
 03/14/2005 -- Robert Edwards
 
 	Version 1.20.2. Fixed Building-Blocks stuff (ExampleBuildingBlocks)
