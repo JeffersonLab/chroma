@@ -1,9 +1,11 @@
-//  $Id: barcomp_w.cc,v 1.4 2003-04-01 03:15:41 edwards Exp $
+//  $Id: barcomp_w.cc,v 1.5 2003-04-17 20:08:20 dgr Exp $
 /*! \file
  *  \brief Construct all components of a baryon propagator
  */
 
 #include "chromabase.h"
+#include "common_io.h"
+#include "io/qprop_io.h"
 #include "meas/hadron/barcomp_w.h"
 
 using namespace QDP;
@@ -26,31 +28,30 @@ private:
  
 //! Construct all components of a baryon propagator
 /*!
- * \ingroup hadron
- *
  * This routine is specific to Wilson fermions!
  *
- * \param quark_propagator_1 -- first quark propagator  ( Read )
- * \param quark_propagator_2 -- second quark propagator ( Read )
- * \param quark_propagator_3 -- third quark propagator  ( Read )
- * \param barprop -- baryon correlation function (in real space) ( Write )
- * \param t0      -- cartesian coordinates of the source in the j_decay direction( Read )
- * \param j_decay -- direction of the exponential decay ( Read )
- * \param bc_spec -- boundary condition for spectroscopy ( Read )
- * \param nml_group -- Group name for output ( Read )
- * \param nml     -- namelist writer ( Read )
-
+ * quark_propagator_{1,2,3} -- quark propagators (read)
+ * header_{1,2,3} -- second quark propagator ( Read )
+ * quark_propagator_3 -- third quark propagator  ( Read )
+ * barprop -- baryon correlation function (in real space) ( Write )
+ * num_mom -- number of non-zero momenta ( Read )
+ * t0      -- cartesian coordinates of the source in the j_decay direction( Read )
+ * j_decay -- direction of the exponential decay ( Read )
+ * bc_spec  -- boundary condition for spectroscopy ( Read )
+ * file - the filename of the binary output file
  * In all baryons the colour components are contracted with the totally
  * antisymmetric 'tensor' eps(a,b,c) = antisym_tensor(a,b,c).
  */
 
 void barcomp(const LatticePropagator& quark_propagator_1, 
-	     const LatticePropagator& quark_propagator_2, 
-	     const LatticePropagator& quark_propagator_3, 
+	     const PropHead& head_1,
+	     const LatticePropagator& quark_propagator_2,
+	     const PropHead& head_2,
+	     const LatticePropagator& quark_propagator_3,
+	     const PropHead& head_3,
 	     int t0, int j_decay, int bc_spec,
-	     const string& nml_group,
+	     const char file[],
 	     NmlWriter& nml)
-
 {
   // Create the time-slice set
   Set timeslice;
@@ -60,13 +61,17 @@ void barcomp(const LatticePropagator& quark_propagator_1,
   int length = timeslice.numSubsets();
 
   multi1d<DComplex> hsum(length);
+  
+  push(nml, "head_1"); writePropHeadinNml(head_1, nml); pop(nml);
+  push(nml, "head_2"); writePropHeadinNml(head_2, nml); pop(nml);
+  push(nml, "head_3"); writePropHeadinNml(head_3, nml);
 
   multi1d<int> ranks(7);
   ranks = Ns;
   ranks[6] = length;
   multiNd<Complex> barprop(ranks);
 
-  START_CODE("barcomp");
+  /*  START_CODE("barcomp");*/
 
   /* Initialize to zero */
   LatticeComplex b_prop;
@@ -79,9 +84,13 @@ void barcomp(const LatticePropagator& quark_propagator_1,
 	    for(ranks[5]=0; ranks[5] < Ns; ++ranks[5]) // si_1
 	    {
 	      // Contract over color indices with antisym tensors
-	      b_prop = colorContract(peekSpin(quark_propagator_1,ranks[5],ranks[2]),  // (si_1,sf_1)
-				     peekSpin(quark_propagator_2,ranks[4],ranks[1]),  // (si_2,sf_2)
-				     peekSpin(quark_propagator_3,ranks[3],ranks[0])); // (si_3,sf_3)
+	      b_prop = 
+		colorContract(peekSpin(quark_propagator_1,
+				       ranks[5],ranks[2]),  // (si_1,sf_1)
+			      peekSpin(quark_propagator_2,
+				       ranks[4],ranks[1]),  // (si_2,sf_2)
+			      peekSpin(quark_propagator_3,
+				       ranks[3],ranks[0])); // (si_3,sf_3)
 
 	      /* Project on zero momentum: Do a slice-wise sum. */
 	      hsum = sumMulti(b_prop, timeslice);
@@ -90,9 +99,17 @@ void barcomp(const LatticePropagator& quark_propagator_1,
 	      {
 		int t_eff = (ranks[6] - t0 + length) % length;
 
-		barprop[ranks] = (bc_spec < 0 && (t_eff+t0) >= length) ? -hsum[ranks[6]] : hsum[ranks[6]];
+		barprop[ranks] = 
+		  (bc_spec < 0 && (t_eff+t0) >= length) ? -hsum[ranks[6]] : 
+		  hsum[ranks[6]];
 	      }
 	    }
-    
-  END_CODE("barcomp");
+
+  /*
+   *  Now write out the file
+   */
+
+  writeBarcomp(file, barprop, head_1, head_2, head_3,j_decay);
+
+  /*  END_CODE("barcomp");*/
 }
