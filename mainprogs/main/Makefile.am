@@ -40,7 +40,7 @@ check_PROGRAMS = propagator spectrum_w qqq_w seqprop bar3ptfn make_source \
 ## These are programs still under development. They won't compile in
 ## the check_PROGRAMS line, so we put them here to keep from breaking
 ## make check
-EXTRA_PROGRAMS =
+EXTRA_PROGRAMS = wallformfac
 
 
 #
@@ -60,6 +60,9 @@ seqprop_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 
 bar3ptfn_SOURCES= bar3ptfn.cc
 bar3ptfn_DEPENDENCIES= build_chroma_libs rebuild_other_libs
+
+wallformfac_SOURCES= wallformfac.cc
+wallformfac_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 
 make_source_SOURCES= make_source.cc
 make_source_DEPENDENCIES= build_chroma_libs rebuild_other_libs
