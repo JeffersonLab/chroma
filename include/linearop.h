@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linearop.h,v 1.10 2003-04-03 19:28:06 edwards Exp $
+// $Id: linearop.h,v 1.11 2003-04-03 19:51:32 edwards Exp $
 
 /*! @file
  * @brief Linear Operators
@@ -42,18 +42,23 @@ public:
 class DslashLinearOperator : public LinearOperator
 {
 public:
-  //! Apply operator on both checkerboards
+  //! Apply operator on both checkerboards (entire lattice)
   virtual LatticeFermion operator() (const LatticeFermion& psi, enum LinOpSign isign) const
     {
       LatticeFermion d;
 
-      d[rb[0]] = operator()(psi, isign, 0);
-      d[rb[1]] = operator()(psi, isign, 1);
+      d[rb[0]] = apply(psi, isign, 0);
+      d[rb[1]] = apply(psi, isign, 1);
 
       return d;
     }
 
-  virtual LatticeFermion operator() (const LatticeFermion& psi, enum LinOpSign isign, int cb) const = 0;
+  //! Apply checkerboarded linear operator
+  /*! 
+   * To avoid confusion (especially of the compilers!), call the checkerboarded
+   * apply instead of operator()
+   */
+  virtual LatticeFermion apply (const LatticeFermion& psi, enum LinOpSign isign, int cb) const = 0;
 
   //! Virtual destructor to help in cleanup
   virtual ~DslashLinearOperator() {}

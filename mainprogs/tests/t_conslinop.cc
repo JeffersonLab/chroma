@@ -1,4 +1,4 @@
-// $Id: t_conslinop.cc,v 1.3 2003-04-03 19:28:07 edwards Exp $
+// $Id: t_conslinop.cc,v 1.4 2003-04-03 19:51:32 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -44,8 +44,8 @@ int main(int argc, char *argv[])
   LatticeFermion psi, chi;
   gaussian(psi);
   cerr << "before dslash call" << endl;
-  chi[rb[0]] = D(psi, PLUS, 0); 
-  chi[rb[1]] = D(psi, PLUS, 0); 
+  chi[rb[0]] = D.apply(psi, PLUS, 0); 
+  chi[rb[1]] = D.apply(psi, PLUS, 0); 
   cerr << "after dslash call" << endl;
 
   cerr << "before wilson construct" << endl;
