@@ -394,6 +394,7 @@ int main(int argc, char **argv)
     }
   
 
+  stag_prop[0] = quark_propagator ; 
   pseudoscalar.compute(stag_prop, j_decay);
   scalar_meson.compute(stag_prop, j_decay);
 
