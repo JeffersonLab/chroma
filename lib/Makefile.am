@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.103 2004-01-29 20:54:29 edwards Exp $
+# $Id: Makefile.am,v 1.104 2004-01-29 20:56:16 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -18,7 +18,6 @@ VPATH += $(TOPDIR)/lib/actions/ferm/linop
 VPATH += $(TOPDIR)/lib/actions/ferm/qprop
 VPATH += $(TOPDIR)/lib/actions/gauge
 #VPATH += $(TOPDIR)/lib/geom
-VPATH += $(TOPDIR)/lib/info
 VPATH += $(TOPDIR)/lib/io
 VPATH += $(TOPDIR)/lib/meas
 VPATH += $(TOPDIR)/lib/meas/eig
