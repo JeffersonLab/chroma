@@ -249,7 +249,7 @@ JLAB-2M)
 for name in \${PBSPROGS}
 do
 echo "Copying over ... " \${name}
-\${RCP} \${FILESERVER}\${PBSPROGROOT}/\${name} .
+\${RCP} \${FILESERVER}\${PBSROOT}/\${name} .
 done
 conf_file=conf.\${PBS_JOBID}
 for name in \${PROGLIST}
@@ -780,7 +780,10 @@ else
 \${RCP} qqq_*.cfg\${cfg} \${FILESERVER}\${QQQDIR}/.
 fi
 
-rm -f *
+rm -f *PS*
+rm -f qqq_*
+rm -f RESULT*
+rm -f *xmldat*
 
 else
 echo "Yikes! You have no \${FILESERVER}\${GAUGEDIR}/\${szingauge}!!"
