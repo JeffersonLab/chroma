@@ -45,7 +45,7 @@ using namespace QDP;
 //###################################################################################//
 
 static const char* const CVSExampleBuildingBlocks_hh =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/mainprogs/main/ExampleBuildingBlocks.cc,v 1.13 2004-05-27 21:29:14 dru Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/mainprogs/main/ExampleBuildingBlocks.cc,v 1.14 2004-05-28 00:14:16 dru Exp $";
 
 //###################################################################################//
 // Accept All Link Patterns                                                          //
@@ -471,8 +471,8 @@ int main( int argc, char** argv )
 
   Out << "calculating building blocks ..." << "\n";  Out.flush();
 
-  const int T1 = 0;
-  const int T2 = NT - 1;
+  const signed short int T1 = 0;
+  const signed short int T2 = NT - 1;
 
   BuildingBlocks( *B, *F, *U, MaxNLinks, AllLinkPatterns, Phases, Files, T1, T2 );
 
