@@ -1,4 +1,4 @@
-// $Id: t_precact_sse.cc,v 1.3 2004-09-09 15:52:52 edwards Exp $
+// $Id: t_precact_sse.cc,v 1.4 2004-10-20 02:35:05 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -28,35 +28,19 @@ int main(int argc, char **argv)
 
   // Init the gauge field
   multi1d<LatticeColorMatrix> u(Nd);
-//  HotSt(u);
+  HotSt(u);
 //  u = 1.0;
 //  XMLReader gauge_xml;
 //  readSzin(gauge_xml, u, "test_purgaug.cfg1");
-  for(int m=0; m < Nd; ++m)
-  {
-    ColorMatrix t;
-    t = 0;
-    for(int i=0; i < Nc; ++i)
-      for(int j=0; j < Nc; ++j)
-	pokeColor(t,cmplx(Real((m+1)*((i+j)*0.02)),Real(-(m+1)*((i+j)*0.00))),i,j);
-
-#if 1
-    for(int site=0; site < Layout::vol(); ++site)
-      pokeSite(u[m],ColorMatrix(site+t),Layout::siteCoords(0,site));
-#else
-    u[m] = t;
-#endif
-//    reunit(u[m]);
-  }
 
   InvertParam_t  invParam;
   invParam.invType = CG_INVERTER;
-  invParam.RsdCG = 1.0e-12;
+  invParam.RsdCG = 1.0e-6;
   invParam.MaxCG = 3000;
   int n_count = 0;
 
   // Create the BC objects
-  const int bnd[] = {1,1,1,1};
+  const int bnd[] = {1,1,1,-1};
   multi1d<int> boundary(Nd);
   boundary = bnd;
 
@@ -68,7 +52,7 @@ int main(int argc, char **argv)
     Real WilsonMass = 1.1;
     int N5 = 8;
     Real m_q = 0.3;
-    UnprecDWFermActArray S_pdwf(fbc,WilsonMass,m_q,N5);
+    EvenOddPrecDWFermActArray S_pdwf(fbc,WilsonMass,m_q,N5);
     Handle<const ConnectState> state(S_pdwf.createState(u));
   
     SSEEvenOddPrecDWFermActArray S_sdwf(fbc,WilsonMass,m_q,N5);
@@ -90,7 +74,7 @@ int main(int argc, char **argv)
     QDPIO::cout << "UnPrec inverter" << endl;
     S_pdwf.qpropT(psi5a, state, chi5, invParam, n_count);
     QDPIO::cout << "SSE prec inverter" << endl;
-    S_sdwf.opt_qpropT(psi5b, state, chi5, invParam, n_count);
+    S_sdwf.qpropT(psi5b, state, chi5, invParam, n_count);
     
     for(int m=0; m < N5; ++m)
       tmp1[m] = psi5a[m] - psi5b[m];
