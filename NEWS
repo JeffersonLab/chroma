@@ -1,3 +1,8 @@
+10/18/2004 -- Robert Edwards
+
+	Version 1.8.0. First version. Changed to support QMP-2. New fermion action
+        initialization. New support for variable initialization.
+
 09/28/2004 -- Balint
 
      -- ZolotarevStateInfo has been renamed to OverlapStateInfo
