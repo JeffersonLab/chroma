@@ -8,7 +8,6 @@
 #include "enum_proptype_io.h"
 #include "enum_eigenvectype_io.h"
 #include "enum_fermtype_io.h"
-#include "enum_fermacttype_io.h"
 #include "enum_seqsrctype_io.h"
 #include "enum_simplebctype_io.h"
 #include "enum_gaugeacttype_io.h"

@@ -13,7 +13,7 @@ namespace Chroma {
       bool success; 
       success = theCoeffTypeMap::Instance().registerPair(string("ZOLOTAREV"), COEFF_TYPE_ZOLOTAREV );
       success &= theCoeffTypeMap::Instance().registerPair(string("TANH"), COEFF_TYPE_TANH);
-      
+      success &- theCoeffTypeMap::Instance().registerPair(string("TANH_UNSCALED"), COEFF_TYPE_TANH_UNSCALED);
       return success;
     }
 

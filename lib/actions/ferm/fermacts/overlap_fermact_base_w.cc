@@ -1,4 +1,4 @@
-// $Id: overlap_fermact_base_w.cc,v 1.21 2004-09-24 16:22:00 bjoo Exp $
+// $Id: overlap_fermact_base_w.cc,v 1.22 2004-09-28 17:39:55 bjoo Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -59,27 +59,36 @@ OverlapFermActBase::qprop(LatticeFermion& psi,
     Chirality ichiral = isChiralVector(chi);
     if( ichiral == CH_NONE || ( isChiral() == false )) { 
 
-      // Source is not chiral. In this case we should use,
-      // InvCG2 with M
-      InvCG2(*M, chi, tmp, invParam.RsdCG, invParam.MaxCG, n_count);
+     
+
+      Handle< const LinearOperator<LatticeFermion> > MM(lMdagM(state));
 
       // Do this at the end as otherwise it may mix chiralities?
-      (*M)(psi, tmp, MINUS);
+      (*M)(tmp, chi, MINUS);
+    
+
+      // Source is not chiral. In this case we should use,
+      // InvCG2 with M
+      InvCG2(*M, tmp, psi, invParam.RsdCG, invParam.MaxCG, n_count);
+
     }
     else {
 	
+      Handle< const LinearOperator<LatticeFermion> > MM(lMdagM(state,ichiral));
+
+      (*M)(tmp, chi, MINUS);	
       // Source is chiral. In this case we should use InvCG1
       // with the special MdagM
-      Handle< const LinearOperator<LatticeFermion> > MM(lMdagM(state, ichiral));
-      InvCG1(*MM, chi, tmp, invParam.RsdCG, invParam.MaxCG, n_count);
-      (*M)(psi, tmp, MINUS);	
+      InvCG1(*MM, tmp, psi, invParam.RsdCG, invParam.MaxCG, n_count);
+
     }
   
     LatticeFermion Mpsi;
     (*M)(Mpsi, psi, PLUS);
-    Mpsi = chi - Mpsi;
-    Mpsi /= sqrt(norm2(chi));
-    QDPIO::cout << "OvQprop || chi - D psi ||/||chi|| = " << sqrt(norm2(Mpsi))
+    Mpsi -= chi;
+    
+    QDPIO::cout << "OvQprop || chi - D psi ||/||chi|| = " 
+		<< sqrt(norm2(Mpsi))/sqrt(norm2(chi)) 
 		<< "  n_count = " << n_count << " iters" << endl;
 
   }
@@ -97,8 +106,9 @@ OverlapFermActBase::qprop(LatticeFermion& psi,
 
       // Source is not chiral. In this case we should use,
       // InvCG2 with M
-      InvRelCG2(*M, chi, tmp, invParam.RsdCG, invParam.MaxCG, n_count);
-      (*M)(psi, tmp, MINUS); 
+      (*M)(tmp, chi, MINUS); 
+      InvRelCG2(*M, tmp, psi, invParam.RsdCG, invParam.MaxCG, n_count);
+    
     }
     else {
 	
@@ -106,16 +116,16 @@ OverlapFermActBase::qprop(LatticeFermion& psi,
       // with the special MdagM
       Handle< const ApproxLinearOperator<LatticeFermion> > MM( dynamic_cast<const ApproxLinearOperator<LatticeFermion>* >( lMdagM(state, ichiral) ) );
 
-
-      InvRelCG1(*MM, chi, tmp, invParam.RsdCG, invParam.MaxCG, n_count);
-      (*M)(psi, tmp, MINUS);	
+      (*M)(tmp, chi, MINUS);	
+      InvRelCG1(*MM, tmp, psi, invParam.RsdCG, invParam.MaxCG, n_count);
+      
     }
 
     LatticeFermion Mpsi;
     (*M)(Mpsi, psi, PLUS);
-    Mpsi = chi - Mpsi;
-    Mpsi /= sqrt(norm2(chi));
-    QDPIO::cout << "OvQprop || chi - D psi ||/||chi|| = " << sqrt(norm2(Mpsi))
+    Mpsi -= chi;
+    QDPIO::cout << "OvQprop || chi - D psi ||/||chi|| = " 
+		<< sqrt(norm2(Mpsi))/sqrt(norm2(chi))
 		<< "  n_count = " << n_count << " iters" << endl;
 
   }
@@ -161,9 +171,9 @@ OverlapFermActBase::qprop(LatticeFermion& psi,
     Handle<const LinearOperator<LatticeFermion> > D(linOp(state));
     LatticeFermion Dpsi;
     (*D)(Dpsi, psi, PLUS);
-    Dpsi = chi - Dpsi;
-    Dpsi /= sqrt(norm2(chi));
-    QDPIO::cout << "OvQprop || chi - D psi || = " << sqrt(norm2(Dpsi))
+    Dpsi -= chi;
+    QDPIO::cout << "OvQprop || chi - D psi || = " 
+		<< sqrt(norm2(Dpsi))/sqrt(norm2(chi))
 		<< "  n_count = " << n_count << " iters" << endl;
   }
   break;
@@ -199,9 +209,9 @@ OverlapFermActBase::qprop(LatticeFermion& psi,
     Handle<const LinearOperator<LatticeFermion> > D(linOp(state));
     LatticeFermion Dpsi;
     (*D)(Dpsi, psi, PLUS);
-    Dpsi = chi - Dpsi;
-    Dpsi /= sqrt(norm2(chi));
-    QDPIO::cout << "OvQprop || chi - D psi || = " << sqrt(norm2(Dpsi))
+    Dpsi -= chi;
+    QDPIO::cout << "OvQprop || chi - D psi || = " 
+		<< sqrt(norm2(Dpsi)) / sqrt(norm2(chi)) 
 		<< "  n_count = " << n_count << " iters" << endl;
   }
   break;
@@ -239,9 +249,10 @@ OverlapFermActBase::qprop(LatticeFermion& psi,
     Handle<const LinearOperator<LatticeFermion> > D(linOp(state));
     LatticeFermion Dpsi;
     (*D)(Dpsi, psi, PLUS);
-    Dpsi = chi - Dpsi;
-    Dpsi /= sqrt(norm2(chi));
-    QDPIO::cout << "OvQprop || chi - D psi || = " << sqrt(norm2(Dpsi))
+    Dpsi -= chi;
+
+    QDPIO::cout << "OvQprop || chi - D psi || = " 
+		<< sqrt(norm2(Dpsi))/sqrt(norm2(chi))
 		<< "  n_count = " << n_count << " iters" << endl;
   }
   break;
@@ -271,17 +282,18 @@ OverlapFermActBase::qprop(LatticeFermion& psi,
 
     Handle<const ApproxLinearOperator<LatticeFermion> > MM(MM_ptr);
     Handle<const ApproxLinearOperator<LatticeFermion> > MM_prec(MM_prec_ptr);
-      
-    InvRelGMRESR_CG(*MM_prec,*MM, chi, tmp, invParam.RsdCG, invParam.RsdCGPrec, invParam.MaxCG, invParam.MaxCGPrec, n_count);
-	
     Handle<const LinearOperator<LatticeFermion> > M(linOp(state));
-    (*M)(psi,tmp,MINUS);
+
+    (*M)(tmp,chi,MINUS);
+    InvRelGMRESR_CG(*MM_prec,*MM, tmp, psi, invParam.RsdCG, invParam.RsdCGPrec, invParam.MaxCG, invParam.MaxCGPrec, n_count);
+	
+   
 
     LatticeFermion Mpsi;
     (*M)(Mpsi, psi, PLUS);
-    Mpsi = chi - Mpsi;
-    Mpsi /= sqrt(norm2(chi));
-    QDPIO::cout << "OvQprop || chi - D psi ||/||chi|| = " << sqrt(norm2(Mpsi))
+    Mpsi -= chi;
+    QDPIO::cout << "OvQprop || chi - D psi ||/||chi|| = "
+		<< sqrt(norm2(Mpsi)) / sqrt(norm2(chi))
 		<< "  n_count = " << n_count << " iters" << endl;
 
 

@@ -15,7 +15,8 @@ namespace Chroma {
  
   enum CoeffType {
       COEFF_TYPE_ZOLOTAREV = 0,
-      COEFF_TYPE_TANH
+      COEFF_TYPE_TANH,
+      COEFF_TYPE_TANH_UNSCALED
   };
 
 

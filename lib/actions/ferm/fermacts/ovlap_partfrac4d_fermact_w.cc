@@ -1,4 +1,4 @@
-// $Id: ovlap_partfrac4d_fermact_w.cc,v 1.5 2004-09-28 13:01:47 bjoo Exp $
+// $Id: ovlap_partfrac4d_fermact_w.cc,v 1.6 2004-09-28 17:39:55 bjoo Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -276,11 +276,12 @@ namespace Chroma
       NEig = NEigVal;
     }
 
-    scale_fac = Real(1) / state.getApproxMax();
-    eps = state.getApproxMin() * scale_fac;
 
     switch(params.approximation_type) { 
     case COEFF_TYPE_ZOLOTAREV:
+      scale_fac = Real(1) / state.getApproxMax();
+      eps = state.getApproxMin() * scale_fac;
+
       QDPIO::cout << "Initing Linop with Zolotarev Coefficients" << endl;
       QDPIO::cout << "  MaxCGInner =  " << params.invParamInner.MaxCG << endl;
       QDPIO::cout << "  RsdCGInner =  " << params.invParamInner.RsdCG << endl;
@@ -309,6 +310,9 @@ namespace Chroma
       break;
 
     case COEFF_TYPE_TANH:
+      scale_fac = Real(1) / state.getApproxMax();
+      eps = state.getApproxMin() * scale_fac;
+
       QDPIO::cout << "Initing Linop with Higham Rep tanh Coefficients" << endl;
       QDPIO::cout << "  MaxCGInner =  " << params.invParamInner.MaxCG << endl;
       QDPIO::cout << "  RsdCGInner =  " << params.invParamInner.RsdCG << endl;
@@ -329,6 +333,31 @@ namespace Chroma
       rdata = higham(toFloat(eps), params.RatPolyDeg);
      
       break;
+    case COEFF_TYPE_TANH_UNSCALED:
+      scale_fac = Real(1) ;
+      eps = state.getApproxMin();
+
+      QDPIO::cout << "Initing Linop with Unscaled Higham Rep tanh Coefficients" << endl;
+      QDPIO::cout << "  MaxCGInner =  " << params.invParamInner.MaxCG << endl;
+      QDPIO::cout << "  RsdCGInner =  " << params.invParamInner.RsdCG << endl;
+      QDPIO::cout << "  NEigVal    =  " << NEigVal << endl;
+      
+      /* Below, when we fill in the coefficents for the partial fraction, 
+	 we include this factor, say t, appropriately, i.e.
+	 R(x) = alpha[da] * t * x + sum(alpha[j] * t * x / (t^2 * x^2 - ap[j]), 
+	 j = 0 .. da-1)
+	 = (alpha[da] + + sum(alpha[j] / (x^2 - ap[j] / t^2) ) / t^2 ) * t * x 
+      */
+      
+      /*  use the tanh formula (Higham Rep) for the coefficients. 
+	 The coefficents produced are for the tanh approximation
+	 to the sign-function in the interval [-1,-eps] U [eps,1] and of order n.	 R(x) = alpha[da] * x + sum(alpha[j] * x / (x^2 - ap[j]), j = 0 .. da-1) 
+	 where da = dd for type 0 and da = dd + 1 with ap[dd] = 0 for type 1. 
+      */
+      rdata = higham(toFloat(eps), params.RatPolyDeg);
+     
+      break;
+
     default:
       // The map system should ensure that we never get here but 
       // just for style
@@ -432,6 +461,11 @@ namespace Chroma
     case COEFF_TYPE_TANH:
       QDPIO::cout << "Coefficients from Higham Tanh representation" << endl;
       break;
+
+    case COEFF_TYPE_TANH_UNSCALED:
+      QDPIO::cout << "Coefficients from Unscaled Higham Tanh representation" << endl;
+      break;
+
     default:
       QDPIO::cerr << "Unknown coefficient type " << params.approximation_type 
 		  << endl;
@@ -451,6 +485,17 @@ namespace Chroma
       QDP_abort(1);
     }
 
+    QDPIO::cout << "Number of poles= " << numroot << endl;
+    QDPIO::cout << "Overall Factor=  " << coeffP << endl;
+    QDPIO::cout << "Numerator coefficients:" << endl;
+    for(int n=0; n < numroot; n++) { 
+      QDPIO::cout <<"  resP[" << n << "]= " << resP[n] << endl;
+    }
+    QDPIO::cout << "Denominator roots: " << endl;
+    for(int n=0; n < numroot; n++) { 
+      QDPIO::cout <<"  rootQ[" << n<< "]= " << rootQ[n] << endl;
+    }
+  
     /* We will also compute the 'function' of the eigenvalues */
     /* for the Wilson vectors to be projected out. */
     if (NEig > 0)
@@ -535,11 +580,11 @@ namespace Chroma
       NEig = NEigVal;
     }
 
-    scale_fac = Real(1) / state.getApproxMax();
-    eps = state.getApproxMin() * scale_fac;
 
     switch(params.approximation_type) { 
     case COEFF_TYPE_ZOLOTAREV:
+      scale_fac = Real(1) / state.getApproxMax();
+      eps = state.getApproxMin() * scale_fac;
       
       QDPIO::cout << "Initing Linop with Zolotarev Coefficients" << endl;
       
@@ -570,7 +615,9 @@ namespace Chroma
       maxerr = (Real)(rdata -> Delta);
       break;
     case COEFF_TYPE_TANH:
-      
+      scale_fac = Real(1) / state.getApproxMax();
+      eps = state.getApproxMin() * scale_fac;
+
       QDPIO::cout << "Initing Linop with Higham Rep tanh Coefficients" << endl;
       
       QDPIO::cout << "  MaxCGInner =  " << params.invParamInner.MaxCG << endl;
@@ -592,6 +639,30 @@ namespace Chroma
       rdata = higham(toFloat(eps), params.RatPolyDeg);
       maxerr = (Real)(rdata -> Delta);
       break;
+    case COEFF_TYPE_TANH_UNSCALED:
+      scale_fac = Real(1) ;
+      eps = state.getApproxMin();
+      
+      QDPIO::cout << "Initing Preconditioning Linop with Unscaled Higham Rep tanh Coefficients" << endl;
+      QDPIO::cout << "  MaxCGInner =  " << params.invParamInner.MaxCG << endl;
+      QDPIO::cout << "  RsdCGInner =  " << params.invParamInner.RsdCG << endl;
+      QDPIO::cout << "  NEigVal    =  " << NEigVal << endl;
+      
+      /* Below, when we fill in the coefficents for the partial fraction, 
+	 we include this factor, say t, appropriately, i.e.
+	 R(x) = alpha[da] * t * x + sum(alpha[j] * t * x / (t^2 * x^2 - ap[j]), 
+	 j = 0 .. da-1)
+	 = (alpha[da] + + sum(alpha[j] / (x^2 - ap[j] / t^2) ) / t^2 ) * t * x 
+      */
+      
+      /*  use the tanh formula (Higham Rep) for the coefficients. 
+	 The coefficents produced are for the tanh approximation
+	 to the sign-function in the interval [-1,-eps] U [eps,1] and of order n.	 R(x) = alpha[da] * x + sum(alpha[j] * x / (x^2 - ap[j]), j = 0 .. da-1) 
+	 where da = dd for type 0 and da = dd + 1 with ap[dd] = 0 for type 1. 
+      */
+      rdata = higham(toFloat(eps), params.RatPolyDeg);
+
+
     default:
       // The map system should ensure that we never get here but 
       // just for style
@@ -683,6 +754,11 @@ namespace Chroma
 
       QDPIO::cout << "Coefficients from Higham Tanh representation" << endl;
       break;
+
+    case COEFF_TYPE_TANH_UNSCALED:
+
+      QDPIO::cout << "Coefficients from Higham Tanh representation" << endl;
+      break;
     default:
       QDPIO::cerr << "Unknown coefficient type " << params.approximation_type 
 		  << endl;
@@ -702,6 +778,18 @@ namespace Chroma
       QDP_abort(1);
     }
 
+    QDPIO::cout << "Number of poles= " << numroot << endl;
+    QDPIO::cout << "Overall Factor=  " << coeffP << endl;
+    QDPIO::cout << "Numerator coefficients:" << endl;
+    for(int n=0; n < numroot; n++) { 
+      QDPIO::cout <<"  resP[" << n << "]= " << resP[n] << endl;
+    }
+    QDPIO::cout << "Denominator roots: " << endl;
+    for(int n=0; n < numroot; n++) { 
+      QDPIO::cout <<"  rootQ[" << n<< "]= " << rootQ[n] << endl;
+    }
+  
+      
     /* We will also compute the 'function' of the eigenvalues */
     /* for the Wilson vectors to be projected out. */
     if (NEig > 0)

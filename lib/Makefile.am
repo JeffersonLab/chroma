@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.173 2004-09-28 13:01:47 bjoo Exp $
+# $Id: Makefile.am,v 1.174 2004-09-28 17:39:55 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -93,7 +93,6 @@ nobase_include_HEADERS = \
 	io/enum_io/enum_proptype_io.h \
 	io/enum_io/enum_eigenvectype_io.h \
 	io/enum_io/enum_fermtype_io.h \
-	io/enum_io/enum_fermacttype_io.h \
 	io/enum_io/enum_seqsrctype_io.h \
 	io/enum_io/enum_simplebctype_io.h \
 	io/enum_io/enum_gaugeacttype_io.h \
@@ -247,7 +246,6 @@ nobase_include_HEADERS += \
 #	actions/ferm/fermacts/unprec_dwf_fermact_w.h \
 #       actions/ferm/linop/ldwfdslash_w.h 
 #	actions/ferm/linop/unprec_dwf_linop_w.h 
-
 endif
 
 if BUILD_STAGGERED_LIBS
@@ -301,7 +299,7 @@ libchroma_a_SOURCES = gauge_startup.cc gaugebc_utils.cc gaugeact_utils.cc \
                sftmom.cc srcfil.cc \
 	       enum_cfgtype_io.cc \
 	       enum_coeffs_io.cc enum_proptype_io.cc enum_eigenvectype_io.cc \
-	       enum_fermtype_io.cc enum_fermacttype_io.h enum_seqsrctype_io.cc \
+	       enum_fermtype_io.cc enum_seqsrctype_io.cc \
 	       enum_simplebctype_io.cc enum_gaugeacttype_io.cc \
 	       enum_invtype_io.cc enum_wvfkind_io.cc enum_qdpvolfmt_io.cc\
 	       enum_srcsnktype_io.cc enum_wavetype_io.cc \
