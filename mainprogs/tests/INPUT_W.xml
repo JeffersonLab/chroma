@@ -12,6 +12,7 @@
     <u0>0.463032</u0>
     <cfg_type>HOT</cfg_type>
     <prop_type>SZIN</prop_type>
+    <number_sample> 5  </number_sample>
     <RsdCG>1.0e-5</RsdCG>
     <MaxCG>1000</MaxCG>
     <nrow>4 4 4 4</nrow>
