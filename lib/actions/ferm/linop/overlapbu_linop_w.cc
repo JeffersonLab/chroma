@@ -1,4 +1,4 @@
-// $Id: overlapbu_linop_w.cc,v 1.1 2003-04-24 18:34:48 edwards Exp $
+// $Id: overlapbu_linop_w.cc,v 1.2 2003-04-24 20:56:39 edwards Exp $
 /*! \file
  *  \brief Overlap operator
  */
@@ -54,10 +54,11 @@ LatticeFermion OverlapBULinOp::operator() (const LatticeFermion& psi, enum LinOp
   Double  beta,eps1,eps2;
   Double  rsd_sq;
   Double  tmp_eps;
+  int     G5=Ns*Ns-1;
 
-
+  n_count=0;
   rsd_sq=1.0e-9;
-  MaxCG =140;
+  MaxCG =1000;
 
   zol_const(qq1,qq,cq);
   
@@ -74,10 +75,13 @@ LatticeFermion OverlapBULinOp::operator() (const LatticeFermion& psi, enum LinOp
       qq[k]-=qq1;
     }
    
-  for(int k = 0; k < n_s; ++k)
+  x[0]=zero;
+  r[0]=where(isign==PLUS,psi,Gamma(G5)*psi);
+
+  for(int k = 1; k < n_s; ++k)
     {
       x[k]=zero;
-      r[k]=psi;
+      r[k]=r[0];
     }
   
   
@@ -98,8 +102,8 @@ LatticeFermion OverlapBULinOp::operator() (const LatticeFermion& psi, enum LinOp
   for(int l = 1; l <= MaxCG; ++l)
     {
       
-      wldirac(v1,r_aux,u,kappa,MINUS);
-      wldirac(r_aux,v2,u,kappa,PLUS);
+      wldirac(v1,r_aux,u,kappa,PLUS);
+      wldirac(r_aux,v2,u,kappa,MINUS);
       
       delta[0]=innerProduct(v2,v1);
       delta[0]+=qq1;
@@ -130,7 +134,7 @@ LatticeFermion OverlapBULinOp::operator() (const LatticeFermion& psi, enum LinOp
       eps2=norm2(x[0]);
       tmp_eps=sqrt(eps1/eps2);
       
-      cout << "iter = " << l << "  " << tmp_eps << endl;
+//      cout << "iter = " << l << "  " << tmp_eps << endl;
       
       if ( toBool( tmp_eps <=  rsd_sq) )  //why?
 	{
@@ -142,8 +146,8 @@ LatticeFermion OverlapBULinOp::operator() (const LatticeFermion& psi, enum LinOp
 
   for(int k = 0; k < n_s; ++k)
     {
-      wldirac(x[k],r_aux,u,kappa,MINUS);
-      wldirac(r_aux,v1,u,kappa,PLUS);
+      wldirac(x[k],r_aux,u,kappa,PLUS);
+      wldirac(r_aux,v1,u,kappa,MINUS);
       v1+=Real(qq1)*x[k];
 
       v1+=Real(qq[k])*x[k];
@@ -151,7 +155,7 @@ LatticeFermion OverlapBULinOp::operator() (const LatticeFermion& psi, enum LinOp
       eps1=norm2(v1);
       eps2=norm2(x[k]);
       tmp_eps=sqrt(eps1/eps2);
-      cout << "tmp_eps = " << tmp_eps << endl;
+//      cout << "tmp_eps = " << tmp_eps << endl;
     }
   
   v1=zero;
@@ -160,8 +164,19 @@ LatticeFermion OverlapBULinOp::operator() (const LatticeFermion& psi, enum LinOp
       v1+=Real(cq[k])*x[k];
     }
   
-  wldirac(v1,chi,u,kappa,MINUS);
-  chi+=psi;
+  if (isign == PLUS)
+  {
+    wldirac(v1,chi,u,kappa,PLUS);
+    chi+=psi;
+  }
+  else
+  {
+    wldirac(v1,v2,u,kappa,PLUS);
+    chi=psi+Gamma(G5)*v2;
+  }
+
+
+  cerr << "Inner CG iters = " << n_count << endl;
 
   END_CODE("OverlapBULinOp");
 
