@@ -1,4 +1,4 @@
-// $Id: prec_dwf_fermact_base_array_w.cc,v 1.2 2003-11-23 05:59:35 edwards Exp $
+// $Id: prec_dwf_fermact_base_array_w.cc,v 1.3 2003-11-25 04:16:42 edwards Exp $
 /*! \file
  *  \brief Base class for even-odd preconditioned domain-wall-like fermion actions
  */
@@ -7,6 +7,7 @@
 #include "actions/ferm/fermacts/prec_dwf_fermact_base_array_w.h"
 #include "actions/ferm/invert/invcg2_array.h"
 #include "actions/ferm/linop/dwffld_w.h"
+
 
 using namespace QDP;
 
@@ -65,7 +66,7 @@ EvenOddPrecDWFermActBaseArray::qprop(LatticeFermion& psi,
   const EvenOddPrecLinearOperator< multi1d<LatticeFermion> >* A = linOp(u);
 
   /* Step (i) */
-  /* chi5 = L^(-1) * tmp5 = [ tmp5_o - D_oe*A_ee^-1*tmp5_o ] */
+  /* chi5 = L^(-1) * tmp5 = [ tmp5_o - D_oe*A_ee^-1*tmp5_e ] */
   {
     multi1d<LatticeFermion> tmp1(N5);
     multi1d<LatticeFermion> tmp2(N5);
@@ -73,7 +74,10 @@ EvenOddPrecDWFermActBaseArray::qprop(LatticeFermion& psi,
     A->evenEvenInvLinOp(tmp1, tmp5, PLUS);
     A->oddEvenLinOp(tmp2, tmp1, PLUS);
     for(int n=0; n < N5; ++n)
+    {
+      chi5[n][rb[0]] = tmp5[n];
       chi5[n][rb[1]] = tmp5[n] - tmp2[n];
+    }
   }
 
   switch(invType)
