@@ -7,27 +7,26 @@ using namespace std;
 
 namespace Chroma { 
 
-
-  bool ChromaLinkage(void);
+  // WARNING THIS CURRENTLY CAUSES A SEGFAULT IN PROPAGATOR SO I AM 
+  // NOT USING IT. LINKAGE HACK STILL NEEDS TO STAY.
+  // bool ChromaLinkage(void);
 
 
   void ChromaInitialize(int* argc, char ***argv) 
   {
     QDP_initialize(argc, argv);
     
-    // Process Chroma type arguments
-    bool input_found = false;
+
     bool output_found = false;
-    
-    std::string input_filename;
     std::string output_filename;
     
     
     for( int i=0; i < *argc; i++) {
-      
-      // Search for -i or --input-xml
+
+      // Get argv[i] into a string
       std::string argv_i = std::string( (*argv)[i] );
-      
+
+      /*
       // Search for -i or --input-xml
       if( argv_i == std::string("-i") ) {
 	if( i + 1 < *argc ) {
@@ -42,7 +41,8 @@ namespace Chroma {
 	  QDP_abort(1);
 	}
       }
-      
+      */
+ 
       if( argv_i == std::string("-o") ) {
 	if( i + 1 < *argc ) {
 	  output_filename = std::string( (*argv)[i+1] );
@@ -59,24 +59,33 @@ namespace Chroma {
       
     }
     
+    /*
     if ( ! input_found ) { 
       input_filename = "./DATA";
     }
-    
+    */
+
     if( ! output_found ) { 
       output_filename = "./XMLDAT";
     }
     
+
+    /*
     QDPIO::cout << "ChromaInitialize: Reading XML Parameters from : " 
 		<< input_filename << endl;
+		TheXMLInputReader::Instance().open(input_filename);
+    */
     QDPIO::cout << "ChromaInitialize: Writing XML Log file to     : " 
 		<< output_filename << endl;
     
-    TheXMLInputReader::Instance().open(input_filename);
     TheXMLOutputWriter::Instance().open(output_filename);
+
+
     
     // Linkage
-    bool foo = ChromaLinkage();
+    // WARNING THIS CURRENTLY CAUSES A SEGFAULT IN PROPAGATOR SO I AM 
+    // NOT USING IT. LINKAGE HACK STILL NEEDS TO STAY.
+    //    bool foo = ChromaLinkage();
 
     // Init done
   }
@@ -84,14 +93,14 @@ namespace Chroma {
   void ChromaFinalize(void) {
     // Finish
     // Chroma Finalize Stuff
-    TheXMLInputReader::Instance().close();
+    /* TheXMLInputReader::Instance().close(); */
     TheXMLOutputWriter::Instance().close();
     QDP_finalize();
   }
 
   void ChromaAbort(int i) { 
     // Cleanup
-    TheXMLInputReader::Instance().close();
+    /*    TheXMLInputReader::Instance().close(); */
     TheXMLOutputWriter::Instance().flush();
     TheXMLOutputWriter::Instance().close();
     QDP_abort(i);
@@ -99,10 +108,39 @@ namespace Chroma {
 
 
   //! To insure linking of code, place the registered code flags here
-/*! This is the bit of code that dictates what fermacts are in use */
+  /*! This is the bit of code that dictates what fermacts are in use */
+
+  // WARNING THIS CURRENTLY CAUSES A SEGFAULT IN PROPAGATOR SO I AM 
+  // NOT USING IT. LINKAGE HACK STILL NEEDS TO STAY.
+  /*
   bool ChromaLinkage(void)
   {
     bool foo = true;
+    
+    // Propagator Fermact Actions 
+    // 4D actions
+    foo &= EvenOddPrecWilsonFermActEnv::registered;
+    foo &= UnprecWilsonFermActEnv::registered;
+    foo &= OvlapPartFrac4DFermActEnv::registered;
+    foo &= EvenOddPrecParWilsonFermActEnv::registered;
+    foo &= UnprecParWilsonFermActEnv::registered;
+    foo &= UnprecDWFTransfFermActEnv::registered;
+
+    // 5D actions
+    foo &= EvenOddPrecDWFermActArrayEnv::registered;
+    foo &= UnprecDWFermActArrayEnv::registered;
+    foo &= EvenOddPrecNEFFermActArrayEnv::registered;
+    foo &= UnprecNEFFermActArrayEnv::registered;
+    foo &= UnprecOvlapContFrac5DFermActArrayEnv::registered;
+    foo &= UnprecHTContFrac5DFermActArrayEnv::registered;
+    foo &= EvenOddPrecOvlapContFrac5DFermActArrayEnv::registered;
+    foo &= UnprecOvDWFermActArrayEnv::registered;
+    foo &= EvenOddPrecOvDWFermActArrayEnv::registered;
+    foo &= UnprecOvExtFermActArrayEnv::registered;
+    foo &= UnprecZoloNEFFermActArrayEnv::registered;
+    foo &= EvenOddPrecZoloNEFFermActArrayEnv::registered;
+    foo &= EvenOddPrecKNOFermActArrayEnv::registered;
+    foo &= UnprecDWFTransfFermActEnv::registered;
     
     // Gauge Monomials
     foo &= GaugeMonomialEnv::registered;
@@ -126,6 +164,6 @@ namespace Chroma {
     
     return foo;
   }
-
+  */
 
 };

@@ -1,6 +1,9 @@
-// $Id: collect_propcomp.cc,v 1.9 2004-12-24 04:19:22 edwards Exp $
+// $Id: collect_propcomp.cc,v 1.10 2005-01-12 15:23:26 bjoo Exp $
 // $Log: collect_propcomp.cc,v $
-// Revision 1.9  2004-12-24 04:19:22  edwards
+// Revision 1.10  2005-01-12 15:23:26  bjoo
+// Moved the mainprogs to use ChromaInitialize and ChromaFinalize. Howver this doesnt buy us much since the linkage hack cannot be properly hidden at the moment (causes segfaults in propagator) and I need closure about how to deal with default input streams. You do get a TheXMLOutputWriter tho
+//
+// Revision 1.9  2004/12/24 04:19:22  edwards
 // Removed explict FermBC args to FermAct factory functions.
 //
 // Revision 1.8  2004/11/17 15:23:00  bjoo
@@ -191,7 +194,9 @@ void read(XMLReader& xml, const string& path, PropagatorComponent_input_t& input
 int main(int argc, char **argv)
 {
   // Put the machine into a known state
-  QDP_initialize(&argc, &argv);
+  //  QDP_initialize(&argc, &argv);
+
+  ChromaInitialize(&argc, &argv);
 
   START_CODE();
 
@@ -199,7 +204,7 @@ int main(int argc, char **argv)
   PropagatorComponent_input_t  input;
 
   // Instantiate xml reader for DATA
-  XMLReader xml_in("DATA");
+  XMLReader xml_in("./DATA");
 
   // Read data
   try { 
@@ -282,7 +287,8 @@ int main(int argc, char **argv)
 
 
   // Instantiate XML writer for XMLDAT
-  XMLFileWriter xml_out("XMLDAT");
+  XMLFileWriter& xml_out = TheXMLOutputWriter::Instance();
+
   push(xml_out, "collectPropcomp");
 
   proginfo(xml_out);    // Print out basic program info
@@ -446,14 +452,11 @@ int main(int argc, char **argv)
 
     
   pop(xml_out);  // propagator
-  
-  xml_out.close();
-  xml_in.close();
-  
+    
   END_CODE();
 
   // Time to bolt
-  QDP_finalize();
+  ChromaFinalize();
   
   exit(0);
 }

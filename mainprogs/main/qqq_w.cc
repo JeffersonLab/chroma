@@ -1,4 +1,4 @@
-// $Id: qqq_w.cc,v 1.19 2004-12-24 04:19:23 edwards Exp $
+// $Id: qqq_w.cc,v 1.20 2005-01-12 15:23:26 bjoo Exp $
 /*! \file
  *  \brief Main code for generalized quark propagator
  *
@@ -132,7 +132,7 @@ void read(XMLReader& xml, const string& path, QQQ_input_t& input)
 int main(int argc, char **argv)
 {
   // Put the machine into a known state
-  QDP_initialize(&argc, &argv);
+  ChromaInitialize(&argc, &argv);
 
   START_CODE();
 
@@ -140,7 +140,7 @@ int main(int argc, char **argv)
   QQQ_input_t input;
 
   // Instantiate xml reader for DATA
-  XMLReader xml_in("DATA");
+  XMLReader xml_in("./DATA");
 
   // Read data
   read(xml_in, "/qqq_w", input);
@@ -182,7 +182,7 @@ int main(int argc, char **argv)
 
 
   // Output
-  XMLFileWriter xml_out("XMLDAT");
+  XMLFileWriter& xml_out = TheXMLOutputWriter::Instance();
   push(xml_out,"qqq");
 
   proginfo(xml_out);    // Print out basic program info
@@ -326,13 +326,12 @@ int main(int argc, char **argv)
 
   pop(xml_out);    // qqq
 
-  xml_out.close();
-  xml_in.close();
+  END_CODE();
 
   // Time to bolt
-  QDP_finalize();
+  ChromaFinalize();
 
-  END_CODE();
+
 
   exit(0);
 }

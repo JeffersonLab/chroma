@@ -1,4 +1,4 @@
-// $Id: wallformfac.cc,v 1.29 2004-12-24 04:19:23 edwards Exp $
+// $Id: wallformfac.cc,v 1.30 2005-01-12 15:23:26 bjoo Exp $
 /*! \file
  * \brief Main program for computing 3pt functions with a wall sink
  *
@@ -222,7 +222,7 @@ int
 main(int argc, char *argv[])
 {
   // Put the machine into a known state
-  QDP_initialize(&argc, &argv);
+  ChromaInitialize(&argc, &argv);
 
   START_CODE();
 
@@ -230,7 +230,7 @@ main(int argc, char *argv[])
   WallFormFac_input_t  input;
 
   // Instantiate xml reader for DATA
-  XMLReader xml_in("DATA");
+  XMLReader xml_in("./DATA");
 
   // Read data
   read(xml_in, "/WallFormFac", input);
@@ -263,7 +263,8 @@ main(int argc, char *argv[])
 
 
   // Instantiate XML writer for XMLDAT
-  XMLFileWriter xml_out("XMLDAT");
+  XMLFileWriter&  xml_out = TheXMLOutputWriter::Instance();
+
   push(xml_out, "wallFormFac");
 
   proginfo(xml_out);    // Print out basic program info
@@ -619,13 +620,10 @@ main(int argc, char *argv[])
   write(bin_out, form);
   bin_out.close();
 
-  xml_in.close();
-  xml_out.close();
-
   END_CODE();
 
   // Time to bolt
-  QDP_finalize();
+  ChromaFinalize();
 
   exit(0);
 }

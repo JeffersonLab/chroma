@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.224 2005-01-12 13:57:09 bjoo Exp $
+# $Id: Makefile.am,v 1.225 2005-01-12 15:23:25 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -326,7 +326,6 @@ libchroma_a_SOURCES = \
 	actions/ferm/qprop/prec_fermact_qprop.cc \
 	actions/ferm/qprop/prec_fermact_qprop_array.cc \
 	actions/ferm/qprop/staggered_qprop.cc \
-	init/chroma_init.cc \
 	io/barcomp_io.cc io/eigen_io.cc io/enum_io/enum_cfgtype_io.cc \
 	io/enum_io/enum_coeffs_io.cc io/enum_io/enum_eigenvectype_io.cc \
 	io/enum_io/enum_fermtype_io.cc \
@@ -522,6 +521,9 @@ libchroma_a_SOURCES += \
         meas/hadron/scalar_loops_s.cc\
         meas/hadron/pseudoscalar_loops_s.cc 
 
+
+libchroma_a_SOURCES += \
+	init/chroma_init.cc
 #	actions/ferm/fermacts/stag_fermact_s.cc
 #	
 #	meas/pbp/mespbp_s.cc meas/pbp/stagpbp_s.cc

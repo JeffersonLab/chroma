@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.300 2005-01-12 13:57:09 bjoo Exp $
+# $Id: Makefile.in,v 1.301 2005-01-12 15:23:25 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -111,8 +111,8 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/qprop/fermact_qprop_array.cc \
 	actions/ferm/qprop/prec_fermact_qprop.cc \
 	actions/ferm/qprop/prec_fermact_qprop_array.cc \
-	actions/ferm/qprop/staggered_qprop.cc init/chroma_init.cc \
-	io/barcomp_io.cc io/eigen_io.cc io/enum_io/enum_cfgtype_io.cc \
+	actions/ferm/qprop/staggered_qprop.cc io/barcomp_io.cc \
+	io/eigen_io.cc io/enum_io/enum_cfgtype_io.cc \
 	io/enum_io/enum_coeffs_io.cc \
 	io/enum_io/enum_eigenvectype_io.cc \
 	io/enum_io/enum_fermtype_io.cc \
@@ -260,7 +260,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/hadron/stag_scalars_s.cc meas/hadron/vector_meson_s.cc \
 	meas/hadron/walfil_s.cc util/gauge/stag_phases_s.cc \
 	meas/hadron/pion_sing_s.cc meas/hadron/scalar_loops_s.cc \
-	meas/hadron/pseudoscalar_loops_s.cc
+	meas/hadron/pseudoscalar_loops_s.cc init/chroma_init.cc
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__objects_1 =  \
 @BUILD_SSE_WILSON_DSLASH_TRUE@	lwldslash_w_sse.$(OBJEXT)
 @BUILD_SSE_DWF_CG_TRUE@am__objects_2 =  \
@@ -280,7 +280,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	minv_rel_sumr.$(OBJEXT) fermact_qprop.$(OBJEXT) \
 	fermact_qprop_array.$(OBJEXT) prec_fermact_qprop.$(OBJEXT) \
 	prec_fermact_qprop_array.$(OBJEXT) staggered_qprop.$(OBJEXT) \
-	chroma_init.$(OBJEXT) barcomp_io.$(OBJEXT) eigen_io.$(OBJEXT) \
+	barcomp_io.$(OBJEXT) eigen_io.$(OBJEXT) \
 	enum_cfgtype_io.$(OBJEXT) enum_coeffs_io.$(OBJEXT) \
 	enum_eigenvectype_io.$(OBJEXT) enum_fermtype_io.$(OBJEXT) \
 	enum_gaugeacttype_io.$(OBJEXT) enum_gaugebc_io.$(OBJEXT) \
@@ -396,7 +396,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	stag_propShift_s.$(OBJEXT) stag_scalars_s.$(OBJEXT) \
 	vector_meson_s.$(OBJEXT) walfil_s.$(OBJEXT) \
 	stag_phases_s.$(OBJEXT) pion_sing_s.$(OBJEXT) \
-	scalar_loops_s.$(OBJEXT) pseudoscalar_loops_s.$(OBJEXT)
+	scalar_loops_s.$(OBJEXT) pseudoscalar_loops_s.$(OBJEXT) \
+	chroma_init.$(OBJEXT)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I.
 depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
@@ -1023,8 +1024,8 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/ferm/qprop/fermact_qprop_array.cc \
 	actions/ferm/qprop/prec_fermact_qprop.cc \
 	actions/ferm/qprop/prec_fermact_qprop_array.cc \
-	actions/ferm/qprop/staggered_qprop.cc init/chroma_init.cc \
-	io/barcomp_io.cc io/eigen_io.cc io/enum_io/enum_cfgtype_io.cc \
+	actions/ferm/qprop/staggered_qprop.cc io/barcomp_io.cc \
+	io/eigen_io.cc io/enum_io/enum_cfgtype_io.cc \
 	io/enum_io/enum_coeffs_io.cc \
 	io/enum_io/enum_eigenvectype_io.cc \
 	io/enum_io/enum_fermtype_io.cc \
@@ -1170,7 +1171,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/hadron/stag_scalars_s.cc meas/hadron/vector_meson_s.cc \
 	meas/hadron/walfil_s.cc util/gauge/stag_phases_s.cc \
 	meas/hadron/pion_sing_s.cc meas/hadron/scalar_loops_s.cc \
-	meas/hadron/pseudoscalar_loops_s.cc
+	meas/hadron/pseudoscalar_loops_s.cc init/chroma_init.cc
 all: chroma_config_internal.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -1911,20 +1912,6 @@ staggered_qprop.obj: actions/ferm/qprop/staggered_qprop.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/qprop/staggered_qprop.cc' object='staggered_qprop.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o staggered_qprop.obj `if test -f 'actions/ferm/qprop/staggered_qprop.cc'; then $(CYGPATH_W) 'actions/ferm/qprop/staggered_qprop.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/qprop/staggered_qprop.cc'; fi`
-
-chroma_init.o: init/chroma_init.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT chroma_init.o -MD -MP -MF "$(DEPDIR)/chroma_init.Tpo" -c -o chroma_init.o `test -f 'init/chroma_init.cc' || echo '$(srcdir)/'`init/chroma_init.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/chroma_init.Tpo" "$(DEPDIR)/chroma_init.Po"; else rm -f "$(DEPDIR)/chroma_init.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='init/chroma_init.cc' object='chroma_init.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o chroma_init.o `test -f 'init/chroma_init.cc' || echo '$(srcdir)/'`init/chroma_init.cc
-
-chroma_init.obj: init/chroma_init.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT chroma_init.obj -MD -MP -MF "$(DEPDIR)/chroma_init.Tpo" -c -o chroma_init.obj `if test -f 'init/chroma_init.cc'; then $(CYGPATH_W) 'init/chroma_init.cc'; else $(CYGPATH_W) '$(srcdir)/init/chroma_init.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/chroma_init.Tpo" "$(DEPDIR)/chroma_init.Po"; else rm -f "$(DEPDIR)/chroma_init.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='init/chroma_init.cc' object='chroma_init.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o chroma_init.obj `if test -f 'init/chroma_init.cc'; then $(CYGPATH_W) 'init/chroma_init.cc'; else $(CYGPATH_W) '$(srcdir)/init/chroma_init.cc'; fi`
 
 barcomp_io.o: io/barcomp_io.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT barcomp_io.o -MD -MP -MF "$(DEPDIR)/barcomp_io.Tpo" -c -o barcomp_io.o `test -f 'io/barcomp_io.cc' || echo '$(srcdir)/'`io/barcomp_io.cc; \
@@ -4921,6 +4908,20 @@ pseudoscalar_loops_s.obj: meas/hadron/pseudoscalar_loops_s.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/pseudoscalar_loops_s.cc' object='pseudoscalar_loops_s.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o pseudoscalar_loops_s.obj `if test -f 'meas/hadron/pseudoscalar_loops_s.cc'; then $(CYGPATH_W) 'meas/hadron/pseudoscalar_loops_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/pseudoscalar_loops_s.cc'; fi`
+
+chroma_init.o: init/chroma_init.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT chroma_init.o -MD -MP -MF "$(DEPDIR)/chroma_init.Tpo" -c -o chroma_init.o `test -f 'init/chroma_init.cc' || echo '$(srcdir)/'`init/chroma_init.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/chroma_init.Tpo" "$(DEPDIR)/chroma_init.Po"; else rm -f "$(DEPDIR)/chroma_init.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='init/chroma_init.cc' object='chroma_init.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o chroma_init.o `test -f 'init/chroma_init.cc' || echo '$(srcdir)/'`init/chroma_init.cc
+
+chroma_init.obj: init/chroma_init.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT chroma_init.obj -MD -MP -MF "$(DEPDIR)/chroma_init.Tpo" -c -o chroma_init.obj `if test -f 'init/chroma_init.cc'; then $(CYGPATH_W) 'init/chroma_init.cc'; else $(CYGPATH_W) '$(srcdir)/init/chroma_init.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/chroma_init.Tpo" "$(DEPDIR)/chroma_init.Po"; else rm -f "$(DEPDIR)/chroma_init.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='init/chroma_init.cc' object='chroma_init.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o chroma_init.obj `if test -f 'init/chroma_init.cc'; then $(CYGPATH_W) 'init/chroma_init.cc'; else $(CYGPATH_W) '$(srcdir)/init/chroma_init.cc'; fi`
 uninstall-info-am:
 install-nobase_includeHEADERS: $(nobase_include_HEADERS)
 	@$(NORMAL_INSTALL)
@@ -5131,7 +5132,6 @@ uninstall-am: uninstall-info-am uninstall-libLIBRARIES \
 	tags uninstall uninstall-am uninstall-info-am \
 	uninstall-libLIBRARIES uninstall-nobase_includeHEADERS \
 	uninstall-nodist_includeHEADERS
-
 
 #	actions/ferm/fermacts/stag_fermact_s.cc
 #	

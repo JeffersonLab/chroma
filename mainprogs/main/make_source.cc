@@ -1,4 +1,4 @@
-// $Id: make_source.cc,v 1.34 2004-10-22 19:04:41 edwards Exp $
+// $Id: make_source.cc,v 1.35 2005-01-12 15:23:26 bjoo Exp $
 /*! \file
  *  \brief Main code for source generation
  */
@@ -71,7 +71,9 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
 int main(int argc, char **argv)
 {
   // Put the machine into a known state
-  QDP_initialize(&argc, &argv);
+  //  QDP_initialize(&argc, &argv);
+
+  ChromaInitialize(&argc, &argv);
 
   START_CODE();
 
@@ -79,7 +81,7 @@ int main(int argc, char **argv)
   Propagator_input_t  input;
 
   // Instantiate xml reader for DATA
-  XMLReader xml_in("DATA");
+  XMLReader xml_in("./DATA");
 
   // Read data
   read(xml_in, "/make_source", input);
@@ -125,7 +127,7 @@ int main(int argc, char **argv)
   QDPIO::cout << "Gauge field initialized!" << endl;
 
   // Output
-  XMLFileWriter xml_out("XMLDAT");
+  XMLFileWriter&  xml_out = TheXMLOutputWriter::Instance();
   push(xml_out,"make_source");
 
   // Write out the input
@@ -328,13 +330,11 @@ int main(int argc, char **argv)
 
 
   pop(xml_out);  // make_source
-  xml_out.close();
-  xml_in.close();
 
   END_CODE();
 
   // Time to bolt
-  QDP_finalize();
+  ChromaFinalize();
 
   exit(0);
 }

@@ -10,7 +10,10 @@ using namespace QDP;
 namespace Chroma { 
   
   typedef SingletonHolder< XMLFileWriter > TheXMLOutputWriter;
+
+  /*
   typedef SingletonHolder< XMLReader > TheXMLInputReader;
+  */
 }; // End namespace Chroma
 
 #endif

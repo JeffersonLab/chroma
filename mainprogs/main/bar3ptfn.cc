@@ -1,4 +1,4 @@
-// $Id: bar3ptfn.cc,v 1.34 2004-07-28 03:08:04 edwards Exp $
+// $Id: bar3ptfn.cc,v 1.35 2005-01-12 15:23:26 bjoo Exp $
 /*! \file
  * \brief Main program for computing 3pt functions
  *
@@ -180,7 +180,7 @@ int
 main(int argc, char *argv[])
 {
   // Put the machine into a known state
-  QDP_initialize(&argc, &argv);
+  ChromaInitialize(&argc, &argv);
 
   START_CODE();
 
@@ -188,7 +188,7 @@ main(int argc, char *argv[])
   Bar3ptfn_input_t  input;
 
   // Instantiate xml reader for DATA
-  XMLReader xml_in("DATA");
+  XMLReader xml_in("./DATA");
 
   // Read data
   read(xml_in, "/bar3ptfn", input);
@@ -221,7 +221,7 @@ main(int argc, char *argv[])
 
 
   // Instantiate XML writer for XMLDAT
-  XMLFileWriter xml_out("XMLDAT");
+  XMLFileWriter& xml_out = TheXMLOutputWriter::Instance();
   push(xml_out, "bar3ptfn");
 
   proginfo(xml_out);    // Print out basic program info
@@ -419,13 +419,11 @@ main(int argc, char *argv[])
   write(bin_out, bar3pt);
   bin_out.close();
 
-  xml_in.close();
-  xml_out.close();
 
   END_CODE();
 
   // Time to bolt
-  QDP_finalize();
+  ChromaFinalize();
 
   exit(0);
 }

@@ -1,4 +1,4 @@
-// $Id: seqsource.cc,v 1.6 2004-12-24 04:19:23 edwards Exp $
+// $Id: seqsource.cc,v 1.7 2005-01-12 15:23:26 bjoo Exp $
 /*! \file
  *  \brief Main code for sequential source construction
  */
@@ -89,7 +89,7 @@ void read(XMLReader& xml, const string& path, SeqSource_input_t& input)
 int main(int argc, char **argv)
 {
   // Put the machine into a known state
-  QDP_initialize(&argc, &argv);
+  ChromaInitialize(&argc, &argv);
 
   START_CODE();
 
@@ -97,7 +97,7 @@ int main(int argc, char **argv)
   SeqSource_input_t  input;
 
   // Instantiate xml reader for DATA
-  XMLReader xml_in("DATA");
+  XMLReader xml_in("./DATA");
 
   // Read data
   read(xml_in, "/seqsource", input);
@@ -128,7 +128,8 @@ int main(int argc, char **argv)
 
 
   // Instantiate XML writer for XMLDAT
-  XMLFileWriter xml_out("XMLDAT");
+  XMLFileWriter& xml_out = TheXMLOutputWriter::Instance();
+
   push(xml_out, "seqsource");
 
   proginfo(xml_out);    // Print out basic program info
@@ -388,11 +389,8 @@ int main(int argc, char **argv)
 
   pop(xml_out);    // seqsource
 
-  xml_out.close();
-  xml_in.close();
-
   // Time to bolt
-  QDP_finalize();
+  ChromaFinalize();
 
   END_CODE();
 

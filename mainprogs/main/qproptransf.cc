@@ -1,4 +1,4 @@
-// $Id: qproptransf.cc,v 1.12 2004-07-28 03:08:04 edwards Exp $
+// $Id: qproptransf.cc,v 1.13 2005-01-12 15:23:26 bjoo Exp $
 /*! \file
  *  \brief Converts quark propagators in one format into another format.
  */
@@ -144,7 +144,7 @@ void read(XMLReader& xml, const string& path, QpropTransf_input_t& input)
 int main(int argc, char *argv[])
 {
   // Put the machine into a known state
-  QDP_initialize(&argc, &argv);
+  ChromaInitialize(&argc, &argv);
 
   START_CODE();
   
@@ -152,7 +152,7 @@ int main(int argc, char *argv[])
   QpropTransf_input_t input;
 
   // Instantiate xml reader for DATA
-  XMLReader xml_in("DATA");
+  XMLReader xml_in("./DATA");
 
   // Read data
   read(xml_in, "/qproptransf", input);
@@ -163,7 +163,7 @@ int main(int argc, char *argv[])
 
   QDPIO::cout << "QPROPTRANSF: propagator transformation utility" << endl;
 
-  XMLFileWriter xml_out("qproptransf.xml");
+  XMLFileWriter& xml_out = TheXMLOutputWriter::Instance();
   push(xml_out, "qproptransf");
 
   proginfo(xml_out);    // Print out basic program info
@@ -401,13 +401,10 @@ int main(int argc, char *argv[])
 
   pop(xml_out);   // qproptransf
         
-  xml_out.close();
-  xml_in.close();
-
   END_CODE();
 
   // Time to bolt
-  QDP_finalize();
+  ChromaFinalize();
 
   exit(0);
 }

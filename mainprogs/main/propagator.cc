@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.85 2005-01-11 19:44:18 edwards Exp $
+// $Id: propagator.cc,v 1.86 2005-01-12 15:23:26 bjoo Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -14,6 +14,7 @@ using namespace Chroma;
 
 //! To insure linking of code, place the registered code flags here
 /*! This is the bit of code that dictates what fermacts are in use */
+
 bool linkage_hack()
 {
   bool foo = true;
@@ -43,7 +44,6 @@ bool linkage_hack()
 
   return foo;
 }
-
 
 
 /*
@@ -124,8 +124,12 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
 int main(int argc, char **argv)
 {
   // Put the machine into a known state
+  /*
   QDP_initialize(&argc, &argv);
  
+  
+  */
+  ChromaInitialize(&argc, &argv);
   QDPIO::cout << "linkage=" << linkage_hack() << endl;
 
   START_CODE();
@@ -134,7 +138,7 @@ int main(int argc, char **argv)
   Propagator_input_t  input;
 
   // Instantiate xml reader for DATA
-  XMLReader xml_in("DATA");
+  XMLReader xml_in("./DATA");
 
   // Read data
   read(xml_in, "/propagator", input);
@@ -211,7 +215,9 @@ int main(int argc, char **argv)
   }    
 
   // Instantiate XML writer for XMLDAT
-  XMLFileWriter xml_out("XMLDAT");
+  //  XMLFileWriter xml_out("XMLDAT");
+  XMLFileWriter& xml_out = TheXMLOutputWriter::Instance();
+
   push(xml_out, "propagator");
 
   proginfo(xml_out);    // Print out basic program info
@@ -406,13 +412,13 @@ int main(int argc, char **argv)
 
   pop(xml_out);  // propagator
 
-  xml_out.close();
-  xml_in.close();
+  // xml_out.close();
+  // xml_in.close();
 
   END_CODE();
 
   // Time to bolt
-  QDP_finalize();
+  ChromaFinalize();
 
   exit(0);
 }

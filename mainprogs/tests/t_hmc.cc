@@ -150,19 +150,48 @@ namespace Chroma {
   void saveState(const HMCParams& params, unsigned long update_no,
 		 const multi1d<LatticeColorMatrix>& u);
 
-};
 
-using namespace Chroma;
+  bool linkageHack(void)
+  {
+    bool foo = true;
+    
+    
+    // Gauge Monomials
+    foo &= GaugeMonomialEnv::registered;
+    
+    // 4D Ferm Monomials
+    foo &= UnprecTwoFlavorWilsonTypeFermMonomialEnv::registered;
+    foo &= EvenOddPrecTwoFlavorWilsonTypeFermMonomialEnv::registered;
+    
+    // 5D Ferm Monomials
+    foo &= UnprecTwoFlavorWilsonTypeFermMonomial5DEnv::registered;
+    foo &= EvenOddPrecTwoFlavorWilsonTypeFermMonomial5DEnv::registered;
+    
+    // MD Integrators
+    foo &= LatColMatPQPLeapfrogIntegratorEnv::registered;
+    
+    // Chrono predictor
+    foo &= ZeroGuess4DChronoPredictorEnv::registered;
+    foo &= ZeroGuess5DChronoPredictorEnv::registered;
+    foo &= LastSolution4DChronoPredictorEnv::registered;  
+    foo &= LastSolution5DChronoPredictorEnv::registered;
+    
+    return foo;
+  }
+};
 
 
 int main(int argc, char *argv[]) 
 {
   // Chroma Init stuff -- Open DATA and XMLDAT
+  linkageHack();
+
   ChromaInitialize(&argc, &argv);
   
   HMCParams params;
-  
-  read( TheXMLInputReader::Instance(), "/HMC", params);
+  XMLReader xml_in("./DATA");
+
+  read( xml_in, "/HMC", params);
   
   Layout::setLattSize(params.nrow);
   Layout::create();

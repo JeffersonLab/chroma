@@ -1,4 +1,4 @@
-// $Id: mres.cc,v 1.6 2005-01-02 05:07:45 edwards Exp $
+// $Id: mres.cc,v 1.7 2005-01-12 15:23:26 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -104,10 +104,10 @@ void read(XMLReader& xml, const string& path, AppInput_t& input)
 int main(int argc, char **argv)
 {
   // Put the machine into a known state
-  QDP_initialize(&argc, &argv);
+  ChromaInitialize(&argc, &argv);
 
   AppInput_t input;
-  XMLReader xml_in("DATA");
+  XMLReader xml_in("./DATA");
 
   try {
     read(xml_in, "/mres", input);
@@ -167,7 +167,7 @@ int main(int argc, char **argv)
     }
   }
 
-  XMLFileWriter xml_out("XMLDAT");
+  XMLFileWriter& xml_out = TheXMLOutputWriter::Instance();
   push(xml_out,"mres");
 
   proginfo(xml_out);    // Print out basic program info
@@ -348,9 +348,6 @@ int main(int argc, char **argv)
   pop(xml_out);
   
   
-  pop(xml_out);
-  xml_out.close();
-  
-  QDP_finalize();
+  ChromaFinalize();
   exit(0);
 }
