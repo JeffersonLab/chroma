@@ -1,4 +1,4 @@
-// $Id: t_lwldslash_sse.cc,v 1.12 2003-09-23 18:28:38 edwards Exp $
+// $Id: t_lwldslash_sse.cc,v 1.13 2003-09-23 18:49:50 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -20,10 +20,6 @@ int main(int argc, char **argv)
   multi1d<int> nrow(Nd);
   read(xml_in, "/param/nrow", nrow);
 
-  // No of iters
-  int iter;
-  read(xml_in, "/param/iter", iter);
-
   xml_in.close();
 
   // Setup the layout
@@ -42,10 +38,6 @@ int main(int argc, char **argv)
   gaussian(psi);
   chi = zero;
 
-  if( Layout::primaryNode() ) { 
-    cout << "Going to do " << iter << " Dslash Applications." << endl;
-  }
-
   //! Create a linear operator
   if( Layout::primaryNode() ) { 
     cout << "Constructing naive QDPWilsonDslash" << endl;
@@ -58,33 +50,55 @@ int main(int argc, char **argv)
     cout << "Done" << endl;
   }
 
-  int i;
-
   int isign, cb, loop;
+  bool first = true;
   for(isign = 1; isign >= -1; isign -= 2) {
     for(cb = 0; cb < 2; ++cb) { 
 
       clock_t myt1;
       clock_t myt2;
       double mydt;
-      
+      int iter; 
+     
+      if (first) 
+      {
+	for(iter=1; ; iter <<= 1)
+	{
+	  if( Layout::primaryNode() ) { 
+	    cout << "Applying D " << iter << " times" << endl;
+	  }
+
+	  myt1=clock();
+	  for(int i=iter; i-- > 0; ) {
+	    D.apply(psi, (isign == 1 ? PLUS : MINUS ) , cb); // NOTE: for timings throw away return value
+	  }
+	  myt2=clock();
+
+	  mydt=double(myt2-myt1)/double(CLOCKS_PER_SEC);
+	  if (mydt > 1) {
+	    first = false;
+	    break;
+	  }
+	}
+      }
+	
       if( Layout::primaryNode() ) { 
-	cout << "Applying D" << endl;
+	cout << "Applying D for timings" << endl;
       }
       
       myt1=clock();
-      for(i=0; i < iter; i++) { 
-	chi = D.apply(psi, (isign == 1 ? PLUS : MINUS ) , cb);
+      for(int i=iter; i-- > 0; ) {
+	D.apply(psi, (isign == 1 ? PLUS : MINUS ) , cb); // NOTE: for timings throw away return value
       }
       myt2=clock();
       
-      mydt=(double)(myt2-myt1)/((double)(CLOCKS_PER_SEC));
-      mydt=1.0e6*mydt/((double)(iter*(Layout::vol()/2)));
+      mydt=double(myt2-myt1)/double(CLOCKS_PER_SEC);
+      mydt=1.0e6*mydt/double(iter*(Layout::vol()/2));
       
       if( Layout::primaryNode() ) { 
 	cout << "cb = " << cb << " isign = " << isign << endl;
 	cout << "The time per lattice point is "<< mydt 
-	     << " micro sec (" <<  (double)(1320.0f/mydt) << ") Mflops " << endl;
+	     << " micro sec (" <<  double(1320.0f/mydt) << ") Mflops " << endl;
 	
 	
       }
@@ -102,30 +116,54 @@ int main(int argc, char **argv)
     cout << "Done" << endl;
   }
 
+  first = true;
   for(isign = 1; isign >= -1; isign -= 2) {
     for(cb = 0; cb < 2; ++cb) { 
 
       clock_t myt1;
       clock_t myt2;
       double mydt;
+      int iter; 
       
+      if (first) 
+      {
+	for(iter=1; ; iter <<= 1)
+	{
+	  if( Layout::primaryNode() ) { 
+	    cout << "Applying D " << iter << " times" << endl;
+	  }
+
+	  myt1=clock();
+	  for(int i=iter; i-- > 0; ) {
+	    D_opt.apply(psi, (isign == 1 ? PLUS : MINUS ) , cb); // NOTE: for timings throw away return value
+	  }
+	  myt2=clock();
+
+	  mydt=double(myt2-myt1)/double(CLOCKS_PER_SEC);
+	  if (mydt > 1) {
+	    first = false;
+	    break;
+	  }
+	}
+      }
+
       if( Layout::primaryNode() ) { 
-	cout << "Applying D" << endl;
+	cout << "Applying D for timings" << endl;
       }
       
       myt1=clock();
-      for(i=0; i < iter; i++) { 
-	chi = D_opt.apply(psi, (isign == 1 ? PLUS : MINUS ) , cb);
+      for(int i=iter; i-- > 0; ) {
+	D_opt.apply(psi, (isign == 1 ? PLUS : MINUS ) , cb); // NOTE: for timings throw away return value
       }
       myt2=clock();
       
-      mydt=(double)(myt2-myt1)/((double)(CLOCKS_PER_SEC));
-      mydt=1.0e6*mydt/((double)(iter*(Layout::vol()/2)));
+      mydt=double(myt2-myt1)/double(CLOCKS_PER_SEC);
+      mydt=1.0e6*mydt/double(iter*(Layout::vol()/2));
       
       if( Layout::primaryNode() ) { 
 	cout << "cb = " << cb << " isign = " << isign << endl;
 	cout << "The time per lattice point is "<< mydt 
-	     << " micro sec (" <<  (double)(1320.0f/mydt) << ") Mflops " << endl;
+	     << " micro sec (" <<  double(1320.0f/mydt) << ") Mflops " << endl;
 	
 	
       }
