@@ -1,4 +1,4 @@
-// $Id: wallformfac.cc,v 1.5 2004-01-14 21:42:09 edwards Exp $
+// $Id: wallformfac.cc,v 1.6 2004-01-31 23:22:01 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions with a wall sink
  *
@@ -246,6 +246,8 @@ main(int argc, char *argv[])
   // Instantiate XML writer for XMLDAT
   XMLFileWriter xml_out("XMLDAT");
   push(xml_out, "wallFormFac");
+
+  proginfo(xml_out);    // Print out basic program info
 
   // Write out the input
   write(xml_out, "Input", xml_in);

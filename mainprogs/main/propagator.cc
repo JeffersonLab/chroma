@@ -1,6 +1,9 @@
-// $Id: propagator.cc,v 1.38 2004-01-30 21:35:22 kostas Exp $
+// $Id: propagator.cc,v 1.39 2004-01-31 23:22:01 edwards Exp $
 // $Log: propagator.cc,v $
-// Revision 1.38  2004-01-30 21:35:22  kostas
+// Revision 1.39  2004-01-31 23:22:01  edwards
+// Added proginfo call.
+//
+// Revision 1.38  2004/01/30 21:35:22  kostas
 // added calls to calculate mres for dwf
 // 
 /*! \file
@@ -227,6 +230,8 @@ int main(int argc, char **argv)
   Layout::setLattSize(input.param.nrow);
   Layout::create();
 
+  QDPIO::cout << "Propagator" << endl;
+
   // Read in the configuration along with relevant information.
   multi1d<LatticeColorMatrix> u(Nd);
   XMLReader gauge_xml;
@@ -262,6 +267,8 @@ int main(int argc, char **argv)
   // Instantiate XML writer for XMLDAT
   XMLFileWriter xml_out("XMLDAT");
   push(xml_out, "propagator");
+
+  proginfo(xml_out);    // Print out basic program info
 
   // Write out the input
   write(xml_out, "Input", xml_in);

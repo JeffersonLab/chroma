@@ -1,4 +1,4 @@
-// $Id: make_source.cc,v 1.17 2004-01-29 16:56:17 edwards Exp $
+// $Id: make_source.cc,v 1.18 2004-01-31 23:22:01 edwards Exp $
 /*! \file
  *  \brief Main code for source generation
  */
@@ -189,6 +189,8 @@ int main(int argc, char **argv)
 
   XMLFileWriter xml_out(xml_filename);
   push(xml_out,"make_source");
+
+  proginfo(xml_out);    // Print out basic program info
 
   xml_out << xml_in;  // save a copy of the input
 

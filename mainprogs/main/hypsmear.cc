@@ -1,5 +1,5 @@
 /*
- *  $Id: hypsmear.cc,v 1.4 2004-01-06 04:59:14 edwards Exp $
+ *  $Id: hypsmear.cc,v 1.5 2004-01-31 23:22:01 edwards Exp $
  *
  *  This is the top-level routine for HYP smearing.
  *  It is a wrapper for Urs' and Robert's implmenetation of the HYP
@@ -223,6 +223,8 @@ int main(int argc, char *argv[])
   // Instantiate XML writer for XMLDAT
   XMLFileWriter xml_out("XMLDAT");
   push(xml_out, "hypsmear");
+
+  proginfo(xml_out);    // Print out basic program info
 
   // Write out the input
   write(xml_out, "Input", xml_in);

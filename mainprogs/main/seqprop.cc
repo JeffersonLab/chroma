@@ -1,4 +1,4 @@
-// $Id: seqprop.cc,v 1.10 2004-01-09 04:26:00 edwards Exp $
+// $Id: seqprop.cc,v 1.11 2004-01-31 23:22:01 edwards Exp $
 /*! \file
  *  \brief Main code for sequential propagator generation
  */
@@ -324,6 +324,8 @@ int main(int argc, char **argv)
   // Instantiate XML writer for XMLDAT
   XMLFileWriter xml_out("XMLDAT");
   push(xml_out, "seqprop");
+
+  proginfo(xml_out);    // Print out basic program info
 
   // Write out the input
   write(xml_out, "Input", xml_in);

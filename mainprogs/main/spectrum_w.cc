@@ -1,10 +1,13 @@
-// $Id: spectrum_w.cc,v 1.24 2004-01-31 22:43:00 edwards Exp $
+// $Id: spectrum_w.cc,v 1.25 2004-01-31 23:22:01 edwards Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.24  2004-01-31 22:43:00  edwards
+//  Revision 1.25  2004-01-31 23:22:01  edwards
+//  Added proginfo call.
+//
+//  Revision 1.24  2004/01/31 22:43:00  edwards
 //  Put in tests of array sizes.
 //
 //  Revision 1.23  2004/01/29 16:44:36  edwards
@@ -376,6 +379,8 @@ int main(int argc, char **argv)
   // Instantiate XML writer for XMLDAT
   XMLFileWriter xml_out("XMLDAT");
   push(xml_out, "spectrum_w");
+
+  proginfo(xml_out);    // Print out basic program info
 
   // Write out the input
   write(xml_out, "Input", xml_in);

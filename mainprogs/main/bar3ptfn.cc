@@ -1,4 +1,4 @@
-// $Id: bar3ptfn.cc,v 1.25 2004-01-29 15:57:38 edwards Exp $
+// $Id: bar3ptfn.cc,v 1.26 2004-01-31 23:22:01 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions
  *
@@ -396,6 +396,8 @@ main(int argc, char *argv[])
   // Instantiate XML writer for XMLDAT
   XMLFileWriter xml_out("XMLDAT");
   push(xml_out, "bar3ptfn");
+
+  proginfo(xml_out);    // Print out basic program info
 
   // Write out the input
   write(xml_out, "Input", xml_in);

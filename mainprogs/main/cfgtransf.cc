@@ -1,4 +1,4 @@
-// $Id: cfgtransf.cc,v 1.8 2004-01-13 05:49:10 edwards Exp $
+// $Id: cfgtransf.cc,v 1.9 2004-01-31 23:22:01 edwards Exp $
 /*! \file
  *  \brief Many-to-many gauge transformation routine
  */
@@ -31,6 +31,8 @@ int main(int argc, char **argv)
 
   XMLFileWriter xml_out("cfgtransf.xml");
   push(xml_out, "cfgtransf");
+
+  proginfo(xml_out);    // Print out basic program info
 
 #if 0
   bool AnisoP;
