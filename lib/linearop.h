@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linearop.h,v 1.7 2004-12-12 21:22:14 edwards Exp $
+// $Id: linearop.h,v 1.8 2004-12-13 02:56:36 edwards Exp $
 
 /*! @file
  * @brief Linear Operators
@@ -73,31 +73,6 @@ namespace Chroma
     virtual ~LinearOperator() {}
   };
 
-
-#if 0
-  //-----------------------------------------------------------------------------------
-  //! Approximate Linear Operator
-  /*!
-   * @ingroup linop
-   *
-   * These are linear operators that in some way require an accuracy
-   * parameter in their operator() for some solvers. Examples are
-   * the multi-pole approximated sign function. Where the epsilon
-   * would refer to the accuracy of the multi shift solver
-   */
-  template<typename T>
-  class ApproxLinearOperator : public LinearOperator<T>
-  {
-  public:
-    //! Return the subset on which the operator acts
-    virtual const OrderedSubset& subset() const = 0;
-
-    //! Apply the operator onto a source vector
-    virtual void operator() (T& chi, const T& psi, enum PlusMinus isign) const = 0;
-
-    virtual ~ApproxLinearOperator() {}
-  };
-#endif
 
   //-----------------------------------------------------------------------------------
   //! Unpreconditioned linear operator
@@ -400,24 +375,6 @@ namespace Chroma
   };
 
 
-#if 0
-  //-----------------------------------------------------------------------------------
-  //! Approximate versions of unpreconditioned linear operators
-  template<typename T>
-  class ApproxUnprecLinearOperatorBase : public virtual UnprecLinearOperatorBase<T>, public virtual ApproxLinearOperator<T>
-  {
-  public:
-  };
-
-
-  //! Approximate versions of even-odd preconditioned linear operators
-  template<typename T>
-  class ApproxEvenOddPrecLinearOperatorBase : public virtual EvenOddPrecLinearOperatorBase<T>, public virtual ApproxLinearOperator<T>
-  {
-  public:
-  };
-#endif
-
 
   //-----------------------------------------------------------------------------------
   //! Unpreconditioned linear operator including derivatives
@@ -554,60 +511,43 @@ namespace Chroma
       //
       // Make sure the deriv routines do a resize !!!
       //
-      ds_u.resize(Nd);
+      ds_u.resize(Nd);  // with routines doing resizing, this code could be pushed to be non-specialized
 
       T   tmp1, tmp2, tmp3;  // if an array is used here, the space is not reserved
-      multi1d<LatticeColorMatrix>   ds_1;  // deriv routines should resize
+      multi1d<LatticeColorMatrix>   ds_1(Nd);  // deriv routines should resize
 
-      //  ds_o  =  chi^dag * A'_oo * psi
+      //
+      // NOTE: even with even-odd decomposition, the ds_u will still have contributions
+      // on all cb. So, no adding of ds_1 onto ds_u under a subset
+      //
+      //  ds_u  =  chi^dag * A'_oo * psi
       derivOddOddLinOp(ds_u, chi, psi, isign);
 
-      //  ds_o  -=  chi^dag * D'_oe * Ainv_ee * D_eo * psi_o
+      //  ds_u  -=  chi^dag * D'_oe * Ainv_ee * D_eo * psi_o
       evenOddLinOp(tmp1, psi, isign);
       evenEvenInvLinOp(tmp2, tmp1, isign);
       derivOddEvenLinOp(ds_1, chi, tmp2, isign);
-      for(int mu=0; mu < ds_u.size(); ++mu)
-	ds_u[mu][rb[1]] -= ds_1[mu];
+      ds_u -= ds_1;
 
-      //  ds_o  +=  chi^dag * D_oe * Ainv_ee * A'_ee * Ainv_ee * D_eo * psi_o
+      //  ds_u  +=  chi^dag * D_oe * Ainv_ee * A'_ee * Ainv_ee * D_eo * psi_o
       evenOddLinOp(tmp1, psi, isign);
       evenEvenInvLinOp(tmp2, tmp1, isign);
       evenOddLinOp(tmp1, chi, msign);
       evenEvenInvLinOp(tmp3, tmp1, msign);
       derivEvenEvenLinOp(ds_1, tmp3, tmp2, isign);
-      for(int mu=0; mu < ds_u.size(); ++mu)
-	ds_u[mu][rb[1]] += ds_1[mu];
+      ds_u += ds_1;
 
-      //  ds_o  -=  chi^dag * D_oe * Ainv_ee * D'_eo * psi_o
+      //  ds_u  -=  chi^dag * D_oe * Ainv_ee * D'_eo * psi_o
       evenOddLinOp(tmp1, chi, msign);
       evenEvenInvLinOp(tmp3, tmp1, msign);
       derivEvenOddLinOp(ds_1, tmp3, psi, isign);
-      for(int mu=0; mu < ds_u.size(); ++mu)
-	ds_u[mu][rb[1]] -= ds_1[mu];
+      ds_u -= ds_1;
     }
 
     //! Virtual destructor to help with cleanup;
     virtual ~EvenOddPrecLinearOperator() {}
   };
 
-
-#if 0
-  //-----------------------------------------------------------------------------------
-  //! Approximate versions of unpreconditioned linear operators with derivatives
-  template<typename T, typename P>
-  class ApproxUnprecLinearOperator : public virtual UnprecLinearOperator<T,P>, public virtual ApproxLinearOperator<T>
-  {
-  public:
-  };
-
-
-  //! Approximate versions of even-odd preconditioned linear operators with derivatives
-  template<typename T, typename P>
-  class ApproxEvenOddPrecLinearOperator : public virtual EvenOddPrecLinearOperator<T,P>, public virtual ApproxLinearOperator<T>
-  {
-  public:
-  };
-#endif
 
 
   //-----------------------------------------------------------------------------------
@@ -786,27 +726,28 @@ namespace Chroma
       // Need deriv of  chi_e^dag * (D_ee * psi_e + D_eo * psi_i)
       // Need deriv of  chi_o^dag * (D_oe * psi_e + D_oo * psi_i)
 
+      //
+      // NOTE: even with even-odd decomposition, the ds_u will still have contributions
+      // on all cb. So, no adding of ds_1 onto ds_u under a subset
+      //
       ds_u.resize(Nd);
       T   tmp1, tmp2;  // if an array is used here, the space is not reserved
-      multi1d<LatticeColorMatrix>   ds_1;  // routines should resize
+      multi1d<LatticeColorMatrix>   ds_1(Nd);  // routines should resize
 
-      // ds_e = chi_e ^dag * D'_ee * psi_e
+      // ds_u = chi_e ^dag * D'_ee * psi_e
       derivEvenEvenLinOp(ds_u, chi, psi, isign);
 
-      // ds_e += chi_e ^dag * D'_eo * psi_o
+      // ds_u += chi_e ^dag * D'_eo * psi_o
       derivEvenOddLinOp(ds_1, chi, psi, isign);
-      for(int mu=0; mu < Nd; ++mu)
-	ds_u[mu][rb[0]] += ds_1[mu];
+      ds_u += ds_1;
 
-      // ds_o += chi_o ^dag * D'_oe * psi_e
+      // ds_u += chi_o ^dag * D'_oe * psi_e
       derivOddEvenLinOp(ds_1, chi, psi, isign);
-      for(int mu=0; mu < Nd; ++mu)
-	ds_u[mu][rb[1]] += ds_1[mu];
+      ds_u += ds_1;
 
-      // ds_o += chi_o ^dag * D'_oo * psi_o
+      // ds_u += chi_o ^dag * D'_oo * psi_o
       derivOddOddLinOp(ds_1, chi, psi, isign);
-      for(int mu=0; mu < Nd; ++mu)
-	ds_u[mu][rb[1]] += ds_1[mu];
+      ds_u += ds_1;
     }
 
     //! Virtual destructor to help with cleanup;
