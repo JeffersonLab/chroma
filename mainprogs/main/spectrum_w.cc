@@ -1,10 +1,13 @@
-// $Id: spectrum_w.cc,v 1.11 2003-10-01 20:23:46 edwards Exp $
+// $Id: spectrum_w.cc,v 1.12 2003-10-02 01:21:15 edwards Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.11  2003-10-01 20:23:46  edwards
+//  Revision 1.12  2003-10-02 01:21:15  edwards
+//  Small tweaks. Changed input group to be program dependent.
+//
+//  Revision 1.11  2003/10/01 20:23:46  edwards
 //  Now supports baryons and currents. Changed reading to use a
 //  structure. Pushed all control vars to this structure.
 //
@@ -102,7 +105,6 @@ struct Param_t
   multi1d<int> WvfIntPar;  // Array of iter numbers to approx. Gaussian or
   //   terminate CG inversion for Wuppertal smearing
 
-  multi1d<int> disk_prop;
   multi1d<int> nrow;
   multi1d<int> boundary;
   multi1d<int> t_srce;
@@ -113,7 +115,7 @@ struct Cfg_t
   string       cfg_file;
 };
 
-struct Input_t
+struct Spectrum_input_t
 {
   IO_version_t     io_version;
   Param_t          param;
@@ -122,7 +124,7 @@ struct Input_t
 
 
 // Reader for input parameters
-void read(XMLReader& xml, const string& path, Input_t& input)
+void read(XMLReader& xml, const string& path, Spectrum_input_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -322,13 +324,13 @@ int main(int argc, char **argv)
   QDP_initialize(&argc, &argv);
 
   // Input parameter structure
-  Input_t  input;
+  Spectrum_input_t  input;
 
   // Instantiate xml reader for DATA
   XMLReader xml_in("DATA");
 
   // Read data
-  read(xml_in, "/Input", input);
+  read(xml_in, "/spectrum_w", input);
 
   // Specify lattice size, shape, etc.
   Layout::setLattSize(input.param.nrow);
@@ -391,7 +393,8 @@ int main(int argc, char **argv)
   XMLFileWriter xml_out("XMLDAT");
   push(xml_out, "spectrum_w");
 
-  xml_out << xml_in;     // save a copy of the input
+  // Write out the input
+  write(xml_out, "Input", xml_in);
 
   // Write out the config info
   write(xml_out, "Config_info", gauge_xml);
