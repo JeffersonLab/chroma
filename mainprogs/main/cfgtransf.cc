@@ -1,4 +1,4 @@
-// $Id: cfgtransf.cc,v 1.4 2003-10-10 04:33:50 edwards Exp $
+// $Id: cfgtransf.cc,v 1.5 2003-10-15 22:10:16 edwards Exp $
 /*! \file
  *  \brief Many-to-many gauge transformation routine
  */
@@ -667,13 +667,10 @@ int main(int argc, char **argv)
   }
   break;
 
-#if 0
-  // Not yet...
   case 4:
     /* Write a QCD Archive format file on FE */
-    wrtarchiv (cfg_output_file, u);
+    writeArchiv(u, cfg_output_file);
     break;
-#endif
 
 #if 0
     // Not yet...
