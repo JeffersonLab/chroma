@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: coulgauge.h,v 1.1 2003-12-06 20:56:56 edwards Exp $
+// $Id: coulgauge.h,v 1.2 2004-01-02 21:28:35 edwards Exp $
 /*! \file
  *  \brief Coulomb (and Landau) gauge fixing 
  */
@@ -25,8 +25,8 @@
  * \param OrPara   overrelaxation parameter ( Read )
  */
 
-void gfix(multi1d<LatticeColorMatrix>& ug, int& n_gf, 
-	  int j_decay, const Real& GFAccu, int GFMax, 
-	  bool OrDo, const Real& OrPara);
+void coulGauge(multi1d<LatticeColorMatrix>& ug, int& n_gf, 
+	       int j_decay, const Real& GFAccu, int GFMax, 
+	       bool OrDo, const Real& OrPara);
 
 #endif
