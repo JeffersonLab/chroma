@@ -1,6 +1,9 @@
-// $Id: dwf_quarkprop4_w.cc,v 1.14 2004-02-06 16:47:41 kostas Exp $
+// $Id: dwf_quarkprop4_w.cc,v 1.15 2004-02-10 22:59:46 kostas Exp $
 // $Log: dwf_quarkprop4_w.cc,v $
-// Revision 1.14  2004-02-06 16:47:41  kostas
+// Revision 1.15  2004-02-10 22:59:46  kostas
+// fixed a comment
+//
+// Revision 1.14  2004/02/06 16:47:41  kostas
 // Ward identity check works. Fixed the local current sign
 //
 // Revision 1.13  2004/02/05 21:15:05  kostas
@@ -289,9 +292,11 @@ void dwf_quarkProp4_a(LatticePropagator& q_sol,
 /*!
   Corelation function:
 \f[
-  C(t) = \sum_x \sum_s \left[\bar{\Psi}(x+\hat{\mu},t,s)\frac{1+\gamma_{\mu}}{2} 
+  C(t) = \sum_x \sum_s \left[\bar{\Psi}(x+\hat{\mu},t,s) U^{\dagger}_{\mu}(x)
+                                                \frac{1+\gamma_{\mu}}{2} 
                                   \Psi (x,t,s) - 
-                             \bar{\Psi}(x,t,s)\frac{1-\gamma_{\mu}}{2} 
+                             \bar{\Psi}(x,t,s) U_{\mu}(x)
+                                                \frac{1-\gamma_{\mu}}{2} 
                                   \Psi (x+\hat{\mu},t,s)\right] 
                        \bar{q}(0,0)\gamma_5 q(0,0) sign(s - \frac{L_s - 1}{2})
 \f]
