@@ -1,4 +1,4 @@
-// $Id: walldeltaff_w.cc,v 1.5 2004-06-05 03:00:48 edwards Exp $
+// $Id: walldeltaff_w.cc,v 1.6 2004-06-07 00:43:42 edwards Exp $
 /*! \file
  *  \brief Wall-sink delta^+ -> gamma+delta^+ form-factors 
  *
@@ -32,19 +32,10 @@ LatticeSpinMatrix deltaContract123(const T1& q1,
 				   const T3& q3,
 				   int n, int m)
 {
-#if 0
   /* C gamma_5 = Gamma(5) = - (C gamma_5)^T */
   /* C gamma_mu = Gamma(10) * Gamma(1 << mu) = + (C gamma_mu)^T */
   LatticeSpinMatrix  S =
     traceColor(q3 * traceSpin(quarkContract13((q1*Gamma(10))*Gamma(n), Gamma(10)*(Gamma(m)*q2))));
-#else
-  SpinMatrix g_one = 1.0;
-  SpinMatrix Cgm = 0.5 * (Gamma(10) * (Gamma(2) * g_one  +  timesI(Gamma(1) * g_one)));
-
-  LatticeSpinMatrix  S =
-    traceColor(q3 * traceSpin(quarkContract13(q1*Cgm, Cgm*q2)));
-#endif
-
 
   return S;
 }
@@ -70,18 +61,11 @@ LatticeSpinMatrix deltaContract132(const T1& q1,
 				   const T3& q3,
 				   int n, int m)
 {
-#if 0
   /* C gamma_5 = Gamma(5) = - (C gamma_5)^T */
   /* C gamma_mu = Gamma(10) * Gamma(1 << mu) = + (C gamma_mu)^T */
   LatticeSpinMatrix  S = 
     traceColor(q3 * quarkContract13((q1*Gamma(10))*Gamma(n), Gamma(10)*(Gamma(m)*q2)));
-#else
-  SpinMatrix g_one = 1.0;
-  SpinMatrix Cgm = 0.5 * (Gamma(10) * (Gamma(2) * g_one  +  timesI(Gamma(1) * g_one)));
 
-  LatticeSpinMatrix  S = 
-    traceColor(q3 * quarkContract13(q1*Cgm, Cgm*q2));
-#endif
   return S;
 }
 
