@@ -1,13 +1,11 @@
 // -*- C++ -*-
-// $Id: fermbc.h,v 1.7 2004-09-22 17:24:59 bjoo Exp $
+// $Id: fermbc.h,v 1.8 2004-12-24 04:25:39 edwards Exp $
 /*! @file
  * @brief Fermion action boundary conditions
  */
 
 #ifndef __fermbc_h__
 #define __fermbc_h__
-
-using namespace QDP;
 
 #include "gaugebc.h"
 #include "handle.h"
