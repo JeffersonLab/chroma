@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.105 2004-01-29 20:59:06 edwards Exp $
+# $Id: Makefile.am,v 1.106 2004-01-30 01:38:12 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -57,7 +57,7 @@ nobase_include_HEADERS = \
 	fermbc.h gaugeact.h gaugebc.h handle.h invtype.h lib.h \
 	linearop.h primitives.h state.h \
 	actions/actions.h actions/boson/boson.h \
-	actions/boson/operator/klein_gord.h actions/ferm/dslash/dslash.h \
+	actions/boson/operator/klein_gord.h \
 	actions/ferm/ferm.h actions/ferm/fermacts/asqtad_state.h \
 	actions/ferm/fermacts/fermacts.h \
 	actions/ferm/fermacts/zolotarev.h \
@@ -98,7 +98,6 @@ nobase_include_HEADERS = \
 
 if BUILD_WILSON_LIBS
 nobase_include_HEADERS += \
-	actions/ferm/dslash/dslashm_w.h \
 	actions/ferm/fermacts/fermacts_w.h \
 	actions/ferm/fermacts/overlap_fermact_base_w.h \
 	actions/ferm/fermacts/prec_clover_fermact_w.h \
@@ -237,7 +236,6 @@ libchroma_a_SOURCES += baryon_w.cc mesons_w.cc curcor2_w.cc lwldslash_w.cc formf
               wallpionff_w.cc
 # wall_qprop_w.cc
 # zolotarev4d_linop_w.cc 
-# dslashm_w.cc 
 endif
 
 #
