@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: mesonseqsrc_w.h,v 1.1 2003-12-17 03:56:46 edwards Exp $
+// $Id: mesonseqsrc_w.h,v 1.2 2004-04-11 05:35:12 edwards Exp $
 /*! \file
  *  \brief Construct meson sequential sources.
  */
