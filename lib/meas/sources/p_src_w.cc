@@ -1,7 +1,7 @@
-// $Id: p_src_w.cc,v 1.1 2003-08-19 17:19:36 bjoo Exp $
+// $Id: p_src_w.cc,v 1.2 2003-08-19 17:34:14 bjoo Exp $
 
 #include "chromabase.h"
-#include "meas/sources/p_src.h"
+#include "meas/sources/p_src_w.h"
 
 using namespace QDP;
 
