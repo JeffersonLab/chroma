@@ -1,4 +1,4 @@
-// $Id: prec_wilson_linop_w.cc,v 1.4 2004-03-22 15:29:29 bjoo Exp $
+// $Id: prec_wilson_linop_w.cc,v 1.5 2004-03-23 13:44:41 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson linear operator
  */
@@ -99,7 +99,7 @@ EvenOddPrecWilsonLinOp::oddEvenLinOp(LatticeFermion& chi,
   END_CODE("EvenOddPrecWilsonLinOp::oddEvenLinOp");
 }
 
-void EvenOddPrecWilsonLinOp::operator() (LatticeFermion & chi, 
+void EvenOddPrecWilsonLinOp::newApply (LatticeFermion & chi, 
 					 const LatticeFermion& psi, 
 					 enum PlusMinus isign) const
 {
@@ -107,18 +107,30 @@ void EvenOddPrecWilsonLinOp::operator() (LatticeFermion & chi,
                                     // the space is not reserved
   
 
-  Real mhalf = -0.5;
-  Real myfact = Real(-2)*fact;
+  Real mquarterinvfact = -0.25*invfact;
 
-  D.apply(tmp2, psi, isign, 0);
-  tmp3[rb[0]] = myfact*psi + tmp2;
-  
-  D.apply(tmp1, psi, isign, 1);
-  tmp3[rb[1]] = myfact*psi + tmp1;
+  // tmp1[0] = D_eo psi[1]
+  D.apply(tmp1, psi, isign, 0);
 
-  chi = mhalf*tmp3;
- 
-  
+  // tmp2[1] = D_oe tmp1[0]
+  D.apply(tmp2, tmp1, isign, 1);
+
+  // Now we have tmp2[1] = D_oe D_eo psi[1]
+
+  // now scale tmp2[1] with (-1/4)/fact = (-1/4)*(1/(Nd + m))
+  // with a vscale -- using tmp2 on both sides should be OK, but
+  // just to be safe use tmp3
+  tmp3[rb[1]] = mquarterinvfact*tmp2;
+
+  // now tmp3[1] should be = (-1/4)*(1/(Nd + m) D_oe D_eo psi[1]
+
+  // Now get chi[1] = fact*psi[1] + tmp3[1]
+  // with a vaxpy3 
+  // chi[1] = (Nd + m) - (1/4)*(1/(Nd + m)) D_oe D_eo psi[1]
+  //
+  // in this order, this last job could be replaced with a 
+  // vaxpy3_norm if we wanted the || M psi ||^2 over the subset.
+  chi[rb[1]] = fact*psi + tmp3;
 }
 
  

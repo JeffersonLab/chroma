@@ -1,4 +1,4 @@
-// $Id: t_invert3_precwilson.cc,v 1.4 2004-03-22 17:35:20 bjoo Exp $
+// $Id: t_invert3_precwilson.cc,v 1.5 2004-03-23 13:44:41 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -131,7 +131,7 @@ int main(int argc, char **argv)
 
 
   // Make me a linop (this callls the initialise function)
-  Handle<const LinearOperator<LatticeFermion> > D_op(S_w.linOp(connect_state));
+  Handle<const EvenOddPrecWilsonLinOp > D_op( dynamic_cast<const EvenOddPrecWilsonLinOp *> (S_w.linOp(connect_state)) );
 
   
   LatticeFermion chi;
@@ -143,6 +143,24 @@ int main(int argc, char **argv)
   LatticeFermion bchi,bpsi;
   gaussian(bchi);
   gaussian(bpsi);
+
+  // Correctness test the new Apply
+  LatticeFermion bchi2, br;
+
+  bchi = zero;
+  bchi2 = zero;
+   
+  (*D_op)(bchi, bpsi, PLUS);
+  (*D_op).newApply(bchi2, bpsi, PLUS);
+  
+ 
+  br = bchi2 - bchi;
+  Double brnorm = norm2(br);
+  QDPIO::cout << "|| newApply - old || = " << brnorm << endl;
+  xml.close();
+  QDP_finalize();
+  exit(0);
+  
 
   mydt=Double(0);
   int j;
