@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev4d_linop_w.h,v 1.3 2003-10-10 03:46:46 edwards Exp $
+// $Id: zolotarev4d_linop_w.h,v 1.4 2003-10-20 20:31:50 edwards Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -20,7 +20,7 @@ using namespace QDP;
  *
  */
 
-class Zolotarev4DLinOp : public LinearOperator
+class Zolotarev4DLinOp : public LinearOperator<LatticeFermion>
 {
 public:
   //! Full constructor
@@ -69,7 +69,7 @@ private:
   UnpreconditionedWilson M;
   
   /* Underlying lovlapms linear operator */
-  LinearOperator* A;
+  LinearOperator<LatticeFermion>* A;
 };
 
 #endif

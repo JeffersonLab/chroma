@@ -1,4 +1,4 @@
-// $Id: lwldslash_w.cc,v 1.3 2003-09-16 13:38:37 bjoo Exp $
+// $Id: lwldslash_w.cc,v 1.4 2003-10-20 20:31:50 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -75,15 +75,55 @@ LatticeFermion QDPWilsonDslash::apply (const LatticeFermion& psi, enum LinOpSign
    *   chi(x) :=  sum_mu  a2  (x)  +  a2  (x)
    *                        mu          mu
    */
-  // NOTE: the loop is not unrolled - it should be all in a single line for
-  // optimal performance
-  chi[rb[cb]] = zero;
 
-  // NOTE: temporarily has conversion call of LatticeHalfFermion - will be removed
-  for(int mu = 0; mu < Nd; ++mu)
+  /* Why are these lines split? An array syntax would help, but the problem is deeper.
+   * The expression templates require NO variable args (like int's) to a function
+   * and all args must be known at compile time. Hence, the function names carry
+   * (as functions usually do) the meaning (and implicit args) to a function.
+   */
+  switch (isign)
   {
-    chi[rb[cb]] += spinReconstruct(LatticeHalfFermion(u[mu] * shift(spinProject(psi,mu,-isign), FORWARD, mu)),mu,-isign)
-      + spinReconstruct(LatticeHalfFermion(shift(adj(u[mu]) * spinProject(psi,mu,+isign), BACKWARD, mu)),mu,+isign);
+  case PLUS:
+    chi[rb[cb]] = spinReconstructDir0Minus(u[0] * shift(spinProjectDir0Minus(psi), FORWARD, 0))
+                + spinReconstructDir0Plus(shift(adj(u[0]) * spinProjectDir0Plus(psi), BACKWARD, 0))
+#if QDP_ND >= 2
+                + spinReconstructDir1Minus(u[1] * shift(spinProjectDir1Minus(psi), FORWARD, 1))
+                + spinReconstructDir1Plus(shift(adj(u[1]) * spinProjectDir1Plus(psi), BACKWARD, 1))
+#endif
+#if QDP_ND >= 3
+                + spinReconstructDir2Minus(u[2] * shift(spinProjectDir2Minus(psi), FORWARD, 2))
+                + spinReconstructDir2Plus(shift(adj(u[2]) * spinProjectDir2Plus(psi), BACKWARD, 2))
+#endif
+#if QDP_ND >= 4
+                + spinReconstructDir3Minus(u[3] * shift(spinProjectDir3Minus(psi), FORWARD, 3))
+                + spinReconstructDir3Plus(shift(adj(u[3]) * spinProjectDir3Plus(psi), BACKWARD, 3))
+#endif
+#if QDP_ND >= 5
+#error "Unsupported number of dimensions"
+#endif
+    ;
+    break;
+
+  case MINUS:
+    chi[rb[cb]] = spinReconstructDir0Plus(u[0] * shift(spinProjectDir0Plus(psi), FORWARD, 0))
+                + spinReconstructDir0Minus(shift(adj(u[0]) * spinProjectDir0Minus(psi), BACKWARD, 0))
+#if QDP_ND >= 2
+                + spinReconstructDir1Plus(u[1] * shift(spinProjectDir1Plus(psi), FORWARD, 1))
+                + spinReconstructDir1Minus(shift(adj(u[1]) * spinProjectDir1Minus(psi), BACKWARD, 1))
+#endif
+#if QDP_ND >= 3
+                + spinReconstructDir2Plus(u[2] * shift(spinProjectDir2Plus(psi), FORWARD, 2))
+                + spinReconstructDir2Minus(shift(adj(u[2]) * spinProjectDir2Minus(psi), BACKWARD, 2))
+#endif
+#if QDP_ND >= 4
+                + spinReconstructDir3Plus(u[3] * shift(spinProjectDir3Plus(psi), FORWARD, 3))
+                + spinReconstructDir3Minus(shift(adj(u[3]) * spinProjectDir3Minus(psi), BACKWARD, 3))
+#endif
+#if QDP_ND >= 5
+#error "Unsupported number of dimensions"
+#endif
+    ;
+    break;
   }
 
   END_CODE("lWlDslash");

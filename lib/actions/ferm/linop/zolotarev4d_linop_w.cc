@@ -1,4 +1,4 @@
-// $Id: zolotarev4d_linop_w.cc,v 1.2 2003-04-09 19:43:22 edwards Exp $
+// $Id: zolotarev4d_linop_w.cc,v 1.3 2003-10-20 20:31:50 edwards Exp $
 /*! \file
  *  \brief 4D Zolotarev operator
  */
@@ -7,24 +7,23 @@
 #include "actions/ferm/linop/lmdagm_w.h"
 #include "actions/ferm/linop/zolotarev4d_w.h"
 #include "actions/ferm/linop/zolotarev.h"
-#include "primitives.h"
+// #include "primitives.h"
 #include "common_declarations.h"
-#include "common_io.h"
 
 //! Creation routine
 /*!
  * \ingroup linop
  *
- * \param _u 	  gauge field  	       (Read)
- * \param _m_q    quark mass   	       (Read)
+ * \param u_ 	  gauge field  	       (Read)
+ * \param m_q_    quark mass   	       (Read)
  */
 
-void Zolotarev4D::create(const multi1d<LatticeColorMatrix>& _u, const Real& _m_q)
+void Zolotarev4D::create(const multi1d<LatticeColorMatrix>& u_, const Real& m_q_)
 {
   START_CODE("Zolotarev4D::create");
 
-  u = _u;
-  m_q = _m_q;
+  u = u_;
+  m_q = m_q_;
 
   RsdCGinner = 1.0e-7;  // Hardwired the accuracy
 
@@ -37,25 +36,25 @@ void Zolotarev4D::create(const multi1d<LatticeColorMatrix>& _u, const Real& _m_q
 /*!
  * \ingroup linop
  *
- * \param _u 	  gauge field  	       (Read)
- * \param _m_q    quark mass   	       (Read)
- * \param _EigVec eigenvectors 	       (Read)
- * \param _EigVal eigenvalues 	       (Read)
+ * \param u_ 	  gauge field  	       (Read)
+ * \param m_q_    quark mass   	       (Read)
+ * \param EigVec_ eigenvectors 	       (Read)
+ * \param EigVal_ eigenvalues 	       (Read)
  */
 
-void Zolotarev4D::create(const multi1d<LatticeColorMatrix>& _u, const Real& _m_q,
-			 const multi1d<LatticeFermion>& _EigVec, const multi1d<Real>& _EigVal)
+void Zolotarev4D::create(const multi1d<LatticeColorMatrix>& u_, const Real& m_q_,
+			 const multi1d<LatticeFermion>& EigVec_, const multi1d<Real>& EigVal_)
 {
   START_CODE("Zolotarev4D::create");
 
-  u = _u;
-  m_q = _m_q;
+  u = u_;
+  m_q = m_q_;
 
   RsdCGinner = 1.0e-7;  // Hardwired the accuracy
 
-  NEigVal = _EigVal.size();
-  EigVec = _EigVec;
-  EigVal = _EigVal;
+  NEigVal = EigVal_.size();
+  EigVec = EigVec_;
+  EigVal = EigVal_;
 
   if (EigVec.size() != EigVal.size())
     QDP_error_exit("Zolotarev4D::create: inconsistent sizes of eigenvectors and values");
@@ -149,13 +148,13 @@ void Zolotarev4D::make()
 
   /* A linear operator containing the non-hermitian Wilson Dirac
      operator with negative mass */
-  LinearOperator* M = ConsLinOp (u, Kappa_t, OverAuxAct);
+  LinearOperator<LatticeFermion>* M = ConsLinOp (u, Kappa_t, OverAuxAct);
   QDP_info("Auxiliary fermion action: OverAuxAct = %d",OverAuxAct);
   
   /* The square M^dagger*M of the Wilson Dirac operators, used for
      solving the multi-shift linear system */
   /* H^2 = M^dag . M */
-  LinearOperator* MdagM = new lmdagm(*M); 
+  LinearOperator<LatticeFermion>* MdagM = new lmdagm(*M); 
   
   /* The operator gamma_5 * M with the M constructed here has its eigenvalues
      in the range m/(m + Nd) <= |gamma_5 * M| <= (m + 2*Nd)/(m + Nd) (in the 
@@ -288,9 +287,9 @@ void Zolotarev4D::make()
 
   /* Finally construct and pack the operator */
   /* This is the operator of the form (1/2)*[(1+mu) + (1-mu)*gamma_5*eps] */
-  LinearOperator* A = new lovlapms(*MdagM, M, m_q,
-				   numroot, coeffP, resP, rootQ, 
-				   EigVec, EigValFunc, NEig, RsdCG);
+  LinearOperator<LatticeFermion>* A = new lovlapms(*MdagM, M, m_q,
+						   numroot, coeffP, resP, rootQ, 
+						   EigVec, EigValFunc, NEig, RsdCG);
   
   END_CODE("Zolotarev4D::create");
 }

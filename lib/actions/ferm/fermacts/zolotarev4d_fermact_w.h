@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev4d_fermact_w.h,v 1.2 2003-10-10 03:46:46 edwards Exp $
+// $Id: zolotarev4d_fermact_w.h,v 1.3 2003-10-20 20:31:50 edwards Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -17,11 +17,13 @@ using namespace QDP;
 /*!
  * \ingroup fermact
  *
- * This routine is specific to Wilson fermions!
+ * This routine is specific to Wilson-like fermions!
  *
+ * NOTE: for now we assume the kernel is a fund. rep. fermion type,
+ * but that is not necessary
  */
 
-class Zolotarev4DFermAct : UnprecWilsonTypeFermAct 
+class Zolotarev4DFermAct : UnprecWilsonTypeFermAct<LatticeFermion>
 {
 public:
   //! Full constructor
@@ -39,10 +41,10 @@ public:
 		   const multi1d<LatticeFermion>& _EigVec, const multi1d<Real>& _EigVal);
 
   //! Produce a linear operator for this action
-  const LinearOperator* linOp(const multi1d<LatticeColorMatrix>& u) const;
+  const LinearOperator<LatticeFermion>* linOp(const multi1d<LatticeColorMatrix>& u) const;
 
   //! Produce a linear operator M^dag.M for this action
-  const LinearOperator* lMdagM(const multi1d<LatticeColorMatrix>& u) const;
+  const LinearOperator<LatticeFermion>* lMdagM(const multi1d<LatticeColorMatrix>& u) const;
 
   //! Compute dS_f/dU
   multi1d<LatticeColorMatrix> dsdu(const multi1d<LatticeColorMatrix>& u) const;
@@ -56,6 +58,6 @@ private:
 
 private:
   Real m_q;
-  UnprecWilsonTypeFermAct& M;
+  UnprecWilsonTypeFermAct<LatticeFermion>& M;
 
 #endif

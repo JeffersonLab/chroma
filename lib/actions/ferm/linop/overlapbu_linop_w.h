@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: overlapbu_linop_w.h,v 1.3 2003-10-10 03:46:46 edwards Exp $
+// $Id: overlapbu_linop_w.h,v 1.4 2003-10-20 20:31:50 edwards Exp $
 /*! \file
  *  \brief A variant of the 4D overlap operator
  */
@@ -35,7 +35,7 @@ using namespace QDP;
  *
  */
 
-class OverlapBULinOp : public LinearOperator
+class OverlapBULinOp : public LinearOperator<LatticeFermion>
 {
 public:
   //! Partial constructor

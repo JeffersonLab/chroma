@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lmdagm_w.h,v 1.3 2003-10-10 03:46:46 edwards Exp $
+// $Id: lmdagm_w.h,v 1.4 2003-10-20 20:31:50 edwards Exp $
 
 #ifndef __lmdagm_w_h__
 #define __lmdagm_w_h__
@@ -17,11 +17,12 @@ using namespace QDP;
  * Linear operator forming M^dag.M from an operator M
  */
 
-class lmdagm : public LinearOperator
+template<typename T>
+class lmdagm : public LinearOperator<T>
 {
 public:
   //! Full constructor
-  lmdagm(const LinearOperator& _A) : A(_A) {}
+  lmdagm(const LinearOperator<T>& A_) : A(A_) {}
 
   //! Destructor
   ~lmdagm() {}
@@ -31,11 +32,11 @@ public:
 
   //! Apply the operator onto a source vector
   /*! For this operator, the sign is ignored */
-  inline LatticeFermion operator() (const LatticeFermion& psi, enum LinOpSign isign) const
+  inline T operator() (const T& psi, enum LinOpSign isign) const
     {return A(A(psi, PLUS), MINUS);}
 
 private:
-  const LinearOperator& A;
+  const LinearOperator<T>& A;
 };
 
 #endif

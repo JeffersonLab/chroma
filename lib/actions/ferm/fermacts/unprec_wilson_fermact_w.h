@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_wilson_fermact_w.h,v 1.8 2003-10-10 03:46:46 edwards Exp $
+// $Id: unprec_wilson_fermact_w.h,v 1.9 2003-10-20 20:31:50 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -18,7 +18,7 @@ using namespace QDP;
  * Supports creation and application for fermion actions
  */
 
-class UnprecWilsonFermAct : public UnprecWilsonTypeFermAct 
+class UnprecWilsonFermAct : public UnprecWilsonTypeFermAct<LatticeFermion>
 {
 public:
   //! Partial constructor
@@ -32,17 +32,18 @@ public:
   void create(const Real& _Kappa);
 
   //! Produce a linear operator for this action
-  const LinearOperator* linOp(const multi1d<LatticeColorMatrix>& u) const;
+  const LinearOperator<LatticeFermion>* linOp(const multi1d<LatticeColorMatrix>& u) const;
 
   //! Produce a linear operator M^dag.M for this action
-  const LinearOperator* lMdagM(const multi1d<LatticeColorMatrix>& u) const;
+  const LinearOperator<LatticeFermion>* lMdagM(const multi1d<LatticeColorMatrix>& u) const;
 
-#if 1
+#if 0
 // THIS SHOULD NOT BE NEEDED
   //! Compute quark propagator
   void qprop(LatticeFermion& psi, 
 	     const multi1d<LatticeColorMatrix>& u, 
 	     const LatticeFermion& chi, 
+	     enum InvType invType,
 	     const Real& RsdCG, 
 	     int MaxCG, int& ncg_had) const;
 #endif

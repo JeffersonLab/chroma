@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linop.h,v 1.8 2003-10-10 03:46:46 edwards Exp $
+// $Id: linop.h,v 1.9 2003-10-20 20:31:50 edwards Exp $
 
 /*! \file
  * \brief Linear operators
@@ -22,6 +22,8 @@
 
 #include "unprec_wilson_linop_w.h"
 #include "overlapbu_linop_w.h"
+
+#include "ldwfdslash_w.h"
 
 #endif
 

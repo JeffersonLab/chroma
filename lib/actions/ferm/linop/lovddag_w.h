@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lovddag_w.h,v 1.3 2003-10-10 03:46:46 edwards Exp $
+// $Id: lovddag_w.h,v 1.4 2003-10-20 20:31:50 edwards Exp $
 /*! \file
  *  \brief Internal Overlap-pole operator for D^dag.D
  */
@@ -28,7 +28,7 @@ using namespace QDP;
  *                           = gamma_5 * (1 + gamma_5 * B) * gamma_5
  *
  */
-class lovddag : public LinearOperator
+class lovddag : public LinearOperator<LatticeFermion>
 {
 public:
   //! Creation routine

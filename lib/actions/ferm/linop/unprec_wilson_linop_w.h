@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_wilson_linop_w.h,v 1.4 2003-10-10 03:46:46 edwards Exp $
+// $Id: unprec_wilson_linop_w.h,v 1.5 2003-10-20 20:31:50 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -36,7 +36,7 @@ using namespace QDP;
  *
  */
 
-class UnprecWilsonLinOp : public LinearOperator
+class UnprecWilsonLinOp : public LinearOperator<LatticeFermion>
 {
 public:
   //! Partial constructor

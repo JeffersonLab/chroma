@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lmpsim_w.h,v 1.4 2003-10-10 03:46:46 edwards Exp $
+// $Id: lmpsim_w.h,v 1.5 2003-10-20 20:31:50 edwards Exp $
 
 // #pragma ident "Id"
 
@@ -78,7 +78,7 @@ using namespace QDP;
  *  2 ( Nc Ns + DSlash )  flops 
  */
 
-class PreconditionedWilson : public LinearOperator
+class PreconditionedWilson : public LinearOperator<LatticeFermion>
 {
 public:
   //! Full constructor

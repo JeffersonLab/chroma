@@ -1,4 +1,4 @@
-// $Id: zolotarev4d_fermact_w.cc,v 1.1 2003-04-09 05:57:15 edwards Exp $
+// $Id: zolotarev4d_fermact_w.cc,v 1.2 2003-10-20 20:31:50 edwards Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -29,7 +29,8 @@ void Zolotarev4DFermAct::Zolotarev4DFermAct(const Real& _m_q, const UnprecWilson
  *
  * \param u 	    gauge field     	       (Read)
  */
-const LinearOperator* Zolotarev4DFermAct::linOp(const multi1d<LatticeColorMatrix>& u) const
+const LinearOperator<LatticeFermion>* 
+Zolotarev4DFermAct::linOp(const multi1d<LatticeColorMatrix>& u) const
 {
   return new UnprecWilsonLinOp(u,Kappa);
 }
@@ -42,9 +43,10 @@ const LinearOperator* Zolotarev4DFermAct::linOp(const multi1d<LatticeColorMatrix
  *
  * \param u 	    gauge field     	       (Read)
  */
-const LinearOperator* Zolotarev4DFermAct::lMdagM(const multi1d<LatticeColorMatrix>& u) const
+const LinearOperator<LatticeFermion>* 
+Zolotarev4DFermAct::lMdagM(const multi1d<LatticeColorMatrix>& u) const
 {
-  LinearOperator* mdagm = new lmdagm(UnprecWilsonLinOp(u,Kappa));
+  LinearOperator<LatticeFermion>* mdagm = new lmdagm(UnprecWilsonLinOp(u,Kappa));
   return mdagm;
 }
 

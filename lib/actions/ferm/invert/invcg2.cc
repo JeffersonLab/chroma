@@ -1,4 +1,4 @@
-// $Id: invcg2.cc,v 1.3 2003-10-09 21:03:33 edwards Exp $
+// $Id: invcg2.cc,v 1.4 2003-10-20 20:31:50 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -59,21 +59,16 @@
  *  2 A + 2 Nc Ns + N_Count ( 2 A + 10 Nc Ns )
  */
 
-void InvCG2(const LinearOperator& M,
-	    const LatticeFermion& chi,
-	    LatticeFermion& psi,
-	    const Real& RsdCG, 
-	    int MaxCG, 
-	    int& n_count)
+template<typename T>
+void InvCG2_a(const LinearOperator<T>& M,
+	      const T& chi,
+	      T& psi,
+	      const Real& RsdCG, 
+	      int MaxCG, 
+	      int& n_count)
 {
   const OrderedSubset& s = M.subset();
 
-  LatticeFermion mp;
-  Real a;
-  Real b;
-  Double c;
-  Double d;
-  
   Real rsd_sq = (RsdCG * RsdCG) * Real(norm2(chi,s));
 
   //                                            +
@@ -81,11 +76,11 @@ void InvCG2(const LinearOperator& M,
     
   //                      +
   //  r  :=  [ Chi  -  M(u)  . M(u) . psi ]
-  LatticeFermion r;
+  T r;
   r[s] = chi - M(M(psi, PLUS), MINUS);
 
   //  p[1]  :=  r[0]
-  LatticeFermion p;
+  T p;
   p[s] = r;
   
   //  Cp = |r[0]|^2
@@ -103,6 +98,10 @@ void InvCG2(const LinearOperator& M,
   //
   //  FOR k FROM 1 TO MaxCG DO
   //
+  T    mp;
+  Real a, b;
+  Double c, d;
+  
   for(int k = 1; k <= MaxCG; ++k)
   {
     //  c  =  | r[k-1] |**2
@@ -148,4 +147,29 @@ void InvCG2(const LinearOperator& M,
   }
   n_count = MaxCG;
   QDP_error_exit("too many CG iterations: count = %d", n_count);
+}
+
+
+// Fix here for now
+template<>
+void InvCG2(const LinearOperator<LatticeFermion>& M,
+	    const LatticeFermion& chi,
+	    LatticeFermion& psi,
+	    const Real& RsdCG, 
+	    int MaxCG, 
+	    int& n_count)
+{
+  InvCG2_a(M, chi, psi, RsdCG, MaxCG, n_count);
+}
+
+// Fix here for now
+template<>
+void InvCG2(const LinearOperator<LatticeDWFermion>& M,
+	    const LatticeDWFermion& chi,
+	    LatticeDWFermion& psi,
+	    const Real& RsdCG, 
+	    int MaxCG, 
+	    int& n_count)
+{
+  InvCG2_a(M, chi, psi, RsdCG, MaxCG, n_count);
 }
