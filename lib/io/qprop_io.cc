@@ -1,5 +1,5 @@
 /*
- *  $Id: qprop_io.cc,v 1.6 2003-10-14 17:41:23 edwards Exp $
+ *  $Id: qprop_io.cc,v 1.7 2003-10-20 20:34:29 edwards Exp $
  *
  *  These are a few simple I/O routines that we can use until QIO makes its appearance
  *  I have tried to include a simple header by means of a structure.
@@ -7,8 +7,6 @@
 
 #include "chromabase.h"
 #include "io/qprop_io.h"
-#include "primitives.h"
-#include "qdp_util.h"
 
 #include <string>
 using std::string;
