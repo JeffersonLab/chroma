@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     gaugeStartup(file_xml, config_xml, u, foo);
   }
 
-   
+    
   multi1d<LatticeColorMatrix> p(Nd);
  
   for(int mu = 0; mu < Nd; mu++) { 
@@ -143,7 +143,7 @@ int main(int argc, char *argv[])
  
 
 
-  for(int i=0; i < 100000; i++) { 
+  for(int i=0; i < 1000; i++) { 
 
     // Do trajectory
     HMC(mc_state, true, monitorHMC);
