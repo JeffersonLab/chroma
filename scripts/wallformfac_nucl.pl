@@ -146,10 +146,10 @@ foreach $x (-$mommax_int .. $mommax_int)
       {
 	$mom_name = "proton" . "_px" . $p[0] . "_py" . $p[1] . "_pz" . $p[2];
 
-	$proton_ap{$x, $y, $z} = "proton" . $mom_name . ".$apext" ;
-	$proton_cp{$x, $y, $z} = "proton" . $mom_name . ".$cpext" ;
-	$proton_cb{$x, $y, $z} = "proton" . $mom_name . ".$cbext" ;
-	$proton_xp{$x, $y, $z} = "proton" . $mom_name . ".$xpext" ;
+	$proton_ap{$x, $y, $z} = $mom_name . ".$apext" ;
+	$proton_cp{$x, $y, $z} = $mom_name . ".$cpext" ;
+	$proton_cb{$x, $y, $z} = $mom_name . ".$cbext" ;
+	$proton_xp{$x, $y, $z} = $mom_name . ".$xpext" ;
       }
     }
   }
