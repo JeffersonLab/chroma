@@ -1,4 +1,4 @@
-// $Id: prec_wilson_fermact_w.cc,v 1.17 2005-01-05 17:28:11 bjoo Exp $
+// $Id: prec_wilson_fermact_w.cc,v 1.18 2005-01-05 22:03:38 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action
  */
@@ -36,7 +36,7 @@ namespace Chroma
     }
 
     //! Name to be used
-    const std::string name = string("WILSON");
+    const std::string name("WILSON");
 
     //! Register all the factories
     bool registerAll()
