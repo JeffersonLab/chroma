@@ -1,4 +1,4 @@
-// $Id: barseqsrc_w.cc,v 1.2 2003-12-18 04:05:36 edwards Exp $
+// $Id: barseqsrc_w.cc,v 1.3 2004-01-10 05:40:36 edwards Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */
@@ -69,7 +69,7 @@ void barSeqSource(const LatticePropagator& quark_propagator_1,
       di_quark = quarkContract24(q1_tmp, q2_tmp);
       src_prop_tmp = di_quark + Gamma(8) * di_quark;
 
-      col_mat = trace(di_quark);
+      col_mat = traceSpin(di_quark);
       q1_tmp = 1;
       di_quark = 1;
       di_quark += Gamma(8) * q1_tmp;
@@ -111,7 +111,7 @@ void barSeqSource(const LatticePropagator& quark_propagator_1,
       src_prop_tmp = Gamma(3) * di_quark;
       src_prop_tmp += Gamma(11) * di_quark;
 
-      col_mat = trace(di_quark);
+      col_mat = traceSpin(di_quark);
       q1_tmp = 1;
       di_quark = Gamma(3) * q1_tmp;
       di_quark += Gamma(11) * q1_tmp;
@@ -157,7 +157,7 @@ void barSeqSource(const LatticePropagator& quark_propagator_1,
       di_quark = quarkContract24(q1_tmp, q2_tmp);
       src_prop_tmp = di_quark + Gamma(8) * di_quark;
 
-      col_mat = trace(di_quark);
+      col_mat = traceSpin(di_quark);
       q1_tmp = 1;
       di_quark = q1_tmp + Gamma(8) * q1_tmp;
       src_prop_tmp += col_mat * di_quark;
@@ -207,7 +207,7 @@ void barSeqSource(const LatticePropagator& quark_propagator_1,
       src_prop_tmp += di_quark + di_quark * Gamma(8);
       src_prop_tmp *= 2;
 
-      col_mat = trace(di_quark);
+      col_mat = traceSpin(di_quark);
       q1_tmp = 1;
       q2_tmp = q1_tmp + Gamma(8) * q1_tmp;
       src_prop_tmp += col_mat * q2_tmp;
@@ -225,7 +225,7 @@ void barSeqSource(const LatticePropagator& quark_propagator_1,
       di_quark = quarkContract24(q1_tmp, q2_tmp);
       src_prop_tmp = di_quark + Gamma(8) * di_quark;
 
-      col_mat = trace(di_quark);
+      col_mat = traceSpin(di_quark);
       q1_tmp = 1;
       di_quark = q1_tmp + Gamma(8) * q1_tmp;
       src_prop_tmp += col_mat * di_quark;
@@ -266,7 +266,7 @@ void barSeqSource(const LatticePropagator& quark_propagator_1,
       di_quark = quarkContract24(q1_tmp, q2_tmp);
       src_prop_tmp = Gamma(3) * di_quark + Gamma(11) * di_quark;
 
-      col_mat = trace(di_quark);
+      col_mat = traceSpin(di_quark);
       q1_tmp = 1;
       di_quark = Gamma(3) * q1_tmp  +  Gamma(11) * q1_tmp;
       src_prop_tmp += col_mat * di_quark;
@@ -337,7 +337,7 @@ void barSeqSource(const LatticePropagator& quark_propagator_1,
        *  Now the second term
        */
 
-      col_mat = trace(di_quark);
+      col_mat = traceSpin(di_quark);
       q1_tmp = 1;
 
       /*
