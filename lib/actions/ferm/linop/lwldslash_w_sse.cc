@@ -1,10 +1,11 @@
-// $Id: lwldslash_w_sse.cc,v 1.21 2004-12-17 17:45:04 bjoo Exp $
+// $Id: lwldslash_w_sse.cc,v 1.22 2004-12-20 03:59:31 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
 
 #include "chromabase.h"
 #include "actions/ferm/linop/lwldslash_w_sse.h"
+#include <sse_config.h>
 
 using namespace QDP;
 
@@ -13,39 +14,11 @@ extern void qdp_pack_gauge(const multi1d<LatticeColorMatrix>&_u, multi1d<Primiti
 
 namespace Chroma 
 { 
-  //! General Wilson-Dirac dslash
-  /*! \ingroup linop
-   * DSLASH
-   *
-   * This routine is specific to Wilson fermions!
-   *
-   * Description:
-   *
-   * This routine applies the operator D' to Psi, putting the result in Chi.
-   *
-   *	       Nd-1
-   *	       ---
-   *	       \
-   *   chi(x)  :=  >  U  (x) (1 - isign gamma  ) psi(x+mu)
-   *	       /    mu			  mu
-   *	       ---
-   *	       mu=0
-   *
-   *	             Nd-1
-   *	             ---
-   *	             \    +
-   *                +    >  U  (x-mu) (1 + isign gamma  ) psi(x-mu)
-   *	             /    mu			   mu
-   *	             ---
-   *	             mu=0
-   *
-   */
-  extern "C" {
-  
+  extern "C" 
+  {
     void init_sse_su3dslash(const int* latt_size);
     void free_sse_su3dslash(void);
     void sse_su3dslash_wilson(SSEREAL* u, SSEREAL *psi, SSEREAL *res, int isign, int cb);
-
   }
 
   //! Creation routine
@@ -129,81 +102,6 @@ namespace Chroma
 
     END_CODE();
   }
-
-
-
-  //! Take deriv of D
-  /*! \return Computes   chi^dag * \dot(D} * psi  */
-  void 
-  SSEWilsonDslash::deriv(multi1d<LatticeColorMatrix>& ds_u,
-			 const LatticeFermion& chi, const LatticeFermion& psi, 
-			 enum PlusMinus isign, int cb) const
-  {
-    START_CODE();
-
-    ds_u.resize(Nd);
-
-    LatticeColorMatrix ds_tmp;
-    for(int mu = 0; mu < Nd; ++mu)
-    {
-      LatticeFermion f_tmp;
-      switch (isign)
-      {
-      case PLUS:
-	// Undaggered:
-        ds_u[mu][rb[cb]]    = u[mu]*traceSpin(outerProduct(shift(psi - Gamma(1 << mu)*psi, FORWARD, mu),chi));	
-	ds_u[mu][rb[1-cb]]  = zero;
-
-	// The piece that comes from the U^daggered term. 
-	// This piece is just -dagger() of the piece from applying
-	// this function on the opposite checkerboard. It therefore
-	// only contributes a factor of 2 to the traceless antihermitian
-	// part of the result. Which should be swept into the taproj
-	// normalisation. Right now until then, I explicitly multiply
-	// the result by 0.5 below.
-
-	// ds_u[mu][rb[1-cb]]  = traceSpin(outerProduct(psi + Gamma(1 << mu)*psi,shift(chi, FORWARD, mu)))*adj(u[mu]);
-       	// ds_u[mu][rb[1-cb]] *= -Real(1);
-	//
-	// From factor of 2 that comes from the U^daggered piece.
-	// This maybe should be absorbed into the taproj normalisation
-	//
-	// ds_u[mu] *= Real(0.5);
-
-	break;
-
-      case MINUS:
-	// Daggered:
-	ds_u[mu][rb[cb]]    = u[mu]*traceSpin(outerProduct(shift(psi + Gamma(1 << mu)*psi, FORWARD, mu),chi));
-	
-	ds_u[mu][rb[1-cb]] = zero;
-	
-	// The piece that comes from the U^daggered term. 
-	// This piece is just -dagger() of the piece from applying
-	// this function on the opposite checkerboard. It therefore
-	// only contributes a factor of 2 to the traceless antihermitian
-	// part of the result. Which should be swept into the taproj
-	// normalisation. Right now until then, I explicitly multiply
-	// the result by 0.5 below.
-	//
-	//        ds_u[mu][rb[1-cb]]  = traceSpin(outerProduct(psi - Gamma(1 << mu)*psi,shift(chi, FORWARD, mu)))*adj(u[mu]);
-	//        ds_u[mu][rb[1-cb]] *= -Real(1);
-	//	 
-	// From factor of 2 that comes from the U^daggered piece.
-	// This maybe should be absorbed into the taproj normalisation
-	//
-	// ds_u[mu] *= Real(0.5);
-
-	break;
-
-      default:
-	QDP_error_exit("unknown case");
-      }
-    }
-    
-    END_CODE();
-  }
-
 
 }; // End Namespace Chroma
 
