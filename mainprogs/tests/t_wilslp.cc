@@ -1,4 +1,4 @@
-// $Id: t_wilslp.cc,v 1.2 2005-01-14 20:13:10 edwards Exp $
+// $Id: t_wilslp.cc,v 1.3 2005-02-11 16:04:57 edwards Exp $
 //
 // Test driver for wilslp
 // default test uses the usual NERSC 4^4 config.
@@ -94,6 +94,7 @@ int main(int argc, char *argv[])
   // Now try calling the Wilson loop routine
   QDPIO::cout << "Measure Wilson loops" << endl;
   int j_decay = Nd - 1;
+  int t_dir = j_decay;
 
   int kind    = 6;
 // kind -- binary-combined YES/NO [1/0] of the three loop options     
@@ -113,8 +114,8 @@ int main(int argc, char *argv[])
   swatch.reset();
   swatch.start();
 
-   wilslp(u, j_decay, kind,
-	xml, "Fuzzed_Wilson_Loops");
+  wilslp(u, j_decay, t_dir, kind,
+	 xml, "Fuzzed_Wilson_Loops");
 
   swatch.stop();
   time_in_sec  = swatch.getTimeInSeconds();
