@@ -2,6 +2,7 @@
 
 <assertions>
 
-<assertion xpath="/fuzzed_hadron_corr/Here_are_all_16_pions/pion0/pion_oper/elem" type="complex" comparison="absolute_real" tolerance="0.0001"/>
+<assertion xpath="/fuzzed_hadron_corr/Hadrons_from_time_source/Pseudoscalar/gamma5_CROSS_gamma5/Pi"
+type="real_array" comparison="relative_comparison" tolerance="0.001"/>
 
 </assertions>
