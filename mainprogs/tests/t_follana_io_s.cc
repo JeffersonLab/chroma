@@ -1,4 +1,4 @@
-// $Id: t_follana_io_s.cc,v 1.2 2003-09-11 12:31:20 bjoo Exp $
+// $Id: t_follana_io_s.cc,v 1.3 2003-09-11 13:08:27 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -32,19 +32,38 @@ int main(int argc, char *argv[])
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
 
-  // Setup the layout
-  const int foo[] = {16,16,16,32};
+  XMLReader xml_in("input.xml");
+
+  // XML File will look like this
+  // 
+  // <? xml version="1.0" ?>
+  // <test>
+  //    <nrow>X Y Z T</nrow>
+  //    <infile>filename_of_propagator</infile>
+  // </test>
+  //
   multi1d<int> nrow(Nd);
-  nrow = foo;  // Use only Nd elements
+  string filename;
+
+  read(xml_in, "/test/nrow", nrow);
+  read(xml_in, "/test/infile", filename);
+
 
 
   Layout::setLattSize(nrow);
   Layout::create();
 
+  if ( Layout::primaryNode() ) { 
+    cout << "Lattice: Lx = " << nrow[0] << " Ly = " << nrow[1] << " Lz = " << nrow[2]
+	 << " Lt =" << nrow[3] << endl;
+
+    cout << "Reading Propagator from file " << filename << endl;
+  }
+
   // Try and read the propagator;
 
   LatticePropagator qprop;
-  readQpropFollana("./prop.0", qprop);
+  readQpropFollana((char *)filename.c_str(), qprop);
 
   LatticeComplex corr_fn = trace(adj(qprop)*qprop);
 
@@ -57,15 +76,11 @@ int main(int argc, char *argv[])
   
   hsum = sumMulti(corr_fn, timeslice);
 
+  XMLFileWriter xml_out("output.xml");
 
-  NmlWriter nml("prop.nml");
-
-  // push(nml, "propagator");
-  //Write(nml, qprop);
-  // pop(nml);
-  push(nml, "goldstone");
-  Write(nml,hsum);
-  pop(nml);
+  push(xml_out, "follanaIO");
+  Write(xml_out, hsum);
+  pop(xml_out);
 
   // Time to bolt
   QDP_finalize();
