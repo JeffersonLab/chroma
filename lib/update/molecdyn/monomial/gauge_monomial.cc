@@ -1,13 +1,13 @@
 // -*- C++ -*-
-// $Id: gauge_monomial.cc,v 1.1 2005-01-13 15:55:04 bjoo Exp $
+// $Id: gauge_monomial.cc,v 1.2 2005-01-13 16:10:30 bjoo Exp $
 /*! \file
  *  \brief Generic gauge action monomial wrapper
  */
 
 #include "chromabase.h"
 
-#include "update/molecdyn/gauge_monomial.h"
-#include "update/molecdyn/monomial_factory.h"
+#include "update/molecdyn/monomial/gauge_monomial.h"
+#include "update/molecdyn/monomial/monomial_factory.h"
 
 #include "actions/gauge/gaugeacts/gaugeact_factory.h"
 #include "actions/gauge/gaugeacts/plaq_gaugeact.h"

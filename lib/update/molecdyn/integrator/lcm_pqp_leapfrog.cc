@@ -1,6 +1,6 @@
 #include "chromabase.h"
-#include "update/molecdyn/md_integrator_factory.h"
-#include "update/molecdyn/lcm_pqp_leapfrog.h"
+#include "update/molecdyn/integrator/md_integrator_factory.h"
+#include "update/molecdyn/integrator/lcm_pqp_leapfrog.h"
 
 
 #include <string>

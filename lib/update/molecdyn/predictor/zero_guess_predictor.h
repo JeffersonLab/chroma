@@ -2,8 +2,8 @@
 #define __zero_guess_predictor_h__
 
 #include "chromabase.h"
-#include "update/molecdyn/chrono_predictor.h"
-#include "update/molecdyn/chrono_predictor_factory.h"
+#include "update/molecdyn/predictor/chrono_predictor.h"
+#include "update/molecdyn/predictor/chrono_predictor_factory.h"
 
 using namespace std;
 using namespace QDP;

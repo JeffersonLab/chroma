@@ -1,11 +1,11 @@
-// $Id: prec_two_flavor_wilson5d_monomial_w.cc,v 1.1 2005-01-13 15:55:04 bjoo Exp $
+// $Id: prec_two_flavor_wilson5d_monomial_w.cc,v 1.2 2005-01-13 16:10:30 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 5D ferm monomials
  */
 
 #include "chromabase.h"
-#include "update/molecdyn/prec_two_flavor_wilson5d_monomial_w.h"
-#include "update/molecdyn/monomial_factory.h"
+#include "update/molecdyn/monomial/prec_two_flavor_wilson5d_monomial_w.h"
+#include "update/molecdyn/monomial/monomial_factory.h"
 
 #include "io/param_io.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
@@ -17,10 +17,10 @@
 #include "actions/ferm/fermacts/prec_nef_fermact_array_w.h"
 #include "actions/ferm/fermacts/prec_zolo_nef_fermact_array_w.h"
 
-#include "update/molecdyn/chrono_predictor.h"
-#include "update/molecdyn/chrono_predictor_factory.h"
+#include "update/molecdyn/predictor/chrono_predictor.h"
+#include "update/molecdyn/predictor/chrono_predictor_factory.h"
 
-#include "update/molecdyn/zero_guess_predictor.h"
+#include "update/molecdyn/predictor/zero_guess_predictor.h"
 
 using namespace Chroma;
 

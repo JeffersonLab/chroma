@@ -4,9 +4,9 @@
 #include "chromabase.h"
 #include "io/xmllog_io.h"
 #include "update/molecdyn/field_state.h"
-#include "update/molecdyn/abs_hamiltonian.h"
-#include "update/molecdyn/abs_integrator.h"
-#include "update/molecdyn/global_metropolis_accrej.h"
+#include "update/molecdyn/hamiltonian//abs_hamiltonian.h"
+#include "update/molecdyn/integrator/abs_integrator.h"
+#include "update/molecdyn/hmc/global_metropolis_accrej.h"
 
 
 using namespace QDP;

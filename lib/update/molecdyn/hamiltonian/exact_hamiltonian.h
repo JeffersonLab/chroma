@@ -3,7 +3,7 @@
 
 #include "chromabase.h"
 
-#include "abs_hamiltonian.h"
+#include "update/molecdyn/hamiltonian/abs_hamiltonian.h"
 
 using namespace QDP;
 using namespace std;

@@ -3,7 +3,7 @@
 
 #include "chromabase.h"
 #include "update/molecdyn/field_state.h"
-#include "update/molecdyn/abs_hamiltonian.h"
+#include "update/molecdyn/hamiltonian/abs_hamiltonian.h"
 
 using namespace QDP;
 using namespace Chroma;

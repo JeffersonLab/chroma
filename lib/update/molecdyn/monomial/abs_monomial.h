@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_monomial.h,v 1.1 2005-01-13 15:55:04 bjoo Exp $
+// $Id: abs_monomial.h,v 1.2 2005-01-13 16:10:30 bjoo Exp $
 
 /*! @file
  * @brief Monomials - gauge action or fermion binlinear contributions for HMC
@@ -12,7 +12,7 @@
 #include "gaugeact.h"
 
 #include "update/molecdyn/field_state.h"
-#include "update/molecdyn/chrono_predictor.h"
+#include "update/molecdyn/predictor/chrono_predictor.h"
 namespace Chroma
 {
   //! An abstract monomial class, for inexact algorithms

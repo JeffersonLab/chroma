@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: md_integrator_factory.h,v 1.1 2005-01-13 15:55:04 bjoo Exp $
+// $Id: md_integrator_factory.h,v 1.2 2005-01-13 16:10:30 bjoo Exp $
 /*! \file
  *  \brief Monomial factories
  */
@@ -11,8 +11,8 @@
 #include "objfactory.h"
 #include "chromabase.h"
 
-#include "update/molecdyn/abs_hamiltonian.h"
-#include "update/molecdyn/abs_integrator.h"
+#include "update/molecdyn/hamiltonian/abs_hamiltonian.h"
+#include "update/molecdyn/integrator/abs_integrator.h"
 
 #include <string>
 

@@ -1,5 +1,5 @@
 #include "chromabase.h"
-#include "update/molecdyn/last_solution_predictor.h"
+#include "update/molecdyn/predictor/last_solution_predictor.h"
 
 using namespace std;
 using namespace QDP;

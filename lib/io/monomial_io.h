@@ -2,7 +2,7 @@
 #define MONOMIAL_IO_H
 
 #include "chromabase.h"
-#include "update/molecdyn/abs_monomial.h"
+#include "update/molecdyn/monomial/abs_monomial.h"
 
 using namespace QDP;
 using namespace Chroma;

@@ -3,12 +3,12 @@
 
 #include "chromabase.h"
 #include "update/molecdyn/field_state.h"
-#include "update/molecdyn/abs_hamiltonian.h"
-#include "update/molecdyn/abs_integrator.h"
-#include "update/molecdyn/abs_hmc.h"
+#include "update/molecdyn/hamiltonian/abs_hamiltonian.h"
+#include "update/molecdyn/integrator/abs_integrator.h"
+#include "update/molecdyn/hmc/abs_hmc.h"
 
 // The accept Reject
-#include "update/molecdyn/global_metropolis_accrej.h"
+#include "update/molecdyn/hmc/global_metropolis_accrej.h"
 
 #include "util/gauge/taproj.h" 
 

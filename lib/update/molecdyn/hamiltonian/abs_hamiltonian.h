@@ -3,7 +3,7 @@
 
 #include "chromabase.h"
 #include "update/molecdyn/field_state.h"
-#include "update/molecdyn/abs_monomial.h"
+#include "update/molecdyn/monomial/abs_monomial.h"
 #include "io/xmllog_io.h"
 
 namespace Chroma { 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: chrono_predictor_factory.h,v 1.1 2005-01-13 15:55:04 bjoo Exp $
+// $Id: chrono_predictor_factory.h,v 1.2 2005-01-13 16:10:30 bjoo Exp $
 /*! \file
  *  \brief Monomial factories
  */
@@ -11,7 +11,7 @@
 #include "objfactory.h"
 #include "chromabase.h"
 
-#include "update/molecdyn/chrono_predictor.h"
+#include "update/molecdyn/predictor/chrono_predictor.h"
 
 
 

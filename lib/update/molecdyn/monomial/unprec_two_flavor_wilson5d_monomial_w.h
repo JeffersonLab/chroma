@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_two_flavor_wilson5d_monomial_w.h,v 1.1 2005-01-13 15:55:04 bjoo Exp $
+// $Id: unprec_two_flavor_wilson5d_monomial_w.h,v 1.2 2005-01-13 16:10:30 bjoo Exp $
 
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 5D ferm monomials
@@ -11,7 +11,7 @@
 #include "chromabase.h"
 
 #include "update/molecdyn/field_state.h"
-#include "update/molecdyn/abs_monomial.h"
+#include "update/molecdyn/monomial/abs_monomial.h"
 
 namespace Chroma 
 {

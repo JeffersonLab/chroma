@@ -3,8 +3,8 @@
 
 
 #include "chromabase.h"
-#include "abs_hamiltonian.h"
-#include "abs_integrator.h"
+#include "update/molecdyn/hamiltonian/abs_hamiltonian.h"
+#include "update/molecdyn/integrator/abs_integrator.h"
 
 #include <string>
 

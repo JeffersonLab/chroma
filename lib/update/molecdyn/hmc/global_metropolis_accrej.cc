@@ -1,5 +1,5 @@
 #include "chromabase.h"
-#include "update/molecdyn/global_metropolis_accrej.h"
+#include "update/molecdyn/hmc/global_metropolis_accrej.h"
 
 namespace Chroma { 
 
