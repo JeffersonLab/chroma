@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hybmeson_w.h,v 1.1 2004-02-03 21:13:35 edwards Exp $
+// $Id: hybmeson_w.h,v 1.2 2004-02-03 21:51:09 edwards Exp $
 /*! \file
  *  \brief Hybrid meson 2-pt functions
  */
@@ -38,7 +38,7 @@ void hybmeson(const multi1d<LatticeColorMatrix>& f,
 	      const LatticePropagator& quark_prop_1,
 	      const LatticePropagator& quark_prop_2, 
 	      const SftMom& phases,
-	      int t0,
+	      multi1d<int> t_source,
 	      XMLWriter& xml,
 	      const string& xml_group);
 
