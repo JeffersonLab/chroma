@@ -1,4 +1,4 @@
-// $Id: prec_dwf_fermact_array_sse_w.cc,v 1.6 2004-10-19 03:24:37 edwards Exp $
+// $Id: prec_dwf_fermact_array_sse_w.cc,v 1.7 2004-10-20 02:11:51 edwards Exp $
 /*! \file
  *  \brief SSE 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -185,11 +185,12 @@ namespace Chroma
 
   //! Fermion field reader
   static double
-  fermion_reader(const void *ptr, void *env, 
-		 const int latt_coord[5], int color, int spin, int reim)
+  fermion_reader_rhs(const void *ptr, void *env, 
+		     const int latt_coord[5], int color, int spin, int reim)
   {
     /* Translate arg */
     multi1d<LatticeFermion>& psi = *(multi1d<LatticeFermion>*)ptr;
+    int Ls1 = psi.size() - 1;
 
     // Get node and index
     int s = latt_coord[4];
@@ -209,8 +210,8 @@ namespace Chroma
     // broadcast to all nodes the value since they are platform independent.
     // We don't want that, so we poke into the on-node data
     double val = (reim == 0) ? 
-      double(psi[s].elem(linear).elem(spin).elem(color).real()) : 
-      double(psi[s].elem(linear).elem(spin).elem(color).imag());
+       double(psi[Ls1-s].elem(linear).elem(spin).elem(color).real()) : 
+      -double(psi[Ls1-s].elem(linear).elem(spin).elem(color).imag());
 
     return val;
   }
@@ -218,21 +219,12 @@ namespace Chroma
 
   //! Fermion field reader
   static double
-  fermion_reader_zero(const void *ptr, void *env, 
-		      const int latt_coord[5], int color, int spin, int reim)
-  {
-    return 0.0;
-  }
-
-
-  //! Fermion field reader
-  static void
-  fermion_writer(void *ptr, void *env, 
-		 const int latt_coord[5], int color, int spin, int reim,
-		 double val)
+  fermion_reader_guess(const void *ptr, void *env, 
+		       const int latt_coord[5], int color, int spin, int reim)
   {
     /* Translate arg */
     multi1d<LatticeFermion>& psi = *(multi1d<LatticeFermion>*)ptr;
+    int Ls1 = psi.size() - 1;
 
     // Get node and index
     int s = latt_coord[4];
@@ -247,14 +239,63 @@ namespace Chroma
       QDP_abort(1);
     }
  
+    // Get the value
+    // NOTE: it would be nice to use the "peek" functions, but they will
+    // broadcast to all nodes the value since they are platform independent.
+    // We don't want that, so we poke into the on-node data
+    double val = (reim == 0) ? 
+       double(psi[Ls1-s].elem(linear).elem(spin).elem(color).real()) : 
+      -double(psi[Ls1-s].elem(linear).elem(spin).elem(color).imag());
+
+    val *= -0.5;
+
+    return val;
+  }
+
+
+  //! Fermion field reader
+  static double
+  fermion_reader_zero(const void *ptr, void *env, 
+		      const int latt_coord[5], int color, int spin, int reim)
+  {
+    return 0.0;
+  }
+
+
+  //! Fermion field writer
+  static void
+  fermion_writer_solver(void *ptr, void *env, 
+			const int latt_coord[5], int color, int spin, int reim,
+			double val)
+  {
+    /* Translate arg */
+    multi1d<LatticeFermion>& psi = *(multi1d<LatticeFermion>*)ptr;
+    int Ls1 = psi.size() - 1;
+
+    // Get node and index
+    int s = latt_coord[4];
+    multi1d<int> coord(4);
+    coord = latt_coord;
+    int node = Layout::nodeNumber(coord);
+    int linear = Layout::linearSiteIndex(coord);
+
+    if (node != Layout::nodeNumber())
+    {
+      QDPIO::cerr << __func__ << ": wrong coordinates for this node" << endl;
+      QDP_abort(1);
+    }
+ 
+    // Rescale
+    val *= -2.0;
+
     // Set the value
     // NOTE: it would be nice to use the "peek" functions, but they will
     // broadcast to all nodes the value since they are platform independent.
     // We don't want that, so we poke into the on-node data
     if (reim == 0)
-      psi[s].elem(linear).elem(spin).elem(color).real() = val;
+      psi[Ls1-s].elem(linear).elem(spin).elem(color).real() =  val;
     else
-      psi[s].elem(linear).elem(spin).elem(color).imag() = val;
+      psi[Ls1-s].elem(linear).elem(spin).elem(color).imag() = -val;
 
     return;
   }
@@ -265,7 +306,7 @@ namespace Chroma
   static void
   solve_cg5(multi1d<LatticeFermion> &solution,    // output
 	    const multi1d<LatticeColorMatrix> &U, // input
-	    double M_0,                           // input
+	    double M5,                            // input
 	    double m_f,                           // input
 	    const multi1d<LatticeFermion> &rhs,   // input
 	    const multi1d<LatticeFermion> &x0,    // input
@@ -281,17 +322,18 @@ namespace Chroma
     // Construct shifted gauge field
     multi1d<LatticeColorMatrix> V(Nd);
     for (int i = 0; i < Nd; i++)
-      V[i] = shift(U[i], -1, i); // as viewed from the destination (sic)
+      V[i] = shift(U[i], -1, i); // as viewed from the destination
 
     SSE_DWF_Gauge *g = SSE_DWF_load_gauge(&U, &V, NULL, gauge_reader);
-    SSE_DWF_Fermion *eta = SSE_DWF_load_fermion(&rhs, NULL, fermion_reader);
-    SSE_DWF_Fermion *X0 = SSE_DWF_load_fermion(&x0, NULL, fermion_reader);
+    SSE_DWF_Fermion *eta = SSE_DWF_load_fermion(&rhs, NULL, fermion_reader_rhs);
+    SSE_DWF_Fermion *X0 = SSE_DWF_load_fermion(&x0, NULL, fermion_reader_guess);
     SSE_DWF_Fermion *res = SSE_DWF_allocate_fermion();
 
     QDPIO::cout << "Entering SSE DWF solver: rsd = " << rsd
 		<< ", max_iterations = " << max_iter
 		<< endl;
 
+    double M_0 = -2*(5.0-M5);
     double out_eps;
     out_eps = 0.0;
     out_iter = 0;
@@ -304,7 +346,7 @@ namespace Chroma
 		<< ", resulting epsilon = " << out_eps
 		<< endl;
 
-    SSE_DWF_save_fermion(&solution, NULL, fermion_writer, res);
+    SSE_DWF_save_fermion(&solution, NULL, fermion_writer_solver, res);
 
     SSE_DWF_delete_fermion(res);
     SSE_DWF_delete_fermion(X0);
@@ -329,28 +371,13 @@ namespace Chroma
 
     const multi1d<LatticeColorMatrix>& u = state->getLinks();
 
-    multi1d<LatticeFermion> avp_chi(N5),tmp5(N5),phi(N5);
-
-    //apply chroma operator
-    Handle<const LinearOperator< multi1d<LatticeFermion> > > dwf_chroma(new UnprecDWLinOpArray(u,OverMass,Mass,N5));
-    (*dwf_chroma)(phi, chi, PLUS);
-    //phi = dwf_chroma * chi 
-    // avp_chi = R*gamma_5 * phi 
-    for(int s(0);s<N5;s++)
-      avp_chi[N5-1-s] = Gamma(15)*phi[s] ;
-
     // Apply SSE inverter
-    double M0 = toDouble(-2*(5.0-OverMass));
+    double M5  = toDouble(OverMass);
     double m_f = toDouble(Mass);
     double rsd = toDouble(invParam.RsdCG);
+    double rsd_sq = rsd * rsd;
     int    max_iter = invParam.MaxCG;
-    solve_cg5(tmp5, u, M0, m_f, avp_chi, avp_chi,
-	      rsd, max_iter, ncg_had);
-
-    // Need remaping to interface with andrew R\gamma_5
-    for(int s(0);s<N5;s++) {
-      psi[s] = -2 * (Gamma(15)*tmp5[N5-1-s]);
-    }
+    solve_cg5(psi, u, M5, m_f, chi, psi, rsd_sq, max_iter, ncg_had);
 
     END_CODE();
 
