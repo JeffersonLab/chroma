@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inv_rel_cg2.h,v 1.2 2004-05-14 18:10:20 bjoo Exp $
+// $Id: inv_rel_cg2.h,v 1.3 2004-05-18 12:40:15 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -75,7 +75,6 @@ template<typename T>
 void InvRelCG2(const ApproxLinearOperator<T>& M,
 	       const T& chi,
 	       T& psi,
-	       const Real& rho,
 	       const Real& RsdCG, 
 	       int MaxCG, 
 	       int& n_count);

@@ -1,4 +1,4 @@
-// $Id: inv_rel_cg2.cc,v 1.2 2004-05-14 18:10:20 bjoo Exp $
+// $Id: inv_rel_cg2.cc,v 1.3 2004-05-18 12:40:15 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -63,7 +63,6 @@ template<typename T>
 void InvRelCG2_a(const ApproxLinearOperator<T>& M,
 		 const T& chi,
 		 T& psi,
-		 const Real& rho,
 		 const Real& RsdCG, 
 		 int MaxCG, 
 		 int& n_count)
@@ -120,7 +119,7 @@ void InvRelCG2_a(const ApproxLinearOperator<T>& M,
   for(int k = 1; k <= MaxCG; ++k)
   {
     // Inner tolerance = epsilon || chi || || p || sqrt(zeta) / 2
-    Real inner_tol = RsdCG*sqrt(chi_sq)*sqrt(norm2(p))*sqrt(zeta)/(Real(8)*rho);
+    Real inner_tol = sqrt(rsd_sq)*sqrt(norm2(p))*sqrt(zeta)/Real(2);
 
     // Compute M^{dag} M p
     M(mp, p, PLUS, inner_tol);
@@ -177,10 +176,9 @@ template<>
 void InvRelCG2(const ApproxLinearOperator<LatticeFermion>& M,
 	       const LatticeFermion& chi,
 	       LatticeFermion& psi,
-	       const Real& rho,
 	       const Real& RsdCG, 
 	       int MaxCG, 
 	       int& n_count)
 {
-  InvRelCG2_a(M, chi, psi, rho, RsdCG, MaxCG, n_count);
+  InvRelCG2_a(M, chi, psi, RsdCG, MaxCG, n_count);
 }

@@ -1,4 +1,4 @@
-// $Id: lovddag_w.cc,v 1.9 2004-05-14 15:08:43 bjoo Exp $
+// $Id: lovddag_w.cc,v 1.10 2004-05-18 12:40:15 bjoo Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -16,11 +16,11 @@ using namespace QDP;
 void lovddag::operator() (LatticeFermion& chi, const LatticeFermion& psi, 
 			   enum PlusMinus isign) const
 {
-  operator()(chi, psi, isign, RsdCG);
+  operator()(chi, psi, isign, RsdCG*sqrt(norm2(psi)) );
 }
 
 //! Apply the GW operator onto a source vector
-//  epsilon specifies desired precision
+//  epsilon specifies desired precision (absolute)
 /*! \ingroup linop
  *
  */
@@ -158,9 +158,11 @@ void lovddag::operator() (LatticeFermion& chi, const LatticeFermion& psi,
 
   int s;                      // Counter for loops over shifts
 
-    
-  Real rsdcg_sq = epsilon * epsilon;   // Target residuum squared
-  Real rsd_sq = c * rsdcg_sq;      // Used for relative residue comparisons
+ 
+  // We are dealing with 4/(1-m_q)^2
+  // so I should readjust the residua by that squared
+  Real rsdcg_sq = epsilon * epsilon*(Real(1)-m_q*m_q)*(Real(1)-m_q*m_q)/Real(16);   // Target residuum squared
+  Real rsd_sq = rsdcg_sq;      // Used for relative residue comparisons
                                    // r_t^2 * || r ||^2
 
   /* By default (could change), rootQ(isz) is considered the smallest shift */
@@ -395,13 +397,13 @@ void lovddag::operator() (LatticeFermion& chi, const LatticeFermion& psi,
     //
     // Only converge if chi is converged. If vectors converge first, then error
     
-   
+#if 0  
     if (k > 0 &&  !convP) {
 
       // Get target r^2 * || sgn (H) ||^2
-      chi_sq_new = rsdcg_sq * norm2(chi);
+      chi_sq_new = rsdcg_sq;
 
-      // Get || Delta sgn()
+      // Get || Delta sgn() ||^2
       chi_sq_diff = norm2(tmp1);      // the diff of old and new soln
 
       // Check convergence
@@ -415,6 +417,7 @@ void lovddag::operator() (LatticeFermion& chi, const LatticeFermion& psi,
       // cnvP = convP & btmp; 
       convP = btmp;
     }
+#endif
   }
 
   int n_count = k;

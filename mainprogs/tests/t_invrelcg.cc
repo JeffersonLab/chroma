@@ -1,4 +1,4 @@
-// $Id: t_invrelcg.cc,v 1.1 2004-05-14 18:10:20 bjoo Exp $
+// $Id: t_invrelcg.cc,v 1.2 2004-05-18 12:40:16 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -168,7 +168,7 @@ int main(int argc, char **argv)
 
   QDPIO::cout << "Wall Clock Time (RelCG, Point) = " << t << " seconds" << endl;
 
-  push(xml_out, "CGPoint");
+  push(xml_out, "CGRelPoint");
   write(xml_out, "n_count", n_count);
   write(xml_out, "t" , t);
   pop(xml_out);
@@ -177,30 +177,27 @@ int main(int argc, char **argv)
   gaussian(chi);
   chi /= sqrt(norm2(chi));
 
-#if 0 
   psi = zero;
   swatch.reset();
   swatch.start();
 
-  S.multiQprop(psi,
-	       input.param.MultiMasses,
-	       connect_state,
-	       chi,
-	       SUMR_INVERTER,
-	       input.param.invParam.RsdCG,
-	       1,
-	       input.param.invParam.MaxCG,
-	       n_count);
+  S.qprop(psi,
+	  connect_state,
+	  chi,
+	  CG_INVERTER,
+	  input.param.invParam.RsdCG,
+	  input.param.invParam.MaxCG,
+	  n_count);
 
   swatch.stop();
   t = swatch.getTimeInSeconds();
 
-  QDPIO::cout << "Multi Qprop with SUMR on Gaussian source: " << n_count
+  QDPIO::cout << "Qprop with CG on Gaussian source: " << n_count
 	      << " iters " << endl;
 
-  QDPIO::cout << "Wall Clock Time (SUMR, Gaussian) = " << t << " seconds" << endl;
+  QDPIO::cout << "Wall Clock Time (CG, Gauss) = " << t << " seconds" << endl;
 
-  push(xml_out, "MSUMRGauss");
+  push(xml_out, "CGGaussian");
   write(xml_out, "n_count", n_count);
   write(xml_out, "t" , t);
   pop(xml_out);
@@ -210,29 +207,27 @@ int main(int argc, char **argv)
   swatch.reset();
   swatch.start();
 
-  S.multiQprop(psi,
-	       input.param.MultiMasses,
-	       connect_state,
-	       chi,
-	       CG_INVERTER,
-	       input.param.invParam.RsdCG,
-	       1,
-	       input.param.invParam.MaxCG,
-	       n_count);
+  S.qprop(psi,
+	  connect_state,
+	  chi,
+	  REL_CG_INVERTER,
+	  input.param.invParam.RsdCG,
+	  input.param.invParam.MaxCG,
+	  n_count);
 
   swatch.stop();
   t = swatch.getTimeInSeconds();
 
-  QDPIO::cout << "Multi Qprop with CG on Gaussian source: " << n_count
+  QDPIO::cout << "Qprop with RelCG on Gaussian source: " << n_count
 	      << " iters " << endl;
 
-  QDPIO::cout << "Wall Clock Time (CG, Gaussian) = " << t << " seconds" << endl;
+  QDPIO::cout << "Wall Clock Time (RelCG, Point) = " << t << " seconds" << endl;
 
-  push(xml_out, "CGGauss");
+  push(xml_out, "CGRelGauss");
   write(xml_out, "n_count", n_count);
   write(xml_out, "t" , t);
   pop(xml_out);
-#endif
+
 
 
   pop(xml_out);

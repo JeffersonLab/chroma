@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.137 2004-05-17 15:36:25 mcneile Exp $
+# $Id: Makefile.am,v 1.138 2004-05-18 12:40:14 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -128,6 +128,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/lwldslash_w_pab.h \
 	actions/ferm/linop/lgherm_w.h \
 	actions/ferm/linop/zolotarev5d_linop_array_w.h \
+	actions/ferm/linop/zolotarev5d_nonhermop_array_w.h \
 	actions/ferm/linop/dslash_w.h actions/ferm/linop/dwffld_w.h \
 	actions/ferm/linop/linop_w.h \
 	actions/ferm/linop/lmpsim_w.h actions/ferm/linop/lovddag_w.h \
@@ -276,6 +277,7 @@ libchroma_a_SOURCES += baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
 	      lovlap_double_pass_w.cc lovddag_double_pass_w.cc \
 	      lg5eps_w.cc \
 	      zolotarev5d_fermact_array_w.cc zolotarev5d_linop_array_w.cc \
+	      zolotarev5d_nonhermop_array_w.cc \
               wallpionff_w.cc wallnuclff_w.cc wall_qprop_w.cc
 
 # zolotarev4d_linop_w.cc 

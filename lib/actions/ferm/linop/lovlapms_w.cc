@@ -1,4 +1,4 @@
-// $Id: lovlapms_w.cc,v 1.16 2004-05-14 15:08:43 bjoo Exp $
+// $Id: lovlapms_w.cc,v 1.17 2004-05-18 12:40:15 bjoo Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -12,7 +12,7 @@ using namespace QDP;
 void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi, 
 			   enum PlusMinus isign) const
 {
-  operator()(chi, psi, isign, RsdCG);
+  operator()(chi, psi, isign, RsdCG*sqrt(norm2(psi)));
 }
 
 //! Apply the GW operator onto a source vector
@@ -150,9 +150,11 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
 
   int s;                      // Counter for loops over shifts
 
+  // We are solving with 2/(1-mu) D(mu) here so 
+  // I should readjust the residuum by (1-mu)/2
     
-  Real rsdcg_sq = epsilon * epsilon;   // Target residuum squared
-  Real rsd_sq = c * rsdcg_sq;      // Used for relative residue comparisons
+  Real rsdcg_sq = epsilon * epsilon*(Real(1)-m_q)*(Real(1)-m_q)/Real(4);   // Target residuum squared
+  Real rsd_sq = c*rsdcg_sq;      // Used for relative residue comparisons
                                    // r_t^2 * || r ||^2
 
 
@@ -394,7 +396,7 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
         ztmp = Real(c) * z[iz][s]*z[iz][s];	
 
 	// Check ztmp is smaller than the target residuum
-	bool btmp = toBool(ztmp < rsd_sq);
+	bool btmp = toBool(ztmp < rsdcg_sq);
 	convP = convP & btmp;
 	convsP[s] = btmp;
       }
@@ -415,7 +417,7 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
     //
     // Only converge if chi is converged. If vectors converge first, then error
     
-   
+#if 0   
     if (k > 0 &&  !convP) {
 
       // Get target r^2 * || sgn (H) ||^2
@@ -439,6 +441,7 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
       convP = btmp;
     }
     
+#endif
   }
 
   QDPIO::cout << "Overlap Inner Solve (lovlapms): " << k << " iterations " << endl;
