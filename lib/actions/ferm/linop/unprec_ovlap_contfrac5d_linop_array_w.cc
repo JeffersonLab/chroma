@@ -1,4 +1,4 @@
-/* $Id: unprec_ovlap_contfrac5d_linop_array_w.cc,v 1.6 2005-01-17 03:57:57 edwards Exp $
+/* $Id: unprec_ovlap_contfrac5d_linop_array_w.cc,v 1.7 2005-01-19 03:30:38 edwards Exp $
 /*! \file
 *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
 */
@@ -187,19 +187,48 @@ namespace Chroma
     LatticeFermion tmp1, tmp2;
     Real pmscale;
 
-    for(int n = 0; n < TwoN; ++n) 
+    switch (isign)
     {
-      tmp2 = Gamma(G5)*chi[n];        // tmp2 = gamma_5 M chi
+    case PLUS:
+      for(int n = 0; n < N5; ++n) 
+      {
+	if (n == N5-1 && isLastZeroP) continue;
 
-      // Scale factor and sign for the diagonal term proportional to H
-      // The scale factor should be chosen in conszolotarev5d_w.m such
-      //  that scale_fac * gamma5 * M has eigenvalues between -1 and 1 
-      Hsign = -Hsign;
-      pmscale = beta[n]*Hsign*scale_fac;
-      tmp1 = pmscale*tmp2;
+	tmp2 = Gamma(G5)*chi[n];        // tmp2 = gamma_5 M chi
 
-      M->deriv(ds_tmp, tmp1, psi[n], PLUS);
-      ds_u += ds_tmp;
+	// Scale factor and sign for the diagonal term proportional to H
+	// The scale factor should be chosen in conszolotarev5d_w.m such
+	//  that scale_fac * gamma5 * M has eigenvalues between -1 and 1 
+	Hsign = -Hsign;
+	pmscale = beta[n]*Hsign*scale_fac;
+	tmp1 = pmscale*tmp2;
+
+	M->deriv(ds_tmp, tmp1, psi[n], PLUS);
+	ds_u += ds_tmp;
+      }
+      break;
+
+    case MINUS:
+      for(int n = 0; n < N5; ++n) 
+      {
+	if (n == N5-1 && isLastZeroP) continue;
+
+	tmp2 = Gamma(G5)*psi[n];        // tmp2 = M^dag gamma_5 psi
+
+	// Scale factor and sign for the diagonal term proportional to H
+	// The scale factor should be chosen in conszolotarev5d_w.m such
+	//  that scale_fac * gamma5 * M has eigenvalues between -1 and 1 
+	Hsign = -Hsign;
+	pmscale = beta[n]*Hsign*scale_fac;
+	tmp1 = pmscale*tmp2;
+
+	M->deriv(ds_tmp, chi[n], tmp1, MINUS);
+	ds_u += ds_tmp;
+      }
+      break;
+
+    default:
+      QDP_error_exit("unknown case");
     }
 
     // Last Component
@@ -207,21 +236,6 @@ namespace Chroma
     {
       QDPIO::cerr << "contfrac5d deriv - projection not supported" << endl;
       QDP_abort(1);
-    }
-                            
-    // Complete the last component
-    // chi(N) = chi(N) + beta_{N}*gamma_5*M*psi_{N}
-    //  The contribution beta_{N}*gamma_5*M*psi_{N} is
-    //   caluclated only if betaa_{N} != 0 */
-
-    if( !isLastZeroP ) 
-    {
-      pmscale = beta[TwoN]*scale_fac;
-      tmp2 = Gamma(G5)*chi[TwoN];
-      tmp1 = pmscale*tmp2;
-
-      M->deriv(ds_tmp, tmp1, psi[TwoN], PLUS);
-      ds_u += ds_tmp;
     }
 
     END_CODE();

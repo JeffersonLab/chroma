@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_pv_linop_array_w.cc,v 1.1 2005-01-17 03:57:57 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_pv_linop_array_w.cc,v 1.2 2005-01-19 03:30:38 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Pauli-Villars Continued Fraction 5D
  */
@@ -51,7 +51,7 @@ namespace Chroma
     for(int i=0; i < N5-1; i++) { 
       a[i] = beta_tilde[i]*(Nd + OverMass);
     }
-    a[N5-1] = beta_tilde[N5-1]*(Nd + OverMass);
+    a[N5-1] = 1;         // CHECK THIS: WHAT IS THE NORM OF THE 1 IN THE PV TERM
 
     /*
       QDPIO::cout << "Nd + OverMass = " << Nd+ OverMass << endl;
@@ -100,12 +100,14 @@ namespace Chroma
     int G5=Ns*Ns-1;
 
     // All in one shot
-    for(int i=0; i < N5; i++) 
+    for(int i=0; i < N5-1; i++) 
     {
       // A_{i} psi[i] = a_{i} g_5 psi[i]
       chi[i][rb[cb]] = Gamma(G5)*psi[i];
       chi[i][rb[cb]] *= a[i];
     }
+
+    chi[N5-1][rb[cb]] = psi[N5-1];
 
     END_CODE();
   }
@@ -137,12 +139,14 @@ namespace Chroma
     const int G5 = Ns*Ns-1;
 
     // Invert diagonal piece  chi <- D^{-1} psi
-    for(int i = 0; i < N5; i++) 
+    for(int i = 0; i < N5-1; i++) 
     {
       chi[i][rb[cb]] = Gamma(G5)*psi[i];
       coeff = Real(1)/a[i];
       chi[i][rb[cb]] *= coeff;
     }
+
+    chi[N5-1][rb[cb]] = psi[N5-1];
 
     END_CODE();
   }
@@ -191,7 +195,7 @@ namespace Chroma
 //    if( !isLastZeroP ) {
 //    }
   
-    chi[N5-1][rb[cb]] = psi[N5-1];
+    chi[N5-1][rb[cb]] = zero;
 
     END_CODE();
   }
@@ -220,24 +224,52 @@ namespace Chroma
     Real coeff;
     int G5 = Ns*Ns-1;
 
-    // Optimisation... do up to the penultimate block...
-    for(int i=0; i < N5-1; i++) 
+    switch (isign)
     {
-      // CB is CB of TARGET
-      // gamma_5 Dslash is hermitian so I can ignore isign
+    case PLUS:
+      // Optimisation... do up to the penultimate block...
+      for(int i=0; i < N5-1; i++) 
+      {
+	// CB is CB of TARGET
+	// consider gamma_5 Dslash
+	tmp[rb[cb]] = Gamma(G5)*chi[i];
 
-      tmp[rb[cb]] = Gamma(G5)*chi[i];
+	// Multiply coefficient
+	coeff = -Real(0.5)*beta_tilde[i];
 
-      // Multiply coefficient
-      coeff = -Real(0.5)*beta_tilde[i];
+	// Chi_i is now -(1/2) beta_tilde_i Dslash 
+	tmp[rb[cb]] *= coeff;
 
-      // Chi_i is now -(1/2) beta_tilde_i Dslash 
-      tmp[rb[cb]] *= coeff;
+	// Apply g5 Dslash
+	Dslash->deriv(ds_tmp, tmp, psi[i], PLUS, cb);
+	ds_u += ds_tmp;
+      }
+      break;
 
-      // Apply g5 Dslash
-      Dslash->deriv(ds_tmp, tmp, psi[i], PLUS, cb);
-      ds_u += ds_tmp;
+    case MINUS:
+      // Optimisation... do up to the penultimate block...
+      for(int i=0; i < N5-1; i++) 
+      {
+	// CB is CB of TARGET
+	// consider Dslash^dag gamma_5
+	tmp[rb[cb]] = Gamma(G5)*psi[i];
+
+	// Multiply coefficient
+	coeff = -Real(0.5)*beta_tilde[i];
+
+	// Chi_i is now -(1/2) beta_tilde_i Dslash 
+	tmp[rb[cb]] *= coeff;
+
+	// Apply g5 Dslash
+	Dslash->deriv(ds_tmp, chi[i], tmp, MINUS, cb);
+	ds_u += ds_tmp;
+      }
+      break;
+
+    default:
+      QDP_error_exit("unknown case");
     }
+    
 
 //    if( !isLastZeroP ) 
 //    {

@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_linop_array_w.cc,v 1.7 2005-01-17 03:57:57 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_linop_array_w.cc,v 1.8 2005-01-19 03:30:38 edwards Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned domain-wall linear operator
  */
@@ -299,40 +299,56 @@ namespace Chroma
     Real coeff;
     int G5 = Ns*Ns-1;
 
-    // Optimisation... do up to the penultimate block...
-    for(int i=0; i < N5-1; i++) 
+    switch (isign)
     {
-      // CB is CB of TARGET
-      // gamma_5 Dslash is hermitian so I can ignore isign
+    case PLUS:
+      // Optimisation... do up to the penultimate block...
+      for(int i=0; i < N5; i++) 
+      {
+	if (i == N5-1 && isLastZeroP) continue;
 
-      tmp[rb[cb]] = Gamma(G5)*chi[i];
+	// CB is CB of TARGET
+	// consider case of gamma_5 Dslash
+	tmp[rb[cb]] = Gamma(G5)*chi[i];
 
-      // Multiply coefficient
-      coeff = -Real(0.5)*beta_tilde[i];
+	// Multiply coefficient
+	coeff = -Real(0.5)*beta_tilde[i];
 
-      // Chi_i is now -(1/2) beta_tilde_i Dslash 
-      tmp[rb[cb]] *= coeff;
+	// Chi_i is now -(1/2) beta_tilde_i Dslash 
+	tmp[rb[cb]] *= coeff;
 
-      // Apply g5 Dslash
-      Dslash->deriv(ds_tmp, tmp, psi[i], PLUS, cb);
-      ds_u += ds_tmp;
+	// Apply g5 Dslash
+	Dslash->deriv(ds_tmp, tmp, psi[i], PLUS, cb);
+	ds_u += ds_tmp;
+      }
+      break;
+
+    case MINUS:
+      // Optimisation... do up to the penultimate block...
+      for(int i=0; i < N5; i++) 
+      {
+	if (i == N5-1 && isLastZeroP) continue;
+
+	// CB is CB of TARGET
+	// consider case of Dslash^dag gamma_5
+	tmp[rb[cb]] = Gamma(G5)*psi[i];
+
+	// Multiply coefficient
+	coeff = -Real(0.5)*beta_tilde[i];
+
+	// Chi_i is now -(1/2) beta_tilde_i Dslash 
+	tmp[rb[cb]] *= coeff;
+
+	// Apply g5 Dslash
+	Dslash->deriv(ds_tmp, chi[i], tmp, MINUS, cb);
+	ds_u += ds_tmp;
+      }
+      break;
+
+    default:
+      QDP_error_exit("unknown case");
     }
 
-    // Only do last block if beta_tilde[i] is not zero
-    if( !isLastZeroP ) 
-    {
-      tmp[rb[cb]] = Gamma(G5)*chi[N5-1];
-
-      // Multiply coefficient
-      coeff = -Real(0.5)*beta_tilde[N5-1];
-
-      // Chi_i is now -(1/2) beta_tilde_i Dslash 
-      tmp[rb[cb]] *= coeff;
-
-      Dslash->deriv(ds_tmp, tmp, psi[N5-1], PLUS, cb);
-      ds_u += ds_tmp;
-    }
-  
     END_CODE();
   }
 
