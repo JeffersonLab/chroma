@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_fermact_base_array_w.h,v 1.11 2004-09-08 02:48:25 edwards Exp $
+// $Id: unprec_dwf_fermact_base_array_w.h,v 1.12 2004-09-18 17:13:42 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned domain-wall-like fermion actions
  */
@@ -45,6 +45,34 @@ namespace Chroma
 	       const T& chi, 
 	       const InvertParam_t& invParam,
 	       int& ncg_had) const;
+
+    //! Given a complete propagator as a source, this does all the inversions needed
+    /*! \ingroup qprop
+     *
+     * This routine is actually generic to Domain Wall fermions (Array) fermions
+     *
+     * \param q_sol    quark propagator ( Write )
+     * \param q_src    source ( Read )
+     * \param xml_out  diagnostic output ( Modify )
+     * \param state    gauge connection state ( Read )
+     * \param t_src    time slice of source ( Read )
+     * \param j_decay  direction of decay ( Read )
+     * \param invParam inverter parameters ( Read )
+     * \param ncg_had  number of CG iterations ( Write )
+     */
+    virtual 
+    void dwf_quarkProp4(LatticePropagator& q_sol, 
+			XMLWriter& xml_out,
+			const LatticePropagator& q_src,
+			int t_src, int j_decay,
+			Handle<const ConnectState> state,
+			const InvertParam_t& invParam,
+			int& ncg_had)
+      {
+	QDPIO::cerr << "dwf_quarkProp4 not implemented" << endl;
+	QDP_abort(1);
+      }
+    
   };
 
 }
