@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: glue.h,v 1.6 2004-04-26 16:13:53 mcneile Exp $
+// $Id: glue.h,v 1.7 2005-02-17 02:51:41 edwards Exp $
 
 /*! \file
  * \brief Gluonic observables
@@ -21,5 +21,7 @@
 #include "polylp.h"
 #include "fuzwilp.h" 
 #include "wilslp.h" 
+
+#include "mesfield.h"
 
 #endif
