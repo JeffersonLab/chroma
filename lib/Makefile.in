@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.204 2004-06-04 04:08:34 edwards Exp $
+# $Id: Makefile.in,v 1.205 2004-06-04 21:14:20 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -161,7 +161,10 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@	      lovlap_double_pass_w.cc lovddag_double_pass_w.cc \
 @BUILD_WILSON_LIBS_TRUE@	      lg5eps_w.cc lg5eps_double_pass_w.cc \
 @BUILD_WILSON_LIBS_TRUE@	      zolotarev5d_fermact_array_w.cc zolotarev5d_linop_array_w.cc \
-@BUILD_WILSON_LIBS_TRUE@	      zolotarev5d_nonhermop_array_w.cc wall_qprop_w.cc
+@BUILD_WILSON_LIBS_TRUE@	      zolotarev5d_nonhermop_array_w.cc wall_qprop_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              wallff_w.cc wallrhoff_w.cc wallrhopiff_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              wallpionff_w.cc wallnuclff_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              walldeltaff_w.cc walldeltapff_w.cc 
 
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_5 = lwldslash_w_sse.cc
 @BUILD_PAB_WILSON_DSLASH_TRUE@am__append_6 = lwldslash_w_pab.cc
@@ -434,7 +437,9 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc rgauge.cc taproj.cc \
 	lovlap_double_pass_w.cc lovddag_double_pass_w.cc lg5eps_w.cc \
 	lg5eps_double_pass_w.cc zolotarev5d_fermact_array_w.cc \
 	zolotarev5d_linop_array_w.cc zolotarev5d_nonhermop_array_w.cc \
-	wall_qprop_w.cc lwldslash_w_sse.cc lwldslash_w_pab.cc \
+	wall_qprop_w.cc wallff_w.cc wallrhoff_w.cc wallrhopiff_w.cc \
+	wallpionff_w.cc wallnuclff_w.cc walldeltaff_w.cc \
+	walldeltapff_w.cc lwldslash_w_sse.cc lwldslash_w_pab.cc \
 	mesphas_s.cc mesphas_follana_s.cc pions_follana_s.cc \
 	follana_io_s.cc walfil_s.cc baryon_s.cc stag_scalars_s.cc \
 	stag_propShift_s.cc asqtad_linop_s.cc asq_dsl_s.cc \
@@ -508,7 +513,14 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc rgauge.cc taproj.cc \
 @BUILD_WILSON_LIBS_TRUE@	zolotarev5d_fermact_array_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	zolotarev5d_linop_array_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	zolotarev5d_nonhermop_array_w.$(OBJEXT) \
-@BUILD_WILSON_LIBS_TRUE@	wall_qprop_w.$(OBJEXT)
+@BUILD_WILSON_LIBS_TRUE@	wall_qprop_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	wallff_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	wallrhoff_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	wallrhopiff_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	wallpionff_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	wallnuclff_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	walldeltaff_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	walldeltapff_w.$(OBJEXT)
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__objects_2 = lwldslash_w_sse.$(OBJEXT)
 @BUILD_PAB_WILSON_DSLASH_TRUE@am__objects_3 = lwldslash_w_pab.$(OBJEXT)
 @BUILD_STAGGERED_LIBS_TRUE@am__objects_4 = mesphas_s.$(OBJEXT) \
@@ -676,7 +688,13 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_wilson_fermact_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_wilson_linop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/walfil_s.Po ./$(DEPDIR)/walfil_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/wall_qprop_w.Po ./$(DEPDIR)/wilslp.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/wall_qprop_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/walldeltaff_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/walldeltapff_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/wallff_w.Po ./$(DEPDIR)/wallnuclff_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/wallpionff_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/wallrhoff_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/wallrhopiff_w.Po ./$(DEPDIR)/wilslp.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/writemilc.Po ./$(DEPDIR)/writeszin.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/writeszinqprop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/z2_src.Po \
@@ -921,6 +939,13 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/walfil_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/walfil_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wall_qprop_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/walldeltaff_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/walldeltapff_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wallff_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wallnuclff_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wallpionff_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wallrhoff_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wallrhopiff_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wilslp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writemilc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writeszin.Po@am__quote@
