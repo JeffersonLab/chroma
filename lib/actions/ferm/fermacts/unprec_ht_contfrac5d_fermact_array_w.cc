@@ -1,4 +1,4 @@
-// $Id: unprec_ht_contfrac5d_fermact_array_w.cc,v 1.2 2005-01-05 21:44:07 edwards Exp $
+// $Id: unprec_ht_contfrac5d_fermact_array_w.cc,v 1.3 2005-01-05 21:51:02 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned H_T kernel continued fraction (5D) action
  */
@@ -237,7 +237,7 @@ namespace Chroma
     }
     
     QDPIO::cout << "UnprecHTContfrac5d:" << endl
-                << " Degree=" << params.RatPolyDeg <<
+                << " Degree=" << params.RatPolyDeg
 		<< " N5=" << N5 << " scale=" << scale_fac
 		<< " Mass=" << params.Mass << endl ;
     QDPIO::cout << "Approximation on [-1,eps] U [eps,1] with eps = " << epsilon <<endl;
