@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: asqtad_mdagm_s.h,v 1.4 2004-11-06 11:35:07 mcneile Exp $
+// $Id: asqtad_mdagm_s.h,v 1.5 2004-11-20 21:18:35 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -10,7 +10,7 @@
 #define __asqtad_mdagm_s_h__
 
 #include "linearop.h"
-#include "linop.h"
+#include "actions/ferm/linop/asqtad_dslash.h"
 
 
 using namespace QDP;

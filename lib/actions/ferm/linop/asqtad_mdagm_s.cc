@@ -1,11 +1,11 @@
-// $Id: asqtad_mdagm_s.cc,v 1.7 2004-11-06 11:35:07 mcneile Exp $
+// $Id: asqtad_mdagm_s.cc,v 1.8 2004-11-20 21:18:35 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
 // NEW $Id: asqtad_linop.cc 2003/11/13 steve
 
 #include "chromabase.h"
-#include "linop.h"
+#include "actions/ferm/linop/asqtad_mdagm_s.h"
 
 //! Creation routine
 /*! \ingroup fermact

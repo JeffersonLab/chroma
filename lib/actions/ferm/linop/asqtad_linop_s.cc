@@ -1,12 +1,11 @@
-// $Id: asqtad_linop_s.cc,v 1.6 2004-11-06 11:30:45 mcneile Exp $
+// $Id: asqtad_linop_s.cc,v 1.7 2004-11-20 21:18:35 edwards Exp $
 /*! \file
- *  \brief Unpreconditioned Wilson linear operator
+ *  \brief Unpreconditioned Asqtad linear operator
  */
 // NEW $Id: asqtad_linop.cc 2003/11/13 steve
 
 #include "chromabase.h"
-#include "linop.h"
-
+#include "actions/ferm/linop/asqtad_linop_s.h"
 
 void AsqtadLinOp::evenOddLinOp(LatticeStaggeredFermion& chi, 
 					  const LatticeStaggeredFermion& psi, 

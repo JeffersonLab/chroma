@@ -1,24 +1,19 @@
 // -*- C++ -*-
-// $Id: asqtad_linop_s.h,v 1.6 2004-11-06 11:30:45 mcneile Exp $
-/*! \file
- *  \brief Unpreconditioned Wilson fermion linear operator
- */
-// NEW $Id: asqtad_linop_s.h 2003/11/13 steve 
-// Asqtad Staggered fermion linear operator
-
-#ifndef __asqtad_linop_s_h__
-#define __asqtad_linop_s_h__
-
-#include "linearop.h"
-#include "linop.h"
-using namespace QDP;
-
+// $Id: asqtad_linop_s.h,v 1.7 2004-11-20 21:18:35 edwards Exp $
 //! Asqtad Staggered-Dirac operator
 /*!
  * \ingroup linop
  *
  * This routine is specific to Staggered fermions!
  */
+
+#ifndef __asqtad_linop_s_h__
+#define __asqtad_linop_s_h__
+
+#include "linearop.h"
+#include "actions/ferm/linop/asqtad_dslash.h"
+
+using namespace QDP;
 
 class AsqtadLinOp : public EvenOddLinearOperator<LatticeStaggeredFermion>
 {
