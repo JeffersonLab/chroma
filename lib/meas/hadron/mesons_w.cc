@@ -1,6 +1,9 @@
-//  $Id: mesons_w.cc,v 1.15 2003-09-29 21:31:36 edwards Exp $
+//  $Id: mesons_w.cc,v 1.16 2003-10-01 03:01:39 edwards Exp $
 //  $Log: mesons_w.cc,v $
-//  Revision 1.15  2003-09-29 21:31:36  edwards
+//  Revision 1.16  2003-10-01 03:01:39  edwards
+//  Removed extraneous include.
+//
+//  Revision 1.15  2003/09/29 21:31:36  edwards
 //  Tiny cosmetic change.
 //
 //  Revision 1.14  2003/06/24 03:25:27  edwards
@@ -43,7 +46,6 @@
 #include "chromabase.h"
 #include "util/ft/sftmom.h"
 #include "meas/hadron/mesons_w.h"
-#include "qdp_util.h"                 // part of QDP++, for crtesn()
 
 using namespace QDP;
 
