@@ -1,10 +1,10 @@
-// $Id: unprec_dwf4d_linop_w.cc,v 1.1 2004-11-08 05:41:29 edwards Exp $
+// $Id: unprec_dwf4d_linop_w.cc,v 1.2 2004-11-08 05:52:33 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
 
 #include "chromabase.h"
-#include "actions/ferm/invert/invcg2.h"
+#include "actions/ferm/invert/invcg2_array.h"
 #include "actions/ferm/linop/unprec_dwf4d_linop_w.h"
 #include "actions/ferm/linop/dwffld_w.h"
 
