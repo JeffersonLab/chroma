@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_linop_array_w.cc,v 1.9 2005-01-21 05:26:22 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_linop_array_w.cc,v 1.10 2005-01-21 17:44:53 edwards Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned domain-wall linear operator
  */
@@ -352,6 +352,41 @@ namespace Chroma
     END_CODE();
   }
 
+
+
+
+  // THIS IS AN OPTIMIZED VERSION OF THE DERIVATIVE
+  void 
+  EvenOddPrecOvlapContFrac5DLinOpArray::deriv(multi1d<LatticeColorMatrix>& ds_u,
+					      const multi1d<LatticeFermion>& chi, 
+					      const multi1d<LatticeFermion>& psi, 
+					      enum PlusMinus isign) const
+  {
+    START_CODE();
+
+    enum PlusMinus msign = (isign == PLUS) ? MINUS : PLUS;
+
+    ds_u.resize(Nd);
+
+    multi1d<LatticeFermion>  tmp1, tmp2, tmp3;
+    multi1d<LatticeColorMatrix> ds_tmp;
+
+    //  ds_u   =  chi^dag * D'_oe * Ainv_ee * D_eo * psi_o
+    evenOddLinOp(tmp1, psi, isign);
+    evenEvenInvLinOp(tmp2, tmp1, isign);
+    derivOddEvenLinOp(ds_u, chi, tmp2, isign);
+
+    //  ds_u  +=  chi^dag * D_oe * Ainv_ee * D'_eo * psi_o
+    evenOddLinOp(tmp1, chi, msign);
+    evenEvenInvLinOp(tmp3, tmp1, msign);
+    derivEvenOddLinOp(ds_tmp, tmp3, psi, isign);
+    ds_u += ds_tmp;
+    
+    for(int mu=0; mu < Nd; mu++)
+      ds_u[mu] *= Real(-1);
+
+    END_CODE();
+  }
 
 }; // End Namespace Chroma
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_linop_array_w.h,v 1.9 2005-01-14 20:13:05 edwards Exp $
+// $Id: prec_dwf_linop_array_w.h,v 1.10 2005-01-21 17:44:53 edwards Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned domain-wall fermion linear operator
  */
@@ -138,12 +138,10 @@ namespace Chroma
 			   const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
 			   enum PlusMinus isign) const;
 
-#if 0
     //! Override virtual function for efficiency.
     void deriv(multi1d<LatticeColorMatrix>& ds_u, 
 	       const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
 	       enum PlusMinus isign) const;
-#endif
 
 
   protected:

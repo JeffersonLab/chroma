@@ -1,4 +1,4 @@
-// $Id: prec_nef_general_linop_array_w.cc,v 1.5 2005-01-17 17:44:22 bjoo Exp $
+// $Id: prec_nef_general_linop_array_w.cc,v 1.6 2005-01-21 17:44:53 edwards Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned NEF domain-wall linear operator
  */
@@ -702,16 +702,13 @@ namespace Chroma
   }
 
 
-#if 0
-  // NOT WORKING YET - USE SLOW DEFAULT
 
   // THIS IS AN OPTIMIZED VERSION OF THE DERIVATIVE
-  /*! ds_u = -(1/4)*(1/(Nd+m))*[\dot(D)_oe*D_eo + D_oe*\dot(D_eo)]*psi */
   void 
-  EvenOddPrecWilsonLinOp::deriv(multi1d<LatticeColorMatrix>& ds_u,
-				const multi1d<LatticeFermion>& chi, 
-				const multi1d<LatticeFermion>& psi, 
-				enum PlusMinus isign) const
+  EvenOddPrecGenNEFDWLinOpArray::deriv(multi1d<LatticeColorMatrix>& ds_u,
+				       const multi1d<LatticeFermion>& chi, 
+				       const multi1d<LatticeFermion>& psi, 
+				       enum PlusMinus isign) const
   {
     START_CODE();
 
@@ -719,29 +716,25 @@ namespace Chroma
 
     ds_u.resize(Nd);
 
-    // ds_u = -(1/4)*(1/(Nd+m))*[\dot(D)_oe*D_eo + D_oe*\dot(D_eo)]*psi
+    multi1d<LatticeFermion>  tmp1, tmp2, tmp3;
+    multi1d<LatticeColorMatrix> ds_tmp;
 
-    // First term
-    //   ds_u = chi_o^dag * \dot(D)_oe * (D_eo*psi_o)
-    LatticeFermion tmp;
-    D.apply(tmp, psi, isign, 0);
-    D.deriv(ds_u, chi, tmp, isign, 1);
+    //  ds_u   =  chi^dag * D'_oe * Ainv_ee * D_eo * psi_o
+    evenOddLinOp(tmp1, psi, isign);
+    evenEvenInvLinOp(tmp2, tmp1, isign);
+    derivOddEvenLinOp(ds_u, chi, tmp2, isign);
 
-    // Second term
-    //   ds_tmp = (D_eo^dag*chi_o)^dag * \dot(D)_eo * psi_o
-    multi1d<LatticeColorMatrix> ds_tmp(Nd);
-    D.apply(tmp, chi, msign, 0);
-    D.deriv(ds_tmp, tmp, psi, isign, 0);
-
-    for(int mu = 0; mu < Nd; ++mu)
-    {
-      ds_u[mu] += ds_tmp[mu];
-      ds_u[mu] *= Real(-0.25)*invfact;
-    }
+    //  ds_u  +=  chi^dag * D_oe * Ainv_ee * D'_eo * psi_o
+    evenOddLinOp(tmp1, chi, msign);
+    evenEvenInvLinOp(tmp3, tmp1, msign);
+    derivEvenOddLinOp(ds_tmp, tmp3, psi, isign);
+    ds_u += ds_tmp;
+    
+    for(int mu=0; mu < Nd; mu++)
+      ds_u[mu] *= Real(-1);
 
     END_CODE();
   }
-#endif
 
 }; // End Namespace Chroma
 

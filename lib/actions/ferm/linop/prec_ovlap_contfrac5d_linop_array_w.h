@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovlap_contfrac5d_linop_array_w.h,v 1.6 2005-01-17 03:57:57 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_linop_array_w.h,v 1.7 2005-01-21 17:44:53 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
  */
@@ -141,12 +141,10 @@ namespace Chroma
       applyDerivOffDiag(ds_u, chi, psi, isign, 1);
     }
 
-#if 0
     // Override virtual function for efficiency.
     void deriv(multi1d<LatticeColorMatrix>& ds_u, 
 	       const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
 	       enum PlusMinus isign) const;
-#endif
 
   protected:
 
