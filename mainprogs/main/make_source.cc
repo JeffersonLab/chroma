@@ -1,4 +1,4 @@
-// $Id: make_source.cc,v 1.16 2004-01-13 04:01:38 edwards Exp $
+// $Id: make_source.cc,v 1.17 2004-01-29 16:56:17 edwards Exp $
 /*! \file
  *  \brief Main code for source generation
  */
@@ -183,7 +183,7 @@ int main(int argc, char **argv)
   }
   else
   {
-    xml_filename = "make_source.xml";
+    xml_filename = "XMLDAT";
   }
 
 
