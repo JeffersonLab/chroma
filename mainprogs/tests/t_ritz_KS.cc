@@ -1,4 +1,4 @@
-// $Id: t_ritz_KS.cc,v 1.14 2004-10-23 11:29:31 bjoo Exp $
+// $Id: t_ritz_KS.cc,v 1.15 2004-11-02 10:33:50 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -38,7 +38,7 @@ bool linkage_hack()
   foo &= UnprecOvDWFermActArrayEnv::registered;
   foo &= EvenOddPrecOvDWFermActArrayEnv::registered;
   foo &= UnprecOvExtFermActArrayEnv::registered;
-
+  foo &= UnprecDWFTransfFermActEnv::registered;
   return foo;
 }
 
@@ -226,7 +226,8 @@ int main(int argc, char **argv)
       // Special case UNPRECONDITIONED_WILSON
       QDPIO::cout << "Trying 4D Wilson Like actions: " << endl;
 
-      if( fermact == "UNPRECONDITIONED_WILSON") {
+      if( fermact == "UNPRECONDITIONED_WILSON"
+	  || fermact == "UNPRECONDITIONED_DWFTRANSF" ) {
 	QDPIO::cout << "Special case. Computing Hw e-values and evecs too" << endl;
 	// DWF-like 5D Wilson-Type stuff
 	Handle< WilsonTypeFermAct<LatticeFermion> >

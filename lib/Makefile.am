@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.186 2004-11-01 19:11:17 ikuro Exp $
+# $Id: Makefile.am,v 1.187 2004-11-02 10:33:49 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -190,6 +190,7 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.h \
 	actions/ferm/fermacts/unprec_ovlap_contfrac5d_fermact_array_w.h \
 	actions/ferm/fermacts/prec_ovlap_contfrac5d_fermact_array_w.h \
+	actions/ferm/fermacts/unprec_dwftransf_fermact_w.h \
 	actions/ferm/invert/inv_borici_w.h \
 	actions/ferm/linop/lgherm_w.h \
 	actions/ferm/linop/unprec_ovlap_contfrac5d_linop_array_w.h \
@@ -220,6 +221,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/unprec_wilson_linop_w.h \
 	actions/ferm/linop/unprec_parwilson_linop_w.h \
 	actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_w.h \
+	actions/ferm/linop/unprec_dwftransf_linop_w.h \
 	actions/ferm/qprop/qprop_w.h \
 	actions/ferm/qprop/unprec_qprop_w.h \
 	io/io_w.h io/barcomp_io.h io/kyuqprop_io.h \
@@ -387,7 +389,9 @@ libchroma_a_SOURCES += baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
 	      prec_ovlap_contfrac5d_linop_array_w.cc lDeltaLs_w.cc \
 	      unprec_zolo_nef_fermact_array_w.cc \
               prec_nef_general_linop_array_w.cc \
-	      prec_zolo_nef_fermact_array_w.cc
+	      prec_zolo_nef_fermact_array_w.cc \
+	      unprec_dwftransf_linop_w.cc \
+	      unprec_dwftransf_fermact_w.cc
 
 # These need to be reworked for new instantiation 
 #	zolotarev5d_fermact_array_w.cc 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermacts_w.h,v 1.15 2004-10-29 13:36:13 bjoo Exp $
+// $Id: fermacts_w.h,v 1.16 2004-11-02 10:33:49 bjoo Exp $
 
 /*! \file
  * \brief Fermion actions
@@ -46,6 +46,8 @@
 #include "ovlap_partfrac4d_fermact_w.h"
 #include "unprec_ovlap_contfrac5d_fermact_array_w.h"
 #include "prec_ovlap_contfrac5d_fermact_array_w.h"
+
+#include "unprec_dwftransf_fermact_w.h"
 
 
 #endif
