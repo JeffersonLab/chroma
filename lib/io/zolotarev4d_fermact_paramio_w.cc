@@ -3,54 +3,7 @@
 
 using namespace QDP;
 using namespace std;
-
-void read(XMLReader& xml_in, const string& path, OverlapInnerSolverType& p)
-{
-  string param_string;
-  try {
-    read(xml_in, path, param_string);
-  }
-  catch (const string& e) {
-    QDPIO::cerr << "Caught exception: " << e << endl;
-    QDP_abort(1);
-  }
-
-  if( param_string == "SINGLE_PASS" ) { 
-    p = OVERLAP_INNER_CG_SINGLE_PASS;
-  }
-  else if ( param_string == "DOUBLE_PASS" ) { 
-    p = OVERLAP_INNER_CG_DOUBLE_PASS;
-  }
-  else {
-    QDPIO::cerr << "Unknown OverlapInnerSolverType " << param_string << endl;
-    QDPIO::cerr << "Allowed values are : " << endl;
-    QDPIO::cerr << "   SINGLE_PASS -- Single Pass Inner CG" << endl;
-    QDPIO::cerr << "   DOUBLE_PASS -- Double Pass Inner CG" << endl;
-    QDP_abort(1);
-  }
-}
-
-void write(XMLWriter& xml_out, const string& path, const OverlapInnerSolverType& p)
-{
-  switch ( p ) { 
-  case OVERLAP_INNER_CG_SINGLE_PASS:
-    {
-      string out_string = "SINGLE_PASS";
-      write(xml_out, path, out_string);
-    }
-    break;
-  case OVERLAP_INNER_CG_DOUBLE_PASS:
-    {
-      string out_string = "DOUBLE_PASS";
-      write(xml_out, path, out_string);
-    }
-    break;
-  default:
-    QDPIO::cerr << "Unknown OverlapInnerSolverType " << p << endl;
-    QDP_abort(1);
-  }
-}
-
+using namespace Chroma;
 
 Zolotarev4DFermActParams::Zolotarev4DFermActParams(XMLReader& in)
 {

@@ -18,16 +18,19 @@ namespace Chroma {
       return success;
     }
 
+    // Boilerplate stuff from here on
+    const string typeIDString = "SimpleBCType";
     const bool registered = registerAll();
   };
+  using namespace SimpleBCTypeEnv;
 
   //! Read an simpleBC type enum
   void read(XMLReader& xml_in,  const string& path, SimpleBCType& t) {
-    theSimpleBCTypeMap::Instance().read(xml_in, path,t);
+    theSimpleBCTypeMap::Instance().read(typeIDString,xml_in, path,t);
   }
   
   //! Write an simpleBC type enum
   void write(XMLWriter& xml_out, const string& path, const SimpleBCType& t) {
-    theSimpleBCTypeMap::Instance().write(xml_out, path, t);
+    theSimpleBCTypeMap::Instance().write(typeIDString,xml_out, path, t);
   }
 };

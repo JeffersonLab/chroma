@@ -15,17 +15,18 @@ namespace Chroma {
       
       return success;
     }
-
+    const string typeIDString = "GaugeActType";
     const bool registered = registerAll();
   };
+  using namespace GaugeActTypeEnv;
 
   //! Read an GaugeActType enum
   void read(XMLReader& xml_in,  const string& path, GaugeActType& t) {
-    theGaugeActTypeMap::Instance().read(xml_in, path,t);
+    theGaugeActTypeMap::Instance().read(typeIDString, xml_in, path,t);
   }
   
   //! Write an GaugeActType enum
   void write(XMLWriter& xml_out, const string& path, const GaugeActType& t) {
-    theGaugeActTypeMap::Instance().write(xml_out, path, t);
+    theGaugeActTypeMap::Instance().write(typeIDString, xml_out, path, t);
   }
 };

@@ -30,16 +30,19 @@ namespace Chroma {
       return success;
     }
 
+    const string typeIDString = "WvfKind";
     const bool registered = registerAll();
   };
 
+  using namespace WvfKindEnv;
+
   //! Read an Smearing Wavefunction kind enum
   void read(XMLReader& xml_in,  const string& path, WvfKind& t) {
-    theWvfKindMap::Instance().read(xml_in, path,t);
+    theWvfKindMap::Instance().read(typeIDString, xml_in, path,t);
   }
   
   //! Write an Smearing Wavefunction kind enum
   void write(XMLWriter& xml_out, const string& path, const WvfKind& t) {
-    theWvfKindMap::Instance().write(xml_out, path, t);
+    theWvfKindMap::Instance().write(typeIDString, xml_out, path, t);
   }
 };

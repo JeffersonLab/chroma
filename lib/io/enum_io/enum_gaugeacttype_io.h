@@ -26,6 +26,7 @@ namespace Chroma {
 
 
   namespace GaugeActTypeEnv { 
+    extern const string typeIDString;
     extern const bool registered; 
     const bool registerAll(void);   // Forward declaration
   }

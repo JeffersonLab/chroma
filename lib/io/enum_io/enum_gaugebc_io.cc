@@ -27,18 +27,20 @@ namespace Chroma {
 
       return success;
     }
-
+    const string typeIDString = "GaugeBCType";
     const bool registered = registerAll();
   };
   
   //! Read an GaugeBCType enum
   void read(XMLReader& xml_in,  const string& path, GaugeBCType& t) {
-    theGaugeBCTypeMap::Instance().read(xml_in, path,t);
+    theGaugeBCTypeMap::Instance().read(GaugeBCTypeEnv::typeIDString,
+				       xml_in, path,t);
   }
   
   //! Write an GaugeBCType enum
   void write(XMLWriter& xml_out, const string& path, const GaugeBCType& t) {
-    theGaugeBCTypeMap::Instance().write(xml_out, path, t);
+    theGaugeBCTypeMap::Instance().write(GaugeBCTypeEnv::typeIDString,
+					xml_out, path, t);
   }
 
   /*****************  SINKS *****************************/
@@ -68,17 +70,20 @@ namespace Chroma {
       return success;
     }
 
+    const string typeIDString = "SchrFunType";
     const bool registered = registerAll();
   };
 
   //! Read an SchrFunType enum
   void read(XMLReader& xml_in,  const string& path, SchrFunType& t) {
-    theSchrFunTypeMap::Instance().read(xml_in, path,t);
+    theSchrFunTypeMap::Instance().read(SchrFunTypeEnv::typeIDString,
+				       xml_in, path,t);
   }
   
   //! Write an SchrFunType enum
   void write(XMLWriter& xml_out, const string& path, const SchrFunType& t) {
-    theSchrFunTypeMap::Instance().write(xml_out, path, t);
+    theSchrFunTypeMap::Instance().write(SchrFunTypeEnv::typeIDString,
+					xml_out, path, t);
   }
 
 

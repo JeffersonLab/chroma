@@ -20,6 +20,7 @@ namespace Chroma {
 
 
   namespace CoeffTypeEnv { 
+    extern const string typeIDString;
     extern const bool registered; 
     const bool registerAll(void);   // Forward declaration
   }
@@ -28,7 +29,10 @@ namespace Chroma {
   typedef SingletonHolder<EnumTypeMap<CoeffType> > theCoeffTypeMap;
 
   // Reader and writer
+  //! Read an approximation coefficient type enum
   void read(XMLReader& r, const string& path, CoeffType& t);
+
+  //! Write an approximation coefficient type enum
   void write(XMLWriter& w, const string& path, const CoeffType& t);
 
 };

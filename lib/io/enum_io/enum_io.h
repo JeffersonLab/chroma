@@ -20,4 +20,5 @@
 #include "enum_heatbathtype_io.h"
 #include "enum_gaugebc_io.h"
 #include "enum_md_integrator_type_io.h"
+#include "enum_inner_solver_type_io.h"
 #endif

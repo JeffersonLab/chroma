@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.232 2004-09-22 17:24:59 bjoo Exp $
+# $Id: Makefile.in,v 1.233 2004-09-23 14:29:08 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -357,6 +357,7 @@ nobase_include_HEADERS = \
 	io/enum_io/enum_heatbathtype_io.h \
 	io/enum_io/enum_gaugebc_io.h \
 	io/enum_io/enum_md_integrator_type_io.h \
+	io/enum_io/enum_inner_solver_type_io.h \
         io/eigen_io.h \
 	io/gauge_io.h io/kyugauge_io.h  \
         io/milc_io.h io/param_io.h io/qprop_io.h io/readmilc.h \
@@ -444,7 +445,7 @@ libchroma_a_SOURCES = gauge_startup.cc gaugebc_utils.cc gaugeact_utils.cc \
 	       enum_invtype_io.cc enum_wvfkind_io.cc enum_qdpvolfmt_io.cc\
 	       enum_srcsnktype_io.cc enum_wavetype_io.cc \
 	       enum_heatbathtype_io.cc enum_gaugebc_io.cc \
-	       enum_md_integrator_type_io.cc \
+	       enum_md_integrator_type_io.cc enum_inner_solver_type_io.cc \
                szin_io.cc readszin.cc writeszin.cc su3proj.cc sun_proj.cc \
                gaus_smear.cc hyp_smear.cc ape_smear.cc fuzz_smear.cc \
                klein_gord.cc laplacian.cc displacement.cc sink_smear2.cc \
@@ -485,20 +486,21 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc gaugebc_utils.cc \
 	enum_invtype_io.cc enum_wvfkind_io.cc enum_qdpvolfmt_io.cc \
 	enum_srcsnktype_io.cc enum_wavetype_io.cc \
 	enum_heatbathtype_io.cc enum_gaugebc_io.cc \
-	enum_md_integrator_type_io.cc szin_io.cc readszin.cc \
-	writeszin.cc su3proj.cc sun_proj.cc gaus_smear.cc hyp_smear.cc \
-	ape_smear.cc fuzz_smear.cc klein_gord.cc laplacian.cc \
-	displacement.cc sink_smear2.cc su2extract.cc sunfill.cc \
-	invcg1.cc inv_rel_cg1.cc invcg2.cc inv_rel_cg2.cc \
-	invcg1_array.cc invcg2_array.cc invcg2_timing_hacks.cc \
-	minvcg.cc minv_rel_cg.cc qprop_io.cc eigen_io.cc stoch_var.cc \
-	z2_src.cc gauge_io.cc milc_io.cc readmilc.cc writemilc.cc \
-	axgauge.cc coulgauge.cc grelax.cc polar_dec.cc rot_colvec.cc \
-	transf.cc param_io.cc gramschm.cc gramschm_array.cc ritz.cc \
-	ritz_array.cc sn_jacob.cc sn_jacob_array.cc eig_spec.cc \
-	eig_spec_array.cc proginfo.cc printgeom.cc fuzwilp.cc wilslp.cc \
-	invsumr.cc minvsumr.cc inv_rel_sumr.cc minv_rel_sumr.cc \
-	invbicgstab.cc invbicgstab_array.cc inv_rel_gmresr_sumr.cc \
+	enum_md_integrator_type_io.cc enum_inner_solver_type_io.cc \
+	szin_io.cc readszin.cc writeszin.cc su3proj.cc sun_proj.cc \
+	gaus_smear.cc hyp_smear.cc ape_smear.cc fuzz_smear.cc \
+	klein_gord.cc laplacian.cc displacement.cc sink_smear2.cc \
+	su2extract.cc sunfill.cc invcg1.cc inv_rel_cg1.cc invcg2.cc \
+	inv_rel_cg2.cc invcg1_array.cc invcg2_array.cc \
+	invcg2_timing_hacks.cc minvcg.cc minv_rel_cg.cc qprop_io.cc \
+	eigen_io.cc stoch_var.cc z2_src.cc gauge_io.cc milc_io.cc \
+	readmilc.cc writemilc.cc axgauge.cc coulgauge.cc grelax.cc \
+	polar_dec.cc rot_colvec.cc transf.cc param_io.cc gramschm.cc \
+	gramschm_array.cc ritz.cc ritz_array.cc sn_jacob.cc \
+	sn_jacob_array.cc eig_spec.cc eig_spec_array.cc proginfo.cc \
+	printgeom.cc fuzwilp.cc wilslp.cc invsumr.cc minvsumr.cc \
+	inv_rel_sumr.cc minv_rel_sumr.cc invbicgstab.cc \
+	invbicgstab_array.cc inv_rel_gmresr_sumr.cc \
 	inv_rel_gmresr_cg.cc inv_gmresr_cg_array.cc inv_minres_array.cc \
 	wilson_gaugeact.cc su3over.cc su3hb.cc gaugebc_io.cc \
 	gaugeact_io.cc wilson_gaugeact_io.cc mc_io.cc md_io.cc \
@@ -655,7 +657,8 @@ am_libchroma_a_OBJECTS = gauge_startup.$(OBJEXT) gaugebc_utils.$(OBJEXT) \
 	enum_wvfkind_io.$(OBJEXT) enum_qdpvolfmt_io.$(OBJEXT) \
 	enum_srcsnktype_io.$(OBJEXT) enum_wavetype_io.$(OBJEXT) \
 	enum_heatbathtype_io.$(OBJEXT) enum_gaugebc_io.$(OBJEXT) \
-	enum_md_integrator_type_io.$(OBJEXT) szin_io.$(OBJEXT) \
+	enum_md_integrator_type_io.$(OBJEXT) \
+	enum_inner_solver_type_io.$(OBJEXT) szin_io.$(OBJEXT) \
 	readszin.$(OBJEXT) writeszin.$(OBJEXT) su3proj.$(OBJEXT) \
 	sun_proj.$(OBJEXT) gaus_smear.$(OBJEXT) hyp_smear.$(OBJEXT) \
 	ape_smear.$(OBJEXT) fuzz_smear.$(OBJEXT) klein_gord.$(OBJEXT) \
@@ -713,6 +716,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/enum_gaugeacttype_io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/enum_gaugebc_io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/enum_heatbathtype_io.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/enum_inner_solver_type_io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/enum_invtype_io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/enum_md_integrator_type_io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/enum_proptype_io.Po \
@@ -969,6 +973,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_gaugeacttype_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_gaugebc_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_heatbathtype_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_inner_solver_type_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_invtype_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_md_integrator_type_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_proptype_io.Po@am__quote@

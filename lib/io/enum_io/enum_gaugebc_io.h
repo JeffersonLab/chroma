@@ -22,6 +22,7 @@ namespace Chroma {
   };
 
   namespace GaugeBCTypeEnv { 
+    extern const string typeIDString;
     extern const bool registered; 
     const bool registerAll(void);   // Forward declaration
   }
@@ -49,6 +50,7 @@ namespace Chroma {
 
 
   namespace SchrFunTypeEnv { 
+    extern const string typeIDString;
     extern const bool registered; 
     const bool registerAll(void);   // Forward declaration
   }

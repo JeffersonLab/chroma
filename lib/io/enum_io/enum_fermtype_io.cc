@@ -16,17 +16,20 @@ namespace Chroma {
       
       return success;
     }
+    const string typeIDString = "FermType";
 
     const bool registered = registerAll();
   };
 
+  using namespace FermTypeEnv;
+
   //! Read an fermion type enum
   void read(XMLReader& xml_in,  const string& path, FermType& t) {
-    theFermTypeMap::Instance().read(xml_in, path,t);
+    theFermTypeMap::Instance().read(typeIDString, xml_in, path,t);
   }
   
   //! Write an fermion type enum
   void write(XMLWriter& xml_out, const string& path, const FermType& t) {
-    theFermTypeMap::Instance().write(xml_out, path, t);
+    theFermTypeMap::Instance().write(typeIDString, xml_out, path, t);
   }
 };

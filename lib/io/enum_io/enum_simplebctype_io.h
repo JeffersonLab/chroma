@@ -19,7 +19,7 @@ namespace Chroma {
    *
    * @{
    */
-  //! Fermion  type
+  //! SimpleBC  type
   enum SimpleBCType {
     BC_TYPE_ANTIPERIODIC = -1,  // Antiperiodic = -1
     BC_TYPE_DIRICHLET,          // Dirichlet    =  0
@@ -28,6 +28,7 @@ namespace Chroma {
 
 
   namespace SimpleBCTypeEnv { 
+    extern const string typeIDString;
     extern const bool registered; 
     const bool registerAll(void);   // Forward declaration
   }

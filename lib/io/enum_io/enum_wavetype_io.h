@@ -15,6 +15,7 @@ namespace Chroma {
   /*************** SOURCES ********************************/
 
   namespace WaveStateTypeEnv { 
+    extern const string typeIDString;
     extern const bool registered; 
     const bool registerAll(void);   // Forward declaration
   }

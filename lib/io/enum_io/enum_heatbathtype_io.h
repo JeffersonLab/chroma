@@ -13,6 +13,7 @@ using namespace Chroma;
 namespace Chroma {
 
   namespace HeatbathTypeEnv { 
+    extern const string typeIDString;
     extern const bool registered; 
     const bool registerAll(void);   // Forward declaration
   }
@@ -22,10 +23,10 @@ namespace Chroma {
 
   // Reader and writer
 
-  //! Read an Fermion Type enum
+  //! Read an HeatbathType enum
   void read(XMLReader& r, const string& path, HeatbathType& t);
 
-  //! Write an Fermion Type enum
+  //! Write an HeatbathType enum
   void write(XMLWriter& w, const string& path, const HeatbathType& t);
 
 };

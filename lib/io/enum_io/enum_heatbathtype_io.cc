@@ -17,16 +17,18 @@ namespace Chroma {
       return success;
     }
 
+    const string typeIDString ="HeatbathType";
     const bool registered = registerAll();
   };
 
-  //! Read an fermion type enum
+  using namespace HeatbathTypeEnv;
+  //! Read an HeatbathType enum
   void read(XMLReader& xml_in,  const string& path, HeatbathType& t) {
-    theHeatbathTypeMap::Instance().read(xml_in, path,t);
+    theHeatbathTypeMap::Instance().read(typeIDString, xml_in, path,t);
   }
   
-  //! Write an fermion type enum
+  //! Write an HeatbathType enum
   void write(XMLWriter& xml_out, const string& path, const HeatbathType& t) {
-    theHeatbathTypeMap::Instance().write(xml_out, path, t);
+    theHeatbathTypeMap::Instance().write(typeIDString, xml_out, path, t);
   }
 };

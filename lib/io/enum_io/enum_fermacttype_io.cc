@@ -67,17 +67,20 @@ namespace Chroma {
       
       return success;
     }
-
+    
+    const string typeIDString = "FermActType";
     const bool registered = registerAll();
   };
 
+  using namespace FermActTypeEnv;
+
   //! Read an fermact type enum
   void read(XMLReader& xml_in,  const string& path, FermActType& t) {
-    theFermActTypeMap::Instance().read(xml_in, path,t);
+    theFermActTypeMap::Instance().read(typeIDString,xml_in, path,t);
   }
   
   //! Write an fermact type  enum
   void write(XMLWriter& xml_out, const string& path, const FermActType& t) {
-    theFermActTypeMap::Instance().write(xml_out, path, t);
+    theFermActTypeMap::Instance().write(typeIDString,xml_out, path, t);
   }
 };

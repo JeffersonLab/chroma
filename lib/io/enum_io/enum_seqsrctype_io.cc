@@ -53,16 +53,18 @@ namespace Chroma {
       return success;
     }
 
+    const string typeIDString = "SeqSourceType";
     const bool registered = registerAll();
   };
+  using namespace SeqSourceTypeEnv;
 
   //! Read a sequential source type enum
   void read(XMLReader& xml_in,  const string& path, SeqSourceType& t) {
-    theSeqSourceTypeMap::Instance().read(xml_in, path,t);
+    theSeqSourceTypeMap::Instance().read(typeIDString, xml_in, path,t);
   }
   
   //! Write a sequential source  type enum
   void write(XMLWriter& xml_out, const string& path, const SeqSourceType& t) {
-    theSeqSourceTypeMap::Instance().write(xml_out, path, t);
+    theSeqSourceTypeMap::Instance().write(typeIDString,xml_out, path, t);
   }
 };

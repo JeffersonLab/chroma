@@ -17,17 +17,18 @@ namespace Chroma {
       
       return success;
     }
-
+    const string typeIDString = "PropType";
     const bool registered = registerAll();
   };
+  using namespace PropTypeEnv;
 
   //! Read a propagator type enum
   void read(XMLReader& xml_in,  const string& path, PropType& t) {
-    thePropTypeMap::Instance().read(xml_in, path,t);
+    thePropTypeMap::Instance().read(typeIDString,xml_in, path,t);
   }
   
   //! Write a propagator type enum
   void write(XMLWriter& xml_out, const string& path, const PropType& t) {
-    thePropTypeMap::Instance().write(xml_out, path, t);
+    thePropTypeMap::Instance().write(typeIDString,xml_out, path, t);
   }
 };

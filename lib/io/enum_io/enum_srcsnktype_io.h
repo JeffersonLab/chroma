@@ -15,6 +15,7 @@ namespace Chroma {
   /*************** SOURCES ********************************/
 
   namespace SourceTypeEnv { 
+    extern const string typeIDString;
     extern const bool registered; 
     const bool registerAll(void);   // Forward declaration
   }
@@ -31,6 +32,7 @@ namespace Chroma {
   /*************  SINKS **********************************/
 
   namespace SinkTypeEnv { 
+    extern const string typeIDString;
     extern const bool registered; 
     const bool registerAll(void);   // Forward declaration
   }

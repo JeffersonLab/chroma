@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.167 2004-09-22 17:24:58 bjoo Exp $
+# $Id: Makefile.am,v 1.168 2004-09-23 14:29:08 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -105,6 +105,7 @@ nobase_include_HEADERS = \
 	io/enum_io/enum_heatbathtype_io.h \
 	io/enum_io/enum_gaugebc_io.h \
 	io/enum_io/enum_md_integrator_type_io.h \
+	io/enum_io/enum_inner_solver_type_io.h \
         io/eigen_io.h \
 	io/gauge_io.h io/kyugauge_io.h  \
         io/milc_io.h io/param_io.h io/qprop_io.h io/readmilc.h \
@@ -305,7 +306,7 @@ libchroma_a_SOURCES = gauge_startup.cc gaugebc_utils.cc gaugeact_utils.cc \
 	       enum_invtype_io.cc enum_wvfkind_io.cc enum_qdpvolfmt_io.cc\
 	       enum_srcsnktype_io.cc enum_wavetype_io.cc \
 	       enum_heatbathtype_io.cc enum_gaugebc_io.cc \
-	       enum_md_integrator_type_io.cc \
+	       enum_md_integrator_type_io.cc enum_inner_solver_type_io.cc \
                szin_io.cc readszin.cc writeszin.cc su3proj.cc sun_proj.cc \
                gaus_smear.cc hyp_smear.cc ape_smear.cc fuzz_smear.cc \
                klein_gord.cc laplacian.cc displacement.cc sink_smear2.cc \

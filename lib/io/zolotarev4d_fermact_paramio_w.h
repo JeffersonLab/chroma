@@ -58,9 +58,6 @@ class Zolotarev4DFermActParams : public FermActParams {
 
 };
 
-
-void read(XMLReader& xml_in, const string& path, OverlapInnerSolverType& p);
-void write(XMLWriter& xml_out, const string& path, const OverlapInnerSolverType& p);
 void write(XMLWriter& xml_out, const string& path, const Zolotarev4DFermActParams& p);
 
 #endif

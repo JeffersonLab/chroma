@@ -25,15 +25,18 @@ namespace Chroma {
     }
 
     const bool registered = registerAll();
+    const string typeIDString = "InvType";
   };
+
+  using namespace InvTypeEnv ;
 
   //! Read an InvType enum
   void read(XMLReader& xml_in,  const string& path, InvType& t) {
-    theInvTypeMap::Instance().read(xml_in, path,t);
+    theInvTypeMap::Instance().read(typeIDString, xml_in, path,t);
   }
   
   //! Write an InvType enum
   void write(XMLWriter& xml_out, const string& path, const InvType& t) {
-    theInvTypeMap::Instance().write(xml_out, path, t);
+    theInvTypeMap::Instance().write(typeIDString, xml_out, path, t);
   }
 };

@@ -17,16 +17,18 @@ namespace Chroma {
       return success;
     }
 
+    const string typeIDString = "MDIntegratorType";
     const bool registered = registerAll();
   };
 
-  //! Read an fermion type enum
+  using namespace MDIntegratorTypeEnv;
+  //! Read an MDIntegratorType enum
   void read(XMLReader& xml_in,  const string& path, MDIntegratorType& t) {
-    theMDIntegratorTypeMap::Instance().read(xml_in, path,t);
+    theMDIntegratorTypeMap::Instance().read(typeIDString, xml_in, path,t);
   }
   
-  //! Write an fermion type enum
+  //! Write an MDIntegratorType enum
   void write(XMLWriter& xml_out, const string& path, const MDIntegratorType& t) {
-    theMDIntegratorTypeMap::Instance().write(xml_out, path, t);
+    theMDIntegratorTypeMap::Instance().write(typeIDString,xml_out, path, t);
   }
 };

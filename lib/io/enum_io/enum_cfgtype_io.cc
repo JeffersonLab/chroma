@@ -13,8 +13,6 @@ namespace Chroma {
       bool success; 
       success = theCfgTypeMap::Instance().registerPair(string("MILC"), CFG_TYPE_MILC );
       success &= theCfgTypeMap::Instance().registerPair(string("NERSC"), CFG_TYPE_NERSC);
-      success &= theCfgTypeMap::Instance().registerPair( string("MILC"), CFG_TYPE_MILC );
-      success &= theCfgTypeMap::Instance().registerPair( string("NERSC"), CFG_TYPE_NERSC );
       success &= theCfgTypeMap::Instance().registerPair( string("SCIDAC"), CFG_TYPE_SCIDAC );
       success &= theCfgTypeMap::Instance().registerPair( string("SZIN" ), CFG_TYPE_SZIN );
       success &= theCfgTypeMap::Instance().registerPair( string("SZINQIO"), CFG_TYPE_SZINQIO );
@@ -25,13 +23,16 @@ namespace Chroma {
     }
 
     const bool registered = registerAll();
+    const string typeIDString = "CfgType";
   };
 
+  using namespace CfgTypeEnv;
+
   void read(XMLReader& xml_in, const string& path, CfgType& t) {
-    theCfgTypeMap::Instance().read(xml_in,path,t);
+    theCfgTypeMap::Instance().read(typeIDString, xml_in,path,t);
   }
   
   void write(XMLWriter& xml_out, const string& path, const CfgType& t) {
-    theCfgTypeMap::Instance().write(xml_out, path, t);
+    theCfgTypeMap::Instance().write(typeIDString, xml_out, path, t);
   }
 };

@@ -28,17 +28,22 @@ namespace Chroma {
       return success;
     }
 
+    const string typeIDString = "SourceType";
     const bool registered = registerAll();
   };
   
   //! Read an SourceType enum
   void read(XMLReader& xml_in,  const string& path, SourceType& t) {
-    theSourceTypeMap::Instance().read(xml_in, path,t);
+    theSourceTypeMap::Instance().read(SourceTypeEnv::typeIDString,
+				      xml_in, 
+				      path,
+				      t);
   }
   
   //! Write an SourceType enum
   void write(XMLWriter& xml_out, const string& path, const SourceType& t) {
-    theSourceTypeMap::Instance().write(xml_out, path, t);
+    theSourceTypeMap::Instance().write(SourceTypeEnv::typeIDString,
+				       xml_out, path, t);
   }
 
   /*****************  SINKS *****************************/
@@ -61,18 +66,21 @@ namespace Chroma {
       
       return success;
     }
-
+    
+    const string typeIDString = "SinkType";
     const bool registered = registerAll();
   };
 
   //! Read an SinkType enum
   void read(XMLReader& xml_in,  const string& path, SinkType& t) {
-    theSinkTypeMap::Instance().read(xml_in, path,t);
+    theSinkTypeMap::Instance().read(SinkTypeEnv::typeIDString,
+				    xml_in, path,t);
   }
   
   //! Write an SinkType enum
   void write(XMLWriter& xml_out, const string& path, const SinkType& t) {
-    theSinkTypeMap::Instance().write(xml_out, path, t);
+    theSinkTypeMap::Instance().write(SinkTypeEnv::typeIDString,
+				     xml_out, path, t);
   }
 
 

@@ -13,6 +13,7 @@ using namespace Chroma;
 namespace Chroma {
 
   namespace WvfKindEnv { 
+    extern const string typeIDString;
     extern const bool registered; 
     const bool registerAll(void);   // Forward declaration
   }
@@ -22,10 +23,10 @@ namespace Chroma {
 
   // Reader and writer
 
-  //! Read an Fermion Type enum
+  //! Read an WvfKind enum
   void read(XMLReader& r, const string& path, WvfKind& t);
 
-  //! Write an Fermion Type enum
+  //! Write an WvfKind Type enum
   void write(XMLWriter& w, const string& path, const WvfKind& t);
 
 };

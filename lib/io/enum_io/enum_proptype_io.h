@@ -28,6 +28,7 @@ namespace Chroma {
 
 
   namespace PropTypeEnv { 
+    extern const string typeIDString;
     extern const bool registered; 
     const bool registerAll(void);   // Forward declaration
   }

@@ -18,13 +18,17 @@ namespace Chroma {
     }
 
     const bool registered = registerAll();
+    const string typeIDString = "CoeffType";
   };
+  using namespace CoeffTypeEnv;
 
+  //! read an approximation coefficient type enum
   void read(XMLReader& xml_in,  const string& path, CoeffType& t) {
-    theCoeffTypeMap::Instance().read(xml_in, path,t);
+    theCoeffTypeMap::Instance().read(typeIDString, xml_in, path,t);
   }
   
+  //! write an approximation coefficient type enum
   void write(XMLWriter& xml_out, const string& path, const CoeffType& t) {
-    theCoeffTypeMap::Instance().write(xml_out, path, t);
+    theCoeffTypeMap::Instance().write(typeIDString, xml_out, path, t);
   }
 };

@@ -16,17 +16,18 @@ namespace Chroma {
       
       return success;
     }
-
+    const string typeIDString = "EigenVecType" ;
     const bool registered = registerAll();
   };
+  using namespace EigenVecTypeEnv;
 
   //! Read an eigenvectype enum
   void read(XMLReader& xml_in,  const string& path, EigenVecType& t) {
-    theEigenVecTypeMap::Instance().read(xml_in, path,t);
+    theEigenVecTypeMap::Instance().read(typeIDString, xml_in, path,t);
   }
   
   //! Write an eigenvectype enum
   void write(XMLWriter& xml_out, const string& path, const EigenVecType& t) {
-    theEigenVecTypeMap::Instance().write(xml_out, path, t);
+    theEigenVecTypeMap::Instance().write(typeIDString, xml_out, path, t);
   }
 };

@@ -24,16 +24,18 @@ namespace Chroma {
       return success;
     }
 
+    const string typeIDString = "WaveStateType";
     const bool registered = registerAll();
   };
   
+  using namespace WaveStateTypeEnv;
   //! Read an WaveType enum
   void read(XMLReader& xml_in,  const string& path, WaveStateType& t) {
-    theWaveStateTypeMap::Instance().read(xml_in, path,t);
+    theWaveStateTypeMap::Instance().read(typeIDString, xml_in, path,t);
   }
   
   //! Write an WaveType enum
   void write(XMLWriter& xml_out, const string& path, const WaveStateType& t) {
-    theWaveStateTypeMap::Instance().write(xml_out, path, t);
+    theWaveStateTypeMap::Instance().write(typeIDString, xml_out, path, t);
   }
 };
