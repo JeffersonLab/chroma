@@ -1,4 +1,4 @@
-// $Id: t_propagator_w.cc,v 1.5 2005-01-14 20:13:10 edwards Exp $
+// $Id: t_propagator_w.cc,v 1.6 2005-02-28 03:34:47 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  *   
@@ -324,16 +324,8 @@ int main(int argc, char **argv)
 
 
   // Calculate some gauge invariant observables just for info.
-  Double w_plaq, s_plaq, t_plaq, link;
-  MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-
-  push(xml_out, "Observables");
-  write(xml_out, "w_plaq", w_plaq);
-  write(xml_out, "s_plaq", s_plaq);
-  write(xml_out, "t_plaq", t_plaq);
-  write(xml_out, "link", link);
-  pop(xml_out);
-
+  MesPlq(xml_out, "Observables", u);
+  xml_out.flush();
 
   // 
   //  gauge invariance test

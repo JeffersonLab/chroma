@@ -1,4 +1,4 @@
-// $Id: spectrum_w.cc,v 1.46 2005-02-17 02:48:41 edwards Exp $
+// $Id: spectrum_w.cc,v 1.47 2005-02-28 03:34:47 edwards Exp $
 /*! \file
  * \brief Main code for spectrum measurements
  */
@@ -230,23 +230,8 @@ int main(int argc, char **argv)
 
   xml_out.flush();
 
-
   // First calculate some gauge invariant observables just for info.
-  Double w_plaq, s_plaq, t_plaq, link;
-  multi1d<DComplex> pollp(Nd);
-
-  MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-  for(int mu = 0; mu < Nd; ++mu)
-    polylp(u, pollp[mu], mu);
-
-  push(xml_out, "Observables");
-  write(xml_out, "w_plaq", w_plaq);
-  write(xml_out, "s_plaq", s_plaq);
-  write(xml_out, "t_plaq", t_plaq);
-  write(xml_out, "link", link);
-  write(xml_out, "pollp", pollp);
-  pop(xml_out);
-
+  MesPlq(xml_out, "Observables", u);
   xml_out.flush();
 
   // Keep an array of all the xml output buffers

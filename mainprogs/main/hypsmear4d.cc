@@ -1,5 +1,5 @@
 /*
- *  $Id: hypsmear4d.cc,v 1.2 2005-02-21 19:28:59 edwards Exp $
+ *  $Id: hypsmear4d.cc,v 1.3 2005-02-28 03:34:46 edwards Exp $
  *
  *  This is the top-level routine for HYP smearing.
  *  Reading in gauge fields and writing out hyp-smear gauge fields
@@ -173,18 +173,8 @@ int main(int argc, char *argv[])
   unitarityCheck(u);
 
   // Calculate some gauge invariant observables
-  Double w_plaq, s_plaq, t_plaq, link;
-  MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-
-  push(xml_out, "Observables");
-  write(xml_out, "w_plaq",w_plaq);
-  write(xml_out, "s_plaq", s_plaq);
-  write(xml_out, "t_plaq", t_plaq);
-  write(xml_out, "link", link);
-
-  pop(xml_out);
+  MesPlq(xml_out, "Observables", u);
   xml_out.flush();
-
 
   // Now hyp smear
   multi1d<LatticeColorMatrix> u_hyp(Nd);
@@ -219,15 +209,7 @@ int main(int argc, char *argv[])
   }
 
   // Again calculate some gauge invariant observables
-  MesPlq(u_hyp, w_plaq, s_plaq, t_plaq, link);
-
-  push(xml_out, "HYP_observables");
-  write(xml_out, "w_plaq", w_plaq);
-  write(xml_out, "s_plaq", s_plaq);
-  write(xml_out, "t_plaq", t_plaq);
-  write(xml_out, "link", link);
-
-  pop(xml_out);
+  MesPlq(xml_out, "HYP_observables", u_hyp);
   xml_out.flush();
 
   // Now write the configuration to disk

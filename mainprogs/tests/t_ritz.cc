@@ -1,4 +1,4 @@
-// $Id: t_ritz.cc,v 1.8 2005-02-06 03:45:02 edwards Exp $
+// $Id: t_ritz.cc,v 1.9 2005-02-28 03:34:47 edwards Exp $
 
 #include "chroma.h"
 
@@ -117,14 +117,8 @@ int main(int argc, char **argv)
   gaugeStartup(gauge_file_xml, gauge_xml, u, params.cfg);
 
   // Measure the plaquette on the gauge
-  Double w_plaq, s_plaq, t_plaq, link;
-  MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-  push(xml_out, "plaquette");
-  write(xml_out, "w_plaq", w_plaq);
-  write(xml_out, "s_plaq", s_plaq);
-  write(xml_out, "t_plaq", t_plaq);
-  write(xml_out, "link", link);
-  pop(xml_out);
+  MesPlq(xml_out, "Observables", u);
+  xml_out.flush();
 
   //! Wilsoniums;
   // Put this puppy into a handle to allow Zolo to copy it around as a **BASE** class

@@ -1,4 +1,4 @@
-// $Id: cfgtransf.cc,v 1.19 2005-02-21 19:28:59 edwards Exp $
+// $Id: cfgtransf.cc,v 1.20 2005-02-28 03:34:46 edwards Exp $
 /*! \file
  *  \brief Many-to-many gauge transformation routine
  */
@@ -508,41 +508,13 @@ int main(int argc, char **argv)
   
 
   // So what's the plaquette?
-  Double w_plaq;
-  Double s_plaq;
-  Double t_plaq;
-  Double link;
-  multi1d<DComplex> pollp(Nd);		/* Polyakov loop */
-  
-  MesPlq (u, w_plaq, s_plaq, t_plaq, link);
-  for(int mu = 0; mu < Nd; ++mu)
-    polylp (u, pollp[mu], mu);
-  
-  push(xml_out,"Observables");
-  write(xml_out, "w_plaq", w_plaq);
-  write(xml_out, "s_plaq", s_plaq);
-  write(xml_out, "t_plaq", t_plaq);
-  write(xml_out, "link", link);
-  write(xml_out, "pollp",pollp);
-  pop(xml_out);
-
+  MesPlq(xml_out, "Observables", u);
   xml_out.flush();
   
   if ( RGaugeP )
   {
     rgauge (u);
-
-    MesPlq (u, w_plaq, s_plaq, t_plaq, link);
-    for(int mu = 0; mu < Nd; ++mu)
-      polylp (u, pollp[mu], mu);
-  
-    push(xml_out,"Rand_Gtransf_observables");
-    write(xml_out, "w_plaq", w_plaq);
-    write(xml_out, "s_plaq", s_plaq);
-    write(xml_out, "t_plaq", t_plaq);
-    write(xml_out, "link", link);
-    write(xml_out, "pollp", pollp);
-    pop(xml_out);
+    MesPlq(xml_out, "Rand_Gtransf_observables", u);
   }
 
   if ( GSmearP )
@@ -560,22 +532,13 @@ int main(int argc, char **argv)
       u = u_tmp;
     }
     
-    MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-    for(int mu = 0; mu < Nd; ++mu)
-      polylp(u, pollp[mu], mu);
-  
     push(xml_out,"Smearing_parameters");
     write(xml_out, "sm_numb",sm_numb);
     write(xml_out, "sm_fact", sm_fact);
     write(xml_out, "j_decay", j_decay);
     pop(xml_out);
-    push(xml_out,"Smeared_observables");
-    write(xml_out, "w_plaq", w_plaq);
-    write(xml_out, "s_plaq", s_plaq);
-    write(xml_out, "t_plaq", t_plaq);
-    write(xml_out, "link", link);
-    write(xml_out, "pollp", pollp);
-    pop(xml_out);
+
+    MesPlq(xml_out, "Smeared_observables", u);
   }
 
   if ( HypSmearP )
@@ -587,23 +550,14 @@ int main(int argc, char **argv)
       u = u_tmp;
     }
     
-    MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-    for(int mu = 0; mu < Nd; ++mu)
-      polylp(u, pollp[mu], mu);
-  
     push(xml_out,"HypSmearing_parameters");
     write(xml_out, "sm_numb", sm_numb);
     write(xml_out, "alpha1", alpha1);
     write(xml_out, "alpha2", alpha2);
     write(xml_out, "alpha3", alpha3);
     pop(xml_out);
-    push(xml_out,"HypSmeared_observables");
-    write(xml_out, "w_plaq", w_plaq);
-    write(xml_out, "s_plaq", s_plaq);
-    write(xml_out, "t_plaq", t_plaq);
-    write(xml_out, "link", link);
-    write(xml_out, "pollp", pollp);
-    pop(xml_out);
+
+    MesPlq(xml_out, "HypSmeared_observables", u);
   }
 
   LatticeColorMatrix g;
@@ -612,10 +566,6 @@ int main(int argc, char **argv)
   {
     coulGauge(u, g, nrl_gf, j_decay, GFAccu, GFMax, OrlxDo, OrPara);
 
-    MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-    for(int mu = 0; mu < Nd; ++mu)
-      polylp(u, pollp[mu], mu);
-  
     push(xml_out,"Gauge_fixing_parameters");
     write(xml_out, "j_decay", j_decay);
     write(xml_out, "GFAccu", GFAccu);
@@ -623,13 +573,8 @@ int main(int argc, char **argv)
     write(xml_out, "OrlxDo",OrlxDo);
     write(xml_out, "OrPara", OrPara);
     pop(xml_out);
-    push(xml_out,"Gauge_fixed_observables");
-    write(xml_out, "w_plaq", w_plaq);
-    write(xml_out, "s_plaq", s_plaq);
-    write(xml_out, "t_plaq", t_plaq);
-    write(xml_out, "link", link);
-    write(xml_out, "pollp", pollp);
-    pop(xml_out);
+
+    MesPlq(xml_out, "Gauge_fixed_observables", u);
     
     push(xml_out,"Relaxation_iterations_in_GFIX");
     write(xml_out, "nrl_gf", nrl_gf);
@@ -638,9 +583,8 @@ int main(int argc, char **argv)
 
 
   // Compute the plaquette again
+  Double w_plaq, s_plaq, t_plaq, link;
   MesPlq (u, w_plaq, s_plaq, t_plaq, link);
-  for(int mu = 0; mu < Nd; ++mu)
-    polylp (u, pollp[mu], mu);
   
   xml_out.flush();
   

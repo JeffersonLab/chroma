@@ -1,4 +1,4 @@
-// $Id: t_invert3_precwilson.cc,v 1.8 2005-01-14 20:13:09 edwards Exp $
+// $Id: t_invert3_precwilson.cc,v 1.9 2005-02-28 03:34:47 edwards Exp $
 
 #include <iostream>
 #include <sstream>
@@ -113,14 +113,8 @@ int main(int argc, char **argv)
 
 
   // Measure the plaquette on the gauge
-  Double w_plaq, s_plaq, t_plaq, link;
-  MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-  push(xml, "plaquette");
-  write(xml, "w_plaq", w_plaq);
-  write(xml, "s_plaq", s_plaq);
-  write(xml, "t_plaq", t_plaq);
-  write(xml, "link", link);
-  pop(xml);
+  MesPlq(xml, "Observables", u);
+  xml.flush();
 
   //! Wilsoniums;
   // Put this puppy into a handle to allow Zolo to copy it around as a **BASE** class

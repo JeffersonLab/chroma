@@ -1,4 +1,4 @@
-// $Id: bar3ptfn.cc,v 1.36 2005-01-14 20:13:08 edwards Exp $
+// $Id: bar3ptfn.cc,v 1.37 2005-02-28 03:34:46 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions
  *
@@ -238,16 +238,7 @@ main(int argc, char *argv[])
 
   // First calculate some gauge invariant observables just for info.
   // This is really cheap.
-  Double w_plaq, s_plaq, t_plaq, link;
-  MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-
-  push(xml_out, "Observables");
-  write(xml_out, "w_plaq", w_plaq);
-  write(xml_out, "s_plaq", s_plaq);
-  write(xml_out, "t_plaq", t_plaq);
-  write(xml_out, "link", link);
-  pop(xml_out);
-
+  MesPlq(xml_out, "Observables", u);
   xml_out.flush();
 
   //

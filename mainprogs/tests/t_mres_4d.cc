@@ -1,4 +1,4 @@
-// $Id: t_mres_4d.cc,v 1.6 2005-02-16 22:22:38 edwards Exp $
+// $Id: t_mres_4d.cc,v 1.7 2005-02-28 03:34:47 edwards Exp $
 
 #include "chroma.h"
 
@@ -117,15 +117,8 @@ int main(int argc, char **argv)
   write(xml_out, "Input", xml_in);
 
   // Measure the plaquette on the gauge
-  Double w_plaq, s_plaq, t_plaq, link;
-  MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-  push(xml_out, "plaquette");
-  write(xml_out, "w_plaq", w_plaq);
-  write(xml_out, "s_plaq", s_plaq);
-  write(xml_out, "t_plaq", t_plaq);
-  write(xml_out, "link", link);
-  pop(xml_out);
-
+  MesPlq(xml_out, "Observables", u);
+  xml_out.flush();
 
   // Read the prop
 

@@ -1,4 +1,4 @@
-// $Id: make_source.cc,v 1.36 2005-01-14 20:13:08 edwards Exp $
+// $Id: make_source.cc,v 1.37 2005-02-28 03:34:46 edwards Exp $
 /*! \file
  *  \brief Main code for source generation
  */
@@ -143,16 +143,8 @@ int main(int argc, char **argv)
   unitarityCheck(u);
 
   // Calculate some gauge invariant observables just for info.
-  Double w_plaq, s_plaq, t_plaq, link;
-  MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-
-  push(xml_out, "Observables");
-  write(xml_out, "w_plaq", w_plaq);
-  write(xml_out, "s_plaq", s_plaq);
-  write(xml_out, "t_plaq", t_plaq);
-  write(xml_out, "link", link);
-  pop(xml_out);
-
+  MesPlq(xml_out, "Observables", u);
+  xml_out.flush();
 
   // Smear the gauge field if needed
   multi1d<LatticeColorMatrix> u_smr(Nd);

@@ -1,4 +1,4 @@
-// $Id: t_precact.cc,v 1.15 2005-02-13 18:15:19 edwards Exp $
+// $Id: t_precact.cc,v 1.16 2005-02-28 03:34:47 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -363,16 +363,8 @@ int main(int argc, char **argv)
   unitarityCheck(u);
 
   // Calculate some gauge invariant observables just for info.
-  Double w_plaq, s_plaq, t_plaq, link;
-  MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-
-  push(xml_out, "Observables");
-  write(xml_out, "w_plaq", w_plaq);
-  write(xml_out, "s_plaq", s_plaq);
-  write(xml_out, "t_plaq", t_plaq);
-  write(xml_out, "link", link);
-  pop(xml_out);
-
+  MesPlq(xml_out, "Observables", u);
+  xml_out.flush();
 
   //
   // Initialize fermion action

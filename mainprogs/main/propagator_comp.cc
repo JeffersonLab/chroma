@@ -1,6 +1,9 @@
-// $Id: propagator_comp.cc,v 1.10 2005-01-14 20:13:09 edwards Exp $
+// $Id: propagator_comp.cc,v 1.11 2005-02-28 03:34:46 edwards Exp $
 // $Log: propagator_comp.cc,v $
-// Revision 1.10  2005-01-14 20:13:09  edwards
+// Revision 1.11  2005-02-28 03:34:46  edwards
+// Collapsed code surrounding MesPlq call to a single sub call.
+//
+// Revision 1.10  2005/01/14 20:13:09  edwards
 // Removed all using namespace QDP/Chroma from lib files. The library
 // should now be 100% in the Chroma namespace. All mainprogs need a
 // using namespace Chroma.
@@ -355,15 +358,8 @@ int main(int argc, char **argv)
   unitarityCheck(u);
 
   // Calculate some gauge invariant observables just for info.
-  Double w_plaq, s_plaq, t_plaq, link;
-  MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-
-  push(xml_out, "Observables");
-  write(xml_out, "w_plaq", w_plaq);
-  write(xml_out, "s_plaq", s_plaq);
-  write(xml_out, "t_plaq", t_plaq);
-  write(xml_out, "link", link);
-  pop(xml_out);
+  MesPlq(xml_out, "Observables", u);
+  xml_out.flush();
 
   // Sanity check - write out the norm2 of the source in the Nd-1 direction
   // Use this for any possible verification
