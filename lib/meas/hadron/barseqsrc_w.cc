@@ -1,4 +1,4 @@
-// $Id: barseqsrc_w.cc,v 1.5 2004-04-22 02:04:47 edwards Exp $
+// $Id: barseqsrc_w.cc,v 1.6 2004-07-27 05:00:05 edwards Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */
@@ -34,14 +34,14 @@ void barSeqSource(const LatticePropagator& quark_propagator_1,
 		  int t_sink, const multi1d<int>& sink_mom, 
 		  int j_decay, int seq_src)
 {
+  START_CODE("barseqsrc");
+
   LatticePropagator src_prop_tmp;
   LatticePropagator q1_tmp;
   LatticePropagator q2_tmp;
   LatticePropagator di_quark;
   LatticeColorMatrix col_mat;
   
-  START_CODE("barseqsrc");
-
   if ( Ns != 4 || Nc != 3 )		/* Code is specific to Ns=4 and Nc=3. */
   {
     END_CODE("barseqsrc");
