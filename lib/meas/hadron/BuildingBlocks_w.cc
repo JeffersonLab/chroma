@@ -29,7 +29,7 @@
 //#####################################################################################
 
 static const char* const CVSBuildingBlocks_cc =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 1.7 2004-05-27 16:26:55 dru Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 1.8 2004-05-27 20:17:20 dru Exp $";
 
 //#####################################################################################
 //#####################################################################################
@@ -41,7 +41,7 @@ static const char* const CVSBuildingBlocks_cc =
 
 using namespace QDP;
 
-#define _DEBUG_BB_C_ 1
+#define _DEBUG_BB_C_ 0
 
 //#####################################################################################
 // record the CVS info
@@ -64,12 +64,14 @@ void BkwdFrwdTr( const LatticePropagator &             B,
                  const SftMom &                        Phases,
                  const multi2d< BinaryWriter* > &      BinaryWriters,
                  const int                             f,
-                 const multi1d< unsigned short int > & LinkDirs )
+                 const multi1d< unsigned short int > & LinkDirs,
+                 const int T1, 
+                 const int T2 )
 {
   const unsigned short int NLinks = LinkDirs.size();
   unsigned short int Link;
-  const int T1 = 0;
-  const int T2 = 7;
+  //const int T1 = 0;
+  //const int T2 = 7;
   const int NQ = Phases.numMom();
 
   //###################################################################################
@@ -155,7 +157,9 @@ void AddLinks( const multi1d< LatticePropagator > &  B,
                BBLinkPattern                         LinkPattern,
                const short int                       PreviousDir,
                const short int                       PreviousMu,
-               const multi2d< BinaryWriter* > &      BinaryWriters )
+               const multi2d< BinaryWriter* > &      BinaryWriters,
+               const int T1, 
+               const int T2 )
 {
   const unsigned short int NLinks = LinkDirs.size();
 
@@ -198,14 +202,14 @@ void AddLinks( const multi1d< LatticePropagator > &  B,
         // form correlation functions
         for( int f = 0; f < NF; f ++ )
         {
-          BkwdFrwdTr( B[ f ], F_mu, Phases, BinaryWriters, f, NextLinkDirs );
+          BkwdFrwdTr( B[ f ], F_mu, Phases, BinaryWriters, f, NextLinkDirs, T1, T2 );
         }
       }
 
       if( DoFurtherPatterns == true )
       {
         // add another link
-        AddLinks( B, F_mu, U, Phases, NextLinkDirs, MaxNLinks, LinkPattern, 1, mu, BinaryWriters );
+        AddLinks( B, F_mu, U, Phases, NextLinkDirs, MaxNLinks, LinkPattern, 1, mu, BinaryWriters, T1, T2 );
       }
     }
   }
@@ -234,14 +238,14 @@ void AddLinks( const multi1d< LatticePropagator > &  B,
         // form correlation functions
         for( int f = 0; f < NF; f ++ )
         {
-          BkwdFrwdTr( B[ f ], F_mu, Phases, BinaryWriters, f, NextLinkDirs );
+          BkwdFrwdTr( B[ f ], F_mu, Phases, BinaryWriters, f, NextLinkDirs, T1, T2 );
         }
       }
 
       if( DoFurtherPatterns == true )
       {
         // add another link
-        AddLinks( B, F_mu, U, Phases, NextLinkDirs, MaxNLinks, LinkPattern, -1, mu, BinaryWriters );
+        AddLinks( B, F_mu, U, Phases, NextLinkDirs, MaxNLinks, LinkPattern, -1, mu, BinaryWriters, T1, T2 );
       }
     }
   }
@@ -259,7 +263,9 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
                      const unsigned short int              MaxNLinks,
                      const BBLinkPattern                   LinkPattern,
                      const SftMom &                        Phases,
-	             const multi2d< const char* > &        BinaryDataFileNames )
+	             const multi2d< const char* > &        BinaryDataFileNames,
+                     const int T1,
+                     const int T2 )
 {
   //###################################################################################
   // open building blocks data files
@@ -286,10 +292,10 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
 
   for( int f = 0; f < NF; f ++ )
   {
-    BkwdFrwdTr( B[ f ], F, Phases, BinaryWriters, f, LinkDirs );
+    BkwdFrwdTr( B[ f ], F, Phases, BinaryWriters, f, LinkDirs, T1, T2 );
   }
 
-  AddLinks( B, F, U, Phases, LinkDirs, MaxNLinks, LinkPattern, 0, -1, BinaryWriters );
+  AddLinks( B, F, U, Phases, LinkDirs, MaxNLinks, LinkPattern, 0, -1, BinaryWriters, T1, T2 );
 
   //###################################################################################
   // add footer and close files
