@@ -1,4 +1,4 @@
-// $Id: make_source.cc,v 1.32 2004-07-28 03:08:04 edwards Exp $
+// $Id: make_source.cc,v 1.33 2004-08-12 21:31:12 ikuro Exp $
 /*! \file
  *  \brief Main code for source generation
  */
@@ -216,14 +216,25 @@ int main(int argc, char **argv)
       if(input.param.source_type == SRC_TYPE_SHELL_SOURCE)
       {
 	// There should be a call to maksrc2 or some-such for general source smearing
+
+	// displace the point source first, then smear
+	// displacement has to be taken along negative direction.
+	displacement(u_smr,src_color_vec,
+		     (-1)*input.param.disp_length, input.param.disp_dir);
+
+        if(input.param.wave_state == WAVE_TYPE_P_WAVE)
+	  p_src(u_smr, src_color_vec, input.param.direction);
+
+        if(input.param.wave_state == WAVE_TYPE_D_WAVE)   /* added */
+	  d_src(u_smr, src_color_vec, input.param.direction);
+
         gausSmear(u_smr, src_color_vec, 
 		  input.param.sourceSmearParam.wvf_param, 
 		  input.param.sourceSmearParam.wvfIntPar, 
 		  input.param.j_decay);
+
         laplacian(u_smr, src_color_vec, 
 		  input.param.j_decay, input.param.laplace_power);
-	displacement(u_smr,src_color_vec,
-		     input.param.disp_length, input.param.disp_dir);
 
         //power = 1 for one laplacian operator
       }
@@ -238,11 +249,6 @@ int main(int argc, char **argv)
 
         CvToFerm(src_color_vec, chi, spin_source);
       
-        if(input.param.wave_state == WAVE_TYPE_P_WAVE)
-	  p_src(u_smr, chi, input.param.direction);
-
-        if(input.param.wave_state == WAVE_TYPE_D_WAVE)   /* added */
-	  d_src(u_smr, chi, input.param.direction);
 
         /*
          *  Move the source to the appropriate components
