@@ -5,11 +5,16 @@
 
 #include "io/param_io.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermacts/unprec_wilson_fermact_w.h"
+
+
 #include "linearop.h"
+#include "fermact.h"
+
 #include "actions/ferm/invert/invcg2.h"
 
 #include "update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.h"
+
+#include "actions/ferm/fermacts/unprec_wilson_fermact_w.h"
 using namespace QDP;
 
 #include <string>
@@ -17,22 +22,42 @@ using namespace std;
 
 namespace Chroma { 
  
-  namespace UnprecTwoFlavorWilsonFermMonomialEnv {
+  namespace UnprecTwoFlavorWilsonTypeFermMonomialEnv {
     //! Callback function for the factory
     Monomial< multi1d<LatticeColorMatrix>,
 	      multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const string& path) {
 
       
-      return new UnprecTwoFlavorWilsonFermMonomial(UnprecTwoFlavorWilsonFermMonomialParams(xml, path));
+      return new UnprecTwoFlavorWilsonTypeFermMonomial(UnprecTwoFlavorWilsonTypeFermMonomialParams(xml, path));
     }
     
-    const std::string name="UNPREC_TWO_FLAVOR_WILSON_FERM_MONOMIAL";
-    const bool registered=TheMonomialFactory::Instance().registerObject(name, createMonomial);
+
+    bool registerAll() 
+    {
+      bool foo = true;
+      const std::string prefix = string("TWO_FLAVOR_");
+      const std::string suffix = string("_FERM_MONOMIAL");
     
-  }; //end namespace Unprec TwoFlavorWilsonFermMonomialEnv
+    
+      foo &= UnprecWilsonFermActEnv::registered;
+
+#if 0
+      // This causes a segfault? Why?
+      foo &= TheMonomialFactory::Instance().registerObject(string(prefix + UnprecWilsonFermActEnv::name + suffix), createMonomial);
+#else
+      // Ugly hack
+     string monomial_name = prefix + "UNPRECONDITIONED_WILSON" + suffix;
+      foo &= TheMonomialFactory::Instance().registerObject(monomial_name, createMonomial);
+#endif
+      return foo;
+    }
+
+    const bool registered=registerAll();
+    
+  }; //end namespace Unprec TwoFlavorWilsonTypeFermMonomialEnv
 
   // Read the parameters
-  UnprecTwoFlavorWilsonFermMonomialParams::UnprecTwoFlavorWilsonFermMonomialParams(XMLReader& xml_in, const string& path)
+  UnprecTwoFlavorWilsonTypeFermMonomialParams::UnprecTwoFlavorWilsonTypeFermMonomialParams(XMLReader& xml_in, const string& path)
   {
     // Get the top of the parameter XML tree
     XMLReader paramtop(xml_in, path);
@@ -51,38 +76,22 @@ namespace Chroma {
       QDP_abort(1);
     }
 
-    std::istringstream is(ferm_act);
-    
-    XMLReader sanity_check(is);
-    try { 
-      std::string ferm_name;
-      read(sanity_check, "/FermionAction/FermAct", ferm_name);
-      if ( ferm_name != UnprecWilsonFermActEnv::name ) { 
-	QDPIO::cerr << "Fermion action is not " << UnprecWilsonFermActEnv::name
-		    << " but is: " << ferm_name << endl;
-	QDP_abort(1);
-      }
-    }
-    catch(const std::string& s) { 
-      QDPIO::cerr << "Unable to sanity check fermion action" << endl;
-      QDP_abort(1);
-    }
   }
 
   //! Read Parameters
   void read(XMLReader& xml, const std::string& path,
-	    UnprecTwoFlavorWilsonFermMonomialParams& params) {
-    UnprecTwoFlavorWilsonFermMonomialParams tmp(xml, path);
+	    UnprecTwoFlavorWilsonTypeFermMonomialParams& params) {
+    UnprecTwoFlavorWilsonTypeFermMonomialParams tmp(xml, path);
     params = tmp;
   }
 
   //! Write Parameters
   void write(XMLWriter& xml, const std::string& path,
-	     const UnprecTwoFlavorWilsonFermMonomialParams& params) {
+	     const UnprecTwoFlavorWilsonTypeFermMonomialParams& params) {
     // Not implemented
   }
 
-  UnprecTwoFlavorWilsonFermMonomial::UnprecTwoFlavorWilsonFermMonomial(const UnprecTwoFlavorWilsonFermMonomialParams& param_) {
+  UnprecTwoFlavorWilsonTypeFermMonomial::UnprecTwoFlavorWilsonTypeFermMonomial(const UnprecTwoFlavorWilsonTypeFermMonomialParams& param_) {
 
     inv_param = param_.inv_param;
 
@@ -103,11 +112,11 @@ namespace Chroma {
     const FermionAction<LatticeFermion>* tmp_act = TheFermionActionFactory::Instance().createObject(fermact_string, fermact_reader, "./FermionAction");
   
 
-    const UnprecWilsonFermAct* downcast=dynamic_cast<const UnprecWilsonFermAct*>(tmp_act);
+    const UnprecWilsonTypeFermAct<LatticeFermion, multi1d<LatticeColorMatrix> >* downcast=dynamic_cast<const UnprecWilsonTypeFermAct<LatticeFermion, multi1d<LatticeColorMatrix> > *>(tmp_act);
 
     // Check success of the downcast 
     if( downcast == 0x0 ) {
-      QDPIO::cerr << "Unable to downcast FermAct to UnprecWilsonFermAct in UnprecTwoFlavorWilsonFermMonomial()" << endl;
+      QDPIO::cerr << "Unable to downcast FermAct to UnprecWilsonTypeFermAct in UnprecTwoFlavorWilsonTypeFermMonomial()" << endl;
       QDP_abort(1);
     }
 
@@ -115,11 +124,11 @@ namespace Chroma {
   }
 
   void
-  UnprecTwoFlavorWilsonFermMonomial::getX(LatticeFermion& X, 
+  UnprecTwoFlavorWilsonTypeFermMonomial::getX(LatticeFermion& X, 
 					  const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const
   {
     // Do the MdagM game:
-    const UnprecWilsonFermAct& S_w = getFermAct();
+    const UnprecWilsonTypeFermAct<LatticeFermion, multi1d<LatticeColorMatrix> >& S_w = getFermAct();
 
     // Make the state
     Handle< const ConnectState > state(S_w.createState(s.getQ()));

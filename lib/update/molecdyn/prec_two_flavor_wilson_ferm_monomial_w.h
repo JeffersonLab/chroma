@@ -14,7 +14,7 @@ using namespace std;
 namespace Chroma {
 
   namespace EvenOddPrecTwoFlavorWilsonTypeFermMonomialEnv {
-    extern const string name;
+    //    extern const string name;
     extern const bool registered;
   };
 

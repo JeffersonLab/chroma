@@ -21,7 +21,7 @@ namespace Chroma {
       return new PeriodicGaugeBC();
     }
 
-    const std::string name = "GAUGEBC_PERIODIC";
+    const std::string name = "PERIODIC_GAUGEBC";
     const bool registered = TheGaugeBCFactory::Instance().registerObject(name,
 									 createGaugeBC);
 

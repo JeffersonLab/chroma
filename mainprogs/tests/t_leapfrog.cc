@@ -24,15 +24,14 @@ bool linkage_hack()
 
   // 4D Ferm actions
   foo &= EvenOddPrecWilsonFermActEnv::registered;
- 
+  foo &= UnprecWilsonFermActEnv::registered;
+
   // 4D Ferm Monomials
-  foo &= UnprecTwoFlavorWilsonFermMonomialEnv::registered;
+  foo &= UnprecTwoFlavorWilsonTypeFermMonomialEnv::registered;
   foo &= EvenOddPrecTwoFlavorWilsonTypeFermMonomialEnv::registered;
 
   // 5D Ferm Monomials
   foo &= UnprecTwoFlavorWilsonTypeFermMonomial5DEnv::registered;
-
-  // 5D Ferm Monomials
   foo &= EvenOddPrecTwoFlavorWilsonTypeFermMonomial5DEnv::registered;
 
   // MD Integrators
@@ -46,26 +45,32 @@ int main(int argc, char *argv[])
   // Initialise QDP
   QDP_initialize(&argc, &argv);
 
-  // Setup a small lattice
-  const int nrow_arr[] = {2, 2, 2, 2};
+  // Snarf it all
+  XMLReader param_in("DATA");
+  XMLReader paramtop(param_in, "/LeapfrogTest");
+
   multi1d<int> nrow(Nd);
-  nrow=nrow_arr;
+
+  try { 
+    read(paramtop, "nrow", nrow);
+  }
+  catch(const std::string& e) { 
+    QDPIO::cerr << "Unable to read nrow from XML: " << e << endl;
+    QDP_abort(1);
+  }
+    
   Layout::setLattSize(nrow);
   Layout::create();
 
 
-
   // Dump output
   XMLFileWriter xml_out("./XMLDAT");
-  push(xml_out, "t_gauge_ferm_monomials");
+  push(xml_out, "t_leapfrog");
 
   // Read Parameters
   multi1d<int> boundary(Nd);           // Ferm BC's
   std::string monomial_name;           // String for Factory
-  XMLReader param_in("DATA");
 
-  // Snarf it all
-  XMLReader paramtop(param_in, "/HamiltonianTest");
 
   Cfg_t cfg;
   try { 

@@ -15,6 +15,8 @@ using namespace QDP;
 #include <string>
 using namespace std;
 
+using namespace Chroma;
+
 namespace Chroma { 
 
  
@@ -28,13 +30,20 @@ namespace Chroma {
     bool registerAll() 
     {
       bool foo = true;
-      std::string prefix = "TWO_FLAVOR_";
-      std::string suffix = "_FERM_MONOMIAL";
+      std::string prefix = string("TWO_FLAVOR_");
+      std::string suffix = string("_FERM_MONOMIAL");
     
     
       foo &= EvenOddPrecWilsonFermActEnv::registered;
-      foo &= TheMonomialFactory::Instance().registerObject(string("TWO_FLAVOR_WILSON_FERM_MONOMIAL"), createMonomial);
-      
+
+#if 0
+      // This causes a segfault? Why?
+      foo &= TheMonomialFactory::Instance().registerObject(string(prefix + EvenOddPrecWilsonFermActEnv::name + suffix), createMonomial);
+#else
+      // Ugly hack
+     string monomial_name = prefix + "WILSON" + suffix;
+      foo &= TheMonomialFactory::Instance().registerObject(monomial_name, createMonomial);
+#endif
       return foo;
     }
 

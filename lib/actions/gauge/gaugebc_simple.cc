@@ -21,7 +21,7 @@ namespace Chroma {
       return new SimpleGaugeBC(SimpleGaugeBCParams(xml, path));
     }
 
-    const std::string name = "GAUGEBC_SIMPLE";
+    const std::string name = "SIMPLE_GAUGEBC";
     const bool registered = TheGaugeBCFactory::Instance().registerObject(name,
 									 createGaugeBC);
 
