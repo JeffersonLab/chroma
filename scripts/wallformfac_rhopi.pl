@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: wallformfac_rhopi.pl,v 1.11 2004-09-16 06:23:31 edwards Exp $
+# $Id: wallformfac_rhopi.pl,v 1.12 2004-09-16 19:28:46 edwards Exp $
 #
 # Usage
 #   wallformfac_rhopi.pl
@@ -327,12 +327,9 @@ foreach $h ('RHO_PI')
 		  @cp_i = &canonical_momenta(*p_i);
 		}
 
-		@cp_i = &canonical_momenta(*p_i);
-
                 printf "\nTEST: s=$s j=$j k=$k l=$l, g=$g, q=[$qx,$qy,$qz] qsq=$qsq\n";
 
-
-                if ($p_i[$l] == 0) {next;}
+                if ($p_i[$l] == 0) {next;}   # Check this, may not be correct with p_i fixed!!
 
                 printf "\nNEW: s=$s j=$j k=$k l=$l, g=$g\n";
 
