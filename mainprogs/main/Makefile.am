@@ -55,11 +55,11 @@ endif
 ## These are programs still under development. They won't compile in
 ## the check_PROGRAMS line, so we put them here to keep from breaking
 ## make check
-EXTRA_PROGRAMS = qpropadd seqprop seqprop_comp seqprop_collect
+EXTRA_PROGRAMS = qpropadd 
 
-if BUILD_WILSON_LIBS
-EXTRA_PROGRAMS += dwf_seqprop
-endif
+# Currently empty
+#if BUILD_WILSON_LIBS
+#endif
 
 # Currently empty
 #if BUILD_STAGGERED_LIBS
@@ -92,21 +92,6 @@ spectrum_w_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 
 qqq_w_SOURCES= qqq_w.cc
 qqq_w_DEPENDENCIES= build_chroma_libs rebuild_other_libs
-
-seqprop_SOURCES= seqprop.cc
-seqprop_DEPENDENCIES= build_chroma_libs rebuild_other_libs
-
-seqsource_SOURCES= seqsource.cc
-seqsource_DEPENDENCIES= build_chroma_libs rebuild_other_libs
-
-seqprop_comp_SOURCES = seqprop_comp.cc
-seqprop_comp_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
-seqprop_collect_SOURCES = seqprop_collect.cc
-seqprop_collect_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
-dwf_seqprop_SOURCES= dwf_seqprop.cc
-dwf_seqprop_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 
 bar3ptfn_SOURCES= bar3ptfn.cc
 bar3ptfn_DEPENDENCIES= build_chroma_libs rebuild_other_libs
