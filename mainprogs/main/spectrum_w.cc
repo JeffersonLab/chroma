@@ -1,10 +1,13 @@
-// $Id: spectrum_w.cc,v 1.15 2003-10-10 17:50:32 edwards Exp $
+// $Id: spectrum_w.cc,v 1.16 2003-10-30 02:32:16 edwards Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.15  2003-10-10 17:50:32  edwards
+//  Revision 1.16  2003-10-30 02:32:16  edwards
+//  Changed output format and number of vector currents measured.
+//
+//  Revision 1.15  2003/10/10 17:50:32  edwards
 //  Removed some extraneous debugging.
 //
 //  Revision 1.14  2003/10/10 17:48:02  edwards
@@ -412,7 +415,7 @@ int main(int argc, char **argv)
   write(xml_out, "Config_info", gauge_xml);
 
   push(xml_out, "Output_version");
-  write(xml_out, "out_version", 6);
+  write(xml_out, "out_version", 7);
   pop(xml_out);
 
   xml_out.flush();
@@ -508,12 +511,12 @@ int main(int argc, char **argv)
       // Construct the rho vector-current and the pion axial current divergence
       if (input.param.Pt_src)
 	curcor2(u, quark_propagator, quark_propagator, phases, 
-		t0, input.param.j_decay, 4,
+		t0, input.param.j_decay, 3,
 		xml_array, "Point_Point_Meson_Currents");
         
       if (input.param.Sl_src)
 	curcor2(u, quark_propagator, quark_propagator, phases, 
-		t0, input.param.j_decay, 4,
+		t0, input.param.j_decay, 3,
 		xml_array, "Shell_Point_Meson_Currents");
     } // end if (CurrentP)
 
