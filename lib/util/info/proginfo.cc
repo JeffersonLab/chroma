@@ -1,4 +1,4 @@
-//  $Id: proginfo.cc,v 1.5 2005-01-26 14:26:50 zbigniew Exp $
+//  $Id: proginfo.cc,v 1.6 2005-01-31 17:56:15 edwards Exp $
 /*! \file
  *  \brief Print out basic info about this program
  */
@@ -27,7 +27,7 @@ void proginfo(XMLWriter& xml)
 
     push(xml,"code_version");
     write(xml, CHROMA_PACKAGE_NAME, CHROMA_PACKAGE_VERSION);
-    write(xml, QDP_PACKAGE_NAME, QDP_PACKAGE_VERSION);
+    write(xml, "qdp", QDP_PACKAGE_VERSION);
     pop(xml);
 
     std::time_t now;
