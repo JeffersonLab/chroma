@@ -1,7 +1,10 @@
-// $Id: bar3ptfn.cc,v 1.16 2003-09-11 15:17:34 edwards Exp $
+// $Id: bar3ptfn.cc,v 1.17 2003-09-11 15:25:32 edwards Exp $
 //
 // $Log: bar3ptfn.cc,v $
-// Revision 1.16  2003-09-11 15:17:34  edwards
+// Revision 1.17  2003-09-11 15:25:32  edwards
+// Added some diagnostic output.
+//
+// Revision 1.16  2003/09/11 15:17:34  edwards
 // Added try/catch to DATA readers.
 //
 // Revision 1.15  2003/09/10 18:04:22  edwards
@@ -468,8 +471,11 @@ main(int argc, char *argv[])
   cout << endl;
 
   // Read in the configuration along with relevant information.
+  QDP_info("Attempt to initialize the gauge field");
+
   XMLReader gauge_xml;
-  switch (cfg_type) {
+  switch (cfg_type) 
+  {
   case CFG_TYPE_SZIN :
     readSzin(gauge_xml, u, cfg_file);
     break;
@@ -477,6 +483,8 @@ main(int argc, char *argv[])
     cerr << "Configuration type is unsupported." << endl;
     QDP_abort(1);
   }
+
+  QDP_info("Gauge field successfully initialized");
 
   // Instantiate namelist writer for NMLDAT
   XMLFileWriter xml_out("XMLDAT");
@@ -580,10 +588,14 @@ main(int argc, char *argv[])
   // Now loop over the various kappas
   for (int loop=0; loop < numKappa; ++loop) 
   {
+    QDP_info("Mass loop = %d",loop);
+  
     push(xml_array);
     Write(xml_array, loop);
 
     // Read the quark propagator
+    QDP_info("Attempt to read forward propagator");
+  
     LatticePropagator quark_propagator;
     {
       XMLReader prop_xml;
@@ -593,6 +605,9 @@ main(int argc, char *argv[])
 
       write(xml_array, "Forward_prop_info", prop_xml);
     }
+
+    QDP_info("Forward propagator successfully read");
+   
 
     XMLArrayWriter  xml_seq_src(xml_array, numSeq_src);
     push(xml_seq_src, "Sequential_source");
@@ -606,6 +621,8 @@ main(int argc, char *argv[])
       int seq_src_value = Seq_src[seq_src_ctr];
 
       // Read the sequential propagator
+      QDP_info("Attempt to read backward propagator");
+   
       {
 	XMLReader seqprop_xml;
         stringstream prop_file;
@@ -615,6 +632,8 @@ main(int argc, char *argv[])
 	write(xml_array, "Backward_prop_info", seqprop_xml);
       }
 
+      QDP_info("Backward propagator successfully read");
+   
       if ((0 <= seq_src_value) && (seq_src_value <= 9)) {
         write(xml_seq_src, "hadron_type", "BARYON");
       } else if ((10 <= seq_src_value) && (seq_src_value <= 20)) {
