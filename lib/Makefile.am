@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.191 2004-11-17 17:40:42 edwards Exp $
+# $Id: Makefile.am,v 1.192 2004-11-20 15:17:03 mcneile Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -435,7 +435,7 @@ endif
 if BUILD_STAGGERED_LIBS
 libchroma_a_SOURCES += mesphas_s.cc mesphas_follana_s.cc pions_s.cc \
 	follana_io_s.cc fermact_qprop.cc walfil_s.cc baryon_s.cc \
-	stag_scalars_s.cc stag_propShift_s.cc vector_meson_s.cc \
+	stag_scalars_s.cc stag_propShift_s.cc vector_meson_s.cc  srcfil_s.cc  \
 	asqtad_linop_s.cc asq_dsl_s.cc fat7_links_s.cc naik_term_s.cc  \
 	asqtad_fermact_s.cc asqtad_mdagm_s.cc staggered_qprop.cc stag_phases_s.cc
 endif
