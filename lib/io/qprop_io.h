@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qprop_io.h,v 1.26 2005-02-23 19:26:41 edwards Exp $
+// $Id: qprop_io.h,v 1.27 2005-03-07 02:54:15 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -101,7 +101,7 @@ struct ChromaProp_t
 //! Structure for writing to seqsource files
 struct SeqSource_t
 {
-  SeqSourceType    seq_src;
+  std::string      seq_src;
   multi1d<int>     sink_mom;
   int              t_sink;
   multi1d<int>     nrow;
@@ -113,7 +113,7 @@ struct ChromaSeqProp_t
 {
   bool             nonRelSeqProp;
   InvertParam_t    invParam;
-  SeqSourceType    seq_src;
+  std::string      seq_src;
   multi1d<int>     sink_mom;
   int              t_sink;
   multi1d<int>     nrow;

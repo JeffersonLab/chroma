@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 1.29 2005-02-21 19:28:59 edwards Exp $
+// $Id: qprop_io.cc,v 1.30 2005-03-07 02:54:15 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -261,20 +261,11 @@ namespace Chroma
     int version;
     read(paramtop, "version", version);
 
-    int seq_src_value;
     switch (version) 
     {
-    case 1:
-      param.nonRelSeqProp = false;
-      read(paramtop, "Seq_src", seq_src_value);
-      param.seq_src = SeqSourceType(seq_src_value);
-      break;
-
-    case 2:
-      read(paramtop, "nonRelSeqProp", param.nonRelSeqProp);
-      read(paramtop, "Seq_src", seq_src_value);
-      param.seq_src = SeqSourceType(seq_src_value);
-      break;
+      // If you need previous versions, you'll have to go back to
+      // the cvs source and dig for old versions. I'm not sure what
+      // in production needs this support.
 
     case 3:
       read(paramtop, "nonRelSeqProp", param.nonRelSeqProp);
