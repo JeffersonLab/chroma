@@ -43,7 +43,7 @@ check_PROGRAMS = propagator propagator_comp multi_propagator \
         qproptrev
 
 if BUILD_WILSON_LIBS
-check_PROGRAMS += spectrum_w qqq_w bar3ptfn qproptransf 
+check_PROGRAMS += spectrum_w qqq_w bar3ptfn qproptransf wallformfac
 endif
 
 # Currently empty
@@ -58,7 +58,7 @@ endif
 EXTRA_PROGRAMS = qpropadd seqprop seqprop_comp seqprop_collect
 
 if BUILD_WILSON_LIBS
-EXTRA_PROGRAMS += dwf_seqprop wallformfac
+EXTRA_PROGRAMS += dwf_seqprop
 endif
 
 # Currently empty
