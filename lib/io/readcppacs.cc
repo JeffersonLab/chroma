@@ -1,4 +1,4 @@
-// $Id: readcppacs.cc,v 1.1 2005-01-13 16:25:40 mcneile Exp $
+// $Id: readcppacs.cc,v 1.2 2005-01-14 15:33:04 mcneile Exp $
 
 /*! \file
  *  \brief Read a CPPACS gauge configuration 
@@ -74,9 +74,13 @@ typedef unsigned long int   n_uint64_t;
   }
     QDPIO::cout << "Magic number: " << magic_number << endl;
 
+
   if( magic_number != 19920410){
     QDP_error_exit("readCPPACS: unexpected magic number");
   }
+
+  if(byterev)
+    QDPIO::cout<<"Doing bytereversal on the links...\n" ;
 
   // read in the header 
   cfg_in.readArray(header_ildg,1,1020);
@@ -106,7 +110,6 @@ typedef unsigned long int   n_uint64_t;
 
   u = zero ; 
 
-  //  multi1d<LatticeColorMatrixD> uu[4]; 
   LatticeColorMatrixD  uu ; 
 
   ColorMatrixD  uuuD ; 
@@ -119,6 +122,9 @@ typedef unsigned long int   n_uint64_t;
     for(int mu=0; mu < Nd; ++mu) 
       {  
 	read(cfg_in, uuuD );  
+	if(byterev){
+	  QDPUtil::byte_swap((void *)&uuuD.elem(),sizeof(double),2*Nc*Nc);
+	}
 	uuu = uuuD ; 
 	pokeSite(u[mu],uuu,coord); 
       }    
@@ -126,15 +132,6 @@ typedef unsigned long int   n_uint64_t;
   }
 
   cfg_in.close();
-
-  if(byterev){
-    QDPIO::cout<<"Doing bytereversal on the links...\n" ;
-    for(int mu(0);mu<Nd;mu++)
-      //slow but hopefully it works
-      for(int s(0); s < Layout::sitesOnNode(); s++)
-        QDPUtil::byte_swap((void *)&u[mu].elem(s).elem(),sizeof(double),2*Nc*Nc);
-  }
-
 
   END_CODE();
 }
