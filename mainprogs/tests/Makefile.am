@@ -45,7 +45,7 @@ check_PROGRAMS  = t_mesplq t_io t_mesons_w t_conslinop t_hypsmear \
 ## development
 
 EXTRA_PROGRAMS  = t_dslashm t_lwldslash t_spprod t_lwldslash_sse t_follana_io_s t_formfac \
-        t_follana_pion_s t_dwflinop
+        t_follana_pion_s t_dwflinop t_precdwf
 
 
 ## DEPENDENCIES = build_chroma_libs
@@ -88,6 +88,9 @@ t_dwflinop_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_precact_SOURCES = t_precact.cc
 t_precact_DEPENDENCIES = build_chroma_libs rebuild_other_libs
+
+t_precdwf_SOURCES = t_precdwf.cc
+t_precdwf_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_formfac_SOURCES = t_formfac.cc
 t_formfac_DEPENDENCIES = build_chroma_libs rebuild_other_libs
