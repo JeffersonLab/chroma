@@ -1,4 +1,4 @@
-// $Id: plaq_gaugeact.cc,v 1.2 2005-01-13 02:51:51 edwards Exp $
+// $Id: plaq_gaugeact.cc,v 1.3 2005-01-14 02:26:41 edwards Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */
@@ -128,7 +128,7 @@ namespace Chroma
    */
   void
   PlaqGaugeAct::dsdu(multi1d<LatticeColorMatrix>& ds_u,
-		       const Handle< const ConnectState> state) const
+		     const Handle< const ConnectState> state) const
   {
     START_CODE();
 
@@ -140,15 +140,14 @@ namespace Chroma
 
     const multi1d<LatticeColorMatrix>& u = state->getLinks();
 
-    for(int mu = 0; mu < Nd; mu++) {
-      ds_u[mu] = zero;
-    }
+    ds_u = zero;
 
     for(int mu = 0; mu < Nd; ++mu)
     {
-      for(int nu=mu+1; nu<Nd; nu++) {
-	for(int cb=0; cb < 2; cb++) { 
-	  
+      for(int nu=mu+1; nu<Nd; nu++) 
+      {
+	for(int cb=0; cb < 2; cb++) 
+	{ 
 	  tmp_0[rb[cb]] = shift(u[mu], FORWARD, nu)*shift(adj(u[nu]), FORWARD, mu);
 	  tmp_1[rb[cb]] = tmp_0*adj(u[mu]);
 	  tmp_2[rb[cb]] = u[nu]*tmp_1;
@@ -157,7 +156,6 @@ namespace Chroma
 	  ds_u[mu][rb[1-cb]] += shift(tmp_1, BACKWARD, nu)*shift(u[nu], BACKWARD, nu);
 	  tmp_1[rb[cb]] = adj(u[nu])*u[mu];
 	  ds_u[nu][rb[1-cb]] += shift(adj(tmp_0),BACKWARD,mu)*shift(tmp_1, BACKWARD, mu);
-	  
 	}
       }
       
