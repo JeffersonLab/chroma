@@ -1,3 +1,8 @@
+// $Id: unprec_two_flavor_wilson5d_monomial_w.cc,v 1.4 2005-01-10 19:57:02 edwards Exp $
+/*! @file
+ * @brief Two-flavor collection of unpreconditioned 5D ferm monomials
+ */
+
 #include "chromabase.h"
 #include "update/molecdyn/unprec_two_flavor_wilson5d_monomial_w.h"
 #include "update/molecdyn/monomial_factory.h"
