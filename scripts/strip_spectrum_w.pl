@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: strip_spectrum_w.pl,v 1.4 2003-07-01 18:55:53 dgr Exp $
+# $Id: strip_spectrum_w.pl,v 1.5 2003-07-02 14:37:28 edwards Exp $
 #
 # SZIN-style stripper for namelist output of spectrum_w.  Namelist output
 # is presented to the stripper on the STDIN.
@@ -83,7 +83,8 @@ $L_s = $nrow{0} ;
 
 printf "L=%d  numKappa=%d  dir=%s\n", $L_t, $numKappa, $dir ;
 
-if ($FermTypeP eq '"WILSON"') {
+# HACK - in some NML the string was written out as an int...
+if ($FermTypeP eq "WILSON" || $FermTypeP eq "1") {
   printf "Using Wilson Fermions\n";
   $meson_particle{'Wilson_Mesons', 'mesprop[', 0, ']'} = 'a0'    ;
   $meson_particle{'Wilson_Mesons', 'mesprop[', 1, ']'} = 'rho_x' ;
@@ -168,7 +169,8 @@ for($i = 0; $i < $numKappa; ++$i) {
   $wvf_param_i =~ s/[0]*$//      ;
   $wvf_param_i =~ s/p$//         ;
 
-  if ($Wvf_kind eq '"GAUGE_INV_GAUSSIAN"') {
+# HACK - in some NML the string was written as an int
+  if ($Wvf_kind eq "GAUGE_INV_GAUSSIAN" || $Wvf_kind eq "1") {
     $wvf_param_i = 'G' . $wvf_param_i ;
   } else {
     die "Unknown or unsupported Wvf_kind = $Wvf_kind\n" ;
