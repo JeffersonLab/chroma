@@ -1,4 +1,4 @@
-// $Id: t_invert3_precwilson.cc,v 1.3 2004-03-22 17:34:43 bjoo Exp $
+// $Id: t_invert3_precwilson.cc,v 1.4 2004-03-22 17:35:20 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -169,7 +169,7 @@ int main(int argc, char **argv)
   QDPIO::cout << "PrecWilsonOp perf: " << linop_flops << " Mflop/s/node" << endl;
   push(xml, "TimeLinOp");
   write(xml, "time", mydt);
-  write(xml, "flops", linop_flops);
+  write(xml, "mflops", linop_flops);
   pop(xml);
 
   for(iter=1; ; iter <<= 1)
