@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.335 2005-02-21 10:31:48 bjoo Exp $
+# $Id: Makefile.in,v 1.336 2005-02-23 19:27:39 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -146,11 +146,12 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	io/enum_io/enum_simplebctype_io.cc \
 	io/enum_io/enum_srcsnktype_io.cc \
 	io/enum_io/enum_wavetype_io.cc io/enum_io/enum_wvfkind_io.cc \
-	io/gauge_io.cc io/kyugauge_io.cc io/kyuqprop_io.cc \
-	io/milc_io.cc io/overlap_state_info.cc io/readcppacs.cc \
-	io/cppacs_io.cc io/param_io.cc io/qprop_io.cc io/readmilc.cc \
-	io/readszin.cc io/szin_io.cc io/writemilc.cc io/writeszin.cc \
-	io/monomial_io.cc io/hamiltonian_io.cc meas/eig/eig_spec.cc \
+	io/aniso_io.cc io/gauge_io.cc io/kyugauge_io.cc \
+	io/kyuqprop_io.cc io/milc_io.cc io/overlap_state_info.cc \
+	io/readcppacs.cc io/cppacs_io.cc io/param_io.cc io/qprop_io.cc \
+	io/readmilc.cc io/readszin.cc io/smearing_io.cc io/szin_io.cc \
+	io/writemilc.cc io/writeszin.cc io/monomial_io.cc \
+	io/hamiltonian_io.cc meas/eig/eig_spec.cc \
 	meas/eig/eig_spec_array.cc meas/eig/gramschm.cc \
 	meas/eig/gramschm_array.cc meas/eig/ritz.cc \
 	meas/eig/ritz_array.cc meas/eig/sn_jacob.cc \
@@ -337,12 +338,13 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	enum_proptype_io.$(OBJEXT) enum_qdpvolfmt_io.$(OBJEXT) \
 	enum_seqsrctype_io.$(OBJEXT) enum_simplebctype_io.$(OBJEXT) \
 	enum_srcsnktype_io.$(OBJEXT) enum_wavetype_io.$(OBJEXT) \
-	enum_wvfkind_io.$(OBJEXT) gauge_io.$(OBJEXT) \
-	kyugauge_io.$(OBJEXT) kyuqprop_io.$(OBJEXT) milc_io.$(OBJEXT) \
-	overlap_state_info.$(OBJEXT) readcppacs.$(OBJEXT) \
-	cppacs_io.$(OBJEXT) param_io.$(OBJEXT) qprop_io.$(OBJEXT) \
-	readmilc.$(OBJEXT) readszin.$(OBJEXT) szin_io.$(OBJEXT) \
-	writemilc.$(OBJEXT) writeszin.$(OBJEXT) monomial_io.$(OBJEXT) \
+	enum_wvfkind_io.$(OBJEXT) aniso_io.$(OBJEXT) \
+	gauge_io.$(OBJEXT) kyugauge_io.$(OBJEXT) kyuqprop_io.$(OBJEXT) \
+	milc_io.$(OBJEXT) overlap_state_info.$(OBJEXT) \
+	readcppacs.$(OBJEXT) cppacs_io.$(OBJEXT) param_io.$(OBJEXT) \
+	qprop_io.$(OBJEXT) readmilc.$(OBJEXT) readszin.$(OBJEXT) \
+	smearing_io.$(OBJEXT) szin_io.$(OBJEXT) writemilc.$(OBJEXT) \
+	writeszin.$(OBJEXT) monomial_io.$(OBJEXT) \
 	hamiltonian_io.$(OBJEXT) eig_spec.$(OBJEXT) \
 	eig_spec_array.$(OBJEXT) gramschm.$(OBJEXT) \
 	gramschm_array.$(OBJEXT) ritz.$(OBJEXT) ritz_array.$(OBJEXT) \
@@ -536,12 +538,13 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	io/enum_io/enum_srcsnktype_io.h io/enum_io/enum_wavetype_io.h \
 	io/enum_io/enum_heatbathtype_io.h io/enum_io/enum_gaugebc_io.h \
 	io/enum_io/enum_md_integrator_type_io.h \
-	io/enum_io/enum_inner_solver_type_io.h io/eigen_io.h \
-	io/gauge_io.h io/kyugauge_io.h io/milc_io.h io/param_io.h \
-	io/qprop_io.h io/readmilc.h io/readcppacs.h io/cppacs_io.h \
-	io/readszin.h io/szin_io.h io/writemilc.h io/writeszin.h \
-	io/monomial_io.h io/hamiltonian_io.h meas/eig/eig.h \
-	meas/eig/gramschm.h meas/eig/gramschm_array.h meas/eig/ritz.h \
+	io/enum_io/enum_inner_solver_type_io.h io/aniso_io.h \
+	io/eigen_io.h io/gauge_io.h io/kyugauge_io.h io/milc_io.h \
+	io/param_io.h io/qprop_io.h io/readmilc.h io/readcppacs.h \
+	io/cppacs_io.h io/readszin.h io/smearing_io.h io/szin_io.h \
+	io/writemilc.h io/writeszin.h io/monomial_io.h \
+	io/hamiltonian_io.h meas/eig/eig.h meas/eig/gramschm.h \
+	meas/eig/gramschm_array.h meas/eig/ritz.h \
 	meas/eig/ritz_array.h meas/eig/sn_jacob.h \
 	meas/eig/sn_jacob_array.h meas/eig/eig_spec.h \
 	meas/eig/eig_spec_array.h meas/gfix/axgauge.h \
@@ -936,12 +939,13 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	io/enum_io/enum_srcsnktype_io.h io/enum_io/enum_wavetype_io.h \
 	io/enum_io/enum_heatbathtype_io.h io/enum_io/enum_gaugebc_io.h \
 	io/enum_io/enum_md_integrator_type_io.h \
-	io/enum_io/enum_inner_solver_type_io.h io/eigen_io.h \
-	io/gauge_io.h io/kyugauge_io.h io/milc_io.h io/param_io.h \
-	io/qprop_io.h io/readmilc.h io/readcppacs.h io/cppacs_io.h \
-	io/readszin.h io/szin_io.h io/writemilc.h io/writeszin.h \
-	io/monomial_io.h io/hamiltonian_io.h meas/eig/eig.h \
-	meas/eig/gramschm.h meas/eig/gramschm_array.h meas/eig/ritz.h \
+	io/enum_io/enum_inner_solver_type_io.h io/aniso_io.h \
+	io/eigen_io.h io/gauge_io.h io/kyugauge_io.h io/milc_io.h \
+	io/param_io.h io/qprop_io.h io/readmilc.h io/readcppacs.h \
+	io/cppacs_io.h io/readszin.h io/smearing_io.h io/szin_io.h \
+	io/writemilc.h io/writeszin.h io/monomial_io.h \
+	io/hamiltonian_io.h meas/eig/eig.h meas/eig/gramschm.h \
+	meas/eig/gramschm_array.h meas/eig/ritz.h \
 	meas/eig/ritz_array.h meas/eig/sn_jacob.h \
 	meas/eig/sn_jacob_array.h meas/eig/eig_spec.h \
 	meas/eig/eig_spec_array.h meas/gfix/axgauge.h \
@@ -1235,11 +1239,12 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	io/enum_io/enum_simplebctype_io.cc \
 	io/enum_io/enum_srcsnktype_io.cc \
 	io/enum_io/enum_wavetype_io.cc io/enum_io/enum_wvfkind_io.cc \
-	io/gauge_io.cc io/kyugauge_io.cc io/kyuqprop_io.cc \
-	io/milc_io.cc io/overlap_state_info.cc io/readcppacs.cc \
-	io/cppacs_io.cc io/param_io.cc io/qprop_io.cc io/readmilc.cc \
-	io/readszin.cc io/szin_io.cc io/writemilc.cc io/writeszin.cc \
-	io/monomial_io.cc io/hamiltonian_io.cc meas/eig/eig_spec.cc \
+	io/aniso_io.cc io/gauge_io.cc io/kyugauge_io.cc \
+	io/kyuqprop_io.cc io/milc_io.cc io/overlap_state_info.cc \
+	io/readcppacs.cc io/cppacs_io.cc io/param_io.cc io/qprop_io.cc \
+	io/readmilc.cc io/readszin.cc io/smearing_io.cc io/szin_io.cc \
+	io/writemilc.cc io/writeszin.cc io/monomial_io.cc \
+	io/hamiltonian_io.cc meas/eig/eig_spec.cc \
 	meas/eig/eig_spec_array.cc meas/eig/gramschm.cc \
 	meas/eig/gramschm_array.cc meas/eig/ritz.cc \
 	meas/eig/ritz_array.cc meas/eig/sn_jacob.cc \
@@ -1478,6 +1483,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BuildingBlocks_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/D_j_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DjDk_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aniso_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ape_smear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/asq_dsl_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/asqtad_cps_wrapper_qprop.Po@am__quote@
@@ -1685,6 +1691,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simple_fermbc_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simple_fermbc_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sink_smear2.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/smearing_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sn_jacob.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sn_jacob_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/srcfil.Po@am__quote@
@@ -2606,6 +2613,20 @@ enum_wvfkind_io.obj: io/enum_io/enum_wvfkind_io.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o enum_wvfkind_io.obj `if test -f 'io/enum_io/enum_wvfkind_io.cc'; then $(CYGPATH_W) 'io/enum_io/enum_wvfkind_io.cc'; else $(CYGPATH_W) '$(srcdir)/io/enum_io/enum_wvfkind_io.cc'; fi`
 
+aniso_io.o: io/aniso_io.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT aniso_io.o -MD -MP -MF "$(DEPDIR)/aniso_io.Tpo" -c -o aniso_io.o `test -f 'io/aniso_io.cc' || echo '$(srcdir)/'`io/aniso_io.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aniso_io.Tpo" "$(DEPDIR)/aniso_io.Po"; else rm -f "$(DEPDIR)/aniso_io.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='io/aniso_io.cc' object='aniso_io.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o aniso_io.o `test -f 'io/aniso_io.cc' || echo '$(srcdir)/'`io/aniso_io.cc
+
+aniso_io.obj: io/aniso_io.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT aniso_io.obj -MD -MP -MF "$(DEPDIR)/aniso_io.Tpo" -c -o aniso_io.obj `if test -f 'io/aniso_io.cc'; then $(CYGPATH_W) 'io/aniso_io.cc'; else $(CYGPATH_W) '$(srcdir)/io/aniso_io.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aniso_io.Tpo" "$(DEPDIR)/aniso_io.Po"; else rm -f "$(DEPDIR)/aniso_io.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='io/aniso_io.cc' object='aniso_io.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o aniso_io.obj `if test -f 'io/aniso_io.cc'; then $(CYGPATH_W) 'io/aniso_io.cc'; else $(CYGPATH_W) '$(srcdir)/io/aniso_io.cc'; fi`
+
 gauge_io.o: io/gauge_io.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gauge_io.o -MD -MP -MF "$(DEPDIR)/gauge_io.Tpo" -c -o gauge_io.o `test -f 'io/gauge_io.cc' || echo '$(srcdir)/'`io/gauge_io.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/gauge_io.Tpo" "$(DEPDIR)/gauge_io.Po"; else rm -f "$(DEPDIR)/gauge_io.Tpo"; exit 1; fi
@@ -2759,6 +2780,20 @@ readszin.obj: io/readszin.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='io/readszin.cc' object='readszin.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o readszin.obj `if test -f 'io/readszin.cc'; then $(CYGPATH_W) 'io/readszin.cc'; else $(CYGPATH_W) '$(srcdir)/io/readszin.cc'; fi`
+
+smearing_io.o: io/smearing_io.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT smearing_io.o -MD -MP -MF "$(DEPDIR)/smearing_io.Tpo" -c -o smearing_io.o `test -f 'io/smearing_io.cc' || echo '$(srcdir)/'`io/smearing_io.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/smearing_io.Tpo" "$(DEPDIR)/smearing_io.Po"; else rm -f "$(DEPDIR)/smearing_io.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='io/smearing_io.cc' object='smearing_io.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o smearing_io.o `test -f 'io/smearing_io.cc' || echo '$(srcdir)/'`io/smearing_io.cc
+
+smearing_io.obj: io/smearing_io.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT smearing_io.obj -MD -MP -MF "$(DEPDIR)/smearing_io.Tpo" -c -o smearing_io.obj `if test -f 'io/smearing_io.cc'; then $(CYGPATH_W) 'io/smearing_io.cc'; else $(CYGPATH_W) '$(srcdir)/io/smearing_io.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/smearing_io.Tpo" "$(DEPDIR)/smearing_io.Po"; else rm -f "$(DEPDIR)/smearing_io.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='io/smearing_io.cc' object='smearing_io.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o smearing_io.obj `if test -f 'io/smearing_io.cc'; then $(CYGPATH_W) 'io/smearing_io.cc'; else $(CYGPATH_W) '$(srcdir)/io/smearing_io.cc'; fi`
 
 szin_io.o: io/szin_io.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT szin_io.o -MD -MP -MF "$(DEPDIR)/szin_io.Tpo" -c -o szin_io.o `test -f 'io/szin_io.cc' || echo '$(srcdir)/'`io/szin_io.cc; \
