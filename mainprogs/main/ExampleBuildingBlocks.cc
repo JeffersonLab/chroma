@@ -24,7 +24,7 @@
 //#####################################################################################
 
 static const char* const CVSExampleBuildingBlocks_hh =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/mainprogs/main/ExampleBuildingBlocks.cc,v 1.3 2003-08-27 22:08:41 edwards Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/mainprogs/main/ExampleBuildingBlocks.cc,v 1.4 2003-09-11 00:46:55 edwards Exp $";
 
 //#####################################################################################
 //#####################################################################################
@@ -392,7 +392,7 @@ int main( int argc, char** argv )
 
   QDP_finalize();
 
-  return 0;
+  exit(0);
 }
 
 //#####################################################################################
