@@ -1,4 +1,4 @@
-// $Id: gauge_startup.cc,v 1.8 2004-12-08 21:43:33 edwards Exp $
+// $Id: gauge_startup.cc,v 1.9 2004-12-21 20:23:59 edwards Exp $
 /*! \file
  *  \brief Initialize the gauge fields
  */
@@ -32,6 +32,7 @@ void gaugeStartup(XMLReader& gauge_file_xml,
 		  multi1d<LatticeColorMatrix>& u,
 		  Cfg_t& cfg)
 {
+  u.resize(Nd);
 
   switch (cfg.cfg_type) 
   {
@@ -62,7 +63,6 @@ void gaugeStartup(XMLReader& gauge_file_xml,
 
   case CFG_TYPE_UNIT:
     QDPIO::cout << "Starting up unit gauge (free) config" << endl;
-    u.resize(Nd);
     u = 1;
     break; 
 

@@ -1,4 +1,4 @@
-// $Id: hotst.cc,v 1.6 2004-07-28 02:38:06 edwards Exp $
+// $Id: hotst.cc,v 1.7 2004-12-21 20:23:59 edwards Exp $
 // HOTST
 
 /*! \file
@@ -21,7 +21,7 @@ using namespace QDP;
  *
  * Arguments:
  *
- *  \param u          Gauge field               (Modify)
+ *  \param u          Gauge field               (Write)
  *
  *
  * NOTE!!!!: we are using a hack. The twelth_order exponentiation followed
@@ -34,6 +34,8 @@ using namespace QDP;
 void HotSt(multi1d<LatticeColorMatrix>& u)
 {
   START_CODE();
+
+  u.resize(Nd);
 
   for(int mu=0; mu<u.size(); ++mu)
   {
