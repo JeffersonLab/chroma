@@ -1,4 +1,4 @@
-// $Id: readszin.cc,v 1.4 2003-04-02 22:28:21 edwards Exp $
+// $Id: readszin.cc,v 1.5 2003-04-17 20:09:38 dgr Exp $
 
 /*! \file
  *  \brief Read in a configuration written by SZIN up to configuration version 7.
@@ -8,6 +8,9 @@
 #include "io/readszin.h"
 #include "primitives.h"
 #include "qdp_util.h"    // from QDP
+
+#include <string>
+using std::string;
 
 using namespace QDP;
 
@@ -90,17 +93,21 @@ void readSzin2(multi1d<LatticeColorMatrix>& u, char cfg_file[], Seed& seed_old)
    *  read (cfg_in) date(1:date_size), banner(1:banner_size), 
    *      cfg_version;
    */
+
+  cerr << "HACK - not assigning date" << endl;
   for(i=0; i < date_size; ++i)
   {
     read(cfg_in,j);
-    date[i] = j;
+    //    date[i] = j;
   }
   date[date_size] = '\0';
 
+  cerr << "HACK - not assigning banner" << endl;
   for(i=0; i < banner_size; ++i)
   {
     read(cfg_in,j);
-    banner[i] = j;
+    //    banner[i] = j;
+    cerr << "HACK - not assigning banner" << endl;
   }
   banner[banner_size] = '\0';
 

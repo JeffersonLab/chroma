@@ -9,16 +9,6 @@
 #ifndef __qprop_io_h__
 #define __qprop_io_h__
 
-struct PropHead{
-  Real kappa;
-  int source_smearingparam;
-  int source_type;		// S-wave (0) or P-wave  (1)
-  int source_direction;         // S-wave (0);   P-wave x(0) y(1) z(2)
-  int sink_smearingparam;
-  int sink_type;
-  int sink_direction;
-};
-
 /*
  *  Routines for reading and writing propagator
  */
