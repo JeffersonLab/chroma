@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.17 2003-03-28 05:35:33 edwards Exp $
+# $Id: Makefile.am,v 1.18 2003-03-29 05:46:19 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -68,7 +68,8 @@ HDRS =  chroma.h chromabase.h chromainc.h primitives.h defs.h common_declaration
 #
 GENERIC_SRCS = $(HDRS) gaus_smear.cc taproj.cc hotst.cc expm12.cc \
                klein_gord.cc mesplq.cc reunit.cc sftmom.cc srcfil.cc \
-               readszin.cc su3proj.cc hyp_smear.cc su2extract.cc sunfill.cc
+               readszin.cc su3proj.cc hyp_smear.cc su2extract.cc sunfill.cc \
+	       invcg2m.cc
 
 #
 # Object files to add if building the Wilson Builds...
