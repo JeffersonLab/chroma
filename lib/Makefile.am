@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.190 2004-11-17 16:51:45 edwards Exp $
+# $Id: Makefile.am,v 1.191 2004-11-17 17:40:42 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -273,7 +273,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/improvement_terms_s.h \
 	actions/ferm/linop/linop_s.h \
 	io/follana_io_s.h io/io_s.h \
-	meas/eig/eig_s.h meas/hadron/baryon_w.h \
+	meas/eig/eig_s.h meas/hadron/baryon_s.h \
 	meas/hadron/hadron_s.h \
 	meas/hadron/mesphas_follana_s.h meas/hadron/mesphas_s.h \
 	meas/hadron/pions_s.h  meas/hadron/walfil_s.h \
