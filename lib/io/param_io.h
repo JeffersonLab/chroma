@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: param_io.h,v 1.13 2004-04-05 16:36:18 edwards Exp $
+// $Id: param_io.h,v 1.14 2004-04-14 20:59:09 edwards Exp $
 /*! \file
  *  \brief Reunitarize (to a SU(N)) inplace the matrix A under some option
  */
@@ -46,6 +46,7 @@ enum CfgType {
 enum PropType {
   PROP_TYPE_SCIDAC = 2,
   PROP_TYPE_SZIN,
+  PROP_TYPE_KYU,
 };
 
 

@@ -1,4 +1,4 @@
-// $Id: param_io.cc,v 1.18 2004-04-14 12:53:21 bjoo Exp $
+// $Id: param_io.cc,v 1.19 2004-04-14 20:59:09 edwards Exp $
 /*! \file
  *  \brief Various parameter readers/writers for main programs
  */
@@ -158,6 +158,8 @@ void read(XMLReader& xml, const string& path, PropType& param)
     param = PROP_TYPE_SZIN;
   else if (prop_type_str == "SCIDAC")
     param = PROP_TYPE_SCIDAC;
+  else if (prop_type_str == "KYU")
+    param = PROP_TYPE_KYU;
   else 
   {
     QDPIO::cerr << "Unsupported propagator type" << endl;
