@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.230 2005-01-13 15:55:02 bjoo Exp $
+# $Id: Makefile.am,v 1.231 2005-01-13 15:58:06 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -128,21 +128,27 @@ nobase_include_HEADERS = \
 	update/heatbath/su3_hb_sweep.h \
 	update/molecdyn/molecdyn.h \
 	update/molecdyn/field_state.h \
+	update/molecdyn/monomial/monomial.h \
 	update/molecdyn/monomial/abs_monomial.h \
 	update/molecdyn/monomial/monomial_factory.h \
 	update/molecdyn/monomial/gauge_monomial.h \
+	update/molecdyn/hamiltonian/hamiltonian.h \
 	update/molecdyn/hamiltonian/abs_hamiltonian.h \
 	update/molecdyn/hamiltonian/exact_hamiltonian.h \
+	update/molecdyn/integrator/integrator.h \
 	update/molecdyn/integrator/abs_integrator.h \
 	update/molecdyn/integrator/md_integrator_factory.h \
 	update/molecdyn/integrator/lcm_pqp_leapfrog.h \
+	update/molecdyn/hmc/hmc.h\
 	update/molecdyn/hmc/abs_hmc.h \
 	update/molecdyn/hmc/lcm_hmc.h \
 	update/molecdyn/hmc/global_metropolis_accrej.h \
+	update/molecdyn/monomial/monomial.h \
 	update/molecdyn/monomial/unprec_two_flavor_wilson_monomial_w.h \
 	update/molecdyn/monomial/prec_two_flavor_wilson_monomial_w.h \
 	update/molecdyn/monomial/unprec_two_flavor_wilson5d_monomial_w.h \
 	update/molecdyn/monomial/prec_two_flavor_wilson5d_monomial_w.h \
+	update/molecdyn/predictor/predictor.h \
 	update/molecdyn/predictor/chrono_predictor.h \
 	update/molecdyn/predictor/chrono_predictor_factory.h \
 	update/molecdyn/predictor/zero_guess_predictor.h \

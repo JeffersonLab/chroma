@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.307 2005-01-13 15:10:51 bjoo Exp $
+# $Id: Makefile.in,v 1.308 2005-01-13 15:58:06 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -164,11 +164,11 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	util/gauge/sunfill.cc util/gauge/sun_proj.cc \
 	util/gauge/taproj.cc util/gauge/unit_check.cc \
 	util/info/printgeom.cc util/info/proginfo.cc \
-	update/molecdyn/gauge_monomial.cc \
-	update/molecdyn/lcm_pqp_leapfrog.cc \
-	update/molecdyn/global_metropolis_accrej.cc \
-	update/molecdyn/zero_guess_predictor.cc \
-	update/molecdyn/last_solution_predictor.cc \
+	update/molecdyn/monomial/gauge_monomial.cc \
+	update/molecdyn/integrator/lcm_pqp_leapfrog.cc \
+	update/molecdyn/hmc/global_metropolis_accrej.cc \
+	update/molecdyn/predictor/zero_guess_predictor.cc \
+	update/molecdyn/predictor/last_solution_predictor.cc \
 	actions/ferm/fermacts/overlap_fermact_base_w.cc \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.cc \
 	actions/ferm/fermacts/prec_dwf_fermact_array_w.cc \
@@ -243,10 +243,10 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/hadron/wallrhopiff_w.cc meas/hadron/wall_qprop_w.cc \
 	meas/sources/d_src_w.cc meas/sources/p_src_w.cc \
 	util/ferm/gammasgn_w.cc \
-	update/molecdyn/unprec_two_flavor_wilson_monomial_w.cc \
-	update/molecdyn/prec_two_flavor_wilson_monomial_w.cc \
-	update/molecdyn/unprec_two_flavor_wilson5d_monomial_w.cc \
-	update/molecdyn/prec_two_flavor_wilson5d_monomial_w.cc \
+	update/molecdyn/monomial/unprec_two_flavor_wilson_monomial_w.cc \
+	update/molecdyn/monomial/prec_two_flavor_wilson_monomial_w.cc \
+	update/molecdyn/monomial/unprec_two_flavor_wilson5d_monomial_w.cc \
+	update/molecdyn/monomial/prec_two_flavor_wilson5d_monomial_w.cc \
 	io/inline_io.cc meas/inline/glue/inline_plaquette.cc \
 	meas/inline/glue/inline_polylp.cc \
 	actions/ferm/linop/lwldslash_w_sse.cc \
@@ -513,25 +513,30 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	update/heatbath/su3hb.h update/heatbath/u_staple.h \
 	update/heatbath/hb_params.h update/heatbath/su2_hb_update.h \
 	update/heatbath/su3_hb_sweep.h update/molecdyn/molecdyn.h \
-	update/molecdyn/molecdyn_w.h update/molecdyn/field_state.h \
-	update/molecdyn/abs_monomial.h \
-	update/molecdyn/monomial_factory.h \
-	update/molecdyn/gauge_monomial.h \
-	update/molecdyn/abs_hamiltonian.h \
-	update/molecdyn/exact_hamiltonian.h \
-	update/molecdyn/abs_integrator.h \
-	update/molecdyn/md_integrator_factory.h \
-	update/molecdyn/lcm_pqp_leapfrog.h update/molecdyn/abs_hmc.h \
-	update/molecdyn/lcm_hmc.h \
-	update/molecdyn/unprec_two_flavor_wilson_monomial_w.h \
-	update/molecdyn/prec_two_flavor_wilson_monomial_w.h \
-	update/molecdyn/unprec_two_flavor_wilson5d_monomial_w.h \
-	update/molecdyn/prec_two_flavor_wilson5d_monomial_w.h \
-	update/molecdyn/global_metropolis_accrej.h \
-	update/molecdyn/chrono_predictor.h \
-	update/molecdyn/chrono_predictor_factory.h \
-	update/molecdyn/zero_guess_predictor.h \
-	update/molecdyn/last_solution_predictor.h \
+	update/molecdyn/field_state.h \
+	update/molecdyn/monomial/monomial.h \
+	update/molecdyn/monomial/abs_monomial.h \
+	update/molecdyn/monomial/monomial_factory.h \
+	update/molecdyn/monomial/gauge_monomial.h \
+	update/molecdyn/hamiltonian/hamiltonian.h \
+	update/molecdyn/hamiltonian/abs_hamiltonian.h \
+	update/molecdyn/hamiltonian/exact_hamiltonian.h \
+	update/molecdyn/integrator/integrator.h \
+	update/molecdyn/integrator/abs_integrator.h \
+	update/molecdyn/integrator/md_integrator_factory.h \
+	update/molecdyn/integrator/lcm_pqp_leapfrog.h \
+	update/molecdyn/hmc/hmc.h update/molecdyn/hmc/abs_hmc.h \
+	update/molecdyn/hmc/lcm_hmc.h \
+	update/molecdyn/hmc/global_metropolis_accrej.h \
+	update/molecdyn/monomial/unprec_two_flavor_wilson_monomial_w.h \
+	update/molecdyn/monomial/prec_two_flavor_wilson_monomial_w.h \
+	update/molecdyn/monomial/unprec_two_flavor_wilson5d_monomial_w.h \
+	update/molecdyn/monomial/prec_two_flavor_wilson5d_monomial_w.h \
+	update/molecdyn/predictor/predictor.h \
+	update/molecdyn/predictor/chrono_predictor.h \
+	update/molecdyn/predictor/chrono_predictor_factory.h \
+	update/molecdyn/predictor/zero_guess_predictor.h \
+	update/molecdyn/predictor/last_solution_predictor.h \
 	actions/ferm/fermacts/fermacts_w.h \
 	actions/ferm/fermacts/fermact_factory_w.h \
 	actions/ferm/fermacts/overlap_fermact_base_w.h \
@@ -864,25 +869,31 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	update/heatbath/su3hb.h update/heatbath/u_staple.h \
 	update/heatbath/hb_params.h update/heatbath/su2_hb_update.h \
 	update/heatbath/su3_hb_sweep.h update/molecdyn/molecdyn.h \
-	update/molecdyn/molecdyn_w.h update/molecdyn/field_state.h \
-	update/molecdyn/abs_monomial.h \
-	update/molecdyn/monomial_factory.h \
-	update/molecdyn/gauge_monomial.h \
-	update/molecdyn/abs_hamiltonian.h \
-	update/molecdyn/exact_hamiltonian.h \
-	update/molecdyn/abs_integrator.h \
-	update/molecdyn/md_integrator_factory.h \
-	update/molecdyn/lcm_pqp_leapfrog.h update/molecdyn/abs_hmc.h \
-	update/molecdyn/lcm_hmc.h \
-	update/molecdyn/unprec_two_flavor_wilson_monomial_w.h \
-	update/molecdyn/prec_two_flavor_wilson_monomial_w.h \
-	update/molecdyn/unprec_two_flavor_wilson5d_monomial_w.h \
-	update/molecdyn/prec_two_flavor_wilson5d_monomial_w.h \
-	update/molecdyn/global_metropolis_accrej.h \
-	update/molecdyn/chrono_predictor.h \
-	update/molecdyn/chrono_predictor_factory.h \
-	update/molecdyn/zero_guess_predictor.h \
-	update/molecdyn/last_solution_predictor.h \
+	update/molecdyn/field_state.h \
+	update/molecdyn/monomial/monomial.h \
+	update/molecdyn/monomial/abs_monomial.h \
+	update/molecdyn/monomial/monomial_factory.h \
+	update/molecdyn/monomial/gauge_monomial.h \
+	update/molecdyn/hamiltonian/hamiltonian.h \
+	update/molecdyn/hamiltonian/abs_hamiltonian.h \
+	update/molecdyn/hamiltonian/exact_hamiltonian.h \
+	update/molecdyn/integrator/integrator.h \
+	update/molecdyn/integrator/abs_integrator.h \
+	update/molecdyn/integrator/md_integrator_factory.h \
+	update/molecdyn/integrator/lcm_pqp_leapfrog.h \
+	update/molecdyn/hmc/hmc.h update/molecdyn/hmc/abs_hmc.h \
+	update/molecdyn/hmc/lcm_hmc.h \
+	update/molecdyn/hmc/global_metropolis_accrej.h \
+	update/molecdyn/monomial/monomial.h \
+	update/molecdyn/monomial/unprec_two_flavor_wilson_monomial_w.h \
+	update/molecdyn/monomial/prec_two_flavor_wilson_monomial_w.h \
+	update/molecdyn/monomial/unprec_two_flavor_wilson5d_monomial_w.h \
+	update/molecdyn/monomial/prec_two_flavor_wilson5d_monomial_w.h \
+	update/molecdyn/predictor/predictor.h \
+	update/molecdyn/predictor/chrono_predictor.h \
+	update/molecdyn/predictor/chrono_predictor_factory.h \
+	update/molecdyn/predictor/zero_guess_predictor.h \
+	update/molecdyn/predictor/last_solution_predictor.h \
 	actions/ferm/fermacts/fermacts_w.h \
 	actions/ferm/fermacts/fermact_factory_w.h \
 	actions/ferm/fermacts/overlap_fermact_base_w.h \
@@ -1112,11 +1123,11 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	util/gauge/sunfill.cc util/gauge/sun_proj.cc \
 	util/gauge/taproj.cc util/gauge/unit_check.cc \
 	util/info/printgeom.cc util/info/proginfo.cc \
-	update/molecdyn/gauge_monomial.cc \
-	update/molecdyn/lcm_pqp_leapfrog.cc \
-	update/molecdyn/global_metropolis_accrej.cc \
-	update/molecdyn/zero_guess_predictor.cc \
-	update/molecdyn/last_solution_predictor.cc \
+	update/molecdyn/monomial/gauge_monomial.cc \
+	update/molecdyn/integrator/lcm_pqp_leapfrog.cc \
+	update/molecdyn/hmc/global_metropolis_accrej.cc \
+	update/molecdyn/predictor/zero_guess_predictor.cc \
+	update/molecdyn/predictor/last_solution_predictor.cc \
 	actions/ferm/fermacts/overlap_fermact_base_w.cc \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.cc \
 	actions/ferm/fermacts/prec_dwf_fermact_array_w.cc \
@@ -1191,10 +1202,10 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/hadron/wallrhopiff_w.cc meas/hadron/wall_qprop_w.cc \
 	meas/sources/d_src_w.cc meas/sources/p_src_w.cc \
 	util/ferm/gammasgn_w.cc \
-	update/molecdyn/unprec_two_flavor_wilson_monomial_w.cc \
-	update/molecdyn/prec_two_flavor_wilson_monomial_w.cc \
-	update/molecdyn/unprec_two_flavor_wilson5d_monomial_w.cc \
-	update/molecdyn/prec_two_flavor_wilson5d_monomial_w.cc \
+	update/molecdyn/monomial/unprec_two_flavor_wilson_monomial_w.cc \
+	update/molecdyn/monomial/prec_two_flavor_wilson_monomial_w.cc \
+	update/molecdyn/monomial/unprec_two_flavor_wilson5d_monomial_w.cc \
+	update/molecdyn/monomial/prec_two_flavor_wilson5d_monomial_w.cc \
 	io/inline_io.cc meas/inline/glue/inline_plaquette.cc \
 	meas/inline/glue/inline_polylp.cc $(am__append_4) \
 	$(am__append_6) $(am__append_8) \
@@ -3263,75 +3274,75 @@ proginfo.obj: util/info/proginfo.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o proginfo.obj `if test -f 'util/info/proginfo.cc'; then $(CYGPATH_W) 'util/info/proginfo.cc'; else $(CYGPATH_W) '$(srcdir)/util/info/proginfo.cc'; fi`
 
-gauge_monomial.o: update/molecdyn/gauge_monomial.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gauge_monomial.o -MD -MP -MF "$(DEPDIR)/gauge_monomial.Tpo" -c -o gauge_monomial.o `test -f 'update/molecdyn/gauge_monomial.cc' || echo '$(srcdir)/'`update/molecdyn/gauge_monomial.cc; \
+gauge_monomial.o: update/molecdyn/monomial/gauge_monomial.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gauge_monomial.o -MD -MP -MF "$(DEPDIR)/gauge_monomial.Tpo" -c -o gauge_monomial.o `test -f 'update/molecdyn/monomial/gauge_monomial.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/gauge_monomial.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/gauge_monomial.Tpo" "$(DEPDIR)/gauge_monomial.Po"; else rm -f "$(DEPDIR)/gauge_monomial.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/gauge_monomial.cc' object='gauge_monomial.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/gauge_monomial.cc' object='gauge_monomial.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o gauge_monomial.o `test -f 'update/molecdyn/gauge_monomial.cc' || echo '$(srcdir)/'`update/molecdyn/gauge_monomial.cc
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o gauge_monomial.o `test -f 'update/molecdyn/monomial/gauge_monomial.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/gauge_monomial.cc
 
-gauge_monomial.obj: update/molecdyn/gauge_monomial.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gauge_monomial.obj -MD -MP -MF "$(DEPDIR)/gauge_monomial.Tpo" -c -o gauge_monomial.obj `if test -f 'update/molecdyn/gauge_monomial.cc'; then $(CYGPATH_W) 'update/molecdyn/gauge_monomial.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/gauge_monomial.cc'; fi`; \
+gauge_monomial.obj: update/molecdyn/monomial/gauge_monomial.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gauge_monomial.obj -MD -MP -MF "$(DEPDIR)/gauge_monomial.Tpo" -c -o gauge_monomial.obj `if test -f 'update/molecdyn/monomial/gauge_monomial.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/gauge_monomial.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/gauge_monomial.cc'; fi`; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/gauge_monomial.Tpo" "$(DEPDIR)/gauge_monomial.Po"; else rm -f "$(DEPDIR)/gauge_monomial.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/gauge_monomial.cc' object='gauge_monomial.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/gauge_monomial.cc' object='gauge_monomial.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o gauge_monomial.obj `if test -f 'update/molecdyn/gauge_monomial.cc'; then $(CYGPATH_W) 'update/molecdyn/gauge_monomial.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/gauge_monomial.cc'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o gauge_monomial.obj `if test -f 'update/molecdyn/monomial/gauge_monomial.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/gauge_monomial.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/gauge_monomial.cc'; fi`
 
-lcm_pqp_leapfrog.o: update/molecdyn/lcm_pqp_leapfrog.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lcm_pqp_leapfrog.o -MD -MP -MF "$(DEPDIR)/lcm_pqp_leapfrog.Tpo" -c -o lcm_pqp_leapfrog.o `test -f 'update/molecdyn/lcm_pqp_leapfrog.cc' || echo '$(srcdir)/'`update/molecdyn/lcm_pqp_leapfrog.cc; \
+lcm_pqp_leapfrog.o: update/molecdyn/integrator/lcm_pqp_leapfrog.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lcm_pqp_leapfrog.o -MD -MP -MF "$(DEPDIR)/lcm_pqp_leapfrog.Tpo" -c -o lcm_pqp_leapfrog.o `test -f 'update/molecdyn/integrator/lcm_pqp_leapfrog.cc' || echo '$(srcdir)/'`update/molecdyn/integrator/lcm_pqp_leapfrog.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/lcm_pqp_leapfrog.Tpo" "$(DEPDIR)/lcm_pqp_leapfrog.Po"; else rm -f "$(DEPDIR)/lcm_pqp_leapfrog.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/lcm_pqp_leapfrog.cc' object='lcm_pqp_leapfrog.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/integrator/lcm_pqp_leapfrog.cc' object='lcm_pqp_leapfrog.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lcm_pqp_leapfrog.o `test -f 'update/molecdyn/lcm_pqp_leapfrog.cc' || echo '$(srcdir)/'`update/molecdyn/lcm_pqp_leapfrog.cc
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lcm_pqp_leapfrog.o `test -f 'update/molecdyn/integrator/lcm_pqp_leapfrog.cc' || echo '$(srcdir)/'`update/molecdyn/integrator/lcm_pqp_leapfrog.cc
 
-lcm_pqp_leapfrog.obj: update/molecdyn/lcm_pqp_leapfrog.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lcm_pqp_leapfrog.obj -MD -MP -MF "$(DEPDIR)/lcm_pqp_leapfrog.Tpo" -c -o lcm_pqp_leapfrog.obj `if test -f 'update/molecdyn/lcm_pqp_leapfrog.cc'; then $(CYGPATH_W) 'update/molecdyn/lcm_pqp_leapfrog.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/lcm_pqp_leapfrog.cc'; fi`; \
+lcm_pqp_leapfrog.obj: update/molecdyn/integrator/lcm_pqp_leapfrog.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lcm_pqp_leapfrog.obj -MD -MP -MF "$(DEPDIR)/lcm_pqp_leapfrog.Tpo" -c -o lcm_pqp_leapfrog.obj `if test -f 'update/molecdyn/integrator/lcm_pqp_leapfrog.cc'; then $(CYGPATH_W) 'update/molecdyn/integrator/lcm_pqp_leapfrog.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/integrator/lcm_pqp_leapfrog.cc'; fi`; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/lcm_pqp_leapfrog.Tpo" "$(DEPDIR)/lcm_pqp_leapfrog.Po"; else rm -f "$(DEPDIR)/lcm_pqp_leapfrog.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/lcm_pqp_leapfrog.cc' object='lcm_pqp_leapfrog.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/integrator/lcm_pqp_leapfrog.cc' object='lcm_pqp_leapfrog.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lcm_pqp_leapfrog.obj `if test -f 'update/molecdyn/lcm_pqp_leapfrog.cc'; then $(CYGPATH_W) 'update/molecdyn/lcm_pqp_leapfrog.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/lcm_pqp_leapfrog.cc'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lcm_pqp_leapfrog.obj `if test -f 'update/molecdyn/integrator/lcm_pqp_leapfrog.cc'; then $(CYGPATH_W) 'update/molecdyn/integrator/lcm_pqp_leapfrog.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/integrator/lcm_pqp_leapfrog.cc'; fi`
 
-global_metropolis_accrej.o: update/molecdyn/global_metropolis_accrej.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT global_metropolis_accrej.o -MD -MP -MF "$(DEPDIR)/global_metropolis_accrej.Tpo" -c -o global_metropolis_accrej.o `test -f 'update/molecdyn/global_metropolis_accrej.cc' || echo '$(srcdir)/'`update/molecdyn/global_metropolis_accrej.cc; \
+global_metropolis_accrej.o: update/molecdyn/hmc/global_metropolis_accrej.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT global_metropolis_accrej.o -MD -MP -MF "$(DEPDIR)/global_metropolis_accrej.Tpo" -c -o global_metropolis_accrej.o `test -f 'update/molecdyn/hmc/global_metropolis_accrej.cc' || echo '$(srcdir)/'`update/molecdyn/hmc/global_metropolis_accrej.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/global_metropolis_accrej.Tpo" "$(DEPDIR)/global_metropolis_accrej.Po"; else rm -f "$(DEPDIR)/global_metropolis_accrej.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/global_metropolis_accrej.cc' object='global_metropolis_accrej.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/hmc/global_metropolis_accrej.cc' object='global_metropolis_accrej.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o global_metropolis_accrej.o `test -f 'update/molecdyn/global_metropolis_accrej.cc' || echo '$(srcdir)/'`update/molecdyn/global_metropolis_accrej.cc
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o global_metropolis_accrej.o `test -f 'update/molecdyn/hmc/global_metropolis_accrej.cc' || echo '$(srcdir)/'`update/molecdyn/hmc/global_metropolis_accrej.cc
 
-global_metropolis_accrej.obj: update/molecdyn/global_metropolis_accrej.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT global_metropolis_accrej.obj -MD -MP -MF "$(DEPDIR)/global_metropolis_accrej.Tpo" -c -o global_metropolis_accrej.obj `if test -f 'update/molecdyn/global_metropolis_accrej.cc'; then $(CYGPATH_W) 'update/molecdyn/global_metropolis_accrej.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/global_metropolis_accrej.cc'; fi`; \
+global_metropolis_accrej.obj: update/molecdyn/hmc/global_metropolis_accrej.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT global_metropolis_accrej.obj -MD -MP -MF "$(DEPDIR)/global_metropolis_accrej.Tpo" -c -o global_metropolis_accrej.obj `if test -f 'update/molecdyn/hmc/global_metropolis_accrej.cc'; then $(CYGPATH_W) 'update/molecdyn/hmc/global_metropolis_accrej.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/hmc/global_metropolis_accrej.cc'; fi`; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/global_metropolis_accrej.Tpo" "$(DEPDIR)/global_metropolis_accrej.Po"; else rm -f "$(DEPDIR)/global_metropolis_accrej.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/global_metropolis_accrej.cc' object='global_metropolis_accrej.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/hmc/global_metropolis_accrej.cc' object='global_metropolis_accrej.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o global_metropolis_accrej.obj `if test -f 'update/molecdyn/global_metropolis_accrej.cc'; then $(CYGPATH_W) 'update/molecdyn/global_metropolis_accrej.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/global_metropolis_accrej.cc'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o global_metropolis_accrej.obj `if test -f 'update/molecdyn/hmc/global_metropolis_accrej.cc'; then $(CYGPATH_W) 'update/molecdyn/hmc/global_metropolis_accrej.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/hmc/global_metropolis_accrej.cc'; fi`
 
-zero_guess_predictor.o: update/molecdyn/zero_guess_predictor.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT zero_guess_predictor.o -MD -MP -MF "$(DEPDIR)/zero_guess_predictor.Tpo" -c -o zero_guess_predictor.o `test -f 'update/molecdyn/zero_guess_predictor.cc' || echo '$(srcdir)/'`update/molecdyn/zero_guess_predictor.cc; \
+zero_guess_predictor.o: update/molecdyn/predictor/zero_guess_predictor.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT zero_guess_predictor.o -MD -MP -MF "$(DEPDIR)/zero_guess_predictor.Tpo" -c -o zero_guess_predictor.o `test -f 'update/molecdyn/predictor/zero_guess_predictor.cc' || echo '$(srcdir)/'`update/molecdyn/predictor/zero_guess_predictor.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/zero_guess_predictor.Tpo" "$(DEPDIR)/zero_guess_predictor.Po"; else rm -f "$(DEPDIR)/zero_guess_predictor.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/zero_guess_predictor.cc' object='zero_guess_predictor.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/predictor/zero_guess_predictor.cc' object='zero_guess_predictor.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o zero_guess_predictor.o `test -f 'update/molecdyn/zero_guess_predictor.cc' || echo '$(srcdir)/'`update/molecdyn/zero_guess_predictor.cc
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o zero_guess_predictor.o `test -f 'update/molecdyn/predictor/zero_guess_predictor.cc' || echo '$(srcdir)/'`update/molecdyn/predictor/zero_guess_predictor.cc
 
-zero_guess_predictor.obj: update/molecdyn/zero_guess_predictor.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT zero_guess_predictor.obj -MD -MP -MF "$(DEPDIR)/zero_guess_predictor.Tpo" -c -o zero_guess_predictor.obj `if test -f 'update/molecdyn/zero_guess_predictor.cc'; then $(CYGPATH_W) 'update/molecdyn/zero_guess_predictor.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/zero_guess_predictor.cc'; fi`; \
+zero_guess_predictor.obj: update/molecdyn/predictor/zero_guess_predictor.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT zero_guess_predictor.obj -MD -MP -MF "$(DEPDIR)/zero_guess_predictor.Tpo" -c -o zero_guess_predictor.obj `if test -f 'update/molecdyn/predictor/zero_guess_predictor.cc'; then $(CYGPATH_W) 'update/molecdyn/predictor/zero_guess_predictor.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/predictor/zero_guess_predictor.cc'; fi`; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/zero_guess_predictor.Tpo" "$(DEPDIR)/zero_guess_predictor.Po"; else rm -f "$(DEPDIR)/zero_guess_predictor.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/zero_guess_predictor.cc' object='zero_guess_predictor.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/predictor/zero_guess_predictor.cc' object='zero_guess_predictor.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o zero_guess_predictor.obj `if test -f 'update/molecdyn/zero_guess_predictor.cc'; then $(CYGPATH_W) 'update/molecdyn/zero_guess_predictor.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/zero_guess_predictor.cc'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o zero_guess_predictor.obj `if test -f 'update/molecdyn/predictor/zero_guess_predictor.cc'; then $(CYGPATH_W) 'update/molecdyn/predictor/zero_guess_predictor.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/predictor/zero_guess_predictor.cc'; fi`
 
-last_solution_predictor.o: update/molecdyn/last_solution_predictor.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT last_solution_predictor.o -MD -MP -MF "$(DEPDIR)/last_solution_predictor.Tpo" -c -o last_solution_predictor.o `test -f 'update/molecdyn/last_solution_predictor.cc' || echo '$(srcdir)/'`update/molecdyn/last_solution_predictor.cc; \
+last_solution_predictor.o: update/molecdyn/predictor/last_solution_predictor.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT last_solution_predictor.o -MD -MP -MF "$(DEPDIR)/last_solution_predictor.Tpo" -c -o last_solution_predictor.o `test -f 'update/molecdyn/predictor/last_solution_predictor.cc' || echo '$(srcdir)/'`update/molecdyn/predictor/last_solution_predictor.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/last_solution_predictor.Tpo" "$(DEPDIR)/last_solution_predictor.Po"; else rm -f "$(DEPDIR)/last_solution_predictor.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/last_solution_predictor.cc' object='last_solution_predictor.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/predictor/last_solution_predictor.cc' object='last_solution_predictor.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o last_solution_predictor.o `test -f 'update/molecdyn/last_solution_predictor.cc' || echo '$(srcdir)/'`update/molecdyn/last_solution_predictor.cc
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o last_solution_predictor.o `test -f 'update/molecdyn/predictor/last_solution_predictor.cc' || echo '$(srcdir)/'`update/molecdyn/predictor/last_solution_predictor.cc
 
-last_solution_predictor.obj: update/molecdyn/last_solution_predictor.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT last_solution_predictor.obj -MD -MP -MF "$(DEPDIR)/last_solution_predictor.Tpo" -c -o last_solution_predictor.obj `if test -f 'update/molecdyn/last_solution_predictor.cc'; then $(CYGPATH_W) 'update/molecdyn/last_solution_predictor.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/last_solution_predictor.cc'; fi`; \
+last_solution_predictor.obj: update/molecdyn/predictor/last_solution_predictor.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT last_solution_predictor.obj -MD -MP -MF "$(DEPDIR)/last_solution_predictor.Tpo" -c -o last_solution_predictor.obj `if test -f 'update/molecdyn/predictor/last_solution_predictor.cc'; then $(CYGPATH_W) 'update/molecdyn/predictor/last_solution_predictor.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/predictor/last_solution_predictor.cc'; fi`; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/last_solution_predictor.Tpo" "$(DEPDIR)/last_solution_predictor.Po"; else rm -f "$(DEPDIR)/last_solution_predictor.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/last_solution_predictor.cc' object='last_solution_predictor.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/predictor/last_solution_predictor.cc' object='last_solution_predictor.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o last_solution_predictor.obj `if test -f 'update/molecdyn/last_solution_predictor.cc'; then $(CYGPATH_W) 'update/molecdyn/last_solution_predictor.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/last_solution_predictor.cc'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o last_solution_predictor.obj `if test -f 'update/molecdyn/predictor/last_solution_predictor.cc'; then $(CYGPATH_W) 'update/molecdyn/predictor/last_solution_predictor.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/predictor/last_solution_predictor.cc'; fi`
 
 overlap_fermact_base_w.o: actions/ferm/fermacts/overlap_fermact_base_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT overlap_fermact_base_w.o -MD -MP -MF "$(DEPDIR)/overlap_fermact_base_w.Tpo" -c -o overlap_fermact_base_w.o `test -f 'actions/ferm/fermacts/overlap_fermact_base_w.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/overlap_fermact_base_w.cc; \
@@ -4579,61 +4590,61 @@ gammasgn_w.obj: util/ferm/gammasgn_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o gammasgn_w.obj `if test -f 'util/ferm/gammasgn_w.cc'; then $(CYGPATH_W) 'util/ferm/gammasgn_w.cc'; else $(CYGPATH_W) '$(srcdir)/util/ferm/gammasgn_w.cc'; fi`
 
-unprec_two_flavor_wilson_monomial_w.o: update/molecdyn/unprec_two_flavor_wilson_monomial_w.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_two_flavor_wilson_monomial_w.o -MD -MP -MF "$(DEPDIR)/unprec_two_flavor_wilson_monomial_w.Tpo" -c -o unprec_two_flavor_wilson_monomial_w.o `test -f 'update/molecdyn/unprec_two_flavor_wilson_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/unprec_two_flavor_wilson_monomial_w.cc; \
+unprec_two_flavor_wilson_monomial_w.o: update/molecdyn/monomial/unprec_two_flavor_wilson_monomial_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_two_flavor_wilson_monomial_w.o -MD -MP -MF "$(DEPDIR)/unprec_two_flavor_wilson_monomial_w.Tpo" -c -o unprec_two_flavor_wilson_monomial_w.o `test -f 'update/molecdyn/monomial/unprec_two_flavor_wilson_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/unprec_two_flavor_wilson_monomial_w.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/unprec_two_flavor_wilson_monomial_w.Tpo" "$(DEPDIR)/unprec_two_flavor_wilson_monomial_w.Po"; else rm -f "$(DEPDIR)/unprec_two_flavor_wilson_monomial_w.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/unprec_two_flavor_wilson_monomial_w.cc' object='unprec_two_flavor_wilson_monomial_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/unprec_two_flavor_wilson_monomial_w.cc' object='unprec_two_flavor_wilson_monomial_w.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_two_flavor_wilson_monomial_w.o `test -f 'update/molecdyn/unprec_two_flavor_wilson_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/unprec_two_flavor_wilson_monomial_w.cc
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_two_flavor_wilson_monomial_w.o `test -f 'update/molecdyn/monomial/unprec_two_flavor_wilson_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/unprec_two_flavor_wilson_monomial_w.cc
 
-unprec_two_flavor_wilson_monomial_w.obj: update/molecdyn/unprec_two_flavor_wilson_monomial_w.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_two_flavor_wilson_monomial_w.obj -MD -MP -MF "$(DEPDIR)/unprec_two_flavor_wilson_monomial_w.Tpo" -c -o unprec_two_flavor_wilson_monomial_w.obj `if test -f 'update/molecdyn/unprec_two_flavor_wilson_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/unprec_two_flavor_wilson_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/unprec_two_flavor_wilson_monomial_w.cc'; fi`; \
+unprec_two_flavor_wilson_monomial_w.obj: update/molecdyn/monomial/unprec_two_flavor_wilson_monomial_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_two_flavor_wilson_monomial_w.obj -MD -MP -MF "$(DEPDIR)/unprec_two_flavor_wilson_monomial_w.Tpo" -c -o unprec_two_flavor_wilson_monomial_w.obj `if test -f 'update/molecdyn/monomial/unprec_two_flavor_wilson_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/unprec_two_flavor_wilson_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/unprec_two_flavor_wilson_monomial_w.cc'; fi`; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/unprec_two_flavor_wilson_monomial_w.Tpo" "$(DEPDIR)/unprec_two_flavor_wilson_monomial_w.Po"; else rm -f "$(DEPDIR)/unprec_two_flavor_wilson_monomial_w.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/unprec_two_flavor_wilson_monomial_w.cc' object='unprec_two_flavor_wilson_monomial_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/unprec_two_flavor_wilson_monomial_w.cc' object='unprec_two_flavor_wilson_monomial_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_two_flavor_wilson_monomial_w.obj `if test -f 'update/molecdyn/unprec_two_flavor_wilson_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/unprec_two_flavor_wilson_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/unprec_two_flavor_wilson_monomial_w.cc'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_two_flavor_wilson_monomial_w.obj `if test -f 'update/molecdyn/monomial/unprec_two_flavor_wilson_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/unprec_two_flavor_wilson_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/unprec_two_flavor_wilson_monomial_w.cc'; fi`
 
-prec_two_flavor_wilson_monomial_w.o: update/molecdyn/prec_two_flavor_wilson_monomial_w.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT prec_two_flavor_wilson_monomial_w.o -MD -MP -MF "$(DEPDIR)/prec_two_flavor_wilson_monomial_w.Tpo" -c -o prec_two_flavor_wilson_monomial_w.o `test -f 'update/molecdyn/prec_two_flavor_wilson_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/prec_two_flavor_wilson_monomial_w.cc; \
+prec_two_flavor_wilson_monomial_w.o: update/molecdyn/monomial/prec_two_flavor_wilson_monomial_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT prec_two_flavor_wilson_monomial_w.o -MD -MP -MF "$(DEPDIR)/prec_two_flavor_wilson_monomial_w.Tpo" -c -o prec_two_flavor_wilson_monomial_w.o `test -f 'update/molecdyn/monomial/prec_two_flavor_wilson_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/prec_two_flavor_wilson_monomial_w.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/prec_two_flavor_wilson_monomial_w.Tpo" "$(DEPDIR)/prec_two_flavor_wilson_monomial_w.Po"; else rm -f "$(DEPDIR)/prec_two_flavor_wilson_monomial_w.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/prec_two_flavor_wilson_monomial_w.cc' object='prec_two_flavor_wilson_monomial_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/prec_two_flavor_wilson_monomial_w.cc' object='prec_two_flavor_wilson_monomial_w.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o prec_two_flavor_wilson_monomial_w.o `test -f 'update/molecdyn/prec_two_flavor_wilson_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/prec_two_flavor_wilson_monomial_w.cc
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o prec_two_flavor_wilson_monomial_w.o `test -f 'update/molecdyn/monomial/prec_two_flavor_wilson_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/prec_two_flavor_wilson_monomial_w.cc
 
-prec_two_flavor_wilson_monomial_w.obj: update/molecdyn/prec_two_flavor_wilson_monomial_w.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT prec_two_flavor_wilson_monomial_w.obj -MD -MP -MF "$(DEPDIR)/prec_two_flavor_wilson_monomial_w.Tpo" -c -o prec_two_flavor_wilson_monomial_w.obj `if test -f 'update/molecdyn/prec_two_flavor_wilson_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/prec_two_flavor_wilson_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/prec_two_flavor_wilson_monomial_w.cc'; fi`; \
+prec_two_flavor_wilson_monomial_w.obj: update/molecdyn/monomial/prec_two_flavor_wilson_monomial_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT prec_two_flavor_wilson_monomial_w.obj -MD -MP -MF "$(DEPDIR)/prec_two_flavor_wilson_monomial_w.Tpo" -c -o prec_two_flavor_wilson_monomial_w.obj `if test -f 'update/molecdyn/monomial/prec_two_flavor_wilson_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/prec_two_flavor_wilson_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/prec_two_flavor_wilson_monomial_w.cc'; fi`; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/prec_two_flavor_wilson_monomial_w.Tpo" "$(DEPDIR)/prec_two_flavor_wilson_monomial_w.Po"; else rm -f "$(DEPDIR)/prec_two_flavor_wilson_monomial_w.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/prec_two_flavor_wilson_monomial_w.cc' object='prec_two_flavor_wilson_monomial_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/prec_two_flavor_wilson_monomial_w.cc' object='prec_two_flavor_wilson_monomial_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o prec_two_flavor_wilson_monomial_w.obj `if test -f 'update/molecdyn/prec_two_flavor_wilson_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/prec_two_flavor_wilson_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/prec_two_flavor_wilson_monomial_w.cc'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o prec_two_flavor_wilson_monomial_w.obj `if test -f 'update/molecdyn/monomial/prec_two_flavor_wilson_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/prec_two_flavor_wilson_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/prec_two_flavor_wilson_monomial_w.cc'; fi`
 
-unprec_two_flavor_wilson5d_monomial_w.o: update/molecdyn/unprec_two_flavor_wilson5d_monomial_w.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_two_flavor_wilson5d_monomial_w.o -MD -MP -MF "$(DEPDIR)/unprec_two_flavor_wilson5d_monomial_w.Tpo" -c -o unprec_two_flavor_wilson5d_monomial_w.o `test -f 'update/molecdyn/unprec_two_flavor_wilson5d_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/unprec_two_flavor_wilson5d_monomial_w.cc; \
+unprec_two_flavor_wilson5d_monomial_w.o: update/molecdyn/monomial/unprec_two_flavor_wilson5d_monomial_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_two_flavor_wilson5d_monomial_w.o -MD -MP -MF "$(DEPDIR)/unprec_two_flavor_wilson5d_monomial_w.Tpo" -c -o unprec_two_flavor_wilson5d_monomial_w.o `test -f 'update/molecdyn/monomial/unprec_two_flavor_wilson5d_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/unprec_two_flavor_wilson5d_monomial_w.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/unprec_two_flavor_wilson5d_monomial_w.Tpo" "$(DEPDIR)/unprec_two_flavor_wilson5d_monomial_w.Po"; else rm -f "$(DEPDIR)/unprec_two_flavor_wilson5d_monomial_w.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/unprec_two_flavor_wilson5d_monomial_w.cc' object='unprec_two_flavor_wilson5d_monomial_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/unprec_two_flavor_wilson5d_monomial_w.cc' object='unprec_two_flavor_wilson5d_monomial_w.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_two_flavor_wilson5d_monomial_w.o `test -f 'update/molecdyn/unprec_two_flavor_wilson5d_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/unprec_two_flavor_wilson5d_monomial_w.cc
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_two_flavor_wilson5d_monomial_w.o `test -f 'update/molecdyn/monomial/unprec_two_flavor_wilson5d_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/unprec_two_flavor_wilson5d_monomial_w.cc
 
-unprec_two_flavor_wilson5d_monomial_w.obj: update/molecdyn/unprec_two_flavor_wilson5d_monomial_w.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_two_flavor_wilson5d_monomial_w.obj -MD -MP -MF "$(DEPDIR)/unprec_two_flavor_wilson5d_monomial_w.Tpo" -c -o unprec_two_flavor_wilson5d_monomial_w.obj `if test -f 'update/molecdyn/unprec_two_flavor_wilson5d_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/unprec_two_flavor_wilson5d_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/unprec_two_flavor_wilson5d_monomial_w.cc'; fi`; \
+unprec_two_flavor_wilson5d_monomial_w.obj: update/molecdyn/monomial/unprec_two_flavor_wilson5d_monomial_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_two_flavor_wilson5d_monomial_w.obj -MD -MP -MF "$(DEPDIR)/unprec_two_flavor_wilson5d_monomial_w.Tpo" -c -o unprec_two_flavor_wilson5d_monomial_w.obj `if test -f 'update/molecdyn/monomial/unprec_two_flavor_wilson5d_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/unprec_two_flavor_wilson5d_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/unprec_two_flavor_wilson5d_monomial_w.cc'; fi`; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/unprec_two_flavor_wilson5d_monomial_w.Tpo" "$(DEPDIR)/unprec_two_flavor_wilson5d_monomial_w.Po"; else rm -f "$(DEPDIR)/unprec_two_flavor_wilson5d_monomial_w.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/unprec_two_flavor_wilson5d_monomial_w.cc' object='unprec_two_flavor_wilson5d_monomial_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/unprec_two_flavor_wilson5d_monomial_w.cc' object='unprec_two_flavor_wilson5d_monomial_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_two_flavor_wilson5d_monomial_w.obj `if test -f 'update/molecdyn/unprec_two_flavor_wilson5d_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/unprec_two_flavor_wilson5d_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/unprec_two_flavor_wilson5d_monomial_w.cc'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_two_flavor_wilson5d_monomial_w.obj `if test -f 'update/molecdyn/monomial/unprec_two_flavor_wilson5d_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/unprec_two_flavor_wilson5d_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/unprec_two_flavor_wilson5d_monomial_w.cc'; fi`
 
-prec_two_flavor_wilson5d_monomial_w.o: update/molecdyn/prec_two_flavor_wilson5d_monomial_w.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT prec_two_flavor_wilson5d_monomial_w.o -MD -MP -MF "$(DEPDIR)/prec_two_flavor_wilson5d_monomial_w.Tpo" -c -o prec_two_flavor_wilson5d_monomial_w.o `test -f 'update/molecdyn/prec_two_flavor_wilson5d_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/prec_two_flavor_wilson5d_monomial_w.cc; \
+prec_two_flavor_wilson5d_monomial_w.o: update/molecdyn/monomial/prec_two_flavor_wilson5d_monomial_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT prec_two_flavor_wilson5d_monomial_w.o -MD -MP -MF "$(DEPDIR)/prec_two_flavor_wilson5d_monomial_w.Tpo" -c -o prec_two_flavor_wilson5d_monomial_w.o `test -f 'update/molecdyn/monomial/prec_two_flavor_wilson5d_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/prec_two_flavor_wilson5d_monomial_w.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/prec_two_flavor_wilson5d_monomial_w.Tpo" "$(DEPDIR)/prec_two_flavor_wilson5d_monomial_w.Po"; else rm -f "$(DEPDIR)/prec_two_flavor_wilson5d_monomial_w.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/prec_two_flavor_wilson5d_monomial_w.cc' object='prec_two_flavor_wilson5d_monomial_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/prec_two_flavor_wilson5d_monomial_w.cc' object='prec_two_flavor_wilson5d_monomial_w.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o prec_two_flavor_wilson5d_monomial_w.o `test -f 'update/molecdyn/prec_two_flavor_wilson5d_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/prec_two_flavor_wilson5d_monomial_w.cc
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o prec_two_flavor_wilson5d_monomial_w.o `test -f 'update/molecdyn/monomial/prec_two_flavor_wilson5d_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/prec_two_flavor_wilson5d_monomial_w.cc
 
-prec_two_flavor_wilson5d_monomial_w.obj: update/molecdyn/prec_two_flavor_wilson5d_monomial_w.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT prec_two_flavor_wilson5d_monomial_w.obj -MD -MP -MF "$(DEPDIR)/prec_two_flavor_wilson5d_monomial_w.Tpo" -c -o prec_two_flavor_wilson5d_monomial_w.obj `if test -f 'update/molecdyn/prec_two_flavor_wilson5d_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/prec_two_flavor_wilson5d_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/prec_two_flavor_wilson5d_monomial_w.cc'; fi`; \
+prec_two_flavor_wilson5d_monomial_w.obj: update/molecdyn/monomial/prec_two_flavor_wilson5d_monomial_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT prec_two_flavor_wilson5d_monomial_w.obj -MD -MP -MF "$(DEPDIR)/prec_two_flavor_wilson5d_monomial_w.Tpo" -c -o prec_two_flavor_wilson5d_monomial_w.obj `if test -f 'update/molecdyn/monomial/prec_two_flavor_wilson5d_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/prec_two_flavor_wilson5d_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/prec_two_flavor_wilson5d_monomial_w.cc'; fi`; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/prec_two_flavor_wilson5d_monomial_w.Tpo" "$(DEPDIR)/prec_two_flavor_wilson5d_monomial_w.Po"; else rm -f "$(DEPDIR)/prec_two_flavor_wilson5d_monomial_w.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/prec_two_flavor_wilson5d_monomial_w.cc' object='prec_two_flavor_wilson5d_monomial_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/prec_two_flavor_wilson5d_monomial_w.cc' object='prec_two_flavor_wilson5d_monomial_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o prec_two_flavor_wilson5d_monomial_w.obj `if test -f 'update/molecdyn/prec_two_flavor_wilson5d_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/prec_two_flavor_wilson5d_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/prec_two_flavor_wilson5d_monomial_w.cc'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o prec_two_flavor_wilson5d_monomial_w.obj `if test -f 'update/molecdyn/monomial/prec_two_flavor_wilson5d_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/prec_two_flavor_wilson5d_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/prec_two_flavor_wilson5d_monomial_w.cc'; fi`
 
 inline_io.o: io/inline_io.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_io.o -MD -MP -MF "$(DEPDIR)/inline_io.Tpo" -c -o inline_io.o `test -f 'io/inline_io.cc' || echo '$(srcdir)/'`io/inline_io.cc; \
@@ -5141,7 +5152,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/actions $(distdir)/actions/boson $(distdir)/actions/boson/operator $(distdir)/actions/ferm $(distdir)/actions/ferm/fermacts $(distdir)/actions/ferm/fermbcs $(distdir)/actions/ferm/invert $(distdir)/actions/ferm/linop $(distdir)/actions/ferm/qprop $(distdir)/actions/gauge $(distdir)/actions/gauge/gaugeacts $(distdir)/actions/gauge/gaugebcs $(distdir)/init $(distdir)/io $(distdir)/io/enum_io $(distdir)/meas $(distdir)/meas/eig $(distdir)/meas/gfix $(distdir)/meas/glue $(distdir)/meas/hadron $(distdir)/meas/pbp $(distdir)/meas/schrfun $(distdir)/meas/smear $(distdir)/meas/sources $(distdir)/update $(distdir)/update/heatbath $(distdir)/update/molecdyn $(distdir)/util $(distdir)/util/ferm $(distdir)/util/ft $(distdir)/util/gauge $(distdir)/util/info
+	$(mkdir_p) $(distdir)/actions $(distdir)/actions/boson $(distdir)/actions/boson/operator $(distdir)/actions/ferm $(distdir)/actions/ferm/fermacts $(distdir)/actions/ferm/fermbcs $(distdir)/actions/ferm/invert $(distdir)/actions/ferm/linop $(distdir)/actions/ferm/qprop $(distdir)/actions/gauge $(distdir)/actions/gauge/gaugeacts $(distdir)/actions/gauge/gaugebcs $(distdir)/init $(distdir)/io $(distdir)/io/enum_io $(distdir)/meas $(distdir)/meas/eig $(distdir)/meas/gfix $(distdir)/meas/glue $(distdir)/meas/hadron $(distdir)/meas/pbp $(distdir)/meas/schrfun $(distdir)/meas/smear $(distdir)/meas/sources $(distdir)/update $(distdir)/update/heatbath $(distdir)/update/molecdyn $(distdir)/update/molecdyn/hamiltonian $(distdir)/update/molecdyn/hmc $(distdir)/update/molecdyn/integrator $(distdir)/update/molecdyn/monomial $(distdir)/update/molecdyn/predictor $(distdir)/util $(distdir)/util/ferm $(distdir)/util/ft $(distdir)/util/gauge $(distdir)/util/info
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
