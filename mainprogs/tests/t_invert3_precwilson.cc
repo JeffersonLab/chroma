@@ -1,4 +1,4 @@
-// $Id: t_invert3_precwilson.cc,v 1.5 2004-03-23 13:44:41 bjoo Exp $
+// $Id: t_invert3_precwilson.cc,v 1.6 2004-03-23 16:24:15 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -74,6 +74,7 @@ int main(int argc, char **argv)
 
 
   // Setup the lattice
+  const multi1d<int>& msize = Layout::logicalSize();
   Layout::setLattSize(params.nrow);
   Layout::create();
 
@@ -144,24 +145,6 @@ int main(int argc, char **argv)
   gaussian(bchi);
   gaussian(bpsi);
 
-  // Correctness test the new Apply
-  LatticeFermion bchi2, br;
-
-  bchi = zero;
-  bchi2 = zero;
-   
-  (*D_op)(bchi, bpsi, PLUS);
-  (*D_op).newApply(bchi2, bpsi, PLUS);
-  
- 
-  br = bchi2 - bchi;
-  Double brnorm = norm2(br);
-  QDPIO::cout << "|| newApply - old || = " << brnorm << endl;
-  xml.close();
-  QDP_finalize();
-  exit(0);
-  
-
   mydt=Double(0);
   int j;
   for(iter =1; ; iter <<= 1) { 
@@ -174,20 +157,27 @@ int main(int argc, char **argv)
     }
     swatch.stop();
     mydt = swatch.getTimeInSeconds();
-
-    if ( toBool(mydt > Double(1)) ) break;
+    Internal::globalSum(mydt);
+    mydt /= Double(Layout::numNodes());
+    
+    if( toBool(mydt > Double(1)) ) break;
   }
+
+  // Now mydt holds the time for 1 cpu for iter iterations.
+  // get time for 1 iter
   mydt /= Double(iter);
-  mydt /= Double(Layout::numNodes());
+
+  // mydt now holds the time for 1 iter on 1cpu in seconds
   mydt *= Double(1.0e6);
-  mydt /= (Double(Layout::sitesOnNode())/Double(2));
 
-  Double linop_flops = Double(1320+24+12) / mydt;
+  // mydt now holds the time for 1 iter on 1 cpu in microsecs.
+  Double flops_cpu_iter = Double(2*1320+3*24)*Layout::sitesOnNode()/Double(2);
+  Double linop_flops_in_mflops  = flops_cpu_iter / mydt;
 
-  QDPIO::cout << "PrecWilsonOp perf: " << linop_flops << " Mflop/s/node" << endl;
+  QDPIO::cout << "PrecWilsonOp perf: " << linop_flops_in_mflops << " Mflop/s/node" << endl;
   push(xml, "TimeLinOp");
   write(xml, "time", mydt);
-  write(xml, "mflops", linop_flops);
+  write(xml, "mflops", linop_flops_in_mflops);
   pop(xml);
 
   for(iter=1; ; iter <<= 1)
@@ -209,9 +199,7 @@ int main(int argc, char **argv)
     swatch.stop();
                                                                                 
     mydt=Double(swatch.getTimeInSeconds());
-
     Internal::globalSum(mydt);
-
     mydt /= Double(Layout::numNodes());
                                                                                 
     QDPIO::cout << "Time was " << mydt << " seconds" << endl;
@@ -223,7 +211,7 @@ int main(int argc, char **argv)
 
   // Snarfed from SZIN
   int  N_dslash = 1320;
-  int  N_mpsi   = 2*12 + 2*24 + 2*N_dslash;
+  int  N_mpsi   = 3*24 + 2*N_dslash;
   int  Nflops_c = (24 + 2*N_mpsi) + (48);     
   int Nflops_s = (2*N_mpsi + (2*48+2*24));   
   Double Nflops;

@@ -1,7 +1,5 @@
-// $Id: t_lwldslash_pab.cc,v 1.2 2004-03-09 21:44:23 bjoo Exp $
+// $Id: t_lwldslash_pab.cc,v 1.3 2004-03-23 16:24:15 bjoo Exp $
 
-#include <iostream>
-#include <cstdio>
 
 #include "chroma.h"
 #include "actions/ferm/linop/lwldslash_w_pab.h"

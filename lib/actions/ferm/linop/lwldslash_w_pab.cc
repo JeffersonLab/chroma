@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_pab.cc,v 1.1 2004-03-09 20:43:13 bjoo Exp $
+// $Id: lwldslash_w_pab.cc,v 1.2 2004-03-23 16:24:14 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -40,6 +40,8 @@ using namespace QDP;
 //! Creation routine
 void PABWilsonDslash::create(const multi1d<LatticeColorMatrix>& _u)
 {
+  QDPIO::cout << "Initing PABWilsonDslash" << endl;
+
   // I probably need the local size here...
   const multi1d<int>& lsize= Layout::subgridLattSize();
   const multi1d<int>& machsize = Layout::logicalSize();
@@ -125,9 +127,9 @@ PABWilsonDslash::apply (LatticeFermion& chi, const LatticeFermion& psi,
 		       (int)isign, (1-cb));
   */
 
-  wfm_dslash((Float *)&(chi.elem(wil_cbsize*(cb)).elem(0).elem(0).real()),
+  wfm_dslash((Float *)&(chi.elem(wil_cbsize*(cb)).elem(0).elem(0).real().elem()),
 	     (Float *)&(packed_gauge[0]),
-	     (Float *)&(psi.elem(wil_cbsize*(1-cb)).elem(0).elem(0).real()),
+	     (Float *)&(psi.elem(wil_cbsize*(1-cb)).elem(0).elem(0).real().elem()),
 	     1-cb,
 	     (isign == (enum PlusMinus)PLUS ? 0 : 1));
 	     

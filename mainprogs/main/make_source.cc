@@ -1,4 +1,4 @@
-// $Id: make_source.cc,v 1.26 2004-02-26 03:41:55 edwards Exp $
+// $Id: make_source.cc,v 1.27 2004-03-23 16:24:14 bjoo Exp $
 /*! \file
  *  \brief Main code for source generation
  */
@@ -116,7 +116,7 @@ int main(int argc, char **argv)
   // Read a gauge field
   multi1d<LatticeColorMatrix> u(Nd);
   XMLReader gauge_xml;
-  Seed seed_old;
+  QDP::Seed seed_old;
 
   QDPIO::cout << "Read Gauge field" << endl;
 
