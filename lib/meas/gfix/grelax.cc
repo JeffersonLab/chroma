@@ -1,4 +1,4 @@
-// $Id: grelax.cc,v 1.2 2003-12-06 21:57:16 edwards Exp $
+// $Id: grelax.cc,v 1.3 2003-12-06 22:05:08 edwards Exp $
 /*! \file
  *  \brief Perform a single gauge fixing iteration
  */
@@ -38,9 +38,7 @@ void grelax(multi1d<LatticeColorMatrix> ug,
 	    int j_decay, int su2_index, bool ordo,
 	    const Real& orpara)
 {
-  LatticeColorMatrix u_tmp;
   LatticeColorMatrix v;
-  multi2d<LatticeComplex> vv(Nc, Nc);
   multi1d<LatticeReal> r(4);
   multi1d<LatticeReal> a(4);
   
@@ -124,12 +122,8 @@ void grelax(multi1d<LatticeColorMatrix> ug,
   }
   else		/* Nc = 1 */
   {
-    for(int i=0; i < Nc; ++i)
-      for(int j=0; j < Nc; ++j)
-	vv[i][j] = peekColor(v, i, j);
-
-    r[0] = real(vv[0][0]);
-    r[1] = imag(vv[0][0]);
+    r[0] = real(peekColor(v, 0, 0));
+    r[1] = imag(peekColor(v, 0, 0));
     LatticeReal r_l = sqrt(r[0] * r[0] + r[1] * r[1]);
 
     // Normalize
@@ -160,14 +154,12 @@ void grelax(multi1d<LatticeColorMatrix> ug,
       a[1] = sin(theta);
     }
 
-    vv[0][0] = cmplx(a[0],a[1]);
-    for(int i=0; i < Nc; ++i)
-      for(int j=0; j < Nc; ++j)
-	pokeColor(v, vv[i][j], i, j);
+    pokeColor(v, cmplx(a[0],a[1]), 0, 0);
   }
 
     
   /* Now do the gauge transformation with matrix V:  */
+  LatticeColorMatrix u_tmp;
   for(int mu = 0; mu < Nd; ++mu)
   {
     /* Forward link (ug(x,mu) = v(x)*ug(x,mu)) */
