@@ -1,6 +1,9 @@
-//  $Id: sftmom.cc,v 1.1 2003-03-14 05:06:06 flemingg Exp $
+//  $Id: sftmom.cc,v 1.2 2003-03-14 17:13:44 flemingg Exp $
 //  $Log: sftmom.cc,v $
-//  Revision 1.1  2003-03-14 05:06:06  flemingg
+//  Revision 1.2  2003-03-14 17:13:44  flemingg
+//  SftMom::sft() now works.
+//
+//  Revision 1.1  2003/03/14 05:06:06  flemingg
 //  Initial version of SftMom class
 //
 
@@ -220,18 +223,13 @@ SftMom::momToNum(const multi1d<int>& mom_in)
   return -1;
 }
 
-#if 0
-multi2d<Complex>
+multi2d<DComplex>
 SftMom::sft(const LatticeComplex& cf)
 {
-  multi2d<Complex> hsum(num_mom, sft_subsets.numSubsets()) ;
+  multi2d<DComplex> hsum(num_mom, sft_subsets.numSubsets()) ;
 
-  for (int mom_num=0; mom_num < num_mom; ++mom_num) {
-    multi1d<Complex> htmp ;
-    htmp = sumMulti(phases[mom_num]*cf, sft_subsets) ;
-    hsum[mom_num] = htmp ;
-  }
+  for (int mom_num=0; mom_num < num_mom; ++mom_num)
+    hsum[mom_num] = sumMulti(phases[mom_num]*cf, sft_subsets) ;
 
   return hsum ;
 }
-#endif

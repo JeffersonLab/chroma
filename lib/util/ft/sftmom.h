@@ -1,6 +1,9 @@
-//  $Id: sftmom.h,v 1.1 2003-03-14 05:06:06 flemingg Exp $
+//  $Id: sftmom.h,v 1.2 2003-03-14 17:13:44 flemingg Exp $
 //  $Log: sftmom.h,v $
-//  Revision 1.1  2003-03-14 05:06:06  flemingg
+//  Revision 1.2  2003-03-14 17:13:44  flemingg
+//  SftMom::sft() now works.
+//
+//  Revision 1.1  2003/03/14 05:06:06  flemingg
 //  Initial version of SftMom class
 //
 
@@ -25,7 +28,7 @@ public:
   const LatticeComplex& operator[](int mom_num) const
     { return phases[mom_num] ; }
 
-  // multi2d<Complex> sft(const LatticeComplex& cf) ;
+  multi2d<DComplex> sft(const LatticeComplex& cf) ;
 
 private:
   SftMom() {} // hide default constructor
