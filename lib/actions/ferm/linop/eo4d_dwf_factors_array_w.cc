@@ -1,9 +1,11 @@
 // -*- C++ -*-
-// $Id: eo4d_dwf_factors_array_w.cc,v 1.1 2003-11-22 19:37:23 kostas Exp $
+// $Id: eo4d_dwf_factors_array_w.cc,v 1.2 2003-11-23 06:00:50 edwards Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned domain-wall fermion linear operator
  *   factors 
  */
+
+#error "OBSOLETE: DO NOT USE"
 
 
 // Check Convensions... Currently I am using Blum et.al.
