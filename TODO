@@ -6,6 +6,9 @@
 
 \item (*) PARTFILE I/O in QIO, for efficient I/O on QCDOC.
 
+\item Fix eesu3 to not cause infinite loops compiling on MACS. This
+really means unify the eesuN and the expsuN routines.
+
 \item Get prec and unprec clover fermacts working. Eventually get deriv
 working.
 
