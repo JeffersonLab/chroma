@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_nef_linop_array_w.h,v 1.3 2004-08-20 20:29:17 kostas Exp $
+// $Id: prec_nef_linop_array_w.h,v 1.4 2004-09-01 03:32:59 kostas Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned NEF domain-wall fermion linear operator
  */
@@ -73,7 +73,7 @@ public:
 			      const multi1d<LatticeFermion>& chi,
 			      const int cb) const
   {
-    for(int s(1);s<N5;s++)
+    for(int s(1);s<N5-1;s++)
       tmp[s][rb[cb]] = b5*chi[s] + 
 	               c5*(chi[s+1] + chi[s-1] + 
 	                   GammaConst<Ns,Ns*Ns-1>()*(chi[s-1] - chi[s+1])) ;

@@ -1,4 +1,4 @@
-// $Id: t_neflinop.cc,v 1.1 2004-08-23 21:07:47 kostas Exp $
+// $Id: t_neflinop.cc,v 1.2 2004-09-01 03:32:59 kostas Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -91,11 +91,21 @@ int main(int argc, char **argv)
   Real WilsonMass = 1.5;
   Real m_q = 0.1;
   int  N5  = 8;
-  UnprecDWFermActArray S_f(fbc_a, WilsonMass, m_q, N5);
+  
+  //Shamir DWF case
+  //UnprecDWFermActArray S_DWF(fbc_a, WilsonMass, m_q, N5);
+  //UnprecNEFFermActArray S_NEF(fbc_a, WilsonMass, 1.0, 0, m_q, N5);
+
+  //Borici DWF case
+  UnprecOvDWFermActArray S_DWF(fbc_a, WilsonMass, m_q, N5);
+  UnprecNEFFermActArray S_NEF(fbc_a, WilsonMass, 1.0, 1.0, m_q, N5);
 
 
-  Handle<const ConnectState> state(S_f.createState(u));
-  Handle<const LinearOperator< multi1d<LatticeFermion> > > A(S_f.linOp(state));
+  Handle<const ConnectState> stateDWF(S_DWF.createState(u));
+  Handle<const LinearOperator< multi1d<LatticeFermion> > > Adwf(S_DWF.linOp(stateDWF));
+
+  Handle<const ConnectState> stateNEF(S_NEF.createState(u));
+  Handle<const LinearOperator< multi1d<LatticeFermion> > > Anef(S_NEF.linOp(stateNEF));
 
   multi1d<LatticeFermion> psi(N5), chi(N5);
 
@@ -106,22 +116,37 @@ int main(int argc, char **argv)
     random(chi[m]);
 
   multi1d<LatticeFermion> tmp1(N5);
-  (*A)(tmp1, psi, PLUS);
+  (*Adwf)(tmp1, psi, PLUS);
+  multi1d<LatticeFermion> tmp2(N5);
+  (*Anef)(tmp2, psi, PLUS);
+  
+  multi1d<LatticeFermion> diff(N5);
+  for(int m=0; m < N5; ++m)
+    diff[m] = tmp2[m]-tmp1[m] ;
+
+
+
+  (*Anef)(tmp1, psi, PLUS);
   DComplex nn1 = innerProduct(chi[0], tmp1[0]);
   for(int m=1; m < N5; ++m)
     nn1 += innerProduct(chi[m], tmp1[m]);
-
-  multi1d<LatticeFermion> tmp2(N5);
-  (*A)(tmp2, chi, MINUS);
+  
+  (*Anef)(tmp2, chi, MINUS);
   DComplex nn2 = innerProduct(tmp2[0], psi[0]);
   for(int m=1; m < N5; ++m)
     nn2 += innerProduct(tmp2[m], psi[m]);
 
+
+
   push(xml,"innerprods");
-  write(xml, "norm_psi", Real(norm2(psi)));
-  write(xml, "norm_chi", Real(norm2(chi)));
+  write(xml, "norm_psi" , Real(norm2(psi )));
+  write(xml, "norm_chi" , Real(norm2(chi )));
+  write(xml, "norm_tmp1", Real(norm2(tmp1)));
+  write(xml, "norm_tmp2", Real(norm2(tmp2)));
+  write(xml, "norm_diff", Real(norm2(diff)));
   write(xml, "nn1", nn1);
   write(xml, "nn2", nn2);
+
   pop(xml);
 
  

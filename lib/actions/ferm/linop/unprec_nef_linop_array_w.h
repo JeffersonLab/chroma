@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_nef_linop_array_w.h,v 1.2 2004-08-20 20:29:17 kostas Exp $
+// $Id: unprec_nef_linop_array_w.h,v 1.3 2004-09-01 03:32:59 kostas Exp $
 /*! \file
  *  \brief Unpreconditioned NEF domain-wall fermion linear operator
  */
@@ -54,23 +54,6 @@ public:
 		   const multi1d<LatticeFermion>& psi, 
 		   enum PlusMinus isign) const;
 
-  void CompbineHoppingVectors(multi1d<LatticeFermion>& tmp,
-			      const multi1d<LatticeFermion>& chi) const
-  {
-    Real fb5(-.5*b5);
-    Real fc5(-.5*c5);
-    for(int s(1);s<N5;s++)
-      tmp[s] = fb5*chi[s] + 
-	       fc5*(chi[s+1] + chi[s-1] + 
-		    GammaConst<Ns,Ns*Ns-1>()*(chi[s-1] - chi[s+1])) ;
-    //Now the boundary terms
-    tmp[0] = fb5*chi[0] +
-             fc5*(chi[1] - m_q*chi[N5-1] +
-		  GammaConst<Ns,Ns*Ns-1>()*( m_q*chi[N5-1] -chi[1])) ;
-    tmp[N5-1] = fb5*chi[N5-1] + 
-                fc5*(chi[N5-2]  - m_q*chi[0] + 
-		     GammaConst<Ns,Ns*Ns-1>()*(chi[N5-2] + m_q*chi[0]));
-  }
 private:
   Real WilsonMass;
   Real b5;
