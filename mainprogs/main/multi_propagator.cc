@@ -1,6 +1,9 @@
-// $Id: multi_propagator.cc,v 1.5 2004-04-22 16:25:25 bjoo Exp $
+// $Id: multi_propagator.cc,v 1.6 2004-04-22 16:49:23 bjoo Exp $
 // $Log: multi_propagator.cc,v $
-// Revision 1.5  2004-04-22 16:25:25  bjoo
+// Revision 1.6  2004-04-22 16:49:23  bjoo
+// Added overlap_state_info Param struct and gauge startup convenience function. Tidyed up propagator zolo4d case
+//
+// Revision 1.5  2004/04/22 16:25:25  bjoo
 // Added overlap_state_info Param struct and gauge startup convenience function. Tidyed up propagator zolo4d case
 //
 // Revision 1.4  2004/04/20 13:08:12  bjoo
@@ -157,23 +160,8 @@ int main(int argc, char **argv)
   multi1d<LatticeColorMatrix> u(Nd);
   XMLReader gauge_file_xml, gauge_xml;
 
-  switch (input.cfg.cfg_type) 
-  {
-  case CFG_TYPE_SZIN :
-    readSzin(gauge_xml, u, input.cfg.cfg_file);
-    break;
-
-  case CFG_TYPE_SZINQIO:
-    readGauge(gauge_file_xml, gauge_xml, u, input.cfg.cfg_file, QDPIO_SERIAL);
-    break;
-
-  case CFG_TYPE_NERSC:
-    readArchiv(gauge_xml, u, input.cfg.cfg_file);
-    break;
-  default :
-    QDP_error_exit("Configuration type is unsupported.");
-  }
-
+  // Startup the gauge fields
+  gaugeStartup(gauge_file_xml, gauge_xml, u, input.cfg);
 
   // Read in the source along with relevant information.
   LatticePropagator quark_prop_source;
