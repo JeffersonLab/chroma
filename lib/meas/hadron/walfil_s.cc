@@ -1,4 +1,4 @@
-// $Id: walfil_s.cc,v 1.2 2003-12-16 02:15:29 edwards Exp $
+// $Id: walfil_s.cc,v 1.3 2003-12-16 02:34:55 edwards Exp $
 /*! \file
  *  \brief Wall source construction
  */
@@ -57,7 +57,10 @@ void walfil(LatticeFermion& a, int slice, int mu, int color_index)
       ltest &= (mod(Layout::latticeCoordinate(m), 2) == 0);
 
   // Write onto the appropriate slice
-  a = where(ltest, LatticeFermion(sitefield), zero);
+  LatticeFermion tmp;
+  tmp = sitefield;  // QDP (not installed version) now supports   construct OLattice = OScalar
+
+  a = where(ltest, tmp, LatticeFermion(zero));
 
   END_CODE("walfil");
 }
