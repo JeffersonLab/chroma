@@ -1,4 +1,4 @@
-// $Id: t_conslinop.cc,v 1.6 2003-04-04 05:30:39 edwards Exp $
+// $Id: t_conslinop.cc,v 1.7 2003-04-09 19:00:41 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -37,6 +37,7 @@ int main(int argc, char *argv[])
 
 
   Real Kappa = 0.1;
+  InvType = CG_INVERTER;
   WilsonDslash D(u);
 //  WilsonDslash D;
 
@@ -48,12 +49,13 @@ int main(int argc, char *argv[])
   cerr << "after dslash call" << endl;
 
   cerr << "before wilson construct" << endl;
-  UnpreconditionedWilson M(u,Kappa);
+  UnprecWilsonLinOp M(u,Kappa);
   cerr << "after wilson construct" << endl;
   chi = M(psi, PLUS); 
   cerr << "after wilson call" << endl;
   
-  LinearOperator* A = ConsLinOp(u, Kappa, UNPRECONDITIONED_WILSON);
+  UnprecWilsonFermAct S(Kappa);
+  const LinearOperator* A = S.linOp(u);
 
   DComplex np = innerproduct(psi,D(psi,PLUS));
   DComplex nm = innerproduct(psi,D(psi,MINUS));
@@ -62,6 +64,8 @@ int main(int argc, char *argv[])
   Write(nml,np);
   Write(nml,nm);
   pop(nml);
+
+  delete A;
 
   // Time to bolt
   QDP_finalize();
