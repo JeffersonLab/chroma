@@ -1,35 +1,9 @@
-// $Id: bar3ptfn.cc,v 1.5 2003-04-30 21:25:23 edwards Exp $
+// $Id: bar3ptfn.cc,v 1.6 2003-05-01 17:32:09 flemingg Exp $
 //
 // $Log: bar3ptfn.cc,v $
-// Revision 1.5  2003-04-30 21:25:23  edwards
-// Changed all uses of char* to using string. Changed readSzin2,readSzinQprop2
-// to readSzin,readSzinQprop.
-//
-// Revision 1.4  2003/04/30 06:11:35  flemingg
-// Finally figured out what Wilson_hadron_2Pt_fn measurement was supposed
-// to do and made it do it.  I realized that it didn't involve a timeslice
-// sum at the source but just the trace at the source point.  So, I removed
-// all the subset stuff and replaced it with a peekSite().  Now, everything
-// agrees with szin.  The code is ready for testing in production.
-//
-// Revision 1.3  2003/04/29 20:14:51  flemingg
-// nml input/output streamlined to eliminate some legacy key-value pairs
-// which aren't currently needed but could be readded later.  Output
-// format was incremented to version=4 and all the params were put into
-// a single group.  Support for mom2_max was added.  Code for computing
-// "Wilson_hadron_2Pt_fn" was also added, but is is probably wrong
-// and certainly kludgy due to the subset construction, etc.
-//
-// Revision 1.2  2003/04/26 06:09:04  flemingg
-// Now uses NmlReader support for bool's and string's.  Main limitations are
-// that it still only allows periodic boundary conditions for fermions and
-// that mom2_max is hard-coded to be 7, sort of matching szin.  Probably
-// should add something to be read from namelist input to allow a different
-// value of mom2_max.  Also, it might be nice to decide if we really need
-// to read in and write out a whole bunch of namelist key-value pairs
-// that are not used for anything else.  Now might be a good time to clean
-// up some accidents of history.
-//
+// Revision 1.6  2003-05-01 17:32:09  flemingg
+// Added code to eliminate temporary 'LatticeComplex seq_hadron'.  It is
+// currently commented out awaiting a qdp++ update.
 //
 
 #include "chroma.h"
@@ -549,10 +523,16 @@ main(int argc, char *argv[])
                     WvfIntPar[loop], j_decay) ;
       }
 
-      LatticeComplex seq_hadron \
-        = trace(adj(Gamma(G5)*seq_quark_prop_tmp*Gamma(G5))) ;
+//    GTF HACK: Eliminating seq_hadron doesn't work yet, but should work soon.
+#if 0
+      Complex seq_hadron_0 =
+        peekSite(trace(adj(Gamma(G5)*seq_quark_prop_tmp*Gamma(G5))), t_srce) ;
+#else
+      LatticeComplex seq_hadron = \
+        trace(adj(Gamma(G5)*seq_quark_prop_tmp*Gamma(G5))) ;
 
       Complex seq_hadron_0 = peekSite(seq_hadron, t_srce) ;
+#endif
 
       push(nml_out,"Wilson_hadron_2Pt_fn") ;
       Write(nml_out, t_srce) ;
