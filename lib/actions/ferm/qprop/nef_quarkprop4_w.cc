@@ -1,6 +1,10 @@
-// $Id: nef_quarkprop4_w.cc,v 1.4 2004-09-16 16:40:53 kostas Exp $
+// $Id: nef_quarkprop4_w.cc,v 1.5 2004-09-19 02:41:02 edwards Exp $
 // $Log: nef_quarkprop4_w.cc,v $
-// Revision 1.4  2004-09-16 16:40:53  kostas
+// Revision 1.5  2004-09-19 02:41:02  edwards
+// Only indented. NOTE: this routine could soon (?) be merged
+// as the general dwf_quarkProp4 routine. Needs, currents, etc.
+//
+// Revision 1.4  2004/09/16 16:40:53  kostas
 // nef_quarkprop4 now compiles
 //
 // Revision 1.3  2004/09/16 15:20:55  kostas
@@ -93,7 +97,7 @@ void nef_quarkProp4_a(LatticePropagator& q_sol,
       tt = chiralProjectPlus(tmp) ;
       S_f.Dminus(chi[0   ],tt,state,PLUS);
       tt = chiralProjectMinus(tmp) ; 
-      S_f.Dminus(chi[N5-1],tt,state,PLUS) ;
+      S_f.Dminus(chi[N5-1],tt,state,PLUS);
 
       
 
@@ -143,8 +147,8 @@ void nef_quarkProp4_a(LatticePropagator& q_sol,
   LatticeComplex cfield ;
 
   /**
-  // constuct the conserved axial current correlator
-  nef_conserved_axial_ps_corr(cfield,state->getLinks(),prop5d,j_decay);
+     // constuct the conserved axial current correlator
+     nef_conserved_axial_ps_corr(cfield,state->getLinks(),prop5d,j_decay);
   **/
 		       
   multi1d<DComplex> corr ;  
@@ -165,21 +169,21 @@ void nef_quarkProp4_a(LatticePropagator& q_sol,
   pop(xml_out);
 
   /**
-  push(xml_out, "DWF_ConservedAxial");
-  write(xml_out, "mesprop", mesprop); 
-  pop(xml_out);
+     push(xml_out, "DWF_ConservedAxial");
+     write(xml_out, "mesprop", mesprop); 
+     pop(xml_out);
 
-  // The local axial corruent pseudoscalar correlator
-  int d(1<<j_decay);
-  cfield = trace( adj(q_sol)*Gamma(d)*q_sol ) ;
-  corr = sumMulti(cfield, trick.getSet()) ;
-  for(int t(0);t<length; t++){
-    int t_eff( (t - t_src + length) % length ) ;
-    mesprop[t_eff] = -real(corr[t]) ; // sign fix
-  }
-  push(xml_out, "DWF_LocalAxial");
-  write(xml_out, "mesprop", mesprop); 
-  pop(xml_out);
+     // The local axial corruent pseudoscalar correlator
+     int d(1<<j_decay);
+     cfield = trace( adj(q_sol)*Gamma(d)*q_sol ) ;
+     corr = sumMulti(cfield, trick.getSet()) ;
+     for(int t(0);t<length; t++){
+     int t_eff( (t - t_src + length) % length ) ;
+     mesprop[t_eff] = -real(corr[t]) ; // sign fix
+     }
+     push(xml_out, "DWF_LocalAxial");
+     write(xml_out, "mesprop", mesprop); 
+     pop(xml_out);
   **/
 
   //Now the midpoint Pseudoscalar correlator
@@ -207,9 +211,9 @@ void nef_quarkProp4_a(LatticePropagator& q_sol,
   pop(xml_out);   // DWF_QuarkProp4
 
   /**
-  check_nef_ward_identity(state->getLinks(),prop5d,q_src,
-			  q_sol,q_mp,S_f.quark_mass(),
-			  j_decay);
+     check_nef_ward_identity(state->getLinks(),prop5d,q_src,
+     q_sol,q_mp,S_f.quark_mass(),
+     j_decay);
   **/
 
   END_CODE();
@@ -240,14 +244,14 @@ void UnprecNEFFermActArray::dwf_quarkProp4(LatticePropagator& q_sol,
 					   int& ncg_had)
 {
   nef_quarkProp4_a<UnprecNEFFermActArray>(q_sol, 
-							 xml_out, 
-							 q_src, 
-							 t_src, 
-							 j_decay, 
-							 *this, 
-							 state, 
-							 invParam,
-							 ncg_had);
+					  xml_out, 
+					  q_src, 
+					  t_src, 
+					  j_decay, 
+					  *this, 
+					  state, 
+					  invParam,
+					  ncg_had);
 }
 
 //! Given a complete propagator as a source, this does all the inversions needed
@@ -274,13 +278,13 @@ EvenOddPrecNEFFermActArray::dwf_quarkProp4(LatticePropagator& q_sol,
 					   int& ncg_had)
 {
   nef_quarkProp4_a<EvenOddPrecNEFFermActArray>(q_sol, 
-							      xml_out, 
-							      q_src, 
-							      t_src, 
-							      j_decay, 
-							      *this, 
-							      state, 
-							      invParam, 
-							      ncg_had);
+					       xml_out, 
+					       q_src, 
+					       t_src, 
+					       j_decay, 
+					       *this, 
+					       state, 
+					       invParam, 
+					       ncg_had);
 }
 
