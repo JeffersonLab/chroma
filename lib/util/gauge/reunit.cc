@@ -1,4 +1,4 @@
-// $Id: reunit.cc,v 1.5 2003-03-31 19:46:08 edwards Exp $
+// $Id: reunit.cc,v 1.6 2003-03-31 19:54:00 edwards Exp $
 
 /*! \file
  *  \brief Reunitarize (to a SU(N)) inplace the matrix A under some option
@@ -13,7 +13,7 @@ using namespace QDP;
 /*!
  * \ingroup gauge
  *
- * \param  a  The descriptor of matrices to be reunitarized.
+ * \param xa  The descriptor of matrices to be reunitarized.
  *            Must be of type LatticeColorMatrix
  */
 void reunit(LatticeColorMatrix& xa)
@@ -29,7 +29,7 @@ void reunit(LatticeColorMatrix& xa)
 /*!
  * \ingroup gauge
  *
- * \param  a  The descriptor of matrices to be reunitarized.
+ * \param xa  The descriptor of matrices to be reunitarized.
  *            Must be of type LatticeColorMatrix
  * \param bad Descriptor of flags indicating sites violating unitarity.
  *            Only used if ruflag = REUNITARIZE_LABEL or
