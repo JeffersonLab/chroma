@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 1.11 2004-09-24 16:22:00 bjoo Exp $
+// $Id: fermact.h,v 1.12 2004-11-08 16:25:01 mcneile Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -106,12 +106,14 @@ namespace Chroma
      * \param ncg_had  number of CG iterations ( Write )
      *
      */
+
+
     virtual void qprop(typename BaseType<T>::Type_t& psi, 
 		       Handle<const ConnectState> state, 
 		       const typename BaseType<T>::Type_t& chi, 
 		       const InvertParam_t& invParam,
 		       int& ncg_had) const;
-  
+
     //! Compute dS_f/dU
     /*! Default version. Derived class should override this if needed. */
     virtual void dsdu(multi1d<LatticeColorMatrix>& result,
@@ -406,9 +408,9 @@ namespace Chroma
 
 
     //! Provide a default version of qprop
-    void qprop(LatticeFermion& psi,
+    void qprop(LatticeStaggeredFermion& psi,
 	       Handle<const ConnectState> state,
-	       const LatticeFermion& chi,
+	       const LatticeStaggeredFermion& chi,
 	       const InvertParam_t& invParam,
 	       int& ncg_had);
 
