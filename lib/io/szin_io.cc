@@ -1,4 +1,4 @@
-// $Id: szin_io.cc,v 1.6 2005-02-21 19:28:59 edwards Exp $
+// $Id: szin_io.cc,v 1.7 2005-03-06 23:19:08 edwards Exp $
 
 /*! \file
  *  \brief Reader/writers for szin headers
@@ -16,8 +16,8 @@ namespace Chroma
     cfg_version = 7;
 
     FermTypeP = 0;
-    Nd = Nd;
-    Nc = Nc;
+    Nd = QDP::Nd;
+    Nc = QDP::Nc;
     BetaMC = 0;
     BetaMD = 0;
 
@@ -46,8 +46,24 @@ namespace Chroma
     nrow = Layout::lattSize();
     RNG::savern(seed);
 
-    banner = "chroma stuff - need more here";
-    date = "put in some date here";
+    banner = CHROMA_PACKAGE_STRING;
+    banner += ", ";
+    banner += QDP_PACKAGE_STRING;
+
+    {
+      std::time_t now;
+
+      if(std::time(&now)==-1)
+      {
+	QDPIO::cerr<<"SzinGauge_t: cannot get the time.\n";
+	QDP_abort(1);
+      }
+      std::tm *tp = std::localtime(&now);
+
+      char date_tmp[64];
+      std::strftime(date_tmp, 63, "%d %b %y %X %Z", tp);
+      date = date_tmp;
+    }
   }
 
 
