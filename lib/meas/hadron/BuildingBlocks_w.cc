@@ -19,13 +19,14 @@
 //#####################################################################################
 
 static const char* const CVSBuildingBlocks_cc =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 1.3 2003-09-11 01:21:34 edwards Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 1.4 2003-09-11 01:24:34 edwards Exp $";
 
 //#####################################################################################
 //#####################################################################################
 
 #include <iostream>
 #include "chromabase.h"
+#include "util/ft/sftmom.h"
 #include "meas/hadron/BuildingBlocks_w.h"
 
 using namespace QDP;
