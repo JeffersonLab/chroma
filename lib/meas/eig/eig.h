@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eig.h,v 1.6 2004-01-16 15:24:40 kostas Exp $
+// $Id: eig.h,v 1.7 2004-01-28 16:04:42 bjoo Exp $
 
 /*! \file
  * \brief Eigenvalue measurements
@@ -17,7 +17,15 @@
 #ifndef __eig_h__
 #define __eig_h__
 
-//#include "gramschm.h"
+#include "gramschm.h"
+#include "gramschm_array.h"
+#include "sn_jacob.h"
+#include "sn_jacob_array.h"
+#include "ritz.h"
+#include "ritz_array.h"
+#include "eig_spec.h"
+#include "eig_spec_array.h"
+
 
 #ifdef CHROMA_BUILD_WILSON
 #include "eig_w.h"

@@ -1,4 +1,4 @@
-// $Id: eig_spec.cc,v 1.1 2004-01-28 15:34:41 bjoo Exp $
+// $Id: eig_spec.cc,v 1.2 2004-01-28 16:04:42 bjoo Exp $
 /*! \file
  *  \brief Compute low lying eigenvalues of the hermitian H
  */
@@ -10,7 +10,7 @@
 
 using namespace std;
 
-#include "meas/eig/eig_spec_bj_w.h"
+#include "meas/eig/eig_spec.h"
 #include "meas/eig/ritz.h"
 #include "meas/eig/sn_jacob.h"
 

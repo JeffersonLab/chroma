@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.99 2004-01-23 10:35:36 bjoo Exp $
+# $Id: Makefile.am,v 1.100 2004-01-28 16:04:42 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -75,7 +75,10 @@ nobase_include_HEADERS = \
 	actions/gauge/gauge.h \
 	io/io.h io/milc_io.h io/param_io.h io/qprop_io.h io/readmilc.h \
 	io/readszin.h io/szin_io.h io/writemilc.h io/writeszin.h \
-	meas/eig/eig.h meas/eig/gramschm.h meas/eig/ritz.h sn_jacob.h \
+	meas/eig/eig.h meas/eig/gramschm.h meas/eig/gramschm_array.h \
+	meas/eig/ritz.h meas/eig/ritz_array.h meas/eig/sn_jacob.h \
+	meas/eig/sn_jacob_array.h \
+	meas/eig/eig_spec.h meas/eig/eig_spec_array.h \
 	meas/gfix/axgauge.h meas/gfix/coulgauge.h \
 	meas/gfix/gfix.h meas/gfix/grelax.h meas/gfix/polar_dec.h \
 	meas/gfix/rot_colvec.h meas/glue/glue.h meas/glue/mesplq.h \
@@ -141,7 +144,7 @@ nobase_include_HEADERS += \
 	io/io_w.h io/readszinferm_w.h io/readszinqprop_w.h \
 	io/writeszinqprop_w.h \
 	meas/eig/eig_w.h meas/eig/ischiral_w.h \
-	meas/eig/eig_spec_bj_w.h meas/hadron/barcomp_w.h \
+	meas/hadron/barcomp_w.h \
 	meas/hadron/barseqsrc_w.h meas/hadron/baryon_w.h \
 	meas/hadron/BuildingBlocks_w.h meas/hadron/curcor2_w.h \
 	meas/hadron/DjDk_w.h meas/hadron/D_j_w.h meas/hadron/formfac_w.h \
@@ -205,8 +208,9 @@ libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	       minvcg.cc qprop_io.cc \
                milc_io.cc readmilc.cc writemilc.cc \
                axgauge.cc coulgauge.cc grelax.cc polar_dec.cc rot_colvec.cc \
-	       transf.cc param_io.cc gramschm.cc ritz.cc sn_jacob.cc \
-	       eig_spec_bj_w.cc
+	       transf.cc param_io.cc gramschm.cc gramschm_array.cc \
+	       ritz.cc ritz_array.cc sn_jacob.cc sn_jacob_array.cc \
+	       eig_spec.cc eig_spec_array.cc
 
 #
 # Object files to add if building the Wilson Builds...

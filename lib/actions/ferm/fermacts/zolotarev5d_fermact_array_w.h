@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev5d_fermact_array_w.h,v 1.4 2004-01-13 17:52:15 bjoo Exp $
+// $Id: zolotarev5d_fermact_array_w.h,v 1.5 2004-01-28 16:04:42 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -9,6 +9,8 @@
 
 #include "fermact.h"
 #include "actions/ferm/fermacts/overlap_state.h"
+#include "actions/ferm/linop/lgherm_w.h"
+
 using namespace QDP;
 
 //! 5D continued fraction overlap action (Borici,Wenger, Edwards)
@@ -69,6 +71,10 @@ public:
   //! Produce a linear operator M^dag.M for this action
   const LinearOperator< multi1d<LatticeFermion> >* lMdagM(Handle<const ConnectState> state) const;
 
+  //! produce gamma_5 times M 
+  const LinearOperator< multi1d<LatticeFermion> >* gamma5HermLinOp(Handle<const ConnectState> state) const {
+    return new lgherm<multi1d<LatticeFermion> >(linOp(state));
+  }
   //! Compute quark propagator over base type
   /*! 
    * Solves  M.psi = chi
