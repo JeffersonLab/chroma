@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovdwf_fermact_array_w.h,v 1.1 2003-11-15 03:23:06 edwards Exp $
+// $Id: unprec_ovdwf_fermact_array_w.h,v 1.2 2003-11-15 03:53:31 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Overlap-DWF (Borici) action
  */
@@ -8,11 +8,11 @@
 #define __unprec_ovdwf_fermact_array_w_h__
 
 #include "fermact_array.h"
-#include "actions/ferm/linop/unprec_ovdwf_fermact_array_w.h"
+#include "actions/ferm/fermacts/unprec_dwf_fermact_base_array_w.h"
 
 using namespace QDP;
 
-//! Unpreconditioned Overlap-style (Borica) DWF fermion action
+//! Unpreconditioned Overlap-style (Borici) DWF fermion action
 /*! \ingroup fermact
  *
  * Unprecondition domain-wall fermion action. The conventions used here
@@ -34,6 +34,9 @@ public:
 
   //! Length of DW flavor index/space
   int size() const {return N5;}
+
+  //! Return the quark mass
+  Real quark_mass() const {return m_q;}
 
   //! Produce a linear operator for this action
   const LinearOperator< multi1d<LatticeFermion> >* linOp(const multi1d<LatticeColorMatrix>& u) const;

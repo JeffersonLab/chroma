@@ -1,10 +1,11 @@
-// $Id: unprec_ovdwf_fermact_array_w.cc,v 1.1 2003-11-15 03:23:06 edwards Exp $
+// $Id: unprec_ovdwf_fermact_array_w.cc,v 1.2 2003-11-15 03:53:31 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Overlap-DWF (Borici) action
  */
 
 #include "chromabase.h"
 #include "actions/ferm/fermacts/unprec_ovdwf_fermact_array_w.h"
+#include "actions/ferm/linop/unprec_ovdwf_linop_array_w.h"
 #include "actions/ferm/linop/lmdagm_w.h"
 
 //! Creation routine
@@ -37,7 +38,7 @@ void UnprecOvDWFermActArray::create(const Real& WilsonMass_, const Real& m_q_, i
 const LinearOperator<multi1d<LatticeFermion> >* 
 UnprecOvDWFermActArray::linOp(const multi1d<LatticeColorMatrix>& u) const
 {
-  return new UnprecDWLinOpArray(u,WilsonMass,m_q,N5);
+  return new UnprecOvDWLinOpArray(u,WilsonMass,m_q,N5);
 }
 
 
@@ -53,7 +54,7 @@ const LinearOperator<multi1d<LatticeFermion> >*
 UnprecOvDWFermActArray::lMdagM(const multi1d<LatticeColorMatrix>& u) const
 {
   LinearOperator<multi1d<LatticeFermion> >* mdagm = 
-    new lmdagm<multi1d<LatticeFermion> >(UnprecDWLinOpArray(u,WilsonMass,m_q,N5));
+    new lmdagm<multi1d<LatticeFermion> >(UnprecOvDWLinOpArray(u,WilsonMass,m_q,N5));
   return mdagm;
 }
 
@@ -69,6 +70,6 @@ UnprecOvDWFermActArray::lMdagM(const multi1d<LatticeColorMatrix>& u) const
 const LinearOperator<multi1d<LatticeFermion> >* 
 UnprecOvDWFermActArray::linOpPV(const multi1d<LatticeColorMatrix>& u) const
 {
-  return new UnprecDWLinOpArray(u,WilsonMass,1.0,N5);  // fixed to quark mass 1
+  return new UnprecOvDWLinOpArray(u,WilsonMass,1.0,N5);  // fixed to quark mass 1
 }
 
