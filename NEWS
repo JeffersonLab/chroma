@@ -1,3 +1,8 @@
+01/16/2005 -- Robert Edwards
+
+	Version 1.18.3. Added more 5D monomials. Added Pauli-Villars
+        for contfrac5d.
+
 01/15/2005 -- Robert Edwards
 
 	Version 1.18.2. Fixed norms on new gaugeacts. Seem okay.
