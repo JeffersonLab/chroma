@@ -1,11 +1,19 @@
-// $Id: spectrum_w.cc,v 1.44 2005-01-17 21:04:41 edwards Exp $
+// $Id: spectrum_w.cc,v 1.45 2005-01-24 21:29:40 edwards Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.44  2005-01-17 21:04:41  edwards
-//  Turned off usage of chromainit and finalize. Its causing segfaults.
+//  Revision 1.45  2005-01-24 21:29:40  edwards
+//  Put chromainit back in.
+//
+//  Revision 1.43  2005/01/14 20:13:09  edwards
+//  Removed all using namespace QDP/Chroma from lib files. The library
+//  should now be 100% in the Chroma namespace. All mainprogs need a
+//  using namespace Chroma.
+//
+//  Revision 1.42  2005/01/12 15:23:26  bjoo
+//  Moved the mainprogs to use ChromaInitialize and ChromaFinalize. Howver this doesnt buy us much since the linkage hack cannot be properly hidden at the moment (causes segfaults in propagator) and I need closure about how to deal with default input streams. You do get a TheXMLOutputWriter tho
 //
 //  Revision 1.41  2004/12/24 04:19:23  edwards
 //  Removed explict FermBC args to FermAct factory functions.
@@ -146,9 +154,7 @@
 
 #include <iostream>
 #include <cstdio>
-
 #include "chroma.h"
-
 
 using namespace Chroma;
 
@@ -291,7 +297,7 @@ void read(XMLReader& xml, const string& path, Spectrum_input_t& input)
 int main(int argc, char **argv)
 {
   // Put the machine into a known state
-  QDP_initialize(&argc, &argv);
+  ChromaInitialize(&argc, &argv);
 
   START_CODE();
 
@@ -299,7 +305,7 @@ int main(int argc, char **argv)
   Spectrum_input_t  input;
 
   // Instantiate xml reader for DATA
-  XMLReader xml_in("DATA");
+  XMLReader xml_in("./DATA");
 
   // Read data
   read(xml_in, "/spectrum_w", input);
@@ -338,7 +344,7 @@ int main(int argc, char **argv)
   unitarityCheck(u);
 
   // Instantiate XML writer for XMLDAT
-  XMLFileWriter xml_out("XMLDAT");
+  XMLFileWriter& xml_out = TheXMLOutputWriter::Instance();
   push(xml_out, "spectrum_w");
 
   proginfo(xml_out);    // Print out basic program info
@@ -682,13 +688,10 @@ int main(int argc, char **argv)
   pop(xml_array);  // Wilson_spectroscopy
   pop(xml_out);  // spectrum_w
 
-  xml_out.close();
-  xml_in.close();
-
   END_CODE();
 
   // Time to bolt
-  QDP_finalize();
+  ChromaFinalize();
 
   exit(0);
 }
