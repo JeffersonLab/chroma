@@ -1,4 +1,4 @@
-// $Id: t_propagator_s.cc,v 1.26 2005-01-02 05:21:11 edwards Exp $
+// $Id: t_propagator_s.cc,v 1.27 2005-01-04 12:03:21 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -419,9 +419,9 @@ int main(int argc, char **argv)
     push(xml_out, "Hadrons_from_time_source");
     write(xml_out, "source_time", t_source);
 
-    staggered_pions pseudoscalar(t_length) ; 
-    staggered_scalars  scalar_meson(t_length) ; 
-    vector_meson rho(t_length) ; 
+    staggered_pions pseudoscalar(t_length,u) ; 
+    staggered_scalars  scalar_meson(t_length,u) ; 
+    vector_meson rho(t_length,u) ; 
      
     pseudoscalar.compute(stag_prop, j_decay);
     scalar_meson.compute(stag_prop,  j_decay);
