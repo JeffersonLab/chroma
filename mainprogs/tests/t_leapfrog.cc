@@ -7,35 +7,33 @@ using namespace std;
 
 //! To insure linking of code, place the registered code flags here
 /*! This is the bit of code that dictates what fermacts are in use */
-bool linkage_hack()
+bool linkageHack(void)
 {
   bool foo = true;
-
-
-  // GaugeBC's
-  foo &= SimpleGaugeBCEnv::registered;
-  foo &= PeriodicGaugeBCEnv::registered;
-
-  // GaugeActs
-  foo &= WilsonGaugeActEnv::registered;
-
+    
   // Gauge Monomials
-  foo &= WilsonGaugeMonomialEnv::registered;
-
-  // 4D Ferm actions
-  foo &= EvenOddPrecWilsonFermActEnv::registered;
-  foo &= UnprecWilsonFermActEnv::registered;
-
+  foo &= GaugeMonomialEnv::registered;
+    
   // 4D Ferm Monomials
   foo &= UnprecTwoFlavorWilsonTypeFermMonomialEnv::registered;
   foo &= EvenOddPrecTwoFlavorWilsonTypeFermMonomialEnv::registered;
-
+    
   // 5D Ferm Monomials
   foo &= UnprecTwoFlavorWilsonTypeFermMonomial5DEnv::registered;
   foo &= EvenOddPrecTwoFlavorWilsonTypeFermMonomial5DEnv::registered;
-
+    
   // MD Integrators
   foo &= LatColMatPQPLeapfrogIntegratorEnv::registered;
+    
+  // Chrono predictor
+  foo &= ZeroGuess4DChronoPredictorEnv::registered;
+  foo &= ZeroGuess5DChronoPredictorEnv::registered;
+  foo &= LastSolution4DChronoPredictorEnv::registered;  
+  foo &= LastSolution5DChronoPredictorEnv::registered;
+
+  // Inline Measurements
+  foo &= InlinePlaquetteEnv::registered;
+  foo &= InlinePolyakovLoopEnv::registered;
   return foo;
 }
 
@@ -145,7 +143,7 @@ int main(int argc, char *argv[])
   pop(xml_out);
   xml_out.close();
 
-    // Finish
+  // Finish
   QDP_finalize();
 
   exit(0);
