@@ -10,7 +10,7 @@
     <FermTypeP>WILSON</FermTypeP>
     <Mass>0.00</Mass>
     <u0>0.463032</u0>
-    <cfg_type>HOT</cfg_type>
+
     <prop_type>SZIN</prop_type>
     <number_sample> 5  </number_sample>
     <RsdCG>1.0e-5</RsdCG>
@@ -18,12 +18,16 @@
     <nrow>4 4 4 4</nrow>
     <boundary>1 1 1 1</boundary>
     <t_srce>0 0 0 0</t_srce>
+
+
   </param>
   <Cfg>
+    <cfg_type>DISORDERED</cfg_type>
     <cfg_file>./t_nersc.cfg</cfg_file>
   </Cfg>
   <Prop>
     <prop_file>prop.out</prop_file>
   </Prop>
+
 </propagator>
 
