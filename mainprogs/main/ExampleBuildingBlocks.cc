@@ -24,7 +24,7 @@
 //#####################################################################################
 
 static const char* const CVSExampleBuildingBlocks_hh =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/mainprogs/main/ExampleBuildingBlocks.cc,v 1.1 2003-08-11 23:09:01 dru Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/mainprogs/main/ExampleBuildingBlocks.cc,v 1.2 2003-08-27 20:19:32 edwards Exp $";
 
 //#####################################################################################
 //#####################################################################################
@@ -286,17 +286,17 @@ int main( int argc, char** argv )
   // Read Gauge Field
   //#####################################################################################
 
+  XMLReader gauge_xml;
   multi1d< LatticeColorMatrix >* U = NULL;
   U = new multi1d< LatticeColorMatrix >( Nd );
   Out << "reading gauge field " << GaugeFieldFileName << " ... ";  Out.flush();
   if( strcmp( GaugeFieldFormat, "archive" ) == 0 )
   {
-    readArchiv( *U, GaugeFieldFileName );
+    readArchiv( gauge_xml, *U, GaugeFieldFileName );
   }
   if( strcmp( GaugeFieldFormat, "szin" ) == 0 )
   {
-    Seed seed;
-    readSzin( *U, GaugeFieldFileName, seed );
+    readSzin( gauge_xml, *U, GaugeFieldFileName );
   }
   Out << "done." << "\n";  Out.flush();
 
