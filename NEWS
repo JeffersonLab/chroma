@@ -1,3 +1,8 @@
+11/23/2003 -- Robert Edwards
+
+	Version 1.2.0. Overhauled FermionAction and LinearOperator. Added
+        new even-odd preconditioned support.
+
 11/20/2003 -- Robert Edwards
 
 	Version 1.1.4. Switched LinearOperator and FermionAction interfaces to
