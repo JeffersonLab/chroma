@@ -160,11 +160,9 @@ LDADD = -lchroma @QDPXX_LIBS@ @LIBS@ $(am__append_3)
 HDRS = 
 
 #noinst_PROGRAMS = propagator
-check_PROGRAMS = propagator spectrum_w qqq_w bar3ptfn make_source \
+check_PROGRAMS = propagator seqprop spectrum_w qqq_w bar3ptfn make_source \
         ExampleBuildingBlocks hypsmear cfgtransf
 
-
-EXTRA_PROGRAMS = seqprop
 
 #
 # The program and its dependencies
@@ -199,11 +197,10 @@ subdir = mainprogs/main
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
 CONFIG_CLEAN_FILES =
-EXTRA_PROGRAMS = seqprop$(EXEEXT)
-check_PROGRAMS = propagator$(EXEEXT) spectrum_w$(EXEEXT) qqq_w$(EXEEXT) \
-	bar3ptfn$(EXEEXT) make_source$(EXEEXT) \
-	ExampleBuildingBlocks$(EXEEXT) hypsmear$(EXEEXT) \
-	cfgtransf$(EXEEXT)
+check_PROGRAMS = propagator$(EXEEXT) seqprop$(EXEEXT) \
+	spectrum_w$(EXEEXT) qqq_w$(EXEEXT) bar3ptfn$(EXEEXT) \
+	make_source$(EXEEXT) ExampleBuildingBlocks$(EXEEXT) \
+	hypsmear$(EXEEXT) cfgtransf$(EXEEXT)
 am_ExampleBuildingBlocks_OBJECTS = ExampleBuildingBlocks.$(OBJEXT)
 ExampleBuildingBlocks_OBJECTS = $(am_ExampleBuildingBlocks_OBJECTS)
 ExampleBuildingBlocks_LDADD = $(LDADD)
