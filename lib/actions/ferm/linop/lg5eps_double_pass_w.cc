@@ -1,4 +1,4 @@
-// $Id: lg5eps_double_pass_w.cc,v 1.1 2004-05-21 12:03:13 bjoo Exp $
+// $Id: lg5eps_double_pass_w.cc,v 1.2 2004-07-08 01:18:45 edwards Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -137,8 +137,8 @@ void lg5eps_double_pass::operator() (LatticeFermion& chi,
 
 
 
-  Double a[MaxCG+1];              // Alpha for unshifted (isz) system
-  Double b[MaxCG+1];              // Beta for unshifted system
+  multi1d<Double> a(MaxCG+1);              // Alpha for unshifted (isz) system
+  multi1d<Double> b(MaxCG+1);              // Beta for unshifted system
 
   bool convP;
   int  iters_taken;
