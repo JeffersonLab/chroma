@@ -1,15 +1,25 @@
+02/22/2004 -- Robert Edwards
+
+	Version 1.4.4. Some new programs added. Fixed make_source/propagator/seqprop/spectrum
+        chain of tests to be consistent and give reasonable output. Cross-checked against
+        new (un-committed) XML driven input/output model.
+
 01/27/2004 -- Robert Edwards
+
 	Version 1.4.3. Overhauled SSE Wilson dslash support. New index tables.
 
 01/26/2004 -- Robert Edwards
+
 	Version 1.4.2. More eigenvalue stuff. Tagging pre-release of the
         new SSE Wilson dslash support.
 
 01/07/2004 -- Robert Edwards
+
 	Version 1.4.1. Functioning Zolotarev code by Balint Joo.
 	Also, added WILSON and STAGGERED build control.
 
 01/01/2004 -- Robert Edwards
+
 	Version 1.4.0. Removed all proxies. Switched to only use Handles
 	(proxies were just glorified handles). Changed fermact factory
 	functions to require a Handle<const ConnectState>  instead of a
