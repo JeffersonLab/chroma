@@ -1,4 +1,4 @@
-// $Id: writeszin.cc,v 1.6 2004-01-08 03:49:14 edwards Exp $
+// $Id: writeszin.cc,v 1.7 2004-04-06 15:27:14 bjoo Exp $
 
 /*! \file
  *  \brief Write out a configuration written by SZIN up to configuration version 7.
@@ -134,6 +134,7 @@ void writeSzin(const SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u,
   for(int j = 0; j < Nd; j++)
   {
     LatticeColorMatrix u_old = transpose(u[j]); // Take the transpose
+    LatticeColorMatrixF u_old_prec(u_old);      // Cast to fixed 32 bit prec
 
     for(int cb=0; cb < 2; ++cb)
       for(int sitecb=0; sitecb < Layout::vol()/2; ++sitecb)
@@ -148,7 +149,7 @@ void writeSzin(const SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u,
 	// The true lattice x-coord
 	coord[0] = 2*coord[0] + ((sum + cb) & 1);
 
-	write(cfg_out, u_old, coord);  // Write out a single SU(3) matrix
+	write(cfg_out, u_old_prec, coord);  // Write out a single SU(3) matrix
       }
   }
 

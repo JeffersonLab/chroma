@@ -1,4 +1,4 @@
-// $Id: readszin.cc,v 1.20 2004-02-23 03:08:24 edwards Exp $
+// $Id: readszin.cc,v 1.21 2004-04-06 15:27:14 bjoo Exp $
 
 /*! \file
  *  \brief Read in a configuration written by SZIN up to configuration version 7.
@@ -234,7 +234,7 @@ void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
 
   read(cfg_in, header.seed);
 
-  multi1d<Real> wstat(41*20); /* On-line statistical accumulators - throw away */
+  multi1d<Real32> wstat(41*20); /* On-line statistical accumulators - throw away */
   read(cfg_in, wstat, wstat.size());    // will not use
 
 
@@ -249,9 +249,9 @@ void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
   // The slowest moving index is the direction
   for(int j = 0; j < Nd; j++)
   {
-    LatticeColorMatrix u_old;
+    LatticeColorMatrixF u_old;
   
-    for(int cb=0; cb < 2; ++cb)
+    for(int cb=0; cb < 2; ++cb) { 
       for(int sitecb=0; sitecb < Layout::vol()/2; ++sitecb)
       {
 	multi1d<int> coord = crtesn(sitecb, lattsize_cb); // The coordinate
@@ -266,8 +266,10 @@ void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
 
 	read(cfg_in, u_old, coord); 	// Read in an SU(3) matrix into coord
       }
-
-    u[j] = transpose(u_old);            // Take the transpose
+    }
+    LatticeColorMatrix u_old_prec(u_old);
+   
+    u[j] = transpose(u_old_prec);            // Take the transpose
   }
 
   cfg_in.close();
