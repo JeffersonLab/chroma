@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_wilson_fermact_w.h,v 1.6 2003-04-09 21:14:01 edwards Exp $
+// $Id: unprec_wilson_fermact_w.h,v 1.7 2003-10-02 19:07:46 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -18,7 +18,7 @@ using namespace QDP;
  * Supports creation and application for fermion actions
  */
 
-class UnprecWilsonFermAct : UnprecWilsonTypeFermAct 
+class UnprecWilsonFermAct : public UnprecWilsonTypeFermAct 
 {
 public:
   //! Partial constructor
