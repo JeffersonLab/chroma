@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_wilson_linop_w.h,v 1.1 2003-11-22 21:34:01 edwards Exp $
+// $Id: prec_wilson_linop_w.h,v 1.2 2003-11-23 06:15:16 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion linear operator
  */
@@ -39,12 +39,20 @@ public:
   //! Creation routine
   void create(const multi1d<LatticeColorMatrix>& u_, const Real& Mass_);
 
+  //! Apply the the even-even block onto a source vector
+  inline
+  void evenEvenLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
+		     enum PlusMinus isign) const
+    {
+      chi[rb[0]] = fact*psi;
+    }
+
   //! Apply the inverse of the even-even block onto a source vector
   inline 
   void evenEvenInvLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
 			enum PlusMinus isign) const
     {
-      chi[rb[1]] = invfact*psi;
+      chi[rb[0]] = invfact*psi;
     }
   
   //! Apply the the even-odd block onto a source vector
@@ -58,7 +66,7 @@ public:
   //! Apply the the odd-odd block onto a source vector
   inline 
   void oddOddLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
-		   enum PlusMinus isign) const;
+		   enum PlusMinus isign) const
     {
       chi[rb[1]] = fact*psi;
     }
