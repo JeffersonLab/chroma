@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.252 2005-02-17 02:49:44 edwards Exp $
+# $Id: Makefile.am,v 1.253 2005-02-23 19:27:15 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -90,11 +90,12 @@ nobase_include_HEADERS = \
 	io/enum_io/enum_gaugebc_io.h \
 	io/enum_io/enum_md_integrator_type_io.h \
 	io/enum_io/enum_inner_solver_type_io.h \
-        io/eigen_io.h \
+        io/aniso_io.h io/eigen_io.h \
 	io/gauge_io.h io/kyugauge_io.h  \
         io/milc_io.h io/param_io.h io/qprop_io.h io/readmilc.h \
-        io/readcppacs.h io/cppacs_io.h\
-	io/readszin.h io/szin_io.h io/writemilc.h io/writeszin.h \
+        io/readcppacs.h io/cppacs_io.h \
+	io/readszin.h io/smearing_io.h io/szin_io.h \
+        io/writemilc.h io/writeszin.h \
 	io/monomial_io.h \
 	io/hamiltonian_io.h \
 	meas/eig/eig.h meas/eig/gramschm.h meas/eig/gramschm_array.h \
@@ -412,11 +413,12 @@ libchroma_a_SOURCES = \
 	io/enum_io/enum_simplebctype_io.cc \
 	io/enum_io/enum_srcsnktype_io.cc io/enum_io/enum_wavetype_io.cc \
 	io/enum_io/enum_wvfkind_io.cc \
+        io/aniso_io.cc \
 	io/gauge_io.cc io/kyugauge_io.cc io/kyuqprop_io.cc \
 	io/milc_io.cc io/overlap_state_info.cc \
         io/readcppacs.cc io/cppacs_io.cc\
 	io/param_io.cc io/qprop_io.cc io/readmilc.cc \
-	io/readszin.cc io/szin_io.cc \
+	io/readszin.cc io/smearing_io.cc io/szin_io.cc \
 	io/writemilc.cc io/writeszin.cc \
 	io/monomial_io.cc io/hamiltonian_io.cc \
 	meas/eig/eig_spec.cc meas/eig/eig_spec_array.cc \
