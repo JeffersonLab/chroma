@@ -1,4 +1,4 @@
-// $Id: chromainc.h,v 1.2 2003-03-07 05:44:51 edwards Exp $
+// $Id: chromainc.h,v 1.3 2003-03-14 05:11:46 flemingg Exp $
 //
 // Include file that includes all the include files.
 
@@ -7,9 +7,9 @@
 #include "common_declarations.h"
 
 #include "actions/actions.h"
+#include "util/util.h"
 #include "meas/meas.h"
 #include "update/update.h"
-#include "util/util.h"
 
 using namespace QDP;
 
