@@ -73,58 +73,53 @@ class ZolotarevStateInfo : public OverlapStateInfo {
 
 
   const Real& getApproxMin(void) const { 
-    if( initedP ) {
-      return ApproxMin; 
-    }
-    else notInited();
+    if( ! initedP )
+      notInited();
+    return ApproxMin;
   } 
 
   const Real& getApproxMax(void) const { 
-    if( initedP ) { 
-      return ApproxMax; 
-    }
-    else notInited();
+    if( ! initedP )
+      notInited();
+    return ApproxMax; 
   }
 
   int   getNWilsVec(void) const { 
-    if( initedP ) { 
-      return NWilsVec; 
-    }
-    else notInited();
+    if( ! initedP )
+      notInited();
+    return NWilsVec; 
   }
 
   bool  loadEigVec(void) const {
-    if( initedP )  { 
-      return ( load_eigenP && (NWilsVec > 0) );
-    }
-    else notInited();
+    if( ! initedP )
+      notInited();
+    return ( load_eigenP && (NWilsVec > 0) );
   }
 
   bool  computeEigVec(void) const { 
-    if( initedP )  {
-      return ( (!load_eigenP) && (NWilsVec > 0));
-    }
-    else notInited();
+    if( ! initedP )
+      notInited();
+    return ( (!load_eigenP) && (NWilsVec > 0));
   }
 
   const EigenIO_t& getEigenIO(void) const {
-    if(initedP) {
-      if( loadEigVec() ) { 
-	return eigen_io; 
-      }
-      else notLoadEig();
-    }
-    else notInited();
+    if( ! initedP)
+      notInited();
+
+    if( ! loadEigVec() )
+      notLoadEig();
+
+    return eigen_io; 
   }
 
   const RitzParams_t& getRitzParams(void) const {
-    if (initedP) { 
-      if( computeEigVec() ) { 
-	return ritzery; 
-      }
-      else notComputeEig();
-    }
-    else notInited();
+    if (! initedP)
+      notInited();
+
+    if( computeEigVec() )
+      notComputeEig();
+
+    return ritzery; 
   }
 
   // Virtual Destructor

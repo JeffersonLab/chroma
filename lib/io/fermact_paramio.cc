@@ -54,6 +54,7 @@ FermActParams* read(XMLReader &reader, const string& path)
     QDP_abort(1);
   }
 
+  return 0;
 }
 
 // Write out is easy. Just call virtual function
@@ -92,7 +93,7 @@ void write(XMLWriter &xml_out, const string& path, const FermActParams& p)
       write(xml_out, path, zolo5d);
     }
     break;
-    defaule:
+  default:
     QDPIO::cerr << "Unknown ferm action type : " << p.getFermActType() << endl;
     QDP_abort(1);
   }

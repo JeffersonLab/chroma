@@ -15,7 +15,7 @@ class Zolotarev5DFermActParams : public FermActParams {
   Zolotarev5DFermActParams(XMLReader& in);
   
   // Satisfy virtual functions
-  const enum FermActType getFermActType(void) const { 
+  enum FermActType getFermActType(void) const { 
     return FERM_ACT_ZOLOTAREV_5D;
   }
 
