@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial5d_w.h,v 1.3 2005-02-23 23:48:10 bjoo Exp $
+// $Id: two_flavor_monomial5d_w.h,v 1.4 2005-02-24 03:15:24 edwards Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -233,7 +233,7 @@ namespace Chroma
 
       // getX() now always uses Chrono predictor. Best to Nuke it for
       // energy calcs
-      (getMDSolutionPredictor()).reset();
+      getMDSolutionPredictor().reset();
       int n_count = getX(X,s);
 
       // tmp is now V (M^dag M)^{-1} V^{dag} phi
@@ -241,7 +241,7 @@ namespace Chroma
 
       // Action on the entire lattice
       Double action = zero;
-      for(int s=0; s < getFermAct().size(); ++s)
+      for(int s=0; s < FA.size(); ++s)
 	action += innerProductReal(getPhi()[s], tmp[s]);
 
       write(xml_out, "n_count", n_count);
@@ -312,7 +312,7 @@ namespace Chroma
       X = zero;
 
       // Get X now always uses predictor. Best to nuke it therefore
-      (getMDSolutionPredictor()).reset();
+      getMDSolutionPredictor().reset();
       int n_count = getX(X, s);
 
       multi1d<Phi> tmp(FA.size());
@@ -359,6 +359,8 @@ namespace Chroma
 
     //! Get X = (PV^dag*PV)^{-1} eta
     virtual int getXPV(multi1d<Phi>& X, const multi1d<Phi>& eta, const AbsFieldState<P,Q>& s) const  = 0;
+
+    virtual AbsChronologicalPredictor5D<Phi>& getMDSolutionPredictor(void) = 0;
   };
 
 
