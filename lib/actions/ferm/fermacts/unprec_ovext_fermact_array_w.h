@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovext_fermact_array_w.h,v 1.5 2004-01-02 03:19:40 edwards Exp $
+// $Id: unprec_ovext_fermact_array_w.h,v 1.6 2004-01-23 20:38:17 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -50,6 +50,13 @@ public:
 
   //! Produce a linear operator M^dag.M for this action
   const LinearOperator< multi1d<LatticeFermion> >* lMdagM(Handle<const ConnectState> state) const;
+
+  //! Produce a hermitian version of the linear operator
+  const LinearOperator< multi1d<LatticeFermion> >* gamma5HermLinOp(Handle<const ConnectState> state) const
+    {
+      QDPIO::cerr << "UnprecOvExtFermActArray::gamma5HermLinOp not implemented" << endl;
+      QDP_abort(1);
+    }
 
   //! Compute quark propagator over base type
   /*! 
