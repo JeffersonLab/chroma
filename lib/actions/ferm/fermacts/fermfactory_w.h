@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermfactory_w.h,v 1.2 2004-09-08 04:12:21 edwards Exp $
+// $Id: fermfactory_w.h,v 1.3 2004-09-18 17:12:53 edwards Exp $
 /*! \file
  *  \brief Fermion action factories
  */
@@ -11,6 +11,10 @@
 #include "objfactory.h"
 #include "chromabase.h"
 
+#include "actions/ferm/fermacts/unprec_dwf_fermact_base_array_w.h"
+#include "actions/ferm/fermacts/prec_dwf_fermact_base_array_w.h"
+
+
 namespace Chroma
 {
   //! Wilson-like fermion factory (foundry)
@@ -20,7 +24,7 @@ namespace Chroma
     TYPELIST_3(Handle< FermBC<LatticeFermion> >, XMLReader&, const std::string&),
     WilsonTypeFermAct<LatticeFermion>* (*)(Handle< FermBC<LatticeFermion> >, 
 					   XMLReader&,
-					   const std::string&), DefaultFactoryError> >
+					   const std::string&), StringFactoryError> >
   TheWilsonTypeFermActFactory;
 
 
@@ -31,8 +35,30 @@ namespace Chroma
     TYPELIST_3(Handle< FermBC< multi1d<LatticeFermion> > >, XMLReader&, const std::string&),
     WilsonTypeFermAct< multi1d<LatticeFermion> >* (*)(Handle< FermBC< multi1d<LatticeFermion> > >, 
 					              XMLReader&,
-					              const std::string&), DefaultFactoryError> >
+					              const std::string&), StringFactoryError> >
   TheWilsonTypeFermActArrayFactory;
+
+
+  //! DWF-like fermion array factory (foundry)
+  typedef SingletonHolder< 
+  ObjectFactory<EvenOddPrecDWFermActBaseArray<LatticeFermion>, 
+    std::string,
+    TYPELIST_3(Handle< FermBC< multi1d<LatticeFermion> > >, XMLReader&, const std::string&),
+    EvenOddPrecDWFermActBaseArray<LatticeFermion>* (*)(Handle< FermBC< multi1d<LatticeFermion> > >, 
+						       XMLReader&,
+						       const std::string&), StringFactoryError> >
+  TheEvenOddPrecDWFermActBaseArrayFactory;
+
+
+  //! DWF-like fermion array factory (foundry)
+  typedef SingletonHolder< 
+  ObjectFactory<UnprecDWFermActBaseArray<LatticeFermion>, 
+    std::string,
+    TYPELIST_3(Handle< FermBC< multi1d<LatticeFermion> > >, XMLReader&, const std::string&),
+    UnprecDWFermActBaseArray<LatticeFermion>* (*)(Handle< FermBC< multi1d<LatticeFermion> > >, 
+						  XMLReader&,
+						  const std::string&), StringFactoryError> >
+  TheUnprecDWFermActBaseArrayFactory;
 
 }
 
