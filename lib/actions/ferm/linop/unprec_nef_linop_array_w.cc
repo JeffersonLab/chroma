@@ -1,4 +1,4 @@
-// $Id: unprec_nef_linop_array_w.cc,v 1.1 2004-08-08 11:12:19 kostas Exp $
+// $Id: unprec_nef_linop_array_w.cc,v 1.2 2004-08-20 20:29:17 kostas Exp $
 /*! \file
  *  \brief Unpreconditioned NEF domain-wall linear operator
  */
@@ -55,7 +55,7 @@ void UnprecNEFDWLinOpArray::operator() (multi1d<LatticeFermion>& chi,
   Real fact1 = b5*(Nd - WilsonMass) + 1;
 
   multi1d<LatticeFermion> cmb(N5) ;
-  CompbineHoppingVectors(cmb, chi)
+  CompbineHoppingVectors(cmb, chi) ;
   switch (isign)
   {
   case PLUS:

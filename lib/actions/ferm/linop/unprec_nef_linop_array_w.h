@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_nef_linop_array_w.h,v 1.1 2004-08-08 11:12:19 kostas Exp $
+// $Id: unprec_nef_linop_array_w.h,v 1.2 2004-08-20 20:29:17 kostas Exp $
 /*! \file
  *  \brief Unpreconditioned NEF domain-wall fermion linear operator
  */
@@ -33,11 +33,11 @@ public:
   UnprecNEFDWLinOpArray(const multi1d<LatticeColorMatrix>& u_, 
 		     const Real& WilsonMass_, const Real& b5_,
 		     const Real& c5_, const Real& m_q, int N5_)
-    {create(u_,WilsonMass_b5_c5_,m_q,N5_);}
+    {create(u_,WilsonMass_, b5_,c5_,m_q,N5_);}
 
   //! Creation routine
   void create(const multi1d<LatticeColorMatrix>& u_, 
-	      const Real& WilsonMass_, const Real& b5_, const Real c5_,
+	      const Real& WilsonMass_, const Real& b5_, const Real& c5_,
 	      const Real& m_q_, int N5_);
 
   //! Length of DW flavor index/space
@@ -59,7 +59,7 @@ public:
   {
     Real fb5(-.5*b5);
     Real fc5(-.5*c5);
-    for(int s(1);s<N5-;s++)
+    for(int s(1);s<N5;s++)
       tmp[s] = fb5*chi[s] + 
 	       fc5*(chi[s+1] + chi[s-1] + 
 		    GammaConst<Ns,Ns*Ns-1>()*(chi[s-1] - chi[s+1])) ;
