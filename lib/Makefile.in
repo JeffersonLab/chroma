@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.304 2005-01-13 02:53:33 edwards Exp $
+# $Id: Makefile.in,v 1.305 2005-01-13 04:32:02 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -115,10 +115,13 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/gauge/gaugebcs/gaugebc_aggregate.cc \
 	actions/gauge/gaugebcs/gaugebc_periodic.cc \
 	actions/gauge/gaugebcs/gaugebc_simple.cc \
-	actions/gauge/gaugeacts/wilson_gaugeact.cc \
 	actions/gauge/gaugeacts/plaq_gaugeact.cc \
 	actions/gauge/gaugeacts/rect_gaugeact.cc \
-	actions/gauge/gaugeacts/pg_gaugeact.cc io/barcomp_io.cc \
+	actions/gauge/gaugeacts/pg_gaugeact.cc \
+	actions/gauge/gaugeacts/wilson_gaugeact.cc \
+	actions/gauge/gaugeacts/lw_tree_gaugeact.cc \
+	actions/gauge/gaugeacts/lw_1loop_gaugeact.cc \
+	actions/gauge/gaugeacts/rg_gaugeact.cc io/barcomp_io.cc \
 	io/eigen_io.cc io/enum_io/enum_cfgtype_io.cc \
 	io/enum_io/enum_coeffs_io.cc \
 	io/enum_io/enum_eigenvectype_io.cc \
@@ -284,9 +287,11 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	fermact_qprop_array.$(OBJEXT) prec_fermact_qprop.$(OBJEXT) \
 	prec_fermact_qprop_array.$(OBJEXT) staggered_qprop.$(OBJEXT) \
 	gaugebc_aggregate.$(OBJEXT) gaugebc_periodic.$(OBJEXT) \
-	gaugebc_simple.$(OBJEXT) wilson_gaugeact.$(OBJEXT) \
-	plaq_gaugeact.$(OBJEXT) rect_gaugeact.$(OBJEXT) \
-	pg_gaugeact.$(OBJEXT) barcomp_io.$(OBJEXT) eigen_io.$(OBJEXT) \
+	gaugebc_simple.$(OBJEXT) plaq_gaugeact.$(OBJEXT) \
+	rect_gaugeact.$(OBJEXT) pg_gaugeact.$(OBJEXT) \
+	wilson_gaugeact.$(OBJEXT) lw_tree_gaugeact.$(OBJEXT) \
+	lw_1loop_gaugeact.$(OBJEXT) rg_gaugeact.$(OBJEXT) \
+	barcomp_io.$(OBJEXT) eigen_io.$(OBJEXT) \
 	enum_cfgtype_io.$(OBJEXT) enum_coeffs_io.$(OBJEXT) \
 	enum_eigenvectype_io.$(OBJEXT) enum_fermtype_io.$(OBJEXT) \
 	enum_gaugeacttype_io.$(OBJEXT) enum_gaugebc_io.$(OBJEXT) \
@@ -447,10 +452,13 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/qprop/qprop.h actions/gauge/gauge.h \
 	actions/gauge/gaugeacts/gaugeacts.h \
 	actions/gauge/gaugeacts/gaugeact_factory.h \
-	actions/gauge/gaugeacts/wilson_gaugeact.h \
 	actions/gauge/gaugeacts/plaq_gaugeact.h \
 	actions/gauge/gaugeacts/rect_gaugeact.h \
 	actions/gauge/gaugeacts/pg_gaugeact.h \
+	actions/gauge/gaugeacts/wilson_gaugeact.h \
+	actions/gauge/gaugeacts/lw_tree_gaugeact.h \
+	actions/gauge/gaugeacts/lw_1loop_gaugeact.h \
+	actions/gauge/gaugeacts/rg_gaugeact.h \
 	actions/gauge/gaugebcs/gaugebcs.h \
 	actions/gauge/gaugebcs/gaugebc_aggregate.h \
 	actions/gauge/gaugebcs/gaugebc_factory.h \
@@ -791,10 +799,13 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/qprop/qprop.h actions/gauge/gauge.h \
 	actions/gauge/gaugeacts/gaugeacts.h \
 	actions/gauge/gaugeacts/gaugeact_factory.h \
-	actions/gauge/gaugeacts/wilson_gaugeact.h \
 	actions/gauge/gaugeacts/plaq_gaugeact.h \
 	actions/gauge/gaugeacts/rect_gaugeact.h \
 	actions/gauge/gaugeacts/pg_gaugeact.h \
+	actions/gauge/gaugeacts/wilson_gaugeact.h \
+	actions/gauge/gaugeacts/lw_tree_gaugeact.h \
+	actions/gauge/gaugeacts/lw_1loop_gaugeact.h \
+	actions/gauge/gaugeacts/rg_gaugeact.h \
 	actions/gauge/gaugebcs/gaugebcs.h \
 	actions/gauge/gaugebcs/gaugebc_aggregate.h \
 	actions/gauge/gaugebcs/gaugebc_factory.h \
@@ -1042,10 +1053,13 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/gauge/gaugebcs/gaugebc_aggregate.cc \
 	actions/gauge/gaugebcs/gaugebc_periodic.cc \
 	actions/gauge/gaugebcs/gaugebc_simple.cc \
-	actions/gauge/gaugeacts/wilson_gaugeact.cc \
 	actions/gauge/gaugeacts/plaq_gaugeact.cc \
 	actions/gauge/gaugeacts/rect_gaugeact.cc \
-	actions/gauge/gaugeacts/pg_gaugeact.cc io/barcomp_io.cc \
+	actions/gauge/gaugeacts/pg_gaugeact.cc \
+	actions/gauge/gaugeacts/wilson_gaugeact.cc \
+	actions/gauge/gaugeacts/lw_tree_gaugeact.cc \
+	actions/gauge/gaugeacts/lw_1loop_gaugeact.cc \
+	actions/gauge/gaugeacts/rg_gaugeact.cc io/barcomp_io.cc \
 	io/eigen_io.cc io/enum_io/enum_cfgtype_io.cc \
 	io/enum_io/enum_coeffs_io.cc \
 	io/enum_io/enum_eigenvectype_io.cc \
@@ -1385,6 +1399,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lovddag_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lovlap_double_pass_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lovlapms_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lw_1loop_gaugeact.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lw_tree_gaugeact.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_base_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_w_pab.Po@am__quote@
@@ -1449,6 +1465,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readszinqprop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rect_gaugeact.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/reunit.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rg_gaugeact.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rgauge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ritz.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ritz_array.Po@am__quote@
@@ -1972,20 +1989,6 @@ gaugebc_simple.obj: actions/gauge/gaugebcs/gaugebc_simple.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o gaugebc_simple.obj `if test -f 'actions/gauge/gaugebcs/gaugebc_simple.cc'; then $(CYGPATH_W) 'actions/gauge/gaugebcs/gaugebc_simple.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugebcs/gaugebc_simple.cc'; fi`
 
-wilson_gaugeact.o: actions/gauge/gaugeacts/wilson_gaugeact.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT wilson_gaugeact.o -MD -MP -MF "$(DEPDIR)/wilson_gaugeact.Tpo" -c -o wilson_gaugeact.o `test -f 'actions/gauge/gaugeacts/wilson_gaugeact.cc' || echo '$(srcdir)/'`actions/gauge/gaugeacts/wilson_gaugeact.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/wilson_gaugeact.Tpo" "$(DEPDIR)/wilson_gaugeact.Po"; else rm -f "$(DEPDIR)/wilson_gaugeact.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugeacts/wilson_gaugeact.cc' object='wilson_gaugeact.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o wilson_gaugeact.o `test -f 'actions/gauge/gaugeacts/wilson_gaugeact.cc' || echo '$(srcdir)/'`actions/gauge/gaugeacts/wilson_gaugeact.cc
-
-wilson_gaugeact.obj: actions/gauge/gaugeacts/wilson_gaugeact.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT wilson_gaugeact.obj -MD -MP -MF "$(DEPDIR)/wilson_gaugeact.Tpo" -c -o wilson_gaugeact.obj `if test -f 'actions/gauge/gaugeacts/wilson_gaugeact.cc'; then $(CYGPATH_W) 'actions/gauge/gaugeacts/wilson_gaugeact.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugeacts/wilson_gaugeact.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/wilson_gaugeact.Tpo" "$(DEPDIR)/wilson_gaugeact.Po"; else rm -f "$(DEPDIR)/wilson_gaugeact.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugeacts/wilson_gaugeact.cc' object='wilson_gaugeact.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o wilson_gaugeact.obj `if test -f 'actions/gauge/gaugeacts/wilson_gaugeact.cc'; then $(CYGPATH_W) 'actions/gauge/gaugeacts/wilson_gaugeact.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugeacts/wilson_gaugeact.cc'; fi`
-
 plaq_gaugeact.o: actions/gauge/gaugeacts/plaq_gaugeact.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT plaq_gaugeact.o -MD -MP -MF "$(DEPDIR)/plaq_gaugeact.Tpo" -c -o plaq_gaugeact.o `test -f 'actions/gauge/gaugeacts/plaq_gaugeact.cc' || echo '$(srcdir)/'`actions/gauge/gaugeacts/plaq_gaugeact.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/plaq_gaugeact.Tpo" "$(DEPDIR)/plaq_gaugeact.Po"; else rm -f "$(DEPDIR)/plaq_gaugeact.Tpo"; exit 1; fi
@@ -2027,6 +2030,62 @@ pg_gaugeact.obj: actions/gauge/gaugeacts/pg_gaugeact.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugeacts/pg_gaugeact.cc' object='pg_gaugeact.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o pg_gaugeact.obj `if test -f 'actions/gauge/gaugeacts/pg_gaugeact.cc'; then $(CYGPATH_W) 'actions/gauge/gaugeacts/pg_gaugeact.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugeacts/pg_gaugeact.cc'; fi`
+
+wilson_gaugeact.o: actions/gauge/gaugeacts/wilson_gaugeact.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT wilson_gaugeact.o -MD -MP -MF "$(DEPDIR)/wilson_gaugeact.Tpo" -c -o wilson_gaugeact.o `test -f 'actions/gauge/gaugeacts/wilson_gaugeact.cc' || echo '$(srcdir)/'`actions/gauge/gaugeacts/wilson_gaugeact.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/wilson_gaugeact.Tpo" "$(DEPDIR)/wilson_gaugeact.Po"; else rm -f "$(DEPDIR)/wilson_gaugeact.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugeacts/wilson_gaugeact.cc' object='wilson_gaugeact.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o wilson_gaugeact.o `test -f 'actions/gauge/gaugeacts/wilson_gaugeact.cc' || echo '$(srcdir)/'`actions/gauge/gaugeacts/wilson_gaugeact.cc
+
+wilson_gaugeact.obj: actions/gauge/gaugeacts/wilson_gaugeact.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT wilson_gaugeact.obj -MD -MP -MF "$(DEPDIR)/wilson_gaugeact.Tpo" -c -o wilson_gaugeact.obj `if test -f 'actions/gauge/gaugeacts/wilson_gaugeact.cc'; then $(CYGPATH_W) 'actions/gauge/gaugeacts/wilson_gaugeact.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugeacts/wilson_gaugeact.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/wilson_gaugeact.Tpo" "$(DEPDIR)/wilson_gaugeact.Po"; else rm -f "$(DEPDIR)/wilson_gaugeact.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugeacts/wilson_gaugeact.cc' object='wilson_gaugeact.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o wilson_gaugeact.obj `if test -f 'actions/gauge/gaugeacts/wilson_gaugeact.cc'; then $(CYGPATH_W) 'actions/gauge/gaugeacts/wilson_gaugeact.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugeacts/wilson_gaugeact.cc'; fi`
+
+lw_tree_gaugeact.o: actions/gauge/gaugeacts/lw_tree_gaugeact.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lw_tree_gaugeact.o -MD -MP -MF "$(DEPDIR)/lw_tree_gaugeact.Tpo" -c -o lw_tree_gaugeact.o `test -f 'actions/gauge/gaugeacts/lw_tree_gaugeact.cc' || echo '$(srcdir)/'`actions/gauge/gaugeacts/lw_tree_gaugeact.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/lw_tree_gaugeact.Tpo" "$(DEPDIR)/lw_tree_gaugeact.Po"; else rm -f "$(DEPDIR)/lw_tree_gaugeact.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugeacts/lw_tree_gaugeact.cc' object='lw_tree_gaugeact.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lw_tree_gaugeact.o `test -f 'actions/gauge/gaugeacts/lw_tree_gaugeact.cc' || echo '$(srcdir)/'`actions/gauge/gaugeacts/lw_tree_gaugeact.cc
+
+lw_tree_gaugeact.obj: actions/gauge/gaugeacts/lw_tree_gaugeact.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lw_tree_gaugeact.obj -MD -MP -MF "$(DEPDIR)/lw_tree_gaugeact.Tpo" -c -o lw_tree_gaugeact.obj `if test -f 'actions/gauge/gaugeacts/lw_tree_gaugeact.cc'; then $(CYGPATH_W) 'actions/gauge/gaugeacts/lw_tree_gaugeact.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugeacts/lw_tree_gaugeact.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/lw_tree_gaugeact.Tpo" "$(DEPDIR)/lw_tree_gaugeact.Po"; else rm -f "$(DEPDIR)/lw_tree_gaugeact.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugeacts/lw_tree_gaugeact.cc' object='lw_tree_gaugeact.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lw_tree_gaugeact.obj `if test -f 'actions/gauge/gaugeacts/lw_tree_gaugeact.cc'; then $(CYGPATH_W) 'actions/gauge/gaugeacts/lw_tree_gaugeact.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugeacts/lw_tree_gaugeact.cc'; fi`
+
+lw_1loop_gaugeact.o: actions/gauge/gaugeacts/lw_1loop_gaugeact.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lw_1loop_gaugeact.o -MD -MP -MF "$(DEPDIR)/lw_1loop_gaugeact.Tpo" -c -o lw_1loop_gaugeact.o `test -f 'actions/gauge/gaugeacts/lw_1loop_gaugeact.cc' || echo '$(srcdir)/'`actions/gauge/gaugeacts/lw_1loop_gaugeact.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/lw_1loop_gaugeact.Tpo" "$(DEPDIR)/lw_1loop_gaugeact.Po"; else rm -f "$(DEPDIR)/lw_1loop_gaugeact.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugeacts/lw_1loop_gaugeact.cc' object='lw_1loop_gaugeact.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lw_1loop_gaugeact.o `test -f 'actions/gauge/gaugeacts/lw_1loop_gaugeact.cc' || echo '$(srcdir)/'`actions/gauge/gaugeacts/lw_1loop_gaugeact.cc
+
+lw_1loop_gaugeact.obj: actions/gauge/gaugeacts/lw_1loop_gaugeact.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lw_1loop_gaugeact.obj -MD -MP -MF "$(DEPDIR)/lw_1loop_gaugeact.Tpo" -c -o lw_1loop_gaugeact.obj `if test -f 'actions/gauge/gaugeacts/lw_1loop_gaugeact.cc'; then $(CYGPATH_W) 'actions/gauge/gaugeacts/lw_1loop_gaugeact.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugeacts/lw_1loop_gaugeact.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/lw_1loop_gaugeact.Tpo" "$(DEPDIR)/lw_1loop_gaugeact.Po"; else rm -f "$(DEPDIR)/lw_1loop_gaugeact.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugeacts/lw_1loop_gaugeact.cc' object='lw_1loop_gaugeact.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lw_1loop_gaugeact.obj `if test -f 'actions/gauge/gaugeacts/lw_1loop_gaugeact.cc'; then $(CYGPATH_W) 'actions/gauge/gaugeacts/lw_1loop_gaugeact.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugeacts/lw_1loop_gaugeact.cc'; fi`
+
+rg_gaugeact.o: actions/gauge/gaugeacts/rg_gaugeact.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT rg_gaugeact.o -MD -MP -MF "$(DEPDIR)/rg_gaugeact.Tpo" -c -o rg_gaugeact.o `test -f 'actions/gauge/gaugeacts/rg_gaugeact.cc' || echo '$(srcdir)/'`actions/gauge/gaugeacts/rg_gaugeact.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/rg_gaugeact.Tpo" "$(DEPDIR)/rg_gaugeact.Po"; else rm -f "$(DEPDIR)/rg_gaugeact.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugeacts/rg_gaugeact.cc' object='rg_gaugeact.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o rg_gaugeact.o `test -f 'actions/gauge/gaugeacts/rg_gaugeact.cc' || echo '$(srcdir)/'`actions/gauge/gaugeacts/rg_gaugeact.cc
+
+rg_gaugeact.obj: actions/gauge/gaugeacts/rg_gaugeact.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT rg_gaugeact.obj -MD -MP -MF "$(DEPDIR)/rg_gaugeact.Tpo" -c -o rg_gaugeact.obj `if test -f 'actions/gauge/gaugeacts/rg_gaugeact.cc'; then $(CYGPATH_W) 'actions/gauge/gaugeacts/rg_gaugeact.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugeacts/rg_gaugeact.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/rg_gaugeact.Tpo" "$(DEPDIR)/rg_gaugeact.Po"; else rm -f "$(DEPDIR)/rg_gaugeact.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugeacts/rg_gaugeact.cc' object='rg_gaugeact.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o rg_gaugeact.obj `if test -f 'actions/gauge/gaugeacts/rg_gaugeact.cc'; then $(CYGPATH_W) 'actions/gauge/gaugeacts/rg_gaugeact.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugeacts/rg_gaugeact.cc'; fi`
 
 barcomp_io.o: io/barcomp_io.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT barcomp_io.o -MD -MP -MF "$(DEPDIR)/barcomp_io.Tpo" -c -o barcomp_io.o `test -f 'io/barcomp_io.cc' || echo '$(srcdir)/'`io/barcomp_io.cc; \
