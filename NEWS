@@ -1,5 +1,10 @@
 11/14/2003 -- Robert Edwards
 
+	Version 1.1.1. Rearranged fermact files and made more base classes.
+        Merged separate dsdu and qprop files into corresponding fermact files.
+
+11/14/2003 -- Robert Edwards
+
 	Version 1.1.0. Added array versions of fermacts. Now have functioning
         unprecondition DWF operator.
 
