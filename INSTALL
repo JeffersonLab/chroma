@@ -1,0 +1,240 @@
+Installation instructions for QDP++
+=================================
+
+1) Configuration.
+---------------- 
+
+SZIN++ has been modified to use the GNU autoconf build system.
+To configure you have to execute the command:
+
+./configure <configuration options>
+
+Some important options for QDP++ are
+
+        --enable-fermion-type=<fermion-type>
+	--with-qdp-cxxflags=QDP_CXXFLAGS
+	--with-qdp-ldflags=QDP_LDFLAGS
+	--with-qdp-libs=QDP_LIBS
+        --with-qmp-cxxflags=QMP_CXXFLAGS
+	--with-qmp-ldflags=QMP_LDFLAGS
+	--with-qmp-libs=QMP_LIBS
+	--with-qmp-comms-type=<comms-type>
+	--with-qmp-comms-cxxflags=QMP_COMMS_CXXFLAGS
+	--with-qmp-comms-ldflags=QMP_COMMS_LDFLAGS
+	--with-qmp-comms-libs=QMP_COMMS_LIBS
+        --prefix=<installation directory>
+
+The values QDP_CXXFLAGS, QDP_LDFLAGS, QDP_LIBS, QMP_CXXFLAGS, QMP_LDFLAGS, 
+QMP_LIBS, QMP_COMMS_CXXFLAGS, QMP_COMMS_LDFLAGS and QMP_COMMS_LIBS can 
+also take their values from environment variables of the same name. 
+The values of these environment variables or the --with-xxxx command line 
+switches should be set as follows:
+
+QDP_CXXFLAGS  -- Compiler flags to give the C++ compiler about QDP 
+		 in particular the include path flags to find QDP headers
+	         eg: QDP_CXXFLAGS="-I/usr/local/qdp++/include" 
+		 or  --with-qdp-cxxflags="-I/usr/local/qdp++/include" if
+		 QDP is installed in /usr/local/qdp++
+
+QDP_LDFLAGS   -- Linker flags to give to the linker for QDP
+	         in particular the link path flags to find the QDP library
+		 eg: QDP_LDFLAGS="-L/usr/local/qdp++/lib" or
+		     --with-qdp-ldflags="-L/usr/local/qdp++/lib" if QDP++
+		 is installed in /usr/local/qdp++
+
+QDP_LIBS      -- Linker library flags to give to the linker for QDP
+		 eg: QDP_LIBS="-lqdp" or --with-qdp-libs="-lqdp"
+
+
+QMP_CXXFLAGS  -- Compiler flags to give the C++ compiler about QMP 
+		 in particular the include path flags to find QMP headers
+	         eg: QMP_CXXFLAGS="-I/usr/local/qmp/include" 
+		 or  --with-qmp-cxxflags="-I/usr/local/qmp/include" if
+		 qmp is installed in /usr/local/qmp
+
+QMP_LDFLAGS   -- Linker flags to give to the linker for QMP
+	         in particular the link path flags to find the QMP library
+		 eg: QMP_LDFLAGS="-L/usr/local/qmp/lib" or
+		     --with-qmp-ldflags="-L/usr/local/qmp/lib" if qmp
+		 is installed in /usr/local/qmp
+
+QMP_LIBS      -- Linker library flags to give to the linker for QMP
+		 eg: QMP_LIBS="-lqmp" or --with-qmp-libs="-lqmp"
+
+QMP_COMMS_CXXFLAGS -- Compiler flags to give the C++ compiler about 
+		additional packages needed by QMP for its comms subsystem
+		eg: QMP_COMMS_CXXFLAGS="-I/usr/local/mpich/include" 
+		or --with-qmp-comms-cxxflags="-I/usr/local/mpich/include"
+		for a QMP built over MPI using mpich where mpich is 
+		installed in /usr/local/mpich
+
+QMP_COMMS_LDFLAGS -- Linker flags to give the C++ compiler about a
+		about additional packages needed by QMP for its comms
+		comms subsystem eg:
+		
+                QMP_COMMS_LDFLAGS="-L/usr/local/mpich/lib \
+				   -L/usr/local/gm/binary/lib"
+		
+		--with-qmp-comms-ldflags="-L/usr/local/mpich/lib \
+                  -L/usr/local/gm/binary/lib"
+
+		for QMP over MPI over GM, where the MPI is MPICH-GM installed
+		in /usr/local/mpich and the GM drivers are in /usr/local/gm
+
+QMP_COMMS_LIBS  -- additional libraries to do with QMP for its comms
+		subsystem eg:
+	
+		QMP_COMMS_LIBS="-lmpich -lpmpich" 
+		-- with-qmp-comms-libs="-lmpich -lpmpich"
+		
+		if QMP is built over a version of MPICH using Ethernet.
+
+In particular if your comms system underneath QMP is MPI, you may 
+have some wrapper script such as mpiCC. You can use this compiler, 
+which can hide QMP_COMMS_CXXFLAGS QMP_COMMS_LDFLAGS and QMP_LIBS 
+by say:
+
+./configure CXX=mpiCC \
+	    --with-qdp-cxxflags=/usr/local/qdp++/include   \
+	    --with-qdp-ldflags=/usr/local/qdp++/lib        \
+	    --with-qdp-libs="-lqdp"                        \
+            --with-qmp-cxxflags=/usr/local/qmp/include     \
+	    --with-qmp-ldflags=/usr/local/qmp/lib          \
+	    --with-qmp-libs="-lqmp"
+
+
+
+The other individual switches:
+
+--enable-fermion-type=<fermion-type> Specifies which fermion type should
+				  be used. Allowed values are:
+			            wilson  -- Wilsonesque Fermions
+				    staggered -- Staggeredesque Fermions
+				  
+				  The default value is 'wilson'.
+
+ --prefix=<installdir>            specifies where the QDP headers 
+                                  and libraries should be installed 
+                                  when you type: make install. 
+	                          By default it is set to /usr/local.
+
+
+ --with-qmp-comms-type=<comms-type>    This specifies what comms harness QMP
+                                  is to be built over. Allowed values for
+	                          COMMS_TYPE are:
+				     MPI  -- Build over MPI (also MPI/GM)
+				     GM   -- Build over GM.
+
+				  this flag is only needed for non scalar
+				  builds. Its default value is MPI
+
+
+
+Specifying a compiler:
+
+You can specify a compiler by using the CXX environment variable on the 
+configure command line eg:
+
+./configure CXX=xlC 
+
+or 
+
+./configure CXX=powerpc-gnu-elf-g++
+
+This currently takes care of the cross compiling issues, as there is currently
+no need to distinguish between host and target compilers.
+
+Autoconf guesses some default compiler flags for you. On Linux this is
+usually "-g -O2 -Wall". You can override (specify more optimisations)
+by defining the CXXFLAGS variable which gets passed on by autoconf.
+Likewise if you need extra libraries (like -lm) you can specify these
+with LDFLAGS and LIBS environment variables eg:
+
+./configure CXX=g++ CXXFLAGS="-O3" LIBS="-lm"
+
+2) Building
+-----------
+There are several ways to build SZIN++
+
+a) SZIN++ is suitable for 'installation' (where you make the programs, and
+install them and then just run them -- This is likely to be the least common
+method of using szin++). In this case just type 
+
+make 
+make install
+
+in the directory where you typed configure. The libraries and executables
+will be installed in whatever you set --prefix to.
+
+b) Working in the build directory:
+
+To make the libszin.a library type:
+
+cd lib ; make
+
+in the directory where you ran configure.
+
+To make the mainprogs/tests programs type:
+
+cd mainprogs/tests ; make
+or
+cd mainprogs/main ; make 
+
+-- in this case ALL the available programs in mainprogs/tests  or
+in mainprogs/main  will be built. In the current setup, if a program
+in mainprogs/main or mainprogs/tests needs the libszin.a to be built
+it should be built automatically.
+
+Alternatively, if you want to build an individual program say t_mesplq,
+you can do it by typing:
+
+cd mainprogs/tests ; make t_mesplq
+
+in the build directory.
+
+3) Building in a different directory from the Source
+----------------------------------------------------
+
+This is supported, and may be desirable if you wish to have several
+different configurations of the same source tree around. 
+Suppose you have the distribution unpacked in directory szin++
+you can then build say a scalar version in ./scalar-build as follows
+
+mkdir ./scalar-build
+cd ./scalar-build
+../qdp/configure --with-qdp-cxxflags="-I/usr/local/qdp++-scalar/include" \
+  --with-qdp-ldflags="-L/usr/local/qdp++-scalar/lib" --with-qdp-libs="-lqdp"
+gmake
+
+should build everything (libraries, mainprogs) using a scalar version
+of QDP++ or you could try:
+
+mkdir parscalar-build
+source szin++-parscalar-env.sh
+../qdp/configure --fermion-type=wilson
+gmake
+
+to build a parscalar version. In this case szin++-parscalar-env.sh
+will probably contain something like:
+
+CXX=/usr/local/mpich/bin/mpiCC
+QDP_CXXFLAGS="-I/usr/local/qdp-parscalar/include"
+QDP_LDFLAGS="-L/usr/local/qdp-parscalar/lib"
+QDP_LIB="-lqdp"
+QMP_CXXFLAGS="-I/usr/local/qmp-mpich/include"
+QMP_LDFLAGS="-L/usr/local/qmp-mpich/lib"
+QMP_LIBS="-lqmp"
+export CXX QDP_CXXFLAGS QDP_LDFLAGS QDP_LIB QMP_CXXFLAGS QMP_LDFLAGS QMP_LIBS
+
+
+4) Building the documentation
+-----------------------------
+
+All in good time ...
+
+
+5) Reporting Bugs etc.
+---------------------
+
+Send bugreports to edwards@jlab.org
+ 
