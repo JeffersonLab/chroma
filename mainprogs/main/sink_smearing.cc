@@ -1,4 +1,4 @@
-// $Id: sink_smearing.cc,v 1.5 2004-02-26 05:07:40 edwards Exp $
+// $Id: sink_smearing.cc,v 1.6 2004-02-26 05:26:51 edwards Exp $
 /*! \file
  * \brief Main program for sink-smearing quark propagators
  *
@@ -48,6 +48,7 @@ void read(XMLReader& xml, const string& path, Prop_t& input)
 
   read(inputtop, "prop_file", input.prop_file);
   read(inputtop, "smeared_prop_file", input.smeared_prop_file);
+  read(inputtop, "smeared_prop_volfmt", input.smeared_prop_volfmt);
 }
 
 
