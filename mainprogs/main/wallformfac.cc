@@ -1,4 +1,4 @@
-// $Id: wallformfac.cc,v 1.24 2004-06-04 21:15:19 edwards Exp $
+// $Id: wallformfac.cc,v 1.25 2004-06-05 21:06:27 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions with a wall sink
  *
@@ -226,7 +226,7 @@ main(int argc, char *argv[])
   write(xml_out, "Config_info", gauge_xml);
 
   push(xml_out, "Output_version");
-  write(xml_out, "out_version", 2);
+  write(xml_out, "out_version", 3);
   pop(xml_out);
 
   // First calculate some gauge invariant observables just for info.
