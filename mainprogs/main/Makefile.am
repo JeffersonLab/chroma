@@ -31,4 +31,4 @@ LDADD = -lszin @QDP_LIBS@ @QMP_LIBS@ @QMP_COMMS_LIBS@ @LIBS@
 # Always try to rebuild this, just in case it needs updating
 .PHONY: build_szin_libs
 build_szin_libs:
-	cd @top_builddir@/lib ; gmake
+	cd @top_builddir@/lib ; $(MAKE)
