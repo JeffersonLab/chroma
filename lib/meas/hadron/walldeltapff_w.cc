@@ -1,4 +1,4 @@
-// $Id: walldeltapff_w.cc,v 1.5 2004-06-01 04:33:33 edwards Exp $
+// $Id: walldeltapff_w.cc,v 1.6 2004-06-01 05:00:33 edwards Exp $
 /*! \file
  *  \brief Wall-sink delta^+ -> gamma+proton form-factors 
  *
@@ -46,10 +46,10 @@ void write(XMLWriter& xml, const string& path, const WallFormFac_momenta_t& head
 
   write(xml, "inser_mom_num", header.inser_mom_num);
   write(xml, "inser_mom", header.inser_mom);
-  write(xml, "local_current", header.local_current);
+  write(xml, "local_cur3ptfn", header.local_current);
 
   if (header.nonlocal_current.size() > 0)
-    write(xml, "nonlocal_current", header.nonlocal_current);
+    write(xml, "nonlocal_cur3ptfn", header.nonlocal_current);
 
   pop(xml);
 }
