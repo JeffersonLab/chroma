@@ -1,4 +1,4 @@
-// $Id: wallnuclff_w.cc,v 1.3 2004-04-11 05:35:12 edwards Exp $
+// $Id: wallnuclff_w.cc,v 1.4 2004-04-14 04:00:09 edwards Exp $
 /*! \file
  *  \brief Wall-sink nucleon form-factors 
  *
@@ -61,8 +61,8 @@ void wallNuclFormFac(XMLWriter& xml,
   LatticePropagator q1_tmp;
 
   // Project propagator onto zero momentum: Do a slice-wise sum.
-  Propagator u_x2 = sum(forw_u_prop, phases.getSubset()[t_sink]);
-  Propagator d_x2 = sum(forw_d_prop, phases.getSubset()[t_sink]);
+  Propagator u_x2 = sum(forw_u_prop, phases.getSet()[t_sink]);
+  Propagator d_x2 = sum(forw_d_prop, phases.getSet()[t_sink]);
 
 //  form.formFac.resize(Nd*Nd);
 
