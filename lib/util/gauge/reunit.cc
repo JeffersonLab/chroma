@@ -1,11 +1,10 @@
-// $Id: reunit.cc,v 1.1 2003-01-04 04:10:56 edwards Exp $
+// $Id: reunit.cc,v 1.2 2003-01-04 05:11:11 edwards Exp $
 
 /*! \file
  *  \brief Reunitarize (to a SU(N)) inplace the matrix A under some option
  */
 
-#include <szin.h>
-
+#include "szin.h"
 
 using namespace QDP;
 
@@ -19,7 +18,7 @@ void reunit(LatticeColorMatrix& xa)
   LatticeBoolean bad;
   int numbad;
 
-  reunit(xa, bad, REUNITARIZE, numbad);
+  reunit(xa, bad, numbad, REUNITARIZE);
 }
 
 
@@ -38,7 +37,7 @@ void reunit(LatticeColorMatrix& xa)
  */
 
 void reunit(LatticeColorMatrix& xa, LatticeBoolean& bad, 
-	    enum Reunitarize ruflag, int& numbad)
+	    int& numbad, enum Reunitarize ruflag)
 {
   multi2d<LatticeComplex> a(Nc, Nc);
   multi2d<LatticeComplex> b(Nc, Nc);
@@ -129,8 +128,8 @@ void reunit(LatticeColorMatrix& xa, LatticeBoolean& bad,
       a[c][0] *= t4;
 
     /* construct the second row from the first row */
-    a[1][1] = conj(a[0][0]);
-    a[0][1] = -conj(a[1][0]);
+    a[1][1] = adj(a[0][0]);
+    a[0][1] = -adj(a[1][0]);
 
     /* Now, do various things depending on the input flag. */
     /* For use later, calculate the mean squared deviation */
@@ -199,9 +198,9 @@ void reunit(LatticeColorMatrix& xa, LatticeBoolean& bad,
 
     /* calculate the orthogonal component to the second row */
     /* t2 <- u^t.v */
-    t2 = conj(a[0][0]) * a[0][1];
+    t2 = adj(a[0][0]) * a[0][1];
     for(int c = 1; c < Nc; ++c)
-      t2 += conj(a[c][0]) * a[c][1];
+      t2 += adj(a[c][0]) * a[c][1];
 
     /* orthogonalize the second row relative to the first row */
     /* v <- v - t2*u */
@@ -224,13 +223,13 @@ void reunit(LatticeColorMatrix& xa, LatticeBoolean& bad,
 
     /* the third row is the cross product of the new first and second rows */
     /* column 1: w(0) = u(1)*v(2) - u(2)*v(1) */
-    a[0][2] = conj(a[1][0]) * conj(a[2][1]) - conj(a[2][0]) * conj(a[1][1]);
+    a[0][2] = adj(a[1][0]) * adj(a[2][1]) - adj(a[2][0]) * adj(a[1][1]);
 
     /* column 2: w(1) = u(2)*v(0) - u(0)*v(2) */
-    a[1][2] = conj(a[2][0]) * conj(a[0][1]) - conj(a[0][0]) * conj(a[2][1]);
+    a[1][2] = adj(a[2][0]) * adj(a[0][1]) - adj(a[0][0]) * adj(a[2][1]);
 
     /* column 3: w(3) = u(1)*v(2) - u(2)*v(1) */
-    a[2][2] = conj(a[0][0]) * conj(a[1][1]) - conj(a[1][0]) * conj(a[0][1]);
+    a[2][2] = adj(a[0][0]) * adj(a[1][1]) - adj(a[1][0]) * adj(a[0][1]);
     
     /* Now, do various things depending on the input flag. */
     /* For use later, calculate the mean squared deviation */
@@ -309,10 +308,10 @@ void reunit(LatticeColorMatrix& xa, LatticeBoolean& bad,
 	for(int i = 0; i < j; i++ )
 	{
 	  /* t2 <- u^t.v */
-	  t2 = conj(a[0][i]) * a[0][j];
+	  t2 = adj(a[0][i]) * a[0][j];
 	  for(int c = 1; c < Nc; ++c)
 	  {
-	    t2 += conj(a[c][i]) * a[c][j];
+	    t2 += adj(a[c][i]) * a[c][j];
 	  }
 
 	  if ( (ruflag == REUNITARIZE_ERROR ||
@@ -373,7 +372,7 @@ void reunit(LatticeColorMatrix& xa, LatticeBoolean& bad,
 	  for(int c = 0; c < j; c++)
 	    t2 -= b[c][i] * b[j][c];
 
-	  b[j][i] = conj(b[j][j]) * t2 / localNorm2(b[j][j]);
+	  b[j][i] = adj(b[j][j]) * t2 / localNorm2(b[j][j]);
 	}
       }
 
@@ -429,5 +428,5 @@ void reunit(LatticeColorMatrix& xa, LatticeBoolean& bad,
     for(int j=0; j < Nc; ++j)
       pokeColor(xa, a[i][j], i, j);
 
-  END_CODE();
+  END_CODE("reunit");
 }

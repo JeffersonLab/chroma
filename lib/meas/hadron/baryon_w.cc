@@ -1,16 +1,28 @@
-// $Id: baryon_w.cc,v 1.1 2003-01-04 04:10:56 edwards Exp $ 
+// $Id: baryon_w.cc,v 1.2 2003-01-04 05:10:20 edwards Exp $ 
 /*! \file
  *  \brief Baryon 2-pt functions
  */
 
-#include <szin.h>
+#include "szin.h"
 
 using namespace QDP;
 
-//! Function used for constructing the time-slice set
-static const int j_decay = Nd-1;
-static int set_timeslice_func(const multi1d<int>& coordinate) {return coordinate[j_decay];}
-  
+//! Function object used for constructing the time-slice set
+class TimeSliceFunc : public SetFunc
+{
+public:
+  TimeSliceFunc(int dir): dir_decay(dir) {}
+
+  int operator() (const multi1d<int>& coordinate) const {return coordinate[dir_decay];}
+  int numSubsets() const {return Layout::lattSize()[dir_decay];}
+
+  int dir_decay;
+
+private:
+  TimeSliceFunc() {}  // hide default constructor
+};
+
+ 
 //! Baryon 2-pt functions
 /*!
  * This routine is specific to Wilson fermions! 
@@ -24,15 +36,16 @@ static int set_timeslice_func(const multi1d<int>& coordinate) {return coordinate
  * The routine also computes time-charge reversed baryons and adds them
  * in for increased statistics.
 
- * quark_propagator -- quark propagator ( Read )
- * barprop -- baryon propagator ( Modify )
- * bardisp -- baryon props. at non-zero momenta ( Modify )
- * num_mom -- number of non-zero momenta ( Read )
- * t_source -- cartesian coordinates of the source ( Read )
- * j_decay -- direction of the exponential decay ( Read )
- * bc_spec  -- boundary condition for spectroscopy ( Read )
+ * \param quark_propagator -- quark propagator ( Read )
+ * \param barprop -- baryon propagator ( Modify )
+ * \param bardisp -- baryon props. at non-zero momenta ( Modify )
+ * \param num_mom -- number of non-zero momenta ( Read )
+ * \param t_source -- cartesian coordinates of the source ( Read )
+ * \param j_decay -- direction of the exponential decay ( Read ) 
+ * \param bc_spec  -- boundary condition for spectroscopy ( Read )
+ *
  * FftP    -- flag for use of fft or sft ( Read )
-
+ *
  *        ____
  *        \
  * b(t) =  >  < b(t_source, 0) b(t + t_source, x) >
@@ -69,15 +82,17 @@ static int set_timeslice_func(const multi1d<int>& coordinate) {return coordinate
 
 void baryon(LatticePropagator& quark_propagator, 
 	    multi2d<Complex>& barprop, 
-	    const multi1d<int>& t_source, int bc_spec)
+	    const multi1d<int>& t_source, int j_decay, int bc_spec)
 {
-  int length = Layout::lattSize()[j_decay];
+  // Create the time-slice set
+  Set timeslice;
+  timeslice.make(TimeSliceFunc(j_decay));
+
+  // Length of lattice in j_decay direction
+  int length = timeslice.numSubsets();
 
   if ( Ns != 4 || Nc != 3 )		/* Code is specific to Ns=4 and Nc=3. */
     return;
-
-  // Create the time-slice set
-  Set timeslice(set_timeslice_func, length);
 
   int t0 = t_source[j_decay];
   
@@ -89,14 +104,14 @@ void baryon(LatticePropagator& quark_propagator,
   SpinMatrix g_tmp1;
 
   /* C = Gamma(10) */
-  g_tmp1 = 0.5 * (Gamma(2) * g_one  +  multiplyI(Gamma(1) * g_one));
+  g_tmp1 = 0.5 * (Gamma(2) * g_one  +  timesI(Gamma(1) * g_one));
   Cgm = Gamma(10) * g_tmp1;
 
   Cg4m = Gamma(10) * (Gamma(8) * g_tmp1);
   CgmNR = Cgm - Cg4m;
 
   SpinMatrix S_proj = 
-    0.5*((g_one + Gamma(8) * g_one) - multiplyI(Gamma(3) * g_one  +  Gamma(11) * g_one));
+    0.5*((g_one + Gamma(8) * g_one) - timesI(Gamma(3) * g_one  +  Gamma(11) * g_one));
 
   /*Loop over time-charge reversals */
   for(int time_rev = 0; time_rev < 2; ++time_rev)
