@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.107 2004-02-03 20:58:16 edwards Exp $
+# $Id: Makefile.am,v 1.108 2004-02-08 11:33:30 mcneile Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -148,6 +148,7 @@ nobase_include_HEADERS += \
 	meas/hadron/hadron_w.h meas/hadron/hybmeson_w.h \
 	meas/hadron/mesonseqsrc_w.h \
 	meas/hadron/mesons_w.h meas/hadron/seqpiontest_w.h \
+	meas/hadron/loops_w.h meas/hadron/z2_src.h \
 	meas/hadron/walfil_w.h meas/hadron/wall_qprop_w.h \
 	meas/hadron/wallpionff_w.h \
 	meas/smear/sink_smear2_w.h meas/sources/d_src_w.h \
@@ -211,6 +212,7 @@ libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
 #
 if BUILD_WILSON_LIBS
 libchroma_a_SOURCES += baryon_w.cc mesons_w.cc hybmeson_w.cc \
+               loops_w.cc z2_src.cc \
               curcor2_w.cc lwldslash_w.cc formfac_w.cc \
               mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
               sink_smear2_w.cc barcomp_w.cc ldwfdslash_w.cc walfil_w.cc \
