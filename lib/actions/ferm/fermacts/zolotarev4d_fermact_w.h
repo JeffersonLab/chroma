@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev4d_fermact_w.h,v 1.8 2003-12-03 03:04:44 edwards Exp $
+// $Id: zolotarev4d_fermact_w.h,v 1.9 2003-12-03 06:12:02 edwards Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -27,9 +27,10 @@ class Zolotarev4DFermAct : public UnprecWilsonTypeFermAct<LatticeFermion>
 {
 public:
   //! Full constructor
-  Zolotarev4DFermAct(const UnprecWilsonTypeFermAct<LatticeFermion>& M_, const Real& m_q_) :
-    M(M_), m_q(m_q_)
-    {init();}
+  Zolotarev4DFermAct(const UnprecWilsonTypeFermAct<LatticeFermion>& Mact_, const Real& m_q_,
+		     int RatPolyDeg_) :
+    Mact(Mact_), m_q(m_q_), RatPolyDeg(RatPolyDeg_)
+    {}
 
   //! Default version, given links create the state needed for the linear operators
   /*! Covariant Return Rule - overload base class virtual function with new return type */
@@ -61,7 +62,11 @@ public:
 
 protected:
   //! Helper in construction
-  void init();
+  void init(int& numroot, Real& coeffP, multi1d<Real>& resP, multi1d<Real>& rootQ, 
+	    int& NEig, 
+	    multi1d<Real>& EigValFunc,
+	    const EVConnectState<LatticeFermion>& state,
+	    int& MaxCG, Real& RsdCGinner) const;
 
 private:
   //! Partial constructor not allowed
@@ -69,8 +74,9 @@ private:
 
 private:
   // Auxilliary action used for kernel of operator
-  const UnprecWilsonTypeFermAct<LatticeFermion>& M;
+  const UnprecWilsonTypeFermAct<LatticeFermion>& Mact;
   Real m_q;
+  int RatPolyDeg;   // degree of polynomial-ratio
 };
 
 #endif
