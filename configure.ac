@@ -185,7 +185,8 @@ AC_CHECK_PROG(DOXYGEN, doxygen, doxygen, true)
 # Set up the doxygen file
 # Substitute the right directories
 #
-AC_CONFIG_FILES(docs/chromadoc)
+# The docs stuff needs more work. Turn it all off for now.
+# AC_CONFIG_FILES(docs/chromadoc)
 
 dnl Make the Makefiles
 AC_CONFIG_FILES(Makefile)
@@ -194,6 +195,6 @@ AC_CONFIG_FILES(lib/Makefile)
 AC_CONFIG_FILES(mainprogs/Makefile)
 AC_CONFIG_FILES(mainprogs/tests/Makefile)
 AC_CONFIG_FILES(mainprogs/main/Makefile)
-AC_CONFIG_FILES(docs/Makefile)
+# AC_CONFIG_FILES(docs/Makefile)
 AC_CONFIG_FILES(other_libs/Makefile)
 AC_OUTPUT
