@@ -1,4 +1,4 @@
-// $Id: lg5eps_w.cc,v 1.4 2004-05-21 12:03:13 bjoo Exp $
+// $Id: lg5eps_w.cc,v 1.5 2004-08-10 14:32:06 edwards Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -41,6 +41,7 @@ void lg5eps::operator() (LatticeFermion& chi, const LatticeFermion& psi,
 void lg5eps::operator() (LatticeFermion& chi, const LatticeFermion& psi, 
 			   enum PlusMinus isign, Real epsilon) const
 {
+  START_CODE();
 
   LatticeFermion tmp1, tmp2;
 
@@ -104,6 +105,7 @@ void lg5eps::operator() (LatticeFermion& chi, const LatticeFermion& psi,
   if (toBool(c == 0))
   {
     chi = zero;
+    END_CODE();
     return;
   }
 
@@ -422,5 +424,7 @@ void lg5eps::operator() (LatticeFermion& chi, const LatticeFermion& psi,
 
   QDPIO::cout << "Overlap Inner Solve (lg5eps): " << k << " iterations " << endl;
   // End of MULTI SHIFTERY 
+
+  END_CODE();
 }
 
