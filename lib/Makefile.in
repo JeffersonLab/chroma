@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.206 2004-06-10 10:42:46 bjoo Exp $
+# $Id: Makefile.in,v 1.207 2004-06-11 20:40:34 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -109,7 +109,8 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@	meas/hadron/wallrhoff_w.h meas/hadron/wallrhopiff_w.h \
 @BUILD_WILSON_LIBS_TRUE@	meas/smear/sink_smear2_w.h meas/sources/d_src_w.h \
 @BUILD_WILSON_LIBS_TRUE@	meas/sources/p_src_w.h meas/sources/sources_w.h \
-@BUILD_WILSON_LIBS_TRUE@	util/ferm/ferm_w.h util/ferm/diractodr.h  util/ferm/paulitodr.h 
+@BUILD_WILSON_LIBS_TRUE@	util/ferm/ferm_w.h util/ferm/diractodr.h util/ferm/gammasgn_w.h \
+@BUILD_WILSON_LIBS_TRUE@        util/ferm/paulitodr.h 
 
 @BUILD_STAGGERED_LIBS_TRUE@am__append_2 = \
 @BUILD_STAGGERED_LIBS_TRUE@	actions/ferm/fermacts/asqtad_fermact_s.h \
@@ -131,7 +132,7 @@ host_triplet = @host@
 
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_3 = -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
 @BUILD_WILSON_LIBS_TRUE@am__append_4 = baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
-@BUILD_WILSON_LIBS_TRUE@              loops_w.cc diractodr.cc paulitodr.cc \
+@BUILD_WILSON_LIBS_TRUE@              loops_w.cc diractodr.cc paulitodr.cc gammasgn_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              curcor2_w.cc lwldslash_w.cc formfac_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              sink_smear2_w.cc barcomp_io.cc barcomp_w.cc walfil_w.cc \
@@ -307,7 +308,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/minv_rel_sumr.h \
 	actions/ferm/invert/invbicgstab.h \
 	actions/ferm/invert/invbicgstab_array.h \
- 	actions/ferm/invert/inv_minres_array.h \
+        actions/ferm/invert/inv_minres_array.h \
 	actions/ferm/invert/inv_rel_gmresr_sumr.h \
 	actions/ferm/invert/inv_rel_gmresr_cg.h \
 	actions/ferm/invert/inv_gmresr_cg_array.h \
@@ -413,11 +414,11 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc rgauge.cc taproj.cc \
 	invbicgstab.cc invbicgstab_array.cc inv_rel_gmresr_sumr.cc \
 	inv_rel_gmresr_cg.cc inv_gmresr_cg_array.cc inv_borici.cc \
 	inv_minres_array.cc baryon_w.cc barhqlq_w.cc mesons_w.cc \
-	hybmeson_w.cc loops_w.cc diractodr.cc paulitodr.cc curcor2_w.cc \
-	lwldslash_w.cc formfac_w.cc mesonseqsrc_w.cc barseqsrc_w.cc \
-	seqpiontest_w.cc sink_smear2_w.cc barcomp_io.cc barcomp_w.cc \
-	walfil_w.cc overlap_state_info.cc \
-	zolotarev4d_fermact_paramio_w.cc \
+	hybmeson_w.cc loops_w.cc diractodr.cc paulitodr.cc \
+	gammasgn_w.cc curcor2_w.cc lwldslash_w.cc formfac_w.cc \
+	mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
+	sink_smear2_w.cc barcomp_io.cc barcomp_w.cc walfil_w.cc \
+	overlap_state_info.cc zolotarev4d_fermact_paramio_w.cc \
 	zolotarev5d_fermact_paramio_w.cc fermact_qprop.cc \
 	prec_fermact_qprop.cc unprec_wilson_fermact_w.cc \
 	unprec_wilson_linop_w.cc prec_wilson_fermact_w.cc \
@@ -453,6 +454,7 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc rgauge.cc taproj.cc \
 @BUILD_WILSON_LIBS_TRUE@	barhqlq_w.$(OBJEXT) mesons_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	hybmeson_w.$(OBJEXT) loops_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	diractodr.$(OBJEXT) paulitodr.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	gammasgn_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	curcor2_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	lwldslash_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	formfac_w.$(OBJEXT) \
@@ -601,7 +603,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/fermact_qprop_array.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/follana_io_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/formfac_w.Po ./$(DEPDIR)/fuzwilp.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/fuzz_smear.Po ./$(DEPDIR)/gauge_io.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/fuzz_smear.Po ./$(DEPDIR)/gammasgn_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/gauge_io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/gauge_startup.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/gaus_smear.Po ./$(DEPDIR)/gramschm.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/gramschm_array.Po ./$(DEPDIR)/grelax.Po \
@@ -827,6 +830,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/formfac_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuzwilp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuzz_smear.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gammasgn_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gauge_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gauge_startup.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gaus_smear.Po@am__quote@
