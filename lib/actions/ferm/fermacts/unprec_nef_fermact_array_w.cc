@@ -1,4 +1,4 @@
-// $Id: unprec_nef_fermact_array_w.cc,v 1.1 2004-08-23 21:07:47 kostas Exp $
+// $Id: unprec_nef_fermact_array_w.cc,v 1.2 2004-08-24 20:56:13 kostas Exp $
 /*! \file
  *  \brief Unpreconditioned NEF fermion action
  */
@@ -47,6 +47,6 @@ UnprecNEFFermActArray::lMdagM(Handle<const ConnectState> state) const
 const LinearOperator<multi1d<LatticeFermion> >* 
 UnprecNEFFermActArray::linOpPV(Handle<const ConnectState> state) const
 {
-  return new UnprecDWLinOpArray(state->getLinks(),WilsonMass,b5,c5,1.0,N5);  // fixed to quark mass 1
+  return new UnprecNEFDWLinOpArray(state->getLinks(),WilsonMass,b5,c5,1.0,N5);  // fixed to quark mass 1
 }
 

@@ -1,4 +1,4 @@
-// $Id: prec_nef_fermact_array_w.cc,v 1.1 2004-08-23 21:07:47 kostas Exp $
+// $Id: prec_nef_fermact_array_w.cc,v 1.2 2004-08-24 20:56:13 kostas Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned NEF fermion action
  */
@@ -20,7 +20,7 @@
 const EvenOddPrecLinearOperator<multi1d<LatticeFermion> >*
 EvenOddPrecNEFFermActArray::linOp(Handle<const ConnectState> state) const
 {
- return new EvenOddPrecDWLinOpArray(state->getLinks(),WilsonMass,b5,c5,m_q,N5);
+ return new EvenOddPrecNEFDWLinOpArray(state->getLinks(),WilsonMass,b5,c5,m_q,N5);
 }
 
 //! Produce a M^dag.M linear operator for this action
@@ -46,6 +46,6 @@ EvenOddPrecNEFFermActArray::linOpPV(Handle<const ConnectState> state) const
 {
   // For the PV operator, use the **unpreconditioned** one
   // fixed to quark mass 1
-  return new UnprecDWLinOpArray(state->getLinks(),WilsonMass,b5,c5,1.0,N5);
+  return new UnprecNEFDWLinOpArray(state->getLinks(),WilsonMass,b5,c5,1.0,N5);
 }
 

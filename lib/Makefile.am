@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.161 2004-08-20 20:29:17 kostas Exp $
+# $Id: Makefile.am,v 1.162 2004-08-24 20:56:12 kostas Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -147,12 +147,14 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/overlap_fermact_base_w.h \
 	actions/ferm/fermacts/prec_clover_fermact_w.h \
 	actions/ferm/fermacts/prec_dwf_fermact_array_w.h \
+	actions/ferm/fermacts/prec_nef_fermact_array_w.h \
 	actions/ferm/fermacts/prec_ovdwf_fermact_array_w.h \
 	actions/ferm/fermacts/prec_dwf_fermact_base_array_w.h \
 	actions/ferm/fermacts/prec_wilson_fermact_w.h \
 	actions/ferm/fermacts/prec_parwilson_fermact_w.h \
 	actions/ferm/fermacts/unprec_clover_fermact_w.h \
 	actions/ferm/fermacts/unprec_dwf_fermact_array_w.h \
+	actions/ferm/fermacts/unprec_nef_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_dwf_fermact_base_array_w.h \
 	actions/ferm/fermacts/unprec_ovdwf_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_ovext_fermact_array_w.h \
@@ -317,12 +319,12 @@ libchroma_a_SOURCES += baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
               fermact_qprop_array.cc prec_fermact_qprop_array.cc \
               unprec_dwf_fermact_qprop_array_w.cc \
               unprec_dwf_fermact_array_w.cc unprec_dwf_linop_array_w.cc \
-              unprec_nef_linop_array_w.cc \
+              unprec_nef_fermact_array_w.cc unprec_nef_linop_array_w.cc \
 	      unprec_ovdwf_fermact_array_w.cc unprec_ovdwf_linop_array_w.cc \
               unprec_ovext_fermact_array_w.cc unprec_ovext_linop_array_w.cc \
               prec_dwf_fermact_qprop_array_w.cc \
               prec_dwf_fermact_array_w.cc prec_dwf_linop_array_w.cc \
-              prec_nef_linop_array_w.cc \
+              prec_nef_fermact_array_w.cc prec_nef_linop_array_w.cc \
               prec_ovdwf_fermact_array_w.cc prec_ovdwf_linop_array_w.cc \
               kyugauge_io.cc kyuqprop_io.cc \
               readszinqprop_w.cc readszinferm_w.cc writeszinqprop_w.cc \
