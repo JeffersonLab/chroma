@@ -1,4 +1,4 @@
-/* $Id: unprec_ovlap_contfrac5d_linop_array_w.cc,v 1.2 2004-09-30 14:52:47 bjoo Exp $
+/* $Id: unprec_ovlap_contfrac5d_linop_array_w.cc,v 1.3 2004-10-01 17:48:31 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
  */
@@ -70,10 +70,12 @@ UnprecOvlapContFrac5DLinOpArray::operator() (multi1d<LatticeFermion>& chi,
     //  that scale_fac * gamma5 * M has eigenvalues between -1 and 1 
     Hsign = -Hsign;
     pmscale = beta[n]*Hsign*scale_fac;
-    
     chi[n] = pmscale*tmp2;
-    chi[n] += alpha[n] * psi[n+1];
-    
+
+    if( N5 > 1 ) { 
+      chi[n] += alpha[n] * psi[n+1];
+    }
+
     if( n > 0 ) {
       chi[n] += alpha[n-1]*psi[n-1];
     }
@@ -90,6 +92,7 @@ UnprecOvlapContFrac5DLinOpArray::operator() (multi1d<LatticeFermion>& chi,
   // (What does this do then? Urs????)
   LatticeFermion psi_proj;
   psi_proj = zero;
+
 
   if(  NEig > 0 ) {
     Complex cconsts;

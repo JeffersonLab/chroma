@@ -1,4 +1,4 @@
-// $Id: unprec_ovlap_contfrac5d_fermact_array_w.cc,v 1.2 2004-09-29 21:48:34 bjoo Exp $
+// $Id: unprec_ovlap_contfrac5d_fermact_array_w.cc,v 1.3 2004-10-01 17:48:30 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -119,18 +119,15 @@ namespace Chroma
     bool isEvenRatPolyDeg = ( params.RatPolyDeg % 2 == 0);
 
     if( isEvenRatPolyDeg ) { 
-      QDPIO::cout << "Rat Poly Deg is even " << endl;
+
       N5 = params.RatPolyDeg+1;
       isLastZeroP = true;     
     }
     else { 
-      QDPIO::cout << "Rat Poly Deg is odd " << endl;
+
       N5 = params.RatPolyDeg;
       isLastZeroP = false;
     }
-
-    QDPIO::cout << "N5 is " << N5 << endl;
-    QDPIO::cout << "Last beta coefficient is zero: " << isLastZeroP << endl;
 
     // Construct the fermact 
     std::istringstream  xml_s(params.AuxFermAct);
@@ -268,48 +265,63 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    
     // The coefficients from the continued fraction
     beta.resize(N5);
     for(int i = 0; i < N5; i++) { 
       beta[i] = rdata->beta[i];
     }
 
-
-    alpha.resize(N5);
-    for(int i = 0; i < N5; i++) {
-      alpha[i] = Real(1);
-    } 
-    alpha[N5-1] = rdata->beta[N5-1];
-
-    // For the moment choose gamma = 1/sqrt(beta) */
-    // except for gamma(N5-1) which always has to be set to 1 */
-    // The N5-1 case is special anyway as in certain cases rdata->beta[i]
-    // is strictly zero
-    multi1d<Real> gamma(N5);
+    alpha.resize(N5-1);
     for(int i=0; i < N5-1; i++) { 
-      gamma[i] = Real(1)/ sqrt( rdata->beta[i] );
+      alpha[i] = Real(1);
     }
-    gamma[N5-1] = Real(1);
 
-    // Now perform the equivalence transformation on the off diagonal
-    // elements 
-    for(int i=0; i < N5; i++) {
+    // The gamma's are the equivalence transforms
+    // There are N5-1 of them and they appear in the 
+    // diagonal terms as gamma^2 
+    // and in the off diagonal terms as gamma_i gamma_i+1
+    // except in the last one which is just gamma
+    //
+    // For the moment choose gamma_i = 1/sqrt(beta_i) */
+    
+    multi1d<Real> gamma(N5-1);
+    for(int i=0; i < N5-1; i++) { 
+      gamma[i] = Real(1)/ sqrt( beta[i] );
+    }
+
+    // Now perform the equivalence transformation 
+    //
+    // On the diagonal coefficients
+    // Note that beta[N5-1] is NOT changed
+    for(int i=0; i < N5-1; i++) {
       beta[i] = beta[i]*gamma[i]*gamma[i];
     }
     
     // and the off diagonal ones
-    for(int i=0; i < N5-1; i++) {
-      alpha[i] = alpha[i]*gamma[i]*gamma[i+1];
+    // from 0..N5-3 we have gamma_i gamma_i+1
+    // and on N5-2 we have gamma_i 
+    for(int i=0; i < N5-2; i++) {
+      alpha[i] *= gamma[i]*gamma[i+1];
     }
+    alpha[N5-2] *= gamma[N5-2];
+
     
-    
-    QDPIO::cout << "UnprecOvlapContfrac5d: " 
-		<< " N5=" << N5 << " scale=" << scale_fac
-		<< " Nwils = " << NEigVal << " Mass=" << params.Mass << endl ;
+    QDPIO::cout << "UnprecOvlapContfrac5d: " << endl
+                << "Degree=" << params.RatPolyDeg 
+		<< "N5=" << N5 << " scale=" << scale_fac
+		<< "Nwils = " << NEigVal << " Mass=" << params.Mass << endl ;
     QDPIO::cout << "Approximation on [-1,eps] U [eps,1] with eps = " << eps <<endl;
     
     QDPIO::cout << "Maximum error | R(x) - sgn(x) | <= Delta = " << maxerr << endl;
+    /*
+    for(int i=0; i < N5; i++) { 
+      QDPIO::cout << "beta["<<i<<"] = " << beta[i] << endl;
+    }
+    for(int i=0; i < N5; i++) { 
+      QDPIO::cout << "alpha["<<i<<"] = " << alpha[i] << endl;
+    }
+    */
+
     switch( params.approximation_type) {
     case COEFF_TYPE_ZOLOTAREV:
       QDPIO::cout << "Coefficients from Zolotarev" << endl;
@@ -569,40 +581,6 @@ namespace Chroma
 	// psi5 = (M^{dag} M)^(-1) M^{dag} * gamma_5 * chi5
 	// psi5[N5]  = (1 - m)/2 D^{-1}(m) chi [N5]
 	InvCG2(*A, tmp5, psi5, invParam.RsdCG, invParam.MaxCG, n_count);
-
-	InvCG2(*A, tmp5, psi5, invParam.RsdCG, invParam.MaxCG, n_count);
-
-      
-	Handle< const LinearOperator< multi1d<LatticeFermion> > > AdagA(lMdagM(state));
-	multi1d<LatticeFermion> tmp5_2(N5);
-	multi1d<LatticeFermion> tmp5_3(N5);
-	for(int i=0; i < N5; i++) { 
-	  tmp5_2[i] = zero;
-	  tmp5_3[i] = zero;
-	}
-
-	(*AdagA)(tmp5_2, psi5, PLUS);
-	(*A)(tmp5_3, psi5, PLUS);
-	
-	Double norm2_MM=Double(0);
-	Double norm2_M=Double(0);
-	Double norm2_tmp=Double(0);
-	Double norm2_chi=Double(0);
-
-	for(int i=0; i < N5; i++) { 
-	  tmp5_2[i] -= tmp5[i];
-	  tmp5_3[i] -= chi5[i];
-	  
-	  norm2_MM += norm2(tmp5_2[i]);
-	  norm2_M  += norm2(tmp5_3[i]);
-	  
-	  norm2_tmp += norm2(tmp5[i]);
-	  norm2_chi += norm2(chi5[i]);
-	}
-	QDPIO::cout << "|| tmp - D^{+}D psi ||/|| tmp ||= " 
-		    << sqrt(norm2_MM)/sqrt(norm2_tmp) << endl;
-	QDPIO::cout << "|| g5chi - D psi ||/ || g5chi ||= "
-		    << sqrt(norm2_M)/sqrt(norm2_chi) << endl;
       }
       break;
       

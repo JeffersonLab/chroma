@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovlap_contfrac5d_linop_array_w.h,v 1.1 2004-09-30 14:52:47 bjoo Exp $
+// $Id: prec_ovlap_contfrac5d_linop_array_w.h,v 1.2 2004-10-01 17:48:31 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
  */
@@ -46,7 +46,7 @@ public:
   //! Length of DW flavor index/space
   int size() const {return N5;}
 
-  //! Destructor is automatic
+   //! Destructor is automatic
   ~EvenOddPrecOvlapContFrac5DLinOpArray() {}
 
   //! Only defined on the entire lattice

@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_linop_array_w.cc,v 1.1 2004-09-30 14:52:47 bjoo Exp $
+// $Id: prec_ovlap_contfrac5d_linop_array_w.cc,v 1.2 2004-10-01 17:48:31 bjoo Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned domain-wall linear operator
  */
@@ -23,8 +23,6 @@ EvenOddPrecOvlapContFrac5DLinOpArray::EvenOddPrecOvlapContFrac5DLinOpArray(
   {
     START_CODE();
 
-    QDPIO::cout << "LinOp isLastZeroP = " << isLastZeroP << endl;
-    QDPIO::cout << "Grabbing new dslash" << endl;
     Handle< const DslashLinearOperator<LatticeFermion> > Ds(new WilsonDslash(state->getLinks()));
     Dslash  = Ds;  // Copy Handle -- M now owns dslash
 
@@ -43,9 +41,17 @@ EvenOddPrecOvlapContFrac5DLinOpArray::EvenOddPrecOvlapContFrac5DLinOpArray(
 
       // Flip Hsign
       beta_tilde[i] = beta[i]*Hsign*scale_fac; 
+
+      /*
+      QDPIO::cout << "beta["<<i<<"]=" << beta[i]
+		  << "  Hsign=" << Hsign
+		  << "  scale_fac=" << scale_fac 
+		  << "  beta_tilde["<<i<<"]=" << beta_tilde[i] << endl;
+
+      */
       Hsign = -Hsign;
     }
-    
+
     // Sanity Check
     if ( Hsign > 0 ) {
       QDPIO::cerr << "Something is wrong. At the end of this loop"
@@ -57,15 +63,26 @@ EvenOddPrecOvlapContFrac5DLinOpArray::EvenOddPrecOvlapContFrac5DLinOpArray(
     for(int i=0; i < N5-1; i++) { 
       a[i] = beta_tilde[i]*(Nd + OverMass);
     }
-
     a[N5-1] = mass + (beta_tilde[N5-1]*(Nd + OverMass));
 
+    /*
+    QDPIO::cout << "Nd + OverMass = " << Nd+ OverMass << endl;
+    for(int i=0; i < N5; i++) { 
+      QDPIO::cout << "a["<<i<<"]= " << a[i] << endl;
+    }
+    */
     // Now the d-s
     d.resize(N5);
     d[0] = a[0];
-    for(int i=1; i < N5-1; i++) { 
+    for(int i=1; i < N5; i++) { 
       d[i] = a[i] - (alpha[i-1]*alpha[i-1])/d[i-1];
     }
+    
+    /*
+    for(int i=0; i < N5; i++) { 
+      QDPIO::cout << "d["<<i<<"]=" << d[i] << endl;
+    }
+    */
 
     // Now the u-s
     u.resize(N5-1);
@@ -73,6 +90,11 @@ EvenOddPrecOvlapContFrac5DLinOpArray::EvenOddPrecOvlapContFrac5DLinOpArray(
       u[i] = alpha[i]/d[i];
     }
 
+    /*
+    for(int i=0; i < N5-1; i++) { 
+      QDPIO::cout << "u["<<i<<"] = " << u[i] << endl;
+    }
+    */
     END_CODE();
   }
 
@@ -115,7 +137,7 @@ EvenOddPrecOvlapContFrac5DLinOpArray::applyDiag(multi1d<LatticeFermion>& chi,
   tmp[rb[cb]] = Gamma(G5)*psi[0];
   chi[0][rb[cb]] = a[0]*tmp;
   if( N5 > 1 ) { 
-    chi[0][rb[cb]] = alpha[0]*psi[1];
+    chi[0][rb[cb]] += alpha[0]*psi[1];
   }
 
   // All the rest
@@ -126,7 +148,7 @@ EvenOddPrecOvlapContFrac5DLinOpArray::applyDiag(multi1d<LatticeFermion>& chi,
 
     // A_{i} psi[i] = a_{i} g_5 psi[i]
     tmp[rb[cb]] = Gamma(G5)*psi[i];
-    chi[i][rb[cb]] = a[i]*tmp;
+    chi[i][rb[cb]] += a[i]*tmp;
 
     // When i hits N5-1, we don't have the B_N5-1 term
     if(i < N5-1) {
@@ -158,6 +180,7 @@ EvenOddPrecOvlapContFrac5DLinOpArray::applyDiagInv(
   START_CODE();
 
   multi1d<LatticeFermion> y(N5);
+
   LatticeFermion tmp;
   Real coeff;
 
@@ -182,7 +205,7 @@ EvenOddPrecOvlapContFrac5DLinOpArray::applyDiagInv(
   chi[N5-1][rb[cb]] = y[N5-1];
 
   for(int i = N5-2; i >= 0; i--) {
-    tmp = Gamma(G5)*y[i+1];
+    tmp = Gamma(G5)*chi[i+1];
     chi[i][rb[cb]] = y[i] - u[i]*tmp;
   }
 
@@ -226,9 +249,9 @@ void EvenOddPrecOvlapContFrac5DLinOpArray::applyOffDiag(
     chi[i][rb[cb]] *= coeff;
   }
 
+ 
   // Only do last block if beta_tilde[i] is not zero
   if( !isLastZeroP ) {
-
     Dslash->apply(tmp, psi[N5-1], PLUS, cb);
     chi[N5-1][rb[cb]] = Gamma(G5)*tmp;
 
@@ -237,7 +260,10 @@ void EvenOddPrecOvlapContFrac5DLinOpArray::applyOffDiag(
 
     // Chi_i is now -(1/2) beta_tilde_i Dslash 
     chi[N5-1][rb[cb]] *= coeff;
-
   }
+  else { 
+    chi[N5-1][rb[cb]] = zero;
+  }
+  
   END_CODE();
 }

@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_fermact_array_w.cc,v 1.2 2004-10-01 06:29:23 bjoo Exp $
+// $Id: prec_ovlap_contfrac5d_fermact_array_w.cc,v 1.3 2004-10-01 17:48:30 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -95,9 +95,8 @@ namespace Chroma
   
   
   // Construct the action out of a parameter structure
-  EvenOddPrecOvlapContFrac5DFermActArray::EvenOddPrecOvlapContFrac5DFermActArray(
-										 Handle< FermBC< multi1d< LatticeFermion> > > fbc_a_, 
-										 const EvenOddPrecOvlapContFrac5DFermActParams& params_) :
+  EvenOddPrecOvlapContFrac5DFermActArray::EvenOddPrecOvlapContFrac5DFermActArray(Handle< FermBC< multi1d< LatticeFermion> > > fbc_a_, 
+ const EvenOddPrecOvlapContFrac5DFermActParams& params_) :
     fbc(fbc_a_), params(params_) 
   {
 
@@ -109,18 +108,13 @@ namespace Chroma
     bool isEvenRatPolyDeg = ( params.RatPolyDeg % 2 == 0);
 
     if( isEvenRatPolyDeg ) { 
-      QDPIO::cout << "Rat Poly Deg is even " << endl;
       N5 = params.RatPolyDeg+1;
       isLastZeroP = true;     
     }
     else { 
-      QDPIO::cout << "Rat Poly Deg is odd " << endl;
       N5 = params.RatPolyDeg;
       isLastZeroP = false;
     }
-
-    QDPIO::cout << "N5 is " << N5 << endl;
-    QDPIO::cout << "Last beta coefficient is zero: " << isLastZeroP << endl;
   }
 
 
@@ -185,46 +179,59 @@ namespace Chroma
       beta[i] = rdata->beta[i];
     }
 
-    for(int i=0; i < N5; i++) { 
-      QDPIO::cout << "beta["<<i<<"] = " << beta[i] << endl;
-    }
-
-    alpha.resize(N5);
-    for(int i = 0; i < N5; i++) {
-      alpha[i] = Real(1);
-    } 
-    alpha[N5-1] = rdata->beta[N5-1];
-
-    // For the moment choose gamma = 1/sqrt(beta) */
-    // except for gamma(N5-1) which always has to be set to 1 */
-    // The N5-1 case is special anyway as in certain cases rdata->beta[i]
-    // is strictly zero
-    multi1d<Real> gamma(N5);
+    alpha.resize(N5-1);
     for(int i=0; i < N5-1; i++) { 
-      gamma[i] = Real(1)/ sqrt( rdata->beta[i] );
+      alpha[i] = Real(1);
     }
-    gamma[N5-1] = Real(1);
 
-    // Now perform the equivalence transformation on the off diagonal
-    // elements 
-    for(int i=0; i < N5; i++) {
+    // The gamma's are the equivalence transforms
+    // There are N5-1 of them and they appear in the 
+    // diagonal terms as gamma^2 
+    // and in the off diagonal terms as gamma_i gamma_i+1
+    // except in the last one which is just gamma
+    //
+    // For the moment choose gamma_i = 1/sqrt(beta_i) */
+    
+    multi1d<Real> gamma(N5-1);
+    for(int i=0; i < N5-1; i++) { 
+      gamma[i] = Real(1)/ sqrt( beta[i] );
+    }
+
+    // Now perform the equivalence transformation 
+    //
+    // On the diagonal coefficients
+    // Note that beta[N5-1] is NOT changed
+    for(int i=0; i < N5-1; i++) {
       beta[i] = beta[i]*gamma[i]*gamma[i];
     }
     
     // and the off diagonal ones
-    for(int i=0; i < N5-1; i++) {
-      alpha[i] = alpha[i]*gamma[i]*gamma[i+1];
+    // from 0..N5-3 we have gamma_i gamma_i+1
+    // and on N5-2 we have gamma_i 
+    for(int i=0; i < N5-2; i++) {
+      alpha[i] *= gamma[i]*gamma[i+1];
     }
+    alpha[N5-2] *= gamma[N5-2];
     
-    
-    QDPIO::cout << "EvenOddPrecOvlapContfrac5d: " 
-		<< " N5=" << N5 << " scale=" << scale_fac
-		<< " Mass=" << params.Mass 
-		<< " OverMass=" << params.OverMass << endl;
+    QDPIO::cout << "EvenOddPrecOvlapContfrac5d: " << endl
+                << "Degree="<< params.RatPolyDeg
+		<< "N5=" << N5 << " scale=" << scale_fac
+		<< "Mass=" << params.Mass << endl
+		<< "OverMass=" << params.OverMass 
+		<< "IsLastZeroP=" << isLastZeroP << endl;
 
     QDPIO::cout << "Approximation on [-1,eps] U [eps,1] with eps = " << eps <<endl;
     
     QDPIO::cout << "Maximum error | R(x) - sgn(x) | <= Delta = " << maxerr << endl;
+    /*
+    for(int i=0; i < N5; i++) { 
+      QDPIO::cout << "beta["<<i<<"] = " << beta[i] << endl;
+    }
+    for(int i=0; i < N5; i++) { 
+      QDPIO::cout << "alpha["<<i<<"] = " << alpha[i] << endl;
+    }
+    */
+
     switch( params.approximation_type) {
     case COEFF_TYPE_ZOLOTAREV:
       QDPIO::cout << "Coefficients from Zolotarev" << endl;
@@ -346,71 +353,79 @@ namespace Chroma
     // Initialize the 5D fields
     multi1d<LatticeFermion> chi5(N5);
     multi1d<LatticeFermion> psi5(N5);
-    multi1d<LatticeFermion> tmp5_1(N5);
-    multi1d<LatticeFermion> tmp5_2(N5);
     // Construct the linear operator
     Handle<const EvenOddPrecLinearOperator< multi1d<LatticeFermion> > > A(linOp(state));
 
 
-    // Construct the source: 
-    for(int i=0; i < N5; i++) { 
-      chi5[i] = zero;
-      psi5[i] = zero;
-      tmp5_1[i] = zero;
-      tmp5_2[i] = zero;
-    }
-      
-    // Set both even and odd components of psi5[N5-1] = gamma_5 chi 
-    // -- use psi as temporary here.
-    psi5[N5-1] = Gamma(G5)*chi;
-    
-    
-    // Chi5[N5-1]_e = gamma_5 chi_e = psi5[N5-1]_e
-    chi5[N5-1][rb[0]] = psi5[N5-1];
-
-    // Chi5[N5-1]_o = S_o - Q_oe Q_ee^{-1} S_e 
-    //              = gamma_5 chi_o - Q_oe Q_ee^{-1} gamma_5 chi_e
-    //              = psi5[N5-1]_o - Q_oe Q_ee^{-1} psi5[N5-1]_e
-    
-    // Get  tmp5_2[N5-1]_o = Q_oe Q_ee^{-1} psi5[N5-1]_e
-    A->evenEvenInvLinOp(tmp5_1, psi5, PLUS);
-    A->oddEvenLinOp(tmp5_2, tmp5_1, PLUS);
-
-    // Now subtract psi5[N5-1]_o - tmp5_2[N5-1]_o
-    for(int i=0; i < N5; i++) { 
-      chi5[i][rb[1]] = psi5[i] - tmp5_2[i];
-    }
-    QDPIO::cout << "|| chi5 || after source prec = " << sqrt(norm2(chi5[N5-1])) << endl;      
-    
-    // Set psi[N5-1] = psi
-    for(int i=0; i < N5-1; i++) { 
-      psi5[i]=zero;
-    }
-    psi5[N5-1] = psi;     
   
     switch(invParam.invType) {
     case CG_INVERTER: 
       {
+	multi1d<LatticeFermion> tmp5_1(N5);
+	
+	{
+	  multi1d<LatticeFermion> tmp5_2(N5);
+	  multi1d<LatticeFermion> tmp5_3(N5);
+
+	  chi5 = zero;
+	  psi5 = zero;
+	  tmp5_1 = zero;
+		
+	  // We need to solve D_5 psi = (0,0,0,...,gamma_5 chi)^T
+	  // Use both subsets
+	  tmp5_1[N5-1] = Gamma(G5)*chi;
+	
+	
+	  // tmp5_3_odd = Qoe Qee^{-1} S_e
+	  A->evenEvenInvLinOp(tmp5_2, tmp5_1, PLUS);
+	  A->oddEvenLinOp(tmp5_3, tmp5_2, PLUS);
+
+
+	  // chi5_e = S_e
+	  // chi5_o = S_o - QoeQee^{-1} S_e
+	  for(int i=0; i < N5; i++) { 
+	    chi5[i][rb[0]] = tmp5_1[i];
+	    chi5[i][rb[1]] = tmp5_1[i] - tmp5_3[i];
+	  }
+	}  // tmp5_2 and tmp5_3 go away
+
+	psi5[N5-1][rb[1]] = psi;     
+	(*A)(tmp5_1, chi5, MINUS);
 
 	// Solve M^{+}M psi = M^{+} chi
-        (*A)(tmp5_1, chi5, MINUS);
-	QDPIO::cout << "|| chi5 || after source prec2 = " << sqrt(norm2(tmp5_1)) << endl;
-	QDPIO::cout << "|| psi5 || after source prec2 = " << sqrt(norm2(psi5)) << endl;
-
 	InvCG2(*A, tmp5_1, psi5, invParam.RsdCG, invParam.MaxCG, n_count);
-
+        
+	
 	// psi[N5-1]_odd now holds the desired piece.
 
 	// Reconstruct psi[N5-1]_e = Q_ee^{-1} S_e - Q_ee^{-1}Q_eo psi[N5-1]_o
-	//                        
-	A->evenOddLinOp(tmp5_1, psi5, PLUS);
-	for(int i=0; i < N5; i++) { 
-	  tmp5_2[i][rb[0]] = chi5[i] - tmp5_1[i];
-	}
-	// This had better leave the odd bits untouched.
-	A->evenEvenInvLinOp(psi5, tmp5_2, PLUS);
-	break;
-      }
+	//         = Q_ee^{-1} ( S_e - Q_eo psi_o )
+	{ 
+
+	  // Dont need to initialise as the parts I use 
+	  // will be over written the other parts I ignore
+	  multi1d<LatticeFermion> tmp5_2(N5);
+	  multi1d<LatticeFermion> tmp5_3(N5);
+
+	  // tmp5_2_e = Qeo psi_o
+	  A->evenOddLinOp(tmp5_2, psi5, PLUS);
+	  for(int i=0; i < N5; i++) {
+
+	    // tmp5_3_e = S_e - Qeo psi_o 
+	    //          =     - tmp5_2_e
+	    tmp5_3[i][rb[0]] = chi5[i] - tmp5_2[i];
+
+	  }
+
+	  // tmp5_1_e = Qee^{-1} ( S_e - Qeo psi_o )
+	  A->evenEvenInvLinOp(tmp5_1, tmp5_3, PLUS);
+
+	  // psi5_e = tmp5_1
+	  for(int i=0; i < N5; i++) {
+	    psi5[i][rb[0]] = tmp5_1[i];
+	  }
+	} // tmp5_2, tmp5_3 disappear 
+      } // tmp5_1 disappears
       break;
       
     case MR_INVERTER:
@@ -434,7 +449,7 @@ namespace Chroma
     
     // Multiply back in factor 2/(1-m) to return to 
     // (1/2)( 1 + m + (1-m) gamma_5 epsilon  )
-    // normalisatoin
+    // normalisation
     psi5[N5-1] *= Real(2)/(Real(1)-Mass);
     
     // Remove contact term
