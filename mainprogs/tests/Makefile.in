@@ -167,7 +167,7 @@ check_PROGRAMS = t_mesplq t_io t_mesons_w t_conslinop t_hypsmear \
                   t_overbu t_ape_smear t_precact
 
 
-EXTRA_PROGRAMS = t_dslashm t_lwldslash t_spprod t_lwldslash_sse t_follana_io_s t_formfac  t_follana_pion_s t_dwflinop t_precdwf t_ovlap_bj t_propagator_s t_propagator_w t_gfix t_ovlap5d_bj t_ritz t_ritz_KS t_ritz5d_KS  t_fermion_loop_w t_propagator_fuzz_s t_disc_loop_s t_ov_pbp t_lwldslash_pab t_propagator_nrqcd t_dwflocality t_invert3_precwilson t_invert4_precwilson t_read_eigen
+EXTRA_PROGRAMS = t_dslashm t_lwldslash t_spprod t_lwldslash_sse t_follana_io_s t_formfac  t_follana_pion_s t_dwflinop t_precdwf t_ovlap_bj t_propagator_s t_propagator_w t_gfix t_ovlap5d_bj t_ritz t_ritz_KS t_ritz5d_KS  t_fermion_loop_w t_propagator_fuzz_s t_disc_loop_s t_ov_pbp t_lwldslash_pab t_propagator_nrqcd t_dwflocality t_invert3_precwilson t_invert4_precwilson t_read_eigen t_fuzwilp
 
 
 #
@@ -178,6 +178,9 @@ t_mesplq_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_ape_smear_SOURCES = t_ape_smear.cc
 t_ape_smear_DEPENDENCIES = build_chroma_libs rebuild_other_libs
+
+t_fuzwilp_SOURCES = t_fuzwilp.cc
+t_fuzwilp_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_hypsmear_SOURCES = t_hypsmear.cc
 t_hypsmear_DEPENDENCIES = build_chroma_libs rebuild_other_libs
@@ -291,7 +294,8 @@ EXTRA_PROGRAMS = t_dslashm$(EXEEXT) t_lwldslash$(EXEEXT) \
 	t_disc_loop_s$(EXEEXT) t_ov_pbp$(EXEEXT) \
 	t_lwldslash_pab$(EXEEXT) t_propagator_nrqcd$(EXEEXT) \
 	t_dwflocality$(EXEEXT) t_invert3_precwilson$(EXEEXT) \
-	t_invert4_precwilson$(EXEEXT) t_read_eigen$(EXEEXT)
+	t_invert4_precwilson$(EXEEXT) t_read_eigen$(EXEEXT) \
+	t_fuzwilp$(EXEEXT)
 check_PROGRAMS = t_mesplq$(EXEEXT) t_io$(EXEEXT) t_mesons_w$(EXEEXT) \
 	t_conslinop$(EXEEXT) t_hypsmear$(EXEEXT) t_overbu$(EXEEXT) \
 	t_ape_smear$(EXEEXT) t_precact$(EXEEXT)
@@ -335,6 +339,10 @@ am_t_formfac_OBJECTS = t_formfac.$(OBJEXT)
 t_formfac_OBJECTS = $(am_t_formfac_OBJECTS)
 t_formfac_LDADD = $(LDADD)
 t_formfac_LDFLAGS =
+am_t_fuzwilp_OBJECTS = t_fuzwilp.$(OBJEXT)
+t_fuzwilp_OBJECTS = $(am_t_fuzwilp_OBJECTS)
+t_fuzwilp_LDADD = $(LDADD)
+t_fuzwilp_LDFLAGS =
 am_t_gfix_OBJECTS = t_gfix.$(OBJEXT)
 t_gfix_OBJECTS = $(am_t_gfix_OBJECTS)
 t_gfix_LDADD = $(LDADD)
@@ -450,8 +458,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/t_fermion_loop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_follana_io_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_follana_pion_s.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_formfac.Po ./$(DEPDIR)/t_gfix.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_hypsmear.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_formfac.Po ./$(DEPDIR)/t_fuzwilp.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_gfix.Po ./$(DEPDIR)/t_hypsmear.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_invert3_precwilson.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_invert4_precwilson.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_io.Po ./$(DEPDIR)/t_lwldslash.Po \
@@ -483,7 +491,7 @@ DIST_SOURCES = $(t_ape_smear_SOURCES) $(t_conslinop_SOURCES) \
 	$(t_dwflinop_SOURCES) $(t_dwflocality_SOURCES) \
 	$(t_fermion_loop_w_SOURCES) $(t_follana_io_s_SOURCES) \
 	$(t_follana_pion_s_SOURCES) $(t_formfac_SOURCES) \
-	$(t_gfix_SOURCES) $(t_hypsmear_SOURCES) \
+	$(t_fuzwilp_SOURCES) $(t_gfix_SOURCES) $(t_hypsmear_SOURCES) \
 	$(t_invert3_precwilson_SOURCES) $(t_invert4_precwilson_SOURCES) \
 	$(t_io_SOURCES) $(t_lwldslash_SOURCES) \
 	$(t_lwldslash_pab_SOURCES) $(t_lwldslash_sse_SOURCES) \
@@ -495,7 +503,7 @@ DIST_SOURCES = $(t_ape_smear_SOURCES) $(t_conslinop_SOURCES) \
 	$(t_read_eigen_SOURCES) $(t_ritz_SOURCES) \
 	$(t_ritz5d_KS_SOURCES) $(t_ritz_KS_SOURCES) $(t_spprod_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(t_ape_smear_SOURCES) $(t_conslinop_SOURCES) $(t_disc_loop_s_SOURCES) $(t_dslashm_SOURCES) $(t_dwflinop_SOURCES) $(t_dwflocality_SOURCES) $(t_fermion_loop_w_SOURCES) $(t_follana_io_s_SOURCES) $(t_follana_pion_s_SOURCES) $(t_formfac_SOURCES) $(t_gfix_SOURCES) $(t_hypsmear_SOURCES) $(t_invert3_precwilson_SOURCES) $(t_invert4_precwilson_SOURCES) $(t_io_SOURCES) $(t_lwldslash_SOURCES) $(t_lwldslash_pab_SOURCES) $(t_lwldslash_sse_SOURCES) $(t_mesons_w_SOURCES) $(t_mesplq_SOURCES) $(t_ov_pbp_SOURCES) $(t_overbu_SOURCES) $(t_ovlap5d_bj_SOURCES) $(t_ovlap_bj_SOURCES) $(t_precact_SOURCES) $(t_precdwf_SOURCES) $(t_propagator_fuzz_s_SOURCES) $(t_propagator_nrqcd_SOURCES) $(t_propagator_s_SOURCES) $(t_propagator_w_SOURCES) $(t_read_eigen_SOURCES) $(t_ritz_SOURCES) $(t_ritz5d_KS_SOURCES) $(t_ritz_KS_SOURCES) $(t_spprod_SOURCES)
+SOURCES = $(t_ape_smear_SOURCES) $(t_conslinop_SOURCES) $(t_disc_loop_s_SOURCES) $(t_dslashm_SOURCES) $(t_dwflinop_SOURCES) $(t_dwflocality_SOURCES) $(t_fermion_loop_w_SOURCES) $(t_follana_io_s_SOURCES) $(t_follana_pion_s_SOURCES) $(t_formfac_SOURCES) $(t_fuzwilp_SOURCES) $(t_gfix_SOURCES) $(t_hypsmear_SOURCES) $(t_invert3_precwilson_SOURCES) $(t_invert4_precwilson_SOURCES) $(t_io_SOURCES) $(t_lwldslash_SOURCES) $(t_lwldslash_pab_SOURCES) $(t_lwldslash_sse_SOURCES) $(t_mesons_w_SOURCES) $(t_mesplq_SOURCES) $(t_ov_pbp_SOURCES) $(t_overbu_SOURCES) $(t_ovlap5d_bj_SOURCES) $(t_ovlap_bj_SOURCES) $(t_precact_SOURCES) $(t_precdwf_SOURCES) $(t_propagator_fuzz_s_SOURCES) $(t_propagator_nrqcd_SOURCES) $(t_propagator_s_SOURCES) $(t_propagator_w_SOURCES) $(t_read_eigen_SOURCES) $(t_ritz_SOURCES) $(t_ritz5d_KS_SOURCES) $(t_ritz_KS_SOURCES) $(t_spprod_SOURCES)
 
 all: all-am
 
@@ -539,6 +547,9 @@ t_follana_pion_s$(EXEEXT): $(t_follana_pion_s_OBJECTS) $(t_follana_pion_s_DEPEND
 t_formfac$(EXEEXT): $(t_formfac_OBJECTS) $(t_formfac_DEPENDENCIES) 
 	@rm -f t_formfac$(EXEEXT)
 	$(CXXLINK) $(t_formfac_LDFLAGS) $(t_formfac_OBJECTS) $(t_formfac_LDADD) $(LIBS)
+t_fuzwilp$(EXEEXT): $(t_fuzwilp_OBJECTS) $(t_fuzwilp_DEPENDENCIES) 
+	@rm -f t_fuzwilp$(EXEEXT)
+	$(CXXLINK) $(t_fuzwilp_LDFLAGS) $(t_fuzwilp_OBJECTS) $(t_fuzwilp_LDADD) $(LIBS)
 t_gfix$(EXEEXT): $(t_gfix_OBJECTS) $(t_gfix_DEPENDENCIES) 
 	@rm -f t_gfix$(EXEEXT)
 	$(CXXLINK) $(t_gfix_LDFLAGS) $(t_gfix_OBJECTS) $(t_gfix_LDADD) $(LIBS)
@@ -633,6 +644,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_follana_io_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_follana_pion_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_formfac.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_fuzwilp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_gfix.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_hypsmear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_invert3_precwilson.Po@am__quote@
