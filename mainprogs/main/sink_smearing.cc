@@ -1,4 +1,4 @@
-// $Id: sink_smearing.cc,v 1.15 2005-02-27 22:47:19 edwards Exp $
+// $Id: sink_smearing.cc,v 1.16 2005-02-27 23:10:49 edwards Exp $
 /*! \file
  * \brief Main program for sink-smearing quark propagators
  *
@@ -104,6 +104,12 @@ int main(int argc, char **argv)
 
   // Instantiate xml reader for DATA
   XMLReader xml_in("./DATA");
+
+  if (xml_in.count("/sink_smearing/Param/elem") == 0)
+  {
+    QDPIO::cerr << "Sink_smear: this is an incorrect or obsolete input file" << endl;
+    QDP_abort(1);
+  }
 
   // Read data
   read(xml_in, "/sink_smearing", input);

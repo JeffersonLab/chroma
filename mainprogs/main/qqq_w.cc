@@ -1,4 +1,4 @@
-// $Id: qqq_w.cc,v 1.23 2005-02-27 22:47:19 edwards Exp $
+// $Id: qqq_w.cc,v 1.24 2005-02-27 23:10:49 edwards Exp $
 /*! \file
  *  \brief Main code for generalized quark propagator
  *
@@ -127,6 +127,12 @@ int main(int argc, char **argv)
 
   // Instantiate xml reader for DATA
   XMLReader xml_in("./DATA");
+
+  if (xml_in.count("/qqq_w/Param/elem") == 0)
+  {
+    QDPIO::cerr << "qqq: this is an incorrect or obsolete input file" << endl;
+    QDP_abort(1);
+  }
 
   // Read data
   read(xml_in, "/qqq_w", input);
