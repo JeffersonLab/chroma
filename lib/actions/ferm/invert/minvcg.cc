@@ -1,4 +1,4 @@
-// $Id: minvcg.cc,v 1.2 2004-01-08 17:11:01 bjoo Exp $
+// $Id: minvcg.cc,v 1.3 2004-01-12 14:54:08 bjoo Exp $
 
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator
@@ -102,12 +102,15 @@ void MInvCG_a(const LinearOperator<T>& A,
   QDPIO::cout << "n_shift = " << n_shift << " isz = " << isz << " shift = " << shifts[0] << endl;
 #endif
 
-  // For this algorithm, all the psi have to be 0 to start
-  // Only is that way the initial residuum r = chi
-  if( psi.size() != n_shift ) { 
+  // We need to make sure, that psi is at least as big as the number
+  // of shifts. We resize it if it is not big enough.
+  // However, it is allowed to be bigger.
+  if( psi.size() <  n_shift ) { 
       psi.resize(n_shift);
   }
-   
+
+  // For this algorithm, all the psi have to be 0 to start
+  // Only is that way the initial residuum r = chi
   for(int i= 0; i < n_shift; ++i) { 
     psi[i][sub] = zero;
   }

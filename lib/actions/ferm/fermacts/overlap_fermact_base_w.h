@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: overlap_fermact_base_w.h,v 1.3 2004-01-08 11:53:08 bjoo Exp $
+// $Id: overlap_fermact_base_w.h,v 1.4 2004-01-12 14:54:08 bjoo Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -35,6 +35,8 @@ public:
   //! Robert's way: 
   //! Produce a linear operator M^dag.M for this action to be applied
   //  to a vector of known chirality. Chirality is passed in
+  virtual const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state) const = 0;
+
   virtual const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state, const Chirality& chirality) const = 0;
 
   //! Redefine quark propagator routine for 4D fermions
@@ -48,7 +50,24 @@ public:
 	     const LatticeFermion& chi, 
 	     enum InvType invType,
 	     const Real& RsdCG, 
-	     int MaxCG, int& ncg_had) const;
+	     int MaxCG, 
+	     int& ncg_had) const;
+
+  //! Define a multi mass qprop
+  /*! this should be possible for most 4D operators of the 
+   *  form   (1/2)[ (1 + m_q ) + (1 - m_q) gamma_5 psi 
+   *
+   */
+  void qprop(multi1d<LatticeFermion>& psi, 
+	     multi1d<Real>& masses,
+	     Handle<const ConnectState> state,
+	     const LatticeFermion& chi,
+	     enum InvType invType,
+	     const multi1d<Real>& RsdCG, 
+	     int nsoln,
+	     int MaxCG, 
+	     int & ncg_had) const;
+
 };
 
 #endif
