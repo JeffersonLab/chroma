@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.326 2005-02-02 16:28:34 edwards Exp $
+# $Id: Makefile.in,v 1.327 2005-02-02 22:48:45 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -465,6 +465,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/fermacts/asqtad_state.h \
 	actions/ferm/fermacts/fermacts.h \
 	actions/ferm/fermacts/bigfloat.h actions/ferm/fermacts/remez.h \
+	actions/ferm/fermacts/remez_coeff.h \
 	actions/ferm/fermacts/remez_stub.h \
 	actions/ferm/fermacts/zolotarev.h \
 	actions/ferm/fermacts/overlap_state.h \
@@ -669,11 +670,13 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	update/molecdyn/monomial/one_flavor_rat_monomial_w.h \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.h \
 	update/molecdyn/monomial/prec_one_flavor_rat_monomial_w.h \
+	update/molecdyn/monomial/one_flavor_rat_monomial5d_w.h \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial5d_w.h \
 	update/molecdyn/monomial/prec_one_flavor_rat_monomial5d_w.h \
 	update/molecdyn/monomial/two_flavor_monomial_w.h \
 	update/molecdyn/monomial/unprec_two_flavor_monomial_w.h \
 	update/molecdyn/monomial/prec_two_flavor_monomial_w.h \
+	update/molecdyn/monomial/two_flavor_monomial5d_w.h \
 	update/molecdyn/monomial/unprec_two_flavor_monomial5d_w.h \
 	update/molecdyn/monomial/prec_two_flavor_monomial5d_w.h \
 	util/ferm/ferm_w.h util/ferm/diractodr.h \
@@ -850,6 +853,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/fermacts/asqtad_state.h \
 	actions/ferm/fermacts/fermacts.h \
 	actions/ferm/fermacts/bigfloat.h actions/ferm/fermacts/remez.h \
+	actions/ferm/fermacts/remez_coeff.h \
 	actions/ferm/fermacts/remez_stub.h \
 	actions/ferm/fermacts/zolotarev.h \
 	actions/ferm/fermacts/overlap_state.h \
@@ -1055,11 +1059,13 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	update/molecdyn/monomial/one_flavor_rat_monomial_w.h \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.h \
 	update/molecdyn/monomial/prec_one_flavor_rat_monomial_w.h \
+	update/molecdyn/monomial/one_flavor_rat_monomial5d_w.h \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial5d_w.h \
 	update/molecdyn/monomial/prec_one_flavor_rat_monomial5d_w.h \
 	update/molecdyn/monomial/two_flavor_monomial_w.h \
 	update/molecdyn/monomial/unprec_two_flavor_monomial_w.h \
 	update/molecdyn/monomial/prec_two_flavor_monomial_w.h \
+	update/molecdyn/monomial/two_flavor_monomial5d_w.h \
 	update/molecdyn/monomial/unprec_two_flavor_monomial5d_w.h \
 	update/molecdyn/monomial/prec_two_flavor_monomial5d_w.h \
 	util/ferm/ferm_w.h util/ferm/diractodr.h \
