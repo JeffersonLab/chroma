@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.93 2005-03-02 00:44:18 edwards Exp $
+// $Id: propagator.cc,v 1.94 2005-03-03 04:05:18 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -281,7 +281,7 @@ int main(int argc, char **argv)
   // Try the factories
   //
   bool success = false;
-  bool mresP = false;
+  bool mresP = true;
 
   if (! success)
   {
