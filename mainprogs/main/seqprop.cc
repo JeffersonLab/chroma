@@ -1,4 +1,4 @@
-// $Id: seqprop.cc,v 1.14 2004-02-23 03:13:58 edwards Exp $
+// $Id: seqprop.cc,v 1.15 2004-02-26 16:50:17 edwards Exp $
 /*! \file
  *  \brief Main code for sequential propagator generation
  */
@@ -243,12 +243,12 @@ int main(int argc, char **argv)
   multi1d<int> boundary = prop_header.boundary;
   multi1d<int> t_source = source_header.t_source;
 
+  // Initialize the slow Fourier transform phases
+  SftMom phases(0, true, j_decay);
+
   // Sanity check - write out the norm2 of the forward prop in the j_decay direction
   // Use this for any possible verification
   {
-    // Initialize the slow Fourier transform phases
-    SftMom phases(0, true, j_decay);
-
     multi1d<Double> forward_prop_corr = sumMulti(localNorm2(quark_propagator), 
 						 phases.getSet());
 
@@ -427,7 +427,7 @@ int main(int argc, char **argv)
       Handle<const ConnectState> state(S_f->createState(u));  // inserts any BC
       int n_count;
 
-      quarkProp4(seq_quark_prop, xml_out, quark_prop_src,
+      quarkProp4(seq_quark_prop, xml_seq_src, quark_prop_src,
 		 *S_f, state, 
 		 input.param.invParam.invType, 
 		 input.param.invParam.RsdCG, 
@@ -440,9 +440,6 @@ int main(int argc, char **argv)
     // Sanity check - write out the norm2 of the forward prop in the j_decay direction
     // Use this for any possible verification
     {
-      // Initialize the slow Fourier transform phases
-      SftMom phases(0, true, Nd-1);
-
       multi1d<Double> backward_prop_corr = sumMulti(localNorm2(seq_quark_prop), 
 						    phases.getSet());
 	
@@ -496,9 +493,9 @@ int main(int argc, char **argv)
       Complex pion_src;
       seqPionTest(pion_src, seq_quark_prop, t_source);
 	
-      push(xml_out,"Seq_propagator_test");
-      write(xml_out, "pion_src", pion_src);
-      pop(xml_out);
+      push(xml_seq_src,"Seq_propagator_test");
+      write(xml_seq_src, "pion_src", pion_src);
+      pop(xml_seq_src);
     }
 
     pop(xml_seq_src);   // elem
