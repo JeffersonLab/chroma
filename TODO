@@ -1,0 +1,26 @@
+      Laundry List   -  19 Feb 2005
+
+\item (*) Implement full Chrono predictor for HMC. This could win
+a factor of 2 based on comparisons of CG counts for linear pred.
+and RBC full chrono cg counts.
+
+\item (*) H_T ContFrac cost-vs-mres tests
+
+\item (*) Add force monitoring for HMC. Currently, we have energy
+contributions for each monomial. More useful is contributions to force
+for each monomial. This monitor is simply  norm2(ds_u)
+
+\item (*) Bagel/QMP-2 tests for IBM Bluegene/L and NERSC SP
+
+Based on force monitoring tests:
+  \item Fractional power monomials??? 
+  \item Sexton-Weingarten integration for gauge piece ala Degrand???
+  \item SAP for force term???
+
+\item Stout-link deriv. for HMC
+
+\item Aniso precond. and even-odd aniso precond. for linops
+\item Aniso precond. and even-odd aniso precond. for HMC
+
+\item Simple aniso for DWF - fix weirdness
+
