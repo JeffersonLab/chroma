@@ -1,4 +1,7 @@
-// $Id: common_declarations.h,v 1.1 2002-12-16 06:56:49 edwards Exp $
+// $Id: common_declarations.h,v 1.2 2003-03-07 05:44:51 edwards Exp $
+
+#ifndef COMMON_DECLS_INCLUDE
+#define COMMON_DECLS_INCLUDE
 
 #if defined(MAIN)
 #define EXTERN
@@ -159,4 +162,6 @@ int OverAuxAct=UNPRECONDITIONED_WILSON;   /* Kernel of overlap,dwf */
 Real OverMass=0.0;   /* Overlap mass */
 int NOperEig=0;       /* Number of eigenvectors kept */
 int NOperEigDim=0;    /* Dimension of eigenvectors kept */
+#endif
+
 #endif

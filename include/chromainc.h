@@ -1,11 +1,10 @@
-// $Id: chromainc.h,v 1.1 2003-02-16 04:02:22 edwards Exp $
+// $Id: chromainc.h,v 1.2 2003-03-07 05:44:51 edwards Exp $
 //
 // Include file that includes all the include files.
 
 #include "qdp.h"
 
 #include "common_declarations.h"
-#include "primitives.h"
 
 #include "actions/actions.h"
 #include "meas/meas.h"
