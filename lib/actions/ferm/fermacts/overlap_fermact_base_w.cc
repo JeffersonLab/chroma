@@ -1,4 +1,4 @@
-// $Id: overlap_fermact_base_w.cc,v 1.16 2004-05-27 11:21:23 bjoo Exp $
+// $Id: overlap_fermact_base_w.cc,v 1.17 2004-07-08 03:19:49 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -738,18 +738,18 @@ OverlapFermActBase::multiQprop(multi1d<LatticeFermion>& psi,
       MInvSUMR(*U, chi, psi, shifted_masses, rho, scaledRsdCG, MaxCG,n_count);
 
 #if 1 
-      for(int shift; shift < n_mass; shift++) { 
+      for(int s=0; s < n_mass; s++) { 
 
 	// Check back solutions
 	LatticeFermion r;
-	(*U)(r, psi[shift], PLUS);
-	r *= rho[shift];
-	r += shifted_masses[shift]*psi[shift];
+	(*U)(r, psi[s], PLUS);
+	r *= rho[s];
+	r += shifted_masses[s]*psi[s];
 
 
 	r -= chi;
 	Double r_norm = sqrt(norm2(r))/sqrt(norm2(chi));
-	QDPIO::cout << "Check: shift="<<shift<<" || r ||/||b|| = " << r_norm << " RsdCG = " << RsdCG[shift] << endl;
+	QDPIO::cout << "Check: shift="<<s<<" || r ||/||b|| = " << r_norm << " RsdCG = " << RsdCG[s] << endl;
 	
       }
 #endif
@@ -808,17 +808,17 @@ OverlapFermActBase::multiQprop(multi1d<LatticeFermion>& psi,
       MInvRelSUMR(*U, chi, psi, shifted_masses, rho, scaledRsdCG, MaxCG,n_count);
  
 #if 1 
-      for(int shift; shift < n_mass; shift++) { 
+      for(int s=0; s < n_mass; s++) { 
 
 	// Check back solutions
 	LatticeFermion r;
-	(*U)(r, psi[shift], PLUS);
-	r *= rho[shift];
-	r += shifted_masses[shift]*psi[shift];
+	(*U)(r, psi[s], PLUS);
+	r *= rho[s];
+	r += shifted_masses[s]*psi[s];
 
 	r -= chi;
 	Double r_norm = sqrt(norm2(r))/sqrt(norm2(chi));
-	QDPIO::cout << "Check: shift="<<shift<<" || r ||/||b|| = " << r_norm << " RsdCG = " << RsdCG[shift] << endl;
+	QDPIO::cout << "Check: shift="<<s<<" || r ||/||b|| = " << r_norm << " RsdCG = " << RsdCG[s] << endl;
 	
       }
 #endif
