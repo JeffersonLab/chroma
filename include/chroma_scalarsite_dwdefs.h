@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: chroma_scalarsite_dwdefs.h,v 1.2 2003-10-22 03:22:09 edwards Exp $
+// $Id: chroma_scalarsite_dwdefs.h,v 1.3 2003-11-02 02:36:56 edwards Exp $
 
 /*! \file
  * \brief Additional QDP type definitions
@@ -20,15 +20,15 @@ QDP_BEGIN_NAMESPACE(QDP);
  * @{
  */
 
-const int Ls = 8;   // HACK - FOR now fixed DW index here
+const int Ls = 4;   // HACK - FOR now fixed DW index here
 
 // Aliases for a scalar architecture
 
 // New guy beyond qdp_defs.h
-typedef OLattice< PDWVector< PSpinVector< PColorVector< RComplex<REAL>, Nc>, Ns>, Ls> > LatticeDWFermion;
-typedef OLattice< PDWVector< PSpinVector< PColorVector< RComplex<REAL>, Nc>, Ns>>1>, Ls> > LatticeHalfDWFermion;
+typedef OLattice< PSpinVector< PColorVector< RComplex< PDWVector<REAL, Ls> >, Nc>, Ns> > LatticeDWFermion;
+typedef OLattice< PSpinVector< PColorVector< RComplex< PDWVector<REAL, Ls> >, Nc>, Ns>>1> > LatticeHalfDWFermion;
 
-typedef OScalar< PDWVector< PSpinVector< PColorVector< RComplex<REAL>, Nc>, Ns>, Ls> > DWFermion;
+typedef OScalar< PSpinVector< PColorVector< RComplex< PDWVector<REAL, Ls> >, Nc>, Ns> > DWFermion;
 
 
 /*! @} */   // end of group defs
