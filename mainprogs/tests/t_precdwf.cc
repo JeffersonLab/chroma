@@ -1,4 +1,4 @@
-// $Id: t_precdwf.cc,v 1.10 2005-03-01 19:12:53 edwards Exp $
+// $Id: t_precdwf.cc,v 1.11 2005-03-01 19:18:17 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -34,7 +34,8 @@ double time_func(const EvenOddPrecLinearOperator< MLF, LCM > *p, EO_mem A,
     myt2=clock();
 
     mydt=double(myt2-myt1)/double(CLOCKS_PER_SEC);
-    Internal::broadcast(mydt);
+    Internal::globalSum(mydt);
+    mydt /= Layout::numNodes();
 
     if (mydt > 1)
       break;
@@ -47,6 +48,8 @@ double time_func(const EvenOddPrecLinearOperator< MLF, LCM > *p, EO_mem A,
 
   mydt = (double)(myt2-myt1)/((double)(CLOCKS_PER_SEC));
   mydt *= 1.0e6/((double)(iter*(Layout::sitesOnNode()/2)));
+  Internal::globalSum(mydt);
+  mydt /= Layout::numNodes();
   return mydt;
 }
 
