@@ -20,6 +20,7 @@ namespace Chroma {
       success &= theCfgTypeMap::Instance().registerPair( string("KYU"), CFG_TYPE_KYU );
       success &= theCfgTypeMap::Instance().registerPair( string("DISORDERED"), CFG_TYPE_DISORDERED );
       success &= theCfgTypeMap::Instance().registerPair( string("UNIT"), CFG_TYPE_UNIT );
+      success &= theCfgTypeMap::Instance().registerPair( string("CPPACS"), CFG_TYPE_CPPACS );
       
       return success;
     }
