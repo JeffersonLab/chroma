@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.243 2005-02-01 21:23:24 edwards Exp $
+# $Id: Makefile.am,v 1.244 2005-02-02 04:45:06 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -24,7 +24,6 @@ nobase_include_HEADERS = \
 	actions/ferm/fermacts/bigfloat.h \
 	actions/ferm/fermacts/remez.h \
 	actions/ferm/fermacts/remez_stub.h \
-	actions/ferm/fermacts/remez_gmp.h \
 	actions/ferm/fermacts/zolotarev.h \
 	actions/ferm/fermacts/overlap_state.h \
 	actions/ferm/fermbcs/fermbcs.h \
@@ -345,7 +344,6 @@ lib_LIBRARIES = libchroma.a
 libchroma_a_SOURCES = \
 	actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/overlap_state.cc \
-	actions/ferm/fermacts/remez_gmp.cc \
 	actions/ferm/fermacts/zolotarev_coeffs.cc \
 	actions/ferm/fermbcs/simple_fermbc.cc \
 	actions/ferm/invert/invbicgstab.cc \
@@ -437,6 +435,12 @@ libchroma_a_SOURCES = \
 #	actions/ferm/invert/invbicg.cc
 #       actions/ferm/invert/invmr.cc 
 #       util/gauge/eesu2.cc 
+
+
+if BUILD_GMP_REMEZ
+nobase_include_HEADERS += actions/ferm/fermacts/remez_gmp.h
+libchroma_a_SOURCES += actions/ferm/fermacts/remez_gmp.cc
+endif
 
 
 #
