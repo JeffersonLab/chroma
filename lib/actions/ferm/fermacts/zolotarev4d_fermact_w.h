@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev4d_fermact_w.h,v 1.20 2004-04-23 11:23:37 bjoo Exp $
+// $Id: zolotarev4d_fermact_w.h,v 1.21 2004-04-26 11:19:12 bjoo Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -120,7 +120,8 @@ public:
   const OverlapConnectState<LatticeFermion>*
   createState(const multi1d<LatticeColorMatrix>& u_,
 	      const OverlapStateInfo& state_info,
-	      XMLWriter& xml_out) const;
+	      XMLWriter& xml_out,
+	      Real wilsonMass = 16) const;
 
   //! Produce a linear operator for this action
   /*! 

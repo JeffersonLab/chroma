@@ -1,5 +1,6 @@
 #include "chromabase.h"
-#include "eigen_io.h"
+#include "io/eigen_io.h"
+#include "io/readszinferm_w.h"
 #include <iostream>
 #include <iomanip>
 using namespace std;
@@ -56,16 +57,29 @@ void read(XMLReader& xml, const string& path, EigenIO_t& io_header)
     XMLReader paramtop(xml, path);
     read(paramtop, "eigen_file_stem", io_header.eigen_file);
     read(paramtop, "eigen_volfmt", io_header.eigen_volfmt);
+
+    // If user specifies file format then read it
+    if( paramtop.count("eigen_filefmt") == 1 ) {
+      read(paramtop, "eigen_filefmt", io_header.eigen_filefmt);
+    }
+    else { 
+      // Otherwise assume default file format -- SciDAC format
+      io_header.eigen_filefmt = EVEC_TYPE_SCIDAC;
+    }
   }
   catch( const string& error ) { 
     QDPIO::cerr << "Caught exception " << error << endl;
     QDP_error_exit("Exiting\n");
   }
+
+
+
 }
 
 void write(XMLWriter& xml, const string& path, const EigenIO_t& io_header)
 {
   push(xml, path);
+  write(xml,"eigen_filefmt", io_header.eigen_filefmt);
   write(xml,"eigen_file_stem", io_header.eigen_file);
   write(xml,"eigen_volfmt", io_header.eigen_volfmt);
   pop(xml);
@@ -117,6 +131,12 @@ void writeEigen(const ChromaWilsonRitz_t& header, multi1d<Real>& lambda_lo,
 		multi1d<LatticeFermion>& eigv_lo, Real& lambda_hi,
 		QDP_serialparallel_t serpar)
 {
+
+  if(header.eigen_io_params.eigen_filefmt != EVEC_TYPE_SCIDAC ) { 
+    QDPIO::cerr << "Writing Eigenvectors only supported in SciDAC format" << endl;
+    QDP_abort(1);
+  }
+
 
   XMLBufferWriter file_xml;
   int file_neig=1;
@@ -217,27 +237,27 @@ void readEigen(ChromaWilsonRitz_t& header, multi1d<Real>& lambda_lo,
 	       multi1d<LatticeFermion>& eigv_lo, Real& lambda_hi,
 	       const string& filename_stem, 
 	       int Neig,
-	       QDP_serialparallel_t serpar)
+	       QDP_serialparallel_t serpar)	
 {
 
   int neig_to_load = Neig;
 
   for(int lo=0; lo < Neig && lo < neig_to_load; lo++) { 
     XMLReader file_xml;
-
+    
     int eig_index;
-
+    
     Real lambda_lo_tmp;
     LatticeFermion eigv_tmp;
-
+    
     ostringstream filename;
-
+    
     filename << filename_stem << "_" << setw(3) << setfill('0') << lo;
     readEigenPair(lambda_lo_tmp,  eig_index, eigv_tmp,
 		  filename.str(), serpar, 
 		  file_xml);
-
-
+    
+    
     // Stuff we need to do once
     if( lo == 0 ) { 
       // Read header -- should be the same for all but I wont check for that
@@ -248,8 +268,8 @@ void readEigen(ChromaWilsonRitz_t& header, multi1d<Real>& lambda_lo,
 	QDPIO::cerr << "Caught Exception reading header: " << e << endl;
 	QDP_error_exit("Exiting\n");
       }
-  
-
+      
+      
       // Get the highest e-value
       try { 
 	read(file_xml, "/WilsonRitzEigen/lambda_hi", lambda_hi);
@@ -258,7 +278,7 @@ void readEigen(ChromaWilsonRitz_t& header, multi1d<Real>& lambda_lo,
 	QDPIO::cerr << "Caught Exception reading lambda_hi: " << e << endl;
 	QDP_error_exit("Exiting\n");
       }
-
+      
       // Check how many e-values there are
       if( header.ritz_params.Neig < Neig ) { 
 	QDPIO::cout << "Requested " << Neig << " eigenpairs but only " << header.ritz_params.Neig << " were computed. Will only read " << header.ritz_params.Neig << " pairs" << endl;
@@ -267,22 +287,79 @@ void readEigen(ChromaWilsonRitz_t& header, multi1d<Real>& lambda_lo,
       else { 
 	header.ritz_params.Neig = Neig;
       }
-
+      
       // Resize arrays to accomodate
       lambda_lo.resize(neig_to_load);
       eigv_lo.resize(neig_to_load);
     }
-
+    
     // Check index
     if( eig_index != lo) { 
       QDPIO::cerr << "Error: index and eig_index dont match lo = " << lo << " eig_index = " << eig_index << endl;
       QDP_error_exit("Exiting\n");
     }
-
+    
     // Put things in their place
     lambda_lo[eig_index] = lambda_lo_tmp;
     eigv_lo[eig_index] = eigv_tmp;
   }
-    
-
 }
+
+
+// Read SZIN eigenvalues. 
+// Expects the following:
+//  filename_stem.xml -- contains the Eigenvalues under tag Eigenvalues
+//  filename_stem_XXX contains the SZIN eigenvectors
+void readEigenSzin(multi1d<Real>& lambda_lo,
+		   multi1d<LatticeFermion>& eigv_lo, Real& lambda_hi,
+		   const int Neig, 
+		   const string& filename_stem)
+{
+
+  ostringstream xml_filename;
+  xml_filename << filename_stem << ".xml" ;
+
+  QDPIO::cout << "Attempting to open " << xml_filename.str() << endl;
+  // Try and get the e-values.
+  XMLReader reader(xml_filename.str());
+
+  try { 
+    XMLReader paramtop(reader, "/Eigenvalues");
+    read(paramtop, "lambda_lo", lambda_lo);
+    read(paramtop, "lambda_hi", lambda_hi);
+  }
+  catch( const string& e) { 
+    QDPIO::cerr << "Caught exception : " << e << endl;
+    QDP_abort(1);
+  }
+
+  if ( lambda_lo.size() != Neig ) { 
+    QDPIO::cerr << "Mismatch in no of low eigenvalues. Neig = " << Neig << 
+      "but read " << lambda_lo.size() << endl;
+    QDP_abort(1);
+  }
+
+  eigv_lo.resize(lambda_lo.size());
+
+  for(int evec = 0; evec < lambda_lo.size(); evec++) { 
+
+    // Create filename
+    ostringstream filename;
+    filename << filename_stem << "_" <<  setw(3) << setfill('0') << evec;
+
+    // read the evec
+    try { 
+      readSzinFerm(eigv_lo[evec], filename.str());
+    }
+    catch (const string& e) { 
+      QDPIO::cerr << "Caught exception " << e << endl;
+      QDP_abort(1);
+    }
+
+
+  }
+
+  
+}
+
+  

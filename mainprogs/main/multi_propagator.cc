@@ -1,6 +1,9 @@
-// $Id: multi_propagator.cc,v 1.6 2004-04-22 16:49:23 bjoo Exp $
+// $Id: multi_propagator.cc,v 1.7 2004-04-26 11:19:13 bjoo Exp $
 // $Log: multi_propagator.cc,v $
-// Revision 1.6  2004-04-22 16:49:23  bjoo
+// Revision 1.7  2004-04-26 11:19:13  bjoo
+// Added support for Reading EV-s in SZIN format. Must provide e-values in XML tho.
+//
+// Revision 1.6  2004/04/22 16:49:23  bjoo
 // Added overlap_state_info Param struct and gauge startup convenience function. Tidyed up propagator zolo4d case
 //
 // Revision 1.5  2004/04/22 16:25:25  bjoo
@@ -273,7 +276,8 @@ int main(int argc, char **argv)
       // Stuff the pointer into a handle. Now, the handle owns the data.
       Handle<const ConnectState> state(S.createState(u,
 						     zolo4d.StateInfo,
-						     xml_out));
+						     xml_out,
+						     zolo4d.AuxFermActHandle->getMass() ));
       
       // Go baby
       multiQuarkProp4(quark_propagator, 

@@ -1,6 +1,9 @@
-// $Id: propagator_comp.cc,v 1.1 2004-04-23 11:23:38 bjoo Exp $
+// $Id: propagator_comp.cc,v 1.2 2004-04-26 11:19:13 bjoo Exp $
 // $Log: propagator_comp.cc,v $
-// Revision 1.1  2004-04-23 11:23:38  bjoo
+// Revision 1.2  2004-04-26 11:19:13  bjoo
+// Added support for Reading EV-s in SZIN format. Must provide e-values in XML tho.
+//
+// Revision 1.1  2004/04/23 11:23:38  bjoo
 // Added component based propagator (non multishift) and added Zolotarev5D operator to propagator and propagator_comp. Reworked propagator collection scripts
 //
 // Revision 1.2  2004/04/22 16:49:23  bjoo
@@ -330,7 +333,7 @@ int main(int argc, char **argv)
       // Make a state. Now calls create state with the state info 
       // params struct. Loads Evalues etc if needed, will in the 
       // future recompute them as needed
-      Handle<const ConnectState> state(S.createState(u, zolo4d.StateInfo, xml_out));
+      Handle<const ConnectState> state(S.createState(u, zolo4d.StateInfo, xml_out, zolo4d.AuxFermActHandle->getMass() ));
       
 
       for(int comp = 0; comp < input.components.size(); comp++) { 
@@ -390,7 +393,7 @@ int main(int argc, char **argv)
       // Make a state. Now calls create state with the state info 
       // params struct. Loads Evalues etc if needed, will in the 
       // future recompute them as needed
-      Handle<const ConnectState> state(S.createState(u, zolo5d.StateInfo, xml_out));
+      Handle<const ConnectState> state(S.createState(u, zolo5d.StateInfo, xml_out, zolo5d.AuxFermActHandle->getMass()));
       
 
       for(int comp = 0; comp < input.components.size(); comp++) { 

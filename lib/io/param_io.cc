@@ -1,4 +1,4 @@
-// $Id: param_io.cc,v 1.25 2004-04-24 03:35:57 edwards Exp $
+// $Id: param_io.cc,v 1.26 2004-04-26 11:19:13 bjoo Exp $
 /*! \file
  *  \brief Various parameter readers/writers for main programs
  */
@@ -169,6 +169,22 @@ void read(XMLReader& xml, const string& path, PropType& param)
   else 
   {
     QDPIO::cerr << "Unsupported propagator type = " << prop_type_str << endl;
+    QDP_abort(1);
+  }
+}
+
+//! Read an Eigenvector type enum
+void read(XMLReader& xml, const string& path, EigenVecType& param)
+{
+  string prop_type_str;
+  read(xml, path, prop_type_str);
+  if (prop_type_str == "SZIN")
+    param = EVEC_TYPE_SZIN;
+  else if (prop_type_str == "SCIDAC")
+    param = EVEC_TYPE_SCIDAC;
+  else 
+  {
+    QDPIO::cerr << "Unsupported eigenvector type = " << prop_type_str << endl;
     QDP_abort(1);
   }
 }
@@ -564,6 +580,22 @@ void write(XMLWriter& xml, const string& path, PropType param)
   else 
   {
     QDPIO::cerr << "Unsupported propagator type" << endl;
+    QDP_abort(1);
+  }
+  write(xml, path, prop_type_str);
+}
+
+//! Write an eigenvector type enum
+void write(XMLWriter& xml, const string& path, EigenVecType param)
+{
+  string prop_type_str;
+  if (param == EVEC_TYPE_SZIN)
+    prop_type_str = "SZIN";
+  else if (param == EVEC_TYPE_SCIDAC)
+    prop_type_str = "SCIDAC";
+  else 
+  {
+    QDPIO::cerr << "Unsupported eigenvector type" << endl;
     QDP_abort(1);
   }
   write(xml, path, prop_type_str);

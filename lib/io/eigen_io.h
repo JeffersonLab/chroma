@@ -29,6 +29,7 @@ struct RitzParams_t
 // Struct for dumping the eigenvalues/vectors
 struct EigenIO_t 
 {
+  EigenVecType eigen_filefmt;
   string eigen_file;
   QDP_volfmt_t eigen_volfmt;
 };
@@ -73,4 +74,11 @@ void readEigen(ChromaWilsonRitz_t& header, multi1d<Real>& lambda_lo,
 	       const string& filename_stem, 
 	       int Neig,
 	       QDP_serialparallel_t serpar);
+
+void readEigenSzin(multi1d<Real>& lambda_lo,
+		   multi1d<LatticeFermion>& eigv_lo, Real& lambda_hi,
+		   const int Neig,
+		   const string& filename_stem);
+		
+
 #endif

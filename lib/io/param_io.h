@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: param_io.h,v 1.19 2004-04-24 03:35:57 edwards Exp $
+// $Id: param_io.h,v 1.20 2004-04-26 11:19:13 bjoo Exp $
 /*! \file
  *  \brief Reunitarize (to a SU(N)) inplace the matrix A under some option
  */
@@ -53,6 +53,11 @@ enum PropType
   PROP_TYPE_KYU,
 };
 
+//! Eigenvector type
+enum EigenVecType {
+  EVEC_TYPE_SCIDAC = 2,
+  EVEC_TYPE_SZIN
+};
 
 //! Types of fermion
 enum FermType 
@@ -197,6 +202,10 @@ void read(XMLReader& xml, const string& path, CfgType& param);
 //! Read a propagator type enum
 void read(XMLReader& xml, const string& path, PropType& param);
 
+//! Read an Eigenvector type enum
+void read(XMLReader& xml, const string& path, EigenVecType& param);
+
+
 //! Read a wave-function type enum
 void read(XMLReader& xml, const string& path, WvfKind& param);
 
@@ -250,6 +259,9 @@ void write(XMLWriter& xml, const string& path, CfgType param);
 
 //! Write a propagator type enum
 void write(XMLWriter& xml, const string& path, PropType param);
+
+//! Write an eigenvector type enum
+void write(XMLWriter& xml, const string& path, EigenVecType param);
 
 //! Write a wave-function type enum
 void write(XMLWriter& xml, const string& path, WvfKind param);

@@ -1,6 +1,9 @@
-// $Id: multi_propagator_comp.cc,v 1.2 2004-04-22 16:49:23 bjoo Exp $
+// $Id: multi_propagator_comp.cc,v 1.3 2004-04-26 11:19:13 bjoo Exp $
 // $Log: multi_propagator_comp.cc,v $
-// Revision 1.2  2004-04-22 16:49:23  bjoo
+// Revision 1.3  2004-04-26 11:19:13  bjoo
+// Added support for Reading EV-s in SZIN format. Must provide e-values in XML tho.
+//
+// Revision 1.2  2004/04/22 16:49:23  bjoo
 // Added overlap_state_info Param struct and gauge startup convenience function. Tidyed up propagator zolo4d case
 //
 // Revision 1.1  2004/04/20 13:08:12  bjoo
@@ -327,7 +330,7 @@ int main(int argc, char **argv)
       // Make a state. Now calls create state with the state info 
       // params struct. Loads Evalues etc if needed, will in the 
       // future recompute them as needed
-      Handle<const ConnectState> state(S.createState(u, zolo4d.StateInfo, xml_out));
+      Handle<const ConnectState> state(S.createState(u, zolo4d.StateInfo, xml_out, zolo4d.AuxFermActHandle->getMass() ));
       
 
       for(int comp = 0; comp < input.components.size(); comp++) { 

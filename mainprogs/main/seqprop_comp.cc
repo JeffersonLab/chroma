@@ -1,4 +1,4 @@
-// $Id: seqprop_comp.cc,v 1.1 2004-04-23 15:54:05 bjoo Exp $
+// $Id: seqprop_comp.cc,v 1.2 2004-04-26 11:19:13 bjoo Exp $
 /*! \file
  *  \brief Main code for sequential propagator generation
  */
@@ -533,7 +533,7 @@ int main(int argc, char **argv)
 	const Zolotarev4DFermActParams& zolo4d = dynamic_cast<const Zolotarev4DFermActParams& > (*(prop_header.FermActHandle));
 	const Zolotarev4DFermAct& S_zolo4 = dynamic_cast<const Zolotarev4DFermAct&>(*S_f);
 
-	state_ptr = S_zolo4.createState(u, zolo4d.StateInfo, xml_out);
+	state_ptr = S_zolo4.createState(u, zolo4d.StateInfo, xml_out,zolo4d.AuxFermActHandle->getMass());
        
       }
       break;
@@ -543,7 +543,7 @@ int main(int argc, char **argv)
 	const Zolotarev5DFermActArray& S_zolo5 = dynamic_cast<const Zolotarev5DFermActArray&>(*S_f_a);
 
 
-	state_ptr = S_zolo5.createState(u, zolo5d.StateInfo, xml_out);
+	state_ptr = S_zolo5.createState(u, zolo5d.StateInfo, xml_out, zolo5d.AuxFermActHandle->getMass());
       }
       break;
 

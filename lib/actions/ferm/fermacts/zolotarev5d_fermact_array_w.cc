@@ -1,4 +1,4 @@
-// $Id: zolotarev5d_fermact_array_w.cc,v 1.7 2004-04-23 11:23:37 bjoo Exp $
+// $Id: zolotarev5d_fermact_array_w.cc,v 1.8 2004-04-26 11:19:12 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -422,7 +422,8 @@ Zolotarev5DFermActArray::qprop(LatticeFermion& psi,
 const OverlapConnectState<LatticeFermion>*
 Zolotarev5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
 				const OverlapStateInfo& state_info,
-				XMLWriter& xml_out) const
+				XMLWriter& xml_out,
+				Real wilsonMass) const
 {
   push(xml_out, "Zolo4DCreateState");
 
@@ -448,17 +449,42 @@ Zolotarev5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
       multi1d<Real> lambda_lo;
       multi1d<LatticeFermion> eigv_lo;
       Real lambda_hi;
-
-      readEigen(ritz_header, lambda_lo, eigv_lo, lambda_hi, 
-		state_info.getEigenIO().eigen_file,
-		state_info.getNWilsVec(),
-		QDPIO_SERIAL);
+      const EigenIO_t& eigen_io = state_info.getEigenIO();
 
       push(xml_out, "EigenSystem");
-      write(xml_out, "OriginalRitzHeader", ritz_header);
+      if( eigen_io.eigen_filefmt == EVEC_TYPE_SCIDAC ) { 
+	readEigen(ritz_header, lambda_lo, eigv_lo, lambda_hi, 
+		  eigen_io.eigen_file,
+		  state_info.getNWilsVec(),
+		QDPIO_SERIAL);
+	write(xml_out, "OriginalRitzHeader", ritz_header);
+      }
+      else if ( eigen_io.eigen_filefmt == EVEC_TYPE_SZIN ) { 
+
+	if( toBool( fabs(wilsonMass) > 8 ) ){
+	  QDPIO::cerr << "WilsonMass unspecified, or | WilsonMass | > 8" << endl;
+	  QDPIO::cerr << "The wilson mass is needed to rescale the eigenvalues" << endl;
+	  QDP_abort(1);
+	}
+
+	readEigenSzin(lambda_lo, eigv_lo, lambda_hi, state_info.getNWilsVec(), eigen_io.eigen_file);
+	
+	// Now I need to scale things by the wilson mass (Nd + m)
+	for(int i=0; i < lambda_lo.size(); i++) { 
+	  lambda_lo[i] *= (Real(Nd) + wilsonMass);
+	}
+
+	lambda_hi *= (Real(Nd) + wilsonMass);
+
+      }
+      else {
+	QDPIO::cerr << "Unsupported Eigenvector format for reading " << endl;
+	QDP_abort(1);
+      }
+
       write(xml_out, "lambda_lo", lambda_lo);
       write(xml_out, "lambda_high", lambda_hi);
-      
+         
       Handle< const ConnectState > wils_connect_state = S_aux->createState(u_);
       Handle< const LinearOperator<LatticeFermion> > H = S_aux->gamma5HermLinOp(wils_connect_state);
 
