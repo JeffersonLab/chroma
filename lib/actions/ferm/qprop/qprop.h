@@ -1,5 +1,5 @@
 //
-// $Id: qprop.h,v 1.1 2003-04-09 05:57:16 edwards Exp $
+// $Id: qprop.h,v 1.2 2003-11-10 05:06:21 edwards Exp $
 
 /*! \file
  * \brief Quark propagator solution routines
@@ -16,5 +16,6 @@
 #ifndef __qprop_h__
 #define __qprop_h__
 
+#include "quarkprop4_w.h"
 
 #endif
