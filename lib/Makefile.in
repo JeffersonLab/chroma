@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.283 2004-12-29 18:38:58 bjoo Exp $
+# $Id: Makefile.in,v 1.284 2004-12-29 22:07:17 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -242,7 +242,8 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/linop/asqtad_mdagm_s.cc \
 	actions/ferm/linop/asq_dsl_s.cc \
 	actions/ferm/linop/fat7_links_s.cc \
-	actions/ferm/linop/naik_term_s.cc io/follana_io_s.cc \
+	actions/ferm/linop/naik_term_s.cc \
+	actions/ferm/qprop/quarkprop4_s.cc io/follana_io_s.cc \
 	meas/hadron/baryon_s.cc meas/hadron/mesphas_follana_s.cc \
 	meas/hadron/mesphas_s.cc meas/hadron/pions_s.cc \
 	meas/hadron/srcfil_s.cc meas/hadron/stag_propShift_s.cc \
@@ -371,9 +372,9 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	simple_fermbc_s.$(OBJEXT) asqtad_linop_s.$(OBJEXT) \
 	asqtad_mdagm_s.$(OBJEXT) asq_dsl_s.$(OBJEXT) \
 	fat7_links_s.$(OBJEXT) naik_term_s.$(OBJEXT) \
-	follana_io_s.$(OBJEXT) baryon_s.$(OBJEXT) \
-	mesphas_follana_s.$(OBJEXT) mesphas_s.$(OBJEXT) \
-	pions_s.$(OBJEXT) srcfil_s.$(OBJEXT) \
+	quarkprop4_s.$(OBJEXT) follana_io_s.$(OBJEXT) \
+	baryon_s.$(OBJEXT) mesphas_follana_s.$(OBJEXT) \
+	mesphas_s.$(OBJEXT) pions_s.$(OBJEXT) srcfil_s.$(OBJEXT) \
 	stag_propShift_s.$(OBJEXT) stag_scalars_s.$(OBJEXT) \
 	vector_meson_s.$(OBJEXT) walfil_s.$(OBJEXT) \
 	stag_phases_s.$(OBJEXT) scalar_loops_s.$(OBJEXT) \
@@ -547,26 +548,30 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/linop/unprec_pdwf4d_linop_w.h \
 	actions/ferm/linop/unprec_ppdwf4d_linop_w.h \
 	actions/ferm/qprop/qprop_w.h \
-	actions/ferm/qprop/unprec_qprop_w.h io/io_w.h io/barcomp_io.h \
-	io/kyuqprop_io.h io/readszinferm_w.h io/readszinqprop_w.h \
-	io/writeszinqprop_w.h io/overlap_state_info.h meas/eig/eig_w.h \
-	meas/eig/ischiral_w.h meas/hadron/barcomp_w.h \
-	meas/hadron/barseqsrc_w.h meas/hadron/barhqlq_w.h \
-	meas/hadron/baryon_w.h meas/hadron/BuildingBlocks_w.h \
-	meas/hadron/curcor2_w.h meas/hadron/DjDk_w.h \
-	meas/hadron/D_j_w.h meas/hadron/formfac_w.h \
-	meas/hadron/hadron_w.h meas/hadron/hybmeson_w.h \
-	meas/hadron/mesonseqsrc_w.h meas/hadron/mesons_w.h \
-	meas/hadron/seqpiontest_w.h meas/hadron/loops_w.h \
-	meas/hadron/walfil_w.h meas/hadron/wall_qprop_w.h \
-	meas/hadron/wallff_w.h meas/hadron/walldeltaff_w.h \
-	meas/hadron/walldeltapff_w.h meas/hadron/wallpionff_w.h \
-	meas/hadron/wallnuclff_w.h meas/hadron/wallrhoff_w.h \
-	meas/hadron/wallrhopiff_w.h meas/sources/d_src_w.h \
-	meas/sources/p_src_w.h meas/sources/sources_w.h \
-	util/ferm/ferm_w.h util/ferm/diractodr.h \
-	util/ferm/gammasgn_w.h util/ferm/tdiractodr.h \
-	util/ferm/paulitodr.h actions/ferm/fermacts/asqtad_fermact_s.h \
+	actions/ferm/qprop/unprec_qprop_w.h \
+	actions/ferm/qprop/quarkprop4_w.h \
+	actions/ferm/qprop/dwf_quarkprop4_w.h \
+	actions/ferm/qprop/nef_quarkprop4_w.h io/io_w.h \
+	io/barcomp_io.h io/kyuqprop_io.h io/readszinferm_w.h \
+	io/readszinqprop_w.h io/writeszinqprop_w.h \
+	io/overlap_state_info.h meas/eig/eig_w.h meas/eig/ischiral_w.h \
+	meas/hadron/barcomp_w.h meas/hadron/barseqsrc_w.h \
+	meas/hadron/barhqlq_w.h meas/hadron/baryon_w.h \
+	meas/hadron/BuildingBlocks_w.h meas/hadron/curcor2_w.h \
+	meas/hadron/DjDk_w.h meas/hadron/D_j_w.h \
+	meas/hadron/formfac_w.h meas/hadron/hadron_w.h \
+	meas/hadron/hybmeson_w.h meas/hadron/mesonseqsrc_w.h \
+	meas/hadron/mesons_w.h meas/hadron/seqpiontest_w.h \
+	meas/hadron/loops_w.h meas/hadron/walfil_w.h \
+	meas/hadron/wall_qprop_w.h meas/hadron/wallff_w.h \
+	meas/hadron/walldeltaff_w.h meas/hadron/walldeltapff_w.h \
+	meas/hadron/wallpionff_w.h meas/hadron/wallnuclff_w.h \
+	meas/hadron/wallrhoff_w.h meas/hadron/wallrhopiff_w.h \
+	meas/sources/d_src_w.h meas/sources/p_src_w.h \
+	meas/sources/sources_w.h util/ferm/ferm_w.h \
+	util/ferm/diractodr.h util/ferm/gammasgn_w.h \
+	util/ferm/tdiractodr.h util/ferm/paulitodr.h \
+	actions/ferm/fermacts/asqtad_fermact_s.h \
 	actions/ferm/fermacts/fermacts_s.h \
 	actions/ferm/fermacts/stag_fermact_s.h \
 	actions/ferm/fermbcs/fermbcs_s.h \
@@ -576,8 +581,9 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/linop/asqtad_mdagm_s.h \
 	actions/ferm/linop/asq_dsl_s.h \
 	actions/ferm/linop/improvement_terms_s.h \
-	actions/ferm/linop/linop_s.h io/follana_io_s.h io/io_s.h \
-	meas/eig/eig_s.h meas/hadron/baryon_s.h meas/hadron/hadron_s.h \
+	actions/ferm/linop/linop_s.h actions/ferm/qprop/quarkprop4_s.h \
+	io/follana_io_s.h io/io_s.h meas/eig/eig_s.h \
+	meas/hadron/baryon_s.h meas/hadron/hadron_s.h \
 	meas/hadron/hadron_corr_s.h meas/hadron/mesphas_follana_s.h \
 	meas/hadron/mesphas_s.h meas/hadron/pions_s.h \
 	meas/hadron/walfil_s.h meas/hadron/loops_s.h \
@@ -871,26 +877,30 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/linop/unprec_pdwf4d_linop_w.h \
 	actions/ferm/linop/unprec_ppdwf4d_linop_w.h \
 	actions/ferm/qprop/qprop_w.h \
-	actions/ferm/qprop/unprec_qprop_w.h io/io_w.h io/barcomp_io.h \
-	io/kyuqprop_io.h io/readszinferm_w.h io/readszinqprop_w.h \
-	io/writeszinqprop_w.h io/overlap_state_info.h meas/eig/eig_w.h \
-	meas/eig/ischiral_w.h meas/hadron/barcomp_w.h \
-	meas/hadron/barseqsrc_w.h meas/hadron/barhqlq_w.h \
-	meas/hadron/baryon_w.h meas/hadron/BuildingBlocks_w.h \
-	meas/hadron/curcor2_w.h meas/hadron/DjDk_w.h \
-	meas/hadron/D_j_w.h meas/hadron/formfac_w.h \
-	meas/hadron/hadron_w.h meas/hadron/hybmeson_w.h \
-	meas/hadron/mesonseqsrc_w.h meas/hadron/mesons_w.h \
-	meas/hadron/seqpiontest_w.h meas/hadron/loops_w.h \
-	meas/hadron/walfil_w.h meas/hadron/wall_qprop_w.h \
-	meas/hadron/wallff_w.h meas/hadron/walldeltaff_w.h \
-	meas/hadron/walldeltapff_w.h meas/hadron/wallpionff_w.h \
-	meas/hadron/wallnuclff_w.h meas/hadron/wallrhoff_w.h \
-	meas/hadron/wallrhopiff_w.h meas/sources/d_src_w.h \
-	meas/sources/p_src_w.h meas/sources/sources_w.h \
-	util/ferm/ferm_w.h util/ferm/diractodr.h \
-	util/ferm/gammasgn_w.h util/ferm/tdiractodr.h \
-	util/ferm/paulitodr.h actions/ferm/fermacts/asqtad_fermact_s.h \
+	actions/ferm/qprop/unprec_qprop_w.h \
+	actions/ferm/qprop/quarkprop4_w.h \
+	actions/ferm/qprop/dwf_quarkprop4_w.h \
+	actions/ferm/qprop/nef_quarkprop4_w.h io/io_w.h \
+	io/barcomp_io.h io/kyuqprop_io.h io/readszinferm_w.h \
+	io/readszinqprop_w.h io/writeszinqprop_w.h \
+	io/overlap_state_info.h meas/eig/eig_w.h meas/eig/ischiral_w.h \
+	meas/hadron/barcomp_w.h meas/hadron/barseqsrc_w.h \
+	meas/hadron/barhqlq_w.h meas/hadron/baryon_w.h \
+	meas/hadron/BuildingBlocks_w.h meas/hadron/curcor2_w.h \
+	meas/hadron/DjDk_w.h meas/hadron/D_j_w.h \
+	meas/hadron/formfac_w.h meas/hadron/hadron_w.h \
+	meas/hadron/hybmeson_w.h meas/hadron/mesonseqsrc_w.h \
+	meas/hadron/mesons_w.h meas/hadron/seqpiontest_w.h \
+	meas/hadron/loops_w.h meas/hadron/walfil_w.h \
+	meas/hadron/wall_qprop_w.h meas/hadron/wallff_w.h \
+	meas/hadron/walldeltaff_w.h meas/hadron/walldeltapff_w.h \
+	meas/hadron/wallpionff_w.h meas/hadron/wallnuclff_w.h \
+	meas/hadron/wallrhoff_w.h meas/hadron/wallrhopiff_w.h \
+	meas/sources/d_src_w.h meas/sources/p_src_w.h \
+	meas/sources/sources_w.h util/ferm/ferm_w.h \
+	util/ferm/diractodr.h util/ferm/gammasgn_w.h \
+	util/ferm/tdiractodr.h util/ferm/paulitodr.h \
+	actions/ferm/fermacts/asqtad_fermact_s.h \
 	actions/ferm/fermacts/fermacts_s.h \
 	actions/ferm/fermacts/stag_fermact_s.h \
 	actions/ferm/fermbcs/fermbcs_s.h \
@@ -900,8 +910,9 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/linop/asqtad_mdagm_s.h \
 	actions/ferm/linop/asq_dsl_s.h \
 	actions/ferm/linop/improvement_terms_s.h \
-	actions/ferm/linop/linop_s.h io/follana_io_s.h io/io_s.h \
-	meas/eig/eig_s.h meas/hadron/baryon_s.h meas/hadron/hadron_s.h \
+	actions/ferm/linop/linop_s.h actions/ferm/qprop/quarkprop4_s.h \
+	io/follana_io_s.h io/io_s.h meas/eig/eig_s.h \
+	meas/hadron/baryon_s.h meas/hadron/hadron_s.h \
 	meas/hadron/hadron_corr_s.h meas/hadron/mesphas_follana_s.h \
 	meas/hadron/mesphas_s.h meas/hadron/pions_s.h \
 	meas/hadron/walfil_s.h meas/hadron/loops_s.h \
@@ -1103,7 +1114,8 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/ferm/linop/asqtad_mdagm_s.cc \
 	actions/ferm/linop/asq_dsl_s.cc \
 	actions/ferm/linop/fat7_links_s.cc \
-	actions/ferm/linop/naik_term_s.cc io/follana_io_s.cc \
+	actions/ferm/linop/naik_term_s.cc \
+	actions/ferm/qprop/quarkprop4_s.cc io/follana_io_s.cc \
 	meas/hadron/baryon_s.cc meas/hadron/mesphas_follana_s.cc \
 	meas/hadron/mesphas_s.cc meas/hadron/pions_s.cc \
 	meas/hadron/srcfil_s.cc meas/hadron/stag_propShift_s.cc \
@@ -1356,6 +1368,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pseudoscalar_loops_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qprop_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quarkprop4_multi_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quarkprop4_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quarkprop4_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readmilc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readszin.Po@am__quote@
@@ -4499,6 +4512,20 @@ naik_term_s.obj: actions/ferm/linop/naik_term_s.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/naik_term_s.cc' object='naik_term_s.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o naik_term_s.obj `if test -f 'actions/ferm/linop/naik_term_s.cc'; then $(CYGPATH_W) 'actions/ferm/linop/naik_term_s.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/naik_term_s.cc'; fi`
+
+quarkprop4_s.o: actions/ferm/qprop/quarkprop4_s.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT quarkprop4_s.o -MD -MP -MF "$(DEPDIR)/quarkprop4_s.Tpo" -c -o quarkprop4_s.o `test -f 'actions/ferm/qprop/quarkprop4_s.cc' || echo '$(srcdir)/'`actions/ferm/qprop/quarkprop4_s.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/quarkprop4_s.Tpo" "$(DEPDIR)/quarkprop4_s.Po"; else rm -f "$(DEPDIR)/quarkprop4_s.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/qprop/quarkprop4_s.cc' object='quarkprop4_s.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o quarkprop4_s.o `test -f 'actions/ferm/qprop/quarkprop4_s.cc' || echo '$(srcdir)/'`actions/ferm/qprop/quarkprop4_s.cc
+
+quarkprop4_s.obj: actions/ferm/qprop/quarkprop4_s.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT quarkprop4_s.obj -MD -MP -MF "$(DEPDIR)/quarkprop4_s.Tpo" -c -o quarkprop4_s.obj `if test -f 'actions/ferm/qprop/quarkprop4_s.cc'; then $(CYGPATH_W) 'actions/ferm/qprop/quarkprop4_s.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/qprop/quarkprop4_s.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/quarkprop4_s.Tpo" "$(DEPDIR)/quarkprop4_s.Po"; else rm -f "$(DEPDIR)/quarkprop4_s.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/qprop/quarkprop4_s.cc' object='quarkprop4_s.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o quarkprop4_s.obj `if test -f 'actions/ferm/qprop/quarkprop4_s.cc'; then $(CYGPATH_W) 'actions/ferm/qprop/quarkprop4_s.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/qprop/quarkprop4_s.cc'; fi`
 
 follana_io_s.o: io/follana_io_s.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT follana_io_s.o -MD -MP -MF "$(DEPDIR)/follana_io_s.Tpo" -c -o follana_io_s.o `test -f 'io/follana_io_s.cc' || echo '$(srcdir)/'`io/follana_io_s.cc; \
