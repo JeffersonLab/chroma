@@ -1,4 +1,4 @@
-// $Id: wallformfac.cc,v 1.25 2004-06-05 21:06:27 edwards Exp $
+// $Id: wallformfac.cc,v 1.26 2004-06-08 20:54:37 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions with a wall sink
  *
@@ -25,6 +25,52 @@ enum WallFormFacType
   WALLFF_DELTA,
   WALLFF_DELTA_P,
 };
+
+
+struct Prop_t
+{
+  string       forwprop_file;
+  string       backprop_file;
+};
+
+
+// Parameters which must be determined from the XML input
+// and written to the XML output
+struct Param_t
+{
+  int mom2_max;            // (mom)^2 <= mom2_max. mom2_max=7 in szin.
+
+  multi1d<WallFormFacType> formfac_type;
+  multi1d<int> nrow;
+};
+
+struct WallFormFac_input_t
+{
+  Param_t          param;
+  Cfg_t            cfg;
+  Prop_t           prop;
+};
+
+
+struct WallFormFac_bar_t
+{
+  int                     formfac_value;
+  string                  formfac_type;
+  WallFormFac_formfacs_t  formfacs;
+};
+
+
+struct WallFormFac_output_t
+{
+  int          out_version;
+
+  int          mom2_max;            // (mom)^2 <= mom2_max. mom2_max=7 in szin.
+  multi1d<int> nrow;
+
+  multi1d<WallFormFac_bar_t> bar;
+};
+
+
 
 //! Read a Wall-formfactor enum
 void read(XMLReader& xml, const string& path, WallFormFacType& param)
@@ -78,31 +124,6 @@ void write(XMLWriter& xml, const string& path, const WallFormFacType& param)
   }
   write(xml, path, wallff_str);
 }
-
-
-struct Prop_t
-{
-  string       forwprop_file;
-  string       backprop_file;
-};
-
-
-// Parameters which must be determined from the XML input
-// and written to the XML output
-struct Param_t
-{
-  int mom2_max;            // (mom)^2 <= mom2_max. mom2_max=7 in szin.
-
-  multi1d<WallFormFacType> formfac_type;
-  multi1d<int> nrow;
-};
-
-struct WallFormFac_input_t
-{
-  Param_t          param;
-  Cfg_t            cfg;
-  Prop_t           prop;
-};
 
 
 //! Propagator filenames
@@ -166,6 +187,23 @@ void read(XMLReader& xml, const string& path, WallFormFac_input_t& input)
   }
 }
 
+
+//! WallFormFac writer
+void write(BinaryWriter& bin, const WallFormFac_bar_t& header)
+{
+  write(bin, header.formfac_value);
+  write(bin, header.formfac_type);
+  write(bin, header.formfacs);
+}
+
+//! WallFormFac writer
+void write(BinaryWriter& bin, const WallFormFac_output_t& header)
+{
+  write(bin, header.out_version);
+  write(bin, header.mom2_max);
+  write(bin, header.nrow);
+  write(bin, header.bar);
+}
 
 
 
@@ -358,11 +396,33 @@ main(int argc, char *argv[])
   }
 
 
+  // Phase factors
+  SftMom phases(input.param.mom2_max, false, j_decay);
+
+
+  //
+  // Big nested structure that is image of entire file
+  //
+  WallFormFac_output_t  form;
+  form.bar.resize(input.param.formfac_type.size());
+
+  form.out_version = 3;  // bump this up everytime something changes
+  form.nrow = input.param.nrow;
+  form.mom2_max = input.param.mom2_max;
+
+  multi1d<string> wallformfac_names(7);
+  wallformfac_names[0] = "PION";
+  wallformfac_names[1] = "RHO";
+  wallformfac_names[2] = "RHO_PI";
+  wallformfac_names[3] = "NUCL";
+  wallformfac_names[4] = "NUCL_CT";
+  wallformfac_names[5] = "DELTA";
+  wallformfac_names[6] = "DELTA_P";
+
+
   //
   // Now the 3pt contractions
   //
-  SftMom phases(input.param.mom2_max, false, j_decay);
-
   XMLArrayWriter  xml_seq_src(xml_out, input.param.formfac_type.size());
   push(xml_seq_src, "Wilson_3Pt_fn_measurements");
 
@@ -377,14 +437,15 @@ main(int argc, char *argv[])
     write(xml_seq_src, "formfac_value", formfac_value);
     write(xml_seq_src, "formfac_type", formfac_type);
 
-    QDPIO::cout << "Measurements for formfac_value = " << formfac_value << endl;
+    form.bar[formfac_ctr].formfac_value = formfac_value;
+    form.bar[formfac_ctr].formfac_type = wallformfac_names[formfac_value];
 
-    WallFormFac_formfacs_t form;
+    QDPIO::cout << "Measurements for formfac_value = " << formfac_value << endl;
 
     switch (formfac_type)
     {
     case WALLFF_PION:
-      wallPionFormFac(form,
+      wallPionFormFac(form.bar[formfac_ctr].formfacs,
 		      u, 
 		      forward_quark_prop, backward_quark_prop, 
 		      forward_quark_prop, backward_quark_prop, 
@@ -393,7 +454,7 @@ main(int argc, char *argv[])
       break;
 
     case WALLFF_NUCL:
-      wallNuclFormFac(form,
+      wallNuclFormFac(form.bar[formfac_ctr].formfacs,
 		      u, 
 		      forward_quark_prop, backward_quark_prop, 
 		      forward_quark_prop, backward_quark_prop, 
@@ -408,7 +469,7 @@ main(int argc, char *argv[])
       LatticePropagator qf_tmp = - (Gamma(7) * forward_quark_prop * Gamma(7));
       LatticePropagator qb_tmp = - (Gamma(7) * backward_quark_prop * Gamma(7));
 
-      wallNuclFormFac(form,
+      wallNuclFormFac(form.bar[formfac_ctr].formfacs,
 		      u, 
 		      qf_tmp, qb_tmp,
 		      qf_tmp, qb_tmp,
@@ -418,7 +479,7 @@ main(int argc, char *argv[])
     break;
 
     case WALLFF_DELTA:
-      wallDeltaFormFac(form,
+      wallDeltaFormFac(form.bar[formfac_ctr].formfacs,
 	 	       u, 
 		       forward_quark_prop, backward_quark_prop, 
 		       forward_quark_prop, backward_quark_prop, 
@@ -427,7 +488,7 @@ main(int argc, char *argv[])
       break;
 
     case WALLFF_DELTA_P:
-      wallDeltaPFormFac(form,
+      wallDeltaPFormFac(form.bar[formfac_ctr].formfacs,
 			u, 
 			forward_quark_prop, backward_quark_prop, 
 			forward_quark_prop, backward_quark_prop, 
@@ -436,7 +497,7 @@ main(int argc, char *argv[])
       break;
 
     case WALLFF_RHO:
-      wallRhoFormFac(form,
+      wallRhoFormFac(form.bar[formfac_ctr].formfacs,
 		     u, 
 		     forward_quark_prop, backward_quark_prop, 
 		     forward_quark_prop, backward_quark_prop, 
@@ -445,7 +506,7 @@ main(int argc, char *argv[])
       break;
 
     case WALLFF_RHO_PI:
-      wallRhoPiFormFac(form,
+      wallRhoPiFormFac(form.bar[formfac_ctr].formfacs,
 		       u, 
 		       forward_quark_prop, backward_quark_prop, 
 		       forward_quark_prop, backward_quark_prop, 
@@ -458,8 +519,6 @@ main(int argc, char *argv[])
       QDP_abort(1);
     }
 
-    write(xml_seq_src, "WallFormFac", form);
-
     pop(xml_seq_src);   // elem
   } // end loop over formfac_ctr
 
@@ -467,6 +526,11 @@ main(int argc, char *argv[])
 
   // Close the output file XMLDAT
   pop(xml_out);     // wallFormFac
+
+  // Dump binary output
+  BinaryWriter  bin_out("wallformfac.dat");
+  write(bin_out, form);
+  bin_out.close();
 
   xml_in.close();
   xml_out.close();
