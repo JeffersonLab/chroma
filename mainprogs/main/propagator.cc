@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.87 2005-01-14 20:13:08 edwards Exp $
+// $Id: propagator.cc,v 1.88 2005-01-30 19:12:42 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -328,6 +328,8 @@ int main(int argc, char **argv)
       Handle<const ConnectState> state(S_f->createState(u,
 							state_info_xml,
 							state_info_path));  // uses phase-multiplied u-fields
+
+      QDPIO::cout << "Suitable factory found: compute the quark prop" << endl;
 
       S_f->quarkProp(quark_propagator, xml_out, quark_prop_source,
 		     t0, j_decay,
