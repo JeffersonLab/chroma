@@ -1,10 +1,13 @@
-// $Id: spectrum_w.cc,v 1.17 2003-12-17 17:34:36 edwards Exp $
+// $Id: spectrum_w.cc,v 1.18 2004-01-05 21:48:36 edwards Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.17  2003-12-17 17:34:36  edwards
+//  Revision 1.18  2004-01-05 21:48:36  edwards
+//  Changed WVF_KIND to WVF_TYPE.
+//
+//  Revision 1.17  2003/12/17 17:34:36  edwards
 //  Removed tests of boundary.
 //
 //  Revision 1.16  2003/10/30 02:32:16  edwards
@@ -116,7 +119,7 @@ struct Param_t
 
   int mom2_max;            // (mom)^2 <= mom2_max. mom2_max=7 in szin.
   bool avg_equiv_mom;      // average over equivalent momenta
-  WvfKind Wvf_kind;        // Wave function kind: gauge invariant
+  WvfType       Wvf_kind;        // Wave function kind: gauge invariant
   multi1d<Real> wvf_param; // Array of width's or other parameters
   //   for "shell" source/sink wave function
   multi1d<int> WvfIntPar;  // Array of iter numbers to approx. Gaussian or
@@ -296,7 +299,7 @@ void read(XMLReader& xml, const string& path, Spectrum_input_t& input)
       string wvf_kind_str;
       read(paramtop, "Wvf_kind", wvf_kind_str);
       if (wvf_kind_str == "GAUGE_INV_GAUSSIAN") {
-	input.param.Wvf_kind = WVF_KIND_GAUGE_INV_GAUSSIAN;
+	input.param.Wvf_kind = WVF_TYPE_GAUGE_INV_GAUSSIAN;
       } else {
 	QDPIO::cerr << "Unsupported gauge-invariant Wvf_kind." << endl;
 	QDPIO::cerr << "  Wvf_kind = " << wvf_kind_str << endl;

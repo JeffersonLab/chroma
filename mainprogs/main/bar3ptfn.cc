@@ -1,4 +1,4 @@
-// $Id: bar3ptfn.cc,v 1.22 2003-12-17 17:35:08 edwards Exp $
+// $Id: bar3ptfn.cc,v 1.23 2004-01-05 21:50:23 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions
  *
@@ -53,7 +53,7 @@ struct Param_t
 
   int mom2_max;            // (mom)^2 <= mom2_max. mom2_max=7 in szin.
 
-  WvfKind Wvf_kind;        // Wave function kind: gauge invariant
+  WvfType       wvf_type;        // Wave function kind: gauge invariant
   multi1d<Real> wvf_param; // Array of width's or other parameters
   //   for "shell" source/sink wave function
   multi1d<int> WvfIntPar;  // Array of iter numbers to approx. Gaussian or
@@ -217,13 +217,13 @@ void read(XMLReader& xml, const string& path, Bar3ptfn_input_t& input)
     read(paramtop, "mom2_max", input.param.mom2_max);
 
     {
-      string wvf_kind_str;
-      read(paramtop, "Wvf_kind", wvf_kind_str);
-      if (wvf_kind_str == "GAUGE_INV_GAUSSIAN") {
-	input.param.Wvf_kind = WVF_KIND_GAUGE_INV_GAUSSIAN;
+      string wvf_type_str;
+      read(paramtop, "wvf_type", wvf_type_str);
+      if (wvf_type_str == "GAUGE_INV_GAUSSIAN") {
+	input.param.wvf_type = WVF_TYPE_GAUGE_INV_GAUSSIAN;
       } else {
-	QDPIO::cerr << "Unsupported gauge-invariant Wvf_kind." << endl;
-	QDPIO::cerr << "  Wvf_kind = " << wvf_kind_str << endl;
+	QDPIO::cerr << "Unsupported gauge-invariant wvf_type." << endl;
+	QDPIO::cerr << "  wvf_type = " << wvf_type_str << endl;
 	QDP_abort(1);
       }
     }
@@ -313,7 +313,7 @@ void write(BinaryWriter& bin, const Param_t& param)
   write(bin, param.Sl_src);
   write(bin, param.Pt_snk);
   write(bin, param.Sl_snk);
-  write(bin, param.Wvf_kind);
+  write(bin, param.wvf_type);
   
   write(bin, param.t_sink);
   write(bin, param.sink_mom);
@@ -595,7 +595,7 @@ main(int argc, char *argv[])
       LatticePropagator seq_quark_prop_tmp = seq_quark_prop;
 
       if (input.param.Sl_src) {
-        sink_smear2(u, seq_quark_prop_tmp, input.param.Wvf_kind, input.param.wvf_param[loop],
+        sink_smear2(u, seq_quark_prop_tmp, input.param.wvf_type, input.param.wvf_param[loop],
                     input.param.WvfIntPar[loop], input.param.j_decay);
       }
 
