@@ -1,4 +1,4 @@
-//  $Id: proginfo.cc,v 1.6 2005-01-31 17:56:15 edwards Exp $
+//  $Id: proginfo.cc,v 1.7 2005-01-31 18:02:22 edwards Exp $
 /*! \file
  *  \brief Print out basic info about this program
  */
@@ -26,7 +26,7 @@ void proginfo(XMLWriter& xml)
     push(xml,"ProgramInfo");
 
     push(xml,"code_version");
-    write(xml, CHROMA_PACKAGE_NAME, CHROMA_PACKAGE_VERSION);
+    write(xml, "chroma", CHROMA_PACKAGE_VERSION);
     write(xml, "qdp", QDP_PACKAGE_VERSION);
     pop(xml);
 
