@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sink_smear2_w.h,v 1.9 2004-01-09 02:47:51 edwards Exp $
+// $Id: sink_smear2_w.h,v 1.10 2004-01-13 03:58:32 edwards Exp $
 /*! \file
  *  \brief Control routine for types of propagator smearing
  */
@@ -7,14 +7,7 @@
 #ifndef __sink_smear2_h__
 #define __sink_smear2_h__
 
-enum WvfKind {
-  WVF_KIND_GAUSSIAN,
-  WVF_KIND_EXPONENTIAL,
-  WVF_KIND_GAUGE_INV_GAUSSIAN,
-  WVF_KIND_WUPPERTAL,
-  WVF_KIND_JACOBI
-};
-
+#include "meas/smear/wvfkind.h"
 
 //! "Smear" the quark propagator at the sink by a covariant Gaussian
 /*!
