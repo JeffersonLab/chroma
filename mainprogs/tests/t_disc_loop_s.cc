@@ -360,10 +360,6 @@ int main(int argc, char **argv)
   //
   AsqtadFermAct S_f(fbc, input.param.Mass, input.param.u0);
 
-  // Set up a state for the current u,
-  // (compute fat & triple links)
-  // Use S_f.createState so that S_f can pass in u0
-
   Handle<const ConnectState > state(S_f.createState(u));
 //  Handle<const EvenOddLinearOperatorBase<LatticeStaggeredFermion> > D_asqtad(S_f.linOp(state));
 //  Handle<const LinearOperator<LatticeStaggeredFermion> > MdagM_asqtad(S_f.lMdagM(state));
@@ -376,8 +372,8 @@ int main(int argc, char **argv)
   // Loop over the source color, creating the source
   // and calling the relevant propagator routines. The QDP
   // terminology is that a staggered propagator is a matrix in color space
-  // 
   //
+
   LatticeStaggeredPropagator quark_propagator;
   XMLBufferWriter xml_buf;
   int ncg_had = 0;
@@ -404,13 +400,12 @@ int main(int argc, char **argv)
   using namespace StagPhases;
 
   // the wrapped disconnected loops
-  local_scalar_loop scalar_one_loop(t_length,Nsamp) ; 
-  non_local_scalar_loop scalar_two_loop(t_length,Nsamp) ; 
-  threelink_pseudoscalar_loop eta3_loop(t_length,Nsamp) ; 
-  fourlink_pseudoscalar_loop eta4_loop(t_length,Nsamp) ; 
+  local_scalar_loop scalar_one_loop(t_length,Nsamp,u) ; 
+  non_local_scalar_loop scalar_two_loop(t_length,Nsamp,u) ; 
+  threelink_pseudoscalar_loop eta3_loop(t_length,Nsamp,u) ; 
+  fourlink_pseudoscalar_loop eta4_loop(t_length,Nsamp,u) ; 
 
   // Connected Correlator, use a point source
-  // THIS IS ONLY FOR THE SCALAR AT THE MOMENT.
   Handle<const SystemSolver<LatticeStaggeredFermion> > qprop(S_f.qprop(state,input.param.invParam));
 
   psi = zero;
