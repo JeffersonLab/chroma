@@ -63,7 +63,7 @@ EXTRA_PROGRAMS  = t_dslashm t_lwldslash t_spprod \
     t_fuzwilp t_ovlap_double_pass t_g5eps_bj t_sumr t_msumr t_invrelcg t_bicgstab \
     t_wilslp t_rel_gmresr t_invborici t_hamsys t_hamsys_ferm t_precact_sse \
     t_hmc_pg t_neflinop t_prec_contfrac t_mres_4d t_prec_nef t_su3 \
-    t_overbu t_lower_tests \
+    t_overbu t_lower_tests t_seqsource \
     t_unprec_wilson_force t_prec_wilson_force t_unprec_twoflav_wilson_monomial \
     t_prec_twoflav_wilson_monomial t_hamiltonian t_leapfrog t_hmc \
     t_propagator_twisted \
@@ -89,6 +89,9 @@ t_su3_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_mesplq_SOURCES = t_mesplq.cc
 t_mesplq_DEPENDENCIES = build_chroma_libs rebuild_other_libs
+
+t_seqsource_SOURCES = t_seqsource.cc
+t_seqsource_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_remez_SOURCES = t_remez.cc
 t_remez_DEPENDENCIES = build_chroma_libs rebuild_other_libs
