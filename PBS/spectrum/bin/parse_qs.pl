@@ -11,8 +11,8 @@ use Parse_groups;
 
 
 
-die "Usage parse_qqq.pl <qqq prop file> <displacement table> <src_template> <prop_template 1-3> 
-<sink_template> <prop_root 1-3> <config_number>" unless $#ARGV eq 10;
+die "Usage parse_qs.pl <qqq prop file> <displacement table> <src_template> <ud_template> <s_template> 
+<sink_template> <prop_root> <config_number>" unless $#ARGV eq 7;
 
 #
 #  Now check the file exists
@@ -22,14 +22,11 @@ die "File $ARGV[0] does not exist\n" unless -f $ARGV[0];
 $qqq_prop = $ARGV[0];
 $disp_file = $ARGV[1];
 $src_template = $ARGV[2];
-$p_template[0] = $ARGV[3];
-$p_template[1] = $ARGV[4];
-$p_template[2] = $ARGV[5];
-$snk_template = $ARGV[6];
-$p_root[0] = $ARGV[7];
-$p_root[1] = $ARGV[8];
-$p_root[2] = $ARGV[9];
-$cfg = $ARGV[10];
+$ud_template = $ARGV[3];
+$s_template = $ARGV[4];
+$snk_template = $ARGV[5];
+$prop_root = $ARGV[6];
+$cfg = $ARGV[7];
 
 #
 #  The first step is to open the smearing length file, and
@@ -65,7 +62,6 @@ $_ = <QQQPROP>; chomp;
 ($number_qqq, $flav[0], $flav[1], $flav[2]) = split;
 
 print "number_qqq is $number_qqq";
-print "Labels are $flav[0], $flav[1], $flav[2]";
 
 #
 #  We now have to parse the lines of the file, and convert the various
@@ -100,7 +96,7 @@ open(PROP_LIST, "> prop_tmp");	# List of propagators
 for($ctr = 0; $ctr < $number_qqq; $ctr++){
 
     ($prop[0], $prop[1], $prop[2]) = 
-	Parse_groups::extract_q($qqq_info[$ctr], @disp_len);
+	Parse_groups::extract_q($qqq_info[$ctr], @flav, @disp_len);
 
 #
 #  We now write out the various propagator specs, and find the unique
@@ -109,7 +105,7 @@ for($ctr = 0; $ctr < $number_qqq; $ctr++){
 
     for($prop_ctr = 0; $prop_ctr < 3; $prop_ctr++){
 	print PROP_LIST 
-	    "$prop[$prop_ctr] $p_root[$prop_ctr] $p_template[$prop_ctr]\n";
+	    "$prop[$prop_ctr]\n";
     }
 
 #
@@ -128,7 +124,7 @@ close(PROP_LIST);
 #
 
 system("sort prop_tmp | uniq > prop_list");
-system("rm prop_tmp");
+#system("rm prop_tmp");
 
 #
 #  We now have a unique list of propagators that we need to generate.
@@ -152,7 +148,7 @@ while(<PROP_LIST>){
     
     chomp;			# truncate the line
     $_ =~ s/^\s+//;		# remove leading spaces
-    ($snk, $src, $snk_len, $src_len, $prop_root, $prop_template) 
+    ($flav, $snk, $src, $snk_len, $src_len) 
 	= split(/\s+/,$_);	# Split the line
 
     ($snk_out, $snk_len_out) = Parse_groups::cmu_to_chroma($snk, $snk_len);
@@ -161,14 +157,18 @@ while(<PROP_LIST>){
     # Note here that setting the sink length to zero is equivalent to 
     # not smearing
 
-    $propname_in = Parse_groups::make_prop_name($prop_root."_PS", 
+    $propname_in = Parse_groups::make_prop_name($prop_root."_PS", $flav,
 				  $snk_out, 0, $src_out, $src_len_out);
     $propname_in = $propname_in . ".cfg$cfg";
 
-    $propname_out = Parse_groups::make_prop_name($prop_root."_SS", $snk_out, 
-						 $snk_len_out, 
-						 $src_out, $src_len_out);
-    $propname_out = $propname_out . ".cfg$cfg";
+    $propname_out = Parse_groups::make_prop_name($prop_root."_SS",
+						 $flav, $snk_out,
+						 $snk_len_out,
+						 $src_out,
+						 $src_len_out);
+						 $propname_out =
+						 $propname_out
+						 . ".cfg$cfg";
 
     # We now see if the sink-smeared propagator exists, and if so
     # we generate a sink-smearing data file for it
@@ -194,7 +194,7 @@ while(<PROP_LIST>){
 #
 #  Now write out the sources
 
-    print SRC_LIST "$src $src_len $prop_root $prop_template\n";
+    print SRC_LIST "$flav $src $src_len\n";
     $ctr++;
 }
 
@@ -219,11 +219,21 @@ while(<SRC_LIST>){
     chomp;			# Truncate the line
     $_ =~ s/^\s+//;		# remove leading spaces
 
-    ($src, $src_len, $prop_root, $prop_template) = split(/\s+/,$_);
+    ($flav, $src, $src_len) = split(/\s+/,$_);
+
+#  There are different templates for ud and for s quarks, since the
+#  masses are different
+
+    if($flav == "ud"){
+	$prop_template = $ud_template;
+    }
+    else{
+	$prop_template = $s_template;
+    }
 
     ($src_out, $src_len_out) = Parse_groups::cmu_to_chroma($src, $src_len);
 
-    $propname = Parse_groups::make_prop_name($prop_root."_PS", 0, 0, $src_out, $src_len_out);
+    $propname = Parse_groups::make_prop_name($prop_root."_PS", $flav, 0, 0, $src_out, $src_len_out);
     $propname = $propname . ".cfg$cfg";
 
     print "DEBUG propname is $propname\n";

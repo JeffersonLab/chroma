@@ -9,7 +9,7 @@ use Parse_groups;
 #
 #  First check the command line arguments are correct
 
-die "Usage parse_qqq.pl <qqq prop file> <displacement table> <qqq_template> <prop_root_1> <prop_root_2> <prop_root_3> <config_number>" unless $#ARGV eq 6;
+die "Usage parse_qqq.pl <qqq prop file> <displacement table> <qqq_template> <prop_root> <config_number>" unless $#ARGV eq 4;
 
 #
 #  Now check the file exists
@@ -19,10 +19,8 @@ die "File $ARGV[0] does not exist\n" unless -f $ARGV[0];
 $qqq_prop = $ARGV[0];
 $disp_file = $ARGV[1];
 $qqq_template = $ARGV[2];
-$prop_root[0] = $ARGV[3];
-$prop_root[1] = $ARGV[4];
-$prop_root[2] = $ARGV[5];
-$cfg = $ARGV[6];
+$prop_root = $ARGV[3];
+$cfg = $ARGV[4];
 
 #
 #  The first step is to open the smearing length file, and
@@ -55,7 +53,8 @@ open(QQQPROP, "< $qqq_prop");
 # Read the first line to give the number of qqq propagators
 
 $_ = <QQQPROP>; chomp;
-($number_qqq) = split;
+($number_qqq, $flav[0], $flav[1], $flav[2]) = split;
+
 
 #print "number_qqq is $number_qqq";
 
@@ -90,18 +89,19 @@ die "$qqq_prop has wrong number of lines" unless $ctr eq $number_qqq;
 for($ctr = 0; $ctr < $number_qqq; $ctr++){
 #    printf("ctr is $ctr\n");
     ($prop[0], $prop[1], $prop[2]) = 
-	Parse_groups::extract_q($qqq_info[$ctr], @disp_len);
+	Parse_groups::extract_q($qqq_info[$ctr], @flav, @disp_len);
 
 #
 #  We now form the propagator from the various information above
 #
 
-    $qqq_name = "qqq_".$prop_root[0]."_".$prop_root[1]."_".$prop_root[2]."_SS";
+    $qqq_name = "qqq_".$prop_root."_SS";
 
     for($prop_ctr = 0; $prop_ctr < 3; $prop_ctr++){
 #
 #  Get the source and sink information
-	($snk, $src, $snk_len, $src_len) = split(/\s+/,$prop[$prop_ctr]);
+	($flavour,$snk, $src, $snk_len, $src_len) = 
+	    split(/\s+/,$prop[$prop_ctr]);
 #
 #  Convert to Chroma format
 	($snk_out, $snk_len_out) = Parse_groups::cmu_to_chroma($snk, $snk_len);
@@ -110,13 +110,13 @@ for($ctr = 0; $ctr < $number_qqq; $ctr++){
 #
 #  Form the propagator names, with the configuration extension
 	$propname[$prop_ctr] =
-	    Parse_groups::make_prop_name($prop_root[$prop_ctr] ."_SS",
+	    Parse_groups::make_prop_name($prop_root ."_SS", $flavour,
 					 $snk_out, $snk_len_out,
 					 $src_out, $src_len_out);
 	$propname[$prop_ctr] = $propname[$prop_ctr] . ".cfg$cfg";
 #
 #  Append the source and sink information to the qqq name
-	$qqq_name = Parse_groups::make_prop_name($qqq_name, 
+	$qqq_name = Parse_groups::make_prop_name($qqq_name, $flavour,
 						 $snk_out, $snk_len_out,
 						 $src_out, $src_len_out);
 

@@ -372,7 +372,7 @@ cat > src_template <<EOF
 
 <make_source>
 <annotation>
-; $Id: run_complete_job.sh,v 1.1 2005-02-15 18:31:52 dgr Exp $
+; $Id: run_complete_job.sh,v 1.2 2005-02-18 05:17:14 dgr Exp $
 ;
 ; MAKE_SOURCE input file.
 ;
@@ -428,7 +428,7 @@ cat > prop_template <<EOF
 
 <propagator>
 <annotation>
-; $Id: run_complete_job.sh,v 1.1 2005-02-15 18:31:52 dgr Exp $
+; $Id: run_complete_job.sh,v 1.2 2005-02-18 05:17:14 dgr Exp $
 ;
 ; PROPAGATOR input file.
 ;
@@ -594,12 +594,12 @@ echo "***************************************************"
 #
 #  We now create all the DATA files we need for the propagators
 
-$HOME/bin/parse_qs.pl uud_props disp_table src_template prop_template prop_template prop_template snk_template ${_UD_PROP_ROOT} ${_UD_PROP_ROOT} ${_UD_PROP_ROOT} $cfg
+$HOME/bin/parse_qs.pl qqq_props disp_table src_template prop_template prop_template snk_template ${_UD_PROP_ROOT} $cfg
 
 #
 #  We now create all the DATA files we need for the qqq files
 
-$HOME/bin/parse_qqq.pl uud_props disp_table qqq_template ${_UD_PROP_ROOT} ${_UD_PROP_ROOT} ${_UD_PROP_ROOT} $cfg
+$HOME/bin/parse_qqq.pl qqq_props disp_table qqq_template ${_UD_PROP_ROOT} $cfg
 
 #
 #  We now generate the sources and run the propagators

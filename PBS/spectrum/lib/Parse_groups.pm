@@ -18,8 +18,24 @@ sub extract_q{
 # We must turn them into "real" lengths
 # Note that the one here comes from offset past the first argument.
 #
-    $src_len = $_[$src_len_offset+1];
-    $snk_len = $_[$snk_len_offset+1];
+
+#
+#  Loop over the flavours of the quarks, recognising that isospin
+
+    for($ctr = 0; $ctr < 3; $ctr++){
+
+	$flav_in = $_[$ctr+1];
+
+	if( $flav_in == "u" || $flav_in == "d"){
+	    $flav[$ctr] = "ud";}
+	else{
+	    $flav[$ctr] = $flav_in;
+	}
+    }
+
+
+    $src_len = $_[$src_len_offset+4];
+    $snk_len = $_[$snk_len_offset+4];
 
 #
 #  Here we assume that the first two propagators are isospin invariant
@@ -47,7 +63,7 @@ sub extract_q{
 	    $src_out = 0;
 	}
 
-	$prop[$ctr] = "$snk[$ctr] $src[$ctr] $snk_out  $src_out";
+	$prop[$ctr] = "$flav[$ctr] $snk[$ctr] $src[$ctr] $snk_out $src_out";
 	$ctr = $ctr + 1;
     }
 
@@ -87,10 +103,11 @@ sub make_prop_name{
 #  the propagator name
 #  Note that the information is in CHROMA FORMAT
     my $prop_root = $_[0];
-    my $snk_dir = $_[1];
-    my $snk_len = $_[2];
-    my $src_dir = $_[3];
-    my $src_len = $_[4];
+    my $flav = $_[1];
+    my $snk_dir = $_[2];
+    my $snk_len = $_[3];
+    my $src_dir = $_[4];
+    my $src_len = $_[5];
 
 #
 #  We encode the name in the form root_snk_src
@@ -98,7 +115,7 @@ sub make_prop_name{
 #  plus and minus, or now derivative term
     
     if($snk_len == 0){
-	$snk_label="N";
+	$snk_label="nnn";
     }
     else{
 	if($snk_dir == 0){
@@ -126,7 +143,7 @@ sub make_prop_name{
     }
 
     if($src_len == 0){
-	$src_label="N";
+	$src_label="nnn";
     }
     else{
 	if($src_dir == 0){
@@ -155,7 +172,7 @@ sub make_prop_name{
 
 
 
-    return $prop_root."_".$snk_label.$src_label;
+    return $prop_root."__".$flav."_".$snk_label."_".$src_label;
 }
 	    
 
