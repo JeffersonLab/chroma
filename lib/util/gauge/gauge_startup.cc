@@ -1,4 +1,4 @@
-// $Id: gauge_startup.cc,v 1.7 2004-11-13 17:32:11 bjoo Exp $
+// $Id: gauge_startup.cc,v 1.8 2004-12-08 21:43:33 edwards Exp $
 /*! \file
  *  \brief Initialize the gauge fields
  */
@@ -62,8 +62,8 @@ void gaugeStartup(XMLReader& gauge_file_xml,
 
   case CFG_TYPE_UNIT:
     QDPIO::cout << "Starting up unit gauge (free) config" << endl;
-    for(int dim=0; dim < u.size(); dim++) 
-      u[dim] = Real(1);
+    u.resize(Nd);
+    u = 1;
     break; 
 
   default:
