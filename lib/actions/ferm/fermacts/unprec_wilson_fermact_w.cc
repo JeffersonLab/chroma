@@ -1,4 +1,4 @@
-// $Id: unprec_wilson_fermact_w.cc,v 1.21 2004-09-08 02:48:26 edwards Exp $
+// $Id: unprec_wilson_fermact_w.cc,v 1.22 2004-12-07 17:11:50 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -170,12 +170,70 @@ namespace Chroma
       u_tmp -= traceSpin(outerProduct(foo,Y));
     
       // accumulate with prefactor
-      ds_u[mu] += prefactor*( u[mu]*u_tmp );
+      ds_u[mu] = prefactor*( u[mu]*u_tmp );
     }
 
      
     
     END_CODE();
   }
+
+  void
+  UnprecWilsonFermAct::dsdu2(multi1d<LatticeColorMatrix>& ds_u,
+			    Handle<const ConnectState> state,
+			    const LatticeFermion& psi) const
+  {
+    START_CODE();
+
+    // The phi <=> X so I define the Y field as MX 
+  
+    // Get at the U matrices
+    const multi1d<LatticeColorMatrix>& u = state->getLinks();
+  
+    // Get a linear operator
+    Handle<const LinearOperator<LatticeFermion> > M(linOp(state));
+
+    // Compute MY
+    LatticeFermion Y;
+    (*M)(Y, psi, PLUS);
+
+    Real prefactor=-Real(0.5);
+
+    // Derivative Matrix
+    for(int mu=0; mu < Nd; mu++) { 
+
+      // Create a linop for dM/dU_mu
+      Handle<const LinearOperator<LatticeFermion> > dMdU(ldMdU(state,mu));
+
+      LatticeColorMatrix u_tmp;
+      LatticeFermion tmp;
+
+      // tmp = (dM^{dagger}/dU_mu) Y
+      (*dMdU)(tmp, Y, MINUS);
+
+      // u_tmp += Tr_spin (dM^{dagger}/dU_mu) Y X^{dagger} 
+      //        = traceSpin(outerProduct(tmp, X))
+      u_tmp = traceSpin(outerProduct(tmp, psi));
+
+    
+      // tmp = (dM/dU_mu) X = (dM/dU_w) phi 
+      (*dMdU)(tmp, psi, PLUS);
+
+      // u_tmp = Tr_spin (dM/dU_mu) X Y^{dagger} = traceSpin(outerProduct(tmp, Y))
+      u_tmp += traceSpin(outerProduct(tmp, Y));
+
+    
+      // Multiply in u_[mu]
+      ds_u[mu] = u[mu]*u_tmp;
+
+      
+      
+
+    }
+    
+    END_CODE();
+  }
+
+
 
 }

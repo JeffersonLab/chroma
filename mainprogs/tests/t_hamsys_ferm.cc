@@ -1,5 +1,6 @@
 #include "chroma.h"
 
+#include "actions/ferm/linop/unprec_wilson_dmdu_w.h"
 
 #include <iostream>
 
@@ -18,16 +19,20 @@ int main(int argc, char *argv[])
   nrow=nrow_arr;
   Layout::setLattSize(nrow);
   Layout::create();
-  
+
+
   multi1d<LatticeColorMatrix> u(Nd);
   {
     XMLReader file_xml;
     XMLReader config_xml;
-    Cfg_t foo; foo.cfg_type=CFG_TYPE_UNIT;
+    Cfg_t foo; foo.cfg_type=CFG_TYPE_DISORDERED;
     // Cfg_t foo; foo.cfg_type=CFG_TYPE_SZIN; foo.cfg_file="./CFGIN";
     gaugeStartup(file_xml, config_xml, u, foo);
   }
-    
+
+  XMLFileWriter xml_out("./XMLDAT");
+  push(xml_out, "t_hamsys_ferm");
+
   multi1d<LatticeColorMatrix> p(Nd);
   multi1d<LatticeFermion> phi(1);
 
@@ -49,7 +54,47 @@ int main(int argc, char *argv[])
   // Now make up an array of handles
   Real m = Real(0.1);
   UnprecWilsonFermAct S_f_MC(fbc, m);
+
+  Handle<const ConnectState> state(S_f_MC.createState(u));
+
+  multi1d<LatticeColorMatrix> dsdu_1(Nd);
+  multi1d<LatticeColorMatrix> dsdu_2(Nd);
+
+  LatticeFermion psi;
+  gaussian(psi);
+  //  for(int mu=0; mu < Nd; mu++) { 
+  //  dsdu_1[mu] = zero;
+  //  dsdu_2[mu] = zero;
+  // }
+
+  S_f_MC.dsdu(dsdu_1, state, psi);
+  S_f_MC.dsdu2(dsdu_2, state, psi);
+
+  for(int mu=0; mu < Nd; mu++) { 
+    taproj(dsdu_1[mu]);
+    taproj(dsdu_2[mu]);
+
+    push(xml_out, "dsdu");
+    write(xml_out, "dsdu_1", dsdu_1[mu]);
+    write(xml_out, "dsdu_2", dsdu_2[mu]);
+    pop(xml_out);
   
+    LatticeColorMatrix dsdu_diff=dsdu_1[mu] - dsdu_2[mu];
+
+    Double sum_diff=norm2(dsdu_diff);
+    QDPIO::cout << "Mu = " << mu << " Sum Diff=" << sum_diff << endl;
+
+    push(xml_out, "ForceDiff");
+    write(xml_out, "mu", mu);
+    write(xml_out, "dsdu_diff", dsdu_diff);
+    pop(xml_out);
+  }
+
+  pop(xml_out);
+  xml_out.close();
+
+
+  /*
   Real Nd_pm = Real(Nd) + m;
 
   // Now the inverter params -- this will need cleaning up
@@ -149,7 +194,7 @@ int main(int argc, char *argv[])
   pop(lf_xml);
   lf_xml.close();
 
-  /* HMC Starts here */
+
   Real tau = Real(1);
   Real dt = Real(0.1);
   GaugeFermPQPLeapFrog leapfrog(leaps, dt, tau);
@@ -182,6 +227,7 @@ int main(int argc, char *argv[])
   pop(monitorHMC);
   monitorHMC.close();
   // Finish.
+  */
 
     // Finish
   QDP_finalize();

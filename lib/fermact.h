@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 1.12 2004-11-08 16:25:01 mcneile Exp $
+// $Id: fermact.h,v 1.13 2004-12-07 17:11:50 bjoo Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -77,6 +77,16 @@ namespace Chroma
 
     //! Produce a linear operator M^dag.M for this action
     virtual const LinearOperator<T>* lMdagM(Handle<const ConnectState> state) const = 0;
+
+
+    //! Produce the derivative of the Fermion Matrix with respect to 
+    //! The Gauge field
+    virtual const LinearOperator<T>* ldMdU(Handle<const ConnectState> state, const int mu) {
+      QDPIO::cerr << "This is not yet implemented" << endl;
+      QDP_abort(1);
+
+      return 0x0;
+    }
 
     //! Compute quark propagator over base type
     /*! 
@@ -171,6 +181,13 @@ namespace Chroma
 
     //! Produce a linear operator M^dag.M for this action
     virtual const LinearOperator< multi1d<T> >* lMdagM(Handle<const ConnectState> state) const = 0;
+
+    virtual const LinearOperator< multi1d<T> >* ldMdU(Handle<const ConnectState> state, const int mu) {
+      QDPIO::cerr << "This is not yet implemented" << endl;
+      QDP_abort(1);
+
+      return 0x0;
+    }
 
     //! Compute quark propagator over base type
     /*! 

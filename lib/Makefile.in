@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.269 2004-11-25 05:25:58 kostas Exp $
+# $Id: Makefile.in,v 1.270 2004-12-07 17:11:49 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -328,6 +328,7 @@ nobase_include_HEADERS = \
 	actions/ferm/linop/unprec_nef_linop_array_w.h \
 	actions/ferm/linop/unprec_ovext_linop_array_w.h \
 	actions/ferm/linop/unprec_wilson_linop_w.h \
+	actions/ferm/linop/unprec_wilson_dmdu_w.h \
 	actions/ferm/linop/unprec_parwilson_linop_w.h \
 	actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_w.h \
 	actions/ferm/linop/unprec_dwftransf_linop_w.h \
@@ -376,6 +377,7 @@ nobase_include_HEADERS = \
 	meas/hadron/pions_s.h  meas/hadron/walfil_s.h \
 	meas/hadron/loops_s.h \
 	meas/hadron/scalar_loops_s.h \
+	meas/hadron/pseudoscalar_loops_s.h \
 	meas/hadron/stag_scalars_s.h meas/sources/sources_s.h \
 	meas/hadron/stag_propShift_s.h \
 	meas/hadron/vector_meson_s.h \
@@ -536,6 +538,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/linop/unprec_parwilson_linop_w.cc \
 	actions/ferm/linop/unprec_pdwf4d_linop_w.cc \
 	actions/ferm/linop/unprec_wilson_linop_w.cc \
+	actions/ferm/linop/unprec_wilson_dmdu_w.cc \
 	actions/ferm/qprop/dwf_fermact_qprop_array_w.cc \
 	actions/ferm/qprop/dwf_quarkprop4_w.cc \
 	actions/ferm/qprop/nef_quarkprop4_w.cc \
@@ -570,7 +573,9 @@ $(am__append_4) $(am__append_6) $(am__append_8) \
 	meas/hadron/srcfil_s.cc \
 	meas/hadron/stag_propShift_s.cc meas/hadron/stag_scalars_s.cc \
 	meas/hadron/vector_meson_s.cc meas/hadron/walfil_s.cc \
-	util/gauge/stag_phases_s.cc
+	util/gauge/stag_phases_s.cc\
+        meas/hadron/scalar_loops_s.cc\
+        meas/hadron/pseudoscalar_loops_s.cc 
 
 subdir = lib
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
@@ -697,6 +702,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/linop/unprec_parwilson_linop_w.cc \
 	actions/ferm/linop/unprec_pdwf4d_linop_w.cc \
 	actions/ferm/linop/unprec_wilson_linop_w.cc \
+	actions/ferm/linop/unprec_wilson_dmdu_w.cc \
 	actions/ferm/qprop/dwf_fermact_qprop_array_w.cc \
 	actions/ferm/qprop/dwf_quarkprop4_w.cc \
 	actions/ferm/qprop/nef_quarkprop4_w.cc \
@@ -729,7 +735,9 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/hadron/mesphas_s.cc meas/hadron/pions_s.cc \
 	meas/hadron/srcfil_s.cc meas/hadron/stag_propShift_s.cc \
 	meas/hadron/stag_scalars_s.cc meas/hadron/vector_meson_s.cc \
-	meas/hadron/walfil_s.cc util/gauge/stag_phases_s.cc
+	meas/hadron/walfil_s.cc util/gauge/stag_phases_s.cc \
+	meas/hadron/scalar_loops_s.cc \
+	meas/hadron/pseudoscalar_loops_s.cc
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__objects_1 = lwldslash_w_sse.$(OBJEXT)
 @BUILD_SSE_DWF_CG_TRUE@am__objects_2 = \
 @BUILD_SSE_DWF_CG_TRUE@	prec_dwf_fermact_array_sse_w.$(OBJEXT)
@@ -821,6 +829,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	unprec_ovlap_contfrac5d_nonhermop_array_w.$(OBJEXT) \
 	unprec_parwilson_linop_w.$(OBJEXT) \
 	unprec_pdwf4d_linop_w.$(OBJEXT) unprec_wilson_linop_w.$(OBJEXT) \
+	unprec_wilson_dmdu_w.$(OBJEXT) \
 	dwf_fermact_qprop_array_w.$(OBJEXT) dwf_quarkprop4_w.$(OBJEXT) \
 	nef_quarkprop4_w.$(OBJEXT) quarkprop4_multi_w.$(OBJEXT) \
 	quarkprop4_w.$(OBJEXT) readszinferm_w.$(OBJEXT) \
@@ -844,7 +853,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	mesphas_follana_s.$(OBJEXT) mesphas_s.$(OBJEXT) \
 	pions_s.$(OBJEXT) srcfil_s.$(OBJEXT) stag_propShift_s.$(OBJEXT) \
 	stag_scalars_s.$(OBJEXT) vector_meson_s.$(OBJEXT) \
-	walfil_s.$(OBJEXT) stag_phases_s.$(OBJEXT)
+	walfil_s.$(OBJEXT) stag_phases_s.$(OBJEXT) \
+	scalar_loops_s.$(OBJEXT) pseudoscalar_loops_s.$(OBJEXT)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I.
@@ -966,6 +976,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/prec_wilson_linop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/prec_zolo_nef_fermact_array_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/printgeom.Po ./$(DEPDIR)/proginfo.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/pseudoscalar_loops_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/qprop_io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/quarkprop4_multi_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/quarkprop4_w.Po ./$(DEPDIR)/readmilc.Po \
@@ -975,6 +986,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/reunit.Po ./$(DEPDIR)/rgauge.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ritz.Po ./$(DEPDIR)/ritz_array.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/rot_colvec.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/scalar_loops_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/seqpiontest_w.Po ./$(DEPDIR)/sftmom.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/sink_smear2.Po ./$(DEPDIR)/sn_jacob.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/sn_jacob_array.Po ./$(DEPDIR)/srcfil.Po \
@@ -1006,6 +1018,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_parwilson_fermact_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_parwilson_linop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_pdwf4d_linop_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/unprec_wilson_dmdu_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_wilson_fermact_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_wilson_linop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_zolo_nef_fermact_array_w.Po \
@@ -1253,6 +1266,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_zolo_nef_fermact_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/printgeom.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/proginfo.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pseudoscalar_loops_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qprop_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quarkprop4_multi_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quarkprop4_w.Po@am__quote@
@@ -1265,6 +1279,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ritz.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ritz_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rot_colvec.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scalar_loops_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seqpiontest_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sftmom.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sink_smear2.Po@am__quote@
@@ -1304,6 +1319,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_parwilson_fermact_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_parwilson_linop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_pdwf4d_linop_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_wilson_dmdu_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_wilson_fermact_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_wilson_linop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_zolo_nef_fermact_array_w.Po@am__quote@
@@ -4982,6 +4998,28 @@ unprec_wilson_linop_w.obj: actions/ferm/linop/unprec_wilson_linop_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_wilson_linop_w.obj `if test -f 'actions/ferm/linop/unprec_wilson_linop_w.cc'; then $(CYGPATH_W) 'actions/ferm/linop/unprec_wilson_linop_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/unprec_wilson_linop_w.cc'; fi`
 
+unprec_wilson_dmdu_w.o: actions/ferm/linop/unprec_wilson_dmdu_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_wilson_dmdu_w.o -MD -MP -MF "$(DEPDIR)/unprec_wilson_dmdu_w.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o unprec_wilson_dmdu_w.o `test -f 'actions/ferm/linop/unprec_wilson_dmdu_w.cc' || echo '$(srcdir)/'`actions/ferm/linop/unprec_wilson_dmdu_w.cc; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/unprec_wilson_dmdu_w.Tpo" "$(DEPDIR)/unprec_wilson_dmdu_w.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/unprec_wilson_dmdu_w.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/unprec_wilson_dmdu_w.cc' object='unprec_wilson_dmdu_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/unprec_wilson_dmdu_w.Po' tmpdepfile='$(DEPDIR)/unprec_wilson_dmdu_w.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_wilson_dmdu_w.o `test -f 'actions/ferm/linop/unprec_wilson_dmdu_w.cc' || echo '$(srcdir)/'`actions/ferm/linop/unprec_wilson_dmdu_w.cc
+
+unprec_wilson_dmdu_w.obj: actions/ferm/linop/unprec_wilson_dmdu_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_wilson_dmdu_w.obj -MD -MP -MF "$(DEPDIR)/unprec_wilson_dmdu_w.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o unprec_wilson_dmdu_w.obj `if test -f 'actions/ferm/linop/unprec_wilson_dmdu_w.cc'; then $(CYGPATH_W) 'actions/ferm/linop/unprec_wilson_dmdu_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/unprec_wilson_dmdu_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/unprec_wilson_dmdu_w.Tpo" "$(DEPDIR)/unprec_wilson_dmdu_w.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/unprec_wilson_dmdu_w.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/unprec_wilson_dmdu_w.cc' object='unprec_wilson_dmdu_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/unprec_wilson_dmdu_w.Po' tmpdepfile='$(DEPDIR)/unprec_wilson_dmdu_w.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_wilson_dmdu_w.obj `if test -f 'actions/ferm/linop/unprec_wilson_dmdu_w.cc'; then $(CYGPATH_W) 'actions/ferm/linop/unprec_wilson_dmdu_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/unprec_wilson_dmdu_w.cc'; fi`
+
 dwf_fermact_qprop_array_w.o: actions/ferm/qprop/dwf_fermact_qprop_array_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT dwf_fermact_qprop_array_w.o -MD -MP -MF "$(DEPDIR)/dwf_fermact_qprop_array_w.Tpo" \
 @am__fastdepCXX_TRUE@	  -c -o dwf_fermact_qprop_array_w.o `test -f 'actions/ferm/qprop/dwf_fermact_qprop_array_w.cc' || echo '$(srcdir)/'`actions/ferm/qprop/dwf_fermact_qprop_array_w.cc; \
@@ -6191,6 +6229,50 @@ stag_phases_s.obj: util/gauge/stag_phases_s.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/stag_phases_s.Po' tmpdepfile='$(DEPDIR)/stag_phases_s.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o stag_phases_s.obj `if test -f 'util/gauge/stag_phases_s.cc'; then $(CYGPATH_W) 'util/gauge/stag_phases_s.cc'; else $(CYGPATH_W) '$(srcdir)/util/gauge/stag_phases_s.cc'; fi`
+
+scalar_loops_s.o: meas/hadron/scalar_loops_s.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT scalar_loops_s.o -MD -MP -MF "$(DEPDIR)/scalar_loops_s.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o scalar_loops_s.o `test -f 'meas/hadron/scalar_loops_s.cc' || echo '$(srcdir)/'`meas/hadron/scalar_loops_s.cc; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/scalar_loops_s.Tpo" "$(DEPDIR)/scalar_loops_s.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/scalar_loops_s.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/scalar_loops_s.cc' object='scalar_loops_s.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/scalar_loops_s.Po' tmpdepfile='$(DEPDIR)/scalar_loops_s.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o scalar_loops_s.o `test -f 'meas/hadron/scalar_loops_s.cc' || echo '$(srcdir)/'`meas/hadron/scalar_loops_s.cc
+
+scalar_loops_s.obj: meas/hadron/scalar_loops_s.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT scalar_loops_s.obj -MD -MP -MF "$(DEPDIR)/scalar_loops_s.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o scalar_loops_s.obj `if test -f 'meas/hadron/scalar_loops_s.cc'; then $(CYGPATH_W) 'meas/hadron/scalar_loops_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/scalar_loops_s.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/scalar_loops_s.Tpo" "$(DEPDIR)/scalar_loops_s.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/scalar_loops_s.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/scalar_loops_s.cc' object='scalar_loops_s.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/scalar_loops_s.Po' tmpdepfile='$(DEPDIR)/scalar_loops_s.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o scalar_loops_s.obj `if test -f 'meas/hadron/scalar_loops_s.cc'; then $(CYGPATH_W) 'meas/hadron/scalar_loops_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/scalar_loops_s.cc'; fi`
+
+pseudoscalar_loops_s.o: meas/hadron/pseudoscalar_loops_s.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT pseudoscalar_loops_s.o -MD -MP -MF "$(DEPDIR)/pseudoscalar_loops_s.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o pseudoscalar_loops_s.o `test -f 'meas/hadron/pseudoscalar_loops_s.cc' || echo '$(srcdir)/'`meas/hadron/pseudoscalar_loops_s.cc; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/pseudoscalar_loops_s.Tpo" "$(DEPDIR)/pseudoscalar_loops_s.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/pseudoscalar_loops_s.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/pseudoscalar_loops_s.cc' object='pseudoscalar_loops_s.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/pseudoscalar_loops_s.Po' tmpdepfile='$(DEPDIR)/pseudoscalar_loops_s.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o pseudoscalar_loops_s.o `test -f 'meas/hadron/pseudoscalar_loops_s.cc' || echo '$(srcdir)/'`meas/hadron/pseudoscalar_loops_s.cc
+
+pseudoscalar_loops_s.obj: meas/hadron/pseudoscalar_loops_s.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT pseudoscalar_loops_s.obj -MD -MP -MF "$(DEPDIR)/pseudoscalar_loops_s.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o pseudoscalar_loops_s.obj `if test -f 'meas/hadron/pseudoscalar_loops_s.cc'; then $(CYGPATH_W) 'meas/hadron/pseudoscalar_loops_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/pseudoscalar_loops_s.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/pseudoscalar_loops_s.Tpo" "$(DEPDIR)/pseudoscalar_loops_s.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/pseudoscalar_loops_s.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/pseudoscalar_loops_s.cc' object='pseudoscalar_loops_s.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/pseudoscalar_loops_s.Po' tmpdepfile='$(DEPDIR)/pseudoscalar_loops_s.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o pseudoscalar_loops_s.obj `if test -f 'meas/hadron/pseudoscalar_loops_s.cc'; then $(CYGPATH_W) 'meas/hadron/pseudoscalar_loops_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/pseudoscalar_loops_s.cc'; fi`
 uninstall-info-am:
 nobase_includeHEADERS_INSTALL = $(install_sh_DATA)
 install-nobase_includeHEADERS: $(nobase_include_HEADERS)
@@ -6409,7 +6491,7 @@ uninstall-am: uninstall-info-am uninstall-libLIBRARIES \
 
 
 #	actions/ferm/fermacts/stag_fermact_s.cc
-#	meas/hadron/scalar_loops_s.cc 
+#	
 #	meas/pbp/mespbp_s.cc meas/pbp/stagpbp_s.cc
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

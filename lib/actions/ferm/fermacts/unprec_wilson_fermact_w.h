@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_wilson_fermact_w.h,v 1.18 2004-09-08 02:48:26 edwards Exp $
+// $Id: unprec_wilson_fermact_w.h,v 1.19 2004-12-07 17:11:50 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -9,6 +9,7 @@
 
 #include "fermact.h"
 #include "actions/ferm/linop/lgherm_w.h"
+#include "actions/ferm/linop/unprec_wilson_dmdu_w.h"
 #include "io/param_io.h"       // to get AnisoParam_t
 
 using namespace QDP;
@@ -80,10 +81,21 @@ namespace Chroma
       return new lgherm<LatticeFermion>(linOp(state));
     }
 
+    //! Produce a derivative matrix...
+    const LinearOperator<LatticeFermion>* ldMdU(Handle < const ConnectState> state, const int mu) const {
+      return new UnprecWilsondMdU(mu);
+    }
+
     //! Compute dS_f/dU
     void dsdu(multi1d<LatticeColorMatrix>& result,
 	      Handle<const ConnectState> state,
 	      const LatticeFermion& psi) const;
+
+
+    //! Compute dS_f/dU the new way for testing only
+    void dsdu2(multi1d<LatticeColorMatrix>& result,
+	       Handle<const ConnectState> state,
+	       const LatticeFermion& X) const;
 
     //! Destructor is automatic
     ~UnprecWilsonFermAct() {}
