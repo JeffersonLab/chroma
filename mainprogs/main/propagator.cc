@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.81 2004-12-24 04:19:23 edwards Exp $
+// $Id: propagator.cc,v 1.82 2004-12-29 22:08:26 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -95,7 +95,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     if( inputtop.count("StateInfo") == 1 ) {
       XMLReader xml_state_info(inputtop, "StateInfo");
       std::ostringstream os;
-      xml_state_info.printCurrentContext(os);
+      xml_state_info.print(os);
       input.stateInfo = os.str();
     }
     else { 
@@ -303,135 +303,41 @@ int main(int argc, char **argv)
   XMLReader state_info_xml(state_info_is);
   string state_info_path="/StateInfo";
   //
-  // Try each factory one-by-one
+  // Try the factories
   //
   bool success = false;
-
-  QDPIO::cout << "Try the special cases first (if there are any)" << endl;
-
   bool mresP = true;
-
-  if (mresP && ! input.param.nonRelProp && ! success)
-  {
-    try
-    {
-      QDPIO::cout << "Try unprec DWF-like actions with via dwf_quarkProp4" << endl;
-
-      // DWF-like 5D Wilson-Type stuff
-      Handle< UnprecDWFermActBaseArray<LatticeFermion> >
-	S_f(TheUnprecDWFermActBaseArrayFactory::Instance().createObject(fermact,
-									fermacttop,
-									fermact_path));
-
-      Handle<const ConnectState> state(S_f->createState(u,
-							state_info_xml,
-							state_info_path));  // uses phase-multiplied u-fields
-
-      S_f->dwf_quarkProp4(quark_propagator, xml_out, quark_prop_source,
-			  t0, j_decay, 
-			  state, 
-			  input.param.invParam, 
-			  ncg_had);
-      
-      success = true;
-    }
-    catch (const std::string& e) 
-    {
-      QDPIO::cout << "Unprec DWF-like: " << e << endl;
-    }
-  }
-
-
-  if (mresP && ! input.param.nonRelProp && ! success)
-  {
-    try
-    {
-      QDPIO::cout << "Try even-odd DWF-like actions with via dwf_quarkProp4" << endl;
-
-      // DWF-like 5D Wilson-Type stuff
-      Handle< EvenOddPrecDWFermActBaseArray<LatticeFermion> >
-	S_f(TheEvenOddPrecDWFermActBaseArrayFactory::Instance().createObject(fermact,
-									     fermacttop,
-									     fermact_path));
-
-      Handle<const ConnectState> state(S_f->createState(u,
-							state_info_xml,
-							state_info_path));  // uses phase-multiplied u-fields
-
-      S_f->dwf_quarkProp4(quark_propagator, xml_out, quark_prop_source,
-			  t0, j_decay, 
-			  state, 
-			  input.param.invParam, 
-			  ncg_had);
-      
-      success = true;
-    }
-    catch (const std::string& e) 
-    {
-      QDPIO::cout << "Even-odd DWF-like: " << e << endl;
-    }
-  }
-
 
   if (! success)
   {
     try
     {
-      QDPIO::cout << "Try the various 4D factories" << endl;
+      QDPIO::cout << "Try the various factories" << endl;
 
       // Generic Wilson-Type stuff
-      Handle< WilsonTypeFermAct<LatticeFermion> >
-	S_f(TheWilsonTypeFermActFactory::Instance().createObject(fermact,
-								 fermacttop,
-								 fermact_path));
+      Handle< FermionAction<LatticeFermion> >
+	S_f(TheFermionActionFactory::Instance().createObject(fermact,
+							     fermacttop,
+							     fermact_path));
 
 
       Handle<const ConnectState> state(S_f->createState(u,
 							state_info_xml,
 							state_info_path));  // uses phase-multiplied u-fields
 
-      S_f->quarkProp4(quark_propagator, xml_out, quark_prop_source,
-		      state, 
-		      input.param.invParam, 
-		      input.param.nonRelProp,
-		      ncg_had);
+      S_f->quarkProp(quark_propagator, xml_out, quark_prop_source,
+		     t0, j_decay,
+		     state, 
+		     input.param.invParam, 
+		     input.param.nonRelProp,
+		     mresP,
+		     ncg_had);
       
       success = true;
     }
     catch (const std::string& e) 
     {
       QDPIO::cout << "4D: " << e << endl;
-    }
-  }
-
-
-  if (! success)
-  {
-    try
-    {
-      QDPIO::cout << "Try the various 5D factories" << endl;
-
-      // Generic 5D Wilson-Type stuff
-      Handle< WilsonTypeFermAct< multi1d<LatticeFermion> > >
-	S_f(TheWilsonTypeFermActArrayFactory::Instance().createObject(fermact,
-								      fermacttop,
-								      fermact_path));
-
-      Handle<const ConnectState> state(S_f->createState(u, 
-							state_info_xml,
-							state_info_path));  // uses phase-multiplied u-fields
-
-      S_f->quarkProp4(quark_propagator, xml_out, quark_prop_source,
-		      state, 
-		      input.param.invParam, 
-		      input.param.nonRelProp,
-		      ncg_had);
-      
-      success = true;
-    }
-    catch (const std::string& e) 
-    {
-      QDPIO::cout << "5D: " << e << endl;
     }
   }
 

@@ -1,4 +1,4 @@
-// $Id: t_propagator_s.cc,v 1.24 2004-12-05 18:31:20 mcneile Exp $
+// $Id: t_propagator_s.cc,v 1.25 2004-12-29 22:08:27 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -350,8 +350,8 @@ int main(int argc, char **argv)
   // Use S_f.createState so that S_f can pass in u0
 
   Handle<const ConnectState > state(S_f.createState(u));
-  Handle<const EvenOddLinearOperator<LatticeStaggeredFermion> > D_asqtad(S_f.linOp(state));
-  Handle<const LinearOperator<LatticeStaggeredFermion> > MdagM_asqtad(S_f.lMdagM(state));
+//  Handle<const EvenOddLinearOperatorBase<LatticeStaggeredFermion> > D_asqtad(S_f.linOp(state));
+//  Handle<const LinearOperator<LatticeStaggeredFermion> > MdagM_asqtad(S_f.lMdagM(state));
 
   //
   // Loop over the source color, creating the source

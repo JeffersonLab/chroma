@@ -1,4 +1,4 @@
-// $Id: t_dwf4d.cc,v 1.6 2004-12-24 04:19:23 edwards Exp $
+// $Id: t_dwf4d.cc,v 1.7 2004-12-29 22:08:27 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -219,10 +219,10 @@ int main(int argc, char **argv)
 
   QDPIO::cerr << "create dwf = " << fermact_5d << endl;
 
-  Handle< EvenOddPrecDWFermActBaseArray<LatticeFermion> >
-    S_f_5d(TheEvenOddPrecDWFermActBaseArrayFactory::Instance().createObject(fermact_5d,
-								       fermacttop_5d,
-								       fermact_path_5d));
+  Handle< WilsonTypeFermAct5D<LatticeFermion> >
+    S_f_5d(TheWilsonTypeFermAct5DFactory::Instance().createObject(fermact_5d,
+								  fermacttop_5d,
+								  fermact_path_5d));
   
   Handle<const ConnectState> state_5d(S_f_5d->createState(u,
 							  state_info_xml_5d,

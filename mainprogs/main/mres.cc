@@ -1,4 +1,4 @@
-// $Id: mres.cc,v 1.4 2004-12-24 04:19:22 edwards Exp $
+// $Id: mres.cc,v 1.5 2004-12-29 22:08:26 edwards Exp $
 
 #include <iostream>
 #include <sstream>
@@ -251,133 +251,77 @@ int main(int argc, char **argv)
   LatticePropagator delta_prop;
   LatticePropagator deltaSq_prop;
 
-  bool success = false;
+  try 
+  { 
+    QDPIO::cout << "Try generic WilsonTypeFermAct actions" << endl;
 
-  if (! success)
-  {
-    try 
-    { 
-      QDPIO::cout << "Try generic WilsonTypeFermAct actions" << endl;
-
-      // Generic Wilson-Type stuff
-      Handle< WilsonTypeFermAct<LatticeFermion> >
-	S_f(TheWilsonTypeFermActFactory::Instance().createObject(fermact,
-								 fermacttop,
-								 fermact_path));
+    // Generic Wilson-Type Array stuff
+    FermionAction<LatticeFermion>* S_f =
+      TheFermionActionFactory::Instance().createObject(fermact,
+						       fermacttop,
+						       fermact_path);
     
-      Handle<const ConnectState> state(S_f->createState(u,
-							state_info_xml,
-							state_info_path)); 
+    Handle<const ConnectState> state(S_f->createState(u,
+						      state_info_xml,
+						      state_info_path)); 
     
-      const OverlapFermActBase& S_ov = dynamic_cast<const OverlapFermActBase&>(*S_f);
+    LinearOperator<LatticeFermion>* DelLs;
 
-      Handle< const LinearOperator<LatticeFermion> > DelLs(S_ov.DeltaLs(state));
+    // Possible actions
+    const UnprecDWFermActBaseArray<LatticeFermion>* S_udwf = 
+      dynamic_cast<const UnprecDWFermActBaseArray<LatticeFermion>*>(S_f);
 
-      for(int col = 0; col < Nc; col++) 
-      {
-	for(int spin = 0; spin < Ns; spin++) 
-	{
-	  LatticeFermion tmp1, tmp2;
+    const EvenOddPrecDWFermActBaseArray<LatticeFermion>* S_pdwf = 
+      dynamic_cast<const EvenOddPrecDWFermActBaseArray<LatticeFermion>*>(S_f);
 
-	  // Move component from prop to ferm
-	  PropToFerm(quark_propagator, tmp1, col, spin);
+    const OverlapFermActBase* S_ov = dynamic_cast<const OverlapFermActBase*>(S_f);
 
-	  // Apply DeltaLs -> tmp2 = Delta_Ls tmp1
-	  (*DelLs)(tmp2, tmp1, PLUS);
+    if (S_pdwf != 0)
+    {
+      DelLs = const_cast<LinearOperator<LatticeFermion>*>(S_pdwf->DeltaLs(state,prop_header.invParam));
+    }
+    else if (S_udwf != 0)
+    {
+      DelLs = const_cast<LinearOperator<LatticeFermion>*>(S_udwf->DeltaLs(state,prop_header.invParam));
+    }
+    else if (S_ov != 0)
+    {
+      DelLs = const_cast<LinearOperator<LatticeFermion>*>(S_ov->DeltaLs(state));
+    }
+    else
+    {
+      throw string("no suitable cast found");
+    }
 	
-	  FermToProp(tmp2, delta_prop, col, spin);
-	}
+    for(int col = 0; col < Nc; col++) 
+    {
+      for(int spin = 0; spin < Ns; spin++) 
+      {
+	LatticeFermion tmp1, tmp2;
+
+	// Move component from prop to ferm
+	PropToFerm(quark_propagator, tmp1, col, spin);
+
+	// Apply DeltaLs -> tmp2 = Delta_Ls tmp1
+	(*DelLs)(tmp2, tmp1, PLUS);
+	
+	FermToProp(tmp2, delta_prop, col, spin);
       }
+    }
     
-      success = true;
-    }
-    catch(const string& e) { 
-      QDPIO::cout << "Wilson Factory Error: " << e << endl;
-    }
-    catch(bad_cast) { 
-      QDPIO::cout << "Action entered is not suitable to be cast to OverlapFermActBase " << endl;
-    }
+    delete DelLs;
+    delete S_f;
   }
-
-
-  if (! success)
-  {
-    try 
-    { 
-      QDPIO::cout << "Try generic WilsonTypeFermAct Array actions" << endl;
-
-      // Generic Wilson-Type Array stuff
-      WilsonTypeFermAct< multi1d<LatticeFermion> >* S_f =
-	TheWilsonTypeFermActArrayFactory::Instance().createObject(fermact,
-								  fermacttop,
-								  fermact_path);
-    
-      Handle<const ConnectState> state(S_f->createState(u,
-							state_info_xml,
-							state_info_path)); 
-    
-      LinearOperator<LatticeFermion>* DelLs;
-
-      // Possible actions
-      const UnprecDWFermActBaseArray<LatticeFermion>* S_udwf = 
-	dynamic_cast<const UnprecDWFermActBaseArray<LatticeFermion>*>(S_f);
-
-      const EvenOddPrecDWFermActBaseArray<LatticeFermion>* S_pdwf = 
-	dynamic_cast<const EvenOddPrecDWFermActBaseArray<LatticeFermion>*>(S_f);
-
-      if (S_pdwf != 0)
-      {
-	DelLs = const_cast<LinearOperator<LatticeFermion>*>(S_pdwf->DeltaLs(state,prop_header.invParam));
-      }
-      else if (S_udwf != 0)
-      {
-	DelLs = const_cast<LinearOperator<LatticeFermion>*>(S_udwf->DeltaLs(state,prop_header.invParam));
-      }
-      else
-      {
-	QDPIO::cerr << "Error: no suitable cast found" << endl;
-	QDP_abort(1);
-      }
-	
-      for(int col = 0; col < Nc; col++) 
-      {
-	for(int spin = 0; spin < Ns; spin++) 
-	{
-	  LatticeFermion tmp1, tmp2;
-
-	  // Move component from prop to ferm
-	  PropToFerm(quark_propagator, tmp1, col, spin);
-
-	  // Apply DeltaLs -> tmp2 = Delta_Ls tmp1
-	  (*DelLs)(tmp2, tmp1, PLUS);
-	
-	  FermToProp(tmp2, delta_prop, col, spin);
-	}
-      }
-    
-      delete DelLs;
-      delete S_f;
-      success = true;
-    }
-    catch(const string& e) { 
-      QDPIO::cout << "Wilson Array Factory Error: " << e << endl;
-    }
-    catch(bad_cast) { 
-      QDPIO::cout << "Action entered is not suitable to be cast to DWF " << endl;
-    }
+  catch(const string& e) { 
+    QDPIO::cout << "Error: " << e << endl;
   }
-
-  if (! success)
-  {
-    QDPIO::cout << "No Factory found" << endl;
-    QDP_abort(1);
+  catch(bad_cast) { 
+    QDPIO::cout << "Action entered is not suitable to be cast to DWF " << endl;
   }
 
 
   multi1d<Double> pseudo_prop_corr = sumMulti(localNorm2(quark_propagator),
 					      phases.getSet());
-  
-
 
   multi1d<DComplex> delta_prop_corr = sumMulti(trace(adj(quark_propagator)*delta_prop),
 					       phases.getSet());
