@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_sse.cc,v 1.12 2003-12-15 21:46:13 edwards Exp $
+// $Id: lwldslash_w_sse.cc,v 1.13 2003-12-15 21:46:48 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -88,7 +88,8 @@ void SSEWilsonDslash::create(const multi1d<LatticeColorMatrix>& _u)
 }
 
 
-SSEWilsonDslash::~SSEWilsonDslash(void) {
+SSEWilsonDslash::~SSEWilsonDslash(void) 
+{
 #if 1
   QDPIO::cout << "Calling free_sse_su3dslash()... " << endl;
 #endif
