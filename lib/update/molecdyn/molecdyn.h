@@ -3,6 +3,7 @@
 
 
 #include "update/field_state.h"
+/*
 #include "update/molecdyn/abs_hamiltonian.h"
 #include "update/molecdyn/exact_pg_hamiltonian.h"
 #include "update/molecdyn/degen_two_flavor_ferm_hamiltonian.h"
@@ -23,5 +24,5 @@
 #include "update/molecdyn/abs_hmc.h"
 #include "update/molecdyn/pg_hmc.h"
 #include "update/molecdyn/ferm_hmc.h"
-
+*/
 #endif

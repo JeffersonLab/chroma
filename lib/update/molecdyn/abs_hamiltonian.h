@@ -33,7 +33,7 @@ class AbsHamiltonian {
 public:
   
   //! virtual descructor:
-  ~AbsHamiltonian() {}
+  virtual ~AbsHamiltonian() {}
 
   //! clone function for virtual copy constructs
   virtual AbsHamiltonian<P,Q>* clone(void) const = 0;
