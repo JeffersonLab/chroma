@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.129 2004-04-29 13:41:20 bjoo Exp $
+# $Id: Makefile.am,v 1.130 2004-05-01 20:16:26 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -151,7 +151,8 @@ nobase_include_HEADERS += \
 	io/zolotarev5d_fermact_paramio_w.h \
 	meas/eig/eig_w.h meas/eig/ischiral_w.h \
 	meas/hadron/barcomp_w.h \
-	meas/hadron/barseqsrc_w.h meas/hadron/baryon_w.h \
+	meas/hadron/barseqsrc_w.h \
+	meas/hadron/barhqlq_w.h meas/hadron/baryon_w.h \
 	meas/hadron/BuildingBlocks_w.h meas/hadron/curcor2_w.h \
 	meas/hadron/DjDk_w.h meas/hadron/D_j_w.h meas/hadron/formfac_w.h \
 	meas/hadron/hadron_w.h meas/hadron/hybmeson_w.h \
@@ -232,7 +233,7 @@ libchroma_a_SOURCES = gauge_startup.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
 # This is OK, since Ns is determined at configure time
 #
 if BUILD_WILSON_LIBS
-libchroma_a_SOURCES += baryon_w.cc mesons_w.cc hybmeson_w.cc \
+libchroma_a_SOURCES += baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
               loops_w.cc \
               curcor2_w.cc lwldslash_w.cc formfac_w.cc \
               mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
