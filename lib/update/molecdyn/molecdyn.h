@@ -11,6 +11,10 @@
 #include "update/molecdyn/exact_hamiltonian.h"
 #include "update/molecdyn/molecdyn_w.h"
 
+#include "update/molecdyn/abs_integrator.h"
+#include "update/molecdyn/md_integrator_factory.h"
+#include "update/molecdyn/lcm_pqp_leapfrog.h"
+
 // #include "update/molecdyn/abs_hamiltonian.h"
 /*
 #include "update/molecdyn/abs_hamiltonian.h"

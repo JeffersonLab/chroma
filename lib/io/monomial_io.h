@@ -9,6 +9,10 @@ using namespace Chroma;
 
 namespace Chroma { 
 
+  void read(XMLReader& xml, 
+	    const std::string& path, 
+	    Handle< Monomial< multi1d<LatticeColorMatrix>, 
+	                      multi1d<LatticeColorMatrix> > >& mon_handle );
 
   // Read a monomial from an XML reader, use a factory 
   // to create and assign the pointer to the handle...
@@ -16,6 +20,7 @@ namespace Chroma {
 	    const std::string& path, 
 	    Handle< ExactMonomial< multi1d<LatticeColorMatrix>, 
 	                           multi1d<LatticeColorMatrix> > >& mon_handle );
+
 
 
 }; // End namespace Chroma

@@ -1,4 +1,4 @@
-// $Id: wilson_gaugeact.cc,v 1.8 2004-12-30 10:29:36 bjoo Exp $
+// $Id: wilson_gaugeact.cc,v 1.9 2004-12-31 17:17:03 bjoo Exp $
 /*! \file
  *  \brief Wilson gauge action
  */
@@ -221,6 +221,8 @@ namespace Chroma
 
     // Undo Mes Plaq Normalisation
     S_pg = Double(Layout::vol()*Nd*(Nd-1))/Double(2);
+
+    // Took out minus sign -- may need to put back in...
     S_pg *= -Double(beta)*w_plaq;
     
     return S_pg;

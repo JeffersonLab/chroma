@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.286 2004-12-30 11:14:37 bjoo Exp $
+# $Id: Makefile.in,v 1.287 2004-12-31 17:17:03 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -159,6 +159,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/gauge/gaugebc_simple.cc \
 	actions/gauge/wilson_gaugeact.cc \
 	update/molecdyn/wilson_gauge_monomial.cc \
+	update/molecdyn/lcm_pqp_leapfrog.cc \
 	actions/ferm/fermacts/overlap_fermact_base_w.cc \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.cc \
 	actions/ferm/fermacts/prec_dwf_fermact_array_w.cc \
@@ -306,7 +307,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	taproj.$(OBJEXT) unit_check.$(OBJEXT) printgeom.$(OBJEXT) \
 	proginfo.$(OBJEXT) gaugebc_periodic.$(OBJEXT) \
 	gaugebc_simple.$(OBJEXT) wilson_gaugeact.$(OBJEXT) \
-	wilson_gauge_monomial.$(OBJEXT) \
+	wilson_gauge_monomial.$(OBJEXT) lcm_pqp_leapfrog.$(OBJEXT) \
 	overlap_fermact_base_w.$(OBJEXT) \
 	ovlap_partfrac4d_fermact_w.$(OBJEXT) \
 	prec_dwf_fermact_array_w.$(OBJEXT) \
@@ -479,6 +480,9 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	update/molecdyn/wilson_gauge_monomial.h \
 	update/molecdyn/abs_hamiltonian.h \
 	update/molecdyn/exact_hamiltonian.h \
+	update/molecdyn/abs_integrator.h \
+	update/molecdyn/md_integrator_factory.h \
+	update/molecdyn/lcm_pqp_leapfrog.h \
 	update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.h \
 	update/molecdyn/prec_two_flavor_wilson_ferm_monomial_w.h \
 	actions/ferm/fermacts/fermacts_w.h \
@@ -803,6 +807,9 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	update/molecdyn/wilson_gauge_monomial.h \
 	update/molecdyn/abs_hamiltonian.h \
 	update/molecdyn/exact_hamiltonian.h \
+	update/molecdyn/abs_integrator.h \
+	update/molecdyn/md_integrator_factory.h \
+	update/molecdyn/lcm_pqp_leapfrog.h \
 	update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.h \
 	update/molecdyn/prec_two_flavor_wilson_ferm_monomial_w.h \
 	actions/ferm/fermacts/fermacts_w.h \
@@ -1023,6 +1030,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/gauge/gaugebc_simple.cc \
 	actions/gauge/wilson_gaugeact.cc \
 	update/molecdyn/wilson_gauge_monomial.cc \
+	update/molecdyn/lcm_pqp_leapfrog.cc \
 	actions/ferm/fermacts/overlap_fermact_base_w.cc \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.cc \
 	actions/ferm/fermacts/prec_dwf_fermact_array_w.cc \
@@ -1297,6 +1305,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kyuqprop_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lDeltaLs_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/laplacian.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_pqp_leapfrog.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lg5eps_double_pass_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lg5eps_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/loops_w.Po@am__quote@
@@ -3058,6 +3067,20 @@ wilson_gauge_monomial.obj: update/molecdyn/wilson_gauge_monomial.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/wilson_gauge_monomial.cc' object='wilson_gauge_monomial.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o wilson_gauge_monomial.obj `if test -f 'update/molecdyn/wilson_gauge_monomial.cc'; then $(CYGPATH_W) 'update/molecdyn/wilson_gauge_monomial.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/wilson_gauge_monomial.cc'; fi`
+
+lcm_pqp_leapfrog.o: update/molecdyn/lcm_pqp_leapfrog.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lcm_pqp_leapfrog.o -MD -MP -MF "$(DEPDIR)/lcm_pqp_leapfrog.Tpo" -c -o lcm_pqp_leapfrog.o `test -f 'update/molecdyn/lcm_pqp_leapfrog.cc' || echo '$(srcdir)/'`update/molecdyn/lcm_pqp_leapfrog.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/lcm_pqp_leapfrog.Tpo" "$(DEPDIR)/lcm_pqp_leapfrog.Po"; else rm -f "$(DEPDIR)/lcm_pqp_leapfrog.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/lcm_pqp_leapfrog.cc' object='lcm_pqp_leapfrog.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lcm_pqp_leapfrog.o `test -f 'update/molecdyn/lcm_pqp_leapfrog.cc' || echo '$(srcdir)/'`update/molecdyn/lcm_pqp_leapfrog.cc
+
+lcm_pqp_leapfrog.obj: update/molecdyn/lcm_pqp_leapfrog.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lcm_pqp_leapfrog.obj -MD -MP -MF "$(DEPDIR)/lcm_pqp_leapfrog.Tpo" -c -o lcm_pqp_leapfrog.obj `if test -f 'update/molecdyn/lcm_pqp_leapfrog.cc'; then $(CYGPATH_W) 'update/molecdyn/lcm_pqp_leapfrog.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/lcm_pqp_leapfrog.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/lcm_pqp_leapfrog.Tpo" "$(DEPDIR)/lcm_pqp_leapfrog.Po"; else rm -f "$(DEPDIR)/lcm_pqp_leapfrog.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/lcm_pqp_leapfrog.cc' object='lcm_pqp_leapfrog.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lcm_pqp_leapfrog.obj `if test -f 'update/molecdyn/lcm_pqp_leapfrog.cc'; then $(CYGPATH_W) 'update/molecdyn/lcm_pqp_leapfrog.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/lcm_pqp_leapfrog.cc'; fi`
 
 overlap_fermact_base_w.o: actions/ferm/fermacts/overlap_fermact_base_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT overlap_fermact_base_w.o -MD -MP -MF "$(DEPDIR)/overlap_fermact_base_w.Tpo" -c -o overlap_fermact_base_w.o `test -f 'actions/ferm/fermacts/overlap_fermact_base_w.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/overlap_fermact_base_w.cc; \

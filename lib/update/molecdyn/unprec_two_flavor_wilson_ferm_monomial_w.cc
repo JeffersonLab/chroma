@@ -19,15 +19,15 @@ namespace Chroma {
  
   namespace UnprecTwoFlavorWilsonFermMonomialEnv {
     //! Callback function for the factory
-    ExactMonomial< multi1d<LatticeColorMatrix>,
-		       multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const string& path) {
+    Monomial< multi1d<LatticeColorMatrix>,
+	      multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const string& path) {
 
       
       return new UnprecTwoFlavorWilsonFermMonomial(UnprecTwoFlavorWilsonFermMonomialParams(xml, path));
     }
     
     const std::string name="UNPREC_TWO_FLAVOR_WILSON_FERM_MONOMIAL";
-    const bool registered=TheExactMonomialFactory::Instance().registerObject(name, createMonomial);
+    const bool registered=TheMonomialFactory::Instance().registerObject(name, createMonomial);
     
   }; //end namespace Unprec TwoFlavorWilsonFermMonomialEnv
 

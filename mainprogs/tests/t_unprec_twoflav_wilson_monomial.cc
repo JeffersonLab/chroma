@@ -102,29 +102,19 @@ int main(int argc, char *argv[])
   // Read Parameters
   std::string monomial_name;           // String for Factory
   XMLReader param_in("DATA");
+  Handle< ExactMonomial<multi1d<LatticeColorMatrix>, 
+    multi1d<LatticeColorMatrix> > > S_w;
   try { 
     
     // Snarf it all
     XMLReader paramtop(param_in, "/MonomialTest");
     // Get the string for the factory
-    read(paramtop, "Monomial/Name", monomial_name);
+    read(paramtop, "Monomial", S_w);
   }
   catch(const string& e) { 
     QDPIO::cerr << "Error reading XML" << endl;
     QDP_abort(1);
   }
-
-  QDPIO::cout << "Monomial name = " << monomial_name << endl;
-
-  // Get the monomial from the factory... Looks gross but is generic
-  Handle<ExactMonomial<multi1d<LatticeColorMatrix>,
-                       multi1d<LatticeColorMatrix> > > 
-                                            S_w(
-     TheExactMonomialFactory::Instance().createObject(
-						      monomial_name, 
-						      param_in, 
-						      "/MonomialTest/Monomial")
-  );
 
   // Fictitious momenta for now
   multi1d<LatticeColorMatrix> p(Nd);

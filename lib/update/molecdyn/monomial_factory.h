@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: monomial_factory.h,v 1.2 2004-12-30 02:03:15 edwards Exp $
+// $Id: monomial_factory.h,v 1.3 2004-12-31 17:17:04 bjoo Exp $
 /*! \file
  *  \brief Monomial factories
  */
@@ -20,16 +20,16 @@ namespace Chroma
   //! A factory for exact non-fermionic monomials
   typedef SingletonHolder< 
   ObjectFactory<
-    ExactMonomial< multi1d<LatticeColorMatrix>, 
-		   multi1d<LatticeColorMatrix> >,
+    Monomial< multi1d<LatticeColorMatrix>, 
+	      multi1d<LatticeColorMatrix> >,
     std::string,
     TYPELIST_2(XMLReader&, const std::string&),
    
-    ExactMonomial< multi1d<LatticeColorMatrix>, 
-		   multi1d<LatticeColorMatrix> >* (*)(XMLReader&,
-						      const std::string&), 
+    Monomial< multi1d<LatticeColorMatrix>, 
+	      multi1d<LatticeColorMatrix> >* (*)(XMLReader&,
+						 const std::string&), 
     StringFactoryError> >
-  TheExactMonomialFactory;
+  TheMonomialFactory;
 
 
   /*

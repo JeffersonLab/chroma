@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.211 2004-12-30 11:14:37 bjoo Exp $
+# $Id: Makefile.am,v 1.212 2004-12-31 17:17:03 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -123,6 +123,9 @@ nobase_include_HEADERS = \
 	update/molecdyn/wilson_gauge_monomial.h \
 	update/molecdyn/abs_hamiltonian.h \
 	update/molecdyn/exact_hamiltonian.h \
+	update/molecdyn/abs_integrator.h \
+	update/molecdyn/md_integrator_factory.h \
+	update/molecdyn/lcm_pqp_leapfrog.h \
 	update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.h \
 	update/molecdyn/prec_two_flavor_wilson_ferm_monomial_w.h
 
@@ -351,7 +354,8 @@ libchroma_a_SOURCES = \
 	actions/gauge/gaugebc_periodic.cc \
 	actions/gauge/gaugebc_simple.cc \
 	actions/gauge/wilson_gaugeact.cc \
-	update/molecdyn/wilson_gauge_monomial.cc
+	update/molecdyn/wilson_gauge_monomial.cc \
+	update/molecdyn/lcm_pqp_leapfrog.cc
 #	actions/ferm/invert/invbicg.cc
 #       actions/ferm/invert/invmr.cc 
 #       util/gauge/eesu2.cc 

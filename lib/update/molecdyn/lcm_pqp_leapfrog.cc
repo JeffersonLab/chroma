@@ -1,0 +1,126 @@
+#include "chromabase.h"
+#include "update/molecdyn/md_integrator_factory.h"
+#include "update/molecdyn/lcm_pqp_leapfrog.h"
+
+
+#include <string>
+#include "util/gauge/taproj.h"
+#include "util/gauge/reunit.h"
+#include "util/gauge/expmat.h"
+
+using namespace QDP;
+using namespace Chroma;
+using namespace std;
+
+namespace Chroma { 
+  
+  namespace LatColMatPQPLeapfrogIntegratorEnv {
+
+    AbsMDIntegrator<multi1d<LatticeColorMatrix>, 
+		    multi1d<LatticeColorMatrix> >* createMDIntegrator(
+								       XMLReader& xml, const std::string& path,  Handle< AbsHamiltonian<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& H) {
+      // Read the integrator params
+      LatColMatPQPLeapfrogIntegratorParams p(xml, path);
+    
+      return new LatColMatPQPLeapfrogIntegrator(p, H);
+    }
+
+    const std::string name = "LCM_PQP_LEAPFROG_INTEGRATOR";
+    const bool registered = TheMDIntegratorFactory::Instance().registerObject(name, createMDIntegrator); 
+  };
+
+  LatColMatPQPLeapfrogIntegratorParams::LatColMatPQPLeapfrogIntegratorParams(XMLReader& xml_in, const std::string& path) 
+  {
+    XMLReader paramtop(xml_in, path);
+    try {
+      read(paramtop, "./dt", dt);
+      read(paramtop, "./tau0", tau0);
+    }
+    catch ( const std::string& e ) { 
+      QDPIO::cout << "Error reading XML in LatColMatPQPLeapfrogIntegratorParams " << e << endl;
+      QDP_abort(1);
+    }
+  }
+
+  void read(XMLReader& xml, 
+	    const std::string& path, 
+	    LatColMatPQPLeapfrogIntegratorParams& p) {
+    LatColMatPQPLeapfrogIntegratorParams tmp(xml, path);
+    p = tmp;
+  }
+
+  void write(XMLWriter& xml, 
+	     const std::string& path, 
+	     const LatColMatPQPLeapfrogIntegratorParams& p) {
+    push(xml, path);
+    write(xml, "dt", p.dt);
+    write(xml, "tau0", p.tau0);
+    pop(xml);
+  }
+
+  void LatColMatPQPLeapfrogIntegrator::leapP(const Real& dt, 
+					     AbsFieldState<multi1d<LatticeColorMatrix>,
+					     multi1d<LatticeColorMatrix> >& s) {
+
+    AbsHamiltonian<multi1d<LatticeColorMatrix>,
+      multi1d<LatticeColorMatrix> >& H = getHamiltonian();
+    
+      // Force Term
+    multi1d<LatticeColorMatrix> dsdQ(Nd);
+    
+    // Compute the force 
+    H.dsdq(s.getP(), s);
+    
+    // Zero boundaries ? -- where would this be done then?
+    // There is a zero boundary in GaugeBC?
+    // H.zero(s.getP());
+    
+    // This should be done in a one liner..
+    // a la s.getP() -= eps*dsdQ;
+    // doing it in loop for now
+    
+    for(int mu =0; mu < Nd; mu++) { 
+      (s.getP())[mu] -= dt * dsdQ[mu];
+      
+      // taproj it...
+      taproj( (s.getP())[mu] );
+    }
+  }
+
+  //! Leap with Q
+  void LatColMatPQPLeapfrogIntegrator::leapQ(const Real& dt, 
+					     AbsFieldState<multi1d<LatticeColorMatrix>,
+					     multi1d<LatticeColorMatrix> >& s) {
+    LatticeColorMatrix tmp_1;
+    LatticeColorMatrix tmp_2;
+    
+    // Constant
+    const multi1d<LatticeColorMatrix>& p_mom = s.getP();
+    
+    // Mutable
+    multi1d<LatticeColorMatrix>& u = s.getQ();
+    
+    for(int mu = 0; mu < Nd; mu++) { 
+      
+      //  dt*p[mu]
+      tmp_1 = dt*p_mom[mu];
+      
+      // tmp_1 = exp(dt*p[mu])  
+      expmat(tmp_1, EXP_TWELFTH_ORDER);
+      
+      // tmp_2 = exp(dt*p[mu]) u[mu] = tmp_1 * u[mu]
+      tmp_2 = tmp_1*u[mu];
+      
+      // u[mu] =  tmp_1 * u[mu] =  tmp_2 
+      u[mu] = tmp_2;
+      
+      // Reunitarize u[mu]
+      int numbad;
+      reunit(u[mu], numbad, REUNITARIZE_ERROR);
+    }
+    
+    // Do I need boundary conditions here?
+    // getHam().applyQBoundary(s.getQ());
+  }
+
+};

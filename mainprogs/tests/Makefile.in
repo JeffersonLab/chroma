@@ -13,7 +13,7 @@
 # PARTICULAR PURPOSE.
 
 @SET_MAKE@
-SOURCES = $(t_ape_smear_SOURCES) $(t_bicgstab_SOURCES) $(t_conslinop_SOURCES) $(t_disc_loop_s_SOURCES) $(t_dslashm_SOURCES) $(t_dwf4d_SOURCES) $(t_dwflinop_SOURCES) $(t_dwflocality_SOURCES) $(t_fermion_loop_w_SOURCES) $(t_follana_io_s_SOURCES) $(t_follana_pion_s_SOURCES) $(t_formfac_SOURCES) $(t_fuzwilp_SOURCES) $(t_g5eps_bj_SOURCES) $(t_gfix_SOURCES) $(t_hamiltonian_SOURCES) $(t_hamsys_SOURCES) $(t_hamsys_ferm_SOURCES) $(t_hmc_pg_SOURCES) $(t_hypsmear_SOURCES) $(t_invborici_SOURCES) $(t_invert3_precwilson_SOURCES) $(t_invert4_precwilson_SOURCES) $(t_invrelcg_SOURCES) $(t_io_SOURCES) $(t_lower_tests_SOURCES) $(t_lwldslash_SOURCES) $(t_lwldslash_pab_SOURCES) $(t_lwldslash_sse_SOURCES) $(t_mesons_w_SOURCES) $(t_mesplq_SOURCES) $(t_mres_4d_SOURCES) $(t_msumr_SOURCES) $(t_neflinop_SOURCES) $(t_ov_pbp_SOURCES) $(t_overbu_SOURCES) $(t_ovlap5d_bj_SOURCES) $(t_ovlap_bj_SOURCES) $(t_ovlap_double_pass_SOURCES) $(t_prec_contfrac_SOURCES) $(t_prec_nef_SOURCES) $(t_prec_twoflav_wilson_monomial_SOURCES) $(t_prec_wilson_force_SOURCES) $(t_precact_SOURCES) $(t_precact_sse_SOURCES) $(t_precdwf_SOURCES) $(t_propagator_fuzz_s_SOURCES) $(t_propagator_nrqcd_SOURCES) $(t_propagator_s_SOURCES) $(t_propagator_w_SOURCES) $(t_read_eigen_SOURCES) $(t_rel_gmresr_SOURCES) $(t_ritz_SOURCES) $(t_ritz5d_KS_SOURCES) $(t_ritz_KS_SOURCES) $(t_spprod_SOURCES) $(t_su3_SOURCES) $(t_sumr_SOURCES) $(t_unprec_twoflav_wilson_monomial_SOURCES) $(t_unprec_wilson_force_SOURCES) $(t_wilslp_SOURCES)
+SOURCES = $(t_ape_smear_SOURCES) $(t_bicgstab_SOURCES) $(t_conslinop_SOURCES) $(t_disc_loop_s_SOURCES) $(t_dslashm_SOURCES) $(t_dwf4d_SOURCES) $(t_dwflinop_SOURCES) $(t_dwflocality_SOURCES) $(t_fermion_loop_w_SOURCES) $(t_follana_io_s_SOURCES) $(t_follana_pion_s_SOURCES) $(t_formfac_SOURCES) $(t_fuzwilp_SOURCES) $(t_g5eps_bj_SOURCES) $(t_gfix_SOURCES) $(t_hamiltonian_SOURCES) $(t_hamsys_SOURCES) $(t_hamsys_ferm_SOURCES) $(t_hmc_pg_SOURCES) $(t_hypsmear_SOURCES) $(t_invborici_SOURCES) $(t_invert3_precwilson_SOURCES) $(t_invert4_precwilson_SOURCES) $(t_invrelcg_SOURCES) $(t_io_SOURCES) $(t_leapfrog_SOURCES) $(t_lower_tests_SOURCES) $(t_lwldslash_SOURCES) $(t_lwldslash_pab_SOURCES) $(t_lwldslash_sse_SOURCES) $(t_mesons_w_SOURCES) $(t_mesplq_SOURCES) $(t_mres_4d_SOURCES) $(t_msumr_SOURCES) $(t_neflinop_SOURCES) $(t_ov_pbp_SOURCES) $(t_overbu_SOURCES) $(t_ovlap5d_bj_SOURCES) $(t_ovlap_bj_SOURCES) $(t_ovlap_double_pass_SOURCES) $(t_prec_contfrac_SOURCES) $(t_prec_nef_SOURCES) $(t_prec_twoflav_wilson_monomial_SOURCES) $(t_prec_wilson_force_SOURCES) $(t_precact_SOURCES) $(t_precact_sse_SOURCES) $(t_precdwf_SOURCES) $(t_propagator_fuzz_s_SOURCES) $(t_propagator_nrqcd_SOURCES) $(t_propagator_s_SOURCES) $(t_propagator_w_SOURCES) $(t_read_eigen_SOURCES) $(t_rel_gmresr_SOURCES) $(t_ritz_SOURCES) $(t_ritz5d_KS_SOURCES) $(t_ritz_KS_SOURCES) $(t_spprod_SOURCES) $(t_su3_SOURCES) $(t_sumr_SOURCES) $(t_unprec_twoflav_wilson_monomial_SOURCES) $(t_unprec_wilson_force_SOURCES) $(t_wilslp_SOURCES)
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -68,7 +68,8 @@ EXTRA_PROGRAMS = t_dslashm$(EXEEXT) t_lwldslash$(EXEEXT) \
 	t_overbu$(EXEEXT) t_lower_tests$(EXEEXT) \
 	t_unprec_wilson_force$(EXEEXT) t_prec_wilson_force$(EXEEXT) \
 	t_unprec_twoflav_wilson_monomial$(EXEEXT) \
-	t_prec_twoflav_wilson_monomial$(EXEEXT) t_hamiltonian$(EXEEXT)
+	t_prec_twoflav_wilson_monomial$(EXEEXT) t_hamiltonian$(EXEEXT) \
+	t_leapfrog$(EXEEXT)
 subdir = mainprogs/tests
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -156,6 +157,9 @@ t_invrelcg_LDADD = $(LDADD)
 am_t_io_OBJECTS = t_io.$(OBJEXT)
 t_io_OBJECTS = $(am_t_io_OBJECTS)
 t_io_LDADD = $(LDADD)
+am_t_leapfrog_OBJECTS = t_leapfrog.$(OBJEXT)
+t_leapfrog_OBJECTS = $(am_t_leapfrog_OBJECTS)
+t_leapfrog_LDADD = $(LDADD)
 am_t_lower_tests_OBJECTS = t_lower_tests.$(OBJEXT)
 t_lower_tests_OBJECTS = $(am_t_lower_tests_OBJECTS)
 t_lower_tests_LDADD = $(LDADD)
@@ -292,7 +296,7 @@ SOURCES = $(t_ape_smear_SOURCES) $(t_bicgstab_SOURCES) \
 	$(t_hypsmear_SOURCES) $(t_invborici_SOURCES) \
 	$(t_invert3_precwilson_SOURCES) \
 	$(t_invert4_precwilson_SOURCES) $(t_invrelcg_SOURCES) \
-	$(t_io_SOURCES) $(t_lower_tests_SOURCES) \
+	$(t_io_SOURCES) $(t_leapfrog_SOURCES) $(t_lower_tests_SOURCES) \
 	$(t_lwldslash_SOURCES) $(t_lwldslash_pab_SOURCES) \
 	$(t_lwldslash_sse_SOURCES) $(t_mesons_w_SOURCES) \
 	$(t_mesplq_SOURCES) $(t_mres_4d_SOURCES) $(t_msumr_SOURCES) \
@@ -322,7 +326,7 @@ DIST_SOURCES = $(t_ape_smear_SOURCES) $(t_bicgstab_SOURCES) \
 	$(t_hypsmear_SOURCES) $(t_invborici_SOURCES) \
 	$(t_invert3_precwilson_SOURCES) \
 	$(t_invert4_precwilson_SOURCES) $(t_invrelcg_SOURCES) \
-	$(t_io_SOURCES) $(t_lower_tests_SOURCES) \
+	$(t_io_SOURCES) $(t_leapfrog_SOURCES) $(t_lower_tests_SOURCES) \
 	$(t_lwldslash_SOURCES) $(t_lwldslash_pab_SOURCES) \
 	$(t_lwldslash_sse_SOURCES) $(t_mesons_w_SOURCES) \
 	$(t_mesplq_SOURCES) $(t_mres_4d_SOURCES) $(t_msumr_SOURCES) \
@@ -598,6 +602,8 @@ t_prec_twoflav_wilson_monomial_SOURCES = t_prec_twoflav_wilson_monomial.cc
 t_prec_twoflav_wilson_monomial_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 t_hamiltonian_SOURCES = t_hamiltonian.cc
 t_hamiltonian_DEPENDENCIES = build_chroma_libs rebuild_other_libs
+t_leapfrog_SOURCES = t_leapfrog.cc
+t_leapfrog_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 all: all-am
 
 .SUFFIXES:
@@ -709,6 +715,9 @@ t_invrelcg$(EXEEXT): $(t_invrelcg_OBJECTS) $(t_invrelcg_DEPENDENCIES)
 t_io$(EXEEXT): $(t_io_OBJECTS) $(t_io_DEPENDENCIES) 
 	@rm -f t_io$(EXEEXT)
 	$(CXXLINK) $(t_io_LDFLAGS) $(t_io_OBJECTS) $(t_io_LDADD) $(LIBS)
+t_leapfrog$(EXEEXT): $(t_leapfrog_OBJECTS) $(t_leapfrog_DEPENDENCIES) 
+	@rm -f t_leapfrog$(EXEEXT)
+	$(CXXLINK) $(t_leapfrog_LDFLAGS) $(t_leapfrog_OBJECTS) $(t_leapfrog_LDADD) $(LIBS)
 t_lower_tests$(EXEEXT): $(t_lower_tests_OBJECTS) $(t_lower_tests_DEPENDENCIES) 
 	@rm -f t_lower_tests$(EXEEXT)
 	$(CXXLINK) $(t_lower_tests_LDFLAGS) $(t_lower_tests_OBJECTS) $(t_lower_tests_LDADD) $(LIBS)
@@ -851,6 +860,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_invert4_precwilson.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_invrelcg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_leapfrog.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_lower_tests.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_lwldslash.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_lwldslash_pab.Po@am__quote@

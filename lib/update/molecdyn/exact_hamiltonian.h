@@ -13,10 +13,30 @@ using namespace Chroma;
 
 namespace Chroma {
 
-
   class ExactLatColMatHamiltonian : public ExactAbsHamiltonian<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > {
     
   public:
+    ExactLatColMatHamiltonian(XMLReader& xml, const std::string path) {
+      
+      XMLReader paramtop(xml,path);
+      multi1d< Handle< 
+	ExactMonomial<
+	multi1d<LatticeColorMatrix>,
+	multi1d<LatticeColorMatrix> 
+	> 
+	> > monomial_array;
+
+      try { 
+	read(paramtop, "./Monomials", monomial_array);
+      }
+      catch( const std::string& e ) { 
+	QDPIO::cerr << "Error Reading Monomials " << e << endl;
+	QDP_abort(1);
+      }
+      
+      QDPIO::cout << "Read " << monomial_array.size() << " monomials" << endl;
+      monomials = monomial_array;
+    }
 
     // Constructor
     ExactLatColMatHamiltonian( multi1d< Handle< ExactMonomial<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > >& monomials_ ) : monomials(monomials_) {}
@@ -33,7 +53,7 @@ namespace Chroma {
       // may need to loop over the indices of P?
       Double KE=Double(0);
       for(int mu=0; mu < s.getP().size(); mu++) { 
-	KE += norm2(s.getP()[mu]);
+	KE += norm2((s.getP())[mu]);
       }
 
       QDPIO::cout << "MesKE: KE = " << KE << endl;

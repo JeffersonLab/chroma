@@ -9,19 +9,49 @@ namespace Chroma {
 
 void read(XMLReader& xml, 
 	  const std::string& path, 
-	  Handle< ExactMonomial< multi1d<LatticeColorMatrix>, 
-	                         multi1d<LatticeColorMatrix> > >& mon_handle )
+	  Handle< Monomial< multi1d<LatticeColorMatrix>, 
+	                    multi1d<LatticeColorMatrix> > >& mon_handle )
 {
   XMLReader paramtop(xml, path);
   std::string monomial_name;
   try { 
     read( paramtop, "./Name", monomial_name);
-    mon_handle = TheExactMonomialFactory::Instance().createObject( monomial_name, xml, path );
+    mon_handle = TheMonomialFactory::Instance().createObject( monomial_name, xml, path );
   }
   catch( const std::string& e ) { 
-    QDPIO::cerr << "Error Reading Exact Monommial: " << e << endl;
+    QDPIO::cerr << "Error Reading Monommial: " << e << endl;
     QDP_abort(1);
   }
+}
+
+void read(XMLReader& xml, 
+	  const std::string& path, 
+	  Handle< ExactMonomial< multi1d<LatticeColorMatrix>, 
+	                         multi1d<LatticeColorMatrix> > >& mon_handle )
+{
+
+  XMLReader paramtop(xml, path);
+  std::string monomial_name;
+  Monomial<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >* m;
+
+  try { 
+    read( paramtop, "./Name", monomial_name);
+    m = TheMonomialFactory::Instance().createObject( monomial_name, xml, path );
+  }
+  catch( const std::string& e ) { 
+    QDPIO::cerr << "Error Reading Monommial: " << e << endl;
+    QDP_abort(1);
+  }
+
+  ExactMonomial<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >* em;
+  em = dynamic_cast< ExactMonomial<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >* >(m);
+  if( em == 0 ) { 
+    QDPIO::cerr << "Failed to downcast monomial to exact monomial " << endl;
+    QDP_abort(1);
+  }
+
+  mon_handle = em;
+
 }
 
 };
