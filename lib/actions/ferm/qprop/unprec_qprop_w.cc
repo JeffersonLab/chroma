@@ -1,4 +1,4 @@
-// $Id: unprec_qprop_w.cc,v 1.3 2003-04-10 21:40:57 edwards Exp $
+// $Id: unprec_qprop_w.cc,v 1.4 2003-10-20 20:29:18 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *
@@ -7,8 +7,6 @@
 
 #include "chromabase.h"
 #include "fermact.h"
-#include "primitives.h"
-#include "common_declarations.h"
 #include "actions/ferm/invert/invcg2.h"
 
 using namespace QDP;
@@ -26,16 +24,21 @@ using namespace QDP;
  * \param psi      quark propagator ( Modify )
  * \param u        gauge field ( Read )
  * \param chi      source ( Read )
+ * \param invType  inverter type ( Read (
  * \param RsdCG    CG (or MR) residual used here ( Read )
  * \param MaxCG    maximum number of CG iterations ( Read )
  * \param ncg_had  number of CG iterations ( Write )
  */
 
-void UnprecWilsonTypeFermAct::qprop(LatticeFermion& psi, 
-				    const multi1d<LatticeColorMatrix>& u, 
-				    const LatticeFermion& chi, 
-				    const Real& RsdCG, 
-				    int MaxCG, int& ncg_had) const
+template<typename T>
+static 
+void qprop_t(const UnprecWilsonTypeFermAct<T>& me,
+	     T& psi, 
+	     const multi1d<LatticeColorMatrix>& u, 
+	     const T& chi, 
+	     enum InvType invType,
+	     const Real& RsdCG, 
+	     int MaxCG, int& ncg_had)
 {
   START_CODE("UnprecWilsonTypeFermAct::qprop");
 
@@ -43,11 +46,11 @@ void UnprecWilsonTypeFermAct::qprop(LatticeFermion& psi,
   
   /* Construct the linear operator */
   /* This allocates field for the appropriate action */
-  const LinearOperator* A = linOp(u);
+  const LinearOperator<T>* A = me.linOp(u);
 
-  LatticeFermion tmp;
+  T tmp;
 
-  switch(InvType)
+  switch(invType)
   {
   case CG_INVERTER: 
     /* chi_1 = M_dag(u) * chi_1 */
@@ -70,7 +73,7 @@ void UnprecWilsonTypeFermAct::qprop(LatticeFermion& psi,
 #endif
   
   default:
-    QDP_error_exit("Unknown inverter type", InvType);
+    QDP_error_exit("Unknown inverter type", invType);
   }
   
   if ( n_count == MaxCG )
@@ -83,3 +86,27 @@ void UnprecWilsonTypeFermAct::qprop(LatticeFermion& psi,
 
   END_CODE("UnprecWilsonTypeFermAct::qprop");
 }
+
+
+template<>
+void UnprecWilsonTypeFermAct<LatticeFermion>::qprop(LatticeFermion& psi, 
+						    const multi1d<LatticeColorMatrix>& u, 
+						    const LatticeFermion& chi, 
+						    enum InvType invType,
+						    const Real& RsdCG, 
+						    int MaxCG, int& ncg_had) const
+{
+  qprop_t(*this, psi, u, chi, invType, RsdCG, MaxCG, ncg_had);
+}
+
+template<>
+void UnprecWilsonTypeFermAct<LatticeDWFermion>::qprop(LatticeDWFermion& psi, 
+						      const multi1d<LatticeColorMatrix>& u, 
+						      const LatticeDWFermion& chi, 
+						      enum InvType invType,
+						      const Real& RsdCG, 
+						      int MaxCG, int& ncg_had) const
+{
+  qprop_t(*this, psi, u, chi, invType, RsdCG, MaxCG, ncg_had);
+}
+
