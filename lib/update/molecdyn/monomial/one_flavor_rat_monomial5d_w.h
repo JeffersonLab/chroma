@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial5d_w.h,v 1.2 2005-01-28 16:48:47 edwards Exp $
+// $Id: one_flavor_rat_monomial5d_w.h,v 1.3 2005-02-03 03:16:41 edwards Exp $
 
 /*! @file
  * @brief One flavor monomials using RHMC
@@ -9,6 +9,7 @@
 #define __one_flavor_monomial5d_w_h__
 
 #include "update/molecdyn/monomial/abs_monomial.h"
+#include "actions/ferm/fermacts/remez_coeff.h"
 
 namespace Chroma
 {
@@ -64,21 +65,23 @@ namespace Chroma
       Handle< const ConnectState> state(FA.createState(s.getQ()));
 	
       // Start the force
-      int n_count;
-      int n_pv_count;
       F.resize(Nd);
       F = zero;
 
       // Force term for the linop
+      int n_count = 0;
       {
 	// Get linear operator
 	Handle< const DiffLinearOperator<multi1d<Phi>, P> > M(FA.linOp(state));
 	
+	// Partial Fraction Expansion coeffs for force
+	const RemezCoeff_t& fpfe = getFPFE();
+
 	multi1d< multi1d<Phi> > X;
 	multi1d<Phi> Y;
 
 	// Get X out here via multisolver
-	n_count = getX(X,getFPartFracRoot(),getPhi(),s);
+	n_count = getX(X,fpfe.pole,getPhi(),s);
 
 	// Loop over solns and accumulate force contributions
 	P  F_1, F_2;
@@ -96,20 +99,24 @@ namespace Chroma
 
 	  // Reweight each contribution in partial fraction
 	  for(int mu=0; mu < F.size(); mu++)
-	    F[mu] -= getFPartFracCoeff()[i] * F_1[mu];
+	    F[mu] -= fpfe.res[i] * F_1[mu];
 	}
       }
 
       // Force term for the PV
+      int n_pv_count = 0;
       {
 	// Get Pauli-Villars linear operator
 	Handle< const DiffLinearOperator<multi1d<Phi>, P> > PV(FA.linOpPV(state));
 	
+	// Partial Fraction Expansion coeffs for force in PV
+	const RemezCoeff_t& fpvpfe = getFPVPFE();
+
 	multi1d< multi1d<Phi> > X;
 	multi1d<Phi> Y;
 
 	// Get X out here via multisolver
-	n_count = getXPV(X,getFPVPartFracRoot(),getPhiPV(),s);
+	n_pv_count = getXPV(X,fpvpfe.pole,getPhiPV(),s);
 
 	// Loop over solns and accumulate force contributions
 	P  F_1, F_2;
@@ -127,7 +134,7 @@ namespace Chroma
 
 	  // Reweight each contribution in partial fraction
 	  for(int mu=0; mu < F.size(); mu++)
-	    F[mu] -= getFPVPartFracCoeff()[i] * F_1[mu];
+	    F[mu] -= fpvpfe.res[i] * F_1[mu];
 	}
       }
 
@@ -135,6 +142,7 @@ namespace Chroma
       write(xml_out, "n_pv_count", n_pv_count);
       pop(xml_out);
     }
+
   
     //! Refresh pseudofermions
     /*!
@@ -145,7 +153,7 @@ namespace Chroma
      * Where:    Q   = M^dag*M
      *           d(Q) = (Q+q_1)*(Q+q_2)*...*(Q+q_m)
      *           n(Q) = (Q+p_1)*(Q+p_2)*...  *(Q+p_m)
-     *           m  = HBRatDeg
+     *           m  = SIRatDeg
      *	     							
      * The rational function n(x)/d(x) is the optimal rational
      * approximation to the inverse square root of N(x)/D(x) which in
@@ -177,6 +185,9 @@ namespace Chroma
       { 
 	Handle< const LinearOperator< multi1d<Phi> > > M(FA.linOp(f_state));
       
+	// Partial Fraction Expansion coeffs for heat-bath
+	const RemezCoeff_t& sipfe = getSIPFE();
+
 	multi1d<Phi> eta(N5);
 	eta = zero;
       
@@ -190,23 +201,24 @@ namespace Chroma
       
 	// Get X out here via multisolver
 	multi1d< multi1d<Phi> > X;
-	n_count = getX(X,getHBPartFracRoot(),eta,s);
+	n_count = getX(X,sipfe.pole,eta,s);
+
+	// Sanity checks
+	if (X.size() != sipfe.pole.size())
+	  QDP_error_exit("%s : sanity failure, internal size not getSIPartFracRoot size", __func__);
+
+	if (X[0].size() != N5)
+	  QDP_error_exit("%s : sanity failure, internal size not N5", __func__);
 
 	// Weight solns to make final PF field
-	if (X.size() != getHBPartFracRoot().size())
-	  QDP_error_exit("%s : sanity failure, internal size not getHNPartFracRoot size", __func__);
-
 	getPhi().resize(N5);
-	getPhi() = zero;
 
-	for(int i=0; i < X.size(); ++i)
+	// Loop over each 5d slice
+	for(int j=0; j < N5; ++j)
 	{
-	  if (X[i].size() != N5)
-	    QDP_error_exit("%s : sanity failure, internal size not N5", __func__);
-
-	  // Loop over each 5d slice
-	  for(int j=0; j < N5; ++j)
-	    getPhi()[j] += getHBPartFracCoeff()[i] * X[i][j];
+	  getPhi()[j][M->subset()] = sipfe.norm * eta[j];
+	  for(int i=0; i < X.size(); ++i)
+	    getPhi()[j][M->subset()] += sipfe.res[i] * X[i][j];
 	}
       }
 
@@ -216,6 +228,9 @@ namespace Chroma
       { 
 	Handle< const LinearOperator< multi1d<Phi> > > PV(FA.linOpPV(f_state));
 	
+	// Partial Fraction Expansion coeffs for heat-bath in pv
+	const RemezCoeff_t& sipvpfe = getSIPVPFE();
+
 	multi1d<Phi> eta(N5);
 	eta = zero;
       
@@ -229,23 +244,24 @@ namespace Chroma
       
 	// Get X out here via multisolver
 	multi1d< multi1d<Phi> > X;
-	n_count = getXPV(X,getHBPVPartFracRoot(),eta,s);
+	n_pv_count = getXPV(X,sipvpfe.pole,eta,s);
+
+	// Sanity checks
+	if (X.size() != sipvpfe.pole.size())
+	  QDP_error_exit("%s : sanity failure, internal size not getSIPartFracRoot size", __func__);
+
+	if (X[0].size() != N5)
+	  QDP_error_exit("%s : sanity failure, internal size not N5", __func__);
 
 	// Weight solns to make final PF field
-	if (X.size() != getHBPVPartFracRoot().size())
-	  QDP_error_exit("%s : sanity failure, internal size not getHNPartFracRoot size", __func__);
-
 	getPhiPV().resize(N5);
-	getPhiPV() = zero;
 
-	for(int i=0; i < X.size(); ++i)
+	// Loop over each 5d slice
+	for(int j=0; j < N5; ++j)
 	{
-	  if (X[i].size() != N5)
-	    QDP_error_exit("%s : sanity failure, internal size not N5", __func__);
-
-	  // Loop over each 5d slice
-	  for(int j=0; j < N5; ++j)
-	    getPhiPV()[j] += getHBPVPartFracCoeff()[i] * X[i][j];
+	  getPhiPV()[j][PV->subset()] = sipvpfe.norm * eta[j];
+	  for(int i=0; i < X.size(); ++i)
+	    getPhiPV()[j][PV->subset()] += sipvpfe.res[i] * X[i][j];
 	}
       }
 
@@ -254,6 +270,8 @@ namespace Chroma
       pop(xml_out);
     }
 
+
+    //! Copy internal fields
     virtual void setInternalFields(const Monomial<P,Q>& m) 
     {
       try {
@@ -278,6 +296,118 @@ namespace Chroma
     }
   
 
+    //! Compute action on the appropriate subset
+    /*! 
+     * This may only be a Piece Of The Action
+     *
+     * This function measures the pseudofermion contribution to the Hamiltonian
+     * for the case of rational evolution (with polynomials n(x) and d(x),
+     * of degree SRatDeg
+     *
+     * S_f = chi_dag * (n(A)*d(A)^(-1))^2* chi
+     *
+     * where A is M^dag*M
+     *
+     * The rational function n(x)/d(x) is the optimal rational
+     * approximation to the square root of N(x)/D(x) which in
+     * turn is the optimal rational approximation to x^(-alpha).
+     * Here, alpha = 1/2
+     */
+    virtual Double S_subset(const AbsFieldState<P,Q>& s) const
+    {
+      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      push(xml_out, "S_subset");
+
+      const WilsonTypeFermAct5D<Phi,P>& FA = getFermAct();
+
+      // Create a Connect State, apply fermionic boundaries
+      Handle<const ConnectState> bc_g_state(FA.createState(s.getQ()));
+
+      // Force terms
+      const int N5 = FA.size();
+
+      // Action for M term
+      Double action_m = zero;
+      int n_count = 0;
+      {
+	Handle< const LinearOperator< multi1d<Phi> > > M(FA.linOp(bc_g_state));
+
+	// Partial Fraction Expansion coeffs for action
+	const RemezCoeff_t& spfe = getSPFE();
+
+	// Get X out here via multisolver
+	multi1d< multi1d<Phi> > X;
+	n_count = getX(X,spfe.pole,getPhi(),s);
+
+	// Sanity checks
+	if (X.size() != spfe.pole.size())
+	  QDP_error_exit("%s : sanity failure, internal size not getSPartFracRoot size", __func__);
+	
+	if (X[0].size() != N5)
+	  QDP_error_exit("%s : sanity failure, internal size not N5", __func__);
+
+	// Weight solns
+	multi1d<Phi> tmp(N5);
+
+	// Loop over each 5d slice
+	for(int j=0; j < N5; ++j)
+	{
+	  tmp[j][M->subset()] = spfe.norm * getPhi()[j];
+	  for(int i=0; i < X.size(); ++i)
+	    tmp[j][M->subset()] += spfe.res[i] * X[i][j];
+	}
+
+	// Action on the subset
+	action_m = norm2(tmp, M->subset());
+      }
+
+      // Action for PV term
+      Double action_pv = zero;
+      int n_pv_count = 0;
+      {
+	Handle< const LinearOperator< multi1d<Phi> > > PV(FA.linOpPV(bc_g_state));
+
+	// Partial Fraction Expansion coeffs for action
+	const RemezCoeff_t& spvpfe = getSPVPFE();
+
+	// Get X out here via multisolver
+	multi1d< multi1d<Phi> > X;
+	n_pv_count = getXPV(X,spvpfe.pole,getPhiPV(),s);
+
+	// Sanity checks
+	if (X.size() != spvpfe.pole.size())
+	  QDP_error_exit("%s : sanity failure, internal size not getSPVPartFracRoot size", __func__);
+
+	if (X[0].size() != N5)
+	  QDP_error_exit("%s : sanity failure, internal size not N5", __func__);
+
+	// Weight solns
+	multi1d<Phi> tmp(N5);
+	
+	// Loop over each 5d slice
+	for(int j=0; j < N5; ++j)
+	{
+	  tmp[j][PV->subset()] = spvpfe.norm * getPhiPV()[j];
+	  for(int i=0; i < X.size(); ++i)
+	    tmp[j][PV->subset()] += spvpfe.res[i] * X[i][j];
+	}
+
+	// Action on the subset
+	action_pv = norm2(tmp, PV->subset());
+      }
+
+      write(xml_out, "n_count", n_count);
+      write(xml_out, "n_pv_count", n_pv_count);
+      write(xml_out, "S_m", action_m);
+      write(xml_out, "S_PV", action_pv);
+      Double action = action_m + action_pv;
+      write(xml_out, "S", action);
+      pop(xml_out);
+
+      return action;
+    }
+
+
   protected:
     //! Get at fermion action
     virtual const WilsonTypeFermAct5D<Phi,P>& getFermAct(void) const = 0;
@@ -294,29 +424,23 @@ namespace Chroma
     //! mutator for PV pseudofermion 
     virtual multi1d<Phi>& getPhiPV(void) = 0;    
 
-    //! Return the numerator coefficient in force calc. partial fraction expansion
-    virtual const multi1d<Real>& getFPartFracCoeff() const = 0;
+    //! Return the partial fraction expansion for the force calc
+    virtual const RemezCoeff_t& getFPFE() const = 0;
 
-    //! Return the denominator roots in force calc. partial fraction expansion
-    virtual const multi1d<Real>& getFPartFracRoot() const = 0;
+    //! Return the partial fraction expansion for the action calc
+    virtual const RemezCoeff_t& getSPFE() const = 0;
 
-    //! Return the numerator coefficient in force calc. partial fraction expansion for PV
-    virtual const multi1d<Real>& getFPVPartFracCoeff() const = 0;
+    //! Return the partial fraction expansion for the heat-bath
+    virtual const RemezCoeff_t& getSIPFE() const = 0;
 
-    //! Return the denominator roots in force calc. partial fraction expansion for PV
-    virtual const multi1d<Real>& getFPVPartFracRoot() const = 0;
+    //! Return the partial fraction expansion for the force calc in PV
+    virtual const RemezCoeff_t& getFPVPFE() const = 0;
 
-    //! Return the numerator coefficient in heat-bath partial fraction expansion
-    virtual const multi1d<Real>& getHBPartFracCoeff() const = 0;
+    //! Return the partial fraction expansion for the action calc in PV
+    virtual const RemezCoeff_t& getSPVPFE() const = 0;
 
-    //! Return the denominator roots in heat-bath partial fraction expansion
-    virtual const multi1d<Real>& getHBPartFracRoot() const = 0;
-
-    //! Return the numerator coefficient in heat-bath partial fraction expansion for PV
-    virtual const multi1d<Real>& getHBPVPartFracCoeff() const = 0;
-
-    //! Return the denominator roots in heat-bath partial fraction expansion for PV
-    virtual const multi1d<Real>& getHBPVPartFracRoot() const = 0;
+    //! Return the partial fraction expansion for the heat-bath in PV
+    virtual const RemezCoeff_t& getSIPVPFE() const = 0;
 
     //! Multi-mass solver  (M^dagM + q_i)^{-1} chi  using partfrac
     virtual int getX(multi1d< multi1d<Phi> >& X, 
@@ -348,89 +472,13 @@ namespace Chroma
     //! Compute the total action
     virtual Double S(const AbsFieldState<P,Q>& s) const
     {
-      // SelfEncapsulation/Identification Rule
-      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out=TheXMLOutputWriter::Instance();
       push(xml_out, "OneFlavorRatExactUnprecWilsonTypeFermMonomial5D");
 
-      // Get at the fermion action
-      const WilsonTypeFermAct5D<Phi,P>& FA = getFermAct();
+      Double action = S_subset(s);
 
-      // Create a Connect State, apply fermionic boundaries
-      Handle<const ConnectState> bc_g_state(FA.createState(s.getQ()));
-
-      // Force terms
-      const int N5 = FA.size();
-
-      // Action for M term
-      Double action_m = zero;
-      int n_count;
-      {
-	Handle< const LinearOperator< multi1d<Phi> > > M(FA.linOp(bc_g_state));
-
-	// Get X out here via multisolver
-	multi1d< multi1d<Phi> > X;
-	n_count = getX(X,getFPartFracRoot(),getPhi(),s);
-
-	// Weight solns
-	if (X.size() != getFPartFracRoot().size())
-	  QDP_error_exit("%s : sanity failure, internal size not getHNPartFracRoot size", __func__);
-
-	multi1d<Phi> tmp(N5);
-	tmp = zero;
-	for(int i=0; i < X.size(); ++i)
-	{
-	  if (X[i].size() != N5)
-	    QDP_error_exit("%s : sanity failure, internal size not N5", __func__);
-
-	  // Loop over each 5d slice
-	  for(int j=0; j < N5; ++j)
-	    tmp[j] += getFPartFracCoeff()[i] * X[i][j];
-	}
-
-	// Action on the entire lattice
-	for(int i=0; i < N5; ++i)
-	  action_m += innerProductReal(getPhi()[i], tmp[i]);
-      }
-
-      // Action for PV term
-      Double action_pv = zero;
-      int n_pv_count = 0;
-      {
-	Handle< const LinearOperator< multi1d<Phi> > > PV(FA.linOpPV(bc_g_state));
-
-	// Get X out here via multisolver
-	multi1d< multi1d<Phi> > X;
-	n_count = getXPV(X,getFPVPartFracRoot(),getPhiPV(),s);
-
-	// Weight solns
-	if (X.size() != getFPVPartFracRoot().size())
-	  QDP_error_exit("%s : sanity failure, internal size not getHNPartFracRoot size", __func__);
-
-	multi1d<Phi> tmp(N5);
-	tmp = zero;
-	for(int i=0; i < X.size(); ++i)
-	{
-	  if (X[i].size() != N5)
-	    QDP_error_exit("%s : sanity failure, internal size not N5", __func__);
-
-	  // Loop over each 5d slice
-	  for(int j=0; j < N5; ++j)
-	    tmp[j] += getFPVPartFracCoeff()[i] * X[i][j];
-	}
-
-	// Action on the entire lattice
-	for(int i=0; i < N5; ++i)
-	  action_pv += innerProductReal(getPhiPV()[i], tmp[i]);
-      }
-
-      write(xml_out, "n_count", n_count);
-      write(xml_out, "n_pv_count", n_pv_count);
-      write(xml_out, "S_m", action_m);
-      write(xml_out, "S_PV", action_pv);
-      Double action = action_m + action_pv;
       write(xml_out, "S", action);
       pop(xml_out);
-
       return action;
     }
 
@@ -451,29 +499,23 @@ namespace Chroma
     //! mutator for PV pseudofermion 
     virtual multi1d<Phi>& getPhiPV(void) = 0;    
 
-    //! Return the numerator coefficient in force calc. partial fraction expansion
-    virtual const multi1d<Real>& getFPartFracCoeff() const = 0;
+    //! Return the partial fraction expansion for the force calc
+    virtual const RemezCoeff_t& getFPFE() const = 0;
 
-    //! Return the denominator roots in force calc. partial fraction expansion
-    virtual const multi1d<Real>& getFPartFracRoot() const = 0;
+    //! Return the partial fraction expansion for the action calc
+    virtual const RemezCoeff_t& getSPFE() const = 0;
 
-    //! Return the numerator coefficient in force calc. partial fraction expansion for PV
-    virtual const multi1d<Real>& getFPVPartFracCoeff() const = 0;
+    //! Return the partial fraction expansion for the heat-bath
+    virtual const RemezCoeff_t& getSIPFE() const = 0;
 
-    //! Return the denominator roots in force calc. partial fraction expansion for PV
-    virtual const multi1d<Real>& getFPVPartFracRoot() const = 0;
+    //! Return the partial fraction expansion for the force calc in PV
+    virtual const RemezCoeff_t& getFPVPFE() const = 0;
 
-    //! Return the numerator coefficient in heat-bath partial fraction expansion
-    virtual const multi1d<Real>& getHBPartFracCoeff() const = 0;
+    //! Return the partial fraction expansion for the action calc in PV
+    virtual const RemezCoeff_t& getSPVPFE() const = 0;
 
-    //! Return the denominator roots in heat-bath partial fraction expansion
-    virtual const multi1d<Real>& getHBPartFracRoot() const = 0;
-
-    //! Return the numerator coefficient in heat-bath partial fraction expansion for PV
-    virtual const multi1d<Real>& getHBPVPartFracCoeff() const = 0;
-
-    //! Return the denominator roots in heat-bath partial fraction expansion for PV
-    virtual const multi1d<Real>& getHBPVPartFracRoot() const = 0;
+    //! Return the partial fraction expansion for the heat-bath in PV
+    virtual const RemezCoeff_t& getSIPVPFE() const = 0;
 
     //! Multi-mass solver  (M^dagM + q_i)^{-1} chi  using partfrac
     virtual int getX(multi1d< multi1d<Phi> >& X, 
@@ -509,101 +551,25 @@ namespace Chroma
     //! Compute the odd odd contribution (eg
     virtual Double S_odd_odd(const AbsFieldState<P,Q>& s) const
     {
-      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
-      push(xml_out, "S_odd_odd");
-
-      const EvenOddPrecWilsonTypeFermAct5D<Phi,P>& FA = getFermAct();
-
-      // Create a Connect State, apply fermionic boundaries
-      Handle<const ConnectState> bc_g_state(FA.createState(s.getQ()));
-
-      // Force terms
-      const int N5 = FA.size();
-
-      // Action for M term
-      Double action_m = zero;
-      int n_count;
-      {
-	Handle< const LinearOperator< multi1d<Phi> > > M(FA.linOp(bc_g_state));
-
-	// Get X out here via multisolver
-	multi1d< multi1d<Phi> > X;
-	n_count = getX(X,getFPartFracRoot(),getPhi(),s);
-
-	// Weight solns
-	if (X.size() != getFPartFracRoot().size())
-	  QDP_error_exit("%s : sanity failure, internal size not getHNPartFracRoot size", __func__);
-
-	multi1d<Phi> tmp(N5);
-	tmp = zero;
-	for(int i=0; i < X.size(); ++i)
-	{
-	  if (X[i].size() != N5)
-	    QDP_error_exit("%s : sanity failure, internal size not N5", __func__);
-
-	  // Loop over each 5d slice
-	  for(int j=0; j < N5; ++j)
-	    tmp[j][M->subset()] += getFPartFracCoeff()[i] * X[i][j];
-	}
-
-	// Action on the entire lattice
-	for(int i=0; i < N5; ++i)
-	  action_m += innerProductReal(getPhi()[i], tmp[i], M->subset());
-      }
-
-      // Action for PV term
-      Double action_pv = zero;
-      int n_pv_count = 0;
-      {
-	Handle< const LinearOperator< multi1d<Phi> > > PV(FA.linOpPV(bc_g_state));
-
-	// Get X out here via multisolver
-	multi1d< multi1d<Phi> > X;
-	n_count = getXPV(X,getFPVPartFracRoot(),getPhiPV(),s);
-
-	// Weight solns
-	if (X.size() != getFPVPartFracRoot().size())
-	  QDP_error_exit("%s : sanity failure, internal size not getHNPartFracRoot size", __func__);
-
-	multi1d<Phi> tmp(N5);
-	tmp = zero;
-	for(int i=0; i < X.size(); ++i)
-	{
-	  if (X[i].size() != N5)
-	    QDP_error_exit("%s : sanity failure, internal size not N5", __func__);
-
-	  // Loop over each 5d slice
-	  for(int j=0; j < N5; ++j)
-	    tmp[j][PV->subset()] += getFPVPartFracCoeff()[i] * X[i][j];
-	}
-
-	// Action on the entire lattice
-	for(int i=0; i < N5; ++i)
-	  action_pv += innerProductReal(getPhiPV()[i], tmp[i], PV->subset());
-      }
-
-      write(xml_out, "n_count", n_count);
-      write(xml_out, "n_pv_count", n_pv_count);
-      write(xml_out, "S_m", action_m);
-      write(xml_out, "S_PV", action_pv);
-      Double action = action_m + action_pv;
-      write(xml_out, "S", action);
-      pop(xml_out);
-
-      return action;
+      return S_subset(s);
     }
 
     //! Compute the total action
-    Double S(const AbsFieldState<P,Q>& s)  const {
+    Double S(const AbsFieldState<P,Q>& s)  const 
+    {
       XMLWriter& xml_out=TheXMLOutputWriter::Instance();
       push(xml_out, "OneFlavorRatExactEvenOddPrecWilsonTypeFermMonomial5D");
 
-      Double action = S_even_even(s) + S_odd_odd(s);
+      Double action_e = S_even_even(s);
+      Double action_o = S_odd_odd(s);
+      Double action   = action_e + action_o;
 
+      write(xml_out, "S_even_even", action_e);
+      write(xml_out, "S_odd_odd", action_o);
       write(xml_out, "S", action);
       pop(xml_out);
-      return action;
 
+      return action;
     }
 
   protected:
@@ -622,29 +588,23 @@ namespace Chroma
     //! mutator for PV pseudofermion 
     virtual multi1d<Phi>& getPhiPV(void) = 0;    
 
-    //! Return the numerator coefficient in force calc. partial fraction expansion
-    virtual const multi1d<Real>& getFPartFracCoeff() const = 0;
+    //! Return the partial fraction expansion for the force calc
+    virtual const RemezCoeff_t& getFPFE() const = 0;
 
-    //! Return the denominator roots in force calc. partial fraction expansion
-    virtual const multi1d<Real>& getFPartFracRoot() const = 0;
+    //! Return the partial fraction expansion for the action calc
+    virtual const RemezCoeff_t& getSPFE() const = 0;
 
-    //! Return the numerator coefficient in force calc. partial fraction expansion for PV
-    virtual const multi1d<Real>& getFPVPartFracCoeff() const = 0;
+    //! Return the partial fraction expansion for the heat-bath
+    virtual const RemezCoeff_t& getSIPFE() const = 0;
 
-    //! Return the denominator roots in force calc. partial fraction expansion for PV
-    virtual const multi1d<Real>& getFPVPartFracRoot() const = 0;
+    //! Return the partial fraction expansion for the force calc in PV
+    virtual const RemezCoeff_t& getFPVPFE() const = 0;
 
-    //! Return the numerator coefficient in heat-bath partial fraction expansion
-    virtual const multi1d<Real>& getHBPartFracCoeff() const = 0;
+    //! Return the partial fraction expansion for the action calc in PV
+    virtual const RemezCoeff_t& getSPVPFE() const = 0;
 
-    //! Return the denominator roots in heat-bath partial fraction expansion
-    virtual const multi1d<Real>& getHBPartFracRoot() const = 0;
-
-    //! Return the numerator coefficient in heat-bath partial fraction expansion for PV
-    virtual const multi1d<Real>& getHBPVPartFracCoeff() const = 0;
-
-    //! Return the denominator roots in heat-bath partial fraction expansion for PV
-    virtual const multi1d<Real>& getHBPVPartFracRoot() const = 0;
+    //! Return the partial fraction expansion for the heat-bath in PV
+    virtual const RemezCoeff_t& getSIPVPFE() const = 0;
 
     //! Multi-mass solver  (M^dagM + q_i)^{-1} chi  using partfrac
     virtual int getX(multi1d< multi1d<Phi> >& X, 

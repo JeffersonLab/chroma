@@ -1,11 +1,11 @@
-// $Id: unprec_one_flavor_rat_monomial5d_w.cc,v 1.2 2005-01-28 05:09:37 edwards Exp $
+// $Id: unprec_one_flavor_rat_monomial5d_w.cc,v 1.3 2005-02-03 03:16:41 edwards Exp $
 /*! @file
  * @brief One-flavor collection of unpreconditioned 5D ferm monomials
  */
 
-#include "chromabase.h"
 #include "update/molecdyn/monomial/unprec_one_flavor_rat_monomial5d_w.h"
 #include "update/molecdyn/monomial/monomial_factory.h"
+#include "update/molecdyn/monomial/genapprox.h"
 
 #include "io/param_io.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
@@ -118,6 +118,26 @@ namespace Chroma
   } //end namespace Unprec OneFlavorWilsonFermRatMonomialEnv
 
 
+  //! Remez input
+  void read(XMLReader& xml, const string& path, 
+	    UnprecOneFlavorWilsonTypeFermRatMonomial5DParams::Remez_t& input)
+  {
+    XMLReader inputtop(xml, path);
+
+    read(inputtop, "lowerMin", input.lowerMin);
+    read(inputtop, "upperMax", input.upperMax);
+    read(inputtop, "lowerMinPV", input.lowerMinPV);
+    read(inputtop, "upperMaxPV", input.upperMaxPV);
+    read(inputtop, "forceDegree", input.forceDegree);
+    read(inputtop, "actionDegree", input.actionDegree);
+
+    if (inputtop.count("digitPrecision") != 0)
+      read(inputtop, "digitPrecision", input.digitPrecision);
+    else
+      input.digitPrecision = 50;
+  }
+
+
   // Read the parameters
   UnprecOneFlavorWilsonTypeFermRatMonomial5DParams::UnprecOneFlavorWilsonTypeFermRatMonomial5DParams(XMLReader& xml_in, const string& path)
   {
@@ -127,6 +147,7 @@ namespace Chroma
     try {
       // Read the inverter Parameters
       read(paramtop, "./InvertParam", inv_param);
+      read(paramtop, "./Remez", remez);
       XMLReader xml_tmp(paramtop, "./FermionAction");
       std::ostringstream os;
       xml_tmp.print(os);
@@ -156,11 +177,11 @@ namespace Chroma
   // Constructor
   UnprecOneFlavorWilsonTypeFermRatMonomial5D::UnprecOneFlavorWilsonTypeFermRatMonomial5D(
     const string& name_,
-    const UnprecOneFlavorWilsonTypeFermRatMonomial5DParams& param_) 
+    const UnprecOneFlavorWilsonTypeFermRatMonomial5DParams& param) 
   {
-    inv_param = param_.inv_param;
+    inv_param = param.inv_param;
 
-    std::istringstream is(param_.ferm_act);
+    std::istringstream is(param.ferm_act);
     XMLReader fermact_reader(is);
 
     // Get the name of the ferm act
@@ -194,29 +215,21 @@ namespace Chroma
 
     fermact = downcast;    
 
-
     //*********************************************************************
-    // HACK FOR NOW - arbitrarily set the coefficients
-    int N = 4;
-    FPartFracCoeff.resize(N);
-    FPartFracRoot.resize(N);
-    HBPartFracCoeff.resize(N);
-    HBPartFracRoot.resize(N);
+    // Remez approx
+    // M term
+    QDPIO::cout << "Normal operator PFE" << endl;
+    generateApprox(fpfe, spfe, sipfe,
+		   param.remez.lowerMin, param.remez.upperMax, 
+		   -2, param.remez.forceDegree, param.remez.actionDegree,
+		   param.remez.digitPrecision);
 
-    FPVPartFracCoeff.resize(N);
-    FPVPartFracRoot.resize(N);
-    HBPVPartFracCoeff.resize(N);
-    HBPVPartFracRoot.resize(N);
-
-    FPartFracCoeff = 1;
-    FPartFracRoot = 1;
-    HBPartFracCoeff = 1;
-    HBPartFracRoot = 1;
-
-    FPVPartFracCoeff = 1;
-    FPVPartFracRoot = 1;
-    HBPVPartFracCoeff = 1;
-    HBPVPartFracRoot = 1;
+    // PV term
+    QDPIO::cout << "PV operator PFE" << endl;
+    generateApprox(fpvpfe, spvpfe, sipvpfe,
+		   param.remez.lowerMinPV, param.remez.upperMaxPV, 
+		   2, param.remez.forceDegree, param.remez.actionDegree,
+		   param.remez.digitPrecision);
     //*********************************************************************
 
     QDPIO::cout << "UnprecOneFlavorWilsonTypeFermRatMonomial5D: finished " << fermact_string << endl;

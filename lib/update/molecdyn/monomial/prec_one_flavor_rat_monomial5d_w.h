@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_one_flavor_rat_monomial5d_w.h,v 1.1 2005-01-28 02:15:32 edwards Exp $
+// $Id: prec_one_flavor_rat_monomial5d_w.h,v 1.2 2005-02-03 03:16:41 edwards Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 5D ferm monomials
  */
@@ -19,7 +19,8 @@ namespace Chroma
   };
 
   // Parameter structure
-  struct EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5DParams {
+  struct EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5DParams 
+  {
     // Base Constructor
     EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5DParams();
 
@@ -27,6 +28,17 @@ namespace Chroma
     EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5DParams(XMLReader& in, const std::string&  path);
     InvertParam_t inv_param; // Inverter Parameters
     string ferm_act;
+
+    struct Remez_t   // eigenvalue bounds of M^dag*M
+    {
+      Real lowerMin;
+      Real upperMax;
+      Real lowerMinPV;
+      Real upperMaxPV;
+      int  forceDegree;
+      int  actionDegree;
+      int  digitPrecision;
+    } remez;
   };
 
   void read(XMLReader& xml, const string& path, EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5DParams& param);
@@ -77,29 +89,23 @@ namespace Chroma
       //! mutator for PV pseudofermion 
       multi1d<LatticeFermion>& getPhiPV(void) {return phiPV;}
 
-      //! Return the numerator coefficient in force calc. partial fraction expansion
-      const multi1d<Real>& getFPartFracCoeff() const {return FPartFracCoeff;}
+      //! Return the partial fraction expansion for the force calc
+      const RemezCoeff_t& getFPFE() const {return fpfe;}
 
-      //! Return the denominator roots in force calc. partial fraction expansion
-      const multi1d<Real>& getFPartFracRoot() const {return FPartFracRoot;}
+      //! Return the partial fraction expansion for the action calc
+      const RemezCoeff_t& getSPFE() const {return spfe;}
 
-      //! Return the numerator coefficient in force calc. partial fraction expansion for PV
-      const multi1d<Real>& getFPVPartFracCoeff() const {return FPVPartFracCoeff;}
+      //! Return the partial fraction expansion for the heat-bath
+      const RemezCoeff_t& getSIPFE() const {return sipfe;}
 
-      //! Return the denominator roots in force calc. partial fraction expansion for PV
-      const multi1d<Real>& getFPVPartFracRoot() const {return FPVPartFracRoot;}
+      //! Return the partial fraction expansion for the force calc in PV
+      const RemezCoeff_t& getFPVPFE() const {return fpvpfe;}
 
-      //! Return the numerator coefficient in heat-bath partial fraction expansion
-      const multi1d<Real>& getHBPartFracCoeff() const {return HBPartFracCoeff;}
+      //! Return the partial fraction expansion for the action calc in PV
+      const RemezCoeff_t& getSPVPFE() const {return spvpfe;}
 
-      //! Return the denominator roots in heat-bath partial fraction expansion
-      const multi1d<Real>& getHBPartFracRoot() const {return HBPartFracRoot;}
-
-      //! Return the numerator coefficient in heat-bath partial fraction expansion for PV
-      const multi1d<Real>& getHBPVPartFracCoeff() const {return HBPVPartFracCoeff;}
-
-      //! Return the denominator roots in heat-bath partial fraction expansion for PV
-      const multi1d<Real>& getHBPVPartFracRoot() const {return HBPVPartFracRoot;}
+      //! Return the partial fraction expansion for the heat-bath in PV
+      const RemezCoeff_t& getSIPVPFE() const {return sipvpfe;}
 
       //! Multi-mass solver  (M^dagM + q_i)^{-1} chi  using partfrac
       int getX(multi1d< multi1d<LatticeFermion> >& X, 
@@ -138,14 +144,13 @@ namespace Chroma
       InvertParam_t inv_param;
 
       // Coefficients and roots of partial fractions
-      multi1d<Real> FPartFracCoeff;
-      multi1d<Real> FPartFracRoot;
-      multi1d<Real> FPVPartFracCoeff;
-      multi1d<Real> FPVPartFracRoot;
-      multi1d<Real> HBPartFracCoeff;
-      multi1d<Real> HBPartFracRoot;
-      multi1d<Real> HBPVPartFracCoeff;
-      multi1d<Real> HBPVPartFracRoot;
+      RemezCoeff_t  fpfe;
+      RemezCoeff_t  spfe;
+      RemezCoeff_t  sipfe;
+
+      RemezCoeff_t  fpvpfe;
+      RemezCoeff_t  spvpfe;
+      RemezCoeff_t  sipvpfe;
     };
 
 

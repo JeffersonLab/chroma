@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_one_flavor_rat_monomial_w.h,v 1.1 2005-01-28 02:15:33 edwards Exp $
+// $Id: unprec_one_flavor_rat_monomial_w.h,v 1.2 2005-02-03 03:16:41 edwards Exp $
 /*! @file
  * @brief One-flavor collection of unpreconditioned 4D ferm monomials
  */
@@ -28,6 +28,15 @@ namespace Chroma
     UnprecOneFlavorWilsonTypeFermRatMonomialParams(XMLReader& in, const std::string&  path);
     InvertParam_t inv_param; // Inverter Parameters
     string ferm_act;
+
+    struct Remez_t   // eigenvalue bounds of M^dag*M
+    {
+      Real lowerMin;
+      Real upperMax;
+      int  forceDegree;
+      int  actionDegree;
+      int  digitPrecision;
+    } remez;
   };
 
   void read(XMLReader& xml, const string& path, UnprecOneFlavorWilsonTypeFermRatMonomialParams& param);
@@ -70,17 +79,14 @@ namespace Chroma
 	       const LatticeFermion& chi, 
 	       const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const;
 
-      //! Return the numerator coefficient in force calc. partial fraction expansion
-      const multi1d<Real>& getFPartFracCoeff() const {return FPartFracCoeff;}
+      //! Return the partial fraction expansion for the force calc
+      const RemezCoeff_t& getFPFE() const {return fpfe;}
 
-      //! Return the denominator roots in force calc. partial fraction expansion
-      const multi1d<Real>& getFPartFracRoot() const {return FPartFracRoot;}
+      //! Return the partial fraction expansion for the action calc
+      const RemezCoeff_t& getSPFE() const {return spfe;}
 
-      //! Return the numerator coefficient in heat-bath partial fraction expansion
-      const multi1d<Real>& getHBPartFracCoeff() const {return HBPartFracCoeff;}
-
-      //! Return the denominator roots in heat-bath partial fraction expansion
-      const multi1d<Real>& getHBPartFracRoot() const {return HBPartFracRoot;}
+      //! Return the partial fraction expansion for the heat-bath
+      const RemezCoeff_t& getSIPFE() const {return sipfe;}
 
     private:
       // Hide empty constructor and =
@@ -97,15 +103,12 @@ namespace Chroma
       InvertParam_t inv_param;
 
       // Coefficients and roots of partial fractions
-      multi1d<Real> FPartFracCoeff;
-      multi1d<Real> FPartFracRoot;
-      multi1d<Real> HBPartFracCoeff;
-      multi1d<Real> HBPartFracRoot;
+      RemezCoeff_t  fpfe;
+      RemezCoeff_t  spfe;
+      RemezCoeff_t  sipfe;
   };
 
-
 } //end namespace chroma
-
 
 
 #endif
