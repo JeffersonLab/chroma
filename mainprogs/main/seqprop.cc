@@ -1,4 +1,4 @@
-// $Id: seqprop.cc,v 1.20 2004-04-23 15:54:05 bjoo Exp $
+// $Id: seqprop.cc,v 1.21 2004-04-24 08:10:34 bjoo Exp $
 /*! \file
  *  \brief Main code for sequential propagator generation
  */
@@ -480,14 +480,22 @@ int main(int argc, char **argv)
     case FERM_ACT_ZOLOTAREV_4D:
       {    
 	const Zolotarev4DFermActParams& zolo4d = dynamic_cast<const Zolotarev4DFermActParams& > (*(prop_header.FermActHandle));
-	state_ptr = S_f->createState(u, zolo4d.StateInfo, xml_out);
-       
+
+       	const Zolotarev4DFermAct& S_zolo4 = dynamic_cast<const Zolotarev4DFermAct&>(*S_f);
+
+	state_ptr = S_zolo4.createState(u, zolo4d.StateInfo, xml_out);
+
       }
       break;
     case FERM_ACT_ZOLOTAREV_5D:
       {
-	const Zolotarev5DFermACtParams& zolo5d = dynamic_cast<const Zolotarev5DFermActParams& > (*(prop_header.FermActHandle));
-	state_ptr = S_f_a->createState(u, zolo5d.StateInfo, xml_out);
+	const Zolotarev5DFermActParams& zolo5d = dynamic_cast<const Zolotarev5DFermActParams& > (*(prop_header.FermActHandle));
+
+	const Zolotarev5DFermActArray& S_zolo5 = dynamic_cast<const Zolotarev5DFermActArray&>(*S_f_a);
+
+
+	state_ptr = S_zolo5.createState(u, zolo5d.StateInfo, xml_out);
+
       }
       break;
 
