@@ -1,5 +1,9 @@
 11/22/2004 -- Robert Edwards
 
+	Version 1.9.1. Removed last of all Namelist-isms. 
+
+11/22/2004 -- Robert Edwards
+
 	Version 1.9.0. Big merge of Wilson and Staggered builds - now all
         the same. Cleaned up automake files so make distcheck  should work.
 
