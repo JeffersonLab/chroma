@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lmdagm_w.h,v 1.4 2003-10-20 20:31:50 edwards Exp $
+// $Id: lmdagm_w.h,v 1.5 2003-11-09 22:35:19 edwards Exp $
 
 #ifndef __lmdagm_w_h__
 #define __lmdagm_w_h__
@@ -32,7 +32,7 @@ public:
 
   //! Apply the operator onto a source vector
   /*! For this operator, the sign is ignored */
-  inline T operator() (const T& psi, enum LinOpSign isign) const
+  inline T operator() (const T& psi, enum PlusMinus isign) const
     {return A(A(psi, PLUS), MINUS);}
 
 private:

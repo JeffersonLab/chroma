@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_linop_w.cc,v 1.3 2003-11-08 16:11:55 edwards Exp $
+// $Id: unprec_dwf_linop_w.cc,v 1.4 2003-11-09 22:35:19 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall linear operator
  */
@@ -94,7 +94,7 @@ chiralProjectMinus(const LatticeFermion& l)
  * \param psi 	  Pseudofermion field     	       (Read)
  * \param isign   Flag ( PLUS | MINUS )   	       (Read)
  */
-LatticeDWFermion UnprecDWLinOp::operator() (const LatticeDWFermion& psi, enum LinOpSign isign) const
+LatticeDWFermion UnprecDWLinOp::operator() (const LatticeDWFermion& psi, enum PlusMinus isign) const
 {
   LatticeDWFermion chi;
 

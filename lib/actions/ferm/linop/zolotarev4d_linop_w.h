@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev4d_linop_w.h,v 1.4 2003-10-20 20:31:50 edwards Exp $
+// $Id: zolotarev4d_linop_w.h,v 1.5 2003-11-09 22:35:19 edwards Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -46,7 +46,7 @@ public:
 	      const multi1d<LatticeFermion>& _EigVec, const multi1d<Real>& _EigVal);
 
   //! Apply the operator onto a source vector
-  LatticeFermion operator() (const LatticeFermion& psi, enum LinOpSign isign) const;
+  LatticeFermion operator() (const LatticeFermion& psi, enum PlusMinus isign) const;
 
 protected:
   //! Internal creation routine

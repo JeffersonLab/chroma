@@ -1,4 +1,4 @@
-// $Id: overlapbu_linop_w.cc,v 1.3 2003-10-09 21:06:29 edwards Exp $
+// $Id: overlapbu_linop_w.cc,v 1.4 2003-11-09 22:35:19 edwards Exp $
 /*! \file
  *  \brief Overlap operator
  */
@@ -39,7 +39,7 @@ void OverlapBULinOp::create(const multi1d<LatticeColorMatrix>& _u, const Real& _
  * \param psi 	  Pseudofermion field     	       (Read)
  * \param isign   Flag ( PLUS | MINUS )   	       (Read)
  */
-LatticeFermion OverlapBULinOp::operator() (const LatticeFermion& psi, enum LinOpSign isign) const
+LatticeFermion OverlapBULinOp::operator() (const LatticeFermion& psi, enum PlusMinus isign) const
 {
   LatticeFermion chi;
 

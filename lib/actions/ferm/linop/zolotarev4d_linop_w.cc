@@ -1,4 +1,4 @@
-// $Id: zolotarev4d_linop_w.cc,v 1.3 2003-10-20 20:31:50 edwards Exp $
+// $Id: zolotarev4d_linop_w.cc,v 1.4 2003-11-09 22:35:19 edwards Exp $
 /*! \file
  *  \brief 4D Zolotarev operator
  */
@@ -316,7 +316,7 @@ void Zolotarev4D::~Zolotarev()
  * \param psi 	  Pseudofermion field     	       (Read)
  * \param isign   Flag ( PLUS | MINUS )   	       (Read)
  */
-LatticeFermion Zolotarev4D::operator() (const LatticeFermion& psi, enum LinOpSign isign) const
+LatticeFermion Zolotarev4D::operator() (const LatticeFermion& psi, enum PlusMinus isign) const
 {
   LatticeFermion chi;
 

@@ -1,4 +1,4 @@
-// $Id: ldwfdslash_w.cc,v 1.1 2003-10-20 20:31:50 edwards Exp $
+// $Id: ldwfdslash_w.cc,v 1.2 2003-11-09 22:35:19 edwards Exp $
 /*! \file
  *  \brief DWF Dslash linear operator
  */
@@ -38,7 +38,7 @@ void DWDslash::create(const multi1d<LatticeColorMatrix>& u_, const Real& WilsonM
  *  \param isign      D'^dag or D' ( MINUS | PLUS ) resp.		(Read)
  *  \param cb	      Checkerboard of OUTPUT vector			(Read) 
  */
-LatticeDWFermion DWDslash::apply (const LatticeDWFermion& psi, enum LinOpSign isign, int cb) const
+LatticeDWFermion DWDslash::apply (const LatticeDWFermion& psi, enum PlusMinus isign, int cb) const
 {
   START_CODE("lDWDslash");
 

@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_sse.cc,v 1.7 2003-10-09 21:03:33 edwards Exp $
+// $Id: lwldslash_w_sse.cc,v 1.8 2003-11-09 22:35:19 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -102,7 +102,7 @@ SSEWilsonDslash::~SSEWilsonDslash(void) {
  *  \param isign      D'^dag or D' ( MINUS | PLUS ) resp.		(Read)
  *  \param cb	      Checkerboard of OUTPUT vector			(Read) 
  */
-LatticeFermion SSEWilsonDslash::apply (const LatticeFermion& psi, enum LinOpSign isign, int cb) const
+LatticeFermion SSEWilsonDslash::apply (const LatticeFermion& psi, enum PlusMinus isign, int cb) const
 {
   START_CODE("lWlDslash");
 

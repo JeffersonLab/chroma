@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_w.h,v 1.4 2003-10-20 20:31:50 edwards Exp $
+// $Id: lwldslash_w.h,v 1.5 2003-11-09 22:35:19 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -65,7 +65,7 @@ public:
    *
    * \return The output of applying dslash on dslash
    */
-  LatticeFermion apply (const LatticeFermion& psi, enum LinOpSign isign, int cb) const;
+  LatticeFermion apply (const LatticeFermion& psi, enum PlusMinus isign, int cb) const;
 
   //! Subset is all here
   const OrderedSubset& subset() const {return all;}

@@ -1,4 +1,4 @@
-// $Id: unprec_wilson_linop_w.cc,v 1.2 2003-04-24 17:45:09 edwards Exp $
+// $Id: unprec_wilson_linop_w.cc,v 1.3 2003-11-09 22:35:19 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -31,7 +31,7 @@ void UnprecWilsonLinOp::create(const multi1d<LatticeColorMatrix>& _u, const Real
  * \param psi 	  Pseudofermion field     	       (Read)
  * \param isign   Flag ( PLUS | MINUS )   	       (Read)
  */
-LatticeFermion UnprecWilsonLinOp::operator() (const LatticeFermion& psi, enum LinOpSign isign) const
+LatticeFermion UnprecWilsonLinOp::operator() (const LatticeFermion& psi, enum PlusMinus isign) const
 {
   LatticeFermion chi;
 

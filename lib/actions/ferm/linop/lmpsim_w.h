@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lmpsim_w.h,v 1.5 2003-10-20 20:31:50 edwards Exp $
+// $Id: lmpsim_w.h,v 1.6 2003-11-09 22:35:19 edwards Exp $
 
 // #pragma ident "Id"
 
@@ -95,7 +95,7 @@ public:
   void create(const multi1d<LatticeColorMatrix>& _u, const Real& _Kappa);
 
   //! Apply the operator onto a source vector
-  LatticeFermion operator() (const LatticeFermion& psi, enum LinOpSign isign) const;
+  LatticeFermion operator() (const LatticeFermion& psi, enum PlusMinus isign) const;
 
 private:
   Real Kappa;
