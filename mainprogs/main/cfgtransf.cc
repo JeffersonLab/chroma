@@ -1,4 +1,4 @@
-// $Id: cfgtransf.cc,v 1.10 2004-02-11 12:51:35 bjoo Exp $
+// $Id: cfgtransf.cc,v 1.11 2004-02-23 04:19:07 edwards Exp $
 /*! \file
  *  \brief Many-to-many gauge transformation routine
  */
@@ -628,7 +628,7 @@ int main(int argc, char **argv)
   {
     int TotalTrj;
     SzinGauge_t szin_out;
-    szinGaugeInit(szin_out);
+    initHeader(szin_out);
 
     QDPIO::cout << "Enter TotalTrj\n";
     QDPIO::cin >> TotalTrj;
