@@ -1,4 +1,4 @@
-// $Id: t_invborici.cc,v 1.1 2004-06-10 10:42:48 bjoo Exp $
+// $Id: t_invborici.cc,v 1.2 2004-07-09 09:50:58 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -13,7 +13,7 @@
 
 #include "chroma.h"
 
-#include "actions/ferm/invert/inv_borici.h"
+#include "actions/ferm/invert/inv_borici_w.h"
 
 using namespace QDP;
 using namespace std;

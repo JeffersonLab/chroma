@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.151 2004-06-16 14:51:33 dgr Exp $
+# $Id: Makefile.am,v 1.152 2004-07-09 09:50:56 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -77,7 +77,6 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/inv_rel_gmresr_sumr.h \
 	actions/ferm/invert/inv_rel_gmresr_cg.h \
 	actions/ferm/invert/inv_gmresr_cg_array.h \
-	actions/ferm/invert/inv_borici.h \
 	actions/ferm/linop/asqtad_dslash.h actions/ferm/linop/linop.h \
 	actions/ferm/linop/lmdagm.h actions/ferm/linop/lopscl.h \
 	actions/ferm/linop/partrat.h actions/ferm/qprop/qprop.h \
@@ -135,6 +134,7 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/unprec_parwilson_fermact_w.h \
 	actions/ferm/fermacts/zolotarev4d_fermact_w.h \
 	actions/ferm/fermacts/zolotarev5d_fermact_array_w.h \
+	actions/ferm/invert/inv_borici_w.h \
 	actions/ferm/linop/lwldslash_w_sse.h \
 	actions/ferm/linop/lwldslash_w_pab.h \
 	actions/ferm/linop/lgherm_w.h \
@@ -256,7 +256,7 @@ libchroma_a_SOURCES = gauge_startup.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
                proginfo.cc printgeom.cc fuzwilp.cc wilslp.cc \
 	       invsumr.cc minvsumr.cc inv_rel_sumr.cc minv_rel_sumr.cc \
 	       invbicgstab.cc invbicgstab_array.cc inv_rel_gmresr_sumr.cc \
-	       inv_rel_gmresr_cg.cc inv_gmresr_cg_array.cc inv_borici.cc \
+	       inv_rel_gmresr_cg.cc inv_gmresr_cg_array.cc \
 	       inv_minres_array.cc
 
 # 
@@ -301,7 +301,8 @@ libchroma_a_SOURCES += baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
 	      zolotarev5d_nonhermop_array_w.cc wall_qprop_w.cc \
               wallff_w.cc wallrhoff_w.cc wallrhopiff_w.cc \
               wallpionff_w.cc wallnuclff_w.cc \
-              walldeltaff_w.cc walldeltapff_w.cc 
+              walldeltaff_w.cc walldeltapff_w.cc \
+	      inv_borici_w.cc
 
 # zolotarev4d_linop_w.cc 
 

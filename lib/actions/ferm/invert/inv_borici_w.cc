@@ -1,5 +1,5 @@
 #include "chromabase.h"
-#include "actions/ferm/invert/inv_borici.h"
+#include "actions/ferm/invert/inv_borici_w.h"
 #include "actions/ferm/invert/inv_minres_array.h"
 
 template<typename T>
