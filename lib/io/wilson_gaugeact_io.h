@@ -20,11 +20,11 @@ public:
     return new WilsonGaugeActParams(*this);
   }
 
-  const GaugeActType_t getType(void) const { 
+  GaugeActType_t getType(void) const { 
     return GAUGEACT_WILSON;
   }
 
-  const Real getBeta(void) const { 
+  const Real& getBeta(void) const { 
     return beta; 
   }
 private:
