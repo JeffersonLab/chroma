@@ -1,4 +1,4 @@
-// $Id: wallpionff_w.cc,v 1.8 2004-04-11 05:35:12 edwards Exp $
+// $Id: wallpionff_w.cc,v 1.9 2004-04-18 20:17:46 edwards Exp $
 /*! \file
  *  \brief Wall-sink pion form-factors 
  *
@@ -42,77 +42,88 @@ void wallPionFormFac(XMLWriter& xml,
   Propagator q_x2 = sum(forw_prop, phases.getSet()[t_sink]);
 
   // Start new array group
-  XMLArrayWriter xml_array(xml, Nd);
-  push(xml_array, "WallPionFormFac");
+  // Loop over appropriate form-factor contractions for this system
+  XMLArrayWriter xml_seq_src(xml, 1);
+  push(xml_seq_src, "WallPionFormFac");
 
-  // Loop over gamma matrices of the insertion current of insertion current
-  for(int mu = 0; mu < Nd; ++mu)
+  for (int seq_src = 0; seq_src < 1; ++seq_src) 
   {
-    push(xml_array);
-    write(xml_array, "mu", mu);
+    push(xml_seq_src);
+    write(xml_seq_src, "seq_src", seq_src);
 
-    int gamma_value = 1 << mu;
+    // Loop over gamma matrices of the insertion current of insertion current
+    XMLArrayWriter xml_array(xml_seq_src, Nd);
+    push(xml_array, "FormFac");
 
-    // The local non-conserved vector-current matrix element 
-    LatticeComplex corr_local_fn =
-      trace(back_prop*Gamma(G5)*q_x2*adj(forw_prop)*Gamma(G5)*Gamma(gamma_value));
+    for(int mu = 0; mu < Nd; ++mu)
+    {
+      int gamma_value = 1 << mu;
 
-    multi2d<DComplex> hsum_local = phases.sft(corr_local_fn);
+      push(xml_array);
+      write(xml_array, "mu", mu);
+      write(xml_array, "gamma_value", gamma_value);
 
-    // Construct the non-local current matrix element 
-    //
-    // The form of J_mu = (1/2)*[psibar(x+mu)*U^dag_mu*(1+gamma_mu)*psi(x) -
-    //                           psibar(x)*U_mu*(1-gamma_mu)*psi(x+mu)]
-    // NOTE: the 1/2  is included down below in the sumMulti stuff
-    LatticePropagator tmp_prop1 = back_prop * Gamma(15) * q_x2;
-    LatticePropagator tmp_prop2 = shift(tmp_prop1, FORWARD, mu);
-    LatticeComplex corr_nonlocal_fn =
-      trace(adj(u[mu] * shift(forw_prop, FORWARD, mu)) * Gamma(15) * 
-	    (tmp_prop1 + Gamma(gamma_value) * tmp_prop1)) -
-      trace(adj(forw_prop) * u[mu] * Gamma(15) *
-	    (tmp_prop2 - Gamma(gamma_value) * tmp_prop2));
+      // The local non-conserved vector-current matrix element 
+      LatticeComplex corr_local_fn =
+	trace(back_prop*Gamma(G5)*q_x2*adj(forw_prop)*Gamma(G5)*Gamma(gamma_value));
 
-    multi2d<DComplex> hsum_nonlocal = phases.sft(corr_nonlocal_fn);
+      multi2d<DComplex> hsum_local = phases.sft(corr_local_fn);
+
+      // Construct the non-local current matrix element 
+      //
+      // The form of J_mu = (1/2)*[psibar(x+mu)*U^dag_mu*(1+gamma_mu)*psi(x) -
+      //                           psibar(x)*U_mu*(1-gamma_mu)*psi(x+mu)]
+      // NOTE: the 1/2  is included down below in the sumMulti stuff
+      LatticePropagator tmp_prop1 = back_prop * Gamma(15) * q_x2;
+      LatticePropagator tmp_prop2 = shift(tmp_prop1, FORWARD, mu);
+      LatticeComplex corr_nonlocal_fn =
+	trace(adj(u[mu] * shift(forw_prop, FORWARD, mu)) * Gamma(15) * 
+	      (tmp_prop1 + Gamma(gamma_value) * tmp_prop1)) -
+	trace(adj(forw_prop) * u[mu] * Gamma(15) *
+	      (tmp_prop2 - Gamma(gamma_value) * tmp_prop2));
+
+      multi2d<DComplex> hsum_nonlocal = phases.sft(corr_nonlocal_fn);
 
   
-    XMLArrayWriter xml_inser_mom(xml_array, phases.numMom());
-    push(xml_inser_mom, "Momenta");
+      XMLArrayWriter xml_inser_mom(xml_array, phases.numMom());
+      push(xml_inser_mom, "Momenta");
 
-    // Loop over insertion momenta and print out results
-    for(int inser_mom_num=0; inser_mom_num<phases.numMom(); ++inser_mom_num) 
-    {
-      push(xml_inser_mom);
-      write(xml_inser_mom, "inser_mom_num", inser_mom_num);
-      write(xml_inser_mom, "inser_mom", phases.numToMom(inser_mom_num)) ;
+      // Loop over insertion momenta and print out results
+      for(int inser_mom_num=0; inser_mom_num<phases.numMom(); ++inser_mom_num) 
+      {
+	push(xml_inser_mom);
+	write(xml_inser_mom, "inser_mom_num", inser_mom_num);
+	write(xml_inser_mom, "inser_mom", phases.numToMom(inser_mom_num)) ;
 
 //      form.formFac[gamma_value].momenta[inser_mom_num].inser_mom = phases.numToMom(inser_mom_num);
 
-      multi1d<Complex> local_cur3ptfn(length);
-      multi1d<Complex> nonlocal_cur3ptfn(length);
+	multi1d<Complex> local_cur3ptfn(length);
+	multi1d<Complex> nonlocal_cur3ptfn(length);
 
-      for (int t=0; t < length; ++t) 
-      {
-        int t_eff = (t - t0 + length) % length;
+	for (int t=0; t < length; ++t) 
+	{
+	  int t_eff = (t - t0 + length) % length;
 
-        local_cur3ptfn[t_eff] = hsum_local[inser_mom_num][t];
-	nonlocal_cur3ptfn[t_eff] = 0.5 * hsum_nonlocal[inser_mom_num][t];
-      } // end for(t)
+	  local_cur3ptfn[t_eff] = hsum_local[inser_mom_num][t];
+	  nonlocal_cur3ptfn[t_eff] = 0.5 * hsum_nonlocal[inser_mom_num][t];
+	} // end for(t)
 
-      // Print out the results
-      write(xml_inser_mom, "local_cur3ptfn", local_cur3ptfn);
-      write(xml_inser_mom, "nonlocal_cur3ptfn", nonlocal_cur3ptfn);
+	// Print out the results
+	write(xml_inser_mom, "local_cur3ptfn", local_cur3ptfn);
+	write(xml_inser_mom, "nonlocal_cur3ptfn", nonlocal_cur3ptfn);
 
-//      form.formFac[gamma_value].momenta[inser_mom_num].local_current    = local_cur3ptfn;
-//      form.formFac[gamma_value].momenta[inser_mom_num].nonlocal_current = nonlocal_cur3ptfn;
+	pop(xml_inser_mom);  // elem
+      } // end for(inser_mom_num)
 
-      pop(xml_inser_mom);  // elem
-    } // end for(inser_mom_num)
-
-    pop(xml_inser_mom);    // Momenta
-    pop(xml_array);        // elem
-  } // end for(gamma_value)
+      pop(xml_inser_mom);    // Momenta
+      pop(xml_array);        // elem
+    } // end for(gamma_value)
                             
-  pop(xml_array);          // WallPionFormFac
+    pop(xml_array);          // FormFac
+    pop(xml_seq_src);        // elem
+  } // end for(seq_src)
+                            
+  pop(xml_seq_src);          // WallPionFormFac
 
   END_CODE("FormFac");
 }
