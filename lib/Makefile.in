@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.11 2003-02-16 20:03:32 edwards Exp $
+# $Id: Makefile.in,v 1.12 2003-02-17 04:36:21 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -164,7 +164,7 @@ GENERIC_SRCS = $(HDRS) gaus_smear.cc taproj.cc hotst.cc expm12.cc \
 # Object files to add if building the Wilson Builds...
 # This is OK, since Ns is determined at configure time
 #
-WILSON_SRCS = dslashm_w.cc baryon_w.cc mesons_w.cc lwldslash_w.cc
+WILSON_SRCS = dslashm_w.cc baryon_w.cc mesons_w.cc lwldslash_w.cc lmpsim_w.cc
 
 #
 # This is the list of files to be used in Staggered Builds
@@ -190,19 +190,20 @@ libchroma_a_LIBADD =
 am__libchroma_a_SOURCES_DIST = chroma.h chromabase.h chromainc.h \
 	primitives.h defs.h common_declarations.h geom.h gaus_smear.cc \
 	taproj.cc hotst.cc expm12.cc klein_gord.cc mesplq.cc reunit.cc \
-	srcfil.cc dslashm_w.cc baryon_w.cc mesons_w.cc lwldslash_w.cc
+	srcfil.cc dslashm_w.cc baryon_w.cc mesons_w.cc lwldslash_w.cc \
+	lmpsim_w.cc
 am__objects_1 =
 am__objects_2 = $(am__objects_1) gaus_smear.$(OBJEXT) taproj.$(OBJEXT) \
 	hotst.$(OBJEXT) expm12.$(OBJEXT) klein_gord.$(OBJEXT) \
 	mesplq.$(OBJEXT) reunit.$(OBJEXT) srcfil.$(OBJEXT)
 am__objects_3 = dslashm_w.$(OBJEXT) baryon_w.$(OBJEXT) \
-	mesons_w.$(OBJEXT) lwldslash_w.$(OBJEXT)
+	mesons_w.$(OBJEXT) lwldslash_w.$(OBJEXT) lmpsim_w.$(OBJEXT)
 @BUILD_STAGGERED_LIBS_TRUE@am_libchroma_a_OBJECTS = $(am__objects_2) \
 @BUILD_STAGGERED_LIBS_TRUE@	$(am__objects_1)
 @BUILD_WILSON_LIBS_TRUE@am_libchroma_a_OBJECTS = $(am__objects_2) \
 @BUILD_WILSON_LIBS_TRUE@	$(am__objects_3)
 am__EXTRA_libchroma_a_SOURCES_DIST = dslashm_w.cc baryon_w.cc \
-	mesons_w.cc lwldslash_w.cc
+	mesons_w.cc lwldslash_w.cc lmpsim_w.cc
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
@@ -211,9 +212,10 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/baryon_w.Po ./$(DEPDIR)/dslashm_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/expm12.Po ./$(DEPDIR)/gaus_smear.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/hotst.Po ./$(DEPDIR)/klein_gord.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/lwldslash_w.Po ./$(DEPDIR)/mesons_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/mesplq.Po ./$(DEPDIR)/reunit.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/srcfil.Po ./$(DEPDIR)/taproj.Po
+@AMDEP_TRUE@	./$(DEPDIR)/lmpsim_w.Po ./$(DEPDIR)/lwldslash_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/mesons_w.Po ./$(DEPDIR)/mesplq.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/reunit.Po ./$(DEPDIR)/srcfil.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/taproj.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -286,6 +288,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gaus_smear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hotst.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/klein_gord.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lmpsim_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesons_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesplq.Po@am__quote@
