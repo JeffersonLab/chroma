@@ -1,4 +1,4 @@
-// $Id: wallpionff_w.cc,v 1.6 2004-04-06 21:46:28 edwards Exp $
+// $Id: wallpionff_w.cc,v 1.7 2004-04-07 04:38:36 edwards Exp $
 /*! \file
  *  \brief Wall-sink pion form-factors 
  *
@@ -69,7 +69,7 @@ void wallPionFormFac(XMLWriter& xml,
     LatticeComplex corr_nonlocal_fn =
       trace(adj(u[mu] * shift(forw_prop, FORWARD, mu)) * Gamma(15) * 
 	    (tmp_prop1 + Gamma(gamma_value) * tmp_prop1)) -
-      trace(adj(forw_prop) * Gamma(15) *
+      trace(adj(forw_prop) * u[mu] * Gamma(15) *
 	    (tmp_prop2 - Gamma(gamma_value) * tmp_prop2));
 
     multi2d<DComplex> hsum_nonlocal = phases.sft(corr_nonlocal_fn);
