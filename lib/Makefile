@@ -14,7 +14,7 @@
 
 
 
-# $Id: Makefile,v 1.11 2003-09-11 16:10:46 bjoo Exp $
+# $Id: Makefile,v 1.12 2003-09-11 16:57:17 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -50,15 +50,15 @@ host_triplet = i686-pc-linux-gnu
 #	      p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc 
 
 #am__append_3 = lwldslash_w_sse.cc
-am__append_4 = 
+am__append_4 = mesphas_s.cc
 VPATH = $(TOPDIR) $(TOPDIR)/lib $(TOPDIR)/lib/actions $(TOPDIR)/lib/actions/boson $(TOPDIR)/lib/actions/boson/operator $(TOPDIR)/lib/actions/ferm $(TOPDIR)/lib/actions/ferm/fermacts $(TOPDIR)/lib/actions/ferm/invert $(TOPDIR)/lib/actions/ferm/linop $(TOPDIR)/lib/actions/ferm/qprop $(TOPDIR)/lib/actions/gauge $(TOPDIR)/lib/geom $(TOPDIR)/lib/info $(TOPDIR)/lib/io $(TOPDIR)/lib/meas $(TOPDIR)/lib/meas/eig $(TOPDIR)/lib/meas/gfix $(TOPDIR)/lib/meas/glue $(TOPDIR)/lib/meas/hadron $(TOPDIR)/lib/meas/pbp $(TOPDIR)/lib/meas/schrfun $(TOPDIR)/lib/meas/smear $(TOPDIR)/lib/meas/sources $(TOPDIR)/lib/update $(TOPDIR)/lib/update/heatbath $(TOPDIR)/lib/update/molecdyn $(TOPDIR)/lib/update/molecdyn/dsdu $(TOPDIR)/lib/update/molecdyn/est $(TOPDIR)/lib/update/molecdyn/mese $(TOPDIR)/lib/update/molecdyn/noise $(TOPDIR)/lib/update/molecdyn/step $(TOPDIR)/lib/util $(TOPDIR)/lib/util/comm $(TOPDIR)/lib/util/ferm $(TOPDIR)/lib/util/ft $(TOPDIR)/lib/util/gauge $(TOPDIR)/lib/util/misc $(TOPDIR)/lib/util/random $(TOPDIR)/include $(TOPDIR)/mainprogs $(TOPDIR)/mainprogs/main $(TOPDIR)/mainprogs/tests $(TOPDIR)/root
-ACLOCAL = ${SHELL} /.automount/flack/disk/flack2/users/bj/scratch/tmp/chroma/config/missing --run aclocal-1.7
+ACLOCAL = ${SHELL} /home/eduardo/chroma/config/missing --run aclocal-1.7
 AMDEP_FALSE = #
 AMDEP_TRUE = 
-AMTAR = ${SHELL} /.automount/flack/disk/flack2/users/bj/scratch/tmp/chroma/config/missing --run tar
-AUTOCONF = ${SHELL} /.automount/flack/disk/flack2/users/bj/scratch/tmp/chroma/config/missing --run autoconf
-AUTOHEADER = ${SHELL} /.automount/flack/disk/flack2/users/bj/scratch/tmp/chroma/config/missing --run autoheader
-AUTOMAKE = ${SHELL} /.automount/flack/disk/flack2/users/bj/scratch/tmp/chroma/config/missing --run automake-1.7
+AMTAR = ${SHELL} /home/eduardo/chroma/config/missing --run tar
+AUTOCONF = ${SHELL} /home/eduardo/chroma/config/missing --run autoconf
+AUTOHEADER = ${SHELL} /home/eduardo/chroma/config/missing --run autoheader
+AUTOMAKE = ${SHELL} /home/eduardo/chroma/config/missing --run automake-1.7
 AWK = gawk
 BUILD_SSE_WILSON_DSLASH_FALSE = 
 BUILD_SSE_WILSON_DSLASH_TRUE = #
@@ -67,9 +67,9 @@ BUILD_STAGGERED_LIBS_TRUE =
 BUILD_WILSON_LIBS_FALSE = 
 BUILD_WILSON_LIBS_TRUE = #
 CPPFLAGS = 
-CXX = mpiCC
+CXX = g++
 CXXDEPMODE = depmode=gcc3
-CXXFLAGS = 
+CXXFLAGS = -g -O2
 CYGPATH_W = echo
 DEFS = -DPACKAGE_NAME=\"chroma\" -DPACKAGE_TARNAME=\"chroma\" -DPACKAGE_VERSION=\"0.2\" -DPACKAGE_STRING=\"chroma\ 0.2\" -DPACKAGE_BUGREPORT=\"edwards@jlab.org\" -DPACKAGE=\"chroma\" -DVERSION=\"0.2\" 
 DEPDIR = .deps
@@ -89,7 +89,7 @@ LDFLAGS =
 LIBOBJS = 
 LIBS = 
 LTLIBOBJS = 
-MAKEINFO = ${SHELL} /.automount/flack/disk/flack2/users/bj/scratch/tmp/chroma/config/missing --run makeinfo
+MAKEINFO = ${SHELL} /home/eduardo/chroma/config/missing --run makeinfo
 OBJEXT = o
 PACKAGE = chroma
 PACKAGE_BUGREPORT = edwards@jlab.org
@@ -98,14 +98,14 @@ PACKAGE_STRING = chroma 0.2
 PACKAGE_TARNAME = chroma
 PACKAGE_VERSION = 0.2
 PATH_SEPARATOR = :
-QDPXX_CONFIG = /Home/bj/scratch/tmp/install/bin/qdp++-config
-QDPXX_CXXFLAGS = -O2 -finline-limit=50000 -I/Home/bj/scratch/tmp/install/include -I/usr/include/libxml2/libxml -I/usr/include/libxml2 -I/include
-QDPXX_LDFLAGS = -L/Home/bj/scratch/tmp/install/lib
-QDPXX_LIBS = -lqdp -lnml -lXPathReader -lxmlWriter -lqio -ldime -L/usr/lib -lxml2 -lz -L/lib -lm -lqmp
+QDPXX_CONFIG = /home/eduardo/bin/qdp++-config
+QDPXX_CXXFLAGS = -O2 -finline-limit=50000 -I/home/eduardo/include -I/usr/include/libxml2
+QDPXX_LDFLAGS = -L/home/eduardo/lib
+QDPXX_LIBS = -lqdp -lnml -lXPathReader -lxmlWriter -lqio -ldime -L/usr/lib -lxml2 -lz -lm
 QDPXX_NC = 3
 QDPXX_ND = 4
 QDPXX_NS = 1
-QDPXX_PARALLEL_ARCH = parscalar
+QDPXX_PARALLEL_ARCH = scalar
 QDPXX_PRECISION = single
 RANLIB = ranlib
 SET_MAKE = 
@@ -119,7 +119,7 @@ ac_ct_STRIP =
 am__fastdepCXX_FALSE = #
 am__fastdepCXX_TRUE = 
 am__include = include
-am__leading_dot = @am__leading_dot@
+am__leading_dot = .
 am__quote = 
 bindir = ${exec_prefix}/bin
 build = i686-pc-linux-gnu
@@ -136,7 +136,7 @@ host_os = linux-gnu
 host_vendor = pc
 includedir = ${prefix}/include
 infodir = ${prefix}/info
-install_sh = /.automount/flack/disk/flack2/users/bj/scratch/tmp/chroma/config/install-sh
+install_sh = /home/eduardo/chroma/config/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localstatedir = ${prefix}/var
@@ -160,7 +160,7 @@ INCFLAGS = -I$(TOPDIR)/include
 #
 # Any other compiler flags
 # 
-AM_CXXFLAGS = $(INCFLAGS)  -O2 -finline-limit=50000 -I/Home/bj/scratch/tmp/install/include -I/usr/include/libxml2/libxml -I/usr/include/libxml2 -I/include $(am__append_1)
+AM_CXXFLAGS = $(INCFLAGS) -g -O2 -O2 -finline-limit=50000 -I/home/eduardo/include -I/usr/include/libxml2 $(am__append_1)
 
 lib_LIBRARIES = libchroma.a
 
@@ -199,7 +199,8 @@ am__libchroma_a_SOURCES_DIST = gaus_smear.cc rgauge.cc taproj.cc \
 	unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
 	unprec_wilson_dsdu_w.cc unprec_qprop_w.cc readszinqprop_w.cc \
 	readszinferm_w.cc overlapbu_linop_w.cc p_src_w.cc d_src_w.cc \
-	D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc lwldslash_w_sse.cc
+	D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc lwldslash_w_sse.cc \
+	mesphas_s.cc
 #am__objects_1 = baryon_w.$(OBJEXT) \
 #	mesons_w.$(OBJEXT) \
 #	lwldslash_w.$(OBJEXT) \
@@ -217,7 +218,7 @@ am__libchroma_a_SOURCES_DIST = gaus_smear.cc rgauge.cc taproj.cc \
 #	D_j_w.$(OBJEXT) DjDk_w.$(OBJEXT) \
 #	BuildingBlocks_w.$(OBJEXT)
 #am__objects_2 = lwldslash_w_sse.$(OBJEXT)
-am__objects_3 =
+am__objects_3 = mesphas_s.$(OBJEXT)
 am_libchroma_a_OBJECTS = gaus_smear.$(OBJEXT) rgauge.$(OBJEXT) \
 	taproj.$(OBJEXT) hotst.$(OBJEXT) expm12.$(OBJEXT) \
 	klein_gord.$(OBJEXT) mesplq.$(OBJEXT) reunit.$(OBJEXT) \
@@ -244,7 +245,8 @@ DEP_FILES = ./$(DEPDIR)/BuildingBlocks_w.Po \
 	./$(DEPDIR)/klein_gord.Po ./$(DEPDIR)/laplacian.Po \
 	./$(DEPDIR)/lwldslash_w.Po \
 	./$(DEPDIR)/lwldslash_w_sse.Po \
-	./$(DEPDIR)/mesons_w.Po ./$(DEPDIR)/mesplq.Po \
+	./$(DEPDIR)/mesons_w.Po ./$(DEPDIR)/mesphas_s.Po \
+	./$(DEPDIR)/mesplq.Po \
 	./$(DEPDIR)/overlapbu_linop_w.Po \
 	./$(DEPDIR)/p_src_w.Po ./$(DEPDIR)/qprop_io.Po \
 	./$(DEPDIR)/readszin.Po \
@@ -343,6 +345,7 @@ include ./$(DEPDIR)/laplacian.Po
 include ./$(DEPDIR)/lwldslash_w.Po
 include ./$(DEPDIR)/lwldslash_w_sse.Po
 include ./$(DEPDIR)/mesons_w.Po
+include ./$(DEPDIR)/mesphas_s.Po
 include ./$(DEPDIR)/mesplq.Po
 include ./$(DEPDIR)/overlapbu_linop_w.Po
 include ./$(DEPDIR)/p_src_w.Po

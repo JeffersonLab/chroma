@@ -1,10 +1,11 @@
-// $Id: t_follana_io_s.cc,v 1.4 2003-09-11 16:10:46 bjoo Exp $
+// $Id: t_follana_io_s.cc,v 1.5 2003-09-11 16:57:17 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
 
 #include "chroma.h"
 #include "io/follana_io.h"
+#include "meas/hadron/mesphas_s.h"
 
 using namespace QDP;
 
@@ -81,6 +82,9 @@ int main(int argc, char *argv[])
   Write(xml_out, hsum);
   pop(xml_out);
 
+  multi1d<LatticeReal> meson_phases(Nd);
+
+  MesPhas(meson_phases, 3);
   // Time to bolt
   QDP_finalize();
   exit(0);

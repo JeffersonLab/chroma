@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.38 2003-09-11 16:34:48 edwards Exp $
+# $Id: Makefile.am,v 1.39 2003-09-11 16:57:17 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -108,7 +108,7 @@ endif
 # This is OK since Ns is determined at configure time 
 #
 if BUILD_STAGGERED_LIBS
-libchroma_a_SOURCES +=
+libchroma_a_SOURCES += mesphas_s.cc
 endif
 
 
