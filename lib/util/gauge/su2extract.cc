@@ -1,4 +1,4 @@
-// $Id: su2extract.cc,v 1.2 2003-03-31 19:46:08 edwards Exp $
+// $Id: su2extract.cc,v 1.3 2003-08-09 03:56:11 edwards Exp $
 /*! \file
  *  \brief  Extract an unnormalized SU(2) matrix from a GL(3,C) matrix
  */
@@ -29,10 +29,12 @@ using namespace QDP;
  * \return su2 matrix represented in the O(4) rep. - an array of LatticeReal 
  */
 
+template<typename S>
+inline
 multi1d<LatticeReal> 
-su2Extract(const LatticeColorMatrix& source, 
-	   int su2_index, 
-	   const Subset& s)
+su2Extract_t(const LatticeColorMatrix& source, 
+	     int su2_index, 
+	     const S& s)
 {
   START_CODE("su2Extract");
 
@@ -73,3 +75,23 @@ su2Extract(const LatticeColorMatrix& source,
 
   return r;
 }
+
+
+multi1d<LatticeReal> 
+su2Extract(const LatticeColorMatrix& source, 
+	   int su2_index, 
+	   const UnorderedSubset& s)
+{
+  return su2Extract_t(source, su2index, s);
+}
+
+
+multi1d<LatticeReal> 
+su2Extract(const LatticeColorMatrix& source, 
+	   int su2_index, 
+	   const OrderedSubset& s)
+{
+  return su2Extract_t(source, su2index, s);
+}
+
+

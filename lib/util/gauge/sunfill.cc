@@ -1,4 +1,4 @@
-// $Id: sunfill.cc,v 1.3 2003-04-02 22:24:58 edwards Exp $
+// $Id: sunfill.cc,v 1.4 2003-08-09 03:56:11 edwards Exp $
 /*! \file
  *  \brief  Fill an SU(Nc) matrix with an SU(2) submatrix
  */
@@ -30,10 +30,12 @@ using namespace QDP;
  * \return su(n) matrix 
  */
 
+template<typename S>
+inline
 LatticeColorMatrix
-sunFill(const multi1d<LatticeReal>& r,
-	int su2_index,
-	const Subset& s)
+sunFill_t(const multi1d<LatticeReal>& r,
+	  int su2_index,
+	  const S& s)
 {
   START_CODE("sunFill");
 
@@ -79,3 +81,23 @@ sunFill(const multi1d<LatticeReal>& r,
 
   return dest;
 }
+
+
+LatticeColorMatrix
+sunFill(const multi1d<LatticeReal>& r,
+	int su2_index,
+	const UnorderedSubset& s)
+{
+  return sunFill_t(r, su2_index, s);
+}
+
+
+LatticeColorMatrix
+sunFill(const multi1d<LatticeReal>& r,
+	int su2_index,
+	const OrderedSubset& s)
+{
+  return sunFill_t(r, su2_index, s);
+}
+
+
