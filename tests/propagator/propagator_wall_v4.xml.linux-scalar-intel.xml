@@ -13,7 +13,7 @@
   </ProgramInfo>
   <Input><propagator>
 <annotation>
-; $Id: propagator_wall_v4.xml.linux-scalar-intel.xml,v 1.1 2004-04-05 16:43:12 edwards Exp $
+; $Id: propagator_wall_v4.xml.linux-scalar-intel.xml,v 1.2 2004-04-06 04:22:00 edwards Exp $
 ;
 ; PROPAGATOR input file.
 ;
@@ -45,9 +45,10 @@
  </InvertParam>
  <nrow>4 4 4 8</nrow>
  <boundary>1 1 1 -1</boundary>
+ <t_source>0 0 0 0</t_source>
 </Param>
 <Cfg>
- <cfg_type>SZIN</cfg_type>
+ <cfg_type>SZINQIO</cfg_type>
  <cfg_file>../gfix.cfg1</cfg_file>
 </Cfg>
 <Prop>
@@ -60,40 +61,40 @@
   </Input>
   <Config_info><szin>
       <cfg_version>7</cfg_version>
-      <date>put in some date here</date>
-      <banner>chroma stuff - need more here</banner>
+      <date>Sat Jun 16 00:35:57 2001</date>
+      <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
       <FermTypeP>0</FermTypeP>
       <Nd>4</Nd>
       <Nc>3</Nc>
-      <BetaMC>0</BetaMC>
+      <BetaMC>20.1</BetaMC>
       <BetaMD>0</BetaMD>
       <KappaMC>0</KappaMC>
       <KappaMD>0</KappaMD>
       <MassMC>0</MassMC>
       <MassMD>0</MassMD>
       <dt>0</dt>
-      <MesTrj>0</MesTrj>
+      <MesTrj>1</MesTrj>
       <TotalCG>0</TotalCG>
-      <TotalTrj>0</TotalTrj>
-      <spec_acc>1</spec_acc>
-      <NOver>0</NOver>
-      <TotalTry>0</TotalTry>
-      <TotalFail>0</TotalFail>
-      <Nf>0</Nf>
-      <Npf>0</Npf>
-      <RefMomTrj>0</RefMomTrj>
-      <RefFnoiseTrj>0</RefFnoiseTrj>
-      <LamPl>0</LamPl>
+      <TotalTrj>2</TotalTrj>
+      <spec_acc>0</spec_acc>
+      <NOver>2</NOver>
+      <TotalTry>12288</TotalTry>
+      <TotalFail>56</TotalFail>
+      <Nf>9.48851e+33</Nf>
+      <Npf>2</Npf>
+      <RefMomTrj>302059064</RefMomTrj>
+      <RefFnoiseTrj>36</RefFnoiseTrj>
+      <LamPl>9.45468e+33</LamPl>
       <LamMi>0</LamMi>
-      <AlpLog>0</AlpLog>
-      <AlpExp>0</AlpExp>
+      <AlpLog>4.2039e-45</AlpLog>
+      <AlpExp>4.2039e-45</AlpExp>
       <nrow>4 4 4 8</nrow>
       <seed>
         <Seed>
-          <elem>11</elem>
-          <elem>0</elem>
-          <elem>0</elem>
-          <elem>0</elem>
+          <elem>811</elem>
+          <elem>1073</elem>
+          <elem>1535</elem>
+          <elem>1310</elem>
         </Seed>
       </seed>
     </szin>
@@ -117,40 +118,40 @@
       <Config_info>
         <szin>
           <cfg_version>7</cfg_version>
-          <date>put in some date here</date>
-          <banner>chroma stuff - need more here</banner>
+          <date>Sat Jun 16 00:35:57 2001</date>
+          <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
           <FermTypeP>0</FermTypeP>
           <Nd>4</Nd>
           <Nc>3</Nc>
-          <BetaMC>0</BetaMC>
+          <BetaMC>20.1</BetaMC>
           <BetaMD>0</BetaMD>
           <KappaMC>0</KappaMC>
           <KappaMD>0</KappaMD>
           <MassMC>0</MassMC>
           <MassMD>0</MassMD>
           <dt>0</dt>
-          <MesTrj>0</MesTrj>
+          <MesTrj>1</MesTrj>
           <TotalCG>0</TotalCG>
-          <TotalTrj>0</TotalTrj>
-          <spec_acc>1</spec_acc>
-          <NOver>0</NOver>
-          <TotalTry>0</TotalTry>
-          <TotalFail>0</TotalFail>
-          <Nf>0</Nf>
-          <Npf>0</Npf>
-          <RefMomTrj>0</RefMomTrj>
-          <RefFnoiseTrj>0</RefFnoiseTrj>
-          <LamPl>0</LamPl>
+          <TotalTrj>2</TotalTrj>
+          <spec_acc>0</spec_acc>
+          <NOver>2</NOver>
+          <TotalTry>12288</TotalTry>
+          <TotalFail>56</TotalFail>
+          <Nf>9.48851e+33</Nf>
+          <Npf>2</Npf>
+          <RefMomTrj>302059064</RefMomTrj>
+          <RefFnoiseTrj>36</RefFnoiseTrj>
+          <LamPl>9.45468e+33</LamPl>
           <LamMi>0</LamMi>
-          <AlpLog>0</AlpLog>
-          <AlpExp>0</AlpExp>
+          <AlpLog>4.2039e-45</AlpLog>
+          <AlpExp>4.2039e-45</AlpExp>
           <nrow>4 4 4 8</nrow>
           <seed>
             <Seed>
-              <elem>11</elem>
-              <elem>0</elem>
-              <elem>0</elem>
-              <elem>0</elem>
+              <elem>811</elem>
+              <elem>1073</elem>
+              <elem>1535</elem>
+              <elem>1310</elem>
             </Seed>
           </seed>
         </szin>
