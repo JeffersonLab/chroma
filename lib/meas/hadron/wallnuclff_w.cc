@@ -1,4 +1,4 @@
-// $Id: wallnuclff_w.cc,v 1.16 2004-06-01 04:00:44 edwards Exp $
+// $Id: wallnuclff_w.cc,v 1.17 2004-06-02 02:00:47 edwards Exp $
 /*! \file
  *  \brief Wall-sink nucleon form-factors 
  *
@@ -7,39 +7,10 @@
 
 #include "chromabase.h"
 #include "util/ft/sftmom.h"
+#include "meas/hadron/wallff_w.h"
 #include "meas/hadron/wallnuclff_w.h"
 
 using namespace QDP;
-
-
-//! Compute nonlocal current propagator
-/*!
- * \ingroup hadron
- *
- * The form of J_mu = (1/2)*[psibar(x+mu)*U^dag_mu*(1+gamma_mu)*psi(x) -
- *                           psibar(x)*U_mu*(1-gamma_mu)*psi(x+mu)]
- *
- * \param u                  gauge fields ( Read )
- * \param mu                 direction ( Read )
- * \param forw_prop          forward propagator ( Read )
- * \param anti_prop          anti-quark version of forward propagator ( Read )
- *
- * \return nonlocal current propagator
- */
-static
-LatticePropagator nonlocalCurrentProp(const multi1d<LatticeColorMatrix>& u, 
-				      int mu, 
-				      const LatticePropagator& forw_prop,
-				      const LatticePropagator& anti_prop)
-{
-  int gamma_value = 1 << mu;
-
-  LatticePropagator S = shift(anti_prop, FORWARD, mu) * adj(u[mu])
-    * (forw_prop + Gamma(gamma_value)*forw_prop)
-    - anti_prop * u[mu] * shift(forw_prop - Gamma(gamma_value)*forw_prop, FORWARD, mu);
-
-  return S;
-}
 
 
 //! Compute dbar-d current insertion in nucleon
@@ -162,7 +133,7 @@ void wallNuclFormFac(XMLWriter& xml,
 	  corr_local_fn = 0.5 * traceSpin(local_contract + Gamma(8)*local_contract);
 
 	  // The nonlocal (possibly conserved) current matrix element 
-	  corr_nonlocal_fn = 0.25 * traceSpin(nonlocal_contract + Gamma(8)*nonlocal_contract);
+	  corr_nonlocal_fn = 0.5 * traceSpin(nonlocal_contract + Gamma(8)*nonlocal_contract);
 	}
 	else
 	{
@@ -174,7 +145,7 @@ void wallNuclFormFac(XMLWriter& xml,
 	  corr_local_fn = 0.5 * timesMinusI(traceSpin(Gamma(3)*local_contract + Gamma(11)*local_contract));
 
 	  // The nonlocal (possibly conserved) current matrix element 
-	  corr_nonlocal_fn = 0.25 * timesMinusI(traceSpin(Gamma(3)*nonlocal_contract + Gamma(11)*nonlocal_contract));
+	  corr_nonlocal_fn = 0.5 * timesMinusI(traceSpin(Gamma(3)*nonlocal_contract + Gamma(11)*nonlocal_contract));
 	}
       }
       break;
@@ -202,7 +173,7 @@ void wallNuclFormFac(XMLWriter& xml,
 	  corr_local_fn = 0.5 * traceSpin(local_contract + Gamma(8)*local_contract);
 
 	  // The nonlocal (possibly conserved) current matrix element 
-	  corr_nonlocal_fn = 0.25 * traceSpin(nonlocal_contract + Gamma(8)*nonlocal_contract);
+	  corr_nonlocal_fn = 0.5 * traceSpin(nonlocal_contract + Gamma(8)*nonlocal_contract);
 	}
 	else
 	{
@@ -214,7 +185,7 @@ void wallNuclFormFac(XMLWriter& xml,
 	  corr_local_fn = 0.5 * timesMinusI(traceSpin(Gamma(3)*local_contract + Gamma(11)*local_contract));
 
 	  // The nonlocal (possibly conserved) current matrix element 
-	  corr_nonlocal_fn = 0.25 * timesMinusI(traceSpin(Gamma(3)*nonlocal_contract + Gamma(11)*nonlocal_contract));
+	  corr_nonlocal_fn = 0.5 * timesMinusI(traceSpin(Gamma(3)*nonlocal_contract + Gamma(11)*nonlocal_contract));
 	}
       }
       break;
