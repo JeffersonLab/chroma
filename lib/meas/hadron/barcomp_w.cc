@@ -1,4 +1,4 @@
-//  $Id: barcomp_w.cc,v 1.1 2003-03-08 03:57:47 edwards Exp $
+//  $Id: barcomp_w.cc,v 1.2 2003-03-08 04:42:33 edwards Exp $
 /*! \file
  *  \brief Construct all components of a baryon propagator
  */
@@ -68,29 +68,26 @@ void barcomp(const LatticePropagator& quark_propagator_1,
   /* Initialize to zero */
   LatticeComplex b_prop;
 
-  for(int sf_3=0; sf_3 < Ns; ++sf_3)
-    for(int sf_2=0; sf_2 < Ns; ++sf_2)
-      for(int sf_1=0; sf_1 < Ns; ++sf_1)
-	for(int si_3=0; si_3 < Ns; ++si_3)
-	  for(int si_2=0; si_2 < Ns; ++si_2)
-	    for(int si_1=0; si_1 < Ns; ++si_1)
+  for(ranks[0]=0; ranks[0] < Ns; ++ranks[0])           // sf_3
+    for(ranks[1]=0; ranks[1] < Ns; ++ranks[1])         // sf_2
+      for(ranks[2]=0; ranks[2] < Ns; ++ranks[2])       // sf_1
+	for(ranks[3]=0; ranks[3] < Ns; ++ranks[3])     // si_3
+	  for(ranks[4]=0; ranks[4] < Ns; ++ranks[4])   // si_2
+	    for(ranks[5]=0; ranks[5] < Ns; ++ranks[5]) // si_1
 	    {
 	      // Contract over color indices with antisym tensors
-	      b_prop = colorContract(peekSpin(quark_propagator_1,sf_1,si_1),
-				     peekSpin(quark_propagator_2,sf_2,si_2),
-				     peekSpin(quark_propagator_3,sf_3,si_3));
+	      b_prop = colorContract(peekSpin(quark_propagator_1,ranks[5],ranks[2]),  // (si_1,sf_1)
+				     peekSpin(quark_propagator_2,ranks[4],ranks[1]),  // (si_2,sf_2)
+				     peekSpin(quark_propagator_3,ranks[3],ranks[0])); // (si_3,sf_3)
 
 	      /* Project on zero momentum: Do a slice-wise sum. */
 	      hsum = sumMulti(b_prop, timeslice);
       
-	      for(int t = 0; t < length; ++t)
+	      for(ranks[6] = 0; ranks[6] < length; ++ranks[6])   // t
 	      {
-		int t_eff = (t - t0 + length) % length;
+		int t_eff = (ranks[6] - t0 + length) % length;
 
-		ranks[0] = sf_3; ranks[1] = sf_2; ranks[2] = sf_1; 
-		ranks[3] = si_3; ranks[4] = si_2; ranks[5] = si_1;
-		ranks[6] = t_eff;
-		barprop[ranks] = (bc_spec < 0 && (t_eff+t0) >= length) ? -hsum[t] : hsum[t];
+		barprop[ranks] = (bc_spec < 0 && (t_eff+t0) >= length) ? -hsum[ranks[6]] : hsum[ranks[6]];
 	      }
 	    }
     
