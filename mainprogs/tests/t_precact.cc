@@ -1,4 +1,4 @@
-// $Id: t_precact.cc,v 1.1 2003-11-23 05:47:36 edwards Exp $
+// $Id: t_precact.cc,v 1.2 2003-11-25 03:03:56 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -52,11 +52,14 @@ int main(int argc, char **argv)
 
   // Init the gauge field
   multi1d<LatticeColorMatrix> u(Nd);
-  for(int m=0; m < u.size(); ++m)
-    gaussian(u[m]);
+  HotSt(u);
+
+  InvType invType = CG_INVERTER;
+  Real RsdCG = 1.0e-7;
+  int MaxCG = 1000;
+  int n_count;
 
   // Check a preconditioned and unpreconditioned fermact give the same results
-
   {
     // The Wilson fermact
     Real WilsonMass = -1;
@@ -71,18 +74,33 @@ int main(int argc, char **argv)
     QDPIO::cout << "Test unprec and eo-prec Wilson: sign=PLUS" << endl;
     (*A_uwil)(tmp1, psi, PLUS);
     A_pwil->unprecLinOp(tmp2, psi, PLUS);
-    QDPIO::cout << "|Wil|^2 = " << norm2(tmp1) << endl;
-    QDPIO::cout << "|pWil|^2 = " << norm2(tmp2) << endl;
-    QDPIO::cout << "|Wil - pWil|^2 = " << norm2(tmp2-tmp1) << endl;
+    QDPIO::cout << "|Wil|^2 = " << norm2(tmp1) << endl
+		<< "|pWil|^2 = " << norm2(tmp2) << endl
+		<< "|Wil - pWil|^2 = " << norm2(tmp2-tmp1) << endl;
 
     QDPIO::cout << "Test unprec and eo-prec Wilson: sign=MINUS" << endl;
     (*A_uwil)(tmp1, psi, MINUS);
     A_pwil->unprecLinOp(tmp2, psi, MINUS);
-    QDPIO::cout << "|Wil|^2 = " << norm2(tmp1) << endl;
-    QDPIO::cout << "|pWil|^2 = " << norm2(tmp2) << endl;
-    QDPIO::cout << "|Wil - pWil|^2 = " << norm2(tmp2-tmp1) << endl;
+    QDPIO::cout << "|Wil|^2 = " << norm2(tmp1) << endl
+		<< "|pWil|^2 = " << norm2(tmp2) << endl
+		<< "|Wil - pWil|^2 = " << norm2(tmp2-tmp1) << endl;
+
+    // try the qprop
+    gaussian(chi);
+    random(tmp1);
+    tmp2 = tmp1;
+    QDPIO::cout << "Unprec Wilson inverter" << endl;
+    S_uwil.qprop(tmp1, u, chi, invType, RsdCG, MaxCG, n_count);
+    QDPIO::cout << "Prec Wilson inverter" << endl;
+    S_pwil.qprop(tmp2, u, chi, invType, RsdCG, MaxCG, n_count);
+    
+    QDPIO::cout << "Test unprec and eo-prec Wilson inverter" << endl
+		<< "|Wil|^2 = " << norm2(tmp1) << endl
+		<< "|pWil|^2 = " << norm2(tmp2) << endl
+		<< "|Wil - pWil|^2 = " << norm2(tmp2-tmp1) << endl;
   }
 
+  QDPIO::cout << "\n\n\n" << endl;
 
   {
     // The standard DWF fermact
@@ -102,8 +120,8 @@ int main(int argc, char **argv)
     QDPIO::cout << "Test unprec and eo-prec DWF: sign=PLUS" << endl;
     (*A_udwf)(tmp1, psi, PLUS);
     A_pdwf->unprecLinOp(tmp2, psi, PLUS);
-    QDPIO::cout << "|DWF|^2 = " << norm2(tmp1) << endl;
-    QDPIO::cout << "|pDWF|^2 = " << norm2(tmp2) << endl;
+    QDPIO::cout << "|DWF|^2 = " << norm2(tmp1) << endl
+		<< "|pDWF|^2 = " << norm2(tmp2) << endl;
     for(int m=0; m < N5; ++m)
       chi[m] = tmp2[m] - tmp1[m];
     QDPIO::cout << "|DWF - pDWF|^2 = " << norm2(chi) << endl;
@@ -111,12 +129,30 @@ int main(int argc, char **argv)
     QDPIO::cout << "Test unprec and eo-prec DWF: sign=MINUS" << endl;
     (*A_udwf)(tmp1, psi, MINUS);
     A_pdwf->unprecLinOp(tmp2, psi, MINUS);
-    QDPIO::cout << "|DWF|^2 = " << norm2(tmp1) << endl;
-    QDPIO::cout << "|pDWF|^2 = " << norm2(tmp2) << endl;
+    QDPIO::cout << "|DWF|^2 = " << norm2(tmp1) << endl
+		<< "|pDWF|^2 = " << norm2(tmp2) << endl;
     for(int m=0; m < N5; ++m)
       chi[m] = tmp2[m] - tmp1[m];
     QDPIO::cout << "|DWF - pDWF|^2 = " << norm2(chi) << endl;
+
+    // try the qprop
+    LatticeFermion chi5, psi5a, psi5b;
+    gaussian(chi5);
+    random(psi5a);
+    psi5b = psi5a;
+
+    QDPIO::cout << "Unprec inverter" << endl;
+    S_udwf.qprop(psi5a, u, chi5, invType, RsdCG, MaxCG, n_count);
+    QDPIO::cout << "Prec inverter" << endl;
+    S_pdwf.qprop(psi5b, u, chi5, invType, RsdCG, MaxCG, n_count);
+    
+    QDPIO::cout << "Test unprec and eo-prec DWF inverter" << endl
+		<< "|DWF|^2 = " << norm2(psi5a) << endl
+		<< "|pDWF|^2 = " << norm2(psi5b) << endl
+		<< "|DWF - pDWF|^2 = " << norm2(psi5a-psi5b) << endl;
   }
+
+  QDPIO::cout << "\n\n\n" << endl;
 
   pop(xml);
 
