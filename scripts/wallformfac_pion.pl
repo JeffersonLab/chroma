@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: wallformfac_pion.pl,v 1.10 2004-09-11 22:09:25 edwards Exp $
+# $Id: wallformfac_pion.pl,v 1.11 2004-09-12 00:37:47 edwards Exp $
 #
 # Usage
 #   formfact.pl
@@ -214,8 +214,8 @@ foreach $qz (-$mommax_int .. $mommax_int)
       printf "Looking for file %s\n","${nam}_cur3ptfn_${s}_snk15_g8_src_15_qx$q[0]_qy$q[1]_qz$q[2]";
       if (! -f "${nam}_cur3ptfn_${s}_snk15_g8_src15_qx$q[0]_qy$q[1]_qz$q[2]") {next;}
 
-      printf "Looking for file %s\n", "$pion_ap{$cp_f[0],$cp_f[1],$cp_f[2]}";
-      if (! -f "$pion_ap{$cp_f[0],$cp_f[1],$cp_f[2]}") {next;}
+      printf "Looking for file %s\n", "$pion_cp{$cp_f[0],$cp_f[1],$cp_f[2]}";
+      if (! -f "$pion_cp{$cp_f[0],$cp_f[1],$cp_f[2]}") {next;}
 
       printf "Looking for file %s\n", "$pion_ap{$cp_i[0],$cp_i[1],$cp_i[2]}";
       if (! -f "$pion_ap{$cp_i[0],$cp_i[1],$cp_i[2]}") {next;}
