@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.74 2003-12-16 22:19:46 edwards Exp $
+# $Id: Makefile.am,v 1.75 2003-12-18 04:06:36 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -90,6 +90,7 @@ libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
 #
 if BUILD_WILSON_LIBS
 libchroma_a_SOURCES += baryon_w.cc mesons_w.cc curcor2_w.cc lwldslash_w.cc formfac_w.cc \
+              mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
               sink_smear2_w.cc barcomp_w.cc ldwfdslash_w.cc walfil_w.cc \
               fermact_qprop.cc prec_fermact_qprop.cc \
               unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
@@ -108,6 +109,7 @@ libchroma_a_SOURCES += baryon_w.cc mesons_w.cc curcor2_w.cc lwldslash_w.cc formf
               overlapbu_linop_w.cc \
               p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc \
 	      zolotarev_coeffs.cc overlap_fermact_base_w.cc lovlapms_w.cc  zolotarev4d_fermact_bj_w.cc
+# wall_qprop_w.cc
 # zolotarev4d_linop_w.cc 
 # dslashm_w.cc 
 endif
