@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_sse.cc,v 1.10 2003-12-15 17:52:51 bjoo Exp $
+// $Id: lwldslash_w_sse.cc,v 1.11 2003-12-15 21:42:50 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -52,7 +52,7 @@ void SSEWilsonDslash::create(const multi1d<LatticeColorMatrix>& _u)
 {
   // Initialize internal structures for DSLASH
 #if 1
-  QDPIO::cout << "Calling init_sse_su3dslash()... " << flush;
+  QDPIO::cout << "Calling init_sse_su3dslash()... " << endl;
 #endif
 
   const multi1d<int>& subgrid_size = Layout::subgridLattSize();
