@@ -1,5 +1,5 @@
 #
-#  $Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/scripts/run_xmldiff.pl,v 1.1 2004-08-03 16:11:15 mcneile Exp $
+#  $Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/scripts/run_xmldiff.pl,v 1.2 2004-12-05 18:28:09 mcneile Exp $
 #
 #  This is wrapper script to run the xmldiff application from
 #  a makefile
@@ -18,6 +18,24 @@
 $xmldiff = "xmldiff" ;
 
 
+# check whether xmldiff is available
+
+$xml_check = `xmldiff` ; 
+chop ($xml_check) ; 
+
+if( $xml_check =~ /Usage/ )
+{
+#    print "xmldiff found\n" ; 
+}
+else
+{
+    print "Error:".$0." needs the xmldiff utility in your path\n" ; 
+    print "Download it from http://forge.nesc.ac.uk/projects/xmldiff/ \n" ; 
+    exit (0) ;
+}
+
+
+
 # at some stage this should be factored into another perl script
  %HoH = (
 	  t_propagator_fuzz_s => {
@@ -25,6 +43,14 @@ $xmldiff = "xmldiff" ;
                        metric       => "../../tests/t_asqtad_prop/t_propagator_fuzz_s_METRIC.xml" ,
                        controlfile  => "../../tests/t_asqtad_prop/t_propagator_fuzz_s.xml" ,
 		   },
+
+	  t_propagator_s => {
+                       output      => "t_propagator_s.xml",
+                       metric       => "../../tests/t_asqtad_prop/t_propagator_s_METRIC.xml" ,
+                       controlfile  => "../../tests/t_asqtad_prop/t_propagator_s.xml" ,
+		   },
+
+
 
 #	  t_mesons_w    => {
 #                       output       => "./t_mesons_w.xml",
@@ -62,24 +88,29 @@ foreach $execute ( keys %HoH )
     if(  -f  $execute )
     {
 	$log = "log_".$execute  ; 
-	system("$execute  >& $log") ; 
-
-	$log_xml = "log_xml_".$execute  ; 
-
-#    $status_tmp = system("$xmldiff $control $candidate $metric $log_xml -v") ; 
-	$status_tmp = system("$xmldiff $control $candidate $metric $log_xml ") ; 
-
-	$status = $status_tmp / 256  ;   ## some perl feature
-
-	if( $status == 0 ) 
-	{
-	    print "   PASS\n"  ; 
+	$status_tmp = system("$execute  >& $log") / 256 ; 
+	if( $status_tmp != 0  ) 
+        {
+		print "   RUN_FAIL\n"  ; 
 	}
 	else
 	{
-	    print "   FAIL\n"  ; 
-	}
+	    $log_xml = "log_xml_".$execute  ; 
 
+#    $status_tmp = system("$xmldiff $control $candidate $metric $log_xml -v") ; 
+	    $status_tmp = system("$xmldiff $control $candidate $metric $log_xml ") ; 
+
+	    $status = $status_tmp / 256  ;   ## some perl feature
+
+	    if( $status == 0 ) 
+	    {
+		print "   PASS\n"  ; 
+	    }
+	    else
+	    {
+		print "   FAIL\n"  ; 
+	    }
+	}
     }
     else
     {
