@@ -1,4 +1,4 @@
-// $Id: t_conslinop.cc,v 1.5 2003-04-03 20:06:52 edwards Exp $
+// $Id: t_conslinop.cc,v 1.6 2003-04-04 05:30:39 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {4,4,4,4};
+  const int foo[] = {2,2,2,2};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -50,10 +50,18 @@ int main(int argc, char *argv[])
   cerr << "before wilson construct" << endl;
   UnpreconditionedWilson M(u,Kappa);
   cerr << "after wilson construct" << endl;
-  chi[rb[1]] = M(psi, PLUS); 
+  chi = M(psi, PLUS); 
   cerr << "after wilson call" << endl;
   
   LinearOperator* A = ConsLinOp(u, Kappa, UNPRECONDITIONED_WILSON);
+
+  DComplex np = innerproduct(psi,D(psi,PLUS));
+  DComplex nm = innerproduct(psi,D(psi,MINUS));
+
+  push(nml,"norm_check");
+  Write(nml,np);
+  Write(nml,nm);
+  pop(nml);
 
   // Time to bolt
   QDP_finalize();
