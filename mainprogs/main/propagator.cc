@@ -1,6 +1,9 @@
-// $Id: propagator.cc,v 1.40 2004-02-04 17:01:55 edwards Exp $
+// $Id: propagator.cc,v 1.41 2004-02-05 04:18:56 edwards Exp $
 // $Log: propagator.cc,v $
-// Revision 1.40  2004-02-04 17:01:55  edwards
+// Revision 1.41  2004-02-05 04:18:56  edwards
+// Changed call of quarkProp4 to write to xml_out instead of xml buffer.
+//
+// Revision 1.40  2004/02/04 17:01:55  edwards
 // Changed getSubset() to the now correct getSet().
 //
 // Revision 1.39  2004/01/31 23:22:01  edwards
@@ -333,7 +336,6 @@ int main(int argc, char **argv)
   // and spin space
   //
   LatticePropagator quark_propagator;
-  XMLBufferWriter xml_buf;
   int ncg_had = 0;
 
   //
@@ -349,7 +351,7 @@ int main(int argc, char **argv)
 				 input.param.anisoParam);
     Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
 
-    quarkProp4(quark_propagator, xml_buf, quark_prop_source,
+    quarkProp4(quark_propagator, xml_out, quark_prop_source,
   	       S_f, state, 
 	       input.param.invParam.invType, 
 	       input.param.invParam.RsdCG, 
@@ -365,7 +367,7 @@ int main(int argc, char **argv)
     UnprecWilsonFermAct S_f(fbc,input.param.Mass);
     Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
 
-    quarkProp4(quark_propagator, xml_buf, quark_prop_source,
+    quarkProp4(quark_propagator, xml_out, quark_prop_source,
   	       S_f, state, 
 	       input.param.invParam.invType, 
 	       input.param.invParam.RsdCG, 
@@ -385,7 +387,7 @@ int main(int argc, char **argv)
     Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
 
 #ifndef MRES_CALCULATION
-    quarkProp4(quark_propagator, xml_buf, quark_prop_source,
+    quarkProp4(quark_propagator, xml_out, quark_prop_source,
 	       S_f, state, 
 	       input.param.invParam.invType, 
 	       input.param.invParam.RsdCG, 
@@ -393,7 +395,7 @@ int main(int argc, char **argv)
 	       ncg_had);
 #else
     //dwf_quarkProp4 has hard coded jdecay = 3
-    dwf_quarkProp4(quark_propagator, xml_buf, quark_prop_source,
+    dwf_quarkProp4(quark_propagator, xml_out, quark_prop_source,
 		   input.param.t_srce[3],
 		   S_f, state, 
 		   input.param.invParam.invType, 
@@ -414,7 +416,7 @@ int main(int argc, char **argv)
 			     input.param.chiralParam.N5);
     Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
 #ifndef MRES_CALCULATION
-    quarkProp4(quark_propagator, xml_buf, quark_prop_source,
+    quarkProp4(quark_propagator, xml_out, quark_prop_source,
   	       S_f, state, 
 	       input.param.invParam.invType, 
 	       input.param.invParam.RsdCG, 
@@ -422,7 +424,7 @@ int main(int argc, char **argv)
 	       ncg_had);
 #else
     //dwf_quarkProp4 has hard coded jdecay = 3
-    dwf_quarkProp4(quark_propagator, xml_buf, quark_prop_source,
+    dwf_quarkProp4(quark_propagator, xml_out, quark_prop_source,
 		   input.param.t_srce[3],
 		   S_f, state, 
 		   input.param.invParam.invType, 
@@ -444,7 +446,7 @@ int main(int argc, char **argv)
 			       input.param.chiralParam.N5);
     Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
 
-    quarkProp4(quark_propagator, xml_buf, quark_prop_source,
+    quarkProp4(quark_propagator, xml_out, quark_prop_source,
   	       S_f, state, 
 	       input.param.invParam.invType, 
 	       input.param.invParam.RsdCG, 
@@ -460,8 +462,6 @@ int main(int argc, char **argv)
     QDPIO::cerr << "Unsupported fermion action" << endl;
     QDP_abort(1);
   }
-
-  xml_out << xml_buf;   // write-out any output from the quarkProp4 routine
 
   push(xml_out,"Relaxation_Iterations");
   Write(xml_out, ncg_had);
