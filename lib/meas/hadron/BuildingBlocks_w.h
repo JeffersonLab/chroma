@@ -27,15 +27,10 @@
 //#####################################################################################
 
 static const char* const CVSBuildingBlocks_hh =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.h,v 1.1 2003-08-19 17:15:24 bjoo Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.h,v 1.2 2003-09-11 01:21:34 edwards Exp $";
 
 //#####################################################################################
 //#####################################################################################
-
-#include "qdp.h"
-#include "chroma.h"
-
-using namespace QDP;
 
 //#####################################################################################
 // Used to Set Requested Link Patterns
