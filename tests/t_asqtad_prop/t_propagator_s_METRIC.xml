@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<assertions>
+
+<assertion xpath="/hadron_corr/Hadrons_from_time_source/Pseudoscalar/gamma5_CROSS_gamma5" type="real_array" comparison="relative_comparison" tolerance="0.001"/>
+
+</assertions>
