@@ -1,10 +1,14 @@
-// $Id: spectrum_w.cc,v 1.3 2003-05-13 22:00:50 flemingg Exp $
+// $Id: spectrum_w.cc,v 1.4 2003-05-22 17:35:36 flemingg Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.3  2003-05-13 22:00:50  flemingg
+//  Revision 1.4  2003-05-22 17:35:36  flemingg
+//  Added stripper for spectrum_w.  Also, minor change to spectrum_w.cc
+//  to make it compatible with the stripper.
+//
+//  Revision 1.3  2003/05/13 22:00:50  flemingg
 //  I'm done with spectrum_w and the test files for now. I'm happy
 //  enough with the output format. Somebody please write a stripper.
 //
@@ -602,6 +606,9 @@ int main(int argc, char **argv)
     } // end if (MesonP)
 
   } // end for(loop)
+
+  push(nml_out, "End_Wilson_hadron_measurements") ;
+  pop(nml_out) ;
 
   nml_out.close() ;
 
