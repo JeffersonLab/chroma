@@ -1,4 +1,4 @@
-// $Id: prec_two_flavor_wilson_monomial_w.cc,v 1.3 2005-01-11 16:22:42 bjoo Exp $
+// $Id: prec_two_flavor_wilson_monomial_w.cc,v 1.4 2005-01-11 19:44:50 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -29,6 +29,8 @@ namespace Chroma
     Monomial< multi1d<LatticeColorMatrix>,
 	      multi1d<LatticeColorMatrix> >* createMonomialWilson(XMLReader& xml, const string& path) 
     {
+      QDPIO::cout << "Create Monomial: " << EvenOddPrecWilsonFermActEnv::name << endl;
+
       return new EvenOddPrecTwoFlavorWilsonTypeFermMonomial(
 	EvenOddPrecWilsonFermActEnv::name,
 	EvenOddPrecTwoFlavorWilsonTypeFermMonomialParams(xml, path));
@@ -38,6 +40,8 @@ namespace Chroma
     Monomial< multi1d<LatticeColorMatrix>,
 	      multi1d<LatticeColorMatrix> >* createMonomialParWilson(XMLReader& xml, const string& path) 
     {
+      QDPIO::cout << "Create Monomial: " << EvenOddPrecParWilsonFermActEnv::name << endl;
+
       return new EvenOddPrecTwoFlavorWilsonTypeFermMonomial(
 	EvenOddPrecParWilsonFermActEnv::name,
 	EvenOddPrecTwoFlavorWilsonTypeFermMonomialParams(xml, path));
@@ -96,7 +100,7 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    QDPIO::cout << "EvenOddPrecTwoFlavorWilsonTypeFermMonomialParams: read " << ferm_act << endl;
+    QDPIO::cout << "EvenOddPrecTwoFlavorWilsonTypeFermMonomialParams: read \n" << ferm_act << endl;
   }
 
   //! Read Parameters
