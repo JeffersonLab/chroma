@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 1.6 2004-03-17 04:06:24 edwards Exp $
+// $Id: fermact.h,v 1.7 2004-07-08 03:06:29 edwards Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -136,7 +136,7 @@ public:
 
   //! Given links, create the state needed for the linear operators
   /*! Default version uses a SimpleConnectState */
-  virtual ConnectState* createState(const multi1d<LatticeColorMatrix>& u) const
+  virtual const ConnectState* createState(const multi1d<LatticeColorMatrix>& u) const
     {
       multi1d<LatticeColorMatrix> u_tmp = u;
       getFermBC().modifyU(u_tmp);
