@@ -1,4 +1,8 @@
-// $Id: dwf_quarkprop4_w.cc,v 1.3 2004-01-06 20:16:47 edwards Exp $
+// $Id: dwf_quarkprop4_w.cc,v 1.4 2004-01-29 14:59:46 kostas Exp $
+// $Log: dwf_quarkprop4_w.cc,v $
+// Revision 1.4  2004-01-29 14:59:46  kostas
+// Fixed the bugs. Code compiles now
+//
 /*! \file
  * \brief Full quark propagator solver for domain wall fermions
  *
@@ -123,25 +127,35 @@ void dwf_quarkProp4_a(LatticePropagator& q_sol,
   LatticeComplex cfield ;
   dwf_conserved_axial_ps_corr(cfield,state->getLinks(),prop5d,3,S_f.size());
 			       
-  multi2d<DComplex> corr ;
+  multi2d<DComplex> corr ;  
    
   SftMom trick(0,false,3) ;
    
   corr = trick.sft(cfield);
+  // Length of lattice in decay direction
+  int length = trick.numSubsets() ;
+  multi1d<Real> mesprop(length);
+  
+  for(int t(0);t<length; t++)
+    mesprop[t] = real(corr[0][t]) ; // only need the zero momentum
 
   //push(xml_out, "t_dir");
   //Write(xml_out, 3);
   //pop(xml_out);
   push(xml_out, "DWF_ConservedAxial");
-  Write(xml_out, corr);
+  //write(xml_out, "corr", corr);
+  Write(xml_out, mesprop); 
   pop(xml_out);
 
   //Now the midpoint Pseudoscalar correlator
-  cfield = trace(prop_mp * adj(prop_mp));    // ERROR: prop_mp not defined!!
+  cfield = trace(q_mp * adj(q_mp));    
 
   corr = trick.sft(cfield);
+  for(int t(0);t<length; t++)
+    mesprop[t] = real(corr[0][t]) ; // only need the zero momentum
+
   push(xml_out, "DWF_MidPoint_Pseudo");
-  Write(xml_out, corr);
+  Write(xml_out, mesprop);
   pop(xml_out);
 
   pop(xml_out);   // DWF_QuarkProp4
@@ -168,10 +182,10 @@ void dwf_conserved_axial_ps_corr(LatticeComplex& corr,
   LatticeComplex  C(0.0) ;
   for(int s(0); s<N5;s++)
   {
-    // first the 1-gamma_4 term 
+    // first the 1-gamma_mu term 
     C=0.5*(trace(shift(p5d[s],FORWARD,mu) * Gamma(d)*u[mu]* adj(p5d[2]))-
 	   trace(shift(p5d[s],FORWARD,mu) *          u[mu]* adj(p5d[2]))+
-	   //now th 1+gamma_4 term
+	   //now th 1+gamma_mu term
 	   trace(p5d[s] *Gamma(d)*adj(u[mu])*shift(adj(p5d[s]),FORWARD,mu))+
 	   trace(p5d[s] *         adj(u[mu])*shift(adj(p5d[s]),FORWARD,mu))
       ) ;
@@ -184,7 +198,7 @@ void dwf_conserved_axial_ps_corr(LatticeComplex& corr,
 }
 
 
-#if 0
+#if 1
 //! Given a complete propagator as a source, this does all the inversions needed
 /*! \ingroup qprop
  *
