@@ -1,4 +1,4 @@
-// $Id: bar3ptfn.cc,v 1.24 2004-01-06 04:59:14 edwards Exp $
+// $Id: bar3ptfn.cc,v 1.25 2004-01-29 15:57:38 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions
  *
@@ -19,7 +19,7 @@ struct Param_t
 {
   FermType FermTypeP;
 
-  multi1d<Real> Kappa;     // array of Wilson mass values
+  multi1d<Real> Mass;      // Quark Mass and **NOT** kappa
 
   CfgType cfg_type;        // storage order for stored gauge configuration
   int j_decay;             // direction to measure propagation
@@ -60,7 +60,6 @@ void read(XMLReader& xml, const string& path, Bar3ptfn_input_t& input)
 {
   XMLReader inputtop(xml, path);
 
-
   // First, read the input parameter version.  Then, if this version
   // includes 'Nc' and 'Nd', verify they agree with values compiled
   // into QDP++
@@ -89,6 +88,7 @@ void read(XMLReader& xml, const string& path, Bar3ptfn_input_t& input)
     {
       /**************************************************************************/
     case 4 :
+    case 5 :
       /**************************************************************************/
       break;
 
@@ -111,54 +111,43 @@ void read(XMLReader& xml, const string& path, Bar3ptfn_input_t& input)
   {
     XMLReader paramtop(inputtop, "param"); // push into 'param' group
 
+    read(paramtop, "FermTypeP", input.param.FermTypeP);
+
+    if (paramtop.count("Mass") != 0)
     {
-      int input_Nc;
-      read(paramtop, "Nc", input_Nc);
-	
-      if (input_Nc != Nc) {
-	QDPIO::cerr << "Input parameter Nc=" << input_Nc \
-		    <<  " different from qdp++ value." << endl;
+      read(paramtop, "Mass", input.param.Mass);
+
+      if (paramtop.count("Kappa") != 0)
+      {
+	QDPIO::cerr << "Error: found both a Kappa and a Mass tag" << endl;
 	QDP_abort(1);
       }
-
-      int input_Nd;
-      read(paramtop, "Nd", input_Nd);
-
-      if (input_Nd != Nd) {
-	QDPIO::cerr << "Input parameter Nd=" << input_Nd \
-		    << " different from qdp++ value." << endl;
-	QDP_abort(1);
-      }
-
-      read(paramtop, "FermTypeP", input.param.FermTypeP);
     }
-
-    // GTF NOTE: I'm going to switch on FermTypeP here because I want
-    // to leave open the option of treating masses differently.
-    switch (input.param.FermTypeP) 
+    else if (paramtop.count("Kappa") != 0)
     {
-    case FERM_TYPE_WILSON :
-
-      QDPIO::cout << " FORMFAC: Baryon form factors for Wilson fermions" << endl;
-
-      read(paramtop, "Kappa", input.param.Kappa);
-
-      for (int i=0; i < input.param.Kappa.size(); ++i) {
-	if (toBool(input.param.Kappa[i] < 0.0)) {
-	  QDPIO::cerr << "Unreasonable value for Kappa." << endl;
-	  QDPIO::cerr << "  Kappa[" << i << "] = " << input.param.Kappa[i] << endl;
-	  QDP_abort(1);
-	} else {
-	  QDPIO::cout << " Spectroscopy Kappa: " << input.param.Kappa[i] << endl;
-	}
-      }
-
-      break;
-
-    default :
-      QDPIO::cerr << "Fermion type not supported." << endl;
+      multi1d<Real> Kappa;
+      read(paramtop, "Kappa", Kappa);
+      
+      input.param.Mass = kappaToMass(Kappa);    // Convert Kappa to Mass
+    }
+    else
+    {
+      QDPIO::cerr << "Error: neither Mass or Kappa found" << endl;
       QDP_abort(1);
+    }    
+
+#if 0
+    for (int i=0; i < input.param.Mass.size(); ++i) {
+      if (toBool(input.param.Mass[i] < 0.0)) {
+	QDPIO::cerr << "Unreasonable value for Mass." << endl;
+	QDPIO::cerr << "  Mass[" << i << "] = " << input.param.Mass[i] << endl;
+	QDP_abort(1);
+      } else {
+	QDPIO::cout << " Spectroscopy Mass: " << input.param.Mass[i] << endl;
+      }
     }
+#endif
+
 
     read(paramtop, "cfg_type", input.param.cfg_type);
     read(paramtop, "j_decay", input.param.j_decay);
@@ -252,7 +241,7 @@ void write(BinaryWriter& bin, const Output_version_t& ver)
 void write(BinaryWriter& bin, const Param_t& param)
 {
   write(bin, param.FermTypeP);
-  write(bin, param.Kappa);
+  write(bin, param.Mass);
 
   write(bin, param.j_decay);
   write(bin, param.Pt_src);
@@ -327,6 +316,8 @@ main(int argc, char *argv[])
   Layout::setLattSize(input.param.nrow);
   Layout::create();
 
+  QDPIO::cout << " FORMFAC: Baryon form factors for Wilson fermions" << endl;
+
   // Sanity checks
   for (int i=0; i<Nd; ++i) {
     if (input.param.t_srce[i] < 0 || input.param.t_srce[i] >= input.param.nrow[i]) {
@@ -345,28 +336,28 @@ main(int argc, char *argv[])
   QDPIO::cout << endl << "     Gauge group: SU(" << Nc << ")" << endl;
 
   // Check for unnecessary multiple occurances of kappas and/or wvf_params
-  if (input.param.Kappa.size() > 1) {
+  if (input.param.Mass.size() > 1) {
     if (input.param.Sl_src == true) {
-      for (int i=1; i < input.param.Kappa.size(); ++i) {
+      for (int i=1; i < input.param.Mass.size(); ++i) {
         for (int j=0; j<i; ++j) {
-          if (toBool(input.param.Kappa[j] == input.param.Kappa[i])
+          if (toBool(input.param.Mass[j] == input.param.Mass[i])
               && toBool(input.param.wvf_param[j] == input.param.wvf_param[i])) {
             QDPIO::cerr << "Same kappa and wvf_param:" << endl;
-            QDPIO::cerr << "  Kappa["     << i << "] = " << input.param.Kappa[i]     << endl;
+            QDPIO::cerr << "  Mass["     << i << "] = " << input.param.Mass[i]     << endl;
             QDPIO::cerr << "  wvf_param[" << i << "] = " << input.param.wvf_param[i] << endl;
-            QDPIO::cerr << "  Kappa["     << j << "] = " << input.param.Kappa[j]     << endl;
+            QDPIO::cerr << "  Mass["     << j << "] = " << input.param.Mass[j]     << endl;
             QDPIO::cerr << "  wvf_param[" << j << "] = " << input.param.wvf_param[j] << endl;
             QDP_abort(1);
           }
         }
       }
     } else {
-      for (int i=1; i < input.param.Kappa.size(); ++i) {
+      for (int i=1; i < input.param.Mass.size(); ++i) {
         for (int j=0; j<i; ++j) {
-          if (toBool(input.param.Kappa[j] == input.param.Kappa[i])) {
+          if (toBool(input.param.Mass[j] == input.param.Mass[i])) {
             QDPIO::cerr  << "Same kappa without shell source or sink:" << endl;
-            QDPIO::cerr << "  Kappa["     << i << "] = " << input.param.Kappa[i]     << endl;
-            QDPIO::cerr << "  Kappa["     << j << "] = " << input.param.Kappa[j]     << endl;
+            QDPIO::cerr << "  Mass["     << i << "] = " << input.param.Mass[i]     << endl;
+            QDPIO::cerr << "  Mass["     << j << "] = " << input.param.Mass[j]     << endl;
             QDP_abort(1);
           }
         }
@@ -436,16 +427,16 @@ main(int argc, char *argv[])
 
   // Big nested structure that is image of entire file
   Bar3ptfn_t  bar3pt;
-  bar3pt.bar.resize(input.param.Kappa.size());
-  bar3pt.output_version.out_version = 7;  // bump this up everytime something changes
+  bar3pt.bar.resize(input.param.Mass.size());
+  bar3pt.output_version.out_version = 8;  // bump this up everytime something changes
   bar3pt.param = input.param; // copy entire structure
 
 
-  XMLArrayWriter xml_array(xml_out, input.param.Kappa.size());
+  XMLArrayWriter xml_array(xml_out, input.param.Mass.size());
   push(xml_array, "Wilson_3Pt_fn_measurements");
 
   // Now loop over the various kappas
-  for (int loop=0; loop < input.param.Kappa.size(); ++loop) 
+  for (int loop=0; loop < input.param.Mass.size(); ++loop) 
   {
     QDPIO::cout << "Mass loop = " << loop << endl;
   
