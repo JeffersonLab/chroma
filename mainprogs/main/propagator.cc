@@ -1,10 +1,12 @@
-// $Id: propagator.cc,v 1.1 2003-03-26 22:12:02 dgr Exp $
+// $Id: propagator.cc,v 1.2 2003-03-29 05:26:14 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
 
 #include <iostream>
 #include <cstdio>
+
+#define MAIN
 
 #include "chroma.h"
 
@@ -16,7 +18,7 @@ int main(int argc, char **argv)
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {16,16,16,32};
+  const int foo[] = {2,2,2,4};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -72,6 +74,7 @@ int main(int argc, char **argv)
   //
   LatticePropagator quark_propagator;
 
+#if 0
   PropHead header;		// Header information
   header.kappa = Kappa;
   header.source_smearingparam=0;     // local (0)  gaussian (1)
@@ -80,6 +83,7 @@ int main(int argc, char **argv)
   header.sink_smearingparam=0;
   header.sink_type=0;
   header.sink_direction=0;
+#endif
 
   int ncg_had = 0;
 
@@ -143,7 +147,7 @@ int main(int argc, char **argv)
     }
   }
 
-  writeQprop("propagator_0", quark_propagator, header);
+//  writeQprop("propagator_0", quark_propagator, header);
 
   nml.close();
 
