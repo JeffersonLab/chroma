@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: chroma_init.h,v 1.4 2005-03-02 00:41:49 edwards Exp $
+// $Id: chroma_init.h,v 1.5 2005-03-02 02:58:22 edwards Exp $
 /*! \file
  *  \brief Initialization of Chroma
  */
@@ -57,6 +57,6 @@ namespace Chroma
   
 //  }
 
-}; // End namespace Chroma
+} // End namespace Chroma
 
 #endif
