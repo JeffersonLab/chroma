@@ -1,6 +1,9 @@
-// $Id: propagator.cc,v 1.41 2004-02-05 04:18:56 edwards Exp $
+// $Id: propagator.cc,v 1.42 2004-02-06 17:39:05 edwards Exp $
 // $Log: propagator.cc,v $
-// Revision 1.41  2004-02-05 04:18:56  edwards
+// Revision 1.42  2004-02-06 17:39:05  edwards
+// Added a flush to xml_out.
+//
+// Revision 1.41  2004/02/05 04:18:56  edwards
 // Changed call of quarkProp4 to write to xml_out instead of xml buffer.
 //
 // Revision 1.40  2004/02/04 17:01:55  edwards
@@ -479,6 +482,8 @@ int main(int argc, char **argv)
     Write(xml_out, prop_corr);
     pop(xml_out);
   }
+
+  xml_out.flush();
 
   // Instantiate XML buffer to make the propagator header
   XMLBufferWriter prop_xml;
