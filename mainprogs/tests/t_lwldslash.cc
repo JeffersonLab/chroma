@@ -1,4 +1,4 @@
-// $Id: t_lwldslash.cc,v 1.1 2003-02-16 20:06:19 edwards Exp $
+// $Id: t_lwldslash.cc,v 1.2 2003-02-17 04:37:16 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -20,7 +20,7 @@ int main(int argc, char **argv)
   Layout::setLattSize(nrow);
   Layout::create();
 
-  NmlWriter nml("t_wldslash.nml");
+  NmlWriter nml("t_lwldslash.nml");
 
   //! Test out dslash
   multi1d<LatticeColorMatrix> u(Nd);
@@ -41,6 +41,14 @@ int main(int argc, char **argv)
   Write(nml,nrow);
   Write(nml,psi);
   Write(nml,chi);
+
+  //! Create and try a more sophisticated operator
+  Real Kappa = 0.1;
+  PreconditionedWilson  M(u,Kappa);
+  LatticeFermion eta;
+  eta = M(psi, PLUS);
+
+  Write(nml,eta);
 
   // Time to bolt
   QDP_finalize();
