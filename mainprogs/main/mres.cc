@@ -1,4 +1,4 @@
-// $Id: mres.cc,v 1.8 2005-01-14 20:13:08 edwards Exp $
+// $Id: mres.cc,v 1.9 2005-01-31 04:16:26 edwards Exp $
 
 #include <iostream>
 #include <sstream>
@@ -40,6 +40,8 @@ bool linkage_hack()
   foo &= UnprecDWFTransfFermActEnv::registered;
   foo &= OvlapPartFrac4DFermActEnv::registered;
   // 5D actions
+  foo &= EvenOddPrecHtContFrac5DFermActArrayEnv::registered;
+  foo &= UnprecHTContFrac5DFermActArrayEnv::registered;
   foo &= EvenOddPrecDWFermActArrayEnv::registered;
   foo &= UnprecDWFermActArrayEnv::registered;
   foo &= EvenOddPrecNEFFermActArrayEnv::registered;
