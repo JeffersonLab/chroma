@@ -163,7 +163,7 @@ check_PROGRAMS = propagator spectrum_w qqq_w seqprop bar3ptfn make_source \
         ExampleBuildingBlocks hypsmear cfgtransf sink_smearing
 
 
-EXTRA_PROGRAMS = wallformfac 
+EXTRA_PROGRAMS = wallformfac qproptransf
 
 #
 # The program and its dependencies
@@ -192,6 +192,9 @@ make_source_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 hypsmear_SOURCES = hypsmear.cc
 hypsmear_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
+qproptransf_SOURCES = qproptransf.cc
+qproptransf_DEPENDENCIES = build_chroma_libs rebuild_other_libs
+
 ExampleBuildingBlocks_SOURCES = ExampleBuildingBlocks.cc
 ExampleBuildingBlocks_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
@@ -203,7 +206,7 @@ sink_smearing_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 subdir = mainprogs/main
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
 CONFIG_CLEAN_FILES =
-EXTRA_PROGRAMS = wallformfac$(EXEEXT)
+EXTRA_PROGRAMS = wallformfac$(EXEEXT) qproptransf$(EXEEXT)
 check_PROGRAMS = propagator$(EXEEXT) spectrum_w$(EXEEXT) qqq_w$(EXEEXT) \
 	seqprop$(EXEEXT) bar3ptfn$(EXEEXT) make_source$(EXEEXT) \
 	ExampleBuildingBlocks$(EXEEXT) hypsmear$(EXEEXT) \
@@ -232,6 +235,10 @@ am_propagator_OBJECTS = propagator.$(OBJEXT)
 propagator_OBJECTS = $(am_propagator_OBJECTS)
 propagator_LDADD = $(LDADD)
 propagator_LDFLAGS =
+am_qproptransf_OBJECTS = qproptransf.$(OBJEXT)
+qproptransf_OBJECTS = $(am_qproptransf_OBJECTS)
+qproptransf_LDADD = $(LDADD)
+qproptransf_LDFLAGS =
 am_qqq_w_OBJECTS = qqq_w.$(OBJEXT)
 qqq_w_OBJECTS = $(am_qqq_w_OBJECTS)
 qqq_w_LDADD = $(LDADD)
@@ -259,7 +266,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/ExampleBuildingBlocks.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/bar3ptfn.Po ./$(DEPDIR)/cfgtransf.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/hypsmear.Po ./$(DEPDIR)/make_source.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/propagator.Po ./$(DEPDIR)/qqq_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/propagator.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/qproptransf.Po ./$(DEPDIR)/qqq_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/seqprop.Po ./$(DEPDIR)/sink_smearing.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/spectrum_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/wallformfac.Po
@@ -270,11 +278,11 @@ CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
 DIST_SOURCES = $(ExampleBuildingBlocks_SOURCES) $(bar3ptfn_SOURCES) \
 	$(cfgtransf_SOURCES) $(hypsmear_SOURCES) $(make_source_SOURCES) \
-	$(propagator_SOURCES) $(qqq_w_SOURCES) $(seqprop_SOURCES) \
-	$(sink_smearing_SOURCES) $(spectrum_w_SOURCES) \
-	$(wallformfac_SOURCES)
+	$(propagator_SOURCES) $(qproptransf_SOURCES) $(qqq_w_SOURCES) \
+	$(seqprop_SOURCES) $(sink_smearing_SOURCES) \
+	$(spectrum_w_SOURCES) $(wallformfac_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(ExampleBuildingBlocks_SOURCES) $(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) $(hypsmear_SOURCES) $(make_source_SOURCES) $(propagator_SOURCES) $(qqq_w_SOURCES) $(seqprop_SOURCES) $(sink_smearing_SOURCES) $(spectrum_w_SOURCES) $(wallformfac_SOURCES)
+SOURCES = $(ExampleBuildingBlocks_SOURCES) $(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) $(hypsmear_SOURCES) $(make_source_SOURCES) $(propagator_SOURCES) $(qproptransf_SOURCES) $(qqq_w_SOURCES) $(seqprop_SOURCES) $(sink_smearing_SOURCES) $(spectrum_w_SOURCES) $(wallformfac_SOURCES)
 
 all: all-am
 
@@ -306,6 +314,9 @@ make_source$(EXEEXT): $(make_source_OBJECTS) $(make_source_DEPENDENCIES)
 propagator$(EXEEXT): $(propagator_OBJECTS) $(propagator_DEPENDENCIES) 
 	@rm -f propagator$(EXEEXT)
 	$(CXXLINK) $(propagator_LDFLAGS) $(propagator_OBJECTS) $(propagator_LDADD) $(LIBS)
+qproptransf$(EXEEXT): $(qproptransf_OBJECTS) $(qproptransf_DEPENDENCIES) 
+	@rm -f qproptransf$(EXEEXT)
+	$(CXXLINK) $(qproptransf_LDFLAGS) $(qproptransf_OBJECTS) $(qproptransf_LDADD) $(LIBS)
 qqq_w$(EXEEXT): $(qqq_w_OBJECTS) $(qqq_w_DEPENDENCIES) 
 	@rm -f qqq_w$(EXEEXT)
 	$(CXXLINK) $(qqq_w_LDFLAGS) $(qqq_w_OBJECTS) $(qqq_w_LDADD) $(LIBS)
@@ -334,6 +345,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hypsmear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/make_source.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/propagator.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qproptransf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qqq_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seqprop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sink_smearing.Po@am__quote@

@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.155 2004-02-26 03:43:01 edwards Exp $
+# $Id: Makefile.in,v 1.156 2004-03-04 02:14:48 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -89,7 +89,7 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@	meas/hadron/hadron_w.h meas/hadron/hybmeson_w.h \
 @BUILD_WILSON_LIBS_TRUE@	meas/hadron/mesonseqsrc_w.h \
 @BUILD_WILSON_LIBS_TRUE@	meas/hadron/mesons_w.h meas/hadron/seqpiontest_w.h \
-@BUILD_WILSON_LIBS_TRUE@	meas/hadron/loops_w.h meas/hadron/z2_src.h \
+@BUILD_WILSON_LIBS_TRUE@	meas/hadron/loops_w.h \
 @BUILD_WILSON_LIBS_TRUE@	meas/hadron/walfil_w.h meas/hadron/wall_qprop_w.h \
 @BUILD_WILSON_LIBS_TRUE@	meas/hadron/wallpionff_w.h \
 @BUILD_WILSON_LIBS_TRUE@	meas/smear/sink_smear2_w.h meas/sources/d_src_w.h \
@@ -108,12 +108,13 @@ host_triplet = @host@
 @BUILD_STAGGERED_LIBS_TRUE@	meas/eig/eig_s.h meas/hadron/hadron_s.h \
 @BUILD_STAGGERED_LIBS_TRUE@	meas/hadron/mesphas_follana_s.h meas/hadron/mesphas_s.h \
 @BUILD_STAGGERED_LIBS_TRUE@	meas/hadron/pions_follana_s.h meas/hadron/walfil_s.h \
-@BUILD_STAGGERED_LIBS_TRUE@	meas/sources/sources_s.h \
+@BUILD_STAGGERED_LIBS_TRUE@	meas/hadron/stag_scalars_s.h meas/sources/sources_s.h \
+@BUILD_STAGGERED_LIBS_TRUE@	meas/hadron/stag_propShift_s.h \
 @BUILD_STAGGERED_LIBS_TRUE@	util/gauge/gauge_s.h util/gauge/stag_phases_s.h
 
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_3 = -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
 @BUILD_WILSON_LIBS_TRUE@am__append_4 = baryon_w.cc mesons_w.cc hybmeson_w.cc \
-@BUILD_WILSON_LIBS_TRUE@              loops_w.cc z2_src.cc \
+@BUILD_WILSON_LIBS_TRUE@              loops_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              curcor2_w.cc lwldslash_w.cc formfac_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              sink_smear2_w.cc barcomp_io.cc barcomp_w.cc walfil_w.cc \
@@ -143,6 +144,7 @@ host_triplet = @host@
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_5 = lwldslash_w_sse.cc
 @BUILD_STAGGERED_LIBS_TRUE@am__append_6 = mesphas_s.cc mesphas_follana_s.cc pions_follana_s.cc \
 @BUILD_STAGGERED_LIBS_TRUE@	follana_io_s.cc fermact_qprop.cc walfil_s.cc \
+@BUILD_STAGGERED_LIBS_TRUE@	stag_scalars_s.cc stag_propShift_s.cc \
 @BUILD_STAGGERED_LIBS_TRUE@	asqtad_linop_s.cc asq_dsl_s.cc fat7_links_s.cc naik_term_s.cc  \
 @BUILD_STAGGERED_LIBS_TRUE@	asqtad_fermact_s.cc asqtad_mdagm_s.cc staggered_qprop.cc stag_phases_s.cc
 
@@ -282,6 +284,7 @@ nobase_include_HEADERS = \
 	meas/gfix/gfix.h meas/gfix/grelax.h meas/gfix/polar_dec.h \
 	meas/gfix/rot_colvec.h meas/glue/glue.h meas/glue/mesplq.h \
 	meas/glue/polylp.h meas/hadron/hadron.h meas/hadron/srcfil.h \
+	meas/hadron/stoch_var.h meas/hadron/z2_src.h \
 	meas/meas.h meas/pbp/pbp.h meas/schrfun/schrfun.h \
 	meas/smear/ape_smear.h meas/smear/displacement.h \
 	meas/smear/fuzz_smear.h \
@@ -321,7 +324,7 @@ libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
                gaus_smear.cc hyp_smear.cc ape_smear.cc fuzz_smear.cc \
                klein_gord.cc laplacian.cc displacement.cc \
                su2extract.cc sunfill.cc invcg1.cc invcg2.cc invcg2_array.cc \
-	       minvcg.cc qprop_io.cc \
+	       minvcg.cc qprop_io.cc stoch_var.cc z2_src.cc \
                milc_io.cc readmilc.cc writemilc.cc \
                axgauge.cc coulgauge.cc grelax.cc polar_dec.cc rot_colvec.cc \
 	       transf.cc param_io.cc gramschm.cc gramschm_array.cc \
@@ -342,15 +345,15 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	gaus_smear.cc hyp_smear.cc ape_smear.cc fuzz_smear.cc \
 	klein_gord.cc laplacian.cc displacement.cc su2extract.cc \
 	sunfill.cc invcg1.cc invcg2.cc invcg2_array.cc minvcg.cc \
-	qprop_io.cc milc_io.cc readmilc.cc writemilc.cc axgauge.cc \
-	coulgauge.cc grelax.cc polar_dec.cc rot_colvec.cc transf.cc \
-	param_io.cc gramschm.cc gramschm_array.cc ritz.cc ritz_array.cc \
-	sn_jacob.cc sn_jacob_array.cc eig_spec.cc eig_spec_array.cc \
-	proginfo.cc printgeom.cc baryon_w.cc mesons_w.cc hybmeson_w.cc \
-	loops_w.cc z2_src.cc curcor2_w.cc lwldslash_w.cc formfac_w.cc \
-	mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
-	sink_smear2_w.cc barcomp_io.cc barcomp_w.cc walfil_w.cc \
-	fermact_qprop.cc prec_fermact_qprop.cc \
+	qprop_io.cc stoch_var.cc z2_src.cc milc_io.cc readmilc.cc \
+	writemilc.cc axgauge.cc coulgauge.cc grelax.cc polar_dec.cc \
+	rot_colvec.cc transf.cc param_io.cc gramschm.cc \
+	gramschm_array.cc ritz.cc ritz_array.cc sn_jacob.cc \
+	sn_jacob_array.cc eig_spec.cc eig_spec_array.cc proginfo.cc \
+	printgeom.cc baryon_w.cc mesons_w.cc hybmeson_w.cc loops_w.cc \
+	curcor2_w.cc lwldslash_w.cc formfac_w.cc mesonseqsrc_w.cc \
+	barseqsrc_w.cc seqpiontest_w.cc sink_smear2_w.cc barcomp_io.cc \
+	barcomp_w.cc walfil_w.cc fermact_qprop.cc prec_fermact_qprop.cc \
 	unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
 	prec_wilson_fermact_w.cc prec_wilson_linop_w.cc \
 	unprec_parwilson_fermact_w.cc unprec_parwilson_linop_w.cc \
@@ -373,13 +376,13 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	zolotarev5d_fermact_array_w.cc zolotarev5d_linop_array_w.cc \
 	wallpionff_w.cc lwldslash_w_sse.cc mesphas_s.cc \
 	mesphas_follana_s.cc pions_follana_s.cc follana_io_s.cc \
-	walfil_s.cc asqtad_linop_s.cc asq_dsl_s.cc fat7_links_s.cc \
-	naik_term_s.cc asqtad_fermact_s.cc asqtad_mdagm_s.cc \
-	staggered_qprop.cc stag_phases_s.cc
+	walfil_s.cc stag_scalars_s.cc stag_propShift_s.cc \
+	asqtad_linop_s.cc asq_dsl_s.cc fat7_links_s.cc naik_term_s.cc \
+	asqtad_fermact_s.cc asqtad_mdagm_s.cc staggered_qprop.cc \
+	stag_phases_s.cc
 @BUILD_WILSON_LIBS_TRUE@am__objects_1 = baryon_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	mesons_w.$(OBJEXT) hybmeson_w.$(OBJEXT) \
-@BUILD_WILSON_LIBS_TRUE@	loops_w.$(OBJEXT) z2_src.$(OBJEXT) \
-@BUILD_WILSON_LIBS_TRUE@	curcor2_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	loops_w.$(OBJEXT) curcor2_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	lwldslash_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	formfac_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	mesonseqsrc_w.$(OBJEXT) \
@@ -441,6 +444,8 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 @BUILD_STAGGERED_LIBS_TRUE@	follana_io_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	fermact_qprop.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	walfil_s.$(OBJEXT) \
+@BUILD_STAGGERED_LIBS_TRUE@	stag_scalars_s.$(OBJEXT) \
+@BUILD_STAGGERED_LIBS_TRUE@	stag_propShift_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	asqtad_linop_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	asq_dsl_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	fat7_links_s.$(OBJEXT) \
@@ -459,11 +464,12 @@ am_libchroma_a_OBJECTS = rgauge.$(OBJEXT) taproj.$(OBJEXT) \
 	laplacian.$(OBJEXT) displacement.$(OBJEXT) su2extract.$(OBJEXT) \
 	sunfill.$(OBJEXT) invcg1.$(OBJEXT) invcg2.$(OBJEXT) \
 	invcg2_array.$(OBJEXT) minvcg.$(OBJEXT) qprop_io.$(OBJEXT) \
-	milc_io.$(OBJEXT) readmilc.$(OBJEXT) writemilc.$(OBJEXT) \
-	axgauge.$(OBJEXT) coulgauge.$(OBJEXT) grelax.$(OBJEXT) \
-	polar_dec.$(OBJEXT) rot_colvec.$(OBJEXT) transf.$(OBJEXT) \
-	param_io.$(OBJEXT) gramschm.$(OBJEXT) gramschm_array.$(OBJEXT) \
-	ritz.$(OBJEXT) ritz_array.$(OBJEXT) sn_jacob.$(OBJEXT) \
+	stoch_var.$(OBJEXT) z2_src.$(OBJEXT) milc_io.$(OBJEXT) \
+	readmilc.$(OBJEXT) writemilc.$(OBJEXT) axgauge.$(OBJEXT) \
+	coulgauge.$(OBJEXT) grelax.$(OBJEXT) polar_dec.$(OBJEXT) \
+	rot_colvec.$(OBJEXT) transf.$(OBJEXT) param_io.$(OBJEXT) \
+	gramschm.$(OBJEXT) gramschm_array.$(OBJEXT) ritz.$(OBJEXT) \
+	ritz_array.$(OBJEXT) sn_jacob.$(OBJEXT) \
 	sn_jacob_array.$(OBJEXT) eig_spec.$(OBJEXT) \
 	eig_spec_array.$(OBJEXT) proginfo.$(OBJEXT) printgeom.$(OBJEXT) \
 	$(am__objects_1) $(am__objects_2) $(am__objects_3)
@@ -539,11 +545,14 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/sn_jacob.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/sn_jacob_array.Po ./$(DEPDIR)/srcfil.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/stag_phases_s.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/stag_propShift_s.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/stag_scalars_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/staggered_qprop.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/su2extract.Po ./$(DEPDIR)/su3proj.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/sun_proj.Po ./$(DEPDIR)/sunfill.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/szin_io.Po ./$(DEPDIR)/taproj.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/transf.Po ./$(DEPDIR)/unit_check.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/stoch_var.Po ./$(DEPDIR)/su2extract.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/su3proj.Po ./$(DEPDIR)/sun_proj.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/sunfill.Po ./$(DEPDIR)/szin_io.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/taproj.Po ./$(DEPDIR)/transf.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/unit_check.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_dwf_fermact_array_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_dwf_fermact_base_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_dwf_fermact_qprop_array_w.Po \
@@ -722,7 +731,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sn_jacob_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/srcfil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stag_phases_s.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stag_propShift_s.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stag_scalars_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/staggered_qprop.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stoch_var.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/su2extract.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/su3proj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sun_proj.Po@am__quote@
