@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ferm.h,v 1.3 2003-12-11 17:11:17 bjoo Exp $
+// $Id: ferm.h,v 1.4 2004-05-14 00:22:24 edwards Exp $
 
 /*! \file
  * \brief Utilities for manipulating fermion fields
@@ -17,6 +17,12 @@
 #define __ferm_h__
 
 #include "transf.h"
+
+#if defined CHROMA_BUILD_WILSON
+#include "ferm_w.h"
+#elif defined CHROMA_BUILD_STAGGERED
+#include "ferm_s.h"
+#endif
 
 #endif
 
