@@ -45,7 +45,7 @@ void write(XMLWriter& xml, const string& path, const MDIntegratorType_t& t)
   }
 
   try { 
-    write(xml, path, t);
+    write(xml, path, token);
   }
   catch( const string& e ) { 
     QDPIO::cerr << "Caught exception while writing XML: " << e << endl;
@@ -56,7 +56,7 @@ void write(XMLWriter& xml, const string& path, const MDIntegratorType_t& t)
 LeapfrogParams::LeapfrogParams(XMLReader& top) 
 {
   try { 
-    read(top, "IntegratorType", my_type);
+    read(top, "./IntegratorType", my_type);
     
     switch( my_type ) { 
     case MD_PQP_LEAPFROG: 
@@ -69,8 +69,8 @@ LeapfrogParams::LeapfrogParams(XMLReader& top)
       break;
     }
 
-    read(top, "dt", dt);
-    read(top, "tau", tau);
+    read(top, "./dt", dt);
+    read(top, "./tau", tau);
   }
   catch( const string& e ) { 
     QDPIO::cerr << "Caught exception while reading XML: "<< e << endl;
@@ -99,7 +99,7 @@ MDIntegratorParamsBase* readMDIntegratorParams(XMLReader& xml, const string& pat
   try {
     XMLReader top(xml, path);
   
-    read(top, "IntegratorType", my_type);
+    read(top, "./IntegratorType", my_type);
 
     switch(my_type) { 
     case MD_PQP_LEAPFROG:

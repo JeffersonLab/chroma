@@ -1,4 +1,4 @@
-// $Id: prec_contfrac_linop_array_w.cc,v 1.1 2004-09-07 14:52:30 bjoo Exp $
+// $Id: prec_contfrac_linop_array_w.cc,v 1.2 2004-09-07 15:53:42 bjoo Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned domain-wall linear operator
  */
@@ -31,7 +31,7 @@ EvenOddPrecContFracLinOpArray::create(Handle< ConnectState > state_,
   N5 = N5_;
   m_q = m_q_;
   WilsonMass = WilsonMass_;
-  D.create(u_);
+  D.create(state_->getLinks());
 
   // Auxiliary factor
   M_factor = (Real(Nd) + WilsonMass);
@@ -64,7 +64,7 @@ EvenOddPrecContFracLinOpArray::create(Handle< ConnectState > state_,
 
   a[0] = ((Real(1) + m_q)/(Real(1) - m_q)) + k[0]*M_factor;
 
-  for(int sgnH=-1, int i=1; i < N5; i++, sgnH *= -1) { 
+  for(int sgnH=-1, i=1; i < N5; i++, sgnH *= -1) { 
     // a_i = (-1)^{i}*(c_{i-1}^2)*k[i]*(Nd + M_w)
     a[i] = Real(sgnH)*c[i-1]*c[i-1]*k[i]*M_factor;
   }
@@ -126,10 +126,10 @@ EvenOddPrecContFracLinOpArray::applyDiag(multi1d<LatticeFermion>& chi,
 
   // chi[N5-1] = b[0] * psi[N5-2] + a[0] gamma_5 psi[N5-1]
   tmp[rb[cb]]  = Gamma(G5)*psi[ N5-1 ];
-  chi[ N5-1 ][ rb[cb] ] = b[0]*psi[ N5-2 ]
+  chi[ N5-1 ][ rb[cb] ] = b[0]*psi[ N5-2 ];
   chi[ N5-1 ][ rb[cb] ] += a[0]*tmp;
 
-  for(int s = N5-2, int index=1; s >= 0; s--, index++ ) { 
+  for(int s = N5-2, index=1; s >= 0; s--, index++ ) { 
 
     // chi[s] = b[i]psi[s-1] + a[i]gamma_5 psi[s] + b[i-1] psi[s+1]
     chi[ s ][rb[cb]] = b[index]*psi[s-1];
@@ -178,7 +178,7 @@ EvenOddPrecContFracLinOpArray::applyDiagInv(multi1d<LatticeFermion>& chi,
 
   // Invert diagonal piece -- store back in y
   for(int s = N5-1,  index=0; s >= 0; s--, index++) { 
-    tmp[rb[cb]] = Gamma(G5)*y[i];
+    tmp[rb[cb]] = Gamma(G5)*y[s];
     coeff = Real(1)/d[index];
     y[s][rb[cb]] = coeff*tmp;
   }
@@ -186,7 +186,7 @@ EvenOddPrecContFracLinOpArray::applyDiagInv(multi1d<LatticeFermion>& chi,
   // Backsubstitute U chi = y
   chi[N5-1][rb[cb]] = y[N5-1];
 
-  for(int s = N5-2, index=0; s >= 0; s--; index++) {
+  for(int s = N5-2, index=0; s >= 0; s--, index++) {
     tmp = Gamma(G5)*y[s+1];
     chi[s][rb[cb]] = y[s] - u_l[index]*tmp;
   }

@@ -50,6 +50,8 @@ public:
 
 };
 
+typedef AbsHamiltonian<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > LatColMatHamiltonian;
+
 
 /*! Now define similar classes for exact algorithms.
  * These are basically the same as before but they can compute
@@ -93,6 +95,8 @@ public:
   //! The Potential Energy 
   virtual Double mesPE(const AbsFieldState<P,Q>& s) const = 0;
 };
+
+
 
 template<typename P, typename Q, typename Phi>
 class AbsFermHamiltonian  {

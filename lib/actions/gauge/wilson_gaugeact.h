@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wilson_gaugeact.h,v 1.5 2004-08-19 16:32:04 bjoo Exp $
+// $Id: wilson_gaugeact.h,v 1.6 2004-09-07 15:53:42 bjoo Exp $
 /*! \file
  *  \brief Wilson gauge action
  */
@@ -29,9 +29,9 @@ public:
     gbc(gbc_), beta(beta_) {}
 
   //! Read beta from a param struct
-  WilsonGaugeAct(const GaugeBCParamsBase& gbc_, 
+  WilsonGaugeAct(Handle< GaugeBC > gbc_, 
 		 const WilsonGaugeActParams& p) : 
-    gbc(getGaugeBCFromParams(gbc_)), beta(p.getBeta()) {}
+    gbc(gbc_), beta(p.getBeta()) {}
 
 
   //! Constructor with different MD beta

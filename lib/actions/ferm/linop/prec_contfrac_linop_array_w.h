@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_contfrac_linop_array_w.h,v 1.1 2004-09-07 14:52:30 bjoo Exp $
+// $Id: prec_contfrac_linop_array_w.h,v 1.2 2004-09-07 15:53:42 bjoo Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned domain-wall fermion linear operator
  */
@@ -8,6 +8,8 @@
 #define __prec_contfrac_linop_array_w_h__
 
 #include "linearop.h"
+#include "state.h"
+
 #include "actions/ferm/linop/dslash_w.h"
 
 using namespace QDP;
@@ -45,9 +47,9 @@ public:
 				const Real& m_q_,
 				const Real& WilsonMass_,
 				const multi1d<Real>& k_,
-				const multi1d<Real>& c_) :
-    create(state_, N5, m_q_, WilsonMass_, k_, c_) {}
-
+				const multi1d<Real>& c_) {
+    create(state_, N5, m_q_, WilsonMass_, k_, c_) ;
+  }
 
   //! Creation routine
   //
@@ -70,7 +72,7 @@ public:
 	      const Real& m_q_,
 	      const Real& WilsonMass_,
 	      const multi1d<Real>& k_,
-	      const multi1d<Real>& c_) {}
+	      const multi1d<Real>& c_) ;
 
   //! Destructor is automatic
   ~EvenOddPrecContFracLinOpArray() {}
@@ -93,7 +95,9 @@ public:
 			const multi1d<LatticeFermion>& psi, 
 			enum PlusMinus isign) const
   {
-      applyDiagInv(chi, psi, isign, 0);
+    START_CODE();
+    applyDiagInv(chi, psi, isign, 0);
+    END_CODE();
   }
   
   //! Apply the the even-odd block onto a source vector
@@ -101,6 +105,7 @@ public:
 		    const multi1d<LatticeFermion>& psi, 
 		    enum PlusMinus isign) const
   {
+    START_CODE();
     // Gamma(5) index. What are the GammaConst thingies?
     const int G5=Ns*Ns-1;
     
@@ -109,7 +114,7 @@ public:
     // Our mass term is in the bottom component, so we 
     // start there and work up.
     // signH=1 for bottom component and wiggles as we come up.
-    for(int signH=1, int s=N5-1, int index=0; 
+    for(int signH=1, s=N5-1, index=0; 
 	s >=0 ; 
 	s--, signH *=-1, index++) {
       
@@ -119,7 +124,7 @@ public:
       D.apply(tmp,psi[s],isign,0);
 
       // Tmp2 = gamma_5 * tmp
-      chi[s][rb[0]] = Gamma(G5)*tmp1;
+      chi[s][rb[0]] = Gamma(G5)*tmp;
       
       // Now multiply in the right coefficieng
       Real coeff;
@@ -133,6 +138,7 @@ public:
       
       chi[s][rb[0]] *= coeff;
     }
+    END_CODE();
   }
 
   //! Apply the the odd-even block onto a source vector
@@ -140,6 +146,7 @@ public:
 		    const multi1d<LatticeFermion>& psi, 
 		    enum PlusMinus isign) const
   {
+    START_CODE();
     // Gamma(5) index. What are the GammaConst thingies?
     const int G5=Ns*Ns-1;
     
@@ -148,7 +155,7 @@ public:
     // Our mass term is in the bottom component, so we 
     // start there and work up.
     // signH=1 for bottom component and wiggles as we come up.
-    for(int signH=1, int s=N5-1, int index=0; 
+    for(int signH=1, s=N5-1, index=0; 
 	s >=0 ; 
 	s++, signH *=-1, index++) {
       
@@ -158,7 +165,7 @@ public:
       D.apply(tmp,psi[s],isign,1);
 
       // Tmp2 = gamma_5 * tmp
-      chi[s][rb[1]] = Gamma(G5)*tmp1;
+      chi[s][rb[1]] = Gamma(G5)*tmp;
       
       // Now multiply in the right coefficieng
       Real coeff;
@@ -172,6 +179,7 @@ public:
       
       chi[s][rb[1]] *= coeff;
     }
+    END_CODE();
   }
 
   //! Apply the the odd-odd block onto a source vector

@@ -56,7 +56,7 @@ GaugeActParamsBase* readGaugeActParams(XMLReader& xml, const string& path)
   GaugeActType_t my_type;
 
   try { 
-    read(top, "GaugeAct", my_type);
+    read(top, "./GaugeAct", my_type);
   }
   catch(const string& e) {
     QDPIO::cerr << "Caught exception while reading XML : " << e << endl;

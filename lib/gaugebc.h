@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gaugebc.h,v 1.5 2004-08-19 16:32:03 bjoo Exp $
+// $Id: gaugebc.h,v 1.6 2004-09-07 15:53:42 bjoo Exp $
 /*! @file
  * @brief Gauge boundary conditions
  */
@@ -142,7 +142,11 @@ public:
 private:
   // Hide default constuctor
   Schr1LinkGaugeBC() {}
-  void initFunc(const SchrFunType_t SchrFun_, const Real& SchrPhiMult_)  ;
+  void initFunc(const SchrFunType_t SchrFun_, const Real& SchrPhiMult_) {
+    QDPIO::cerr << "Schr1LinkGaugeBC() not yet implemented" << endl;
+    QDP_abort(1);
+  }
+
 
 private:
   SchrFunType_t SchrFun;
@@ -224,7 +228,11 @@ private:
   // Hide default constuctor
   Schr2LinkGaugeBC() {}
 
-  void initFunc(const SchrFunType_t SchrFun_, const Real& SchrPhiMult_);
+  void initFunc(const SchrFunType_t SchrFun_, const Real& SchrPhiMult_) {
+    QDPIO::cerr << "Schr1LinkGaugeBC() not yet implemented" << endl;
+    QDP_abort(1);
+  }
+
 private:
   SchrFunType_t SchrFun;
   int decay_dir;

@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.162 2004-08-24 20:56:12 kostas Exp $
+# $Id: Makefile.am,v 1.163 2004-09-07 15:53:42 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -113,6 +113,7 @@ nobase_include_HEADERS = \
 	util/gauge/gauge.h \
 	util/gauge/gauge_startup.h \
 	util/gauge/gaugebc_utils.h \
+	util/gauge/gaugeact_utils.h \
 	util/gauge/hotst.h util/gauge/phfctr.h util/gauge/reunit.h \
 	util/gauge/rgauge.h util/gauge/su2extract.h util/gauge/su3proj.h \
 	util/gauge/sunfill.h util/gauge/sun_proj.h util/gauge/taproj.h \
@@ -187,6 +188,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/unprec_ovext_linop_array_w.h \
 	actions/ferm/linop/unprec_wilson_linop_w.h \
 	actions/ferm/linop/unprec_parwilson_linop_w.h \
+	actions/ferm/linop/prec_contfrac_linop_array_w.h \
 	actions/ferm/qprop/qprop_w.h \
 	actions/ferm/qprop/dwf_quarkprop4_w.h \
 	actions/ferm/qprop/quarkprop4_w.h \
@@ -271,7 +273,8 @@ lib_LIBRARIES = libchroma.a
 #
 # Fermion independent sources
 #
-libchroma_a_SOURCES = gauge_startup.cc gaugebc_utils.cc rgauge.cc taproj.cc \
+libchroma_a_SOURCES = gauge_startup.cc gaugebc_utils.cc gaugeact_utils.cc \
+	       rgauge.cc taproj.cc \
 	       hotst.cc expm12.cc \
                expmat.cc expsu3.cc mesplq.cc polylp.cc reunit.cc unit_check.cc \
                sftmom.cc srcfil.cc \
@@ -296,6 +299,7 @@ libchroma_a_SOURCES = gauge_startup.cc gaugebc_utils.cc rgauge.cc taproj.cc \
                su3over.cc su3hb.cc \
 	       bc_io.cc gaugebc_io.cc gaugeact_io.cc wilson_gaugeact_io.cc \
 	       mc_io.cc md_io.cc pg_hmc_io.cc
+	
 
 #
 # Object files to add if building the Wilson Builds...
@@ -336,7 +340,8 @@ libchroma_a_SOURCES += baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
 	      lovlap_double_pass_w.cc lovddag_double_pass_w.cc \
 	      lg5eps_w.cc lg5eps_double_pass_w.cc \
 	      zolotarev5d_fermact_array_w.cc zolotarev5d_linop_array_w.cc \
-	      zolotarev5d_nonhermop_array_w.cc wall_qprop_w.cc \
+	      zolotarev5d_nonhermop_array_w.cc  \
+	      prec_contfrac_linop_array_w.cc wall_qprop_w.cc \
               wallff_w.cc wallrhoff_w.cc wallrhopiff_w.cc \
               wallpionff_w.cc wallnuclff_w.cc \
               walldeltaff_w.cc walldeltapff_w.cc \

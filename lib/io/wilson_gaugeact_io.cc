@@ -10,7 +10,7 @@ WilsonGaugeActParams::WilsonGaugeActParams(XMLReader& xml)
   GaugeActType_t my_type;
   try {
 
-    read(xml, "GaugeAct", my_type);
+    read(xml, "./GaugeAct", my_type);
   }
   catch(const string& e ) { 
     QDPIO::cerr << "Caught exception while reading XML : " << e << endl;
@@ -23,7 +23,7 @@ WilsonGaugeActParams::WilsonGaugeActParams(XMLReader& xml)
   }
 
   try { 
-    read(xml, "beta", beta);
+    read(xml, "./beta", beta);
   }
   catch(const string& e ) { 
     QDPIO::cerr << "Caught exception while reading XML : " << e << endl;

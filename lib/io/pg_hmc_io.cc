@@ -11,27 +11,27 @@ void read(XMLReader& xml, const string& path, PureGaugeHMCParams& p)
   try {
     XMLReader top(xml, path);
 
-    read(top, "IO_version/version", p.io_version.version);
+    read(top, "./IO_version/version", p.io_version.version);
     
     switch( p.io_version.version ) {
     case 1:
       {
-	read(top, "MC_Iterations", p.MC_iters);
+	read(top, "./MC_Iterations", p.MC_iters);
 
-	read(top, "MC_StartUp", p.MC_startup);
+	read(top, "./MC_StartUp", p.MC_startup);
 
-	p.gauge_bc_handle = readGaugeBCParams(top, "GaugeBC");
+	p.gauge_bc_handle = readGaugeBCParams(top, "./GaugeBC");
 
-	p.gauge_act_MC_handle = readGaugeActParams(top, "GaugeAction_MC");
+	p.gauge_act_MC_handle = readGaugeActParams(top, "./GaugeAction_MC");
 
-	if( top.count("GaugeAction_MD") == 1 ) { 
-	  p.gauge_act_MD_handle = readGaugeActParams(top, "GaugeAction_MD");
+	if( top.count("./GaugeAction_MD") == 1 ) { 
+	  p.gauge_act_MD_handle = readGaugeActParams(top, "./GaugeAction_MD");
 	}
 	else { 
 	  p.gauge_act_MD_handle = p.gauge_act_MC_handle;
 	}
 
-	p.MD_params_handle = readMDIntegratorParams(top, "MDIntegrator");
+	p.MD_params_handle = readMDIntegratorParams(top, "./MDIntegrator");
       }
       break;
     default:
@@ -60,6 +60,8 @@ void write(XMLWriter& xml, const string& path, const PureGaugeHMCParams& p)
     write(xml, "GaugeAction_MC", *(p.gauge_act_MC_handle));
     write(xml, "GaugeAction_MD", *(p.gauge_act_MD_handle));
     write(xml, "MDIntegrator", *(p.MD_params_handle));
+
+    pop(xml);
   }
   catch( const string& e ) {
     QDPIO::cerr << "Caught exception while writing XML : " << e << endl;
