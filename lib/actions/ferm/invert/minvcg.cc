@@ -1,10 +1,13 @@
-// $Id: minvcg.cc,v 1.1 2003-04-08 21:36:13 edwards Exp $
+// $Id: minvcg.cc,v 1.2 2004-01-08 17:11:01 bjoo Exp $
 
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator
  */
 
-#include "chroma.h"
+#include <iostream>
+#include "chromabase.h"
+#include "linearop.h"
+
 #include "actions/ferm/invert/minvcg.h"
 
 using namespace QDP;
@@ -27,7 +30,7 @@ using namespace QDP;
  *  r[0]   :=  Chi;                           Initial residual
  *  p[1]   :=  Chi ;	       	       	      Initial direction
  *  b[0]   := |r[0]|**2 / <p[0],Ap[0]> ;
- *  z[0]   := 1 / (1 - (m - m(0))*b) 
+ *  z[0]   := 1 / (1 - (shift - shift(0))*b) 
  *  bs[0]  := b[0] * z[0]  
  *  r[1] += b[k] A . p[0] ; 	       	      New residual
  *  Psi[1] = - b[k] p[k] ;   	       	      Starting solution vector
@@ -45,14 +48,9 @@ using namespace QDP;
  *  A	        Hermitian linear operator      (Read)
  *  Chi	        Source   	               (Read)
  *  Psi	        array of solutions    	       (Write)
- *  Chi_Norm    |Chi|	    	    	       (Read)
- *  mass        shifts of form  A + mass       (Read)
- *  Nmass       Number of shifts               (Read)
- *  isz         which mass in list is smallest (Read)
- *  RsdCG       residual accuracy              (Read)
- *  N_Count     Number of CG iteration	       (Write)
- *  EigVec      Eigenvectors, to which we want orthogonality	(Read)
- *  NEig        Number of eigenvectors         (Read)
+ *  shifts        shifts of form  A + mass       (Read)
+ *  RsdCG       residual accuracy              (Read/Write)
+ *  n_count     Number of CG iteration	       (Write)
 
   * Local Variables:
 
@@ -72,275 +70,295 @@ using namespace QDP;
  *  A	       Apply matrix hermitian A to vector 
  */
 
-void MInvCG(const LinearOperator& A, const LatticeFermion& chi, LatticeFermion& psi,
-	    const Double& chi_norm, 
-	    const multi1d<Real>& mass, int Nmass, int isz, 
-	    const multi1d<Real>& RsdCG, int n_count&,
-	    const multi1d<LatticeFermion>& EigVec, int NEig)
+template<typename T>
+void MInvCG_a(const LinearOperator<T>& A, 
+	      const T& chi, 
+	      multi1d<T>& psi,
+	      const multi1d<Real>& shifts, 
+	      const multi1d<Real>& RsdCG, 
+	      int MaxCG,
+	      int& n_count)
+{
+  START_CODE("MinvCG");
 
-/*  Vec_orth    Vectors to which we want orthogonality	(Read) */
-/*  NVec        Number of vectors Vec_orth     (Read) */
-{ /* Local Variables */
-  multi1d<LatticeFermion> p(Nmass);
-  LatticeFermion r;
-  LatticeFermion Ap;
-  LatticeFermion ltmp;
-  Real a;
-  Real as;
-  Real b;
-  Real bp;
-  multi1d<Real> bs(Nmass);
-  multi2d<Real> z(2, Nmass);
-  Real css;
-  Real ztmp;
-  Double c;
-  Double cs;
-  Double d;
-  Double cp;
-  Boolean convP;
-  multi1d<Boolean> convsP(Nmass);
-  int iz;
-  int k;
-  int s;
-  multi1d<Real> rsd_sq(Nmass);
-  multi1d<Real> rsdcg_sq(Nmass);
+  const OrderedSubset& sub = A.subset();
+
+  int n_shift = shifts.size();
+
+  if (n_shift == 0) {
+    QDP_error_exit("MinvCG: You must supply at least 1 mass: mass.size() = %d",
+		   n_shift);
+  }
+
+  /* Now find the smallest mass */
+  int isz = 0;
+  for(int findit=1; findit < n_shift; ++findit) {
+    if ( toBool( shifts[findit] < shifts[isz])  ) { 
+      isz = findit;
+    }
+  }
+
+#if 0 
+  QDPIO::cout << "n_shift = " << n_shift << " isz = " << isz << " shift = " << shifts[0] << endl;
+#endif
+
+  // For this algorithm, all the psi have to be 0 to start
+  // Only is that way the initial residuum r = chi
+  if( psi.size() != n_shift ) { 
+      psi.resize(n_shift);
+  }
+   
+  for(int i= 0; i < n_shift; ++i) { 
+    psi[i][sub] = zero;
+  }
   
-  START_CODE("MInvCGm");
-  
-  /* If exactly 0 norm, then solution must be 0 (for pos. def. operator) */
-  if (chi_norm == 0.0)
-  {
+  // If chi has zero norm then the result is zero
+  Double chi_norm = sqrt(norm2(chi,sub));
+
+
+  if( toBool( chi_norm < fuzz )) { 
     n_count = 0;
-    psi = 0;
-    END_CODE("MInvCGm");
+
+    // The psi are all zero anyway at this point
+    // for(int i=0; i < n_shift; i++) { psi[i] = zero; }
     return;
   }
 
-    
-  cp = chi_norm * chi_norm;
-  for(s = 0; s < Nmass; ++s)
-  {
-    rsdcg_sq[s] = RsdCG[s] * RsdCG[s];
-    rsd_sq[s] = Real(cp) * rsdcg_sq[s];
+  multi1d<Double> rsd_sq(n_shift);
+  multi1d<Double> rsdcg_sq(n_shift);
+
+  Double cp = chi_norm * chi_norm;
+  int s;
+  for(s = 0; s < n_shift; ++s)  {
+    rsdcg_sq[s] = RsdCG[s] * RsdCG[s];  // RsdCG^2
+    rsd_sq[s] = Real(cp) * rsdcg_sq[s]; // || chi ||^2 RsdCG^2
   }
 
-              
-  /* Psi[0] := 0; */
-  /* r[0] := p[0] := Chi */
-  r = chi;
-  for(s = 0; s < Nmass; ++s)
-    p[s] = chi;
+  
+  // r[0] := p[0] := Chi 
+  T r;
+  r[sub] = chi;
 
-  /*  b[0] := - | r[0] |**2 / < p[0], Ap[0] > ; */
-  /*  First compute  d  =  < p, A.p >  */
-  /*  Ap = A . p  */
-  ltmp = p[isz];
-  A (ltmp, Ap, 0);
+  // Psi[0] := 0;
+  multi1d<T> p(n_shift);
+  for(s = 0; s < n_shift; ++s) {
+    p[s][sub] = chi;
+  }
 
-#if 1
-  /* Project out eigenvectors */
-  GramSchm (Ap, 1, EigVec, NEig);
-#endif
 
-  Ap += p[isz] * mass[isz];
+  //  b[0] := - | r[0] |**2 / < p[0], Ap[0] > ;/
+  //  First compute  d  =  < p, A.p > 
+  //  Ap = A . p  */
+  LatticeFermion Ap;
+  A(Ap, p[isz], PLUS);
+  Ap[sub] += p[isz] * shifts[isz];
 
   /*  d =  < p, A.p >  */
-  d = sum(real(trace(adj(Ap) * ltmp)));                        /* 2 Nc Ns  flops */
+  Double d = real(innerProduct(p[isz], Ap, sub)); // 2Nc Ns flops 
+
+ 
   
-  b = -Real(cp/d);
+  Double b = -cp/d;
 
   /* Compute the shifted bs and z */
-  z[isz][0] = 1;
-  z[isz][1] = 1;
+  multi1d<Double> bs(n_shift);
+  multi2d<Double> z(2, n_shift);
+  int iz;
+
+  z[0][isz] = Double(1);
+  z[1][isz] = Double(1);
   bs[isz] = b;
   iz = 1;
-  for(s = 0; s < Nmass; ++s)
-  {
-    if (s == isz) continue;
 
-    z[s][1-iz] = 1;
-    z[iz][s] = Real(1) / (1 - (mass[s]-mass[isz])*b);
-    bs[s] = b * z[s][iz];
+  for(s = 0; s < n_shift; ++s)
+  {
+    if( s != isz ) {
+      z[1-iz][s] = Double(1);
+      z[iz][s] = Double(1) / (Double(1) - (Double(shifts[s])-Double(shifts[isz]))*b);
+      bs[s] = b * z[iz][s];
+    }
   }
 
-  /*  r[1] += b[0] A . p[0]; */
-  r += Ap * b;	   /* 2 Nc Ns  flops */
+  //  r[1] += b[0] A . p[0]; 
+  r[sub] += Ap * Real(b);	                        // 2 Nc Ns  flops
 
-  /*  Psi[1] -= b[0] p[0] = - b[0] chi; */
-  for(s = 0; s < Nmass; ++s)
-    psi[s] = -(chi * bs[s]); /* 2 Nc Ns  flops */
+  //  Psi[1] -= b[0] p[0] = - b[0] chi;
+  for(s = 0; s < n_shift; ++s) {
+    psi[s][sub] = - Real(bs[s])*chi;                      //  2 Nc Ns  flops 
+  }
+  
+  //  c = |r[1]|^2   
+  Double c = norm2(r,sub);   	       	         //  2 Nc Ns  flops 
 
-  /*  c = |r[1]|^2 */
-  c = norm2(r);   	       	   /* 2 Nc Ns  flops */
+  // Check convergence of first solution
+  multi1d<bool> convsP(n_shift);
+  for(s = 0; s < n_shift; ++s) {
+    convsP[s] = false;
+  }
 
-  /*  Check convergence of first solution */
-  convsP = false;
+  bool convP = toBool( c < rsd_sq[isz] );
 
-  css = Real(c);
-  convP = css < rsd_sq[isz];
+#if 0 
+  QDPIO::cout << "MInvCG: k = 0  r = " << sqrt(c) << endl;
+#endif
 
-  PRINTF("MInvCG: k = %d  r = %g\n",0,sqrt(c));
-
-  /*  FOR k FROM 1 TO MaxCG DO */
-  /*  IF |psi[k+1] - psi[k]| <= RsdCG |psi[k+1]| THEN RETURN; */
-  for(k = 1; k <= MaxCG && ! convP ; ++k)
+  //  FOR k FROM 1 TO MaxCG DO
+  //  IF |psi[k+1] - psi[k]| <= RsdCG |psi[k+1]| THEN RETURN; 
+  Double z0, z1;
+  Double ztmp;
+  Double cs;
+  Double a;
+  Double as;
+  Double  bp;
+  int k;
+  
+  for(k = 1; k <= MaxCG && !convP ; ++k)
   {
-    /*  a[k+1] := |r[k]|**2 / |r[k-1]|**2 ; */
-    a = Real(c/cp);
+    //  a[k+1] := |r[k]|**2 / |r[k-1]|**2 ; 
+    a = c/cp;
 
-    /*  p[k+1] := r[k+1] + a[k+1] p[k]; */
-    /*  Compute the shifted as */
-    /*  ps[k+1] := zs[k+1] r[k+1] + a[k+1] ps[k]; */
-    for(s = 0; s < Nmass; ++s)
-    {
-      if (convsP[s]) continue;
-
-      if (s == isz)
-      {
-	p[s] *= a;	/* Nc Ns  flops */
-	p[s] += r;	/* Nc Ns  flops */
+    //  p[k+1] := r[k+1] + a[k+1] p[k]; 
+    //  Compute the shifted as */
+    //  ps[k+1] := zs[k+1] r[k+1] + a[k+1] ps[k];
+    for(s = 0; s < n_shift; ++s) {
+      if (!convsP[s]) {
+	
+	if (s == isz) {
+	  p[s][sub] *= Real(a);	                              // Nc Ns  flops 
+	  p[s][sub] += r;	                              // Nc Ns  flops 
+	}
+	else {
+	  as = a * z[iz][s]*bs[s] / (z[1-iz][s]*b);
+	  
+	  p[s][sub] *= Real(as);	                             // Nc Ns  flops 
+	  p[s][sub] += r * Real(z[iz][s]);	                     // Nc Ns  flops 
 	}
       }
-      else
-      {
-	as = a * z[iz][s]*bs[s] / (z[1-iz][s]*b);
+    }
 
-	p[s] *= as;	/* Nc Ns  flops */
-	p[s] += r * z[s][iz];	/* Nc Ns  flops */
+    //  cp  =  | r[k] |**2 
+    cp = c;
+
+    //  b[k] := | r[k] |**2 / < p[k], Ap[k] > ;
+    //  First compute  d  =  < p, A.p >  
+    //  Ap = A . p 
+    A(Ap, p[isz], PLUS);
+    Ap[sub] += p[isz] * shifts[isz];
+
+    /*  d =  < p, A.p >  */
+    d = real(innerProduct(p[isz], Ap, sub));                   //  2 Nc Ns  flops
+    
+    bp = b;
+    b = -cp/d;
+
+    // Compute the shifted bs and z 
+    bs[isz] = b;
+    iz = 1 - iz;
+    for(s = 0; s < n_shift; s++) {
+      
+      
+      if (s != isz && !convsP[s] ) {
+	z0 = z[1-iz][s];
+	z1 = z[iz][s];
+	z[iz][s] = z0*z1*bp;
+	z[iz][s] /= b*a*(z1-z0) + z1*bp*(Double(1) - (shifts[s] - shifts[isz])*b);
+	bs[s] = b*z[iz][s]/z0;
       }
     }
 
+    //  r[k+1] += b[k] A . p[k] ; 
+    r[sub] += Ap * Real(b);	        // 2 Nc Ns  flops
+
+
+    //  Psi[k+1] -= b[k] p[k] ; 
+    for(s = 0; s < n_shift; ++s) {
+      if (! convsP[s] ) {
+	psi[s][sub] -= p[s] * Real(bs[s]);	// 2 Nc Ns  flops 
+      }
+    }
+
+    //  c  =  | r[k] |**2 
+    c = norm2(r,sub);	                // 2 Nc Ns  flops 
+
+    //    IF |psi[k+1] - psi[k]| <= RsdCG |psi[k+1]| THEN RETURN;
+    // or IF |r[k+1]| <= RsdCG |chi| THEN RETURN;
+    for(s = 0; s < n_shift; s++) {
+      convP = true;
+      if (! convsP[s] ) {
+
+	// Convergence methods 
 #if 0
-    /* Project out eigenvectors */
-    if (k % 10 == 0)
-      GramSchm (p, Nmass, EigVec, NEig);
+	// Check norm of shifted residuals 
+	Double css = c * z[iz][s]* z[iz][s];
+
+#if 0	
+	if (s == isz) {
+	  QDPIO::cout << "MInvCG: k = " << k <<"  r =  " 
+		      << sqrt(css/chi_norm) << endl;
+	}
+#endif 
+	convsP[s] = toBool(  css < rsd_sq[s] );
+
 #else
-#if 1
-    /* Project out eigenvectors */
-    if (k % 10 == 0)
-    {
-      ltmp = p[isz];
-      GramSchm (ltmp, 1, EigVec, NEig);
-      p[isz] = ltmp;
+	// Check relative error of solution 
+	cs = norm2(p[s],sub);         	        // 2 Nc Ns  flops 
+	d = norm2(psi[s],sub);         	        // 2 Nc Ns  flops 
+
+	cs *= bs[s]*bs[s];
+	d *= rsdcg_sq[s];
+	convsP[s] = toBool( cs < d );
+#if 0
+	if (s == isz) {
+	  QDPIO::cout  << "MInvCG: k = " << k << " s = " << s << " r = " 
+		       << sqrt(cs) << " d = " << sqrt(d) << endl;
+	}
+#endif
+
+#endif
+      }
+      convP &= convsP[s];
     }
-#endif
-#endif
-
-    /*  cp  =  | r[k] |**2 */
-    cp = c;
-
-    /*  b[k] := | r[k] |**2 / < p[k], Ap[k] > ; */
-    /*  First compute  d  =  < p, A.p >  */
-    /*  Ap = A . p  */
-    ltmp = p[isz];
-    A (ltmp, Ap, 0);
-
-#if 1
-    /* Project out eigenvectors */
-    if (k % 10 == 0)
-      GramSchm (Ap, 1, EigVec, NEig);
-#endif
-
-    Ap += p[isz] * mass[isz];
-
-    /*  d =  < p, A.p >  */
-    d = sum(real(trace(adj[Ap] * ltmp)));       /* 2 Nc Ns  flops */
-    
-    bp = b;
-    b = -Real(cp/d);
-
-    /* Compute the shifted bs and z */
-    bs[isz] = b;
-    iz = 1 - iz;
-    for(s = 0; s < Nmass; ++s)
-    {
-      if (s == isz || VALUE(convsP(s))) continue;
-
-      ztmp = VALUE(z(1-iz,s))*VALUE(z(iz,s))*bp / 
-	(b*a*(VALUE(z(iz,s)) - VALUE(z(1-iz,s))) + 
-	 VALUE(z(iz,s))*bp*(1 - (VALUE(mass(s)) - VALUE(mass(isz)))*b));
-      VALUE(bs(s)) = b * ztmp / VALUE(z(1-iz,s));
-      z[s][iz] = ztmp;
-    }
-
-    /*  r[k+1] += b[k] A . p[k] ; */
-    r += Ap * b;	        /* 2 Nc Ns  flops */
-
-#if 1
-    /* Project out eigenvectors */
-    if (k % 10 == 0)
-      GramSchm (r, 1, EigVec, NEig);
-#endif
-
-    /*  Psi[k+1] -= b[k] p[k] ; */
-    for(s = 0; s < Nmass; ++s)
-    {
-      if (VALUE(convsP(s))) continue;
-
-      psi[s] -= p[s] * bs[s];	/* 2 Nc Ns  flops */
-    }
-
-    /*  c  =  | r[k] |**2 */
-    c = norm2(r);	                /* 2 Nc Ns  flops */
-
-    /*    IF |psi[k+1] - psi[k]| <= RsdCG |psi[k+1]| THEN RETURN; */
-    /* or IF |r[k+1]| <= RsdCG |chi| THEN RETURN; */
-    for(s = 0; s < Nmass; ++s)
-    {
-      if (VALUE(convsP(s))) continue;
-
-      /* Convergence methods */
-#if 1
-      /* Check norm of shifted residuals */
-      css = Real(c) * VALUE(z(iz,s))*VALUE(z(iz,s));
-
-      convsP[s] = css < rsd_sq[s];
-
-      if (s == isz)
-	PRINTF("MInvCG: k = %d  s = %d  r = %g\n",k,s,sqrt(css));
-#else
-      /* Check relative error of solution */
-      cs = norm2(p[s]);         	        /* 2 Nc Ns  flops */
-      d = norm2(psi[s]);         	/* 2 Nc Ns  flops */
-
-      cs *= VALUE(bs(s))*VALUE(bs(s));
-      d *= VALUE(rsdcg_sq(s));
-      convsP[s] = cs < d;
-
-      if (s == isz)
-	PRINTF("MInvCG: k = %d  s = %d  r = %g  d = %g\n",k,s,sqrt(cs),sqrt(d));
-#endif
-    }
-    /* Final convergence is determined by smallest shift */
-    convP = convsP[isz];
 
     n_count = k;
   }
 
 #if 1
-  GramSchm (psi, Nmass, EigVec, NEig);
-#endif
-
-#if 0
-  /* HACK **/
-  for(s = 0; s < Nmass; ++s)
+  // Expicitly check the solutions
+  for(s = 0; s < n_shift; ++s)
   {
-    ltmp = psi[s];
-    A (ltmp, Ap, 0);
-    Ap += psi[s] * mass[s];
+    A(Ap, psi[s], PLUS);
+    Ap[sub] += psi[s] * shifts[s];
 
-    Ap -= chi;
+    Ap[sub] -= chi;
 
-    c = norm2(Ap);	                /* 2 Nc Ns  flops */
+    c = norm2(Ap,sub);	                /* 2 Nc Ns  flops */
 
-    PRINTF("MInvCG (conv): s = %d  r = %g  m = %g\n",s,sqrt(c),VALUE(mass(s)));
+    QDPIO::cout << "MInvCG (conv): s = " << s 
+                << " shift = " << shifts[s]
+		<< " r = " <<  Real(sqrt(c/chi_norm)) << endl;
+		
   }
-  PRINTF("\n");
   /* end */
 #endif
 
-  if (n_count == MaxCG)
-    QDP_error_exit("too many CG iterations", n_count, rsd_sq[isz], d, c, cp, a, b);
-  END_CODE("subroutine");;
+  if (n_count == MaxCG) {
+    QDP_error_exit("too many CG iterationns: %d\n", n_count);
+  }
+
+  END_CODE("MinvCG");
   return;
+  
+}
+
+
+template<>
+void MInvCG(const LinearOperator<LatticeFermion>& M,
+	    const LatticeFermion& chi, 
+	    multi1d<LatticeFermion>& psi, 
+	    const multi1d<Real>& shifts,
+	    const multi1d<Real>& RsdCG, 
+	    int MaxCG,
+	    int &n_count)
+{
+  MInvCG_a(M, chi, psi, shifts, RsdCG, MaxCG, n_count);
 }
