@@ -367,17 +367,17 @@ if ($tot_cnt{"f0"} > 0)
 #   system("calc ${nuc}_r_mu3_100 | head -$t_ext | axis -e -c '\cr' |plot -Tpng > ${nuc}_r_mu3_100.png");
 #   system("calc ${nuc}_r_mu3_110 | head -$t_ext | axis -e -c '\cr' |plot -Tpng > ${nuc}_r_mu3_110.png");
 #   system("calc ${nuc}_r_mu3_111 | head -$t_ext | axis -e -c '\cr' |plot -Tpng > ${nuc}_r_mu3_111.png");
-    system("(echo '#e c \cr'; calc ${nuc}_r_mu3_000 | head -$t_ext) > ${nuc}_r_mu3_000.ax");
-    system("(echo '#e c \cr'; calc ${nuc}_r_mu3_100 | head -$t_ext) > ${nuc}_r_mu3_100.ax");
-    system("(echo '#e c \cr'; calc ${nuc}_r_mu3_110 | head -$t_ext) > ${nuc}_r_mu3_110.ax");
-    system("(echo '#e c \cr'; calc ${nuc}_r_mu3_111 | head -$t_ext) > ${nuc}_r_mu3_111.ax");
+    system("(echo '#e c \cr'; calc ${nuc}_r_mu3_000 ) > ${nuc}_r_mu3_000.ax");
+    system("(echo '#e c \cr'; calc ${nuc}_r_mu3_100 ) > ${nuc}_r_mu3_100.ax");
+    system("(echo '#e c \cr'; calc ${nuc}_r_mu3_110 ) > ${nuc}_r_mu3_110.ax");
+    system("(echo '#e c \cr'; calc ${nuc}_r_mu3_111 ) > ${nuc}_r_mu3_111.ax");
 
     $t_ext_m1 = $t_ext - 1;
 
     foreach $i (0 .. $mom2_max)
     {
-      system("(echo '#e c \cr'; calc ${nuc}_r_mu3_q${i} | head -$t_ext) > ${nuc}_r_mu3_q${i}.ax");
-      system("(echo '#e c \cr'; calcbc \"${nuc}_r_mu3_q${i} / P_r_mu3_q0\" | head -$t_ext_m1) > ${nuc}_r_mu3_q${i}_norm.ax");
+      system("(echo '#e c \cr'; calc ${nuc}_r_mu3_q${i} ) > ${nuc}_r_mu3_q${i}.ax");
+      system("(echo '#e c \cr'; calcbc \"${nuc}_r_mu3_q${i} / P_r_mu3_q0\" ) > ${nuc}_r_mu3_q${i}_norm.ax");
     }
 
     if (0)
@@ -454,9 +454,12 @@ if ($tot_cnt{"f2"} > 0)
 #     system("calc ${nuc}_r_mu${j}_100 | head -$t_ext | axis -e -c '\cr' |plot -Tpng > ${nuc}_r_mu${j}_100.png");
 #     system("calc ${nuc}_r_mu${j}_110 | head -$t_ext | axis -e -c '\cr' |plot -Tpng > ${nuc}_r_mu${j}_110.png");
 #     system("calc ${nuc}_r_mu${j}_111 | head -$t_ext | axis -e -c '\cr' |plot -Tpng > ${nuc}_r_mu${j}_111.png");
-      system("(echo '#e c \cr'; calc ${nuc}_r_mu${j}_100 | head -$t_ext) > ${nuc}_r_mu${j}_100.ax");
-      system("(echo '#e c \cr'; calc ${nuc}_r_mu${j}_110 | head -$t_ext) > ${nuc}_r_mu${j}_110.ax");
-      system("(echo '#e c \cr'; calc ${nuc}_r_mu${j}_111 | head -$t_ext) > ${nuc}_r_mu${j}_111.ax");
+#      system("(echo '#e c \\cr'; calc ${nuc}_r_mu${j}_100 | head -$t_ext) > ${nuc}_r_mu${j}_100.ax");
+#      system("(echo '#e c \\cr'; calc ${nuc}_r_mu${j}_110 | head -$t_ext) > ${nuc}_r_mu${j}_110.ax");
+#      system("(echo '#e c \\cr'; calc ${nuc}_r_mu${j}_111 | head -$t_ext) > ${nuc}_r_mu${j}_111.ax");
+      system("(echo '#e c \\cr'; calc ${nuc}_r_mu${j}_100) > ${nuc}_r_mu${j}_100.ax");
+      system("(echo '#e c \\cr'; calc ${nuc}_r_mu${j}_110) > ${nuc}_r_mu${j}_110.ax");
+      system("(echo '#e c \\cr'; calc ${nuc}_r_mu${j}_111) > ${nuc}_r_mu${j}_111.ax");
 
       $t_ext_m1 = $t_ext - 1;
 
@@ -464,8 +467,10 @@ if ($tot_cnt{"f2"} > 0)
       {
 #       system("calc ${nuc}_r_mu${j}_q${i} | head -$t_ext | axis -e -c '\cr' |plot -Tpng > ${nuc}_r_mu${j}_q${i}.png");
 #       system("calcbc \"${nuc}_r_mu${j}_q${i} / P_r_mu3_q0\" | head -$t_ext_m1 | axis -e -c '\cr' |plot -Tpng > ${nuc}_r_mu${j}_q${i}_norm.png");
-	system("(echo '#e c \cr'; calc ${nuc}_r_mu${j}_q${i} | head -$t_ext) > ${nuc}_r_mu${j}_q${i}.ax");
-	system("(echo '#e c \cr'; calcbc \"${nuc}_r_mu${j}_q${i} / P_r_mu3_q0\" | head -$t_ext_m1) > ${nuc}_r_mu${j}_q${i}_norm.ax");
+#	system("(echo '#e c \cr'; calc ${nuc}_r_mu${j}_q${i} | head -$t_ext) > ${nuc}_r_mu${j}_q${i}.ax");
+#	system("(echo '#e c \cr'; calcbc \"${nuc}_r_mu${j}_q${i} / P_r_mu3_q0\" | head -$t_ext_m1) > ${nuc}_r_mu${j}_q${i}_norm.ax");
+	system("(echo '#e c \cr'; calc ${nuc}_r_mu${j}_q${i}) > ${nuc}_r_mu${j}_q${i}.ax");
+	system("(echo '#e c \cr'; calcbc \"${nuc}_r_mu${j}_q${i} / P_r_mu3_q0\") > ${nuc}_r_mu${j}_q${i}_norm.ax");
       }
     }
   }
