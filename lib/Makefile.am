@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.46 2003-10-09 16:08:29 edwards Exp $
+# $Id: Makefile.am,v 1.47 2003-10-20 20:18:43 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -80,7 +80,7 @@ libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
                gaus_smear.cc hyp_smear.cc ape_smear.cc \
                klein_gord.cc laplacian.cc  \
                su2extract.cc sunfill.cc invcg2.cc qprop_io.cc follana_io.cc \
-	       milc_io.cc readmilc.cc writemilc.cc
+               milc_io.cc readmilc.cc writemilc.cc
 
 #
 # Object files to add if building the Wilson Builds...
@@ -88,12 +88,12 @@ libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
 #
 if BUILD_WILSON_LIBS
 libchroma_a_SOURCES += baryon_w.cc mesons_w.cc curcor2_w.cc lwldslash_w.cc formfac_w.cc \
-              sink_smear2_w.cc barcomp_w.cc transf_w.cc \
-              unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
-              unprec_wilson_dsdu_w.cc  unprec_qprop_w.cc readszinqprop_w.cc \
-              readszinferm_w.cc writeszinqprop_w.cc \
+              sink_smear2_w.cc barcomp_w.cc transf_w.cc ldwfdslash_w.cc unprec_qprop_w.cc \
+              unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc unprec_wilson_dsdu_w.cc \
+              unprec_dwf_fermact_w.cc unprec_dwf_linop_w.cc unprec_dwf_dsdu_w.cc \
+              readszinqprop_w.cc readszinferm_w.cc writeszinqprop_w.cc \
               overlapbu_linop_w.cc \
-	      p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc
+              p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc
 #              zolotarev4d_fermact_w.cc zolotarev4d_linop_w.cc lovlapms_w.cc
 # dslashm_w.cc 
 endif
