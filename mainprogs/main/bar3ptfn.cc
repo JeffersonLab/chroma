@@ -1,4 +1,4 @@
-// $Id: bar3ptfn.cc,v 1.39 2005-03-07 02:57:59 edwards Exp $
+// $Id: bar3ptfn.cc,v 1.40 2005-03-25 15:28:04 flemingg Exp $
 /*! \file
  * \brief Main program for computing 3pt functions
  *
@@ -404,6 +404,7 @@ main(int argc, char *argv[])
   write(bin_out, bar3pt);
   bin_out.close();
 
+  QDPIO::cout << "Baryon 3-pt ran successfully" << endl;
 
   END_CODE();
 

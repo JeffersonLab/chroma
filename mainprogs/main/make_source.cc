@@ -1,4 +1,4 @@
-// $Id: make_source.cc,v 1.38 2005-03-02 00:44:18 edwards Exp $
+// $Id: make_source.cc,v 1.39 2005-03-25 15:28:04 flemingg Exp $
 /*! \file
  *  \brief Main code for source generation
  */
@@ -316,6 +316,8 @@ int main(int argc, char **argv)
     // Write the source
     writeQprop(file_xml, record_xml, quark_source,
 	       input.prop.source_file, input.prop.source_volfmt, QDPIO_SERIAL);
+
+    QDPIO::cout << "Source successfully written" << endl;
   }
 
 

@@ -1,4 +1,4 @@
-// $Id: spectrum_w.cc,v 1.48 2005-03-02 00:44:18 edwards Exp $
+// $Id: spectrum_w.cc,v 1.49 2005-03-25 15:28:04 flemingg Exp $
 /*! \file
  * \brief Main code for spectrum measurements
  */
@@ -623,6 +623,8 @@ int main(int argc, char **argv)
 
   pop(xml_array);  // Wilson_spectroscopy
   pop(xml_out);  // spectrum_w
+
+  QDPIO::cout << "Wilson spectroscopy ran successfully" << endl;
 
   END_CODE();
 
