@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.32 2004-01-07 21:59:10 edwards Exp $
+// $Id: propagator.cc,v 1.33 2004-01-08 20:59:12 kostas Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -334,7 +334,6 @@ int main(int argc, char **argv)
   }
   break;
 
-#if 0
   case FERM_ACT_DWF:
   {
     QDPIO::cout << "FERM_ACT_DWF" << endl;
@@ -372,7 +371,26 @@ int main(int argc, char **argv)
 	       ncg_had);
   }
   break;
-#endif
+
+
+  case FERM_ACT_OVERLAP_DWF:
+  {
+    QDPIO::cout << "FERM_ACT_OVERLAP_DWF" << endl;
+
+    UnprecOvDWFermActArray S_f(fbc_a,
+			       input.param.chiralParam.OverMass, 
+			       input.param.Mass, 
+			       input.param.chiralParam.N5);
+    Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
+
+    quarkProp4(quark_propagator, xml_buf, quark_prop_source,
+  	       S_f, state, 
+	       input.param.invParam.invType, 
+	       input.param.invParam.RsdCG, 
+	       input.param.invParam.MaxCG, 
+	       ncg_had);
+  }
+  break;
 
 //  case FERM_ACT_INTERNAL_UNPRECONDITIONED_DWF;
 //  UnprecDWFermAct S_f(fbc_a, OverMass, Mass);
