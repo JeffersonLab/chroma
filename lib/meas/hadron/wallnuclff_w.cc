@@ -1,4 +1,4 @@
-// $Id: wallnuclff_w.cc,v 1.14 2004-05-04 19:54:03 edwards Exp $
+// $Id: wallnuclff_w.cc,v 1.15 2004-05-04 21:28:50 edwards Exp $
 /*! \file
  *  \brief Wall-sink nucleon form-factors 
  *
@@ -41,69 +41,28 @@ LatticePropagator nonlocalCurrentProp(const multi1d<LatticeColorMatrix>& u,
 }
 
 
-
-//! Compute ubar-u current insertion in nucleon
-/*!
- * \ingroup hadron
- *
- * "\bar u O u" insertion in proton, ie. "(u C gamma_5 d) u"
- *
- * \param insert_prop        U insertion propagator ( Read )
- * \param u_x2               wall sink forward U propagator ( Read )
- * \param d_x2               wall sink forward D propagator ( Read )
- *
- * \return nonlocal ubar-u insertion
- */
-static
-LatticeSpinMatrix wallNuclUContract(const LatticePropagator& insert_prop,
-				    const Propagator& u_x2, 
-				    const Propagator& d_x2)
-{
-  /* "\bar u O u" insertion in proton, ie. "(u C gamma_5 d) u" */
-  /* T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2 */
-  /* C gamma_5 = Gamma(5) = - (C gamma_5)^T */
-
-  LatticeSpinMatrix  S;
-
-  // Term 1
-  S  = traceColor(insert_prop * quarkContract13(d_x2*Gamma(5), Gamma(5)*u_x2));
-  // Term 3
-  S += traceColor(insert_prop * traceSpin(quarkContract13(d_x2*Gamma(5), Gamma(5)*u_x2)));
-  // Term 4
-  S += traceColor(u_x2 * quarkContract13(d_x2*Gamma(5), Gamma(5)*insert_prop));
-  // Term 2
-  S += traceColor(u_x2 * traceSpin(quarkContract13(d_x2*Gamma(5), Gamma(5)*insert_prop)));
-
-  return S;
-}
-
-      
 //! Compute dbar-d current insertion in nucleon
 /*!
  * \ingroup hadron
  *
- * "\bar d O d" insertion in proton, ie. "(u C gamma_5 d) u"
+ * quark contraction within a baryon
  *
- * \param insert_prop        D insertion propagator ( Read )
- * \param u_x2               wall sink forward U propagator ( Read )
- * \param d_x2               wall sink forward D propagator ( Read )
+ * \param q1        first quark ( Read )
+ * \param q2        second quark ( Read )
+ * \param q3        third quark ( Read )
  *
- * \return nonlocal dbar-d insertion
+ * \return color-contracted spin object
  */
+template<class T1, class T2, class T3>
 static
-LatticeSpinMatrix wallNuclDContract(const LatticePropagator& insert_prop,
-				    const Propagator& u_x2, 
-				    const Propagator& d_x2)
+LatticeSpinMatrix baryonContract(const T1& q1,
+				 const T2& q2, 
+				 const T3& q3)
 {
-  /* "\bar d O d" insertion in proton, ie. "(u C gamma_5 d) u" */
-  /* T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2 */
   LatticeSpinMatrix  S; 
 
-  // Term 5
-  S  = traceColor(u_x2 * quarkContract13(insert_prop*Gamma(5), Gamma(5)*u_x2));
-
-  // Term 6
-  S += traceColor(u_x2 * traceSpin(quarkContract13(insert_prop*Gamma(5), Gamma(5)*u_x2)));
+  S = traceColor(q1 * traceSpin(quarkContract13(q3*Gamma(5), Gamma(5)*q2)))
+    + traceColor(q1 * quarkContract13(q3*Gamma(5), Gamma(5)*q2));
 
   return S;
 }
@@ -180,17 +139,18 @@ void wallNuclFormFac(XMLWriter& xml,
       case 0:
       case 2:
       {
+
 	// "\bar u O u" insertion in proton, ie. "(u C gamma_5 d) u"
 	// The local non-conserved current contraction
+	LatticePropagator local_insert_prop = anti_u_prop*Gamma(gamma_value)*forw_u_prop;
 	LatticeSpinMatrix local_contract = 
-	  wallNuclUContract(LatticePropagator(anti_u_prop*Gamma(gamma_value)*forw_u_prop), 
-			    u_x2, d_x2);
+	  baryonContract(local_insert_prop, u_x2, d_x2) + baryonContract(u_x2, local_insert_prop, d_x2);
 
 	// Construct the non-local (possibly conserved) current contraction
+	LatticePropagator nonlocal_insert_prop = nonlocalCurrentProp(u, mu, forw_u_prop, anti_u_prop);
 	LatticeSpinMatrix nonlocal_contract = 
-	  wallNuclUContract(nonlocalCurrentProp(u, mu, forw_u_prop, anti_u_prop), 
-			    u_x2, d_x2);
-
+	  baryonContract(nonlocal_insert_prop, u_x2, d_x2) + baryonContract(u_x2, nonlocal_insert_prop, d_x2);
+	  
 	if (seq_src == 0)
 	{
 	  /* "\bar u O u" insertion in proton, ie. "(u C gamma_5 d) u" */
@@ -223,14 +183,14 @@ void wallNuclFormFac(XMLWriter& xml,
       {
 	// "\bar d O d" insertion in proton, ie. "(u C gamma_5 d) u"
 	// The local non-conserved current contraction
+	LatticePropagator local_insert_prop = anti_d_prop*Gamma(gamma_value)*forw_d_prop;
 	LatticeSpinMatrix local_contract = 
-	  wallNuclDContract(LatticePropagator(anti_d_prop*Gamma(gamma_value)*forw_d_prop), 
-			    u_x2, d_x2);
+	  baryonContract(u_x2, u_x2, local_insert_prop);
 
 	// Construct the non-local (possibly conserved) current contraction
+	LatticePropagator nonlocal_insert_prop = nonlocalCurrentProp(u, mu, forw_d_prop, anti_d_prop);
 	LatticeSpinMatrix nonlocal_contract = 
-	  wallNuclDContract(nonlocalCurrentProp(u, mu, forw_d_prop, anti_d_prop), 
-			    u_x2, d_x2);
+	  baryonContract(u_x2, u_x2, nonlocal_insert_prop);
 
 	if (seq_src == 1)
 	{
