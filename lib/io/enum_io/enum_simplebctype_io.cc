@@ -8,7 +8,7 @@ namespace Chroma {
 
   namespace SimpleBCTypeEnv { 
 
-    const bool registerAll(void) 
+    bool registerAll(void) 
     {
       bool success; 
       success = theSimpleBCTypeMap::Instance().registerPair(string("ANTIPERIODIC"), BC_TYPE_ANTIPERIODIC );
@@ -20,7 +20,7 @@ namespace Chroma {
 
     // Boilerplate stuff from here on
     const string typeIDString = "SimpleBCType";
-    const bool registered = registerAll();
+    bool registered = registerAll();
   };
   using namespace SimpleBCTypeEnv;
 

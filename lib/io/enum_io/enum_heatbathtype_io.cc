@@ -8,7 +8,7 @@ namespace Chroma {
 
   namespace HeatbathTypeEnv { 
 
-    const bool registerAll(void) 
+    bool registerAll(void) 
     {
       bool success; 
       success = theHeatbathTypeMap::Instance().registerPair(string("KPHB"), HEATBATH_TYPE_KPHB );
@@ -18,7 +18,7 @@ namespace Chroma {
     }
 
     const string typeIDString ="HeatbathType";
-    const bool registered = registerAll();
+    bool registered = registerAll();
   };
 
   using namespace HeatbathTypeEnv;

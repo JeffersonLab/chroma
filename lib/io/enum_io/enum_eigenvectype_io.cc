@@ -8,7 +8,7 @@ namespace Chroma {
 
   namespace EigenVecTypeEnv { 
 
-    const bool registerAll(void) 
+    bool registerAll(void) 
     {
       bool success; 
       success = theEigenVecTypeMap::Instance().registerPair(string("SCIDAC"), EVEC_TYPE_SCIDAC );
@@ -17,7 +17,7 @@ namespace Chroma {
       return success;
     }
     const string typeIDString = "EigenVecType" ;
-    const bool registered = registerAll();
+    bool registered = registerAll();
   };
   using namespace EigenVecTypeEnv;
 

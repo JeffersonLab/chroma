@@ -8,7 +8,7 @@ namespace Chroma {
 
   namespace CoeffTypeEnv { 
 
-    const bool registerAll(void) 
+    bool registerAll(void) 
     {
       bool success; 
       success = theCoeffTypeMap::Instance().registerPair(string("ZOLOTAREV"), COEFF_TYPE_ZOLOTAREV );
@@ -17,7 +17,7 @@ namespace Chroma {
       return success;
     }
 
-    const bool registered = registerAll();
+    bool registered = registerAll();
     const string typeIDString = "CoeffType";
   };
   using namespace CoeffTypeEnv;

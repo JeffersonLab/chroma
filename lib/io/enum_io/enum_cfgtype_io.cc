@@ -8,7 +8,7 @@ namespace Chroma {
 
   namespace CfgTypeEnv { 
 
-    const bool registerAll(void) 
+    bool registerAll(void) 
     {
       bool success; 
       success = theCfgTypeMap::Instance().registerPair(string("MILC"), CFG_TYPE_MILC );
@@ -22,7 +22,7 @@ namespace Chroma {
       return success;
     }
 
-    const bool registered = registerAll();
+    bool registered = registerAll();
     const string typeIDString = "CfgType";
   };
 

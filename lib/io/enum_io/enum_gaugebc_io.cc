@@ -10,7 +10,7 @@ namespace Chroma {
   /*****************  SOURCES *****************************/
   namespace GaugeBCTypeEnv { 
 
-    const bool registerAll(void) 
+    bool registerAll(void) 
     {
       bool success; 
       success = theGaugeBCTypeMap::Instance().registerPair(string( "ALL_PERIODIC" ),
@@ -28,7 +28,7 @@ namespace Chroma {
       return success;
     }
     const string typeIDString = "GaugeBCType";
-    const bool registered = registerAll();
+    bool registered = registerAll();
   };
   
   //! Read an GaugeBCType enum
@@ -46,7 +46,7 @@ namespace Chroma {
   /*****************  SINKS *****************************/
   namespace SchrFunTypeEnv { 
 
-    const bool registerAll(void) 
+    bool registerAll(void) 
     {
       bool success; 
       success = theSchrFunTypeMap::Instance().registerPair(string(  "NONE" ),
@@ -71,7 +71,7 @@ namespace Chroma {
     }
 
     const string typeIDString = "SchrFunType";
-    const bool registered = registerAll();
+    bool registered = registerAll();
   };
 
   //! Read an SchrFunType enum

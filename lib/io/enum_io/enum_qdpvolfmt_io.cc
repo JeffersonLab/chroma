@@ -8,7 +8,7 @@ namespace Chroma {
 
   namespace QDPVolfmtEnv { 
 
-    const bool registerAll(void) 
+    bool registerAll(void) 
     {
       bool success; 
       success = theQDPVolfmtMap::Instance().registerPair(string("SINGLEFILE"), QDPIO_SINGLEFILE );
@@ -19,7 +19,7 @@ namespace Chroma {
 
     const string typeIDString = "QDP_volfmt_t";
 
-    const bool registered = registerAll();
+    bool registered = registerAll();
   };
   using namespace QDPVolfmtEnv;
 

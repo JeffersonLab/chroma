@@ -15,8 +15,8 @@ namespace Chroma {
 
   namespace QDPVolfmtEnv { 
     extern const string typeIDString;
-    extern const bool registered; 
-    const bool registerAll(void);   // Forward declaration
+    extern bool registered; 
+    bool registerAll(void);   // Forward declaration
   }
 
   // A singleton to hold the typemap

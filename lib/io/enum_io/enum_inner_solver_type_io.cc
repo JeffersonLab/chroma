@@ -8,7 +8,7 @@ namespace Chroma {
 
   namespace OverlapInnerSolverTypeEnv { 
 
-    const bool registerAll(void) 
+    bool registerAll(void) 
     {
       bool success; 
       success = theOverlapInnerSolverTypeMap::Instance().registerPair(string("SINGLE_PASS"),
@@ -18,7 +18,7 @@ namespace Chroma {
       return success;
     }
     const string typeIDString = "OverlapInnerSolverType";
-    const bool registered = registerAll();
+    bool registered = registerAll();
   };
   using namespace OverlapInnerSolverTypeEnv;
 

@@ -8,7 +8,7 @@ namespace Chroma {
 
   namespace PropTypeEnv { 
 
-    const bool registerAll(void) 
+    bool registerAll(void) 
     {
       bool success; 
       success = thePropTypeMap::Instance().registerPair(string("SCIDAC"), PROP_TYPE_SCIDAC );
@@ -18,7 +18,7 @@ namespace Chroma {
       return success;
     }
     const string typeIDString = "PropType";
-    const bool registered = registerAll();
+    bool registered = registerAll();
   };
   using namespace PropTypeEnv;
 

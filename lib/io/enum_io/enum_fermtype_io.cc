@@ -8,7 +8,7 @@ namespace Chroma {
 
   namespace FermTypeEnv { 
 
-    const bool registerAll(void) 
+    bool registerAll(void) 
     {
       bool success; 
       success = theFermTypeMap::Instance().registerPair(string("WILSON"), FERM_TYPE_WILSON );
@@ -18,7 +18,7 @@ namespace Chroma {
     }
     const string typeIDString = "FermType";
 
-    const bool registered = registerAll();
+    bool registered = registerAll();
   };
 
   using namespace FermTypeEnv;

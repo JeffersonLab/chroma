@@ -8,7 +8,7 @@ namespace Chroma {
 
   namespace GaugeActTypeEnv { 
 
-    const bool registerAll(void) 
+    bool registerAll(void) 
     {
       bool success; 
       success = theGaugeActTypeMap::Instance().registerPair(string("WILSON"), GAUGE_ACT_TYPE_WILSON );
@@ -16,7 +16,7 @@ namespace Chroma {
       return success;
     }
     const string typeIDString = "GaugeActType";
-    const bool registered = registerAll();
+    bool registered = registerAll();
   };
   using namespace GaugeActTypeEnv;
 

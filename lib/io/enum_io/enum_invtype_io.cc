@@ -8,7 +8,7 @@ namespace Chroma {
 
   namespace InvTypeEnv { 
 
-    const bool registerAll(void) 
+    bool registerAll(void) 
     {
       bool success; 
       success = theInvTypeMap::Instance().registerPair(string("CG_INVERTER"), CG_INVERTER );
@@ -24,7 +24,7 @@ namespace Chroma {
       return success;
     }
 
-    const bool registered = registerAll();
+    bool registered = registerAll();
     const string typeIDString = "InvType";
   };
 

@@ -8,7 +8,7 @@ namespace Chroma {
 
   namespace WvfKindEnv { 
 
-    const bool registerAll(void) 
+    bool registerAll(void) 
     {
       bool success; 
       success = theWvfKindMap::Instance().registerPair(string("GAUSSIAN"),
@@ -31,7 +31,7 @@ namespace Chroma {
     }
 
     const string typeIDString = "WvfKind";
-    const bool registered = registerAll();
+    bool registered = registerAll();
   };
 
   using namespace WvfKindEnv;

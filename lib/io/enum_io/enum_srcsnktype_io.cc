@@ -10,7 +10,7 @@ namespace Chroma {
   /*****************  SOURCES *****************************/
   namespace SourceTypeEnv { 
 
-    const bool registerAll(void) 
+    bool registerAll(void) 
     {
       bool success; 
       success = theSourceTypeMap::Instance().registerPair(string("POINT_SOURCE"),
@@ -29,7 +29,7 @@ namespace Chroma {
     }
 
     const string typeIDString = "SourceType";
-    const bool registered = registerAll();
+    bool registered = registerAll();
   };
   
   //! Read an SourceType enum
@@ -49,7 +49,7 @@ namespace Chroma {
   /*****************  SINKS *****************************/
   namespace SinkTypeEnv { 
 
-    const bool registerAll(void) 
+    bool registerAll(void) 
     {
       bool success; 
       success = theSinkTypeMap::Instance().registerPair(string("POINT_SINK" ),
@@ -68,7 +68,7 @@ namespace Chroma {
     }
     
     const string typeIDString = "SinkType";
-    const bool registered = registerAll();
+    bool registered = registerAll();
   };
 
   //! Read an SinkType enum

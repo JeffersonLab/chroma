@@ -8,7 +8,7 @@ namespace Chroma {
   
   namespace MDIntegratorTypeEnv { 
 
-    const bool registerAll(void) 
+    bool registerAll(void) 
     {
       bool success; 
       success = theMDIntegratorTypeMap::Instance().registerPair(string("PQP_LEAPFROG"), MD_PQP_LEAPFROG);
@@ -18,7 +18,7 @@ namespace Chroma {
     }
 
     const string typeIDString = "MDIntegratorType";
-    const bool registered = registerAll();
+    bool registered = registerAll();
   };
 
   using namespace MDIntegratorTypeEnv;

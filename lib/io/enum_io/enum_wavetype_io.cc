@@ -9,7 +9,7 @@ namespace Chroma {
 
   namespace WaveStateTypeEnv { 
 
-    const bool registerAll(void) 
+    bool registerAll(void) 
     {
       bool success; 
       success = theWaveStateTypeMap::Instance().registerPair(string("S_WAVE"),
@@ -25,7 +25,7 @@ namespace Chroma {
     }
 
     const string typeIDString = "WaveStateType";
-    const bool registered = registerAll();
+    bool registered = registerAll();
   };
   
   using namespace WaveStateTypeEnv;

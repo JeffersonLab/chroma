@@ -8,7 +8,7 @@ namespace Chroma {
 
   namespace SeqSourceTypeEnv { 
 
-    const bool registerAll(void) 
+    bool registerAll(void) 
     {
       bool success; 
       success = theSeqSourceTypeMap::Instance().registerPair(string("NUCL_U_UNPOL"), 
@@ -54,7 +54,7 @@ namespace Chroma {
     }
 
     const string typeIDString = "SeqSourceType";
-    const bool registered = registerAll();
+    bool registered = registerAll();
   };
   using namespace SeqSourceTypeEnv;
 

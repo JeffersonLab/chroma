@@ -24,9 +24,9 @@ namespace Chroma {
 
 
   namespace CfgTypeEnv { 
-    extern const bool registered; 
+    extern bool registered; 
     extern const string typeIDString;
-    const bool registerAll(void);   // Forward declaration
+    bool registerAll(void);   // Forward declaration
   }
 
   // A singleton to hold the typemap
