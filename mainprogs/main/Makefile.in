@@ -38,8 +38,8 @@ host_triplet = @host@
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_1 = -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include -I@top_builddir@/other_libs/@SSE_DSLASH_DIR@/include
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_2 = -L@top_builddir@/other_libs/@SSE_DSLASH_DIR@/lib
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_3 = -llevel3 @QDPXX_LIBS@
-@BUILD_WILSON_LIBS_TRUE@am__append_4 = spectrum_w qqq_w bar3ptfn qproptransf wallformfac
-@BUILD_WILSON_LIBS_TRUE@am__append_5 = dwf_seqprop
+@BUILD_WILSON_LIBS_TRUE@am__append_4 = spectrum_w qqq_w bar3ptfn qproptransf 
+@BUILD_WILSON_LIBS_TRUE@am__append_5 = dwf_seqprop wallformfac
 VPATH = @top_srcdir@/mainprogs/main
 ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
@@ -264,7 +264,8 @@ CONFIG_CLEAN_FILES =
 @BUILD_WILSON_LIBS_TRUE@EXTRA_PROGRAMS = qpropadd$(EXEEXT) \
 @BUILD_WILSON_LIBS_TRUE@	seqprop$(EXEEXT) seqprop_comp$(EXEEXT) \
 @BUILD_WILSON_LIBS_TRUE@	seqprop_collect$(EXEEXT) \
-@BUILD_WILSON_LIBS_TRUE@	dwf_seqprop$(EXEEXT)
+@BUILD_WILSON_LIBS_TRUE@	dwf_seqprop$(EXEEXT) \
+@BUILD_WILSON_LIBS_TRUE@	wallformfac$(EXEEXT)
 @BUILD_WILSON_LIBS_FALSE@EXTRA_PROGRAMS = qpropadd$(EXEEXT) \
 @BUILD_WILSON_LIBS_FALSE@	seqprop$(EXEEXT) seqprop_comp$(EXEEXT) \
 @BUILD_WILSON_LIBS_FALSE@	seqprop_collect$(EXEEXT)
@@ -280,8 +281,7 @@ CONFIG_CLEAN_FILES =
 @BUILD_WILSON_LIBS_TRUE@	sink_smearing$(EXEEXT) \
 @BUILD_WILSON_LIBS_TRUE@	qpropgfix$(EXEEXT) qproptrev$(EXEEXT) \
 @BUILD_WILSON_LIBS_TRUE@	spectrum_w$(EXEEXT) qqq_w$(EXEEXT) \
-@BUILD_WILSON_LIBS_TRUE@	bar3ptfn$(EXEEXT) qproptransf$(EXEEXT) \
-@BUILD_WILSON_LIBS_TRUE@	wallformfac$(EXEEXT)
+@BUILD_WILSON_LIBS_TRUE@	bar3ptfn$(EXEEXT) qproptransf$(EXEEXT)
 @BUILD_WILSON_LIBS_FALSE@check_PROGRAMS = propagator$(EXEEXT) \
 @BUILD_WILSON_LIBS_FALSE@	propagator_comp$(EXEEXT) \
 @BUILD_WILSON_LIBS_FALSE@	multi_propagator$(EXEEXT) \
