@@ -1,3 +1,1 @@
-SUBDIRS = @SSE_DSLASH_DIR@
-
-## EXTRA_DIST=lib root mainprogs
+SUBDIRS = @SSE_DSLASH_DIR@ @SSE_DWF_CG_DIR@
