@@ -1,4 +1,4 @@
-// $Id: make_source.cc,v 1.4 2003-08-28 03:07:47 edwards Exp $
+// $Id: make_source.cc,v 1.5 2003-08-28 03:48:13 edwards Exp $
 /*! \file
  *  \brief Main code for source generation
  */
@@ -106,6 +106,8 @@ int main(int argc, char **argv)
       read(xml_in, path + "/prop_type", input_prop_type) ;
       if (input_prop_type == "SZIN")
         prop_type = PROP_TYPE_SZIN ;
+      else if (input_prop_type == "SCIDAC")
+        prop_type = PROP_TYPE_SCIDAC ;
       else 
         prop_type = PROP_TYPE_UNKNOWN ;
     }
@@ -128,8 +130,6 @@ int main(int argc, char **argv)
   {
     QDP_error_exit("Error reading in make_source: %s", e.c_str());
   }
-
-  xml_in.close();
 
   Layout::setLattSize(nrow);
   Layout::create();
@@ -204,12 +204,7 @@ int main(int argc, char **argv)
   XMLFileWriter xml_out(xml_filename);
   push(xml_out,"make_source");
 
-  push(xml_out,"lattice");
-  Write(xml_out,Nd);
-  Write(xml_out,Nc);
-  Write(xml_out,Ns);
-  Write(xml_out,nrow);
-  pop(xml_out);
+  xml_out << xml_in;  // save a copy of the input
 
   // Write out the config info
   try {
@@ -309,13 +304,35 @@ int main(int argc, char **argv)
   case PROP_TYPE_SCIDAC:
     writeQprop(source_filename, quark_propagator, header);
     break;
+
   default :
     QDP_error_exit("Configuration type is unsupported.");
   }
 
 
+#if 1
+  // SciDAC output format - move up into switch statement or a subroutine
+  {
+    XMLBufferWriter file_xml;
+    push(file_xml,"make_source");
+    write(file_xml, "input", xml_in);
+    write(file_xml, "config_info", gauge_xml);
+    pop(file_xml);
+
+    QDPSerialFileWriter to(file_xml,source_filename);
+
+    XMLBufferWriter record_xml;
+    write(record_xml, "prop_header", header);
+
+    to.write(record_xml,quark_propagator);  // can keep repeating writes for more records
+    to.close();
+  }
+#endif
+
+
   pop(xml_out);  // make_source
   xml_out.close();
+  xml_in.close();
 
   // Time to bolt
   QDP_finalize();
