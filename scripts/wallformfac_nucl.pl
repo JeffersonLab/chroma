@@ -58,6 +58,14 @@ $Vector[1] = 2;
 $Vector[2] = 4;
 $Vector[3] = 8;
 
+# Quark electric charges within certain systems
+# The flip-flopping allows for the "u" to look like a "d" in the neutron.
+$P_charge{"u"} = '(2/3)';
+$P_charge{"d"} = '(-1/3)';
+
+$N_charge{"u"} = '(-1/3)';
+$N_charge{"d"} = '(2/3)';
+
 # Initialize an anti-symmetric matrix
 foreach $i (0 .. 2)
 {
@@ -127,7 +135,7 @@ foreach $x (-$mommax_int .. $mommax_int)
 # Normalizations
 print "Nucleon form-factor";
 
-# Assume zero momenta pion exist
+# Assume zero momenta proton exist
 if (-f proton.$ssext) {exit(1);}
 if (-f proton.$swext) {exit(1);}
 
@@ -155,9 +163,22 @@ foreach $qx ( -$mommax_int .. $mommax_int ) {
       {
 	print "found for ", $proton_sp{$qx,$qy,$qz};
 
+	@q = ($qx, $qy, $qz);
+
 	$proton_energy{$qx, $qy, $qz} = "energy." . $proton_sp{$qx, $qy, $qz};
-	&meff("$proton_energy{$qx, $qy, $qz}","$proton_sp{$qx,$qy,$qz}",$t_ins);
-	($mass, $mass_err) = &calc("$proton_energy{$qx, $qy, $qz}");
+	if ($mom2 > 0)
+	{
+	  # Use dispersion relation
+	  &meff("$proton_energy{0,0,0}","$proton_sp{0,0,0}",$t_ins);
+	  ($mass_g, $mass_g_err) = &calc("$proton_energy{0,0,0}");
+	  $mass = &compute_2pt_ener($mass_g, *q);
+	  $mass_err = $mass_g_err;
+	}
+	else
+	{
+	  &meff("$proton_energy{$qx, $qy, $qz}","$proton_sp{$qx,$qy,$qz}",$t_ins);
+	  ($mass, $mass_err) = &calc("$proton_energy{$qx, $qy, $qz}");
+	}
 
 	$proton_mass{$qx, $qy, $qz} = $mass;
 	$proton_mass_err{$qx, $qy, $qz} = $mass_err;
@@ -176,10 +197,12 @@ foreach $qx ( -$mommax_int .. $mommax_int ) {
 #   f0  is  u  quark contribution to E nucleon form-fac
 #   f1  is  d  quark contribution to E nucleon form-fac
 #
+$proj = 0;
+
 print "Electric";
-foreach $h ('h1', 'h2')
+foreach $h ('NUCL')
 {
-  foreach $s ('f0', 'f1')
+  foreach $s ('u', 'd')
   {
     $k = 3;
     $g = $Vector[$k];
@@ -194,52 +217,62 @@ foreach $h ('h1', 'h2')
 	{
 	  @q = ($qx, $qy, $qz);
 
-	  $qsq = $qx*$qx + $qy*$qy + $qz*$qz;
+	  $qsq = &compute_psq(*q);
 
-	  next if ($qsq > $mom2_max);
-	  
-	  print "qsq = $qsq";
+	  if ($qsq > $mom2_max) {next;}
 
-	  if (! -f "${nam}_cur3ptfn_${h}_${s}_g8_qx${qx}_qy${qy}_qz${qz}") {next;}
-
-	  printf "Found file %s\n","${nam}_cur3ptfn_${h}_${s}_g8_qx${qx}_qy${qy}_qz${qz}";
-
-          if ($h eq "h1")
-          {
- 	    &realpart("${nam}_cur3ptfn_${h}_${s}_g8_qx${qx}_qy${qy}_qz${qz}","${cur}_${h}_${s}_mu3_${qx}${qy}${qz}");
-          }
-          elsif ($h eq "h2")
-          {
-	    &realpart_rev("${nam}_cur3ptfn_${h}_${s}_g8_qx${qx}_qy${qy}_qz${qz}","${cur}_${h}_${s}_mu3_${qx}${qy}${qz}");
-          }
-          else
-          {
-            die "Unknown $h";
-          }
-
-	  if ($cur_cnt{$h,$s,3,$qsq} == 0)
+	  # Construct p_i using mom. conservation
+	  foreach $i (0 .. 2)
 	  {
-	    &ensbc("${cur}_${h}_${s}_mu3_q${qsq} = ${cur}_${h}_${s}_mu3_${qx}${qy}${qz}");
-	    $cur_cnt{$h,$s,3,$qsq} = 1;
-	    ++$tot_cnt{$s};
+	    $p_i[$i] = -$q[$i] + $p_f[$i];     # note sign convention on q
+	  }
+	  $p_i_sq = &compute_psq(*p_i);
+
+	  @cp_i = &canonical_momenta(*p_i);
+
+	  print "q=[$q[0],$q[1],$q[2]], qsq = $qsq,  p_i=[$p_i[0],$p_i[1],$p_i[2]], p_i_sq = $p_i_sq, p_f=[$p_f[0],$p_f[1],$p_f[2]]";
+
+	  printf "Looking for file %s\n","${nam}_cur3ptfn_${h}_f0_${s}_p0_snk15_g8_src_15_qx$q[0]_qy$q[1]_qz$q[2]";
+	  if (! -f "${nam}_cur3ptfn_${h}_f0_${s}_p0_snk15_g8_src15_qx$q[0]_qy$q[1]_qz$q[2]") {next;}
+
+	  printf "Looking for file %s\n", "$proton_sp{$cp_f[0],$cp_f[1],$cp_f[2]}";
+	  if (! -f "$proton_sp{$cp_f[0],$cp_f[1],$cp_f[2]}") {next;}
+
+	  printf "Looking for file %s\n", "$proton_sp{$cp_i[0],$cp_i[1],$cp_i[2]}";
+	  if (! -f "$proton_sp{$cp_i[0],$cp_i[1],$cp_i[2]}") {next;}
+
+	  &realpart("${nam}_cur3ptfn_${h}_f0_${s}_p0_snk15_g8_src15_qx$q[0]_qy$q[1]_qz$q[2]",
+		    "${cur}_${h}_f0_${s}_p0_mu3_$q[0]$q[1]$q[2]");
+
+	  $proton_disp = -(($fmtoGeV/$a)**2)*&compute_disp_pipf_sq($proton_mass{0,0,0},*p_i,*p_f);
+	  printf "proton mass = %g +- %g,  qsq (via vector disp) = %g\n", 
+	  $proton_mass{$cp_i[0],$cp_i[1],$cp_i[2]}, $proton_mass_err{$cp_i[0],$cp_i[1],$cp_i[2]}, $proton_disp;
+
+	  $var = "$norm*(${cur}_${h}_f0_${s}_p0_mu3_$q[0]$q[1]$q[2] * $proton_sp{$cp_f[0],$cp_f[1],$cp_f[2]}) / ($proton_sp{$cp_i[0],$cp_i[1],$cp_i[2]} * proton_norm)";
+	  
+	  # Use some number of significant digits to uniquely identity the floating point qsq
+	  $qsq_int = int(10000*$proton_disp);
+
+	  print "qsq_int = ", $qsq_int;
+	  print "proton_cnt = ", $proton_cnt{$h}{0}{3}{$qsq_int};
+
+	  if (! defined($proton_cnt{$h}{0}{3}{$qsq_int}))
+	  {
+	    &ensbc("P_${cur}_r_${h}_p0_mu3_q${qsq_int} = $P_charge{$s}*$var");
+	    &ensbc("N_${cur}_r_${h}_p0_mu3_q${qsq_int} = $N_charge{$s}*$var");
+
+	    $proton_cnt{$h}{0}{3}{$qsq_int} = 1;
 	  }
 	  else
 	  {
-	    &ensbc("${cur}_${h}_${s}_mu3_q${qsq} = ${cur}_${h}_${s}_mu3_q${qsq} + ${cur}_${h}_${s}_mu3_${qx}${qy}${qz}");
-	    ++$cur_cnt{$h,$s,3,$qsq};
-	    ++$tot_cnt{$s};
-	  }
-	}
-      }
-    }
+	    &ensbc("P_${cur}_r_${h}_p0_mu3_q${qsq_int} = P_${cur}_r_${h}_p0_mu3_q${qsq_int} + $P_charge{$s}*$var");
+	    &ensbc("N_${cur}_r_${h}_p0_mu3_q${qsq_int} = N_${cur}_r_${h}_p0_mu3_q${qsq_int} + $N_charge{$s}*$var");
 
-    # Normalize
-    print "normalize";
-    foreach $i (0 .. $mom2_max)
-    {
-      if ($cur_cnt{$h,$s,3,$i} > 0)
-      {
-	&ensbc("${cur}_${h}_${s}_mu3_q${i} = ${cur}_${h}_${s}_mu3_q${i} / $cur_cnt{$h,$s,3,$i}");
+	    ++$proton_cnt{$h}{0}{3}{$qsq_int};
+	  }
+
+	  print "now proton_cnt = ", $proton_cnt{$h}{0}{3}{$qsq_int};
+	}
       }
     }
   }
@@ -247,247 +280,166 @@ foreach $h ('h1', 'h2')
 
 
 # Terms needed for magnetic form factors
-$h = "h1";
-
 print "Magnetic";
-foreach $s ('f2', 'f3')
+foreach $h ('NUCL')
 {
-  # Use  \Gamma_k = \sigma_3*(1+\gamma_4)  which corresponds to k = 2 in szin
-  $k = 2;
-
-  # Loop over spatial directions
-  foreach $j (0 .. 2)
+  foreach $s ('u', 'd')
   {
-    $g = $Vector[$j];
+    # Use  \Gamma_k = \sigma_3*(1+\gamma_4)  which corresponds to k = 2 in szin
+    $k = 2;
+    $proj = $k + 1;
 
-    # Another loop over spatial directions
-    foreach $l (0 .. 2)
+    # Loop over spatial directions
+    foreach $j (0 .. 2)
     {
-      if ($eps{$j,$k,$l} == 0) {next;}
+      $g = $Vector[$j];
 
-      # Construct necessary real parts
-      # Average over all momenta
-      foreach $qz (-$mommax_int .. $mommax_int)
+      # Another loop over spatial directions
+      foreach $l (0 .. 2)
       {
-	foreach $qy (-$mommax_int .. $mommax_int)
+	if ($eps{$j,$k,$l} == 0) {next;}
+
+	# Construct necessary real parts
+	# Average over all momenta
+	foreach $qz (-$mommax_int .. $mommax_int)
 	{
-	  foreach $qx (-$mommax_int .. $mommax_int)
+	  foreach $qy (-$mommax_int .. $mommax_int)
 	  {
-	    @q = ($qx, $qy, $qz);
-	    
-	    if ($q[$l] == 0) {next;}
-
-	    $qsq = $qx*$qx + $qy*$qy + $qz*$qz;
-
-	    if ($qsq > $mom2_max) {next;}
-
-	    print "qsq = $qsq";
-
-	    if (! -f "${nam}_cur3ptfn_${h}_${s}_g${g}_qx${qx}_qy${qy}_qz${qz}") {next;}
-
-	    &realpart("${nam}_cur3ptfn_${h}_${s}_g${g}_qx${qx}_qy${qy}_qz${qz}","${cur}_${h}_${s}_mu${j}_${qx}${qy}${qz}");
-
-	    $e = $eps{$j,$k,$l} / $q[$l];
-
-	    print "qx=$qx, qy=$qy, qz=$qz, e=$e";
-
-	    if ($cur_cnt{$h,$s,$j,$qsq} == 0)
+	    foreach $qx (-$mommax_int .. $mommax_int)
 	    {
-	      &ensbc("${cur}_${h}_${s}_mu${j}_q${qsq} = $e * ${cur}_${h}_${s}_mu${j}_${qx}${qy}${qz}");
-	      $cur_cnt{$h,$s,$j,$qsq} = 1;
-	      ++$tot_cnt{$s};
-	    }
-	    else
-	    {
-	      &ensbc("${cur}_${h}_${s}_mu${j}_q${qsq} = ${cur}_${h}_${s}_mu${j}_q${qsq} + $e * ${cur}_${h}_${s}_mu${j}_${qx}${qy}${qz}");
-	      ++$cur_cnt{$h,$s,$j,$qsq};
-	      ++$tot_cnt{$s};
+	      @q = ($qx, $qy, $qz);
+	      if ($q[$l] == 0) {next;}
+
+	      $qsq = &compute_psq(*q);
+	      if ($qsq > $mom2_max) {next;}
+
+	      # Construct p_i using mom. conservation
+	      foreach $i (0 .. 2)
+	      {
+		$p_i[$i] = -$q[$i] + $p_f[$i];     # note sign convention on q
+	      }
+	      $p_i_sq = &compute_psq(*p_i);
+
+	      @cp_i = &canonical_momenta(*p_i);
+
+	      print "q=[$q[0],$q[1],$q[2]], qsq = $qsq,  p_i=[$p_i[0],$p_i[1],$p_i[2]], p_i_sq = $p_i_sq, p_f=[$p_f[0],$p_f[1],$p_f[2]]";
+
+	      printf "Looking for file %s\n","${nam}_cur3ptfn_${h}_f0_${s}_p${$proj}_snk15_g8_src_15_qx$q[0]_qy$q[1]_qz$q[2]";
+	      if (! -f "${nam}_cur3ptfn_${h}_f0_${s}_p${proj}_snk15_g8_src15_qx$q[0]_qy$q[1]_qz$q[2]") {next;}
+
+	      printf "Looking for file %s\n", "$proton_sp{$cp_f[0],$cp_f[1],$cp_f[2]}";
+	      if (! -f "$proton_sp{$cp_f[0],$cp_f[1],$cp_f[2]}") {next;}
+
+	      printf "Looking for file %s\n", "$proton_sp{$cp_i[0],$cp_i[1],$cp_i[2]}";
+	      if (! -f "$proton_sp{$cp_i[0],$cp_i[1],$cp_i[2]}") {next;}
+
+
+	      &realpart("${nam}_cur3ptfn_${h}_f0_${s}_p${proj}_snk15_g8_src15_qx$q[0]_qy$q[1]_qz$q[2]",
+			"${cur}_${h}_f0_${s}_p${proj}_mu${j}_$q[0]$q[1]$q[2]");
+
+	      $proton_disp = -(($fmtoGeV/$a)**2)*&compute_disp_pipf_sq($proton_mass{0,0,0},*p_i,*p_f);
+	      printf "proton mass = %g +- %g,  qsq (via vector disp) = %g\n", 
+	      $proton_mass{$cp_i[0],$cp_i[1],$cp_i[2]}, $proton_mass_err{$cp_i[0],$cp_i[1],$cp_i[2]}, $proton_disp;
+
+	      $e = $eps{$j,$k,$l} / $q[$l];
+
+	      # Use some number of significant digits to uniquely identity the floating point qsq
+	      $qsq_int = int(10000*$proton_disp);
+
+	      print "qsq_int = $qsq_int,  qx=$qx, qy=$qy, qz=$qz, e=$e";
+
+	      if (! defined($proton_cnt{$h}{$proj}{$j}{$qsq_int}))
+	      {
+		&ensbc("P_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int} = $e * $P_charge{$s}*$var");
+		&ensbc("N_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int} = $e * $N_charge{$s}*$var");
+
+		$proton_cnt{$h}{$proj}{$j}{$qsq_int} = 1;
+	      }
+	      else
+	      {
+		&ensbc("P_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int} = P_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int} + $e * $P_charge{$s}*$var");
+		&ensbc("N_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int} = N_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int} + $e * $N_charge{$s}*$var");
+
+		++$proton_cnt{$h}{$proj}{$j}{$qsq_int};
+	      }
 	    }
 	  }
 	}
       }
 
-      # Normalize
-      print "normalize";
-      foreach $i (1 .. $mom2_max)
-      {
-	if ($cur_cnt{$h,$s,$j,$i} > 0)
-	{
-	  &ensbc("${cur}_${h}_${s}_mu${j}_q${i} = ${cur}_${h}_${s}_mu${j}_q${i} / $cur_cnt{$h,$s,$j,$i}");
-	}
-      }
     }
-
   }
 }
 
 
-# Normalizations
-# Assume zero momenta proton exist
-if (-f proton.$ssext) {exit(1);}
-if (-f proton.$swext) {exit(1);}
 
-&ensbc("had_f1_q0_sw=2*$proton_sw{0,0,0}");
-&ensbc("had_f1_q0_sp=2*$proton_sp{0,0,0}");
-&ensbc("had_f1_q1_sp=2*$proton_sp{1,0,0}");
-&ensbc("had_f1_q2_sp=2*$proton_sp{1,1,0}");
-&ensbc("had_f1_q3_sp=2*$proton_sp{1,1,1}");
+# Normalize
+print "Normalize";
+foreach $h (keys %proton_cnt)
+{
+  foreach $proj (keys %{$proton_cnt{$h}})
+  {
+    foreach $j (keys %{$proton_cnt{$h}{$proj}})
+    {
+      foreach $qsq_int (keys %{$proton_cnt{$h}{$proj}{$j}})
+      {
+	printf "norm(h=%s,proj=%s,j=%s,qsq=%s)=%s\n",$h,$proj,$j,$qsq_int,$proton_cnt{$h}{$proj}{$j}{$qsq_int};
+	if ($proton_cnt{$h}{$proj}{$j}{$qsq_int} > 0)
+	{
+	  # Correct for double counting by multiplying by 2
+	  &ensbc("P_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int} = 2* P_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int} / $proton_cnt{$h}{$proj}{$j}{$qsq_int}");
+	  &ensbc("N_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int} = 2* N_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int} / $proton_cnt{$h}{$proj}{$j}{$qsq_int}");
+	}
+      }
+    }
+  }
+}
 
-#&ensbc("proton_norm=extract(had_f1_q0_ss, $t_snk - $t_src)");
-&ensbc("proton_norm=extract($proton_sw{$p_f[0],$p_f[1],$p_f[2]}, $t_snk - $t_src)");
-
-
-# Quark electric charges within certain systems
-# The flip-flopping allows for the "u" to look like a "d" in the neutron.
-$u_charge{"P"} = '(2/3)';
-$d_charge{"P"} = '(-1/3)';
-
-$u_charge{"N"} = '(-1/3)';
-$d_charge{"N"} = '(2/3)';
 
 #------------------------------------------------------------------------------
 #
-# Only if f0  was found can we have electric form-factors
 #
-printf "Found %d files of f0\n", $tot_cnt{"f0"} ;
-if ($tot_cnt{"f0"} > 0)
+# Print Baryon electric and magnetic form factors
+#
+foreach $h (keys %proton_cnt)
 {
-#
-# Baryon Electric form factors
-#
-  print "Computing nucleon electric form-factors";
+  print "Printing baryon electric and magnetic form-factors";
   foreach $nuc ("P", "N")
   {
-    &ensbc("${nuc}_j_mu3_000 = $norm*($u_charge{$nuc}*${cur}_${h}_f0_mu3_000 + $d_charge{$nuc}*${cur}_${h}_f1_mu3_000)");
-    &ensbc("${nuc}_j_mu3_100 = $norm*($u_charge{$nuc}*${cur}_${h}_f0_mu3_100 + $d_charge{$nuc}*${cur}_${h}_f1_mu3_100)");
-    &ensbc("${nuc}_j_mu3_110 = $norm*($u_charge{$nuc}*${cur}_${h}_f0_mu3_110 + $d_charge{$nuc}*${cur}_${h}_f1_mu3_110)");
-    &ensbc("${nuc}_j_mu3_111 = $norm*($u_charge{$nuc}*${cur}_${h}_f0_mu3_111 + $d_charge{$nuc}*${cur}_${h}_f1_mu3_111)");
-
-    foreach $i (0 .. $mom2_max)
-    {
-      &ensbc("${nuc}_j_mu3_q$i = $norm*($u_charge{$nuc}*${cur}_${h}_f0_mu3_q$i + $d_charge{$nuc}*${cur}_${h}_f1_mu3_q$i)");
-    }
-    
-    &ensbc("${nuc}_r_mu3_000 = (${nuc}_j_mu3_000 * had_f1_q0_sp) / (proton_norm * had_f1_q0_sp)");
-    &ensbc("${nuc}_r_mu3_100 = (${nuc}_j_mu3_100 * had_f1_q0_sp) / (proton_norm * had_f1_q1_sp)");
-    &ensbc("${nuc}_r_mu3_110 = (${nuc}_j_mu3_110 * had_f1_q0_sp) / (proton_norm * had_f1_q2_sp)");
-    &ensbc("${nuc}_r_mu3_111 = (${nuc}_j_mu3_111 * had_f1_q0_sp) / (proton_norm * had_f1_q3_sp)");
-    
-    foreach $i (0 .. $mom2_max)
-    {
-      &ensbc("${nuc}_r_mu3_q${i} = (${nuc}_j_mu3_q${i} * had_f1_q0_sp) / (proton_norm * had_f1_q${i}_sp)");
-    }
-
     $t_ext = $t_snk - $t_src + 1;
-
-#   system("calc ${nuc}_r_mu3_000 | head -$t_ext | axis -e -c '\cr' |plot -Tpng > ${nuc}_r_mu3_000.png");
-#   system("calc ${nuc}_r_mu3_100 | head -$t_ext | axis -e -c '\cr' |plot -Tpng > ${nuc}_r_mu3_100.png");
-#   system("calc ${nuc}_r_mu3_110 | head -$t_ext | axis -e -c '\cr' |plot -Tpng > ${nuc}_r_mu3_110.png");
-#   system("calc ${nuc}_r_mu3_111 | head -$t_ext | axis -e -c '\cr' |plot -Tpng > ${nuc}_r_mu3_111.png");
-    system("(echo '#e c \cr'; calc ${nuc}_r_mu3_000 ) > ${nuc}_r_mu3_000.ax");
-    system("(echo '#e c \cr'; calc ${nuc}_r_mu3_100 ) > ${nuc}_r_mu3_100.ax");
-    system("(echo '#e c \cr'; calc ${nuc}_r_mu3_110 ) > ${nuc}_r_mu3_110.ax");
-    system("(echo '#e c \cr'; calc ${nuc}_r_mu3_111 ) > ${nuc}_r_mu3_111.ax");
-
     $t_ext_m1 = $t_ext - 1;
 
-    foreach $i (0 .. $mom2_max)
+    foreach $proj (keys %{$proton_cnt{$h}})
     {
-      system("(echo '#e c \cr'; calc ${nuc}_r_mu3_q${i} ) > ${nuc}_r_mu3_q${i}.ax");
-      system("(echo '#e c \cr'; calcbc \"${nuc}_r_mu3_q${i} / P_r_mu3_q0\" ) > ${nuc}_r_mu3_q${i}_norm.ax");
-    }
-
-    if (0)
-    {
-      # Extract Z_V and other ratios by simple average
-      $ti = 2;
-      $tf = 13;
-
-      $ttot = $tf - $ti + 1;
-
-      foreach $i (0 .. $mom2_max)
+      foreach $j (keys %{$proton_cnt{$h}{$proj}})
       {
-	$t = $ti;
-	
-	&ensbc("${nuc}_r_mu3_q${i}_avg = extract(${nuc}_r_mu3_q${i},$t)");
-	
-	while ($t < $tf)
+	foreach $qsq_int (keys %{$proton_cnt{$h}{$proj}{$j}})
 	{
-	  ++$t;
-	  &ensbc("${nuc}_r_mu3_q${i}_avg = ${nuc}_r_mu3_q${i}_avg + extract(${nuc}_r_mu3_q${i},$t)");
+	  print "keys: qsq=",$qsq_int, " cnt=",$proton_cnt{$h}{$proj}{$j}{$qsq_int};
+	  if ($proton_cnt{$h}{$proj}{$j}{$qsq_int} > 0)
+	  {
+	    $qsq = $qsq_int / 10000;
+
+	    print "qsq_int=", $qsq_int;
+
+	    open(FOO,"> ${nuc}_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int}.ax");
+	    print FOO '#e c \cr';
+	    printf FOO "! a = %s fm = %g GeV^{-1}\n", $a, $fmtoGeV/$a;
+	    printf FOO "! Qsq = %g GeV^{2}\n", $qsq;
+	    close(FOO);
+	    
+	    open(FOO,"> ${nuc}_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int}_norm.ax");
+	    print FOO '#e c \cr';
+	    printf FOO "! a = %s fm = %g GeV^{-1}\n", $a, $fmtoGeV/$a;
+	    printf FOO "! Qsq = %g GeV^{2}\n", $qsq;
+	    close(FOO);
+	    
+	    system("calc ${nuc}_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int} >> ${nuc}_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int}.ax");
+	    system("calcbc \"${nuc}_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int} * Z_V\" >> ${nuc}_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int}_norm.ax");
+
+#	    system("calcbc \"${nuc}_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int} / ${nuc}_${cur}_r_${h}_p${proj}_mu${j}_q0\" >> ${nuc}_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int}_norm.ax");
+	  }
 	}
-
-	# The first average - Z_V - is the norm. for the non-zero mom. guys
-	&ensbc("${nuc}_r_mu3_q${i}_avg = ${nuc}_r_mu3_q${i}_avg / $ttot");
-      }
-    }
-  }
-}
-
-
-#------------------------------------------------------------------------------
-#
-# Only if f2  was found can we have magnetic form-factors
-#
-printf "Found %d files of f2\n", $tot_cnt{"f2"} ;
-if ($tot_cnt{"f2"} > 0)
-{
-  #
-  # Magnetic form factors
-  #
-  print "Computing nucleon magnetic form-factors";
-  foreach $nuc ("P", "N")
-  {
-    # Use  \Gamma_k = \sigma_3*(1+\gamma_4)  which corresponds to k = 2 in szin
-    $k = 2;
-    
-    # Loop over spatial directions
-    foreach $j (0 .. 2)
-    {
-      $g = $Vector[$j];
-      
-      if ($j == $k) {next;}
-
-      &ensbc("${nuc}_j_mu${j}_100 = $norm*($u_charge{$nuc}*${cur}_f2_mu${j}_100 + $d_charge{$nuc}*${cur}_f3_mu${j}_100)");
-      &ensbc("${nuc}_j_mu${j}_110 = $norm*($u_charge{$nuc}*${cur}_f2_mu${j}_110 + $d_charge{$nuc}*${cur}_f3_mu${j}_110)");
-      &ensbc("${nuc}_j_mu${j}_111 = $norm*($u_charge{$nuc}*${cur}_f2_mu${j}_111 + $d_charge{$nuc}*${cur}_f3_mu${j}_111)");
-    
-      foreach $i (1 .. $mom2_max)
-      {
-	&ensbc("${nuc}_j_mu${j}_q$i = $norm*($u_charge{$nuc}*${cur}_f2_mu${j}_q$i + $d_charge{$nuc}*${cur}_f3_mu${j}_q$i)");
-      }
-
-      &ensbc("${nuc}_r_mu${j}_100 = (${nuc}_j_mu${j}_100 * had_f1_q0_sp) / (proton_norm * had_f1_q1_sp)");
-      &ensbc("${nuc}_r_mu${j}_110 = (${nuc}_j_mu${j}_110 * had_f1_q0_sp) / (proton_norm * had_f1_q2_sp)");
-      &ensbc("${nuc}_r_mu${j}_111 = (${nuc}_j_mu${j}_111 * had_f1_q0_sp) / (proton_norm * had_f1_q3_sp)");
-
-      foreach $i (1 .. $mom2_max)
-      {
-	&ensbc("${nuc}_r_mu${j}_q${i} = (${nuc}_j_mu${j}_q${i} * had_f1_q0_sp) / (proton_norm * had_f1_q${i}_sp)");
-      }
-
-      $t_ext = $t_snk - $t_src + 1;
-
-#     system("calc ${nuc}_r_mu${j}_100 | head -$t_ext | axis -e -c '\cr' |plot -Tpng > ${nuc}_r_mu${j}_100.png");
-#     system("calc ${nuc}_r_mu${j}_110 | head -$t_ext | axis -e -c '\cr' |plot -Tpng > ${nuc}_r_mu${j}_110.png");
-#     system("calc ${nuc}_r_mu${j}_111 | head -$t_ext | axis -e -c '\cr' |plot -Tpng > ${nuc}_r_mu${j}_111.png");
-#      system("(echo '#e c \\cr'; calc ${nuc}_r_mu${j}_100 | head -$t_ext) > ${nuc}_r_mu${j}_100.ax");
-#      system("(echo '#e c \\cr'; calc ${nuc}_r_mu${j}_110 | head -$t_ext) > ${nuc}_r_mu${j}_110.ax");
-#      system("(echo '#e c \\cr'; calc ${nuc}_r_mu${j}_111 | head -$t_ext) > ${nuc}_r_mu${j}_111.ax");
-      system("(echo '#e c \\cr'; calc ${nuc}_r_mu${j}_100) > ${nuc}_r_mu${j}_100.ax");
-      system("(echo '#e c \\cr'; calc ${nuc}_r_mu${j}_110) > ${nuc}_r_mu${j}_110.ax");
-      system("(echo '#e c \\cr'; calc ${nuc}_r_mu${j}_111) > ${nuc}_r_mu${j}_111.ax");
-
-      $t_ext_m1 = $t_ext - 1;
-
-      foreach $i (1 .. $mom2_max)
-      {
-#       system("calc ${nuc}_r_mu${j}_q${i} | head -$t_ext | axis -e -c '\cr' |plot -Tpng > ${nuc}_r_mu${j}_q${i}.png");
-#       system("calcbc \"${nuc}_r_mu${j}_q${i} / P_r_mu3_q0\" | head -$t_ext_m1 | axis -e -c '\cr' |plot -Tpng > ${nuc}_r_mu${j}_q${i}_norm.png");
-#	system("(echo '#e c \cr'; calc ${nuc}_r_mu${j}_q${i} | head -$t_ext) > ${nuc}_r_mu${j}_q${i}.ax");
-#	system("(echo '#e c \cr'; calcbc \"${nuc}_r_mu${j}_q${i} / P_r_mu3_q0\" | head -$t_ext_m1) > ${nuc}_r_mu${j}_q${i}_norm.ax");
-	system("(echo '#e c \cr'; calc ${nuc}_r_mu${j}_q${i}) > ${nuc}_r_mu${j}_q${i}.ax");
-	system("(echo '#e c \cr'; calcbc \"${nuc}_r_mu${j}_q${i} / P_r_mu3_q0\") > ${nuc}_r_mu${j}_q${i}_norm.ax");
       }
     }
   }
@@ -570,6 +522,34 @@ sub meff
 }
   
 
+# Compute norm of  |p|^2
+sub compute_psq
+{
+  local(*p) = @_;
+  local($psq);
+ 
+  $psq = 0;
+  foreach $i (0 .. 2)
+  {
+    $psq += $p[$i]**2;
+  }
+
+  return $psq;
+}
+
+
+# Compute 2-pt energy via dispersion relation
+sub compute_2pt_ener
+{
+  local($m,*p) = @_;
+
+  local($p_sq) = &compute_psq(*p);
+  local($E) = sqrt($m**2 + $p_sq*(2*$pi/$L_s)**2);
+#  printf "\t%g %g  %g\n",$E_i*200/$a, $E_f*200/$a, $m*200/$a;
+  return $E;
+}
+  
+  
 # This is not really correct, should use vectors of p's instead of norms
 # So, only really works for say p_f=0  hence  q = p_i
 sub compute_ener_qsq
@@ -594,6 +574,31 @@ sub compute_disp_qsq
   local($E_f) = sqrt($m**2 + $psq_f*(2*$pi/$L_s)**2);
   
   $Qsq = ($E_f-$E_i)**2 - $qsq*(2*$pi/$L_s)**2;   # note only q=p_i
+#  printf "\t%g %g  %g\n",$E_i*200/$a, $E_f*200/$a, $m*200/$a;
+  return $Qsq;
+}
+  
+
+# This should be correct - uses vectors for  q = p_i - p_f
+sub compute_disp_pipf_sq
+{
+  local($m,*p_i,*p_f) = @_;
+  local($Qsq);
+
+  local($q_sq) = 0;
+  local($i);
+
+  local($pi_sq) = &compute_psq(*p_i);
+  local($pf_sq) = &compute_psq(*p_f);
+  foreach $i (0 .. 2)
+  {
+    $q_sq  += ($p_i[$i] - $p_f[$i])**2;
+  }
+
+  local($E_i) = sqrt($m**2 + $pi_sq*(2*$pi/$L_s)**2);
+  local($E_f) = sqrt($m**2 + $pf_sq*(2*$pi/$L_s)**2);
+  
+  $Qsq = ($E_i-$E_f)**2 - $q_sq*(2*$pi/$L_s)**2;
 #  printf "\t%g %g  %g\n",$E_i*200/$a, $E_f*200/$a, $m*200/$a;
   return $Qsq;
 }

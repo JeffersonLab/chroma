@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: wallformfac_pion.pl,v 1.5 2004-05-07 16:30:15 edwards Exp $
+# $Id: wallformfac_pion.pl,v 1.6 2004-06-16 21:23:02 edwards Exp $
 #
 # Usage
 #   formfact.pl
@@ -169,8 +169,8 @@ foreach $qx ( -$mommax_int .. $mommax_int ) {
 #   s10 is  (u or d)  quark contribution to pion form-fac
 #
 print "Electric";
-$s = "h0_f0";
-$mes = "pion";
+$s = "PION_f0_d_p0";
+$mes = "PION";
 $k = 3;
 $g = $Vector[$k];
 
@@ -199,27 +199,29 @@ foreach $qz (-$mommax_int .. $mommax_int)
 
       print "q=[$q[0],$q[1],$q[2]], qsq = $qsq,  p_i=[$p_i[0],$p_i[1],$p_i[2]], p_i_sq = $p_i_sq, p_f=[$p_f[0],$p_f[1],$p_f[2]]";
 
-#      printf "Looking for file %s\n","${nam}_cur3ptfn_${s}_g8_qx$q[0]_qy$q[1]_qz$q[2]";
-      if (! -f "${nam}_cur3ptfn_${s}_g8_qx$q[0]_qy$q[1]_qz$q[2]") {next;}
+      printf "Looking for file %s\n","${nam}_cur3ptfn_${s}_snk15_g8_src_15_qx$q[0]_qy$q[1]_qz$q[2]";
+      if (! -f "${nam}_cur3ptfn_${s}_snk15_g8_src15_qx$q[0]_qy$q[1]_qz$q[2]") {next;}
 
-#      printf "Looking for file %s\n", "$pion_sp{$cp_f[0],$cp_f[1],$cp_f[2]}";
+      printf "Looking for file %s\n", "$pion_sp{$cp_f[0],$cp_f[1],$cp_f[2]}";
       if (! -f "$pion_sp{$cp_f[0],$cp_f[1],$cp_f[2]}") {next;}
 
-#      printf "Looking for file %s\n", "$pion_sp{$cp_i[0],$cp_i[1],$cp_i[2]}";
+      printf "Looking for file %s\n", "$pion_sp{$cp_i[0],$cp_i[1],$cp_i[2]}";
       if (! -f "$pion_sp{$cp_i[0],$cp_i[1],$cp_i[2]}") {next;}
 
-#      printf "Found file %s\n","${nam}_cur3ptfn_${s}_g8_qx$q[0]_qy$q[1]_qz$q[2]";
+      printf "Found file %s\n","${nam}_cur3ptfn_${s}_snk15_g8_src15_qx$q[0]_qy$q[1]_qz$q[2]";
 
       $pion_disp = -(($fmtoGeV/$a)**2)*&compute_disp_pipf_sq($pion_mass{0,0,0},*p_i,*p_f);
       printf "pion mass = %g +- %g,  qsq (via vector disp) = %g\n", 
       $pion_mass{$cp_i[0],$cp_i[1],$cp_i[2]}, $pion_mass_err{$cp_i[0],$cp_i[1],$cp_i[2]}, $pion_disp;
 
-      &realpart("${nam}_cur3ptfn_${s}_g8_qx$q[0]_qy$q[1]_qz$q[2]","${cur}_${s}_mu3_$q[0]$q[1]$q[2]");
+      &realpart("${nam}_cur3ptfn_${s}_snk15_g8_src15_qx$q[0]_qy$q[1]_qz$q[2]","${cur}_${s}_mu3_$q[0]$q[1]$q[2]");
 
       $var = "$norm*(${cur}_${s}_mu3_$q[0]$q[1]$q[2] * $pion_sp{$cp_f[0],$cp_f[1],$cp_f[2]}) * (2 * $pion_energy{$cp_f[0],$cp_f[1],$cp_f[2]} / ($pion_energy{$cp_i[0],$cp_i[1],$cp_i[2]} + $pion_energy{$cp_f[0],$cp_f[1],$cp_f[2]}))/ ($pion_sp{$cp_i[0],$cp_i[1],$cp_i[2]} * pion_norm)";
 
       # Use some number of significant digits to uniquely identity the floating point qsq
       $qsq_int = int(10000*$pion_disp);
+
+      print "qsq_int = ", $qsq_int;
 
       if ($pion_cnt{$qsq_int} == 0)
       {
@@ -251,7 +253,7 @@ foreach $qsq_int (keys %pion_cnt)
 # Print Meson Electric form factors
 #
 print "Printing pion electric form-factors";
-foreach $mes ("pion")
+foreach $mes ("PION")
 {
   $t_ext = $t_snk - $t_src + 1;
   $t_ext_m1 = $t_ext - 1;
@@ -260,22 +262,24 @@ foreach $mes ("pion")
   {
     $qsq = $qsq_int / 10000;
 
-    open(FOO,"> ${mes}_r_mu3_q${qsq}.ax");
+    print "qsq_int=", $qsq_int;
+
+    open(FOO,"> ${mes}_r_mu3_q${qsq_int}.ax");
     print FOO '#e c \cr';
     printf FOO "! a = %s fm = %g GeV^{-1}\n", $a, $fmtoGeV/$a;
     printf FOO "! Qsq = %g GeV^{2}\n", $qsq;
     close(FOO);
     
-    open(FOO,"> ${mes}_r_mu3_q${qsq}_norm.ax");
+    open(FOO,"> ${mes}_r_mu3_q${qsq_int}_norm.ax");
     print FOO '#e c \cr';
     printf FOO "! a = %s fm = %g GeV^{-1}\n", $a, $fmtoGeV/$a;
     printf FOO "! Qsq = %g GeV^{2}\n", $qsq;
     close(FOO);
     
-#    system("calc ${mes}_r_mu3_q${qsq_int} | head -$t_ext >> ${mes}_r_mu3_q${qsq}.ax");
-#    system("calcbc \"${mes}_r_mu3_q${qsq_int} / pion_r_mu3_q0\" | head -$t_ext_m1 > ${mes}_r_mu3_q${qsq}_norm.ax");
-    system("calc ${mes}_r_mu3_q${qsq_int} >> ${mes}_r_mu3_q${qsq}.ax");
-    system("calcbc \"${mes}_r_mu3_q${qsq_int} / pion_r_mu3_q0\" > ${mes}_r_mu3_q${qsq}_norm.ax");
+#    system("calc ${mes}_r_mu3_q${qsq_int} | head -$t_ext >> ${mes}_r_mu3_q${qsq_int}.ax");
+#    system("calcbc \"${mes}_r_mu3_q${qsq_int} / pion_r_mu3_q0\" | head -$t_ext_m1 > ${mes}_r_mu3_q${qsq_int}_norm.ax");
+    system("calc ${mes}_r_mu3_q${qsq_int} >> ${mes}_r_mu3_q${qsq_int}.ax");
+    system("calcbc \"${mes}_r_mu3_q${qsq_int} / pion_r_mu3_q0\" > ${mes}_r_mu3_q${qsq_int}_norm.ax");
   }
 }
 
