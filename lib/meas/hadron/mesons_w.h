@@ -1,8 +1,8 @@
 // -*- C++ -*-
-// $Id: mesons_w.h,v 1.4 2003-03-14 05:14:32 flemingg Exp $
+// $Id: mesons_w.h,v 1.5 2003-04-01 01:56:19 edwards Exp $
 
-#ifndef MESONS_INCLUDE
-#define MESONS_INCLUDE
+#ifndef __mesons_h__
+#define __mesons_h__
 
 //! Meson 2-pt functions
 /* This routine is specific to Wilson fermions!

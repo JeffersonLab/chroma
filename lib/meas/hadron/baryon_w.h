@@ -1,8 +1,8 @@
 // -*- C++ -*-
-// $Id: baryon_w.h,v 1.2 2003-02-26 03:19:36 edwards Exp $
+// $Id: baryon_w.h,v 1.3 2003-04-01 01:56:19 edwards Exp $
 
-#ifndef BARYON_INCLUDE
-#define BARYON_INCLUDE
+#ifndef __baryon_h__
+#define __baryon_h__
 
 //! Baryon 2-pt functions
 /*!

@@ -1,8 +1,8 @@
 // -*- C++ -*-
-// $Id: sink_smear2_w.h,v 1.1 2003-03-07 05:42:01 edwards Exp $
+// $Id: sink_smear2_w.h,v 1.2 2003-04-01 01:56:19 edwards Exp $
 
-#ifndef SINK_SMEAR2_INCLUDE
-#define SINK_SMEAR2_INCLUDE
+#ifndef __sink_smear2_h__
+#define __sink_smear2_h__
 
 void sink_smear2(const multi1d<LatticeColorMatrix>& u, 
 		 LatticePropagator& quark_propagator, 

@@ -1,8 +1,8 @@
 // -*- C++ -*-
-// $Id: formfac_w.h,v 1.4 2003-03-31 19:54:15 edwards Exp $
+// $Id: formfac_w.h,v 1.5 2003-04-01 01:56:19 edwards Exp $
 
-#ifndef FORMFAC_INCLUDE
-#define FORMFAC_INCLUDE
+#ifndef __formfac_h__
+#define __formfac_h__
 
 // void FormFac(const multi1d<LatticeColorMatrix>& u, 
 //              const LatticePropagator& quark_propagator,

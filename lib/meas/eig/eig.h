@@ -1,8 +1,21 @@
 // -*- C++ -*-
-// $Id: eig.h,v 1.1 2003-04-01 01:40:27 edwards Exp $
+// $Id: eig.h,v 1.2 2003-04-01 01:56:19 edwards Exp $
 
-#ifndef __smear_h__
-#define __smear_h__
+/*! \file
+ * \brief Eigenvalue measurements
+ *
+ * Central include file for all measurements of eigenvalues
+ */
+
+/*! \defgroup eig Eigenvalue measurements
+ * \ingroup meas
+ *
+ * Central include file for all measurements related to calculations
+ * of eigenvalues of various linear operators.
+ */
+
+#ifndef __eig_h__
+#define __eig_h__
 
 
 #endif

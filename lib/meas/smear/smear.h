@@ -1,8 +1,20 @@
 // -*- C++ -*-
-// $Id: smear.h,v 1.4 2003-03-30 22:08:43 heller Exp $
+// $Id: smear.h,v 1.5 2003-04-01 01:56:19 edwards Exp $
 
-#ifndef SMEAR_INCLUDE
-#define SMEAR_INCLUDE
+/*! \file
+ * \brief Smearing routines
+ *
+ * Central include file for all smearing routines
+ */
+
+/*! \defgroup smear Smearing routines
+ * \ingroup meas
+ *
+ * Support for smearing of gauge and fermion fields.
+ */
+
+#ifndef __smear_h__
+#define __smear_h__
 
 #include "gaus_smear.h"
 #include "sink_smear2_w.h"

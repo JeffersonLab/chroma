@@ -1,8 +1,8 @@
 // -*- C++ -*-
-// $Id: barcomp_w.h,v 1.1 2003-03-08 03:57:47 edwards Exp $
+// $Id: barcomp_w.h,v 1.2 2003-04-01 01:56:19 edwards Exp $
 
-#ifndef BARCOMP_INCLUDE
-#define BARCOMP_INCLUDE
+#ifndef __barcomp_h__
+#define __barcomp_h__
 
 void barcomp(const LatticePropagator& quark_propagator_1, 
 	     const LatticePropagator& quark_propagator_2, 

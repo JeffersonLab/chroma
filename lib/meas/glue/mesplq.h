@@ -1,8 +1,8 @@
 // -*- C++ -*-
-// $Id: mesplq.h,v 1.1 2003-02-15 05:54:25 edwards Exp $
+// $Id: mesplq.h,v 1.2 2003-04-01 01:56:19 edwards Exp $
 
-#ifndef MESPLQ_INCLUDE
-#define MESPLQ_INCLUDE
+#ifndef __mesplq_h__
+#define __mesplq_h__
 
 void MesPlq(const multi1d<LatticeColorMatrix>& u, Double& w_plaq, Double& s_plaq, 
 	    Double& t_plaq, Double& link);
