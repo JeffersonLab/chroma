@@ -1,4 +1,4 @@
-// $Id: seqprop.cc,v 1.15 2004-02-26 16:50:17 edwards Exp $
+// $Id: seqprop.cc,v 1.16 2004-02-28 01:41:02 edwards Exp $
 /*! \file
  *  \brief Main code for sequential propagator generation
  */
@@ -344,9 +344,13 @@ int main(int argc, char **argv)
   Handle< WilsonTypeFermAct<LatticeFermion> > S_f(S_f_ptr);
 //  Handle< WilsonTypeFermAct< multi1d<LatticeFermion> > > S_f_a(S_f_a_ptr);
 
+  QDPIO::cout << "Seqprop: fermion action initialized" << endl;
+
 
   if (Sl_snk);
   {
+    QDPIO::cout << "Seqprop: do sink smearing" << endl;
+
     // Do the sink smearing BEFORE the interpolating operator
     sink_smear2(u, quark_propagator, 
 		source_header.sourceSmearParam.wvf_kind, 
