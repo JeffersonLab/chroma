@@ -1,4 +1,4 @@
-// $Id: t_ovlap_bj.cc,v 1.18 2004-01-14 12:45:18 bjoo Exp $
+// $Id: t_ovlap_bj.cc,v 1.19 2004-01-14 17:00:54 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -430,7 +430,7 @@ int main(int argc, char **argv)
   // but just don't delete it.
   Handle<UnprecWilsonTypeFermAct<LatticeFermion> >  S_w(new UnprecWilsonFermAct(fbc, params.wilson_mass));
 
-  Real m_q = 0.0;
+
   XMLBufferWriter my_writer;
 
   //! N order Zolo approx, with wilson action.
@@ -486,27 +486,77 @@ int main(int argc, char **argv)
   // Make me a linop (this callls the initialise function)
   Handle<const LinearOperator<LatticeFermion> > D_op(S.linOp(connect_state));
 
+
+  // Check GW Relation.
+  //
+  // In massless case GWR is: D^{dag}(0) + D(0) = 2 D^{dag}(0) D(0)
+  //
+  // To derive for arbitrary mass case, use D(m) = m + (1-m)D(0)
+  //                                    =>  D(0) = (1/m)[ D(m) - m ]
+  //
+  //
+  // LHS is: (1/(1-m)) [ D(m) + D^{dag}(m) - 2m ] 
+  //    =  (1/(1-m)) [ D(m) + D^{dag}(m) ] - 2m/(1-m)
+  //
+  // RHS is: (2/(1-m)^2) [ D^{dag}(m)D(m) - mD(m) - mD^{dag}(m) + m^2 ]
+  //        =(1/(1-m)^2) [ 2D^{dag}(m)D(m) -2m(D(m) + D^{dag}(m)) + 2 m^2 ]
+  //
+  // Multiply both sides by (1-m)^2
+  //
+  // LHS is: (1 - m)[D(m) + D^{dag}(m) ] - 2m(1-m) 
+  //       = (1 - m)[D(m) + D^{dag}(m} ] - 2m + 2m^2
+  //
+  // RHS is:  2D^{dag}(m)D(m) - 2m(D(m) + D^{dag}(m)) + 2 m^2
+  //
+  // Add 2m( D(m) + D^{dag}(m) - 2m^2 to both sides:
+  //
+  //  LHS is: (1 + m)[ D(m) + D^{dag}(m) ] - 2m
+  //  RHS is:   2D^{dag}(m) D(m)
+  //
+  // 
+  //  Divide both sides by 2 to get a massive version of the GWR:
+  //
+  //  ***********************************************************
+  //
+  //  ((1 + m)/2) [ D(m) + D^{dag}(m) ] - m = D^{dag}(m)D(m)
+  //
+  //  ***********************************************************
+  //
+  //  This is what we check.
+
   LatticeFermion psi;
+
+  // Create some source with unit norm
   gaussian(psi);
   Double n2 = sqrt(norm2(psi));
   psi /= n2;
 
+
   LatticeFermion s1, s2, s3, tmp2;
   s1 = s2 = s3 = tmp2 = zero;
 
-  (*D_op)(s1,psi,PLUS);
-  (*D_op)(s2,psi,MINUS);
+  (*D_op)(s1,psi,PLUS);              //  s1 = D(m)  psi
+  (*D_op)(s2,psi,MINUS);             //  s2 = D^{dag}(m) psi
 
-  (*D_op)(tmp2, psi, PLUS);
-  (*D_op)(s3, tmp2, MINUS);
+  (*D_op)(tmp2, psi, PLUS);          //  s3 = D^{dag}(m) D(m) psi
+  (*D_op)(s3, tmp2, MINUS);          //     = RHS psi
 
-  s3 *= 2;
-  s3 -= s1;
-  s3 -= s2;
+  tmp2 = s1 + s2;          // tmp2 = [ D(m) + D^{dag}(m) ] psi
 
-  Double circle_norm = sqrt(norm2(s3));
-  cout << "Circle Norm: " << circle_norm << endl;
-  Write(xml_out, circle_norm);
+ 
+  // tmp2 = (1 + m) [ D(m) + D^{dag}(m) ] psi
+  tmp2 *= ( Real(1) + params.quark_mass )/Real(2);
+
+  // tmp2 = (1 + m ) [ D(m) + D^{dag}(m) - m ] psi = LHS psi
+  tmp2 -= params.quark_mass * psi;
+
+  // RHS - LHS 
+  s3 -= tmp2;
+
+  // Should be zero
+  Double gwr_norm = sqrt(norm2(s3));
+  cout << "GWR Norm: " << gwr_norm << endl;
+  Write(xml_out, gwr_norm);
 
   // Now test Naive MdagM
   Handle< const LinearOperator<LatticeFermion> > MdagM( S.lMdagM(connect_state));
