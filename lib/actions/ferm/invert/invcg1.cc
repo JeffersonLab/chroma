@@ -1,4 +1,4 @@
-// $Id: invcg1.cc,v 1.5 2004-05-27 11:21:23 bjoo Exp $
+// $Id: invcg1.cc,v 1.6 2004-05-31 19:32:16 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -58,6 +58,8 @@
  *
  *  2 A + 2 Nc Ns + N_Count ( 2 A + 10 Nc Ns )
  */
+
+
 
 template<typename T>
 void InvCG1_a(const LinearOperator<T>& A,
@@ -143,6 +145,7 @@ void InvCG1_a(const LinearOperator<T>& A,
     //  r  =  r  - a A p  
 
     r[s] -= a * ap;
+
 
 
     //  IF |r[k]| <= RsdCG |Chi| THEN RETURN;

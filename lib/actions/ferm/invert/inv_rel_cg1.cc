@@ -1,4 +1,4 @@
-// $Id: inv_rel_cg1.cc,v 1.5 2004-05-25 21:47:39 bjoo Exp $
+// $Id: inv_rel_cg1.cc,v 1.6 2004-05-31 19:32:16 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -13,6 +13,7 @@
  *
  *   	    Chi  =  A . Psi
  */
+#undef CHROMA_INV_REL_CG1_RSD_CHK
 
 template<typename T>
 void InvRelCG1_a(const ApproxLinearOperator<T>& A,
@@ -72,7 +73,7 @@ void InvRelCG1_a(const ApproxLinearOperator<T>& A,
 
     // The sqrt(norm2(p)) part is taken care of by using relative residua
     // in the inner solve
-    inner_tol = sqrt(rsd_sq)*sqrt(zeta);
+    inner_tol = sqrt(rsd_sq)*sqrt(zeta)/Real(MaxCG);
  
     A(q,p,PLUS,inner_tol);
   
@@ -102,6 +103,16 @@ void InvRelCG1_a(const ApproxLinearOperator<T>& A,
     r[s] -= a * q;
 
     c = norm2(r,s);
+
+#ifdef CHROMA_INV_REL_CG1_RSD_CHK
+    {
+      LatticeFermion rcheck;
+      A(rcheck, psi, PLUS);
+      rcheck[s] -= chi;
+      QDPIO::cout << "InvCG1: inter " << k<< " || b - Ax ||^2 = " << norm2(rcheck,s) << " || r ||^2 = " << c << endl;
+    }
+#endif
+
     zeta += Double(1)/c;
 
     //  b[k+1] := |r[k]|**2 / |r[k-1]|**2

@@ -1,4 +1,4 @@
-// $Id: lovddag_w.cc,v 1.12 2004-05-27 11:21:23 bjoo Exp $
+// $Id: lovddag_w.cc,v 1.13 2004-05-31 19:32:16 bjoo Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -6,6 +6,9 @@
 #include "chromabase.h"
 #include "actions/ferm/linop/lovddag_w.h"
 #include "meas/eig/gramschm.h"
+
+
+#undef LOVDDAG_RSD_CHK
 
 using namespace QDP;
 
@@ -99,6 +102,7 @@ void lovddag::operator() (LatticeFermion& chi, const LatticeFermion& psi,
   Double c = norm2(tmp1);
 
 
+
   
   /* If exactly 0 norm, then solution must be 0 (for pos. def. operator) */
   if ( toBool(c == Real(0)) ) { 
@@ -127,7 +131,11 @@ void lovddag::operator() (LatticeFermion& chi, const LatticeFermion& psi,
 
   /********************************************************************/
   /* Solve  (MdagM + rootQ_n) chi_n = H * tmp1 */
-
+#ifdef LOVDDAG_RSD_CHK
+  // DEBUG 
+  LatticeFermion b_vec=tmp1;
+  LatticeFermion x = zero;
+#endif
   LatticeFermion Ap;
   LatticeFermion r; 
   multi1d<LatticeFermion> p(numroot);
@@ -161,7 +169,16 @@ void lovddag::operator() (LatticeFermion& chi, const LatticeFermion& psi,
  
   // We are dealing with 4/(1-m_q)^2
   // so I should readjust the residua by that squared
-  Real rsdcg_sq = epsilon * epsilon*(Real(1)-m_q*m_q)*(Real(1)-m_q*m_q)/Real(16);   // Target residuum squared
+  Real epsilon_normalise = epsilon*(Real(1)-m_q*m_q)/Real(4);
+
+  // Now get the desired residuum to terminated the CG
+  //
+  // Which is epsilon/(2+epsilon) according to the wuppertal paper
+  Real epsilon_target = epsilon_normalise/(Real(2)+epsilon_normalise);
+
+  // Now square that up
+  Real rsdcg_sq = epsilon_target*epsilon_target;
+
   Real rsd_sq = norm2(psi)*rsdcg_sq;      // Used for relative residue comparisons
                                    // r_t^2 * || r ||^2
 
@@ -176,7 +193,7 @@ void lovddag::operator() (LatticeFermion& chi, const LatticeFermion& psi,
     p[s] = tmp1;
   }
 
-// Set convergence masks to fals
+  // Set convergence masks to fals
   convsP = false;
   convP = false;
 
@@ -303,6 +320,10 @@ void lovddag::operator() (LatticeFermion& chi, const LatticeFermion& psi,
     /* chi += diff . The minus comes from the CG method. */
     chi -= tmp1;                   /* 2 Nc Ns  flops */
 
+#ifdef LOVDDAG_RSD_CHK
+    /*  diff :=  (gamma_5 + ichiral) * tmp1  */
+    x -= b*p[isz];
+#endif
 
     // Store in cp the previous value of c
     // cp  =  | r[k] |**2 
@@ -324,6 +345,7 @@ void lovddag::operator() (LatticeFermion& chi, const LatticeFermion& psi,
 	
 	p[s] *= a;	         // Nc Ns  flops 
 	p[s] += r;		 // Nc Ns  flops 
+
 	
       }
       else {
@@ -360,7 +382,7 @@ void lovddag::operator() (LatticeFermion& chi, const LatticeFermion& psi,
                                            // otherwise
 
     for(s = 0; s < numroot; ++s) {
-
+      
       // Only deal with unconverged systems
       if (! convsP[s]) {
 	
@@ -382,6 +404,17 @@ void lovddag::operator() (LatticeFermion& chi, const LatticeFermion& psi,
       }
     }
     
+#ifdef LOVDDAG_RSD_CHK
+    if(convP) {
+      LatticeFermion tmp_normcheck;
+      (*MdagM)(tmp_normcheck, x, PLUS);
+      tmp_normcheck += rootQ[isz]*x;
+      tmp_normcheck -= b_vec;
+      Double norm2check = norm2(tmp_normcheck);
+      Double check_ztmp = Real(c) * z[iz][isz]*z[iz][isz];
+      QDPIO::cout << "|| b - (Q_isz + MM)x || = " << norm2check << " accum = " << check_ztmp << endl;
+    }
+#endif
 
    // Now check convergence of the sgn() itself.
     // It was updated with 
