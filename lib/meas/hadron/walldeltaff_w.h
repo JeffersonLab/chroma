@@ -1,13 +1,13 @@
 // -*- C++ -*-
-// $Id: walldeltaff_w.h,v 1.1 2004-06-02 01:58:08 edwards Exp $
+// $Id: walldeltaff_w.h,v 1.2 2004-06-02 03:39:16 edwards Exp $
 /*! \file
  *  \brief Wall-sink delta-> gamma+delta form-factors 
  *
  *  Form factors constructed from a quark and a wall sink
  */
 
-#ifndef __walldeltapff_h__
-#define __walldeltapff_h__
+#ifndef __walldeltaff_h__
+#define __walldeltaff_h__
 
 #include "util/ft/sftmom.h"
 
