@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: overlap_state.h,v 1.5 2004-09-27 20:18:15 bjoo Exp $
+// $Id: overlap_state.h,v 1.6 2004-09-28 13:01:47 bjoo Exp $
 /*! @file
  * @brief Connection state holding eigenvectors
  *
@@ -12,13 +12,14 @@
 #include "state.h"
 #include "chromabase.h"
 #include "io/overlap_state_info.h"
-#include "actions/ferm/fermacts/unprec_wilson_fermact_w.h"
+#include "fermact.h"
 
+
+using namespace std;
 using namespace QDP;
 
 namespace Chroma
 {
-  template<typename T>
   class OverlapConnectState : public ConnectState
   {
   public:
@@ -41,7 +42,7 @@ namespace Chroma
     //! Constructor with e-values and e-vectors
     OverlapConnectState(const multi1d<LatticeColorMatrix>& u_,
 			const multi1d<WordBase_t>& val_, 
-			const multi1d<T>& vec_,
+			const multi1d<LatticeFermion>& vec_,
 			const WordBase_t& val_max_,
 			const WordBase_t& approxMin_,
 			const WordBase_t& approxMax_)  {
@@ -67,7 +68,7 @@ namespace Chroma
     const multi1d<WordBase_t>& getEigVal() const {return eigVal;}
 
     //! Return the eigenvectors
-    const multi1d<T>& getEigVec() const {return eigVec;}
+    const multi1d<LatticeFermion>& getEigVec() const {return eigVec;}
   
     //! Return the max eigenvalues
     const WordBase_t& getEigValMax() const {return eigValMax;}
@@ -82,214 +83,111 @@ namespace Chroma
   private:
     multi1d<LatticeColorMatrix> u;
     multi1d<WordBase_t>  eigVal;
-    multi1d<T>           eigVec;
+    multi1d<LatticeFermion> eigVec;
     WordBase_t           eigValMax;
-    WordBase_t           approxMin;
+    WordBase_t           approxMin; 
     WordBase_t           approxMax;
 
   };
 
-  /*
   using namespace Chroma;
   namespace OverlapConnectStateEnv { 
-
     // Shared manipulation functions -- should only be called by fermacts
+    
+
+    //! Create a ConnectState with just the gauge fields
+    const OverlapConnectState*
+    createOverlapState(const multi1d<LatticeColorMatrix>& u_, 
+		       const FermBC<LatticeFermion>& fbc);
+
+    //! Create a ConnectState with just the gauge fields, and a lower
+    //!  approximation bound
+    const OverlapConnectState*
+    createOverlapState(const multi1d<LatticeColorMatrix>& u_,
+		       const FermBC<LatticeFermion>& fbc,
+		       const Real& approxMin_);
 
     //! Create a connect State with just approximation range bounds
-    template <typename T> 
-    static
-    const OverlapConnectState<T>*
-    createState(const multi1d<LatticeColorMatrix>& u_,
-		const FermBC<T>& fbc, 
-		const Real& approxMin_,
-		const Real& approxMax_)
-    {
-      ostringstream error_str;
-      
-      
-      if ( toBool(approxMin_ < 0 )) { 
-	error_str << "OverlapConnectState::createState: approxMin_ has to be positive" << endl;
-	throw error_str.str();
-      }
-      
-      if ( toBool(approxMax_ < approxMin_) ) { 
-	error_str << "OverlapConnectState::createState: approxMax_ has to be larger than approxMin_" << endl;
-	throw error_str.str();
-      }
- 
-      
-      // First put in the BC
-      multi1d<LatticeColorMatrix> u_tmp = u_;
-      fbc.modifyU(u_tmp);
-
-      return new OverlapConnectState<T>(u_tmp, approxMin_, approxMax_);
-    }
-    
+    const OverlapConnectState*
+    createOverlapState(const multi1d<LatticeColorMatrix>& u_,
+		       const FermBC<LatticeFermion>& fbc, 
+		       const Real& approxMin_,
+		       const Real& approxMax_);
 
     //! Create OverlapConnectState with eigenvalues/vectors
-    template<typename T>
-    static
-    const OverlapConnectState<T>*
-    createState(const multi1d<LatticeColorMatrix>& u_,
-		const FermBC<T>& fbc, 
-		const multi1d<Real>& lambda_lo_, 
-		const multi1d<LatticeFermion>& evecs_lo_,
-		const Real& lambda_hi_)
-    {
-      ostringstream error_str;
-      
-      if ( lambda_lo_.size() == 0 ) {
-	error_str << "Attempt to createState with 0 e-values and no approxMin" << endl;
-	throw error_str.str();
-      }
-      
-      if ( lambda_lo_.size() != evecs_lo_.size() ) {
-	error_str << "Attempt to createState with no of low eigenvalues != no of low eigenvectors" << endl;
-	throw error_str.str();
-      }
-      
-      Real approxMax = lambda_hi_;
-      Real approxMin = fabs(lambda_lo_[ lambda_lo_.size() - 1 ]);
-      
-      // First put in the BC
-      multi1d<LatticeColorMatrix> u_tmp = u_;
-      fbc.modifyU(u_tmp);
-      
-      return new OverlapConnectState<T>(u_tmp, 
-					lambda_lo_, 
-					evecs_lo_, 
-					lambda_hi_, 
-					approxMin, 
-					approxMax);
-    }    
+    const OverlapConnectState*
+    createOverlapState(const multi1d<LatticeColorMatrix>& u_,
+		       const FermBC<LatticeFermion>& fbc, 
+		       const multi1d<Real>& lambda_lo_, 
+		       const multi1d<LatticeFermion>& evecs_lo_,
+		       const Real& lambda_hi_);
 
-
-    //! Create from OverlapStateInfo Structure
-    template<typename T>
-    static const OverlapConnectState<T>*
-    createState(const multi1d<LatticeColorMatrix>& u_,
-		const FermBC<T>& fbc,
-		const OverlapStateInfo& state_info,
-		const Real AuxMass) const
-    {
-      
-      // If No eigen values specified use min and max
-      if ( state_info.getNWilsVec() == 0 ) { 
-	return OverlapConnectStateEnv::createState(u_,
-						   fbc,
-						   state_info.getApproxMin(),
-						   state_info.getApproxMax());
-      }
-      else {
-	
-	// If there are eigen values, either load them, 
-	if( state_info.loadEigVec() ) {
-	  ChromaWilsonRitz_t ritz_header;
-	  multi1d<Real> lambda_lo;
-	  multi1d<LatticeFermion> eigv_lo;
-	  Real lambda_hi;
-	  const EigenIO_t& eigen_io = state_info.getEigenIO();
-	  
-	  if( eigen_io.eigen_filefmt == EVEC_TYPE_SCIDAC ) { 
-	    readEigen(ritz_header, lambda_lo, eigv_lo, lambda_hi, 
-		      eigen_io.eigen_file,
-		      state_info.getNWilsVec(),
-		      QDPIO_SERIAL);
-	  }
-	  else if ( eigen_io.eigen_filefmt == EVEC_TYPE_SZIN ) { 
-	    if( toBool( fabs(params.AuxMass) > 8 ) ){
-	      QDPIO::cerr << "OverMass unspecified, or | OverMass | > 8" << endl;
-	      QDPIO::cerr << "The wilson mass is needed to rescale the eigenvalues" << endl;
-	      QDP_abort(1);
-	    }
-	    
-	    readEigenSzin(lambda_lo, eigv_lo, lambda_hi, state_info.getNWilsVec(), eigen_io.eigen_file);
-	    
-	    // Now I need to scale things by the wilson mass (Nd + m)
-	    for(int i=0; i < lambda_lo.size(); i++) { 
-	      lambda_lo[i] *= (Real(Nd) + AuxMass);
-	    }
-	    
-	    lambda_hi *= (Real(Nd) + AuxMass);
-	    
-	  }
-	  else {
-	    QDPIO::cerr << "Unsupported Eigenvector format for reading " << endl;
-	    QDP_abort(1);
-	  }
-	  
-	  QDPIO::cout << "createOverlapState: " << endl;
-	  QDPIO::cout << " |lambda_lo|" << lambda_lo << endl;
-	  QDPIO::cout << " |lambda_high|" << lambda_hi;
-	  
-	  // Test the e-values
-	  // BEASTLY HACKERY!!!!
-	  //  In order to test the evecs I need to create a ConnectState
-	  //  for the fermions. I am assuming here, that the AuxiliaryFermAct
-	  //  needs only a SimpleConnectState and I manufacture it by 
-	  //  hand after applying the BC's of the calling Operator.
-	  //  This goes hand in hand with the problem of turning 
-	  //  a potentially 5D FermBC into a 4D one. If I could do that
-	  //  then I wouldn't need to hack trivial 
-
-	  multi1d<LatticeColorMatrix> u_test = u_;
-	  fbc.modifyU(u_test);
-	  Handle< const ConnectState > wils_connect_state(new SimpleConnectState(u_test));
-	  Handle< const LinearOperator<LatticeFermion> > H = Mact->gamma5HermLinOp(wils_connect_state); 
-	  
-	  
-	  multi1d<Double> check_norm(state_info.getNWilsVec());
-	  multi1d<Double> check_norm_rel(state_info.getNWilsVec());
-	  for(int i=0; i < state_info.getNWilsVec() ; i++) { 
-	    LatticeFermion Me;
-	    (*H)(Me, eigv_lo[i], PLUS);
-	    
-	    LatticeFermion lambda_e;
-	    
-	    lambda_e = lambda_lo[i]*eigv_lo[i];
-	    LatticeFermion r_norm = Me - lambda_e;
-	    check_norm[i] = sqrt(norm2(r_norm));
-	    check_norm_rel[i] = check_norm[i]/fabs(Double(lambda_lo[i]));
-	    
-	    QDPIO::cout << "Eigenpair " << i << " Resid Norm = " 
-			<< check_norm[i] << " Resid Rel Norm = " << check_norm_rel[i] << endl;
-	  }
-
-	    write(xml_out, "eigen_norm", check_norm);
-	    write(xml_out, "eigen_rel_norm", check_norm_rel);
-
-	  return createState(u_, fbc, lambda_lo, eigv_lo, lambda_hi);
-	}
-	else if( state_info.computeEigVec() ) {
-	  QDPIO::cerr << "Recomputation of eigensystem not yet implemented" << endl;
-	  QDP_abort(1);
-	}
-	else {
-	  QDPIO::cerr << "I have to create a state without min/max, loading/computing eigenvectors/values. How do I do that? "<< endl;
-	  QDP_abort(1);
-	}
-      }
-      
-      return 0;
-    }
-  
-    
-    template<typename T>
-    static 
-    OverlapConnectState<T>*  
+    //! Create a ConnectState out of XML
+    const OverlapConnectState*  
     createOverlapState(const multi1d<LatticeColorMatrix> u_,
-		       const FermBC<T>& fbc,
+		       const FermBC< LatticeFermion >& fbc,
 		       XMLReader& state_info_xml, 
 		       const string& state_info_path,
-		       const Real AuxMass)
-    {
-      ZolotarevStateInfo tmp_info;
-      read(state_info_xml, state_info_path, tmp_info);
-      return OverlapConnectStateEnv::createState(u_, fbc, tmp_info, AuxMass);
-    }
+		       const LinearOperator<LatticeFermion>& H);
+
     
-  };
-*/  
-};
+    //! Create from OverlapStateInfo Structure
+    const OverlapConnectState*
+    createOverlapState(const multi1d<LatticeColorMatrix>& u_,
+		       const FermBC< LatticeFermion >& fbc,
+		       const OverlapStateInfo& state_info,
+		       const LinearOperator<LatticeFermion>& H);
+    
+
+
+    //! Create a ConnectState with just the gauge fields
+    const OverlapConnectState*
+    createOverlapState(const multi1d<LatticeColorMatrix>& u_, 
+		       const FermBC< multi1d<LatticeFermion> >& fbc);
+
+    //! Create a ConnectState with just the gauge fields, and a lower
+    //!  approximation bound
+    const OverlapConnectState*
+    createOverlapState(const multi1d<LatticeColorMatrix>& u_,
+		       const FermBC< multi1d<LatticeFermion> >& fbc,
+		       const Real& approxMin_);
+
+
+    //! Create a connect State with just approximation range bounds
+    const OverlapConnectState*
+    createOverlapState(const multi1d<LatticeColorMatrix>& u_,
+		       const FermBC< multi1d<LatticeFermion> >& fbc, 
+		       const Real& approxMin_,
+		       const Real& approxMax_);
+
+
+    //! Create OverlapConnectState with eigenvalues/vectors
+    const OverlapConnectState*
+    createOverlapState(const multi1d<LatticeColorMatrix>& u_,
+		       const FermBC< multi1d<LatticeFermion> >& fbc, 
+		       const multi1d<Real>& lambda_lo_, 
+		       const multi1d<LatticeFermion>& evecs_lo_,
+		       const Real& lambda_hi_);
+
+    //! Create a ConnectState out of XML
+    const OverlapConnectState*  
+    createOverlapState(const multi1d<LatticeColorMatrix> u_,
+		       const FermBC< multi1d<LatticeFermion> >& fbc,
+		       XMLReader& state_info_xml, 
+		       const string& state_info_path,
+		       const LinearOperator<LatticeFermion>& H);
+
+    
+    //! Create from OverlapStateInfo Structure
+    const OverlapConnectState*
+    createOverlapState(const multi1d<LatticeColorMatrix>& u_,
+		       const FermBC< multi1d<LatticeFermion> >& fbc,
+		       const OverlapStateInfo& state_info,
+		       const LinearOperator<LatticeFermion>& H);
+    
+
+  }; // namespace OverlapConnectStateEnv
+
+}; // namespace Chroma 
 
 #endif

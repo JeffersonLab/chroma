@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.172 2004-09-27 14:58:43 bjoo Exp $
+# $Id: Makefile.am,v 1.173 2004-09-28 13:01:47 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -316,7 +316,7 @@ libchroma_a_SOURCES = gauge_startup.cc gaugebc_utils.cc gaugeact_utils.cc \
 	       qprop_io.cc eigen_io.cc stoch_var.cc \
 	       z2_src.cc gauge_io.cc milc_io.cc readmilc.cc writemilc.cc \
                axgauge.cc coulgauge.cc grelax.cc polar_dec.cc rot_colvec.cc \
-	       transf.cc param_io.cc  \
+	       transf.cc param_io.cc  overlap_state.cc \
 	       gramschm.cc \
 	       gramschm_array.cc ritz.cc ritz_array.cc sn_jacob.cc \
 	       sn_jacob_array.cc eig_spec.cc eig_spec_array.cc \

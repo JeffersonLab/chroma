@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.69 2004-09-27 12:00:18 bjoo Exp $
+// $Id: propagator.cc,v 1.70 2004-09-28 13:01:48 bjoo Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -51,6 +51,7 @@ struct Propagator_input_t
 {
   ChromaProp_t     param;
   Cfg_t            cfg;
+  std::string      stateInfo;
   Prop_t           prop;
 };
 
@@ -79,6 +80,20 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
 
     // Read in the gauge configuration info
     read(inputtop, "Cfg", input.cfg);
+
+    // Read any auxiliary state information
+    if( inputtop.count("StateInfo") == 1 ) {
+      XMLReader xml_state_info(inputtop, "StateInfo");
+      std::ostringstream os;
+      xml_state_info.print(os);
+      input.stateInfo = os.str();
+    }
+    else { 
+      XMLBufferWriter s_i_xml;
+      push(s_i_xml, "StateInfo");
+      pop(s_i_xml);
+      input.stateInfo = s_i_xml.str();
+    }
 
     // Read in the source/propagator info
     read(inputtop, "Prop", input.prop);
@@ -295,7 +310,7 @@ int main(int argc, char **argv)
   // stored as a string called "stateInfo" in the param struct.
 
   // Make a reader for the stateInfo
-  std::istringstream state_info_is(input.param.stateInfo);
+  std::istringstream state_info_is(input.stateInfo);
   XMLReader state_info_xml(state_info_is);
   string state_info_path="/StateInfo";
   //

@@ -11,24 +11,7 @@ using namespace QDP;
 namespace Chroma
 {
 
-  class OverlapStateInfo {
-  public:
-
-    virtual const Real& getApproxMin(void) const = 0;
-    virtual const Real& getApproxMax(void) const = 0;
-
-    virtual int   getNWilsVec(void) const = 0;
-    virtual bool  loadEigVec(void) const = 0;
-    virtual bool  computeEigVec(void) const = 0;
-
-    virtual const EigenIO_t& getEigenIO(void) const = 0;
-    virtual const RitzParams_t& getRitzParams(void) const = 0;
-
-    // Virtual Destructor
-    virtual ~OverlapStateInfo(void) {}
-  };
-
-  class ZolotarevStateInfo : public OverlapStateInfo { 
+  class OverlapStateInfo { 
   private:
     bool initedP;
     Real ApproxMin;
@@ -39,7 +22,7 @@ namespace Chroma
     RitzParams_t ritzery;
 
     void notInited(void) const { 
-      QDPIO::cerr << "ZolotarevStateInfo not inited" << endl;
+      QDPIO::cerr << "OverlapStateInfo not inited" << endl;
       QDP_abort(1);
     }
 
@@ -56,7 +39,7 @@ namespace Chroma
   public:
 
 
-    ZolotarevStateInfo(void);   
+    OverlapStateInfo(void);   
   
     void init(const Real& _ApproxMin,
 	      const Real& _ApproxMax,
@@ -125,11 +108,11 @@ namespace Chroma
     }
 
     // Virtual Destructor
-    ~ZolotarevStateInfo(void) {}
+    ~OverlapStateInfo(void) {}
   };
 
-  void read(XMLReader& xml_in, const std::string& path, ZolotarevStateInfo& info);
-  void write(XMLWriter& xml_out, const std::string& path, const ZolotarevStateInfo& info);
+  void read(XMLReader& xml_in, const std::string& path, OverlapStateInfo& info);
+  void write(XMLWriter& xml_out, const std::string& path, const OverlapStateInfo& info);
 
 };
 

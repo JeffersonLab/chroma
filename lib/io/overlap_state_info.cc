@@ -8,7 +8,7 @@ using namespace QDP;
 
 namespace Chroma { 
 
-ZolotarevStateInfo::ZolotarevStateInfo(void) 
+OverlapStateInfo::OverlapStateInfo(void) 
 {
   initedP = false;
   ApproxMin = 0;
@@ -35,7 +35,7 @@ ZolotarevStateInfo::ZolotarevStateInfo(void)
   
 }
 
-void read(XMLReader& xml_in, const string& path, ZolotarevStateInfo& info)
+void read(XMLReader& xml_in, const string& path, OverlapStateInfo& info)
 {
 
   
@@ -167,7 +167,7 @@ void read(XMLReader& xml_in, const string& path, ZolotarevStateInfo& info)
 
 }
 
-void write(XMLWriter& xml_out, const string& path, const ZolotarevStateInfo& info)
+void write(XMLWriter& xml_out, const string& path, const OverlapStateInfo& info)
 {
 
   if( path != "." ) { 

@@ -38,11 +38,7 @@ namespace Chroma {
 
 	success &=theFermActTypeMap::Instance().registerPair(string("UNPRECONDITIONED_OVERLAP_CONTINUED_FRACTION_5D"),
 							     FERM_ACT_UNPRECONDITIONED_OVERLAP_CONTFRAC_5D );
-	// OBSOLETE: Here for backward compatibility
-	success &=theFermActTypeMap::Instance().registerPair(string("ZOLOTAREV_4D"),
-							     FERM_ACT_OVLAP_PARTFRAC_4D);
 
-	// OBSOLETE: Here for backward compatibility 
 	success &=theFermActTypeMap::Instance().registerPair(string("ZOLOTAREV_5D"),
 							     FERM_ACT_OVLAP_CONTFRAC_5D);
 

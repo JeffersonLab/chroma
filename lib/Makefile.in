@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.238 2004-09-27 20:18:14 bjoo Exp $
+# $Id: Makefile.in,v 1.239 2004-09-28 13:01:47 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -455,7 +455,7 @@ libchroma_a_SOURCES = gauge_startup.cc gaugebc_utils.cc gaugeact_utils.cc \
 	       qprop_io.cc eigen_io.cc stoch_var.cc \
 	       z2_src.cc gauge_io.cc milc_io.cc readmilc.cc writemilc.cc \
                axgauge.cc coulgauge.cc grelax.cc polar_dec.cc rot_colvec.cc \
-	       transf.cc param_io.cc  \
+	       transf.cc param_io.cc  overlap_state.cc \
 	       gramschm.cc \
 	       gramschm_array.cc ritz.cc ritz_array.cc sn_jacob.cc \
 	       sn_jacob_array.cc eig_spec.cc eig_spec_array.cc \
@@ -495,12 +495,12 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc gaugebc_utils.cc \
 	invcg2_timing_hacks.cc minvcg.cc minv_rel_cg.cc qprop_io.cc \
 	eigen_io.cc stoch_var.cc z2_src.cc gauge_io.cc milc_io.cc \
 	readmilc.cc writemilc.cc axgauge.cc coulgauge.cc grelax.cc \
-	polar_dec.cc rot_colvec.cc transf.cc param_io.cc gramschm.cc \
-	gramschm_array.cc ritz.cc ritz_array.cc sn_jacob.cc \
-	sn_jacob_array.cc eig_spec.cc eig_spec_array.cc proginfo.cc \
-	printgeom.cc fuzwilp.cc wilslp.cc invsumr.cc minvsumr.cc \
-	inv_rel_sumr.cc minv_rel_sumr.cc invbicgstab.cc \
-	invbicgstab_array.cc inv_rel_gmresr_sumr.cc \
+	polar_dec.cc rot_colvec.cc transf.cc param_io.cc \
+	overlap_state.cc gramschm.cc gramschm_array.cc ritz.cc \
+	ritz_array.cc sn_jacob.cc sn_jacob_array.cc eig_spec.cc \
+	eig_spec_array.cc proginfo.cc printgeom.cc fuzwilp.cc wilslp.cc \
+	invsumr.cc minvsumr.cc inv_rel_sumr.cc minv_rel_sumr.cc \
+	invbicgstab.cc invbicgstab_array.cc inv_rel_gmresr_sumr.cc \
 	inv_rel_gmresr_cg.cc inv_gmresr_cg_array.cc inv_minres_array.cc \
 	wilson_gaugeact.cc su3over.cc su3hb.cc gaugebc_io.cc \
 	gaugeact_io.cc wilson_gaugeact_io.cc mc_io.cc md_io.cc \
@@ -674,9 +674,10 @@ am_libchroma_a_OBJECTS = gauge_startup.$(OBJEXT) gaugebc_utils.$(OBJEXT) \
 	gauge_io.$(OBJEXT) milc_io.$(OBJEXT) readmilc.$(OBJEXT) \
 	writemilc.$(OBJEXT) axgauge.$(OBJEXT) coulgauge.$(OBJEXT) \
 	grelax.$(OBJEXT) polar_dec.$(OBJEXT) rot_colvec.$(OBJEXT) \
-	transf.$(OBJEXT) param_io.$(OBJEXT) gramschm.$(OBJEXT) \
-	gramschm_array.$(OBJEXT) ritz.$(OBJEXT) ritz_array.$(OBJEXT) \
-	sn_jacob.$(OBJEXT) sn_jacob_array.$(OBJEXT) eig_spec.$(OBJEXT) \
+	transf.$(OBJEXT) param_io.$(OBJEXT) overlap_state.$(OBJEXT) \
+	gramschm.$(OBJEXT) gramschm_array.$(OBJEXT) ritz.$(OBJEXT) \
+	ritz_array.$(OBJEXT) sn_jacob.$(OBJEXT) \
+	sn_jacob_array.$(OBJEXT) eig_spec.$(OBJEXT) \
 	eig_spec_array.$(OBJEXT) proginfo.$(OBJEXT) printgeom.$(OBJEXT) \
 	fuzwilp.$(OBJEXT) wilslp.$(OBJEXT) invsumr.$(OBJEXT) \
 	minvsumr.$(OBJEXT) inv_rel_sumr.$(OBJEXT) \
@@ -784,6 +785,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/naik_term_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/nef_quarkprop4_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/overlap_fermact_base_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/overlap_state.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/overlap_state_info.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/overlapbu_linop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ovlap_partfrac4d_fermact_w.Po \
@@ -1059,6 +1061,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/naik_term_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nef_quarkprop4_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/overlap_fermact_base_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/overlap_state.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/overlap_state_info.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/overlapbu_linop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ovlap_partfrac4d_fermact_w.Po@am__quote@

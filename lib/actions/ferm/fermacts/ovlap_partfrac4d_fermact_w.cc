@@ -1,4 +1,4 @@
-// $Id: ovlap_partfrac4d_fermact_w.cc,v 1.4 2004-09-27 21:34:49 bjoo Exp $
+// $Id: ovlap_partfrac4d_fermact_w.cc,v 1.5 2004-09-28 13:01:47 bjoo Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -52,7 +52,7 @@ namespace Chroma
     const std::string name ="OVERLAP_PARTIAL_FRACTION_4D";
 
     //! Register the Wilson fermact
-    const bool registered = TheWilsonTypeFermActFactory::Instance().registerObject(name, createFermAct) && TheWilsonTypeFermActFactory::Instance().registerObject("ZOLOTAREV_4D", createFermAct);
+    const bool registered = TheWilsonTypeFermActFactory::Instance().registerObject(name, createFermAct);
 
   }
 
@@ -111,8 +111,8 @@ namespace Chroma
 	// inner_solver_type = OVERLAP_INNER_CG_SINGLE_PASS;
 	// This is now set automagically -- constructor initialisation
       }
-	
-      //      read(in, "StateInfo", state_info);
+
+      read(in, "IsChiral", isChiralP);
     }
     catch( const string &e ) {
       QDPIO::cerr << "Caught Exception reading Zolo4D Fermact params: " << e << endl;
@@ -136,7 +136,7 @@ namespace Chroma
     write(xml_out, "ReorthFreq", p.ReorthFreqInner);
     write(xml_out, "SolverType", p.inner_solver_type);
     write(xml_out, "ApproximationType", p.approximation_type);
- 
+    write(xml_out, "IsChiral", p.isChiralP); 
     pop(xml_out);
 
 //    write(xml_out, "StateInfo", p.state_info);
@@ -225,7 +225,7 @@ namespace Chroma
 			   multi1d<Real>& rootQ, 
 			   int& NEig, 
 			   multi1d<Real>& EigValFunc,
-			   const OverlapConnectState<LatticeFermion>& state ) const
+			   const OverlapConnectState& state ) const
   {
     /* A scale factor which should bring the spectrum of the hermitian
        Wilson Dirac operator H into |H| < 1. */
@@ -483,7 +483,7 @@ namespace Chroma
 			       multi1d<Real>& rootQ, 
 			       int& NEig, 
 			       multi1d<Real>& EigValFunc,
-			       const OverlapConnectState<LatticeFermion>& state ) const
+			       const OverlapConnectState& state ) const
   {
     /* A scale factor which should bring the spectrum of the hermitian
        Wilson Dirac operator H into |H| < 1. */
@@ -739,59 +739,69 @@ namespace Chroma
   {
     START_CODE();
 
-    const OverlapConnectState<LatticeFermion>& state = dynamic_cast<const OverlapConnectState<LatticeFermion>&>(*state_);
-
- 
-    if (state.getEigVec().size() != state.getEigVal().size())
-      QDP_error_exit("OvlapPartFrac4DLinOp: inconsistent sizes of eigenvectors and values");
-
-    int NEigVal = state.getEigVal().size();
-
-    /* The actual number of eigenvectors to project out.
-       The highest of the valid low eigenmodes is not
-       projected out. So we will put NEig = NEigVal - 1 */  
-    int NEig;
-
-    /* The number of residuals and poles */
-    int numroot;
-
-    /* The roots, i.e., the shifts in the partial fraction expansion */
-    multi1d<Real> rootQ;
-
-    /* The residuals in the partial fraction expansion */
-    multi1d<Real> resP;
-
-    /* This will be our alpha(0) which can be 0 depending on type */
-    /* an even- or oddness of RatPolyDeg*/
-    Real coeffP; 
-
-    /* Array of values of the sign function evaluated on the eigenvectors of H */
-    multi1d<Real> EigValFunc(NEigVal);
-
-    // Common initialization
-    init(numroot, coeffP, resP, rootQ, NEig, EigValFunc, state);
-
-  
-    /* Finally construct and pack the operator */
-    /* This is the operator of the form (1/2)*[(1+mu) + (1-mu)*gamma_5*eps] */
-    switch( params.inner_solver_type ) {
-    case OVERLAP_INNER_CG_SINGLE_PASS:
-      return new lovlapms(*Mact, state_, params.Mass,
-			  numroot, coeffP, resP, rootQ, 
-			  NEig, EigValFunc, state.getEigVec(),
+    try {
+      const OverlapConnectState& state = dynamic_cast<const OverlapConnectState&>(*state_);
+      
+      if (state.getEigVec().size() != state.getEigVal().size()) {
+	QDPIO::cerr << "OvlapPartFrac4DLinOp: inconsistent sizes of eigenvectors and values" << endl;
+	QDP_abort(1);
+      }
+      
+      int NEigVal = state.getEigVal().size();
+      
+      /* The actual number of eigenvectors to project out.
+	 The highest of the valid low eigenmodes is not
+	 projected out. So we will put NEig = NEigVal - 1 */  
+      int NEig;
+      
+      /* The number of residuals and poles */
+      int numroot;
+      
+      /* The roots, i.e., the shifts in the partial fraction expansion */
+      multi1d<Real> rootQ;
+      
+      /* The residuals in the partial fraction expansion */
+      multi1d<Real> resP;
+      
+      /* This will be our alpha(0) which can be 0 depending on type */
+      /* an even- or oddness of RatPolyDeg*/
+      Real coeffP; 
+      
+      /* Array of values of the sign function evaluated on the eigenvectors of H */
+      multi1d<Real> EigValFunc(NEigVal);
+      
+      // Common initialization
+      init(numroot, coeffP, resP, rootQ, NEig, EigValFunc, state);
+      
+      
+      /* Finally construct and pack the operator */
+      /* This is the operator of the form (1/2)*[(1+mu) + (1-mu)*gamma_5*eps] */
+      switch( params.inner_solver_type ) {
+      case OVERLAP_INNER_CG_SINGLE_PASS:
+	return new lovlapms(*Mact, state_, params.Mass,
+			    numroot, coeffP, resP, rootQ, 
+			    NEig, EigValFunc, state.getEigVec(),
 			  params.invParamInner.MaxCG, params.invParamInner.RsdCG, params.ReorthFreqInner);
-      break;
-    case OVERLAP_INNER_CG_DOUBLE_PASS:
-      return new lovlap_double_pass(*Mact, state_, params.Mass,
-				    numroot, coeffP, resP, rootQ, 
-				    NEig, EigValFunc, state.getEigVec(),
-				    params.invParamInner.MaxCG, params.invParamInner.RsdCG, params.ReorthFreqInner);
-      break;
-    default:
-      QDPIO::cerr << "Unknown OverlapInnerSolverType " << params.inner_solver_type << flush << endl;
+	break;
+      case OVERLAP_INNER_CG_DOUBLE_PASS:
+	return new lovlap_double_pass(*Mact, state_, params.Mass,
+				      numroot, coeffP, resP, rootQ, 
+				      NEig, EigValFunc, state.getEigVec(),
+				      params.invParamInner.MaxCG, params.invParamInner.RsdCG, params.ReorthFreqInner);
+	break;
+      default:
+	QDPIO::cerr << "Unknown OverlapInnerSolverType " << params.inner_solver_type << flush << endl;
+	QDP_abort(1);
+      }
+      
+    }
+    catch(bad_cast) { 
+      QDPIO::cerr << "OverlapPartFrac4DFermAct::linOp: "
+		  << " Failed to downcast ConnectState to OverlapConnectState"
+		  << endl;
       QDP_abort(1);
     }
-  
+
     END_CODE();
 
     QDPIO::cout << "DANGER!!! About to return zero! " << endl;
@@ -808,59 +818,67 @@ namespace Chroma
   OvlapPartFrac4DFermAct::linOpPrecondition(Handle<const ConnectState> state_) const
   {
     START_CODE();
+    try {
+      const OverlapConnectState& state = dynamic_cast<const OverlapConnectState&>(*state_);
 
-    const OverlapConnectState<LatticeFermion>& state = dynamic_cast<const OverlapConnectState<LatticeFermion>&>(*state_);
-
-    if (state.getEigVec().size() != state.getEigVal().size())
-      QDP_error_exit("OvlapPartFrac4DLinOp: inconsistent sizes of eigenvectors and values");
-
-    int NEigVal = state.getEigVal().size();
-
-    /* The actual number of eigenvectors to project out.
-       The highest of the valid low eigenmodes is not
-       projected out. So we will put NEig = NEigVal - 1 */  
-    int NEig;
-
-    /* The number of residuals and poles */
-    int numroot;
-
-    /* The roots, i.e., the shifts in the partial fraction expansion */
-    multi1d<Real> rootQ;
-
-    /* The residuals in the partial fraction expansion */
-    multi1d<Real> resP;
-
-    /* This will be our alpha(0) which can be 0 depending on type */
-    /* an even- or oddness of RatPolyDeg*/
-    Real coeffP; 
-
-    /* Array of values of the sign function evaluated on the eigenvectors of H */
-    multi1d<Real> EigValFunc(NEigVal);
-
-    // Common initialization
-    initPrec(numroot, coeffP, resP, rootQ, NEig, EigValFunc, state);
-
+      if (state.getEigVec().size() != state.getEigVal().size())
+	QDP_error_exit("OvlapPartFrac4DLinOp: inconsistent sizes of eigenvectors and values");
+      
+      int NEigVal = state.getEigVal().size();
+      
+      /* The actual number of eigenvectors to project out.
+	 The highest of the valid low eigenmodes is not
+	 projected out. So we will put NEig = NEigVal - 1 */  
+      int NEig;
+      
+      /* The number of residuals and poles */
+      int numroot;
+      
+      /* The roots, i.e., the shifts in the partial fraction expansion */
+      multi1d<Real> rootQ;
+      
+      /* The residuals in the partial fraction expansion */
+      multi1d<Real> resP;
+      
+      /* This will be our alpha(0) which can be 0 depending on type */
+      /* an even- or oddness of RatPolyDeg*/
+      Real coeffP; 
+      
+      /* Array of values of the sign function evaluated on the eigenvectors of H */
+      multi1d<Real> EigValFunc(NEigVal);
+      
+      // Common initialization
+      initPrec(numroot, coeffP, resP, rootQ, NEig, EigValFunc, state);
+      
+      
+      /* Finally construct and pack the operator */
+      /* This is the operator of the form (1/2)*[(1+mu) + (1-mu)*gamma_5*eps] */
+      switch( params.inner_solver_type ) {
+      case OVERLAP_INNER_CG_SINGLE_PASS:
+	return new lovlapms(*Mact, state_, params.Mass,
+			    numroot, coeffP, resP, rootQ, 
+			    NEig, EigValFunc, state.getEigVec(),
+			    params.invParamInner.MaxCG, params.invParamInner.RsdCG, params.ReorthFreqInner);
+	break;
+      case OVERLAP_INNER_CG_DOUBLE_PASS:
+	return new lovlap_double_pass(*Mact, state_, params.Mass,
+				      numroot, coeffP, resP, rootQ, 
+				      NEig, EigValFunc, state.getEigVec(),
+				      params.invParamInner.MaxCG, params.invParamInner.RsdCG, params.ReorthFreqInner);
+	break;
+      default:
+	QDPIO::cerr << "Unknown OverlapInnerSolverType " << params.inner_solver_type << endl;
+	QDP_abort(1);
+      }
   
-    /* Finally construct and pack the operator */
-    /* This is the operator of the form (1/2)*[(1+mu) + (1-mu)*gamma_5*eps] */
-    switch( params.inner_solver_type ) {
-    case OVERLAP_INNER_CG_SINGLE_PASS:
-      return new lovlapms(*Mact, state_, params.Mass,
-			  numroot, coeffP, resP, rootQ, 
-			  NEig, EigValFunc, state.getEigVec(),
-			  params.invParamInner.MaxCG, params.invParamInner.RsdCG, params.ReorthFreqInner);
-      break;
-    case OVERLAP_INNER_CG_DOUBLE_PASS:
-      return new lovlap_double_pass(*Mact, state_, params.Mass,
-				    numroot, coeffP, resP, rootQ, 
-				    NEig, EigValFunc, state.getEigVec(),
-				    params.invParamInner.MaxCG, params.invParamInner.RsdCG, params.ReorthFreqInner);
-      break;
-    default:
-      QDPIO::cerr << "Unknown OverlapInnerSolverType " << params.inner_solver_type << endl;
+    }
+    catch(bad_cast) { 
+      QDPIO::cerr << "OverlapPartFrac4DFermAct::linOpPrecondition: "
+		  << " Failed to downcast ConnectState to OverlapConnectState"
+		  << endl;
       QDP_abort(1);
     }
-  
+
     END_CODE();
 
     return 0;
@@ -877,60 +895,68 @@ namespace Chroma
   {
     START_CODE();
 
-    const OverlapConnectState<LatticeFermion>& state = dynamic_cast<const OverlapConnectState<LatticeFermion>&>(*state_);
+    try {
+      const OverlapConnectState& state = dynamic_cast<const OverlapConnectState&>(*state_);
 
-    if (state.getEigVec().size() != state.getEigVal().size())
-      QDP_error_exit("OvlapPartFrac4DLinOp: inconsistent sizes of eigenvectors and values");
-
-    int NEigVal = state.getEigVal().size();
-
-    /* The actual number of eigenvectors to project out.
+      if (state.getEigVec().size() != state.getEigVal().size())
+	QDP_error_exit("OvlapPartFrac4DLinOp: inconsistent sizes of eigenvectors and values");
+      
+      int NEigVal = state.getEigVal().size();
+      
+      /* The actual number of eigenvectors to project out.
        The highest of the valid low eigenmodes is not
        projected out. So we will put NEig = NEigVal - 1 */  
-    int NEig;
-
-    /* The number of residuals and poles */
-    int numroot;
-
-    /* The roots, i.e., the shifts in the partial fraction expansion */
-    multi1d<Real> rootQ;
-
-    /* The residuals in the partial fraction expansion */
-    multi1d<Real> resP;
-
-    /* This will be our alpha(0) which can be 0 depending on type */
-    /* an even- or oddness of RatPolyDeg*/
-    Real coeffP; 
-
-    /* Array of values of the sign function evaluated on the eigenvectors of H */
-    multi1d<Real> EigValFunc(NEigVal);
-
-    // Common initialization
-    init(numroot, coeffP, resP, rootQ, NEig, EigValFunc, state);
-
-  
-    /* Finally construct and pack the operator */
-    /* This is the operator of the form (1/2)*[(1+mu) + (1-mu)*gamma_5*eps] */
-    switch( params.inner_solver_type ) { 
-    case OVERLAP_INNER_CG_SINGLE_PASS:
-      return new lg5eps(*Mact, state_,
-			numroot, coeffP, resP, rootQ, 
-			NEig, EigValFunc, state.getEigVec(),
-			params.invParamInner.MaxCG, params.invParamInner.RsdCG, params.ReorthFreqInner);
-      break;
-    case OVERLAP_INNER_CG_DOUBLE_PASS:
-      return new lg5eps_double_pass(*Mact, state_,
-				    numroot, coeffP, resP, rootQ, 
-				    NEig, EigValFunc, state.getEigVec(),
-				    params.invParamInner.MaxCG, params.invParamInner.RsdCG, params.ReorthFreqInner);
-      break;
-    default:
-      QDPIO::cerr << "Unknown OverlapInnerSolverType " << params.inner_solver_type << endl;
+      int NEig;
+      
+      /* The number of residuals and poles */
+      int numroot;
+      
+      /* The roots, i.e., the shifts in the partial fraction expansion */
+      multi1d<Real> rootQ;
+      
+      /* The residuals in the partial fraction expansion */
+      multi1d<Real> resP;
+      
+      /* This will be our alpha(0) which can be 0 depending on type */
+      /* an even- or oddness of RatPolyDeg*/
+      Real coeffP; 
+      
+      /* Array of values of the sign function evaluated on the eigenvectors of H */
+      multi1d<Real> EigValFunc(NEigVal);
+      
+      // Common initialization
+      init(numroot, coeffP, resP, rootQ, NEig, EigValFunc, state);
+      
+      
+      /* Finally construct and pack the operator */
+      /* This is the operator of the form (1/2)*[(1+mu) + (1-mu)*gamma_5*eps] */
+      switch( params.inner_solver_type ) { 
+      case OVERLAP_INNER_CG_SINGLE_PASS:
+	return new lg5eps(*Mact, state_,
+			  numroot, coeffP, resP, rootQ, 
+			  NEig, EigValFunc, state.getEigVec(),
+			  params.invParamInner.MaxCG, params.invParamInner.RsdCG, params.ReorthFreqInner);
+	break;
+      case OVERLAP_INNER_CG_DOUBLE_PASS:
+	return new lg5eps_double_pass(*Mact, state_,
+				      numroot, coeffP, resP, rootQ, 
+				      NEig, EigValFunc, state.getEigVec(),
+				      params.invParamInner.MaxCG, params.invParamInner.RsdCG, params.ReorthFreqInner);
+	break;
+      default:
+	QDPIO::cerr << "Unknown OverlapInnerSolverType " << params.inner_solver_type << endl;
+	QDP_abort(1);
+      }
+    }
+    catch(bad_cast) { 
+      QDPIO::cerr << "OverlapPartFrac4DFermAct::lgamma5epsH: "
+		  << " Failed to downcast ConnectState to OverlapConnectState"
+		  << endl;
       QDP_abort(1);
     }
-  
+      
     END_CODE();
-
+    
     return 0;
   }
   
@@ -945,7 +971,7 @@ namespace Chroma
   {
     START_CODE();
   
-    const OverlapConnectState<LatticeFermion>& state = dynamic_cast<const OverlapConnectState<LatticeFermion>&>(*state_);
+    const OverlapConnectState& state = dynamic_cast<const OverlapConnectState&>(*state_);
 
     if (state.getEigVec().size() != state.getEigVal().size())
       QDP_error_exit("OvlapPartFrac4DLinOp: inconsistent sizes of eigenvectors and values");
@@ -1017,7 +1043,7 @@ namespace Chroma
       return lMdagM(state_);
     }
     else { 
-      const OverlapConnectState<LatticeFermion>& state = dynamic_cast<const OverlapConnectState<LatticeFermion>&>(*state_);
+      const OverlapConnectState& state = dynamic_cast<const OverlapConnectState&>(*state_);
     
       if (state.getEigVec().size() != state.getEigVal().size())
 	QDP_error_exit("OvlapPartFrac4DLinOp: inconsistent sizes of eigenvectors and values");
@@ -1109,7 +1135,7 @@ namespace Chroma
       return lMdagM(state_);
     }
     else { 
-      const OverlapConnectState<LatticeFermion>& state = dynamic_cast<const OverlapConnectState<LatticeFermion>&>(*state_);
+      const OverlapConnectState& state = dynamic_cast<const OverlapConnectState&>(*state_);
     
       if (state.getEigVec().size() != state.getEigVal().size())
 	QDP_error_exit("OvlapPartFrac4DLinOp: inconsistent sizes of eigenvectors and values");
@@ -1184,210 +1210,158 @@ namespace Chroma
     return new lmdagm<LatticeFermion>( linOpPrecondition(state_) );
   }
 
-
-  const OverlapConnectState<LatticeFermion>*
+    //! Create a ConnectState with just the gauge fields
+  const OverlapConnectState*
   OvlapPartFrac4DFermAct::createState(const multi1d<LatticeColorMatrix>& u_) const
   {
-    multi1d<LatticeColorMatrix> u_tmp = u_;
-    getFermBC().modifyU(u_tmp);
+    const OverlapConnectState *ret_val;
+    try { 
+      ret_val = 
+	OverlapConnectStateEnv::createOverlapState(u_, 
+						   getFermBC()
+						   );
+    } 
+    catch(const string& e) { 
+      QDPIO::cerr << "Caught Exception: " << e << endl;
+      QDP_abort(1);
+    }
 
-    Real approxMin = 0.0;
-    Real approxMax = Real(2)*Real(Nd);
-    return new OverlapConnectState<LatticeFermion>(u_tmp, approxMin, approxMax);
+    return ret_val;
   }
 
-
-  const OverlapConnectState<LatticeFermion>*
+  //! Create a ConnectState with just the gauge fields, and a lower
+  //  approximation bound
+  const OverlapConnectState*
   OvlapPartFrac4DFermAct::createState(const multi1d<LatticeColorMatrix>& u_,
 				  const Real& approxMin_) const 
   {
-    if ( toBool( approxMin_ < Real(0) )) { 
-      ostringstream error_str;
-      error_str << "OvlapPartFrac4DFermAct: approxMin_ has to be positive" << endl;
-      throw error_str.str();
+    const OverlapConnectState *ret_val;
+    try { 
+      ret_val = 
+	OverlapConnectStateEnv::createOverlapState(u_, 
+						   getFermBC(),
+						   approxMin_
+						   );
+    } 
+    catch(const string& e) { 
+      QDPIO::cerr << "Caught Exception: " << e << endl;
+      QDP_abort(1);
     }
- 
 
-    // First put in the BC
-    multi1d<LatticeColorMatrix> u_tmp = u_;
-    getFermBC().modifyU(u_tmp);
-
-    Real approxMax = Real(2)*Real(Nd);
-    return new OverlapConnectState<LatticeFermion>(u_tmp, approxMin_, approxMax);
+    return ret_val;
   }
 
-
-  const OverlapConnectState<LatticeFermion>*
+  //! Create a connect State with just approximation range bounds
+  const OverlapConnectState*
   OvlapPartFrac4DFermAct::createState(const multi1d<LatticeColorMatrix>& u_,
 	      const Real& approxMin_,
 	      const Real& approxMax_) const
   {
-    ostringstream error_str;
-    
-    
-    if ( toBool(approxMin_ < 0 )) { 
-      error_str << "OverlapConnectState::createState: approxMin_ has to be positive" << endl;
-      throw error_str.str();
+    const OverlapConnectState *ret_val;
+    try { 
+      ret_val = 
+	OverlapConnectStateEnv::createOverlapState(u_, 
+						   getFermBC(),
+						   approxMin_,
+						   approxMax_
+						   );
+    } 
+    catch(const string& e) { 
+      QDPIO::cerr << "Caught Exception: " << e << endl;
+      QDP_abort(1);
     }
-    
-    if ( toBool(approxMax_ < approxMin_) ) { 
-      error_str << "OverlapConnectState::createState: approxMax_ has to be larger than approxMin_" << endl;
-      throw error_str.str();
-    }
-    
-    
-    // First put in the BC
-    multi1d<LatticeColorMatrix> u_tmp = u_;
-    getFermBC().modifyU(u_tmp);
-    
-    return new OverlapConnectState<LatticeFermion>(u_tmp, approxMin_, approxMax_);
+
+    return ret_val;
   }
 
-  const OverlapConnectState<LatticeFermion>*
+  //! Create OverlapConnectState with eigenvalues/vectors
+  const OverlapConnectState*
   OvlapPartFrac4DFermAct::createState(const multi1d<LatticeColorMatrix>& u_,
 	      const multi1d<Real>& lambda_lo_, 
 	      const multi1d<LatticeFermion>& evecs_lo_,
 	      const Real& lambda_hi_) const
   {
-    ostringstream error_str;
-    
-    if ( lambda_lo_.size() == 0 ) {
-      error_str << "Attempt to createState with 0 e-values and no approxMin" << endl;
-      throw error_str.str();
+    const OverlapConnectState *ret_val;
+    try { 
+      ret_val = 
+	OverlapConnectStateEnv::createOverlapState(u_, 
+						   getFermBC(),
+						   lambda_lo_, 
+						   evecs_lo_, 
+						   lambda_hi_);
+      
+    } 
+    catch(const string& e) { 
+      QDPIO::cerr << "Caught Exception: " << e << endl;
+      QDP_abort(1);
     }
-    
-    if ( lambda_lo_.size() != evecs_lo_.size() ) {
-      error_str << "Attempt to createState with no of low eigenvalues != no of low eigenvectors" << endl;
-      throw error_str.str();
-    }
-    
-    Real approxMax = lambda_hi_;
-    Real approxMin = fabs(lambda_lo_[ lambda_lo_.size() - 1 ]);
-    
-    // First put in the BC
-    multi1d<LatticeColorMatrix> u_tmp = u_;
-    getFermBC().modifyU(u_tmp);
-    
-    return new OverlapConnectState<LatticeFermion>(u_tmp, 
-				      lambda_lo_, 
-				      evecs_lo_, 
-				      lambda_hi_, 
-				      approxMin, 
-				      approxMax);
+
+    return ret_val;
   }    
   
-  const OverlapConnectState<LatticeFermion>* 
+  //! Create OverlapConnectState from XML
+  const OverlapConnectState*
   OvlapPartFrac4DFermAct::createState(const multi1d<LatticeColorMatrix>& u_,
-				  XMLReader& state_info_xml,
-				  const string& state_info_path) const
+				      XMLReader& state_info_xml,
+				      const string& state_info_path) const
   {
-    ZolotarevStateInfo z_info;
-    XMLBufferWriter create_state_out;
-    read(state_info_xml, state_info_path, z_info);
-    return createState(u_, z_info, create_state_out);
+    multi1d<LatticeColorMatrix> u_tmp = u_;
+
+    // HACK UP A LINEAR OPERATOR TO CHECK EIGENVALUES/VECTORS WITH
+    getFermBC().modifyU(u_tmp);
+    Handle< const ConnectState > state_aux = new SimpleConnectState(u_tmp);
+    Handle< const LinearOperator<LatticeFermion> > Maux = 
+      Mact->gamma5HermLinOp(state_aux);
+
+
+    const OverlapConnectState *ret_val;
+
+    try {
+      ret_val = 
+	OverlapConnectStateEnv::createOverlapState(
+						   u_,
+						   getFermBC(),
+						   state_info_xml,
+						   state_info_path,
+						   *Maux);
+    }
+    catch(const string& e) { 
+      QDPIO::cerr << "Caught Exception: " << e << endl;
+      QDP_abort(1);
+    }
+
+    return ret_val;
   }
 
-  const OverlapConnectState<LatticeFermion>*
+  //! Create OverlapConnectState from XML
+  const OverlapConnectState*
   OvlapPartFrac4DFermAct::createState(const multi1d<LatticeColorMatrix>& u_,
-				  const OverlapStateInfo& state_info,
-				  XMLWriter& xml_out) const
+				      const OverlapStateInfo& state_info) const
   {
-    push(xml_out, "Zolo4DCreateState");
+    // HACK UP A LINEAR OPERATOR TO CHECK EIGENVALUES/VECTORS WITH
+    multi1d<LatticeColorMatrix> u_tmp = u_;
+    getFermBC().modifyU(u_tmp);
+    Handle< const ConnectState > state_aux = new SimpleConnectState(u_tmp);
+    Handle< const LinearOperator<LatticeFermion> > Maux = 
+      Mact->gamma5HermLinOp(state_aux);
 
 
-    // If No eigen values specified use min and max
-    if ( state_info.getNWilsVec() == 0 ) { 
-      write(xml_out, "ApproxMin", state_info.getApproxMin());
-      write(xml_out, "ApproxMax", state_info.getApproxMax());
-      pop(xml_out);
-
-      return createState(u_,
-			 state_info.getApproxMin(),
-			 state_info.getApproxMax());
+    const OverlapConnectState* ret_val;    
+    try {
+      ret_val = 
+	OverlapConnectStateEnv::createOverlapState(
+						   u_,
+						   getFermBC(),
+						   state_info,
+						   *Maux);
     }
-    else {
-
-      // If there are eigen values, either load them, 
-      if( state_info.loadEigVec() ) {
-	ChromaWilsonRitz_t ritz_header;
-	multi1d<Real> lambda_lo;
-	multi1d<LatticeFermion> eigv_lo;
-	Real lambda_hi;
-	const EigenIO_t& eigen_io = state_info.getEigenIO();
-
-	push(xml_out, "EigenSystem");
-	if( eigen_io.eigen_filefmt == EVEC_TYPE_SCIDAC ) { 
-	  readEigen(ritz_header, lambda_lo, eigv_lo, lambda_hi, 
-		    eigen_io.eigen_file,
-		    state_info.getNWilsVec(),
-		    QDPIO_SERIAL);
-	  write(xml_out, "OriginalRitzHeader", ritz_header);
-	}
-	else if ( eigen_io.eigen_filefmt == EVEC_TYPE_SZIN ) { 
-
-	  if( toBool( fabs(params.AuxMass) > 8 ) ){
-	    QDPIO::cerr << "OverMass unspecified, or | OverMass | > 8" << endl;
-	    QDPIO::cerr << "The wilson mass is needed to rescale the eigenvalues" << endl;
-	    QDP_abort(1);
-	  }
-
-	  readEigenSzin(lambda_lo, eigv_lo, lambda_hi, state_info.getNWilsVec(), eigen_io.eigen_file);
-	
-	  // Now I need to scale things by the wilson mass (Nd + m)
-	  for(int i=0; i < lambda_lo.size(); i++) { 
-	    lambda_lo[i] *= (Real(Nd) + params.AuxMass);
-	  }
-
-	  lambda_hi *= (Real(Nd) + params.AuxMass);
-
-	}
-	else {
-	  QDPIO::cerr << "Unsupported Eigenvector format for reading " << endl;
-	  QDP_abort(1);
-	}
-
-	write(xml_out, "lambda_lo", lambda_lo);
-	write(xml_out, "lambda_high", lambda_hi);
-      
-	Handle< const ConnectState > wils_connect_state = Mact->createState(u_);
-	Handle< const LinearOperator<LatticeFermion> > H = Mact->gamma5HermLinOp(wils_connect_state); 
-
-      	      
-	multi1d<Double> check_norm(state_info.getNWilsVec());
-	multi1d<Double> check_norm_rel(state_info.getNWilsVec());
-	for(int i=0; i < state_info.getNWilsVec() ; i++) { 
-	  LatticeFermion Me;
-	  (*H)(Me, eigv_lo[i], PLUS);
-	
-	  LatticeFermion lambda_e;
-	
-	  lambda_e = lambda_lo[i]*eigv_lo[i];
-	  LatticeFermion r_norm = Me - lambda_e;
-	  check_norm[i] = sqrt(norm2(r_norm));
-	  check_norm_rel[i] = check_norm[i]/fabs(Double(lambda_lo[i]));
-	
-	  QDPIO::cout << "Eigenpair " << i << " Resid Norm = " 
-		      << check_norm[i] << " Resid Rel Norm = " << check_norm_rel[i] << endl;
-	}
-	write(xml_out, "eigen_norm", check_norm);
-	write(xml_out, "eigen_rel_norm", check_norm_rel);
-      
-	pop(xml_out); // Eigensystem
-
-	pop(xml_out); // Zolo4DCreateState
-	return createState(u_, lambda_lo, eigv_lo, lambda_hi);
-      }
-      else if( state_info.computeEigVec() ) {
-	QDPIO::cerr << "Recomputation of eigensystem not yet implemented" << endl;
-	QDP_abort(1);
-      }
-      else {
-	QDPIO::cerr << "I have to create a state without min/max, loading/computing eigenvectors/values. How do I do that? "<< endl;
-	QDP_abort(1);
-      }
+    catch(const string& e) { 
+      QDPIO::cerr << "Caught Exception: " << e << endl;
+      QDP_abort(1);
     }
+    
+    return ret_val;
 
-    return 0;
   }
 
 }

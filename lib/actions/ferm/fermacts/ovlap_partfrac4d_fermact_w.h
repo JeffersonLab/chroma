@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ovlap_partfrac4d_fermact_w.h,v 1.2 2004-09-27 20:18:15 bjoo Exp $
+// $Id: ovlap_partfrac4d_fermact_w.h,v 1.3 2004-09-28 13:01:48 bjoo Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -44,7 +44,8 @@ namespace Chroma
 
     InvertParam_t invParamInner;
     OverlapInnerSolverType inner_solver_type;
-    
+
+    bool isChiralP;    
     std::string AuxFermAct;
     std::string AuxFermActGrp;
   };
@@ -151,44 +152,49 @@ namespace Chroma
      *  However, setting it up wrongly may make it non chiral.
      *  that would need a run-time check. So this is a hack below,
      *  signifying intent */
-    bool isChiral() const { return true; }
+    bool isChiral() const { return params.isChiralP; }
     
     // Create state functions
-    //! Generic I/O Override...
-    const OverlapConnectState<LatticeFermion>* createState(const multi1d<LatticeColorMatrix>& u, 
-				    XMLReader& state_info_xml,
-				    const string& state_info_path) const;
-
+    
+    //! Create OverlapConnectState from XML
+    const OverlapConnectState* 
+    createState(const multi1d<LatticeColorMatrix>& u, 
+		XMLReader& state_info_xml,
+		const string& state_info_path) const;
+    
     //! Given links, create the state needed for the linear operators
     /*! Override the parent */
-    const OverlapConnectState<LatticeFermion>*
+    
+    //! Create a ConnectState with just the gauge fields
+    const OverlapConnectState*
     createState(const multi1d<LatticeColorMatrix>& u_) const ;
 
-    // Just gauge field and epsilon -- Approx Max is 2*Nd 
-    const OverlapConnectState<LatticeFermion>*
+    //! Create a ConnectState with just the gauge fields, and a lower
+    //!  approximation bound
+    const OverlapConnectState*
     createState(const multi1d<LatticeColorMatrix>& u_, 
 		const Real& approxMin_) const ;
  
-    // Gauge field, epsilon, approx min, approx max
-    const OverlapConnectState<LatticeFermion>*
+    
+    //! Create a connect State with just approximation range bounds
+    const OverlapConnectState*
     createState(const multi1d<LatticeColorMatrix>& u_, 
 		const Real& approxMin_, 
 		const Real& approxMax_) const;
 
 
-    // Gauge field, e-values, e-vectors
-    const OverlapConnectState<LatticeFermion>*
+    //! Create OverlapConnectState with eigenvalues/vectors 
+    const OverlapConnectState*
     createState(const multi1d<LatticeColorMatrix>& u_,
 		const multi1d<Real>& lambda_lo_,
 		const multi1d<LatticeFermion>& evecs_lo_, 
 		const Real& lambda_hi_) const;
 
 
-    // Gauge field and whatever (min/max, e-vectors)
-    const OverlapConnectState<LatticeFermion>*
+    //! Create from OverlapStateInfo Structure
+    const OverlapConnectState*
     createState(const multi1d<LatticeColorMatrix>& u_,
-		const OverlapStateInfo& state_info,
-		XMLWriter& xml_out) const;
+		const OverlapStateInfo& state_info) const;
 
     //! Produce a linear operator for this action
     /*! 
@@ -250,7 +256,7 @@ namespace Chroma
 	      multi1d<Real>& rootQ, 
 	      int& NEig, 
 	      multi1d<Real>& EigValFunc,
-	      const OverlapConnectState<LatticeFermion>& state) const;
+	      const OverlapConnectState& state) const;
 
     //! Construct stuff but use RatPolyDegPrec in the polynomial
     void initPrec(int& numroot, 
@@ -259,7 +265,7 @@ namespace Chroma
 		  multi1d<Real>& rootQ, 
 		  int& NEig, 
 		  multi1d<Real>& EigValFunc,
-		  const OverlapConnectState<LatticeFermion>& state) const;
+		  const OverlapConnectState& state) const;
 
 
   private:

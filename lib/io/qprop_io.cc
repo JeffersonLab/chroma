@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 1.25 2004-09-24 16:22:01 bjoo Exp $
+// $Id: qprop_io.cc,v 1.26 2004-09-28 13:01:48 bjoo Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -111,13 +111,7 @@ void initHeader(ChromaProp_t& header)
 {
   header.nrow        = Layout::lattSize();
   // Create an document with an empty state info tag
-  {
-    QDP::XMLBufferWriter stateInfoXML;
-    QDP::push(stateInfoXML, "StateInfo");
-    QDP::pop(stateInfoXML);
-    header.stateInfo = stateInfoXML.str();
-  }
-
+  
   // initHeader(header.anisoParam);
   // initHeader(header.chiralParam);
 }
@@ -351,15 +345,7 @@ void read(XMLReader& xml, const string& path, ChromaProp_t& param)
     xml_tmp.print(os);
     param.fermact = os.str();
 
-   // In this version, state info is still in FermionAction
-    if( xml_tmp.count("./StateInfo") == 1 ) {
-      XMLReader xml_state_info(xml_tmp, "./StateInfo");
-      std::ostringstream os;
-      xml_state_info.print(os);
-      param.stateInfo = os.str();
-    }
-
-    read(paramtop, "InvertParam", param.invParam);
+     read(paramtop, "InvertParam", param.invParam);
     read(paramtop, "boundary", param.boundary);
     read(paramtop, "nrow", param.nrow);
     param.nonRelProp = false;
@@ -375,15 +361,6 @@ void read(XMLReader& xml, const string& path, ChromaProp_t& param)
     std::ostringstream os;
     xml_tmp.print(os);
     param.fermact = os.str();
-
-   // In this version, state info is now out of  FermionAction,
-    // just below Param
-    if( paramtop.count("./StateInfo") == 1 ) {
-      XMLReader xml_state_info(paramtop, "./StateInfo");
-      std::ostringstream os;
-      xml_state_info.print(os);
-      param.stateInfo = os.str();
-    }
 
     read(paramtop, "InvertParam", param.invParam);
     read(paramtop, "boundary", param.boundary);
