@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_wilson_fermact_w.h,v 1.7 2003-10-02 19:07:46 edwards Exp $
+// $Id: unprec_wilson_fermact_w.h,v 1.8 2003-10-10 03:46:46 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev4d_linop_w.h,v 1.2 2003-08-09 04:18:48 edwards Exp $
+// $Id: zolotarev4d_linop_w.h,v 1.3 2003-10-10 03:46:46 edwards Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator

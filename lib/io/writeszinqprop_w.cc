@@ -1,4 +1,4 @@
-// $Id: writeszinqprop_w.cc,v 1.1 2003-09-25 22:20:28 edwards Exp $
+// $Id: writeszinqprop_w.cc,v 1.2 2003-10-10 03:46:46 edwards Exp $
 /*!
  * @file
  * @brief  Write an old SZIN-style (checkerboarded) quark propagator

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: smear.h,v 1.7 2003-09-25 22:21:48 edwards Exp $
+// $Id: smear.h,v 1.8 2003-10-10 03:46:47 edwards Exp $
 
 /*! \file
  * \brief Smearing routines

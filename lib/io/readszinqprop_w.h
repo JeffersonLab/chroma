@@ -1,4 +1,4 @@
-// $Id: readszinqprop_w.h,v 1.6 2003-09-25 22:20:05 edwards Exp $
+// $Id: readszinqprop_w.h,v 1.7 2003-10-10 03:46:46 edwards Exp $
 
 #ifndef __readszinqprop_h__
 #define __readszinqprop_h__

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: minvcg.h,v 1.1 2003-04-08 21:36:13 edwards Exp $
+// $Id: minvcg.h,v 1.2 2003-10-10 03:46:46 edwards Exp $
 
 #ifndef MINVCG_INCLUDE
 #define MINVCG_INCLUDE

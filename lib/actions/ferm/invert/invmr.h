@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: invmr.h,v 1.1 2003-04-14 16:35:01 edwards Exp $
+// $Id: invmr.h,v 1.2 2003-10-10 03:46:46 edwards Exp $
 
 #ifndef __invmr_h__
 #define __invmr_h__

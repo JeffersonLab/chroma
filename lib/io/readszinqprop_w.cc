@@ -1,4 +1,4 @@
-// $Id: readszinqprop_w.cc,v 1.9 2003-08-27 22:08:41 edwards Exp $
+// $Id: readszinqprop_w.cc,v 1.10 2003-10-10 03:46:46 edwards Exp $
 /*!
  * @file
  * @brief  Read an old SZIN-style (checkerboarded) quark propagator

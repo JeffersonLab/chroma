@@ -1,4 +1,4 @@
-// $Id: t_wlinvcg.cc,v 1.3 2003-10-09 20:36:49 edwards Exp $
+// $Id: t_wlinvcg.cc,v 1.4 2003-10-10 03:46:47 edwards Exp $
 
 #include <iostream>
 #include <cstdio>

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: baryon_w.h,v 1.4 2003-10-01 03:03:32 edwards Exp $
+// $Id: baryon_w.h,v 1.5 2003-10-10 03:46:46 edwards Exp $
 
 #ifndef __baryon_h__
 #define __baryon_h__

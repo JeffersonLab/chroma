@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: laplacian.h,v 1.2 2003-06-19 17:40:42 ikuro Exp $
+// $Id: laplacian.h,v 1.3 2003-10-10 03:46:47 edwards Exp $
 
 #ifndef __laplacian_h__
 #define __laplacian_h__

@@ -1,4 +1,4 @@
-// $Id: readmilc.h,v 1.1 2003-10-09 15:45:14 edwards Exp $
+// $Id: readmilc.h,v 1.2 2003-10-10 03:46:46 edwards Exp $
 
 /*! \file
  *  \brief Read a MILC gauge configuration written in the 1997 format

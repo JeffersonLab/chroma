@@ -1,4 +1,4 @@
-// $Id: readszin.h,v 1.7 2003-10-08 04:37:50 edwards Exp $
+// $Id: readszin.h,v 1.8 2003-10-10 03:46:46 edwards Exp $
 
 /*! \file
  *  \brief Read in a configuration written by SZIN up to configuration version 7.

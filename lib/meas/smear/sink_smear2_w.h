@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sink_smear2_w.h,v 1.4 2003-05-08 22:55:49 flemingg Exp $
+// $Id: sink_smear2_w.h,v 1.5 2003-10-10 03:46:47 edwards Exp $
 
 #ifndef __sink_smear2_h__
 #define __sink_smear2_h__

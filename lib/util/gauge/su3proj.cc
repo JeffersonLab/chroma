@@ -1,4 +1,4 @@
-//  $Id: su3proj.cc,v 1.3 2003-03-31 19:46:08 edwards Exp $
+//  $Id: su3proj.cc,v 1.4 2003-10-10 03:46:47 edwards Exp $
 /*! \file
  *  \brief Project a complex Nc x Nc matrix W onto SU(Nc) by maximizing Tr(VW)
  */

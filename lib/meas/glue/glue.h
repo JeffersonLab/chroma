@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: glue.h,v 1.4 2003-10-08 18:40:57 edwards Exp $
+// $Id: glue.h,v 1.5 2003-10-10 03:46:46 edwards Exp $
 
 /*! \file
  * \brief Gluonic observables

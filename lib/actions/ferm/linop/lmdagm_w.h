@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lmdagm_w.h,v 1.2 2003-08-09 04:18:47 edwards Exp $
+// $Id: lmdagm_w.h,v 1.3 2003-10-10 03:46:46 edwards Exp $
 
 #ifndef __lmdagm_w_h__
 #define __lmdagm_w_h__

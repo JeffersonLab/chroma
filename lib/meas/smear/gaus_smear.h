@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gaus_smear.h,v 1.3 2003-04-01 01:56:19 edwards Exp $
+// $Id: gaus_smear.h,v 1.4 2003-10-10 03:46:47 edwards Exp $
 
 #ifndef __gaus_smear_h__
 #define __gaus_smear_h__

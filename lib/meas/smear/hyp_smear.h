@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hyp_smear.h,v 1.1 2003-03-28 04:10:54 edwards Exp $
+// $Id: hyp_smear.h,v 1.2 2003-10-10 03:46:47 edwards Exp $
 
 #ifndef __hyp_smear_h__
 #define __hyp_smear_h__
