@@ -1,3 +1,8 @@
+11/20/2004 -- Robert Edwards
+
+	Version 1.8.2. More changes within Zolo Ferm support. 
+        Changed staggered files to use LatticeStaggeredFermion
+
 10/21/2004 -- Robert Edwards
 
 	Version 1.8.1. More updates. First start of Zolo in NEF.
