@@ -1,4 +1,4 @@
-// $Id: seqsource.cc,v 1.3 2004-04-29 15:08:42 edwards Exp $
+// $Id: seqsource.cc,v 1.4 2004-05-13 00:35:59 edwards Exp $
 /*! \file
  *  \brief Main code for sequential source construction
  */
@@ -363,25 +363,19 @@ int main(int argc, char **argv)
     write(file_xml, "id", id);
     pop(file_xml);
 
+    // Sequential source header
+    // For now, only have 1 set of forward props to tie
+    SequentialSource_t src;
+    src.sink_header = input.sink_header;
+    src.seqsource_header = input.param;
+    src.forward_props.resize(1);
+    src.forward_props[0].sink_header = input.sink_header;
+    src.forward_props[0].prop_header = prop_header;
+    src.forward_props[0].source_header = source_header;
+
     XMLBufferWriter record_xml;
     push(record_xml, "SequentialSource");
-    write(record_xml, "SeqSourceSinkSmear", input.sink_header);
-    write(record_xml, "SeqSource", input.param);
-
-    // For now, only have 1 set of forward props to tie
-    XMLArrayWriter  xml_props(record_xml, 1);
-    push(xml_props, "ForwardProps");
-
-    for (int i=0; i < 1; ++i)
-    {
-      push(xml_props);
-      write(xml_props, "PropSink", input.sink_header);
-      write(xml_props, "ForwardProp", prop_header);
-      write(xml_props, "PropSource", source_header);
-      pop(xml_props);
-    }
-    pop(xml_props);  // ForwardProps
-
+    write(record_xml, ".", src);
     write(record_xml, "Config_info", gauge_xml);
     pop(record_xml);  // SequentialSource
 
