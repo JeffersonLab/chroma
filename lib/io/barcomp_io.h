@@ -1,4 +1,4 @@
-// $Id: barcomp_io.h,v 1.1 2004-02-23 03:08:52 edwards Exp $
+// $Id: barcomp_io.h,v 1.2 2004-04-21 17:25:22 edwards Exp $
 /*! \file
  * \brief Routines associated with barcomp generalized correlator IO
  */
