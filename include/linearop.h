@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linearop.h,v 1.21 2004-01-02 03:19:40 edwards Exp $
+// $Id: linearop.h,v 1.22 2004-01-05 05:22:55 edwards Exp $
 
 /*! @file
  * @brief Linear Operators
@@ -316,11 +316,15 @@ public:
 
 
 //! Even odd Linear Operator (for staggered like things )
-//
-//  [   D_ee        D_eo ]
-//  [   D_oe        D_oo ]
-//
-//  Usually D_ee = D_oo = 2m
+/*! @ingroup linop
+ *
+ * Support for even-odd staggered-like linear operators
+ *
+ *  [   D_ee        D_eo ]
+ *  [   D_oe        D_oo ]
+ *
+ *  Usually D_ee = D_oo = 2m
+ */
 template<typename T>
 class EvenOddLinearOperator : public LinearOperator<T>
 {

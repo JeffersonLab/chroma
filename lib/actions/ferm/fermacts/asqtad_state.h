@@ -6,7 +6,10 @@
 
 using namespace QDP;
 
-// Basic "Connect State" for ASQTAD
+//! Basic "Connect State" for ASQTAD
+/*! 
+ * \ingroup fermact
+ */
 template<typename T>
 class AsqtadConnectStateBase : public ConnectState {
  public: 
@@ -17,7 +20,10 @@ class AsqtadConnectStateBase : public ConnectState {
 };
 
 
-//! The actual thing
+//! The actual Asqtad thing
+/*! 
+ * \ingroup fermact
+ */
 template<typename T>
 class AsqtadConnectState : public AsqtadConnectStateBase<T>
 {
