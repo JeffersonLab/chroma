@@ -1,4 +1,4 @@
-// $Id: qqq_w.cc,v 1.17 2004-07-28 03:08:05 edwards Exp $
+// $Id: qqq_w.cc,v 1.18 2004-08-12 21:36:40 ikuro Exp $
 /*! \file
  *  \brief Main code for generalized quark propagator
  *
@@ -286,7 +286,7 @@ int main(int argc, char **argv)
     LatticePropagator q_tmp;
     for(int i=0; i < Nprops; ++i)
     {
-      q_tmp = adj(U) * quark_propagator[i] * U;   // note, adj(U) = -U
+      q_tmp = adj(U) * quark_propagator[i] * U;   // DeGrand-Rossi ---> Dirac
       quark_propagator[i] = q_tmp;
     }
   }
