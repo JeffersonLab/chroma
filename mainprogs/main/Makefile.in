@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-SOURCES = $(ExampleBuildingBlocks_SOURCES) $(apesmear_SOURCES) $(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) $(collect_multi_propcomp_SOURCES) $(collect_propcomp_SOURCES) $(hmc_SOURCES) $(hypsmear_SOURCES) $(hypsmear3d_SOURCES) $(hypsmear4d_SOURCES) $(make_source_SOURCES) $(mres_SOURCES) $(multi_propagator_SOURCES) $(multi_propagator_comp_SOURCES) $(propagator_SOURCES) $(propagator_comp_SOURCES) $(propagator_hack_SOURCES) $(qpropadd_SOURCES) $(qpropgfix_SOURCES) $(qpropqio_SOURCES) $(qproptransf_SOURCES) $(qproptrev_SOURCES) $(qqq_w_SOURCES) $(seqsource_SOURCES) $(sink_smearing_SOURCES) $(spectrum_w_SOURCES) $(stoutsmear_SOURCES) $(wallformfac_SOURCES)
+SOURCES = $(ExampleBuildingBlocks_SOURCES) $(apesmear_SOURCES) $(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) $(chroma_SOURCES) $(collect_multi_propcomp_SOURCES) $(collect_propcomp_SOURCES) $(hmc_SOURCES) $(hypsmear_SOURCES) $(hypsmear3d_SOURCES) $(hypsmear4d_SOURCES) $(make_source_SOURCES) $(mres_SOURCES) $(multi_propagator_SOURCES) $(multi_propagator_comp_SOURCES) $(propagator_SOURCES) $(propagator_comp_SOURCES) $(propagator_hack_SOURCES) $(qpropadd_SOURCES) $(qpropgfix_SOURCES) $(qpropqio_SOURCES) $(qproptransf_SOURCES) $(qproptrev_SOURCES) $(qqq_w_SOURCES) $(seqsource_SOURCES) $(sink_smearing_SOURCES) $(spectrum_w_SOURCES) $(stoutsmear_SOURCES) $(wallformfac_SOURCES)
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -49,9 +49,9 @@ bin_PROGRAMS = propagator$(EXEEXT) collect_propcomp$(EXEEXT) \
 	cfgtransf$(EXEEXT) sink_smearing$(EXEEXT) qpropgfix$(EXEEXT) \
 	qproptrev$(EXEEXT) apesmear$(EXEEXT) stoutsmear$(EXEEXT) \
 	hmc$(EXEEXT) hypsmear3d$(EXEEXT) hypsmear4d$(EXEEXT) \
-	spectrum_w$(EXEEXT) qqq_w$(EXEEXT) bar3ptfn$(EXEEXT) \
-	qproptransf$(EXEEXT) wallformfac$(EXEEXT) mres$(EXEEXT) \
-	propagator_hack$(EXEEXT) qpropqio$(EXEEXT)
+	chroma$(EXEEXT) spectrum_w$(EXEEXT) qqq_w$(EXEEXT) \
+	bar3ptfn$(EXEEXT) qproptransf$(EXEEXT) wallformfac$(EXEEXT) \
+	mres$(EXEEXT) propagator_hack$(EXEEXT) qpropqio$(EXEEXT)
 EXTRA_PROGRAMS = qpropadd$(EXEEXT) propagator_comp$(EXEEXT) \
 	multi_propagator$(EXEEXT) multi_propagator_comp$(EXEEXT) \
 	collect_multi_propcomp$(EXEEXT)
@@ -81,6 +81,9 @@ bar3ptfn_LDADD = $(LDADD)
 am_cfgtransf_OBJECTS = cfgtransf.$(OBJEXT)
 cfgtransf_OBJECTS = $(am_cfgtransf_OBJECTS)
 cfgtransf_LDADD = $(LDADD)
+am_chroma_OBJECTS = chroma.$(OBJEXT)
+chroma_OBJECTS = $(am_chroma_OBJECTS)
+chroma_LDADD = $(LDADD)
 am_collect_multi_propcomp_OBJECTS = collect_multi_propcomp.$(OBJEXT)
 collect_multi_propcomp_OBJECTS = $(am_collect_multi_propcomp_OBJECTS)
 collect_multi_propcomp_LDADD = $(LDADD)
@@ -162,7 +165,7 @@ CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
 SOURCES = $(ExampleBuildingBlocks_SOURCES) $(apesmear_SOURCES) \
-	$(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) \
+	$(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) $(chroma_SOURCES) \
 	$(collect_multi_propcomp_SOURCES) $(collect_propcomp_SOURCES) \
 	$(hmc_SOURCES) $(hypsmear_SOURCES) $(hypsmear3d_SOURCES) \
 	$(hypsmear4d_SOURCES) $(make_source_SOURCES) $(mres_SOURCES) \
@@ -175,7 +178,7 @@ SOURCES = $(ExampleBuildingBlocks_SOURCES) $(apesmear_SOURCES) \
 	$(spectrum_w_SOURCES) $(stoutsmear_SOURCES) \
 	$(wallformfac_SOURCES)
 DIST_SOURCES = $(ExampleBuildingBlocks_SOURCES) $(apesmear_SOURCES) \
-	$(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) \
+	$(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) $(chroma_SOURCES) \
 	$(collect_multi_propcomp_SOURCES) $(collect_propcomp_SOURCES) \
 	$(hmc_SOURCES) $(hypsmear_SOURCES) $(hypsmear3d_SOURCES) \
 	$(hypsmear4d_SOURCES) $(make_source_SOURCES) $(mres_SOURCES) \
@@ -330,6 +333,8 @@ HDRS =
 #
 # The program and its dependencies
 #
+chroma_SOURCES = chroma.cc
+chroma_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 propagator_SOURCES = propagator.cc
 propagator_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 propagator_comp_SOURCES = propagator_comp.cc
@@ -454,6 +459,9 @@ bar3ptfn$(EXEEXT): $(bar3ptfn_OBJECTS) $(bar3ptfn_DEPENDENCIES)
 cfgtransf$(EXEEXT): $(cfgtransf_OBJECTS) $(cfgtransf_DEPENDENCIES) 
 	@rm -f cfgtransf$(EXEEXT)
 	$(CXXLINK) $(cfgtransf_LDFLAGS) $(cfgtransf_OBJECTS) $(cfgtransf_LDADD) $(LIBS)
+chroma$(EXEEXT): $(chroma_OBJECTS) $(chroma_DEPENDENCIES) 
+	@rm -f chroma$(EXEEXT)
+	$(CXXLINK) $(chroma_LDFLAGS) $(chroma_OBJECTS) $(chroma_LDADD) $(LIBS)
 collect_multi_propcomp$(EXEEXT): $(collect_multi_propcomp_OBJECTS) $(collect_multi_propcomp_DEPENDENCIES) 
 	@rm -f collect_multi_propcomp$(EXEEXT)
 	$(CXXLINK) $(collect_multi_propcomp_LDFLAGS) $(collect_multi_propcomp_OBJECTS) $(collect_multi_propcomp_LDADD) $(LIBS)
@@ -537,6 +545,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/apesmear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bar3ptfn.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cfgtransf.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/chroma.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/collect_multi_propcomp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/collect_propcomp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hmc.Po@am__quote@
