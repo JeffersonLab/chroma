@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev4d_fermact_w.h,v 1.9 2003-12-03 06:12:02 edwards Exp $
+// $Id: zolotarev4d_fermact_w.h,v 1.10 2003-12-04 02:57:42 edwards Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -9,6 +9,7 @@
 #define __zolotarev4d_fermact_w_h__
 
 #include "fermact.h"
+#include "actions/ferm/fermacts/overlap_fermact_base_w.h"
 #include "actions/ferm/fermacts/ev_state.h"
 
 using namespace QDP;
@@ -23,7 +24,7 @@ using namespace QDP;
  * but that is not necessary
  */
 
-class Zolotarev4DFermAct : public UnprecWilsonTypeFermAct<LatticeFermion>
+class Zolotarev4DFermAct : public OverlapFermActBase
 {
 public:
   //! Full constructor
@@ -31,6 +32,13 @@ public:
 		     int RatPolyDeg_) :
     Mact(Mact_), m_q(m_q_), RatPolyDeg(RatPolyDeg_)
     {}
+
+  //! Return the quark mass
+  Real quark_mass() const {return m_q;}
+
+  //! Does this object really satisfy the Ginsparg-Wilson relation?
+  /*! HACK - NEED TO FIX THIS */
+  bool isChiral() const {return false;}
 
   //! Default version, given links create the state needed for the linear operators
   /*! Covariant Return Rule - overload base class virtual function with new return type */
