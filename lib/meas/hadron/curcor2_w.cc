@@ -1,4 +1,4 @@
-// $Id: curcor2_w.cc,v 1.7 2003-10-30 01:55:20 edwards Exp $
+// $Id: curcor2_w.cc,v 1.8 2004-01-05 00:47:20 edwards Exp $
 /*! \file
  *  \brief Mesonic current correlators
  */
@@ -27,6 +27,7 @@ using namespace QDP;
  * \param u               gauge field ( Read )
  * \param quark_prop_1    first quark propagator ( Read )
  * \param quark_prop_2    second (anti-) quark propagator ( Read )
+ * \param phases          fourier transform phase factors ( Read )
  * \param t0              timeslice coordinate of the source ( Read )
  * \param j_decay         direction of the exponential decay ( Read )
  * \param no_vec_cur      number of vector current types, 3 or 4 ( Read )

@@ -1,4 +1,4 @@
-// $Id: unit_check.cc,v 1.3 2004-01-01 15:32:55 edwards Exp $
+// $Id: unit_check.cc,v 1.4 2004-01-05 00:47:20 edwards Exp $
 
 /*! \file
  *  \brief Test a gauge field is unitarized
@@ -15,7 +15,7 @@ using namespace QDP;
 /*!
  * \ingroup gauge
  *
- * \param  a  The LatticeColorMatrix to be tested
+ * \param  u  The LatticeColorMatrix to be tested
  */
 void unitarityCheck(const multi1d<LatticeColorMatrix>& u)
 {

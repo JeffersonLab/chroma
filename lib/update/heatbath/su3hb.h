@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: su3hb.h,v 1.1 2003-12-29 19:47:22 edwards Exp $
+// $Id: su3hb.h,v 1.2 2004-01-05 00:47:20 edwards Exp $
 /*! \file
  *  \brief Do one SU(2) subgroup heatbath update of SU(Nc) matrix U with action
  */
@@ -21,6 +21,7 @@
  * \param nheat      maximal number of update trials ( Read )
  * \param ntrials    total number of link trials ( Write )
  * \param nfails     total number of failed trials ( Write ) 
+ * \param sub        Subset for updating ( Read )
  */
 
 void su3hb(LatticeColorMatrix& u,

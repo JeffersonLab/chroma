@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: formfac_w.h,v 1.9 2003-10-14 17:42:34 edwards Exp $
+// $Id: formfac_w.h,v 1.10 2004-01-05 00:47:20 edwards Exp $
 /*! \file
  *  \brief Form-factors 
  *
@@ -51,15 +51,15 @@ void write(BinaryWriter& bin, const FormFac_insertions_t& form);
  *
  * This routine is specific to Wilson fermions!
  *
- * \param form         structures holding formfactors ( Write )
- * \param u            gauge fields (used for non-local currents) ( Read )
+ * \param form               structures holding formfactors ( Write )
+ * \param u                  gauge fields (used for non-local currents) ( Read )
  * \param quark_propagator   quark propagator ( Read )
  * \param seq_quark_prop     sequential quark propagator ( Read )
- * \param phases       fourier transofmr phase factors ( Read )
- * \param t0           cartesian coordinates of the source ( Read )
+ * \param phases             fourier transform phase factors ( Read )
+ * \param t0                 cartesian coordinates of the source ( Read )
  */
 
-void FormFac(FormFac_insertions_t& seqsrc,
+void FormFac(FormFac_insertions_t& form,
 	     const multi1d<LatticeColorMatrix>& u,
              const LatticePropagator& quark_propagator,
              const LatticePropagator& seq_quark_prop, 

@@ -1,4 +1,4 @@
-// $Id: eeu1.cc,v 1.1 2003-12-30 19:49:18 edwards Exp $
+// $Id: eeu1.cc,v 1.2 2004-01-05 00:47:20 edwards Exp $
 /*! \file
  *  \brief Exactly exponentiate a U(1) lie algebra element
  */
@@ -12,7 +12,7 @@ using namespace QDP;
 /*!
  * \ingroup gauge
  *
- *  \param a        LatticeColorMatrix          (Modify)
+ *  \param lambda      LatticeColorMatrix          (Modify)
  */
 
 void eeu1(LatticeColorMatrix& lambda)

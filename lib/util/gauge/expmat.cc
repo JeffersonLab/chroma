@@ -1,4 +1,4 @@
-// $Id: expmat.cc,v 1.1 2003-12-30 19:49:18 edwards Exp $
+// $Id: expmat.cc,v 1.2 2004-01-05 00:47:20 edwards Exp $
 /*! \file
  *  \brief Exponentiate a SU(n) lie algebra element by some method,
  */
@@ -22,6 +22,7 @@ using namespace QDP;
  * The routine eesu3 EXACTLY exponentiates a SU(3) matrix. 
  *
  *  \param a        LatticeColorMatrix          (Modify)
+ *  \param opt      Method of exponentiation    (Read)
  */
 
 void expmat(LatticeColorMatrix& a,

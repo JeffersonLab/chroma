@@ -1,4 +1,4 @@
-// $Id: formfac_w.cc,v 1.14 2003-12-17 02:23:07 edwards Exp $
+// $Id: formfac_w.cc,v 1.15 2004-01-05 00:47:20 edwards Exp $
 /*! \file
  *  \brief Form-factors 
  *
@@ -72,15 +72,15 @@ void write(BinaryWriter& bin, const FormFac_insertions_t& form)
  *
  * This routine is specific to Wilson fermions!
  *
- * \param form         structures holding formfactors ( Write )
- * \param u            gauge fields (used for non-local currents) ( Read )
+ * \param form               structures holding formfactors ( Write )
+ * \param u                  gauge fields (used for non-local currents) ( Read )
  * \param quark_propagator   quark propagator ( Read )
  * \param seq_quark_prop     sequential quark propagator ( Read )
- * \param phases       fourier transofmr phase factors ( Read )
- * \param t0           cartesian coordinates of the source ( Read )
+ * \param phases             fourier transform phase factors ( Read )
+ * \param t0                 cartesian coordinates of the source ( Read )
  */
 
-void FormFac(FormFac_insertions_t& seqsrc,
+void FormFac(FormFac_insertions_t& form,
 	     const multi1d<LatticeColorMatrix>& u, 
              const LatticePropagator& quark_propagator,
              const LatticePropagator& seq_quark_prop, 
@@ -102,7 +102,7 @@ void FormFac(FormFac_insertions_t& seqsrc,
   //   Variant 2: 140
   // See previous cvs versions (before 1.10) for Variant 2 - only keeping Variant 1
 
-  seqsrc.formFac.resize(Nd*Nd);
+  form.formFac.resize(Nd*Nd);
 
   // Loop over gamma matrices of the insertion current of insertion current
   for(int gamma_value = 0; gamma_value < Nd*Nd; ++gamma_value)
@@ -169,13 +169,13 @@ void FormFac(FormFac_insertions_t& seqsrc,
     }
 
   
-    seqsrc.formFac[gamma_value].gamma_value = gamma_value;
-    seqsrc.formFac[gamma_value].momenta.resize(phases.numMom());  // hold momenta output
+    form.formFac[gamma_value].gamma_value = gamma_value;
+    form.formFac[gamma_value].momenta.resize(phases.numMom());  // hold momenta output
 
     // Loop over insertion momenta and print out results
     for(int inser_mom_num=0; inser_mom_num<phases.numMom(); ++inser_mom_num) 
     {
-      seqsrc.formFac[gamma_value].momenta[inser_mom_num].inser_mom = phases.numToMom(inser_mom_num);
+      form.formFac[gamma_value].momenta[inser_mom_num].inser_mom = phases.numToMom(inser_mom_num);
 
       multi1d<Complex> local_cur3ptfn(length); // always compute
       multi1d<Complex> nonlocal_cur3ptfn;
@@ -192,8 +192,8 @@ void FormFac(FormFac_insertions_t& seqsrc,
 
       } // end for(t)
 
-      seqsrc.formFac[gamma_value].momenta[inser_mom_num].local_current    = local_cur3ptfn;
-      seqsrc.formFac[gamma_value].momenta[inser_mom_num].nonlocal_current = nonlocal_cur3ptfn;
+      form.formFac[gamma_value].momenta[inser_mom_num].local_current    = local_cur3ptfn;
+      form.formFac[gamma_value].momenta[inser_mom_num].nonlocal_current = nonlocal_cur3ptfn;
 
     } // end for(inser_mom_num)
   } // end for(gamma_value)

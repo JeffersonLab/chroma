@@ -1,4 +1,4 @@
-//  $Id: ape_smear.cc,v 1.3 2003-10-09 21:04:07 edwards Exp $
+//  $Id: ape_smear.cc,v 1.4 2004-01-05 00:47:20 edwards Exp $
 
 /*! \file
  *  \brief APE-smearing of the gauge configuration
@@ -64,7 +64,7 @@ LatticeColorMatrix shift2(const LatticeColorMatrix& s1, int isign, int dir, int 
  * \param sm_fact  smearing factor ( Read )
  * \param BlkAccu  accuracy in fuzzy link projection ( Read )
  * \param BlkMax   maximum number of iterations in fuzzy link projection ( Read )
- * \paramj_decay   no staple in direction j_decay ( Read )
+ * \param j_decay  no staple in direction j_decay ( Read )
  */
 
 void APE_Smear(const multi1d<LatticeColorMatrix>& u,

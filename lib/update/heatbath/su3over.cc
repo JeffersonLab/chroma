@@ -1,4 +1,4 @@
-// $Id: su3over.cc,v 1.1 2003-12-29 19:47:22 edwards Exp $
+// $Id: su3over.cc,v 1.2 2004-01-05 00:47:20 edwards Exp $
 /*! \file
  *  \brief Do one SU(2) subgroup microcanonical overrelaxation update of SU(Nc)
  */
@@ -24,6 +24,7 @@ using namespace QDP;
  * \param u            field to be updated ( Modify )
  * \param w            "staple" field in the action ( Read )
  * \param su2_index    SU(2) subgroup index ( Read ) 
+ * \param sub          Subset for operations ( Read ) 
  */
 
 void su3over(LatticeColorMatrix& u,
