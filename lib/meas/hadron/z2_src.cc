@@ -1,4 +1,4 @@
-// $Id: z2_src.cc,v 1.1 2004-02-08 11:31:22 mcneile Exp $
+// $Id: z2_src.cc,v 1.2 2004-11-20 19:26:25 mcneile Exp $
 /*! \file
  *  \brief Variety of Z2 noise sources
  */
@@ -24,7 +24,8 @@ using namespace QDP;
  *
  */
 
-void z2_src(LatticeFermion& a)
+template<typename T>
+void z2_src_t(T & a)
 {
 
   a = zero ; 
@@ -49,6 +50,19 @@ void z2_src(LatticeFermion& a)
 
 }
 
+
+// template<>
+void z2_src(LatticeFermion& a)
+{
+  z2_src_t<LatticeFermion>(a) ; 
+}
+
+
+// template<>
+void z2_src(LatticeStaggeredFermion& a)
+{
+  z2_src_t<LatticeStaggeredFermion>(a) ; 
+}
 
 
 //! Timeslice source of complex Z2 noise
