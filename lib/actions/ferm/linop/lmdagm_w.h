@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lmdagm_w.h,v 1.8 2003-12-17 11:39:27 bjoo Exp $
+// $Id: lmdagm_w.h,v 1.9 2003-12-17 11:45:05 bjoo Exp $
 
 #ifndef __lmdagm_w_h__
 #define __lmdagm_w_h__
@@ -58,28 +58,28 @@ class lmdagm< multi1d<T> > : public LinearOperator< multi1d<T> >
 {
 public:
   //! Full constructor
-  lmdagm(const LinearOperator< multi1d<T> >& A_) : A(A_) {}
+  lmdagm(const LinearOperator< multi1d<T> >& A_) : A(&A_) {}
 
   //! Destructor
   ~lmdagm() {}
 
   //! Length of array index
-  int size() const {return A.size();}
+  int size() const {return A->size();}
 
   //! Subset comes from underlying operator
-  inline const OrderedSubset& subset() const {return A.subset();}
+  inline const OrderedSubset& subset() const {return A->subset();}
 
   //! Apply the operator onto a source vector
   /*! For this operator, the sign is ignored */
   inline void operator() (multi1d<T>& chi, const multi1d<T>& psi, enum PlusMinus isign) const
     {
       multi1d<T>  tmp(size());
-      A(tmp, psi, PLUS);
-      A(chi, tmp, MINUS);
+      (*A)(tmp, psi, PLUS);
+      (*A)(chi, tmp, MINUS);
     }
 
 private:
-  const LinearOperator< multi1d<T> >& A;
+  const Handle< const LinearOperator< multi1d<T> > > A;
 };
 
 #endif
