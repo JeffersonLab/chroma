@@ -1,32 +1,37 @@
-/*   $Id: wilslp.cc,v 1.1 2004-04-26 16:12:49 mcneile Exp $ ($Date: 2004-04-26 16:12:49 $) */
-
-/* WILSLP -- calculates, depending on option, (1) "space-like" planar 	 */
-/*           Wilson loops in the directions perpendicular to j_decay     */
-/*           that have equal length, (2) "time-like" planar Wilson loops */
-/*           with time direction j_decay and space directions the        */
-/*           perpendicular ones that have equal length and (3) off-axis  */
-/*           "time-like" Wilson loops along 3 particular paths in the    */
-/*           space directions that have equal length.                    */
-/* Translated by ACI from the SZIN code originally by Urs Heller.        */
-/*									 */
-/* u -- gauge field (Read)                                               */
-/* j_decay -- time direction (Read)                                      */
-/* kind -- binary-combined YES/NO [1/0] of the three options (Read)      */
-/*									 */
-/*  e.g. kind = 2 gives planar t-like					 */
-/*              6       planar + off-axis: sqrt(2), sqrt(5), sqrt(3)  	 */
+// $id$
+/*! \file
+ *  \brief Calculate Wilson loops
+ */
 
 #include "chromabase.h"
 #include "meas/glue/wilslp.h"
 
 using namespace QDP;
 
+//! Calculate Wilson loops
+/*!
+ * \ingroup glue
+ *
+ * Calculates, depending on option, (1) "space-like" planar   
+ * Wilson loops in the directions perpendicular to j_decay    
+ * that have equal length, (2) "time-like" planar Wilson loops
+ * with time direction j_decay and space directions the       
+ * perpendicular ones that have equal length and (3) off-axis 
+ * "time-like" Wilson loops along 3 paricular paths in the    
+ * space directions that have equal length.                   
+ *
+ * \param u          gauge field (Read)                                              
+ * \param j_decay    time direction (Read)                                     
+ * \param kind       binary-combined YES/NO [1/0] of the three options (Read)      
+ *                   e.g. kind = 2 gives planar t-like, kind=6 is 
+ *                   planar + off-axis: sqrt(2), sqrt(5), sqrt(3)
+ */
+
 void wilslp(const multi1d<LatticeColorMatrix>& u, 
-	int j_decay, int kind,
-	XMLWriter& xml, const string& xml_group)
+	    int j_decay, int kind,
+	    XMLWriter& xml, const string& xml_group)
 {
   START_CODE("wilslp");
-
 
   multi1d<int> nrow(Nd);
   nrow = Layout::lattSize();
@@ -68,7 +73,7 @@ void wilslp(const multi1d<LatticeColorMatrix>& u,
   lengtht = lsizet / 2;
   
   /* Determine 'lattice shape' */
-    space_dir = 1;
+  space_dir = 1;
   nr = 1;
   for(mu = 0;mu  <= ( Nd-2); ++mu )
     if ( mu != j_decay && mu != t_dir )
@@ -126,9 +131,9 @@ void wilslp(const multi1d<LatticeColorMatrix>& u,
     if( nspace < 2 )
       for(mu = 0;mu  < ( Nd); ++mu )
 	QDP_error_exit("Wrong lattice size for space-like Wilson loops: ", 
-	mu, nrow[mu]);
+		       mu, nrow[mu]);
                     
-        wils_loop1 = 0;			/* initialize the Wilson loops */
+    wils_loop1 = 0;			/* initialize the Wilson loops */
 
     for(j = 1;j  < ( nspace); ++j )
     {
@@ -152,8 +157,8 @@ void wilslp(const multi1d<LatticeColorMatrix>& u,
 
 	  if ( r == 0 )
 	  {
-	      u_t = shift(ug[nu], FORWARD, mu);
-	      u_space = ug[mu];
+	    u_t = shift(ug[nu], FORWARD, mu);
+	    u_space = ug[mu];
 	  }
 	  else
 	  {
@@ -170,7 +175,7 @@ void wilslp(const multi1d<LatticeColorMatrix>& u,
 
 	    if ( t == 0 )
 	    {
-		u_tmp = shift(u_space, FORWARD, nu);
+	      u_tmp = shift(u_space, FORWARD, nu);
 	    }
 	    else
 	    {
@@ -237,8 +242,8 @@ void wilslp(const multi1d<LatticeColorMatrix>& u,
 
 	if ( r == 0 )
 	{
-	    u_t = shift(ug[j_decay], FORWARD, mu);
-	    u_space = ug[mu];
+	  u_t = shift(ug[j_decay], FORWARD, mu);
+	  u_space = ug[mu];
 	}
 	else
 	{
@@ -256,7 +261,7 @@ void wilslp(const multi1d<LatticeColorMatrix>& u,
 
 	  if ( t == 0 )
 	  {
-	      u_tmp = shift(u_space, FORWARD, j_decay);
+	    u_tmp = shift(u_space, FORWARD, j_decay);
 	  }
 	  else
 	  {
@@ -305,7 +310,7 @@ void wilslp(const multi1d<LatticeColorMatrix>& u,
     {
       for(mu = 0;mu  < ( Nd); ++mu )
 	QDP_error_exit("Wrong lattice size for off-axis Wilson loops: ", 
-		mu, nrow[mu]);
+		       mu, nrow[mu]);
     }
     else if ( nspace == 2 )
     {
@@ -343,17 +348,17 @@ void wilslp(const multi1d<LatticeColorMatrix>& u,
 
 	  if ( r == 0 )
 	  {
-	      tmp_2 = shift(ug[j_decay], FORWARD, mu);
-	      u_t   = shift(tmp_2, FORWARD, nu);
-	      u_space = u_diag;
+	    tmp_2 = shift(ug[j_decay], FORWARD, mu);
+	    u_t   = shift(tmp_2, FORWARD, nu);
+	    u_space = u_diag;
 	  }
 	  else
 	  {
-	      tmp_2 = shift(u_t, FORWARD, mu);
-	      u_t   = shift(tmp_2, FORWARD, nu);
-	      tmp_2 = shift(u_space, FORWARD, mu);
-	      tmp_3 = shift(tmp_2, FORWARD, nu);
-	      u_space = u_diag * tmp_3;
+	    tmp_2 = shift(u_t, FORWARD, mu);
+	    u_t   = shift(tmp_2, FORWARD, nu);
+	    tmp_2 = shift(u_space, FORWARD, mu);
+	    tmp_3 = shift(tmp_2, FORWARD, nu);
+	    u_space = u_diag * tmp_3;
 	  }
 
 	  for(t = 0;t  < ( lengtht); ++t )
@@ -361,7 +366,7 @@ void wilslp(const multi1d<LatticeColorMatrix>& u,
 	    /* Gather space-link from t-direction (i.e. j_decay) */
 	    if ( t == 0 )
 	    {
-		u_tmp = shift(u_space, FORWARD, j_decay);
+	      u_tmp = shift(u_space, FORWARD, j_decay);
 	    }
 	    else
 	    {
@@ -400,17 +405,17 @@ void wilslp(const multi1d<LatticeColorMatrix>& u,
 
 	  if ( r == 0 )
 	  {
-	      tmp_2 = shift(ug[j_decay], FORWARD, mu);
-	      u_t   = shift(tmp_2, BACKWARD, nu);
-	      u_space = u_diag;
+	    tmp_2 = shift(ug[j_decay], FORWARD, mu);
+	    u_t   = shift(tmp_2, BACKWARD, nu);
+	    u_space = u_diag;
 	  }
 	  else
 	  {
-	      tmp_2 = shift(u_t, FORWARD, mu);
-	      u_t   = shift(tmp_2, BACKWARD, nu);
-	      tmp_2 = shift(u_space, FORWARD, mu);
-	      tmp_3 = shift(tmp_2, BACKWARD, nu);
-	      u_space = u_diag * tmp_3;
+	    tmp_2 = shift(u_t, FORWARD, mu);
+	    u_t   = shift(tmp_2, BACKWARD, nu);
+	    tmp_2 = shift(u_space, FORWARD, mu);
+	    tmp_3 = shift(tmp_2, BACKWARD, nu);
+	    u_space = u_diag * tmp_3;
 	  }
 
 	  for(t = 0;t  < ( lengtht); ++t )
@@ -418,7 +423,7 @@ void wilslp(const multi1d<LatticeColorMatrix>& u,
 	    /* Gather space-link from t-direction (i.e. j_decay) */
 	    if ( t == 0 )
 	    {
-		u_tmp = shift(u_space, FORWARD, j_decay);
+	      u_tmp = shift(u_space, FORWARD, j_decay);
 	    }
 	    else
 	    {
@@ -465,10 +470,10 @@ void wilslp(const multi1d<LatticeColorMatrix>& u,
 
 	  if ( r == 0 )
 	  {
-	      tmp_2 = shift(ug[j_decay], FORWARD, mu);
-	      tmp_3 = shift(tmp_2, FORWARD, mu);
-	      u_t   = shift(tmp_3, FORWARD, nu);
-	      u_space = u_diag;
+	    tmp_2 = shift(ug[j_decay], FORWARD, mu);
+	    tmp_3 = shift(tmp_2, FORWARD, mu);
+	    u_t   = shift(tmp_3, FORWARD, nu);
+	    u_space = u_diag;
 	  }
 	  else
 	  {
@@ -489,7 +494,7 @@ void wilslp(const multi1d<LatticeColorMatrix>& u,
 	    /* Gather space-link from t-direction (i.e. j_decay) */
 	    if ( t == 0 )
 	    {
-		u_tmp = shift(u_space, FORWARD, j_decay);
+	      u_tmp = shift(u_space, FORWARD, j_decay);
 	    }
 	    else
 	    {
@@ -536,10 +541,10 @@ void wilslp(const multi1d<LatticeColorMatrix>& u,
 
 	  if ( r == 0 )
 	  {
-	      tmp_2 = shift(ug[j_decay], FORWARD, mu);
-	      tmp_3 = shift(tmp_2, FORWARD, mu);
-	      u_t   = shift(tmp_3, BACKWARD, nu);
-	      u_space = u_diag;
+	    tmp_2 = shift(ug[j_decay], FORWARD, mu);
+	    tmp_3 = shift(tmp_2, FORWARD, mu);
+	    u_t   = shift(tmp_3, BACKWARD, nu);
+	    u_space = u_diag;
 	  }
 	  else
 	  {
@@ -560,7 +565,7 @@ void wilslp(const multi1d<LatticeColorMatrix>& u,
 	    /* Gather space-link from t-direction (i.e. j_decay) */
 	    if ( t == 0 )
 	    {
-		u_tmp = shift(u_space, FORWARD, j_decay);
+	      u_tmp = shift(u_space, FORWARD, j_decay);
 	    }
 	    else
 	    {
@@ -572,12 +577,12 @@ void wilslp(const multi1d<LatticeColorMatrix>& u,
 	    tt = lsizet - t - 1;
 	    btmp = t_coord < tt;
 
-	      tmp_2 = ug[j_decay] * u_tmp;
-	      tmp_3 = tmp_2 * adj(u_t);
-	      copymask(tmp_3, btmp, u_tmp, REPLACE);
-	      tmp_2 = tmp_3 * adj(u_space);
-	      wl_trace = real(trace(tmp_2));
-	      wils_loop3[t][r_off+r] += sum(wl_trace);
+	    tmp_2 = ug[j_decay] * u_tmp;
+	    tmp_3 = tmp_2 * adj(u_t);
+	    copymask(tmp_3, btmp, u_tmp, REPLACE);
+	    tmp_2 = tmp_3 * adj(u_space);
+	    wl_trace = real(trace(tmp_2));
+	    wils_loop3[t][r_off+r] += sum(wl_trace);
 	  }        /* end t loop */
 	}          /* end r loop */
 
@@ -588,17 +593,17 @@ void wilslp(const multi1d<LatticeColorMatrix>& u,
 	/* Make the "corner link" in the (2*nu,mu) direction */
 	ftmp = 1.0 / 2.0;
 
-	  tmp_2 = shift(ug[mu], FORWARD, nu);
-	  tmp_3 = ug[nu] * tmp_2;
-	  tmp_2 = shift(tmp_3, FORWARD, nu);
-	  u_diag = ug[nu] * tmp_2;
+	tmp_2 = shift(ug[mu], FORWARD, nu);
+	tmp_3 = ug[nu] * tmp_2;
+	tmp_2 = shift(tmp_3, FORWARD, nu);
+	u_diag = ug[nu] * tmp_2;
 
-	  tmp_2 = shift(ug[nu], FORWARD, nu);
-	  tmp_3 = ug[nu] * tmp_2;
-	  tmp_2 = shift(tmp_3, FORWARD, mu);
-	  u_diag += ug[mu] * tmp_2;
+	tmp_2 = shift(ug[nu], FORWARD, nu);
+	tmp_3 = ug[nu] * tmp_2;
+	tmp_2 = shift(tmp_3, FORWARD, mu);
+	u_diag += ug[mu] * tmp_2;
 
-	  u_diag = u_diag * ftmp;
+	u_diag = u_diag * ftmp;
 
 	for(r = 0;r  < ( lengthr/2); ++r )
 	{
@@ -607,10 +612,10 @@ void wilslp(const multi1d<LatticeColorMatrix>& u,
 
 	  if ( r == 0 )
 	  {
-	      tmp_2 = shift(ug[j_decay], FORWARD, nu);
-	      tmp_3 = shift(tmp_2, FORWARD, nu);
-	      u_t   = shift(tmp_3, FORWARD, mu);
-	      u_space = u_diag;
+	    tmp_2 = shift(ug[j_decay], FORWARD, nu);
+	    tmp_3 = shift(tmp_2, FORWARD, nu);
+	    u_t   = shift(tmp_3, FORWARD, mu);
+	    u_space = u_diag;
 	  }
 	  else
 	  {
@@ -631,7 +636,7 @@ void wilslp(const multi1d<LatticeColorMatrix>& u,
 	    /* Gather space-link from t-direction (i.e. j_decay) */
 	    if ( t == 0 )
 	    {
-		u_tmp = shift(u_space, FORWARD, j_decay);
+	      u_tmp = shift(u_space, FORWARD, j_decay);
 	    }
 	    else
 	    {
@@ -676,10 +681,10 @@ void wilslp(const multi1d<LatticeColorMatrix>& u,
 
 	  if ( r == 0 )
 	  {
-	      tmp_2 = shift(ug[j_decay], FORWARD, nu);
-	      tmp_3 = shift(tmp_2, FORWARD, nu);
-	      u_t   = shift(tmp_3, BACKWARD, mu);
-	      u_space[cb] = u_diag[cb];
+	    tmp_2 = shift(ug[j_decay], FORWARD, nu);
+	    tmp_3 = shift(tmp_2, FORWARD, nu);
+	    u_t   = shift(tmp_3, BACKWARD, mu);
+	    u_space[cb] = u_diag[cb];
 	  }
 	  else
 	  {
@@ -700,7 +705,7 @@ void wilslp(const multi1d<LatticeColorMatrix>& u,
 	    /* Gather space-link from t-direction (i.e. j_decay) */
 	    if ( t == 0 )
 	    {
-		u_tmp = shift(u_space, FORWARD, j_decay);
+	      u_tmp = shift(u_space, FORWARD, j_decay);
 	    }
 	    else
 	    {
@@ -711,13 +716,12 @@ void wilslp(const multi1d<LatticeColorMatrix>& u,
 	    tt = lsizet - t - 1;
 	    btmp = t_coord < tt;
 
-	      tmp_2 = ug[j_decay] * u_tmp;
-	      tmp_3 = tmp_2 * adj(u_t);
-	      copymask(tmp_3, btmp, u_tmp, REPLACE);
-	      tmp_2 = tmp_3 * adj(u_space);
-	      wl_trace = real(trace(tmp_2));
-	      wils_loop3[t][r_off+r] += sum(wl_trace);
-	    }
+	    tmp_2 = ug[j_decay] * u_tmp;
+	    tmp_3 = tmp_2 * adj(u_t);
+	    copymask(tmp_3, btmp, u_tmp, REPLACE);
+	    tmp_2 = tmp_3 * adj(u_space);
+	    wl_trace = real(trace(tmp_2));
+	    wils_loop3[t][r_off+r] += sum(wl_trace);
 	  }        /* end t loop */
 	}          /* end r loop */
       }            /* end i loop (for mu) */
@@ -795,11 +799,11 @@ void wilslp(const multi1d<LatticeColorMatrix>& u,
 
 	      if ( r == 0 )
 	      {
-		  tmp_2 = shift(ug[j_decay], FORWARD, mu);
-		  tmp_3 = shift(tmp_2, FORWARD, nu);
-		  u_t   = shift(tmp_3, FORWARD, rho);
+		tmp_2 = shift(ug[j_decay], FORWARD, mu);
+		tmp_3 = shift(tmp_2, FORWARD, nu);
+		u_t   = shift(tmp_3, FORWARD, rho);
 
-		  u_space = u_diag;
+		u_space = u_diag;
 	      }
 	      else
 	      {
@@ -820,7 +824,7 @@ void wilslp(const multi1d<LatticeColorMatrix>& u,
 		/* Gather space-link from t-direction (i.e. j_decay) */
 		if ( t == 0 )
 		{
-		    u_tmp = shift(u_space, FORWARD, j_decay);
+		  u_tmp = shift(u_space, FORWARD, j_decay);
 		}
 		else
 		{
@@ -846,36 +850,36 @@ void wilslp(const multi1d<LatticeColorMatrix>& u,
 
 	    /* Make the "corner link" in the (mu,nu,-rho) direction */
 	    ftmp = 1.0 / 6.0;
-	      tmp_2 = shift(ug[nu], FORWARD, mu);
-	      u_tmp = ug[mu] * tmp_2;
+	    tmp_2 = shift(ug[nu], FORWARD, mu);
+	    u_tmp = ug[mu] * tmp_2;
 
-	      tmp_2 = shift(ug[mu], FORWARD, nu);
-	      u_tmp[0] += ug[nu] * tmp_2;
+	    tmp_2 = shift(ug[mu], FORWARD, nu);
+	    u_tmp[0] += ug[nu] * tmp_2;
 
-	      tmp_2 = adj(ug[rho]) * u_tmp;
-	      u_diag = shift(tmp_2, BACKWARD, rho);
+	    tmp_2 = adj(ug[rho]) * u_tmp;
+	    u_diag = shift(tmp_2, BACKWARD, rho);
 
-	      tmp_2 = adj(ug[rho]) * ug[nu];
-	      u_tmp = shift(tmp_2, BACKWARD, rho);
+	    tmp_2 = adj(ug[rho]) * ug[nu];
+	    u_tmp = shift(tmp_2, BACKWARD, rho);
 
-	      tmp_2 = shift(ug[rho], FORWARD, nu);
-	      tmp_3 = shift(tmp_2, BACKWARD, rho);
-	      u_tmp += ug[nu] * adj(tmp_3);
+	    tmp_2 = shift(ug[rho], FORWARD, nu);
+	    tmp_3 = shift(tmp_2, BACKWARD, rho);
+	    u_tmp += ug[nu] * adj(tmp_3);
 
-	      tmp_2 = shift(u_tmp, FORWARD, mu);
-	      u_diag += ug[mu] * tmp_2;
+	    tmp_2 = shift(u_tmp, FORWARD, mu);
+	    u_diag += ug[mu] * tmp_2;
 
-	      tmp_2 = adj(ug[rho]) * ug[mu];
-	      u_tmp = shift(tmp_2, BACKWARD, rho);
+	    tmp_2 = adj(ug[rho]) * ug[mu];
+	    u_tmp = shift(tmp_2, BACKWARD, rho);
 
-	      tmp_2 = shift(ug[rho], FORWARD, mu);
-	      tmp_3 = shift(tmp_2, BACKWARD, rho);
-	      u_tmp += ug[mu] * adj(tmp_3);
+	    tmp_2 = shift(ug[rho], FORWARD, mu);
+	    tmp_3 = shift(tmp_2, BACKWARD, rho);
+	    u_tmp += ug[mu] * adj(tmp_3);
 
-	      tmp_2 = shift(u_tmp, FORWARD, nu);
-	      u_diag += ug[nu] * tmp_2;
+	    tmp_2 = shift(u_tmp, FORWARD, nu);
+	    u_diag += ug[nu] * tmp_2;
 
-	      u_diag = u_diag * ftmp;
+	    u_diag = u_diag * ftmp;
 
 	    for(r = 0;r  < ( lengthr); ++r )
 	    {
@@ -884,10 +888,10 @@ void wilslp(const multi1d<LatticeColorMatrix>& u,
 
 	      if ( r == 0 )
 	      {
-		  tmp_2 = shift(ug[j_decay], FORWARD, mu);
-		  tmp_3 = shift(tmp_2, FORWARD, nu);
-		  u_t   = shift(tmp_3, BACKWARD, rho);
-		  u_space = u_diag;
+		tmp_2 = shift(ug[j_decay], FORWARD, mu);
+		tmp_3 = shift(tmp_2, FORWARD, nu);
+		u_t   = shift(tmp_3, BACKWARD, rho);
+		u_space = u_diag;
 	      }
 	      else
 	      {
@@ -908,7 +912,7 @@ void wilslp(const multi1d<LatticeColorMatrix>& u,
 		/* Gather space-link from t-direction (i.e. j_decay) */
 		if ( t == 0 )
 		{
-		    u_tmp = shift(u_space, FORWARD, j_decay);
+		  u_tmp = shift(u_space, FORWARD, j_decay);
 		}
 		else
 		{
@@ -973,10 +977,10 @@ void wilslp(const multi1d<LatticeColorMatrix>& u,
 
 	      if ( r == 0 )
 	      {
-		  tmp_2 = shift(ug[j_decay], FORWARD, mu);
-		  tmp_3 = shift(tmp_2, BACKWARD, nu);
-		  u_t   = shift(tmp_3, FORWARD, rho);
-		  u_space = u_diag[cb];
+		tmp_2 = shift(ug[j_decay], FORWARD, mu);
+		tmp_3 = shift(tmp_2, BACKWARD, nu);
+		u_t   = shift(tmp_3, FORWARD, rho);
+		u_space = u_diag[cb];
 	      }
 	      else
 	      {
@@ -997,7 +1001,7 @@ void wilslp(const multi1d<LatticeColorMatrix>& u,
 		/* Gather space-link from t-direction (i.e. j_decay) */
 		if ( t == 0 )
 		{
-		    u_tmp[cb] = shift(u_space, FORWARD, j_decay);
+		  u_tmp[cb] = shift(u_space, FORWARD, j_decay);
 		}
 		else
 		{
@@ -1067,10 +1071,10 @@ void wilslp(const multi1d<LatticeColorMatrix>& u,
 
 	      if ( r == 0 )
 	      {
-		  tmp_2 = shift(ug[j_decay], FORWARD, mu);
-		  tmp_3 = shift(tmp_2, BACKWARD, nu);
-		  u_t   = shift(tmp_3, BACKWARD, rho);
-		  u_space = u_diag;
+		tmp_2 = shift(ug[j_decay], FORWARD, mu);
+		tmp_3 = shift(tmp_2, BACKWARD, nu);
+		u_t   = shift(tmp_3, BACKWARD, rho);
+		u_space = u_diag;
 	      }
 	      else
 	      {
@@ -1091,7 +1095,7 @@ void wilslp(const multi1d<LatticeColorMatrix>& u,
 		/* Gather space-link from t-direction (i.e. j_decay) */
 		if ( t == 0 )
 		{
-		    u_tmp = shift(u_space, FORWARD, j_decay);
+		  u_tmp = shift(u_space, FORWARD, j_decay);
 		}
 		else
 		{
@@ -1115,9 +1119,6 @@ void wilslp(const multi1d<LatticeColorMatrix>& u,
 	}          /* end j loop (for nu) */
       }            /* end k loop (for rho) */
 
-
-
-
       dummy = 3.0 / double (Layout::vol()*Nc*2*nspace*(nspace-1)*(nspace-2)) ;
       for(t = 0;t  < ( lengtht); ++t )
 	for(r = r_off;r  < ( r_off+lengthr); ++r )
@@ -1129,15 +1130,15 @@ void wilslp(const multi1d<LatticeColorMatrix>& u,
     write(xml, "lengthr", lengthr);
 
     for(r = 0; r < r_off+lengthr; ++r)
+    {
+      for(t = 0; t < lengtht; ++t)
       {
-        for(t = 0; t < lengtht; ++t)
-        {
 
-          wils_loop3[t][r] = wils_loop3[t][r] * dummy;
-          wloopr[t]      = wils_loop3[t][r];
-        }
-        write(xml, "r", r);
-        write(xml, "wloopr", wloopr);   // write out wils_wloop3
+	wils_loop3[t][r] = wils_loop3[t][r] * dummy;
+	wloopr[t]      = wils_loop3[t][r];
+      }
+      write(xml, "r", r);
+      write(xml, "wloopr", wloopr);   // write out wils_wloop3
     } // end for r
     pop(xml);               // XML end tag for wils_wloop3
 
