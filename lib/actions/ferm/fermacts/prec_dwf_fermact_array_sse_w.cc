@@ -1,4 +1,4 @@
-// $Id: prec_dwf_fermact_array_sse_w.cc,v 1.7 2004-10-20 02:11:51 edwards Exp $
+// $Id: prec_dwf_fermact_array_sse_w.cc,v 1.8 2004-10-20 02:30:13 edwards Exp $
 /*! \file
  *  \brief SSE 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -41,7 +41,7 @@ namespace Chroma
 
     //! Register the Wilson fermact
     const bool registered = Chroma::TheWilsonTypeFermActArrayFactory::Instance().registerObject(name, createFermAct)
-                          & Chroma::TheEvenOddPrecDWFermActBaseArrayFactory::Instance().registerObject(name, createDWFermAct); 
+      & Chroma::TheEvenOddPrecDWFermActBaseArrayFactory::Instance().registerObject(name, createDWFermAct); 
   }
 
 
@@ -81,10 +81,10 @@ namespace Chroma
     QDPIO::cout << "entering SSEEvenOddPrecDWFermActArray::init" << endl;
 
     if (Nd != 4 || Nc != 3)
-    {
-      QDPIO::cerr << "SSEEvenOddPrecDWFermActArray: only supports Nd=4 and Nc=3" << endl;
-      QDP_abort(1);
-    }
+      {
+	QDPIO::cerr << "SSEEvenOddPrecDWFermActArray: only supports Nd=4 and Nc=3" << endl;
+	QDP_abort(1);
+      }
 
     multi1d<int> lattice_size(Nd+1);
     lattice_size[Nd] = size();
@@ -92,10 +92,10 @@ namespace Chroma
       lattice_size[i] = Layout::lattSize()[i];
 
     if (SSE_DWF_init(lattice_size.slice(), SSE_DWF_FLOAT, NULL, NULL) != 0)
-    {
-      QDPIO::cerr << __func__ << ": error in SSE_DWF_init" << endl;
-      QDP_abort(1);
-    }
+      {
+	QDPIO::cerr << __func__ << ": error in SSE_DWF_init" << endl;
+	QDP_abort(1);
+      }
 
     QDPIO::cout << "exiting SSEEvenOddPrecDWFermActArray::init" << endl;
   }
@@ -151,25 +151,26 @@ namespace Chroma
   }
 
 
+  ///////////////////////////////////////////////////////////////////////////////
   //! Gauge field reader
   static double
   gauge_reader(const void *ptr, void *env, 
-	       const int latt_coord[4], int mu, int row, int col, int reim)
+	       const int latt_coord[Nd], int mu, int row, int col, int reim)
   {
     /* Translate arg */
     multi1d<LatticeColorMatrix>& u = *(multi1d<LatticeColorMatrix>*)ptr;
 
     // Get node and index
-    multi1d<int> coord(4);
+    multi1d<int> coord(Nd);
     coord = latt_coord;
     int node = Layout::nodeNumber(coord);
     int linear = Layout::linearSiteIndex(coord);
 
     if (node != Layout::nodeNumber())
-    {
-      QDPIO::cerr << __func__ << ": wrong coordinates for this node" << endl;
-      QDP_abort(1);
-    }
+      {
+	QDPIO::cerr << __func__ << ": wrong coordinates for this node" << endl;
+	QDP_abort(1);
+      }
  
     // Get the value
     // NOTE: it would be nice to use the "peek" functions, but they will
@@ -193,25 +194,28 @@ namespace Chroma
     int Ls1 = psi.size() - 1;
 
     // Get node and index
-    int s = latt_coord[4];
-    multi1d<int> coord(4);
+    int s = latt_coord[Nd];
+    multi1d<int> coord(Nd);
     coord = latt_coord;
     int node = Layout::nodeNumber(coord);
     int linear = Layout::linearSiteIndex(coord);
 
     if (node != Layout::nodeNumber())
-    {
-      QDPIO::cerr << __func__ << ": wrong coordinates for this node" << endl;
-      QDP_abort(1);
-    }
+      {
+	QDPIO::cerr << __func__ << ": wrong coordinates for this node" << endl;
+	QDP_abort(1);
+      }
  
     // Get the value
     // NOTE: it would be nice to use the "peek" functions, but they will
     // broadcast to all nodes the value since they are platform independent.
     // We don't want that, so we poke into the on-node data
     double val = (reim == 0) ? 
-       double(psi[Ls1-s].elem(linear).elem(spin).elem(color).real()) : 
-      -double(psi[Ls1-s].elem(linear).elem(spin).elem(color).imag());
+      double(psi[Ls1-s].elem(linear).elem(spin).elem(color).real()) : 
+      double(psi[Ls1-s].elem(linear).elem(spin).elem(color).imag());
+
+    if (spin >= Ns/2)
+      val *= -1;
 
     return val;
   }
@@ -227,38 +231,32 @@ namespace Chroma
     int Ls1 = psi.size() - 1;
 
     // Get node and index
-    int s = latt_coord[4];
-    multi1d<int> coord(4);
+    int s = latt_coord[Nd];
+    multi1d<int> coord(Nd);
     coord = latt_coord;
     int node = Layout::nodeNumber(coord);
     int linear = Layout::linearSiteIndex(coord);
 
     if (node != Layout::nodeNumber())
-    {
-      QDPIO::cerr << __func__ << ": wrong coordinates for this node" << endl;
-      QDP_abort(1);
-    }
+      {
+	QDPIO::cerr << __func__ << ": wrong coordinates for this node" << endl;
+	QDP_abort(1);
+      }
  
     // Get the value
     // NOTE: it would be nice to use the "peek" functions, but they will
     // broadcast to all nodes the value since they are platform independent.
     // We don't want that, so we poke into the on-node data
     double val = (reim == 0) ? 
-       double(psi[Ls1-s].elem(linear).elem(spin).elem(color).real()) : 
-      -double(psi[Ls1-s].elem(linear).elem(spin).elem(color).imag());
+      double(psi[Ls1-s].elem(linear).elem(spin).elem(color).real()) : 
+      double(psi[Ls1-s].elem(linear).elem(spin).elem(color).imag());
+
+    if (spin >= Ns/2)
+      val *= -1;
 
     val *= -0.5;
 
     return val;
-  }
-
-
-  //! Fermion field reader
-  static double
-  fermion_reader_zero(const void *ptr, void *env, 
-		      const int latt_coord[5], int color, int spin, int reim)
-  {
-    return 0.0;
   }
 
 
@@ -273,19 +271,22 @@ namespace Chroma
     int Ls1 = psi.size() - 1;
 
     // Get node and index
-    int s = latt_coord[4];
-    multi1d<int> coord(4);
+    int s = latt_coord[Nd];
+    multi1d<int> coord(Nd);
     coord = latt_coord;
     int node = Layout::nodeNumber(coord);
     int linear = Layout::linearSiteIndex(coord);
 
     if (node != Layout::nodeNumber())
-    {
-      QDPIO::cerr << __func__ << ": wrong coordinates for this node" << endl;
-      QDP_abort(1);
-    }
+      {
+	QDPIO::cerr << __func__ << ": wrong coordinates for this node" << endl;
+	QDP_abort(1);
+      }
  
     // Rescale
+    if (spin >= Ns/2)
+      val *= -1;
+
     val *= -2.0;
 
     // Set the value
@@ -293,9 +294,51 @@ namespace Chroma
     // broadcast to all nodes the value since they are platform independent.
     // We don't want that, so we poke into the on-node data
     if (reim == 0)
-      psi[Ls1-s].elem(linear).elem(spin).elem(color).real() =  val;
+      psi[Ls1-s].elem(linear).elem(spin).elem(color).real() = val;
     else
-      psi[Ls1-s].elem(linear).elem(spin).elem(color).imag() = -val;
+      psi[Ls1-s].elem(linear).elem(spin).elem(color).imag() = val;
+
+    return;
+  }
+
+
+  //! Fermion field writer
+  static void
+  fermion_writer_operator(void *ptr, void *env, 
+			  const int latt_coord[5], int color, int spin, int reim,
+			  double val)
+  {
+    /* Translate arg */
+    multi1d<LatticeFermion>& psi = *(multi1d<LatticeFermion>*)ptr;
+    int Ls1 = psi.size() - 1;
+
+    // Get node and index
+    int s = latt_coord[Nd];
+    multi1d<int> coord(Nd);
+    coord = latt_coord;
+    int node = Layout::nodeNumber(coord);
+    int linear = Layout::linearSiteIndex(coord);
+
+    if (node != Layout::nodeNumber())
+      {
+	QDPIO::cerr << __func__ << ": wrong coordinates for this node" << endl;
+	QDP_abort(1);
+      }
+ 
+    // Rescale
+    if (spin >= Ns/2)
+      val *= -1;
+
+    val *= -0.5;
+
+    // Set the value
+    // NOTE: it would be nice to use the "peek" functions, but they will
+    // broadcast to all nodes the value since they are platform independent.
+    // We don't want that, so we poke into the on-node data
+    if (reim == 0)
+      psi[Ls1-s].elem(linear).elem(spin).elem(color).real() = val;
+    else
+      psi[Ls1-s].elem(linear).elem(spin).elem(color).imag() = val;
 
     return;
   }
