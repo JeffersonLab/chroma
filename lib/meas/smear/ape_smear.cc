@@ -1,4 +1,4 @@
-//  $Id: ape_smear.cc,v 1.1 2003-09-12 04:31:45 edwards Exp $
+//  $Id: ape_smear.cc,v 1.2 2003-09-25 22:21:48 edwards Exp $
 
 /*! \file
  *  \brief APE-smearing of the gauge configuration
@@ -12,7 +12,7 @@
 using namespace QDP;
 
 //! A simple not-fancy power of 2 shift
-LatticeColorMatrix shift(const LatticeColorMatrix& s1, int isign, int dir, int level)
+LatticeColorMatrix shift2(const LatticeColorMatrix& s1, int isign, int dir, int level)
 {
   LatticeColorMatrix d;
 
@@ -68,7 +68,7 @@ LatticeColorMatrix shift(const LatticeColorMatrix& s1, int isign, int dir, int l
  */
 
 void APE_Smear(const multi1d<LatticeColorMatrix>& u,
-	       multi1d<LatticeColorMatrix>& u_smear,
+	       LatticeColorMatrix& u_smear,
 	       int mu, int bl_level, 
 	       const Real& sm_fact, const Real& BlkAccu, 
 	       int BlkMax, int j_decay)
@@ -85,15 +85,15 @@ void APE_Smear(const multi1d<LatticeColorMatrix>& u,
     {
       /* Forward staple */
       /* u_smear = u_smear + u(x,nu) * u(x+nu*2^bl_level,mu) * adj(u(x+mu*2^bl_level,nu)) */
-      u_smear += u[nu] * shift(u[mu], FORWARD, nu, bl_level) 
-	       * adj(shift(u[nu], FORWARD, mu, bl_level));
+      u_smear += u[nu] * shift2(u[mu], FORWARD, nu, bl_level) 
+	       * adj(shift2(u[nu], FORWARD, mu, bl_level));
 
       /* Backward staple */
       /* tmp_1 = u_dagger(x,nu) * u(x,mu) * u(x+mu*2^bl_level,nu) */
-      LatticeColorMatrix tmp_1 = adj(u[nu]) * u[mu] * shift(u[nu], FORWARD, mu, bl_level);
+      LatticeColorMatrix tmp_1 = adj(u[nu]) * u[mu] * shift2(u[nu], FORWARD, mu, bl_level);
 
       /* u_smear = u_smear + tmp_1(x-nu*2^bl_level) */
-      u_smear += shift(tmp_1, BACKWARD, nu, bl_level);
+      u_smear += shift2(tmp_1, BACKWARD, nu, bl_level);
     }
   }
 
@@ -130,7 +130,7 @@ void APE_Smear(const multi1d<LatticeColorMatrix>& u,
   bool wrswitch = false;			/* Write out iterations? */
   Double conver = 1;
   
-  while ( conver > BlkAccu  &&  n_smr < BlkMax )
+  while ( toBool(conver > BlkAccu)  &&  n_smr < BlkMax )
   {
     ++n_smr;
 

@@ -1,4 +1,4 @@
-//  $Id: ape_smear.h,v 1.1 2003-09-12 04:31:45 edwards Exp $
+//  $Id: ape_smear.h,v 1.2 2003-09-25 22:21:48 edwards Exp $
 
 #ifndef __ape_smear__
 #define __ape_smear__
@@ -33,7 +33,7 @@
  */
 
 void APE_Smear(const multi1d<LatticeColorMatrix>& u,
-	       multi1d<LatticeColorMatrix>& u_smear,
+	       LatticeColorMatrix& u_smear,
 	       int mu, int bl_level, 
 	       const Real& sm_fact, const Real& BlkAccu, 
 	       int BlkMax, int j_decay);
