@@ -1,4 +1,4 @@
-/*  $Id: naik_term_s.cc,v 1.5 2004-07-28 03:47:26 edwards Exp $  */
+/*  $Id: naik_term_s.cc,v 1.6 2004-12-08 21:50:24 edwards Exp $  */
 
 /* NAIK_LINKS */
 
@@ -19,7 +19,7 @@
 //  rewritten by steve to calculate u_triple.
 //
 
-#include "chroma.h"
+#include "actions/ferm/linop/improvement_terms_s.h"
 
 using namespace QDP;
 
