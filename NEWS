@@ -1,3 +1,15 @@
+01/01/2004 -- Robert Edwards
+	Version 1.4.0. Removed all proxies. Switched to only use Handles
+	(proxies were just glorified handles). Changed fermact factory
+	functions to require a Handle<const ConnectState>  instead of a
+	pointer to a connect state.  Added Fermion and Gauge BC support.
+	Now a new virtual getFermBC in FermAct.  Now, the semantics is
+	the FermAct is responsible for applying the Fermionic BC. All
+	the fermacts changed to pass a FermBC which is then applied
+	to the U fields in createState. This is supplied as a default
+	in createState. 
+        First tentative code for pure gauge heatbath and dyn. ferm. HMC.
+
 12/31/2003 -- Robert Edwards
 
 	Version 1.3.2. More tweaks in fermacts. Added first versions
