@@ -1,34 +1,27 @@
 // -*- C++ -*-
-// $Id: gaugeacts.h,v 1.1 2005-01-13 02:02:38 edwards Exp $
+// $Id: gaugeacts.h,v 1.2 2005-01-13 02:27:42 edwards Exp $
 
 /*! \file
- * \brief Gauge action support
+ * \brief Gauge actions
  *
- * Central include file for all gauge action support
+ * Various gauge actions
  */
 
-/*! \defgroup gaugeact Gauge action support
- * \ingroup actions
+/*! \defgroup gaugeacts Gauge actions
+ * \ingroup gaugeact
  *
- * Support for construction of gauge actions, including 
- * improved gauge actions
+ * Various gauge actions
  */
 
 #ifndef __actgaugee_h__
 #define __actgaugee_h__
 
-#include "actions/gauge/gaugebc_factory.h"
-#include "actions/gauge/gaugebc_periodic.h"
-#include "actions/gauge/gaugebc_simple.h"
-#include "actions/gauge/gaugebc_schroedinger.h"
-#include "actions/gauge/gaugebcs.h"
+#include "gaugeact_factory.h"
+#include "wilson_gaugeact.h"
 
-#include "actions/gauge/gaugeact_factory.h"
-#include "actions/gauge/wilson_gaugeact.h"
-
-#include "actions/gauge/plaq_gaugeact.h"
-#include "actions/gauge/rect_gaugeact.h"
-#include "actions/gauge/pg_gaugeact.h"
+#include "plaq_gaugeact.h"
+#include "rect_gaugeact.h"
+#include "pg_gaugeact.h"
 
 #endif
 

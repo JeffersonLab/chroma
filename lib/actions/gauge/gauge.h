@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gauge.h,v 1.5 2005-01-12 04:44:53 edwards Exp $
+// $Id: gauge.h,v 1.6 2005-01-13 02:27:42 edwards Exp $
 
 /*! \file
  * \brief Gauge action support
@@ -14,21 +14,11 @@
  * improved gauge actions
  */
 
-#ifndef __actgaugee_h__
-#define __actgaugee_h__
+#ifndef __gaugeeee_h__
+#define __gaugeeee_h__
 
-#include "actions/gauge/gaugebc_factory.h"
-#include "actions/gauge/gaugebc_periodic.h"
-#include "actions/gauge/gaugebc_simple.h"
-#include "actions/gauge/gaugebc_schroedinger.h"
-#include "actions/gauge/gaugebcs.h"
-
-#include "actions/gauge/gaugeact_factory.h"
-#include "actions/gauge/wilson_gaugeact.h"
-
-#include "actions/gauge/plaq_gaugeact.h"
-#include "actions/gauge/rect_gaugeact.h"
-#include "actions/gauge/pg_gaugeact.h"
+#include "gaugeacts/gaugeacts.h"
+#include "gaugebcs/gaugebcs.h"
 
 #endif
 

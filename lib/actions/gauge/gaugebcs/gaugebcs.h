@@ -1,26 +1,23 @@
 // -*- C++ -*-
-// $Id: gaugebcs.h,v 1.1 2005-01-13 02:02:38 edwards Exp $
+// $Id: gaugebcs.h,v 1.2 2005-01-13 02:27:42 edwards Exp $
 /*! \file
  *  \brief All gauge boundary conditions
  */
+/*! \defgroup gaugebcs Gauge action support
+ * \ingroup gauge
+ *
+ * Support for construction of gauge actions, including 
+ * improved gauge actions
+ */
 
-#ifndef __gaugebcs_h__
-#define __gaugebcs_h__
 
-#include "chromabase.h"
-#include "handle.h"
-#include "gaugebc.h"
+#ifndef __gaugebcsss_h__
+#define __gaugebcsss_h__
 
-namespace Chroma
-{
-  //! Registration aggregator
-  namespace GaugeTypeGaugeBCEnv
-  {
-    extern const bool registered;
-
-    //! Helper function for the GaugeAction readers
-    Handle<GaugeBC> reader(XMLReader& xml_in, const std::string& path);
-  }
-}
+#include "actions/gauge/gaugebc_factory.h"
+#include "actions/gauge/gaugebc_periodic.h"
+#include "actions/gauge/gaugebc_simple.h"
+#include "actions/gauge/gaugebc_schroedinger.h"
+#include "actions/gauge/gaugebcs_aggregate.h"
 
 #endif
