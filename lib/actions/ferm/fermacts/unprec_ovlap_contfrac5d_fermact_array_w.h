@@ -1,11 +1,11 @@
 // -*- C++ -*-
-// $Id: ovlap_contfrac5d_fermact_array_w.h,v 1.1 2004-09-27 12:03:41 bjoo Exp $
+// $Id: unprec_ovlap_contfrac5d_fermact_array_w.h,v 1.1 2004-09-27 14:58:43 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
 
-#ifndef __zolotarev5d_fermact_array_w_h__
-#define __zolotarev5d_fermact_array_w_h__
+#ifndef __unprec_ovlap_contfrac5d_fermact_array_w_h__
+#define __unprec_ovlap_contfrac5d_fermact_array_w_h__
 
 #include "fermact.h"
 #include "actions/ferm/fermacts/overlap_state.h"
@@ -17,7 +17,7 @@ using namespace QDP;
 namespace Chroma
 {
   //! Name and registration
-  namespace Zolotarev5DFermActEnv
+  namespace UnprecOvlapContFrac5DFermActEnv
   {
     extern const std::string name;
     extern const bool registered;
@@ -25,21 +25,31 @@ namespace Chroma
 
 
   //! Params for 5D overlap ferm acts
-  struct Zolotarev5DFermActParams
+  struct UnprecOvlapContFrac5DFermActParams
   {
-    Zolotarev5DFermActParams(XMLReader& in, const std::string& path);
+    //! Default empty construction
+    UnprecOvlapContFrac5DFermActParams() {};
+
+    //! Read params from XML
+    UnprecOvlapContFrac5DFermActParams(XMLReader& in, const std::string& path);
   
-    Real Mass;
-    int RatPolyDeg;
-    ZolotarevStateInfo StateInfo;
-  
-    std::string AuxFermAct;
+    
+    Real Mass;     //!< Fermion Mass
+    Real AuxMass;  //!< Auxiliary action mass: Filled in when the FermAct is processed
+    int RatPolyDeg; //!<  Degree of the Rational Poly
+    CoeffType approximation_type;  //!< ZOLOTAREV | TANH | Other approximation coeffs
+    std::string AuxFermAct;        //!<  The auxiliary ferm act
+    std::string AuxFermActGrp;     //!<  The group name for the auxiliary fermion action
   };
 
 
   // Reader/writers
-  void read(XMLReader& xml, const string& path, Zolotarev5DFermActParams& param);
-  void write(XMLReader& xml, const string& path, const Zolotarev5DFermActParams& param);
+
+  //! Read the Continued Fraction parameters 
+  void read(XMLReader& xml, const string& path, UnprecOvlapContFrac5DFermActParams& param);
+
+  //! Write the Continued Fraction parameters
+  void write(XMLReader& xml, const string& path, const UnprecOvlapContFrac5DFermActParams& param);
 
 
   //! 5D continued fraction overlap action (Borici,Wenger, Edwards)
@@ -51,11 +61,13 @@ namespace Chroma
    *   Chi  =   ((1+Mass)/(1-Mass)*gamma_5 + B) . Psi
    *  where  B  is the continued fraction of the zolotarev approx. to eps(H(m))
    */
-  class Zolotarev5DFermActArray : public UnprecWilsonTypeFermAct< multi1d<LatticeFermion> >
+  class UnprecOvlapContFrac5DFermActArray : public UnprecWilsonTypeFermAct< multi1d<LatticeFermion> >
   {
   public:
 
-    Zolotarev5DFermActArray(Handle< FermBC< multi1d< LatticeFermion> > > fbc_, 
+    // Default construction
+    /*!
+    UnprecOvlapContFrac5DFermActArray(Handle< FermBC< multi1d< LatticeFermion> > > fbc_, 
 			    Handle<UnprecWilsonTypeFermAct<LatticeFermion> > S_aux_,
 			    Real& Mass_,
 			    int RatPolyDeg_,
@@ -67,21 +79,21 @@ namespace Chroma
       }
       N5 = RatPolyDeg_;
     }
+    */
 
     // Construct the action out of a parameter structure
-    Zolotarev5DFermActArray(Handle< FermBC< multi1d< LatticeFermion> > > fbc_a_,
-			    Handle< FermBC< LatticeFermion > > fbc_,
-			    const Zolotarev5DFermActParams& param,
-			    XMLWriter& writer_);
+    UnprecOvlapContFrac5DFermActArray(Handle< FermBC< multi1d< LatticeFermion> > > fbc_a_,
+				const UnprecOvlapContFrac5DFermActParams& param,
+				XMLWriter& writer_);
   
 
     //! Copy constructor
-    Zolotarev5DFermActArray(const Zolotarev5DFermActArray& a) : 
-      fbc(a.fbc), S_aux(a.S_aux), Mass(a.Mass), RatPolyDeg(a.RatPolyDeg), writer(a.writer), N5(a.N5) {};
+    UnprecOvlapContFrac5DFermActArray(const UnprecOvlapContFrac5DFermActArray& a) : 
+      fbc(a.fbc), S_aux(a.S_aux), params(a.params), N5(a.N5) {};
 
     //! Assignment
     /* Writer screws this up -- I might get rid of that 
-       Zolotarev5DFermActArray& operator=(const Zolotarev5DFermActArray& a) {
+       UnprecOvlapContFrac5DFermActArray& operator=(const UnprecOvlapContFrac5DFermActArray& a) {
        fbc=a.fbc; 
        S_aux=a.S_aux;
        Mass=a.Mass;
@@ -135,7 +147,7 @@ namespace Chroma
 	       int& ncg_had) const;
 
     //! Destructor is automatic
-    ~Zolotarev5DFermActArray() {}
+    ~UnprecOvlapContFrac5DFermActArray() {}
 
 
     // Create state functions
@@ -184,17 +196,13 @@ namespace Chroma
 	      const OverlapConnectState<LatticeFermion>& state) const;
   private:
     // Hide partial constructor
-    Zolotarev5DFermActArray();
+    UnprecOvlapContFrac5DFermActArray();
 
   private:
     Handle< FermBC< multi1d<LatticeFermion> > >  fbc;
     Handle< UnprecWilsonTypeFermAct<LatticeFermion> > S_aux;
-
-    Real Mass;
-    int RatPolyDeg;
+    UnprecOvlapContFrac5DFermActParams params;
     int  N5;
-  
-    XMLWriter& writer;
   };
 
 }

@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.236 2004-09-27 12:00:18 bjoo Exp $
+# $Id: Makefile.in,v 1.237 2004-09-27 14:58:43 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -59,7 +59,7 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/unprec_wilson_fermact_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/unprec_parwilson_fermact_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.h \
-@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/zolotarev5d_fermact_array_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/unprec_ovlap_contfrac5d_fermact_array_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/invert/inv_borici_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/lgherm_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/zolotarev5d_linop_array_w.h \

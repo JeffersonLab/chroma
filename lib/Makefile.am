@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.171 2004-09-27 12:00:18 bjoo Exp $
+# $Id: Makefile.am,v 1.172 2004-09-27 14:58:43 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -185,7 +185,7 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/unprec_wilson_fermact_w.h \
 	actions/ferm/fermacts/unprec_parwilson_fermact_w.h \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.h \
-	actions/ferm/fermacts/zolotarev5d_fermact_array_w.h \
+	actions/ferm/fermacts/unprec_ovlap_contfrac5d_fermact_array_w.h \
 	actions/ferm/invert/inv_borici_w.h \
 	actions/ferm/linop/lgherm_w.h \
 	actions/ferm/linop/zolotarev5d_linop_array_w.h \

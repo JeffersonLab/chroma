@@ -1,4 +1,4 @@
-// $Id: ovlap_contfrac5d_fermact_array_w.cc,v 1.1 2004-09-27 12:03:41 bjoo Exp $
+// $Id: unprec_ovlap_contfrac5d_fermact_array_w.cc,v 1.1 2004-09-27 14:58:43 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -6,32 +6,34 @@
 #include "chromabase.h"
 
 #include "actions/ferm/fermacts/unprec_wilson_fermact_w.h"
-#include "actions/ferm/fermacts/zolotarev5d_fermact_array_w.h"
-#include "actions/ferm/linop/zolotarev5d_linop_array_w.h"
-#include "actions/ferm/linop/zolotarev5d_nonhermop_array_w.h"
+#include "actions/ferm/fermacts/ovlap_contfrac5d_fermact_array_w.h"
+#include "actions/ferm/linop/ovlap_contfrac5d_linop_array_w.h"
+#include "actions/ferm/linop/ovlap_contfrac5d_nonhermop_array_w.h"
 
 #include "actions/ferm/linop/lmdagm.h"
 #include "actions/ferm/invert/invcg2_array.h"
 #include "zolotarev.h"
 
 #include "actions/ferm/fermacts/fermfactory_w.h"
+#include "io/enum_io/enum_io.h"
+#include "io/overlap_state_info.h"
 
 namespace Chroma
 {
 
   //! Hooks to register the class with the fermact factory
-  namespace Zolotarev5DFermActEnv
+  namespace UnprecOvlapContFrac5DFermActEnv
   {
     //! Callback function
-    WilsonTypeFermAct<LatticeFermion>* createFermAct(Handle< FermBC<LatticeFermion> > fbc,
+    WilsonTypeFermAct<LatticeFermion>* createFermAct(Handle< FermBC< multi1d<LatticeFermion> > > fbc,
 						     XMLReader& xml_in,
 						     const std::string& path)
     {
-      return new Zolotarev5DFermAct(fbc, Zolotarev5DFermActParams(xml_in, path));
+      return new UnprecOvlapContFrac5DFermAct(fbc, UnprecOvlapContFrac5DFermActParams(xml_in, path));
     }
 
     //! Name to be used
-    const std::string name = "ZOLOTAREV_5D";
+    const std::string name = "UNPRECONDITIONED_OVERLAP_CONTINUED_FRACTION_5D";
 
     //! Register the Wilson fermact
     const bool registered = TheWilsonTypeFermActFactory::Instance().registerObject(name, createFermAct);
@@ -39,23 +41,35 @@ namespace Chroma
 
 
   //! Read XML
-  Zolotarev5DFermActParams::Zolotarev5DFermActParams(XMLReader& xml, const std::string& path)
+  UnprecOvlapContFrac5DFermActParams::UnprecOvlapContFrac5DFermActParams(XMLReader& xml, const std::string& path)
   {
     XMLReader in(xml, path);
 
-    // This will bomb if it fails so no need to check for NULL after
-    AuxFermActHandle = read(in, "AuxFermAct");
-    if( AuxFermActHandle == 0x0 ) { 
-      QDPIO::cerr << "Read of AuxFermAct returned NULL Pointer" << endl;
-      QDP_abort(1);
-    }
-
-    try { 
-
+    try 
+    { 
       if(in.count("AuxFermAct") == 1 )
-	read(in, "Mass", Mass);
+      { 
+	XMLReader xml_tmp(in, "AuxFermAct");
+	std::ostringstream os;
+	xml_tmp.print(os);
+	AuxFermAct = os.str();
+      }
+      else {
+	throw "No auxilliary action";
+      }
+
+
+      read(in, "Mass", Mass);
       read(in, "RatPolyDeg", RatPolyDeg);
-      read(in, "StateInfo", StateInfo);
+
+      if( in.count("ApproximationType") == 1 ) { 
+	read(in, "ApproximationType", approximation_type);
+      }
+      else { 
+	// Default coeffs are Zolotarev
+	approximation_type = COEFF_TYPE_ZOLOTAREV;
+      }
+
     }
     catch( const string &e ) {
       QDPIO::cerr << "Caught Exception reading Zolo5D Fermact params: " << e << endl;
@@ -63,42 +77,39 @@ namespace Chroma
     }
   }
 
-  void write(XMLWriter& xml_out, const string& path, const Zolotarev5DFermActParams& p)
+  void read(XMLReader& xml_in, const string& path,
+	    UnprecOvlapContFrac5DFermActParams& param) {
+
+    UnprecOvlapContFrac5DFermActParams tmp(xml_in, path);
+    param = tmp;
+  }
+    
+  void write(XMLWriter& xml_out, const string& path, const UnprecOvlapContFrac5DFermActParams& p)
   {
     if ( path != "." ) { 
       push( xml_out, path);
     }
   
-    write(xml_out, "FermAct", p.getFermActType());
-
-    switch(p.AuxFermActHandle->getFermActType()) {
-    case FERM_ACT_WILSON:
-    {
-      const WilsonFermActParams& wilson = dynamic_cast<WilsonFermActParams&>(*(p.AuxFermActHandle));
-      write(xml_out, "AuxFermAct", wilson);
-    }
-    break;
-    default:
-      QDPIO::cerr << "Unsupported AuxFermAct in write " << endl;
-      QDP_abort(1);
-      break;
-    }
-
+    xml_out << p.AuxFermAct;
     write(xml_out, "Mass", p.Mass);
     write(xml_out, "RatPolyDeg", p.RatPolyDeg);
-    write(xml_out, "StateInfo", p.StateInfo);
+    write(xml_out, "ApproximationType", p.approximation_type);
+ 
+    pop(xml_out);
+
 
     if( path != "." ) { 
       pop(xml_out);
     }
   }
 
+  
 // Construct the action out of a parameter structure
-  Zolotarev5DFermActArray::Zolotarev5DFermActArray(Handle< FermBC< multi1d< LatticeFermion> > > fbc_a_, 
-						   Handle< FermBC< LatticeFermion > > fbc_,
-						   const Zolotarev5DFermActParams& params,
-						   XMLWriter& writer_) :
-    fbc(fbc_a_), Mass(params.Mass), RatPolyDeg(params.RatPolyDeg), writer(writer_)  {
+  UnprecOvlapContFrac5DFermActArray::UnprecOvlapContFrac5DFermActArray(
+		        Handle< FermBC< multi1d< LatticeFermion> > > fbc_a_, 
+			const UnprecOvlapContFrac5DFermActParams& params_)
+			
+    fbc(fbc_a_), params(params_) {
   
     // Check RatPolyDeg is even
     if ( params.RatPolyDeg % 2 == 0 ) { 
@@ -106,59 +117,128 @@ namespace Chroma
     }
     N5 = params.RatPolyDeg;
   
-    // Get the auxiliary fermion action
-    UnprecWilsonTypeFermAct<LatticeFermion>* S_w;
-    switch( params.AuxFermActHandle->getFermActType() ) {
-    case FERM_ACT_WILSON:
+    // Construct the fermact 
+      XMLReader  fermacttop(xml_s);
+    const string fermact_path = "/AuxFermAct";
+
+    // In case I fail to upcast to the UnprecWilsonType FermAct
+    struct UnprecCastFailure {
+      UnprecCastFailure(std::string e) : auxfermact(e) {};
+      const string auxfermact;
+    };
+
+    try
     {
-      // Upcast
-      const WilsonFermActParams& wils = dynamic_cast<const WilsonFermActParams &>( *(params.AuxFermActHandle));
-      
-      //Get the FermAct
-      S_w = new UnprecWilsonFermAct(fbc_, wils.Mass);
-      if( S_w == 0x0 ) { 
-	QDPIO::cerr << "Unable to instantiate S_aux " << endl;
-	QDP_abort(1);
-      }
-      
+      string auxfermact;
+      read(fermacttop, fermact_path + "/FermAct", auxfermact);
+      QDPIO::cout << "AuxFermAct: " << auxfermact << endl;
+
+      read(fermacttop, fermact_path + "/Mass", params.AuxMass);
+      QDPIO::cout << "AuxFermAct Mass: " << params.AuxMass << endl;
+
+      // I need a 4D FermAct for this beast so that I can create the
+      // 4D Auxiliary action -- WHAT FOLLOWS IS A BEASTLY HACK:
+      //
+      // I am going to create a 4D trivial (all periodic) BC to wire
+      // into the auxiliary operator. This is OK, because the 
+      // createState() will use the 5D one and the 4D one is redundant
+      // in this case. The auxiliary fermacts createState() with the 
+      // trivial BC's will NEVER be called. It would be nice if I could
+      // somehow convert the FermBC< multi1d<T> > to FermBC< T >
+      // but that is something I need to discuss with Robert.
+      Handle< FermBC<LatticeFermion> > fbc4( new PeriodicFermBC<LatticeFermion>() );
+
+     
+      // Generic Wilson-Type stuff
+      WilsonTypeFermAct<LatticeFermion>* S_f =
+	TheWilsonTypeFermActFactory::Instance().createObject(auxfermact,
+							     fbc4,
+							     fermacttop,
+							     fermact_path);
+
+      UnprecWilsonTypeFermAct<LatticeFermion>* S_aux_ptr; 
+      S_aux_ptr = dynamic_cast<UnprecWilsonTypeFermAct<LatticeFermion>*>(S_f);
+
+      // Dumbass User specifies something that is not UnpreWilsonTypeFermAct
+      // dynamic_cast MUST be checked for 0
+      if( S_aux_ptr == 0 ) throw UnprecCastFailure(auxfermact);
+     
+
+      // Drop AuxFermAct into a Handle immediately.
+      // This should free things up at the end
+      Handle<UnprecWilsonTypeFermAct<LatticeFermion> >  S_w(S_aux_ptr);
+      S_aux = S_w;
     }
+    catch( const UnprecCastFailure& e) {
+
+      // Breakage Scenario
+      QDPIO::cerr << "Unable to upcast auxiliary fermion action to "
+		  << "UnprecWilsonTypeFermAct " << endl;
+      QDPIO::cerr << OvlapPartFrac4DFermActEnv::name << " does not support even-odd preconditioned "
+		  << "auxiliary FermActs" << endl;
+      QDPIO::cerr << "You passed : " << endl;
+      QDPIO::cerr << e.auxfermact << endl;
+      QDP_abort(1);
+    }
+    catch (const std::exception& e) {
+      // General breakage Scenario
+      QDPIO::cerr << "Error reading data: " << e.what() << endl;
+      throw;
+    }
+
     break;
     default:
       QDPIO::cerr << "Auxiliary Fermion Action Unsupported" << endl;
       QDP_abort(1);
     }
-  
-    // Drop AuxFermAct into a Handle immediately.
-    // This should free things up at the end
-    Handle<UnprecWilsonTypeFermAct<LatticeFermion> >  Handle_S_w(S_w);
-    S_aux = Handle_S_w;
   }
 
   void
-  Zolotarev5DFermActArray::init(Real& scale_fac,
+  UnprecOvlapContFrac5DFermActArray::init(Real& scale_fac,
 				multi1d<Real>& alpha,
 				multi1d<Real>& beta,
 				int& NEig,
 				multi1d<Real>& EigValFunc,
 				const OverlapConnectState<LatticeFermion>& state) const
   {
-    XMLBufferWriter my_writer;
-    push( my_writer, "Zolo5DInit" );
-
+  
     int NEigVal = state.getEigVal().size();
     if( NEigVal == 0 ) {
       NEig = 0;
     }
     else {
-      NEig = NEigVal - 1;
+      NEig = NEigVal;
     }
 
     scale_fac = Real(1) / state.getApproxMax();
     Real eps = state.getApproxMin() * scale_fac;
-  
+    switch(params.approximation_type) { 
+    case COEFF_TYPE_ZOLOTAREV:
+      QDPIO::cout << "Initing Linop with Zolotarev Coefficients" << endl;
+      QDPIO::cout << "  MaxCGInner =  " << params.invParamInner.MaxCG << endl;
+      QDPIO::cout << "  RsdCGInner =  " << params.invParamInner.RsdCG << endl;
+      QDPIO::cout << "  NEigVal    =  " << NEigVal << endl;
+      
+      type = 0;
+      rdata = zolotarev(toFloat(eps), params.RatPolyDeg, type);    
+      break;
 
-    int type = 0;
-    zolotarev_data *rdata = zolotarev(toFloat(eps), RatPolyDeg, type);
+    case COEFF_TYPE_TANH:
+      QDPIO::cout << "Initing Linop with Higham Rep tanh Coefficients" << endl;
+      QDPIO::cout << "  MaxCGInner =  " << params.invParamInner.MaxCG << endl;
+      QDPIO::cout << "  RsdCGInner =  " << params.invParamInner.RsdCG << endl;
+      QDPIO::cout << "  NEigVal    =  " << NEigVal << endl;
+      
+      rdata = higham(toFloat(eps), params.RatPolyDeg);
+
+      break;
+    default:
+      // The map system should ensure that we never get here but 
+      // just for style
+      QDPIO::cerr << "Unknown coefficient type: " << params.approximation_type
+		  << endl;
+      QDP_abort(1);
+    }
 
     Real maxerr = (Real)(rdata->Delta);
 
@@ -175,20 +255,12 @@ namespace Chroma
     }
 
 
-    push(my_writer, "ZoloContFracCoeff");
-    write(my_writer, "beta", beta);
-    pop(my_writer);
-
-    QDPIO::cout << "Did Beta" << endl;
-
     alpha.resize(N5);
     for(int i = 0; i < N5; i++) {
       alpha[i] = Real(1);
     }
 
     alpha[N5-1] = rdata->beta[N5-1];
-
-    QDPIO::cout << "Did alpha" << endl;
 
     // For the moment choose gamma = 1/sqrt(beta) */
     // except for gamma(N5-1) which always has to be set to 1 */
@@ -205,31 +277,39 @@ namespace Chroma
     for(int i=0; i < N5; i++) {
       beta[i] = beta[i]*gamma[i]*gamma[i];
     }
-
+    
     // and the off diagonal ones
     for(int i=0; i < N5-1; i++) {
       alpha[i] = alpha[i]*gamma[i]*gamma[i+1];
     }
-
-    QDPIO::cout << "Did alpha2 " << endl;
-
-    push(my_writer, "ZoloEquivTransCoeff");
-    write(my_writer, "beta", beta);
-    write(my_writer, "alpha", alpha);
-    pop(my_writer);
-
-    QDPIO::cout << "Zolotarev 5d: " 
+    
+    
+    QDPIO::cout << "UnprecOvlapContfrac5d: " 
 		<< " N5=" << N5 << " scale=" << scale_fac
 		<< " Nwils = " << NEigVal << " Mass=" << Mass << endl ;
     QDPIO::cout << "Approximation on [-1,eps] U [eps,1] with eps = " << eps <<endl;
- 
+    
     QDPIO::cout << "Maximum error | R(x) - sgn(x) | <= Delta = " << maxerr << endl;
-
-    if( type == 0 ) {
-      QDPIO::cout << "Approximation type " << type << " with R(0) = 0" << endl;
-    }
-    else {
-      QDPIO::cout << "Approximation type " << type << " with R(0) = infinity" << endl;
+    switch( params.approximation_type) {
+    case COEFF_TYPE_ZOLOTAREV:
+      QDPIO::cout << "Coefficients from Zolotarev" << endl;
+      
+      if(type == 0) {
+	QDPIO::cout << "Approximation type " << type << " with R(0) = 0"
+		    << endl;
+      }
+      else {
+	QDPIO::cout << "Approximation type " << type << " with R(0) =  infinity"                    << endl;
+      }
+      
+      break;
+    case COEFF_TYPE_TANH:
+      QDPIO::cout << "Coefficients from Higham Tanh representation" << endl;
+      break;
+    default:
+      QDPIO::cerr << "Unknown coefficient type " << params.approximation_type 
+		  << endl;
+      break;
     }
 
     // We will also compute te 'function of the eigenvalues
@@ -246,11 +326,8 @@ namespace Chroma
 	}
       }
     }
-
-    pop(my_writer);
-
-    writer << my_writer;
-
+    
+    
     // free the arrays allocated by Tony's Zolo
     free( rdata->a );
     free( rdata->ap );
@@ -269,13 +346,13 @@ namespace Chroma
  * \param state	    gauge field     	       (Read)
  */
   const LinearOperator<multi1d<LatticeFermion> >* 
-  Zolotarev5DFermActArray::linOp(Handle<const ConnectState> state_) const
+  UnprecOvlapContFrac5DFermActArray::linOp(Handle<const ConnectState> state_) const
   {
     START_CODE();
     const OverlapConnectState<LatticeFermion>& state = dynamic_cast<const OverlapConnectState<LatticeFermion>&>(*state_);
 
     if (state.getEigVec().size() != state.getEigVal().size())
-      QDP_error_exit("Zolotarev5DFermActArray: inconsistent sizes of eigenvectors and values");
+      QDP_error_exit("UnprecOvlapContFrac5DFermActArray: inconsistent sizes of eigenvectors and values");
 
     int NEigVal = state.getEigVal().size();
     int NEig;
@@ -287,7 +364,7 @@ namespace Chroma
 
     init(scale_factor, alpha, beta, NEig, EigValFunc, state);
 
-    return new Zolotarev5DLinOpArray( *S_aux,
+    return new UnprecOvlapContFrac5DLinOpArray( *S_aux,
 				      state_,
 				      Mass,
 				      N5,
@@ -309,13 +386,13 @@ namespace Chroma
  * \param state	    gauge field     	       (Read)
  */
   const LinearOperator<multi1d<LatticeFermion> >* 
-  Zolotarev5DFermActArray::lnonHermLinOp(Handle<const ConnectState> state_) const
+  UnprecOvlapContFrac5DFermActArray::lnonHermLinOp(Handle<const ConnectState> state_) const
   {
     START_CODE();
     const OverlapConnectState<LatticeFermion>& state = dynamic_cast<const OverlapConnectState<LatticeFermion>&>(*state_);
 
     if (state.getEigVec().size() != state.getEigVal().size())
-      QDP_error_exit("Zolotarev5DFermActArray: inconsistent sizes of eigenvectors and values");
+      QDP_error_exit("UnprecOvlapContFrac5DFermActArray: inconsistent sizes of eigenvectors and values");
 
     int NEigVal = state.getEigVal().size();
     int NEig;
@@ -327,7 +404,7 @@ namespace Chroma
 
     init(scale_factor, alpha, beta, NEig, EigValFunc, state);
 
-    return new Zolotarev5DNonHermOpArray( *S_aux,
+    return new UnprecOvlapContFrac5DNonHermOpArray( *S_aux,
 					  state_,
 					  Mass,
 					  N5,
@@ -349,7 +426,7 @@ namespace Chroma
  * \param state	    gauge field     	       (Read)
  */
   const LinearOperator<multi1d<LatticeFermion> >* 
-  Zolotarev5DFermActArray::lMdagM(Handle<const ConnectState> state) const
+  UnprecOvlapContFrac5DFermActArray::lMdagM(Handle<const ConnectState> state) const
   {
     return new lmdagm<multi1d<LatticeFermion> >(linOp(state));
   }
@@ -360,14 +437,14 @@ namespace Chroma
  * \param state	    gauge field     	       (Read)
  */
   const LinearOperator<multi1d<LatticeFermion> >* 
-  Zolotarev5DFermActArray::lnonHermMdagM(Handle<const ConnectState> state) const
+  UnprecOvlapContFrac5DFermActArray::lnonHermMdagM(Handle<const ConnectState> state) const
   {
     return new lmdagm<multi1d<LatticeFermion> >(lnonHermLinOp(state));
   }
 
 
   const OverlapConnectState<LatticeFermion>*
-  Zolotarev5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_) const
+  UnprecOvlapContFrac5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_) const
   {
     multi1d<LatticeColorMatrix> u_tmp = u_;
     getFermBC().modifyU(u_tmp);
@@ -379,12 +456,12 @@ namespace Chroma
 
 
   const OverlapConnectState<LatticeFermion>*
-  Zolotarev5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
+  UnprecOvlapContFrac5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
 				       const Real& approxMin_) const 
   {
     if ( toBool( approxMin_ < Real(0) )) { 
       ostringstream error_str;
-      error_str << "Zolotarev5DFermActArray: approxMin_ has to be positive" << endl;
+      error_str << "UnprecOvlapContFrac5DFermActArray: approxMin_ has to be positive" << endl;
       throw error_str.str();
     }
  
@@ -399,7 +476,7 @@ namespace Chroma
 
 
   const OverlapConnectState<LatticeFermion>*
-  Zolotarev5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
+  UnprecOvlapContFrac5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
 				       const Real& approxMin_,
 				       const Real& approxMax_) const
   {
@@ -407,12 +484,12 @@ namespace Chroma
   
  
     if ( toBool(approxMin_ < 0 )) { 
-      error_str << "Zolotarev5DFermActArray: approxMin_ has to be positive" << endl;
+      error_str << "UnprecOvlapContFrac5DFermActArray: approxMin_ has to be positive" << endl;
       throw error_str.str();
     }
 
     if ( toBool(approxMax_ < approxMin_) ) { 
-      error_str << "Zolotarev5DFermActArray: approxMax_ has to be larger than approxMin_" << endl;
+      error_str << "UnprecOvlapContFrac5DFermActArray: approxMax_ has to be larger than approxMin_" << endl;
       throw error_str.str();
     }
  
@@ -427,7 +504,7 @@ namespace Chroma
 
 
   const OverlapConnectState<LatticeFermion>*
-  Zolotarev5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
+  UnprecOvlapContFrac5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
 				       const multi1d<Real>& lambda_lo_, 
 				       const multi1d<LatticeFermion>& evecs_lo_,
 				       const Real& lambda_hi_) const
@@ -468,7 +545,7 @@ namespace Chroma
 
 
   void 
-  Zolotarev5DFermActArray::qprop(LatticeFermion& psi, 
+  UnprecOvlapContFrac5DFermActArray::qprop(LatticeFermion& psi, 
 				 Handle<const ConnectState> state, 
 				 const LatticeFermion& chi, 
 				 enum InvType invType,
@@ -566,7 +643,7 @@ namespace Chroma
 
 
   const OverlapConnectState<LatticeFermion>*
-  Zolotarev5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
+  UnprecOvlapContFrac5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
 				       const OverlapStateInfo& state_info,
 				       XMLWriter& xml_out,
 				       Real wilsonMass) const

@@ -1,4 +1,4 @@
-// $Id: ovlap_partfrac4d_fermact_w.cc,v 1.1 2004-09-27 12:00:18 bjoo Exp $
+// $Id: ovlap_partfrac4d_fermact_w.cc,v 1.2 2004-09-27 14:58:43 bjoo Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -49,7 +49,7 @@ namespace Chroma
     }
 
     //! Name to be used
-    const std::string name = "OVERLAP_PARTIAL_FRACTION_4D";
+    const std::string name ="OVERLAP_PARTIAL_FRACTION_4D";
 
     //! Register the Wilson fermact
     const bool registered = TheWilsonTypeFermActFactory::Instance().registerObject(name, createFermAct) && TheWilsonTypeFermActFactory::Instance().registerObject("ZOLOTAREV_4D", createFermAct);
@@ -309,7 +309,6 @@ namespace Chroma
       */
       type = 0;
       rdata = zolotarev(toFloat(eps), params.RatPolyDeg, type);
-      maxerr = (Real)(rdata -> Delta);
       break;
 
     case COEFF_TYPE_TANH:
@@ -331,7 +330,7 @@ namespace Chroma
 	 where da = dd for type 0 and da = dd + 1 with ap[dd] = 0 for type 1. 
       */
       rdata = higham(toFloat(eps), params.RatPolyDeg);
-      maxerr = (Real)(rdata -> Delta);
+     
       break;
     default:
       // The map system should ensure that we never get here but 
@@ -341,6 +340,7 @@ namespace Chroma
       QDP_abort(1);
     }
     
+    maxerr = (Real)(rdata -> Delta);
     
       /*
 	push(my_writer, "ZolotarevApprox");
