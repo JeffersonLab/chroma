@@ -1,11 +1,82 @@
 #include "chroma.h"
 
-#include "actions/ferm/linop/unprec_wilson_dmdu_w.h"
-
 #include <iostream>
 
 using namespace QDP;
 using namespace std;
+
+void wilson_dsdu(const UnprecWilsonFermAct& S,
+		 multi1d<LatticeColorMatrix> & ds_u,
+		 Handle<const ConnectState> state,
+		 const LatticeFermion& psi) 
+{
+  START_CODE();
+  
+   // Get at the U matrices
+  const multi1d<LatticeColorMatrix>& u = state->getLinks();
+
+  // Get a linear operator
+  Handle<const LinearOperator<LatticeFermion> > M(S.linOp(state));
+
+  // Compute MY
+  LatticeFermion Y;
+  (*M)(Y, psi, PLUS);
+
+    // Usually this is Kappa. In our normalisation it is 0.5 
+    // I am adding in a factor of -1 to be consistent with the sign
+    // convention for the preconditioned one. (We can always take this out
+    // later
+    Real prefactor=-Real(0.5);
+
+    // Two temporaries
+    LatticeFermion f_tmp;
+    LatticeColorMatrix u_tmp;
+    for(int mu = 0; mu < Nd; mu++)
+    { 
+      // f_tmp = (1 + gamma_mu) Y 
+      f_tmp = Gamma(1<<mu)*Y;
+      f_tmp += Y;
+
+      //   trace_spin ( ( 1 + gamma_mu ) Y_x+mu X^{dag}_x )
+//      u_tmp = traceSpin(outerProduct(shift(f_tmp, FORWARD, mu),psi));
+      LatticeFermion foo = shift(f_tmp, FORWARD, mu);
+      u_tmp = traceSpin(outerProduct(foo,psi));
+
+      // f_tmp = -(1 -gamma_mu) X
+      f_tmp = Gamma(1<<mu)*psi;
+      f_tmp -= psi;
+
+      //  +trace_spin( ( 1 - gamma_mu) X_x+mu Y^{dag}_x)
+//      u_tmp -= traceSpin(outerProduct(shift(f_tmp, FORWARD, mu),Y));
+      foo = shift(f_tmp, FORWARD, mu);
+      u_tmp -= traceSpin(outerProduct(foo,Y));
+    
+      // accumulate with prefactor
+      ds_u[mu] = prefactor*( u[mu]*u_tmp );
+    }
+    
+    END_CODE();
+}
+
+void funky_new_dsdu(const UnprecLinearOperator<LatticeFermion, multi1d<LatticeColorMatrix> >& M,
+		   multi1d<LatticeColorMatrix> & ds_u,
+		   const LatticeFermion& X) {
+  LatticeFermion Y;
+  M(Y,X,PLUS);
+
+  M.deriv(ds_u, X, Y, PLUS);
+
+  multi1d<LatticeColorMatrix> F_tmp(Nd);
+ 
+  M.deriv(F_tmp, Y, X, MINUS);
+  for(int mu=0; mu < Nd; mu++) { 
+    
+    ds_u[mu] += F_tmp[mu];
+    ds_u[mu] *= Real(-1);
+  }
+
+
+}
 
 
 int main(int argc, char *argv[])
@@ -67,8 +138,15 @@ int main(int argc, char *argv[])
   //  dsdu_2[mu] = zero;
   // }
 
-  S_f_MC.dsdu(dsdu_1, state, psi);
-  S_f_MC.dsdu2(dsdu_2, state, psi);
+  //  S_f_MC.dsdu(dsdu_1, state, psi);
+  //S_f_MC.dsdu2(dsdu_2, state, psi);
+
+  wilson_dsdu(S_f_MC, dsdu_1, state, psi);
+
+  Handle<const UnprecLinearOperator<LatticeFermion, multi1d<LatticeColorMatrix> > > M_w(S_f_MC.linOp(state));
+
+
+  funky_new_dsdu(*M_w, dsdu_2, psi);
 
   for(int mu=0; mu < Nd; mu++) { 
     taproj(dsdu_1[mu]);
