@@ -1,4 +1,4 @@
-// $Id: bar3ptfn.cc,v 1.31 2004-04-17 03:36:36 edwards Exp $
+// $Id: bar3ptfn.cc,v 1.32 2004-04-27 21:28:28 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions
  *
@@ -286,6 +286,10 @@ main(int argc, char *argv[])
       QDPIO::cerr << "Error extracting forward_prop header: " << e << endl;
       QDP_abort(1);
     }
+
+    // Save propagator input
+    write(xml_out, "Propagator_file_info", prop_file_xml);
+    write(xml_out, "Propagator_record_info", prop_record_xml);
   }
   QDPIO::cout << "Forward propagator successfully read" << endl;
 
@@ -307,17 +311,10 @@ main(int argc, char *argv[])
     pop(xml_out);
   }
 
-  // Determine what kind of source to use
-  bool Sl_src = (source_header.source_type == SRC_TYPE_SHELL_SOURCE) ? true : false;
 
-  // Save prop input
-  write(xml_out, "ForwardProp", prop_header);
-  write(xml_out, "PropSource", source_header);
-
-  write(xml_out,"Sl_src",Sl_src);
-
-
+  //
   // Big nested structure that is image of entire file
+  //
   Bar3ptfn_t  bar3pt;
   bar3pt.output_version.out_version = 9;  // bump this up everytime something changes
   bar3pt.param = input.param; // copy entire structure
@@ -340,8 +337,7 @@ main(int argc, char *argv[])
     // Read the sequential propagator
     // Read the quark propagator and extract headers
     LatticePropagator seq_quark_prop;
-    ChromaSeqProp_t seqprop_header;
-    PropSink_t sink_header;
+    SeqSource_t seqsource_header;
     {
       XMLReader seqprop_file_xml, seqprop_record_xml;
       readQprop(seqprop_file_xml, 
@@ -353,20 +349,19 @@ main(int argc, char *argv[])
       // NEED SECURITY HERE - need a way to cross check props. Use the ID.
       try
       {
-	read(seqprop_record_xml, "/SeqProp/SequentialProp", seqprop_header);
-	read(seqprop_record_xml, "/SeqProp/PropSink", sink_header);
+	read(seqprop_record_xml, "/SequentialProp/SeqSource", seqsource_header);
       }
       catch (const string& e) 
       {
 	QDPIO::cerr << "Error extracting seqprop header: " << e << endl;
 	QDP_abort(1);
       }
+
+      // Save seqprop input
+      write(xml_seq_src, "SequentialProp_file_info", seqprop_file_xml);
+      write(xml_seq_src, "SequentialProp_record_info", seqprop_record_xml);
     }
     QDPIO::cout << "Sequential propagator successfully read" << endl;
-
-    // Save seqprop input
-    write(xml_seq_src, "SequentialProp", seqprop_header);
-    write(xml_seq_src, "PropSink", sink_header);
 
     // Sanity check - write out the norm2 of the forward prop in the j_decay direction
     // Use this for any possible verification
@@ -383,9 +378,9 @@ main(int argc, char *argv[])
     }
 
     // Derived from input seqprop
-    int seq_src_value = seqprop_header.Seq_src;
-    int           t_sink   = seqprop_header.t_sink;
-    multi1d<int>  sink_mom = seqprop_header.sink_mom;
+    int seq_src_value = seqsource_header.seq_src;
+    int           t_sink   = seqsource_header.t_sink;
+    multi1d<int>  sink_mom = seqsource_header.sink_mom;
 
     // Output is driven by the type of sequential propagator
     if ((0 <= seq_src_value) && (seq_src_value <= 9)) {
@@ -407,37 +402,10 @@ main(int argc, char *argv[])
     bar3pt.bar.seqsrc[seq_src_ctr].t_source      = t_source;
     bar3pt.bar.seqsrc[seq_src_ctr].t_sink        = t_sink;
     bar3pt.bar.seqsrc[seq_src_ctr].sink_mom      = sink_mom;
+    // This is no longer computed (or needed), but keep here to make binary happy
+    bar3pt.bar.seqsrc[seq_src_ctr].seq_hadron_0  = zero;
 	
 //      xml_seq_src.flush();
-
-    // Construct the two-pt function from the source point to the sink
-    // using only the seq. quark prop.
-    // Take hermitian conjugate of the seq. prop, multiply on both sides
-    // with gamma_5 = Gamma(G5) and take the trace
-    // Use indexing to pull out precisely the source point.
-    int G5 = Ns*Ns-1;
-
-    // Contract the sequential propagator with itself
-    // to form the 2-pt function at the source.
-    // Do "source" smearing, if needed
-    {
-      LatticePropagator seq_quark_prop_tmp = seq_quark_prop;
-
-      if (Sl_src) {
-	sink_smear2(u, seq_quark_prop_tmp, 
-		    source_header.sourceSmearParam.wvf_kind, 
-		    source_header.sourceSmearParam.wvf_param,
-		    source_header.sourceSmearParam.wvfIntPar, 
-		    j_decay);
-      }
-
-      // Compute the 2pt function at the source - used in later normalizations
-      Complex seq_hadron_0 =
-	peekSite(trace(adj(Gamma(G5)*seq_quark_prop_tmp*Gamma(G5))), t_source);
-
-      write(xml_seq_src, "seq_hadron_0", seq_hadron_0);
-      bar3pt.bar.seqsrc[seq_src_ctr].seq_hadron_0 = seq_hadron_0;
-    }
 
     // Now the 3pt contractions
     SftMom phases(input.param.mom2_max, sink_mom, false, j_decay);
