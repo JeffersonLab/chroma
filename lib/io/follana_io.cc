@@ -1,16 +1,12 @@
 /*
- *  $Id: follana_io.cc,v 1.3 2003-10-09 21:03:33 edwards Exp $
+ *  $Id: follana_io.cc,v 1.4 2003-10-14 17:41:23 edwards Exp $
  *
  *  These are a few simple I/O routines that we can use until QIO makes its appearance
  *  I have tried to include a simple header by means of a structure.
  */
 
 #include "chromabase.h"
-#include "common_io.h"
 #include "io/follana_io.h"
-#include "primitives.h"
-#include "qdp_util.h"
-
 
 #include <string>
 
@@ -41,7 +37,7 @@ void readQpropFollana(char file[], LatticePropagator& quark_prop){
     for( z = 0; z < latt_size[2]; z++) { 
       for( y = 0; y < latt_size[1]; y++ ) {
 
-	read(prop_in, buf);
+	read(prop_in, buf, latt_size[0]*Nc*Nc*2);
 	index = 0;
 
 	for( x = 0; x < latt_size[0]; x++) {

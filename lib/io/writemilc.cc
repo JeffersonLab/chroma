@@ -1,4 +1,4 @@
-// $Id: writemilc.cc,v 1.1 2003-10-09 16:08:08 edwards Exp $
+// $Id: writemilc.cc,v 1.2 2003-10-14 17:41:23 edwards Exp $
 
 /*! \file
  *  \brief Writer a MILC gauge configuration in the 1997 format
@@ -34,7 +34,7 @@ void writeMILC(const MILCGauge_t& header, const multi1d<LatticeColorMatrix>& u,
   int magic_number = 20103;
   write(cfg_out, magic_number);
 
-  write(cfg_out, header.nrow);
+  write(cfg_out, header.nrow, Nd);
 
   // Time stamp - write exactly 64 bytes padded with nulls
   char date_tmp[65];
@@ -63,7 +63,7 @@ void writeMILC(const MILCGauge_t& header, const multi1d<LatticeColorMatrix>& u,
 
     // Write Nd SU(3) matrices. 
     // NOTE: the su3_matrix layout should be the same as in QDP
-    write(cfg_out, u_old); 
+    write(cfg_out, u_old, Nd); 
   }
 
   // Go ahead and write checksums, but will not use for now

@@ -1,10 +1,9 @@
-//  $Id: barcomp_w.cc,v 1.6 2003-08-09 04:19:14 edwards Exp $
+//  $Id: barcomp_w.cc,v 1.7 2003-10-14 17:41:23 edwards Exp $
 /*! \file
  *  \brief Construct all components of a baryon propagator
  */
 
 #include "chromabase.h"
-#include "common_io.h"
 #include "io/qprop_io.h"
 #include "meas/hadron/barcomp_w.h"
 

@@ -1,4 +1,4 @@
-// $Id: readszin.cc,v 1.16 2003-10-09 15:09:05 edwards Exp $
+// $Id: readszin.cc,v 1.17 2003-10-14 17:41:23 edwards Exp $
 
 /*! \file
  *  \brief Read in a configuration written by SZIN up to configuration version 7.
@@ -34,8 +34,6 @@ void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
   START_CODE("readSzin");
 
   szinGaugeInit(header);  // initialize the header with defaults
-
-  multi2d<Real> wstat(41, 20); /* On-line statistical accumulators - throw away */
 
   int cfg_record_size; // must read but will ignore - not used
   int date_size;
@@ -224,7 +222,7 @@ void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
                    header.Nc);
 
   header.nrow.resize(Nd);
-  read(cfg_in, header.nrow);
+  read(cfg_in, header.nrow, Nd);
 
   for(int j = 0; j < Nd; ++j)
     if ( header.nrow[j] != Layout::lattSize()[j] )
@@ -233,7 +231,9 @@ void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
 
 
   read(cfg_in, header.seed);
-  read(cfg_in, wstat);    // will not use
+
+  multi1d<Real> wstat(41*20); /* On-line statistical accumulators - throw away */
+  read(cfg_in, wstat, wstat.size());    // will not use
 
 
   /*

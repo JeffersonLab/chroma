@@ -1,4 +1,4 @@
-// $Id: readmilc.cc,v 1.2 2003-10-09 16:07:57 edwards Exp $
+// $Id: readmilc.cc,v 1.3 2003-10-14 17:41:23 edwards Exp $
 
 /*! \file
  *  \brief Read a MILC gauge configuration written in the 1997 format
@@ -39,7 +39,7 @@ void readMILC(MILCGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
 
   // Check lattice size
   header.nrow.resize(Nd);
-  read(cfg_in, header.nrow);
+  read(cfg_in, header.nrow, Nd);
 
   for(int j = 0; j < Nd; ++j)
     if ( header.nrow[j] != Layout::lattSize()[j] )
@@ -71,7 +71,7 @@ void readMILC(MILCGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
       
     // Read in Nd SU(3) matrices. 
     // NOTE: the su3_matrix layout should be the same as in QDP
-    read(cfg_in, u_old); 
+    read(cfg_in, u_old, Nd); 
 
     for(int mu=0; mu < Nd; ++mu)
       pokeSite(u[mu], u_old[mu], coord); // Put it into the correct place

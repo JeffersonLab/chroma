@@ -1,8 +1,10 @@
 // -*- C++ -*-
-// $Id: barcomp_w.h,v 1.4 2003-10-10 03:46:46 edwards Exp $
+// $Id: barcomp_w.h,v 1.5 2003-10-14 17:41:23 edwards Exp $
 
 #ifndef __barcomp_h__
 #define __barcomp_h__
+
+#include "io/qprop_io.h"
 
 void barcomp(const LatticePropagator& quark_propagator_1, 
 	     const PropHead& header_1,

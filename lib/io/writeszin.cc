@@ -1,4 +1,4 @@
-// $Id: writeszin.cc,v 1.3 2003-10-08 16:01:37 edwards Exp $
+// $Id: writeszin.cc,v 1.4 2003-10-14 17:41:23 edwards Exp $
 
 /*! \file
  *  \brief Write out a configuration written by SZIN up to configuration version 7.
@@ -28,9 +28,6 @@ using namespace QDP;
 static void writeSzinHeader(BinaryWriter& cfg_out, const SzinGauge_t& header)
 {
   START_CODE("writeSzinheader");
-
-  multi2d<Real32> wstat(41, 20); /* On-line statistical accumulators - write junk */
-  wstat = 0;
 
   int cfg_record_size = 0;
 
@@ -89,10 +86,12 @@ static void writeSzinHeader(BinaryWriter& cfg_out, const SzinGauge_t& header)
   write(cfg_out, header.AlpLog);
   write(cfg_out, header.AlpExp);
 
-  write(cfg_out, header.nrow);
+  write(cfg_out, header.nrow, Nd);
   write(cfg_out, header.seed);
 
-  write(cfg_out, wstat);
+  multi1d<Real32> wstat(41*20); /* On-line statistical accumulators - write junk */
+  wstat = 0;
+  write(cfg_out, wstat, wstat.size());
 
   END_CODE("writeSzinHeader");
 }
