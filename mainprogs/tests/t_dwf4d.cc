@@ -1,4 +1,4 @@
-// $Id: t_dwf4d.cc,v 1.4 2004-12-09 04:04:08 edwards Exp $
+// $Id: t_dwf4d.cc,v 1.5 2004-12-10 02:52:31 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -250,7 +250,7 @@ int main(int argc, char **argv)
   
   
   //-------------------------------------------------------------------------------
-  Handle<const LinearOperator<LatticeFermion> > A5(S_f_5d->linOp4D(state_5d,input.param.invParam));
+  Handle<const LinearOperator<LatticeFermion> > A5(S_f_5d->linOp4D(state_5d,S_f_5d->quark_mass(),input.param.invParam));
   Handle<const LinearOperator<LatticeFermion> > A4(S_f_4d->linOp(state_4d));
   
   LatticeFermion psi, chi;
