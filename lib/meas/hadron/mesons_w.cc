@@ -1,6 +1,6 @@
-//  $Id: mesons_w.cc,v 1.3 2003-02-15 05:54:26 edwards Exp $
+//  $Id: mesons_w.cc,v 1.4 2003-02-16 04:14:37 edwards Exp $
 
-#include "szinbase.h"
+#include "chromabase.h"
 #include "meas/hadron/mesons_w.h"
 
 using namespace QDP;

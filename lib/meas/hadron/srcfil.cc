@@ -1,9 +1,9 @@
-// $Id: srcfil.cc,v 1.2 2003-02-15 05:54:26 edwards Exp $
+// $Id: srcfil.cc,v 1.3 2003-02-16 04:14:37 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */
 
-#include "szinbase.h"
+#include "chromabase.h"
 #include "meas/hadron/srcfil.h"
 
 using namespace QDP;

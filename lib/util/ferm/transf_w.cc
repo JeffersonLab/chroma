@@ -1,10 +1,10 @@
-// $Id: transf_w.cc,v 1.1 2003-02-15 05:54:26 edwards Exp $
+// $Id: transf_w.cc,v 1.2 2003-02-16 04:14:37 edwards Exp $
 /*! \file
  *  \brief Insertion/Extraction utilities for vectors/fermions/propagators
  */
 
-#include "qdp.h"
-#include "szin.h"
+#include "chromabase.h"
+#include "util/ferm/transf_w.h"
 
 using namespace QDP;
 

@@ -1,10 +1,10 @@
-// $Id: reunit.cc,v 1.3 2003-02-15 05:54:26 edwards Exp $
+// $Id: reunit.cc,v 1.4 2003-02-16 04:14:37 edwards Exp $
 
 /*! \file
  *  \brief Reunitarize (to a SU(N)) inplace the matrix A under some option
  */
 
-#include "szinbase.h"
+#include "chromabase.h"
 #include "util/gauge/reunit.h"
 
 using namespace QDP;

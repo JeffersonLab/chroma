@@ -1,9 +1,9 @@
-// $Id: baryon_w.cc,v 1.3 2003-02-15 05:54:25 edwards Exp $ 
+// $Id: baryon_w.cc,v 1.4 2003-02-16 04:14:37 edwards Exp $ 
 /*! \file
  *  \brief Baryon 2-pt functions
  */
 
-#include "szinbase.h"
+#include "chromabase.h"
 #include "meas/hadron/baryon_w.h"
 
 using namespace QDP;

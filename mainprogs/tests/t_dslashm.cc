@@ -1,9 +1,9 @@
-// $Id: t_dslashm.cc,v 1.3 2003-01-31 18:41:47 edwards Exp $
+// $Id: t_dslashm.cc,v 1.4 2003-02-16 04:14:37 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
 
-#include "szin.h"
+#include "chroma.h"
 
 using namespace QDP;
 

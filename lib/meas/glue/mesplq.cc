@@ -1,9 +1,9 @@
-// $Id: mesplq.cc,v 1.4 2003-02-15 05:54:25 edwards Exp $
+// $Id: mesplq.cc,v 1.5 2003-02-16 04:14:37 edwards Exp $
 /*! \file
  *  \brief Plaquette measurement
  */
 
-#include "szinbase.h"
+#include "chromabase.h"
 #include "meas/glue/mesplq.h"
 
 

@@ -1,4 +1,4 @@
-// $Id: hotst.cc,v 1.3 2003-02-15 05:54:26 edwards Exp $
+// $Id: hotst.cc,v 1.4 2003-02-16 04:14:37 edwards Exp $
 // HOTST
 
 /*! \file
@@ -20,7 +20,7 @@
  *   measure, then something can be done about it. 
  */
 
-#include "szinbase.h"
+#include "chromabase.h"
 #include "util/gauge/hotst.h"
 #include "util/gauge/taproj.h"
 #include "util/gauge/expm12.h"
