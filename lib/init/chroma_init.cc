@@ -1,4 +1,4 @@
-// $Id: chroma_init.cc,v 1.4 2005-01-17 21:08:29 edwards Exp $
+// $Id: chroma_init.cc,v 1.5 2005-01-24 21:31:32 edwards Exp $
 
 
 //#include "chroma.h"
@@ -67,7 +67,7 @@ namespace Chroma {
     */
 
     if( ! output_found ) { 
-      output_filename = "./XMLLOG";
+      output_filename = "./XMLDAT";
     }
     
 
