@@ -1,8 +1,11 @@
 // -*- C++ -*-
-// $Id: phfctr.h,v 1.1 2003-12-16 22:18:48 edwards Exp $
+// $Id: phfctr.h,v 1.2 2004-01-02 03:00:07 edwards Exp $
 /*! \file
  *  \brief  This routine is specific to Wilson fermions!
  */
+
+#error "THIS METHOD IS OBSOLETE - DO NOT USE IT!!!"
+
 
 #ifndef __setph_h__
 #define __setph_h__

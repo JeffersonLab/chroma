@@ -1,7 +1,9 @@
-// $Id: phfctr.cc,v 1.2 2003-12-16 22:21:47 edwards Exp $
+// $Id: phfctr.cc,v 1.3 2004-01-02 03:00:07 edwards Exp $
 /*! \file
  *  \brief  This routine is specific to Wilson fermions!
  */
+
+#error "THIS CODE IS OBSOLETE - DO NOT USE IT!!!"
 
 #include "chromabase.h"
 #include "util/gauge/phfctr.h"
