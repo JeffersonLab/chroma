@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lovlapms_w.h,v 1.7 2003-12-03 06:12:41 edwards Exp $
+// $Id: lovlapms_w.h,v 1.8 2003-12-09 22:08:03 edwards Exp $
 /*! \file
  *  \brief Internal Overlap-pole operator
  */
@@ -50,7 +50,7 @@ public:
    * \param _RsdCG          residual for inner CG              (Read)
    */
   lovlapms(const LinearOperatorProxy<LatticeFermion> _MdagM, 
-	   const LinearOperator<LatticeFermion>& _M, 
+	   const LinearOperatorProxy<LatticeFermion> _M, 
 	   const Real& _m_q, int _numroot, 
 	   const Real& _constP, 
 	   const multi1d<Real>& _resP,
@@ -75,7 +75,7 @@ public:
 
 private:
   const LinearOperatorProxy<LatticeFermion> MdagM;
-  const LinearOperator<LatticeFermion>& M;
+  const LinearOperatorProxy<LatticeFermion> M;
   const Real& m_q;
   int numroot;
   const Real& constP;
