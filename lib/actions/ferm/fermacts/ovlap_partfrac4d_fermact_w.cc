@@ -1,4 +1,4 @@
-// $Id: ovlap_partfrac4d_fermact_w.cc,v 1.16 2005-02-08 12:21:06 bjoo Exp $
+// $Id: ovlap_partfrac4d_fermact_w.cc,v 1.17 2005-02-08 13:14:14 bjoo Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -398,27 +398,21 @@ namespace Chroma
       /* The number of residuals and poles */
       /* Allocate the roots and residua */
     numroot = rdata -> dd;
-    QDPIO::cout << "Numroot " << numroot << flush << endl;
     /* The roots, i.e., the shifts in the partial fraction expansion */
     rootQ.resize(numroot);
-    QDPIO::cout << 0 << endl << flush; 
     /* The residuals in the partial fraction expansion */
     resP.resize(numroot);
  
-    QDPIO::cout << 1 << endl << flush;
     /* Fill in alpha[0] = alpha[da] if it is not zero*/
-    coeffP = 0;
+    coeffP = Real(0);
     coeffP = rdata -> alpha[rdata -> da - 1];
     /* The coefficients from the partial fraction.
        Here, we write them out for the sake of bookkeeping. */
-    resP = 0;
-    rootQ = 0;
     for(int n=0; n < numroot; ++n) {
       resP[n] = rdata -> alpha[n];
       rootQ[n] = rdata -> ap[n];
       rootQ[n] = -rootQ[n];
     }
-    QDPIO::cout << 2 << endl << flush;  
     /*
     push(my_writer,"ZolotarevPartFrac");
     write(my_writer, "scale_fac", scale_fac);
@@ -434,8 +428,6 @@ namespace Chroma
     coeffP = rdata -> alpha[rdata -> da - 1] * scale_fac;
     /* Fill in the coefficients for the roots and the residua */
     /* Make sure that the smallest shift is in the last value rootQ(numroot-1)*/
-    resP = 0;
-    rootQ = 0;
     Real t = Real(1) / (scale_fac * scale_fac);
     for(int n=0; n < numroot; ++n) {
     
@@ -444,7 +436,6 @@ namespace Chroma
       rootQ[n] = -(rootQ[n] * t);
     }
   
-     QDPIO::cout << "3" << endl << flush; 
     /* Write them out into the namelist */
     /*
     push(my_writer,"ZolotarevPartFracResc");
@@ -514,7 +505,6 @@ namespace Chroma
       QDPIO::cout <<"  rootQ[" << n<< "]= " << rootQ[n] << endl;
     }
  
-    QDPIO::cout << "4" << endl << flush; 
     /* We will also compute the 'function' of the eigenvalues */
     /* for the Wilson vectors to be projected out. */
     if (NEig > 0)
@@ -533,7 +523,6 @@ namespace Chroma
 
     // Free the arrays allocate by Tony's zolo
     zolotarev_free(rdata);
-    QDPIO::cout << "5" << endl << flush;
   }
 
   void 
@@ -700,8 +689,6 @@ namespace Chroma
     coeffP = rdata -> alpha[rdata -> da - 1];
     /* The coefficients from the partial fraction.
        Here, we write them out for the sake of bookkeeping. */
-    resP = 0;
-    rootQ = 0;
     for(int n=0; n < numroot; ++n) {
       resP[n] = rdata -> alpha[n];
       rootQ[n] = rdata -> ap[n];
@@ -723,8 +710,6 @@ namespace Chroma
     coeffP = rdata -> alpha[rdata -> da - 1] * scale_fac;
     /* Fill in the coefficients for the roots and the residua */
     /* Make sure that the smallest shift is in the last value rootQ(numroot-1)*/
-    resP = 0;
-    rootQ = 0;
     Real t = Real(1) / (scale_fac * scale_fac);
     for(int n=0; n < numroot; ++n) {
     
