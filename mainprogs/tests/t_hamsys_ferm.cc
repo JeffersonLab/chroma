@@ -23,8 +23,8 @@ int main(int argc, char *argv[])
   {
     XMLReader file_xml;
     XMLReader config_xml;
-    // Cfg_t foo; foo.cfg_type=CFG_TYPE_UNIT;
-    Cfg_t foo; foo.cfg_type=CFG_TYPE_SZIN; foo.cfg_file="./CFGIN";
+    Cfg_t foo; foo.cfg_type=CFG_TYPE_UNIT;
+    // Cfg_t foo; foo.cfg_type=CFG_TYPE_SZIN; foo.cfg_file="./CFGIN";
     gaugeStartup(file_xml, config_xml, u, foo);
   }
     
@@ -62,30 +62,9 @@ int main(int argc, char *argv[])
   TwoFlavorDegenFermHamiltonian<WilsonGaugeAct,UnprecWilsonFermAct> H_MC( S_pg_MC, S_f_MC, inv_params_MC);
 
 
-  LatticeFermion psi;
-  readSzinFerm(psi, "./PSI");
-  Double psi_norm = norm2(psi);
-  QDPIO::cout << "|| psi ||^2 = " << norm2(psi) << endl;
-  multi1d<LatticeColorMatrix> ds_u_f(Nd);
-  for(int mu=0; mu < Nd; mu++) { 
-    ds_u_f[mu] = zero;
-  }
-
-  Handle<const ConnectState> g_state(S_f_MC.createState(u));
-  S_f_MC.dsdu(ds_u_f, g_state, psi);
-
-  XMLFileWriter force_xml("./FERM_FORCE");
-  push(force_xml, "fforce");
-  write(force_xml, "ds_u_f", ds_u_f);
-
- 
-  
   GaugeFermFieldState mc_state(p,u,phi);
   MomRefreshGaussian(mc_state, H_MC);
   PseudoFermionHeatbath(mc_state, H_MC);
-
-  XMLFileWriter monitor("FORCE MONITOR");
-  multi1d<LatticeColorMatrix> force(Nd);
 
   GaugeFermSympUpdates leaps(H_MC); 
   XMLFileWriter lf_xml("./LEAPFROG_TESTS");
@@ -170,6 +149,7 @@ int main(int argc, char *argv[])
   pop(lf_xml);
   lf_xml.close();
 
+  /* HMC Starts here */
   Real tau = Real(1);
   Real dt = Real(0.1);
   GaugeFermPQPLeapFrog leapfrog(leaps, dt, tau);
@@ -186,7 +166,7 @@ int main(int argc, char *argv[])
     // Do measurements
     push(monitorHMC, "Measurements");
 
-    // -1 because it is the last trajectory
+    // -1 because it belongs to the previous trajectory
     write(monitorHMC, "HMCtraj", HMC.getTrajNum()-1);
 
     Double w_plaq, s_plaq,t_plaq, link;
@@ -201,11 +181,9 @@ int main(int argc, char *argv[])
 
   pop(monitorHMC);
   monitorHMC.close();
-  // Finish
+  // Finish.
 
- 
-  
-   // Finish
+    // Finish
   QDP_finalize();
 
   exit(0);
