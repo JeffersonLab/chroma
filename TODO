@@ -20,7 +20,9 @@ Based on force monitoring tests:
   \item Sexton-Weingarten integration for gauge piece ala Degrand???
   \item SAP for force term???
 
-\item Stout-link deriv. for HMC
+\item Stout-link deriv. for HMC. How do we add stout smearing for the
+actions??? Is this a new  "state" ?? We can't overload on the arg types
+to the factory calls.
 
 \item Aniso precond. and even-odd aniso precond. for linops
 \item Aniso precond. and even-odd aniso precond. for HMC
