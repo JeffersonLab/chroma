@@ -1,4 +1,4 @@
-// $Id: wallformfac.cc,v 1.3 2004-01-13 04:32:19 edwards Exp $
+// $Id: wallformfac.cc,v 1.4 2004-01-13 05:10:01 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions with a wall sink
  *
@@ -183,7 +183,7 @@ main(int argc, char *argv[])
   XMLReader xml_in("DATA");
 
   // Read data
-  read(xml_in, "/wallFormFac", input);
+  read(xml_in, "/WallFormFac", input);
 
   // Specify lattice size, shape, etc.
   Layout::setLattSize(input.param.nrow);
