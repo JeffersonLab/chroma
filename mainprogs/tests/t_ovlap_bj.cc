@@ -1,4 +1,4 @@
-// $Id: t_ovlap_bj.cc,v 1.11 2004-01-06 15:35:42 bjoo Exp $
+// $Id: t_ovlap_bj.cc,v 1.12 2004-01-07 12:09:50 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -20,6 +20,7 @@
 #include "meas/eig/eig_w.h"
 #include "meas/hadron/srcfil.h"
 #include "actions/ferm/invert/invcg1.h"
+#include "util/ft/sftmom.h"
 
 using namespace QDP;
 using namespace std;
@@ -48,7 +49,12 @@ typedef struct {
   double approx_min;
   double approx_max;
   Real rsd_cg;
+  Real rsd_cg_inner;
+  
   int max_cg;
+  int max_cg_inner;
+  multi1d<Real> szin_pion;
+
 } Param_t;
 
 // Declare routine to read the parameters
@@ -115,10 +121,23 @@ void readParams(const string& filename, Param_t& params)
 
 
    read(reader, "/params/zolotarev/quarkMass",  params.quark_mass);
-   read(reader, "/params/zolotarev/RsdCG", params.rsd_cg);
-   read(reader, "/params/zolotarev/MaxCG", params.max_cg);
+   read(reader, "/params/zolotarev/RsdCG", params.rsd_cg_inner);
+   read(reader, "/params/zolotarev/MaxCG", params.max_cg_inner);
+
+   read(reader, "/params/qprop/RsdCG", params.rsd_cg);
+   read(reader, "/params/qprop/MaxCG", params.max_cg);
 
 
+   if( reader.count("/params/checking/szinPion") == 1 ) {
+     read(reader, "/params/checking/szinPion", params.szin_pion);
+     if( params.szin_pion.size() != params.nrow[3] ) { 
+       QDP_error_exit("Comparison pion has wrong no of timeslices. Nrow[3] = %d szin_pion.size() = %d", params.nrow[3], params.szin_pion.size());
+     }
+
+   }
+   else { 
+     params.szin_pion.resize(0);
+   }
 
   }
   catch(const string& e) { 
@@ -185,9 +204,20 @@ void dumpParams(XMLWriter& writer, Param_t& params)
 
   write(writer, "wilsonMass", params.wilson_mass);
   write(writer, "quarkMass",  params.quark_mass);
-  write(writer, "RsdCG",      params.rsd_cg);
-  write(writer, "MaxCG",      params.max_cg);
+  write(writer, "RsdCG",      params.rsd_cg_inner);
+  write(writer, "MaxCG",      params.max_cg_inner);
   pop(writer); // zolotarev
+
+  push(writer, "qprop");
+  write(writer, "RsdCG", params.rsd_cg);
+  write(writer, "MaxCG", params.max_cg);
+  pop(writer);
+
+  if( params.szin_pion.size() > 0 ) { 
+    push(writer, "checking");
+    write(writer, "szinPion", params.szin_pion);
+    pop(writer);
+  }
 
   pop(writer); // params
 }
@@ -407,8 +437,8 @@ int main(int argc, char **argv)
   Zolotarev4DFermActBj   S(fbc, S_w, 
 			   params.quark_mass,
 			   params.approx_order, 
-			   params.rsd_cg,
-			   params.max_cg,
+			   params.rsd_cg_inner,
+			   params.max_cg_inner,
 			   my_writer);
 
 
@@ -584,7 +614,7 @@ int main(int argc, char **argv)
   s3 = s1 - s2;
   cout << "Non Chiral Source: || M dag M - MdagM(chi=0)  || = " << sqrt(norm2(s3)) << endl;
 
-
+  /*
   cout << "Beginning qprop test" << endl;
   cout << "Chiral Sources" << endl;
   
@@ -642,9 +672,61 @@ int main(int argc, char **argv)
   }
 
   
+  
+  */
+
+  // Try and reproduce the SZIN pion
+  // Source and solution props
+  LatticePropagator q_src, q_sol;
+  
+  // Fill out the source. Point source on each one.
+  // Shurely there musht be shome convenience for this.
+  for(int spin=0; spin < Ns; spin++) { 
+    for(int col=0; col < Nc; col++) { 
+      s1 = zero;
+
+      srcfil(s1, coord, col, spin);
+      FermToProp(s1, q_src, col, spin);
+    }
+  }
+
+
+  int qprop_ncount = 0;
+  
+  // Do this. The function came for free as it was written for
+  // all wilson type fermacts.
+  quarkProp4(q_sol, xml_out, q_src, S, connect_state, CG_INVERTER,
+	     params.rsd_cg, params.max_cg,  qprop_ncount);
+
+  // Get the pion
+  LatticeComplex corr_fn = trace(adj(q_sol)*q_sol);
+
+  // Funky new way to get the sum and phases
+  SftMom phases(0,true,3);
+  multi2d<DComplex> hsum = phases.sft(corr_fn);
+
+  // Check and dump
+  push(xml_out, "pions");
+  Write(xml_out, hsum[0]);
   pop(xml_out);
 
+  // Check against SZIN pion
+  if( params.szin_pion.size() > 0 ) { 
+    multi1d<Real> difference(params.nrow[3]);
+    for(int t = 0; t < params.nrow[3]; t++) { 
+      difference[t] = fabs(Real(real(hsum[0][t])) - params.szin_pion[t]);
+    }
+    write(xml_out, "absPionSZINdifference", difference);
 
+    for(int t = 0; t < params.nrow[3]; t++) { 
+      difference[t] /= fabs(params.szin_pion[t]);
+    }
+    write(xml_out, "relPionSZINdifference", difference);
+  }    
+
+
+
+  pop(xml_out);
   QDP_finalize();
     
   exit(0);
