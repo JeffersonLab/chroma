@@ -1,6 +1,9 @@
-// $Id: propagator.cc,v 1.55 2004-04-27 21:30:01 edwards Exp $
+// $Id: propagator.cc,v 1.56 2004-04-28 02:54:12 edwards Exp $
 // $Log: propagator.cc,v $
-// Revision 1.55  2004-04-27 21:30:01  edwards
+// Revision 1.56  2004-04-28 02:54:12  edwards
+// Added sanity check on boundary.
+//
+// Revision 1.55  2004/04/27 21:30:01  edwards
 // Now supports input from seqsource as well as make_source.
 //
 // Revision 1.54  2004/04/26 11:19:13  bjoo
@@ -170,6 +173,7 @@ int main(int argc, char **argv)
   XMLReader source_file_xml, source_record_xml;
   int t0;
   int j_decay;
+  multi1d<int> boundary;
   bool make_sourceP = false;;
   bool seqsourceP = false;
   {
@@ -191,19 +195,24 @@ int main(int argc, char **argv)
 	read(source_record_xml, "/MakeSource/PropSource", source_header);
 	j_decay = source_header.j_decay;
 	t0 = source_header.t_source[j_decay];
+	boundary = input.param.boundary;
 	make_sourceP = true;
       }
       else if (source_record_xml.count("/SequentialSource") != 0)
       {
+	ChromaProp_t prop_header;
 	PropSource_t source_header;
 	SeqSource_t seqsource_header;
 
 	read(source_record_xml, "/SequentialSource/SeqSource", seqsource_header);
 	// Any source header will do for j_decay
+	read(source_record_xml, "/SequentialSource/ForwardProps/elem[1]/ForwardProp", 
+	     prop_header);
 	read(source_record_xml, "/SequentialSource/ForwardProps/elem[1]/PropSource", 
 	     source_header);
 	j_decay = source_header.j_decay;
 	t0 = seqsource_header.t_sink;
+	boundary = prop_header.boundary;
 	seqsourceP = true;
       }
       else
@@ -216,6 +225,16 @@ int main(int argc, char **argv)
     }
   }    
 
+  // Sanity check
+  if (seqsourceP)
+  {
+    for(int i=0; i < boundary.size(); ++i)
+      if (boundary[i] != input.param.boundary[i])
+      {
+	QDPIO::cerr << "Incompatible boundary between input and seqsource" << endl;
+	QDP_abort(1);
+      }
+  }
 
   // Instantiate XML writer for XMLDAT
   XMLFileWriter xml_out("XMLDAT");
