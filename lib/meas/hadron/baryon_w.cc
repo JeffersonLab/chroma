@@ -1,4 +1,4 @@
-// $Id: baryon_w.cc,v 1.16 2004-05-01 20:16:04 edwards Exp $ 
+// $Id: baryon_w.cc,v 1.17 2004-06-08 03:39:55 edwards Exp $ 
 /*! \file
  *  \brief Baryon 2-pt functions
  */
@@ -199,7 +199,7 @@ void baryon(LatticePropagator& quark_propagator,
     return;
 
   // Setup the return stuff
-  const int num_baryons = 12;
+  const int num_baryons = 21;
   int num_mom = phases.numMom();
   barprop.resize(num_baryons,num_mom,length);
 
@@ -227,6 +227,9 @@ void baryon(LatticePropagator& quark_propagator,
 
   // C g_5 NR = (1/2)*C gamma_5 * ( 1 + g_4 )
   SpinMatrix Cg5NR = Gamma(5) * S_proj_unpol;
+
+  // C NR = (1/2)*C * ( 1 + g_4 )
+  SpinMatrix CNR = Gamma(10) * S_proj_unpol;
 
 
   LatticeComplex b_prop;
@@ -392,6 +395,141 @@ void baryon(LatticePropagator& quark_propagator,
 				 Cg5NR * quark_propagator);
       b_prop = trace(S_proj_unpol * traceColor(quark_propagator * traceSpin(di_quark)))
 	     + trace(S_proj_unpol * traceColor(quark_propagator * di_quark));
+      break;
+
+    case 12:
+      // Delta_x^+_4 -- unpolarised with explicit gamma_k interpolation
+      // |D_4, s_z=3/2> = 2*(d C gamma_1 u) "u_up" + (u C gamma_1 u) "d_up"
+      // C gamma_1 = Gamma(10) * Gamma(1) = Gamma(11)
+      // Unpolarized:
+      // S_proj_unpol = T = (1/2)(1 + gamma_4)
+      di_quark = quarkContract13(quark_propagator * Gamma(11),
+				 Gamma(11) * quark_propagator);
+      b_prop = trace(S_proj * traceColor(quark_propagator * traceSpin(di_quark)))
+	   + 2*trace(S_proj * traceColor(quark_propagator * di_quark));
+      
+      // Multiply by 3 for compatibility with heavy-light routine
+      b_prop *= 3.0;
+      break;
+
+    case 13:
+      // Delta_y^+_4 -- unpolarised with explicit gamma_k interpolation
+      // |D_4, s_z=3/2> = 2*(d C gamma_2 u) "u_up" + (u C gamma_2 u) "d_up"
+      // C gamma_2 = Gamma(10) * Gamma(2) = Gamma(8)
+      // Unpolarized:
+      // S_proj_unpol = T = (1/2)(1 + gamma_4)
+      di_quark = quarkContract13(quark_propagator * Gamma(8),
+				 Gamma(8) * quark_propagator);
+      b_prop = trace(S_proj * traceColor(quark_propagator * traceSpin(di_quark)))
+	   + 2*trace(S_proj * traceColor(quark_propagator * di_quark));
+      
+      // Multiply by 3 for compatibility with heavy-light routine
+      b_prop *= 3.0;
+      break;
+
+    case 14:
+      // Delta_z^+_4 -- unpolarised with explicit gamma_k interpolation
+      // |D_4, s_z=3/2> = 2*(d C gamma_3 u) "u_up" + (u C gamma_3 u) "d_up"
+      // C gamma_3 = Gamma(10) * Gamma(3) = Gamma(11)
+      // Unpolarized:
+      // S_proj_unpol = T = (1/2)(1 + gamma_4)
+      di_quark = quarkContract13(quark_propagator * Gamma(11),
+				 Gamma(11) * quark_propagator);
+      b_prop = trace(S_proj * traceColor(quark_propagator * traceSpin(di_quark)))
+	   + 2*trace(S_proj * traceColor(quark_propagator * di_quark));
+      
+      // Multiply by 3 for compatibility with heavy-light routine
+      b_prop *= 3.0;
+      break;
+
+    case 15:
+      // Delta_x^+_5 -- unpolarised with explicit gamma_k interpolation
+      // |D_5, s_z=3/2> = 2*(d C gamma_4 gamma_1 u) "u_up" + (u C gamma_4 gamma_1 u) "d_up"
+      // C gamma_4 gamma_1 = Gamma(10) * Gamma(8) * Gamma(1) = Gamma(3)
+      // Unpolarized:
+      // S_proj_unpol = T = (1/2)(1 + gamma_4)
+      di_quark = quarkContract13(quark_propagator * Gamma(3),
+				 Gamma(3) * quark_propagator);
+      b_prop = trace(S_proj * traceColor(quark_propagator * traceSpin(di_quark)))
+	   + 2*trace(S_proj * traceColor(quark_propagator * di_quark));
+      
+      // Multiply by 3 for compatibility with heavy-light routine
+      b_prop *= 3.0;
+      break;
+
+    case 16:
+      // Delta_y^+_5 -- unpolarised with explicit gamma_k interpolation
+      // |D_4, s_z=3/2> = 2*(d C gamma_4 gamma_2 u) "u_up" + (u C gamma_4 gamma_2 u) "d_up"
+      // C gamma_4 gamma_2 = Gamma(10) * Gamma(8) * Gamma(2) = Gamma(0)
+      // Unpolarized:
+      // S_proj_unpol = T = (1/2)(1 + gamma_4)
+      di_quark = quarkContract13(quark_propagator * Gamma(0),
+				 Gamma(0) * quark_propagator);
+      b_prop = trace(S_proj * traceColor(quark_propagator * traceSpin(di_quark)))
+	   + 2*trace(S_proj * traceColor(quark_propagator * di_quark));
+      
+      // Multiply by 3 for compatibility with heavy-light routine
+      b_prop *= 3.0;
+      break;
+
+    case 17:
+      // Delta_z^+_5 -- unpolarised with explicit gamma_k interpolation
+      // |D_4, s_z=3/2> = 2*(d C gamma_4 gamma_3 u) "u_up" + (u C gamma_4 gamma_3 u) "d_up"
+      // C gamma_4 gamma_3 = Gamma(10) * Gamma(8) * Gamma(3) = Gamma(1)
+      // Unpolarized:
+      // S_proj_unpol = T = (1/2)(1 + gamma_4)
+      di_quark = quarkContract13(quark_propagator * Gamma(1),
+				 Gamma(1) * quark_propagator);
+      b_prop = trace(S_proj * traceColor(quark_propagator * traceSpin(di_quark)))
+	   + 2*trace(S_proj * traceColor(quark_propagator * di_quark));
+      
+      // Multiply by 3 for compatibility with heavy-light routine
+      b_prop *= 3.0;
+      break;
+
+    case 18:
+      // Delta_x^+_6 -- unpolarised NR with explicit gamma_k interpolation
+      // |D_6, s_z=3/2> = 2*(d C gamma_1 (1/2)(1 + gamma_4) d) u) "u_up"
+      //                  + (u C gamma_1 (1/2)(1 + gamma_4) d) u) "d_up"
+      // Unpolarized:
+      // S_proj_unpol = T = (1/2)(1 + gamma_4)
+      di_quark = quarkContract13((quark_propagator*Gamma(1))*CNR,
+				 Gamma(1)*(CNR*quark_propagator));
+      b_prop = trace(S_proj * traceColor(quark_propagator * traceSpin(di_quark)))
+	   + 2*trace(S_proj * traceColor(quark_propagator * di_quark));
+      
+      // Multiply by 3 for compatibility with heavy-light routine
+      b_prop *= 3.0;
+      break;
+
+    case 19:
+      // Delta_y^+_6 -- unpolarised NR with explicit gamma_k interpolation
+      // |D_6, s_z=3/2> = 2*(d C gamma_2 (1/2)(1 + gamma_4) d) u) "u_up"
+      //                  + (u C gamma_2 (1/2)(1 + gamma_4) d) u) "d_up"
+      // Unpolarized:
+      // S_proj_unpol = T = (1/2)(1 + gamma_4)
+      di_quark = quarkContract13((quark_propagator*Gamma(2))*CNR,
+				 Gamma(2)*(CNR*quark_propagator));
+      b_prop = trace(S_proj * traceColor(quark_propagator * traceSpin(di_quark)))
+	   + 2*trace(S_proj * traceColor(quark_propagator * di_quark));
+      
+      // Multiply by 3 for compatibility with heavy-light routine
+      b_prop *= 3.0;
+      break;
+
+    case 20:
+      // Delta_z^+_6 -- unpolarised NR with explicit gamma_k interpolation
+      // |D_6, s_z=3/2> = 2*(d C gamma_3 (1/2)(1 + gamma_4) d) u) "u_up"
+      //                  + (u C gamma_3 (1/2)(1 + gamma_4) d) u) "d_up"
+      // Unpolarized:
+      // S_proj_unpol = T = (1/2)(1 + gamma_4)
+      di_quark = quarkContract13((quark_propagator*Gamma(4))*CNR,
+				 Gamma(4)*(CNR*quark_propagator));
+      b_prop = trace(S_proj * traceColor(quark_propagator * traceSpin(di_quark)))
+	   + 2*trace(S_proj * traceColor(quark_propagator * di_quark));
+      
+      // Multiply by 3 for compatibility with heavy-light routine
+      b_prop *= 3.0;
       break;
 
     default:
