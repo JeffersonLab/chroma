@@ -1,4 +1,4 @@
-//  $Id: ape_smear.cc,v 1.2 2003-09-25 22:21:48 edwards Exp $
+//  $Id: ape_smear.cc,v 1.3 2003-10-09 21:04:07 edwards Exp $
 
 /*! \file
  *  \brief APE-smearing of the gauge configuration
@@ -145,7 +145,7 @@ void APE_Smear(const multi1d<LatticeColorMatrix>& u,
     new_tr = sum(real(trace(u_smear * u_unproj))) / toDouble(Layout::vol()*Nc);
 
     if( wrswitch )
-      cout << " BLOCK: " << n_smr << " old_tr= " << old_tr << " new_tr= " << new_tr;
+      QDPIO::cout << " BLOCK: " << n_smr << " old_tr= " << old_tr << " new_tr= " << new_tr;
 
     /* Normalized convergence criterion: */
     conver = fabs((new_tr - old_tr) / old_tr);
