@@ -54,6 +54,11 @@ namespace Chroma {
 		   multi1d<LatticeColorMatrix> >& s) {
 	//Nop
       }
+
+      void copyPseudofermions(const Monomial<multi1d<LatticeColorMatrix>, 
+	                                     multi1d<LatticeColorMatrix> >& m) {
+	// Nop
+      }
     protected:
       const WilsonGaugeAct& getGaugeAct(void) const { 
 	return *gaugeact;

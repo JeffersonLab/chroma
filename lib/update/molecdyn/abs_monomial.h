@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_monomial.h,v 1.8 2005-01-04 14:57:25 bjoo Exp $
+// $Id: abs_monomial.h,v 1.9 2005-01-04 15:57:14 bjoo Exp $
 
 /*! @file
  * @brief Monomials - gauge action or fermion binlinear contributions for HMC
@@ -51,6 +51,9 @@ namespace Chroma
 
     //! Refresh pseudofermion fields if any
     virtual void refresh(const AbsFieldState<P,Q>& field_state) =0 ;
+
+    //! Copy pseudofermion fields from another monomial...
+    virtual void copyPseudofermions(const Monomial<P,Q>& m) = 0;
   };
 
 
@@ -82,6 +85,9 @@ namespace Chroma
 
     //! Refresh pseudofermion fields if any
     virtual void refresh(const AbsFieldState<P,Q>& field_state) = 0;
+
+    //! Copy pseudofermions if any
+    virtual void copyPseudofermions(const Monomial<P,Q>& m) = 0;
   };
 
   //-------------------------------------------------------------------------------------------
@@ -108,6 +114,9 @@ namespace Chroma
 
     // Refresh all pseudofermions
     virtual void refresh(const AbsFieldState<P,Q>& field_state) = 0 ;
+
+    //! Copy pseudofermions if any
+    virtual void copyPseudofermions(const Monomial<P,Q>& m) = 0;
   };
 
 
@@ -138,6 +147,9 @@ namespace Chroma
 
     //! Refresh pseudofermions
     virtual void refresh(const AbsFieldState<P,Q>& field_state) = 0;
+
+    //! Copy pseudofermions if any
+    virtual void copyPseudofermions(const Monomial<P,Q>& m) = 0;
   };
 
 
@@ -165,6 +177,9 @@ namespace Chroma
 
     //! Refresh pseudofermions
     virtual void refresh(const AbsFieldState<P,Q>& field_state) = 0;
+
+    //! Copy pseudofermions if any
+    virtual void copyPseudofermions(const Monomial<P,Q>& m) = 0;
   };
 
 
@@ -192,6 +207,9 @@ namespace Chroma
 
     //! Refresh pseudofermions
     virtual void refresh(const AbsFieldState<P,Q>& field_state) = 0;
+
+    //! Copy pseudofermions if any
+    virtual void copyPseudofermions(const Monomial<P,Q>& m) = 0;
   };
 
 
@@ -218,6 +236,9 @@ namespace Chroma
 
     //! Refresh pseudofermions
     virtual void refresh(const AbsFieldState<P,Q>& field_state) = 0;
+
+    //! Copy pseudofermions if any
+    virtual void copyPseudofermions(const Monomial<P,Q>& m) = 0;
 
   protected:
     //! Get at fermion action for pseudofermion field i
@@ -249,6 +270,9 @@ namespace Chroma
 
     //! Refresh pseudofermions
     virtual void refresh(const AbsFieldState<P,Q>& field_state) = 0;
+
+    //! Copy pseudofermions if any
+    virtual void copyPseudofermions(const Monomial<P,Q>& m) = 0;
 
   protected:
     //! Get at fermion action for pseudofermion field i
@@ -350,7 +374,18 @@ namespace Chroma
       (*M)(getPhi(), eta, MINUS);
     }				    
   
+    //! Copy pseudofermions if any
+    virtual void copyPseudofermions(const Monomial<P,Q>& m) {
+      try {
+	const TwoFlavorExactWilsonTypeFermMonomial<P,Q,Phi>& fm = dynamic_cast<  const TwoFlavorExactWilsonTypeFermMonomial<P,Q,Phi>& >(m);
 
+	getPhi() = fm.getPhi();
+      }
+      catch(bad_cast) { 
+	QDPIO::cerr << "Failed to cast ,,," << endl;
+	QDP_abort(1);
+      }
+    }
   protected:
     //! Accessor for pseudofermion with Pf index i (read only)
     virtual const Phi& getPhi(void) const = 0;
@@ -489,6 +524,20 @@ namespace Chroma
       // Finally, get phi
       (*PV)(getPhi(), eta, PLUS);
     }				    
+
+    virtual void copyPseudofermions(const Monomial<P,Q>& m) {
+      try {
+	const TwoFlavorExactWilsonTypeFermMonomial5D<P,Q,Phi>& fm = dynamic_cast< const TwoFlavorExactWilsonTypeFermMonomial5D<P,Q,Phi>& >(m);
+
+	for(int i=0 ; i < getPhi().size(); i++) { 
+	  (getPhi())[i] = (fm.getPhi())[i];
+	}
+      }
+      catch(bad_cast) { 
+	QDPIO::cerr << "Failed to cast ,,," << endl;
+	QDP_abort(1);
+      }
+    }
   
 
   protected:
