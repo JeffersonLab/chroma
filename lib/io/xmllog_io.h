@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: xmllog_io.h,v 1.4 2005-03-02 00:42:37 edwards Exp $
+// $Id: xmllog_io.h,v 1.5 2005-03-02 18:32:05 bjoo Exp $
 /*! \file
  * \brief Singleton instances of xml output
  */
@@ -13,6 +13,8 @@
 
 namespace Chroma 
 {
+
+  /* typedef SingletonHolder< XMLReader > TheXMLInputReader; */
 
   typedef SingletonHolder< XMLFileWriter > TheXMLOutputWriter;
 

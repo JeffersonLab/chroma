@@ -1,4 +1,4 @@
-// $Id: prec_ovdwf_linop_array_w.cc,v 1.10 2005-03-02 16:27:15 bjoo Exp $
+// $Id: prec_ovdwf_linop_array_w.cc,v 1.11 2005-03-02 18:32:04 bjoo Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned Overlap-DWF (Borici) linear operator
  */
@@ -60,7 +60,7 @@ namespace Chroma
   {
     START_CODE();
 
-    //chi.resize(N5);
+    if( chi.size() != N5 ) chi.resize(N5);
 
     switch ( isign ) {
     
@@ -123,7 +123,7 @@ namespace Chroma
   {
     START_CODE();
 
-    // chi.resize(N5);
+    if( chi.size() != N5 ) chi.resize(N5);
 
     // Copy and scale by TwoKappa (1/M0)
     for(int s(0);s<N5;s++)
@@ -220,7 +220,8 @@ namespace Chroma
   {
     START_CODE();
 
-    // chi.resize(N5);
+    if( chi.size() != N5 ) chi.resize(N5);
+
 
     switch ( isign ) 
     {

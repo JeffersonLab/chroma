@@ -1,4 +1,4 @@
-// $Id: prec_dwf_linop_array_w.cc,v 1.13 2005-03-02 16:27:15 bjoo Exp $
+// $Id: prec_dwf_linop_array_w.cc,v 1.14 2005-03-02 18:32:04 bjoo Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned domain-wall linear operator
  */
@@ -75,7 +75,7 @@ namespace Chroma
   {
     START_CODE();
 
-    //    chi.resize(N5);
+    if( chi.size() != N5 ) chi.resize(N5);
 
     switch ( isign ) {
     
@@ -138,7 +138,7 @@ namespace Chroma
   {
     START_CODE();
 
-    // chi.resize(N5);
+    if( chi.size() != N5 ) chi.resize(N5);
 
     switch ( isign ) {
 

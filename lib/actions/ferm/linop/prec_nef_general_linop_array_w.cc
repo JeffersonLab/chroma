@@ -1,4 +1,4 @@
-// $Id: prec_nef_general_linop_array_w.cc,v 1.7 2005-03-02 16:27:15 bjoo Exp $
+// $Id: prec_nef_general_linop_array_w.cc,v 1.8 2005-03-02 18:32:04 bjoo Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned NEF domain-wall linear operator
  */
@@ -113,6 +113,8 @@ namespace Chroma
 					   int cb) const
   {
     START_CODE();
+
+    if( chi.size() != N5 ) chi.resize(N5);
 
     switch ( isign ) {
     
@@ -243,6 +245,8 @@ namespace Chroma
 					      int cb) const
   {
     START_CODE();
+
+    if( chi.size() != N5 ) chi.resize(N5);
 
     // I use two temporaries
     multi1d<LatticeFermion> z(N5);
@@ -381,6 +385,8 @@ namespace Chroma
 					      int cb) const 
   {
     START_CODE();
+
+    if( chi.size() != N5 ) chi.resize(N5);
 
     switch ( isign ) 
     {

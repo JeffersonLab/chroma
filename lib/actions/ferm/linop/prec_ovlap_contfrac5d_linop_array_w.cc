@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_linop_array_w.cc,v 1.13 2005-03-02 16:27:15 bjoo Exp $
+// $Id: prec_ovlap_contfrac5d_linop_array_w.cc,v 1.14 2005-03-02 18:32:05 bjoo Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned domain-wall linear operator
  */
@@ -120,8 +120,8 @@ namespace Chroma
   {
     START_CODE();
 
-    // chi.resize(N5);
-
+    if( chi.size() != N5 ) chi.resize(N5);
+   
     // We don't care about the isign because our operator is Hermitian
     // Apply matrix
     //   [ A_0  B_0   0     ...                       ]  [ psi_0    ]
@@ -182,7 +182,7 @@ namespace Chroma
   {
     START_CODE();
 
-    // chi.resize(N5);
+    if( chi.size() != N5 )  chi.resize(N5);
 
     multi1d<LatticeFermion> y(N5);
 
@@ -234,7 +234,7 @@ namespace Chroma
   {
     START_CODE();
 
-    // chi.resize(N5);
+    if( chi.size() != N5 ) chi.resize(N5);
 
     LatticeFermion tmp;
     Real coeff;

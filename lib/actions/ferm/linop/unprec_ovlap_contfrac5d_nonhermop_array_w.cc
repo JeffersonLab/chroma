@@ -1,4 +1,4 @@
-/* $Id: unprec_ovlap_contfrac5d_nonhermop_array_w.cc,v 1.2 2004-12-12 21:22:16 edwards Exp $
+/* $Id: unprec_ovlap_contfrac5d_nonhermop_array_w.cc,v 1.3 2005-03-02 18:32:05 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
  */
@@ -25,6 +25,7 @@ UnprecOvlapContFrac5DNonHermOpArray::operator() (multi1d<LatticeFermion>& chi,
 {
   START_CODE();
 
+  if ( chi.size() != N5 )  chi.resize(N5);
 
   int G5 = Ns*Ns - 1;
 

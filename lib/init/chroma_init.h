@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: chroma_init.h,v 1.5 2005-03-02 02:58:22 edwards Exp $
+// $Id: chroma_init.h,v 1.6 2005-03-02 18:32:05 bjoo Exp $
 /*! \file
  *  \brief Initialization of Chroma
  */
@@ -54,8 +54,12 @@ namespace Chroma
   
   //! Get xml log instance
   XMLFileWriter& getXMLLogInstance();
-  
-//  }
+
+  /*
+  //! Get xml input instance
+  XMLReader& getXMLInputInstance();
+  */
+
 
 } // End namespace Chroma
 

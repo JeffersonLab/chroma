@@ -32,17 +32,35 @@ namespace Chroma
 
     //! Has the xml log instance been created?
     bool xmlLogP = false;
-  }
 
+    //! Has the input instance been created?
+    // bool xmlInputP = false;
+ 
+
+    // Internal
+    string constructFileName(const string& filename)
+    {
+      string ret_val;
+      if ( filename[0] == '.' || filename[0]=='/'  ) {
+	// Fully qualified pathname
+	ret_val = filename;
+      }
+      else { 
+	// Prepend CWD
+	ret_val = getCWD() + "/" + filename;
+      }
+      return ret_val;
+    }
+  }; // End anonymous namespace
 
   //! Get input file name
-  string getXMLInputFileName() {return input_filename;}
+  string getXMLInputFileName() {return constructFileName(input_filename);}
 
   //! Get output file name
-  string getXMLOutputFileName() {return output_filename;}
+  string getXMLOutputFileName() {return constructFileName(output_filename);}
 
   //! Get log file name
-  string getXMLLogFileName() {return log_filename;}
+  string getXMLLogFileName() {return constructFileName(log_filename);}
 
   //! Get current working directory
   string getCWD() {return cwd;}
@@ -146,6 +164,17 @@ namespace Chroma
   //! Chroma finalization routine
   void finalize(void)
   {
+    /*
+    if( xmlInputP ) { 
+      Chroma::getXMLInputInstance().close();
+    }
+    */
+    if( xmlOutputP ) { 
+      Chroma::getXMLOutputInstance().close();
+    }
+    if( xmlLogP ) {
+      Chroma::getXMLLogInstance().close();
+    }
     QDP_finalize();
   }
 
@@ -162,7 +191,14 @@ namespace Chroma
   {
     if (! xmlOutputP)
     {
-      TheXMLOutputWriter::Instance().open(Chroma::getXMLOutputFileName());
+      try { 
+	TheXMLOutputWriter::Instance().open(getXMLOutputFileName());
+      }
+      catch(...) { 
+	QDPIO::cerr << "Unable to open " << getXMLOutputFileName() << endl;
+	QDP_abort(1);
+      }
+
       xmlOutputP = true;
     }
 
@@ -174,14 +210,38 @@ namespace Chroma
   {
     if (! xmlLogP)
     {
-      TheXMLLogWriter::Instance().open(Chroma::getXMLLogFileName());
+      try { 
+	TheXMLLogWriter::Instance().open(getXMLLogFileName());
+      }
+      catch(...) {
+	QDPIO::cerr << "Unable to open " << getXMLLogFileName() << endl;
+	QDP_abort(1);
+      }
+
       xmlLogP = true;
     }
 
     return TheXMLLogWriter::Instance();
   }
   
-  
+  /*
+  //! Get xml input instance
+  XMLReader& getXMLInputInstance()
+  {
+    if(! xmlInputP ) {
+      try {
+	TheXMLInputReader::Instance().open(getXMLInputFileName());
+      }
+      catch() { 
+	QDPIO::cerr << "Unable to open " << pathname << endl;
+	QDP_abort(1);
+      }
+      xmlInputP = true;
+    }
+    
+    return TheXMLInputReader::Instance();
+  }
+  */
 
-//  }
+
 }

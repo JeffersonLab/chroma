@@ -1,4 +1,4 @@
-/* $Id: unprec_ovlap_contfrac5d_linop_array_w.cc,v 1.9 2005-03-02 16:27:15 bjoo Exp $
+/* $Id: unprec_ovlap_contfrac5d_linop_array_w.cc,v 1.10 2005-03-02 18:32:05 bjoo Exp $
 /*! \file
 *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
 */
@@ -25,7 +25,7 @@ namespace Chroma
   {
     START_CODE();
 
-    // chi.resize(N5);
+    if( chi.size() != N5 )  chi.resize(N5);
     int G5 = Ns*Ns - 1;
 
     // This is the upper limit for the index of the 5th dimension, i.e.

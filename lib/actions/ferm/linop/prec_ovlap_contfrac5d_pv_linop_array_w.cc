@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_pv_linop_array_w.cc,v 1.6 2005-03-02 16:27:15 bjoo Exp $
+// $Id: prec_ovlap_contfrac5d_pv_linop_array_w.cc,v 1.7 2005-03-02 18:32:05 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Pauli-Villars Continued Fraction 5D
  */
@@ -120,7 +120,7 @@ namespace Chroma
   {
     START_CODE();
 
-    // chi.resize(N5);
+    if( chi.size() != N5 ) chi.resize(N5);
 
     // We don't care about the isign because our operator is Hermitian
     // Apply matrix
@@ -183,7 +183,7 @@ namespace Chroma
   {
     START_CODE();
 
-    // chi.resize(N5);
+    if( chi.size() != N5 )  chi.resize(N5);
 
     multi1d<LatticeFermion> y(N5);
 
@@ -236,7 +236,7 @@ namespace Chroma
   {
     START_CODE();
 
-    // chi.resize(N5);
+    if( chi.size() != N5 )  chi.resize(N5);
 
     LatticeFermion tmp;
     Real coeff;
