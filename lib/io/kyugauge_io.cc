@@ -1,4 +1,4 @@
-// $Id: kyugauge_io.cc,v 1.4 2004-04-15 03:43:11 edwards Exp $
+// $Id: kyugauge_io.cc,v 1.5 2004-05-25 01:22:44 edwards Exp $
 
 /*! \file
  *  \brief Read a Kentucky gauge configuration
@@ -38,10 +38,9 @@ void readKYU(multi1d<LatticeColorMatrix>& u, const string& cfg_file)
      and nxyzt goes as x + (y-1)*nx + ...
      so that x changes fastest than y than z than t.
 
-     The words are d.p. -- 8 bytes -- or REAL64 
+     The words are d.p. -- 8 bytes -- or REAL64
   */
-//  LatticeReal64 re, im;
-  LatticeDouble re, im;
+  LatticeRealD re, im;
   
   for(int mu=0; mu < Nd; ++mu)
     for(int col=0; col < 3; ++col)
