@@ -1,4 +1,4 @@
-//  $Id: hyp_smear3d.cc,v 1.1 2005-02-03 22:10:43 sbasak Exp $
+//  $Id: hyp_smear3d.cc,v 1.2 2005-02-04 19:24:55 sbasak Exp $
 /*! \file
  *  \brief Hyp-smearing of the gauge configuration
  */
@@ -46,8 +46,8 @@ void Hyp_Smear3d(const multi1d<LatticeColorMatrix>& u,
 
   START_CODE();
   
-  if (Nd > 3)
-     QDP_error_exit("Hyp-smearing-3D only implemented for Nd=3",Nd);
+  if (Nd > 4)
+     QDP_error_exit("Hyp-smearing-3D only implemented for Nd=4",Nd);
 
   /*
    * Construct "level 1" smeared links in mu-direction

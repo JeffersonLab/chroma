@@ -1,8 +1,8 @@
 // -*- C++ -*-
-// $Id: hyp_smear3d.h,v 1.1 2005-02-03 22:11:08 sbasak Exp $
+// $Id: hyp_smear3d.h,v 1.2 2005-02-04 19:24:55 sbasak Exp $
 
-#ifndef __hyp_smear_h__
-#define __hyp_smear_h__
+#ifndef __hyp_smear3d_h__
+#define __hyp_smear3d_h__
 
 namespace Chroma { 
 //! Construct the "hyp-smeared" links of Anna Hasenfratz, with
