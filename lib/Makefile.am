@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.12 2003-03-08 04:45:00 edwards Exp $
+# $Id: Makefile.am,v 1.13 2003-03-14 05:06:06 flemingg Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -66,10 +66,7 @@ HDRS =  chroma.h chromabase.h chromainc.h primitives.h defs.h common_declaration
 # Fermion independent sources
 #
 GENERIC_SRCS = $(HDRS) gaus_smear.cc taproj.cc hotst.cc expm12.cc \
-               klein_gord.cc \
-               mesplq.cc \
-               reunit.cc \
-               srcfil.cc
+               klein_gord.cc mesplq.cc reunit.cc sftmom.cc srcfil.cc
 
 #
 # Object files to add if building the Wilson Builds...
