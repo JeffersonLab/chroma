@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.61 2003-12-04 02:58:05 edwards Exp $
+# $Id: Makefile.am,v 1.62 2003-12-06 20:57:22 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -80,7 +80,8 @@ libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
                gaus_smear.cc hyp_smear.cc ape_smear.cc \
                klein_gord.cc laplacian.cc  \
                su2extract.cc sunfill.cc invcg2.cc invcg2_array.cc qprop_io.cc \
-               milc_io.cc readmilc.cc writemilc.cc
+               milc_io.cc readmilc.cc writemilc.cc \
+               axgauge.cc coulgauge.cc grelax.cc polar_dec.cc rot_colvec.cc
 
 #
 # Object files to add if building the Wilson Builds...

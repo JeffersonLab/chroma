@@ -1,6 +1,5 @@
 // -*- C++ -*-
-// $Id: gfix.h,v 1.3 2003-10-10 03:46:46 edwards Exp $
-
+// $Id: gfix.h,v 1.4 2003-12-06 20:56:56 edwards Exp $
 /*! \file
  * \brief Gauge fixing routines
  *
@@ -16,5 +15,10 @@
 #ifndef __gfix_h__
 #define __gfix_h__
 
+#include "axgauge.h"
+#include "coulgauge.h"
+#include "grelax.h"
+#include "polar_dec.h"
+#include "rot_colvec.h"
 
 #endif
