@@ -28,5 +28,9 @@ it can use the BLAS routines therein. Hence there is no
 need to put those linkage flags into these configure_xxx.sh scripts
 they are picked up automa(t|g)ically from the QDP++.
 
+At present time, the assembler doesn't appear to work except
+for purely local (NO_COMMS, or FAKE_COMMS) installations of BAGEL.
+This will change. For the moment we recommend using the build
+without the BAGEL dslash. Its slow but safe.
 Your mileage may vary. Please contact me: bj@ph.ed.ac.uk for help.
 
