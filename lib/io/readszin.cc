@@ -1,4 +1,4 @@
-// $Id: readszin.cc,v 1.15 2003-10-08 16:00:35 edwards Exp $
+// $Id: readszin.cc,v 1.16 2003-10-09 15:09:05 edwards Exp $
 
 /*! \file
  *  \brief Read in a configuration written by SZIN up to configuration version 7.
@@ -271,7 +271,7 @@ void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
 
   cfg_in.close();
 
-  END_CODE("writeSzin");
+  END_CODE("readSzin");
 }
 
 
@@ -313,6 +313,6 @@ void readSzin(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_
     QDP_error_exit("Error in readszin: %s",e.c_str());
   }
 
-  END_CODE("writeSzin");
+  END_CODE("readSzin");
 }
 
