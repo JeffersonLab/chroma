@@ -1,4 +1,4 @@
-// $Id: inv_rel_cg1.cc,v 1.6 2004-05-31 19:32:16 bjoo Exp $
+// $Id: inv_rel_cg1.cc,v 1.7 2004-06-03 11:49:28 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -73,7 +73,7 @@ void InvRelCG1_a(const ApproxLinearOperator<T>& A,
 
     // The sqrt(norm2(p)) part is taken care of by using relative residua
     // in the inner solve
-    inner_tol = sqrt(rsd_sq)*sqrt(zeta)/Real(MaxCG);
+    inner_tol = sqrt(rsd_sq)*sqrt(zeta);
  
     A(q,p,PLUS,inner_tol);
   
