@@ -1,10 +1,14 @@
-// $Id: spectrum_w.cc,v 1.13 2003-10-09 20:32:37 edwards Exp $
+// $Id: spectrum_w.cc,v 1.14 2003-10-10 17:48:02 edwards Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.13  2003-10-09 20:32:37  edwards
+//  Revision 1.14  2003-10-10 17:48:02  edwards
+//  Added missing time_rev for this version of input_io. Other
+//  small tweaks.
+//
+//  Revision 1.13  2003/10/09 20:32:37  edwards
 //  Changed all cout/cerr to QDPIO::cout/cerr. Change QDP_info calls
 //  to use QDPIO::cout.
 //
@@ -173,6 +177,7 @@ void read(XMLReader& xml, const string& path, Spectrum_input_t& input)
       /**************************************************************************/
       read(paramtop, "CurrentP", input.param.CurrentP);
       read(paramtop, "BaryonP", input.param.BaryonP);
+      read(paramtop, "time_rev", input.param.time_rev);
       break;
 
     default :
@@ -329,11 +334,17 @@ int main(int argc, char **argv)
   // Input parameter structure
   Spectrum_input_t  input;
 
+  QDPIO::cout << "Before DATA" << endl;
+
   // Instantiate xml reader for DATA
   XMLReader xml_in("DATA");
 
+  QDPIO::cout << "Before read spectrum" << endl;
+
   // Read data
   read(xml_in, "/spectrum_w", input);
+
+  QDPIO::cout << "Before Layout" << endl;
 
   // Specify lattice size, shape, etc.
   Layout::setLattSize(input.param.nrow);
@@ -371,8 +382,6 @@ int main(int argc, char **argv)
 
   QDPIO::cout << endl << "     Gauge group: SU(" << Nc << ")" << endl;
 
-  multi1d<LatticeColorMatrix> u(Nd);
-
   QDPIO::cout << "     volume: " << input.param.nrow[0];
   for (int i=1; i<Nd; ++i) {
     QDPIO::cout << " x " << input.param.nrow[i];
@@ -380,6 +389,7 @@ int main(int argc, char **argv)
   QDPIO::cout << endl;
 
   // Read in the configuration along with relevant information.
+  multi1d<LatticeColorMatrix> u(Nd);
   XMLReader gauge_xml;
 
   switch (input.param.cfg_type) 
@@ -391,6 +401,8 @@ int main(int argc, char **argv)
     QDP_error_exit("Configuration type is unsupported.");
   }
 
+  // Check if the gauge field configuration is unitarized
+  unitarityCheck(u);
 
   // Instantiate XML writer for XMLDAT
   XMLFileWriter xml_out("XMLDAT");
@@ -410,30 +422,22 @@ int main(int argc, char **argv)
 
 
   // First calculate some gauge invariant observables just for info.
-  // This is really cheap.
   Double w_plaq, s_plaq, t_plaq, link;
+  multi1d<DComplex> pollp(Nd);
+
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
+  for(int mu = 0; mu < Nd; ++mu)
+    polylp(u, pollp[mu], mu);
 
   push(xml_out, "Observables");
   Write(xml_out, w_plaq);
   Write(xml_out, s_plaq);
   Write(xml_out, t_plaq);
   Write(xml_out, link);
+  Write(xml_out, pollp);
   pop(xml_out);
 
   xml_out.flush();
-
-  // Next check the gauge field configuration by reunitarizing.
-  {
-    LatticeBoolean lbad;
-    int numbad;
-    multi1d<LatticeColorMatrix> u_tmp(Nd);
-    u_tmp = u;
-    int mu;
-    for (mu=0; mu < Nd; ++mu) {
-      reunit(u_tmp[mu], lbad, numbad, REUNITARIZE_ERROR);
-    }
-  }
 
   // Initialize the slow Fourier transform phases
   SftMom phases(input.param.mom2_max, input.param.avg_equiv_mom, input.param.j_decay);
