@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: formfac_w.h,v 1.8 2003-10-14 17:41:23 edwards Exp $
+// $Id: formfac_w.h,v 1.9 2003-10-14 17:42:34 edwards Exp $
 /*! \file
  *  \brief Form-factors 
  *
@@ -40,6 +40,8 @@ void read(BinaryReader& bin, FormFac_insertions_t& form);
 void write(BinaryWriter& bin, const FormFac_momenta_t& mom);
 void write(BinaryWriter& bin, const FormFac_insertion_t& mes);
 void write(BinaryWriter& bin, const FormFac_insertions_t& form);
+
+
 
 
 

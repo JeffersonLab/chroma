@@ -1,4 +1,4 @@
-// $Id: formfac_w.cc,v 1.12 2003-10-14 17:41:23 edwards Exp $
+// $Id: formfac_w.cc,v 1.13 2003-10-14 17:42:34 edwards Exp $
 /*! \file
  *  \brief Form-factors 
  *
@@ -12,8 +12,6 @@
 
 using namespace QDP;
 
-
-#if 1
 
 // Read a momenta struct
 void read(BinaryReader& bin, FormFac_momenta_t& mom)
@@ -66,8 +64,6 @@ void write(BinaryWriter& bin, const FormFac_insertions_t& form)
   write(bin, form.output_version);
   write(bin, form.formFac);
 }
-
-#endif
 
 
 
