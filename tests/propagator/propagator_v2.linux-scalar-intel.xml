@@ -4,7 +4,7 @@
 <propagator>
   <Input><propagator>
 <annotation>
-; $Id: propagator_v2.linux-scalar-intel.xml,v 1.1 2004-01-07 04:14:21 edwards Exp $
+; $Id: propagator_v2.linux-scalar-intel.xml,v 1.2 2004-01-07 22:00:10 edwards Exp $
 ;
 ; PROPAGATOR input file.
 ;
@@ -43,7 +43,7 @@
 </Cfg>
 <Prop>
  <source_file>foo</source_file>
- <prop_file>prop_0</prop_file>
+ <prop_file>propagator_0</prop_file>
 </Prop>
 </propagator>
 
@@ -152,6 +152,9 @@
   </Qprop>
 </QuarkProp4>
 
+  <Relaxation_Iterations>
+    <ncg_had>271</ncg_had>
+  </Relaxation_Iterations>
   <Pion_correlator>
     <pion_corr>613.428 641.35 747.057 823.685 838.027 754.225 626.343 612.769</pion_corr>
   </Pion_correlator>
