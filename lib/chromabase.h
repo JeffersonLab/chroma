@@ -1,4 +1,4 @@
-// $Id: chromabase.h,v 1.5 2004-11-08 16:18:49 mcneile Exp $
+// $Id: chromabase.h,v 1.6 2004-12-29 22:10:00 edwards Exp $
 //
 // Absolute basic stuff to use chroma
 //
@@ -17,21 +17,21 @@
 
 namespace QDP {
 
-// Trait classes to undo DW index
+// Trait classes 
 template<class T>
-struct BaseType {};
+struct PropTypeTraits {};
 
 template<>
-struct BaseType<LatticeFermion>
+struct PropTypeTraits<LatticeDiracFermion>
 {
-  typedef LatticeFermion   Type_t;
+  typedef LatticeDiracPropagator   Type_t;
 };
 
 
 template<>
-struct BaseType<LatticeStaggeredFermion>
+struct PropTypeTraits<LatticeStaggeredFermion>
 {
-  typedef LatticeStaggeredFermion   Type_t;
+  typedef LatticeStaggeredPropagator   Type_t;
 };
 
 
