@@ -1,4 +1,4 @@
-// $Id: t_propagator_s.cc,v 1.10 2004-01-21 13:29:41 mcneile Exp $
+// $Id: t_propagator_s.cc,v 1.11 2004-01-29 15:19:44 bjoo Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -459,7 +459,7 @@ int main(int argc, char **argv)
       stag_prop[src_ind] = quark_propagator;
       } // end src_ind
   
-      multi2d<DComplex> pion(16, input.param,nrow[3]);
+      multi2d<DComplex> pion(16, input.param.nrow[3]);
       staggeredPionsFollana(stag_prop, pion, j_decay);
 
     push(xml_out, "Here are all 16 pions");
