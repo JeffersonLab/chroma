@@ -22,28 +22,20 @@ LDADD = -lchroma @QDPXX_LIBS@ @LIBS@
 #
 HDRS =
 
-#
-# add the programs to build in here
-# 
-noinst_PROGRAMS= propagator
-
-propagator_SOURCES= propagator.cc
-propagator_DEPENDENCIES= build_chroma_libs
-
-
 ## NOTE: if you want the programs to be build by default when 'make' is run
 ##   add them to bin_PROGRAMS.  But, if you don't want them to be installed
 ##   in @prefix@/bin by 'make install' then add them to nodist_PROGRAMS.
 ##   Another option is to add it to check_PROGRAMS, which means it will only
 ##   be built by 'make check' and is not installed.
-#noinst_PROGRAMS = example
-#check_PROGRAMS = example
+#noinst_PROGRAMS = propagator
+check_PROGRAMS = propagator
 
 #
 # The program and its dependencies
 #
-#example_SOURCES =  example.cc $(HDRS)
-#example_DEPENDENCIES = build_chroma_libs
+propagator_SOURCES= propagator.cc
+propagator_DEPENDENCIES= build_chroma_libs
+
 #
 # The latter rule will always try to rebuild libchroma.a when you 
 # try to compile example
