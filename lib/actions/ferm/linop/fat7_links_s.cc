@@ -1,4 +1,4 @@
-/*  $Id: fat7_links_s.cc,v 1.2 2004-07-28 03:47:26 edwards Exp $  */
+/*  $Id: fat7_links_s.cc,v 1.3 2004-12-08 21:49:59 edwards Exp $  */
 
 /* FAT7_LINKS */
 
@@ -18,7 +18,7 @@
 //
 //  NO CHECKERBOARDING HERE
 
-#include "chroma.h"
+#include "actions/ferm/linop/improvement_terms_s.h"
 
 using namespace QDP;
 
