@@ -1,4 +1,4 @@
-// $Id: rect_gaugeact.cc,v 1.3 2005-01-14 02:27:11 edwards Exp $
+// $Id: rect_gaugeact.cc,v 1.4 2005-01-14 03:12:34 edwards Exp $
 /*! \file
  *  \brief Rectangle gauge action
  */
@@ -100,7 +100,7 @@ namespace Chroma
     // in the taproj, which is a factor of 2 different from the 
     // one used here.
 
-    Real coeff_tmp = Real(1)*Real(coeff)/Real(2*Nc);
+    Real coeff_tmp = Real(-1)*Real(coeff)/Real(2*Nc);
 
     for(int mu = 0; mu < Nd; ++mu)
     {
@@ -259,7 +259,7 @@ namespace Chroma
     }
   
     Double S_rect = sum(lgimp);
-    S_rect *= coeff / Real(Nc);   // what about factors here???
+    S_rect *= -coeff / Real(Nc);   // note sign here
   
     END_CODE();
     
