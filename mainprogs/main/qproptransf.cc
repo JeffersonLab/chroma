@@ -1,4 +1,4 @@
-// $Id: qproptransf.cc,v 1.10 2004-05-07 16:05:33 edwards Exp $
+// $Id: qproptransf.cc,v 1.11 2004-05-13 00:44:06 edwards Exp $
 /*! \file
  *  \brief Converts quark propagators in one format into another format.
  */
@@ -375,10 +375,7 @@ int main(int argc, char *argv[])
 
 	XMLBufferWriter prop_out_record_xml;
 	push(prop_out_record_xml, "SequentialProp");
-	write(prop_out_record_xml, "SeqProp", sequential_prop_header.seqprop_header);
-	write(prop_out_record_xml, "SeqSourceSinkSmear", sequential_prop_header.sink_header);
-	write(prop_out_record_xml, "SeqSource", sequential_prop_header.seqsource_header);
-	write(prop_out_record_xml, "ForwardProps", sequential_prop_header.forward_props);
+	write(prop_out_record_xml, ".", sequential_prop_header);
 	write(prop_out_record_xml, "Config_info", gauge_xml);
 	pop(prop_out_record_xml);
     
