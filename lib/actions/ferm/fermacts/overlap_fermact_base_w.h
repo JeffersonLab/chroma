@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: overlap_fermact_base_w.h,v 1.13 2004-09-23 14:29:09 bjoo Exp $
+// $Id: overlap_fermact_base_w.h,v 1.14 2004-10-15 16:37:19 bjoo Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -11,6 +11,8 @@
 #include "meas/eig/ischiral_w.h"
 #include "actions/ferm/linop/lgherm_w.h"
 #include "io/enum_io/enum_inner_solver_type_io.h"
+#include "actions/ferm/linop/lDeltaLs_w.h"
+
 using namespace QDP;
 
 namespace Chroma
@@ -46,9 +48,15 @@ namespace Chroma
       return new lgherm<LatticeFermion>(linOp(state));
     }
 
+    virtual const LinearOperator<LatticeFermion>* DeltaLs(Handle< const ConnectState> state) const {
+      Handle< const LinearOperator<LatticeFermion> > g5eps=lgamma5epsH(state);
+      return new lDeltaLs(g5eps);
+    }
+
     //! Produce a linear operator that gives back gamma_5 eps(H)
     virtual const LinearOperator<LatticeFermion>* lgamma5epsH(Handle<const ConnectState> state) const = 0;
 
+   
     //! Produce a linear operator that gives back gamma_5 eps(H)
     virtual const LinearOperator<LatticeFermion>* lgamma5epsHPrecondition(Handle<const ConnectState> state) const = 0;
 

@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.245 2004-10-13 22:17:21 ikuro Exp $
+# $Id: Makefile.in,v 1.246 2004-10-15 16:37:19 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -73,6 +73,7 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/lovddag_double_pass_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/lg5eps_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/lg5eps_double_pass_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/lDeltaLs_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/lwldslash_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/overlapbu_linop_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/prec_dwf_linop_base_array_w.h \
@@ -179,7 +180,7 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@	      ovlap_partfrac4d_fermact_w.cc overlap_state_info.cc \
 @BUILD_WILSON_LIBS_TRUE@	      unprec_ovlap_contfrac5d_fermact_array_w.cc \
 @BUILD_WILSON_LIBS_TRUE@	      prec_ovlap_contfrac5d_fermact_array_w.cc \
-@BUILD_WILSON_LIBS_TRUE@	      prec_ovlap_contfrac5d_linop_array_w.cc
+@BUILD_WILSON_LIBS_TRUE@	      prec_ovlap_contfrac5d_linop_array_w.cc lDeltaLs_w.cc
 
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_6 = actions/ferm/linop/lwldslash_w_sse.h
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_7 = lwldslash_w_sse.cc
@@ -482,12 +483,13 @@ libchroma_a_AR = $(AR) cru
 libchroma_a_LIBADD =
 am__libchroma_a_SOURCES_DIST = gauge_startup.cc gaugebc_utils.cc \
 	gaugeact_utils.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
-	expmat.cc eesu3.cc expsu3.cc mesplq.cc polylp.cc reunit.cc unit_check.cc \
-	sftmom.cc srcfil.cc enum_cfgtype_io.cc enum_coeffs_io.cc \
-	enum_proptype_io.cc enum_eigenvectype_io.cc enum_fermtype_io.cc \
-	enum_seqsrctype_io.cc enum_simplebctype_io.cc \
-	enum_gaugeacttype_io.cc enum_invtype_io.cc enum_wvfkind_io.cc \
-	enum_qdpvolfmt_io.cc enum_srcsnktype_io.cc enum_wavetype_io.cc \
+	eesu3.cc expmat.cc expsu3.cc mesplq.cc polylp.cc reunit.cc \
+	unit_check.cc sftmom.cc srcfil.cc enum_cfgtype_io.cc \
+	enum_coeffs_io.cc enum_proptype_io.cc enum_eigenvectype_io.cc \
+	enum_fermtype_io.cc enum_seqsrctype_io.cc \
+	enum_simplebctype_io.cc enum_gaugeacttype_io.cc \
+	enum_invtype_io.cc enum_wvfkind_io.cc enum_qdpvolfmt_io.cc \
+	enum_srcsnktype_io.cc enum_wavetype_io.cc \
 	enum_heatbathtype_io.cc enum_gaugebc_io.cc \
 	enum_md_integrator_type_io.cc enum_inner_solver_type_io.cc \
 	szin_io.cc readszin.cc writeszin.cc su3proj.cc sun_proj.cc \
@@ -542,7 +544,8 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc gaugebc_utils.cc \
 	overlap_state_info.cc \
 	unprec_ovlap_contfrac5d_fermact_array_w.cc \
 	prec_ovlap_contfrac5d_fermact_array_w.cc \
-	prec_ovlap_contfrac5d_linop_array_w.cc lwldslash_w_sse.cc \
+	prec_ovlap_contfrac5d_linop_array_w.cc lDeltaLs_w.cc \
+	lwldslash_w_sse.cc \
 	actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc \
 	lwldslash_w_pab.cc mesphas_s.cc mesphas_follana_s.cc \
 	pions_follana_s.cc follana_io_s.cc walfil_s.cc baryon_s.cc \
@@ -632,7 +635,8 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc gaugebc_utils.cc \
 @BUILD_WILSON_LIBS_TRUE@	overlap_state_info.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	unprec_ovlap_contfrac5d_fermact_array_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	prec_ovlap_contfrac5d_fermact_array_w.$(OBJEXT) \
-@BUILD_WILSON_LIBS_TRUE@	prec_ovlap_contfrac5d_linop_array_w.$(OBJEXT)
+@BUILD_WILSON_LIBS_TRUE@	prec_ovlap_contfrac5d_linop_array_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	lDeltaLs_w.$(OBJEXT)
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__objects_2 = lwldslash_w_sse.$(OBJEXT)
 @BUILD_SSE_DWF_CG_TRUE@am__objects_3 = \
 @BUILD_SSE_DWF_CG_TRUE@	prec_dwf_fermact_array_sse_w.$(OBJEXT)
@@ -656,11 +660,10 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc gaugebc_utils.cc \
 @BUILD_STAGGERED_LIBS_TRUE@	stag_phases_s.$(OBJEXT)
 am_libchroma_a_OBJECTS = gauge_startup.$(OBJEXT) gaugebc_utils.$(OBJEXT) \
 	gaugeact_utils.$(OBJEXT) rgauge.$(OBJEXT) taproj.$(OBJEXT) \
-	hotst.$(OBJEXT) expm12.$(OBJEXT) expmat.$(OBJEXT) \
-	eesu3.$(OBJEXT) \
-	expsu3.$(OBJEXT) mesplq.$(OBJEXT) polylp.$(OBJEXT) \
-	reunit.$(OBJEXT) unit_check.$(OBJEXT) sftmom.$(OBJEXT) \
-	srcfil.$(OBJEXT) enum_cfgtype_io.$(OBJEXT) \
+	hotst.$(OBJEXT) expm12.$(OBJEXT) eesu3.$(OBJEXT) \
+	expmat.$(OBJEXT) expsu3.$(OBJEXT) mesplq.$(OBJEXT) \
+	polylp.$(OBJEXT) reunit.$(OBJEXT) unit_check.$(OBJEXT) \
+	sftmom.$(OBJEXT) srcfil.$(OBJEXT) enum_cfgtype_io.$(OBJEXT) \
 	enum_coeffs_io.$(OBJEXT) enum_proptype_io.$(OBJEXT) \
 	enum_eigenvectype_io.$(OBJEXT) enum_fermtype_io.$(OBJEXT) \
 	enum_seqsrctype_io.$(OBJEXT) enum_simplebctype_io.$(OBJEXT) \
@@ -718,7 +721,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/diractodr.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/displacement.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/dwf_quarkprop4_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/dwffld_w.Po ./$(DEPDIR)/eig_spec.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/dwffld_w.Po ./$(DEPDIR)/eesu3.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/eig_spec.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/eig_spec_array.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/eigen_io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/enum_cfgtype_io.Po \
@@ -739,7 +743,6 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/enum_wavetype_io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/enum_wvfkind_io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/expm12.Po ./$(DEPDIR)/expmat.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/eesu3.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/expsu3.Po ./$(DEPDIR)/fat7_links_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ferm_refresh.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/fermact_qprop.Po \
@@ -775,7 +778,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/invsumr.Po ./$(DEPDIR)/ischiral_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/klein_gord.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/kyugauge_io.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/kyuqprop_io.Po ./$(DEPDIR)/laplacian.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/kyuqprop_io.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/lDeltaLs_w.Po ./$(DEPDIR)/laplacian.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/lg5eps_double_pass_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/lg5eps_w.Po ./$(DEPDIR)/loops_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/lovddag_double_pass_w.Po \
@@ -976,6 +980,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/displacement.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dwf_quarkprop4_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dwffld_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eesu3.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eig_spec.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eig_spec_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eigen_io.Po@am__quote@
@@ -998,7 +1003,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_wvfkind_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/expm12.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/expmat.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eesu3.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/expsu3.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fat7_links_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ferm_refresh.Po@am__quote@
@@ -1043,6 +1047,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/klein_gord.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kyugauge_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kyuqprop_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lDeltaLs_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/laplacian.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lg5eps_double_pass_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lg5eps_w.Po@am__quote@

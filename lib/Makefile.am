@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.178 2004-10-13 22:17:20 ikuro Exp $
+# $Id: Makefile.am,v 1.179 2004-10-15 16:37:19 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -199,6 +199,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/lovddag_double_pass_w.h \
 	actions/ferm/linop/lg5eps_w.h \
 	actions/ferm/linop/lg5eps_double_pass_w.h \
+	actions/ferm/linop/lDeltaLs_w.h \
 	actions/ferm/linop/lwldslash_w.h \
 	actions/ferm/linop/overlapbu_linop_w.h \
 	actions/ferm/linop/prec_dwf_linop_base_array_w.h \
@@ -378,7 +379,7 @@ libchroma_a_SOURCES += baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
 	      ovlap_partfrac4d_fermact_w.cc overlap_state_info.cc \
 	      unprec_ovlap_contfrac5d_fermact_array_w.cc \
 	      prec_ovlap_contfrac5d_fermact_array_w.cc \
-	      prec_ovlap_contfrac5d_linop_array_w.cc
+	      prec_ovlap_contfrac5d_linop_array_w.cc lDeltaLs_w.cc
 
 # These need to be reworked for new instantiation 
 #	zolotarev5d_fermact_array_w.cc 

@@ -1,6 +1,9 @@
-// $Id: multi_propagator.cc,v 1.9 2004-07-28 03:08:04 edwards Exp $
+// $Id: multi_propagator.cc,v 1.10 2004-10-15 16:37:20 bjoo Exp $
 // $Log: multi_propagator.cc,v $
-// Revision 1.9  2004-07-28 03:08:04  edwards
+// Revision 1.10  2004-10-15 16:37:20  bjoo
+// Added t_mres4d and lDeltaLs files for 4D m_res calculations
+//
+// Revision 1.9  2004/07/28 03:08:04  edwards
 // Added START/END_CODE to all routines. Changed some to not pass an
 // argument.
 //
@@ -75,15 +78,22 @@
 #include <iostream>
 #include <cstdio>
 #include <iomanip>
-using namespace std;
-#include "chroma.h"
 
+#include "chroma.h"
+using namespace std;
 using namespace QDP;
 
+using namespace Chroma;
 
-// define MRES_CALCULATION in order to run the code computing the residual mass
-// and the pseudoscalar to conserved axial current correlator
-#define MRES_CALCULATION
+bool linkage_hack()
+{
+  bool foo = true;
+
+  // 4D actions
+  foo &= UnprecWilsonFermActEnv::registered;
+  foo &= OvlapPartFrac4DFermActEnv::registered;
+  return foo;
+}
 
 /*
  * Input 
@@ -99,6 +109,7 @@ struct Propagator_input_t
 {
   ChromaMultiProp_t     param;
   Cfg_t            cfg;
+  std::string      stateInfo;
   Prop_t           prop;
 };
 
@@ -128,6 +139,20 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     // Read in the gauge configuration info
     read(inputtop, "Cfg", input.cfg);
 
+    // Read any auxiliary state information
+    if( inputtop.count("StateInfo") == 1 ) {
+      XMLReader xml_state_info(inputtop, "StateInfo");
+      std::ostringstream os;
+      xml_state_info.print(os);
+      input.stateInfo = os.str();
+    }
+    else { 
+      XMLBufferWriter s_i_xml;
+      push(s_i_xml, "StateInfo");
+      pop(s_i_xml);
+      input.stateInfo = s_i_xml.str();
+    }
+    
     // Read in the source/propagator info
     read(inputtop, "Prop", input.prop);
   }
@@ -317,39 +342,71 @@ int main(int argc, char **argv)
   //
   // Initialize fermion action
   //
-  switch (input.param.FermActHandle->getFermActType()) {
-  case FERM_ACT_ZOLOTAREV_4D:
-    {
-      QDPIO::cout << "FERM_ACT_ZOLOTAREV_4D" << endl;
-      const Zolotarev4DFermActParams& zolo4d = dynamic_cast<const Zolotarev4DFermActParams& > (*(input.param.FermActHandle));
+  std::istringstream  xml_s(input.param.fermact);
+  XMLReader  fermacttop(xml_s);
+  const string fermact_path = "/FermionAction";
+  string fermact;
 
-      // Construct Fermact
-      Zolotarev4DFermAct S(fbc, zolo4d, xml_out); 
+  try
+  {
+    read(fermacttop, fermact_path + "/FermAct", fermact);
+  }
+  catch (const std::string& e) 
+  {
+    QDPIO::cerr << "Error reading fermact: " << e << endl;
+    throw;
+  }
 
-      // Stuff the pointer into a handle. Now, the handle owns the data.
-      Handle<const ConnectState> state(S.createState(u,
-						     zolo4d.StateInfo,
-						     xml_out,
-						     zolo4d.AuxFermActHandle->getMass() ));
-      
-      // Go baby
-      multiQuarkProp4(quark_propagator, 
-		      xml_out, 
-		      quark_prop_source,
-		      S, 
-		      state, 
-		      input.param.invParam.invType, 
-		      input.param.MultiMasses,
-		      input.param.invParam.RsdCG, 
-		      input.param.invParam.MaxCG, 
-		      ncg_had);
+  QDPIO::cout << "FermAct = " << fermact << endl;
+
+  // Deal with auxiliary (and polymorphic) state information
+  // eigenvectors, eigenvalues etc. The XML for this should be
+  // stored as a string called "stateInfo" in the param struct.
+
+  // Make a reader for the stateInfo
+  std::istringstream state_info_is(input.stateInfo);
+  XMLReader state_info_xml(state_info_is);
+  string state_info_path="/StateInfo";
+
+  bool success;
+  try {
+    QDPIO::cout << "Try the various 4D factories" << endl;
+    
+    // Generic Wilson-Type stuff
+    Handle< WilsonTypeFermAct<LatticeFermion> >
+      S_f(TheWilsonTypeFermActFactory::Instance().createObject(fermact,
+							       fbc,
+							       fermacttop,
+							       fermact_path));
+    
+    
+    Handle<const ConnectState> state(S_f->createState(u,
+						      state_info_xml,
+						      state_info_path));  // uses phase-multiplied u-fields
+        
+    // If this cast fails a bad cast exception is thrown.
+    OverlapFermActBase& S_ov = dynamic_cast<OverlapFermActBase&>(*S_f);
+    
+    
+    S_ov.multiQuarkProp4(quark_propagator, 
+			 xml_out, 
+			 quark_prop_source,
+			 state, 
+			 input.param.MultiMasses, 
+			 input.param.invParam, 
+			 1,
+			 ncg_had);
 		      
-    }
-    break;
-  default:
-    QDPIO::cerr << "Unsupported fermion action" << endl;
+  }
+  catch(const std::string &e) {
+    QDPIO::cout << "4D Wilson like: " << e << endl;
+
+  }
+  catch(bad_cast) {
+    QDPIO::cerr << "Fermion action created cannot be used for multi mass qprop" << endl;
     QDP_abort(1);
   }
+
 
   push(xml_out,"Relaxation_Iterations");
   write(xml_out, "ncg_had", ncg_had);
@@ -394,8 +451,20 @@ int main(int argc, char **argv)
     // for input param.
     // I Will eventually write Copy Constructors.
 
-    ChromaProp_t out_param(input.param, m);
+    // ChromaProp_t out_param(input.param, m);
  
+    ChromaProp_t out_param;
+    out_param.FermTypeP = input.param.FermTypeP;
+    out_param.nonRelProp = input.param.nonRelProp;
+    out_param.fermact = input.param.fermact;
+    out_param.invParam.invType = input.param.invParam.invType;
+    out_param.invParam.MROver = input.param.invParam.MROver;
+    out_param.invParam.MaxCG = input.param.invParam.MaxCG;
+    out_param.invParam.RsdCG = input.param.invParam.RsdCG[m];
+    out_param.boundary = input.param.boundary;
+    out_param.nrow =input.param.nrow ;
+
+
     write(record_xml, "ForwardProp", out_param);
     XMLReader xml_tmp(source_record_xml, "/MakeSource");
     record_xml << xml_tmp;

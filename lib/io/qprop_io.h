@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qprop_io.h,v 1.21 2004-09-28 13:01:48 bjoo Exp $
+// $Id: qprop_io.h,v 1.22 2004-10-15 16:37:19 bjoo Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -63,9 +63,8 @@ struct PropSink_t
 };
 
 
-class ChromaMultiProp_t 
+struct ChromaMultiProp_t 
 { 
-public:
   FermType        FermTypeP;
   bool            nonRelProp;   // compute only the nonrelativistic portion of this prop?
 
@@ -81,9 +80,8 @@ public:
 
 
 //! Propagator inversion parameters
-class ChromaProp_t 
+struct ChromaProp_t 
 { 
-public:
   FermType        FermTypeP;
   bool            nonRelProp;   // compute only the nonrelativistic portion of this prop?
 
@@ -94,7 +92,6 @@ public:
   InvertParam_t   invParam;   // Inverter parameters
   multi1d<int>    boundary;
   multi1d<int>    nrow;          // lattice size
-
 };
 
 
