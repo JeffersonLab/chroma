@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.31 2004-01-07 04:44:26 edwards Exp $
+// $Id: propagator.cc,v 1.32 2004-01-07 21:59:10 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -295,7 +295,7 @@ int main(int argc, char **argv)
   //
   LatticePropagator quark_propagator;
   XMLBufferWriter xml_buf;
-  int ncg_had;
+  int ncg_had = 0;
 
   //
   // Initialize fermion action
@@ -334,6 +334,7 @@ int main(int argc, char **argv)
   }
   break;
 
+#if 0
   case FERM_ACT_DWF:
   {
     QDPIO::cout << "FERM_ACT_DWF" << endl;
@@ -371,6 +372,7 @@ int main(int argc, char **argv)
 	       ncg_had);
   }
   break;
+#endif
 
 //  case FERM_ACT_INTERNAL_UNPRECONDITIONED_DWF;
 //  UnprecDWFermAct S_f(fbc_a, OverMass, Mass);
@@ -382,12 +384,15 @@ int main(int argc, char **argv)
 
   xml_out << xml_buf;   // write-out any output from the quarkProp4 routine
 
-  // Debugging aid - write out the pion propagator in the Nd-1 direction
+  push(xml_out,"Relaxation_Iterations");
+  Write(xml_out, ncg_had);
+  pop(xml_out);
+
+  // Sanity check - write out the pion propagator in the Nd-1 direction
   {
     // Initialize the slow Fourier transform phases
     SftMom phases(0, true, Nd-1);
 
-    /* The nonconserved vector current first */
     multi1d<Double> pion_corr = sumMulti(localNorm2(quark_propagator), 
 					 phases.getSubset());
 
@@ -416,7 +421,7 @@ int main(int argc, char **argv)
   switch (input.param.prop_type) 
   {
   case PROP_TYPE_SZIN:
-    writeSzinQprop(quark_propagator, input.prop.prop_file, input.param.Mass);
+    writeSzinQprop(quark_propagator, input.prop.prop_file, massToKappa(input.param.Mass));
     break;
 
 //  case PROP_TYPE_SCIDAC:
@@ -427,6 +432,7 @@ int main(int argc, char **argv)
     QDP_error_exit("Propagator type is unsupported.");
   }
 
+  pop(xml_out);  // propagator
 
   xml_out.close();
   xml_in.close();
