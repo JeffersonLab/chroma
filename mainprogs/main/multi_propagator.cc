@@ -1,6 +1,9 @@
-// $Id: multi_propagator.cc,v 1.1 2004-04-16 17:04:49 bjoo Exp $
+// $Id: multi_propagator.cc,v 1.2 2004-04-16 20:18:03 bjoo Exp $
 // $Log: multi_propagator.cc,v $
-// Revision 1.1  2004-04-16 17:04:49  bjoo
+// Revision 1.2  2004-04-16 20:18:03  bjoo
+// Zolo seems to work now
+//
+// Revision 1.1  2004/04/16 17:04:49  bjoo
 // Added multi_propagator for Zolo4D multi massery. Seems to work even
 //
 // Revision 1.49  2004/04/15 14:43:25  bjoo
@@ -340,7 +343,7 @@ int main(int argc, char **argv)
     outfile << input.prop.prop_file << "_" << setw(3) << setfill('0') << m;
 
     QDPIO::cout << "Attempting to write " << outfile.str() << endl;
-    QDPIO::cout << "Volfmt " << input.prop.prop_volfmt << endl;
+   
     // Write the source
     writeQprop(file_xml, record_xml, quark_propagator[m],
 	       outfile.str(), input.prop.prop_volfmt, QDPIO_SERIAL);

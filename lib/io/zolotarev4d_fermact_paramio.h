@@ -48,8 +48,7 @@ class Zolotarev4DFermActParams : public FermActParams {
   }
 
   // Copy
-  Zolotarev4DFermActParams(const Zolotarev4DFermActParams& p) : Mass(p.Mass),
-    RatPolyDeg(p.RatPolyDeg), RsdCGInner(p.RsdCGInner), MaxCGInner(p.MaxCGInner), ReorthFreqInner(p.ReorthFreqInner), StateInfo(p.StateInfo), AuxFermActHandle(p.AuxFermActHandle->clone()) {}
+  Zolotarev4DFermActParams(const Zolotarev4DFermActParams& p) : Mass(p.Mass), RatPolyDeg(p.RatPolyDeg), RsdCGInner(p.RsdCGInner), MaxCGInner(p.MaxCGInner), ReorthFreqInner(p.ReorthFreqInner), StateInfo(p.StateInfo), AuxFermActHandle(p.AuxFermActHandle->clone()) {}
 
   // Virtual constructor 
   Zolotarev4DFermActParams* clone(void) const { 

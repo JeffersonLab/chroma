@@ -39,7 +39,7 @@ class WilsonFermActParams : public FermActParams {
   WilsonFermActParams( XMLReader& xml_in );
   
   // Copy
-  WilsonFermActParams( const WilsonFermActParams& p) : Mass(p.Mass), anisoParam(p.anisoParam) {}
+  WilsonFermActParams( const WilsonFermActParams& p) : my_fermact_type(p.my_fermact_type), Mass(p.Mass), anisoParam(p.anisoParam) {}
    
   // Satisfy virtual functions
   const enum FermActType getFermActType(void) const { return my_fermact_type; }
@@ -64,7 +64,7 @@ class DWFFermActParams : public FermActParams {
   DWFFermActParams( XMLReader& xml_in);
 
   // copy
-  DWFFermActParams( const DWFFermActParams& p ) : Mass(p.Mass), anisoParam(p.anisoParam), chiralParam(p.chiralParam) {}
+  DWFFermActParams( const DWFFermActParams& p ) : my_fermact_type(p.my_fermact_type), Mass(p.Mass), anisoParam(p.anisoParam), chiralParam(p.chiralParam) {}
 
   Real& getMass(void) { return Mass;  }
   void setMass(const Real& m) { Mass = m ; }
