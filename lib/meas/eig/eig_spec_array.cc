@@ -1,4 +1,4 @@
-// $Id: eig_spec_array.cc,v 1.4 2005-01-14 18:42:35 edwards Exp $
+// $Id: eig_spec_array.cc,v 1.5 2005-02-07 04:10:39 edwards Exp $
 /*! \file
  *  \brief Compute low lying eigenvalues of the hermitian H
  */
@@ -54,7 +54,7 @@ void EigSpecRitzCG(const LinearOperator<multi1d<LatticeFermion> >& M, // Herm po
 		   const bool ProjApsiP,             // Project in Ritz?
 		   
 		   int& n_cg_tot,                    // Total no of CG iters
-		   XMLBufferWriter& xml_out          // Diagnostics
+		   XMLWriter& xml_out          // Diagnostics
 	     )
 {
   START_CODE();
@@ -132,7 +132,7 @@ void EigSpecRitzKS(const LinearOperator<multi1d<LatticeFermion> >& M, // Herm po
 		   int& n_cg_tot,                   // Total no of CG iters
 		   int& n_KS,                       // Total no of KS cycles
 		   int& n_jacob_tot,
-		   XMLBufferWriter& xml_out         // Diagnostics
+		   XMLWriter& xml_out         // Diagnostics
 	      )
 {
   START_CODE();

@@ -1,4 +1,4 @@
-// $Id: eig_spec.h,v 1.2 2005-01-14 18:42:35 edwards Exp $
+// $Id: eig_spec.h,v 1.3 2005-02-07 04:10:39 edwards Exp $
 
 #ifndef __eig_spec_bj_w_h__
 #define __eig_spec_bj_w_h__
@@ -25,7 +25,7 @@ void EigSpecRitzCG(const LinearOperator<LatticeFermion>& H, // Herm pos def oper
 		   const bool ProjApsiP,            // Project in Ritz?
 		   
 		   int& n_cg_tot,                   // Total no of CG iters
-		   XMLBufferWriter& xml_out         // Diagnostics
+		   XMLWriter& xml_out         // Diagnostics
 	      );
 
 void EigSpecRitzKS(const LinearOperator<LatticeFermion>& H, // Herm pos def operator
@@ -51,7 +51,7 @@ void EigSpecRitzKS(const LinearOperator<LatticeFermion>& H, // Herm pos def oper
 		   int& n_cg_tot,                   // Total no of CG iters
 		   int& n_KS,                       // No of KS cycles
 		   int& n_jacob_tot,                // No of Jacobi Diag
-		   XMLBufferWriter& xml_out         // Diagnostics
+		   XMLWriter& xml_out         // Diagnostics
 	      );
 
 
