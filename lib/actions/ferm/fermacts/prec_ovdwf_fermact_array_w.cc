@@ -1,4 +1,4 @@
-// $Id: prec_ovdwf_fermact_array_w.cc,v 1.1 2004-02-13 20:56:43 edwards Exp $
+// $Id: prec_ovdwf_fermact_array_w.cc,v 1.2 2004-02-14 18:47:40 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned Overlap-DWF (Borici) action
  */
@@ -46,6 +46,6 @@ EvenOddPrecOvDWFermActArray::linOpPV(Handle<const ConnectState> state) const
 {
   // For the PV operator, use the **unpreconditioned** one
   // fixed to quark mass 1
-  return new UnprecDWLinOpArray(state->getLinks(),WilsonMass,1.0,N5);
+  return new UnprecOvDWLinOpArray(state->getLinks(),WilsonMass,1.0,N5);
 }
 
