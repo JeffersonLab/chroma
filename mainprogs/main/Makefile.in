@@ -154,7 +154,7 @@ LDADD = -lchroma @QDPXX_LIBS@ @LIBS@
 HDRS = 
 
 #noinst_PROGRAMS = propagator
-check_PROGRAMS = propagator spectrum_w qqq_w bar3ptfn
+check_PROGRAMS = propagator spectrum_w qqq_w bar3ptfn make_source
 
 #
 # The program and its dependencies
@@ -170,15 +170,22 @@ qqq_w_DEPENDENCIES = build_chroma_libs
 
 bar3ptfn_SOURCES = bar3ptfn.cc
 bar3ptfn_DEPENDENCIES = build_chroma_libs
+
+make_source_SOURCES = make_source.cc
+make_source_DEPENDENCIES = build_chroma_libs
 subdir = mainprogs/main
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
 CONFIG_CLEAN_FILES =
 check_PROGRAMS = propagator$(EXEEXT) spectrum_w$(EXEEXT) qqq_w$(EXEEXT) \
-	bar3ptfn$(EXEEXT)
+	bar3ptfn$(EXEEXT) make_source$(EXEEXT)
 am_bar3ptfn_OBJECTS = bar3ptfn.$(OBJEXT)
 bar3ptfn_OBJECTS = $(am_bar3ptfn_OBJECTS)
 bar3ptfn_LDADD = $(LDADD)
 bar3ptfn_LDFLAGS =
+am_make_source_OBJECTS = make_source.$(OBJEXT)
+make_source_OBJECTS = $(am_make_source_OBJECTS)
+make_source_LDADD = $(LDADD)
+make_source_LDFLAGS =
 am_propagator_OBJECTS = propagator.$(OBJEXT)
 propagator_OBJECTS = $(am_propagator_OBJECTS)
 propagator_LDADD = $(LDADD)
@@ -196,6 +203,7 @@ DEFAULT_INCLUDES =  -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/bar3ptfn.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/make_source.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/propagator.Po ./$(DEPDIR)/qqq_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/spectrum_w.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
@@ -203,10 +211,10 @@ CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
-DIST_SOURCES = $(bar3ptfn_SOURCES) $(propagator_SOURCES) \
-	$(qqq_w_SOURCES) $(spectrum_w_SOURCES)
+DIST_SOURCES = $(bar3ptfn_SOURCES) $(make_source_SOURCES) \
+	$(propagator_SOURCES) $(qqq_w_SOURCES) $(spectrum_w_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(bar3ptfn_SOURCES) $(propagator_SOURCES) $(qqq_w_SOURCES) $(spectrum_w_SOURCES)
+SOURCES = $(bar3ptfn_SOURCES) $(make_source_SOURCES) $(propagator_SOURCES) $(qqq_w_SOURCES) $(spectrum_w_SOURCES)
 
 all: all-am
 
@@ -223,6 +231,9 @@ clean-checkPROGRAMS:
 bar3ptfn$(EXEEXT): $(bar3ptfn_OBJECTS) $(bar3ptfn_DEPENDENCIES) 
 	@rm -f bar3ptfn$(EXEEXT)
 	$(CXXLINK) $(bar3ptfn_LDFLAGS) $(bar3ptfn_OBJECTS) $(bar3ptfn_LDADD) $(LIBS)
+make_source$(EXEEXT): $(make_source_OBJECTS) $(make_source_DEPENDENCIES) 
+	@rm -f make_source$(EXEEXT)
+	$(CXXLINK) $(make_source_LDFLAGS) $(make_source_OBJECTS) $(make_source_LDADD) $(LIBS)
 propagator$(EXEEXT): $(propagator_OBJECTS) $(propagator_DEPENDENCIES) 
 	@rm -f propagator$(EXEEXT)
 	$(CXXLINK) $(propagator_LDFLAGS) $(propagator_OBJECTS) $(propagator_LDADD) $(LIBS)
@@ -240,6 +251,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bar3ptfn.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/make_source.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/propagator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qqq_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/spectrum_w.Po@am__quote@
