@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.18 2003-09-11 00:46:55 edwards Exp $
+// $Id: propagator.cc,v 1.19 2003-10-02 16:52:36 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -10,25 +10,234 @@
 
 #include "chroma.h"
 
+
 /*
  *  Here we have various temporary definitions
  */
+enum CfgType {
+  CFG_TYPE_MILC = 0,
+  CFG_TYPE_NERSC,
+  CFG_TYPE_SCIDAC,
+  CFG_TYPE_SZIN,
+  CFG_TYPE_UNKNOWN
+} ;
 
-// First the source type
-#define S_WAVE 0
-#define P_WAVE 1
-#define D_WAVE 2    /*added*/
+enum PropType {
+  PROP_TYPE_SCIDAC = 2,
+  PROP_TYPE_SZIN,
+  PROP_TYPE_UNKNOWN
+} ;
 
-#define MAXLINE 80
+enum FermType {
+  FERM_TYPE_WILSON,
+  FERM_TYPE_UNKNOWN
+};
+
+
 
 using namespace QDP;
+
+
+/*
+ * Input 
+ */
+struct IO_version_t
+{
+  int version;
+};
+
+// Parameters which must be determined from the XML input
+// and written to the XML output
+struct Param_t
+{
+  FermType     FermTypeP;
+  Real         Kappa;      // Wilson mass
+ 
+  CfgType  cfg_type;       // storage order for stored gauge configuration
+  PropType prop_type;      // storage order for stored propagator
+
+//  int  InvType;            // Inverter type
+  Real RsdCG;
+  int MaxCG;		   // Iteration parameters
+
+  multi1d<int> nrow;
+  multi1d<int> boundary;
+  multi1d<int> t_srce;
+};
+
+struct Cfg_t
+{
+  string       cfg_file;
+};
+
+struct Prop_t
+{
+  string       source_file;
+  string       prop_file;
+};
+
+struct Propagator_input_t
+{
+  IO_version_t     io_version;
+  Param_t          param;
+  Cfg_t            cfg;
+  Prop_t           prop;
+};
+
+
+// Reader for input parameters
+void read(XMLReader& xml, const string& path, Propagator_input_t& input)
+{
+  XMLReader inputtop(xml, path);
+
+
+  // First, read the input parameter version.  Then, if this version
+  // includes 'Nc' and 'Nd', verify they agree with values compiled
+  // into QDP++
+
+  // Read in the IO_version
+  try
+  {
+    read(inputtop, "IO_version/version", input.io_version.version);
+  }
+  catch (const string& e) 
+  {
+    cerr << "Error reading data: " << e << endl;
+    throw;
+  }
+
+
+  // Currently, in the supported IO versions, there is only a small difference
+  // in the inputs. So, to make code simpler, extract the common bits 
+
+  // Read the uncommon bits first
+  try
+  {
+    XMLReader paramtop(inputtop, "param"); // push into 'param' group
+
+    switch (input.io_version.version) 
+    {
+      /**************************************************************************/
+    case 1 :
+      /**************************************************************************/
+      break;
+
+    default :
+      /**************************************************************************/
+
+      cerr << "Input parameter version " << input.io_version.version << " unsupported." << endl;
+      QDP_abort(1);
+    }
+  }
+  catch (const string& e) 
+  {
+    cerr << "Error reading data: " << e << endl;
+    throw;
+  }
+
+
+  // Read the common bits
+  try 
+  {
+    XMLReader paramtop(inputtop, "param"); // push into 'param' group
+
+    {
+      string ferm_type_str;
+      read(paramtop, "FermTypeP", ferm_type_str);
+      if (ferm_type_str == "WILSON") {
+	input.param.FermTypeP = FERM_TYPE_WILSON;
+      } else {
+	input.param.FermTypeP = FERM_TYPE_UNKNOWN;
+      }
+    }
+
+    // GTF NOTE: I'm going to switch on FermTypeP here because I want
+    // to leave open the option of treating masses differently.
+    switch (input.param.FermTypeP) {
+    case FERM_TYPE_WILSON :
+
+//	cout << " PROPAGATOR: Propagator for Wilson fermions" << endl;
+      QDP_info(" PROPAGATOR: Propagator for Wilson fermions");
+
+//      read(paramtop, "numKappa", input.param.numKappa);
+      read(paramtop, "Kappa", input.param.Kappa);
+
+#if 0
+      for (int i=0; i < input.param.numKappa; ++i) {
+	if (toBool(input.param.Kappa[i] < 0.0)) {
+	  cerr << "Unreasonable value for Kappa." << endl;
+	  cerr << "  Kappa[" << i << "] = " << input.param.Kappa[i] << endl;
+	  QDP_abort(1);
+	} else {
+	  cout << " Spectroscopy Kappa: " << input.param.Kappa[i] << endl;
+	}
+      }
+#endif
+
+      break;
+
+    default :
+      cerr << "Fermion type not supported." << endl;
+      if (input.param.FermTypeP == FERM_TYPE_UNKNOWN) {
+	cerr << "  FermTypeP = UNKNOWN" << endl;
+      }
+      QDP_abort(1);
+    }
+
+    {
+      string cfg_type_str;
+      read(paramtop, "cfg_type", cfg_type_str);
+      if (cfg_type_str == "SZIN") {
+	input.param.cfg_type = CFG_TYPE_SZIN;
+      } else {
+	input.param.cfg_type = CFG_TYPE_UNKNOWN;
+      }
+    }
+
+    {
+      string prop_type_str;
+      read(paramtop, "prop_type", prop_type_str);
+      if (prop_type_str == "SZIN") {
+	input.param.prop_type = PROP_TYPE_SZIN;
+      } else {
+	input.param.prop_type = PROP_TYPE_UNKNOWN;
+      }
+    }
+
+    read(paramtop, "RsdCG", input.param.RsdCG);
+    read(paramtop, "MaxCG", input.param.MaxCG);
+
+    read(paramtop, "nrow", input.param.nrow);
+    read(paramtop, "boundary", input.param.boundary);
+    read(paramtop, "t_srce", input.param.t_srce);
+  }
+  catch (const string& e) 
+  {
+    cerr << "Error reading data: " << e << endl;
+    throw;
+  }
+
+
+
+  // Read in the gauge configuration file name
+  try
+  {
+    read(inputtop, "Cfg/cfg_file",input.cfg.cfg_file);
+  }
+  catch (const string& e) 
+  {
+    cerr << "Error reading data: " << e << endl;
+    throw;
+  }
+}
+
+
 
 //! Propagator generation
 /*! \defgroup propagator Propagator generation
  *  \ingroup main
  *
- * Main program for propagator generation. Here we need some
- * profound and deep discussion of input parameters.
+ * Main program for propagator generation. 
  */
 
 int main(int argc, char **argv)
@@ -36,150 +245,92 @@ int main(int argc, char **argv)
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
 
-  // Setup the layout
-  const int foo[] = {4,4,4,8};
-  multi1d<int> nrow(Nd);
-  nrow = foo;  // Use only Nd elements
-  Layout::setLattSize(nrow);
+  // Input parameter structure
+  Propagator_input_t  input;
+
+  // Instantiate xml reader for DATA
+  XMLReader xml_in("DATA");
+
+  // Read data
+  read(xml_in, "/propagator", input);
+
+  // Specify lattice size, shape, etc.
+  Layout::setLattSize(input.param.nrow);
   Layout::create();
 
-  // Useful parameters that should be read from an input file
-  int j_decay = Nd-1;
-  int length = Layout::lattSize()[j_decay]; // define the temporal direction
-
-
-  /*
-   *  As a temporary measure, we will now read in the parameters from a file
-   *  DATA.  Eventually, this will use QIO or NML, but for the moment we will
-   *  just use the usual command-line reader
-   */
-
-  TextReader params_in("DATA");
-
-
-  int io_version_in; 		// The I/O version that we are reading....
-
-  Real Kappa;			// Kappa value
-  
-  int source_type, source_direction; // S-wave(0), P-wave(1), D-wave(2), and direction
-
-  int wf_type;			// Point (0) or Smeared (2)
-  Real wvf_param;		// smearing width
-  int WvfIntPar;                // number of iteration for smearing
-  int source_laplace_power;     // power of laplacian operator: 0, 1, 2, etc.
-
-  Real RsdCG;
-  int MaxCG;			// Iteration parameters
-
-  params_in >> io_version_in;
-
-  switch(io_version_in){	// The parameters we read in IO version
-
-  case 101:			// 
-
-    params_in >> Kappa;
-
-    params_in >> source_type;	// S-wave, P-wave D-wave, etc
-    params_in >> source_direction; // dx(0) dy(1) dz(2) dydz(3) dzdz(4)
-
-    params_in >> wf_type;	// Point, Gaussian(2) etc
-    params_in >> wvf_param;
-    params_in >> WvfIntPar;
-
-    params_in >> source_laplace_power;
-
-    params_in >> RsdCG;		// Target residue and maximum iterations
-    params_in >> MaxCG;
-    break;
-
-  default:
-
-    QDP_error_exit("Unknown io version", io_version_in);
-
-  }
-  
-  cout << "Kappa is " << Kappa << endl;
-
-  switch(wf_type){
-  case POINT_SOURCE:  // 0
-    cout << "Point source" << endl;
-    break;
-  case SHELL_SOURCE:  // 2
-    cout << "Smeared source wvf_param= " << wvf_param <<": WvfIntPar= " 
-	 << WvfIntPar << endl
-         << "Power of Laplacian operator" << source_laplace_power << endl;
-    break;
-  default:
-    QDP_error_exit("Unknown source_type", wf_type);
-  }    
-
-  cout << "RsdCG= " << RsdCG << ": MaxCG= " << MaxCG << endl;
-
-  multi1d<int> t_source(Nd);
-  t_source = 0;
-
-
-  UnprecWilsonFermAct S_f(Kappa);
-
-  FermAct = UNPRECONDITIONED_WILSON;  // global
-  InvType = CG_INVERTER;  // global
-
-  cerr << "DEBUG 1" << endl;
-
-  // Generate a hot start gauge field
+  // Read in the configuration along with relevant information.
   multi1d<LatticeColorMatrix> u(Nd);
+  XMLReader gauge_xml;
 
-  cerr << "DEBUG 1" << endl;
-
-
-  /*  for(int mu=0; mu < u.size(); ++mu)
+  switch (input.param.cfg_type) 
   {
-    gaussian(u[mu]);
-    reunit(u[mu]);
-    }
-  */
-
-  readArchiv(u, "nersc_freefield.cfg");
-
-  //Seed seed_old;
-  //readSzin(u, "szin.cfg", seed_old);
-
-  cerr << "DEBUG 2" << endl;
-
-
-  // Useful info
-
-  string nml_filename;
-
-  switch(source_type){
-  case S_WAVE:
-    nml_filename = "propagator.nml";
+  case CFG_TYPE_SZIN :
+    readSzin(gauge_xml, u, input.cfg.cfg_file);
     break;
-  case P_WAVE:
-    nml_filename = "dz_propagator.nml";
-    break;
-  case D_WAVE:    /* added */
-    if (source_direction == 12)
-      nml_filename = "dydz_propagator.nml";
-    if (source_direction == 22)
-      nml_filename = "dzdz_propagator.nml";
-    break;
-  default: 
-    cerr<<"invaid source_type\n";
-    break;
+  default :
+    QDP_error_exit("Configuration type is unsupported.");
   }
 
-  cerr << "DEBUG 3" << endl;
 
-  NmlWriter nml(nml_filename);
-    
+  // Read in the source along with relevant information.
+  LatticePropagator quark_prop_source;
+  XMLReader source_xml;
 
-  push(nml,"lattice");
-  Write(nml,Nd);
-  Write(nml,Nc);
-  Write(nml,Ns);
-  Write(nml,nrow);
-  pop(nml);
+  switch (input.param.prop_type) 
+  {
+  case PROP_TYPE_SZIN :
+//    readSzinQprop(source_xml, quark_prop_source, input.prop.source_file);
+    quark_prop_source = 1;
+    break;
+  default :
+    QDP_error_exit("Propagator type is unsupported.");
+  }
+
+
+  // Instantiate XML writer for XMLDAT
+  XMLFileWriter xml_out("XMLDAT");
+  push(xml_out, "propagator");
+
+  // Write out the input
+  write(xml_out, "Input", xml_in);
+
+  // Write out the config header
+  write(xml_out, "Config_info", gauge_xml);
+
+  // Write out the source header
+  write(xml_out, "Source_info", source_xml);
+
+  push(xml_out, "Output_version");
+  write(xml_out, "out_version", 1);
+  pop(xml_out);
+
+  xml_out.flush();
+
+
+  // Check if the gauge field configuration is unitarized
+  unitarityCheck(u);
+
+  // Calculate some gauge invariant observables just for info.
+  Double w_plaq, s_plaq, t_plaq, link;
+  MesPlq(u, w_plaq, s_plaq, t_plaq, link);
+
+  push(xml_out, "Observables");
+  Write(xml_out, w_plaq);
+  Write(xml_out, s_plaq);
+  Write(xml_out, t_plaq);
+  Write(xml_out, link);
+  pop(xml_out);
+
+  xml_out.flush();
+
+  //
+  // Initialize fermion action
+  //
+  UnprecWilsonFermAct S_f(input.param.Kappa);
+
+//  FermAct = UNPRECONDITIONED_WILSON;  // global
+//  InvType = CG_INVERTER;  // global
+
 
   //
   // Loop over the source color and spin, creating the source
@@ -187,116 +338,81 @@ int main(int argc, char **argv)
   // terminology is that a propagator is a matrix in color
   // and spin space
   //
-  // For this calculation, a smeared source is used. A point
-  // source is first constructed and then smeared. If a user
-  // only wanted a point source, then remove the smearing stuff
-  //
   LatticePropagator quark_propagator;
-
-#if 1
-  PropHead header;		// Header information
-  header.kappa = Kappa;
-  header.source_smearingparam=wf_type;     // local (0)  gaussian (2)
-  header.source_type=source_type; // S-wave, P-wave or D-wave source
-  header.source_direction=source_direction; 
-  header.source_laplace_power=source_laplace_power; 
-  header.sink_smearingparam=0;	// Always to local sinks
-  header.sink_type=0;
-  header.sink_direction=0;   // dx(0) dy(1) dz(2) dydy(11) dydz(12) dzdz(22)
-  header.sink_laplace_power=0;
-#endif
 
   int ncg_had = 0;
 
+  LatticeFermion psi = zero;  // note this is ``zero'' and not 0
 
   for(int color_source = 0; color_source < Nc; ++color_source)
   {
-    if (Layout::primaryNode())
-      cerr << "color = " << color_source << endl;
-
-    LatticeColorVector src_color_vec = zero;
-
-    // Make a point source at coordinates t_source
-
-    srcfil(src_color_vec, t_source, color_source);
-
-    // Smear the colour source if specified
-
-    if(wf_type == SHELL_SOURCE) {
-      gausSmear(u, src_color_vec, wvf_param, WvfIntPar, j_decay);
-      laplacian(u, src_color_vec, j_decay, source_laplace_power); 
-      // power = 1 for one laplacian operator
-    }
-
-
     for(int spin_source = 0; spin_source < Ns; ++spin_source)
     {
-      if (Layout::primaryNode())
-        cerr << "spin = " << spin_source << endl;
+      LatticeFermion chi;
 
-      // Insert a ColorVector into spin index spin_source
-      // This only overwrites sections, so need to initialize first
+      // Extract a fermion source
+      PropToFerm(quark_prop_source, chi, color_source, spin_source);
 
-      LatticeFermion psi = zero;  // note this is ``zero'' and not 0
+      // Use the last initial guess as the current initial guess
 
-      {
+      // Compute the propagator for given source color/spin.
+      int n_count;
+
+      S_f.qprop(psi, u, chi, input.param.RsdCG, input.param.MaxCG, n_count);
+      ncg_had += n_count;
 	
-	LatticeFermion chi = zero;
+      push(xml_out,"Qprop");
 
-	CvToFerm(src_color_vec, chi, spin_source);
-
-	if(source_type == P_WAVE)
-	  p_src(u, chi, source_direction);
-
-	if(source_type == D_WAVE)   /* added */
-	  d_src(u, chi, source_direction);
-
-
-
-	// primitive initial guess for the linear sys solution
-
-	// Compute the propagator for given source color/spin.
-	push(nml,"qprop");
-	int n_count;
-
-	S_f.qprop(psi, u, chi, RsdCG, MaxCG, n_count);
-	ncg_had += n_count;
-	
-	Write(nml, Kappa);
-	Write(nml, RsdCG);
-	Write(nml, n_count);
+      write(xml_out, "Kappa", input.param.Kappa);
+      write(xml_out, "RsdCG", input.param.RsdCG);
+      Write(xml_out, n_count);
 	  
-	pop(nml);
+      pop(xml_out);
 
-	/*
-	 *  Move the solution to the appropriate components
-	 *  of quark propagator.
-	 */
-      }
+      /*
+       *  Move the solution to the appropriate components
+       *  of quark propagator.
+       */
       FermToProp(psi, quark_propagator, color_source, spin_source);
     }
   }
 
-  switch(source_type){
-  case S_WAVE:
-    writeQprop("propagator_0", quark_propagator, header);
-    break;
-  case P_WAVE:
-    writeQprop("dz_propagator_0", quark_propagator, header);
-    break;
-  case D_WAVE:       /* added */
-    if (source_direction ==12)
-      writeQprop("dydz_propagator_0", quark_propagator, header);
-    if (source_direction ==22)
-      writeQprop("dzdz_propagator_0", quark_propagator, header);
-    break;
-  default:
-    QDP_error_exit("Unknown io version", io_version_in);
-  }    
 
-  //Write(nml, quark_propagator);
 
-  nml.close();
+  // Instantiate XML buffer to make the propagator header
+  XMLBufferWriter prop_xml;
+  push(prop_xml, "propagator");
+
+  // Write out the input
+  write(prop_xml, "Input", xml_in);
+
+  // Write out the config header
+  write(prop_xml, "Config_info", gauge_xml);
+
+  // Write out the source header
+  write(prop_xml, "Source_info", source_xml);
+
+  pop(prop_xml);
+
+
+  // Save the propagator
+  switch (input.param.prop_type) 
+  {
+  case PROP_TYPE_SZIN:
+    writeSzinQprop(quark_propagator, input.prop.prop_file, input.param.Kappa);
+    break;
+
+//  case PROP_TYPE_SCIDAC:
+//    writeQprop(prop_xml, quark_propagator, input.prop.prop_file);
+//    break;
+
+  default :
+    QDP_error_exit("Propagator type is unsupported.");
+  }
+
+
+  xml_out.close();
+  xml_in.close();
 
   // Time to bolt
   QDP_finalize();
