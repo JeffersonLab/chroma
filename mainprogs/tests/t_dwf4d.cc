@@ -1,4 +1,4 @@
-// $Id: t_dwf4d.cc,v 1.1 2004-11-09 05:45:03 edwards Exp $
+// $Id: t_dwf4d.cc,v 1.2 2004-11-15 21:52:32 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -197,6 +197,11 @@ int main(int argc, char **argv)
       QDPIO::cerr << "Error reading fermact: " << e << endl;
       throw;
     }
+  catch (const char* e) 
+    {
+      QDPIO::cerr << "Error reading fermact: " << e << endl;
+      throw;
+    }
 
   QDPIO::cout << "FermAct5D = " << fermact_5d << endl;
   QDPIO::cout << "FermAct4D = " << fermact_4d << endl;
@@ -256,7 +261,7 @@ int main(int argc, char **argv)
   DComplex nn5 = innerProduct(chi, tmp1);
 
   LatticeFermion tmp2;
-  (*A4)(tmp2, chi, PLUS);
+  (*A4)(tmp2, psi, PLUS);
   DComplex nn4 = innerProduct(chi, tmp2);
 
   push(xml_out,"innerprods");
@@ -267,6 +272,11 @@ int main(int argc, char **argv)
 
     }
   catch (const std::string& e) 
+    {
+      QDPIO::cerr << "Error in t_dwf4d: " << e << endl;
+      throw;
+    }
+  catch (const char* e) 
     {
       QDPIO::cerr << "Error in t_dwf4d: " << e << endl;
       throw;
