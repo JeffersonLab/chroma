@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: grelax.h,v 1.1 2003-12-06 20:56:56 edwards Exp $
+// $Id: grelax.h,v 1.2 2004-01-02 20:53:25 edwards Exp $
 /*! \file
  *  \brief Perform a single gauge fixing iteration
  */
@@ -23,8 +23,8 @@
  * \param orpara     overrelaxation parameter ( Read ) 
  */
 
-void grelax(multi1d<LatticeColorMatrix> ug, 
-	    const multi1d<LatticeColorMatrix> u_neg,
+void grelax(multi1d<LatticeColorMatrix>& ug, 
+	    const multi1d<LatticeColorMatrix>& u_neg,
 	    int j_decay, int su2_index, bool ordo,
 	    const Real& orpara);
 
