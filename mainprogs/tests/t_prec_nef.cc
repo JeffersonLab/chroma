@@ -1,4 +1,4 @@
-// $Id: t_prec_nef.cc,v 1.4 2005-02-28 19:43:40 edwards Exp $
+// $Id: t_prec_nef.cc,v 1.5 2005-03-01 03:50:29 edwards Exp $
 
 #include "chroma.h"
 
@@ -170,7 +170,13 @@ int main(int argc, char **argv)
 		<< "  norm2(psi5b)=" << Real(norm2(psi5b)) 
 		<< endl;
     for(int n=0; n < N5; ++n)
-      QDPIO::cout << "QpropT: norm2(tmp5[" << n << "])= " << Real(norm2(tmp5[n])) << endl;
+    {
+      QDPIO::cout << "QpropT:" 
+		  << " norm2(tmp5[" << n << "])= " << Real(norm2(tmp5[n])) 
+		  << " norm2(psi5a[])= " << Real(norm2(psi5a[n])) 
+		  << " norm2(psi5b[])= " << Real(norm2(psi5b[n])) 
+		  << endl;
+    }
 
 #if 1
     push(xml_out,"QpropT");
