@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_wilson_fermact_w.h,v 1.4 2003-04-09 20:47:02 edwards Exp $
+// $Id: unprec_wilson_fermact_w.h,v 1.5 2003-04-09 21:11:01 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -36,6 +36,16 @@ public:
 
   //! Produce a linear operator M^dag.M for this action
   const LinearOperator* lMdagM(const multi1d<LatticeColorMatrix>& u) const;
+
+#if 1
+// THIS SHOULD NOT BE NEEDED
+  //! Compute quark propagator
+  void Qprop(LatticeFermion& psi, 
+	     const multi1d<LatticeColorMatrix>& u, 
+	     const LatticeFermion& chi, 
+	     const Real& RsdCG, 
+	     int MaxCG, int& ncg_had) const;
+#endif
 
   //! Compute dS_f/dU
   multi1d<LatticeColorMatrix> dsdu(const multi1d<LatticeColorMatrix>& u,
