@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.291 2005-01-06 11:21:30 bjoo Exp $
+# $Id: Makefile.in,v 1.292 2005-01-06 16:50:43 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -256,7 +256,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/hadron/srcfil_s.cc meas/hadron/stag_propShift_s.cc \
 	meas/hadron/stag_scalars_s.cc meas/hadron/vector_meson_s.cc \
 	meas/hadron/walfil_s.cc util/gauge/stag_phases_s.cc \
-	meas/hadron/scalar_loops_s.cc \
+	meas/hadron/pion_sing_s.cc meas/hadron/scalar_loops_s.cc \
 	meas/hadron/pseudoscalar_loops_s.cc
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__objects_1 =  \
 @BUILD_SSE_WILSON_DSLASH_TRUE@	lwldslash_w_sse.$(OBJEXT)
@@ -388,8 +388,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	pions_s.$(OBJEXT) srcfil_s.$(OBJEXT) \
 	stag_propShift_s.$(OBJEXT) stag_scalars_s.$(OBJEXT) \
 	vector_meson_s.$(OBJEXT) walfil_s.$(OBJEXT) \
-	stag_phases_s.$(OBJEXT) scalar_loops_s.$(OBJEXT) \
-	pseudoscalar_loops_s.$(OBJEXT)
+	stag_phases_s.$(OBJEXT) pion_sing_s.$(OBJEXT) \
+	scalar_loops_s.$(OBJEXT) pseudoscalar_loops_s.$(OBJEXT)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I.
 depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
@@ -604,9 +604,9 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/hadron/scalar_loops_s.h \
 	meas/hadron/pseudoscalar_loops_s.h \
 	meas/hadron/stag_scalars_s.h meas/sources/sources_s.h \
-	meas/hadron/stag_propShift_s.h meas/hadron/vector_meson_s.h \
-	util/ferm/ferm_s.h util/gauge/gauge_s.h \
-	util/gauge/stag_phases_s.h \
+	meas/hadron/pion_sing_s.h meas/hadron/stag_propShift_s.h \
+	meas/hadron/vector_meson_s.h util/ferm/ferm_s.h \
+	util/gauge/gauge_s.h util/gauge/stag_phases_s.h \
 	actions/ferm/linop/lwldslash_w_sse.h \
 	actions/ferm/qprop/prec_dwf_qprop_array_sse_w.h \
 	actions/ferm/linop/lwldslash_w_pab.h
@@ -935,10 +935,10 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/hadron/scalar_loops_s.h \
 	meas/hadron/pseudoscalar_loops_s.h \
 	meas/hadron/stag_scalars_s.h meas/sources/sources_s.h \
-	meas/hadron/stag_propShift_s.h meas/hadron/vector_meson_s.h \
-	util/ferm/ferm_s.h util/gauge/gauge_s.h \
-	util/gauge/stag_phases_s.h $(am__append_3) $(am__append_5) \
-	$(am__append_7)
+	meas/hadron/pion_sing_s.h meas/hadron/stag_propShift_s.h \
+	meas/hadron/vector_meson_s.h util/ferm/ferm_s.h \
+	util/gauge/gauge_s.h util/gauge/stag_phases_s.h \
+	$(am__append_3) $(am__append_5) $(am__append_7)
 nodist_include_HEADERS = chroma_config_internal.h
 
 #
@@ -1143,7 +1143,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/hadron/srcfil_s.cc meas/hadron/stag_propShift_s.cc \
 	meas/hadron/stag_scalars_s.cc meas/hadron/vector_meson_s.cc \
 	meas/hadron/walfil_s.cc util/gauge/stag_phases_s.cc \
-	meas/hadron/scalar_loops_s.cc \
+	meas/hadron/pion_sing_s.cc meas/hadron/scalar_loops_s.cc \
 	meas/hadron/pseudoscalar_loops_s.cc
 all: chroma_config_internal.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -1362,6 +1362,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/p_src_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/param_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paulitodr.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pion_sing_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pions_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/polar_dec.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/polylp.Po@am__quote@
@@ -4747,6 +4748,20 @@ stag_phases_s.obj: util/gauge/stag_phases_s.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/gauge/stag_phases_s.cc' object='stag_phases_s.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o stag_phases_s.obj `if test -f 'util/gauge/stag_phases_s.cc'; then $(CYGPATH_W) 'util/gauge/stag_phases_s.cc'; else $(CYGPATH_W) '$(srcdir)/util/gauge/stag_phases_s.cc'; fi`
+
+pion_sing_s.o: meas/hadron/pion_sing_s.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT pion_sing_s.o -MD -MP -MF "$(DEPDIR)/pion_sing_s.Tpo" -c -o pion_sing_s.o `test -f 'meas/hadron/pion_sing_s.cc' || echo '$(srcdir)/'`meas/hadron/pion_sing_s.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/pion_sing_s.Tpo" "$(DEPDIR)/pion_sing_s.Po"; else rm -f "$(DEPDIR)/pion_sing_s.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/pion_sing_s.cc' object='pion_sing_s.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o pion_sing_s.o `test -f 'meas/hadron/pion_sing_s.cc' || echo '$(srcdir)/'`meas/hadron/pion_sing_s.cc
+
+pion_sing_s.obj: meas/hadron/pion_sing_s.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT pion_sing_s.obj -MD -MP -MF "$(DEPDIR)/pion_sing_s.Tpo" -c -o pion_sing_s.obj `if test -f 'meas/hadron/pion_sing_s.cc'; then $(CYGPATH_W) 'meas/hadron/pion_sing_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/pion_sing_s.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/pion_sing_s.Tpo" "$(DEPDIR)/pion_sing_s.Po"; else rm -f "$(DEPDIR)/pion_sing_s.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/pion_sing_s.cc' object='pion_sing_s.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o pion_sing_s.obj `if test -f 'meas/hadron/pion_sing_s.cc'; then $(CYGPATH_W) 'meas/hadron/pion_sing_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/pion_sing_s.cc'; fi`
 
 scalar_loops_s.o: meas/hadron/scalar_loops_s.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT scalar_loops_s.o -MD -MP -MF "$(DEPDIR)/scalar_loops_s.Tpo" -c -o scalar_loops_s.o `test -f 'meas/hadron/scalar_loops_s.cc' || echo '$(srcdir)/'`meas/hadron/scalar_loops_s.cc; \
