@@ -1,4 +1,4 @@
-// $Id: t_ovlap5d_bj.cc,v 1.10 2004-05-27 11:21:23 bjoo Exp $
+// $Id: t_ovlap5d_bj.cc,v 1.11 2004-06-10 10:42:48 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -14,7 +14,7 @@
 #include "chroma.h"
 
 #include "actions/ferm/invert/inv_gmresr_cg_array.h"
-
+#include "actions/ferm/invert/inv_minres_array.h"
 using namespace QDP;
 using namespace std;
 
@@ -140,12 +140,16 @@ int main(int argc, char **argv)
 
   swatch.reset();
   swatch.start();
-  InvGMRESR_CG(*DD_op, *D_op, *D_op, chi, psi, 
-	       input.param.invParam.RsdCG, 
-	       input.param.invParam.RsdCGPrec,
-	       input.param.invParam.MaxCG,
-	       input.param.invParam.MaxCGPrec,
-	       n_count);
+  //InvGMRESR_CG(*DD_op, *D_op, *D_op, chi, psi, 
+  //	       input.param.invParam.RsdCG, 
+  //	       input.param.invParam.RsdCGPrec,
+  //	       input.param.invParam.MaxCG,
+  //	       input.param.invParam.MaxCGPrec,
+  //	       n_count);
+
+  InvMINRES(*D_op, chi, psi, input.param.invParam.RsdCG, 
+	    input.param.invParam.MaxCG, n_count);
+
   swatch.stop();
   t = swatch.getTimeInSeconds();
 
