@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_wilson_fermact_w.h,v 1.15 2004-01-02 03:19:41 edwards Exp $
+// $Id: unprec_wilson_fermact_w.h,v 1.16 2004-01-03 18:48:39 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -8,7 +8,6 @@
 #define __unprec_wilson_fermact_w_h__
 
 #include "fermact.h"
-#include "actions/ferm/linop/unprec_wilson_linop_w.h"
 
 using namespace QDP;
 
