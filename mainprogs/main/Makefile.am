@@ -28,7 +28,7 @@ HDRS =
 ##   Another option is to add it to check_PROGRAMS, which means it will only
 ##   be built by 'make check' and is not installed.
 #noinst_PROGRAMS = propagator
-check_PROGRAMS = propagator spectrum_w qqq_w bar3ptfn make_source
+check_PROGRAMS = propagator spectrum_w qqq_w bar3ptfn make_source ExampleBuildingBlocks
 
 #
 # The program and its dependencies
@@ -48,6 +48,8 @@ bar3ptfn_DEPENDENCIES= build_chroma_libs
 make_source_SOURCES= make_source.cc
 make_source_DEPENDENCIES= build_chroma_libs
 
+ExampleBuildingBlocks_SOURCES= ExampleBuildingBlocks.cc
+ExampleBuildingBlocks_DEPENDENCIES= build_chroma_libs
 
 
 #
