@@ -1,4 +1,4 @@
-// $Id: common_declarations.h,v 1.3 2003-03-26 22:07:41 dgr Exp $
+// $Id: common_declarations.h,v 1.4 2003-03-29 05:21:48 edwards Exp $
 
 #ifndef COMMON_DECLS_INCLUDE
 #define COMMON_DECLS_INCLUDE
@@ -60,8 +60,6 @@ extern Real ClovCoeffT; /* Temporal Clover coefficient */
 #if defined(MAIN)
 int FftInitP =0;
 int SchrFun=0;
-int mom_mask_norm = MAX_MOMENTUM;
-int mom_norm = MAX_MOMENTUM;
 int SftInitP=0;
 
 int InvType=0;  /* Type of fermion inverter */
