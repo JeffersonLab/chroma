@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: objfactory.h,v 1.6 2005-01-14 20:13:04 edwards Exp $
+// $Id: objfactory.h,v 1.7 2005-01-20 03:08:15 edwards Exp $
 
 /*! @file
  * @brief Factory class for objects from XML input
@@ -101,7 +101,7 @@ namespace Chroma
     bool registerObject(const IdentifierType& id, ProductCreator creator)
       {
 	return associations_.insert(
-	  IdToProductMap::value_type(id, creator)).second;
+	  typename IdToProductMap::value_type(id, creator)).second;
       }
   
     //! Unregister the object

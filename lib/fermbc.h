@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermbc.h,v 1.11 2005-01-14 20:13:04 edwards Exp $
+// $Id: fermbc.h,v 1.12 2005-01-20 03:07:59 edwards Exp $
 /*! @file
  * @brief Fermion action boundary conditions
  */
@@ -69,7 +69,7 @@ namespace Chroma
      * \param theta_  twist angle for BC
      */
     Schr1LinkFermBC(const Schr1LinkGaugeBC& gbc_, const Real& theta_) : gbc(gbc_) 
-      {init(theta);}
+      {init(theta_);}
 
     //! Copy constructor
     Schr1LinkFermBC(const Schr1LinkFermBC& a) : gbc(a.gbc), mask(a.mask), fld(a.fld) {}
@@ -122,7 +122,7 @@ namespace Chroma
      * \param theta_  twist angle for BC
      */
     Schr2LinkFermBC(const Schr2LinkGaugeBC& gbc_, const Real& theta_) : gbc(gbc_) 
-      {init(theta);}
+      {init(theta_);}
 
     //! Copy constructor
     Schr2LinkFermBC(const Schr2LinkFermBC& a) : gbc(a.gbc), mask(a.mask), fld(a.fld) {}
@@ -134,8 +134,8 @@ namespace Chroma
     Schr2LinkFermBC& operator=(const Schr2LinkFermBC& a)
       {gbc = a.gbc; mask = a.mask; fld = a.fld; return *this;}
 
-    //! Type of Schroedinger BC
-    SchrFunType getSFermBC() const {return SchrFun;}
+//    //! Type of Schroedinger BC
+//    SchrFunType getSFermBC() const {return SchrFun;}
 
     //! Modify U fields in place
     void modifyU(multi1d<LatticeColorMatrix>& u) const
