@@ -28,6 +28,12 @@ bool linkage_hack()
   // 4D Ferm Monomials
   foo &= EvenOddPrecTwoFlavorWilsonFermMonomialEnv::registered;
 
+  // 5D Ferm Monomials
+  foo &= UnprecTwoFlavorWilsonTypeFermMonomial5DEnv::registered;
+
+  // 5D Ferm Monomials
+  foo &= EvenOddPrecTwoFlavorWilsonTypeFermMonomial5DEnv::registered;
+
   // MD Integrators
   foo &= LatColMatPQPLeapfrogIntegratorEnv::registered;
   return foo;
@@ -51,7 +57,8 @@ int main(int argc, char *argv[])
   {
     XMLReader file_xml;
     XMLReader config_xml;
-    Cfg_t foo; foo.cfg_type=CFG_TYPE_DISORDERED;
+    Cfg_t foo; foo.cfg_type=CFG_TYPE_UNIT;
+//    Cfg_t foo; foo.cfg_type=CFG_TYPE_DISORDERED;
     // Cfg_t foo; foo.cfg_type=CFG_TYPE_SZIN; foo.cfg_file="./CFGIN";
     gaugeStartup(file_xml, config_xml, u, foo);
   }
