@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_fermact_base_array_w.cc,v 1.1 2003-11-15 03:22:42 edwards Exp $
+// $Id: unprec_dwf_fermact_base_array_w.cc,v 1.2 2003-11-15 03:54:19 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned domain-wall-like fermion actions
  */
@@ -32,7 +32,8 @@ UnprecDWFermActBaseArray::qprop(LatticeFermion& psi,
 {
   START_CODE("UnprecDWTypeFermActBaseArray::qprop");
 
-  const int N5 = size();   // array size better match
+  const int  N5 = size();   // array size better match
+  const Real m_q = quark_mass();
   int n_count;
   
   // Initialize the 5D fields
@@ -113,7 +114,7 @@ UnprecDWFermActBaseArray::qprop(LatticeFermion& psi,
 //! Computes the derivative of the fermionic action respect to the link field
 /*!
  *         |  dS      dS_f
- * ds_u -- | ----   + -----   ( Modify )
+ * ds_u -- | ----   + -----   ( Write )
  *         |  dU       dU
  *
  * psi -- [1./(M_dag*M)]*chi_  ( read ) 
