@@ -204,7 +204,18 @@ foreach $h ('h1', 'h2')
 
 	  printf "Found file %s\n","${nam}_cur3ptfn_${h}_${s}_g8_qx${qx}_qy${qy}_qz${qz}";
 
-	  &realpart("${nam}_cur3ptfn_${h}_${s}_g8_qx${qx}_qy${qy}_qz${qz}","${cur}_${h}_${s}_mu3_${qx}${qy}${qz}");
+          if ($h eq "h1")
+          {
+ 	    &realpart("${nam}_cur3ptfn_${h}_${s}_g8_qx${qx}_qy${qy}_qz${qz}","${cur}_${h}_${s}_mu3_${qx}${qy}${qz}");
+          }
+          elsif ($h eq "h2")
+          {
+	    &realpart_rev("${nam}_cur3ptfn_${h}_${s}_g8_qx${qx}_qy${qy}_qz${qz}","${cur}_${h}_${s}_mu3_${qx}${qy}${qz}");
+          }
+          else
+          {
+            die "Unknown $h";
+          }
 
 	  if ($cur_cnt{$h,$s,3,$qsq} == 0)
 	  {
@@ -517,6 +528,13 @@ sub calc_prop
   ($junk, $val, $err, $junk) = split(' ', $ret);
 
   printf "Norm of $line\n%g %g\n", $val, $err;
+}
+
+sub realpart_rev
+{
+  local($f1,$f2) = @_;
+  
+  system("/home/edwards/bin/realpart.pl < $f1 | /home/edwards/bin/reverse_prop.pl > $f2");
 }
 
 sub realpart
