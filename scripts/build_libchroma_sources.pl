@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: build_libchroma_sources.pl,v 1.1 2004-11-20 21:12:38 edwards Exp $
+# $Id: build_libchroma_sources.pl,v 1.2 2004-11-20 22:01:14 edwards Exp $
 #
 # Build the  libchroma_a_SOURCES  lines in  chroma/lib/Makefile.am
 #
@@ -11,7 +11,7 @@
 
 print "libchroma_a_SOURCES =";
 # All subdirs
-@subdirs = ("actions", "geom", "io", "meas", "util");
+@subdirs = ("actions", "io", "meas", "util");
 
 # Go through each dir and find fermion independent sources
 foreach $i (@subdirs)

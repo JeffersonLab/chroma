@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: build_include_headers.pl,v 1.2 2004-11-20 21:12:38 edwards Exp $
+# $Id: build_include_headers.pl,v 1.3 2004-11-20 22:01:14 edwards Exp $
 #
 # Build the  nobase_include_headers  lines in  chroma/lib/Makefile.am
 #
@@ -15,7 +15,7 @@ print "nobase_include_HEADERS =";
 system('ls *.h | fmt -w 65 | awk \'{printf " \\\\\\n\t%s", $0}\'');
 
 # All subdirs
-@subdirs = ("actions", "geom", "info", "io", "meas", "util");
+@subdirs = ("actions", "info", "io", "meas", "util");
 
 # Go through each dir and find fermion independent headers
 foreach $i (@subdirs)
