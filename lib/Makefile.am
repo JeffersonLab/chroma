@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.149 2004-06-10 10:42:46 bjoo Exp $
+# $Id: Makefile.am,v 1.150 2004-06-11 20:40:19 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -73,7 +73,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/minv_rel_sumr.h \
 	actions/ferm/invert/invbicgstab.h \
 	actions/ferm/invert/invbicgstab_array.h \
- 	actions/ferm/invert/inv_minres_array.h \
+        actions/ferm/invert/inv_minres_array.h \
 	actions/ferm/invert/inv_rel_gmresr_sumr.h \
 	actions/ferm/invert/inv_rel_gmresr_cg.h \
 	actions/ferm/invert/inv_gmresr_cg_array.h \
@@ -186,7 +186,8 @@ nobase_include_HEADERS += \
 	meas/hadron/wallrhoff_w.h meas/hadron/wallrhopiff_w.h \
 	meas/smear/sink_smear2_w.h meas/sources/d_src_w.h \
 	meas/sources/p_src_w.h meas/sources/sources_w.h \
-	util/ferm/ferm_w.h util/ferm/diractodr.h  util/ferm/paulitodr.h 
+	util/ferm/ferm_w.h util/ferm/diractodr.h util/ferm/gammasgn_w.h \
+        util/ferm/paulitodr.h 
 
 # Deprecated
 #	actions/ferm/fermacts/prec_dwf_fermact_base_w.h \
@@ -265,7 +266,7 @@ libchroma_a_SOURCES = gauge_startup.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
 #
 if BUILD_WILSON_LIBS
 libchroma_a_SOURCES += baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
-              loops_w.cc diractodr.cc paulitodr.cc \
+              loops_w.cc diractodr.cc paulitodr.cc gammasgn_w.cc \
               curcor2_w.cc lwldslash_w.cc formfac_w.cc \
               mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
               sink_smear2_w.cc barcomp_io.cc barcomp_w.cc walfil_w.cc \
