@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_nef_linop_array_w.h,v 1.12 2005-01-14 20:13:06 edwards Exp $
+// $Id: unprec_nef_linop_array_w.h,v 1.13 2005-01-21 17:44:32 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF domain-wall fermion linear operator
  */
@@ -63,6 +63,10 @@ namespace Chroma
 		enum PlusMinus isign,
 		int s5) const;
 
+    //! Derivative
+    void deriv(multi1d<LatticeColorMatrix>& ds_u, 
+	       const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
+	       enum PlusMinus isign) const;
 
   private:
     Real WilsonMass;
