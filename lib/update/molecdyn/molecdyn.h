@@ -9,7 +9,7 @@
 #include "update/molecdyn/chrono_predictor_factory.h"
 
 #include "update/molecdyn/monomial_factory.h"
-#include "update/molecdyn/wilson_gauge_monomial.h"
+#include "update/molecdyn/gauge_monomial.h"
 
 #include "update/molecdyn/abs_hamiltonian.h"
 #include "update/molecdyn/exact_hamiltonian.h"
