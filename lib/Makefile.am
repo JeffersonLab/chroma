@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.236 2005-01-21 00:20:33 edwards Exp $
+# $Id: Makefile.am,v 1.237 2005-01-25 02:17:28 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -55,6 +55,7 @@ nobase_include_HEADERS = \
 	actions/gauge/gaugeacts/wilson_gaugeact.h \
 	actions/gauge/gaugeacts/lw_tree_gaugeact.h \
 	actions/gauge/gaugeacts/lw_1loop_gaugeact.h \
+	actions/gauge/gaugeacts/rbc_gaugeact.h \
 	actions/gauge/gaugeacts/rg_gaugeact.h \
 	actions/gauge/gaugebcs/gaugebcs.h \
 	actions/gauge/gaugebcs/gaugebc_aggregate.h \
@@ -365,6 +366,7 @@ libchroma_a_SOURCES = \
 	actions/gauge/gaugeacts/wilson_gaugeact.cc \
 	actions/gauge/gaugeacts/lw_tree_gaugeact.cc \
 	actions/gauge/gaugeacts/lw_1loop_gaugeact.cc \
+	actions/gauge/gaugeacts/rbc_gaugeact.cc \
 	actions/gauge/gaugeacts/rg_gaugeact.cc \
 	io/barcomp_io.cc io/eigen_io.cc io/enum_io/enum_cfgtype_io.cc \
 	io/enum_io/enum_coeffs_io.cc io/enum_io/enum_eigenvectype_io.cc \
