@@ -1,4 +1,4 @@
-// $Id: make_source.cc,v 1.28 2004-04-06 04:20:33 edwards Exp $
+// $Id: make_source.cc,v 1.29 2004-04-23 23:58:00 ikuro Exp $
 /*! \file
  *  \brief Main code for source generation
  */
@@ -178,7 +178,8 @@ int main(int argc, char **argv)
   multi1d<LatticeColorMatrix> u_smr(Nd);
   u_smr = u;
 
-  if (input.param.link_smear_num > 0)
+  if (input.param.source_type == SRC_TYPE_SHELL_SOURCE && 
+      input.param.link_smear_num > 0)
   {
     QDPIO::cout << "Smear gauge field" << endl;
 
