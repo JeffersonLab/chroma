@@ -1,4 +1,4 @@
-// $Id: t_lwldslash_sse.cc,v 1.21 2004-03-22 12:42:02 bjoo Exp $
+// $Id: t_lwldslash_sse.cc,v 1.22 2004-03-25 23:18:10 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -37,11 +37,7 @@ int main(int argc, char **argv)
 
   push(xml,"t_lwldslash");
 
-  push(xml,"lattis");
-  write(xml,"latt_size",nrow);
-  write(xml,"logical_size",Layout::logicalSize());
-  write(xml,"subgrid_size",Layout::subgridLattSize());
-  pop(xml);
+  proginfo(xml);    // Print out basic program info
 
   // Make up a random gauge field.
   multi1d<LatticeColorMatrix> u(Nd);
@@ -63,6 +59,8 @@ int main(int argc, char **argv)
   QDPIO::cout << "Done" << endl;
 
 #undef DEBUG
+
+  push(xml,"Unoptimized_test");
 
   int isign, cb, loop, iter=1;
   bool first = true;
@@ -106,18 +104,29 @@ int main(int argc, char **argv)
       mydt=double(myt2-myt1)/double(CLOCKS_PER_SEC);
       mydt=1.0e6*mydt/double(iter*(Layout::sitesOnNode()/2));
       
+      float mflops = float(1320.0f/mydt);
       QDPIO::cout << "cb = " << cb << " isign = " << isign << endl;
       QDPIO::cout << "The time per lattice point is "<< mydt 
-		  << " micro sec (" <<  double(1320.0f/mydt) << ") Mflops " << endl;
+		  << " micro sec (" <<  mflops << ") Mflops " << endl;
+
+      push(xml,"test");
+      write(xml,"cb",cb);
+      write(xml,"isign",isign);
+      write(xml,"mflops",mflops);
+      pop(xml);
     }
   }
   
+  pop(xml);
+
   //! Create a linear operator
   QDPIO::cout << "Constructing (possibly optimized) WilsonDslash" << endl;
 
   WilsonDslash D_opt(u);
 
   QDPIO::cout << "Done" << endl;
+
+  push(xml,"Optimized_test");
 
   first = true;
   for(isign = 1; isign >= -1; isign -= 2) {
@@ -160,12 +169,20 @@ int main(int argc, char **argv)
       mydt=double(myt2-myt1)/double(CLOCKS_PER_SEC);
       mydt=1.0e6*mydt/double(iter*(Layout::sitesOnNode()/2));
       
+      float mflops = float(1320.0f/mydt);
       QDPIO::cout << "cb = " << cb << " isign = " << isign << endl;
       QDPIO::cout << "After " << iter << " calls, the time per lattice point is "<< mydt 
-		  << " micro sec (" <<  double(1320.0f/mydt) << ") Mflops " << endl;
+		  << " micro sec (" <<  mflops << ") Mflops " << endl;
+
+      push(xml,"test");
+      write(xml,"cb",cb);
+      write(xml,"isign",isign);
+      write(xml,"mflops",mflops);
+      pop(xml);
     }
   }
 
+  pop(xml);
 
   LatticeFermion chi3;
   Double n2;
