@@ -1,4 +1,4 @@
-/* $Id: unprec_ovext_linop_array_w.cc,v 1.4 2004-07-28 02:38:02 edwards Exp $
+/* $Id: unprec_ovext_linop_array_w.cc,v 1.5 2004-12-12 21:22:16 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
  */
@@ -6,6 +6,8 @@
 #include "chromabase.h"
 #include "actions/ferm/linop/unprec_ovext_linop_array_w.h"
 
+namespace Chroma 
+{ 
 //! Creation routine
 /*! \ingroup fermact
  *
@@ -92,4 +94,6 @@ UnprecOvExtLinOpArray::operator() (multi1d<LatticeFermion>& chi,
 
   END_CODE();
 }
+
+}; // End Namespace Chroma
 

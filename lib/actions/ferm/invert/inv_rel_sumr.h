@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inv_rel_sumr.h,v 1.1 2004-05-21 12:03:13 bjoo Exp $
+// $Id: inv_rel_sumr.h,v 1.2 2004-12-12 21:22:15 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -31,7 +31,7 @@
 // which is where the name SUMR was coined.
 //
 template<typename T>
-void InvRelSUMR(const ApproxLinearOperator<T>& U,
+void InvRelSUMR(const LinearOperator<T>& U,
 		const T& b,
 		T& x,
 		const Complex& zeta,

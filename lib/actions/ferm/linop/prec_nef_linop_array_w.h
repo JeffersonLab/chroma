@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_nef_linop_array_w.h,v 1.13 2004-10-22 03:37:24 edwards Exp $
+// $Id: prec_nef_linop_array_w.h,v 1.14 2004-12-12 21:22:16 edwards Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned NEF domain-wall fermion linear operator
  */
@@ -13,8 +13,8 @@
 
 using namespace QDP;
 
-//namespace Chroma
-//{
+namespace Chroma
+{
   //! 4D Even Odd preconditioned NEF domain-wall Dirac operator
   /*!
    * \ingroup linop
@@ -45,7 +45,7 @@ using namespace QDP;
     EvenOddPrecNEFDWLinOpArray(const multi1d<LatticeColorMatrix>& u_, 
 			       const Real& WilsonMass_, const Real &b5_, 
 			       const Real &c5_, const Real& m_q, int N5_)
-      {create(u_,WilsonMass_,b5_,c5_,m_q,N5_);}
+    {create(u_,WilsonMass_,b5_,c5_,m_q,N5_);}
 
     //! Creation routine
     void create(const multi1d<LatticeColorMatrix>& u_, 
@@ -68,52 +68,52 @@ using namespace QDP;
     void evenEvenLinOp(multi1d<LatticeFermion>& chi, 
 		       const multi1d<LatticeFermion>& psi, 
 		       enum PlusMinus isign) const
-      {
-	applyDiag(chi, psi, isign, 0);
-      }
+    {
+      applyDiag(chi, psi, isign, 0);
+    }
   
     //! Apply the inverse of the even-even block onto a source vector
     inline
     void evenEvenInvLinOp(multi1d<LatticeFermion>& chi, 
 			  const multi1d<LatticeFermion>& psi, 
 			  enum PlusMinus isign) const
-      {
-	applyDiagInv(chi, psi, isign, 0);
-      }
+    {
+      applyDiagInv(chi, psi, isign, 0);
+    }
 
     //! Apply the the even-odd block onto a source vector
     void evenOddLinOp(multi1d<LatticeFermion>& chi, 
 		      const multi1d<LatticeFermion>& psi, 
 		      enum PlusMinus isign) const
-      {
-	applyOffDiag(chi, psi, isign, 0);
-      }
+    {
+      applyOffDiag(chi, psi, isign, 0);
+    }
 
     //! Apply the the odd-even block onto a source vector
     void oddEvenLinOp(multi1d<LatticeFermion>& chi, 
 		      const multi1d<LatticeFermion>& psi, 
 		      enum PlusMinus isign) const
-      {
-	applyOffDiag(chi, psi, isign, 1);
-      }
+    {
+      applyOffDiag(chi, psi, isign, 1);
+    }
 
     //! Apply the the odd-odd block onto a source vector
     inline
     void oddOddLinOp(multi1d<LatticeFermion>& chi, 
 		     const multi1d<LatticeFermion>& psi, 
 		     enum PlusMinus isign) const
-      {
-	applyDiag(chi, psi, isign, 1);
-      }
+    {
+      applyDiag(chi, psi, isign, 1);
+    }
 
     //! Apply the inverse of the odd-odd block onto a source vector
     inline
     void oddOddInvLinOp(multi1d<LatticeFermion>& chi, 
 			const multi1d<LatticeFermion>& psi, 
 			enum PlusMinus isign) const
-      {
-	applyDiagInv(chi, psi, isign, 1);
-      }
+    {
+      applyDiagInv(chi, psi, isign, 1);
+    }
  
     //! Apply the Dminus operator on a lattice fermion. See my notes ;-)
     void Dminus(LatticeFermion& chi,
@@ -148,16 +148,16 @@ using namespace QDP;
 		      const int cb) const;
     
 
-//! Apply the even-odd (odd-even) coupling piece of the NEF operator
-/*!
- * \ingroup linop
- *
- * The operator acts on the entire lattice
- *
- * \param psi 	  Pseudofermion field     	       (Read)
- * \param isign   Flag ( PLUS | MINUS )   	       (Read)
- * \param cb      checkerboard ( 0 | 1 )               (Read)
- */
+    //! Apply the even-odd (odd-even) coupling piece of the NEF operator
+    /*!
+     * \ingroup linop
+     *
+     * The operator acts on the entire lattice
+     *
+     * \param psi 	  Pseudofermion field     	       (Read)
+     * \param isign   Flag ( PLUS | MINUS )   	       (Read)
+     * \param cb      checkerboard ( 0 | 1 )               (Read)
+     */
     void  applyOffDiag(multi1d<LatticeFermion>& chi, 
 		       const multi1d<LatticeFermion>& psi, 
 		       enum PlusMinus isign,
@@ -183,6 +183,9 @@ using namespace QDP;
     WilsonDslash  D;
   };
 
-//}
+}; // End Namespace Chroma
+
+using namespace Chroma;
+
 
 #endif

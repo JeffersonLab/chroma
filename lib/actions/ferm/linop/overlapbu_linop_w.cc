@@ -1,4 +1,4 @@
-// $Id: overlapbu_linop_w.cc,v 1.7 2004-07-28 03:47:27 edwards Exp $
+// $Id: overlapbu_linop_w.cc,v 1.8 2004-12-12 21:22:16 edwards Exp $
 /*! \file
  *  \brief Overlap operator
  */
@@ -6,6 +6,8 @@
 #include "chromabase.h"
 #include "actions/ferm/linop/overlapbu_linop_w.h"
 
+namespace Chroma 
+{ 
 void zol_const(Double& qq1, Double qq[], Double cq[]);
 static void wldirac(const LatticeFermion& psi, 
 		    LatticeFermion& chi,
@@ -238,4 +240,6 @@ void zol_const(Double& qq1, Double qq[], Double cq[])
   
 }
 
+
+}; // End Namespace Chroma
 

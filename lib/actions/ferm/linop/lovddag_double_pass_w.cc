@@ -1,4 +1,4 @@
-// $Id: lovddag_double_pass_w.cc,v 1.8 2004-07-28 03:47:26 edwards Exp $
+// $Id: lovddag_double_pass_w.cc,v 1.9 2004-12-12 21:22:16 edwards Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -8,6 +8,9 @@
 #include "meas/eig/gramschm.h"
 
 using namespace QDP;
+
+namespace Chroma 
+{ 
 //! Apply the GW operator onto a source vector
 /*! \ingroup linop
  *
@@ -440,4 +443,6 @@ void lovddag_double_pass::operator() (LatticeFermion& chi,
 
   END_CODE();
 }
+
+}; // End Namespace Chroma
 

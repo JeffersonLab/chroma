@@ -5,10 +5,10 @@
 
     
 template<typename T>
-void InvRelGMRESR_SUMR_a(const ApproxLinearOperator<T>& PrecU,
+void InvRelGMRESR_SUMR_a(const LinearOperator<T>& PrecU,
 			 const Complex& zeta,
 			 const Real& rho,
-			 const ApproxLinearOperator<T>& UnprecU,
+			 const LinearOperator<T>& UnprecU,
 			 const T& b,
 			 T& x,
 			 const Real& epsilon, 
@@ -109,10 +109,10 @@ void InvRelGMRESR_SUMR_a(const ApproxLinearOperator<T>& PrecU,
 }
 
 template<>
-void InvRelGMRESR_SUMR(const ApproxLinearOperator<LatticeFermion>& PrecU,
+void InvRelGMRESR_SUMR(const LinearOperator<LatticeFermion>& PrecU,
 		       const Complex& zeta,
 		       const Real& rho,
-		       const ApproxLinearOperator<LatticeFermion>& UnprecU,
+		       const LinearOperator<LatticeFermion>& UnprecU,
 		       const LatticeFermion& b,
 		       LatticeFermion& x,
 		       const Real& epsilon, 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 1.13 2004-12-07 17:11:50 bjoo Exp $
+// $Id: fermact.h,v 1.14 2004-12-12 21:22:14 edwards Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -35,16 +35,13 @@ namespace Chroma
    * The FermBC is the type of boundary conditions used for this action
    *
    * The linop and lmdagm functions create a linear operator on a 
- * fixed ConnectState
- *
- * The qprop solves for the full linear system undoing all preconditioning.
- * No direct functions are provided (or needed) to call a linear system
- * solver - that is a stand-alone function in the generic programming sense.
- *
- * dsdu provides the derivative of the action on a specific background
- * gauge field.
- *
- */
+   * fixed ConnectState
+   *
+   * The qprop solves for the full linear system undoing all preconditioning.
+   * No direct functions are provided (or needed) to call a linear system
+   * solver - that is a stand-alone function in the generic programming sense.
+   *
+   */
   template<typename T>
   class FermionAction
   {
@@ -52,11 +49,11 @@ namespace Chroma
     //! Given links, create the state needed for the linear operators
     /*! Default version uses a SimpleConnectState */
     virtual const ConnectState* createState(const multi1d<LatticeColorMatrix>& u) const
-      {
-	multi1d<LatticeColorMatrix> u_tmp = u;
-	getFermBC().modifyU(u_tmp);
-	return new SimpleConnectState(u_tmp);
-      }
+    {
+      multi1d<LatticeColorMatrix> u_tmp = u;
+      getFermBC().modifyU(u_tmp);
+      return new SimpleConnectState(u_tmp);
+    }
 
     //! Given the links create a state with additional info held by the XMLReader
     /*! This is a default version, which ignores the reader and just calls the default
@@ -77,16 +74,6 @@ namespace Chroma
 
     //! Produce a linear operator M^dag.M for this action
     virtual const LinearOperator<T>* lMdagM(Handle<const ConnectState> state) const = 0;
-
-
-    //! Produce the derivative of the Fermion Matrix with respect to 
-    //! The Gauge field
-    virtual const LinearOperator<T>* ldMdU(Handle<const ConnectState> state, const int mu) {
-      QDPIO::cerr << "This is not yet implemented" << endl;
-      QDP_abort(1);
-
-      return 0x0;
-    }
 
     //! Compute quark propagator over base type
     /*! 
@@ -124,17 +111,6 @@ namespace Chroma
 		       const InvertParam_t& invParam,
 		       int& ncg_had) const;
 
-    //! Compute dS_f/dU
-    /*! Default version. Derived class should override this if needed. */
-    virtual void dsdu(multi1d<LatticeColorMatrix>& result,
-		      Handle<const ConnectState> state,
-		      const T& psi) const
-      {
-	QDPIO::cerr << "FermionAction::dsdu not implemented" << endl;
-	QDP_abort(1);
-      }
-
-  
     //! Virtual destructor to help with cleanup;
     virtual ~FermionAction() {}
   };
@@ -156,11 +132,11 @@ namespace Chroma
     //! Given links, create the state needed for the linear operators
     /*! Default version uses a SimpleConnectState */
     virtual const ConnectState* createState(const multi1d<LatticeColorMatrix>& u) const
-      {
-	multi1d<LatticeColorMatrix> u_tmp = u;
-	getFermBC().modifyU(u_tmp);
-	return new SimpleConnectState(u_tmp);
-      }
+    {
+      multi1d<LatticeColorMatrix> u_tmp = u;
+      getFermBC().modifyU(u_tmp);
+      return new SimpleConnectState(u_tmp);
+    }
 
     //! Given the links create a state with additional info held by the XMLReader
     /*! This is a default version, which ignores the reader and just calls the default
@@ -181,13 +157,6 @@ namespace Chroma
 
     //! Produce a linear operator M^dag.M for this action
     virtual const LinearOperator< multi1d<T> >* lMdagM(Handle<const ConnectState> state) const = 0;
-
-    virtual const LinearOperator< multi1d<T> >* ldMdU(Handle<const ConnectState> state, const int mu) {
-      QDPIO::cerr << "This is not yet implemented" << endl;
-      QDP_abort(1);
-
-      return 0x0;
-    }
 
     //! Compute quark propagator over base type
     /*! 
@@ -223,21 +192,12 @@ namespace Chroma
 		       const InvertParam_t& invParam,
 		       int& ncg_had) const = 0;
 
-    //! Compute dS_f/dU
-    /*! Default version. Derived class should override this if needed. */
-    virtual void dsdu(multi1d<LatticeColorMatrix>& result,
-		      Handle<const ConnectState> state,
-		      const multi1d<T>& psi) const
-      {
-	QDPIO::cerr << "FermionAction::dsdu not implemented" << endl;
-	QDP_abort(1);
-      }
-
     //! Virtual destructor to help with cleanup;
     virtual ~FermionAction() {}
   };
 
 
+  //-------------------------------------------------------------------------------------------
   //! Wilson-like fermion actions
   /*! @ingroup actions
    *
@@ -248,7 +208,6 @@ namespace Chroma
   class WilsonTypeFermAct : public FermionAction<T>
   {
   public:
-
     //! Produce a hermitian version of the linear operator
     virtual const LinearOperator<T>* gamma5HermLinOp(Handle<const ConnectState> state) const = 0;
 
@@ -271,7 +230,11 @@ namespace Chroma
 			    const InvertParam_t& invParam,
 			    bool nonRelProp,
 			    int& ncg_had);
+
+    //! Virtual destructor to help with cleanup;
+    virtual ~WilsonTypeFermAct() {}
   };
+
 
   //! Unpreconditioned Wilson-like fermion actions
   /*! @ingroup actions
@@ -279,19 +242,16 @@ namespace Chroma
    * Unpreconditioned like Wilson-like fermion actions
    */
   template<typename T>
-  class UnprecWilsonTypeFermAct : public WilsonTypeFermAct<T>
+  class UnprecWilsonTypeFermActBase : public WilsonTypeFermAct<T>
   {
   public:
-#if 0
-    // This does not appear to be needed
-    //! Compute quark propagator
-    void qprop(T& psi, 
-	       Handle<const ConnectState> state, 
-	       const T& chi, 
-	       const InvertParam_t& invParam,
-	       int& ncg_had) const;
-#endif
+    //! Produce a linear operator for this action
+    virtual const UnprecLinearOperatorBase<T>* linOp(Handle<const ConnectState> state) const = 0;
+
+    //! Virtual destructor to help with cleanup;
+    virtual ~UnprecWilsonTypeFermActBase() {}
   };
+
 
 
   //! Even-odd preconditioned Wilson-like fermion actions
@@ -300,12 +260,12 @@ namespace Chroma
    * Even-odd preconditioned like Wilson-like fermion actions
    */
   template<typename T>
-  class EvenOddPrecWilsonTypeFermAct : public WilsonTypeFermAct<T>
+  class EvenOddPrecWilsonTypeFermActBase : public WilsonTypeFermAct<T>
   {
   public:
     //! Override to produce an even-odd prec. linear operator for this action
     /*! Covariant return rule - override base class function */
-    virtual const EvenOddPrecLinearOperator<T>* linOp(Handle<const ConnectState> state) const = 0;
+    virtual const EvenOddPrecLinearOperatorBase<T>* linOp(Handle<const ConnectState> state) const = 0;
 
     //! Compute quark propagator over base type
     /*! 
@@ -343,6 +303,8 @@ namespace Chroma
 		       const InvertParam_t& invParam,
 		       int& ncg_had) const;
   
+    //! Virtual destructor to help with cleanup;
+    virtual ~EvenOddPrecWilsonTypeFermActBase() {}
   };
 
 
@@ -351,16 +313,14 @@ namespace Chroma
    *
    * Even-odd preconditioned like Wilson-like fermion actions.
    * Here, use arrays of matter fields.
- */
+   */
   template<typename T>
-  class EvenOddPrecWilsonTypeFermAct< multi1d<T> > : public WilsonTypeFermAct< multi1d<T> >
+  class EvenOddPrecWilsonTypeFermActBase< multi1d<T> > : public WilsonTypeFermAct< multi1d<T> >
   {
   public:
-
-
     //! Override to produce an even-odd prec. linear operator for this action
     /*! Covariant return rule - override base class function */
-    virtual const EvenOddPrecLinearOperator< multi1d<T> >* linOp(Handle<const ConnectState> state) const = 0;
+    virtual const EvenOddPrecLinearOperatorBase< multi1d<T> >* linOp(Handle<const ConnectState> state) const = 0;
 
     //! Compute quark propagator over base type
     /*! 
@@ -398,9 +358,50 @@ namespace Chroma
 		       const InvertParam_t& invParam,
 		       int& ncg_had) const = 0;
   
+    //! Virtual destructor to help with cleanup;
+    virtual ~EvenOddPrecWilsonTypeFermActBase() {}
   };
 
 
+  //-------------------------------------------------------------------------------------------
+  //! Unpreconditioned Wilson-like fermion actions with derivatives
+  /*! @ingroup actions
+   *
+   * Unpreconditioned like Wilson-like fermion actions
+   */
+  template<typename T, typename P>
+  class UnprecWilsonTypeFermAct : public UnprecWilsonTypeFermActBase<T>
+  {
+  public:
+    //! Produce a linear operator for this action
+    virtual const UnprecLinearOperator<T,P>* linOp(Handle<const ConnectState> state) const = 0;
+
+    //! Virtual destructor to help with cleanup;
+    virtual ~UnprecWilsonTypeFermAct() {}
+  };
+
+
+
+  //! Even-odd preconditioned Wilson-like fermion actions including derivatives
+  /*! @ingroup actions
+   *
+   * Even-odd preconditioned like Wilson-like fermion actions
+   */
+  template<typename T, typename P>
+  class EvenOddPrecWilsonTypeFermAct : public EvenOddPrecWilsonTypeFermActBase<T>
+  {
+  public:
+    //! Override to produce an even-odd prec. linear operator for this action
+    /*! Covariant return rule - override base class function */
+    virtual const EvenOddPrecLinearOperator<T,P>* linOp(Handle<const ConnectState> state) const = 0;
+
+    //! Virtual destructor to help with cleanup;
+    virtual ~EvenOddPrecWilsonTypeFermAct() {}
+  };
+
+
+
+  //-------------------------------------------------------------------------------------------
   //! Staggered-like fermion actions
   /*! @ingroup actions
    *
@@ -410,6 +411,26 @@ namespace Chroma
   class StaggeredTypeFermAct : public FermionAction<T>
   {
   public:
+    //! Virtual destructor to help with cleanup;
+    virtual ~StaggeredTypeFermAct() {}
+  };
+
+
+  //! Staggered-like fermion actions
+  /*! @ingroup actions
+   *
+   * Staggered-like fermion actions
+   */
+  template<typename T>
+  class UnprecStaggeredTypeFermActBase : public FermionAction<T>
+  {
+  public:
+    //! Override to produce an even-odd prec. linear operator for this action
+    /*! Covariant return rule - override base class function */
+    virtual const UnprecLinearOperatorBase<T>* linOp(Handle<const ConnectState> state) const = 0;
+
+    //! Virtual destructor to help with cleanup;
+    virtual ~UnprecStaggeredTypeFermActBase() {}
   };
 
 
@@ -419,32 +440,63 @@ namespace Chroma
    * Even-odd preconditioned like Staggered-like fermion actions
    */
   template<typename T>
-  class EvenOddStaggeredTypeFermAct : public StaggeredTypeFermAct<T>
+  class EvenOddStaggeredTypeFermActBase : public StaggeredTypeFermAct<T>
   {
   public:
-
+    //! Override to produce an even-odd prec. linear operator for this action
+    /*! Covariant return rule - override base class function */
+    virtual const EvenOddLinearOperatorBase<T>* linOp(Handle<const ConnectState> state) const = 0;
 
     //! Provide a default version of qprop
-    void qprop(LatticeStaggeredFermion& psi,
+    void qprop(T& psi,
 	       Handle<const ConnectState> state,
-	       const LatticeStaggeredFermion& chi,
+	       const T& chi,
 	       const InvertParam_t& invParam,
 	       int& ncg_had);
 
     //! Return the quark mass
     virtual const Real  getQuarkMass() const = 0;
 
-    //! Produce a linear operator for this action
-    /*! NOTE: maybe this should be abstracted to a foundry class object */
-    virtual const EvenOddLinearOperator<T>* linOp(Handle<const ConnectState> state) const = 0;
+    //! Virtual destructor to help with cleanup;
+    virtual ~EvenOddStaggeredTypeFermActBase() {}
 
-    //! Produce a linear operator M^dag.M for this action
-    /*! NOTE: maybe this should be abstracted to a foundry class object */
-    virtual const LinearOperator<T>* lMdagM(Handle<const ConnectState> state) const = 0;
+  };
+
+
+
+  //! Staggered-like fermion actions with derivatives
+  /*! @ingroup actions
+   *
+   * Staggered-like fermion actions
+   */
+  template<typename T, typename P>
+  class UnprecStaggeredTypeFermAct : public UnprecStaggeredTypeFermActBase<T>
+  {
+  public:
+    //! Override to produce an even-odd prec. linear operator for this action
+    /*! Covariant return rule - override base class function */
+    virtual const UnprecLinearOperator<T,P>* linOp(Handle<const ConnectState> state) const = 0;
+
+    //! Virtual destructor to help with cleanup;
+    virtual ~UnprecStaggeredTypeFermAct() {}
+  };
+
+
+  //! Even-odd preconditioned Staggered-like fermion actions
+  /*! @ingroup actions
+   *
+   * Even-odd preconditioned like Staggered-like fermion actions
+   */
+  template<typename T, typename P>
+  class EvenOddStaggeredTypeFermAct : public EvenOddStaggeredTypeFermActBase<T>
+  {
+  public:
+    //! Override to produce an even-odd prec. linear operator for this action
+    /*! Covariant return rule - override base class function */
+    virtual const EvenOddLinearOperator<T,P>* linOp(Handle<const ConnectState> state) const = 0;
 
     //! Virtual destructor to help with cleanup;
     virtual ~EvenOddStaggeredTypeFermAct() {}
-
   };
 
 }

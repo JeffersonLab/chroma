@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_fermact_array_w.cc,v 1.5 2004-10-22 03:36:43 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_fermact_array_w.cc,v 1.6 2004-12-12 21:22:15 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -268,7 +268,7 @@ namespace Chroma
    *
    * \param state	    gauge field     	       (Read)
    */
-  const EvenOddPrecLinearOperator<multi1d<LatticeFermion> >* 
+  const EvenOddPrecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* 
   EvenOddPrecOvlapContFrac5DFermActArray::linOp(Handle<const ConnectState> state_) const
   {
     START_CODE();
@@ -333,10 +333,10 @@ namespace Chroma
    */
   void 
   EvenOddPrecOvlapContFrac5DFermActArray::qprop(LatticeFermion& psi, 
-					   Handle<const ConnectState> state, 
-					   const LatticeFermion& chi, 
-					   const InvertParam_t& invParam,
-					   int& ncg_had) const
+						Handle<const ConnectState> state, 
+						const LatticeFermion& chi, 
+						const InvertParam_t& invParam,
+						int& ncg_had) const
   {
     
     START_CODE();
@@ -350,7 +350,7 @@ namespace Chroma
     multi1d<LatticeFermion> chi5(N5);
     multi1d<LatticeFermion> psi5(N5);
     // Construct the linear operator
-    Handle<const EvenOddPrecLinearOperator< multi1d<LatticeFermion> > > A(linOp(state));
+    Handle<const EvenOddPrecLinearOperatorBase< multi1d<LatticeFermion> > > A(linOp(state));
 
 
   

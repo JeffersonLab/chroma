@@ -1,10 +1,12 @@
-/*  $Id: asq_dsl_s.cc,v 1.9 2004-11-20 21:18:35 edwards Exp $  */
+/*  $Id: asq_dsl_s.cc,v 1.10 2004-12-12 21:22:15 edwards Exp $  */
 
 #include "chromabase.h"
 #include "actions/ferm/linop/asq_dsl_s.h"
 
 using namespace QDP;
 
+namespace Chroma 
+{ 
 /* This routine is specific to staggered fermions! */
 
 /* Asq_Dsl */
@@ -134,6 +136,9 @@ mu);
 
   END_CODE();
 }
+
+}; // End Namespace Chroma
+
 
 
 

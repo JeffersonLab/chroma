@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovlap_contfrac5d_fermact_array_w.h,v 1.1 2004-09-30 18:14:31 bjoo Exp $
+// $Id: prec_ovlap_contfrac5d_fermact_array_w.h,v 1.2 2004-12-12 21:22:15 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -61,7 +61,7 @@ namespace Chroma
    *   Chi  =   ((1+Mass)/(1-Mass)*gamma_5 + B) . Psi
    *  where  B  is the continued fraction of the zolotarev approx. to eps(H(m))
    */
-  class EvenOddPrecOvlapContFrac5DFermActArray : public EvenOddPrecWilsonTypeFermAct< multi1d<LatticeFermion> >
+  class EvenOddPrecOvlapContFrac5DFermActArray : public EvenOddPrecWilsonTypeFermAct< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >
   {
   public:
 
@@ -84,7 +84,7 @@ namespace Chroma
     Real quark_mass() const {return params.Mass;}
 
     //! Produce a linear operator for this action
-    const EvenOddPrecLinearOperator< multi1d<LatticeFermion> >* linOp(Handle<const ConnectState> state) const;
+    const EvenOddPrecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* linOp(Handle<const ConnectState> state) const;
 
     //! Produce a linear operator M^dag.M for this action
     const LinearOperator< multi1d<LatticeFermion> >* lMdagM(Handle<const ConnectState> state) const;

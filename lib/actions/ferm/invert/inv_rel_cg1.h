@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inv_rel_cg1.h,v 1.3 2004-05-18 12:40:15 bjoo Exp $
+// $Id: inv_rel_cg1.h,v 1.4 2004-12-12 21:22:15 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -75,7 +75,7 @@
  */
 
 template<typename T>
-void InvRelCG1(const ApproxLinearOperator<T>& A,
+void InvRelCG1(const LinearOperator<T>& A,
 	       const T& chi,
 	       T& psi,
 	       const Real& RsdCG, 

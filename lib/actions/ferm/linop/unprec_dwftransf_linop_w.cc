@@ -1,4 +1,4 @@
-// $Id: unprec_dwftransf_linop_w.cc,v 1.6 2004-11-16 18:50:26 bjoo Exp $
+// $Id: unprec_dwftransf_linop_w.cc,v 1.7 2004-12-12 21:22:16 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -13,6 +13,8 @@
 using namespace QDP;
 using namespace Chroma;
 
+namespace Chroma 
+{ 
 void UnprecDWFTransfLinOp::create(const multi1d<LatticeColorMatrix>& u_, 
 				  const Real& Mass_,
 				  const Real& b5_,
@@ -92,4 +94,6 @@ void UnprecDWFTransfLinOp::operator() (LatticeFermion& chi, const LatticeFermion
   QDPIO::cout << "UnprecDWFTransfLinOp: ncount= " << n_count << endl;
   END_CODE();
 }
+
+}; // End Namespace Chroma
 

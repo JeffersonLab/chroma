@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_linop_array_w.cc,v 1.7 2004-07-28 02:38:02 edwards Exp $
+// $Id: unprec_dwf_linop_array_w.cc,v 1.8 2004-12-12 21:22:16 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall linear operator
  */
@@ -6,6 +6,8 @@
 #include "chromabase.h"
 #include "actions/ferm/linop/unprec_dwf_linop_array_w.h"
 
+namespace Chroma 
+{ 
 //! Creation routine
 /*! \ingroup fermact
  *
@@ -90,3 +92,6 @@ void UnprecDWLinOpArray::operator() (multi1d<LatticeFermion>& chi,
 
   END_CODE();
 }
+
+}; // End Namespace Chroma
+

@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_sse.cc,v 1.18 2004-07-28 02:38:02 edwards Exp $
+// $Id: lwldslash_w_sse.cc,v 1.19 2004-12-12 21:22:16 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -8,6 +8,11 @@
 
 using namespace QDP;
 
+// This is in C++ so it comes outside the extern "C" {}
+extern void qdp_pack_gauge(const multi1d<LatticeColorMatrix>&_u, multi1d<PrimitiveSU3Matrix>& u_tmp);
+
+namespace Chroma 
+{ 
 //! General Wilson-Dirac dslash
 /*! \ingroup linop
  * DSLASH
@@ -42,9 +47,6 @@ extern "C" {
   void sse_su3dslash_wilson(SSEREAL* u, SSEREAL *psi, SSEREAL *res, int isign, int cb);
 
 }
-
-// This is in C++ so it comes outside the extern "C" {}
-extern void qdp_pack_gauge(const multi1d<LatticeColorMatrix>&_u, multi1d<PrimitiveSU3Matrix>& u_tmp);
 
 //! Creation routine
 void SSEWilsonDslash::create(const multi1d<LatticeColorMatrix>& _u)
@@ -124,4 +126,6 @@ SSEWilsonDslash::apply (LatticeFermion& chi, const LatticeFermion& psi,
 
   END_CODE();
 }
+
+}; // End Namespace Chroma
 

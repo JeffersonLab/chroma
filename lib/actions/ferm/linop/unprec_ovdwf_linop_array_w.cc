@@ -1,4 +1,4 @@
-// $Id: unprec_ovdwf_linop_array_w.cc,v 1.9 2004-10-03 01:21:19 edwards Exp $
+// $Id: unprec_ovdwf_linop_array_w.cc,v 1.10 2004-12-12 21:22:16 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Overlap-DWF (Borici) linear operator
  */
@@ -6,6 +6,8 @@
 #include "chromabase.h"
 #include "actions/ferm/linop/unprec_ovdwf_linop_array_w.h"
 
+namespace Chroma 
+{ 
 //! Creation routine
 /*! \ingroup fermact
  *
@@ -125,4 +127,6 @@ UnprecOvDWLinOpArray::Dminus(LatticeFermion& chi,
   chi = (1.0 - (Nd-WilsonMass))*psi +0.5*tt ; //really -(-.5)D
 }
   
+
+}; // End Namespace Chroma
 

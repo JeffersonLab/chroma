@@ -1,4 +1,4 @@
-// $Id: lg5eps_w.cc,v 1.5 2004-08-10 14:32:06 edwards Exp $
+// $Id: lg5eps_w.cc,v 1.6 2004-12-12 21:22:16 edwards Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -9,6 +9,8 @@
 
 using namespace QDP;
 
+namespace Chroma 
+{ 
 //! Internal Overlap-pole operator
 /*!
  * \ingroup linop
@@ -427,4 +429,7 @@ void lg5eps::operator() (LatticeFermion& chi, const LatticeFermion& psi,
 
   END_CODE();
 }
+
+
+}; // End Namespace Chroma
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermfactory_w.h,v 1.4 2004-09-30 18:14:31 bjoo Exp $
+// $Id: fermfactory_w.h,v 1.5 2004-12-12 21:22:14 edwards Exp $
 /*! \file
  *  \brief Fermion action factories
  */
@@ -43,7 +43,7 @@ namespace Chroma
   ObjectFactory<WilsonTypeFermAct< multi1d<LatticeFermion> >, 
     std::string,
     TYPELIST_3(Handle< FermBC< multi1d<LatticeFermion> > >, XMLReader&, const std::string&),
-    EvenOddPrecWilsonTypeFermAct< multi1d<LatticeFermion> >* (*)(Handle< FermBC< multi1d<LatticeFermion> > >, 
+    EvenOddPrecWilsonTypeFermAct< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* (*)(Handle< FermBC< multi1d<LatticeFermion> > >, 
 					              XMLReader&,
 					              const std::string&), StringFactoryError> >
   TheEvenOddPrecWilsonTypeFermActArrayFactory;

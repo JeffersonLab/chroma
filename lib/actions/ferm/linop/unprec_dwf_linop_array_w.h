@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_linop_array_w.h,v 1.8 2004-10-03 01:21:19 edwards Exp $
+// $Id: unprec_dwf_linop_array_w.h,v 1.9 2004-12-12 21:22:16 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion linear operator
  */
@@ -13,8 +13,8 @@
 
 using namespace QDP;
 
-//namespace Chroma
-//{
+namespace Chroma
+{
   //! Unpreconditioned domain-wall Dirac operator
   /*!
    * \ingroup linop
@@ -30,7 +30,7 @@ using namespace QDP;
     //! Full constructor
     UnprecDWLinOpArray(const multi1d<LatticeColorMatrix>& u_, 
 		       const Real& WilsonMass_, const Real& m_q, int N5_)
-      {create(u_,WilsonMass_,m_q,N5_);}
+    {create(u_,WilsonMass_,m_q,N5_);}
 
     //! Creation routine
     void create(const multi1d<LatticeColorMatrix>& u_, 
@@ -56,10 +56,10 @@ using namespace QDP;
 		const LatticeFermion& psi,
 		enum PlusMinus isign,
 		int s5) const
-      {
-	QDPIO::cerr << "Dminus not implemented" << endl;
-	QDP_abort(1);
-      }
+    {
+      QDPIO::cerr << "Dminus not implemented" << endl;
+      QDP_abort(1);
+    }
 
   private:
     Real WilsonMass;
@@ -69,6 +69,9 @@ using namespace QDP;
     WilsonDslash  D;
   };
 
-//}
+}; // End Namespace Chroma
+
+using namespace Chroma;
+
 
 #endif

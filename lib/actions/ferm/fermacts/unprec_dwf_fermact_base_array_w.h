@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_fermact_base_array_w.h,v 1.17 2004-12-09 03:58:03 edwards Exp $
+// $Id: unprec_dwf_fermact_base_array_w.h,v 1.18 2004-12-12 21:22:15 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned domain-wall-like fermion actions
  */
@@ -25,7 +25,7 @@ namespace Chroma
    * are specified in Phys.Rev.D63:094505,2001 (hep-lat/0005002).
    */
   template<typename T>
-  class UnprecDWFermActBaseArray : public UnprecWilsonTypeFermAct< multi1d<T> >
+  class UnprecDWFermActBaseArray : public UnprecWilsonTypeFermAct< multi1d<T>, multi1d<LatticeColorMatrix> >
   {
   public:
     //! Return the quark mass

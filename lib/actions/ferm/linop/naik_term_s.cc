@@ -1,4 +1,4 @@
-/*  $Id: naik_term_s.cc,v 1.6 2004-12-08 21:50:24 edwards Exp $  */
+/*  $Id: naik_term_s.cc,v 1.7 2004-12-12 21:22:16 edwards Exp $  */
 
 /* NAIK_LINKS */
 
@@ -23,6 +23,8 @@
 
 using namespace QDP;
 
+namespace Chroma 
+{ 
 
 //
 //  u(Nd), probably should check
@@ -62,3 +64,6 @@ void Triple_Links(multi1d<LatticeColorMatrix> & u,
 
   END_CODE();
 }
+
+}; // End Namespace Chroma
+

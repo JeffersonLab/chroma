@@ -4,9 +4,15 @@
 
 #include "chromabase.h"
 
-void Fat7_Links(multi1d<LatticeColorMatrix>& u, multi1d<LatticeColorMatrix>& u_fat, Real u0);
+namespace Chroma 
+{ 
+  void Fat7_Links(multi1d<LatticeColorMatrix>& u, multi1d<LatticeColorMatrix>& u_fat, Real u0);
 
-void Triple_Links(multi1d<LatticeColorMatrix>& u, multi1d<LatticeColorMatrix>& u_triple, Real u0);
+  void Triple_Links(multi1d<LatticeColorMatrix>& u, multi1d<LatticeColorMatrix>& u_triple, Real u0);
+
+}; // End Namespace Chroma
+
+using namespace Chroma;
 
 #endif
 

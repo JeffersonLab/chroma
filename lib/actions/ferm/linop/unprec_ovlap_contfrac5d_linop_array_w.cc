@@ -1,4 +1,4 @@
-/* $Id: unprec_ovlap_contfrac5d_linop_array_w.cc,v 1.3 2004-10-01 17:48:31 bjoo Exp $
+/* $Id: unprec_ovlap_contfrac5d_linop_array_w.cc,v 1.4 2004-12-12 21:22:16 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
  */
@@ -9,6 +9,8 @@
 #include "actions/ferm/linop/unprec_ovlap_contfrac5d_linop_array_w.h"
 
 
+namespace Chroma 
+{ 
 //! Apply the operator onto a source vector
 /*!
  * The operator acts on the entire lattice
@@ -139,4 +141,7 @@ UnprecOvlapContFrac5DLinOpArray::operator() (multi1d<LatticeFermion>& chi,
 
   END_CODE();
 }
+
+}; // End Namespace Chroma
+
 

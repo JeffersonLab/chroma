@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ovlap_partfrac4d_fermact_w.h,v 1.4 2004-12-09 03:58:03 edwards Exp $
+// $Id: ovlap_partfrac4d_fermact_w.h,v 1.5 2004-12-12 21:22:15 edwards Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -201,7 +201,7 @@ namespace Chroma
      * NOTE: the arg MUST be the original base because C++ requires it for a virtual func!
      * The function will have to downcast to get the correct state
      */
-    const LinearOperator<LatticeFermion>* 
+    const UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* 
     unprecLinOp(Handle<const ConnectState> state, const Real& m_q) const;
 
     const LinearOperator<LatticeFermion>* 
@@ -275,7 +275,7 @@ namespace Chroma
   private:
     Handle<FermBC<LatticeFermion> >  fbc;   // fermion BC
     // Auxilliary action used for kernel of operator
-    Handle<UnprecWilsonTypeFermAct<LatticeFermion> > Mact;   
+    Handle<UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> > > Mact;   
     OvlapPartFrac4DFermActParams params;
   };
 

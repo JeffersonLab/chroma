@@ -1,4 +1,4 @@
-// $Id: stag_fermact_s.cc,v 1.4 2004-11-06 13:00:24 mcneile Exp $
+// $Id: stag_fermact_s.cc,v 1.5 2004-12-12 21:22:15 edwards Exp $
 /*! \file
  *  \brief Staggered fermion action
  */
@@ -8,13 +8,15 @@
 #include "actions/ferm/linop/stag_linop_s.h"
 #include "actions/ferm/linop/stag_mdagm_linop_s.h"
 
+namespace Chroma 
+{ 
 //! Produce a linear operator for this action
 /*!
  * The operator acts on the entire lattice
  *
  * \param state	    gauge field     	       (Read)
  */
-const LinearOperator<LatticeStaggeredFermion>*
+const EvenOddLinearOperator< LatticeStaggeredFermion, multi1d<LatticeColorMatrix> >*
 StagFermAct::linOp(Handle<const ConnectState> state) const
 {
   return new StagLinOp(state->getLinks(), Mass); 
@@ -102,5 +104,7 @@ StagFermAct::dsdu(multi1d<LatticeColorMatrix> & ds_u,
       
   END_CODE();
 }
+
+} // End Namespace Chroma
 
 #endif

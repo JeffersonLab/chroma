@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lmdagm.h,v 1.3 2004-05-21 15:31:50 bjoo Exp $
+// $Id: lmdagm.h,v 1.4 2004-12-12 21:22:16 edwards Exp $
 
 #ifndef __lmdagm_w_h__
 #define __lmdagm_w_h__
@@ -9,6 +9,8 @@
 
 using namespace QDP;
 
+namespace Chroma 
+{ 
 //! M^dag.M linear operator
 /*!
  * \ingroup linop
@@ -100,15 +102,15 @@ private:
  * Linear operator forming M^dag.M from an operator M
  */
 template<typename T>
-class approx_lmdagm : public ApproxLinearOperator<T>
+class approx_lmdagm : public LinearOperator<T>
 {
 public:
   //! Initialize pointer with existing pointer
   /*! Requires that the pointer p is a return value of new */
-  approx_lmdagm(const ApproxLinearOperator<T>* p) : A(p) {}
+  approx_lmdagm(const LinearOperator<T>* p) : A(p) {}
 
   //! Copy pointer (one more owner)
-  approx_lmdagm(Handle<const ApproxLinearOperator<T> > p) : A(p) {}
+  approx_lmdagm(Handle<const LinearOperator<T> > p) : A(p) {}
 
   //! Destructor
   ~approx_lmdagm() {}
@@ -135,7 +137,12 @@ public:
     }
 
 private:
-  const Handle< const ApproxLinearOperator<T> > A;
+  const Handle< const LinearOperator<T> > A;
 };
+
+
+}; // End Namespace Chroma
+
+using namespace Chroma;
 
 #endif

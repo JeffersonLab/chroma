@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: asqtad_mdagm_s.h,v 1.5 2004-11-20 21:18:35 edwards Exp $
+// $Id: asqtad_mdagm_s.h,v 1.6 2004-12-12 21:22:15 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -15,6 +15,8 @@
 
 using namespace QDP;
 
+namespace Chroma 
+{ 
 //! Asqtad Staggered-Dirac operator
 /*!
  * \ingroup linop
@@ -71,5 +73,10 @@ private:
 
   AsqtadDslash D;
 };
+
+
+}; // End Namespace Chroma
+
+using namespace Chroma;
 
 #endif

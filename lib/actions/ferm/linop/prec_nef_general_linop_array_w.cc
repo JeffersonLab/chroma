@@ -1,4 +1,4 @@
-// $Id: prec_nef_general_linop_array_w.cc,v 1.2 2004-10-29 13:36:13 bjoo Exp $
+// $Id: prec_nef_general_linop_array_w.cc,v 1.3 2004-12-12 21:22:16 edwards Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned NEF domain-wall linear operator
  */
@@ -7,6 +7,8 @@
 #include "actions/ferm/linop/prec_nef_general_linop_array_w.h"
 
 
+namespace Chroma 
+{ 
 
 //! Creation routine
 /*! \ingroup fermact
@@ -111,6 +113,8 @@ EvenOddPrecGenNEFDWLinOpArray::applyDiag(multi1d<LatticeFermion>& chi,
 				      const int cb) const
 {
   START_CODE();
+
+  chi.resize(N5);
 
   switch ( isign ) {
     
@@ -242,6 +246,7 @@ EvenOddPrecGenNEFDWLinOpArray::applyDiagInv(multi1d<LatticeFermion>& chi,
 {
   START_CODE();
 
+  chi.resize(N5);
 
   // I use two temporaries
   multi1d<LatticeFermion> z(N5);
@@ -381,6 +386,8 @@ EvenOddPrecGenNEFDWLinOpArray::applyOffDiag(multi1d<LatticeFermion>& chi,
 {
   START_CODE();
 
+  chi.resize(N5);
+
   switch ( isign ) 
   {
   case PLUS:
@@ -495,3 +502,6 @@ EvenOddPrecGenNEFDWLinOpArray::Dminus(LatticeFermion& chi,
   Real fact = Real(0.5)*c5[s5];
   chi = f_minus[s5]*psi - fact*tt ;
 }
+
+}; // End Namespace Chroma
+

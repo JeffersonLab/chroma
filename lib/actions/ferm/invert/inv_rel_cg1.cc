@@ -1,4 +1,4 @@
-// $Id: inv_rel_cg1.cc,v 1.8 2004-07-28 03:47:26 edwards Exp $
+// $Id: inv_rel_cg1.cc,v 1.9 2004-12-12 21:22:15 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -16,7 +16,7 @@
 #undef CHROMA_INV_REL_CG1_RSD_CHK
 
 template<typename T>
-void InvRelCG1_a(const ApproxLinearOperator<T>& A,
+void InvRelCG1_a(const LinearOperator<T>& A,
 		 const T& chi,
 		 T& psi,
 		 const Real& RsdCG, 
@@ -140,7 +140,7 @@ void InvRelCG1_a(const ApproxLinearOperator<T>& A,
 
 // Fix here for now
 template<>
-void InvRelCG1(const ApproxLinearOperator<LatticeFermion>& A,
+void InvRelCG1(const LinearOperator<LatticeFermion>& A,
 	       const LatticeFermion& chi,
 	       LatticeFermion& psi,
 	       const Real& RsdCG, 

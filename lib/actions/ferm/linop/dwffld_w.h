@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dwffld_w.h,v 1.3 2004-07-27 06:03:04 edwards Exp $
+// $Id: dwffld_w.h,v 1.4 2004-12-12 21:22:15 edwards Exp $
 /*! \file
  *  \brief DWF parity/rotation operator
  *
@@ -14,6 +14,8 @@
 
 using namespace QDP;
 
+namespace Chroma 
+{ 
 //! DWF parity/rotation operator
 /*! \ingroup linop
  *
@@ -25,5 +27,9 @@ using namespace QDP;
  */
 
 void DwfFld(multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, enum PlusMinus isign);
+
+}; // End Namespace Chroma
+
+using namespace Chroma;
 
 #endif

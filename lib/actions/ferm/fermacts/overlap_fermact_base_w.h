@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: overlap_fermact_base_w.h,v 1.15 2004-12-09 03:58:03 edwards Exp $
+// $Id: overlap_fermact_base_w.h,v 1.16 2004-12-12 21:22:14 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -28,7 +28,7 @@ namespace Chroma
    * NOTE: for now we assume the kernel is a fund. rep. fermion type,
    * but that is not necessary
    */
-  class OverlapFermActBase : public UnprecWilsonTypeFermAct<LatticeFermion>
+  class OverlapFermActBase : public UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >
   {
   public:
     //! Return the quark mass
@@ -38,12 +38,13 @@ namespace Chroma
     virtual bool isChiral() const = 0;
 
     //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
-    virtual const LinearOperator<LatticeFermion>* unprecLinOp(Handle<const ConnectState> state, 
-							      const Real& m_q) const = 0;
-
+    virtual const UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* 
+    unprecLinOp(Handle<const ConnectState> state, const Real& m_q) const = 0;
+    
     //! Override to produce a DWF-link unprec. linear operator for this action
     /*! Covariant return rule - override base class function */
-    virtual const LinearOperator<LatticeFermion>* linOp(Handle<const ConnectState> state) const
+    virtual const UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* 
+    linOp(Handle<const ConnectState> state) const
     {
       return unprecLinOp(state,quark_mass());
     }

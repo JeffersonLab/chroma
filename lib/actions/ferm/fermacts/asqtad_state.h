@@ -8,6 +8,8 @@
 
 using namespace QDP;
 
+namespace Chroma 
+{ 
 //! Basic "Connect State" for ASQTAD
 /*! 
  * \ingroup fermact
@@ -60,5 +62,7 @@ private:
   multi1d<LatticeColorMatrix> u_triple;
 };
 	
+}; // End Namespace Chroma
+
 
 #endif

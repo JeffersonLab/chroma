@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_wilson_fermact_w.h,v 1.19 2004-12-07 17:11:50 bjoo Exp $
+// $Id: unprec_wilson_fermact_w.h,v 1.20 2004-12-12 21:22:15 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -9,7 +9,6 @@
 
 #include "fermact.h"
 #include "actions/ferm/linop/lgherm_w.h"
-#include "actions/ferm/linop/unprec_wilson_dmdu_w.h"
 #include "io/param_io.h"       // to get AnisoParam_t
 
 using namespace QDP;
@@ -45,7 +44,7 @@ namespace Chroma
    *
    * Supports creation and application for fermion actions
    */
-  class UnprecWilsonFermAct : public UnprecWilsonTypeFermAct<LatticeFermion>
+  class UnprecWilsonFermAct : public UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >
   {
   public:
     //! General FermBC
@@ -70,7 +69,7 @@ namespace Chroma
     const FermBC<LatticeFermion>& getFermBC() const {return *fbc;}
 
     //! Produce a linear operator for this action
-    const LinearOperator<LatticeFermion>* linOp(Handle<const ConnectState> state) const;
+    const UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* linOp(Handle<const ConnectState> state) const;
 
     //! Produce a linear operator M^dag.M for this action
     const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state) const;
@@ -80,22 +79,6 @@ namespace Chroma
     const LinearOperator<LatticeFermion>* gamma5HermLinOp(Handle< const ConnectState> state) const { 
       return new lgherm<LatticeFermion>(linOp(state));
     }
-
-    //! Produce a derivative matrix...
-    const LinearOperator<LatticeFermion>* ldMdU(Handle < const ConnectState> state, const int mu) const {
-      return new UnprecWilsondMdU(mu);
-    }
-
-    //! Compute dS_f/dU
-    void dsdu(multi1d<LatticeColorMatrix>& result,
-	      Handle<const ConnectState> state,
-	      const LatticeFermion& psi) const;
-
-
-    //! Compute dS_f/dU the new way for testing only
-    void dsdu2(multi1d<LatticeColorMatrix>& result,
-	       Handle<const ConnectState> state,
-	       const LatticeFermion& X) const;
 
     //! Destructor is automatic
     ~UnprecWilsonFermAct() {}

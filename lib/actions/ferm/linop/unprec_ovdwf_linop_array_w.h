@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovdwf_linop_array_w.h,v 1.8 2004-10-03 01:21:19 edwards Exp $
+// $Id: unprec_ovdwf_linop_array_w.h,v 1.9 2004-12-12 21:22:16 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Overlap-DWF (Borici) linear operator
  */
@@ -13,8 +13,8 @@
 
 using namespace QDP;
 
-//namespace Chroma
-//{
+namespace Chroma
+{
   //! Unpreconditioned Overlap-DWF (Borici) linear operator
   /*!
    * \ingroup linop
@@ -62,7 +62,8 @@ using namespace QDP;
     WilsonDslash  D;
   };
 
-//}
+}; // End Namespace Chroma
 
+using namespace Chroma;
 
 #endif

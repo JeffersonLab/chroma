@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: minv_rel_cg.h,v 1.1 2004-05-21 15:31:50 bjoo Exp $
+// $Id: minv_rel_cg.h,v 1.2 2004-12-12 21:22:15 edwards Exp $
 
 #ifndef MINV_REL_CG_INCLUDE
 #define MINV_REL_CG_INCLUDE
@@ -8,7 +8,7 @@
 #include "linearop.h"
 
 template<typename T>
-void MInvRelCG(const ApproxLinearOperator<T>& A, 
+void MInvRelCG(const LinearOperator<T>& A, 
 	       const T& chi, 
 	       multi1d<T>& psi,
 	       const multi1d<Real>& shifts, 

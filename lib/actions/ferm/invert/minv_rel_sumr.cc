@@ -25,7 +25,7 @@
 
     
 template<typename T>
-void MInvRelSUMR_a(const ApproxLinearOperator<T>& U,
+void MInvRelSUMR_a(const LinearOperator<T>& U,
 		   const T& b,
 		   multi1d<T>& x,
 		   const multi1d<Complex>& zeta,
@@ -397,7 +397,7 @@ void MInvRelSUMR_a(const ApproxLinearOperator<T>& U,
 }
 
 template<>
-void MInvRelSUMR(const ApproxLinearOperator<LatticeFermion>& U,
+void MInvRelSUMR(const LinearOperator<LatticeFermion>& U,
 		 const LatticeFermion& b,
 		 multi1d<LatticeFermion>& x,
 		 const multi1d<Complex>& zeta,

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_w_pab.h,v 1.2 2004-07-27 06:03:04 edwards Exp $
+// $Id: lwldslash_w_pab.h,v 1.3 2004-12-12 21:22:16 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -12,6 +12,8 @@
 
 using namespace QDP;
 
+namespace Chroma 
+{ 
 //! General Wilson-Dirac dslash
 /*!
  * \ingroup linop
@@ -81,5 +83,10 @@ private:
   unsigned long wil_cbsize;
 // Real CoeffWilsr_s;
 };
+
+
+}; // End Namespace Chroma
+
+using namespace Chroma;
 
 #endif

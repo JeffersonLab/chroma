@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_clover_fermact_w.h,v 1.7 2004-09-08 02:48:25 edwards Exp $
+// $Id: unprec_clover_fermact_w.h,v 1.8 2004-12-12 21:22:15 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Clover fermion action
  */
@@ -43,7 +43,7 @@ namespace Chroma
    *
    * Unpreconditioned clover fermion action
    */
-  class UnprecCloverFermAct : public UnprecWilsonTypeFermAct<LatticeFermion>
+  class UnprecCloverFermAct : public UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >
   {
   public:
     //! General FermBC
@@ -64,7 +64,7 @@ namespace Chroma
     const FermBC<LatticeFermion>& getFermBC() const {return *fbc;}
 
     //! Produce a linear operator for this action
-    const LinearOperator<LatticeFermion>* linOp(Handle<const ConnectState> state) const;
+    const UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* linOp(Handle<const ConnectState> state) const;
 
     //! Produce a linear operator M^dag.M for this action
     const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state) const;

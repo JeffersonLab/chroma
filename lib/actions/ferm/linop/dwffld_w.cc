@@ -1,4 +1,4 @@
-// $Id: dwffld_w.cc,v 1.5 2004-07-28 02:38:01 edwards Exp $
+// $Id: dwffld_w.cc,v 1.6 2004-12-12 21:22:15 edwards Exp $
 /*! \file
  *  \brief DWF parity/rotation operator
  *
@@ -11,7 +11,8 @@
 
 using namespace QDP;
 
-
+namespace Chroma 
+{ 
 //! DWF parity/rotation operator
 /*! \ingroup linop
  *
@@ -49,6 +50,9 @@ void DwfFld(multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, en
 
   END_CODE();
 }
+
+
+}; // End Namespace Chroma
 
 
 

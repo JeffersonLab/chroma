@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwftransf_fermact_w.h,v 1.3 2004-11-16 06:09:09 bjoo Exp $
+// $Id: unprec_dwftransf_fermact_w.h,v 1.4 2004-12-12 21:22:15 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -49,7 +49,7 @@ namespace Chroma
    *
    * Supports creation and application for fermion actions
    */
-  class UnprecDWFTransfFermAct : public UnprecWilsonTypeFermAct<LatticeFermion>
+  class UnprecDWFTransfFermAct : public UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >
   {
   public:
     //! General FermBC
@@ -82,7 +82,7 @@ namespace Chroma
     const FermBC<LatticeFermion>& getFermBC() const {return *fbc;}
 
     //! Produce a linear operator for this action
-    const LinearOperator<LatticeFermion>* linOp(Handle<const ConnectState> state) const;
+    const UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* linOp(Handle<const ConnectState> state) const;
 
     //! Produce a linear operator M^dag.M for this action
     const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state) const {
@@ -96,11 +96,6 @@ namespace Chroma
     const LinearOperator<LatticeFermion>* gamma5HermLinOp(Handle< const ConnectState> state) const { 
       return linOp(state);
     }
-
-    //! Compute dS_f/dU
-    void dsdu(multi1d<LatticeColorMatrix>& result,
-	      Handle<const ConnectState> state,
-	      const LatticeFermion& psi) const;
 
     //! Destructor is automatic
     ~UnprecDWFTransfFermAct() {}

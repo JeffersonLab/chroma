@@ -1,4 +1,4 @@
-// $Id: unprec_nef_linop_array_w.cc,v 1.5 2004-10-03 01:21:19 edwards Exp $
+// $Id: unprec_nef_linop_array_w.cc,v 1.6 2004-12-12 21:22:16 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF domain-wall linear operator
  */
@@ -6,6 +6,8 @@
 #include "chromabase.h"
 #include "actions/ferm/linop/unprec_nef_linop_array_w.h"
 
+namespace Chroma 
+{ 
 //! Creation routine
 /*! \ingroup linop
  *
@@ -134,4 +136,6 @@ void UnprecNEFDWLinOpArray::Dminus(LatticeFermion& chi,
   chi = fc5[s5]*psi + Real(-0.5*c5[s5])*tt;
   chi *= -1;
 }
+
+}; // End Namespace Chroma
 

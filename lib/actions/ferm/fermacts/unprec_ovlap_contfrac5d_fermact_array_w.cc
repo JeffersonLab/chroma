@@ -1,4 +1,4 @@
-// $Id: unprec_ovlap_contfrac5d_fermact_array_w.cc,v 1.7 2004-11-17 15:23:00 bjoo Exp $
+// $Id: unprec_ovlap_contfrac5d_fermact_array_w.cc,v 1.8 2004-12-12 21:22:15 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -165,8 +165,8 @@ namespace Chroma
 							     fermacttop,
 							     fermact_path);
       
-      UnprecWilsonTypeFermAct<LatticeFermion>* S_aux_ptr; 
-      S_aux_ptr = dynamic_cast<UnprecWilsonTypeFermAct<LatticeFermion>*>(S_f);
+      UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* S_aux_ptr; 
+      S_aux_ptr = dynamic_cast<UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >*>(S_f);
       
       // Dumbass User specifies something that is not UnpreWilsonTypeFermAct
       // dynamic_cast MUST be checked for 0
@@ -175,7 +175,7 @@ namespace Chroma
       
       // Drop AuxFermAct into a Handle immediately.
       // This should free things up at the end
-      Handle<UnprecWilsonTypeFermAct<LatticeFermion> >  S_w(S_aux_ptr);
+      Handle<UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> > >  S_w(S_aux_ptr);
       S_aux = S_w;
     }
     catch( const UnprecCastFailure& e) {
@@ -374,7 +374,7 @@ namespace Chroma
    *
    * \param state	    gauge field     	       (Read)
    */
-  const LinearOperator<multi1d<LatticeFermion> >* 
+  const UnprecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* 
   UnprecOvlapContFrac5DFermActArray::linOp(Handle<const ConnectState> state_) const
   {
     START_CODE();
@@ -496,7 +496,7 @@ namespace Chroma
    * The operator acts on the entire lattice *
    * \param state	    gauge field     	       (Read)
    */
-  const LinearOperator<multi1d<LatticeFermion> >* 
+  const LinearOperator< multi1d<LatticeFermion> >* 
   UnprecOvlapContFrac5DFermActArray::lMdagM(Handle<const ConnectState> state) const
   {
     return new lmdagm<multi1d<LatticeFermion> >(linOp(state));

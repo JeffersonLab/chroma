@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_w.h,v 1.6 2003-11-20 05:43:41 edwards Exp $
+// $Id: lwldslash_w.h,v 1.7 2004-12-12 21:22:16 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -11,6 +11,8 @@
 
 using namespace QDP;
 
+namespace Chroma 
+{ 
 //! General Wilson-Dirac dslash
 /*!
  * \ingroup linop
@@ -75,5 +77,10 @@ private:
   multi1d<LatticeColorMatrix> u;
 // Real CoeffWilsr_s;
 };
+
+
+}; // End Namespace Chroma
+
+using namespace Chroma;
 
 #endif

@@ -1,4 +1,4 @@
-// $Id: lovlapms_w.cc,v 1.21 2004-07-28 03:47:26 edwards Exp $
+// $Id: lovlapms_w.cc,v 1.22 2004-12-12 21:22:16 edwards Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -11,6 +11,8 @@ using namespace QDP;
 
 #undef LOVLAPMS_RSD_CHK
 
+namespace Chroma 
+{ 
 void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi, 
 			   enum PlusMinus isign) const
 {
@@ -493,4 +495,6 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
 
   END_CODE();
 }
+
+}; // End Namespace Chroma
 

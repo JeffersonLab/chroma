@@ -1,4 +1,4 @@
-// $Id: prec_fermact_qprop.cc,v 1.8 2004-10-08 13:20:15 bjoo Exp $
+// $Id: prec_fermact_qprop.cc,v 1.9 2004-12-12 21:22:17 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic even-odd preconditioned fermion operator
  *
@@ -28,7 +28,7 @@ namespace Chroma {
  */
 
 template<typename T>
-void qprop_t(const EvenOddPrecWilsonTypeFermAct<T>& me,
+void qprop_t(const EvenOddPrecWilsonTypeFermActBase<T>& me,
 	     T& psi, 
 	     Handle<const ConnectState> state, 
 	     const T& chi, 
@@ -41,7 +41,7 @@ void qprop_t(const EvenOddPrecWilsonTypeFermAct<T>& me,
   
   /* Construct the linear operator */
   /* This allocates field for the appropriate action */
-  Handle<const EvenOddPrecLinearOperator<T> > A(me.linOp(state));
+  Handle<const EvenOddPrecLinearOperatorBase<T> > A(me.linOp(state));
 
   /* Step (i) */
   /* chi_tmp =  chi_o - D_oe * A_ee^-1 * chi_o */
@@ -109,22 +109,22 @@ void qprop_t(const EvenOddPrecWilsonTypeFermAct<T>& me,
 
 template<>
 void 
-EvenOddPrecWilsonTypeFermAct<LatticeFermion>::qpropT(LatticeFermion& psi, 
-						     Handle<const ConnectState> state, 
-						     const LatticeFermion& chi, 
-						     const InvertParam_t& invParam,
-						     int& ncg_had) const
+EvenOddPrecWilsonTypeFermActBase<LatticeFermion>::qpropT(LatticeFermion& psi, 
+							 Handle<const ConnectState> state, 
+							 const LatticeFermion& chi, 
+							 const InvertParam_t& invParam,
+							 int& ncg_had) const
 {
   qprop_t(*this, psi, state, chi, invParam, ncg_had);
 }
 
 template<>
 void 
-EvenOddPrecWilsonTypeFermAct<LatticeFermion>::qprop(LatticeFermion& psi, 
-						    Handle<const ConnectState> state, 
-						    const LatticeFermion& chi, 
-						    const InvertParam_t& invParam,
-						    int& ncg_had) const
+EvenOddPrecWilsonTypeFermActBase<LatticeFermion>::qprop(LatticeFermion& psi, 
+							Handle<const ConnectState> state, 
+							const LatticeFermion& chi, 
+							const InvertParam_t& invParam,
+							int& ncg_had) const
 {
   qprop_t(*this, psi, state, chi, invParam, ncg_had);
 }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovext_fermact_array_w.h,v 1.9 2004-09-09 15:51:31 edwards Exp $
+// $Id: unprec_ovext_fermact_array_w.h,v 1.10 2004-12-12 21:22:15 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -47,7 +47,7 @@ namespace Chroma
    *   Chi  =   ((1+Mass)/(1-Mass)*gamma_5 + B) . Psi
    *  where  B  is the continued fraction of the pole approx. to eps(H(m))
    */
-  class UnprecOvExtFermActArray : public UnprecWilsonTypeFermAct< multi1d<LatticeFermion> >
+  class UnprecOvExtFermActArray : public UnprecWilsonTypeFermAct< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >
   {
   public:
     //! General FermBC
@@ -78,7 +78,7 @@ namespace Chroma
     Real quark_mass() const {return Mass;}
 
     //! Produce a linear operator for this action
-    const LinearOperator< multi1d<LatticeFermion> >* linOp(Handle<const ConnectState> state) const;
+    const UnprecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* linOp(Handle<const ConnectState> state) const;
 
     //! Produce a linear operator M^dag.M for this action
     const LinearOperator< multi1d<LatticeFermion> >* lMdagM(Handle<const ConnectState> state) const;

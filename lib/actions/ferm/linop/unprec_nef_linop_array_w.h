@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_nef_linop_array_w.h,v 1.9 2004-10-03 01:21:19 edwards Exp $
+// $Id: unprec_nef_linop_array_w.h,v 1.10 2004-12-12 21:22:16 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF domain-wall fermion linear operator
  */
@@ -13,8 +13,8 @@
 
 using namespace QDP;
 
-//namespace Chroma
-//{
+namespace Chroma
+{
   //! Unpreconditioned domain-wall Dirac operator
   /*!
    * \ingroup linop
@@ -77,6 +77,9 @@ using namespace QDP;
     multi1d<Real> fc5;
   };
 
-//}
+}; // End Namespace Chroma
+
+using namespace Chroma;
+
 
 #endif

@@ -1,4 +1,4 @@
-/*  $Id: fat7_links_s.cc,v 1.3 2004-12-08 21:49:59 edwards Exp $  */
+/*  $Id: fat7_links_s.cc,v 1.4 2004-12-12 21:22:15 edwards Exp $  */
 
 /* FAT7_LINKS */
 
@@ -22,6 +22,8 @@
 
 using namespace QDP;
 
+namespace Chroma 
+{ 
 
 //
 //  u(Nd), probably should check
@@ -122,3 +124,8 @@ void Fat7_Links(multi1d<LatticeColorMatrix> & u,
   
   END_CODE();
 }
+
+}; // End Namespace Chroma
+
+using namespace Chroma;
+

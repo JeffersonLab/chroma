@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lgherm_w.h,v 1.2 2004-01-20 20:51:10 bjoo Exp $
+// $Id: lgherm_w.h,v 1.3 2004-12-12 21:22:16 edwards Exp $
 
 #ifndef __lgherm_h__
 #define __lgherm_h__
@@ -9,6 +9,8 @@
 
 using namespace QDP;
 
+namespace Chroma 
+{ 
 //! Gamma(5) hermitian linear operator
 /*!
  * \ingroup linop
@@ -104,5 +106,10 @@ public:
 private:
   const Handle< const LinearOperator< multi1d<T> > > A;
 };
+
+
+}; // End Namespace Chroma
+
+using namespace Chroma;
 
 #endif

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: minv_rel_sumr.h,v 1.1 2004-05-21 14:32:37 bjoo Exp $
+// $Id: minv_rel_sumr.h,v 1.2 2004-12-12 21:22:15 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -31,7 +31,7 @@
 // which is where the name SUMR was coined.
 //
 template<typename T>
-void MInvRelSUMR(const ApproxLinearOperator<T>& U,
+void MInvRelSUMR(const LinearOperator<T>& U,
 		 const T& b,
 		 multi1d<T>& x,
 		 const multi1d<Complex>& zeta,

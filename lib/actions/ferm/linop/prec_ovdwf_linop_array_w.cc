@@ -1,4 +1,4 @@
-// $Id: prec_ovdwf_linop_array_w.cc,v 1.7 2004-10-03 01:21:19 edwards Exp $
+// $Id: prec_ovdwf_linop_array_w.cc,v 1.8 2004-12-12 21:22:16 edwards Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned Overlap-DWF (Borici) linear operator
  */
@@ -6,6 +6,8 @@
 #include "chromabase.h"
 #include "actions/ferm/linop/prec_ovdwf_linop_array_w.h"
 
+namespace Chroma 
+{ 
 
 //! Creation routine
 /*! \ingroup fermact
@@ -57,6 +59,8 @@ EvenOddPrecOvDWLinOpArray::applyDiag(multi1d<LatticeFermion>& chi,
 				     const int cb) const
 {
   START_CODE();
+
+  chi.resize(N5);
 
   switch ( isign ) {
     
@@ -118,6 +122,8 @@ EvenOddPrecOvDWLinOpArray::applyDiagInv(multi1d<LatticeFermion>& chi,
 					const int cb) const
 {
   START_CODE();
+
+  chi.resize(N5);
 
   // Copy and scale by TwoKappa (1/M0)
   for(int s(0);s<N5;s++)
@@ -214,6 +220,8 @@ EvenOddPrecOvDWLinOpArray::applyOffDiag(multi1d<LatticeFermion>& chi,
 {
   START_CODE();
 
+  chi.resize(N5);
+
   switch ( isign ) 
   {
   case PLUS:
@@ -292,3 +300,5 @@ EvenOddPrecOvDWLinOpArray::Dminus(LatticeFermion& chi,
   chi = c5InvTwoKappa*psi +0.5*tt ;  //really -(-.5)D
 }
   
+}; // End Namespace Chroma
+

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovext_linop_array_w.h,v 1.3 2003-11-23 06:16:24 edwards Exp $
+// $Id: unprec_ovext_linop_array_w.h,v 1.4 2004-12-12 21:22:16 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
  */
@@ -12,58 +12,64 @@
 
 using namespace QDP;
 
-//! Unpreconditioned Extended-Overlap (N&N) linear operator
-/*!
- * \ingroup linop
- *
- * This operator applies the extended version of the hermitian overlap operator
- *   Chi  =   ((1+m_q)/(1-m_q)*gamma_5 + B) . Psi
- *  where  B  is the continued fraction of the pole approx. to eps(H(m))
- *
- * This operator implements  hep-lat/0005004
- */
+namespace Chroma 
+{ 
+  //! Unpreconditioned Extended-Overlap (N&N) linear operator
+  /*!
+   * \ingroup linop
+   *
+   * This operator applies the extended version of the hermitian overlap operator
+   *   Chi  =   ((1+m_q)/(1-m_q)*gamma_5 + B) . Psi
+   *  where  B  is the continued fraction of the pole approx. to eps(H(m))
+   *
+   * This operator implements  hep-lat/0005004
+   */
 
-class UnprecOvExtLinOpArray : public LinearOperator< multi1d<LatticeFermion> >
-{
-public:
-  //! Partial constructor
-  UnprecOvExtLinOpArray() {}
+  class UnprecOvExtLinOpArray : public UnprecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >
+  {
+  public:
+    //! Partial constructor
+    UnprecOvExtLinOpArray() {}
 
-  //! Full constructor
-  UnprecOvExtLinOpArray(const multi1d<LatticeColorMatrix>& u_, 
-			const Real& WilsonMass_, const Real& m_q, int N5_)
+    //! Full constructor
+    UnprecOvExtLinOpArray(const multi1d<LatticeColorMatrix>& u_, 
+			  const Real& WilsonMass_, const Real& m_q, int N5_)
     {create(u_,WilsonMass_,m_q,N5_);}
 
-  //! Creation routine
-  void create(const multi1d<LatticeColorMatrix>& u_, 
-	      const Real& WilsonMass_, const Real& m_q_, int N5_);
+    //! Creation routine
+    void create(const multi1d<LatticeColorMatrix>& u_, 
+		const Real& WilsonMass_, const Real& m_q_, int N5_);
 
-  //! Length of DW flavor index/space
-  int size() const {return N5;}
+    //! Length of DW flavor index/space
+    int size() const {return N5;}
 
-  //! Destructor is automatic
-  ~UnprecOvExtLinOpArray() {}
+    //! Destructor is automatic
+    ~UnprecOvExtLinOpArray() {}
 
-  //! Only defined on the entire lattice
-  const OrderedSubset& subset() const {return all;}
+    //! Only defined on the entire lattice
+    const OrderedSubset& subset() const {return all;}
 
-  //! Apply the operator onto a source vector
-  void operator() (multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
-		   enum PlusMinus isign) const;
+    //! Apply the operator onto a source vector
+    void operator() (multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
+		     enum PlusMinus isign) const;
 
-private:
-  Real WilsonMass;
-  Real m_q;
-  Real a5;
-  int  N5;    // total number of 4D fields
-  int  NN5;   // number of poles
+  private:
+    Real WilsonMass;
+    Real m_q;
+    Real a5;
+    int  N5;    // total number of 4D fields
+    int  NN5;   // number of poles
 
-  multi1d<Real> cc;
-  multi1d<Real> ss;
-  Real          fact1;
-  Real          fact2;
+    multi1d<Real> cc;
+    multi1d<Real> ss;
+    Real          fact1;
+    Real          fact2;
 
-  UnprecWilsonLinOp  D;
-};
+    UnprecWilsonLinOp  D;
+  };
+
+}; // End Namespace Chroma
+
+using namespace Chroma;
 
 #endif

@@ -1,4 +1,4 @@
-// $Id: prec_nef_linop_array_w.cc,v 1.6 2004-10-03 01:21:19 edwards Exp $
+// $Id: prec_nef_linop_array_w.cc,v 1.7 2004-12-12 21:22:16 edwards Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned NEF domain-wall linear operator
  */
@@ -7,6 +7,8 @@
 #include "actions/ferm/linop/prec_nef_linop_array_w.h"
 
 
+namespace Chroma 
+{ 
 
 //! Creation routine
 /*! \ingroup fermact
@@ -68,6 +70,8 @@ EvenOddPrecNEFDWLinOpArray::applyDiag(multi1d<LatticeFermion>& chi,
 				      const int cb) const
 {
   START_CODE();
+
+  chi.resize(N5);
 
   Real c5Fact(0.5*c5InvTwoKappa) ; // The 0.5 is for the P+ and P-
 
@@ -131,6 +135,8 @@ EvenOddPrecNEFDWLinOpArray::applyDiagInv(multi1d<LatticeFermion>& chi,
 				      const int cb) const
 {
   START_CODE();
+
+  chi.resize(N5);
 
   // Copy and scale by TwoKappa (1/M0)
   for(int s(0);s<N5;s++)
@@ -233,6 +239,8 @@ EvenOddPrecNEFDWLinOpArray::applyOffDiag(multi1d<LatticeFermion>& chi,
 {
   START_CODE();
 
+  chi.resize(N5);
+
   Real fb5 = -0.5*b5 ;
   Real fc5 = -0.25*c5 ;
   
@@ -315,4 +323,7 @@ EvenOddPrecNEFDWLinOpArray::Dminus(LatticeFermion& chi,
   D.apply(tt,psi,isign,1);
   chi = c5InvTwoKappa*psi + (0.5*c5)*tt ;//It really is -(-0.5*c5)D 
 }
+
+
+}; // End Namespace Chroma
 

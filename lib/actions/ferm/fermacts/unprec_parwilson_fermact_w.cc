@@ -1,4 +1,4 @@
-// $Id: unprec_parwilson_fermact_w.cc,v 1.3 2004-09-08 02:48:26 edwards Exp $
+// $Id: unprec_parwilson_fermact_w.cc,v 1.4 2004-12-12 21:22:15 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action with parity breaking term
  */
@@ -55,7 +55,7 @@ namespace Chroma
    *
    * \param state	    gauge field     	       (Read)
    */
-  const LinearOperator<LatticeFermion>*
+  const UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >*
   UnprecParWilsonFermAct::linOp(Handle<const ConnectState> state) const
   {
     return new UnprecParWilsonLinOp(state->getLinks(),param.Mass,param.H); 
@@ -71,32 +71,6 @@ namespace Chroma
   UnprecParWilsonFermAct::lMdagM(Handle<const ConnectState> state) const
   {
   return new lmdagm<LatticeFermion>(linOp(state));
-  }
-
-
-  //! Computes the derivative of the fermionic action respect to the link field
-  /*!
-   *         |  dS      dS_f
-   * ds_u -- | ----   + -----   ( Write )
-   *         |  dU       dU
-   *
-   * psi -- [1./(M_dag*M)]*chi_  ( read ) 
-   *
-   * \param ds_u     result      ( Write )
-   * \param state    gauge field ( Read )
-   * \param psi      solution to linear system ( Read )
-   */
-  void
-  UnprecParWilsonFermAct::dsdu(multi1d<LatticeColorMatrix> & ds_u,
-			       Handle<const ConnectState> state,
-			       const LatticeFermion& psi) const
-  {
-    START_CODE();
-  
-    QDPIO::cerr << "UnprecParWilsonFermAct::dsdu not implemented" << endl;
-    QDP_abort(1);
-
-    END_CODE();
   }
 
 }

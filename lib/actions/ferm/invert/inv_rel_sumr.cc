@@ -29,7 +29,7 @@
 //
     
 template<typename T>
-void InvRelSUMR_a(const ApproxLinearOperator<T>& U,
+void InvRelSUMR_a(const LinearOperator<T>& U,
 		  const T& b,
 		  T& x,
 		  const Complex& zeta,
@@ -240,7 +240,7 @@ void InvRelSUMR_a(const ApproxLinearOperator<T>& U,
 }
 
 template<>
-void InvRelSUMR(const ApproxLinearOperator<LatticeFermion>& U,
+void InvRelSUMR(const LinearOperator<LatticeFermion>& U,
 		const LatticeFermion& b,
 		LatticeFermion& x,
 		const Complex& zeta,

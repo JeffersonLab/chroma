@@ -1,6 +1,13 @@
-// $Id: prec_fermact_qprop_array.cc,v 1.9 2004-11-17 16:52:24 edwards Exp $
+// $Id: prec_fermact_qprop_array.cc,v 1.10 2004-12-12 21:22:17 edwards Exp $
 // $Log: prec_fermact_qprop_array.cc,v $
-// Revision 1.9  2004-11-17 16:52:24  edwards
+// Revision 1.10  2004-12-12 21:22:17  edwards
+// Major overhaul of fermact and linearop class structure. Merged ApproxLinOp
+// into LinOp. Removed dsdu stuff - now in linops.  Introduced levels of
+// fermacts (base or not) that have derivs. All low level fermacts/linops
+// have an additional template param for type of conjugate momenta in
+// derivative. Made all fermacts and linops within chroma namespace.
+//
+// Revision 1.9  2004/11/17 16:52:24  edwards
 // Improved some comments
 //
 // Revision 1.8  2004/10/08 13:20:15  bjoo
@@ -73,7 +80,7 @@ namespace Chroma {
 
 template<typename T>
 static 
-void qprop_t(const EvenOddPrecWilsonTypeFermAct< multi1d<T> >& me,
+void qprop_t(const EvenOddPrecWilsonTypeFermActBase< multi1d<T> >& me,
 	     multi1d<T>& psi, 
 	     Handle<const ConnectState> state, 
 	     const multi1d<T>& chi, 
@@ -86,7 +93,7 @@ void qprop_t(const EvenOddPrecWilsonTypeFermAct< multi1d<T> >& me,
   
   /* Construct the linear operator */
   /* This allocates field for the appropriate action */
-  Handle<const EvenOddPrecLinearOperator< multi1d<T> > > A(me.linOp(state));
+  Handle<const EvenOddPrecLinearOperatorBase< multi1d<T> > > A(me.linOp(state));
 
   /* Step (i) */
   /* chi_tmp_o =  chi_o - D_oe * A_ee^-1 * chi_e */
@@ -153,11 +160,11 @@ void qprop_t(const EvenOddPrecWilsonTypeFermAct< multi1d<T> >& me,
 
 template<>
 void 
-EvenOddPrecWilsonTypeFermAct< multi1d<LatticeFermion> >::qpropT(multi1d<LatticeFermion>& psi, 
-								Handle<const ConnectState> state, 
-								const multi1d<LatticeFermion>& chi, 
-								const InvertParam_t& invParam,
-								int& ncg_had) const
+EvenOddPrecWilsonTypeFermActBase< multi1d<LatticeFermion> >::qpropT(multi1d<LatticeFermion>& psi, 
+								    Handle<const ConnectState> state, 
+								    const multi1d<LatticeFermion>& chi, 
+								    const InvertParam_t& invParam,
+								    int& ncg_had) const
 {
   qprop_t<LatticeFermion>(*this, psi, state, chi, invParam, ncg_had);
 }

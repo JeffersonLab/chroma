@@ -5,8 +5,8 @@
 
     
 template<typename T>
-void InvRelGMRESR_CG_a(const ApproxLinearOperator<T>& PrecMM,
-			 const ApproxLinearOperator<T>& UnprecMM,
+void InvRelGMRESR_CG_a(const LinearOperator<T>& PrecMM,
+			 const LinearOperator<T>& UnprecMM,
 			 const T& b,
 			 T& x,
 			 const Real& epsilon, 
@@ -101,8 +101,8 @@ void InvRelGMRESR_CG_a(const ApproxLinearOperator<T>& PrecMM,
 }
 
 template<>
-void InvRelGMRESR_CG(const ApproxLinearOperator<LatticeFermion>& PrecMM,
-		     const ApproxLinearOperator<LatticeFermion>& UnprecMM,
+void InvRelGMRESR_CG(const LinearOperator<LatticeFermion>& PrecMM,
+		     const LinearOperator<LatticeFermion>& UnprecMM,
 		     const LatticeFermion& b,
 		     LatticeFermion& x,
 		     const Real& epsilon, 

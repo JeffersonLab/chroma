@@ -1,4 +1,4 @@
-// $Id: minv_rel_cg.cc,v 1.3 2004-07-28 03:47:26 edwards Exp $
+// $Id: minv_rel_cg.cc,v 1.4 2004-12-12 21:22:15 edwards Exp $
 
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator
@@ -71,7 +71,7 @@ using namespace QDP;
  */
 
 template<typename T>
-void MInvRelCG_a(const ApproxLinearOperator<T>& A, 
+void MInvRelCG_a(const LinearOperator<T>& A, 
 		 const T& chi, 
 		 multi1d<T>& psi,
 		 const multi1d<Real>& shifts, 
@@ -411,7 +411,7 @@ void MInvRelCG_a(const ApproxLinearOperator<T>& A,
 
 
 template<>
-void MInvRelCG(const ApproxLinearOperator<LatticeFermion>& M,
+void MInvRelCG(const LinearOperator<LatticeFermion>& M,
 	       const LatticeFermion& chi, 
 	       multi1d<LatticeFermion>& psi, 
 	       const multi1d<Real>& shifts,

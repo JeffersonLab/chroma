@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lg5eps_w.h,v 1.3 2004-05-14 15:08:42 bjoo Exp $
+// $Id: lg5eps_w.h,v 1.4 2004-12-12 21:22:16 edwards Exp $
 /*! \file
  *  \brief Internal pole epsilon operator. Just the unitary part
  *
@@ -15,6 +15,8 @@
 
 using namespace QDP;
 
+namespace Chroma 
+{ 
 //! Internal Overlap-pole operator
 /*!
  * \ingroup linop
@@ -33,7 +35,7 @@ using namespace QDP;
  *                           = gamma_5 * (1 + gamma_5 * B) * gamma_5 
  */
 
-class lg5eps : public ApproxLinearOperator<LatticeFermion>
+class lg5eps : public LinearOperator<LatticeFermion>
 {
 public:
   //! Creation routine
@@ -52,7 +54,7 @@ public:
    * \param _MaxCG          MaxCG inner CG                     (Read)
    * \param _RsdCG          residual for inner CG              (Read)
    */
-  lg5eps(const UnprecWilsonTypeFermAct<LatticeFermion>& S_aux,
+  lg5eps(const UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >& S_aux,
 	   Handle<const ConnectState> state,
 	   int _numroot, 
 	   const Real& _constP, 
@@ -98,5 +100,10 @@ private:
   const Real RsdCG;
   const int   ReorthFreq;
 };
+
+
+}; // End Namespace Chroma
+
+using namespace Chroma;
 
 #endif

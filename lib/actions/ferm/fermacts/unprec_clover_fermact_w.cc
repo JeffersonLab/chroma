@@ -1,4 +1,4 @@
-// $Id: unprec_clover_fermact_w.cc,v 1.6 2004-09-08 02:48:25 edwards Exp $
+// $Id: unprec_clover_fermact_w.cc,v 1.7 2004-12-12 21:22:15 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Clover fermion action
  */
@@ -78,7 +78,7 @@ namespace Chroma
    *
    * \param state	    gauge field     	       (Read)
    */
-  const LinearOperator<LatticeFermion>* 
+  const UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* 
   UnprecCloverFermAct::linOp(Handle<const ConnectState> state) const
   {
     return new UnprecCloverLinOp(state->getLinks(),Mass,ClovCoeff,u0);

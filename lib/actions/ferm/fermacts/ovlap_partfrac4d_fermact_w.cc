@@ -1,4 +1,4 @@
-// $Id: ovlap_partfrac4d_fermact_w.cc,v 1.10 2004-12-09 03:58:03 edwards Exp $
+// $Id: ovlap_partfrac4d_fermact_w.cc,v 1.11 2004-12-12 21:22:14 edwards Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -183,8 +183,8 @@ namespace Chroma
 							     fermacttop,
 							     fermact_path);
 
-      UnprecWilsonTypeFermAct<LatticeFermion>* S_aux; 
-      S_aux = dynamic_cast<UnprecWilsonTypeFermAct<LatticeFermion>*>(S_f);
+      UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* S_aux; 
+      S_aux = dynamic_cast<UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >*>(S_f);
 
       // Dumbass User specifies something that is not UnpreWilsonTypeFermAct
       // dynamic_cast MUST be checked for 0
@@ -193,7 +193,7 @@ namespace Chroma
 
       // Drop AuxFermAct into a Handle immediately.
       // This should free things up at the end
-      Handle<UnprecWilsonTypeFermAct<LatticeFermion> >  S_w(S_aux);
+      Handle<UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> > >  S_w(S_aux);
       Mact = S_w;
     }
     catch( const UnprecCastFailure& e) {
@@ -814,7 +814,7 @@ namespace Chroma
    * \param state_	 gauge field state  	 (Read)
    * \param m_q	         mass for this operator	 (Read)
    */
-  const LinearOperator<LatticeFermion>* 
+  const UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* 
   OvlapPartFrac4DFermAct::unprecLinOp(Handle<const ConnectState> state_, const Real& m_q) const
   {
     START_CODE();
@@ -861,13 +861,17 @@ namespace Chroma
 	return new lovlapms(*Mact, state_, m_q,
 			    numroot, coeffP, resP, rootQ, 
 			    NEig, EigValFunc, state.getEigVec(),
-			    params.invParamInner.MaxCG, params.invParamInner.RsdCG, params.ReorthFreqInner);
+			    params.invParamInner.MaxCG, 
+			    params.invParamInner.RsdCG, 
+			    params.ReorthFreqInner);
 	break;
       case OVERLAP_INNER_CG_DOUBLE_PASS:
 	return new lovlap_double_pass(*Mact, state_, m_q,
 				      numroot, coeffP, resP, rootQ, 
 				      NEig, EigValFunc, state.getEigVec(),
-				      params.invParamInner.MaxCG, params.invParamInner.RsdCG, params.ReorthFreqInner);
+				      params.invParamInner.MaxCG, 
+				      params.invParamInner.RsdCG, 
+				      params.ReorthFreqInner);
 	break;
       default:
 	QDPIO::cerr << "Unknown OverlapInnerSolverType " << params.inner_solver_type << flush << endl;

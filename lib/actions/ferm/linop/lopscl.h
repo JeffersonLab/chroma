@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lopscl.h,v 1.3 2004-05-14 18:10:20 bjoo Exp $
+// $Id: lopscl.h,v 1.4 2004-12-12 21:22:16 edwards Exp $
 
 #ifndef __lopscl_h__
 #define __lopscl_h__
@@ -9,6 +9,8 @@
 
 using namespace QDP;
 
+namespace Chroma 
+{ 
 //! Scaled Linear Operator
 /*!
  * \ingroup linop
@@ -57,15 +59,15 @@ private:
  * This operator scales its input operator
  */
 template<typename T, class C>
-class approx_lopscl : public ApproxLinearOperator<T>
+class approx_lopscl : public LinearOperator<T>
 {
 public:
   //! Initialize pointer with existing pointer
   /*! Requires that the pointer p is a return value of new */
-  approx_lopscl(const ApproxLinearOperator<T>* p, const C& scale_fact_) : A(p), scale_fact(scale_fact_)  {}
+  approx_lopscl(const LinearOperator<T>* p, const C& scale_fact_) : A(p), scale_fact(scale_fact_)  {}
 
   //! Copy pointer (one more owner)
-  approx_lopscl(Handle<const ApproxLinearOperator<T> > p, const C& scale_fact_) : A(p), scale_fact(scale_fact_) {}
+  approx_lopscl(Handle<const LinearOperator<T> > p, const C& scale_fact_) : A(p), scale_fact(scale_fact_) {}
 
   //! Destructor
   ~approx_lopscl() {}
@@ -92,7 +94,7 @@ public:
     }
 
 private:
-  const Handle< const ApproxLinearOperator<T> > A;
+  const Handle< const LinearOperator<T> > A;
   const C scale_fact;
 };
 
@@ -143,5 +145,10 @@ private:
   const Handle< const LinearOperator< multi1d<T> > > A;
   const C scale_fact;
 };
+
+
+}; // End Namespace Chroma
+
+using namespace Chroma;
 
 #endif

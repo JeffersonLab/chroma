@@ -1,4 +1,4 @@
-// $Id: prec_dwf_linop_array_w.cc,v 1.8 2004-10-03 01:21:19 edwards Exp $
+// $Id: prec_dwf_linop_array_w.cc,v 1.9 2004-12-12 21:22:16 edwards Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned domain-wall linear operator
  */
@@ -6,6 +6,8 @@
 #include "chromabase.h"
 #include "actions/ferm/linop/prec_dwf_linop_array_w.h"
 
+namespace Chroma 
+{ 
 // Check Conventions... Currently I (Kostas) am using Blum et.al.
 
 
@@ -58,6 +60,8 @@ EvenOddPrecDWLinOpArray::applyDiag(multi1d<LatticeFermion>& chi,
 				   const int cb) const
 {
   START_CODE();
+
+  chi.resize(N5);
 
   switch ( isign ) {
     
@@ -119,6 +123,8 @@ EvenOddPrecDWLinOpArray::applyDiagInv(multi1d<LatticeFermion>& chi,
 				      const int cb) const
 {
   START_CODE();
+
+  chi.resize(N5);
 
   switch ( isign ) {
 
@@ -210,3 +216,6 @@ EvenOddPrecDWLinOpArray::Dminus(LatticeFermion& chi,
   QDPIO::cerr << "Dminus not implemented" << endl;
   QDP_abort(1);
 }
+
+}; // End Namespace Chroma
+

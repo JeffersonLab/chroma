@@ -1,4 +1,4 @@
-// $Id: asqtad_fermact_s.cc,v 1.7 2004-11-06 11:27:27 mcneile Exp $
+// $Id: asqtad_fermact_s.cc,v 1.8 2004-12-12 21:22:14 edwards Exp $
 /*! \file
  *  \brief Asqtad staggered fermion action
  */
@@ -15,6 +15,8 @@
 #include "actions/ferm/fermacts/asqtad_fermact_s.h"
 #include "util/gauge/stag_phases_s.h"
 
+namespace Chroma 
+{ 
 
 //! Produce a linear operator for this action
 /*!
@@ -25,7 +27,7 @@
  * \param u_fat, u_triple 	 fat7 and triple links    (Read)
  * \u has already had KS phases multiplied in.
  */
-const EvenOddLinearOperator<LatticeStaggeredFermion>* 
+const EvenOddLinearOperator< LatticeStaggeredFermion, multi1d<LatticeColorMatrix> >* 
 AsqtadFermAct::linOp(Handle<const ConnectState> state_) const
 {
 
@@ -93,3 +95,6 @@ AsqtadFermAct::createState(const multi1d<LatticeColorMatrix>& u_) const
 
   return new AsqtadConnectState<LatticeStaggeredFermion>(u_with_phases, u_fat, u_triple);
 }
+
+}; // End Namespace Chroma
+

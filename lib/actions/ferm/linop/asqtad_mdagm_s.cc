@@ -1,4 +1,4 @@
-// $Id: asqtad_mdagm_s.cc,v 1.8 2004-11-20 21:18:35 edwards Exp $
+// $Id: asqtad_mdagm_s.cc,v 1.9 2004-12-12 21:22:15 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -7,6 +7,8 @@
 #include "chromabase.h"
 #include "actions/ferm/linop/asqtad_mdagm_s.h"
 
+namespace Chroma 
+{ 
 //! Creation routine
 /*! \ingroup fermact
  *
@@ -58,3 +60,6 @@ void AsqtadMdagM::operator() (LatticeStaggeredFermion& chi, const LatticeStagger
 
 //  return chi;
 }
+
+}; // End Namespace Chroma
+

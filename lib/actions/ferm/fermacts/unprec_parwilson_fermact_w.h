@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_parwilson_fermact_w.h,v 1.3 2004-09-08 02:48:26 edwards Exp $
+// $Id: unprec_parwilson_fermact_w.h,v 1.4 2004-12-12 21:22:15 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action with parity breaking term
  */
@@ -46,7 +46,7 @@ namespace Chroma
    *
    *      M  =  (d+M) + i*H*gamma_5  - (1/2) D'
    */
-  class UnprecParWilsonFermAct : public UnprecWilsonTypeFermAct<LatticeFermion>
+  class UnprecParWilsonFermAct : public UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >
   {
   public:
     //! General FermBC
@@ -66,7 +66,7 @@ namespace Chroma
     const FermBC<LatticeFermion>& getFermBC() const {return *fbc;}
 
     //! Produce a linear operator for this action
-    const LinearOperator<LatticeFermion>* linOp(Handle<const ConnectState> state) const;
+    const UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* linOp(Handle<const ConnectState> state) const;
 
     //! Produce a linear operator M^dag.M for this action
     const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state) const;
@@ -77,12 +77,6 @@ namespace Chroma
       QDP_error_exit("gamma5HermLinOp not implemented yet for this action\n");
       return 0;
     }
-
-
-    //! Compute dS_f/dU
-    void dsdu(multi1d<LatticeColorMatrix>& result,
-	      Handle<const ConnectState> state,
-	      const LatticeFermion& psi) const;
 
     //! Destructor is automatic
     ~UnprecParWilsonFermAct() {}

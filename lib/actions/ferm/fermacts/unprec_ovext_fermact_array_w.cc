@@ -1,4 +1,4 @@
-// $Id: unprec_ovext_fermact_array_w.cc,v 1.10 2004-09-09 15:51:31 edwards Exp $
+// $Id: unprec_ovext_fermact_array_w.cc,v 1.11 2004-12-12 21:22:15 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -66,7 +66,7 @@ namespace Chroma
    *
    * \param state	    gauge field     	       (Read)
    */
-  const LinearOperator<multi1d<LatticeFermion> >* 
+  const UnprecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* 
   UnprecOvExtFermActArray::linOp(Handle<const ConnectState> state) const
   {
     return new UnprecOvExtLinOpArray(state->getLinks(),OverMass,Mass,N5);
@@ -79,7 +79,7 @@ namespace Chroma
    *
    * \param state	    gauge field     	       (Read)
    */
-  const LinearOperator<multi1d<LatticeFermion> >* 
+  const LinearOperator< multi1d<LatticeFermion> >* 
   UnprecOvExtFermActArray::lMdagM(Handle<const ConnectState> state) const
   {
     return new lmdagm<multi1d<LatticeFermion> >(linOp(state));

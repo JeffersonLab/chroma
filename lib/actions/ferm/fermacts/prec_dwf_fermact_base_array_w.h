@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_fermact_base_array_w.h,v 1.17 2004-12-10 03:05:38 edwards Exp $
+// $Id: prec_dwf_fermact_base_array_w.h,v 1.18 2004-12-12 21:22:15 edwards Exp $
 /*! \file
  *  \brief Base class for even-odd preconditioned domain-wall-like fermion actions
  */
@@ -26,7 +26,7 @@ namespace Chroma
    * are specified in Phys.Rev.D63:094505,2001 (hep-lat/0005002).
    */
   template<typename T>
-  class EvenOddPrecDWFermActBaseArray : public EvenOddPrecWilsonTypeFermAct< multi1d<T> >
+  class EvenOddPrecDWFermActBaseArray : public EvenOddPrecWilsonTypeFermAct< multi1d<T>, multi1d<LatticeColorMatrix> >
   {
   public:
     //! Return the quark mass

@@ -1,4 +1,4 @@
-// $Id: unprec_dwftransf_fermact_w.cc,v 1.3 2004-11-16 06:09:09 bjoo Exp $
+// $Id: unprec_dwftransf_fermact_w.cc,v 1.4 2004-12-12 21:22:15 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -92,7 +92,7 @@ namespace Chroma
    *
    * \param state	    gauge field     	       (Read)
    */
-  const LinearOperator<LatticeFermion>*
+  const UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >*
   UnprecDWFTransfFermAct::linOp(Handle<const ConnectState> state) const
   {
     return new UnprecDWFTransfLinOp(state->getLinks(),
@@ -120,17 +120,5 @@ namespace Chroma
 					 param.invParam);
   }
   */
-
-
-  void
-  UnprecDWFTransfFermAct::dsdu(multi1d<LatticeColorMatrix> & ds_u,
-			    Handle<const ConnectState> state,
-			    const LatticeFermion& psi) const
-  {
-    START_CODE();
-    QDPIO::cerr << "Force term not implemented for DWFTRansf" << endl;
-    QDP_abort(1);
-    END_CODE();
-  }
 
 }

@@ -1,4 +1,4 @@
-// $Id: unprec_parwilson_linop_w.cc,v 1.3 2004-07-28 02:38:02 edwards Exp $
+// $Id: unprec_parwilson_linop_w.cc,v 1.4 2004-12-12 21:22:16 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator with parity breaking term
  */
@@ -6,6 +6,8 @@
 #include "chromabase.h"
 #include "actions/ferm/linop/unprec_parwilson_linop_w.h"
 
+namespace Chroma 
+{ 
 //! Creation routine
 /*! \ingroup fermact
  *
@@ -54,3 +56,7 @@ void UnprecParWilsonLinOp::operator() (LatticeFermion& chi, const LatticeFermion
   
   END_CODE();
 }
+
+}; // End Namespace Chroma
+
+

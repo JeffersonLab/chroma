@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_pab.cc,v 1.4 2004-08-02 14:57:06 bjoo Exp $
+// $Id: lwldslash_w_pab.cc,v 1.5 2004-12-12 21:22:16 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -10,6 +10,8 @@
 
 using namespace QDP;
 
+namespace Chroma 
+{ 
 //! General Wilson-Dirac dslash
 /*! \ingroup linop
  * DSLASH
@@ -135,4 +137,6 @@ PABWilsonDslash::apply (LatticeFermion& chi, const LatticeFermion& psi,
 	     
   
 }
+
+}; // End Namespace Chroma
 

@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_linop_array_w.cc,v 1.2 2004-10-01 17:48:31 bjoo Exp $
+// $Id: prec_ovlap_contfrac5d_linop_array_w.cc,v 1.3 2004-12-12 21:22:16 edwards Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned domain-wall linear operator
  */
@@ -9,6 +9,8 @@
 
 using namespace QDP;
 
+namespace Chroma 
+{ 
 EvenOddPrecOvlapContFrac5DLinOpArray::EvenOddPrecOvlapContFrac5DLinOpArray(
                                      Handle<const ConnectState> state,
 				     const Real& _m_q,
@@ -119,6 +121,8 @@ EvenOddPrecOvlapContFrac5DLinOpArray::applyDiag(multi1d<LatticeFermion>& chi,
 {
   START_CODE();
 
+  chi.resize(N5);
+
   // We don't care about the isign because our operator is Hermitian
   // Apply matrix
   //   [ A_0  B_0   0     ...                       ]  [ psi_0    ]
@@ -179,6 +183,8 @@ EvenOddPrecOvlapContFrac5DLinOpArray::applyDiagInv(
 {
   START_CODE();
 
+  chi.resize(N5);
+
   multi1d<LatticeFermion> y(N5);
 
   LatticeFermion tmp;
@@ -229,6 +235,8 @@ void EvenOddPrecOvlapContFrac5DLinOpArray::applyOffDiag(
 {
   START_CODE();
 
+  chi.resize(N5);
+
   LatticeFermion tmp;
   Real coeff;
   int G5 = Ns*Ns-1;
@@ -267,3 +275,8 @@ void EvenOddPrecOvlapContFrac5DLinOpArray::applyOffDiag(
   
   END_CODE();
 }
+
+}; // End Namespace Chroma
+
+using namespace Chroma;
+

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inv_rel_gmresr_sumr.h,v 1.1 2004-05-25 21:47:39 bjoo Exp $
+// $Id: inv_rel_gmresr_sumr.h,v 1.2 2004-12-12 21:22:15 edwards Exp $
 /*! \file
  *  \brief Relaxed GMRESR algorithm of the Wuppertal Group
  */
@@ -12,10 +12,10 @@
 
 
 template<typename T>
-void InvRelGMRESR_SUMR(const ApproxLinearOperator<T>& PrecU,
+void InvRelGMRESR_SUMR(const LinearOperator<T>& PrecU,
 		       const Complex& zeta,
 		       const Real& rho,
-		       const ApproxLinearOperator<T>& UnprecU,
+		       const LinearOperator<T>& UnprecU,
 		       const T& b,
 		       T& x,
 		       const Real& epsilon, 

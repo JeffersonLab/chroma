@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovlap_contfrac5d_fermact_array_w.h,v 1.2 2004-09-29 21:48:34 bjoo Exp $
+// $Id: unprec_ovlap_contfrac5d_fermact_array_w.h,v 1.3 2004-12-12 21:22:15 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -60,7 +60,7 @@ namespace Chroma
    *   Chi  =   ((1+Mass)/(1-Mass)*gamma_5 + B) . Psi
    *  where  B  is the continued fraction of the zolotarev approx. to eps(H(m))
    */
-  class UnprecOvlapContFrac5DFermActArray : public UnprecWilsonTypeFermAct< multi1d<LatticeFermion> >
+  class UnprecOvlapContFrac5DFermActArray : public UnprecWilsonTypeFermAct< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >
   {
   public:
 
@@ -95,7 +95,7 @@ namespace Chroma
     Real quark_mass() const {return params.Mass;}
 
     //! Produce a linear operator for this action
-    const LinearOperator< multi1d<LatticeFermion> >* linOp(Handle<const ConnectState> state) const;
+    const UnprecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* linOp(Handle<const ConnectState> state) const;
 
     //! Produce a linear operator for this action
     const LinearOperator< multi1d<LatticeFermion> >* lnonHermLinOp(Handle<const ConnectState> state) const;
@@ -110,6 +110,7 @@ namespace Chroma
     const LinearOperator< multi1d<LatticeFermion> >* gamma5HermLinOp(Handle<const ConnectState> state) const {
       return new lgherm<multi1d<LatticeFermion> >(linOp(state));
     }
+
     //! Compute quark propagator over base type
     /*! 
      * Solves  M.psi = chi
@@ -190,7 +191,7 @@ namespace Chroma
 
   private:
     Handle< FermBC< multi1d<LatticeFermion> > >  fbc;
-    Handle< UnprecWilsonTypeFermAct<LatticeFermion> > S_aux;
+    Handle< UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> > > S_aux;
     UnprecOvlapContFrac5DFermActParams params;
     int  N5;
     bool isLastZeroP;

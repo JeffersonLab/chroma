@@ -1,4 +1,4 @@
-// $Id: lovlap_double_pass_w.cc,v 1.7 2004-07-28 03:47:26 edwards Exp $
+// $Id: lovlap_double_pass_w.cc,v 1.8 2004-12-12 21:22:16 edwards Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -9,6 +9,8 @@
 
 using namespace QDP;
 
+namespace Chroma 
+{ 
 //! Apply the GW operator onto a source vector
 /*! \ingroup linop
  *
@@ -388,4 +390,9 @@ void lovlap_double_pass::operator() (LatticeFermion& chi,
 
   END_CODE();
 }
+
+
+}; // End Namespace Chroma
+
+using namespace Chroma;
 
