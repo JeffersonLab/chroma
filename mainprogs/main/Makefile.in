@@ -173,7 +173,7 @@ check_PROGRAMS = propagator \
 	make_source \
         ExampleBuildingBlocks hypsmear cfgtransf sink_smearing qpropgfix \
         qproptrev\
-spectrum_w qqq_w bar3ptfn qproptransf wallformfac
+spectrum_w qqq_w bar3ptfn qproptransf wallformfac mres
 
 
 # Staggered specific programs
@@ -182,7 +182,7 @@ spectrum_w qqq_w bar3ptfn qproptransf wallformfac
 # Wilson specific programs
 # Temporarily moved here while fixing codes.
 EXTRA_PROGRAMS = qpropadd  propagator_comp multi_propagator multi_propagator_comp \
-       collect_multi_propcomp mres
+       collect_multi_propcomp
 
 
 # Staggered specific programs
@@ -259,13 +259,14 @@ CONFIG_HEADER = $(top_builddir)/lib/chroma_config_internal.h
 CONFIG_CLEAN_FILES =
 EXTRA_PROGRAMS = qpropadd$(EXEEXT) propagator_comp$(EXEEXT) \
 	multi_propagator$(EXEEXT) multi_propagator_comp$(EXEEXT) \
-	collect_multi_propcomp$(EXEEXT) mres$(EXEEXT)
+	collect_multi_propcomp$(EXEEXT)
 check_PROGRAMS = propagator$(EXEEXT) collect_propcomp$(EXEEXT) \
 	seqsource$(EXEEXT) make_source$(EXEEXT) \
 	ExampleBuildingBlocks$(EXEEXT) hypsmear$(EXEEXT) \
 	cfgtransf$(EXEEXT) sink_smearing$(EXEEXT) qpropgfix$(EXEEXT) \
 	qproptrev$(EXEEXT) spectrum_w$(EXEEXT) qqq_w$(EXEEXT) \
-	bar3ptfn$(EXEEXT) qproptransf$(EXEEXT) wallformfac$(EXEEXT)
+	bar3ptfn$(EXEEXT) qproptransf$(EXEEXT) wallformfac$(EXEEXT) \
+	mres$(EXEEXT)
 am_ExampleBuildingBlocks_OBJECTS = ExampleBuildingBlocks.$(OBJEXT)
 ExampleBuildingBlocks_OBJECTS = $(am_ExampleBuildingBlocks_OBJECTS)
 ExampleBuildingBlocks_LDADD = $(LDADD)
