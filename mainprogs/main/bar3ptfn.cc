@@ -1,7 +1,15 @@
-// $Id: bar3ptfn.cc,v 1.2 2003-04-26 06:09:04 flemingg Exp $
+// $Id: bar3ptfn.cc,v 1.3 2003-04-29 20:14:51 flemingg Exp $
 //
 // $Log: bar3ptfn.cc,v $
-// Revision 1.2  2003-04-26 06:09:04  flemingg
+// Revision 1.3  2003-04-29 20:14:51  flemingg
+// nml input/output streamlined to eliminate some legacy key-value pairs
+// which aren't currently needed but could be readded later.  Output
+// format was incremented to version=4 and all the params were put into
+// a single group.  Support for mom2_max was added.  Code for computing
+// "Wilson_hadron_2Pt_fn" was also added, but is is probably wrong
+// and certainly kludgy due to the subset construction, etc.
+//
+// Revision 1.2  2003/04/26 06:09:04  flemingg
 // Now uses NmlReader support for bool's and string's.  Main limitations are
 // that it still only allows periodic boundary conditions for fermions and
 // that mom2_max is hard-coded to be 7, sort of matching szin.  Probably
@@ -17,6 +25,46 @@
 #include "qdp_util.h" // for readSzin()
 
 using namespace QDP ;
+
+//! Function object used for constructing the source time-slice set
+class SrcTimeSliceFunc : public SetFunc
+{
+public:
+  SrcTimeSliceFunc(multi1d<int> t_srce, int j_decay)
+    : src_coord(t_srce), dir_decay(j_decay) {}
+
+  int operator() (const multi1d<int>& coordinate) const ;
+
+  int numSubsets() const ;
+
+private:
+  SrcTimeSliceFunc() {}  // hide default constructor
+
+  multi1d<int> src_coord ;
+  int dir_decay ;
+};
+
+int
+SrcTimeSliceFunc::operator() (const multi1d<int>& coordinate) const
+{
+  if ((dir_decay<0)||(dir_decay>=Nd)) {
+    return 0 ;
+  } else if (toBool(src_coord[dir_decay] == coordinate[dir_decay])) {
+    return 0 ;
+  } else {
+    return 1 ;
+  }
+}
+
+int
+SrcTimeSliceFunc::numSubsets() const
+{
+  if ((dir_decay<0)||(dir_decay>=Nd)) {
+    return 1 ;
+  } else {
+    return 2 ;
+  }
+}
 
 int
 main(int argc, char *argv[])
@@ -79,7 +127,8 @@ main(int argc, char *argv[])
     Write(nml_out, version) ;
     pop(nml_out) ;
     push(nml_out, "Output_version") ;
-    write(nml_out, "out_version", 3) ;
+//  write(nml_out, "out_version", 3) ;
+    write(nml_out, "out_version", 4) ;
     pop(nml_out) ;
 
     break ;
@@ -87,15 +136,15 @@ main(int argc, char *argv[])
     QDP_error_exit("Fermion type incorrect", FermTypeP) ;
   }
 
-  Real          OverMass ;
-  int           RatPolyDeg ;
-  Real          PolyArgResc ;
-  int           NWilsVec ;
+//Real          OverMass ;
+//int           RatPolyDeg ;
+//Real          PolyArgResc ;
+//int           NWilsVec ;
 
   int           cfg_type ;
   int           j_decay ;
 
-  int           Z3_src ; // Z3 random value source at 2^Z3_src pts/dir
+//int           Z3_src ; // Z3 random value source at 2^Z3_src pts/dir
 
   bool          Pt_src ; // Point source
   bool          Sl_src ; // Shell source
@@ -105,16 +154,16 @@ main(int argc, char *argv[])
   int           t_sink ;
   multi1d<int>  sink_mom(Nd-1) ;
 
-  int           InvType ;
-  int           FermAct ;
-  Real          H_parity ;
-  Real          ClovCoeff ;
-  Real          u0 ;
-  Real          MRover ;
+//int           InvType ;
+//int           FermAct ;
+//Real          H_parity ;
+//Real          ClovCoeff ;
+//Real          u0 ;
+//Real          MRover ;
 
   // GTF ???: Why is MaxCG 'int' and not 'multi1d<int> MaxCG(numKappa)'
-  int           MaxCG ;
-  multi1d<Real> RsdCG(numKappa) ; // CG accuracy
+//int           MaxCG ;
+//multi1d<Real> RsdCG(numKappa) ; // CG accuracy
 
   int           Wvf_kind ; // Wave function kind: gauge invariant
 
@@ -127,27 +176,30 @@ main(int argc, char *argv[])
 
   int           numSeq_src ; // The total number of sequential sources
 
-  int           numGamma ;
+//int           numGamma ;
 
   // An array containing a list of the sequential source
   multi1d<int>  Seq_src ;
 
   // A list of the gamma matrices in the usual DeGrand-Rossi encoding
-  multi1d<int>  Gamma_list ;
+//multi1d<int>  Gamma_list ;
 
+  // (inser_mom)^2 <= mom2_max.  mom2_max=7 is hard coded in szin.
+  int mom2_max = 7 ;
 
   switch (version) {
   case 3 :
+  case 4 :
 
-    Read(nml_in, OverMass) ;
-    Read(nml_in, RatPolyDeg) ;
-    Read(nml_in, PolyArgResc) ;
-    Read(nml_in, NWilsVec) ;
+//  Read(nml_in, OverMass) ;
+//  Read(nml_in, RatPolyDeg) ;
+//  Read(nml_in, PolyArgResc) ;
+//  Read(nml_in, NWilsVec) ;
 
     Read(nml_in, cfg_type) ; // Configuration type - szin, Illinois staggered
     Read(nml_in, j_decay) ;  // Direction to measure propagators
 
-    Read(nml_in, Z3_src) ;
+//  Read(nml_in, Z3_src) ;
 
     Read(nml_in, Pt_src) ;
     Read(nml_in, Sl_src) ;
@@ -158,15 +210,15 @@ main(int argc, char *argv[])
     Read(nml_in, t_sink) ;
     Read(nml_in, sink_mom) ; // Sink hadron momentum
 
-    Read(nml_in, InvType) ;
-    Read(nml_in, FermAct) ;
-    Read(nml_in, H_parity) ;
-    Read(nml_in, ClovCoeff) ;
-    Read(nml_in, u0) ;
-    Read(nml_in, MRover) ;
+//  Read(nml_in, InvType) ;
+//  Read(nml_in, FermAct) ;
+//  Read(nml_in, H_parity) ;
+//  Read(nml_in, ClovCoeff) ;
+//  Read(nml_in, u0) ;
+//  Read(nml_in, MRover) ;
 
-    Read(nml_in, MaxCG) ;
-    Read(nml_in, RsdCG) ;
+//  Read(nml_in, MaxCG) ;
+//  Read(nml_in, RsdCG) ;
    
     Read(nml_in, Wvf_kind) ;
 
@@ -178,7 +230,7 @@ main(int argc, char *argv[])
     Read(nml_in, numSeq_src) ;
 
     // Now the information associated with the gamma matrices
-    Read(nml_in, numGamma) ;
+//  Read(nml_in, numGamma) ;
 
     // Now read in the particular Sequential Sources we are evaluating
     Seq_src.resize(numSeq_src) ;
@@ -191,9 +243,13 @@ main(int argc, char *argv[])
     }
 
     // Read in the list of gamma matrices
-    Gamma_list.resize(numGamma) ;
-    Read(nml_in, Gamma_list) ;
-   
+//  Gamma_list.resize(numGamma) ;
+//  Read(nml_in, Gamma_list) ;
+
+    if (version > 3) {
+      Read(nml_in, mom2_max) ;
+    }
+
     break ;
   default :
     QDP_error_exit("Unsupported input parameter version", version) ;
@@ -328,75 +384,81 @@ main(int argc, char *argv[])
   Write(nml_out, link) ;
   pop(nml_out) ;
 
-  push(nml_out, "param1") ;
+  push(nml_out, "param") ;
+
+//push(nml_out, "param1") ;
   Write(nml_out, FermTypeP) ;
   Write(nml_out, Nd) ;
   Write(nml_out, Nc) ;
   Write(nml_out, Ns) ;
   Write(nml_out, numKappa) ;
   Write(nml_out, Kappa) ;
-  pop(nml_out) ;
+//pop(nml_out) ;
 
-  push(nml_out, "param2") ;
-  Write(nml_out, FermAct) ;
-  Write(nml_out, OverMass) ;
-  Write(nml_out, RatPolyDeg) ;
-  Write(nml_out, PolyArgResc) ;
-  Write(nml_out, NWilsVec) ;
-  Write(nml_out, H_parity) ;
-  Write(nml_out, ClovCoeff) ;
-  write(nml_out, "ClovCoeffR", 0) ;
-  write(nml_out, "ClovCoeffT", 0) ;
-  Write(nml_out, u0) ;
-  pop(nml_out) ;
+//push(nml_out, "param2") ;
+//Write(nml_out, FermAct) ;
+//Write(nml_out, OverMass) ;
+//Write(nml_out, RatPolyDeg) ;
+//Write(nml_out, PolyArgResc) ;
+//Write(nml_out, NWilsVec) ;
+//Write(nml_out, H_parity) ;
+//Write(nml_out, ClovCoeff) ;
+//write(nml_out, "ClovCoeffR", 0) ;
+//write(nml_out, "ClovCoeffT", 0) ;
+//Write(nml_out, u0) ;
+//pop(nml_out) ;
 
-  push(nml_out, "param3") ;
+//push(nml_out, "param3") ;
   Write(nml_out, cfg_type) ;
   Write(nml_out, j_decay) ;
-  pop(nml_out) ;
+//pop(nml_out) ;
 
-  push(nml_out, "param4") ;
-  Write(nml_out, MaxCG) ;
-  Write(nml_out, RsdCG) ;
-  Write(nml_out, InvType) ;
-  Write(nml_out, MRover) ;
-  pop(nml_out) ;
+//push(nml_out, "param4") ;
+//Write(nml_out, MaxCG) ;
+//Write(nml_out, RsdCG) ;
+//Write(nml_out, InvType) ;
+//Write(nml_out, MRover) ;
+//pop(nml_out) ;
 
-  push(nml_out, "param5") ;
+//push(nml_out, "param5") ;
   Write(nml_out, Pt_src) ;
   Write(nml_out, Sl_src) ;
-  Write(nml_out, Z3_src) ;
-  pop(nml_out) ;
+//Write(nml_out, Z3_src) ;
+//pop(nml_out) ;
 
-  push(nml_out, "param6") ;
+//push(nml_out, "param6") ;
   Write(nml_out, Pt_snk) ;
   Write(nml_out, Sl_snk) ;
   Write(nml_out, t_sink) ;
   Write(nml_out, sink_mom) ;
-  pop(nml_out) ;
+//pop(nml_out) ;
 
-  push(nml_out, "param7") ;
+//push(nml_out, "param7") ;
   Write(nml_out, Wvf_kind) ;
   Write(nml_out, wvf_param) ;
   Write(nml_out, WvfIntPar) ;
-  pop(nml_out) ;
+//pop(nml_out) ;
 
-  push(nml_out, "param8") ;
-  write(nml_out, "AnisoP", false) ;
-  write(nml_out, "t_dir", Nd-1) ;
-  write(nml_out, "xi_0", 1) ;
-  write(nml_out, "xiF_0", 1) ;
-  pop(nml_out) ;
+//push(nml_out, "param8") ;
+//write(nml_out, "AnisoP", false) ;
+//write(nml_out, "t_dir", Nd-1) ;
+//write(nml_out, "xi_0", 1) ;
+//write(nml_out, "xiF_0", 1) ;
+//pop(nml_out) ;
 
-  push(nml_out, "param9") ;
+//push(nml_out, "param9") ;
   Write(nml_out, numSeq_src) ;
   Write(nml_out, Seq_src) ;
-  Write(nml_out, numGamma) ;
-  Write(nml_out, Gamma_list) ;
-  pop(nml_out) ;
+//Write(nml_out, numGamma) ;
+//Write(nml_out, Gamma_list) ;
+//pop(nml_out) ;
 
-  push(nml_out, "param10") ;
+  Write(nml_out, mom2_max) ;
+
+//push(nml_out, "param10") ;
   Write(nml_out, seed) ;
+//pop(nml_out) ;
+
   pop(nml_out) ;
 
   push(nml_out, "lattis") ;
@@ -513,18 +575,29 @@ main(int argc, char *argv[])
       // to form the 2-pt function at the source.
       // Do "source" smearing, if needed
       LatticePropagator seq_quark_prop_tmp = seq_quark_prop ;
+
       if (Sl_src == true) {
         sink_smear2(u, seq_quark_prop_tmp, wvf_type, wvf_param[loop],
                     WvfIntPar[loop], j_decay) ;
       }
 
-      // GTF HACK: skipping the "Wilson_hadron_2Pt_fn" part for now.
+      LatticeComplex seq_hadron \
+        = trace(adj(Gamma(G5)*seq_quark_prop_tmp*Gamma(G5))*seq_quark_prop) ;
+
+      Set timeslices ;
+      timeslices.make(SrcTimeSliceFunc(t_srce, j_decay)) ;
+
+      Complex seq_hadron_0 = sum(seq_hadron, timeslices[0]) ;
+
+      push(nml_out,"Wilson_hadron_2Pt_fn") ;
+      Write(nml_out, t_srce) ;
+      Write(nml_out, t_sink) ;
+      Write(nml_out, sink_mom) ;
+      Write(nml_out, seq_hadron_0) ;
+      pop(nml_out) ;
 
       // Now the 3pt contractions
-      // GTF ???: Note that mom2_max = 7 here to match what was done
-      // in szin.  Would like to have more momenta. Add something
-      // to namelist input file DATA to accomplish this?
-      SftMom phases(7, sink_mom, false, j_decay) ;
+      SftMom phases(mom2_max, sink_mom, false, j_decay) ;
       FormFac(u, quark_propagator, seq_quark_prop, phases, t_srce[j_decay],
               nml_out) ;
 
