@@ -1,4 +1,4 @@
-// $Id: ritz.cc,v 1.3 2004-01-16 14:16:14 bjoo Exp $
+// $Id: ritz.cc,v 1.4 2004-01-19 17:58:26 bjoo Exp $
 /*! \file
  *  \brief Ritz code for eigenvalues
  */
@@ -111,6 +111,7 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
 	    int MaxCG,                  // Max iters after which we bomb
 	    bool ProjApsiP,             // Project A (?) -- user option
 	    int& n_count,               // No of iters actually taken
+	    Real& final_grad,           // || g || at the end
 	    bool Kalk_Sim,              // Are we in Kalk Simma mode?
 	    const Real& delta_cycle,    // Initial error estimate (KS mode)
 	    const Real& gamma_factor)   // Convergence factor Gamma
@@ -175,10 +176,11 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
   g2_0 = g2;
   p2 = g2;
 
-
+#if 0
   // Debugging
   QDPIO::cout << "Starting Ritz: N_eig=" << N_eig << ", mu = " << mu
 	      << ", g2_0 = " << g2_0 << endl;
+#endif
 
   // Check whether we have converged
   bool convP;
@@ -186,6 +188,7 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
   bool maxItersDoneP = n_max <= 0;
   bool CGConvP;
   bool KSConvP;
+  bool deltaCycleConvP;
 
   Double rsd;
 
@@ -338,12 +341,15 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
 
       // "Extrapolate the delta_cycle error with the decrease in g"
       delta_cycle_err *= fabs(g_decr_factor);
-      
       Double g2_g0_ratio = g2 / g2_0;
+      deltaCycleConvP = toBool( delta_cycle_err < rsd );
+      KSConvP = deltaCycleConvP || toBool( g2_g0_ratio <= Double(gamma_factor)) ;
 
-      KSConvP = toBool( delta_cycle_err < rsd ) || toBool( g2_g0_ratio <= Double(gamma_factor)) ;
+      // Ignore delta_cycle_err for now
+      // KSConvP = toBool ( g2_g0_ratio <= Double(gamma_factor));
 
       convP = minItersDoneP && ( maxItersDoneP || CGConvP || KSConvP );
+
     }
 
       
@@ -360,6 +366,7 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
       psi /= d;
       d -= one;
 
+
       // Print out info about convergence 
       QDPIO::cout << "Converged at iter=" << k << ", lambda = " << lambda
 		  << ",  rsd | mu | = " << rsd << ",  || g || = "
@@ -370,7 +377,7 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
 	QDPIO::cout << "KS: gamma = "<< gamma_factor << ",  || g ||^2/|| g_0 ||^2="
 		    << g2/g2_0 
 		    << ",  delta_cycle_err=" << delta_cycle_err << endl;
-	QDPIO::cout << "KS: CGConvP = " << CGConvP << ",  KSConvP = " << KSConvP << endl;
+	QDPIO::cout << "KS: CGConvP = " << CGConvP << ",  KSConvP = " << KSConvP << " deltaCycleConvP = " << deltaCycleConvP << endl;
       }
 
       // Recompute lambda
@@ -379,10 +386,16 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
       s1 = mu;
       mu = innerProductReal(psi, Apsi);
       lambda = Real(mu);
+#if 0
       QDPIO::cout << "Mu-s at convergence: old " << s1 << " vs " << mu << endl;
 
+#endif
       // Copy vector back into psi array.
       psi_all[N_eig_index] = psi;
+
+      // Work out final gradient 
+      Ap = Apsi - psi*lambda;
+      final_grad = sqrt(norm2(Ap));
       END_CODE("Ritz");
       return;
 
@@ -485,6 +498,7 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
  
   psi_all[N_eig_index] = psi;
   n_count = MaxCG;
+  final_grad = sqrt(g2);
   QDPIO::cerr << "too many CG/Ritz iterations: n_count=" << n_count
 	      << ", rsd=" << rsd << ", ||g||=" << sqrt(g2) << ", p2=" << p2
 	      << ", lambda" << lambda << endl;
@@ -505,10 +519,11 @@ void Ritz(const LinearOperator<LatticeFermion>& A,   // Herm Pos Def
 	  int MaxCG,                  // Max no of iters after which we bomb
 	  bool ProjApsiP,             // Project A (?) -- user option
 	  int& n_count,               // No of iters actually taken
+	  Real& final_grad,           // Final gradient at the end.
 	  bool Kalk_Sim,              // Are we in Kalk Simma mode?
 	  const Real& delta_cycle,    // Initial error estimate (KS mode)
 	  const Real& gamma_factor)   // Convergence factor Gamma
 {
   Ritz_t(A, lambda, psi_all, N_eig, Rsd_r, n_renorm, n_min, n_max, MaxCG,
-	 ProjApsiP, n_count, Kalk_Sim, delta_cycle, gamma_factor);
+	 ProjApsiP, n_count, final_grad, Kalk_Sim, delta_cycle, gamma_factor);
 }

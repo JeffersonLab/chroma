@@ -44,7 +44,7 @@ check_PROGRAMS  = t_mesplq t_io t_mesons_w t_conslinop t_hypsmear \
 ## 'make t_dslashm' and 'make t_lwldslash' are still there for further
 ## development
 
-EXTRA_PROGRAMS  = t_dslashm t_lwldslash t_spprod t_lwldslash_sse t_follana_io_s t_formfac  t_follana_pion_s t_dwflinop t_precdwf t_ovlap_bj t_propagator_s t_gfix t_ovlap5d_bj t_ritz
+EXTRA_PROGRAMS  = t_dslashm t_lwldslash t_spprod t_lwldslash_sse t_follana_io_s t_formfac  t_follana_pion_s t_dwflinop t_precdwf t_ovlap_bj t_propagator_s t_gfix t_ovlap5d_bj t_ritz t_ritz_KS
 
 
 ## DEPENDENCIES = build_chroma_libs
@@ -129,6 +129,9 @@ t_gfix_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_ritz_SOURCES = t_ritz.cc
 t_ritz_DEPENDENCIES = build_chroma_libs rebuild_other_libs
+
+t_ritz_KS_SOURCES = t_ritz_KS.cc
+t_ritz_KS_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 # build lib is a target that goes to the build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order

@@ -105,6 +105,7 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
 	    int MaxCG,                  // Max iters after which we bomb
 	    bool ProjApsiP,             // Project A (?) -- user option
 	    int& n_count,               // No of iters actually taken
+	    Real& final_grad,           // Final gradient
 	    bool Kalk_Sim,              // Are we in Kalk Simma mode?
 	    const Real& delta_cycle,    // Initial error estimate (KS mode)
 	    const Real& gamma_factor) ;  // Convergence factor Gamma
@@ -120,6 +121,7 @@ void Ritz(const LinearOperator<LatticeFermion>& A,   // Herm Pos Def
 	  int MaxCG,                  // Maximum no if iters after which we bomb
 	  bool ProjApsiP,             // Project A (?) -- user option
 	  int& n_count,               // No of iters actually taken
+	  Real& final_grad,           // Final Gradient
 	  bool Kalk_Sim,              // Are we in Kalk Simma mode?
 	  const Real& delta_cycle,    // Initial error estimate (KS mode)
 	  const Real& gamma_factor) ;  // Convergence factor Gamma
