@@ -1,4 +1,4 @@
-// $Id: fermact_qprop.cc,v 1.8 2004-07-28 02:38:02 edwards Exp $
+// $Id: fermact_qprop.cc,v 1.9 2004-08-02 14:57:06 bjoo Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *
@@ -31,7 +31,6 @@ using namespace QDP;
  */
 
 template<typename T>
-static 
 void qprop_t(const FermionAction<T>& me,
 	     T& psi, 
 	     Handle<const ConnectState> state, 

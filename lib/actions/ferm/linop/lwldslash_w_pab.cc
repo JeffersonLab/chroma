@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_pab.cc,v 1.3 2004-07-28 02:38:02 edwards Exp $
+// $Id: lwldslash_w_pab.cc,v 1.4 2004-08-02 14:57:06 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -127,9 +127,9 @@ PABWilsonDslash::apply (LatticeFermion& chi, const LatticeFermion& psi,
 		       (int)isign, (1-cb));
   */
 
-  wfm_dslash((Float *)&(chi.elem(wil_cbsize*(cb)).elem(0).elem(0).real().elem()),
+  wfm_dslash((Float *)&(chi.elem(wil_cbsize*(cb)).elem(0).elem(0).real()),
 	     (Float *)&(packed_gauge[0]),
-	     (Float *)&(psi.elem(wil_cbsize*(1-cb)).elem(0).elem(0).real().elem()),
+	     (Float *)&(psi.elem(wil_cbsize*(1-cb)).elem(0).elem(0).real()),
 	     1-cb,
 	     (isign == (enum PlusMinus)PLUS ? 0 : 1));
 	     

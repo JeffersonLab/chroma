@@ -1,15 +1,18 @@
-// $Id: readszinqprop_w.cc,v 1.11 2003-10-16 01:41:01 edwards Exp $
+// $Id: readszinqprop_w.cc,v 1.12 2004-08-02 14:57:07 bjoo Exp $
 /*!
  * @file
  * @brief  Read an old SZIN-style (checkerboarded) quark propagator
  */
 
+#include <iostream>
+#include <string>
+#include <sstream>
+
 #include "chromabase.h"
 #include "io/readszinqprop_w.h"
 
-#include "qdp_util.h"   // from QDP++
-
 using namespace QDP;
+using namespace std;
 
 //! Read a SZIN propagator file. This is a simple memory dump reader.
 /*!
@@ -71,7 +74,15 @@ void readSzinQprop(XMLReader& xml, LatticePropagator& q, const string& file)
 
   try 
   {
+    // Temporary XLC failure workaround
+#if 0
     xml.open(xml_buf);
+#else
+    const string bufcontent=xml_buf.str() + "\n";
+    istringstream is(bufcontent);
+    xml.open(is);
+#endif
+
   }
   catch(const string& e)
   { 

@@ -9,6 +9,6 @@
 #include "update/molecdyn/exact_pg_hamiltonian.h"
 #include "update/molecdyn/pg_symp_updates.h"
 #include "update/molecdyn/pg_leapfrog.h"
-#include "update/molecdyn/pg_hmc.h"
+// #include "update/molecdyn/pg_hmc.h"
 
 #endif

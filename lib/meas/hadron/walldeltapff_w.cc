@@ -1,4 +1,4 @@
-// $Id: walldeltapff_w.cc,v 1.13 2004-07-28 02:38:04 edwards Exp $
+// $Id: walldeltapff_w.cc,v 1.14 2004-08-02 14:57:07 bjoo Exp $
 /*! \file
  *  \brief Wall-sink delta^+ -> gamma+proton form-factors 
  *
@@ -26,7 +26,6 @@ using namespace QDP;
  * \return color-contracted spin object
  */
 template<class T1, class T2, class T3>
-static
 LatticeSpinMatrix deltaPContract123(const T1& q1,
 				    const T2& q2, 
 				    const T3& q3,
@@ -55,7 +54,6 @@ LatticeSpinMatrix deltaPContract123(const T1& q1,
  * \return color-contracted spin object
  */
 template<class T1, class T2, class T3>
-static
 LatticeSpinMatrix deltaPContract132(const T1& q1,
 				    const T2& q2, 
 				    const T3& q3,
@@ -84,7 +82,6 @@ LatticeSpinMatrix deltaPContract132(const T1& q1,
  * \return color-contracted spin object
  */
 template<class T1, class T2, class T3>
-static
 LatticeSpinMatrix deltaPContract(const T1& u1,
 				 const T2& u2, 
 				 const T3& d,
@@ -115,7 +112,6 @@ LatticeSpinMatrix deltaPContract(const T1& u1,
  * \return color-contracted spin object
  */
 template<class T1, class T2, class T3>
-static
 LatticeSpinMatrix pDeltaContract123(const T1& q1,
 				    const T2& q2, 
 				    const T3& q3,
@@ -144,7 +140,6 @@ LatticeSpinMatrix pDeltaContract123(const T1& q1,
  * \return color-contracted spin object
  */
 template<class T1, class T2, class T3>
-static
 LatticeSpinMatrix pDeltaContract132(const T1& q1,
 				    const T2& q2, 
 				    const T3& q3,
@@ -173,7 +168,6 @@ LatticeSpinMatrix pDeltaContract132(const T1& q1,
  * \return color-contracted spin object
  */
 template<class T1, class T2, class T3>
-static
 LatticeSpinMatrix pDeltaContract(const T1& u1,
 				 const T2& u2, 
 				 const T3& d,

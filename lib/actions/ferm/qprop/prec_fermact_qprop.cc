@@ -1,4 +1,4 @@
-// $Id: prec_fermact_qprop.cc,v 1.5 2004-07-28 02:38:02 edwards Exp $
+// $Id: prec_fermact_qprop.cc,v 1.6 2004-08-02 14:57:07 bjoo Exp $
 /*! \file
  *  \brief Propagator solver for a generic even-odd preconditioned fermion operator
  *
@@ -26,7 +26,6 @@ using namespace QDP;
  */
 
 template<typename T>
-static 
 void qprop_t(const EvenOddPrecWilsonTypeFermAct<T>& me,
 	     T& psi, 
 	     Handle<const ConnectState> state, 
