@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lovlapms_w.h,v 1.10 2003-12-16 16:19:53 bjoo Exp $
+// $Id: lovlapms_w.h,v 1.11 2003-12-17 11:03:04 bjoo Exp $
 /*! \file
  *  \brief Internal Overlap-pole operator
  */
@@ -8,7 +8,9 @@
 #define __lovlapms_w_h__
 
 #include "linearop.h"
-#include "actions/ferm/linop/lmdagm_w.h"
+#include "fermact.h" 
+
+
 using namespace QDP;
 
 //! Internal Overlap-pole operator
@@ -49,7 +51,8 @@ public:
    * \param _MaxCG          MaxCG inner CG                     (Read)
    * \param _RsdCG          residual for inner CG              (Read)
    */
-  lovlapms(const LinearOperator<LatticeFermion>& _M,
+  lovlapms(const FermionAction<LatticeFermion>& S_aux,
+	   const ConnectState& state,
 	   const Real& _m_q, int _numroot, 
 	   const Real& _constP, 
 	   const multi1d<Real>& _resP,
@@ -59,15 +62,14 @@ public:
 	   const multi1d<LatticeFermion>& _EigVec,
 	   int _MaxCG,
 	   const Real& _RsdCG) :
-    M(_M), m_q(_m_q), numroot(_numroot), constP(_constP),
+    m_q(_m_q), numroot(_numroot), constP(_constP),
     resP(_resP), rootQ(_rootQ), EigVec(_EigVec), EigValFunc(_EigValFunc),
-    NEig(_NEig), MaxCG(_MaxCG), RsdCG(_RsdCG) {
-
-    MdagM = new lmdagm<LatticeFermion>(_M);
+    NEig(_NEig), MaxCG(_MaxCG), RsdCG(_RsdCG), M(S_aux.linOp(state)), MdagM(S_aux.lMdagM(state)) {
   }
   //! Destructor is automatic
   ~lovlapms() {
-
+    
+    delete M;
     delete MdagM;
   };
  
@@ -78,8 +80,8 @@ public:
   void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const;
 
 private:
-  LinearOperator<LatticeFermion>* MdagM;
-  const LinearOperator<LatticeFermion>& M;
+  const LinearOperator<LatticeFermion>* M;
+  const LinearOperator<LatticeFermion>*  MdagM;
   const Real& m_q;
   int numroot;
   const Real& constP;

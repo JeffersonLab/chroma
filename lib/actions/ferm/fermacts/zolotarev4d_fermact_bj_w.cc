@@ -1,4 +1,4 @@
-// $Id: zolotarev4d_fermact_bj_w.cc,v 1.2 2003-12-15 17:52:51 bjoo Exp $
+// $Id: zolotarev4d_fermact_bj_w.cc,v 1.3 2003-12-17 11:03:04 bjoo Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -241,12 +241,10 @@ Zolotarev4DFermActBj::linOp(const ConnectState& state_) const
   /* The square M^dagger*M of the Wilson Dirac operators, used for
      solving the multi-shift linear system */
   /* H^2 = M^dag . M */
-  const LinearOperator<LatticeFermion>* M = Mact.linOp(state_);
-  const LinearOperator<LatticeFermion>* MdagM = Mact.lMdagM(state_);
   
   /* Finally construct and pack the operator */
   /* This is the operator of the form (1/2)*[(1+mu) + (1-mu)*gamma_5*eps] */
-  return new lovlapms(*MdagM, *M, m_q,
+  return new lovlapms(Mact, state, m_q,
 		      numroot, coeffP, resP, rootQ, 
 		      NEig, EigValFunc, state.getEigVec(),
 		      MaxCGinner, RsdCGinner);

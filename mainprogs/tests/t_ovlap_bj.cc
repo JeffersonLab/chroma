@@ -1,4 +1,4 @@
-// $Id: t_ovlap_bj.cc,v 1.2 2003-12-15 17:52:51 bjoo Exp $
+// $Id: t_ovlap_bj.cc,v 1.3 2003-12-17 11:03:04 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -29,30 +29,49 @@ int main(int argc, char **argv)
 
   //! Test out dslash
   multi1d<LatticeColorMatrix> u(Nd);
-  for(int m=0; m < u.size(); ++m) {
-    gaussian(u[m]);
-    reunit(u[m]);
+  
+  //! Cold start
+  for(int j = 0; j < Nd; j++) { 
+     u(j) = Real(1);
   }
 
-  LatticeFermion psi, chi;
-
-  random(psi);
-  chi = zero;
+  for(int j=0; j < Nd; j++) { 
+    random(u(j));
+    reunit(u(j));
+  }
 
   //! Create a linear operator
-  QDPIO::cout << "Constructing Zolotarev4Dbj" << endl;
+  cout << "Testing Wilson Dslash: " << endl;
 
 
   //! Wilsoniums
   Real WilsonMass = -1.5;
-  const UnprecWilsonFermAct D_w(WilsonMass);
+  const UnprecWilsonFermAct S_w(WilsonMass);
 
+  const ConnectStateProxy  wilson_state(S_w.createState(u));
+  const LinearOperatorProxy<LatticeFermion> D_wils(S_w.linOp(wilson_state));
+  const LinearOperatorProxy<LatticeFermion> DD_wils(S_w.lMdagM(wilson_state));
+
+  LatticeFermion psi, mm, mandm, tmp;
+
+  random(psi);
+  mm = zero;
+  mandm = zero;
+  tmp = zero;
+
+  D_wils(tmp, psi, PLUS);
+  D_wils(mandm, tmp, MINUS);
+  DD_wils(mm, psi, PLUS);
+
+  mm -= mandm;
+
+  cout << "|| MdagM - M^{+} M || = " << norm2(mm) << endl;
 
   Real m_q = 0.1;
   XMLBufferWriter my_writer;
 
   //! N order Zolo approx, with wilson action.
-  Zolotarev4DFermActBj   D(D_w, 
+  Zolotarev4DFermActBj   D(S_w, 
 			   m_q,
 			   22, 
 			   1.0e-7,
@@ -64,15 +83,25 @@ int main(int argc, char **argv)
   ZolotarevConnectState<LatticeFermion> connect_state(u, 0.05);
 
   // Make me a linop (this callls the initialise function)
-  const LinearOperator<LatticeFermion>*  D_op = D.linOp((ConnectState &)connect_state);
+  const LinearOperatorProxy<LatticeFermion> D_op(D.linOp((ConnectState &)connect_state));
 
   Double n2 = norm2(psi);
   psi /= n2;
 
-  (*D_op)(chi,psi,(enum PlusMinus) PLUS);
-  
+  LatticeFermion s1, s2, s3, tmp2;
+  s1 = s2 = s3 = tmp2 = zero;
 
-  delete D_op;
+  (D_op)(s1,psi,PLUS);
+  (D_op)(s2,psi,MINUS);
+  (D_op)(tmp2, psi, PLUS);
+  (D_op)(s3, tmp2, MINUS);
+
+  s3 *= 2;
+  s3 -= s1;
+  s3 -= s2;
+
+  cout << "Circle Norm: " << norm2(s3) << endl;
+
   // Time to bolt
   QDP_finalize();
 

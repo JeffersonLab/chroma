@@ -1,4 +1,4 @@
-// $Id: lovlapms_w.cc,v 1.7 2003-12-16 16:19:53 bjoo Exp $
+// $Id: lovlapms_w.cc,v 1.8 2003-12-17 11:03:04 bjoo Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -75,7 +75,7 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
   /* tmp1 <- H * Projected psi */
   /*      <- gamma_5 * M * psi */
 
-  M(tmp2, tmp1, PLUS);
+  (*M)(tmp2, tmp1, PLUS);
   tmp1 = Gamma(G5) * tmp2;
   
  
