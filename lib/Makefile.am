@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.180 2004-10-21 16:43:19 bjoo Exp $
+# $Id: Makefile.am,v 1.181 2004-10-22 03:38:29 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -172,6 +172,7 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/prec_clover_fermact_w.h \
 	actions/ferm/fermacts/prec_dwf_fermact_array_w.h \
 	actions/ferm/fermacts/prec_nef_fermact_array_w.h \
+	actions/ferm/fermacts/prec_zolo_nef_fermact_array_w.h \
 	actions/ferm/fermacts/prec_ovdwf_fermact_array_w.h \
 	actions/ferm/fermacts/prec_dwf_fermact_base_array_w.h \
 	actions/ferm/fermacts/prec_wilson_fermact_w.h \
@@ -351,12 +352,11 @@ libchroma_a_SOURCES += baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
               prec_parwilson_fermact_w.cc prec_parwilson_linop_w.cc \
               dwffld_w.cc \
               fermact_qprop_array.cc prec_fermact_qprop_array.cc \
-              unprec_dwf_fermact_qprop_array_w.cc \
+              dwf_fermact_qprop_array_w.cc \
               unprec_dwf_fermact_array_w.cc unprec_dwf_linop_array_w.cc \
               unprec_nef_fermact_array_w.cc unprec_nef_linop_array_w.cc \
 	      unprec_ovdwf_fermact_array_w.cc unprec_ovdwf_linop_array_w.cc \
               unprec_ovext_fermact_array_w.cc unprec_ovext_linop_array_w.cc \
-              prec_dwf_fermact_qprop_array_w.cc \
               prec_dwf_fermact_array_w.cc prec_dwf_linop_array_w.cc \
               prec_nef_fermact_array_w.cc prec_nef_linop_array_w.cc \
               prec_ovdwf_fermact_array_w.cc prec_ovdwf_linop_array_w.cc \
@@ -381,7 +381,8 @@ libchroma_a_SOURCES += baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
 	      unprec_ovlap_contfrac5d_fermact_array_w.cc \
 	      prec_ovlap_contfrac5d_fermact_array_w.cc \
 	      prec_ovlap_contfrac5d_linop_array_w.cc lDeltaLs_w.cc \
-	      unprec_zolo_nef_fermact_array_w.cc
+	      unprec_zolo_nef_fermact_array_w.cc \
+              prec_zolo_nef_fermact_array_w.cc
 
 # These need to be reworked for new instantiation 
 #	zolotarev5d_fermact_array_w.cc 
