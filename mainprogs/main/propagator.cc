@@ -1,6 +1,9 @@
-// $Id: propagator.cc,v 1.48 2004-04-06 04:20:33 edwards Exp $
+// $Id: propagator.cc,v 1.49 2004-04-15 14:43:25 bjoo Exp $
 // $Log: propagator.cc,v $
-// Revision 1.48  2004-04-06 04:20:33  edwards
+// Revision 1.49  2004-04-15 14:43:25  bjoo
+// Added generalised qprop_io FermAct reading
+//
+// Revision 1.48  2004/04/06 04:20:33  edwards
 // Added SZINQIO support.
 //
 // Revision 1.47  2004/04/01 18:10:22  edwards
@@ -252,14 +255,16 @@ int main(int argc, char **argv)
   //
   // Initialize fermion action
   //
-  switch (input.param.FermAct)
+  switch (input.param.FermActHandle->getFermActType())
   {
   case FERM_ACT_WILSON:
   {
     QDPIO::cout << "FERM_ACT_WILSON" << endl;
 
-    EvenOddPrecWilsonFermAct S_f(fbc,input.param.Mass,
-				 input.param.anisoParam);
+    const WilsonFermActParams& wilson_params=dynamic_cast<const WilsonFermActParams &>(*(input.param.FermActHandle));
+
+    EvenOddPrecWilsonFermAct S_f(fbc,wilson_params.Mass,
+				 wilson_params.anisoParam);
     Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
 
     quarkProp4(quark_propagator, xml_out, quark_prop_source,
@@ -276,7 +281,10 @@ int main(int argc, char **argv)
   {
     QDPIO::cout << "FERM_ACT_UNPRECONDITIONED_WILSON" << endl;
 
-    UnprecWilsonFermAct S_f(fbc,input.param.Mass);
+    const WilsonFermActParams& wilson_params=dynamic_cast<const WilsonFermActParams &>(*(input.param.FermActHandle));
+
+
+    UnprecWilsonFermAct S_f(fbc,wilson_params.Mass);
     Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
 
     quarkProp4(quark_propagator, xml_out, quark_prop_source,
@@ -293,10 +301,13 @@ int main(int argc, char **argv)
   {
     QDPIO::cout << "FERM_ACT_DWF" << endl;
 
+
+    const DWFFermActParams& dwf_params=dynamic_cast<const DWFFermActParams &>(*(input.param.FermActHandle));
+
     EvenOddPrecDWFermActArray S_f(fbc_a,
-				  input.param.chiralParam.OverMass, 
-				  input.param.Mass, 
-				  input.param.chiralParam.N5);
+				  dwf_params.chiralParam.OverMass, 
+				  dwf_params.Mass, 
+				  dwf_params.chiralParam.N5);
     Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
 
 #ifndef MRES_CALCULATION
@@ -324,10 +335,12 @@ int main(int argc, char **argv)
   {
     QDPIO::cout << "FERM_ACT_UNPRECONDITONED_DWF" << endl;
 
+    const DWFFermActParams& dwf_params=dynamic_cast<const DWFFermActParams &>(*(input.param.FermActHandle));
+
     UnprecDWFermActArray S_f(fbc_a,
-			     input.param.chiralParam.OverMass, 
-			     input.param.Mass, 
-			     input.param.chiralParam.N5);
+			     dwf_params.chiralParam.OverMass, 
+			     dwf_params.Mass, 
+			     dwf_params.chiralParam.N5);
     Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
 #ifndef MRES_CALCULATION
     quarkProp4(quark_propagator, xml_out, quark_prop_source,
@@ -354,11 +367,12 @@ int main(int argc, char **argv)
   case FERM_ACT_OVERLAP_DWF:
   {
     QDPIO::cout << "FERM_ACT_OVERLAP_DWF" << endl;
+    const DWFFermActParams& dwf_params=dynamic_cast<const DWFFermActParams &>(*(input.param.FermActHandle));
 
     UnprecOvDWFermActArray S_f(fbc_a,
-			       input.param.chiralParam.OverMass, 
-			       input.param.Mass, 
-			       input.param.chiralParam.N5);
+			       dwf_params.chiralParam.OverMass, 
+			       dwf_params.Mass, 
+			       dwf_params.chiralParam.N5);
     Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
 
     quarkProp4(quark_propagator, xml_out, quark_prop_source,

@@ -1,4 +1,4 @@
-// $Id: qprop_io.h,v 1.7 2004-04-01 18:09:58 edwards Exp $
+// $Id: qprop_io.h,v 1.8 2004-04-15 14:43:24 bjoo Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -6,7 +6,9 @@
 #ifndef __qprop_io_h__
 #define __qprop_io_h__
 
+#include "handle.h"
 #include "io/param_io.h"
+#include "io/fermact_paramio.h"
 #include "meas/sources/srcsnktype.h"
 #include "meas/sources/wavetype.h"
 #include "meas/smear/wvfkind.h"
@@ -63,19 +65,20 @@ struct PropSink_t
 
 
 //! Propagator inversion parameters
-struct ChromaProp_t
-{
+class ChromaProp_t { 
+ public:
   int             version;
   FermType        FermTypeP;
-  FermActType     FermAct;
-  Real            Mass;       // quark mass (bare units)
- 
-  AnisoParam_t    anisoParam;
-  ChiralParam_t   chiralParam;
+  
+  // Uninitialised to start with (should hold null pointer)
+  FermActParams* FermActHandle;
+  
   InvertParam_t   invParam;   // Inverter parameters
-
   multi1d<int>    boundary;
   multi1d<int>    nrow;          // lattice size
+  
+  ChromaProp_t(void) { FermActHandle = 0x0 ; }
+  ~ChromaProp_t(void) { if ( FermActHandle != 0x0 ) delete FermActHandle ; }
 };
 
 

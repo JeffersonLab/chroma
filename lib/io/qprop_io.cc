@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 1.12 2004-04-01 18:09:58 edwards Exp $
+// $Id: qprop_io.cc,v 1.13 2004-04-15 14:43:24 bjoo Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -112,11 +112,11 @@ void initHeader(PropSink_t& header, const PropSource_t& source)
 // Initialize header with default values
 void initHeader(ChromaProp_t& header)
 {
-  header.version     = 4;
+  header.version     = 5;
   header.nrow        = Layout::lattSize();
 
-  initHeader(header.anisoParam);
-  initHeader(header.chiralParam);
+  // initHeader(header.anisoParam);
+  // initHeader(header.chiralParam);
 }
 
 
@@ -252,58 +252,39 @@ void read(XMLReader& xml, const string& path, ChromaProp_t& param)
 
   initHeader(param);
 
-  int version;
-  read(paramtop, "version", version);
+  read(paramtop, "version", param.version);
 
-  switch (version) 
+  switch (param.version) 
   {
     /**************************************************************************/
   case 4:
     /**************************************************************************/
+
+    read(paramtop, "FermTypeP", param.FermTypeP);
+    param.FermActHandle = read(paramtop, ".");
+    read(paramtop, "InvertParam", param.invParam);
+    read(paramtop, "boundary", param.boundary);
+    read(paramtop, "nrow", param.nrow);
+    
     break;
 
+  case 5:
+
+    // In this modified version of v4, the fermion action specific stuff
+    // goes into a <FermionAction> tag beneath <Param>
+    read(paramtop, "FermTypeP", param.FermTypeP);
+    param.FermActHandle = read(paramtop, "FermionAction");
+    read(paramtop, "InvertParam", param.invParam);
+    read(paramtop, "boundary", param.boundary);
+    read(paramtop, "nrow", param.nrow);
+
+    break;
   default:
     /**************************************************************************/
-    QDPIO::cerr << "ChromaProp parameter version " << version 
+    QDPIO::cerr << "ChromaProp parameter version " << param.version 
 		<< " unsupported." << endl;
     QDP_abort(1);
   }
-
-  read(paramtop, "FermTypeP", param.FermTypeP);
-  read(paramtop, "FermAct", param.FermAct);
-
-  if (paramtop.count("Mass") != 0)
-  {
-    read(paramtop, "Mass", param.Mass);
-
-    if (paramtop.count("Kappa") != 0)
-    {
-      QDPIO::cerr << "Error: found both a Kappa and a Mass tag" << endl;
-      QDP_abort(1);
-    }
-  }
-  else if (paramtop.count("Kappa") != 0)
-  {
-    Real Kappa;
-    read(paramtop, "Kappa", Kappa);
-
-    param.Mass = kappaToMass(Kappa);    // Convert Kappa to Mass
-  }
-  else
-  {
-    QDPIO::cerr << "Error: neither Mass or Kappa found" << endl;
-    QDP_abort(1);
-  }    
-
-  if (paramtop.count("AnisoParam") != 0)
-    read(paramtop, "AnisoParam", param.anisoParam);
-
-  if (paramtop.count("ChiralParam") != 0)
-    read(paramtop, "ChiralParam", param.chiralParam);
-
-  read(paramtop, "InvertParam", param.invParam);
-  read(paramtop, "boundary", param.boundary);
-  read(paramtop, "nrow", param.nrow);
 }
 
 
@@ -371,15 +352,44 @@ void write(XMLWriter& xml, const string& path, const ChromaProp_t& header)
 {
   push(xml, path);
 
-  write(xml, "version", header.version);
-  write(xml, "FermTypeP", header.FermTypeP);
-  write(xml, "FermAct", header.FermAct);
-  write(xml, "Mass", header.Mass);
-  write(xml, "AnisoParam", header.anisoParam);
-  write(xml, "ChiralParam", header.chiralParam);
-  write(xml, "InvertParam", header.invParam);
-  write(xml, "boundary", header.boundary);
-  write(xml, "nrow", header.nrow);
+  switch( header.version) { 
+  case 4:
+    write(xml, "version", header.version);
+    write(xml, "FermTypeP", header.FermTypeP);
+
+    if( header.FermActHandle != 0x0 ) { 
+      write(xml, ".", *(header.FermActHandle));
+    }
+    else {
+      QDPIO::cerr << "Attempting to print Uninitialised FermActHandle" << endl;
+      QDP_abort(1);
+    }
+        
+    write(xml, "InvertParam", header.invParam);
+    write(xml, "boundary", header.boundary);
+    write(xml, "nrow", header.nrow);
+    break;
+  case 5:
+    write(xml, "version", header.version);
+    write(xml, "FermTypeP", header.FermTypeP);
+
+    if( header.FermActHandle != 0x0 ) { 
+      write(xml, "FermionAction", *(header.FermActHandle));
+    }
+    else {
+      QDPIO::cerr << "Attempting to print Uninitialised FermActHandle" << endl;
+      QDP_abort(1);
+    }
+        
+    write(xml, "InvertParam", header.invParam);
+    write(xml, "boundary", header.boundary);
+    write(xml, "nrow", header.nrow);
+    break;
+  default:
+    QDPIO::cerr << "ChromaProp parameter version " << header.version 
+		<< " unsupported." << endl;
+    QDP_abort(1);
+  }
 
   pop(xml);
 }

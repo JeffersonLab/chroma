@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.171 2004-04-15 03:25:50 edwards Exp $
+# $Id: Makefile.in,v 1.172 2004-04-15 14:43:24 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -280,7 +280,7 @@ nobase_include_HEADERS = \
 	actions/ferm/linop/lmdagm.h actions/ferm/linop/lopscl.h \
 	actions/ferm/linop/partrat.h actions/ferm/qprop/qprop.h \
 	actions/gauge/gauge.h \
-	io/io.h io/eigen_io.h io/gauge_io.h io/kyugauge_io.h io/kyuqprop_io.h \
+	io/io.h io/eigen_io.h io/fermact_paramio.h io/gauge_io.h io/kyugauge_io.h io/kyuqprop_io.h \
         io/milc_io.h io/param_io.h io/qprop_io.h io/readmilc.h \
 	io/readszin.h io/szin_io.h io/writemilc.h io/writeszin.h \
 	meas/eig/eig.h meas/eig/gramschm.h meas/eig/gramschm_array.h \
@@ -334,9 +334,9 @@ libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	       invcg2_timing_hacks.cc minvcg.cc qprop_io.cc eigen_io.cc stoch_var.cc \
 	       z2_src.cc gauge_io.cc milc_io.cc readmilc.cc writemilc.cc \
                axgauge.cc coulgauge.cc grelax.cc polar_dec.cc rot_colvec.cc \
-	       transf.cc param_io.cc gramschm.cc gramschm_array.cc \
-	       ritz.cc ritz_array.cc sn_jacob.cc sn_jacob_array.cc \
-	       eig_spec.cc eig_spec_array.cc \
+	       transf.cc param_io.cc fermact_paramio.cc gramschm.cc \
+	       gramschm_array.cc ritz.cc ritz_array.cc sn_jacob.cc \
+	       sn_jacob_array.cc eig_spec.cc eig_spec_array.cc \
                proginfo.cc printgeom.cc\
 $(am__append_4) $(am__append_5) $(am__append_6) $(am__append_7)
 subdir = lib
@@ -355,8 +355,8 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	invcg2_timing_hacks.cc minvcg.cc qprop_io.cc eigen_io.cc \
 	stoch_var.cc z2_src.cc gauge_io.cc milc_io.cc readmilc.cc \
 	writemilc.cc axgauge.cc coulgauge.cc grelax.cc polar_dec.cc \
-	rot_colvec.cc transf.cc param_io.cc gramschm.cc \
-	gramschm_array.cc ritz.cc ritz_array.cc sn_jacob.cc \
+	rot_colvec.cc transf.cc param_io.cc fermact_paramio.cc \
+	gramschm.cc gramschm_array.cc ritz.cc ritz_array.cc sn_jacob.cc \
 	sn_jacob_array.cc eig_spec.cc eig_spec_array.cc proginfo.cc \
 	printgeom.cc baryon_w.cc mesons_w.cc hybmeson_w.cc loops_w.cc \
 	curcor2_w.cc lwldslash_w.cc formfac_w.cc mesonseqsrc_w.cc \
@@ -484,9 +484,9 @@ am_libchroma_a_OBJECTS = rgauge.$(OBJEXT) taproj.$(OBJEXT) \
 	milc_io.$(OBJEXT) readmilc.$(OBJEXT) writemilc.$(OBJEXT) \
 	axgauge.$(OBJEXT) coulgauge.$(OBJEXT) grelax.$(OBJEXT) \
 	polar_dec.$(OBJEXT) rot_colvec.$(OBJEXT) transf.$(OBJEXT) \
-	param_io.$(OBJEXT) gramschm.$(OBJEXT) gramschm_array.$(OBJEXT) \
-	ritz.$(OBJEXT) ritz_array.$(OBJEXT) sn_jacob.$(OBJEXT) \
-	sn_jacob_array.$(OBJEXT) eig_spec.$(OBJEXT) \
+	param_io.$(OBJEXT) fermact_paramio.$(OBJEXT) gramschm.$(OBJEXT) \
+	gramschm_array.$(OBJEXT) ritz.$(OBJEXT) ritz_array.$(OBJEXT) \
+	sn_jacob.$(OBJEXT) sn_jacob_array.$(OBJEXT) eig_spec.$(OBJEXT) \
 	eig_spec_array.$(OBJEXT) proginfo.$(OBJEXT) printgeom.$(OBJEXT) \
 	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
 	$(am__objects_4)
@@ -511,6 +511,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/eig_spec_array.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/eigen_io.Po ./$(DEPDIR)/expm12.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/fat7_links_s.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/fermact_paramio.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/fermact_qprop.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/fermact_qprop_array.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/follana_io_s.Po \
@@ -687,6 +688,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eigen_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/expm12.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fat7_links_s.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fermact_paramio.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fermact_qprop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fermact_qprop_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/follana_io_s.Po@am__quote@

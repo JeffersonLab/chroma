@@ -1,4 +1,4 @@
-// $Id: t_read_eigen.cc,v 1.1 2004-04-14 12:53:22 bjoo Exp $
+// $Id: t_read_eigen.cc,v 1.2 2004-04-15 14:43:25 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -131,9 +131,9 @@ int main(int argc, char **argv)
   
   Handle< const LinearOperator<LatticeFermion> > H = S_w.gamma5HermLinOp(connect_state);  
 
-  multi1d<Double> check_norm(input.Neig);
+  multi1d<Double> check_norm(header.ritz_params.Neig);
 
-  for(int i=0; i < input.Neig; i++) { 
+  for(int i=0; i < header.ritz_params.Neig; i++) { 
     LatticeFermion Me;
     (*H)(Me, eigv_lo[i], PLUS);
 

@@ -1,4 +1,4 @@
-// $Id: t_ritz_KS.cc,v 1.9 2004-04-14 12:53:22 bjoo Exp $
+// $Id: t_ritz_KS.cc,v 1.10 2004-04-15 14:43:25 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -65,6 +65,19 @@ int main(int argc, char **argv)
     QDPIO::cout << "Reading NERSC gauge config" << endl;
     readArchiv(gauge_xml, u, input.cfg.cfg_file);
     break;
+  case CFG_TYPE_DISORDERED:
+    QDPIO::cout << "Starting up disordered (random/hot) config" << endl;
+    for(int dim=0; dim < Nd; dim++) { 
+	random(u[dim]);
+	reunit(u[dim]);
+    }
+    break;
+  case CFG_TYPE_UNIT:
+    QDPIO::cout << "Starting up unit gauge (free) config" << endl;
+    for(int dim=0; dim < Nd; dim++) { 
+	u[dim] = Real(1);
+    }
+    break; 
   default :
     QDP_error_exit("Configuration type is unsupported.");
   }

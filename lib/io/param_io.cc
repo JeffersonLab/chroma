@@ -1,4 +1,4 @@
-// $Id: param_io.cc,v 1.20 2004-04-14 21:23:43 edwards Exp $
+// $Id: param_io.cc,v 1.21 2004-04-15 14:43:24 bjoo Exp $
 /*! \file
  *  \brief Various parameter readers/writers for main programs
  */
@@ -141,9 +141,13 @@ void read(XMLReader& xml, const string& path, CfgType& param)
     param = CFG_TYPE_SZIN;
   else if (cfg_type_str == "SZINQIO")
     param = CFG_TYPE_SZINQIO;
+  else if (cfg_type_str == "DISORDERED")
+    param = CFG_TYPE_DISORDERED;
+  else if (cfg_type_str == "UNIT")
+    param = CFG_TYPE_UNIT;
   else 
   {
-    QDPIO::cerr << "Unsupported configuration type" << endl;
+    QDPIO::cerr << "Unsupported configuration type " << cfg_type_str << endl;
     QDP_abort(1);
   }
 }
@@ -471,6 +475,10 @@ void write(XMLWriter& xml, const string& path, CfgType param)
     cfg_type_str = "SZIN";
   else if (param == CFG_TYPE_SZINQIO)
     cfg_type_str = "SZINQIO";
+  else if (param == CFG_TYPE_DISORDERED)
+    cfg_type_str = "DISORDERED";
+  else if (param == CFG_TYPE_UNIT)
+    cfg_type_str = "UNIT";
   else 
   {
     QDPIO::cerr << "Unsupported configuration type" << endl;

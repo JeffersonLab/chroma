@@ -264,6 +264,9 @@ void readEigen(ChromaWilsonRitz_t& header, multi1d<Real>& lambda_lo,
 	QDPIO::cout << "Requested " << Neig << " eigenpairs but only " << header.ritz_params.Neig << " were computed. Will only read " << header.ritz_params.Neig << " pairs" << endl;
 	neig_to_load = header.ritz_params.Neig;
       }
+      else { 
+	header.ritz_params.Neig = Neig;
+      }
 
       // Resize arrays to accomodate
       lambda_lo.resize(neig_to_load);
