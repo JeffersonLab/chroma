@@ -1,4 +1,4 @@
-// $Id: writemilc.cc,v 1.3 2003-10-16 01:41:01 edwards Exp $
+// $Id: writemilc.cc,v 1.4 2004-03-23 20:17:16 kostas Exp $
 
 /*! \file
  *  \brief Writer a MILC gauge configuration in the 1997 format
@@ -46,6 +46,11 @@ void writeMILC(const MILCGauge_t& header, const multi1d<LatticeColorMatrix>& u,
   // Site order - only support non-sitelist format
   int order = 0;
   write(cfg_out, order);
+ 
+  // Go ahead and write checksums, but will not use for now
+  unsigned int sum29=0, sum31=0;  // WARNING: these are BOGUS
+  write(cfg_out, sum29);
+  write(cfg_out, sum31);
 
   /*
    * Write away...
@@ -63,11 +68,6 @@ void writeMILC(const MILCGauge_t& header, const multi1d<LatticeColorMatrix>& u,
       write(cfg_out, u[j], coord); 
     }
   }
-
-  // Go ahead and write checksums, but will not use for now
-  unsigned int sum29=0, sum31=0;  // WARNING: these are BOGUS
-  write(cfg_out, sum29);
-  write(cfg_out, sum31);
 
   cfg_out.close();
 

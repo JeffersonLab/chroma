@@ -1,4 +1,4 @@
-// $Id: param_io.cc,v 1.14 2004-02-24 02:40:58 edwards Exp $
+// $Id: param_io.cc,v 1.15 2004-03-23 20:17:16 kostas Exp $
 /*! \file
  *  \brief Various parameter readers/writers for main programs
  */
@@ -135,6 +135,8 @@ void read(XMLReader& xml, const string& path, CfgType& param)
     param = CFG_TYPE_SZIN;
   else if (cfg_type_str == "NERSC")
     param = CFG_TYPE_NERSC;
+  else if (cfg_type_str == "MILC")
+    param = CFG_TYPE_MILC;
   else 
   {
     QDPIO::cerr << "Unsupported configuration type" << endl;

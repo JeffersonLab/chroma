@@ -1,4 +1,4 @@
-// $Id: readmilc.cc,v 1.4 2003-10-16 01:41:01 edwards Exp $
+// $Id: readmilc.cc,v 1.5 2004-03-23 20:17:16 kostas Exp $
 
 /*! \file
  *  \brief Read a MILC gauge configuration written in the 1997 format
@@ -34,13 +34,24 @@ void readMILC(MILCGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
   int magic_number;
   read(cfg_in, magic_number);
 
-  if( magic_number != 20103)
-    QDP_error_exit("readMILC: unexpected byte order of file");
+  bool byterev = false ;
+  if( magic_number != 20103){
+    //need byte reversal
+    byterev = true ;
+    //QDP_error_exit("readMILC: unexpected byte order of file");
+    QDPUtil::byte_swap((void *)&magic_number, sizeof(int), 1 );
+  }
+  if( magic_number != 20103){
+    QDP_error_exit("readMILC: unexpected magic number");
+  }
+  
 
   // Check lattice size
   header.nrow.resize(Nd);
   read(cfg_in, header.nrow, Nd);
-
+  if(byterev){
+    QDPUtil::byte_swap((void *)&header.nrow[0], sizeof(int), Nd );
+  }
   for(int j = 0; j < Nd; ++j)
     if ( header.nrow[j] != Layout::lattSize()[j] )
       QDP_error_exit("readMILC: unexpected lattice size: header.nrow[%d]=%d",
@@ -58,6 +69,17 @@ void readMILC(MILCGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
   if( order != 0)
     QDP_error_exit("readMILC: only support non-sitelist format");
 
+
+  // Go ahead an read checksums, but will not use for now
+  unsigned int sum29, sum31;
+  read(cfg_in, sum29);
+  read(cfg_in, sum31);
+  if(byterev){
+    QDPUtil::byte_swap((void *)&sum29,sizeof(int),1);
+    QDPUtil::byte_swap((void *)&sum31,sizeof(int),1);
+  }
+  QDPIO::cout<<"Golbal sums (sum29, sum31): "<<sum29<<" "<<sum31<<endl; 
+
   /*
    * Read away...
    */
@@ -73,12 +95,16 @@ void readMILC(MILCGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
       read(cfg_in, u[mu], coord);    // read in a single site
   }
 
-  // Go ahead an read checksums, but will not use for now
-  unsigned int sum29, sum31;
-  read(cfg_in, sum29);
-  read(cfg_in, sum31);
-
   cfg_in.close();
+  
+  //QDPUtil::byte_swap((void *)&buf[0], sizeof(Real64), latt_size[0]*Nc*Nc*2 );
+  if(byterev){
+    QDPIO::cout<<"Doing bytereversal on the links...\n" ;
+    for(int mu(0);mu<Nd;mu++)
+      //slow but hopefully it works
+      for(int s(0); s < Layout::sitesOnNode(); s++)
+	QDPUtil::byte_swap((void *)&u[mu].elem(s).elem(),sizeof(Real),2*Nc*Nc);
+  }
 
   END_CODE("readMILC");
 }
