@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev4d_fermact_w.h,v 1.18 2004-04-16 14:58:29 bjoo Exp $
+// $Id: zolotarev4d_fermact_w.h,v 1.19 2004-04-22 16:25:24 bjoo Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -12,6 +12,8 @@
 #include "actions/ferm/fermacts/overlap_fermact_base_w.h"
 #include "actions/ferm/fermacts/overlap_state.h"
 #include "meas/eig/eig_w.h"
+#include "io/zolotarev4d_fermact_paramio.h"
+#include "io/overlap_state_info.h"
 
 using namespace QDP;
 
@@ -36,13 +38,18 @@ public:
 		     const int RatPolyDeg_,
 		     const Real& RsdCGinner_,
 		     int MaxCGinner_,
-		     XMLBufferWriter& writer_,
+		     XMLWriter& writer_,
 		     const int ReorthFreqInner_=10
 		     ) :
     fbc(fbc_), Mact(Mact_), m_q(m_q_), RatPolyDeg(RatPolyDeg_), 
     RsdCGinner(RsdCGinner_), MaxCGinner(MaxCGinner_), writer(writer_),
     ReorthFreqInner(ReorthFreqInner_)
     {}
+
+  //! Construct from param struct
+  Zolotarev4DFermAct(Handle<FermBC<LatticeFermion> > fbc_,
+		     const Zolotarev4DFermActParams& params,
+		     XMLWriter& xml_out);
 
   //! Copy Constructor
   Zolotarev4DFermAct(const Zolotarev4DFermAct& a) :
@@ -82,8 +89,8 @@ public:
    *  that would need a run-time check. So this is a hack below,
    *  signifying intent */
   bool isChiral() const { return true; }
-
-  XMLBufferWriter& getWriter() const { 
+    
+  XMLWriter& getWriter() const { 
     return writer;
   }
 
@@ -108,6 +115,12 @@ public:
 	      const multi1d<LatticeFermion>& evecs_lo_, 
 	      const Real& lambda_hi_) const;
 
+
+  // Gauge field and whatever (min/max, e-vectors)
+  const OverlapConnectState<LatticeFermion>*
+  createState(const multi1d<LatticeColorMatrix>& u_,
+	      const OverlapStateInfo& state_info,
+	      XMLWriter& xml_out) const;
 
   //! Produce a linear operator for this action
   /*! 
@@ -164,7 +177,7 @@ private:
                     // not state. (eg 5D op has none of this)
   int MaxCGinner;
 
-  XMLBufferWriter& writer;
+  XMLWriter& writer;
   const int ReorthFreqInner;  // How often should we reorthogonalize
 };
 

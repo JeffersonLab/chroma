@@ -1,6 +1,9 @@
-// $Id: collect_propcomp.cc,v 1.1 2004-04-20 13:08:12 bjoo Exp $
+// $Id: collect_propcomp.cc,v 1.2 2004-04-22 16:25:25 bjoo Exp $
 // $Log: collect_propcomp.cc,v $
-// Revision 1.1  2004-04-20 13:08:12  bjoo
+// Revision 1.2  2004-04-22 16:25:25  bjoo
+// Added overlap_state_info Param struct and gauge startup convenience function. Tidyed up propagator zolo4d case
+//
+// Revision 1.1  2004/04/20 13:08:12  bjoo
 // Added multi mass component based solves and propagator collection program
 //
 // Revision 1.3  2004/04/16 22:03:59  bjoo
@@ -349,7 +352,6 @@ int main(int argc, char **argv)
     // I Will eventually write Copy Constructors.
 
     ChromaProp_t out_param(input.param, m);
- 
     write(record_xml, "ForwardProp", out_param);
     write(record_xml, "PropSource", source_header);
     write(record_xml, "Config_info", gauge_xml);

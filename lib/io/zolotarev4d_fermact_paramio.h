@@ -5,18 +5,12 @@
 #include "io/param_io.h"
 #include "io/fermact_paramio.h"
 #include "io/eigen_io.h"
+#include "io/overlap_state_info.h"
 
 using namespace std;
 using namespace QDP;
 
 
-
-struct Zolotarev4DStateInfo {
-  Real ApproxMin;
-  Real ApproxMax;
-  int  NWilsVec;
-  EigenIO_t eigen_io;
-};
 
 class Zolotarev4DFermActParams : public FermActParams {
  public:
@@ -35,8 +29,9 @@ class Zolotarev4DFermActParams : public FermActParams {
   Real RsdCGInner;
   int   MaxCGInner;
   int   ReorthFreqInner;
-  Zolotarev4DStateInfo StateInfo;
-  
+
+  ZolotarevStateInfo StateInfo;
+
   // Destructor
   ~Zolotarev4DFermActParams() {
     if ( AuxFermActHandle == 0x0 ) { 
@@ -48,7 +43,7 @@ class Zolotarev4DFermActParams : public FermActParams {
   }
 
   // Copy
-  Zolotarev4DFermActParams(const Zolotarev4DFermActParams& p) : Mass(p.Mass), RatPolyDeg(p.RatPolyDeg), RsdCGInner(p.RsdCGInner), MaxCGInner(p.MaxCGInner), ReorthFreqInner(p.ReorthFreqInner), StateInfo(p.StateInfo), AuxFermActHandle(p.AuxFermActHandle->clone()) {}
+  Zolotarev4DFermActParams(const Zolotarev4DFermActParams& p) : AuxFermActHandle(p.AuxFermActHandle->clone()), Mass(p.Mass), RatPolyDeg(p.RatPolyDeg), RsdCGInner(p.RsdCGInner), MaxCGInner(p.MaxCGInner), ReorthFreqInner(p.ReorthFreqInner), StateInfo(p.StateInfo) {}
 
   // Virtual constructor 
   Zolotarev4DFermActParams* clone(void) const { 
@@ -60,9 +55,6 @@ class Zolotarev4DFermActParams : public FermActParams {
 
 };
 
-
-void read(XMLReader& xml_in, const string& path, Zolotarev4DStateInfo& info);
-void write(XMLWriter& xml_out, const string& path, const Zolotarev4DStateInfo& info);
 
 void write(XMLWriter& xml_out, const string& path, const Zolotarev4DFermActParams& p);
 

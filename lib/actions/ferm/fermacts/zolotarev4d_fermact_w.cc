@@ -1,4 +1,4 @@
-// $Id: zolotarev4d_fermact_w.cc,v 1.15 2004-04-16 14:58:29 bjoo Exp $
+// $Id: zolotarev4d_fermact_w.cc,v 1.16 2004-04-22 16:25:24 bjoo Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -7,6 +7,7 @@
 #include <chromabase.h>
 #include <linearop.h>
 
+#include "actions/ferm/fermacts/unprec_wilson_fermact_w.h"
 #include "actions/ferm/fermacts/zolotarev4d_fermact_w.h"
 #include "actions/ferm/fermacts/zolotarev.h"
 #include "actions/ferm/linop/lovlapms_w.h"
@@ -15,6 +16,41 @@
 #include "meas/eig/ischiral_w.h"
 
 using namespace std;
+
+
+Zolotarev4DFermAct::Zolotarev4DFermAct(Handle<FermBC<LatticeFermion> > fbc_,
+				       const Zolotarev4DFermActParams& params,
+				       XMLWriter& writer_) : fbc(fbc_), m_q( params.Mass), RatPolyDeg(params.RatPolyDeg), RsdCGinner(params.RsdCGInner), MaxCGinner(params.MaxCGInner), writer(writer_), ReorthFreqInner(params.ReorthFreqInner)
+{
+
+  UnprecWilsonTypeFermAct<LatticeFermion>* S_aux;
+  switch( params.AuxFermActHandle->getFermActType() ) {
+  case FERM_ACT_WILSON:
+    {
+      // Upcast
+      const WilsonFermActParams& wils = dynamic_cast<const WilsonFermActParams &>( *(params.AuxFermActHandle));
+
+      //Get the FermAct
+      S_aux = new UnprecWilsonFermAct(fbc, wils.Mass);
+      if( S_aux == 0x0 ) { 
+	QDPIO::cerr << "Unable to instantiate S_aux " << endl;
+	QDP_abort(1);
+      }
+      
+    }
+    break;
+  default:
+    QDPIO::cerr << "Auxiliary Fermion Action Unsupported" << endl;
+    QDP_abort(1);
+  }
+  
+    
+  // Drop AuxFermAct into a Handle immediately.
+  // This should free things up at the end
+  Handle<UnprecWilsonTypeFermAct<LatticeFermion> >  S_w(S_aux);
+  Mact = S_w;
+}
+
 
 //! Creation routine
 /*! */
@@ -418,3 +454,79 @@ Zolotarev4DFermAct::createState(const multi1d<LatticeColorMatrix>& u_,
 }
 
   
+
+const OverlapConnectState<LatticeFermion>*
+Zolotarev4DFermAct::createState(const multi1d<LatticeColorMatrix>& u_,
+				const OverlapStateInfo& state_info,
+				XMLWriter& xml_out) const
+{
+  push(xml_out, "Zolo4DCreateState");
+
+
+  // If No eigen values specified use min and max
+  if ( state_info.getNWilsVec() == 0 ) { 
+    write(xml_out, "ApproxMin", state_info.getApproxMin());
+    write(xml_out, "ApproxMax", state_info.getApproxMax());
+    pop(xml_out);
+
+    return createState(u_,
+		       state_info.getApproxMin(),
+		       state_info.getApproxMax());
+  }
+  else {
+
+    // If there are eigen values, either load them, 
+    if( state_info.loadEigVec() ) {
+      ChromaWilsonRitz_t ritz_header;
+      multi1d<Real> lambda_lo;
+      multi1d<LatticeFermion> eigv_lo;
+      Real lambda_hi;
+
+      readEigen(ritz_header, lambda_lo, eigv_lo, lambda_hi, 
+		state_info.getEigenIO().eigen_file,
+		state_info.getNWilsVec(),
+		QDPIO_SERIAL);
+
+      push(xml_out, "EigenSystem");
+      write(xml_out, "OriginalRitzHeader", ritz_header);
+      write(xml_out, "lambda_lo", lambda_lo);
+      write(xml_out, "lambda_high", lambda_hi);
+      
+      Handle< const ConnectState > wils_connect_state = Mact->createState(u_);
+      Handle< const LinearOperator<LatticeFermion> > H = Mact->gamma5HermLinOp(wils_connect_state);
+
+      	      
+      multi1d<Double> check_norm(state_info.getNWilsVec());
+      multi1d<Double> check_norm_rel(state_info.getNWilsVec());
+      for(int i=0; i < state_info.getNWilsVec() ; i++) { 
+	LatticeFermion Me;
+	(*H)(Me, eigv_lo[i], PLUS);
+	
+	LatticeFermion lambda_e;
+	
+	lambda_e = lambda_lo[i]*eigv_lo[i];
+	LatticeFermion r_norm = Me - lambda_e;
+	check_norm[i] = sqrt(norm2(r_norm));
+	check_norm_rel[i] = check_norm[i]/fabs(Double(lambda_lo[i]));
+	
+	QDPIO::cout << "Eigenpair " << i << " Resid Norm = " 
+		    << check_norm[i] << " Resid Rel Norm = " << check_norm_rel[i] << endl;
+      }
+      write(xml_out, "eigen_norm", check_norm);
+      write(xml_out, "eigen_rel_norm", check_norm_rel);
+      
+      pop(xml_out); // Eigensystem
+
+      pop(xml_out); // Zolo4DCreateState
+      return createState(u_, lambda_lo, eigv_lo, lambda_hi);
+    }
+    else if( state_info.computeEigVec() ) {
+      QDPIO::cerr << "Recomputation of eigensystem not yet implemented" << endl;
+      QDP_abort(1);
+    }
+    else {
+      QDPIO::cerr << "I have to create a state without min/max, loading/computing eigenvectors/values. How do I do that? "<< endl;
+      QDP_abort(1);
+    }
+  }
+}

@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.124 2004-04-16 14:58:28 bjoo Exp $
+# $Id: Makefile.am,v 1.125 2004-04-22 16:25:24 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -71,7 +71,7 @@ nobase_include_HEADERS = \
 	actions/ferm/linop/partrat.h actions/ferm/qprop/qprop.h \
 	actions/gauge/gauge.h \
 	io/io.h io/eigen_io.h io/fermact_paramio.h \
-	io/zolotarev4d_fermact_paramio.h io/gauge_io.h io/kyugauge_io.h io/kyuqprop_io.h \
+	io/overlap_state_info.h io/zolotarev4d_fermact_paramio.h io/gauge_io.h io/kyugauge_io.h io/kyuqprop_io.h \
         io/milc_io.h io/param_io.h io/qprop_io.h io/readmilc.h \
 	io/readszin.h io/szin_io.h io/writemilc.h io/writeszin.h \
 	meas/eig/eig.h meas/eig/gramschm.h meas/eig/gramschm_array.h \
@@ -93,6 +93,7 @@ nobase_include_HEADERS = \
 	util/ferm/ferm.h util/ferm/transf.h util/ft/ft.h \
 	util/ft/sftmom.h util/gauge/eesu2.h util/gauge/eeu1.h \
 	util/gauge/expm12.h util/gauge/expmat.h util/gauge/gauge.h \
+	util/gauge/gauge_startup.h \
 	util/gauge/hotst.h util/gauge/phfctr.h util/gauge/reunit.h \
 	util/gauge/rgauge.h util/gauge/su2extract.h util/gauge/su3proj.h \
 	util/gauge/sunfill.h util/gauge/sun_proj.h util/gauge/taproj.h \
@@ -205,7 +206,7 @@ lib_LIBRARIES = libchroma.a
 #
 # Fermion independent sources
 #
-libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
+libchroma_a_SOURCES = gauge_startup.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
                mesplq.cc polylp.cc reunit.cc unit_check.cc sftmom.cc srcfil.cc \
                szin_io.cc readszin.cc writeszin.cc su3proj.cc sun_proj.cc \
                gaus_smear.cc hyp_smear.cc ape_smear.cc fuzz_smear.cc \
@@ -215,7 +216,7 @@ libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	       z2_src.cc gauge_io.cc milc_io.cc readmilc.cc writemilc.cc \
                axgauge.cc coulgauge.cc grelax.cc polar_dec.cc rot_colvec.cc \
 	       transf.cc param_io.cc fermact_paramio.cc  \
-	       zolotarev4d_fermact_paramio.cc  gramschm.cc \
+	       gramschm.cc \
 	       gramschm_array.cc ritz.cc ritz_array.cc sn_jacob.cc \
 	       sn_jacob_array.cc eig_spec.cc eig_spec_array.cc \
                proginfo.cc printgeom.cc
@@ -230,6 +231,7 @@ libchroma_a_SOURCES += baryon_w.cc mesons_w.cc hybmeson_w.cc \
               curcor2_w.cc lwldslash_w.cc formfac_w.cc \
               mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
               sink_smear2_w.cc barcomp_io.cc barcomp_w.cc walfil_w.cc \
+              overlap_state_info.cc zolotarev4d_fermact_paramio.cc \
               fermact_qprop.cc prec_fermact_qprop.cc \
               unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
               prec_wilson_fermact_w.cc prec_wilson_linop_w.cc \

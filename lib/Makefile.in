@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.175 2004-04-20 13:08:11 bjoo Exp $
+# $Id: Makefile.in,v 1.176 2004-04-22 16:25:24 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -119,6 +119,7 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@              curcor2_w.cc lwldslash_w.cc formfac_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              sink_smear2_w.cc barcomp_io.cc barcomp_w.cc walfil_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              overlap_state_info.cc zolotarev4d_fermact_paramio.cc \
 @BUILD_WILSON_LIBS_TRUE@              fermact_qprop.cc prec_fermact_qprop.cc \
 @BUILD_WILSON_LIBS_TRUE@              unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              prec_wilson_fermact_w.cc prec_wilson_linop_w.cc \
@@ -281,7 +282,7 @@ nobase_include_HEADERS = \
 	actions/ferm/linop/partrat.h actions/ferm/qprop/qprop.h \
 	actions/gauge/gauge.h \
 	io/io.h io/eigen_io.h io/fermact_paramio.h \
-	io/zolotarev4d_fermact_paramio.h io/gauge_io.h io/kyugauge_io.h io/kyuqprop_io.h \
+	io/overlap_state_info.h io/zolotarev4d_fermact_paramio.h io/gauge_io.h io/kyugauge_io.h io/kyuqprop_io.h \
         io/milc_io.h io/param_io.h io/qprop_io.h io/readmilc.h \
 	io/readszin.h io/szin_io.h io/writemilc.h io/writeszin.h \
 	meas/eig/eig.h meas/eig/gramschm.h meas/eig/gramschm_array.h \
@@ -303,6 +304,7 @@ nobase_include_HEADERS = \
 	util/ferm/ferm.h util/ferm/transf.h util/ft/ft.h \
 	util/ft/sftmom.h util/gauge/eesu2.h util/gauge/eeu1.h \
 	util/gauge/expm12.h util/gauge/expmat.h util/gauge/gauge.h \
+	util/gauge/gauge_startup.h \
 	util/gauge/hotst.h util/gauge/phfctr.h util/gauge/reunit.h \
 	util/gauge/rgauge.h util/gauge/su2extract.h util/gauge/su3proj.h \
 	util/gauge/sunfill.h util/gauge/sun_proj.h util/gauge/taproj.h \
@@ -326,7 +328,7 @@ lib_LIBRARIES = libchroma.a
 #
 # Fermion independent sources
 #
-libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
+libchroma_a_SOURCES = gauge_startup.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
                mesplq.cc polylp.cc reunit.cc unit_check.cc sftmom.cc srcfil.cc \
                szin_io.cc readszin.cc writeszin.cc su3proj.cc sun_proj.cc \
                gaus_smear.cc hyp_smear.cc ape_smear.cc fuzz_smear.cc \
@@ -336,7 +338,7 @@ libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	       z2_src.cc gauge_io.cc milc_io.cc readmilc.cc writemilc.cc \
                axgauge.cc coulgauge.cc grelax.cc polar_dec.cc rot_colvec.cc \
 	       transf.cc param_io.cc fermact_paramio.cc  \
-	       zolotarev4d_fermact_paramio.cc  gramschm.cc \
+	       gramschm.cc \
 	       gramschm_array.cc ritz.cc ritz_array.cc sn_jacob.cc \
 	       sn_jacob_array.cc eig_spec.cc eig_spec_array.cc \
                proginfo.cc printgeom.cc\
@@ -348,29 +350,29 @@ LIBRARIES = $(lib_LIBRARIES)
 
 libchroma_a_AR = $(AR) cru
 libchroma_a_LIBADD =
-am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
-	mesplq.cc polylp.cc reunit.cc unit_check.cc sftmom.cc srcfil.cc \
-	szin_io.cc readszin.cc writeszin.cc su3proj.cc sun_proj.cc \
-	gaus_smear.cc hyp_smear.cc ape_smear.cc fuzz_smear.cc \
-	klein_gord.cc laplacian.cc displacement.cc su2extract.cc \
-	sunfill.cc invcg1.cc invcg2.cc invcg2_array.cc \
+am__libchroma_a_SOURCES_DIST = gauge_startup.cc rgauge.cc taproj.cc \
+	hotst.cc expm12.cc mesplq.cc polylp.cc reunit.cc unit_check.cc \
+	sftmom.cc srcfil.cc szin_io.cc readszin.cc writeszin.cc \
+	su3proj.cc sun_proj.cc gaus_smear.cc hyp_smear.cc ape_smear.cc \
+	fuzz_smear.cc klein_gord.cc laplacian.cc displacement.cc \
+	su2extract.cc sunfill.cc invcg1.cc invcg2.cc invcg2_array.cc \
 	invcg2_timing_hacks.cc minvcg.cc qprop_io.cc eigen_io.cc \
 	stoch_var.cc z2_src.cc gauge_io.cc milc_io.cc readmilc.cc \
 	writemilc.cc axgauge.cc coulgauge.cc grelax.cc polar_dec.cc \
 	rot_colvec.cc transf.cc param_io.cc fermact_paramio.cc \
-	zolotarev4d_fermact_paramio.cc gramschm.cc gramschm_array.cc \
-	ritz.cc ritz_array.cc sn_jacob.cc sn_jacob_array.cc eig_spec.cc \
-	eig_spec_array.cc proginfo.cc printgeom.cc baryon_w.cc \
-	mesons_w.cc hybmeson_w.cc loops_w.cc curcor2_w.cc \
-	lwldslash_w.cc formfac_w.cc mesonseqsrc_w.cc barseqsrc_w.cc \
-	seqpiontest_w.cc sink_smear2_w.cc barcomp_io.cc barcomp_w.cc \
-	walfil_w.cc fermact_qprop.cc prec_fermact_qprop.cc \
-	unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
-	prec_wilson_fermact_w.cc prec_wilson_linop_w.cc \
-	unprec_parwilson_fermact_w.cc unprec_parwilson_linop_w.cc \
-	prec_parwilson_fermact_w.cc prec_parwilson_linop_w.cc \
-	dwffld_w.cc fermact_qprop_array.cc prec_fermact_qprop_array.cc \
-	unprec_dwf_fermact_base_w.cc \
+	gramschm.cc gramschm_array.cc ritz.cc ritz_array.cc sn_jacob.cc \
+	sn_jacob_array.cc eig_spec.cc eig_spec_array.cc proginfo.cc \
+	printgeom.cc baryon_w.cc mesons_w.cc hybmeson_w.cc loops_w.cc \
+	curcor2_w.cc lwldslash_w.cc formfac_w.cc mesonseqsrc_w.cc \
+	barseqsrc_w.cc seqpiontest_w.cc sink_smear2_w.cc barcomp_io.cc \
+	barcomp_w.cc walfil_w.cc overlap_state_info.cc \
+	zolotarev4d_fermact_paramio.cc fermact_qprop.cc \
+	prec_fermact_qprop.cc unprec_wilson_fermact_w.cc \
+	unprec_wilson_linop_w.cc prec_wilson_fermact_w.cc \
+	prec_wilson_linop_w.cc unprec_parwilson_fermact_w.cc \
+	unprec_parwilson_linop_w.cc prec_parwilson_fermact_w.cc \
+	prec_parwilson_linop_w.cc dwffld_w.cc fermact_qprop_array.cc \
+	prec_fermact_qprop_array.cc unprec_dwf_fermact_base_w.cc \
 	unprec_dwf_fermact_qprop_array_w.cc \
 	unprec_dwf_fermact_array_w.cc unprec_dwf_linop_array_w.cc \
 	unprec_ovdwf_fermact_array_w.cc unprec_ovdwf_linop_array_w.cc \
@@ -403,6 +405,8 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 @BUILD_WILSON_LIBS_TRUE@	sink_smear2_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	barcomp_io.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	barcomp_w.$(OBJEXT) walfil_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	overlap_state_info.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	zolotarev4d_fermact_paramio.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	fermact_qprop.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	prec_fermact_qprop.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	unprec_wilson_fermact_w.$(OBJEXT) \
@@ -472,23 +476,23 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 @BUILD_STAGGERED_LIBS_TRUE@	asqtad_mdagm_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	staggered_qprop.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	stag_phases_s.$(OBJEXT)
-am_libchroma_a_OBJECTS = rgauge.$(OBJEXT) taproj.$(OBJEXT) \
-	hotst.$(OBJEXT) expm12.$(OBJEXT) mesplq.$(OBJEXT) \
-	polylp.$(OBJEXT) reunit.$(OBJEXT) unit_check.$(OBJEXT) \
-	sftmom.$(OBJEXT) srcfil.$(OBJEXT) szin_io.$(OBJEXT) \
-	readszin.$(OBJEXT) writeszin.$(OBJEXT) su3proj.$(OBJEXT) \
-	sun_proj.$(OBJEXT) gaus_smear.$(OBJEXT) hyp_smear.$(OBJEXT) \
-	ape_smear.$(OBJEXT) fuzz_smear.$(OBJEXT) klein_gord.$(OBJEXT) \
-	laplacian.$(OBJEXT) displacement.$(OBJEXT) su2extract.$(OBJEXT) \
-	sunfill.$(OBJEXT) invcg1.$(OBJEXT) invcg2.$(OBJEXT) \
-	invcg2_array.$(OBJEXT) invcg2_timing_hacks.$(OBJEXT) \
-	minvcg.$(OBJEXT) qprop_io.$(OBJEXT) eigen_io.$(OBJEXT) \
-	stoch_var.$(OBJEXT) z2_src.$(OBJEXT) gauge_io.$(OBJEXT) \
-	milc_io.$(OBJEXT) readmilc.$(OBJEXT) writemilc.$(OBJEXT) \
-	axgauge.$(OBJEXT) coulgauge.$(OBJEXT) grelax.$(OBJEXT) \
-	polar_dec.$(OBJEXT) rot_colvec.$(OBJEXT) transf.$(OBJEXT) \
-	param_io.$(OBJEXT) fermact_paramio.$(OBJEXT) \
-	zolotarev4d_fermact_paramio.$(OBJEXT) gramschm.$(OBJEXT) \
+am_libchroma_a_OBJECTS = gauge_startup.$(OBJEXT) rgauge.$(OBJEXT) \
+	taproj.$(OBJEXT) hotst.$(OBJEXT) expm12.$(OBJEXT) \
+	mesplq.$(OBJEXT) polylp.$(OBJEXT) reunit.$(OBJEXT) \
+	unit_check.$(OBJEXT) sftmom.$(OBJEXT) srcfil.$(OBJEXT) \
+	szin_io.$(OBJEXT) readszin.$(OBJEXT) writeszin.$(OBJEXT) \
+	su3proj.$(OBJEXT) sun_proj.$(OBJEXT) gaus_smear.$(OBJEXT) \
+	hyp_smear.$(OBJEXT) ape_smear.$(OBJEXT) fuzz_smear.$(OBJEXT) \
+	klein_gord.$(OBJEXT) laplacian.$(OBJEXT) displacement.$(OBJEXT) \
+	su2extract.$(OBJEXT) sunfill.$(OBJEXT) invcg1.$(OBJEXT) \
+	invcg2.$(OBJEXT) invcg2_array.$(OBJEXT) \
+	invcg2_timing_hacks.$(OBJEXT) minvcg.$(OBJEXT) \
+	qprop_io.$(OBJEXT) eigen_io.$(OBJEXT) stoch_var.$(OBJEXT) \
+	z2_src.$(OBJEXT) gauge_io.$(OBJEXT) milc_io.$(OBJEXT) \
+	readmilc.$(OBJEXT) writemilc.$(OBJEXT) axgauge.$(OBJEXT) \
+	coulgauge.$(OBJEXT) grelax.$(OBJEXT) polar_dec.$(OBJEXT) \
+	rot_colvec.$(OBJEXT) transf.$(OBJEXT) param_io.$(OBJEXT) \
+	fermact_paramio.$(OBJEXT) gramschm.$(OBJEXT) \
 	gramschm_array.$(OBJEXT) ritz.$(OBJEXT) ritz_array.$(OBJEXT) \
 	sn_jacob.$(OBJEXT) sn_jacob_array.$(OBJEXT) eig_spec.$(OBJEXT) \
 	eig_spec_array.$(OBJEXT) proginfo.$(OBJEXT) printgeom.$(OBJEXT) \
@@ -520,8 +524,9 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/fermact_qprop_array.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/follana_io_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/formfac_w.Po ./$(DEPDIR)/fuzz_smear.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/gauge_io.Po ./$(DEPDIR)/gaus_smear.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/gramschm.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/gauge_io.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/gauge_startup.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/gaus_smear.Po ./$(DEPDIR)/gramschm.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/gramschm_array.Po ./$(DEPDIR)/grelax.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/hotst.Po ./$(DEPDIR)/hybmeson_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/hyp_smear.Po ./$(DEPDIR)/invcg1.Po \
@@ -542,6 +547,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/milc_io.Po ./$(DEPDIR)/minvcg.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/naik_term_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/overlap_fermact_base_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/overlap_state_info.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/overlapbu_linop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/p_src_w.Po ./$(DEPDIR)/param_io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/pions_follana_s.Po \
@@ -700,6 +706,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/formfac_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuzz_smear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gauge_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gauge_startup.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gaus_smear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gramschm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gramschm_array.Po@am__quote@
@@ -731,6 +738,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minvcg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/naik_term_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/overlap_fermact_base_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/overlap_state_info.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/overlapbu_linop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/p_src_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/param_io.Po@am__quote@
