@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.218 2005-01-07 04:43:29 edwards Exp $
+# $Id: Makefile.am,v 1.219 2005-01-10 19:53:04 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -128,8 +128,8 @@ nobase_include_HEADERS = \
 	update/molecdyn/lcm_pqp_leapfrog.h \
 	update/molecdyn/abs_hmc.h \
 	update/molecdyn/lcm_hmc.h \
-	update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.h \
-	update/molecdyn/prec_two_flavor_wilson_ferm_monomial_w.h \
+	update/molecdyn/unprec_two_flavor_wilson_monomial_w.h \
+	update/molecdyn/prec_two_flavor_wilson_monomial_w.h \
 	update/molecdyn/unprec_two_flavor_wilson5d_monomial_w.h \
 	update/molecdyn/prec_two_flavor_wilson5d_monomial_w.h \
 	update/molecdyn/global_metropolis_accrej.h
@@ -450,8 +450,8 @@ libchroma_a_SOURCES += \
 	meas/hadron/wallrhopiff_w.cc meas/hadron/wall_qprop_w.cc \
 	meas/sources/d_src_w.cc meas/sources/p_src_w.cc \
 	util/ferm/gammasgn_w.cc \
-	update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.cc \
-	update/molecdyn/prec_two_flavor_wilson_ferm_monomial_w.cc \
+	update/molecdyn/unprec_two_flavor_wilson_monomial_w.cc \
+	update/molecdyn/prec_two_flavor_wilson_monomial_w.cc \
 	update/molecdyn/unprec_two_flavor_wilson5d_monomial_w.cc \
 	update/molecdyn/prec_two_flavor_wilson5d_monomial_w.cc
 
