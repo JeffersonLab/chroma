@@ -1,4 +1,4 @@
-//  $Id: sun_proj.cc,v 1.1 2003-03-30 15:35:22 edwards Exp $
+//  $Id: sun_proj.cc,v 1.2 2003-03-31 19:46:08 edwards Exp $
 /*! \file
  *  \brief Project a complex Nc x Nc matrix W onto SU(Nc) by maximizing Tr(VW)
  */
@@ -12,6 +12,8 @@ using namespace QDP;
 
 //! Project a complex Nc x Nc matrix W onto SU(Nc) by maximizing Tr(VW)
 /*!
+ * \ingroup gauge
+ *
  * Arguments:
  *
  *  \param w            complex Nc x Nc matrix (Read)

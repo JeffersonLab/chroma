@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gauge.h,v 1.3 2003-03-31 19:38:38 edwards Exp $
+// $Id: gauge.h,v 1.4 2003-03-31 19:46:08 edwards Exp $
 
 /*! \file
  * \brief Include all utility routines
@@ -7,11 +7,10 @@
  * Central include file for all utilities
  */
 
-/*! \defgroup util Utility routines
- * \ingroup lib
+/*! \defgroup gauge Utility routines for manipulating color matrices
+ * \ingroup util
  *
- * Utility routines for simple manipulation of gauge fields and fermions.
- * Support for projection onto momentum states (fourier transforms).
+ * Utility routines for simple manipulation of gauge fields.
  */
 
 #ifndef __gauge_h__

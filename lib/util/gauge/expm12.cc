@@ -1,21 +1,23 @@
-// $Id: expm12.cc,v 1.4 2003-02-16 04:14:37 edwards Exp $
+// $Id: expm12.cc,v 1.5 2003-03-31 19:46:08 edwards Exp $
 /*! \file
  *  \brief 12-th order exponentiation of a lattice color matrix
- */
-
-/*!
- *  In place  a_ = 1 + a_ + (1/2)*a_^2 + ...+ (1/n!)*(a_)^n  n = power
- *  A must be a LATTICE_COMPLEX_COLOUR_COLOUR
- *
- * Arguments:
- *
- *  \param a        LatticeColorMatrix          (Modify)
  */
 
 #include "chromabase.h"
 #include "util/gauge/expm12.h"
 
 using namespace QDP;
+
+//! 12-th order exponentiation of a lattice color matrix
+/*!
+ * \ingroup gauge
+ *
+ *  In place  a_ = 1 + a_ + (1/2)*a_^2 + ...+ (1/n!)*(a_)^n  n = power
+ *
+ * Arguments:
+ *
+ *  \param a        LatticeColorMatrix          (Modify)
+ */
 
 void expm12(LatticeColorMatrix& a)
 {

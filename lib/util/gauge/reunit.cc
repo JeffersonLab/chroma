@@ -1,4 +1,4 @@
-// $Id: reunit.cc,v 1.4 2003-02-16 04:14:37 edwards Exp $
+// $Id: reunit.cc,v 1.5 2003-03-31 19:46:08 edwards Exp $
 
 /*! \file
  *  \brief Reunitarize (to a SU(N)) inplace the matrix A under some option
@@ -11,6 +11,8 @@ using namespace QDP;
 
 //! Reunitarize in place a color matrix to SU(N)
 /*!
+ * \ingroup gauge
+ *
  * \param  a  The descriptor of matrices to be reunitarized.
  *            Must be of type LatticeColorMatrix
  */
@@ -25,6 +27,7 @@ void reunit(LatticeColorMatrix& xa)
 
 //! Reunitarize in place a color matrix to SU(N)
 /*!
+ * \ingroup gauge
  *
  * \param  a  The descriptor of matrices to be reunitarized.
  *            Must be of type LatticeColorMatrix

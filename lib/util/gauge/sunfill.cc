@@ -1,4 +1,4 @@
-// $Id: sunfill.cc,v 1.1 2003-03-28 05:34:39 edwards Exp $
+// $Id: sunfill.cc,v 1.2 2003-03-31 19:46:08 edwards Exp $
 /*! \file
  *  \brief  Fill an SU(Nc) matrix with an SU(2) submatrix
  */
@@ -10,6 +10,8 @@ using namespace QDP;
 
 //! Fill a dest(su2_index) <- r_0,r_1,r_2,r_3  under a subset
 /*!
+ * \ingroup gauge
+ *
  * Fill an SU(Nc) matrix V with the SU(2) submatrix su2_index
  * paramtrized by b_k in the sigma matrix basis.
  *

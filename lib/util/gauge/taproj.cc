@@ -1,11 +1,19 @@
-// $Id: taproj.cc,v 1.4 2003-02-16 04:14:37 edwards Exp $
+// $Id: taproj.cc,v 1.5 2003-03-31 19:46:08 edwards Exp $
 // TAPROJ
 
 /*! \file
  *  \brief Take the traceless antihermitian projection of a color matrix
  */
 
+#include "chromabase.h"
+#include "util/gauge/taproj.h"
+
+using namespace QDP;
+
+//! Take the traceless antihermitian projection of a color matrix
 /*!
+ * \ingroup gauge
+ *
  *  a = (1/2)[a - a_dag] - Tr[(1/2)*(a - a_dag)]/Nc
  *
  * that is the anti-hermitian traceless part of a 
@@ -14,11 +22,6 @@
  *
  *  \param a        LatticeColorMatrix          (Modify)
  */
-
-#include "chromabase.h"
-#include "util/gauge/taproj.h"
-
-using namespace QDP;
 
 void taproj(LatticeColorMatrix& a)
 {

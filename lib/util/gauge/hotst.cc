@@ -1,11 +1,22 @@
-// $Id: hotst.cc,v 1.4 2003-02-16 04:14:37 edwards Exp $
+// $Id: hotst.cc,v 1.5 2003-03-31 19:46:08 edwards Exp $
 // HOTST
 
 /*! \file
  *  \brief Set a gauge field from a sample of (almost) Haar measure
  */
 
+#include "chromabase.h"
+#include "util/gauge/hotst.h"
+#include "util/gauge/taproj.h"
+#include "util/gauge/expm12.h"
+#include "util/gauge/reunit.h"
+
+using namespace QDP;
+
+//! Set a gauge field from a sample of (almost) Haar measure
 /*!
+ * \ingroup gauge
+ *
  * u = exp(A), where A = random traceless antihermitian matrix.
  *
  * Arguments:
@@ -19,14 +30,6 @@
  *   if someone can think of a really good reason why it should be Haar
  *   measure, then something can be done about it. 
  */
-
-#include "chromabase.h"
-#include "util/gauge/hotst.h"
-#include "util/gauge/taproj.h"
-#include "util/gauge/expm12.h"
-#include "util/gauge/reunit.h"
-
-using namespace QDP;
 
 void HotSt(multi1d<LatticeColorMatrix>& u)
 {

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: reunit.h,v 1.2 2003-03-06 03:35:20 edwards Exp $
+// $Id: reunit.h,v 1.3 2003-03-31 19:46:08 edwards Exp $
 
 #ifndef REUNIT_INCLUDE
 #define REUNIT_INCLUDE
@@ -8,6 +8,8 @@ enum Reunitarize {REUNITARIZE, REUNITARIZE_ERROR, REUNITARIZE_LABEL};
 
 //! Reunitarize in place a color matrix to SU(N)
 /*!
+ * \ingroup gauge
+ *
  * \param  a  The descriptor of matrices to be reunitarized.
  *            Must be of type LatticeColorMatrix
  */
@@ -15,6 +17,7 @@ void reunit(LatticeColorMatrix& xa);
 
 //! Reunitarize in place a color matrix to SU(N)
 /*!
+ * \ingroup gauge
  *
  * \param  a  The descriptor of matrices to be reunitarized.
  *            Must be of type LatticeColorMatrix

@@ -1,4 +1,4 @@
-// $Id: su2extract.cc,v 1.1 2003-03-28 05:34:39 edwards Exp $
+// $Id: su2extract.cc,v 1.2 2003-03-31 19:46:08 edwards Exp $
 /*! \file
  *  \brief  Extract an unnormalized SU(2) matrix from a GL(3,C) matrix
  */
@@ -10,6 +10,8 @@ using namespace QDP;
 
 //! Su2_extract: r_0,r_1,r_2,r_3 <- source(su2_index)  [SU(N) field]  under a subset
 /*! 
+ * \ingroup gauge
+ *
  * Extract components r_k proportional to SU(2) submatrix su2_index
  * from the "SU(Nc)" matrix V. The SU(2) matrix is parametrized in the
  * sigma matrix basis.
