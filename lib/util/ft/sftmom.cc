@@ -1,6 +1,9 @@
-//  $Id: sftmom.cc,v 1.3 2003-03-20 19:34:25 flemingg Exp $
+//  $Id: sftmom.cc,v 1.4 2003-04-01 02:46:43 edwards Exp $
 //  $Log: sftmom.cc,v $
-//  Revision 1.3  2003-03-20 19:34:25  flemingg
+//  Revision 1.4  2003-04-01 02:46:43  edwards
+//  Added const qual.
+//
+//  Revision 1.3  2003/03/20 19:34:25  flemingg
 //  Evolved formfac_w.cc to use SftMom class, which included some bug fixes
 //  in features in SftMom which had been previously untested and evolution
 //  of the corresponding test program.
@@ -367,7 +370,7 @@ SftMom::init(int mom2_max, multi1d<int> mom_offset,
 // }
 
 multi2d<DComplex>
-SftMom::sft(const LatticeComplex& cf)
+SftMom::sft(const LatticeComplex& cf) const
 {
   multi2d<DComplex> hsum(num_mom, sft_subsets.numSubsets()) ;
 
