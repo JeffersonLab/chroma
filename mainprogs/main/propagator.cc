@@ -1,6 +1,9 @@
-// $Id: propagator.cc,v 1.46 2004-02-23 03:13:58 edwards Exp $
+// $Id: propagator.cc,v 1.47 2004-04-01 18:10:22 edwards Exp $
 // $Log: propagator.cc,v $
-// Revision 1.46  2004-02-23 03:13:58  edwards
+// Revision 1.47  2004-04-01 18:10:22  edwards
+// Added support for non-relativistic quark props.
+//
+// Revision 1.46  2004/02/23 03:13:58  edwards
 // Major overhaul of input/output model! Now using EXCLUSIVELY
 // SciDAC propagator format for propagators. Now, Param part of input
 // files directly matches source/sink/propagator/seqprop headers
@@ -256,6 +259,7 @@ int main(int argc, char **argv)
 	       input.param.invParam.invType, 
 	       input.param.invParam.RsdCG, 
 	       input.param.invParam.MaxCG, 
+	       false,
 	       ncg_had);
   }
   break;
@@ -272,6 +276,7 @@ int main(int argc, char **argv)
 	       input.param.invParam.invType, 
 	       input.param.invParam.RsdCG, 
 	       input.param.invParam.MaxCG, 
+	       false,
 	       ncg_had);
   }
   break;
@@ -292,6 +297,7 @@ int main(int argc, char **argv)
 	       input.param.invParam.invType, 
 	       input.param.invParam.RsdCG, 
 	       input.param.invParam.MaxCG, 
+	       false,
 	       ncg_had);
 #else
     dwf_quarkProp4(quark_propagator, xml_out, quark_prop_source,
@@ -321,6 +327,7 @@ int main(int argc, char **argv)
 	       input.param.invParam.invType, 
 	       input.param.invParam.RsdCG, 
 	       input.param.invParam.MaxCG, 
+	       false,
 	       ncg_had);
 #else
     dwf_quarkProp4(quark_propagator, xml_out, quark_prop_source,
@@ -351,6 +358,7 @@ int main(int argc, char **argv)
 	       input.param.invParam.invType, 
 	       input.param.invParam.RsdCG, 
 	       input.param.invParam.MaxCG, 
+	       false,
 	       ncg_had);
   }
   break;

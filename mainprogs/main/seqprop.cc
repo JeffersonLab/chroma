@@ -1,4 +1,4 @@
-// $Id: seqprop.cc,v 1.16 2004-02-28 01:41:02 edwards Exp $
+// $Id: seqprop.cc,v 1.17 2004-04-01 18:10:22 edwards Exp $
 /*! \file
  *  \brief Main code for sequential propagator generation
  */
@@ -19,6 +19,7 @@ struct Param_t
 {
   InvertParam_t    invParam;
 
+  bool             nonRelSeqProp;
   multi1d<int>     Seq_src;    // integer array holding sequential source numbers
   multi1d<int>     sink_mom;
   int              t_sink;
@@ -68,7 +69,12 @@ void read(XMLReader& xml, const string& path, Param_t& param)
   {
     /**************************************************************************/
   case 2:
+    param.nonRelSeqProp = false;
+    break;
+
     /**************************************************************************/
+  case 3:
+    read(paramtop, "nonRelSeqProp", param.nonRelSeqProp);
     break;
 
   default:
@@ -435,7 +441,8 @@ int main(int argc, char **argv)
 		 *S_f, state, 
 		 input.param.invParam.invType, 
 		 input.param.invParam.RsdCG, 
-		 input.param.invParam.MaxCG, 
+		 input.param.invParam.MaxCG,
+		 input.param.nonRelSeqProp,
 		 n_count);
 
       ncg_had += n_count;
@@ -466,6 +473,7 @@ int main(int argc, char **argv)
       // Make a seqprop structure
       ChromaSeqProp_t seqprop_header;
       seqprop_header.invParam = input.param.invParam;
+      seqprop_header.nonRelSeqProp  = input.param.nonRelSeqProp;
       seqprop_header.Seq_src  = seq_src_value;
       seqprop_header.sink_mom = input.param.sink_mom;
       seqprop_header.t_sink   = input.param.t_sink;
