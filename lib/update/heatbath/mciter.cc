@@ -1,4 +1,4 @@
-// $Id: mciter.cc,v 1.1 2003-12-29 19:47:22 edwards Exp $
+// $Id: mciter.cc,v 1.2 2004-01-22 22:51:37 edwards Exp $
 /*! \file
  *  \brief One heatbath interation of updating the gauge field configuration
  */
@@ -76,9 +76,9 @@ void mciter(multi1d<LatticeColorMatrix>& u,
 
 	  /* Backward staple */
 	  /* tmp_1(x) = u(x,mu)*u(x+mu,nu) */
-	  tmp_1[rb[1-cb] = u[mu][1-cb] * shift(u[nu][cb], (1-cb), FORWARD, mu);
+	  tmp_1[rb[1-cb]] = u[mu] * shift(u[nu], FORWARD, mu);
 
-          if( AnisoP == YES )  	
+          if( AnisoP )  	
 	    if( mu == t_dir || nu == t_dir )
 	      tmp_1[rb[1-cb]] = xi02 * tmp_1;
 
