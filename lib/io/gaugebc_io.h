@@ -45,7 +45,7 @@ class GaugeBCParamsBase {
   virtual GaugeBCParamsBase* clone(void) const = 0;
 
   // get type
-  virtual const GaugeBCType_t getType(void) const = 0;
+  virtual GaugeBCType_t getType(void) const = 0;
 
 };
 
@@ -66,7 +66,7 @@ class GaugeBCPeriodicParams : public GaugeBCParamsBase {
     return new GaugeBCPeriodicParams(*this);
   }
   // get type
-  const GaugeBCType_t getType(void) const { 
+  GaugeBCType_t getType(void) const { 
     return GAUGEBC_ALL_PERIODIC;
   }
 };
@@ -88,7 +88,7 @@ class GaugeBCSimpleParams : public GaugeBCParamsBase {
   }
 
   // get type
-  const GaugeBCType_t getType(void) const {
+  GaugeBCType_t getType(void) const {
     return GAUGEBC_SIMPLE;
   }
 
@@ -115,12 +115,12 @@ public:
     return new GaugeBCSchrParams(*this);
   }
   
-  const GaugeBCType_t getType(void) const { 
+  GaugeBCType_t getType(void) const { 
     return type_t;
   }
 
-  const SchrFunType_t getSchrFun(void) const { return SchrFun; }
-  const Real getSchrPhiMult(void) const { return SchrPhiMult; }
+  SchrFunType_t getSchrFun(void) const { return SchrFun; }
+  const Real& getSchrPhiMult(void) const { return SchrPhiMult; }
 private:
   SchrFunType_t SchrFun;
   Real SchrPhiMult;
