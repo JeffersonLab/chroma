@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwftransf_fermact_w.h,v 1.6 2005-01-14 20:13:04 edwards Exp $
+// $Id: unprec_dwftransf_fermact_w.h,v 1.7 2005-02-23 19:29:20 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -11,7 +11,7 @@
 #include "invtype.h"
 #include "actions/ferm/linop/lmdagm.h"
 #include "actions/ferm/linop/unprec_dwftransf_linop_w.h"
-#include "io/param_io.h"       // to get AnisoParam_t
+#include "io/aniso_io.h"
 
 
 namespace Chroma

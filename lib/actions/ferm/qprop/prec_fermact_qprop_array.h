@@ -1,4 +1,4 @@
-// $Id: prec_fermact_qprop_array.h,v 1.2 2005-02-21 19:28:59 edwards Exp $
+// $Id: prec_fermact_qprop_array.h,v 1.3 2005-02-23 19:29:20 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic even-odd preconditioned fermion operator
  *
@@ -10,7 +10,7 @@
 
 #include "chromabase.h"
 #include "fermact.h"
-#include "io/param_io.h"       // to get AnisoParam_t
+#include "io/aniso_io.h"
 
 namespace Chroma 
 {

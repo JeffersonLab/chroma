@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_fermact_array_w.h,v 1.16 2005-02-21 19:28:58 edwards Exp $
+// $Id: prec_dwf_fermact_array_w.h,v 1.17 2005-02-23 19:29:20 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -9,7 +9,7 @@
 
 #include "fermact.h"
 #include "actions/ferm/fermacts/prec_dwf_fermact_base_array_w.h"
-#include "io/param_io.h"       // to get AnisoParam_t
+#include "io/aniso_io.h"
 
 namespace Chroma
 {

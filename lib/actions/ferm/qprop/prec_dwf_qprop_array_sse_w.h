@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_qprop_array_sse_w.h,v 1.6 2005-02-22 02:13:33 edwards Exp $
+// $Id: prec_dwf_qprop_array_sse_w.h,v 1.7 2005-02-23 19:29:20 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -8,7 +8,7 @@
 #define __prec_dwf_qprop_array_sse_w_h__
 
 #include "fermact.h"
-#include "io/param_io.h"       // to get AnisoParam_t
+#include "io/aniso_io.h"
 
 
 extern "C" 

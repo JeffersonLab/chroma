@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_linop_array_w.h,v 1.13 2005-02-21 19:28:59 edwards Exp $
+// $Id: unprec_dwf_linop_array_w.h,v 1.14 2005-02-23 19:29:20 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion linear operator
  */
@@ -10,7 +10,7 @@
 #include "linearop.h"
 #include "actions/ferm/linop/dslash_w.h"
 #include "actions/ferm/linop/unprec_dwf_linop_base_array_w.h"
-#include "io/param_io.h"       // to get AnisoParam_t
+#include "io/aniso_io.h"
 
 namespace Chroma
 {

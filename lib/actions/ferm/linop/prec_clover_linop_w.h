@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_clover_linop_w.h,v 1.2 2005-01-14 20:13:05 edwards Exp $
+// $Id: prec_clover_linop_w.h,v 1.3 2005-02-23 19:29:20 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion linear operator
  */
@@ -12,7 +12,7 @@
 
 #include "linearop.h"
 #include "actions/ferm/linop/dslash_w.h"
-#include "io/param_io.h"       // to get AnisoParam_t
+#include "io/aniso_io.h"
 
 
 namespace Chroma 
