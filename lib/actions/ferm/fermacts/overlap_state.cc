@@ -17,8 +17,8 @@ namespace Chroma {
     template<typename T>
     static
     const OverlapConnectState*
-    createOverlapState(const multi1d<LatticeColorMatrix>& u_, 
-		       const FermBC<T>& fbc)
+    createOverlapStateA(const multi1d<LatticeColorMatrix>& u_, 
+			const FermBC<T>& fbc)
     {
       multi1d<LatticeColorMatrix> u_tmp = u_;
       fbc.modifyU(u_tmp);
@@ -36,9 +36,9 @@ namespace Chroma {
     template<typename T>
     static
     const OverlapConnectState*
-    createOverlapState(const multi1d<LatticeColorMatrix>& u_,
-		       const FermBC<T>& fbc,
-		       const Real& approxMin_)
+    createOverlapStateB(const multi1d<LatticeColorMatrix>& u_,
+			const FermBC<T>& fbc,
+			const Real& approxMin_)
     {
       if ( toBool( approxMin_ < Real(0) )) { 
 	ostringstream error_str;
@@ -61,10 +61,10 @@ namespace Chroma {
     template<typename T>
     static
     const OverlapConnectState*
-    createOverlapState(const multi1d<LatticeColorMatrix>& u_,
-		       const FermBC<T>& fbc, 
-		       const Real& approxMin_,
-		       const Real& approxMax_)
+    createOverlapStateC(const multi1d<LatticeColorMatrix>& u_,
+			const FermBC<T>& fbc, 
+			const Real& approxMin_,
+			const Real& approxMax_)
     {
       ostringstream error_str;
       
@@ -91,11 +91,11 @@ namespace Chroma {
     template<typename T>
     static
     const OverlapConnectState*
-    createOverlapState(const multi1d<LatticeColorMatrix>& u_,
-		const FermBC<T>& fbc, 
-		const multi1d<Real>& lambda_lo_, 
-		const multi1d<LatticeFermion>& evecs_lo_,
-		const Real& lambda_hi_)
+    createOverlapStateD(const multi1d<LatticeColorMatrix>& u_,
+			const FermBC<T>& fbc, 
+			const multi1d<Real>& lambda_lo_, 
+			const multi1d<LatticeFermion>& evecs_lo_,
+			const Real& lambda_hi_)
     {
       ostringstream error_str;
       
@@ -125,26 +125,6 @@ namespace Chroma {
     }    
 
 
-  
-    //! Create a ConnectState out of XML
-    /*! Needs the auxiliary fermion action linear operator 
-        passed just in case it needs to check eigenvalues/vectors.
-	The caller should be a fermact so it should be able to 
-	generate the linop easy enough */
-    template<typename T>
-    static 
-    const OverlapConnectState*  
-    createOverlapState(const multi1d<LatticeColorMatrix> u_,
-		       const FermBC<T>& fbc,
-		       XMLReader& state_info_xml, 
-		       const string& state_info_path,
-		       const LinearOperator<LatticeFermion>& H)
-    {
-      OverlapStateInfo tmp_info;
-      read(state_info_xml, state_info_path, tmp_info);
-      return OverlapConnectStateEnv::createOverlapState<T>(u_, fbc, tmp_info, H);
-    }
-
     //! Create from OverlapStateInfo Structure
     /*! Needs the auxiliary fermion action linear operator 
         passed just in case it needs to check eigenvalues/vectors.
@@ -153,18 +133,18 @@ namespace Chroma {
     template<typename T>
     static 
     const OverlapConnectState*
-    createOverlapState(const multi1d<LatticeColorMatrix>& u_,
-		const FermBC<T>& fbc,
-		const OverlapStateInfo& state_info,
-		const LinearOperator<LatticeFermion>& H)
+    createOverlapStateF(const multi1d<LatticeColorMatrix>& u_,
+			const FermBC<T>& fbc,
+			const OverlapStateInfo& state_info,
+			const LinearOperator<LatticeFermion>& H)
     {
       
       // If No eigen values specified use min and max
       if ( state_info.getNWilsVec() == 0 ) { 
-	return OverlapConnectStateEnv::createOverlapState<T>(u_,
-						      fbc,
-						      state_info.getApproxMin(),
-						      state_info.getApproxMax());
+	return OverlapConnectStateEnv::createOverlapStateC<T>(u_,
+							      fbc,
+							      state_info.getApproxMin(),
+							      state_info.getApproxMax());
       }
       else {
 	
@@ -225,7 +205,7 @@ namespace Chroma {
 			<< check_norm[i] << " Resid Rel Norm = " << check_norm_rel[i] << endl;
 	  }
 
-	  return OverlapConnectStateEnv::createOverlapState<T>(u_, fbc, lambda_lo, eigv_lo, lambda_hi);
+	  return OverlapConnectStateEnv::createOverlapStateD<T>(u_, fbc, lambda_lo, eigv_lo, lambda_hi);
 	}
 	else if( state_info.computeEigVec() ) {
 	  QDPIO::cerr << "Recomputation of eigensystem not yet implemented" << endl;
@@ -241,6 +221,26 @@ namespace Chroma {
     }
 
 
+  
+    //! Create a ConnectState out of XML
+    /*! Needs the auxiliary fermion action linear operator 
+        passed just in case it needs to check eigenvalues/vectors.
+	The caller should be a fermact so it should be able to 
+	generate the linop easy enough */
+    template<typename T>
+    static 
+    const OverlapConnectState*  
+    createOverlapStateE(const multi1d<LatticeColorMatrix> u_,
+			const FermBC<T>& fbc,
+			XMLReader& state_info_xml, 
+			const string& state_info_path,
+			const LinearOperator<LatticeFermion>& H)
+    {
+      OverlapStateInfo tmp_info;
+      read(state_info_xml, state_info_path, tmp_info);
+      return OverlapConnectStateEnv::createOverlapStateF<T>(u_, fbc, tmp_info, H);
+    }
+
     // Non templated wrappers
     //! Create a ConnectState with just the gauge fields
     /*! Assumes that approximation bounds are those of the free field
@@ -250,7 +250,7 @@ namespace Chroma {
     createOverlapState(const multi1d<LatticeColorMatrix>& u_, 
 		       const FermBC<LatticeFermion>& fbc) 
     {
-      return OverlapConnectStateEnv::createOverlapState<LatticeFermion>(u_, fbc);
+      return OverlapConnectStateEnv::createOverlapStateA<LatticeFermion>(u_, fbc);
     }
 
     //! Create a ConnectState with just the gauge fields
@@ -261,7 +261,7 @@ namespace Chroma {
     createOverlapState(const multi1d<LatticeColorMatrix>& u_, 
 		       const FermBC< multi1d<LatticeFermion> >& fbc) 
     {
-      return OverlapConnectStateEnv::createOverlapState< multi1d<LatticeFermion> >(u_, fbc);
+      return OverlapConnectStateEnv::createOverlapStateA< multi1d<LatticeFermion> >(u_, fbc);
     }
 
     //! Create a ConnectState with just the gauge fields, and a lower
@@ -274,7 +274,7 @@ namespace Chroma {
 		       const FermBC<LatticeFermion>& fbc,
 		       const Real& approxMin_) 
     {
-      return OverlapConnectStateEnv::createOverlapState<LatticeFermion>(u_, fbc, approxMin_ );
+      return OverlapConnectStateEnv::createOverlapStateB<LatticeFermion>(u_, fbc, approxMin_ );
     }
 
     //! Create a ConnectState with just the gauge fields, and a lower
@@ -287,7 +287,7 @@ namespace Chroma {
 		       const FermBC<multi1d<LatticeFermion> >& fbc,
 		       const Real& approxMin_) 
     {
-      return OverlapConnectStateEnv::createOverlapState< multi1d<LatticeFermion>  >(u_,fbc, approxMin_);
+      return OverlapConnectStateEnv::createOverlapStateB< multi1d<LatticeFermion>  >(u_,fbc, approxMin_);
     }
 
     //! Create a connect State with just approximation range bounds
@@ -297,7 +297,7 @@ namespace Chroma {
 		       const Real& approxMin_,
 		       const Real& approxMax_)
     {
-      return OverlapConnectStateEnv::createOverlapState< LatticeFermion >(u_,fbc,approxMin_, approxMax_);
+      return OverlapConnectStateEnv::createOverlapStateC< LatticeFermion >(u_,fbc,approxMin_, approxMax_);
     }
 
     //! Create a connect State with just approximation range bounds
@@ -307,7 +307,7 @@ namespace Chroma {
 		       const Real& approxMin_,
 		       const Real& approxMax_) 
     {
-      return OverlapConnectStateEnv::createOverlapState<  multi1d<LatticeFermion> >(u_,fbc,approxMin_, approxMax_);
+      return OverlapConnectStateEnv::createOverlapStateC<  multi1d<LatticeFermion> >(u_,fbc,approxMin_, approxMax_);
     }
 
     //! Create OverlapConnectState with eigenvalues/vectors
@@ -318,7 +318,7 @@ namespace Chroma {
 		       const multi1d<LatticeFermion>& evecs_lo_,
 		       const Real& lambda_hi_) 
     {
-      return OverlapConnectStateEnv::createOverlapState< LatticeFermion >(u_, fbc, lambda_lo_, evecs_lo_, lambda_hi_);
+      return OverlapConnectStateEnv::createOverlapStateD< LatticeFermion >(u_, fbc, lambda_lo_, evecs_lo_, lambda_hi_);
     }
 
     //! Create OverlapConnectState with eigenvalues/vectors
@@ -329,11 +329,11 @@ namespace Chroma {
 		       const multi1d<LatticeFermion>& evecs_lo_,
 		       const Real& lambda_hi_) 
     {
-      return OverlapConnectStateEnv::createOverlapState< multi1d<LatticeFermion>  >(u_, fbc, lambda_lo_, evecs_lo_, lambda_hi_);
+      return OverlapConnectStateEnv::createOverlapStateD< multi1d<LatticeFermion>  >(u_, fbc, lambda_lo_, evecs_lo_, lambda_hi_);
     }
 
 
-#if 0
+#if 1
     //! Create a ConnectState out of XML
     /*! Needs the auxiliary fermion action linear operator 
         passed just in case it needs to check eigenvalues/vectors.
@@ -346,13 +346,13 @@ namespace Chroma {
 		       const string& state_info_path,
 		       const LinearOperator<LatticeFermion>& H)
     {
-      return OverlapConnectStateEnv::createOverlapState< LatticeFermion >(u_, fbc, state_info_xml, 
-									  state_info_path, H);
+      return OverlapConnectStateEnv::createOverlapStateE< LatticeFermion >(u_, fbc, state_info_xml, 
+									   state_info_path, H);
     }
 #endif
 
 
-#if 0
+#if 1
     //! Create a ConnectState out of XML
     /*! Needs the auxiliary fermion action linear operator 
         passed just in case it needs to check eigenvalues/vectors.
@@ -365,7 +365,7 @@ namespace Chroma {
 		       const string& state_info_path,
 		       const LinearOperator<LatticeFermion>& H)
     {
-      return OverlapConnectStateEnv::createOverlapState< multi1d< LatticeFermion > >(u_, fbc, state_info_xml, state_info_path, H);
+      return OverlapConnectStateEnv::createOverlapStateE< multi1d< LatticeFermion > >(u_, fbc, state_info_xml, state_info_path, H);
     }
 #endif
 
@@ -381,7 +381,7 @@ namespace Chroma {
 		       const OverlapStateInfo& state_info,
 		       const LinearOperator<LatticeFermion>& H) 
     {
-      return OverlapConnectStateEnv::createOverlapState< LatticeFermion >(u_, fbc, state_info, H);
+      return OverlapConnectStateEnv::createOverlapStateF<LatticeFermion>(u_, fbc, state_info, H);
     }
 
     //! Create from OverlapStateInfo Structure
@@ -395,7 +395,7 @@ namespace Chroma {
 		       const OverlapStateInfo& state_info,
 		       const LinearOperator<LatticeFermion>& H) 
     {
-      return OverlapConnectStateEnv::createOverlapState< multi1d<LatticeFermion> >(u_, fbc, state_info, H);
+      return OverlapConnectStateEnv::createOverlapStateF< multi1d<LatticeFermion> >(u_, fbc, state_info, H);
     }
 
   }; // namespace OverlapConnectStateEnv
