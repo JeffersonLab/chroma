@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: wallformfac_rhopi.pl,v 1.1 2004-06-24 07:04:16 edwards Exp $
+# $Id: wallformfac_rhopi.pl,v 1.2 2004-06-24 07:21:53 edwards Exp $
 #
 # Usage
 #   wallformfac_rhopi.pl
@@ -248,7 +248,7 @@ foreach $h ('RHO_PI')
     # Loop over projection directions
     foreach $k (0 .. 2)
     {
-      $sg = $Vector[$k];
+      $gk = $Vector[$k];
 
       # Loop over spatial directions
       foreach $j (0 .. 2)
@@ -283,7 +283,14 @@ foreach $h ('RHO_PI')
 
 		@cp_i = &canonical_momenta(*p_i);
 
-		print "q=[$q[0],$q[1],$q[2]], qsq = $qsq,  p_i=[$p_i[0],$p_i[1],$p_i[2]], p_i_sq = $p_i_sq, p_f=[$p_f[0],$p_f[1],$p_f[2]]";
+                printf "\nTEST: s=$s j=$j k=$k l=$l, proj=$proj g=$g, q=[$qx,$qy,$qz] qsq_int=$qsq_int\n";
+
+
+                if ($p_i[$l] == 0) {next;}
+
+                printf "\nNEW: s=$s j=$j k=$k l=$l, proj=$proj g=$g\n";
+
+                print "q=[$q[0],$q[1],$q[2]], qsq = $qsq,  p_i=[$p_i[0],$p_i[1],$p_i[2]], p_i_sq = $p_i_sq, p_f=[$p_f[0],$p_f[1],$p_f[2]]";
 
 		printf "Looking for file %s\n","${nam}_cur3ptfn_${h}_f0_${s}_p0_snk15_g${g}_src${gk}_qx$q[0]_qy$q[1]_qz$q[2]";
 		if (! -f "${nam}_cur3ptfn_${h}_f0_${s}_p0_snk15_g${g}_src${gk}_qx$q[0]_qy$q[1]_qz$q[2]") {next;}
