@@ -1,12 +1,17 @@
-
+//  $Id: displacement.cc,v 1.3 2004-01-23 22:18:26 edwards Exp $
+/*! \file
+ *  \brief Parallel transport a lattice field
+ */
 
 #include "chromabase.h"
 #include "meas/smear/displacement.h"
 
 using namespace QDP;
 
-//! apply a displacement operator to a lattice field
+//! Apply a displacement operator to a lattice field
 /*!
+ * \ingroup smear
+ *
  * Arguments:
  *
  *  \param u        gauge field ( Read )
@@ -15,7 +20,7 @@ using namespace QDP;
  *  \param dir      direction of displacement ( Read )
  *
  *
- * Discription:
+ * Description:
  *
  *  Suppose q(x) is a quark field.
  *  Displacement operator D_j^{(p)} moves quark field 
@@ -35,24 +40,19 @@ void displacement(const multi1d<LatticeColorMatrix>& u,
 		  T& chi, 
 		  int length, int dir)
 {
-  // Initial ferm field
-  T psi = chi;
-
   if (length > 0)
     for(int n = 0; n < length; ++n)
       {
-	T tmp = shift(psi, FORWARD, dir);
-	psi = u[dir] * tmp;
+	T tmp = shift(chi, FORWARD, dir);
+	chi = u[dir] * tmp;
       }
 
   else 
-    for(int n = 0; n < -1*length; ++n)
+    for(int n = 0; n < length; ++n)
       {
-	T tmp = shift(psi, BACKWARD, dir);
-	psi = u[dir] * tmp;
+	T tmp = shift(adj(u[dir])*chi, BACKWARD, dir);
+	chi = tmp;
       }
-
-
 }
 
 
