@@ -1,4 +1,4 @@
-// $Id: invcg2.cc,v 1.10 2004-08-10 13:21:28 bjoo Exp $
+// $Id: invcg2.cc,v 1.11 2004-11-12 18:54:57 mcneile Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -172,6 +172,18 @@ template<>
 void InvCG2(const LinearOperator<LatticeFermion>& M,
 	    const LatticeFermion& chi,
 	    LatticeFermion& psi,
+	    const Real& RsdCG, 
+	    int MaxCG, 
+	    int& n_count)
+{
+  InvCG2_a(M, chi, psi, RsdCG, MaxCG, n_count);
+}
+
+
+
+void InvCG2(const LinearOperator<LatticeStaggeredFermion>& M,
+	    const LatticeStaggeredFermion& chi,
+	    LatticeStaggeredFermion& psi,
 	    const Real& RsdCG, 
 	    int MaxCG, 
 	    int& n_count)
