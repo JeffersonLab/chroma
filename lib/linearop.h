@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linearop.h,v 1.5 2004-12-09 03:59:53 edwards Exp $
+// $Id: linearop.h,v 1.6 2004-12-10 00:15:13 edwards Exp $
 
 /*! @file
  * @brief Linear Operators
@@ -149,6 +149,22 @@ namespace Chroma
    *
    *  M'   =  L^-1 * M * U^-1
    *
+   * where
+   *
+   *           [      1              0        ]
+   *           [       E,E            E,O     ]
+   *  L^(-1) = [                              ]
+   *           [   - D     A^(-1)    1        ]
+   *           [      O,E   E,E        O,O    ]
+   *
+   * and
+   *
+   *           [      A^(-1)       - A^(-1) D       ]
+   *           [       E,E            E,E    E,O    ]
+   *  U^(-1) = [                                    ]
+   *           [      0                1            ]
+   *           [       O,E              O,O         ]
+   *
    * Resulting in a new  M
    *
    *      [      1                    0                      ]
@@ -272,6 +288,22 @@ namespace Chroma
    * The preconditioned matrix is formed from
    *
    *  M'   =  L^-1 * M * U^-1
+   *
+   * where
+   *
+   *           [      1              0        ]
+   *           [       E,E            E,O     ]
+   *  L^(-1) = [                              ]
+   *           [   - D     A^(-1)    1        ]
+   *           [      O,E   E,E        O,O    ]
+   *
+   * and
+   *
+   *           [      A^(-1)       - A^(-1) D       ]
+   *           [       E,E            E,E    E,O    ]
+   *  U^(-1) = [                                    ]
+   *           [      0                1            ]
+   *           [       O,E              O,O         ]
    *
    * Resulting in a new  M
    *
