@@ -1,4 +1,4 @@
-// $Id: t_propagator_s.cc,v 1.19 2004-10-30 13:41:21 mcneile Exp $
+// $Id: t_propagator_s.cc,v 1.20 2004-11-06 14:21:04 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -338,7 +338,7 @@ int main(int argc, char **argv)
   xml_out.flush();
 
   // Create a fermion BC. Note, the handle is on an ABSTRACT type.
-  Handle< FermBC<LatticeFermion> >  fbc(new SimpleFermBC<LatticeFermion>(input.param.boundary));
+  Handle< FermBC<LatticeStaggeredFermion> >  fbc(new SimpleFermBC<LatticeStaggeredFermion>(input.param.boundary));
 
   //
   // Initialize fermion action
@@ -350,8 +350,8 @@ int main(int argc, char **argv)
   // Use S_f.createState so that S_f can pass in u0
 
   Handle<const ConnectState > state(S_f.createState(u));
-  Handle<const EvenOddLinearOperator<LatticeFermion> > D_asqtad(S_f.linOp(state));
-  Handle<const LinearOperator<LatticeFermion> > MdagM_asqtad(S_f.lMdagM(state));
+  Handle<const EvenOddLinearOperator<LatticeStaggeredFermion> > D_asqtad(S_f.linOp(state));
+  Handle<const LinearOperator<LatticeStaggeredFermion> > MdagM_asqtad(S_f.lMdagM(state));
 
   //
   // Loop over the source color, creating the source
@@ -365,7 +365,7 @@ int main(int argc, char **argv)
   int n_count;
   int t_length = input.param.nrow[3];
 
-  LatticeFermion q_source, psi;
+  LatticeStaggeredFermion q_source, psi;
   multi1d<LatticeStaggeredPropagator> stag_prop(8);
   multi2d<Real> pi_corr(16, input.param.nrow[3]);
   multi2d<Real> sc_corr(16, input.param.nrow[3]);
