@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lib.h,v 1.6 2004-08-10 13:27:37 bjoo Exp $
+// $Id: lib.h,v 1.7 2005-01-12 13:57:09 bjoo Exp $
 
 /*! \file
  * \brief Chroma Lattice Field Theory library
@@ -15,6 +15,8 @@
 
 #ifndef __lib_h__
 #define __lib_h__
+
+#include "init/chroma_init.h"
 
 #include "fermact.h"
 #include "fermbc.h"

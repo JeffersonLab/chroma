@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.223 2005-01-12 12:44:41 bjoo Exp $
+# $Id: Makefile.am,v 1.224 2005-01-12 13:57:09 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -56,6 +56,7 @@ nobase_include_HEADERS = \
 	actions/gauge/plaq_gaugeact.h \
 	actions/gauge/rect_gaugeact.h \
 	actions/gauge/pg_gaugeact.h \
+	init/chroma_init.h \
 	io/io.h \
 	io/xmllog_io.h \
 	io/enum_io/enum_io.h \
@@ -325,6 +326,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/qprop/prec_fermact_qprop.cc \
 	actions/ferm/qprop/prec_fermact_qprop_array.cc \
 	actions/ferm/qprop/staggered_qprop.cc \
+	init/chroma_init.cc \
 	io/barcomp_io.cc io/eigen_io.cc io/enum_io/enum_cfgtype_io.cc \
 	io/enum_io/enum_coeffs_io.cc io/enum_io/enum_eigenvectype_io.cc \
 	io/enum_io/enum_fermtype_io.cc \
