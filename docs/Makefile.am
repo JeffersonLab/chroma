@@ -1,9 +1,3 @@
-#
-# VPATH to the documentation sources and the topdirectory
-#
-VPATH  =@top_srcdir@
-VPATH +=@top_srcdir@/docs
-
 ###########################################################
 # Autoconf substitutions
 ###########################################################
