@@ -1,4 +1,4 @@
-// $Id: kyuqprop_io.cc,v 1.7 2004-05-25 16:19:35 edwards Exp $
+// $Id: kyuqprop_io.cc,v 1.8 2004-05-25 21:16:57 edwards Exp $
 /*!
  * @file
  * @brief  Read/write a Kentucky quark propagator
@@ -8,6 +8,7 @@
 #include "io/kyuqprop_io.h"
 #include "util/ferm/transf.h"
 #include "util/ferm/paulitodr.h"
+#include "util/ft/sftmom.h"
 
 using namespace QDP;
 
@@ -108,5 +109,61 @@ void readKYUQprop(LatticePropagator& q, const string& file)
   // And finally...
   q = U * q_old * adj(U);   // note, adj(U) = -U
   
+
+#if 1
+  {
+    // HACK - compute rho correlator like thingy
+    ComplexD  i   = cmplx(RealD(0), RealD(1));
+    ComplexD mi   = -i;
+    ComplexD  one = cmplx(RealD(1), RealD(0));
+
+    SpinMatrixD gamma_1 = zero;
+    pokeSpin(gamma_1, one, 0, 3);
+    pokeSpin(gamma_1, one, 1, 2);
+    pokeSpin(gamma_1, one, 2, 1);
+    pokeSpin(gamma_1, one, 3, 0);
+
+    SpinMatrixD gamma_5 = zero;
+    pokeSpin(gamma_5, mi, 0, 2);
+    pokeSpin(gamma_5, mi, 1, 3);
+    pokeSpin(gamma_5,  i, 2, 0);
+    pokeSpin(gamma_5,  i, 3, 1);
+
+ 
+    LatticeComplex ps_rho = trace(adj(gamma_5 * q_old * gamma_5) * gamma_1 * q_old * gamma_1);
+
+    LatticeComplex dr_rho = trace(adj(Gamma(15) * q * Gamma(15)) * Gamma(1) * q * Gamma(1));
+
+    QDPIO::cout << "readKYUQprop: norm2(ps_rho) = " << RealD(norm2(ps_rho)) << endl;
+    QDPIO::cout << "readKYUQprop: norm2(dr_rho) = " << RealD(norm2(dr_rho)) << endl;
+    QDPIO::cout << "readKYUQprop: norm2(ps_rho - dr_rho) = " << RealD(norm2(ps_rho-dr_rho)) << endl;
+    QDPIO::cout << "readKYUQprop: norm2(ps_rho + dr_rho) = " << RealD(norm2(ps_rho+dr_rho)) << endl;
+
+#if 1
+    {
+      // Keep a copy of the phases with NO momenta
+      int j_decay = Nd-1;
+      SftMom phases(0, true, j_decay);
+
+      multi1d<DComplex> ps_hsum = sumMulti(ps_rho, phases.getSet());
+      multi1d<DComplex> dr_hsum = sumMulti(dr_rho, phases.getSet());
+
+      // Initial group
+      XMLFileWriter xml_out("kyuqprop.xml");
+
+      push(xml_out, "kyuqprop");
+      write(xml_out, "norm_diff", RealD(norm2(ps_rho-dr_rho)));
+      write(xml_out, "ps_hsum", ps_hsum);
+      write(xml_out, "dr_hsum", ps_hsum);
+      pop(xml_out);
+      
+      xml_out.close();
+    }
+#endif
+
+  }
+#endif
+
+
   END_CODE("readKYUQprop");
 }
