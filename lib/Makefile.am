@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.163 2004-09-07 15:53:42 bjoo Exp $
+# $Id: Makefile.am,v 1.164 2004-09-08 02:44:34 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -54,7 +54,8 @@ nobase_include_HEADERS = \
 	chroma_config.h chroma.h \
 	chromabase.h chromainc.h common_declarations.h fermact.h \
 	fermbc.h gaugeact.h gaugebc.h handle.h invtype.h lib.h \
-	linearop.h primitives.h state.h \
+	linearop.h objfactory.h objfunctor.h primitives.h \
+	singleton.h state.h typeinfo.h typelist.h typemanip.h typetraits.h \
 	actions/actions.h actions/boson/boson.h \
 	actions/boson/operator/klein_gord.h \
 	actions/gauge/gauge.h \
@@ -83,7 +84,7 @@ nobase_include_HEADERS = \
 	actions/ferm/linop/lmdagm.h actions/ferm/linop/lopscl.h \
 	actions/ferm/linop/partrat.h actions/ferm/qprop/qprop.h \
 	actions/gauge/gauge.h \
-	io/io.h io/eigen_io.h io/fermact_paramio.h \
+	io/io.h io/eigen_io.h \
 	io/gauge_io.h io/kyugauge_io.h  \
         io/milc_io.h io/param_io.h io/qprop_io.h io/readmilc.h \
 	io/readszin.h io/szin_io.h io/writemilc.h io/writeszin.h \
@@ -190,15 +191,11 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/unprec_parwilson_linop_w.h \
 	actions/ferm/linop/prec_contfrac_linop_array_w.h \
 	actions/ferm/qprop/qprop_w.h \
-	actions/ferm/qprop/dwf_quarkprop4_w.h \
-	actions/ferm/qprop/quarkprop4_w.h \
-	actions/ferm/qprop/quarkprop4_multi_w.h \
 	actions/ferm/qprop/unprec_qprop_w.h \
 	io/io_w.h io/barcomp_io.h io/kyuqprop_io.h \
         io/readszinferm_w.h io/readszinqprop_w.h \
 	io/writeszinqprop_w.h \
-        io/overlap_state_info.h io/zolotarev4d_fermact_paramio_w.h \
-	io/zolotarev5d_fermact_paramio_w.h \
+        io/overlap_state_info.h  \
 	meas/eig/eig_w.h meas/eig/ischiral_w.h \
 	meas/hadron/barcomp_w.h \
 	meas/hadron/barseqsrc_w.h \
@@ -287,7 +284,7 @@ libchroma_a_SOURCES = gauge_startup.cc gaugebc_utils.cc gaugeact_utils.cc \
 	       qprop_io.cc eigen_io.cc stoch_var.cc \
 	       z2_src.cc gauge_io.cc milc_io.cc readmilc.cc writemilc.cc \
                axgauge.cc coulgauge.cc grelax.cc polar_dec.cc rot_colvec.cc \
-	       transf.cc param_io.cc fermact_paramio.cc  \
+	       transf.cc param_io.cc  \
 	       gramschm.cc \
 	       gramschm_array.cc ritz.cc ritz_array.cc sn_jacob.cc \
 	       sn_jacob_array.cc eig_spec.cc eig_spec_array.cc \
@@ -299,7 +296,7 @@ libchroma_a_SOURCES = gauge_startup.cc gaugebc_utils.cc gaugeact_utils.cc \
                su3over.cc su3hb.cc \
 	       bc_io.cc gaugebc_io.cc gaugeact_io.cc wilson_gaugeact_io.cc \
 	       mc_io.cc md_io.cc pg_hmc_io.cc
-	
+
 
 #
 # Object files to add if building the Wilson Builds...
@@ -312,8 +309,7 @@ libchroma_a_SOURCES += baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
               curcor2_w.cc lwldslash_w.cc formfac_w.cc \
               mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
               barcomp_io.cc barcomp_w.cc walfil_w.cc \
-              overlap_state_info.cc zolotarev4d_fermact_paramio_w.cc \
-	      zolotarev5d_fermact_paramio_w.cc \
+              overlap_state_info.cc \
               fermact_qprop.cc prec_fermact_qprop.cc \
               unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
               prec_wilson_fermact_w.cc prec_wilson_linop_w.cc \
@@ -336,19 +332,21 @@ libchroma_a_SOURCES += baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
               overlapbu_linop_w.cc \
               p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc \
 	      zolotarev_coeffs.cc overlap_fermact_base_w.cc lovlapms_w.cc  \
-	      zolotarev4d_fermact_w.cc ischiral_w.cc lovddag_w.cc \
+	      ischiral_w.cc lovddag_w.cc \
 	      lovlap_double_pass_w.cc lovddag_double_pass_w.cc \
 	      lg5eps_w.cc lg5eps_double_pass_w.cc \
-	      zolotarev5d_fermact_array_w.cc zolotarev5d_linop_array_w.cc \
-	      zolotarev5d_nonhermop_array_w.cc  \
-	      prec_contfrac_linop_array_w.cc wall_qprop_w.cc \
+	      zolotarev5d_linop_array_w.cc \
+	      zolotarev5d_nonhermop_array_w.cc wall_qprop_w.cc \
+	      prec_contfrac_linop_array_w.cc \
               wallff_w.cc wallrhoff_w.cc wallrhopiff_w.cc \
               wallpionff_w.cc wallnuclff_w.cc \
               walldeltaff_w.cc walldeltapff_w.cc \
 	      inv_borici_w.cc \
 	      ferm_refresh.cc mom_refresh.cc global_metropolis_accrej.cc
 
-# zolotarev4d_linop_w.cc 
+# These need to be reworked for new instantiation 
+#	zolotarev4d_fermact_w.cc 
+#	zolotarev5d_fermact_array_w.cc 
 
 # Deprecated
 #             unprec_dwf_fermact_w.cc unprec_dwf_linop_w.cc
