@@ -1,5 +1,5 @@
 //
-// $Id: qprop.h,v 1.4 2004-01-12 18:09:29 bjoo Exp $
+// $Id: qprop_w.h,v 1.1 2004-01-12 18:09:29 bjoo Exp $
 
 /*! \file
  * \brief Quark propagator solution routines
@@ -13,12 +13,10 @@
  * Routines for computing a quark propagator with various fermion actions
  */
 
-#ifndef __qprop_h__
-#define __qprop_h__
+#ifndef __qprop_w_h__
+#define __qprop_w_h__
 
-#ifdef CHROMA_BUILD_WILSON
-#include "qprop_w.h"
-#elif CHROMA_BUILD_STAGGERED
-#endif
-
+#include "quarkprop4_w.h"
+#include "dwf_quarkprop4_w.h"
+#include "quarkprop4_multi_w.h"
 #endif

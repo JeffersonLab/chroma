@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.127 2004-01-12 14:54:08 bjoo Exp $
+# $Id: Makefile.in,v 1.128 2004-01-12 18:09:29 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -76,6 +76,7 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/unprec_parwilson_linop_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/qprop/dwf_quarkprop4_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/qprop/quarkprop4_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/qprop/quarkprop4_multi_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/qprop/unprec_qprop_w.h \
 @BUILD_WILSON_LIBS_TRUE@	io/io_w.h io/readszinferm_w.h io/readszinqprop_w.h \
 @BUILD_WILSON_LIBS_TRUE@	io/writeszinqprop_w.h \
@@ -124,7 +125,7 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@              prec_dwf_fermact_base_w.cc prec_dwf_fermact_qprop_array_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              prec_dwf_fermact_array_w.cc prec_dwf_linop_array_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              readszinqprop_w.cc readszinferm_w.cc writeszinqprop_w.cc \
-@BUILD_WILSON_LIBS_TRUE@	      dwf_quarkprop4_w.cc quarkprop4_w.cc \
+@BUILD_WILSON_LIBS_TRUE@	      dwf_quarkprop4_w.cc quarkprop4_w.cc quarkprop4_multi_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              overlapbu_linop_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc \
 @BUILD_WILSON_LIBS_TRUE@	      zolotarev_coeffs.cc overlap_fermact_base_w.cc lovlapms_w.cc  \
@@ -346,9 +347,10 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	prec_dwf_fermact_base_w.cc prec_dwf_fermact_qprop_array_w.cc \
 	prec_dwf_fermact_array_w.cc prec_dwf_linop_array_w.cc \
 	readszinqprop_w.cc readszinferm_w.cc writeszinqprop_w.cc \
-	dwf_quarkprop4_w.cc quarkprop4_w.cc overlapbu_linop_w.cc \
-	p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc \
-	zolotarev_coeffs.cc overlap_fermact_base_w.cc lovlapms_w.cc \
+	dwf_quarkprop4_w.cc quarkprop4_w.cc quarkprop4_multi_w.cc \
+	overlapbu_linop_w.cc p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc \
+	BuildingBlocks_w.cc zolotarev_coeffs.cc \
+	overlap_fermact_base_w.cc lovlapms_w.cc \
 	zolotarev4d_fermact_w.cc ischiral_w.cc lovddag_w.cc \
 	lwldslash_w_sse.cc mesphas_s.cc mesphas_follana_s.cc \
 	pions_follana_s.cc follana_io_s.cc walfil_s.cc \
@@ -398,6 +400,7 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 @BUILD_WILSON_LIBS_TRUE@	writeszinqprop_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	dwf_quarkprop4_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	quarkprop4_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	quarkprop4_multi_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	overlapbu_linop_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	p_src_w.$(OBJEXT) d_src_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	D_j_w.$(OBJEXT) DjDk_w.$(OBJEXT) \
@@ -489,8 +492,10 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/prec_parwilson_linop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/prec_wilson_fermact_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/prec_wilson_linop_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/qprop_io.Po ./$(DEPDIR)/quarkprop4_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/readmilc.Po ./$(DEPDIR)/readszin.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/qprop_io.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/quarkprop4_multi_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/quarkprop4_w.Po ./$(DEPDIR)/readmilc.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/readszin.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/readszinferm_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/readszinqprop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/reunit.Po ./$(DEPDIR)/rgauge.Po \
@@ -650,6 +655,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_wilson_fermact_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_wilson_linop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qprop_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quarkprop4_multi_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quarkprop4_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readmilc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readszin.Po@am__quote@

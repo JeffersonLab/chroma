@@ -1,4 +1,4 @@
-// $Id: zolotarev4d_fermact_w.cc,v 1.11 2004-01-08 11:53:08 bjoo Exp $
+// $Id: zolotarev4d_fermact_w.cc,v 1.12 2004-01-12 18:09:29 bjoo Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -201,6 +201,14 @@ Zolotarev4DFermAct::init(int& numroot,
   }
 
   writer << my_writer;
+
+  // Free the arrays allocate by Tony's zolo
+  free( rdata->a );
+  free( rdata->ap );
+  free( rdata->alpha );
+  free( rdata->beta );
+  free( rdata );
+
 }
 
 //! Produce a linear operator for this action
@@ -269,7 +277,6 @@ Zolotarev4DFermAct::lMdagM(Handle<const ConnectState> state_, const Chirality& i
 
   // If chirality is none, return traditional MdagM
   if ( ichiral == CH_NONE ) {
-    cout << "Returning Normal MdagM" << endl << flush;
     return lMdagM(state_);
   }
   else { 
@@ -305,9 +312,8 @@ Zolotarev4DFermAct::lMdagM(Handle<const ConnectState> state_, const Chirality& i
     init(numroot, coeffP, resP, rootQ, NEig, EigValFunc, state);
 
   
-    /* Finally construct and pack the operator */
-    /* This is the operator of the form (1/2)*[(1+mu) + (1-mu)*gamma_5*eps] */
-    cout << "Returning lovddag" << endl << flush;
+    // Finally construct and pack the operator 
+    // This is the operator of the form (1/2)*[(1+mu) + (1-mu)*gamma_5*eps]
     return new lovddag(*Mact, state_, m_q,
 		       numroot, coeffP, resP, rootQ, 
 		       NEig, EigValFunc, state.getEigVec(),
@@ -339,12 +345,12 @@ const OverlapConnectState<LatticeFermion>*
 Zolotarev4DFermAct::createState(const multi1d<LatticeColorMatrix>& u_,
 				  const Real& approxMin_) const 
 {
-  /* if ( ! ( approxMin_ > Real(0) )) { 
+  if ( toBool( approxMin_ < Real(0) )) { 
     ostringstream error_str;
     error_str << "Zolotarev4DFermAct: approxMin_ has to be positive" << endl;
     throw error_str.str();
   }
-  */
+ 
 
   // First put in the BC
   multi1d<LatticeColorMatrix> u_tmp = u_;
@@ -362,17 +368,17 @@ Zolotarev4DFermAct::createState(const multi1d<LatticeColorMatrix>& u_,
 {
   ostringstream error_str;
   
-  /*
-  if ( !(approxMin_ > 0 )) { 
+ 
+  if ( toBool(approxMin_ < 0 )) { 
     error_str << "Zolotarev4DFermAct: approxMin_ has to be positive" << endl;
     throw error_str.str();
   }
 
-  if ( ! (approxMax_ > approxMin_) ) { 
+  if ( toBool(approxMax_ < approxMin_) ) { 
     error_str << "Zolotarev4DFermAct: approxMax_ has to be larger than approxMin_" << endl;
     throw error_str.str();
   }
-  */
+ 
 
   // First put in the BC
   multi1d<LatticeColorMatrix> u_tmp = u_;

@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.89 2004-01-12 14:54:07 bjoo Exp $
+# $Id: Makefile.am,v 1.90 2004-01-12 18:09:29 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -129,6 +129,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/unprec_parwilson_linop_w.h \
 	actions/ferm/qprop/dwf_quarkprop4_w.h \
 	actions/ferm/qprop/quarkprop4_w.h \
+	actions/ferm/qprop/quarkprop4_multi_w.h \
 	actions/ferm/qprop/unprec_qprop_w.h \
 	io/io_w.h io/readszinferm_w.h io/readszinqprop_w.h \
 	io/writeszinqprop_w.h \
@@ -220,7 +221,7 @@ libchroma_a_SOURCES += baryon_w.cc mesons_w.cc curcor2_w.cc lwldslash_w.cc formf
               prec_dwf_fermact_base_w.cc prec_dwf_fermact_qprop_array_w.cc \
               prec_dwf_fermact_array_w.cc prec_dwf_linop_array_w.cc \
               readszinqprop_w.cc readszinferm_w.cc writeszinqprop_w.cc \
-	      dwf_quarkprop4_w.cc quarkprop4_w.cc \
+	      dwf_quarkprop4_w.cc quarkprop4_w.cc quarkprop4_multi_w.cc \
               overlapbu_linop_w.cc \
               p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc \
 	      zolotarev_coeffs.cc overlap_fermact_base_w.cc lovlapms_w.cc  \

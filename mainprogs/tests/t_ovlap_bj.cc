@@ -1,4 +1,4 @@
-// $Id: t_ovlap_bj.cc,v 1.15 2004-01-08 17:11:53 bjoo Exp $
+// $Id: t_ovlap_bj.cc,v 1.16 2004-01-12 18:09:30 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -731,19 +731,68 @@ int main(int argc, char **argv)
   shifts[1] = 0.02;
   shifts[2] = 0.03;
 
+  int multi_n_count=0;
 
-  gaussian(source);
-  multi1d<Real> RsdCGMulti(3);
-  RsdCGMulti[0] = params.rsd_cg;
-  RsdCGMulti[1] = params.rsd_cg;
-  RsdCGMulti[2] = params.rsd_cg;
+  // Source propagator
+  LatticePropagator multi_q_src;
 
-  multi1d<LatticeFermion> psi_multi(3);
-  int n_count=0;
+  // Solution propagator
+  multi1d<LatticePropagator> multi_q_sol(3);
+
+  for(int spin=0; spin < Ns; spin++) { 
+    for(int col=0; col < Nc; col++) { 
+
+      // Put a point source in q_src
+      s1 = zero;
+      srcfil(s1, coord, col, spin);
+      FermToProp(s1, multi_q_src, col, spin);
+      
+      // Zero out q_sol
+      s1 = zero;
+      for(int mass=0; mass < 3; mass++) { 
+	FermToProp(s1, multi_q_sol[mass], col, spin);
+      }
+    }
+  }
+
+
+  // Do the solves with multi mass.
+  //! N order Zolo approx, with wilson action.
+  Zolotarev4DFermAct   S_multi(fbc, S_w, 
+			       Real(0),
+			       params.approx_order, 
+			       params.rsd_cg_inner,
+			       params.max_cg_inner,
+			       my_writer);
   
-  MInvCG(*MdagM, source, psi_multi, shifts, RsdCGMulti, params.max_cg, n_count);
-  
 
+
+
+  int qprop_ncount = 0;
+  
+  // Do this. The function came for free as it was written for
+  // all wilson type fermacts.
+  multiQuarkProp4(multi_q_sol, xml_out, multi_q_src, S_multi, 
+		  connect_state, CG_INVERTER,
+		  shifts, params.rsd_cg, params.max_cg,  qprop_ncount);
+
+
+  // Get the pion
+  // Funky new way to get the sum and phases
+  SftMom phases(0,true,3);
+  
+  for(int i = 0; i < shifts.size(); i++) { 
+    LatticeComplex corr_fn = trace(adj(multi_q_sol[i])*multi_q_sol[i]);
+    
+
+    multi2d<DComplex> hsum = phases.sft(corr_fn);
+    
+    // Check and dump
+    push(xml_out, "pion");
+    Write(xml_out, shifts[i]);
+    Write(xml_out, hsum[0]);
+    pop(xml_out);
+  }
 
   pop(xml_out);
   QDP_finalize();

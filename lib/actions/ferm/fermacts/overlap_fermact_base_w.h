@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: overlap_fermact_base_w.h,v 1.4 2004-01-12 14:54:08 bjoo Exp $
+// $Id: overlap_fermact_base_w.h,v 1.5 2004-01-12 18:09:29 bjoo Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -58,8 +58,8 @@ public:
    *  form   (1/2)[ (1 + m_q ) + (1 - m_q) gamma_5 psi 
    *
    */
-  void qprop(multi1d<LatticeFermion>& psi, 
-	     multi1d<Real>& masses,
+  void multiQprop(multi1d<LatticeFermion>& psi, 
+	     const multi1d<Real>& masses,
 	     Handle<const ConnectState> state,
 	     const LatticeFermion& chi,
 	     enum InvType invType,

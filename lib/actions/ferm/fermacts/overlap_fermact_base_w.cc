@@ -1,4 +1,4 @@
-// $Id: overlap_fermact_base_w.cc,v 1.4 2004-01-12 14:54:08 bjoo Exp $
+// $Id: overlap_fermact_base_w.cc,v 1.5 2004-01-12 18:09:29 bjoo Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -125,15 +125,15 @@ OverlapFermActBase::qprop(LatticeFermion& psi,
 /* psi      -- quark propagators ( Write ) */
 /* ncg_had  -- number of CG iterations ( Modify ) */
 void 
-OverlapFermActBase::qprop(multi1d<LatticeFermion>& psi,
-			  multi1d<Real>& masses,
-			  Handle<const ConnectState> state, 
-			  const LatticeFermion& chi, 
-			  enum InvType invType,
-			  const multi1d<Real>& RsdCG, 
-			  int nsoln,
-			  int MaxCG, 
-			  int& ncg_had) const
+OverlapFermActBase::multiQprop(multi1d<LatticeFermion>& psi,
+			       const multi1d<Real>& masses,
+			       Handle<const ConnectState> state, 
+			       const LatticeFermion& chi, 
+			       enum InvType invType,
+			       const multi1d<Real>& RsdCG, 
+			       int nsoln,
+			       int MaxCG, 
+			       int& ncg_had) const
 
 {
 
@@ -275,7 +275,7 @@ OverlapFermActBase::qprop(multi1d<LatticeFermion>& psi,
       case 1:
       case 2:
 	for(int iset=0; iset < nsets; iset++) {
-	  for(int i; i < n_mass; i++) {
+	  for(int i=0; i < n_mass; i++) {
 	    int j = i+iset*n_mass;
 	    LatticeFermion tmp1;
 	    	    
@@ -342,7 +342,7 @@ OverlapFermActBase::qprop(multi1d<LatticeFermion>& psi,
     }
 
     /* psi <- (D^(-1) - 1) chi */
-    for(i=0; i < n_masses; ++i) {
+    for(i=0; i < n_mass; ++i) {
       
       // Go back to (1/2)( 1 + mu + (1 - mu) normalisation
       ftmp = Real(2) / ( Real(1) - masses[i] );
@@ -350,7 +350,7 @@ OverlapFermActBase::qprop(multi1d<LatticeFermion>& psi,
       
       // Remove conact term
       psi[i] -= chi;
-
+ 
       // overall noramalisation 
       ftmp = Real(1) / ( Real(1) - masses[i] );
       psi[i] *= ftmp;
