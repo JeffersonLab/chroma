@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.150 2004-02-13 21:00:26 edwards Exp $
+# $Id: Makefile.in,v 1.151 2004-02-14 18:45:02 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -40,7 +40,62 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_triplet = @host@
-@BUILD_STAGGERED_LIBS_TRUE@am__append_1 = \
+@BUILD_WILSON_LIBS_TRUE@am__append_1 = \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/fermacts_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/overlap_fermact_base_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/prec_clover_fermact_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/prec_dwf_fermact_array_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/prec_ovdwf_fermact_array_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/prec_dwf_fermact_base_array_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/prec_wilson_fermact_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/prec_parwilson_fermact_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/unprec_clover_fermact_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/unprec_dwf_fermact_array_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/unprec_dwf_fermact_base_array_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/unprec_ovdwf_fermact_array_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/unprec_ovext_fermact_array_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/unprec_wilson_fermact_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/unprec_parwilson_fermact_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/zolotarev4d_fermact_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/zolotarev5d_fermact_array_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/lwldslash_w_sse.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/lgherm_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/zolotarev5d_linop_array_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/dslash_w.h actions/ferm/linop/dwffld_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/linop_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/lmpsim_w.h actions/ferm/linop/lovddag_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/lovlapms_w.h actions/ferm/linop/lwldslash_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/overlapbu_linop_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/prec_dwf_linop_array_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/prec_ovdwf_linop_array_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/prec_wilson_linop_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/prec_parwilson_linop_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/unprec_dwf_linop_array_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/unprec_ovdwf_linop_array_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/unprec_ovext_linop_array_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/unprec_wilson_linop_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/unprec_parwilson_linop_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/qprop/dwf_quarkprop4_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/qprop/quarkprop4_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/qprop/quarkprop4_multi_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/qprop/unprec_qprop_w.h \
+@BUILD_WILSON_LIBS_TRUE@	io/io_w.h io/readszinferm_w.h io/readszinqprop_w.h \
+@BUILD_WILSON_LIBS_TRUE@	io/writeszinqprop_w.h \
+@BUILD_WILSON_LIBS_TRUE@	meas/eig/eig_w.h meas/eig/ischiral_w.h \
+@BUILD_WILSON_LIBS_TRUE@	meas/hadron/barcomp_w.h \
+@BUILD_WILSON_LIBS_TRUE@	meas/hadron/barseqsrc_w.h meas/hadron/baryon_w.h \
+@BUILD_WILSON_LIBS_TRUE@	meas/hadron/BuildingBlocks_w.h meas/hadron/curcor2_w.h \
+@BUILD_WILSON_LIBS_TRUE@	meas/hadron/DjDk_w.h meas/hadron/D_j_w.h meas/hadron/formfac_w.h \
+@BUILD_WILSON_LIBS_TRUE@	meas/hadron/hadron_w.h meas/hadron/hybmeson_w.h \
+@BUILD_WILSON_LIBS_TRUE@	meas/hadron/mesonseqsrc_w.h \
+@BUILD_WILSON_LIBS_TRUE@	meas/hadron/mesons_w.h meas/hadron/seqpiontest_w.h \
+@BUILD_WILSON_LIBS_TRUE@	meas/hadron/loops_w.h meas/hadron/z2_src.h \
+@BUILD_WILSON_LIBS_TRUE@	meas/hadron/walfil_w.h meas/hadron/wall_qprop_w.h \
+@BUILD_WILSON_LIBS_TRUE@	meas/hadron/wallpionff_w.h \
+@BUILD_WILSON_LIBS_TRUE@	meas/smear/sink_smear2_w.h meas/sources/d_src_w.h \
+@BUILD_WILSON_LIBS_TRUE@	meas/sources/p_src_w.h meas/sources/sources_w.h
+
+@BUILD_STAGGERED_LIBS_TRUE@am__append_2 = \
 @BUILD_STAGGERED_LIBS_TRUE@	actions/ferm/fermacts/asqtad_fermact_s.h \
 @BUILD_STAGGERED_LIBS_TRUE@	actions/ferm/fermacts/fermacts_s.h \
 @BUILD_STAGGERED_LIBS_TRUE@	actions/ferm/fermacts/stag_fermact_s.h \
@@ -56,9 +111,37 @@ host_triplet = @host@
 @BUILD_STAGGERED_LIBS_TRUE@	meas/sources/sources_s.h \
 @BUILD_STAGGERED_LIBS_TRUE@	util/gauge/gauge_s.h util/gauge/stag_phases_s.h
 
-@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_2 = -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
-@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_3 = lwldslash_w_sse.cc
-@BUILD_STAGGERED_LIBS_TRUE@am__append_4 = mesphas_s.cc mesphas_follana_s.cc pions_follana_s.cc \
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_3 = -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
+@BUILD_WILSON_LIBS_TRUE@am__append_4 = baryon_w.cc mesons_w.cc hybmeson_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              loops_w.cc z2_src.cc \
+@BUILD_WILSON_LIBS_TRUE@              curcor2_w.cc lwldslash_w.cc formfac_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              sink_smear2_w.cc barcomp_w.cc walfil_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              fermact_qprop.cc prec_fermact_qprop.cc \
+@BUILD_WILSON_LIBS_TRUE@              unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              prec_wilson_fermact_w.cc prec_wilson_linop_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              unprec_parwilson_fermact_w.cc unprec_parwilson_linop_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              prec_parwilson_fermact_w.cc prec_parwilson_linop_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              dwffld_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              fermact_qprop_array.cc prec_fermact_qprop_array.cc \
+@BUILD_WILSON_LIBS_TRUE@              unprec_dwf_fermact_base_w.cc unprec_dwf_fermact_qprop_array_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              unprec_dwf_fermact_array_w.cc unprec_dwf_linop_array_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              unprec_ovdwf_fermact_array_w.cc unprec_ovdwf_linop_array_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              unprec_ovext_fermact_array_w.cc unprec_ovext_linop_array_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              prec_dwf_fermact_base_w.cc prec_dwf_fermact_qprop_array_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              prec_dwf_fermact_array_w.cc prec_dwf_linop_array_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              prec_ovdwf_fermact_array_w.cc prec_ovdwf_linop_array_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              readszinqprop_w.cc readszinferm_w.cc writeszinqprop_w.cc \
+@BUILD_WILSON_LIBS_TRUE@	      dwf_quarkprop4_w.cc quarkprop4_w.cc quarkprop4_multi_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              overlapbu_linop_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc \
+@BUILD_WILSON_LIBS_TRUE@	      zolotarev_coeffs.cc overlap_fermact_base_w.cc lovlapms_w.cc  \
+@BUILD_WILSON_LIBS_TRUE@	      zolotarev4d_fermact_w.cc ischiral_w.cc lovddag_w.cc \
+@BUILD_WILSON_LIBS_TRUE@	      zolotarev5d_fermact_array_w.cc zolotarev5d_linop_array_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              wallpionff_w.cc
+
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_5 = lwldslash_w_sse.cc
+@BUILD_STAGGERED_LIBS_TRUE@am__append_6 = mesphas_s.cc mesphas_follana_s.cc pions_follana_s.cc \
 @BUILD_STAGGERED_LIBS_TRUE@	follana_io_s.cc fermact_qprop.cc walfil_s.cc \
 @BUILD_STAGGERED_LIBS_TRUE@	asqtad_linop_s.cc asq_dsl_s.cc fat7_links_s.cc naik_term_s.cc  \
 @BUILD_STAGGERED_LIBS_TRUE@	asqtad_fermact_s.cc asqtad_mdagm_s.cc staggered_qprop.cc stag_phases_s.cc
@@ -215,7 +298,7 @@ nobase_include_HEADERS = \
 	util/gauge/unit_check.h \
         util/info/info.h util/info/proginfo.h util/info/printgeom.h \
         util/util.h\
-$(am__append_1)
+$(am__append_1) $(am__append_2)
 
 #
 # Include Path
@@ -225,7 +308,7 @@ INCFLAGS = -I$(TOPDIR)/lib
 #
 # Any other compiler flags
 # 
-AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDPXX_CXXFLAGS@ $(am__append_2)
+AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDPXX_CXXFLAGS@ $(am__append_3)
 
 lib_LIBRARIES = libchroma.a
 
@@ -245,7 +328,7 @@ libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	       ritz.cc ritz_array.cc sn_jacob.cc sn_jacob_array.cc \
 	       eig_spec.cc eig_spec_array.cc \
                proginfo.cc printgeom.cc\
-$(am__append_3) $(am__append_4)
+$(am__append_4) $(am__append_5) $(am__append_6)
 subdir = lib
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
 CONFIG_CLEAN_FILES =
@@ -263,13 +346,94 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	coulgauge.cc grelax.cc polar_dec.cc rot_colvec.cc transf.cc \
 	param_io.cc gramschm.cc gramschm_array.cc ritz.cc ritz_array.cc \
 	sn_jacob.cc sn_jacob_array.cc eig_spec.cc eig_spec_array.cc \
-	proginfo.cc printgeom.cc lwldslash_w_sse.cc mesphas_s.cc \
+	proginfo.cc printgeom.cc baryon_w.cc mesons_w.cc hybmeson_w.cc \
+	loops_w.cc z2_src.cc curcor2_w.cc lwldslash_w.cc formfac_w.cc \
+	mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
+	sink_smear2_w.cc barcomp_w.cc walfil_w.cc fermact_qprop.cc \
+	prec_fermact_qprop.cc unprec_wilson_fermact_w.cc \
+	unprec_wilson_linop_w.cc prec_wilson_fermact_w.cc \
+	prec_wilson_linop_w.cc unprec_parwilson_fermact_w.cc \
+	unprec_parwilson_linop_w.cc prec_parwilson_fermact_w.cc \
+	prec_parwilson_linop_w.cc dwffld_w.cc fermact_qprop_array.cc \
+	prec_fermact_qprop_array.cc unprec_dwf_fermact_base_w.cc \
+	unprec_dwf_fermact_qprop_array_w.cc \
+	unprec_dwf_fermact_array_w.cc unprec_dwf_linop_array_w.cc \
+	unprec_ovdwf_fermact_array_w.cc unprec_ovdwf_linop_array_w.cc \
+	unprec_ovext_fermact_array_w.cc unprec_ovext_linop_array_w.cc \
+	prec_dwf_fermact_base_w.cc prec_dwf_fermact_qprop_array_w.cc \
+	prec_dwf_fermact_array_w.cc prec_dwf_linop_array_w.cc \
+	prec_ovdwf_fermact_array_w.cc prec_ovdwf_linop_array_w.cc \
+	readszinqprop_w.cc readszinferm_w.cc writeszinqprop_w.cc \
+	dwf_quarkprop4_w.cc quarkprop4_w.cc quarkprop4_multi_w.cc \
+	overlapbu_linop_w.cc p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc \
+	BuildingBlocks_w.cc zolotarev_coeffs.cc \
+	overlap_fermact_base_w.cc lovlapms_w.cc \
+	zolotarev4d_fermact_w.cc ischiral_w.cc lovddag_w.cc \
+	zolotarev5d_fermact_array_w.cc zolotarev5d_linop_array_w.cc \
+	wallpionff_w.cc lwldslash_w_sse.cc mesphas_s.cc \
 	mesphas_follana_s.cc pions_follana_s.cc follana_io_s.cc \
-	fermact_qprop.cc walfil_s.cc asqtad_linop_s.cc asq_dsl_s.cc \
-	fat7_links_s.cc naik_term_s.cc asqtad_fermact_s.cc \
-	asqtad_mdagm_s.cc staggered_qprop.cc stag_phases_s.cc
-@BUILD_SSE_WILSON_DSLASH_TRUE@am__objects_1 = lwldslash_w_sse.$(OBJEXT)
-@BUILD_STAGGERED_LIBS_TRUE@am__objects_2 = mesphas_s.$(OBJEXT) \
+	walfil_s.cc asqtad_linop_s.cc asq_dsl_s.cc fat7_links_s.cc \
+	naik_term_s.cc asqtad_fermact_s.cc asqtad_mdagm_s.cc \
+	staggered_qprop.cc stag_phases_s.cc
+@BUILD_WILSON_LIBS_TRUE@am__objects_1 = baryon_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	mesons_w.$(OBJEXT) hybmeson_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	loops_w.$(OBJEXT) z2_src.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	curcor2_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	lwldslash_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	formfac_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	mesonseqsrc_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	barseqsrc_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	seqpiontest_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	sink_smear2_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	barcomp_w.$(OBJEXT) walfil_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	fermact_qprop.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	prec_fermact_qprop.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	unprec_wilson_fermact_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	unprec_wilson_linop_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	prec_wilson_fermact_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	prec_wilson_linop_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	unprec_parwilson_fermact_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	unprec_parwilson_linop_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	prec_parwilson_fermact_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	prec_parwilson_linop_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	dwffld_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	fermact_qprop_array.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	prec_fermact_qprop_array.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	unprec_dwf_fermact_base_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	unprec_dwf_fermact_qprop_array_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	unprec_dwf_fermact_array_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	unprec_dwf_linop_array_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	unprec_ovdwf_fermact_array_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	unprec_ovdwf_linop_array_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	unprec_ovext_fermact_array_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	unprec_ovext_linop_array_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	prec_dwf_fermact_base_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	prec_dwf_fermact_qprop_array_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	prec_dwf_fermact_array_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	prec_dwf_linop_array_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	prec_ovdwf_fermact_array_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	prec_ovdwf_linop_array_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	readszinqprop_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	readszinferm_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	writeszinqprop_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	dwf_quarkprop4_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	quarkprop4_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	quarkprop4_multi_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	overlapbu_linop_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	p_src_w.$(OBJEXT) d_src_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	D_j_w.$(OBJEXT) DjDk_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	BuildingBlocks_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	zolotarev_coeffs.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	overlap_fermact_base_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	lovlapms_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	zolotarev4d_fermact_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	ischiral_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	lovddag_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	zolotarev5d_fermact_array_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	zolotarev5d_linop_array_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	wallpionff_w.$(OBJEXT)
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__objects_2 = lwldslash_w_sse.$(OBJEXT)
+@BUILD_STAGGERED_LIBS_TRUE@am__objects_3 = mesphas_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	mesphas_follana_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	pions_follana_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	follana_io_s.$(OBJEXT) \
@@ -300,43 +464,76 @@ am_libchroma_a_OBJECTS = rgauge.$(OBJEXT) taproj.$(OBJEXT) \
 	ritz.$(OBJEXT) ritz_array.$(OBJEXT) sn_jacob.$(OBJEXT) \
 	sn_jacob_array.$(OBJEXT) eig_spec.$(OBJEXT) \
 	eig_spec_array.$(OBJEXT) proginfo.$(OBJEXT) printgeom.$(OBJEXT) \
-	$(am__objects_1) $(am__objects_2)
+	$(am__objects_1) $(am__objects_2) $(am__objects_3)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/ape_smear.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/asq_dsl_s.Po \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/BuildingBlocks_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/D_j_w.Po ./$(DEPDIR)/DjDk_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ape_smear.Po ./$(DEPDIR)/asq_dsl_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/asqtad_fermact_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/asqtad_linop_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/asqtad_mdagm_s.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/axgauge.Po ./$(DEPDIR)/coulgauge.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/displacement.Po ./$(DEPDIR)/eig_spec.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/axgauge.Po ./$(DEPDIR)/barcomp_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/barseqsrc_w.Po ./$(DEPDIR)/baryon_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/coulgauge.Po ./$(DEPDIR)/curcor2_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/d_src_w.Po ./$(DEPDIR)/displacement.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/dwf_quarkprop4_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/dwffld_w.Po ./$(DEPDIR)/eig_spec.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/eig_spec_array.Po ./$(DEPDIR)/expm12.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/fat7_links_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/fermact_qprop.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/fermact_qprop_array.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/follana_io_s.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/fuzz_smear.Po ./$(DEPDIR)/gaus_smear.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/gramschm.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/formfac_w.Po ./$(DEPDIR)/fuzz_smear.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/gaus_smear.Po ./$(DEPDIR)/gramschm.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/gramschm_array.Po ./$(DEPDIR)/grelax.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/hotst.Po ./$(DEPDIR)/hyp_smear.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/invcg1.Po ./$(DEPDIR)/invcg2.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/invcg2_array.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/klein_gord.Po ./$(DEPDIR)/laplacian.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/hotst.Po ./$(DEPDIR)/hybmeson_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/hyp_smear.Po ./$(DEPDIR)/invcg1.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/invcg2.Po ./$(DEPDIR)/invcg2_array.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ischiral_w.Po ./$(DEPDIR)/klein_gord.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/laplacian.Po ./$(DEPDIR)/loops_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/lovddag_w.Po ./$(DEPDIR)/lovlapms_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/lwldslash_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/lwldslash_w_sse.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/mesons_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/mesonseqsrc_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/mesphas_follana_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/mesphas_s.Po ./$(DEPDIR)/mesplq.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/milc_io.Po ./$(DEPDIR)/minvcg.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/naik_term_s.Po ./$(DEPDIR)/param_io.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/naik_term_s.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/overlap_fermact_base_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/overlapbu_linop_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/p_src_w.Po ./$(DEPDIR)/param_io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/pions_follana_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/polar_dec.Po ./$(DEPDIR)/polylp.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/prec_dwf_fermact_array_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/prec_dwf_fermact_base_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/prec_dwf_fermact_qprop_array_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/prec_dwf_linop_array_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/prec_fermact_qprop.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/prec_fermact_qprop_array.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/prec_ovdwf_fermact_array_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/prec_ovdwf_linop_array_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/prec_parwilson_fermact_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/prec_parwilson_linop_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/prec_wilson_fermact_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/prec_wilson_linop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/printgeom.Po ./$(DEPDIR)/proginfo.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/qprop_io.Po ./$(DEPDIR)/readmilc.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/readszin.Po ./$(DEPDIR)/reunit.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/rgauge.Po ./$(DEPDIR)/ritz.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/ritz_array.Po ./$(DEPDIR)/rot_colvec.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/sftmom.Po ./$(DEPDIR)/sn_jacob.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/qprop_io.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/quarkprop4_multi_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/quarkprop4_w.Po ./$(DEPDIR)/readmilc.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/readszin.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/readszinferm_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/readszinqprop_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/reunit.Po ./$(DEPDIR)/rgauge.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ritz.Po ./$(DEPDIR)/ritz_array.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/rot_colvec.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/seqpiontest_w.Po ./$(DEPDIR)/sftmom.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/sink_smear2_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/sn_jacob.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/sn_jacob_array.Po ./$(DEPDIR)/srcfil.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/stag_phases_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/staggered_qprop.Po \
@@ -344,8 +541,27 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/sun_proj.Po ./$(DEPDIR)/sunfill.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/szin_io.Po ./$(DEPDIR)/taproj.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/transf.Po ./$(DEPDIR)/unit_check.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/walfil_s.Po ./$(DEPDIR)/writemilc.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/writeszin.Po
+@AMDEP_TRUE@	./$(DEPDIR)/unprec_dwf_fermact_array_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/unprec_dwf_fermact_base_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/unprec_dwf_fermact_qprop_array_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/unprec_dwf_linop_array_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/unprec_ovdwf_fermact_array_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/unprec_ovdwf_linop_array_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/unprec_ovext_fermact_array_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/unprec_ovext_linop_array_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/unprec_parwilson_fermact_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/unprec_parwilson_linop_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/unprec_wilson_fermact_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/unprec_wilson_linop_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/walfil_s.Po ./$(DEPDIR)/walfil_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/wallpionff_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/writemilc.Po ./$(DEPDIR)/writeszin.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/writeszinqprop_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/z2_src.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/zolotarev4d_fermact_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/zolotarev5d_fermact_array_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/zolotarev5d_linop_array_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/zolotarev_coeffs.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -409,54 +625,95 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BuildingBlocks_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/D_j_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DjDk_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ape_smear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/asq_dsl_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/asqtad_fermact_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/asqtad_linop_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/asqtad_mdagm_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/axgauge.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/barcomp_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/barseqsrc_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/baryon_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/coulgauge.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/curcor2_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/d_src_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/displacement.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dwf_quarkprop4_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dwffld_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eig_spec.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eig_spec_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/expm12.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fat7_links_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fermact_qprop.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fermact_qprop_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/follana_io_s.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/formfac_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuzz_smear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gaus_smear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gramschm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gramschm_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/grelax.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hotst.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hybmeson_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyp_smear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/invcg1.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/invcg2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/invcg2_array.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ischiral_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/klein_gord.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/laplacian.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/loops_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lovddag_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lovlapms_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_w_sse.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesons_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesonseqsrc_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesphas_follana_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesphas_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesplq.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/milc_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minvcg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/naik_term_s.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/overlap_fermact_base_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/overlapbu_linop_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/p_src_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/param_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pions_follana_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/polar_dec.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/polylp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_dwf_fermact_array_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_dwf_fermact_base_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_dwf_fermact_qprop_array_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_dwf_linop_array_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_fermact_qprop.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_fermact_qprop_array.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_ovdwf_fermact_array_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_ovdwf_linop_array_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_parwilson_fermact_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_parwilson_linop_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_wilson_fermact_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_wilson_linop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/printgeom.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/proginfo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qprop_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quarkprop4_multi_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quarkprop4_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readmilc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readszin.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readszinferm_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readszinqprop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/reunit.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rgauge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ritz.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ritz_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rot_colvec.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seqpiontest_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sftmom.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sink_smear2_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sn_jacob.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sn_jacob_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/srcfil.Po@am__quote@
@@ -470,9 +727,29 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/taproj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/transf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unit_check.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_dwf_fermact_array_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_dwf_fermact_base_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_dwf_fermact_qprop_array_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_dwf_linop_array_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_ovdwf_fermact_array_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_ovdwf_linop_array_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_ovext_fermact_array_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_ovext_linop_array_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_parwilson_fermact_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_parwilson_linop_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_wilson_fermact_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_wilson_linop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/walfil_s.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/walfil_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wallpionff_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writemilc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writeszin.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writeszinqprop_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/z2_src.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zolotarev4d_fermact_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zolotarev5d_fermact_array_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zolotarev5d_linop_array_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zolotarev_coeffs.Po@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
