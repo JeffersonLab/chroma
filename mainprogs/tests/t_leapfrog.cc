@@ -40,8 +40,13 @@ bool linkageHack(void)
 
 int main(int argc, char *argv[]) 
 {
+  // Chroma Init stuff -- Open DATA and XMLDAT
+  linkageHack();
+
+  ChromaInitialize(&argc, &argv);
+  
   // Initialise QDP
-  QDP_initialize(&argc, &argv);
+//  QDP_initialize(&argc, &argv);
 
   // Snarf it all
   XMLReader param_in("DATA");
@@ -62,7 +67,8 @@ int main(int argc, char *argv[])
 
 
   // Dump output
-  XMLFileWriter xml_out("./XMLDAT");
+  XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+//  XMLFileWriter xml_out("./XMLDAT");
   push(xml_out, "t_leapfrog");
 
   // Read Parameters
@@ -113,15 +119,24 @@ int main(int argc, char *argv[])
     taproj(p[mu]);
   }
 
+  QDPIO::cout << "create state" << endl;
+
   // Create a field state
   GaugeFieldState gauge_state(p,u);
  
   
+  QDPIO::cout << "exact ham" << endl;
+
   ExactLatColMatHamiltonian& H_exact = dynamic_cast<ExactLatColMatHamiltonian&    >(*H);
   Double KE_old, PE_old;
 
+  QDPIO::cout << "fields" << endl;
+
   // Put some noise into the pseudofermions...
   H_exact.refreshInternalFields(gauge_state);
+
+  QDPIO::cout << "mesE" << endl;
+
   H_exact.mesE(gauge_state, KE_old, PE_old);
   QDPIO::cout << "Initial energies: KE =" << KE_old << " PE = " << PE_old <<endl;
 
@@ -141,10 +156,11 @@ int main(int argc, char *argv[])
 
   QDPIO::cout << "DeltaE = " << deltaKE + deltaPE <<endl;
   pop(xml_out);
-  xml_out.close();
+// xml_out.close();
+
 
   // Finish
-  QDP_finalize();
-
+//  QDP_finalize();
+  ChromaFinalize();
   exit(0);
 }
