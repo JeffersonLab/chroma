@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.60 2004-09-08 02:48:26 edwards Exp $
+// $Id: propagator.cc,v 1.61 2004-09-09 04:03:10 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -275,11 +275,22 @@ int main(int argc, char **argv)
   //
   // Initialize fermion action
   //
-  QDPIO::cout << "FermAct = " << input.param.fermact << endl;
-
-  std::istringstream  xml_s(input.param.fermactgrp);
+  std::istringstream  xml_s(input.param.fermact);
   XMLReader  fermacttop(xml_s);
   const string fermact_path = "/FermionAction";
+  string fermact;
+
+  try
+  {
+    read(fermacttop, fermact_path + "/FermAct", fermact);
+  }
+  catch (const std::exception& e) 
+  {
+    QDPIO::cerr << "Error reading fermact: " << e.what() << endl;
+    throw;
+  }
+
+  QDPIO::cout << "FermAct = " << fermact << endl;
 
   //
   // Try each factory one-by-one
@@ -290,7 +301,7 @@ int main(int argc, char **argv)
 
 
 #if 1
-  if (input.param.fermact == EvenOddPrecDWFermActArrayEnv::name)  // FERM_ACT_DWF
+  if (fermact == EvenOddPrecDWFermActArrayEnv::name)  // FERM_ACT_DWF
   {
     QDPIO::cout << EvenOddPrecDWFermActArrayEnv::name << endl;
 
@@ -316,7 +327,7 @@ int main(int argc, char **argv)
   }
 
 
-  if (input.param.fermact == UnprecDWFermActArrayEnv::name)  // FERM_ACT_UNPRECONDITIONED_DWF:
+  if (fermact == UnprecDWFermActArrayEnv::name)  // FERM_ACT_UNPRECONDITIONED_DWF:
   {
     QDPIO::cout << UnprecDWFermActArrayEnv::name << endl;
 
@@ -352,7 +363,7 @@ int main(int argc, char **argv)
       // Generic Wilson-Type stuff
 
       Handle< WilsonTypeFermAct<LatticeFermion> >
-	S_f(TheWilsonTypeFermActFactory::Instance().createObject(input.param.fermact,
+	S_f(TheWilsonTypeFermActFactory::Instance().createObject(fermact,
 								 fbc,
 								 fermacttop,
 								 fermact_path));
@@ -382,7 +393,7 @@ int main(int argc, char **argv)
       // Generic 5D Wilson-Type stuff
 
       Handle< WilsonTypeFermAct<LatticeFermion> >
-	S_f(TheWilsonTypeFermActFactory::Instance().createObject(input.param.fermact,
+	S_f(TheWilsonTypeFermActFactory::Instance().createObject(fermact,
 								 fbc,
 								 fermacttop,
 								 fermact_path));

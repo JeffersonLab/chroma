@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qprop_io.h,v 1.17 2004-09-08 02:48:26 edwards Exp $
+// $Id: qprop_io.h,v 1.18 2004-09-09 04:03:10 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -67,10 +67,8 @@ public:
   FermType        FermTypeP;
   bool            nonRelProp;   // compute only the nonrelativistic portion of this prop?
 
-  // String holding name of the Fermion Action
-  std::string     fermact;
   // String holding XML of the FermionAction section
-  std::string     fermactgrp;
+  std::string     fermact;
 
   MultiInvertParam_t   invParam;   // Inverter parameters
   multi1d<int>    boundary;
@@ -87,10 +85,8 @@ public:
   FermType        FermTypeP;
   bool            nonRelProp;   // compute only the nonrelativistic portion of this prop?
 
-  // String holding name of the Fermion Action
-  std::string     fermact;
   // String holding XML of the FermionAction section
-  std::string     fermactgrp;
+  std::string     fermact;
 
   InvertParam_t   invParam;   // Inverter parameters
   multi1d<int>    boundary;

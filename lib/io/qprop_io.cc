@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 1.22 2004-09-08 02:48:26 edwards Exp $
+// $Id: qprop_io.cc,v 1.23 2004-09-09 04:03:10 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -318,10 +318,9 @@ void read(XMLReader& xml, const string& path, ChromaProp_t& param)
   {
     read(paramtop, "FermTypeP", param.FermTypeP);
     XMLReader xml_tmp(paramtop, "FermionAction");
-    read(xml_tmp, "FermAct", param.fermact);
     std::ostringstream os;
     xml_tmp.print(os);
-    param.fermactgrp = os.str();
+    param.fermact = os.str();
 
     read(paramtop, "InvertParam", param.invParam);
     read(paramtop, "boundary", param.boundary);
@@ -339,10 +338,9 @@ void read(XMLReader& xml, const string& path, ChromaProp_t& param)
     read(paramtop, "FermTypeP", param.FermTypeP);
 
     XMLReader xml_tmp(paramtop, "FermionAction");
-    read(xml_tmp, "FermAct", param.fermact);
     std::ostringstream os;
     xml_tmp.print(os);
-    param.fermactgrp = os.str();
+    param.fermact = os.str();
 
     read(paramtop, "InvertParam", param.invParam);
     read(paramtop, "boundary", param.boundary);
@@ -357,10 +355,9 @@ void read(XMLReader& xml, const string& path, ChromaProp_t& param)
     read(paramtop, "FermTypeP", param.FermTypeP);
 
     XMLReader xml_tmp(paramtop, "FermionAction");
-    read(xml_tmp, "FermAct", param.fermact);
     std::ostringstream os;
     xml_tmp.print(os);
-    param.fermactgrp = os.str();
+    param.fermact = os.str();
 
     read(paramtop, "InvertParam", param.invParam);
     read(paramtop, "boundary", param.boundary);
@@ -398,10 +395,9 @@ void read(XMLReader& xml, const string& path, ChromaMultiProp_t& param)
     read(paramtop, "FermTypeP", param.FermTypeP);
 
     XMLReader xml_tmp(paramtop, "FermionAction");
-    read(xml_tmp, "FermAct", param.fermact);
     std::ostringstream os;
     xml_tmp.print(os);
-    param.fermactgrp = os.str();
+    param.fermact = os.str();
 
     read(paramtop, "InvertParam", param.invParam);
     read(paramtop, "boundary", param.boundary);
@@ -417,10 +413,9 @@ void read(XMLReader& xml, const string& path, ChromaMultiProp_t& param)
     read(paramtop, "MultiMasses", param.MultiMasses);
     read(paramtop, "FermTypeP", param.FermTypeP);
     XMLReader xml_tmp(paramtop, "FermionAction");
-    read(xml_tmp, "FermAct", param.fermact);
     std::ostringstream os;
     xml_tmp.print(os);
-    param.fermactgrp = os.str();
+    param.fermact = os.str();
 
     read(paramtop, "InvertParam", param.invParam);
     read(paramtop, "boundary", param.boundary);
@@ -606,7 +601,7 @@ void write(XMLWriter& xml, const string& path, const ChromaProp_t& header)
   write(xml, "version", version);
   write(xml, "FermTypeP", header.FermTypeP);
   write(xml, "nonRelProp", header.nonRelProp); // new - is this prop non-relativistic
-  xml << header.fermactgrp;
+  xml << header.fermact;
   write(xml, "InvertParam", header.invParam);
   write(xml, "boundary", header.boundary);
   write(xml, "nrow", header.nrow);
@@ -624,7 +619,7 @@ void write(XMLWriter& xml, const string& path, const ChromaMultiProp_t& header)
   write(xml, "FermTypeP", header.FermTypeP);
   write(xml, "nonRelProp", header.nonRelProp); // new - is this prop non-relativistic
   write(xml, "MultiMasses", header.MultiMasses);
-  xml << header.fermactgrp;
+  xml << header.fermact;
   write(xml, "InvertParam", header.invParam);
   write(xml, "boundary", header.boundary);
   write(xml, "nrow", header.nrow);
