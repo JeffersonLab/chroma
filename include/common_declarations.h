@@ -1,4 +1,4 @@
-// $Id: common_declarations.h,v 1.4 2003-03-29 05:21:48 edwards Exp $
+// $Id: common_declarations.h,v 1.5 2003-04-07 04:47:49 edwards Exp $
 
 #ifndef COMMON_DECLS_INCLUDE
 #define COMMON_DECLS_INCLUDE
@@ -51,6 +51,43 @@ extern Real u0;         /* Tadpole improvement factor  (Tr U_p/3)^(1/4) */
 extern Real H_parity;        /* Strenght of parity breaking term */
 extern Real ClovCoeffR; /* Spatial Clover coefficient */
 extern Real ClovCoeffT; /* Temporal Clover coefficient */
+
+/* New variables related to the Polynomial MD evolution algorithms           */
+EXTERN int PolyPowNum;   /* Polynomial approximation p(x):           */ 
+EXTERN int PolyPowDen;   /* p(x) ~ x^(-PolyPowNum/PolyPowDen)        */
+extern int PolyDegHalf;  /* degree(p)/2                         */
+EXTERN Real PolyNorm;        /* p(x) = p^tilde(x) p^tilde^dag (x)      */
+                                   /* p^tilde = C(x-z_1)(x-z_2)...           */
+                                   /* = (x-z_1(x-z_2...                */
+                                   /* x = PolyNorm*x   z_k = PolyNorm*z_k  */
+                                   /* PolyNorm = C^(1/PolyDegHalf)           */ 
+ 
+EXTERN Real PolyRangLow;     /* Range of approximation =               */
+EXTERN Real PolyRangUp;      /* = (PolyRangLow,PolyRangUp)             */
+EXTERN Real PolyError;       /* Error of approximation                 */
+// EXTERN multi1d<Complex> PolyRoots(PolyDegHalf);  /* z_1,z_2...z_PolyDegHalf */
+EXTERN multi1d<Complex> PolyRoots;  /* z_1,z_2...z_PolyDegHalf */
+EXTERN int PolyEvolP;    /* Flag for Polynomial Evolution          */
+EXTERN int RatEvolP;     /* Flag for Rational Evolution            */
+EXTERN Real PolyArgResc;     /* Rescale the argument of polynomial     */
+extern int RatPolyDeg;  /* Degree of polynomials in ratio approx  */
+//EXTERN multi1d<Real> NumPolyRoots(PolyDegHalf);  /* z_1,z_2...z_PolyDegHalf */
+//EXTERN multi1d<Real> DenPolyRoots(PolyDegHalf);  /* z_1,z_2...z_PolyDegHalf */
+EXTERN multi1d<Real> NumPolyRoots;  /* z_1,z_2...z_PolyDegHalf */
+EXTERN multi1d<Real> DenPolyRoots;  /* z_1,z_2...z_PolyDegHalf */
+ 
+/* Eigenvalue/vector used for various overlap or projected algorithms */
+extern int OverAuxAct;   /* Kernel of overlap,dwf */
+extern Real OverMass;   /* Overlap mass */
+extern int NOperEig;       /* Number of eigenvectors kept */
+extern int NOperEigDim;    /* Dimension of eigenvectors kept */
+//EXTERN multi1d<Real> OperEigVal(NOperEigDim); /* Eigenvalues */
+// EXTERN multi1d<Real> OperEigVal; /* Eigenvalues */
+// multi1d<LatticeFermion> OperEigVec(NOperEigDim);  /* Eigenvectors */
+
+
+////////////////////////////////////////////////////////////
+
 
 
 /* variable which controls number of namelist sites */
