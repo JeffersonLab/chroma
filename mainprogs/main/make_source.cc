@@ -1,4 +1,4 @@
-// $Id: make_source.cc,v 1.27 2004-03-23 16:24:14 bjoo Exp $
+// $Id: make_source.cc,v 1.28 2004-04-06 04:20:33 edwards Exp $
 /*! \file
  *  \brief Main code for source generation
  */
@@ -115,7 +115,7 @@ int main(int argc, char **argv)
 
   // Read a gauge field
   multi1d<LatticeColorMatrix> u(Nd);
-  XMLReader gauge_xml;
+  XMLReader gauge_file_xml, gauge_xml;
   QDP::Seed seed_old;
 
   QDPIO::cout << "Read Gauge field" << endl;
@@ -124,6 +124,11 @@ int main(int argc, char **argv)
   {
   case CFG_TYPE_SZIN:
     readSzin(gauge_xml, u, input.cfg.cfg_file);
+    read(gauge_xml, "/szin/seed", seed_old);
+    break;
+
+  case CFG_TYPE_SZINQIO:
+    readGauge(gauge_file_xml, gauge_xml, u, input.cfg.cfg_file, QDPIO_SERIAL);
     read(gauge_xml, "/szin/seed", seed_old);
     break;
 
@@ -145,9 +150,28 @@ int main(int argc, char **argv)
   XMLFileWriter xml_out("XMLDAT");
   push(xml_out,"make_source");
 
-  xml_out << xml_in;  // save a copy of the input
-  write(xml_out, "config_info", gauge_xml);
+  // Write out the input
+  write(xml_out, "Input", xml_in);
+
+  // Write out the config header
+  write(xml_out, "Config_info", gauge_xml);
+
   xml_out.flush();
+
+
+  // Check if the gauge field configuration is unitarized
+  unitarityCheck(u);
+
+  // Calculate some gauge invariant observables just for info.
+  Double w_plaq, s_plaq, t_plaq, link;
+  MesPlq(u, w_plaq, s_plaq, t_plaq, link);
+
+  push(xml_out, "Observables");
+  write(xml_out, "w_plaq", w_plaq);
+  write(xml_out, "s_plaq", s_plaq);
+  write(xml_out, "t_plaq", t_plaq);
+  write(xml_out, "link", link);
+  pop(xml_out);
 
 
   // Smear the gauge field if needed

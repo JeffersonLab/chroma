@@ -1,10 +1,13 @@
-// $Id: spectrum_w.cc,v 1.32 2004-04-05 16:26:27 edwards Exp $
+// $Id: spectrum_w.cc,v 1.33 2004-04-06 04:20:33 edwards Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.32  2004-04-05 16:26:27  edwards
+//  Revision 1.33  2004-04-06 04:20:33  edwards
+//  Added SZINQIO support.
+//
+//  Revision 1.32  2004/04/05 16:26:27  edwards
 //  Moved init of sftmom down after prop is read. Eliminated read
 //  of j_decay from input.
 //
@@ -295,12 +298,15 @@ int main(int argc, char **argv)
 
   // Read in the configuration along with relevant information.
   multi1d<LatticeColorMatrix> u(Nd);
-  XMLReader gauge_xml;
+  XMLReader gauge_file_xml, gauge_xml;
 
   switch (input.cfg.cfg_type) 
   {
   case CFG_TYPE_SZIN :
     readSzin(gauge_xml, u, input.cfg.cfg_file);
+    break;
+  case CFG_TYPE_SZINQIO:
+    readGauge(gauge_file_xml, gauge_xml, u, input.cfg.cfg_file, QDPIO_SERIAL);
     break;
   case CFG_TYPE_NERSC:
     readArchiv(gauge_xml, u, input.cfg.cfg_file);

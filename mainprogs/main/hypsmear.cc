@@ -1,5 +1,5 @@
 /*
- *  $Id: hypsmear.cc,v 1.9 2004-03-24 15:24:19 kostas Exp $
+ *  $Id: hypsmear.cc,v 1.10 2004-04-06 04:20:33 edwards Exp $
  *
  *  This is the top-level routine for HYP smearing.
  *  It is a wrapper for Urs' and Robert's implmenetation of the HYP
@@ -158,7 +158,7 @@ int main(int argc, char *argv[])
 
   // Read in the configuration along with relevant information.
   multi1d<LatticeColorMatrix> u(Nd);
-  XMLReader gauge_xml;
+  XMLReader gauge_file_xml, gauge_xml;
 
   clock_t t1 = clock();
 
@@ -167,6 +167,10 @@ int main(int argc, char *argv[])
   case CFG_TYPE_SZIN :
     QDPIO::cout<<"About to read szin gauge\n" ;
     readSzin(gauge_xml, u, input.cfg.cfg_file);
+    break;
+  case CFG_TYPE_SZINQIO:
+    QDPIO::cout<<"About to read qio gauge\n" ;
+    readGauge(gauge_file_xml, gauge_xml, u, input.cfg.cfg_file, QDPIO_SERIAL);
     break;
   case CFG_TYPE_NERSC:
     QDPIO::cout<<"About to read nersc gauge\n" ;

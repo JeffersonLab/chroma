@@ -1,4 +1,4 @@
-// $Id: sink_smearing.cc,v 1.6 2004-02-26 05:26:51 edwards Exp $
+// $Id: sink_smearing.cc,v 1.7 2004-04-06 04:20:33 edwards Exp $
 /*! \file
  * \brief Main program for sink-smearing quark propagators
  *
@@ -101,12 +101,15 @@ int main(int argc, char **argv)
 
   // Read in the configuration along with relevant information.
   multi1d<LatticeColorMatrix> u(Nd);
-  XMLReader gauge_xml;
+  XMLReader gauge_file_xml, gauge_xml;
 
   switch (input.cfg.cfg_type) 
   {
   case CFG_TYPE_SZIN :
     readSzin(gauge_xml, u, input.cfg.cfg_file);
+    break;
+  case CFG_TYPE_SZINQIO:
+    readGauge(gauge_file_xml, gauge_xml, u, input.cfg.cfg_file, QDPIO_SERIAL);
     break;
   case CFG_TYPE_NERSC:
     readArchiv(gauge_xml, u, input.cfg.cfg_file);

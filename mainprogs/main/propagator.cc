@@ -1,6 +1,9 @@
-// $Id: propagator.cc,v 1.47 2004-04-01 18:10:22 edwards Exp $
+// $Id: propagator.cc,v 1.48 2004-04-06 04:20:33 edwards Exp $
 // $Log: propagator.cc,v $
-// Revision 1.47  2004-04-01 18:10:22  edwards
+// Revision 1.48  2004-04-06 04:20:33  edwards
+// Added SZINQIO support.
+//
+// Revision 1.47  2004/04/01 18:10:22  edwards
 // Added support for non-relativistic quark props.
 //
 // Revision 1.46  2004/02/23 03:13:58  edwards
@@ -133,13 +136,18 @@ int main(int argc, char **argv)
 
   // Read in the configuration along with relevant information.
   multi1d<LatticeColorMatrix> u(Nd);
-  XMLReader gauge_xml;
+  XMLReader gauge_file_xml, gauge_xml;
 
   switch (input.cfg.cfg_type) 
   {
   case CFG_TYPE_SZIN :
     readSzin(gauge_xml, u, input.cfg.cfg_file);
     break;
+
+  case CFG_TYPE_SZINQIO:
+    readGauge(gauge_file_xml, gauge_xml, u, input.cfg.cfg_file, QDPIO_SERIAL);
+    break;
+
   case CFG_TYPE_NERSC:
     readArchiv(gauge_xml, u, input.cfg.cfg_file);
     break;
