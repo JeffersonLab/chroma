@@ -1,5 +1,10 @@
 12/29/2004 -- Robert Edwards
 
+	Version 1.13.0. Rearranged top-level FermionAction support.
+        Consolidated FermFactories.
+
+12/29/2004 -- Robert Edwards
+
 	Version 1.12.1. HMC changes and support for gauge and
         ferm Monomials.
 
