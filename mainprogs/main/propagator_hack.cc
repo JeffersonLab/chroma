@@ -1,4 +1,4 @@
-// $Id: propagator_hack.cc,v 1.1 2005-03-06 17:25:41 edwards Exp $
+// $Id: propagator_hack.cc,v 1.2 2005-03-06 17:50:20 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -137,56 +137,15 @@ int main(int argc, char **argv)
   // Read in the source along with relevant information.
   // 
   LatticePropagator quark_prop_source;
-  XMLReader source_file_xml, source_record_xml;
-  int t0;
-  int j_decay;
-  bool make_sourceP = false;
-  bool seqsourceP = false;
   {
-    // ONLY SciDAC mode is supported for propagators!!
-    QDPIO::cout << "Attempt to read source" << endl;
-    readQprop(source_file_xml, 
-	      source_record_xml, quark_prop_source,
-	      input.prop.source_file, QDPIO_SERIAL);
-    QDPIO::cout << "Source successfully read" << flush << endl;
-
-    // Try to invert this record XML into a source struct
-    try
-    {
-      // First identify what kind of source might be here
-      if (source_record_xml.count("/MakeSource") != 0)
-      {
-	PropSource_t source_header;
-
-	read(source_record_xml, "/MakeSource/PropSource", source_header);
-	j_decay = source_header.j_decay;
-	t0 = source_header.t_source[j_decay];
-	make_sourceP = true;
-      }
-      else if (source_record_xml.count("/SequentialSource") != 0)
-      {
-	ChromaProp_t prop_header;
-	PropSource_t source_header;
-	SeqSource_t seqsource_header;
-
-	read(source_record_xml, "/SequentialSource/SeqSource", seqsource_header);
-	// Any source header will do for j_decay
-	read(source_record_xml, "/SequentialSource/ForwardProps/elem[1]/ForwardProp", 
-	     prop_header);
-	read(source_record_xml, "/SequentialSource/ForwardProps/elem[1]/PropSource", 
-	     source_header);
-	j_decay = source_header.j_decay;
-	t0 = seqsource_header.t_sink;
-	seqsourceP = true;
-      }
-      else
-	throw std::string("No appropriate header found");
-    }
-    catch (const string& e) 
-    {
-      QDPIO::cerr << "Error extracting source_header: " << e << endl;
-      QDP_abort(1);
-    }
+    // Gruesome hack - only read szin props.
+    QDPIO::cout << "Attempt to read szin source" << endl;
+    Real Kappa;
+    XMLReader source_xml;
+    readSzinQprop(source_xml,
+		  quark_prop_source,
+		  input.prop.source_file);
+    QDPIO::cout << "Szin source successfully read" << flush << endl;
   }    
 
   
@@ -204,11 +163,6 @@ int main(int argc, char **argv)
 
   // Write out the config header
   write(xml_out, "Config_info", gauge_xml);
-
-  // Write out the source header
-  write(xml_out, "Source_file_info", source_file_xml);
-
-  write(xml_out, "Source_record_info", source_record_xml);
 
   push(xml_out, "Output_version");
   write(xml_out, "out_version", 1);
@@ -303,11 +257,9 @@ int main(int argc, char **argv)
       QDPIO::cout << "Suitable factory found: compute the quark prop" << endl;
 
       S_f->quarkProp(quark_propagator, xml_out, quark_prop_source,
-		     t0, j_decay,
 		     state, 
 		     input.param.invParam, 
 		     input.param.nonRelProp,
-		     mresP,
 		     ncg_had);
       
       success = true;
