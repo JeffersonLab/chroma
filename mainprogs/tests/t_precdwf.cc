@@ -1,4 +1,4 @@
-// $Id: t_precdwf.cc,v 1.1 2003-11-26 15:20:44 edwards Exp $
+// $Id: t_precdwf.cc,v 1.2 2003-12-04 04:26:44 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -10,17 +10,40 @@
 
 using namespace QDP;
 
-double time_func(void (*A)(multi1d<LatticeFermion>&, const multi1d<LatticeFermion>&, enum PlusMinus),
-		 multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi,
-		 enum PlusMinus isign,
-		 int iter)
-{
-  clock_t myt1=clock();
-  for(int i=0; i < iter; i++)
-    (*A)(chi, psi, (isign == 1 ? PLUS : MINUS));
-  clock_t myt2=clock();
+typedef  void (EvenOddPrecLinearOperator< multi1d<LatticeFermion> >::* EO_mem)(multi1d<LatticeFermion>&, const multi1d<LatticeFermion>&, enum PlusMinus) const;
 
-  return (double)(myt2-myt1)/((double)(CLOCKS_PER_SEC));
+
+double time_func(const EvenOddPrecLinearOperator< multi1d<LatticeFermion> > *p, EO_mem A,
+		 multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi,
+		 enum PlusMinus isign)
+{
+  clock_t myt1, myt2;
+  double  mydt;
+  int iter = 1;
+
+  for(iter=1; ; iter <<= 1)
+  {
+    QDPIO::cout << "Applying D " << iter << " times" << endl;
+
+    myt1=clock();
+    for(int i=iter; i-- > 0; ) {
+      (p->*A)(chi, psi, isign);
+    }
+    myt2=clock();
+
+    mydt=double(myt2-myt1)/double(CLOCKS_PER_SEC);
+    if (mydt > 1)
+      break;
+  }
+
+  myt1=clock();
+  for(int i=0; i < iter; i++)
+    (p->*A)(chi, psi, isign);
+  myt2=clock();
+
+  mydt = (double)(myt2-myt1)/((double)(CLOCKS_PER_SEC));
+  mydt *= 1.0e6/((double)(iter*(Layout::sitesOnNode()/2)));
+  return mydt;
 }
 
 
@@ -49,9 +72,6 @@ int main(int argc, char **argv)
     random(psi[n]);
   chi = zero;
 
-  int iter = 200;
-  QDPIO::cout << "Iters is " << iter << endl;
-
   //! Create a linear operator
   QDPIO::cout << "Constructing DWDslash" << endl;
 
@@ -59,7 +79,8 @@ int main(int argc, char **argv)
   Real WilsonMass = 1.5;
   Real m_q = 0.01;
   EvenOddPrecDWFermActArray S_pdwf(WilsonMass,m_q,N5);
-  const  EvenOddPrecLinearOperator< multi1d<LatticeFermion> >* D_pdwf = S_pdwf.linOp(u); 
+  const ConnectStateProxy state(S_pdwf.createState(u));
+  const  EvenOddPrecLinearOperator< multi1d<LatticeFermion> >* D_pdwf = S_pdwf.linOp(state); 
 
   QDPIO::cout << "Done" << endl;
 
@@ -68,6 +89,7 @@ int main(int argc, char **argv)
     QDPIO::cout << "Applying D" << endl;
     QDPIO::cout << " isign = " << isign << endl;
       
+    PlusMinus is = (isign == 1 ? PLUS : MINUS);
     clock_t myt1;
     clock_t myt2;
     double mydt;
@@ -77,60 +99,26 @@ int main(int argc, char **argv)
     int Nflops = 2*Ndiag + 2*Neo + N5*24;
 
     // even-even-inv piece
-#if 0
-    mydt = time_func(D_pdwf->evenEvenInvLinOp, chi, psi, isign, iter);
-#else
-    myt1=clock();
-    for(int i=0; i < iter; i++)
-      D_pdwf->evenEvenInvLinOp(chi, psi, (isign == 1 ? PLUS : MINUS));
-    myt2=clock();
-
-    mydt = (double)(myt2-myt1)/((double)(CLOCKS_PER_SEC));
-#endif
-    mydt *= 1.0e6/((double)(iter*(Layout::sitesOnNode()/2)));
+    mydt = time_func(D_pdwf, &EvenOddPrecLinearOperator<multi1d<LatticeFermion> >::evenEvenInvLinOp, chi, psi, is);
     QDPIO::cout << "The time per lattice point is "<< mydt << " micro sec" 
 		<< " (" <<  ((double)(Ndiag)/mydt) << ") Mflops " << endl;
       
     // odd-odd piece
-    myt1=clock();
-    for(int i=0; i < iter; i++)
-      D_pdwf->oddOddLinOp(chi, psi, (isign == 1 ? PLUS : MINUS));
-    myt2=clock();
-
-    mydt = (double)(myt2-myt1)/((double)(CLOCKS_PER_SEC));
-    mydt *= 1.0e6/((double)(iter*(Layout::sitesOnNode()/2)));
+    mydt = time_func(D_pdwf, &EvenOddPrecLinearOperator<multi1d<LatticeFermion> >::oddOddLinOp, chi, psi, is);
     QDPIO::cout << "The time per lattice point is "<< mydt << " micro sec" 
 		<< " (" <<  ((double)(Ndiag)/mydt) << ") Mflops " << endl;
       
     // even-odd
-    myt1=clock();
-    for(int i=0; i < iter; i++)
-      D_pdwf->evenOddLinOp(chi, psi, (isign == 1 ? PLUS : MINUS));
-    myt2=clock();
-      
-    mydt = (double)(myt2-myt1)/((double)(CLOCKS_PER_SEC));
-    mydt *= 1.0e6/((double)(iter*(Layout::sitesOnNode()/2)));
+    mydt = time_func(D_pdwf, &EvenOddPrecLinearOperator<multi1d<LatticeFermion> >::evenOddLinOp, chi, psi, is);
     QDPIO::cout << "The time per lattice point is "<< mydt << " micro sec" 
 		<< " (" <<  ((double)(Neo)/mydt) << ") Mflops " << endl;
     // odd-even
-    myt1=clock();
-    for(int i=0; i < iter; i++)
-      D_pdwf->oddEvenLinOp(chi, psi, (isign == 1 ? PLUS : MINUS));
-    myt2=clock();
-      
-    mydt = (double)(myt2-myt1)/((double)(CLOCKS_PER_SEC));
-    mydt *= 1.0e6/((double)(iter*(Layout::sitesOnNode()/2)));
+    mydt = time_func(D_pdwf, &EvenOddPrecLinearOperator<multi1d<LatticeFermion> >::oddEvenLinOp, chi, psi, (isign == 1 ? PLUS : MINUS));
     QDPIO::cout << "The time per lattice point is "<< mydt << " micro sec" 
 		<< " (" <<  ((double)(Neo)/mydt) << ") Mflops " << endl;
 
     // Total thing
-    myt1=clock();
-    for(int i=0; i < iter; i++)
-      (*D_pdwf)(chi, psi, (isign == 1 ? PLUS : MINUS));
-    myt2=clock();
-      
-    mydt = (double)(myt2-myt1)/((double)(CLOCKS_PER_SEC));
-    mydt *= 1.0e6/((double)(iter*(Layout::sitesOnNode()/2)));
+    mydt = time_func(D_pdwf, &EvenOddPrecLinearOperator<multi1d<LatticeFermion> >::operator(), chi, psi, is);
     QDPIO::cout << "The time per lattice point is "<< mydt << " micro sec" 
 		<< " (" <<  ((double)(Nflops)/mydt) << ") Mflops " << endl;
   }
