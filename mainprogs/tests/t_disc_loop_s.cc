@@ -1,4 +1,4 @@
-// $Id: t_disc_loop_s.cc,v 1.9 2005-01-02 05:21:11 edwards Exp $
+
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -390,6 +390,7 @@ int main(int argc, char **argv)
 
 
   // Timeslice sums of fermion loops.
+<<<<<<< t_disc_loop_s.cc
   // G_s is local scalar 
   LatticeComplex TrG_s0 ;
   LatticeComplex corr_fn_s, corr_fn_p ;
@@ -399,12 +400,39 @@ int main(int argc, char **argv)
 
   multi1d<DComplex> sca0_loop(t_length), sca1_loop(t_length), 
                     conn_corr_s(t_length), conn_corr_p(t_length);
+=======
+  // G_s is local scalar 
+  LatticeComplex TrG_s0 ;
+  LatticeComplex corr_fn_s, corr_fn_p ;
 
+
+  multi2d<DComplex> loop_s0(Nsamp, t_length) ;
+>>>>>>> 1.9
+
+<<<<<<< t_disc_loop_s.cc
+=======
+  multi1d<DComplex> sca0_loop(t_length), sca1_loop(t_length), 
+                    conn_corr_s(t_length), conn_corr_p(t_length);
+>>>>>>> 1.9
+
+<<<<<<< t_disc_loop_s.cc
+  sca0_loop = sca1_loop =  zero;
+=======
 
   sca0_loop = sca1_loop =  zero;
+>>>>>>> 1.9
 
   using namespace StagPhases;
 
+<<<<<<< t_disc_loop_s.cc
+  // the wrapped disconnected loops
+  local_scalar_loop scalar_one_loop(t_length,Nsamp) ; 
+  non_local_scalar_loop scalar_two_loop(t_length,Nsamp) ; 
+  threelink_pseudoscalar_loop eta3_loop(t_length,Nsamp) ; 
+  fourlink_pseudoscalar_loop eta4_loop(t_length,Nsamp) ; 
+
+  // Connected Correlator, use a point source at:  0000
+=======
   // the wrapped disconnected loops
   local_scalar_loop scalar_one_loop(t_length,Nsamp) ; 
   non_local_scalar_loop scalar_two_loop(t_length,Nsamp) ; 
@@ -415,6 +443,7 @@ int main(int argc, char **argv)
   // THIS IS ONLY FOR THE SCALAR AT THE MOMENT.
   Handle<const SystemSolver<LatticeStaggeredFermion> > qprop(S_f.qprop(state,input.param.invParam));
 
+>>>>>>> 1.9
   psi = zero;
   for(int color_source = 0; color_source < Nc; ++color_source) {
     int spin_source = 0;
@@ -437,21 +466,72 @@ int main(int argc, char **argv)
   corr_fn_s = - alpha(1)*beta(0)*trace(adj(quark_propagator)*quark_propagator);
   conn_corr_s = sumMulti(corr_fn_s, timeslice);
 
-  corr_fn_p = trace(adj(quark_propagator)*quark_propagator);
-  conn_corr_p = sumMulti(corr_fn_p, timeslice);
+  corr_fn_p   =  trace(adj(quark_propagator)*quark_propagator);
+  conn_corr_p =  sumMulti(corr_fn_p, timeslice);
+
+  staggered_pion_singlet pion_singlet(t_length,u); 
+
+  // 
+  //  connected part of the taste singlet pseudoscalar
+  // 
+  //  The code should be gauge fixed at this point
+  //
+
+
+  LatticeStaggeredPropagator quark_propagator_4link ;
+
+  // Connected Correlator, use a point source at:  1111
+  psi = zero;
+  for(int color_source = 0; color_source < Nc; ++color_source) {
+    int spin_source = 0;
+    q_source = zero;
+    multi1d<int> coord(Nd);
+    coord[0]=1; coord[1] = 1; coord[2] = 1; coord[3] = 1;
+    srcfil(q_source, coord,color_source ) ;
+
+    S_f.qprop(psi, state, q_source, input.param.invParam, n_count);
+
+    ncg_had += n_count;
+#ifdef NNNNNNNNNNNNNN
+    push(xml_out,"Qprop");
+    write(xml_out, "Mass" , input.param.Mass);
+    write(xml_out, "RsdCG", input.param.invParam.RsdCG);
+    write(xml_out, "n_count", n_count);
+    pop(xml_out);
+#endif
+
+    FermToProp(psi, quark_propagator_4link, color_source);
+  }
+
+
+  pion_singlet.compute(quark_propagator,quark_propagator_4link,j_decay); 
+
+  const int t_source = 0 ; 
 
   push(xml_out, "CONNECTED");
   write(xml_out, "local_scalar", conn_corr_s);
   write(xml_out, "goldstone_pion", conn_corr_p);
+  pion_singlet.dump(t_source,xml_out ) ; 
   pop(xml_out);
+
+
+  //
+  // ----- compute disconnected diagrams -----
+  //
 
   // Seed the RNG with the cfg number for now
   Seed seed;
   seed = input.param.CFGNO;
   RNG::setrn(seed);
 
+<<<<<<< t_disc_loop_s.cc
 
 
+
+=======
+
+
+>>>>>>> 1.9
   for(int i = 0; i < Nsamp; ++i){
     psi = zero;   // note this is ``zero'' and not 0
 
