@@ -1,4 +1,4 @@
-// $Id: gauge_startup.cc,v 1.9 2004-12-21 20:23:59 edwards Exp $
+// $Id: gauge_startup.cc,v 1.10 2005-01-13 16:46:09 mcneile Exp $
 /*! \file
  *  \brief Initialize the gauge fields
  */
@@ -12,6 +12,7 @@
 #include "io/readszin.h"
 #include "io/readmilc.h"
 #include "io/kyugauge_io.h"
+#include "io/readcppacs.h"
 
 #include "util/gauge/hotst.h"
 
@@ -50,6 +51,10 @@ void gaugeStartup(XMLReader& gauge_file_xml,
   
   case CFG_TYPE_MILC:
     readMILC(gauge_xml, u, cfg.cfg_file);
+    break;
+
+  case CFG_TYPE_CPPACS :
+    readCPPACS(gauge_xml, u, cfg.cfg_file);
     break;
 
   case CFG_TYPE_KYU:
