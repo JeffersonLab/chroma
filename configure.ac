@@ -27,7 +27,7 @@ dnl --with-qdp=DIR
 AC_ARG_WITH(qdp,
   AC_HELP_STRING(
     [--with-qdp=DIR],
-    [Build QDP++ Apps on top of QDP++ where QDP++ is installed in DIR]
+    [Build Chroma on top of QDP++ where QDP++ is installed in DIR]
   ),
   [QDPXX_HOME="$with_qdp"]
 )
