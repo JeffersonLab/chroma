@@ -1,3 +1,8 @@
+05/13/2004 -- Robert Edwards
+
+	Version 1.5.13. QQQ program now can output in Dirac or Degrand-Rossi
+        basis. Made basis rotation more public.
+
 05/13/2004 -- Balint Joo
 
 	Version 1.5.12. Working multi-mass SUMR code.
