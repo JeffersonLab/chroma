@@ -1,9 +1,10 @@
-// $Id: t_lwldslash.cc,v 1.2 2003-02-17 04:37:16 edwards Exp $
+// $Id: t_lwldslash.cc,v 1.3 2003-03-14 05:08:25 flemingg Exp $
 
 #include <iostream>
 #include <cstdio>
 
 #include "chroma.h"
+#include "primitives.h" // GTF: for PLUS
 
 using namespace QDP;
 
