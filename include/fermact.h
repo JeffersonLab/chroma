@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 1.12 2003-11-23 05:51:05 edwards Exp $
+// $Id: fermact.h,v 1.13 2003-12-02 15:40:51 edwards Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -16,7 +16,28 @@ using namespace QDP;
 //! Base class for quadratic matter actions (e.g., fermions)
 /*! @ingroup actions
  *
- * Supports creation and application for quadratic actions
+ * Supports creation and application for quadratic actions.
+ * This is basically a foundry class with additional operations.
+ *
+ * The class holds info on the particulars of a bi-local action,
+ * but it DOES NOT hold gauge fields. A specific dirac-operator
+ * is a functional of the gauge fields, hence when a dirac-operator
+ * is needed, it is created.
+ *
+ * The ConnectState holds gauge fields and whatever auxilliary info
+ * is needed to create a specific dirac operator (linear operator)
+ * on some background gauge field.
+ *
+ * The linop and lmdagm functions create a linear operator on a 
+ * fixed ConnectState
+ *
+ * The qprop solves for the full linear system undoing all preconditioning.
+ * No direct functions are provided (or needed) to call a linear system
+ * solver - that is a stand-alone function in the generic programming sense.
+ *
+ * dsdu provides the derivative of the action on a specific background
+ * gauge field.
+ *
  */
 template<typename T>
 class FermionAction
@@ -28,13 +49,16 @@ public:
 //  virtual LinOpFoundry* linop(const multi1d<LatticeColorMatrix>& _u) const = 0;
 #endif
 
+  //! Given links, create the state needed for the linear operators
+  /*! Default version uses a SimpleConnectState */
+  virtual const ConnectState* createState(const multi1d<LatticeColorMatrix>& u) const
+    {return new SimpleConnectState(u);}
+
   //! Produce a linear operator for this action
-  /*! NOTE: maybe this should be abstracted to a foundry class object */
-  virtual const LinearOperator<T>* linOp(const multi1d<LatticeColorMatrix>& u) const = 0;
+  virtual const LinearOperator<T>* linOp(const ConnectState& state) const = 0;
 
   //! Produce a linear operator M^dag.M for this action
-  /*! NOTE: maybe this should be abstracted to a foundry class object */
-  virtual const LinearOperator<T>* lMdagM(const multi1d<LatticeColorMatrix>& u) const = 0;
+  virtual const LinearOperator<T>* lMdagM(const ConnectState& state) const = 0;
 
   //! Compute quark propagator over base type
   /*! 
@@ -48,10 +72,9 @@ public:
    * \param MaxCG    maximum number of CG iterations ( Read )
    * \param ncg_had  number of CG iterations ( Write )
    *
-   * NOTE: maybe this should produce a quark prop foundry class object 
    */
   virtual void qpropT(T& psi, 
-		      const multi1d<LatticeColorMatrix>& u, 
+		      const ConnectState& state, 
 		      const T& chi, 
 		      enum InvType invType,
 		      const Real& RsdCG, 
@@ -69,19 +92,17 @@ public:
    * \param MaxCG    maximum number of CG iterations ( Read )
    * \param ncg_had  number of CG iterations ( Write )
    *
-   * NOTE: maybe this should produce a quark prop foundry class object 
    */
   virtual void qprop(typename BaseType<T>::Type_t& psi, 
-		     const multi1d<LatticeColorMatrix>& u, 
+		     const ConnectState& state, 
 		     const typename BaseType<T>::Type_t& chi, 
 		     enum InvType invType,
 		     const Real& RsdCG, 
 		     int MaxCG, int& ncg_had) const;
   
   //! Compute dS_f/dU
-  /*! NOTE: maybe this should produce a derivative foundry class object */
   virtual void dsdu(multi1d<LatticeColorMatrix>& result,
-		    const multi1d<LatticeColorMatrix>& u,
+		    const ConnectState& state,
 		    const T& psi) const
     {
       QDPIO::cerr << "FermionAction::dsdu not implemented" << endl;
@@ -106,13 +127,18 @@ public:
   //! Expected length of array index
   virtual int size() const = 0;
 
+  //! Given links, create the state needed for the linear operators
+  /*! Default version uses a SimpleConnectState */
+  virtual ConnectState* createState(const multi1d<LatticeColorMatrix>& u) const
+    {
+      return new SimpleConnectState(u);
+    }
+
   //! Produce a linear operator for this action
-  /*! NOTE: maybe this should be abstracted to a foundry class object */
-  virtual const LinearOperator< multi1d<T> >* linOp(const multi1d<LatticeColorMatrix>& u) const = 0;
+  virtual const LinearOperator< multi1d<T> >* linOp(const ConnectState& state) const = 0;
 
   //! Produce a linear operator M^dag.M for this action
-  /*! NOTE: maybe this should be abstracted to a foundry class object */
-  virtual const LinearOperator< multi1d<T> >* lMdagM(const multi1d<LatticeColorMatrix>& u) const = 0;
+  virtual const LinearOperator< multi1d<T> >* lMdagM(const ConnectState& state) const = 0;
 
   //! Compute quark propagator over base type
   /*! 
@@ -126,10 +152,9 @@ public:
    * \param MaxCG    maximum number of CG iterations ( Read )
    * \param ncg_had  number of CG iterations ( Write )
    *
-   * NOTE: maybe this should produce a quark prop foundry class object 
    */
   virtual void qpropT(multi1d<T>& psi, 
-		      const multi1d<LatticeColorMatrix>& u, 
+		      const ConnectState& state, 
 		      const multi1d<T>& chi, 
 		      enum InvType invType,
 		      const Real& RsdCG, 
@@ -147,19 +172,17 @@ public:
    * \param MaxCG    maximum number of CG iterations ( Read )
    * \param ncg_had  number of CG iterations ( Write )
    *
-   * NOTE: maybe this should produce a quark prop foundry class object 
    */
   virtual void qprop(T& psi, 
-		     const multi1d<LatticeColorMatrix>& u, 
+		     const ConnectState& state, 
 		     const T& chi, 
 		     enum InvType invType,
 		     const Real& RsdCG, 
 		     int MaxCG, int& ncg_had) const = 0;
 
   //! Compute dS_f/dU
-  /*! NOTE: maybe this should produce a derivative foundry class object */
   virtual void dsdu(multi1d<LatticeColorMatrix>& result,
-		    const multi1d<LatticeColorMatrix>& u,
+		    const ConnectState& state,
 		    const multi1d<T>& psi) const
     {
       QDPIO::cerr << "FermionAction::dsdu not implemented" << endl;
@@ -194,9 +217,8 @@ class UnprecWilsonTypeFermAct : public WilsonTypeFermAct<T>
 public:
 #if 0
   //! Compute quark propagator
-  /*! NOTE: maybe this should produce a quark prop foundry */
   void qprop(T& psi, 
-	     const multi1d<LatticeColorMatrix>& u, 
+	     const ConnectState& state, 
 	     const T& chi, 
 	     enum InvType invType,
 	     const Real& RsdCG, 
@@ -216,7 +238,7 @@ class EvenOddPrecWilsonTypeFermAct : public WilsonTypeFermAct<T>
 public:
   //! Override to produce an even-odd prec. linear operator for this action
   /*! Covariant return rule - override base class function */
-  virtual const EvenOddPrecLinearOperator<T>* linOp(const multi1d<LatticeColorMatrix>& u) const = 0;
+  virtual const EvenOddPrecLinearOperator<T>* linOp(const ConnectState& state) const = 0;
 
   //! Compute quark propagator over base type
   /*! 
@@ -233,7 +255,7 @@ public:
    * \param ncg_had  number of CG iterations ( Write )
    */
   virtual void qpropT(T& psi, 
-		      const multi1d<LatticeColorMatrix>& u, 
+		      const ConnectState& state, 
 		      const T& chi, 
 		      enum InvType invType,
 		      const Real& RsdCG, 
@@ -254,7 +276,7 @@ public:
    * \param ncg_had  number of CG iterations ( Write )
    */
   virtual void qprop(typename BaseType<T>::Type_t& psi, 
-		     const multi1d<LatticeColorMatrix>& u, 
+		     const ConnectState& state, 
 		     const typename BaseType<T>::Type_t& chi, 
 		     enum InvType invType,
 		     const Real& RsdCG, 
@@ -275,7 +297,7 @@ class EvenOddPrecWilsonTypeFermAct< multi1d<T> > : public WilsonTypeFermAct< mul
 public:
   //! Override to produce an even-odd prec. linear operator for this action
   /*! Covariant return rule - override base class function */
-  virtual const EvenOddPrecLinearOperator< multi1d<T> >* linOp(const multi1d<LatticeColorMatrix>& u) const = 0;
+  virtual const EvenOddPrecLinearOperator< multi1d<T> >* linOp(const ConnectState& state) const = 0;
 
   //! Compute quark propagator over base type
   /*! 
@@ -292,7 +314,7 @@ public:
    * \param ncg_had  number of CG iterations ( Write )
    */
   virtual void qpropT(multi1d<T>& psi, 
-		      const multi1d<LatticeColorMatrix>& u, 
+		      const ConnectState& state, 
 		      const multi1d<T>& chi, 
 		      enum InvType invType,
 		      const Real& RsdCG, 
@@ -313,34 +335,12 @@ public:
    * \param ncg_had  number of CG iterations ( Write )
    */
   virtual void qprop(typename BaseType<T>::Type_t& psi, 
-		     const multi1d<LatticeColorMatrix>& u, 
+		     const ConnectState& state, 
 		     const typename BaseType<T>::Type_t& chi, 
 		     enum InvType invType,
 		     const Real& RsdCG, 
 		     int MaxCG, int& ncg_had) const;
   
-};
-
-
-//! Even-odd/unit-diag preconditioned Wilson-like fermion actions
-/*! @ingroup actions
- *
- * Even-odd with a unit diagonal preconditioned like Wilson-like fermion actions
- */
-template<typename T>
-class DiagEvenOddPrecWilsonTypeFermAct : public EvenOddPrecWilsonTypeFermAct<T>
-{
-public:
-#if 0
-  //! Compute quark propagator
-  /*! NOTE: maybe this should produce a quark prop foundry */
-  void qprop(T& psi, 
-	     const multi1d<LatticeColorMatrix>& u, 
-	     const T& chi, 
-	     enum InvType invType,
-	     const Real& RsdCG, 
-	     int MaxCG, int& ncg_had) const;
-#endif
 };
 
 
@@ -367,9 +367,8 @@ class UnprecStaggeredTypeFermAct : public StaggeredTypeFermAct<T>
 public:
 #if 0
   //! Compute quark propagator
-  /*! NOTE: maybe this should produce a quark prop foundry */
   void qprop(T& psi, 
-	     const multi1d<LatticeColorMatrix>& u, 
+	     const ConnectState& state, 
 	     const T& chi, 
 	     enum InvType invType,
 	     const Real& RsdCG, 
@@ -387,28 +386,6 @@ template<typename T>
 class EvenOddPrecStaggeredTypeFermAct : public StaggeredTypeFermAct<T>
 {
 public:
-};
-
-
-//! Even-odd/unit-diag preconditioned Staggered-like fermion actions
-/*! @ingroup actions
- *
- * Even-odd with a unit diagonal preconditioned like Staggered-like fermion actions
- */
-template<typename T>
-class DiagEvenOddPrecStaggeredTypeFermAct : public EvenOddPrecStaggeredTypeFermAct<T>
-{
-public:
-#if 0
-  //! Compute quark propagator
-  /*! NOTE: maybe this should produce a quark prop foundry */
-  void qprop(T& psi, 
-	     const multi1d<LatticeColorMatrix>& u, 
-	     const T& chi, 
-	     enum InvType invType,
-	     const Real& RsdCG, 
-	     int MaxCG, int& ncg_had) const;
-#endif
 };
 
 
