@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.41 2003-05-10 00:21:05 edwards Exp $
+# $Id: Makefile.in,v 1.42 2003-05-27 17:47:38 ikuro Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -164,7 +164,7 @@ GENERIC_SRCS = $(HDRS) gaus_smear.cc taproj.cc hotst.cc expm12.cc \
                klein_gord.cc mesplq.cc reunit.cc sftmom.cc srcfil.cc \
                readszin.cc su3proj.cc sun_proj.cc hyp_smear.cc \
                su2extract.cc sunfill.cc invcg2.cc qprop_io.cc p_src.cc \
-               D_j.cc
+               D_j.cc laplacian.cc
 
 #
 # Object files to add if building the Wilson Builds...
@@ -208,9 +208,9 @@ am__libchroma_a_SOURCES_DIST = chroma.h chromabase.h chromainc.h \
 	taproj.cc hotst.cc expm12.cc klein_gord.cc mesplq.cc reunit.cc \
 	sftmom.cc srcfil.cc readszin.cc su3proj.cc sun_proj.cc \
 	hyp_smear.cc su2extract.cc sunfill.cc invcg2.cc qprop_io.cc \
-	p_src.cc D_j.cc baryon_w.cc mesons_w.cc lwldslash_w.cc \
-	formfac_w.cc sink_smear2_w.cc barcomp_w.cc transf_w.cc \
-	unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
+	p_src.cc D_j.cc laplacian.cc baryon_w.cc mesons_w.cc \
+	lwldslash_w.cc formfac_w.cc sink_smear2_w.cc barcomp_w.cc \
+	transf_w.cc unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
 	unprec_wilson_dsdu_w.cc unprec_qprop_w.cc readszinqprop_w.cc \
 	readszinferm_w.cc overlapbu_linop_w.cc
 am__objects_1 =
@@ -220,7 +220,7 @@ am__objects_2 = $(am__objects_1) gaus_smear.$(OBJEXT) taproj.$(OBJEXT) \
 	srcfil.$(OBJEXT) readszin.$(OBJEXT) su3proj.$(OBJEXT) \
 	sun_proj.$(OBJEXT) hyp_smear.$(OBJEXT) su2extract.$(OBJEXT) \
 	sunfill.$(OBJEXT) invcg2.$(OBJEXT) qprop_io.$(OBJEXT) \
-	p_src.$(OBJEXT) D_j.$(OBJEXT)
+	p_src.$(OBJEXT) D_j.$(OBJEXT) laplacian.$(OBJEXT)
 am__objects_3 = baryon_w.$(OBJEXT) mesons_w.$(OBJEXT) \
 	lwldslash_w.$(OBJEXT) formfac_w.$(OBJEXT) \
 	sink_smear2_w.$(OBJEXT) barcomp_w.$(OBJEXT) transf_w.$(OBJEXT) \
@@ -249,8 +249,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/formfac_w.Po ./$(DEPDIR)/gaus_smear.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/hotst.Po ./$(DEPDIR)/hyp_smear.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/invcg2.Po ./$(DEPDIR)/klein_gord.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/lwldslash_w.Po ./$(DEPDIR)/mesons_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/mesplq.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/laplacian.Po ./$(DEPDIR)/lwldslash_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/mesons_w.Po ./$(DEPDIR)/mesplq.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/overlapbu_linop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/p_src.Po ./$(DEPDIR)/qprop_io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/readszin.Po \
@@ -341,6 +341,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyp_smear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/invcg2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/klein_gord.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/laplacian.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesons_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesplq.Po@am__quote@
