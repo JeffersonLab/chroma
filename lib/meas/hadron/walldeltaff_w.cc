@@ -1,4 +1,4 @@
-// $Id: walldeltaff_w.cc,v 1.6 2004-06-07 00:43:42 edwards Exp $
+// $Id: walldeltaff_w.cc,v 1.7 2004-06-11 01:56:02 edwards Exp $
 /*! \file
  *  \brief Wall-sink delta^+ -> gamma+delta^+ form-factors 
  *
@@ -133,6 +133,11 @@ void wallDeltaFormFac(WallFormFac_formfacs_t& form,
   if ( Ns != 4 || Nc != 3 || Nd != 4 )	// Code is specific to Ns=4, Nc=3, Nd=4
     return;
 
+  QDPIO::cout << "Entering wallDeltaFormFac" << endl;
+  QDP::StopWatch swatch;
+  swatch.reset();
+  swatch.start();
+
   form.subroutine = "wallDeltaFormFac";
 
   // Length of lattice in j_decay direction and 3pt correlations fcns
@@ -221,12 +226,19 @@ void wallDeltaFormFac(WallFormFac_formfacs_t& form,
     }
   }
 
+  swatch.stop();
+  QDPIO::cout << "Time(init): " << swatch.getTimeInSeconds() << " s" << endl;
+  swatch.start();
 
   // For calculational purpose, loop over insertions first.
   // This is out-of-order from storage within the data structure
   // Loop over gamma matrices of the insertion current of insertion current
   for(int gamma_ctr = 0; gamma_ctr < gamma_list.size(); ++gamma_ctr)
   {
+    swatch.stop();
+    QDPIO::cout << "Time(gamma_ctr=" << gamma_ctr << "): " << swatch.getTimeInSeconds() << " s" << endl;
+    swatch.start();
+
     int gamma_value = gamma_list[gamma_ctr];
     int mu = gamma_ctr % Nd;
     bool compute_nonlocal = (gamma_ctr < Nd) ? true : false;
@@ -234,6 +246,10 @@ void wallDeltaFormFac(WallFormFac_formfacs_t& form,
     // Loop over "u"=0 or "d"=1 pieces
     for(int ud = 0; ud < form.quark.size(); ++ud)
     {
+      swatch.stop();
+      QDPIO::cout << "Time(ud=" << ud << "): " << swatch.getTimeInSeconds() << " s" << endl;
+      swatch.start();
+
       WallFormFac_quark_t& quark = form.quark[ud];
       quark.quark_ctr = ud;
       quark.quark_name = quark_name[ud];
@@ -279,6 +295,10 @@ void wallDeltaFormFac(WallFormFac_formfacs_t& form,
       // Loop over "rho->rho"=0 types of form-factors
       for(int dp = 0; dp < quark.formfac.size(); ++dp)
       {
+	swatch.stop();
+	QDPIO::cout << "Time(dp=" << dp << "): " << swatch.getTimeInSeconds() << " s" << endl;
+	swatch.start();
+
 	WallFormFac_formfac_t& formfac = quark.formfac[dp];
 	formfac.formfac_ctr  = dp;
 	formfac.formfac_name = formfac_name[dp];
@@ -289,6 +309,10 @@ void wallDeltaFormFac(WallFormFac_formfacs_t& form,
 	// Loop over Lorentz indices of source and sink hadron operators
 	for(int lorz = 0; lorz < formfac.lorentz.size(); ++lorz)
 	{
+	  swatch.stop();
+	  QDPIO::cout << "Time(lorz=" << lorz << "): " << swatch.getTimeInSeconds() << " s" << endl;
+	  swatch.start();
+
 	  WallFormFac_lorentz_t& lorentz = formfac.lorentz[lorz];
 	  lorentz.lorentz_ctr = lorz;
 
@@ -351,6 +375,10 @@ void wallDeltaFormFac(WallFormFac_formfacs_t& form,
 	  // Loop over the spin projectors
 	  for (int proj = 0; proj < lorentz.projector.size(); ++proj) 
 	  {
+	    swatch.stop();
+	    QDPIO::cout << "Time(proj=" << proj << "): " << swatch.getTimeInSeconds() << " s" << endl;
+	    swatch.start();
+
 	    WallFormFac_projector_t& projector = lorentz.projector[proj];
 	    projector.proj_ctr  = proj;
 	    projector.proj_name = proj_name[proj];
@@ -369,14 +397,20 @@ void wallDeltaFormFac(WallFormFac_formfacs_t& form,
 	
 	    multi1d<WallFormFac_momenta_t>& momenta = insertion.momenta;
 
+	    QDPIO::cout << "Time(before sft): " << swatch.getTimeInSeconds() << " s" << endl;
 	    wallFormFacSft(momenta, corr_local_fn, corr_nonlocal_fn, phases,
 			   compute_nonlocal, t0, t_sink);
+	    QDPIO::cout << "Time(after sft): " << swatch.getTimeInSeconds() << " s" << endl;
 
 	  } // end for(proj)
 	}  // end for(dp)
       } // end for(lorz)
     } // end for(ud)
   } // end for(gamma_ctr)
+
+  swatch.stop();
+  QDPIO::cout << "Time(wallDeltaFormFac): " << swatch.getTimeInSeconds() << " s" << endl;
+  QDPIO::cout << "Exiting wallDeltaFormFac" << endl;
 
   END_CODE("wallDeltaFormFac");
 }
