@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hamilton.h,v 1.1 2004-07-23 11:54:40 bjoo Exp $
+// $Id: hamilton.h,v 1.2 2004-07-27 16:09:06 edwards Exp $
 /*! \file
  *  \brief Hamiltonian systems
  */
@@ -241,7 +241,8 @@ protected:
   
 	// Zero out any potential constant boundaries
 	// BJ: DO WE NEED THIS? FermAct doesnt have a zero() method
-	//getFermAct().zero(eta);  // WARNING: WHAT ABOUT SUBSET HERE???
+	// RGE: fixed
+	getFermAct().getFermBC().zero(eta);  // WARNING: WHAT ABOUT SUBSET HERE???
 
 	// chi = M_dag*eta
 	FT chi;
