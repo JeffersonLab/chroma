@@ -1,4 +1,4 @@
-// $Id: unprec_dwftransf_linop_w.cc,v 1.4 2004-11-15 21:52:18 edwards Exp $
+// $Id: unprec_dwftransf_linop_w.cc,v 1.5 2004-11-16 04:08:47 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -65,31 +65,53 @@ void UnprecDWFTransfLinOp::operator() (LatticeFermion& chi, const LatticeFermion
 {
   START_CODE();
 
-  // Apply   (b5+c5) D / ( 2 + (b5-c5) D )
-  chi = zero;
-
-  // First do tmp = (b5 + c5) D psi
-  LatticeFermion tmp,tmp2;
   int n_count;
 
-  // tmp2 = H_w psi
-  (*D_w)(tmp, psi, PLUS);
-  tmp2=GammaConst<Ns,Ns*Ns-1>()*tmp;
-    
-  (*D_denum)(tmp,tmp2 , MINUS);
+  // OK Copy from SZIN Code. DOn't DO hermitian op... just do the D's
+  switch(isign) { 
+  case PLUS:
+    {
+
+      // Apply chi = (b5+c5)M [ D_denum ]^{-1} psi
+      (*D_denum)(chi, psi, MINUS);
+      LatticeFermion tmp=psi; 
+      LatticeFermion tmp2;
+      InvCG2<LatticeFermion>(*D_denum, 
+			     chi, 
+			     tmp,
+			     inv_param.RsdCG,
+			     inv_param.MaxCG,
+			     n_count);
+      (*D_w)(chi, tmp, PLUS);
+   
+      break;
+    }
+  case MINUS:
+    {
+      LatticeFermion tmp;
+      chi = GammaConst<Ns,Ns*Ns-1>()*psi;      
+      (*D_denum)(tmp, chi, MINUS);
+
+      InvCG2<LatticeFermion>(*D_denum, 
+			     tmp, 
+			     chi,
+			     inv_param.RsdCG,
+			     inv_param.MaxCG,
+			     n_count);
       
-  // ii) Solve  tmp = [ D_denum^{dag} D_denum ]^{-1} tmp2
-  //               = D_denum^{-1} D_denum^{-dag} D_denum^{dag} psi
-  //               = D_denum^{-1} psi
-  InvCG2<LatticeFermion>(*D_denum, 
-			 tmp, 
-			 chi, 
-			 inv_param.RsdCG, 
-			 inv_param.MaxCG,
-			 n_count);
+      (*D_w)(tmp, chi, PLUS);
+      chi  = GammaConst<Ns,Ns*Ns-1>()*tmp;
+      break;
+    }
+  default:
+    {
+      QDPIO::cerr << "Bad option " << isign << endl;
+      QDP_abort(1);
+      break;
+    }
+  }
+    
   chi *= (b5 + c5);
-  QDPIO::cout << "DWFTransf Denominator invert n_count = " << n_count << endl;
-  
   END_CODE();
 }
 

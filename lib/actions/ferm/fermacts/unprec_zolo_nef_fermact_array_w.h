@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_zolo_nef_fermact_array_w.h,v 1.3 2004-11-01 12:52:47 bjoo Exp $
+// $Id: unprec_zolo_nef_fermact_array_w.h,v 1.4 2004-11-16 04:08:47 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned NEF domain-wall fermion action
  */
@@ -35,6 +35,7 @@ namespace Chroma
     Real b5;
     Real c5;
     int  N5;
+    CoeffType approximation_type;
   };
 
 
@@ -59,17 +60,18 @@ namespace Chroma
 			      const Real& Mass_, 
 			      const Real& b5_,
 			      const Real& c5_,
-			      int N5_) : 
-      fbc(fbc_), OverMass(OverMass_), Mass(Mass_), b5(b5_), c5(c5_), N5(N5_) {init();}
+			      int N5_,
+			      const CoeffType& approx_type_) : 
+      fbc(fbc_), OverMass(OverMass_), Mass(Mass_), b5(b5_), c5(c5_), N5(N5_), approximation_type(approx_type_) {init();}
 
     //! General FermBC
     UnprecZoloNEFFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
 			      const UnprecZoloNEFFermActArrayParams& param) :
-      fbc(fbc_), OverMass(param.OverMass), Mass(param.Mass), b5(param.b5), c5(param.c5), N5(param.N5) {init();}
+      fbc(fbc_), OverMass(param.OverMass), Mass(param.Mass), b5(param.b5), c5(param.c5), N5(param.N5), approximation_type(param.approximation_type) {init();}
 
     //! Copy constructor
     UnprecZoloNEFFermActArray(const UnprecZoloNEFFermActArray& a) : 
-      fbc(a.fbc), OverMass(a.OverMass), Mass(a.Mass), b5(a.b5), c5(a.c5), N5(a.N5) {}
+      fbc(a.fbc), OverMass(a.OverMass), Mass(a.Mass), b5(a.b5), c5(a.c5), N5(a.N5), approximation_type(a.approximation_type)  {}
 
     //! Assignment
     UnprecZoloNEFFermActArray& operator=(const UnprecZoloNEFFermActArray& a)
@@ -80,6 +82,7 @@ namespace Chroma
 	b5=a.b5;
 	c5=a.c5;
 	N5=a.N5; 
+	approximation_type = a.approximation_type;
 	return *this;
       }
 
@@ -192,6 +195,7 @@ namespace Chroma
     Real b5;
     Real c5;
     int  N5;
+    CoeffType approximation_type;
   };
 
 }

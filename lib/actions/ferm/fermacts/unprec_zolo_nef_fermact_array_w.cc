@@ -1,4 +1,4 @@
-// $Id: unprec_zolo_nef_fermact_array_w.cc,v 1.5 2004-11-13 17:32:11 bjoo Exp $
+// $Id: unprec_zolo_nef_fermact_array_w.cc,v 1.6 2004-11-16 04:08:47 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned NEF fermion action
  */
@@ -57,6 +57,7 @@ namespace Chroma
       read(paramtop, "b5", b5);
       read(paramtop, "c5", c5);
       read(paramtop, "N5", N5);
+      read(paramtop, "ApproximationType", approximation_type);
     }
     catch(const string& e) { 
       QDPIO::cerr << "Caught Exception : " << e << endl;
@@ -100,11 +101,32 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    Real epsilon = approxMin / approxMax;
-  
     zolotarev_data *rdata;
-    rdata=zolotarev(toFloat(epsilon), N5, 0);
-
+    Real epsilon;
+    Real scale_factor;
+    switch(approximation_type) { 
+    case COEFF_TYPE_ZOLOTAREV:
+      {
+	epsilon = approxMin / approxMax;
+	rdata=zolotarev(toFloat(epsilon), N5, 0);
+	scale_factor = approxMax;
+	break;
+      }
+    case COEFF_TYPE_TANH_UNSCALED:
+      {
+	epsilon = approxMin;
+	rdata=higham(toFloat(epsilon), N5);
+	scale_factor = Real(1);
+	break;
+      }
+    default:
+      { 
+	QDPIO::cout << "Unsupported Coefficient Type : " << approximation_type << endl;
+	QDP_abort(1);
+	break;
+      }
+    };
+      
     if( rdata->n != N5 ) { 
       QDPIO::cerr << "Error:rdata->n != N5" << endl;
       QDP_abort(1);
@@ -114,7 +136,7 @@ namespace Chroma
 
     multi1d<Real> gamma(N5);
     for(int i=0; i < N5; i++) { 
-      gamma[i] = Real(rdata->gamma[i])*approxMax;
+      gamma[i] = Real(rdata->gamma[i])*scale_factor;
     }
 
     zolotarev_free(rdata);
