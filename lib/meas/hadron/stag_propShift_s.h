@@ -10,7 +10,7 @@
 
 int deltaToPropIndex(multi1d<int>& delta);
 
-LatticePropagator shiftDeltaProp(multi1d<int>& delta, 
-                                 const LatticePropagator& src);
+LatticeStaggeredPropagator shiftDeltaProp(multi1d<int>& delta, 
+                                 const LatticeStaggeredPropagator& src);
 
 #endif

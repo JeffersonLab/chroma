@@ -36,8 +36,8 @@ int deltaToPropIndex(multi1d<int>& delta)
  *  possibly 1 in each dimension
  */
 
-LatticePropagator shiftDeltaProp(multi1d<int>& delta,
-                                 const LatticePropagator& src)
+LatticeStaggeredPropagator shiftDeltaProp(multi1d<int>& delta,
+                                 const LatticeStaggeredPropagator& src)
 {
 
   int mu;
@@ -54,8 +54,8 @@ LatticePropagator shiftDeltaProp(multi1d<int>& delta,
     }
   }
 
-  LatticePropagator ret_val = src;
-  LatticePropagator tmp;
+  LatticeStaggeredPropagator ret_val = src;
+  LatticeStaggeredPropagator tmp;
 
   for( mu = 0; mu < Nd; mu++) {
     if( delta[mu] == 1 ) {
