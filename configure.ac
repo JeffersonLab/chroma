@@ -12,157 +12,121 @@ dnl
 dnl --with-xxxx and --enable-xxxx switches 
 dnl
 
-dnl Balint Joo 13/12/2002 
-dnl Options for finding out where MPI/GM/QMP is
-dnl folowing George Flemings QMP mods
+dnl George T. Fleming, 12 February 2003
+dnl Complete rewrite of configure switches based on new config scripts.
+
 
 dnl --enable-fermion-type
-AC_ARG_ENABLE(fermion-type,
-	      AC_HELP_STRING([--enable-fermion-type=<fermion type>],
-	        [ Set the fermion type (wilson or staggered) default is wilson ]),
-	      [ ac_fermion_type="$enable_fermion_type" ],
-	      [ ac_fermion_type="wilson" ] ) 
+AC_ARG_ENABLE(
+  [fermion-type],
+  AC_HELP_STRING(
+    [--enable-fermion-type=<fermion type>],
+    [Set the fermion type (wilson or staggered) default is wilson]
+  ),
+  [
+    case "$enable_fermion_type" in
+      STAG*) ac_fermion_type="staggered" ;;
+      Stag*) ac_fermion_type="staggered" ;;
+      stag*) ac_fermion_type="staggered" ;;
+
+      WIL*)  ac_fermion_type="wilson" ;;
+      Wil*)  ac_fermion_type="wilson" ;;
+      wil*)  ac_fermion_type="wilson" ;;
+
+      *)     ac_fermion_type="$enable_fermion_type" ;;
+    esac
+  ],
+  [ac_fermion_type="wilson"]
+) 
 
 
 dnl --with-qdp=DIR
 AC_ARG_WITH(qdp,
-  AC_HELP_STRING([--with-qdp=DIR],
-    [ Build SZIN++ on top of QDP++ where QDP++ is installed in DIR]),
-    [ QDP_HOME="$with_qdp"
-      AC_MSG_CHECKING([if $QDP_HOME/config/qdp_build_env.sh exists])
-      if test -f $QDP_HOME/config/qdp_build_env.sh ;
-      then
-	      AC_MSG_RESULT([yes])
-	      AC_MSG_NOTICE([ Sourcing qdp_build_env.sh in $QDP_HOME/config ])
-	      source $QDP_HOME/config/qdp_build_env.sh
-      else
-	      AC_MSG_RESULT([no])
-	      AC_MSG_NOTICE([ configuration may still work if you set the ])
-	      AC_MSG_NOTICE([ --with-xxxx switches or environment variables])
-      fi]
+  AC_HELP_STRING(
+    [--with-qdp=DIR],
+    [Build QDP++ Apps on top of QDP++ where QDP++ is installed in DIR]
+  ),
+  [QDPXX_HOME="$with_qdp"]
 )
-	      
-dnl --with-qdp-cxxflags
-AC_ARG_WITH( qdp-cxxflags,
-  AC_HELP_STRING([--with-qdp-cxxflags=QDP_CXXFLAGS],
-    [To pass include path to QDP header files via compiler flag
-      -I]),
-  [QDP_CXXFLAGS="$with_qdp_cxxflags"])
-AC_SUBST(QDP_CXXFLAGS)
 
-dnl --with-qdp-ldflags
-AC_ARG_WITH( qdp-ldflags,
-  AC_HELP_STRING([--with-qdp-ldflags=QDP_LDFLAGS],
-    [To pass QDP library search path via compiler flag -L]),
-  [QDP_LDFLAGS="$with_qdp_ldflags"])
-AC_SUBST(QDP_LDFLAGS)
+if test "X${QDPXX_HOME}X" = "XX" ; then
+  AC_PATH_PROG(QDPXX_CONFIG, [qdp++-config], [])
+else
+  AC_PATH_PROG(QDPXX_CONFIG, [qdp++-config], [], [${QDPXX_HOME}/bin:${PATH}])
+fi
 
-dnl --with-qdp-libs 
-AC_ARG_WITH( qdp-libs,
-  AC_HELP_STRING([--with-qdp-libs=QDP_LIBS],
-    [To pass optional list of QDP libraries to linker via compiler flag -l]),
-  [QDP_LIBS="$with_qdp_libs"])
-AC_SUBST(QDP_LIBS)
+if test "X${QDPXX_CONFIG}X" = "XX" ; then
+  AC_MSG_ERROR([QDP++ configuration program qdp++-config not found.])
+fi
 
-dnl now the qmp-flags
-dnl --with-qmp-cxxflags
-AC_ARG_WITH( qmp-cxxflags,
-  AC_HELP_STRING([--with-qmp-cxxflags=QMP_CXXFLAGS],
-    [To pass optional include path to QMP header files via compiler flag
-      -I]),
-  [QMP_CXXFLAGS="$with_qmp_cxxflags"] )
-AC_SUBST(QMP_CXXFLAGS)
-
-dnl --with-qmp-ldflags
-AC_ARG_WITH( qmp-ldflags, 
-  AC_HELP_STRING([--with-qmp-ldflags=QMP_LDFLAGS],
-    [To pass optional link path to QMP libraries via compiler flag -L]),
-    [QMP_LDFLAGS="$with_qmp_ldflags"])
-AC_SUBST(QMP_LDFLAGS)
-
-dnl --with-qmp-libs
-AC_ARG_WITH( qmp-libs,
-  AC_HELP_STRING([-with-qmp-libs=QMP_LIBS],
-    [To pass optional libraries to QMP libraries via compiler flag -l]),
-    [QMP_LIBS="$with_qmp_libs"])
-AC_SUBST(QMP_LIBS)
-
-dnl Now the QMP Comms Flags
-
-dnl --with-qmp-comms-type
-AC_ARG_WITH(qmp-comms-type,
-  AC_HELP_STRING([--with-qmp-comms-type=TYPE],
-    [Build QMP on top of MPI or GM.  If MPI over GM is desired, choose MPI.
-      Default is MPI.]),
-  [case "${with_qmp_comms_type}" in
-    MPI) ;;
-    mpi) with_qmp_comms_type=MPI ;;
-    GM)  ;;
-    gm) with_qmp_comms_type=GM ;;
-    *) AC_MSG_ERROR([bad value "${with_qmp_comms_type}"
-      for --with-qmp-comms-type]) ;;
-    esac],
-  [with_qmp_comms_type=MPI])
-
-dnl --with-qmp-comms-cxxflags
-AC_ARG_WITH( qmp-comms-cxxflags,
-  AC_HELP_STRING([--with-qmp-comms-cxxflags=QMP_COMMS_CXXFLAGS],
-    [To pass optional include path to comms header files via compiler flag
-      -I]),
-  [QMP_COMMS_CXXFLAGS="$with_qmp_comms_cxxflags"] )
-AC_SUBST(QMP_COMMS_CXXFLAGS)
-
-dnl --with-qmp-comms-ldflags
-AC_ARG_WITH( qmp-comms-ldflags,
-  AC_HELP_STRING([--with-qmp-comms-ldflags=QMP_COMMS_LDFLAGS],
-    [To pass optional library search path to comms libraries via compiler
-      flag -L]),
-  [QMP_COMMS_LDFLAGS="$with_qmp_comms_ldflags"])
-AC_SUBST(QMP_COMMS_LDFLAGS)
-
-dnl --with-qmp-comms-libs
-AC_ARG_WITH( qmp-comms-libs,
-  AC_HELP_STRING([--with-qmp-comms-libs=QMP_COMMS_LIBS],
-    [To pass optional list of comms libraries to linker via compiler flag -l]),
-  [QMP_COMMS_LIBS="$with_qmp_comms_libs"])
-AC_SUBST(QMP_COMMS_LIBS)
+AC_MSG_NOTICE([Found QDP++ configuration program ${QDPXX_CONFIG}])
+AC_SUBST(QDPXX_CXXFLAGS, "`${QDPXX_CONFIG} --cxxflags`")
+AC_MSG_NOTICE([QDP++ compile flags: ${QDPXX_CXXFLAGS}])
+AC_SUBST(QDPXX_LDFLAGS,  "`${QDPXX_CONFIG} --ldflags`")
+AC_MSG_NOTICE([QDP++ linking flags: ${QDPXX_LDFLAGS}])
+AC_SUBST(QDPXX_LIBS,     "`${QDPXX_CONFIG} --libs`")
+AC_MSG_NOTICE([QDP++ libraries flags: ${QDPXX_LIBS}])
+AC_SUBST(QDPXX_ND,       "`${QDPXX_CONFIG} --Nd`")
+if test "X${QDPXX_ND}X" = "XX" ; then
+  AC_MSG_ERROR([Cannot determine QDP++ spacetime dimension])
+else
+  AC_MSG_NOTICE([QDP++ spacetime dimension: ${QDPXX_ND}])
+fi
+AC_SUBST(QDPXX_NC,       "`${QDPXX_CONFIG} --Nc`")
+AC_MSG_NOTICE([QDP++ number of colors: ${QDPXX_NC}])
+AC_SUBST(QDPXX_NS,       "`${QDPXX_CONFIG} --Ns`")
+if test "X${QDPXX_NS}X" = "XX" ; then
+  AC_MSG_ERROR([Cannot determine number of spin components in QDP++])
+else
+  AC_MSG_NOTICE([QDP++ number of spin components: ${QDPXX_NS}])
+fi
 
 
 dnl
-dnl Check the fermion type
 dnl
 case $ac_fermion_type in
-  wilson) 
-    AC_MSG_NOTICE([ Configuring SZIN++ with WILSON-like fermions ])
-    ;;
   staggered)
-    AC_MSG_NOTICE([ Configuring SZIN++ with STAGGERED-like fermions ])
+    if test $QDPXX_NS -ne 1 ; then
+      AC_MSG_ERROR([STAGGERED-like fermions should have Ns=1. Check QDP++])
+    else 
+      AC_MSG_NOTICE([Configuring QDP++ Apps with STAGGERED-like fermions])
+    fi
+    ;;
+  wilson)
+    AC_MSG_NOTICE([Configuring QDP++ Apps with WILSON-like fermions])
     ;;
   *)
-    AC_MSG_ERROR([ must specify either wilson or staggered with --enable-fermion-type])
+    AC_MSG_ERROR([${ac_fermion_type}-like fermions not supported yet.])
     ;;
 esac
+
+AM_CONDITIONAL(BUILD_STAGGERED_LIBS,
+  [test "X${ac_fermion_type}X" = "XstaggeredX"])
+AM_CONDITIONAL(BUILD_WILSON_LIBS,
+  [test "X${ac_fermion_type}X" = "XwilsonX"])
+
 
 dnl Try to compile a QDP++ program to check the --with options
 AC_MSG_CHECKING([if we can compile/link a simple QDP++ program])
 
 dnl This function is defined in acinclude.m4
 dnl it tries to try to compile the program 
-PAC_QDP_LINK_CXX_FUNC( ${QDP_CXXFLAGS}, ${QDP_LDFLAGS}, ${QDP_LIBS}, dnl
-                       ${QMP_CXXFLAGS}, ${QMP_LDFLAGS}, ${QMP_LIBS}, dnl
-		       ${QMP_COMMS_CXXFLAGS}, ${QMP_COMMS_LDFLAGS},  dnl
-                       ${QMP_COMMS_LIBS}, , , [qdp_link_ok=yes], [qdp_link_ok=no] )
-if test "X${qdp_link_ok}X" = "XyesX" ; then 
+PAC_QDPXX_LINK_CXX_FUNC(
+  ${QDPXX_CXXFLAGS},
+  ${QDPXX_LDFLAGS},
+  ${QDPXX_LIBS},
+  ,
+  ,
+  [qdpxx_link_ok=yes],
+  [qdpxx_link_ok=no]
+)
+if test "X${qdpxx_link_ok}X" = "XyesX" ; then 
   AC_MSG_RESULT(yes)
 else 
   AC_MSG_RESULT(no)
-  AC_MSG_ERROR( [ Cannot compile/link a program with QDP please check/set 
-   the values of QDP_CXXFLAGS, QDP_LDFLAGS, QDP_LIBS, QMP_CXXFLAGS, QMP_LDFLAGS
-   QMP_LIBS, QMP_COMMS_CXXFLAGS, QMP_COMMS_LDFLAGS, QMP_COMMS_LIBS ] )
+  AC_MSG_ERROR([Cannot compile/link a program with QDP++.
+    Use --with-qdp++=<dir> to select a working version.])
 fi 
-
-dnl Set a conditional to construct the list of sources for libszin.a
-AM_CONDITIONAL(BUILD_WILSON_LIBS, test "X${ac_fermion_type}X" = "XwilsonX" )
 
 dnl Make the Makefiles
 AC_CONFIG_FILES(Makefile)

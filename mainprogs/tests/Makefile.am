@@ -10,11 +10,9 @@ INCFLAGS = -I@top_srcdir@/include
 #
 # Any other compiler flags
 #
-AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDP_CXXFLAGS@ @QMP_CXXFLAGS@
-AM_LDFLAGS = -L@top_builddir@/lib @QDP_LDFLAGS@ @QMP_LDFLAGS@ \
-	      @QMP_COMMS_LDFLAGS@ @LDFLAGS@
-
-LDADD = -lszin @QDP_LIBS@ @QMP_LIBS@ @QMP_COMMS_LIBS@ @LIBS@
+AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDPXX_CXXFLAGS@
+AM_LDFLAGS = -L@top_builddir@/lib @LDFLAGS@ @QDPXX_LDFLAGS@
+LDADD = -lszin @QDPXX_LIBS@ @LIBS@
 
 noinst_PROGRAMS = t_mesplq t_dslashm t_io
 
