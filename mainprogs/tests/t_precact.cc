@@ -1,4 +1,4 @@
-// $Id: t_precact.cc,v 1.14 2005-02-13 04:48:37 edwards Exp $
+// $Id: t_precact.cc,v 1.15 2005-02-13 18:15:19 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -447,6 +447,13 @@ int main(int argc, char **argv)
 							    state_info_path_un));
   
 
+    // Sanity check
+    if (S_f_eo->size() != S_f_un->size())
+    {
+      QDPIO::cout << "Prec and unprec fermacts do not have same size" << endl;
+      QDP_abort(1);
+    }
+
     //-------------------------------------------------------------------------------
     {
       Handle<const EvenOddPrecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> > > AP(S_f_eo->linOp(state_eo));
@@ -454,7 +461,7 @@ int main(int argc, char **argv)
       
       QDPIO::cout << "Check bulk linops" << endl;
       check_linops(xml_out, "Bulk", *AP, *AU);
-
+      xml_out.flush();
 
       Handle< const SystemSolver<LatticeFermion> > PP = S_f_eo->qprop(state_eo,
 								      input.param.invParam);
@@ -463,10 +470,11 @@ int main(int argc, char **argv)
 
       QDPIO::cout << "Check qprop" << endl;
       check_qprop(xml_out, "Qprop", *PP, *UP);
-
+      xml_out.flush();
 
       QDPIO::cout << "Check bulk derivatives" << endl;
       check_derivs(xml_out, "Bulk", *AP, *AU);
+      xml_out.flush();
     }
 
 
@@ -477,9 +485,11 @@ int main(int argc, char **argv)
       
       QDPIO::cout << "Check PV linops" << endl;
       check_linops(xml_out, "PV", *AP, *AU);
+      xml_out.flush();
 
       QDPIO::cout << "Check PV derivatives" << endl;
       check_derivs(xml_out, "PV", *AP, *AU);
+      xml_out.flush();
     }
 
   }
