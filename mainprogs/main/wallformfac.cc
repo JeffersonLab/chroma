@@ -1,4 +1,4 @@
-// $Id: wallformfac.cc,v 1.16 2004-04-18 20:41:24 edwards Exp $
+// $Id: wallformfac.cc,v 1.17 2004-04-19 02:30:56 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions with a wall sink
  *
@@ -172,7 +172,7 @@ main(int argc, char *argv[])
   write(xml_out, "Config_info", gauge_xml);
 
   push(xml_out, "Output_version");
-  write(xml_out, "out_version", 1);
+  write(xml_out, "out_version", 2);
   pop(xml_out);
 
   // First calculate some gauge invariant observables just for info.
@@ -293,16 +293,24 @@ main(int argc, char *argv[])
   pop(xml_out);
 
   
+  /*
+   * Construct fermionic BC.
+   * The BC is used to modify the U fields used for the CONSERVERED currents
+   * within the formfac routines
+   */
+  {
+    SimpleFermBC<LatticeFermion>  fbc(forward_prop_header.boundary);
+    fbc.modifyU(u);   // modify the U fields
+  }
+
+
   //
   // Now the 3pt contractions
   //
   SftMom phases(input.param.mom2_max, false, j_decay);
 
-  push(xml_out, "Wilson_3Pt_fn_measurements");
-  write(xml_out, "formfac_type", input.param.formfac_type);
-
   XMLArrayWriter  xml_seq_src(xml_out, input.param.formfac_type.size());
-  push(xml_seq_src, "Formfac_contractions");
+  push(xml_seq_src, "Wilson_3Pt_fn_measurements");
 
   // Loop over types of form-factor
   for (int formfac_ctr = 0; formfac_ctr < input.param.formfac_type.size(); ++formfac_ctr) 
@@ -339,10 +347,9 @@ main(int argc, char *argv[])
     }
 
     pop(xml_seq_src);   // elem
-  } // end loop over formfac_contractions
+  } // end loop over formfac_ctr
 
-  pop(xml_seq_src);  // formfac_contractions
-  pop(xml_out);  // Wilson_3Pt_fn_measurements
+  pop(xml_seq_src);  // Wilson_3Pt_fn_measurements
 
   // Close the output file XMLDAT
   pop(xml_out);     // wallFormFac
