@@ -1,4 +1,4 @@
-// $Id: t_propagator_s.cc,v 1.18 2004-10-30 11:14:32 mcneile Exp $
+// $Id: t_propagator_s.cc,v 1.19 2004-10-30 13:41:21 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -420,15 +420,16 @@ int main(int argc, char **argv)
 
     staggered_pions pseudoscalar(t_length) ; 
     staggered_scalars  scalar_meson(t_length) ; 
+    vector_meson rho(t_length) ; 
      
     pseudoscalar.compute(stag_prop, j_decay);
     scalar_meson.compute(stag_prop,  j_decay);
-
+    rho.compute(stag_prop,  j_decay);
     
     // write the correlators to disk
     pseudoscalar.dump(t_source,xml_out);
     scalar_meson.dump(t_source,xml_out);
-    
+    rho.dump(t_source,xml_out);
 
     // Instantiate XML buffer to make the propagator header
     XMLBufferWriter prop_xml;
