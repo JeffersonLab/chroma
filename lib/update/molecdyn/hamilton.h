@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hamilton.h,v 1.4 2003-12-31 23:46:33 edwards Exp $
+// $Id: hamilton.h,v 1.5 2003-12-31 23:59:28 edwards Exp $
 /*! \file
  *  \brief Hamiltonian systems
  */
@@ -310,7 +310,6 @@ public:
     {
       LatticeColorMatrix tmp_1;
       LatticeColorMatrix tmp_2;
-      LatticeBoolean lbad;
 
       for(int mu=0; mu < Nd; ++mu)
       {
@@ -327,7 +326,7 @@ public:
 	/* Fill new u and reunitarize ---- */
 	u[mu] = tmp_2;
 	int numbad;
-	reunit(u[mu], lbad, REUNITARIZE_ERROR, numbad); 
+	reunit(u[mu], REUNITARIZE_ERROR, numbad); 
       }
     }
 
