@@ -1,4 +1,4 @@
-// $Id: quarkprop4_w.cc,v 1.10 2004-02-11 12:51:33 bjoo Exp $
+// $Id: quarkprop4_w.cc,v 1.11 2004-04-01 18:09:58 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -34,7 +34,9 @@ void quarkProp4_a(LatticePropagator& q_sol,
 		  Handle<const ConnectState> state,
 		  enum InvType invType,
 		  const Real& RsdCG, 
-		  int MaxCG, int& ncg_had)
+		  int MaxCG, 
+		  bool nonRelProp,
+		  int& ncg_had)
 {
   START_CODE("quarkProp4");
 
@@ -42,15 +44,16 @@ void quarkProp4_a(LatticePropagator& q_sol,
 
   ncg_had = 0;
 
+  int max_spin = (nonRelProp) ? Ns>>1 : Ns;
+
 //  LatticeFermion psi = zero;  // note this is ``zero'' and not 0
 
   // This version loops over all color and spin indices
   for(int color_source = 0; color_source < Nc; ++color_source)
   {
-    for(int spin_source = 0; spin_source < Ns; ++spin_source)
+    for(int spin_source = 0; spin_source < max_spin; ++spin_source)
     {
       LatticeFermion psi = zero;  // note this is ``zero'' and not 0
-
       LatticeFermion chi;
 
       // Extract a fermion source
@@ -88,6 +91,34 @@ void quarkProp4_a(LatticePropagator& q_sol,
     }	/* end loop over spin_source */
   } /* end loop over color_source */
 
+
+  if ( nonRelProp )
+  {
+    /* Since this is a non-relativistic prop 
+     * negate the quark props 'lower' components
+     * This is because I should have only done a half inversion 
+     * on non relativistic channels, where the last two columns of the 
+     * source MUST be the negation of the first two columns. 
+     * Hence the last two columns of the solution must also be 
+     * negations of the first two columns. The half inversion itself
+     * has not put in the minus sign, it just copied the columns.
+     * The post multiply by Gamma_5 adds in the required - sign 
+     * in the last two columns 
+     */ 
+    /* Apply Gamma_5 = Gamma(15) by negating the fermion extracted */
+    for(int color_source = 0; color_source < Nc ; ++color_source) 
+    {
+      for(int spin_source = max_spin; spin_source < Ns; ++spin_source) 
+      { 
+	int copyfrom = spin_source - max_spin;
+	LatticeFermion psi;
+
+	PropToFerm(q_sol, psi, color_source, copyfrom);
+	FermToProp(LatticeFermion(-psi), q_sol, color_source, spin_source);
+      }
+    }
+  }
+
   pop(xml_out);
 
   END_CODE("quarkProp4");
@@ -114,9 +145,11 @@ void quarkProp4(LatticePropagator& q_sol,
 		Handle<const ConnectState> state,
 		enum InvType invType,
 		const Real& RsdCG, 
-		int MaxCG, int& ncg_had)
+		int MaxCG, 
+		bool nonRelProp,
+		int& ncg_had)
 {
-  quarkProp4_a(q_sol, xml_out, q_src, S_f, state, invType, RsdCG, MaxCG, ncg_had);
+  quarkProp4_a(q_sol, xml_out, q_src, S_f, state, invType, RsdCG, MaxCG, nonRelProp, ncg_had);
 }
 
 //! Given a complete propagator as a source, this does all the inversions needed
@@ -139,9 +172,11 @@ void quarkProp4(LatticePropagator& q_sol,
 		Handle<const ConnectState> state,
 		enum InvType invType,
 		const Real& RsdCG, 
-		int MaxCG, int& ncg_had)
+		int MaxCG, 
+		bool nonRelProp,
+		int& ncg_had)
 {
-  quarkProp4_a(q_sol, xml_out, q_src, S_f, state, invType, RsdCG, MaxCG, ncg_had);
+  quarkProp4_a(q_sol, xml_out, q_src, S_f, state, invType, RsdCG, MaxCG, nonRelProp, ncg_had);
 }
 
 
@@ -165,9 +200,11 @@ void quarkProp4(LatticePropagator& q_sol,
 		Handle<const ConnectState> state,
 		enum InvType invType,
 		const Real& RsdCG, 
-		int MaxCG, int& ncg_had)
+		int MaxCG, 
+		bool nonRelProp,
+		int& ncg_had)
 {
-  quarkProp4_a(q_sol, xml_out, q_src, S_f, state, invType, RsdCG, MaxCG, ncg_had);
+  quarkProp4_a(q_sol, xml_out, q_src, S_f, state, invType, RsdCG, MaxCG, nonRelProp, ncg_had);
 }
 
 
@@ -193,8 +230,10 @@ void quarkProp4(LatticePropagator& q_sol,
 		Handle<const ConnectState> state,
 		enum InvType invType,
 		const Real& RsdCG, 
-		int MaxCG, int& ncg_had)
+		int MaxCG, 
+		bool nonRelProp,
+		int& ncg_had)
 {
-  quarkProp4_a(q_sol, xml_out, q_src, S_f, state, invType, RsdCG, MaxCG, ncg_had);
+  quarkProp4_a(q_sol, xml_out, q_src, S_f, state, invType, RsdCG, MaxCG, nonRelProp, ncg_had);
 }
 

@@ -1,4 +1,4 @@
-// $Id: quarkprop4_w.h,v 1.9 2004-03-29 21:32:28 edwards Exp $
+// $Id: quarkprop4_w.h,v 1.10 2004-04-01 18:09:58 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -20,6 +20,7 @@
  * \param invType  inverter type ( Read (
  * \param RsdCG    CG (or MR) residual used here ( Read )
  * \param MaxCG    maximum number of CG iterations ( Read )
+ * \param nonRelProp compute only a non-relativistic prop ( Read )
  * \param ncg_had  number of CG iterations ( Write )
  */
 
@@ -30,7 +31,9 @@ void quarkProp4(LatticePropagator& q_sol,
 		Handle<const ConnectState> state,
 		enum InvType invType,
 		const Real& RsdCG, 
-		int MaxCG, int& ncg_had);
+		int MaxCG, 
+		bool nonRelProp,
+		int& ncg_had);
 
 //! Given a complete propagator as a source, this does all the inversions needed
 /*! \ingroup qprop
@@ -42,6 +45,7 @@ void quarkProp4(LatticePropagator& q_sol,
  * \param invType  inverter type ( Read (
  * \param RsdCG    CG (or MR) residual used here ( Read )
  * \param MaxCG    maximum number of CG iterations ( Read )
+ * \param nonRelProp compute only a non-relativistic prop ( Read )
  * \param ncg_had  number of CG iterations ( Write )
  */
 
@@ -52,7 +56,9 @@ void quarkProp4(LatticePropagator& q_sol,
 		Handle<const ConnectState> state,
 		enum InvType invType,
 		const Real& RsdCG, 
-		int MaxCG, int& ncg_had);
+		int MaxCG, 
+		bool nonRelProp,
+		int& ncg_had);
 
 
 //! Given a complete propagator as a source, this does all the inversions needed
@@ -65,6 +71,7 @@ void quarkProp4(LatticePropagator& q_sol,
  * \param invType  inverter type ( Read (
  * \param RsdCG    CG (or MR) residual used here ( Read )
  * \param MaxCG    maximum number of CG iterations ( Read )
+ * \param nonRelProp compute only a non-relativistic prop ( Read )
  * \param ncg_had  number of CG iterations ( Write )
  */
 
@@ -75,7 +82,9 @@ void quarkProp4(LatticePropagator& q_sol,
 		Handle<const ConnectState> state,
 		enum InvType invType,
 		const Real& RsdCG, 
-		int MaxCG, int& ncg_had);
+		int MaxCG, 
+		bool nonRelProp,
+		int& ncg_had);
 
 
 #include "actions/ferm/fermacts/prec_dwf_fermact_base_array_w.h"
@@ -90,6 +99,7 @@ void quarkProp4(LatticePropagator& q_sol,
  * \param invType  inverter type ( Read (
  * \param RsdCG    CG (or MR) residual used here ( Read )
  * \param MaxCG    maximum number of CG iterations ( Read )
+ * \param nonRelProp compute only a non-relativistic prop ( Read )
  * \param ncg_had  number of CG iterations ( Write )
  */
 
@@ -100,6 +110,8 @@ void quarkProp4(LatticePropagator& q_sol,
 		Handle<const ConnectState> state,
 		enum InvType invType,
 		const Real& RsdCG, 
-		int MaxCG, int& ncg_had);
+		int MaxCG, 
+		bool nonRelProp,
+		int& ncg_had);
 
 #endif

@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 1.11 2004-02-23 03:10:40 edwards Exp $
+// $Id: qprop_io.cc,v 1.12 2004-04-01 18:09:58 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -221,7 +221,13 @@ void read(XMLReader& xml, const string& path, ChromaSeqProp_t& param)
   {
     /**************************************************************************/
   case 1:
+    param.nonRelSeqProp = false;
     /**************************************************************************/
+    break;
+
+    /**************************************************************************/
+  case 2:
+    read(paramtop, "nonRelSeqProp", param.nonRelSeqProp);
     break;
 
   default:
@@ -384,8 +390,9 @@ void write(XMLWriter& xml, const string& path, const ChromaSeqProp_t& param)
 {
   push(xml, path);
 
-  int version = 1;
+  int version = 2;
   write(xml, "version", version);
+  write(xml, "nonRelSeqProp", param.nonRelSeqProp);
   write(xml, "Seq_src", param.Seq_src);
   write(xml, "InvertParam", param.invParam);
   write(xml, "t_sink", param.t_sink);

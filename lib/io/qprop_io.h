@@ -1,4 +1,4 @@
-// $Id: qprop_io.h,v 1.6 2004-02-23 03:10:40 edwards Exp $
+// $Id: qprop_io.h,v 1.7 2004-04-01 18:09:58 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -82,6 +82,7 @@ struct ChromaProp_t
 //! Structure for writing to seqprop files
 struct ChromaSeqProp_t
 {
+  bool             nonRelSeqProp;
   InvertParam_t    invParam;
   int              Seq_src;
   multi1d<int>     sink_mom;
