@@ -1,4 +1,8 @@
-// $Id: prec_fermact_qprop_array.cc,v 1.4 2004-02-04 17:48:36 edwards Exp $
+// $Id: prec_fermact_qprop_array.cc,v 1.5 2004-02-05 20:01:47 kostas Exp $
+// $Log: prec_fermact_qprop_array.cc,v $
+// Revision 1.5  2004-02-05 20:01:47  kostas
+// Fixed the chi_tmp bug to all inverters
+//
 /*! \file
  *  \brief Propagator solver for a generic even-odd preconditioned fermion operator
  *
@@ -35,7 +39,7 @@ void qprop_t(const EvenOddPrecWilsonTypeFermAct< multi1d<T> >& me,
 	     const Real& RsdCG, 
 	     int MaxCG, int& ncg_had)
 {
-  START_CODE("EvenOddPrecWilsonTypeFermActArray::qprop");
+  START_CODE("EvenOddPrecWilsonTypeFermActArray::qpropT");
 
   int n_count;
   
@@ -44,7 +48,7 @@ void qprop_t(const EvenOddPrecWilsonTypeFermAct< multi1d<T> >& me,
   Handle<const EvenOddPrecLinearOperator< multi1d<T> > > A(me.linOp(state));
 
   /* Step (i) */
-  /* chi_tmp =  chi_o - D_oe * A_ee^-1 * chi_e */
+  /* chi_tmp_o =  chi_o - D_oe * A_ee^-1 * chi_e */
   multi1d<T> chi_tmp(me.size());
   {
     multi1d<T> tmp1(me.size());
@@ -63,7 +67,7 @@ void qprop_t(const EvenOddPrecWilsonTypeFermAct< multi1d<T> >& me,
     /* chi_1 = M_dag(u) * chi_1 */
     multi1d<T> tmp(me.size());
     (*A)(tmp, chi_tmp, MINUS);
-    
+
     /* psi = (M^dag * M)^(-1) chi */
     InvCG2 (*A, tmp, psi, RsdCG, MaxCG, n_count);
   }
@@ -72,12 +76,12 @@ void qprop_t(const EvenOddPrecWilsonTypeFermAct< multi1d<T> >& me,
 #if 0
   case MR_INVERTER:
     /* psi = M^(-1) chi */
-    InvMR (*A, chi, psi, MRover, RsdCG, MaxCG, n_count);
+    InvMR (*A, chi_tmp, psi, MRover, RsdCG, MaxCG, n_count);
     break;
 
   case BICG_INVERTER:
     /* psi = M^(-1) chi */
-    InvBiCG (*A, chi, psi, RsdCG, MaxCG, n_count);
+    InvBiCG (*A, chi_tmp, psi, RsdCG, MaxCG, n_count);
     break;
 #endif
   
@@ -102,7 +106,7 @@ void qprop_t(const EvenOddPrecWilsonTypeFermAct< multi1d<T> >& me,
     A->evenEvenInvLinOp(psi, tmp2, PLUS);
   }
   
-  END_CODE("EvenOddPrecWilsonTypeFermActArray::qprop");
+  END_CODE("EvenOddPrecWilsonTypeFermActArray::qpropT");
 }
 
 
