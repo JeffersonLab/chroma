@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: param_io.h,v 1.4 2004-01-06 04:51:06 edwards Exp $
+// $Id: param_io.h,v 1.5 2004-01-06 20:16:18 edwards Exp $
 /*! \file
  *  \brief Reunitarize (to a SU(N)) inplace the matrix A under some option
  */
@@ -47,12 +47,13 @@ enum FermActType {
   FERM_ACT_PARITY_BREAKING_WILSON,
   FERM_ACT_CLOVER,
   FERM_ACT_UNPRECONDITIONED_CLOVER,
-  FERM_ACT_DWF,
-  FERM_ACT_UNPRECONDITIONED_DWF,
-  FERM_ACT_PROJECTED_PRECONDITIONED_DWF,
-  FERM_ACT_ZOLOTAREV_4D,
-  FERM_ACT_EXTENDED_OVERLAP,
-  FERM_ACT_UNPRECONDITIONED_EXTENDED_OVERLAP,
+  FERM_ACT_DWF,                           // Precond. Shamir DWF
+  FERM_ACT_UNPRECONDITIONED_DWF,          // Unprec. Shamir DWF
+  FERM_ACT_PROJECTED_DWF,                 // Shamir precond. DWF with E&H projection
+  FERM_ACT_ZOLOTAREV_4D,                  // Overlap pole with Zolotarev coeffs
+  FERM_ACT_OVERLAP_DWF,                   // Borici
+  FERM_ACT_EXTENDED_OVERLAP,              // Unprecond. N&N 5D overlap
+  FERM_ACT_UNPRECONDITIONED_EXTENDED_OVERLAP,  // Precond. N&N 5D overlap
   FERM_ACT_SMEARED_LAPLACIAN_WILSON,
   FERM_ACT_PLANAR_WILSON,
   FERM_ACT_HAMBER_WU,
@@ -80,7 +81,7 @@ struct Cfg_t
 struct ChiralParam_t
 {
   Real       overMass;
-  Real       N5;
+  int        N5;
   Real       a5;
   int        nWilsVec;
 };

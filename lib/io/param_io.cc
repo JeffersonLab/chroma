@@ -1,4 +1,4 @@
-// $Id: param_io.cc,v 1.4 2004-01-06 04:51:06 edwards Exp $
+// $Id: param_io.cc,v 1.5 2004-01-06 20:16:18 edwards Exp $
 /*! \file
  *  \brief Various parameter readers/writers for main programs
  */
@@ -31,8 +31,40 @@ void read(XMLReader& xml, const string& path, FermActType& param)
   read(xml, path, ferm_type_str);
   if (ferm_type_str == "WILSON")
     param = FERM_ACT_WILSON;
+  else if (ferm_type_str == "UNPRECONDITIONED_WILSON")
+    param = FERM_ACT_UNPRECONDITIONED_WILSON;
+  else if (ferm_type_str == "PARITY_BREAKING_WILSON")
+    param = FERM_ACT_PARITY_BREAKING_WILSON;
+  else if (ferm_type_str == "CLOVER")
+    param = FERM_ACT_CLOVER;
+  else if (ferm_type_str == "UNPRECONDITONED_CLOVER")
+    param = FERM_ACT_UNPRECONDITIONED_CLOVER;
   else if (ferm_type_str == "DWF")
     param = FERM_ACT_DWF;
+  else if (ferm_type_str == "UNPRECONDITIONED_DWF")
+    param = FERM_ACT_UNPRECONDITIONED_DWF;
+  else if (ferm_type_str == "PROJECTED_DWF")
+    param = FERM_ACT_PROJECTED_DWF;
+  else if (ferm_type_str == "ZOLOTAREV_4D")
+    param = FERM_ACT_ZOLOTAREV_4D;
+  else if (ferm_type_str == "OVERLAP_DWF")
+    param = FERM_ACT_OVERLAP_DWF;
+  else if (ferm_type_str == "EXTENDED_OVERLAP")
+    param = FERM_ACT_EXTENDED_OVERLAP;
+  else if (ferm_type_str == "UNPRECONDITIONED_EXTENDED_OVERLAP")
+    param = FERM_ACT_UNPRECONDITIONED_EXTENDED_OVERLAP;
+  else if (ferm_type_str == "SMEARED_LAPLACIAN_WILSON")
+    param = FERM_ACT_SMEARED_LAPLACIAN_WILSON;
+  else if (ferm_type_str == "PLANAR_WILSON")
+    param = FERM_ACT_PLANAR_WILSON;
+  else if (ferm_type_str == "HAMBER_WU")
+    param = FERM_ACT_HAMBER_WU;
+  else if (ferm_type_str == "STAGGERED")
+    param = FERM_ACT_STAGGERED;
+  else if (ferm_type_str == "NAIK")
+    param = FERM_ACT_NAIK;
+  else if (ferm_type_str == "ASQTAD")
+    param = FERM_ACT_ASQTAD;
   else 
   {
     QDPIO::cerr << "Unsupported fermion action type" << endl;
