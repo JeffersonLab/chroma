@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.29 2004-01-06 20:17:10 edwards Exp $
+// $Id: propagator.cc,v 1.30 2004-01-07 04:15:46 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -23,12 +23,12 @@ Real kappaToMass(const Real& Kappa)
 
 multi1d<Real> kappaToMass(const multi1d<Real>& Kappa)
 {
-  multi1d<Real> mass(Kappa.size());
+  multi1d<Real> Mass(Kappa.size());
 
   for(int i=0; i < Kappa.size(); ++i)
-    mass[i] = 1.0/(2*Kappa[i]) - Nd;
+    Mass[i] = 1.0/(2*Kappa[i]) - Nd;
 
-  return mass;
+  return Mass;
 }
 
 
@@ -38,8 +38,8 @@ multi1d<Real> kappaToMass(const multi1d<Real>& Kappa)
 struct Param_t
 {
   FermType        FermTypeP;
-  FermActType     fermAct;
-  Real            mass;       // quark mass (bare units)
+  FermActType     FermAct;
+  Real            Mass;       // quark mass (bare units)
  
   ChiralParam_t   chiralParam;
 
@@ -136,15 +136,15 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     XMLReader paramtop(inputtop, "param"); // push into 'param' group
 
     read(paramtop, "FermTypeP", input.param.FermTypeP);
-    read(paramtop, "fermAct", input.param.fermAct);
+    read(paramtop, "FermAct", input.param.FermAct);
 
-    if (paramtop.count("mass") != 0)
+    if (paramtop.count("Mass") != 0)
     {
-      read(paramtop, "mass", input.param.mass);
+      read(paramtop, "Mass", input.param.Mass);
 
       if (paramtop.count("Kappa") != 0)
       {
-	QDPIO::cerr << "Error: found both a Kappa and a mass tag" << endl;
+	QDPIO::cerr << "Error: found both a Kappa and a Mass tag" << endl;
 	QDP_abort(1);
       }
     }
@@ -153,22 +153,22 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
       Real Kappa;
       read(paramtop, "Kappa", Kappa);
 
-      input.param.mass = kappaToMass(Kappa);    // Convert Kappa to mass
+      input.param.Mass = kappaToMass(Kappa);    // Convert Kappa to Mass
     }
     else
     {
-      QDPIO::cerr << "Error: neither mass or Kappa found" << endl;
+      QDPIO::cerr << "Error: neither Mass or Kappa found" << endl;
       QDP_abort(1);
     }    
 
 #if 0
-    for (int i=0; i < input.param.mass.size(); ++i) {
-      if (toBool(input.param.mass[i] < 0.0)) {
-	QDPIO::cerr << "Unreasonable value for mass." << endl;
-	QDPIO::cerr << "  mass[" << i << "] = " << input.param.mass[i] << endl;
+    for (int i=0; i < input.param.Mass.size(); ++i) {
+      if (toBool(input.param.Mass[i] < 0.0)) {
+	QDPIO::cerr << "Unreasonable value for Mass." << endl;
+	QDPIO::cerr << "  Mass[" << i << "] = " << input.param.Mass[i] << endl;
 	QDP_abort(1);
       } else {
-	QDPIO::cout << " Spectroscopy mass: " << input.param.mass[i] << endl;
+	QDPIO::cout << " Spectroscopy Mass: " << input.param.Mass[i] << endl;
       }
     }
 #endif
@@ -179,7 +179,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     read(paramtop, "cfg_type", input.param.cfg_type);
     read(paramtop, "prop_type", input.param.prop_type);
 
-    read(paramtop, "InverterParam", input.param.invParam);
+    read(paramtop, "InvertParam", input.param.invParam);
 
     read(paramtop, "nrow", input.param.nrow);
     read(paramtop, "boundary", input.param.boundary);
@@ -317,13 +317,13 @@ int main(int argc, char **argv)
   //
   // Initialize fermion action
   //
-  switch (input.param.fermAct)
+  switch (input.param.FermAct)
   {
   case FERM_ACT_WILSON:
   {
     QDPIO::cout << "FERM_ACT_WILSON" << endl;
 
-    EvenOddPrecWilsonFermAct S_f(fbc,input.param.mass);
+    EvenOddPrecWilsonFermAct S_f(fbc,input.param.Mass);
     Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
 
     quarkProp4(quark_propagator, xml_buf, quark_prop_source,
@@ -339,7 +339,7 @@ int main(int argc, char **argv)
   {
     QDPIO::cout << "FERM_ACT_UNPRECONDITIONED_WILSON" << endl;
 
-    UnprecWilsonFermAct S_f(fbc,input.param.mass);
+    UnprecWilsonFermAct S_f(fbc,input.param.Mass);
     Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
 
     quarkProp4(quark_propagator, xml_buf, quark_prop_source,
@@ -356,8 +356,8 @@ int main(int argc, char **argv)
     QDPIO::cout << "FERM_ACT_DWF" << endl;
 
     EvenOddPrecDWFermActArray S_f(fbc_a,
-				  input.param.chiralParam.overMass, 
-				  input.param.mass, 
+				  input.param.chiralParam.OverMass, 
+				  input.param.Mass, 
 				  input.param.chiralParam.N5);
     Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
 
@@ -375,8 +375,8 @@ int main(int argc, char **argv)
     QDPIO::cout << "FERM_ACT_UNPRECONDITONED_DWF" << endl;
 
     UnprecDWFermActArray S_f(fbc_a,
-			     input.param.chiralParam.overMass, 
-			     input.param.mass, 
+			     input.param.chiralParam.OverMass, 
+			     input.param.Mass, 
 			     input.param.chiralParam.N5);
     Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
 
@@ -390,7 +390,7 @@ int main(int argc, char **argv)
   break;
 
 //  case FERM_ACT_INTERNAL_UNPRECONDITIONED_DWF;
-//  UnprecDWFermAct S_f(fbc_a, overMass, mass);
+//  UnprecDWFermAct S_f(fbc_a, OverMass, Mass);
 
   default:
     QDPIO::cerr << "Unsupported fermion action" << endl;
@@ -405,7 +405,8 @@ int main(int argc, char **argv)
     SftMom phases(0, true, Nd-1);
 
     /* The nonconserved vector current first */
-    multi1d<Double> pion_corr = sumMulti(localInnerProduct(quark_propagator), phases.getSubset());
+    multi1d<Double> pion_corr = sumMulti(localNorm2(quark_propagator), 
+					 phases.getSubset());
 
     push(xml_out, "Pion_correlator");
     Write(xml_out, pion_corr);
@@ -432,7 +433,7 @@ int main(int argc, char **argv)
   switch (input.param.prop_type) 
   {
   case PROP_TYPE_SZIN:
-    writeSzinQprop(quark_propagator, input.prop.prop_file, input.param.mass);
+    writeSzinQprop(quark_propagator, input.prop.prop_file, input.param.Mass);
     break;
 
 //  case PROP_TYPE_SCIDAC:

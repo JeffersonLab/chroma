@@ -1,4 +1,4 @@
-// $Id: param_io.cc,v 1.5 2004-01-06 20:16:18 edwards Exp $
+// $Id: param_io.cc,v 1.6 2004-01-07 04:15:11 edwards Exp $
 /*! \file
  *  \brief Various parameter readers/writers for main programs
  */
@@ -174,7 +174,7 @@ void read(XMLReader& xml, const string& path, ChiralParam_t& param)
 {
   XMLReader paramtop(xml, path);
 
-  read(paramtop, "overMass", param.overMass);
+  read(paramtop, "OverMass", param.OverMass);
   read(paramtop, "N5", param.N5);
 
   string xpath;
@@ -184,11 +184,11 @@ void read(XMLReader& xml, const string& path, ChiralParam_t& param)
   else
     param.a5 = 1;
 
-  xpath = "nWilsVec";
+  xpath = "NWilsVec";
   if (paramtop.count(xpath) != 0)
-    read(paramtop, xpath, param.nWilsVec);
+    read(paramtop, xpath, param.NWilsVec);
   else
-    param.nWilsVec = 0;
+    param.NWilsVec = 0;
 }
 
 

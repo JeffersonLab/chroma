@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: param_io.h,v 1.5 2004-01-06 20:16:18 edwards Exp $
+// $Id: param_io.h,v 1.6 2004-01-07 04:15:11 edwards Exp $
 /*! \file
  *  \brief Reunitarize (to a SU(N)) inplace the matrix A under some option
  */
@@ -80,10 +80,10 @@ struct Cfg_t
 //! Parameters for chiral fermion actions
 struct ChiralParam_t
 {
-  Real       overMass;
+  Real       OverMass;
   int        N5;
   Real       a5;
-  int        nWilsVec;
+  int        NWilsVec;
 };
 
 
