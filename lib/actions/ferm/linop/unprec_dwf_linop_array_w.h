@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_linop_array_w.h,v 1.6 2003-11-23 06:15:59 edwards Exp $
+// $Id: unprec_dwf_linop_array_w.h,v 1.7 2004-09-19 02:37:06 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion linear operator
  */
@@ -9,51 +9,75 @@
 
 #include "linearop.h"
 #include "actions/ferm/linop/dslash_w.h"
+#include "actions/ferm/linop/unprec_dwf_linop_base_array_w.h"
 
 using namespace QDP;
 
-//! Unpreconditioned domain-wall Dirac operator
-/*!
- * \ingroup linop
- *
- * This routine is specific to Wilson fermions!
- */
+//namespace Chroma
+//{
+  //! Unpreconditioned domain-wall Dirac operator
+  /*!
+   * \ingroup linop
+   *
+   * This routine is specific to Wilson fermions!
+   */
+  class UnprecDWLinOpArray : public UnprecDWLinOpBaseArray<LatticeFermion>
+  {
+  public:
+    //! Partial constructor
+    UnprecDWLinOpArray() {}
 
-class UnprecDWLinOpArray : public LinearOperator< multi1d<LatticeFermion> >
-{
-public:
-  //! Partial constructor
-  UnprecDWLinOpArray() {}
+    //! Full constructor
+    UnprecDWLinOpArray(const multi1d<LatticeColorMatrix>& u_, 
+		       const Real& WilsonMass_, const Real& m_q, int N5_)
+      {create(u_,WilsonMass_,m_q,N5_);}
 
-  //! Full constructor
-  UnprecDWLinOpArray(const multi1d<LatticeColorMatrix>& u_, 
-		     const Real& WilsonMass_, const Real& m_q, int N5_)
-    {create(u_,WilsonMass_,m_q,N5_);}
+    //! Creation routine
+    void create(const multi1d<LatticeColorMatrix>& u_, 
+		const Real& WilsonMass_, const Real& m_q_, int N5_);
 
-  //! Creation routine
-  void create(const multi1d<LatticeColorMatrix>& u_, 
-	      const Real& WilsonMass_, const Real& m_q_, int N5_);
+    //! Length of DW flavor index/space
+    inline int size() const {return N5;}
 
-  //! Length of DW flavor index/space
-  inline int size() const {return N5;}
+    //! Destructor is automatic
+    ~UnprecDWLinOpArray() {}
 
-  //! Destructor is automatic
-  ~UnprecDWLinOpArray() {}
+    //! Only defined on the entire lattice
+    const OrderedSubset& subset() const {return all;}
 
-  //! Only defined on the entire lattice
-  const OrderedSubset& subset() const {return all;}
+    //! Apply the operator onto a source vector
+    void operator() (multi1d<LatticeFermion>& chi, 
+		     const multi1d<LatticeFermion>& psi, 
+		     enum PlusMinus isign) const;
 
-  //! Apply the operator onto a source vector
-  void operator() (multi1d<LatticeFermion>& chi, 
-		   const multi1d<LatticeFermion>& psi, 
-		   enum PlusMinus isign) const;
+    //! Apply the Dminus operator on a vector in Ls.
+    inline
+    void Dminus(multi1d<LatticeFermion>& chi,
+		const multi1d<LatticeFermion>& psi,
+		enum PlusMinus isign) const
+      {
+	QDPIO::cerr << "Dminus not implemented" << endl;
+	QDP_abort(1);
+      }
 
-private:
-  Real WilsonMass;
-  Real m_q;
-  Real a5;
-  int  N5;
-  WilsonDslash  D;
-};
+    //! Apply the Dminus operator on a lattice fermion.
+    inline
+    void Dminus(LatticeFermion& chi,
+		const LatticeFermion& psi,
+		enum PlusMinus isign) const
+      {
+	QDPIO::cerr << "Dminus not implemented" << endl;
+	QDP_abort(1);
+      }
+
+  private:
+    Real WilsonMass;
+    Real m_q;
+    Real a5;
+    int  N5;
+    WilsonDslash  D;
+  };
+
+//}
 
 #endif

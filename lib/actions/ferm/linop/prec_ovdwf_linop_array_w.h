@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovdwf_linop_array_w.h,v 1.6 2004-09-17 13:30:43 kostas Exp $
+// $Id: prec_ovdwf_linop_array_w.h,v 1.7 2004-09-19 02:37:06 edwards Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned Overlap-DWF (Borici) linear operator
  */
@@ -9,6 +9,7 @@
 
 #include "linearop.h"
 #include "actions/ferm/linop/dslash_w.h"
+#include "actions/ferm/linop/prec_dwf_linop_base_array_w.h"
 
 using namespace QDP;
 
@@ -19,7 +20,7 @@ using namespace QDP;
  * This routine is specific to Wilson fermions!
  */
 
-class EvenOddPrecOvDWLinOpArray : public EvenOddPrecLinearOperator< multi1d<LatticeFermion> >
+class EvenOddPrecOvDWLinOpArray : public EvenOddPrecDWLinOpBaseArray<LatticeFermion>
 {
 public:
   //! Partial constructor
@@ -92,33 +93,16 @@ public:
       applyDiagInv(chi, psi, isign, 1);
     }
 
-
   //! Apply the Dminus operator on a vector in Ls. See my notes ;-)
-  inline
   void Dminus(multi1d<LatticeFermion>& chi,
 	      const multi1d<LatticeFermion>& psi,
-	      enum PlusMinus isign)
-  {
-    multi1d<LatticeFermion> tt(N5) ;
-    for(int s(0);s<N5;s++){
-      D.apply(tt[s],psi[s],isign,0);
-      D.apply(tt[s],psi[s],isign,1);
-      chi[s] = c5InvTwoKappa*psi[s] + 0.5*tt[s] ; //really -(-.5)D
-    }
-  }
+	      enum PlusMinus isign) const;
   
   //! Apply the Dminus operator on a lattice fermion. See my notes ;-)
-  inline
-  void Dminus(LatticeFermion chi,
+  void Dminus(LatticeFermion& chi,
 	      const LatticeFermion& psi,
-	      enum PlusMinus isign)
-  {
-    LatticeFermion tt ;
-    D.apply(tt,psi,isign,0);
-    D.apply(tt,psi,isign,1);
-    chi = c5InvTwoKappa*psi +0.5*tt ;  //really -(-.5)D
-  }
-  
+	      enum PlusMinus isign) const;
+
 protected:
 
   //! Apply the even-even (odd-odd) coupling piece of the Borici fermion operator

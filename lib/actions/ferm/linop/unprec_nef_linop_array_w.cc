@@ -1,4 +1,4 @@
-// $Id: unprec_nef_linop_array_w.cc,v 1.3 2004-09-01 03:32:59 kostas Exp $
+// $Id: unprec_nef_linop_array_w.cc,v 1.4 2004-09-19 02:37:06 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF domain-wall linear operator
  */
@@ -104,3 +104,30 @@ void UnprecNEFDWLinOpArray::operator() (multi1d<LatticeFermion>& chi,
 
   END_CODE();
 }
+
+//! Apply the Dminus operator on a vector in Ls. See my notes ;-)
+void UnprecNEFDWLinOpArray::Dminus(multi1d<LatticeFermion>& chi,
+				   const multi1d<LatticeFermion>& psi,
+				   enum PlusMinus isign) const
+{
+  Real c5InvTwoKappa =  1.0 - c5*(Nd-WilsonMass) ;
+  Real fc5 = -0.5*c5 ;
+  multi1d<LatticeFermion> tt(N5) ;
+  for(int s(0);s<N5;s++){
+    D.apply(tt[s],psi[s],isign,0);
+    D.apply(tt[s],psi[s],isign,1);
+    chi[s] =  c5InvTwoKappa*psi[s] - fc5*tt[s] ;
+  }
+}
+  
+//! Apply the Dminus operator on a lattice fermion. See my notes ;-)
+void UnprecNEFDWLinOpArray::Dminus(LatticeFermion& chi,
+				   const LatticeFermion& psi,
+				   enum PlusMinus isign) const
+{
+  LatticeFermion tt ;
+  D.apply(tt,psi,isign,0);
+  D.apply(tt,psi,isign,1);
+  chi = (1.0-c5*(Nd-WilsonMass))*psi +(0.5*c5)*tt;//It really is -(-0.5*c5)D 
+}
+

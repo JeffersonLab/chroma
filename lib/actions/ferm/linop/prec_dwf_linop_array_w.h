@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_linop_array_w.h,v 1.3 2003-11-24 16:11:37 kostas Exp $
+// $Id: prec_dwf_linop_array_w.h,v 1.4 2004-09-19 02:37:05 edwards Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned domain-wall fermion linear operator
  */
@@ -9,6 +9,7 @@
 
 #include "linearop.h"
 #include "actions/ferm/linop/dslash_w.h"
+#include "actions/ferm/linop/prec_dwf_linop_base_array_w.h"
 
 using namespace QDP;
 
@@ -19,7 +20,7 @@ using namespace QDP;
  * This routine is specific to Wilson fermions!
  */
 
-class EvenOddPrecDWLinOpArray : public EvenOddPrecLinearOperator< multi1d<LatticeFermion> >
+class EvenOddPrecDWLinOpArray : public EvenOddPrecDWLinOpBaseArray<LatticeFermion>
 {
 public:
   //! Partial constructor
@@ -99,6 +100,16 @@ public:
     {
       applyDiagInv(chi, psi, isign, 1);
     }
+
+  //! Apply the Dminus operator on a vector in Ls.
+  void Dminus(multi1d<LatticeFermion>& chi,
+	      const multi1d<LatticeFermion>& psi,
+	      enum PlusMinus isign) const;
+  
+  //! Apply the Dminus operator on a lattice fermion.
+  void Dminus(LatticeFermion& chi,
+	      const LatticeFermion& psi,
+	      enum PlusMinus isign) const;
 
 protected:
 

@@ -1,4 +1,4 @@
-// $Id: prec_dwf_linop_array_w.cc,v 1.6 2004-07-28 03:47:27 edwards Exp $
+// $Id: prec_dwf_linop_array_w.cc,v 1.7 2004-09-19 02:37:05 edwards Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned domain-wall linear operator
  */
@@ -197,4 +197,25 @@ EvenOddPrecDWLinOpArray::applyDiagInv(multi1d<LatticeFermion>& chi,
   //Done! That was not that bad after all....
   //See, I told you so...
   END_CODE();
+}
+
+
+//! Apply the Dminus operator on a vector in Ls. See my notes ;-)
+void 
+EvenOddPrecDWLinOpArray::Dminus(multi1d<LatticeFermion>& chi,
+				const multi1d<LatticeFermion>& psi,
+				enum PlusMinus isign) const
+{
+  QDPIO::cerr << "Dminus not implemented" << endl;
+  QDP_abort(1);
+}
+  
+//! Apply the Dminus operator on a lattice fermion. See my notes ;-)
+void 
+EvenOddPrecDWLinOpArray::Dminus(LatticeFermion& chi,
+				const LatticeFermion& psi,
+				enum PlusMinus isign) const
+{
+  QDPIO::cerr << "Dminus not implemented" << endl;
+  QDP_abort(1);
 }

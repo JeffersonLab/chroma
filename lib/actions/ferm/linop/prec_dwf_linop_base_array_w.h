@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_linop_base_array_w.h,v 1.1 2004-09-18 22:08:10 edwards Exp $
+// $Id: prec_dwf_linop_base_array_w.h,v 1.2 2004-09-19 02:37:06 edwards Exp $
 /*! \file
  *  \brief Base class for even-odd preconditioned domain-wall-like linops
  */
@@ -8,12 +8,11 @@
 #define __prec_dwf_linop_base_array_w_h__
 
 #include "linearop.h"
-#include "actions/ferm/linop/dslash_w.h"
 
 using namespace QDP;
 
-namespace Chroma
-{
+//namespace Chroma
+//{
   //! 4D Even Odd preconditioned domain-wall Dirac operator
   /*!
    * \ingroup linop
@@ -54,5 +53,6 @@ namespace Chroma
 		enum PlusMinus isign) const = 0;
   };
 
-}
+//}
+
 #endif

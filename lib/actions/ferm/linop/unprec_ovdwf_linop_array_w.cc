@@ -1,4 +1,4 @@
-// $Id: unprec_ovdwf_linop_array_w.cc,v 1.7 2004-07-28 02:38:02 edwards Exp $
+// $Id: unprec_ovdwf_linop_array_w.cc,v 1.8 2004-09-19 02:37:06 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Overlap-DWF (Borici) linear operator
  */
@@ -60,21 +60,21 @@ UnprecOvDWLinOpArray::operator() (multi1d<LatticeFermion>& chi,
 	tmp1   = psi[n] - m_q*chiralProjectPlus(psi[N5-1]) + chiralProjectMinus(psi[1]);
 	D(tmp2, tmp1, isign);
 	chi[n] = fact1*tmp1 + fact2*tmp2 + psi[n] 
-	       + m_q*chiralProjectPlus(psi[N5-1]) - chiralProjectMinus(psi[1]);
+	  + m_q*chiralProjectPlus(psi[N5-1]) - chiralProjectMinus(psi[1]);
       }
       else if (n == N5-1)
       {
 	tmp1   = psi[n] + chiralProjectPlus(psi[N5-2]) - m_q*chiralProjectMinus(psi[0]);
 	D(tmp2, tmp1, isign);
 	chi[n] = fact1*tmp1 + fact2*tmp2 + psi[n] 
-	       - chiralProjectPlus(psi[N5-2]) + m_q*chiralProjectMinus(psi[0]);
+	  - chiralProjectPlus(psi[N5-2]) + m_q*chiralProjectMinus(psi[0]);
       }
       else
       {
 	tmp1   = psi[n] + chiralProjectPlus(psi[n-1]) + chiralProjectMinus(psi[n+1]);
 	D(tmp2, tmp1, isign);
 	chi[n] = fact1*tmp1 + fact2*tmp2 + psi[n] 
-	       - chiralProjectPlus(psi[n-1]) - chiralProjectMinus(psi[n+1]);
+	  - chiralProjectPlus(psi[n-1]) - chiralProjectMinus(psi[n+1]);
       }
     }          
   }
@@ -94,20 +94,49 @@ UnprecOvDWLinOpArray::operator() (multi1d<LatticeFermion>& chi,
       if (n == 0)
       {
 	chi[0] = tmp[0] + psi[0] + chiralProjectPlus(tmp[1]) - chiralProjectPlus(psi[1])
-  	       - m_q*(chiralProjectMinus(tmp[N5-1]) - chiralProjectMinus(psi[N5-1]));
+	  - m_q*(chiralProjectMinus(tmp[N5-1]) - chiralProjectMinus(psi[N5-1]));
       }
       else if (n == N5-1)
       {
 	chi[n] = tmp[n] + psi[n] + chiralProjectMinus(tmp[N5-2]) - chiralProjectMinus(psi[N5-2])
-  	       - m_q*(chiralProjectPlus(tmp[0]) - chiralProjectPlus(psi[0]));
+	  - m_q*(chiralProjectPlus(tmp[0]) - chiralProjectPlus(psi[0]));
       }
       else
       {
 	chi[n] = tmp[n] + psi[n] + chiralProjectMinus(tmp[n-1]) - chiralProjectMinus(psi[n-1])
-  	       + chiralProjectPlus(tmp[n+1]) - chiralProjectPlus(psi[n+1]);
+	  + chiralProjectPlus(tmp[n+1]) - chiralProjectPlus(psi[n+1]);
       }
     }          
   }
 
   END_CODE();
 }
+
+//! Apply the Dminus operator on a vector in Ls. See my notes ;-)
+void 
+UnprecOvDWLinOpArray::Dminus(multi1d<LatticeFermion>& chi,
+			     const multi1d<LatticeFermion>& psi,
+			     enum PlusMinus isign) const
+{
+  Real c5InvTwoKappa =  1.0 - (Nd-WilsonMass) ;
+  multi1d<LatticeFermion> tt(N5) ;
+  for(int s(0);s<N5;s++){
+    D.apply(tt[s],psi[s],isign,0);
+    D.apply(tt[s],psi[s],isign,1);
+    chi[s] = c5InvTwoKappa*psi[s] +0.5*tt[s] ;  //really -(-.5)D
+  }
+}
+  
+//! Apply the Dminus operator on a lattice fermion. See my notes ;-)
+void 
+UnprecOvDWLinOpArray::Dminus(LatticeFermion& chi,
+			     const LatticeFermion& psi,
+			     enum PlusMinus isign) const
+{
+  LatticeFermion tt ;
+  D.apply(tt,psi,isign,0);
+  D.apply(tt,psi,isign,1);
+  chi = (1.0 - (Nd-WilsonMass))*psi +0.5*tt ; //really -(-.5)D
+}
+  
+
