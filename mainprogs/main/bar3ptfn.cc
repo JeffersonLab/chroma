@@ -1,7 +1,10 @@
-// $Id: bar3ptfn.cc,v 1.9 2003-05-30 02:37:40 flemingg Exp $
+// $Id: bar3ptfn.cc,v 1.10 2003-06-08 05:02:27 edwards Exp $
 //
 // $Log: bar3ptfn.cc,v $
-// Revision 1.9  2003-05-30 02:37:40  flemingg
+// Revision 1.10  2003-06-08 05:02:27  edwards
+// Added some flush to nml_out.
+//
+// Revision 1.9  2003/05/30 02:37:40  flemingg
 // A message printed to stdout was printing the wrong thing cut and pasted
 // from spectrum_w.cc.  Replaced with the intended thing from szin bar3ptfn.m
 //
@@ -549,6 +552,8 @@ main(int argc, char *argv[])
   Write(nml_out, t_srce) ;
   pop(nml_out) ;
 
+  nml_out.flush();
+
   // First calculate some gauge invariant observables just for info.
   // This is really cheap.
   Double w_plaq, s_plaq, t_plaq, link ;
@@ -560,6 +565,8 @@ main(int argc, char *argv[])
   Write(nml_out, t_plaq) ;
   Write(nml_out, link) ;
   pop(nml_out) ;
+
+  nml_out.flush();
 
   // Next check the gauge field configuration by reunitarizing.
   multi1d<LatticeColorMatrix> u_tmp(Nd) ;
@@ -614,6 +621,8 @@ main(int argc, char *argv[])
         QDP_error_exit("Unknown sequential source type", seq_src_value) ;
       }
 
+      nml_out.flush();
+
       // Construct the two-pt function from the source point to the sink
       // using only the seq. quark prop.
       // Take hermitian conjugate of the seq. prop, multiply on both sides
@@ -649,10 +658,14 @@ main(int argc, char *argv[])
       Write(nml_out, seq_hadron_0) ;
       pop(nml_out) ;
 
+      nml_out.flush();
+
       // Now the 3pt contractions
       SftMom phases(mom2_max, sink_mom, false, j_decay) ;
       FormFac(u, quark_propagator, seq_quark_prop, phases, t_srce[j_decay],
               nml_out) ;
+
+      nml_out.flush();
 
     } // end loop over sequential sources
   } // end loop over the kappa value

@@ -1,10 +1,13 @@
-// $Id: spectrum_w.cc,v 1.4 2003-05-22 17:35:36 flemingg Exp $
+// $Id: spectrum_w.cc,v 1.5 2003-06-08 05:00:25 edwards Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.4  2003-05-22 17:35:36  flemingg
+//  Revision 1.5  2003-06-08 05:00:25  edwards
+//  Added some flush to nml_out.
+//
+//  Revision 1.4  2003/05/22 17:35:36  flemingg
 //  Added stripper for spectrum_w.  Also, minor change to spectrum_w.cc
 //  to make it compatible with the stripper.
 //
@@ -528,6 +531,8 @@ int main(int argc, char **argv)
   Write(nml_out, t_srce) ;
   pop(nml_out) ;
 
+  nml_out.flush();
+
   // First calculate some gauge invariant observables just for info.
   // This is really cheap.
   Double w_plaq, s_plaq, t_plaq, link ;
@@ -539,6 +544,8 @@ int main(int argc, char **argv)
   Write(nml_out, t_plaq) ;
   Write(nml_out, link) ;
   pop(nml_out) ;
+
+  nml_out.flush();
 
   // Next check the gauge field configuration by reunitarizing.
   LatticeBoolean lbad = true ;
@@ -573,6 +580,8 @@ int main(int argc, char **argv)
     Write(nml_out, t_srce) ;
     pop(nml_out) ;
 
+    nml_out.flush();
+
     // Do Point sink hadrons and the currents first
     if (MesonP == true) {
       // Construct {Point|Shell}-Point mesons, if desired
@@ -604,6 +613,8 @@ int main(int argc, char **argv)
       } // end if (Sl_snk)
 
     } // end if (MesonP)
+
+    nml_out.flush();
 
   } // end for(loop)
 
