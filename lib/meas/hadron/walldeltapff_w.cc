@@ -1,4 +1,4 @@
-// $Id: walldeltapff_w.cc,v 1.6 2004-06-01 05:00:33 edwards Exp $
+// $Id: walldeltapff_w.cc,v 1.7 2004-06-02 01:59:17 edwards Exp $
 /*! \file
  *  \brief Wall-sink delta^+ -> gamma+proton form-factors 
  *
@@ -450,7 +450,7 @@ void wallDeltaPFormFac(XMLWriter& xml,
 	  LatticeComplex corr_local_fn = traceSpin(S_proj[proj] * local_contract[dp]);
 
 	  // The nonlocal (possibly conserved) current matrix element 
-	  LatticeComplex corr_nonlocal_fn = 0.5 * traceSpin(S_proj[proj] * nonlocal_contract[dp]);
+	  LatticeComplex corr_nonlocal_fn = traceSpin(S_proj[proj] * nonlocal_contract[dp]);
 	
 	  multi2d<DComplex> hsum_local = phases.sft(corr_local_fn);
 	  multi2d<DComplex> hsum_nonlocal = phases.sft(corr_nonlocal_fn);
