@@ -1,7 +1,10 @@
-// $Id: bar3ptfn.cc,v 1.6 2003-05-01 17:32:09 flemingg Exp $
+// $Id: bar3ptfn.cc,v 1.7 2003-05-08 22:58:45 flemingg Exp $
 //
 // $Log: bar3ptfn.cc,v $
-// Revision 1.6  2003-05-01 17:32:09  flemingg
+// Revision 1.7  2003-05-08 22:58:45  flemingg
+// Now using 'enum WvfKind' defined in lib/meas/smear/sink_smear2_w.h
+//
+// Revision 1.6  2003/05/01 17:32:09  flemingg
 // Added code to eliminate temporary 'LatticeComplex seq_hadron'.  It is
 // currently commented out awaiting a qdp++ update.
 //
@@ -109,7 +112,7 @@ main(int argc, char *argv[])
 //int           MaxCG ;
 //multi1d<Real> RsdCG(numKappa) ; // CG accuracy
 
-  int           Wvf_kind ; // Wave function kind: gauge invariant
+  WvfKind       Wvf_kind ; // Wave function kind: gauge invariant
 
   // Array of width's or other parameters for "shell" source/sink wave function
   multi1d<Real> wvf_param(numKappa) ;
@@ -164,7 +167,29 @@ main(int argc, char *argv[])
 //  Read(nml_in, MaxCG) ;
 //  Read(nml_in, RsdCG) ;
    
-    Read(nml_in, Wvf_kind) ;
+    if (version <= 3) {
+      int input_wvf_kind ;
+      read(nml_in, "Wvf_kind", input_wvf_kind) ;
+      switch (input_wvf_kind) {
+      case 3 :
+        Wvf_kind = WVF_KIND_GAUGE_INV_GAUSSIAN ;
+        break ;
+      default :
+        cerr << "Unsupported gauge-invariant Wvf_kind." << endl ;
+        cerr << "  Wvf_kind = " << input_wvf_kind << endl ;
+        QDP_abort(1) ;
+      }
+    } else {
+      string input_wvf_kind ;
+      read(nml_in, "Wvf_kind", input_wvf_kind) ;
+      if (input_wvf_kind == "GAUGE_INV_GAUSSIAN") {
+        Wvf_kind = WVF_KIND_GAUGE_INV_GAUSSIAN ;
+      } else {
+        cerr << "Unsupported gauge-invariant Wvf_kind." << endl ;
+        cerr << "  Wvf_kind = " << input_wvf_kind << endl ;
+        QDP_abort(1) ;
+      }
+    }
 
     Read(nml_in, wvf_param) ;
    
@@ -378,7 +403,13 @@ main(int argc, char *argv[])
 //pop(nml_out) ;
 
 //push(nml_out, "param7") ;
-  Write(nml_out, Wvf_kind) ;
+  switch (Wvf_kind) {
+  case WVF_KIND_GAUGE_INV_GAUSSIAN :
+    write(nml_out, "Wvf_kind", "GAUGE_INV_GAUSSIAN") ;
+    break ;
+  default :
+    write(nml_out, "Wvf_kind", "UNKNOWN") ;
+  }
   Write(nml_out, wvf_param) ;
   Write(nml_out, WvfIntPar) ;
 //pop(nml_out) ;
@@ -419,22 +450,6 @@ main(int argc, char *argv[])
   int mu ;
   for (mu=0; mu < Nd; ++mu) {
     reunit(u_tmp[mu], lbad, numbad, REUNITARIZE_ERROR) ;
-  }
-
-  // If we require a shell wave function sink type, determine it now:
-  int wvf_type = 0 ; // GTF ???: should be enum
-  if (Sl_snk == true) {
-    switch (Wvf_kind) {
-    case 3 :
-      wvf_type = OPTION_GAUGE_INV_GAUSSIAN_WVF ;
-      break ;
-    case 4 :
-      wvf_type = OPTION_WUPPERTAL_WVF ;
-      break ;
-    default :
-      QDP_error_exit("Unsupported gauge-invariant Wvf_kind[not 3 or 4]",
-        Wvf_kind) ;
-    }
   }
 
   // Allocate the source type
@@ -519,7 +534,7 @@ main(int argc, char *argv[])
       LatticePropagator seq_quark_prop_tmp = seq_quark_prop ;
 
       if (Sl_src == true) {
-        sink_smear2(u, seq_quark_prop_tmp, wvf_type, wvf_param[loop],
+        sink_smear2(u, seq_quark_prop_tmp, Wvf_kind, wvf_param[loop],
                     WvfIntPar[loop], j_decay) ;
       }
 
