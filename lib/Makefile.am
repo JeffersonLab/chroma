@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.241 2005-01-28 02:13:11 edwards Exp $
+# $Id: Makefile.am,v 1.242 2005-01-28 05:07:44 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -358,7 +358,9 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/inv_rel_gmresr_cg.cc \
 	actions/ferm/invert/inv_rel_gmresr_sumr.cc \
 	actions/ferm/invert/inv_rel_sumr.cc \
-	actions/ferm/invert/minvcg.cc actions/ferm/invert/minvsumr.cc \
+	actions/ferm/invert/minvcg.cc \
+	actions/ferm/invert/minvcg_array.cc \
+        actions/ferm/invert/minvsumr.cc \
 	actions/ferm/invert/minv_rel_cg.cc \
 	actions/ferm/invert/minv_rel_sumr.cc \
 	actions/ferm/qprop/fermact_qprop.cc \
