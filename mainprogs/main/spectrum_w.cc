@@ -1,10 +1,13 @@
-// $Id: spectrum_w.cc,v 1.6 2003-06-24 03:25:06 edwards Exp $
+// $Id: spectrum_w.cc,v 1.7 2003-08-27 20:05:20 edwards Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.6  2003-06-24 03:25:06  edwards
+//  Revision 1.7  2003-08-27 20:05:20  edwards
+//  Removed use of seed. Do not need random numbers here.
+//
+//  Revision 1.6  2003/06/24 03:25:06  edwards
 //  Changed from nml to xml.
 //
 //  Revision 1.5  2003/06/08 05:00:25  edwards
@@ -88,8 +91,6 @@ int main(int argc, char **argv)
   multi1d<int> t_srce(Nd) ;
 
   string cfg_file ;
-
-  Seed seed ;               // Random number seed (see SETRN for meaning)
 
   // Instantiate namelist reader for DATA
   XMLReader xml_in("DATA") ;
@@ -424,17 +425,16 @@ int main(int argc, char **argv)
   cout << endl ;
 
   // Read in the configuration along with relevant information.
-  switch (cfg_type) {
+  XMLReader gauge_xml;
+
+  switch (cfg_type) 
+  {
   case CFG_TYPE_SZIN :
-    readSzin(u, cfg_file, seed) ;
+    readSzin(gauge_xml, u, cfg_file);
     break ;
   default :
-    cerr << "Configuration type is unsupported." << endl ;
-    QDP_abort(1) ;
+    QDP_error_exit("Configuration type is unsupported.");
   }
-
-  // The call to setrn MUST go after setbc
-  RNG::setrn(seed) ;
 
   // Instantiate namelist writer for XMLDAT
   XMLFileWriter xml_out("XMLDAT") ;
@@ -514,9 +514,6 @@ int main(int argc, char **argv)
   Write(xml_out, mom2_max) ;
   Write(xml_out, avg_equiv_mom) ;
 
-  // was "param11"
-  Write(xml_out, seed) ;
-
   pop(xml_out) ;
 
   push(xml_out, "lattis") ;
@@ -524,6 +521,11 @@ int main(int argc, char **argv)
   Write(xml_out, boundary) ;
   Write(xml_out, t_srce) ;
   pop(xml_out) ;
+
+  // Write out the config info
+  push(xml_out, "config_info");
+  xml_out << gauge_xml;
+  pop(xml_out);
 
   xml_out.flush();
 
