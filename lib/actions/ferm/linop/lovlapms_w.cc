@@ -1,8 +1,8 @@
-// $Id: lovlapms_w.cc,v 1.5 2003-12-03 04:56:13 edwards Exp $
+// $Id: lovlapms_w.cc,v 1.6 2003-12-15 17:52:51 bjoo Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
-
+#include <math.h>
 #include "chromabase.h"
 #include "actions/ferm/linop/lovlapms_w.h"
 
@@ -20,13 +20,30 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
 			   enum PlusMinus isign) const
 {
   START_CODE("lovlapms");
+  LatticeFermion Ap,tmp1, tmp2;
+  LatticeFermion r;
+  multi1d<LatticeFermion> p(numroot);
+
+  Real a;
+  Real as;
+  Real b;
+  Real bp;
+  Real ztmp;
+  Double cp;
+  Double d;
+  Real z0;
+  Real z1;   
+  multi1d<Real> bs(numroot);
+  multi2d<Real> z(2, numroot);
+  Double chi_sq_new;
+  Double chi_sq_diff;
+
 
   int G5 = Ns*Ns - 1;
 
   Real mass = Real(1 + m_q) / Real(1 - m_q);
-      
-  /* First part of application of D.psi */
-  LatticeFermion tmp1;
+  
+
 
   switch (isign)
   {
@@ -51,6 +68,9 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
   /* Project out eigenvectors of source if desired */
   /* chi  +=  func(lambda) * EigVec * <EigVec, psi>  */
   /* Usually "func(.)" is eps(.); it is precomputed in EigValFunc. */
+
+  QDPIO::cout << "NEig = " << NEig << endl;
+
   if (NEig > 0)
   {
     Complex cconsts;
@@ -67,11 +87,11 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
 
   /* tmp1 <- H * Projected psi */
   /*      <- gamma_5 * M * psi */
-  {
-    LatticeFermion tmp2;
-    M(tmp2, tmp1, PLUS);
-    tmp1 = Gamma(G5) * tmp2;
-  }
+
+  M(tmp2, tmp1, PLUS);
+  tmp1 = Gamma(G5) * tmp2;
+  
+
 
   Double c = norm2(tmp1);
 
@@ -84,15 +104,21 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
     return;
   }
 
+
+  QDP_info("Doing multi-mass solve\n");
   /********************************************************************/
   /* Solve  (MdagM + rootQ_n) chi_n = H * tmp1 */
+
   Real rsdcg_sq = RsdCG * RsdCG;
   Real rsd_sq = c * rsdcg_sq;
+
+
+  cout << "Rsd_sq = " << rsd_sq << endl;
 
   /* By default (could change), rootQ(isz) is considered the smallest shift */
   int isz = numroot-1;
 
-          
+  cout << "isz = " << isz << endl;
   /* chi[0] := mass*psi + c0*H*tmp1 + Eigvecs; */
   if (isign == PLUS)
   {
@@ -108,11 +134,9 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
 
   chi += tmp1 * constP;
 
-  LatticeFermion r;
-  multi1d<LatticeFermion> p(numroot);
-
   /* r[0] := p[0] := tmp1 */
   r = tmp1;
+
   for(int s = 0; s < numroot; ++s)
     p[s] = tmp1;
 
@@ -121,20 +145,7 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
   bool convP = false;
   int iz = 1;
 
-  LatticeFermion Ap;
-  Real a;
-  Real as;
-  Real b;
-  Real bp;
-  Real ztmp;
-  Double cp;
-  Double d;
-  Real z0;
-  Real z1;   
-  multi1d<Real> bs(numroot);
-  multi2d<Real> z(2, numroot);
-  Real chi_sq_new;
-  Real chi_sq_diff;
+
 
   z = 1;
   a = 0;
@@ -148,6 +159,12 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
     /*  b[k] := | r[k] |**2 / < p[k], Ap[k] > ; */
     /*  First compute  d  =  < p, A.p >  */
     /*  Ap = A . p  */
+
+
+    /* This bit computes 
+       Ap = [  M^dag M + rootQ(isz)  ] p_isz
+    */
+
     MdagM(Ap, p[isz], PLUS);
     Ap += p[isz] * rootQ[isz];
 
@@ -258,15 +275,14 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
     /* Only converge if chi is converged. If vectors converge first, then error */
     if (k > 0 && ! convP)
     {
-      chi_sq_new = Real(rsdcg_sq) * Real(norm2(chi));
+      chi_sq_new = rsdcg_sq * norm2(chi);
       chi_sq_diff = norm2(tmp1);      /* the diff of old and new soln */
 
       bool btmp = toBool(chi_sq_diff < chi_sq_new);
 
-#if 0
-      QDP_info("Lovlapms (chi): k = %d  diff = %g  new = %g  rsdcg = %g",
-	       k,sqrt(chi_sq_diff),sqrt(chi_sq_new),sqrt(rsdcg_sq));
-#endif
+
+      QDPIO::cout << "Lovlapms: k =" << k <<" c= " << Real(c) << endl;
+
 
       if (! btmp && convP)
 	QDP_error_exit("vectors converged but not final chi");
@@ -286,15 +302,7 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
   /* Rescale to the correct normalization */
   chi *= 0.5 * (1 - m_q);
 
-
-#if 0
-  QDP_info("Lovlapms (chi): k = %d  diff = %g  new = %g  rsdcg = %g",
-	   n_count,sqrt(chi_sq_diff),sqrt(chi_sq_new),sqrt(rsdcg_sq));
-#endif
-
-#if 1
   QDP_info("ovlapms: %d", n_count);
-#endif
                 
   END_CODE("lovlapms");
 }

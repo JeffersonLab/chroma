@@ -1,4 +1,4 @@
-// $Id: t_ovlap_bj.cc,v 1.1 2003-12-09 17:47:32 bjoo Exp $
+// $Id: t_ovlap_bj.cc,v 1.2 2003-12-15 17:52:51 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -10,6 +10,7 @@
 #include "actions/ferm/linop/lovlapms_w.h"
 #include "actions/ferm/fermacts/zolotarev_state.h"
 #include "actions/ferm/fermacts/zolotarev4d_fermact_bj_w.h"
+#include "actions/ferm/linop/lovlapms_w.h"
 using namespace QDP;
 
 int main(int argc, char **argv)
@@ -18,7 +19,7 @@ int main(int argc, char **argv)
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {8,4,4,4};
+  const int foo[] = {4,4,4,4};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -28,8 +29,10 @@ int main(int argc, char **argv)
 
   //! Test out dslash
   multi1d<LatticeColorMatrix> u(Nd);
-  for(int m=0; m < u.size(); ++m)
+  for(int m=0; m < u.size(); ++m) {
     gaussian(u[m]);
+    reunit(u[m]);
+  }
 
   LatticeFermion psi, chi;
 
@@ -41,34 +44,35 @@ int main(int argc, char **argv)
 
 
   //! Wilsoniums
-  Real WilsonMass = 1.5;
-  Real kappa = Real(1)/( Real(2)*Real(Nd) - WilsonMass );
-  const UnprecWilsonFermAct D_w(kappa);
+  Real WilsonMass = -1.5;
+  const UnprecWilsonFermAct D_w(WilsonMass);
 
 
-  Real m_q = 0.01;
+  Real m_q = 0.1;
   XMLBufferWriter my_writer;
 
   //! N order Zolo approx, with wilson action.
   Zolotarev4DFermActBj   D(D_w, 
 			   m_q,
-			   28, 
+			   22, 
 			   1.0e-7,
 			   5000,
 			   my_writer);
 
 
   // Specify the approximation
-  ZolotarevConnectState<LatticeFermion> connect_state(u, 0.031, 2.5);
+  ZolotarevConnectState<LatticeFermion> connect_state(u, 0.05);
 
   // Make me a linop (this callls the initialise function)
-  const LinearOperator<LatticeFermion>* D_op = (lovlapms *)D.linOp(connect_state);
+  const LinearOperator<LatticeFermion>*  D_op = D.linOp((ConnectState &)connect_state);
 
-  (*(lovlapms *)D_op)(chi,psi,(enum PlusMinus) PLUS);
+  Double n2 = norm2(psi);
+  psi /= n2;
+
+  (*D_op)(chi,psi,(enum PlusMinus) PLUS);
   
-  // Dump out stuff
-  xml_out <<  D.getWriter();
 
+  delete D_op;
   // Time to bolt
   QDP_finalize();
 

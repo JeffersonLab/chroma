@@ -1,4 +1,4 @@
-// $Id: zolotarev4d_fermact_bj_w.cc,v 1.1 2003-12-09 17:44:47 bjoo Exp $
+// $Id: zolotarev4d_fermact_bj_w.cc,v 1.2 2003-12-15 17:52:51 bjoo Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -6,10 +6,11 @@
 #include "chromabase.h"
 #include "actions/ferm/fermacts/zolotarev4d_fermact_bj_w.h"
 #include <zolotarev.h>
+#include <linearop.h>
 #include "actions/ferm/linop/lovlapms_w.h"
 
 // Replace this with special overlap M^dag*M version
-#include "actions/ferm/linop/lmdagm_w.h"
+// #include "actions/ferm/linop/lmdagm_w.h"
 
 //! Creation routine
 /*! */
@@ -20,7 +21,7 @@ Zolotarev4DFermActBj::init(int& numroot,
 			   multi1d<Real>& rootQ, 
 			   int& NEig, 
 			   multi1d<Real>& EigValFunc,
-			   const ZolotarevConnectState<LatticeFermion>& state ) const
+			   const ZolotarevConnectStateBase<LatticeFermion>& state ) const
 {
   /* A scale factor which should bring the spectrum of the hermitian
      Wilson Dirac operator H into |H| < 1. */
@@ -170,6 +171,7 @@ Zolotarev4DFermActBj::init(int& numroot,
     QDP_info("ZOLOTAREV_4d: n= %d scale= %g coeff= %g  Nwils= %d  m_q= %g  Rsd= %g",
 	     RatPolyDeg,toFloat(scale_fac),toFloat(coeffP),NEigVal,
 	     toFloat(m_q),toFloat(RsdCGinner));
+
 //  QDP_info("Auxiliary fermion action: OverAuxAct = %d",OverAuxAct);
     QDP_info("Approximation on [-1,-eps] U [eps,1] with eps = %g",toFloat(eps));
     /* maxerr = rdata -> Delta; */
@@ -205,7 +207,7 @@ Zolotarev4DFermActBj::linOp(const ConnectState& state_) const
 {
   START_CODE("Zolotarev4DLinOp::create");
 
-  const ZolotarevConnectState<LatticeFermion>& state = dynamic_cast<const ZolotarevConnectState<LatticeFermion>&>(state_);
+  const ZolotarevConnectStateBase<LatticeFermion>& state = dynamic_cast<const ZolotarevConnectStateBase<LatticeFermion>&>(state_);
 
   if (state.getEigVec().size() != state.getEigVal().size())
     QDP_error_exit("Zolotarev4DLinOp: inconsistent sizes of eigenvectors and values");
@@ -239,12 +241,12 @@ Zolotarev4DFermActBj::linOp(const ConnectState& state_) const
   /* The square M^dagger*M of the Wilson Dirac operators, used for
      solving the multi-shift linear system */
   /* H^2 = M^dag . M */
-  LinearOperatorProxy<LatticeFermion> M(Mact.linOp(state_));
-  LinearOperatorProxy<LatticeFermion> MdagM(Mact.lMdagM(state_));
+  const LinearOperator<LatticeFermion>* M = Mact.linOp(state_);
+  const LinearOperator<LatticeFermion>* MdagM = Mact.lMdagM(state_);
   
   /* Finally construct and pack the operator */
   /* This is the operator of the form (1/2)*[(1+mu) + (1-mu)*gamma_5*eps] */
-  return new lovlapms(MdagM, M, m_q,
+  return new lovlapms(*MdagM, *M, m_q,
 		      numroot, coeffP, resP, rootQ, 
 		      NEig, EigValFunc, state.getEigVec(),
 		      MaxCGinner, RsdCGinner);
@@ -252,58 +254,4 @@ Zolotarev4DFermActBj::linOp(const ConnectState& state_) const
   END_CODE("Zolotarev4DLinOp::create");
 }
 
-//! Produce a M^dag.M linear operator for this action
-/*!
- * Should use special form when we know we have exact chiral symmetry
- *
- * The operator acts on the entire lattice
- *
- * \param state	    gauge field state   	       (Read)
- */
-const LinearOperator<LatticeFermion>* 
-Zolotarev4DFermActBj::lMdagM(const ConnectState& state_) const
-{
-  //  *****NOTE***** 
-  // Should use special form when we know we have exact chiral symmetry
-
-  const ZolotarevConnectState<LatticeFermion>& state = dynamic_cast<const ZolotarevConnectState<LatticeFermion>&>(state_);
-
-  if (state.getEigVec().size() != state.getEigVal().size())
-    QDP_error_exit("Zolotarev4DLinOp: inconsistent sizes of eigenvectors and values");
-
-  int NEigVal = state.getEigVal().size();
-
-  /* The actual number of eigenvectors to project out.
-     The highest of the valid low eigenmodes is not
-     projected out. So we will put NEig = NEigVal - 1 */  
-  int NEig;
-  /* The number of residuals and poles */
-  int numroot;
-  /* The roots, i.e., the shifts in the partial fraction expansion */
-  multi1d<Real> rootQ;
-  /* The residuals in the partial fraction expansion */
-  multi1d<Real> resP;
-  /* This will be our alpha(0) which can be 0 depending on type */
-  /* an even- or oddness of RatPolyDeg*/
-  Real coeffP; 
-
-  /* Array of values of the sign function evaluated on the eigenvectors of H */
-  multi1d<Real> EigValFunc(NEigVal);
-
-  // Common initialization
-  init(numroot, coeffP, resP, rootQ, NEig, EigValFunc, state);
-
-  /* The square M^dagger*M of the Wilson Dirac operators, used for
-     solving the multi-shift linear system */
-  /* H^2 = M^dag . M */
-  LinearOperatorProxy<LatticeFermion> M(Mact.linOp(state_));
-  LinearOperatorProxy<LatticeFermion> MdagM(Mact.lMdagM(state_));
-  
-  /* Finally construct and pack the operator */
-  /* This is the operator of the form (1/2)*[(1+mu) + (1-mu)*gamma_5*eps] */
-  return new lmdagm<LatticeFermion>(lovlapms(MdagM, M, m_q,
-					     numroot, coeffP, resP, rootQ, 
-					     NEig, EigValFunc, state.getEigVec(),
-					     MaxCGinner, RsdCGinner));
-}
 

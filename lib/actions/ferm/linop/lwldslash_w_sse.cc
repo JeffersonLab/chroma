@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_sse.cc,v 1.9 2003-11-20 05:43:41 edwards Exp $
+// $Id: lwldslash_w_sse.cc,v 1.10 2003-12-15 17:52:51 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -51,7 +51,7 @@ extern void qdp_pack_gauge(const multi1d<LatticeColorMatrix>&_u, multi1d<Primiti
 void SSEWilsonDslash::create(const multi1d<LatticeColorMatrix>& _u)
 {
   // Initialize internal structures for DSLASH
-#if 0
+#if 1
   QDPIO::cout << "Calling init_sse_su3dslash()... " << flush;
 #endif
 
