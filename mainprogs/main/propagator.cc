@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.64 2004-09-16 22:32:24 kostas Exp $
+// $Id: propagator.cc,v 1.65 2004-09-18 17:11:06 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -10,11 +10,6 @@
 
 using namespace QDP;
 using namespace Chroma;
-
-
-// define MRES_CALCULATION in order to run the code computing the residual mass
-// and the pseudoscalar to conserved axial current correlator
-#define MRES_CALCULATION
 
 
 //! To insure linking of code, place the registered code flags here
@@ -286,9 +281,9 @@ int main(int argc, char **argv)
   {
     read(fermacttop, fermact_path + "/FermAct", fermact);
   }
-  catch (const std::exception& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading fermact: " << e.what() << endl;
+    QDPIO::cerr << "Error reading fermact: " << e << endl;
     throw;
   }
 
@@ -299,117 +294,69 @@ int main(int argc, char **argv)
   //
   bool success = false;
 
-  QDPIO::cout << "Try the special cases first" << endl;
+  QDPIO::cout << "Try the special cases first (if there are any)" << endl;
 
+  bool mresP = true;
 
-#if 1
-  if (fermact == EvenOddPrecDWFermActArrayEnv::name)  // FERM_ACT_DWF
+  if (mresP && ! success)
   {
-    QDPIO::cout << EvenOddPrecDWFermActArrayEnv::name << endl;
+    try
+    {
+      QDPIO::cout << "Try unprec DWF-like actions with via dwf_quarkProp4" << endl;
 
-    EvenOddPrecDWFermActArray S_f(fbc_a, EvenOddPrecDWFermActArrayParams(fermacttop, fermact_path));
-    Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
+      // DWF-like 5D Wilson-Type stuff
+      Handle< UnprecDWFermActBaseArray<LatticeFermion> >
+	S_f(TheUnprecDWFermActBaseArrayFactory::Instance().createObject(fermact,
+									fbc_a,
+									fermacttop,
+									fermact_path));
 
-#ifdef MRES_CALCULATION
-    if (! input.param.nonRelProp)
-      S_f.dwf_quarkProp4(quark_propagator, xml_out, quark_prop_source,
-			 t0, j_decay, 
-			 state, 
-			 input.param.invParam, 
-			 ncg_had);
-    else
-#endif
-      S_f.quarkProp4(quark_propagator, xml_out, quark_prop_source,
-		     state, 
-		     input.param.invParam, 
-		     input.param.nonRelProp,
-		     ncg_had);
+      Handle<const ConnectState> state(S_f->createState(u));  // uses phase-multiplied u-fields
+
+      S_f->dwf_quarkProp4(quark_propagator, xml_out, quark_prop_source,
+			  t0, j_decay, 
+			  state, 
+			  input.param.invParam, 
+			  ncg_had);
       
-    success = true;
+      success = true;
+    }
+    catch (const std::string& e) 
+    {
+      QDPIO::cout << "Unprec DWF-like: " << e << endl;
+    }
   }
 
 
-  if (fermact == UnprecDWFermActArrayEnv::name)  // FERM_ACT_UNPRECONDITIONED_DWF:
+  if (mresP && ! success)
   {
-    QDPIO::cout << UnprecDWFermActArrayEnv::name << endl;
+    try
+    {
+      QDPIO::cout << "Try even-odd DWF-like actions with via dwf_quarkProp4" << endl;
 
-    UnprecDWFermActArray S_f(fbc_a, UnprecDWFermActArrayParams(fermacttop, fermact_path));
-    Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
+      // DWF-like 5D Wilson-Type stuff
+      Handle< EvenOddPrecDWFermActBaseArray<LatticeFermion> >
+	S_f(TheEvenOddPrecDWFermActBaseArrayFactory::Instance().createObject(fermact,
+									     fbc_a,
+									     fermacttop,
+									     fermact_path));
 
-#ifdef MRES_CALCULATION
-    if (! input.param.nonRelProp)
-      S_f.dwf_quarkProp4(quark_propagator, xml_out, quark_prop_source,
-			 t0, j_decay, 
-			 state, 
-			 input.param.invParam, 
-			 ncg_had);
-    else
-#endif
-      S_f.quarkProp4(quark_propagator, xml_out, quark_prop_source,
-		     state, 
-		     input.param.invParam, 
-		     input.param.nonRelProp,
-		     ncg_had);
-    
-    success = true;
-  }
+      Handle<const ConnectState> state(S_f->createState(u));  // uses phase-multiplied u-fields
 
-  ///THE NEF variant
-
-  if (fermact == EvenOddPrecNEFFermActArrayEnv::name)  // FERM_ACT_NEFF
-  {
-    QDPIO::cout << EvenOddPrecNEFFermActArrayEnv::name << endl;
-
-    EvenOddPrecNEFFermActArray S_f(fbc_a, EvenOddPrecNEFFermActArrayParams(fermacttop, fermact_path));
-    Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
-
-#ifdef MRES_CALCULATION
-    if (! input.param.nonRelProp)
-      S_f.dwf_quarkProp4(quark_propagator, xml_out, quark_prop_source,
-			 t0, j_decay, 
-			 state, 
-			 input.param.invParam, 
-			 ncg_had);
-    else
-#endif
-      S_f.quarkProp4(quark_propagator, xml_out, quark_prop_source,
-		     state, 
-		     input.param.invParam, 
-		     input.param.nonRelProp,
-		     ncg_had);
+      S_f->dwf_quarkProp4(quark_propagator, xml_out, quark_prop_source,
+			  t0, j_decay, 
+			  state, 
+			  input.param.invParam, 
+			  ncg_had);
       
-    success = true;
+      success = true;
+    }
+    catch (const std::string& e) 
+    {
+      QDPIO::cout << "Even-odd DWF-like: " << e << endl;
+    }
   }
 
-
-  if (fermact == UnprecNEFFermActArrayEnv::name)  // FERM_ACT_UNPRECONDITIONED_NEFF:
-  {
-    QDPIO::cout << UnprecNEFFermActArrayEnv::name << endl;
-
-    UnprecNEFFermActArray S_f(fbc_a, UnprecNEFFermActArrayParams(fermacttop, fermact_path));
-    Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
-
-#ifdef MRES_CALCULATION
-    if (! input.param.nonRelProp)
-      S_f.dwf_quarkProp4(quark_propagator, xml_out, quark_prop_source,
-			 t0, j_decay, 
-			 state, 
-			 input.param.invParam, 
-			 ncg_had);
-    else
-#endif
-      S_f.quarkProp4(quark_propagator, xml_out, quark_prop_source,
-		     state, 
-		     input.param.invParam, 
-		     input.param.nonRelProp,
-		     ncg_had);
-    
-    success = true;
-  }
-
-
-#endif
-		      
 
   if (! success)
   {
@@ -418,7 +365,6 @@ int main(int argc, char **argv)
       QDPIO::cout << "Try the various 4D factories" << endl;
 
       // Generic Wilson-Type stuff
-
       Handle< WilsonTypeFermAct<LatticeFermion> >
 	S_f(TheWilsonTypeFermActFactory::Instance().createObject(fermact,
 								 fbc,
@@ -435,9 +381,9 @@ int main(int argc, char **argv)
       
       success = true;
     }
-    catch (const std::exception& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cout << "The id does not correspond to a 4D fermact" << endl;
+      QDPIO::cout << "4D: " << e << endl;
     }
   }
 
@@ -449,7 +395,6 @@ int main(int argc, char **argv)
       QDPIO::cout << "Try the various 5D factories" << endl;
 
       // Generic 5D Wilson-Type stuff
-
       Handle< WilsonTypeFermAct< multi1d<LatticeFermion> > >
 	S_f(TheWilsonTypeFermActArrayFactory::Instance().createObject(fermact,
 								      fbc_a,
@@ -466,9 +411,9 @@ int main(int argc, char **argv)
       
       success = true;
     }
-    catch (const std::exception& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cout << "The id does not correspond to a 5D fermact" << endl;
+      QDPIO::cout << "5D: " << e << endl;
     }
   }
 
