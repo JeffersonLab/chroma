@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<assertions>
+
+<assertion xpath="/fuzzed_hadron_corr/Here_are_all_16_pions/pion0/pion_oper/elem" type="complex" comparison="absolute_real" tolerance="0.0001"/>
+
+</assertions>

@@ -22,7 +22,7 @@
     <t_srce>0 0 0 0</t_srce>
   </param>
   <Cfg>
-    <cfg_file>./t_nersc.cfg</cfg_file>
+    <cfg_file>../../tests/t_asqtad_prop/t_nersc.cfg</cfg_file>
   </Cfg>
   <Prop>
     <prop_file>prop.out</prop_file>
