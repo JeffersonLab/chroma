@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_linop_array_w.cc,v 1.1 2003-11-12 22:12:26 edwards Exp $
+// $Id: unprec_dwf_linop_array_w.cc,v 1.2 2003-11-13 04:13:06 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall linear operator
  */
@@ -14,11 +14,12 @@
  * \param m_q_          quark mass    (Read)
  */
 void UnprecDWLinOpArray::create(const multi1d<LatticeColorMatrix>& u_, 
-				const Real& WilsonMass_, const Real& m_q_)
+				const Real& WilsonMass_, const Real& m_q_, int N5_)
 {
   WilsonMass = WilsonMass_;
   m_q = m_q_;
   a5  = 1.0;
+  N5  = N5_;
 
   D.create(u_);
 //    CoeffWilsr_s = (AnisoP) ? Wilsr_s / xiF_0 : 1;
@@ -57,8 +58,7 @@ chiralProjectMinus(const LatticeFermion& l)
 multi1d<LatticeFermion> UnprecDWLinOpArray::operator() (const multi1d<LatticeFermion>& psi, 
 							enum PlusMinus isign) const
 {
-  const int N5 = psi.size();
-  multi1d<LatticeFermion> chi(N5);
+  multi1d<LatticeFermion> chi(N5);   // probably should check psi.size() == N5
 
   START_CODE("UnprecDWLinOpArray");
 
