@@ -1,4 +1,4 @@
-// $Id: hybtrj.cc,v 1.4 2004-07-28 02:38:05 edwards Exp $
+// $Id: hybtrj.cc,v 1.1 2005-01-13 15:25:29 bjoo Exp $
 
 #error "NOT FULLY CONVERTED - NEED TO MOVE AlgETrj into params of Integ. functor"
 
