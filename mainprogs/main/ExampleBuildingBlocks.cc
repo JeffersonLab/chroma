@@ -45,7 +45,7 @@ using namespace QDP;
 //###################################################################################//
 
 static const char* const CVSExampleBuildingBlocks_hh =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/mainprogs/main/ExampleBuildingBlocks.cc,v 1.16 2004-11-06 20:04:09 edwards Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/mainprogs/main/ExampleBuildingBlocks.cc,v 1.17 2004-11-06 20:19:55 edwards Exp $";
 
 //###################################################################################//
 // Accept All Link Patterns                                                          //
@@ -240,6 +240,9 @@ int main( int argc, char** argv )
   }
   Out << "finished reading gauge field " << GaugeFieldFileName << "\n";  Out.flush();
 
+  // Write out the config header
+  write(Xml, "Config_info", GaugeFieldXML);
+
   // check that the gauge field seems normal
   unitarityCheck( *U );
   Double ave_plaq, ave_spacelike_plaq, ave_timelike_plaq, ave_link_trace;
@@ -250,8 +253,12 @@ int main( int argc, char** argv )
   Out << "average time-like plaquette  = " << ave_timelike_plaq  << "\n";
   Out << "average link trace           = " << ave_link_trace     << "\n";
 
-  // Write out the config header
-  write(Xml, "Config_info", GaugeFieldXML);
+  push(Xml, "Observables");
+  write(Xml, "ave_plaq", ave_plaq);
+  write(Xml, "ave_spacelike_plaq", ave_spacelike_plaq);
+  write(Xml, "ave_timelike_plaq", ave_timelike_plaq);
+  write(Xml, "ave_link_trace", ave_link_trace);
+  pop(Xml);
 
   //#################################################################################//
   // Read Forward Propagator                                                         //
@@ -279,11 +286,14 @@ int main( int argc, char** argv )
     multi1d<Double> FrwdPropCheck = sumMulti( localNorm2( *F ), phases.getSet() );
 
     Out << "forward propagator check = " << FrwdPropCheck[0] << "\n";  Out.flush();
-  }
 
-  // Write out the forward propagator header
-  write(Xml, "FrwdPropXML", FrwdPropXML);
-  write(Xml, "FrwdPropRecordXML", FrwdPropRecordXML);
+    // Write out the forward propagator header
+    push(Xml, "ForwardProp");
+    write(Xml, "FrwdPropXML", FrwdPropXML);
+    write(Xml, "FrwdPropRecordXML", FrwdPropRecordXML);
+    write(Xml, "FrwdPropCheck", FrwdPropCheck);
+    pop(Xml);
+  }
 
   Xml.flush();
 
@@ -324,12 +334,14 @@ int main( int argc, char** argv )
     multi1d<Double> BkwdUPropCheck = sumMulti( localNorm2( *Bu ), phases.getSet() );
 
     Out << "backward u propagator check = " << BkwdUPropCheck[0] << "\n";  Out.flush();
+
+    // Write out the forward propagator header
+    push(Xml, "BackwardUProp");
+    write(Xml, "BkwdUPropXML", BkwdUPropXML);
+    write(Xml, "BkwdUPropRecordXML", BkwdUPropRecordXML);
+    write(Xml, "BkwdUPropCheck", BkwdUPropCheck);
+    pop(Xml);
   }
-
-  // Write out the forward propagator header
-  write(Xml, "BkwdUPropXML", BkwdUPropXML);
-  write(Xml, "BkwdUPropRecordXML", BkwdUPropRecordXML);
-
   //#################################################################################//
   // Read Backward (or Sequential) D Propagator                                      //
   //#################################################################################//
@@ -365,11 +377,14 @@ int main( int argc, char** argv )
     multi1d<Double> BkwdDPropCheck = sumMulti( localNorm2( *Bd ), phases.getSet() );
 
     Out << "backward d propagator check = " << BkwdDPropCheck[0] << "\n";  Out.flush();
-  }
 
-  // Write out the forward propagator header
-  write(Xml, "BkwdDPropXML", BkwdDPropXML);
-  write(Xml, "BkwdDPropRecordXML", BkwdDPropRecordXML);
+    // Write out the forward propagator header
+    push(Xml, "BackwardDProp");
+    write(Xml, "BkwdDPropXML", BkwdDPropXML);
+    write(Xml, "BkwdDPropRecordXML", BkwdDPropRecordXML);
+    write(Xml, "BkwdDPropCheck", BkwdDPropCheck);
+    pop(Xml);
+  }
 
   //#################################################################################//
   // Basic Information                                                               //
