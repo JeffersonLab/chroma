@@ -1,4 +1,4 @@
-// $Id: t_precact_sse.cc,v 1.4 2004-10-20 02:35:05 edwards Exp $
+// $Id: t_precact_sse.cc,v 1.5 2004-10-20 03:22:38 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -60,18 +60,16 @@ int main(int argc, char **argv)
     multi1d<int> coord(Nd);
     coord = 0;
 
-    // try the qprop
+    // Try the qpropT
     multi1d<LatticeFermion>  psi5a(N5), psi5b(N5), chi5(N5), tmp1(N5);
     for(int m=0; m < N5; ++m)
     {
       gaussian(chi5[m]);
       random(psi5a[m]);
-//      srcfil(chi5[m], coord, 0, 0);
-//      psi5a[m] = zero;
     }
     psi5b = psi5a;
 
-    QDPIO::cout << "UnPrec inverter" << endl;
+    QDPIO::cout << "Prec inverter" << endl;
     S_pdwf.qpropT(psi5a, state, chi5, invParam, n_count);
     QDPIO::cout << "SSE prec inverter" << endl;
     S_sdwf.qpropT(psi5b, state, chi5, invParam, n_count);
@@ -84,24 +82,13 @@ int main(int argc, char **argv)
 		<< "|sDWF|^2 = " << norm2(psi5b) << endl
 		<< "|pDWF - sDWF|^2 = " << norm2(tmp1) << endl;
 
-    
-    push(xml,"Unprec");
-    write(xml,"psi5a",psi5a);
-    pop(xml);
-
-    push(xml,"Prec");
-    write(xml,"psi5b",psi5b);
-    pop(xml);
-
-
-#if 0
-    // try the qpropT
+    // Try the qprop
     LatticeFermion chi, psia, psib;
     gaussian(chi);
     random(psia);
     psib = psia;
 
-    QDPIO::cout << "UnPrec inverter" << endl;
+    QDPIO::cout << "Prec inverter" << endl;
     S_pdwf.qprop(psia, state, chi, invParam, n_count);
     QDPIO::cout << "SSE prec inverter" << endl;
     S_sdwf.qprop(psib, state, chi, invParam, n_count);
@@ -110,7 +97,6 @@ int main(int argc, char **argv)
 		<< "|pDWF|^2 = " << norm2(psia) << endl
 		<< "|sDWF|^2 = " << norm2(psib) << endl
 		<< "|pDWF - sDWF|^2 = " << norm2(psia-psib) << endl;
-#endif
   }
 
   QDPIO::cout << "\n\n\n" << endl;
