@@ -14,7 +14,7 @@
 
 
 
-# $Id: Makefile,v 1.10 2003-09-11 11:12:21 bjoo Exp $
+# $Id: Makefile,v 1.11 2003-09-11 16:10:46 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -52,13 +52,13 @@ host_triplet = i686-pc-linux-gnu
 #am__append_3 = lwldslash_w_sse.cc
 am__append_4 = 
 VPATH = $(TOPDIR) $(TOPDIR)/lib $(TOPDIR)/lib/actions $(TOPDIR)/lib/actions/boson $(TOPDIR)/lib/actions/boson/operator $(TOPDIR)/lib/actions/ferm $(TOPDIR)/lib/actions/ferm/fermacts $(TOPDIR)/lib/actions/ferm/invert $(TOPDIR)/lib/actions/ferm/linop $(TOPDIR)/lib/actions/ferm/qprop $(TOPDIR)/lib/actions/gauge $(TOPDIR)/lib/geom $(TOPDIR)/lib/info $(TOPDIR)/lib/io $(TOPDIR)/lib/meas $(TOPDIR)/lib/meas/eig $(TOPDIR)/lib/meas/gfix $(TOPDIR)/lib/meas/glue $(TOPDIR)/lib/meas/hadron $(TOPDIR)/lib/meas/pbp $(TOPDIR)/lib/meas/schrfun $(TOPDIR)/lib/meas/smear $(TOPDIR)/lib/meas/sources $(TOPDIR)/lib/update $(TOPDIR)/lib/update/heatbath $(TOPDIR)/lib/update/molecdyn $(TOPDIR)/lib/update/molecdyn/dsdu $(TOPDIR)/lib/update/molecdyn/est $(TOPDIR)/lib/update/molecdyn/mese $(TOPDIR)/lib/update/molecdyn/noise $(TOPDIR)/lib/update/molecdyn/step $(TOPDIR)/lib/util $(TOPDIR)/lib/util/comm $(TOPDIR)/lib/util/ferm $(TOPDIR)/lib/util/ft $(TOPDIR)/lib/util/gauge $(TOPDIR)/lib/util/misc $(TOPDIR)/lib/util/random $(TOPDIR)/include $(TOPDIR)/mainprogs $(TOPDIR)/mainprogs/main $(TOPDIR)/mainprogs/tests $(TOPDIR)/root
-ACLOCAL = ${SHELL} /home/eduardo/chroma/config/missing --run aclocal-1.7
+ACLOCAL = ${SHELL} /.automount/flack/disk/flack2/users/bj/scratch/tmp/chroma/config/missing --run aclocal-1.7
 AMDEP_FALSE = #
 AMDEP_TRUE = 
-AMTAR = ${SHELL} /home/eduardo/chroma/config/missing --run tar
-AUTOCONF = ${SHELL} /home/eduardo/chroma/config/missing --run autoconf
-AUTOHEADER = ${SHELL} /home/eduardo/chroma/config/missing --run autoheader
-AUTOMAKE = ${SHELL} /home/eduardo/chroma/config/missing --run automake-1.7
+AMTAR = ${SHELL} /.automount/flack/disk/flack2/users/bj/scratch/tmp/chroma/config/missing --run tar
+AUTOCONF = ${SHELL} /.automount/flack/disk/flack2/users/bj/scratch/tmp/chroma/config/missing --run autoconf
+AUTOHEADER = ${SHELL} /.automount/flack/disk/flack2/users/bj/scratch/tmp/chroma/config/missing --run autoheader
+AUTOMAKE = ${SHELL} /.automount/flack/disk/flack2/users/bj/scratch/tmp/chroma/config/missing --run automake-1.7
 AWK = gawk
 BUILD_SSE_WILSON_DSLASH_FALSE = 
 BUILD_SSE_WILSON_DSLASH_TRUE = #
@@ -67,9 +67,9 @@ BUILD_STAGGERED_LIBS_TRUE =
 BUILD_WILSON_LIBS_FALSE = 
 BUILD_WILSON_LIBS_TRUE = #
 CPPFLAGS = 
-CXX = g++
+CXX = mpiCC
 CXXDEPMODE = depmode=gcc3
-CXXFLAGS = -O2 -finline-limit=50000
+CXXFLAGS = 
 CYGPATH_W = echo
 DEFS = -DPACKAGE_NAME=\"chroma\" -DPACKAGE_TARNAME=\"chroma\" -DPACKAGE_VERSION=\"0.2\" -DPACKAGE_STRING=\"chroma\ 0.2\" -DPACKAGE_BUGREPORT=\"edwards@jlab.org\" -DPACKAGE=\"chroma\" -DVERSION=\"0.2\" 
 DEPDIR = .deps
@@ -89,7 +89,7 @@ LDFLAGS =
 LIBOBJS = 
 LIBS = 
 LTLIBOBJS = 
-MAKEINFO = ${SHELL} /home/eduardo/chroma/config/missing --run makeinfo
+MAKEINFO = ${SHELL} /.automount/flack/disk/flack2/users/bj/scratch/tmp/chroma/config/missing --run makeinfo
 OBJEXT = o
 PACKAGE = chroma
 PACKAGE_BUGREPORT = edwards@jlab.org
@@ -98,14 +98,14 @@ PACKAGE_STRING = chroma 0.2
 PACKAGE_TARNAME = chroma
 PACKAGE_VERSION = 0.2
 PATH_SEPARATOR = :
-QDPXX_CONFIG = /home/eduardo/bin/qdp++-config
-QDPXX_CXXFLAGS = -O2 -finline-limit=50000 -I/home/eduardo/include -I/usr/include/libxml2
-QDPXX_LDFLAGS = -L/home/eduardo/lib
-QDPXX_LIBS = -lqdp -lnml -lXPathReader -lxmlWriter -lqio -ldime -L/usr/lib -lxml2 -lz -lm
+QDPXX_CONFIG = /Home/bj/scratch/tmp/install/bin/qdp++-config
+QDPXX_CXXFLAGS = -O2 -finline-limit=50000 -I/Home/bj/scratch/tmp/install/include -I/usr/include/libxml2/libxml -I/usr/include/libxml2 -I/include
+QDPXX_LDFLAGS = -L/Home/bj/scratch/tmp/install/lib
+QDPXX_LIBS = -lqdp -lnml -lXPathReader -lxmlWriter -lqio -ldime -L/usr/lib -lxml2 -lz -L/lib -lm -lqmp
 QDPXX_NC = 3
 QDPXX_ND = 4
 QDPXX_NS = 1
-QDPXX_PARALLEL_ARCH = scalar
+QDPXX_PARALLEL_ARCH = parscalar
 QDPXX_PRECISION = single
 RANLIB = ranlib
 SET_MAKE = 
@@ -119,7 +119,7 @@ ac_ct_STRIP =
 am__fastdepCXX_FALSE = #
 am__fastdepCXX_TRUE = 
 am__include = include
-am__leading_dot = .
+am__leading_dot = @am__leading_dot@
 am__quote = 
 bindir = ${exec_prefix}/bin
 build = i686-pc-linux-gnu
@@ -136,7 +136,7 @@ host_os = linux-gnu
 host_vendor = pc
 includedir = ${prefix}/include
 infodir = ${prefix}/info
-install_sh = /home/eduardo/chroma/config/install-sh
+install_sh = /.automount/flack/disk/flack2/users/bj/scratch/tmp/chroma/config/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localstatedir = ${prefix}/var
@@ -160,7 +160,7 @@ INCFLAGS = -I$(TOPDIR)/include
 #
 # Any other compiler flags
 # 
-AM_CXXFLAGS = $(INCFLAGS) -O2 -finline-limit=50000 -O2 -finline-limit=50000 -I/home/eduardo/include -I/usr/include/libxml2 $(am__append_1)
+AM_CXXFLAGS = $(INCFLAGS)  -O2 -finline-limit=50000 -I/Home/bj/scratch/tmp/install/include -I/usr/include/libxml2/libxml -I/usr/include/libxml2 -I/include $(am__append_1)
 
 lib_LIBRARIES = libchroma.a
 

@@ -1,10 +1,10 @@
-// $Id: t_follana_io_s.cc,v 1.3 2003-09-11 13:08:27 bjoo Exp $
+// $Id: t_follana_io_s.cc,v 1.4 2003-09-11 16:10:46 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
 
 #include "chroma.h"
-#include "follana_io.h"
+#include "io/follana_io.h"
 
 using namespace QDP;
 
@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
 
   // Try and read the propagator;
 
-  LatticePropagator qprop;
+  LatticePropagator qprop= zero;
   readQpropFollana((char *)filename.c_str(), qprop);
 
   LatticeComplex corr_fn = trace(adj(qprop)*qprop);
@@ -72,7 +72,6 @@ int main(int argc, char *argv[])
 
   /* Project on zero momentum: Do a slice-wise sum. */
   multi1d<DComplex> hsum(nrow[3]);
-  
   
   hsum = sumMulti(corr_fn, timeslice);
 
@@ -84,4 +83,6 @@ int main(int argc, char *argv[])
 
   // Time to bolt
   QDP_finalize();
+  exit(0);
+
 }

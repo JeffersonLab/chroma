@@ -1,5 +1,5 @@
 /*
- *  $Id: follana_io.cc,v 1.1 2003-09-11 11:12:21 bjoo Exp $
+ *  $Id: follana_io.cc,v 1.2 2003-09-11 16:10:46 bjoo Exp $
  *
  *  These are a few simple I/O routines that we can use until QIO makes its appearance
  *  I have tried to include a simple header by means of a structure.
@@ -21,32 +21,37 @@ void readQpropFollana(char file[], LatticePropagator& quark_prop){
   /*
    *  Now the local variables
    */
-  multi1d<Real32> buf( Layout::vol()*Nc*Nc*2 );
+
   BinaryReader prop_in(file);
  
-  read(prop_in,buf);
-
-  int x, y, z, t, src_col, snk_col, src_spin, snk_spin;
+  int x, y, z, t, src_col, snk_col, src_spin, snk_spin, index;
   Propagator site_prop;
  
   Complex tmp_cmpx;
   const multi1d<int>& latt_size = Layout::lattSize();
   multi1d<int> coords(Nd);
 
+  multi1d<Real32> buf( latt_size[0]*Nc*Nc*2 );
   /* Get size of the lattice */
   /* Read the file somehow */
 
-  int index=0;
   for( t = 0; t < latt_size[3]; t++) {  
+    if( Layout::primaryNode() ) { 
+	   cout << "Reading timeslice: " << t << endl;
+    }
     for( z = 0; z < latt_size[2]; z++) { 
       for( y = 0; y < latt_size[1]; y++ ) {
+
+	read(prop_in, buf);
+	index = 0;
+
 	for( x = 0; x < latt_size[0]; x++) {
 
 	  coords[0] = x;
 	  coords[1] = y;
 	  coords[2] = z;
 	  coords[3] = t;
-	
+	 
 	  for( snk_spin = 0; snk_spin < Ns; snk_spin++) { 
 	    for( src_spin = 0; src_spin < Ns; src_spin++) { 
 
