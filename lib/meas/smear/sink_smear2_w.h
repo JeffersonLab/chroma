@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sink_smear2_w.h,v 1.6 2003-12-27 04:28:46 edwards Exp $
+// $Id: sink_smear2_w.h,v 1.7 2004-01-05 21:47:20 edwards Exp $
 /*! \file
  *  \brief Control routine for types of propagator smearing
  */
@@ -7,11 +7,12 @@
 #ifndef __sink_smear2_h__
 #define __sink_smear2_h__
 
-enum WvfKind {
-  WVF_KIND_GAUGE_INV_GAUSSIAN,
-  WVF_KIND_WUPPERTAL,
-  WVF_KIND_UNKNOWN
-} ;
+enum WvfType {
+  WVF_TYPE_GAUGE_INV_GAUSSIAN,
+  WVF_TYPE_WUPPERTAL,
+  WVF_TYPE_UNKNOWN
+};
+
 
 //! "Smear" the quark propagator at the sink by a covariant Gaussian
 /*!
@@ -23,7 +24,7 @@ enum WvfKind {
  *
  *  \param u                   gauge field ( Read )
  *  \param quark_propagator    quark propagator ( Modify )
- *  \param Wvf_kind            wave function kind: Gaussian or exponential
+ *  \param wvf_type            wave function kind: Gaussian or exponential
  *                             ( Read )
  *  \param wvf_param           wvf_param of "shell" wave function ( Read )
  *  \param WvfIntPar           number of iterations to approximate Gaussian
@@ -34,7 +35,7 @@ enum WvfKind {
 
 void
 sink_smear2(const multi1d<LatticeColorMatrix>& u,
-            LatticePropagator& quark_propagator, WvfKind Wvf_kind,
-            const Real& wvf_param, int WvfIntPar, int j_decay) ;
+            LatticePropagator& quark_propagator, WvfType wvf_type,
+            const Real& wvf_param, int WvfIntPar, int j_decay);
 
 #endif
