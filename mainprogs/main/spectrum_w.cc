@@ -1,10 +1,13 @@
-// $Id: spectrum_w.cc,v 1.30 2004-02-26 16:38:22 edwards Exp $
+// $Id: spectrum_w.cc,v 1.31 2004-04-05 04:19:13 edwards Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.30  2004-02-26 16:38:22  edwards
+//  Revision 1.31  2004-04-05 04:19:13  edwards
+//  Added initial support for Wall sources/sinks.
+//
+//  Revision 1.30  2004/02/26 16:38:22  edwards
 //  Added test/write-out of forward_prop  prop_corr.
 //
 //  Revision 1.29  2004/02/23 03:13:58  edwards
@@ -125,6 +128,7 @@ struct Param_t
 
   bool Pt_snk;             // point sink
   bool Sl_snk;             // shell sink
+  bool Wl_snk;             // wall sink
 
   bool MesonP;             // Meson spectroscopy
   bool CurrentP;           // Meson currents
@@ -182,11 +186,16 @@ void read(XMLReader& xml, const string& path, Param_t& param)
   {
   case 9:
     /**************************************************************************/
+    param.Wl_snk = false;
     break;
 
-  default :
+  case 10:
     /**************************************************************************/
+    read(paramtop, "Wl_snk", param.Wl_snk);
+    break;
 
+  default:
+    /**************************************************************************/
     QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
     QDP_abort(1);
   }
@@ -321,7 +330,7 @@ int main(int argc, char **argv)
   write(xml_out, "Config_info", gauge_xml);
 
   push(xml_out, "Output_version");
-  write(xml_out, "out_version", 9);
+  write(xml_out, "out_version", 10);
   pop(xml_out);
 
   xml_out.flush();
@@ -347,6 +356,9 @@ int main(int argc, char **argv)
 
   // Initialize the slow Fourier transform phases
   SftMom phases(input.param.mom2_max, input.param.avg_equiv_mom, input.param.j_decay);
+
+  // Keep a copy of the phases with NO momenta
+  SftMom phases_nomom(0, true, input.param.j_decay);
 
   // Keep an array of all the xml output buffers
   XMLArrayWriter xml_array(xml_out,input.prop.prop_files.size());
@@ -414,6 +426,7 @@ int main(int argc, char **argv)
     // Determine what kind of source to use
     bool Pt_src = (source_header.source_type == SRC_TYPE_POINT_SOURCE) ? true : false;
     bool Sl_src = (source_header.source_type == SRC_TYPE_SHELL_SOURCE) ? true : false;
+    bool Wl_src = (source_header.source_type == SRC_TYPE_WALL_SOURCE)  ? true : false;
 
     // Do the mesons first
     if (input.param.MesonP) 
@@ -428,6 +441,10 @@ int main(int argc, char **argv)
 	if (Sl_src)
 	  mesons(quark_propagator, quark_propagator, phases, t0,
 		 xml_array, "Shell_Point_Wilson_Mesons");
+        
+	if (Wl_src)
+	  mesons(quark_propagator, quark_propagator, phases_nomom, t0,
+		 xml_array, "Wall_Point_Wilson_Mesons");
       } // end if (Pt_snk)
 
       // Convolute the quark propagator with the sink smearing function.
@@ -450,7 +467,30 @@ int main(int argc, char **argv)
 	if (Sl_src)
 	  mesons(quark_prop_smr, quark_prop_smr, phases, t0,
 		 xml_array, "Shell_Shell_Wilson_Mesons");
+
+	if (Wl_src)
+	  mesons(quark_prop_smr, quark_prop_smr, phases_nomom, t0,
+		 xml_array, "Wall_Shell_Wilson_Mesons");
       } // end if (Sl_snk)
+
+      // Wall sink
+      if (input.param.Wl_snk) 
+      {
+	LatticePropagator wall_quark_prop;
+	wall_qprop(wall_quark_prop, quark_propagator, input.param.j_decay);
+
+	if (Pt_src)
+	  mesons(wall_quark_prop, wall_quark_prop, phases_nomom, t0,
+		 xml_array, "Point_Wall_Wilson_Mesons");
+
+	if (Sl_src)
+	  mesons(wall_quark_prop, wall_quark_prop, phases_nomom, t0,
+		 xml_array, "Shell_Wall_Wilson_Mesons");
+
+	if (Wl_src)
+	  mesons(wall_quark_prop, wall_quark_prop, phases_nomom, t0,
+		 xml_array, "Wall_Wall_Wilson_Mesons");
+      } // end if (Wl_snk)
 
     } // end if (MesonP)
 
@@ -468,6 +508,11 @@ int main(int argc, char **argv)
 	curcor2(u, quark_propagator, quark_propagator, phases, 
 		t0, 3,
 		xml_array, "Shell_Point_Meson_Currents");
+        
+      if (Wl_src)
+	curcor2(u, quark_propagator, quark_propagator, phases_nomom, 
+		t0, 3,
+		xml_array, "Wall_Point_Meson_Currents");
     } // end if (CurrentP)
 
 
@@ -486,6 +531,11 @@ int main(int argc, char **argv)
 	  baryon(quark_propagator, phases, 
 		 t0, bc_spec, input.param.time_rev, 
 		 xml_array, "Shell_Point_Wilson_Baryons");
+        
+	if (Wl_src)
+	  baryon(quark_propagator, phases_nomom, 
+		 t0, bc_spec, input.param.time_rev, 
+		 xml_array, "Wall_Point_Wilson_Baryons");
       } // end if (Pt_snk)
 
       // Convolute the quark propagator with the sink smearing function.
@@ -509,7 +559,34 @@ int main(int argc, char **argv)
 	  baryon(quark_prop_smr, phases, 
 		 t0, bc_spec, input.param.time_rev, 	
 		 xml_array, "Shell_Shell_Wilson_Baryons");
+        
+	if (Wl_src)
+	  baryon(quark_prop_smr, phases_nomom, 
+		 t0, bc_spec, input.param.time_rev, 	
+		 xml_array, "Wall_Shell_Wilson_Baryons");
       } // end if (Sl_snk)
+
+      // Wall sink
+      if (input.param.Wl_snk) 
+      {
+	LatticePropagator wall_quark_prop;
+	wall_qprop(wall_quark_prop, quark_propagator, input.param.j_decay);
+
+	if (Pt_src)
+	  baryon(wall_quark_prop, phases_nomom, 
+		 t0, bc_spec, input.param.time_rev, 
+		 xml_array, "Point_Wall_Wilson_Baryons");
+        
+	if (Sl_src)
+	  baryon(wall_quark_prop, phases_nomom, 
+		 t0, bc_spec, input.param.time_rev, 	
+		 xml_array, "Shell_Wall_Wilson_Baryons");
+        
+	if (Wl_src)
+	  baryon(wall_quark_prop, phases_nomom, 
+		 t0, bc_spec, input.param.time_rev, 	
+		 xml_array, "Wall_Wall_Wilson_Baryons");
+      } // end if (Wl_snk)
 
     } // end if (BaryonP)
 
