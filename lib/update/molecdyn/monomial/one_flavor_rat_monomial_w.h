@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial_w.h,v 1.2 2005-01-28 05:09:37 edwards Exp $
+// $Id: one_flavor_rat_monomial_w.h,v 1.3 2005-01-28 16:48:47 edwards Exp $
 
 /*! @file
  * @brief One flavor monomials using RHMC
@@ -78,6 +78,7 @@ namespace Chroma
 
       // Loop over solns and accumulate force contributions
       P  F_1, F_2;
+      F.resize(Nd);
       F = zero;
 
       for(int i=0; i < X.size(); ++i)

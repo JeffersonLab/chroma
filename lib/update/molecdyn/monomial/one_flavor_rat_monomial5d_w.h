@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial5d_w.h,v 1.1 2005-01-28 02:15:32 edwards Exp $
+// $Id: one_flavor_rat_monomial5d_w.h,v 1.2 2005-01-28 16:48:47 edwards Exp $
 
 /*! @file
  * @brief One flavor monomials using RHMC
@@ -66,6 +66,7 @@ namespace Chroma
       // Start the force
       int n_count;
       int n_pv_count;
+      F.resize(Nd);
       F = zero;
 
       // Force term for the linop
@@ -170,10 +171,9 @@ namespace Chroma
       
       // Force terms
       const int N5 = FA.size();
-      int n_count;
-      int n_pv_count;
 
       // Pseudofermions for M term
+      int n_count = 0;
       { 
 	Handle< const LinearOperator< multi1d<Phi> > > M(FA.linOp(f_state));
       
@@ -196,7 +196,9 @@ namespace Chroma
 	if (X.size() != getHBPartFracRoot().size())
 	  QDP_error_exit("%s : sanity failure, internal size not getHNPartFracRoot size", __func__);
 
+	getPhi().resize(N5);
 	getPhi() = zero;
+
 	for(int i=0; i < X.size(); ++i)
 	{
 	  if (X[i].size() != N5)
@@ -208,7 +210,9 @@ namespace Chroma
 	}
       }
 
+
       // Pseudofermions for PV term
+      int n_pv_count = 0;
       { 
 	Handle< const LinearOperator< multi1d<Phi> > > PV(FA.linOpPV(f_state));
 	
@@ -231,7 +235,9 @@ namespace Chroma
 	if (X.size() != getHBPVPartFracRoot().size())
 	  QDP_error_exit("%s : sanity failure, internal size not getHNPartFracRoot size", __func__);
 
-	getPhi() = zero;
+	getPhiPV().resize(N5);
+	getPhiPV() = zero;
+
 	for(int i=0; i < X.size(); ++i)
 	{
 	  if (X[i].size() != N5)
@@ -239,7 +245,7 @@ namespace Chroma
 
 	  // Loop over each 5d slice
 	  for(int j=0; j < N5; ++j)
-	    getPhi()[j] += getHBPVPartFracCoeff()[i] * X[i][j];
+	    getPhiPV()[j] += getHBPVPartFracCoeff()[i] * X[i][j];
 	}
       }
 
@@ -388,13 +394,13 @@ namespace Chroma
 
       // Action for PV term
       Double action_pv = zero;
-      int n_pv_count;
+      int n_pv_count = 0;
       {
 	Handle< const LinearOperator< multi1d<Phi> > > PV(FA.linOpPV(bc_g_state));
 
 	// Get X out here via multisolver
 	multi1d< multi1d<Phi> > X;
-	n_count = getX(X,getFPVPartFracRoot(),getPhi(),s);
+	n_count = getXPV(X,getFPVPartFracRoot(),getPhiPV(),s);
 
 	// Weight solns
 	if (X.size() != getFPVPartFracRoot().size())
@@ -414,7 +420,7 @@ namespace Chroma
 
 	// Action on the entire lattice
 	for(int i=0; i < N5; ++i)
-	  action_pv += innerProductReal(getPhi()[i], tmp[i]);
+	  action_pv += innerProductReal(getPhiPV()[i], tmp[i]);
       }
 
       write(xml_out, "n_count", n_count);
@@ -547,13 +553,13 @@ namespace Chroma
 
       // Action for PV term
       Double action_pv = zero;
-      int n_pv_count;
+      int n_pv_count = 0;
       {
 	Handle< const LinearOperator< multi1d<Phi> > > PV(FA.linOpPV(bc_g_state));
 
 	// Get X out here via multisolver
 	multi1d< multi1d<Phi> > X;
-	n_count = getX(X,getFPVPartFracRoot(),getPhi(),s);
+	n_count = getXPV(X,getFPVPartFracRoot(),getPhiPV(),s);
 
 	// Weight solns
 	if (X.size() != getFPVPartFracRoot().size())
@@ -573,7 +579,7 @@ namespace Chroma
 
 	// Action on the entire lattice
 	for(int i=0; i < N5; ++i)
-	  action_pv += innerProductReal(getPhi()[i], tmp[i], PV->subset());
+	  action_pv += innerProductReal(getPhiPV()[i], tmp[i], PV->subset());
       }
 
       write(xml_out, "n_count", n_count);

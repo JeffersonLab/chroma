@@ -1,4 +1,4 @@
-// $Id: prec_one_flavor_rat_monomial5d_w.cc,v 1.1 2005-01-28 02:15:32 edwards Exp $
+// $Id: prec_one_flavor_rat_monomial5d_w.cc,v 1.2 2005-01-28 16:48:47 edwards Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 5D ferm monomials
  */
@@ -190,15 +190,15 @@ namespace Chroma
     HBPVPartFracCoeff.resize(N);
     HBPVPartFracRoot.resize(N);
 
-    FPartFracCoeff = 1;
-    FPartFracRoot = 1;
-    HBPartFracCoeff = 1;
-    HBPartFracRoot = 1;
+    FPartFracCoeff = 0.557;
+    FPartFracRoot = 1.678;
+    HBPartFracCoeff = 0.98;
+    HBPartFracRoot = 1.05;
 
-    FPVPartFracCoeff = 1;
-    FPVPartFracRoot = 1;
-    HBPVPartFracCoeff = 1;
-    HBPVPartFracRoot = 1;
+    FPVPartFracCoeff = 2.1;
+    FPVPartFracRoot = 2.1;
+    HBPVPartFracCoeff = 4.212;
+    HBPVPartFracRoot = 3.7;
     //*********************************************************************
 
     QDPIO::cout << "EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5DParams: read " << fermact_string << endl;

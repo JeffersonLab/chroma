@@ -1,4 +1,4 @@
-// $Id: prec_one_flavor_rat_monomial_w.cc,v 1.2 2005-01-28 05:09:37 edwards Exp $
+// $Id: prec_one_flavor_rat_monomial_w.cc,v 1.3 2005-01-28 16:48:47 edwards Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -147,10 +147,10 @@ namespace Chroma
     HBPartFracCoeff.resize(N);
     HBPartFracRoot.resize(N);
 
-    FPartFracCoeff = 1;
-    FPartFracRoot = 1;
-    HBPartFracCoeff = 1;
-    HBPartFracRoot = 1;
+    FPartFracCoeff = 0.78;
+    FPartFracRoot = 1.234;;
+    HBPartFracCoeff = 3.2;
+    HBPartFracRoot = 1.89;
     //*********************************************************************
 
   }
