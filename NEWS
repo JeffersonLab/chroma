@@ -1,4 +1,8 @@
-05/022004 -- Robert Edwards
+05/04/2004 -- Balint Joo
+
+	Version 1.5.10. Overlap double pass appears okay.
+
+05/02/2004 -- Robert Edwards
 
 	Version 1.5.9. Qproptransf codes in place. Now have completed
 	conversion to new seqsource/propagator qprop format.
