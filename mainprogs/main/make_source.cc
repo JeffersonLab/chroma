@@ -1,4 +1,4 @@
-// $Id: make_source.cc,v 1.10 2003-10-09 22:24:07 edwards Exp $
+// $Id: make_source.cc,v 1.11 2003-10-15 21:57:21 edwards Exp $
 /*! \file
  *  \brief Main code for source generation
  */
@@ -7,6 +7,7 @@
 #include <cstdio>
 
 #include "chroma.h"
+#include "qdp_iogauge.h"
 
 /*
  *  Here we have various temporary definitions
