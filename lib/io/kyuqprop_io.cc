@@ -1,4 +1,4 @@
-// $Id: kyuqprop_io.cc,v 1.8 2004-05-25 21:16:57 edwards Exp $
+// $Id: kyuqprop_io.cc,v 1.9 2004-06-30 19:49:57 edwards Exp $
 /*!
  * @file
  * @brief  Read/write a Kentucky quark propagator
@@ -104,7 +104,7 @@ void readKYUQprop(LatticePropagator& q, const string& file)
   q_old *= RealD(1.0) / sqrt(RealD(2));
 
   // Now that we have read the prop, need to change the spin basis
-  SpinMatrixD U = PauliToDRMat();
+  SpinMatrixD U = DiracToDRMat();
 
   // And finally...
   q = U * q_old * adj(U);   // note, adj(U) = -U
