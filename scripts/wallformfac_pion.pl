@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: wallformfac_pion.pl,v 1.2 2004-04-08 02:01:26 edwards Exp $
+# $Id: wallformfac_pion.pl,v 1.3 2004-04-21 03:23:18 edwards Exp $
 #
 # Usage
 #   formfact.pl
@@ -17,6 +17,11 @@ die "config.pl does not exist\n" unless -f "config.pl";
 do './config.pl';
 
 #### Example input
+#$mom2_max = 5
+#@sink_mom = (0,0,0);
+#$a = 0.1;
+#$L_s = 8;
+
 #$nam = 'nonlocal';
 #$cur = 'n';
 #$nam = 'local';
@@ -88,7 +93,7 @@ foreach $x (-$mommax_int .. $mommax_int)
       {
 	$pion_sp{$x, $y, $z} = "pion.$spext" ;
 	$pion_ss{$x, $y, $z} = "pion.$ssext" ;
-	$pion_sw{$x, $y, $z} = "pion.$swext" ;
+	$pion_sw{$x, $y, $z} = "pion.$swext" ;  printf "pion_sw = %s\n", $pion_sw{0,0,0};
 	$pion_wp{$x, $y, $z} = "pion.$ssext" ;
 	$pion_ws{$x, $y, $z} = "pion.$ssext" ;
 	$pion_ws{$x, $y, $z} = "pion.$ssext" ;
@@ -114,6 +119,7 @@ print "Pion Electric form-factor";
 
 # Assume zero momenta pion exist
 if (-f pion.$ssext) {exit(1);}
+if (-f pion.$swext) {exit(1);}
 
 &ensbc("pion_norm=extract($pion_sw{$p_f[0],$p_f[1],$p_f[2]}, $t_snk - $t_src)");
 
@@ -266,7 +272,8 @@ foreach $mes ("pion")
     printf FOO "! Qsq = %g GeV^{2}\n", $qsq;
     close(FOO);
     
-    system("calc ${mes}_r_mu3_q${qsq_int} | head -$t_ext >> ${mes}_r_mu3_q${qsq}.ax");
+#    system("calc ${mes}_r_mu3_q${qsq_int} | head -$t_ext >> ${mes}_r_mu3_q${qsq}.ax");
+    system("calcbc \"- ${mes}_r_mu3_q${qsq_int}\" >> ${mes}_r_mu3_q${qsq}.ax");
     system("calcbc \"${mes}_r_mu3_q${qsq_int} / pion_r_mu3_q0\" | head -$t_ext_m1 > ${mes}_r_mu3_q${qsq}_norm.ax");
   }
 }
