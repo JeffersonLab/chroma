@@ -1,4 +1,4 @@
-// $Id: quarkprop4_w.cc,v 1.2 2003-11-13 18:18:22 edwards Exp $
+// $Id: quarkprop4_w.cc,v 1.3 2003-11-13 21:44:50 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -27,6 +27,7 @@ using namespace QDP;
  */
 
 template<typename T, template<class> class C>
+static 
 void quarkProp4_a(LatticePropagator& q_sol, 
 		  XMLWriter& xml_out,
 		  const LatticePropagator& q_src,
