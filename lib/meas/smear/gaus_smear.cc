@@ -1,11 +1,11 @@
-// $Id: gaus_smear.cc,v 1.7 2003-04-02 06:59:20 edwards Exp $
+// $Id: gaus_smear.cc,v 1.8 2003-04-09 19:43:40 edwards Exp $
 /*! \file
  *  \brief Gaussian smearing of color vector
  */
 
 #include "chromabase.h"
 #include "meas/smear/gaus_smear.h"
-#include "actions/dirac/klein_gord.h"
+#include "actions/boson/operator/klein_gord.h"
 
 using namespace QDP;
 
