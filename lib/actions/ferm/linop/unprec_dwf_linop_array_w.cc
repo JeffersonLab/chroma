@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_linop_array_w.cc,v 1.3 2003-11-13 18:16:57 edwards Exp $
+// $Id: unprec_dwf_linop_array_w.cc,v 1.4 2003-11-14 04:59:52 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall linear operator
  */
@@ -65,7 +65,7 @@ multi1d<LatticeFermion> UnprecDWLinOpArray::operator() (const multi1d<LatticeFer
   //
   //  Chi   =  D' Psi
   //
-  Real fact1 = a5*(2*Nd - WilsonMass) + 1;
+  Real fact1 = a5*(Nd - WilsonMass) + 1;
   Real fact2 = -0.5*a5;
 
   switch (isign)
@@ -75,13 +75,13 @@ multi1d<LatticeFermion> UnprecDWLinOpArray::operator() (const multi1d<LatticeFer
     {
       if (n == 0)
 	chi[n] = fact2*D(psi[n], isign) + fact1*psi[n] 
-	       - m_q*chiralProjectPlus(psi[N5-1]) + chiralProjectMinus(psi[1]);
+	       + m_q*chiralProjectPlus(psi[N5-1]) - chiralProjectMinus(psi[1]);
       else if (n == N5-1)
 	chi[n] = fact2*D(psi[n], isign) + fact1*psi[n] 
-	       + chiralProjectPlus(psi[N5-2]) - m_q*chiralProjectMinus(psi[0]);
+	       - chiralProjectPlus(psi[N5-2]) + m_q*chiralProjectMinus(psi[0]);
       else
 	chi[n] = fact2*D(psi[n], isign) + fact1*psi[n] 
-	       + chiralProjectPlus(psi[n-1]) + chiralProjectMinus(psi[n+1]);
+	       - chiralProjectPlus(psi[n-1]) - chiralProjectMinus(psi[n+1]);
     }          
     break;
 
@@ -90,13 +90,13 @@ multi1d<LatticeFermion> UnprecDWLinOpArray::operator() (const multi1d<LatticeFer
     {
       if (n == 0)
 	chi[n] = fact2*D(psi[n], isign) + fact1*psi[n] 
-	       - m_q*chiralProjectMinus(psi[N5-1]) + chiralProjectPlus(psi[1]);
+	       + m_q*chiralProjectMinus(psi[N5-1]) - chiralProjectPlus(psi[1]);
       else if (n == N5-1)
 	chi[n] = fact2*D(psi[n], isign) + fact1*psi[n] 
-	       + chiralProjectMinus(psi[N5-2]) - m_q*chiralProjectPlus(psi[0]);
+	       - chiralProjectMinus(psi[N5-2]) + m_q*chiralProjectPlus(psi[0]);
       else
 	chi[n] = fact2*D(psi[n], isign) + fact1*psi[n] 
-	       + chiralProjectMinus(psi[n-1]) + chiralProjectPlus(psi[n+1]);
+	       - chiralProjectMinus(psi[n-1]) - chiralProjectPlus(psi[n+1]);
     }          
     break;
   }
