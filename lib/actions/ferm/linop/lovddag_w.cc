@@ -1,4 +1,4 @@
-// $Id: lovddag_w.cc,v 1.10 2004-05-18 12:40:15 bjoo Exp $
+// $Id: lovddag_w.cc,v 1.11 2004-05-18 12:54:49 bjoo Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -16,7 +16,7 @@ using namespace QDP;
 void lovddag::operator() (LatticeFermion& chi, const LatticeFermion& psi, 
 			   enum PlusMinus isign) const
 {
-  operator()(chi, psi, isign, RsdCG*sqrt(norm2(psi)) );
+  operator()(chi, psi, isign, RsdCG );
 }
 
 //! Apply the GW operator onto a source vector
@@ -162,7 +162,7 @@ void lovddag::operator() (LatticeFermion& chi, const LatticeFermion& psi,
   // We are dealing with 4/(1-m_q)^2
   // so I should readjust the residua by that squared
   Real rsdcg_sq = epsilon * epsilon*(Real(1)-m_q*m_q)*(Real(1)-m_q*m_q)/Real(16);   // Target residuum squared
-  Real rsd_sq = rsdcg_sq;      // Used for relative residue comparisons
+  Real rsd_sq = norm2(psi)*rsdcg_sq;      // Used for relative residue comparisons
                                    // r_t^2 * || r ||^2
 
   /* By default (could change), rootQ(isz) is considered the smallest shift */

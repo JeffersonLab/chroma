@@ -1,4 +1,4 @@
-// $Id: inv_rel_cg1.cc,v 1.3 2004-05-18 12:40:15 bjoo Exp $
+// $Id: inv_rel_cg1.cc,v 1.4 2004-05-18 12:54:48 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -72,8 +72,9 @@ void InvRelCG1_a(const ApproxLinearOperator<T>& A,
 
   for(int k = 1; k <= MaxCG; ++k) {
 
-    // Why do I need the fudge factor 100?
-    inner_tol = sqrt(rsd_sq)*sqrt(norm2(p))*sqrt(zeta);
+    // The sqrt(norm2(p)) part is taken care of by using relative residua
+    // in the inner solve
+    inner_tol = sqrt(rsd_sq)*sqrt(zeta);
  
     A(q,p,PLUS,inner_tol);
   

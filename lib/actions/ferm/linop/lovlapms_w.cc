@@ -1,4 +1,4 @@
-// $Id: lovlapms_w.cc,v 1.17 2004-05-18 12:40:15 bjoo Exp $
+// $Id: lovlapms_w.cc,v 1.18 2004-05-18 12:54:49 bjoo Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -12,7 +12,7 @@ using namespace QDP;
 void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi, 
 			   enum PlusMinus isign) const
 {
-  operator()(chi, psi, isign, RsdCG*sqrt(norm2(psi)));
+  operator()(chi, psi, isign, RsdCG);
 }
 
 //! Apply the GW operator onto a source vector
@@ -154,8 +154,8 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
   // I should readjust the residuum by (1-mu)/2
     
   Real rsdcg_sq = epsilon * epsilon*(Real(1)-m_q)*(Real(1)-m_q)/Real(4);   // Target residuum squared
-  Real rsd_sq = c*rsdcg_sq;      // Used for relative residue comparisons
-                                   // r_t^2 * || r ||^2
+  Real rsd_sq = norm2(psi)*rsdcg_sq;      // Used for relative residue comparisons
+                                          // r_t^2 * || r ||^2
 
 
   // By default, rootQ(isz) is considered the smallest shift 
@@ -396,7 +396,7 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
         ztmp = Real(c) * z[iz][s]*z[iz][s];	
 
 	// Check ztmp is smaller than the target residuum
-	bool btmp = toBool(ztmp < rsdcg_sq);
+	bool btmp = toBool(ztmp < rsd_sq);
 	convP = convP & btmp;
 	convsP[s] = btmp;
       }

@@ -1,4 +1,4 @@
-// $Id: inv_rel_cg2.cc,v 1.3 2004-05-18 12:40:15 bjoo Exp $
+// $Id: inv_rel_cg2.cc,v 1.4 2004-05-18 12:54:49 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -119,7 +119,11 @@ void InvRelCG2_a(const ApproxLinearOperator<T>& M,
   for(int k = 1; k <= MaxCG; ++k)
   {
     // Inner tolerance = epsilon || chi || || p || sqrt(zeta) / 2
-    Real inner_tol = sqrt(rsd_sq)*sqrt(norm2(p))*sqrt(zeta)/Real(2);
+    //
+    // The || p || part is taken care of the fact that we are using 
+    // relative residua in the inner solve. The factor of 2 is because
+    // we apply the operator twice...
+    Real inner_tol = sqrt(rsd_sq)*sqrt(zeta)/Real(2);
 
     // Compute M^{dag} M p
     M(mp, p, PLUS, inner_tol);
