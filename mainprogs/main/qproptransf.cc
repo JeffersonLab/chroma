@@ -1,4 +1,4 @@
-// $Id: qproptransf.cc,v 1.1 2004-03-04 03:20:50 edwards Exp $
+// $Id: qproptransf.cc,v 1.2 2004-04-01 04:12:43 edwards Exp $
 /*! \file
  *  \brief Converts quark propagators in one format into another format.
  */
@@ -10,6 +10,31 @@ using namespace QDP;
 /*
  * Input 
  */
+
+//! Propagator type
+enum SciDACPropType {
+  SCIDAC_SOURCE,
+  SCIDAC_PROP,
+  SCIDAC_SEQPROP,
+};
+
+//! Read a SciDACPropType enum
+void read(XMLReader& xml, const string& path, SciDACPropType& param)
+{
+  string prop_type_str;
+  read(xml, path, prop_type_str);
+  if (prop_type_str == "PROPAGATOR")
+    param = SCIDAC_PROP;
+  else if (prop_type_str == "SEQPROP")
+    param = SCIDAC_SEQPROP;
+  else 
+  {
+    QDPIO::cerr << "Unsupported propagator type" << endl;
+    QDP_abort(1);
+  }
+}
+
+
 
 // Parameters which must be determined from the XML input
 // and written to the XML output
@@ -26,6 +51,8 @@ struct Prop_t
   PropType  prop_out_type;      // propagator format
   string    prop_out_file;
   QDP_volfmt_t prop_out_volfmt; // volume format (SINGLEFILE or MULTIFILE)
+
+  SciDACPropType   scidac_prop_type;   // Either "PROPAGATOR", or "SEQPROP", etc.
 };
 
 struct QpropTransf_input_t
@@ -48,6 +75,9 @@ void read(XMLReader& xml, const string& path, Prop_t& input)
   read(inputtop, "prop_out_type", input.prop_out_type);
   read(inputtop, "prop_out_file", input.prop_out_file);
   read(inputtop, "prop_out_volfmt", input.prop_out_volfmt);  // singlefile or multifile
+
+  if (inputtop.count("scidac_prop_type") != 0)
+    read(inputtop, "scidac_prop_type", input.scidac_prop_type);
 }
 
 
@@ -118,20 +148,11 @@ int main(int argc, char *argv[])
   // Parameter structure for the input
   QpropTransf_input_t input;
 
-  // Hmm, at this moment I've not decided between what style of input
-  // to use - all XML or mostly ascii and some XML when needed.
-#if 0
   // Instantiate xml reader for DATA
   XMLReader xml_in("DATA");
 
   // Read data
   read(xml_in, "/qproptransf", input);
-#else
-  input.param.nrow.resize(Nd);
-
-  QDPIO::cout << "Enter lattice size\n";
-  QDPIO::cin >> input.param.nrow;
-#endif
 
   // Setup QDP
   Layout::setLattSize(input.param.nrow);
@@ -142,31 +163,8 @@ int main(int argc, char *argv[])
 
   proginfo(xml_out);    // Print out basic program info
 
-//  xml_out << xml_in;  // save a copy of the input
-//  write(xml_out, "config_info", gauge_xml);
+  write(xml_out, "input", xml_in); // save a copy of the input
   xml_out.flush();
-
-
-  int input_type;
-  QDPIO::cout << "Enter input propagator format\n"
-	      << "  (1) SZIN\n"
-	      << "  (2) SciDAC\n"
-	      << "  (3) Kentucky\n";
-  QDPIO::cin >> input_type;
-  
-  int output_type;
-  QDPIO::cout << "Enter output propagator field type\n"
-	      << "  (1) SZIN\n"
-	      << "  (2) SciDAC\n";
-  QDPIO::cin >> output_type;
-  
-  string prop_in_file;
-  QDPIO::cout << "Enter input file name\n";
-  QDPIO::cin >> prop_in_file;
-
-  string prop_out_file;
-  QDPIO::cout << "Enter output file name\n";
-  QDPIO::cin >> prop_out_file;
   
   /*
    * Now read them thangs...
@@ -174,28 +172,28 @@ int main(int argc, char *argv[])
   XMLReader prop_in_xml, prop_in_file_xml;
   LatticePropagator  prop;
 
-  switch (input_type)
+  switch (input.prop.prop_in_type)
   {
-  case 1:
+  case PROP_TYPE_SZIN:
     // SZIN
     push(xml_out,"SZIN_propagator");
-    write(xml_out, "input_type", input_type);
-    write(xml_out, "prop_in_file", prop_in_file);
+    write(xml_out, "prop_in_type", input.prop.prop_in_type);
+    write(xml_out, "prop_in_file", input.prop.prop_in_file);
 
-    readSzinQprop(prop_in_xml, prop, prop_in_file);
+    readSzinQprop(prop_in_xml, prop, input.prop.prop_in_file);
 
     write(xml_out, "propagator_info", prop_in_xml);
     pop(xml_out);
     break;
 
-  case 2:
+  case PROP_TYPE_SCIDAC:
     // SciDAC
     push(xml_out,"SciDAC_propagator");
-    write(xml_out, "input_type", input_type);
-    write(xml_out, "prop_in_file", prop_in_file);
+    write(xml_out, "input_type", input.prop.prop_in_type);
+    write(xml_out, "prop_in_file", input.prop.prop_in_file);
 
     readQprop(prop_in_file_xml, prop_in_xml, prop, 
-	      prop_in_file, QDPIO_SERIAL);
+	      input.prop.prop_in_file, QDPIO_SERIAL);
 
     write(xml_out, "File_xml", prop_in_file_xml);
     write(xml_out, "Record_xml", prop_in_xml);
@@ -203,7 +201,7 @@ int main(int argc, char *argv[])
     break;
 
   default:
-    QDP_error_exit("unknown input type", input_type);
+    QDP_error_exit("unknown input type", input.prop.prop_in_type);
   }
     
 
@@ -225,37 +223,183 @@ int main(int argc, char *argv[])
   /*
    * Now write them thangs...
    */ 
-  switch (output_type)
+  switch (input.prop.prop_out_type)
   {
-  case 1:
+  case PROP_TYPE_SZIN:
   {
     // SZIN
     Real Kappa(3.14159265359);
 
     push(xml_out,"SZIN_propagator");
-    write(xml_out, "output_type", output_type);
-    write(xml_out, "prop_out_file", prop_out_file);
+    write(xml_out, "output_type", input.prop.prop_out_type);
+    write(xml_out, "prop_out_file", input.prop.prop_out_file);
     pop(xml_out);
 
-    writeSzinQprop(prop, prop_out_file, Kappa);
+    writeSzinQprop(prop, input.prop.prop_out_file, Kappa);
   }
   break;
 
-  case 2:
+  case PROP_TYPE_SCIDAC:
+  {
     // SciDAC
-    QDPIO::cerr << "SciDAC output not implemented\n";
-    QDP_abort(1);
+    // SciDAC output expects to find the relevant structures in the
+    // xml input.
+    // Read in the configuration along with relevant information.
+    multi1d<LatticeColorMatrix> u(Nd);
+    XMLReader gauge_xml;
+
+    switch (input.cfg.cfg_type) 
+    {
+    case CFG_TYPE_SZIN :
+      readSzin(gauge_xml, u, input.cfg.cfg_file);
+      break;
+    default :
+      QDP_error_exit("Configuration type is unsupported.");
+    }
+
+    // xml input file
+    XMLReader inputtop(xml_in, "/qproptransf");
+
+    // There are various forms of SciDAC prop types
+    switch (input.prop.scidac_prop_type)
+    {
+    case SCIDAC_SOURCE:
+    {
+      // Try to invert this record XML into a source struct
+      // Also pull out the id of this source
+      PropSource_t source_header;
+
+      try
+      {
+	read(inputtop, "MakeSource/PropSource", source_header);
+      }
+      catch (const string& e) 
+      {
+	QDPIO::cerr << "Error extracting source_header: " << e << endl;
+	throw;
+      }
+
+      {
+	XMLBufferWriter prop_out_file_xml;
+	push(prop_out_file_xml, "make_source");
+	int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
+	write(prop_out_file_xml, "id", id);
+	pop(prop_out_file_xml);
+
+	XMLBufferWriter prop_out_record_xml;
+	push(prop_out_record_xml, "MakeSource");
+	write(prop_out_record_xml, "PropSource", source_header);
+	write(prop_out_record_xml, "Config_info", gauge_xml);
+	pop(prop_out_record_xml);
+    
+	// Write the source
+	writeQprop(prop_out_file_xml, prop_out_record_xml, prop,
+		   input.prop.prop_out_file, input.prop.prop_out_volfmt, 
+		   QDPIO_SERIAL);
+      }
+    }
     break;
 
+    case SCIDAC_PROP:
+    {
+      // Try to invert this record XML into a source struct
+      // Also pull out the id of this source
+      ChromaProp_t prop_header;
+      PropSource_t source_header;
+
+      try
+      {
+	read(inputtop, "Propagator/ForwardProp", prop_header);
+	read(inputtop, "Propagator/PropSource", source_header);
+      }
+      catch (const string& e) 
+      {
+	QDPIO::cerr << "Error extracting source_header: " << e << endl;
+	throw;
+      }
+
+      {
+	XMLBufferWriter prop_out_file_xml;
+	push(prop_out_file_xml, "propagator");
+	int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
+	write(prop_out_file_xml, "id", id);
+	pop(prop_out_file_xml);
+
+	XMLBufferWriter prop_out_record_xml;
+	push(prop_out_record_xml, "Propagator");
+	write(prop_out_record_xml, "ForwardProp", prop_header);
+	write(prop_out_record_xml, "PropSource", source_header);
+	write(prop_out_record_xml, "Config_info", gauge_xml);
+	pop(prop_out_record_xml);
+    
+	// Write the source
+	writeQprop(prop_out_file_xml, prop_out_record_xml, prop,
+		   input.prop.prop_out_file, input.prop.prop_out_volfmt, 
+		   QDPIO_SERIAL);
+      }
+    }
+    break;
+
+    case SCIDAC_SEQPROP:
+    {
+      // Try to invert this record XML into a source struct
+      // Also pull out the id of this source
+      ChromaSeqProp_t seqprop_header;
+      PropSink_t sink_header;
+      ChromaProp_t prop_header;
+      PropSource_t source_header;
+
+      try
+      {
+	read(inputtop, "SeqProp/SequentialProp", seqprop_header);
+	read(inputtop, "SeqProp/PropSink", sink_header);
+	read(inputtop, "SeqProp/ForwardProp", prop_header);
+	read(inputtop, "SeqProp/PropSource", source_header);
+      }
+      catch (const string& e) 
+      {
+	QDPIO::cerr << "Error extracting source_header: " << e << endl;
+	throw;
+      }
+
+      {
+	XMLBufferWriter prop_out_file_xml;
+	push(prop_out_file_xml, "seqprop");
+	int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
+	write(prop_out_file_xml, "id", id);
+	pop(prop_out_file_xml);
+
+	XMLBufferWriter prop_out_record_xml;
+	push(prop_out_record_xml, "SeqProp");
+	write(prop_out_record_xml, "ForwardProp", prop_header);
+	write(prop_out_record_xml, "PropSource", source_header);
+	write(prop_out_record_xml, "Config_info", gauge_xml);
+	pop(prop_out_record_xml);
+    
+	// Write the source
+	writeQprop(prop_out_file_xml, prop_out_record_xml, prop,
+		   input.prop.prop_out_file, input.prop.prop_out_volfmt, 
+		   QDPIO_SERIAL);
+      }
+    }
+    break;
+
+    default:
+      QDPIO::cerr << "Unknown SciDAC prop type" << endl;
+      QDP_abort(1);
+    }
+  }
+  break;
+
   default:
-    QDPIO::cerr << "unknown output type = " << output_type << endl;
+    QDPIO::cerr << "unknown output type = " << input.prop.prop_out_type << endl;
     QDP_abort(1);
   }
 
-  pop(xml_out);
+  pop(xml_out);   // qproptransf
         
   xml_out.close();
-//  xml_in.close();
+  xml_in.close();
 
   END_CODE("qproptransf");
 
