@@ -1,4 +1,4 @@
-// $Id: staggered_qprop.cc,v 1.7 2004-07-28 02:38:02 edwards Exp $
+// $Id: staggered_qprop.cc,v 1.8 2004-10-14 14:19:32 mcneile Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *
@@ -34,9 +34,7 @@ void
 EvenOddStaggeredTypeFermAct<LatticeFermion>::qprop(LatticeFermion& psi, 
 						   Handle<const ConnectState> state,
 						   const LatticeFermion& chi,
-						   enum InvType invType,
-						   const Real& RsdCG, 
-						   int MaxCG, 
+						   const InvertParam_t& invParam,
 						   int& ncg_had)
 {
   START_CODE();
@@ -52,9 +50,9 @@ EvenOddStaggeredTypeFermAct<LatticeFermion>::qprop(LatticeFermion& psi,
   tmp = tmp1 = tmp2 = zero;
   Real invm;
 
-  switch(invType)
-  {
-  case CG_INVERTER: 
+  //  switch(invType)
+  //{
+  //case CG_INVERTER: 
 
     // Make preconditioned source:  tmp_1_e = M_ee chi_e + M_eo^{dag} chi_o
 
@@ -64,7 +62,7 @@ EvenOddStaggeredTypeFermAct<LatticeFermion>::qprop(LatticeFermion& psi,
     
 
     /* psi = (M^dag * M)^(-1) chi  = A^{-1} chi*/
-    InvCG1(*A, tmp, psi, RsdCG, MaxCG, n_count);
+    InvCG1(*A, tmp, psi, invParam.RsdCG, invParam.MaxCG, n_count);
    
     // psi[rb[0]] is returned, so reconstruct psi[rb[1]]
     invm = Real(1)/(2*getQuarkMass());
@@ -80,7 +78,7 @@ EvenOddStaggeredTypeFermAct<LatticeFermion>::qprop(LatticeFermion& psi,
 
     // psi_o = (1/2m) chi_o - (1/2m) D_oe psi_e 
     psi[rb[1]] = tmp2 - tmp1;
-    break;  
+    //    break;  
 
 #if 0
   case MR_INVERTER:
@@ -94,11 +92,11 @@ EvenOddStaggeredTypeFermAct<LatticeFermion>::qprop(LatticeFermion& psi,
     break;
 #endif
   
-  default:
-    QDP_error_exit("Unknown inverter type", invType);
-  }
+    //  default:
+    // QDP_error_exit("Unknown inverter type", invType);
+    //}
 
-  if ( n_count == MaxCG )
+  if ( n_count == invParam.MaxCG )
     QDP_error_exit("no convergence in the inverter", n_count);
 
   ncg_had = n_count;
