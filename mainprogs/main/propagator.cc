@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.6 2003-04-04 18:20:57 edwards Exp $
+// $Id: propagator.cc,v 1.7 2003-04-04 18:28:20 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -15,6 +15,9 @@ using namespace QDP;
 //! Main program for propagator generation
 /*! \defgroup propagator Propagator generation
  *  \ingroup main
+ *
+ * Main program for propagator generation. Here we need some
+ * profound and deep discussion of input parameters.
  */
 
 int main(int argc, char **argv)
