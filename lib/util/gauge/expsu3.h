@@ -3,6 +3,10 @@
 
 #include "util/gauge/reunit.h"
 
+namespace Chroma { 
+
 void expsu3(LatticeColorMatrix& m, Reunitarize cflag);
+
+};
 
 #endif

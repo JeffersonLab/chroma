@@ -1,4 +1,4 @@
-// $Id: polar_dec.cc,v 1.3 2004-07-28 02:38:03 edwards Exp $
+// $Id: polar_dec.cc,v 1.4 2005-01-14 15:59:00 bjoo Exp $
 /*! \file
  *  \brief Decompose a complex matrix as C = exp(i\alpha) V P
  */
@@ -8,7 +8,10 @@
 #include "util/gauge/reunit.h"
 
 using namespace QDP;
+using namespace Chroma; 
 
+
+namespace Chroma { 
 //! Decompose a complex matrix as C = exp(i\alpha) V P
 /*!
  * \ingroup gfix
@@ -354,3 +357,5 @@ void polar_dec(LatticeColorMatrix& c, LatticeColorMatrix& v,
   
   END_CODE();
 }
+
+}; // End namespace Chroma

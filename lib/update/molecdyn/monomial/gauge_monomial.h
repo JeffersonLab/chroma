@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gauge_monomial.h,v 1.2 2005-01-13 16:10:30 bjoo Exp $
+// $Id: gauge_monomial.h,v 1.3 2005-01-14 15:59:00 bjoo Exp $
 /*! \file
  *  \brief Generic gauge action monomial wrapper
  */
@@ -11,6 +11,8 @@
 
 #include "update/molecdyn/field_state.h"
 #include "update/molecdyn/monomial/abs_monomial.h"
+
+#include "io/xmllog_io.h"
 
 namespace Chroma 
 {
@@ -49,17 +51,32 @@ namespace Chroma
 
       // Create a suitable state and compute F
       void dsdq(multi1d<LatticeColorMatrix>& F, const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) {
+
+	XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+	push(xml_out, "GaugeMonomial");
+
+
 	// Make a gauge connect state
 	Handle< const ConnectState> g_state(getGaugeAct().createState(s.getQ()));
 
 	getGaugeAct().dsdu(F, g_state);
+	pop(xml_out);
       }
 
 
       Double S(const AbsFieldState<multi1d<LatticeColorMatrix>,
 	       multi1d<LatticeColorMatrix> >& s) const {
+
+	XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+	push(xml_out, "GaugeMonomial");
+
 	Handle< const ConnectState> g_state(getGaugeAct().createState(s.getQ()));
-	return getGaugeAct().S(g_state);
+	Double action = getGaugeAct().S(g_state);
+
+	write(xml_out, "S", action);
+	pop(xml_out);
+
+	return action;
       }
 	
 	

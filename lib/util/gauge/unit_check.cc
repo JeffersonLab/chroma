@@ -1,4 +1,4 @@
-// $Id: unit_check.cc,v 1.4 2004-01-05 00:47:20 edwards Exp $
+// $Id: unit_check.cc,v 1.5 2005-01-14 15:59:00 bjoo Exp $
 
 /*! \file
  *  \brief Test a gauge field is unitarized
@@ -9,7 +9,9 @@
 #include "util/gauge/unit_check.h"
 
 using namespace QDP;
+using namespace Chroma; 
 
+namespace Chroma {
 
 //! Check the unitarity of color matrix in SU(N)
 /*!
@@ -28,4 +30,5 @@ void unitarityCheck(const multi1d<LatticeColorMatrix>& u)
   }
 }
 
+};
 

@@ -1,32 +1,37 @@
-//  $Id: sun_proj.cc,v 1.6 2004-07-28 02:38:06 edwards Exp $
+//  $Id: sun_proj.cc,v 1.7 2005-01-14 15:59:00 bjoo Exp $
 /*! \file
+ *  \ingroup gauge
+ *  \author Subsetting added by A. Hart
+ *  \param[in] w            complex Nc x Nc matrix
+ *  \param[out] v           the projected SU(Nc) Matrix
+ *  \param[in] BlkAccu      accuracy in SU(Nc) projection
+ *  \param[in] BlkMax       max number of iterations in SU(Nc) projection
+ *  \param[in] mstag        an (un)ordered subset of lattice sites
  *  \brief Project a complex Nc x Nc matrix W onto SU(Nc) by maximizing Tr(VW)
+ *
+ *  Project a complex Nc x Nc matrix W onto SU(Nc) by maximizing Tr(VW)
  */
 
 #include "chromabase.h"
+
 #include "util/gauge/sun_proj.h"
 #include "util/gauge/su3proj.h"
-#include "util/gauge/reunit.h"
+#include "util/gauge/reunit.h" 
 
 using namespace QDP;
+using namespace Chroma;
 
-//! Project a complex Nc x Nc matrix W onto SU(Nc) by maximizing Tr(VW)
-/*!
- * \ingroup gauge
- *
- * Arguments:
- *
- *  \param w            complex Nc x Nc matrix (Read)
- *  \param v            the projected SU(Nc) Matrix (Write)
- *  \param BlkAccu      accuracy in SU(Nc) projection (Read)
- *  \param BlkMax       max number of iterations in SU(Nc) projection (Read)
- */
+namespace Chroma { 
 
-void sun_proj(const LatticeColorMatrix& w, LatticeColorMatrix& v,
-	      const Real& BlkAccu, int BlkMax)
+template<typename S>
+inline
+void sun_proj_t(const LatticeColorMatrix& w, 
+		 LatticeColorMatrix& v,
+		 const Real& BlkAccu, 
+		 int BlkMax,
+		 const S& mstag)
 {
   Double new_tr;
-  Double ddummy;
 
   START_CODE();
 
@@ -35,33 +40,43 @@ void sun_proj(const LatticeColorMatrix& w, LatticeColorMatrix& v,
    * This is done by looping proj_iter times over the 3 SU(2) subgroups.
    */
 
+  /* I need to get the number of sites in the sublattice. As far as
+   * I know, mstag does not contain information about either the number
+   * of sites it contains, nor of the number of subsets.
+   */
+
+  LatticeInt count;
+  count = 1;
+  Int numSites = sum(count,mstag);
+  Double norm = Double(1)/(Nc*numSites);
+
   /* The initial trace */
-  Double old_tr = sum(real(trace(v * w))) / double(Layout::vol()*Nc);
+  Double old_tr = sum(real(trace(v * w)),mstag) * norm;
 
   int iter = 0;
-  int wrswitch = 1;			/* Write out iterations? */
+  int wrswitch = 0;			// Write out iterations?
 //  Double conver = 1.0;
   Real conver = 1.0;
 
   while ( toBool(conver > BlkAccu)  &&  iter < BlkMax )
   {
-    iter = iter + 1;
+    ++iter;
 
     // Loop over SU(2) subgroup index
     for(int su2_index = 0; su2_index < Nc*(Nc-1)/2; ++su2_index)
-      su3proj(v, w, su2_index);
+      su3proj(v, w, su2_index, mstag);
 
-    // Reunitarize
-    reunit(v);
+    // Reunitarize: this is the slow bit of the code...
+    reunit(v,mstag);
 
     // Calculate the trace
-    new_tr = sum(real(trace(v * w))) / double(Layout::vol()*Nc);
+    new_tr = sum(real(trace(v * w)), mstag) * norm;
 
     if( wrswitch == 1 )
     {
-      QDPIO::cout << "iter = " << iter << endl;
-      QDPIO::cout << "old_tr = " << old_tr << endl;
-      QDPIO::cout << "new_tr = " << new_tr << endl;
+      QDPIO::cout << "iter =     " << iter << endl;
+      QDPIO::cout << "  old_tr = " << old_tr << endl;
+      QDPIO::cout << "  new_tr = " << new_tr << endl;
     }
 
     // Normalized convergence criterion:
@@ -69,6 +84,7 @@ void sun_proj(const LatticeColorMatrix& w, LatticeColorMatrix& v,
     old_tr = new_tr;
   }
 
+#if 0
   if ( wrswitch == 1 )
   {
 //    push(nml,"Final_sun_proj");
@@ -78,6 +94,35 @@ void sun_proj(const LatticeColorMatrix& w, LatticeColorMatrix& v,
     QDPIO::cout << "iter = " << iter << endl;
     QDPIO::cout << "new_tr = " << new_tr << endl;
   }
+#endif
 
   END_CODE();
+}
+
+void sun_proj(const LatticeColorMatrix& w, 
+		 LatticeColorMatrix& v,
+		 const Real& BlkAccu, 
+		 int BlkMax)
+{
+  sun_proj_t(w, v, BlkAccu, BlkMax, all);
+}
+
+void sun_proj(const LatticeColorMatrix& w, 
+		 LatticeColorMatrix& v,
+		 const Real& BlkAccu, 
+		 int BlkMax,
+		 const UnorderedSubset& mstag)
+{
+  sun_proj_t(w, v, BlkAccu, BlkMax, mstag);
+}
+
+void sun_proj(const LatticeColorMatrix& w, 
+		 LatticeColorMatrix& v,
+		 const Real& BlkAccu, 
+		 int BlkMax,
+		 const OrderedSubset& mstag)
+{
+  sun_proj_t(w, v, BlkAccu, BlkMax, mstag);
+}
+
 }

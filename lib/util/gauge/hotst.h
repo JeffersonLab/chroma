@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hotst.h,v 1.4 2004-12-21 20:23:59 edwards Exp $
+// $Id: hotst.h,v 1.5 2005-01-14 15:59:00 bjoo Exp $
 /*! \file
  *  \brief Set a gauge field from a sample of (almost) Haar measure
  */
@@ -7,6 +7,7 @@
 #ifndef __hotst_h__
 #define __hotst_h__
 
+namespace Chroma { 
 //! Set a gauge field from a sample of (almost) Haar measure
 /*!
  * \ingroup gauge
@@ -25,5 +26,7 @@
  *   measure, then something can be done about it. 
  */
 void HotSt(multi1d<LatticeColorMatrix>& u);
+
+};
 
 #endif

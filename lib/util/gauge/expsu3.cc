@@ -1,4 +1,4 @@
-/*#  $Id: expsu3.cc,v 1.2 2004-07-23 12:37:13 bjoo Exp $ ($Date: 2004-07-23 12:37:13 $) */
+/*#  $Id: expsu3.cc,v 1.3 2005-01-14 15:59:00 bjoo Exp $ ($Date: 2005-01-14 15:59:00 $) */
 /*#  EXPSU3: */
 /*#  In place  a = 1 + a + (1/2)*a^2 + ...+ (1/n!)*(a)^n  n = 12 */
 /*#  a must be a lattice_complex32_colour_colour  primitive */
@@ -9,6 +9,11 @@
 #include "chromabase.h" 
 
 #include "util/gauge/expsu3.h"
+
+using namespace QDP;
+using namespace Chroma; 
+
+namespace Chroma { 
 
 void expsu3(LatticeColorMatrix& a, Reunitarize cflag)
 {
@@ -294,3 +299,6 @@ void expsu3(LatticeColorMatrix& a, Reunitarize cflag)
   }
   a = aux2;
 }
+
+
+}; // End namespace Chroma 

@@ -1,53 +1,71 @@
 // -*- C++ -*-
-// $Id: reunit.h,v 1.5 2003-12-31 23:58:46 edwards Exp $
+// $Id: reunit.h,v 1.6 2005-01-14 15:59:00 bjoo Exp $
+
 /*! \file
- *  \brief Reunitarize (to a SU(N)) inplace the matrix A under some option
+ *  \ingroup gauge
+ *  \author Subsetting added by A. Hart
+ *  \param[in,out] xa  The descriptor of matrices to be reunitarized.
+ *            Must be of type LatticeColorMatrix
+ *  \param[in] bad Descriptor of flags indicating sites violating unitarity.
+ *            Only used if ruflag = REUNITARIZE_LABEL or
+ *            REUNITARIZE_ERROR.
+ *  \param[in] ruflag Can also be REUNITARIZE in which case the
+ *            matrices are reunitarized but no complaints are made.
+ *  \param[out] numbad Total number of matrices violating unitarity.
+ *            ONLY USED IF ruflag is testing for ERROR or LABEL. 
+ *  \param[in] mstag  An (un)ordered subset of sites
+ *  \brief Reunitarize in place a color matrix to SU(N)
+ *
+ *  Reunitarize (to a SU(N)) inplace the matrix XA under some option
  */
 
 #ifndef __reunit_h__
 #define __reunit_h__
 
-enum Reunitarize {REUNITARIZE, REUNITARIZE_ERROR, REUNITARIZE_LABEL};
+namespace Chroma {
 
-//! Reunitarize in place a color matrix to SU(N)
-/*!
- * \ingroup gauge
- *
- * \param  a  The descriptor of matrices to be reunitarized.
- *            Must be of type LatticeColorMatrix
- */
-void reunit(LatticeColorMatrix& xa);
-
-
-//! Reunitarize in place a color matrix to SU(N)
-/*!
- * \ingroup gauge
- *
- * \param xa  The descriptor of matrices to be reunitarized.
- *            Must be of type LatticeColorMatrix
- * \param ruflag Can also be REUNITARIZE in which case the
- *            matrices are reunitarized but no complaints are made.
- * \param numbad Total number of matrices violating unitarity.
- *            ONLY USED IF ruflag is testing for ERROR or LABEL. 
- */
-void reunit(LatticeColorMatrix& xa,
-	    int& numbad, enum Reunitarize ruflag);
-
-
-//! Reunitarize in place a color matrix to SU(N)
-/*!
- * \ingroup gauge
- *
- * \param  a  The descriptor of matrices to be reunitarized.
- *            Must be of type LatticeColorMatrix
- * \param bad Descriptor of flags indicating sites violating unitarity.
- *            Only used if ruflag = REUNITARIZE_LABEL or
- *            REUNITARIZE_ERROR.
- * \param ruflag Can also be REUNITARIZE in which case the
- *            matrices are reunitarized but no complaints are made.
- * \param numbad Total number of matrices violating unitarity.
- *            ONLY USED IF ruflag is testing for ERROR or LABEL. 
- */
-void reunit(LatticeColorMatrix& xa, LatticeBoolean& bad, int& numbad, enum Reunitarize ruflag);
-
+  enum Reunitarize {REUNITARIZE, REUNITARIZE_ERROR, REUNITARIZE_LABEL};
+  
+  void reunit(LatticeColorMatrix& xa);
+  
+  void reunit(LatticeColorMatrix& xa,
+	      const UnorderedSubset& mstag);
+  
+  void reunit(LatticeColorMatrix& xa,
+	      const OrderedSubset& mstag);
+  
+  // With ruflag
+  void reunit(LatticeColorMatrix& xa,
+	      int& numbad, 
+	      enum Reunitarize ruflag);
+  
+  void reunit(LatticeColorMatrix& xa,
+	      int& numbad, 
+	      enum Reunitarize ruflag,
+	      const UnorderedSubset& mstag);
+  
+  void reunit(LatticeColorMatrix& xa,
+	      int& numbad, 
+	      enum Reunitarize ruflag,
+	      const OrderedSubset& mstag);
+  
+  // With numbad and ruflag
+  void reunit(LatticeColorMatrix& xa, 
+	      LatticeBoolean& bad, 
+	      int& numbad, 
+	      enum Reunitarize ruflag);
+  
+  void reunit(LatticeColorMatrix& xa, 
+	      LatticeBoolean& bad, 
+	      int& numbad, 
+	      enum Reunitarize ruflag,
+	      const UnorderedSubset& mstag);
+  
+  void reunit(LatticeColorMatrix& xa, 
+	      LatticeBoolean& bad, 
+	      int& numbad, 
+	      enum Reunitarize ruflag,
+	      const OrderedSubset& mstag);
+  
+}; // End namespace
 #endif

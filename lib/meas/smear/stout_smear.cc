@@ -1,4 +1,4 @@
-//  $Id: stout_smear.cc,v 1.4 2004-11-01 18:43:11 ikuro Exp $
+//  $Id: stout_smear.cc,v 1.5 2005-01-14 15:59:00 bjoo Exp $
 /*! \file
  *  \brief Stout-link smearing of the gauge configuration
  */
@@ -9,7 +9,9 @@
 #include "util/gauge/taproj.h"
 
 using namespace QDP;
+using namespace Chroma; 
 
+namespace Chroma { 
 //! Stout-link smearing of the gauge configuration
 /*!
  * \ingroup smear
@@ -77,3 +79,5 @@ void stout_smear(LatticeColorMatrix& u_smear,
   END_CODE();
 }
 
+
+}; // End namespace Chroma

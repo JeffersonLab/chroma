@@ -1,4 +1,4 @@
-//  $Id: ape_smear.cc,v 1.6 2004-07-28 02:38:04 edwards Exp $
+//  $Id: ape_smear.cc,v 1.7 2005-01-14 15:59:00 bjoo Exp $
 
 /*! \file
  *  \brief APE-smearing of the gauge configuration
@@ -10,7 +10,9 @@
 #include "util/gauge/su3proj.h"
 
 using namespace QDP;
+using namespace Chroma;
 
+namespace Chroma { 
 //! A simple not-fancy power of 2 shift
 LatticeColorMatrix shift2(const LatticeColorMatrix& s1, int isign, int dir, int level)
 {
@@ -174,3 +176,5 @@ void APE_Smear(const multi1d<LatticeColorMatrix>& u,
   END_CODE();
 }
 
+
+}; // Namespace Chroma

@@ -1,4 +1,4 @@
-// $Id: coulgauge.cc,v 1.6 2004-07-28 02:38:03 edwards Exp $
+// $Id: coulgauge.cc,v 1.7 2005-01-14 15:59:00 bjoo Exp $
 /*! \file
  *  \brief Coulomb (and Landau) gauge fixing 
  */
@@ -9,6 +9,10 @@
 #include "util/gauge/reunit.h"
 
 using namespace QDP;
+using namespace Chroma;
+
+
+namespace Chroma {
 
 /********************** HACK ******************************/
 // Primitive way for now to indicate the time direction
@@ -245,3 +249,6 @@ void coulGauge(multi1d<LatticeColorMatrix>& u,
 
   END_CODE();
 }
+
+
+}; // Namespace Chroma

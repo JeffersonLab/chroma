@@ -1,4 +1,4 @@
-//  $Id: hyp_smear.cc,v 1.5 2004-07-28 02:38:04 edwards Exp $
+//  $Id: hyp_smear.cc,v 1.6 2005-01-14 15:59:00 bjoo Exp $
 /*! \file
  *  \brief Hyp-smearing of the gauge configuration
  */
@@ -8,7 +8,9 @@
 #include "util/gauge/sun_proj.h"
 
 using namespace QDP;
+using namespace Chroma;
 
+namespace Chroma { 
 //! Construct the "hyp-smeared" links of Anna Hasenfratz
 /*!
  * \ingroup smear
@@ -265,3 +267,5 @@ void Hyp_Smear(const multi1d<LatticeColorMatrix>& u,
 
   END_CODE();
 }
+
+}; // ENd namespace Chroma

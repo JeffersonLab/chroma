@@ -1,21 +1,34 @@
 // -*- C++ -*-
-// $Id: su3proj.h,v 1.2 2003-12-29 19:49:17 edwards Exp $
+// $Id: su3proj.h,v 1.3 2005-01-14 15:59:00 bjoo Exp $
 /*! \file
- *  \brief Project a complex Nc x Nc matrix W onto SU(Nc) by maximizing Tr(VW)
+ *  \ingroup gauge
+ *  \author Subsetting added by A. Hart
+ *  \param[in,out] u        the projected SU(3) Matrix (Modify)
+ *  \param[in] w            matrix against which to maximize (Read)
+ *  \param[in] su2_index    SU(2) subgroup index (Read)
+ *  \param[in] mstag        An (un)ordered subset of sites (Read)
+ *  \brief Project a GL(3,C) color matrix onto SU(3)
+ *
+ *  Project a complex Nc x Nc matrix W onto SU(Nc) by maximizing Tr(VW)
  */
 
 #ifndef __su3proj_h__
 #define __su3proj_h__
 
-//! Project a GL(3,C) color matrix onto SU(3)
-/*!
- * Arguments:
- *
- *  \param u            the projected SU(3) Matrix (Modify)
- *  \param w            matrix against which to maximize (Read)
- *  \param su2_index    SU(2) subgroup index (Read)
- */
+namespace Chroma { 
+void su3proj(LatticeColorMatrix& u, 
+	     const LatticeColorMatrix& w, 
+	     int su2_index);
 
-void su3proj(LatticeColorMatrix& u, const LatticeColorMatrix& w, int su2_index);
+void su3proj(LatticeColorMatrix& u, 
+	     const LatticeColorMatrix& w, 
+	     int su2_index,
+	     const OrderedSubset& mstag);
 
+void su3proj(LatticeColorMatrix& u, 
+	     const LatticeColorMatrix& w, 
+	     int su2_index,
+	     const UnorderedSubset& mstag);
+
+};
 #endif

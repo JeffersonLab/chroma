@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_monomial.h,v 1.2 2005-01-13 16:10:30 bjoo Exp $
+// $Id: abs_monomial.h,v 1.3 2005-01-14 15:59:00 bjoo Exp $
 
 /*! @file
  * @brief Monomials - gauge action or fermion binlinear contributions for HMC
@@ -13,6 +13,8 @@
 
 #include "update/molecdyn/field_state.h"
 #include "update/molecdyn/predictor/chrono_predictor.h"
+#include "io/xmllog_io.h"
+
 namespace Chroma
 {
   //! An abstract monomial class, for inexact algorithms
@@ -307,6 +309,10 @@ namespace Chroma
     /*! Actions of the form  chi^dag*(M^dag*M)*chi */
     virtual void dsdq(P& F, const AbsFieldState<P,Q>& s)
     {
+      // Self Description/Encapsulation Rule
+      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      push(xml_out, "TwoFlavorExactWilsonTypeFermMonomial");
+
       /**** Identical code for unprec and even-odd prec case *****/
       
       // S_f  chi^dag*(M^dag*M)^(-1)*chi     
@@ -335,7 +341,7 @@ namespace Chroma
       (getMDSolutionPredictor())(X);
       int n_count = getX(X,s);
       (getMDSolutionPredictor()).newVector(X);
-
+      
       (*lin)(Y, X, PLUS);
 
       lin->deriv(F, X, Y, MINUS);
@@ -350,6 +356,8 @@ namespace Chroma
 	 F[mu] *= Real(-1);   // IS THIS SIGN CORRECT???
       }
 
+      write(xml_out, "n_count", n_count);
+      pop(xml_out);
     }
   
     //! Refresh pseudofermions
@@ -437,6 +445,10 @@ namespace Chroma
     /*! Actions of the form  chi^dag*(M^dag*M)*chi */
     virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) 
     {
+      // SelfIdentification/Encapsultaion Rule
+      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      push(xml_out, "TwoFlavorExactWilsonTypeFermMonomial5D");
+
       /**** Identical code for unprec and even-odd prec case *****/
       
       // S_f = chi^dag*V*(M^dag*M)^(-1)*V^dag*chi     
@@ -495,6 +507,8 @@ namespace Chroma
       PV->deriv(F_tmp, X, getPhi(), MINUS);
       F += F_tmp;   // NOTE SIGN
 
+      write(xml_out, "n_count", n_count);
+      pop(xml_out);
     }
   
     //! Refresh pseudofermions
@@ -601,6 +615,10 @@ namespace Chroma
     //! Compute the total action
     virtual Double S(const AbsFieldState<P,Q>& s)   const
     {
+      // Self identification/encapsulation Rule
+      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      push(xml_out, "TwoFlavorExactUnprecWilsonTypeFermMonomial");
+
       Phi X;
       
       // Energy calc doesnt use Chrono Predictor
@@ -610,6 +628,11 @@ namespace Chroma
 
       // Action on the entire lattice
       Double action = innerProductReal(getPhi(), X);
+      
+      write(xml_out, "n_count", n_count);
+      write(xml_out, "S", action);
+      pop(xml_out);
+
       return action;
     }
 
@@ -651,6 +674,9 @@ namespace Chroma
     //! Compute the odd odd contribution (eg
     virtual Double S_odd_odd(const AbsFieldState<P,Q>& s) const
     {
+      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      push(xml_out, "S_odd_odd");
+
       const EvenOddPrecWilsonTypeFermAct<Phi,P>& FA = getFermAct();
 
       Handle<const ConnectState> bc_g_state = FA.createState(s.getQ());
@@ -665,12 +691,25 @@ namespace Chroma
 
       int n_count = getX(X, s);
       Double action = innerProductReal(getPhi(), X, lin->subset());
+      
+      write(xml_out, "n_count", n_count);
+      write(xml_out, "S_oo", action);
+      pop(xml_out);
+
       return action;
     }
 
     //! Compute the total action
     Double S(const AbsFieldState<P,Q>& s)  const {
-      return S_even_even(s) + S_odd_odd(s);
+      XMLWriter& xml_out=TheXMLOutputWriter::Instance();
+      push(xml_out, "TwoFlavorExactEvenOddPrecWilsonTypeFermMonomial");
+
+      Double action = S_even_even(s) + S_odd_odd(s);
+
+      write(xml_out, "S", action);
+      pop(xml_out);
+      return action;
+
     }
 
   protected:
@@ -710,6 +749,10 @@ namespace Chroma
     //! Compute the total action
     virtual Double S(const AbsFieldState<P,Q>& s) const
     {
+      // SelfEncapsulation/Identification Rule
+      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      push(xml_out, "TwoFlavorExactUnprecWilsonTypeFermMonomial5D");
+
            // Get at the ferion action for piece i
       const WilsonTypeFermAct5D<Phi,P>& FA = getFermAct();
 
@@ -735,6 +778,11 @@ namespace Chroma
       Double action = zero;
       for(int s=0; s < getFermAct().size(); ++s)
 	action += innerProductReal(getPhi()[s], tmp[s]);
+
+      write(xml_out, "n_count", n_count);
+      write(xml_out, "S", action);
+      pop(xml_out);
+
       return action;
     }
 
@@ -778,6 +826,9 @@ namespace Chroma
     //! Compute the odd odd contribution (eg
     virtual Double S_odd_odd(const AbsFieldState<P,Q>& s) const
     {
+      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      push(xml_out, "S_odd_odd");
+
       const EvenOddPrecWilsonTypeFermAct5D<Phi,P>& FA = getFermAct();
 
       Handle<const ConnectState> bc_g_state(FA.createState(s.getQ()));
@@ -802,12 +853,26 @@ namespace Chroma
       // Total odd-subset action. NOTE: QDP has norm2(multi1d) but not innerProd
       for(int s=0; s < FA.size(); ++s)
 	action += innerProductReal(getPhi()[s], tmp[s], lin->subset());
+
+
+      write(xml_out, "n_count", n_count);
+      write(xml_out, "S_oo", action);
+      pop(xml_out);
+
       return action;
     }
 
     //! Compute the total action
-    Double S(const AbsFieldState<P,Q>& s) const  {
-      return S_even_even(s) + S_odd_odd(s);
+    Double S(const AbsFieldState<P,Q>& s)  const {
+      XMLWriter& xml_out=TheXMLOutputWriter::Instance();
+      push(xml_out, "TwoFlavorExactEvenOddPrecWilsonTypeFermMonomial5D");
+
+      Double action = S_even_even(s) + S_odd_odd(s);
+
+      write(xml_out, "S", action);
+      pop(xml_out);
+      return action;
+
     }
 
   protected:

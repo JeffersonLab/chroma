@@ -1,23 +1,43 @@
 // -*- C++ -*-
-// $Id: sun_proj.h,v 1.2 2003-12-29 19:52:57 edwards Exp $
+// $Id: sun_proj.h,v 1.3 2005-01-14 15:59:00 bjoo Exp $
 /*! \file
+ *  \ingroup gauge
+ *  \author Subsetting added by A. Hart
+ *  \param[in] w            complex Nc x Nc matrix
+ *  \param[out] v           the projected SU(Nc) Matrix
+ *  \param[in] BlkAccu      accuracy in SU(Nc) projection
+ *  \param[in] BlkMax       max number of iterations in SU(Nc) projection
+ *  \param[in] mstag        an (un)ordered subset of lattice sites
  *  \brief Project a complex Nc x Nc matrix W onto SU(Nc) by maximizing Tr(VW)
+ *
+ *  Project a complex Nc x Nc matrix W onto SU(Nc) by maximizing Tr(VW)
  */
 
 #ifndef __sun_proj_h__
 #define __sun_proj_h__
 
-//! Project a complex Nc x Nc matrix W onto SU(Nc) by maximizing Tr(VW)
-/*!
- * Arguments:
- *
- *  \param w            complex Nc x Nc matrix (Read)
- *  \param v            the projected SU(Nc) Matrix (Write)
- *  \param BlkAccu      accuracy in SU(Nc) projection (Read)
- *  \param BlkMax       max number of iterations in SU(Nc) projection (Read)
- */
+namespace Chroma { 
 
-void sun_proj(const LatticeColorMatrix& w, LatticeColorMatrix& v,
-	      const Real& BlkAccu, int BlkMax);
+// No subsets 
+void sun_proj(const LatticeColorMatrix& w, 
+		 LatticeColorMatrix& v,
+		 const Real& BlkAccu, 
+		 int BlkMax);
 
+// Ordered subsets
+void sun_proj(const LatticeColorMatrix& w, 
+		 LatticeColorMatrix& v,
+		 const Real& BlkAccu, 
+		 int BlkMax,
+		 const OrderedSubset& mstag);
+
+// Unordered subsets
+void sun_proj(const LatticeColorMatrix& w, 
+		 LatticeColorMatrix& v,
+		 const Real& BlkAccu, 
+		 int BlkMax,
+		 const UnorderedSubset& mstag);
+
+
+}; // End namespace
 #endif

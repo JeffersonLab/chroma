@@ -1,11 +1,13 @@
 // -*- C++ -*-
-// $Id: expmat.h,v 1.3 2004-07-23 12:37:13 bjoo Exp $
+// $Id: expmat.h,v 1.4 2005-01-14 15:59:00 bjoo Exp $
 /*! \file
  *  \brief Exponentiate a SU(n) lie algebra element by some method,
  */
 
 #ifndef __expmat_h__
 #define __expmat_h__
+
+namespace Chroma { 
 
 enum ExpMat_t {EXP_EXACT, EXP_TWELFTH_ORDER};
 
@@ -24,5 +26,7 @@ enum ExpMat_t {EXP_EXACT, EXP_TWELFTH_ORDER};
 
 void expmat(LatticeColorMatrix& a,
 	    ExpMat_t opt);
+
+};
 
 #endif

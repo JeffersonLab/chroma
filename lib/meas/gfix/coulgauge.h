@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: coulgauge.h,v 1.3 2004-05-29 01:49:14 edwards Exp $
+// $Id: coulgauge.h,v 1.4 2005-01-14 15:59:00 bjoo Exp $
 /*! \file
  *  \brief Coulomb (and Landau) gauge fixing 
  */
@@ -7,6 +7,7 @@
 #ifndef __coulgauge_h__
 #define __coulgauge_h__
 
+namespace Chroma {
 //! Coulomb (and Landau) gauge fixing
 /*!
  * \ingroup gfix
@@ -54,5 +55,7 @@ void coulGauge(multi1d<LatticeColorMatrix>& u,
 	       int& n_gf, 
 	       int j_decay, const Real& GFAccu, int GFMax, 
 	       bool OrDo, const Real& OrPara);
+
+}; // End namespace
 
 #endif

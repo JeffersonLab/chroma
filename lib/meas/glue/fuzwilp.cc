@@ -1,4 +1,4 @@
-// $Id: fuzwilp.cc,v 1.3 2004-07-28 02:38:03 edwards Exp $ fuzwilp.h,v 1.1 2004/04/26 16:12:49 mcneile Exp $
+// $Id: fuzwilp.cc,v 1.4 2005-01-14 15:59:00 bjoo Exp $ fuzwilp.h,v 1.1 2004/04/26 16:12:49 mcneile Exp $
 /*! \file
  *  \brief Calculate ape-fuzzed Wilson loops
  */
@@ -8,7 +8,9 @@
 #include "meas/glue/fuzwilp.h"
 
 using namespace QDP;
+using namespace Chroma;
 
+namespace Chroma { 
 //! Calculate ape-fuzzed Wilson loops
 /*!
  * \ingroup glue
@@ -575,3 +577,5 @@ void fuzwilp( const multi1d<LatticeColorMatrix>& u,
   pop(xml);				// XML end tag for fuz_wlp2
   QDPIO::cout << "fuz_wlp1 and fuz_wlp2 written to .xml file " << endl;
 }
+
+};

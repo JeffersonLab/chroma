@@ -1,9 +1,10 @@
 // -*- C++ -*-
-// $Id: hyp_smear.h,v 1.2 2003-10-10 03:46:47 edwards Exp $
+// $Id: hyp_smear.h,v 1.3 2005-01-14 15:59:00 bjoo Exp $
 
 #ifndef __hyp_smear_h__
 #define __hyp_smear_h__
 
+namespace Chroma { 
 //! Construct the "hyp-smeared" links of Anna Hasenfratz, with
 //! staple coefficients alpha1, alpha2 and alpha3
 
@@ -23,5 +24,7 @@ void Hyp_Smear(const multi1d<LatticeColorMatrix>& u,
 	       multi1d<LatticeColorMatrix>& u_hyp,
 	       const Real& alpha1, const Real& alpha2, const Real& alpha3,
 	       const Real& BlkAccu, int BlkMax);
+
+};
 
 #endif

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fuzwilp.h,v 1.2 2004-04-27 20:29:07 edwards Exp $
+// $Id: fuzwilp.h,v 1.3 2005-01-14 15:59:00 bjoo Exp $
 /*! \file
  *  \brief Calculate ape-fuzzed Wilson loops
  */
@@ -7,6 +7,7 @@
 #ifndef __fuzwilp_h__
 #define __fuzwilp_h__
 
+namespace Chroma { 
 //! Calculate ape-fuzzed Wilson loops
 /*!
  * \ingroup glue
@@ -39,4 +40,5 @@ void fuzwilp(const multi1d<LatticeColorMatrix>& u,
         const Real& sm_fact, const Real& BlkAccu, int BlkMax,
 	XMLWriter& xml, const string& xml_group);
 
+}; // End namespace
 #endif

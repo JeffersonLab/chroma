@@ -1,4 +1,4 @@
-// $Id: hotst.cc,v 1.7 2004-12-21 20:23:59 edwards Exp $
+// $Id: hotst.cc,v 1.8 2005-01-14 15:59:00 bjoo Exp $
 // HOTST
 
 /*! \file
@@ -12,6 +12,9 @@
 #include "util/gauge/reunit.h"
 
 using namespace QDP;
+using namespace Chroma; 
+
+namespace Chroma { 
 
 //! Set a gauge field from a sample of (almost) Haar measure
 /*!
@@ -47,3 +50,5 @@ void HotSt(multi1d<LatticeColorMatrix>& u)
 
   END_CODE();
 }
+
+};

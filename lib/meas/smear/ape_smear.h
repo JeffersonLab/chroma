@@ -1,4 +1,4 @@
-//  $Id: ape_smear.h,v 1.4 2003-10-10 03:46:47 edwards Exp $
+//  $Id: ape_smear.h,v 1.5 2005-01-14 15:59:00 bjoo Exp $
 
 #ifndef __ape_smear__
 #define __ape_smear__
@@ -32,10 +32,12 @@
  * \param j_decay  no staple in direction j_decay ( Read )
  */
 
+namespace Chroma {
 void APE_Smear(const multi1d<LatticeColorMatrix>& u,
 	       LatticeColorMatrix& u_smear,
 	       int mu, int bl_level, 
 	       const Real& sm_fact, const Real& BlkAccu, 
 	       int BlkMax, int j_decay);
 
+};
 #endif

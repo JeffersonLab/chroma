@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: polar_dec.h,v 1.1 2003-12-06 20:56:56 edwards Exp $
+// $Id: polar_dec.h,v 1.2 2005-01-14 15:59:00 bjoo Exp $
 /*! \file
  *  \brief Decompose a complex matrix as C = exp(i\alpha) V P
  */
@@ -7,6 +7,7 @@
 #ifndef __polar_dec_h__
 #define __polar_dec_h__
 
+namespace Chroma {
 //! Decompose a complex matrix as C = exp(i\alpha) V P
 /*!
  * \ingroup gfix
@@ -25,4 +26,5 @@
 void polar_dec(LatticeColorMatrix& c, LatticeColorMatrix& v,
 	       LatticeReal& alpha, const Real& JacAccu, int JacMax);
 
+};
 #endif
