@@ -27,7 +27,7 @@ class staggered_pions  : public staggered_hadron_corr
 
   staggered_pions(int t_len)  : staggered_hadron_corr(t_len,no_pions)
     {
-      outer_tag = "Here_are_all_16_pions"  ; 
+      outer_tag = "Pseudoscalar"  ; 
       inner_tag = "Pi" ; 
 
       tag_names.resize(no_pions) ; 
