@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.100 2004-01-28 16:04:42 bjoo Exp $
+# $Id: Makefile.am,v 1.101 2004-01-29 20:39:35 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -37,13 +37,10 @@ VPATH += $(TOPDIR)/lib/update/molecdyn/mese
 VPATH += $(TOPDIR)/lib/update/molecdyn/noise
 VPATH += $(TOPDIR)/lib/update/molecdyn/step
 VPATH += $(TOPDIR)/lib/util
-VPATH += $(TOPDIR)/lib/util/comm
 VPATH += $(TOPDIR)/lib/util/ferm
 VPATH += $(TOPDIR)/lib/util/ft
 VPATH += $(TOPDIR)/lib/util/gauge
-VPATH += $(TOPDIR)/lib/util/misc
-VPATH += $(TOPDIR)/lib/util/random
-VPATH += $(TOPDIR)/include
+VPATH += $(TOPDIR)/lib/util/info
 VPATH += $(TOPDIR)/mainprogs
 VPATH += $(TOPDIR)/mainprogs/main
 VPATH += $(TOPDIR)/mainprogs/tests
@@ -95,7 +92,9 @@ nobase_include_HEADERS = \
 	util/gauge/hotst.h util/gauge/phfctr.h util/gauge/reunit.h \
 	util/gauge/rgauge.h util/gauge/su2extract.h util/gauge/su3proj.h \
 	util/gauge/sunfill.h util/gauge/sun_proj.h util/gauge/taproj.h \
-	util/gauge/unit_check.h util/util.h
+	util/gauge/unit_check.h \
+        util/info.h util/info/proginfo.h util/info/printgeom.h \
+        util/util.h
 
 
 if BUILD_WILSON_LIBS
@@ -210,7 +209,8 @@ libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
                axgauge.cc coulgauge.cc grelax.cc polar_dec.cc rot_colvec.cc \
 	       transf.cc param_io.cc gramschm.cc gramschm_array.cc \
 	       ritz.cc ritz_array.cc sn_jacob.cc sn_jacob_array.cc \
-	       eig_spec.cc eig_spec_array.cc
+	       eig_spec.cc eig_spec_array.cc \
+               proginfo.cc printgeom.cc
 
 #
 # Object files to add if building the Wilson Builds...
