@@ -1,4 +1,4 @@
-// $Id: seqprop.cc,v 1.20 2004-04-23 15:54:05 bjoo Exp $
+// $Id: seqprop_collect.cc,v 1.1 2004-04-23 15:54:05 bjoo Exp $
 /*! \file
  *  \brief Main code for sequential propagator generation
  */
@@ -146,7 +146,7 @@ int main(int argc, char **argv)
   XMLReader xml_in("DATA");
 
   // Read data
-  read(xml_in, "/seqprop", input);
+  read(xml_in, "/seqpropComponent", input);
 
   // Specify lattice size, shape, etc.
   Layout::setLattSize(input.param.nrow);
@@ -154,17 +154,12 @@ int main(int argc, char **argv)
 
   // Sanity checks
   QDPIO::cout << endl << "     Gauge group: SU(" << Nc << ")" << endl;
-
-  for(int seq_src_ctr = 0; seq_src_ctr < input.param.Seq_src.size(); seq_src_ctr++)
-    QDPIO::cout << "     Computing sequential source of type "
-		<< input.param.Seq_src[seq_src_ctr] << endl;
   
   QDPIO::cout << "     Volume: " << input.param.nrow[0];
   for (int i=1; i<Nd; ++i) {
     QDPIO::cout << " x " << input.param.nrow[i];
   }
   QDPIO::cout << endl;
-
 
   // Read in the configuration along with relevant information.
   multi1d<LatticeColorMatrix> u(Nd);
@@ -173,28 +168,22 @@ int main(int argc, char **argv)
   // Startup gauge
   gaugeStartup(gauge_file_xml, gauge_xml, u, input.cfg);
 
-
-
+  // Read in the configuration along with relevant information.
   // Instantiate XML writer for XMLDAT
   XMLFileWriter xml_out("XMLDAT");
-  push(xml_out, "seqprop");
+  push(xml_out, "seqpropCollect");
 
   proginfo(xml_out);    // Print out basic program info
 
   // Write out the input
   write(xml_out, "Input", xml_in);
 
-  // Write out the config header
-  write(xml_out, "Config_info", gauge_xml);
-
   push(xml_out, "Output_version");
   write(xml_out, "out_version", 2);
   pop(xml_out);
 
   xml_out.flush();
-
-
-  // Check if the gauge field configuration is unitarized
+ // Check if the gauge field configuration is unitarized
   unitarityCheck(u);
 
   // Calculate some gauge invariant observables just for info.
@@ -210,8 +199,7 @@ int main(int argc, char **argv)
 
   xml_out.flush();
 
-
-  //
+ //
   // Read the quark propagator and extract headers
   //
   XMLReader prop_file_xml, prop_record_xml;
@@ -246,9 +234,6 @@ int main(int argc, char **argv)
 
   // Initialize the slow Fourier transform phases
   SftMom phases(0, true, j_decay);
-
-  // Sanity check - write out the norm2 of the forward prop in the j_decay direction
-  // Use this for any possible verification
   {
     multi1d<Double> forward_prop_corr = sumMulti(localNorm2(quark_propagator), 
 						 phases.getSet());
@@ -281,251 +266,58 @@ int main(int argc, char **argv)
   write(xml_out, "ForwardProp", prop_header);
   write(xml_out, "PropSink", sink_header);
 
-
-  //------------------ Start main body of calculations -----------------------------
-  /*
-   * Construct fermionic BC. Need one for LatticeFermion and multi1d<LatticeFermion>
-   * Note, the handle is on an ABSTRACT type
-   */
-  Handle< FermBC<LatticeFermion> >  fbc(new SimpleFermBC<LatticeFermion>(boundary));
-  Handle< FermBC<multi1d<LatticeFermion> > >  fbc_a(new SimpleFermBC<multi1d<LatticeFermion> >(boundary));
-
-  //
-  // Initialize fermion action
-  //
-  WilsonTypeFermAct<LatticeFermion>* S_f_ptr = 0;
-  WilsonTypeFermAct< multi1d<LatticeFermion> >* S_f_a_ptr = 0;
-
-  switch (prop_header.FermActHandle->getFermActType() )
-  {
-  case FERM_ACT_WILSON:
-  {
-    const WilsonFermActParams& wils = dynamic_cast<const WilsonFermActParams&>(*(prop_header.FermActHandle));
-
-    QDPIO::cout << "FERM_ACT_WILSON" << endl;
-    S_f_ptr = new EvenOddPrecWilsonFermAct(fbc, wils.Mass,
-					   wils.anisoParam);
-  }
-  break;
-
-  case FERM_ACT_UNPRECONDITIONED_WILSON:
-  {
-    const WilsonFermActParams& wils = dynamic_cast<const WilsonFermActParams&>(*(prop_header.FermActHandle));
-
-    QDPIO::cout << "FERM_ACT_UNPRECONDITIONED_WILSON" << endl;
-    S_f_ptr = new UnprecWilsonFermAct(fbc, wils.Mass);
-  }
-  break;
-
-  case FERM_ACT_ZOLOTAREV_4D:
-  {
-    QDPIO::cout << "FERM_ACT_ZOLOTAREV_4D" << endl;
-    const Zolotarev4DFermActParams& zolo4d = dynamic_cast<const Zolotarev4DFermActParams& > (*(prop_header.FermActHandle));
-    
-    // Construct Fermact -- now uses constructor from the zolo4d params
-    // struct
-    S_f_ptr = new Zolotarev4DFermAct(fbc, zolo4d, xml_out);
-  }
-  break;
-
-  case FERM_ACT_ZOLOTAREV_5D:
-  {
-    QDPIO::cout << "FERM_ACT_ZOLOTAREV_5D" << endl;
-    const Zolotarev5DFermActParams& zolo5d = dynamic_cast<const Zolotarev5DFermActParams& > (*(prop_header.FermActHandle));
-    
-    // Construct Fermact -- now uses constructor from the zolo4d params
-    // struct
-    S_f_a_ptr = new Zolotarev5DFermActArray(fbc_a, fbc, zolo5d, xml_out);
-  }
-  break;
-
-  case FERM_ACT_DWF:
-  {
-    const DWFFermActParams& dwf = dynamic_cast<const DWFFermActParams&>(*(prop_header.FermActHandle));
-
-    QDPIO::cout << "FERM_ACT_DWF" << endl;
-    S_f_a_ptr = new EvenOddPrecDWFermActArray(fbc_a,
-					      dwf.chiralParam.OverMass, 
-					      dwf.Mass, 
-					      dwf.chiralParam.N5);
-  }
-  break;
-
-  case FERM_ACT_UNPRECONDITIONED_DWF:
-  {
-    const DWFFermActParams& dwf = dynamic_cast<const DWFFermActParams&>(*(prop_header.FermActHandle));
-
-    QDPIO::cout << "FERM_ACT_UNPRECONDITONED_DWF" << endl;
-    S_f_a_ptr = new UnprecDWFermActArray(fbc_a,
-					 dwf.chiralParam.OverMass, 
-					 dwf.Mass, 
-					 dwf.chiralParam.N5);
-  }
-  break;
-  default:
-    QDPIO::cerr << "Unsupported fermion action" << endl;
-    QDP_abort(1);
-  }
-
-  // Create a useable handle on the action
-  // The handle now owns the pointer
-  Handle< WilsonTypeFermAct<LatticeFermion> > S_f(S_f_ptr);
-  Handle< WilsonTypeFermAct< multi1d<LatticeFermion> > > S_f_a(S_f_a_ptr);
-
-  QDPIO::cout << "Seqprop: fermion action initialized" << endl;
-
-
-  if (Sl_snk);
-  {
-    QDPIO::cout << "Seqprop: do sink smearing" << endl;
-
-    // Do the sink smearing BEFORE the interpolating operator
-    sink_smear2(u, quark_propagator, 
-		source_header.sourceSmearParam.wvf_kind, 
-		source_header.sourceSmearParam.wvf_param, 
-		source_header.sourceSmearParam.wvfIntPar, 
-		j_decay);
-  }
-  
-  //
-  // Loop over the sequential propagators
+  // Read the quark propagator and extract headers
   //
   XMLArrayWriter  xml_seq_src(xml_out, input.param.Seq_src.size());
   push(xml_seq_src, "Sequential_source");
 
-  int ncg_had = 0;			// Initialise iteration counter
   for(int seq_src_ctr = 0; seq_src_ctr < input.param.Seq_src.size(); seq_src_ctr++)
   {
-    push(xml_seq_src);
-    write(xml_seq_src, "seq_src_ctr", seq_src_ctr);
-
-    QDPIO::cout << "Start seqprop calculation for seq_src number = " 
+    QDPIO::cout << "collecting components  for seq_src number = " 
 		<< seq_src_ctr << endl;
 
-    // Allocate space for the sequential source
-    LatticePropagator quark_prop_src;
-
-    /*
-     *  Sources 0 -> 9 corresponding to Baryon sequential sources
-     *  Sources 10 -> 19 corresponds to a Meson sequential source
-     *  Souces  21 -> 29 are additional Baryon ones we thought of
-     *
-     *  Note that not all the source values are necessarily implemented
-     *
-     */
+    push(xml_seq_src);
+    write(xml_seq_src, "seq_src_ctr", seq_src_ctr);
 
     int seq_src_value = input.param.Seq_src[seq_src_ctr]; /* Assign the particular 
 							     source type */
 
-
-    if(((0 <= seq_src_value) && (seq_src_value <= 9)) ||
-       ((21 <= seq_src_value) && (seq_src_value <= 29))) 
-    {
-      // Computation of the Baryon sequential source
-      barSeqSource(quark_propagator, quark_propagator, quark_prop_src, 
-		   input.param.t_sink, 
-		   input.param.sink_mom, 
-		   j_decay, 
-		   seq_src_value);
+    // Allocate space for the sequential source
+    LatticePropagator seq_quark_prop;
+    LatticeFermion psi;
+    int max_spin;
+    if( input.param.nonRelSeqProp ) { 
+      max_spin = Ns/2;
     }
-    else if ((10 <= seq_src_value) && (seq_src_value <= 20))
-    {
-      // Computation of the Meson sequential source
-      mesonSeqSource(quark_propagator, quark_prop_src, 
-		     input.param.t_sink, 
-		     input.param.sink_mom, 
-		     j_decay, 
-		     seq_src_value);
-    }
-    else{
-      QDP_error_exit("Unknown sequential source type", seq_src_value);
+    else {
+      max_spin = Ns;
     }
 
-    if (Sl_snk)
-    {
-      // Do the sink smearing AFTER the interpolating operator
-      sink_smear2(u, quark_prop_src, 
-		  source_header.sourceSmearParam.wvf_kind, 
-		  source_header.sourceSmearParam.wvf_param, 
-		  source_header.sourceSmearParam.wvfIntPar, 
-		  j_decay);
+    XMLReader file_xml_in, record_xml_in;
+    for(int spin = 0; spin < max_spin; spin++) {
+      for(int color =0; color < Nc; color++) { 
+	
+	ostringstream infile;
+	infile <<  input.prop.seqprop_files[seq_src_ctr] << "_component_s" << spin << "_c" << color;
+
+	readFermion(file_xml_in, record_xml_in, psi, infile.str(), 
+		    QDPIO_SERIAL);
+
+	FermToProp(psi, seq_quark_prop, color, spin);
+      }
     }
 
-
-
-    /*
-     *  Compute the full propagator.
-     */
-
-    // This is a little non trivial
-
-    // FIrst we have to set up the state -- this is fermact dependent
-    const ConnectState *state_ptr;
-    LatticePropagator seq_quark_prop = zero;
-
-    switch(prop_header.FermActHandle->getFermActType()) {
-    case FERM_ACT_WILSON:
-      state_ptr = S_f->createState(u);
-      break;
-    case FERM_ACT_UNPRECONDITIONED_WILSON:
-      state_ptr = S_f->createState(u);
-      break;
-    case FERM_ACT_DWF:
-      state_ptr = S_f->createState(u);
-      break;
-    case FERM_ACT_UNPRECONDITIONED_DWF:
-      state_ptr = S_f->createState(u);
-      break;
-
-    case FERM_ACT_ZOLOTAREV_4D:
-      {    
-	const Zolotarev4DFermActParams& zolo4d = dynamic_cast<const Zolotarev4DFermActParams& > (*(prop_header.FermActHandle));
-	state_ptr = S_f->createState(u, zolo4d.StateInfo, xml_out);
-       
+    // Now trick of negatings spin components max_spin -> Ns 
+    // this is the effect of a gamma_5 
+    if( input.param.nonRelSeqProp ) { 
+      for(int spin = max_spin; spin < Ns; spin++) {
+	for(int color =0; color < Nc; color++) { 
+	  
+	  PropToFerm(seq_quark_prop,psi, color, spin-max_spin);
+	  
+	  FermToProp((-psi), seq_quark_prop, color, spin);
+	}
       }
-      break;
-    case FERM_ACT_ZOLOTAREV_5D:
-      {
-	const Zolotarev5DFermACtParams& zolo5d = dynamic_cast<const Zolotarev5DFermActParams& > (*(prop_header.FermActHandle));
-	state_ptr = S_f_a->createState(u, zolo5d.StateInfo, xml_out);
-      }
-      break;
-
-    default:
-      QDPIO::cerr << "Unsupported fermion action (state creation)" << endl;
-      QDP_abort(1);
-    }
-      
-    // Now do the quarkprop here again depending on which of the
-    // action pointers is not null
-    {
-      Handle<const ConnectState> state(state_ptr);  // inserts any BC
-      int n_count;
-
-      if( S_f_ptr != 0x0 ) { 
-	quarkProp4(seq_quark_prop, xml_seq_src, quark_prop_src,
-		   *S_f, state, 
-		   input.param.invParam.invType, 
-		   input.param.invParam.RsdCG, 
-		   input.param.invParam.MaxCG,
-		   input.param.nonRelSeqProp,
-		   n_count);
-      }
-      else if ( S_f_a_ptr != 0x0 ) { 
-	quarkProp4(seq_quark_prop, xml_seq_src, quark_prop_src,
-		   *S_f_a, state, 
-		   input.param.invParam.invType, 
-		   input.param.invParam.RsdCG, 
-		   input.param.invParam.MaxCG,
-		   input.param.nonRelSeqProp,
-		   n_count);
-      }
-      else {
-	QDPIO::cerr << "Both S_f_ptr and S_f_a_ptr == 0 " << endl;
-	QDP_abort(1);
-      }
-
-      ncg_had += n_count;
     }
 
     // Sanity check - write out the norm2 of the forward prop in the j_decay direction
@@ -590,14 +382,11 @@ int main(int argc, char **argv)
       pop(xml_seq_src);
     }
 
-    pop(xml_seq_src);   // elem
+    pop(xml_seq_src); /// Elem
+
   } /* end loop over sequential sources */
       
   pop(xml_seq_src);  // Sequential_source
-
-  push(xml_out,"Relaxation_Iterations");
-  write(xml_out, "ncg_had", ncg_had);
-  pop(xml_out);
 
   pop(xml_out);    // seqprop
 

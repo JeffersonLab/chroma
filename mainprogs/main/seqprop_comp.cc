@@ -1,4 +1,4 @@
-// $Id: seqprop.cc,v 1.20 2004-04-23 15:54:05 bjoo Exp $
+// $Id: seqprop_comp.cc,v 1.1 2004-04-23 15:54:05 bjoo Exp $
 /*! \file
  *  \brief Main code for sequential propagator generation
  */
@@ -10,6 +10,10 @@
 
 using namespace QDP;
 
+struct Component_t { 
+  int color;
+  int spin;
+};
 
 /*
  * Input 
@@ -38,12 +42,47 @@ struct Prop_t
 
 
 //! Mega-structure of all input
-struct Seqprop_input_t
+struct SeqpropComponent_input_t
 {
   Param_t          param;
   Cfg_t            cfg;
   Prop_t           prop;
+  multi1d<Component_t> components;
 };
+
+
+void read(XMLReader& xml, const string& path, Component_t &comp)
+{
+  XMLReader top(xml,path);
+  try {
+    read(top, "color", comp.color);
+    read(top, "spin",  comp.spin);
+  }
+  catch( const string& e ) {
+    QDPIO::cerr << "Caught Exception : " << e << endl;
+    QDP_abort(1);
+  }  
+  if( comp.color < 0 || comp.color >= Nc ) { 
+    QDPIO::cerr << "Component color >= Nc. color = " << comp.color << endl;
+    QDP_abort(1);
+  }
+
+  if( comp.spin < 0 || comp.spin >= Ns ) { 
+    QDPIO::cerr << "Component spin >= Ns.  spin = " << comp.spin << endl;
+    QDP_abort(1);
+  }
+}
+
+void write(XMLWriter& xml, const string& path, const Component_t &comp)
+{
+  
+  push( xml, path );
+
+  write(xml, "color", comp.color);
+  write(xml, "spin",  comp.spin);
+  
+  pop( xml );
+}
 
 
 //! Propagator parameters
@@ -95,7 +134,7 @@ void read(XMLReader& xml, const string& path, Param_t& param)
 
 
 // Reader for input parameters
-void read(XMLReader& xml, const string& path, Seqprop_input_t& input)
+void read(XMLReader& xml, const string& path, SeqpropComponent_input_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -110,11 +149,23 @@ void read(XMLReader& xml, const string& path, Seqprop_input_t& input)
 
     // Read in the forward_prop/seqprop info
     read(inputtop, "Prop", input.prop);
+
+     read(inputtop, "Components", input.components);
   }
   catch (const string& e) 
   {
     QDPIO::cerr << "Error reading data: " << e << endl;
     throw;
+  }
+
+  // Sanity check. If non rel flags are given, spin components must
+  // 
+  for(int comp=0; comp < input.components.size(); comp++) { 
+    if( input.param.nonRelSeqProp && (input.components[comp].spin >= (Ns/2))) {
+      QDPIO::cerr << "nonRelSeqProp specified, but also spin component " << input.components[comp].spin << endl;
+      QDPIO::cerr << "if nonRelSeqProp is specified spins must be < " << Ns/2<< endl;
+      QDP_abort(1);
+    }
   }
 }
 
@@ -140,13 +191,13 @@ int main(int argc, char **argv)
   START_CODE("seqprop");
 
   // Input parameter structure
-  Seqprop_input_t  input;
+  SeqpropComponent_input_t  input;
 
   // Instantiate xml reader for DATA
   XMLReader xml_in("DATA");
 
   // Read data
-  read(xml_in, "/seqprop", input);
+  read(xml_in, "/seqpropComponent", input);
 
   // Specify lattice size, shape, etc.
   Layout::setLattSize(input.param.nrow);
@@ -461,7 +512,7 @@ int main(int argc, char **argv)
 
     // FIrst we have to set up the state -- this is fermact dependent
     const ConnectState *state_ptr;
-    LatticePropagator seq_quark_prop = zero;
+
 
     switch(prop_header.FermActHandle->getFermActType()) {
     case FERM_ACT_WILSON:
@@ -480,14 +531,19 @@ int main(int argc, char **argv)
     case FERM_ACT_ZOLOTAREV_4D:
       {    
 	const Zolotarev4DFermActParams& zolo4d = dynamic_cast<const Zolotarev4DFermActParams& > (*(prop_header.FermActHandle));
-	state_ptr = S_f->createState(u, zolo4d.StateInfo, xml_out);
+	const Zolotarev4DFermAct& S_zolo4 = dynamic_cast<const Zolotarev4DFermAct&>(*S_f);
+
+	state_ptr = S_zolo4.createState(u, zolo4d.StateInfo, xml_out);
        
       }
       break;
     case FERM_ACT_ZOLOTAREV_5D:
       {
-	const Zolotarev5DFermACtParams& zolo5d = dynamic_cast<const Zolotarev5DFermActParams& > (*(prop_header.FermActHandle));
-	state_ptr = S_f_a->createState(u, zolo5d.StateInfo, xml_out);
+	const Zolotarev5DFermActParams& zolo5d = dynamic_cast<const Zolotarev5DFermActParams& > (*(prop_header.FermActHandle));
+	const Zolotarev5DFermActArray& S_zolo5 = dynamic_cast<const Zolotarev5DFermActArray&>(*S_f_a);
+
+
+	state_ptr = S_zolo5.createState(u, zolo5d.StateInfo, xml_out);
       }
       break;
 
@@ -498,99 +554,130 @@ int main(int argc, char **argv)
       
     // Now do the quarkprop here again depending on which of the
     // action pointers is not null
-    {
-      Handle<const ConnectState> state(state_ptr);  // inserts any BC
-      int n_count;
+    
+    Handle<const ConnectState> state(state_ptr);  // inserts any BC
+    
+    LatticeFermion seq_prop_component = zero;
+    LatticeFermion seq_src_component = zero;
 
+    for(int comp = 0; comp < input.components.size(); comp++) { 
+
+      PropToFerm(quark_prop_src, seq_src_component, input.components[comp].color,
+		 input.components[comp].spin);
+
+      seq_prop_component = zero;
+
+      Real fact = Real(1) / sqrt(norm2(seq_src_component));
+      seq_src_component *= fact;
+      
+      int n_count = 0;
+      
       if( S_f_ptr != 0x0 ) { 
-	quarkProp4(seq_quark_prop, xml_seq_src, quark_prop_src,
-		   *S_f, state, 
+	
+	S_f->qprop(seq_prop_component,
+		   state,
+		   seq_src_component,
 		   input.param.invParam.invType, 
 		   input.param.invParam.RsdCG, 
 		   input.param.invParam.MaxCG,
-		   input.param.nonRelSeqProp,
 		   n_count);
+	
+	/*	  quarkProp4(seq_quark_prop, xml_seq_src, quark_prop_src,
+	 *S_f, state, 
+	 input.param.invParam.invType, 
+	 input.param.invParam.RsdCG, 
+	 input.param.invParam.MaxCG,
+	 input.param.nonRelSeqProp,
+	 n_count);
+	*/
       }
       else if ( S_f_a_ptr != 0x0 ) { 
-	quarkProp4(seq_quark_prop, xml_seq_src, quark_prop_src,
-		   *S_f_a, state, 
-		   input.param.invParam.invType, 
-		   input.param.invParam.RsdCG, 
-		   input.param.invParam.MaxCG,
-		   input.param.nonRelSeqProp,
-		   n_count);
+	
+	S_f_a->qprop(seq_prop_component,
+		     state,
+		     seq_src_component,
+		     input.param.invParam.invType, 
+		     input.param.invParam.RsdCG, 
+		     input.param.invParam.MaxCG,
+		     n_count);
+	
+	/* quarkProp4(seq_quark_prop, xml_seq_src, quark_prop_src,
+	 *S_f_a, state, 
+	 input.param.invParam.invType, 
+	 input.param.invParam.RsdCG, 
+	 input.param.invParam.MaxCG,
+	 input.param.nonRelSeqProp,
+	 n_count);
+	*/
       }
       else {
 	QDPIO::cerr << "Both S_f_ptr and S_f_a_ptr == 0 " << endl;
 	QDP_abort(1);
       }
-
+      
       ncg_had += n_count;
-    }
+      
+      fact = Real(1) / fact;
+      seq_prop_component *= fact;
+      
+      push(xml_out,"Relaxation_Iterations");
+      write(xml_out, "ncg_had", n_count);
+      pop(xml_out);
+      
+      
 
-    // Sanity check - write out the norm2 of the forward prop in the j_decay direction
-    // Use this for any possible verification
-    {
-      multi1d<Double> backward_prop_corr = sumMulti(localNorm2(seq_quark_prop), 
-						    phases.getSet());
+      // Sanity check - write out the norm2 of the forward prop in the j_decay direction
+      // Use this for any possible verification
+      
+      multi1d<Double> backward_prop_corr = sumMulti(localNorm2(seq_prop_component), 
+						      phases.getSet());
 	
       push(xml_seq_src, "Backward_prop_correlator");
       write(xml_seq_src, "backward_prop_corr", backward_prop_corr);
       pop(xml_seq_src);
-    }
+      
 
+      /*
+       *  Write the sequential propagator component out to disk
+       */
+      {
+	XMLBufferWriter file_xml;
+	push(file_xml, "seqpropComponent");
+	int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
+	write(file_xml, "id", id);
+	pop(file_xml);
 
-    /*
-     *  Write the sequential propagator out to disk
-     */
-    {
-      XMLBufferWriter file_xml;
-      push(file_xml, "seqprop");
-      int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
-      write(file_xml, "id", id);
-      pop(file_xml);
-
-      // Make a seqprop structure
-      ChromaSeqProp_t seqprop_header;
-      seqprop_header.invParam = input.param.invParam;
-      seqprop_header.nonRelSeqProp  = input.param.nonRelSeqProp;
-      seqprop_header.Seq_src  = seq_src_value;
-      seqprop_header.sink_mom = input.param.sink_mom;
-      seqprop_header.t_sink   = input.param.t_sink;
-      seqprop_header.nrow     = input.param.nrow;
-
-      XMLBufferWriter record_xml;
-      push(record_xml, "SeqProp");
-      write(record_xml, "SequentialProp", seqprop_header);
-      write(record_xml, "PropSink", sink_header);
-      write(record_xml, "ForwardProp", prop_header);
-      write(record_xml, "PropSource", source_header);
-      write(record_xml, "Config_info", gauge_xml);
-      pop(record_xml);
-
-      // Write the seqprop
-      writeQprop(file_xml, record_xml, seq_quark_prop,
-		 input.prop.seqprop_files[seq_src_ctr], 
-		 input.prop.seqprop_volfmt, QDPIO_SERIAL);
-    }
-
-    /*
-     *  In the case of the pion, we know that the exponentiated propagator
-     *  back to the source should be the pion correlator at time-slice
-     *  zero, and so will write this out
-     */
-
-    if(seq_src_value == 10)
-    {
-      Complex pion_src;
-      seqPionTest(pion_src, seq_quark_prop, t_source);
+	// Make a seqprop structure
+	ChromaSeqProp_t seqprop_header;
+	seqprop_header.invParam = input.param.invParam;
+	seqprop_header.nonRelSeqProp  = input.param.nonRelSeqProp;
+	seqprop_header.Seq_src  = seq_src_value;
+	seqprop_header.sink_mom = input.param.sink_mom;
+	seqprop_header.t_sink   = input.param.t_sink;
+	seqprop_header.nrow     = input.param.nrow;
 	
-      push(xml_seq_src,"Seq_propagator_test");
-      write(xml_seq_src, "pion_src", pion_src);
-      pop(xml_seq_src);
-    }
+	XMLBufferWriter record_xml;
+	push(record_xml, "SeqProp");
+	write(record_xml, "SequentialProp", seqprop_header);
+	write(record_xml, "PropSink", sink_header);
+	write(record_xml, "ForwardProp", prop_header);
+	write(record_xml, "PropSource", source_header);
+	write(record_xml, "Config_info", gauge_xml);
+	pop(record_xml);
+	  
+	ostringstream outfile;
+	outfile << input.prop.seqprop_files[seq_src_ctr] << "_component_s" << input.components[comp].spin << "_c" << input.components[comp].color;
+ 
+	// Write the seqprop
+	writeFermion(file_xml, record_xml, seq_prop_component,
+		     outfile.str(), 
+		     input.prop.seqprop_volfmt, QDPIO_SERIAL);
+      }
 
-    pop(xml_seq_src);   // elem
+	
+
+    } /* End loop over components */
+    pop(xml_seq_src);   // elem   
   } /* end loop over sequential sources */
       
   pop(xml_seq_src);  // Sequential_source
@@ -607,7 +694,7 @@ int main(int argc, char **argv)
   // Time to bolt
   QDP_finalize();
 
-  END_CODE("seqprop");
+  END_CODE("seqpropComponent");
 
   exit(0);
 }

@@ -1,4 +1,4 @@
-// $Id: quarkprop4_w.cc,v 1.11 2004-04-01 18:09:58 edwards Exp $
+// $Id: quarkprop4_w.cc,v 1.12 2004-04-23 15:54:05 bjoo Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -44,7 +44,7 @@ void quarkProp4_a(LatticePropagator& q_sol,
 
   ncg_had = 0;
 
-  int max_spin = (nonRelProp) ? Ns>>1 : Ns;
+  int max_spin = (nonRelProp) ? (Ns/2) : Ns;
 
 //  LatticeFermion psi = zero;  // note this is ``zero'' and not 0
 
