@@ -1,4 +1,4 @@
-// $Id: unprec_parwilson_linop_w.cc,v 1.1 2004-01-12 04:48:00 edwards Exp $
+// $Id: unprec_parwilson_linop_w.cc,v 1.2 2004-01-12 04:54:04 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator with parity breaking term
  */
@@ -13,8 +13,8 @@
  * \param Mass_    fermion kappa   	       (Read)
  * \param H__      parity breaking term	       (Read)
  */
-void UnprecWilsonLinOp::create(const multi1d<LatticeColorMatrix>& u_, 
-			       const Real& Mass_, const Real& H_)
+void UnprecParWilsonLinOp::create(const multi1d<LatticeColorMatrix>& u_, 
+				  const Real& Mass_, const Real& H_)
 {
   Mass = Mass_;
   H = H_;
@@ -35,10 +35,10 @@ void UnprecWilsonLinOp::create(const multi1d<LatticeColorMatrix>& u_,
  * \param psi 	  Pseudofermion field     	       (Read)
  * \param isign   Flag ( PLUS | MINUS )   	       (Read)
  */
-void UnprecWilsonLinOp::operator() (LatticeFermion& chi, const LatticeFermion& psi, 
-				    enum PlusMinus isign) const
+void UnprecParWilsonLinOp::operator() (LatticeFermion& chi, const LatticeFermion& psi, 
+				       enum PlusMinus isign) const
 {
-  START_CODE("UnprecWilsonLinOp");
+  START_CODE("UnprecParWilsonLinOp");
 
   //
   //  Chi   =  (Nd+Mass)*Psi  -  (1/2) * D' Psi
@@ -50,7 +50,7 @@ void UnprecWilsonLinOp::operator() (LatticeFermion& chi, const LatticeFermion& p
   // D is a Dslash - must apply to both CB-s
   D(tmp, psi, isign);
 
-  chi = fact*psi + Gamma(Ns*Ns-1)*(H*timesI(psi)) + fact2*tmp;
+  chi = fact1*psi + Gamma(Ns*Ns-1)*(H*timesI(psi)) + fact2*tmp;
   
-  END_CODE("UnprecWilsonLinOp");
+  END_CODE("UnprecParWilsonLinOp");
 }
