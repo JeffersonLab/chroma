@@ -1,4 +1,4 @@
-// $Id: qqq_w.cc,v 1.15 2004-05-14 00:31:30 edwards Exp $
+// $Id: qqq_w.cc,v 1.16 2004-05-14 00:36:49 edwards Exp $
 /*! \file
  *  \brief Main code for generalized quark propagator
  *
@@ -192,7 +192,7 @@ int main(int argc, char **argv)
   write(xml_out, "Config_info", gauge_xml);
 
   push(xml_out, "Output_version");
-  write(xml_out, "out_version", 2);
+  write(xml_out, "out_version", 3);
   pop(xml_out);
 
   xml_out.flush();
