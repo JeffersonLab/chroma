@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.33 2003-04-17 14:52:02 dgr Exp $
+# $Id: Makefile.in,v 1.34 2003-04-17 20:15:02 dgr Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -160,8 +160,8 @@ HDRS = chroma.h chromabase.h chromainc.h primitives.h defs.h common_declarations
 GENERIC_SRCS = $(HDRS) gaus_smear.cc taproj.cc hotst.cc expm12.cc \
                klein_gord.cc mesplq.cc reunit.cc sftmom.cc srcfil.cc \
                readszin.cc su3proj.cc sun_proj.cc hyp_smear.cc \
-               su2extract.cc sunfill.cc invcg2.cc qprop_io.cc p_src.cc
-
+               su2extract.cc sunfill.cc invcg2.cc qprop_io.cc p_src.cc \
+               D_j.cc
 
 #
 # Object files to add if building the Wilson Builds...
@@ -204,7 +204,7 @@ am__objects_2 = $(am__objects_1) gaus_smear.$(OBJEXT) taproj.$(OBJEXT) \
 	srcfil.$(OBJEXT) readszin.$(OBJEXT) su3proj.$(OBJEXT) \
 	sun_proj.$(OBJEXT) hyp_smear.$(OBJEXT) su2extract.$(OBJEXT) \
 	sunfill.$(OBJEXT) invcg2.$(OBJEXT) qprop_io.$(OBJEXT) \
-	p_src.$(OBJEXT)
+	p_src.$(OBJEXT) D_j.$(OBJEXT)
 am__objects_3 = baryon_w.$(OBJEXT) mesons_w.$(OBJEXT) \
 	lwldslash_w.$(OBJEXT) formfac_w.$(OBJEXT) \
 	sink_smear2_w.$(OBJEXT) barcomp_w.$(OBJEXT) transf_w.$(OBJEXT) \
@@ -220,11 +220,11 @@ libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS)
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/barcomp_w.Po ./$(DEPDIR)/baryon_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/expm12.Po ./$(DEPDIR)/formfac_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/gaus_smear.Po ./$(DEPDIR)/hotst.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/hyp_smear.Po ./$(DEPDIR)/invcg2.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/klein_gord.Po \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/D_j.Po ./$(DEPDIR)/barcomp_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/baryon_w.Po ./$(DEPDIR)/expm12.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/formfac_w.Po ./$(DEPDIR)/gaus_smear.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/hotst.Po ./$(DEPDIR)/hyp_smear.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/invcg2.Po ./$(DEPDIR)/klein_gord.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/lwldslash_w.Po ./$(DEPDIR)/mesons_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/mesplq.Po ./$(DEPDIR)/p_src.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/qprop_io.Po ./$(DEPDIR)/readszin.Po \
@@ -303,6 +303,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/D_j.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/barcomp_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/baryon_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/expm12.Po@am__quote@
