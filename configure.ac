@@ -182,7 +182,6 @@ AC_CONFIG_FILES(docs/chromadoc)
 
 dnl Make the Makefiles
 AC_CONFIG_FILES(Makefile)
-AC_CONFIG_FILES(include/Makefile)
 AC_CONFIG_FILES(lib/Makefile)
 AC_CONFIG_FILES(mainprogs/Makefile)
 AC_CONFIG_FILES(mainprogs/tests/Makefile)
