@@ -1,6 +1,9 @@
-//  $Id: sftmom.cc,v 1.5 2003-04-02 22:28:22 edwards Exp $
+//  $Id: sftmom.cc,v 1.6 2003-12-17 04:50:42 edwards Exp $
 //  $Log: sftmom.cc,v $
-//  Revision 1.5  2003-04-02 22:28:22  edwards
+//  Revision 1.6  2003-12-17 04:50:42  edwards
+//  Added function to return decay direction. Added some doxygen comments.
+//
+//  Revision 1.5  2003/04/02 22:28:22  edwards
 //  Changed proto.h to qdp_util.h
 //
 //  Revision 1.4  2003/04/01 02:46:43  edwards
@@ -80,6 +83,8 @@ void
 SftMom::init(int mom2_max, multi1d<int> mom_offset,
              bool avg_equiv_mom, int j_decay)
 {
+  decay_dir = j_decay;  // private copy
+
   // Averaging over equivalent momenta is only allowed if 
   // mom_offset is zero.
   if (avg_equiv_mom) {

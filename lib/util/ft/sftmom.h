@@ -1,25 +1,7 @@
-//  $Id: sftmom.h,v 1.6 2003-08-09 02:10:44 edwards Exp $
-//  $Log: sftmom.h,v $
-//  Revision 1.6  2003-08-09 02:10:44  edwards
-//  Replaced Subset with UnorderedSubset .
-//
-//  Revision 1.5  2003/04/01 02:45:03  edwards
-//  Added some const member functions.
-//
-//  Revision 1.4  2003/04/01 02:38:26  edwards
-//  Added doxygen comments.
-//
-//  Revision 1.3  2003/03/20 19:34:25  flemingg
-//  Evolved formfac_w.cc to use SftMom class, which included some bug fixes
-//  in features in SftMom which had been previously untested and evolution
-//  of the corresponding test program.
-//
-//  Revision 1.2  2003/03/14 17:13:44  flemingg
-//  SftMom::sft() now works.
-//
-//  Revision 1.1  2003/03/14 05:06:06  flemingg
-//  Initial version of SftMom class
-//
+//  $Id: sftmom.h,v 1.7 2003-12-17 04:50:42 edwards Exp $
+/*! \file
+ *  \brief Fourier transform phase factor support
+ */
 
 #ifndef SFTMOM_INCLUDE
 #define SFTMOM_INCLUDE
@@ -31,23 +13,34 @@
 class SftMom
 {
 public:
+  //! Constructor about origin
   SftMom(int mom2_max, bool avg_equiv_mom=false, int j_decay=-1) ;
 
+  //! Construct around some fixed mom_offset
   SftMom(int mom2_max, multi1d<int> mom_offset,
          bool avg_equiv_mom=false, int j_decay=-1) 
   { init(mom2_max, mom_offset, avg_equiv_mom, j_decay) ; }
 
+  //! The set to be used in sumMulti
   const UnorderedSet& getSubset() const { return sft_subsets ; }
 
+  //! Number of momenta
   int numMom() const { return num_mom ; }
 
+  //! Number of subsets - length in decay direction
   int numSubsets() const { return sft_subsets.numSubsets() ; }
 
+  //! Decay direction
+  int getDir() const { return decay_dir ; }
+
+  //! Convert momenta id to actual array of momenta
   multi1d<int> numToMom(int mom_num) const { return mom_list[mom_num] ; }
 
+  //! Return the phase for this particular momenta id
   const LatticeComplex& operator[](int mom_num) const
     { return phases[mom_num] ; }
 
+  //! Do a sumMulti(cf*phases,getSubset())
   multi2d<DComplex> sft(const LatticeComplex& cf) const ;
 
 private:
@@ -57,6 +50,8 @@ private:
             bool avg_equiv_mom=false, int j_decay=-1) ;
 
   multi2d<int> mom_list ;
+
+  int decay_dir;
 
   int num_mom ;
 
