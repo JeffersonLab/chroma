@@ -1,17 +1,28 @@
-// $Id: bar3ptfn.cc,v 1.7 2003-05-08 22:58:45 flemingg Exp $
+// $Id: bar3ptfn.cc,v 1.8 2003-05-14 06:07:03 flemingg Exp $
 //
 // $Log: bar3ptfn.cc,v $
-// Revision 1.7  2003-05-08 22:58:45  flemingg
-// Now using 'enum WvfKind' defined in lib/meas/smear/sink_smear2_w.h
+// Revision 1.8  2003-05-14 06:07:03  flemingg
+// Should be done playing around with the input and output formats
+// for bar3ptfn with this version.
 //
-// Revision 1.6  2003/05/01 17:32:09  flemingg
-// Added code to eliminate temporary 'LatticeComplex seq_hadron'.  It is
-// currently commented out awaiting a qdp++ update.
 //
 
 #include "chroma.h"
 
 using namespace QDP ;
+
+enum CfgType {
+  CFG_TYPE_MILC,
+  CFG_TYPE_NERSC,
+  CFG_TYPE_SCIDAC,
+  CFG_TYPE_SZIN,
+  CFG_TYPE_UNKNOWN
+} ;
+
+enum FermType {
+  FERM_TYPE_WILSON,
+  FERM_TYPE_UNKNOWN
+} ;
 
 int
 main(int argc, char *argv[])
@@ -21,153 +32,155 @@ main(int argc, char *argv[])
 
   int i, j ;
 
+  // Parameters which must be determined from the namelist input
+  // and written to the namelist output
+
+  int version ;              // input parameter version
+
+  FermType FermTypeP ;
+
+  // GTF GRIPE: I would prefer masses rather than kappa values here,
+  //   but I'll save that for another day.
+    int numKappa ;            // number of Wilson masses
+  multi1d<Real> Kappa ;     // array of Wilson mass values
+
+  CfgType cfg_type ;        // storage order for stored gauge configuration
+  int j_decay ;             // direction to measure propagation
+
+  bool Pt_src ;             // point source
+  bool Sl_src ;             // shell source
+  bool Pt_snk ;             // point sink
+  bool Sl_snk ;             // shell sink
+
+  int t_sink ;
+
+  multi1d<int> sink_mom(Nd-1) ;
+
+  int mom2_max ;            // (mom)^2 <= mom2_max. mom2_max=7 in szin.
+
+  WvfKind Wvf_kind ;        // Wave function kind: gauge invariant
+  multi1d<Real> wvf_param ; // Array of width's or other parameters
+                            //   for "shell" source/sink wave function
+  multi1d<int> WvfIntPar ;  // Array of iter numbers to approx. Gaussian or
+                            //   terminate CG inversion for Wuppertal smearing
+
+  int numSeq_src ;
+  multi1d<int> Seq_src ;
+
+  multi1d<int> nrow(Nd) ;
+  multi1d<int> boundary(Nd) ;
+  multi1d<int> t_srce(Nd) ;
+
+  string cfg_file ;
+
   Seed seed ; // Random number seed (see SETRN for meaning)
 
   // Instantiate namelist reader for DATA
   NmlReader nml_in("DATA") ;
 
-  // Instantiate namelist writer for NMLDAT
-  NmlWriter nml_out("NMLDAT") ;
-
-  // Read in the IO_version (checked later)
-  int version ; // input parameter version
+  // Read in the IO_version
   push(nml_in, "IO_version") ;
   Read(nml_in, version) ;
   pop(nml_in) ;
 
-  // push into param group
-  push(nml_in, "param") ;
+  switch (version) {
 
-  int FermTypeP ;
-  Read(nml_in, FermTypeP) ;
+  /**************************************************************************/
+  case 3 :
+  /**************************************************************************/
 
-  int numKappa ; // Number of Kappa's passed to hadron
-  Read(nml_in, numKappa) ;
+    push(nml_in, "param") ; // push into 'param' group
 
-  int input_Nd ;
-  read(nml_in, "Nd", input_Nd) ;
+    {
+      int input_Nc ;
+      read(nml_in, "Nc", input_Nc) ;
 
-  if (input_Nd != Nd) {
-    QDP_error_exit("Input parameter Nd different from qdp++ value.") ;
-  }
+      if (input_Nc != Nc) {
+        cerr << "Input parameter Nc=" << input_Nc \
+          <<  " different from qdp++ value." << endl ;
+        QDP_abort(1) ;
+      }
 
-  int input_Nc ;
-  read(nml_in, "Nc", input_Nc) ;
+      int input_Nd ;
+      read(nml_in, "Nd", input_Nd) ;
 
-  if (input_Nc != Nc) {
-    QDP_error_exit("Input parameter Nc different from qdp++ value.") ;
-  }
+      if (input_Nd != Nd) {
+        cerr << "Input parameter Nd=" << input_Nd \
+          << " different from qdp++ value." << endl ;
+        QDP_abort(1) ;
+      }
 
-  multi1d<Real> Kappa(numKappa) ; // Array of Kappa's passed to hadron
-
-  switch (FermTypeP) {
-  case 1 :             // GTF HACK, change once WILSON_FERMIONS enum defined
-    cout << " FORMFAC: Baryon form factors for Wilson fermions" << endl ;
-
-    Read(nml_in, Kappa) ;
-
-    for (i = 0; i < numKappa; ++i) {
-      cout << " Spectroscopy Kappa: " << Kappa[i] << endl ;
+      int ferm_type_int ;
+      read(nml_in, "FermTypeP", ferm_type_int) ;
+      switch (ferm_type_int) {
+      case 1 :
+        FermTypeP = FERM_TYPE_WILSON ;
+        break ;
+      default :
+        FermTypeP = FERM_TYPE_UNKNOWN ;
+      }
     }
 
-    push(nml_out, "IO_version") ;
-    Write(nml_out, version) ;
-    pop(nml_out) ;
-    push(nml_out, "Output_version") ;
-//  write(nml_out, "out_version", 3) ;
-    write(nml_out, "out_version", 4) ;
-    pop(nml_out) ;
+    // GTF NOTE: I'm going to switch on FermTypeP here because I want
+    // to leave open the option of treating masses differently.
+    switch (FermTypeP) {
+    case FERM_TYPE_WILSON :
 
-    break ;
-  default :
-    QDP_error_exit("Fermion type incorrect", FermTypeP) ;
-  }
+      cout << " SPECTRUM_W: Spectroscopy for Wilson fermions" << endl ;
 
-//Real          OverMass ;
-//int           RatPolyDeg ;
-//Real          PolyArgResc ;
-//int           NWilsVec ;
+      Read(nml_in, numKappa) ;
 
-  int           cfg_type ;
-  int           j_decay ;
+      Kappa.resize(numKappa) ;
+      Read(nml_in, Kappa) ;
 
-//int           Z3_src ; // Z3 random value source at 2^Z3_src pts/dir
+      for (i=0; i < numKappa; ++i) {
+        if (toBool(Kappa[i] < 0.0)) {
+          cerr << "Unreasonable value for Kappa." << endl ;
+          cerr << "  Kappa[" << i << "] = " << Kappa[i] << endl ;
+          QDP_abort(1) ;
+        } else {
+          cout << " Spectroscopy Kappa: " << Kappa[i] << endl ;
+        }
+      }
 
-  bool          Pt_src ; // Point source
-  bool          Sl_src ; // Shell source
+      break ;
 
-  bool          Pt_snk ; // Point sink
-  bool          Sl_snk ; // Shell sink
-  int           t_sink ;
-  multi1d<int>  sink_mom(Nd-1) ;
+    default :
+      cerr << "Fermion type not supported." << endl ;
+      if (FermTypeP == FERM_TYPE_UNKNOWN) {
+        cerr << "  FermTypeP = UNKNOWN" << endl ;
+      }
+      QDP_abort(1) ;
+    }
 
-//int           InvType ;
-//int           FermAct ;
-//Real          H_parity ;
-//Real          ClovCoeff ;
-//Real          u0 ;
-//Real          MRover ;
+    {
+      int input_cfg_type ;
+      read(nml_in, "cfg_type", input_cfg_type) ;
+      switch (input_cfg_type) {
+      case 1 :
+        cfg_type = CFG_TYPE_SZIN ;
+        break ;
+      default :
+        cfg_type = CFG_TYPE_UNKNOWN ;
+      }
+    }
 
-  // GTF ???: Why is MaxCG 'int' and not 'multi1d<int> MaxCG(numKappa)'
-//int           MaxCG ;
-//multi1d<Real> RsdCG(numKappa) ; // CG accuracy
-
-  WvfKind       Wvf_kind ; // Wave function kind: gauge invariant
-
-  // Array of width's or other parameters for "shell" source/sink wave function
-  multi1d<Real> wvf_param(numKappa) ;
-
-  // Array of iter numbers to approx. Gaussian or terminate CG inversion
-  // for Wuppertal smearing
-  multi1d<int>  WvfIntPar(numKappa) ;
-
-  int           numSeq_src ; // The total number of sequential sources
-
-//int           numGamma ;
-
-  // An array containing a list of the sequential source
-  multi1d<int>  Seq_src ;
-
-  // A list of the gamma matrices in the usual DeGrand-Rossi encoding
-//multi1d<int>  Gamma_list ;
-
-  // (inser_mom)^2 <= mom2_max.  mom2_max=7 is hard coded in szin.
-  int mom2_max = 7 ;
-
-  switch (version) {
-  case 3 :
-  case 4 :
-
-//  Read(nml_in, OverMass) ;
-//  Read(nml_in, RatPolyDeg) ;
-//  Read(nml_in, PolyArgResc) ;
-//  Read(nml_in, NWilsVec) ;
-
-    Read(nml_in, cfg_type) ; // Configuration type - szin, Illinois staggered
-    Read(nml_in, j_decay) ;  // Direction to measure propagators
-
-//  Read(nml_in, Z3_src) ;
+    Read(nml_in, j_decay) ;
+    if (j_decay < 0 || j_decay >= Nd) {
+      cerr << "Bad value: j_decay = " << j_decay << endl ;
+      QDP_abort(1) ;
+    }
 
     Read(nml_in, Pt_src) ;
     Read(nml_in, Sl_src) ;
-
     Read(nml_in, Pt_snk) ;
     Read(nml_in, Sl_snk) ;
-    // Time coordinate of the sequential quark propagator source (ie. the sink)
+
     Read(nml_in, t_sink) ;
-    Read(nml_in, sink_mom) ; // Sink hadron momentum
 
-//  Read(nml_in, InvType) ;
-//  Read(nml_in, FermAct) ;
-//  Read(nml_in, H_parity) ;
-//  Read(nml_in, ClovCoeff) ;
-//  Read(nml_in, u0) ;
-//  Read(nml_in, MRover) ;
+    Read(nml_in, sink_mom) ;
 
-//  Read(nml_in, MaxCG) ;
-//  Read(nml_in, RsdCG) ;
-   
-    if (version <= 3) {
+    {
       int input_wvf_kind ;
       read(nml_in, "Wvf_kind", input_wvf_kind) ;
       switch (input_wvf_kind) {
@@ -179,78 +192,210 @@ main(int argc, char *argv[])
         cerr << "  Wvf_kind = " << input_wvf_kind << endl ;
         QDP_abort(1) ;
       }
-    } else {
-      string input_wvf_kind ;
-      read(nml_in, "Wvf_kind", input_wvf_kind) ;
-      if (input_wvf_kind == "GAUGE_INV_GAUSSIAN") {
-        Wvf_kind = WVF_KIND_GAUGE_INV_GAUSSIAN ;
-      } else {
-        cerr << "Unsupported gauge-invariant Wvf_kind." << endl ;
-        cerr << "  Wvf_kind = " << input_wvf_kind << endl ;
-        QDP_abort(1) ;
-      }
     }
 
+    wvf_param.resize(numKappa) ;
     Read(nml_in, wvf_param) ;
-   
+
+    WvfIntPar.resize(numKappa) ;
     Read(nml_in, WvfIntPar) ;
 
     // Now we read in the information associated with the sequential sources
     Read(nml_in, numSeq_src) ;
 
-    // Now the information associated with the gamma matrices
-//  Read(nml_in, numGamma) ;
+    // Now read in the particular Sequential Sources we are evaluating
+    Seq_src.resize(numSeq_src) ;
+    Read(nml_in, Seq_src) ;
+
+    {
+      int seq_src_ctr ;
+      for (seq_src_ctr=0; seq_src_ctr<numSeq_src; ++seq_src_ctr) {
+        cout << "Computing sequential source of type "
+          << Seq_src[seq_src_ctr] << endl ;
+      }
+    }
+
+    Read(nml_in, nrow) ;
+
+    Read(nml_in, boundary) ;
+
+    Read(nml_in, t_srce) ;
+
+    // default value in SZIN
+    mom2_max = 7 ;
+
+    pop(nml_in) ;
+
+    // Read in the gauge configuration file name
+    push(nml_in, "Cfg") ;
+    Read(nml_in, cfg_file) ;
+    pop(nml_in) ;
+
+    break ;
+
+  /**************************************************************************/
+  case 4 :
+  /**************************************************************************/
+
+    push(nml_in, "param") ; // push into 'param' group
+
+    {
+      int input_Nc ;
+      read(nml_in, "Nc", input_Nc) ;
+
+      if (input_Nc != Nc) {
+        cerr << "Input parameter Nc=" << input_Nc \
+          <<  " different from qdp++ value." << endl ;
+        QDP_abort(1) ;
+      }
+
+      int input_Nd ;
+      read(nml_in, "Nd", input_Nd) ;
+
+      if (input_Nd != Nd) {
+        cerr << "Input parameter Nd=" << input_Nd \
+          << " different from qdp++ value." << endl ;
+        QDP_abort(1) ;
+      }
+
+      string ferm_type_str ;
+      read(nml_in, "FermTypeP", ferm_type_str) ;
+      if (ferm_type_str == "WILSON") {
+        FermTypeP = FERM_TYPE_WILSON ;
+      } else {
+        FermTypeP = FERM_TYPE_UNKNOWN ;
+      }
+    }
+
+    // GTF NOTE: I'm going to switch on FermTypeP here because I want
+    // to leave open the option of treating masses differently.
+    switch (FermTypeP) {
+    case FERM_TYPE_WILSON :
+
+      cout << " SPECTRUM_W: Spectroscopy for Wilson fermions" << endl ;
+
+      Read(nml_in, numKappa) ;
+
+      Kappa.resize(numKappa) ;
+      Read(nml_in, Kappa) ;
+
+      for (i=0; i < numKappa; ++i) {
+        if (toBool(Kappa[i] < 0.0)) {
+          cerr << "Unreasonable value for Kappa." << endl ;
+          cerr << "  Kappa[" << i << "] = " << Kappa[i] << endl ;
+          QDP_abort(1) ;
+        } else {
+          cout << " Spectroscopy Kappa: " << Kappa[i] << endl ;
+        }
+      }
+
+      break ;
+
+    default :
+      cerr << "Fermion type not supported." << endl ;
+      if (FermTypeP == FERM_TYPE_UNKNOWN) {
+        cerr << "  FermTypeP = UNKNOWN" << endl ;
+      }
+      QDP_abort(1) ;
+    }
+
+    {
+      string cfg_type_str ;
+      read(nml_in, "cfg_type", cfg_type_str) ;
+      if (cfg_type_str == "SZIN") {
+        cfg_type = CFG_TYPE_SZIN ;
+      } else {
+        cfg_type = CFG_TYPE_UNKNOWN ;
+      }
+    }
+
+    Read(nml_in, j_decay) ;
+    if (j_decay < 0 || j_decay >= Nd) {
+      cerr << "Bad value: j_decay = " << j_decay << endl ;
+      QDP_abort(1) ;
+    }
+
+    Read(nml_in, Pt_src) ;
+    Read(nml_in, Sl_src) ;
+    Read(nml_in, Pt_snk) ;
+    Read(nml_in, Sl_snk) ;
+
+    Read(nml_in, t_sink) ;
+
+    Read(nml_in, sink_mom) ;
+
+    {
+      string wvf_kind_str ;
+      read(nml_in, "Wvf_kind", wvf_kind_str) ;
+      if (wvf_kind_str == "GAUGE_INV_GAUSSIAN") {
+        Wvf_kind = WVF_KIND_GAUGE_INV_GAUSSIAN ;
+      } else {
+        cerr << "Unsupported gauge-invariant Wvf_kind." << endl ;
+        cerr << "  Wvf_kind = " << wvf_kind_str << endl ;
+        QDP_abort(1) ;
+      }
+    }
+
+    wvf_param.resize(numKappa) ;
+    Read(nml_in, wvf_param) ;
+
+    WvfIntPar.resize(numKappa) ;
+    Read(nml_in, WvfIntPar) ;
+
+    // Now we read in the information associated with the sequential sources
+    Read(nml_in, numSeq_src) ;
 
     // Now read in the particular Sequential Sources we are evaluating
     Seq_src.resize(numSeq_src) ;
     Read(nml_in, Seq_src) ;
 
-    int seq_src_ctr ;
-    for (seq_src_ctr=0; seq_src_ctr<numSeq_src; ++seq_src_ctr) {
-      cout << "Computing sequential source of type "
-        << Seq_src[seq_src_ctr] << endl ;
+    {
+      int seq_src_ctr ;
+      for (seq_src_ctr=0; seq_src_ctr<numSeq_src; ++seq_src_ctr) {
+        cout << "Computing sequential source of type "
+          << Seq_src[seq_src_ctr] << endl ;
+      }
     }
 
-    // Read in the list of gamma matrices
-//  Gamma_list.resize(numGamma) ;
-//  Read(nml_in, Gamma_list) ;
+    Read(nml_in, nrow) ;
 
-    if (version > 3) {
-      Read(nml_in, mom2_max) ;
-    }
+    Read(nml_in, boundary) ;
 
-    break ;
+    Read(nml_in, t_srce) ;
+
+    Read(nml_in, mom2_max) ;
+
+    pop(nml_in) ;
+
+    // Read in the gauge configuration file name
+    push(nml_in, "Cfg") ;
+    Read(nml_in, cfg_file) ;
+    pop(nml_in) ;
+
+  break ;
+
+  /**************************************************************************/
   default :
-    QDP_error_exit("Unsupported input parameter version", version) ;
+  /**************************************************************************/
+
+    cerr << "Input parameter version " << version << " unsupported." << endl ;
+    QDP_abort(1) ;
   }
 
+  // GTF: ALL NAMELIST INPUT COMPLETED
+  nml_in.close() ;
+
   // Specify lattice size, shape, etc.
-  multi1d<int> nrow(Nd) ;
-  Read(nml_in, nrow) ;
   Layout::setLattSize(nrow) ;
   Layout::create() ;
-
-  multi1d<int> boundary(Nd) ;
-  Read(nml_in, boundary) ;
-
-  // Coordinates of the quark propagator source.
-  multi1d<int> t_srce(Nd) ;
-  Read(nml_in, t_srce) ;
-
-  // pop out of param group
-  pop(nml_in) ;
-
-  // Read in the gauge configuration file name
-  push(nml_in, "Cfg") ;
-  string cfg_file ;
-  Read(nml_in, cfg_file) ;
-  pop(nml_in) ;
 
   // Check for valid parameter values
   for (i=0; i<Nd; ++i) {
     if ((nrow[i] % 2) != 0) {
-      QDP_error_exit("lattice shape is invalid odd linear size not allowed",
-        i, nrow[i]) ;
+      cerr << "Lattice shape is invalid; odd linear size not allowed." \
+        << endl ;
+      cerr << "  nrow[" << i << "] = " << nrow[i] << endl ;
+      QDP_abort(1) ;
     }
   }
 
@@ -258,36 +403,27 @@ main(int argc, char *argv[])
   // GTF HACK: only allow periodic boundary conditions
   for (i=0; i<Nd; ++i) {
     if (boundary[i] != 1) {
-      QDP_error_exit("Only periodic boundary conditions supported") ;
+      cerr << "Only periodic boundary conditions supported." << endl ;
+      cerr << "  boundary[" << i << "] = " << boundary[i] << endl ;
+      QDP_abort(1) ;
     }
   }
 
   for (i=0; i<Nd; ++i) {
     if (t_srce[i] < 0 || t_srce[i] >= nrow[i]) {
-      QDP_error_exit("quark propagator source coordinate incorrect",
-        i, t_srce[i]) ;
+      cerr << "Quark propagator source coordinate incorrect." << endl ;
+      cerr << "t_srce[" << i << "] = " << t_srce[i] << endl ;
+      QDP_abort(1) ;
     }
   }
 
   if (t_sink < 0 || t_sink >= nrow[j_decay]) {
-    QDP_error_exit("sink time coordinate incorrect", t_sink) ;
+    cerr << "Sink time coordinate incorrect." << endl ;
+    cerr << "t_sink = " << t_sink << endl ;
+    QDP_abort(1) ;
   }
 
   cout << endl << "     Gauge group: SU(" << Nc << ")" << endl ;
-
-  for (i=0; i < numKappa; ++i) {
-    if (toBool(Kappa[i] < 0.0)) {
-      QDP_error_exit("unreasonable value for Kappa", i, toDouble(Kappa[i])) ;
-    }
-  }
-
-// GTF ???: What to use for SMALL and HALF
-//
-//for (i=0; i < numKappa; ++i) {
-//  if (MaxCG < 0 || RsdCG[i] < SMALL || RsdCG[i] > HALF) {
-//    QDP_error_exit("unreasonable CG parameters", MaxCG, RsdCG[i]) ;
-//  }
-//}
 
   // Check for unnecessary multiple occurances of kappas and/or wvf_params
   if (numKappa > 1) {
@@ -296,9 +432,12 @@ main(int argc, char *argv[])
         for (j=0; j<i; ++j) {
           if (toBool(Kappa[j] == Kappa[i])
               && toBool(wvf_param[j] == wvf_param[i])) {
-            QDP_error_exit("Same kappa and wvf_param",
-              i, toDouble(Kappa[i]), toDouble(wvf_param[i]),
-              j, toDouble(Kappa[j]), toDouble(wvf_param[j])) ;
+            cerr << "Same kappa and wvf_param:" << endl ;
+            cerr << "  Kappa["     << i << "] = " << Kappa[i]     << endl ;
+            cerr << "  wvf_param[" << i << "] = " << wvf_param[i] << endl ;
+            cerr << "  Kappa["     << j << "] = " << Kappa[j]     << endl ;
+            cerr << "  wvf_param[" << j << "] = " << wvf_param[j] << endl ;
+            QDP_abort(1) ;
           }
         }
       }
@@ -306,17 +445,15 @@ main(int argc, char *argv[])
       for (i=1; i < numKappa; ++i) {
         for (j=0; j<i; ++j) {
           if (toBool(Kappa[j] == Kappa[i])) {
-            QDP_error_exit("Same kappa without shell source or sink",
-              i, toDouble(Kappa[i]), j, toDouble(Kappa[j])) ;
+            cerr  << "Same kappa without shell source or sink:" << endl ;
+            cerr << "  Kappa["     << i << "] = " << Kappa[i]     << endl ;
+            cerr << "  Kappa["     << j << "] = " << Kappa[j]     << endl ;
+            QDP_abort(1) ;
           }
         }
       }
     }
   }
-
-  // Initialize neighbour communication and boundary conditions
-  // INITIALIZE_GEOMETRY
-  // INITIALIZE_BOUNDARY
 
   multi1d<LatticeColorMatrix> u(Nd) ;
 
@@ -328,18 +465,85 @@ main(int argc, char *argv[])
 
   // Read in the configuration along with relevant information.
   switch (cfg_type) {
-  case 1 :
+  case CFG_TYPE_SZIN :
     readSzin(u, cfg_file, seed) ;
     break ;
   default :
-    QDP_error_exit("configuration type is unsupported", cfg_type) ;
+    cerr << "Configuration type is unsupported." << endl ;
+    QDP_abort(1) ;
   }
-
-  // Finished with READ_NAMELIST input
-  nml_in.close() ;
 
   // The call to setrn MUST go after setbc
   RNG::setrn(seed) ;
+
+  // Instantiate namelist writer for NMLDAT
+  NmlWriter nml_out("NMLDAT") ;
+
+  // Write out configuration data to namelist output
+  push(nml_out, "IO_version") ;
+  Write(nml_out, version) ;
+  pop(nml_out) ;
+
+  push(nml_out, "Output_version") ;
+  write(nml_out, "out_version", 4) ;
+  pop(nml_out) ;
+
+  push(nml_out, "param") ;
+
+  switch (FermTypeP) {
+  case FERM_TYPE_WILSON :
+    write(nml_out, "FermTypeP", "WILSON") ;
+    break ;
+  default :
+    write(nml_out, "FermTypeP", "UNKNOWN") ;
+  }
+  Write(nml_out, Nd) ;
+  Write(nml_out, Nc) ;
+  Write(nml_out, Ns) ;
+  Write(nml_out, numKappa) ;
+  Write(nml_out, Kappa) ;
+
+  switch (cfg_type) {
+  case CFG_TYPE_SZIN :
+    write(nml_out, "cfg_type", "SZIN") ;
+    break ;
+  default :
+    write(nml_out, "cfg_type", "UNKNOWN") ;
+  }
+  Write(nml_out, j_decay) ;
+
+  Write(nml_out, Pt_src) ;
+  Write(nml_out, Sl_src) ;
+  Write(nml_out, Pt_snk) ;
+  Write(nml_out, Sl_snk) ;
+
+  Write(nml_out, t_sink) ;
+  Write(nml_out, sink_mom) ;
+
+  switch (Wvf_kind) {
+  case WVF_KIND_GAUGE_INV_GAUSSIAN :
+    write(nml_out, "Wvf_kind", "GAUGE_INV_GAUSSIAN") ;
+    break ;
+  default :
+    write(nml_out, "Wvf_kind", "UNKNOWN") ;
+  }
+  Write(nml_out, wvf_param) ;
+  Write(nml_out, WvfIntPar) ;
+
+  Write(nml_out, numSeq_src) ;
+  Write(nml_out, Seq_src) ;
+
+  Write(nml_out, mom2_max) ;
+
+  Write(nml_out, seed) ;
+
+  pop(nml_out) ;
+
+  push(nml_out, "lattis") ;
+  Write(nml_out, nrow) ;
+  Write(nml_out, boundary) ;
+  Write(nml_out, t_srce) ;
+  pop(nml_out) ;
 
   // First calculate some gauge invariant observables just for info.
   // This is really cheap.
@@ -353,95 +557,6 @@ main(int argc, char *argv[])
   Write(nml_out, link) ;
   pop(nml_out) ;
 
-  push(nml_out, "param") ;
-
-//push(nml_out, "param1") ;
-  Write(nml_out, FermTypeP) ;
-  Write(nml_out, Nd) ;
-  Write(nml_out, Nc) ;
-  Write(nml_out, Ns) ;
-  Write(nml_out, numKappa) ;
-  Write(nml_out, Kappa) ;
-//pop(nml_out) ;
-
-//push(nml_out, "param2") ;
-//Write(nml_out, FermAct) ;
-//Write(nml_out, OverMass) ;
-//Write(nml_out, RatPolyDeg) ;
-//Write(nml_out, PolyArgResc) ;
-//Write(nml_out, NWilsVec) ;
-//Write(nml_out, H_parity) ;
-//Write(nml_out, ClovCoeff) ;
-//write(nml_out, "ClovCoeffR", 0) ;
-//write(nml_out, "ClovCoeffT", 0) ;
-//Write(nml_out, u0) ;
-//pop(nml_out) ;
-
-//push(nml_out, "param3") ;
-  Write(nml_out, cfg_type) ;
-  Write(nml_out, j_decay) ;
-//pop(nml_out) ;
-
-//push(nml_out, "param4") ;
-//Write(nml_out, MaxCG) ;
-//Write(nml_out, RsdCG) ;
-//Write(nml_out, InvType) ;
-//Write(nml_out, MRover) ;
-//pop(nml_out) ;
-
-//push(nml_out, "param5") ;
-  Write(nml_out, Pt_src) ;
-  Write(nml_out, Sl_src) ;
-//Write(nml_out, Z3_src) ;
-//pop(nml_out) ;
-
-//push(nml_out, "param6") ;
-  Write(nml_out, Pt_snk) ;
-  Write(nml_out, Sl_snk) ;
-  Write(nml_out, t_sink) ;
-  Write(nml_out, sink_mom) ;
-//pop(nml_out) ;
-
-//push(nml_out, "param7") ;
-  switch (Wvf_kind) {
-  case WVF_KIND_GAUGE_INV_GAUSSIAN :
-    write(nml_out, "Wvf_kind", "GAUGE_INV_GAUSSIAN") ;
-    break ;
-  default :
-    write(nml_out, "Wvf_kind", "UNKNOWN") ;
-  }
-  Write(nml_out, wvf_param) ;
-  Write(nml_out, WvfIntPar) ;
-//pop(nml_out) ;
-
-//push(nml_out, "param8") ;
-//write(nml_out, "AnisoP", false) ;
-//write(nml_out, "t_dir", Nd-1) ;
-//write(nml_out, "xi_0", 1) ;
-//write(nml_out, "xiF_0", 1) ;
-//pop(nml_out) ;
-
-//push(nml_out, "param9") ;
-  Write(nml_out, numSeq_src) ;
-  Write(nml_out, Seq_src) ;
-//Write(nml_out, numGamma) ;
-//Write(nml_out, Gamma_list) ;
-//pop(nml_out) ;
-
-  Write(nml_out, mom2_max) ;
-
-//push(nml_out, "param10") ;
-  Write(nml_out, seed) ;
-//pop(nml_out) ;
-
-  pop(nml_out) ;
-
-  push(nml_out, "lattis") ;
-  Write(nml_out, nrow) ;
-  Write(nml_out, boundary) ;
-  Write(nml_out, t_srce) ;
-  pop(nml_out) ;
-
   // Next check the gauge field configuration by reunitarizing.
   multi1d<LatticeColorMatrix> u_tmp(Nd) ;
   u_tmp = u ;
@@ -450,32 +565,6 @@ main(int argc, char *argv[])
   int mu ;
   for (mu=0; mu < Nd; ++mu) {
     reunit(u_tmp[mu], lbad, numbad, REUNITARIZE_ERROR) ;
-  }
-
-  // Allocate the source type
-  int src_type ; // GTF ???: should be enum
-  if (Pt_src == true) {
-    src_type = OPTION_POINT_SOURCE ;
-    if (Sl_src == true) {
-      cout << " Warning: shell source ignored; do point source" << endl ;
-    }
-  } else if (Sl_src == true) {
-    src_type = OPTION_SHELL_SOURCE ;
-  } else {
-    QDP_error_exit("Must specify point source or shell source") ;
-  }
-
-  // Allocate the sink type
-  int snk_type ;
-  if (Pt_snk == true) {
-    snk_type = OPTION_POINT_SINK ;
-    if (Sl_snk == true) {
-      cout << " Warning: shell sink ignored; do point sink" << endl ;
-    }
-  } else if (Sl_snk == true) {
-    snk_type = OPTION_SHELL_SINK ;
-  } else {
-    QDP_error_exit("Must specify point sink or shell sink") ;
   }
 
   // Now loop over the various kappas
@@ -563,6 +652,10 @@ main(int argc, char *argv[])
 
     } // end loop over sequential sources
   } // end loop over the kappa value
+
+  push(nml_out, "End_Wilson_3Pt_fn_measurements") ;
+  Write(nml_out, numSeq_src) ;
+  pop(nml_out) ;
 
   // Close the namelist output file NMLDAT
   nml_out.close() ;
