@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.178 2004-04-23 15:54:04 bjoo Exp $
+# $Id: Makefile.in,v 1.179 2004-04-27 20:31:42 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -296,6 +296,7 @@ nobase_include_HEADERS = \
 	meas/gfix/gfix.h meas/gfix/grelax.h meas/gfix/polar_dec.h \
 	meas/gfix/rot_colvec.h meas/glue/glue.h meas/glue/mesplq.h \
 	meas/glue/polylp.h meas/hadron/hadron.h meas/hadron/srcfil.h \
+	meas/glue/fuzwilp.h meas/glue/wilslp.h \
 	meas/hadron/stoch_var.h meas/hadron/z2_src.h \
 	meas/meas.h meas/pbp/pbp.h meas/schrfun/schrfun.h \
 	meas/smear/ape_smear.h meas/smear/displacement.h \
@@ -344,7 +345,7 @@ libchroma_a_SOURCES = gauge_startup.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
 	       gramschm.cc \
 	       gramschm_array.cc ritz.cc ritz_array.cc sn_jacob.cc \
 	       sn_jacob_array.cc eig_spec.cc eig_spec_array.cc \
-               proginfo.cc printgeom.cc\
+               proginfo.cc printgeom.cc fuzwilp.cc \
 $(am__append_4) $(am__append_5) $(am__append_6) $(am__append_7)
 subdir = lib
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
@@ -365,11 +366,11 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc rgauge.cc taproj.cc \
 	rot_colvec.cc transf.cc param_io.cc fermact_paramio.cc \
 	gramschm.cc gramschm_array.cc ritz.cc ritz_array.cc sn_jacob.cc \
 	sn_jacob_array.cc eig_spec.cc eig_spec_array.cc proginfo.cc \
-	printgeom.cc baryon_w.cc mesons_w.cc hybmeson_w.cc loops_w.cc \
-	curcor2_w.cc lwldslash_w.cc formfac_w.cc mesonseqsrc_w.cc \
-	barseqsrc_w.cc seqpiontest_w.cc sink_smear2_w.cc barcomp_io.cc \
-	barcomp_w.cc walfil_w.cc overlap_state_info.cc \
-	zolotarev4d_fermact_paramio_w.cc \
+	printgeom.cc fuzwilp.cc baryon_w.cc mesons_w.cc hybmeson_w.cc \
+	loops_w.cc curcor2_w.cc lwldslash_w.cc formfac_w.cc \
+	mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
+	sink_smear2_w.cc barcomp_io.cc barcomp_w.cc walfil_w.cc \
+	overlap_state_info.cc zolotarev4d_fermact_paramio_w.cc \
 	zolotarev5d_fermact_paramio_w.cc fermact_qprop.cc \
 	prec_fermact_qprop.cc unprec_wilson_fermact_w.cc \
 	unprec_wilson_linop_w.cc prec_wilson_fermact_w.cc \
@@ -501,8 +502,8 @@ am_libchroma_a_OBJECTS = gauge_startup.$(OBJEXT) rgauge.$(OBJEXT) \
 	gramschm_array.$(OBJEXT) ritz.$(OBJEXT) ritz_array.$(OBJEXT) \
 	sn_jacob.$(OBJEXT) sn_jacob_array.$(OBJEXT) eig_spec.$(OBJEXT) \
 	eig_spec_array.$(OBJEXT) proginfo.$(OBJEXT) printgeom.$(OBJEXT) \
-	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
-	$(am__objects_4)
+	fuzwilp.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
+	$(am__objects_3) $(am__objects_4)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
@@ -528,8 +529,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/fermact_qprop.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/fermact_qprop_array.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/follana_io_s.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/formfac_w.Po ./$(DEPDIR)/fuzz_smear.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/gauge_io.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/formfac_w.Po ./$(DEPDIR)/fuzwilp.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/fuzz_smear.Po ./$(DEPDIR)/gauge_io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/gauge_startup.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/gaus_smear.Po ./$(DEPDIR)/gramschm.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/gramschm_array.Po ./$(DEPDIR)/grelax.Po \
@@ -710,6 +711,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fermact_qprop_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/follana_io_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/formfac_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuzwilp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuzz_smear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gauge_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gauge_startup.Po@am__quote@
