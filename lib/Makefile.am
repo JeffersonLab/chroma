@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.154 2004-07-27 05:53:16 edwards Exp $
+# $Id: Makefile.am,v 1.155 2004-07-28 00:44:32 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -102,6 +102,7 @@ nobase_include_HEADERS = \
 	meas/smear/fuzz_smear.h \
 	meas/smear/gaus_smear.h meas/smear/hyp_smear.h \
 	meas/smear/laplacian.h meas/smear/smear.h meas/smear/wvfkind.h \
+	meas/smear/sink_smear2.h \
 	meas/sources/sources.h meas/sources/srcsnktype.h \
 	meas/sources/wavetype.h \
 	util/ferm/ferm.h util/ferm/transf.h util/ft/ft.h \
@@ -198,7 +199,7 @@ nobase_include_HEADERS += \
 	meas/hadron/walldeltaff_w.h meas/hadron/walldeltapff_w.h \
 	meas/hadron/wallpionff_w.h meas/hadron/wallnuclff_w.h \
 	meas/hadron/wallrhoff_w.h meas/hadron/wallrhopiff_w.h \
-	meas/smear/sink_smear2_w.h meas/sources/d_src_w.h \
+	meas/sources/d_src_w.h \
 	meas/sources/p_src_w.h meas/sources/sources_w.h \
 	util/ferm/ferm_w.h util/ferm/diractodr.h util/ferm/gammasgn_w.h \
 	util/ferm/tdiractodr.h \
@@ -224,7 +225,8 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/improvement_terms_s.h \
 	actions/ferm/linop/linop_s.h \
 	io/follana_io_s.h io/io_s.h \
-	meas/eig/eig_s.h meas/hadron/hadron_s.h \
+	meas/eig/eig_s.h meas/hadron/baryon_w.h \
+	meas/hadron/hadron_s.h \
 	meas/hadron/mesphas_follana_s.h meas/hadron/mesphas_s.h \
 	meas/hadron/pions_follana_s.h meas/hadron/walfil_s.h \
 	meas/hadron/stag_scalars_s.h meas/sources/sources_s.h \
@@ -253,10 +255,11 @@ lib_LIBRARIES = libchroma.a
 # Fermion independent sources
 #
 libchroma_a_SOURCES = gauge_startup.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
-               expmat.cc expsu3.cc mesplq.cc polylp.cc reunit.cc unit_check.cc sftmom.cc srcfil.cc \
+               expmat.cc expsu3.cc mesplq.cc polylp.cc reunit.cc unit_check.cc \
+               sftmom.cc srcfil.cc \
                szin_io.cc readszin.cc writeszin.cc su3proj.cc sun_proj.cc \
                gaus_smear.cc hyp_smear.cc ape_smear.cc fuzz_smear.cc \
-               klein_gord.cc laplacian.cc displacement.cc \
+               klein_gord.cc laplacian.cc displacement.cc sink_smear2.cc \
                su2extract.cc sunfill.cc invcg1.cc inv_rel_cg1.cc \
 	       invcg2.cc inv_rel_cg2.cc invcg1_array.cc \
 	       invcg2_array.cc invcg2_timing_hacks.cc minvcg.cc minv_rel_cg.cc\
@@ -285,7 +288,7 @@ libchroma_a_SOURCES += baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
 	      gammasgn_w.cc \
               curcor2_w.cc lwldslash_w.cc formfac_w.cc \
               mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
-              sink_smear2_w.cc barcomp_io.cc barcomp_w.cc walfil_w.cc \
+              barcomp_io.cc barcomp_w.cc walfil_w.cc \
               overlap_state_info.cc zolotarev4d_fermact_paramio_w.cc \
 	      zolotarev5d_fermact_paramio_w.cc \
               fermact_qprop.cc prec_fermact_qprop.cc \
