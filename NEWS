@@ -1,4 +1,13 @@
-12/22/2004 -- Robert Edwards
+12/23/2004 -- Robert Edwards
+
+	Version 1.12.0. Now have a FermBC factory/foundries. Removed 
+        explicit FermBC args from FermAct factories and now the creation
+        of the FermBC is done within the construction of the FermAct.
+        Similarly, HMC will create FermActs as needed. The old "boundary"
+        within propagator.cc input is now shoved into the FermionAction
+        xml.
+
+12/23/2004 -- Robert Edwards
 
 	Version 1.11.3. More HMC changes.
 
