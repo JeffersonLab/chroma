@@ -1,4 +1,4 @@
-// $Id: make_source.cc,v 1.13 2004-01-06 04:59:14 edwards Exp $
+// $Id: make_source.cc,v 1.14 2004-01-09 03:35:04 edwards Exp $
 /*! \file
  *  \brief Main code for source generation
  */
@@ -58,48 +58,50 @@ int main(int argc, char **argv)
   string cfg_file;
 
   string xml_in_root = "/make_source";
-  string path = xml_in_root + "/IO_version"; // push into 'IO_version' group
 
-  try {
-  read(xml_in, path + "/version", version) ;
-
-  switch(version){	// The parameters we read in IO version
-
-  case 2:			
-
-    path = xml_in_root + "/param"; // push into 'param' group
-
-    read(xml_in, path + "/j_decay", j_decay);
-
-    read(xml_in, path + "/source_type", source_type);	// S-wave, P-wave etc
-    read(xml_in, path + "/source_direction", source_direction);
-
-    read(xml_in, path + "/wf_type", wf_type);	// Point, Gaussian etc
-    read(xml_in, path + "/wvf_param", wvf_param);
-    read(xml_in, path + "/WvfIntPar", WvfIntPar);
-    read(xml_in, path + "/LaplacePower", LaplacePower);
-    read(xml_in, path + "/t_srce", t_source);
-
-    read(xml_in, path + "/cfg_type", cfg_type);
-    read(xml_in, path + "/prop_type", prop_type);
-    break;
-
-  default:
-
-    QDP_error_exit("Unknown io version", version);
-
-  }
-  
-  // Now get the lattice sizes etc
-  read(xml_in, path + "/nrow", nrow);
-
-  // Read in the gauge configuration file name
-  read(xml_in, xml_in_root + "/Cfg", cfg_file);
-
-  } 
-  catch(const string& e)
   {
-    QDP_error_exit("Error reading in make_source: %s", e.c_str());
+    XMLReader inputtop(xml_in, xml_in_root);
+
+    try 
+    {
+      read(inputtop, "IO_version/version", version);
+
+      switch(version)  	// The parameters we read in IO version
+      {
+      case 2:
+      {
+	XMLReader paramtop(inputtop, "param");
+
+	read(paramtop, "j_decay", j_decay);
+	read(paramtop, "source_type", source_type);	// S-wave, P-wave etc
+	read(paramtop, "source_direction", source_direction);
+
+	read(paramtop, "wf_type", wf_type);	// Point, Gaussian etc
+	read(paramtop, "wvf_param", wvf_param);
+	read(paramtop, "WvfIntPar", WvfIntPar);
+	read(paramtop, "LaplacePower", LaplacePower);
+	read(paramtop, "t_srce", t_source);
+
+	read(paramtop, "cfg_type", cfg_type);
+	read(paramtop, "prop_type", prop_type);
+
+	// Now get the lattice sizes etc
+	read(paramtop, "nrow", nrow);
+      }
+      break;
+
+      default:
+	QDP_error_exit("Unknown io version", version);
+
+      }
+  
+      // Read in the gauge configuration file name
+      read(inputtop, "Cfg/cfg_file", cfg_file);
+    } 
+    catch(const string& e)
+    {
+      QDP_error_exit("Error reading in make_source: %s", e.c_str());
+    }
   }
 
   Layout::setLattSize(nrow);
