@@ -1,4 +1,4 @@
-// $Id: invcg2_timing_hacks_2.cc,v 1.2 2004-03-24 17:38:57 bjoo Exp $
+// $Id: invcg2_timing_hacks_2.cc,v 1.3 2004-03-25 11:42:49 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -64,7 +64,7 @@
  *  2 A + 2 Nc Ns + N_Count ( 2 A + 10 Nc Ns )
  */
 
-void InvCG2EvenOddPrecWilsLinOp(const PABWilsonDslash &D,
+void InvCG2EvenOddPrecWilsLinOp(const WilsonDslash &D,
 			   const LFerm& chi,
 			   LFerm& psi,
 			   const LScal& mass,

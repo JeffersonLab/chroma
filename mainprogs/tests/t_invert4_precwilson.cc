@@ -1,4 +1,4 @@
-// $Id: t_invert4_precwilson.cc,v 1.2 2004-03-24 17:38:58 bjoo Exp $
+// $Id: t_invert4_precwilson.cc,v 1.3 2004-03-25 11:42:49 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -125,7 +125,7 @@ int main(int argc, char **argv)
   // Put this puppy into a handle to allow Zolo to copy it around as a **BASE** class
   // WARNING: the handle now owns the data. The use of a bare S_w below is legal,
   // but just don't delete it.
-  PABWilsonDslash D(u);
+  WilsonDslash D(u);
 
   LatticeFermion chi;
   LatticeFermion psi;
