@@ -1,4 +1,4 @@
-// $Id: gauge_startup.cc,v 1.5 2004-04-28 14:48:34 edwards Exp $
+// $Id: gauge_startup.cc,v 1.6 2004-05-13 03:52:09 edwards Exp $
 /*! \file
  *  \brief Initialize the gauge fields
  */
@@ -11,7 +11,7 @@
 #include "io/gauge_io.h"
 #include "io/readszin.h"
 #include "io/readmilc.h"
-#include "util/gauge/reunit.h"
+#include "util/gauge/hotst.h"
 
 
 using namespace QDP;
@@ -51,11 +51,7 @@ void gaugeStartup(XMLReader& gauge_file_xml,
 
   case CFG_TYPE_DISORDERED:
     QDPIO::cout << "Starting up disordered (random/hot) config" << endl;
-    for(int dim=0; dim < u.size(); dim++) 
-    { 
-      random(u[dim]);
-      reunit(u[dim]);
-    }
+    HotSt(u);
     break;
 
   case CFG_TYPE_UNIT:
