@@ -1,8 +1,11 @@
 // -*- C++ -*-
-// $Id: reunit.h,v 1.3 2003-03-31 19:46:08 edwards Exp $
+// $Id: reunit.h,v 1.4 2003-12-29 19:52:57 edwards Exp $
+/*! \file
+ *  \brief Reunitarize (to a SU(N)) inplace the matrix A under some option
+ */
 
-#ifndef REUNIT_INCLUDE
-#define REUNIT_INCLUDE
+#ifndef __reunit_h__
+#define __reunit_h__
 
 enum Reunitarize {REUNITARIZE, REUNITARIZE_ERROR, REUNITARIZE_LABEL};
 

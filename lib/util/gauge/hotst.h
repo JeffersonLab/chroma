@@ -1,11 +1,11 @@
 // -*- C++ -*-
-// $Id: hotst.h,v 1.2 2003-11-25 04:18:56 edwards Exp $
+// $Id: hotst.h,v 1.3 2003-12-29 19:52:57 edwards Exp $
 /*! \file
  *  \brief Set a gauge field from a sample of (almost) Haar measure
  */
 
-#ifndef HOTST_INCLUDE
-#define HOTST_INCLUDE
+#ifndef __hotst_h__
+#define __hotst_h__
 
 //! Set a gauge field from a sample of (almost) Haar measure
 /*!

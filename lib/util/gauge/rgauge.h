@@ -1,8 +1,11 @@
 // -*- C++ -*-
-// $Id: rgauge.h,v 1.2 2003-10-08 18:54:37 edwards Exp $
+// $Id: rgauge.h,v 1.3 2003-12-29 19:52:57 edwards Exp $
+/*! \file
+ *  \brief Do a random gauge transformation on the u fields
+ */
 
-#ifndef RGAUGE_INCLUDE
-#define RGAUGE_INCLUDE
+#ifndef __rgauge_h__
+#define __rgauge_h__
 
 //! Do a random gauge transformation on the u fields
 /*!

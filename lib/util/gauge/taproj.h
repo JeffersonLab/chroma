@@ -1,9 +1,25 @@
 // -*- C++ -*-
-// $Id: taproj.h,v 1.1 2003-02-15 05:54:26 edwards Exp $
+// $Id: taproj.h,v 1.2 2003-12-29 19:52:57 edwards Exp $
+/*! \file
+ *  \brief Take the traceless antihermitian projection of a color matrix
+ */
 
-#ifndef TAPROJ_INCLUDE
-#define TAPROJ_INCLUDE
+#ifndef __taproj_h__
+#define __taproj_h__
 
-void taproj(LatticeColorMatrix& ds_u);
+//! Take the traceless antihermitian projection of a color matrix
+/*!
+ * \ingroup gauge
+ *
+ *  a = (1/2)[a - a_dag] - Tr[(1/2)*(a - a_dag)]/Nc
+ *
+ * that is the anti-hermitian traceless part of a 
+ *
+ * Arguments:
+ *
+ *  \param a        LatticeColorMatrix          (Modify)
+ */
+
+void taproj(LatticeColorMatrix& a);
 
 #endif
