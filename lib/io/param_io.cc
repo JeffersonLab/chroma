@@ -1,4 +1,4 @@
-// $Id: param_io.cc,v 1.9 2004-01-09 02:47:51 edwards Exp $
+// $Id: param_io.cc,v 1.10 2004-01-09 04:26:34 edwards Exp $
 /*! \file
  *  \brief Various parameter readers/writers for main programs
  */
@@ -30,7 +30,7 @@ multi1d<Real> kappaToMass(const multi1d<Real>& Kappa)
 //! Convert a Kappa to a mass
 Real massToKappa(const Real& Mass)
 {
-  return 0.5/(Nd - Mass);
+  return 0.5/(Nd + Mass);
 }
 
 
@@ -40,7 +40,7 @@ multi1d<Real> massToKappa(const multi1d<Real>& Mass)
   multi1d<Real> Kappa(Mass.size());
 
   for(int i=0; i < Kappa.size(); ++i)
-    Kappa[i] = 0.5/(Nd - Mass[i]);
+    Kappa[i] = 0.5/(Nd + Mass[i]);
 
   return Kappa;
 }
