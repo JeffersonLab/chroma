@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev4d_fermact_bj_w.h,v 1.5 2004-01-06 10:42:36 bjoo Exp $
+// $Id: zolotarev4d_fermact_bj_w.h,v 1.6 2004-01-06 14:12:51 bjoo Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -76,16 +76,6 @@ public:
 	      const multi1d<LatticeFermion>& evecs_lo_, 
 	      const Real& lambda_hi_) const;
 
-  // Gauge field, e-values, e-vectors and explicit approx min and approx max
-  /*
-  const ZolotarevConnectState<LatticeFermion>*
-  createState(const multi1d<LatticeColorMatrix>& u_, 
-	      const multi1d<Real>& lambda_lo_,
-	      const multi1d<LatticeFermion>& evecs_lo_,
-	      const Real& lambda_hi_, 
-	      const Real& approxMin_,
-	      const Real& approxMax_) const;
-  */
 
   //! Produce a linear operator for this action
   /*! 
@@ -103,8 +93,16 @@ public:
 
   //! Produce a linear operator M^dag.M for this action to be applied
   //  to a vector of known chirality. Chirality is passed in
-  const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state, 
-					       const Chirality& chirality) const;
+  const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state, const Chirality& chirality) const;
+
+  // Special qprop for now
+  void qprop(LatticeFermion& psi, 
+	     Handle<const ConnectState> state, 
+	     const LatticeFermion& chi, 
+	     enum InvType invType,
+	     const Real& RsdCG, 
+	     int MaxCG, int& ncg_had) const;
+
   //! Destructor is automatic
   ~Zolotarev4DFermActBj() {}
 
