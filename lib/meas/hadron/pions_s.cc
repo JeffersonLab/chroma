@@ -80,7 +80,7 @@ staggered_pions::compute(multi1d<LatticeStaggeredPropagator>& quark_props,
 
   // Check for 8 props
   if( quark_props.size() != NUM_STAG_PROPS ) { 
-    QDPIO::cerr << "staggeredPionsFollana: input quark props has the wrong number of elements. It should be 8 but is " << quark_props.size() << endl;
+    QDPIO::cerr << "pions_s: input quark props has the wrong number of elements. It should be 8 but is " << quark_props.size() << endl;
     QDP_abort(1);
   };
 
@@ -90,7 +90,7 @@ staggered_pions::compute(multi1d<LatticeStaggeredPropagator>& quark_props,
     break;
     
   default:
-    QDPIO::cerr << "staggeredPionsFollana: j_decay must be 3 for just now. It is " << j_decay << endl;
+    QDPIO::cerr << "pions_s: j_decay must be 3 for just now. It is " << j_decay << endl;
     QDP_abort(1);
   };
 
@@ -124,13 +124,17 @@ staggered_pions::compute(multi1d<LatticeStaggeredPropagator>& quark_props,
 
   // Slice Sum
   corr_fn[ pion_index ] = sumMulti(latt_corr_fn, timeslice);
+  tag_names[pion_index] = "gamma5_CROSS_gamma5" ; 
+
   pion_index++;
 
 
   // Array to describe shifts in cube
   multi1d<int> delta(Nd);
 
-  // One link spatial pions.
+  tag_names[pion_index]   = "gamma5_CROSS_gamma0_gamma5" ; 
+  tag_names[pion_index+1] = "gamma5_CROSS_gamma1_gamma5" ; 
+  tag_names[pion_index+2] = "gamma5_CROSS_gamma2_gamma5" ; 
   for(mu=0; mu<Nd-1; mu++) {
  
     delta = 0;
@@ -143,12 +147,17 @@ staggered_pions::compute(multi1d<LatticeStaggeredPropagator>& quark_props,
     pion_index++;
   }
     
-  // One link temporal
+  // ------------------------------
+  tag_names[pion_index]   = "gamma3_gamma5_CROSS_gamma3_gamma5" ; 
   latt_corr_fn = -  alpha(Nd-1)*trace(adj(quark_props[0])*quark_props[0]);
   corr_fn[ pion_index ] = sumMulti(latt_corr_fn, timeslice);
   pion_index++;
 
-  // Two link spatial
+  // -----------------------------
+  tag_names[pion_index]     = "gamma5_CROSS_gamma2_gamma3" ; 
+  tag_names[pion_index+1]   = "gamma5_CROSS_gamma1_gamma3" ; 
+  tag_names[pion_index+2]   = "gamma5_CROSS_gamma0_gamma3" ; 
+
   for(mu=0; mu<Nd-1; mu++) { 
     for(nu=mu+1; nu <Nd-1; nu++) { 
       delta = 0;
@@ -164,7 +173,12 @@ staggered_pions::compute(multi1d<LatticeStaggeredPropagator>& quark_props,
     }
   }
 
-  // Two link temporal
+  // --------------------
+
+  tag_names[pion_index]     = "gamma3_gamma5_CROSS_gamma1_gamma2" ; 
+  tag_names[pion_index+1]   = "gamma3_gamma5_CROSS_gamma0_gamma2" ; 
+  tag_names[pion_index+2]   = "gamma3_gamma5_CROSS_gamma0_gamma1" ; 
+
   for(mu=0; mu<Nd-1; mu++) { 
       delta = 0;
       delta[mu] = 1;
@@ -177,7 +191,9 @@ staggered_pions::compute(multi1d<LatticeStaggeredPropagator>& quark_props,
       pion_index++;
   }
 
-  // Three link spatial
+  // ---------------------------------
+  tag_names[pion_index]     = "gamma5_CROSS_gamma3" ; 
+
   for(mu=0; mu<Nd-1; mu++) { 
     for(nu=mu+1; nu <Nd-1; nu++) { 
       for(rho=nu+1; rho < Nd-1; rho++) { 
@@ -198,7 +214,11 @@ staggered_pions::compute(multi1d<LatticeStaggeredPropagator>& quark_props,
     }
   }
   
-  // Three link temporal 
+  // ---------------------------------
+  tag_names[pion_index]     = "gamma3_gamma5_CROSS_gamma2" ; 
+  tag_names[pion_index+1]   = "gamma3_gamma5_CROSS_gamma1" ; 
+  tag_names[pion_index+2]   = "gamma3_gamma5_CROSS_gamma0" ; 
+
   for(mu=0; mu<Nd-1; mu++) { 
     for(nu=mu+1; nu <Nd-1; nu++) { 
 
@@ -215,7 +235,9 @@ staggered_pions::compute(multi1d<LatticeStaggeredPropagator>& quark_props,
     }
   }
 
-  // Four link temporal
+  // ---------------------------------
+  tag_names[pion_index]     = "gamma3_gamma5_CROSS_one" ; 
+
   delta = 0;
   delta[0] = delta[1] = delta[2] = 1;
   latt_corr_fn = - alpha(3)* beta(0)* beta(1) * beta(2)
