@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovlap_contfrac5d_linop_array_w.h,v 1.3 2004-12-12 21:22:16 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_linop_array_w.h,v 1.4 2005-01-02 05:21:10 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
  */
@@ -147,7 +147,7 @@ namespace Chroma
 		      const int cb) const;
 
   private:
-    Handle< const DslashLinearOperator<LatticeFermion> > Dslash; //Dslash Op
+    Handle< const DslashLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> > > Dslash; //Dslash Op
     const Real m_q;
     const Real OverMass;
     const int  N5;    // Size of the 5th dimension

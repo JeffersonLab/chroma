@@ -1,4 +1,4 @@
-// $Id: t_precact.cc,v 1.7 2004-12-12 21:14:56 edwards Exp $
+// $Id: t_precact.cc,v 1.8 2005-01-02 05:21:11 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -52,7 +52,7 @@ int main(int argc, char **argv)
     Handle<const LinearOperator<LatticeFermion> > A_uwil(S_uwil.linOp(state));
   
     EvenOddPrecWilsonFermAct S_pwil(fbc, WilsonMass);
-    Handle<const EvenOddPrecLinearOperatorBase<LatticeFermion> > A_pwil(S_pwil.linOp(state));
+    Handle<const EvenOddPrecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> > > A_pwil(S_pwil.linOp(state));
   
     LatticeFermion  psi, chi, tmp1, tmp2;
     random(psi);
@@ -75,9 +75,15 @@ int main(int argc, char **argv)
     random(tmp1);
     tmp2 = tmp1;
     QDPIO::cout << "Unprec Wilson inverter" << endl;
-    S_uwil.qprop(tmp1, state, chi, invParam, n_count);
+    {
+      Handle<const SystemSolver<LatticeFermion> > qprop(S_uwil.qprop(state, invParam));
+      (*qprop)(tmp1, chi);
+    }
     QDPIO::cout << "Prec Wilson inverter" << endl;
-    S_pwil.qprop(tmp2, state, chi, invParam, n_count);
+    {
+      Handle<const SystemSolver<LatticeFermion> > qprop(S_pwil.qprop(state, invParam));
+      (*qprop)(tmp2, chi);
+    }
     
     QDPIO::cout << "Test unprec and eo-prec Wilson inverter" << endl
 		<< "|Wil|^2 = " << norm2(tmp1) << endl
@@ -100,7 +106,7 @@ int main(int argc, char **argv)
     Handle<const LinearOperator< multi1d<LatticeFermion> > > A_udwf(S_udwf.linOp(state));
   
     EvenOddPrecDWFermActArray S_pdwf(fbc,WilsonMass,m_q,N5);
-    Handle<const EvenOddPrecLinearOperatorBase< multi1d<LatticeFermion> > > A_pdwf(S_pdwf.linOp(state));
+    Handle<const EvenOddPrecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> > > A_pdwf(S_pdwf.linOp(state));
   
     multi1d<LatticeFermion>  psi(N5), chi(N5), tmp1(N5), tmp2(N5);
     for(int m=0; m < N5; ++m)
@@ -131,9 +137,15 @@ int main(int argc, char **argv)
     psi5b = psi5a;
 
     QDPIO::cout << "Unprec inverter" << endl;
-    S_udwf.qprop(psi5a, state, chi5, invParam, n_count);
+    {
+      Handle<const SystemSolver<LatticeFermion> > qprop(S_udwf.qprop(state, invParam));
+      (*qprop)(psi5a, chi5);
+    }
     QDPIO::cout << "Prec inverter" << endl;
-    S_pdwf.qprop(psi5b, state, chi5, invParam, n_count);
+    {
+      Handle<const SystemSolver<LatticeFermion> > qprop(S_pdwf.qprop(state, invParam));
+      (*qprop)(psi5b, chi5);
+    }
     
     QDPIO::cout << "Test unprec and eo-prec DWF inverter" << endl
 		<< "|DWF|^2 = " << norm2(psi5a) << endl

@@ -1,4 +1,4 @@
-// $Id: unprec_dwftransf_fermact_w.cc,v 1.6 2004-12-29 22:13:40 edwards Exp $
+// $Id: unprec_dwftransf_fermact_w.cc,v 1.7 2005-01-02 05:21:10 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -25,8 +25,8 @@ namespace Chroma
   namespace UnprecDWFTransfFermActEnv
   {
     //! Callback function
-    WilsonTypeFermAct<LatticeFermion>* createFermAct4D(XMLReader& xml_in,
-						       const std::string& path)
+    WilsonTypeFermAct<LatticeFermion,multi1d<LatticeColorMatrix> >* createFermAct4D(XMLReader& xml_in,
+										    const std::string& path)
     {
       return new UnprecDWFTransfFermAct(WilsonTypeFermBCEnv::reader(xml_in, path), 
 					UnprecDWFTransfFermActParams(xml_in, path));

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_base_w.h,v 1.1 2004-12-20 03:59:31 edwards Exp $
+// $Id: lwldslash_base_w.h,v 1.2 2005-01-02 05:21:10 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -43,7 +43,7 @@ namespace Chroma
    *
    */
 
-  class WilsonDslashBase : public DslashLinearOperator<LatticeFermion>
+  class WilsonDslashBase : public DslashLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >
   {
   public:
     //! No real need for cleanup here

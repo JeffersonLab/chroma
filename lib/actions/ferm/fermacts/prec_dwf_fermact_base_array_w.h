@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_fermact_base_array_w.h,v 1.19 2004-12-29 22:13:40 edwards Exp $
+// $Id: prec_dwf_fermact_base_array_w.h,v 1.20 2005-01-02 05:21:09 edwards Exp $
 /*! \file
  *  \brief Base class for even-odd preconditioned domain-wall-like fermion actions
  */
@@ -12,7 +12,6 @@
 #include "actions/ferm/linop/unprec_dwf_linop_base_array_w.h"
 #include "actions/ferm/linop/unprec_ppdwf4d_linop_w.h"
 #include "actions/ferm/linop/lDeltaLs_w.h"
-#include "actions/ferm/linop/llincomb.h"
 #include "actions/ferm/linop/lmdagm.h"
 
 using namespace QDP;
@@ -25,32 +24,32 @@ namespace Chroma
    * Unprecondition domain-wall fermion action. The conventions used here
    * are specified in Phys.Rev.D63:094505,2001 (hep-lat/0005002).
    */
-  template<typename T>
-  class EvenOddPrecDWFermActBaseArray : public EvenOddPrecWilsonTypeFermAct5D<T, multi1d<LatticeColorMatrix> >
+  template<typename T, typename P>
+  class EvenOddPrecDWFermActBaseArray : public EvenOddPrecWilsonTypeFermAct5D<T,P>
   {
   public:
     //! Return the quark mass
-    virtual Real quark_mass() const = 0;
+    virtual Real getQuarkMass() const = 0;
 
     //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
-    virtual const UnprecDWLinOpBaseArray<T>* unprecLinOp(Handle<const ConnectState> state, 
-							 const Real& m_q) const = 0;
+    virtual const UnprecDWLinOpBaseArray<T,P>* unprecLinOp(Handle<const ConnectState> state, 
+							   const Real& m_q) const = 0;
 
     //! Produce an even-odd preconditioned linear operator for this action with arbitrary quark mass
-    virtual const EvenOddPrecDWLinOpBaseArray<T>* precLinOp(Handle<const ConnectState> state, 
-							    const Real& m_q) const = 0;
+    virtual const EvenOddPrecDWLinOpBaseArray<T,P>* precLinOp(Handle<const ConnectState> state, 
+							      const Real& m_q) const = 0;
 
     //! Override to produce a DWF-link even-odd prec. linear operator for this action
     /*! Covariant return rule - override base class function */
-    virtual const EvenOddPrecDWLinOpBaseArray<T>* linOp(Handle<const ConnectState> state) const
+    virtual const EvenOddPrecDWLinOpBaseArray<T,P>* linOp(Handle<const ConnectState> state) const
     {
-      return precLinOp(state,quark_mass());
+      return precLinOp(state,getQuarkMass());
     }
 
     //! Produce a linear operator M^dag.M for this action
-    virtual const LinearOperator< multi1d<LatticeFermion> >* lMdagM(Handle<const ConnectState> state) const
+    virtual const LinearOperator< multi1d<T> >* lMdagM(Handle<const ConnectState> state) const
     {
-      return new lmdagm< multi1d<LatticeFermion> >(linOp(state));
+      return new lmdagm< multi1d<T> >(linOp(state));
     }
 
     //! Produce a hermitian version of the linear operator
@@ -69,25 +68,23 @@ namespace Chroma
 					     const Real& m_q,
 					     const InvertParam_t& invParam) const
     {
-      return new UnprecPPDWF4DLinOp<T>(precLinOp(state,m_q),
-				       precLinOp(state,Real(1)),
-				       invParam);
+      return new UnprecPPDWF4DLinOp<T,P>(precLinOp(state,m_q),
+					 precLinOp(state,Real(1)),
+					 invParam);
     }
 
     //! Produce a  DeltaLs = 1-epsilon^2(H) operator
-    virtual const LinearOperator<LatticeFermion>* DeltaLs(Handle< const ConnectState> state,
-							  const InvertParam_t& invParam) const 
+    virtual const LinearOperator<T>* DeltaLs(Handle< const ConnectState> state,
+					     const InvertParam_t& invParam) const 
     {
-      Handle< const LinearOperator<LatticeFermion> >  lin(linOp4D(state,Real(0),invParam));
+      Handle< const LinearOperator<T> >  lin(linOp4D(state,Real(0),invParam));
       return new lDeltaLs(lin);
     }
 
     //! Define quark propagator routine for 4D fermions
-    void qprop(T& psi, 
-	       Handle<const ConnectState> state, 
-	       const T& chi, 
-	       const InvertParam_t& invParam,
-	       int& ncg_had) const;
+    /*! Default implementation provided */
+    const SystemSolver<T>* qprop(Handle<const ConnectState> state,
+				 const InvertParam_t& invParam) const;
 
     //! Apply the Dminus operator on a fermion.
     /*! 
@@ -101,7 +98,7 @@ namespace Chroma
 		enum PlusMinus isign,
 		int s5) const
       {
-	Handle< const EvenOddPrecDWLinOpBaseArray<T> > A(linOp(state));
+	Handle< const EvenOddPrecDWLinOpBaseArray<T,P> > A(linOp(state));
 	A->Dminus(chi,psi,isign,s5);
       }
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: overlap_fermact_base_w.h,v 1.17 2004-12-29 22:13:40 edwards Exp $
+// $Id: overlap_fermact_base_w.h,v 1.18 2005-01-02 05:21:09 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -31,8 +31,11 @@ namespace Chroma
   class OverlapFermActBase : public UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >
   {
   public:
+    //! Virtual copy constructor
+    virtual OverlapFermActBase* clone() const = 0;
+
     //! Return the quark mass
-    virtual Real quark_mass() const = 0;
+    virtual Real getQuarkMass() const = 0;
 
     //! Does this object really satisfy the Ginsparg-Wilson relation?
     virtual bool isChiral() const = 0;
@@ -46,7 +49,7 @@ namespace Chroma
     virtual const UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* 
     linOp(Handle<const ConnectState> state) const
     {
-      return unprecLinOp(state,quark_mass());
+      return unprecLinOp(state,getQuarkMass());
     }
 
     //! Robert's way: 
@@ -82,17 +85,9 @@ namespace Chroma
     virtual const LinearOperator<LatticeFermion>* lMdagMPrecondition(Handle<const ConnectState> state, const Chirality& chirality) const = 0;
 
     //! Redefine quark propagator routine for 4D fermions
-    /*! 
-     * NOTE: the arg ConectState MUST be in the original base because C++ 
-     * requires it for a virtual func!
-     * The function will have to downcast to get the correct state
-     */
-    void qprop(LatticeFermion& psi, 
-	       Handle<const ConnectState> state, 
-	       const LatticeFermion& chi, 
-	       const InvertParam_t& invParam,
-	       int& ncg_had) const;
-
+    /*! Default implementation provided */
+    const SystemSolver<LatticeFermion>* qprop(Handle<const ConnectState> state,
+					      const InvertParam_t& invParam) const;
   
     //! Define a multi mass qprop
     /*! this should be possible for most 4D operators of the 

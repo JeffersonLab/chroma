@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linearop.h,v 1.8 2004-12-13 02:56:36 edwards Exp $
+// $Id: linearop.h,v 1.9 2005-01-02 05:21:09 edwards Exp $
 
 /*! @file
  * @brief Linear Operators
@@ -24,6 +24,9 @@ namespace Chroma
   class LinearOperator
   {
   public:
+    //! Virtual destructor to help with cleanup;
+    virtual ~LinearOperator() {}
+
     //! Apply the operator onto a source vector
     virtual void operator() (T& chi, const T& psi, enum PlusMinus isign) const = 0;
 
@@ -36,9 +39,6 @@ namespace Chroma
 
     //! Return the subset on which the operator acts
     virtual const OrderedSubset& subset() const = 0;
-
-    //! Virtual destructor to help with cleanup;
-    virtual ~LinearOperator() {}
   };
 
 
@@ -52,6 +52,9 @@ namespace Chroma
   class LinearOperator< multi1d<T> >
   {
   public:
+    //! Virtual destructor to help with cleanup;
+    virtual ~LinearOperator() {}
+
     //! Expected length of array index
     virtual int size() const = 0;
 
@@ -68,27 +71,57 @@ namespace Chroma
 
     //! Return the subset on which the operator acts
     virtual const OrderedSubset& subset() const = 0;
-
-    //! Virtual destructor to help with cleanup;
-    virtual ~LinearOperator() {}
   };
 
 
   //-----------------------------------------------------------------------------------
-  //! Unpreconditioned linear operator
+  //! Differentiable Linear Operator
   /*! @ingroup linop
    *
-   * Support for unpreconditioned linear operators
+   * Supports creation and application for linear operators that
+   * hold things like Dirac operators, etc. that are differentiable
    */
-  template<typename T>
-  class UnprecLinearOperatorBase : public LinearOperator<T>
+  template<typename T, typename P>
+  class DiffLinearOperator : public LinearOperator<T>
   {
   public:
+    //! Virtual destructor to help with cleanup;
+    virtual ~DiffLinearOperator() {}
+
+    //! Apply the derivative of the operator onto a source vector
+    /*! Default implementation */
+    virtual void deriv(P& ds_u, const T& chi, const T& psi, 
+		       enum PlusMinus isign) const
+    {
+      QDPIO::cerr << "deriv: not implemented" << endl;
+      QDP_abort(1);
+    }
+
+    //! Apply the derivative of the operator onto a source vector to some precision
+    /*! Default implementation */
+    virtual void deriv(P& ds_u, const T& chi, const T& psi, 
+		       enum PlusMinus isign, const Real& epsilon) const
+    {
+      deriv(ds_u,chi,psi,isign);
+    }
+  };
+
+
+  //-----------------------------------------------------------------------------------
+  //! Unpreconditioned linear operator including derivatives
+  /*! @ingroup linop
+   *
+   * Support for unpreconditioned linear operators with derivative
+   */
+  template<typename T, typename P>
+  class UnprecLinearOperator : public DiffLinearOperator<T,P>
+  {
+  public:
+    //! Virtual destructor to help with cleanup;
+    virtual ~UnprecLinearOperator() {}
+
     //! Only defined on the entire lattice
     const OrderedSubset& subset() const {return all;}
-
-    //! Virtual destructor to help with cleanup;
-    virtual ~UnprecLinearOperatorBase() {}
   };
 
 
@@ -158,10 +191,13 @@ namespace Chroma
    *
    */
 
-  template<typename T>
-  class EvenOddPrecLinearOperatorBase : public LinearOperator<T>
+  template<typename T, typename P>
+  class EvenOddPrecLinearOperator : public DiffLinearOperator<T,P>
   {
   public:
+    //! Virtual destructor to help with cleanup;
+    virtual ~EvenOddPrecLinearOperator() {}
+
     //! Only defined on the odd lattice
     const OrderedSubset& subset() const {return rb[1];}
 
@@ -224,15 +260,87 @@ namespace Chroma
       chi[rb[1]] = tmp1 + tmp2;
     }
 
-    //! Virtual destructor to help with cleanup;
-    virtual ~EvenOddPrecLinearOperatorBase() {}
+    //! Apply the even-even block onto a source vector
+    virtual void derivEvenEvenLinOp(P& ds_u, const T& chi, const T& psi, 
+				    enum PlusMinus isign) const
+    {
+      QDPIO::cerr << "EvenOdd: not implemented" << endl;
+      QDP_abort(1);
+    }
+  
+    //! Apply the the even-odd block onto a source vector
+    virtual void derivEvenOddLinOp(P& ds_u, const T& chi, const T& psi, 
+				   enum PlusMinus isign) const
+    {
+      QDPIO::cerr << "EvenOdd: not implemented" << endl;
+      QDP_abort(1);
+    }
+ 
+    //! Apply the the odd-even block onto a source vector
+    virtual void derivOddEvenLinOp(P& ds_u, const T& chi, const T& psi, 
+				   enum PlusMinus isign) const
+    {
+      QDPIO::cerr << "EvenOdd: not implemented" << endl;
+      QDP_abort(1);
+    }
+
+    //! Apply the the odd-odd block onto a source vector
+    virtual void derivOddOddLinOp(P& ds_u, const T& chi, const T& psi, 
+				  enum PlusMinus isign) const
+    {
+      QDPIO::cerr << "EvenOdd: not implemented" << endl;
+      QDP_abort(1);
+    }
+
+    //! Apply the operator onto a source vector
+    /*! User should make sure deriv routines do a resize  */
+    virtual void deriv(P& ds_u, const T& chi, const T& psi, 
+		       enum PlusMinus isign) const
+    {
+      // Need deriv of  (A_oo - D_oe*Ainv_ee*D_eo*psi_e)
+      enum PlusMinus msign = (isign == PLUS) ? MINUS : PLUS;
+
+      //
+      // Make sure the deriv routines do a resize !!!
+      //
+      T   tmp1, tmp2, tmp3;  // if an array is used here, the space is not reserved
+      P   ds_1;  // deriv routines should resize
+
+      //
+      // NOTE: even with even-odd decomposition, the ds_u will still have contributions
+      // on all cb. So, no adding of ds_1 onto ds_u under a subset
+      //
+      //  ds_u  =  chi^dag * A'_oo * psi
+      derivOddOddLinOp(ds_u, chi, psi, isign);
+
+      //  ds_u  -=  chi^dag * D'_oe * Ainv_ee * D_eo * psi_o
+      evenOddLinOp(tmp1, psi, isign);
+      evenEvenInvLinOp(tmp2, tmp1, isign);
+      derivOddEvenLinOp(ds_1, chi, tmp2, isign);
+      ds_u -= ds_1;
+
+      //  ds_u  +=  chi^dag * D_oe * Ainv_ee * A'_ee * Ainv_ee * D_eo * psi_o
+      evenOddLinOp(tmp1, psi, isign);
+      evenEvenInvLinOp(tmp2, tmp1, isign);
+      evenOddLinOp(tmp1, chi, msign);
+      evenEvenInvLinOp(tmp3, tmp1, msign);
+      derivEvenEvenLinOp(ds_1, tmp3, tmp2, isign);
+      ds_u += ds_1;
+
+      //  ds_u  -=  chi^dag * D_oe * Ainv_ee * D'_eo * psi_o
+      evenOddLinOp(tmp1, chi, msign);
+      evenEvenInvLinOp(tmp3, tmp1, msign);
+      derivEvenOddLinOp(ds_1, tmp3, psi, isign);
+      ds_u -= ds_1;
+    }
   };
 
 
-  //! Partial specialization of even-odd preconditioned linear operator to arrays
+  //! Partial specialization of even-odd preconditioned linear operator including derivatives
   /*! @ingroup linop
    *
-   * Support for even-odd preconditioned linear operators
+   * Support for even-odd preconditioned linear operators with derivatives
+   *
    * Given a matrix M written in block form:
    *
    *      [      A             D        ]
@@ -295,10 +403,13 @@ namespace Chroma
    *
    */
 
-  template<typename T>
-  class EvenOddPrecLinearOperatorBase< multi1d<T> > : public LinearOperator< multi1d<T> >
+  template<typename T, typename P>
+  class EvenOddPrecLinearOperator< multi1d<T>, P > : public DiffLinearOperator< multi1d<T>, P >
   {
   public:
+    //! Virtual destructor to help with cleanup;
+    virtual ~EvenOddPrecLinearOperator() {}
+
     //! Only defined on the odd lattice
     const OrderedSubset& subset() const {return rb[1];}
 
@@ -370,49 +481,9 @@ namespace Chroma
 	chi[n][rb[1]] = tmp1[n] + tmp2[n];
     }
 
-    //! Virtual destructor to help with cleanup;
-    virtual ~EvenOddPrecLinearOperatorBase() {}
-  };
-
-
-
-  //-----------------------------------------------------------------------------------
-  //! Unpreconditioned linear operator including derivatives
-  /*! @ingroup linop
-   *
-   * Support for unpreconditioned linear operators with derivative
-   */
-  template<typename T, typename P>
-  class UnprecLinearOperator : public UnprecLinearOperatorBase<T>
-  {
-  public:
-    //! Apply the operator onto a source vector
-    virtual void deriv(P& ds_u, const T& chi, const T& psi, 
-		       enum PlusMinus isign) const
-    {
-      QDPIO::cerr << "deriv: not implemented" << endl;
-      QDP_abort(1);
-    }
-
-    //! Virtual destructor to help with cleanup;
-    virtual ~UnprecLinearOperator() {}
-  };
-
-
-  //! Even-odd preconditioned linear operator including derivatives
-  /*! @ingroup linop
-   *
-   * Defines derivative of linear operator
-   */
-  template<typename T, typename P>
-  class EvenOddPrecLinearOperator : public EvenOddPrecLinearOperatorBase<T>
-  {
-  public:
-    //! Only defined on the odd lattice
-    const OrderedSubset& subset() const {return rb[1];}
 
     //! Apply the even-even block onto a source vector
-    virtual void derivEvenEvenLinOp(P& ds_u, const T& chi, const T& psi, 
+    virtual void derivEvenEvenLinOp(P& ds_u, const multi1d<T>& chi, const multi1d<T>& psi, 
 				    enum PlusMinus isign) const
     {
       QDPIO::cerr << "EvenOdd: not implemented" << endl;
@@ -420,7 +491,7 @@ namespace Chroma
     }
   
     //! Apply the the even-odd block onto a source vector
-    virtual void derivEvenOddLinOp(P& ds_u, const T& chi, const T& psi, 
+    virtual void derivEvenOddLinOp(P& ds_u, const multi1d<T>& chi, const multi1d<T>& psi, 
 				   enum PlusMinus isign) const
     {
       QDPIO::cerr << "EvenOdd: not implemented" << endl;
@@ -428,7 +499,7 @@ namespace Chroma
     }
  
     //! Apply the the odd-even block onto a source vector
-    virtual void derivOddEvenLinOp(P& ds_u, const T& chi, const T& psi, 
+    virtual void derivOddEvenLinOp(P& ds_u, const multi1d<T>& chi, const multi1d<T>& psi, 
 				   enum PlusMinus isign) const
     {
       QDPIO::cerr << "EvenOdd: not implemented" << endl;
@@ -436,64 +507,7 @@ namespace Chroma
     }
 
     //! Apply the the odd-odd block onto a source vector
-    virtual void derivOddOddLinOp(P& ds_u, const T& chi, const T& psi, 
-				  enum PlusMinus isign) const
-    {
-      QDPIO::cerr << "EvenOdd: not implemented" << endl;
-      QDP_abort(1);
-    }
-
-    //! Apply the operator onto a source vector
-    virtual void deriv(P& ds_u, const T& chi, const T& psi, 
-		       enum PlusMinus isign) const
-    {
-      QDPIO::cerr << "EvenOdd: not implemented" << endl;
-      QDP_abort(1);
-    }
-
-    //! Virtual destructor to help with cleanup;
-    virtual ~EvenOddPrecLinearOperator() {}
-  };
-
-
-  //! Even-odd preconditioned linear operator including derivatives
-  /*! @ingroup linop
-   *
-   * Defines derivative of linear operator
-   */
-  template<typename T>
-  class EvenOddPrecLinearOperator<T, multi1d<LatticeColorMatrix> > : public EvenOddPrecLinearOperatorBase<T>
-  {
-  public:
-    //! Only defined on the odd lattice
-    const OrderedSubset& subset() const {return rb[1];}
-
-    //! Apply the even-even block onto a source vector
-    virtual void derivEvenEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, const T& chi, const T& psi, 
-				    enum PlusMinus isign) const
-    {
-      QDPIO::cerr << "EvenOdd: not implemented" << endl;
-      QDP_abort(1);
-    }
-  
-    //! Apply the the even-odd block onto a source vector
-    virtual void derivEvenOddLinOp(multi1d<LatticeColorMatrix>& ds_u, const T& chi, const T& psi, 
-				   enum PlusMinus isign) const
-    {
-      QDPIO::cerr << "EvenOdd: not implemented" << endl;
-      QDP_abort(1);
-    }
- 
-    //! Apply the the odd-even block onto a source vector
-    virtual void derivOddEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, const T& chi, const T& psi, 
-				   enum PlusMinus isign) const
-    {
-      QDPIO::cerr << "EvenOdd: not implemented" << endl;
-      QDP_abort(1);
-    }
-
-    //! Apply the the odd-odd block onto a source vector
-    virtual void derivOddOddLinOp(multi1d<LatticeColorMatrix>& ds_u, const T& chi, const T& psi, 
+    virtual void derivOddOddLinOp(P& ds_u, const multi1d<T>& chi, const multi1d<T>& psi, 
 				  enum PlusMinus isign) const
     {
       QDPIO::cerr << "EvenOdd: not implemented" << endl;
@@ -502,7 +516,7 @@ namespace Chroma
 
     //! Apply the operator onto a source vector
     /*! User should make sure deriv routines do a resize  */
-    virtual void deriv(multi1d<LatticeColorMatrix>& ds_u, const T& chi, const T& psi, 
+    virtual void deriv(P& ds_u, const multi1d<T>& chi, const multi1d<T>& psi, 
 		       enum PlusMinus isign) const
     {
       // Need deriv of  (A_oo - D_oe*Ainv_ee*D_eo*psi_e)
@@ -511,10 +525,8 @@ namespace Chroma
       //
       // Make sure the deriv routines do a resize !!!
       //
-      ds_u.resize(Nd);  // with routines doing resizing, this code could be pushed to be non-specialized
-
-      T   tmp1, tmp2, tmp3;  // if an array is used here, the space is not reserved
-      multi1d<LatticeColorMatrix>   ds_1(Nd);  // deriv routines should resize
+      multi1d<T>   tmp1(size()), tmp2(size()), tmp3(size());  // if an array is used here, the space is not reserved
+      P            ds_1;  // deriv routines should resize
 
       //
       // NOTE: even with even-odd decomposition, the ds_u will still have contributions
@@ -543,11 +555,7 @@ namespace Chroma
       derivEvenOddLinOp(ds_1, tmp3, psi, isign);
       ds_u -= ds_1;
     }
-
-    //! Virtual destructor to help with cleanup;
-    virtual ~EvenOddPrecLinearOperator() {}
   };
-
 
 
   //-----------------------------------------------------------------------------------
@@ -561,10 +569,13 @@ namespace Chroma
    *
    *  Usually D_ee = D_oo = 2m
    */
-  template<typename T>
-  class EvenOddLinearOperatorBase : public LinearOperator<T>
+  template<typename T, typename P>
+  class EvenOddLinearOperator : public DiffLinearOperator<T,P>
   {
   public:
+    //! Virtual destructor to help with cleanup;
+    virtual ~EvenOddLinearOperator() {}
+
     //! Only defined on the even lattice
     const OrderedSubset& subset() const {return all;}
 
@@ -604,86 +615,8 @@ namespace Chroma
       chi[rb[1]] = tmp1 + tmp2;
     }
 
-    //! Virtual destructor to help with cleanup;
-    virtual ~EvenOddLinearOperatorBase() {}
-  };
-
-
-  //! Even odd Linear Operator (for staggered like things ) including derivatives
-  /*! @ingroup linop
-   *
-   * Support for even-odd staggered-like linear operators including derivatives
-   *
-   *  [   D_ee        D_eo ]
-   *  [   D_oe        D_oo ]
-   *
-   *  Usually D_ee = D_oo = 2m
-   */
-  template<typename T, typename P>
-  class EvenOddLinearOperator : public EvenOddLinearOperatorBase<T>
-  {
-  public:
     //! Apply the even-even block onto a source vector
-    virtual void derivEvenEvenLinOp(P& ds_u, const T& chi, const T& psi, 
-				    enum PlusMinus isign) const 
-    {
-      QDPIO::cerr << "EvenOdd: not implemented" << endl;
-      QDP_abort(1);
-    }
- 
-    //! Apply the the even-odd block onto a source vector
-    virtual void derivEvenOddLinOp(P& ds_u, const T& chi, const T& psi, 
-				   enum PlusMinus isign) const
-    {
-      QDPIO::cerr << "EvenOdd: not implemented" << endl;
-      QDP_abort(1);
-    }
-
-    //! Apply the the odd-even block onto a source vector
-    virtual void derivOddEvenLinOp(P& ds_u, const T& chi, const T& psi, 
-				   enum PlusMinus isign) const
-    {
-      QDPIO::cerr << "EvenOdd: not implemented" << endl;
-      QDP_abort(1);
-    }
-
-    //! Apply the the odd-odd block onto a source vector
-    virtual void derivOddOddLinOp(P& ds_u, const T& chi, const T& psi, 
-				  enum PlusMinus isign) const
-    {
-      QDPIO::cerr << "EvenOdd: not implemented" << endl;
-      QDP_abort(1);
-    }
-
-    //! Apply the operator onto a source vector
-    virtual void deriv(P& ds_u, const T& chi, const T& psi, 
-		       enum PlusMinus isign) const
-    {
-      QDPIO::cerr << "EvenOdd: not implemented" << endl;
-      QDP_abort(1);
-    }
-
-    //! Virtual destructor to help with cleanup;
-    virtual ~EvenOddLinearOperator() {}
-  };
-
-
-  //! Even odd Linear Operator (for staggered like things ) including derivatives
-  /*! @ingroup linop
-   *
-   * Support for even-odd staggered-like linear operators including derivatives
-   *
-   *  [   D_ee        D_eo ]
-   *  [   D_oe        D_oo ]
-   *
-   *  Usually D_ee = D_oo = 2m
-   */
-  template<typename T>
-  class EvenOddLinearOperator<T, multi1d<LatticeColorMatrix> > : public EvenOddLinearOperatorBase<T>
-  {
-  public:
-    //! Apply the even-even block onto a source vector
-    virtual void derivEvenEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
+    virtual void derivEvenEvenLinOp(P& ds_u, 
 				    const T& chi, const T& psi, 
 				    enum PlusMinus isign) const 
     {
@@ -692,7 +625,7 @@ namespace Chroma
     }
  
     //! Apply the the even-odd block onto a source vector
-    virtual void derivEvenOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
+    virtual void derivEvenOddLinOp(P& ds_u, 
 				   const T& chi, const T& psi, 
 				   enum PlusMinus isign) const
     {
@@ -701,7 +634,7 @@ namespace Chroma
     }
 
     //! Apply the the odd-even block onto a source vector
-    virtual void derivOddEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
+    virtual void derivOddEvenLinOp(P& ds_u, 
 				   const T& chi, const T& psi, 
 				   enum PlusMinus isign) const
     {
@@ -710,7 +643,7 @@ namespace Chroma
     }
 
     //! Apply the the odd-odd block onto a source vector
-    virtual void derivOddOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
+    virtual void derivOddOddLinOp(P& ds_u, 
 				  const T& chi, const T& psi, 
 				  enum PlusMinus isign) const
     {
@@ -719,7 +652,7 @@ namespace Chroma
     }
 
     //! Apply the operator onto a source vector
-    virtual void deriv(multi1d<LatticeColorMatrix>& ds_u, 
+    virtual void deriv(P& ds_u, 
 		       const T& chi, const T& psi, 
 		       enum PlusMinus isign) const
     {
@@ -730,9 +663,8 @@ namespace Chroma
       // NOTE: even with even-odd decomposition, the ds_u will still have contributions
       // on all cb. So, no adding of ds_1 onto ds_u under a subset
       //
-      ds_u.resize(Nd);
       T   tmp1, tmp2;  // if an array is used here, the space is not reserved
-      multi1d<LatticeColorMatrix>   ds_1(Nd);  // routines should resize
+      P   ds_1;  // routines should resize
 
       // ds_u = chi_e ^dag * D'_ee * psi_e
       derivEvenEvenLinOp(ds_u, chi, psi, isign);
@@ -749,9 +681,6 @@ namespace Chroma
       derivOddOddLinOp(ds_1, chi, psi, isign);
       ds_u += ds_1;
     }
-
-    //! Virtual destructor to help with cleanup;
-    virtual ~EvenOddLinearOperator() {}
   };
 
 
@@ -761,10 +690,13 @@ namespace Chroma
    *
    * These are concessions/optimizations for red-black checkboarding 
    */
-  template<typename T>
-  class DslashLinearOperator : public LinearOperator<T>
+  template<typename T, typename P>
+  class DslashLinearOperator : public DiffLinearOperator<T,P>
   {
   public:
+    //! Virtual destructor to help in cleanup
+    virtual ~DslashLinearOperator() {}
+
     //! Apply operator on both checkerboards (entire lattice)
     virtual void operator() (T& d, const T& psi, enum PlusMinus isign) const
     {
@@ -779,8 +711,37 @@ namespace Chroma
      */
     virtual void apply (T& chi, const T& psi, enum PlusMinus isign, int cb) const = 0;
 
-    //! Virtual destructor to help in cleanup
-    virtual ~DslashLinearOperator() {}
+
+    //! Take deriv of D
+    /*!
+     * \param chi     left vector                                 (Read)
+     * \param psi     right vector                                (Read)
+     * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
+     *
+     * \return Computes   chi^dag * \dot(D} * psi  
+     */
+    virtual void deriv(P& ds_u, const T& chi, const T& psi, 
+		       enum PlusMinus isign) const
+    {
+      QDPIO::cerr << "deriv: not implemented" << endl;
+      QDP_abort(1);
+    }
+
+    //! Take deriv of D
+    /*!
+     * \param chi     left vector on cb                           (Read)
+     * \param psi     right vector on 1-cb                        (Read)
+     * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
+     * \param cb      Checkerboard of chi vector                  (Read)
+     *
+     * \return Computes   chi^dag * \dot(D} * psi  
+     */
+    virtual void deriv(P& ds_u, const T& chi, const T& psi, 
+		       enum PlusMinus isign, int cb) const
+    {
+      QDPIO::cerr << "deriv: not implemented" << endl;
+      QDP_abort(1);
+    }
   };
 
 }

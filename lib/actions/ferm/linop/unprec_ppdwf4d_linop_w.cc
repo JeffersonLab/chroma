@@ -1,4 +1,4 @@
-// $Id: unprec_ppdwf4d_linop_w.cc,v 1.1 2004-12-10 02:54:24 edwards Exp $
+// $Id: unprec_ppdwf4d_linop_w.cc,v 1.2 2005-01-02 05:21:10 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned projected DWF operator to 4D using prec 5D bits
  */
@@ -17,9 +17,9 @@ namespace Chroma
   // Apply unpreconditioned linear operator
   template<>
   void 
-  UnprecPPDWF4DLinOp<LatticeFermion>::operator()(LatticeFermion& chi, 
-						 const LatticeFermion& psi, 
-						 enum PlusMinus isign) const
+  UnprecPPDWF4DLinOp< LatticeFermion, multi1d<LatticeColorMatrix> >::operator()(LatticeFermion& chi, 
+										const LatticeFermion& psi, 
+										enum PlusMinus isign) const
   {
     START_CODE();
 

@@ -1,4 +1,4 @@
-// $Id: t_disc_loop_s.cc,v 1.8 2004-12-29 22:08:26 edwards Exp $
+// $Id: t_disc_loop_s.cc,v 1.9 2005-01-02 05:21:11 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -413,14 +413,16 @@ int main(int argc, char **argv)
 
   // Connected Correlator, use a point source
   // THIS IS ONLY FOR THE SCALAR AT THE MOMENT.
+  Handle<const SystemSolver<LatticeStaggeredFermion> > qprop(S_f.qprop(state,input.param.invParam));
+
   psi = zero;
   for(int color_source = 0; color_source < Nc; ++color_source) {
     int spin_source = 0;
     q_source = zero;
     srcfil(q_source, input.param.t_srce, color_source);
 
-    S_f.qprop(psi, state, q_source, input.param.invParam, n_count);
-
+    // Compute the propagator
+    int n_count = (*qprop)(psi, q_source);
     ncg_had += n_count;
 
     push(xml_out,"Qprop");
@@ -461,11 +463,7 @@ int main(int argc, char **argv)
     z2_src(q_source);
 
     // Compute the solution vector for the particular source
-    // int n_count;
-
-    S_f.qprop(psi, state, q_source, input.param.invParam,
-              n_count);
-    
+    int n_count = (*qprop)(psi, q_source);
     ncg_had += n_count;
       
     push(xml_out,"Qprop");

@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_linop_array_w.cc,v 1.3 2004-12-12 21:22:16 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_linop_array_w.cc,v 1.4 2005-01-02 05:21:10 edwards Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned domain-wall linear operator
  */
@@ -25,7 +25,7 @@ EvenOddPrecOvlapContFrac5DLinOpArray::EvenOddPrecOvlapContFrac5DLinOpArray(
   {
     START_CODE();
 
-    Handle< const DslashLinearOperator<LatticeFermion> > Ds(new WilsonDslash(state->getLinks()));
+    Handle< const DslashLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> > > Ds(new WilsonDslash(state->getLinks()));
     Dslash  = Ds;  // Copy Handle -- M now owns dslash
 
     // The mass ratio

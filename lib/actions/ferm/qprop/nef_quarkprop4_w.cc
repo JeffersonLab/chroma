@@ -1,6 +1,15 @@
-// $Id: nef_quarkprop4_w.cc,v 1.12 2004-12-29 22:13:41 edwards Exp $
+// $Id: nef_quarkprop4_w.cc,v 1.13 2005-01-02 05:21:10 edwards Exp $
 // $Log: nef_quarkprop4_w.cc,v $
-// Revision 1.12  2004-12-29 22:13:41  edwards
+// Revision 1.13  2005-01-02 05:21:10  edwards
+// Rearranged top-level fermion actions and linear operators.
+// The deriv is pushed up much higher. This has the effect that
+// now the "P" type (conjugate momentum type) is carried around
+// in DiffFermAct4D<T,P> and below carry this "P" template param.
+// All fermacts now have at least default deriv support (possibly
+// Not Implemented error). Made qprop and qpropT now go through
+// factory functions.
+//
+// Revision 1.12  2004/12/29 22:13:41  edwards
 // Rearranged the top-level FermionAction structure. Moved up
 // 5d-style actions to be a  FermAct5D and there is a FermAct4D.
 // Consolidated quarkprop routines and fermact factories.
@@ -68,21 +77,24 @@ namespace Chroma
    * \param MaxCG    maximum number of CG iterations ( Read )
    * \param ncg_had  number of CG iterations ( Write )
    */
-  template<typename T, template<class> class C>
+  template<typename T, typename P, template<class,class> class C>
   void nef_quarkProp_a(LatticePropagator& q_sol, 
 		       XMLWriter& xml_out,
 		       const LatticePropagator& q_src,
 		       int t_src, int j_decay,
-		       const C<T>& S_f,
+		       const C<T,P>& S_f,
 		       Handle<const ConnectState> state,
 		       const InvertParam_t& invParam,
 		       int& ncg_had)
   {
     START_CODE();
 
-    push(xml_out, "DWF_QuarkProp");
+    push(xml_out, "DWF_QuarkProp4");
 
     ncg_had = 0;
+
+    // Setup solver
+    Handle< const SystemSolver< multi1d<LatticeFermion> > > qpropT(S_f.qpropT(state,invParam));
 
     multi1d<LatticePropagator> prop5d(S_f.size()) ;
     LatticePropagator q_mp  ;
@@ -128,11 +140,8 @@ namespace Chroma
       
 
 	// now we are ready invert
-	   
-
-	int n_count;
 	// Compute the propagator for given source color/spin.	   
-	S_f.qpropT(psi, state, chi, invParam, n_count);
+	int n_count = (*qpropT)(psi,chi);
 	ncg_had += n_count;
 
 	push(xml_out,"Qprop");
@@ -265,20 +274,21 @@ namespace Chroma
 		      XMLWriter& xml_out,
 		      const LatticePropagator& q_src,
 		      int t_src, int j_decay,
-		      const UnprecDWFermActBaseArray<LatticeFermion>& S_f,
+		      const UnprecDWFermActBaseArray<LatticeFermion,multi1d<LatticeColorMatrix> >& S_f,
 		      Handle<const ConnectState> state,
 		      const InvertParam_t& invParam,
 		      int& ncg_had)
   {
-    nef_quarkProp_a<LatticeFermion,UnprecDWFermActBaseArray>(q_sol, 
-							     xml_out, 
-							     q_src, 
-							     t_src, 
-							     j_decay, 
-							     S_f, 
-							     state, 
-							     invParam,
-							     ncg_had);
+    nef_quarkProp_a<LatticeFermion,multi1d<LatticeColorMatrix>,UnprecDWFermActBaseArray>(
+      q_sol, 
+      xml_out, 
+      q_src, 
+      t_src, 
+      j_decay, 
+      S_f, 
+      state, 
+      invParam,
+      ncg_had);
   }
 
   //! Given a complete propagator as a source, this does all the inversions needed
@@ -300,20 +310,21 @@ namespace Chroma
 		      XMLWriter& xml_out,
 		      const LatticePropagator& q_src,
 		      int t_src, int j_decay,
-		      const EvenOddPrecDWFermActBaseArray<LatticeFermion>& S_f,
+		      const EvenOddPrecDWFermActBaseArray<LatticeFermion,multi1d<LatticeColorMatrix> >& S_f,
 		      Handle<const ConnectState> state,
 		      const InvertParam_t& invParam,
 		      int& ncg_had)
   {
-    nef_quarkProp_a<LatticeFermion,EvenOddPrecDWFermActBaseArray>(q_sol, 
-								  xml_out, 
-								  q_src, 
-								  t_src, 
-								  j_decay, 
-								  S_f, 
-								  state, 
-								  invParam,
-								  ncg_had);
+    nef_quarkProp_a<LatticeFermion,multi1d<LatticeColorMatrix>,EvenOddPrecDWFermActBaseArray>(
+      q_sol, 
+      xml_out, 
+      q_src, 
+      t_src, 
+      j_decay, 
+      S_f, 
+      state, 
+      invParam,
+      ncg_had);
   }
 
 }

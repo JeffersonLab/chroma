@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_zolo_nef_fermact_array_w.h,v 1.7 2004-12-29 22:13:41 edwards Exp $
+// $Id: unprec_zolo_nef_fermact_array_w.h,v 1.8 2005-01-02 05:21:10 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF domain-wall fermion action
  */
@@ -51,7 +51,7 @@ namespace Chroma
    * are specified in Phys.Rev.D63:094505,2001 (hep-lat/0005002).
    * See also Brower et.al. LATTICE04
    */
-  class UnprecZoloNEFFermActArray : public UnprecDWFermActBaseArray<LatticeFermion>
+  class UnprecZoloNEFFermActArray : public UnprecDWFermActBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >
   {
   public:
     //! General FermBC
@@ -93,11 +93,11 @@ namespace Chroma
     int size() const {return N5;}
 
     //! Return the quark mass
-    Real quark_mass() const {return Mass;}
+    Real getQuarkMass() const {return Mass;}
 
     //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
-    const UnprecDWLinOpBaseArray<LatticeFermion>* unprecLinOp(Handle<const ConnectState> state, 
-							      const Real& m_q) const;
+    const UnprecDWLinOpBaseArray<LatticeFermion, multi1d<LatticeColorMatrix> >* unprecLinOp(Handle<const ConnectState> state, 
+											    const Real& m_q) const;
 
     //! Destructor is automatic
     ~UnprecZoloNEFFermActArray() {}

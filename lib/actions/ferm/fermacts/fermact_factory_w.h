@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact_factory_w.h,v 1.2 2004-12-29 22:13:40 edwards Exp $
+// $Id: fermact_factory_w.h,v 1.3 2005-01-02 05:21:09 edwards Exp $
 /*! \file
  *  \brief Fermion action factories
  */
@@ -25,21 +25,23 @@ namespace Chroma
 
   //! Wilson-like fermion 4D factory (foundry)
   typedef SingletonHolder< 
-  ObjectFactory<WilsonTypeFermAct<LatticeFermion>, 
+  ObjectFactory<WilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >, 
     std::string,
     TYPELIST_2(XMLReader&, const std::string&),
-    WilsonTypeFermAct<LatticeFermion>* (*)(XMLReader&,
-					   const std::string&), StringFactoryError> >
+    WilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* (*)(XMLReader&,
+									  const std::string&), 
+		StringFactoryError> >
   TheWilsonTypeFermActFactory;
 
 
   //! Wilson-like fermion array factory (foundry)
   typedef SingletonHolder< 
-  ObjectFactory<WilsonTypeFermAct5D<LatticeFermion>, 
+  ObjectFactory<WilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >, 
     std::string,
     TYPELIST_2(XMLReader&, const std::string&),
-    WilsonTypeFermAct5D<LatticeFermion>* (*)(XMLReader&,
-					     const std::string&), StringFactoryError> >
+    WilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >* (*)(XMLReader&,
+									    const std::string&), 
+		StringFactoryError> >
   TheWilsonTypeFermAct5DFactory;
 
 }

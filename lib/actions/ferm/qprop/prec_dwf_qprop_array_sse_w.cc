@@ -1,106 +1,35 @@
-// $Id: prec_dwf_fermact_array_sse_w.cc,v 1.15 2004-12-29 22:13:40 edwards Exp $
+// $Id: prec_dwf_qprop_array_sse_w.cc,v 1.1 2005-01-02 05:21:10 edwards Exp $
 /*! \file
- *  \brief SSE 4D style even-odd preconditioned domain-wall fermion action
+ *  \brief SSE 5D DWF specific quark propagator solver
  */
 
 #include "chromabase.h"
-#include "actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.h"
-#include "actions/ferm/linop/unprec_dwf_linop_array_w.h"
-#include "actions/ferm/linop/prec_dwf_linop_array_w.h"
-
-#include "actions/ferm/linop/dwffld_w.h"
+#include "actions/ferm/qprop/prec_dwf_qprop_array_sse_w.h"
 
 #include <sse_dwf_cg.h>
 
-#include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermbcs/fermbcs_w.h"
-
 namespace Chroma
 {
-
-  //! Hooks to register the class with the fermact factory
-  namespace SSEEvenOddPrecDWFermActArrayEnv
-  {
-    //! Callback function
-    WilsonTypeFermAct5D<LatticeFermion>* createFermAct5D(XMLReader& xml_in,
-							 const std::string& path)
-    {
-      return new SSEEvenOddPrecDWFermActArray(WilsonTypeFermBCArrayArrayEnv::reader(xml_in, path), 
-					      SSEEvenOddPrecDWFermActArrayParams(xml_in, path));
-    }
-
-    //! Callback function
-    /*! Differs in return type */
-    FermionAction<LatticeFermion>* createFermAct(XMLReader& xml_in,
-						 const std::string& path)
-    {
-      return createFermAct5D(xml_in, path);
-    }
-
-    //! Callback function
-    /*! Differs in return type */
-    EvenOddPrecDWFermActBaseArray<LatticeFermion>* createDWFermAct(Handle< FermBC< multi1d<LatticeFermion> > > fbc,
-								   XMLReader& xml_in,
-								   const std::string& path)
-    {
-      return new SSEEvenOddPrecDWFermActArray(fbc, SSEEvenOddPrecDWFermActArrayParams(xml_in, path));
-    }
-
-    //! Name to be used
-    const std::string name = "SSE_DWF";    // TEMPORARY HACK
-
-    //! Register all the factories
-    bool registerAll()
-    {
-      return Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct)
-	   & Chroma::TheWilsonTypeFermAct5DFactory::Instance().registerObject(name, createFermAct5D);
-    }
-
-    //! Register the fermact
-    const bool registered = registerAll();
-  }
-
-
-  //! Read parameters
-  SSEEvenOddPrecDWFermActArrayParams::SSEEvenOddPrecDWFermActArrayParams(XMLReader& xml, 
-									 const std::string& path)
-  {
-    QDPIO::cout << "SSEDWF param read" << endl;
-
-    XMLReader paramtop(xml, path);
-
-    // Read the stuff for the action
-    read(paramtop, "OverMass", OverMass);
-    read(paramtop, "Mass", Mass);
-    read(paramtop, "N5", N5);
-
-    if (paramtop.count("a5") != 0) 
-      read(paramtop, "a5", a5);
-    else
-      a5 = 1.0;
-  }
-
-
-  //! Read parameters
-  void read(XMLReader& xml, const string& path, SSEEvenOddPrecDWFermActArrayParams& param)
-  {
-    SSEEvenOddPrecDWFermActArrayParams tmp(xml, path);
-    param = tmp;
-  }
-
-
+  //! Need a real destructor
+  SSEDWFQprop::~SSEDWFQprop() {SSE_DWF_fini();}
 
   //! Private internal initializer
   void 
-  SSEEvenOddPrecDWFermActArray::init()
+  SSEDWFQprop::init()
   {
     QDPIO::cout << "entering SSEEvenOddPrecDWFermActArray::init" << endl;
 
     if (Nd != 4 || Nc != 3)
-      {
-	QDPIO::cerr << "SSEEvenOddPrecDWFermActArray: only supports Nd=4 and Nc=3" << endl;
-	QDP_abort(1);
-      }
+    {
+      QDPIO::cerr << "SSEEvenOddPrecDWFermActArray: only supports Nd=4 and Nc=3" << endl;
+      QDP_abort(1);
+    }
+
+    if (invParam.invType != CG_INVERTER)
+    {
+      QDPIO::cerr << "SSE EvenOddPrecDWF qpropT only supports CG" << endl;
+      QDP_abort(1);
+    }
 
     multi1d<int> lattice_size(Nd+1);
     lattice_size[Nd] = size();
@@ -108,46 +37,20 @@ namespace Chroma
       lattice_size[i] = Layout::lattSize()[i];
 
     if (SSE_DWF_init(lattice_size.slice(), SSE_DWF_FLOAT, NULL, NULL) != 0)
-      {
-	QDPIO::cerr << __func__ << ": error in SSE_DWF_init" << endl;
-	QDP_abort(1);
-      }
+    {
+      QDPIO::cerr << __func__ << ": error in SSE_DWF_init" << endl;
+      QDP_abort(1);
+    }
 
     QDPIO::cout << "exiting SSEEvenOddPrecDWFermActArray::init" << endl;
   }
 
 
-  //! Private internal destructor
-  void 
-  SSEEvenOddPrecDWFermActArray::fini()
-  {
-    SSE_DWF_fini();
-  }
-
-
-
-  //! Produce an even-odd preconditioned linear operator for this action with arbitrary quark mass
-  const EvenOddPrecDWLinOpBaseArray<LatticeFermion>*
-  SSEEvenOddPrecDWFermActArray::precLinOp(Handle<const ConnectState> state, 
-					  const Real& m_q) const
-  {
-    return new EvenOddPrecDWLinOpArray(state->getLinks(),OverMass,m_q,N5);
-  }
-
-  //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
-  const UnprecDWLinOpBaseArray<LatticeFermion>*
-  SSEEvenOddPrecDWFermActArray::unprecLinOp(Handle<const ConnectState> state, 
-					    const Real& m_q) const
-  {
-    return new UnprecDWLinOpArray(state->getLinks(),OverMass,m_q,N5);
-  }
-
-
   ///////////////////////////////////////////////////////////////////////////////
   //! Gauge field reader
-  static double
-  gauge_reader(const void *ptr, void *env, 
-	       const int latt_coord[Nd], int mu, int row, int col, int reim)
+  double
+  SSEDWFQprop::gauge_reader(const void *ptr, void *env, 
+			    const int latt_coord[Nd], int mu, int row, int col, int reim)
   {
     /* Translate arg */
     multi1d<LatticeColorMatrix>& u = *(multi1d<LatticeColorMatrix>*)ptr;
@@ -177,9 +80,9 @@ namespace Chroma
 
 
   //! Fermion field reader
-  static double
-  fermion_reader_rhs(const void *ptr, void *env, 
-		     const int latt_coord[5], int color, int spin, int reim)
+  double
+  SSEDWFQprop::fermion_reader_rhs(const void *ptr, void *env, 
+				  const int latt_coord[5], int color, int spin, int reim)
   {
     /* Translate arg */
     multi1d<LatticeFermion>& psi = *(multi1d<LatticeFermion>*)ptr;
@@ -214,9 +117,9 @@ namespace Chroma
 
 
   //! Fermion field reader
-  static double
-  fermion_reader_guess(const void *ptr, void *env, 
-		       const int latt_coord[5], int color, int spin, int reim)
+  double
+  SSEDWFQprop::fermion_reader_guess(const void *ptr, void *env, 
+				    const int latt_coord[5], int color, int spin, int reim)
   {
     /* Translate arg */
     multi1d<LatticeFermion>& psi = *(multi1d<LatticeFermion>*)ptr;
@@ -253,10 +156,10 @@ namespace Chroma
 
 
   //! Fermion field writer
-  static void
-  fermion_writer_solver(void *ptr, void *env, 
-			const int latt_coord[5], int color, int spin, int reim,
-			double val)
+  void
+  SSEDWFQprop::fermion_writer_solver(void *ptr, void *env, 
+				     const int latt_coord[5], int color, int spin, int reim,
+				     double val)
   {
     /* Translate arg */
     multi1d<LatticeFermion>& psi = *(multi1d<LatticeFermion>*)ptr;
@@ -295,10 +198,10 @@ namespace Chroma
 
 
   //! Fermion field writer
-  static void
-  fermion_writer_operator(void *ptr, void *env, 
-			  const int latt_coord[5], int color, int spin, int reim,
-			  double val)
+  void
+  SSEDWFQprop::fermion_writer_operator(void *ptr, void *env, 
+				       const int latt_coord[5], int color, int spin, int reim,
+				       double val)
   {
     /* Translate arg */
     multi1d<LatticeFermion>& psi = *(multi1d<LatticeFermion>*)ptr;
@@ -338,16 +241,16 @@ namespace Chroma
 
 
   ///////////////////////////////////////////////////////////////////////////////
-  static void
-  solve_cg5(multi1d<LatticeFermion> &solution,    // output
-	    const multi1d<LatticeColorMatrix> &U, // input
-	    double M5,                            // input
-	    double m_f,                           // input
-	    const multi1d<LatticeFermion> &rhs,   // input
-	    const multi1d<LatticeFermion> &x0,    // input
-	    double rsd,                           // input
-	    int max_iter,                         // input
-	    int &out_iter )                       // output
+  void
+  SSEDWFQprop::solve_cg5(multi1d<LatticeFermion> &solution,    // output
+			 const multi1d<LatticeColorMatrix> &U, // input
+			 double M5,                            // input
+			 double m_f,                           // input
+			 const multi1d<LatticeFermion> &rhs,   // input
+			 const multi1d<LatticeFermion> &x0,    // input
+			 double rsd,                           // input
+			 int max_iter,                         // input
+			 int &out_iter )                       // output
   {
     // Initialize internal structure of the solver
     //    if (SSE_DWF_init(lattice_size, SSE_DWF_FLOAT, NULL, NULL)) {
@@ -392,13 +295,13 @@ namespace Chroma
   }
 
 
-  // Optimized inverter
-  void 
-  SSEEvenOddPrecDWFermActArray::qpropT(multi1d<LatticeFermion>& psi, 
-				       Handle<const ConnectState> state, 
-				       const multi1d<LatticeFermion>& chi, 
-				       const InvertParam_t& invParam,
-				       int& ncg_had) const
+  //! Solver the linear system
+  /*!
+   * \param psi      quark propagator ( Modify )
+   * \param chi      source ( Read )
+   * \return number of CG iterations
+   */
+  int operator() (LatticeFermion& psi, const LatticeFermion& chi) const
   {
     QDPIO::cout << "entering SSEEvenOddPrecDWFermActArray::qpropT" << endl;
 
@@ -406,23 +309,20 @@ namespace Chroma
 
     const multi1d<LatticeColorMatrix>& u = state->getLinks();
 
-    if (invParam.invType != CG_INVERTER)
-    {
-      QDPIO::cerr << "SSE EvenOddPrecDWF qpropT only supports CG" << endl;
-      QDP_abort(1);
-    }
-
     // Apply SSE inverter
     double M5  = toDouble(OverMass);
     double m_f = toDouble(Mass);
     double rsd = toDouble(invParam.RsdCG);
     double rsd_sq = rsd * rsd;
     int    max_iter = invParam.MaxCG;
-    solve_cg5(psi, u, M5, m_f, chi, psi, rsd_sq, max_iter, ncg_had);
+    int    n_count
+    solve_cg5(psi, u, M5, m_f, chi, psi, rsd_sq, max_iter, n_count);
 
     END_CODE();
 
     QDPIO::cout << "exiting SSEEvenOddPrecDWFermActArray::qpropT" << endl;
+
+    return n_count;
   }
 
 }

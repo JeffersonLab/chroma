@@ -1,4 +1,4 @@
-// $Id: unprec_ovlap_contfrac5d_fermact_array_w.cc,v 1.10 2004-12-29 22:13:41 edwards Exp $
+// $Id: unprec_ovlap_contfrac5d_fermact_array_w.cc,v 1.11 2005-01-02 05:21:10 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -27,8 +27,8 @@ namespace Chroma
   namespace UnprecOvlapContFrac5DFermActArrayEnv
   {
     //! Callback function
-    WilsonTypeFermAct5D<LatticeFermion>* createFermAct5D(XMLReader& xml_in,
-							 const std::string& path)
+    WilsonTypeFermAct5D<LatticeFermion,multi1d<LatticeColorMatrix> >* createFermAct5D(XMLReader& xml_in,
+										      const std::string& path)
     {
       return new UnprecOvlapContFrac5DFermActArray(WilsonTypeFermBCArrayEnv::reader(xml_in, path), 
 						   UnprecOvlapContFrac5DFermActParams(xml_in, path));
@@ -519,49 +519,61 @@ namespace Chroma
 
 
   //! Propagator of an un-preconditioned Extended-Overlap linear operator
-  /*!
-   * \param psi      quark propagator ( Modify )
-   * \param state    gauge field ( Read )
-   * \param chi      source ( Read )
-   * \param invType  inverter type ( Read (
-   * \param RsdCG    CG (or MR) residual used here ( Read )
-   * \param MaxCG    maximum number of CG iterations ( Read )
-   * \param ncg_had  number of CG iterations ( Write )
+  /*! \ingroup qprop
+   *
+   * Propagator solver for Extended overlap fermions
    */
-  void 
-  UnprecOvlapContFrac5DFermActArray::qprop(LatticeFermion& psi, 
-					   Handle<const ConnectState> state, 
-					   const LatticeFermion& chi, 
-					   const InvertParam_t& invParam,
-					   int& ncg_had) const
+  template<typename T>
+  class OvExt5DQprop : public SystemSolver<T>
   {
-    
-    START_CODE();
-    
-    const Real Mass = quark_mass();
-    int n_count;
-    
-    int G5 = Ns*Ns - 1;
-    
-    // Initialize the 5D fields
-    multi1d<LatticeFermion> chi5(N5);
-    multi1d<LatticeFermion> psi5(N5);
+  public:
+    //! Constructor
+    /*!
+     * \param A_        Linear operator ( Read )
+     * \param Mass_      quark mass ( Read )
+     */
+    OvExt5DQprop(Handle< const LinearOperator< multi1d<T> > > A_,
+		 const Real& Mass_,
+		 const InvertParam_t& invParam_) : 
+      A(A_), Mass(Mass_), invParam(invParam_) {}
 
-    
-    // For reasons I do not appreciate doing the solve as
-    //  M^{dag} M psi = M^{dag} chi
-    //  seems a few iterations faster and more accurate than
-    //  Doing M^{dag} M psi = chi
-    //  and then applying M^{dag}
+    //! Destructor is automatic
+    ~OvExt5DQprop() {}
 
-    // So first get  M^{dag} gamma_5 chi into the source.
-    
-    // Construct the linear operator
-    Handle<const LinearOperator< multi1d<LatticeFermion> > > A(linOp(state));
+    //! Return the subset on which the operator acts
+    const OrderedSubset& subset() const {return all;}
 
+    //! Solver the linear system
+    /*!
+     * \param psi      quark propagator ( Modify )
+     * \param chi      source ( Read )
+     * \return number of CG iterations
+     */
+    int operator() (T& psi, const T& chi) const
+    {
+      START_CODE();
     
-    switch(invParam.invType) {
-    case CG_INVERTER: 
+      const int N5 = A->size();
+      int n_count;
+    
+      int G5 = Ns*Ns - 1;
+    
+      // Initialize the 5D fields
+      multi1d<LatticeFermion> chi5(N5);
+      multi1d<LatticeFermion> psi5(N5);
+
+      
+      // For reasons I do not appreciate doing the solve as
+      //  M^{dag} M psi = M^{dag} chi
+      //  seems a few iterations faster and more accurate than
+      //  Doing M^{dag} M psi = chi
+      //  and then applying M^{dag}
+
+      // So first get  M^{dag} gamma_5 chi into the source.
+    
+      switch(invParam.invType) 
+      {
+      case CG_INVERTER: 
       {
 	multi1d<LatticeFermion> tmp5(N5);
 	
@@ -585,39 +597,61 @@ namespace Chroma
       }
       break;
       
-    case MR_INVERTER:
-      QDP_error_exit("Unsupported inverter type", invParam.invType);
-      break;
+      case MR_INVERTER:
+	QDP_error_exit("Unsupported inverter type", invParam.invType);
+	break;
 
-    case BICG_INVERTER:
-      QDP_error_exit("Unsupported inverter type", invParam.invType);
-      break;
+      case BICG_INVERTER:
+	QDP_error_exit("Unsupported inverter type", invParam.invType);
+	break;
       
-    default:
-      QDP_error_exit("Unknown inverter type", invParam.invType);
-    }
+      default:
+	QDP_error_exit("Unknown inverter type", invParam.invType);
+      }
   
-    if ( n_count == invParam.MaxCG )
-      QDP_error_exit("no convergence in the inverter", n_count);
+      if ( n_count == invParam.MaxCG )
+	QDP_error_exit("no convergence in the inverter", n_count);
     
-    ncg_had = n_count;
+      // Solution now lives in chi5
     
-    // Solution now lives in chi5
+      // Multiply back in factor 2/(1-m) to return to 
+      // (1/2)( 1 + m + (1-m) gamma_5 epsilon  )
+      // normalisatoin
+      psi5[N5-1] *= Real(2)/(Real(1)-Mass);
     
-    // Multiply back in factor 2/(1-m) to return to 
-    // (1/2)( 1 + m + (1-m) gamma_5 epsilon  )
-    // normalisatoin
-    psi5[N5-1] *= Real(2)/(Real(1)-Mass);
+      // Remove contact term
+      psi = psi5[N5-1] - chi;
     
-    // Remove contact term
-    psi = psi5[N5-1] - chi;
-    
-    // Overall normalization
-    Real ftmp1 = Real(1) / (Real(1) - Mass);
-    psi *= ftmp1;
+      // Overall normalization
+      Real ftmp1 = Real(1) / (Real(1) - Mass);
+      psi *= ftmp1;
 
-    END_CODE();
+      END_CODE();
+
+      return n_count;
+    }
+
+  private:
+    // Hide default constructor
+    OvExt5DQprop() {}
+
+    Handle< const LinearOperator< multi1d<T> > > A;
+    const Real Mass;
+    const InvertParam_t invParam;
+  };
+
+  
+  //! Propagator of an un-preconditioned Extended-Overlap linear operator
+  const SystemSolver<LatticeFermion>* 
+  UnprecOvlapContFrac5DFermActArray::qprop(Handle<const ConnectState> state,
+					   const InvertParam_t& invParam) const
+  {
+    return new OvExt5DQprop<LatticeFermion>(Handle< const LinearOperator< multi1d<LatticeFermion> > >(linOp(state)),
+					    getQuarkMass(),
+					    invParam);
   }
+
+
   
   //! Create a ConnectState with just the gauge fields
   const OverlapConnectState*

@@ -1,125 +1,129 @@
-// $Id: staggered_qprop.cc,v 1.10 2004-12-12 21:22:17 edwards Exp $
+// $Id: staggered_qprop.cc,v 1.11 2005-01-02 05:21:10 edwards Exp $
 /*! \file
- *  \brief Propagator solver for a generic non-preconditioned fermion operator
+ *  \brief Propagator solver for an even-odd non-preconditioned fermion operator
  *
- *  Solve for the propagator of a generic non-preconditioned fermion operator
+ *  Solve for the propagator of an even-odd non-preconditioned fermion operator
  */
 
-#include "chromabase.h"
 #include "fermact.h"
-#include "linearop.h"
 #include "actions/ferm/invert/invcg1.h"
 
 using namespace QDP;
 
-//! Propagator of a generic non-preconditioned fermion linear operator
-/*! \ingroup qprop
- *
- * This routine is actually generic to all non-preconditioned (not red/black) fermions
- *
- * Compute the lattice fermion for a generic non-red/black fermion
- * using the source in "chi" - so, the source can
- * be of any desired form. The result will appear in "psi", which on input
- * contains an initial guess for the solution.
-
- * \param psi      quark propagator ( Modify )
- * \param u        gauge field ( Read )
- * \param chi      source ( Read )
- * \param RsdCG    CG (or MR) residual used here ( Read )
- * \param MaxCG    maximum number of CG iterations ( Read )
- * \param ncg_had  number of CG iterations ( Write )
- */
-
-void 
-EvenOddStaggeredTypeFermActBase<LatticeStaggeredFermion>::qprop(LatticeStaggeredFermion& psi, 
-								Handle<const ConnectState> state,
-								const LatticeStaggeredFermion& chi,
-								const InvertParam_t& invParam,
-								int& ncg_had)
+namespace Chroma
 {
-  START_CODE();
+  //! Propagator of a generic even-odd fermion linear operator
+  /*! \ingroup qprop
+   *
+   * This routine is actually generic to all even-odd fermions
+   */
+  template<typename T, typename P>
+  class EvenOddFermActQprop : public SystemSolver<T>
+  {
+  public:
+    //! Constructor
+    /*!
+     * \param M_        Linear operator ( Read )
+     * \param A_        M^dag*M operator ( Read )
+     * \param invParam  inverter parameters ( Read )
+     */
+    EvenOddFermActQprop(Handle< const EvenOddLinearOperator<T,P> > M_,
+			Handle< const LinearOperator<T> > A_,
+			const Real& Mass_,
+			const InvertParam_t& invParam_) : 
+      M(M_), A(A_), Mass(Mass_), invParam(invParam_) 
+      {}
 
-  int n_count;
+    //! Destructor is automatic
+    ~EvenOddFermActQprop() {}
+
+    //! Return the subset on which the operator acts
+    const OrderedSubset& subset() const {return all;}
+
+    //! Solver the linear system
+    /*!
+     * \param psi      quark propagator ( Modify )
+     * \param chi      source ( Read )
+     * \return number of CG iterations
+     */
+    int operator() (T& psi, const T& chi) const
+    {
+      START_CODE();
+
+      int n_count;
   
-  /* Construct the linear operator */
-  /* This allocates field for the appropriate action */
-  Handle<const EvenOddLinearOperatorBase<LatticeStaggeredFermion> > M(linOp(state));
-  Handle<const LinearOperator<LatticeStaggeredFermion> > A(lMdagM(state));
+      LatticeStaggeredFermion tmp, tmp1, tmp2;
+      tmp = tmp1 = tmp2 = zero;
+      Real invm;
 
-  LatticeStaggeredFermion tmp, tmp1, tmp2;
-  tmp = tmp1 = tmp2 = zero;
-  Real invm;
+      //  switch(invType)
+      //{
+      //case CG_INVERTER: 
 
-  //  switch(invType)
-  //{
-  //case CG_INVERTER: 
+      // Make preconditioned source:  tmp_1_e = M_ee chi_e + M_eo^{dag} chi_o
 
-    // Make preconditioned source:  tmp_1_e = M_ee chi_e + M_eo^{dag} chi_o
-
-    M->evenEvenLinOp(tmp, chi, PLUS);
-    M->evenOddLinOp(tmp2, chi, MINUS);
-    tmp[rb[0]] += tmp2;
+      M->evenEvenLinOp(tmp, chi, PLUS);
+      M->evenOddLinOp(tmp2, chi, MINUS);
+      tmp[rb[0]] += tmp2;
     
 
-    /* psi = (M^dag * M)^(-1) chi  = A^{-1} chi*/
-    InvCG1(*A, tmp, psi, invParam.RsdCG, invParam.MaxCG, n_count);
-   
-    // psi[rb[0]] is returned, so reconstruct psi[rb[1]]
-    invm = Real(1)/(2*getQuarkMass());
+      /* psi = (M^dag * M)^(-1) chi  = A^{-1} chi*/
+      InvCG1(*A, tmp, psi, invParam.RsdCG, invParam.MaxCG, n_count);
+      
+      // psi[rb[0]] is returned, so reconstruct psi[rb[1]]
+      invm = Real(1)/(2*Mass);
     
-    // tmp_1_o = D_oe psi_e 
-    M->oddEvenLinOp(tmp1, psi, PLUS);
+      // tmp_1_o = D_oe psi_e 
+      M->oddEvenLinOp(tmp1, psi, PLUS);
 
-    // tmp_1_o = (1/2m) D_oe psi_e
-    tmp1[rb[1]] *= invm;
+      // tmp_1_o = (1/2m) D_oe psi_e
+      tmp1[rb[1]] *= invm;
 
-    // tmp_2_o = (1/2m) chi_o
-    tmp2[rb[1]]  = invm * chi;
+      // tmp_2_o = (1/2m) chi_o
+      tmp2[rb[1]]  = invm * chi;
 
-    // psi_o = (1/2m) chi_o - (1/2m) D_oe psi_e 
-    psi[rb[1]] = tmp2 - tmp1;
-    //    break;  
-
-#if 0
-  case MR_INVERTER:
-    /* psi = M^(-1) chi */
-    InvMR (M, chi, psi, MRover, RsdCG, MaxCG, n_count);
-    break;
-
-  case BICG_INVERTER:
-    /* psi = M^(-1) chi */
-    InvBiCG (M, chi, psi, RsdCG, MaxCG, n_count);
-    break;
-#endif
+      // psi_o = (1/2m) chi_o - (1/2m) D_oe psi_e 
+      psi[rb[1]] = tmp2 - tmp1;
+      //    break;  
   
-    //  default:
-    // QDP_error_exit("Unknown inverter type", invType);
-    //}
+      //  default:
+      // QDP_error_exit("Unknown inverter type", invType);
+      //}
 
-  if ( n_count == invParam.MaxCG )
-    QDP_error_exit("no convergence in the inverter", n_count);
+      if ( n_count == invParam.MaxCG )
+	QDP_error_exit("no convergence in the inverter", n_count);
 
-  ncg_had = n_count;
+      END_CODE();
+
+      return n_count;
+    }
+
+
+  private:
+    // Hide default constructor
+    EvenOddFermActQprop() {}
+
+    Handle< const EvenOddLinearOperator<T,P> > M;
+    Handle< const LinearOperator<T> > A;
+    const Real Mass;
+    const InvertParam_t invParam;
+  };
+
+
+  typedef LatticeStaggeredFermion LF;
+  typedef multi1d<LatticeColorMatrix> LCM;
+
+
+  template<>
+  const SystemSolver<LF>* 
+  EvenOddStaggeredTypeFermAct<LF,LCM>:: qprop(Handle<const ConnectState> state,
+					      const InvertParam_t& invParam) const
+  {
+    return new EvenOddFermActQprop<LF,LCM>(Handle< const EvenOddLinearOperator<LF,LCM> >(linOp(state)),
+					   Handle< const LinearOperator<LF> >(lMdagM(state)),
+					   getQuarkMass(),
+					   invParam);
+  }
   
-  // Call the virtual destructor of A
-  // delete A;
 
-  END_CODE();
-}
-
-
-//template<>
-//void AsqtadFermAction<LatticeStaggeredFermion>::qprop(LatticeStaggeredFermion& psi,
-//                                           const 
-//multi1d<LatticeColorMatrix>& u_fat,
-//					   const 
-//multi1d<LatticeColorMatrix>& u_triple,
-//                                           const LatticeStaggeredFermion& chi,
-//                                           int invType,
-//                                           const Real& RsdCG,
-//                                           int MaxCG, int& ncg_had) 
-//const
-//{   
-//  qprop_t(psi, u_fat, u_triple, chi, invType, RsdCG, MaxCG, ncg_had);
-//}   
-
+}  

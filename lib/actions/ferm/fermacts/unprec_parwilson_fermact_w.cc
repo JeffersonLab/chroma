@@ -1,4 +1,4 @@
-// $Id: unprec_parwilson_fermact_w.cc,v 1.6 2004-12-29 22:13:41 edwards Exp $
+// $Id: unprec_parwilson_fermact_w.cc,v 1.7 2005-01-02 05:21:10 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action with parity breaking term
  */
@@ -17,18 +17,33 @@ namespace Chroma
   namespace UnprecParWilsonFermActEnv
   {
     //! Callback function
-    FermionAction<LatticeFermion>* createFermAct(XMLReader& xml_in,
-						 const std::string& path)
+    WilsonTypeFermAct<LatticeFermion,multi1d<LatticeColorMatrix> >* createFermAct4D(XMLReader& xml_in,
+										    const std::string& path)
     {
       return new UnprecParWilsonFermAct(WilsonTypeFermBCEnv::reader(xml_in, path), 
 					UnprecParWilsonFermActParams(xml_in, path));
     }
 
+    //! Callback function
+    /*! Differs in return type */
+    FermionAction<LatticeFermion>* createFermAct(XMLReader& xml_in,
+						 const std::string& path)
+    {
+      return createFermAct4D(xml_in, path);
+    }
+
     //! Name to be used
     const std::string name = "PARWILSON";
 
-    //! Register the ParWilson fermact
-    const bool registered = Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct); 
+    //! Register all the factories
+    bool registerAll()
+    {
+      return Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct)
+	   & Chroma::TheWilsonTypeFermActFactory::Instance().registerObject(name, createFermAct4D);
+    }
+
+    //! Register the fermact
+    const bool registered = registerAll();
   }
 
 
@@ -71,7 +86,7 @@ namespace Chroma
   const LinearOperator<LatticeFermion>*
   UnprecParWilsonFermAct::lMdagM(Handle<const ConnectState> state) const
   {
-  return new lmdagm<LatticeFermion>(linOp(state));
+    return new lmdagm<LatticeFermion>(linOp(state));
   }
 
 }

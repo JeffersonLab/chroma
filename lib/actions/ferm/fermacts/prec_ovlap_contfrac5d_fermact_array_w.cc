@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_fermact_array_w.cc,v 1.8 2004-12-29 22:13:40 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_fermact_array_w.cc,v 1.9 2005-01-02 05:21:09 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -27,8 +27,8 @@ namespace Chroma
   namespace EvenOddPrecOvlapContFrac5DFermActArrayEnv
   {
     //! Callback function
-    WilsonTypeFermAct5D<LatticeFermion>* createFermAct5D(XMLReader& xml_in,
-							 const std::string& path)
+    WilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >* createFermAct5D(XMLReader& xml_in,
+											const std::string& path)
     {
       return new EvenOddPrecOvlapContFrac5DFermActArray(WilsonTypeFermBCArrayEnv::reader(xml_in, path), 
 							EvenOddPrecOvlapContFrac5DFermActParams(xml_in, path));
@@ -49,7 +49,7 @@ namespace Chroma
     bool registerAll()
     {
       return Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct)
-	   & Chroma::TheWilsonTypeFermAct5DFactory::Instance().registerObject(name, createFermAct5D);
+	& Chroma::TheWilsonTypeFermAct5DFactory::Instance().registerObject(name, createFermAct5D);
     }
 
     //! Register the fermact
@@ -113,7 +113,7 @@ namespace Chroma
   
   // Construct the action out of a parameter structure
   EvenOddPrecOvlapContFrac5DFermActArray::EvenOddPrecOvlapContFrac5DFermActArray(Handle< FermBC< multi1d< LatticeFermion> > > fbc_a_, 
- const EvenOddPrecOvlapContFrac5DFermActParams& params_) :
+										 const EvenOddPrecOvlapContFrac5DFermActParams& params_) :
     fbc(fbc_a_), params(params_) 
   {
 
@@ -137,9 +137,9 @@ namespace Chroma
 
   void
   EvenOddPrecOvlapContFrac5DFermActArray::init(Real& scale_fac,
-					  multi1d<Real>& alpha,
-					  multi1d<Real>& beta,
-					  const OverlapConnectState& state) const
+					       multi1d<Real>& alpha,
+					       multi1d<Real>& beta,
+					       const OverlapConnectState& state) const
   {
   
     int type = 0;
@@ -241,12 +241,12 @@ namespace Chroma
     
     QDPIO::cout << "Maximum error | R(x) - sgn(x) | <= Delta = " << maxerr << endl;
     /*
-    for(int i=0; i < N5; i++) { 
+      for(int i=0; i < N5; i++) { 
       QDPIO::cout << "beta["<<i<<"] = " << beta[i] << endl;
-    }
-    for(int i=0; i < N5; i++) { 
+      }
+      for(int i=0; i < N5; i++) { 
       QDPIO::cout << "alpha["<<i<<"] = " << alpha[i] << endl;
-    }
+      }
     */
 
     switch( params.approximation_type) {
@@ -339,46 +339,57 @@ namespace Chroma
   
 
   //! Propagator of an un-preconditioned Extended-Overlap linear operator
-  /*!
-   * \param psi      quark propagator ( Modify )
-   * \param state    gauge field ( Read )
-   * \param chi      source ( Read )
-   * \param invType  inverter type ( Read (
-   * \param RsdCG    CG (or MR) residual used here ( Read )
-   * \param MaxCG    maximum number of CG iterations ( Read )
-   * \param ncg_had  number of CG iterations ( Write )
+  /*! \ingroup qprop
+   *
+   * Propagator solver for DWF-like fermions
    */
-  void 
-  EvenOddPrecOvlapContFrac5DFermActArray::qprop(LatticeFermion& psi, 
-						Handle<const ConnectState> state, 
-						const LatticeFermion& chi, 
-						const InvertParam_t& invParam,
-						int& ncg_had) const
+  template<typename T, typename P>
+  class ContFrac5DQprop : public SystemSolver<T>
   {
-    
-    START_CODE();
-    
-    const Real Mass = quark_mass();
-    int n_count;
-    
-    int G5 = Ns*Ns - 1;
-    
-    // Initialize the 5D fields
-    multi1d<LatticeFermion> chi5(N5);
-    multi1d<LatticeFermion> psi5(N5);
-    // Construct the linear operator
-    Handle<const EvenOddPrecLinearOperatorBase< multi1d<LatticeFermion> > > A(linOp(state));
+  public:
+    //! Constructor
+    /*!
+     * \param A_         Linear operator ( Read )
+     * \param Mass_      quark mass ( Read )
+     */
+    ContFrac5DQprop(Handle< const EvenOddPrecLinearOperator<multi1d<T>, P> > A_,
+		    const Real& Mass_,
+		    const InvertParam_t& invParam_) : 
+      A(A_), Mass(Mass_), invParam(invParam_) {}
 
+    //! Destructor is automatic
+    ~ContFrac5DQprop() {}
 
-  
-    switch(invParam.invType) {
-    case CG_INVERTER: 
+    //! Return the subset on which the operator acts
+    const OrderedSubset& subset() const {return all;}
+
+    //! Solver the linear system
+    /*!
+     * \param psi      quark propagator ( Modify )
+     * \param chi      source ( Read )
+     * \return number of CG iterations
+     */
+    int operator() (T& psi, const T& chi) const
+    {
+      START_CODE();
+    
+      const int N5 = A->size();
+      int n_count;
+    
+      int G5 = Ns*Ns - 1;
+      
+      // Initialize the 5D fields
+      multi1d<T> chi5(N5);
+      multi1d<T> psi5(N5);
+
+      switch(invParam.invType) 
       {
-	multi1d<LatticeFermion> tmp5_1(N5);
-	
+      case CG_INVERTER: 
+      {
+	multi1d<T> tmp5_1(N5);
 	{
-	  multi1d<LatticeFermion> tmp5_2(N5);
-	  multi1d<LatticeFermion> tmp5_3(N5);
+	  multi1d<T> tmp5_2(N5);
+	  multi1d<T> tmp5_3(N5);
 
 	  chi5 = zero;
 	  psi5 = zero;
@@ -414,20 +425,20 @@ namespace Chroma
 	// Reconstruct psi[N5-1]_e = Q_ee^{-1} S_e - Q_ee^{-1}Q_eo psi[N5-1]_o
 	//         = Q_ee^{-1} ( S_e - Q_eo psi_o )
 	{ 
-
+	  
 	  // Dont need to initialise as the parts I use 
 	  // will be over written the other parts I ignore
-	  multi1d<LatticeFermion> tmp5_2(N5);
-	  multi1d<LatticeFermion> tmp5_3(N5);
+	  multi1d<T> tmp5_2(N5);
+	  multi1d<T> tmp5_3(N5);
 
 	  // tmp5_2_e = Qeo psi_o
 	  A->evenOddLinOp(tmp5_2, psi5, PLUS);
 	  for(int i=0; i < N5; i++) {
-
+	    
 	    // tmp5_3_e = S_e - Qeo psi_o 
 	    //          =     - tmp5_2_e
 	    tmp5_3[i][rb[0]] = chi5[i] - tmp5_2[i];
-
+	    
 	  }
 
 	  // tmp5_1_e = Qee^{-1} ( S_e - Qeo psi_o )
@@ -441,40 +452,62 @@ namespace Chroma
       } // tmp5_1 disappears
       break;
       
-    case MR_INVERTER:
-      QDP_error_exit("Unsupported inverter type", invParam.invType);
-      break;
+      case MR_INVERTER:
+	QDP_error_exit("Unsupported inverter type", invParam.invType);
+	break;
 
-    case BICG_INVERTER:
-      QDP_error_exit("Unsupported inverter type", invParam.invType);
-      break;
+      case BICG_INVERTER:
+	QDP_error_exit("Unsupported inverter type", invParam.invType);
+	break;
       
-    default:
-      QDP_error_exit("Unknown inverter type", invParam.invType);
-    }
+      default:
+	QDP_error_exit("Unknown inverter type", invParam.invType);
+      }
   
-    if ( n_count == invParam.MaxCG )
-      QDP_error_exit("no convergence in the inverter", n_count);
+      if ( n_count == invParam.MaxCG )
+	QDP_error_exit("no convergence in the inverter", n_count);
     
-    ncg_had = n_count;
+      // Solution now lives in chi5
+      
+      // Multiply back in factor 2/(1-m) to return to 
+      // (1/2)( 1 + m + (1-m) gamma_5 epsilon  )
+      // normalisation
+      psi5[N5-1] *= Real(2)/(Real(1)-Mass);
     
-    // Solution now lives in chi5
+      // Remove contact term
+      psi = psi5[N5-1] - chi;
     
-    // Multiply back in factor 2/(1-m) to return to 
-    // (1/2)( 1 + m + (1-m) gamma_5 epsilon  )
-    // normalisation
-    psi5[N5-1] *= Real(2)/(Real(1)-Mass);
-    
-    // Remove contact term
-    psi = psi5[N5-1] - chi;
-    
-    // Overall normalization
-    Real ftmp1 = Real(1) / (Real(1) - Mass);
-    psi *= ftmp1;
+      // Overall normalization
+      Real ftmp1 = Real(1) / (Real(1) - Mass);
+      psi *= ftmp1;
 
-    END_CODE();
+      END_CODE();
+
+      return n_count;
+    }
+
+  private:
+    // Hide default constructor
+    ContFrac5DQprop() {}
+
+    Handle< const EvenOddPrecLinearOperator<multi1d<T>,P> > A;
+    const Real Mass;
+    const InvertParam_t invParam;
+  };
+
+ 
+  //! Propagator of an un-preconditioned Extended-Overlap linear operator
+  const SystemSolver<LatticeFermion>* 
+  EvenOddPrecOvlapContFrac5DFermActArray::qprop(Handle<const ConnectState> state,
+						const InvertParam_t& invParam) const
+  {
+    return new ContFrac5DQprop<LatticeFermion,multi1d<LatticeColorMatrix> >(
+      Handle< const EvenOddPrecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> > >(linOp(state)),
+      getQuarkMass(),
+      invParam);
   }
   
+
   //! Create a ConnectState with just the gauge fields
   const OverlapConnectState*
   EvenOddPrecOvlapContFrac5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_) const
@@ -484,7 +517,7 @@ namespace Chroma
       ret_val = 
 	OverlapConnectStateEnv::createOverlapState(u_, 
 						   getFermBC()
-						   );
+	  );
     } 
     catch(const string& e) { 
       QDPIO::cerr << "Caught Exception: " << e << endl;
@@ -498,7 +531,7 @@ namespace Chroma
   //  approximation bound
   const OverlapConnectState*
   EvenOddPrecOvlapContFrac5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
-				      const Real& approxMin_) const 
+						      const Real& approxMin_) const 
   {
     const OverlapConnectState *ret_val;
     try { 
@@ -506,7 +539,7 @@ namespace Chroma
 	OverlapConnectStateEnv::createOverlapState(u_, 
 						   getFermBC(),
 						   approxMin_
-						   );
+	  );
     } 
     catch(const string& e) { 
       QDPIO::cerr << "Caught Exception: " << e << endl;
@@ -519,8 +552,8 @@ namespace Chroma
   //! Create a connect State with just approximation range bounds
   const OverlapConnectState*
   EvenOddPrecOvlapContFrac5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
-				      const Real& approxMin_,
-				      const Real& approxMax_) const
+						      const Real& approxMin_,
+						      const Real& approxMax_) const
   {
     const OverlapConnectState *ret_val;
     try { 
@@ -529,7 +562,7 @@ namespace Chroma
 						   getFermBC(),
 						   approxMin_,
 						   approxMax_
-						   );
+	  );
     } 
     catch(const string& e) { 
       QDPIO::cerr << "Caught Exception: " << e << endl;
@@ -542,9 +575,9 @@ namespace Chroma
   //! Create OverlapConnectState with eigenvalues/vectors
   const OverlapConnectState*
   EvenOddPrecOvlapContFrac5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
-				      const multi1d<Real>& lambda_lo_, 
-				      const multi1d<LatticeFermion>& evecs_lo_,
-				      const Real& lambda_hi_) const
+						      const multi1d<Real>& lambda_lo_, 
+						      const multi1d<LatticeFermion>& evecs_lo_,
+						      const Real& lambda_hi_) const
   {
     const OverlapConnectState *ret_val;
     try { 
@@ -567,8 +600,8 @@ namespace Chroma
   //! Create OverlapConnectState from XML
   const OverlapConnectState*
   EvenOddPrecOvlapContFrac5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
-				      XMLReader& state_info_xml,
-				      const string& state_info_path) const
+						      XMLReader& state_info_xml,
+						      const string& state_info_path) const
   {
     multi1d<LatticeColorMatrix> u_tmp = u_;
     
@@ -588,11 +621,11 @@ namespace Chroma
     try {
       ret_val = 
 	OverlapConnectStateEnv::createOverlapState(
-						   u_,
-						   getFermBC(),
-						   state_info_xml,
-						   state_info_path,
-						   *Maux);
+	  u_,
+	  getFermBC(),
+	  state_info_xml,
+	  state_info_path,
+	  *Maux);
     }
     catch(const string& e) { 
       QDPIO::cerr << "Caught Exception: " << e << endl;
@@ -605,7 +638,7 @@ namespace Chroma
   //! Create OverlapConnectState from XML
   const OverlapConnectState*
   EvenOddPrecOvlapContFrac5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
-				      const OverlapStateInfo& state_info) const
+						      const OverlapStateInfo& state_info) const
   {
     // HACK UP A LINEAR OPERATOR TO CHECK EIGENVALUES/VECTORS WITH
     multi1d<LatticeColorMatrix> u_tmp = u_;
@@ -623,10 +656,10 @@ namespace Chroma
     try {
       ret_val = 
 	OverlapConnectStateEnv::createOverlapState(
-						   u_,
-						   getFermBC(),
-						   state_info,
-						   *Maux);
+	  u_,
+	  getFermBC(),
+	  state_info,
+	  *Maux);
     }
     catch(const string& e) { 
       QDPIO::cerr << "Caught Exception: " << e << endl;

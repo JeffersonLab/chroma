@@ -1,4 +1,4 @@
-// $Id: ovlap_partfrac4d_fermact_w.cc,v 1.13 2004-12-29 22:13:40 edwards Exp $
+// $Id: ovlap_partfrac4d_fermact_w.cc,v 1.14 2005-01-02 05:21:09 edwards Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -42,8 +42,8 @@ namespace Chroma
   namespace OvlapPartFrac4DFermActEnv
   {
     //! Callback function
-    WilsonTypeFermAct<LatticeFermion>* createFermAct4D(XMLReader& xml_in,
-						       const std::string& path)
+    WilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* createFermAct4D(XMLReader& xml_in,
+										      const std::string& path)
     {
       return new OvlapPartFrac4DFermAct(WilsonTypeFermBCEnv::reader(xml_in, path), 
 					OvlapPartFrac4DFermActParams(xml_in, path));

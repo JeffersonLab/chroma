@@ -1,4 +1,4 @@
-// $Id: quarkprop4_w.cc,v 1.18 2004-12-29 22:13:41 edwards Exp $
+// $Id: quarkprop4_w.cc,v 1.19 2005-01-02 05:21:10 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -27,11 +27,11 @@ namespace Chroma
    * \param ncg_had  number of CG iterations ( Write )
    */
 
-  template<typename T, template<class> class C>
+  template<typename T>
   void quarkProp4_a(LatticePropagator& q_sol, 
 		    XMLWriter& xml_out,
 		    const LatticePropagator& q_src,
-		    const C<T>& S_f,
+		    const FermionAction<T>& S_f,
 		    Handle<const ConnectState> state,
 		    const InvertParam_t& invParam,
 		    bool nonRelProp,
@@ -39,9 +39,11 @@ namespace Chroma
   {
     START_CODE();
 
-    push(xml_out, "QuarkProp");
+    push(xml_out, "QuarkProp4");
 
     ncg_had = 0;
+
+    Handle<const SystemSolver<T> > qprop(S_f.qprop(state,invParam));
 
     int max_spin = (nonRelProp) ? (Ns/2) : Ns;
 
@@ -68,9 +70,8 @@ namespace Chroma
 	chi *= fact;
 
 	// Compute the propagator for given source color/spin.
-	int n_count;
-
-	S_f.qprop(psi, state, chi, invParam, n_count);
+//	S_f.qprop(psi, state, chi, invParam, n_count);
+	int n_count = (*qprop)(psi,chi);
 	ncg_had += n_count;
 
 	push(xml_out,"Qprop");
@@ -137,13 +138,13 @@ namespace Chroma
   void quarkProp4(LatticePropagator& q_sol, 
 		  XMLWriter& xml_out,
 		  const LatticePropagator& q_src,
-		  const WilsonTypeFermAct<LatticeFermion>& S_f,
+		  const WilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >& S_f,
 		  Handle<const ConnectState> state,
 		  const InvertParam_t& invParam,
 		  bool nonRelProp,
 		  int& ncg_had)
   {
-    quarkProp4_a<LatticeFermion,WilsonTypeFermAct>(q_sol, xml_out, q_src, S_f, state, invParam, nonRelProp, ncg_had);
+    quarkProp4_a<LatticeFermion>(q_sol, xml_out, q_src, S_f, state, invParam, nonRelProp, ncg_had);
   }
 
 
@@ -160,15 +161,14 @@ namespace Chroma
   void quarkProp4(LatticePropagator& q_sol, 
 		  XMLWriter& xml_out,
 		  const LatticePropagator& q_src,
-		  const WilsonTypeFermAct5D<LatticeFermion>& S_f,
+		  const WilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >& S_f,
 		  Handle<const ConnectState> state,
 		  const InvertParam_t& invParam,
 		  bool nonRelProp,
 		  int& ncg_had)
   {
-    quarkProp4_a<LatticeFermion,WilsonTypeFermAct5D>(q_sol, xml_out, q_src, S_f, state, invParam, nonRelProp, ncg_had);
+    quarkProp4_a<LatticeFermion>(q_sol, xml_out, q_src, S_f, state, invParam, nonRelProp, ncg_had);
   }
-
 
 
   //! Given a complete propagator as a source, this does all the inversions needed
@@ -183,13 +183,13 @@ namespace Chroma
    */
   template<>
   void 
-  WilsonTypeFermAct<LatticeFermion>::quarkProp(LatticePropagator& q_sol, 
-					       XMLWriter& xml_out,
-					       const LatticePropagator& q_src,
-					       Handle<const ConnectState> state,
-					       const InvertParam_t& invParam,
-					       bool nonRelProp,
-					       int& ncg_had)
+  WilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >::quarkProp(LatticePropagator& q_sol, 
+									      XMLWriter& xml_out,
+									      const LatticePropagator& q_src,
+									      Handle<const ConnectState> state,
+									      const InvertParam_t& invParam,
+									      bool nonRelProp,
+									      int& ncg_had)
   {
     quarkProp4(q_sol, xml_out, q_src, *this, state, invParam, nonRelProp, ncg_had);
   }
@@ -207,13 +207,13 @@ namespace Chroma
    */
   template<>
   void 
-  WilsonTypeFermAct5D<LatticeFermion>::quarkProp(LatticePropagator& q_sol, 
-						 XMLWriter& xml_out,
-						 const LatticePropagator& q_src,
-						 Handle<const ConnectState> state,
-						 const InvertParam_t& invParam,
-						 bool nonRelProp,
-						 int& ncg_had)
+  WilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >::quarkProp(LatticePropagator& q_sol, 
+										XMLWriter& xml_out,
+										const LatticePropagator& q_src,
+										Handle<const ConnectState> state,
+										const InvertParam_t& invParam,
+										bool nonRelProp,
+										int& ncg_had)
   {
     quarkProp4(q_sol, xml_out, q_src, *this, state, invParam, nonRelProp, ncg_had);
   }

@@ -1,4 +1,4 @@
-// $Id: prec_wilson_fermact_w.cc,v 1.15 2004-12-29 22:13:40 edwards Exp $
+// $Id: prec_wilson_fermact_w.cc,v 1.16 2005-01-02 05:21:09 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action
  */
@@ -17,8 +17,8 @@ namespace Chroma
   namespace EvenOddPrecWilsonFermActEnv
   {
     //! Callback function
-    WilsonTypeFermAct<LatticeFermion>* createFermAct4D(XMLReader& xml_in,
-						       const std::string& path)
+    WilsonTypeFermAct<LatticeFermion,multi1d<LatticeColorMatrix> >* createFermAct4D(XMLReader& xml_in,
+										    const std::string& path)
     {
       return new EvenOddPrecWilsonFermAct(WilsonTypeFermBCEnv::reader(xml_in, path), 
 					  EvenOddPrecWilsonFermActParams(xml_in, path));

@@ -1,4 +1,4 @@
-// $Id: prec_zolo_nef_fermact_array_w.cc,v 1.11 2004-12-29 22:13:40 edwards Exp $
+// $Id: prec_zolo_nef_fermact_array_w.cc,v 1.12 2005-01-02 05:21:09 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF fermion action
  */
@@ -23,8 +23,8 @@ namespace Chroma
   namespace EvenOddPrecZoloNEFFermActArrayEnv
   {
     //! Callback function
-    WilsonTypeFermAct5D<LatticeFermion>* createFermAct5D(XMLReader& xml_in,
-							 const std::string& path)
+    WilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >* createFermAct5D(XMLReader& xml_in,
+											const std::string& path)
     {
       return new EvenOddPrecZoloNEFFermActArray(WilsonTypeFermBCArrayEnv::reader(xml_in, path), 
 						EvenOddPrecZoloNEFFermActArrayParams(xml_in, path));
@@ -177,7 +177,7 @@ namespace Chroma
   }
 
   //! Produce an even-odd preconditioned linear operator for this action with arbitrary quark mass
-  const EvenOddPrecDWLinOpBaseArray<LatticeFermion>* 
+  const EvenOddPrecDWLinOpBaseArray<LatticeFermion, multi1d<LatticeColorMatrix> >* 
   EvenOddPrecZoloNEFFermActArray::precLinOp(Handle<const ConnectState> state,
 					    const Real& m_q) const
   {
@@ -191,7 +191,7 @@ namespace Chroma
   }
 
   //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
-  const UnprecDWLinOpBaseArray<LatticeFermion>* 
+  const UnprecDWLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >* 
   EvenOddPrecZoloNEFFermActArray::unprecLinOp(Handle<const ConnectState> state,
 					      const Real& m_q) const
   {

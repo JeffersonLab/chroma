@@ -1,4 +1,4 @@
-// $Id: quarkprop4_w.h,v 1.13 2004-12-29 22:13:41 edwards Exp $
+// $Id: quarkprop4_w.h,v 1.14 2005-01-02 05:21:10 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -26,7 +26,7 @@ namespace Chroma
   void quarkProp4(LatticePropagator& q_sol, 
 		  XMLWriter& xml_out,
 		  const LatticePropagator& q_src,
-		  const WilsonTypeFermAct<LatticeFermion>& S_f,
+		  const WilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >& S_f,
 		  Handle<const ConnectState> state,
 		  const InvertParam_t& invParam,
 		  bool nonRelProp,
@@ -46,7 +46,7 @@ namespace Chroma
   void quarkProp4(LatticePropagator& q_sol, 
 		  XMLWriter& xml_out,
 		  const LatticePropagator& q_src,
-		  const WilsonTypeFermAct5D<LatticeFermion>& S_f,
+		  const WilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >& S_f,
 		  Handle<const ConnectState> state,
 		  const InvertParam_t& invParam,
 		  bool nonRelProp,

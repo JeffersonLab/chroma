@@ -1,4 +1,4 @@
-// $Id: nef_quarkprop4_w.h,v 1.4 2004-12-29 22:13:41 edwards Exp $
+// $Id: nef_quarkprop4_w.h,v 1.5 2005-01-02 05:21:10 edwards Exp $
 /*! \file
  * \brief Full quark propagator solver for domain wall fermions
  *
@@ -31,7 +31,7 @@ namespace Chroma
 		 XMLWriter& xml_out,
 		 const LatticePropagator& q_src,
 		 int t_src, int j_decay,
-		 const UnprecDWFermActBaseArray<LatticeFermion>& S_f,
+		 const UnprecDWFermActBaseArray<LatticeFermion,multi1d<LatticeColorMatrix> >& S_f,
 		 Handle<const ConnectState> state,
 		 const InvertParam_t& invParam,
 		 int& ncg_had);
@@ -53,7 +53,7 @@ namespace Chroma
 		 XMLWriter& xml_out,
 		 const LatticePropagator& q_src,
 		 int t_src, int j_decay,
-		 const EvenOddPrecDWFermActBaseArray<LatticeFermion>& S_f,
+		 const EvenOddPrecDWFermActBaseArray<LatticeFermion,multi1d<LatticeColorMatrix> >& S_f,
 		 Handle<const ConnectState> state,
 		 const InvertParam_t& invParam,
 		 int& ncg_had);

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_fermact_base_array_w.h,v 1.19 2004-12-29 22:13:40 edwards Exp $
+// $Id: unprec_dwf_fermact_base_array_w.h,v 1.20 2005-01-02 05:21:10 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned domain-wall-like fermion actions
  */
@@ -24,28 +24,28 @@ namespace Chroma
    * Unprecondition domain-wall fermion action. The conventions used here
    * are specified in Phys.Rev.D63:094505,2001 (hep-lat/0005002).
    */
-  template<typename T>
-  class UnprecDWFermActBaseArray : public UnprecWilsonTypeFermAct5D<T, multi1d<LatticeColorMatrix> >
+  template<typename T, typename P>
+  class UnprecDWFermActBaseArray : public UnprecWilsonTypeFermAct5D<T,P>
   {
   public:
     //! Return the quark mass
-    virtual Real quark_mass() const = 0;
+    virtual Real getQuarkMass() const = 0;
 
     //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
-    virtual const UnprecDWLinOpBaseArray<T>* unprecLinOp(Handle<const ConnectState> state, 
-							 const Real& m_q) const = 0;
+    virtual const UnprecDWLinOpBaseArray<T,P>* unprecLinOp(Handle<const ConnectState> state, 
+							   const Real& m_q) const = 0;
 
     //! Override to produce a DWF-link unprec. linear operator for this action
     /*! Covariant return rule - override base class function */
-    virtual const UnprecDWLinOpBaseArray<T>* linOp(Handle<const ConnectState> state) const
+    virtual const UnprecDWLinOpBaseArray<T,P>* linOp(Handle<const ConnectState> state) const
     {
-      return unprecLinOp(state,quark_mass());
+      return unprecLinOp(state,getQuarkMass());
     }
 
     //! Produce a linear operator M^dag.M for this action
-    virtual const LinearOperator< multi1d<LatticeFermion> >* lMdagM(Handle<const ConnectState> state) const
+    virtual const LinearOperator< multi1d<T> >* lMdagM(Handle<const ConnectState> state) const
     {
-      return new lmdagm< multi1d<LatticeFermion> >(linOp(state));
+      return new lmdagm< multi1d<T> >(linOp(state));
     }
 
     //! Produce a hermitian version of the linear operator
@@ -70,19 +70,17 @@ namespace Chroma
     }
 
     //! Produce a  DeltaLs = 1-epsilon^2(H) operator
-    virtual const LinearOperator<LatticeFermion>* DeltaLs(Handle< const ConnectState> state,
-							  const InvertParam_t& invParam) const 
+    virtual const LinearOperator<T>* DeltaLs(Handle< const ConnectState> state,
+					     const InvertParam_t& invParam) const 
     {
-      Handle< const LinearOperator<LatticeFermion> >  lin(linOp4D(state,Real(0),invParam));
+      Handle< const LinearOperator<T> >  lin(linOp4D(state,Real(0),invParam));
       return new lDeltaLs(lin);
     }
 
     //! Define quark propagator routine for 4D fermions
-    void qprop(T& psi, 
-	       Handle<const ConnectState> state, 
-	       const T& chi, 
-	       const InvertParam_t& invParam,
-	       int& ncg_had) const;
+    /*! Default implementation provided */
+    const SystemSolver<T>* qprop(Handle<const ConnectState> state,
+				 const InvertParam_t& invParam) const;
 
     //! Apply the Dminus operator on a fermion.
     /*! 
@@ -96,7 +94,7 @@ namespace Chroma
 		enum PlusMinus isign,
 		int s5) const
       {
-	Handle< const UnprecDWLinOpBaseArray<T> > A(linOp(state));
+	Handle< const UnprecDWLinOpBaseArray<T,P> > A(linOp(state));
 	A->Dminus(chi,psi,isign,s5);
       }
 

@@ -1,4 +1,4 @@
-// $Id: t_propagator_s.cc,v 1.25 2004-12-29 22:08:27 edwards Exp $
+// $Id: t_propagator_s.cc,v 1.26 2005-01-02 05:21:11 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -374,6 +374,8 @@ int main(int argc, char **argv)
   write(xml_out, "RsdCG", input.param.invParam.RsdCG);
   pop(xml_out);
 
+  Handle<const SystemSolver<LatticeStaggeredFermion> > qprop(S_f.qprop(state,input.param.invParam));
+
   for(int t_source = 0; t_source < 3; t_source += 2) {
     QDPIO::cout << "Source time slice = " << t_source << endl;
 
@@ -393,10 +395,7 @@ int main(int argc, char **argv)
         // Use the last initial guess as the current guess
 
         // Compute the propagator for given source color/spin 
-        // int n_count;
-
-        S_f.qprop(psi, state, q_source, input.param.invParam, n_count);
-    
+	int n_count = (*qprop)(psi, q_source);
         ncg_had += n_count;
       
 	push(xml_out,"Inverter_performance");

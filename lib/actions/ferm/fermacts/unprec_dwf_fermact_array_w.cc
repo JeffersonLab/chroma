@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_fermact_array_w.cc,v 1.13 2004-12-29 22:13:40 edwards Exp $
+// $Id: unprec_dwf_fermact_array_w.cc,v 1.14 2005-01-02 05:21:09 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion action
  */
@@ -20,8 +20,8 @@ namespace Chroma
   namespace UnprecDWFermActArrayEnv
   {
     //! Callback function
-    WilsonTypeFermAct5D<LatticeFermion>* createFermAct5D(XMLReader& xml_in,
-							 const std::string& path)
+    WilsonTypeFermAct5D<LatticeFermion, multi1d<LatticeColorMatrix> >* createFermAct5D(XMLReader& xml_in,
+										       const std::string& path)
     {
       return new UnprecDWFermActArray(WilsonTypeFermBCArrayEnv::reader(xml_in, path), 
 				      UnprecDWFermActArrayParams(xml_in, path));
@@ -78,7 +78,7 @@ namespace Chroma
 
   
   //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
-  const UnprecDWLinOpBaseArray<LatticeFermion>* 
+  const UnprecDWLinOpBaseArray<LatticeFermion, multi1d<LatticeColorMatrix> >* 
   UnprecDWFermActArray::unprecLinOp(Handle<const ConnectState> state, 
 				    const Real& m_q) const
   {

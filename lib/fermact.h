@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 1.15 2004-12-29 22:13:40 edwards Exp $
+// $Id: fermact.h,v 1.16 2005-01-02 05:21:08 edwards Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -8,12 +8,14 @@
 #ifndef __fermact_h__
 #define __fermact_h__
 
-using namespace QDP;
-
+#include "chromabase.h"
 #include "invtype.h"
 #include "state.h"
 #include "linearop.h"
+#include "syssolver.h"
 #include "fermbc.h"
+
+using namespace QDP;
 
 namespace Chroma
 {
@@ -57,22 +59,9 @@ namespace Chroma
 					    XMLReader& reader,
 					    const string& path) const = 0;
 
-    //! Compute quark propagator over simpler type
-    /*! 
-     * Solves  M.psi = chi
-     *
-     * \param psi      quark propagator ( Modify )
-     * \param state    gauge connection state ( Read )
-     * \param chi      source ( Read )
-     * \param invParam inverter parameters ( Read (
-     * \param ncg_had  number of CG iterations ( Write )
-     *
-     */
-    virtual void qprop(T& psi, 
-		       Handle<const ConnectState> state, 
-		       const T& chi, 
-		       const InvertParam_t& invParam,
-		       int& ncg_had) const = 0;
+    //! Return quark prop solver, solution of unpreconditioned system
+    virtual const SystemSolver<T>* qprop(Handle<const ConnectState> state,
+					 const InvertParam_t& invParam) const = 0;
 
     //! Given a complete propagator as a source, this does all the inversions needed
     /*!
@@ -185,22 +174,29 @@ namespace Chroma
     //! Produce a linear operator M^dag.M for this action
     virtual const LinearOperator<T>* lMdagM(Handle<const ConnectState> state) const = 0;
 
-    //! Compute quark propagator over simpler type
-    /*! 
-     * Solves  M.psi = chi
-     *
-     * \param psi      quark propagator ( Modify )
-     * \param state    gauge connection state ( Read )
-     * \param chi      source ( Read )
-     * \param invParam inverter parameters ( Read (
-     * \param ncg_had  number of CG iterations ( Write )
-     *
-     */
-    virtual void qprop(T& psi, 
-		       Handle<const ConnectState> state, 
-		       const T& chi, 
-		       const InvertParam_t& invParam,
-		       int& ncg_had) const;
+    //! Return quark prop solver, solution of unpreconditioned system
+    /*! Default implementation provided */
+    virtual const SystemSolver<T>* qprop(Handle<const ConnectState> state,
+					 const InvertParam_t& invParam) const;
+  };
+
+
+  //-------------------------------------------------------------------------------------------
+  //! Base class for quadratic matter actions (e.g., fermions)
+  /*! @ingroup actions
+   *
+   * Supports creation and application for quadratic actions with derivatives
+   * This is basically a foundry class with additional operations.
+   */
+  template<typename T, typename P>
+  class DiffFermAct4D : public FermAct4D<T>
+  {
+  public:
+    //! Virtual destructor to help with cleanup;
+    virtual ~DiffFermAct4D() {}
+
+    //! Produce a linear operator for this action
+    virtual const DiffLinearOperator<T,P>* linOp(Handle<const ConnectState> state) const = 0;
   };
 
 
@@ -238,7 +234,7 @@ namespace Chroma
     virtual ~FermAct5D() {}
 
     //! Return the quark mass
-    virtual Real quark_mass() const = 0;
+    virtual Real getQuarkMass() const = 0;
 
     //! Expected length of array index
     virtual int size() const = 0;
@@ -272,22 +268,29 @@ namespace Chroma
     //! Produce a linear operator M^dag.M for this action
     virtual const LinearOperator< multi1d<T> >* lMdagM(Handle<const ConnectState> state) const = 0;
 
-    //! Compute quark propagator over base type
-    /*! 
-     * Solves  M.psi = chi
-     *
-     * \param psi      quark propagator ( Modify )
-     * \param state    gauge connection state ( Read )
-     * \param chi      source ( Modify )
-     * \param invParam inverter parameters ( Read (
-     * \param ncg_had  number of CG iterations ( Write )
-     *
-     */
-    virtual void qpropT(multi1d<T>& psi, 
-			Handle<const ConnectState> state, 
-			const multi1d<T>& chi, 
-			const InvertParam_t& invParam,
-			int& ncg_had) const;
+    //! Return quark prop solver, solution of unpreconditioned system
+    /*! Default implementation provided */
+    virtual const SystemSolver< multi1d<T> >* qpropT(Handle<const ConnectState> state,
+						     const InvertParam_t& invParam) const;
+  };
+
+
+  //-------------------------------------------------------------------------------------------
+  //! Base class of quadratic matter actions (e.g., fermions) living in an extra dimension
+  /*! @ingroup actions
+   *
+   * Supports creation and application for quadratic actions, specialized
+   * to support arrays of matter fields including derivatives
+   */
+  template<typename T, typename P>
+  class DiffFermAct5D : public FermAct5D<T>
+  {
+  public:
+    //! Virtual destructor to help with cleanup;
+    virtual ~DiffFermAct5D() {}
+
+    //! Produce a linear operator for this action
+    virtual const DiffLinearOperator<multi1d<T>, P>* linOp(Handle<const ConnectState> state) const = 0;
   };
 
 
@@ -297,8 +300,8 @@ namespace Chroma
    *
    * Wilson-like fermion actions
    */
-  template<typename T>
-  class WilsonTypeFermAct : public FermAct4D<T>
+  template<typename T, typename P>
+  class WilsonTypeFermAct : public DiffFermAct4D<T,P>
   {
   public:
     //! Virtual destructor to help with cleanup;
@@ -335,8 +338,8 @@ namespace Chroma
    *
    * Wilson-like fermion actions
    */
-  template<typename T>
-  class WilsonTypeFermAct5D : public FermAct5D<T>
+  template<typename T, typename P>
+  class WilsonTypeFermAct5D : public DiffFermAct5D<T,P>
   {
   public:
     //! Virtual destructor to help with cleanup;
@@ -348,6 +351,10 @@ namespace Chroma
     //! Produce an unpreconditioned linear operator projecting 5D to 4D (the inverse of qprop below)
     virtual const LinearOperator<T>* linOp4D(Handle<const ConnectState> state,
 					     const Real& m_q,
+					     const InvertParam_t& invParam) const = 0;
+
+    //! Produce a  DeltaLs = 1-epsilon^2(H) operator
+    virtual const LinearOperator<T>* DeltaLs(Handle< const ConnectState> state,
 					     const InvertParam_t& invParam) const = 0;
 
     //! Given a complete propagator as a source, this does all the inversions needed
@@ -373,127 +380,13 @@ namespace Chroma
 
 
   //-------------------------------------------------------------------------------------------
-  //! Unpreconditioned Wilson-like fermion actions
-  /*! @ingroup actions
-   *
-   * Unpreconditioned like Wilson-like fermion actions
-   */
-  template<typename T>
-  class UnprecWilsonTypeFermActBase : public WilsonTypeFermAct<T>
-  {
-  public:
-    //! Produce a linear operator for this action
-    virtual const UnprecLinearOperatorBase<T>* linOp(Handle<const ConnectState> state) const = 0;
-
-    //! Virtual destructor to help with cleanup;
-    virtual ~UnprecWilsonTypeFermActBase() {}
-  };
-
-
-
-  //-------------------------------------------------------------------------------------------
-  //! Even-odd preconditioned Wilson-like fermion actions
-  /*! @ingroup actions
-   *
-   * Even-odd preconditioned like Wilson-like fermion actions
-   */
-  template<typename T>
-  class EvenOddPrecWilsonTypeFermActBase : public WilsonTypeFermAct<T>
-  {
-  public:
-    //! Virtual destructor to help with cleanup;
-    virtual ~EvenOddPrecWilsonTypeFermActBase() {}
-
-    //! Override to produce an even-odd prec. linear operator for this action
-    /*! Covariant return rule - override base class function */
-    virtual const EvenOddPrecLinearOperatorBase<T>* linOp(Handle<const ConnectState> state) const = 0;
-
-    //! Compute quark propagator over base type
-    /*! 
-     * Solves  M.psi = chi
-     *
-     * Provides a default version
-     *
-     * \param psi      quark propagator ( Modify )
-     * \param state    gauge connection state ( Read )
-     * \param chi      source ( Modify )
-     * \param invParam inverter parameters ( Read (
-     * \param ncg_had  number of CG iterations ( Write )
-     */
-    virtual void qprop(T& psi, 
-		       Handle<const ConnectState> state, 
-		       const T& chi, 
-		       const InvertParam_t& invParam,
-		       int& ncg_had) const;
-  };
-
-
-  //-------------------------------------------------------------------------------------------
-  //! Unpreconditioned Wilson-like fermion actions over extra dim arrays
-  /*! @ingroup actions
-   *
-   * Unpreconditioned like Wilson-like fermion actions
-   * Here, use arrays of matter fields.
-   */
-  template<typename T>
-  class UnprecWilsonTypeFermActBase5D : public WilsonTypeFermAct5D<T>
-  {
-  public:
-    //! Virtual destructor to help with cleanup;
-    virtual ~UnprecWilsonTypeFermActBase5D() {}
-
-    //! Produce a linear operator for this action
-    virtual const UnprecLinearOperatorBase< multi1d<T> >* linOp(Handle<const ConnectState> state) const = 0;
-  };
-
-
-
-  //-------------------------------------------------------------------------------------------
-  //! Even-odd preconditioned Wilson-like fermion actions over extra dim arrays
-  /*! @ingroup actions
-   *
-   * Even-odd preconditioned like Wilson-like fermion actions.
-   * Here, use arrays of matter fields.
-   */
-  template<typename T>
-  class EvenOddPrecWilsonTypeFermActBase5D : public WilsonTypeFermAct5D<T>
-  {
-  public:
-    //! Virtual destructor to help with cleanup;
-    virtual ~EvenOddPrecWilsonTypeFermActBase5D() {}
-
-    //! Override to produce an even-odd prec. linear operator for this action
-    /*! Covariant return rule - override base class function */
-    virtual const EvenOddPrecLinearOperatorBase< multi1d<T> >* linOp(Handle<const ConnectState> state) const = 0;
-
-    //! Compute quark propagator over base type
-    /*! 
-     * Solves  M.psi = chi
-     *
-     * Provides a default version
-     *
-     * \param psi      quark propagator ( Modify )
-     * \param state    gauge connection state ( Read )
-     * \param chi      source ( Modify )
-     * \param invParam inverter parameters ( Read (
-     * \param ncg_had  number of CG iterations ( Write )
-     */
-    virtual void qpropT(multi1d<T>& psi, 
-			Handle<const ConnectState> state, 
-			const multi1d<T>& chi, 
-			const InvertParam_t& invParam,
-			int& ncg_had) const;
-  };
-
-
-  //-------------------------------------------------------------------------------------------
   //! Unpreconditioned Wilson-like fermion actions with derivatives
   /*! @ingroup actions
    *
    * Unpreconditioned like Wilson-like fermion actions
    */
   template<typename T, typename P>
-  class UnprecWilsonTypeFermAct : public UnprecWilsonTypeFermActBase<T>
+  class UnprecWilsonTypeFermAct : public WilsonTypeFermAct<T,P>
   {
   public:
     //! Virtual destructor to help with cleanup;
@@ -511,7 +404,7 @@ namespace Chroma
    * Even-odd preconditioned like Wilson-like fermion actions
    */
   template<typename T, typename P>
-  class EvenOddPrecWilsonTypeFermAct : public EvenOddPrecWilsonTypeFermActBase<T>
+  class EvenOddPrecWilsonTypeFermAct : public WilsonTypeFermAct<T,P>
   {
   public:
     //! Virtual destructor to help with cleanup;
@@ -520,6 +413,11 @@ namespace Chroma
     //! Override to produce an even-odd prec. linear operator for this action
     /*! Covariant return rule - override base class function */
     virtual const EvenOddPrecLinearOperator<T,P>* linOp(Handle<const ConnectState> state) const = 0;
+
+    //! Return quark prop solver, solution of unpreconditioned system
+    /*! Default implementation provided */
+    virtual const SystemSolver<T>* qprop(Handle<const ConnectState> state,
+					 const InvertParam_t& invParam) const;
   };
 
 
@@ -532,14 +430,14 @@ namespace Chroma
    * Here, use arrays of matter fields.
    */
   template<typename T, typename P>
-  class UnprecWilsonTypeFermAct5D : public UnprecWilsonTypeFermActBase5D<T>
+  class UnprecWilsonTypeFermAct5D : public WilsonTypeFermAct5D<T,P>
   {
   public:
     //! Virtual destructor to help with cleanup;
     virtual ~UnprecWilsonTypeFermAct5D() {}
 
     //! Produce a linear operator for this action
-    virtual const UnprecLinearOperator< multi1d<T>, P>* linOp(Handle<const ConnectState> state) const = 0;
+    virtual const UnprecLinearOperator<multi1d<T>, P>* linOp(Handle<const ConnectState> state) const = 0;
   };
 
 
@@ -551,7 +449,7 @@ namespace Chroma
    * Here, use arrays of matter fields.
    */
   template<typename T, typename P>
-  class EvenOddPrecWilsonTypeFermAct5D : public EvenOddPrecWilsonTypeFermActBase5D<T>
+  class EvenOddPrecWilsonTypeFermAct5D : public WilsonTypeFermAct5D<T,P>
   {
   public:
     //! Virtual destructor to help with cleanup;
@@ -559,7 +457,12 @@ namespace Chroma
 
     //! Override to produce an even-odd prec. linear operator for this action
     /*! Covariant return rule - override base class function */
-    virtual const EvenOddPrecLinearOperator< multi1d<T>, P>* linOp(Handle<const ConnectState> state) const = 0;
+    virtual const EvenOddPrecLinearOperator<multi1d<T>, P>* linOp(Handle<const ConnectState> state) const = 0;
+
+    //! Return quark prop solver, solution of unpreconditioned system
+    /*! Default implementation provided */
+    virtual const SystemSolver< multi1d<T> >* qpropT(Handle<const ConnectState> state,
+						     const InvertParam_t& invParam) const;
   };
 
 
@@ -570,12 +473,15 @@ namespace Chroma
    *
    * Staggered-like fermion actions
    */
-  template<typename T>
-  class StaggeredTypeFermAct : public FermAct4D<T>
+  template<typename T, typename P>
+  class StaggeredTypeFermAct : public DiffFermAct4D<T,P>
   {
   public:
     //! Virtual destructor to help with cleanup;
     virtual ~StaggeredTypeFermAct() {}
+
+    //! Return the quark mass
+    virtual const Real getQuarkMass() const = 0;
 
     //! Given a complete propagator as a source, this does all the inversions needed
     /*!
@@ -599,53 +505,6 @@ namespace Chroma
   };
 
 
-  //! Staggered-like fermion actions
-  /*! @ingroup actions
-   *
-   * Staggered-like fermion actions
-   */
-  template<typename T>
-  class UnprecStaggeredTypeFermActBase : public StaggeredTypeFermAct<T>
-  {
-  public:
-    //! Override to produce an even-odd prec. linear operator for this action
-    /*! Covariant return rule - override base class function */
-    virtual const UnprecLinearOperatorBase<T>* linOp(Handle<const ConnectState> state) const = 0;
-
-    //! Virtual destructor to help with cleanup;
-    virtual ~UnprecStaggeredTypeFermActBase() {}
-  };
-
-
-  //! Even-odd preconditioned Staggered-like fermion actions
-  /*! @ingroup actions
-   *
-   * Even-odd preconditioned like Staggered-like fermion actions
-   */
-  template<typename T>
-  class EvenOddStaggeredTypeFermActBase : public StaggeredTypeFermAct<T>
-  {
-  public:
-    //! Virtual destructor to help with cleanup;
-    virtual ~EvenOddStaggeredTypeFermActBase() {}
-
-    //! Override to produce an even-odd prec. linear operator for this action
-    /*! Covariant return rule - override base class function */
-    virtual const EvenOddLinearOperatorBase<T>* linOp(Handle<const ConnectState> state) const = 0;
-
-    //! Provide a default version of qprop
-    void qprop(T& psi,
-	       Handle<const ConnectState> state,
-	       const T& chi,
-	       const InvertParam_t& invParam,
-	       int& ncg_had);
-
-    //! Return the quark mass
-    virtual const Real  getQuarkMass() const = 0;
-  };
-
-
-
   //-------------------------------------------------------------------------------------------
   //! Staggered-like fermion actions with derivatives
   /*! @ingroup actions
@@ -653,7 +512,7 @@ namespace Chroma
    * Staggered-like fermion actions
    */
   template<typename T, typename P>
-  class UnprecStaggeredTypeFermAct : public UnprecStaggeredTypeFermActBase<T>
+  class UnprecStaggeredTypeFermAct : public StaggeredTypeFermAct<T,P>
   {
   public:
     //! Virtual destructor to help with cleanup;
@@ -671,7 +530,7 @@ namespace Chroma
    * Even-odd preconditioned like Staggered-like fermion actions
    */
   template<typename T, typename P>
-  class EvenOddStaggeredTypeFermAct : public EvenOddStaggeredTypeFermActBase<T>
+  class EvenOddStaggeredTypeFermAct : public StaggeredTypeFermAct<T,P>
   {
   public:
     //! Virtual destructor to help with cleanup;
@@ -680,6 +539,11 @@ namespace Chroma
     //! Override to produce an even-odd prec. linear operator for this action
     /*! Covariant return rule - override base class function */
     virtual const EvenOddLinearOperator<T,P>* linOp(Handle<const ConnectState> state) const = 0;
+
+    //! Return quark prop solver, solution of unpreconditioned system
+    /*! Default implementation provided */
+    virtual const SystemSolver<T>* qprop(Handle<const ConnectState> state,
+					 const InvertParam_t& invParam) const;
   };
 
 }

@@ -1,4 +1,4 @@
-// $Id: t_dwf4d.cc,v 1.7 2004-12-29 22:08:27 edwards Exp $
+// $Id: t_dwf4d.cc,v 1.8 2005-01-02 05:21:11 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -219,7 +219,7 @@ int main(int argc, char **argv)
 
   QDPIO::cerr << "create dwf = " << fermact_5d << endl;
 
-  Handle< WilsonTypeFermAct5D<LatticeFermion> >
+  Handle< WilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> > >
     S_f_5d(TheWilsonTypeFermAct5DFactory::Instance().createObject(fermact_5d,
 								  fermacttop_5d,
 								  fermact_path_5d));
@@ -230,7 +230,7 @@ int main(int argc, char **argv)
   
     // Overlap-like stuff
   QDPIO::cerr << "create overlap" << endl;
-  Handle< WilsonTypeFermAct<LatticeFermion> >
+  Handle< WilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> > >
     S_f_4d(TheWilsonTypeFermActFactory::Instance().createObject(fermact_4d,
 								fermacttop_4d,
 								fermact_path_4d));
@@ -242,7 +242,7 @@ int main(int argc, char **argv)
   
   
   //-------------------------------------------------------------------------------
-  Handle<const LinearOperator<LatticeFermion> > A5(S_f_5d->linOp4D(state_5d,S_f_5d->quark_mass(),input.param.invParam));
+  Handle<const LinearOperator<LatticeFermion> > A5(S_f_5d->linOp4D(state_5d,S_f_5d->getQuarkMass(),input.param.invParam));
   Handle<const LinearOperator<LatticeFermion> > A4(S_f_4d->linOp(state_4d));
   
   LatticeFermion psi, chi;

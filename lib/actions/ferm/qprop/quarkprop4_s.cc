@@ -1,4 +1,4 @@
-// $Id: quarkprop4_s.cc,v 1.1 2004-12-29 22:12:05 edwards Exp $
+// $Id: quarkprop4_s.cc,v 1.2 2005-01-02 05:21:10 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -27,11 +27,11 @@ namespace Chroma
    * \param ncg_had  number of CG iterations ( Write )
    */
 
-  template<typename T, template<class> class C>
+  template<typename T>
   void quarkProp_a(LatticeStaggeredPropagator& q_sol, 
 		   XMLWriter& xml_out,
 		   const LatticeStaggeredPropagator& q_src,
-		   const C<T>& S_f,
+		   const FermionAction<T>& S_f,
 		   Handle<const ConnectState> state,
 		   const InvertParam_t& invParam,
 		   bool nonRelProp,
@@ -39,9 +39,11 @@ namespace Chroma
   {
     START_CODE();
 
-    push(xml_out, "QuarkProp");
+    push(xml_out, "QuarkProp4");
 
     ncg_had = 0;
+
+    Handle<const SystemSolver<T> > qprop(S_f.qprop(state,invParam));
 
 //  LatticeStaggeredFermion psi = zero;  // note this is ``zero'' and not 0
 
@@ -63,10 +65,9 @@ namespace Chroma
       Real fact = Real(1) / sqrt(norm2(chi));
       chi *= fact;
 
-      // Compute the propagator for given source color/spin.
-      int n_count;
-
-      S_f.qprop(psi, state, chi, invParam, n_count);
+      // Compute the propagator for given source color.
+//    S_f.qprop(psi, state, chi, invParam, n_count);
+      int n_count = (*qprop)(psi, chi);
       ncg_had += n_count;
 
       push(xml_out,"Qprop");
@@ -104,13 +105,13 @@ namespace Chroma
   void quarkProp4(LatticeStaggeredPropagator& q_sol, 
 		  XMLWriter& xml_out,
 		  const LatticeStaggeredPropagator& q_src,	
-		  const StaggeredTypeFermAct<LatticeStaggeredFermion>& S_f,
+		  const StaggeredTypeFermAct< LatticeStaggeredFermion, multi1d<LatticeColorMatrix> >& S_f,
 		  Handle<const ConnectState> state,
 		  const InvertParam_t& invParam,
 		  bool nonRelProp,
 		  int& ncg_had)
   {
-    quarkProp_a<LatticeStaggeredFermion,StaggeredTypeFermAct>(q_sol, xml_out, q_src, S_f, state, invParam, nonRelProp, ncg_had);
+    quarkProp_a<LatticeStaggeredFermion>(q_sol, xml_out, q_src, S_f, state, invParam, nonRelProp, ncg_had);
   }
 
 
@@ -127,13 +128,14 @@ namespace Chroma
    */
   template<>
   void 
-  StaggeredTypeFermAct<LatticeStaggeredFermion>::quarkProp(LatticeStaggeredPropagator& q_sol, 
-							   XMLWriter& xml_out,
-							   const LatticeStaggeredPropagator& q_src,
-							   Handle<const ConnectState> state,
-							   const InvertParam_t& invParam,
-							   bool nonRelProp,
-							   int& ncg_had)
+  StaggeredTypeFermAct< LatticeStaggeredFermion, multi1d<LatticeColorMatrix> >::quarkProp(
+    LatticeStaggeredPropagator& q_sol, 
+    XMLWriter& xml_out,
+    const LatticeStaggeredPropagator& q_src,
+    Handle<const ConnectState> state,
+    const InvertParam_t& invParam,
+    bool nonRelProp,
+    int& ncg_had)
   {
     quarkProp4(q_sol, xml_out, q_src, *this, state, invParam, nonRelProp, ncg_had);
   }

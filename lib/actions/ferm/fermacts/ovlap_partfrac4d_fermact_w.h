@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ovlap_partfrac4d_fermact_w.h,v 1.6 2004-12-24 04:23:20 edwards Exp $
+// $Id: ovlap_partfrac4d_fermact_w.h,v 1.7 2005-01-02 05:21:09 edwards Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -128,6 +128,9 @@ namespace Chroma
       }
   
 
+    //! Virtual copy constructor
+    OvlapPartFrac4DFermAct* clone() const {return new OvlapPartFrac4DFermAct(*this);}
+
     // Assignment
     OvlapPartFrac4DFermAct& operator=(const OvlapPartFrac4DFermAct& a) 
     {
@@ -142,7 +145,7 @@ namespace Chroma
     const FermBC<LatticeFermion>& getFermBC() const {return *fbc;}
 
     //! Return the quark mass
-    Real quark_mass() const {return params.Mass;}
+    Real getQuarkMass() const {return params.Mass;}
 
 
     //! Is the operator Chiral 

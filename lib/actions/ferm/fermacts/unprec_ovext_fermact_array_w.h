@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovext_fermact_array_w.h,v 1.12 2004-12-29 22:13:41 edwards Exp $
+// $Id: unprec_ovext_fermact_array_w.h,v 1.13 2005-01-02 05:21:10 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -8,6 +8,7 @@
 #define __unprec_ovext_fermact_array_w_h__
 
 #include "fermact.h"
+#include "actions/ferm/linop/lDeltaLs_w.h"
 
 using namespace QDP;
 
@@ -75,7 +76,7 @@ namespace Chroma
     int size() const {return N5;}
 
     //! Return the quark mass
-    Real quark_mass() const {return Mass;}
+    Real getQuarkMass() const {return Mass;}
 
     //! Produce a linear operator for this action
     const UnprecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* linOp(Handle<const ConnectState> state) const;
@@ -100,23 +101,17 @@ namespace Chroma
       QDP_abort(1);
     }
     
+    //! Produce a  DeltaLs = 1-epsilon^2(H) operator
+    const LinearOperator<LatticeFermion>* DeltaLs(Handle< const ConnectState> state,
+						  const InvertParam_t& invParam) const 
+    {
+      Handle< const LinearOperator<LatticeFermion> >  lin(linOp4D(state,Real(0),invParam));
+      return new lDeltaLs(lin);
+    }
+
     //! Compute quark propagator over base type
-    /*! 
-     * Solves  M.psi = chi
-     *
-     * \param psi      quark propagator ( Modify )
-     * \param u        gauge field ( Read )
-     * \param chi      source ( Modify )
-     * \param invParam inverter parameters ( Read (
-     * \param ncg_had  number of CG iterations ( Write )
-     *
-     * NOTE: maybe this should produce a quark prop foundry class object 
-     */
-    void qprop(LatticeFermion& psi, 
-	       Handle<const ConnectState> state, 
-	       const LatticeFermion& chi, 
-	       const InvertParam_t& invParam,
-	       int& ncg_had) const;
+    const SystemSolver<LatticeFermion>* qprop(Handle<const ConnectState> state,
+					      const InvertParam_t& invParam) const;
 
     //! Destructor is automatic
     ~UnprecOvExtFermActArray() {}

@@ -1,4 +1,4 @@
-// $Id: prec_kno_fermact_array_w.cc,v 1.7 2004-12-29 22:13:40 edwards Exp $
+// $Id: prec_kno_fermact_array_w.cc,v 1.8 2005-01-02 05:21:09 edwards Exp $
 /*! \file
  *  \brief preconditioned KNO fermion action
  */
@@ -23,8 +23,8 @@ namespace Chroma
   namespace EvenOddPrecKNOFermActArrayEnv
   {
     //! Callback function
-    WilsonTypeFermAct5D<LatticeFermion>* createFermAct5D(XMLReader& xml_in,
-							 const std::string& path)
+    WilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >* createFermAct5D(XMLReader& xml_in,
+											const std::string& path)
     {
       return new EvenOddPrecKNOFermActArray(WilsonTypeFermBCArrayEnv::reader(xml_in, path), 
 					    EvenOddPrecKNOFermActArrayParams(xml_in, path));
@@ -112,7 +112,7 @@ namespace Chroma
 
 
   //! Produce a preconditioned linear operator for this action with arbitrary quark mass
-  const EvenOddPrecDWLinOpBaseArray<LatticeFermion>* 
+  const EvenOddPrecDWLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >* 
   EvenOddPrecKNOFermActArray::precLinOp(Handle<const ConnectState> state,
 					const Real& m_q) const
   {
@@ -126,7 +126,7 @@ namespace Chroma
   }
 
   //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
-  const UnprecDWLinOpBaseArray<LatticeFermion>* 
+  const UnprecDWLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >* 
   EvenOddPrecKNOFermActArray::unprecLinOp(Handle<const ConnectState> state,
 					  const Real& m_q) const
   {

@@ -1,6 +1,15 @@
-// $Id: dwf_quarkprop4_w.cc,v 1.21 2004-12-29 22:13:41 edwards Exp $
+// $Id: dwf_quarkprop4_w.cc,v 1.22 2005-01-02 05:21:10 edwards Exp $
 // $Log: dwf_quarkprop4_w.cc,v $
-// Revision 1.21  2004-12-29 22:13:41  edwards
+// Revision 1.22  2005-01-02 05:21:10  edwards
+// Rearranged top-level fermion actions and linear operators.
+// The deriv is pushed up much higher. This has the effect that
+// now the "P" type (conjugate momentum type) is carried around
+// in DiffFermAct4D<T,P> and below carry this "P" template param.
+// All fermacts now have at least default deriv support (possibly
+// Not Implemented error). Made qprop and qpropT now go through
+// factory functions.
+//
+// Revision 1.21  2004/12/29 22:13:41  edwards
 // Rearranged the top-level FermionAction structure. Moved up
 // 5d-style actions to be a  FermAct5D and there is a FermAct4D.
 // Consolidated quarkprop routines and fermact factories.
@@ -103,12 +112,7 @@
 
 #include "actions/ferm/qprop/dwf_quarkprop4_w.h"
 
-#if defined(BUILD_SSE_DWF_CG)
-#include "actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.h"
-#endif
-
 using namespace QDP;
-using namespace Chroma;
 
 namespace Chroma
 {
@@ -186,16 +190,19 @@ namespace Chroma
 		       XMLWriter& xml_out,
 		       const LatticePropagator& q_src,
 		       int t_src, int j_decay,
-		       const WilsonTypeFermAct5D<LatticeFermion>& S_f,
+		       const FermAct5D<LatticeFermion>& S_f,
 		       Handle<const ConnectState> state,
 		       const InvertParam_t& invParam,
 		       int& ncg_had)
   {
     START_CODE();
 
-    push(xml_out, "DWF_QuarkProp");
+    push(xml_out, "DWF_QuarkProp4");
 
     ncg_had = 0;
+
+    // Setup solver
+    Handle< const SystemSolver< multi1d<LatticeFermion> > > qpropT(S_f.qpropT(state,invParam));
 
     multi1d<LatticePropagator> prop5d(S_f.size()) ;
     LatticePropagator q_mp  ;
@@ -235,11 +242,8 @@ namespace Chroma
 
 
 	// now we are ready invert
-	   
-
-	int n_count;
 	// Compute the propagator for given source color/spin.	   
-	S_f.qpropT(psi, state, chi, invParam, n_count);
+	int n_count = (*qpropT)(psi,chi);
 	ncg_had += n_count;
 
 	push(xml_out,"Qprop");
@@ -338,7 +342,7 @@ namespace Chroma
     pop(xml_out);   // DWF_QuarkProp
 
     check_dwf_ward_identity(state->getLinks(),prop5d,q_src,
-			    q_sol,q_mp,S_f.quark_mass(),
+			    q_sol,q_mp,S_f.getQuarkMass(),
 			    j_decay);
 
 
@@ -415,7 +419,7 @@ namespace Chroma
 		 XMLWriter& xml_out,
 		 const LatticePropagator& q_src,
 		 int t_src, int j_decay,
-		 const WilsonTypeFermAct5D<LatticeFermion>& S_f,
+		 const FermAct5D<LatticeFermion>& S_f,
 		 Handle<const ConnectState> state,
 		 const InvertParam_t& invParam,
 		 int& ncg_had)

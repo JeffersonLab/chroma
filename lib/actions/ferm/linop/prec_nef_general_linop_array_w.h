@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_nef_general_linop_array_w.h,v 1.3 2004-12-12 21:22:16 edwards Exp $
+// $Id: prec_nef_general_linop_array_w.h,v 1.4 2005-01-02 05:21:10 edwards Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned NEF domain-wall fermion linear operator
  *            generalised to take array of b_5 and c_5
@@ -22,7 +22,7 @@ namespace Chroma
    *
    * This routine is specific to Wilson fermions!
    */
-  class EvenOddPrecGenNEFDWLinOpArray : public EvenOddPrecDWLinOpBaseArray<LatticeFermion>
+  class EvenOddPrecGenNEFDWLinOpArray : public EvenOddPrecDWLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >
   {
   public:
     //! Partial constructor

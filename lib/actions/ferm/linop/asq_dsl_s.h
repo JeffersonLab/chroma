@@ -1,4 +1,4 @@
-//  $Id: asq_dsl_s.h,v 1.4 2004-12-12 21:22:15 edwards Exp $
+//  $Id: asq_dsl_s.h,v 1.5 2005-01-02 05:21:10 edwards Exp $
 /*! \file
  *  \brief The "asq" or "asqtad" dslash operator D'
  */
@@ -48,7 +48,7 @@ namespace Chroma
    * Note the KS phase factors are already included in the U's!
    */
 
-  class QDPStaggeredDslash : public DslashLinearOperator<LatticeStaggeredFermion>
+  class QDPStaggeredDslash : public DslashLinearOperator< LatticeStaggeredFermion, multi1d<LatticeColorMatrix> >
   {  
   public:
     //! Empty constructor. Must use create later

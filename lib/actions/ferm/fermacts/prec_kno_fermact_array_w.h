@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_kno_fermact_array_w.h,v 1.5 2004-12-29 22:13:40 edwards Exp $
+// $Id: prec_kno_fermact_array_w.h,v 1.6 2005-01-02 05:21:09 edwards Exp $
 /*! \file
  *  \brief preconditioned KNO domain-wall fermion action
  */
@@ -50,7 +50,7 @@ namespace Chroma
    * are specified in Phys.Rev.D63:094505,2001 (hep-lat/0005002).
    * See also Brower et.al. LATTICE04
    */
-  class EvenOddPrecKNOFermActArray : public EvenOddPrecDWFermActBaseArray<LatticeFermion>
+  class EvenOddPrecKNOFermActArray : public EvenOddPrecDWFermActBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >
   {
   public:
     //! General FermBC
@@ -91,15 +91,15 @@ namespace Chroma
     int size() const {return N5;}
 
     //! Return the quark mass
-    Real quark_mass() const {return Mass;}
+    Real getQuarkMass() const {return Mass;}
 
     //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
-    const UnprecDWLinOpBaseArray<LatticeFermion>* unprecLinOp(Handle<const ConnectState> state, 
-							      const Real& m_q) const;
+    const UnprecDWLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >* unprecLinOp(Handle<const ConnectState> state, 
+											     const Real& m_q) const;
 
     //! Produce an even-odd preconditioned linear operator for this action with arbitrary quark mass
-    const EvenOddPrecDWLinOpBaseArray<LatticeFermion>* precLinOp(Handle<const ConnectState> state, 
-								 const Real& m_q) const;
+    const EvenOddPrecDWLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >* precLinOp(Handle<const ConnectState> state, 
+												const Real& m_q) const;
 
     //! Destructor is automatic
     ~EvenOddPrecKNOFermActArray() {}

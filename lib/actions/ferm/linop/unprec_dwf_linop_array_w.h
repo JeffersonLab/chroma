@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_linop_array_w.h,v 1.9 2004-12-12 21:22:16 edwards Exp $
+// $Id: unprec_dwf_linop_array_w.h,v 1.10 2005-01-02 05:21:10 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion linear operator
  */
@@ -21,7 +21,7 @@ namespace Chroma
    *
    * This routine is specific to Wilson fermions!
    */
-  class UnprecDWLinOpArray : public UnprecDWLinOpBaseArray<LatticeFermion>
+  class UnprecDWLinOpArray : public UnprecDWLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >
   {
   public:
     //! Partial constructor
