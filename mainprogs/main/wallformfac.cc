@@ -1,4 +1,4 @@
-// $Id: wallformfac.cc,v 1.2 2004-01-13 04:02:06 edwards Exp $
+// $Id: wallformfac.cc,v 1.3 2004-01-13 04:32:19 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions with a wall sink
  *
@@ -19,23 +19,18 @@ struct Param_t
 {
   FermType FermTypeP;
 
-  multi1d<Real> Mass;      // array of mass values
+//  multi1d<Real> Mass;      // array of mass values
 
   CfgType cfg_type;        // storage order for stored gauge configuration
   int j_decay;             // direction to measure propagation
 
-  bool Pt_src;             // point source
-  bool Sl_src;             // shell source
+  SourceType source_type;  // source type (POINT_SOURCE, SHELL_SOURCE)
 
   int t_sink;
 
   int mom2_max;            // (mom)^2 <= mom2_max. mom2_max=7 in szin.
 
-  WvfKind       Wvf_kind;        // Wave function kind: gauge invariant
-  multi1d<Real> wvf_param; // Array of width's or other parameters
-  //   for "shell" source/sink wave function
-  multi1d<int> WvfIntPar;  // Array of iter numbers to approx. Gaussian or
-  //   terminate CG inversion for Wuppertal smearing
+  SmearingParam_t  smearParam;
 
   multi1d<int> formfac_type;
 
@@ -84,11 +79,11 @@ void read(XMLReader& xml, const string& path, WallFormFac_input_t& input)
     switch (input.io_version.version) 
     {
       /**************************************************************************/
-    case 4 :
+    case 1:
       /**************************************************************************/
       break;
 
-    default :
+    default:
       /**************************************************************************/
       QDPIO::cerr << "Input parameter version " << input.io_version.version 
 		  << " unsupported." << endl;
@@ -109,7 +104,7 @@ void read(XMLReader& xml, const string& path, WallFormFac_input_t& input)
     XMLReader paramtop(inputtop, "param"); // push into 'param' group
 
     read(paramtop, "FermTypeP", input.param.FermTypeP);
-    read(paramtop, "Mass", input.param.Mass);
+//    read(paramtop, "Mass", input.param.Mass);
 
 #if 0
     for (int i=0; i < input.param.Mass.size(); ++i) {
@@ -130,14 +125,12 @@ void read(XMLReader& xml, const string& path, WallFormFac_input_t& input)
       QDP_abort(1);
     }
 
-    read(paramtop, "Pt_src", input.param.Pt_src);
-    read(paramtop, "Sl_src", input.param.Sl_src);
+    read(paramtop, "source_type", input.param.source_type);
 
     read(paramtop, "mom2_max", input.param.mom2_max);
 
-    read(paramtop, "Wvf_kind", input.param.Wvf_kind);
-    read(paramtop, "wvf_param", input.param.wvf_param);
-    read(paramtop, "WvfIntPar", input.param.WvfIntPar);
+    if (input.param.source_type == SRC_TYPE_SHELL_SOURCE)
+      read(paramtop, "SmearingParam", input.param.smearParam);
 
     read(paramtop, "nrow", input.param.nrow);
     read(paramtop, "t_srce", input.param.t_srce);
@@ -146,11 +139,13 @@ void read(XMLReader& xml, const string& path, WallFormFac_input_t& input)
     read(paramtop, "t_sink", input.param.t_sink);
     read(paramtop, "formfac_type", input.param.formfac_type);
 
+#if 1
     for (int seq_src_ctr=0; seq_src_ctr<input.param.formfac_type.size(); ++seq_src_ctr) 
     {
       QDPIO::cout << "Computing formfactors for "
 		  << input.param.formfac_type[seq_src_ctr] << endl;
     }
+#endif
   }
   catch (const string& e) 
   {
@@ -273,14 +268,14 @@ main(int argc, char *argv[])
   // Read the quark propagator
   QDPIO::cout << "Attempt to read forward propagator" << endl;
   
-  LatticePropagator quark_propagator;
-  XMLReader prop_xml;
+  LatticePropagator forward_quark_prop;
+  XMLReader forwprop_xml;
   {
     stringstream prop_file;
     prop_file << "propagator_0";
-    readSzinQprop(prop_xml, forward_quark_prop, prop_file.str());
+    readSzinQprop(forwprop_xml, forward_quark_prop, prop_file.str());
     
-    write(xml_array, "Forward_prop_info", prop_xml);
+    write(xml_out, "Forward_prop_info", forwprop_xml);
   }
 
   QDPIO::cout << "Forward propagator successfully read" << endl;
@@ -288,13 +283,15 @@ main(int argc, char *argv[])
 
   // Read the backward propagator
   QDPIO::cout << "Attempt to read backward propagator" << endl;
-  XMLReader seqprop_xml;
+
+  LatticePropagator backward_quark_prop;
+  XMLReader backprop_xml;
   {
     stringstream prop_file;
     prop_file << "backprop_0";
-    readSzinQprop(seqprop_xml, backward_quark_prop, prop_file.str());
+    readSzinQprop(backprop_xml, backward_quark_prop, prop_file.str());
     
-    write(xml_seq_src, "Backward_prop_info", seqprop_xml);
+    write(xml_out, "Backward_prop_info", backprop_xml);
   }
 
   QDPIO::cout << "Backward propagator successfully read" << endl;
