@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.227 2004-09-07 15:53:42 bjoo Exp $
+# $Id: Makefile.in,v 1.228 2004-09-08 02:44:47 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -87,15 +87,11 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/unprec_parwilson_linop_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/prec_contfrac_linop_array_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/qprop/qprop_w.h \
-@BUILD_WILSON_LIBS_TRUE@	actions/ferm/qprop/dwf_quarkprop4_w.h \
-@BUILD_WILSON_LIBS_TRUE@	actions/ferm/qprop/quarkprop4_w.h \
-@BUILD_WILSON_LIBS_TRUE@	actions/ferm/qprop/quarkprop4_multi_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/qprop/unprec_qprop_w.h \
 @BUILD_WILSON_LIBS_TRUE@	io/io_w.h io/barcomp_io.h io/kyuqprop_io.h \
 @BUILD_WILSON_LIBS_TRUE@        io/readszinferm_w.h io/readszinqprop_w.h \
 @BUILD_WILSON_LIBS_TRUE@	io/writeszinqprop_w.h \
-@BUILD_WILSON_LIBS_TRUE@        io/overlap_state_info.h io/zolotarev4d_fermact_paramio_w.h \
-@BUILD_WILSON_LIBS_TRUE@	io/zolotarev5d_fermact_paramio_w.h \
+@BUILD_WILSON_LIBS_TRUE@        io/overlap_state_info.h  \
 @BUILD_WILSON_LIBS_TRUE@	meas/eig/eig_w.h meas/eig/ischiral_w.h \
 @BUILD_WILSON_LIBS_TRUE@	meas/hadron/barcomp_w.h \
 @BUILD_WILSON_LIBS_TRUE@	meas/hadron/barseqsrc_w.h \
@@ -144,8 +140,7 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@              curcor2_w.cc lwldslash_w.cc formfac_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              barcomp_io.cc barcomp_w.cc walfil_w.cc \
-@BUILD_WILSON_LIBS_TRUE@              overlap_state_info.cc zolotarev4d_fermact_paramio_w.cc \
-@BUILD_WILSON_LIBS_TRUE@	      zolotarev5d_fermact_paramio_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              overlap_state_info.cc \
 @BUILD_WILSON_LIBS_TRUE@              fermact_qprop.cc prec_fermact_qprop.cc \
 @BUILD_WILSON_LIBS_TRUE@              unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              prec_wilson_fermact_w.cc prec_wilson_linop_w.cc \
@@ -168,12 +163,12 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@              overlapbu_linop_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc \
 @BUILD_WILSON_LIBS_TRUE@	      zolotarev_coeffs.cc overlap_fermact_base_w.cc lovlapms_w.cc  \
-@BUILD_WILSON_LIBS_TRUE@	      zolotarev4d_fermact_w.cc ischiral_w.cc lovddag_w.cc \
+@BUILD_WILSON_LIBS_TRUE@	      ischiral_w.cc lovddag_w.cc \
 @BUILD_WILSON_LIBS_TRUE@	      lovlap_double_pass_w.cc lovddag_double_pass_w.cc \
 @BUILD_WILSON_LIBS_TRUE@	      lg5eps_w.cc lg5eps_double_pass_w.cc \
-@BUILD_WILSON_LIBS_TRUE@	      zolotarev5d_fermact_array_w.cc zolotarev5d_linop_array_w.cc \
-@BUILD_WILSON_LIBS_TRUE@	      zolotarev5d_nonhermop_array_w.cc  \
-@BUILD_WILSON_LIBS_TRUE@	      prec_contfrac_linop_array_w.cc wall_qprop_w.cc \
+@BUILD_WILSON_LIBS_TRUE@	      zolotarev5d_linop_array_w.cc \
+@BUILD_WILSON_LIBS_TRUE@	      zolotarev5d_nonhermop_array_w.cc wall_qprop_w.cc \
+@BUILD_WILSON_LIBS_TRUE@	      prec_contfrac_linop_array_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              wallff_w.cc wallrhoff_w.cc wallrhopiff_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              wallpionff_w.cc wallnuclff_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              walldeltaff_w.cc walldeltapff_w.cc \
@@ -309,7 +304,8 @@ nobase_include_HEADERS = \
 	chroma_config.h chroma.h \
 	chromabase.h chromainc.h common_declarations.h fermact.h \
 	fermbc.h gaugeact.h gaugebc.h handle.h invtype.h lib.h \
-	linearop.h primitives.h state.h \
+	linearop.h objfactory.h objfunctor.h primitives.h \
+	singleton.h state.h typeinfo.h typelist.h typemanip.h typetraits.h \
 	actions/actions.h actions/boson/boson.h \
 	actions/boson/operator/klein_gord.h \
 	actions/gauge/gauge.h \
@@ -338,7 +334,7 @@ nobase_include_HEADERS = \
 	actions/ferm/linop/lmdagm.h actions/ferm/linop/lopscl.h \
 	actions/ferm/linop/partrat.h actions/ferm/qprop/qprop.h \
 	actions/gauge/gauge.h \
-	io/io.h io/eigen_io.h io/fermact_paramio.h \
+	io/io.h io/eigen_io.h \
 	io/gauge_io.h io/kyugauge_io.h  \
         io/milc_io.h io/param_io.h io/qprop_io.h io/readmilc.h \
 	io/readszin.h io/szin_io.h io/writemilc.h io/writeszin.h \
@@ -427,7 +423,7 @@ libchroma_a_SOURCES = gauge_startup.cc gaugebc_utils.cc gaugeact_utils.cc \
 	       qprop_io.cc eigen_io.cc stoch_var.cc \
 	       z2_src.cc gauge_io.cc milc_io.cc readmilc.cc writemilc.cc \
                axgauge.cc coulgauge.cc grelax.cc polar_dec.cc rot_colvec.cc \
-	       transf.cc param_io.cc fermact_paramio.cc  \
+	       transf.cc param_io.cc  \
 	       gramschm.cc \
 	       gramschm_array.cc ritz.cc ritz_array.cc sn_jacob.cc \
 	       sn_jacob_array.cc eig_spec.cc eig_spec_array.cc \
@@ -460,11 +456,11 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc gaugebc_utils.cc \
 	qprop_io.cc eigen_io.cc stoch_var.cc z2_src.cc gauge_io.cc \
 	milc_io.cc readmilc.cc writemilc.cc axgauge.cc coulgauge.cc \
 	grelax.cc polar_dec.cc rot_colvec.cc transf.cc param_io.cc \
-	fermact_paramio.cc gramschm.cc gramschm_array.cc ritz.cc \
-	ritz_array.cc sn_jacob.cc sn_jacob_array.cc eig_spec.cc \
-	eig_spec_array.cc proginfo.cc printgeom.cc fuzwilp.cc wilslp.cc \
-	invsumr.cc minvsumr.cc inv_rel_sumr.cc minv_rel_sumr.cc \
-	invbicgstab.cc invbicgstab_array.cc inv_rel_gmresr_sumr.cc \
+	gramschm.cc gramschm_array.cc ritz.cc ritz_array.cc sn_jacob.cc \
+	sn_jacob_array.cc eig_spec.cc eig_spec_array.cc proginfo.cc \
+	printgeom.cc fuzwilp.cc wilslp.cc invsumr.cc minvsumr.cc \
+	inv_rel_sumr.cc minv_rel_sumr.cc invbicgstab.cc \
+	invbicgstab_array.cc inv_rel_gmresr_sumr.cc \
 	inv_rel_gmresr_cg.cc inv_gmresr_cg_array.cc inv_minres_array.cc \
 	wilson_gaugeact.cc su3over.cc su3hb.cc bc_io.cc gaugebc_io.cc \
 	gaugeact_io.cc wilson_gaugeact_io.cc mc_io.cc md_io.cc \
@@ -472,9 +468,7 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc gaugebc_utils.cc \
 	loops_w.cc tdiractodr.cc diractodr.cc paulitodr.cc \
 	gammasgn_w.cc curcor2_w.cc lwldslash_w.cc formfac_w.cc \
 	mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc barcomp_io.cc \
-	barcomp_w.cc walfil_w.cc overlap_state_info.cc \
-	zolotarev4d_fermact_paramio_w.cc \
-	zolotarev5d_fermact_paramio_w.cc fermact_qprop.cc \
+	barcomp_w.cc walfil_w.cc overlap_state_info.cc fermact_qprop.cc \
 	prec_fermact_qprop.cc unprec_wilson_fermact_w.cc \
 	unprec_wilson_linop_w.cc prec_wilson_fermact_w.cc \
 	prec_wilson_linop_w.cc unprec_parwilson_fermact_w.cc \
@@ -493,12 +487,11 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc gaugebc_utils.cc \
 	dwf_quarkprop4_w.cc quarkprop4_w.cc quarkprop4_multi_w.cc \
 	overlapbu_linop_w.cc p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc \
 	BuildingBlocks_w.cc zolotarev_coeffs.cc \
-	overlap_fermact_base_w.cc lovlapms_w.cc \
-	zolotarev4d_fermact_w.cc ischiral_w.cc lovddag_w.cc \
-	lovlap_double_pass_w.cc lovddag_double_pass_w.cc lg5eps_w.cc \
-	lg5eps_double_pass_w.cc zolotarev5d_fermact_array_w.cc \
+	overlap_fermact_base_w.cc lovlapms_w.cc ischiral_w.cc \
+	lovddag_w.cc lovlap_double_pass_w.cc lovddag_double_pass_w.cc \
+	lg5eps_w.cc lg5eps_double_pass_w.cc \
 	zolotarev5d_linop_array_w.cc zolotarev5d_nonhermop_array_w.cc \
-	prec_contfrac_linop_array_w.cc wall_qprop_w.cc wallff_w.cc \
+	wall_qprop_w.cc prec_contfrac_linop_array_w.cc wallff_w.cc \
 	wallrhoff_w.cc wallrhopiff_w.cc wallpionff_w.cc wallnuclff_w.cc \
 	walldeltaff_w.cc walldeltapff_w.cc inv_borici_w.cc \
 	ferm_refresh.cc mom_refresh.cc global_metropolis_accrej.cc \
@@ -524,8 +517,6 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc gaugebc_utils.cc \
 @BUILD_WILSON_LIBS_TRUE@	barcomp_io.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	barcomp_w.$(OBJEXT) walfil_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	overlap_state_info.$(OBJEXT) \
-@BUILD_WILSON_LIBS_TRUE@	zolotarev4d_fermact_paramio_w.$(OBJEXT) \
-@BUILD_WILSON_LIBS_TRUE@	zolotarev5d_fermact_paramio_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	fermact_qprop.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	prec_fermact_qprop.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	unprec_wilson_fermact_w.$(OBJEXT) \
@@ -570,18 +561,16 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc gaugebc_utils.cc \
 @BUILD_WILSON_LIBS_TRUE@	zolotarev_coeffs.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	overlap_fermact_base_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	lovlapms_w.$(OBJEXT) \
-@BUILD_WILSON_LIBS_TRUE@	zolotarev4d_fermact_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	ischiral_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	lovddag_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	lovlap_double_pass_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	lovddag_double_pass_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	lg5eps_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	lg5eps_double_pass_w.$(OBJEXT) \
-@BUILD_WILSON_LIBS_TRUE@	zolotarev5d_fermact_array_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	zolotarev5d_linop_array_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	zolotarev5d_nonhermop_array_w.$(OBJEXT) \
-@BUILD_WILSON_LIBS_TRUE@	prec_contfrac_linop_array_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	wall_qprop_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	prec_contfrac_linop_array_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	wallff_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	wallrhoff_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	wallrhopiff_w.$(OBJEXT) \
@@ -633,9 +622,9 @@ am_libchroma_a_OBJECTS = gauge_startup.$(OBJEXT) gaugebc_utils.$(OBJEXT) \
 	milc_io.$(OBJEXT) readmilc.$(OBJEXT) writemilc.$(OBJEXT) \
 	axgauge.$(OBJEXT) coulgauge.$(OBJEXT) grelax.$(OBJEXT) \
 	polar_dec.$(OBJEXT) rot_colvec.$(OBJEXT) transf.$(OBJEXT) \
-	param_io.$(OBJEXT) fermact_paramio.$(OBJEXT) gramschm.$(OBJEXT) \
-	gramschm_array.$(OBJEXT) ritz.$(OBJEXT) ritz_array.$(OBJEXT) \
-	sn_jacob.$(OBJEXT) sn_jacob_array.$(OBJEXT) eig_spec.$(OBJEXT) \
+	param_io.$(OBJEXT) gramschm.$(OBJEXT) gramschm_array.$(OBJEXT) \
+	ritz.$(OBJEXT) ritz_array.$(OBJEXT) sn_jacob.$(OBJEXT) \
+	sn_jacob_array.$(OBJEXT) eig_spec.$(OBJEXT) \
 	eig_spec_array.$(OBJEXT) proginfo.$(OBJEXT) printgeom.$(OBJEXT) \
 	fuzwilp.$(OBJEXT) wilslp.$(OBJEXT) invsumr.$(OBJEXT) \
 	minvsumr.$(OBJEXT) inv_rel_sumr.$(OBJEXT) \
@@ -673,7 +662,6 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/expmat.Po ./$(DEPDIR)/expsu3.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/fat7_links_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ferm_refresh.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/fermact_paramio.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/fermact_qprop.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/fermact_qprop_array.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/follana_io_s.Po \
@@ -796,10 +784,6 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/writemilc.Po ./$(DEPDIR)/writeszin.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/writeszinqprop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/z2_src.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/zolotarev4d_fermact_paramio_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/zolotarev4d_fermact_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/zolotarev5d_fermact_array_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/zolotarev5d_fermact_paramio_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/zolotarev5d_linop_array_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/zolotarev5d_nonhermop_array_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/zolotarev_coeffs.Po
@@ -916,7 +900,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/expsu3.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fat7_links_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ferm_refresh.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fermact_paramio.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fermact_qprop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fermact_qprop_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/follana_io_s.Po@am__quote@
@@ -1074,10 +1057,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writeszin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writeszinqprop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/z2_src.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zolotarev4d_fermact_paramio_w.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zolotarev4d_fermact_w.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zolotarev5d_fermact_array_w.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zolotarev5d_fermact_paramio_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zolotarev5d_linop_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zolotarev5d_nonhermop_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zolotarev_coeffs.Po@am__quote@
