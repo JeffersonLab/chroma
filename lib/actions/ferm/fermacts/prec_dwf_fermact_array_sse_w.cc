@@ -1,4 +1,4 @@
-// $Id: prec_dwf_fermact_array_sse_w.cc,v 1.4 2004-09-09 15:51:31 edwards Exp $
+// $Id: prec_dwf_fermact_array_sse_w.cc,v 1.5 2004-10-18 20:40:57 edwards Exp $
 /*! \file
  *  \brief SSE 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -17,7 +17,7 @@ namespace Chroma
 {
 
   //! Hooks to register the class with the fermact factory
-  namespace EvenOddPrecDWFermActArrayEnv
+  namespace SSEEvenOddPrecDWFermActArrayEnv
   {
     //! Callback function
     WilsonTypeFermAct< multi1d<LatticeFermion> >* createFermAct(Handle< FermBC< multi1d<LatticeFermion> > > fbc,
@@ -27,17 +27,27 @@ namespace Chroma
       return new SSEEvenOddPrecDWFermActArray(fbc, SSEEvenOddPrecDWFermActArrayParams(xml_in, path));
     }
 
+    //! Callback function
+    /*! Differs in return type */
+    EvenOddPrecDWFermActBaseArray<LatticeFermion>* createDWFermAct(Handle< FermBC< multi1d<LatticeFermion> > > fbc,
+								   XMLReader& xml_in,
+								   const std::string& path)
+    {
+      return new SSEEvenOddPrecDWFermActArray(fbc, SSEEvenOddPrecDWFermActArrayParams(xml_in, path));
+    }
+
     //! Name to be used
     const std::string name = "SSE_DWF";    // TEMPORARY HACK
 
     //! Register the Wilson fermact
-    const bool registered = Chroma::TheWilsonTypeFermActArrayFactory::Instance().registerObject(name, createFermAct); 
+    const bool registered = Chroma::TheWilsonTypeFermActArrayFactory::Instance().registerObject(name, createFermAct)
+                          & Chroma::TheEvenOddPrecDWFermActBaseArrayFactory::Instance().registerObject(name, createDWFermAct); 
   }
 
 
   //! Read parameters
-  EvenOddPrecDWFermActArrayParams::EvenOddPrecDWFermActArrayParams(XMLReader& xml, 
-								   const std::string& path)
+  SSEEvenOddPrecDWFermActArrayParams::SSEEvenOddPrecDWFermActArrayParams(XMLReader& xml, 
+									 const std::string& path)
   {
     XMLReader paramtop(xml, path);
 
@@ -54,9 +64,9 @@ namespace Chroma
 
 
   //! Read parameters
-  void read(XMLReader& xml, const string& path, EvenOddPrecDWFermActArrayParams& param)
+  void read(XMLReader& xml, const string& path, SSEEvenOddPrecDWFermActArrayParams& param)
   {
-    EvenOddPrecDWFermActArrayParams tmp(xml, path);
+    SSEEvenOddPrecDWFermActArrayParams tmp(xml, path);
     param = tmp;
   }
 
@@ -106,7 +116,7 @@ namespace Chroma
    *
    * \param state 	    gauge field     	       (Read)
    */
-  const EvenOddPrecLinearOperator<multi1d<LatticeFermion> >*
+  const EvenOddPrecDWLinOpBaseArray<LatticeFermion>*
   SSEEvenOddPrecDWFermActArray::linOp(Handle<const ConnectState> state) const
   {
     return new EvenOddPrecDWLinOpArray(state->getLinks(),OverMass,Mass,N5);
@@ -130,7 +140,7 @@ namespace Chroma
    *
    * \param state	    gauge field     	       (Read)
    */
-  const LinearOperator<multi1d<LatticeFermion> >*
+  const UnprecDWLinOpBaseArray<LatticeFermion>*
   SSEEvenOddPrecDWFermActArray::linOpPV(Handle<const ConnectState> state) const
   {
     // For the PV operator, use the **unpreconditioned** one
@@ -140,9 +150,9 @@ namespace Chroma
 
 
   //! Gauge field reader
-  double
-  DWF_gauge_reader(const void *ptr, void *env, 
-		   const int latt_coord[4], int mu, int row, int col, int reim)
+  static double
+  gauge_reader(const void *ptr, void *env, 
+	       const int latt_coord[4], int mu, int row, int col, int reim)
   {
     /* Translate arg */
     multi1d<LatticeColorMatrix>& u = *(multi1d<LatticeColorMatrix>*)ptr;
@@ -172,9 +182,9 @@ namespace Chroma
 
 
   //! Fermion field reader
-  double
-  DWF_fermion_reader(const void *ptr, void *env, 
-		     const int latt_coord[5], int color, int spin, int reim)
+  static double
+  fermion_reader(const void *ptr, void *env, 
+		 const int latt_coord[5], int color, int spin, int reim)
   {
     /* Translate arg */
     multi1d<LatticeFermion>& psi = *(multi1d<LatticeFermion>*)ptr;
@@ -205,19 +215,19 @@ namespace Chroma
 
 
   //! Fermion field reader
-  double
-  DWF_fermion_reader_zero(const void *ptr, void *env, 
-			  const int latt_coord[5], int color, int spin, int reim)
+  static double
+  fermion_reader_zero(const void *ptr, void *env, 
+		      const int latt_coord[5], int color, int spin, int reim)
   {
     return 0.0;
   }
 
 
   //! Fermion field reader
-  void
-  DWF_fermion_writer(void *ptr, void *env, 
-		     const int latt_coord[5], int color, int spin, int reim,
-		     double val)
+  static void
+  fermion_writer(void *ptr, void *env, 
+		 const int latt_coord[5], int color, int spin, int reim,
+		 double val)
   {
     /* Translate arg */
     multi1d<LatticeFermion>& psi = *(multi1d<LatticeFermion>*)ptr;
@@ -249,6 +259,54 @@ namespace Chroma
 
 
 
+  ///////////////////////////////////////////////////////////////////////////////
+  static void
+  solve_cg5(multi1d<LatticeFermion> &solution,    // output
+	    const multi1d<LatticeColorMatrix> &U, // input
+	    double M_0,                           // input
+	    double m_f,                           // input
+	    const multi1d<LatticeFermion> &rhs,   // input
+	    const multi1d<LatticeFermion> &x0,    // input
+	    double rsd,                           // input
+	    int max_iter,                         // input
+	    int &out_iter )                       // output
+  {
+    // Initialize internal structure of the solver
+    //    if (SSE_DWF_init(lattice_size, SSE_DWF_FLOAT, NULL, NULL)) {
+    //      error("SSE DWF init() failed");
+    //    }
+
+    // Construct shifted gauge field
+    multi1d<LatticeColorMatrix> V(Nd);
+    for (int i = 0; i < Nd; i++)
+      V[i] = shift(U[i], -1, i); // as viewed from the destination (sic)
+
+    SSE_DWF_Gauge *g = SSE_DWF_load_gauge(&U, &V, NULL, gauge_reader);
+    SSE_DWF_Fermion *eta = SSE_DWF_load_fermion(&rhs, NULL, fermion_reader);
+    SSE_DWF_Fermion *X0 = SSE_DWF_load_fermion(&x0, NULL, fermion_reader);
+    SSE_DWF_Fermion *res = SSE_DWF_allocate_fermion();
+
+    double out_eps;
+    int status = SSE_DWF_cg_solver(res, &out_eps, &out_iter,
+				   g, M_0, m_f, X0, eta, 
+				   rsd, max_iter);
+
+    QDPIO::cout << "SSE DWF solver: status = " << status
+		<< ", iterations = " << out_iter
+		<< ", resulting epsilon = " << out_eps
+		<< endl;
+
+    SSE_DWF_save_fermion(&solution, NULL, fermion_writer, res);
+
+    SSE_DWF_delete_fermion(res);
+    SSE_DWF_delete_fermion(X0);
+    SSE_DWF_delete_fermion(eta);
+    SSE_DWF_delete_gauge(g);
+
+    // SSE_DWF_fini();
+  }
+
+
   //! Optimized inverter - this is temporary
   void 
   SSEEvenOddPrecDWFermActArray::opt_qpropT(multi1d<LatticeFermion>& psi, 
@@ -263,72 +321,28 @@ namespace Chroma
 
     const multi1d<LatticeColorMatrix>& u = state->getLinks();
 
-    // Get a shift copy of the gauge fields
-    multi1d<LatticeColorMatrix> v(u.size());
-    for(int mu=0; mu < Nd; ++mu)
-      v[mu] = shift(u[mu], BACKWARD, mu);
+    multi1d<LatticeFermion> avp_chi(N5),tmp5(N5),phi(N5);
 
-    // Initialize the SSE specific fields
-    SSE_DWF_Gauge*   g   = SSE_DWF_load_gauge(&u, &v, NULL, DWF_gauge_reader);
-    if (g == NULL)
-      QMP_error_exit("%s: error allocating g", __func__);
+    //apply chroma operator
+    Handle<const LinearOperator< multi1d<LatticeFermion> > > dwf_chroma(new UnprecDWLinOpArray(u,OverMass,Mass,N5));
+    (*dwf_chroma)(phi, chi, PLUS);
+    //phi = dwf_chroma * chi 
+    // avp_chi = R*gamma_5 * phi 
+    for(int s(0);s<N5;s++)
+      avp_chi[N5-1-s] = Gamma(15)*phi[s] ;
 
-    multi1d<LatticeFermion> chi_tmp(N5);
-    for(int s=0; s < N5; ++s)
-    {
-//    chi_tmp[s] = -Real(2)*chi[s];   // compensate for AVP's def
-      chi_tmp[s] = chi[s];
-    }
- 
-    SSE_DWF_Fermion* rhs = SSE_DWF_load_fermion(&chi_tmp, NULL, DWF_fermion_reader);
-    if (rhs == NULL)
-      QMP_error_exit("%s: error allocating rhs", __func__);
-
-    SSE_DWF_Fermion* x0  = SSE_DWF_load_fermion(&psi, NULL, DWF_fermion_reader);
-    if (x0 == NULL)
-      QMP_error_exit("%s: error allocating x0", __func__);
-
-    SSE_DWF_Fermion* x   = SSE_DWF_allocate_fermion();
-    if (x == NULL)
-      QMP_error_exit("%s: error allocating x", __func__);
-
-
-    // Call the solver
-    double out_epsilon = 0.0;
-    double M_0 = -2*toDouble(Double(a5*(Nd-OverMass) + 1));  // compensate for AVP's def
-    double mq  = toDouble(Mass);
+    // Apply SSE inverter
+    double M0 = toDouble(-2*(5.0-OverMass));
+    double m_f = toDouble(Mass);
     double rsd = toDouble(invParam.RsdCG);
-    double rsdsq = rsd*rsd;
-    int err;
+    int    max_iter = invParam.MaxCG;
+    solve_cg5(tmp5, u, M0, m_f, avp_chi, avp_chi,
+	      rsd, max_iter, ncg_had);
 
-    cerr << "M_0=" << M_0 << " mq=" << mq << " rsdsq=" << rsdsq << endl;
-
- 
-    err = SSE_DWF_cg_solver(x, &out_epsilon, &ncg_had,
-			    g, M_0, mq,
-			    x0, rhs, 
-			    rsdsq, invParam.MaxCG);
-
-    QDPIO::cerr << __func__ 
-		<< ": iterations = " << ncg_had 
-		<< "  eps = " << sqrt(out_epsilon)
-		<< endl;
-
-    if (err != 0)
-    {
-      QDPIO::cerr << __func__ << ": convergence not found" << endl;
-      QDP_abort(1);
+    // Need remaping to interface with andrew R\gamma_5
+    for(int s(0);s<N5;s++) {
+      psi[s] = -2 * (Gamma(15)*tmp5[N5-1-s]);
     }
-
-    // Save the result
-    psi = zero;
-    SSE_DWF_save_fermion(&psi, NULL, DWF_fermion_writer, x);
-
-    // Cleanup
-    SSE_DWF_delete_fermion(x);
-    SSE_DWF_delete_fermion(x0);
-    SSE_DWF_delete_fermion(rhs);
-    SSE_DWF_delete_gauge(g);
 
     END_CODE();
 
