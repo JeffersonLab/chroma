@@ -1,8 +1,15 @@
-// $Id: formfac_w.cc,v 1.2 2003-03-02 02:30:31 flemingg Exp $
+// $Id: formfac_w.cc,v 1.3 2003-03-05 01:25:47 flemingg Exp $
 /*! \file
  *  \brief Form-factors 
  *
  * Form factors constructed from a quark and a sequential quark propagator
+ *
+ * $Log: formfac_w.cc,v $
+ * Revision 1.3  2003-03-05 01:25:47  flemingg
+ * Modified to insert all Nd^2 Gamma matrices in the local current.  For
+ * vector and axial vector insertions, the non-local currents are computed
+ * as well.
+ *
  */
 
 #include "chromabase.h"
@@ -82,31 +89,71 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
 
 
   /*
-   * Loop over mu of insertion current
+   * Loop over gamma matrices of the insertion current of insertion current
    */
-  for(int mu = 0; mu < Nd; ++mu)
+  for(int gamma_value = 0; gamma_value < Nd*Nd; ++gamma_value)
   {
+    /*
+     *  For the case where the gamma value indicates we are evaluating either
+     *  the vector or axial vector currents, we will also evaluate
+     *  the non-local currents.  The non-local vector current is the conserved
+     *  current.  The non-local axial vector current would be partially
+     *  conserved but for the Wilson term.  In these cases we will set
+     *  mu = corresponding direction.  In all other cases, we will set mu = -1.
+     */
+
+    int compute_nonlocal;
+    int mu;
+
+    switch(gamma_value){
+    case  1:
+    case 14:
+      mu = 0;
+      compute_nonlocal = 1;
+      break;
+    case  2:
+    case 13:
+      mu = 1;
+      compute_nonlocal = 1;
+      break;
+    case  4:
+    case 11:
+      mu = 2;
+      compute_nonlocal = 1;
+      break;
+    case  8:
+    case  7:
+      mu = 3;
+      compute_nonlocal = 1;
+      break;
+    default:
+      mu = -1;
+      compute_nonlocal = 0;
+    }
+
     /* 
      * The local non-conserved vector-current matrix element 
      */
-    int n = 1 << mu;
-    LatticeComplex corr_local_fn = trace(adj(anti_quark_prop) * Gamma(n) * quark_propagator);
+    LatticeComplex corr_local_fn =
+      trace(adj(anti_quark_prop) * Gamma(gamma_value) * quark_propagator);
 
-    /* 
-     * Construct the conserved non-local vector-current matrix element 
-     * NOTE: this is only really conserved for the Wilson fermion quark action
+    /*
+     * Construct the non-local current matrix element 
      *
      * The form of J_mu = (1/2)*[psibar(x+mu)*U^dag_mu*(1+gamma_mu)*psi(x) -
      *                           psibar(x)*U_mu*(1-gamma_mu)*psi(x+mu)]
      * NOTE: the 1/2  is included down below in the sumMulti stuff
      */
-    LatticeComplex corr_nonlocal_fn = 
-      trace(adj(u[mu] * shift(anti_quark_prop, FORWARD, mu)) * 
-	    (quark_propagator + Gamma(n) * quark_propagator));
-
-    LatticePropagator tmp_prop1 = u[mu] * shift(quark_propagator, FORWARD, mu);
-    corr_nonlocal_fn -= trace(adj(anti_quark_prop) * (tmp_prop1 - Gamma(n) * tmp_prop1));
-
+    LatticeComplex corr_nonlocal_fn;
+    if(compute_nonlocal){
+      corr_nonlocal_fn =
+        trace(adj(u[mu] * shift(anti_quark_prop, FORWARD, mu)) *
+          (quark_propagator + Gamma(gamma_value) * quark_propagator));
+      LatticePropagator tmp_prop1 = u[mu] *
+        shift(quark_propagator, FORWARD, mu);
+      corr_nonlocal_fn -= trace(adj(anti_quark_prop) *
+                            (tmp_prop1 - Gamma(gamma_value) * tmp_prop1));
+    }
 
     /*
      * Loop over allowed source momenta: (source_mom)^2 <= source_mom2_max.
@@ -178,22 +225,25 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
 
 
       // Non-local current
-      hsum = sumMulti(phasefac * corr_nonlocal_fn, timeslice);
+      if(compute_nonlocal){
+        hsum = sumMulti(phasefac * corr_nonlocal_fn, timeslice);
 
-      for(int t = 0; t < length; ++t)
-      {
-	int t_eff = (t - t0 + length) % length;
+        for(int t = 0; t < length; ++t)
+        {
+          int t_eff = (t - t0 + length) % length;
 
-	nonlocal_cur3ptfn[t_eff] = 0.5 * Complex(hsum[t]);
+          nonlocal_cur3ptfn[t_eff] = 0.5 * Complex(hsum[t]);
+        }
       }
 
       // Print out the results
       push(nml,"Wilson_Current_3Pt_fn");
+      Write(nml,gamma_value);
       Write(nml,mu);
       Write(nml,j_decay);
       Write(nml,inser_mom);
       Write(nml,local_cur3ptfn);
-      Write(nml,nonlocal_cur3ptfn);
+      if(compute_nonlocal){ Write(nml,nonlocal_cur3ptfn); }
       pop(nml);
     }
   }
