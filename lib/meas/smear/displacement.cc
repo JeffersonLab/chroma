@@ -1,4 +1,4 @@
-//  $Id: displacement.cc,v 1.5 2004-02-09 19:22:50 mcneile Exp $
+//  $Id: displacement.cc,v 1.6 2004-11-20 14:47:41 mcneile Exp $
 /*! \file
  *  \brief Parallel transport a lattice field
  */
@@ -76,6 +76,14 @@ void displacement(const multi1d<LatticeColorMatrix>& u,
 		  int length, int dir)
 {
   displacement<LatticeFermion>(u, chi, length, dir);
+}
+
+
+void displacement(const multi1d<LatticeColorMatrix>& u, 
+		  LatticeStaggeredFermion& chi, 
+		  int length, int dir)
+{
+  displacement<LatticeStaggeredFermion>(u, chi, length, dir);
 }
 
 
