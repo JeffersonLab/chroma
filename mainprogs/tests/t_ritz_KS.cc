@@ -1,20 +1,6 @@
-// $Id: t_ritz_KS.cc,v 1.19 2005-02-06 03:45:42 edwards Exp $
-
-#include <iostream>
-#include <sstream>
-#include <iomanip>
-#include <string>
-
-#include <cstdio>
-
-#include <stdlib.h>
-#include <sys/time.h>
-#include <math.h>
+// $Id: t_ritz_KS.cc,v 1.20 2005-02-07 04:16:55 edwards Exp $
 
 #include "chroma.h"
-#include "io/param_io.h"
-#include "io/eigen_io.h"
-
 
 using namespace Chroma;
 
@@ -148,7 +134,9 @@ int main(int argc, char **argv)
       Handle< const LinearOperator<multi1d<LatticeFermion> > > MM(S_f->lMdagM(state));
 
 
+      QDPIO::cout << "Call 5D ritz code" << endl;
       RitzCode5D(MM, input, xml_out);
+      QDPIO::cout << "Done with 5D ritz code" << endl;
 
       success = true;
     }
@@ -554,6 +542,9 @@ void RitzCode5D(Handle< const LinearOperator<multi1d<LatticeFermion> > >& MM,
   int n_KS_count = 0;
   int n_jacob_count = 0;
   
+#if 1
+  QDPIO::cout << "Call EigSpecRitzKS" << endl;
+
   EigSpecRitzKS(*MM, 
 		lambda, 
 		psi, 
@@ -573,8 +564,10 @@ void RitzCode5D(Handle< const LinearOperator<multi1d<LatticeFermion> > >& MM,
 		n_KS_count,
 		n_jacob_count,
 		eig_spec_xml);
-  
-  /*
+#else
+
+  QDPIO::cout << "Call EigSpecRitzCG" << endl;
+
   EigSpecRitzCG( *MM,
 		 lambda,
 		 psi,
@@ -588,7 +581,8 @@ void RitzCode5D(Handle< const LinearOperator<multi1d<LatticeFermion> > >& MM,
 		 input.ritz_params.ProjApsiP,
 		 n_CG_count,
 		 eig_spec_xml);
-  */
+#endif
+
   // Dump output
   xml_out << eig_spec_xml;
   write(xml_out, "lambda_Msq", lambda); 
