@@ -1,4 +1,4 @@
-// $Id: prec_ht_contfrac5d_fermact_array_w.cc,v 1.1 2005-01-27 17:57:48 bjoo Exp $
+// $Id: prec_ht_contfrac5d_fermact_array_w.cc,v 1.2 2005-01-31 13:06:47 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -8,6 +8,7 @@
 #include "actions/ferm/fermacts/unprec_wilson_fermact_w.h"
 #include "actions/ferm/fermacts/prec_ht_contfrac5d_fermact_array_w.h"
 #include "actions/ferm/linop/unprec_wilson_linop_w.h"
+#include "actions/ferm/linop/unprec_dwftransf_linop_w.h"
 #include "actions/ferm/linop/prec_ht_contfrac5d_linop_array_w.h"
 // #include "actions/ferm/linop/prec_ovlap_contfrac5d_pv_linop_array_w.h"
 #include "actions/ferm/linop/lmdagm.h"
@@ -164,16 +165,16 @@ namespace Chroma
 
     switch(params.approximation_type) { 
     case COEFF_TYPE_ZOLOTAREV:
-      scale_fac = Real(1) / state.getApproxMax();
-      eps = state.getApproxMin() * scale_fac;
+      scale_fac = state.getApproxMax();
+      eps = state.getApproxMin() /  scale_fac;
 
       QDPIO::cout << "Initing Linop with Zolotarev Coefficients" << endl;
       rdata = zolotarev(toFloat(eps), params.RatPolyDeg, type);    
       break;
 
     case COEFF_TYPE_TANH:
-      scale_fac = Real(1) / state.getApproxMax();
-      eps = state.getApproxMin() * scale_fac;
+      scale_fac = state.getApproxMax();
+      eps = state.getApproxMin() / scale_fac;
 
       QDPIO::cout << "Initing Linop with Higham Rep tanh Coefficients" << endl;
       rdata = higham(toFloat(eps), params.RatPolyDeg);
@@ -318,7 +319,7 @@ namespace Chroma
       
       return new EvenOddPrecHtContFrac5DLinOpArray(state_,
 						      params.Mass,
-						      params.OverMass,
+						      -params.OverMass,
 						      N5,
 						      scale_factor,
 						      alpha,
@@ -376,7 +377,7 @@ namespace Chroma
       // Hmm, not sure about what all the rescaling does to the PV....
       return new EvenOddPrecHtContFrac5DPVLinOpArray(state_,
 							params.Mass,
-							params.OverMass,
+							-params.OverMass,
 							N5,
 							scale_factor,
 							alpha,
@@ -415,13 +416,10 @@ namespace Chroma
      * \param Mass_      quark mass ( Read )
      */
     HtContFrac5DQprop(Handle< const EvenOddPrecLinearOperator<multi1d<T>, P> > A_,
-		      Handle< const UnprecLinearOperator<T, P>  > D_,
+		      Handle< const LinearOperator<T> > D_denum_,
 		      const Real& Mass_,
-		      const Real& b5_,
-		      const Real& c5_,
-
 		      const InvertParam_t& invParam_) : 
-      A(A_), D(D_), Mass(Mass_), b5(b5_), c5(c5_),  invParam(invParam_) {}
+      A(A_), D_denum(D_denum_), Mass(Mass_),  invParam(invParam_) {}
 
     //! Destructor is automatic
     ~HtContFrac5DQprop() {}
@@ -460,26 +458,13 @@ namespace Chroma
 	  chi5 = zero;
 	  psi5 = zero;
 	  tmp5_1 = zero;
-		
-	  // We need to solve D_5 psi = (0,0,0,...,(2 + (b5-c5)D^dag) gamma_5 chi)^T
-	  // Use both subsets
-	  tmp5_1[N5-1] = Gamma(G5)*chi;
-	
-	  // T ddag_tmp = D(wilson)^dag * [ G5 chi[N5-1] ]
-	  T ddag_tmp;
-	  (*D)(ddag_tmp, tmp5_1[N5-1], MINUS);
 
-	  // T ddag_tmp = (b5 - c5)D^dag [ G5 chi[N5-1] ]
-	  ddag_tmp *= (b5 - c5);
+	  // Need to prepare the source 
+	  {
+	    LatticeFermion tmp4 = Gamma(G5)*chi;
+	    (*D_denum)(tmp5_1[N5-1], tmp4, MINUS);
+	  }
 
-	  // tmp5_1[N5-1] = 2 * [ G5 chi[N5-1] ]
-	  tmp5_1[N5-1] *= Real(2);
-
-	  // tmp5_1[N5-1] = 2 * [ G5 chi[N5-1 ]+(b5 - c5)D^dag [ G5 chi[N5-1] ]
-	  //              = (2 + (b5-c5)D^dag ] [ G5 chi[N5-1] ]
-	  tmp5_1[N5-1] += ddag_tmp;
-
-	  // tmp5_3_odd = Qoe Qee^{-1} S_e
 	  A->evenEvenInvLinOp(tmp5_2, tmp5_1, PLUS);
 	  A->oddEvenLinOp(tmp5_3, tmp5_2, PLUS);
 
@@ -570,10 +555,8 @@ namespace Chroma
     HtContFrac5DQprop() {}
 
     Handle< const EvenOddPrecLinearOperator<multi1d<T>,P> > A;
-    Handle< const UnprecLinearOperator<T,P> > D;
+    Handle< const LinearOperator<T> > D_denum;
     const Real Mass;
-    const Real b5;
-    const Real c5;
     const InvertParam_t invParam;
   };
 
@@ -583,14 +566,16 @@ namespace Chroma
   EvenOddPrecHtContFrac5DFermActArray::qprop(Handle<const ConnectState> state,
 						const InvertParam_t& invParam) const
   {
+    const multi1d<LatticeColorMatrix>& u = state->getLinks();
+    Real a5 = params.b5- params.c5;
+    Real WilsonMass = -params.OverMass ;
+    Handle<LinearOperator<LatticeFermion> > D_w(new UnprecWilsonLinOp(u, WilsonMass));
+    Handle< const LinearOperator<LatticeFermion> > D_denum(new UnprecDWFTransfDenLinOp(u, a5, D_w));
 
-    return new HtContFrac5DQprop<LatticeFermion,multi1d<LatticeColorMatrix> >(
-      Handle< const EvenOddPrecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> > >(linOp(state)),
-      Handle< const UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> > >(new UnprecWilsonLinOp( state->getLinks(), params.OverMass )), 
-      getQuarkMass(),
-      params.b5, 
-      params.c5, 
-      invParam);
+    return new HtContFrac5DQprop<LatticeFermion, multi1d<LatticeColorMatrix> >(Handle< const EvenOddPrecLinearOperator< multi1d<LatticeFermion> , multi1d<LatticeColorMatrix> > >(linOp(state)),
+									       D_denum, 
+									       getQuarkMass(),
+									       invParam);
   }
   
 
@@ -695,7 +680,7 @@ namespace Chroma
     getFermBC().modifyU(u_tmp);
 
     Handle< FermBC<LatticeFermion> > fbc4 = new PeriodicFermBC<LatticeFermion>();
-    UnprecWilsonFermAct S_w(fbc4, params.OverMass);
+    UnprecWilsonFermAct S_w(fbc4, -params.OverMass);
 
     Handle< const ConnectState > state_aux = new SimpleConnectState(u_tmp);
     Handle< const LinearOperator<LatticeFermion> > Maux = 
@@ -731,7 +716,7 @@ namespace Chroma
     getFermBC().modifyU(u_tmp);
 
     Handle< FermBC<LatticeFermion> > fbc4 = new PeriodicFermBC<LatticeFermion>();
-    UnprecWilsonFermAct S_w(fbc4, params.OverMass);
+    UnprecWilsonFermAct S_w(fbc4, -params.OverMass);
 
     Handle< const ConnectState > state_aux = new SimpleConnectState(u_tmp);
     Handle< const LinearOperator<LatticeFermion> > Maux = 

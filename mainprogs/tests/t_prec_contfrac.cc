@@ -1,4 +1,4 @@
-// $Id: t_prec_contfrac.cc,v 1.2 2005-01-14 20:13:09 edwards Exp $
+// $Id: t_prec_contfrac.cc,v 1.3 2005-01-31 13:06:47 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -11,8 +11,9 @@ struct App_input_t {
   std::string  stateInfo;
   multi1d<int> nrow;
   multi1d<int> boundary;
-  UnprecOvlapContFrac5DFermActParams p_unprec;
-  EvenOddPrecOvlapContFrac5DFermActParams p_prec;
+ //  UnprecOvlapContFrac5DFermActParams p_unprec;
+  UnprecHTContFrac5DFermActParams p_unprec;
+  EvenOddPrecHtContFrac5DFermActParams p_prec;
 };
 
 // Reader for input parameters
@@ -87,8 +88,8 @@ int main(int argc, char **argv)
   Handle< FermBC< multi1d< LatticeFermion> > >  fbc(new SimpleFermBC< multi1d< LatticeFermion> >(input.boundary));
  
   // Initialize fermion actions
-  UnprecOvlapContFrac5DFermActArray S_unprec(fbc, input.p_unprec);
-  EvenOddPrecOvlapContFrac5DFermActArray S_prec(fbc, input.p_prec);
+  UnprecHTContFrac5DFermActArray S_unprec(fbc, input.p_unprec);
+  EvenOddPrecHtContFrac5DFermActArray S_prec(fbc, input.p_prec);
 
 
   // Create an overlap state
@@ -99,10 +100,10 @@ int main(int argc, char **argv)
   Handle< const ConnectState > state(S_prec.createState(u, state_info_xml, state_info_path));
 
   // Make an unprec linOp
-  Handle< const LinearOperator< multi1d<LatticeFermion> > > M_u( S_unprec.linOp(state) );
+  Handle< const UnprecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> > > M_u( S_unprec.linOp(state) );
   
   // Make the prec linOp
-  Handle< const EvenOddPrecLinearOperator< multi1d<LatticeFermion> > > M_e( S_prec.linOp(state));
+  Handle< const EvenOddPrecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> > > M_e( S_prec.linOp(state));
 
   QDPIO::cout << "Unprec LinOp size = " << M_u->size() << endl;
   QDPIO::cout << "Prec   LinOp size = " << M_e->size() << endl;
@@ -119,14 +120,27 @@ int main(int argc, char **argv)
     Me_s[i]=zero;
     r[i] = zero;
   }
+  
+  // Normalise Gaussien
+  Double s_norm10 = norm2(s[0]);
+  for(int i=1; i < s.size(); i++) { 
+    s_norm10 += norm2(s[i]);
+  }
+
+  for(int i=0; i < s.size(); i++) { 
+    s[i] /= sqrt(s_norm10);
+  }
+  
 
   (*M_u)(Mu_s, s, PLUS);
   (*M_e).unprecLinOp(Me_s, s, PLUS);
 
   for(int i=0; i < N5; i++) { 
     r[i] = Mu_s[i] - Me_s[i];
-    QDPIO::cout << "i = " << i << " || r [" << i << "] || = " 
-		<< sqrt(norm2(r[i])) << endl;
+    QDPIO::cout << "i[0]= " << i << " || r [" << i << "] || = " 
+		<< sqrt(norm2(r[i], rb[0])) << endl;
+    QDPIO::cout << "i[1]= " << i << " || r [" << i << "] || = " 
+		<< sqrt(norm2(r[i], rb[1])) << endl;
   }
 
   Mu_s = zero;
