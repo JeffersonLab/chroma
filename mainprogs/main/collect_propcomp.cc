@@ -1,6 +1,9 @@
-// $Id: collect_propcomp.cc,v 1.6 2004-07-28 03:08:04 edwards Exp $
+// $Id: collect_propcomp.cc,v 1.7 2004-09-08 14:41:36 edwards Exp $
 // $Log: collect_propcomp.cc,v $
-// Revision 1.6  2004-07-28 03:08:04  edwards
+// Revision 1.7  2004-09-08 14:41:36  edwards
+// Ifdef'ed out old FermActHandle code to get to compile.
+//
+// Revision 1.6  2004/07/28 03:08:04  edwards
 // Added START/END_CODE to all routines. Changed some to not pass an
 // argument.
 //
@@ -396,10 +399,13 @@ int main(int argc, char **argv)
   multi1d<Double> prop_corr = sumMulti(localNorm2(quark_prop), 
 					 phases.getSet());
     
+#if 0
+  // Need to fix FermActHandle here
   push(xml_out, "Prop_correlator");
   write(xml_out, "Mass", input.param.FermActHandle->getMass());
   write(xml_out, "prop_corr", prop_corr);
   pop(xml_out);
+#endif
   
   
   xml_out.flush();
