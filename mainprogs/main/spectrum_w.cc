@@ -1,10 +1,13 @@
-// $Id: spectrum_w.cc,v 1.20 2004-01-14 22:24:38 kostas Exp $
+// $Id: spectrum_w.cc,v 1.21 2004-01-16 15:01:06 kostas Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.20  2004-01-14 22:24:38  kostas
+//  Revision 1.21  2004-01-16 15:01:06  kostas
+//  Corrected the shell sink bug
+//
+//  Revision 1.20  2004/01/14 22:24:38  kostas
 //  added reading capability for NERSC confs
 //
 //  Revision 1.19  2004/01/06 04:59:14  edwards
@@ -512,7 +515,7 @@ int main(int argc, char **argv)
 		 xml_array, "Point_Shell_Wilson_Baryons");
         
 	if (input.param.Sl_src)
-	  baryon(quark_propagator, phases, 
+	  baryon(quark_prop_smr, phases, 
 		 t0, bc_spec, input.param.time_rev, 	
 		 xml_array, "Shell_Shell_Wilson_Baryons");
       } // end if (Sl_snk)
