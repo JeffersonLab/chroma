@@ -1,10 +1,13 @@
-// $Id: spectrum_w.cc,v 1.14 2003-10-10 17:48:02 edwards Exp $
+// $Id: spectrum_w.cc,v 1.15 2003-10-10 17:50:32 edwards Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.14  2003-10-10 17:48:02  edwards
+//  Revision 1.15  2003-10-10 17:50:32  edwards
+//  Removed some extraneous debugging.
+//
+//  Revision 1.14  2003/10/10 17:48:02  edwards
 //  Added missing time_rev for this version of input_io. Other
 //  small tweaks.
 //
@@ -334,17 +337,11 @@ int main(int argc, char **argv)
   // Input parameter structure
   Spectrum_input_t  input;
 
-  QDPIO::cout << "Before DATA" << endl;
-
   // Instantiate xml reader for DATA
   XMLReader xml_in("DATA");
 
-  QDPIO::cout << "Before read spectrum" << endl;
-
   // Read data
   read(xml_in, "/spectrum_w", input);
-
-  QDPIO::cout << "Before Layout" << endl;
 
   // Specify lattice size, shape, etc.
   Layout::setLattSize(input.param.nrow);
