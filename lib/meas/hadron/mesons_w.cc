@@ -1,6 +1,9 @@
-//  $Id: mesons_w.cc,v 1.20 2005-01-14 18:42:36 edwards Exp $
+//  $Id: mesons_w.cc,v 1.21 2005-02-28 03:35:25 edwards Exp $
 //  $Log: mesons_w.cc,v $
-//  Revision 1.20  2005-01-14 18:42:36  edwards
+//  Revision 1.21  2005-02-28 03:35:25  edwards
+//  Fixed doxygen comments.
+//
+//  Revision 1.20  2005/01/14 18:42:36  edwards
 //  Converted all lib files to be in chroma namespace.
 //
 //  Revision 1.19  2004/07/28 02:38:04  edwards
@@ -70,12 +73,12 @@ namespace Chroma {
  * Construct meson propagators
  * The two propagators can be identical or different.
  *
- * \param quark_prop_1 -- first quark propagator ( Read )
- * \param quark_prop_2 -- second (anti-) quark propagator ( Read )
- * \param t0 -- timeslice coordinate of the source ( Read )
- * \param phases -- object holds list of momenta and Fourier phases ( Read )
- * \param xml -- namelist file object ( Read )
- * \param xml_group -- string used for writing xml data ( Read )
+ * \param quark_prop_1  first quark propagator ( Read )
+ * \param quark_prop_2  second (anti-) quark propagator ( Read )
+ * \param t0            timeslice coordinate of the source ( Read )
+ * \param phases        object holds list of momenta and Fourier phases ( Read )
+ * \param xml           xml file object ( Write )
+ * \param xml_group     string used for writing xml data ( Read )
  *
  *        ____
  *        \
