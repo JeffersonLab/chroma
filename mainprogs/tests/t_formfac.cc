@@ -1,7 +1,22 @@
-// $Id: t_formfac.cc,v 1.1 2003-03-03 16:05:34 flemingg Exp $
-/*! \file
- *  \brief Test the form-factor routine
- */
+// $Id: t_formfac.cc,v 1.3 2003-03-20 19:34:25 flemingg Exp $
+//
+//! \file
+//  \brief Test the form-factor routine
+//
+// $Log: t_formfac.cc,v $
+// Revision 1.3  2003-03-20 19:34:25  flemingg
+// Evolved formfac_w.cc to use SftMom class, which included some bug fixes
+// in features in SftMom which had been previously untested and evolution
+// of the corresponding test program.
+//
+// Revision 1.2  2003/03/06 00:27:29  flemingg
+// Added $Log: t_formfac.cc,v $
+// Added Revision 1.3  2003-03-20 19:34:25  flemingg
+// Added Evolved formfac_w.cc to use SftMom class, which included some bug fixes
+// Added in features in SftMom which had been previously untested and evolution
+// Added of the corresponding test program.
+// Added to header comments
+//
 
 #include <iostream>
 #include <cstdio>
@@ -45,19 +60,27 @@ int main(int argc, char *argv[])
   gaussian(quark_prop_1);
   gaussian(quark_prop_2);
 
+  // propagation direction
   int j_decay = Nd-1;
-  int length = Layout::lattSize()[j_decay];
-  multi1d<int> t_source(Nd);
-  t_source = 0;
 
-  int t_sink = length-1;
+  // source timeslice
+  int t0 = 0 ;
 
-  multi1d<int> sink_mom(Nd-1);
+  // sink momentum {1,0,0}
+  multi1d<int> sink_mom(Nd-1) ;
+  sink_mom    = 0 ;
+  sink_mom[0] = 1 ;
 
-  sink_mom = 0;
+  clock_t start_clock = clock() ;
 
-  FormFac(u, quark_prop_1, quark_prop_2, t_source, 3, t_sink, sink_mom,
-          j_decay, nml);
+  // create Fourier phases with (mom-sink_mom)^2 <= 10 (NO AVERAGING)
+  SftMom phases(10, sink_mom, false, j_decay) ;
+
+  FormFac(u, quark_prop_1, quark_prop_2, phases, t0, nml) ;
+
+  clock_t end_clock = clock() ;
+
+  cerr << "Test took " << end_clock - start_clock << " clocks.\n" ;
 
   // Time to bolt
   QDP_finalize();
