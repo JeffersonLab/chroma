@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: param_io.h,v 1.18 2004-04-23 08:55:42 bjoo Exp $
+// $Id: param_io.h,v 1.19 2004-04-24 03:35:57 edwards Exp $
 /*! \file
  *  \brief Reunitarize (to a SU(N)) inplace the matrix A under some option
  */
@@ -34,7 +34,8 @@ multi1d<Real> massToKappa(const multi1d<Real>& Mass);
  */
 
 //! Configuration type
-enum CfgType {
+enum CfgType 
+{
   CFG_TYPE_MILC = 0,
   CFG_TYPE_NERSC,
   CFG_TYPE_SCIDAC,
@@ -45,7 +46,8 @@ enum CfgType {
 };
 
 //! Propagator type
-enum PropType {
+enum PropType 
+{
   PROP_TYPE_SCIDAC = 2,
   PROP_TYPE_SZIN,
   PROP_TYPE_KYU,
@@ -53,14 +55,16 @@ enum PropType {
 
 
 //! Types of fermion
-enum FermType {
+enum FermType 
+{
   FERM_TYPE_WILSON,
   FERM_TYPE_STAGGERED,
 };
 
 
 //! Types of fermion actions
-enum FermActType {
+enum FermActType 
+{
   FERM_ACT_WILSON,
   FERM_ACT_UNPRECONDITIONED_WILSON,
   FERM_ACT_PARITY_BREAKING_WILSON,
@@ -80,6 +84,26 @@ enum FermActType {
   FERM_ACT_STAGGERED,
   FERM_ACT_NAIK,
   FERM_ACT_ASQTAD
+};
+
+
+//! Sequential source type
+enum SeqSourceType 
+{
+  SEQ_SOURCE_TYPE_NUCL_U_UNPOL  = 0,
+  SEQ_SOURCE_TYPE_NUCL_D_UNPOL  = 1,
+  SEQ_SOURCE_TYPE_NUCL_U_POL    = 2,   // same as polarized in 2pt baryon case
+  SEQ_SOURCE_TYPE_NUCL_D_POL    = 3,   // same as polarized in 2pt baryon case
+  SEQ_SOURCE_TYPE_DELTA_U_UNPOL = 4,
+  SEQ_SOURCE_TYPE_DELTA_D_UNPOL = 5,
+  SEQ_SOURCE_TYPE_NUCL_U_UNPOL_NONREL = 6,
+  SEQ_SOURCE_TYPE_NUCL_D_UNPOL_NONREL = 7,
+  SEQ_SOURCE_TYPE_NUCL_U_POL_NONREL   = 8,
+  SEQ_SOURCE_TYPE_NUCL_D_POL_NONREL   = 9,
+  SEQ_SOURCE_TYPE_NUCL_U_MIXED_NONREL = 21,
+  SEQ_SOURCE_TYPE_NUCL_D_MIXED_NONREL = 22,
+
+  SEQ_SOURCE_TYPE_PION = 10,
 };
 
 
@@ -189,6 +213,9 @@ void read(XMLReader& xml, const string& path, SinkType& param);
 //! Read a wave type enum
 void read(XMLReader& xml, const string& path, WaveStateType& param);
 
+//! Read a sequential source type enum
+void read(XMLReader& xml, const string& path, SeqSourceType& param);
+
 //! Configuration input
 void read(XMLReader& xml, const string& path, Cfg_t& input);
 
@@ -212,49 +239,52 @@ void read(XMLReader& xml, const string& path, MultiInvertParam_t& param);
 //! Write a QDP volume format type
 void write(XMLWriter& xml, const string& path, QDP_volfmt_t param);
 
-//! Read a fermion type enum
+//! Write a fermion type enum
 void write(XMLWriter& xml, const string& path, FermType param);
 
-//! Read a fermion action type enum
+//! Write a fermion action type enum
 void write(XMLWriter& xml, const string& path, FermActType param);
 
-//! Read a configuration type enum
+//! Write a configuration type enum
 void write(XMLWriter& xml, const string& path, CfgType param);
 
-//! Read a propagator type enum
+//! Write a propagator type enum
 void write(XMLWriter& xml, const string& path, PropType param);
 
-//! Read a wave-function type enum
+//! Write a wave-function type enum
 void write(XMLWriter& xml, const string& path, WvfKind param);
 
-//! Read a inverter type enum
+//! Write a inverter type enum
 void write(XMLWriter& xml, const string& path, InvType param);
 
-//! Read a source type enum
+//! Write a source type enum
 void write(XMLWriter& xml, const string& path, SourceType param);
 
-//! Read a sink type enum
+//! Write a sink type enum
 void write(XMLWriter& xml, const string& path, SinkType param);
 
-//! Read a wave type enum
+//! Write a wave type enum
 void write(XMLWriter& xml, const string& path, WaveStateType param);
+
+//! Write a seqsource type enum
+void write(XMLWriter& xml, const string& path, SeqSourceType param);
 
 //! Configuration input
 void write(XMLWriter& xml, const string& path, const Cfg_t& input);
 
-//! Read a anisotropy param struct
+//! Write a anisotropy param struct
 void write(XMLWriter& xml, const string& path, const AnisoParam_t& param);
 
-//! Read a smearing param struct
+//! Write a smearing param struct
 void write(XMLWriter& xml, const string& path, const SmearingParam_t& param);
 
-//! Read chiral action like parameters
+//! Write chiral action like parameters
 void write(XMLWriter& xml, const string& path, const ChiralParam_t& param);
 
-//! Read inverter parameters
+//! Write inverter parameters
 void write(XMLWriter& xml, const string& path, const InvertParam_t& param);
 
-//! Read inverter parameters
+//! Write inverter parameters
 void write(XMLWriter& xml, const string& path, const MultiInvertParam_t& param);
 
 /*! @} */  // end of group io

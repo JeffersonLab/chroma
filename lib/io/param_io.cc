@@ -1,4 +1,4 @@
-// $Id: param_io.cc,v 1.24 2004-04-23 08:55:42 bjoo Exp $
+// $Id: param_io.cc,v 1.25 2004-04-24 03:35:57 edwards Exp $
 /*! \file
  *  \brief Various parameter readers/writers for main programs
  */
@@ -272,6 +272,44 @@ void read(XMLReader& xml, const string& path, WaveStateType& param)
   else 
   {
     QDPIO::cerr << "Unsupported particle wave-state type" << endl;
+    QDP_abort(1);
+  }
+}
+
+//! Read a sequential source type enum
+void read(XMLReader& xml, const string& path, SeqSourceType& param)
+{
+  string seq_type_str;
+  read(xml, path, seq_type_str);
+  if (seq_type_str == "NUCL_U_UNPOL")
+    param = SEQ_SOURCE_TYPE_NUCL_U_UNPOL;
+  else if (seq_type_str == "NUCL_D_UNPOL")
+    param = SEQ_SOURCE_TYPE_NUCL_D_UNPOL;
+  else if (seq_type_str == "NUCL_U_POL")
+    param = SEQ_SOURCE_TYPE_NUCL_U_POL;
+  else if (seq_type_str == "NUCL_D_POL")
+    param = SEQ_SOURCE_TYPE_NUCL_D_POL;
+  else if (seq_type_str == "DELTA_U_UNPOL")
+    param = SEQ_SOURCE_TYPE_DELTA_U_UNPOL;
+  else if (seq_type_str == "DELTA_D_UNPOL")
+    param = SEQ_SOURCE_TYPE_DELTA_D_UNPOL;
+  else if (seq_type_str == "NUCL_U_UNPOL_NONREL")
+    param = SEQ_SOURCE_TYPE_NUCL_U_UNPOL_NONREL;
+  else if (seq_type_str == "NUCL_D_UNPOL_NONREL")
+    param = SEQ_SOURCE_TYPE_NUCL_D_UNPOL_NONREL;
+  else if (seq_type_str == "NUCL_U_POL_NONREL")
+    param = SEQ_SOURCE_TYPE_NUCL_U_POL_NONREL;
+  else if (seq_type_str == "NUCL_D_POL_NONREL")
+    param = SEQ_SOURCE_TYPE_NUCL_D_POL_NONREL;
+  else if (seq_type_str == "NUCL_U_MIXED_NONREL")
+    param = SEQ_SOURCE_TYPE_NUCL_U_MIXED_NONREL;
+  else if (seq_type_str == "NUCL_D_MIXED_NONREL")
+    param = SEQ_SOURCE_TYPE_NUCL_D_MIXED_NONREL;
+  else if (seq_type_str == "PION")
+    param = SEQ_SOURCE_TYPE_PION;
+  else 
+  {
+    QDPIO::cerr << "Unsupported sequential sorce type = " << seq_type_str << endl;
     QDP_abort(1);
   }
 }
@@ -632,6 +670,45 @@ void write(XMLWriter& xml, const string& path, WaveStateType param)
     QDP_abort(1);
   }
   write(xml, path, wave_type_str);
+}
+
+
+//! Read a sequential source type enum
+void write(XMLWriter& xml, const string& path, SeqSourceType param)
+{
+  string seq_type_str;
+  if (param == SEQ_SOURCE_TYPE_NUCL_U_UNPOL)
+    seq_type_str = "NUCL_U_UNPOL";
+  else if (param == SEQ_SOURCE_TYPE_NUCL_D_UNPOL)
+    seq_type_str = "NUCL_D_UNPOL";
+  else if (param == SEQ_SOURCE_TYPE_NUCL_U_POL)
+    seq_type_str = "NUCL_U_POL";
+  else if (param == SEQ_SOURCE_TYPE_NUCL_D_POL)
+    seq_type_str = "NUCL_D_POL";
+  else if (param == SEQ_SOURCE_TYPE_DELTA_U_UNPOL)
+    seq_type_str = "DELTA_U_UNPOL";
+  else if (param == SEQ_SOURCE_TYPE_DELTA_D_UNPOL)
+    seq_type_str = "DELTA_D_UNPOL";
+  else if (param == SEQ_SOURCE_TYPE_NUCL_U_UNPOL_NONREL)
+    seq_type_str = "NUCL_U_UNPOL_NONREL";
+  else if (param == SEQ_SOURCE_TYPE_NUCL_D_UNPOL_NONREL)
+    seq_type_str = "NUCL_D_UNPOL_NONREL";
+  else if (param == SEQ_SOURCE_TYPE_NUCL_U_POL_NONREL)
+    seq_type_str = "NUCL_U_POL_NONREL";
+  else if (param == SEQ_SOURCE_TYPE_NUCL_D_POL_NONREL)
+    seq_type_str = "NUCL_D_POL_NONREL";
+  else if (param == SEQ_SOURCE_TYPE_NUCL_U_MIXED_NONREL)
+    seq_type_str = "NUCL_U_MIXED_NONREL";
+  else if (param == SEQ_SOURCE_TYPE_NUCL_D_MIXED_NONREL)
+    seq_type_str = "NUCL_D_MIXED_NONREL";
+  else if (param == SEQ_SOURCE_TYPE_PION)
+    seq_type_str = "PION";
+  else 
+  {
+    QDPIO::cerr << "Unsupported sequential sourrrce type" << endl;
+    QDP_abort(1);
+  }
+  write(xml, path, seq_type_str);
 }
 
 
