@@ -1,4 +1,4 @@
-// $Id: curcor2_w.cc,v 1.1 2003-09-29 21:31:51 edwards Exp $
+// $Id: curcor2_w.cc,v 1.2 2003-09-30 21:01:04 edwards Exp $
 /*! \file
  *  \brief Mesonic current correlators
  */
@@ -114,7 +114,7 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
 
 	/* The nonconserved vector current first */
 
-	hsum = phases.sft(psi_sq);
+	hsum = sumMulti(psi_sq, phases.getSubset());
 
 	multi1d<Real> nonconserved_vector_current(length);
 	for(int t = 0; t < length; ++t)
@@ -126,7 +126,7 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
 
 	/* The conserved vector current next */
 
-	hsum = phases.sft(chi_sq);
+	hsum = sumMulti(chi_sq, phases.getSubset());
 
 	multi1d<Real> conserved_vector_current(length);
 	for(int t = 0; t < length; ++t)
@@ -166,7 +166,7 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
 	psi_sq = real(trace(adj(anti_quark_prop) * Gamma(n1) * quark_prop_1 * Gamma(n)));
 
 	/* Do a slice-wise sum. */
-	hsum = phases.sft(psi_sq);
+	hsum = sumMulti(psi_sq, phases.getSubset());
 //	dummy1 = - Real(meson_eta[n]);
 	Real dummy1 = - 1;
 
@@ -205,7 +205,7 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
 	psi_sq = real(trace(adj(anti_quark_prop) * Gamma(n) * quark_prop_1 * Gamma(n)));
 
 	/* Do a slice-wise sum. */
-	hsum = phases.sft(psi_sq);
+	hsum = sumMulti(psi_sq, phases.getSubset());
 //	dummy1 = Real(meson_eta[n]);
 	Real dummy1 = 1;
 
@@ -239,7 +239,8 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
     chi_sq  = real(trace(adj(anti_quark_prop) * Gamma(n) * 
 			 u[j_decay] * shift(quark_prop_1, FORWARD, j_decay) * Gamma(G5)));
 
-    chi_sq -= real(trace(adj(Gamma(n) * u[j_decay] * shift(anti_quark_prop, FORWARD, j_decay) * 
+    // The () forces precedence
+    chi_sq -= real(trace(adj(Gamma(n) * (u[j_decay] * shift(anti_quark_prop, FORWARD, j_decay)) * 
 			     Gamma(G5)) * quark_prop_1));
 
     /* Do a slice-wise sum. */
@@ -248,7 +249,7 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
 
     /* The local axial current first */
 
-    hsum = phases.sft(psi_sq);
+    hsum = sumMulti(psi_sq, phases.getSubset());
 
     multi1d<Real> local_axial_current(length);
     for(int t = 0; t < length; ++t)
@@ -261,7 +262,7 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
 
     /* The nonlocal axial current next */
 
-    hsum = phases.sft(chi_sq);
+    hsum = sumMulti(chi_sq, phases.getSubset());
 
     multi1d<Real> nonlocal_axial_current(length);
     for(int t = 0; t < length; ++t)
