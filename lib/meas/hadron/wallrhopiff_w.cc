@@ -1,4 +1,4 @@
-// $Id: wallrhopiff_w.cc,v 1.3 2004-06-05 03:00:48 edwards Exp $
+// $Id: wallrhopiff_w.cc,v 1.4 2004-06-07 01:33:17 edwards Exp $
 /*! \file
  *  \brief Wall-sink rho^+ <-> gamma+pi^+ form-factors 
  *
@@ -191,13 +191,13 @@ void wallRhoPiFormFac(WallFormFac_formfacs_t& form,
 
 	  if (dp == 0)
 	  {
-	    gamma_value1 = 1 << sigma;
-	    gamma_value2 = G5;
+	    gamma_value1 = G5;
+	    gamma_value2 = 1 << sigma;
 	  }
 	  else
 	  {
-	    gamma_value1 = G5;
-	    gamma_value2 = 1 << sigma;
+	    gamma_value1 = 1 << sigma;
+	    gamma_value2 = G5;
 	  }
 
 	  lorentz.snk_gamma = gamma_value1;
