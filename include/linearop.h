@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linearop.h,v 1.19 2003-12-11 21:41:16 edwards Exp $
+// $Id: linearop.h,v 1.20 2003-12-12 13:56:40 bjoo Exp $
 
 /*! @file
  * @brief Linear Operators
@@ -546,6 +546,116 @@ private:
 };
 
 
+//! Even odd Linear Operator (for staggered like things )
+//
+//  [   D_ee        D_eo ]
+//  [   D_oe        D_oo ]
+//
+//  Usually D_ee = D_oo = 2m
+template<typename T>
+class EvenOddLinearOperator : public LinearOperator<T>
+{
+public:
+  //! Only defined on the even lattice
+  const OrderedSubset& subset() const {return all;}
+
+
+  //! Apply the even-even block onto a source vector
+  /*! This does not need to be optimized */
+  inline virtual void evenEvenLinOp(T& chi, const T& psi, 
+			     enum PlusMinus isign) const = 0;
+  
+  //! Apply the the even-odd block onto a source vector
+  virtual void evenOddLinOp(T& chi, const T& psi, 
+			    enum PlusMinus isign) const = 0;
+
+  //! Apply the the odd-even block onto a source vector
+  virtual void oddEvenLinOp(T& chi, const T& psi, 
+			    enum PlusMinus isign) const = 0;
+
+  //! Apply the the odd-odd block onto a source vector
+  virtual void oddOddLinOp(T& chi, const T& psi, 
+			   enum PlusMinus isign) const = 0;
+
+  //! Apply the operator onto a source vector
+  virtual void operator() (T& chi, const T& psi, 
+			   enum PlusMinus isign) const
+    {
+      T   tmp1, tmp2;  // if an array is used here, the space is not reserved
+
+      /*  Chi   =   D    Psi   +    D    Psi   */
+      /*     E       E,E    E        E,O    O  */
+      evenEvenLinOp(tmp1, psi, isign);
+      evenOddLinOp(tmp2, psi, isign);
+      chi[rb[0]] = tmp1 + tmp2;
+
+      /*  Chi   =  D    Psi    +  D    Psi  */
+      /*     O      O,E    E       O,O    O */
+      oddEvenLinOp(tmp1, psi, isign);
+      oddOddLinOp(tmp2, psi, isign);
+      chi[rb[1]] = tmp1 + tmp2;
+    }
+
+  //! Virtual destructor to help with cleanup;
+  virtual ~EvenOddLinearOperator() {}
+};
+
+//! Proxy for even-odd staggered linear operator abstract class
+/*! @ingroup linop
+ *
+ * Support for even-odd staggered linear operators
+ */
+template<typename T>
+class EvenOddLinearOperatorProxy : public EvenOddLinearOperator<T>
+{
+public:
+  //! Initialize pointer with existing pointer
+  /*! Requires that the pointer p is a return value of new */
+  explicit EvenOddLinearOperatorProxy(const EvenOddLinearOperator<T>* p=0) : linop(p) {}
+
+  //! Copy pointer (one more owner)
+  EvenOddLinearOperatorProxy(const EvenOddLinearOperatorProxy& a) : linop(a.linop) {}
+
+  //! Assignment
+  EvenOddLinearOperatorProxy& operator=(const EvenOddLinearOperatorProxy& a)
+    {linop = a.linop; return *this;}
+
+  //! Access the value to which the pointer refers
+  const EvenOddLinearOperator<T>& operator*() const {return linop.operator*();}
+  const EvenOddLinearOperator<T>* operator->() const {return linop.operator->();}
+
+  //! Only defined on the odd lattice
+  const OrderedSubset& subset() const {return linop->subset();}
+
+  //! Apply the even-even block onto a source vector
+  /*! This does not need to be optimized */
+  virtual void evenEvenLinOp(T& chi, const T& psi, 
+			     enum PlusMinus isign) const
+    {linop->evenEvenLinOp(chi, psi, isign);}
+    
+  //! Apply the the even-odd block onto a source vector
+  virtual void evenOddLinOp(T& chi, const T& psi, 
+			    enum PlusMinus isign) const
+    {linop->evenOddLinOp(chi, psi, isign);}
+
+  //! Apply the the odd-even block onto a source vector
+  virtual void oddEvenLinOp(T& chi, const T& psi, 
+			    enum PlusMinus isign) const
+    {linop->oddEvenLinOp(chi, psi, isign);}
+
+  //! Apply the the odd-odd block onto a source vector
+  virtual void oddOddLinOp(T& chi, const T& psi, 
+			   enum PlusMinus isign) const
+    {linop->oddOddLinOp(chi, psi, isign);}
+
+  //! Apply the operator onto a source vector
+  virtual void operator() (T& chi, const T& psi, 
+			   enum PlusMinus isign) const
+    {linop->operator()(chi, psi, isign);}
+
+  private:
+  Handle<const EvenOddLinearOperator<T> >  linop;
+};
 
 
 //! Dslash-like Linear Operator

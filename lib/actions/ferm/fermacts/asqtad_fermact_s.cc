@@ -1,4 +1,4 @@
-// $Id: prec_asqtad_fermact_s.cc,v 1.3 2003-12-11 17:11:17 bjoo Exp $
+// $Id: asqtad_fermact_s.cc,v 1.3 2003-12-12 13:56:40 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -9,9 +9,9 @@
 //#include "actions/ferm/fermacts/asqtad_fermact_s.h"
 //#include "actions/ferm/linop/lmdagm_s.h"
 
-#include "actions/ferm/linop/prec_asq_mdagm_s.h"
-#include "actions/ferm/linop/prec_asqtad_linop_s.h"
-#include "actions/ferm/fermacts/prec_asqtad_fermact_s.h"
+#include "actions/ferm/linop/asqtad_mdagm_s.h"
+#include "actions/ferm/linop/asqtad_linop_s.h"
+#include "actions/ferm/fermacts/asqtad_fermact_s.h"
 
 
 //! Produce a linear operator for this action
@@ -23,8 +23,8 @@
  * \param u_fat, u_triple 	 fat7 and triple links    (Read)
  * \u has already had KS phases multiplied in.
  */
-const EvenOddPrecLinearOperator<LatticeFermion>* 
-EvenOddPrecAsqtadFermAct::linOp(const ConnectState& state_) const
+const EvenOddLinearOperator<LatticeFermion>* 
+AsqtadFermAct::linOp(const ConnectState& state_) const
 {
 
   // Why in fact are we casting to the base class on both sides of
@@ -42,7 +42,7 @@ EvenOddPrecAsqtadFermAct::linOp(const ConnectState& state_) const
   const AsqtadConnectStateBase<LatticeFermion>& state = 
     dynamic_cast<const AsqtadConnectStateBase<LatticeFermion>&>(state_);
 
-  return new EvenOddPrecAsqtadLinOp(state.getFatLinks(), state.getTripleLinks(), Mass);
+  return new AsqtadLinOp(state.getFatLinks(), state.getTripleLinks(), Mass);
 }
 
 //! Produce a M^dag.M linear operator for this action
@@ -55,11 +55,11 @@ EvenOddPrecAsqtadFermAct::linOp(const ConnectState& state_) const
  */
 
 const LinearOperator<LatticeFermion>* 
-EvenOddPrecAsqtadFermAct::lMdagM(const ConnectState& state_) const
+AsqtadFermAct::lMdagM(const ConnectState& state_) const
 {
   const AsqtadConnectStateBase<LatticeFermion>& state = 
     dynamic_cast<const AsqtadConnectStateBase<LatticeFermion>&>(state_);
   
-  return new PrecAsqtadMdagM(state.getFatLinks(), state.getTripleLinks(), Mass);
+  return new AsqtadMdagM(state.getFatLinks(), state.getTripleLinks(), Mass);
 }
 

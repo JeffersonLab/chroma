@@ -1,4 +1,4 @@
-// $Id: prec_asq_mdagm_s.cc,v 1.2 2003-12-11 17:11:17 bjoo Exp $
+// $Id: asqtad_mdagm_s.cc,v 1.1 2003-12-12 13:56:40 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -6,7 +6,7 @@
 
 #include "chromabase.h"
 //#include "actions/ferm/linop/asqtad_linop_s.h"
-#include "prec_asq_mdagm_s.h"
+#include "asqtad_mdagm_s.h"
 
 //! Creation routine
 /*! \ingroup fermact
@@ -15,7 +15,7 @@
  * \param _u_triple    triple links                        (Read)
  * \param _Mass        fermion mass   	                   (Read)
  */
-void PrecAsqtadMdagM::create(const multi1d<LatticeColorMatrix>& _u_fat, const multi1d<LatticeColorMatrix>& _u_triple, const Real& _Mass)
+void AsqtadMdagM::create(const multi1d<LatticeColorMatrix>& _u_fat, const multi1d<LatticeColorMatrix>& _u_triple, const Real& _Mass)
 {
   Mass = _Mass;
   u_fat = _u_fat;
@@ -34,7 +34,7 @@ void PrecAsqtadMdagM::create(const multi1d<LatticeColorMatrix>& _u_fat, const mu
  * \param isign   Flag ( PLUS | MINUS )   	       (Read)
  * \param cb      Checkerboard of OUTPUT VECTOR        (Read)
  */
-void PrecAsqtadMdagM::operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const
+void AsqtadMdagM::operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const
 {
 
   START_CODE("AsqtadMdagM");

@@ -1,4 +1,4 @@
-// $Id: t_propagator_s.cc,v 1.3 2003-12-11 17:11:17 bjoo Exp $
+// $Id: t_propagator_s.cc,v 1.4 2003-12-12 13:56:41 bjoo Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -11,8 +11,8 @@
 #include "chroma.h"
 #include "util/ferm/transf.h"
 #include "fermact.h"
-#include "actions/ferm/fermacts/prec_asqtad_fermact_s.h"
-#include "actions/ferm/linop/prec_asqtad_linop_s.h"
+#include "actions/ferm/fermacts/asqtad_fermact_s.h"
+#include "actions/ferm/linop/asqtad_linop_s.h"
 
 /*
  *  Here we have various temporary definitions
@@ -353,45 +353,47 @@ int main(int argc, char **argv)
   //
   // Initialize fermion action
   //
-  EvenOddPrecAsqtadFermAct S_f(input.param.Mass, input.param.u0);
+  AsqtadFermAct S_f(input.param.Mass, input.param.u0);
 
   // Set up a state for the current u,
   // (compute fat & triple links)
   // Use S_f.createState so that S_f can pass in u0
 
   const AsqtadConnectStateProxy<LatticeFermion> state(S_f.createState(u));
-  const EvenOddPrecLinearOperatorProxy<LatticeFermion> D_asqtad(S_f.linOp((ConnectState &)state));
+  const EvenOddLinearOperatorProxy<LatticeFermion> D_asqtad(S_f.linOp((ConnectState &)state));
 
   // Create a fermion to apply linop to.
-  LatticeFermion psi;
+  LatticeFermion tmp1, tmp2;
+  const int even_source[] = { 0, 0, 0, 0 };
+  multi1d<int> t_src_even(4);
+  t_src_even = even_source;
+			  
 
-//  multi1d<int> t_source = zero;
-//  psi = zero;
-  srcfil(psi ,input.param.t_srce ,0, 0);
-//  random(psi);
+  const int odd_source[] = { 1, 0, 0, 0 };
+  multi1d<int> t_src_odd(4);
+  t_src_odd = odd_source;
 
-//  const peeksite(const LatticeFermion& psi, 0);
-  
-  // Create a result vector 
-  LatticeFermion chi;
-  chi  =  zero;
+  srcfil(tmp1, t_src_odd ,0, 0);
+  tmp2  =  zero;
 
   // Apply Linop
-  D_asqtad.evenOddLinOp(chi, psi, PLUS); 
+  D_asqtad.evenOddLinOp(tmp2, tmp1, PLUS); 
 
   push(xml_out, "dslash");
-  Write(xml_out, psi);
-  Write(xml_out, chi);
+  Write(xml_out, tmp1);
+  Write(xml_out, tmp2);
   pop(xml_out);
 
   const LinearOperatorProxy<LatticeFermion> MdagM_asqtad(S_f.lMdagM((ConnectState &)state));
 
-  chi = zero;
-  MdagM_asqtad(chi, psi, PLUS);
+  
+  srcfil(tmp1, t_src_even, 0, 0);
+
+  MdagM_asqtad(tmp2, tmp1, PLUS);
 
   push(xml_out, "MdagM");
-  Write(xml_out, psi);
-  Write(xml_out, chi);
+  Write(xml_out, tmp1);
+  Write(xml_out, tmp2);
   pop(xml_out);
 
  
@@ -407,15 +409,17 @@ int main(int argc, char **argv)
   int ncg_had = 0;
   int n_count;
 
-  psi = zero;   // note this is ``zero'' and not 0
+  LatticeFermion psi, chi;
+
+  chi = zero;   // note this is ``zero'' and not 0
+  srcfil(psi, t_src_even, 0, 0);
 
   for(int color_source = 0; color_source < Nc; ++color_source)
   {
     int spin_source = 0;
-    LatticeFermion chi;
 
     // Extract a fermion source
-    PropToFerm(quark_prop_source, chi, color_source, spin_source);
+    //PropToFerm(quark_prop_source, chi, color_source, spin_source);
 
     // push(xml_out, "SOURCE");
    //  Write(xml_out, psi);
@@ -427,7 +431,7 @@ int main(int argc, char **argv)
     // Compute the propagator for given source color/spin 
     // int n_count;
 
-    S_f.qprop(psi, (ConnectState&) state, chi, CG_INVERTER, 
+    S_f.qprop(chi, (ConnectState&) state, psi, CG_INVERTER, 
               input.param.RsdCG, input.param.MaxCG, n_count);
     
     ncg_had += n_count;
@@ -442,7 +446,8 @@ int main(int argc, char **argv)
      * Move the solution to the appropriate components
      * of quark propagator.
      */
-    FermToProp(psi, quark_propagator, color_source, spin_source);
+    FermToProp(chi, quark_propagator, color_source, spin_source);
+    
   }
 
 

@@ -6,14 +6,14 @@
 
 using namespace QDP;
 
-class EvenOddPrecAsqtadFermAct : public EvenOddPrecStaggeredTypeFermAct<LatticeFermion>
+class AsqtadFermAct : public EvenOddStaggeredTypeFermAct<LatticeFermion>
 {
 public:
   //! Partial constructor
-  EvenOddPrecAsqtadFermAct() {}
+  AsqtadFermAct() {}
 
   //! Full constructor
-  EvenOddPrecAsqtadFermAct(const Real Mass_, const Real u0_) {
+  AsqtadFermAct(const Real Mass_, const Real u0_) {
 
     // Copy mass an u0
     Mass = Mass_;
@@ -43,7 +43,7 @@ public:
   
 
   //! Produce a linear operator for this action
-  const EvenOddPrecLinearOperator<LatticeFermion>* linOp(const ConnectState& state_) const;
+  const EvenOddLinearOperator<LatticeFermion>* linOp(const ConnectState& state_) const;
 
   //! Produce a linear operator M^dag.M for this action
   
@@ -71,7 +71,7 @@ public:
   //				   const LatticeFermion& psi) const;
 
   //! Destructor is automatic
-  ~EvenOddPrecAsqtadFermAct() {}
+  ~AsqtadFermAct() {}
 
 private:
   Real Mass;

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 1.15 2003-12-11 17:11:17 bjoo Exp $
+// $Id: fermact.h,v 1.16 2003-12-12 13:56:40 bjoo Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -356,34 +356,13 @@ public:
 };
 
 
-//! Unpreconditioned Staggered-like fermion actions
-/*! @ingroup actions
- *
- * Unpreconditioned like Staggered-like fermion actions
- */
-template<typename T>
-class UnprecStaggeredTypeFermAct : public StaggeredTypeFermAct<T>
-{
-public:
-#if 0
-  //! Compute quark propagator
-  void qprop(T& psi, 
-	     const ConnectState& state, 
-	     const T& chi, 
-	     enum InvType invType,
-	     const Real& RsdCG, 
-	     int MaxCG, int& ncg_had) const;
-#endif
-};
-
-
 //! Even-odd preconditioned Staggered-like fermion actions
 /*! @ingroup actions
  *
  * Even-odd preconditioned like Staggered-like fermion actions
  */
 template<typename T>
-class EvenOddPrecStaggeredTypeFermAct : public StaggeredTypeFermAct<T>
+class EvenOddStaggeredTypeFermAct : public StaggeredTypeFermAct<T>
 {
 public:
   void qprop(LatticeFermion& psi,
@@ -397,14 +376,14 @@ public:
 
   //! Produce a linear operator for this action
   /*! NOTE: maybe this should be abstracted to a foundry class object */
-  virtual const EvenOddPrecLinearOperator<T>* linOp(const ConnectState& state) const = 0;
+  virtual const EvenOddLinearOperator<T>* linOp(const ConnectState& state) const = 0;
                                                                                                                                                  
   //! Produce a linear operator M^dag.M for this action
   /*! NOTE: maybe this should be abstracted to a foundry class object */
   virtual const LinearOperator<T>* lMdagM(const ConnectState& state) const = 0;
                                                                                                                                                  
   //! Virtual destructor to help with cleanup;
-  virtual ~EvenOddPrecStaggeredTypeFermAct() {}
+  virtual ~EvenOddStaggeredTypeFermAct() {}
 
 };
 

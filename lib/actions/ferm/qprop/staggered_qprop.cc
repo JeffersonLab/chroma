@@ -1,4 +1,4 @@
-// $Id: staggered_qprop.cc,v 1.1 2003-12-11 17:11:17 bjoo Exp $
+// $Id: staggered_qprop.cc,v 1.2 2003-12-12 13:56:41 bjoo Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *
@@ -32,9 +32,9 @@ using namespace QDP;
  * \param ncg_had  number of CG iterations ( Write )
  */
 
-void EvenOddPrecStaggeredTypeFermAct<LatticeFermion>::qprop(
-						       LatticeFermion& psi, 
-						       const ConnectState& state,
+void EvenOddStaggeredTypeFermAct<LatticeFermion>::qprop(
+							LatticeFermion& psi, 
+							const ConnectState& state,
 						       const LatticeFermion& chi,
 						       enum InvType invType,
 						       
@@ -48,7 +48,7 @@ void EvenOddPrecStaggeredTypeFermAct<LatticeFermion>::qprop(
   
   /* Construct the linear operator */
   /* This allocates field for the appropriate action */
-  const EvenOddPrecLinearOperatorProxy<LatticeFermion> M(linOp(state));
+  const EvenOddLinearOperatorProxy<LatticeFermion> M(linOp(state));
   const LinearOperatorProxy<LatticeFermion> A(lMdagM(state));
 
   LatticeFermion tmp, tmp1, tmp2;

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_asqtad_linop_s.h,v 1.2 2003-12-10 16:21:00 bjoo Exp $
+// $Id: asqtad_linop_s.h,v 1.3 2003-12-12 13:56:40 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -18,37 +18,16 @@ using namespace QDP;
  * \ingroup linop
  *
  * This routine is specific to Staggered fermions!
- *
- *                                     ~      ~+
- * This subroutine applies the matrix  M  or  M   to the vector
- * Psi,
- *
- *      	       	   {   ~
- *      	       	   {   M(U) . Psi      	       if  ISign = PLUS
- *      	   Chi  =  {
- *      	       	   {   ~   +
- *      	       	   {   M(U)  . Psi     	       if  ISign = MINUS
-
- * Algorithm:
-
- * The kernel for Staggered fermions is
-
- *      M  =  2m + D'
- *
- *  The KS phases are already included in the fat and triple links.
- *  This is done when creating the "connectState" where the fat
- *  and triple links are themselves computed.
- *
  */
 
-class EvenOddPrecAsqtadLinOp : public EvenOddPrecLinearOperator<LatticeFermion>
+class AsqtadLinOp : public EvenOddLinearOperator<LatticeFermion>
 {
 public:
   //! Partial constructor - Must use create later
-  EvenOddPrecAsqtadLinOp() {}
+  AsqtadLinOp() {}
 
   //! Full constructor
-  EvenOddPrecAsqtadLinOp(const multi1d<LatticeColorMatrix>& u_fat_, const multi1d<LatticeColorMatrix>& u_triple_, const Real& Mass_) 
+  AsqtadLinOp(const multi1d<LatticeColorMatrix>& u_fat_, const multi1d<LatticeColorMatrix>& u_triple_, const Real& Mass_) 
   {
     create(u_fat_, u_triple_, Mass_);
   }
@@ -61,11 +40,14 @@ public:
 
   };
   //! Destructor is automatic
-  ~EvenOddPrecAsqtadLinOp() {}
+  ~AsqtadLinOp() {}
 
   //! Apply the the even-even block onto a source vector
-  void evenEvenLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
-		     enum PlusMinus isign) const;
+  inline void evenEvenLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
+		     enum PlusMinus isign) const 
+  {
+    chi[ rb[0] ] = 2*Mass*psi;
+  }
   
   //! Apply the the even-odd block onto a source vector
   void evenOddLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
@@ -76,11 +58,11 @@ public:
 		    enum PlusMinus isign) const;
 
   //! Apply the the odd-odd block onto a source vector
-  void oddOddLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
-		   enum PlusMinus isign) const;
-
-  void evenEvenInvLinOp(LatticeFermion& chi, const LatticeFermion& psi,
-                   enum PlusMinus isign) const { };
+  inline void oddOddLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
+		   enum PlusMinus isign) const
+  {
+    chi[ rb[1] ] = 2*Mass*psi;
+  }
 
 private:
   Real Mass;
