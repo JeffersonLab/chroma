@@ -1,4 +1,4 @@
-// $Id: unprec_wilson_fermact_w.cc,v 1.18 2004-08-05 15:56:25 bjoo Exp $
+// $Id: unprec_wilson_fermact_w.cc,v 1.19 2004-08-05 15:59:03 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -66,8 +66,11 @@ UnprecWilsonFermAct::dsdu(multi1d<LatticeColorMatrix> & ds_u,
   LatticeFermion Y;
   (*M)(Y, psi, PLUS);
 
-  // Usually this is Kappa. In our normalisation it is 0.5
-  Real prefactor=Real(0.5);
+  // Usually this is Kappa. In our normalisation it is 0.5 
+  // I am adding in a factor of -1 to be consistent with the sign
+  // convention for the preconditioned one. (We can always take this out
+  // later
+  Real prefactor=-Real(0.5);
 
   // Two temporaries
   LatticeFermion f_tmp;

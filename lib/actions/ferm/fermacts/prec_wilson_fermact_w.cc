@@ -1,4 +1,4 @@
-// $Id: prec_wilson_fermact_w.cc,v 1.9 2004-07-28 02:38:01 edwards Exp $
+// $Id: prec_wilson_fermact_w.cc,v 1.10 2004-08-05 15:56:25 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action
  */
@@ -52,6 +52,8 @@ EvenOddPrecWilsonFermAct::lMdagM(Handle<const ConnectState> state) const
  * \param ds_u     result      ( Write )
  * \param state    gauge field ( Read )
  * \param psi      solution to linear system ( Read )
+ *
+ * In this function I assume that ds_u may already have the gauge piece in there...
  */
 
 void
@@ -61,84 +63,81 @@ EvenOddPrecWilsonFermAct::dsdu(multi1d<LatticeColorMatrix>& ds_u,
 {
   START_CODE();
   
-#if 1
-  QDPIO::cerr << "EvenOddPrecWilsonFermAct::dsdu not implemented" << endl;
-  QDP_abort(1);
-#else
-
-#error "Not quite correct implementation"
-
   if (aniso.anisoP)
   {
     QDPIO::cerr << "Currently do not support anisotropy" << endl;
     QDP_abort(1);
   }
 
-  const multi1d<LatticeColorMatrix>& u = state->getLinks();
+  Real prefactor = -Real(1)/(Real(4)*(Real(Nd) + Mass));
+
 				 
   LatticeColorMatrix utmp_1;
   LatticeFermion phi;
   LatticeFermion rho;
   LatticeFermion sigma;
-  LatticeFermion ftmp_1;
+
   LatticeFermion ftmp_2;
-  Double ddummy;
-  Real dummy;
-  int cb;
 
   // Do the usual Wilson fermion dS_f/dU
-  const LinearOperatorProxy<LatticeFermion> A(linOp(u));
+  // const LinearOperatorProxy<LatticeFermion> A(linOp(u));
+  const Handle< const LinearOperator<LatticeFermion> >&  M(linOp(state));
 
+  // Need the wilson dslash
+  // Use u from state with BC's on 
+  const multi1d<LatticeColorMatrix>& u = state->getLinks();
   WilsonDslash  D(u);
-
   //  phi = M(u)*psi
-  LatticeFermion phi;
-  A(phi, psi, PLUS);
+  (*M)(phi, psi, PLUS);
     
   /* rho = Dslash(0<-1) * psi */
   D.apply(rho, psi, PLUS, 1);
  
-  /* phi = (KappaMD^2)*phi = -(KappaMD^2)*M*psi */
-  dummy = -(KappaMD*KappaMD);
-  phi *= dummy;
-    
   /* sigma = Dslash_dag(0 <- 1) * phi */
   D.apply(sigma, phi, MINUS, 1);
     
   for(int mu = 0; mu < Nd; ++mu)
   {
-    cb = 0;
 
-    /* ftmp_2 = (gamma(mu))*psi */
-    ftmp_2 = Gamma(1<<mu) * psi;
-    /* ftmp_2(x) = -(psi(x) - ftmp_2(x)) = -(1 - gamma(mu))*psi( x )  */
-    ftmp_2 -= psi;
-    utmp_1 = -(shift(ftmp_2, cb, FORWARD, mu) * adj(sigma));
+    // ftmp_2(x) = -(psi(x) - ftmp_2(x)) = -(1 - gamma(mu))*psi( x )
+    ftmp_2[rb[1]] = Gamma(1<<mu) * psi;
+    ftmp_2[rb[1]] -= psi;
 
-    /* ftmp_2 = (gamma(mu))*phi */
-    SPIN_PRODUCT(phi,(INTEGER_LSHIFT_FUNCTION(1,mu)),ftmp_2);
-    /* ftmp_2 = phi + ftmp_2 = (1 + gamma(mu))*phi( x)  */
-    ftmp_2 += phi;
-    utmp_1 += shift(ftmp_2, cb, FORWARD, mu) * adj(rho);
-    ds_u[mu][cb] += u[mu][cb] * utmp_1;
-      
-    cb = 1;
+    // utmp_1 = - Trace_spin [ ( 1 - gamma(mu) )*psi_{x+mu)*sigma^{dagger} ]
+    //        = - Trace_spin [ sigma^{dagger} ( 1 - gamma_mu ) psi_{x+mu} ]
 
-    /* ftmp_2 = (gamma(mu))*ftmp_1 */
-    SPIN_PRODUCT(rho,(INTEGER_LSHIFT_FUNCTION(1,mu)),ftmp_2);
-    /* ftmp_2 = -(rho - ftmp_2) = -(1 - gamma(mu))*rho( x )  */
-    ftmp_2 -= rho;
-    utmp_1 = -(shift(ftmp_2, cb, FORWARD, mu) * adj(phi));
+    utmp_1[rb[0]] = - trace(adj(sigma)*shift(ftmp_2, FORWARD, mu));
+ 
+    // ftmp_2 = phi + ftmp_2 = (1 + gamma(mu))*phi( x) 
+    ftmp_2[rb[1]] = Gamma(1<<mu) * phi;
+    ftmp_2[rb[1]] += phi;
+
+    // utmp_1 += ( 1 + gamma(mu) )*phi_{x+mu)*rho^{dagger}_x 
+    utmp_1[rb[0]] += trace(adj(rho)*shift(ftmp_2, FORWARD, mu));
+
+    // dsdu[mu][0] += u[mu][0] * utmp_1 
+    //                = u[mu][0] [   ( 1 - gamma(mu) )*psi_{x+mu)*sigma^{dagger}_x
+    //                             + ( 1 + gamma(mu) )*phi_{x+mu)*rho^{dagger}_x   ]
+    ds_u[mu][rb[0]] += prefactor * u[mu] * utmp_1;
       
-    /* ftmp_2 = (gamma(mu))*sigma */
-    SPIN_PRODUCT(sigma,(INTEGER_LSHIFT_FUNCTION(1,mu)),ftmp_2);
-    /* ftmp_1 = ftmp_1 + ftmp_2 = (1 + gamma(mu))*sigma( x + mu)  */
-    ftmp_2 += sigma;
-    utmp_1 += shift(ftmp_2, cb, FORWARD, mu) * adj(psi);
-    ds_u[mu][cb] += u[mu][cb] * utmp_1;
+    // Checkerboard 1
+
+    // ftmp_2 = -(rho - ftmp_2) = -(1 - gamma(mu))*rho( x ) 
+    ftmp_2[rb[0]] = Gamma(1<<mu)*rho;
+    ftmp_2[rb[0]] -= rho;
+
+    // utmp_1 = ( 1 - gamma(mu) )*rho_{x+mu)*phi^{dagger}_x
+    utmp_1[rb[1]] = -trace(adj(phi)*shift(ftmp_2, FORWARD, mu));
       
+    // ftmp_2 = (gamma(mu))*sigma 
+    ftmp_2[rb[0]] = Gamma(1<<mu)*sigma;
+    ftmp_2[rb[0]] += sigma;
+
+
+    utmp_1[rb[1]] += trace(adj(psi)*shift(ftmp_2, FORWARD, mu));
+    ds_u[mu][rb[1]] += prefactor * u[mu] * utmp_1;
+
   }
-#endif
 
   END_CODE();
 }
