@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.249 2005-02-04 19:25:44 sbasak Exp $
+# $Id: Makefile.am,v 1.250 2005-02-07 04:14:30 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -155,6 +155,7 @@ nobase_include_HEADERS = \
 	update/molecdyn/predictor/predictor.h \
 	update/molecdyn/predictor/chrono_predictor.h \
 	update/molecdyn/predictor/chrono_predictor_factory.h \
+	update/molecdyn/predictor/predictor_aggregate.h \
 	update/molecdyn/predictor/zero_guess_predictor.h \
 	update/molecdyn/predictor/last_solution_predictor.h \
 	update/molecdyn/predictor/circular_buffer.h \
@@ -165,6 +166,7 @@ nodist_include_HEADERS=chroma_config_internal.h
 # Wilson specific headers
 nobase_include_HEADERS += \
 	actions/ferm/fermacts/fermacts_w.h \
+	actions/ferm/fermacts/fermacts_aggregate_w.h \
 	actions/ferm/fermacts/fermact_factory_w.h \
 	actions/ferm/fermacts/overlap_fermact_base_w.h \
 	actions/ferm/fermacts/prec_clover_fermact_w.h \
@@ -261,6 +263,7 @@ nobase_include_HEADERS += \
 	meas/sources/d_src_w.h \
 	meas/sources/p_src_w.h meas/sources/sources_w.h \
 	update/molecdyn/monomial/monomial_w.h \
+	update/molecdyn/monomial/monomial_aggregate_w.h \
 	update/molecdyn/monomial/one_flavor_rat_monomial_w.h \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.h \
 	update/molecdyn/monomial/prec_one_flavor_rat_monomial_w.h \
@@ -317,7 +320,12 @@ nobase_include_HEADERS += \
 	meas/inline/inline.h \
 	meas/inline/abs_inline_measurement.h \
 	meas/inline/abs_inline_measurement_factory.h \
+	meas/inline/inline_aggregate.h \
+	meas/inline/eig/eig.h \
+	meas/inline/eig/inline_eig_aggregate.h \
+	meas/inline/eig/inline_eigbnds.h \
 	meas/inline/glue/glue.h \
+	meas/inline/glue/inline_glue_aggregate.h \
 	meas/inline/glue/inline_plaquette.h \
 	meas/inline/glue/inline_polylp.h
 
@@ -437,6 +445,7 @@ libchroma_a_SOURCES = \
 	update/molecdyn/monomial/genapprox.cc \
 	update/molecdyn/integrator/lcm_pqp_leapfrog.cc \
 	update/molecdyn/hmc/global_metropolis_accrej.cc \
+	update/molecdyn/predictor/predictor_aggregate.cc \
 	update/molecdyn/predictor/zero_guess_predictor.cc \
 	update/molecdyn/predictor/last_solution_predictor.cc \
 	update/molecdyn/predictor/linear_extrap_predictor.cc
@@ -457,6 +466,7 @@ endif
 #
 # Wilson specific sources
 libchroma_a_SOURCES += \
+	actions/ferm/fermacts/fermacts_aggregate_w.cc \
 	actions/ferm/fermacts/overlap_fermact_base_w.cc \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.cc \
 	actions/ferm/fermacts/prec_dwf_fermact_array_w.cc \
@@ -533,6 +543,7 @@ libchroma_a_SOURCES += \
 	meas/hadron/wallpionff_w.cc meas/hadron/wallrhoff_w.cc \
 	meas/hadron/wallrhopiff_w.cc meas/hadron/wall_qprop_w.cc \
 	meas/sources/d_src_w.cc meas/sources/p_src_w.cc \
+	update/molecdyn/monomial/monomial_aggregate_w.cc \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.cc \
 	update/molecdyn/monomial/prec_one_flavor_rat_monomial_w.cc \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial5d_w.cc \
@@ -556,6 +567,10 @@ libchroma_a_SOURCES += \
 #
 libchroma_a_SOURCES += \
 	io/inline_io.cc \
+	meas/inline/inline_aggregate.cc \
+	meas/inline/eig/inline_eig_aggregate.cc \
+	meas/inline/eig/inline_eigbnds.cc \
+	meas/inline/glue/inline_glue_aggregate.cc \
 	meas/inline/glue/inline_plaquette.cc \
 	meas/inline/glue/inline_polylp.cc
 
