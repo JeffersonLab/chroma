@@ -1,6 +1,9 @@
-//  $Id: sftmom.h,v 1.3 2003-03-20 19:34:25 flemingg Exp $
+//  $Id: sftmom.h,v 1.4 2003-04-01 02:38:26 edwards Exp $
 //  $Log: sftmom.h,v $
-//  Revision 1.3  2003-03-20 19:34:25  flemingg
+//  Revision 1.4  2003-04-01 02:38:26  edwards
+//  Added doxygen comments.
+//
+//  Revision 1.3  2003/03/20 19:34:25  flemingg
 //  Evolved formfac_w.cc to use SftMom class, which included some bug fixes
 //  in features in SftMom which had been previously untested and evolution
 //  of the corresponding test program.
@@ -15,6 +18,10 @@
 #ifndef SFTMOM_INCLUDE
 #define SFTMOM_INCLUDE
 
+//! Fourier transform phase factor support
+/*!
+ * \ingroup ft
+ */
 class SftMom
 {
 public:

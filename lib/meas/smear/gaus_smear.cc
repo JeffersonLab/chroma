@@ -1,4 +1,4 @@
-// $Id: gaus_smear.cc,v 1.5 2003-03-07 17:26:52 edwards Exp $
+// $Id: gaus_smear.cc,v 1.6 2003-04-01 02:38:26 edwards Exp $
 /*! \file
  *  \brief Gaussian smearing of color vector
  */
@@ -11,6 +11,8 @@ using namespace QDP;
 
 //! Do a covariant Gaussian smearing of a lattice field
 /*!
+ * \ingroup smear
+ *
  * Arguments:
  *
  *  \param u        gauge field ( Read )

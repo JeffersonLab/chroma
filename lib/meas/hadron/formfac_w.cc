@@ -1,11 +1,14 @@
-// $Id: formfac_w.cc,v 1.7 2003-03-31 19:54:15 edwards Exp $
+// $Id: formfac_w.cc,v 1.8 2003-04-01 02:38:26 edwards Exp $
 /*! \file
  *  \brief Form-factors 
  *
  *  Form factors constructed from a quark and a sequential quark propagator
  */
 // $Log: formfac_w.cc,v $
-// Revision 1.7  2003-03-31 19:54:15  edwards
+// Revision 1.8  2003-04-01 02:38:26  edwards
+// Added doxygen comments.
+//
+// Revision 1.7  2003/03/31 19:54:15  edwards
 // Fixed doxygen comments.
 //
 // Revision 1.6  2003/03/20 19:34:25  flemingg
@@ -23,6 +26,7 @@ using namespace QDP;
 
 //! Compute contractions for current insertion 3-point functions.
 /*!
+ * \ingroup hadron
  *
  * This routine is specific to Wilson fermions!
  *

@@ -1,8 +1,22 @@
 // -*- C++ -*-
-// $Id: actions.h,v 1.3 2003-03-30 18:33:25 edwards Exp $
+// $Id: actions.h,v 1.4 2003-04-01 02:38:26 edwards Exp $
 
-#ifndef ACTIONS_INCLUDE
-#define ACTIONS_INCLUDE
+/*! \file
+ * \brief Include all files related to actions
+ *
+ * Central include file for all action support
+ */
+
+/*! \defgroup actions Support for gauge and fermion actions
+ * \ingroup lib
+ *
+ * Support for construction of linear operators operators including
+ * fermion/dirac operators, inverters, improved gauge actions,
+ * and quark propagators.
+ */
+
+#ifndef __actions_h__
+#define __actions_h__
 
 #include "construct/construct.h"
 #include "dirac/dirac.h"

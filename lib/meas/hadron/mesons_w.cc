@@ -1,6 +1,9 @@
-//  $Id: mesons_w.cc,v 1.10 2003-03-14 21:51:54 flemingg Exp $
+//  $Id: mesons_w.cc,v 1.11 2003-04-01 02:38:26 edwards Exp $
 //  $Log: mesons_w.cc,v $
-//  Revision 1.10  2003-03-14 21:51:54  flemingg
+//  Revision 1.11  2003-04-01 02:38:26  edwards
+//  Added doxygen comments.
+//
+//  Revision 1.10  2003/03/14 21:51:54  flemingg
 //  Changes the way in which the nml data is output to match what's done
 //  in szin.
 //
@@ -33,7 +36,10 @@
 using namespace QDP;
 
 //! Meson 2-pt functions
-/* This routine is specific to Wilson fermions!
+/*!
+ * \ingroup hadron
+ *
+ * This routine is specific to Wilson fermions!
  *
  * Construct meson propagators
  * The two propagators can be identical or different.

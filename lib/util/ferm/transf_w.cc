@@ -1,4 +1,4 @@
-// $Id: transf_w.cc,v 1.2 2003-02-16 04:14:37 edwards Exp $
+// $Id: transf_w.cc,v 1.3 2003-04-01 02:38:26 edwards Exp $
 /*! \file
  *  \brief Insertion/Extraction utilities for vectors/fermions/propagators
  */
@@ -10,6 +10,8 @@ using namespace QDP;
 
 //! Convert (insert) a LatticeColorVector into a LatticeFermion
 /*!
+ * \ingroup ferm
+ *
  * \param a      Source color vector
  * \param b      Destination fermion
  * \param spin_index   Spin index
@@ -23,6 +25,8 @@ void CvToFerm(const LatticeColorVector& a, LatticeFermion& b,
 
 //! Insert a LatticeFermion into a LatticeFermion
 /*!
+ * \ingroup ferm
+ *
  * \param a      Source fermion
  * \param b      Destination propagator
  * \param color_index  Color index
@@ -46,6 +50,8 @@ void FermToProp(const LatticeFermion& a, LatticePropagator& b,
 
 //! Extract a LatticeFermion from a LatticePropagator
 /*!
+ * \ingroup ferm
+ *
  * \param a      Source propagator
  * \param b      Destination fermion
  * \param color_index  Color index

@@ -1,4 +1,4 @@
-//  $Id: hyp_smear.cc,v 1.2 2003-03-31 01:05:51 heller Exp $
+//  $Id: hyp_smear.cc,v 1.3 2003-04-01 02:38:26 edwards Exp $
 /*! \file
  *  \brief Hyp-smearing of the gauge configuration
  */
@@ -9,10 +9,13 @@
 
 using namespace QDP;
 
-//! Construct the "hyp-smeared" links of Anna Hasenfratz, with
-//! staple coefficients alpha1, alpha2 and alpha3
-
+//! Construct the "hyp-smeared" links of Anna Hasenfratz
 /*!
+ * \ingroup smear
+ *
+ * Construct the "hyp-smeared" links of Anna Hasenfratz, with
+ * staple coefficients alpha1, alpha2 and alpha3
+ *
  * Arguments:
  *
  *  \param u		gauge field (Read)

@@ -1,4 +1,4 @@
-// $Id: srcfil.cc,v 1.3 2003-02-16 04:14:37 edwards Exp $
+// $Id: srcfil.cc,v 1.4 2003-04-01 02:38:26 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */
@@ -10,6 +10,8 @@ using namespace QDP;
 
 //! Fill a specific color and spin index with 1.0
 /*!
+ * \ingroup hadron
+ *
  * This routine is specific to Wilson fermions! 
  *
  * \param a      Source fermion

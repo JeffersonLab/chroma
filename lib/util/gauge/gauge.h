@@ -1,10 +1,10 @@
 // -*- C++ -*-
-// $Id: gauge.h,v 1.4 2003-03-31 19:46:08 edwards Exp $
+// $Id: gauge.h,v 1.5 2003-04-01 02:38:26 edwards Exp $
 
 /*! \file
- * \brief Include all utility routines
+ * \brief Include all gauge utility routines
  *
- * Central include file for all utilities
+ * Utility routines for simple manipulation of gauge fields.
  */
 
 /*! \defgroup gauge Utility routines for manipulating color matrices

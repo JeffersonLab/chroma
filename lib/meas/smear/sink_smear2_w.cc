@@ -1,4 +1,4 @@
-// $Id: sink_smear2_w.cc,v 1.1 2003-03-07 05:42:01 edwards Exp $
+// $Id: sink_smear2_w.cc,v 1.2 2003-04-01 02:38:26 edwards Exp $
 /*! \file
  *  \brief Control routine for types of propagator smearing
  */
@@ -11,6 +11,8 @@ using namespace QDP;
 
 //! "Smear" the quark propagator at the sink by a covariant Gaussian
 /*!
+ * \ingroup smear
+ *
  * This routine is specific to Wilson fermions!
  *
  * Arguments:

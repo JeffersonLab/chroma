@@ -1,4 +1,4 @@
-// $Id: baryon_w.cc,v 1.4 2003-02-16 04:14:37 edwards Exp $ 
+// $Id: baryon_w.cc,v 1.5 2003-04-01 02:38:26 edwards Exp $ 
 /*! \file
  *  \brief Baryon 2-pt functions
  */
@@ -26,6 +26,8 @@ private:
  
 //! Baryon 2-pt functions
 /*!
+ * \ingroup hadron
+ *
  * This routine is specific to Wilson fermions! 
  *
  * Construct baryon propagators for the Proton and the Delta^+ with

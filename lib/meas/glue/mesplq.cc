@@ -1,4 +1,4 @@
-// $Id: mesplq.cc,v 1.6 2003-03-06 03:34:34 edwards Exp $
+// $Id: mesplq.cc,v 1.7 2003-04-01 02:38:26 edwards Exp $
 /*! \file
  *  \brief Plaquette measurement
  */
@@ -14,6 +14,8 @@ static int tDir() {return Nd-1;}
 
 //! Return the value of the average plaquette normalized to 1
 /*!
+ * \ingroup glue
+ *
  * \param u -- gauge field (Read)
  * \param w_plaq -- plaquette average (Write)
  * \param s_plaq -- space-like plaquette average (Write)

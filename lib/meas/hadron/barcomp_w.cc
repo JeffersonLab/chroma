@@ -1,4 +1,4 @@
-//  $Id: barcomp_w.cc,v 1.2 2003-03-08 04:42:33 edwards Exp $
+//  $Id: barcomp_w.cc,v 1.3 2003-04-01 02:38:26 edwards Exp $
 /*! \file
  *  \brief Construct all components of a baryon propagator
  */
@@ -26,6 +26,8 @@ private:
  
 //! Construct all components of a baryon propagator
 /*!
+ * \ingroup hadron
+ *
  * This routine is specific to Wilson fermions!
  *
  * quark_propagator_1 -- first quark propagator  ( Read )
