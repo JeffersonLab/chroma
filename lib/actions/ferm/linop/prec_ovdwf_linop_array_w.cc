@@ -1,4 +1,4 @@
-// $Id: prec_ovdwf_linop_array_w.cc,v 1.2 2004-02-14 18:49:01 edwards Exp $
+// $Id: prec_ovdwf_linop_array_w.cc,v 1.3 2004-07-28 03:47:27 edwards Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned Overlap-DWF (Borici) linear operator
  */
@@ -52,6 +52,8 @@ EvenOddPrecOvDWLinOpArray::applyDiag(multi1d<LatticeFermion>& chi,
 				     enum PlusMinus isign,
 				     const int cb) const
 {
+  START_CODE();
+
   switch ( isign ) {
     
   case PLUS:
@@ -90,6 +92,8 @@ EvenOddPrecOvDWLinOpArray::applyDiag(multi1d<LatticeFermion>& chi,
   }
   break ;
   }
+
+  END_CODE();
 }
 
 
@@ -109,6 +113,8 @@ EvenOddPrecOvDWLinOpArray::applyDiagInv(multi1d<LatticeFermion>& chi,
 					enum PlusMinus isign,
 					const int cb) const
 {
+  START_CODE();
+
   switch ( isign ) {
 
   case PLUS:
@@ -182,6 +188,8 @@ EvenOddPrecOvDWLinOpArray::applyDiagInv(multi1d<LatticeFermion>& chi,
   }
   break ;
   }
+
+  END_CODE();
 }
 
 
@@ -201,6 +209,8 @@ EvenOddPrecOvDWLinOpArray::applyOffDiag(multi1d<LatticeFermion>& chi,
 					enum PlusMinus isign,
 					const int cb) const
 {
+  START_CODE();
+
   switch ( isign ) 
   {
   case PLUS:
@@ -247,6 +257,5 @@ EvenOddPrecOvDWLinOpArray::applyOffDiag(multi1d<LatticeFermion>& chi,
 
   //Done! That was not that bad after all....
   //See, I told you so...
-
-
+  END_CODE();
 }

@@ -34,6 +34,7 @@ void MInvSUMR_a(const LinearOperator<T>& U,
 		int MaxSUMR, 
 		int& n_count)
 {
+  START_CODE();
 
   // Sanity check
   int numroot = x.size();  
@@ -348,7 +349,8 @@ void MInvSUMR_a(const LinearOperator<T>& U,
   if( n_count == MaxSUMR && ! allConvP ) { 
     QDPIO::cout << "Solver Nonconvergence Warning " << endl;
   }
-  
+
+  END_CODE();
 }
 
 template<>

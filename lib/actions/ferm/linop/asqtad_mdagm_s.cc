@@ -1,4 +1,4 @@
-// $Id: asqtad_mdagm_s.cc,v 1.5 2004-07-28 02:38:01 edwards Exp $
+// $Id: asqtad_mdagm_s.cc,v 1.6 2004-07-28 03:47:26 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -37,7 +37,6 @@ void AsqtadMdagM::create(const multi1d<LatticeColorMatrix>& u_fat_, const multi1
  */
 void AsqtadMdagM::operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const
 {
-
   START_CODE();
 
   Real mass_sq = Mass*Mass;

@@ -1,4 +1,4 @@
-// $Id: minvcg.cc,v 1.10 2004-07-28 02:38:01 edwards Exp $
+// $Id: minvcg.cc,v 1.11 2004-07-28 03:47:26 edwards Exp $
 
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator
@@ -125,6 +125,7 @@ void MInvCG_a(const LinearOperator<T>& A,
 
     // The psi are all zero anyway at this point
     // for(int i=0; i < n_shift; i++) { psi[i] = zero; }
+    END_CODE();
     return;
   }
 
@@ -366,7 +367,6 @@ void MInvCG_a(const LinearOperator<T>& A,
 
   END_CODE();
   return;
-  
 }
 
 

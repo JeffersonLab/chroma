@@ -11,6 +11,7 @@ void InvMINRES_a(const LinearOperator< multi1d<T> >& A,
 		 int MaxCG,
 		 int& n_count)
 {
+  START_CODE();
 
   // Compute v_1 = b - A x_0 
   int N5 = A.size();
@@ -132,6 +133,7 @@ void InvMINRES_a(const LinearOperator< multi1d<T> >& A,
     //  QDPIO::cout << "MINRES: iter " << k << " || r || = " << r_norm << endl;
     if( toBool( r_norm < RsdCG*b_norm ) ) {
       convP = true;
+      END_CODE();
       return;
     }
 
@@ -167,6 +169,8 @@ void InvMINRES_a(const LinearOperator< multi1d<T> >& A,
 
     n_count = k;
   }
+
+  END_CODE();
 }
 
 

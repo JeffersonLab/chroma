@@ -1,4 +1,4 @@
-// $Id: lovlap_double_pass_w.cc,v 1.6 2004-07-08 01:15:36 edwards Exp $
+// $Id: lovlap_double_pass_w.cc,v 1.7 2004-07-28 03:47:26 edwards Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -57,6 +57,7 @@ void lovlap_double_pass::operator() (LatticeFermion& chi,
 				     const LatticeFermion& psi, 
 				     enum PlusMinus isign, Real epsilon) const
 {
+  START_CODE();
 
   LatticeFermion tmp1, tmp2;
 
@@ -128,6 +129,7 @@ void lovlap_double_pass::operator() (LatticeFermion& chi,
   if (toBool(c == 0))
   {
     chi = zero;
+    END_CODE();
     return;
   }
 
@@ -383,5 +385,7 @@ void lovlap_double_pass::operator() (LatticeFermion& chi,
 
   // Rescale to the correct normalization 
   chi *= 0.5 * (1 - m_q);
+
+  END_CODE();
 }
 

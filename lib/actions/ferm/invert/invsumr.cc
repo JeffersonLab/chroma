@@ -34,7 +34,7 @@ void InvSUMR_a(const LinearOperator<T>& U,
 	     int MaxSUMR, 
 	     int& n_count)
 {
-
+  START_CODE();
 
   /********************************************************************/
   /* Initialisation                                                   */
@@ -53,7 +53,9 @@ void InvSUMR_a(const LinearOperator<T>& U,
   Real delta = sqrt(norm2(r));
 
   // If already converged then exit now.
-  if( toBool( delta < epsilon*sqrt(norm2(b)) ) ) {
+  if( toBool( delta < epsilon*sqrt(norm2(b)) ) ) 
+  {
+    END_CODE();
     return;
   }
 
@@ -231,6 +233,7 @@ void InvSUMR_a(const LinearOperator<T>& U,
     QDPIO::cout << "Solver Nonconvergence Warning " << endl;
   }
 
+  END_CODE();
 }
 
 template<>

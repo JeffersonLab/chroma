@@ -1,4 +1,4 @@
-// $Id: invmr.cc,v 1.4 2004-07-28 02:38:01 edwards Exp $
+// $Id: invmr.cc,v 1.5 2004-07-28 03:47:26 edwards Exp $
 
 /*! \file
  *  \brief Minimal-Residual (MR) for a generic fermion Linear Operator
@@ -68,6 +68,8 @@ void InvCG2(const LinearOperator& A,
 	    int MaxCG, 
 	    int& n_count)
 {
+  START_CODE();
+
   const OrderedSubset& s = M.subset();
 
   LatticeFermion Ar;
@@ -76,10 +78,7 @@ void InvCG2(const LinearOperator& A,
   Double d;
   int k;
 
-  START_CODE();
-  
   Real rsd_sq = (RsdMR * RsdMR) * Real(norm2(chi,s));
-
         
   /*  r[0]  :=  Chi - A . Psi[0] */
   /*  r  :=  A . Psi  */
@@ -142,6 +141,5 @@ void InvCG2(const LinearOperator& A,
     QDP_error_exit("too many MR iterations: iters=%d", k);
 
   END_CODE();
-
   return;
 }

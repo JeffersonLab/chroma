@@ -1,4 +1,4 @@
-// $Id: invcg2_array.cc,v 1.9 2004-05-27 11:21:23 bjoo Exp $
+// $Id: invcg2_array.cc,v 1.10 2004-07-28 03:47:26 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -69,6 +69,8 @@ void InvCG2_a(const LinearOperator< multi1d<T> >& M,
 	      int MaxCG, 
 	      int& n_count)
 {
+  START_CODE();
+
   const int N = psi.size();
   const OrderedSubset& s = M.subset();
 
@@ -112,6 +114,7 @@ void InvCG2_a(const LinearOperator< multi1d<T> >& M,
   if ( toBool(cp  <=  rsd_sq) )
   {
     n_count = 0;
+    END_CODE();
     return;
   }
 
@@ -168,6 +171,7 @@ void InvCG2_a(const LinearOperator< multi1d<T> >& M,
     if ( toBool(cp  <=  rsd_sq) )
     {
       n_count = k;
+      END_CODE();
       return;
     }
 

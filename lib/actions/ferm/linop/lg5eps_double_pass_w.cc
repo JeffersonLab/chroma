@@ -1,4 +1,4 @@
-// $Id: lg5eps_double_pass_w.cc,v 1.2 2004-07-08 01:18:45 edwards Exp $
+// $Id: lg5eps_double_pass_w.cc,v 1.3 2004-07-28 03:47:26 edwards Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -57,6 +57,7 @@ void lg5eps_double_pass::operator() (LatticeFermion& chi,
 				     const LatticeFermion& psi, 
 				     enum PlusMinus isign, Real epsilon) const
 {
+  START_CODE();
 
   LatticeFermion tmp1, tmp2;
 
@@ -114,6 +115,7 @@ void lg5eps_double_pass::operator() (LatticeFermion& chi,
   if (toBool(c == 0))
   {
     chi = zero;
+    END_CODE();
     return;
   }
 
@@ -365,6 +367,6 @@ void lg5eps_double_pass::operator() (LatticeFermion& chi,
 
   QDPIO::cout << "Overlap Inner Solve (lg5eps_double_pass): " << k << " iterations " << endl;
 
-
+  END_CODE();
 }
 

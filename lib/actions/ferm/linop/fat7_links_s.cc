@@ -1,4 +1,4 @@
-/*  $Id: fat7_links_s.cc,v 1.1 2003-12-10 16:20:59 bjoo Exp $  */
+/*  $Id: fat7_links_s.cc,v 1.2 2004-07-28 03:47:26 edwards Exp $  */
 
 /* FAT7_LINKS */
 
@@ -32,6 +32,7 @@ void Fat7_Links(multi1d<LatticeColorMatrix> & u,
 		multi1d<LatticeColorMatrix> & uf,
 		Real u0)
 {
+  START_CODE();
   
   LatticeColorMatrix tmp_0;
   LatticeColorMatrix tmp_1;
@@ -119,4 +120,5 @@ void Fat7_Links(multi1d<LatticeColorMatrix> & u,
   else
     QDP_error_exit("Fat7_links not implemented for this dim", Nd);
   
+  END_CODE();
 }

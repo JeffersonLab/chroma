@@ -1,4 +1,4 @@
-// $Id: lovddag_double_pass_w.cc,v 1.7 2004-07-08 01:17:35 edwards Exp $
+// $Id: lovddag_double_pass_w.cc,v 1.8 2004-07-28 03:47:26 edwards Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -69,7 +69,7 @@ void lovddag_double_pass::operator() (LatticeFermion& chi,
 				      enum PlusMinus isign, 
 				      Real epsilon) const
 {
- 
+  START_CODE();
 
   LatticeFermion ltmp;
   LatticeFermion tmp1;
@@ -77,8 +77,6 @@ void lovddag_double_pass::operator() (LatticeFermion& chi,
 
   const int G5 = Ns * Ns - 1;
   int n;
-
-
 
   Real mass =  ( Real(1) + m_q ) / ( Real(1) - m_q );
   Real init_fac = (Real(1)/mass) + mass;
@@ -172,6 +170,7 @@ void lovddag_double_pass::operator() (LatticeFermion& chi,
   // In which case we stop right now...
   if ( toBool(c == Real(0)) ) { 
     chi = zero;
+    END_CODE();
     return;
   }
 
@@ -438,5 +437,7 @@ void lovddag_double_pass::operator() (LatticeFermion& chi,
   ftmp = Real(0.25) * (Real(1) - m_q*m_q);
   chi *= ftmp;	        /* 2 Nc Ns  flops */
   QDPIO::cout << "Overlap Inner Solve (lovddag_double_pass(" << ichiral << ")) = " << k << " iterations" << endl;
+
+  END_CODE();
 }
 

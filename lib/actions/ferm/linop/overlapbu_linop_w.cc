@@ -1,4 +1,4 @@
-// $Id: overlapbu_linop_w.cc,v 1.6 2004-07-28 02:38:02 edwards Exp $
+// $Id: overlapbu_linop_w.cc,v 1.7 2004-07-28 03:47:27 edwards Exp $
 /*! \file
  *  \brief Overlap operator
  */
@@ -189,14 +189,17 @@ static void wldirac(const LatticeFermion& psi,
 		    int   isign)
 
 {
+  START_CODE();
+
   chi = psi;
-  
   
   for(int mu = 0; mu < Nd; ++mu)
   {
     chi -= Kappa*(spinReconstruct(LatticeHalfFermion(u[mu] * shift(spinProject(psi,mu,-isign), FORWARD, mu)),mu,-isign)
 		  + spinReconstruct(LatticeHalfFermion(shift(adj(u[mu]) * spinProject(psi,mu,+isign), BACKWARD, mu)),mu,+isign));
   }
+
+  END_CODE();
 }
 
 

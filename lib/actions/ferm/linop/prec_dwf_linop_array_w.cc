@@ -1,4 +1,4 @@
-// $Id: prec_dwf_linop_array_w.cc,v 1.5 2003-12-08 17:02:38 edwards Exp $
+// $Id: prec_dwf_linop_array_w.cc,v 1.6 2004-07-28 03:47:27 edwards Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned domain-wall linear operator
  */
@@ -21,6 +21,8 @@ void
 EvenOddPrecDWLinOpArray::create(const multi1d<LatticeColorMatrix>& u_, 
 				const Real& WilsonMass_, const Real& m_q_, int N5_)
 {
+  START_CODE();
+
   WilsonMass = WilsonMass_;
   m_q = m_q_;
   a5  = 1.0;
@@ -34,7 +36,8 @@ EvenOddPrecDWLinOpArray::create(const multi1d<LatticeColorMatrix>& u_,
   Kappa = TwoKappa/2.0 ;
   
   invDfactor =1.0/(1.0  + m_q/pow(InvTwoKappa,N5)) ;
-  
+
+  END_CODE();
 }
 
 
@@ -54,6 +57,8 @@ EvenOddPrecDWLinOpArray::applyDiag(multi1d<LatticeFermion>& chi,
 				   enum PlusMinus isign,
 				   const int cb) const
 {
+  START_CODE();
+
   switch ( isign ) {
     
   case PLUS:
@@ -92,6 +97,8 @@ EvenOddPrecDWLinOpArray::applyDiag(multi1d<LatticeFermion>& chi,
     }
     break ;
   }
+
+  END_CODE();
 }
 
 
@@ -111,6 +118,8 @@ EvenOddPrecDWLinOpArray::applyDiagInv(multi1d<LatticeFermion>& chi,
 				      enum PlusMinus isign,
 				      const int cb) const
 {
+  START_CODE();
+
   switch ( isign ) {
 
   case PLUS:
@@ -187,5 +196,5 @@ EvenOddPrecDWLinOpArray::applyDiagInv(multi1d<LatticeFermion>& chi,
 
   //Done! That was not that bad after all....
   //See, I told you so...
-  
+  END_CODE();
 }

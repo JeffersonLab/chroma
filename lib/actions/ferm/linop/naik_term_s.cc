@@ -1,4 +1,4 @@
-/*  $Id: naik_term_s.cc,v 1.4 2004-03-29 21:32:28 edwards Exp $  */
+/*  $Id: naik_term_s.cc,v 1.5 2004-07-28 03:47:26 edwards Exp $  */
 
 /* NAIK_LINKS */
 
@@ -33,6 +33,7 @@ void Triple_Links(multi1d<LatticeColorMatrix> & u,
 		multi1d<LatticeColorMatrix> & ut,
 		Real u0)
 {
+  START_CODE();
   
   LatticeColorMatrix tmp_0;
   LatticeColorMatrix tmp_1;
@@ -58,4 +59,6 @@ void Triple_Links(multi1d<LatticeColorMatrix> & u,
       ut[mu] = tmp_1 * c_3;
     }
   }
+
+  END_CODE();
 }

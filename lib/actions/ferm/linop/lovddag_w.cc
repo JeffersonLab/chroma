@@ -1,4 +1,4 @@
-// $Id: lovddag_w.cc,v 1.13 2004-05-31 19:32:16 bjoo Exp $
+// $Id: lovddag_w.cc,v 1.14 2004-07-28 03:47:26 edwards Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -30,7 +30,7 @@ void lovddag::operator() (LatticeFermion& chi, const LatticeFermion& psi,
 void lovddag::operator() (LatticeFermion& chi, const LatticeFermion& psi, 
 			   enum PlusMinus isign, Real epsilon) const
 {
- 
+  START_CODE();
 
   LatticeFermion ltmp;
   LatticeFermion tmp1;
@@ -38,8 +38,6 @@ void lovddag::operator() (LatticeFermion& chi, const LatticeFermion& psi,
 
   const int G5 = Ns * Ns - 1;
   int n;
-
-
 
   Real mass =  ( Real(1) + m_q ) / ( Real(1) - m_q );
   Real init_fac = (Real(1)/mass) + mass;
@@ -101,12 +99,10 @@ void lovddag::operator() (LatticeFermion& chi, const LatticeFermion& psi,
 
   Double c = norm2(tmp1);
 
-
-
-  
   /* If exactly 0 norm, then solution must be 0 (for pos. def. operator) */
   if ( toBool(c == Real(0)) ) { 
     chi = zero;
+    END_CODE();
     return;
   }
 
@@ -460,5 +456,7 @@ void lovddag::operator() (LatticeFermion& chi, const LatticeFermion& psi,
   ftmp = Real(0.25) * (Real(1) - m_q*m_q);
   chi *= ftmp;	        /* 2 Nc Ns  flops */
   QDPIO::cout << "Overlap Inner Solve (lovddag(" << ichiral << ")) = " << n_count << " iterations" << endl;
+
+  END_CODE();
 }
 

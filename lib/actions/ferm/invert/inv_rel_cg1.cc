@@ -1,4 +1,4 @@
-// $Id: inv_rel_cg1.cc,v 1.7 2004-06-03 11:49:28 bjoo Exp $
+// $Id: inv_rel_cg1.cc,v 1.8 2004-07-28 03:47:26 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -23,6 +23,8 @@ void InvRelCG1_a(const ApproxLinearOperator<T>& A,
 		 int MaxCG, 
 		 int& n_count)
 {
+  START_CODE();
+
   const OrderedSubset& s = A.subset();
 
   Real chi_sq = Real(norm2(chi,s));
@@ -60,6 +62,7 @@ void InvRelCG1_a(const ApproxLinearOperator<T>& A,
   if ( toBool(cp  <=  rsd_sq) )
   {
     n_count = 0;
+    END_CODE();
     return;
   }
 
@@ -125,11 +128,13 @@ void InvRelCG1_a(const ApproxLinearOperator<T>& A,
     if ( toBool(cp  <=  rsd_sq) )
     {
       n_count = k;
+      END_CODE();
       return;
     }
   }
   n_count = MaxCG;
   QDPIO::cerr << "Nonconvergence Warning: n_count =" << n_count << endl;
+  END_CODE();
 }
 
 

@@ -16,6 +16,8 @@ void InvGMRESR_CG_a(const LinearOperator<multi1d<T> >& PrecMM,
 		    int MaxGMRESRPrec,
 		    int& n_count)
 {
+  START_CODE();
+
   const OrderedSubset&  s= UnprecM.subset();
   int N5 = UnprecM.size();
 
@@ -136,6 +138,7 @@ void InvGMRESR_CG_a(const LinearOperator<multi1d<T> >& PrecMM,
   }
   
   n_count = iter;
+  END_CODE();
 }
 
 template<>

@@ -1,4 +1,4 @@
-/* $Id: zolotarev5d_linop_array_w.cc,v 1.3 2004-07-28 02:38:02 edwards Exp $
+/* $Id: zolotarev5d_linop_array_w.cc,v 1.4 2004-07-28 03:47:27 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
  */
@@ -22,7 +22,6 @@ Zolotarev5DLinOpArray::operator() (multi1d<LatticeFermion>& chi,
 				   enum PlusMinus isign) const
 {
   START_CODE();
-
 
   int G5 = Ns*Ns - 1;
 

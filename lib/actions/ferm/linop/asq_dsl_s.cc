@@ -1,4 +1,4 @@
-/*  $Id: asq_dsl_s.cc,v 1.6 2004-07-27 05:01:11 edwards Exp $  */
+/*  $Id: asq_dsl_s.cc,v 1.7 2004-07-28 03:47:26 edwards Exp $  */
 
 #include "chromabase.h"
 #include "linop.h"
@@ -57,6 +57,8 @@ using namespace QDP;
 //! Creation routine
 void QDPStaggeredDslash::create(const multi1d<LatticeColorMatrix>& _u_fat, const multi1d<LatticeColorMatrix>& _u_triple)
 { 
+  START_CODE();
+
   u_fat = _u_fat;
   u_triple = _u_triple;
   
@@ -66,11 +68,12 @@ void QDPStaggeredDslash::create(const multi1d<LatticeColorMatrix>& _u_fat, const
 //  write(xml_out,"u_triple", u_triple);
 //  pop(xml_out);
 
+  END_CODE();
 }
 
 void QDPStaggeredDslash::apply (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign, int cb) const
 {
-  START_CODE("asqdslash")
+  START_CODE();
 
 //  multi1d<LatticeColorMatrix> u_fat(Nd);
 //  multi1d<LatticeColorMatrix> u_triple(Nd);
@@ -129,7 +132,7 @@ mu);
   if(isign == MINUS)
     chi = -chi;
 
-  END_CODE("asqdslash")
+  END_CODE();
 }
 
 

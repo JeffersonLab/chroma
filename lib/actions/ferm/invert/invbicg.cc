@@ -1,4 +1,4 @@
-// $Id: invbicg.cc,v 1.2 2004-07-28 02:38:01 edwards Exp $
+// $Id: invbicg.cc,v 1.3 2004-07-28 03:47:26 edwards Exp $
 
 // THIS ROUTINE IS NOT FUNCTIONAL YET - SIMPLE CLEANUP EDITING IS REQUIRED
 
@@ -148,7 +148,7 @@ Real RsdBiCG;
   if ( TO_REAL(cp)  <=  rsd_sq )
   {
     n_count = 0;
-        END_CODE();
+    END_CODE();
     return;
   }
 
@@ -237,7 +237,7 @@ Real RsdBiCG;
     if ( TO_REAL(cp)  <=  rsd_sq )
     {
       n_count = k;
-                                                                                          END_CODE();
+      END_CODE();
       return;
     }
 

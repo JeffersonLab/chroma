@@ -34,6 +34,7 @@ void MInvRelSUMR_a(const ApproxLinearOperator<T>& U,
 		   int MaxSUMR, 
 		   int& n_count)
 {
+  START_CODE();
 
   // Sanity check
   int numroot = x.size();  
@@ -392,7 +393,7 @@ void MInvRelSUMR_a(const ApproxLinearOperator<T>& U,
     QDP_abort(1);
   }
 
-  
+  END_CODE();
 }
 
 template<>

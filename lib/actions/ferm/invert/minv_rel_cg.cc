@@ -1,4 +1,4 @@
-// $Id: minv_rel_cg.cc,v 1.2 2004-07-28 02:38:01 edwards Exp $
+// $Id: minv_rel_cg.cc,v 1.3 2004-07-28 03:47:26 edwards Exp $
 
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator
@@ -125,6 +125,7 @@ void MInvRelCG_a(const ApproxLinearOperator<T>& A,
 
     // The psi are all zero anyway at this point
     // for(int i=0; i < n_shift; i++) { psi[i] = zero; }
+    END_CODE();
     return;
   }
 
@@ -406,7 +407,6 @@ void MInvRelCG_a(const ApproxLinearOperator<T>& A,
 
   END_CODE();
   return;
-  
 }
 
 

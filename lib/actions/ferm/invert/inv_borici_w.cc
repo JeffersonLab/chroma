@@ -15,6 +15,7 @@ void InvBorici_a( const LinearOperator<T>& D_4,
 		  const Real& m,
 		  int& n_iters)
 {
+  START_CODE();
 
   // Initial setup
   // x_0 = 0, r_0 = b, tol_0 = 1
@@ -97,6 +98,8 @@ void InvBorici_a( const LinearOperator<T>& D_4,
   if( !convP ) {
     QDPIO::cerr << "Nonconvergence warning: " << n_iters << " iters. || r || / || b || = " << r_norm / b_norm;
   }
+
+  END_CODE();
 }
 
 template<>
