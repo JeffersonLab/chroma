@@ -1,4 +1,4 @@
-// $Id: walldeltapff_w.cc,v 1.8 2004-06-02 02:06:37 edwards Exp $
+// $Id: walldeltapff_w.cc,v 1.9 2004-06-02 03:34:13 edwards Exp $
 /*! \file
  *  \brief Wall-sink delta^+ -> gamma+proton form-factors 
  *
@@ -236,9 +236,9 @@ void wallDeltaPFormFac(XMLWriter& xml,
   S_proj[0] = 0.5 * (g_one + (g_one * Gamma(8)));
 
   // T = \Sigma_k (1 + gamma_4) / 2 = -i gamma_i gamma_j S_proj[0] i,j cyclic perms
-  S_proj[1] = timesMinusI(Gamma(1 << 2) * (Gamma(1 << 3) * S_proj[0]));
-  S_proj[2] = timesMinusI(Gamma(1 << 3) * (Gamma(1 << 1) * S_proj[0]));
-  S_proj[3] = timesMinusI(Gamma(1 << 1) * (Gamma(1 << 2) * S_proj[0]));
+  S_proj[1] = timesMinusI(Gamma(1 << 1) * (Gamma(1 << 2) * S_proj[0]));
+  S_proj[2] = timesMinusI(Gamma(1 << 2) * (Gamma(1 << 0) * S_proj[0]));
+  S_proj[3] = timesMinusI(Gamma(1 << 0) * (Gamma(1 << 1) * S_proj[0]));
 
 
   // Project propagator onto zero momentum: Do a slice-wise sum.
