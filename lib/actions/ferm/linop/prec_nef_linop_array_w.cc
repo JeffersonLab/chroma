@@ -1,4 +1,4 @@
-// $Id: prec_nef_linop_array_w.cc,v 1.12 2005-03-18 13:26:41 bjoo Exp $
+// $Id: prec_nef_linop_array_w.cc,v 1.13 2005-03-30 15:55:05 bjoo Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned NEF domain-wall linear operator
  */
@@ -167,7 +167,7 @@ namespace Chroma
    * \ingroup linop
    *
    * The operator acts on the entire lattice
-   * Total flopcount: (12N5 - 7)*Nc*Ns flops
+   * Total flopcount: (10*N5 - 8)*Nc*Ns flops
    *
    * \param psi 	  Pseudofermion field     	       (Read)
    * \param isign   Flag ( PLUS | MINUS )   	       (Read)
@@ -183,107 +183,107 @@ namespace Chroma
  
     if( chi.size() != N5 ) chi.resize(N5);
    
-    // Copy and scale by TwoKappa (1/M0)
-    // N5*2NcNs flops
-    for(int s(0);s<N5;s++) {
-
-      // 2Nc Ns flops/site
-      chi[s][rb[cb]] = b5TwoKappa * psi[s] ;
-    }
 
     switch ( isign ) {
 
     case PLUS:
     {
       
-      // First apply the inverse of Lm 
-      // Real fact(0.5*m_q*TwoKappa) ;
-      
-      // Recoded with chiral projectors
-      // factor of 0.5 in fact absorbed into projectors
-      Real fact = m_q*TwoKappa;
+      // Copying and scaling, application of Lm^{-1} and L^{-1} and D^{-1}
+      // Coalesced into a fused loop.
 
-      // (N5 - 1) * (2Nc Ns flops) / site
-      for(int s(0);s<N5-1;s++){
-	chi[N5-1][rb[cb]] -= fact * chiralProjectMinus(chi[s]);
+      Real fact = m_q*TwoKappa*b5TwoKappa*invDfactor;
+      Real invDTwoKappa = invDfactor*TwoKappa;
+      Real invDb5TwoKappa = invDfactor*b5TwoKappa;
+
+      // 2Nc Ns flops/site
+      chi[0][rb[cb]] = b5TwoKappa*psi[0];
+      
+      // 4Nc Ns flops/site
+      chi[N5-1][rb[cb]] = invDb5TwoKappa*psi[N5-1] 
+	- fact * chiralProjectMinus(psi[0]);
+      
+      fact *= TwoKappa;
+
+      // (N5-2)*6NcNs flops/site
+      for(int s = 1; s < N5-1; s++) {
+	
+	// 2Nc Ns flops/site
+	chi[s][rb[cb]] = b5TwoKappa * psi[s] ;
+	// 2Nc Ns flops/site
+	chi[s][rb[cb]] += TwoKappa*chiralProjectPlus(chi[s-1]);
+	// 2Nc Ns flops/site
+	chi[N5-1][rb[cb]] -= fact * chiralProjectMinus(psi[s]);
 	fact *= TwoKappa ;
+
       }
       
-      //Now apply the inverse of L. Forward elimination 
-      // (N5 -1) * (2Nc Ns flops) / site
-      for(int s(1);s<N5;s++)
-	chi[s][rb[cb]] += TwoKappa*chiralProjectPlus(chi[s-1]);
-      
-      //The inverse of D  now
-      // 2Nc Ns flops
-      chi[N5-1][rb[cb]] *= invDfactor ;
-      // That was easy....
+      // 2NcNs flops/site
+      chi[N5-1][rb[cb]] += invDTwoKappa*chiralProjectPlus(chi[N5-2]);
+
       
       //The inverse of R. Back substitution...... Getting there! 
-      // N5 -1 * (2Nc Ns flops) / site
+      // (N5-1)*2Nc*Ns flops /site total
       for(int s(N5-2);s>-1;s--)
+	// 2Nc Ns2 flops/site
 	chi[s][rb[cb]] += TwoKappa*chiralProjectMinus(chi[s+1]);
 
-      
       //Finally the inverse of Rm 
-      LatticeFermion tt;
-
-      // Former factor of 0.5 in fact is absorbed into chiralProjector
       fact = m_q*TwoKappa;
-      // Nc Ns flops
-      tt[rb[cb]] = fact*chiralProjectPlus(chi[N5-1]);
 
-      // (N5 -1) * 4Nc Ns flops 
+      // (N5-1)*2NcNs flops/site total
       for(int s(0);s<N5-1;s++){
 	// 2Nc Ns flops
-	chi[s][rb[cb]] -= tt  ;
-	// 2Nc Ns flops
-	tt[rb[cb]] *= TwoKappa ;
+	chi[s][rb[cb]] -= fact*chiralProjectPlus(chi[N5-1]);
+	fact *= TwoKappa;
       }
     }
     break ;
     
     case MINUS:
     {
-       
+
+      // Copy and scale by TwoKappa (1/M0)
       // First apply the inverse of Lm 
-      // Recoded using chiral projectors. The former factor of 0.5 in fact
-      // is absorbed into the projectors
-      Real fact = m_q*TwoKappa ;
-      for(int s(0);s<N5-1;s++){
-	chi[N5-1][rb[cb]] -= fact * chiralProjectPlus(chi[s]);
+      // Now apply the inverse of L. Forward elimination
+      // The inverse of D  now
+      // All fused.
+
+      Real fact = m_q*TwoKappa*b5TwoKappa*invDfactor ;
+      Real invDTwoKappa = invDfactor*TwoKappa;
+      Real invDb5TwoKappa = invDfactor*b5TwoKappa;
+
+      chi[0][rb[cb]] = b5TwoKappa*psi[0];
+      chi[N5-1][rb[cb]] = invDb5TwoKappa*psi[N5-1];
+      chi[N5-1][rb[cb]] -= fact*chiralProjectPlus(psi[0]);
+      fact *= TwoKappa;
+
+      for(int s(1);s<N5-1;s++) {
+	// 2Nc Ns flops/sit
+	chi[s][rb[cb]] = b5TwoKappa * psi[s] ;
+	chi[s][rb[cb]] += TwoKappa*chiralProjectMinus(chi[s-1]);
+	chi[N5-1][rb[cb]] -= fact * chiralProjectPlus(psi[s]);
 	fact *= TwoKappa ;
       }
-      
-      //Now apply the inverse of L. Forward elimination 
-      for(int s(1);s<N5;s++)
-	chi[s][rb[cb]] += TwoKappa*chiralProjectMinus(chi[s-1]);
-      
-      //The inverse of D  now
-      chi[N5-1][rb[cb]] *= invDfactor ;
+
+      chi[N5-1][rb[cb]] += invDTwoKappa*chiralProjectMinus(chi[N5-2]);
+
       // That was easy....
-      
+
       //The inverse of R. Back substitution...... Getting there! 
       for(int s(N5-2);s>-1;s--)
 	chi[s][rb[cb]] += TwoKappa*chiralProjectPlus(chi[s+1]);
       
       //Finally the inverse of Rm 
-      LatticeFermion tt;
       fact = m_q*TwoKappa;
 
-      tt[rb[cb]] = fact*chiralProjectMinus(chi[N5-1]);
       for(int s(0);s<N5-1;s++){
-	chi[s][rb[cb]] -= tt  ;
-	tt[rb[cb]] *= TwoKappa ;
+	chi[s][rb[cb]] -= fact*chiralProjectMinus(chi[N5-1]);
+	fact *= TwoKappa ;
       }
     }
     break ;
     }
-
-    //Fixup the normalization. This step can probably be incorporated into
-    // the above algerbra for more efficiency
-    //for(int s(0);s<N5;s++)
-    //  chi[s][rb[cb]] *= c5TwoKappa ;
 
     //Done! That was not that bad after all....
     //See, I told you so...

@@ -1,4 +1,4 @@
-// $Id: t_precdwf.cc,v 1.17 2005-03-30 15:55:06 bjoo Exp $
+// $Id: t_precnef.cc,v 1.1 2005-03-30 15:55:06 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -84,20 +84,16 @@ int main(int argc, char **argv)
   Real WilsonMass = 1.5;
   Real m_q = 0.01;
 
-#if 1
-  EvenOddPrecDWFermActArray S_pdwf(fbc_a,WilsonMass,m_q,N5);
-#else
-  EvenOddPrecZoloNEFFermActArrayParams params;
-  params.OverMass = WilsonMass;
-  params.Mass = m_q;
-  params.b5 = 1.0;
-  params.c5 = 0.0;
-  params.N5 = N5;
-  params.approximation_type = COEFF_TYPE_TANH_UNSCALED;
-  params.ApproxMin = 0.0;
-  params.ApproxMax = 0.0;
-  EvenOddPrecZoloNEFFermActArray S_pdwf(fbc_a,params);
-#endif
+  Real b5=Real(1);
+  Real c5=Real(0);
+  EvenOddPrecNEFFermActArrayParams p;
+  p.OverMass = WilsonMass;
+  p.b5 = b5;
+  p.c5 = c5;
+  p.Mass = m_q;
+  p.N5=N5;
+
+  EvenOddPrecNEFFermActArray S_pdwf(fbc_a,p);
 
   Handle<const ConnectState> state(S_pdwf.createState(u));
   const EvenOddPrecLinearOperator< MLF, LCM >* D_pdwf = S_pdwf.linOp(state); 
@@ -119,11 +115,9 @@ int main(int argc, char **argv)
     clock_t myt2;
     double mydt;
 
-//    int Ndiag  = (N5-2)*(5*24) + 2*(8*24);
-    // int Ndiag  = N5*(4*24) + (N5-1)*(8*24) + 3*24;   // this is what I get counting flops in code
-    int Ndiag  = (4*N5+2)*Nc*Ns; // This is my count with the blas / chiral proj ops
+    int Ndiag  = 6*N5*Nc*Ns; // This is my count with the blas / chiral proj ops
     int NdiagInv = (10*N5-8)*Nc*Ns;
-    int Neo    = N5*(1320+24);
+    int Neo    = 6*N5*Nc*Ns + N5*(1320+24);
     int Nflops = 2*Ndiag + 2*Neo + N5*24;
 
     // even-even-inv piece
