@@ -18,38 +18,33 @@ namespace Chroma {
     //! virtual descructor:
     virtual ~AbsHamiltonian() {}
     
-    //! clone function for virtual copy constructs
-    virtual AbsHamiltonian<P,Q>* clone(void) const = 0;
-    
-    
-    
     //! Compute dsdq for the system...
     //  The Category default goes through all the monomials
     //  and sums their contribution
     //
     //  s is the state, F is the computed force
-    virtual void dsdq(const AbsFieldState<P,Q>& s, P& F) const {
+    virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) const {
       int num_terms = numMonomials();
       
       if( num_terms > 0 ) {
-	Monomial<P,Q>& first_term = getMonomial(0);
-	first_term.dsdq(F, s);
+	getMonomial(0).dsdq(F, s);
 	
 	for(int i=1; i < num_terms; i++) { 
-	  Monomial<P,Q>& current_term = getMonomial(i);
 	  P cur_F;
-	  current_term.dsdq(cur_F, s);
+	  getMonomial(i).dsdq(cur_F, s);
 	  F += cur_F;
 	}
       }
     }
     
-    //! Apply any BC's to Q
-    virtual void applyQBoundary(Q& q) const = 0;
-    
-    //! Apply any BC's to P
-    virtual void applyPBoundary(P& p) const = 0;
-    
+    //! Refresh pseudofermsions (if any)
+    virtual void refresh(const AbsFieldState<P,Q>& s) {
+      int num_terms = numMonomials();
+      for(int i=0; i < num_terms; i++) { 
+	getMonomial(i).refresh(s);
+      }
+    }
+
     protected:
     
     //! Get hold of monomial with index i
@@ -75,37 +70,35 @@ namespace Chroma {
     
     //! virtual descructor:
     virtual ~ExactAbsHamiltonian() {}
-    
-    //! clone function for virtual copy constructs
-    virtual ExactAbsHamiltonian<P,Q>* clone(void) const = 0;
-    
-    //! Apply any BC's to Q
-    virtual void applyQBoundary(Q& q) const = 0;
-    
-    //! Apply any BC's to P
-    virtual void applyPBoundary(P& p) const = 0;
-    
-    //! Compute dsdq for the system... Not specified how to actually do this
+
+    //! Compute dsdq for the system...
+    //  The Category default goes through all the monomials
+    //  and sums their contribution
+    //
     //  s is the state, F is the computed force
-    virtual void dsdq(const AbsFieldState<P,Q>& s, P& F) const 
-    {
+    virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) const {
       int num_terms = numMonomials();
       
       if( num_terms > 0 ) {
-	Monomial<P,Q>& first_term = getMonomial(0);
-	first_term.dsdq(F, s);
+	getMonomial(0).dsdq(F, s);
 	
 	for(int i=1; i < num_terms; i++) { 
-	  Monomial<P,Q>& current_term = getMonomial(i);
 	  P cur_F;
-	  current_term.dsdq(cur_F, s);
+	  getMonomial(i).dsdq(cur_F, s);
 	  F += cur_F;
 	}
       }
     }
 
-    //! Compute the energies 
+    //! Refresh pseudofermsions (if any)
+    virtual void refresh(const AbsFieldState<P,Q>& s) {
+      int num_terms = numMonomials();
+      for(int i=0; i < num_terms; i++) { 
+	getMonomial(i).refresh(s);
+      }
+    }
     
+    //! Compute the energies 
     //! The total energy
     virtual void  mesE(const AbsFieldState<P,Q>& s, Double& KE, Double& PE) const 
     {
@@ -114,7 +107,13 @@ namespace Chroma {
     }
     
     //! The Kinetic Energy
-    virtual Double mesKE(const AbsFieldState<P,Q>& s) const = 0;
+    virtual Double mesKE(const AbsFieldState<P,Q>& s) const 
+    {
+      // Return 1/2 sum pi^2
+      // may need to loop over the indices of P?
+      Double KE=norm2(s.getP());
+      return KE;
+    }
     
     //! The Potential Energy 
     virtual Double mesPE(const AbsFieldState<P,Q>& s) const 
@@ -124,16 +123,18 @@ namespace Chroma {
       int num_terms = numMonomials();
       
       
-      Double PE;
+      Double PE=Double(0);
       if( num_terms > 0 ) {
-	ExactMonomial<P,Q>& first_term = getMonomial(0);
-	PE = first_term.S(s);
-	
+	PE = getMonomial(0).S(s);
+	QDPIO::cout << "MesPE: PE[0] = " << PE << endl;
 	for(int i=1; i < num_terms; i++) { 
-	  ExactMonomial<P,Q>& current_term = getMonomial(i);	
-	  PE += current_term.S(s);
+	  Double tmp = getMonomial(i).S(s);
+	  PE += tmp;
+	  QDPIO::cout <<"MesPE: PE["<<i<<"] = " << tmp << endl;
 	}
       }
+      QDPIO::cout << "MesPE: Total PE = " << PE << endl;
+      return PE;
     }
     
     
@@ -147,11 +148,6 @@ namespace Chroma {
     
   };
 
-  // Potentially finger saving typedefs
-  typedef AbsHamiltonian<multi1d<LatticeColorMatrix>, 
-    multi1d<LatticeColorMatrix> > LatColMatHamiltonian;
-  
-  typedef ExactAbsHamiltonian<multi1d<LatticeColorMatrix>,
-    multi1d<LatticeColorMatrix> > ExactLatColMatHamiltonian;
+
 }; // End namespace Chroma
 #endif

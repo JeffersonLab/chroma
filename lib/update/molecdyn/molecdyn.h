@@ -5,7 +5,10 @@
 #include "update/molecdyn/field_state.h"
 #include "update/molecdyn/abs_monomial.h"
 #include "update/molecdyn/monomial_factory.h"
+#include "update/molecdyn/wilson_gauge_monomial.h"
 
+#include "update/molecdyn/abs_hamiltonian.h"
+#include "update/molecdyn/exact_hamiltonian.h"
 #include "update/molecdyn/molecdyn_w.h"
 
 // #include "update/molecdyn/abs_hamiltonian.h"

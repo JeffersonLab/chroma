@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.285 2004-12-30 10:29:36 bjoo Exp $
+# $Id: Makefile.in,v 1.286 2004-12-30 11:14:37 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -130,7 +130,8 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	io/gauge_io.cc io/kyugauge_io.cc io/kyuqprop_io.cc \
 	io/milc_io.cc io/overlap_state_info.cc io/param_io.cc \
 	io/qprop_io.cc io/readmilc.cc io/readszin.cc io/szin_io.cc \
-	io/writemilc.cc io/writeszin.cc meas/eig/eig_spec.cc \
+	io/writemilc.cc io/writeszin.cc io/monomial_io.cc \
+	io/hamiltonian_io.cc meas/eig/eig_spec.cc \
 	meas/eig/eig_spec_array.cc meas/eig/gramschm.cc \
 	meas/eig/gramschm_array.cc meas/eig/ritz.cc \
 	meas/eig/ritz_array.cc meas/eig/sn_jacob.cc \
@@ -157,6 +158,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/gauge/gaugebc_periodic.cc \
 	actions/gauge/gaugebc_simple.cc \
 	actions/gauge/wilson_gaugeact.cc \
+	update/molecdyn/wilson_gauge_monomial.cc \
 	actions/ferm/fermacts/overlap_fermact_base_w.cc \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.cc \
 	actions/ferm/fermacts/prec_dwf_fermact_array_w.cc \
@@ -284,6 +286,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	overlap_state_info.$(OBJEXT) param_io.$(OBJEXT) \
 	qprop_io.$(OBJEXT) readmilc.$(OBJEXT) readszin.$(OBJEXT) \
 	szin_io.$(OBJEXT) writemilc.$(OBJEXT) writeszin.$(OBJEXT) \
+	monomial_io.$(OBJEXT) hamiltonian_io.$(OBJEXT) \
 	eig_spec.$(OBJEXT) eig_spec_array.$(OBJEXT) gramschm.$(OBJEXT) \
 	gramschm_array.$(OBJEXT) ritz.$(OBJEXT) ritz_array.$(OBJEXT) \
 	sn_jacob.$(OBJEXT) sn_jacob_array.$(OBJEXT) axgauge.$(OBJEXT) \
@@ -303,6 +306,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	taproj.$(OBJEXT) unit_check.$(OBJEXT) printgeom.$(OBJEXT) \
 	proginfo.$(OBJEXT) gaugebc_periodic.$(OBJEXT) \
 	gaugebc_simple.$(OBJEXT) wilson_gaugeact.$(OBJEXT) \
+	wilson_gauge_monomial.$(OBJEXT) \
 	overlap_fermact_base_w.$(OBJEXT) \
 	ovlap_partfrac4d_fermact_w.$(OBJEXT) \
 	prec_dwf_fermact_array_w.$(OBJEXT) \
@@ -438,8 +442,9 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	io/enum_io/enum_inner_solver_type_io.h io/eigen_io.h \
 	io/gauge_io.h io/kyugauge_io.h io/milc_io.h io/param_io.h \
 	io/qprop_io.h io/readmilc.h io/readszin.h io/szin_io.h \
-	io/writemilc.h io/writeszin.h meas/eig/eig.h \
-	meas/eig/gramschm.h meas/eig/gramschm_array.h meas/eig/ritz.h \
+	io/writemilc.h io/writeszin.h io/monomial_io.h \
+	io/hamiltonian_io.h meas/eig/eig.h meas/eig/gramschm.h \
+	meas/eig/gramschm_array.h meas/eig/ritz.h \
 	meas/eig/ritz_array.h meas/eig/sn_jacob.h \
 	meas/eig/sn_jacob_array.h meas/eig/eig_spec.h \
 	meas/eig/eig_spec_array.h meas/gfix/axgauge.h \
@@ -471,19 +476,12 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	update/molecdyn/molecdyn_w.h update/molecdyn/field_state.h \
 	update/molecdyn/abs_monomial.h \
 	update/molecdyn/monomial_factory.h \
+	update/molecdyn/wilson_gauge_monomial.h \
+	update/molecdyn/abs_hamiltonian.h \
+	update/molecdyn/exact_hamiltonian.h \
 	update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.h \
 	update/molecdyn/prec_two_flavor_wilson_ferm_monomial_w.h \
-	update/molecdyn/exact_pg_hamiltonian.h \
-	update/molecdyn/degen_two_flavor_ferm_hamiltonian.h \
-	update/molecdyn/abs_symp_updates.h \
-	update/molecdyn/pg_symp_updates.h \
-	update/molecdyn/ferm_symp_updates.h \
-	update/molecdyn/abs_hyb_int.h update/molecdyn/pg_leapfrog.h \
-	update/molecdyn/ferm_leapfrog.h update/molecdyn/ferm_refresh.h \
-	update/molecdyn/mom_refresh.h \
-	update/molecdyn/global_metropolis_accrej.h \
-	update/molecdyn/abs_hmc.h update/molecdyn/pg_hmc.h \
-	update/molecdyn/ferm_hmc.h actions/ferm/fermacts/fermacts_w.h \
+	actions/ferm/fermacts/fermacts_w.h \
 	actions/ferm/fermacts/fermact_factory_w.h \
 	actions/ferm/fermacts/overlap_fermact_base_w.h \
 	actions/ferm/fermacts/prec_clover_fermact_w.h \
@@ -768,8 +766,9 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	io/enum_io/enum_inner_solver_type_io.h io/eigen_io.h \
 	io/gauge_io.h io/kyugauge_io.h io/milc_io.h io/param_io.h \
 	io/qprop_io.h io/readmilc.h io/readszin.h io/szin_io.h \
-	io/writemilc.h io/writeszin.h meas/eig/eig.h \
-	meas/eig/gramschm.h meas/eig/gramschm_array.h meas/eig/ritz.h \
+	io/writemilc.h io/writeszin.h io/monomial_io.h \
+	io/hamiltonian_io.h meas/eig/eig.h meas/eig/gramschm.h \
+	meas/eig/gramschm_array.h meas/eig/ritz.h \
 	meas/eig/ritz_array.h meas/eig/sn_jacob.h \
 	meas/eig/sn_jacob_array.h meas/eig/eig_spec.h \
 	meas/eig/eig_spec_array.h meas/gfix/axgauge.h \
@@ -801,19 +800,12 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	update/molecdyn/molecdyn_w.h update/molecdyn/field_state.h \
 	update/molecdyn/abs_monomial.h \
 	update/molecdyn/monomial_factory.h \
+	update/molecdyn/wilson_gauge_monomial.h \
+	update/molecdyn/abs_hamiltonian.h \
+	update/molecdyn/exact_hamiltonian.h \
 	update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.h \
 	update/molecdyn/prec_two_flavor_wilson_ferm_monomial_w.h \
-	update/molecdyn/exact_pg_hamiltonian.h \
-	update/molecdyn/degen_two_flavor_ferm_hamiltonian.h \
-	update/molecdyn/abs_symp_updates.h \
-	update/molecdyn/pg_symp_updates.h \
-	update/molecdyn/ferm_symp_updates.h \
-	update/molecdyn/abs_hyb_int.h update/molecdyn/pg_leapfrog.h \
-	update/molecdyn/ferm_leapfrog.h update/molecdyn/ferm_refresh.h \
-	update/molecdyn/mom_refresh.h \
-	update/molecdyn/global_metropolis_accrej.h \
-	update/molecdyn/abs_hmc.h update/molecdyn/pg_hmc.h \
-	update/molecdyn/ferm_hmc.h actions/ferm/fermacts/fermacts_w.h \
+	actions/ferm/fermacts/fermacts_w.h \
 	actions/ferm/fermacts/fermact_factory_w.h \
 	actions/ferm/fermacts/overlap_fermact_base_w.h \
 	actions/ferm/fermacts/prec_clover_fermact_w.h \
@@ -1002,7 +994,8 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	io/gauge_io.cc io/kyugauge_io.cc io/kyuqprop_io.cc \
 	io/milc_io.cc io/overlap_state_info.cc io/param_io.cc \
 	io/qprop_io.cc io/readmilc.cc io/readszin.cc io/szin_io.cc \
-	io/writemilc.cc io/writeszin.cc meas/eig/eig_spec.cc \
+	io/writemilc.cc io/writeszin.cc io/monomial_io.cc \
+	io/hamiltonian_io.cc meas/eig/eig_spec.cc \
 	meas/eig/eig_spec_array.cc meas/eig/gramschm.cc \
 	meas/eig/gramschm_array.cc meas/eig/ritz.cc \
 	meas/eig/ritz_array.cc meas/eig/sn_jacob.cc \
@@ -1029,6 +1022,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/gauge/gaugebc_periodic.cc \
 	actions/gauge/gaugebc_simple.cc \
 	actions/gauge/wilson_gaugeact.cc \
+	update/molecdyn/wilson_gauge_monomial.cc \
 	actions/ferm/fermacts/overlap_fermact_base_w.cc \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.cc \
 	actions/ferm/fermacts/prec_dwf_fermact_array_w.cc \
@@ -1277,6 +1271,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gramschm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gramschm_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/grelax.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hamiltonian_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hotst.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hybmeson_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyp_smear.Po@am__quote@
@@ -1323,6 +1318,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minv_rel_sumr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minvcg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minvsumr.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/monomial_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/naik_term_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nef_quarkprop4_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/overlap_fermact_base_w.Po@am__quote@
@@ -1431,6 +1427,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wallrhoff_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wallrhopiff_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wilslp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wilson_gauge_monomial.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wilson_gaugeact.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writemilc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writeszin.Po@am__quote@
@@ -2278,6 +2275,34 @@ writeszin.obj: io/writeszin.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o writeszin.obj `if test -f 'io/writeszin.cc'; then $(CYGPATH_W) 'io/writeszin.cc'; else $(CYGPATH_W) '$(srcdir)/io/writeszin.cc'; fi`
 
+monomial_io.o: io/monomial_io.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT monomial_io.o -MD -MP -MF "$(DEPDIR)/monomial_io.Tpo" -c -o monomial_io.o `test -f 'io/monomial_io.cc' || echo '$(srcdir)/'`io/monomial_io.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/monomial_io.Tpo" "$(DEPDIR)/monomial_io.Po"; else rm -f "$(DEPDIR)/monomial_io.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='io/monomial_io.cc' object='monomial_io.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o monomial_io.o `test -f 'io/monomial_io.cc' || echo '$(srcdir)/'`io/monomial_io.cc
+
+monomial_io.obj: io/monomial_io.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT monomial_io.obj -MD -MP -MF "$(DEPDIR)/monomial_io.Tpo" -c -o monomial_io.obj `if test -f 'io/monomial_io.cc'; then $(CYGPATH_W) 'io/monomial_io.cc'; else $(CYGPATH_W) '$(srcdir)/io/monomial_io.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/monomial_io.Tpo" "$(DEPDIR)/monomial_io.Po"; else rm -f "$(DEPDIR)/monomial_io.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='io/monomial_io.cc' object='monomial_io.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o monomial_io.obj `if test -f 'io/monomial_io.cc'; then $(CYGPATH_W) 'io/monomial_io.cc'; else $(CYGPATH_W) '$(srcdir)/io/monomial_io.cc'; fi`
+
+hamiltonian_io.o: io/hamiltonian_io.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT hamiltonian_io.o -MD -MP -MF "$(DEPDIR)/hamiltonian_io.Tpo" -c -o hamiltonian_io.o `test -f 'io/hamiltonian_io.cc' || echo '$(srcdir)/'`io/hamiltonian_io.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/hamiltonian_io.Tpo" "$(DEPDIR)/hamiltonian_io.Po"; else rm -f "$(DEPDIR)/hamiltonian_io.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='io/hamiltonian_io.cc' object='hamiltonian_io.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o hamiltonian_io.o `test -f 'io/hamiltonian_io.cc' || echo '$(srcdir)/'`io/hamiltonian_io.cc
+
+hamiltonian_io.obj: io/hamiltonian_io.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT hamiltonian_io.obj -MD -MP -MF "$(DEPDIR)/hamiltonian_io.Tpo" -c -o hamiltonian_io.obj `if test -f 'io/hamiltonian_io.cc'; then $(CYGPATH_W) 'io/hamiltonian_io.cc'; else $(CYGPATH_W) '$(srcdir)/io/hamiltonian_io.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/hamiltonian_io.Tpo" "$(DEPDIR)/hamiltonian_io.Po"; else rm -f "$(DEPDIR)/hamiltonian_io.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='io/hamiltonian_io.cc' object='hamiltonian_io.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o hamiltonian_io.obj `if test -f 'io/hamiltonian_io.cc'; then $(CYGPATH_W) 'io/hamiltonian_io.cc'; else $(CYGPATH_W) '$(srcdir)/io/hamiltonian_io.cc'; fi`
+
 eig_spec.o: meas/eig/eig_spec.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eig_spec.o -MD -MP -MF "$(DEPDIR)/eig_spec.Tpo" -c -o eig_spec.o `test -f 'meas/eig/eig_spec.cc' || echo '$(srcdir)/'`meas/eig/eig_spec.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/eig_spec.Tpo" "$(DEPDIR)/eig_spec.Po"; else rm -f "$(DEPDIR)/eig_spec.Tpo"; exit 1; fi
@@ -3019,6 +3044,20 @@ wilson_gaugeact.obj: actions/gauge/wilson_gaugeact.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/wilson_gaugeact.cc' object='wilson_gaugeact.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o wilson_gaugeact.obj `if test -f 'actions/gauge/wilson_gaugeact.cc'; then $(CYGPATH_W) 'actions/gauge/wilson_gaugeact.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/wilson_gaugeact.cc'; fi`
+
+wilson_gauge_monomial.o: update/molecdyn/wilson_gauge_monomial.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT wilson_gauge_monomial.o -MD -MP -MF "$(DEPDIR)/wilson_gauge_monomial.Tpo" -c -o wilson_gauge_monomial.o `test -f 'update/molecdyn/wilson_gauge_monomial.cc' || echo '$(srcdir)/'`update/molecdyn/wilson_gauge_monomial.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/wilson_gauge_monomial.Tpo" "$(DEPDIR)/wilson_gauge_monomial.Po"; else rm -f "$(DEPDIR)/wilson_gauge_monomial.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/wilson_gauge_monomial.cc' object='wilson_gauge_monomial.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o wilson_gauge_monomial.o `test -f 'update/molecdyn/wilson_gauge_monomial.cc' || echo '$(srcdir)/'`update/molecdyn/wilson_gauge_monomial.cc
+
+wilson_gauge_monomial.obj: update/molecdyn/wilson_gauge_monomial.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT wilson_gauge_monomial.obj -MD -MP -MF "$(DEPDIR)/wilson_gauge_monomial.Tpo" -c -o wilson_gauge_monomial.obj `if test -f 'update/molecdyn/wilson_gauge_monomial.cc'; then $(CYGPATH_W) 'update/molecdyn/wilson_gauge_monomial.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/wilson_gauge_monomial.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/wilson_gauge_monomial.Tpo" "$(DEPDIR)/wilson_gauge_monomial.Po"; else rm -f "$(DEPDIR)/wilson_gauge_monomial.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/wilson_gauge_monomial.cc' object='wilson_gauge_monomial.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o wilson_gauge_monomial.obj `if test -f 'update/molecdyn/wilson_gauge_monomial.cc'; then $(CYGPATH_W) 'update/molecdyn/wilson_gauge_monomial.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/wilson_gauge_monomial.cc'; fi`
 
 overlap_fermact_base_w.o: actions/ferm/fermacts/overlap_fermact_base_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT overlap_fermact_base_w.o -MD -MP -MF "$(DEPDIR)/overlap_fermact_base_w.Tpo" -c -o overlap_fermact_base_w.o `test -f 'actions/ferm/fermacts/overlap_fermact_base_w.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/overlap_fermact_base_w.cc; \

@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.210 2004-12-30 10:29:36 bjoo Exp $
+# $Id: Makefile.am,v 1.211 2004-12-30 11:14:37 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -77,6 +77,8 @@ nobase_include_HEADERS = \
 	io/gauge_io.h io/kyugauge_io.h  \
         io/milc_io.h io/param_io.h io/qprop_io.h io/readmilc.h \
 	io/readszin.h io/szin_io.h io/writemilc.h io/writeszin.h \
+	io/monomial_io.h \
+	io/hamiltonian_io.h \
 	meas/eig/eig.h meas/eig/gramschm.h meas/eig/gramschm_array.h \
 	meas/eig/ritz.h meas/eig/ritz_array.h meas/eig/sn_jacob.h \
 	meas/eig/sn_jacob_array.h \
@@ -118,22 +120,11 @@ nobase_include_HEADERS = \
 	update/molecdyn/field_state.h \
 	update/molecdyn/abs_monomial.h \
 	update/molecdyn/monomial_factory.h \
+	update/molecdyn/wilson_gauge_monomial.h \
+	update/molecdyn/abs_hamiltonian.h \
+	update/molecdyn/exact_hamiltonian.h \
 	update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.h \
-	update/molecdyn/prec_two_flavor_wilson_ferm_monomial_w.h \
-	update/molecdyn/exact_pg_hamiltonian.h \
-	update/molecdyn/degen_two_flavor_ferm_hamiltonian.h \
-	update/molecdyn/abs_symp_updates.h \
-	update/molecdyn/pg_symp_updates.h \
-	update/molecdyn/ferm_symp_updates.h \
-	update/molecdyn/abs_hyb_int.h \
-	update/molecdyn/pg_leapfrog.h \
-	update/molecdyn/ferm_leapfrog.h \
-	update/molecdyn/ferm_refresh.h \
-	update/molecdyn/mom_refresh.h \
-	update/molecdyn/global_metropolis_accrej.h \
-	update/molecdyn/abs_hmc.h \
-	update/molecdyn/pg_hmc.h \
-	update/molecdyn/ferm_hmc.h
+	update/molecdyn/prec_two_flavor_wilson_ferm_monomial_w.h
 
 nodist_include_HEADERS=chroma_config_internal.h
 
@@ -333,6 +324,7 @@ libchroma_a_SOURCES = \
 	io/param_io.cc io/qprop_io.cc io/readmilc.cc \
 	io/readszin.cc io/szin_io.cc \
 	io/writemilc.cc io/writeszin.cc \
+	io/monomial_io.cc io/hamiltonian_io.cc \
 	meas/eig/eig_spec.cc meas/eig/eig_spec_array.cc \
 	meas/eig/gramschm.cc meas/eig/gramschm_array.cc \
 	meas/eig/ritz.cc meas/eig/ritz_array.cc meas/eig/sn_jacob.cc \
@@ -358,7 +350,8 @@ libchroma_a_SOURCES = \
 	util/info/printgeom.cc util/info/proginfo.cc \
 	actions/gauge/gaugebc_periodic.cc \
 	actions/gauge/gaugebc_simple.cc \
-	actions/gauge/wilson_gaugeact.cc
+	actions/gauge/wilson_gaugeact.cc \
+	update/molecdyn/wilson_gauge_monomial.cc
 #	actions/ferm/invert/invbicg.cc
 #       actions/ferm/invert/invmr.cc 
 #       util/gauge/eesu2.cc 
