@@ -132,6 +132,8 @@
       <RsdCG>1e-10</RsdCG>
       <MaxCG>1000</MaxCG>
       <MROver>1</MROver>
+      <RsdCGPrec>1e-10</RsdCGPrec>
+      <MaxCGPrec>1086918619</MaxCGPrec>
     </InvertParam>
     <boundary>1 1 1 -1</boundary>
     <nrow>4 4 4 8</nrow>
