@@ -1,4 +1,4 @@
-// $Id: gauge_io.cc,v 1.1 2004-04-05 19:48:19 edwards Exp $
+// $Id: gauge_io.cc,v 1.2 2004-05-27 00:47:18 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator gauge IO
  */
@@ -23,7 +23,18 @@ void readGauge(XMLReader& file_xml,
 	       QDP_serialparallel_t serpar)
 {
   QDPFileReader to(file_xml,file,serpar);
-  read(to,record_xml,u);
+
+  /* 
+   * This is problematic - the size should
+   * come from the read - a resize. Currently, QDPIO does not 
+   * support this
+   */
+  multi1d<LatticeColorMatrixF> u_f(u.size());
+  read(to,record_xml,u_f);      // Always read in single precision!
+
+  for(int mu=0; mu < u.size(); ++mu)
+    u[mu] = u_f[mu];
+
   close(to);
 }
 
@@ -45,7 +56,12 @@ void writeGauge(XMLBufferWriter& file_xml,
 		QDP_serialparallel_t serpar)
 {
   QDPFileWriter to(file_xml,file,volfmt,serpar,QDPIO_OPEN);
-  write(to,record_xml,u);
+
+  multi1d<LatticeColorMatrixF> u_f(u.size());
+  for(int mu=0; mu < u.size(); ++mu)
+    u_f[mu] = u[mu];
+
+  write(to,record_xml,u_f);         // Always save in single precision!
   close(to);
 }
 
