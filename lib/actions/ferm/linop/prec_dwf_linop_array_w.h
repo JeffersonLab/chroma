@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_linop_array_w.h,v 1.7 2005-01-02 05:21:10 edwards Exp $
+// $Id: prec_dwf_linop_array_w.h,v 1.8 2005-01-03 04:10:48 edwards Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned domain-wall fermion linear operator
  */
@@ -110,6 +110,43 @@ namespace Chroma
 		enum PlusMinus isign,
 		int s5) const;
 
+
+    //! Apply the even-even block onto a source vector
+    void derivEvenEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
+			    const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
+			    enum PlusMinus isign) const
+    {
+      ds_u.resize(Nd);
+      ds_u = zero;
+    }
+
+    //! Apply the the odd-odd block onto a source vector
+    void derivOddOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
+			  const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
+			  enum PlusMinus isign) const
+    {
+      ds_u.resize(Nd);
+      ds_u = zero;
+    }
+
+    //! Apply the the even-odd block onto a source vector
+    void derivEvenOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
+			   const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
+			   enum PlusMinus isign) const;
+ 
+    //! Apply the the odd-even block onto a source vector
+    void derivOddEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
+			   const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
+			   enum PlusMinus isign) const;
+
+#if 0
+    //! Override virtual function for efficiency.
+    void deriv(multi1d<LatticeColorMatrix>& ds_u, 
+	       const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
+	       enum PlusMinus isign) const;
+#endif
+
+
   protected:
 
     //! Apply the even-even (odd-odd) coupling piece of the domain-wall fermion operator
@@ -135,8 +172,8 @@ namespace Chroma
 		      const multi1d<LatticeFermion>& psi, 
 		      enum PlusMinus isign,
 		      const int cb) const;
-    
 
+    
   private:
     Real WilsonMass;
     Real m_q;
