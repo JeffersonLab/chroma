@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermacts_w.h,v 1.2 2004-01-08 11:53:08 bjoo Exp $
+// $Id: fermacts_w.h,v 1.3 2004-01-12 04:48:00 edwards Exp $
 
 /*! \file
  * \brief Fermion actions
@@ -18,6 +18,9 @@
 
 #include "unprec_wilson_fermact_w.h"
 #include "prec_wilson_fermact_w.h"
+
+#include "unprec_parwilson_fermact_w.h"
+#include "prec_parwilson_fermact_w.h"
 
 #include "unprec_dwf_fermact_base_w.h"
 #include "unprec_dwf_fermact_w.h"

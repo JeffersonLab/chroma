@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.87 2004-01-12 04:21:32 edwards Exp $
+# $Id: Makefile.am,v 1.88 2004-01-12 04:45:28 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -110,6 +110,7 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/unprec_ovdwf_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_ovext_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_wilson_fermact_w.h \
+	actions/ferm/fermacts/unprec_parwilson_fermact_w.h \
 	actions/ferm/fermacts/zolotarev4d_fermact_w.h \
 	actions/ferm/linop/dslash_w.h actions/ferm/linop/dwffld_w.h \
 	actions/ferm/linop/ldwfdslash_w.h actions/ferm/linop/linop_w.h \
@@ -124,6 +125,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/unprec_ovdwf_linop_array_w.h \
 	actions/ferm/linop/unprec_ovext_linop_array_w.h \
 	actions/ferm/linop/unprec_wilson_linop_w.h \
+	actions/ferm/linop/unprec_parwilson_linop_w.h \
 	actions/ferm/qprop/dwf_quarkprop4_w.h \
 	actions/ferm/qprop/quarkprop4_w.h \
 	actions/ferm/qprop/unprec_qprop_w.h \
@@ -205,6 +207,7 @@ libchroma_a_SOURCES += baryon_w.cc mesons_w.cc curcor2_w.cc lwldslash_w.cc formf
               fermact_qprop.cc prec_fermact_qprop.cc \
               unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
               prec_wilson_fermact_w.cc prec_wilson_linop_w.cc \
+              unprec_parwilson_fermact_w.cc unprec_parwilson_linop_w.cc \
               prec_parwilson_fermact_w.cc prec_parwilson_linop_w.cc \
               unprec_dwf_fermact_w.cc unprec_dwf_linop_w.cc \
               dwffld_w.cc \
