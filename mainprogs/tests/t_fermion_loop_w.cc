@@ -1,4 +1,4 @@
-// $Id: t_fermion_loop_w.cc,v 1.4 2005-01-14 20:13:09 edwards Exp $
+// $Id: t_fermion_loop_w.cc,v 1.5 2005-01-22 18:02:41 mcneile Exp $
 /*! \file
  *  \brief Main code for  generation of disconnected 
  *         loops
@@ -375,7 +375,7 @@ int main(int argc, char **argv)
 
   // Set up a state for the current u,
   Handle<const ConnectState > state(S_f.createState(u));
-
+  Handle<const SystemSolver<LatticeFermion> > qprop(S_f.qprop(state,input.param.invParam));
 
   //
   // Loop over the source color and spin , creating the source
@@ -413,8 +413,8 @@ int main(int argc, char **argv)
       // Compute the propagator for given source color/spin 
       // int n_count;
       
-      S_f.qprop(psi, state, q_source, input.param.invParam, n_count);
-    
+      n_count = (*qprop)(psi, q_source);         
+
       ncg_had += n_count;
       
       push(xml_out,"Qprop");
