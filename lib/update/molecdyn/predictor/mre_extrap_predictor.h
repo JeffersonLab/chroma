@@ -51,7 +51,7 @@ namespace Chroma {
   };
 
   
-#if 0
+
   namespace MinimalResidualExtrapolation5DChronoPredictorEnv {
     extern const std::string name;
     extern const bool registered;
@@ -64,8 +64,12 @@ namespace Chroma {
     Handle< CircularBufferArray<LatticeFermion>  > chrono_buf;
     const int N5;
 
+    void find_extrap_solution(multi1d<LatticeFermion>& psi, 
+			      const LinearOperator<multi1d<LatticeFermion> >& A,
+			      const multi1d<LatticeFermion>& chi);
+
     public:
-    MinimalResidualExtrapolation5DChronoPredictor(const int N5_) : chrono_buf( new CircularBufferArray<LatticeFermion>(2, N5_) ), N5(N5_) {}
+    MinimalResidualExtrapolation5DChronoPredictor(const int N5_, const unsigned int max_chrono) : chrono_buf( new CircularBufferArray<LatticeFermion>(max_chrono, N5_) ), N5(N5_) {}
 
       
     ~MinimalResidualExtrapolation5DChronoPredictor(void) {}
@@ -74,49 +78,9 @@ namespace Chroma {
     MinimalResidualExtrapolation5DChronoPredictor(const MinimalResidualExtrapolation5DChronoPredictor& p) : chrono_buf(p.chrono_buf), N5(p.N5) {}
 
     // Zero out psi -- it is a zero guess after all
-    void operator()(multi1d<LatticeFermion>& psi) { 
-
-      switch( chrono_buf->size() ) { 
-      case 0:
-	{
-	  QDPIO::cout << "MinimalResidualExtrapolationPredictor: giving you zero" << endl;
-	  psi = zero;
-	}
-	break;
-
-      case 1:
-	{ 
-	  QDPIO::cout << "MinimalResidualExtrapolationPredictor: giving you last soln" << endl;
-	  chrono_buf->get(0, psi);
-	}
-	break;
-
-      case 2:
-	{
-	  
-	  QDPIO::cout << "MinimalResidualExtrapolationPredictor: giving you linear extrapolation" << endl;
-
-	  multi1d<LatticeFermion> y0(N5);
-	  chrono_buf->get(0, y0);
-
-	  multi1d<LatticeFermion> y1(N5);
-	  chrono_buf->get(1, y1);
-
-	  psi.resize(N5);
-	  for(int s = 0; s < N5; s++) { 
-	    psi[s] = Real(2)*y0[s] - y1[s];         // MinimalResidual Extrapolation
-	  }
-	}
-	break;
-      default:
-	QDPIO::cerr << "Unknown case reached in MinimalResidualExtrapPredictor " << endl;
-	QDP_abort(1);
-	break;
-      }
-
-
-    }
-    
+    void operator()(multi1d<LatticeFermion>& psi,
+		    const LinearOperator<multi1d<LatticeFermion> >& A,
+		    const multi1d<LatticeFermion>& chi); 
 
     // No internal state so reset is a Nop
     void reset(void) {
@@ -135,7 +99,6 @@ namespace Chroma {
 
 
   };
-#endif
   
 }; // End Namespace Chroma
 
