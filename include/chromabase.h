@@ -1,9 +1,8 @@
-// $Id: chromabase.h,v 1.2 2003-03-29 05:54:15 edwards Exp $
+// $Id: chromabase.h,v 1.3 2003-03-30 17:14:36 edwards Exp $
 //
 // Absolute basic stuff to use chroma
 
 #include "qdp.h"
-#include "linearop.h"
 
 using namespace QDP;
 
