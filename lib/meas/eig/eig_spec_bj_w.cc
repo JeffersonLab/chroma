@@ -1,15 +1,14 @@
-// $Id: eig_spec_bj_w.cc,v 1.1 2004-01-16 15:38:37 bjoo Exp $
+// $Id: eig_spec_bj_w.cc,v 1.2 2004-01-16 15:41:52 bjoo Exp $
 /*! \file
  *  \brief Compute low lying eigenvalues of the hermitian H
  */
 
-#error "CONVERSION NOT COMPLETE: NEED TO MAKE APPROPRIATE SUBCLASSING"
 
 #include "chromabase.h"
 
 #include "meas/eig/eig_spec_bj_w.h"
 #include "meas/eig/ritz.h"
-#include "meas/eig/sn_jacobi.h"
+#include "meas/eig/sn_jacob.h"
 
 
 using namespace QDP;

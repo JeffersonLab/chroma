@@ -1,10 +1,10 @@
-/* ! $Id: eig_spec_bj_w.h,v 1.1 2004-01-16 15:38:37 bjoo Exp $ */
+/* ! $Id: eig_spec_bj_w.h,v 1.2 2004-01-16 15:41:52 bjoo Exp $ */
 
 #ifndef __eig_spec_bj_w_h__
 #define __eig_spec_bj_w_h__
 
 #include "chromabase.h"
-
+#include "linearop.h"
 
 void Eig_Spec(LinearOperator<LatticeFermion>& H, // Herm pos def operator
 	      multi1d<Real> lambda_H,            // E-values
