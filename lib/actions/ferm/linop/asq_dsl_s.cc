@@ -1,4 +1,4 @@
-/*  $Id: asq_dsl_s.cc,v 1.4 2004-02-11 12:51:33 bjoo Exp $  */
+/*  $Id: asq_dsl_s.cc,v 1.5 2004-03-03 11:00:50 mcneile Exp $  */
 
 #include "chromabase.h"
 #include "linop.h"
@@ -75,25 +75,14 @@ void QDPStaggeredDslash::apply (LatticeFermion& chi, const LatticeFermion& psi, 
 //  multi1d<LatticeColorMatrix> u_fat(Nd);
 //  multi1d<LatticeColorMatrix> u_triple(Nd);
 
-
-// Commenting out the XML Output should considerably increase the speed
-// of execution :)
-// In any case fattening is done elsewhere and is done only once 
-//   XMLFileWriter xml_out("output2.xml");
-//  push(xml_out, "more_tests");
-//   write(xml_out, "u_fat", u_fat);
-//  write(xml_out,"u_triple", u_triple);
-//   pop(xml_out);
-//  LatticeFermion chi;
-
-//  need convention on isign
+// need convention on isign
 //
 // isign == PLUS is normal isign == MINUS is daggered
 //
 
-  LatticeFermion tmp_0;
-  LatticeFermion tmp_1;
-  LatticeFermion tmp_2;
+  LatticeFermion tmp_0 = zero;
+  LatticeFermion tmp_1 = zero;
+  LatticeFermion tmp_2 = zero;
 
   int mu;
 
