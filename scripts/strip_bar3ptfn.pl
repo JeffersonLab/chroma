@@ -1,6 +1,6 @@
 #!/usr/local/bin/perl
 #
-# $Id: strip_bar3ptfn.pl,v 1.1 2003-05-09 23:22:11 edwards Exp $
+# $Id: strip_bar3ptfn.pl,v 1.2 2003-05-10 00:22:12 edwards Exp $
 #
 # Strip out all data of bar3ptfn.m output
 #
@@ -25,6 +25,8 @@ $valid_grp_name = 0;
 # Scan through the intro stuff to determine the number of kappas and the
 # lattice size
 
+$FermAct = 0;  # default
+
 # Default V2 format. V3 now defines these things
 $out_version = 2;
 $numSeq_src = 4;
@@ -32,16 +34,15 @@ $Seq_src[0] = 0;
 $Seq_src[1] = 1;
 $Seq_src[2] = 2;
 $Seq_src[3] = 3;
-$numGamma = 4;
-$Gamma_list[0] = 1;
-$Gamma_list[1] = 2;
-$Gamma_list[2] = 4;
-$Gamma_list[3] = 8;
+$numGamma = 16;
+foreach $i (0 .. 15)
+{
+  $Gamma_list{$i} = $i;
+}
 
 
 # other stuff
 $FermTypeP = 0;
-$Z3_src = 0;
 
 $found = 0;
 while ($found == 0)
@@ -64,7 +65,7 @@ while ($found == 0)
     }
   }
 
-  if ( $Fld[0] eq '&param1' )
+  if ( $Fld[0] eq '&param' )
   {
     $end = 0;
     while ($end == 0)
@@ -76,104 +77,22 @@ while ($found == 0)
       if ( $Fld[0] eq 'Nd' ) {$Nd = $Fld[2];}
       if ( $Fld[0] eq 'FermTypeP' ) {$FermTypeP = $Fld[2];}
       if ( $Fld[0] eq 'numKappa' ) {$numKappa = $Fld[2];}
-      if ( $Fld[0] eq 'Kappa(' ) {$Kappa[$Fld[1]] = $Fld[4];}
-      if ( $Fld[0] eq '&END' ) {$end = 1;}
-    }
-  }
-
-  if ( $Fld[0] eq '&param2' )
-  {
-    $end = 0;
-    while ($end == 0)
-    {
-      $_ = <STDIN>;
-      chop;
-      @Fld = split(' ', $_);
-
+      if ( $Fld[0] eq 'Kappa[' ) {$Kappa[$Fld[1]] = $Fld[4];}
       if ( $Fld[0] eq 'FermAct' ) {$FermAct = $Fld[2];}
-      if ( $Fld[0] eq '&END' ) {$end = 1;}
-    }
-  }
-
-  if ( $Fld[0] eq '&param3' )
-  {
-    $end = 0;
-    while ($end == 0)
-    {
-      $_ = <STDIN>;
-      chop;
-      @Fld = split(' ', $_);
-
       if ( $Fld[0] eq 'j_decay' ) {$j_decay = $Fld[2];}
-      if ( $Fld[0] eq '&END' ) {$end = 1;}
-    }
-  }
-
-  if ( $Fld[0] eq '&param5' )
-  {
-    $end = 0;
-    while ($end == 0)
-    {
-      $_ = <STDIN>;
-      chop;
-      @Fld = split(' ', $_);
-
-      # New format
-      if ( $Fld[0] eq 'Z3_src' ) {$Z3_src = $Fld[2];}
       if ( $Fld[0] eq 'Pt_src' ) {$Pt_src = $Fld[2];}
       if ( $Fld[0] eq 'Sl_src' ) {$Sl_src = $Fld[2];}
-      if ( $Fld[0] eq '&END' ) {$end = 1;}
-    }
-  }
-
-  if ( $Fld[0] eq '&param6' )
-  {
-    $end = 0;
-    while ($end == 0)
-    {
-      $_ = <STDIN>;
-      chop;
-      @Fld = split(' ', $_);
-
-      # New format
       if ( $Fld[0] eq 'Pt_snk' ) {$Pt_snk = $Fld[2];}
       if ( $Fld[0] eq 'Sl_snk' ) {$Sl_snk = $Fld[2];}
       if ( $Fld[0] eq 't_sink' ) {$t_snk = $Fld[2];}
-      if ( $Fld[0] eq 'sink_mom(' ) {$sink_mom[$Fld[1]] = $Fld[4];}
-      if ( $Fld[0] eq '&END' ) {$end = 1;}
-    }
-  }
-
-
-  if ( $Fld[0] eq '&param7' )
-  {
-    $end = 0;
-    while ($end == 0)
-    {
-      $_ = <STDIN>;
-      chop;
-      @Fld = split(' ', $_);
-
+      if ( $Fld[0] eq 'mom2_max' ) {$mom2_max = $Fld[2];}
+      if ( $Fld[0] eq 'sink_mom[' ) {$sink_mom[$Fld[1]] = $Fld[4];}
       if ( $Fld[0] eq 'Wvf_kind' ) {$Wvf_kind = $Fld[2];}
-      if ( $Fld[0] eq 'wvf_param(' ) {$wvf_param[$Fld[1]] = $Fld[4];}
-      if ( $Fld[0] eq '&END' ) {$end = 1;}
-    }
-  }
-
-  if ( $Fld[0] eq '&param9' )
-  {
-    $end = 0;
-    while ($end == 0)
-    {
-      $_ = <STDIN>;
-      chop;
-      @Fld = split(' ', $_);
-
-      # V3 format
+      if ( $Fld[0] eq 'wvf_param[' ) {$wvf_param[$Fld[1]] = $Fld[4];}
       if ( $Fld[0] eq 'numSeq_src' ) {$numSeq_src = $Fld[2];}
-      if ( $Fld[0] eq 'Seq_src(' ) {$Seq_src[$Fld[1]] = $Fld[4];}
+      if ( $Fld[0] eq 'Seq_src[' ) {$Seq_src[$Fld[1]] = $Fld[4];}
       if ( $Fld[0] eq 'numGamma' ) {$numGamma = $Fld[2];}
-      if ( $Fld[0] eq 'Gamma_list(' ) {$Gamma_list[$Fld[1]] = $Fld[4];}
+      if ( $Fld[0] eq 'Gamma_list[' ) {$Gamma_list[$Fld[1]] = $Fld[4];}
       if ( $Fld[0] eq '&END' ) {$end = 1;}
     }
   }
@@ -187,8 +106,8 @@ while ($found == 0)
       chop;
       @Fld = split(' ', $_);
 
-      if ( $Fld[0] eq 'nrow(' ) {$nrow[$Fld[1]] = $Fld[4];}
-      if ( $Fld[0] eq 't_srce(' ) {$t_srce[$Fld[1]] = $Fld[4];}
+      if ( $Fld[0] eq 'nrow[' ) {$nrow[$Fld[1]] = $Fld[4];}
+      if ( $Fld[0] eq 't_srce[' ) {$t_srce[$Fld[1]] = $Fld[4];}
       if ( $Fld[0] eq '&END' ) {$end = 1;}
     }
     $found = 1;
@@ -200,6 +119,7 @@ printf "nrow = [%d,%d,%d,%d]\n", $nrow[0], $nrow[1], $nrow[2], $nrow[3];
 $L_t = $nrow[$j_decay];
 $L_s = $nrow[0];
 printf "L=%d  numKappa=%d  dir=%s\n", $L_t, $numKappa, $dir;
+printf "j_decay=%d\n", $j_decay;
 printf "numSeq_src=%d  numGamma=%d\n", $numSeq_src, $numGamma;
 foreach $x (0 .. $numSeq_src-1)
 { 
@@ -226,6 +146,7 @@ foreach $x (0 .. $numSeq_src-1)
   if ( -f $file ) {unlink($file);}
 }
 
+$mommax_int = int(sqrt($mom2_max)+0.5);
 
 foreach $x (0 .. $numSeq_src-1)
 { 
@@ -233,16 +154,16 @@ foreach $x (0 .. $numSeq_src-1)
 
   foreach $gg (0 .. $numGamma-1)
   { 
-    $g = $Gamma_list[$gg];
+    $g = $Gamma_list{$gg};
 
-    foreach $x (-2 .. 2)
+    foreach $x (-$mommax_int .. $mommax_int)
     {
-      foreach $y (-2 .. 2)
+      foreach $y (-$mommax_int .. $mommax_int)
       {
-	foreach $z (-2 .. 2)
+	foreach $z (-$mommax_int .. $mommax_int)
 	{
 	  $p2 = $x*$x + $y*$y + $z*$z;
-	  next if ($p2 > 5);
+	  next if ($p2 > $mom2_max);
 
 	  foreach $s ('local_cur3ptfn', 'nonlocal_cur3ptfn')
 	  {
@@ -458,99 +379,13 @@ while (<STDIN>)
 	  open($hand, ">>" . $file) || die "Unable to reopen seq_hadron file $file\n";
 	}
 
-	printf $hand "0 %s %s\n", $Fld[3], $Fld[5];
+#	printf $hand "0 %s %s\n", $Fld[3], $Fld[5];
+	printf $hand "0 %s\n", $Fld[3];
 	close($hand);
       }
 
       if ( $Fld[0] eq '&END' ) {$end = 1;}
     }
-  }
-
-
-  if ( $Fld[0] eq '&Wilson_Current_3Pt_fn')   # old format
-  {
-    $_ = <STDIN>; chop; @Fld = split(' ', $_);
-    die "no mu\n" if ( $Fld[0] ne 'mu' );
-    $mu = $Fld[2];
-    $_ = <STDIN>; chop; @Fld = split(' ', $_);
-    die "no j_decay\n" if ( $Fld[0] ne 'j_decay' );
-    foreach $i (1 .. $Nd-1)
-    {
-      $_ = <STDIN>; chop; @Fld = split(' ', $_);
-      die "no inser_mom\n" if ( $Fld[0] ne 'inser_mom(' );
-      $inser_mom[$Fld[1]] = $Fld[4];
-    }
-
-    $gamma_value = 1 << $mu;
-
-    $s = 'local_cur3ptfn';
-    $file = $bar_file{$s, $seq_src, $gamma_value, $inser_mom[0], $inser_mom[1], $inser_mom[2]};
-    $tag = ++$bar_tag{$s, $seq_src, $gamma_value, $inser_mom[0], $inser_mom[1], $inser_mom[2]};
-
-    if ($tag == 1)
-    {
-#      print "Open local_cur3ptfn $file";
-
-      $bar_hand{$s, $seq_src, $gamma_value, $inser_mom[0], $inser_mom[1], $inser_mom[2]} = 
-	$hand = ("foo" . ++$hand_inc);
-      open($hand, ">" . $file) || die "Unable to open local_cur3ptfn file $file\n";
-	      
-      # Write header
-      printf $hand "XXXXXX %d 1 %d 1\n", $L_t, $L_s;
-    }
-    else
-    {
-#      print "Reopen local_cur3ptfn $file";
-
-      $hand = $bar_hand{$s, $seq_src, $gamma_value, $inser_mom[0], $inser_mom[1], $inser_mom[2]};
-      open($hand, ">>" . $file) || die "Unable to reopen local_cur3ptfn file $file\n";
-    }
-
-    foreach $t (0 .. $L_t-1)
-    {
-      $_ = <STDIN>; chop; @Fld = split(' ', $_);
-      $tt = $Fld[1];
-      printf $hand "%d %s %s\n", $tt, $Fld[5], $Fld[7];
-    }
-
-    close($hand);
-
-    $s = 'nonlocal_cur3ptfn';
-    $file = $bar_file{$s, $seq_src, $gamma_value, $inser_mom[0], $inser_mom[1], $inser_mom[2]};
-    $tag = ++$bar_tag{$s, $seq_src, $gamma_value, $inser_mom[0], $inser_mom[1], $inser_mom[2]};
-
-    if ($tag == 1)
-    {
-#      print "Open nonlocal_cur3ptfn $file";
-
-      $bar_hand{$s, $seq_src, $gamma_value, $inser_mom[0], $inser_mom[1], $inser_mom[2]} = 
-	$hand = ("foo" . ++$hand_inc);
-      open($hand, ">" . $file) || die "Unable to open nonlocal_cur3ptfn file $file\n";
-	      
-      # Write header
-      printf $hand "XXXXXX %d 1 %d 1\n", $L_t, $L_s;
-    }
-    else
-    {
-#      print "Reopen nonlocal_cur3ptfn $file";
-
-      $hand = $bar_hand{$s, $seq_src, $gamma_value, $inser_mom[0], $inser_mom[1], $inser_mom[2]};
-      open($hand, ">>" . $file) || die "Unable to reopen nonlocal_cur3ptfn file $file\n";
-    }
-
-    $hand = $bar_hand{$s, $seq_src, $gamma_value, $inser_mom[0], $inser_mom[1], $inser_mom[2]};
-
-    foreach $t (0 .. $L_t-1)
-    {
-      $_ = <STDIN>; chop; @Fld = split(' ', $_);
-      $tt = $Fld[1];
-      printf $hand "%d %s %s\n", $tt, $Fld[5], $Fld[7];
-    }
-
-    close($hand);
-
-    $_ = <STDIN>; chop; @Fld = split(' ', $_);
-    die "no END\n" if ( $Fld[0] ne '&END' );
   }
 
 
@@ -566,8 +401,9 @@ while (<STDIN>)
       if ( $Fld[0] eq '&END' ) {$end = 1;}
       if ( $Fld[0] eq 'gamma_value' ) {$gamma_value = $Fld[2];}
       if ( $Fld[0] eq 'j_decay' ) {$j_decay = $Fld[2];}
-      if ( $Fld[0] eq 'inser_mom(' ) {$inser_mom[$Fld[1]] = $Fld[4];}
-      if ( $Fld[0] eq 'local_cur3ptfn(' )
+      if ( $Fld[0] eq 'inser_mom[' ) {$inser_mom[$Fld[1]] = $Fld[4];}
+#      if ( defined($Gamma_list{$gamma_value}) 
+      if ( $Fld[0] eq 'local_cur3ptfn[' )
       {
 	$s = 'local_cur3ptfn';
 	$file = $bar_file{$s, $seq_src, $gamma_value, $inser_mom[0], $inser_mom[1], $inser_mom[2]};
@@ -575,7 +411,7 @@ while (<STDIN>)
 
 	if ($tag == 1)
 	{
-#	  print "Open local_cur3ptfn $file";
+#	  print "Open local_cur3ptfn XX${file}XX";
 
 	  $bar_hand{$s, $seq_src, $gamma_value, $inser_mom[0], $inser_mom[1], $inser_mom[2]} = 
 	    $hand = ("foo" . ++$hand_inc);
@@ -586,17 +422,19 @@ while (<STDIN>)
 	}
 	else
 	{
-#         print "Reopen local_cur3ptfn $file";
+#	  print "Reopen local_cur3ptfn $file";
 
 	  $hand = $bar_hand{$s, $seq_src, $gamma_value, $inser_mom[0], $inser_mom[1], $inser_mom[2]};
 	  open($hand, ">>" . $file) || die "Unable to reopen local_cur3ptfn file $file\n";
 	}
 
-	printf $hand "%d %s %s\n", $Fld[1], $Fld[5], $Fld[7];
+#	printf $hand "%d %s %s\n", $Fld[1], $Fld[5], $Fld[7];
+	printf $hand "%d %s\n", $Fld[1], $Fld[5];
 	foreach $t (1 .. $L_t-1)
 	{
 	  $_ = <STDIN>; chop; @Fld = split(' ', $_);
-	  printf $hand "%d %s %s\n", $Fld[1], $Fld[5], $Fld[7];
+#	  printf $hand "%d %s %s\n", $Fld[1], $Fld[5], $Fld[7];
+	  printf $hand "%d %s\n", $Fld[1], $Fld[5];
 	}
 
 	close($hand);
@@ -616,8 +454,8 @@ while (<STDIN>)
       if ( $Fld[0] eq '&END' ) {$end = 1;}
       if ( $Fld[0] eq 'gamma_value' ) {$gamma_value = $Fld[2];}
       if ( $Fld[0] eq 'j_decay' ) {$j_decay = $Fld[2];}
-      if ( $Fld[0] eq 'inser_mom(' ) {$inser_mom[$Fld[1]] = $Fld[4];}
-      if ( $Fld[0] eq 'nonlocal_cur3ptfn(' )
+      if ( $Fld[0] eq 'inser_mom[' ) {$inser_mom[$Fld[1]] = $Fld[4];}
+      if ( $Fld[0] eq 'nonlocal_cur3ptfn[' )
       {
 	$s = 'nonlocal_cur3ptfn';
 	$file = $bar_file{$s, $seq_src, $gamma_value, $inser_mom[0], $inser_mom[1], $inser_mom[2]};
@@ -625,7 +463,7 @@ while (<STDIN>)
 
 	if ($tag == 1)
 	{
-#         print "Open nonlocal_cur3ptfn $file";
+#	  print "Open nonlocal_cur3ptfn $file";
 
 	  $bar_hand{$s, $seq_src, $gamma_value, $inser_mom[0], $inser_mom[1], $inser_mom[2]} = 
 	    $hand = ("foo" . ++$hand_inc);
@@ -636,7 +474,7 @@ while (<STDIN>)
 	}
 	else
 	{
-#         print "Reopen nonlocal_cur3ptfn $file";
+#	  print "Reopen nonlocal_cur3ptfn $file";
 
 	  $hand = $bar_hand{$s, $seq_src, $gamma_value, $inser_mom[0], $inser_mom[1], $inser_mom[2]};
 	  open($hand, ">>" . $file) || die "Unable to reopen nonlocal_cur3ptfn file $file\n";
@@ -644,11 +482,13 @@ while (<STDIN>)
 	
 	$hand = $bar_hand{$s, $seq_src, $gamma_value, $inser_mom[0], $inser_mom[1], $inser_mom[2]};
 
-	printf $hand "%d %s %s\n", $Fld[1], $Fld[5], $Fld[7];
+#	printf $hand "%d %s %s\n", $Fld[1], $Fld[5], $Fld[7];
+	printf $hand "%d %s\n", $Fld[1], $Fld[5];
 	foreach $t (1 .. $L_t-1)
 	{
 	  $_ = <STDIN>; chop; @Fld = split(' ', $_);
-	  printf $hand "%d %s %s\n", $Fld[1], $Fld[5], $Fld[7];
+#	  printf $hand "%d %s %s\n", $Fld[1], $Fld[5], $Fld[7];
+	  printf $hand "%d %s\n", $Fld[1], $Fld[5];
 	}
 
 	close($hand);
@@ -670,7 +510,7 @@ foreach $X (keys %bar_tag)
   {
     $name = $bar_file{$X};
 
-#    printf "Header  %s\n", $name;
+#   printf "Header  %s\n", $name;
     
     open(FILE, "+<" . $name) || die "could not reopen $name for rewrite\n";
     printf FILE "%6d", $number;
