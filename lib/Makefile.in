@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.260 2004-11-20 19:48:53 edwards Exp $
+# $Id: Makefile.in,v 1.261 2004-11-20 19:55:43 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -204,7 +204,7 @@ host_triplet = @host@
 @BUILD_PAB_WILSON_DSLASH_TRUE@am__append_11 = lwldslash_w_pab.cc
 @BUILD_STAGGERED_LIBS_TRUE@am__append_12 = mesphas_s.cc mesphas_follana_s.cc pions_s.cc \
 @BUILD_STAGGERED_LIBS_TRUE@	follana_io_s.cc fermact_qprop.cc walfil_s.cc baryon_s.cc \
-@BUILD_STAGGERED_LIBS_TRUE@	stag_scalars_s.cc stag_propShift_s.cc vector_meson_s.cc \
+@BUILD_STAGGERED_LIBS_TRUE@	stag_scalars_s.cc stag_propShift_s.cc vector_meson_s.cc  srcfil_s.cc  \
 @BUILD_STAGGERED_LIBS_TRUE@	asqtad_linop_s.cc asq_dsl_s.cc fat7_links_s.cc naik_term_s.cc  \
 @BUILD_STAGGERED_LIBS_TRUE@	asqtad_fermact_s.cc asqtad_mdagm_s.cc staggered_qprop.cc stag_phases_s.cc
 
@@ -573,9 +573,10 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc gaugebc_utils.cc \
 	actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc \
 	lwldslash_w_pab.cc mesphas_s.cc mesphas_follana_s.cc pions_s.cc \
 	follana_io_s.cc walfil_s.cc baryon_s.cc stag_scalars_s.cc \
-	stag_propShift_s.cc vector_meson_s.cc asqtad_linop_s.cc \
-	asq_dsl_s.cc fat7_links_s.cc naik_term_s.cc asqtad_fermact_s.cc \
-	asqtad_mdagm_s.cc staggered_qprop.cc stag_phases_s.cc
+	stag_propShift_s.cc vector_meson_s.cc srcfil_s.cc \
+	asqtad_linop_s.cc asq_dsl_s.cc fat7_links_s.cc naik_term_s.cc \
+	asqtad_fermact_s.cc asqtad_mdagm_s.cc staggered_qprop.cc \
+	stag_phases_s.cc
 @BUILD_WILSON_LIBS_TRUE@am__objects_1 = baryon_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	barhqlq_w.$(OBJEXT) mesons_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	hybmeson_w.$(OBJEXT) loops_w.$(OBJEXT) \
@@ -681,6 +682,7 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc gaugebc_utils.cc \
 @BUILD_STAGGERED_LIBS_TRUE@	stag_scalars_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	stag_propShift_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	vector_meson_s.$(OBJEXT) \
+@BUILD_STAGGERED_LIBS_TRUE@	srcfil_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	asqtad_linop_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	asq_dsl_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	fat7_links_s.$(OBJEXT) \
@@ -870,6 +872,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/seqpiontest_w.Po ./$(DEPDIR)/sftmom.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/sink_smear2.Po ./$(DEPDIR)/sn_jacob.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/sn_jacob_array.Po ./$(DEPDIR)/srcfil.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/srcfil_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/stag_phases_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/stag_propShift_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/stag_scalars_s.Po \
@@ -1166,6 +1169,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sn_jacob.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sn_jacob_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/srcfil.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/srcfil_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stag_phases_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stag_propShift_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stag_scalars_s.Po@am__quote@
