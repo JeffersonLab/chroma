@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_qprop_array_sse_w.h,v 1.5 2005-02-21 19:28:59 edwards Exp $
+// $Id: prec_dwf_qprop_array_sse_w.h,v 1.6 2005-02-22 02:13:33 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -9,6 +9,12 @@
 
 #include "fermact.h"
 #include "io/param_io.h"       // to get AnisoParam_t
+
+
+extern "C" 
+{
+  struct SSE_DWF_Gauge;  // forward decl
+}
 
 namespace Chroma
 {
@@ -33,23 +39,23 @@ namespace Chroma
 		 int N5_,
 		 const AnisoParam_t& anisoParam_,
 		 const InvertParam_t& invParam_) : 
-      state(state_), OverMass(OverMass_), Mass(Mass_), 
+      OverMass(OverMass_), Mass(Mass_), 
       N5(N5_), anisoParam(anisoParam_), invParam(invParam_) 
-      {init();}
+      {init(state_);}
 
     //! Alternative constructor for compatibility
     /*!
      * \param m_q_       quark mass ( Read )
      */
-    SSEDWFQpropT(Handle< const EvenOddPrecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> > > A,
+    SSEDWFQpropT(Handle< const EvenOddPrecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> > > A,  // throw away
 		 Handle<const ConnectState> state_, 
 		 const Real& OverMass_,
 		 const Real& Mass_,
 		 const AnisoParam_t& anisoParam_,
 		 const InvertParam_t& invParam_) : 
-      state(state_), OverMass(OverMass_), Mass(Mass_), 
+      OverMass(OverMass_), Mass(Mass_), 
       N5(A->size()), anisoParam(anisoParam_), invParam(invParam_) 
-      {init();}
+      {init(state_);}
 
     //! Need a real destructor
     ~SSEDWFQpropT() {fini();}
@@ -70,13 +76,14 @@ namespace Chroma
 
   protected:
     //! Private internal initializer
-    void init() const;
-      
+    void init(Handle<const ConnectState> state);
+
     //! Private internal destructor
-    void fini() const;
+    void fini();
       
   private:
-    Handle<const ConnectState> state;
+    SSE_DWF_Gauge *g;
+
     const Real OverMass;
     const Real Mass;
     const int  N5;

@@ -1,4 +1,4 @@
-// $Id: prec_dwf_qprop_array_sse_w.cc,v 1.5 2005-02-21 19:28:59 edwards Exp $
+// $Id: prec_dwf_qprop_array_sse_w.cc,v 1.6 2005-02-22 02:13:33 edwards Exp $
 /*! \file
  *  \brief SSE 5D DWF specific quark propagator solver
  */
@@ -209,7 +209,7 @@ namespace Chroma
     ///////////////////////////////////////////////////////////////////////////////
     void
     solve_cg5(multi1d<LatticeFermion> &solution,    // output
-	      const multi1d<LatticeColorMatrix> &U, // input
+	      SSE_DWF_Gauge* g,                     // input
 	      double M5,                            // input
 	      double m_f,                           // input
 	      const multi1d<LatticeFermion> &rhs,   // input
@@ -223,12 +223,6 @@ namespace Chroma
       //      error("SSE DWF init() failed");
       //    }
 
-      // Construct shifted gauge field
-      multi1d<LatticeColorMatrix> V(Nd);
-      for (int i = 0; i < Nd; i++)
-	V[i] = shift(U[i], -1, i); // as viewed from the destination
-
-      SSE_DWF_Gauge *g = SSE_DWF_load_gauge(&U, &V, NULL, &SSEDWF::gauge_reader);
       SSE_DWF_Fermion *eta = SSE_DWF_load_fermion(&rhs, NULL, &SSEDWF::fermion_reader_rhs);
       SSE_DWF_Fermion *X0 = SSE_DWF_load_fermion(&x0, NULL, &SSEDWF::fermion_reader_guess);
       SSE_DWF_Fermion *res = SSE_DWF_allocate_fermion();
@@ -255,7 +249,6 @@ namespace Chroma
       SSE_DWF_delete_fermion(res);
       SSE_DWF_delete_fermion(X0);
       SSE_DWF_delete_fermion(eta);
-      SSE_DWF_delete_gauge(g);
 
       // SSE_DWF_fini();
     }
@@ -263,16 +256,9 @@ namespace Chroma
   }  // end namespace SSEDWF
 
 
-  //! Need a real destructor
-  void SSEDWFQpropT::fini() const
-  {
-    QDPIO::cout << "SSEDWFQpropT: calling destructor" << endl;
-    SSE_DWF_fini();
-  }
-
+  //----------------------------------------------------------------------------------
   //! Private internal initializer
-  void 
-  SSEDWFQpropT::init() const
+  void SSEDWFQpropT::init(Handle<const ConnectState> state)
   {
     QDPIO::cout << "entering SSEDWFQpropT::init" << endl;
 
@@ -305,11 +291,43 @@ namespace Chroma
       QDP_abort(1);
     }
 
+    // Transform the U fields
+    multi1d<LatticeColorMatrix> u = state->getLinks();
+  
+    if (anisoParam.anisoP)
+    {
+      Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
+
+      // Rescale the u fields by the anisotropy
+      for(int mu=0; mu < u.size(); ++mu)
+      {
+	if (mu != anisoParam.t_dir)
+	  u[mu] *= ff;
+      }
+    }
+
+    // Construct shifted gauge field
+    multi1d<LatticeColorMatrix> v(Nd);
+    for (int i = 0; i < Nd; i++)
+      v[i] = shift(u[i], -1, i); // as viewed from the destination
+
+    g = SSE_DWF_load_gauge(&u, &v, NULL, &SSEDWF::gauge_reader);
+
     QDPIO::cout << "exiting SSEDWFQpropT::init" << endl;
   }
 
 
+  //----------------------------------------------------------------------------------
+  //! Need a real destructor
+  void SSEDWFQpropT::fini()
+  {
+    QDPIO::cout << "SSEDWFQpropT: calling destructor" << endl;
+    SSE_DWF_delete_gauge(g);
+    SSE_DWF_fini();
+  }
 
+
+  //----------------------------------------------------------------------------------
   //! Solver the linear system
   /*!
    * \param psi      quark propagator ( Modify )
@@ -324,18 +342,7 @@ namespace Chroma
 
 //    init();   // only needed because 2 qpropT might be active - SSE CG does not allow this
 
-    multi1d<LatticeColorMatrix> u = state->getLinks();
     Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
-  
-    if (anisoParam.anisoP)
-    {
-      // Rescale the u fields by the anisotropy
-      for(int mu=0; mu < u.size(); ++mu)
-      {
-	if (mu != anisoParam.t_dir)
-	  u[mu] *= ff;
-      }
-    }
 
     // Apply SSE inverter
     Real   a5  = 1;
@@ -345,7 +352,8 @@ namespace Chroma
     double rsd_sq = rsd * rsd;
     int    max_iter = invParam.MaxCG;
     int    n_count;
-    SSEDWF::solve_cg5(psi, u, M5, m_f, chi, psi, rsd_sq, max_iter, n_count);
+    SSEDWF::solve_cg5(psi, g, M5, m_f, 
+		      chi, psi, rsd_sq, max_iter, n_count);
 
 //    fini();   // only needed because 2 qpropT might be active - SSE CG does not allow this
 
