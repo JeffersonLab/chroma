@@ -119,11 +119,6 @@ dnl
 dnl
 case $ac_fermion_type in
   staggered)
-    if test $QDPXX_NS -ne 1 ; then
-      AC_MSG_ERROR([STAGGERED-like fermions should have Ns=1. Check QDP++])
-    else 
-      AC_MSG_NOTICE([Configuring QDP++ Apps with STAGGERED-like fermions])
-    fi
     AC_DEFINE(CHROMA_BUILD_STAGGERED,[],[ Build Staggered Chroma ])
     ;;
   wilson)
