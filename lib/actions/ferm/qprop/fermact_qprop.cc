@@ -1,4 +1,4 @@
-// $Id: unprec_qprop_w.cc,v 1.4 2003-10-20 20:29:18 edwards Exp $
+// $Id: fermact_qprop.cc,v 1.1 2003-11-10 03:07:03 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *
@@ -32,7 +32,7 @@ using namespace QDP;
 
 template<typename T>
 static 
-void qprop_t(const UnprecWilsonTypeFermAct<T>& me,
+void qprop_t(const FermionAction<T>& me,
 	     T& psi, 
 	     const multi1d<LatticeColorMatrix>& u, 
 	     const T& chi, 
@@ -40,7 +40,7 @@ void qprop_t(const UnprecWilsonTypeFermAct<T>& me,
 	     const Real& RsdCG, 
 	     int MaxCG, int& ncg_had)
 {
-  START_CODE("UnprecWilsonTypeFermAct::qprop");
+  START_CODE("FermionAction::qprop");
 
   int n_count;
   
@@ -84,28 +84,28 @@ void qprop_t(const UnprecWilsonTypeFermAct<T>& me,
   // Call the virtual destructor of A
   delete A;
 
-  END_CODE("UnprecWilsonTypeFermAct::qprop");
+  END_CODE("FermionAction::qprop");
 }
 
 
 template<>
-void UnprecWilsonTypeFermAct<LatticeFermion>::qprop(LatticeFermion& psi, 
-						    const multi1d<LatticeColorMatrix>& u, 
-						    const LatticeFermion& chi, 
-						    enum InvType invType,
-						    const Real& RsdCG, 
-						    int MaxCG, int& ncg_had) const
+void FermionAction<LatticeFermion>::qprop(LatticeFermion& psi, 
+					  const multi1d<LatticeColorMatrix>& u, 
+					  const LatticeFermion& chi, 
+					  enum InvType invType,
+					  const Real& RsdCG, 
+					  int MaxCG, int& ncg_had) const
 {
   qprop_t(*this, psi, u, chi, invType, RsdCG, MaxCG, ncg_had);
 }
 
 template<>
-void UnprecWilsonTypeFermAct<LatticeDWFermion>::qprop(LatticeDWFermion& psi, 
-						      const multi1d<LatticeColorMatrix>& u, 
-						      const LatticeDWFermion& chi, 
-						      enum InvType invType,
-						      const Real& RsdCG, 
-						      int MaxCG, int& ncg_had) const
+void FermionAction<LatticeDWFermion>::qprop(LatticeDWFermion& psi, 
+					    const multi1d<LatticeColorMatrix>& u, 
+					    const LatticeDWFermion& chi, 
+					    enum InvType invType,
+					    const Real& RsdCG, 
+					    int MaxCG, int& ncg_had) const
 {
   qprop_t(*this, psi, u, chi, invType, RsdCG, MaxCG, ncg_had);
 }
