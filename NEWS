@@ -1,5 +1,10 @@
 02/23/2005 -- Robert Edwards
 
+	Version 1.19.9. Upgrade again of Chrono predictors. Seems to
+        work for 4D. Need 5D.
+
+02/23/2005 -- Robert Edwards
+
 	Version 1.19.8. Updated interface for Chrono predictors.  Start of
 	aniso support in GaugeActs. Split off some structs to separate
 	files to thin-out file dependencies.
