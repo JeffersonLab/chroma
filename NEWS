@@ -1,3 +1,9 @@
+02/13/2005 -- Robert Edwards
+
+	Version 1.19.4. Changed/fixed all ContFrac codes to have a +OverMass sign
+        convention. Changed Zolo fermacts to take ApproxMin/Max from FermionAction
+        group. 
+
 02/10/2005 -- Robert Edwards
 
 	Version 1.19.3. Fixed ritz code to work over subsets.
