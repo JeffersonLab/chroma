@@ -1,4 +1,4 @@
-// $Id: t_lwldslash.cc,v 1.10 2003-10-09 20:36:49 edwards Exp $
+// $Id: t_lwldslash.cc,v 1.11 2003-10-20 20:26:25 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -58,7 +58,7 @@ int main(int argc, char **argv)
       
       myt1=clock();
       for(i=0; i < iter; i++) { 
-	chi = D.apply(psi, (isign == 1 ? PLUS : MINUS ) , cb);
+	D.apply(psi, (isign == 1 ? PLUS : MINUS ) , cb);   // throw away the result
       }
       myt2=clock();
       
