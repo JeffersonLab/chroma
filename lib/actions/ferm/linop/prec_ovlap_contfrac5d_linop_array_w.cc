@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_linop_array_w.cc,v 1.8 2005-01-19 03:30:38 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_linop_array_w.cc,v 1.9 2005-01-21 05:26:22 edwards Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned domain-wall linear operator
  */
@@ -331,13 +331,13 @@ namespace Chroma
 
 	// CB is CB of TARGET
 	// consider case of Dslash^dag gamma_5
-	tmp[rb[cb]] = Gamma(G5)*psi[i];
+	tmp[rb[1-cb]] = Gamma(G5)*psi[i];
 
 	// Multiply coefficient
 	coeff = -Real(0.5)*beta_tilde[i];
 
 	// Chi_i is now -(1/2) beta_tilde_i Dslash 
-	tmp[rb[cb]] *= coeff;
+	tmp[rb[1-cb]] *= coeff;
 
 	// Apply g5 Dslash
 	Dslash->deriv(ds_tmp, chi[i], tmp, MINUS, cb);
