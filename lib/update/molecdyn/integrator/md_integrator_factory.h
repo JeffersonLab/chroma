@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: md_integrator_factory.h,v 1.1 2004-12-31 17:17:04 bjoo Exp $
+// $Id: md_integrator_factory.h,v 1.1 2005-01-13 15:55:04 bjoo Exp $
 /*! \file
  *  \brief Monomial factories
  */

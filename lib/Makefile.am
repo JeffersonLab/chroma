@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.229 2005-01-13 15:10:51 bjoo Exp $
+# $Id: Makefile.am,v 1.230 2005-01-13 15:55:02 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -127,27 +127,26 @@ nobase_include_HEADERS = \
 	update/heatbath/su2_hb_update.h \
 	update/heatbath/su3_hb_sweep.h \
 	update/molecdyn/molecdyn.h \
-	update/molecdyn/molecdyn_w.h \
 	update/molecdyn/field_state.h \
-	update/molecdyn/abs_monomial.h \
-	update/molecdyn/monomial_factory.h \
-	update/molecdyn/gauge_monomial.h \
-	update/molecdyn/abs_hamiltonian.h \
-	update/molecdyn/exact_hamiltonian.h \
-	update/molecdyn/abs_integrator.h \
-	update/molecdyn/md_integrator_factory.h \
-	update/molecdyn/lcm_pqp_leapfrog.h \
-	update/molecdyn/abs_hmc.h \
-	update/molecdyn/lcm_hmc.h \
-	update/molecdyn/unprec_two_flavor_wilson_monomial_w.h \
-	update/molecdyn/prec_two_flavor_wilson_monomial_w.h \
-	update/molecdyn/unprec_two_flavor_wilson5d_monomial_w.h \
-	update/molecdyn/prec_two_flavor_wilson5d_monomial_w.h \
-	update/molecdyn/global_metropolis_accrej.h \
-	update/molecdyn/chrono_predictor.h \
-	update/molecdyn/chrono_predictor_factory.h \
-	update/molecdyn/zero_guess_predictor.h \
-	update/molecdyn/last_solution_predictor.h
+	update/molecdyn/monomial/abs_monomial.h \
+	update/molecdyn/monomial/monomial_factory.h \
+	update/molecdyn/monomial/gauge_monomial.h \
+	update/molecdyn/hamiltonian/abs_hamiltonian.h \
+	update/molecdyn/hamiltonian/exact_hamiltonian.h \
+	update/molecdyn/integrator/abs_integrator.h \
+	update/molecdyn/integrator/md_integrator_factory.h \
+	update/molecdyn/integrator/lcm_pqp_leapfrog.h \
+	update/molecdyn/hmc/abs_hmc.h \
+	update/molecdyn/hmc/lcm_hmc.h \
+	update/molecdyn/hmc/global_metropolis_accrej.h \
+	update/molecdyn/monomial/unprec_two_flavor_wilson_monomial_w.h \
+	update/molecdyn/monomial/prec_two_flavor_wilson_monomial_w.h \
+	update/molecdyn/monomial/unprec_two_flavor_wilson5d_monomial_w.h \
+	update/molecdyn/monomial/prec_two_flavor_wilson5d_monomial_w.h \
+	update/molecdyn/predictor/chrono_predictor.h \
+	update/molecdyn/predictor/chrono_predictor_factory.h \
+	update/molecdyn/predictor/zero_guess_predictor.h \
+	update/molecdyn/predictor/last_solution_predictor.h
 
 nodist_include_HEADERS=chroma_config_internal.h
 
@@ -384,11 +383,11 @@ libchroma_a_SOURCES = \
 	util/gauge/sunfill.cc util/gauge/sun_proj.cc \
 	util/gauge/taproj.cc util/gauge/unit_check.cc \
 	util/info/printgeom.cc util/info/proginfo.cc \
-	update/molecdyn/gauge_monomial.cc \
-	update/molecdyn/lcm_pqp_leapfrog.cc \
-	update/molecdyn/global_metropolis_accrej.cc \
-	update/molecdyn/zero_guess_predictor.cc \
-	update/molecdyn/last_solution_predictor.cc
+	update/molecdyn/monomial/gauge_monomial.cc \
+	update/molecdyn/integrator/lcm_pqp_leapfrog.cc \
+	update/molecdyn/hmc/global_metropolis_accrej.cc \
+	update/molecdyn/predictor/zero_guess_predictor.cc \
+	update/molecdyn/predictor/last_solution_predictor.cc
 
 #	actions/ferm/invert/invbicg.cc
 #       actions/ferm/invert/invmr.cc 
@@ -474,10 +473,15 @@ libchroma_a_SOURCES += \
 	meas/hadron/wallrhopiff_w.cc meas/hadron/wall_qprop_w.cc \
 	meas/sources/d_src_w.cc meas/sources/p_src_w.cc \
 	util/ferm/gammasgn_w.cc \
-	update/molecdyn/unprec_two_flavor_wilson_monomial_w.cc \
-	update/molecdyn/prec_two_flavor_wilson_monomial_w.cc \
-	update/molecdyn/unprec_two_flavor_wilson5d_monomial_w.cc \
-	update/molecdyn/prec_two_flavor_wilson5d_monomial_w.cc
+	update/molecdyn/monomial/unprec_two_flavor_wilson_monomial_w.cc \
+	update/molecdyn/monomial/prec_two_flavor_wilson_monomial_w.cc \
+	update/molecdyn/monomial/unprec_two_flavor_wilson5d_monomial_w.cc \
+	update/molecdyn/monomial/prec_two_flavor_wilson5d_monomial_w.cc
+
+
+
+
+
 
 #
 # Inline measurement headers

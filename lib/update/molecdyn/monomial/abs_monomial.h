@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_monomial.h,v 1.16 2005-01-13 15:10:51 bjoo Exp $
+// $Id: abs_monomial.h,v 1.1 2005-01-13 15:55:04 bjoo Exp $
 
 /*! @file
  * @brief Monomials - gauge action or fermion binlinear contributions for HMC

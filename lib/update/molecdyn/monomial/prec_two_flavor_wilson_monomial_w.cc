@@ -1,4 +1,4 @@
-// $Id: prec_two_flavor_wilson_monomial_w.cc,v 1.5 2005-01-13 15:10:51 bjoo Exp $
+// $Id: prec_two_flavor_wilson_monomial_w.cc,v 1.1 2005-01-13 15:55:04 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */

@@ -1,50 +1,49 @@
-// $Id: prec_two_flavor_wilson5d_monomial_w.cc,v 1.7 2005-01-13 15:10:51 bjoo Exp $
+// $Id: unprec_two_flavor_wilson5d_monomial_w.cc,v 1.1 2005-01-13 15:55:04 bjoo Exp $
 /*! @file
- * @brief Two-flavor collection of even-odd preconditioned 5D ferm monomials
+ * @brief Two-flavor collection of unpreconditioned 5D ferm monomials
  */
 
 #include "chromabase.h"
-#include "update/molecdyn/prec_two_flavor_wilson5d_monomial_w.h"
+#include "update/molecdyn/unprec_two_flavor_wilson5d_monomial_w.h"
 #include "update/molecdyn/monomial_factory.h"
 
 #include "io/param_io.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/invert/invcg2_array.h"
 
-#include "actions/ferm/fermacts/prec_dwf_fermact_array_w.h"
-#include "actions/ferm/fermacts/prec_ovdwf_fermact_array_w.h"
-#include "actions/ferm/fermacts/prec_ovlap_contfrac5d_fermact_array_w.h"
-#include "actions/ferm/fermacts/prec_nef_fermact_array_w.h"
-#include "actions/ferm/fermacts/prec_zolo_nef_fermact_array_w.h"
+#include "actions/ferm/fermacts/unprec_dwf_fermact_array_w.h"
+#include "actions/ferm/fermacts/unprec_ovdwf_fermact_array_w.h"
+#include "actions/ferm/fermacts/unprec_ovext_fermact_array_w.h"
+#include "actions/ferm/fermacts/unprec_ovlap_contfrac5d_fermact_array_w.h"
+#include "actions/ferm/fermacts/unprec_nef_fermact_array_w.h"
+#include "actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.h"
 
 #include "update/molecdyn/chrono_predictor.h"
 #include "update/molecdyn/chrono_predictor_factory.h"
 
 #include "update/molecdyn/zero_guess_predictor.h"
 
-using namespace Chroma;
-
 namespace Chroma 
 { 
  
-  namespace EvenOddPrecTwoFlavorWilsonTypeFermMonomial5DEnv 
+  namespace UnprecTwoFlavorWilsonTypeFermMonomial5DEnv 
   {
     //! Callback function for the factory
     Monomial< multi1d<LatticeColorMatrix>,
 	      multi1d<LatticeColorMatrix> >* createMonomialDWF(XMLReader& xml, const string& path) 
     {
-      return new EvenOddPrecTwoFlavorWilsonTypeFermMonomial5D(
-	EvenOddPrecDWFermActArrayEnv::name,
-	EvenOddPrecTwoFlavorWilsonTypeFermMonomial5DParams(xml, path));
+      return new UnprecTwoFlavorWilsonTypeFermMonomial5D(
+	UnprecDWFermActArrayEnv::name,
+	UnprecTwoFlavorWilsonTypeFermMonomial5DParams(xml, path));
     }
     
     //! Callback function for the factory
     Monomial< multi1d<LatticeColorMatrix>,
 	      multi1d<LatticeColorMatrix> >* createMonomialZoloNEF(XMLReader& xml, const string& path) 
     {
-      return new EvenOddPrecTwoFlavorWilsonTypeFermMonomial5D(
-	EvenOddPrecZoloNEFFermActArrayEnv::name,
-	EvenOddPrecTwoFlavorWilsonTypeFermMonomial5DParams(xml, path));
+      return new UnprecTwoFlavorWilsonTypeFermMonomial5D(
+	UnprecZoloNEFFermActArrayEnv::name,
+	UnprecTwoFlavorWilsonTypeFermMonomial5DParams(xml, path));
     }
     
     //! Register all the objects
@@ -55,23 +54,23 @@ namespace Chroma
       const std::string suffix = "_FERM_MONOMIAL";
 
       // Use a pattern to register all the qualifying fermacts
-      foo &= EvenOddPrecDWFermActArrayEnv::registered;
-      foo &= TheMonomialFactory::Instance().registerObject(prefix+EvenOddPrecDWFermActArrayEnv::name+suffix, 
+      foo &= UnprecDWFermActArrayEnv::registered;
+      foo &= TheMonomialFactory::Instance().registerObject(prefix+UnprecDWFermActArrayEnv::name+suffix, 
 							   createMonomialDWF);
 
-      foo &= EvenOddPrecZoloNEFFermActArrayEnv::registered;
-      foo &= TheMonomialFactory::Instance().registerObject(prefix+EvenOddPrecZoloNEFFermActArrayEnv::name+suffix, 
+      foo &= UnprecZoloNEFFermActArrayEnv::registered;
+      foo &= TheMonomialFactory::Instance().registerObject(prefix+UnprecZoloNEFFermActArrayEnv::name+suffix, 
 							   createMonomialZoloNEF);
       return foo;
     }
 
     //! Register the fermact
     const bool registered = registerAll();
-  }; //end namespace EvenOddPrec TwoFlavorWilsonFermMonomialEnv
+  } //end namespace Unprec TwoFlavorWilsonFermMonomialEnv
 
 
   // Read the parameters
-  EvenOddPrecTwoFlavorWilsonTypeFermMonomial5DParams::EvenOddPrecTwoFlavorWilsonTypeFermMonomial5DParams(XMLReader& xml_in, const string& path)
+  UnprecTwoFlavorWilsonTypeFermMonomial5DParams::UnprecTwoFlavorWilsonTypeFermMonomial5DParams(XMLReader& xml_in, const string& path)
   {
     // Get the top of the parameter XML tree
     XMLReader paramtop(xml_in, path);
@@ -93,34 +92,32 @@ namespace Chroma
 	chrono_xml_reader.print(chrono_os);
 	predictor_xml = chrono_os.str();
       }
-
     }
     catch(const string& s) {
       QDPIO::cerr << "Caught Exception while reading parameters: " << s <<endl;
       QDP_abort(1);
     }
 
-    QDPIO::cout << "EvenOddPrecTwoFlavorWilsonTypeFermMonomial5DParams: read " << ferm_act << endl;
+    QDPIO::cout << "UnprecTwoFlavorWilsonTypeFermMonomial5DParams: read " << ferm_act << endl;
   }
 
   //! Read Parameters
   void read(XMLReader& xml, const std::string& path,
-	    EvenOddPrecTwoFlavorWilsonTypeFermMonomial5DParams& params) {
-    EvenOddPrecTwoFlavorWilsonTypeFermMonomial5DParams tmp(xml, path);
+	    UnprecTwoFlavorWilsonTypeFermMonomial5DParams& params) {
+    UnprecTwoFlavorWilsonTypeFermMonomial5DParams tmp(xml, path);
     params = tmp;
   }
 
   //! Write Parameters
   void write(XMLWriter& xml, const std::string& path,
-	     const EvenOddPrecTwoFlavorWilsonTypeFermMonomial5DParams& params) {
+	     const UnprecTwoFlavorWilsonTypeFermMonomial5DParams& params) {
     // Not implemented
   }
 
-
   // Constructor
-  EvenOddPrecTwoFlavorWilsonTypeFermMonomial5D::EvenOddPrecTwoFlavorWilsonTypeFermMonomial5D(
+  UnprecTwoFlavorWilsonTypeFermMonomial5D::UnprecTwoFlavorWilsonTypeFermMonomial5D(
     const string& name_,
-    const EvenOddPrecTwoFlavorWilsonTypeFermMonomial5DParams& param_) 
+    const UnprecTwoFlavorWilsonTypeFermMonomial5DParams& param_) 
   {
     inv_param = param_.inv_param;
 
@@ -142,14 +139,17 @@ namespace Chroma
       QDP_abort(1);
     }
 
+
+    QDPIO::cout << "UnprecTwoFlavorWilsonTypeFermMonomial5D: construct " << fermact_string << endl;
+
     const FermionAction<LatticeFermion>* tmp_act = TheFermionActionFactory::Instance().createObject(fermact_string, fermact_reader, "./FermionAction");
   
 
-    const EvenOddPrecWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >* downcast=dynamic_cast<const EvenOddPrecWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >*>(tmp_act);
+    const UnprecWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >* downcast=dynamic_cast<const UnprecWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >*>(tmp_act);
 
     // Check success of the downcast 
     if( downcast == 0x0 ) {
-      QDPIO::cerr << "Unable to downcast FermAct to EvenOddPrecWilsonTypeFermAct5D in EvenOddPrecTwoFlavorWilsonTypeFermMonomial5D()" << endl;
+      QDPIO::cerr << "Unable to downcast FermAct to UnprecWilsonTypeFermAct5D in UnprecTwoFlavorWilsonTypeFermMonomial5D()" << endl;
       QDP_abort(1);
     }
 
@@ -159,7 +159,7 @@ namespace Chroma
     AbsChronologicalPredictor5D<LatticeFermion>* tmp=0x0;
     if( param_.predictor_xml == "" ) {
       // No predictor specified use zero guess
-      tmp = new ZeroGuess5DChronoPredictor(fermact->size());
+       tmp = new ZeroGuess5DChronoPredictor(fermact->size());
     }
     else {
       try { 
@@ -180,12 +180,19 @@ namespace Chroma
       QDP_abort(1);
     }
     chrono_predictor = tmp;
+
+
+    QDPIO::cout << "UnprecTwoFlavorWilsonTypeFermMonomial5D: finished " << fermact_string << endl;
+
+   
   }
 
-  // Do inversion M^dag M X = phi
-  // X allocated and passed in 
+
+  // Do inversion M^dag M X = V^dag phi ?
+
+  // X allocated and pased in...
   int
-  EvenOddPrecTwoFlavorWilsonTypeFermMonomial5D::getX(
+  UnprecTwoFlavorWilsonTypeFermMonomial5D::getX(
     multi1d<LatticeFermion>& X, 
     const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const
   {
@@ -195,25 +202,29 @@ namespace Chroma
     // Make the state
     Handle< const ConnectState > state(FA.createState(s.getQ()));
 
+    
     // Get linop
     Handle< const LinearOperator< multi1d<LatticeFermion> > > M(FA.linOp(state));
-    // Get PV
+
     Handle< const LinearOperator< multi1d<LatticeFermion> > > PV(FA.linOpPV(state));
 
+    //    // Get PV linop
+    // Handle< const LinearOperator< multi1d<LatticeFermion> > > PV(FA.linOpPV
+    // Do the inversion...
     multi1d<LatticeFermion> VdagPhi(FA.size());
-    
     (*PV)(VdagPhi, getPhi(), MINUS);
 
-    // Do the inversion...
+    /*
+    int n_count = invert(X, *M, getPhi());
+    */
     int n_count = invert(X, *M, VdagPhi);
     return n_count;
   }
 
   
   // Get X = (PV^dag*PV)^{-1} eta
-  // X allocated and passed in
-  int 
-  EvenOddPrecTwoFlavorWilsonTypeFermMonomial5D::getXPV(
+  int
+  UnprecTwoFlavorWilsonTypeFermMonomial5D::getXPV(
     multi1d<LatticeFermion>& X, 
     const multi1d<LatticeFermion>& eta, 
     const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const
@@ -223,9 +234,13 @@ namespace Chroma
 
     // Make the state
     Handle< const ConnectState > state(FA.createState(s.getQ()));
+
+    // X allocated and passed in
+    X=zero;
    
     // Get linop
     Handle< const LinearOperator< multi1d<LatticeFermion> > > M(FA.linOpPV(state));
+    
 
     // Do the inversion...
     int n_count = invert(X, *M, eta);
@@ -235,7 +250,7 @@ namespace Chroma
 
   // Get X = (A^dag*A)^{-1} eta
   int
-  EvenOddPrecTwoFlavorWilsonTypeFermMonomial5D::invert(
+  UnprecTwoFlavorWilsonTypeFermMonomial5D::invert(
     multi1d<LatticeFermion>& X, 
     const LinearOperator< multi1d<LatticeFermion> >& M,
     const multi1d<LatticeFermion>& eta) const
@@ -248,7 +263,7 @@ namespace Chroma
     {
       // Solve MdagM X = eta
       InvCG2(M, eta, X, inv_param.RsdCG, inv_param.MaxCG, n_count);
-      QDPIO::cout << "2Flav5D::invert,  n_count = " << n_count << endl;
+      QDPIO::cout << "2Flav5D::invert, n_count = " << n_count << endl;
     }
     break;
     default:
@@ -263,6 +278,7 @@ namespace Chroma
   }
 
   
+
 }; //end namespace Chroma
 
 
