@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.77 2003-11-08 04:19:41 edwards Exp $
+# $Id: Makefile.in,v 1.78 2003-11-09 22:26:58 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -45,13 +45,14 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@              sink_smear2_w.cc barcomp_w.cc transf_w.cc ldwfdslash_w.cc unprec_qprop_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc unprec_wilson_dsdu_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              unprec_dwf_fermact_w.cc unprec_dwf_linop_w.cc unprec_dwf_dsdu_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              unprec_dwf_qprop_w.cc dwffld_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              readszinqprop_w.cc readszinferm_w.cc writeszinqprop_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              overlapbu_linop_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc
 
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_3 = lwldslash_w_sse.cc
 @BUILD_STAGGERED_LIBS_TRUE@am__append_4 = mesphas_s.cc mesphas_follana_s.cc pions_follana_s.cc follana_io_s.cc
-VPATH = $(TOPDIR) $(TOPDIR)/lib $(TOPDIR)/lib/actions $(TOPDIR)/lib/actions/boson $(TOPDIR)/lib/actions/boson/operator $(TOPDIR)/lib/actions/ferm $(TOPDIR)/lib/actions/ferm/fermacts $(TOPDIR)/lib/actions/ferm/invert $(TOPDIR)/lib/actions/ferm/linop $(TOPDIR)/lib/actions/ferm/qprop $(TOPDIR)/lib/actions/gauge $(TOPDIR)/lib/geom $(TOPDIR)/lib/info $(TOPDIR)/lib/io $(TOPDIR)/lib/meas $(TOPDIR)/lib/meas/eig $(TOPDIR)/lib/meas/gfix $(TOPDIR)/lib/meas/glue $(TOPDIR)/lib/meas/hadron $(TOPDIR)/lib/meas/pbp $(TOPDIR)/lib/meas/schrfun $(TOPDIR)/lib/meas/smear $(TOPDIR)/lib/meas/sources $(TOPDIR)/lib/update $(TOPDIR)/lib/update/heatbath $(TOPDIR)/lib/update/molecdyn $(TOPDIR)/lib/update/molecdyn/dsdu $(TOPDIR)/lib/update/molecdyn/est $(TOPDIR)/lib/update/molecdyn/mese $(TOPDIR)/lib/update/molecdyn/noise $(TOPDIR)/lib/update/molecdyn/step $(TOPDIR)/lib/util $(TOPDIR)/lib/util/comm $(TOPDIR)/lib/util/ferm $(TOPDIR)/lib/util/ft $(TOPDIR)/lib/util/gauge $(TOPDIR)/lib/util/misc $(TOPDIR)/lib/util/random $(TOPDIR)/include $(TOPDIR)/mainprogs $(TOPDIR)/mainprogs/main $(TOPDIR)/mainprogs/tests $(TOPDIR)/root
+VPATH = $(TOPDIR) $(TOPDIR)/lib $(TOPDIR)/lib/actions $(TOPDIR)/lib/actions/boson $(TOPDIR)/lib/actions/boson/operator $(TOPDIR)/lib/actions/ferm $(TOPDIR)/lib/actions/ferm/dsdu $(TOPDIR)/lib/actions/ferm/fermacts $(TOPDIR)/lib/actions/ferm/invert $(TOPDIR)/lib/actions/ferm/linop $(TOPDIR)/lib/actions/ferm/qprop $(TOPDIR)/lib/actions/gauge $(TOPDIR)/lib/geom $(TOPDIR)/lib/info $(TOPDIR)/lib/io $(TOPDIR)/lib/meas $(TOPDIR)/lib/meas/eig $(TOPDIR)/lib/meas/gfix $(TOPDIR)/lib/meas/glue $(TOPDIR)/lib/meas/hadron $(TOPDIR)/lib/meas/pbp $(TOPDIR)/lib/meas/schrfun $(TOPDIR)/lib/meas/smear $(TOPDIR)/lib/meas/sources $(TOPDIR)/lib/update $(TOPDIR)/lib/update/heatbath $(TOPDIR)/lib/update/molecdyn $(TOPDIR)/lib/update/molecdyn/est $(TOPDIR)/lib/update/molecdyn/mese $(TOPDIR)/lib/update/molecdyn/noise $(TOPDIR)/lib/update/molecdyn/step $(TOPDIR)/lib/util $(TOPDIR)/lib/util/comm $(TOPDIR)/lib/util/ferm $(TOPDIR)/lib/util/ft $(TOPDIR)/lib/util/gauge $(TOPDIR)/lib/util/misc $(TOPDIR)/lib/util/random $(TOPDIR)/include $(TOPDIR)/mainprogs $(TOPDIR)/mainprogs/main $(TOPDIR)/mainprogs/tests $(TOPDIR)/root
 ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
@@ -202,7 +203,8 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	barcomp_w.cc transf_w.cc ldwfdslash_w.cc unprec_qprop_w.cc \
 	unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
 	unprec_wilson_dsdu_w.cc unprec_dwf_fermact_w.cc \
-	unprec_dwf_linop_w.cc unprec_dwf_dsdu_w.cc readszinqprop_w.cc \
+	unprec_dwf_linop_w.cc unprec_dwf_dsdu_w.cc \
+	unprec_dwf_qprop_w.cc dwffld_w.cc readszinqprop_w.cc \
 	readszinferm_w.cc writeszinqprop_w.cc overlapbu_linop_w.cc \
 	p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc \
 	lwldslash_w_sse.cc mesphas_s.cc mesphas_follana_s.cc \
@@ -221,6 +223,8 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 @BUILD_WILSON_LIBS_TRUE@	unprec_dwf_fermact_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	unprec_dwf_linop_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	unprec_dwf_dsdu_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	unprec_dwf_qprop_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	dwffld_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	readszinqprop_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	readszinferm_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	writeszinqprop_w.$(OBJEXT) \
@@ -256,8 +260,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/D_j_w.Po ./$(DEPDIR)/DjDk_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ape_smear.Po ./$(DEPDIR)/barcomp_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/baryon_w.Po ./$(DEPDIR)/curcor2_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/d_src_w.Po ./$(DEPDIR)/expm12.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/follana_io_s.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/d_src_w.Po ./$(DEPDIR)/dwffld_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/expm12.Po ./$(DEPDIR)/follana_io_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/formfac_w.Po ./$(DEPDIR)/gaus_smear.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/hotst.Po ./$(DEPDIR)/hyp_smear.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/invcg2.Po ./$(DEPDIR)/klein_gord.Po \
@@ -286,6 +290,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_dwf_dsdu_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_dwf_fermact_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_dwf_linop_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/unprec_dwf_qprop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_qprop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_wilson_dsdu_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_wilson_fermact_w.Po \
@@ -365,6 +370,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/baryon_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/curcor2_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/d_src_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dwffld_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/expm12.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/follana_io_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/formfac_w.Po@am__quote@
@@ -407,6 +413,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_dwf_dsdu_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_dwf_fermact_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_dwf_linop_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_dwf_qprop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_qprop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_wilson_dsdu_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_wilson_fermact_w.Po@am__quote@
