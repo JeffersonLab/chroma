@@ -69,11 +69,26 @@ class PureGaugeFieldState : public AbsFieldState<multi1d<LatticeColorMatrix>,   
  public: 
 
   // Constructor
-  PureGaugeFieldState(multi1d<LatticeColorMatrix>& p_,
-		      multi1d<LatticeColorMatrix>& q_) : p(p_), q(q_) {}
+  PureGaugeFieldState(const multi1d<LatticeColorMatrix>& p_,
+		      const multi1d<LatticeColorMatrix>& q_) {
+    p.resize(Nd);
+    q.resize(Nd);
+    for(int mu=0; mu < Nd; mu++) { 
+      p[mu] = p_[mu];
+      q[mu] = q_[mu];
+    }
+  }
 
   // Copy Constructor
-  PureGaugeFieldState(const PureGaugeFieldState& s) : p(s.p), q(s.q) {}
+  PureGaugeFieldState(const PureGaugeFieldState& s)  {
+    p.resize(Nd);
+    q.resize(Nd);
+    for(int mu=0; mu < Nd; mu++) { 
+      p[mu] = s.p[mu];
+      q[mu] = s.q[mu];
+    }
+
+  }
 
   // Destructor
   ~PureGaugeFieldState() {};
