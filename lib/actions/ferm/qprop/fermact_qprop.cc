@@ -1,4 +1,4 @@
-// $Id: fermact_qprop.cc,v 1.2 2003-11-10 05:06:07 edwards Exp $
+// $Id: fermact_qprop.cc,v 1.3 2003-11-13 04:14:33 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *
@@ -48,17 +48,17 @@ void qprop_t(const FermionAction<T>& me,
   /* This allocates field for the appropriate action */
   const LinearOperator<T>* A = me.linOp(u);
 
-  T tmp;
-
   switch(invType)
   {
   case CG_INVERTER: 
+  {
     /* chi_1 = M_dag(u) * chi_1 */
-    tmp = (*A)(chi, MINUS);
+    T  tmp = (*A)(chi, MINUS);
     
     /* psi = (M^dag * M)^(-1) chi */
     InvCG2 (*A, tmp, psi, RsdCG, MaxCG, n_count);
-    break;
+  }
+  break;
   
 #if 0
   case MR_INVERTER:
