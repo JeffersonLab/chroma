@@ -1,5 +1,5 @@
 
-// $Id: io.h,v 1.18 2004-09-22 17:24:59 bjoo Exp $
+// $Id: io.h,v 1.19 2004-11-20 21:19:09 edwards Exp $
 
 #ifndef __io_h__
 #define __io_h__
@@ -31,10 +31,7 @@
 #include "writemilc.h"
 
 #include "param_io.h"
-#if defined CHROMA_BUILD_WILSON
 #include "io_w.h"
-#elif defined CHROMA_BUILD_STAGGERED
 #include "io_s.h"
-#endif
 
 #endif
