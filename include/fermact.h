@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 1.8 2003-11-10 05:08:27 edwards Exp $
+// $Id: fermact.h,v 1.9 2003-11-13 04:10:20 edwards Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -10,12 +10,7 @@
 
 using namespace QDP;
 
-enum InvType {
-  CG_INVERTER = 21, 
-  MR_INVERTER = 22,
-  BICG_INVERTER = 23,
-  CR_INVERTER = 24};
-
+#include "invtype.h"
 #include "linearop.h"
 
 //! Base class for quadratic matter actions (e.g., fermions)
