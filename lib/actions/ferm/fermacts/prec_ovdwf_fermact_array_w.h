@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovdwf_fermact_array_w.h,v 1.2 2004-09-08 02:48:25 edwards Exp $
+// $Id: prec_ovdwf_fermact_array_w.h,v 1.3 2004-09-09 15:51:31 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned Overlap-DWF (Borici) action
  */
@@ -27,8 +27,8 @@ namespace Chroma
   {
     EvenOddPrecOvDWFermActArrayParams(XMLReader& in, const std::string& path);
     
-    Real WilsonMass;
-    Real m_q;
+    Real OverMass;
+    Real Mass;
     Real a5;
     int  N5;
   };
@@ -53,12 +53,12 @@ namespace Chroma
   public:
     //! General FermBC
     EvenOddPrecOvDWFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
-				const Real& WilsonMass_, const Real& m_q_, int N5_) : 
-      fbc(fbc_), WilsonMass(WilsonMass_), m_q(m_q_), N5(N5_) 
+				const Real& OverMass_, const Real& Mass_, int N5_) : 
+      fbc(fbc_), OverMass(OverMass_), Mass(Mass_), N5(N5_) 
       {
 	a5=1;
-	QDPIO::cout << "Construct EvenOddPrecOvDWFermActArray: WilsonMass = " << WilsonMass 
-		    << "  m_q = " << m_q 
+	QDPIO::cout << "Construct EvenOddPrecOvDWFermActArray: OverMass = " << OverMass 
+		    << "  Mass = " << Mass 
 		    << "  N5 = " << N5 
 		    << "  a5 = " << a5 
 		    << endl;
@@ -67,15 +67,15 @@ namespace Chroma
     //! General FermBC
     EvenOddPrecOvDWFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
 				const EvenOddPrecOvDWFermActArrayParams& param) :
-      fbc(fbc_), WilsonMass(param.WilsonMass), m_q(param.m_q), a5(param.a5), N5(param.N5) {}
+      fbc(fbc_), OverMass(param.OverMass), Mass(param.Mass), a5(param.a5), N5(param.N5) {}
 
     //! Copy constructor
     EvenOddPrecOvDWFermActArray(const EvenOddPrecOvDWFermActArray& a) : 
-      fbc(a.fbc), WilsonMass(a.WilsonMass), m_q(a.m_q), a5(a.a5), N5(a.N5) {}
+      fbc(a.fbc), OverMass(a.OverMass), Mass(a.Mass), a5(a.a5), N5(a.N5) {}
 
     //! Assignment
     EvenOddPrecOvDWFermActArray& operator=(const EvenOddPrecOvDWFermActArray& a)
-      {fbc=a.fbc; WilsonMass=a.WilsonMass; m_q=a.m_q; a5=a.a5; N5=a.N5; return *this;}
+      {fbc=a.fbc; OverMass=a.OverMass; Mass=a.Mass; a5=a.a5; N5=a.N5; return *this;}
 
     //! Return the fermion BC object for this action
     const FermBC< multi1d<LatticeFermion> >& getFermBC() const {return *fbc;}
@@ -84,7 +84,7 @@ namespace Chroma
     int size() const {return N5;}
 
     //! Return the quark mass
-    Real quark_mass() const {return m_q;}
+    Real quark_mass() const {return Mass;}
 
     //! Produce a linear operator for this action
     const EvenOddPrecLinearOperator< multi1d<LatticeFermion> >* linOp(Handle<const ConnectState> state) const;
@@ -100,8 +100,8 @@ namespace Chroma
 
   private:
     Handle< FermBC< multi1d<LatticeFermion> > >  fbc;
-    Real WilsonMass;
-    Real m_q;
+    Real OverMass;
+    Real Mass;
     Real a5;
     int  N5;
   };

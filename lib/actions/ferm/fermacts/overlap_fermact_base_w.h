@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: overlap_fermact_base_w.h,v 1.10 2004-09-08 02:48:25 edwards Exp $
+// $Id: overlap_fermact_base_w.h,v 1.11 2004-09-09 15:51:30 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -78,7 +78,7 @@ public:
   
   //! Define a multi mass qprop
   /*! this should be possible for most 4D operators of the 
-   *  form   (1/2)[ (1 + m_q ) + (1 - m_q) gamma_5 psi 
+   *  form   (1/2)[ (1 + Mass ) + (1 - Mass) gamma_5 psi 
    *
    */
   void multiQprop(multi1d<LatticeFermion>& psi, 

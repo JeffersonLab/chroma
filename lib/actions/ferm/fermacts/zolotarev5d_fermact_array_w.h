@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev5d_fermact_array_w.h,v 1.10 2004-09-08 02:48:26 edwards Exp $
+// $Id: zolotarev5d_fermact_array_w.h,v 1.11 2004-09-09 15:51:31 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -34,7 +34,6 @@ namespace Chroma
     ZolotarevStateInfo StateInfo;
   
     std::string AuxFermAct;
-    std::string AuxFermActGrp;
   };
 
 
@@ -49,7 +48,7 @@ namespace Chroma
    * \ingroup fermact
    *
    * This operator applies the extended version of the hermitian overlap operator
-   *   Chi  =   ((1+m_q)/(1-m_q)*gamma_5 + B) . Psi
+   *   Chi  =   ((1+Mass)/(1-Mass)*gamma_5 + B) . Psi
    *  where  B  is the continued fraction of the zolotarev approx. to eps(H(m))
    */
   class Zolotarev5DFermActArray : public UnprecWilsonTypeFermAct< multi1d<LatticeFermion> >
@@ -58,10 +57,10 @@ namespace Chroma
 
     Zolotarev5DFermActArray(Handle< FermBC< multi1d< LatticeFermion> > > fbc_, 
 			    Handle<UnprecWilsonTypeFermAct<LatticeFermion> > S_aux_,
-			    Real& m_q_,
+			    Real& Mass_,
 			    int RatPolyDeg_,
 			    XMLWriter& writer_) :
-      fbc(fbc_), S_aux(S_aux_), m_q(m_q_), RatPolyDeg(RatPolyDeg_), writer(writer_)  {
+      fbc(fbc_), S_aux(S_aux_), Mass(Mass_), RatPolyDeg(RatPolyDeg_), writer(writer_)  {
     
       if ( RatPolyDeg_ % 2 == 0 ) { 
 	QDP_error_exit("For Now (and possibly forever), 5D Operators can only be constructed with ODD approximation order. You gave an even one: =%d\n", RatPolyDeg_);
@@ -78,14 +77,14 @@ namespace Chroma
 
     //! Copy constructor
     Zolotarev5DFermActArray(const Zolotarev5DFermActArray& a) : 
-      fbc(a.fbc), S_aux(a.S_aux), m_q(a.m_q), RatPolyDeg(a.RatPolyDeg), writer(a.writer), N5(a.N5) {};
+      fbc(a.fbc), S_aux(a.S_aux), Mass(a.Mass), RatPolyDeg(a.RatPolyDeg), writer(a.writer), N5(a.N5) {};
 
     //! Assignment
     /* Writer screws this up -- I might get rid of that 
        Zolotarev5DFermActArray& operator=(const Zolotarev5DFermActArray& a) {
        fbc=a.fbc; 
        S_aux=a.S_aux;
-       m_q=a.m_q;
+       Mass=a.Mass;
        RatPolyDeg = a.RatPolyDeg;
        writer=a.writer;
        return *this;
@@ -98,7 +97,7 @@ namespace Chroma
     int size(void) const { return N5; }
 
     //! Return the quark mass
-    Real quark_mass() const {return m_q;}
+    Real quark_mass() const {return Mass;}
 
     //! Produce a linear operator for this action
     const LinearOperator< multi1d<LatticeFermion> >* linOp(Handle<const ConnectState> state) const;
@@ -191,7 +190,7 @@ namespace Chroma
     Handle< FermBC< multi1d<LatticeFermion> > >  fbc;
     Handle< UnprecWilsonTypeFermAct<LatticeFermion> > S_aux;
 
-    Real m_q;
+    Real Mass;
     int RatPolyDeg;
     int  N5;
   

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_nef_fermact_array_w.h,v 1.2 2004-09-08 02:48:25 edwards Exp $
+// $Id: unprec_nef_fermact_array_w.h,v 1.3 2004-09-09 15:51:31 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF domain-wall fermion action
  */
@@ -28,10 +28,10 @@ namespace Chroma
     UnprecNEFFermActArrayParams() {}
     UnprecNEFFermActArrayParams(XMLReader& in, const std::string& path);
     
-    Real WilsonMass;
+    Real OverMass;
     Real b5;
     Real c5;
-    Real m_q;
+    Real Mass;
     int  N5;
   };
 
@@ -53,27 +53,27 @@ namespace Chroma
   public:
     //! General FermBC
     UnprecNEFFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
-			  const Real& WilsonMass_, 
+			  const Real& OverMass_, 
 			  const Real& b5_, const Real& c5_, 
-			  const Real& m_q_, int N5_) : 
-      fbc(fbc_), WilsonMass(WilsonMass_), b5(b5_),c5(c5_), m_q(m_q_), N5(N5_) {}
+			  const Real& Mass_, int N5_) : 
+      fbc(fbc_), OverMass(OverMass_), b5(b5_),c5(c5_), Mass(Mass_), N5(N5_) {}
 
     //! General FermBC
     UnprecNEFFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
 			  const UnprecNEFFermActArrayParams& param) :
-      fbc(fbc_), WilsonMass(param.WilsonMass), b5(param.b5), c5(param.c5), m_q(param.m_q), N5(param.N5) {}
+      fbc(fbc_), OverMass(param.OverMass), b5(param.b5), c5(param.c5), Mass(param.Mass), N5(param.N5) {}
 
     //! Copy constructor
     UnprecNEFFermActArray(const UnprecNEFFermActArray& a) : 
-      fbc(a.fbc), WilsonMass(a.WilsonMass), b5(a.b5), c5(a.c5), 
-      m_q(a.m_q), N5(a.N5) {}
+      fbc(a.fbc), OverMass(a.OverMass), b5(a.b5), c5(a.c5), 
+      Mass(a.Mass), N5(a.N5) {}
 
     //! Assignment
     UnprecNEFFermActArray& operator=(const UnprecNEFFermActArray& a)
       {
 	fbc=a.fbc; 
-	WilsonMass=a.WilsonMass; 
-	m_q=a.m_q; 
+	OverMass=a.OverMass; 
+	Mass=a.Mass; 
 	b5=a.b5; 
 	c5=a.c5; 
 	N5=a.N5; 
@@ -87,7 +87,7 @@ namespace Chroma
     int size() const {return N5;}
 
     //! Return the quark mass
-    Real quark_mass() const {return m_q;}
+    Real quark_mass() const {return Mass;}
 
     //! Produce a linear operator for this action
     const LinearOperator< multi1d<LatticeFermion> >* linOp(Handle<const ConnectState> state) const;
@@ -113,10 +113,10 @@ namespace Chroma
 
   private:
     Handle< FermBC< multi1d<LatticeFermion> > >  fbc;
-    Real WilsonMass;
+    Real OverMass;
     Real b5;
     Real c5;
-    Real m_q;
+    Real Mass;
     int  N5;
   };
 

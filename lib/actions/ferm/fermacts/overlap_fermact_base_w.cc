@@ -1,4 +1,4 @@
-// $Id: overlap_fermact_base_w.cc,v 1.19 2004-09-08 02:48:25 edwards Exp $
+// $Id: overlap_fermact_base_w.cc,v 1.20 2004-09-09 15:51:30 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -323,7 +323,6 @@ OverlapFermActBase::qprop(LatticeFermion& psi,
 /* u        -- gauge field ( Read ) */
 /* chi      -- source ( Modify ) */
 /* Mass     -- quark masses in lattice units ( Read ) */
-/* numMass  -- number of quark masses ( Read ) */
 /* psi      -- quark propagators ( Write ) */
 /* ncg_had  -- number of CG iterations ( Modify ) */
 void 

@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_fermact_base_array_w.cc,v 1.9 2004-09-08 02:48:25 edwards Exp $
+// $Id: unprec_dwf_fermact_base_array_w.cc,v 1.10 2004-09-09 15:51:31 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned domain-wall-like fermion actions
  */
@@ -30,7 +30,7 @@ UnprecDWFermActBaseArray::qprop(LatticeFermion& psi,
   START_CODE();
 
   const int  N5 = size();   // array size better match
-  const Real m_q = quark_mass();
+  const Real Mass = quark_mass();
   int n_count;
   
   // Initialize the 5D fields
@@ -91,7 +91,7 @@ UnprecDWFermActBaseArray::qprop(LatticeFermion& psi,
   ncg_had = n_count;
   
   // Overall normalization
-  Real ftmp1 = Real(1) / Real(1 - m_q);
+  Real ftmp1 = Real(1) / Real(1 - Mass);
 
   // Project out first slice after  tmp5 <- P^(-1) . psi5
   DwfFld(tmp5, psi5, MINUS);

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev4d_fermact_w.h,v 1.26 2004-09-08 02:48:26 edwards Exp $
+// $Id: zolotarev4d_fermact_w.h,v 1.27 2004-09-09 15:51:31 edwards Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -64,7 +64,7 @@ namespace Chroma
     //! Full constructor
     Zolotarev4DFermAct(Handle<FermBC<LatticeFermion> > fbc_,
 		       Handle<UnprecWilsonTypeFermAct<LatticeFermion> > Mact_, 
-		       const Real& m_q_,
+		       const Real& Mass_,
 		       const int RatPolyDeg_,
 		       const Real& RsdCGinner_,
 		       int MaxCGinner_,
@@ -72,7 +72,7 @@ namespace Chroma
 		       const int ReorthFreqInner_=10,
 		       const OverlapInnerSolverType inner_solver_type_=OVERLAP_INNER_CG_SINGLE_PASS
       ) :
-      fbc(fbc_), Mact(Mact_), params.Mass(m_q_), 
+      fbc(fbc_), Mact(Mact_), params.Mass(Mass_), 
       params.RatPolyDeg(RatPolyDeg_), 
       params.invParamInner.RsdCG(RsdCGinner_), 
       params.invParamInner.MaxCGi(MaxCGinner_),
@@ -85,7 +85,7 @@ namespace Chroma
 
     Zolotarev4DFermAct(Handle<FermBC<LatticeFermion> > fbc_,
 		       Handle<UnprecWilsonTypeFermAct<LatticeFermion> > Mact_, 
-		       const Real& m_q_,
+		       const Real& Mass_,
 		       const int RatPolyDeg_,
 		       const int RatPolyDegPrecond_,
 		       const Real& RsdCGinner_,
@@ -94,7 +94,7 @@ namespace Chroma
 		       const int ReorthFreqInner_=10,
 		       const OverlapInnerSolverType inner_solver_type_=OVERLAP_INNER_CG_SINGLE_PASS
       ) :
-      fbc(fbc_), Mact(Mact_), m_q(m_q_), RatPolyDeg(RatPolyDeg_), RatPolyDegPrecond(RatPolyDegPrecond_),
+      fbc(fbc_), Mact(Mact_), Mass(Mass_), RatPolyDeg(RatPolyDeg_), RatPolyDegPrecond(RatPolyDegPrecond_),
       RsdCGinner(RsdCGinner_), MaxCGinner(MaxCGinner_), writer(writer_),
       ReorthFreqInner(ReorthFreqInner_), inner_solver_type(inner_solver_type_)
       {}
@@ -106,7 +106,7 @@ namespace Chroma
 
     //! Copy Constructor
     Zolotarev4DFermAct(const Zolotarev4DFermAct& a) :
-      fbc(a.fbc), Mact(a.Mact), m_q(a.m_q), RatPolyDeg(a.RatPolyDeg), 
+      fbc(a.fbc), Mact(a.Mact), Mass(a.Mass), RatPolyDeg(a.RatPolyDeg), 
       RatPolyDegPrecond(a.RatPolyDegPrecond),
       RsdCGinner(a.RsdCGinner), MaxCGinner(a.MaxCGinner), writer(a.writer),
       ReorthFreqInner(a.ReorthFreqInner), inner_solver_type(a.inner_solver_type)
@@ -119,7 +119,7 @@ namespace Chroma
        {
        fbc = a.fbc;
        Mact = a.Mact;
-       m_q = a.m_q;
+       Mass = a.Mass;
        RatPolyDeg=a.RatPolyDeg;
        RsdCGinner=a.RsdCGinner;
        MaxCGinner=a.MaxCGinner;
@@ -132,7 +132,7 @@ namespace Chroma
     const FermBC<LatticeFermion>& getFermBC() const {return *fbc;}
 
     //! Return the quark mass
-    Real quark_mass() const {return m_q;}
+    Real quark_mass() const {return Mass;}
 
 
     //! Is the operator Chiral 

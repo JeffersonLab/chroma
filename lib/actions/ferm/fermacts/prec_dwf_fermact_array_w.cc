@@ -1,4 +1,4 @@
-// $Id: prec_dwf_fermact_array_w.cc,v 1.6 2004-09-08 02:48:25 edwards Exp $
+// $Id: prec_dwf_fermact_array_w.cc,v 1.7 2004-09-09 15:51:31 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -40,8 +40,8 @@ namespace Chroma
     XMLReader paramtop(xml, path);
 
     // Read the stuff for the action
-    read(paramtop, "WilsonMass", WilsonMass);
-    read(paramtop, "m_q", m_q);
+    read(paramtop, "OverMass", OverMass);
+    read(paramtop, "Mass", Mass);
     read(paramtop, "N5", N5);
 
     if (paramtop.count("a5") != 0) 
@@ -71,7 +71,7 @@ namespace Chroma
   const EvenOddPrecLinearOperator<multi1d<LatticeFermion> >*
   EvenOddPrecDWFermActArray::linOp(Handle<const ConnectState> state) const
   {
-    return new EvenOddPrecDWLinOpArray(state->getLinks(),WilsonMass,m_q,N5);
+    return new EvenOddPrecDWLinOpArray(state->getLinks(),OverMass,Mass,N5);
   }
 
   //! Produce a M^dag.M linear operator for this action
@@ -97,7 +97,7 @@ namespace Chroma
   {
     // For the PV operator, use the **unpreconditioned** one
     // fixed to quark mass 1
-    return new UnprecDWLinOpArray(state->getLinks(),WilsonMass,1.0,N5);
+    return new UnprecDWLinOpArray(state->getLinks(),OverMass,1.0,N5);
   }
 
 }

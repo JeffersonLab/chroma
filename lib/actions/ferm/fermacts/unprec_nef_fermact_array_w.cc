@@ -1,4 +1,4 @@
-// $Id: unprec_nef_fermact_array_w.cc,v 1.3 2004-09-08 02:48:25 edwards Exp $
+// $Id: unprec_nef_fermact_array_w.cc,v 1.4 2004-09-09 15:51:31 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF fermion action
  */
@@ -38,8 +38,8 @@ namespace Chroma
     XMLReader paramtop(xml, path);
 
     // Read the stuff for the action
-    read(paramtop, "WilsonMass", WilsonMass);
-    read(paramtop, "m_q", m_q);
+    read(paramtop, "OverMass", OverMass);
+    read(paramtop, "Mass", Mass);
     read(paramtop, "N5", N5);
     read(paramtop, "b5", b5);
     read(paramtop, "c5", c5);
@@ -66,7 +66,7 @@ namespace Chroma
   const LinearOperator<multi1d<LatticeFermion> >* 
   UnprecNEFFermActArray::linOp(Handle<const ConnectState> state) const
   {
-    return new UnprecNEFDWLinOpArray(state->getLinks(),WilsonMass,b5,c5,m_q,N5);
+    return new UnprecNEFDWLinOpArray(state->getLinks(),OverMass,b5,c5,Mass,N5);
   }
 
   //! Produce a M^dag.M linear operator for this action
@@ -94,7 +94,7 @@ namespace Chroma
   const LinearOperator<multi1d<LatticeFermion> >* 
   UnprecNEFFermActArray::linOpPV(Handle<const ConnectState> state) const
   {
-    return new UnprecNEFDWLinOpArray(state->getLinks(),WilsonMass,b5,c5,1.0,N5);  // fixed to quark mass 1
+    return new UnprecNEFDWLinOpArray(state->getLinks(),OverMass,b5,c5,1.0,N5);  // fixed to quark mass 1
   }
 
 }

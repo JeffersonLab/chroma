@@ -1,4 +1,4 @@
-// $Id: zolotarev4d_fermact_w.cc,v 1.26 2004-09-08 02:48:26 edwards Exp $
+// $Id: zolotarev4d_fermact_w.cc,v 1.27 2004-09-09 15:51:31 edwards Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -103,10 +103,13 @@ namespace Chroma
       if(in.count("AuxFermAct") == 1 )
       { 
 	XMLReader xml_tmp(paramtop, "AuxFermAct");
-	read(xml_tmp, "FermAct", AuxFermActGrp);
 	std::ostringstream os;
 	xml_tmp.print(os);
-	AuxFermActGrp = os.str();
+	AuxFermAct = os.str();
+      }
+      else
+      {
+	throw "No auxilliary action";
       }
   	
       read(in, "Mass", Mass);
@@ -150,20 +153,7 @@ namespace Chroma
     }
   
     write(xml_out, "FermAct", p.getFermActType());
-
-    switch(p.AuxFermActHandle->getFermActType()) {
-    case FERM_ACT_WILSON:
-    {
-      const WilsonFermActParams& wilson = dynamic_cast<WilsonFermActParams&>(*(p.AuxFermActHandle));
-      write(xml_out, "AuxFermAct", wilson);
-    }
-    break;
-    default:
-      QDPIO::cerr << "Unsupported AuxFermAct in write " << endl;
-      QDP_abort(1);
-      break;
-    }
-
+    xml_out << AuxFermAct;
     write(xml_out, "Mass", p.Mass);
     write(xml_out, "RatPolyDeg", p.RatPolyDeg);
     write(xml_out, "RatPolyDegPrecond", p.RatPolyDegPrecond);
@@ -193,19 +183,22 @@ namespace Chroma
   //! Constructor
   Zolotarev4DFermAct::Zolotarev4DFermAct(Handle<FermBC<LatticeFermion> > fbc_,
 					 const Zolotarev4DFermActParams& params,
-					 XMLWriter& writer_) : fbc(fbc_), m_q( params.Mass), RatPolyDeg(params.RatPolyDeg), RatPolyDegPrecond(params.RatPolyDegPrecond), RsdCGinner(params.RsdCGInner), MaxCGinner(params.MaxCGInner), writer(writer_), ReorthFreqInner(params.ReorthFreqInner), inner_solver_type(params.InnerSolverType)
+					 XMLWriter& writer_) : fbc(fbc_), Mass( params.Mass), RatPolyDeg(params.RatPolyDeg), RatPolyDegPrecond(params.RatPolyDegPrecond), RsdCGinner(params.RsdCGInner), MaxCGinner(params.MaxCGInner), writer(writer_), ReorthFreqInner(params.ReorthFreqInner), inner_solver_type(params.InnerSolverType)
   {
 
-    std::istringstream  xml_s(params.AuxFermActGrp);
+    std::istringstream  xml_s(params.AuxFermAct);
     XMLReader  fermacttop(xml_s);
     const string fermact_path = "/AuxFermAct";
 
     UnprecWilsonTypeFermAct<LatticeFermion>* S_aux;
     try
     {
+      string auxfermact;
+      read(fermacttop, fermact_path + "/FermAct", auxfermact);
+
       // Generic Wilson-Type stuff
       WilsonTypeFermAct<LatticeFermion>* S_f =
-	TheWilsonTypeFermActFactory::Instance().createObject(params.AuxFermAct,
+	TheWilsonTypeFermActFactory::Instance().createObject(auxfermact,
 							     fbc,
 							     fermacttop,
 							     fermact_path);
@@ -264,7 +257,7 @@ namespace Chroma
     //  RsdCGinner = 1.0e-7;  // Hardwired the accuracy
 
 
-    /* Hermitian 4D overlap operator 1/2 ( 1 + m_q + (1 - m_q) gamma5 * sgn(H)) 
+    /* Hermitian 4D overlap operator 1/2 ( 1 + Mass + (1 - Mass) gamma5 * sgn(H)) 
        using a partial fraction expansion of the optimal rational function
        approximation to sgn. Here, H = 1/2 * gamma_5 * (1/kappa - D'). 
        The coefficients are computed by Zolotarev's formula. */
@@ -387,8 +380,8 @@ namespace Chroma
   
   
     QDPIO::cout << "ZOLOTAREV 4d n=" << RatPolyDeg << " scale=" << scale_fac
-		<< " coeff=" << coeffP << " Nwils= " << NEigVal <<" m_q="
-		<< m_q << " Rsd=" << RsdCGinner << endl;
+		<< " coeff=" << coeffP << " Nwils= " << NEigVal <<" Mass="
+		<< Mass << " Rsd=" << RsdCGinner << endl;
   
     QDPIO::cout << "Approximation on [-1,-eps] U [eps,1] with eps = " << eps <<
       endl;
@@ -477,7 +470,7 @@ namespace Chroma
     //  RsdCGinner = 1.0e-7;  // Hardwired the accuracy
 
 
-    /* Hermitian 4D overlap operator 1/2 ( 1 + m_q + (1 - m_q) gamma5 * sgn(H)) 
+    /* Hermitian 4D overlap operator 1/2 ( 1 + Mass + (1 - Mass) gamma5 * sgn(H)) 
        using a partial fraction expansion of the optimal rational function
        approximation to sgn. Here, H = 1/2 * gamma_5 * (1/kappa - D'). 
        The coefficients are computed by Zolotarev's formula. */
@@ -603,8 +596,8 @@ namespace Chroma
   
   
     QDPIO::cout << "ZOLOTAREV Preconditioner 4d n=" << RatPolyDegPrecond << " scale=" << scale_fac
-		<< " coeff=" << coeffP << " Nwils= " << NEigVal <<" m_q="
-		<< m_q << " Rsd=" << RsdCGinner << endl;
+		<< " coeff=" << coeffP << " Nwils= " << NEigVal <<" Mass="
+		<< Mass << " Rsd=" << RsdCGinner << endl;
   
     QDPIO::cout << "Approximation on [-1,-eps] U [eps,1] with eps = " << eps <<
       endl;
@@ -703,13 +696,13 @@ namespace Chroma
     /* This is the operator of the form (1/2)*[(1+mu) + (1-mu)*gamma_5*eps] */
     switch( inner_solver_type ) {
     case OVERLAP_INNER_CG_SINGLE_PASS:
-      return new lovlapms(*Mact, state_, m_q,
+      return new lovlapms(*Mact, state_, Mass,
 			  numroot, coeffP, resP, rootQ, 
 			  NEig, EigValFunc, state.getEigVec(),
 			  MaxCGinner, RsdCGinner, ReorthFreqInner);
       break;
     case OVERLAP_INNER_CG_DOUBLE_PASS:
-      return new lovlap_double_pass(*Mact, state_, m_q,
+      return new lovlap_double_pass(*Mact, state_, Mass,
 				    numroot, coeffP, resP, rootQ, 
 				    NEig, EigValFunc, state.getEigVec(),
 				    MaxCGinner, RsdCGinner, ReorthFreqInner);
@@ -771,13 +764,13 @@ namespace Chroma
     /* This is the operator of the form (1/2)*[(1+mu) + (1-mu)*gamma_5*eps] */
     switch( inner_solver_type ) {
     case OVERLAP_INNER_CG_SINGLE_PASS:
-      return new lovlapms(*Mact, state_, m_q,
+      return new lovlapms(*Mact, state_, Mass,
 			  numroot, coeffP, resP, rootQ, 
 			  NEig, EigValFunc, state.getEigVec(),
 			  MaxCGinner, RsdCGinner, ReorthFreqInner);
       break;
     case OVERLAP_INNER_CG_DOUBLE_PASS:
-      return new lovlap_double_pass(*Mact, state_, m_q,
+      return new lovlap_double_pass(*Mact, state_, Mass,
 				    numroot, coeffP, resP, rootQ, 
 				    NEig, EigValFunc, state.getEigVec(),
 				    MaxCGinner, RsdCGinner, ReorthFreqInner);
@@ -979,13 +972,13 @@ namespace Chroma
       // This is the operator of the form (1/2)*[(1+mu) + (1-mu)*gamma_5*eps]
       switch( inner_solver_type ) { 
       case OVERLAP_INNER_CG_SINGLE_PASS:
-	return new lovddag(*Mact, state_, m_q,
+	return new lovddag(*Mact, state_, Mass,
 			   numroot, coeffP, resP, rootQ, 
 			   NEig, EigValFunc, state.getEigVec(),
 			   MaxCGinner, RsdCGinner, ReorthFreqInner, ichiral);
 	break;
       case OVERLAP_INNER_CG_DOUBLE_PASS:
-	return new lovddag_double_pass(*Mact, state_, m_q,
+	return new lovddag_double_pass(*Mact, state_, Mass,
 				       numroot, coeffP, resP, rootQ, 
 				       NEig, EigValFunc, state.getEigVec(),
 				       MaxCGinner, RsdCGinner, ReorthFreqInner, ichiral);
@@ -1071,13 +1064,13 @@ namespace Chroma
       // This is the operator of the form (1/2)*[(1+mu) + (1-mu)*gamma_5*eps]
       switch( inner_solver_type ) { 
       case OVERLAP_INNER_CG_SINGLE_PASS:
-	return new lovddag(*Mact, state_, m_q,
+	return new lovddag(*Mact, state_, Mass,
 			   numroot, coeffP, resP, rootQ, 
 			   NEig, EigValFunc, state.getEigVec(),
 			   MaxCGinner, RsdCGinner, ReorthFreqInner, ichiral);
 	break;
       case OVERLAP_INNER_CG_DOUBLE_PASS:
-	return new lovddag_double_pass(*Mact, state_, m_q,
+	return new lovddag_double_pass(*Mact, state_, Mass,
 				       numroot, coeffP, resP, rootQ, 
 				       NEig, EigValFunc, state.getEigVec(),
 				       MaxCGinner, RsdCGinner, ReorthFreqInner, ichiral);
@@ -1241,7 +1234,7 @@ namespace Chroma
 	else if ( eigen_io.eigen_filefmt == EVEC_TYPE_SZIN ) { 
 
 	  if( toBool( fabs(wilsonMass) > 8 ) ){
-	    QDPIO::cerr << "WilsonMass unspecified, or | WilsonMass | > 8" << endl;
+	    QDPIO::cerr << "OverMass unspecified, or | OverMass | > 8" << endl;
 	    QDPIO::cerr << "The wilson mass is needed to rescale the eigenvalues" << endl;
 	    QDP_abort(1);
 	  }

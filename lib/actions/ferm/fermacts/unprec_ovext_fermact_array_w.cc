@@ -1,4 +1,4 @@
-// $Id: unprec_ovext_fermact_array_w.cc,v 1.9 2004-09-08 02:48:25 edwards Exp $
+// $Id: unprec_ovext_fermact_array_w.cc,v 1.10 2004-09-09 15:51:31 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -40,8 +40,8 @@ namespace Chroma
     XMLReader paramtop(xml, path);
 
     // Read the stuff for the action
-    read(paramtop, "WilsonMass", WilsonMass);
-    read(paramtop, "m_q", m_q);
+    read(paramtop, "OverMass", OverMass);
+    read(paramtop, "Mass", Mass);
     read(paramtop, "N5", N5);
 
     if (paramtop.count("a5") != 0) 
@@ -69,7 +69,7 @@ namespace Chroma
   const LinearOperator<multi1d<LatticeFermion> >* 
   UnprecOvExtFermActArray::linOp(Handle<const ConnectState> state) const
   {
-    return new UnprecOvExtLinOpArray(state->getLinks(),WilsonMass,m_q,N5);
+    return new UnprecOvExtLinOpArray(state->getLinks(),OverMass,Mass,N5);
   }
 
 
@@ -103,7 +103,7 @@ namespace Chroma
     START_CODE();
 
     const int  N5 = size();   // array size better match
-    const Real m_q = quark_mass();
+    const Real Mass = quark_mass();
     int n_count;
   
     int G5 = Ns*Ns - 1;
@@ -145,7 +145,7 @@ namespace Chroma
     ncg_had = n_count;
   
     // Overall normalization
-    Real ftmp1 = Real(1) / Real(1 - m_q);
+    Real ftmp1 = Real(1) / Real(1 - Mass);
 
     // Normalize and remove contact term
     psi = ftmp1*(chi5[0] - chi);
