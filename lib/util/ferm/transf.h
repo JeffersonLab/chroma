@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: transf.h,v 1.4 2004-05-23 21:44:09 edwards Exp $
+// $Id: transf.h,v 1.5 2004-11-12 10:49:38 mcneile Exp $
 
 #ifndef __transf_h__
 #define __transf_h__
@@ -75,6 +75,20 @@ void PropToFerm(const LatticePropagatorF& b, LatticeFermionF& a,
  */
 void PropToFerm(const LatticePropagatorD& b, LatticeFermionD& a, 
 		int color_index, int spin_index);
+
+
+//! Insert a LatticeStaggeredFermion into a LatticeStaggeredPropagator
+/*!
+ * \ingroup ferm
+ *
+ * \param a      Source fermion
+ * \param b      Destination propagator
+ * \param color_index  Color index
+ *
+ */
+void FermToProp(const LatticeStaggeredFermion& a, LatticeStaggeredPropagator& b, 
+		int color_index) ; 
+
 
 #endif
 
