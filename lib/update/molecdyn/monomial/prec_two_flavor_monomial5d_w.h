@@ -1,17 +1,15 @@
 // -*- C++ -*-
-// $Id: prec_two_flavor_wilson5d_monomial_w.h,v 1.2 2005-01-13 16:10:30 bjoo Exp $
+// $Id: prec_two_flavor_monomial5d_w.h,v 1.1 2005-01-28 02:15:32 edwards Exp $
 
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 5D ferm monomials
  */
 
-#ifndef PREC_TWO_FLAVOR_WILSON_TYPE_MONOMIAL5D_H
-#define PREC_TWO_FLAVOR_WILSON_TYPE_MONOMIAL5D_H
-
-#include "chromabase.h"
+#ifndef __prec_two_flavor_monomial5d_w_h__
+#define __prec_two_flavor_monomial5d_w_h__
 
 #include "update/molecdyn/field_state.h"
-#include "update/molecdyn/monomial/abs_monomial.h"
+#include "update/molecdyn/monomial/two_flavor_monomial5d_w.h"
 
 namespace Chroma 
 {

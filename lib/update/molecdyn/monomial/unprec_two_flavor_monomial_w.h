@@ -1,17 +1,14 @@
 // -*- C++ -*-
-// $Id: unprec_two_flavor_wilson_monomial_w.h,v 1.3 2005-01-13 16:18:46 bjoo Exp $
+// $Id: unprec_two_flavor_monomial_w.h,v 1.1 2005-01-28 02:15:33 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 4D ferm monomials
  */
 
-#ifndef UNPREC_TWO_FLAVOR_WILSON_TYPE_MONOMIAL_H
-#define UNPREC_TWO_FLAVOR_WILSON_TYPE_MONOMIAL_H
-
-#include "chromabase.h"
+#ifndef __unprec_two_flavor_monomial_w_h__
+#define __unprec_two_flavor_monomial_w_h__
 
 #include "update/molecdyn/field_state.h"
-#include "update/molecdyn/monomial/abs_monomial.h"
-#include "update/molecdyn/predictor/chrono_predictor.h"
+#include "update/molecdyn/monomial/two_flavor_monomial_w.h"
 
 namespace Chroma 
 {

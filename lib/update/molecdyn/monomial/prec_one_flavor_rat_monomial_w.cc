@@ -1,29 +1,24 @@
-// $Id: prec_two_flavor_wilson_monomial_w.cc,v 1.2 2005-01-13 16:10:30 bjoo Exp $
+// $Id: prec_one_flavor_rat_monomial_w.cc,v 1.1 2005-01-28 02:15:32 edwards Exp $
 /*! @file
- * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
+ * @brief One-flavor collection of even-odd preconditioned 4D ferm monomials
  */
 
 #include "chromabase.h"
-#include "update/molecdyn/monomial/prec_two_flavor_wilson_monomial_w.h"
+#include "update/molecdyn/monomial/prec_one_flavor_rat_monomial_w.h"
 #include "update/molecdyn/monomial/monomial_factory.h"
 
 #include "io/param_io.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/invert/invcg2.h"
+#include "actions/ferm/invert/minvcg.h"
 
 #include "actions/ferm/fermacts/prec_wilson_fermact_w.h"
 #include "actions/ferm/fermacts/prec_parwilson_fermact_w.h"
-
-#include "update/molecdyn/predictor/chrono_predictor.h"
-#include "update/molecdyn/predictor/chrono_predictor_factory.h"
-
-#include "update/molecdyn/predictor/zero_guess_predictor.h"
 
 
 namespace Chroma 
 { 
  
-  namespace EvenOddPrecTwoFlavorWilsonTypeFermMonomialEnv 
+  namespace EvenOddPrecOneFlavorWilsonTypeFermRatMonomialEnv 
   {
     //! Callback function for the factory
     Monomial< multi1d<LatticeColorMatrix>,
@@ -31,9 +26,9 @@ namespace Chroma
     {
       QDPIO::cout << "Create Monomial: " << EvenOddPrecWilsonFermActEnv::name << endl;
 
-      return new EvenOddPrecTwoFlavorWilsonTypeFermMonomial(
+      return new EvenOddPrecOneFlavorWilsonTypeFermRatMonomial(
 	EvenOddPrecWilsonFermActEnv::name,
-	EvenOddPrecTwoFlavorWilsonTypeFermMonomialParams(xml, path));
+	EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams(xml, path));
     }
     
     //! Callback function for the factory
@@ -42,17 +37,17 @@ namespace Chroma
     {
       QDPIO::cout << "Create Monomial: " << EvenOddPrecParWilsonFermActEnv::name << endl;
 
-      return new EvenOddPrecTwoFlavorWilsonTypeFermMonomial(
+      return new EvenOddPrecOneFlavorWilsonTypeFermRatMonomial(
 	EvenOddPrecParWilsonFermActEnv::name,
-	EvenOddPrecTwoFlavorWilsonTypeFermMonomialParams(xml, path));
+	EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams(xml, path));
     }
     
     //! Register all the objects
     bool registerAll()
     {
       bool foo = true;
-      const std::string prefix = "TWO_FLAVOR_";
-      const std::string suffix = "_FERM_MONOMIAL";
+      const std::string prefix = "ONE_FLAVOR_";
+      const std::string suffix = "_FERM_RAT_MONOMIAL";
 
       // Use a pattern to register all the qualifying fermacts
       foo &= EvenOddPrecWilsonFermActEnv::registered;
@@ -67,11 +62,11 @@ namespace Chroma
 
     //! Register the fermact
     const bool registered = registerAll();
-  }; //end namespace EvenOddPrec TwoFlavorWilsonFermMonomialEnv
+  }; //end namespace EvenOddPrec OneFlavorWilsonFermRatMonomialEnv
 
 
   // Read the parameters
-  EvenOddPrecTwoFlavorWilsonTypeFermMonomialParams::EvenOddPrecTwoFlavorWilsonTypeFermMonomialParams(XMLReader& xml_in, const string& path)
+  EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams::EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams(XMLReader& xml_in, const string& path)
   {
     // Get the top of the parameter XML tree
     XMLReader paramtop(xml_in, path);
@@ -83,44 +78,33 @@ namespace Chroma
       std::ostringstream os;
       xml_tmp.print(os);
       ferm_act = os.str();
-
-      if( paramtop.count("./ChronologicalPredictor") == 0 ) {
-	predictor_xml="";
-      }
-      else {
-	XMLReader chrono_xml_reader(paramtop, "./ChronologicalPredictor");
-	std::ostringstream chrono_os;
-	chrono_xml_reader.print(chrono_os);
-	predictor_xml = chrono_os.str();
-      }
-      
     }
     catch(const string& s) {
       QDPIO::cerr << "Caught Exception while reading parameters: " << s <<endl;
       QDP_abort(1);
     }
 
-    QDPIO::cout << "EvenOddPrecTwoFlavorWilsonTypeFermMonomialParams: read \n" << ferm_act << endl;
+    QDPIO::cout << "EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams: read \n" << ferm_act << endl;
   }
 
   //! Read Parameters
   void read(XMLReader& xml, const std::string& path,
-	    EvenOddPrecTwoFlavorWilsonTypeFermMonomialParams& params) {
-    EvenOddPrecTwoFlavorWilsonTypeFermMonomialParams tmp(xml, path);
+	    EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams& params) {
+    EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams tmp(xml, path);
     params = tmp;
   }
 
   //! Write Parameters
   void write(XMLWriter& xml, const std::string& path,
-	     const EvenOddPrecTwoFlavorWilsonTypeFermMonomialParams& params) {
+	     const EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams& params) {
     // Not implemented
   }
 
 
   // Constructor
-  EvenOddPrecTwoFlavorWilsonTypeFermMonomial::EvenOddPrecTwoFlavorWilsonTypeFermMonomial(
+  EvenOddPrecOneFlavorWilsonTypeFermRatMonomial::EvenOddPrecOneFlavorWilsonTypeFermRatMonomial(
     const string& name_,
-    const EvenOddPrecTwoFlavorWilsonTypeFermMonomialParams& param_) 
+    const EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams& param_) 
   {
     inv_param = param_.inv_param;
 
@@ -149,50 +133,35 @@ namespace Chroma
 
     // Check success of the downcast 
     if( downcast == 0x0 ) {
-      QDPIO::cerr << "Unable to downcast FermAct to EvenOddPrecWilsonTypeFermAct in EvenOddPrecTwoFlavorWilsonTypeFermMonomial()" << endl;
+      QDPIO::cerr << "Unable to downcast FermAct to EvenOddPrecWilsonTypeFermAct in EvenOddPrecOneFlavorWilsonTypeFermRatMonomial()" << endl;
       QDP_abort(1);
     }
 
     fermact = downcast;    
 
-    // Get Chronological predictor
-    AbsChronologicalPredictor4D<LatticeFermion>* tmp=0x0;
-    if( param_.predictor_xml == "" ) {
-      // No predictor specified use zero guess
-       tmp = new ZeroGuess4DChronoPredictor();
-    }
-    else {
+    //*********************************************************************
+    // HACK FOR NOW - arbitrarily set the coefficients
+    int N = 4;
+    FPartFracCoeff.resize(N);
+    FPartFracRoot.resize(N);
+    HBPartFracCoeff.resize(N);
+    HBPartFracRoot.resize(N);
 
-      
-      try { 
-	std::string chrono_name;
-	std::istringstream chrono_is(param_.predictor_xml);
-	XMLReader chrono_xml(chrono_is);
-	read(chrono_xml, "/ChronologicalPredictor/Name", chrono_name);
-	tmp = The4DChronologicalPredictorFactory::Instance().createObject(chrono_name, 
-								 chrono_xml, 
-								 "/ChronologicalPredictor");
-      }
-      catch(const std::string& e ) { 
-	QDPIO::cerr << "Caught Exception Reading XML: " << e << endl;
-	QDP_abort(1);
-      }
-    }
-     
-    if( tmp == 0x0 ) { 
-      QDPIO::cerr << "Failed to create ZeroGuess4DChronoPredictor" << endl;
-      QDP_abort(1);
-    }
-    chrono_predictor = tmp;
+    FPartFracCoeff = 1;
+    FPartFracRoot = 1;
+    HBPartFracCoeff = 1;
+    HBPartFracRoot = 1;
+    //*********************************************************************
 
-    
   }
 
 
-  // Do inversion M^dag M X = phi
+  // Do inversion M^dag M X = phi ?
   int
-  EvenOddPrecTwoFlavorWilsonTypeFermMonomial::getX(
-    LatticeFermion& X, 
+  EvenOddPrecOneFlavorWilsonTypeFermRatMonomial::getX(
+    multi1d<LatticeFermion>& X, 
+    const multi1d<Real>& shifts, 
+    const LatticeFermion& chi, 
     const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const
   {
     // Upcast the fermact
@@ -201,34 +170,22 @@ namespace Chroma
     // Make the state
     Handle< const ConnectState > state(FA.createState(s.getQ()));
 
-    // Guess is passed in
-   
+    // Initial guess for X passed in
+    
     // Get linop
-    Handle< const LinearOperator<LatticeFermion> > M(FA.linOp(state));
+    Handle< const LinearOperator<LatticeFermion> > MdagM(FA.lMdagM(state));
 
-    // Do the inversion...
-    int n_count = invert(X, *M, getPhi());
-    return n_count;
-  }
-
-
-
-  // Get X = (A^dag*A)^{-1} eta
-  int
-  EvenOddPrecTwoFlavorWilsonTypeFermMonomial::invert(
-    LatticeFermion& X, 
-    const LinearOperator<LatticeFermion>& M,
-    const LatticeFermion& eta) const
-  {
     int n_count =0;
+    multi1d<Real> RsdCG(shifts.size());
+    RsdCG = inv_param.RsdCG;
 
     // Do the inversion...
     switch( inv_param.invType) {
     case CG_INVERTER:
     {
       // Solve MdagM X = eta
-      InvCG2(M, eta, X, inv_param.RsdCG, inv_param.MaxCG, n_count);
-      QDPIO::cout << "2Flav::invert,  n_count = " << n_count << endl;
+      MInvCG(*MdagM, chi, X, shifts, RsdCG, inv_param.MaxCG, n_count);
+      QDPIO::cout << "2Flav::invert, n_count = " << n_count << endl;
     }
     break;
     default:
