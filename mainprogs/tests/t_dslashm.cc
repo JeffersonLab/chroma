@@ -1,4 +1,4 @@
-// $Id: t_dslashm.cc,v 1.8 2004-02-11 12:51:35 bjoo Exp $
+// $Id: t_dslashm.cc,v 1.9 2004-11-22 22:54:39 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -30,13 +30,17 @@ int main(int argc, char **argv)
   chi = zero;
   dslash(chi, u, psi, +1, 0);
 
-  NmlWriter nml("t_dslashm.nml");
-  write(nml,"Nd", Nd);
-  write(nml,"Nc", Nc);
-  write(nml,"Ns", Ns);
-  write(nml,"nrow", nrow);
-  write(nml,"psi", psi);
-  write(nml,"chi", chi);
+  XMLFileWriter xml("t_dslashm.xml");
+  push(xml,"t_dslashm");
+
+  write(xml,"Nd", Nd);
+  write(xml,"Nc", Nc);
+  write(xml,"Ns", Ns);
+  write(xml,"nrow", nrow);
+  write(xml,"psi", psi);
+  write(xml,"chi", chi);
+
+  pop(xml);
 
   // Time to bolt
   QDP_finalize();

@@ -1,4 +1,4 @@
-// $Id: t_overbu.cc,v 1.7 2004-02-11 12:51:35 bjoo Exp $
+// $Id: t_overbu.cc,v 1.8 2004-11-22 22:54:39 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -36,13 +36,15 @@ int main(int argc, char **argv)
   random(psi);
   gaussian(chi);
 
-  NmlWriter nml("t_overbu.nml");
-  write(nml,"Nd", Nd);
-  write(nml,"Nc", Nc);
-  write(nml,"Ns", Ns);
-  write(nml,"nrow", nrow);
-  write(nml,"psi", psi);
-  write(nml,"chi", chi);
+  XMLFileWriter xml("t_overbu.xml");
+  push(xml,"t_overbu");
+
+  write(xml,"Nd", Nd);
+  write(xml,"Nc", Nc);
+  write(xml,"Ns", Ns);
+  write(xml,"nrow", nrow);
+  write(xml,"psi", psi);
+  write(xml,"chi", chi);
 
   Real OverMass = 1.5;
   Real m_q = 0.2;
@@ -64,6 +66,8 @@ int main(int argc, char **argv)
   Double solnorm = sqrt(norm2(tmp-chi));
   Double ratio = solnorm / sqrt(norm2(chi));
   QDPIO::cout << "|solution| / |source| = " << ratio << endl;
+
+  pop(xml);
 
   // Time to bolt
   QDP_finalize();

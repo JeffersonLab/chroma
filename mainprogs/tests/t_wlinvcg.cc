@@ -1,4 +1,4 @@
-// $Id: t_wlinvcg.cc,v 1.5 2004-02-11 12:51:36 bjoo Exp $
+// $Id: t_wlinvcg.cc,v 1.6 2004-11-22 22:54:39 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -178,7 +178,8 @@ int main(int argc, char **argv)
   Layout::setLattSize(nrow);
   Layout::create();
 
-  NmlWriter nml("t_lwldslash.nml");
+  XMLFileWriter xml("t_lwldslash.xml");
+  push(xml,"t_lwldslash");
 
   //! Test out dslash
   multi1d<LatticeColorMatrix> u(Nd);
@@ -214,12 +215,12 @@ int main(int argc, char **argv)
   WilsonDslash D(u);
   chi = D(psi, PLUS, 0);
 
-  write(nml,"Nd", Nd);
-  write(nml,"Nc", Nc);
-  write(nml,"Ns", Ns);
-  write(nml,"nrow", nrow);
-  write(nml,"psi", psi);
-  write(nml,"chi", chi);
+  write(xml,"Nd", Nd);
+  write(xml,"Nc", Nc);
+  write(xml,"Ns", Ns);
+  write(xml,"nrow", nrow);
+  write(xml,"psi", psi);
+  write(xml,"chi", chi);
 
   //! Create and try a more sophisticated operator
   Real Kappa = 0.1;
@@ -227,7 +228,9 @@ int main(int argc, char **argv)
   LatticeFermion eta;
   eta = M(psi, PLUS);
 
-  write(nml,"eta", eta);
+  write(xml,"eta", eta);
+
+  pop(xml);
 
   // Time to bolt
   QDP_finalize();

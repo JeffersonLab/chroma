@@ -1,4 +1,4 @@
-// $Id: t_hypsmear.cc,v 1.5 2004-02-11 12:51:35 bjoo Exp $
+// $Id: t_hypsmear.cc,v 1.6 2004-11-22 22:54:39 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -19,13 +19,14 @@ int main(int argc, char *argv[])
   Layout::setLattSize(nrow);
   Layout::create();
 
-  NmlWriter nml("t_hypsmear.nml");
+  XMLFileWriter xml("t_hypsmear.xml");
+  push(xml,"t_hypsmear");
 
-  push(nml,"lattis");
-  write(nml,"Nd", Nd);
-  write(nml,"Nc", Nc);
-  write(nml,"nrow", nrow);
-  pop(nml);
+  push(xml,"lattis");
+  write(xml,"Nd", Nd);
+  write(xml,"Nc", Nc);
+  write(xml,"nrow", nrow);
+  pop(xml);
 
   //! Example of calling a plaquette routine
   /*! NOTE: the STL is *not* used to hold gauge fields */
@@ -49,10 +50,10 @@ int main(int argc, char *argv[])
   QDPIO::cout << "link = " << link << endl;
 
   // Write out the results
-  push(nml,"observables");
-  write(nml,"w_plaq", w_plaq);
-  write(nml,"link", link);
-  pop(nml);
+  push(xml,"observables");
+  write(xml,"w_plaq", w_plaq);
+  write(xml,"link", link);
+  pop(xml);
 
   // Now hyp smear
   multi1d<LatticeColorMatrix> u_hyp(Nd);
@@ -69,10 +70,12 @@ int main(int argc, char *argv[])
   QDPIO::cout << "link = " << link << endl;
 
   // Write out the results
-  push(nml,"HYP_observables");
-  write(nml,"w_plaq", w_plaq);
-  write(nml,"link", link);
-  pop(nml);
+  push(xml,"HYP_observables");
+  write(xml,"w_plaq", w_plaq);
+  write(xml,"link", link);
+  pop(xml);
+
+  pop(xml);
 
   // Time to bolt
   QDP_finalize();

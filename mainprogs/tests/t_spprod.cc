@@ -1,4 +1,4 @@
-// $Id: t_spprod.cc,v 1.3 2004-02-11 12:51:36 bjoo Exp $
+// $Id: t_spprod.cc,v 1.4 2004-11-22 22:54:39 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -20,11 +20,13 @@ int main(int argc, char **argv)
   Layout::setLattSize(nrow);
   Layout::create();
 
-  NmlWriter nml("t_spprod.nml");
-  write(nml,"Nd", Nd);
-  write(nml,"Nc", Nc);
-  write(nml,"Ns", Ns);
-  write(nml,"nrow", nrow);
+  XMLFileWriter xml("t_spprod.xml");
+  push(xml,"t_spprod");
+
+  write(xml,"Nd", Nd);
+  write(xml,"Nc", Nc);
+  write(xml,"Ns", Ns);
+  write(xml,"nrow", nrow);
 
   LatticeFermion fpsi;
   LatticeFermion fchi;
@@ -38,9 +40,9 @@ int main(int argc, char **argv)
   gaussian(fpsi);
   gaussian(fchi);
 
-  push(nml,"here_is_psi");
-  write(nml, "fpsi", fpsi);
-  pop(nml);
+  push(xml,"here_is_psi");
+  write(xml, "fpsi", fpsi);
+  pop(xml);
 
   /* fa1 = (gamma(n))*psi */
   for(int n = 0; n < Ns*Ns; ++n)
@@ -49,12 +51,12 @@ int main(int argc, char **argv)
     fa1[rb[0]] = Gamma(n) * fpsi;
 
     printf("print the fa1 fields in direction n= %d\n", n);
-    push(nml,"Basis");
-    write(nml, "n", n);
-    pop(nml);
-    push(nml,"fa1_is_spin");
-    write(nml, "fa1", fa1);
-    pop(nml);
+    push(xml,"Basis");
+    write(xml, "n", n);
+    pop(xml);
+    push(xml,"fa1_is_spin");
+    write(xml, "fa1", fa1);
+    pop(xml);
   }
 
       
@@ -69,10 +71,10 @@ int main(int argc, char **argv)
     DComplex dcsum = innerProduct(fchi, Gamma(n) * fpsi);
 
     printf("print the fa1 fields in direction n= %d\n", n);
-    push(nml,"Fermion_inner_product");
-    write(nml, "n", n);
-    write(nml, "dcsum", dcsum);
-    pop(nml);
+    push(xml,"Fermion_inner_product");
+    write(xml, "n", n);
+    write(xml, "dcsum", dcsum);
+    pop(xml);
   }
 
           
@@ -87,11 +89,13 @@ int main(int argc, char **argv)
     DComplex dcsum = innerProduct(pchi, Gamma(n) * ppsi);
 
     printf("print the pa1 fields in direction n= %d\n", n);
-    push(nml,"Propagator_inner_product");
-    write(nml, "n", n);
-    write(nml, "dcsum", dcsum);
-    pop(nml);
+    push(xml,"Propagator_inner_product");
+    write(xml, "n", n);
+    write(xml, "dcsum", dcsum);
+    pop(xml);
   }
+
+  pop(xml);
 
   // Time to bolt
   QDP_finalize();

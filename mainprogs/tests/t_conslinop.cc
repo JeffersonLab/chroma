@@ -1,4 +1,4 @@
-// $Id: t_conslinop.cc,v 1.17 2004-02-16 01:19:22 edwards Exp $
+// $Id: t_conslinop.cc,v 1.18 2004-11-22 22:54:39 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -21,13 +21,14 @@ int main(int argc, char *argv[])
   Layout::setLattSize(nrow);
   Layout::create();
 
-  NmlWriter nml("t_conslinop.nml");
+  XMLFileWriter xml("t_conslinop.xml");
+  push(xml,"t_conslinop");
 
-  push(nml,"lattis");
-  write(nml,"Nd",  Nd);
-  write(nml,"Nc", Nc);
-  write(nml,"nrow", nrow);
-  pop(nml);
+  push(xml,"lattis");
+  write(xml,"Nd",  Nd);
+  write(xml,"Nc", Nc);
+  write(xml,"nrow", nrow);
+  pop(xml);
 
   //! Example of calling a plaquette routine
   /*! NOTE: the STL is *not* used to hold gauge fields */
@@ -67,10 +68,12 @@ int main(int argc, char *argv[])
   D(tmp, psi, MINUS);
   DComplex nm = innerProduct(psi,tmp);
 
-  push(nml,"norm_check");
-  write(nml,"np", np);
-  write(nml,"nm", nm);
-  pop(nml);
+  push(xml,"norm_check");
+  write(xml,"np", np);
+  write(xml,"nm", nm);
+  pop(xml);
+
+  pop(xml);
 
   // Time to bolt
   QDP_finalize();
