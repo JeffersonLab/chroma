@@ -1,6 +1,9 @@
-//  $Id: sftmom.cc,v 1.7 2004-02-03 20:04:05 edwards Exp $
+//  $Id: sftmom.cc,v 1.8 2004-04-28 18:55:38 edwards Exp $
 //  $Log: sftmom.cc,v $
-//  Revision 1.7  2004-02-03 20:04:05  edwards
+//  Revision 1.8  2004-04-28 18:55:38  edwards
+//  Added numSites().
+//
+//  Revision 1.7  2004/02/03 20:04:05  edwards
 //  Added sft for LatticeReal. Changed  getSubset() to the more accurate
 //  getSet().
 //
@@ -82,6 +85,23 @@ SftMom::SftMom(int mom2_max, bool avg_equiv_mom, int j_decay)
 
   init(mom2_max, mom_offset, avg_equiv_mom, j_decay) ;
 }
+
+int
+SftMom::numSites() const
+{
+  int vol = 1;
+
+  if ((decay_dir<0)||(decay_dir>=Nd))
+    vol = Layout::vol();
+  else 
+  {
+    for(int m=0; m < Nd; ++m)
+      vol *= Layout::lattSize()[m];
+  }
+
+  return vol;
+}
+
 
 void
 SftMom::init(int mom2_max, multi1d<int> mom_offset,

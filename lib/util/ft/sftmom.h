@@ -1,4 +1,4 @@
-//  $Id: sftmom.h,v 1.8 2004-02-03 20:04:05 edwards Exp $
+//  $Id: sftmom.h,v 1.9 2004-04-28 18:55:38 edwards Exp $
 /*! \file
  *  \brief Fourier transform phase factor support
  */
@@ -29,6 +29,9 @@ public:
 
   //! Number of subsets - length in decay direction
   int numSubsets() const { return sft_set.numSubsets(); }
+
+  //! Number of sites in each subset
+  int numSites() const;
 
   //! Decay direction
   int getDir() const { return decay_dir; }
