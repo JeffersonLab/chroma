@@ -1,4 +1,4 @@
-/* $Id: unprec_ovlap_contfrac5d_linop_array_w.cc,v 1.1 2004-09-29 21:48:34 bjoo Exp $
+/* $Id: unprec_ovlap_contfrac5d_linop_array_w.cc,v 1.2 2004-09-30 14:52:47 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
  */
@@ -121,7 +121,7 @@ UnprecOvlapContFrac5DLinOpArray::operator() (multi1d<LatticeFermion>& chi,
   //   caluclated only if betaa_{N} != 0 */
 
 
-  if( isLastZeroP ) {
+  if( !isLastZeroP ) {
     
     // Complete psi_proj
     psi_proj += psi[TwoN];
