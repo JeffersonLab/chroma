@@ -1,4 +1,4 @@
-// $Id: common_declarations.h,v 1.6 2003-10-02 17:19:28 edwards Exp $
+// $Id: common_declarations.h,v 1.7 2003-10-20 20:24:11 edwards Exp $
 
 #ifndef COMMON_DECLS_INCLUDE
 #define COMMON_DECLS_INCLUDE
@@ -39,7 +39,7 @@ EXTERN int MonitordH;  /* Measure dH for every step on the trajectory */
 EXTERN Real tau0;          /* Average trajectory length */
 
 /* New variables related to Action improvement */
-extern int InvType;  /* Type of fermion inverter */
+// extern int InvType;  /* Type of fermion inverter */
 extern int GaugeAct; /* Type of Gauge action (Wilson,Symanzik,...) */
 extern int GlueImp;  /* Level of Symanzik improvement in dsdu */
 extern Real GlueCoeffRT;   /* Coefficient of 1x2 rectangle in dsdu */
@@ -99,7 +99,7 @@ int FftInitP =0;
 int SchrFun=0;
 int SftInitP=0;
 
-int InvType=21;  /* Type of fermion inverter */
+// int invType=21;  /* Type of fermion inverter */
 int GaugeAct=0; /* Type of Gauge action (Wilson,Symanzik,...) */
 int GlueImp=0;  /* Level of Symanzik improvement in dsdu */
 int FermAct=0; /* Type of Fermion action (Wilson,Clover,...) */
