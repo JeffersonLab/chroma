@@ -1,4 +1,4 @@
-// $Id: pg_gaugeact.cc,v 1.2 2005-01-13 02:51:51 edwards Exp $
+// $Id: pg_gaugeact.cc,v 1.3 2005-01-14 02:27:11 edwards Exp $
 /*! \file
  *  \brief Parallelogram gauge action
  */
@@ -101,7 +101,7 @@ namespace Chroma
     // in the taproj, which is a factor of 2 different from the 
     // one used here.
 
-    Real coeff_tmp = Real(-1)*Real(coeff)/(Real(2*Nc));
+    Real coeff_tmp = Real(1)*Real(coeff)/(Real(2*Nc));
 
     for(int mu = 0; mu < Nd; ++mu)
     {
@@ -110,8 +110,7 @@ namespace Chroma
       /* generalized parallelogram */
       for(int nu=mu+1; nu < Nd; nu++)
       {
-	int j = 0;
-	for(int k=0; k < Nd; k++)
+	for(int j=0, k=0; k < Nd; k++)
 	  if((k!=mu) && (k!=nu))
 	    fdir[j++] = k;
 
@@ -215,6 +214,8 @@ namespace Chroma
     END_CODE();
   }
 
+
+
   // Get the gauge action
   //
   // S = -(coeff/(Nc) Sum Re Tr Pg
@@ -227,7 +228,6 @@ namespace Chroma
     LatticeColorMatrix tmp_0;
     LatticeColorMatrix tmp_1;
     LatticeColorMatrix tmp_2;
-    LatticeColorMatrix tmp_tot;
     LatticeReal lgimp = zero;
 
     // Parallelogram term
@@ -350,8 +350,8 @@ namespace Chroma
 	/* lgimp += trace(tmp_0 * u_dag(x,rho)) */
 	/*       += trace(u(x,mu)*u_dag(x+mu-nu,nu)*u(x+mu-nu,rho) */
 	/*         *u_dag(x-nu+rho,mu)*u(x-nu+rho,nu)*u_dag(x,rho)) */
-//	lgimp[rb[cb]] = real(trace(tmp_0 * adj(u[rho])));
-	lgimp[rb[cb]] = real(trace(adj(u[rho]) * tmp_0));
+//	lgimp[rb[cb]] += real(trace(tmp_0 * adj(u[rho])));
+	lgimp[rb[cb]] += real(trace(adj(u[rho]) * tmp_0));
       }
     }
 

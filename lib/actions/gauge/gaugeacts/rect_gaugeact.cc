@@ -1,4 +1,4 @@
-// $Id: rect_gaugeact.cc,v 1.2 2005-01-13 02:51:51 edwards Exp $
+// $Id: rect_gaugeact.cc,v 1.3 2005-01-14 02:27:11 edwards Exp $
 /*! \file
  *  \brief Rectangle gauge action
  */
@@ -100,11 +100,11 @@ namespace Chroma
     // in the taproj, which is a factor of 2 different from the 
     // one used here.
 
-    Real coeff_tmp = Real(-1)*Real(coeff)/(Real(2*Nc));
+    Real coeff_tmp = Real(1)*Real(coeff)/Real(2*Nc);
 
     for(int mu = 0; mu < Nd; ++mu)
     {
-      tmp_tot = 0;
+      tmp_tot = zero;
     
       /*  2*1 rectangles */
 
@@ -115,8 +115,7 @@ namespace Chroma
       {
 	tmp_6[rb[1-cb]] = tmp_3 * coeff_tmp;
 
-	int j = 0;
-	for(int nu = 0; nu < Nd; nu++)
+	for(int j=0, nu=0; nu < Nd; nu++)
 	{
 	  if(nu == mu)
 	    continue;
@@ -186,7 +185,7 @@ namespace Chroma
     LatticeColorMatrix tmp_tot;
     LatticeReal lgimp = zero;
 
-    /* 2x1 rectangle piece. This term always contributes for GlueImp != 0. */
+    // 2x1 rectangle piece
 
     for(int mu = 1; mu < Nd; ++mu)
     {
