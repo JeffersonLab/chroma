@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wilson_gaugeact.h,v 1.1 2004-03-03 01:50:12 edwards Exp $
+// $Id: wilson_gaugeact.h,v 1.2 2004-03-29 21:33:03 edwards Exp $
 /*! \file
  *  \brief Wilson gauge action
  */
