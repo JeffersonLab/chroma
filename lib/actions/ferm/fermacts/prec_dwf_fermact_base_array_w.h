@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_fermact_base_array_w.h,v 1.13 2004-11-08 05:41:28 edwards Exp $
+// $Id: prec_dwf_fermact_base_array_w.h,v 1.14 2004-11-08 06:40:21 edwards Exp $
 /*! \file
  *  \brief Base class for even-odd preconditioned domain-wall-like fermion actions
  */
@@ -43,7 +43,10 @@ namespace Chroma
 	return 0;
       }
 
-    //! Produce a linear operator for this action but with quark mass 1
+    //! Produce an unpreconditioned linear operator for this action
+    virtual const UnprecDWLinOpBaseArray<T>* unprecLinOp(Handle<const ConnectState> state) const = 0;
+
+    //! Produce an unpreconditioned linear operator for this action but with quark mass 1
     virtual const UnprecDWLinOpBaseArray<T>* linOpPV(Handle<const ConnectState> state) const = 0;
 
     //! Produce an unpreconditioned linear operator projecting 5D to 4D (the inverse of qprop below)
@@ -56,7 +59,7 @@ namespace Chroma
     virtual const LinearOperator<T>* linOp4D(Handle<const ConnectState> state,
 					     const InvertParam_t& invParam) const
     {
-      return new UnprecDWF4DLinOp<T>(linOp(state),linOpPV(state),invParam);
+      return new UnprecDWF4DLinOp<T>(unprecLinOp(state),linOpPV(state),invParam);
     }
 
     //! Define quark propagator routine for 4D fermions

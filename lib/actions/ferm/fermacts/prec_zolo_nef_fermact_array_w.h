@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_zolo_nef_fermact_array_w.h,v 1.4 2004-11-01 12:52:47 bjoo Exp $
+// $Id: prec_zolo_nef_fermact_array_w.h,v 1.5 2004-11-08 06:40:21 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF domain-wall fermion action
  */
@@ -107,6 +107,9 @@ namespace Chroma
 	QDP_abort(1);
 	return 0;
       }
+
+    //! Produce an unpreconditioned linear operator for this action
+    const UnprecDWLinOpBaseArray<LatticeFermion>* unprecLinOp(Handle<const ConnectState> state) const;
 
     //! Produce a linear operator for this action but with quark mass 1
     const UnprecDWLinOpBaseArray<LatticeFermion>* linOpPV(Handle<const ConnectState> state) const;

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_fermact_array_w.h,v 1.9 2004-09-19 02:39:45 edwards Exp $
+// $Id: prec_dwf_fermact_array_w.h,v 1.10 2004-11-08 06:40:21 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -92,6 +92,9 @@ namespace Chroma
 
     //! Produce a linear operator M^dag.M for this action
     const LinearOperator< multi1d<LatticeFermion> >* lMdagM(Handle<const ConnectState> state) const;
+
+    //! Produce an unpreconditioned linear operator for this action
+    const UnprecDWLinOpBaseArray<LatticeFermion>* unprecLinOp(Handle<const ConnectState> state) const;
 
     //! Produce a linear operator for this action but with quark mass 1
     const UnprecDWLinOpBaseArray<LatticeFermion>* linOpPV(Handle<const ConnectState> state) const;
