@@ -1,4 +1,4 @@
-// $Id: prec_nef_linop_array_w.cc,v 1.2 2004-08-08 11:12:19 kostas Exp $
+// $Id: prec_nef_linop_array_w.cc,v 1.3 2004-09-01 23:35:06 kostas Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned NEF domain-wall linear operator
  */
@@ -192,6 +192,90 @@ EvenOddPrecNEFDWLinOpArray::applyDiagInv(multi1d<LatticeFermion>& chi,
 	chi[s][rb[cb]] -= tt  ;
 	tt[rb[cb]] *= TwoKappa ;
       }
+    }
+    break ;
+  }
+
+  //Done! That was not that bad after all....
+  //See, I told you so...
+  END_CODE();
+}
+
+//! Apply the even-odd (odd-even) coupling piece of the NEF operator
+/*!
+ * \ingroup linop
+ *
+ * The operator acts on the entire lattice
+ *
+ * \param psi 	  Pseudofermion field     	       (Read)
+ * \param isign   Flag ( PLUS | MINUS )   	       (Read)
+ * \param cb      checkerboard ( 0 | 1 )               (Read)
+ */
+void 
+EvenOddPrecNEFDWLinOpArray::applyOffDiag(multi1d<LatticeFermion>& chi, 
+					 const multi1d<LatticeFermion>& psi, 
+					 enum PlusMinus isign,
+					 const int cb) const 
+{
+  START_CODE();
+
+  
+  switch ( isign ) 
+  {
+  case PLUS:
+    {
+      LatticeFermion tmp;
+      int otherCB = (cb + 1)%2 ;
+
+      for(int s(1);s<N5-1;s++){
+	tmp[rb[otherCB]] = b5*psi[s] + 
+	  0.5*c5*(psi[s+1] + psi[s-1] +
+		  GammaConst<Ns,Ns*Ns-1>()*(psi[s-1]-psi[s+1]));
+	D.apply(chi[s],tmp,isign,cb);
+	chi[s][rb[cb]] *= (-0.5);
+      }
+      
+      int N5m1(N5-1);
+      tmp[rb[otherCB]] = b5*psi[0]  + 
+	(0.5*c5)*(psi[1] - m_q*psi[N5m1] 
+		  - GammaConst<Ns,Ns*Ns-1>()*(m_q*psi[N5m1] + psi[1]));
+      D.apply(chi[0],tmp,isign,cb);
+      chi[0][rb[cb]] *= (-0.5);
+      
+      int N5m2(N5-2);
+      tmp[rb[otherCB]] = b5*psi[N5m1] + 
+	(0.5*c5)*( psi[N5m2] - m_q *psi[0] +
+		   GammaConst<Ns,Ns*Ns-1>()*(psi[N5m2] + m_q * psi[0]));
+      D.apply(chi[N5m1],tmp,isign,cb);
+      chi[N5m1][rb[cb]] *= (-0.5);
+      
+    }
+    break ;
+    
+  case MINUS:
+    { 
+      multi1d<LatticeFermion> tmp(N5) ;
+      for(int s(0);s<N5;s++){
+	D.apply(tmp[s],psi[s],isign,cb);
+	tmp[s][rb[cb]] *= (-0.5) ;
+      }
+      for(int s(1);s<N5-1;s++){
+	chi[s][rb[cb]] = b5*tmp[s] + 
+	  0.5*c5*(tmp[s+1] + tmp[s-1] -
+		  GammaConst<Ns,Ns*Ns-1>()*(tmp[s-1]-tmp[s+1]));
+      }
+      int N5m1(N5-1);
+      chi[0][rb[cb]] = b5*tmp[0]  + 
+	(0.5*c5)*(tmp[1] - m_q*tmp[N5m1] + 
+		  GammaConst<Ns,Ns*Ns-1>()*(m_q*tmp[N5m1] + tmp[1]));
+
+      
+      int N5m2(N5-2);
+      chi[N5m1][rb[cb]] = b5*tmp[N5m1] + 
+	(0.5*c5)*( tmp[N5m2] - m_q *tmp[0] +
+		   GammaConst<Ns,Ns*Ns-1>()*(tmp[N5m2] + m_q * tmp[0]));
+      
+
     }
     break ;
   }

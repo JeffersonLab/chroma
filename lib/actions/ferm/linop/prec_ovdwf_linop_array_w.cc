@@ -1,4 +1,4 @@
-// $Id: prec_ovdwf_linop_array_w.cc,v 1.3 2004-07-28 03:47:27 edwards Exp $
+// $Id: prec_ovdwf_linop_array_w.cc,v 1.4 2004-09-01 23:35:06 kostas Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned Overlap-DWF (Borici) linear operator
  */
@@ -216,42 +216,52 @@ EvenOddPrecOvDWLinOpArray::applyOffDiag(multi1d<LatticeFermion>& chi,
   case PLUS:
   {
     LatticeFermion tmp;
-
+    int otherCB = (cb + 1)%2 ;
     for(int s(1);s<N5-1;s++)
     {
-      tmp = psi[s] + psi[s+1] + psi[s-1] + GammaConst<Ns,Ns*Ns-1>()*(psi[s-1] - psi[s+1]);
+      tmp[rb[otherCB]] = psi[s] + 
+	0.5*( psi[s+1] + psi[s-1] + 
+	      GammaConst<Ns,Ns*Ns-1>()*(psi[s-1] - psi[s+1]));
       D.apply(chi[s],tmp,isign,cb);
       chi[s][rb[cb]] *= (-0.5);
     }
       
     int N5m1(N5-1);
-    chi[0][rb[cb]] = psi[0]  + psi[1] - m_q*psi[N5m1] 
-      - GammaConst<Ns,Ns*Ns-1>()*(m_q*psi[N5m1] + psi[1]);
+    chi[0][rb[otherCB]] = psi[0]  + 0.5*(psi[1] - m_q*psi[N5m1] 
+      - GammaConst<Ns,Ns*Ns-1>()*(m_q*psi[N5m1] + psi[1]));
     D.apply(chi[0],tmp,isign,cb);
     chi[0][rb[cb]] *= (-0.5);
       
     int N5m2(N5-2);
-    chi[N5m1][rb[cb]] = psi[N5m1] + psi[N5m2] - m_q *psi[0] 
-      + GammaConst<Ns,Ns*Ns-1>()*(psi[N5m2] + m_q * psi[0]);
+    chi[N5m1][rb[otherCB]] = psi[N5m1] + 0.5*(psi[N5m2] - m_q *psi[0] 
+      + GammaConst<Ns,Ns*Ns-1>()*(psi[N5m2] + m_q * psi[0]));
   }
   break ;
 
   case MINUS:
-  {    
-    for(int s(1);s<N5-1;s++) // 1/2k psi[s] - P_+ * psi[s+1] - P_- * psi[s-1]
-      chi[s][rb[cb]] = InvTwoKappa*psi[s] - 
-	0.5*( psi[s+1] + psi[s-1] + GammaConst<Ns,Ns*Ns-1>()*(psi[s+1] - psi[s-1]) ) ;
+    {    
+      multi1d<LatticeFermion> tmp(N5) ;
+      for(int s(0);s<N5;s++){
+	D.apply(tmp[s],psi[s],isign,cb);
+	tmp[s][rb[cb]] *= (-0.5) ;
+      }
+      for(int s(1);s<N5-1;s++){
+	chi[s][rb[cb]] = tmp[s] + 
+	  0.5*(tmp[s+1] + tmp[s-1] -
+	       GammaConst<Ns,Ns*Ns-1>()*(tmp[s-1]-tmp[s+1]));
+      }
+      int N5m1(N5-1);
+      chi[0][rb[cb]] = tmp[0]  + 
+	0.5*(tmp[1] - m_q*tmp[N5m1] + 
+	     GammaConst<Ns,Ns*Ns-1>()*(m_q*tmp[N5m1] + tmp[1]));
       
-    int N5m1(N5-1) ;
-    //s=0 -- 1/2k psi[0] - P_+ * psi[1] + mf* P_- * psi[N5-1]
-    chi[0][rb[cb]] = InvTwoKappa*psi[0] - 
-      0.5*( psi[1]   - m_q*psi[N5m1] + GammaConst<Ns,Ns*Ns-1>()*( psi[1]+m_q*psi[N5m1]) ) ;
       
-    int N5m2(N5-2);
-    //s=N5-1 -- 1/2k psi[N5-1] + mf* P_+ * psi[0]  -  P_- * psi[N5-2]
-    chi[N5m1][rb[cb]] = InvTwoKappa*psi[N5m1] - 
-      0.5*( psi[N5m2] - m_q *psi[0] - GammaConst<Ns,Ns*Ns-1>()*(psi[N5m2] + m_q * psi[0]) );
-  }
+      int N5m2(N5-2);
+      chi[N5m1][rb[cb]] = tmp[N5m1] + 
+	0.5*(tmp[N5m2] - m_q *tmp[0] +
+	     GammaConst<Ns,Ns*Ns-1>()*(tmp[N5m2] + m_q * tmp[0]));
+      
+    }
   break ;
   }
 

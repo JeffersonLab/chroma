@@ -1,4 +1,4 @@
-// $Id: t_neflinop.cc,v 1.2 2004-09-01 03:32:59 kostas Exp $
+// $Id: t_neflinop.cc,v 1.3 2004-09-01 23:35:06 kostas Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -91,23 +91,8 @@ int main(int argc, char **argv)
   Real WilsonMass = 1.5;
   Real m_q = 0.1;
   int  N5  = 8;
-  
-  //Shamir DWF case
-  //UnprecDWFermActArray S_DWF(fbc_a, WilsonMass, m_q, N5);
-  //UnprecNEFFermActArray S_NEF(fbc_a, WilsonMass, 1.0, 0, m_q, N5);
 
-  //Borici DWF case
-  UnprecOvDWFermActArray S_DWF(fbc_a, WilsonMass, m_q, N5);
-  UnprecNEFFermActArray S_NEF(fbc_a, WilsonMass, 1.0, 1.0, m_q, N5);
-
-
-  Handle<const ConnectState> stateDWF(S_DWF.createState(u));
-  Handle<const LinearOperator< multi1d<LatticeFermion> > > Adwf(S_DWF.linOp(stateDWF));
-
-  Handle<const ConnectState> stateNEF(S_NEF.createState(u));
-  Handle<const LinearOperator< multi1d<LatticeFermion> > > Anef(S_NEF.linOp(stateNEF));
-
-  multi1d<LatticeFermion> psi(N5), chi(N5);
+  multi1d<LatticeFermion> psi(N5), chi(N5),saveUprec(N5), savePrec(N5),tt(N5);
 
   for(int m=0; m < N5; ++m) 
     random(psi[m]);
@@ -115,11 +100,34 @@ int main(int argc, char **argv)
   for(int m=0; m < N5; ++m)
     random(chi[m]);
 
+  
+  //#define SHAMIR
+#define BORICI
+ {
+  //Shamir DWF case
+#ifdef SHAMIR
+  UnprecDWFermActArray S_DWF(fbc_a, WilsonMass, m_q, N5);
+  UnprecNEFFermActArray S_NEF(fbc_a, WilsonMass, 1.0, 0, m_q, N5);
+#endif
+  //Borici DWF case
+#ifdef BORICI
+  UnprecOvDWFermActArray S_DWF(fbc_a, WilsonMass, m_q, N5);
+  UnprecNEFFermActArray S_NEF(fbc_a, WilsonMass, 1.0, 1.0, m_q, N5);
+#endif
+
+  Handle<const ConnectState> stateDWF(S_DWF.createState(u));
+  Handle<const LinearOperator< multi1d<LatticeFermion> > > Adwf(S_DWF.linOp(stateDWF));
+
+  Handle<const ConnectState> stateNEF(S_NEF.createState(u));
+  Handle<const LinearOperator< multi1d<LatticeFermion> > > Anef(S_NEF.linOp(stateNEF));
+
   multi1d<LatticeFermion> tmp1(N5);
   (*Adwf)(tmp1, psi, PLUS);
   multi1d<LatticeFermion> tmp2(N5);
   (*Anef)(tmp2, psi, PLUS);
-  
+
+  saveUprec = tmp2 ;
+
   multi1d<LatticeFermion> diff(N5);
   for(int m=0; m < N5; ++m)
     diff[m] = tmp2[m]-tmp1[m] ;
@@ -148,12 +156,141 @@ int main(int argc, char **argv)
   write(xml, "nn2", nn2);
 
   pop(xml);
+}
 
- 
+  {
+  //Shamir case
+#ifdef SHAMIR
+  EvenOddPrecDWFermActArray S_DWF(fbc_a, WilsonMass, m_q, N5);
+  EvenOddPrecNEFFermActArray S_NEF(fbc_a, WilsonMass, 1.0, 0, m_q, N5);
+#endif
+  //Borici DWF case
+#ifdef BORICI
+  EvenOddPrecOvDWFermActArray S_DWF(fbc_a, WilsonMass, m_q, N5);
+  EvenOddPrecNEFFermActArray S_NEF(fbc_a, WilsonMass, 1.0, 1.0, m_q, N5);
+#endif
+
+  Handle<const ConnectState> stateDWF(S_DWF.createState(u));
+  Handle<const EvenOddPrecLinearOperator< multi1d<LatticeFermion> > > Adwf(S_DWF.linOp(stateDWF));
+
+  Handle<const ConnectState> stateNEF(S_NEF.createState(u));
+  Handle<const EvenOddPrecLinearOperator< multi1d<LatticeFermion> > > Anef(S_NEF.linOp(stateNEF));
+
+  multi1d<LatticeFermion> tmp1(N5);
+  (*Adwf)(tmp1, psi, PLUS);
+  multi1d<LatticeFermion> tmp2(N5);
+  (*Anef)(tmp2, psi, PLUS);
+
+  (*Adwf).unprecLinOp(savePrec,psi,PLUS);
+
+  for(int m=0; m < N5; ++m){
+    tmp2[m][rb[0]] = tmp1[m] ;
+  }
+
+  multi1d<LatticeFermion> diff(N5);
+  for(int m=0; m < N5; ++m)
+    diff[m] = tmp2[m]-tmp1[m] ;
+
+
+
+  (*Anef)(tmp1, psi, PLUS);
+  DComplex nn1 = innerProduct(chi[0], tmp1[0]);
+  for(int m=1; m < N5; ++m)
+    nn1 += innerProduct(chi[m], tmp1[m]);
+  
+  (*Anef)(tmp2, chi, MINUS);
+  DComplex nn2 = innerProduct(tmp2[0], psi[0]);
+  for(int m=1; m < N5; ++m)
+    nn2 += innerProduct(tmp2[m], psi[m]);
+
+
+
+  push(xml,"prec_innerprods");
+  write(xml, "norm_psi" , Real(norm2(psi )));
+  write(xml, "norm_chi" , Real(norm2(chi )));
+  //write(xml, "norm_tmp1", Real(norm2(tmp1)));
+  //write(xml, "norm_tmp2", Real(norm2(tmp2)));
+  write(xml, "norm_diff", Real(norm2(diff)));
+  write(xml, "nn1", nn1);
+  write(xml, "nn2", nn2);
+
   pop(xml);
+  }
+ for(int m=0; m < N5; ++m)
+   tt[m] = savePrec[m]- saveUprec[m] ;
 
-  // Time to bolt
-  QDP_finalize();
+ push(xml,"prec_minus_unprec_innerprods");
+ write(xml, "norm_Prec_minus_Uprec", Real(norm2(tt)));
+ pop(xml);
 
-  exit(0);
+ //TEST THE individual pieces of the operator
+ {
+  //Shamir case
+#ifdef SHAMIR
+  EvenOddPrecDWFermActArray S_DWF(fbc_a, WilsonMass, m_q, N5);
+  EvenOddPrecNEFFermActArray S_NEF(fbc_a, WilsonMass, 1.0, 0, m_q, N5);
+#endif
+  //Borici DWF case
+#ifdef BORICI
+  EvenOddPrecOvDWFermActArray S_DWF(fbc_a, WilsonMass, m_q, N5);
+  EvenOddPrecNEFFermActArray S_NEF(fbc_a, WilsonMass, 1.0, 1.0, m_q, N5);
+#endif
+
+  Handle<const ConnectState> stateDWF(S_DWF.createState(u));
+  Handle<const EvenOddPrecLinearOperator< multi1d<LatticeFermion> > > Adwf(S_DWF.linOp(stateDWF));
+
+  Handle<const ConnectState> stateNEF(S_NEF.createState(u));
+  Handle<const EvenOddPrecLinearOperator< multi1d<LatticeFermion> > > Anef(S_NEF.linOp(stateNEF));
+
+  multi1d<LatticeFermion> tmp1(N5);
+  multi1d<LatticeFermion> tmp2(N5),diff_ee(N5), diff_oo(N5),diff_eo(N5) ; 
+  multi1d<LatticeFermion>  diff_oe(N5),diff_inv_ee(N5),diff_inv_oo(N5) ;
+
+  (*Adwf).evenEvenLinOp(tmp1, psi, PLUS);
+  (*Anef).evenEvenLinOp(tmp2, psi, PLUS);
+  
+  for(int m=0; m < N5; ++m)
+    diff_ee[m] = tmp2[m]-tmp1[m] ;
+
+  (*Adwf).oddOddLinOp(tmp1, psi, PLUS);
+  (*Anef).oddOddLinOp(tmp2, psi, PLUS);
+  
+  for(int m=0; m < N5; ++m)
+    diff_oo[m] = tmp2[m]-tmp1[m] ;
+
+  (*Adwf).evenEvenInvLinOp(tmp1, psi, PLUS);
+  (*Anef).evenEvenInvLinOp(tmp2, psi, PLUS);
+  
+  for(int m=0; m < N5; ++m)
+    diff_inv_ee[m] = tmp2[m]-tmp1[m] ;
+
+  (*Adwf).evenOddLinOp(tmp1, psi, PLUS);
+  (*Anef).evenOddLinOp(tmp2, psi, PLUS);
+  
+  for(int m=0; m < N5; ++m)
+    diff_eo[m] = tmp2[m]-tmp1[m] ;
+
+  (*Adwf).oddEvenLinOp(tmp1, psi, PLUS);
+  (*Anef).oddEvenLinOp(tmp2, psi, PLUS);
+  
+  for(int m=0; m < N5; ++m)
+    diff_oe[m] = tmp2[m]-tmp1[m] ;
+
+  push(xml,"prec_pieces");
+  write(xml, "norm_ee" , Real(norm2(diff_ee)));
+  write(xml, "norm_oo" , Real(norm2(diff_oo)));
+  write(xml, "norm_eo" , Real(norm2(diff_eo)));
+  write(xml, "norm_oe" , Real(norm2(diff_oe)));
+
+  write(xml, "norm_inv_ee" , Real(norm2(diff_inv_ee)));
+
+  pop(xml);
+ }
+
+ pop(xml);
+
+ // Time to bolt
+ QDP_finalize();
+
+ exit(0);
 }
