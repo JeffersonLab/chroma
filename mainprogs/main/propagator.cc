@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.22 2003-11-10 05:16:08 edwards Exp $
+// $Id: propagator.cc,v 1.23 2003-11-16 19:52:48 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -56,7 +56,7 @@ struct Param_t
   CfgType  cfg_type;       // storage order for stored gauge configuration
   PropType prop_type;      // storage order for stored propagator
 
-  enum InvType  invType;            // Inverter type
+  enum InvType  invType;   // Inverter type
   Real RsdCG;
   int MaxCG;		   // Iteration parameters
 
@@ -352,7 +352,9 @@ int main(int argc, char **argv)
 #else
   Real WilsonMass = 1.5;
   Real m_q = 0.1;
-  UnprecDWFermAct S_f(WilsonMass, m_q);
+  int  N5  = 8;
+  UnprecDWFermActArray S_f(WilsonMass, m_q, N5);
+//  UnprecDWFermAct S_f(WilsonMass, m_q);
 #endif
 
 //  FermAct = UNPRECONDITIONED_WILSON;  // global
@@ -371,6 +373,9 @@ int main(int argc, char **argv)
 
   quarkProp4(quark_propagator, xml_buf, quark_prop_source,
 	     S_f, u, input.param.invType, input.param.RsdCG, input.param.MaxCG, ncg_had);
+
+
+  xml_out << xml_buf;
 
   // Instantiate XML buffer to make the propagator header
   XMLBufferWriter prop_xml;
