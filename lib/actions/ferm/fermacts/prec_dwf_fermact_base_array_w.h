@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_fermact_base_array_w.h,v 1.16 2004-12-09 03:58:03 edwards Exp $
+// $Id: prec_dwf_fermact_base_array_w.h,v 1.17 2004-12-10 03:05:38 edwards Exp $
 /*! \file
  *  \brief Base class for even-odd preconditioned domain-wall-like fermion actions
  */
@@ -10,7 +10,7 @@
 #include "fermact.h"
 #include "actions/ferm/linop/prec_dwf_linop_base_array_w.h"
 #include "actions/ferm/linop/unprec_dwf_linop_base_array_w.h"
-#include "actions/ferm/linop/unprec_pdwf4d_linop_w.h"
+#include "actions/ferm/linop/unprec_ppdwf4d_linop_w.h"
 #include "actions/ferm/linop/lDeltaLs_w.h"
 #include "actions/ferm/linop/llincomb.h"
 #include "actions/ferm/linop/lmdagm.h"
@@ -69,9 +69,9 @@ namespace Chroma
 					     const Real& m_q,
 					     const InvertParam_t& invParam) const
     {
-      return new UnprecPDWF4DLinOp<T>(precLinOp(state,m_q),
-				      unprecLinOp(state,Real(1)),
-				      invParam);
+      return new UnprecPPDWF4DLinOp<T>(precLinOp(state,m_q),
+				       precLinOp(state,Real(1)),
+				       invParam);
     }
 
     //! Produce a  DeltaLs = 1-epsilon^2(H) operator
