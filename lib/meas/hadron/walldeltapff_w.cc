@@ -1,4 +1,4 @@
-// $Id: walldeltapff_w.cc,v 1.2 2004-06-01 02:49:27 edwards Exp $
+// $Id: walldeltapff_w.cc,v 1.3 2004-06-01 04:00:44 edwards Exp $
 /*! \file
  *  \brief Wall-sink delta^+ -> gamma+proton form-factors 
  *
@@ -97,6 +97,7 @@ void write(XMLWriter& xml, const string& path, const WallFormFac_formfacs_t& hea
  *
  * \return nonlocal current propagator
  */
+static
 LatticePropagator nonlocalCurrentProp(const multi1d<LatticeColorMatrix>& u, 
 				      int mu, 
 				      const LatticePropagator& forw_prop,

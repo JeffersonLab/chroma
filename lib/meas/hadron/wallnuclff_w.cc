@@ -1,4 +1,4 @@
-// $Id: wallnuclff_w.cc,v 1.15 2004-05-04 21:28:50 edwards Exp $
+// $Id: wallnuclff_w.cc,v 1.16 2004-06-01 04:00:44 edwards Exp $
 /*! \file
  *  \brief Wall-sink nucleon form-factors 
  *
@@ -26,6 +26,7 @@ using namespace QDP;
  *
  * \return nonlocal current propagator
  */
+static
 LatticePropagator nonlocalCurrentProp(const multi1d<LatticeColorMatrix>& u, 
 				      int mu, 
 				      const LatticePropagator& forw_prop,
