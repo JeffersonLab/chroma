@@ -1,11 +1,13 @@
 // -*- C++ -*-
-// $Id: wilslp.h,v 1.3 2004-04-27 20:32:16 edwards Exp $
+// $Id: wilslp.h,v 1.4 2005-02-10 18:11:22 edwards Exp $
 /*! \file
  *  \brief Calculate Wilson loops
  */
 
 #ifndef __wilslp_h__
 #define __wilslp_h__
+
+namespace Chroma {
 
 //! Calculate Wilson loops
 /*!
@@ -20,14 +22,17 @@
  * space directions that have equal length.                   
  *
  * \param u          gauge field (Read)                                              
- * \param j_decay    time direction (Read)                                     
+ * \param j_decay    decay direction (Read)                                     
+ * \param t_dir      time direction (Read)                                     
  * \param kind       binary-combined YES/NO [1/0] of the three options (Read)      
  *                   e.g. kind = 2 gives planar t-like, kind=6 is 
  *                   planar + off-axis: sqrt(2), sqrt(5), sqrt(3)
  */
 
 void wilslp(const multi1d<LatticeColorMatrix>& u,
-        int j_decay, int kind,
-        XMLWriter& xml, const string& xml_group);
+	    int j_decay, int t_dir, int kind,
+	    XMLWriter& xml, const string& xml_group);
+
+}  // end namespace Chroma
 
 #endif
