@@ -1,7 +1,10 @@
-// $Id: bar3ptfn.cc,v 1.17 2003-09-11 15:25:32 edwards Exp $
+// $Id: bar3ptfn.cc,v 1.18 2003-09-11 15:27:18 edwards Exp $
 //
 // $Log: bar3ptfn.cc,v $
-// Revision 1.17  2003-09-11 15:25:32  edwards
+// Revision 1.18  2003-09-11 15:27:18  edwards
+// Turned on some flush's.
+//
+// Revision 1.17  2003/09/11 15:25:32  edwards
 // Added some diagnostic output.
 //
 // Revision 1.16  2003/09/11 15:17:34  edwards
@@ -554,7 +557,7 @@ main(int argc, char *argv[])
   Write(xml_out, t_srce);
   pop(xml_out);
 
-//  xml_out.flush();
+  xml_out.flush();
 
   // First calculate some gauge invariant observables just for info.
   // This is really cheap.
@@ -568,7 +571,7 @@ main(int argc, char *argv[])
   Write(xml_out, link);
   pop(xml_out);
 
-//  xml_out.flush();
+  xml_out.flush();
 
   // Next check the gauge field configuration by reunitarizing.
   multi1d<LatticeColorMatrix> u_tmp(Nd);
