@@ -1,4 +1,4 @@
-// $Id: readszin.cc,v 1.11 2003-08-27 20:18:49 edwards Exp $
+// $Id: readszin.cc,v 1.12 2003-08-27 20:19:58 edwards Exp $
 
 /*! \file
  *  \brief Read in a configuration written by SZIN up to configuration version 7.
@@ -24,7 +24,7 @@ using namespace QDP;
  * \param cfg_file   path ( Read )
  */    
 
-void readSzin(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_file)
+void readSzin(multi1d<LatticeColorMatrix>& u, const string& cfg_file)
 {
   XMLReader xml;
   readSzin(xml, u, cfg_file);
