@@ -1,14 +1,14 @@
-// $Id: zolotarev4d_fermact_bj_w.cc,v 1.10 2004-01-07 13:50:07 bjoo Exp $
+// $Id: zolotarev4d_fermact_bj_w.cc,v 1.11 2004-01-08 03:11:29 edwards Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
 #include <iostream>
 #include <sstream>
 #include <chromabase.h>
-#include <zolotarev.h>
 #include <linearop.h>
 
 #include "fermacts.h"
+#include "actions/ferm/fermacts/zolotarev.h"
 #include "actions/ferm/linop/linop.h"
 #include "meas/eig/eig.h"
 
