@@ -1,5 +1,5 @@
 /* + */
-/* $Id: baryon_s.cc,v 1.2 2004-03-23 20:46:28 mcneile Exp $ ($Date: 2004-03-23 20:46:28 $) */
+/* $Id: baryon_s.cc,v 1.3 2004-11-20 15:42:04 mcneile Exp $ ($Date: 2004-11-20 15:42:04 $) */
 
 /* This routine is specific to staggered fermions! */
 
@@ -51,7 +51,7 @@ private:
 
 //  multi1d<Complex> barprop(length)
 
-void baryon_s(LatticePropagator & quark_propagator_in, 
+void baryon_s(LatticeStaggeredPropagator & quark_propagator_in, 
 	      multi1d<Complex> & barprop,
 	      multi1d<int> & t_source,
 	      int j_decay, int bc_spec)
