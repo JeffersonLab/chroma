@@ -1,4 +1,4 @@
-// $Id: prec_ovdwf_fermact_array_w.cc,v 1.4 2004-09-09 15:51:31 edwards Exp $
+// $Id: prec_ovdwf_fermact_array_w.cc,v 1.5 2004-09-16 19:29:37 kostas Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned Overlap-DWF (Borici) action
  */
@@ -25,7 +25,7 @@ namespace Chroma
     }
 
     //! Name to be used
-    const std::string name = "UNPRECONDITIONED_OVDWF";
+    const std::string name = "OVDWF"; 
 
     //! Register the Wilson fermact
     const bool registered = Chroma::TheWilsonTypeFermActArrayFactory::Instance().registerObject(name, createFermAct); 
