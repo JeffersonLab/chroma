@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.152 2004-02-20 14:02:54 bjoo Exp $
+# $Id: Makefile.in,v 1.153 2004-02-23 03:03:52 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -79,7 +79,7 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/qprop/quarkprop4_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/qprop/quarkprop4_multi_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/qprop/unprec_qprop_w.h \
-@BUILD_WILSON_LIBS_TRUE@	io/io_w.h io/readszinferm_w.h io/readszinqprop_w.h \
+@BUILD_WILSON_LIBS_TRUE@	io/io_w.h io/barcomp_io.h io/readszinferm_w.h io/readszinqprop_w.h \
 @BUILD_WILSON_LIBS_TRUE@	io/writeszinqprop_w.h \
 @BUILD_WILSON_LIBS_TRUE@	meas/eig/eig_w.h meas/eig/ischiral_w.h \
 @BUILD_WILSON_LIBS_TRUE@	meas/hadron/barcomp_w.h \
@@ -116,7 +116,7 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@              loops_w.cc z2_src.cc \
 @BUILD_WILSON_LIBS_TRUE@              curcor2_w.cc lwldslash_w.cc formfac_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
-@BUILD_WILSON_LIBS_TRUE@              sink_smear2_w.cc barcomp_w.cc walfil_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              sink_smear2_w.cc barcomp_io.cc barcomp_w.cc walfil_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              fermact_qprop.cc prec_fermact_qprop.cc \
 @BUILD_WILSON_LIBS_TRUE@              unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              prec_wilson_fermact_w.cc prec_wilson_linop_w.cc \
@@ -138,7 +138,7 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@	      zolotarev_coeffs.cc overlap_fermact_base_w.cc lovlapms_w.cc  \
 @BUILD_WILSON_LIBS_TRUE@	      zolotarev4d_fermact_w.cc ischiral_w.cc lovddag_w.cc \
 @BUILD_WILSON_LIBS_TRUE@	      zolotarev5d_fermact_array_w.cc zolotarev5d_linop_array_w.cc \
-@BUILD_WILSON_LIBS_TRUE@              wallpionff_w.cc
+@BUILD_WILSON_LIBS_TRUE@              wallpionff_w.cc 
 
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_5 = lwldslash_w_sse.cc
 @BUILD_STAGGERED_LIBS_TRUE@am__append_6 = mesphas_s.cc mesphas_follana_s.cc pions_follana_s.cc \
@@ -349,13 +349,14 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	proginfo.cc printgeom.cc baryon_w.cc mesons_w.cc hybmeson_w.cc \
 	loops_w.cc z2_src.cc curcor2_w.cc lwldslash_w.cc formfac_w.cc \
 	mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
-	sink_smear2_w.cc barcomp_w.cc walfil_w.cc fermact_qprop.cc \
-	prec_fermact_qprop.cc unprec_wilson_fermact_w.cc \
-	unprec_wilson_linop_w.cc prec_wilson_fermact_w.cc \
-	prec_wilson_linop_w.cc unprec_parwilson_fermact_w.cc \
-	unprec_parwilson_linop_w.cc prec_parwilson_fermact_w.cc \
-	prec_parwilson_linop_w.cc dwffld_w.cc fermact_qprop_array.cc \
-	prec_fermact_qprop_array.cc unprec_dwf_fermact_base_w.cc \
+	sink_smear2_w.cc barcomp_io.cc barcomp_w.cc walfil_w.cc \
+	fermact_qprop.cc prec_fermact_qprop.cc \
+	unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
+	prec_wilson_fermact_w.cc prec_wilson_linop_w.cc \
+	unprec_parwilson_fermact_w.cc unprec_parwilson_linop_w.cc \
+	prec_parwilson_fermact_w.cc prec_parwilson_linop_w.cc \
+	dwffld_w.cc fermact_qprop_array.cc prec_fermact_qprop_array.cc \
+	unprec_dwf_fermact_base_w.cc \
 	unprec_dwf_fermact_qprop_array_w.cc \
 	unprec_dwf_fermact_array_w.cc unprec_dwf_linop_array_w.cc \
 	unprec_ovdwf_fermact_array_w.cc unprec_ovdwf_linop_array_w.cc \
@@ -385,6 +386,7 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 @BUILD_WILSON_LIBS_TRUE@	barseqsrc_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	seqpiontest_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	sink_smear2_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	barcomp_io.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	barcomp_w.$(OBJEXT) walfil_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	fermact_qprop.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	prec_fermact_qprop.$(OBJEXT) \
@@ -476,10 +478,11 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/asqtad_fermact_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/asqtad_linop_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/asqtad_mdagm_s.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/axgauge.Po ./$(DEPDIR)/barcomp_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/barseqsrc_w.Po ./$(DEPDIR)/baryon_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/coulgauge.Po ./$(DEPDIR)/curcor2_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/d_src_w.Po ./$(DEPDIR)/displacement.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/axgauge.Po ./$(DEPDIR)/barcomp_io.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/barcomp_w.Po ./$(DEPDIR)/barseqsrc_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/baryon_w.Po ./$(DEPDIR)/coulgauge.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/curcor2_w.Po ./$(DEPDIR)/d_src_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/displacement.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/dwf_quarkprop4_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/dwffld_w.Po ./$(DEPDIR)/eig_spec.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/eig_spec_array.Po ./$(DEPDIR)/expm12.Po \
@@ -634,6 +637,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/asqtad_linop_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/asqtad_mdagm_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/axgauge.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/barcomp_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/barcomp_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/barseqsrc_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/baryon_w.Po@am__quote@
