@@ -1,5 +1,11 @@
 03/06/2005 -- Robert Edwards
 
+	Version 1.20.0. Overhauled sequential source construction.
+        Eliminated "magic numbers" for sources. Now all string 
+        driven. Added force measurements to HMC.
+
+03/06/2005 -- Robert Edwards
+
 	Version 1.19.14. Bug fix in SzinGauge_t constructor. This was
         introduced when the initHeader's were removed in favor of 
         constructors.
