@@ -1,4 +1,4 @@
-// $Id: kyuqprop_io.cc,v 1.10 2004-06-30 19:51:25 edwards Exp $
+// $Id: kyuqprop_io.cc,v 1.11 2004-07-01 21:12:33 edwards Exp $
 /*!
  * @file
  * @brief  Read/write a Kentucky quark propagator
@@ -107,7 +107,7 @@ void readKYUQprop(LatticePropagator& q, const string& file)
   SpinMatrixD U = DiracToDRMat();
 
   // And finally...
-  q = U * q_old * adj(U);   // note, adj(U) = -U
+  q = U * q_old * adj(U);
   
 
 #if 1
