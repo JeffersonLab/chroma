@@ -1,4 +1,4 @@
-// $Id: wallpionff_w.cc,v 1.12 2004-06-04 21:13:15 edwards Exp $
+// $Id: wallpionff_w.cc,v 1.13 2004-06-05 03:00:48 edwards Exp $
 /*! \file
  *  \brief Wall-sink pion form-factors 
  *
@@ -147,14 +147,12 @@ void wallPionFormFac(WallFormFac_formfacs_t& form,
       {
 	// "\bar d O d" insertion in pion
 	// The local non-conserved current contraction
-	LatticePropagator local_insert_prop = 
-	  anti_d_prop*Gamma(gamma_value)*forw_d_prop;
+	local_insert_prop = anti_d_prop*Gamma(gamma_value)*forw_d_prop;
 
 	if (compute_nonlocal)
 	{
 	  // Construct the non-local (possibly conserved) current contraction
-	  LatticePropagator nonlocal_insert_prop = 
-	    nonlocalCurrentProp(u, mu, forw_d_prop, anti_d_prop);
+	  nonlocal_insert_prop = nonlocalCurrentProp(u, mu, forw_d_prop, anti_d_prop);
 	}
       }
       break;

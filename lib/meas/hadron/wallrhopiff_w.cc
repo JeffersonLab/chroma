@@ -1,4 +1,4 @@
-// $Id: wallrhopiff_w.cc,v 1.2 2004-06-04 21:13:15 edwards Exp $
+// $Id: wallrhopiff_w.cc,v 1.3 2004-06-05 03:00:48 edwards Exp $
 /*! \file
  *  \brief Wall-sink rho^+ <-> gamma+pi^+ form-factors 
  *
@@ -155,14 +155,12 @@ void wallRhoPiFormFac(WallFormFac_formfacs_t& form,
       {
 	// "\bar d O d" insertion in rho
 	// The local non-conserved current contraction
-	LatticePropagator local_insert_prop = 
-	  anti_d_prop*Gamma(gamma_value)*forw_d_prop;
+	local_insert_prop = anti_d_prop*Gamma(gamma_value)*forw_d_prop;
 
 	if (compute_nonlocal)
 	{
 	  // Construct the non-local (possibly conserved) current contraction
-	  LatticePropagator nonlocal_insert_prop = 
-	    nonlocalCurrentProp(u, mu, forw_d_prop, anti_d_prop);
+	  nonlocal_insert_prop = nonlocalCurrentProp(u, mu, forw_d_prop, anti_d_prop);
 	}
       }
       break;
