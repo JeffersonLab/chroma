@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: predictor.h,v 1.4 2005-02-07 04:11:55 edwards Exp $
+// $Id: predictor.h,v 1.5 2005-02-23 22:14:26 bjoo Exp $
 
 /*! \file
  * \brief HMC linear system solver initial guess 
@@ -24,4 +24,6 @@
 
 #include "update/molecdyn/predictor/circular_buffer.h"
 #include "update/molecdyn/predictor/linear_extrap_predictor.h"
+
+#include "update/molecdyn/predictor/lu_solve.h"
 #endif
