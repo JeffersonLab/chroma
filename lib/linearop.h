@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linearop.h,v 1.4 2004-09-08 02:45:51 edwards Exp $
+// $Id: linearop.h,v 1.5 2004-12-09 03:59:53 edwards Exp $
 
 /*! @file
  * @brief Linear Operators
@@ -131,7 +131,7 @@ namespace Chroma
    *
    * The preconditioning consists of using the triangular matrices
    *
-   *      [      1      	      0        ]
+   *      [      1              0        ]
    *      [       E,E            E,O     ]
    *  L = [                              ]
    *      [     D     A^(-1)    1        ]
@@ -139,7 +139,7 @@ namespace Chroma
    *
    * and
    *
-   *      [      A      	      D       ]
+   *      [      A              D       ]
    *      [       E,E            E,O    ]
    *  U = [                             ]
    *      [      0              1       ]
@@ -151,10 +151,10 @@ namespace Chroma
    *
    * Resulting in a new  M
    *
-   *      [      1       	            0                      ]
+   *      [      1                    0                      ]
    *      [       E,E                  E,O                   ]
    *      [                                                  ]
-   *      [      0       	        A     -  D    A^(-1)  D    ]
+   *      [      0                A     -  D    A^(-1)  D    ]
    *      [       O,E              O,O      O,E   E,E    E,O ]
    *
    *
@@ -255,7 +255,7 @@ namespace Chroma
    *
    * The preconditioning consists of using the triangular matrices
    *
-   *      [      1      	      0        ]
+   *      [      1              0        ]
    *      [       E,E            E,O     ]
    *  L = [                              ]
    *      [     D     A^(-1)    1        ]
@@ -263,7 +263,7 @@ namespace Chroma
    *
    * and
    *
-   *      [      A      	      D       ]
+   *      [      A              D       ]
    *      [       E,E            E,O    ]
    *  U = [                             ]
    *      [      0              1       ]
@@ -275,10 +275,10 @@ namespace Chroma
    *
    * Resulting in a new  M
    *
-   *      [      1       	            0                      ]
+   *      [      1                    0                      ]
    *      [       E,E                  E,O                   ]
    *      [                                                  ]
-   *      [      0       	        A     -  D    A^(-1)  D    ]
+   *      [      0                A     -  D    A^(-1)  D    ]
    *      [       O,E              O,O      O,E   E,E    E,O ]
    *
    *
