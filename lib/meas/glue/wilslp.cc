@@ -1,4 +1,4 @@
-/*   $Id: wilslp.cc,v 1.4 2004-07-27 04:58:07 edwards Exp $ ($Date: 2004-07-27 04:58:07 $) */
+/*   $Id: wilslp.cc,v 1.5 2004-07-28 02:38:03 edwards Exp $ ($Date: 2004-07-28 02:38:03 $) */
 
 /* WILSLP -- calculates, depending on option, (1) "space-like" planar 	 */
 /*           Wilson loops in the directions perpendicular to j_decay     */
@@ -26,7 +26,7 @@ void wilslp(const multi1d<LatticeColorMatrix>& u,
 	int j_decay, int kind,
 	XMLWriter& xml, const string& xml_group)
 {
-  START_CODE("wilslp");
+  START_CODE();
 
 
   multi1d<int> nrow(Nd);
@@ -1156,6 +1156,6 @@ QDPIO::cout << "computing time-like Wilson loops" << endl;
   QDPIO::cout << "wils_loop3 data written to .xml file " << endl;  
   QDPIO::cout << "All wils_loop data written to .xml file " << endl;  
 
-  END_CODE("wilslp");
+  END_CODE();
 } // end of wilslp
 
