@@ -1,4 +1,4 @@
-// $Id: sink_smearing.cc,v 1.3 2004-02-23 03:13:58 edwards Exp $
+// $Id: sink_smearing.cc,v 1.4 2004-02-23 21:20:27 edwards Exp $
 /*! \file
  * \brief Main program for sink-smearing quark propagators
  *
@@ -306,9 +306,11 @@ int main(int argc, char **argv)
 
   pop(xml_out);  // sink_smear
 
+  xml_out.close();
+  xml_in.close();
 
-  xml_out.flush( );
-  xml_out.close( );
+  // Time to bolt
+  QDP_finalize();
 
   exit(0);
 }
