@@ -1,4 +1,4 @@
-// $Id: param_io.cc,v 1.3 2004-01-06 02:52:06 edwards Exp $
+// $Id: param_io.cc,v 1.4 2004-01-06 04:51:06 edwards Exp $
 /*! \file
  *  \brief Various parameter readers/writers for main programs
  */
@@ -20,6 +20,22 @@ void read(XMLReader& xml, const string& path, FermType& param)
   else 
   {
     QDPIO::cerr << "Unsupported fermion type" << endl;
+    QDP_abort(1);
+  }
+}
+
+//! Read a fermion action type enum
+void read(XMLReader& xml, const string& path, FermActType& param)
+{
+  string ferm_type_str;
+  read(xml, path, ferm_type_str);
+  if (ferm_type_str == "WILSON")
+    param = FERM_ACT_WILSON;
+  else if (ferm_type_str == "DWF")
+    param = FERM_ACT_DWF;
+  else 
+  {
+    QDPIO::cerr << "Unsupported fermion action type" << endl;
     QDP_abort(1);
   }
 }
@@ -59,15 +75,15 @@ void read(XMLReader& xml, const string& path, PropType& param)
 
 
 //! Read a wave-function type enum
-void read(XMLReader& xml, const string& path, WvfType& param)
+void read(XMLReader& xml, const string& path, WvfKind& param)
 {
-  string wvf_type_str;
-  read(xml, path, wvf_type_str);
-  if (wvf_type_str == "GAUGE_INV_GAUSSIAN")
-    param = WVF_TYPE_GAUGE_INV_GAUSSIAN;
+  string wvf_kind_str;
+  read(xml, path, wvf_kind_str);
+  if (wvf_kind_str == "GAUGE_INV_GAUSSIAN")
+    param = WVF_KIND_GAUGE_INV_GAUSSIAN;
   else 
   {
-    QDPIO::cerr << "Unsupported gauge-invariant wvf_type" << endl;
+    QDPIO::cerr << "Unsupported gauge-invariant wvf_kind" << endl;
     QDP_abort(1);
   }
 }
@@ -115,9 +131,9 @@ void read(XMLReader& xml, const string& path, SmearingParam_t& param)
 {
   XMLReader paramtop(xml, path);
 
-  read(paramtop, "wvf_type", param.wvf_type);
+  read(paramtop, "Wvf_kind", param.Wvf_kind);
   read(paramtop, "wvf_param", param.wvf_param);
-  read(paramtop, "wvfIntPar", param.wvfIntPar);
+  read(paramtop, "WvfIntPar", param.WvfIntPar);
 }
 
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: param_io.h,v 1.3 2004-01-06 02:52:06 edwards Exp $
+// $Id: param_io.h,v 1.4 2004-01-06 04:51:06 edwards Exp $
 /*! \file
  *  \brief Reunitarize (to a SU(N)) inplace the matrix A under some option
  */
@@ -101,9 +101,9 @@ struct AnisoParam_t
 //! Parameters for sources and sinks
 struct SmearingParam_t
 {
-  WvfType       wvf_type;
+  WvfKind       Wvf_kind;
   multi1d<Real> wvf_param;
-  multi1d<int>  wvfIntPar;
+  multi1d<int>  WvfIntPar;
 };
 
 
@@ -120,6 +120,9 @@ struct InvertParam_t
 //! Read a fermion type enum
 void read(XMLReader& xml, const string& path, FermType& param);
 
+//! Read a fermion action type enum
+void read(XMLReader& xml, const string& path, FermActType& param);
+
 //! Read a configuration type enum
 void read(XMLReader& xml, const string& path, CfgType& param);
 
@@ -127,7 +130,7 @@ void read(XMLReader& xml, const string& path, CfgType& param);
 void read(XMLReader& xml, const string& path, PropType& param);
 
 //! Read a wave-function type enum
-void read(XMLReader& xml, const string& path, WvfType& param);
+void read(XMLReader& xml, const string& path, WvfKind& param);
 
 //! Read a inverter type enum
 void read(XMLReader& xml, const string& path, InvType& param);
@@ -146,7 +149,6 @@ void read(XMLReader& xml, const string& path, ChiralParam_t& param);
 
 //! Read inverter parameters
 void read(XMLReader& xml, const string& path, InvertParam_t& param);
-
 
 /*! @} */  // end of group io
 
