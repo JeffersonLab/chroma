@@ -1,4 +1,4 @@
-// $Id: t_precact.cc,v 1.2 2003-11-25 03:03:56 edwards Exp $
+// $Id: t_precact.cc,v 1.3 2003-12-02 15:46:45 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -64,23 +64,24 @@ int main(int argc, char **argv)
     // The Wilson fermact
     Real WilsonMass = -1;
     UnprecWilsonFermAct S_uwil(WilsonMass);
-    const  LinearOperator<LatticeFermion>* A_uwil = S_uwil.linOp(u);
+    const ConnectStateProxy state(S_uwil.createState(u));
+    const LinearOperatorProxy<LatticeFermion> A_uwil(S_uwil.linOp(state));
   
     EvenOddPrecWilsonFermAct S_pwil(WilsonMass);
-    const  EvenOddPrecLinearOperator<LatticeFermion>* A_pwil = S_pwil.linOp(u);
+    const EvenOddPrecLinearOperatorProxy<LatticeFermion> A_pwil(S_pwil.linOp(state));
   
     LatticeFermion  psi, chi, tmp1, tmp2;
     random(psi);
     QDPIO::cout << "Test unprec and eo-prec Wilson: sign=PLUS" << endl;
-    (*A_uwil)(tmp1, psi, PLUS);
-    A_pwil->unprecLinOp(tmp2, psi, PLUS);
+    A_uwil(tmp1, psi, PLUS);
+    A_pwil.unprecLinOp(tmp2, psi, PLUS);
     QDPIO::cout << "|Wil|^2 = " << norm2(tmp1) << endl
 		<< "|pWil|^2 = " << norm2(tmp2) << endl
 		<< "|Wil - pWil|^2 = " << norm2(tmp2-tmp1) << endl;
 
     QDPIO::cout << "Test unprec and eo-prec Wilson: sign=MINUS" << endl;
-    (*A_uwil)(tmp1, psi, MINUS);
-    A_pwil->unprecLinOp(tmp2, psi, MINUS);
+    A_uwil(tmp1, psi, MINUS);
+    A_pwil.unprecLinOp(tmp2, psi, MINUS);
     QDPIO::cout << "|Wil|^2 = " << norm2(tmp1) << endl
 		<< "|pWil|^2 = " << norm2(tmp2) << endl
 		<< "|Wil - pWil|^2 = " << norm2(tmp2-tmp1) << endl;
@@ -90,9 +91,9 @@ int main(int argc, char **argv)
     random(tmp1);
     tmp2 = tmp1;
     QDPIO::cout << "Unprec Wilson inverter" << endl;
-    S_uwil.qprop(tmp1, u, chi, invType, RsdCG, MaxCG, n_count);
+    S_uwil.qprop(tmp1, state, chi, invType, RsdCG, MaxCG, n_count);
     QDPIO::cout << "Prec Wilson inverter" << endl;
-    S_pwil.qprop(tmp2, u, chi, invType, RsdCG, MaxCG, n_count);
+    S_pwil.qprop(tmp2, state, chi, invType, RsdCG, MaxCG, n_count);
     
     QDPIO::cout << "Test unprec and eo-prec Wilson inverter" << endl
 		<< "|Wil|^2 = " << norm2(tmp1) << endl
@@ -108,18 +109,19 @@ int main(int argc, char **argv)
     int N5 = 8;
     Real m_q = 0.1;
     UnprecDWFermActArray S_udwf(WilsonMass,m_q,N5);
-    const  LinearOperator< multi1d<LatticeFermion> >* A_udwf = S_udwf.linOp(u);
+    const ConnectStateProxy state(S_udwf.createState(u));
+    const LinearOperatorProxy< multi1d<LatticeFermion> > A_udwf(S_udwf.linOp(state));
   
     EvenOddPrecDWFermActArray S_pdwf(WilsonMass,m_q,N5);
-    const  EvenOddPrecLinearOperator< multi1d<LatticeFermion> >* A_pdwf = S_pdwf.linOp(u);
+    const EvenOddPrecLinearOperatorProxy< multi1d<LatticeFermion> > A_pdwf(S_pdwf.linOp(state));
   
     multi1d<LatticeFermion>  psi(N5), chi(N5), tmp1(N5), tmp2(N5);
     for(int m=0; m < N5; ++m)
       random(psi[m]);
 
     QDPIO::cout << "Test unprec and eo-prec DWF: sign=PLUS" << endl;
-    (*A_udwf)(tmp1, psi, PLUS);
-    A_pdwf->unprecLinOp(tmp2, psi, PLUS);
+    A_udwf(tmp1, psi, PLUS);
+    A_pdwf.unprecLinOp(tmp2, psi, PLUS);
     QDPIO::cout << "|DWF|^2 = " << norm2(tmp1) << endl
 		<< "|pDWF|^2 = " << norm2(tmp2) << endl;
     for(int m=0; m < N5; ++m)
@@ -127,8 +129,8 @@ int main(int argc, char **argv)
     QDPIO::cout << "|DWF - pDWF|^2 = " << norm2(chi) << endl;
 
     QDPIO::cout << "Test unprec and eo-prec DWF: sign=MINUS" << endl;
-    (*A_udwf)(tmp1, psi, MINUS);
-    A_pdwf->unprecLinOp(tmp2, psi, MINUS);
+    A_udwf(tmp1, psi, MINUS);
+    A_pdwf.unprecLinOp(tmp2, psi, MINUS);
     QDPIO::cout << "|DWF|^2 = " << norm2(tmp1) << endl
 		<< "|pDWF|^2 = " << norm2(tmp2) << endl;
     for(int m=0; m < N5; ++m)
@@ -142,9 +144,9 @@ int main(int argc, char **argv)
     psi5b = psi5a;
 
     QDPIO::cout << "Unprec inverter" << endl;
-    S_udwf.qprop(psi5a, u, chi5, invType, RsdCG, MaxCG, n_count);
+    S_udwf.qprop(psi5a, state, chi5, invType, RsdCG, MaxCG, n_count);
     QDPIO::cout << "Prec inverter" << endl;
-    S_pdwf.qprop(psi5b, u, chi5, invType, RsdCG, MaxCG, n_count);
+    S_pdwf.qprop(psi5b, state, chi5, invType, RsdCG, MaxCG, n_count);
     
     QDPIO::cout << "Test unprec and eo-prec DWF inverter" << endl
 		<< "|DWF|^2 = " << norm2(psi5a) << endl
