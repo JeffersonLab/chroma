@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gaugebc.h,v 1.1 2004-01-08 03:11:47 edwards Exp $
+// $Id: gaugebc.h,v 1.2 2004-03-17 03:09:40 edwards Exp $
 /*! @file
  * @brief Gauge boundary conditions
  */
@@ -111,10 +111,12 @@ public:
 #endif
 
   //! Modify U fields in place
-  virtual void modify(multi1d<LatticeColorMatrix>& u) const = 0;
+  void modify(multi1d<LatticeColorMatrix>& u) const
+    {QDP_abort("modify not implemented");}
 
   //! Zero the U fields in place on the masked links
-  virtual void zero(multi1d<LatticeColorMatrix>& u) const = 0;
+  void zero(multi1d<LatticeColorMatrix>& u) const
+    {QDP_abort("zero not implemented");}
 
 #if defined(EXPOSE_THIS_STUFF)
   // NOT SURE THIS STUFF IS ABSOLUTELY REQUIRED - TRY TO AVOID EXPOSING THIS
@@ -180,10 +182,12 @@ public:
 #endif
 
   //! Modify U fields in place
-  virtual void modify(multi1d<LatticeColorMatrix>& u) const = 0;
+  void modify(multi1d<LatticeColorMatrix>& u) const
+    {QDP_abort("modify not implemented");}
 
   //! Zero the U fields in place on the masked links
-  virtual void zero(multi1d<LatticeColorMatrix>& u) const = 0;
+  void zero(multi1d<LatticeColorMatrix>& u) const
+    {QDP_abort("zero not implemented");}
 
 #if defined(EXPOSE_THIS_STUFF)
   // NOT SURE THIS STUFF IS ABSOLUTELY REQUIRED - TRY TO AVOID EXPOSING THIS
