@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: wallformfac_rhopi.pl,v 1.7 2004-06-24 08:00:19 edwards Exp $
+# $Id: wallformfac_rhopi.pl,v 1.8 2004-06-24 08:02:00 edwards Exp $
 #
 # Usage
 #   wallformfac_rhopi.pl
@@ -168,6 +168,7 @@ foreach $qx ( -$mommax_int .. $mommax_int ) {
       {
 	# Average the rho
 	&ensbc("$rho_sp{$qx,$qy,$qz} = ($rho_x_sp{$qx,$qy,$qz} + $rho_y_sp{$qx,$qy,$qz} + $rho_z_sp{$qx,$qy,$qz})/3");
+	&ensbc("$rho_sw{$qx,$qy,$qz} = ($rho_x_sw{$qx,$qy,$qz} + $rho_y_sw{$qx,$qy,$qz} + $rho_z_sw{$qx,$qy,$qz})/3");
       }
 	
       if (-f $pion_sp{$qx,$qy,$qz})
