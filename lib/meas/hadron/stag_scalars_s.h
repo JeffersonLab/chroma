@@ -7,9 +7,46 @@
 
 #include "chroma.h"
 
-void
-staggeredScalars(multi1d<LatticeStaggeredPropagator>& quark_props,
-		      multi2d<DComplex>& scalar_corr_fn,
+class staggered_hadron_corr ; 
+
+class staggered_scalars  : public staggered_hadron_corr
+{
+
+
+  public :
+
+    void
+    compute(multi1d<LatticeStaggeredPropagator>& quark_props,
 		      int j_decay);
+
+
+  staggered_scalars(int t_len)  : staggered_hadron_corr(t_len,no_scalar)
+    {
+      outer_tag = "Here_are_all_16_scalars"  ; 
+      inner_tag = "Sc" ; 
+
+      tag_names.resize(no_scalar) ; 
+      for(int i = 0 ; i <  no_scalar ; ++i ) 
+	{
+	  ostringstream tag;
+	  tag << "re_sc" << i;
+	  tag_names[i] = tag.str() ; 
+	}
+
+    }
+
+  ~staggered_scalars()
+    {
+    }
+
+
+ protected:
+
+  private :
+    static const int no_scalar = 16 ; 
+
+
+} ; 
+
 
 #endif

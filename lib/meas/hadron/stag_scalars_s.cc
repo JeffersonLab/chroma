@@ -10,7 +10,6 @@
  * YOU HAVE BEEN WARNED.
  */
 #include "chroma.h"
-// #include "mesphas_follana_s.h"
 #include "stag_scalars_s.h"
 #include "util/gauge/stag_phases_s.h"
 
@@ -66,9 +65,9 @@ private:
 using namespace StagPhases;
 
 void 
-staggeredScalars(multi1d<LatticeStaggeredPropagator>& quark_props,
-		      multi2d<DComplex>& scalar_corr_fn,
-		      int j_decay)
+staggered_scalars::compute(
+   multi1d<LatticeStaggeredPropagator>& quark_props,
+   int j_decay)
 {
 
   // Paranoid Checks
@@ -99,7 +98,7 @@ staggeredScalars(multi1d<LatticeStaggeredPropagator>& quark_props,
   const multi1d<int>& latt_size = Layout::lattSize();
   
   // resize output array appropriately
-  scalar_corr_fn.resize(NUM_STAG_PIONS, latt_size[Nd-1]);
+  corr_fn.resize(NUM_STAG_PIONS, latt_size[Nd-1]);
 
   // Correlation functions before spatial sum
   LatticeComplex corr_fn_s;
@@ -124,7 +123,7 @@ staggeredScalars(multi1d<LatticeStaggeredPropagator>& quark_props,
   corr_fn_s = - alpha(1)*beta(0)*trace(adj(quark_props[0])*quark_props[0]);
 
   // Slice Sum
-  scalar_corr_fn[ sca_index ] = sumMulti(corr_fn_s, timeslice);
+  corr_fn[ sca_index ] = sumMulti(corr_fn_s, timeslice);
 
   sca_index++;
 
@@ -141,13 +140,13 @@ staggeredScalars(multi1d<LatticeStaggeredPropagator>& quark_props,
     corr_fn_s =  alpha(mu+1)*trace(shiftDeltaProp(delta,quark_props[0])
                              *adj(quark_props[ deltaToPropIndex(delta) ]));
 
-    scalar_corr_fn[ sca_index ] = sumMulti(corr_fn_s, timeslice);
+    corr_fn[ sca_index ] = sumMulti(corr_fn_s, timeslice);
     sca_index++;
   }
     
   // One link temporal
   corr_fn_s = -  beta(0)*alpha(1)*alpha(3)*trace(adj(quark_props[0])*quark_props[0]);
-  scalar_corr_fn[ sca_index ] = sumMulti(corr_fn_s, timeslice);
+  corr_fn[ sca_index ] = sumMulti(corr_fn_s, timeslice);
 
   sca_index++;
 
@@ -162,7 +161,7 @@ staggeredScalars(multi1d<LatticeStaggeredPropagator>& quark_props,
                               *trace(adj(shiftDeltaProp(delta,quark_props[0]))
                                      *quark_props[ deltaToPropIndex(delta) ]);
 
-      scalar_corr_fn[ sca_index ] = sumMulti(corr_fn_s, timeslice);
+      corr_fn[ sca_index ] = sumMulti(corr_fn_s, timeslice);
       sca_index++;
     }
   }
@@ -177,7 +176,7 @@ staggeredScalars(multi1d<LatticeStaggeredPropagator>& quark_props,
                                      *quark_props[ deltaToPropIndex(delta) ]);
 
     
-      scalar_corr_fn[ sca_index ] = sumMulti(corr_fn_s, timeslice);
+      corr_fn[ sca_index ] = sumMulti(corr_fn_s, timeslice);
       sca_index++;
   }
 
@@ -195,7 +194,7 @@ staggeredScalars(multi1d<LatticeStaggeredPropagator>& quark_props,
           *trace(adj(shiftDeltaProp(delta,quark_props[0]))
                  *quark_props[ deltaToPropIndex(delta) ]);
 
-        scalar_corr_fn[ sca_index ] = sumMulti(corr_fn_s, timeslice);
+        corr_fn[ sca_index ] = sumMulti(corr_fn_s, timeslice);
 	sca_index++;
       }
     }
@@ -213,7 +212,7 @@ staggeredScalars(multi1d<LatticeStaggeredPropagator>& quark_props,
           *trace(adj(shiftDeltaProp(delta,quark_props[0]))
                  *quark_props[ deltaToPropIndex(delta) ]);
 
-	scalar_corr_fn[ sca_index ] = sumMulti(corr_fn_s, timeslice);
+	corr_fn[ sca_index ] = sumMulti(corr_fn_s, timeslice);
 	sca_index++;
     }
   }
@@ -226,7 +225,7 @@ staggeredScalars(multi1d<LatticeStaggeredPropagator>& quark_props,
     *trace(adj(shiftDeltaProp(delta, quark_props[0]))
            *quark_props[ deltaToPropIndex(delta) ] );
 
-  scalar_corr_fn[ sca_index ] = sumMulti(corr_fn_s, timeslice);
+  corr_fn[ sca_index ] = sumMulti(corr_fn_s, timeslice);
   sca_index++;
 
   if( sca_index != NUM_STAG_PIONS) { 
