@@ -56,6 +56,12 @@ AC_ARG_ENABLE(asqtad_cps_inverter,
     [Wrap the CPS asqtad inverter])
 )
 
+AC_ARG_ENABLE(gmp,
+   AC_HELP_STRING(
+    [--enable-gmp],
+    [Enable use of GMP - GNU Multi-Precision library])
+)
+
 if test "X${QDPXX_HOME}X" = "XX" ; then
   AC_PATH_PROG(QDPXX_CONFIG, [qdp++-config], [])
 else
@@ -103,7 +109,6 @@ case "$enable_sse_wilson_dslash" in
 	AC_CONFIG_SUBDIRS(other_libs/intel_sse_wilson_dslash)
 	AC_SUBST(SSE_DSLASH_DIR, [intel_sse_wilson_dslash])
 	AC_DEFINE([BUILD_SSE_WILSON_DSLASH],[],[ Build SSE Dslash Op ])
-
 	;;
   *)
 	AC_SUBST(SSE_DSLASH_DIR)
@@ -144,7 +149,6 @@ case "$enable_pab_wilson_dslash" in
 	;;
   *)
 	ac_build_pab_wilson_dslash="no"
-	AC_SUBST(SSE_DSLASH_DIR)
 	AC_MSG_NOTICE( [Not building PAB Dslash ] )
         ;;
 esac 
@@ -165,6 +169,21 @@ esac
 
 AM_CONDITIONAL(BUILD_ASQTAD_CPS_INVERTER_WRAPPER,
   [test "x${enable_asqtad_cps_inverter}x" = "xyesx" ])
+
+
+dnl Enable GMP
+case "$enable_gmp" in
+  yes) 
+        AC_MSG_NOTICE( [Enabling GNU Multi-Precision Library] )
+	AC_DEFINE([BUILD_GMP_REMEZ],[],[ Build GMP Remez code ])
+	;;
+  *)
+	AC_MSG_NOTICE( [Not building GMP Remez code ] )
+        ;;
+esac 
+
+AM_CONDITIONAL(BUILD_GMP_REMEZ,
+  [test "x${enable_gmp}x" = "xyesx" ])
 
 
 dnl Try to compile a QDP++ program to check the --with options
