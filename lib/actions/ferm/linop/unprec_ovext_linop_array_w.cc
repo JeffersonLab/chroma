@@ -1,4 +1,4 @@
-/* $Id: unprec_ovext_linop_array_w.cc,v 1.6 2005-01-04 06:52:04 edwards Exp $
+/* $Id: unprec_ovext_linop_array_w.cc,v 1.7 2005-01-17 18:26:13 edwards Exp $
 /*! \file
 *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
 */
@@ -43,8 +43,8 @@ namespace Chroma
     for(int n=1; n <= NN5; ++n)
     {
       Real theta = twopi*(n - 0.5)/(4*NN5);
-      cc[n] = pow(cos(theta),2);
-      ss[n] = sin(theta);
+      cc[n-1] = pow(cos(theta),2);
+      ss[n-1] = sin(theta);
     }
   }
 
@@ -85,7 +85,7 @@ namespace Chroma
       }
       else
       {
-	int nn = (n-1) >> 1;
+	int nn = (n >> 1) - 1;
 	D(tmp, psi[n], PLUS);
 	chi[n] = ss[nn]*psi[n-1] - a5*(Gamma(G5)*tmp);
       }
@@ -94,5 +94,43 @@ namespace Chroma
     END_CODE();
   }
 
+
+  //! Derivative
+  void 
+  UnprecOvExtLinOpArray::deriv(multi1d<LatticeColorMatrix>& ds_u, 
+			       const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
+			       enum PlusMinus isign) const
+  {
+    START_CODE();
+
+    ds_u.resize(Nd);
+    ds_u = zero;
+
+    int G5 = Ns*Ns - 1;
+
+    // Run through all the pseudofermion fields
+    multi1d<LatticeColorMatrix> ds_tmp(Nd);
+    LatticeFermion  tmp;
+
+    for(int n=0; n < N5; ++n)
+    {
+      if ((n & 1) == 1)
+      {
+	int nn = (n-1) >> 1;
+	tmp = (a5*cc[nn])*(Gamma(G5)*chi[n]);
+	D.deriv(ds_tmp, tmp, psi[n], PLUS);
+      }
+      else
+      {
+	int nn = (n >> 1) - 1;
+	tmp = - a5*(Gamma(G5)*chi[n]);
+	D.deriv(ds_tmp, tmp, psi[n], PLUS);
+      }
+
+      ds_u += ds_tmp;
+    }
+
+    END_CODE();
+  }
 }; // End Namespace Chroma
 
