@@ -195,6 +195,9 @@ propagator_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 propagator_comp_SOURCES = propagator_comp.cc
 propagator_comp_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
+seqsource_SOURCES = seqsource.cc
+seqsource_DEPENDENCIES = build_chroma_libs rebuild_other_libs
+
 multi_propagator_SOURCES = multi_propagator.cc
 multi_propagator_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
@@ -340,11 +343,9 @@ am_qqq_w_OBJECTS = qqq_w.$(OBJEXT)
 qqq_w_OBJECTS = $(am_qqq_w_OBJECTS)
 qqq_w_LDADD = $(LDADD)
 qqq_w_LDFLAGS =
-seqsource_SOURCES = seqsource.c
-seqsource_OBJECTS = seqsource.$(OBJEXT)
+am_seqsource_OBJECTS = seqsource.$(OBJEXT)
+seqsource_OBJECTS = $(am_seqsource_OBJECTS)
 seqsource_LDADD = $(LDADD)
-@BUILD_SSE_WILSON_DSLASH_TRUE@seqsource_DEPENDENCIES =
-@BUILD_SSE_WILSON_DSLASH_FALSE@seqsource_DEPENDENCIES =
 seqsource_LDFLAGS =
 am_sink_smearing_OBJECTS = sink_smearing.$(OBJEXT)
 sink_smearing_OBJECTS = $(am_sink_smearing_OBJECTS)
@@ -377,10 +378,6 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/sink_smearing.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/spectrum_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/wallformfac.Po
-COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
-	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-CCLD = $(CC)
-LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -393,16 +390,16 @@ DIST_SOURCES = $(ExampleBuildingBlocks_SOURCES) $(bar3ptfn_SOURCES) \
 	$(multi_propagator_comp_SOURCES) $(propagator_SOURCES) \
 	$(propagator_comp_SOURCES) $(qpropadd_SOURCES) \
 	$(qpropgfix_SOURCES) $(qproptransf_SOURCES) \
-	$(qproptrev_SOURCES) $(qqq_w_SOURCES) seqsource.c \
+	$(qproptrev_SOURCES) $(qqq_w_SOURCES) $(seqsource_SOURCES) \
 	$(sink_smearing_SOURCES) $(spectrum_w_SOURCES) \
 	$(wallformfac_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(ExampleBuildingBlocks_SOURCES) $(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) $(collect_multi_propcomp_SOURCES) $(collect_propcomp_SOURCES) $(hypsmear_SOURCES) $(make_source_SOURCES) $(multi_propagator_SOURCES) $(multi_propagator_comp_SOURCES) $(propagator_SOURCES) $(propagator_comp_SOURCES) $(qpropadd_SOURCES) $(qpropgfix_SOURCES) $(qproptransf_SOURCES) $(qproptrev_SOURCES) $(qqq_w_SOURCES) seqsource.c $(sink_smearing_SOURCES) $(spectrum_w_SOURCES) $(wallformfac_SOURCES)
+SOURCES = $(ExampleBuildingBlocks_SOURCES) $(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) $(collect_multi_propcomp_SOURCES) $(collect_propcomp_SOURCES) $(hypsmear_SOURCES) $(make_source_SOURCES) $(multi_propagator_SOURCES) $(multi_propagator_comp_SOURCES) $(propagator_SOURCES) $(propagator_comp_SOURCES) $(qpropadd_SOURCES) $(qpropgfix_SOURCES) $(qproptransf_SOURCES) $(qproptrev_SOURCES) $(qqq_w_SOURCES) $(seqsource_SOURCES) $(sink_smearing_SOURCES) $(spectrum_w_SOURCES) $(wallformfac_SOURCES)
 
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .c .cc .o .obj
+.SUFFIXES: .cc .o .obj
 $(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.ac $(ACLOCAL_M4)
 	cd $(top_srcdir) && \
 	  $(AUTOMAKE) --gnu  mainprogs/main/Makefile
@@ -461,7 +458,7 @@ qqq_w$(EXEEXT): $(qqq_w_OBJECTS) $(qqq_w_DEPENDENCIES)
 	$(CXXLINK) $(qqq_w_LDFLAGS) $(qqq_w_OBJECTS) $(qqq_w_LDADD) $(LIBS)
 seqsource$(EXEEXT): $(seqsource_OBJECTS) $(seqsource_DEPENDENCIES) 
 	@rm -f seqsource$(EXEEXT)
-	$(LINK) $(seqsource_LDFLAGS) $(seqsource_OBJECTS) $(seqsource_LDADD) $(LIBS)
+	$(CXXLINK) $(seqsource_LDFLAGS) $(seqsource_OBJECTS) $(seqsource_LDADD) $(LIBS)
 sink_smearing$(EXEEXT): $(sink_smearing_OBJECTS) $(sink_smearing_DEPENDENCIES) 
 	@rm -f sink_smearing$(EXEEXT)
 	$(CXXLINK) $(sink_smearing_LDFLAGS) $(sink_smearing_OBJECTS) $(sink_smearing_LDADD) $(LIBS)
@@ -501,28 +498,6 @@ distclean-compile:
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
-
-.c.o:
-@am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o $@ `test -f '$<' || echo '$(srcdir)/'`$<; \
-@am__fastdepCC_TRUE@	then mv "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; \
-@am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(COMPILE) -c `test -f '$<' || echo '$(srcdir)/'`$<
-
-.c.obj:
-@am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o $@ `if test -f '$<'; then $(CYGPATH_W) '$<'; else $(CYGPATH_W) '$(srcdir)/$<'; fi`; \
-@am__fastdepCC_TRUE@	then mv "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; \
-@am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(COMPILE) -c `if test -f '$<'; then $(CYGPATH_W) '$<'; else $(CYGPATH_W) '$(srcdir)/$<'; fi`
 
 .cc.o:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" \
