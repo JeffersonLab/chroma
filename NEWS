@@ -1,3 +1,8 @@
+02/02/2005 -- Robert Edwards
+
+	Version 1.18.9. Added missing files to lib/Makefile.am .
+        Upgraded Remez codes. New configure switch for GMP.
+
 02/01/2005 -- Robert Edwards
 
 	Version 1.18.8. Cosmetic changes. Code sync.
