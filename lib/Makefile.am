@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.242 2005-01-28 05:07:44 edwards Exp $
+# $Id: Makefile.am,v 1.243 2005-02-01 21:23:24 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -21,6 +21,10 @@ nobase_include_HEADERS = \
 	actions/boson/operator/klein_gord.h \
 	actions/ferm/ferm.h actions/ferm/fermacts/asqtad_state.h \
 	actions/ferm/fermacts/fermacts.h \
+	actions/ferm/fermacts/bigfloat.h \
+	actions/ferm/fermacts/remez.h \
+	actions/ferm/fermacts/remez_stub.h \
+	actions/ferm/fermacts/remez_gmp.h \
 	actions/ferm/fermacts/zolotarev.h \
 	actions/ferm/fermacts/overlap_state.h \
 	actions/ferm/fermbcs/fermbcs.h \
@@ -341,6 +345,7 @@ lib_LIBRARIES = libchroma.a
 libchroma_a_SOURCES = \
 	actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/overlap_state.cc \
+	actions/ferm/fermacts/remez_gmp.cc \
 	actions/ferm/fermacts/zolotarev_coeffs.cc \
 	actions/ferm/fermbcs/simple_fermbc.cc \
 	actions/ferm/invert/invbicgstab.cc \
