@@ -13,5 +13,5 @@
  *  Routines for reading and writing propagator
  */
 
-void readQpropFollana(char file[], LatticePropagator& quark_prop);
+void readQpropFollana(char file[], LatticePropagator& quark_prop, bool swap);
 #endif

@@ -43,7 +43,7 @@ check_PROGRAMS  = t_mesplq t_io t_mesons_w t_conslinop t_hypsmear \
 ## 'make t_dslashm' and 'make t_lwldslash' are still there for further
 ## development
 
-EXTRA_PROGRAMS  = t_dslashm t_lwldslash t_spprod t_lwldslash_sse t_follana_io_s t_formfac 
+EXTRA_PROGRAMS  = t_dslashm t_lwldslash t_spprod t_lwldslash_sse t_follana_io_s t_formfac  t_follana_pion_s
 
 ## DEPENDENCIES = build_chroma_libs
 
@@ -97,6 +97,9 @@ t_spprod_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_follana_io_s_SOURCES = t_follana_io_s.cc
 t_follana_io_s_DEPENDENCIES = build_chroma_libs rebuild_other_libs
+
+t_follana_pion_s_SOURCES = t_follana_pion_s.cc
+t_follana_pion_s_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_lwldslash_sse_SOURCES = t_lwldslash_sse.cc
 t_lwldslash_sse_DEPENDENCIES = build_chroma_libs rebuild_other_libs

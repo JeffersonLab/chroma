@@ -1,5 +1,5 @@
 /*
- *  $Id: follana_io_s.cc,v 1.1 2003-10-23 09:44:31 bjoo Exp $
+ *  $Id: follana_io_s.cc,v 1.2 2003-10-23 15:28:17 bjoo Exp $
  *
  *  These are a few simple I/O routines that we can use until QIO makes its appearance
  *  I have tried to include a simple header by means of a structure.
@@ -7,12 +7,12 @@
 
 #include "chromabase.h"
 #include "io/follana_io_s.h"
-
+#include "qdp_util.h"
 #include <string>
 
 using std::string;
 
-void readQpropFollana(char file[], LatticePropagator& quark_prop){
+void readQpropFollana(char file[], LatticePropagator& quark_prop, bool swap){
 
   /*
    *  Now the local variables
@@ -27,7 +27,7 @@ void readQpropFollana(char file[], LatticePropagator& quark_prop){
   const multi1d<int>& latt_size = Layout::lattSize();
   multi1d<int> coords(Nd);
 
-  multi1d<Real32> buf( latt_size[0]*Nc*Nc*2 );
+  multi1d<Real64> buf( latt_size[0]*Nc*Nc*2 );
   /* Get size of the lattice */
   /* Read the file somehow */
 
@@ -37,7 +37,13 @@ void readQpropFollana(char file[], LatticePropagator& quark_prop){
     for( z = 0; z < latt_size[2]; z++) { 
       for( y = 0; y < latt_size[1]; y++ ) {
 
+
+        
 	read(prop_in, buf, latt_size[0]*Nc*Nc*2);
+
+	if( swap == true ) { 
+	  QDPUtil::byte_swap((void *)&buf[0], sizeof(Real64), latt_size[0]*Nc*Nc*2 );
+        } 
 	index = 0;
 
 	for( x = 0; x < latt_size[0]; x++) {
@@ -57,9 +63,9 @@ void readQpropFollana(char file[], LatticePropagator& quark_prop){
 
 		  Real32 re, im;
 		  
-		  re = buf[index];
+		  re = (Real32)(buf[index]);
 		  index++;
-		  im = buf[index];
+		  im = (Real32)(buf[index]);
 		  index++;
 
 		  tmp_cmpx = cmplx(Real(re), Real(im));
@@ -87,4 +93,5 @@ void readQpropFollana(char file[], LatticePropagator& quark_prop){
     }
   }
 }
+
 
