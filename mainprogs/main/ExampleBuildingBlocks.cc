@@ -24,7 +24,7 @@
 //#####################################################################################
 
 static const char* const CVSExampleBuildingBlocks_hh =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/mainprogs/main/ExampleBuildingBlocks.cc,v 1.6 2003-10-09 20:32:37 edwards Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/mainprogs/main/ExampleBuildingBlocks.cc,v 1.7 2003-10-15 21:59:10 edwards Exp $";
 
 //#####################################################################################
 //#####################################################################################
@@ -33,7 +33,7 @@ static const char* const CVSExampleBuildingBlocks_hh =
 #include <string.h>
 #include <assert.h>
 #include "qdp.h"
-#include "qdp_util.h"
+#include "qdp_iogauge.h"
 #include "chroma.h"
 
 using namespace QDP;
