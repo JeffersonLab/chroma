@@ -1,5 +1,5 @@
 /*
- *  $Id: qprop_io.cc,v 1.7 2003-10-20 20:34:29 edwards Exp $
+ *  $Id: qprop_io.cc,v 1.8 2004-02-04 16:57:21 sbasak Exp $
  *
  *  These are a few simple I/O routines that we can use until QIO makes its appearance
  *  I have tried to include a simple header by means of a structure.
@@ -20,10 +20,14 @@ void read(XMLReader& xml, const string& path, PropHead& header)
   read(xml, path + "/source_type", header.source_type);
   read(xml, path + "/source_direction",  header.source_direction);
   read(xml, path + "/source_laplace_power",  header.source_laplace_power);
+  read(xml, path + "/source_disp_length", header.source_disp_length);
+  read(xml, path + "/source_disp_dir", header.source_disp_dir);
   read(xml, path + "/sink_smearingparam", header.sink_smearingparam);
   read(xml, path + "/sink_type",  header.sink_type);
   read(xml, path + "/sink_direction", header.sink_direction);
   read(xml, path + "/sink_laplace_power",  header.sink_laplace_power);
+  read(xml, path + "/sink_disp_length", header.sink_disp_length);
+  read(xml, path + "/sink_disp_dir", header.sink_disp_dir);
 }
 
 
@@ -36,10 +40,14 @@ void write(XMLWriter& xml, const string& path, const PropHead& header)
   write(xml, "source_type", header.source_type);
   write(xml, "source_direction",  header.source_direction);
   write(xml, "source_laplace_power",  header.source_laplace_power);
+  write(xml, "source_disp_length", header.sink_disp_length);
+  write(xml, "source_disp_dir", header.sink_disp_dir);
   write(xml, "sink_smearingparam", header.sink_smearingparam);
   write(xml, "sink_type",  header.sink_type);
   write(xml, "sink_direction", header.sink_direction);
   write(xml, "sink_laplace_power",  header.sink_laplace_power);
+  write(xml, "sink_disp_length", header.sink_disp_length);
+  write(xml, "sink_disp_dir", header.sink_disp_dir);
   pop(xml);
 }
 

@@ -18,10 +18,14 @@ struct PropHead{
   int source_type;		// S-wave (0) or P-wave  (1)
   int source_direction;         // S-wave (0);   P-wave x(0) y(1) z(2)
   int source_laplace_power;
+  int source_disp_length;
+  int source_disp_dir;		// x(0), y(1), z(2)
   int sink_smearingparam;
   int sink_type;
   int sink_direction;
   int sink_laplace_power;
+  int sink_disp_length;
+  int sink_disp_dir;
 };
 
 
