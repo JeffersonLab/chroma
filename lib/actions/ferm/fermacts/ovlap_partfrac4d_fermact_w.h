@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ovlap_partfrac4d_fermact_w.h,v 1.1 2004-09-27 12:00:18 bjoo Exp $
+// $Id: ovlap_partfrac4d_fermact_w.h,v 1.2 2004-09-27 20:18:15 bjoo Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -155,7 +155,7 @@ namespace Chroma
     
     // Create state functions
     //! Generic I/O Override...
-    const ConnectState* createState(const multi1d<LatticeColorMatrix>& u, 
+    const OverlapConnectState<LatticeFermion>* createState(const multi1d<LatticeColorMatrix>& u, 
 				    XMLReader& state_info_xml,
 				    const string& state_info_path) const;
 
@@ -199,7 +199,7 @@ namespace Chroma
     linOp(Handle<const ConnectState> state) const;
 
     const LinearOperator<LatticeFermion>* 
-    linOpPrecondition(Handle<const ConnectState> state) const;
+    linOpPrecondition(Handle<const ConnectState > state) const;
 
     //! Produce a linear operator M^dag.M for this action
     /*! 

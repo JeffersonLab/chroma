@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: overlap_state.h,v 1.4 2004-09-27 14:58:43 bjoo Exp $
+// $Id: overlap_state.h,v 1.5 2004-09-27 20:18:15 bjoo Exp $
 /*! @file
  * @brief Connection state holding eigenvectors
  *
@@ -19,7 +19,7 @@ using namespace QDP;
 namespace Chroma
 {
   template<typename T>
-  class OverlapConnectState
+  class OverlapConnectState : public ConnectState
   {
   public:
 
@@ -89,6 +89,7 @@ namespace Chroma
 
   };
 
+  /*
   using namespace Chroma;
   namespace OverlapConnectStateEnv { 
 
@@ -154,11 +155,16 @@ namespace Chroma
       multi1d<LatticeColorMatrix> u_tmp = u_;
       fbc.modifyU(u_tmp);
       
-      return new OverlapConnectState<LatticeFermion>(u_tmp, lambda_lo_, evecs_lo_, lambda_hi_, approxMin, approxMax);
+      return new OverlapConnectState<T>(u_tmp, 
+					lambda_lo_, 
+					evecs_lo_, 
+					lambda_hi_, 
+					approxMin, 
+					approxMax);
     }    
 
 
-    //! Create from 
+    //! Create from OverlapStateInfo Structure
     template<typename T>
     static const OverlapConnectState<T>*
     createState(const multi1d<LatticeColorMatrix>& u_,
@@ -169,10 +175,10 @@ namespace Chroma
       
       // If No eigen values specified use min and max
       if ( state_info.getNWilsVec() == 0 ) { 
-	return createState(u_,
-			   fbc,
-			   state_info.getApproxMin(),
-			   state_info.getApproxMax());
+	return OverlapConnectStateEnv::createState(u_,
+						   fbc,
+						   state_info.getApproxMin(),
+						   state_info.getApproxMax());
       }
       else {
 	
@@ -217,6 +223,15 @@ namespace Chroma
 	  QDPIO::cout << " |lambda_high|" << lambda_hi;
 	  
 	  // Test the e-values
+	  // BEASTLY HACKERY!!!!
+	  //  In order to test the evecs I need to create a ConnectState
+	  //  for the fermions. I am assuming here, that the AuxiliaryFermAct
+	  //  needs only a SimpleConnectState and I manufacture it by 
+	  //  hand after applying the BC's of the calling Operator.
+	  //  This goes hand in hand with the problem of turning 
+	  //  a potentially 5D FermBC into a 4D one. If I could do that
+	  //  then I wouldn't need to hack trivial 
+
 	  multi1d<LatticeColorMatrix> u_test = u_;
 	  fbc.modifyU(u_test);
 	  Handle< const ConnectState > wils_connect_state(new SimpleConnectState(u_test));
@@ -239,11 +254,10 @@ namespace Chroma
 	    QDPIO::cout << "Eigenpair " << i << " Resid Norm = " 
 			<< check_norm[i] << " Resid Rel Norm = " << check_norm_rel[i] << endl;
 	  }
-	  /*
+
 	    write(xml_out, "eigen_norm", check_norm);
 	    write(xml_out, "eigen_rel_norm", check_norm_rel);
-	  */
-	  
+
 	  return createState(u_, fbc, lambda_lo, eigv_lo, lambda_hi);
 	}
 	else if( state_info.computeEigVec() ) {
@@ -275,7 +289,7 @@ namespace Chroma
     }
     
   };
-  
+*/  
 };
 
 #endif
