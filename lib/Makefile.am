@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.250 2005-02-07 04:14:30 edwards Exp $
+# $Id: Makefile.am,v 1.251 2005-02-10 18:03:51 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -327,7 +327,8 @@ nobase_include_HEADERS += \
 	meas/inline/glue/glue.h \
 	meas/inline/glue/inline_glue_aggregate.h \
 	meas/inline/glue/inline_plaquette.h \
-	meas/inline/glue/inline_polylp.h
+	meas/inline/glue/inline_polylp.h \
+	meas/inline/glue/inline_wilslp.h
 
 #
 # Include Path
@@ -572,7 +573,8 @@ libchroma_a_SOURCES += \
 	meas/inline/eig/inline_eigbnds.cc \
 	meas/inline/glue/inline_glue_aggregate.cc \
 	meas/inline/glue/inline_plaquette.cc \
-	meas/inline/glue/inline_polylp.cc
+	meas/inline/glue/inline_polylp.cc \
+	meas/inline/glue/inline_wilslp.cc
 
 
 #
