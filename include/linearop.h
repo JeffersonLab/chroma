@@ -1,11 +1,14 @@
 // -*- C++ -*-
-// $Id: linearop.h,v 1.5 2003-03-29 06:34:29 edwards Exp $
+// $Id: linearop.h,v 1.6 2003-03-30 17:14:58 edwards Exp $
 
 /*! @file
  * @brief Linear Operators
  */
 
-QDP_BEGIN_NAMESPACE(QDP);
+#ifndef __linearop_h__
+#define __linearop_h__
+
+using namespace QDP;
 
 /*! @defgroup linop Linear Operators
  *
@@ -51,7 +54,6 @@ public:
 };
 
 
-
 /** @} */ // end of group linop
 
-QDP_END_NAMESPACE();
+#endif
