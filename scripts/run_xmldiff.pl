@@ -1,5 +1,5 @@
 #
-#  $Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/scripts/run_xmldiff.pl,v 1.3 2004-12-09 12:58:54 mcneile Exp $
+#  $Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/scripts/run_xmldiff.pl,v 1.4 2004-12-19 15:25:35 mcneile Exp $
 #
 #  This is wrapper script to run the xmldiff application from
 #  a makefile
@@ -49,6 +49,14 @@ else
                        metric       => "../../tests/t_asqtad_prop/t_propagator_s_METRIC.xml" ,
                        controlfile  => "../../tests/t_asqtad_prop/t_propagator_s.xml" ,
 		   },
+
+
+	  t_disc_loop_s => {
+                       output      =>  "t_disc_loop_s.xml",
+                       metric       => "../../tests/t_asqtad_prop/t_disc_loop_s_METRIC.xml" ,
+                       controlfile  => "../../tests/t_asqtad_prop/t_disc_loop_s.xml" ,
+		   },
+
 
 	  t_lower_tests  => {
                        output      => "t_lower_tests.xml",
