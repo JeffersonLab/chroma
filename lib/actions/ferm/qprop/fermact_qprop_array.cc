@@ -1,4 +1,4 @@
-// $Id: fermact_qprop_array.cc,v 1.1 2003-11-12 22:16:22 edwards Exp $
+// $Id: fermact_qprop_array.cc,v 1.2 2003-11-13 04:15:00 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *
@@ -6,8 +6,8 @@
  */
 
 #include "chromabase.h"
-#include "fermactarray.h"
-#include "actions/ferm/invert/invcg2array.h"
+#include "fermact_array.h"
+#include "actions/ferm/invert/invcg2_array.h"
 
 using namespace QDP;
 
@@ -48,17 +48,17 @@ void qprop_t(const FermionActionArray<T>& me,
   /* This allocates field for the appropriate action */
   const LinearOperator< multi1d<T> >* A = me.linOp(u);
 
-  T tmp;
-
   switch(invType)
   {
   case CG_INVERTER: 
+  {
     /* chi_1 = M_dag(u) * chi_1 */
-    tmp = (*A)(chi, MINUS);
+    multi1d<T> tmp = (*A)(chi, MINUS);
     
     /* psi = (M^dag * M)^(-1) chi */
     InvCG2 (*A, tmp, psi, RsdCG, MaxCG, n_count);
-    break;
+  }
+  break;
   
 #if 0
   case MR_INVERTER:
@@ -89,14 +89,14 @@ void qprop_t(const FermionActionArray<T>& me,
 
 
 template<>
-void FermionActionArray<LatticeFermion>::qprop(multi1d<LatticeFermion>& psi, 
-					       const multi1d<LatticeColorMatrix>& u, 
-					       const multi1d<LatticeFermion>& chi, 
-					       enum InvType invType,
-					       const Real& RsdCG, 
-					       int MaxCG, int& ncg_had) const
+void FermionActionArray<LatticeFermion>::qpropT(multi1d<LatticeFermion>& psi, 
+						const multi1d<LatticeColorMatrix>& u, 
+						const multi1d<LatticeFermion>& chi, 
+						enum InvType invType,
+						const Real& RsdCG, 
+						int MaxCG, int& ncg_had) const
 {
-  qprop_t(*this, psi, u, chi, invType, RsdCG, MaxCG, ncg_had);
+  qprop_t<LatticeFermion>(*this, psi, u, chi, invType, RsdCG, MaxCG, ncg_had);
 }
 
 
