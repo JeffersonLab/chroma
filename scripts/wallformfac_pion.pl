@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: wallformfac_pion.pl,v 1.7 2004-06-18 01:35:22 edwards Exp $
+# $Id: wallformfac_pion.pl,v 1.8 2004-06-24 04:51:59 edwards Exp $
 #
 # Usage
 #   formfact.pl
@@ -250,7 +250,7 @@ foreach $qsq_int (keys %pion_cnt)
 }
 
 #
-# Extract Z_V for chuckles
+# Extract Z_V for analysis
 #
 print "Extract Z_V";
 &ensbc("Z_V = 1 / extract(${mes}_r_mu3_q0,$t_ins)");
