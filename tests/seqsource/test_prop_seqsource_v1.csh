@@ -2,7 +2,7 @@
 
 set builddir = ../../scalar/mainprogs/main
 
-foreach i (NUCL_U_UNPOL NUCL_D_UNPOL NUCL_U_POL NUCL_D_POL PION)
+foreach i (NUCL_U_UNPOL NUCL_D_UNPOL NUCL_U_POL NUCL_D_POL NUCL_U_MIXED_NONREL NUCL_D_MIXED_NONREL PION)
 
 /bin/rm -f DATA
 
