@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 1.14 2004-04-16 14:58:29 bjoo Exp $
+// $Id: qprop_io.cc,v 1.15 2004-04-16 17:04:49 bjoo Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -122,7 +122,7 @@ void initHeader(ChromaProp_t& header)
 // Initialize header with default values
 void initHeader(ChromaMultiProp_t& header)
 {
-  header.version     = 1;
+  header.version     = 5;
   header.nrow        = Layout::lattSize();
 
   // initHeader(header.anisoParam);
@@ -310,7 +310,7 @@ void read(XMLReader& xml, const string& path, ChromaMultiProp_t& param)
   switch (param.version) 
   {
     /**************************************************************************/
-  case 1:
+  case 5:  // Backward compatibility with non Multi ChromaProp_t
     /**************************************************************************/
     read(paramtop, "MultiMasses", param.MultiMasses);
     read(paramtop, "FermTypeP", param.FermTypeP);
@@ -441,7 +441,7 @@ void write(XMLWriter& xml, const string& path, const ChromaMultiProp_t& header)
   push(xml, path);
 
   switch( header.version) { 
-  case 1:
+  case 5: // Backward compatibility with non Multi version
     write(xml, "version", header.version);
     write(xml, "FermTypeP", header.FermTypeP);
     write(xml, "MultiMasses", header.MultiMasses);

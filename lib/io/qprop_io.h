@@ -1,4 +1,4 @@
-// $Id: qprop_io.h,v 1.9 2004-04-16 14:58:29 bjoo Exp $
+// $Id: qprop_io.h,v 1.10 2004-04-16 17:04:49 bjoo Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -64,23 +64,6 @@ struct PropSink_t
 };
 
 
-//! Propagator inversion parameters
-class ChromaProp_t { 
- public:
-  int             version;
-  FermType        FermTypeP;
-  
-  // Uninitialised to start with (should hold null pointer)
-  FermActParams* FermActHandle;
-  
-  InvertParam_t   invParam;   // Inverter parameters
-  multi1d<int>    boundary;
-  multi1d<int>    nrow;          // lattice size
-  
-  ChromaProp_t(void) { FermActHandle = 0x0 ; }
-  ~ChromaProp_t(void) { if ( FermActHandle != 0x0 ) delete FermActHandle ; }
-};
-
 class ChromaMultiProp_t { 
  public:
   int             version;
@@ -94,8 +77,39 @@ class ChromaMultiProp_t {
   multi1d<int>    nrow;          // lattice size
  
   multi1d<Real>   MultiMasses;
+  ChromaMultiProp_t(void) { FermActHandle = 0x0 ; }
+  ~ChromaMultiProp_t(void) { if ( FermActHandle != 0x0 ) delete FermActHandle ; }
+};
+
+//! Propagator inversion parameters
+class ChromaProp_t { 
+ public:
+  int             version;
+  FermType        FermTypeP;
+  
+  // Uninitialised to start with (should hold null pointer)
+  FermActParams* FermActHandle;
+  
+  InvertParam_t   invParam;   // Inverter parameters
+  multi1d<int>    boundary;
+  multi1d<int>    nrow;          // lattice size
+  
+
   ChromaProp_t(void) { FermActHandle = 0x0 ; }
   ~ChromaProp_t(void) { if ( FermActHandle != 0x0 ) delete FermActHandle ; }
+
+  ChromaProp_t(const ChromaMultiProp_t &p, int m) : version(p.version), FermTypeP(p.FermTypeP), invParam(p.invParam), boundary(p.boundary), nrow(p.nrow) {
+    
+    // Clone through virtualt fucntions
+    FermActHandle = p.FermActHandle->clone();
+
+    // Set up the mass
+    FermActHandle->setMass( p.MultiMasses[m] );
+  }
+
+    
+      
+    
 };
 
 
