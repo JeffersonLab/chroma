@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.253 2004-11-01 12:52:46 bjoo Exp $
+# $Id: Makefile.in,v 1.254 2004-11-01 19:11:17 ikuro Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -390,6 +390,7 @@ nobase_include_HEADERS = \
 	meas/smear/gaus_smear.h meas/smear/hyp_smear.h \
 	meas/smear/laplacian.h meas/smear/smear.h meas/smear/wvfkind.h \
 	meas/smear/sink_smear2.h \
+	meas/smear/stout_smear.h \
 	meas/sources/sources.h meas/sources/srcsnktype.h \
 	meas/sources/wavetype.h \
 	util/ferm/ferm.h util/ferm/transf.h util/ft/ft.h \
@@ -461,6 +462,7 @@ libchroma_a_SOURCES = gauge_startup.cc gaugebc_utils.cc gaugeact_utils.cc \
                szin_io.cc readszin.cc writeszin.cc su3proj.cc sun_proj.cc \
                gaus_smear.cc hyp_smear.cc ape_smear.cc fuzz_smear.cc \
                klein_gord.cc laplacian.cc displacement.cc sink_smear2.cc \
+               stout_smear.cc \
                su2extract.cc sunfill.cc invcg1.cc inv_rel_cg1.cc \
 	       invcg2.cc inv_rel_cg2.cc invcg1_array.cc \
 	       invcg2_array.cc invcg2_timing_hacks.cc minvcg.cc minv_rel_cg.cc\
@@ -502,6 +504,7 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc gaugebc_utils.cc \
 	szin_io.cc readszin.cc writeszin.cc su3proj.cc sun_proj.cc \
 	gaus_smear.cc hyp_smear.cc ape_smear.cc fuzz_smear.cc \
 	klein_gord.cc laplacian.cc displacement.cc sink_smear2.cc \
+	stout_smear.cc \
 	su2extract.cc sunfill.cc invcg1.cc inv_rel_cg1.cc invcg2.cc \
 	inv_rel_cg2.cc invcg1_array.cc invcg2_array.cc \
 	invcg2_timing_hacks.cc minvcg.cc minv_rel_cg.cc qprop_io.cc \
@@ -688,6 +691,7 @@ am_libchroma_a_OBJECTS = gauge_startup.$(OBJEXT) gaugebc_utils.$(OBJEXT) \
 	sun_proj.$(OBJEXT) gaus_smear.$(OBJEXT) hyp_smear.$(OBJEXT) \
 	ape_smear.$(OBJEXT) fuzz_smear.$(OBJEXT) klein_gord.$(OBJEXT) \
 	laplacian.$(OBJEXT) displacement.$(OBJEXT) \
+	stout_smear.$(OBJEXT) \
 	sink_smear2.$(OBJEXT) su2extract.$(OBJEXT) sunfill.$(OBJEXT) \
 	invcg1.$(OBJEXT) inv_rel_cg1.$(OBJEXT) invcg2.$(OBJEXT) \
 	inv_rel_cg2.$(OBJEXT) invcg1_array.$(OBJEXT) \
@@ -848,6 +852,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/rot_colvec.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/seqpiontest_w.Po ./$(DEPDIR)/sftmom.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/sink_smear2.Po ./$(DEPDIR)/sn_jacob.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/stout_smear.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/sn_jacob_array.Po ./$(DEPDIR)/srcfil.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/stag_phases_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/stag_propShift_s.Po \
@@ -1135,6 +1140,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seqpiontest_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sftmom.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sink_smear2.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stout_smear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sn_jacob.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sn_jacob_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/srcfil.Po@am__quote@

@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.185 2004-10-30 13:40:09 mcneile Exp $
+# $Id: Makefile.am,v 1.186 2004-11-01 19:11:17 ikuro Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -126,7 +126,7 @@ nobase_include_HEADERS = \
 	meas/smear/fuzz_smear.h \
 	meas/smear/gaus_smear.h meas/smear/hyp_smear.h \
 	meas/smear/laplacian.h meas/smear/smear.h meas/smear/wvfkind.h \
-	meas/smear/sink_smear2.h \
+	meas/smear/sink_smear2.h meas/smear/stout_smear.h \
 	meas/sources/sources.h meas/sources/srcsnktype.h \
 	meas/sources/wavetype.h \
 	util/ferm/ferm.h util/ferm/transf.h util/ft/ft.h \
@@ -317,6 +317,7 @@ libchroma_a_SOURCES = gauge_startup.cc gaugebc_utils.cc gaugeact_utils.cc \
                szin_io.cc readszin.cc writeszin.cc su3proj.cc sun_proj.cc \
                gaus_smear.cc hyp_smear.cc ape_smear.cc fuzz_smear.cc \
                klein_gord.cc laplacian.cc displacement.cc sink_smear2.cc \
+               stout_smear.cc \
                su2extract.cc sunfill.cc invcg1.cc inv_rel_cg1.cc \
 	       invcg2.cc inv_rel_cg2.cc invcg1_array.cc \
 	       invcg2_array.cc invcg2_timing_hacks.cc minvcg.cc minv_rel_cg.cc\
