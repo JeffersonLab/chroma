@@ -1,9 +1,5 @@
       Laundry List   -  23 Feb 2005
 
-\item (*) Implement full Chrono predictor for HMC. This could win
-a factor of 2 based on comparisons of CG counts for linear pred.
-and RBC full chrono cg counts. {\em B\'alint: 4D DONE, 23/02/05. 5D Still to do}
-
 \item (*) H_T ContFrac cost-vs-mres tests
 
 \item (*) Add force monitoring for HMC. Currently, we have energy
@@ -47,6 +43,6 @@ in chroma/mainprogs/main
 
 \item Simple aniso for DWF - fix weirdness
 
-\item 4D Chrono Predictor Done. - 5D Still to do.
+\item 4D Chrono Predictor Done. (23/Feb/2005) - 5D Chrono Predictor Done (24/Feb 2004) 
 
 \item BAGEL Running on Bluegene/L using QCDOC target and QMP_v2. IBM needs checking/porting still (potential XLC/isms). Detailed report to write.
