@@ -1,4 +1,4 @@
-// $Id: wilson_gaugeact_tmp.cc,v 1.1 2004-12-22 19:27:29 edwards Exp $
+// $Id: lw_gaugeact_tmp.cc,v 1.1 2004-12-22 19:28:08 edwards Exp $
 
 //! Computes the derivative of the Wilson (and Symanzik improved)
 /*!
