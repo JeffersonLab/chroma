@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.217 2005-01-06 16:50:35 edwards Exp $
+# $Id: Makefile.am,v 1.218 2005-01-07 04:43:29 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -205,8 +205,10 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/unprec_ppdwf4d_linop_w.h \
 	actions/ferm/qprop/qprop_w.h \
 	actions/ferm/qprop/quarkprop4_w.h \
+	actions/ferm/qprop/dwf_qpropt_w.h \
 	actions/ferm/qprop/dwf_quarkprop4_w.h \
 	actions/ferm/qprop/nef_quarkprop4_w.h \
+	actions/ferm/qprop/prec_fermact_qprop_array.h \
 	io/io_w.h io/barcomp_io.h io/kyuqprop_io.h \
         io/readszinferm_w.h io/readszinqprop_w.h \
 	io/writeszinqprop_w.h \
