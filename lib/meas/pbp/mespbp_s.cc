@@ -1,4 +1,4 @@
-/* $Id: mespbp_s.cc,v 1.1 2004-10-04 02:59:47 edwards Exp $ ($Date: 2004-10-04 02:59:47 $) */
+/* $Id: mespbp_s.cc,v 1.2 2004-11-20 19:50:11 edwards Exp $ ($Date: 2004-11-20 19:50:11 $) */
 
 /* This routine is specific to staggered fermions! */
 
@@ -20,10 +20,10 @@ Double psi_bar_psi;
 { /* Local Variables */
   include(COMMON_DECLARATIONS)
 
-  LatticeFermion eta;
-  LatticeFermion aux;
-  LatticeFermion tmp;
-  LatticeFermion psi;
+  LatticeStaggeredFermion eta;
+  LatticeStaggeredFermion aux;
+  LatticeStaggeredFermion tmp;
+  LatticeStaggeredFermion psi;
   
   Double aux_norm;
   
