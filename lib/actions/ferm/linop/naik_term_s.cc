@@ -1,4 +1,4 @@
-/*  $Id: naik_term_s.cc,v 1.1 2003-12-10 16:20:59 bjoo Exp $  */
+/*  $Id: naik_term_s.cc,v 1.2 2003-12-20 12:10:07 bjoo Exp $  */
 
 /* NAIK_LINKS */
 
@@ -48,7 +48,8 @@ void Triple_Links(multi1d<LatticeColorMatrix> & u,
   
   if (Nd == 4)
   {
-    c_3 = (Real)(-1) / u0*u0*(Real)(24); 
+    c_3 = (Real)(-1) / (u0*u0*(Real)(24)); 
+    QDPIO::cout << "c_3 = " << c_3 << endl;
                     
     for(mu=0; mu < Nd; ++mu)
     {
