@@ -1,4 +1,4 @@
-// $Id: t_lwldslash_sse.cc,v 1.24 2005-02-16 10:41:49 bjoo Exp $
+// $Id: t_lwldslash_sse.cc,v 1.25 2005-03-01 23:23:50 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -76,7 +76,8 @@ int main(int argc, char **argv)
 	  myt2=clock();
 
 	  mydt=double(myt2-myt1)/double(CLOCKS_PER_SEC);
-	  Internal::broadcast(mydt);
+	  Internal::globalSum(mydt);
+	  mydt /= Layout::numNodes();
 
 	  if (mydt > 1) {
 	    first = false;
@@ -95,7 +96,8 @@ int main(int argc, char **argv)
       
       mydt=double(myt2-myt1)/double(CLOCKS_PER_SEC);
       mydt=1.0e6*mydt/double(iter*(Layout::sitesOnNode()/2));
-      Internal::broadcast(mydt);
+      Internal::globalSum(mydt);
+      mydt /= Layout::numNodes();
  
       float mflops = float(1320.0f/mydt);
       QDPIO::cout << "cb = " << cb << " isign = " << isign << endl;
@@ -142,7 +144,9 @@ int main(int argc, char **argv)
 	  myt2=clock();
 
 	  mydt=double(myt2-myt1)/double(CLOCKS_PER_SEC);
-	  Internal::broadcast(mydt);
+	  Internal::globalSum(mydt);
+	  mydt /= Layout::numNodes();
+
 	  if (mydt > 1) {
 	    first = false;
 	    break;
@@ -160,7 +164,8 @@ int main(int argc, char **argv)
       
       mydt=double(myt2-myt1)/double(CLOCKS_PER_SEC);
       mydt=1.0e6*mydt/double(iter*(Layout::sitesOnNode()/2));
-      Internal::broadcast(mydt);
+      Internal::globalSum(mydt);
+      mydt /= Layout::numNodes();
  
       float mflops = float(1320.0f/mydt);
       QDPIO::cout << "cb = " << cb << " isign = " << isign << endl;

@@ -1,4 +1,4 @@
-// $Id: t_lwldslash_pab.cc,v 1.6 2005-02-22 17:11:52 bjoo Exp $
+// $Id: t_lwldslash_pab.cc,v 1.7 2005-03-01 23:23:50 edwards Exp $
 
 
 #include "chroma.h"
@@ -76,7 +76,9 @@ int main(int argc, char **argv)
 	  swatch.stop();
 
 	  mydt=swatch.getTimeInSeconds();
-          Internal::broadcast(mydt);
+	  Internal::globalSum(mydt);
+	  mydt /= Layout::numNodes();
+
 	  if (mydt > 1) {
 	    first = false;
 	    break;
@@ -94,7 +96,8 @@ int main(int argc, char **argv)
       swatch.stop();
       
       mydt=swatch.getTimeInSeconds();
-      Internal::broadcast(mydt);
+      Internal::globalSum(mydt);
+      mydt /= Layout::numNodes();
 
       mydt=1.0e6*mydt/double(iter*(Layout::sitesOnNode()/2));
       
@@ -131,7 +134,9 @@ int main(int argc, char **argv)
 	  swatch.stop();
 
 	  mydt=swatch.getTimeInSeconds();
- 	  Internal::broadcast(mydt);
+	  Internal::globalSum(mydt);
+	  mydt /= Layout::numNodes();
+
           if (mydt > 1) {
 	    first = false;
 	    break;
@@ -149,7 +154,8 @@ int main(int argc, char **argv)
       swatch.stop();
       
       mydt=swatch.getTimeInSeconds();
-      Internal::broadcast(mydt);
+      Internal::globalSum(mydt);
+      mydt /= Layout::numNodes();
       mydt=1.0e6*mydt/double(iter*(Layout::sitesOnNode()/2));
       
       QDPIO::cout << "cb = " << cb << " isign = " << isign << endl;
