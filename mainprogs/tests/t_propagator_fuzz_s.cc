@@ -1,4 +1,4 @@
-// $Id: t_propagator_fuzz_s.cc,v 1.12 2005-01-04 12:15:51 mcneile Exp $
+// $Id: t_propagator_fuzz_s.cc,v 1.13 2005-01-04 15:45:09 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  *
@@ -405,9 +405,12 @@ int main(int argc, char **argv)
   // Use S_f.createState so that S_f can pass in u0
 
   Handle<const ConnectState > state(S_f.createState(u));
-  Handle<const EvenOddLinearOperator<LatticeStaggeredFermion> > D_asqtad(S_f.linOp(state));
+  // Handle<const EvenOddLinearOperator<LatticeStaggeredFermion> > D_asqtad(S_f.linOp(state));
 
-  Handle<const LinearOperator<LatticeStaggeredFermion> > MdagM_asqtad(S_f.lMdagM(state));
+  //Handle<const LinearOperator<LatticeStaggeredFermion> > MdagM_asqtad(S_f.lMdagM(state));
+
+  Handle<const SystemSolver<LatticeStaggeredFermion> > qprop(S_f.qprop(state,input.param.invParam));
+
 
   //
   // Loop over the source color, creating the source
@@ -497,7 +500,8 @@ int main(int argc, char **argv)
 	  // Compute the propagator for given source color/spin 
 	  // int n_count;
 
-	  S_f.qprop(psi, state, q_source, input.param.invParam, n_count);
+	  // S_f.qprop(psi, state, q_source, input.param.invParam, n_count);
+	  n_count = (*qprop)(psi, q_source);
     
 	  ncg_had += n_count;
 
