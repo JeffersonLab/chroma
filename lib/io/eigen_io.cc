@@ -116,7 +116,7 @@ void read(XMLReader &xml, const string& path, ChromaWilsonRitz_t& param)
     }
     else {
       XMLBufferWriter s_i_xml;
-      push(s_i_xml, "StateInfo");
+      push(s_i_xml,"StateInfo");
       pop(s_i_xml);
       param.state_info = s_i_xml.str();
     }
@@ -142,7 +142,29 @@ void write(XMLWriter &xml, const string& path, const ChromaWilsonRitz_t& param)
 
   write(xml, "RitzParams", param.ritz_params);
   write(xml, "Cfg",       param.cfg);
-  write(xml, "StateInfo", param.state_info);
+  
+  // Write out the state info struct, even if it is empty
+  try { 
+    // Make an istream from the XML
+    std::istringstream s_i_i(param.state_info);
+
+    // Make the XMLReader (toplevel)
+    XMLReader r1(s_i_i);
+    
+    // Set context tag to "/StateInfo"
+    XMLReader r2(r1, "/StateInfo");
+
+    // Dump the StateInfo tag and descendets into an ostream
+    ostringstream s_i_o;
+    r2.print(s_i_o);
+
+    // Dump the XML String without an extra header
+    xml << s_i_o.str()  ;
+  }
+  catch( const string& e) { 
+    QDPIO::cerr << "Caught exception : " << e << endl;
+    QDP_abort(1);
+  }
   write(xml, "Eigen",      param.eigen_io_params);
   
   pop(xml);
