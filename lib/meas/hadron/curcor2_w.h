@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: curcor2_w.h,v 1.3 2004-01-05 00:47:20 edwards Exp $
+// $Id: curcor2_w.h,v 1.4 2004-02-03 20:04:53 edwards Exp $
 
 #ifndef __curcor2_h__
 #define __curcor2_h__
@@ -23,7 +23,6 @@
  * \param quark_prop_2    second (anti-) quark propagator ( Read )
  * \param phases          fourier transform phase factors ( Read )
  * \param t0              timeslice coordinate of the source ( Read )
- * \param j_decay         direction of the exponential decay ( Read )
  * \param no_vec_cur      number of vector current types, 3 or 4 ( Read )
  * \param xml             namelist file object ( Read )
  * \param xml_group       string used for writing xml data ( Read )
@@ -41,7 +40,7 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
 	     const LatticePropagator& quark_prop_2, 
 	     const SftMom& phases,
 	     int t0,
-	     int j_decay, int no_vec_cur,
+	     int no_vec_cur,
 	     XMLWriter& xml,
 	     const string& xml_group);
 

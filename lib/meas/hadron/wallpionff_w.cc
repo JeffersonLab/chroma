@@ -1,4 +1,4 @@
-// $Id: wallpionff_w.cc,v 1.3 2004-01-22 22:51:08 edwards Exp $
+// $Id: wallpionff_w.cc,v 1.4 2004-02-03 20:04:53 edwards Exp $
 /*! \file
  *  \brief Wall-sink pion form-factors 
  *
@@ -39,7 +39,7 @@ void wallPionFormFac(XMLWriter& xml,
   const int G5 = Ns*Ns-1;
   
   // Project propagator onto zero momentum: Do a slice-wise sum.
-  Propagator q_x2 = sum(forw_prop, phases.getSubset()[t_sink]);
+  Propagator q_x2 = sum(forw_prop, phases.getSet()[t_sink]);
 
   // Start new array group
   XMLArrayWriter xml_array(xml, Nd);

@@ -1,6 +1,10 @@
-// $Id: dwf_quarkprop4_w.cc,v 1.9 2004-01-30 21:35:49 kostas Exp $
+// $Id: dwf_quarkprop4_w.cc,v 1.10 2004-02-03 20:04:53 edwards Exp $
 // $Log: dwf_quarkprop4_w.cc,v $
-// Revision 1.9  2004-01-30 21:35:49  kostas
+// Revision 1.10  2004-02-03 20:04:53  edwards
+// Changed phases.getSubset() to phases.getSet(). Removed passing j_decay
+// into curcor2
+//
+// Revision 1.9  2004/01/30 21:35:49  kostas
 // added uprec_dwf support
 //
 // Revision 1.8  2004/01/29 19:48:26  kostas
@@ -147,7 +151,7 @@ void dwf_quarkProp4_a(LatticePropagator& q_sol,
    
   SftMom trick(0,false,3) ;
    
-  corr = sumMulti(cfield, trick.getSubset());
+  corr = sumMulti(cfield, trick.getSet());
   // Length of lattice in decay direction
   int length = trick.numSubsets();
   multi1d<Real> mesprop(length);
@@ -167,7 +171,7 @@ void dwf_quarkProp4_a(LatticePropagator& q_sol,
 
   //Now the midpoint Pseudoscalar correlator
   multi1d<Double> tmp(length);
-  tmp = sumMulti(localNorm2(q_mp), trick.getSubset());
+  tmp = sumMulti(localNorm2(q_mp), trick.getSet());
   for(int t(0);t<length; t++){
     int t_eff( (t - t_src + length) % length ) ;
     mesprop[t_eff] = tmp[t] ; // only need the zero momentum

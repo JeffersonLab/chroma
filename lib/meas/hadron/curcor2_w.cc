@@ -1,4 +1,4 @@
-// $Id: curcor2_w.cc,v 1.8 2004-01-05 00:47:20 edwards Exp $
+// $Id: curcor2_w.cc,v 1.9 2004-02-03 20:04:53 edwards Exp $
 /*! \file
  *  \brief Mesonic current correlators
  */
@@ -29,7 +29,6 @@ using namespace QDP;
  * \param quark_prop_2    second (anti-) quark propagator ( Read )
  * \param phases          fourier transform phase factors ( Read )
  * \param t0              timeslice coordinate of the source ( Read )
- * \param j_decay         direction of the exponential decay ( Read )
  * \param no_vec_cur      number of vector current types, 3 or 4 ( Read )
  * \param xml             namelist file object ( Read )
  * \param xml_group       string used for writing xml data ( Read )
@@ -48,7 +47,7 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
 	     const LatticePropagator& quark_prop_2, 
 	     const SftMom& phases,
 	     int t0,
-	     int j_decay, int no_vec_cur,
+	     int no_vec_cur,
 	     XMLWriter& xml,
 	     const string& xml_group)
 {
@@ -63,7 +62,8 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
   write(xml, "num_vec_cur", no_vec_cur);
 
   // Length of lattice in decay direction
-  int length = phases.numSubsets() ;
+  int length  = phases.numSubsets();
+  int j_decay = phases.getDir();
 
   LatticePropagator tmp_prop1;
   LatticePropagator tmp_prop2;
@@ -113,7 +113,7 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
 	Real dummy1 = 0.5;
 
 	/* The nonconserved vector current first */
-	hsum = sumMulti(psi_sq, phases.getSubset());
+	hsum = sumMulti(psi_sq, phases.getSet());
 
 	for(int t = 0; t < length; ++t)
 	{
@@ -122,7 +122,7 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
 	}
 
 	/* The conserved vector current next */
-	hsum = sumMulti(chi_sq, phases.getSubset());
+	hsum = sumMulti(chi_sq, phases.getSet());
 
 	for(int t = 0; t < length; ++t)
 	{
@@ -154,7 +154,7 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
 	  Real dummy1 = - 1;
 
 	  /* Do a slice-wise sum. */
-	  hsum = sumMulti(psi_sq, phases.getSubset());
+	  hsum = sumMulti(psi_sq, phases.getSet());
 
 	  for(int t = 0; t < length; ++t)
 	  {
@@ -184,7 +184,7 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
 	  Real dummy1 = 1;
 
 	  /* Do a slice-wise sum. */
-	  hsum = sumMulti(psi_sq, phases.getSubset());
+	  hsum = sumMulti(psi_sq, phases.getSet());
 
 	  for(int t = 0; t < length; ++t)
 	  {
@@ -239,7 +239,7 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
     Real dummy1 = Real(-1) / Real(2);
 
     /* The local axial current first */
-    hsum = sumMulti(psi_sq, phases.getSubset());
+    hsum = sumMulti(psi_sq, phases.getSet());
 
     for(int t = 0; t < length; ++t)
     {
@@ -248,7 +248,7 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
     }
 
     /* The nonlocal axial current next */
-    hsum = sumMulti(chi_sq, phases.getSubset());
+    hsum = sumMulti(chi_sq, phases.getSet());
 
     for(int t = 0; t < length; ++t)
     {
