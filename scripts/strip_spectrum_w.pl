@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: strip_spectrum_w.pl,v 1.5 2003-07-02 14:37:28 edwards Exp $
+# $Id: strip_spectrum_w.pl,v 1.6 2003-07-16 17:34:02 edwards Exp $
 #
 # SZIN-style stripper for namelist output of spectrum_w.  Namelist output
 # is presented to the stripper on the STDIN.
@@ -78,10 +78,17 @@ while (($found == 0) && defined($_ = <STDIN>)) {
   }  # end if ($Fld[0] eq '&lattis')
 }  # end while (($found == 0) && defined($_ = <STDIN>))
 
+
 $L_t = $nrow{$j_decay} ;
 $L_s = $nrow{0} ;
 
 printf "L=%d  numKappa=%d  dir=%s\n", $L_t, $numKappa, $dir ;
+
+# Clean up some of the names
+$FermTypeP =~ s/\"//g;
+$Wvf_kind  =~ s/\"//g;
+
+
 
 # HACK - in some NML the string was written out as an int...
 if ($FermTypeP eq "WILSON" || $FermTypeP eq "1") {
