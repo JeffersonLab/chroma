@@ -1,4 +1,4 @@
-// $Id: unprec_dwf4d_linop_w.cc,v 1.2 2004-11-08 05:52:33 edwards Exp $
+// $Id: unprec_dwf4d_linop_w.cc,v 1.3 2004-11-09 05:42:45 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -27,16 +27,16 @@ namespace Chroma
     int n_count;
   
     // Initialize the 5D fields
-    multi1d<LatticeFermion> chi5(N5);
-    //  chi5 = (chi,0,0,0,..,0)^T
-    chi5 = zero;
-    chi5[0] = chi;
+    multi1d<LatticeFermion> psi5(N5);
+    //  psi5 = (psi,0,0,0,..,0)^T
+    psi5 = zero;
+    psi5[0] = psi;
 
-    // tmp5 = P . chi5
+    // tmp5 = P . psi5
     multi1d<LatticeFermion> tmp5(N5);
-    DwfFld(tmp5, chi5, PLUS);
+    DwfFld(tmp5, psi5, PLUS);
 
-    multi1d<LatticeFermion> psi5;
+    multi1d<LatticeFermion> chi5(N5);
 
     switch(isign)
       {
