@@ -1,4 +1,4 @@
-// $Id: make_source.cc,v 1.29 2004-04-23 23:58:00 ikuro Exp $
+// $Id: make_source.cc,v 1.30 2004-04-24 03:28:21 edwards Exp $
 /*! \file
  *  \brief Main code for source generation
  */
@@ -61,12 +61,11 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
 
 
 
-//! Propagator generation
-/*! \defgroup propagator Propagator generation
+//! Propagator source generation
+/*! \defgroup make_source Propagator source generation
  *  \ingroup main
  *
- * Main program for propagator generation. Here we need some
- * profound and deep discussion of input parameters.
+ * Main program for propagator source generation.
  */
 
 int main(int argc, char **argv)
@@ -113,38 +112,13 @@ int main(int argc, char **argv)
     QDP_abort(1);
   }
 
-  // Read a gauge field
+  // Start up the gauge field
   multi1d<LatticeColorMatrix> u(Nd);
   XMLReader gauge_file_xml, gauge_xml;
-  QDP::Seed seed_old;
 
-  QDPIO::cout << "Read Gauge field" << endl;
-
-  switch (input.cfg.cfg_type) 
-  {
-  case CFG_TYPE_SZIN:
-    readSzin(gauge_xml, u, input.cfg.cfg_file);
-    read(gauge_xml, "/szin/seed", seed_old);
-    break;
-
-  case CFG_TYPE_SZINQIO:
-    readGauge(gauge_file_xml, gauge_xml, u, input.cfg.cfg_file, QDPIO_SERIAL);
-    read(gauge_xml, "/szin/seed", seed_old);
-    break;
-
-  case CFG_TYPE_NERSC:
-    readArchiv(gauge_xml, u, input.cfg.cfg_file);
-    seed_old = 11;
-    break;
-  default :
-    QDP_error_exit("Configuration type is unsupported.");
-  }
-
-  QDPIO::cout << "Gauge field read!" << endl;
-
-  // Set the rng seed
-  QDP::RNG::setrn (seed_old);
-
+  QDPIO::cout << "Initialize Gauge field" << endl;
+  gaugeStartup(gauge_file_xml, gauge_xml, u, input.cfg);
+  QDPIO::cout << "Gauge field initialized!" << endl;
 
   // Output
   XMLFileWriter xml_out("XMLDAT");
@@ -278,19 +252,6 @@ int main(int argc, char **argv)
 
   case SRC_TYPE_WALL_SOURCE:
   {
-#if 0
-    // This stuff is not needed here - should be in propagator.cc
-
-    // For a wall source, we must Coulomb gauge fix the gauge field
-    Real GFAccu = 1.0e-6;       // Gauge-fixing relaxation accuracy
-    Real OrPara = 1.0;          // Over-relaxation parameter in gauge-fixing
-    int GFMax = 1000;           // Maximum number of gauge-fixing relaxations
-    bool ORlxDo = false;        // Do Over-relaxation in gauge fixing
-    int nrl_gf;                 // Number of relaxations in gauge-fixing
-
-    coulGauge(u, input.param.j_decay, GFAccu, GFMax, nrl_gf, ORlxDo, OrPara);
-#endif
-
     for(int color_source = 0; color_source < Nc; ++color_source)
     {
       for(int spin_source = 0; spin_source < Ns; ++spin_source)
