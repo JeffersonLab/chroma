@@ -1,4 +1,4 @@
-// $Id: t_ritz_KS.cc,v 1.18 2005-01-14 20:13:10 edwards Exp $
+// $Id: t_ritz_KS.cc,v 1.19 2005-02-06 03:45:42 edwards Exp $
 
 #include <iostream>
 #include <sstream>
@@ -106,14 +106,6 @@ int main(int argc, char **argv)
   write(xml_out, "link", link);
   pop(xml_out);
 
-  /* Construct fermionic BC Need one for LatticeFermion and 
-   * multi1d<LatticeFermion>   
-   * Note, the handle is on an ABSTRACT type
-   */
-  Handle< FermBC<LatticeFermion> >  fbc(new SimpleFermBC<LatticeFermion>(input.boundary));
-  Handle< FermBC<multi1d<LatticeFermion> > >  fbc_a(new SimpleFermBC<multi1d<LatticeFermion> >(input.boundary));
-
-
   // Initialise Fermion action
   std::istringstream xml_fermact_string(input.fermact);
   XMLReader fermacttop(xml_fermact_string);
@@ -138,16 +130,16 @@ int main(int argc, char **argv)
 
   bool success = false;
 
+#if 1
   if( ! success ) { 
     try { 
-      QDPIO::cout << "Trying unprec DWF-like actions" << endl;
+      QDPIO::cout << "Trying 5D actions" << endl;
 
       // DWF-like 5D Wilson-Type stuff
-      Handle< UnprecDWFermActBaseArray<LatticeFermion> >
-	S_f(TheUnprecDWFermActBaseArrayFactory::Instance().createObject(fermact,
-									fbc_a,
-									fermacttop,
-									fermact_path));
+      Handle< WilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> > >
+	S_f(TheWilsonTypeFermAct5DFactory::Instance().createObject(fermact,
+								   fermacttop,
+								   fermact_path));
 
       Handle<const ConnectState> state(S_f->createState(u,
 							state_info_xml,
@@ -161,62 +153,10 @@ int main(int argc, char **argv)
       success = true;
     }
     catch(const std::string& e ) { 
-       QDPIO::cout << "Unprec DWF-like: " << e << endl;
+       QDPIO::cout << "5d: " << e << endl;
     }
   }
-
-  if( ! success ) { 
-    try { 
-      QDPIO::cout << "Trying  even odd prec DWF-like actions" << endl;
-
-      // DWF-like 5D Wilson-Type stuff
-      Handle< EvenOddPrecDWFermActBaseArray<LatticeFermion> >
-	S_f(TheEvenOddPrecDWFermActBaseArrayFactory::Instance().createObject(fermact,
-									fbc_a,
-									fermacttop,
-									fermact_path));
-
-      Handle<const ConnectState> state(S_f->createState(u,
-							state_info_xml,
-							state_info_path));
-
-      Handle< const LinearOperator<multi1d<LatticeFermion> > > MM(S_f->lMdagM(state));
-
-      RitzCode5D(MM, input, xml_out);
-
-      success = true;
-    }
-    catch(const std::string& e ) { 
-       QDPIO::cout << "EvenOddPrec DWF-like: " << e << endl;
-    }
-  }
-
-  if( ! success ) { 
-    try { 
-      QDPIO::cout << "Trying 5D Wilson like actions" << endl;
-
-      // DWF-like 5D Wilson-Type stuff
-      Handle< WilsonTypeFermAct< multi1d<LatticeFermion> > >
-	S_f(TheWilsonTypeFermActArrayFactory::Instance().createObject(fermact,
-									fbc_a,
-									fermacttop,
-									fermact_path));
-
-      Handle<const ConnectState> state(S_f->createState(u,
-							state_info_xml,
-							state_info_path));
-
-      Handle< const LinearOperator<multi1d<LatticeFermion> > > MM(S_f->lMdagM(state));
-
-      QDPIO::cout << "LINOP CREATED" << endl << flush <<endl;
-      RitzCode5D(MM, input, xml_out);
-
-      success = true;
-    }
-    catch(const std::string& e ) { 
-       QDPIO::cout << "5D Wilson like: " << e << endl;
-    }
-  }
+#endif
 
   if( ! success ) { 
     try { 
@@ -229,9 +169,8 @@ int main(int argc, char **argv)
 
 	QDPIO::cout << "Special case. Computing Hw e-values and evecs too" << endl;
 	// DWF-like 5D Wilson-Type stuff
-	Handle< WilsonTypeFermAct<LatticeFermion> >
+	Handle< WilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> > >
 	  S_f(TheWilsonTypeFermActFactory::Instance().createObject(fermact,
-								   fbc,
 								   fermacttop,
 								   fermact_path));
 	
@@ -249,9 +188,8 @@ int main(int argc, char **argv)
       }
       else {
 
-	Handle< WilsonTypeFermAct<LatticeFermion> >
+	Handle< WilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> > >
 	  S_f(TheWilsonTypeFermActFactory::Instance().createObject(fermact,
-								   fbc,
 								   fermacttop,
 								   fermact_path));
 	
