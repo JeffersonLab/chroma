@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.287 2004-12-31 17:17:03 bjoo Exp $
+# $Id: Makefile.in,v 1.288 2005-01-02 05:05:29 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -56,8 +56,8 @@ host_triplet = @host@
 #
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_3 = actions/ferm/linop/lwldslash_w_sse.h
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_4 = actions/ferm/linop/lwldslash_w_sse.cc
-@BUILD_SSE_DWF_CG_TRUE@am__append_5 = actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.h
-@BUILD_SSE_DWF_CG_TRUE@am__append_6 = actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc
+@BUILD_SSE_DWF_CG_TRUE@am__append_5 = actions/ferm/qprop/prec_dwf_qprop_array_sse_w.h
+@BUILD_SSE_DWF_CG_TRUE@am__append_6 = actions/ferm/qprop/prec_dwf_qprop_array_sse_w.cc
 @BUILD_PAB_WILSON_DSLASH_TRUE@am__append_7 = actions/ferm/linop/lwldslash_w_pab.h
 @BUILD_PAB_WILSON_DSLASH_TRUE@am__append_8 = actions/ferm/linop/lwldslash_w_pab.cc
 subdir = lib
@@ -235,7 +235,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.cc \
 	update/molecdyn/prec_two_flavor_wilson_ferm_monomial_w.cc \
 	actions/ferm/linop/lwldslash_w_sse.cc \
-	actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc \
+	actions/ferm/qprop/prec_dwf_qprop_array_sse_w.cc \
 	actions/ferm/linop/lwldslash_w_pab.cc \
 	actions/ferm/fermacts/asqtad_fermact_s.cc \
 	actions/ferm/fermbcs/fermbcs_s.cc \
@@ -256,7 +256,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__objects_1 =  \
 @BUILD_SSE_WILSON_DSLASH_TRUE@	lwldslash_w_sse.$(OBJEXT)
 @BUILD_SSE_DWF_CG_TRUE@am__objects_2 =  \
-@BUILD_SSE_DWF_CG_TRUE@	prec_dwf_fermact_array_sse_w.$(OBJEXT)
+@BUILD_SSE_DWF_CG_TRUE@	prec_dwf_qprop_array_sse_w.$(OBJEXT)
 @BUILD_PAB_WILSON_DSLASH_TRUE@am__objects_3 =  \
 @BUILD_PAB_WILSON_DSLASH_TRUE@	lwldslash_w_pab.$(OBJEXT)
 am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
@@ -547,9 +547,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/linop/unprec_dwf4d_linop_w.h \
 	actions/ferm/linop/unprec_pdwf4d_linop_w.h \
 	actions/ferm/linop/unprec_ppdwf4d_linop_w.h \
-	actions/ferm/qprop/qprop_w.h \
-	actions/ferm/qprop/unprec_qprop_w.h \
-	actions/ferm/qprop/quarkprop4_w.h \
+	actions/ferm/qprop/qprop_w.h actions/ferm/qprop/quarkprop4_w.h \
 	actions/ferm/qprop/dwf_quarkprop4_w.h \
 	actions/ferm/qprop/nef_quarkprop4_w.h io/io_w.h \
 	io/barcomp_io.h io/kyuqprop_io.h io/readszinferm_w.h \
@@ -594,7 +592,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	util/ferm/ferm_s.h util/gauge/gauge_s.h \
 	util/gauge/stag_phases_s.h \
 	actions/ferm/linop/lwldslash_w_sse.h \
-	actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.h \
+	actions/ferm/qprop/prec_dwf_qprop_array_sse_w.h \
 	actions/ferm/linop/lwldslash_w_pab.h
 nobase_includeHEADERS_INSTALL = $(install_sh_DATA)
 nodist_includeHEADERS_INSTALL = $(INSTALL_HEADER)
@@ -874,9 +872,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/linop/unprec_dwf4d_linop_w.h \
 	actions/ferm/linop/unprec_pdwf4d_linop_w.h \
 	actions/ferm/linop/unprec_ppdwf4d_linop_w.h \
-	actions/ferm/qprop/qprop_w.h \
-	actions/ferm/qprop/unprec_qprop_w.h \
-	actions/ferm/qprop/quarkprop4_w.h \
+	actions/ferm/qprop/qprop_w.h actions/ferm/qprop/quarkprop4_w.h \
 	actions/ferm/qprop/dwf_quarkprop4_w.h \
 	actions/ferm/qprop/nef_quarkprop4_w.h io/io_w.h \
 	io/barcomp_io.h io/kyuqprop_io.h io/readszinferm_w.h \
@@ -1341,9 +1337,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pions_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/polar_dec.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/polylp.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_dwf_fermact_array_sse_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_dwf_fermact_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_dwf_linop_array_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_dwf_qprop_array_sse_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_fermact_qprop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_fermact_qprop_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_kno_fermact_array_w.Po@am__quote@
@@ -4342,19 +4338,19 @@ lwldslash_w_sse.obj: actions/ferm/linop/lwldslash_w_sse.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lwldslash_w_sse.obj `if test -f 'actions/ferm/linop/lwldslash_w_sse.cc'; then $(CYGPATH_W) 'actions/ferm/linop/lwldslash_w_sse.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/lwldslash_w_sse.cc'; fi`
 
-prec_dwf_fermact_array_sse_w.o: actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT prec_dwf_fermact_array_sse_w.o -MD -MP -MF "$(DEPDIR)/prec_dwf_fermact_array_sse_w.Tpo" -c -o prec_dwf_fermact_array_sse_w.o `test -f 'actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/prec_dwf_fermact_array_sse_w.Tpo" "$(DEPDIR)/prec_dwf_fermact_array_sse_w.Po"; else rm -f "$(DEPDIR)/prec_dwf_fermact_array_sse_w.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc' object='prec_dwf_fermact_array_sse_w.o' libtool=no @AMDEPBACKSLASH@
+prec_dwf_qprop_array_sse_w.o: actions/ferm/qprop/prec_dwf_qprop_array_sse_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT prec_dwf_qprop_array_sse_w.o -MD -MP -MF "$(DEPDIR)/prec_dwf_qprop_array_sse_w.Tpo" -c -o prec_dwf_qprop_array_sse_w.o `test -f 'actions/ferm/qprop/prec_dwf_qprop_array_sse_w.cc' || echo '$(srcdir)/'`actions/ferm/qprop/prec_dwf_qprop_array_sse_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/prec_dwf_qprop_array_sse_w.Tpo" "$(DEPDIR)/prec_dwf_qprop_array_sse_w.Po"; else rm -f "$(DEPDIR)/prec_dwf_qprop_array_sse_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/qprop/prec_dwf_qprop_array_sse_w.cc' object='prec_dwf_qprop_array_sse_w.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o prec_dwf_fermact_array_sse_w.o `test -f 'actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o prec_dwf_qprop_array_sse_w.o `test -f 'actions/ferm/qprop/prec_dwf_qprop_array_sse_w.cc' || echo '$(srcdir)/'`actions/ferm/qprop/prec_dwf_qprop_array_sse_w.cc
 
-prec_dwf_fermact_array_sse_w.obj: actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT prec_dwf_fermact_array_sse_w.obj -MD -MP -MF "$(DEPDIR)/prec_dwf_fermact_array_sse_w.Tpo" -c -o prec_dwf_fermact_array_sse_w.obj `if test -f 'actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/prec_dwf_fermact_array_sse_w.Tpo" "$(DEPDIR)/prec_dwf_fermact_array_sse_w.Po"; else rm -f "$(DEPDIR)/prec_dwf_fermact_array_sse_w.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc' object='prec_dwf_fermact_array_sse_w.obj' libtool=no @AMDEPBACKSLASH@
+prec_dwf_qprop_array_sse_w.obj: actions/ferm/qprop/prec_dwf_qprop_array_sse_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT prec_dwf_qprop_array_sse_w.obj -MD -MP -MF "$(DEPDIR)/prec_dwf_qprop_array_sse_w.Tpo" -c -o prec_dwf_qprop_array_sse_w.obj `if test -f 'actions/ferm/qprop/prec_dwf_qprop_array_sse_w.cc'; then $(CYGPATH_W) 'actions/ferm/qprop/prec_dwf_qprop_array_sse_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/qprop/prec_dwf_qprop_array_sse_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/prec_dwf_qprop_array_sse_w.Tpo" "$(DEPDIR)/prec_dwf_qprop_array_sse_w.Po"; else rm -f "$(DEPDIR)/prec_dwf_qprop_array_sse_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/qprop/prec_dwf_qprop_array_sse_w.cc' object='prec_dwf_qprop_array_sse_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o prec_dwf_fermact_array_sse_w.obj `if test -f 'actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o prec_dwf_qprop_array_sse_w.obj `if test -f 'actions/ferm/qprop/prec_dwf_qprop_array_sse_w.cc'; then $(CYGPATH_W) 'actions/ferm/qprop/prec_dwf_qprop_array_sse_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/qprop/prec_dwf_qprop_array_sse_w.cc'; fi`
 
 lwldslash_w_pab.o: actions/ferm/linop/lwldslash_w_pab.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lwldslash_w_pab.o -MD -MP -MF "$(DEPDIR)/lwldslash_w_pab.Tpo" -c -o lwldslash_w_pab.o `test -f 'actions/ferm/linop/lwldslash_w_pab.cc' || echo '$(srcdir)/'`actions/ferm/linop/lwldslash_w_pab.cc; \
