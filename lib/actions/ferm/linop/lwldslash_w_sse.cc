@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_sse.cc,v 1.4 2003-09-16 13:38:37 bjoo Exp $
+// $Id: lwldslash_w_sse.cc,v 1.5 2003-09-17 16:27:40 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -44,20 +44,32 @@ extern "C" {
 
 }
 
+// This is in C++ so it comes outside the extern "C" {}
 extern void qdp_pack_gauge(const multi1d<LatticeColorMatrix>&_u, multi1d<PrimitiveSU3Matrix>& u_tmp);
 
 //! Creation routine
 void SSEWilsonDslash::create(const multi1d<LatticeColorMatrix>& _u)
 {
   // Initialize internal structures for DSLASH
+#if 0
   if( Layout::primaryNode() ) { 
     cout << "Calling init_sse_su3dslash()... " << flush;
+  }
+#endif
+
+  const multi1d<int>& subgrid_size = Layout::subgridLattSize();
+  int i;
+  for(i=0 ; i < Nd; i++) { 
+    if ( subgrid_size[i] % 2 != 0 ) { 
+      QDP_error_exit("This SSE Dslash does not work for odd sublattice. Here the sublattice is odd in dimension %d with length %d\n", i, subgrid_size[i]);
+    }
   }
 
   init_sse_su3dslash(Layout::sitesOnNode()/2);
 
   packed_gauge.resize( Nd * Layout::sitesOnNode() );
 
+#if 0
   if( Layout::primaryNode() ) { 
     cout << "Done " << endl << flush;
   }
@@ -65,14 +77,15 @@ void SSEWilsonDslash::create(const multi1d<LatticeColorMatrix>& _u)
   if( Layout::primaryNode() ) { 
     cout << "Calling pack_gauge_field..." << flush;
   }
- 
-  
+#endif
+
   qdp_pack_gauge(_u, packed_gauge);
   
-
+#if 0
   if( Layout::primaryNode() ) { 
     cout << "Done" << endl << flush;
   }
+#endif
 }
 
 
