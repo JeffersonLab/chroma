@@ -1,4 +1,4 @@
-// $Id: unprec_ovext_fermact_array_w.cc,v 1.2 2003-11-20 05:43:41 edwards Exp $
+// $Id: unprec_ovext_fermact_array_w.cc,v 1.3 2003-11-23 05:55:46 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -128,35 +128,4 @@ UnprecOvExtFermActArray::qprop(LatticeFermion& psi,
   delete A;
 
   END_CODE("UnprecOvExtFermActArray::qprop");
-}
-
-
-//! Computes the derivative of the fermionic action respect to the link field
-/*!
- *         |  dS      dS_f
- * ds_u -- | ----   + -----   ( Write )
- *         |  dU       dU
- *
- * psi -- [1./(M_dag*M)]*chi_  ( read ) 
- *
- * \param ds_u     result      ( Write )
- * \param u        gauge field ( Read )
- * \param psi      solution to linear system ( Read )
- */
-
-void
-UnprecOvExtFermActArray::dsdu(multi1d<LatticeColorMatrix>& ds_u,
-			      const multi1d<LatticeColorMatrix>& u, 
-			      const multi1d<LatticeFermion>& psi) const
-{
-  START_CODE("UnprecWilsonFermAct::dsdu");
-  
-//  multi1d<LatticeColorMatrix> ds_u(Nd);
-
-  ds_u = 0;
-
-  QDPIO::cerr << "UnprecWilsonFermAct::dsdu not implemented" << endl;
-  QDP_abort(1);
-
-  END_CODE("UnprecWilsonFermAct::dsdu");
 }

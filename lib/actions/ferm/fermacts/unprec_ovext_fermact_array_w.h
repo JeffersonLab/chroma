@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovext_fermact_array_w.h,v 1.2 2003-11-20 05:43:41 edwards Exp $
+// $Id: unprec_ovext_fermact_array_w.h,v 1.3 2003-11-23 05:55:46 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -7,7 +7,7 @@
 #ifndef __unprec_ovext_fermact_array_w_h__
 #define __unprec_ovext_fermact_array_w_h__
 
-#include "fermact_array.h"
+#include "fermact.h"
 
 using namespace QDP;
 
@@ -20,7 +20,7 @@ using namespace QDP;
  *  where  B  is the continued fraction of the pole approx. to eps(H(m))
  */
 
-class UnprecOvExtFermActArray : public UnprecWilsonTypeFermActArray<LatticeFermion>
+class UnprecOvExtFermActArray : public UnprecWilsonTypeFermAct< multi1d<LatticeFermion> >
 {
 public:
   //! Partial constructor
@@ -65,12 +65,6 @@ public:
 	     enum InvType invType,
 	     const Real& RsdCG, 
 	     int MaxCG, int& ncg_had) const;
-
-  //! Compute dS_f/dU
-  /*! NOTE: maybe this should produce a derivative foundry class object */
-  void dsdu(multi1d<LatticeColorMatrix>& result,
-	    const multi1d<LatticeColorMatrix>& u,
-	    const multi1d<LatticeFermion>& psi) const;
 
   //! Destructor is automatic
   ~UnprecOvExtFermActArray() {}
