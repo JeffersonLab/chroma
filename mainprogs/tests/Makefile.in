@@ -45,28 +45,29 @@ host_triplet = @host@
 check_PROGRAMS = t_mesplq$(EXEEXT) t_io$(EXEEXT) t_mesons_w$(EXEEXT) \
 	t_conslinop$(EXEEXT) t_hypsmear$(EXEEXT) t_ape_smear$(EXEEXT) \
 	t_precact$(EXEEXT) t_dwf4d$(EXEEXT) t_propagator_s$(EXEEXT) \
-	t_disc_loop_s$(EXEEXT) t_remez$(EXEEXT)
+	t_disc_loop_s$(EXEEXT) t_remez$(EXEEXT) t_ritz$(EXEEXT) \
+	t_ritz_KS$(EXEEXT)
 EXTRA_PROGRAMS = t_dslashm$(EXEEXT) t_lwldslash$(EXEEXT) \
 	t_spprod$(EXEEXT) t_lwldslash_sse$(EXEEXT) \
 	t_follana_io_s$(EXEEXT) t_formfac$(EXEEXT) \
 	t_follana_pion_s$(EXEEXT) t_dwflinop$(EXEEXT) \
 	t_precdwf$(EXEEXT) t_ovlap_bj$(EXEEXT) t_propagator_s$(EXEEXT) \
 	t_propagator_w$(EXEEXT) t_gfix$(EXEEXT) t_ovlap5d_bj$(EXEEXT) \
-	t_ritz$(EXEEXT) t_ritz_KS$(EXEEXT) t_ritz5d_KS$(EXEEXT) \
-	t_fermion_loop_w$(EXEEXT) t_propagator_fuzz_s$(EXEEXT) \
-	t_disc_loop_s$(EXEEXT) t_ov_pbp$(EXEEXT) \
-	t_lwldslash_pab$(EXEEXT) t_propagator_nrqcd$(EXEEXT) \
-	t_dwflocality$(EXEEXT) t_invert3_precwilson$(EXEEXT) \
-	t_invert4_precwilson$(EXEEXT) t_read_eigen$(EXEEXT) \
-	t_fuzwilp$(EXEEXT) t_ovlap_double_pass$(EXEEXT) \
-	t_g5eps_bj$(EXEEXT) t_sumr$(EXEEXT) t_msumr$(EXEEXT) \
-	t_invrelcg$(EXEEXT) t_bicgstab$(EXEEXT) t_wilslp$(EXEEXT) \
-	t_rel_gmresr$(EXEEXT) t_invborici$(EXEEXT) t_hamsys$(EXEEXT) \
-	t_hamsys_ferm$(EXEEXT) t_precact_sse$(EXEEXT) \
-	t_hmc_pg$(EXEEXT) t_neflinop$(EXEEXT) t_prec_contfrac$(EXEEXT) \
-	t_mres_4d$(EXEEXT) t_prec_nef$(EXEEXT) t_su3$(EXEEXT) \
-	t_overbu$(EXEEXT) t_lower_tests$(EXEEXT) \
-	t_unprec_wilson_force$(EXEEXT) t_prec_wilson_force$(EXEEXT) \
+	t_ritz5d_KS$(EXEEXT) t_fermion_loop_w$(EXEEXT) \
+	t_propagator_fuzz_s$(EXEEXT) t_disc_loop_s$(EXEEXT) \
+	t_ov_pbp$(EXEEXT) t_lwldslash_pab$(EXEEXT) \
+	t_propagator_nrqcd$(EXEEXT) t_dwflocality$(EXEEXT) \
+	t_invert3_precwilson$(EXEEXT) t_invert4_precwilson$(EXEEXT) \
+	t_read_eigen$(EXEEXT) t_fuzwilp$(EXEEXT) \
+	t_ovlap_double_pass$(EXEEXT) t_g5eps_bj$(EXEEXT) \
+	t_sumr$(EXEEXT) t_msumr$(EXEEXT) t_invrelcg$(EXEEXT) \
+	t_bicgstab$(EXEEXT) t_wilslp$(EXEEXT) t_rel_gmresr$(EXEEXT) \
+	t_invborici$(EXEEXT) t_hamsys$(EXEEXT) t_hamsys_ferm$(EXEEXT) \
+	t_precact_sse$(EXEEXT) t_hmc_pg$(EXEEXT) t_neflinop$(EXEEXT) \
+	t_prec_contfrac$(EXEEXT) t_mres_4d$(EXEEXT) \
+	t_prec_nef$(EXEEXT) t_su3$(EXEEXT) t_overbu$(EXEEXT) \
+	t_lower_tests$(EXEEXT) t_unprec_wilson_force$(EXEEXT) \
+	t_prec_wilson_force$(EXEEXT) \
 	t_unprec_twoflav_wilson_monomial$(EXEEXT) \
 	t_prec_twoflav_wilson_monomial$(EXEEXT) t_hamiltonian$(EXEEXT) \
 	t_leapfrog$(EXEEXT) t_hmc$(EXEEXT) \
