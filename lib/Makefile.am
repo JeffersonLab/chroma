@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.144 2004-05-27 11:21:22 bjoo Exp $
+# $Id: Makefile.am,v 1.145 2004-06-01 03:55:34 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -178,6 +178,7 @@ nobase_include_HEADERS += \
 	meas/hadron/mesons_w.h meas/hadron/seqpiontest_w.h \
 	meas/hadron/loops_w.h \
 	meas/hadron/walfil_w.h meas/hadron/wall_qprop_w.h \
+	meas/hadron/walldeltapff_w.h \
 	meas/hadron/wallpionff_w.h meas/hadron/wallnuclff_w.h \
 	meas/smear/sink_smear2_w.h meas/sources/d_src_w.h \
 	meas/sources/p_src_w.h meas/sources/sources_w.h \
@@ -290,6 +291,7 @@ libchroma_a_SOURCES += baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
 	      lg5eps_w.cc lg5eps_double_pass_w.cc \
 	      zolotarev5d_fermact_array_w.cc zolotarev5d_linop_array_w.cc \
 	      zolotarev5d_nonhermop_array_w.cc \
+              walldeltapff_w.cc \
               wallpionff_w.cc wallnuclff_w.cc wall_qprop_w.cc
 
 # zolotarev4d_linop_w.cc 
