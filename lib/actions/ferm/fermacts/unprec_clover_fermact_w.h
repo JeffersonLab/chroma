@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_clover_fermact_w.h,v 1.9 2004-12-24 04:23:20 edwards Exp $
+// $Id: unprec_clover_fermact_w.h,v 1.10 2005-01-14 20:13:04 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Clover fermion action
  */
@@ -10,7 +10,6 @@
 #include "fermact.h"
 #include "actions/ferm/linop/lgherm_w.h"
 
-using namespace QDP;
 
 namespace Chroma
 {

@@ -1,4 +1,4 @@
-// $Id: gauge_io.cc,v 1.2 2004-05-27 00:47:18 edwards Exp $
+// $Id: gauge_io.cc,v 1.3 2005-01-14 20:13:06 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator gauge IO
  */
@@ -6,7 +6,8 @@
 #include "chromabase.h"
 #include "io/gauge_io.h"
 
-using std::string;
+namespace Chroma {
+
 
 // Read a Chroma propagator
 /*
@@ -66,5 +67,6 @@ void writeGauge(XMLBufferWriter& file_xml,
 }
 
 
+}  // end namespace Chroma
 
 

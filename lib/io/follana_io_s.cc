@@ -1,5 +1,5 @@
 /*
- *  $Id: follana_io_s.cc,v 1.2 2003-10-23 15:28:17 bjoo Exp $
+ *  $Id: follana_io_s.cc,v 1.3 2005-01-14 20:13:06 edwards Exp $
  *
  *  These are a few simple I/O routines that we can use until QIO makes its appearance
  *  I have tried to include a simple header by means of a structure.
@@ -10,7 +10,8 @@
 #include "qdp_util.h"
 #include <string>
 
-using std::string;
+namespace Chroma {
+
 
 void readQpropFollana(char file[], LatticePropagator& quark_prop, bool swap){
 
@@ -95,3 +96,4 @@ void readQpropFollana(char file[], LatticePropagator& quark_prop, bool swap){
 }
 
 
+}  // end namespace Chroma

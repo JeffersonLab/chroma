@@ -1,4 +1,4 @@
-// $Id: t_precact_sse.cc,v 1.6 2005-01-07 05:02:44 edwards Exp $
+// $Id: t_precact_sse.cc,v 1.7 2005-01-14 20:13:09 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -8,7 +8,7 @@
 
 #include "qdp_util.h"
 
-using namespace QDP;
+using namespace Chroma;
 using namespace Chroma;
 
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_wilson_linop_w.h,v 1.8 2004-12-17 17:45:04 bjoo Exp $
+// $Id: prec_wilson_linop_w.h,v 1.9 2005-01-14 20:13:06 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion linear operator
  */
@@ -11,7 +11,6 @@
 #include "actions/ferm/linop/dslash_w.h"
 #include "io/param_io.h"       // to get AnisoParam_t
 
-using namespace QDP;
 
 namespace Chroma 
 { 
@@ -135,6 +134,5 @@ namespace Chroma
 
 }; // End Namespace Chroma
 
-using namespace Chroma;
 
 #endif

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wils_hamsys_w.h,v 1.1 2004-07-23 11:54:40 bjoo Exp $
+// $Id: wils_hamsys_w.h,v 1.2 2005-01-14 20:13:08 edwards Exp $
 /*! \file
  *  \brief HMC
  */
@@ -12,7 +12,6 @@
 #include "fermact.h"
 #include "update/molecdyn/hamilton.h"
 #include "actions/ferm/fermacts/unprec_wilson_fermact_w.h"
-using namespace QDP;
 
 //! A simple HamSys
 /*! \ingroup molecdyn

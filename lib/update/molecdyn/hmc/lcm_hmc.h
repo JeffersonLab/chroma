@@ -12,9 +12,6 @@
 
 #include "util/gauge/taproj.h" 
 
-using namespace QDP;
-using namespace Chroma;
-using namespace std;
 
 namespace Chroma {
 

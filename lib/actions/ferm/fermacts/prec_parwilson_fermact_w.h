@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_parwilson_fermact_w.h,v 1.5 2004-12-24 04:23:20 edwards Exp $
+// $Id: prec_parwilson_fermact_w.h,v 1.6 2005-01-14 20:13:04 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action with parity breaking term
  */
@@ -9,7 +9,6 @@
 
 #include "fermact.h"
 
-using namespace QDP;
 
 namespace Chroma
 {

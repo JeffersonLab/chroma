@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermbc.h,v 1.10 2005-01-13 02:51:51 edwards Exp $
+// $Id: fermbc.h,v 1.11 2005-01-14 20:13:04 edwards Exp $
 /*! @file
  * @brief Fermion action boundary conditions
  */
@@ -289,6 +289,5 @@ namespace Chroma
 
 }
 
-using namespace Chroma;
 
 #endif

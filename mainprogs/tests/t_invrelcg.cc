@@ -1,4 +1,4 @@
-// $Id: t_invrelcg.cc,v 1.2 2004-05-18 12:40:16 bjoo Exp $
+// $Id: t_invrelcg.cc,v 1.3 2005-01-14 20:13:09 edwards Exp $
 
 #include <iostream>
 #include <sstream>
@@ -14,8 +14,7 @@
 #include "chroma.h"
 #include "actions/ferm/invert/minvsumr.h"
 
-using namespace QDP;
-using namespace std;
+using namespace Chroma;
 
 struct App_input_t {
   ChromaProp_t param;

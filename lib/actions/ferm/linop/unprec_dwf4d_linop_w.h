@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf4d_linop_w.h,v 1.1 2004-11-08 05:41:29 edwards Exp $
+// $Id: unprec_dwf4d_linop_w.h,v 1.2 2005-01-14 20:13:06 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned projected DWF operator to 4D
  */
@@ -11,8 +11,6 @@
 #include "handle.h"
 #include "invtype.h"
 
-using namespace QDP;
-using namespace Chroma;
 
 
 namespace Chroma
@@ -59,6 +57,5 @@ namespace Chroma
 
 }
 
-using namespace Chroma;
 
 #endif

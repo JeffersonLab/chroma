@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: state.h,v 1.2 2004-09-08 02:45:51 edwards Exp $
+// $Id: state.h,v 1.3 2005-01-14 20:13:04 edwards Exp $
 
 /*! @file
  * @brief Support class for fermion actions and linear operators
@@ -13,7 +13,6 @@
 
 #include "handle.h"
 
-using namespace QDP;
 
 namespace Chroma
 {
@@ -98,6 +97,5 @@ namespace Chroma
 
 }
 
-using namespace Chroma;
 
 #endif

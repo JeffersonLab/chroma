@@ -1,4 +1,4 @@
-// $Id: t_sumr.cc,v 1.4 2004-05-21 12:03:14 bjoo Exp $
+// $Id: t_sumr.cc,v 1.5 2005-01-14 20:13:10 edwards Exp $
 
 #include <iostream>
 #include <sstream>
@@ -13,8 +13,7 @@
 
 #include "chroma.h"
 
-using namespace QDP;
-using namespace std;
+using namespace Chroma;
 
 struct App_input_t {
   ChromaProp_t param;

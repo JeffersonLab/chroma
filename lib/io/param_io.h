@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: param_io.h,v 1.26 2004-12-21 15:42:21 bjoo Exp $
+// $Id: param_io.h,v 1.27 2005-01-14 20:13:07 edwards Exp $
 /*! \file
  *  \brief Reunitarize (to a SU(N)) inplace the matrix A under some option
  */
@@ -12,7 +12,6 @@
 #include "io/enum_io/enum_io.h"
 
 // ! now needed
-using namespace Chroma;
 
 namespace Chroma { 
 

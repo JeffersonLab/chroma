@@ -1,4 +1,4 @@
-// $Id: readmilc.cc,v 1.7 2004-07-28 02:38:03 edwards Exp $
+// $Id: readmilc.cc,v 1.8 2005-01-14 20:13:07 edwards Exp $
 
 /*! \file
  *  \brief Read a MILC gauge configuration written in the 1997 format
@@ -9,10 +9,7 @@
 #include "io/readmilc.h"
 #include "qdp_util.h"    // from QDP
 
-#include <string>
-using std::string;
-
-using namespace QDP;
+namespace Chroma {
 
 //! Read a MILC configuration file
 /*!
@@ -146,3 +143,4 @@ void readMILC(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_
   END_CODE();
 }
 
+}  // end namespace Chroma

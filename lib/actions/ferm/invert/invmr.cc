@@ -1,4 +1,4 @@
-// $Id: invmr.cc,v 1.5 2004-07-28 03:47:26 edwards Exp $
+// $Id: invmr.cc,v 1.6 2005-01-14 20:13:05 edwards Exp $
 
 /*! \file
  *  \brief Minimal-Residual (MR) for a generic fermion Linear Operator
@@ -6,6 +6,8 @@
 
 #include "chromabase.h"
 #include "actions/ferm/invert/invmr.h"
+
+namespace Chroma {
 
 /*! \ingroup invert
  * This subroutine uses the Minimal Residual (MR) algorithm to determine
@@ -143,3 +145,5 @@ void InvCG2(const LinearOperator& A,
   END_CODE();
   return;
 }
+
+}  // end namespace Chroma

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lDeltaLs_w.h,v 1.2 2004-12-09 03:58:03 edwards Exp $
+// $Id: lDeltaLs_w.h,v 1.3 2005-01-14 20:13:05 edwards Exp $
 /*! \file
  *   Apply DeltaLs = (1/4)(1-eps^2) to a fermion field.
 
@@ -12,8 +12,6 @@
 #include "fermact.h" 
 
 
-using namespace QDP;
-using namespace Chroma; 
 
 namespace Chroma {
 
@@ -43,6 +41,5 @@ private:
 
 }
 
-using namespace Chroma;
 
 #endif

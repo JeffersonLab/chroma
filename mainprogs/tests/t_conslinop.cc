@@ -1,4 +1,4 @@
-// $Id: t_conslinop.cc,v 1.18 2004-11-22 22:54:39 edwards Exp $
+// $Id: t_conslinop.cc,v 1.19 2005-01-14 20:13:09 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -7,7 +7,7 @@
 
 #include "chroma.h"
 
-using namespace QDP;
+using namespace Chroma;
 
 int main(int argc, char *argv[])
 {

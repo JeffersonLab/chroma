@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stag_fermact_s.h,v 1.4 2004-12-12 21:22:15 edwards Exp $
+// $Id: stag_fermact_s.h,v 1.5 2005-01-14 20:13:04 edwards Exp $
 /*! \file
  *  \brief Staggered fermion action
  */
@@ -9,7 +9,6 @@
 
 #include "fermact.h"
 
-using namespace QDP;
 
 namespace Chroma 
 { 
@@ -58,6 +57,5 @@ namespace Chroma
 
 } // End Namespace Chroma
 
-using namespace Chroma;
 
 #endif

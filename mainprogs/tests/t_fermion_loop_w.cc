@@ -1,4 +1,4 @@
-// $Id: t_fermion_loop_w.cc,v 1.3 2004-09-09 15:52:52 edwards Exp $
+// $Id: t_fermion_loop_w.cc,v 1.4 2005-01-14 20:13:09 edwards Exp $
 /*! \file
  *  \brief Main code for  generation of disconnected 
  *         loops
@@ -20,7 +20,7 @@
 #include "chroma.h"
 
 
-using namespace QDP;
+using namespace Chroma;
 
 
 // copied from t_ritz.cc

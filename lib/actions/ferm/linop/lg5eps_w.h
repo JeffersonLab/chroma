@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lg5eps_w.h,v 1.4 2004-12-12 21:22:16 edwards Exp $
+// $Id: lg5eps_w.h,v 1.5 2005-01-14 20:13:05 edwards Exp $
 /*! \file
  *  \brief Internal pole epsilon operator. Just the unitary part
  *
@@ -13,7 +13,6 @@
 #include "fermact.h" 
 
 
-using namespace QDP;
 
 namespace Chroma 
 { 
@@ -104,6 +103,5 @@ private:
 
 }; // End Namespace Chroma
 
-using namespace Chroma;
 
 #endif

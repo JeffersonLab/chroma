@@ -1,4 +1,4 @@
-// $Id: cppacs_io.cc,v 1.1 2005-01-13 16:27:58 mcneile Exp $
+// $Id: cppacs_io.cc,v 1.2 2005-01-14 20:13:06 edwards Exp $
 
 /*! \file
  *  \brief CPPACS gauge format routines
@@ -7,7 +7,8 @@
 #include "chromabase.h"
 #include "io/cppacs_io.h"
 
-using namespace QDP;
+namespace Chroma {
+
 
 //! Initialize header with default values
 void CPPACSGaugeInit(CPPACSGauge_t& header)
@@ -39,3 +40,4 @@ void write(XMLWriter& xml, const string& path, const CPPACSGauge_t& header)
   pop(xml);
 }
 
+}  // end namespace Chroma

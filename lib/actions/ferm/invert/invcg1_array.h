@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: invcg1_array.h,v 1.1 2004-05-19 00:21:23 bjoo Exp $
+// $Id: invcg1_array.h,v 1.2 2005-01-14 20:13:05 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -8,6 +8,8 @@
 #define __invcg1_array__
 
 #include "linearop.h"
+
+namespace Chroma {
 
 //! Conjugate-Gradient (CGNE) algorithm for a generic Linear Operator
 /*! \ingroup invert
@@ -68,5 +70,7 @@ void InvCG1(const LinearOperator< multi1d<T> >& A,
 	    const Real& RsdCG, 
 	    int MaxCG, 
 	    int& n_count);
+
+}  // end namespace Chroma
 
 #endif

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_linop_base_array_w.h,v 1.5 2005-01-02 05:21:10 edwards Exp $
+// $Id: prec_dwf_linop_base_array_w.h,v 1.6 2005-01-14 20:13:06 edwards Exp $
 /*! \file
  *  \brief Base class for even-odd preconditioned domain-wall-like linops
  */
@@ -9,7 +9,6 @@
 
 #include "linearop.h"
 
-using namespace QDP;
 
 namespace Chroma
 {
@@ -45,6 +44,5 @@ namespace Chroma
 
 }; // End Namespace Chroma
 
-using namespace Chroma;
 
 #endif

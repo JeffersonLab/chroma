@@ -1,4 +1,4 @@
-// $Id: t_dwflocality.cc,v 1.5 2004-09-08 23:59:06 kostas Exp $
+// $Id: t_dwflocality.cc,v 1.6 2005-01-14 20:13:09 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -11,7 +11,7 @@
 
 typedef multi1d<LatticeFermion>  MLF;
 
-using namespace QDP;
+using namespace Chroma;
 
 int main(int argc, char **argv)
 {

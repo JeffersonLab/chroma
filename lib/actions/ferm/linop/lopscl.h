@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lopscl.h,v 1.4 2004-12-12 21:22:16 edwards Exp $
+// $Id: lopscl.h,v 1.5 2005-01-14 20:13:05 edwards Exp $
 
 #ifndef __lopscl_h__
 #define __lopscl_h__
@@ -7,7 +7,6 @@
 #include "handle.h"
 #include "linearop.h"
 
-using namespace QDP;
 
 namespace Chroma 
 { 
@@ -149,6 +148,5 @@ private:
 
 }; // End Namespace Chroma
 
-using namespace Chroma;
 
 #endif

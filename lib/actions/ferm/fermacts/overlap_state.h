@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: overlap_state.h,v 1.6 2004-09-28 13:01:47 bjoo Exp $
+// $Id: overlap_state.h,v 1.7 2005-01-14 20:13:04 edwards Exp $
 /*! @file
  * @brief Connection state holding eigenvectors
  *
@@ -15,8 +15,6 @@
 #include "fermact.h"
 
 
-using namespace std;
-using namespace QDP;
 
 namespace Chroma
 {

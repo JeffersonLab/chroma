@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 1.27 2004-12-24 04:24:41 edwards Exp $
+// $Id: qprop_io.cc,v 1.28 2005-01-14 20:13:07 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -7,10 +7,7 @@
 #include "io/param_io.h"
 #include "io/qprop_io.h"
 
-#include <string>
-using namespace std;
-using namespace Chroma;
-
+namespace Chroma {
 
 // Given a fermion action in string form, return the boundary
 /* HACK - THIS DEFINITELY NEEDS IMPROVEMENT */
@@ -933,4 +930,5 @@ void readFermion(XMLReader& file_xml,
   close(to);
 }
 
+}  // end namespace Chroma
 

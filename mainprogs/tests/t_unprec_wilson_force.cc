@@ -2,8 +2,7 @@
 
 #include <iostream>
 
-using namespace QDP;
-using namespace std;
+using namespace Chroma;
 
 void wilson_dsdu(const UnprecWilsonFermAct& S,
 		 multi1d<LatticeColorMatrix> & ds_u,

@@ -21,7 +21,7 @@ enum VolSrc {
 
 typedef   VolSrc  VolSrc_type ; 
 
-using namespace QDP;
+using namespace Chroma;
 
 
 /*

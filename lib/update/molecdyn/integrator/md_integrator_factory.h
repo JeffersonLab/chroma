@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: md_integrator_factory.h,v 1.2 2005-01-13 16:10:30 bjoo Exp $
+// $Id: md_integrator_factory.h,v 1.3 2005-01-14 20:13:08 edwards Exp $
 /*! \file
  *  \brief Monomial factories
  */
@@ -16,9 +16,6 @@
 
 #include <string>
 
-using namespace QDP;
-using namespace Chroma;
-using namespace std;
 
 namespace Chroma
 {

@@ -1,7 +1,8 @@
-// $Id: invbicg.cc,v 1.3 2004-07-28 03:47:26 edwards Exp $
+// $Id: invbicg.cc,v 1.4 2005-01-14 20:13:05 edwards Exp $
 
 // THIS ROUTINE IS NOT FUNCTIONAL YET - SIMPLE CLEANUP EDITING IS REQUIRED
 
+namespace Chroma {
 
 /* INVBICG */
 
@@ -290,3 +291,5 @@ Real RsdBiCG;
   QDP_error_exit("too many BiCG iterations", n_count, rsd_sq, cp, c, re_rvr, im_rvr, re_a, im_a, re_b, im_b);
   END_CODE();
 }
+
+}  // end namespace Chroma

@@ -1,4 +1,4 @@
-// $Id: t_ov_pbp.cc,v 1.2 2004-03-29 21:34:13 edwards Exp $
+// $Id: t_ov_pbp.cc,v 1.3 2005-01-14 20:13:09 edwards Exp $
 
 #include <iostream>
 #include <sstream>
@@ -13,8 +13,7 @@
 
 #include "chroma.h"
 
-using namespace QDP;
-using namespace std;
+using namespace Chroma;
 
 enum GaugeStartType { HOT_START = 0, COLD_START = 1, FILE_START = 2 };
 enum GaugeFormat { SZIN_GAUGE_FORMAT = 0, NERSC_GAUGE_FORMAT = 1 };

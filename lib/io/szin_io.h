@@ -1,4 +1,4 @@
-// $Id: szin_io.h,v 1.4 2004-02-23 03:08:02 edwards Exp $
+// $Id: szin_io.h,v 1.5 2005-01-14 20:13:07 edwards Exp $
 
 /*! \file
  *  \brief  Routines associated with SZIN gauge field IO
@@ -7,7 +7,10 @@
 #ifndef __szin_io_h__
 #define __szin_io_h__
 
-#include <string>
+#include "chromabase.h"
+
+namespace Chroma {
+
 
 //! Szin gauge field header
 struct SzinGauge_t
@@ -58,5 +61,7 @@ void read(XMLReader& xml, const std::string& path, SzinGauge_t& header);
 
 //! Source header writer
 void write(XMLWriter& xml, const std::string& path, const SzinGauge_t& header);
+
+}  // end namespace Chroma
 
 #endif

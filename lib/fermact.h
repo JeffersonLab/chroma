@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 1.17 2005-01-04 06:53:41 edwards Exp $
+// $Id: fermact.h,v 1.18 2005-01-14 20:13:04 edwards Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -15,7 +15,6 @@
 #include "syssolver.h"
 #include "fermbc.h"
 
-using namespace QDP;
 
 namespace Chroma
 {
@@ -561,6 +560,5 @@ namespace Chroma
 
 }
 
-using namespace Chroma;
 
 #endif

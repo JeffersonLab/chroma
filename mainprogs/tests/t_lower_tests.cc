@@ -1,4 +1,4 @@
-// $Id: t_lower_tests.cc,v 1.1 2004-12-09 12:55:58 mcneile Exp $
+// $Id: t_lower_tests.cc,v 1.2 2005-01-14 20:13:09 edwards Exp $
 //
 //  This is a collection of simple 
 //  tests to make sure that none of 
@@ -13,7 +13,7 @@
 
 #include "chroma.h"
 
-using namespace QDP;
+using namespace Chroma;
 
 int main(int argc, char *argv[])
 {

@@ -1,4 +1,4 @@
-// $Id: invbicgstab.cc,v 1.2 2004-05-19 11:43:19 bjoo Exp $
+// $Id: invbicgstab.cc,v 1.3 2005-01-14 20:13:05 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -6,6 +6,7 @@
 #include "chromabase.h"
 #include "actions/ferm/invert/invbicgstab.h"
 
+namespace Chroma {
 
 template<typename T>
 void InvBiCGStab_a(const LinearOperator<T>& A,
@@ -164,3 +165,4 @@ void InvBiCGStab(const LinearOperator<LatticeFermion>& A,
   InvBiCGStab_a(A, chi, psi, RsdCG, MaxCG, n_count);
 }
 
+}  // end namespace Chroma

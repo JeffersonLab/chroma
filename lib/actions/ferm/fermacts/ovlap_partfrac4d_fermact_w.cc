@@ -1,4 +1,4 @@
-// $Id: ovlap_partfrac4d_fermact_w.cc,v 1.14 2005-01-02 05:21:09 edwards Exp $
+// $Id: ovlap_partfrac4d_fermact_w.cc,v 1.15 2005-01-14 20:13:04 edwards Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -29,8 +29,6 @@
 #include "actions/ferm/linop/lg5eps_double_pass_w.h"
 #include "meas/eig/ischiral_w.h"
 
-using namespace std;
-using namespace Chroma;
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/fermbcs/fermbcs_w.h"

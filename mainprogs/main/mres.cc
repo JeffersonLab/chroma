@@ -1,4 +1,4 @@
-// $Id: mres.cc,v 1.7 2005-01-12 15:23:26 bjoo Exp $
+// $Id: mres.cc,v 1.8 2005-01-14 20:13:08 edwards Exp $
 
 #include <iostream>
 #include <sstream>
@@ -12,6 +12,8 @@
 #include <math.h>
 
 #include "chroma.h"
+
+using namespace Chroma;
 
 struct Prop_t
 {

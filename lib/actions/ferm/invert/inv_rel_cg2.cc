@@ -1,10 +1,12 @@
-// $Id: inv_rel_cg2.cc,v 1.6 2004-12-12 21:22:15 edwards Exp $
+// $Id: inv_rel_cg2.cc,v 1.7 2005-01-14 20:13:05 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
 
 #include "chromabase.h"
 #include "actions/ferm/invert/inv_rel_cg2.h"
+
+namespace Chroma {
 
 //! Conjugate-Gradient (CGNE) algorithm for a generic Linear Operator
 /*! \ingroup invert
@@ -180,3 +182,5 @@ void InvRelCG2(const LinearOperator<LatticeFermion>& M,
 {
   InvRelCG2_a(M, chi, psi, RsdCG, MaxCG, n_count);
 }
+
+}  // end namespace Chroma

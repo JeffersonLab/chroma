@@ -1,9 +1,6 @@
 #include "chromabase.h"
 #include "update/molecdyn/predictor/last_solution_predictor.h"
 
-using namespace std;
-using namespace QDP;
-using namespace Chroma;
 
 namespace Chroma { 
 

@@ -1,4 +1,4 @@
-// $Id: t_wlinvcg.cc,v 1.6 2004-11-22 22:54:39 edwards Exp $
+// $Id: t_wlinvcg.cc,v 1.7 2005-01-14 20:13:10 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -8,7 +8,7 @@
 
 
 
-using namespace QDP;
+using namespace Chroma;
 
 
 #include "chromabase.h"

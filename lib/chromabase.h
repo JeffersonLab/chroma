@@ -1,4 +1,4 @@
-// $Id: chromabase.h,v 1.6 2004-12-29 22:10:00 edwards Exp $
+// $Id: chromabase.h,v 1.7 2005-01-14 20:13:03 edwards Exp $
 //
 // Absolute basic stuff to use chroma
 //
@@ -15,7 +15,9 @@
 #include "qdp.h"
 #include "chroma_config.h"
 
-namespace QDP {
+using namespace QDP;
+
+namespace Chroma {
 
 // Trait classes 
 template<class T>
@@ -35,11 +37,6 @@ struct PropTypeTraits<LatticeStaggeredFermion>
 };
 
 
-
-}
-
-using namespace QDP;
-
 // Extremely basic types
 enum PlusMinus {PLUS = 1, MINUS = -1};
 
@@ -53,13 +50,11 @@ const Real fuzz = 1.0e-10;
 
 const Real twopi = 6.283185307179586476925286;
 
-#define TO_REAL(a) float(a)
-
 
 // Hooks for various things
-// NOTE: can get rid of unused arg "a" !!
 #define START_CODE() QDP_PUSH_PROFILE(QDP::getProfileLevel())
 #define END_CODE()   QDP_POP_PROFILE()
 
+}
 
 #endif

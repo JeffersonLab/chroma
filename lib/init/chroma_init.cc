@@ -1,8 +1,5 @@
 #include "init/chroma_init.h"
 
-using namespace QDP;
-using namespace Chroma;
-using namespace std;
 
 
 namespace Chroma { 

@@ -1,4 +1,4 @@
-// $Id: dwf_fermact_qprop_array_w.cc,v 1.3 2005-01-02 05:21:10 edwards Exp $
+// $Id: dwf_fermact_qprop_array_w.cc,v 1.4 2005-01-14 20:13:06 edwards Exp $
 /*! \file
  *  \brief Base class for unprec and even-odd preconditioned DWF qprop
  */
@@ -9,7 +9,6 @@
 #include "actions/ferm/linop/dwffld_w.h"
 
 
-using namespace QDP;
 
 namespace Chroma 
 {

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovext_fermact_array_w.h,v 1.15 2005-01-10 18:17:11 edwards Exp $
+// $Id: unprec_ovext_fermact_array_w.h,v 1.16 2005-01-14 20:13:04 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -10,7 +10,6 @@
 #include "fermact.h"
 #include "actions/ferm/linop/lDeltaLs_w.h"
 
-using namespace QDP;
 
 namespace Chroma
 {
@@ -139,7 +138,6 @@ namespace Chroma
 
 }
 
-using namespace Chroma;
 
 
 #endif

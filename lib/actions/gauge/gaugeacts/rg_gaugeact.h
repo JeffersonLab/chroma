@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: rg_gaugeact.h,v 1.1 2005-01-13 04:30:51 edwards Exp $
+// $Id: rg_gaugeact.h,v 1.2 2005-01-14 20:13:06 edwards Exp $
 /*! \file
  *  \brief Generic RG style plaquette + rectangle gauge action
  */
@@ -128,6 +128,5 @@ namespace Chroma
 
 };
 
-using namespace Chroma;
 
 #endif

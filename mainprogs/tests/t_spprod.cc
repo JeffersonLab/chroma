@@ -1,11 +1,11 @@
-// $Id: t_spprod.cc,v 1.4 2004-11-22 22:54:39 edwards Exp $
+// $Id: t_spprod.cc,v 1.5 2005-01-14 20:13:10 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
 
 #include "chroma.h"
 
-using namespace QDP;
+using namespace Chroma;
 
 
 int main(int argc, char **argv)

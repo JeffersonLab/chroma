@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_zolo_nef_fermact_array_w.h,v 1.10 2005-01-02 05:21:09 edwards Exp $
+// $Id: prec_zolo_nef_fermact_array_w.h,v 1.11 2005-01-14 20:13:04 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF domain-wall fermion action
  */
@@ -12,7 +12,6 @@
 #include "actions/ferm/fermacts/overlap_state.h"
 #include "io/overlap_state_info.h"
 
-using namespace QDP;
 
 namespace Chroma
 {

@@ -1,4 +1,4 @@
-// $Id: gauge_io.h,v 1.1 2004-04-05 19:48:19 edwards Exp $
+// $Id: gauge_io.h,v 1.2 2005-01-14 20:13:06 edwards Exp $
 
 /*! \file
  *  \brief Gauge reader/writers in QIO format
@@ -7,7 +7,9 @@
 #ifndef __gauge_io_h__
 #define __gauge_io_h__
 
-#include <string>
+#include "chromabase.h"
+
+namespace Chroma {
 
 //! Read a gauge config in QIO format
 /*!
@@ -45,5 +47,7 @@ void writeGauge(XMLBufferWriter& file_xml,
 		const std::string& file, 
 		QDP_volfmt_t volfmt, 
 		QDP_serialparallel_t serpar);
+
+}  // end namespace Chroma
 
 #endif

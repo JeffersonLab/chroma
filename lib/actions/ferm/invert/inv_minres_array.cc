@@ -3,6 +3,8 @@
 #include "chromabase.h"
 #include "actions/ferm/invert/inv_minres_array.h"
 
+namespace Chroma {
+
 template<typename T>
 void InvMINRES_a(const LinearOperator< multi1d<T> >& A,
 		 const multi1d<T>& chi,
@@ -184,3 +186,5 @@ void InvMINRES(const LinearOperator< multi1d<LatticeFermion> >& A,
 {
   InvMINRES_a(A, chi, psi, RsdCG, MaxCG, n_count);
 }
+
+}  // end namespace Chroma

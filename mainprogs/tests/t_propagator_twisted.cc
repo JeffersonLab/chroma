@@ -1,4 +1,4 @@
-// $Id: t_propagator_twisted.cc,v 1.2 2005-01-08 19:58:09 mcneile Exp $
+// $Id: t_propagator_twisted.cc,v 1.3 2005-01-14 20:13:10 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation of twisted mass QCD
  *   
@@ -20,7 +20,7 @@
 #include "chroma.h"
 
 
-using namespace QDP;
+using namespace Chroma;
 
 
 /*

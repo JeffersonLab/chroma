@@ -1,4 +1,4 @@
-// $Id: unprec_dwftransf_linop_w.cc,v 1.8 2005-01-05 05:39:35 edwards Exp $
+// $Id: unprec_dwftransf_linop_w.cc,v 1.9 2005-01-14 20:13:06 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -8,8 +8,6 @@
 #include "actions/ferm/linop/unprec_dwftransf_linop_w.h"
 #include "actions/ferm/invert/invcg2.h"
 
-using namespace QDP;
-using namespace Chroma;
 
 namespace Chroma 
 { 

@@ -1,6 +1,11 @@
-// $Id: multi_propagator_comp.cc,v 1.6 2004-12-24 04:19:22 edwards Exp $
+// $Id: multi_propagator_comp.cc,v 1.7 2005-01-14 20:13:08 edwards Exp $
 // $Log: multi_propagator_comp.cc,v $
-// Revision 1.6  2004-12-24 04:19:22  edwards
+// Revision 1.7  2005-01-14 20:13:08  edwards
+// Removed all using namespace QDP/Chroma from lib files. The library
+// should now be 100% in the Chroma namespace. All mainprogs need a
+// using namespace Chroma.
+//
+// Revision 1.6  2004/12/24 04:19:22  edwards
 // Removed explict FermBC args to FermAct factory functions.
 //
 // Revision 1.5  2004/07/28 03:08:04  edwards
@@ -75,10 +80,9 @@
 #include <iostream>
 #include <cstdio>
 #include <iomanip>
-using namespace std;
 #include "chroma.h"
 
-using namespace QDP;
+using namespace Chroma;
 
 
 // define MRES_CALCULATION in order to run the code computing the residual mass

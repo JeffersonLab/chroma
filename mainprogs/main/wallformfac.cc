@@ -1,4 +1,4 @@
-// $Id: wallformfac.cc,v 1.30 2005-01-12 15:23:26 bjoo Exp $
+// $Id: wallformfac.cc,v 1.31 2005-01-14 20:13:09 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions with a wall sink
  *
@@ -7,7 +7,7 @@
 
 #include "chroma.h"
 
-using namespace QDP;
+using namespace Chroma;
 
 
 /*

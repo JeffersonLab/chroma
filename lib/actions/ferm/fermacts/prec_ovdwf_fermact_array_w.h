@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovdwf_fermact_array_w.h,v 1.8 2005-01-02 05:21:09 edwards Exp $
+// $Id: prec_ovdwf_fermact_array_w.h,v 1.9 2005-01-14 20:13:04 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned Overlap-DWF (Borici) action
  */
@@ -10,7 +10,6 @@
 #include "fermact.h"
 #include "actions/ferm/fermacts/prec_dwf_fermact_base_array_w.h"
 
-using namespace QDP;
 
 namespace Chroma
 {

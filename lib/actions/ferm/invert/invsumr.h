@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: invsumr.h,v 1.1 2004-05-10 16:41:11 bjoo Exp $
+// $Id: invsumr.h,v 1.2 2005-01-14 20:13:05 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -7,8 +7,9 @@
 #ifndef __invsumr__
 #define __invsumr__
 
-#include "chromabase.h"
 #include "linearop.h"
+
+namespace Chroma {
 
 // Solve a shifted unitary system
 //
@@ -39,5 +40,7 @@ void InvSUMR(const LinearOperator<T>& U,
 	     const Real& epsilon, 
 	     int MaxSUMR, 
 	     int& n_count);
+
+}  // end namespace Chroma
 
 #endif

@@ -5,9 +5,6 @@
 #include "update/molecdyn/predictor/chrono_predictor.h"
 #include "update/molecdyn/predictor/chrono_predictor_factory.h"
 
-using namespace std;
-using namespace QDP;
-using namespace Chroma;
 
 namespace Chroma { 
   

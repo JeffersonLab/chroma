@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_wilson_fermact_w.h,v 1.12 2005-01-05 17:28:11 bjoo Exp $
+// $Id: prec_wilson_fermact_w.h,v 1.13 2005-01-14 20:13:04 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action
  */
@@ -11,8 +11,6 @@
 #include "actions/ferm/linop/lgherm_w.h"
 #include "io/param_io.h"       // to get AnisoParam_t
 
-using namespace QDP;
-using namespace std;
 
 namespace Chroma
 {

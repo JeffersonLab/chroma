@@ -2,6 +2,9 @@
 #include "actions/ferm/invert/inv_borici_w.h"
 #include "actions/ferm/invert/inv_minres_array.h"
 
+namespace Chroma {
+
+
 template<typename T>
 void InvBorici_a( const LinearOperator<T>& D_4,
 		  const LinearOperator< multi1d<T> >& D_5,
@@ -117,3 +120,5 @@ void InvBorici( const LinearOperator<LatticeFermion>& D_4,
 {
   InvBorici_a(D_4, D_5, D_dag_D_5, b, x, tol, tol_1, MaxIter, MaxIter5D, m, n_iters);
 }
+
+}  // end namespace Chroma

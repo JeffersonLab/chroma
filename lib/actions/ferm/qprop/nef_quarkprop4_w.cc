@@ -1,6 +1,11 @@
-// $Id: nef_quarkprop4_w.cc,v 1.13 2005-01-02 05:21:10 edwards Exp $
+// $Id: nef_quarkprop4_w.cc,v 1.14 2005-01-14 20:13:06 edwards Exp $
 // $Log: nef_quarkprop4_w.cc,v $
-// Revision 1.13  2005-01-02 05:21:10  edwards
+// Revision 1.14  2005-01-14 20:13:06  edwards
+// Removed all using namespace QDP/Chroma from lib files. The library
+// should now be 100% in the Chroma namespace. All mainprogs need a
+// using namespace Chroma.
+//
+// Revision 1.13  2005/01/02 05:21:10  edwards
 // Rearranged top-level fermion actions and linear operators.
 // The deriv is pushed up much higher. This has the effect that
 // now the "P" type (conjugate momentum type) is carried around
@@ -59,7 +64,6 @@
 #include "util/ferm/transf.h"
 #include "util/ft/sftmom.h"
 
-using namespace QDP;
 
 namespace Chroma
 {

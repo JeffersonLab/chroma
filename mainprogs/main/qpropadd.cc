@@ -1,4 +1,4 @@
-// $Id: qpropadd.cc,v 1.4 2004-12-24 04:19:23 edwards Exp $
+// $Id: qpropadd.cc,v 1.5 2005-01-14 20:13:09 edwards Exp $
 /*! \file
  * \brief Add two quark propagators
  *
@@ -7,7 +7,7 @@
 
 #include "chroma.h"
 
-using namespace QDP;
+using namespace Chroma;
 
 
 /*

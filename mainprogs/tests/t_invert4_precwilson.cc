@@ -1,4 +1,4 @@
-// $Id: t_invert4_precwilson.cc,v 1.4 2004-03-25 14:31:20 bjoo Exp $
+// $Id: t_invert4_precwilson.cc,v 1.5 2005-01-14 20:13:09 edwards Exp $
 
 #include <iostream>
 #include <sstream>
@@ -15,8 +15,7 @@
 #include "invcg2_timing_hacks_2.h"
 #include "invcg2_prec_wilson.h"
 
-using namespace QDP;
-using namespace std;
+using namespace Chroma;
 
 
 enum GaugeStartType { COLD_START=0, HOT_START };

@@ -1,4 +1,4 @@
-// $Id: t_neflinop.cc,v 1.4 2004-09-02 20:00:02 kostas Exp $
+// $Id: t_neflinop.cc,v 1.5 2005-01-14 20:13:09 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -7,7 +7,7 @@
 
 #include "qdp_util.h"
 
-using namespace QDP;
+using namespace Chroma;
 
 
 //! Read a SZIN fermion. This is a simple memory dump reader.

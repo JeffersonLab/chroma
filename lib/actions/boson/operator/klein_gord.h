@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: klein_gord.h,v 1.3 2004-12-15 04:49:03 edwards Exp $
+// $Id: klein_gord.h,v 1.4 2005-01-14 20:13:04 edwards Exp $
 
 #ifndef KLEIN_GORD_INCLUDE
 #define KLEIN_GORD_INCLUDE
@@ -17,6 +17,5 @@ namespace Chroma
 		  const Real& mass_sq, int j_decay);
 }
 
-using namespace Chroma;
 
 #endif

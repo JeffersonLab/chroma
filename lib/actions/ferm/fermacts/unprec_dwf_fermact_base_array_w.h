@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_fermact_base_array_w.h,v 1.21 2005-01-04 06:52:03 edwards Exp $
+// $Id: unprec_dwf_fermact_base_array_w.h,v 1.22 2005-01-14 20:13:04 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned domain-wall-like fermion actions
  */
@@ -14,7 +14,6 @@
 #include "actions/ferm/linop/llincomb.h"
 #include "actions/ferm/linop/lmdagm.h"
 
-using namespace QDP;
  
 namespace Chroma
 {
@@ -109,6 +108,5 @@ namespace Chroma
 
 }
 
-using namespace Chroma;
 
 #endif

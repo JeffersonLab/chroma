@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: objfactory.h,v 1.5 2005-01-14 17:16:50 bjoo Exp $
+// $Id: objfactory.h,v 1.6 2005-01-14 20:13:04 edwards Exp $
 
 /*! @file
  * @brief Factory class for objects from XML input
@@ -15,7 +15,6 @@
 #include <map>
 #include <exception>
 
-using namespace QDP;
 
 namespace Chroma
 {

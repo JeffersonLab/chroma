@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_sse.cc,v 1.22 2004-12-20 03:59:31 edwards Exp $
+// $Id: lwldslash_w_sse.cc,v 1.23 2005-01-14 20:13:05 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -7,10 +7,9 @@
 #include "actions/ferm/linop/lwldslash_w_sse.h"
 #include <sse_config.h>
 
-using namespace QDP;
 
 // This is in C++ so it comes outside the extern "C" {}
-extern void qdp_pack_gauge(const multi1d<LatticeColorMatrix>&_u, multi1d<PrimitiveSU3Matrix>& u_tmp);
+extern void qdp_pack_gauge(const multi1d<LatticeColorMatrix>&_u, multi1d<Chroma::PrimitiveSU3Matrix>& u_tmp);
 
 namespace Chroma 
 { 

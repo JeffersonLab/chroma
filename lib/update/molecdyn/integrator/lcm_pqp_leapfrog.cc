@@ -8,9 +8,6 @@
 #include "util/gauge/reunit.h"
 #include "util/gauge/expmat.h"
 
-using namespace QDP;
-using namespace Chroma;
-using namespace std;
 
 namespace Chroma { 
   

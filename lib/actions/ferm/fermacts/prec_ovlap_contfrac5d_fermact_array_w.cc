@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_fermact_array_w.cc,v 1.9 2005-01-02 05:21:09 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_fermact_array_w.cc,v 1.10 2005-01-14 20:13:04 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -18,8 +18,6 @@
 #include "io/enum_io/enum_io.h"
 #include "io/overlap_state_info.h"
 
-using namespace QDP;
-using namespace Chroma;
 namespace Chroma
 {
 

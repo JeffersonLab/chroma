@@ -1,4 +1,4 @@
-// $Id: dwffld_w.cc,v 1.6 2004-12-12 21:22:15 edwards Exp $
+// $Id: dwffld_w.cc,v 1.7 2005-01-14 20:13:05 edwards Exp $
 /*! \file
  *  \brief DWF parity/rotation operator
  *
@@ -9,7 +9,6 @@
 #include "chromabase.h"
 #include "actions/ferm/linop/dwffld_w.h"
 
-using namespace QDP;
 
 namespace Chroma 
 { 

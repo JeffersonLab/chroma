@@ -1,4 +1,4 @@
-// $Id: unprec_wilson_linop_w.cc,v 1.12 2004-12-17 17:45:04 bjoo Exp $
+// $Id: unprec_wilson_linop_w.cc,v 1.13 2005-01-14 20:13:06 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -6,8 +6,6 @@
 #include "chromabase.h"
 #include "actions/ferm/linop/unprec_wilson_linop_w.h"
 
-using namespace QDP;
-using namespace Chroma;
 
 namespace Chroma 
 { 

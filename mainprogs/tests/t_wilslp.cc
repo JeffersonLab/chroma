@@ -1,4 +1,4 @@
-// $Id: t_wilslp.cc,v 1.1 2004-05-24 19:41:50 mcneile Exp $
+// $Id: t_wilslp.cc,v 1.2 2005-01-14 20:13:10 edwards Exp $
 //
 // Test driver for wilslp
 // default test uses the usual NERSC 4^4 config.
@@ -11,7 +11,7 @@
 
 #include "chroma.h"
 
-using namespace QDP;
+using namespace Chroma;
 
 int main(int argc, char *argv[])
 {

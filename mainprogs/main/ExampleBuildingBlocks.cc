@@ -38,14 +38,14 @@
 #include <assert.h>
 #include "chroma.h"
 
-using namespace QDP;
+using namespace Chroma;
 
 //###################################################################################//
 // CVS Header                                                                        //
 //###################################################################################//
 
 static const char* const CVSExampleBuildingBlocks_hh =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/mainprogs/main/ExampleBuildingBlocks.cc,v 1.18 2004-11-06 20:32:42 edwards Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/mainprogs/main/ExampleBuildingBlocks.cc,v 1.19 2005-01-14 20:13:08 edwards Exp $";
 
 //###################################################################################//
 // Accept All Link Patterns                                                          //

@@ -2,8 +2,6 @@
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/glue/mesplq.h"
 
-using namespace QDP;
-using namespace Chroma;
 
 namespace Chroma { 
 

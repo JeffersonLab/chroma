@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inv_rel_gmresr_cg.h,v 1.2 2004-12-12 21:22:15 edwards Exp $
+// $Id: inv_rel_gmresr_cg.h,v 1.3 2005-01-14 20:13:05 edwards Exp $
 /*! \file
  *  \brief Relaxed GMRESR algorithm of the Wuppertal Group
  */
@@ -7,9 +7,9 @@
 #ifndef __inv_rel_gmresr_cg__
 #define __inv_rel_gmresr_cg__
 
-#include "chromabase.h"
 #include "linearop.h"
 
+namespace Chroma {
 
 template<typename T>
 void InvRelGMRESR_CG(const LinearOperator<T>& PrecMM,
@@ -21,5 +21,7 @@ void InvRelGMRESR_CG(const LinearOperator<T>& PrecMM,
 		     int MaxGMRESR, 
 		     int MaxGMRESRPrec,
 		     int& n_count);
+
+}  // end namespace Chroma
 
 #endif

@@ -9,9 +9,6 @@
 #include "update/molecdyn/hmc/global_metropolis_accrej.h"
 
 
-using namespace QDP;
-using namespace std;
-using namespace Chroma;
 
 namespace Chroma { 
 

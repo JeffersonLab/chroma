@@ -1,10 +1,12 @@
-// $Id: invcg2.cc,v 1.12 2004-11-13 12:17:41 mcneile Exp $
+// $Id: invcg2.cc,v 1.13 2005-01-14 20:13:05 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
 
 #include "chromabase.h"
 #include "actions/ferm/invert/invcg2.h"
+
+namespace Chroma {
 
 //! Conjugate-Gradient (CGNE) algorithm for a generic Linear Operator
 /*! \ingroup invert
@@ -191,3 +193,4 @@ void InvCG2(const LinearOperator<LatticeStaggeredFermion>& M,
   InvCG2_a(M, chi, psi, RsdCG, MaxCG, n_count);
 }
 
+}  // end namespace Chroma

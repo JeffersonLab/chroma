@@ -3,7 +3,8 @@
 #include "io/readszinferm_w.h"
 #include <iostream>
 #include <iomanip>
-using namespace std;
+
+namespace Chroma {
 
 void read(XMLReader& xml, const string& path, RitzParams_t& header)
 {
@@ -402,4 +403,5 @@ void readEigenSzin(multi1d<Real>& lambda_lo,
   
 }
 
+}  // end namespace Chroma
   

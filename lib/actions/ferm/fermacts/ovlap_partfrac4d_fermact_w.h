@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ovlap_partfrac4d_fermact_w.h,v 1.7 2005-01-02 05:21:09 edwards Exp $
+// $Id: ovlap_partfrac4d_fermact_w.h,v 1.8 2005-01-14 20:13:04 edwards Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -15,7 +15,6 @@
 #include "io/overlap_state_info.h"
 #include "io/enum_io/enum_io.h"
 
-using namespace QDP;
 
 namespace Chroma
 {

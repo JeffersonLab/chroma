@@ -1,4 +1,4 @@
-// $Id: szin_io.cc,v 1.4 2004-02-23 03:08:02 edwards Exp $
+// $Id: szin_io.cc,v 1.5 2005-01-14 20:13:07 edwards Exp $
 
 /*! \file
  *  \brief Reader/writers for szin headers
@@ -7,7 +7,7 @@
 #include "chromabase.h"
 #include "io/szin_io.h"
 
-using namespace QDP;
+namespace Chroma {
 
 // Initialize header with default values
 void initHeader(SzinGauge_t& header)
@@ -138,3 +138,4 @@ void write(XMLWriter& xml, const string& path, const SzinGauge_t& header)
   pop(xml);
 }
 
+}  // end namespace Chroma

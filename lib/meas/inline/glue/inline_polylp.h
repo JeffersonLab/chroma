@@ -5,8 +5,6 @@
 #include "meas/inline/abs_inline_measurement.h"
 
 
-using namespace QDP;
-using namespace Chroma;
 
 namespace Chroma { 
   namespace InlinePolyakovLoopEnv {

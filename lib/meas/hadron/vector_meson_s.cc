@@ -63,7 +63,6 @@ private:
  
 
 // THis brings the staggered phases alpha and beta into the namespace
-using namespace StagPhases;
 
 void 
 vector_meson::compute(
@@ -133,7 +132,7 @@ vector_meson::compute(
     delta = 0;
     delta[mu] = 1;
       
-    corr_fn_s =  alpha(1)*trace(shift_deltaProp(delta,quark_props[0])
+    corr_fn_s =  StagPhases::alpha(1)*trace(shift_deltaProp(delta,quark_props[0])
                              *adj(quark_props[ deltaToPropIndex(delta) ]));
     corr_fn[ sca_index ] = sumMulti(corr_fn_s, timeslice);
     tag_names[sca_index] = "gamma_x_CROSS_gamma_x" ; 
@@ -144,7 +143,7 @@ vector_meson::compute(
     delta = 0;
     delta[mu] = 1;
       
-    corr_fn_s =  alpha(1)*trace(shift_deltaProp(delta,quark_props[0])
+    corr_fn_s =  StagPhases::alpha(1)*trace(shift_deltaProp(delta,quark_props[0])
                              *adj(quark_props[ deltaToPropIndex(delta) ]));
     corr_fn[ sca_index ] = sumMulti(corr_fn_s, timeslice);
     tag_names[sca_index] = "gamma_y_CROSS_gamma_y" ; 
@@ -155,7 +154,7 @@ vector_meson::compute(
     delta = 0;
     delta[mu] = 1;
       
-    corr_fn_s =  alpha(1)*trace(shift_deltaProp(delta,quark_props[0])
+    corr_fn_s =  StagPhases::alpha(1)*trace(shift_deltaProp(delta,quark_props[0])
                              *adj(quark_props[ deltaToPropIndex(delta) ]));
     corr_fn[ sca_index ] = sumMulti(corr_fn_s, timeslice);
     tag_names[sca_index] = "gamma_z_CROSS_gamma_z" ; 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: invtype.h,v 1.7 2004-09-22 17:24:59 bjoo Exp $
+// $Id: invtype.h,v 1.8 2005-01-14 20:13:04 edwards Exp $
 
 /*! @file
  * @brief Types of inverters
@@ -50,6 +50,5 @@ namespace Chroma
 }
 
 
-using namespace Chroma;
 
 #endif

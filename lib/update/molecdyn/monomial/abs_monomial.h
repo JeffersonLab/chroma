@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_monomial.h,v 1.3 2005-01-14 15:59:00 bjoo Exp $
+// $Id: abs_monomial.h,v 1.4 2005-01-14 20:13:08 edwards Exp $
 
 /*! @file
  * @brief Monomials - gauge action or fermion binlinear contributions for HMC
@@ -896,6 +896,5 @@ namespace Chroma
 
 }
 
-using namespace Chroma;
 
 #endif

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_base_w.h,v 1.2 2005-01-02 05:21:10 edwards Exp $
+// $Id: lwldslash_base_w.h,v 1.3 2005-01-14 20:13:05 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -9,7 +9,6 @@
 
 #include "linearop.h"
 
-using namespace QDP;
 
 namespace Chroma 
 { 
@@ -87,6 +86,5 @@ namespace Chroma
 
 }; // End Namespace Chroma
 
-using namespace Chroma;
 
 #endif

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovlap_contfrac5d_fermact_array_w.h,v 1.8 2005-01-10 18:17:11 edwards Exp $
+// $Id: unprec_ovlap_contfrac5d_fermact_array_w.h,v 1.9 2005-01-14 20:13:04 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -13,7 +13,6 @@
 #include "actions/ferm/linop/lDeltaLs_w.h"
 #include "io/overlap_state_info.h"
 
-using namespace QDP;
 
 namespace Chroma
 {

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: asqtad_fermact_s.h,v 1.8 2004-12-12 21:22:14 edwards Exp $
+// $Id: asqtad_fermact_s.h,v 1.9 2005-01-14 20:13:04 edwards Exp $
 /*! \file
  *  \brief Asqtad staggered fermion action
  */
@@ -10,7 +10,6 @@
 #include <fermact.h>
 #include "actions/ferm/fermacts/asqtad_state.h"
 
-using namespace QDP;
 
 namespace Chroma 
 { 

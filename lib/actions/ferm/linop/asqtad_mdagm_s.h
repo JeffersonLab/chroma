@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: asqtad_mdagm_s.h,v 1.6 2004-12-12 21:22:15 edwards Exp $
+// $Id: asqtad_mdagm_s.h,v 1.7 2005-01-14 20:13:05 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -13,7 +13,6 @@
 #include "actions/ferm/linop/asqtad_dslash.h"
 
 
-using namespace QDP;
 
 namespace Chroma 
 { 
@@ -77,6 +76,5 @@ private:
 
 }; // End Namespace Chroma
 
-using namespace Chroma;
 
 #endif

@@ -1,4 +1,4 @@
-// $Id: readszin.cc,v 1.22 2004-07-28 02:38:03 edwards Exp $
+// $Id: readszin.cc,v 1.23 2005-01-14 20:13:07 edwards Exp $
 
 /*! \file
  *  \brief Read in a configuration written by SZIN up to configuration version 7.
@@ -10,12 +10,10 @@
 // #include "io/param_io.h"
 #include "qdp_util.h"    // from QDP
 
-#include <string>
-using std::string;
+namespace Chroma {
 
 #define SZIN_WILSON_FERMIONS  1
 
-using namespace QDP;
 
 //! Read a SZIN configuration file
 /*!
@@ -319,3 +317,4 @@ void readSzin(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_
   END_CODE();
 }
 
+}  // end namespace Chroma

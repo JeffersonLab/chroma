@@ -2,10 +2,6 @@
 #include "chromabase.h"
 #include "overlap_state_info.h"
 
-#include <string>
-using namespace std;
-using namespace QDP;
-
 namespace Chroma { 
 
 OverlapStateInfo::OverlapStateInfo(void) 

@@ -1,4 +1,4 @@
-// $Id: t_rel_gmresr.cc,v 1.1 2004-05-25 21:47:40 bjoo Exp $
+// $Id: t_rel_gmresr.cc,v 1.2 2005-01-14 20:13:10 edwards Exp $
 
 #include <iostream>
 #include <sstream>
@@ -13,7 +13,7 @@
 
 #include "chroma.h"
 
-using namespace QDP;
+using namespace Chroma;
 using namespace std;
 
 struct App_input_t {

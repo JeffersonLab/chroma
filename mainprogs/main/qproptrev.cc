@@ -1,11 +1,11 @@
-// $Id: qproptrev.cc,v 1.3 2005-01-12 15:23:26 bjoo Exp $
+// $Id: qproptrev.cc,v 1.4 2005-01-14 20:13:09 edwards Exp $
 /*! \file
  *  \brief Time-reverse a propagator
  */
 
 #include "chroma.h"
 
-using namespace QDP;
+using namespace Chroma;
 
 /*
  * Input 

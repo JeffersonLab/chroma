@@ -1,10 +1,12 @@
-// $Id: invcg2_timing_hacks.cc,v 1.3 2004-07-27 06:03:04 edwards Exp $
+// $Id: invcg2_timing_hacks.cc,v 1.4 2005-01-14 20:13:05 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
 
 #include "chromabase.h"
 #include "actions/ferm/invert/invcg2_timing_hacks.h"
+
+namespace Chroma {
 
 // This is a hack version of invcg2 designed to allow timing.
 // In particular stuff that would make the CG converge has been
@@ -189,3 +191,4 @@ void InvCG2_timing_hacks(const LinearOperator<LatticeFermion>& M,
   InvCG2_timing_hacks_a(M, chi, psi, RsdCG, MaxCG, n_count);
 }
 
+}  // end namespace Chroma

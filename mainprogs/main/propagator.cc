@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.86 2005-01-12 15:23:26 bjoo Exp $
+// $Id: propagator.cc,v 1.87 2005-01-14 20:13:08 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -8,7 +8,6 @@
 
 #include "chroma.h"
 
-using namespace QDP;
 using namespace Chroma;
 
 

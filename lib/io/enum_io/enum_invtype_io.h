@@ -7,8 +7,6 @@
 #include "io/enum_io/enum_type_map.h"
 #include "invtype.h" // This is where the enum is defined. We are non-intrusive
 
-using namespace std;
-using namespace Chroma;
 
 namespace Chroma {
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: llincomb.h,v 1.1 2004-12-07 20:21:03 edwards Exp $
+// $Id: llincomb.h,v 1.2 2005-01-14 20:13:05 edwards Exp $
 
 #ifndef __llincomb_h__
 #define __llincomb_h__
@@ -7,7 +7,6 @@
 #include "handle.h"
 #include "linearop.h"
 
-using namespace QDP;
 
 namespace Chroma
 {
@@ -53,6 +52,5 @@ namespace Chroma
   };
 }
 
-using namespace Chroma;
 
 #endif

@@ -4,8 +4,6 @@
 #include "chromabase.h"
 #include "update/molecdyn/monomial/abs_monomial.h"
 
-using namespace QDP;
-using namespace Chroma;
 
 namespace Chroma { 
 

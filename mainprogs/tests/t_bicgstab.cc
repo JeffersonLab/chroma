@@ -1,4 +1,4 @@
-// $Id: t_bicgstab.cc,v 1.1 2004-05-19 11:43:19 bjoo Exp $
+// $Id: t_bicgstab.cc,v 1.2 2005-01-14 20:13:09 edwards Exp $
 
 #include <iostream>
 #include <sstream>
@@ -14,7 +14,7 @@
 #include "chroma.h"
 #include "actions/ferm/invert/invsumr.h"
 
-using namespace QDP;
+using namespace Chroma;
 using namespace std;
 
 struct App_input_t {

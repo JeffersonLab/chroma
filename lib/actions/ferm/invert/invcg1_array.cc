@@ -1,4 +1,4 @@
-// $Id: invcg1_array.cc,v 1.4 2004-11-01 12:52:47 bjoo Exp $
+// $Id: invcg1_array.cc,v 1.5 2005-01-14 20:13:05 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -6,6 +6,7 @@
 #include "chromabase.h"
 #include "actions/ferm/invert/invcg1_array.h"
 
+namespace Chroma {
 
 //! Conjugate-Gradient (CGNE) algorithm for a generic Linear Operator
 /*! \ingroup invert
@@ -209,3 +210,4 @@ void InvCG1(const LinearOperator< multi1d<LatticeFermion> >& A,
   InvCG1_a(A, chi, psi, RsdCG, MaxCG, n_count);
 }
 
+}  // end namespace Chroma

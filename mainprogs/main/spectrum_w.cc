@@ -1,10 +1,15 @@
-// $Id: spectrum_w.cc,v 1.42 2005-01-12 15:23:26 bjoo Exp $
+// $Id: spectrum_w.cc,v 1.43 2005-01-14 20:13:09 edwards Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.42  2005-01-12 15:23:26  bjoo
+//  Revision 1.43  2005-01-14 20:13:09  edwards
+//  Removed all using namespace QDP/Chroma from lib files. The library
+//  should now be 100% in the Chroma namespace. All mainprogs need a
+//  using namespace Chroma.
+//
+//  Revision 1.42  2005/01/12 15:23:26  bjoo
 //  Moved the mainprogs to use ChromaInitialize and ChromaFinalize. Howver this doesnt buy us much since the linkage hack cannot be properly hidden at the moment (causes segfaults in propagator) and I need closure about how to deal with default input streams. You do get a TheXMLOutputWriter tho
 //
 //  Revision 1.41  2004/12/24 04:19:23  edwards
@@ -146,11 +151,9 @@
 
 #include <iostream>
 #include <cstdio>
-
 #include "chroma.h"
 
-
-using namespace QDP;
+using namespace Chroma;
 
 
 /*

@@ -6,9 +6,6 @@
 #include "update/molecdyn/hamiltonian/abs_hamiltonian.h"
 #include "io/xmllog_io.h"
 
-using namespace QDP;
-using namespace std;
-using namespace Chroma;
 
 
 

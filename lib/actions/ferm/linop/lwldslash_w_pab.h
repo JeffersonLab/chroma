@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_w_pab.h,v 1.5 2004-12-20 03:59:31 edwards Exp $
+// $Id: lwldslash_w_pab.h,v 1.6 2005-01-14 20:13:05 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -11,7 +11,6 @@
 
 #include <wfm.h>
 
-using namespace QDP;
 
 namespace Chroma 
 { 
@@ -92,6 +91,5 @@ namespace Chroma
 
 }; // End Namespace Chroma
 
-using namespace Chroma;
 
 #endif

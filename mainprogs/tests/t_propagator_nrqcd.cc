@@ -1,4 +1,4 @@
-// $Id: t_propagator_nrqcd.cc,v 1.2 2004-09-09 15:52:52 edwards Exp $
+// $Id: t_propagator_nrqcd.cc,v 1.3 2005-01-14 20:13:10 edwards Exp $
 /*! \file
  *  \brief Main code for NRQCD propagator generation
  *   
@@ -43,7 +43,7 @@
 #include "chroma.h"
 
 
-using namespace QDP;
+using namespace Chroma;
 
 
 // ----- start of prototypes for NRQCD -----

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ht_contfrac5d_linop_array_w.h,v 1.2 2005-01-05 21:44:07 edwards Exp $
+// $Id: unprec_ht_contfrac5d_linop_array_w.h,v 1.3 2005-01-14 20:13:06 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned H_T kernel continued fraction (5D) operator
  */
@@ -10,7 +10,6 @@
 #include "linearop.h"
 #include "state.h"
 
-using namespace QDP;
 
 namespace Chroma 
 { 
@@ -84,6 +83,5 @@ namespace Chroma
 
 }; // End Namespace Chroma
 
-using namespace Chroma;
 
 #endif

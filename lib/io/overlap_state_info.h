@@ -5,9 +5,6 @@
 #include "io/param_io.h"
 #include "io/eigen_io.h"
 
-#include <string>
-using namespace QDP;
-
 namespace Chroma
 {
 
@@ -116,6 +113,5 @@ namespace Chroma
 
 };
 
-using namespace Chroma;
 
 #endif

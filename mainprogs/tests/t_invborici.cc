@@ -1,4 +1,4 @@
-// $Id: t_invborici.cc,v 1.2 2004-07-09 09:50:58 bjoo Exp $
+// $Id: t_invborici.cc,v 1.3 2005-01-14 20:13:09 edwards Exp $
 
 #include <iostream>
 #include <sstream>
@@ -15,8 +15,7 @@
 
 #include "actions/ferm/invert/inv_borici_w.h"
 
-using namespace QDP;
-using namespace std;
+using namespace Chroma;
 
 struct App_input_t {
   Zolotarev4DFermActParams* zolo4D;

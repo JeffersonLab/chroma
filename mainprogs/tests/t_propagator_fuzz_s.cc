@@ -1,4 +1,4 @@
-// $Id: t_propagator_fuzz_s.cc,v 1.14 2005-01-04 15:55:32 mcneile Exp $
+// $Id: t_propagator_fuzz_s.cc,v 1.15 2005-01-14 20:13:09 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  *
@@ -29,7 +29,7 @@ enum FermType {
 };
 
 
-using namespace QDP;
+using namespace Chroma;
 
 
 /*

@@ -1,4 +1,4 @@
-// $Id: quarkprop4_s.cc,v 1.2 2005-01-02 05:21:10 edwards Exp $
+// $Id: quarkprop4_s.cc,v 1.3 2005-01-14 20:13:06 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -10,7 +10,6 @@
 #include "util/ferm/transf.h"
 #include "actions/ferm/qprop/quarkprop4_s.h"
 
-using namespace QDP;
 
 namespace Chroma 
 {

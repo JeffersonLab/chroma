@@ -1,10 +1,12 @@
 // -*- C++ -*-
-// $Id: invmr.h,v 1.2 2003-10-10 03:46:46 edwards Exp $
+// $Id: invmr.h,v 1.3 2005-01-14 20:13:05 edwards Exp $
 
 #ifndef __invmr_h__
 #define __invmr_h__
 
 #include "linearop.h"
+
+namespace Chroma {
 
 void InvMR(const LinearOperator& A,
 	   const LatticeFermion& chi,
@@ -13,5 +15,7 @@ void InvMR(const LinearOperator& A,
 	   const Real& MRovpar;
 	   int MaxCG, 
 	   int& n_count);
+
+}  // end namespace Chroma
 
 #endif

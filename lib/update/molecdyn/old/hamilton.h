@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hamilton.h,v 1.2 2004-07-27 16:09:06 edwards Exp $
+// $Id: hamilton.h,v 1.3 2005-01-14 20:13:08 edwards Exp $
 /*! \file
  *  \brief Hamiltonian systems
  */
@@ -12,7 +12,6 @@
 #include "gaugeact.h"
 #include "fermact.h"
 
-using namespace QDP;
 
 //----------------------------------------------------------------------------
 //! Abstract Hamiltonian system

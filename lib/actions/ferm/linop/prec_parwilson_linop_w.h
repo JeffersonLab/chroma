@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_parwilson_linop_w.h,v 1.4 2005-01-11 19:45:49 edwards Exp $
+// $Id: prec_parwilson_linop_w.h,v 1.5 2005-01-14 20:13:06 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion linear operator with parity breaking term
  */
@@ -10,7 +10,6 @@
 #include "linearop.h"
 #include "actions/ferm/linop/dslash_w.h"
 
-using namespace QDP;
 
 namespace Chroma 
 { 
@@ -106,6 +105,5 @@ namespace Chroma
 
 }; // End Namespace Chroma
 
-using namespace Chroma;
 
 #endif

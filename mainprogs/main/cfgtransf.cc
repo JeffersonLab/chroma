@@ -1,11 +1,11 @@
-// $Id: cfgtransf.cc,v 1.17 2004-07-28 03:08:04 edwards Exp $
+// $Id: cfgtransf.cc,v 1.18 2005-01-14 20:13:08 edwards Exp $
 /*! \file
  *  \brief Many-to-many gauge transformation routine
  */
 
 #include "chroma.h"
 
-using namespace QDP;
+using namespace Chroma;
 
 //! Many-to-many gauge transformation routine
 /*! \defgroup cfgtransf Tranformation routine

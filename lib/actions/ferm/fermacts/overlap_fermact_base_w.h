@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: overlap_fermact_base_w.h,v 1.18 2005-01-02 05:21:09 edwards Exp $
+// $Id: overlap_fermact_base_w.h,v 1.19 2005-01-14 20:13:04 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -13,7 +13,6 @@
 #include "io/enum_io/enum_inner_solver_type_io.h"
 #include "actions/ferm/linop/lDeltaLs_w.h"
 
-using namespace QDP;
 
 namespace Chroma
 {

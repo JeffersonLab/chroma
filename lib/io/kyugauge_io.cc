@@ -1,4 +1,4 @@
-// $Id: kyugauge_io.cc,v 1.7 2004-07-28 02:38:02 edwards Exp $
+// $Id: kyugauge_io.cc,v 1.8 2005-01-14 20:13:06 edwards Exp $
 
 /*! \file
  *  \brief Read/write a Kentucky gauge configuration
@@ -7,7 +7,8 @@
 #include "chromabase.h"
 #include "io/kyugauge_io.h"
 
-using namespace QDP;
+namespace Chroma {
+
 
 //! Read a Kentucky gauge configuration
 /*!
@@ -112,3 +113,4 @@ void writeKYU(const multi1d<LatticeColorMatrix>& u, const string& cfg_file)
 }
 
 
+}  // end namespace Chroma

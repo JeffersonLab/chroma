@@ -1,10 +1,15 @@
-// $Id: t_formfac.cc,v 1.7 2004-02-11 12:51:35 bjoo Exp $
+// $Id: t_formfac.cc,v 1.8 2005-01-14 20:13:09 edwards Exp $
 //
 //! \file
 //  \brief Test the form-factor routine
 //
 // $Log: t_formfac.cc,v $
-// Revision 1.7  2004-02-11 12:51:35  bjoo
+// Revision 1.8  2005-01-14 20:13:09  edwards
+// Removed all using namespace QDP/Chroma from lib files. The library
+// should now be 100% in the Chroma namespace. All mainprogs need a
+// using namespace Chroma.
+//
+// Revision 1.7  2004/02/11 12:51:35  bjoo
 // Stripped out Read() and Write()
 //
 // Revision 1.6  2003/10/09 20:36:49  edwards
@@ -24,7 +29,12 @@
 //
 // Revision 1.2  2003/03/06 00:27:29  flemingg
 // Added $Log: t_formfac.cc,v $
-// Added Revision 1.7  2004-02-11 12:51:35  bjoo
+// Added Revision 1.8  2005-01-14 20:13:09  edwards
+// Added Removed all using namespace QDP/Chroma from lib files. The library
+// Added should now be 100% in the Chroma namespace. All mainprogs need a
+// Added using namespace Chroma.
+// Added
+// Added Revision 1.7  2004/02/11 12:51:35  bjoo
 // Added Stripped out Read() and Write()
 // Added
 // Added Revision 1.6  2003/10/09 20:36:49  edwards
@@ -49,7 +59,7 @@
 
 #include "chroma.h"
 
-using namespace QDP;
+using namespace Chroma;
 
 int main(int argc, char *argv[])
 {

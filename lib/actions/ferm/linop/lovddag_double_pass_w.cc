@@ -1,4 +1,4 @@
-// $Id: lovddag_double_pass_w.cc,v 1.9 2004-12-12 21:22:16 edwards Exp $
+// $Id: lovddag_double_pass_w.cc,v 1.10 2005-01-14 20:13:05 edwards Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -7,7 +7,6 @@
 #include "actions/ferm/linop/lovddag_double_pass_w.h"
 #include "meas/eig/gramschm.h"
 
-using namespace QDP;
 
 namespace Chroma 
 { 

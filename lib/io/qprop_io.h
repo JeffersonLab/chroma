@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qprop_io.h,v 1.23 2004-12-24 04:24:41 edwards Exp $
+// $Id: qprop_io.h,v 1.24 2005-01-14 20:13:07 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -13,7 +13,8 @@
 #include "meas/sources/wavetype.h"
 #include "meas/smear/wvfkind.h"
 
-using namespace Chroma;
+namespace Chroma {
+
 /*!
  * Chroma propagator support
  *
@@ -298,5 +299,7 @@ void readFermion(XMLReader& file_xml,
 		 QDP_serialparallel_t serpar);
 
 /*! @} */  // end of group io
+
+}  // end namespace Chroma
 
 #endif

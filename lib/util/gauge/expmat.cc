@@ -1,4 +1,4 @@
-// $Id: expmat.cc,v 1.6 2005-01-14 15:59:00 bjoo Exp $
+// $Id: expmat.cc,v 1.7 2005-01-14 20:13:08 edwards Exp $
 /*! \file
  *  \brief Exponentiate a SU(n) lie algebra element by some method,
  */
@@ -13,8 +13,6 @@
 #include "util/gauge/reunit.h"
 //#include "util/gauge/eesu3.h"
 
-using namespace QDP;
-using namespace Chroma;
 
 namespace Chroma { 
 //! Exponentiate a SU(n) lie algebra element by some method.

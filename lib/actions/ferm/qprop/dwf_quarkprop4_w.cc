@@ -1,6 +1,11 @@
-// $Id: dwf_quarkprop4_w.cc,v 1.23 2005-01-07 04:53:53 edwards Exp $
+// $Id: dwf_quarkprop4_w.cc,v 1.24 2005-01-14 20:13:06 edwards Exp $
 // $Log: dwf_quarkprop4_w.cc,v $
-// Revision 1.23  2005-01-07 04:53:53  edwards
+// Revision 1.24  2005-01-14 20:13:06  edwards
+// Removed all using namespace QDP/Chroma from lib files. The library
+// should now be 100% in the Chroma namespace. All mainprogs need a
+// using namespace Chroma.
+//
+// Revision 1.23  2005/01/07 04:53:53  edwards
 // Some debugging output added.
 //
 // Revision 1.22  2005/01/02 05:21:10  edwards
@@ -115,7 +120,6 @@
 
 #include "actions/ferm/qprop/dwf_quarkprop4_w.h"
 
-using namespace QDP;
 
 namespace Chroma
 {

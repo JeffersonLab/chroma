@@ -1,4 +1,4 @@
-// $Id: writeszin.h,v 1.5 2004-04-13 03:06:13 edwards Exp $
+// $Id: writeszin.h,v 1.6 2005-01-14 20:13:07 edwards Exp $
 
 /*! \file
  *  \brief Write a SZIN configuration written at configuration version 7.
@@ -6,6 +6,8 @@
 
 #ifndef __writeszin_h__
 #define __writeszin_h__
+
+namespace Chroma {
 
 //! Write a SZIN configuration file
 /*!
@@ -70,5 +72,8 @@ void writeSzinTrunc(SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u,
 void writeSzinReplica(SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u, 
 		      int j_decay, int n_replica, 
 		      const string& cfg_file);
+
+}  // end namespace Chroma
+
 #endif
 

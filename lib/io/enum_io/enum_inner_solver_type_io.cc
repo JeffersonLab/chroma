@@ -1,8 +1,6 @@
 #include "enum_inner_solver_type_io.h"
 
 #include <string>
-using namespace std;
-using namespace Chroma;
 
 namespace Chroma { 
 

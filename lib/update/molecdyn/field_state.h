@@ -8,7 +8,6 @@
 */
 #include "chromabase.h"
 
-using namespace QDP;
 
 namespace Chroma {
 /*! An abstract field state. The templates P and Q are the 

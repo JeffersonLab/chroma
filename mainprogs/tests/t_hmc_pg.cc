@@ -6,9 +6,7 @@
 
 #include <iostream>
 
-using namespace QDP;
-using namespace std;
-
+using namespace Chroma;
 
 int main(int argc, char *argv[])
 {

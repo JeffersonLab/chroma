@@ -2,6 +2,7 @@
 #include "actions/ferm/invert/inv_rel_cg1.h"
 #include "actions/ferm/invert/inv_rel_gmresr_cg.h"
 
+namespace Chroma {
 
     
 template<typename T>
@@ -113,3 +114,5 @@ void InvRelGMRESR_CG(const LinearOperator<LatticeFermion>& PrecMM,
 {
   InvRelGMRESR_CG_a(PrecMM, UnprecMM, b, x, epsilon, epsilon_prec, MaxGMRESR, MaxGMRESRPrec, n_count);
 }
+
+}  // end namespace Chroma

@@ -1,4 +1,4 @@
-// $Id: asqtad_fermact_s.cc,v 1.8 2004-12-12 21:22:14 edwards Exp $
+// $Id: asqtad_fermact_s.cc,v 1.9 2005-01-14 20:13:04 edwards Exp $
 /*! \file
  *  \brief Asqtad staggered fermion action
  */
@@ -69,7 +69,6 @@ AsqtadFermAct::lMdagM(Handle<const ConnectState> state_) const
 
 //! Create a state -- this multiplies in the K-S phases computes the fat and triple links etc
 
-using namespace StagPhases;
 
 const AsqtadConnectStateBase<LatticeStaggeredFermion>*
 AsqtadFermAct::createState(const multi1d<LatticeColorMatrix>& u_) const
@@ -86,7 +85,7 @@ AsqtadFermAct::createState(const multi1d<LatticeColorMatrix>& u_) const
   //
   // alpha comes from the StagPhases:: namespace
   for(int i = 0; i < Nd; i++) { 
-    u_with_phases[i] *= alpha(i);
+    u_with_phases[i] *= StagPhases::alpha(i);
   }
 
   // Make Fat7 and triple links

@@ -6,7 +6,6 @@
 #include "state.h"
 #include "actions/ferm/linop/improvement_terms_s.h"
 
-using namespace QDP;
 
 namespace Chroma 
 { 

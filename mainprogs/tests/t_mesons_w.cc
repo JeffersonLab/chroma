@@ -1,10 +1,15 @@
-// $Id: t_mesons_w.cc,v 1.6 2004-02-11 12:51:35 bjoo Exp $
+// $Id: t_mesons_w.cc,v 1.7 2005-01-14 20:13:09 edwards Exp $
 //
 //! \file
 //  \brief Test the Wilson mesons() routine
 //
 // $Log: t_mesons_w.cc,v $
-// Revision 1.6  2004-02-11 12:51:35  bjoo
+// Revision 1.7  2005-01-14 20:13:09  edwards
+// Removed all using namespace QDP/Chroma from lib files. The library
+// should now be 100% in the Chroma namespace. All mainprogs need a
+// using namespace Chroma.
+//
+// Revision 1.6  2004/02/11 12:51:35  bjoo
 // Stripped out Read() and Write()
 //
 // Revision 1.5  2003/10/09 20:36:49  edwards
@@ -29,7 +34,7 @@
 
 #include "chroma.h"
 
-using namespace QDP;
+using namespace Chroma;
 
 int main(int argc, char *argv[])
 {

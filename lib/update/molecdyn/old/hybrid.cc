@@ -1,11 +1,10 @@
-// $Id: hybrid.cc,v 1.1 2004-12-24 14:10:47 edwards Exp $
+// $Id: hybrid.cc,v 1.2 2005-01-14 20:13:08 edwards Exp $
 // HYBRID
 
 #error "NOT FULLY CONVERTED"
 
 #include "chromabase.h"
 
-using namespace QDP;
 
 //! Routine for doing the hybrid (monte carlo) algorithm.
 /*!

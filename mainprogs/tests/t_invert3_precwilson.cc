@@ -1,4 +1,4 @@
-// $Id: t_invert3_precwilson.cc,v 1.7 2004-03-25 23:18:33 edwards Exp $
+// $Id: t_invert3_precwilson.cc,v 1.8 2005-01-14 20:13:09 edwards Exp $
 
 #include <iostream>
 #include <sstream>
@@ -14,8 +14,7 @@
 #include "chroma.h"
 #include "actions/ferm/invert/invcg2_timing_hacks.h"
 
-using namespace QDP;
-using namespace std;
+using namespace Chroma;
 
 
 enum GaugeStartType { COLD_START=0, HOT_START };

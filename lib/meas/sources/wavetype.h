@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wavetype.h,v 1.2 2004-09-22 17:25:01 bjoo Exp $
+// $Id: wavetype.h,v 1.3 2005-01-14 20:13:08 edwards Exp $
 /*! \file
  *  \brief Particle wave type, like S-wave, P-Wave, etc.
  */
@@ -17,5 +17,4 @@ namespace Chroma {
     };
 };
 
-using namespace Chroma;
 #endif

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gaugeact.h,v 1.7 2004-12-30 10:29:36 bjoo Exp $
+// $Id: gaugeact.h,v 1.8 2005-01-14 20:13:04 edwards Exp $
 
 /*! @file
  * @brief Class structure for gauge actions
@@ -8,7 +8,6 @@
 #ifndef __gaugeactt_h__
 #define __gaugeactt_h__
 
-using namespace QDP;
 
 #include "state.h"
 #include "gaugebc.h"
@@ -70,6 +69,5 @@ namespace Chroma
 
 }
 
-using namespace Chroma;
 
 #endif

@@ -3,6 +3,7 @@
 #include "actions/ferm/invert/inv_rel_gmresr_sumr.h"
 
 
+namespace Chroma {
     
 template<typename T>
 void InvRelGMRESR_SUMR_a(const LinearOperator<T>& PrecU,
@@ -123,3 +124,5 @@ void InvRelGMRESR_SUMR(const LinearOperator<LatticeFermion>& PrecU,
 {
   InvRelGMRESR_SUMR_a(PrecU, zeta, rho, UnprecU, b, x, epsilon, epsilon_prec, MaxGMRESR, MaxGMRESRPrec, n_count);
 }
+
+}  // end namespace Chroma

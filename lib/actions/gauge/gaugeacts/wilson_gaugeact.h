@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wilson_gaugeact.h,v 1.2 2005-01-13 04:29:45 edwards Exp $
+// $Id: wilson_gaugeact.h,v 1.3 2005-01-14 20:13:06 edwards Exp $
 /*! \file
  *  \brief Wilson gauge action
  */
@@ -116,6 +116,5 @@ namespace Chroma
 
 };
 
-using namespace Chroma;
 
 #endif

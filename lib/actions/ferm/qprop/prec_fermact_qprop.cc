@@ -1,4 +1,4 @@
-// $Id: prec_fermact_qprop.cc,v 1.11 2005-01-02 05:21:10 edwards Exp $
+// $Id: prec_fermact_qprop.cc,v 1.12 2005-01-14 20:13:06 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic even-odd preconditioned fermion operator
  *
@@ -8,7 +8,6 @@
 #include "fermact.h"
 #include "actions/ferm/invert/invcg2.h"
 
-using namespace QDP;
 namespace Chroma 
 { 
   //! Propagator of a generic even-odd preconditioned fermion linear operator

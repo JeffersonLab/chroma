@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: handle.h,v 1.2 2004-09-08 02:45:50 edwards Exp $
+// $Id: handle.h,v 1.3 2005-01-14 20:13:04 edwards Exp $
 /*! @file
  * @brief  Class for counted reference semantics
  *
@@ -73,6 +73,5 @@ namespace Chroma
 
 }
 
-using namespace Chroma;
 
 #endif

@@ -1,10 +1,12 @@
-// $Id: barcomp_io.cc,v 1.2 2004-04-21 17:25:21 edwards Exp $
+// $Id: barcomp_io.cc,v 1.3 2005-01-14 20:13:06 edwards Exp $
 /*! \file
  * \brief Routines associated with QQQ generalized correlator IO
  */
 
 #include "chromabase.h"
 #include "io/barcomp_io.h"
+
+namespace Chroma {
 
 //! Convert generalized correlator object
 void convertBarcomp(multi1d<Complex>& barprop_1d, const multiNd<Complex>& barprop, 
@@ -32,3 +34,6 @@ void convertBarcomp(multi1d<Complex>& barprop_1d, const multiNd<Complex>& barpro
 		  barprop_1d[cnt++] = barprop[ranks];
 		}
 }
+
+}  // end namespace Chroma
+

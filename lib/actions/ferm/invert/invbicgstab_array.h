@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: invbicgstab_array.h,v 1.1 2004-05-19 00:21:23 bjoo Exp $
+// $Id: invbicgstab_array.h,v 1.2 2005-01-14 20:13:05 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -9,6 +9,8 @@
 
 #include "linearop.h"
 
+namespace Chroma {
+
 template<typename T>
 void InvBiCGStab(const LinearOperator< multi1d<T> >& A,
 		 const multi1d<T>& chi,
@@ -16,5 +18,7 @@ void InvBiCGStab(const LinearOperator< multi1d<T> >& A,
 		 const Real& RsdCG, 
 		 int MaxCG, 
 		 int& n_count);
+
+}  // end namespace Chroma
 
 #endif

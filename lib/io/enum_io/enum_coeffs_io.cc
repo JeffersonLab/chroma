@@ -1,8 +1,6 @@
 #include "enum_coeffs_io.h"
 
 #include <string>
-using namespace std;
-using namespace Chroma;
 
 namespace Chroma { 
 

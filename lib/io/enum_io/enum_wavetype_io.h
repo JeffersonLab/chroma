@@ -7,8 +7,6 @@
 #include "io/enum_io/enum_type_map.h"
 #include "meas/sources/wavetype.h"
 
-using namespace std;
-using namespace Chroma;
 
 namespace Chroma {
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovdwf_linop_array_w.h,v 1.10 2005-01-02 05:21:10 edwards Exp $
+// $Id: prec_ovdwf_linop_array_w.h,v 1.11 2005-01-14 20:13:06 edwards Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned Overlap-DWF (Borici) linear operator
  */
@@ -11,7 +11,6 @@
 #include "actions/ferm/linop/dslash_w.h"
 #include "actions/ferm/linop/prec_dwf_linop_base_array_w.h"
 
-using namespace QDP;
 
 namespace Chroma 
 { 
@@ -160,6 +159,5 @@ namespace Chroma
 
 }; // End Namespace Chroma
 
-using namespace Chroma;
 
 #endif

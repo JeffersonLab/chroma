@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver.h,v 1.1 2005-01-03 15:36:50 edwards Exp $
+// $Id: syssolver.h,v 1.2 2005-01-14 20:13:04 edwards Exp $
 /*! @file
  * @brief Linear system solvers
  */
@@ -7,7 +7,6 @@
 #ifndef __syssolver_h__
 #define __syssolver_h__
 
-using namespace QDP;
 
 namespace Chroma
 {
@@ -39,7 +38,6 @@ namespace Chroma
 
 }
 
-using namespace Chroma;
 
 
 #endif

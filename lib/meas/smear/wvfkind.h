@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wvfkind.h,v 1.2 2004-09-22 17:25:00 bjoo Exp $
+// $Id: wvfkind.h,v 1.3 2005-01-14 20:13:07 edwards Exp $
 /*! \file
  *  \brief Wave-function types for smearing
  */
@@ -19,5 +19,4 @@ enum WvfKind {
 
 };
 
-using namespace Chroma;
 #endif

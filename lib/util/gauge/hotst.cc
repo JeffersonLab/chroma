@@ -1,4 +1,4 @@
-// $Id: hotst.cc,v 1.8 2005-01-14 15:59:00 bjoo Exp $
+// $Id: hotst.cc,v 1.9 2005-01-14 20:13:08 edwards Exp $
 // HOTST
 
 /*! \file
@@ -11,8 +11,6 @@
 #include "util/gauge/expm12.h"
 #include "util/gauge/reunit.h"
 
-using namespace QDP;
-using namespace Chroma; 
 
 namespace Chroma { 
 

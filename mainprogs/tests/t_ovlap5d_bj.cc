@@ -1,4 +1,4 @@
-// $Id: t_ovlap5d_bj.cc,v 1.11 2004-06-10 10:42:48 bjoo Exp $
+// $Id: t_ovlap5d_bj.cc,v 1.12 2005-01-14 20:13:09 edwards Exp $
 
 #include <iostream>
 #include <sstream>
@@ -15,8 +15,7 @@
 
 #include "actions/ferm/invert/inv_gmresr_cg_array.h"
 #include "actions/ferm/invert/inv_minres_array.h"
-using namespace QDP;
-using namespace std;
+using namespace Chroma;
 
 struct App_input_t {
   ChromaProp_t param;

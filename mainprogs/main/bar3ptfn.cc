@@ -1,4 +1,4 @@
-// $Id: bar3ptfn.cc,v 1.35 2005-01-12 15:23:26 bjoo Exp $
+// $Id: bar3ptfn.cc,v 1.36 2005-01-14 20:13:08 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions
  *
@@ -7,7 +7,7 @@
 
 #include "chroma.h"
 
-using namespace QDP;
+using namespace Chroma;
 
 
 /*

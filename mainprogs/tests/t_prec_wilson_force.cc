@@ -2,8 +2,7 @@
 
 #include <iostream>
 
-using namespace QDP;
-using namespace std;
+using namespace Chroma;
 
 void prec_wilson_dsdu(const EvenOddPrecWilsonFermAct& S,
 		      const Real& Mass,

@@ -1,4 +1,4 @@
-// $Id: rgauge.cc,v 1.6 2005-01-12 19:30:43 edwards Exp $
+// $Id: rgauge.cc,v 1.7 2005-01-14 20:13:08 edwards Exp $
 /*! \file
  *  \brief Do a random gauge transformation on the u fields
  */
@@ -8,7 +8,6 @@
 #include "util/gauge/expm12.h"
 #include "util/gauge/reunit.h"
 
-using namespace QDP;
 
 namespace Chroma
 {

@@ -1,9 +1,7 @@
 #include "chroma.h"
 #include <string>
 
-using namespace QDP;
 using namespace Chroma;
-using namespace std;
 
 namespace Chroma { 
   

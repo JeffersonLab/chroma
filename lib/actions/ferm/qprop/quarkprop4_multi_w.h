@@ -7,8 +7,6 @@
 #include "actions/ferm/fermacts/overlap_fermact_base_w.h"
 
 
-using namespace QDP;
-using namespace Chroma;
 
 namespace Chroma 
 {

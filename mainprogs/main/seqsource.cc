@@ -1,4 +1,4 @@
-// $Id: seqsource.cc,v 1.7 2005-01-12 15:23:26 bjoo Exp $
+// $Id: seqsource.cc,v 1.8 2005-01-14 20:13:09 edwards Exp $
 /*! \file
  *  \brief Main code for sequential source construction
  */
@@ -8,7 +8,7 @@
 
 #include "chroma.h"
 
-using namespace QDP;
+using namespace Chroma;
 
 
 /*

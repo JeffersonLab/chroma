@@ -1,6 +1,11 @@
-// $Id: collect_multi_propcomp.cc,v 1.6 2004-12-24 04:19:22 edwards Exp $
+// $Id: collect_multi_propcomp.cc,v 1.7 2005-01-14 20:13:08 edwards Exp $
 // $Log: collect_multi_propcomp.cc,v $
-// Revision 1.6  2004-12-24 04:19:22  edwards
+// Revision 1.7  2005-01-14 20:13:08  edwards
+// Removed all using namespace QDP/Chroma from lib files. The library
+// should now be 100% in the Chroma namespace. All mainprogs need a
+// using namespace Chroma.
+//
+// Revision 1.6  2004/12/24 04:19:22  edwards
 // Removed explict FermBC args to FermAct factory functions.
 //
 // Revision 1.5  2004/11/17 15:23:00  bjoo
@@ -78,10 +83,9 @@
 #include <iostream>
 #include <cstdio>
 #include <iomanip>
-using namespace std;
 #include "chroma.h"
 
-using namespace QDP;
+using namespace Chroma;
 
 
 

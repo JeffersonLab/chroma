@@ -7,8 +7,6 @@
 #include "io/enum_io/enum_type_map.h"
 #include "meas/smear/wvfkind.h"  // This is where the enum is defined
 
-using namespace std;
-using namespace Chroma;
 
 namespace Chroma {
 

@@ -1,4 +1,4 @@
-// $Id: cppacs_io.h,v 1.1 2005-01-13 16:27:58 mcneile Exp $
+// $Id: cppacs_io.h,v 1.2 2005-01-14 20:13:06 edwards Exp $
 
 /*! \file
  *  \brief CPPACS gauge format routines
@@ -7,7 +7,10 @@
 #ifndef __cppacs_io_h__
 #define __cppacs_io_h__
 
-#include <string>
+#include "chromabase.h"
+
+namespace Chroma {
+
 
 //! CPPACS gauge field header
 struct CPPACSGauge_t
@@ -25,5 +28,7 @@ void read(XMLReader& xml, const std::string& path, CPPACSGauge_t& header);
 
 //! Source header writer
 void write(XMLWriter& xml, const std::string& path, const CPPACSGauge_t& header);
+
+}  // end namespace Chroma
 
 #endif

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_nef_general_linop_array_w.h,v 1.5 2005-01-03 04:23:09 edwards Exp $
+// $Id: prec_nef_general_linop_array_w.h,v 1.6 2005-01-14 20:13:06 edwards Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned NEF domain-wall fermion linear operator
  *            generalised to take array of b_5 and c_5
@@ -12,7 +12,6 @@
 #include "actions/ferm/linop/dslash_w.h"
 #include "actions/ferm/linop/prec_dwf_linop_base_array_w.h"
 
-using namespace QDP;
 
 namespace Chroma
 {
@@ -272,7 +271,6 @@ namespace Chroma
 
 }; // End Namespace Chroma
 
-using namespace Chroma;
 
 
 #endif

@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-using namespace QDP;
+using namespace Chroma;
 using namespace std;
 
 

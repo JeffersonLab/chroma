@@ -1,4 +1,4 @@
-// $Id: readcppacs.h,v 1.1 2005-01-13 16:25:40 mcneile Exp $
+// $Id: readcppacs.h,v 1.2 2005-01-14 20:13:07 edwards Exp $
 
 /*! \file
  *  \brief Read a CPPACS gauge configuration 
@@ -8,6 +8,8 @@
 #define __readcppacs_h__
 
 #include "io/cppacs_io.h"
+
+namespace Chroma {
 
 //! Read a CPPACS gauge configuration 
 /*!
@@ -30,5 +32,7 @@ void readCPPACS(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cf
  */    
 
 void readCPPACS(CPPACSGauge_t& header, multi1d<LatticeColorMatrix>& u, const string& cfg_file);
+
+}  // end namespace Chroma
 
 #endif

@@ -1,10 +1,9 @@
-// $Id: leappmx.cc,v 1.1 2005-01-13 15:25:29 bjoo Exp $
+// $Id: leappmx.cc,v 1.2 2005-01-14 20:13:08 edwards Exp $
 
 #error "NOT FULLY CONVERTED - NEED TO MOVE GLOBAL PARAMS INTO FUNCTOR"
 
 #include "chromabase.h"
 
-using namespace QDP;
 
 //! Leaps P forward step eps with optional monitor of DelH
 /*!

@@ -1,4 +1,4 @@
-// $Id: lovddag_w.cc,v 1.15 2004-12-12 21:22:16 edwards Exp $
+// $Id: lovddag_w.cc,v 1.16 2005-01-14 20:13:05 edwards Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -10,7 +10,6 @@
 
 #undef LOVDDAG_RSD_CHK
 
-using namespace QDP;
 
 namespace Chroma 
 { 

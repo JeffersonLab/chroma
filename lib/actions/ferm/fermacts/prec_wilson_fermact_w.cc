@@ -1,4 +1,4 @@
-// $Id: prec_wilson_fermact_w.cc,v 1.18 2005-01-05 22:03:38 edwards Exp $
+// $Id: prec_wilson_fermact_w.cc,v 1.19 2005-01-14 20:13:04 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action
  */
@@ -11,8 +11,6 @@
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/fermbcs/fermbcs_w.h"
 
-using namespace QDP;
-using namespace std;
 
 namespace Chroma
 {

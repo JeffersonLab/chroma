@@ -1,11 +1,9 @@
-// $Id: t_prec_contfrac.cc,v 1.1 2004-10-01 17:48:31 bjoo Exp $
+// $Id: t_prec_contfrac.cc,v 1.2 2005-01-14 20:13:09 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
 #include "chroma.h"
 
-using namespace QDP;
-using namespace std;
 using namespace Chroma;
 
 struct App_input_t {

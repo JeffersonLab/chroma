@@ -1,4 +1,4 @@
-// $Id: readszinqprop_w.cc,v 1.13 2004-08-03 16:02:17 edwards Exp $
+// $Id: readszinqprop_w.cc,v 1.14 2005-01-14 20:13:07 edwards Exp $
 /*!
  * @file
  * @brief  Read an old SZIN-style (checkerboarded) quark propagator
@@ -13,8 +13,7 @@
 
 #include "qdp_util.h"   // from QDP++
 
-using namespace QDP;
-using namespace std;
+namespace Chroma {
 
 //! Read a SZIN propagator file. This is a simple memory dump reader.
 /*!
@@ -140,3 +139,5 @@ void writeSzinQprop(const LatticePropagator& q, const string& file,
 
   cfg_out.close();
 }
+
+}  // end namespace Chroma

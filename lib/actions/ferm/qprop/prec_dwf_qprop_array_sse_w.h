@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_qprop_array_sse_w.h,v 1.3 2005-01-07 05:00:10 edwards Exp $
+// $Id: prec_dwf_qprop_array_sse_w.h,v 1.4 2005-01-14 20:13:06 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -9,7 +9,6 @@
 
 #include "fermact.h"
 
-using namespace QDP;
 
 namespace Chroma
 {

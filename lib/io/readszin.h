@@ -1,4 +1,4 @@
-// $Id: readszin.h,v 1.8 2003-10-10 03:46:46 edwards Exp $
+// $Id: readszin.h,v 1.9 2005-01-14 20:13:07 edwards Exp $
 
 /*! \file
  *  \brief Read in a configuration written by SZIN up to configuration version 7.
@@ -8,6 +8,8 @@
 #define __readszin_h__
 
 #include "io/szin_io.h"
+
+namespace Chroma {
 
 //! Read a SZIN configuration file
 /*!
@@ -38,5 +40,7 @@ void readSzin(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_
  */    
 
 void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string& cfg_file);
+
+}  // end namespace Chroma
 
 #endif

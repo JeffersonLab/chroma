@@ -1,4 +1,4 @@
-// $Id: qqq_w.cc,v 1.20 2005-01-12 15:23:26 bjoo Exp $
+// $Id: qqq_w.cc,v 1.21 2005-01-14 20:13:09 edwards Exp $
 /*! \file
  *  \brief Main code for generalized quark propagator
  *
@@ -12,7 +12,7 @@
 
 #include "chroma.h"
 
-using namespace QDP;
+using namespace Chroma;
 
 /*
  *  This is the reader for the input parameters

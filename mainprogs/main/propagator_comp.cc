@@ -1,6 +1,11 @@
-// $Id: propagator_comp.cc,v 1.9 2004-11-17 15:23:00 bjoo Exp $
+// $Id: propagator_comp.cc,v 1.10 2005-01-14 20:13:09 edwards Exp $
 // $Log: propagator_comp.cc,v $
-// Revision 1.9  2004-11-17 15:23:00  bjoo
+// Revision 1.10  2005-01-14 20:13:09  edwards
+// Removed all using namespace QDP/Chroma from lib files. The library
+// should now be 100% in the Chroma namespace. All mainprogs need a
+// using namespace Chroma.
+//
+// Revision 1.9  2004/11/17 15:23:00  bjoo
 // t_su3 removed from make check. Throws stringified
 //
 // Revision 1.8  2004/09/27 12:00:18  bjoo
@@ -90,10 +95,9 @@
 #include <iostream>
 #include <cstdio>
 #include <iomanip>
-using namespace std;
 #include "chroma.h"
 
-using namespace QDP;
+using namespace Chroma;
 
 
 // define MRES_CALCULATION in order to run the code computing the residual mass

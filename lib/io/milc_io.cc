@@ -1,4 +1,4 @@
-// $Id: milc_io.cc,v 1.1 2003-10-09 15:45:14 edwards Exp $
+// $Id: milc_io.cc,v 1.2 2005-01-14 20:13:06 edwards Exp $
 
 /*! \file
  *  \brief MILC gauge format routines
@@ -7,7 +7,7 @@
 #include "chromabase.h"
 #include "io/milc_io.h"
 
-using namespace QDP;
+namespace Chroma {
 
 //! Initialize header with default values
 void MILCGaugeInit(MILCGauge_t& header)
@@ -39,3 +39,4 @@ void write(XMLWriter& xml, const string& path, const MILCGauge_t& header)
   pop(xml);
 }
 
+}  // end namespace Chroma

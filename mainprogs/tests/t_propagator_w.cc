@@ -1,4 +1,4 @@
-// $Id: t_propagator_w.cc,v 1.4 2004-10-22 14:42:25 mcneile Exp $
+// $Id: t_propagator_w.cc,v 1.5 2005-01-14 20:13:10 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  *   
@@ -19,7 +19,7 @@
 #include "chroma.h"
 
 
-using namespace QDP;
+using namespace Chroma;
 
 
 // copied from t_ritz.cc

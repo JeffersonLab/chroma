@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: reunit.cc,v 1.10 2005-01-14 15:59:00 bjoo Exp $
+// $Id: reunit.cc,v 1.11 2005-01-14 20:13:08 edwards Exp $
 
 /*! \file
  *  \ingroup gauge
@@ -22,7 +22,6 @@
 #include "chromabase.h"
 #include "util/gauge/reunit.h"
 
-using namespace QDP;
 
 namespace Chroma {
 

@@ -2,6 +2,8 @@
 #include "actions/ferm/invert/minvsumr.h"
 
 
+namespace Chroma {
+
 // Solve a shifted unitary system
 //
 // A x = b
@@ -365,3 +367,5 @@ void MInvSUMR(const LinearOperator<LatticeFermion>& U,
 {
   MInvSUMR_a(U, b, x, zeta, rho, epsilon, MaxSUMR, n_count);
 }
+
+}  // end namespace Chroma

@@ -1,10 +1,9 @@
-// $Id: clmesferm_w.cc,v 1.1 2005-01-13 15:25:29 bjoo Exp $
+// $Id: clmesferm_w.cc,v 1.2 2005-01-14 20:13:08 edwards Exp $
 
 #error "NOT FULLY CONVERTED - MAJOR CHANGES OR SUPPORT FOR FIELD-STRENGTH F NEEDED. HERE FOR IDEAS TO HELP WITH OVERALL CLASS STRUCTURE"
 
 #include "chromabase.h"
 
-using namespace QDP;
 
 /* This routine is specific to Wilson fermions! */
 

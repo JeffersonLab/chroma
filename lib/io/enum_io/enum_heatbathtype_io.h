@@ -7,8 +7,6 @@
 #include "io/enum_io/enum_type_map.h"
 #include "update/heatbath/su3hb.h"
 
-using namespace std;
-using namespace Chroma;
 
 namespace Chroma {
 

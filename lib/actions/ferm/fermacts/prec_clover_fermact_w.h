@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_clover_fermact_w.h,v 1.6 2004-12-12 21:22:15 edwards Exp $
+// $Id: prec_clover_fermact_w.h,v 1.7 2005-01-14 20:13:04 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion action
  */
@@ -10,7 +10,6 @@
 #include "fermact.h"
 #include "actions/ferm/linop/lgherm_w.h"
 
-using namespace QDP;
 
 namespace Chroma 
 { 
@@ -62,6 +61,5 @@ namespace Chroma
 
 }; // End Namespace Chroma
 
-using namespace Chroma;
 
 #endif

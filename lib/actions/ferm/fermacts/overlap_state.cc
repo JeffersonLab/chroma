@@ -1,8 +1,6 @@
 #include "chromabase.h"
 #include "actions/ferm/fermacts/overlap_state.h"
 
-using namespace std;
-using namespace QDP;
 
 
 namespace Chroma {

@@ -1,4 +1,4 @@
-//  $Id: sun_proj.cc,v 1.7 2005-01-14 15:59:00 bjoo Exp $
+//  $Id: sun_proj.cc,v 1.8 2005-01-14 20:13:08 edwards Exp $
 /*! \file
  *  \ingroup gauge
  *  \author Subsetting added by A. Hart
@@ -18,8 +18,6 @@
 #include "util/gauge/su3proj.h"
 #include "util/gauge/reunit.h" 
 
-using namespace QDP;
-using namespace Chroma;
 
 namespace Chroma { 
 

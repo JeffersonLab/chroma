@@ -1,11 +1,13 @@
 // -*- C++ -*-
-// $Id: minvcg.h,v 1.4 2004-01-08 17:11:01 bjoo Exp $
+// $Id: minvcg.h,v 1.5 2005-01-14 20:13:05 edwards Exp $
 
 #ifndef MINVCG_INCLUDE
 #define MINVCG_INCLUDE
 
-#include "chromabase.h"
 #include "linearop.h"
+
+namespace Chroma {
+
 
 template<typename T>
 void MInvCG(const LinearOperator<T>& A, 
@@ -15,5 +17,8 @@ void MInvCG(const LinearOperator<T>& A,
 	    const multi1d<Real>& RsdCG,
 	    int MaxCG,
 	    int &n_count);
+
+}  // end namespace Chroma
+
 
 #endif

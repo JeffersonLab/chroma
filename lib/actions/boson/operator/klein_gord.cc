@@ -1,4 +1,4 @@
-// $Id: klein_gord.cc,v 1.4 2004-12-15 04:49:03 edwards Exp $
+// $Id: klein_gord.cc,v 1.5 2005-01-14 20:13:04 edwards Exp $
 /*! \file
  *  \brief Apply Klein-Gordon operator
  */
@@ -6,7 +6,6 @@
 #include "chromabase.h"
 #include "actions/boson/operator/klein_gord.h"
 
-using namespace QDP;
 
 namespace Chroma
 {

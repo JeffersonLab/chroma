@@ -11,8 +11,6 @@
 // The production HMC etc does not use these enums but works off its
 // own factory
 /* *********!!!!!!!!!!!!!!!!!!! WARNING WARNING !!!!!!!!!!!!!!!! *********** */
-using namespace std;
-using namespace Chroma;
 
 namespace Chroma {
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_clover_linop_w.h,v 1.1 2005-01-04 06:55:14 edwards Exp $
+// $Id: prec_clover_linop_w.h,v 1.2 2005-01-14 20:13:05 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion linear operator
  */
@@ -14,7 +14,6 @@
 #include "actions/ferm/linop/dslash_w.h"
 #include "io/param_io.h"       // to get AnisoParam_t
 
-using namespace QDP;
 
 namespace Chroma 
 { 
@@ -138,6 +137,5 @@ namespace Chroma
 
 }; // End Namespace Chroma
 
-using namespace Chroma;
 
 #endif

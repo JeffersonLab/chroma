@@ -3,8 +3,6 @@
 
 #include "chromabase.h"
 
-using namespace QDP;
-using namespace std;
 
 namespace Chroma {
   

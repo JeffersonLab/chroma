@@ -1,4 +1,4 @@
-// $Id: t_read_eigen.cc,v 1.2 2004-04-15 14:43:25 bjoo Exp $
+// $Id: t_read_eigen.cc,v 1.3 2005-01-14 20:13:10 edwards Exp $
 
 #include <iostream>
 #include <sstream>
@@ -16,8 +16,7 @@
 #include "io/eigen_io.h"
 
 
-using namespace QDP;
-using namespace std;
+using namespace Chroma;
 
 
 struct ReadEigen_t {

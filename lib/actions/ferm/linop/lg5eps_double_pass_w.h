@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lg5eps_double_pass_w.h,v 1.2 2004-12-12 21:22:15 edwards Exp $
+// $Id: lg5eps_double_pass_w.h,v 1.3 2005-01-14 20:13:05 edwards Exp $
 /*! \file
  *  \brief Internal Overlap-pole operator
  */
@@ -11,7 +11,6 @@
 #include "fermact.h" 
 
 
-using namespace QDP;
 
 namespace Chroma 
 { 
@@ -99,6 +98,5 @@ private:
 
 }; // End Namespace Chroma
 
-using namespace Chroma;
 
 #endif

@@ -7,8 +7,6 @@
 /* *********!!!!!!!!!!!!!!!!!!! WARNING WARNING !!!!!!!!!!!!!!!! *********** */
 
 #include <string>
-using namespace std;
-using namespace Chroma;
 
 namespace Chroma { 
 

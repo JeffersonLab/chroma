@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: plaq_gaugeact.h,v 1.1 2005-01-13 02:02:38 edwards Exp $
+// $Id: plaq_gaugeact.h,v 1.2 2005-01-14 20:13:06 edwards Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */
@@ -104,6 +104,5 @@ namespace Chroma
 
 };
 
-using namespace Chroma;
 
 #endif

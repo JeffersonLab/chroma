@@ -1,4 +1,4 @@
-// $Id: lwldslash_base_w.cc,v 1.1 2004-12-20 03:59:31 edwards Exp $
+// $Id: lwldslash_base_w.cc,v 1.2 2005-01-14 20:13:05 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -6,7 +6,6 @@
 #include "chromabase.h"
 #include "actions/ferm/linop/lwldslash_base_w.h"
 
-using namespace QDP;
 
 namespace Chroma 
 { 

@@ -7,8 +7,6 @@
 #include "io/enum_io/enum_type_map.h"
 #include "meas/sources/srcsnktype.h"
 
-using namespace std;
-using namespace Chroma;
 
 namespace Chroma {
 
@@ -68,5 +66,4 @@ namespace Chroma {
 
 };
 
-using namespace Chroma;
 #endif

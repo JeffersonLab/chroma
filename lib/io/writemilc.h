@@ -1,4 +1,4 @@
-// $Id: writemilc.h,v 1.2 2003-10-10 03:46:46 edwards Exp $
+// $Id: writemilc.h,v 1.3 2005-01-14 20:13:07 edwards Exp $
 
 /*! \file
  *  \brief  Write a MILC gauge configuration in the 1997 format
@@ -6,6 +6,9 @@
 
 #ifndef __writemilc_h__
 #define __writemilc_h__
+
+namespace Chroma {
+
 
 //! Write a MILC gauge configuration in the 1997 format
 /*!
@@ -31,5 +34,7 @@ void writeMILC(XMLBufferWriter& xml, const multi1d<LatticeColorMatrix>& u,
 
 void writeMILC(const MILCGauge_t& header, const multi1d<LatticeColorMatrix>& u, 
 	       const string& cfg_file);
+
+}  // end namespace Chroma
 
 #endif

@@ -1,6 +1,11 @@
-// $Id: multi_propagator.cc,v 1.12 2004-12-24 04:19:22 edwards Exp $
+// $Id: multi_propagator.cc,v 1.13 2005-01-14 20:13:08 edwards Exp $
 // $Log: multi_propagator.cc,v $
-// Revision 1.12  2004-12-24 04:19:22  edwards
+// Revision 1.13  2005-01-14 20:13:08  edwards
+// Removed all using namespace QDP/Chroma from lib files. The library
+// should now be 100% in the Chroma namespace. All mainprogs need a
+// using namespace Chroma.
+//
+// Revision 1.12  2004/12/24 04:19:22  edwards
 // Removed explict FermBC args to FermAct factory functions.
 //
 // Revision 1.11  2004/11/17 15:23:00  bjoo
@@ -84,10 +89,7 @@
 #include <iostream>
 #include <cstdio>
 #include <iomanip>
-
 #include "chroma.h"
-using namespace std;
-using namespace QDP;
 
 using namespace Chroma;
 

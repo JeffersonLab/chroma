@@ -5,9 +5,6 @@
 #include "actions/gauge/gaugebcs/gaugebc_factory.h"
 
 
-using namespace QDP;
-using namespace Chroma;
-using namespace std;
 
 
 namespace Chroma {

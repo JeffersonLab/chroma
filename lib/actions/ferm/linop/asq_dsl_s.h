@@ -1,4 +1,4 @@
-//  $Id: asq_dsl_s.h,v 1.5 2005-01-02 05:21:10 edwards Exp $
+//  $Id: asq_dsl_s.h,v 1.6 2005-01-14 20:13:05 edwards Exp $
 /*! \file
  *  \brief The "asq" or "asqtad" dslash operator D'
  */
@@ -8,7 +8,6 @@
 
 #include "linearop.h"
 
-using namespace QDP;
 
 namespace Chroma 
 { 
@@ -87,7 +86,6 @@ namespace Chroma
 
 }; // End Namespace Chroma
 
-using namespace Chroma;
 
 #endif
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: minvsumr.h,v 1.2 2004-05-13 15:36:07 bjoo Exp $
+// $Id: minvsumr.h,v 1.3 2005-01-14 20:13:05 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -7,8 +7,10 @@
 #ifndef __minvsumr__
 #define __minvsumr__
 
-#include "chromabase.h"
 #include "linearop.h"
+
+namespace Chroma {
+
 
 // Solve a shifted unitary system
 //
@@ -39,5 +41,8 @@ void MInvSUMR(const LinearOperator<T>& U,
 	      const multi1d<Real>& epsilon, 
 	      int MaxSUMR, 
 	      int& n_count);
+
+}  // end namespace Chroma
+
 
 #endif

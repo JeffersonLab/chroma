@@ -1,4 +1,4 @@
-// $Id: unprec_dwf4d_linop_w.cc,v 1.5 2004-12-09 03:55:30 edwards Exp $
+// $Id: unprec_dwf4d_linop_w.cc,v 1.6 2005-01-14 20:13:06 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned projected DWF operator to 4D
  */
@@ -8,8 +8,6 @@
 #include "actions/ferm/linop/unprec_dwf4d_linop_w.h"
 #include "actions/ferm/linop/dwffld_w.h"
 
-using namespace QDP;
-using namespace Chroma;
 
 namespace Chroma
 {

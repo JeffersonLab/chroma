@@ -6,7 +6,6 @@
 #include <string>
 #include <map>
 
-using namespace std;
 namespace Chroma { 
 
 

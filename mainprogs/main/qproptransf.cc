@@ -1,11 +1,11 @@
-// $Id: qproptransf.cc,v 1.13 2005-01-12 15:23:26 bjoo Exp $
+// $Id: qproptransf.cc,v 1.14 2005-01-14 20:13:09 edwards Exp $
 /*! \file
  *  \brief Converts quark propagators in one format into another format.
  */
 
 #include "chroma.h"
 
-using namespace QDP;
+using namespace Chroma;
 
 /*
  * Input 

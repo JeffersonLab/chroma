@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: minv_rel_sumr.h,v 1.2 2004-12-12 21:22:15 edwards Exp $
+// $Id: minv_rel_sumr.h,v 1.3 2005-01-14 20:13:05 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -7,8 +7,9 @@
 #ifndef __minv_rel_sumr__
 #define __minv_rel_sumr__
 
-#include "chromabase.h"
 #include "linearop.h"
+
+namespace Chroma {
 
 // Solve a shifted unitary system
 //
@@ -39,5 +40,8 @@ void MInvRelSUMR(const LinearOperator<T>& U,
 		 const multi1d<Real>& epsilon, 
 		 int MaxSUMR, 
 		 int& n_count);
+
+}  // end namespace Chroma
+
 
 #endif

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: asqtad_linop_s.h,v 1.8 2004-12-12 21:22:15 edwards Exp $
+// $Id: asqtad_linop_s.h,v 1.9 2005-01-14 20:13:05 edwards Exp $
 //! Asqtad Staggered-Dirac operator
 /*!
  * \ingroup linop
@@ -13,7 +13,6 @@
 #include "linearop.h"
 #include "actions/ferm/linop/asqtad_dslash.h"
 
-using namespace QDP;
 
 namespace Chroma 
 { 
@@ -79,6 +78,5 @@ namespace Chroma
 
 }; // End Namespace Chroma
 
-using namespace Chroma;
 
 #endif

@@ -5,9 +5,6 @@
 #include "gaugebc.h"
 #include "io/enum_io/enum_gaugebc_io.h"
 
-using namespace QDP;
-using namespace Chroma;
-using namespace std;
 
 
 namespace Chroma { 

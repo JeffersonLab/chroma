@@ -1,4 +1,4 @@
-// $Id: t_fuzwilp.cc,v 1.1 2004-04-26 16:02:46 mcneile Exp $
+// $Id: t_fuzwilp.cc,v 1.2 2005-01-14 20:13:09 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -6,7 +6,7 @@
 
 #include "chroma.h"
 
-using namespace QDP;
+using namespace Chroma;
 
 int main(int argc, char *argv[])
 {

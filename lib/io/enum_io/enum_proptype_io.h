@@ -7,8 +7,6 @@
 #include "io/enum_io/enum_type_map.h"
 
 
-using namespace std;
-using namespace Chroma;
 
 namespace Chroma {
   // CfgType --------------------------------------

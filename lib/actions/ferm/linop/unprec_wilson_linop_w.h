@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_wilson_linop_w.h,v 1.9 2004-12-12 21:22:17 edwards Exp $
+// $Id: unprec_wilson_linop_w.h,v 1.10 2005-01-14 20:13:06 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -10,7 +10,6 @@
 #include "linearop.h"
 #include "actions/ferm/linop/dslash_w.h"
 
-using namespace QDP;
 
 namespace Chroma 
 { 
@@ -70,6 +69,5 @@ namespace Chroma
 
 }; // End Namespace Chroma
 
-using namespace Chroma;
 
 #endif

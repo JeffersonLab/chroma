@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: simple_fermbc.h,v 1.1 2004-12-24 04:23:20 edwards Exp $
+// $Id: simple_fermbc.h,v 1.2 2005-01-14 20:13:04 edwards Exp $
 /*! \file
  *  \brief Simple fermionic BC
  */
@@ -9,7 +9,6 @@
 
 #include "fermbc.h"
 
-using namespace QDP;
 
 namespace Chroma
 {

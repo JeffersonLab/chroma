@@ -1,10 +1,9 @@
-// $Id: mesmom.cc,v 1.1 2005-01-13 15:25:29 bjoo Exp $
+// $Id: mesmom.cc,v 1.2 2005-01-14 20:13:08 edwards Exp $
 
 #warning "SHOULD ADD INCLUDE OF PROTOTYPE"
 
 #include "chromabase.h"
 
-using namespace QDP;
 
 //! MESMOM: calculate (p_mom,p_mom)
 /*!

@@ -1,5 +1,5 @@
 /*
- *  $Id: hypsmear.cc,v 1.15 2005-01-12 15:23:26 bjoo Exp $
+ *  $Id: hypsmear.cc,v 1.16 2005-01-14 20:13:08 edwards Exp $
  *
  *  This is the top-level routine for HYP smearing.
  *  It is a wrapper for Urs' and Robert's implmenetation of the HYP
@@ -14,7 +14,7 @@
 
 #include <sys/time.h>   // for timings
 
-using namespace QDP;
+using namespace Chroma;
 
 /*
  *  This is the reader for the input parameters

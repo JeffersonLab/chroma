@@ -6,8 +6,7 @@
 
 #include <iostream>
 
-using namespace std;
-using namespace QDP;
+namespace Chroma {
 
 // Struct for parameters needed for a Ritz KS type solve
 struct RitzParams_t
@@ -80,5 +79,6 @@ void readEigenSzin(multi1d<Real>& lambda_lo,
 		   const int Neig,
 		   const string& filename_stem);
 		
+}  // end namespace Chroma
 
 #endif

@@ -1,16 +1,14 @@
-// $Id: minvcg.cc,v 1.11 2004-07-28 03:47:26 edwards Exp $
+// $Id: minvcg.cc,v 1.12 2005-01-14 20:13:05 edwards Exp $
 
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator
  */
 
-#include <iostream>
-#include "chromabase.h"
 #include "linearop.h"
-
 #include "actions/ferm/invert/minvcg.h"
 
-using namespace QDP;
+namespace Chroma {
+
 
 //! Multishift Conjugate-Gradient (CG1) algorithm for a  Linear Operator
 /*! \ingroup invert
@@ -381,3 +379,5 @@ void MInvCG(const LinearOperator<LatticeFermion>& M,
 {
   MInvCG_a(M, chi, psi, shifts, RsdCG, MaxCG, n_count);
 }
+
+}  // end namespace Chroma

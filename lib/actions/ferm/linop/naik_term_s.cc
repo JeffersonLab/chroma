@@ -1,4 +1,4 @@
-/*  $Id: naik_term_s.cc,v 1.7 2004-12-12 21:22:16 edwards Exp $  */
+/*  $Id: naik_term_s.cc,v 1.8 2005-01-14 20:13:05 edwards Exp $  */
 
 /* NAIK_LINKS */
 
@@ -21,7 +21,6 @@
 
 #include "actions/ferm/linop/improvement_terms_s.h"
 
-using namespace QDP;
 
 namespace Chroma 
 { 

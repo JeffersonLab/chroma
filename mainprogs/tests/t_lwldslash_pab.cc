@@ -1,10 +1,10 @@
-// $Id: t_lwldslash_pab.cc,v 1.3 2004-03-23 16:24:15 bjoo Exp $
+// $Id: t_lwldslash_pab.cc,v 1.4 2005-01-14 20:13:09 edwards Exp $
 
 
 #include "chroma.h"
 #include "actions/ferm/linop/lwldslash_w_pab.h"
 
-using namespace QDP;
+using namespace Chroma;
 
 
 int main(int argc, char **argv)

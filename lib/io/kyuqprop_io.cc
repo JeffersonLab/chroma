@@ -1,4 +1,4 @@
-// $Id: kyuqprop_io.cc,v 1.12 2004-07-28 02:38:03 edwards Exp $
+// $Id: kyuqprop_io.cc,v 1.13 2005-01-14 20:13:06 edwards Exp $
 /*!
  * @file
  * @brief  Read/write a Kentucky quark propagator
@@ -10,7 +10,7 @@
 #include "util/ferm/diractodr.h"
 #include "util/ft/sftmom.h"
 
-using namespace QDP;
+namespace Chroma {
 
 //! Read a Kentucky quark propagator
 /*!
@@ -167,3 +167,5 @@ void readKYUQprop(LatticePropagator& q, const string& file)
 
   END_CODE();
 }
+
+}  // end namespace Chroma

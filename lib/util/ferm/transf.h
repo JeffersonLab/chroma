@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: transf.h,v 1.6 2004-12-29 22:08:48 edwards Exp $
+// $Id: transf.h,v 1.7 2005-01-14 20:13:08 edwards Exp $
 
 #ifndef __transf_h__
 #define __transf_h__
@@ -151,7 +151,6 @@ namespace Chroma
 		  int color_index);
 }
 
-using namespace Chroma;
 
 #endif
 

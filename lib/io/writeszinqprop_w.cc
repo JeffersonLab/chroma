@@ -1,4 +1,4 @@
-// $Id: writeszinqprop_w.cc,v 1.3 2003-10-16 01:41:01 edwards Exp $
+// $Id: writeszinqprop_w.cc,v 1.4 2005-01-14 20:13:07 edwards Exp $
 /*!
  * @file
  * @brief  Write an old SZIN-style (checkerboarded) quark propagator
@@ -9,7 +9,7 @@
 
 #include "qdp_util.h"   // from QDP++
 
-using namespace QDP;
+namespace Chroma {
 
 //! Write a SZIN propagator file. This is a simple memory dump writer.
 /*!
@@ -58,3 +58,5 @@ void writeSzinQprop(const LatticePropagator& q, const string& file,
 
   cfg_out.close();
 }
+
+}  // end namespace Chroma

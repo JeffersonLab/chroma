@@ -1,4 +1,4 @@
-// $Id: param_io.cc,v 1.34 2004-12-21 15:42:21 bjoo Exp $
+// $Id: param_io.cc,v 1.35 2005-01-14 20:13:06 edwards Exp $
 /*! \file
  *  \brief Various parameter readers/writers for main programs
  */
@@ -6,10 +6,9 @@
 #include "chromabase.h"
 #include "io/param_io.h"
 
-using namespace QDP;
-using namespace Chroma;
 
 namespace Chroma { 
+
 //! Convert a Kappa to a mass
 Real kappaToMass(const Real& Kappa)
 {
@@ -265,5 +264,4 @@ void write(XMLWriter& xml, const string& path, const MultiInvertParam_t& param)
   pop(xml);
 }
 
-}
-
+}  // end namespace Chroma

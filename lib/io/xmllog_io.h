@@ -5,7 +5,6 @@
 #include "chromabase.h"
 #include "singleton.h"
 
-using namespace QDP;
 
 namespace Chroma { 
   

@@ -8,7 +8,7 @@
 #include "update/heatbath/hb_params.h"
 #include "update/heatbath/su3_hb_sweep.h"
 
-using namespace std;
+using namespace Chroma;
 
 
 HBParams::HBParams(int x1, double x2, double x3, bool x4)

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: srcsnktype.h,v 1.2 2004-09-22 17:25:01 bjoo Exp $
+// $Id: srcsnktype.h,v 1.3 2005-01-14 20:13:08 edwards Exp $
 /*! \file
  *  \brief Source and sink types
  */
@@ -33,5 +33,4 @@ namespace Chroma {
     };
 }
 
-using namespace Chroma;
 #endif

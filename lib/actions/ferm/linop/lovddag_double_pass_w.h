@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lovddag_double_pass_w.h,v 1.4 2005-01-10 18:17:11 edwards Exp $
+// $Id: lovddag_double_pass_w.h,v 1.5 2005-01-14 20:13:05 edwards Exp $
 /*! \file
  *  \brief Internal Overlap-pole operator
  */
@@ -11,7 +11,6 @@
 #include "fermact.h" 
 #include "meas/eig/eig_w.h"
 
-using namespace QDP;
 
 namespace Chroma 
 { 
@@ -107,6 +106,5 @@ namespace Chroma
 
 }; // End Namespace Chroma
 
-using namespace Chroma;
 
 #endif

@@ -1,4 +1,4 @@
-/*  $Id: fat7_links_s.cc,v 1.4 2004-12-12 21:22:15 edwards Exp $  */
+/*  $Id: fat7_links_s.cc,v 1.5 2005-01-14 20:13:05 edwards Exp $  */
 
 /* FAT7_LINKS */
 
@@ -20,7 +20,6 @@
 
 #include "actions/ferm/linop/improvement_terms_s.h"
 
-using namespace QDP;
 
 namespace Chroma 
 { 
@@ -127,5 +126,4 @@ void Fat7_Links(multi1d<LatticeColorMatrix> & u,
 
 }; // End Namespace Chroma
 
-using namespace Chroma;
 

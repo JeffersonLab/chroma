@@ -2,8 +2,6 @@
 #include "io/inline_io.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
 
-using namespace QDP;
-using namespace Chroma;
 
 namespace Chroma { 
 

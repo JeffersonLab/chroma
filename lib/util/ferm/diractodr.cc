@@ -1,4 +1,4 @@
-// $Id: diractodr.cc,v 1.6 2005-01-14 18:42:37 edwards Exp $
+// $Id: diractodr.cc,v 1.7 2005-01-14 20:13:08 edwards Exp $
 /*! \file
  *  \brief Basis rotation matrix from Dirac to Degrand-Rossi (and reverse)
  */
@@ -6,7 +6,6 @@
 #include "chromabase.h"
 #include "util/ferm/diractodr.h"
 
-using namespace QDP;
 
 namespace Chroma {
 

@@ -1,4 +1,4 @@
-// $Id: t_lwldslash.cc,v 1.14 2004-02-11 12:51:35 bjoo Exp $
+// $Id: t_lwldslash.cc,v 1.15 2005-01-14 20:13:09 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -6,7 +6,7 @@
 #include "chroma.h"
 
 
-using namespace QDP;
+using namespace Chroma;
 
 
 int main(int argc, char **argv)

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovlap_contfrac5d_linop_array_w.h,v 1.4 2005-01-02 05:21:10 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_linop_array_w.h,v 1.5 2005-01-14 20:13:06 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
  */
@@ -11,7 +11,6 @@
 #include "fermact.h"
 #include "state.h"
 
-using namespace QDP;
 
 namespace Chroma 
 { 
@@ -164,6 +163,5 @@ namespace Chroma
 
 }; // End Namespace Chroma
 
-using namespace Chroma;
 
 #endif

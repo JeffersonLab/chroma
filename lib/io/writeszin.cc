@@ -1,4 +1,4 @@
-// $Id: writeszin.cc,v 1.9 2004-07-28 02:38:03 edwards Exp $
+// $Id: writeszin.cc,v 1.10 2005-01-14 20:13:07 edwards Exp $
 
 /*! \file
  *  \brief Write out a configuration written by SZIN up to configuration version 7.
@@ -13,7 +13,7 @@
 #include <string>
 using std::string;
 
-using namespace QDP;
+namespace Chroma {
 
 //! Write a SZIN header to a binary file
 /*!
@@ -350,3 +350,4 @@ void writeSzinReplica(SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u,
   END_CODE();
 }
 
+}  // end namespace Chroma

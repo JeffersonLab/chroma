@@ -1,4 +1,4 @@
-// $Id: readcppacs.cc,v 1.2 2005-01-14 15:33:04 mcneile Exp $
+// $Id: readcppacs.cc,v 1.3 2005-01-14 20:13:07 edwards Exp $
 
 /*! \file
  *  \brief Read a CPPACS gauge configuration 
@@ -9,10 +9,7 @@
 #include "io/readcppacs.h"
 #include "qdp_util.h"    // from QDP
 
-#include <string>
-using std::string;
-
-using namespace QDP;
+namespace Chroma {
 
 //! Read a CPPACCPPACS configuration file
 /*!
@@ -174,4 +171,6 @@ void readCPPACS(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cf
 
   END_CODE();
 }
+
+}  // end namespace Chroma
 

@@ -1,4 +1,4 @@
-// $Id: prec_two_flavor_wilson5d_monomial_w.cc,v 1.2 2005-01-13 16:10:30 bjoo Exp $
+// $Id: prec_two_flavor_wilson5d_monomial_w.cc,v 1.3 2005-01-14 20:13:08 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 5D ferm monomials
  */
@@ -22,7 +22,6 @@
 
 #include "update/molecdyn/predictor/zero_guess_predictor.h"
 
-using namespace Chroma;
 
 namespace Chroma 
 { 

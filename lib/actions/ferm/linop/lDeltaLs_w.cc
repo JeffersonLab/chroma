@@ -1,4 +1,4 @@
-// $Id: lDeltaLs_w.cc,v 1.2 2004-12-09 03:58:03 edwards Exp $
+// $Id: lDeltaLs_w.cc,v 1.3 2005-01-14 20:13:05 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -6,8 +6,6 @@
 #include "chromabase.h"
 #include "lDeltaLs_w.h"
 
-using namespace QDP;
-using namespace Chroma;
 
 namespace Chroma { 
 //! Apply unpreconditioned Wilson fermion linear operator

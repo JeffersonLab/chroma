@@ -1,9 +1,6 @@
 #include "chromabase.h"
 #include "update/molecdyn/predictor/zero_guess_predictor.h"
 
-using namespace std;
-using namespace QDP;
-using namespace Chroma;
 
 namespace Chroma { 
 

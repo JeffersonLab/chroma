@@ -1,4 +1,4 @@
-// $Id: readszinferm_w.cc,v 1.6 2004-04-07 11:06:17 bjoo Exp $: readszinqprop_w.cc,v 1.6 2003/04/30 21:19:33 edwards Exp $
+// $Id: readszinferm_w.cc,v 1.7 2005-01-14 20:13:07 edwards Exp $: readszinqprop_w.cc,v 1.6 2003/04/30 21:19:33 edwards Exp $
 /*!
  * @file
  * @brief  Read an old SZIN-style (checkerboarded) lattice Dirac fermion
@@ -9,7 +9,7 @@
 
 #include "qdp_util.h"   // from QDP++
 
-using namespace QDP;
+namespace Chroma {
 
 //! Read a SZIN fermion. This is a simple memory dump reader.
 /*!
@@ -86,3 +86,5 @@ void readSzinFerm(LatticeFermion& q, const string& file)
 
   cfg_in.close();
 }
+
+}  // end namespace Chroma

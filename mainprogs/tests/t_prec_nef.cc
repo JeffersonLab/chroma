@@ -1,4 +1,4 @@
-// $Id: t_prec_nef.cc,v 1.1 2004-10-29 13:36:14 bjoo Exp $
+// $Id: t_prec_nef.cc,v 1.2 2005-01-14 20:13:09 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -6,8 +6,7 @@
 
 #include "actions/ferm/fermacts/zolotarev.h"
 #include "actions/ferm/linop/prec_nef_general_linop_array_w.h"
-using namespace QDP;
-using namespace std;
+
 using namespace Chroma;
 
 struct App_input_t {

@@ -1,11 +1,10 @@
-// $Id: leapu.cc,v 1.1 2005-01-13 15:25:29 bjoo Exp $
+// $Id: leapu.cc,v 1.2 2005-01-14 20:13:08 edwards Exp $
 
 #warning "NEED TO DEAL WITH SCHRFUN"
 
 #include "chromabase.h"
 #include "util/gauge/expmat.h"
 
-using namespace QDP;
 
 //! LEAPU:  Make a step in U
 /*!

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: invcg2_timing_hacks.h,v 1.1 2004-03-22 12:48:31 bjoo Exp $
+// $Id: invcg2_timing_hacks.h,v 1.2 2005-01-14 20:13:05 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -8,6 +8,8 @@
 #define __invcg2_timing_hacks_h__
 
 #include "linearop.h"
+
+namespace Chroma {
 
 //! Conjugate-Gradient (CGNE) algorithm for a generic Linear Operator
 /*! \ingroup invert
@@ -69,5 +71,8 @@ void InvCG2_timing_hacks(const LinearOperator<T>& M,
 			 const Real& RsdCG, 
 			 int MaxCG, 
 			 int& n_count);
+
+}  // end namespace Chroma
+
 
 #endif

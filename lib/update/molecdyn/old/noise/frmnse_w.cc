@@ -1,10 +1,9 @@
-// $Id: frmnse_w.cc,v 1.1 2005-01-13 15:25:29 bjoo Exp $
+// $Id: frmnse_w.cc,v 1.2 2005-01-14 20:13:08 edwards Exp $
 
 #error "NOT FULLY CONVERTED - NEED TO FIT TO USE VIRTUAL FUNCS"
 
 #include "chromabase.h"
 
-using namespace QDP;
 
 /* This routine is specific to Wilson fermions! */
 

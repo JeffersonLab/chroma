@@ -2,6 +2,9 @@
 #define INV_BORICI_H
 
 #include "linearop.h"
+
+namespace Chroma {
+
 template<typename T> 
 void InvBorici( const LinearOperator<T>& D_4,
 		const LinearOperator< multi1d<T> >& D_5,
@@ -14,5 +17,7 @@ void InvBorici( const LinearOperator<T>& D_4,
 		const int MaxIter5D,
 		const Real& m,
 		int& n_iters);
+
+}  // end namespace Chroma
 
 #endif

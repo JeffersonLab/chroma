@@ -1,4 +1,4 @@
-// $Id: overlap_fermact_base_w.cc,v 1.25 2005-01-02 05:21:09 edwards Exp $
+// $Id: overlap_fermact_base_w.cc,v 1.26 2005-01-14 20:13:04 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -24,7 +24,6 @@
 #include "meas/eig/ischiral_w.h"
 
 
-using namespace QDP;
 
 namespace Chroma 
 { 

@@ -4,8 +4,6 @@
 #include "chroma.h"
 #include <string>
 
-using namespace QDP;
-using namespace std;
 
 namespace Chroma {
 

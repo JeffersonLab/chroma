@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hybrid.h,v 1.1 2004-07-23 11:54:40 bjoo Exp $
+// $Id: hybrid.h,v 1.2 2005-01-14 20:13:08 edwards Exp $
 /*! \file
  *  \brief HMC
  */
@@ -11,7 +11,6 @@
 #include "gaugeact.h"
 #include "fermact.h"
 
-using namespace QDP;
 
 //! A simple HamSys
 /*! \ingroup molecdyn

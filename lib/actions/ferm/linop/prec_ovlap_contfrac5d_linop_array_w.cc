@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_linop_array_w.cc,v 1.5 2005-01-04 06:52:03 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_linop_array_w.cc,v 1.6 2005-01-14 20:13:06 edwards Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned domain-wall linear operator
  */
@@ -7,7 +7,6 @@
 #include "actions/ferm/linop/dslash_w.h"
 #include "actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_w.h"
 
-using namespace QDP;
 
 namespace Chroma 
 { 
@@ -278,5 +277,4 @@ namespace Chroma
 
 }; // End Namespace Chroma
 
-using namespace Chroma;
 

@@ -1,4 +1,4 @@
-// $Id: unit_check.cc,v 1.5 2005-01-14 15:59:00 bjoo Exp $
+// $Id: unit_check.cc,v 1.6 2005-01-14 20:13:08 edwards Exp $
 
 /*! \file
  *  \brief Test a gauge field is unitarized
@@ -8,8 +8,6 @@
 #include "util/gauge/reunit.h"
 #include "util/gauge/unit_check.h"
 
-using namespace QDP;
-using namespace Chroma; 
 
 namespace Chroma {
 

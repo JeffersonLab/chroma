@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linearop.h,v 1.9 2005-01-02 05:21:09 edwards Exp $
+// $Id: linearop.h,v 1.10 2005-01-14 20:13:04 edwards Exp $
 
 /*! @file
  * @brief Linear Operators
@@ -8,7 +8,7 @@
 #ifndef __linearop_h__
 #define __linearop_h__
 
-using namespace QDP;
+#include "chromabase.h"
 
 namespace Chroma
 {
@@ -746,7 +746,6 @@ namespace Chroma
 
 }
 
-using namespace Chroma;
 
 
 #endif

@@ -1,10 +1,9 @@
-// $Id: mese.cc,v 1.1 2005-01-13 15:25:29 bjoo Exp $
+// $Id: mese.cc,v 1.2 2005-01-14 20:13:08 edwards Exp $
 
 #error "NOT FULLY CONVERTED"
 
 #include "chromabase.h"
 
-using namespace QDP;
 
 //! MESE -- measures the contributions to the Hamiltonian per bosonic d.o.f.
 /*!

@@ -6,8 +6,6 @@
 #include "io/monomial_io.h"
 #include "update/molecdyn/hamiltonian/exact_hamiltonian.h"
 
-using namespace QDP;
-using namespace Chroma; 
 
 namespace Chroma { 
 

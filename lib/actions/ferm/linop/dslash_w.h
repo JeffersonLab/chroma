@@ -13,17 +13,25 @@
 // The lwldslash_w_sse.h defines the SSE Dslash class
 // The following typedef switches it in.
 # include "lwldslash_w_sse.h"
+namespace Chroma {
 typedef SSEWilsonDslash WilsonDslash;
+}  // end namespace Chroma
+
 
 // Many #elif clauses could come in here for other opotimised Dslash-es
 #elif defined BUILD_PAB_WILSON_DSLASH
 # include "lwldslash_w_pab.h"
+namespace Chroma {
 typedef PABWilsonDslash WilsonDslash;
+}  // end namespace Chroma
+
 #else
 
 // Bottom line, if no optimised Dslash-s exist then the naive QDP Dslash
 // becomes the WilsonDslash
+namespace Chroma {
 typedef QDPWilsonDslash WilsonDslash;
+}  // end namespace Chroma
 #endif
 
 

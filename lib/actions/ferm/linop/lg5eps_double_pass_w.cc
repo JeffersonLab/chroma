@@ -1,4 +1,4 @@
-// $Id: lg5eps_double_pass_w.cc,v 1.4 2004-12-12 21:22:15 edwards Exp $
+// $Id: lg5eps_double_pass_w.cc,v 1.5 2005-01-14 20:13:05 edwards Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -7,7 +7,6 @@
 #include "actions/ferm/linop/lg5eps_double_pass_w.h"
 #include "meas/eig/gramschm.h"
 
-using namespace QDP;
 
 namespace Chroma 
 { 

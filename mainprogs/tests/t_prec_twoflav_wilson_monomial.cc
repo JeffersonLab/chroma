@@ -1,7 +1,7 @@
 #include "chroma.h"
 
-using namespace QDP;
 using namespace Chroma;
+
 //! To insure linking of code, place the registered code flags here
 /*! This is the bit of code that dictates what fermacts are in use */
 bool linkage_hack()

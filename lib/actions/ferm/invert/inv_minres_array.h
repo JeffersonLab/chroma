@@ -3,6 +3,8 @@
 
 #include "linearop.h"
 
+namespace Chroma {
+
 template<typename T>
 void InvMINRES(const LinearOperator< multi1d<T> >& A,
 	       const multi1d<T>& chi,
@@ -10,5 +12,7 @@ void InvMINRES(const LinearOperator< multi1d<T> >& A,
 	       const Real& RsdCG,
 	       int MaxCG,
 	       int& n_count);
+
+}  // end namespace Chroma
 
 #endif

@@ -1,6 +1,7 @@
 #include "chromabase.h"
 #include "actions/ferm/invert/inv_rel_sumr.h"
 
+namespace Chroma {
 
 // Solve a shifted unitary system
 //
@@ -251,3 +252,5 @@ void InvRelSUMR(const LinearOperator<LatticeFermion>& U,
 {
   InvRelSUMR_a(U, b, x, zeta, rho, epsilon, MaxSUMR, n_count);
 }
+
+}  // end namespace Chroma

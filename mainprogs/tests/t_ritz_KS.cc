@@ -1,4 +1,4 @@
-// $Id: t_ritz_KS.cc,v 1.17 2004-11-02 15:43:03 bjoo Exp $
+// $Id: t_ritz_KS.cc,v 1.18 2005-01-14 20:13:10 edwards Exp $
 
 #include <iostream>
 #include <sstream>
@@ -16,8 +16,6 @@
 #include "io/eigen_io.h"
 
 
-using namespace QDP;
-using namespace std;
 using namespace Chroma;
 
 bool linkage_hack()

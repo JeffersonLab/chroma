@@ -1,4 +1,4 @@
-// $Id: t_ovlap_bj.cc,v 1.25 2004-05-11 13:29:29 bjoo Exp $
+// $Id: t_ovlap_bj.cc,v 1.26 2005-01-14 20:13:09 edwards Exp $
 
 #include <iostream>
 #include <sstream>
@@ -22,8 +22,7 @@
 //#include "actions/ferm/invert/invcg1.h"
 //#include "util/ft/sftmom.h"
 
-using namespace QDP;
-using namespace std;
+using namespace Chroma;
 
 enum GaugeStartType { HOT_START = 0, COLD_START = 1, FILE_START = 2 };
 enum GaugeFormat { SZIN_GAUGE_FORMAT = 0, NERSC_GAUGE_FORMAT = 1 };

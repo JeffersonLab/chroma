@@ -1,4 +1,4 @@
-// $Id: milc_io.h,v 1.1 2003-10-09 15:45:14 edwards Exp $
+// $Id: milc_io.h,v 1.2 2005-01-14 20:13:06 edwards Exp $
 
 /*! \file
  *  \brief MILC gauge format routines
@@ -7,7 +7,10 @@
 #ifndef __milc_io_h__
 #define __milc_io_h__
 
-#include <string>
+#include "chromabase.h"
+
+namespace Chroma {
+
 
 //! MILC gauge field header
 struct MILCGauge_t
@@ -25,5 +28,7 @@ void read(XMLReader& xml, const std::string& path, MILCGauge_t& header);
 
 //! Source header writer
 void write(XMLWriter& xml, const std::string& path, const MILCGauge_t& header);
+
+}  // end namespace Chroma
 
 #endif

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ht_contfrac5d_fermact_array_w.h,v 1.3 2005-01-10 18:17:11 edwards Exp $
+// $Id: unprec_ht_contfrac5d_fermact_array_w.h,v 1.4 2005-01-14 20:13:04 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned H_T kernel continued fraction (5D) action
  */
@@ -9,7 +9,6 @@
 
 #include "fermact.h"
 
-using namespace QDP;
 
 namespace Chroma
 {

@@ -1,12 +1,12 @@
-// $Id: t_io.cc,v 1.10 2004-09-22 17:25:01 bjoo Exp $
+// $Id: t_io.cc,v 1.11 2005-01-14 20:13:09 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
 
 #include "chroma.h"
 
-using namespace QDP;
 using namespace Chroma;
+
 const std::string foo_xml="<?xml version='1.0'?><foo><coeffs1>ZOLOTAREV</coeffs1><coeffs2>TANH</coeffs2></foo>";
 
 int main(int argc, char **argv)

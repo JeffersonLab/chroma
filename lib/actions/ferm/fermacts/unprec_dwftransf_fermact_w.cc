@@ -1,4 +1,4 @@
-// $Id: unprec_dwftransf_fermact_w.cc,v 1.7 2005-01-02 05:21:10 edwards Exp $
+// $Id: unprec_dwftransf_fermact_w.cc,v 1.8 2005-01-14 20:13:04 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -14,9 +14,6 @@
 
 #include <string>
 
-using namespace std;
-using namespace QDP;
-using namespace Chroma;
 
 namespace Chroma
 {

@@ -1,6 +1,11 @@
-// $Id: collect_propcomp.cc,v 1.10 2005-01-12 15:23:26 bjoo Exp $
+// $Id: collect_propcomp.cc,v 1.11 2005-01-14 20:13:08 edwards Exp $
 // $Log: collect_propcomp.cc,v $
-// Revision 1.10  2005-01-12 15:23:26  bjoo
+// Revision 1.11  2005-01-14 20:13:08  edwards
+// Removed all using namespace QDP/Chroma from lib files. The library
+// should now be 100% in the Chroma namespace. All mainprogs need a
+// using namespace Chroma.
+//
+// Revision 1.10  2005/01/12 15:23:26  bjoo
 // Moved the mainprogs to use ChromaInitialize and ChromaFinalize. Howver this doesnt buy us much since the linkage hack cannot be properly hidden at the moment (causes segfaults in propagator) and I need closure about how to deal with default input streams. You do get a TheXMLOutputWriter tho
 //
 // Revision 1.9  2004/12/24 04:19:22  edwards
@@ -84,12 +89,9 @@
 #include <iostream>
 #include <cstdio>
 #include <iomanip>
-using namespace std;
 #include "chroma.h"
 
-using namespace QDP;
-
-
+using namespace Chroma;
 
 /*
  * Input 

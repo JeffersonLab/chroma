@@ -1,4 +1,4 @@
-// $Id: writemilc.cc,v 1.5 2004-07-28 02:38:03 edwards Exp $
+// $Id: writemilc.cc,v 1.6 2005-01-14 20:13:07 edwards Exp $
 
 /*! \file
  *  \brief Writer a MILC gauge configuration in the 1997 format
@@ -13,7 +13,7 @@
 #include <string.h>
 using std::string;
 
-using namespace QDP;
+namespace Chroma {
 
 //! Write a MILC configuration file
 /*!
@@ -98,3 +98,4 @@ void writeMILC(XMLBufferWriter& xml, multi1d<LatticeColorMatrix>& u, const strin
   END_CODE();
 }
 
+}  // end namespace Chroma

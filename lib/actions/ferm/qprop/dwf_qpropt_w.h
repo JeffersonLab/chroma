@@ -1,4 +1,4 @@
-// $Id: dwf_qpropt_w.h,v 1.1 2005-01-07 05:00:10 edwards Exp $
+// $Id: dwf_qpropt_w.h,v 1.2 2005-01-14 20:13:06 edwards Exp $
 /*! \file
  * \brief Pick up possibly optimized DWF inverters.
  *
@@ -20,13 +20,17 @@
 // The file defines the SSE Dslash class
 // The following typedef switches it in.
 #include "prec_dwf_qprop_array_sse_w.h"
+namespace Chroma {
 typedef SSEDWFQpropT DWFQpropT;
+}  // end namespace Chroma
 
 #else
 
 // Bottom line, if no optimised DWF qpropT-s exist then the naive QDP qpropT
 // becomes the DWFQpropT
+namespace Chroma {
 typedef PrecFermAct5DQprop<LatticeFermion, multi1d<LatticeColorMatrix> > DWFQpropT;
+}  // end namespace Chroma
 #endif
 
 

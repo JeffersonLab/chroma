@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: overlapbu_linop_w.h,v 1.7 2004-12-12 21:22:16 edwards Exp $
+// $Id: overlapbu_linop_w.h,v 1.8 2005-01-14 20:13:05 edwards Exp $
 /*! \file
  *  \brief A variant of the 4D overlap operator
  */
@@ -9,7 +9,6 @@
 
 #include "linearop.h"
 
-using namespace QDP;
 
 namespace Chroma 
 { 
@@ -68,6 +67,5 @@ namespace Chroma
 
 }; // End Namespace Chroma
 
-using namespace Chroma;
 
 #endif
