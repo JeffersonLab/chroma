@@ -1,5 +1,5 @@
 /*
- *  $Id: hypsmear.cc,v 1.2 2003-10-09 20:32:37 edwards Exp $
+ *  $Id: hypsmear.cc,v 1.3 2003-10-10 17:04:29 edwards Exp $
  *
  *  This is the top-level routine for HYP smearing.
  *  It is a wrapper for Urs' and Robert's implmenetation of the HYP
@@ -14,6 +14,7 @@
 
 #include "chroma.h"
 
+#include <sys/time.h>   // for timings
 
 enum CfgType {
   CFG_TYPE_MILC = 0,
@@ -243,6 +244,8 @@ int main(int argc, char *argv[])
   multi1d<LatticeColorMatrix> u(Nd);
   XMLReader gauge_xml;
 
+  clock_t t1 = clock();
+
   switch (input.param.cfg_type_in) 
   {
   case CFG_TYPE_SZIN :
@@ -257,9 +260,13 @@ int main(int argc, char *argv[])
     QDP_error_exit("Configuration type is unsupported.");
   }
 
+  clock_t t2 = clock();
+  QDPIO::cout << "Gauge read took " << (double)((int)(t2)-(int)(t1))/(double)(CLOCKS_PER_SEC) << " secs" << endl;
+
+
   // Instantiate XML writer for XMLDAT
   XMLFileWriter xml_out("XMLDAT");
-  push(xml_out, "propagator");
+  push(xml_out, "hypsmear");
 
   // Write out the input
   write(xml_out, "Input", xml_in);
@@ -275,11 +282,18 @@ int main(int argc, char *argv[])
 
 
   // Check if the gauge field configuration is unitarized
+  t1 = clock();
   unitarityCheck(u);
+  t2 = clock();
+  QDPIO::cout << "Unitarity took " << (double)((int)(t2)-(int)(t1))/(double)(CLOCKS_PER_SEC) << " secs" << endl;
+  
 
   // Calculate some gauge invariant observables just for info.
   Double w_plaq, s_plaq, t_plaq, link;
+  t1 = clock();
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
+  t2 = clock();
+  QDPIO::cout << "Plaquette took " << (double)((int)(t2)-(int)(t1))/(double)(CLOCKS_PER_SEC) << " secs" << endl;
 
   push(xml_out, "Observables");
   Write(xml_out, w_plaq);
@@ -298,9 +312,13 @@ int main(int argc, char *argv[])
   int BlkMax = 100;
 
 
+  t1 = clock();
   Hyp_Smear(u, u_hyp, 
 	    input.param.alpha1, input.param.alpha2, input.param.alpha3, 
 	    BlkAccu, BlkMax);
+
+  t2 = clock();
+  QDPIO::cout << "Hypsmear took " << (double)((int)(t2)-(int)(t1))/(double)(CLOCKS_PER_SEC) << " secs" << endl;
 
   // Calculate some gauge invariant observables just for info.
 
@@ -316,6 +334,8 @@ int main(int argc, char *argv[])
   // Now write the configuration to disk
 
   SzinGauge_t szin_out;
+
+  t1 = clock();
 
   switch (input.param.cfg_type_out) 
   {
@@ -338,7 +358,10 @@ int main(int argc, char *argv[])
     QDP_error_exit("Configuration type is unsupported.");
   }
 
+  t2 = clock();
+  QDPIO::cout << "Gauge write took " << (double)((int)(t2)-(int)(t1))/(double)(CLOCKS_PER_SEC) << " secs" << endl;
 
+  pop(xml_out);
 
 
   // Time to bolt
