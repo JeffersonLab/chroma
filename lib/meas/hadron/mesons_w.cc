@@ -1,6 +1,10 @@
-//  $Id: mesons_w.cc,v 1.8 2003-03-14 05:14:32 flemingg Exp $
+//  $Id: mesons_w.cc,v 1.9 2003-03-14 17:16:13 flemingg Exp $
 //  $Log: mesons_w.cc,v $
-//  Revision 1.8  2003-03-14 05:14:32  flemingg
+//  Revision 1.9  2003-03-14 17:16:13  flemingg
+//  Variant 1 is now working with SftMom::sft().  In arbitrary units,
+//  the relative performance seems to be: V1) 7.5, V2) 10, V3) 100.
+//
+//  Revision 1.8  2003/03/14 05:14:32  flemingg
 //  rewrite of mesons_w.cc to use the new SftMom class.  mesons_w.cc still
 //  needs to be cleaned up once the best strategy is resolved.  But for now,
 //  the library and test program compiles and runs.
@@ -62,9 +66,10 @@ void mesons(const LatticePropagator& quark_prop_1,
   LatticePropagator anti_quark_prop =  Gamma(G5) * quark_prop_2 * Gamma(G5);
 
   // GTF: We're going to consider several working variants here to see
-  // which one works best.
+  // which one works best.  Now that Variant 1 is working, it seems to be
+  // 25% faster than Variant 2 in the test program.
 
-#if 0    // Variant 1 // Not working because SftMom::sft() is broken
+#if 1    // Variant 1
 
   // This variant uses the function SftMom::sft() to do all the work
   // computing the Fourier transform of the meson correlation function
@@ -81,8 +86,8 @@ void mesons(const LatticePropagator& quark_prop_1,
     corr_fn = trace(adj(anti_quark_prop) * Gamma(gamma_value) *
                     quark_prop_1 * Gamma(gamma_value)) ;
 
-    multi2d<Double> hsum ;
-    hsum = real(phases.sft(corr_fn)) ;
+    multi2d<DComplex> hsum ;
+    hsum = phases.sft(corr_fn) ;
 
     for (int sink_mom_num=0; sink_mom_num < phases.numMom(); ++sink_mom_num) {
       multi1d<Double> mesprop(phases.numSubsets()) ;
@@ -90,7 +95,7 @@ void mesons(const LatticePropagator& quark_prop_1,
       for (int t=0; t < phases.numSubsets(); ++t) {
         int t_eff = (t - t0 + length) % length ;
 
-        mesprop[t_eff] = hsum[sink_mom_num][t] ;
+        mesprop[t_eff] = real(hsum[sink_mom_num][t]) ;
       }
 
       // Print out the results
