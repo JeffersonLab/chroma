@@ -1,4 +1,4 @@
-// $Id: multipole_w.cc,v 1.4 2005-04-04 03:22:40 edwards Exp $
+// $Id: multipole_w.cc,v 1.5 2005-04-05 03:45:05 edwards Exp $
 /*! \file
  *  \brief Multipole moments
  *
@@ -131,10 +131,113 @@ namespace Chroma
     }
     
 
-    //! Compute the deriv(r^L*Y_{LM},x_k)
-    LatticeComplex deriv_rYLM(const multi1d<LatticeReal>& x, int l, int m, int k)
+    //! Compute the grad(r^L*Y_{LM},x_k)
+    multi1d<LatticeComplex> deriv_rYLM(const multi1d<LatticeReal>& x, int l, int m)
     {
-      LatticeComplex ylm = 1.0;   // HACK
+      if (m < -l || m > l)
+	QDP_error_exit("Bad arguments in deriv_rYLM");
+
+      if (x.size() != Nd-1)
+	QDP_error_exit("Bad arguments in deriv_rYLM");
+
+      if (Nd != 4)
+	QDP_error_exit("Bad arguments in deriv_rYLM");
+
+      multi1d<LatticeComplex> ylm(Nd-1);
+
+      if (m < 0)
+      {
+	// Y_{l,-m} = (-1)^m * conj(Y_{l,m})
+	int ss = ((-m) & 1 == 1) ? -1 : 1;
+	multi1d<LatticeComplex> foo = deriv_rYLM(x,l,-m);
+	for(int k=0; k < Nd-1; ++k)
+	  ylm[k] = ss*conj(foo[k]);
+	return ylm;
+      }
+
+      // NOTE: I would like to automate this and use the recurrence relation
+      // involving a derivative, but I don't immediately see a nice one around
+      // The obvious one is in terms of standard Legendre poly like
+      //  P^{lm}(z) = (-1)^m * (1-z^2)^{m/2} * d^m P_l(z)/dm , note the P_l(z)
+      // and not  P_{lm}(z).
+
+      // YUK - the deriv is kind of nasty - need to jump into polar space and
+      // then cast back to euclidean coord space. So, just telephone book
+      // the thing for the moment
+
+      // Use gradient in coord space, but with deriv. in spherical polar space
+      // grad = \hat{x}*d_x + \hat{y}*d_y + \hat{z}*d_z
+      // d_x  = sin(theta)*cos(phi)*d_r + (cos(theta)*cos(phi)/r)*d_theta 
+      //      - sin(phi)/(r*sin(theta)*d_phi
+      // d_y  = sin(theta)*sin(phi)*d_r + (cos(theta)*sin(phi)/r)*d_theta 
+      //      + cos(phi)/(r*sin(theta)*d_phi
+      // d_z  = cos(theta)*d_r - (sin(theta)/r)*d_theta 
+
+      // Build radius squared
+      LatticeReal r_sq = zero;
+      for(int j=0; j < x.size(); ++j)
+	r_sq += x[j]*x[j];
+
+      LatticeReal r = where(r_sq > 0.0, sqrt(r_sq), LatticeReal(1));
+
+      // z = r*cos(theta)
+      LatticeReal cos_theta = x[2] / r;
+	
+      // y = r*sin(phi),  x = r*cos(phi),  y/x = tan(phi)
+      LatticeReal phi = atan2(LatticeReal(x[1]),LatticeReal(x[0]));
+
+      Real cnst = 0;
+      ylm = zero;
+
+      switch(l)
+      {
+      case 0:
+	ylm = zero;
+	break;
+
+      case 1:
+	// L=1
+	switch(m)
+	{
+	case 0:
+	  cnst = sqrt(3/(2*twopi));
+	  ylm[2] = 1;
+	  break;
+
+	case 1:
+	  cnst = -sqrt(3/(4*twopi));
+	  ylm[0] = 1;
+	  ylm[1] = timesI(Real(1));  // i
+	  break;
+	}
+	break;
+
+#if 0
+	// Need to do this case...
+      case 2:
+	// L=2
+	switch(m)
+	{
+	case 0:
+	  ylm[0] = 0;
+	  break;
+
+	case 1:
+	  break;
+
+	case 2:
+	  break;
+	}
+	break;
+#endif
+
+      default:
+	break;
+      }
+
+      // Multiply in normalization
+      for(int k=0; k < ylm.size(); ++k)
+	ylm[k] *= cnst;
 
       return ylm;
     }
@@ -177,9 +280,11 @@ namespace Chroma
 
       // The density is   (\vec{r} \cross \vec{J}(x)) \dot div(r^L*Y_{LM}(x))
       // Here, use local current for \vec{J} so  insertion is  gamma_k
-      dens  = (x[1]*(Gamma(g[2])*g_one) - x[2]*(Gamma(g[1])*g_one)) * deriv_rYLM(x,L,M,0);
-      dens += (x[2]*(Gamma(g[0])*g_one) - x[0]*(Gamma(g[2])*g_one)) * deriv_rYLM(x,L,M,1);
-      dens += (x[0]*(Gamma(g[1])*g_one) - x[1]*(Gamma(g[0])*g_one)) * deriv_rYLM(x,L,M,2);
+      multi1d<LatticeComplex> deriv = deriv_rYLM(x,L,M);
+
+      dens  = (x[1]*(Gamma(g[2])*g_one) - x[2]*(Gamma(g[1])*g_one)) * deriv[0];
+      dens += (x[2]*(Gamma(g[0])*g_one) - x[0]*(Gamma(g[2])*g_one)) * deriv[1];
+      dens += (x[0]*(Gamma(g[1])*g_one) - x[1]*(Gamma(g[0])*g_one)) * deriv[2];
 
       return dens;
     }
