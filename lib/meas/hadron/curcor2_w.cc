@@ -1,4 +1,4 @@
-// $Id: curcor2_w.cc,v 1.4 2003-10-01 20:23:12 edwards Exp $
+// $Id: curcor2_w.cc,v 1.5 2003-10-29 21:42:30 edwards Exp $
 /*! \file
  *  \brief Mesonic current correlators
  */
@@ -75,9 +75,6 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
   LatticeReal psi_sq;
   LatticeReal chi_sq;
 
-  int kv = -1;
-  int kcv = Nd-2;
-
   {
     XMLArrayWriter xml_dir(xml,Nd-1);
     push(xml_dir, "Vector_current");
@@ -90,22 +87,20 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
 	write(xml_dir, "ortho_dir_num", k);
 
 	int n = 1 << k;
-	kv = kv + 1;
-	kcv = kcv + 1;
-	psi_sq = 0;
-	chi_sq = 0;
 
 	tmp_prop2 = u[k] * shift(quark_prop_1, FORWARD, k) * Gamma(n);
-	chi_sq -= real(trace(adj(anti_quark_prop) * tmp_prop2));
+	chi_sq = - real(trace(adj(anti_quark_prop) * tmp_prop2));
 
 	tmp_prop1 = Gamma(n) * tmp_prop2;
-	psi_sq += real(trace(adj(anti_quark_prop) * tmp_prop1));
+	psi_sq = real(trace(adj(anti_quark_prop) * tmp_prop1));
 
 	tmp_prop2 = u[k] * shift(anti_quark_prop, FORWARD, k) * Gamma(n);
 	chi_sq += real(trace(adj(tmp_prop2) * quark_prop_1));
 
 	tmp_prop1 = Gamma(n) * tmp_prop2;
 	psi_sq += real(trace(adj(tmp_prop1) * quark_prop_1));
+
+	chi_sq += psi_sq;
 
 	/* Do a slice-wise sum. */
 
@@ -120,7 +115,7 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
 	for(int t = 0; t < length; ++t)
 	{
 	  int t_eff = (t - t0 + length) % length;
-	  nonconserved_vector_current[t_eff] += dummy1 * Real(hsum[t]);
+	  nonconserved_vector_current[t_eff] = dummy1 * Real(hsum[t]);
 	}
 	Write(xml_dir, nonconserved_vector_current);
 
@@ -132,7 +127,7 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
 	for(int t = 0; t < length; ++t)
 	{
 	  int t_eff = (t - t0 + length) % length;
-	  conserved_vector_current[t_eff] += dummy1 * Real(hsum[t]);
+	  conserved_vector_current[t_eff] = dummy1 * Real(hsum[t]);
 	}
 	Write(xml_dir, conserved_vector_current);
       
@@ -151,7 +146,6 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
     XMLArrayWriter xml_dir(xml,Nd-1);
     push(xml_dir, "Oa_improved_vector_current");
 
-    kv = 2*Nd-3;
     int jd = 1 << j_decay;
 
     for(int k = 0; k < Nd; ++k)
@@ -162,7 +156,6 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
 	write(xml_dir, "ortho_dir_num", k);
 
 	int n = 1 << k;
-	kv = kv + 1;
 	psi_sq = 0;
 	int n1 = n ^ jd;
 
@@ -177,7 +170,7 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
 	for(int t = 0; t < length; ++t)
 	{
 	  int t_eff = (t - t0 + length) % length;
-	  improved_vector_current[t_eff] += dummy1 * Real(hsum[t]);
+	  improved_vector_current[t_eff] = dummy1 * Real(hsum[t]);
 	}
 	Write(xml_dir, improved_vector_current);
       
@@ -190,12 +183,10 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
 
   /* Construct the local vector-current to rho correlators, if desired */
 
-  if ( no_vec_cur == 4 )
+  if ( no_vec_cur >= 4 )
   {
     XMLArrayWriter xml_dir(xml,Nd-1);
     push(xml_dir, "Local_vector_current");
-
-    kv = 3*Nd-4;
 
     for(int k = 0; k < Nd; ++k)
     {
@@ -205,7 +196,6 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
 	write(xml_dir, "ortho_dir_num", k);
 
 	int n = 1 << k;
-	kv = kv + 1;
 	psi_sq = 0;
 
 	psi_sq = real(trace(adj(anti_quark_prop) * Gamma(n) * quark_prop_1 * Gamma(n)));
@@ -219,7 +209,7 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
 	for(int t = 0; t < length; ++t)
 	{
 	  int t_eff = (t - t0 + length) % length;
-	  local_vector_current[t_eff] += dummy1 * Real(hsum[t]);
+	  local_vector_current[t_eff] = dummy1 * Real(hsum[t]);
 	}
 	Write(xml_dir, local_vector_current);
       
@@ -261,7 +251,7 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
     for(int t = 0; t < length; ++t)
     {
       int t_eff = (t - t0 + length) % length;
-      local_axial_current[t_eff] -= Real(hsum[t]);
+      local_axial_current[t_eff] = - Real(hsum[t]);
     }
     Write(xml, local_axial_current);
 
@@ -274,7 +264,7 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
     for(int t = 0; t < length; ++t)
     {
       int t_eff = (t - t0 + length) % length;
-      nonlocal_axial_current[t_eff] += dummy1 * Real(hsum[t]);
+      nonlocal_axial_current[t_eff] = dummy1 * Real(hsum[t]);
     }
     Write(xml, nonlocal_axial_current);
   }
