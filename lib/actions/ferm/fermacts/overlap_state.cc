@@ -333,6 +333,7 @@ namespace Chroma {
     }
 
 
+#if 0
     //! Create a ConnectState out of XML
     /*! Needs the auxiliary fermion action linear operator 
         passed just in case it needs to check eigenvalues/vectors.
@@ -346,10 +347,12 @@ namespace Chroma {
 		       const LinearOperator<LatticeFermion>& H)
     {
       return OverlapConnectStateEnv::createOverlapState< LatticeFermion >(u_, fbc, state_info_xml, 
-						  state_info_path, H);
+									  state_info_path, H);
     }
+#endif
 
 
+#if 0
     //! Create a ConnectState out of XML
     /*! Needs the auxiliary fermion action linear operator 
         passed just in case it needs to check eigenvalues/vectors.
@@ -364,6 +367,7 @@ namespace Chroma {
     {
       return OverlapConnectStateEnv::createOverlapState< multi1d< LatticeFermion > >(u_, fbc, state_info_xml, state_info_path, H);
     }
+#endif
 
 
     //! Create from OverlapStateInfo Structure
