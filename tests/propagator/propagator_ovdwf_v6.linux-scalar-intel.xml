@@ -13,7 +13,7 @@
   </ProgramInfo>
   <Input><propagator>
 <annotation>
-; $Id: propagator_ovdwf_v6.linux-scalar-intel.xml,v 1.1 2004-09-28 17:39:55 bjoo Exp $
+; $Id: propagator_ovdwf_v6.linux-scalar-intel.xml,v 1.2 2004-10-01 18:04:22 bjoo Exp $
 ;
 ; PROPAGATOR input file.
 ;
@@ -36,7 +36,7 @@
  </FermionAction>
  <InvertParam>
    <invType>CG_INVERTER</invType>
-   <RsdCG>1.0e-8</RsdCG>
+   <RsdCG>1.0e-6</RsdCG>
    <MaxCG>1000</MaxCG>
  </InvertParam>
  <nrow>4 4 4 8</nrow>
@@ -168,56 +168,56 @@
   </Source_correlator>
   <QuarkProp4>
     <Qprop>
-      <RsdCG>1e-08</RsdCG>
-      <n_count>94</n_count>
+      <RsdCG>1e-06</RsdCG>
+      <n_count>69</n_count>
     </Qprop>
     <Qprop>
-      <RsdCG>1e-08</RsdCG>
-      <n_count>94</n_count>
+      <RsdCG>1e-06</RsdCG>
+      <n_count>69</n_count>
     </Qprop>
     <Qprop>
-      <RsdCG>1e-08</RsdCG>
-      <n_count>94</n_count>
+      <RsdCG>1e-06</RsdCG>
+      <n_count>69</n_count>
     </Qprop>
     <Qprop>
-      <RsdCG>1e-08</RsdCG>
-      <n_count>94</n_count>
+      <RsdCG>1e-06</RsdCG>
+      <n_count>69</n_count>
     </Qprop>
     <Qprop>
-      <RsdCG>1e-08</RsdCG>
-      <n_count>94</n_count>
+      <RsdCG>1e-06</RsdCG>
+      <n_count>69</n_count>
     </Qprop>
     <Qprop>
-      <RsdCG>1e-08</RsdCG>
-      <n_count>93</n_count>
+      <RsdCG>1e-06</RsdCG>
+      <n_count>69</n_count>
     </Qprop>
     <Qprop>
-      <RsdCG>1e-08</RsdCG>
-      <n_count>94</n_count>
+      <RsdCG>1e-06</RsdCG>
+      <n_count>69</n_count>
     </Qprop>
     <Qprop>
-      <RsdCG>1e-08</RsdCG>
-      <n_count>94</n_count>
+      <RsdCG>1e-06</RsdCG>
+      <n_count>69</n_count>
     </Qprop>
     <Qprop>
-      <RsdCG>1e-08</RsdCG>
-      <n_count>94</n_count>
+      <RsdCG>1e-06</RsdCG>
+      <n_count>69</n_count>
     </Qprop>
     <Qprop>
-      <RsdCG>1e-08</RsdCG>
-      <n_count>94</n_count>
+      <RsdCG>1e-06</RsdCG>
+      <n_count>69</n_count>
     </Qprop>
     <Qprop>
-      <RsdCG>1e-08</RsdCG>
-      <n_count>94</n_count>
+      <RsdCG>1e-06</RsdCG>
+      <n_count>69</n_count>
     </Qprop>
     <Qprop>
-      <RsdCG>1e-08</RsdCG>
-      <n_count>94</n_count>
+      <RsdCG>1e-06</RsdCG>
+      <n_count>69</n_count>
     </Qprop>
   </QuarkProp4>
   <Relaxation_Iterations>
-    <ncg_had>1127</ncg_had>
+    <ncg_had>828</ncg_had>
   </Relaxation_Iterations>
   <Prop_correlator>
     <prop_corr>1.24861 0.616506 0.279986 0.214303 0.200652 0.218193 0.277162 0.608434</prop_corr>
