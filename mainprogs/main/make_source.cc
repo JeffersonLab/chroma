@@ -1,4 +1,4 @@
-// $Id: make_source.cc,v 1.20 2004-02-04 17:01:55 edwards Exp $
+// $Id: make_source.cc,v 1.21 2004-02-04 17:41:56 sbasak Exp $
 /*! \file
  *  \brief Main code for source generation
  */
@@ -71,7 +71,7 @@ int main(int argc, char **argv)
       
       switch(version) 	// The parameters we read in IO version
       {
-      case 3:			
+      case 4:			
       {
 	XMLReader paramtop(inputtop, "param");
 
