@@ -1,4 +1,4 @@
-// $Id: t_precdwf.cc,v 1.15 2005-03-30 11:26:55 bjoo Exp $
+// $Id: t_precdwf.cc,v 1.16 2005-03-30 13:15:50 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -121,8 +121,8 @@ int main(int argc, char **argv)
 
 //    int Ndiag  = (N5-2)*(5*24) + 2*(8*24);
     // int Ndiag  = N5*(4*24) + (N5-1)*(8*24) + 3*24;   // this is what I get counting flops in code
-    int Ndiag  = 4*(N5+2)*Nc*Ns; // This is my count with the blas / chiral proj ops
-    int NdiagInv = (12*N5-11)*Nc*Ns;
+    int Ndiag  = (4*N5+2)*Nc*Ns; // This is my count with the blas / chiral proj ops
+    int NdiagInv = (10*N5-8)*Nc*Ns;
     int Neo    = N5*(1320+24);
     int Nflops = 2*Ndiag + 2*Neo + N5*24;
 
