@@ -1,4 +1,4 @@
-// $Id: minvcg.cc,v 1.6 2004-04-28 16:38:23 bjoo Exp $
+// $Id: minvcg.cc,v 1.7 2004-04-29 15:55:29 bjoo Exp $
 
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator
@@ -294,7 +294,7 @@ void MInvCG_a(const LinearOperator<T>& A,
     for(s = 0; s < n_shift; s++) {
       if (! convsP[s] ) {
 
-	/*
+
 	// Convergence methods 
 	// Check norm of shifted residuals 
 	Double css = c * z[iz][s]* z[iz][s];
@@ -305,9 +305,10 @@ void MInvCG_a(const LinearOperator<T>& A,
 #endif 
 
 	convsP[s] = toBool(  css < rsd_sq[s] );
-	*/
 
+	
 
+#if 0
      
 	// 
 	// Check relative error of solution 
@@ -324,9 +325,10 @@ void MInvCG_a(const LinearOperator<T>& A,
 	// Terminate if | psi |^2/|psi_next|^2 < epsilon^2
 	convsP[s] = toBool( cs < d );
 
-#if 1
+#if 0
 	QDPIO::cout  << "MInvCG (shift=" << s << ") k = " << k << " cs = " 
 		     << cs << " d = " << d << endl;
+#endif
 #endif
 
       }
