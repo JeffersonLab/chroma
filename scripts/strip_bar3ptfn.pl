@@ -1,6 +1,6 @@
 #!/usr/local/bin/perl
 #
-# $Id: strip_bar3ptfn.pl,v 1.2 2003-05-10 00:22:12 edwards Exp $
+# $Id: strip_bar3ptfn.pl,v 1.3 2003-05-30 02:28:39 flemingg Exp $
 #
 # Strip out all data of bar3ptfn.m output
 #
@@ -8,9 +8,9 @@
 #   strip_bar3ptfn.pl  tempdir
 #
 
-$[ = 0;			# set array base to 1
-$, = ' ';		# set output field separator
-$\ = "\n";		# set output record separator
+$[ = 0;                        # set array base to 1
+$, = ' ';                # set output field separator
+$\ = "\n";                # set output record separator
 
 #die "Usage: strip_bar3ptfn.pl  temp_directory\n" unless scalar($@ARGV) == 1;
 
@@ -48,7 +48,7 @@ $found = 0;
 while ($found == 0)
 {
   $_ = <STDIN>;
-  chop;	# strip record separator
+  chop;        # strip record separator
   @Fld = split(' ', $_);
   
   if ( $Fld[0] eq '&Output_version' )
@@ -139,7 +139,7 @@ foreach $x (0 .. $numSeq_src-1)
   # Get a unique handle
   $s = 'seq_hadron';
   $file = $s . "_s" . $i;
-	    
+            
   $bar_tag{$s, $i} = 0;
   $bar_file{$s, $i} = $file;
 
@@ -160,22 +160,26 @@ foreach $x (0 .. $numSeq_src-1)
     {
       foreach $y (-$mommax_int .. $mommax_int)
       {
-	foreach $z (-$mommax_int .. $mommax_int)
-	{
-	  $p2 = $x*$x + $y*$y + $z*$z;
-	  next if ($p2 > $mom2_max);
+        foreach $z (-$mommax_int .. $mommax_int)
+        {
+          $p2 = $x*$x + $y*$y + $z*$z;
+          next if ($p2 > $mom2_max);
 
-	  foreach $s ('local_cur3ptfn', 'nonlocal_cur3ptfn')
-	  {
-	    # Get a unique handle
-	    $file = $s . "_s" . $i . "_g" . $g . "_qx" . $x . "_qy" . $y . "_qz" . $z;
-	    
-	    $bar_tag{$s, $i, $g, $x, $y, $z} = 0;
-	    $bar_file{$s, $i, $g, $x, $y, $z} = $file;
+          $inser_mom[0] = $x + $sink_mom[0] ;
+          $inser_mom[1] = $y + $sink_mom[1] ;
+          $inser_mom[2] = $z + $sink_mom[2] ;
 
-	    if ( -f $file ) {unlink($file);}
-	  }
-	}
+          foreach $s ('local_cur3ptfn', 'nonlocal_cur3ptfn')
+          {
+            # Get a unique handle
+            $file = $s . "_s" . $i . "_g" . $g . "_qx" . $inser_mom[0] . "_qy" . $inser_mom[1] . "_qz" . $inser_mom[2] ;
+            
+            $bar_tag{$s, $i, $g, $inser_mom[0], $inser_mom[1], $inser_mom[2]} = 0 ;
+            $bar_file{$s, $i, $g, $inser_mom[0], $inser_mom[1], $inser_mom[2]} = $file;
+
+            if ( -f $file ) {unlink($file);}
+          }
+        }
       }
     }
   }
@@ -293,7 +297,7 @@ printf "Searching for correlation functions....\n";
 
 while (<STDIN>)
 {
-  chop;	# strip record separator
+  chop;        # strip record separator
   @Fld = split(' ', $_);
 
   if ( $Fld[0] eq '&End_Wilson_3Pt_fn_measurements' ||  
@@ -357,31 +361,31 @@ while (<STDIN>)
 
       if ( $Fld[0] eq 'seq_hadron_0' ) 
       {
-	$s = 'seq_hadron';
-	$file = $bar_file{$s, $seq_src};
-	$tag = ++$bar_tag{$s, $seq_src};
+        $s = 'seq_hadron';
+        $file = $bar_file{$s, $seq_src};
+        $tag = ++$bar_tag{$s, $seq_src};
 
-	if ($tag == 1)
-	{
-#	  print "Open seq_hadron $file";
+        if ($tag == 1)
+        {
+#          print "Open seq_hadron $file";
 
-	  $bar_hand{$s, $seq_src} = $hand = ("foo" . ++$hand_inc);
-	  open($hand, ">" . $file) || die "Unable to open seq_hadron file $file\n";
-	      
-	  # Write header
-	  printf $hand "XXXXXX 1 1 %d 1\n", $L_t, $L_s;
-	}
-	else
-	{
-#	  print "Reopen seq_hadron $file";
+          $bar_hand{$s, $seq_src} = $hand = ("foo" . ++$hand_inc);
+          open($hand, ">" . $file) || die "Unable to open seq_hadron file $file\n";
+              
+          # Write header
+          printf $hand "XXXXXX 1 1 %d 1\n", $L_t, $L_s;
+        }
+        else
+        {
+#          print "Reopen seq_hadron $file";
 
-	  $hand = $bar_hand{$s, $seq_src};
-	  open($hand, ">>" . $file) || die "Unable to reopen seq_hadron file $file\n";
-	}
+          $hand = $bar_hand{$s, $seq_src};
+          open($hand, ">>" . $file) || die "Unable to reopen seq_hadron file $file\n";
+        }
 
-#	printf $hand "0 %s %s\n", $Fld[3], $Fld[5];
-	printf $hand "0 %s\n", $Fld[3];
-	close($hand);
+#        printf $hand "0 %s %s\n", $Fld[3], $Fld[5];
+        printf $hand "0 %s\n", $Fld[3];
+        close($hand);
       }
 
       if ( $Fld[0] eq '&END' ) {$end = 1;}
@@ -405,39 +409,39 @@ while (<STDIN>)
 #      if ( defined($Gamma_list{$gamma_value}) 
       if ( $Fld[0] eq 'local_cur3ptfn[' )
       {
-	$s = 'local_cur3ptfn';
-	$file = $bar_file{$s, $seq_src, $gamma_value, $inser_mom[0], $inser_mom[1], $inser_mom[2]};
-	$tag = ++$bar_tag{$s, $seq_src, $gamma_value, $inser_mom[0], $inser_mom[1], $inser_mom[2]};
+        $s = 'local_cur3ptfn';
+        $file = $bar_file{$s, $seq_src, $gamma_value, $inser_mom[0], $inser_mom[1], $inser_mom[2]};
+        $tag = ++$bar_tag{$s, $seq_src, $gamma_value, $inser_mom[0], $inser_mom[1], $inser_mom[2]};
 
-	if ($tag == 1)
-	{
-#	  print "Open local_cur3ptfn XX${file}XX";
+        if ($tag == 1)
+        {
+#          print "Open local_cur3ptfn XX${file}XX";
 
-	  $bar_hand{$s, $seq_src, $gamma_value, $inser_mom[0], $inser_mom[1], $inser_mom[2]} = 
-	    $hand = ("foo" . ++$hand_inc);
-	  open($hand, ">" . $file) || die "Unable to open local_cur3ptfn file $file\n";
-	      
-	  # Write header
-	  printf $hand "XXXXXX %d 1 %d 1\n", $L_t, $L_s;
-	}
-	else
-	{
-#	  print "Reopen local_cur3ptfn $file";
+          $bar_hand{$s, $seq_src, $gamma_value, $inser_mom[0], $inser_mom[1], $inser_mom[2]} = 
+            $hand = ("foo" . ++$hand_inc);
+          open($hand, ">" . $file) || die "Unable to open local_cur3ptfn file $file\n";
+              
+          # Write header
+          printf $hand "XXXXXX %d 1 %d 1\n", $L_t, $L_s;
+        }
+        else
+        {
+#          print "Reopen local_cur3ptfn $file";
 
-	  $hand = $bar_hand{$s, $seq_src, $gamma_value, $inser_mom[0], $inser_mom[1], $inser_mom[2]};
-	  open($hand, ">>" . $file) || die "Unable to reopen local_cur3ptfn file $file\n";
-	}
+          $hand = $bar_hand{$s, $seq_src, $gamma_value, $inser_mom[0], $inser_mom[1], $inser_mom[2]};
+          open($hand, ">>" . $file) || die "Unable to reopen local_cur3ptfn file $file\n";
+        }
 
-#	printf $hand "%d %s %s\n", $Fld[1], $Fld[5], $Fld[7];
-	printf $hand "%d %s\n", $Fld[1], $Fld[5];
-	foreach $t (1 .. $L_t-1)
-	{
-	  $_ = <STDIN>; chop; @Fld = split(' ', $_);
-#	  printf $hand "%d %s %s\n", $Fld[1], $Fld[5], $Fld[7];
-	  printf $hand "%d %s\n", $Fld[1], $Fld[5];
-	}
+#        printf $hand "%d %s %s\n", $Fld[1], $Fld[5], $Fld[7];
+        printf $hand "%d %s\n", $Fld[1], $Fld[5];
+        foreach $t (1 .. $L_t-1)
+        {
+          $_ = <STDIN>; chop; @Fld = split(' ', $_);
+#          printf $hand "%d %s %s\n", $Fld[1], $Fld[5], $Fld[7];
+          printf $hand "%d %s\n", $Fld[1], $Fld[5];
+        }
 
-	close($hand);
+        close($hand);
       }
     }
   }
@@ -457,41 +461,41 @@ while (<STDIN>)
       if ( $Fld[0] eq 'inser_mom[' ) {$inser_mom[$Fld[1]] = $Fld[4];}
       if ( $Fld[0] eq 'nonlocal_cur3ptfn[' )
       {
-	$s = 'nonlocal_cur3ptfn';
-	$file = $bar_file{$s, $seq_src, $gamma_value, $inser_mom[0], $inser_mom[1], $inser_mom[2]};
-	$tag = ++$bar_tag{$s, $seq_src, $gamma_value, $inser_mom[0], $inser_mom[1], $inser_mom[2]};
+        $s = 'nonlocal_cur3ptfn';
+        $file = $bar_file{$s, $seq_src, $gamma_value, $inser_mom[0], $inser_mom[1], $inser_mom[2]};
+        $tag = ++$bar_tag{$s, $seq_src, $gamma_value, $inser_mom[0], $inser_mom[1], $inser_mom[2]};
 
-	if ($tag == 1)
-	{
-#	  print "Open nonlocal_cur3ptfn $file";
+        if ($tag == 1)
+        {
+#         print "Open nonlocal_cur3ptfn $file";
 
-	  $bar_hand{$s, $seq_src, $gamma_value, $inser_mom[0], $inser_mom[1], $inser_mom[2]} = 
-	    $hand = ("foo" . ++$hand_inc);
-	  open($hand, ">" . $file) || die "Unable to open nonlocal_cur3ptfn file $file\n";
-	      
-	  # Write header
-	  printf $hand "XXXXXX %d 1 %d 1\n", $L_t, $L_s;
-	}
-	else
-	{
-#	  print "Reopen nonlocal_cur3ptfn $file";
+          $bar_hand{$s, $seq_src, $gamma_value, $inser_mom[0], $inser_mom[1], $inser_mom[2]} = 
+            $hand = ("foo" . ++$hand_inc);
+          open($hand, ">" . $file) || die "Unable to open nonlocal_cur3ptfn file $file\n";
+              
+          # Write header
+          printf $hand "XXXXXX %d 1 %d 1\n", $L_t, $L_s;
+        }
+        else
+        {
+#         print "Reopen nonlocal_cur3ptfn $file";
 
-	  $hand = $bar_hand{$s, $seq_src, $gamma_value, $inser_mom[0], $inser_mom[1], $inser_mom[2]};
-	  open($hand, ">>" . $file) || die "Unable to reopen nonlocal_cur3ptfn file $file\n";
-	}
-	
-	$hand = $bar_hand{$s, $seq_src, $gamma_value, $inser_mom[0], $inser_mom[1], $inser_mom[2]};
+          $hand = $bar_hand{$s, $seq_src, $gamma_value, $inser_mom[0], $inser_mom[1], $inser_mom[2]};
+          open($hand, ">>" . $file) || die "Unable to reopen nonlocal_cur3ptfn file $file\n";
+        }
+        
+        $hand = $bar_hand{$s, $seq_src, $gamma_value, $inser_mom[0], $inser_mom[1], $inser_mom[2]};
 
-#	printf $hand "%d %s %s\n", $Fld[1], $Fld[5], $Fld[7];
-	printf $hand "%d %s\n", $Fld[1], $Fld[5];
-	foreach $t (1 .. $L_t-1)
-	{
-	  $_ = <STDIN>; chop; @Fld = split(' ', $_);
-#	  printf $hand "%d %s %s\n", $Fld[1], $Fld[5], $Fld[7];
-	  printf $hand "%d %s\n", $Fld[1], $Fld[5];
-	}
+#       printf $hand "%d %s %s\n", $Fld[1], $Fld[5], $Fld[7];
+        printf $hand "%d %s\n", $Fld[1], $Fld[5];
+        foreach $t (1 .. $L_t-1)
+        {
+          $_ = <STDIN>; chop; @Fld = split(' ', $_);
+#         printf $hand "%d %s %s\n", $Fld[1], $Fld[5], $Fld[7];
+          printf $hand "%d %s\n", $Fld[1], $Fld[5];
+        }
 
-	close($hand);
+        close($hand);
       }
     }
   }
