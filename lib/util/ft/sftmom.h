@@ -1,6 +1,9 @@
-//  $Id: sftmom.h,v 1.5 2003-04-01 02:45:03 edwards Exp $
+//  $Id: sftmom.h,v 1.6 2003-08-09 02:10:44 edwards Exp $
 //  $Log: sftmom.h,v $
-//  Revision 1.5  2003-04-01 02:45:03  edwards
+//  Revision 1.6  2003-08-09 02:10:44  edwards
+//  Replaced Subset with UnorderedSubset .
+//
+//  Revision 1.5  2003/04/01 02:45:03  edwards
 //  Added some const member functions.
 //
 //  Revision 1.4  2003/04/01 02:38:26  edwards
@@ -34,7 +37,7 @@ public:
          bool avg_equiv_mom=false, int j_decay=-1) 
   { init(mom2_max, mom_offset, avg_equiv_mom, j_decay) ; }
 
-  const Set& getSubset() const { return sft_subsets ; }
+  const UnorderedSet& getSubset() const { return sft_subsets ; }
 
   int numMom() const { return num_mom ; }
 
@@ -59,7 +62,7 @@ private:
 
   multi1d<LatticeComplex> phases ;
 
-  Set sft_subsets ;
+  UnorderedSet sft_subsets ;
 
 } ;
 
