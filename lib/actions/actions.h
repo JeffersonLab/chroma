@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: actions.h,v 1.4 2003-04-01 02:38:26 edwards Exp $
+// $Id: actions.h,v 1.5 2003-04-09 17:16:25 edwards Exp $
 
 /*! \file
  * \brief Include all files related to actions
@@ -18,12 +18,8 @@
 #ifndef __actions_h__
 #define __actions_h__
 
-#include "construct/construct.h"
-#include "dirac/dirac.h"
-#include "dslash/dslash.h"
-#include "invert/invert.h"
-#include "linop/linop.h"
-#include "qprop/qprop.h"
+#include "ferm/ferm.h"
+#include "gauge/gauge.h"
 
 #endif
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_wilson_fermact_w.h,v 1.1 2003-04-09 05:57:15 edwards Exp $
+// $Id: unprec_wilson_fermact_w.h,v 1.2 2003-04-09 17:16:25 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -11,9 +11,6 @@
 #include "actions/ferm/linop/unprec_wilson_linop_w.h"
 
 using namespace QDP;
-
-// Forward declaration
-// class UnprecWilsonLinOp : public LinearOperator;
 
 //! Unpreconditioned Wilson fermion action
 /*! \ingroup fermact
@@ -41,7 +38,7 @@ public:
   const LinearOperator* lMdagM(const multi1d<LatticeColorMatrix>& u) const;
 
   //! Compute dS_f/dU
-  multi1d<LatticeColorMatrix> dsdu(const multi1d<LatticeColorMatrix>& u) const;
+  multi1d<LatticeColorMatrix> dsdu(const multi1d<LatticeColorMatrix>& u) const {}
 
   //! Destructor is automatic
   ~UnprecWilsonFermAct() {}
