@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermbc.h,v 1.2 2004-03-17 03:07:50 edwards Exp $
+// $Id: fermbc.h,v 1.3 2004-03-17 03:33:40 edwards Exp $
 /*! @file
  * @brief Fermion action boundary conditions
  */
@@ -79,11 +79,11 @@ public:
 
   //! Modify U fields in place
   void modifyU(multi1d<LatticeColorMatrix>& u) const
-    {QDP_abort("modifyU not implemented");}
+    {QDP_error_exit("modifyU not implemented");}
 
   //! Modify fermion fields in place
   void modifyF(T& psi) const = 0;
-    {QDP_abort("modifyF not implemented");}
+    {QDP_error_exit("modifyF not implemented");}
  
   //! Says if there are fixed links within the lattice
   bool nontrivialP() const {return true;}
@@ -135,11 +135,11 @@ public:
 
   //! Modify U fields in place
   void modifyU(multi1d<LatticeColorMatrix>& u) const;
-    {QDP_abort("modifyU not implemented");}
+    {QDP_error_exit("modifyU not implemented");}
 
   //! Modify fermion fields in place
   void modifyF(T& psi) const;
-    {QDP_abort("modifyF not implemented");}
+    {QDP_error_exit("modifyF not implemented");}
  
   //! Says if there are fixed links within the lattice
   bool nontrivialP() const {return true;}
