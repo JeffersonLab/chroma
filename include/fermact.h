@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 1.7 2003-11-10 03:06:16 edwards Exp $
+// $Id: fermact.h,v 1.8 2003-11-10 05:08:27 edwards Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -42,7 +42,7 @@ public:
   /*! NOTE: maybe this should be abstracted to a foundry class object */
   virtual const LinearOperator<T>* lMdagM(const multi1d<LatticeColorMatrix>& u) const = 0;
 
-  //! Compute quark propagator
+  //! Compute quark propagator over base type
   /*! 
    * Solves  M.psi = chi
    *
@@ -56,13 +56,34 @@ public:
    *
    * NOTE: maybe this should produce a quark prop foundry class object 
    */
-  virtual void qprop(T& psi, 
+  virtual void qpropT(T& psi, 
+		      const multi1d<LatticeColorMatrix>& u, 
+		      const T& chi, 
+		      enum InvType invType,
+		      const Real& RsdCG, 
+		      int MaxCG, int& ncg_had) const;
+
+  //! Compute quark propagator over simpler type
+  /*! 
+   * Solves  M.psi = chi
+   *
+   * \param psi      quark propagator ( Modify )
+   * \param u        gauge field ( Read )
+   * \param chi      source ( Modify )
+   * \param invType  inverter type ( Read (
+   * \param RsdCG    CG (or MR) residual used here ( Read )
+   * \param MaxCG    maximum number of CG iterations ( Read )
+   * \param ncg_had  number of CG iterations ( Write )
+   *
+   * NOTE: maybe this should produce a quark prop foundry class object 
+   */
+  virtual void qprop(typename BaseType<T>::Type_t& psi, 
 		     const multi1d<LatticeColorMatrix>& u, 
-		     const T& chi, 
+		     const typename BaseType<T>::Type_t& chi, 
 		     enum InvType invType,
 		     const Real& RsdCG, 
 		     int MaxCG, int& ncg_had) const;
-
+  
   //! Compute dS_f/dU
   /*! NOTE: maybe this should produce a derivative foundry class object */
   virtual multi1d<LatticeColorMatrix> dsdu(const multi1d<LatticeColorMatrix>& u,
