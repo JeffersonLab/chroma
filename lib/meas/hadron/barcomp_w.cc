@@ -1,4 +1,4 @@
-//  $Id: barcomp_w.cc,v 1.5 2003-04-17 20:08:20 dgr Exp $
+//  $Id: barcomp_w.cc,v 1.6 2003-08-09 04:19:14 edwards Exp $
 /*! \file
  *  \brief Construct all components of a baryon propagator
  */
@@ -54,7 +54,7 @@ void barcomp(const LatticePropagator& quark_propagator_1,
 	     NmlWriter& nml)
 {
   // Create the time-slice set
-  Set timeslice;
+  UnorderedSet timeslice;
   timeslice.make(TimeSliceFunc(j_decay));
 
   // Length of lattice in j_decay direction
