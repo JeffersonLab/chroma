@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qprop_io.h,v 1.18 2004-09-09 04:03:10 edwards Exp $
+// $Id: qprop_io.h,v 1.19 2004-09-22 17:24:59 bjoo Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -8,10 +8,12 @@
 #define __qprop_io_h__
 
 #include "io/param_io.h"
+#include "io/enum_io/enum_io.h"
 #include "meas/sources/srcsnktype.h"
 #include "meas/sources/wavetype.h"
 #include "meas/smear/wvfkind.h"
 
+using namespace Chroma;
 /*!
  * Chroma propagator support
  *

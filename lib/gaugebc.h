@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gaugebc.h,v 1.7 2004-09-08 02:45:50 edwards Exp $
+// $Id: gaugebc.h,v 1.8 2004-09-22 17:24:59 bjoo Exp $
 /*! @file
  * @brief Gauge boundary conditions
  */
@@ -61,7 +61,7 @@ namespace Chroma
 
 #if defined(EXPOSE_THIS_STUFF)
     //! Type of Schroedinger BC
-    virtual SchrFunType_t getSFBC() const = 0;
+    virtual SchrFunType getSFBC() const = 0;
 #endif
 
     //! Decay direction
@@ -83,7 +83,7 @@ namespace Chroma
      * \param SchrFun_      type of Schroedinger BC
      * \param SchrPhiMult_  factor to rescale fixed field
      */
-    Schr1LinkGaugeBC(const SchrFunType_t SchrFun_, const Real& SchrPhiMult_)
+    Schr1LinkGaugeBC(const SchrFunType SchrFun_, const Real& SchrPhiMult_)
       {
 	initFunc(SchrFun_, SchrPhiMult_);
       }
@@ -114,7 +114,7 @@ namespace Chroma
 
 #if defined(EXPOSE_THIS_STUFF)
     //! Type of Schroedinger BC
-    SchrFunType_t getSFBC() const {return SchrFun;}
+    SchrFunType getSFBC() const {return SchrFun;}
 #endif
 
     //! Modify U fields in place
@@ -143,13 +143,13 @@ namespace Chroma
   private:
     // Hide default constuctor
     Schr1LinkGaugeBC() {}
-    void initFunc(const SchrFunType_t SchrFun_, const Real& SchrPhiMult_) {
+    void initFunc(const SchrFunType SchrFun_, const Real& SchrPhiMult_) {
       QDPIO::cerr << "Schr1LinkGaugeBC() not yet implemented" << endl;
       QDP_abort(1);
     }
 
   private:
-    SchrFunType_t SchrFun;
+    SchrFunType SchrFun;
     int decay_dir;
     multi1d<LatticeBoolean> mask;
     multi1d<LatticeColorMatrix> fld;
@@ -170,7 +170,7 @@ namespace Chroma
      * \param SchrFun_      type of Schroedinger BC
      * \param SchrPhiMult_  factor to rescale fixed field
      */
-    Schr2LinkGaugeBC(const SchrFunType_t SchrFun_, const Real& SchrPhiMult_)
+    Schr2LinkGaugeBC(const SchrFunType SchrFun_, const Real& SchrPhiMult_)
       {
 	initFunc(SchrFun_, SchrPhiMult_);
       }
@@ -198,7 +198,7 @@ namespace Chroma
 
 #if defined(EXPOSE_THIS_STUFF)
     //! Type of Schroedinger BC
-    SchrFunType_t getSFBC() const {return SchrFun;}
+    SchrFunType getSFBC() const {return SchrFun;}
 #endif
 
     //! Modify U fields in place
@@ -228,13 +228,13 @@ namespace Chroma
     // Hide default constuctor
     Schr2LinkGaugeBC() {}
 
-    void initFunc(const SchrFunType_t SchrFun_, const Real& SchrPhiMult_) {
+    void initFunc(const SchrFunType SchrFun_, const Real& SchrPhiMult_) {
       QDPIO::cerr << "Schr2LinkGaugeBC() not yet implemented" << endl;
       QDP_abort(1);
     }
 
   private:
-    SchrFunType_t SchrFun;
+    SchrFunType SchrFun;
     int decay_dir;
     multi1d<LatticeBoolean> mask;
     multi1d<LatticeColorMatrix> fld;

@@ -1,0 +1,32 @@
+#ifndef enum_heatbatbtype_io_h
+#define enum_heatbatbtype_io_h
+
+#include "chromabase.h"
+#include <string>
+#include "singleton.h"
+#include "io/enum_io/enum_type_map.h"
+#include "update/heatbath/su3hb.h"
+
+using namespace std;
+using namespace Chroma;
+
+namespace Chroma {
+
+  namespace HeatbathTypeEnv { 
+    extern const bool registered; 
+    const bool registerAll(void);   // Forward declaration
+  }
+
+  // A singleton to hold the typemap
+  typedef SingletonHolder<EnumTypeMap<HeatbathType> > theHeatbathTypeMap;
+
+  // Reader and writer
+
+  //! Read an Fermion Type enum
+  void read(XMLReader& r, const string& path, HeatbathType& t);
+
+  //! Write an Fermion Type enum
+  void write(XMLWriter& w, const string& path, const HeatbathType& t);
+
+};
+#endif

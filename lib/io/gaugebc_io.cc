@@ -1,169 +1,17 @@
 #include "chromabase.h"
-#include "io/bc_io.h"
+#include "io/enum_io/enum_io.h"
 #include "io/gaugebc_io.h"
 #include <string>
 
 using namespace QDP;
 using namespace std;
-
-
-// Read a GaugeBCType_t: hash string to C++ type 
-void read(XMLReader& xml, const string& path, GaugeBCType_t& t)
-{
-  START_CODE();
-
-  string token;
-  try { 
-    read(xml, path, token);
-  }
-  catch(const string& e ) { 
-    QDPIO::cerr << "Caught exception while reading XML: " << e << endl;
-    QDP_abort(1);
-  }
-
-  
-  if (token == "ALL_PERIODIC") { 
-    t = GAUGEBC_ALL_PERIODIC;
-  }
-  else if( token == "SCHROEDINRGER_1LINK" ) { 
-    t = GAUGEBC_SCHROEDINGER_1LINK;
-  }
-  else if( token == "SCHROEDINGER_2LINK" ) { 
-    t = GAUGEBC_SCHROEDINGER_2LINK;
-  }
-  else if( token == "SIMPLE" ) { 
-    t = GAUGEBC_SIMPLE;
-  }
-  else { 
-    QDPIO::cerr << "Token " << token << " is not supported as a GaugeBCType_t" << endl;
-    QDP_abort(1);
-  }
-
-  END_CODE();
-}
-
-// Write out a GaugeBCType_t
-void write(XMLWriter& xml, const string& path, const GaugeBCType_t& t) 
-{
-  START_CODE();
-
-  string token;
-  switch(t) { 
-  case GAUGEBC_ALL_PERIODIC : 
-    token = "ALL_PERIODIC";
-    break;
-  case GAUGEBC_SCHROEDINGER_1LINK:
-    token = "SCHROEDINGER_1LINK";
-    break;
-  case GAUGEBC_SCHROEDINGER_2LINK :
-    token = "SCHROEDINGER_2LINK";
-    break;
-  case GAUGEBC_SIMPLE:
-    token = "SIMPLE";
-    break;
-  default:
-    QDPIO::cerr << "Unsupported GaugeBCType_t " << t << endl;
-    QDP_abort(1);
-  }
-
-  try {
-    write(xml, path, token);
-  }
-  catch( const string& e) { 
-    QDPIO::cerr << "Caught exception writing XML: " << e << endl;
-    QDP_abort(1);
-  }
-  END_CODE();
-}
-
-
-void read(XMLReader& xml, const string& path, SchrFunType_t& t) 
-{
-  START_CODE();
-
-  string token;
-  try { 
-    read(xml, path, token);
-  }
-  catch(const string& e ) { 
-    QDPIO::cerr << "Caught exception while reading XML: " << e << endl;
-    QDP_abort(1);
-  }
-
-
-  if( token == "NONE" ) { 
-    t = SF_NONE;
-  }
-  else if (token == "TRIVIAL" ) { 
-    t = SF_TRIVIAL;
-  }
-  else if (token == "NONPERTURBATIVE" ) { 
-    t = SF_NONPERT;
-  }
-  else if (token == "COUPLING" ) {
-    t = SF_COUPLING;
-  }
-  else if (token == "CHROMOMAGNETIC" ) { 
-    t = SF_CHROMOMAG;
-  }
-  else if (token == "DIRICHLET" ) {
-    t = SF_DIRICHLET;
-  }
-  else {
-    QDPIO::cerr << "Token " << token << " is not a supported SchFunType_t" << endl;
-    QDP_abort(1);
-  }
-
-  END_CODE();
-}
-
-void write(XMLWriter& xml, const string& path, const SchrFunType_t& t)
-{
-
-  START_CODE();
-
-  string token;
-  switch(t) { 
-  case SF_NONE: 
-    token = "NONE";
-    break;
-  case SF_TRIVIAL:
-    token = "TRIVIAL";
-    break;
-  case SF_NONPERT:
-    token = "NONPERTURBATIVE";
-    break;
-  case SF_COUPLING:
-    token = "COUPLING";
-    break;
-  case SF_CHROMOMAG:
-    token = "CHROMOMAGNETIC";
-    break;
-  case SF_DIRICHLET:
-    token = "DIRICHLET";
-    break;
-
-  default:
-    QDPIO::cerr << "Unsupported SchrFunType_t " << t << endl;
-    QDP_abort(1);
-  }
-
-  try {
-    write(xml, path, token);
-  }
-  catch( const string& e) { 
-    QDPIO::cerr << "Caught exception writing XML: " << e << endl;
-    QDP_abort(1);
-  }
-
-  END_CODE();
-}
+using namespace Chroma;
     
 GaugeBCPeriodicParams::GaugeBCPeriodicParams(XMLReader& xml)
 {
   START_CODE();
 
-  GaugeBCType_t my_type;
+  GaugeBCType my_type;
   try { 
     read(xml, "BCType", my_type);
   }
@@ -202,7 +50,7 @@ GaugeBCSimpleParams::GaugeBCSimpleParams(XMLReader& xml)
 {
   START_CODE();
 
-  GaugeBCType_t my_type;
+  GaugeBCType my_type;
   try { 
     read(xml, "BCType", my_type);
   }
@@ -251,7 +99,7 @@ GaugeBCSchrParams::GaugeBCSchrParams(XMLReader& xml)
 {
   START_CODE();
 
-  GaugeBCType_t my_type;
+  GaugeBCType my_type;
   try { 
     read(xml, "BCType", my_type);
   }
@@ -311,7 +159,7 @@ void write(XMLWriter& xml, const string& path, const GaugeBCParamsBase& p)
 {
   START_CODE();
 
-  GaugeBCType_t my_type;
+  GaugeBCType my_type;
 
   my_type = p.getType();
 
@@ -358,7 +206,7 @@ GaugeBCParamsBase* readGaugeBCParams(XMLReader& xml, const string& path)
 
   XMLReader top(xml, path);
 
-  enum GaugeBCType_t bc_type;
+  enum GaugeBCType bc_type;
 
   try { 
     read( top, "BCType", bc_type );

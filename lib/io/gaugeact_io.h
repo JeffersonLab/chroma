@@ -2,17 +2,12 @@
 #define GAUGEACT_IO_H
 
 #include "chromabase.h"
+#include "enum_io/enum_io.h"
 #include <string>
 
 using namespace QDP;
 using namespace std;
-
-enum GaugeActType_t { 
-  GAUGEACT_WILSON
-};
-
-void read(XMLReader& xml, const string&  path, GaugeActType_t& g);
-void write(XMLWriter& xml, const string& path, const GaugeActType_t& g);
+using namespace Chroma;
 
 class GaugeActParamsBase {
  public:
@@ -23,7 +18,7 @@ class GaugeActParamsBase {
   virtual GaugeActParamsBase* clone(void) const = 0;
 
   // get Type
-  virtual GaugeActType_t getType(void) const =0;
+  virtual GaugeActType getType(void) const =0;
 };
 
 GaugeActParamsBase* readGaugeActParams(XMLReader& xml, const string& path);

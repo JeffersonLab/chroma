@@ -1,5 +1,5 @@
 
-// $Id: io.h,v 1.17 2004-09-08 02:48:26 edwards Exp $
+// $Id: io.h,v 1.18 2004-09-22 17:24:59 bjoo Exp $
 
 #ifndef __io_h__
 #define __io_h__
@@ -15,6 +15,8 @@
  *
  * Readers and writers of gauge fields and propagators
  */
+
+#include "enum_io/enum_io.h"
 
 #include "readszin.h"
 #include "qprop_io.h"

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: invtype.h,v 1.6 2004-09-08 02:45:50 edwards Exp $
+// $Id: invtype.h,v 1.7 2004-09-22 17:24:59 bjoo Exp $
 
 /*! @file
  * @brief Types of inverters
@@ -8,11 +8,13 @@
 #ifndef __invtype_h__
 #define __invtype_h__
 
+
 namespace Chroma
 {
+
   //! Types of inverters
   enum InvType {
-    CG_INVERTER = 21, 
+    CG_INVERTER = 21,
     MR_INVERTER = 22,
     BICG_INVERTER = 23,
     CR_INVERTER = 24,
@@ -23,6 +25,7 @@ namespace Chroma
     REL_GMRESR_CG_INVERTER = 29,
     BICGSTAB_INVERTER = 30
   };
+
 
   //! Parameters for inverter
   struct InvertParam_t

@@ -6,54 +6,11 @@
 using namespace QDP;
 using namespace std;
 
-void read(XMLReader& xml, const string& path, GaugeActType_t& g)
-{
-  string token;
-
-  try { 
-    read(xml, path, token);
-  }
-  catch(const string& e) { 
-    QDPIO::cerr << "Caught exception reading XML: " << e << endl;
-    QDP_abort(1);
-  }
-
-  if ( token == "WILSON_GAUGE" ) { 
-    g = GAUGEACT_WILSON;
-  }
-  else { 
-    QDPIO::cerr << "Unknown gauge action " << token << endl;
-    QDP_abort(1);
-  }
-}
-
-void write(XMLWriter& xml, const string& path, const GaugeActType_t& g) 
-{
-  string token;
-
-  switch(g) { 
-  case GAUGEACT_WILSON:
-    token = "WILSON_GAUGE" ;
-    break;
-  default:
-    QDPIO::cerr << "Unsupported GaugeActType_t: " << g << endl;
-    QDP_abort(1);
-  }
-
-  try { 
-    write(xml, path, token);
-  }
-  catch(const string& e) { 
-    QDPIO::cerr << "Caught exception writing XML " << e << endl;
-    QDP_abort(1);
-  }
-}
-
 GaugeActParamsBase* readGaugeActParams(XMLReader& xml, const string& path)
 {
   XMLReader top(xml, path);
 
-  GaugeActType_t my_type;
+  GaugeActType my_type;
 
   try { 
     read(top, "./GaugeAct", my_type);
@@ -64,11 +21,11 @@ GaugeActParamsBase* readGaugeActParams(XMLReader& xml, const string& path)
   }
 
   switch(my_type) { 
-  case GAUGEACT_WILSON:
+  case GAUGE_ACT_TYPE_WILSON:
     return new WilsonGaugeActParams(top);
     break;
   default:
-    QDPIO::cerr << "Unknown GaugeActType_t " << my_type << endl;
+    QDPIO::cerr << "Unknown GaugeActType " << my_type << endl;
     QDP_abort(1);
   }
 
@@ -77,10 +34,10 @@ GaugeActParamsBase* readGaugeActParams(XMLReader& xml, const string& path)
 
 void write(XMLWriter& xml, const string& path, const GaugeActParamsBase& p) 
 {
-  GaugeActType_t my_type = p.getType();
+  GaugeActType my_type = p.getType();
 
   switch(my_type) {
-  case GAUGEACT_WILSON: 
+  case GAUGE_ACT_TYPE_WILSON: 
     {
       const WilsonGaugeActParams& pp = 
 	dynamic_cast<const WilsonGaugeActParams&>(p);
@@ -89,7 +46,7 @@ void write(XMLWriter& xml, const string& path, const GaugeActParamsBase& p)
     }
     break;
   default:
-    QDPIO::cerr << "Unknown GaugeActType_t " << my_type << endl;
+    QDPIO::cerr << "Unknown GaugeActType " << my_type << endl;
     QDP_abort(1);
   }
 }

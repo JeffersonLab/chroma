@@ -7,7 +7,7 @@ GaugeAction* getGaugeActFromParams(Handle< GaugeBC > gbc,
 				   const GaugeActParamsBase& b)
 {
   switch(b.getType()) {
-  case GAUGEACT_WILSON:
+  case GAUGE_ACT_TYPE_WILSON:
     {
       const WilsonGaugeActParams& w_p = 
 	dynamic_cast<const WilsonGaugeActParams&>(b);

@@ -2,37 +2,14 @@
 #define GAUGE_BC_IO_H
 
 #include "chromabase.h"
-
+#include "enum_io/enum_io.h"
 #include <string>
 
 using namespace QDP;
 using namespace std;
 
-// Supported Gauge BC types
-enum GaugeBCType_t { 
-  GAUGEBC_ALL_PERIODIC, 
-  GAUGEBC_SCHROEDINGER_1LINK,
-  GAUGEBC_SCHROEDINGER_2LINK,
-  GAUGEBC_SIMPLE 
-};
+using namespace Chroma;
 
-// Read and write the GaugeBCType
-void read(XMLReader& xml, const string& path, GaugeBCType_t& t);
-void write(XMLWriter& xml, const string& path, const GaugeBCType_t& t);
-
-// Read and write teh SchrFunType_t
-//! Schroedinger Functional type Boundary Conditions
-enum SchrFunType_t {
-  SF_NONE = 0, 
-  SF_TRIVIAL = 1,
-  SF_NONPERT = 2,
-  SF_COUPLING = 3,
-  SF_CHROMOMAG = 4,
-  SF_DIRICHLET = 10,
-};
-
-void read(XMLReader& xml, const string& path, SchrFunType_t& t);
-void write(XMLWriter& xml, const string& path, const SchrFunType_t& t);
 
 
 // Base class
@@ -45,7 +22,7 @@ class GaugeBCParamsBase {
   virtual GaugeBCParamsBase* clone(void) const = 0;
 
   // get type
-  virtual GaugeBCType_t getType(void) const = 0;
+  virtual GaugeBCType getType(void) const = 0;
 
 };
 
@@ -66,7 +43,7 @@ class GaugeBCPeriodicParams : public GaugeBCParamsBase {
     return new GaugeBCPeriodicParams(*this);
   }
   // get type
-  GaugeBCType_t getType(void) const { 
+  GaugeBCType getType(void) const { 
     return GAUGEBC_ALL_PERIODIC;
   }
 };
@@ -88,7 +65,7 @@ class GaugeBCSimpleParams : public GaugeBCParamsBase {
   }
 
   // get type
-  GaugeBCType_t getType(void) const {
+  GaugeBCType getType(void) const {
     return GAUGEBC_SIMPLE;
   }
 
@@ -115,16 +92,16 @@ public:
     return new GaugeBCSchrParams(*this);
   }
   
-  GaugeBCType_t getType(void) const { 
+  GaugeBCType getType(void) const { 
     return type_t;
   }
 
-  SchrFunType_t getSchrFun(void) const { return SchrFun; }
+  SchrFunType getSchrFun(void) const { return SchrFun; }
   const Real& getSchrPhiMult(void) const { return SchrPhiMult; }
 private:
-  SchrFunType_t SchrFun;
+  SchrFunType SchrFun;
   Real SchrPhiMult;
-  GaugeBCType_t type_t;
+  GaugeBCType type_t;
 
 };
 

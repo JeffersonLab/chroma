@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.231 2004-09-19 02:34:31 edwards Exp $
+# $Id: Makefile.in,v 1.232 2004-09-22 17:24:59 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -191,7 +191,7 @@ host_triplet = @host@
 @BUILD_STAGGERED_LIBS_TRUE@	asqtad_fermact_s.cc asqtad_mdagm_s.cc staggered_qprop.cc stag_phases_s.cc
 
 #VPATH += $(TOPDIR)/lib/geom
-VPATH = $(TOPDIR) $(TOPDIR)/lib $(TOPDIR)/lib/actions $(TOPDIR)/lib/actions/boson $(TOPDIR)/lib/actions/boson/operator $(TOPDIR)/lib/actions/ferm $(TOPDIR)/lib/actions/ferm/dsdu $(TOPDIR)/lib/actions/ferm/fermacts $(TOPDIR)/lib/actions/ferm/invert $(TOPDIR)/lib/actions/ferm/linop $(TOPDIR)/lib/actions/ferm/qprop $(TOPDIR)/lib/actions/gauge $(TOPDIR)/lib/io $(TOPDIR)/lib/meas $(TOPDIR)/lib/meas/eig $(TOPDIR)/lib/meas/gfix $(TOPDIR)/lib/meas/glue $(TOPDIR)/lib/meas/hadron $(TOPDIR)/lib/meas/pbp $(TOPDIR)/lib/meas/schrfun $(TOPDIR)/lib/meas/smear $(TOPDIR)/lib/meas/sources $(TOPDIR)/lib/update $(TOPDIR)/lib/update/heatbath $(TOPDIR)/lib/update/molecdyn $(TOPDIR)/lib/update/molecdyn/est $(TOPDIR)/lib/update/molecdyn/mese $(TOPDIR)/lib/update/molecdyn/noise $(TOPDIR)/lib/update/molecdyn/step $(TOPDIR)/lib/util $(TOPDIR)/lib/util/ferm $(TOPDIR)/lib/util/ft $(TOPDIR)/lib/util/gauge $(TOPDIR)/lib/util/info $(TOPDIR)/mainprogs $(TOPDIR)/mainprogs/main $(TOPDIR)/mainprogs/tests $(TOPDIR)/root
+VPATH = $(TOPDIR) $(TOPDIR)/lib $(TOPDIR)/lib/actions $(TOPDIR)/lib/actions/boson $(TOPDIR)/lib/actions/boson/operator $(TOPDIR)/lib/actions/ferm $(TOPDIR)/lib/actions/ferm/dsdu $(TOPDIR)/lib/actions/ferm/fermacts $(TOPDIR)/lib/actions/ferm/invert $(TOPDIR)/lib/actions/ferm/linop $(TOPDIR)/lib/actions/ferm/qprop $(TOPDIR)/lib/actions/gauge $(TOPDIR)/lib/io $(TOPDIR)/lib/io/enum_io $(TOPDIR)/lib/meas $(TOPDIR)/lib/meas/eig $(TOPDIR)/lib/meas/gfix $(TOPDIR)/lib/meas/glue $(TOPDIR)/lib/meas/hadron $(TOPDIR)/lib/meas/pbp $(TOPDIR)/lib/meas/schrfun $(TOPDIR)/lib/meas/smear $(TOPDIR)/lib/meas/sources $(TOPDIR)/lib/update $(TOPDIR)/lib/update/heatbath $(TOPDIR)/lib/update/molecdyn $(TOPDIR)/lib/update/molecdyn/est $(TOPDIR)/lib/update/molecdyn/mese $(TOPDIR)/lib/update/molecdyn/noise $(TOPDIR)/lib/update/molecdyn/step $(TOPDIR)/lib/util $(TOPDIR)/lib/util/ferm $(TOPDIR)/lib/util/ft $(TOPDIR)/lib/util/gauge $(TOPDIR)/lib/util/info $(TOPDIR)/mainprogs $(TOPDIR)/mainprogs/main $(TOPDIR)/mainprogs/tests $(TOPDIR)/root
 ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
@@ -337,11 +337,31 @@ nobase_include_HEADERS = \
 	actions/ferm/linop/lmdagm.h actions/ferm/linop/lopscl.h \
 	actions/ferm/linop/partrat.h actions/ferm/qprop/qprop.h \
 	actions/gauge/gauge.h \
-	io/io.h io/eigen_io.h \
+	io/io.h \
+	io/enum_io/enum_io.h \
+	io/enum_io/enum_type_map.h \
+	io/enum_io/enum_cfgtype_io.h \
+	io/enum_io/enum_coeffs_io.h \
+	io/enum_io/enum_proptype_io.h \
+	io/enum_io/enum_eigenvectype_io.h \
+	io/enum_io/enum_fermtype_io.h \
+	io/enum_io/enum_fermacttype_io.h \
+	io/enum_io/enum_seqsrctype_io.h \
+	io/enum_io/enum_simplebctype_io.h \
+	io/enum_io/enum_gaugeacttype_io.h \
+	io/enum_io/enum_invtype_io.h \
+	io/enum_io/enum_wvfkind_io.h \
+	io/enum_io/enum_qdpvolfmt_io.h \
+	io/enum_io/enum_srcsnktype_io.h \
+	io/enum_io/enum_wavetype_io.h \
+	io/enum_io/enum_heatbathtype_io.h \
+	io/enum_io/enum_gaugebc_io.h \
+	io/enum_io/enum_md_integrator_type_io.h \
+        io/eigen_io.h \
 	io/gauge_io.h io/kyugauge_io.h  \
         io/milc_io.h io/param_io.h io/qprop_io.h io/readmilc.h \
 	io/readszin.h io/szin_io.h io/writemilc.h io/writeszin.h \
-	io/bc_io.h io/gaugebc_io.h  io/gaugeact_io.h io/wilson_gaugeact_io.h \
+        io/gaugebc_io.h  io/gaugeact_io.h io/wilson_gaugeact_io.h \
 	io/mc_io.h io/md_io.h io/pg_hmc_io.h \
 	meas/eig/eig.h meas/eig/gramschm.h meas/eig/gramschm_array.h \
 	meas/eig/ritz.h meas/eig/ritz_array.h meas/eig/sn_jacob.h \
@@ -417,6 +437,14 @@ libchroma_a_SOURCES = gauge_startup.cc gaugebc_utils.cc gaugeact_utils.cc \
 	       hotst.cc expm12.cc \
                expmat.cc expsu3.cc mesplq.cc polylp.cc reunit.cc unit_check.cc \
                sftmom.cc srcfil.cc \
+	       enum_cfgtype_io.cc \
+	       enum_coeffs_io.cc enum_proptype_io.cc enum_eigenvectype_io.cc \
+	       enum_fermtype_io.cc enum_fermacttype_io.h enum_seqsrctype_io.cc \
+	       enum_simplebctype_io.cc enum_gaugeacttype_io.cc \
+	       enum_invtype_io.cc enum_wvfkind_io.cc enum_qdpvolfmt_io.cc\
+	       enum_srcsnktype_io.cc enum_wavetype_io.cc \
+	       enum_heatbathtype_io.cc enum_gaugebc_io.cc \
+	       enum_md_integrator_type_io.cc \
                szin_io.cc readszin.cc writeszin.cc su3proj.cc sun_proj.cc \
                gaus_smear.cc hyp_smear.cc ape_smear.cc fuzz_smear.cc \
                klein_gord.cc laplacian.cc displacement.cc sink_smear2.cc \
@@ -436,7 +464,7 @@ libchroma_a_SOURCES = gauge_startup.cc gaugebc_utils.cc gaugeact_utils.cc \
 	       inv_rel_gmresr_cg.cc inv_gmresr_cg_array.cc \
 	       inv_minres_array.cc wilson_gaugeact.cc \
                su3over.cc su3hb.cc \
-	       bc_io.cc gaugebc_io.cc gaugeact_io.cc wilson_gaugeact_io.cc \
+	       gaugebc_io.cc gaugeact_io.cc wilson_gaugeact_io.cc \
 	       mc_io.cc md_io.cc pg_hmc_io.cc\
 $(am__append_5) $(am__append_7) $(am__append_9) $(am__append_11) $(am__append_12)
 subdir = lib
@@ -450,22 +478,29 @@ libchroma_a_LIBADD =
 am__libchroma_a_SOURCES_DIST = gauge_startup.cc gaugebc_utils.cc \
 	gaugeact_utils.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
 	expmat.cc expsu3.cc mesplq.cc polylp.cc reunit.cc unit_check.cc \
-	sftmom.cc srcfil.cc szin_io.cc readszin.cc writeszin.cc \
-	su3proj.cc sun_proj.cc gaus_smear.cc hyp_smear.cc ape_smear.cc \
-	fuzz_smear.cc klein_gord.cc laplacian.cc displacement.cc \
-	sink_smear2.cc su2extract.cc sunfill.cc invcg1.cc \
-	inv_rel_cg1.cc invcg2.cc inv_rel_cg2.cc invcg1_array.cc \
-	invcg2_array.cc invcg2_timing_hacks.cc minvcg.cc minv_rel_cg.cc \
-	qprop_io.cc eigen_io.cc stoch_var.cc z2_src.cc gauge_io.cc \
-	milc_io.cc readmilc.cc writemilc.cc axgauge.cc coulgauge.cc \
-	grelax.cc polar_dec.cc rot_colvec.cc transf.cc param_io.cc \
-	gramschm.cc gramschm_array.cc ritz.cc ritz_array.cc sn_jacob.cc \
-	sn_jacob_array.cc eig_spec.cc eig_spec_array.cc proginfo.cc \
-	printgeom.cc fuzwilp.cc wilslp.cc invsumr.cc minvsumr.cc \
-	inv_rel_sumr.cc minv_rel_sumr.cc invbicgstab.cc \
-	invbicgstab_array.cc inv_rel_gmresr_sumr.cc \
+	sftmom.cc srcfil.cc enum_cfgtype_io.cc enum_coeffs_io.cc \
+	enum_proptype_io.cc enum_eigenvectype_io.cc enum_fermtype_io.cc \
+	enum_fermacttype_io.h enum_seqsrctype_io.cc \
+	enum_simplebctype_io.cc enum_gaugeacttype_io.cc \
+	enum_invtype_io.cc enum_wvfkind_io.cc enum_qdpvolfmt_io.cc \
+	enum_srcsnktype_io.cc enum_wavetype_io.cc \
+	enum_heatbathtype_io.cc enum_gaugebc_io.cc \
+	enum_md_integrator_type_io.cc szin_io.cc readszin.cc \
+	writeszin.cc su3proj.cc sun_proj.cc gaus_smear.cc hyp_smear.cc \
+	ape_smear.cc fuzz_smear.cc klein_gord.cc laplacian.cc \
+	displacement.cc sink_smear2.cc su2extract.cc sunfill.cc \
+	invcg1.cc inv_rel_cg1.cc invcg2.cc inv_rel_cg2.cc \
+	invcg1_array.cc invcg2_array.cc invcg2_timing_hacks.cc \
+	minvcg.cc minv_rel_cg.cc qprop_io.cc eigen_io.cc stoch_var.cc \
+	z2_src.cc gauge_io.cc milc_io.cc readmilc.cc writemilc.cc \
+	axgauge.cc coulgauge.cc grelax.cc polar_dec.cc rot_colvec.cc \
+	transf.cc param_io.cc gramschm.cc gramschm_array.cc ritz.cc \
+	ritz_array.cc sn_jacob.cc sn_jacob_array.cc eig_spec.cc \
+	eig_spec_array.cc proginfo.cc printgeom.cc fuzwilp.cc wilslp.cc \
+	invsumr.cc minvsumr.cc inv_rel_sumr.cc minv_rel_sumr.cc \
+	invbicgstab.cc invbicgstab_array.cc inv_rel_gmresr_sumr.cc \
 	inv_rel_gmresr_cg.cc inv_gmresr_cg_array.cc inv_minres_array.cc \
-	wilson_gaugeact.cc su3over.cc su3hb.cc bc_io.cc gaugebc_io.cc \
+	wilson_gaugeact.cc su3over.cc su3hb.cc gaugebc_io.cc \
 	gaugeact_io.cc wilson_gaugeact_io.cc mc_io.cc md_io.cc \
 	pg_hmc_io.cc baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
 	loops_w.cc tdiractodr.cc diractodr.cc paulitodr.cc \
@@ -612,23 +647,31 @@ am_libchroma_a_OBJECTS = gauge_startup.$(OBJEXT) gaugebc_utils.$(OBJEXT) \
 	hotst.$(OBJEXT) expm12.$(OBJEXT) expmat.$(OBJEXT) \
 	expsu3.$(OBJEXT) mesplq.$(OBJEXT) polylp.$(OBJEXT) \
 	reunit.$(OBJEXT) unit_check.$(OBJEXT) sftmom.$(OBJEXT) \
-	srcfil.$(OBJEXT) szin_io.$(OBJEXT) readszin.$(OBJEXT) \
-	writeszin.$(OBJEXT) su3proj.$(OBJEXT) sun_proj.$(OBJEXT) \
-	gaus_smear.$(OBJEXT) hyp_smear.$(OBJEXT) ape_smear.$(OBJEXT) \
-	fuzz_smear.$(OBJEXT) klein_gord.$(OBJEXT) laplacian.$(OBJEXT) \
-	displacement.$(OBJEXT) sink_smear2.$(OBJEXT) \
-	su2extract.$(OBJEXT) sunfill.$(OBJEXT) invcg1.$(OBJEXT) \
-	inv_rel_cg1.$(OBJEXT) invcg2.$(OBJEXT) inv_rel_cg2.$(OBJEXT) \
-	invcg1_array.$(OBJEXT) invcg2_array.$(OBJEXT) \
-	invcg2_timing_hacks.$(OBJEXT) minvcg.$(OBJEXT) \
-	minv_rel_cg.$(OBJEXT) qprop_io.$(OBJEXT) eigen_io.$(OBJEXT) \
-	stoch_var.$(OBJEXT) z2_src.$(OBJEXT) gauge_io.$(OBJEXT) \
-	milc_io.$(OBJEXT) readmilc.$(OBJEXT) writemilc.$(OBJEXT) \
-	axgauge.$(OBJEXT) coulgauge.$(OBJEXT) grelax.$(OBJEXT) \
-	polar_dec.$(OBJEXT) rot_colvec.$(OBJEXT) transf.$(OBJEXT) \
-	param_io.$(OBJEXT) gramschm.$(OBJEXT) gramschm_array.$(OBJEXT) \
-	ritz.$(OBJEXT) ritz_array.$(OBJEXT) sn_jacob.$(OBJEXT) \
-	sn_jacob_array.$(OBJEXT) eig_spec.$(OBJEXT) \
+	srcfil.$(OBJEXT) enum_cfgtype_io.$(OBJEXT) \
+	enum_coeffs_io.$(OBJEXT) enum_proptype_io.$(OBJEXT) \
+	enum_eigenvectype_io.$(OBJEXT) enum_fermtype_io.$(OBJEXT) \
+	enum_seqsrctype_io.$(OBJEXT) enum_simplebctype_io.$(OBJEXT) \
+	enum_gaugeacttype_io.$(OBJEXT) enum_invtype_io.$(OBJEXT) \
+	enum_wvfkind_io.$(OBJEXT) enum_qdpvolfmt_io.$(OBJEXT) \
+	enum_srcsnktype_io.$(OBJEXT) enum_wavetype_io.$(OBJEXT) \
+	enum_heatbathtype_io.$(OBJEXT) enum_gaugebc_io.$(OBJEXT) \
+	enum_md_integrator_type_io.$(OBJEXT) szin_io.$(OBJEXT) \
+	readszin.$(OBJEXT) writeszin.$(OBJEXT) su3proj.$(OBJEXT) \
+	sun_proj.$(OBJEXT) gaus_smear.$(OBJEXT) hyp_smear.$(OBJEXT) \
+	ape_smear.$(OBJEXT) fuzz_smear.$(OBJEXT) klein_gord.$(OBJEXT) \
+	laplacian.$(OBJEXT) displacement.$(OBJEXT) \
+	sink_smear2.$(OBJEXT) su2extract.$(OBJEXT) sunfill.$(OBJEXT) \
+	invcg1.$(OBJEXT) inv_rel_cg1.$(OBJEXT) invcg2.$(OBJEXT) \
+	inv_rel_cg2.$(OBJEXT) invcg1_array.$(OBJEXT) \
+	invcg2_array.$(OBJEXT) invcg2_timing_hacks.$(OBJEXT) \
+	minvcg.$(OBJEXT) minv_rel_cg.$(OBJEXT) qprop_io.$(OBJEXT) \
+	eigen_io.$(OBJEXT) stoch_var.$(OBJEXT) z2_src.$(OBJEXT) \
+	gauge_io.$(OBJEXT) milc_io.$(OBJEXT) readmilc.$(OBJEXT) \
+	writemilc.$(OBJEXT) axgauge.$(OBJEXT) coulgauge.$(OBJEXT) \
+	grelax.$(OBJEXT) polar_dec.$(OBJEXT) rot_colvec.$(OBJEXT) \
+	transf.$(OBJEXT) param_io.$(OBJEXT) gramschm.$(OBJEXT) \
+	gramschm_array.$(OBJEXT) ritz.$(OBJEXT) ritz_array.$(OBJEXT) \
+	sn_jacob.$(OBJEXT) sn_jacob_array.$(OBJEXT) eig_spec.$(OBJEXT) \
 	eig_spec_array.$(OBJEXT) proginfo.$(OBJEXT) printgeom.$(OBJEXT) \
 	fuzwilp.$(OBJEXT) wilslp.$(OBJEXT) invsumr.$(OBJEXT) \
 	minvsumr.$(OBJEXT) inv_rel_sumr.$(OBJEXT) \
@@ -636,11 +679,11 @@ am_libchroma_a_OBJECTS = gauge_startup.$(OBJEXT) gaugebc_utils.$(OBJEXT) \
 	invbicgstab_array.$(OBJEXT) inv_rel_gmresr_sumr.$(OBJEXT) \
 	inv_rel_gmresr_cg.$(OBJEXT) inv_gmresr_cg_array.$(OBJEXT) \
 	inv_minres_array.$(OBJEXT) wilson_gaugeact.$(OBJEXT) \
-	su3over.$(OBJEXT) su3hb.$(OBJEXT) bc_io.$(OBJEXT) \
-	gaugebc_io.$(OBJEXT) gaugeact_io.$(OBJEXT) \
-	wilson_gaugeact_io.$(OBJEXT) mc_io.$(OBJEXT) md_io.$(OBJEXT) \
-	pg_hmc_io.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
-	$(am__objects_3) $(am__objects_4) $(am__objects_5)
+	su3over.$(OBJEXT) su3hb.$(OBJEXT) gaugebc_io.$(OBJEXT) \
+	gaugeact_io.$(OBJEXT) wilson_gaugeact_io.$(OBJEXT) \
+	mc_io.$(OBJEXT) md_io.$(OBJEXT) pg_hmc_io.$(OBJEXT) \
+	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
+	$(am__objects_4) $(am__objects_5)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I.
@@ -655,16 +698,32 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/axgauge.Po ./$(DEPDIR)/barcomp_io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/barcomp_w.Po ./$(DEPDIR)/barhqlq_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/barseqsrc_w.Po ./$(DEPDIR)/baryon_s.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/baryon_w.Po ./$(DEPDIR)/bc_io.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/coulgauge.Po ./$(DEPDIR)/curcor2_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/d_src_w.Po ./$(DEPDIR)/diractodr.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/baryon_w.Po ./$(DEPDIR)/coulgauge.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/curcor2_w.Po ./$(DEPDIR)/d_src_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/diractodr.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/displacement.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/dwf_quarkprop4_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/dwffld_w.Po ./$(DEPDIR)/eig_spec.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/eig_spec_array.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/eigen_io.Po ./$(DEPDIR)/expm12.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/expmat.Po ./$(DEPDIR)/expsu3.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/fat7_links_s.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/eigen_io.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/enum_cfgtype_io.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/enum_coeffs_io.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/enum_eigenvectype_io.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/enum_fermtype_io.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/enum_gaugeacttype_io.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/enum_gaugebc_io.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/enum_heatbathtype_io.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/enum_invtype_io.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/enum_md_integrator_type_io.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/enum_proptype_io.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/enum_qdpvolfmt_io.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/enum_seqsrctype_io.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/enum_simplebctype_io.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/enum_srcsnktype_io.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/enum_wavetype_io.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/enum_wvfkind_io.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/expm12.Po ./$(DEPDIR)/expmat.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/expsu3.Po ./$(DEPDIR)/fat7_links_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ferm_refresh.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/fermact_qprop.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/fermact_qprop_array.Po \
@@ -797,6 +856,10 @@ CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 DIST_SOURCES = $(am__libchroma_a_SOURCES_DIST)
 HEADERS = $(nobase_include_HEADERS) $(nodist_include_HEADERS)
 
@@ -889,7 +952,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/barseqsrc_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/baryon_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/baryon_w.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bc_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/coulgauge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/curcor2_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/d_src_w.Po@am__quote@
@@ -900,6 +962,22 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eig_spec.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eig_spec_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eigen_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_cfgtype_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_coeffs_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_eigenvectype_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_fermtype_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_gaugeacttype_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_gaugebc_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_heatbathtype_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_invtype_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_md_integrator_type_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_proptype_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_qdpvolfmt_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_seqsrctype_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_simplebctype_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_srcsnktype_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_wavetype_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_wvfkind_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/expm12.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/expmat.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/expsu3.Po@am__quote@
@@ -1210,7 +1288,7 @@ top_distdir = ..
 distdir = $(top_distdir)/$(PACKAGE)-$(VERSION)
 
 distdir: $(DISTFILES)
-	$(mkinstalldirs) $(distdir)/actions $(distdir)/actions/boson $(distdir)/actions/boson/operator $(distdir)/actions/ferm $(distdir)/actions/ferm/fermacts $(distdir)/actions/ferm/invert $(distdir)/actions/ferm/linop $(distdir)/actions/ferm/qprop $(distdir)/actions/gauge $(distdir)/io $(distdir)/meas $(distdir)/meas/eig $(distdir)/meas/gfix $(distdir)/meas/glue $(distdir)/meas/hadron $(distdir)/meas/pbp $(distdir)/meas/schrfun $(distdir)/meas/smear $(distdir)/meas/sources $(distdir)/update $(distdir)/update/heatbath $(distdir)/update/molecdyn $(distdir)/util $(distdir)/util/ferm $(distdir)/util/ft $(distdir)/util/gauge $(distdir)/util/info
+	$(mkinstalldirs) $(distdir)/actions $(distdir)/actions/boson $(distdir)/actions/boson/operator $(distdir)/actions/ferm $(distdir)/actions/ferm/fermacts $(distdir)/actions/ferm/invert $(distdir)/actions/ferm/linop $(distdir)/actions/ferm/qprop $(distdir)/actions/gauge $(distdir)/io $(distdir)/io/enum_io $(distdir)/meas $(distdir)/meas/eig $(distdir)/meas/gfix $(distdir)/meas/glue $(distdir)/meas/hadron $(distdir)/meas/pbp $(distdir)/meas/schrfun $(distdir)/meas/smear $(distdir)/meas/sources $(distdir)/update $(distdir)/update/heatbath $(distdir)/update/molecdyn $(distdir)/util $(distdir)/util/ferm $(distdir)/util/ft $(distdir)/util/gauge $(distdir)/util/info
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \

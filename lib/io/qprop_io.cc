@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 1.23 2004-09-09 04:03:10 edwards Exp $
+// $Id: qprop_io.cc,v 1.24 2004-09-22 17:24:59 bjoo Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -8,8 +8,8 @@
 #include "io/qprop_io.h"
 
 #include <string>
-using std::string;
-
+using namespace std;
+using namespace Chroma;
 
 // Initialize header with default values
 void initHeader(PropSource_t& header)

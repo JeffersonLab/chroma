@@ -2,7 +2,7 @@
 #define WILSON_GAUGEACT_IO_H
 
 #include "chromabase.h"
-#include "gaugeact_io.h"
+#include "io/gaugeact_io.h"
 
 #include <string>
 
@@ -20,8 +20,8 @@ public:
     return new WilsonGaugeActParams(*this);
   }
 
-  GaugeActType_t getType(void) const { 
-    return GAUGEACT_WILSON;
+  GaugeActType getType(void) const { 
+    return GAUGE_ACT_TYPE_WILSON;
   }
 
   const Real& getBeta(void) const { 

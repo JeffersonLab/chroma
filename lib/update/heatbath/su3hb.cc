@@ -1,4 +1,4 @@
-// $Id: su3hb.cc,v 1.4 2004-08-07 03:26:23 edwards Exp $
+// $Id: su3hb.cc,v 1.5 2004-09-22 17:25:01 bjoo Exp $
 /*! \file
  *  \brief Do one SU(2) subgroup heatbath update of SU(Nc) matrix U with action
  */
@@ -26,14 +26,13 @@ using namespace QDP;
  * \param nfails     total number of failed trials ( Write ) 
  * \param sub        Subset for updating ( Read )
  */
-
 void su3hb(LatticeColorMatrix& u,
-	   const LatticeColorMatrix& w,
-	   int su2_index,
-	   int nheat,
-	   int& ntrials,
-	   int& nfails,
-	   HeatbathType algorithm,
+	     const LatticeColorMatrix& w,
+	     int su2_index,
+	     int nheat,
+	     int& ntrials,
+	     int& nfails,
+	     HeatbathType algorithm,
 	   const OrderedSubset& sub)
 {
   START_CODE();

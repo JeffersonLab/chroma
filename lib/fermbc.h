@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermbc.h,v 1.6 2004-09-08 02:45:50 edwards Exp $
+// $Id: fermbc.h,v 1.7 2004-09-22 17:24:59 bjoo Exp $
 /*! @file
  * @brief Fermion action boundary conditions
  */
@@ -133,7 +133,7 @@ namespace Chroma
       {gbc = a.gbc; mask = a.mask; fld = a.fld; return *this;}
 
     //! Type of Schroedinger BC
-    SchrFunType_t getSFermBC() const {return SchrFun;}
+    SchrFunType getSFermBC() const {return SchrFun;}
 
     //! Modify U fields in place
     void modifyU(multi1d<LatticeColorMatrix>& u) const

@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.166 2004-09-19 02:33:42 edwards Exp $
+# $Id: Makefile.am,v 1.167 2004-09-22 17:24:58 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -19,6 +19,7 @@ VPATH += $(TOPDIR)/lib/actions/ferm/qprop
 VPATH += $(TOPDIR)/lib/actions/gauge
 #VPATH += $(TOPDIR)/lib/geom
 VPATH += $(TOPDIR)/lib/io
+VPATH += $(TOPDIR)/lib/io/enum_io
 VPATH += $(TOPDIR)/lib/meas
 VPATH += $(TOPDIR)/lib/meas/eig
 VPATH += $(TOPDIR)/lib/meas/gfix
@@ -84,11 +85,31 @@ nobase_include_HEADERS = \
 	actions/ferm/linop/lmdagm.h actions/ferm/linop/lopscl.h \
 	actions/ferm/linop/partrat.h actions/ferm/qprop/qprop.h \
 	actions/gauge/gauge.h \
-	io/io.h io/eigen_io.h \
+	io/io.h \
+	io/enum_io/enum_io.h \
+	io/enum_io/enum_type_map.h \
+	io/enum_io/enum_cfgtype_io.h \
+	io/enum_io/enum_coeffs_io.h \
+	io/enum_io/enum_proptype_io.h \
+	io/enum_io/enum_eigenvectype_io.h \
+	io/enum_io/enum_fermtype_io.h \
+	io/enum_io/enum_fermacttype_io.h \
+	io/enum_io/enum_seqsrctype_io.h \
+	io/enum_io/enum_simplebctype_io.h \
+	io/enum_io/enum_gaugeacttype_io.h \
+	io/enum_io/enum_invtype_io.h \
+	io/enum_io/enum_wvfkind_io.h \
+	io/enum_io/enum_qdpvolfmt_io.h \
+	io/enum_io/enum_srcsnktype_io.h \
+	io/enum_io/enum_wavetype_io.h \
+	io/enum_io/enum_heatbathtype_io.h \
+	io/enum_io/enum_gaugebc_io.h \
+	io/enum_io/enum_md_integrator_type_io.h \
+        io/eigen_io.h \
 	io/gauge_io.h io/kyugauge_io.h  \
         io/milc_io.h io/param_io.h io/qprop_io.h io/readmilc.h \
 	io/readszin.h io/szin_io.h io/writemilc.h io/writeszin.h \
-	io/bc_io.h io/gaugebc_io.h  io/gaugeact_io.h io/wilson_gaugeact_io.h \
+        io/gaugebc_io.h  io/gaugeact_io.h io/wilson_gaugeact_io.h \
 	io/mc_io.h io/md_io.h io/pg_hmc_io.h \
 	meas/eig/eig.h meas/eig/gramschm.h meas/eig/gramschm_array.h \
 	meas/eig/ritz.h meas/eig/ritz_array.h meas/eig/sn_jacob.h \
@@ -277,6 +298,14 @@ libchroma_a_SOURCES = gauge_startup.cc gaugebc_utils.cc gaugeact_utils.cc \
 	       hotst.cc expm12.cc \
                expmat.cc expsu3.cc mesplq.cc polylp.cc reunit.cc unit_check.cc \
                sftmom.cc srcfil.cc \
+	       enum_cfgtype_io.cc \
+	       enum_coeffs_io.cc enum_proptype_io.cc enum_eigenvectype_io.cc \
+	       enum_fermtype_io.cc enum_fermacttype_io.h enum_seqsrctype_io.cc \
+	       enum_simplebctype_io.cc enum_gaugeacttype_io.cc \
+	       enum_invtype_io.cc enum_wvfkind_io.cc enum_qdpvolfmt_io.cc\
+	       enum_srcsnktype_io.cc enum_wavetype_io.cc \
+	       enum_heatbathtype_io.cc enum_gaugebc_io.cc \
+	       enum_md_integrator_type_io.cc \
                szin_io.cc readszin.cc writeszin.cc su3proj.cc sun_proj.cc \
                gaus_smear.cc hyp_smear.cc ape_smear.cc fuzz_smear.cc \
                klein_gord.cc laplacian.cc displacement.cc sink_smear2.cc \
@@ -296,7 +325,7 @@ libchroma_a_SOURCES = gauge_startup.cc gaugebc_utils.cc gaugeact_utils.cc \
 	       inv_rel_gmresr_cg.cc inv_gmresr_cg_array.cc \
 	       inv_minres_array.cc wilson_gaugeact.cc \
                su3over.cc su3hb.cc \
-	       bc_io.cc gaugebc_io.cc gaugeact_io.cc wilson_gaugeact_io.cc \
+	       gaugebc_io.cc gaugeact_io.cc wilson_gaugeact_io.cc \
 	       mc_io.cc md_io.cc pg_hmc_io.cc
 
 

@@ -4,54 +4,6 @@
 using namespace QDP;
 using namespace std;
 
-void read(XMLReader& xml, const string& path, MDIntegratorType_t& t)
-{
-  string token;
-
-  try { 
-    read(xml, path, token);
-  }
-  catch(const string& e ) {
-    QDPIO::cout << "Caught exception while reading XML " << e << endl;
-    QDP_abort(1);
-  }
-
-  if ( token == "PQP_LEAPFROG" ) { 
-    t = MD_PQP_LEAPFROG;
-  }
-  else if ( token == "QPQ_LEAPFROG" ) { 
-    t = MD_QPQ_LEAPFROG;
-  }
-  else { 
-    QDPIO::cerr << " Unsupported MDIntegratorType_t: " << token << endl;
-    QDP_abort(1);
-  }
-}
-
-void write(XMLWriter& xml, const string& path, const MDIntegratorType_t& t) 
-{
-  string token; 
-  
-  switch( t ) { 
-  case MD_PQP_LEAPFROG: 
-    token = "PQP_LEAPFROG";
-    break;
-  case MD_QPQ_LEAPFROG:
-    token = "QPQ_LEAPFROG";
-    break;
-  default:
-    QDPIO::cerr<< "Unsupported MDIntegratorType_t : " << t << endl;
-    QDP_abort(1);
-  }
-
-  try { 
-    write(xml, path, token);
-  }
-  catch( const string& e ) { 
-    QDPIO::cerr << "Caught exception while writing XML: " << e << endl;
-    QDP_abort(1);
-  }
-}
 
 LeapfrogParams::LeapfrogParams(XMLReader& top) 
 {
@@ -95,7 +47,7 @@ void write(XMLWriter& xml, const string& path, const LeapfrogParams& p)
 
 MDIntegratorParamsBase* readMDIntegratorParams(XMLReader& xml, const string& path)
 {
-  MDIntegratorType_t my_type;
+  MDIntegratorType my_type;
   try {
     XMLReader top(xml, path);
   
@@ -109,7 +61,7 @@ MDIntegratorParamsBase* readMDIntegratorParams(XMLReader& xml, const string& pat
       return new LeapfrogParams(top);
       break;
     default:
-      QDPIO::cerr << "Unsupported MDIntegratorType_t " << my_type << endl;
+      QDPIO::cerr << "Unsupported MDIntegratorType " << my_type << endl;
       QDP_abort(1);
     }
   }
@@ -133,7 +85,7 @@ void write(XMLWriter& xml, const string& path, const MDIntegratorParamsBase& p)
     }
     break;
   default:
-    QDPIO::cerr << "Unknown MDIntegratorType_t: " << p.getType() << endl;
+    QDPIO::cerr << "Unknown MDIntegratorType: " << p.getType() << endl;
     QDP_abort(1);
   }
 }

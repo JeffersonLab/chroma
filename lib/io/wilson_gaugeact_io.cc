@@ -7,7 +7,7 @@ using namespace QDP;
 WilsonGaugeActParams::WilsonGaugeActParams(XMLReader& xml)
 {
 
-  GaugeActType_t my_type;
+  GaugeActType my_type;
   try {
 
     read(xml, "./GaugeAct", my_type);
@@ -17,7 +17,7 @@ WilsonGaugeActParams::WilsonGaugeActParams(XMLReader& xml)
     QDP_abort(1);
   }
 
-  if ( my_type != GAUGEACT_WILSON ) { 
+  if ( my_type != GAUGE_ACT_TYPE_WILSON ) { 
     QDPIO::cerr << "Internal error: WilsonGaugeActParams trying to read wrong kind of params: " << my_type << endl;
     QDP_abort(1);
   }

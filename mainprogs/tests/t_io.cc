@@ -1,4 +1,4 @@
-// $Id: t_io.cc,v 1.9 2004-04-05 19:47:48 edwards Exp $
+// $Id: t_io.cc,v 1.10 2004-09-22 17:25:01 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -6,7 +6,8 @@
 #include "chroma.h"
 
 using namespace QDP;
-
+using namespace Chroma;
+const std::string foo_xml="<?xml version='1.0'?><foo><coeffs1>ZOLOTAREV</coeffs1><coeffs2>TANH</coeffs2></foo>";
 
 int main(int argc, char **argv)
 {
@@ -93,8 +94,33 @@ int main(int argc, char **argv)
     pop(xml_out);
   }
 
-  pop(xml_out);
 
+  CoeffType t1;
+  CoeffType t2;
+  istringstream foo_xml_is(foo_xml);
+  XMLReader fooreader(foo_xml_is);
+
+  try { 
+    read(fooreader, "/foo/coeffs1", t1);
+    read(fooreader, "/foo/coeffs2", t2);
+  }
+  catch(const string& e) { 
+    QDPIO::cerr << "Caught error : " << e << endl;
+    QDP_abort(1);
+  }
+
+  try { 
+    write(xml_out, "coeffs1", t1);
+    write(xml_out, "coeffs2", t2);
+  }
+  catch(const string& e) { 
+    QDPIO::cerr << "Caught error : " << e << endl;
+    QDP_abort(1);
+  }
+
+  pop(xml_out);
+  
+  
   // Time to bolt
   QDP_finalize();
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sink_smear2.h,v 1.1 2004-07-28 00:46:13 edwards Exp $
+// $Id: sink_smear2.h,v 1.2 2004-09-22 17:25:00 bjoo Exp $
 /*! \file
  *  \brief Control routine for types of propagator smearing
  */
@@ -27,6 +27,7 @@
  *                             ( Read )
  *  \param j_decay             direction of decay ( Read ) 
  */
+
 
 void
 sink_smear2(const multi1d<LatticeColorMatrix>& u,

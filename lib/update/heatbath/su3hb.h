@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: su3hb.h,v 1.4 2004-08-07 03:26:24 edwards Exp $
+// $Id: su3hb.h,v 1.5 2004-09-22 17:25:01 bjoo Exp $
 /*! \file
  *  \brief Do one SU(2) subgroup heatbath update of SU(Nc) matrix U with action
  */
@@ -7,14 +7,16 @@
 #ifndef __su3hb_h__
 #define __su3hb_h__
 
-//! Algorithm type
-enum HeatbathType 
-{
-  HEATBATH_TYPE_KPHB = 201,
-  HEATBATH_TYPE_CrHB = 202,
+namespace Chroma {
+  //! Algorithm type
+  enum HeatbathType 
+    {
+      HEATBATH_TYPE_KPHB = 201,
+      HEATBATH_TYPE_CrHB = 202,
+    };
 };
 
-
+using namespace Chroma;
 //! Do one SU(2) subgroup heatbath update of SU(Nc) matrix U with action
 /*!
  * \ingroup heatbath
@@ -40,5 +42,6 @@ void su3hb(LatticeColorMatrix& u,
 	   int& nfails,
 	   HeatbathType algorithm,
 	   const OrderedSubset& sub);
+
 
 #endif
