@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.21 2003-10-20 20:54:43 edwards Exp $
+// $Id: propagator.cc,v 1.22 2003-11-10 05:16:08 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -366,44 +366,11 @@ int main(int argc, char **argv)
   // and spin space
   //
   LatticePropagator quark_propagator;
+  XMLBufferWriter xml_buf;
+  int ncg_had;
 
-  int ncg_had = 0;
-
-  LatticeFermion psi = zero;  // note this is ``zero'' and not 0
-
-  for(int color_source = 0; color_source < Nc; ++color_source)
-  {
-    for(int spin_source = 0; spin_source < Ns; ++spin_source)
-    {
-      LatticeFermion chi;
-
-      // Extract a fermion source
-      PropToFerm(quark_prop_source, chi, color_source, spin_source);
-
-      // Use the last initial guess as the current initial guess
-
-      // Compute the propagator for given source color/spin.
-      int n_count;
-
-      S_f.qprop(psi, u, chi, input.param.invType, 
-		input.param.RsdCG, input.param.MaxCG, n_count);
-      ncg_had += n_count;
-
-      push(xml_out,"Qprop");
-      write(xml_out, "Kappa", input.param.Kappa);
-      write(xml_out, "RsdCG", input.param.RsdCG);
-      Write(xml_out, n_count);
-      pop(xml_out);
-
-      /*
-       *  Move the solution to the appropriate components
-       *  of quark propagator.
-       */
-      FermToProp(psi, quark_propagator, color_source, spin_source);
-    }
-  }
-
-
+  quarkProp4(quark_propagator, xml_buf, quark_prop_source,
+	     S_f, u, input.param.invType, input.param.RsdCG, input.param.MaxCG, ncg_had);
 
   // Instantiate XML buffer to make the propagator header
   XMLBufferWriter prop_xml;
