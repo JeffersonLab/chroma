@@ -1,6 +1,9 @@
-//  $Id: sftmom.h,v 1.4 2003-04-01 02:38:26 edwards Exp $
+//  $Id: sftmom.h,v 1.5 2003-04-01 02:45:03 edwards Exp $
 //  $Log: sftmom.h,v $
-//  Revision 1.4  2003-04-01 02:38:26  edwards
+//  Revision 1.5  2003-04-01 02:45:03  edwards
+//  Added some const member functions.
+//
+//  Revision 1.4  2003/04/01 02:38:26  edwards
 //  Added doxygen comments.
 //
 //  Revision 1.3  2003/03/20 19:34:25  flemingg
@@ -33,7 +36,7 @@ public:
 
   const Set& getSubset() const { return sft_subsets ; }
 
-  int numMom() { return num_mom ; }
+  int numMom() const { return num_mom ; }
 
   int numSubsets() const { return sft_subsets.numSubsets() ; }
 
@@ -42,7 +45,7 @@ public:
   const LatticeComplex& operator[](int mom_num) const
     { return phases[mom_num] ; }
 
-  multi2d<DComplex> sft(const LatticeComplex& cf) ;
+  multi2d<DComplex> sft(const LatticeComplex& cf) const ;
 
 private:
   SftMom() {} // hide default constructor
