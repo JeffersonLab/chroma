@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: param_io.h,v 1.12 2004-02-24 02:40:58 edwards Exp $
+// $Id: param_io.h,v 1.13 2004-04-05 16:36:18 edwards Exp $
 /*! \file
  *  \brief Reunitarize (to a SU(N)) inplace the matrix A under some option
  */
@@ -39,6 +39,7 @@ enum CfgType {
   CFG_TYPE_NERSC,
   CFG_TYPE_SCIDAC,
   CFG_TYPE_SZIN,
+  CFG_TYPE_SZINQIO,
 };
 
 //! Propagator type

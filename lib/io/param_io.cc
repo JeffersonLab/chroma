@@ -1,4 +1,4 @@
-// $Id: param_io.cc,v 1.16 2004-04-04 03:02:17 edwards Exp $
+// $Id: param_io.cc,v 1.17 2004-04-05 16:37:02 edwards Exp $
 /*! \file
  *  \brief Various parameter readers/writers for main programs
  */
@@ -139,6 +139,8 @@ void read(XMLReader& xml, const string& path, CfgType& param)
     param = CFG_TYPE_SCIDAC;
   else if (cfg_type_str == "SZIN")
     param = CFG_TYPE_SZIN;
+  else if (cfg_type_str == "SZINQIO")
+    param = CFG_TYPE_SZINQIO;
   else 
   {
     QDPIO::cerr << "Unsupported configuration type" << endl;
@@ -465,6 +467,8 @@ void write(XMLWriter& xml, const string& path, CfgType param)
     cfg_type_str = "SCIDAC";
   else if (param == CFG_TYPE_SZIN)
     cfg_type_str = "SZIN";
+  else if (param == CFG_TYPE_SZINQIO)
+    cfg_type_str = "SZINQIO";
   else 
   {
     QDPIO::cerr << "Unsupported configuration type" << endl;
