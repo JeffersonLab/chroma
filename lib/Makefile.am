@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.220 2005-01-11 15:28:02 bjoo Exp $
+# $Id: Makefile.am,v 1.221 2005-01-11 16:22:41 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -135,7 +135,8 @@ nobase_include_HEADERS = \
 	update/molecdyn/global_metropolis_accrej.h \
 	update/molecdyn/chrono_predictor.h \
 	update/molecdyn/chrono_predictor_factory.h \
-	update/molecdyn/zero_guess_predictor.h
+	update/molecdyn/zero_guess_predictor.h \
+	update/molecdyn/last_solution_predictor.h
 
 nodist_include_HEADERS=chroma_config_internal.h
 
@@ -368,7 +369,8 @@ libchroma_a_SOURCES = \
 	update/molecdyn/wilson_gauge_monomial.cc \
 	update/molecdyn/lcm_pqp_leapfrog.cc \
 	update/molecdyn/global_metropolis_accrej.cc \
-	update/molecdyn/zero_guess_predictor.cc 
+	update/molecdyn/zero_guess_predictor.cc \
+	update/molecdyn/last_solution_predictor.cc
 
 #	actions/ferm/invert/invbicg.cc
 #       actions/ferm/invert/invmr.cc 

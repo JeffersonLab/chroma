@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.296 2005-01-11 15:28:02 bjoo Exp $
+# $Id: Makefile.in,v 1.297 2005-01-11 16:22:41 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -162,6 +162,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/lcm_pqp_leapfrog.cc \
 	update/molecdyn/global_metropolis_accrej.cc \
 	update/molecdyn/zero_guess_predictor.cc \
+	update/molecdyn/last_solution_predictor.cc \
 	actions/ferm/fermacts/overlap_fermact_base_w.cc \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.cc \
 	actions/ferm/fermacts/prec_dwf_fermact_array_w.cc \
@@ -316,6 +317,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	wilson_gauge_monomial.$(OBJEXT) lcm_pqp_leapfrog.$(OBJEXT) \
 	global_metropolis_accrej.$(OBJEXT) \
 	zero_guess_predictor.$(OBJEXT) \
+	last_solution_predictor.$(OBJEXT) \
 	overlap_fermact_base_w.$(OBJEXT) \
 	ovlap_partfrac4d_fermact_w.$(OBJEXT) \
 	prec_dwf_fermact_array_w.$(OBJEXT) \
@@ -504,6 +506,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	update/molecdyn/chrono_predictor.h \
 	update/molecdyn/chrono_predictor_factory.h \
 	update/molecdyn/zero_guess_predictor.h \
+	update/molecdyn/last_solution_predictor.h \
 	actions/ferm/fermacts/fermacts_w.h \
 	actions/ferm/fermacts/fermact_factory_w.h \
 	actions/ferm/fermacts/overlap_fermact_base_w.h \
@@ -839,6 +842,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	update/molecdyn/chrono_predictor.h \
 	update/molecdyn/chrono_predictor_factory.h \
 	update/molecdyn/zero_guess_predictor.h \
+	update/molecdyn/last_solution_predictor.h \
 	actions/ferm/fermacts/fermacts_w.h \
 	actions/ferm/fermacts/fermact_factory_w.h \
 	actions/ferm/fermacts/overlap_fermact_base_w.h \
@@ -1063,6 +1067,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/lcm_pqp_leapfrog.cc \
 	update/molecdyn/global_metropolis_accrej.cc \
 	update/molecdyn/zero_guess_predictor.cc \
+	update/molecdyn/last_solution_predictor.cc \
 	actions/ferm/fermacts/overlap_fermact_base_w.cc \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.cc \
 	actions/ferm/fermacts/prec_dwf_fermact_array_w.cc \
@@ -1342,6 +1347,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kyuqprop_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lDeltaLs_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/laplacian.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/last_solution_predictor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_pqp_leapfrog.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lg5eps_double_pass_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lg5eps_w.Po@am__quote@
@@ -3152,6 +3158,20 @@ zero_guess_predictor.obj: update/molecdyn/zero_guess_predictor.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/zero_guess_predictor.cc' object='zero_guess_predictor.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o zero_guess_predictor.obj `if test -f 'update/molecdyn/zero_guess_predictor.cc'; then $(CYGPATH_W) 'update/molecdyn/zero_guess_predictor.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/zero_guess_predictor.cc'; fi`
+
+last_solution_predictor.o: update/molecdyn/last_solution_predictor.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT last_solution_predictor.o -MD -MP -MF "$(DEPDIR)/last_solution_predictor.Tpo" -c -o last_solution_predictor.o `test -f 'update/molecdyn/last_solution_predictor.cc' || echo '$(srcdir)/'`update/molecdyn/last_solution_predictor.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/last_solution_predictor.Tpo" "$(DEPDIR)/last_solution_predictor.Po"; else rm -f "$(DEPDIR)/last_solution_predictor.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/last_solution_predictor.cc' object='last_solution_predictor.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o last_solution_predictor.o `test -f 'update/molecdyn/last_solution_predictor.cc' || echo '$(srcdir)/'`update/molecdyn/last_solution_predictor.cc
+
+last_solution_predictor.obj: update/molecdyn/last_solution_predictor.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT last_solution_predictor.obj -MD -MP -MF "$(DEPDIR)/last_solution_predictor.Tpo" -c -o last_solution_predictor.obj `if test -f 'update/molecdyn/last_solution_predictor.cc'; then $(CYGPATH_W) 'update/molecdyn/last_solution_predictor.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/last_solution_predictor.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/last_solution_predictor.Tpo" "$(DEPDIR)/last_solution_predictor.Po"; else rm -f "$(DEPDIR)/last_solution_predictor.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/last_solution_predictor.cc' object='last_solution_predictor.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o last_solution_predictor.obj `if test -f 'update/molecdyn/last_solution_predictor.cc'; then $(CYGPATH_W) 'update/molecdyn/last_solution_predictor.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/last_solution_predictor.cc'; fi`
 
 overlap_fermact_base_w.o: actions/ferm/fermacts/overlap_fermact_base_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT overlap_fermact_base_w.o -MD -MP -MF "$(DEPDIR)/overlap_fermact_base_w.Tpo" -c -o overlap_fermact_base_w.o `test -f 'actions/ferm/fermacts/overlap_fermact_base_w.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/overlap_fermact_base_w.cc; \

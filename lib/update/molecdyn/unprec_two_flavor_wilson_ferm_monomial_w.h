@@ -77,7 +77,6 @@ namespace Chroma {
       // Mutable getPhi used in assignments 
       LatticeFermion& getPhi(void) {
 	// If phi are changed we must reset the chrono predictor
-	getChronoPredictor().reset();
 	return phi;
       }
 

@@ -1,4 +1,4 @@
-// $Id: unprec_two_flavor_wilson5d_monomial_w.cc,v 1.5 2005-01-11 15:28:02 bjoo Exp $
+// $Id: unprec_two_flavor_wilson5d_monomial_w.cc,v 1.6 2005-01-11 16:22:42 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 5D ferm monomials
  */
@@ -166,8 +166,8 @@ namespace Chroma
 	std::string chrono_name;
 	std::istringstream chrono_is(param_.predictor_xml);
 	XMLReader chrono_xml(chrono_is);
-	read(chrono_xml, "./ChronologicalPredictor/Name", chrono_name);
-	tmp = The5DChronologicalPredictorFactory::Instance().createObject(chrono_name, fermact->size(), chrono_xml, "./ChronologicalPredictor");
+	read(chrono_xml, "/ChronologicalPredictor/Name", chrono_name);
+	tmp = The5DChronologicalPredictorFactory::Instance().createObject(chrono_name, fermact->size(), chrono_xml, "/ChronologicalPredictor");
       }
       catch(const std::string& e ) { 
 	QDPIO::cerr << "Caught Exception Reading XML: " << e << endl;

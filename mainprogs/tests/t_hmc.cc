@@ -35,6 +35,10 @@ bool linkage_hack()
 
   // Chrono predictor
   foo &= ZeroGuess4DChronoPredictorEnv::registered;
+  foo &= ZeroGuess4DChronoPredictorEnv::registered;
+  foo &= LastSolution5DChronoPredictorEnv::registered;  
+  foo &= LastSolution5DChronoPredictorEnv::registered;
+
   return foo;
 }
 

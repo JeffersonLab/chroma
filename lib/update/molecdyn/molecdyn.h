@@ -23,5 +23,5 @@
 #include "update/molecdyn/lcm_hmc.h"
 
 #include "update/molecdyn/zero_guess_predictor.h"
-
+#include "update/molecdyn/last_solution_predictor.h"
 #endif
