@@ -1,4 +1,4 @@
-// $Id: make_source.cc,v 1.33 2004-08-12 21:31:12 ikuro Exp $
+// $Id: make_source.cc,v 1.34 2004-10-22 19:04:41 edwards Exp $
 /*! \file
  *  \brief Main code for source generation
  */
@@ -162,7 +162,7 @@ int main(int argc, char **argv)
     QDPIO::cout << "Smear gauge field" << endl;
 
     int BlkMax = 100;	// Maximum number of blocking/smearing iterations
-    Real BlkAccu = 1.0-5;	// Blocking/smearing accuracy
+    Real BlkAccu = 1.0e-5;	// Blocking/smearing accuracy
 
     for(int i=0; i < input.param.link_smear_num; ++i)
     {
