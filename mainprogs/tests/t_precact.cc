@@ -1,4 +1,4 @@
-// $Id: t_precact.cc,v 1.13 2005-01-31 16:43:49 bjoo Exp $
+// $Id: t_precact.cc,v 1.14 2005-02-13 04:48:37 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -15,26 +15,8 @@ using namespace Chroma;
 bool linkage_hack()
 {
   bool foo = true;
-
-  // 4D actions
-  foo &= EvenOddPrecWilsonFermActEnv::registered;
-  foo &= UnprecWilsonFermActEnv::registered;
-  foo &= OvlapPartFrac4DFermActEnv::registered;
-  // 5D actions
-  foo &= EvenOddPrecDWFermActArrayEnv::registered;
-  foo &= UnprecDWFermActArrayEnv::registered;
-  foo &= EvenOddPrecNEFFermActArrayEnv::registered;
-  foo &= UnprecNEFFermActArrayEnv::registered;
-  foo &= UnprecOvlapContFrac5DFermActArrayEnv::registered;
-  foo &= EvenOddPrecOvlapContFrac5DFermActArrayEnv::registered;
-  foo &= UnprecOvDWFermActArrayEnv::registered;
-  foo &= EvenOddPrecOvDWFermActArrayEnv::registered;
-  foo &= UnprecOvExtFermActArrayEnv::registered;
-  foo &= UnprecZoloNEFFermActArrayEnv::registered;
-  foo &= EvenOddPrecZoloNEFFermActArrayEnv::registered;
-  foo &= UnprecDWFTransfFermActEnv::registered;
-  foo &= UnprecHTContFrac5DFermActArrayEnv::registered;
-  foo &= EvenOddPrecHtContFrac5DFermActArrayEnv::registered;
+  // All actions
+  foo &= WilsonTypeFermActsEnv::registered;
   return foo;
 }
 
