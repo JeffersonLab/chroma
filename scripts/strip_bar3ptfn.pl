@@ -1,6 +1,6 @@
 #!/usr/local/bin/perl
 #
-# $Id: strip_bar3ptfn.pl,v 1.3 2003-05-30 02:28:39 flemingg Exp $
+# $Id: strip_bar3ptfn.pl,v 1.4 2003-06-23 21:02:49 edwards Exp $
 #
 # Strip out all data of bar3ptfn.m output
 #
@@ -279,6 +279,7 @@ print CONF "\$t_snk = $t_snk;";
 printf CONF "\$spext = \'$spext\';\n";
 printf CONF "\$ssext = \'$ssext\';\n";
 printf CONF "\$norm  = \'$norm\';\n";
+print CONF "\$mom2_max = $mom2_max;";
 
 printf CONF "\@sink_mom  = ($sink_mom[0]";
 for($i=1; $i < $Nd-1; ++$i)
