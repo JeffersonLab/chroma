@@ -1,4 +1,4 @@
-// $Id: kyugauge_io.cc,v 1.1 2004-04-15 03:23:49 edwards Exp $
+// $Id: kyugauge_io.cc,v 1.2 2004-04-15 03:32:36 edwards Exp $
 
 /*! \file
  *  \brief Read a Kentucky gauge configuration
@@ -40,7 +40,8 @@ void readKYU(multi1d<LatticeColorMatrix>& u, const string& cfg_file)
 
      The words are d.p. -- 8 bytes -- or REAL64 
   */
-  LatticeReal re, im;
+//  LatticeReal64 re, im;
+  LatticeDouble re, im;
   
   for(int mu=0; mu < Nd; ++mu)
     for(int col=0; col < 3; ++col)
