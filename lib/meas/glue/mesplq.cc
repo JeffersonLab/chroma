@@ -1,4 +1,4 @@
-// $Id: mesplq.cc,v 1.7 2003-04-01 02:38:26 edwards Exp $
+// $Id: mesplq.cc,v 1.8 2003-12-06 20:58:34 edwards Exp $
 /*! \file
  *  \brief Plaquette measurement
  */
@@ -9,7 +9,7 @@
 
 using namespace QDP;
 
-// Primitive way to indicate the time direction
+// Primitive way for now to indicate the time direction
 static int tDir() {return Nd-1;}
 
 //! Return the value of the average plaquette normalized to 1
