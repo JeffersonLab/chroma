@@ -1,4 +1,4 @@
-// $Id: unprec_ovdwf_linop_array_w.cc,v 1.2 2003-11-15 05:26:55 edwards Exp $
+// $Id: unprec_ovdwf_linop_array_w.cc,v 1.3 2003-11-15 23:29:55 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Overlap-DWF (Borici) linear operator
  */
@@ -65,13 +65,13 @@ UnprecOvDWLinOpArray::operator() (const multi1d<LatticeFermion>& psi,
   //
   //  Chi   =  D' Psi
   //
-  LatticeFermion  tmp;
   Real fact1 = a5*(Nd - WilsonMass);
   Real fact2 = -0.5*a5;
 
-  switch (isign)
+  if (isign == PLUS)
   {
-  case PLUS:
+    LatticeFermion  tmp;
+
     for(int n=0; n < N5; ++n)
     {
       if (n == 0)
@@ -93,31 +93,32 @@ UnprecOvDWLinOpArray::operator() (const multi1d<LatticeFermion>& psi,
 	       - chiralProjectPlus(psi[n-1]) - chiralProjectMinus(psi[n+1]);
       }
     }          
-    break;
+  }
+  else   // isign = MINUS   case
+  {
+    multi1d<LatticeFermion>  tmp(N5);   // should be more clever and reduce temporaries
 
-  case MINUS:
+    for(int n=0; n < N5; ++n)
+      tmp[n] = fact1*psi[n] + fact2*D(psi[n], isign);
+
     for(int n=0; n < N5; ++n)
     {
       if (n == 0)
       {
-	tmp    = psi[n] - m_q*chiralProjectMinus(psi[N5-1]) + chiralProjectPlus(psi[1]);
-	chi[n] = fact1*tmp + fact2*D(tmp, isign) + psi[n] 
-	       + m_q*chiralProjectMinus(psi[N5-1]) - chiralProjectPlus(psi[1]);
+	chi[0] = tmp[0] + psi[0] + chiralProjectPlus(tmp[1]) - chiralProjectPlus(psi[1])
+  	       - m_q*(chiralProjectMinus(tmp[N5-1]) - m_q*chiralProjectMinus(psi[N5-1]));
       }
       else if (n == N5-1)
       {
-	tmp    = psi[n] + chiralProjectMinus(psi[N5-2]) - m_q*chiralProjectPlus(psi[0]);
-	chi[n] = fact1*tmp + fact2*D(tmp, isign) + psi[n] 
-	       - chiralProjectMinus(psi[N5-2]) + m_q*chiralProjectPlus(psi[0]);
+	chi[n] = tmp[n] + psi[n] + chiralProjectMinus(tmp[N5-2]) - chiralProjectMinus(psi[N5-2])
+  	       - m_q*(chiralProjectPlus(tmp[0]) - m_q*chiralProjectPlus(psi[0]));
       }
       else
       {
-	tmp    = psi[n] + chiralProjectMinus(psi[n-1]) + chiralProjectPlus(psi[n+1]);
-	chi[n] = fact1*tmp + fact2*D(tmp, isign) + psi[n] 
-	       - chiralProjectMinus(psi[n-1]) - chiralProjectPlus(psi[n+1]);
+	chi[n] = tmp[n] + psi[n] + chiralProjectMinus(tmp[n-1]) - chiralProjectMinus(psi[n-1])
+  	       + chiralProjectPlus(tmp[n+1]) - chiralProjectPlus(psi[n+1]);
       }
     }          
-    break;
   }
 
   END_CODE("UnprecOvDWLinOpArray");
