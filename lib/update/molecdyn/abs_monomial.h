@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_monomial.h,v 1.10 2005-01-04 21:17:37 edwards Exp $
+// $Id: abs_monomial.h,v 1.11 2005-01-05 16:15:23 bjoo Exp $
 
 /*! @file
  * @brief Monomials - gauge action or fermion binlinear contributions for HMC
@@ -341,11 +341,11 @@ namespace Chroma
       lin->deriv(F_tmp, Y, X, PLUS);
       F += F_tmp;
  
-      /*
+
       for(int mu=0; mu < Nd; mu++) { 
 	 F[mu] *= Real(-1);   // IS THIS SIGN CORRECT???
       }
-      */
+
     }
   
     //! Refresh pseudofermions
@@ -515,7 +515,7 @@ namespace Chroma
       
       // Temporary: Move to correct normalisation
       for(int s=0; s < N5; ++s)
-	eta[s] *= sqrt(0.5);
+	eta[s][M->subset()] *= sqrt(0.5);
       
       // Build  phi = V * (V^dag*V)^(-1) * M^dag * eta
       multi1d<Phi> tmp(N5);
@@ -679,13 +679,29 @@ namespace Chroma
     //! Compute the total action
     virtual Double S(const AbsFieldState<P,Q>& s) const 
     {
-      multi1d<Phi> X(getFermAct().size());
+           // Get at the ferion action for piece i
+      const WilsonTypeFermAct5D<Phi,P>& FA = getFermAct();
+
+      // Create a Connect State, apply fermionic boundaries
+      Handle< const ConnectState > f_state(FA.createState(s.getQ()));
+      Handle< const LinearOperator< multi1d<Phi> > > PV(FA.linOpPV(f_state));
+ 
+      multi1d<Phi> X(FA.size());
+      multi1d<Phi> tmp(FA.size());
+
+      // Paranoia -- to deal with subsets.
+      tmp = zero; 
+
+      // X is now (M^dagM)^{-1} V^{dag} phi
       getX(X,s);
+
+      // tmp is now V (M^dag M)^{-1} V^{dag} phi
+      (*PV)(tmp, X, PLUS);
 
       // Action on the entire lattice
       Double action = zero;
       for(int s=0; s < getFermAct().size(); ++s)
-	action += innerProductReal(getPhi()[s], X[s]);
+	action += innerProductReal(getPhi()[s], tmp[s]);
       return action;
     }
 
@@ -729,17 +745,25 @@ namespace Chroma
     {
       const EvenOddPrecWilsonTypeFermAct5D<Phi,P>& FA = getFermAct();
 
-      Handle<const ConnectState> bc_g_state = FA.createState(s.getQ());
+      Handle<const ConnectState> bc_g_state(FA.createState(s.getQ()));
 
       // Need way to get gauge state from AbsFieldState<P,Q>
       Handle< const EvenOddPrecLinearOperator<multi1d<Phi>,P> > lin(FA.linOp(bc_g_state));
+
+      Handle< const EvenOddPrecLinearOperator<multi1d<Phi>,P> > PV(FA.linOpPV(bc_g_state));
       // Get the X fields
       multi1d<Phi> X(FA.size());
+
+      // X is now (M^dag M)^{-1} V^dag phi
       getX(X, s);
+
+      multi1d<Phi> tmp(FA.size());
+      (*PV)(tmp, X, PLUS);
+
       Double action = zero;
       // Total odd-subset action. NOTE: QDP has norm2(multi1d) but not innerProd
       for(int s=0; s < FA.size(); ++s)
-	action += innerProductReal(getPhi()[s], X[s], lin->subset());
+	action += innerProductReal(getPhi()[s], tmp[s], lin->subset());
       return action;
     }
 

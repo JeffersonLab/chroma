@@ -140,7 +140,7 @@ namespace Chroma
   }
 
 
-  // Do inversion M^dag M X = phi
+  // Do inversion M^dag M X = V^dag phi ?
   void
   UnprecTwoFlavorWilsonTypeFermMonomial5D::getX(
     multi1d<LatticeFermion>& X, 
@@ -158,8 +158,18 @@ namespace Chroma
     // Get linop
     Handle< const LinearOperator< multi1d<LatticeFermion> > > M(FA.linOp(state));
 
+    Handle< const LinearOperator< multi1d<LatticeFermion> > > PV(FA.linOpPV(state));
+
+    //    // Get PV linop
+    // Handle< const LinearOperator< multi1d<LatticeFermion> > > PV(FA.linOpPV
     // Do the inversion...
+    multi1d<LatticeFermion> VdagPhi(FA.size());
+    (*PV)(VdagPhi, getPhi(), MINUS);
+
+    /*
     int n_count = invert(X, *M, getPhi());
+    */
+    int n_count = invert(X, *M, VdagPhi);
   }
 
   
@@ -181,6 +191,7 @@ namespace Chroma
    
     // Get linop
     Handle< const LinearOperator< multi1d<LatticeFermion> > > M(FA.linOpPV(state));
+    
 
     // Do the inversion...
     int n_count = invert(X, *M, eta);

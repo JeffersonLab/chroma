@@ -1,4 +1,4 @@
-// $Id: wilson_gaugeact.cc,v 1.10 2005-01-04 14:57:25 bjoo Exp $
+// $Id: wilson_gaugeact.cc,v 1.11 2005-01-05 16:15:23 bjoo Exp $
 /*! \file
  *  \brief Wilson gauge action
  */
@@ -180,7 +180,10 @@ namespace Chroma
 	}
       }
       
-      ds_u[mu] *= Real(1)*Real(beta)/(Real(4*Nc));
+      // It is 1/(4Nc) to account for normalisation relevant to fermions
+      // in the taproj, which is a factor of 2 different from the 
+      // one used here.
+      ds_u[mu] *= Real(-1)*Real(beta)/(Real(4*Nc));
     }
 
 
@@ -217,7 +220,7 @@ namespace Chroma
     // Pure Gauge factor (-beta/Nc and a factor of 2 because of the forward
     // and backward staple of the force)
     for(int mu=0; mu < Nd; mu++) { 
-      ds_u[mu] *= Real(beta)/(Real(2*Nc));
+      ds_u[mu] *= Real(-beta)/(Real(2*Nc));
     }
 #endif
 

@@ -80,7 +80,7 @@ namespace Chroma {
     // doing it in loop for now
     
     for(int mu =0; mu < Nd; mu++) { 
-      (s.getP())[mu] -= dt * dsdQ[mu];
+      (s.getP())[mu] += dt * dsdQ[mu];
       
       // taproj it...
       taproj( (s.getP())[mu] );

@@ -33,8 +33,35 @@ namespace Chroma {
     virtual Q& getQ(void) = 0;
 
     // And that is all we can do here
-};
+  };
+  
+  /*
+  template <typename P, typename Q, typename Phi>
+    class AbsPFFieldState : public AbsFieldState<P,Q> {
+    public:
 
+    //! Virtual destructor
+    virtual ~AbsPFFieldState<P,Q,Phi>() {}
+
+    //! Clone the state -- this will be needed for the virtual 
+    // copy ideas for derived classes
+    virtual AbsPFFieldState<P,Q,Phi>* clone(void) const = 0;
+
+    //! Accessors
+    virtual const P& getP(void) const = 0;
+    virtual const Q& getQ(void) const = 0;
+
+    virtual const int numPhi(void) const =0;
+    virtual const Phi& getPhi(int i) const = 0;
+
+    //! Mutators
+    virtual P& getP(void) = 0;
+    virtual Q& getQ(void) = 0;
+    virtual Phi& getPhi(int i) = 0;
+
+    // And that is all we can do here
+  };
+  */
 
   /*! A pure Gauge field state
     type field state. */

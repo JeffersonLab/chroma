@@ -45,6 +45,7 @@ namespace Chroma {
       }
     }
 
+    //! Copy Pseudo
     protected:
     
     //! Get hold of monomial with index i

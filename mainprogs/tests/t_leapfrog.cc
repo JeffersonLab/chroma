@@ -27,7 +27,7 @@ bool linkage_hack()
  
   // 4D Ferm Monomials
   foo &= UnprecTwoFlavorWilsonFermMonomialEnv::registered;
-  foo &= EvenOddPrecTwoFlavorWilsonFermMonomialEnv::registered;
+  foo &= EvenOddPrecTwoFlavorWilsonTypeFermMonomialEnv::registered;
 
   // 5D Ferm Monomials
   foo &= UnprecTwoFlavorWilsonTypeFermMonomial5DEnv::registered;

@@ -5,7 +5,7 @@
 
 #include "update/molecdyn/field_state.h"
 #include "update/molecdyn/abs_monomial.h"
-#include "actions/ferm/fermacts/prec_wilson_fermact_w.h"
+#include "fermact.h"
 
 using namespace std;
 using namespace QDP;
@@ -13,28 +13,28 @@ using namespace std;
 
 namespace Chroma {
 
-  namespace EvenOddPrecTwoFlavorWilsonFermMonomialEnv {
+  namespace EvenOddPrecTwoFlavorWilsonTypeFermMonomialEnv {
     extern const string name;
     extern const bool registered;
   };
 
   // Parameter structure
-  struct EvenOddPrecTwoFlavorWilsonFermMonomialParams {
+  struct EvenOddPrecTwoFlavorWilsonTypeFermMonomialParams {
     // Base Constructor
-    EvenOddPrecTwoFlavorWilsonFermMonomialParams();
+    EvenOddPrecTwoFlavorWilsonTypeFermMonomialParams();
 
     // Read monomial from some root path
-    EvenOddPrecTwoFlavorWilsonFermMonomialParams(XMLReader& in, const std::string&  path);
+    EvenOddPrecTwoFlavorWilsonTypeFermMonomialParams(XMLReader& in, const std::string&  path);
     InvertParam_t inv_param; // Inverter Parameters
     string ferm_act;
   };
 
-  void read(XMLReader& xml, const string& path, EvenOddPrecTwoFlavorWilsonFermMonomialParams& param);
+  void read(XMLReader& xml, const string& path, EvenOddPrecTwoFlavorWilsonTypeFermMonomialParams& param);
 
-  void write(XMLWriter& xml, const string& path, const EvenOddPrecTwoFlavorWilsonFermMonomialParams& params);
+  void write(XMLWriter& xml, const string& path, const EvenOddPrecTwoFlavorWilsonTypeFermMonomialParams& params);
 
 
-  class EvenOddPrecTwoFlavorWilsonFermMonomial :
+  class EvenOddPrecTwoFlavorWilsonTypeFermMonomial :
     public  TwoFlavorExactEvenOddPrecWilsonTypeFermMonomial< 
     multi1d<LatticeColorMatrix>,
     multi1d<LatticeColorMatrix>,
@@ -42,15 +42,21 @@ namespace Chroma {
     {
     public: 
       // Construct out of a FermBC and a parameter struct
-      EvenOddPrecTwoFlavorWilsonFermMonomial(const EvenOddPrecTwoFlavorWilsonFermMonomialParams& param_);
+      EvenOddPrecTwoFlavorWilsonTypeFermMonomial(const EvenOddPrecTwoFlavorWilsonTypeFermMonomialParams& param_);
 
 
       // Construct from a fermact handle and inv params
       // FermAct already holds BC-s
-      EvenOddPrecTwoFlavorWilsonFermMonomial(Handle< const EvenOddPrecWilsonFermAct >& fermact_, const InvertParam_t& inv_param_ ) : fermact(fermact_), inv_param(inv_param_) {}
+      EvenOddPrecTwoFlavorWilsonTypeFermMonomial(
+	Handle< 
+        const EvenOddPrecWilsonTypeFermAct< LatticeFermion, 
+                                            multi1d<LatticeColorMatrix> 
+                                          > 
+              > fermact_, 
+              const InvertParam_t& inv_param_ ) : fermact(fermact_), inv_param(inv_param_) {}
 
       // Copy Constructor
-      EvenOddPrecTwoFlavorWilsonFermMonomial(const EvenOddPrecTwoFlavorWilsonFermMonomial& m) : fermact((m.fermact)), inv_param(m.inv_param) 
+      EvenOddPrecTwoFlavorWilsonTypeFermMonomial(const EvenOddPrecTwoFlavorWilsonTypeFermMonomial& m) : fermact((m.fermact)), inv_param(m.inv_param) 
 	{
 	  phi = m.phi;
 	}
@@ -64,7 +70,7 @@ namespace Chroma {
 	getX(X,s);
       }
 
-      const EvenOddPrecWilsonFermAct& debugGetFermAct(void) const { 
+      const EvenOddPrecWilsonTypeFermAct<LatticeFermion, multi1d<LatticeColorMatrix> >& debugGetFermAct(void) const { 
 	return getFermAct();
       }
       
@@ -87,7 +93,7 @@ namespace Chroma {
 	return phi;
       }
 
-      const EvenOddPrecWilsonFermAct& getFermAct(void) const { 
+      const EvenOddPrecWilsonTypeFermAct<LatticeFermion, multi1d<LatticeColorMatrix> >& getFermAct(void) const { 
 	return *fermact;
       }
 
@@ -102,7 +108,7 @@ namespace Chroma {
       LatticeFermion phi;
 
       // A handle for the EvenOddPrecWilsonFermAct
-      Handle<const EvenOddPrecWilsonFermAct> fermact;
+      Handle<const EvenOddPrecWilsonTypeFermAct<LatticeFermion, multi1d<LatticeColorMatrix> > > fermact;
 
       // The parameters for the inversion
       InvertParam_t inv_param;

@@ -15,15 +15,12 @@ using namespace Chroma;
 namespace Chroma { 
 
   template<typename P, typename Q>
-  class AbsHMC {
+  class AbsHMCTrj {
   public: 
     
     // Virtual destructor
-    virtual ~AbsHMC() {};
+    virtual ~AbsHMCTrj() {};
     
-
-    // Traj accessor
-    virtual const int& getTrajNum(void) const = 0;
 
     // Do the HMC trajectory
     virtual void operator()(AbsFieldState<P,Q>& s,
@@ -80,10 +77,6 @@ namespace Chroma {
 	  s.getP() = old_state->getP();
 	}
       }
-      
-      // Increase trajectory count
-      getTrajNum()++;
-      
     }
     
   protected:
@@ -97,8 +90,6 @@ namespace Chroma {
     // with monitoring and such so it is bes to template this
     virtual AbsMDIntegrator<P,Q>& getMDIntegrator(void) const = 0;
     
-    // Traj mutator
-    virtual int& getTrajNum(void) = 0;
 
     virtual void refreshP(AbsFieldState<P,Q>& state) const = 0;
   

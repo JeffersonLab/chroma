@@ -150,9 +150,15 @@ namespace Chroma
    
     // Get linop
     Handle< const LinearOperator< multi1d<LatticeFermion> > > M(FA.linOp(state));
+    // Get PV
+    Handle< const LinearOperator< multi1d<LatticeFermion> > > PV(FA.linOpPV(state));
+
+    multi1d<LatticeFermion> VdagPhi(FA.size());
+    
+    (*PV)(VdagPhi, getPhi(), MINUS);
 
     // Do the inversion...
-    int n_count = invert(X, *M, getPhi());
+    int n_count = invert(X, *M, VdagPhi);
   }
 
   
