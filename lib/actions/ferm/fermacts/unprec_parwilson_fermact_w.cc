@@ -1,4 +1,4 @@
-// $Id: unprec_parwilson_fermact_w.cc,v 1.9 2005-01-25 19:29:12 mcneile Exp $
+// $Id: unprec_parwilson_fermact_w.cc,v 1.10 2005-01-26 18:50:25 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action with parity breaking term
  */
@@ -10,6 +10,8 @@
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/fermbcs/fermbcs_w.h"
+
+#include "io/param_io.h"       // to get kappaToMass
 
 namespace Chroma
 {
