@@ -1,4 +1,4 @@
-// $Id: mesonseqsrc_w.cc,v 1.1 2003-12-17 03:56:46 edwards Exp $
+// $Id: mesonseqsrc_w.cc,v 1.2 2003-12-17 05:17:13 edwards Exp $
 /*! \file
  *  \brief Construct meson sequential sources.
  */
@@ -73,9 +73,13 @@ void mesonSeqSource(const LatticePropagator& quark_propagator,
   /*
    *  We now inject momentum at sink if required
    */
+  multi1d<LatticeInteger> my_coord(Nd);
+
   bool nonzero = false;
   for(int mu=0, j=0; mu < Nd; mu++)
   {
+    my_coord[mu] = Layout::latticeCoordinate(mu);	/* Obtains the muth coordinate */
+
     if (mu != j_decay)
     {
       if(sink_mom[j] != 0)
@@ -90,10 +94,6 @@ void mesonSeqSource(const LatticePropagator& quark_propagator,
   // multiply in the phase if required
   if (nonzero)
   {
-    multi1d<LatticeInteger> my_coord(Nd);
-    for(int mu=0; mu < Nd; mu++)
-      my_coord[mu] = Layout::latticeCoordinate(mu);	/* Obtains the muth coordinate */
-
     LatticeReal p_dot_x = 0;
     for(int mu=0, j=0; mu < Nd; ++mu)
     {
