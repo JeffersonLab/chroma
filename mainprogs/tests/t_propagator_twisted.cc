@@ -1,10 +1,14 @@
-// $Id: t_propagator_twisted.cc,v 1.1 2005-01-08 19:06:14 mcneile Exp $
+// $Id: t_propagator_twisted.cc,v 1.2 2005-01-08 19:58:09 mcneile Exp $
 /*! \file
- *  \brief Main code for propagator generation
+ *  \brief Main code for propagator generation of twisted mass QCD
  *   
  *   This version is for TWISTED Wilson fermions.
  *   This code should work for su3 or su4.
  *
+ *   See hep-lat/0411001 for an introduction to twisted mass
+ *   QCD. This code is currently being debugged. When the 
+ *   code is debugged the input xml file will include 
+ *   a test case with a mass term in the gamma_5 component.
  */
 
 #include <iostream>
@@ -29,10 +33,10 @@ using namespace QDP;
 struct Param_t
 {
   FermType     FermTypeP;
-  Real         Mass;      // Staggered mass
   Real         u0;        // Tadpole Factor
  
-  //  GaugeStartType  cfg_type;       // storage order for stored gauge configuration
+  UnprecParWilsonFermActParams mass_param  ; 
+
   PropType prop_type;      // storage order for stored propagator
 
   InvertParam_t  invParam;
@@ -66,7 +70,6 @@ void read(XMLReader& xml, const string& path, Prop_t& input)
 {
   XMLReader inputtop(xml, path);
 
-//  read(inputtop, "source_file", input.source_file);
   read(inputtop, "prop_file", input.prop_file);
 }
 
@@ -139,31 +142,12 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
       } 
     }
 
-    // GTF NOTE: I'm going to switch on FermTypeP here because I want
-    // to leave open the option of treating masses differently.
-    switch (input.param.FermTypeP) {
-    case FERM_TYPE_WILSON  :
-
-      QDPIO::cout << " PROPAGATOR: Propagator for Wilson fermions" << endl;
-
-      read(paramtop, "Mass", input.param.Mass);
-      read(paramtop, "u0" , input.param.u0);
-
-      break;
-
-    default :
-      QDP_error_exit("Fermion type not supported\n.");
-    }
-
-
+    read(paramtop,"Twisted_mass",input.param.mass_param); 
 
 //    read(paramtop, "invType", input.param.invType);
     input.param.invParam.invType = CG_INVERTER;   //need to fix this
     read(paramtop, "RsdCG", input.param.invParam.RsdCG);
     read(paramtop, "MaxCG", input.param.invParam.MaxCG);
-    //    read(paramtop, "GFAccu", input.param.GFAccu);
-    //    read(paramtop, "OrPara", input.param.OrPara);
-    //    read(paramtop, "GFMax", input.param.GFMax);
 
     read(paramtop, "nrow", input.param.nrow);
     read(paramtop, "boundary", input.param.boundary);
@@ -210,7 +194,7 @@ int main(int argc, char **argv)
   Propagator_input_t  input;
 
   // Instantiate xml reader for DATA
-  XMLReader xml_in("INPUT_W.xml");
+  XMLReader xml_in("INPUT_t_propagator_twisted.xml");
 
   // Read data
   read(xml_in, "/propagator", input);
@@ -221,21 +205,19 @@ int main(int argc, char **argv)
 
   // Read in the configuration along with relevant information.
   multi1d<LatticeColorMatrix> u(Nd);
-  
-  //  XMLReader gauge_xml;
 
+  QDPIO::cout << "Computation of Meson Correlators for Twisted Mass QCD" << endl;
   QDPIO::cout << "Calculation for SU(" << Nc << ")" << endl;
   XMLReader gauge_file_xml, gauge_xml;
  
   // Start up the gauge field
   gaugeStartup(gauge_file_xml, gauge_xml, u, input.cfg);
 
-
   // Check if the gauge field configuration is unitarized
   unitarityCheck(u);
 
-  // Instantiate XML writer for XMLDAT
-  XMLFileWriter xml_out("XMLDAT");
+  // Instantiate XML writer for output
+  XMLFileWriter xml_out("t_propagator_twisted.xml");
   push(xml_out, "propagator");
 
   // Write out the input
@@ -243,9 +225,6 @@ int main(int argc, char **argv)
 
   // Write out the config header
   write(xml_out, "Config_info", gauge_xml);
-
-  // Write out the source header
-  //  write(xml_out, "Source_info", source_xml);
 
   push(xml_out, "Output_version");
   write(xml_out, "out_version", 1);
@@ -271,10 +250,8 @@ int main(int argc, char **argv)
   //  
 
   // this parameter will be read from the input file
-  bool do_gauge_transform ;
-  do_gauge_transform = false ;
-  //  do_gauge_transform = true ;
-
+  bool do_gauge_transform = false ;
+  read(xml_in, "/propagator/param/do_gauge_transform",do_gauge_transform );
 
   if( do_gauge_transform )
     {
@@ -309,13 +286,7 @@ int main(int argc, char **argv)
   //
   // Initialize fermion action
   //
-  Real G5_mass = 0.0 ; 
-
-  UnprecParWilsonFermActParams in_stuff ;
-  in_stuff.Mass = input.param.Mass ;
-  in_stuff.H = G5_mass ; 
-
-  UnprecParWilsonFermAct  S_f(fbc,in_stuff) ;
+  UnprecParWilsonFermAct  S_f(fbc,input.param.mass_param) ;
 
   // Set up a state for the current u,
   Handle<const ConnectState > state(S_f.createState(u));
@@ -329,7 +300,8 @@ int main(int argc, char **argv)
   LatticeFermion q_source, psi;
 
   multi1d<int> coord(Nd);
-  coord[0]=0; coord[1] = 0; coord[2] = 0; coord[3] = 0;
+  coord = input.param.t_srce ; 
+  //  coord[0]=0; coord[1] = 0; coord[2] = 0; coord[3] = 0;
   int t_source = coord[Nd - 1] ;
   QDPIO::cout << "Source time slice = " << t_source << endl;
 
@@ -341,8 +313,8 @@ int main(int argc, char **argv)
   for(int color_source = 0; color_source < Nc; ++color_source) 
     for(int spin_source = 0 ; spin_source < Ns ; ++spin_source)
       {
-	QDPIO::cout << "Inversion for Color =  " << color_source << endl;
-	QDPIO::cout << "Inversion for Spin =  " << spin_source << endl;
+	QDPIO::cout << "Inversion for Color =  " << color_source ; 
+	QDPIO::cout << " Spin =  " << spin_source << endl;
 
 	q_source = zero ;
 	srcfil(q_source, coord, color_source, spin_source);
@@ -358,7 +330,8 @@ int main(int argc, char **argv)
         ncg_had += n_count;
       
         push(xml_out,"Qprop");
-        write(xml_out, "Mass" , input.param.Mass);
+        write(xml_out, "Mass" , input.param.mass_param.Mass);
+        write(xml_out, "gamma5_mass" , input.param.mass_param.H);
         write(xml_out, "RsdCG", input.param.invParam.RsdCG);
         write(xml_out, "n_count", n_count);
         pop(xml_out);
