@@ -1,3 +1,9 @@
+01/13/2005 -- Balint Joo
+
+	Version 1.17.0. Major reorg of molecdyn dir. Files split and
+        rearranged. Basic HMC structure in place - still some polishing.
+        Gauge acts like plaq,rect,pg seem to all work.
+
 01/12/2005 -- Robert Edwards
 
 	Version 1.16.1. Added new gauge actions (wrappers over plaq,rect,pg).
