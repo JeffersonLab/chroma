@@ -11,16 +11,8 @@ bool linkage_hack()
 {
   bool foo = true;
 
-
-  // GaugeBC's
-  foo &= SimpleGaugeBCEnv::registered;
-  foo &= PeriodicGaugeBCEnv::registered;
-
-  // GaugeActs
-  foo &= WilsonGaugeActEnv::registered;
-
   // Gauge Monomials
-  foo &= WilsonGaugeMonomialEnv::registered;
+  foo &= GaugeMonomialEnv::registered;
 
   // 4D Ferm Monomials
   foo &= UnprecTwoFlavorWilsonTypeFermMonomialEnv::registered;
