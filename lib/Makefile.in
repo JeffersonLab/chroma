@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.122 2004-01-08 11:53:08 bjoo Exp $
+# $Id: Makefile.in,v 1.123 2004-01-08 17:11:52 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -301,7 +301,8 @@ libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
                szin_io.cc readszin.cc writeszin.cc su3proj.cc sun_proj.cc \
                gaus_smear.cc hyp_smear.cc ape_smear.cc \
                klein_gord.cc laplacian.cc displacement.cc \
-               su2extract.cc sunfill.cc invcg1.cc invcg2.cc invcg2_array.cc qprop_io.cc \
+               su2extract.cc sunfill.cc invcg1.cc invcg2.cc invcg2_array.cc \
+	       minvcg.cc qprop_io.cc \
                milc_io.cc readmilc.cc writemilc.cc \
                axgauge.cc coulgauge.cc grelax.cc polar_dec.cc rot_colvec.cc \
 	       transf.cc param_io.cc\
@@ -319,17 +320,18 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	szin_io.cc readszin.cc writeszin.cc su3proj.cc sun_proj.cc \
 	gaus_smear.cc hyp_smear.cc ape_smear.cc klein_gord.cc \
 	laplacian.cc displacement.cc su2extract.cc sunfill.cc invcg1.cc \
-	invcg2.cc invcg2_array.cc qprop_io.cc milc_io.cc readmilc.cc \
-	writemilc.cc axgauge.cc coulgauge.cc grelax.cc polar_dec.cc \
-	rot_colvec.cc transf.cc param_io.cc baryon_w.cc mesons_w.cc \
-	curcor2_w.cc lwldslash_w.cc formfac_w.cc mesonseqsrc_w.cc \
-	barseqsrc_w.cc seqpiontest_w.cc sink_smear2_w.cc barcomp_w.cc \
-	ldwfdslash_w.cc walfil_w.cc fermact_qprop.cc \
-	prec_fermact_qprop.cc unprec_wilson_fermact_w.cc \
-	unprec_wilson_linop_w.cc prec_wilson_fermact_w.cc \
-	prec_wilson_linop_w.cc unprec_dwf_fermact_w.cc \
-	unprec_dwf_linop_w.cc dwffld_w.cc fermact_qprop_array.cc \
-	prec_fermact_qprop_array.cc unprec_dwf_fermact_base_w.cc \
+	invcg2.cc invcg2_array.cc minvcg.cc qprop_io.cc milc_io.cc \
+	readmilc.cc writemilc.cc axgauge.cc coulgauge.cc grelax.cc \
+	polar_dec.cc rot_colvec.cc transf.cc param_io.cc baryon_w.cc \
+	mesons_w.cc curcor2_w.cc lwldslash_w.cc formfac_w.cc \
+	mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
+	sink_smear2_w.cc barcomp_w.cc ldwfdslash_w.cc walfil_w.cc \
+	fermact_qprop.cc prec_fermact_qprop.cc \
+	unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
+	prec_wilson_fermact_w.cc prec_wilson_linop_w.cc \
+	unprec_dwf_fermact_w.cc unprec_dwf_linop_w.cc dwffld_w.cc \
+	fermact_qprop_array.cc prec_fermact_qprop_array.cc \
+	unprec_dwf_fermact_base_w.cc \
 	unprec_dwf_fermact_qprop_array_w.cc \
 	unprec_dwf_fermact_array_w.cc unprec_dwf_linop_array_w.cc \
 	unprec_ovdwf_fermact_array_w.cc unprec_ovdwf_linop_array_w.cc \
@@ -419,11 +421,11 @@ am_libchroma_a_OBJECTS = rgauge.$(OBJEXT) taproj.$(OBJEXT) \
 	ape_smear.$(OBJEXT) klein_gord.$(OBJEXT) laplacian.$(OBJEXT) \
 	displacement.$(OBJEXT) su2extract.$(OBJEXT) sunfill.$(OBJEXT) \
 	invcg1.$(OBJEXT) invcg2.$(OBJEXT) invcg2_array.$(OBJEXT) \
-	qprop_io.$(OBJEXT) milc_io.$(OBJEXT) readmilc.$(OBJEXT) \
-	writemilc.$(OBJEXT) axgauge.$(OBJEXT) coulgauge.$(OBJEXT) \
-	grelax.$(OBJEXT) polar_dec.$(OBJEXT) rot_colvec.$(OBJEXT) \
-	transf.$(OBJEXT) param_io.$(OBJEXT) $(am__objects_1) \
-	$(am__objects_2) $(am__objects_3)
+	minvcg.$(OBJEXT) qprop_io.$(OBJEXT) milc_io.$(OBJEXT) \
+	readmilc.$(OBJEXT) writemilc.$(OBJEXT) axgauge.$(OBJEXT) \
+	coulgauge.$(OBJEXT) grelax.$(OBJEXT) polar_dec.$(OBJEXT) \
+	rot_colvec.$(OBJEXT) transf.$(OBJEXT) param_io.$(OBJEXT) \
+	$(am__objects_1) $(am__objects_2) $(am__objects_3)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
@@ -459,7 +461,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/mesonseqsrc_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/mesphas_follana_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/mesphas_s.Po ./$(DEPDIR)/mesplq.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/milc_io.Po ./$(DEPDIR)/naik_term_s.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/milc_io.Po ./$(DEPDIR)/minvcg.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/naik_term_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/overlap_fermact_base_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/overlapbu_linop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/p_src_w.Po ./$(DEPDIR)/param_io.Po \
@@ -613,6 +616,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesphas_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesplq.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/milc_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minvcg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/naik_term_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/overlap_fermact_base_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/overlapbu_linop_w.Po@am__quote@

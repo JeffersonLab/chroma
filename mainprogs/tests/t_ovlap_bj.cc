@@ -1,4 +1,4 @@
-// $Id: t_ovlap_bj.cc,v 1.14 2004-01-08 11:53:09 bjoo Exp $
+// $Id: t_ovlap_bj.cc,v 1.15 2004-01-08 17:11:53 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -675,6 +675,7 @@ int main(int argc, char **argv)
   
   */
 
+  /*
   // Try and reproduce the SZIN pion
   // Source and solution props
   LatticePropagator q_src, q_sol;
@@ -723,7 +724,25 @@ int main(int argc, char **argv)
     }
     write(xml_out, "relPionSZINdifference", difference);
   }    
+  */
 
+  multi1d<Real> shifts(3);
+  shifts[0] = 0.01;
+  shifts[1] = 0.02;
+  shifts[2] = 0.03;
+
+
+  gaussian(source);
+  multi1d<Real> RsdCGMulti(3);
+  RsdCGMulti[0] = params.rsd_cg;
+  RsdCGMulti[1] = params.rsd_cg;
+  RsdCGMulti[2] = params.rsd_cg;
+
+  multi1d<LatticeFermion> psi_multi(3);
+  int n_count=0;
+  
+  MInvCG(*MdagM, source, psi_multi, shifts, RsdCGMulti, params.max_cg, n_count);
+  
 
 
   pop(xml_out);

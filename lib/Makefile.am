@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.85 2004-01-08 11:53:08 bjoo Exp $
+# $Id: Makefile.am,v 1.86 2004-01-08 17:11:52 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -186,7 +186,8 @@ libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
                szin_io.cc readszin.cc writeszin.cc su3proj.cc sun_proj.cc \
                gaus_smear.cc hyp_smear.cc ape_smear.cc \
                klein_gord.cc laplacian.cc displacement.cc \
-               su2extract.cc sunfill.cc invcg1.cc invcg2.cc invcg2_array.cc qprop_io.cc \
+               su2extract.cc sunfill.cc invcg1.cc invcg2.cc invcg2_array.cc \
+	       minvcg.cc qprop_io.cc \
                milc_io.cc readmilc.cc writemilc.cc \
                axgauge.cc coulgauge.cc grelax.cc polar_dec.cc rot_colvec.cc \
 	       transf.cc param_io.cc
