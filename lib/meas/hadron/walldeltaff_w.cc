@@ -1,4 +1,4 @@
-// $Id: walldeltaff_w.cc,v 1.8 2004-06-11 02:08:54 edwards Exp $
+// $Id: walldeltaff_w.cc,v 1.9 2004-06-11 21:09:28 edwards Exp $
 /*! \file
  *  \brief Wall-sink delta^+ -> gamma+delta^+ form-factors 
  *
@@ -7,6 +7,7 @@
 
 #include "chromabase.h"
 #include "meas/hadron/walldeltaff_w.h"
+#include "util/ferm/gammasgn_w.h"
 
 using namespace QDP;
 
@@ -90,12 +91,40 @@ LatticeSpinMatrix deltaContract(const T1& u1,
 				const T3& d,
 				int n, int m)
 {
+#if 0
   LatticeSpinMatrix  S =
     2*deltaContract123( d, u1, u2, n, m) +   deltaContract123(u1, u2,  d, n, m)
     + 2*deltaContract132( d, u1, u2, n, m) + 2*deltaContract132(u1,  d, u2, n, m)
     + 2*deltaContract132(u1, u2,  d, n, m);
 
   S *= 2;
+#endif
+
+#if 0
+  LatticeSpinMatrix  S =
+      traceColor(u2 * traceSpin(quarkContract13(( d*Gamma(10))*Gamma(n), Gamma(10)*(Gamma(m)*u1))))
++ 0.5*traceColor( d * traceSpin(quarkContract13((u1*Gamma(10))*Gamma(n), Gamma(10)*(Gamma(m)*u2))))
+    + traceColor(u2 * quarkContract13(( d*Gamma(10))*Gamma(n), Gamma(10)*(Gamma(m)*u1)))
+    + traceColor(u2 * quarkContract13((u1*Gamma(10))*Gamma(n), Gamma(10)*(Gamma(m)* d)))
+    + traceColor( d * quarkContract13((u1*Gamma(10))*Gamma(n), Gamma(10)*(Gamma(m)*u2)));
+
+  S *= 4;
+#endif
+
+// (More) Optimized version
+#if 1
+  int n10 = 10 ^ n;
+  int m10 = 10 ^ m;
+
+  LatticeSpinMatrix  S =
+      traceColor(u2 * traceSpin(quarkContract13( d*Gamma(n10), Gamma(m10)*u1)))
++ 0.5*traceColor( d * traceSpin(quarkContract13(u1*Gamma(n10), Gamma(m10)*u2)))
+    + traceColor(u2 * quarkContract13( d*Gamma(n10), Gamma(m10)*u1))
+    + traceColor(u2 * quarkContract13(u1*Gamma(n10), Gamma(m10)* d))
+    + traceColor( d * quarkContract13(u1*Gamma(n10), Gamma(m10)*u2));
+
+  S *= 4 * gammaSgn(10,n) * gammaSgn(10,m);
+#endif
 
   return S;
 }
