@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hadron_s.h,v 1.1 2004-01-07 13:50:08 bjoo Exp $
+// $Id: hadron_s.h,v 1.2 2004-03-03 10:46:03 mcneile Exp $
 
 /*! \file
  * \brief Hadronic observables
@@ -21,6 +21,8 @@
 #include "mesphas_follana_s.h"
 #include "mesphas_s.h"
 #include "pions_follana_s.h"
+#include "stag_scalars_s.h"
 #include "walfil_s.h"
+#include "stag_propShift_s.h"
 
 #endif
