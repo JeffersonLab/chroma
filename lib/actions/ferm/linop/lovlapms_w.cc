@@ -1,4 +1,4 @@
-// $Id: lovlapms_w.cc,v 1.12 2004-04-16 14:58:29 bjoo Exp $
+// $Id: lovlapms_w.cc,v 1.13 2004-04-27 09:34:36 bjoo Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -305,19 +305,17 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
     // As usual we only update the unconverged systems
     for(s = 0; s < numroot; ++s)
     {
-      if (! convsP[s]) {
 
-
-	if (s == isz) {
-	  // Smallest shift 	  
-	  // p[k+1] = r[k+1] + a[k+1] p[k]
-	  // 
-	  // k is iteration index
-	  p[s] *= a;	        // Nc Ns  flops 
-	  p[s] += r;		// Nc Ns  flops 
-	}
-	else {
-
+      if (s == isz) {
+	// Smallest shift 	  
+	// p[k+1] = r[k+1] + a[k+1] p[k]
+	// 
+	// k is iteration index
+	p[s] *= a;	        // Nc Ns  flops 
+	p[s] += r;		// Nc Ns  flops 
+      }
+      else {
+	if (! convsP[s]) {
 	  // Unshifted systems
 	  // First compute shifted alpha
 	  as = a * z[iz][s]*bs[s] / (z[1-iz][s]*b);

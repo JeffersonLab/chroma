@@ -1,4 +1,4 @@
-// $Id: lovddag_w.cc,v 1.6 2004-04-16 14:58:29 bjoo Exp $
+// $Id: lovddag_w.cc,v 1.7 2004-04-27 09:34:36 bjoo Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -306,16 +306,14 @@ void lovddag::operator() (LatticeFermion& chi, const LatticeFermion& psi,
     /*  Compute the shifted as */
     /*  ps[k+1] := zs[k+1] r[k+1] + a[k+1] ps[k]; */
     for(s = 0; s < numroot; ++s) {
-      if (! convsP[s]) {
+      if (s == isz) {
 	
-	if (s == isz) {
-	  
-	  p[s] *= a;	         // Nc Ns  flops 
-	  p[s] += r;		 // Nc Ns  flops 
-	  
-	}
-	else {
-	  
+	p[s] *= a;	         // Nc Ns  flops 
+	p[s] += r;		 // Nc Ns  flops 
+	
+      }
+      else {
+	if (! convsP[s]) {	  
 	  as = a * z[iz][s]*bs[s] / (z[1-iz][s]*b);
 	  
 	  p[s] *= as;	/* Nc Ns  flops */

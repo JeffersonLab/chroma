@@ -1,4 +1,4 @@
-// $Id: minvcg.cc,v 1.4 2004-04-17 09:48:57 bjoo Exp $
+// $Id: minvcg.cc,v 1.5 2004-04-27 09:34:36 bjoo Exp $
 
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator
@@ -116,7 +116,8 @@ void MInvCG_a(const LinearOperator<T>& A,
   }
   
   // If chi has zero norm then the result is zero
-  Double chi_norm = sqrt(norm2(chi,sub));
+  Double chi_norm_sq = norm2(chi,sub);
+  Double chi_norm = sqrt(chi_norm_sq);
 
 
   if( toBool( chi_norm < fuzz )) { 
@@ -130,7 +131,7 @@ void MInvCG_a(const LinearOperator<T>& A,
   multi1d<Double> rsd_sq(n_shift);
   multi1d<Double> rsdcg_sq(n_shift);
 
-  Double cp = chi_norm * chi_norm;
+  Double cp = chi_norm_sq;
   int s;
   for(s = 0; s < n_shift; ++s)  {
     rsdcg_sq[s] = RsdCG[s] * RsdCG[s];  // RsdCG^2
@@ -224,19 +225,23 @@ void MInvCG_a(const LinearOperator<T>& A,
     //  Compute the shifted as */
     //  ps[k+1] := zs[k+1] r[k+1] + a[k+1] ps[k];
     for(s = 0; s < n_shift; ++s) {
-      if (!convsP[s]) {
-	
-	if (s == isz) {
-	  p[s][sub] *= Real(a);	                              // Nc Ns  flops 
-	  p[s][sub] += r;	                              // Nc Ns  flops 
-	}
-	else {
+
+      // Always update p[isz] even if isz is converged
+      // since the other p-s depend on it.
+      if (s == isz) {
+	p[s][sub] *= Real(a);	                              // Nc Ns  flops 
+	p[s][sub] += r;	                              // Nc Ns  flops 
+      }
+      else {
+	// Don't update other p-s if converged.
+	if( ! convsP[s] ) { 
 	  as = a * z[iz][s]*bs[s] / (z[1-iz][s]*b);
 	  
 	  p[s][sub] *= Real(as);	                             // Nc Ns  flops 
 	  p[s][sub] += r * Real(z[iz][s]);	                     // Nc Ns  flops 
 	}
       }
+
     }
 
     //  cp  =  | r[k] |**2 
@@ -290,19 +295,17 @@ void MInvCG_a(const LinearOperator<T>& A,
       if (! convsP[s] ) {
 
 	// Convergence methods 
-#if 0
 	// Check norm of shifted residuals 
 	Double css = c * z[iz][s]* z[iz][s];
 
 #if 0	
-	if (s == isz) {
-	  QDPIO::cout << "MInvCG: k = " << k <<"  r =  " 
-		      << sqrt(css/chi_norm) << endl;
-	}
+	QDPIO::cout << "MInvCG (shift=" << s << ") k = " << k <<"  r =  " 
+		    << css << " rsd_sq["<<s<<"] = " << rsd_sq[s] << endl;
 #endif 
+
 	convsP[s] = toBool(  css < rsd_sq[s] );
 
-#else
+	/* Old way -- check on the fact that psi[k+1]-psi[k} < RsdCG|psi[k+1]|
 	// Check relative error of solution 
 	cs = norm2(p[s],sub);         	        // 2 Nc Ns  flops 
 	d = norm2(psi[s],sub);         	        // 2 Nc Ns  flops 
@@ -310,14 +313,13 @@ void MInvCG_a(const LinearOperator<T>& A,
 	cs *= bs[s]*bs[s];
 	d *= rsdcg_sq[s];
 	convsP[s] = toBool( cs < d );
-#if 0
+
 	if (s == isz) {
 	  QDPIO::cout  << "MInvCG: k = " << k << " s = " << s << " r = " 
 		       << sqrt(cs) << " d = " << sqrt(d) << endl;
 	}
-#endif
 
-#endif
+	*/
       }
       convP &= convsP[s];
     }
@@ -326,7 +328,7 @@ void MInvCG_a(const LinearOperator<T>& A,
   }
 
 #if 1
-  // Expicitly check the solutions
+  // Expicitly check the ALL solutions
   for(s = 0; s < n_shift; ++s)
   {
     A(Ap, psi[s], PLUS);
@@ -338,7 +340,7 @@ void MInvCG_a(const LinearOperator<T>& A,
 
     QDPIO::cout << "MInvCG (conv): s = " << s 
                 << " shift = " << shifts[s]
-		<< " r = " <<  Real(sqrt(c/chi_norm)) << endl;
+		<< " r = " <<  Real(sqrt(c)/chi_norm) << endl;
 		
   }
   /* end */
@@ -346,6 +348,9 @@ void MInvCG_a(const LinearOperator<T>& A,
 
   if (n_count == MaxCG) {
     QDP_error_exit("too many CG iterationns: %d\n", n_count);
+  }
+  else {
+    QDPIO::cout << "MinvCG: " << n_count << " iterations" << endl;
   }
 
   END_CODE("MinvCG");
