@@ -1,10 +1,13 @@
-// $Id: spectrum_w.cc,v 1.23 2004-01-29 16:44:36 edwards Exp $
+// $Id: spectrum_w.cc,v 1.24 2004-01-31 22:43:00 edwards Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.23  2004-01-29 16:44:36  edwards
+//  Revision 1.24  2004-01-31 22:43:00  edwards
+//  Put in tests of array sizes.
+//
+//  Revision 1.23  2004/01/29 16:44:36  edwards
 //  Removed reading of Nd, Nc, and numKappa. Changed from Kappa to Mass!
 //  Can also read Kappa for back compatibility.
 //
@@ -243,7 +246,8 @@ void read(XMLReader& xml, const string& path, Spectrum_input_t& input)
 
     read(paramtop, "cfg_type", input.param.cfg_type);
     read(paramtop, "j_decay", input.param.j_decay);
-    if (input.param.j_decay < 0 || input.param.j_decay >= Nd) {
+    if (input.param.j_decay < 0 || input.param.j_decay >= Nd) 
+    {
       QDPIO::cerr << "Bad value: j_decay = " << input.param.j_decay << endl;
       QDP_abort(1);
     }
@@ -261,6 +265,18 @@ void read(XMLReader& xml, const string& path, Spectrum_input_t& input)
     read(paramtop, "Wvf_kind", input.param.Wvf_kind);
     read(paramtop, "wvf_param", input.param.wvf_param);
     read(paramtop, "WvfIntPar", input.param.WvfIntPar);
+
+    if (input.param.Mass.size() != input.param.wvf_param.size())
+    {
+      QDPIO::cerr << "Mass size inconsistent with wvf_param size" << endl;
+      QDP_abort(1);
+    }
+
+    if (input.param.wvf_param.size() != input.param.WvfIntPar.size())
+    {
+      QDPIO::cerr << "wvf_param size inconsistent with wvfintpar size" << endl;
+      QDP_abort(1);
+    }
 
     read(paramtop, "nrow", input.param.nrow);
     read(paramtop, "boundary", input.param.boundary);
