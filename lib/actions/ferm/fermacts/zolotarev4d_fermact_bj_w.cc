@@ -1,7 +1,8 @@
-// $Id: zolotarev4d_fermact_bj_w.cc,v 1.8 2004-01-02 03:31:56 edwards Exp $
+// $Id: zolotarev4d_fermact_bj_w.cc,v 1.9 2004-01-06 10:42:36 bjoo Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
+#include <iostream>
 #include <sstream>
 #include "chromabase.h"
 #include <zolotarev.h>
@@ -10,6 +11,9 @@
 #include "actions/ferm/fermacts/zolotarev_state.h"
 #include "actions/ferm/fermacts/zolotarev4d_fermact_bj_w.h"
 #include "actions/ferm/linop/lovlapms_w.h"
+#include "actions/ferm/linop/lmdagm_w.h"
+#include "meas/eig/eig_w.h"
+#include "actions/ferm/linop/lovddag_w.h"
 
 using namespace std;
 // Replace this with special overlap M^dag*M version
@@ -29,6 +33,7 @@ Zolotarev4DFermActBj::init(int& numroot,
   /* A scale factor which should bring the spectrum of the hermitian
      Wilson Dirac operator H into |H| < 1. */
   Real scale_fac;
+  XMLBufferWriter my_writer;
   
   /* Contains all the data necessary for Zolotarev partial fraction */
   /* -------------------------------------------------------------- */
@@ -78,11 +83,11 @@ Zolotarev4DFermActBj::init(int& numroot,
   eps = state.getApproxMin() * scale_fac;
 
 
-  push(writer, "Zolotarev4D");
-  Write(writer, MaxCGinner);
-  Write(writer, RsdCGinner);
-  Write(writer, NEigVal);
-  Write(writer, NEig);
+  push(my_writer, "Zolotarev4D");
+  Write(my_writer, MaxCGinner);
+  Write(my_writer, RsdCGinner);
+  Write(my_writer, NEigVal);
+  Write(my_writer, NEig);
 
     /* Below, when we fill in the coefficents for the partial fraction, 
        we include this factor, say t, appropriately, i.e.
@@ -106,13 +111,13 @@ Zolotarev4DFermActBj::init(int& numroot,
     rdata = zolotarev(toFloat(eps), RatPolyDeg, type);
     maxerr = (Real)(rdata -> Delta);
 
-    push(writer, "ZolotarevApprox");
-    Write(writer, eps);
-    Write(writer, scale_fac);
-    Write(writer, RatPolyDeg);
-    Write(writer, type);
-    Write(writer, maxerr);
-    pop(writer);
+    push(my_writer, "ZolotarevApprox");
+    Write(my_writer, eps);
+    Write(my_writer, scale_fac);
+    Write(my_writer, RatPolyDeg);
+    Write(my_writer, type);
+    Write(my_writer, maxerr);
+    pop(my_writer);
 
     /* The number of residuals and poles */
     /* Allocate the roots and residua */
@@ -137,12 +142,12 @@ Zolotarev4DFermActBj::init(int& numroot,
     }
 
 
-    push(writer,"ZolotarevPartFrac");
-    Write(writer, scale_fac);
-    Write(writer, coeffP);
-    Write(writer, resP);
-    Write(writer, rootQ);
-    pop(writer);
+    push(my_writer,"ZolotarevPartFrac");
+    Write(my_writer, scale_fac);
+    Write(my_writer, coeffP);
+    Write(my_writer, resP);
+    Write(my_writer, rootQ);
+    pop(my_writer);
 
     /* Now fill in the coefficients for real, i.e., taking the rescaling
        into account */
@@ -162,14 +167,14 @@ Zolotarev4DFermActBj::init(int& numroot,
     
 
   /* Write them out into the namelist */
-    push(writer,"ZolotarevPartFracResc");
-    Write(writer, scale_fac);
-    Write(writer, coeffP);
-    Write(writer, resP);
-    Write(writer, rootQ);
-    pop(writer);
+    push(my_writer,"ZolotarevPartFracResc");
+    Write(my_writer, scale_fac);
+    Write(my_writer, coeffP);
+    Write(my_writer, resP);
+    Write(my_writer, rootQ);
+    pop(my_writer);
 
-    pop(writer);
+    pop(my_writer);
 
 
     QDP_info("ZOLOTAREV_4d: n= %d scale= %g coeff= %g  Nwils= %d  m_q= %g  Rsd= %g",
@@ -198,6 +203,7 @@ Zolotarev4DFermActBj::init(int& numroot,
     }
   }
 
+  writer << my_writer;
 }
 
 //! Produce a linear operator for this action
@@ -242,9 +248,6 @@ Zolotarev4DFermActBj::linOp(Handle<const ConnectState> state_) const
   // Common initialization
   init(numroot, coeffP, resP, rootQ, NEig, EigValFunc, state);
 
-  /* The square M^dagger*M of the Wilson Dirac operators, used for
-     solving the multi-shift linear system */
-  /* H^2 = M^dag . M */
   
   /* Finally construct and pack the operator */
   /* This is the operator of the form (1/2)*[(1+mu) + (1-mu)*gamma_5*eps] */
@@ -255,6 +258,83 @@ Zolotarev4DFermActBj::linOp(Handle<const ConnectState> state_) const
 		      MaxCGinner, RsdCGinner);
   
   END_CODE("Zolotarev4DLinOp::create");
+}
+
+//! Produce a linear operator for this action
+/*!
+ * The operator acts on the entire lattice
+ *
+ * \param state_	 gauge field state  	 (Read)
+ */
+const LinearOperator<LatticeFermion>* 
+Zolotarev4DFermActBj::lMdagM(Handle<const ConnectState> state_, const Chirality& ichiral) const
+{
+
+  // If chirality is none, return traditional MdagM
+  if ( ichiral == CH_NONE ) {
+    cout << "Returning Normal MdagM" << endl << flush;
+    return lMdagM(state_);
+  }
+  else { 
+    const ZolotarevConnectState<LatticeFermion>& state = dynamic_cast<const ZolotarevConnectState<LatticeFermion>&>(*state_);
+    
+    if (state.getEigVec().size() != state.getEigVal().size())
+      QDP_error_exit("Zolotarev4DLinOp: inconsistent sizes of eigenvectors and values");
+
+    int NEigVal = state.getEigVal().size();
+
+    /* The actual number of eigenvectors to project out.
+       The highest of the valid low eigenmodes is not
+       projected out. So we will put NEig = NEigVal - 1 */  
+    int NEig;
+    
+    /* The number of residuals and poles */
+    int numroot;
+
+    /* The roots, i.e., the shifts in the partial fraction expansion */
+    multi1d<Real> rootQ;
+    
+    /* The residuals in the partial fraction expansion */
+    multi1d<Real> resP;
+    
+    /* This will be our alpha(0) which can be 0 depending on type */
+    /* an even- or oddness of RatPolyDeg*/
+    Real coeffP; 
+    
+    /* Array of values of the sign function evaluated on the eigenvectors of H */
+    multi1d<Real> EigValFunc(NEigVal);
+    
+  // Common initialization
+    init(numroot, coeffP, resP, rootQ, NEig, EigValFunc, state);
+
+  
+    /* Finally construct and pack the operator */
+    /* This is the operator of the form (1/2)*[(1+mu) + (1-mu)*gamma_5*eps] */
+    cout << "Returning lovddag" << endl << flush;
+    return new lovddag(*Mact, state_, m_q,
+		       numroot, coeffP, resP, rootQ, 
+		       NEig, EigValFunc, state.getEigVec(),
+		       MaxCGinner, RsdCGinner, ichiral);
+  
+  }
+  END_CODE("Zolotarev4DlMdagM");
+}
+
+//! Produce a conventional MdagM operator for this action
+/*!
+ * This is the operator which you can always use
+ * The operator acts on the entire lattice
+ *
+ * \param state_	 gauge field state  	 (Read)
+ */
+const LinearOperator<LatticeFermion>* 
+Zolotarev4DFermActBj::lMdagM(Handle<const ConnectState> state_) const
+{
+  // linOp news the linear operator and gives back pointer, 
+  // We call lmdagm with this pointer.
+  // lmdagm is the only owner
+  // No need to grab linOp with handle at this stage.
+  return new lmdagm<LatticeFermion>( linOp(state_) );
 }
 
 
@@ -334,36 +414,3 @@ Zolotarev4DFermActBj::createState(const multi1d<LatticeColorMatrix>& u_,
   return new ZolotarevConnectState<LatticeFermion>(u_tmp, lambda_lo_, evecs_lo_, lambda_hi_, approxMin, approxMax);
 }
 
-/*
-const ZolotarevConnectState<LatticeFermion>*
-Zolotarev4DFermActBj::createState(const multi1d<LatticeColorMatrix>& u_,
-				  const multi1d<Real>& lambda_lo_, 
-				  const multi1d<LatticeFermion>& evecs_lo_,
-				  const Real& lambda_hi_,
-				  const Real& approxMin_,
-				  const Real& approxMax_) const
-{
-
-  if ( lambda_lo_.size() != evecs_lo_.size() ) {
-    ostringstream error_str;
-    error_str << "Attempt to createState with no of low eigenvalues != no of low eigenvectors" << endl;
-    throw error_str.str();
-  }
-
-  if ( approxMin_ <= 0 ) { 
-    error_str << "Zolotarev4DFermActBj: approxMin_ has to be positive" << endl;
-    throw error_str.str();
-  }
-
-  if ( approxMax_ <= approxMin ) { 
-    error_str << "Zolotarev4DFermActBj: approxMax_ has to be larger than approxMin_" << endl;
-    throw error_str.str();
-  }
-
-  // First put in the BC
-  multi1d<LatticeColorMatrix> u_tmp = u_;
-  getFermBC().modifyU(u_tmp);
-
-  return new ZolotarevConnectState<LatticeFermion>(u_tmp, lambda_lo_, evecs_lo, lambda_hi, approxMin_, approxMax_);
-}
-*/

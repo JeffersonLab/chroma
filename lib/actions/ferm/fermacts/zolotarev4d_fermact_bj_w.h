@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev4d_fermact_bj_w.h,v 1.4 2004-01-02 03:19:41 edwards Exp $
+// $Id: zolotarev4d_fermact_bj_w.h,v 1.5 2004-01-06 10:42:36 bjoo Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -11,6 +11,7 @@
 #include "fermact.h"
 #include "actions/ferm/fermacts/overlap_fermact_base_w.h"
 #include "actions/ferm/fermacts/zolotarev_state.h"
+#include "meas/eig/eig_w.h"
 
 using namespace QDP;
 
@@ -23,6 +24,7 @@ using namespace QDP;
  * NOTE: for now we assume the kernel is a fund. rep. fermion type,
  * but that is not necessary
  */
+
 
 class Zolotarev4DFermActBj : public OverlapFermActBase
 {
@@ -45,9 +47,9 @@ public:
   //! Return the quark mass
   Real quark_mass() const {return m_q;}
 
-  //! Does this object really satisfy the Ginsparg-Wilson relation?
-  /*! HACK - NEED TO FIX THIS */
-  bool isChiral() const {return false;}
+
+  //! Dunno what this is for. This is a hack.
+  bool isChiral() const { return false; }
 
   XMLBufferWriter& getWriter() const { 
     return writer;
@@ -97,9 +99,12 @@ public:
    * NOTE: the arg MUST be the original base because C++ requires it for a virtual func!
    * The function will have to downcast to get the correct state
    */
-  //const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state) const;
-  const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state) const {};
+  const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state) const;
 
+  //! Produce a linear operator M^dag.M for this action to be applied
+  //  to a vector of known chirality. Chirality is passed in
+  const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state, 
+					       const Chirality& chirality) const;
   //! Destructor is automatic
   ~Zolotarev4DFermActBj() {}
 

@@ -1,4 +1,4 @@
-// $Id: t_ovlap_bj.cc,v 1.9 2004-01-03 14:54:42 bjoo Exp $
+// $Id: t_ovlap_bj.cc,v 1.10 2004-01-06 10:42:36 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -17,6 +17,8 @@
 #include "actions/ferm/fermacts/zolotarev_state.h"
 #include "actions/ferm/fermacts/zolotarev4d_fermact_bj_w.h"
 #include "actions/ferm/linop/lovlapms_w.h"
+#include "meas/eig/eig_w.h"
+#include "meas/hadron/srcfil.h"
 
 using namespace QDP;
 using namespace std;
@@ -280,6 +282,7 @@ void readEigenVecs(const multi1d<LatticeColorMatrix>& u,
     Write(xml_out, szin_enorms);
     pop(xml_out);
   }
+  pop(xml_out); // eigenvector test
 }
   
 int main(int argc, char **argv)
@@ -472,11 +475,116 @@ int main(int argc, char **argv)
 
   Double circle_norm = sqrt(norm2(s3));
   cout << "Circle Norm: " << circle_norm << endl;
-  xml_out << S.getWriter();
-  write(xml_out, "circleNorm", circle_norm);
+  Write(xml_out, circle_norm);
 
+  // Now test Naive MdagM
+  Handle< const LinearOperator<LatticeFermion> > MdagM( S.lMdagM(connect_state));
+
+  // MdagM created.
+  cout << "MdagM created" << endl;
+  // Apply MdagM to psi
+  (*MdagM)(s1, psi, PLUS);
+  
+  // Apply MdagM on its own
+  (*D_op)(tmp2, psi, PLUS);
+  (*D_op)(s2, tmp2, MINUS);
+
+  s3 = s2 - s1;
   // Time to bolt
+  Double internal_norm = sqrt(norm2(s3));
+  cout << " || MdagM - M^{dag}M || = " << internal_norm << endl;
+  Write(xml_out, internal_norm);
+
+  xml_out << S.getWriter();  
+
+
+  // Make a Source
+  LatticeFermion source;
+  multi1d<int> coord(Nd);
+  coord[0]=0; coord[1] = 0; coord[2] = 0; coord[3] = 0;
+ 
+  for(int i = 0; i < Ns; i++) {
+    source = zero;
+    srcfil(source, coord, 0, i);
+    Chirality c = isChiralVector(source);
+    switch ( c ) { 
+    case CH_NONE:
+      cout << "Ns = " << i <<" : No definite chirality" <<endl;
+      break;
+    case CH_PLUS:
+      cout << "Ns = " << i << " : Chirality is positive " << endl;
+      break;
+    case CH_MINUS:
+      cout << "Ns = " << i << " : Chirality is negative " << endl;
+      break;
+    default:
+      QDP_error_exit("What the heck?: %d\n", (int)c);
+      break;
+    }
+  }
+
+  // Zero the source
+  source = zero;
+
+  
+  ColorVector c=zero;
+  Complex cone = cmplx(Real(1), Real(0));
+  
+  // Set one element of the color vec to Cmplx(1)
+  pokeColor(c, cone, 0);
+
+  // Poke it into two locations of opposite chirality
+  Fermion f=zero;
+  pokeSpin(f, c, 0);
+  pokeSpin(f, c, 2);
+  
+  // Poke the site into source
+  pokeSite(source, f, coord);
+
+  cout << "(1,0,1,0) has chirality " << isChiralVector(source) << endl;
   pop(xml_out);
+
+  gaussian(source);
+  cout << "Gaussian source has chirality: " << isChiralVector(source) << endl;
+
+  int G5 = Ns * Ns  - 1;
+
+  s1 = 0.5*(source + Gamma(G5)*source);
+  s2 = 0.5*(source - Gamma(G5)*source);
+  
+  cout << "+ve chirality projection has chirality: " << isChiralVector(s1) << endl;
+  cout << "-ve chirality projection has chirality: " << isChiralVector(s2) << endl;
+
+  
+
+  for(int i = 0; i < Ns; i++ ) { 
+    source = zero;
+    srcfil(source, coord, 0, i);
+
+    Handle< const LinearOperator<LatticeFermion> >
+      MdagM_ch( S.lMdagM(connect_state, isChiralVector(source)) );
+
+    (*MdagM)(s1, source, PLUS);
+    (*MdagM_ch)(s2, source, PLUS);
+    
+    s3 = s1 - s2;
+    cout << "Spin Comp: " << i << ": || M dag M - lovddag || = " << sqrt(norm2(s3)) << endl;
+  }
+
+
+  cout << "Now non chiral work. Should get back Normal MdagM" << endl;
+  source = zero;
+  gaussian(source);
+
+  Handle< const LinearOperator<LatticeFermion> >
+    MdagM2 ( S.lMdagM(connect_state, isChiralVector(source)) );
+
+  (*MdagM)(s1, source, PLUS);
+  (*MdagM2)(s2, source, PLUS);
+  s3 = s1 - s2;
+  cout << "Non Chiral Source: || M dag M - MdagM(chi=0)  || = " << sqrt(norm2(s3)) << endl;
+
+
   QDP_finalize();
 
   exit(0);
