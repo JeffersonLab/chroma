@@ -33,18 +33,13 @@ namespace Chroma {
   class InlinePolyakovLoop : public AbsInlineMeasurement {
   public:
     ~InlinePolyakovLoop() {}
-
     InlinePolyakovLoop(const InlinePolyakovLoopParams& p_) : p(p_) {}
-
     InlinePolyakovLoop(const InlinePolyakovLoop& p_) : p(p_.p) {}
 
-    const unsigned long getFrequency(void) const {
-      return p.frequency;
-    }
-
+    unsigned long getFrequency(void) const {return p.frequency;}
 
     void operator()(const multi1d<LatticeColorMatrix>& u,
-		    const unsigned long update_no,
+		    unsigned long update_no,
 		    XMLWriter& xml_out); 
 
   private:

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_eigbnds.h,v 1.1 2005-02-07 15:54:53 edwards Exp $
+// $Id: inline_eigbnds.h,v 1.2 2005-02-10 15:50:47 edwards Exp $
 
 /*! \file
  * \brief Inline measurements for eigenvalue bounds
@@ -54,21 +54,21 @@ namespace Chroma
     InlineEigBndsMdagM(const InlineEigBndsMdagMParams& p) : params(p) {}
     InlineEigBndsMdagM(const InlineEigBndsMdagM& p) : params(p.params) {}
 
-    const unsigned long getFrequency(void) const {return params.frequency;}
+    unsigned long getFrequency(void) const {return params.frequency;}
 
     void operator()(const multi1d<LatticeColorMatrix>& u,
-		    const unsigned long update_no,
+		    unsigned long update_no,
 		    XMLWriter& xml_out); 
 
   protected:
     //! 4D
     void do4d(Handle< const LinearOperator<LatticeFermion> > MM,
-	      const unsigned long update_no,
+	      unsigned long update_no,
 	      XMLWriter& xml_out);
 
     //! 5D
     void do5d(Handle< const LinearOperator< multi1d<LatticeFermion> > > MM,
-	      const unsigned long update_no,
+	      unsigned long update_no,
 	      XMLWriter& xml_out);
 
   private:

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_eigbnds.cc,v 1.1 2005-02-07 15:54:53 edwards Exp $
+// $Id: inline_eigbnds.cc,v 1.2 2005-02-10 15:50:47 edwards Exp $
 /*! \file
  * \brief Inline measurements for eigenvalue bounds
  *
@@ -75,9 +75,11 @@ namespace Chroma {
   // "Do" helper on a 4D action
   void 
   InlineEigBndsMdagM::do4d(Handle< const LinearOperator<LatticeFermion> > MM,
-			   const unsigned long update_no,
+			   unsigned long update_no,
 			   XMLWriter& xml_out) 
   {
+    QDPIO::cout << "4D eig bnds" << endl;
+
     push(xml_out, "EigBndsMdagM");
     write(xml_out, "update_no", update_no);
 
@@ -139,9 +141,11 @@ namespace Chroma {
   // "Do" helper on a 5D action
   void 
   InlineEigBndsMdagM::do5d(Handle< const LinearOperator< multi1d<LatticeFermion> > > MM,
-			   const unsigned long update_no,
+			   unsigned long update_no,
 			   XMLWriter& xml_out) 
   {
+    QDPIO::cout << "5D eig bnds" << endl;
+
     push(xml_out, "EigBndsMdagM");
     write(xml_out, "update_no", update_no);
 
@@ -207,7 +211,7 @@ namespace Chroma {
   // The "do" function
   void 
   InlineEigBndsMdagM::operator()(const multi1d<LatticeColorMatrix>& u,
-				 const unsigned long update_no,
+				 unsigned long update_no,
 				 XMLWriter& xml_out) 
   {
     // Check success of the downcast 

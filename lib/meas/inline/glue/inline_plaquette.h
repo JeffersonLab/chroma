@@ -1,4 +1,4 @@
-// $Id: inline_plaquette.h,v 1.3 2005-02-07 04:11:27 edwards Exp $
+// $Id: inline_plaquette.h,v 1.4 2005-02-10 15:50:47 edwards Exp $
 /*! \file
  *  \brief Inline plaquette
  */
@@ -36,18 +36,13 @@ namespace Chroma {
   class InlinePlaquette : public AbsInlineMeasurement {
   public:
     ~InlinePlaquette() {}
-
     InlinePlaquette(const InlinePlaquetteParams& p) : frequency(p.frequency) {}
-
     InlinePlaquette(const InlinePlaquette& p) : frequency(p.frequency) {}
 
-    const unsigned long getFrequency(void) const {
-      return frequency;
-    }
-
+    unsigned long getFrequency(void) const {return frequency;}
 
     void operator()(const multi1d<LatticeColorMatrix>& u,
-		    const unsigned long update_no,
+		    unsigned long update_no,
 		    XMLWriter& xml_out); 
 
   private:

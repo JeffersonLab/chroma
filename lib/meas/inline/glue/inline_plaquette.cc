@@ -22,7 +22,7 @@ namespace Chroma {
 
   void 
   InlinePlaquette::operator()(const multi1d<LatticeColorMatrix>& u,
-			      const unsigned long update_no,
+			      unsigned long update_no,
 			      XMLWriter& xml_out) 
   {
     

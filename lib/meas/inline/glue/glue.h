@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: glue.h,v 1.3 2005-02-07 04:11:27 edwards Exp $
+// $Id: glue.h,v 1.4 2005-02-10 15:50:47 edwards Exp $
 /*! \file
  * \brief Inline glue measurements
  *
@@ -20,5 +20,6 @@
 
 #include "inline_plaquette.h"
 #include "inline_polylp.h"
+#include "inline_wilslp.h"
 
 #endif

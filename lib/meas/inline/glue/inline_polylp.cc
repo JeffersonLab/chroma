@@ -22,8 +22,8 @@ namespace Chroma {
 
   void 
   InlinePolyakovLoop::operator()(const multi1d<LatticeColorMatrix>& u,
-			      const unsigned long update_no,
-			      XMLWriter& xml_out) 
+				 unsigned long update_no,
+				 XMLWriter& xml_out) 
   {
 
     QDPIO::cout << "In POLYLOOP CODE" << endl;
