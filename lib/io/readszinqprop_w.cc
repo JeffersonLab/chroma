@@ -1,4 +1,4 @@
-// $Id: readszinqprop_w.cc,v 1.6 2003-04-30 21:19:33 edwards Exp $
+// $Id: readszinqprop_w.cc,v 1.7 2003-05-23 05:07:01 edwards Exp $
 /*!
  * @file
  * @brief  Read an old SZIN-style (checkerboarded) quark propagator
@@ -59,5 +59,3 @@ void readSzinQprop(LatticePropagator& q, const string& file)
 
   cfg_in.close();
 }
-
-QDP_END_NAMESPACE();

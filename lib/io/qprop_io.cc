@@ -1,5 +1,5 @@
 /*
- *  $Id: qprop_io.cc,v 1.2 2003-04-17 20:09:38 dgr Exp $
+ *  $Id: qprop_io.cc,v 1.3 2003-05-23 05:06:48 edwards Exp $
  *
  *  These are a few simple I/O routines that we can use until QIO makes its appearance
  *  I have tried to include a simple header by means of a structure.
@@ -13,8 +13,6 @@
 
 #include <string>
 using std::string;
-
-QDP_BEGIN_NAMESPACE(QDP);
 
 /*
  *  A simple binary writer for the propagators

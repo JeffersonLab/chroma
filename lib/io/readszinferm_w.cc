@@ -1,4 +1,4 @@
-// $Id: readszinferm_w.cc,v 1.1 2003-05-09 20:27:11 edwards Exp $: readszinqprop_w.cc,v 1.6 2003/04/30 21:19:33 edwards Exp $
+// $Id: readszinferm_w.cc,v 1.2 2003-05-23 05:07:00 edwards Exp $: readszinqprop_w.cc,v 1.6 2003/04/30 21:19:33 edwards Exp $
 /*!
  * @file
  * @brief  Read an old SZIN-style (checkerboarded) lattice Dirac fermion
@@ -54,5 +54,3 @@ void readSzinFerm(LatticeFermion& q, const string& file)
 
   cfg_in.close();
 }
-
-QDP_END_NAMESPACE();
