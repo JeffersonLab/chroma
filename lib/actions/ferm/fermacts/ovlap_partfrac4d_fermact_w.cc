@@ -1,4 +1,4 @@
-// $Id: ovlap_partfrac4d_fermact_w.cc,v 1.3 2004-09-27 20:18:15 bjoo Exp $
+// $Id: ovlap_partfrac4d_fermact_w.cc,v 1.4 2004-09-27 21:34:49 bjoo Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -1217,7 +1217,65 @@ namespace Chroma
   }
 
 
+  const OverlapConnectState<LatticeFermion>*
+  OvlapPartFrac4DFermAct::createState(const multi1d<LatticeColorMatrix>& u_,
+	      const Real& approxMin_,
+	      const Real& approxMax_) const
+  {
+    ostringstream error_str;
+    
+    
+    if ( toBool(approxMin_ < 0 )) { 
+      error_str << "OverlapConnectState::createState: approxMin_ has to be positive" << endl;
+      throw error_str.str();
+    }
+    
+    if ( toBool(approxMax_ < approxMin_) ) { 
+      error_str << "OverlapConnectState::createState: approxMax_ has to be larger than approxMin_" << endl;
+      throw error_str.str();
+    }
+    
+    
+    // First put in the BC
+    multi1d<LatticeColorMatrix> u_tmp = u_;
+    getFermBC().modifyU(u_tmp);
+    
+    return new OverlapConnectState<LatticeFermion>(u_tmp, approxMin_, approxMax_);
+  }
 
+  const OverlapConnectState<LatticeFermion>*
+  OvlapPartFrac4DFermAct::createState(const multi1d<LatticeColorMatrix>& u_,
+	      const multi1d<Real>& lambda_lo_, 
+	      const multi1d<LatticeFermion>& evecs_lo_,
+	      const Real& lambda_hi_) const
+  {
+    ostringstream error_str;
+    
+    if ( lambda_lo_.size() == 0 ) {
+      error_str << "Attempt to createState with 0 e-values and no approxMin" << endl;
+      throw error_str.str();
+    }
+    
+    if ( lambda_lo_.size() != evecs_lo_.size() ) {
+      error_str << "Attempt to createState with no of low eigenvalues != no of low eigenvectors" << endl;
+      throw error_str.str();
+    }
+    
+    Real approxMax = lambda_hi_;
+    Real approxMin = fabs(lambda_lo_[ lambda_lo_.size() - 1 ]);
+    
+    // First put in the BC
+    multi1d<LatticeColorMatrix> u_tmp = u_;
+    getFermBC().modifyU(u_tmp);
+    
+    return new OverlapConnectState<LatticeFermion>(u_tmp, 
+				      lambda_lo_, 
+				      evecs_lo_, 
+				      lambda_hi_, 
+				      approxMin, 
+				      approxMax);
+  }    
+  
   const OverlapConnectState<LatticeFermion>* 
   OvlapPartFrac4DFermAct::createState(const multi1d<LatticeColorMatrix>& u_,
 				  XMLReader& state_info_xml,
