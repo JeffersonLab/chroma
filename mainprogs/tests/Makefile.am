@@ -222,3 +222,8 @@ build_chroma_libs:
 .PHONY: rebuild_other_libs
 rebuild_other_libs:
 	cd $(BUILDDIR)/other_libs ; $(MAKE)
+
+# xmldiff targets
+.PHONY: xcheck
+xcheck:
+	perl ../../scripts/run_xmldiff.pl
