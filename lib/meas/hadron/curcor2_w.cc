@@ -1,4 +1,4 @@
-// $Id: curcor2_w.cc,v 1.5 2003-10-29 21:42:30 edwards Exp $
+// $Id: curcor2_w.cc,v 1.6 2003-10-30 01:53:57 edwards Exp $
 /*! \file
  *  \brief Mesonic current correlators
  */
@@ -56,7 +56,7 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
   if ( no_vec_cur < 2 || no_vec_cur > 4 )
     QDP_error_exit("no_vec_cur must be 2 or 3 or 4", no_vec_cur);
 
-  // Beginning group
+  // Initial group
   push(xml, xml_group);
 
   // Length of lattice in decay direction
@@ -65,28 +65,30 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
   LatticePropagator tmp_prop1;
   LatticePropagator tmp_prop2;
 
+  LatticeReal psi_sq;
+  LatticeReal chi_sq;
+
   multi1d<Double> hsum(length);
 
   // Construct the anti-quark propagator from quark_prop_2
   int G5 = Ns*Ns-1;
   LatticePropagator anti_quark_prop =  Gamma(G5) * quark_prop_2 * Gamma(G5);
-        
-  /* Construct the 2*(Nd-1) non-local vector-current to rho correlators */
-  LatticeReal psi_sq;
-  LatticeReal chi_sq;
 
+  // Vector currents
   {
-    XMLArrayWriter xml_dir(xml,Nd-1);
-    push(xml_dir, "Vector_current");
+    multi2d<Real> vector_current(no_vec_cur*(Nd-1), length);
+
+    /* Construct the 2*(Nd-1) non-local vector-current to rho correlators */
+    int kv = -1;
+    int kcv = Nd-2;
 
     for(int k = 0; k < Nd; ++k)
     {
       if( k != j_decay )
       {
-	push(xml_dir);     // next array element
-	write(xml_dir, "ortho_dir_num", k);
-
 	int n = 1 << k;
+	kv = kv + 1;
+	kcv = kcv + 1;
 
 	tmp_prop2 = u[k] * shift(quark_prop_1, FORWARD, k) * Gamma(n);
 	chi_sq = - real(trace(adj(anti_quark_prop) * tmp_prop2));
@@ -104,134 +106,124 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
 
 	/* Do a slice-wise sum. */
 
-//	Real dummy1 = Real(meson_eta[n]) / Real(2);
+//    Real dummy1 = Real(meson_eta[n]) / Real(2);
 	Real dummy1 = 0.5;
 
 	/* The nonconserved vector current first */
-
 	hsum = sumMulti(psi_sq, phases.getSubset());
 
-	multi1d<Real> nonconserved_vector_current(length);
 	for(int t = 0; t < length; ++t)
 	{
 	  int t_eff = (t - t0 + length) % length;
-	  nonconserved_vector_current[t_eff] = dummy1 * Real(hsum[t]);
+	  vector_current[kv][t_eff] = dummy1 * Real(hsum[t]);
 	}
-	Write(xml_dir, nonconserved_vector_current);
 
 	/* The conserved vector current next */
-
 	hsum = sumMulti(chi_sq, phases.getSubset());
 
-	multi1d<Real> conserved_vector_current(length);
 	for(int t = 0; t < length; ++t)
 	{
 	  int t_eff = (t - t0 + length) % length;
-	  conserved_vector_current[t_eff] = dummy1 * Real(hsum[t]);
+	  vector_current[kcv][t_eff] = dummy1 * Real(hsum[t]);
 	}
-	Write(xml_dir, conserved_vector_current);
-      
-	pop(xml_dir);
       }
     }
 
-    pop(xml_dir);
-  }
 
-  /* Construct the O(a) improved vector-current to rho correlators,
-     if desired */
-
-  if ( no_vec_cur >= 3 )
-  {
-    XMLArrayWriter xml_dir(xml,Nd-1);
-    push(xml_dir, "Oa_improved_vector_current");
-
-    int jd = 1 << j_decay;
-
-    for(int k = 0; k < Nd; ++k)
+    /* Construct the O(a) improved vector-current to rho correlators,
+       if desired */
+    if ( no_vec_cur >= 3 )
     {
-      if( k != j_decay )
+      kv = 2*Nd-3;
+      int jd = 1 << j_decay;
+
+      for(int k = 0; k < Nd; ++k)
       {
-	push(xml_dir);     // next array element
-	write(xml_dir, "ortho_dir_num", k);
+	if( k != j_decay )
+	{
+	  int n = 1 << k;
+	  kv = kv + 1;
+	  int n1 = n ^ jd;
 
-	int n = 1 << k;
-	psi_sq = 0;
-	int n1 = n ^ jd;
+	  psi_sq = real(trace(adj(anti_quark_prop) * Gamma(n1) * quark_prop_1 * Gamma(n)));
 
-	psi_sq = real(trace(adj(anti_quark_prop) * Gamma(n1) * quark_prop_1 * Gamma(n)));
-
-	/* Do a slice-wise sum. */
-	hsum = sumMulti(psi_sq, phases.getSubset());
 //	dummy1 = - Real(meson_eta[n]);
-	Real dummy1 = - 1;
+	  Real dummy1 = - 1;
 
-	multi1d<Real> improved_vector_current(length);
-	for(int t = 0; t < length; ++t)
-	{
-	  int t_eff = (t - t0 + length) % length;
-	  improved_vector_current[t_eff] = dummy1 * Real(hsum[t]);
+	  /* Do a slice-wise sum. */
+	  hsum = sumMulti(psi_sq, phases.getSubset());
+
+	  for(int t = 0; t < length; ++t)
+	  {
+	    int t_eff = (t - t0 + length) % length;
+	    vector_current[kv][t_eff] = dummy1 * Real(hsum[t]);
+	  }
 	}
-	Write(xml_dir, improved_vector_current);
-      
-	pop(xml_dir);
       }
     }
 
-    pop(xml_dir);
-  }
 
-  /* Construct the local vector-current to rho correlators, if desired */
-
-  if ( no_vec_cur >= 4 )
-  {
-    XMLArrayWriter xml_dir(xml,Nd-1);
-    push(xml_dir, "Local_vector_current");
-
-    for(int k = 0; k < Nd; ++k)
+    /* Construct the local vector-current to rho correlators, if desired */
+    if ( no_vec_cur >= 4 )
     {
-      if( k != j_decay )
+      kv = 3*Nd-4;
+
+      for(int k = 0; k < Nd; ++k)
       {
-	push(xml_dir);     // next array element
-	write(xml_dir, "ortho_dir_num", k);
-
-	int n = 1 << k;
-	psi_sq = 0;
-
-	psi_sq = real(trace(adj(anti_quark_prop) * Gamma(n) * quark_prop_1 * Gamma(n)));
-
-	/* Do a slice-wise sum. */
-	hsum = sumMulti(psi_sq, phases.getSubset());
-//	dummy1 = Real(meson_eta[n]);
-	Real dummy1 = 1;
-
-	multi1d<Real> local_vector_current(length);
-	for(int t = 0; t < length; ++t)
+	if( k != j_decay )
 	{
-	  int t_eff = (t - t0 + length) % length;
-	  local_vector_current[t_eff] = dummy1 * Real(hsum[t]);
+	  int n = 1 << k;
+	  kv = kv + 1;
+
+	  psi_sq = real(trace(adj(anti_quark_prop) * Gamma(n) * quark_prop_1 * Gamma(n)));
+
+//	dummy1 = Real(meson_eta[n]);
+	  Real dummy1 = 1;
+
+	  /* Do a slice-wise sum. */
+	  hsum = sumMulti(psi_sq, phases.getSubset());
+
+	  for(int t = 0; t < length; ++t)
+	  {
+	    int t_eff = (t - t0 + length) % length;
+	    vector_current[kv][t_eff] = dummy1 * Real(hsum[t]);
+	  }
 	}
-	Write(xml_dir, local_vector_current);
-      
-	pop(xml_dir);
       }
     }
 
-    pop(xml_dir);
+
+    // Loop over currents to print
+    XMLArrayWriter xml_cur(xml,vector_current.size2());
+    push(xml_cur, "Vector_currents");
+
+    for (int current_value=0; current_value < vector_current.size2(); ++current_value)
+    {
+      push(xml_cur);     // next array element
+
+      write(xml_cur, "current_value", current_value);
+      write(xml_cur, "vector_current", vector_current[current_value]);
+
+      pop(xml_cur);
+    }
+
+    pop(xml_cur);
   }
 
 
+  //
+  // Axial currents
+  //
   {
-    /* Construct the 2 axial-current to pion correlators */
+    multi2d<Real> axial_current(2, length);
 
+    /* Construct the 2 axial-current to pion correlators */
     int n = G5 ^ (1 << j_decay);
 
     /* The local axial current first */
-
     psi_sq = real(trace(adj(anti_quark_prop) * Gamma(n) * quark_prop_1 * Gamma(G5)));
 
     /* The nonlocal axial current next */
-
     chi_sq  = real(trace(adj(anti_quark_prop) * Gamma(n) * 
 			 u[j_decay] * shift(quark_prop_1, FORWARD, j_decay) * Gamma(G5)));
 
@@ -244,32 +236,43 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
     Real dummy1 = Real(-1) / Real(2);
 
     /* The local axial current first */
-
     hsum = sumMulti(psi_sq, phases.getSubset());
 
-    multi1d<Real> local_axial_current(length);
     for(int t = 0; t < length; ++t)
     {
       int t_eff = (t - t0 + length) % length;
-      local_axial_current[t_eff] = - Real(hsum[t]);
+      axial_current[1][t_eff] = - Real(hsum[t]);
     }
-    Write(xml, local_axial_current);
-
 
     /* The nonlocal axial current next */
-
     hsum = sumMulti(chi_sq, phases.getSubset());
 
-    multi1d<Real> nonlocal_axial_current(length);
     for(int t = 0; t < length; ++t)
     {
       int t_eff = (t - t0 + length) % length;
-      nonlocal_axial_current[t_eff] = dummy1 * Real(hsum[t]);
+      axial_current[0][t_eff] = dummy1 * Real(hsum[t]);
     }
-    Write(xml, nonlocal_axial_current);
+
+
+    // Loop over currents to print
+    XMLArrayWriter xml_cur(xml,axial_current.size2());
+    push(xml_cur, "Axial_currents");
+
+    for (int current_value=0; current_value < axial_current.size2(); ++current_value)
+    {
+      push(xml_cur);     // next array element
+
+      write(xml_cur, "current_value", current_value);
+      write(xml_cur, "axial_current", axial_current[current_value]);
+
+      pop(xml_cur);
+    }
+
+    pop(xml_cur);
   }
 
-  pop(xml);
+
+  pop(xml);  // xml_group
               
   END_CODE("curcor2");
 }
