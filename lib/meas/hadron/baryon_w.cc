@@ -1,4 +1,4 @@
-// $Id: baryon_w.cc,v 1.12 2004-04-22 01:27:06 edwards Exp $ 
+// $Id: baryon_w.cc,v 1.13 2004-04-22 01:34:51 edwards Exp $ 
 /*! \file
  *  \brief Baryon 2-pt functions
  */
@@ -310,7 +310,7 @@ void baryon(LatticePropagator& quark_propagator,
 
     case 6:
       // Proton^+_3; use also for Lambda_3!
-      // |P_3, s_z=1/2> = (d C gamma_5 (1/2)(1 + gamma_4) u) "u_up" 
+      // |P_3, s_z=1/2> = (d C (1/2)(1 + gamma_4) gamma_5 u) "u_up" 
       // C gamma_5 - C gamma_5 gamma_4 = Gamma(5) + Gamma(13)
       // S_proj = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
       //            = (1 + Gamma(8) - i G(3) - i G(11)) / 2
@@ -322,9 +322,9 @@ void baryon(LatticePropagator& quark_propagator,
 
     case 7:
       // Lambda_3 = 3*Proton_3 (for compatibility with heavy-light routine)
-      // |L_3, s_z=1/2> = 2*(u C gamma_5 (1/2)(1 + gamma_4) d) "s_up"
-      //                  + (s C gamma_5 (1/2)(1 + gamma_4) d) "u_up"
-      //                  + (u C gamma_5 (1/2)(1 + gamma_4) s) "d_up"
+      // |L_3, s_z=1/2> = 2*(u C (1/2)(1 + gamma_4) gamma_5 d) "s_up"
+      //                  + (s C (1/2)(1 + gamma_4) gamma_5 d) "u_up"
+      //                  + (u C (1/2)(1 + gamma_4) gamma_5 s) "d_up"
       // S_proj = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
       //            = (1 + Gamma(8) - i G(3) - i G(11)) / 2
       b_prop *= 3.0;
@@ -332,8 +332,8 @@ void baryon(LatticePropagator& quark_propagator,
 
     case 8:
       // Sigma^{*+}_3
-      // |D_3, s_z=3/2> = 2*(d C gamma_- (1/2)(1 + gamma_4) d) u) "u_up"
-      //                  + (u C gamma_- (1/2)(1 + gamma_4) d) u) "d_up"
+      // |D_3, s_z=3/2> = 2*(d C (1/2)(1 + gamma_4) gamma_- d) u) "u_up"
+      //                  + (u C (1/2)(1 + gamma_4) gamma_- d) u) "d_up"
       // S_proj = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
       //            = (1 + Gamma(8) - i G(3) - i G(11)) / 2
       di_quark = quarkContract13(quark_propagator * CgmNR,
@@ -371,7 +371,7 @@ void baryon(LatticePropagator& quark_propagator,
     
     case 11:
       // Proton^+_6; use also for Lambda_6!
-      // |P_6, s_z=1/2> = (d C gamma_5 (1/2)(1 + gamma_4) u) "u_up", see comments at top
+      // |P_6, s_z=1/2> = (d C (1/2)(1 + gamma_4) gamma_5 u) "u_up", see comments at top
       // C gamma_5 = Gamma(5)
       // Unpolarized:
       // S_proj_unpol = T = (1/2)(1 + gamma_4)
