@@ -1,4 +1,4 @@
-// $Id: unprec_ovlap_contfrac5d_fermact_array_w.cc,v 1.3 2004-10-01 17:48:30 bjoo Exp $
+// $Id: unprec_ovlap_contfrac5d_fermact_array_w.cc,v 1.4 2004-10-02 03:43:08 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -490,6 +490,8 @@ namespace Chroma
       QDP_abort(1);
       
     }
+
+    return 0;
   }
 
 
