@@ -1,4 +1,4 @@
-// $Id: lw_1loop_gaugeact.cc,v 1.1 2005-01-13 04:30:51 edwards Exp $
+// $Id: lw_1loop_gaugeact.cc,v 1.2 2005-01-15 20:29:06 edwards Exp $
 /*! \file
  *  \brief 1-loop tadpole-improved Luscher-Weisz gauge action
  */
@@ -55,10 +55,10 @@ namespace Chroma
     Real c0 = beta;
     plaq = new PlaqGaugeAct(gbc,c0);
 
-    Real c1 = -(1 + 0.4805*alpha_s) / (20*u0*u0);
+    Real c1 = -c0 * (1 + 0.4805*alpha_s) / (20*u0*u0);
     rect = new RectGaugeAct(gbc,c1);
 
-    Real c2 = -0.03325 * alpha_s / (u0*u0);
+    Real c2 = -c0 * 0.03325 * alpha_s / (u0*u0);
     pg = new PgGaugeAct(gbc,c2);
   } 
 

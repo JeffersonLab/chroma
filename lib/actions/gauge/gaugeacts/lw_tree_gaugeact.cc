@@ -1,4 +1,4 @@
-// $Id: lw_tree_gaugeact.cc,v 1.1 2005-01-13 04:30:51 edwards Exp $
+// $Id: lw_tree_gaugeact.cc,v 1.2 2005-01-15 20:29:06 edwards Exp $
 /*! \file
  *  \brief Tree-level tadpole-improved Luscher-Weisz gauge action
  */
@@ -53,7 +53,7 @@ namespace Chroma
     Real c0 = beta;
     plaq = new PlaqGaugeAct(gbc,c0);
 
-    Real c1 = -(1/(20*u0*u0))*beta;
+    Real c1 = -c0 * (1/(20*u0*u0));
     rect = new RectGaugeAct(gbc,c1);
   } 
 
