@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_nef_linop_array_w.h,v 1.12 2004-10-03 01:21:19 edwards Exp $
+// $Id: prec_nef_linop_array_w.h,v 1.13 2004-10-22 03:37:24 edwards Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned NEF domain-wall fermion linear operator
  */
@@ -26,6 +26,16 @@ using namespace QDP;
   public:
     //! Partial constructor
     EvenOddPrecNEFDWLinOpArray() {}
+
+
+    // ***** HACK *****
+    EvenOddPrecNEFDWLinOpArray(const multi1d<LatticeColorMatrix>& u_, 
+			       const Real& WilsonMass_, const multi1d<Real>& b5_, 
+			       const multi1d<Real>& c5_, const Real& m_q, int N5_)
+    {QDP_error_exit("not supported");}
+    // ***** HACK *****
+
+
 
     /*!
       Full constructor 
