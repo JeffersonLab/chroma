@@ -1,4 +1,4 @@
-// $Id: t_propagator_s.cc,v 1.11 2004-01-29 15:19:44 bjoo Exp $
+// $Id: t_propagator_s.cc,v 1.12 2004-01-29 15:50:57 bjoo Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -428,10 +428,10 @@ int main(int argc, char **argv)
         int spin_source = 0;
 
         q_source = zero ;
-//        srcfil(q_source, t_src_even, color_source, 0);
+        
 
 //  Use a wall source
-        walfil(q_source, t_source, j_decay, color_source, src_ind);
+	walfil(q_source, t_source, j_decay, color_source, src_ind);
 
         // Use the last initial guess as the current guess
 
