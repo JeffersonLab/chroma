@@ -21,18 +21,28 @@ exec_prefix_set=no
 
 version="@VERSION@"
 
-#parallel_arch="@CONFIG_PARALLEL_ARCH@"
 parallel_arch="unknown"
+
+sse_dslash_enabled="@SSE_DSLASH_ENABLED@"
+case $sse_dslash_enabled in
+yes)
+	dslash_libs="-llevel3"
+	;;
+no)
+        dslash_libs=""
+	;;
+*)
+	;;
+esac
 
 chroma_cxx="@CXX@"
 chroma_cxxflags="@CXXFLAGS@ -I@includedir@ @QDPXX_CXXFLAGS@"
 chroma_ldflags="@LDFLAGS@ -L@libdir@ @QDPXX_LDFLAGS@"
-chroma_libs="-lchroma @QDPXX_LIBS@ @LIBS@"
+chroma_libs="-lchroma "$dslash_libs" @QDPXX_LIBS@ @LIBS@"
 
-#precision="@CONFIG_PRECISION@"
-precision="unknown"
-#layout="@CONFIG_LAYOUT@"
-layout="unknown"
+precision="@QDPXX_PRECISION@"
+
+
 
 usage()
 {
@@ -45,9 +55,8 @@ Options:
   [--Nd]
   [--Nc]
   [--Ns]
-#  [--parallel-arch]
-#  [--precision ]
-#  [--layout ]
+  [--parallel-arch]
+  [--precision ]
   [--cxx]
   [--cxxflags]
   [--ldflags]
@@ -93,23 +102,23 @@ while test $# -gt 0; do
       ;;
 
     --Nd)
-      echo @CONFIG_ND@
+      echo @QDPXX_ND@
       ;;
 
     --Nc)
-      echo @CONFIG_NC@
+      echo @QDPXX_NC@
       ;;
 
     --Ns)
-      echo @CONFIG_NS@
+      echo @QDPXX_NS@
       ;;
 
     --parallel-arch)
-      echo $parallel_arch
+      echo @QDPXX_PARALLEL_ARCH@
       ;;
 
     --cxx)
-      echo $qdp_cxx
+      echo $chroma_cxx
       ;;
 
     --cxxflags)
@@ -125,17 +134,7 @@ while test $# -gt 0; do
       ;;
 
     --precision)
-      case "${precision}" in 
-	32)
-		echo "single"
-		;;
-	64)
-		echo "double"
-		;;
-	*)
-		echo "Unknown Precision error"
-		;;
-      esac
+	  echo ${precision}
       ;;
     --layout)
        echo ${layout}
@@ -158,7 +157,7 @@ fi
 
 if test "X${echo_cxxflags}X" = "XyesX" ; then
   output_cxxflags=
-  for i in $qdp_cxxflags ; do
+  for i in $chroma_cxxflags ; do
     case $i in
       -I/usr/include) ;;
       -g) ;;
@@ -176,7 +175,7 @@ fi
 
 if test "X${echo_ldflags}X" = "XyesX" ; then
   output_ldflags=
-  for i in $qdp_ldflags ; do
+  for i in $chroma_ldflags ; do
     if test "X${i}X" != "X-I/usr/libX" ; then
       case " $output_ldflags " in
         *\ $i\ *) ;;                               # already there, skip it
@@ -192,7 +191,7 @@ fi
 
 if test "X${echo_libs}X" = "XyesX" ; then
   rev_libs=
-  for i in $qdp_libs ; do
+  for i in $chroma_libs ; do
     rev_libs="$i $rev_libs"
   done
   output_libs=
