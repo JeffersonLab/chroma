@@ -1,4 +1,4 @@
-// $Id: zolotarev4d_fermact_bj_w.cc,v 1.3 2003-12-17 11:03:04 bjoo Exp $
+// $Id: zolotarev4d_fermact_bj_w.cc,v 1.4 2003-12-17 13:22:59 bjoo Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -116,6 +116,8 @@ Zolotarev4DFermActBj::init(int& numroot,
     numroot = rdata -> dd;
     /* The roots, i.e., the shifts in the partial fraction expansion */
     rootQ.resize(numroot);
+
+    QDPIO::cout << "rootQ.resize() new size = " << rootQ.size() << endl;
     /* The residuals in the partial fraction expansion */
     resP.resize(numroot);
 
@@ -244,6 +246,10 @@ Zolotarev4DFermActBj::linOp(const ConnectState& state_) const
   
   /* Finally construct and pack the operator */
   /* This is the operator of the form (1/2)*[(1+mu) + (1-mu)*gamma_5*eps] */
+  QDPIO::cout << "After init: rootQ.size() = " << rootQ.size() << endl;
+  for(int qcount=0; qcount < rootQ.size(); qcount++) {
+    QDPIO::cout << "rootQ["<<qcount<<"] " << rootQ[qcount] << endl;
+  }
   return new lovlapms(Mact, state, m_q,
 		      numroot, coeffP, resP, rootQ, 
 		      NEig, EigValFunc, state.getEigVec(),

@@ -1,4 +1,4 @@
-// $Id: t_ovlap_bj.cc,v 1.4 2003-12-17 11:39:27 bjoo Exp $
+// $Id: t_ovlap_bj.cc,v 1.5 2003-12-17 13:22:59 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -35,10 +35,10 @@ int main(int argc, char **argv)
      u(j) = Real(1);
   }
 
-  for(int j=0; j < Nd; j++) { 
-    random(u(j));
-    reunit(u(j));
-  }
+  //for(int j=0; j < Nd; j++) { 
+  //  random(u(j));
+  //  reunit(u(j));
+  // }
 
   //! Create a linear operator
   cout << "Testing Wilson Dslash: " << endl;
@@ -67,23 +67,23 @@ int main(int argc, char **argv)
 
   cout << "|| MdagM - M^{+} M || = " << norm2(mm) << endl;
 
-  Real m_q = 0.1;
+  Real m_q = 0.0;
   XMLBufferWriter my_writer;
 
   //! N order Zolo approx, with wilson action.
   Zolotarev4DFermActBj   D(S_w, 
 			   m_q,
-			   22, 
+			   28, 
 			   1.0e-7,
 			   5000,
 			   my_writer);
 
 
   // Specify the approximation
-  ZolotarevConnectState<LatticeFermion> connect_state(u, 0.05);
+  ZolotarevConnectState<LatticeFermion> connect_state(u, 0.031, 2.5);
 
   // Make me a linop (this callls the initialise function)
-  const LinearOperator<LatticeFermion>* D_op =D.linOp((ConnectState &)connect_state);
+  const LinearOperatorProxy<LatticeFermion> D_op(D.linOp((ConnectState &)connect_state));
 
   Double n2 = norm2(psi);
   psi /= n2;
@@ -91,10 +91,10 @@ int main(int argc, char **argv)
   LatticeFermion s1, s2, s3, tmp2;
   s1 = s2 = s3 = tmp2 = zero;
 
-  (*D_op)(s1,psi,PLUS);
-  (*D_op)(s2,psi,MINUS);
-  (*D_op)(tmp2, psi, PLUS);
-  (*D_op)(s3, tmp2, MINUS);
+  D_op(s1,psi,PLUS);
+  D_op(s2,psi,MINUS);
+  D_op(tmp2, psi, PLUS);
+  D_op(s3, tmp2, MINUS);
 
   s3 *= 2;
   s3 -= s1;

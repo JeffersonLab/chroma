@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lovlapms_w.h,v 1.11 2003-12-17 11:03:04 bjoo Exp $
+// $Id: lovlapms_w.h,v 1.12 2003-12-17 13:22:59 bjoo Exp $
 /*! \file
  *  \brief Internal Overlap-pole operator
  */
@@ -65,7 +65,13 @@ public:
     m_q(_m_q), numroot(_numroot), constP(_constP),
     resP(_resP), rootQ(_rootQ), EigVec(_EigVec), EigValFunc(_EigValFunc),
     NEig(_NEig), MaxCG(_MaxCG), RsdCG(_RsdCG), M(S_aux.linOp(state)), MdagM(S_aux.lMdagM(state)) {
+
+    QDPIO::cout << "lovlapms init : rootQ.size() " << rootQ.size() << endl;
+    for(int qcount=0; qcount < rootQ.size(); qcount++) {
+      QDPIO::cout << "rootQ["<<qcount<<"] " << rootQ[qcount] << endl;
+    }
   }
+
   //! Destructor is automatic
   ~lovlapms() {
     
@@ -82,16 +88,18 @@ public:
 private:
   const LinearOperator<LatticeFermion>* M;
   const LinearOperator<LatticeFermion>*  MdagM;
-  const Real& m_q;
+
+  // Copy all of these rather than reference them.
+  const Real m_q;
   int numroot;
-  const Real& constP;
-  const multi1d<Real>& rootQ;
-  const multi1d<Real>& resP;
-  const multi1d<LatticeFermion>& EigVec;
-  const multi1d<Real>& EigValFunc;
+  const Real constP;
+  const multi1d<Real> rootQ;
+  const multi1d<Real> resP;
+  const multi1d<LatticeFermion> EigVec;
+  const multi1d<Real> EigValFunc;
   int NEig;
   int MaxCG;
-  const Real& RsdCG;
+  const Real RsdCG;
 
 };
 

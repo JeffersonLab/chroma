@@ -1,4 +1,4 @@
-// $Id: lovlapms_w.cc,v 1.8 2003-12-17 11:03:04 bjoo Exp $
+// $Id: lovlapms_w.cc,v 1.9 2003-12-17 13:22:59 bjoo Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -20,6 +20,30 @@ using namespace QDP;
 void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi, 
 			   enum PlusMinus isign) const
 {
+
+  // Debugging section:
+  QDPIO::cout << "m_q " << m_q << endl;
+  QDPIO::cout << "numroot " << numroot << endl;
+  QDPIO::cout << "constP " << constP <<endl;
+
+  QDPIO::cout << "rootQ.size() " << rootQ.size() << endl;
+  for(int qcount=0; qcount < rootQ.size(); qcount++) {
+    QDPIO::cout << "rootQ["<<qcount<<"] " << rootQ[qcount] << endl;
+  }
+  
+  QDPIO::cout << "resP.size() " << resP.size() << endl;
+  for(int qcount=0; qcount < resP.size(); qcount++) {
+    QDPIO::cout << "resP[" << qcount <<"] " << resP[qcount] << endl;
+  }
+
+  QDPIO::cout << "NEig " << NEig << endl;  
+  QDPIO::cout << "EigValFunc.size() " << EigValFunc.size() << endl;
+  for(int qcount=0; qcount < EigValFunc.size(); qcount++) {
+    QDPIO::cout << "EigValFunc[" << qcount <<"] " << EigValFunc[qcount] << endl;
+  }
+
+  QDPIO::cout << "MaxCG " << MaxCG << endl;
+  QDPIO::cout << "RsdCG " << RsdCG << endl;
 
   LatticeFermion tmp1, tmp2;
   int k, n_count;
