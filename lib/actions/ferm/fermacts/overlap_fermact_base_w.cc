@@ -1,4 +1,4 @@
-// $Id: overlap_fermact_base_w.cc,v 1.9 2004-05-13 13:34:48 bjoo Exp $
+// $Id: overlap_fermact_base_w.cc,v 1.10 2004-05-13 15:36:07 bjoo Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -9,6 +9,7 @@
 #include "actions/ferm/invert/invcg1.h"
 #include "actions/ferm/invert/invcg2.h"
 #include "actions/ferm/invert/invsumr.h"
+#include "actions/ferm/invert/minvsumr.h"
 #include "actions/ferm/invert/minvcg.h"
 #include "actions/ferm/linop/lmdagm.h"
 #include "actions/ferm/linop/lopscl.h"
@@ -218,24 +219,25 @@ OverlapFermActBase::multiQprop(multi1d<LatticeFermion>& psi,
   }
   
 
-  // This is M_scaled = 2 D(0). 
-  // the fact that D has zero masss is enforced earlier 
-  //
-  const Handle< const LinearOperator<LatticeFermion> > 
-    M_scaled( new lopscl<LatticeFermion, Real>( linOp(state), Real(2) ) );
-
-
   const int n_mass = masses.size();
-  multi1d<Real> RsdCG_array(n_mass);
-  multi1d<Real> shifted_masses(n_mass);
+
+
 
   
-  Chirality ischiral;
-  LinearOperator<LatticeFermion>* MdagMPtr;
   
   Real ftmp;
   switch( invType ) { 
-  case CG_INVERTER:
+  case CG_INVERTER: 
+    {
+      // This is M_scaled = 2 D(0). 
+      // the fact that D has zero masss is enforced earlier 
+      //
+      const Handle< const LinearOperator<LatticeFermion> > 
+	M_scaled( new lopscl<LatticeFermion, Real>( linOp(state), Real(2) ) );
+
+      Chirality ischiral;
+      LinearOperator<LatticeFermion>* MdagMPtr;
+      multi1d<Real> shifted_masses(n_mass);
     
       for(int i = 0; i < n_mass; i++) { 
 	shifted_masses[i] = ( Real(1) + masses[i] )/( Real(1) - masses[i] );
@@ -364,44 +366,94 @@ OverlapFermActBase::multiQprop(multi1d<LatticeFermion>& psi,
 	QDP_error_exit("This value of nsoln is not known about %d\n", nsoln);
 	break;
       }  // End switch over nsoln;
-    
+    }    
     break; // End of CG case
 
-  case MR_INVERTER:
-#if 0
-    /* psi = D^(-1) chi */
-    if (nsoln != 1) {
-      QDP_error_exit("MR inverter does not solve for D_dag");
-    }
+  case SUMR_INVERTER:
+    {
 
-    // This is the code from SZIN. I checked the shifts . Should work ok
-    for(int i=0; i < n_mass; ++i) {
-      shifted_masses[i] = (Real(1) + masses[i]) / ( Real(1) - masses[i] ) - 1;
-    }
-    
-    // Do the solve
-    MInvMR (*M_scaled, chi, psi, shifted_masses, RsdCG, ncg_had);
-    if ( n_count == MaxCG ) {
-      QDP_error_exit("no convergence in the inverter", n_count);    
-    }
+      /* Only do psi = D^(-1) chi */
+      if (nsoln != 1) {
+	QDP_error_exit("SUMMR inverter does not solve for D_dag");
+      }
 
-    /* psi <- (D^(-1) - 1) chi */
-    for(i=0; i < n_mass; ++i) {
+      Handle<const LinearOperator<LatticeFermion> > U = lgamma5epsH(state);
+
+      multi1d<Complex> shifted_masses(n_mass);
+
+      // This is the code from SZIN. I checked the shifts . Should work ok
+      for(int i=0; i < n_mass; ++i) {
+	shifted_masses[i] = (Real(1) + masses[i]) / ( Real(1) - masses[i] );
+      }
       
-      // Go back to (1/2)( 1 + mu + (1 - mu) normalisation
-      ftmp = Real(2) / ( Real(1) - masses[i] );
-      psi[i] *= ftmp;
+      // For the case of the overlap rho, is always 1
+      multi1d<Real> rho(n_mass);
+      rho = Real(1);
+
+      // Do the solve
+      MInvSUMR(*U, chi, psi, shifted_masses, rho, RsdCG, MaxCG,n_count);
+
+      if ( n_count == MaxCG ) {
+	QDP_error_exit("no convergence in the inverter", n_count);    
+      }
       
-      // Remove conact term
-      psi[i] -= chi;
- 
-      // overall noramalisation 
-      ftmp = Real(1) / ( Real(1) - masses[i] );
-      psi[i] *= ftmp;
-      
+      /* psi <- (D^(-1) - 1) chi */
+      for(int i=0; i < n_mass; ++i) {
+	
+	// Go back to (1/2)( 1 + mu + (1 - mu) normalisation
+	ftmp = Real(2) / ( Real(1) - masses[i] );
+	psi[i] *= ftmp;
+	
+	// Remove conact term
+	psi[i] -= chi;
+	
+	// overall noramalisation 
+	ftmp = Real(1) / ( Real(1) - masses[i] );
+	psi[i] *= ftmp;
+	
+      }
     }
-#endif
     break; // End of MR inverter case
+#if 0
+  case MR_INVERTER:
+    {
+
+      /* psi = D^(-1) chi */
+      if (nsoln != 1) {
+	QDP_error_exit("MR inverter does not solve for D_dag");
+      }
+
+      // This is the code from SZIN. I checked the shifts . Should work ok
+      multi1d<Real> shifted_masses(n_mass);
+      for(int i=0; i < n_mass; ++i) {
+	shifted_masses[i] = (Real(1) + masses[i]) / ( Real(1) - masses[i] ) - 1;
+      }
+      
+      // Do the solve
+      MInvMR (*M_scaled, chi, psi, shifted_masses, RsdCG, ncg_had);
+      if ( n_count == MaxCG ) {
+	QDP_error_exit("no convergence in the inverter", n_count);    
+      }
+      
+      /* psi <- (D^(-1) - 1) chi */
+      for(i=0; i < n_mass; ++i) {
+	
+	// Go back to (1/2)( 1 + mu + (1 - mu) normalisation
+	ftmp = Real(2) / ( Real(1) - masses[i] );
+	psi[i] *= ftmp;
+	
+	// Remove conact term
+	psi[i] -= chi;
+	
+	// overall noramalisation 
+	ftmp = Real(1) / ( Real(1) - masses[i] );
+	psi[i] *= ftmp;
+	
+      }
+    }
+    break; // End of MR inverter case
+#endif
+
 
   default:
     QDP_error_exit("Unknown inverter type %d\n", invType);

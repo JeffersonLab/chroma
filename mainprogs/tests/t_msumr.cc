@@ -1,4 +1,4 @@
-// $Id: t_msumr.cc,v 1.1 2004-05-13 13:34:49 bjoo Exp $
+// $Id: t_msumr.cc,v 1.2 2004-05-13 15:36:07 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -18,7 +18,7 @@ using namespace QDP;
 using namespace std;
 
 struct App_input_t {
-  ChromaProp_t param;
+  ChromaMultiProp_t param;
   Cfg_t        cfg;
 };
 
@@ -72,7 +72,7 @@ int main(int argc, char **argv)
   gaugeStartup(gauge_file_xml, gauge_xml, u, input.cfg);
 
   XMLFileWriter xml_out("XMLDAT");
-  push(xml_out,"t_g5eps_bj");
+  push(xml_out,"t_msumr");
 
 
   // Measure the plaquette on the gauge
@@ -89,67 +89,151 @@ int main(int argc, char **argv)
   Handle<FermBC<LatticeFermion> >  fbc(new SimpleFermBC<LatticeFermion>(input.param.boundary));
 
 
-  QDPIO::cout << "FERM_ACT_ZOLOTAREV_4D" << endl;
   const Zolotarev4DFermActParams& zolo4d = dynamic_cast<const Zolotarev4DFermActParams& > (*(input.param.FermActHandle));
-      
+
   // Construct Fermact -- now uses constructor from the zolo4d params
   // struct
   Zolotarev4DFermAct S(fbc, zolo4d, xml_out);
 
   Handle<const ConnectState> connect_state(S.createState(u, zolo4d.StateInfo, xml_out,zolo4d.AuxFermActHandle->getMass()));
 
+  LatticeFermion chi;
+  multi1d<LatticeFermion> psi(3);
 
-
-
-  Handle<const LinearOperator<LatticeFermion> > g5eps(S.lgamma5epsH(connect_state));
-
-  int numroot=3;
+  
   int n_count;
 
-  multi1d<Complex> zeta(numroot);
-  multi1d<Real> rho(numroot);
-  multi1d<LatticeFermion> x(numroot);
-  multi1d<Real> epsilon(numroot);
-  LatticeFermion b;
+  // Solve on chiral point source
+  multi1d<int> coord(4);
+  coord[0] = 0;
+  coord[1] = 0;
+  coord[2] = 0;
+  coord[3] = 0;
+  QDP::StopWatch swatch;
+  double t;
 
-  zeta[0] = Real(1.01);
-  rho[0]  = Real(1);
-  epsilon[0] = Real(1.0e-4);
-  for(int i=1; i < numroot; i++) { 
-    zeta[i] = zeta[0] + Complex(Real(i)*Real(0.04));
-    rho[i]  = rho[0];
-    epsilon[i] = epsilon[i-1]*Real(0.1);
-  }
-  
-  gaussian(b);
-  b /= sqrt(norm2(b));
+  chi=zero;
+  srcfil(chi, coord, 0, 0);
 
 
-  
-  MInvSUMR(*g5eps,
-	   b,
-	   x,
-	   zeta,
-	   rho,
-	   epsilon,
-	   Real(1.0e-6),
-	   100,
-	   n_count);
+  psi = zero;
+  swatch.reset();
+  swatch.start();
 
-  // Check back the solutions
-  for(int i=0; i < numroot; i++) { 
-    LatticeFermion t1;
+  S.multiQprop(psi,
+	       input.param.MultiMasses,
+	       connect_state,
+	       chi,
+	       SUMR_INVERTER,
+	       input.param.invParam.RsdCG,
+	       1,
+	       input.param.invParam.MaxCG,
+	       n_count);
 
-    (*g5eps)(t1, x[i], PLUS);
-    t1 *= rho[i];
-    t1 += zeta[i]*x[i];
-    
-    t1 -= b;
-    QDPIO::cout << "|| b - A x || = " << sqrt(norm2(t1)) << endl;
-    QDPIO::cout << "|| b - A x || / || b || = " << sqrt(norm2(t1))/sqrt(norm2(b)) << endl;
+  swatch.stop();
+  t = swatch.getTimeInSeconds();
 
-  }
+  QDPIO::cout << "Multi Qprop with SUMR on Point source: " << n_count
+	      << " iters " << endl;
 
+  QDPIO::cout << "Wall Clock Time (SUMR, Point) = " << t << " seconds" << endl;
+
+  push(xml_out, "MSUMRPoint");
+  write(xml_out, "n_count", n_count);
+  write(xml_out, "t" , t);
+  pop(xml_out);
+
+
+  psi = zero;
+  swatch.reset();
+  swatch.start();
+
+  S.multiQprop(psi,
+	       input.param.MultiMasses,
+	       connect_state,
+	       chi,
+	       CG_INVERTER,
+	       input.param.invParam.RsdCG,
+	       1,
+	       input.param.invParam.MaxCG,
+	       n_count);
+
+  swatch.stop();
+  t = swatch.getTimeInSeconds();
+
+  QDPIO::cout << "Multi Qprop with CG on Point source: " << n_count
+	      << " iters " << endl;
+
+  QDPIO::cout << "Wall Clock Time (CG, Point) = " << t << " seconds" << endl;
+
+  push(xml_out, "CGPoint");
+  write(xml_out, "n_count", n_count);
+  write(xml_out, "t" , t);
+  pop(xml_out);
+
+
+  gaussian(chi);
+  chi /= sqrt(norm2(chi));
+
+
+  psi = zero;
+  swatch.reset();
+  swatch.start();
+
+  S.multiQprop(psi,
+	       input.param.MultiMasses,
+	       connect_state,
+	       chi,
+	       SUMR_INVERTER,
+	       input.param.invParam.RsdCG,
+	       1,
+	       input.param.invParam.MaxCG,
+	       n_count);
+
+  swatch.stop();
+  t = swatch.getTimeInSeconds();
+
+  QDPIO::cout << "Multi Qprop with SUMR on Gaussian source: " << n_count
+	      << " iters " << endl;
+
+  QDPIO::cout << "Wall Clock Time (SUMR, Gaussian) = " << t << " seconds" << endl;
+
+  push(xml_out, "MSUMRGauss");
+  write(xml_out, "n_count", n_count);
+  write(xml_out, "t" , t);
+  pop(xml_out);
+
+
+  psi = zero;
+  swatch.reset();
+  swatch.start();
+
+  S.multiQprop(psi,
+	       input.param.MultiMasses,
+	       connect_state,
+	       chi,
+	       CG_INVERTER,
+	       input.param.invParam.RsdCG,
+	       1,
+	       input.param.invParam.MaxCG,
+	       n_count);
+
+  swatch.stop();
+  t = swatch.getTimeInSeconds();
+
+  QDPIO::cout << "Multi Qprop with CG on Gaussian source: " << n_count
+	      << " iters " << endl;
+
+  QDPIO::cout << "Wall Clock Time (CG, Gaussian) = " << t << " seconds" << endl;
+
+  push(xml_out, "CGGauss");
+  write(xml_out, "n_count", n_count);
+  write(xml_out, "t" , t);
+  pop(xml_out);
+
+
+
+  pop(xml_out);
   QDP_finalize();
     
   exit(0);

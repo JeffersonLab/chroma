@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: minvsumr.h,v 1.1 2004-05-13 13:34:48 bjoo Exp $
+// $Id: minvsumr.h,v 1.2 2004-05-13 15:36:07 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -37,7 +37,6 @@ void MInvSUMR(const LinearOperator<T>& U,
 	      const multi1d<Complex>& zeta,
 	      const multi1d<Real>& rho,
 	      const multi1d<Real>& epsilon, 
-	      const Real epsilon_sigma,
 	      int MaxSUMR, 
 	      int& n_count);
 

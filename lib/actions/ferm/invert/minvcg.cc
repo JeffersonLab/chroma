@@ -1,4 +1,4 @@
-// $Id: minvcg.cc,v 1.7 2004-04-29 15:55:29 bjoo Exp $
+// $Id: minvcg.cc,v 1.8 2004-05-13 15:36:07 bjoo Exp $
 
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator
@@ -338,7 +338,7 @@ void MInvCG_a(const LinearOperator<T>& A,
     n_count = k;
   }
 
-#if 1
+#if 0
   // Expicitly check the ALL solutions
   for(s = 0; s < n_shift; ++s)
   {

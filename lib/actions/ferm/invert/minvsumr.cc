@@ -31,7 +31,6 @@ void MInvSUMR_a(const LinearOperator<T>& U,
 		const multi1d<Complex>& zeta,
 		const multi1d<Real>& rho,
 		const multi1d<Real>& epsilon, 
-		const Real epsilon_sigma,
 		int MaxSUMR, 
 		int& n_count)
 {
@@ -56,6 +55,16 @@ void MInvSUMR_a(const LinearOperator<T>& U,
 		<<" is different from x.size:"<<numroot << endl;
 
   }
+
+  // Auxiliary condition for stopping is when sigma < epsilon
+  // To keep things consistent this should be the smallest epsilon passed in
+  Real epsilon_sigma = epsilon[0];
+  for(int shift = 0; shift < numroot; shift++) {
+    if ( toBool( epsilon[shift] < epsilon_sigma ) ) {
+      epsilon_sigma = epsilon[shift];
+    }
+  }
+  
   /********************************************************************/
   /* Initialisation                                                   */
   /********************************************************************/
@@ -166,7 +175,10 @@ void MInvSUMR_a(const LinearOperator<T>& U,
     // sigma = ( 1 - | gamma |^2 )^{1/2}
     sigma = sqrt( Real(1) - real( conj(gamma)*gamma ) );
 
-    multi1d<Complex> alpha(numroot);
+    // multi1d<Complex> alpha(numroot);
+    Complex alpha;
+    alpha = -gamma*delta;
+  
     multi1d<Complex> r1hat(numroot);
 
     // the abs_rhat_sq abs_sigma_sq and tmp_length are truly temporary
@@ -182,14 +194,11 @@ void MInvSUMR_a(const LinearOperator<T>& U,
       // Only do unconverged systems
       if( !convP[shift] ) {
 
-	// alpha_m := - gamma_m  delta_{m-1}
-	alpha[shift] = - gamma * delta;
-
 	// r_{m-1, m}:= alpha_m * phi_{m-1} + s_{m-1}*zeta/rho;
-	r0[shift] = alpha[shift] * phi[shift] + s[shift]*zeta[shift]/rho[shift];
+	r0[shift] = alpha * phi[shift] + s[shift]*zeta[shift]/rho[shift];
 
 	// rhat_{m,m} := alpha_m phihat_m + conj(c_{m-1})*zeta/rho;
-	r1hat = alpha[shift]*phihat[shift]+conj(c[shift])*zeta[shift]/rho[shift];
+	r1hat = alpha * phihat[shift]+conj(c[shift])*zeta[shift]/rho[shift];
 
 	// conj(c_m) := rhat_{m,m}/( | rhat_{m,m} |^2 + | sigma_m |^2 )^{1/2}
 	// s_m       := -sigma_m / ( | rhat_{m,m} |^2 + | sigma_m |^2 )^{1/2}
@@ -228,7 +237,7 @@ void MInvSUMR_a(const LinearOperator<T>& U,
 	LatticeFermion w_minus_v;
 	w_minus_v = w_old[shift] - v_old;
 
-	LatticeFermion w = alpha[shift]*p[shift] - kappa*w_minus_v;
+	LatticeFermion w = alpha*p[shift] - kappa*w_minus_v;
 	p[shift] = p[shift] - lambda[shift]*w_minus_v;
 
 	// x_{m-1} := x_{m-1} - ( w_{m-1} - v_m ) eta
@@ -349,9 +358,8 @@ void MInvSUMR(const LinearOperator<LatticeFermion>& U,
 	      const multi1d<Complex>& zeta,
 	      const multi1d<Real>& rho,
 	      const multi1d<Real>& epsilon, 
-	      const Real epsilon_sigma,
 	      int MaxSUMR, 
 	      int& n_count)
 {
-  MInvSUMR_a(U, b, x, zeta, rho, epsilon, epsilon_sigma, MaxSUMR, n_count);
+  MInvSUMR_a(U, b, x, zeta, rho, epsilon, MaxSUMR, n_count);
 }

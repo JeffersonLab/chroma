@@ -1,4 +1,4 @@
-// $Id: t_sumr.cc,v 1.2 2004-05-13 13:34:49 bjoo Exp $
+// $Id: t_sumr.cc,v 1.3 2004-05-13 15:36:07 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -122,9 +122,10 @@ int main(int argc, char **argv)
 	  connect_state,
 	  chi,
 	  CG_INVERTER,
-	  Real(1.0e-6),
-	  1000,
+	  input.param.invParam.RsdCG,
+	  input.param.invParam.MaxCG,
 	  n_count);
+
   swatch.stop();
 
   double t = swatch.getTimeInSeconds();
@@ -143,8 +144,8 @@ int main(int argc, char **argv)
 	  connect_state,
 	  chi,
 	  SUMR_INVERTER,
-	  Real(1.0e-6),
-	  1000,
+	  input.param.invParam.RsdCG,
+	  input.param.invParam.MaxCG,
 	  n_count);
   swatch.stop();
   t = swatch.getTimeInSeconds();
@@ -167,8 +168,8 @@ int main(int argc, char **argv)
 	  connect_state,
 	  chi,
 	  CG_INVERTER,
-	  Real(1.0e-6),
-	  1000,
+	  input.param.invParam.RsdCG,
+	  input.param.invParam.MaxCG,
 	  n_count);
   swatch.stop();
   t = swatch.getTimeInSeconds();
@@ -187,8 +188,8 @@ int main(int argc, char **argv)
 	  connect_state,
 	  chi,
 	  SUMR_INVERTER,
-	  Real(1.0e-6),
-	  1000,
+	  input.param.invParam.RsdCG,
+	  input.param.invParam.MaxCG,
 	  n_count);
   swatch.stop();
   t = swatch.getTimeInSeconds();
