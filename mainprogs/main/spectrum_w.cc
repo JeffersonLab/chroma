@@ -1,10 +1,13 @@
-// $Id: spectrum_w.cc,v 1.25 2004-01-31 23:22:01 edwards Exp $
+// $Id: spectrum_w.cc,v 1.26 2004-02-03 20:05:12 edwards Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.25  2004-01-31 23:22:01  edwards
+//  Revision 1.26  2004-02-03 20:05:12  edwards
+//  Removed passing j_decay into curcor2
+//
+//  Revision 1.25  2004/01/31 23:22:01  edwards
 //  Added proginfo call.
 //
 //  Revision 1.24  2004/01/31 22:43:00  edwards
@@ -488,12 +491,12 @@ int main(int argc, char **argv)
       // Construct the rho vector-current and the pion axial current divergence
       if (input.param.Pt_src)
 	curcor2(u, quark_propagator, quark_propagator, phases, 
-		t0, input.param.j_decay, 3,
+		t0, 3,
 		xml_array, "Point_Point_Meson_Currents");
         
       if (input.param.Sl_src)
 	curcor2(u, quark_propagator, quark_propagator, phases, 
-		t0, input.param.j_decay, 3,
+		t0, 3,
 		xml_array, "Shell_Point_Meson_Currents");
     } // end if (CurrentP)
 
