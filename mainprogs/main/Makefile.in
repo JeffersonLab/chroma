@@ -13,7 +13,7 @@
 # PARTICULAR PURPOSE.
 
 @SET_MAKE@
-SOURCES = $(ExampleBuildingBlocks_SOURCES) $(apesmear_SOURCES) $(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) $(collect_multi_propcomp_SOURCES) $(collect_propcomp_SOURCES) $(hmc_SOURCES) $(hypsmear_SOURCES) $(hypsmear3d_SOURCES) $(make_source_SOURCES) $(mres_SOURCES) $(multi_propagator_SOURCES) $(multi_propagator_comp_SOURCES) $(propagator_SOURCES) $(propagator_comp_SOURCES) $(qpropadd_SOURCES) $(qpropgfix_SOURCES) $(qproptransf_SOURCES) $(qproptrev_SOURCES) $(qqq_w_SOURCES) $(seqsource_SOURCES) $(sink_smearing_SOURCES) $(spectrum_w_SOURCES) $(stoutsmear_SOURCES) $(wallformfac_SOURCES)
+SOURCES = $(ExampleBuildingBlocks_SOURCES) $(apesmear_SOURCES) $(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) $(collect_multi_propcomp_SOURCES) $(collect_propcomp_SOURCES) $(hmc_SOURCES) $(hypsmear_SOURCES) $(hypsmear3d_SOURCES) $(hypsmear4d_SOURCES) $(make_source_SOURCES) $(mres_SOURCES) $(multi_propagator_SOURCES) $(multi_propagator_comp_SOURCES) $(propagator_SOURCES) $(propagator_comp_SOURCES) $(qpropadd_SOURCES) $(qpropgfix_SOURCES) $(qproptransf_SOURCES) $(qproptrev_SOURCES) $(qqq_w_SOURCES) $(seqsource_SOURCES) $(sink_smearing_SOURCES) $(spectrum_w_SOURCES) $(stoutsmear_SOURCES) $(wallformfac_SOURCES)
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -47,9 +47,9 @@ check_PROGRAMS = propagator$(EXEEXT) collect_propcomp$(EXEEXT) \
 	ExampleBuildingBlocks$(EXEEXT) hypsmear$(EXEEXT) \
 	cfgtransf$(EXEEXT) sink_smearing$(EXEEXT) qpropgfix$(EXEEXT) \
 	qproptrev$(EXEEXT) apesmear$(EXEEXT) stoutsmear$(EXEEXT) \
-	hmc$(EXEEXT) hypsmear3d$(EXEEXT) spectrum_w$(EXEEXT) \
-	qqq_w$(EXEEXT) bar3ptfn$(EXEEXT) qproptransf$(EXEEXT) \
-	wallformfac$(EXEEXT) mres$(EXEEXT)
+	hmc$(EXEEXT) hypsmear3d$(EXEEXT) hypsmear4d$(EXEEXT) \
+	spectrum_w$(EXEEXT) qqq_w$(EXEEXT) bar3ptfn$(EXEEXT) \
+	qproptransf$(EXEEXT) wallformfac$(EXEEXT) mres$(EXEEXT)
 EXTRA_PROGRAMS = qpropadd$(EXEEXT) propagator_comp$(EXEEXT) \
 	multi_propagator$(EXEEXT) multi_propagator_comp$(EXEEXT) \
 	collect_multi_propcomp$(EXEEXT)
@@ -91,6 +91,9 @@ hypsmear_LDADD = $(LDADD)
 am_hypsmear3d_OBJECTS = hypsmear3d.$(OBJEXT)
 hypsmear3d_OBJECTS = $(am_hypsmear3d_OBJECTS)
 hypsmear3d_LDADD = $(LDADD)
+am_hypsmear4d_OBJECTS = hypsmear4d.$(OBJEXT)
+hypsmear4d_OBJECTS = $(am_hypsmear4d_OBJECTS)
+hypsmear4d_LDADD = $(LDADD)
 am_make_source_OBJECTS = make_source.$(OBJEXT)
 make_source_OBJECTS = $(am_make_source_OBJECTS)
 make_source_LDADD = $(LDADD)
@@ -151,7 +154,7 @@ SOURCES = $(ExampleBuildingBlocks_SOURCES) $(apesmear_SOURCES) \
 	$(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) \
 	$(collect_multi_propcomp_SOURCES) $(collect_propcomp_SOURCES) \
 	$(hmc_SOURCES) $(hypsmear_SOURCES) $(hypsmear3d_SOURCES) \
-	$(make_source_SOURCES) $(mres_SOURCES) \
+	$(hypsmear4d_SOURCES) $(make_source_SOURCES) $(mres_SOURCES) \
 	$(multi_propagator_SOURCES) $(multi_propagator_comp_SOURCES) \
 	$(propagator_SOURCES) $(propagator_comp_SOURCES) \
 	$(qpropadd_SOURCES) $(qpropgfix_SOURCES) \
@@ -163,7 +166,7 @@ DIST_SOURCES = $(ExampleBuildingBlocks_SOURCES) $(apesmear_SOURCES) \
 	$(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) \
 	$(collect_multi_propcomp_SOURCES) $(collect_propcomp_SOURCES) \
 	$(hmc_SOURCES) $(hypsmear_SOURCES) $(hypsmear3d_SOURCES) \
-	$(make_source_SOURCES) $(mres_SOURCES) \
+	$(hypsmear4d_SOURCES) $(make_source_SOURCES) $(mres_SOURCES) \
 	$(multi_propagator_SOURCES) $(multi_propagator_comp_SOURCES) \
 	$(propagator_SOURCES) $(propagator_comp_SOURCES) \
 	$(qpropadd_SOURCES) $(qpropgfix_SOURCES) \
@@ -348,6 +351,8 @@ hypsmear_SOURCES = hypsmear.cc
 hypsmear_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 hypsmear3d_SOURCES = hypsmear3d.cc
 hypsmear3d_DEPENDENCIES = build_chroma_libs rebuild_other_libs
+hypsmear4d_SOURCES = hypsmear4d.cc
+hypsmear4d_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 stoutsmear_SOURCES = stoutsmear.cc
 stoutsmear_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 qproptransf_SOURCES = qproptransf.cc
@@ -427,6 +432,9 @@ hypsmear$(EXEEXT): $(hypsmear_OBJECTS) $(hypsmear_DEPENDENCIES)
 hypsmear3d$(EXEEXT): $(hypsmear3d_OBJECTS) $(hypsmear3d_DEPENDENCIES) 
 	@rm -f hypsmear3d$(EXEEXT)
 	$(CXXLINK) $(hypsmear3d_LDFLAGS) $(hypsmear3d_OBJECTS) $(hypsmear3d_LDADD) $(LIBS)
+hypsmear4d$(EXEEXT): $(hypsmear4d_OBJECTS) $(hypsmear4d_DEPENDENCIES) 
+	@rm -f hypsmear4d$(EXEEXT)
+	$(CXXLINK) $(hypsmear4d_LDFLAGS) $(hypsmear4d_OBJECTS) $(hypsmear4d_LDADD) $(LIBS)
 make_source$(EXEEXT): $(make_source_OBJECTS) $(make_source_DEPENDENCIES) 
 	@rm -f make_source$(EXEEXT)
 	$(CXXLINK) $(make_source_LDFLAGS) $(make_source_OBJECTS) $(make_source_LDADD) $(LIBS)
@@ -491,6 +499,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hmc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hypsmear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hypsmear3d.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hypsmear4d.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/make_source.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mres.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/multi_propagator.Po@am__quote@
