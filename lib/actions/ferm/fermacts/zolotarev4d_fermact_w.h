@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev4d_fermact_w.h,v 1.6 2003-12-02 15:45:04 edwards Exp $
+// $Id: zolotarev4d_fermact_w.h,v 1.7 2003-12-02 22:35:26 edwards Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -9,7 +9,7 @@
 #define __zolotarev4d_fermact_w_h__
 
 #include "fermact.h"
-#include "linearop.h"
+#include "actions/ferm/fermacts/ev_state.h"
 
 using namespace QDP;
 
@@ -23,38 +23,42 @@ using namespace QDP;
  * but that is not necessary
  */
 
-class Zolotarev4DFermAct : UnprecWilsonTypeFermAct<LatticeFermion>
+class Zolotarev4DFermAct : public UnprecWilsonTypeFermAct<LatticeFermion>
 {
 public:
-private:
-  //! Partial constructor
-  Zolotarev4DFermAct();
-
   //! Full constructor
-  Zolotarev4DFermAct(const Real& _m_q, const UnprecWilsonTypeFermAct& _M);
+  Zolotarev4DFermAct(const UnprecWilsonTypeFermAct<LatticeFermion>& M_, const Real& m_q_) :
+    M(M_), m_q(m_q_)
+    {init();}
 
-  //! Full constructor including eigenvectors
-  /*! 
-   * NOTE: here must include gauge field, otherwise eigenv. make no sense 
-   *
-   * NOTE: could/should generalize this to some object holding underlying kernel
-   * and eigenmodes
-   */
-  Zolotarev4dLinOp(const EVConnectState<LatticeFermion>& state, 
-		   const Real& _m_q, const UnprecWilsonTypeFermAct& _M,
-		   const multi1d<LatticeFermion>& _EigVec, const multi1d<Real>& _EigVal);
+  //! Default version, given links create the state needed for the linear operators
+  const EVConnectState<LatticeFermion>* createState(const multi1d<LatticeColorMatrix>& u) const;
+
+  //! Full version, given links create the state needed for the linear operators
+  const EVConnectState<LatticeFermion>* createState(const multi1d<LatticeColorMatrix>& u, 
+						    const multi1d<LatticeFermion>& EigVec, 
+						    const multi1d<Real>& EigVal) const;
 
   //! Produce a linear operator for this action
-  const LinearOperator<LatticeFermion> linOp(const EVConnectState<LatticeFermion>& state) const;
+  const LinearOperator<LatticeFermion>* linOp(const EVConnectState<LatticeFermion>& state) const;
 
   //! Produce a linear operator M^dag.M for this action
-  const LinearOperator<LatticeFermion> lMdagM(const EVConnectState<LatticeFermion>& state) const;
+  const LinearOperator<LatticeFermion>* lMdagM(const EVConnectState<LatticeFermion>& state) const;
 
   //! Destructor is automatic
   ~Zolotarev4DFermAct() {}
 
+protected:
+  //! Helper in construction
+  void init();
+
+private:
+  //! Partial constructor not allowed
+  Zolotarev4DFermAct();
+
 private:
   Real m_q;
-  UnprecWilsonTypeFermAct<LatticeFermion>& M;
+  const UnprecWilsonTypeFermAct<LatticeFermion>& M;
+};
 
 #endif

@@ -1,36 +1,32 @@
-// $Id: zolotarev4d_fermact_w.cc,v 1.3 2003-12-02 15:45:04 edwards Exp $
+// $Id: zolotarev4d_fermact_w.cc,v 1.4 2003-12-02 22:35:26 edwards Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
 
 #include "chromabase.h"
 #include "actions/ferm/fermacts/zolotarev4d_fermact_w.h"
+#include "actions/ferm/linop/zolotarev4d_linop_w.h"
+
+// Replace this with special overlap M^dag*M version
 #include "actions/ferm/linop/lmdagm_w.h"
 
 //! Creation routine
-/*! \ingroup fermact
- *
- * \param _m_q    quark mass   	       (Read)
- * \param _M 	  operator kernel      (Read)
- */
-void Zolotarev4DFermAct::Zolotarev4DFermAct(const Real& _m_q, const UnprecWilsonTypeFermAct& _M) :
-  m_q(_m_q), M(_M) 
+/*! */
+void 
+Zolotarev4DFermAct::init()
 {
-  RsdCGinner = 1.0e-7;  // Hardwired the accuracy
-
-  NEigVal = 0;
 }
 
 //! Produce a linear operator for this action
 /*!
  * The operator acts on the entire lattice
  *
- * \param state	    gauge field     	       (Read)
+ * \param state	    gauge field state  	       (Read)
  */
 const LinearOperator<LatticeFermion>* 
-Zolotarev4DFermAct::linOp(const ConnectState& state) const
+Zolotarev4DFermAct::linOp(const EVConnectState<LatticeFermion>& state) const
 {
-  return new UnprecWilsonLinOp(state.getLinks(),Kappa);
+  return new Zolotarev4DLinOp(state,M,m_q);
 }
 
 //! Produce a M^dag.M linear operator for this action
@@ -39,13 +35,13 @@ Zolotarev4DFermAct::linOp(const ConnectState& state) const
  *
  * The operator acts on the entire lattice
  *
- * \param state	    gauge field     	       (Read)
+ * \param state	    gauge field state   	       (Read)
  */
 const LinearOperator<LatticeFermion>* 
-Zolotarev4DFermAct::lMdagM(const ConnectState& state) const
+Zolotarev4DFermAct::lMdagM(const EVConnectState<LatticeFermion>& state) const
 {
   //  *****NOTE***** 
   // Should use special form when we know we have exact chiral symmetry
-  return new lmdagm(UnprecWilsonLinOp(state.getLinks(),Kappa));
+  return new lmdagm<LatticeFermion>(Zolotarev4DLinOp(state,M,m_q));
 }
 
