@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: util.h,v 1.4 2003-10-10 03:46:47 edwards Exp $
+// $Id: util.h,v 1.5 2004-01-29 20:38:46 edwards Exp $
 
 /*! \file
  * \brief Include all utility routines
@@ -20,6 +20,7 @@
 #include "ferm/ferm.h"
 #include "ft/ft.h"
 #include "gauge/gauge.h"
+#include "info/info.h"
 
 #endif
 
