@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.40 2003-05-09 20:09:47 edwards Exp $
+# $Id: Makefile.in,v 1.41 2003-05-10 00:21:05 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -174,6 +174,7 @@ WILSON_SRCS = baryon_w.cc mesons_w.cc lwldslash_w.cc formfac_w.cc \
               sink_smear2_w.cc barcomp_w.cc transf_w.cc \
               unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
               unprec_wilson_dsdu_w.cc  unprec_qprop_w.cc readszinqprop_w.cc \
+              readszinferm_w.cc \
               overlapbu_linop_w.cc
 
 #              zolotarev4d_fermact_w.cc zolotarev4d_linop_w.cc lovlapms_w.cc
@@ -211,7 +212,7 @@ am__libchroma_a_SOURCES_DIST = chroma.h chromabase.h chromainc.h \
 	formfac_w.cc sink_smear2_w.cc barcomp_w.cc transf_w.cc \
 	unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
 	unprec_wilson_dsdu_w.cc unprec_qprop_w.cc readszinqprop_w.cc \
-	overlapbu_linop_w.cc
+	readszinferm_w.cc overlapbu_linop_w.cc
 am__objects_1 =
 am__objects_2 = $(am__objects_1) gaus_smear.$(OBJEXT) taproj.$(OBJEXT) \
 	hotst.$(OBJEXT) expm12.$(OBJEXT) klein_gord.$(OBJEXT) \
@@ -226,7 +227,7 @@ am__objects_3 = baryon_w.$(OBJEXT) mesons_w.$(OBJEXT) \
 	unprec_wilson_fermact_w.$(OBJEXT) \
 	unprec_wilson_linop_w.$(OBJEXT) unprec_wilson_dsdu_w.$(OBJEXT) \
 	unprec_qprop_w.$(OBJEXT) readszinqprop_w.$(OBJEXT) \
-	overlapbu_linop_w.$(OBJEXT)
+	readszinferm_w.$(OBJEXT) overlapbu_linop_w.$(OBJEXT)
 @BUILD_STAGGERED_LIBS_TRUE@am_libchroma_a_OBJECTS = $(am__objects_2) \
 @BUILD_STAGGERED_LIBS_TRUE@	$(am__objects_1)
 @BUILD_WILSON_LIBS_TRUE@am_libchroma_a_OBJECTS = $(am__objects_2) \
@@ -235,7 +236,7 @@ am__EXTRA_libchroma_a_SOURCES_DIST = baryon_w.cc mesons_w.cc \
 	lwldslash_w.cc formfac_w.cc sink_smear2_w.cc barcomp_w.cc \
 	transf_w.cc unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
 	unprec_wilson_dsdu_w.cc unprec_qprop_w.cc readszinqprop_w.cc \
-	overlapbu_linop_w.cc
+	readszinferm_w.cc overlapbu_linop_w.cc
 nodist_libchroma_a_OBJECTS = $(am__objects_1)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS) \
 	$(nodist_libchroma_a_OBJECTS)
@@ -253,6 +254,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/overlapbu_linop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/p_src.Po ./$(DEPDIR)/qprop_io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/readszin.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/readszinferm_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/readszinqprop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/reunit.Po ./$(DEPDIR)/sftmom.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/sink_smear2_w.Po ./$(DEPDIR)/srcfil.Po \
@@ -346,6 +348,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/p_src.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qprop_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readszin.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readszinferm_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readszinqprop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/reunit.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sftmom.Po@am__quote@
