@@ -1,4 +1,4 @@
-// $Id: t_dwf4d.cc,v 1.9 2005-01-14 20:13:09 edwards Exp $
+// $Id: t_dwf4d.cc,v 1.10 2005-01-24 21:23:02 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -33,11 +33,6 @@ bool linkage_hack()
   foo &= UnprecZoloNEFFermActArrayEnv::registered;
   foo &= EvenOddPrecZoloNEFFermActArrayEnv::registered;
   foo &= UnprecDWFTransfFermActEnv::registered;
-
-  // Test stuff
-#if defined(BUILD_SSE_DWF_CG)
-  foo &= SSEEvenOddPrecDWFermActArrayEnv::registered;
-#endif
 
   return foo;
 }
