@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_qprop_array_w.cc,v 1.1 2003-11-12 22:16:22 edwards Exp $
+// $Id: unprec_dwf_qprop_array_w.cc,v 1.2 2003-11-13 04:15:31 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion propagator solver
  *
@@ -9,7 +9,7 @@
 
 #include "chromabase.h"
 #include "actions/ferm/fermacts/unprec_dwf_fermact_array_w.h"
-#include "actions/ferm/invert/invcg2array.h"
+#include "actions/ferm/invert/invcg2_array.h"
 #include "actions/ferm/linop/dwffld_w.h"
 
 using namespace QDP;
@@ -26,24 +26,27 @@ using namespace QDP;
  * \param ncg_had  number of CG iterations ( Write )
  */
 
-void UnprecDWFermActArray::qprop(multi1d<LatticeFermion>& psi, 
+void UnprecDWFermActArray::qprop(LatticeFermion& psi, 
 				 const multi1d<LatticeColorMatrix>& u, 
-				 const multi1d<LatticeFermion>& chi, 
+				 const LatticeFermion& chi, 
 				 enum InvType invType,
 				 const Real& RsdCG, 
 				 int MaxCG, int& ncg_had) const
 {
   START_CODE("UnprecDWTypeFermActArray::qprop");
 
+//  const int N5 = chi.size();
   int n_count;
   
   // Construct the linear operator
-  const LinearOperator<LatticeDWFermion>* A = linOp(u);
+  const LinearOperator< multi1d<LatticeFermion> >* A = linOp(u);
 
   // Initialize the 5D fields
   //  tmp5 = (chi,0,0,0,..,0)^T
-  LatticeDWFermion chi5, tmp5 = zero;
-  pokeDW(tmp5, chi, 0);
+  multi1d<LatticeFermion> chi5(N5);
+  multi1d<LatticeFermion> tmp5(N5);
+  tmp5 = zero;
+  tmp5[0] = chi;
 
   // chi5 = P . tmp5
   DwfFld(chi5, tmp5, PLUS);
@@ -51,7 +54,7 @@ void UnprecDWFermActArray::qprop(multi1d<LatticeFermion>& psi,
   // tmp5 = D5(1) . chi5 =  D5(1) . P . (chi,0,0,..,0)^T 
   {
     // Create a Pauli-Villars linop and use it for just this part
-    const LinearOperator<LatticeDWFermion>* B = linOpPV(u);
+    const LinearOperator< multi1d<LatticeFermion> >* B = linOpPV(u);
 
     tmp5 = (*B)(chi5, MINUS);
 
@@ -59,12 +62,13 @@ void UnprecDWFermActArray::qprop(multi1d<LatticeFermion>& psi,
   }
 
   //  psi5 = (psi,0,0,0,...,0)^T
-  LatticeDWFermion psi5 = zero;
-  pokeDW(psi5, psi, 0);
+  multi1d<LatticeFermion> psi5(N5);
+  psi5 = zero;
+  psi5[0] = psi;
 
 
-  QDPIO::cout << "|psi5|^2 = " << norm2(psi5) << endl;
-  QDPIO::cout << "|chi5|^2 = " << norm2(chi5) << endl;
+//  QDPIO::cout << "|psi5|^2 = " << norm2(psi5) << endl;
+//  QDPIO::cout << "|chi5|^2 = " << norm2(chi5) << endl;
 
   switch(invType)
   {
@@ -104,7 +108,7 @@ void UnprecDWFermActArray::qprop(multi1d<LatticeFermion>& psi,
   DwfFld(tmp5, psi5, MINUS);
 
   // Normalize and remove contact term
-  psi = ftmp1*(peekDW(tmp5, 0) - chi);
+  psi = ftmp1*(tmp5[0] - chi);
 
   // Call the virtual destructor of A
   delete A;
