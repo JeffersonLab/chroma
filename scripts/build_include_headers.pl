@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: build_include_headers.pl,v 1.1 2004-01-08 03:13:49 edwards Exp $
+# $Id: build_include_headers.pl,v 1.2 2004-11-20 21:12:38 edwards Exp $
 #
 # Build the  nobase_include_headers  lines in  chroma/lib/Makefile.am
 #
@@ -26,7 +26,7 @@ foreach $i (@subdirs)
 print "\n\n";
 
 # Now print only the Wilson specific headers
-print "if BUILD_WILSON_LIBS\n";
+print "# Wilson specific headers\n";
 print "nobase_include_HEADERS +=";
 
 # Go through each dir and find Wilson specific headers
@@ -35,10 +35,10 @@ foreach $i (@subdirs)
   system("find $i -name \"*_w.h\" -print | fmt -w 65 | awk '{printf \" \\\\\\n\\t%s\", \$0}'");
 }
 
-print "\nendif\n\n";
+print "\n\n";
 
 # Now print only the Staggered specific headers
-print "if BUILD_STAGGERED_LIBS\n";
+print "# Staggered specific headers\n";
 print "nobase_include_HEADERS +=";
 
 # Go through each dir and find Staggered specific headers
@@ -47,7 +47,7 @@ foreach $i (@subdirs)
   system("find $i -name \"*_s.h\" -print | fmt -w 65 | awk '{printf \" \\\\\\n\\t%s\", \$0}'");
 }
 
-print "\nendif\n";
+print "\n\n";
 
 
 exit(0);
