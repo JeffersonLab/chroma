@@ -1,4 +1,4 @@
-//  $Id: ape_smear.cc,v 1.4 2004-01-05 00:47:20 edwards Exp $
+//  $Id: ape_smear.cc,v 1.5 2004-02-11 12:51:34 bjoo Exp $
 
 /*! \file
  *  \brief APE-smearing of the gauge configuration
@@ -156,9 +156,9 @@ void APE_Smear(const multi1d<LatticeColorMatrix>& u,
 //  if ( wrswitch )
 //  {
 //    push(nml_out,"Final_smear");
-//    Write(nml_out, mu);
-//    Write(nml_out, n_smr);
-//    Write(nml_out, new_tr);
+//    write(nml_out, "mu", mu);
+//    write(nml_out, "n_smr", n_smr);
+//    write(nml_out, "new_tr", new_tr);
 //    pop(nml_out);
 //  }
 

@@ -1,4 +1,4 @@
-// $Id: t_ape_smear.cc,v 1.2 2003-10-09 20:36:49 edwards Exp $
+// $Id: t_ape_smear.cc,v 1.3 2004-02-11 12:51:35 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -23,9 +23,9 @@ int main(int argc, char *argv[])
   push(xml, "t_ape_smear");
 
   push(xml,"lattis");
-  Write(xml,Nd);
-  Write(xml,Nc);
-  Write(xml,nrow);
+  write(xml,"Nd", Nd);
+  write(xml,"Nc", Nc);
+  write(xml,"nrow", nrow);
   pop(xml);
 
   //! Example of calling a plaquette routine
@@ -48,8 +48,8 @@ int main(int argc, char *argv[])
 
   // Write out the results
   push(xml,"observables");
-  Write(xml,w_plaq);
-  Write(xml,link);
+  write(xml,"w_plaq", w_plaq);
+  write(xml,"link", link);
   pop(xml);
 
 
@@ -84,8 +84,8 @@ int main(int argc, char *argv[])
 
   // Write out the results
   push(xml,"Smeared_observables");
-  Write(xml,w_plaq);
-  Write(xml,link);
+  write(xml,"w_plaq", w_plaq);
+  write(xml,"link", link);
   pop(xml);
 
   pop(xml);

@@ -1,6 +1,9 @@
-// $Id: dwf_quarkprop4_w.cc,v 1.15 2004-02-10 22:59:46 kostas Exp $
+// $Id: dwf_quarkprop4_w.cc,v 1.16 2004-02-11 12:51:33 bjoo Exp $
 // $Log: dwf_quarkprop4_w.cc,v $
-// Revision 1.15  2004-02-10 22:59:46  kostas
+// Revision 1.16  2004-02-11 12:51:33  bjoo
+// Stripped out Read() and Write()
+//
+// Revision 1.15  2004/02/10 22:59:46  kostas
 // fixed a comment
 //
 // Revision 1.14  2004/02/06 16:47:41  kostas
@@ -188,7 +191,7 @@ void dwf_quarkProp4_a(LatticePropagator& q_sol,
 
       push(xml_out,"Qprop");
       write(xml_out, "RsdCG", RsdCG);
-      Write(xml_out, n_count);
+      write(xml_out, "n_count", n_count);
       pop(xml_out);
 
       // Unnormalize the source following the inverse 
@@ -242,7 +245,7 @@ void dwf_quarkProp4_a(LatticePropagator& q_sol,
   write(xml_out, "t_dir",t_dir);
   pop(xml_out);
   push(xml_out, "DWF_ConservedAxial");
-  Write(xml_out, mesprop); 
+  write(xml_out, "mesprop", mesprop); 
   pop(xml_out);
 
   // The local axial corruent pseudoscalar correlator
@@ -254,7 +257,7 @@ void dwf_quarkProp4_a(LatticePropagator& q_sol,
     mesprop[t_eff] = -real(corr[t]) ; // sign fix
   }
   push(xml_out, "DWF_LocalAxial");
-  Write(xml_out, mesprop); 
+  write(xml_out, "mesprop", mesprop); 
   pop(xml_out);
 
   //Now the midpoint Pseudoscalar correlator
@@ -266,7 +269,7 @@ void dwf_quarkProp4_a(LatticePropagator& q_sol,
   }
   
   push(xml_out, "DWF_MidPoint_Pseudo");
-  Write(xml_out, mesprop);
+  write(xml_out, "mesprop", mesprop);
   pop(xml_out);
 
 
@@ -276,7 +279,7 @@ void dwf_quarkProp4_a(LatticePropagator& q_sol,
     mesprop[t_eff] = tmp[t] ; // only need the zero momentum
   }
   push(xml_out, "DWF_Psuedo_Pseudo");
-  Write(xml_out, mesprop);
+  write(xml_out, "mesprop", mesprop);
   pop(xml_out);
 
   pop(xml_out);   // DWF_QuarkProp4

@@ -1,4 +1,4 @@
-// $Id: t_overbu.cc,v 1.6 2003-11-20 05:43:41 edwards Exp $
+// $Id: t_overbu.cc,v 1.7 2004-02-11 12:51:35 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -37,12 +37,12 @@ int main(int argc, char **argv)
   gaussian(chi);
 
   NmlWriter nml("t_overbu.nml");
-  Write(nml,Nd);
-  Write(nml,Nc);
-  Write(nml,Ns);
-  Write(nml,nrow);
-  Write(nml,psi);
-  Write(nml,chi);
+  write(nml,"Nd", Nd);
+  write(nml,"Nc", Nc);
+  write(nml,"Ns", Ns);
+  write(nml,"nrow", nrow);
+  write(nml,"psi", psi);
+  write(nml,"chi", chi);
 
   Real OverMass = 1.5;
   Real m_q = 0.2;

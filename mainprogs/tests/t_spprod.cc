@@ -1,4 +1,4 @@
-// $Id: t_spprod.cc,v 1.2 2003-09-11 00:46:04 edwards Exp $
+// $Id: t_spprod.cc,v 1.3 2004-02-11 12:51:36 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -21,10 +21,10 @@ int main(int argc, char **argv)
   Layout::create();
 
   NmlWriter nml("t_spprod.nml");
-  Write(nml,Nd);
-  Write(nml,Nc);
-  Write(nml,Ns);
-  Write(nml,nrow);
+  write(nml,"Nd", Nd);
+  write(nml,"Nc", Nc);
+  write(nml,"Ns", Ns);
+  write(nml,"nrow", nrow);
 
   LatticeFermion fpsi;
   LatticeFermion fchi;
@@ -39,7 +39,7 @@ int main(int argc, char **argv)
   gaussian(fchi);
 
   push(nml,"here_is_psi");
-  Write(nml, fpsi);
+  write(nml, "fpsi", fpsi);
   pop(nml);
 
   /* fa1 = (gamma(n))*psi */
@@ -50,10 +50,10 @@ int main(int argc, char **argv)
 
     printf("print the fa1 fields in direction n= %d\n", n);
     push(nml,"Basis");
-    Write(nml, n);
+    write(nml, "n", n);
     pop(nml);
     push(nml,"fa1_is_spin");
-    Write(nml, fa1);
+    write(nml, "fa1", fa1);
     pop(nml);
   }
 
@@ -70,8 +70,8 @@ int main(int argc, char **argv)
 
     printf("print the fa1 fields in direction n= %d\n", n);
     push(nml,"Fermion_inner_product");
-    Write(nml, n);
-    Write(nml, dcsum);
+    write(nml, "n", n);
+    write(nml, "dcsum", dcsum);
     pop(nml);
   }
 
@@ -88,8 +88,8 @@ int main(int argc, char **argv)
 
     printf("print the pa1 fields in direction n= %d\n", n);
     push(nml,"Propagator_inner_product");
-    Write(nml, n);
-    Write(nml, dcsum);
+    write(nml, "n", n);
+    write(nml, "dcsum", dcsum);
     pop(nml);
   }
 

@@ -1,10 +1,13 @@
-// $Id: spectrum_w.cc,v 1.26 2004-02-03 20:05:12 edwards Exp $
+// $Id: spectrum_w.cc,v 1.27 2004-02-11 12:51:35 bjoo Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.26  2004-02-03 20:05:12  edwards
+//  Revision 1.27  2004-02-11 12:51:35  bjoo
+//  Stripped out Read() and Write()
+//
+//  Revision 1.26  2004/02/03 20:05:12  edwards
 //  Removed passing j_decay into curcor2
 //
 //  Revision 1.25  2004/01/31 23:22:01  edwards
@@ -407,11 +410,11 @@ int main(int argc, char **argv)
     polylp(u, pollp[mu], mu);
 
   push(xml_out, "Observables");
-  Write(xml_out, w_plaq);
-  Write(xml_out, s_plaq);
-  Write(xml_out, t_plaq);
-  Write(xml_out, link);
-  Write(xml_out, pollp);
+  write(xml_out, "w_plaq", w_plaq);
+  write(xml_out, "s_plaq", s_plaq);
+  write(xml_out, "t_plaq", t_plaq);
+  write(xml_out, "link", link);
+  write(xml_out, "pollp"< pollp);
   pop(xml_out);
 
   xml_out.flush();
@@ -441,7 +444,7 @@ int main(int argc, char **argv)
     }
 
     push(xml_array);         // next array element - name auto-written
-    Write(xml_array, loop);
+    write(xml_array, "loop", loop);
     write(xml_array, "Mass_mes", input.param.Mass[loop]);
     write(xml_array, "t_srce", input.param.t_srce);
 

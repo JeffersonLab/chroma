@@ -1,4 +1,4 @@
-// $Id: hybrid_orig.cc,v 1.1 2003-12-31 23:48:22 edwards Exp $
+// $Id: hybrid_orig.cc,v 1.2 2004-02-11 12:51:34 bjoo Exp $
 // HYBRID
 
 #error "NOT FULLY CONVERTED"
@@ -245,7 +245,7 @@ int Npf;                   /* Number of pseudofermion fields */
     TrjNumber = TotalTrj;	/* Want a different name here. */
 
     push(nml_out,"NewTrajectory");
-    Write(nml_out, TrjNumber);
+    write(nml_out, "TrjNumber", TrjNumber);
     pop(nml_out);
 
     if ( FermAct == OVERLAP_POLE && FermiP == YES )
@@ -364,9 +364,9 @@ int Npf;                   /* Number of pseudofermion fields */
       rvse_pe = pe;
       rvse_fe = fe;
       push(nml_out,"Initial_Reversibilty_Check");
-      Write(nml_out, rvse_ke);
-      Write(nml_out, rvse_pe);
-      Write(nml_out, rvse_fe);
+      write(nml_out, "rvse_ke", rvse_ke);
+      write(nml_out, "rvse_pe", rvse_pe);
+      write(nml_out, "rvse_fe", rvse_fe);
       pop(nml_out);
       Reverse_num = 2;
     }
@@ -408,11 +408,11 @@ int Npf;                   /* Number of pseudofermion fields */
 	DelFe = fe - rvse_fe;
 	DelH  = DelKe - DelPe + DelFe;
 	push(nml_out,"Reversibilty_Check");
-	Write(nml_out, Reverse_loop);
-	Write(nml_out, DelH);
-	Write(nml_out, DelKe);
-	Write(nml_out, DelPe);
-	Write(nml_out, DelFe);
+	write(nml_out, "Reverse_loop", Reverse_loop);
+	write(nml_out, "DelH",DelH);
+	write(nml_out, "DelKe", DelKe);
+	write(nml_out, "DelPe", DelPe);
+	write(nml_out, "DelFe", DelFe);
 	pop(nml_out);
 	FPRINTF(trm_out,"Reversibility check at TrjNumber = %d\n", TrjNumber);
 
@@ -442,10 +442,10 @@ int Npf;                   /* Number of pseudofermion fields */
 	  DelFe = fe - guide_fe;
 	  DelH  = DelKe - DelPe + DelFe;
 	  push(nml_out,"Guidance_energy_diffs");
-	  Write(nml_out, DelH);
-	  Write(nml_out, DelKe);
-	  Write(nml_out, DelPe);
-	  Write(nml_out, DelFe);
+	  write(nml_out, "DelH", DelH);
+	  write(nml_out, "DelKe", DelKe);
+	  write(nml_out, "DelPe", DelPe);
+	  write(nml_out, "DelFe", DelFe);
 	  pop(nml_out);
 	}
 
@@ -599,8 +599,8 @@ int Npf;                   /* Number of pseudofermion fields */
 	}
 
 	push(nml_out,"Stochastic_Stuff");
-	Write(nml_out, DetRat);
-	Write(nml_out, AccProb);
+	write(nml_out, "DetRat", DetRat);
+	write(nml_out, "AccProb", AccProb);
 	pop(nml_out);
 
 	/* Handle the violations of acceptance probability estimates */ 
@@ -608,14 +608,14 @@ int Npf;                   /* Number of pseudofermion fields */
 	{ AccProb = 0;
 	NProbViSm = NProbViSm + 1;
         push(nml_out,"Stoch_Exception");
-	Write(nml_out, NProbViSm);
+	write(nml_out, "NProbViSm", NProbViSm);
 	pop(nml_out); 
 	}
 	if (AccProb > 1.0)
 	{ AccProb = 1;
 	NProbViLa = NProbViLa + 1;
         push(nml_out,"Stoch_Exception");
-	Write(nml_out, NProbViLa);
+	write(nml_out, "NProbViLa", NProbViLa);
 	pop(nml_out);
 	}
 
@@ -638,7 +638,7 @@ int Npf;                   /* Number of pseudofermion fields */
     }
     /* end of Metropolis accept/reject step */
     push(nml_out,"Cfg_acceptance");
-    Write(nml_out, conf_acc);
+    write(nml_out, "conf_acc", conf_acc);
     pop(nml_out);
   
       
@@ -691,25 +691,25 @@ int Npf;                   /* Number of pseudofermion fields */
 	polylp (u, pollp[mu], mu);
 
       push(nml_out,"obsvbl1");
-      Write(nml_out, TotalTrj);
-      Write(nml_out, w_plaq);
-      Write(nml_out, s_plaq);
-      Write(nml_out, t_plaq);
-      Write(nml_out, link);
-      Write(nml_out, pollp);
+      write(nml_out, "TotalTrj", TotalTrj);
+      write(nml_out, "w_plaq", w_plaq);
+      write(nml_out, "s_plaq", s_plaq);
+      write(nml_out, "t_plaq", t_plaq);
+      write(nml_out, "link",   link);
+      write(nml_out, "pollp",  pollp);
       pop(nml_out);
       push(nml_out,"obsvbl2");
-      Write(nml_out, pbp_st);
-      Write(nml_out, cg_iter);
-      Write(nml_out, DelH);
-      Write(nml_out, DelKe);
-      Write(nml_out, DelPe);
-      Write(nml_out, DelFe);
+      write(nml_out, "pbp_st", pbp_st);
+      write(nml_out, "cg_iter", cg_iter);
+      write(nml_out, "DelH", DelH);
+      write(nml_out, "DelKe", DelKe);
+      write(nml_out, "DelPe", DelPe);
+      write(nml_out, "DelFe", DelFe);
       pop(nml_out);
       push(nml_out,"obsvbl3");
-      Write(nml_out, ke);
-      Write(nml_out, pe);
-      Write(nml_out, fe);
+      write(nml_out, "ke", ke);
+      write(nml_out, "pe", pe);
+      write(nml_out, "fe", fe);
       pop(nml_out);
 
       /*      if ( ( PolyEvolP == YES || RatEvolP == YES ) 
@@ -767,8 +767,8 @@ int Npf;                   /* Number of pseudofermion fields */
 
 	
 	push(nml_out,"Smeared_Wilson_Loops");
-	Write(nml_out, numb_sm);
-	Write(nml_out, fact_sm);
+	write(nml_out, "numb_sm", numb_sm);
+	write(nml_out, "fact_sm", fact_sm);
 	pop(nml_out);
 
 	wilslp (u_smr, j_decay, 6);
@@ -790,7 +790,7 @@ int Npf;                   /* Number of pseudofermion fields */
 	if( spec_acc == YES )
 	{
 	  push(nml_out,"Do_hadron_measurements");
-	  Write(nml_out, spec_acc);
+	  write(nml_out, "spec_acc", spec_acc);
 	  pop(nml_out);
   
 	  u_tmp = u;
@@ -829,19 +829,19 @@ int Npf;                   /* Number of pseudofermion fields */
   
 	  	  	    
 	  push(nml_out,"cg_and_gf_iterations");
-	  Write(nml_out, nrl_gf);
-	  Write(nml_out, ncg_had);
+	  write(nml_out,"nrl_gf",  nrl_gf);
+	  write(nml_out, "ncg_had", ncg_had);
 	  pop(nml_out);
 	  MesonP = 1;		/* spectroscopy will now only be done on accep. */
 	} /* end of spectroscopy */
 	else
 	{
 	  push(nml_out,"Do_hadron_measurements");
-	  Write(nml_out, spec_acc);
+	  write(nml_out, "spec_acc", spec_acc);
 	  pop(nml_out);
 	  push(nml_out,"cg_and_gf_iterations");
-	  Write(nml_out, nrl_gf);
-	  Write(nml_out, ncg_had);
+	  write(nml_out, "nrl_gf", nrl_gf);
+	  write(nml_out, "ncg_had", ncg_had);
 	  pop(nml_out);
 	}
       }
@@ -855,7 +855,7 @@ int Npf;                   /* Number of pseudofermion fields */
 	ClCoeff[0] = ClovCoeff;
         SFpcac (u, j_decay, Kappa, ClCoeff, ClCoeff, numKappa, RsdCGMC, ncg_had, NO, NO, 0, 0);
         push(nml_out,"PCAC_Inversion_steps");
-	Write(nml_out, ncg_had);
+	write(nml_out, "ncg_had", ncg_had);
 	pop(nml_out); 
       }
 
@@ -864,7 +864,7 @@ int Npf;                   /* Number of pseudofermion fields */
   
     /* This is absolutely the last namelist group Printed in this trajectory */
     push(nml_out,"EndTrajectory");
-    Write(nml_out, TrjNumber);
+    write(nml_out, "TrjNumber", TrjNumber);
     pop(nml_out);
 
     NumCG = NumCG + cg_iter;
@@ -873,12 +873,12 @@ int Npf;                   /* Number of pseudofermion fields */
 
           
   push(nml_out,"Acceptances");
-  Write(nml_out, n_acc);
+  write(nml_out, "n_acc", n_acc);
   pop(nml_out);
 
   push(nml_out,"Probability_Estimate_Exceptions");
-  Write(nml_out, NProbViLa);
-  Write(nml_out, NProbViSm);
+  write(nml_out, "NProbViLa", NProbViLa);
+  write(nml_out, "NProbViSm", NProbViSm);
   pop(nml_out);
   
   /* Close out any other code */

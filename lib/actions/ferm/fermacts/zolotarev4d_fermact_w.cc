@@ -1,4 +1,4 @@
-// $Id: zolotarev4d_fermact_w.cc,v 1.13 2004-01-13 10:00:57 bjoo Exp $
+// $Id: zolotarev4d_fermact_w.cc,v 1.14 2004-02-11 12:51:33 bjoo Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -81,10 +81,10 @@ Zolotarev4DFermAct::init(int& numroot,
 
 
   push(my_writer, "Zolotarev4D");
-  Write(my_writer, MaxCGinner);
-  Write(my_writer, RsdCGinner);
-  Write(my_writer, NEigVal);
-  Write(my_writer, NEig);
+  write(my_writer, "MaxCGinner", MaxCGinner);
+  write(my_writer, "RsdCGinner", RsdCGinner);
+  write(my_writer, "NEigVal", NEigVal);
+  write(my_writer, "NEig", NEig);
 
     /* Below, when we fill in the coefficents for the partial fraction, 
        we include this factor, say t, appropriately, i.e.
@@ -109,11 +109,11 @@ Zolotarev4DFermAct::init(int& numroot,
     maxerr = (Real)(rdata -> Delta);
 
     push(my_writer, "ZolotarevApprox");
-    Write(my_writer, eps);
-    Write(my_writer, scale_fac);
-    Write(my_writer, RatPolyDeg);
-    Write(my_writer, type);
-    Write(my_writer, maxerr);
+    write(my_writer, "eps", eps);
+    write(my_writer, "scale_fac", scale_fac);
+    write(my_writer, "RatPolyDeg", RatPolyDeg);
+    write(my_writer, "type", type);
+    write(my_writer, "maxerr", maxerr);
     pop(my_writer);
 
     /* The number of residuals and poles */
@@ -140,10 +140,10 @@ Zolotarev4DFermAct::init(int& numroot,
 
 
     push(my_writer,"ZolotarevPartFrac");
-    Write(my_writer, scale_fac);
-    Write(my_writer, coeffP);
-    Write(my_writer, resP);
-    Write(my_writer, rootQ);
+    write(my_writer, "scale_fac", scale_fac);
+    write(my_writer, "coeffP", coeffP);
+    write(my_writer, "resP", resP);
+    write(my_writer, "rootQ", rootQ);
     pop(my_writer);
 
     /* Now fill in the coefficients for real, i.e., taking the rescaling
@@ -165,10 +165,10 @@ Zolotarev4DFermAct::init(int& numroot,
 
   /* Write them out into the namelist */
     push(my_writer,"ZolotarevPartFracResc");
-    Write(my_writer, scale_fac);
-    Write(my_writer, coeffP);
-    Write(my_writer, resP);
-    Write(my_writer, rootQ);
+    write(my_writer, "scale_fac", scale_fac);
+    write(my_writer, "coeffP", coeffP);
+    write(my_writer, "resP", resP);
+    write(my_writer, "rootQ", rootQ);
     pop(my_writer);
 
     pop(my_writer);

@@ -1,4 +1,4 @@
-// $Id: t_ritz_KS.cc,v 1.5 2004-01-28 15:57:24 bjoo Exp $
+// $Id: t_ritz_KS.cc,v 1.6 2004-02-11 12:51:36 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -214,10 +214,10 @@ int main(int argc, char **argv)
   Double w_plaq, s_plaq, t_plaq, link;
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
   push(xml_out, "plaquette");
-  Write(xml_out, w_plaq);
-  Write(xml_out, s_plaq);
-  Write(xml_out, t_plaq);
-  Write(xml_out, link);
+  write(xml_out, "w_plaq", w_plaq);
+  write(xml_out, "s_plaq", s_plaq);
+  write(xml_out, "t_plaq", t_plaq);
+  write(xml_out, "link" , link);
   pop(xml_out);
 
   //! Wilsoniums;

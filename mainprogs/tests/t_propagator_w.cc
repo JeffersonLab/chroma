@@ -1,4 +1,4 @@
-// $Id: t_propagator_w.cc,v 1.1 2004-01-25 13:12:38 mcneile Exp $
+// $Id: t_propagator_w.cc,v 1.2 2004-02-11 12:51:36 bjoo Exp $
 /*! \file
  *  \brief Main code for propagator generation
  *   
@@ -309,10 +309,10 @@ int main(int argc, char **argv)
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
 
   push(xml_out, "Observables");
-  Write(xml_out, w_plaq);
-  Write(xml_out, s_plaq);
-  Write(xml_out, t_plaq);
-  Write(xml_out, link);
+  write(xml_out, "w_plaq", w_plaq);
+  write(xml_out, "s_plaq", s_plaq);
+  write(xml_out, "t_plaq", t_plaq);
+  write(xml_out, "link", link);
   pop(xml_out);
 
 
@@ -408,7 +408,7 @@ int main(int argc, char **argv)
         push(xml_out,"Qprop");
         write(xml_out, "Mass" , input.param.Mass);
         write(xml_out, "RsdCG", input.param.RsdCG);
-        Write(xml_out, n_count);
+        write(xml_out, "n_count", n_count);
         pop(xml_out);
 
         /*
@@ -426,7 +426,7 @@ int main(int argc, char **argv)
       ostringstream tag;
       tag << "pion" << i;
       push(xml_out, tag.str());
-      Write(xml_out, pion[i]);
+      write(xml_out, "pion_i", pion[i]);
       pop(xml_out);
       }
 #endif

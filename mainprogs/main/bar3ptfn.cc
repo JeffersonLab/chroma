@@ -1,4 +1,4 @@
-// $Id: bar3ptfn.cc,v 1.26 2004-01-31 23:22:01 edwards Exp $
+// $Id: bar3ptfn.cc,v 1.27 2004-02-11 12:51:35 bjoo Exp $
 /*! \file
  * \brief Main program for computing 3pt functions
  *
@@ -419,10 +419,10 @@ main(int argc, char *argv[])
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
 
   push(xml_out, "Observables");
-  Write(xml_out, w_plaq);
-  Write(xml_out, s_plaq);
-  Write(xml_out, t_plaq);
-  Write(xml_out, link);
+  write(xml_out, "w_plaq", w_plaq);
+  write(xml_out, "s_plaq", s_plaq);
+  write(xml_out, "t_plaq", t_plaq);
+  write(xml_out, "link", link);
   pop(xml_out);
 
   xml_out.flush();
@@ -443,7 +443,7 @@ main(int argc, char *argv[])
     QDPIO::cout << "Mass loop = " << loop << endl;
   
     push(xml_array);
-    Write(xml_array, loop);
+    write(xml_array, "loop", loop);
 
     // Read the quark propagator
     QDPIO::cout << "Attempt to read forward propagator" << endl;
@@ -472,7 +472,7 @@ main(int argc, char *argv[])
     for (int seq_src_ctr = 0; seq_src_ctr < input.param.Seq_src.size(); ++seq_src_ctr) 
     {
       push(xml_seq_src);
-      Write(xml_seq_src, seq_src_ctr);
+      write(xml_seq_src, "seq_src_ctr", seq_src_ctr);
 
       LatticePropagator seq_quark_prop;
       int seq_src_value = input.param.Seq_src[seq_src_ctr];
@@ -533,7 +533,7 @@ main(int argc, char *argv[])
       Complex seq_hadron_0 =
         peekSite(trace(adj(Gamma(G5)*seq_quark_prop_tmp*Gamma(G5))), input.param.t_srce);
 
-      Write(xml_seq_src, seq_hadron_0);
+      write(xml_seq_src, "seq_hadron_0", seq_hadron_0);
       bar3pt.bar[loop].seqsrc[seq_src_ctr].seq_hadron_0 = seq_hadron_0;
 
       // Now the 3pt contractions

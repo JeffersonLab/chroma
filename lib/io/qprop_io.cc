@@ -1,5 +1,5 @@
 /*
- *  $Id: qprop_io.cc,v 1.9 2004-02-04 20:50:39 sbasak Exp $
+ *  $Id: qprop_io.cc,v 1.10 2004-02-11 12:51:33 bjoo Exp $
  *
  *  These are a few simple I/O routines that we can use until QIO makes its appearance
  *  I have tried to include a simple header by means of a structure.
@@ -155,19 +155,19 @@ void writePropHead(const PropHead header, BinaryWriter& prop_out){
 }
 
 void writePropHeadinNml(const PropHead header, NmlWriter& nml) {
-  Write(nml, header.kappa);
-  Write(nml, header.source_smearingparam);
-  Write(nml, header.source_type);
-  Write(nml, header.source_direction);
-  Write(nml, header.source_laplace_power);
-  Write(nml, header.source_disp_length);
-  Write(nml, header.source_disp_dir);
-  Write(nml, header.sink_smearingparam);
-  Write(nml, header.sink_type);
-  Write(nml, header.sink_direction);
-  Write(nml, header.sink_laplace_power);
-  Write(nml, header.sink_disp_length);
-  Write(nml, header.sink_disp_dir);
+  write(nml, "header.kappa", header.kappa);
+  write(nml, "header.source_smearingparam", header.source_smearingparam);
+  write(nml, "header.source_type", header.source_type);
+  write(nml, "header.source_direction", header.source_direction);
+  write(nml, "header.source_laplace_power", header.source_laplace_power);
+  write(nml, "header.source_disp_length", header.source_disp_length);
+  write(nml, "header.source_disp_dir", header.source_disp_dir);
+  write(nml, "header.sink_smearingparam", header.sink_smearingparam);
+  write(nml, "header.sink_type", header.sink_type);
+  write(nml, "header.sink_direction", header.sink_direction);
+  write(nml, "header.sink_laplace_power", header.sink_laplace_power);
+  write(nml, "header.sink_disp_length", header.sink_disp_length);
+  write(nml, "header.sink_disp_dir", header.sink_disp_dir);
 }
 
 void readPropHead(PropHead& header, BinaryReader& prop_in){

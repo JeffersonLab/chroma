@@ -1,4 +1,4 @@
-// $Id: t_wlinvcg.cc,v 1.4 2003-10-10 03:46:47 edwards Exp $
+// $Id: t_wlinvcg.cc,v 1.5 2004-02-11 12:51:36 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -214,12 +214,12 @@ int main(int argc, char **argv)
   WilsonDslash D(u);
   chi = D(psi, PLUS, 0);
 
-  Write(nml,Nd);
-  Write(nml,Nc);
-  Write(nml,Ns);
-  Write(nml,nrow);
-  Write(nml,psi);
-  Write(nml,chi);
+  write(nml,"Nd", Nd);
+  write(nml,"Nc", Nc);
+  write(nml,"Ns", Ns);
+  write(nml,"nrow", nrow);
+  write(nml,"psi", psi);
+  write(nml,"chi", chi);
 
   //! Create and try a more sophisticated operator
   Real Kappa = 0.1;
@@ -227,7 +227,7 @@ int main(int argc, char **argv)
   LatticeFermion eta;
   eta = M(psi, PLUS);
 
-  Write(nml,eta);
+  write(nml,"eta", eta);
 
   // Time to bolt
   QDP_finalize();

@@ -1,4 +1,4 @@
-// $Id: camptrj.cc,v 1.1 2003-12-30 19:52:28 edwards Exp $
+// $Id: camptrj.cc,v 1.2 2004-02-11 12:51:34 bjoo Exp $
 
 #error "NOT FULLY CONVERTED - NEED TO MOVE AlgETrj into params of Integ. functor"
 
@@ -116,12 +116,12 @@ void campTrj(multi1d<LatticeColorMatrix> u,
       DelH  = DelKe - DelPe + DelFe;
 
       push(xml_out,"CampStpMon1");
-      Write(xml_out, t);
-      Write(xml_out, nn_count);
-      Write(xml_out, DelH);
-      Write(xml_out, DelKe);
-      Write(xml_out, DelPe);
-      Write(xml_out, DelFe);
+      write(xml_out, "t", t);
+      write(xml_out, "nn_count", nn_count);
+      write(xml_out, "DelH", DelH);
+      write(xml_out, "DelKe", DelKe);
+      write(xml_out, "DelPe", DelPe);
+      write(xml_out, "DelFe", DelFe);
       pop(xml_out);
 
       old_stp_ke = ke;
@@ -152,12 +152,12 @@ void campTrj(multi1d<LatticeColorMatrix> u,
       DelH  = DelKe - DelPe + DelFe;
 
       push(xml_out,"CampStpMon2");
-      Write(xml_out, t);
-      Write(xml_out, nn_count);
-      Write(xml_out, DelH);
-      Write(xml_out, DelKe);
-      Write(xml_out, DelPe);
-      Write(xml_out, DelFe);
+      write(xml_out, "t", t);
+      write(xml_out, "nn_count", nn_count);
+      write(xml_out, "DelH", DelH);
+      write(xml_out, "DelKe", DelKe);
+      write(xml_out, "DelPe", DelPe);
+      write(xml_out, "DelFe", DelFe);
       pop(xml_out);
 
       old_stp_ke = ke;
@@ -189,12 +189,12 @@ void campTrj(multi1d<LatticeColorMatrix> u,
       DelH  = DelKe - DelPe + DelFe;
 
       push(xml_out,"CampStpMon3");
-      Write(xml_out, t);
-      Write(xml_out, nn_count);
-      Write(xml_out, DelH);
-      Write(xml_out, DelKe);
-      Write(xml_out, DelPe);
-      Write(xml_out, DelFe);
+      write(xml_out, "t", t);
+      write(xml_out, "nn_count", nn_count);
+      write(xml_out, "DelH", DelH);
+      write(xml_out, "DelKe", DelKe);
+      write(xml_out, "DelPe", DelPe);
+      write(xml_out, "DelFe", DelFe);
       pop(xml_out);
 
       old_stp_ke = ke;
@@ -210,12 +210,12 @@ void campTrj(multi1d<LatticeColorMatrix> u,
       DelH  = DelKe - DelPe + DelFe;
 
       push(xml_out,"CampWglMon");
-      Write(xml_out, t);
-      Write(xml_out, wgl_n_count);
-      Write(xml_out, DelH);
-      Write(xml_out, DelKe);
-      Write(xml_out, DelPe);
-      Write(xml_out, DelFe);
+      write(xml_out, "t", t);
+      write(xml_out, "wgl_n_count", wgl_n_count);
+      write(xml_out, "DelH", DelH);
+      write(xml_out, "DelKe", DelKe);
+      write(xml_out, "DelPe", DelPe);
+      write(xml_out, "DelFe", DelFe);
       pop(xml_out);
 
       old_wgl_ke = ke;

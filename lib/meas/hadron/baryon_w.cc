@@ -1,4 +1,4 @@
-// $Id: baryon_w.cc,v 1.9 2003-10-10 17:22:05 edwards Exp $ 
+// $Id: baryon_w.cc,v 1.10 2004-02-11 12:51:34 bjoo Exp $ 
 /*! \file
  *  \brief Baryon 2-pt functions
  */
@@ -86,7 +86,7 @@ void baryon(LatticePropagator& quark_propagator,
     for(int sink_mom_num = 0; sink_mom_num < num_mom; ++sink_mom_num)
     {
       push(xml_sink_mom);
-      Write(xml_sink_mom, sink_mom_num) ;
+      write(xml_sink_mom, "sink_mom_num", sink_mom_num) ;
       write(xml_sink_mom, "sink_mom", phases.numToMom(sink_mom_num)) ;
 
       multi1d<Complex> barprop(length);
@@ -116,7 +116,7 @@ void baryon(LatticePropagator& quark_propagator,
 	}
       }
 
-      Write(xml_sink_mom, barprop);
+      write(xml_sink_mom, "barprop", barprop);
       pop(xml_sink_mom);
     } // end for(sink_mom_num)
  

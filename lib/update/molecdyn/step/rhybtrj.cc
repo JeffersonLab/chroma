@@ -1,4 +1,4 @@
-// $Id: rhybtrj.cc,v 1.1 2003-12-30 19:57:45 edwards Exp $
+// $Id: rhybtrj.cc,v 1.2 2004-02-11 12:51:34 bjoo Exp $
 
 #error "NOT FULLY CONVERTED - NEED TO MOVE GLOBAL params of Integ. functor"
 
@@ -97,12 +97,12 @@ void RHybTrj(multi1d<LatticeColorMatrix>& u,
       DelH  = DelKe - DelPe + DelFe;
 
       push(nml_out,"HybStpMon");
-      Write(nml_out, t);
-      Write(nml_out, nn_count);
-      Write(nml_out, DelH);
-      Write(nml_out, DelKe);
-      Write(nml_out, DelPe);
-      Write(nml_out, DelFe);
+      write(nml_out, "t", t);
+      write(nml_out, "nn_count", nn_count);
+      write(nml_out, "DelH", DelH);
+      write(nml_out, "DelKe", DelKe);
+      write(nml_out, "DelPe", DelPe);
+      write(nml_out, "DelFe", DelFe);
       pop(nml_out);
 
       old_stp_ke = ke;

@@ -1,4 +1,4 @@
-//  $Id: loops_w.cc,v 1.1 2004-02-08 11:23:01 mcneile Exp $
+//  $Id: loops_w.cc,v 1.2 2004-02-11 12:51:34 bjoo Exp $
 //
 
 #include "chromabase.h"
@@ -70,7 +70,7 @@ void loops(const LatticeFermion &q_source,
   for (int gamma_value=0; gamma_value < (Ns*Ns); ++gamma_value)
   {
     push(xml_gamma,"loop_diagram");     // next array element
-    Write(xml_gamma, gamma_value);
+    write(xml_gamma,"gamma_value", gamma_value );
 
     // Construct the meson correlation function
     LatticeComplex corr_fn;
@@ -85,7 +85,7 @@ void loops(const LatticeFermion &q_source,
 	mesprop[t] = real(corr_fn_t[t]);
       }
 
-      Write(xml_gamma, mesprop);
+      write(xml_gamma, "mesprop", mesprop);
 
       pop(xml_gamma); // end of array element
 

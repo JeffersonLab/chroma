@@ -1,4 +1,4 @@
-// $Id: wallformfac.cc,v 1.6 2004-01-31 23:22:01 edwards Exp $
+// $Id: wallformfac.cc,v 1.7 2004-02-11 12:51:35 bjoo Exp $
 /*! \file
  * \brief Main program for computing 3pt functions with a wall sink
  *
@@ -269,10 +269,10 @@ main(int argc, char *argv[])
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
 
   push(xml_out, "Observables");
-  Write(xml_out, w_plaq);
-  Write(xml_out, s_plaq);
-  Write(xml_out, t_plaq);
-  Write(xml_out, link);
+  write(xml_out, "w_plaq", w_plaq);
+  write(xml_out, "s_plaq", s_plaq);
+  write(xml_out, "t_plaq", t_plaq);
+  write(xml_out, "link", link);
   pop(xml_out);
 
   xml_out.flush();

@@ -1,4 +1,4 @@
-// $Id: coulgauge.cc,v 1.3 2004-01-02 22:48:02 edwards Exp $
+// $Id: coulgauge.cc,v 1.4 2004-02-11 12:51:33 bjoo Exp $
 /*! \file
  *  \brief Coulomb (and Landau) gauge fixing 
  */
@@ -204,12 +204,12 @@ void coulGauge(multi1d<LatticeColorMatrix>& ug, int& n_gf,
   /*+ debugging */
   XMLBufferWriter xml_out;
   push(xml_out,"Final_trace_max_in_CoulGauge");
-  Write(xml_out, j_decay);
+  write(xml_out, "j_decay", j_decay);
   write(xml_out, "t_dir", tDir());
-  Write(xml_out, n_gf);
-  Write(xml_out, tgfold);
-  Write(xml_out, tgf_s);
-  Write(xml_out, tgf_t);
+  write(xml_out, "n_gf",n_gf);
+  write(xml_out, "tgfold", tgfold);
+  write(xml_out, "tgf_s", tgf_s);
+  write(xml_out, "tgf_t", tgf_t);
   pop(xml_out);
 #endif
 

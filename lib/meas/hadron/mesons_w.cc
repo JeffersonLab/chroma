@@ -1,6 +1,9 @@
-//  $Id: mesons_w.cc,v 1.17 2004-02-03 20:47:24 edwards Exp $
+//  $Id: mesons_w.cc,v 1.18 2004-02-11 12:51:34 bjoo Exp $
 //  $Log: mesons_w.cc,v $
-//  Revision 1.17  2004-02-03 20:47:24  edwards
+//  Revision 1.18  2004-02-11 12:51:34  bjoo
+//  Stripped out Read() and Write()
+//
+//  Revision 1.17  2004/02/03 20:47:24  edwards
 //  Small code tweaks.
 //
 //  Revision 1.16  2003/10/01 03:01:39  edwards
@@ -106,7 +109,7 @@ void mesons(const LatticePropagator& quark_prop_1,
   for (int gamma_value=0; gamma_value < (Ns*Ns); ++gamma_value)
   {
     push(xml_gamma);     // next array element
-    Write(xml_gamma, gamma_value);
+    write(xml_gamma, "gamma_value", gamma_value);
 
     // Construct the meson correlation function
     LatticeComplex corr_fn;
@@ -123,7 +126,7 @@ void mesons(const LatticePropagator& quark_prop_1,
     for (int sink_mom_num=0; sink_mom_num < phases.numMom(); ++sink_mom_num) 
     {
       push(xml_sink_mom);
-      Write(xml_sink_mom, sink_mom_num);
+      write(xml_sink_mom, "sink_mom_num", sink_mom_num);
       write(xml_sink_mom, "sink_mom", phases.numToMom(sink_mom_num));
 
       multi1d<Real> mesprop(length);
@@ -133,7 +136,7 @@ void mesons(const LatticePropagator& quark_prop_1,
 	mesprop[t_eff] = real(hsum[sink_mom_num][t]);
       }
 
-      Write(xml_sink_mom, mesprop);
+      write(xml_sink_mom, "mesprop", mesprop);
       pop(xml_sink_mom);
 
     } // end for(sink_mom_num)

@@ -1,4 +1,4 @@
-// $Id: hybmeson_w.cc,v 1.2 2004-02-03 21:50:13 edwards Exp $
+// $Id: hybmeson_w.cc,v 1.3 2004-02-11 12:51:34 bjoo Exp $
 /*! \file
  *  \brief Hybrid meson 2-pt functions
  */
@@ -25,7 +25,7 @@ static void print_disp(XMLWriter& xml_hyb, const LatticeReal& corr_fn,
   for (int sink_mom_num=0; sink_mom_num < phases.numMom(); ++sink_mom_num) 
   {
     push(xml_sink_mom);
-    Write(xml_sink_mom, sink_mom_num);
+    write(xml_sink_mom, "sink_mom_num", sink_mom_num);
     write(xml_sink_mom, "sink_mom", phases.numToMom(sink_mom_num));
 
     multi1d<Real> mesprop(length);
@@ -35,7 +35,7 @@ static void print_disp(XMLWriter& xml_hyb, const LatticeReal& corr_fn,
       mesprop[t_eff] = real(hsum[sink_mom_num][t]);
     }
 
-    Write(xml_sink_mom, mesprop);
+    write(xml_sink_mom, "mesprop", mesprop);
     pop(xml_sink_mom);
   } // end for(sink_mom_num)
  
@@ -139,7 +139,7 @@ void hybmeson(const multi1d<LatticeColorMatrix>& f,
   int kv = 0;
   {
     push(xml_hyb);     // next array element
-    Write(xml_hyb, kv);
+    write(xml_hyb, "kv", kv);
 
     LatticePropagator q1_prop = 0;
     LatticePropagator q2_prop = 0;
@@ -177,7 +177,7 @@ void hybmeson(const multi1d<LatticeColorMatrix>& f,
       kv++;
       
       push(xml_hyb);     // next array element
-      Write(xml_hyb, kv);
+      write(xml_hyb, "kv", kv);
 
       int j = kp1[k];
       int n = kp1[j];
@@ -194,7 +194,7 @@ void hybmeson(const multi1d<LatticeColorMatrix>& f,
   kv = 4;
   {
     push(xml_hyb);     // next array element
-    Write(xml_hyb, kv);
+    write(xml_hyb, "kv", kv);
 
     LatticePropagator q1_prop = 0;
     LatticePropagator q2_prop = 0;
@@ -230,7 +230,7 @@ void hybmeson(const multi1d<LatticeColorMatrix>& f,
   kv = 5;
   {
     push(xml_hyb);     // next array element
-    Write(xml_hyb, kv);
+    write(xml_hyb, "kv", kv);
 
     LatticePropagator q1_prop = 0;
     LatticePropagator q2_prop = 0;
@@ -269,7 +269,7 @@ void hybmeson(const multi1d<LatticeColorMatrix>& f,
       kv++;
 
       push(xml_hyb);     // next array element
-      Write(xml_hyb, kv);
+      write(xml_hyb, "kv", kv);
 
       LatticePropagator q1_prop = 0;
       LatticePropagator q2_prop = 0;
@@ -307,7 +307,7 @@ void hybmeson(const multi1d<LatticeColorMatrix>& f,
       kv++;
 
       push(xml_hyb);     // next array element
-      Write(xml_hyb, kv);
+      write(xml_hyb, "kv", kv);
 
       int jm = 1 << j_decay;
       int m = n_munu[k][j_decay];
@@ -347,7 +347,7 @@ void hybmeson(const multi1d<LatticeColorMatrix>& f,
       kv++;
 
       push(xml_hyb);     // next array element
-      Write(xml_hyb, kv);
+      write(xml_hyb,"kv", kv);
 
       LatticePropagator q1_prop = 0;
       LatticePropagator q2_prop = 0;

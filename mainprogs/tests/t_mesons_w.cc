@@ -1,10 +1,13 @@
-// $Id: t_mesons_w.cc,v 1.5 2003-10-09 20:36:49 edwards Exp $
+// $Id: t_mesons_w.cc,v 1.6 2004-02-11 12:51:35 bjoo Exp $
 //
 //! \file
 //  \brief Test the Wilson mesons() routine
 //
 // $Log: t_mesons_w.cc,v $
-// Revision 1.5  2003-10-09 20:36:49  edwards
+// Revision 1.6  2004-02-11 12:51:35  bjoo
+// Stripped out Read() and Write()
+//
+// Revision 1.5  2003/10/09 20:36:49  edwards
 // Changed all cout/cerr to QDPIO::cout/cerr. Changed QDP_info calls
 // to QDPIO::cout.
 //
@@ -44,10 +47,10 @@ int main(int argc, char *argv[])
   push(xml,"t_mesons_w");
 
   push(xml,"lattice");
-  Write(xml,Nd);
-  Write(xml,Nc);
-  Write(xml,Ns);
-  Write(xml,nrow);
+  write(xml,"Nd", Nd);
+  write(xml,"Nc", Nc);
+  write(xml,"Ns", Ns);
+  write(xml,"nrow", nrow);
   pop(xml);
 
   LatticePropagator quark_prop_1, quark_prop_2;

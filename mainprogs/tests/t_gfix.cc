@@ -1,4 +1,4 @@
-/// $Id: t_gfix.cc,v 1.2 2004-01-02 21:54:49 edwards Exp $
+/// $Id: t_gfix.cc,v 1.3 2004-02-11 12:51:35 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -59,9 +59,9 @@ int main(int argc, char *argv[])
   push(xml_out, "t_gfix");
 
   push(xml_out,"Lattice_dimensions");
-  Write(xml_out, Nc);
-  Write(xml_out, Nd);
-  Write(xml_out, nrow);
+  write(xml_out,"Nc", Nc);
+  write(xml_out,"Nd", Nd);
+  write(xml_out, "nrow", nrow);
   pop(xml_out);
 
   multi1d<LatticeColorMatrix> u(Nd);    // Gauge field
@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
   {
   case 1:
     push(xml_out,"Free_Field");
-    Write(xml_out, type);
+    write(xml_out, "type", type);
     pop(xml_out);
     QDPIO::cout << "Fill u with free field" << endl;
     u = 1;
@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
 
   case 2:
     push(xml_out,"Free_Field_with_random_gauge_transformation");
-    Write(xml_out, type);
+    write(xml_out, "type", type);
     pop(xml_out);
     QDPIO::cout << "Fill u with random gauge transformed free field" << endl;
     u = 1;
@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
 
   case 3:
     push(xml_out,"Semi-Haar_measure");
-    Write(xml_out, type);
+    write(xml_out, "type", type);
     pop(xml_out);
     QDPIO::cout << "Fill u with semi-Haar" << endl;
     HotSt(u);
@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
     QDPIO::cin >> cfg_file_in;
 
     push(xml_out,"Configuration");
-    Write(xml_out, type);
+    write(xml_out, "type", type);
     pop(xml_out);
     QDPIO::cout << "Read SZIN config from " << cfg_file_in << endl;
 
@@ -117,7 +117,7 @@ int main(int argc, char *argv[])
     QDPIO::cin >> cfg_file_in;
 
     push(xml_out,"Configuration");
-    Write(xml_out, type);
+    write(xml_out, "type", type);
     pop(xml_out);
     QDPIO::cout << "Read NERSC config from " << cfg_file_in << endl;
 
@@ -136,11 +136,11 @@ int main(int argc, char *argv[])
 
 
   push(xml_out,"Gfix_parameters");
-  Write(xml_out, j_decay);
-  Write(xml_out, GFAccu);
-  Write(xml_out, GFMax);
-  Write(xml_out, OrlxDo);
-  Write(xml_out, OrPara);
+  write(xml_out, "j_decay", j_decay);
+  write(xml_out, "GFAccu", GFAccu);
+  write(xml_out, "GFMax", GFMax);
+  write(xml_out, "OrlxDo", OrlxDo);
+  write(xml_out, "OrPara", OrPara);
   pop(xml_out);
 
   Double w_plaq, s_plaq, t_plaq, link;
@@ -149,10 +149,10 @@ int main(int argc, char *argv[])
 	      << " " << s_plaq << " " << t_plaq << " " << link << endl;
 
   push(xml_out,"Initial_gauge_invariant_observables");
-  Write(xml_out, w_plaq);
-  Write(xml_out, s_plaq);
-  Write(xml_out, t_plaq);
-  Write(xml_out, link);
+  write(xml_out, "w_plaq", w_plaq);
+  write(xml_out, "s_plaq", s_plaq);
+  write(xml_out, "t_plaq", t_plaq);
+  write(xml_out, "link", link);
   pop(xml_out);
 
   // Now gauge fix
@@ -164,14 +164,14 @@ int main(int argc, char *argv[])
 	      << " " << s_plaq << " " << t_plaq << " " << link << endl;
 
   push(xml_out,"Final_gauge_invariant_observables");
-  Write(xml_out, w_plaq);
-  Write(xml_out, s_plaq);
-  Write(xml_out, t_plaq);
-  Write(xml_out, link);
+  write(xml_out, "w_plaq",w_plaq);
+  write(xml_out, "s_plaq", s_plaq);
+  write(xml_out, "t_plaq", t_plaq);
+  write(xml_out, "link", link);
   pop(xml_out);
 
   push(xml_out,"Relaxation_iterations_in_GFIX");
-  Write(xml_out, nrl_gf);
+  write(xml_out, "nrl_gf", nrl_gf);
   pop(xml_out);
 
   // Now write the gauge field in NERSC format

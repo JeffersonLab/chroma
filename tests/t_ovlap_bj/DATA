@@ -39,7 +39,7 @@
   <Cfg>
      <!-- This will probably soon be standardised. 2 means from file  -->
      <startType>2</startType>
-     <gaugeFilename>./test_purgaug.cfg1</gaugeFilename>
+     <gaugeFilename>/home/bj/Devel/SciDAC/packages/chroma/tests/test_purgaug.cfg1</gaugeFilename>
 
      <!-- Format = 0 means SZIN format -->
      <gaugeFileFormat>0</gaugeFileFormat>

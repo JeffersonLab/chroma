@@ -1,4 +1,4 @@
-// $Id: t_mesplq.cc,v 1.11 2003-11-20 05:43:41 edwards Exp $
+// $Id: t_mesplq.cc,v 1.12 2004-02-11 12:51:35 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -23,9 +23,9 @@ int main(int argc, char *argv[])
   push(xml, "t_mesplq");
 
   push(xml,"lattis");
-  Write(xml,Nd);
-  Write(xml,Nc);
-  Write(xml,nrow);
+  write(xml,"Nd", Nd);
+  write(xml,"Nc", Nc);
+  write(xml,"nrow", nrow);
   pop(xml);
 
   //! Example of calling a plaquette routine
@@ -63,9 +63,9 @@ int main(int argc, char *argv[])
 
   // Write out the results
   push(xml,"Observables");
-  Write(xml,w_plaq);
-  Write(xml,link);
-  Write(xml,pollp);
+  write(xml,"w_plaq", w_plaq);
+  write(xml,"link", link);
+  write(xml,"pollp", pollp);
   pop(xml);
 
 
@@ -80,9 +80,9 @@ int main(int argc, char *argv[])
   QDPIO::cout << "link = " << link << endl;
 
   push(xml,"Observables_after_gt");
-  Write(xml,w_plaq);
-  Write(xml,link);
-  Write(xml,pollp);
+  write(xml,"w_plaq", w_plaq);
+  write(xml,"link", link);
+  write(xml,"pollp", pollp);
   pop(xml);
 
   pop(xml);

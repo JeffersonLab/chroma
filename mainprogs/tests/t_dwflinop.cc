@@ -1,4 +1,4 @@
-// $Id: t_dwflinop.cc,v 1.7 2004-01-02 03:19:41 edwards Exp $
+// $Id: t_dwflinop.cc,v 1.8 2004-02-11 12:51:35 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -129,8 +129,8 @@ int main(int argc, char **argv)
   push(xml,"innerprods");
   write(xml, "norm_psi", Real(norm2(psi)));
   write(xml, "norm_chi", Real(norm2(chi)));
-  Write(xml, nn1);
-  Write(xml, nn2);
+  write(xml, "nn1", nn1);
+  write(xml, "nn2", nn2);
   pop(xml);
 
  
@@ -163,8 +163,8 @@ int main(int argc, char **argv)
   push(xml,"innerprods_dwf");
   write(xml, "norm_psi5", Real(norm2(psi5)));
   write(xml, "norm_chi5", Real(norm2(chi5)));
-  Write(xml, nd1);
-  Write(xml, nd2);
+  write(xml, "nd1", nd1);
+  write(xml, "nd2", nd2);
   write(xml, "norm_tmp1_tmp1a", Real(norm2(tmp5a-tmp1a)));
   pop(xml);
 

@@ -1,4 +1,4 @@
-// $Id: t_ovlap_bj.cc,v 1.19 2004-01-14 17:00:54 bjoo Exp $
+// $Id: t_ovlap_bj.cc,v 1.20 2004-02-11 12:51:35 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -56,6 +56,7 @@ typedef struct {
   multi1d<Real> szin_pion;
 
 } Param_t;
+
 
 // Declare routine to read the parameters
 void readParams(const string& filename, Param_t& params)
@@ -247,7 +248,8 @@ void readEigenVecs(const multi1d<LatticeColorMatrix>& u,
 		   multi1d<LatticeFermion>& eigen_vec,
 		   const Real wilson_mass,
 		   const bool szin_eig,
-		   XMLWriter& xml_out)
+		   XMLWriter& xml_out,
+		   const std::string& root_prefix)
 {
 
 
@@ -272,7 +274,7 @@ void readEigenVecs(const multi1d<LatticeColorMatrix>& u,
 
     // this will produce eigenvector_XXX
     // where XXX is a 0 padded integer -- eg 001, 002, 010 etc
-    filename << "eigenvector_" << setw(3) << setfill('0') << i;
+    filename << root_prefix << "eigenvector_" << setw(3) << setfill('0') << i;
 
     
     cout << "Reading eigenvector: " << filename.str() << endl;
@@ -298,10 +300,10 @@ void readEigenVecs(const multi1d<LatticeColorMatrix>& u,
   }    
   push(xml_out, "EigenvectorTest");
   push(xml_out, "EigenVecNorms");
-  Write(xml_out, evec_norms);
+  write(xml_out, "evec_norms", evec_norms);
   pop(xml_out);
   push(xml_out, "EigenTestNorms");
-  Write(xml_out, e_norms);
+  write(xml_out, "e_norms", e_norms);
   pop(xml_out);
 
   if( szin_eig ) { 
@@ -310,7 +312,7 @@ void readEigenVecs(const multi1d<LatticeColorMatrix>& u,
       szin_enorms[i] /= (Real(Nd)+wilson_mass);
     }
     push(xml_out, "SZINEigenTestNorms");
-    Write(xml_out, szin_enorms);
+    write(xml_out, "szin_enorms",szin_enorms);
     pop(xml_out);
   }
   pop(xml_out); // eigenvector test
@@ -321,11 +323,18 @@ int main(int argc, char **argv)
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
 
+  std::string root_prefix="";
+
+  if( argc == 2 ) { 
+	root_prefix += argv[1];
+        root_prefix += "/";
+  }
+
   // Read the parameters 
   Param_t params;
 
   try { 
-    readParams("./DATA", params);
+    readParams(root_prefix+"DATA", params);
   }
   catch(const string& s) { 
     QDPIO::cerr << "Caught exception " << s << endl;
@@ -338,7 +347,7 @@ int main(int argc, char **argv)
   Layout::create();
 
   // Write out the params
-  XMLFileWriter xml_out("t_ovlap.xml");
+  XMLFileWriter xml_out(root_prefix+"t_ovlap.xml");
   push(xml_out, "overlapTest");
 
   dumpParams(xml_out, params);
@@ -418,10 +427,10 @@ int main(int argc, char **argv)
   Double w_plaq, s_plaq, t_plaq, link;
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
   push(xml_out, "plaquette");
-  Write(xml_out, w_plaq);
-  Write(xml_out, s_plaq);
-  Write(xml_out, t_plaq);
-  Write(xml_out, link);
+  write(xml_out, "w_plaq", w_plaq);
+  write(xml_out, "s_plaq", s_plaq);
+  write(xml_out, "t_plaq", t_plaq);
+  write(xml_out, "link", link);
   pop(xml_out);
 
   //! Wilsoniums;
@@ -466,7 +475,8 @@ int main(int argc, char **argv)
 		    eigen_vecs, 
 		    params.wilson_mass, 
 		    params.szin_eig, 
-		    xml_out);
+		    xml_out, 
+		    root_prefix);
     }
     else {
       QDP_error_exit("Non SZIN e-values not yet implmeneted");
@@ -556,7 +566,7 @@ int main(int argc, char **argv)
   // Should be zero
   Double gwr_norm = sqrt(norm2(s3));
   cout << "GWR Norm: " << gwr_norm << endl;
-  Write(xml_out, gwr_norm);
+  write(xml_out, "gwr_norm", gwr_norm);
 
   // Now test Naive MdagM
   Handle< const LinearOperator<LatticeFermion> > MdagM( S.lMdagM(connect_state));
@@ -574,7 +584,7 @@ int main(int argc, char **argv)
   // Time to bolt
   Double internal_norm = sqrt(norm2(s3));
   cout << " || MdagM - M^{dag}M || = " << internal_norm << endl;
-  Write(xml_out, internal_norm);
+  write(xml_out, "internal_norm", internal_norm);
 
 
 
@@ -759,7 +769,7 @@ int main(int argc, char **argv)
 
   // Check and dump
   push(xml_out, "pions");
-  Write(xml_out, hsum[0]);
+  write(xml_out, "hsum0",hsum[0]);
   pop(xml_out);
 
   // Check against SZIN pion
@@ -840,8 +850,8 @@ int main(int argc, char **argv)
     
     // Check and dump
     push(xml_out, "pion");
-    Write(xml_out, shifts[i]);
-    Write(xml_out, hsum[0]);
+    write(xml_out, "shifts_i", shifts[i]);
+    write(xml_out, "hsum", hsum[0]);
     pop(xml_out);
   }
 

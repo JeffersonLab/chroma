@@ -1,4 +1,4 @@
-// $Id: cfgtransf.cc,v 1.9 2004-01-31 23:22:01 edwards Exp $
+// $Id: cfgtransf.cc,v 1.10 2004-02-11 12:51:35 bjoo Exp $
 /*! \file
  *  \brief Many-to-many gauge transformation routine
  */
@@ -229,18 +229,18 @@ int main(int argc, char **argv)
   QDPIO::cout << "I am working on it...\n";
   
   push(xml_out,"Lattis");
-  Write(xml_out, Nd);
-  Write(xml_out, Nc);
-  Write(xml_out, nrow);
+  write(xml_out, "Nd", Nd);
+  write(xml_out, "Nc", Nc);
+  write(xml_out, "nrow", nrow);
   pop(xml_out);
   
 #if 0
   if ( AnisoP )
   {
     push(xml_out,"Anisotropy_parameters");
-    Write(xml_out, AnisoP);
-    Write(xml_out, xi_0);
-    Write(xml_out, t_dir);
+    write(xml_out, "AnisoP", AnisoP);
+    write(xml_out, "xi_0", xi_0);
+    write(xml_out, "t_dir", t_dir);
     pop(xml_out);
   }
 #endif
@@ -251,11 +251,11 @@ int main(int argc, char **argv)
   {
     SetSFbc(SchrPhiMult, SchrFermP, theta, j_decay);
     push(xml_out,"Schroed_Func_parameters");
-    Write(xml_out, SchrFun);
-    Write(xml_out, j_decay);
-    Write(xml_out, SchrPhiMult);
-    Write(xml_out, SchrFermP);
-    Write(xml_out, theta);
+    write(xml_out, "SchrFun", SchrFun);
+    write(xml_out, "j_decay", j_decay);
+    write(xml_out, "SchrPhiMult", SchrPhiMult);
+    write(xml_out, "SchrFermP", SchrFermP);
+    write(xml_out, "theta", theta);
     pop(xml_out);
   }
 #endif
@@ -272,7 +272,7 @@ int main(int argc, char **argv)
   {
   case 1:
     push(xml_out,"Free_Field");
-    Write(xml_out, input_type);
+    write(xml_out, "input_type", input_type);
     pop(xml_out);
     QDPIO::cout << "Fill u with free field\n";
     u = 1;
@@ -280,7 +280,7 @@ int main(int argc, char **argv)
 
   case 2:
     push(xml_out,"Free_Field_with_random_gauge_transformation");
-    Write(xml_out, input_type);
+    write(xml_out, "input_type", input_type);
     pop(xml_out);
     QDPIO::cout << "Fill u with random gauge transformed free field\n";
     u = 1;
@@ -289,7 +289,7 @@ int main(int argc, char **argv)
 
   case 3:
     push(xml_out,"Semi-Haar_measure");
-    Write(xml_out, input_type);
+    write(xml_out, "input_type", input_type);
     pop(xml_out);
     QDPIO::cout << "Fill u with semi-Haar\n";
     HotSt(u);
@@ -298,8 +298,8 @@ int main(int argc, char **argv)
   case 4:
   case 5:
     push(xml_out,"SZIN_configuration");
-    Write(xml_out, input_type);
-    Write(xml_out, cfg_input_file);
+    write(xml_out, "input_type", input_type);
+    write(xml_out, "cfg_input_file", cfg_input_file);
     pop(xml_out);
     
     QDPIO::cout << "Read SZIN u from FE file " << cfg_input_file << endl;
@@ -310,8 +310,8 @@ int main(int argc, char **argv)
 
   case 7:
     push(xml_out,"MILC_config");
-    Write(xml_out, input_type);
-    Write(xml_out, cfg_input_file);
+    write(xml_out, "input_type", input_type);
+    write(xml_out, "cfg_input_file", cfg_input_file);
     pop(xml_out);
     QDPIO::cout << "Read MILC u from FE file\n";
     readMILC(gauge_xml_in, u, cfg_input_file);
@@ -322,7 +322,7 @@ int main(int argc, char **argv)
 #if 0
   case 9:
     push(xml_out,"Schroedinger_BC_config");
-    Write(xml_out, input_type);
+    write(xml_out, "input_type", input_type);
     pop(xml_out);
     u = SFBndFld;
     break;
@@ -334,8 +334,8 @@ int main(int argc, char **argv)
     // Not sure I want this ...
   case 11:
     push(xml_out,"Ascii_MILC_config");
-    Write(xml_out, input_type);
-    Write(xml_out, cfg_input_file);
+    write(xml_out, "input_type", input_type);
+    write(xml_out, "cfg_input_file", cfg_input_file);
     pop(xml_out);
     QDPIO::cout << "Read ASCII MILC u from FE file\n";
     readascii (u, cfg_input_file);
@@ -346,8 +346,8 @@ int main(int argc, char **argv)
     // Not yet...
   case 12:
     push(xml_out,"Fund_to_adj_SZIN_config");
-    Write(xml_out, input_type);
-    Write(xml_out, cfg_input_file);
+    write(xml_out, "input_type", input_type);
+    write(xml_out, "cfg_input_file", cfg_input_file);
     pop(xml_out);
     QDPIO::cout << "Read fund to adj SZIN from file " << cfg_input_file << endl;
     readFunToAdj (u, cfg_input_file);
@@ -358,8 +358,8 @@ int main(int argc, char **argv)
     // Not yet...
   case 13:
     push(xml_out,"O3_to_U1_config");
-    Write(xml_out, input_type);
-    Write(xml_out, cfg_input_file);
+    write(xml_out, "input_type", input_type);
+    write(xml_out, "cfg_input_file", cfg_input_file);
     pop(xml_out);
     QDPIO::cout << "Read O(3) to U(1) SZIN from file " << cfg_input_file << endl;
     ReadO3toU1 (u, cfg_input_file);
@@ -396,11 +396,11 @@ int main(int argc, char **argv)
       su2_index = 0;
 
     push(xml_out,"Instanton_config");
-    Write(xml_out, input_type);
-    Write(xml_out, center);
-    Write(xml_out, rho);
-    Write(xml_out, su2_index);
-    Write(xml_out, sign);
+    write(xml_out, "input_type", input_type);
+    write(xml_out, "center", center);
+    write(xml_out, "rho", rho);
+    write(xml_out, "su2_index", su2_index);
+    write(xml_out, "sign", sign);
     pop(xml_out);
     QDPIO::cout << "Create instanton configuration\n";
     instanton (u, center, rho, su2_index, sign);
@@ -410,7 +410,7 @@ int main(int argc, char **argv)
 
   case 15:
     push(xml_out,"QCD_Archive_config");
-    Write(xml_out, input_type);
+    write(xml_out, "input_type", input_type);
     pop(xml_out);
     QDPIO::cout << "Read QCD Archive u from FE file\n";
     readArchiv(gauge_xml_in, u, cfg_input_file);
@@ -420,7 +420,7 @@ int main(int argc, char **argv)
     // Someday...
   case 16:
     push(xml_out,"MIT_config");
-    Write(xml_out, input_type);
+    write(xml_out, "input_type", input_type);
     pop(xml_out);
     QDPIO::cout << "Read MIT gauge config from FE file\n";
     readmitu (cfg_input_file, u);
@@ -431,7 +431,7 @@ int main(int argc, char **argv)
     // Not now...
   case 17:
     push(xml_out,"MIT_double_config");
-    Write(xml_out, input_type);
+    write(xml_out, "input_type", input_type);
     pop(xml_out);
     QDPIO::cout << "Read double prec. MIT gauge config from FE file\n";
     readmitdu (cfg_input_file, u);
@@ -443,7 +443,7 @@ int main(int argc, char **argv)
     // Not now...
   case 18:
     push(xml_out,"Kentucky_config");
-    Write(xml_out, input_type);
+    write(xml_out, "input_type", input_type);
     pop(xml_out);
     QDPIO::cout << "Read Kentucky gauge config from FE file\n";
     readkyu (cfg_input_file, u);
@@ -455,7 +455,7 @@ int main(int argc, char **argv)
     // Not now...
   case 19:
     push(xml_out,"UKQCD_config");
-    Write(xml_out, input_type);
+    write(xml_out, "input_type", input_type);
     pop(xml_out);
     QDPIO::cout << "Read UKQCD gauge config from FE file\n";
     readukqcd (cfg_input_file, u);
@@ -467,7 +467,7 @@ int main(int argc, char **argv)
     // Not now...
   case 20:
     push(xml_out,"UKQCD_single_config");
-    Write(xml_out, input_type);
+    write(xml_out, "input_type", input_type);
     pop(xml_out);
     QDPIO::cout << "Read single-precision UKQCD gauge config from FE file\n";
     readukqcdsingle (cfg_input_file, u);
@@ -496,11 +496,11 @@ int main(int argc, char **argv)
     polylp (u, pollp[mu], mu);
   
   push(xml_out,"Observables");
-  Write(xml_out, w_plaq);
-  Write(xml_out, s_plaq);
-  Write(xml_out, t_plaq);
-  Write(xml_out, link);
-  Write(xml_out, pollp);
+  write(xml_out, "w_plaq", w_plaq);
+  write(xml_out, "s_plaq", s_plaq);
+  write(xml_out, "t_plaq", t_plaq);
+  write(xml_out, "link", link);
+  write(xml_out, "pollp",pollp);
   pop(xml_out);
 
   xml_out.flush();
@@ -514,11 +514,11 @@ int main(int argc, char **argv)
       polylp (u, pollp[mu], mu);
   
     push(xml_out,"Rand_Gtransf_observables");
-    Write(xml_out, w_plaq);
-    Write(xml_out, s_plaq);
-    Write(xml_out, t_plaq);
-    Write(xml_out, link);
-    Write(xml_out, pollp);
+    write(xml_out, "w_plaq", w_plaq);
+    write(xml_out, "s_plaq", s_plaq);
+    write(xml_out, "t_plaq", t_plaq);
+    write(xml_out, "link", link);
+    write(xml_out, "pollp", pollp);
     pop(xml_out);
   }
 
@@ -542,16 +542,16 @@ int main(int argc, char **argv)
       polylp(u, pollp[mu], mu);
   
     push(xml_out,"Smearing_parameters");
-    Write(xml_out, sm_numb);
-    Write(xml_out, sm_fact);
-    Write(xml_out, j_decay);
+    write(xml_out, "sm_numb",sm_numb);
+    write(xml_out, "sm_fact", sm_fact);
+    write(xml_out, "j_decay", j_decay);
     pop(xml_out);
     push(xml_out,"Smeared_observables");
-    Write(xml_out, w_plaq);
-    Write(xml_out, s_plaq);
-    Write(xml_out, t_plaq);
-    Write(xml_out, link);
-    Write(xml_out, pollp);
+    write(xml_out, "w_plaq", w_plaq);
+    write(xml_out, "s_plaq", s_plaq);
+    write(xml_out, "t_plaq", t_plaq);
+    write(xml_out, "link", link);
+    write(xml_out, "pollp", pollp);
     pop(xml_out);
   }
 
@@ -569,17 +569,17 @@ int main(int argc, char **argv)
       polylp(u, pollp[mu], mu);
   
     push(xml_out,"HypSmearing_parameters");
-    Write(xml_out, sm_numb);
-    Write(xml_out, alpha1);
-    Write(xml_out, alpha2);
-    Write(xml_out, alpha3);
+    write(xml_out, "sm_numb", sm_numb);
+    write(xml_out, "alpha1", alpha1);
+    write(xml_out, "alpha2", alpha2);
+    write(xml_out, "alpha3", alpha3);
     pop(xml_out);
     push(xml_out,"HypSmeared_observables");
-    Write(xml_out, w_plaq);
-    Write(xml_out, s_plaq);
-    Write(xml_out, t_plaq);
-    Write(xml_out, link);
-    Write(xml_out, pollp);
+    write(xml_out, "w_plaq", w_plaq);
+    write(xml_out, "s_plaq", s_plaq);
+    write(xml_out, "t_plaq", t_plaq);
+    write(xml_out, "link", link);
+    write(xml_out, "pollp", pollp);
     pop(xml_out);
   }
 
@@ -593,22 +593,22 @@ int main(int argc, char **argv)
       polylp(u, pollp[mu], mu);
   
     push(xml_out,"Gauge_fixing_parameters");
-    Write(xml_out, j_decay);
-    Write(xml_out, GFAccu);
-    Write(xml_out, GFMax);
-    Write(xml_out, OrlxDo);
-    Write(xml_out, OrPara);
+    write(xml_out, "j_decay", j_decay);
+    write(xml_out, "GFAccu", GFAccu);
+    write(xml_out, "GFMax", GFMax);
+    write(xml_out, "OrlxDo",OrlxDo);
+    write(xml_out, "OrPara", OrPara);
     pop(xml_out);
     push(xml_out,"Gauge_fixed_observables");
-    Write(xml_out, w_plaq);
-    Write(xml_out, s_plaq);
-    Write(xml_out, t_plaq);
-    Write(xml_out, link);
-    Write(xml_out, pollp);
+    write(xml_out, "w_plaq", w_plaq);
+    write(xml_out, "s_plaq", s_plaq);
+    write(xml_out, "t_plaq", t_plaq);
+    write(xml_out, "link", link);
+    write(xml_out, "pollp", pollp);
     pop(xml_out);
     
     push(xml_out,"Relaxation_iterations_in_GFIX");
-    Write(xml_out, nrl_gf);
+    write(xml_out, "nrl_gf", nrl_gf);
     pop(xml_out);
   }
 

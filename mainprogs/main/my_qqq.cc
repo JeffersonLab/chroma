@@ -1,5 +1,5 @@
 /*
- *  $Id: my_qqq.cc,v 1.1 2004-02-04 18:25:49 dgr Exp $
+ *  $Id: my_qqq.cc,v 1.2 2004-02-11 12:51:35 bjoo Exp $
  *
  *  This is the test program for the routine that reads in a quark propagator,
  *  stored in SZIN format, and computes the generalised quark propagators
@@ -28,7 +28,7 @@ int main(int argc, char **argv)
   // Now get info about the lattice sizes etc..
 
   push(nml_in,"IO_version");
-  Read(nml_in, version);
+  read(nml_in, "version", version);
   pop(nml_in);
 
 
@@ -42,9 +42,9 @@ int main(int argc, char **argv)
 
     push(nml_in,"param");       // Push into param group
 
-    Read(nml_in, source_type);  // S-wave, P-wave etc
-    Read(nml_in, source_direction);
-    Read(nml_in, wf_type);      // Point, Gaussian etc
+    read(nml_in, "source_type", source_type);  // S-wave, P-wave etc
+    read(nml_in, "source_direction",source_direction);
+    read(nml_in, "wf_type", wf_type);      // Point, Gaussian etc
 
     break;
 
@@ -54,7 +54,7 @@ int main(int argc, char **argv)
   }
 
   // Now get the lattice sizes etc
-  Read(nml_in, nrow);
+  read(nml_in, "nrow", nrow);
 
   nml_in.close();
 

@@ -1,4 +1,4 @@
-// $Id: t_lwldslash.cc,v 1.13 2004-01-14 12:45:18 bjoo Exp $
+// $Id: t_lwldslash.cc,v 1.14 2004-02-11 12:51:35 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -20,8 +20,6 @@ int main(int argc, char **argv)
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
   Layout::create();
-
-  XMLFileWriter xml("t_lwldslash.xml");
 
   //! Test out dslash
   multi1d<LatticeColorMatrix> u(Nd);
@@ -77,7 +75,7 @@ int main(int argc, char **argv)
   LatticeFermion eta;
   M(eta, psi, PLUS);
 
-  Write(nml,eta);
+  write(nml,"eta", eta);
   */
 
   // Time to bolt

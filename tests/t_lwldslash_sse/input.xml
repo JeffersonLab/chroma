@@ -4,5 +4,5 @@
 <!-- the test and run t_lwldslash_sse -->
 <param>
   <!-- Lattice Size -->
-  <nrow>8 4 4 4</nrow>
+  <nrow>4 4 4 8</nrow>
 </param>

@@ -1,4 +1,4 @@
-// $Id: seqprop.cc,v 1.12 2004-02-04 17:01:56 edwards Exp $
+// $Id: seqprop.cc,v 1.13 2004-02-11 12:51:35 bjoo Exp $
 /*! \file
  *  \brief Main code for sequential propagator generation
  */
@@ -348,10 +348,10 @@ int main(int argc, char **argv)
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
 
   push(xml_out, "Observables");
-  Write(xml_out, w_plaq);
-  Write(xml_out, s_plaq);
-  Write(xml_out, t_plaq);
-  Write(xml_out, link);
+  write(xml_out, "w_plaq", w_plaq);
+  write(xml_out, "s_plaq", s_plaq);
+  write(xml_out, "t_plaq", t_plaq);
+  write(xml_out, "link", link);
   pop(xml_out);
 
   xml_out.flush();
@@ -378,7 +378,7 @@ int main(int argc, char **argv)
     QDPIO::cout << "Mass loop = " << loop << endl;
   
     push(xml_array);
-    Write(xml_array, loop);
+    write(xml_array, "loop", loop);
 
     //
     // Initialize fermion action
@@ -418,7 +418,7 @@ int main(int argc, char **argv)
 						   phases.getSet());
 
       push(xml_array, "Forward_prop_correlator");
-      Write(xml_array, forward_prop_corr);
+      write(xml_array, "forward_prop_corr", forward_prop_corr);
       pop(xml_array);
     }
 
@@ -439,7 +439,7 @@ int main(int argc, char **argv)
     for(int seq_src_ctr = 0; seq_src_ctr < input.param.Seq_src.size(); seq_src_ctr++)
     {
       push(xml_seq_src);
-      Write(xml_seq_src, seq_src_ctr);
+      write(xml_seq_src, "seq_src_ctr", seq_src_ctr);
 
       QDPIO::cout << "Start seqprop calculation for seq_src number = " 
 		  << seq_src_ctr << endl;
@@ -524,7 +524,7 @@ int main(int argc, char **argv)
 						      phases.getSet());
 	
 	push(xml_seq_src, "Backward_prop_correlator");
-	Write(xml_seq_src, backward_prop_corr);
+	write(xml_seq_src, "backward_prop_corr", backward_prop_corr);
 	pop(xml_seq_src);
       }
 
@@ -557,7 +557,7 @@ int main(int argc, char **argv)
 	seqPionTest(pion_src, seq_quark_prop, input.param.srceSinkParam.t_srce);
 	
 	push(xml_out,"Seq_propagator_test");
-	Write(xml_out, pion_src);
+	write(xml_out, "pion_src", pion_src);
 	pop(xml_out);
       }
 
@@ -572,7 +572,7 @@ int main(int argc, char **argv)
   pop(xml_array);  // Seqprop_calc
 
   push(xml_out,"Relaxation_Iterations");
-  Write(xml_out, ncg_had);
+  write(xml_out, "ncg_had", ncg_had);
   pop(xml_out);
 
   pop(xml_out);    // seqprop

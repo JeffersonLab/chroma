@@ -1,4 +1,4 @@
-// $Id: polar_dec.cc,v 1.1 2003-12-06 20:56:56 edwards Exp $
+// $Id: polar_dec.cc,v 1.2 2004-02-11 12:51:34 bjoo Exp $
 /*! \file
  *  \brief Decompose a complex matrix as C = exp(i\alpha) V P
  */
@@ -233,7 +233,7 @@ void polar_dec(LatticeColorMatrix& c, LatticeColorMatrix& v,
     QDPIO::cout << "Warning: " << numbad << " C matrices have zero determiant" << endl;
 #if 0
     push(nml_out,"Bad_C_matrices");
-    Write(nml_out, numbad);
+    write(nml_out, "numbad", numbad);
     pop(nml_out);
 #endif
   }
@@ -343,12 +343,12 @@ void polar_dec(LatticeColorMatrix& c, LatticeColorMatrix& v,
 #if 0
   XMLBufferWriter xml_out;
   push(xml_out,"Diagonalization_test");
-  Write(xml_out, iter);
-  Write(xml_out, off_d);
-  Write(xml_out, diff_sq);
-  Write(xml_out, unit_test);
-  Write(xml_out, det_diff);
-  Write(xml_out, numbad);
+  write(xml_out, "iter",iter);
+  write(xml_out, "off_d",off_d);
+  write(xml_out, "diff_sq", diff_sq);
+  write(xml_out, "unit_test", unit_test);
+  write(xml_out, "det_diff", det_diff);
+  write(xml_out, "numbad", numbad);
   pop(xml_out);
 #endif
   

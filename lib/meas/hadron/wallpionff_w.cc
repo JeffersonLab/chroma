@@ -1,4 +1,4 @@
-// $Id: wallpionff_w.cc,v 1.4 2004-02-03 20:04:53 edwards Exp $
+// $Id: wallpionff_w.cc,v 1.5 2004-02-11 12:51:34 bjoo Exp $
 /*! \file
  *  \brief Wall-sink pion form-factors 
  *
@@ -49,7 +49,7 @@ void wallPionFormFac(XMLWriter& xml,
   for(int mu = 0; mu < Nd; ++mu)
   {
     push(xml_array);
-    Write(xml_array, mu);
+    write(xml_array, "mu", mu);
 
     int gamma_value = 1 << mu;
 
@@ -68,7 +68,7 @@ void wallPionFormFac(XMLWriter& xml,
     for(int inser_mom_num=0; inser_mom_num<phases.numMom(); ++inser_mom_num) 
     {
       push(xml_inser_mom);
-      Write(xml_inser_mom, inser_mom_num);
+      write(xml_inser_mom, "inser_mom_num", inser_mom_num);
       write(xml_inser_mom, "inser_mom", phases.numToMom(inser_mom_num)) ;
 
 //      form.formFac[gamma_value].momenta[inser_mom_num].inser_mom = phases.numToMom(inser_mom_num);
@@ -90,7 +90,7 @@ void wallPionFormFac(XMLWriter& xml,
 
       // Print out the results
       push(xml_inser_mom, "Wilson_Local_Current_3Pt_fn");
-      Write(xml_inser_mom, local_cur3ptfn);
+      write(xml_inser_mom, "local_cur3ptfn", local_cur3ptfn);
       pop(xml_inser_mom);
 
 //      form.formFac[gamma_value].momenta[inser_mom_num].local_current    = local_cur3ptfn;

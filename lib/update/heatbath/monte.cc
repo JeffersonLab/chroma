@@ -1,4 +1,4 @@
-// $Id: monte.cc,v 1.1 2003-12-29 19:47:22 edwards Exp $
+// $Id: monte.cc,v 1.2 2004-02-11 12:51:34 bjoo Exp $
 /*! \file
  *  \brief Routine for doing the hybrid (monte carlo) algorithm. 
  */
@@ -122,7 +122,7 @@ void monte(multi1d<LatticeColorMatrix>& u(Nd),	/* New gauge field cfg. */
     
     /* This is the very first namelist group printed in an iteration */
     push(xml_out,"NewIteration");
-    Write(xml_out, ItrNumber);
+    write(xml_out, "ItrNumber", ItrNumber);
     pop(xml_out);
 
     /* Perform a Monte Carlo iteration */
@@ -141,16 +141,16 @@ void monte(multi1d<LatticeColorMatrix>& u(Nd),	/* New gauge field cfg. */
 	polylp(u, pollp[mu], mu);
 
       push(xml_out,"obsvbl1");
-      Write(xml_out, TotalItr);
-      Write(xml_out, w_plaq);
-      Write(xml_out, s_plaq);
-      Write(xml_out, t_plaq);
-      Write(xml_out, link);
-      Write(xml_out, pollp);
+      write(xml_out, "TotalItr", TotalItr);
+      write(xml_out, "w_plaq", w_plaq);
+      write(xml_out, "s_plaq", s_plaq);
+      write(xml_out, "t_plaq", t_plaq);
+      write(xml_out, "link", link);
+      write(xml_out, "pollp", pollp);
       pop(xml_out);
       push(xml_out,"obsvbl2");
-      Write(xml_out, NumTry);
-      Write(xml_out, NumFail);
+      write(xml_out, "NumTry", NumTry);
+      write(xml_out, "NumFail", NumFail);
       pop(xml_out);
 
       if ( GlueP == YES )
@@ -200,9 +200,9 @@ void monte(multi1d<LatticeColorMatrix>& u(Nd),	/* New gauge field cfg. */
 
 	
 	push(xml_out,"Smeared_Wilson_Loops");
-	Write(xml_out, NumSmea);
-	Write(xml_out, FacSmea);
-	Write(xml_out, t_dir);
+	write(xml_out, "NumSmea", NumSmea);
+	write(xml_out, "FacSmea", FacSmea);
+	write(xml_out, "t_dir", t_dir);
 	pop(xml_out);
 	wilslp (u_sm, t_dir, 6);
 
@@ -224,9 +224,9 @@ void monte(multi1d<LatticeColorMatrix>& u(Nd),	/* New gauge field cfg. */
 	  u_sm = u_tmp;
 
 	  push(xml_out,"Smeared_Wilson_Loops");
-	  Write(xml_out, NumSmea);
-	  Write(xml_out, FacSmea);
-	  Write(xml_out, j_decay);
+	  write(xml_out, "NumSmea", NumSmea);
+	  write(xml_out, "FacSmea", FacSmea);
+	  write(xml_out, "j_decay", j_decay);
 	  pop(xml_out);
 	  wilslp(u_sm, j_decay, 6);
 	}               /*  end of sideways potl  */
@@ -246,7 +246,7 @@ void monte(multi1d<LatticeColorMatrix>& u(Nd),	/* New gauge field cfg. */
     
     /* This is absolutely the last namelist group Printed in this trajectory */
     push(xml_out,"EndIteration");
-    Write(xml_out, ItrNumber);
+    write(xml_out, "ItrNumber", ItrNumber);
     pop(xml_out);
   }                     /* end loop over iterations */
   

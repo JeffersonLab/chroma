@@ -1,4 +1,4 @@
-// $Id: t_lwldslash_sse.cc,v 1.19 2004-02-05 20:09:34 edwards Exp $
+// $Id: t_lwldslash_sse.cc,v 1.20 2004-02-11 12:51:35 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -13,8 +13,15 @@ int main(int argc, char **argv)
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
 
+  std::string root="";
+
+  if(argc == 2 ) { 
+	root += argv[1];
+        root += "/";
+  }
+
   // Read parameters
-  XMLReader xml_in("input.xml");
+  XMLReader xml_in((root+"input.xml"));
 
   // Lattice Size
   multi1d<int> nrow(Nd);
@@ -25,8 +32,9 @@ int main(int argc, char **argv)
   // Setup the layout
   Layout::setLattSize(nrow);
   Layout::create();
+w
+  XMLFileWriter xml(root+"t_lwldslash.xml");
 
-  XMLFileWriter xml("t_lwldslash.xml");
   push(xml,"t_lwldslash");
 
   push(xml,"lattis");
@@ -208,8 +216,8 @@ int main(int argc, char **argv)
 		  << endl;
 
       push(xml,"OPT test");
-      Write(xml,isign);
-      Write(xml,cb);
+      write(xml,"isign", isign);
+      write(xml,"co", cb);
       write(xml,"norm2_diff",n2);
       pop(xml);
     }

@@ -1,4 +1,4 @@
-// $Id: t_disc_loop_s.cc,v 1.1 2004-02-09 12:41:49 mcneile Exp $
+// $Id: t_disc_loop_s.cc,v 1.2 2004-02-11 12:51:35 bjoo Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -359,10 +359,10 @@ int main(int argc, char **argv)
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
 
   push(xml_out, "Observables");
-  Write(xml_out, w_plaq);
-  Write(xml_out, s_plaq);
-  Write(xml_out, t_plaq);
-  Write(xml_out, link);
+  write(xml_out, "w_plaq", w_plaq);
+  write(xml_out, "s_plaq", s_plaq);
+  write(xml_out, "t_plaq", t_plaq);
+  write(xml_out, "link", link);
   pop(xml_out);
 
   // Fix to the coulomb gauge
@@ -375,10 +375,10 @@ int main(int argc, char **argv)
   // Calcluate plaq on the gauge fixed field
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
   push(xml_out, "Is this gauge invariant?");
-  Write(xml_out, w_plaq);
-  Write(xml_out, s_plaq);
-  Write(xml_out, t_plaq);
-  Write(xml_out, link);
+  write(xml_out, "w_plaq", w_plaq);
+  write(xml_out, "s_plaq", s_plaq);
+  write(xml_out, "t_plaq", t_plaq);
+  write(xml_out, "link", link);
   pop(xml_out);
 */
   xml_out.flush();
@@ -418,8 +418,8 @@ int main(int argc, char **argv)
     (*D_asqtad).evenOddLinOp(tmp2, tmp1, PLUS); 
 
     push(xml_out, "dslash");
-    Write(xml_out, tmp1);
-    Write(xml_out, tmp2);
+    write(xml_out, "tmp1", tmp1);
+    write(xml_out, "tmp2",  tmp2);
     pop(xml_out);
   }
 */
@@ -472,7 +472,7 @@ int main(int argc, char **argv)
     push(xml_out,"Qprop");
     write(xml_out, "Mass" , input.param.Mass);
     write(xml_out, "RsdCG" , input.param.RsdCG);
-    Write(xml_out, n_count);
+    write(xml_out, "n_count", n_count);
     pop(xml_out);
 
     // Store the solution vectors for now
@@ -488,7 +488,7 @@ int main(int argc, char **argv)
     sca_loop += loop[i];
 
     push(xml_out, "LOOP");
-    Write(xml_out, loop[i]);
+    write(xml_out, "loop[i]",loop[i]);
     pop(xml_out);
 
   } // Nsamples
@@ -509,7 +509,7 @@ int main(int argc, char **argv)
   // Will also write out correlators here soon!
 
   push(xml_out, "AV_LOOP");
-  Write(xml_out, sca_loop);
+  write(xml_out, "sca_loop", sca_loop);
   pop(xml_out);
 
   // Calculate the standard deviation on the average 

@@ -1,4 +1,4 @@
-// $Id: t_io.cc,v 1.7 2003-10-09 20:36:49 edwards Exp $
+// $Id: t_io.cc,v 1.8 2004-02-11 12:51:35 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -25,7 +25,7 @@ int main(int argc, char **argv)
   random(a);
 
   NmlWriter tonml("cat");
-  Write(tonml,a);
+  write(tonml,"a", a);
   tonml.close();
 
   BinaryWriter tobinary("dog");

@@ -1,4 +1,4 @@
-// $Id: t_ovlap5d_bj.cc,v 1.3 2004-01-14 12:45:18 bjoo Exp $
+// $Id: t_ovlap5d_bj.cc,v 1.4 2004-02-11 12:51:35 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -292,10 +292,10 @@ void readEigenVecs(const multi1d<LatticeColorMatrix>& u,
   }    
   push(xml_out, "EigenvectorTest");
   push(xml_out, "EigenVecNorms");
-  Write(xml_out, evec_norms);
+  write(xml_out, "evec_norms", evec_norms);
   pop(xml_out);
   push(xml_out, "EigenTestNorms");
-  Write(xml_out, e_norms);
+  write(xml_out, "e_norms", e_norms);
   pop(xml_out);
 
   if( szin_eig ) { 
@@ -304,7 +304,7 @@ void readEigenVecs(const multi1d<LatticeColorMatrix>& u,
       szin_enorms[i] /= (Real(Nd)+wilson_mass);
     }
     push(xml_out, "SZINEigenTestNorms");
-    Write(xml_out, szin_enorms);
+    write(xml_out, "szin_enorms", szin_enorms);
     pop(xml_out);
   }
   pop(xml_out); // eigenvector test
@@ -410,10 +410,10 @@ int main(int argc, char **argv)
   Double w_plaq, s_plaq, t_plaq, link;
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
   push(xml_out, "plaquette");
-  Write(xml_out, w_plaq);
-  Write(xml_out, s_plaq);
-  Write(xml_out, t_plaq);
-  Write(xml_out, link);
+  write(xml_out, "w_plaq", w_plaq);
+  write(xml_out, "s_plaq", s_plaq);
+  write(xml_out, "t_plaq", t_plaq);
+  write(xml_out, "link", link);
   pop(xml_out);
 
   //! Wilsoniums;

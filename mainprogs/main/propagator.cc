@@ -1,6 +1,9 @@
-// $Id: propagator.cc,v 1.44 2004-02-07 04:51:58 edwards Exp $
+// $Id: propagator.cc,v 1.45 2004-02-11 12:51:35 bjoo Exp $
 // $Log: propagator.cc,v $
-// Revision 1.44  2004-02-07 04:51:58  edwards
+// Revision 1.45  2004-02-11 12:51:35  bjoo
+// Stripped out Read() and Write()
+//
+// Revision 1.44  2004/02/07 04:51:58  edwards
 // Removed SSE hack - pushed it down into the SSE code where it belongs.
 //
 // Revision 1.43  2004/02/06 22:31:00  edwards
@@ -310,10 +313,10 @@ int main(int argc, char **argv)
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
 
   push(xml_out, "Observables");
-  Write(xml_out, w_plaq);
-  Write(xml_out, s_plaq);
-  Write(xml_out, t_plaq);
-  Write(xml_out, link);
+  write(xml_out, "w_plaq", w_plaq);
+  write(xml_out, "s_plaq", s_plaq);
+  write(xml_out, "t_plaq", t_plaq);
+  write(xml_out, "link", link);
   pop(xml_out);
 
   // Sanity check - write out the norm2 of the source in the Nd-1 direction
@@ -326,7 +329,7 @@ int main(int argc, char **argv)
 					   phases.getSet());
 
     push(xml_out, "Source_correlator");
-    Write(xml_out, source_corr);
+    write(xml_out, "source_corr", source_corr);
     pop(xml_out);
   }
 
@@ -474,7 +477,7 @@ int main(int argc, char **argv)
   }
 
   push(xml_out,"Relaxation_Iterations");
-  Write(xml_out, ncg_had);
+  write(xml_out, "ncg_had", ncg_had);
   pop(xml_out);
 
   // Sanity check - write out the propagator (pion) correlator in the Nd-1 direction
@@ -486,7 +489,7 @@ int main(int argc, char **argv)
 					 phases.getSet());
 
     push(xml_out, "Prop_correlator");
-    Write(xml_out, prop_corr);
+    write(xml_out, "prop_corr", prop_corr);
     pop(xml_out);
   }
 

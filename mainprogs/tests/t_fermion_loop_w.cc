@@ -1,4 +1,4 @@
-// $Id: t_fermion_loop_w.cc,v 1.1 2004-02-08 11:17:58 mcneile Exp $
+// $Id: t_fermion_loop_w.cc,v 1.2 2004-02-11 12:51:35 bjoo Exp $
 /*! \file
  *  \brief Main code for  generation of disconnected 
  *         loops
@@ -323,10 +323,10 @@ int main(int argc, char **argv)
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
 
   push(xml_out, "Observables");
-  Write(xml_out, w_plaq);
-  Write(xml_out, s_plaq);
-  Write(xml_out, t_plaq);
-  Write(xml_out, link);
+  write(xml_out, "w_plaq", w_plaq);
+  write(xml_out, "s_plaq", s_plaq);
+  write(xml_out, "t_plaq", t_plaq);
+  write(xml_out, "link", link);
   pop(xml_out);
 
 
@@ -406,7 +406,7 @@ int main(int argc, char **argv)
       //      z2_src(q_source,0,3) ;
 
       // DEBUG write out the source
-      // Write(xml_out, q_source); 
+      // write(xml_out, "q_source", q_source); 
 
 
       // initial guess is zero
@@ -424,7 +424,7 @@ int main(int argc, char **argv)
       write(xml_out, "Mass" , input.param.Mass);
       write(xml_out, "RsdCG", input.param.RsdCG);
       write(xml_out, "Sample" , sample);
-      Write(xml_out, n_count);
+      write(xml_out, "n_count", n_count);
       pop(xml_out);
 
 

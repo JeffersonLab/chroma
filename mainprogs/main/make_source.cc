@@ -1,4 +1,4 @@
-// $Id: make_source.cc,v 1.23 2004-02-06 21:54:40 sbasak Exp $
+// $Id: make_source.cc,v 1.24 2004-02-11 12:51:35 bjoo Exp $
 /*! \file
  *  \brief Main code for source generation
  */
@@ -377,7 +377,7 @@ int main(int argc, char **argv)
                                          phases.getSet());
 
   push(xml_out, "Source_correlator");
-  Write(xml_out, source_corr);
+  write(xml_out, "source_corr", source_corr);
   pop(xml_out);
  }
  

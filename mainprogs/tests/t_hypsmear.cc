@@ -1,4 +1,4 @@
-// $Id: t_hypsmear.cc,v 1.4 2003-10-09 20:36:49 edwards Exp $
+// $Id: t_hypsmear.cc,v 1.5 2004-02-11 12:51:35 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -22,9 +22,9 @@ int main(int argc, char *argv[])
   NmlWriter nml("t_hypsmear.nml");
 
   push(nml,"lattis");
-  Write(nml,Nd);
-  Write(nml,Nc);
-  Write(nml,nrow);
+  write(nml,"Nd", Nd);
+  write(nml,"Nc", Nc);
+  write(nml,"nrow", nrow);
   pop(nml);
 
   //! Example of calling a plaquette routine
@@ -50,8 +50,8 @@ int main(int argc, char *argv[])
 
   // Write out the results
   push(nml,"observables");
-  Write(nml,w_plaq);
-  Write(nml,link);
+  write(nml,"w_plaq", w_plaq);
+  write(nml,"link", link);
   pop(nml);
 
   // Now hyp smear
@@ -70,8 +70,8 @@ int main(int argc, char *argv[])
 
   // Write out the results
   push(nml,"HYP_observables");
-  Write(nml,w_plaq);
-  Write(nml,link);
+  write(nml,"w_plaq", w_plaq);
+  write(nml,"link", link);
   pop(nml);
 
   // Time to bolt

@@ -1,4 +1,4 @@
-// $Id: t_follana_io_s.cc,v 1.7 2003-10-23 09:46:48 bjoo Exp $
+// $Id: t_follana_io_s.cc,v 1.8 2004-02-11 12:51:35 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
   XMLFileWriter xml_out("output.xml");
 
   push(xml_out, "follanaIO");
-  Write(xml_out, hsum);
+  write(xml_out, "hsum", hsum);
   pop(xml_out);
 
   multi1d<LatticeReal> meson_phases(Nd);

@@ -1,4 +1,4 @@
-// $Id: t_follana_pion_s.cc,v 1.1 2003-10-23 15:28:17 bjoo Exp $
+// $Id: t_follana_pion_s.cc,v 1.2 2004-02-11 12:51:35 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
     ostringstream tag;
     tag << "pion" << i;
     push(xml_out, tag.str());
-    Write(xml_out, pions[i]);
+    write(xml_out, "pions_i", pions[i]);
     pop(xml_out);
   }
 

@@ -1,4 +1,4 @@
-// $Id: quarkprop4_w.cc,v 1.9 2004-02-05 20:10:24 edwards Exp $
+// $Id: quarkprop4_w.cc,v 1.10 2004-02-11 12:51:33 bjoo Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -73,7 +73,7 @@ void quarkProp4_a(LatticePropagator& q_sol,
 
       push(xml_out,"Qprop");
       write(xml_out, "RsdCG", RsdCG);
-      Write(xml_out, n_count);
+      write(xml_out, "n_count", n_count);
       pop(xml_out);
 
       // Unnormalize the source following the inverse of the normalization above

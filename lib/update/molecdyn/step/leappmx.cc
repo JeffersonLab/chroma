@@ -1,4 +1,4 @@
-// $Id: leappmx.cc,v 1.2 2003-12-31 23:47:55 edwards Exp $
+// $Id: leappmx.cc,v 1.3 2004-02-11 12:51:34 bjoo Exp $
 
 #error "NOT FULLY CONVERTED - NEED TO MOVE GLOBAL PARAMS INTO FUNCTOR"
 
@@ -128,13 +128,13 @@ void LeapPMX(multi1d<LatticeColorMatrix>& u,
 	DelHCG  = DelKeCG + DelFeCG;
 
 	push(xml_out,"RsdCGMon");
-	Write(xml_out, del_n_count);
-	Write(xml_out, n_count);
-	Write(xml_out, psi_norm);
-	Write(xml_out, RsdCG);
-	Write(xml_out, DelHCG);
-	Write(xml_out, DelKeCG);
-	Write(xml_out, DelFeCG);
+	write(xml_out, "del_n_count", del_n_count);
+	write(xml_out, "n_count", n_count);
+	write(xml_out, "psi_norm", psi_norm);
+	write(xml_out, "RsdCG",  RsdCG);
+	write(xml_out, "DelHCG", DelHCG);
+	write(xml_out, "DelKeCG", DelKeCG);
+	write(xml_out, "DelFeCG", DelFeCG);
 	pop(xml_out);
 
 	if ( RsdCG <= RsdCGMD )

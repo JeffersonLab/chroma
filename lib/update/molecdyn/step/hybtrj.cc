@@ -1,4 +1,4 @@
-// $Id: hybtrj.cc,v 1.2 2004-01-01 22:06:58 edwards Exp $
+// $Id: hybtrj.cc,v 1.3 2004-02-11 12:51:34 bjoo Exp $
 
 #error "NOT FULLY CONVERTED - NEED TO MOVE AlgETrj into params of Integ. functor"
 
@@ -89,12 +89,12 @@ void HybTrj(multi1d<LatticeColorMatrix>& u,
       DelH  = DelKe - DelPe + DelFe;
 
       push(xml_out,"HybStpMon");
-      Write(xml_out, t);
-      Write(xml_out, nn_count);
-      Write(xml_out, DelH);
-      Write(xml_out, DelKe);
-      Write(xml_out, DelPe);
-      Write(xml_out, DelFe);
+      write(xml_out, "t", t);
+      write(xml_out, "nn_count", nn_count);
+      write(xml_out, "DelH", DelH);
+      write(xml_out, "DelKe", DelKe);
+      write(xml_out, "DelPe", DelPe);
+      write(xml_out, "DelFe", DelFe);
       pop(xml_out);
 
       if ( FermAct == OVERLAP_POLE && FermiP && ! EndP )

@@ -1,4 +1,4 @@
-// $Id: invmr.cc,v 1.2 2003-08-09 04:18:47 edwards Exp $
+// $Id: invmr.cc,v 1.3 2004-02-11 12:51:33 bjoo Exp $
 
 /*! \file
  *  \brief Minimal-Residual (MR) for a generic fermion Linear Operator
@@ -90,9 +90,9 @@ void InvCG2(const LinearOperator& A,
   Double cp = norm2(r, s);                 /* 2 Nc Ns  flops */
 
   /*  IF |r[0]| <= RsdMR |Chi| THEN RETURN; */
-  /*#Write(nml_out,*) "&Minimal_Residual_iterations"; */
+  /*#erite(nml_out,*) "&Minimal_Residual_iterations"; */
   /*#printf("InvMRm: k = 0  cp = %g\n", cp); */
-  /*#Write(nml_out,*) "ClovInv: k = 0  cp = ", cp; */
+  /*#write(nml_out,*) "ClovInv: k = 0  cp = ", cp; */
   
   if ( toBool(cp  <=  rsd_sq) )
   {
@@ -135,7 +135,7 @@ void InvCG2(const LinearOperator& A,
     cp = norm2(r, s);                   /* 2 Nc Ns  flops */
 
     /*#  printf("InvMRm: k = %d  cp = %g\n", k, cp); */
-    /*#  Write(nml_out,*) "InvMRm: k = ",k,"  cp = ", cp; */
+    /*#  write(nml_out,*) "InvMRm: k = ",k,"  cp = ", cp; */
   }
   n_count = k;
   if ( n_count == MaxCG )

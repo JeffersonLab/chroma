@@ -1,4 +1,4 @@
-// $Id: zolotarev5d_fermact_array_w.cc,v 1.4 2004-01-13 17:52:15 bjoo Exp $
+// $Id: zolotarev5d_fermact_array_w.cc,v 1.5 2004-02-11 12:51:33 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -54,7 +54,7 @@ Zolotarev5DFermActArray::init(Real& scale_fac,
 
 
   push(my_writer, "ZoloContFracCoeff");
-  Write(my_writer, beta);
+  write(my_writer, "beta", beta);
   pop(my_writer);
 
   QDPIO::cout << "Did Beta" << endl;
@@ -90,8 +90,8 @@ Zolotarev5DFermActArray::init(Real& scale_fac,
   QDPIO::cout << "Did alpha2 " << endl;
 
   push(my_writer, "ZoloEquivTransCoeff");
-  Write(my_writer, beta);
-  Write(my_writer, alpha);
+  write(my_writer, "beta", beta);
+  write(my_writer, "alpha", alpha);
   pop(my_writer);
 
   QDPIO::cout << "Zolotarev 5d: " 

@@ -1,5 +1,5 @@
 /*
- *  $Id: hypsmear.cc,v 1.5 2004-01-31 23:22:01 edwards Exp $
+ *  $Id: hypsmear.cc,v 1.6 2004-02-11 12:51:35 bjoo Exp $
  *
  *  This is the top-level routine for HYP smearing.
  *  It is a wrapper for Urs' and Robert's implmenetation of the HYP
@@ -254,10 +254,10 @@ int main(int argc, char *argv[])
   QDPIO::cout << "Plaquette took " << (double)((int)(t2)-(int)(t1))/(double)(CLOCKS_PER_SEC) << " secs" << endl;
 
   push(xml_out, "Observables");
-  Write(xml_out, w_plaq);
-  Write(xml_out, s_plaq);
-  Write(xml_out, t_plaq);
-  Write(xml_out, link);
+  write(xml_out, "w_plaq",w_plaq);
+  write(xml_out, "s_plaq", s_plaq);
+  write(xml_out, "t_plaq", t_plaq);
+  write(xml_out, "link", link);
   pop(xml_out);
 
   xml_out.flush();
@@ -283,10 +283,10 @@ int main(int argc, char *argv[])
   MesPlq(u_hyp, w_plaq, s_plaq, t_plaq, link);
 
   push(xml_out, "HYP_observables");
-  Write(xml_out, w_plaq);
-  Write(xml_out, s_plaq);
-  Write(xml_out, t_plaq);
-  Write(xml_out, link);
+  write(xml_out, "w_plaq", w_plaq);
+  write(xml_out, "s_plaq", s_plaq);
+  write(xml_out, "t_plaq", t_plaq);
+  write(xml_out, "link", link);
   pop(xml_out);
 
   // Now write the configuration to disk

@@ -162,7 +162,7 @@ int main(int argc, char **argv)
   
   
   //NmlWriter nml("propagator_1");   // output in ASCII format
-  //Write(nml, quark_propagator);
+  //erite(nml, "quark_propagator", quark_propagator);
   //nml.close();
 
 	
@@ -223,10 +223,10 @@ int main(int argc, char **argv)
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
   
   push(xml_out, "Observables");
-  Write(xml_out, w_plaq);
-  Write(xml_out, s_plaq);
-  Write(xml_out, t_plaq);
-  Write(xml_out, link);
+  write(xml_out, "w_plaq", w_plaq);
+  write(xml_out, "s_plaq", s_plaq);
+  write(xml_out, "t_plaq", t_plaq);
+  write(xml_out, "link", link);
 
 
   
@@ -261,7 +261,7 @@ int main(int argc, char **argv)
                                                     phases.getSet());
   
     push(xml_out, "Prop_correlator");
-    Write(xml_out, prop_corr);
+    write(xml_out, "prop_corr", prop_corr);
   }
 
 

@@ -1,4 +1,4 @@
-/*  $Id: asq_dsl_s.cc,v 1.3 2004-01-07 13:50:07 bjoo Exp $  */
+/*  $Id: asq_dsl_s.cc,v 1.4 2004-02-11 12:51:33 bjoo Exp $  */
 
 #include "chromabase.h"
 #include "linop.h"
@@ -62,8 +62,8 @@ void QDPStaggeredDslash::create(const multi1d<LatticeColorMatrix>& _u_fat, const
   
 //  XMLFileWriter xml_out("output2.xml");
 //  push(xml_out, "more_tests");
-//  Write(xml_out, u_fat);
-//  Write(xml_out,u_triple);
+//  write(xml_out, "u_fat", u_fat);
+//  write(xml_out,"u_triple", u_triple);
 //  pop(xml_out);
 
 }
@@ -81,8 +81,8 @@ void QDPStaggeredDslash::apply (LatticeFermion& chi, const LatticeFermion& psi, 
 // In any case fattening is done elsewhere and is done only once 
 //   XMLFileWriter xml_out("output2.xml");
 //  push(xml_out, "more_tests");
-//   Write(xml_out, u_fat);
-//  Write(xml_out,u_triple);
+//   write(xml_out, "u_fat", u_fat);
+//  write(xml_out,"u_triple", u_triple);
 //   pop(xml_out);
 //  LatticeFermion chi;
 
