@@ -1,4 +1,4 @@
-// $Id: t_precact.cc,v 1.3 2003-12-02 15:46:45 edwards Exp $
+// $Id: t_precact.cc,v 1.4 2003-12-15 21:48:47 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -7,32 +7,7 @@
 
 #include "qdp_util.h"
 
-
-//---------------- HACK ----------------------------
-// WARNING - Inefficient; improve later - move into QDP
-#if 1
-namespace QDP {
-
-template<class T>
-inline typename UnaryReturn<OLattice<T>, FnNorm2>::Type_t
-norm2(const multi1d< OLattice<T> >& s1)
-{
-  typename UnaryReturn<OLattice<T>, FnNorm2>::Type_t  d;
-
-  d = norm2(s1[0]);
-  for(int n=1; n < s1.size(); ++n)
-    d += norm2(s1[n]);
-
-  return d;
-}
-}
-#endif
-//---------------------------------------------------
-
-
 using namespace QDP;
-
-
 
 
 int main(int argc, char **argv)
