@@ -1,3 +1,7 @@
+12/22/2004 -- Robert Edwards
+
+	Version 1.11.2. New HMC support. First versions of Monomials.
+
 12/15/2004 -- Robert Edwards
 
 	Version 1.11.1. Fixed chroma_config (for libs). Moved other routines
