@@ -162,10 +162,11 @@ HDRS =
 
 #noinst_PROGRAMS = propagator
 check_PROGRAMS = propagator spectrum_w qqq_w seqprop bar3ptfn make_source \
-        ExampleBuildingBlocks hypsmear cfgtransf sink_smearing qproptransf
+        ExampleBuildingBlocks hypsmear cfgtransf sink_smearing qproptransf \
+        wallformfac
 
 
-EXTRA_PROGRAMS = wallformfac
+EXTRA_PROGRAMS = 
 
 #
 # The program and its dependencies
@@ -208,11 +209,12 @@ sink_smearing_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 subdir = mainprogs/main
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
 CONFIG_CLEAN_FILES =
-EXTRA_PROGRAMS = wallformfac$(EXEEXT)
+EXTRA_PROGRAMS =
 check_PROGRAMS = propagator$(EXEEXT) spectrum_w$(EXEEXT) qqq_w$(EXEEXT) \
 	seqprop$(EXEEXT) bar3ptfn$(EXEEXT) make_source$(EXEEXT) \
 	ExampleBuildingBlocks$(EXEEXT) hypsmear$(EXEEXT) \
-	cfgtransf$(EXEEXT) sink_smearing$(EXEEXT) qproptransf$(EXEEXT)
+	cfgtransf$(EXEEXT) sink_smearing$(EXEEXT) qproptransf$(EXEEXT) \
+	wallformfac$(EXEEXT)
 am_ExampleBuildingBlocks_OBJECTS = ExampleBuildingBlocks.$(OBJEXT)
 ExampleBuildingBlocks_OBJECTS = $(am_ExampleBuildingBlocks_OBJECTS)
 ExampleBuildingBlocks_LDADD = $(LDADD)
