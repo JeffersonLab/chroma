@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.111 2004-02-14 18:44:41 edwards Exp $
+# $Id: Makefile.am,v 1.112 2004-02-23 03:03:36 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -137,7 +137,7 @@ nobase_include_HEADERS += \
 	actions/ferm/qprop/quarkprop4_w.h \
 	actions/ferm/qprop/quarkprop4_multi_w.h \
 	actions/ferm/qprop/unprec_qprop_w.h \
-	io/io_w.h io/readszinferm_w.h io/readszinqprop_w.h \
+	io/io_w.h io/barcomp_io.h io/readszinferm_w.h io/readszinqprop_w.h \
 	io/writeszinqprop_w.h \
 	meas/eig/eig_w.h meas/eig/ischiral_w.h \
 	meas/hadron/barcomp_w.h \
@@ -222,7 +222,7 @@ libchroma_a_SOURCES += baryon_w.cc mesons_w.cc hybmeson_w.cc \
               loops_w.cc z2_src.cc \
               curcor2_w.cc lwldslash_w.cc formfac_w.cc \
               mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
-              sink_smear2_w.cc barcomp_w.cc walfil_w.cc \
+              sink_smear2_w.cc barcomp_io.cc barcomp_w.cc walfil_w.cc \
               fermact_qprop.cc prec_fermact_qprop.cc \
               unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
               prec_wilson_fermact_w.cc prec_wilson_linop_w.cc \
@@ -244,7 +244,7 @@ libchroma_a_SOURCES += baryon_w.cc mesons_w.cc hybmeson_w.cc \
 	      zolotarev_coeffs.cc overlap_fermact_base_w.cc lovlapms_w.cc  \
 	      zolotarev4d_fermact_w.cc ischiral_w.cc lovddag_w.cc \
 	      zolotarev5d_fermact_array_w.cc zolotarev5d_linop_array_w.cc \
-              wallpionff_w.cc
+              wallpionff_w.cc 
 
 # wall_qprop_w.cc
 # zolotarev4d_linop_w.cc 
