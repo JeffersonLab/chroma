@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial5d_w.h,v 1.4 2005-02-23 14:51:56 bjoo Exp $
+// $Id: one_flavor_rat_monomial5d_w.h,v 1.5 2005-03-07 02:55:59 edwards Exp $
 
 /*! @file
  * @brief One flavor monomials using RHMC
@@ -103,8 +103,11 @@ namespace Chroma
 	}
       }
 
+      Double F_m_sq = norm2(F);   // monitor force
+
       // Force term for the PV
       int n_pv_count = 0;
+      Double F_pv_sq;
       {
 	// Get Pauli-Villars linear operator
 	Handle< const DiffLinearOperator<multi1d<Phi>, P> > PV(FA.linOpPV(state));
@@ -121,6 +124,10 @@ namespace Chroma
 	// Loop over solns and accumulate force contributions
 	P  F_1, F_2;
 	
+	P  F_pv;
+	F_pv.resize(Nd);
+	F_pv = zero;
+	
 	for(int i=0; i < X.size(); ++i)
 	{
 	  (*PV)(Y, X[i], PLUS);
@@ -134,12 +141,21 @@ namespace Chroma
 
 	  // Reweight each contribution in partial fraction
 	  for(int mu=0; mu < F.size(); mu++)
-	    F[mu] -= fpvpfe.res[i] * F_1[mu];
+	    F_pv[mu] -= fpvpfe.res[i] * F_1[mu];
 	}
+
+	F_pv_sq = norm2(F_pv);   // monitor force
+
+	F += F_pv;   // add on PV force term
       }
+
+      Double F_sq = norm2(F);
 
       write(xml_out, "n_count", n_count);
       write(xml_out, "n_pv_count", n_pv_count);
+      write(xml_out, "F_m_sq", F_m_sq);
+      write(xml_out, "F_pv_sq", F_pv_sq);
+      write(xml_out, "F_sq", F_sq);
       pop(xml_out);
     }
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial_w.h,v 1.5 2005-02-23 14:51:56 bjoo Exp $
+// $Id: one_flavor_rat_monomial_w.h,v 1.6 2005-03-07 02:55:59 edwards Exp $
 
 /*! @file
  * @brief One flavor monomials using RHMC
@@ -101,7 +101,10 @@ namespace Chroma
 	  F[mu] -= fpfe.res[i] * F_1[mu];
       }
 
+      Double F_sq = norm2(F);   // monitor force
+
       write(xml_out, "n_count", n_count);
+      write(xml_out, "F_sq", F_sq);
       pop(xml_out);
     }
   

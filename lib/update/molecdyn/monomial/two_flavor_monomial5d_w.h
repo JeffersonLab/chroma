@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial5d_w.h,v 1.4 2005-02-24 03:15:24 edwards Exp $
+// $Id: two_flavor_monomial5d_w.h,v 1.5 2005-03-07 02:55:59 edwards Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -88,20 +88,30 @@ namespace Chroma
       // First PV contribution
       PV->deriv(F, getPhi(), X, PLUS);
 
-      // First interior term
-      P F_tmp;
-      M->deriv(F_tmp, X, Y, MINUS);
-      F -= F_tmp;   // NOTE SIGN
-      
-      // fold M^dag into X^dag ->  Y  !!
-      M->deriv(F_tmp, Y, X, PLUS);
-      F -= F_tmp;   // NOTE SIGN
-      
       // Last PV contribution
+      P F_tmp;
       PV->deriv(F_tmp, X, getPhi(), MINUS);
       F += F_tmp;   // NOTE SIGN
 
+      Double F_pv_sq = norm2(F);  // monitor force
+
+      // First interior term
+      P FM;
+      M->deriv(FM, X, Y, MINUS);
+      
+      // fold M^dag into X^dag ->  Y  !!
+      M->deriv(F_tmp, Y, X, PLUS);
+      FM += F_tmp;   // NOTE SIGN
+      
+      Double F_m_sq = norm2(FM);  // monitor force
+
+      F -= FM;  // NOTE SIGN
+      Double F_sq = norm2(F);  // monitor force
+
       write(xml_out, "n_count", n_count);
+      write(xml_out, "F_m_sq", F_m_sq);
+      write(xml_out, "F_pv_sq", F_pv_sq);
+      write(xml_out, "F_sq", F_sq);
       pop(xml_out);
     }
   

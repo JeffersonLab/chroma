@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gauge_monomial.h,v 1.4 2005-02-23 14:51:56 bjoo Exp $
+// $Id: gauge_monomial.h,v 1.5 2005-03-07 02:55:59 edwards Exp $
 /*! \file
  *  \brief Generic gauge action monomial wrapper
  */
@@ -42,28 +42,31 @@ namespace Chroma
                            multi1d<LatticeColorMatrix> >    
     {
     public: 
-      // Construct out of a parameter struct. Check against the desired GaugeAct name
+      //! Construct out of a parameter struct. Check against the desired GaugeAct name
       GaugeMonomial(const string& gaugeact_name, 
 		    const GaugeMonomialParams& param_);
 
-      // Copy Constructor
+      //! Copy Constructor
       GaugeMonomial(const GaugeMonomial& m) : gaugeact((m.gaugeact)) {}
 
-      // Create a suitable state and compute F
-      void dsdq(multi1d<LatticeColorMatrix>& F, const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) {
-
+      //! Create a suitable state and compute F
+      void dsdq(multi1d<LatticeColorMatrix>& F, const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) 
+      {
 	XMLWriter& xml_out = TheXMLOutputWriter::Instance();
 	push(xml_out, "GaugeMonomial");
-
 
 	// Make a gauge connect state
 	Handle< const ConnectState> g_state(getGaugeAct().createState(s.getQ()));
 
 	getGaugeAct().dsdu(F, g_state);
+
+	Double F_sq = norm2(F);
+	write(xml_out, "F_sq", F_sq);
 	pop(xml_out);
       }
 
 
+      //! Gauge action value
       Double S(const AbsFieldState<multi1d<LatticeColorMatrix>,
 	       multi1d<LatticeColorMatrix> >& s)  {
 
