@@ -208,14 +208,16 @@ dnl - set the parallel compiler environment
     AC_TRY_LINK( [#include <qdp.h>
 		 using namespace QDP; ], [
     int argc; char **argv;
-    // Setup the geometry
+    // Turn on the machine
+    QDP_initialize(&argc, &argv);
+    // Create the layout
     const int foo[] = {2,2,2,2};
     multi1d<int> nrow(Nd);
     nrow = foo;  // Use only Nd elements
-    Layout::initialize(nrow);
+    Layout::create(nrow);
     $10;
     $11;
-    Layout::finalize(); ], pac_qdp_working=yes, pac_qdp_working=no )
+    QDP_finalize(); ], pac_qdp_working=yes, pac_qdp_working=no )
     CXXFLAGS="$pac_saved_CXXFLAGS"
     LDFLAGS="$pac_saved_LDFLAGS"
     LIBS="$pac_saved_LIBS"

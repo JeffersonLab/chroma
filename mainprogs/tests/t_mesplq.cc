@@ -1,4 +1,4 @@
-// $Id: t_mesplq.cc,v 1.1 2002-12-16 07:08:33 edwards Exp $
+// $Id: t_mesplq.cc,v 1.2 2002-12-16 07:12:17 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -7,8 +7,6 @@
 
 
 using namespace QDP;
-
-NmlWriter nml;
 
 void main_start(void)
 {
@@ -21,7 +19,7 @@ void main_start(void)
   nrow = foo;  // Use only Nd elements
   Layout::create(nrow);
 
-  nml.open("t_mesplq.nml");
+  NmlWriter nml("t_mesplq.nml");
 
   push(nml,"lattis");
   Write(nml,Nd);

@@ -1,4 +1,4 @@
-# generated automatically by aclocal 1.7.2 -*- Autoconf -*-
+# generated automatically by aclocal 1.7.1 -*- Autoconf -*-
 
 # Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002
 # Free Software Foundation, Inc.
@@ -221,14 +221,16 @@ dnl - set the parallel compiler environment
     AC_TRY_LINK( [#include <qdp.h>
 		 using namespace QDP; ], [
     int argc; char **argv;
-    // Setup the geometry
+    // Turn on the machine
+    QDP_initialize(&argc, &argv);
+    // Create the layout
     const int foo[] = {2,2,2,2};
     multi1d<int> nrow(Nd);
     nrow = foo;  // Use only Nd elements
-    Layout::initialize(nrow);
+    Layout::create(nrow);
     $10;
     $11;
-    Layout::finalize(); ], pac_qdp_working=yes, pac_qdp_working=no )
+    QDP_finalize(); ], pac_qdp_working=yes, pac_qdp_working=no )
     CXXFLAGS="$pac_saved_CXXFLAGS"
     LDFLAGS="$pac_saved_LDFLAGS"
     LIBS="$pac_saved_LIBS"
@@ -389,7 +391,7 @@ AC_DEFUN([AM_AUTOMAKE_VERSION],[am__api_version="1.7"])
 # Call AM_AUTOMAKE_VERSION so it can be traced.
 # This function is AC_REQUIREd by AC_INIT_AUTOMAKE.
 AC_DEFUN([AM_SET_CURRENT_AUTOMAKE_VERSION],
-	 [AM_AUTOMAKE_VERSION([1.7.2])])
+	 [AM_AUTOMAKE_VERSION([1.7.1])])
 
 # Helper functions for option handling.                    -*- Autoconf -*-
 
