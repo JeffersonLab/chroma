@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_linop_array_w.cc,v 1.9 2005-01-04 06:52:03 edwards Exp $
+// $Id: unprec_dwf_linop_array_w.cc,v 1.10 2005-01-04 21:18:42 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall linear operator
  */
@@ -102,12 +102,14 @@ namespace Chroma
     ds_u.resize(Nd);
     ds_u = zero;
 
+    Real fact2 = -0.5*a5;
+
     multi1d<LatticeColorMatrix> ds_tmp(Nd);
     for(int s(0);s<N5;s++)
     {
       D.deriv(ds_tmp,chi[s],psi[s],isign);
       for(int mu(0);mu<Nd;mu++)
-	ds_u[mu] += Real(-0.5)*ds_tmp[mu];
+	ds_u[mu] += fact2*ds_tmp[mu];
     }
   }
 
