@@ -1,3 +1,8 @@
+12/15/2004 -- Robert Edwards
+
+	Version 1.11.1. Fixed chroma_config (for libs). Moved other routines
+        to chroma namespace. Added more to EXTRA_DIST .
+
 12/12/2004 -- Robert Edwards
 
 	Version 1.11.0. Major overhaul of fermact and linearop class
