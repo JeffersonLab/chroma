@@ -1,3 +1,7 @@
+02/09/2005 -- Robert Edwards
+
+	Version 1.19.2. Small bug fixes. Split off hypsmear.cc
+
 02/06/2005 -- Robert Edwards
 
 	Version 1.19.1. Added a bunch of aggregators to simplify
