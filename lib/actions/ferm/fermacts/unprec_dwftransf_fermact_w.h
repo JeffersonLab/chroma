@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwftransf_fermact_w.h,v 1.2 2004-11-02 15:43:03 bjoo Exp $
+// $Id: unprec_dwftransf_fermact_w.h,v 1.3 2004-11-16 06:09:09 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -9,7 +9,7 @@
 
 #include "fermact.h"
 #include "invtype.h"
-#include "actions/ferm/linop/lgherm_w.h"
+#include "actions/ferm/linop/lmdagm.h"
 #include "actions/ferm/linop/unprec_dwftransf_linop_w.h"
 #include "io/param_io.h"       // to get AnisoParam_t
 
@@ -85,7 +85,9 @@ namespace Chroma
     const LinearOperator<LatticeFermion>* linOp(Handle<const ConnectState> state) const;
 
     //! Produce a linear operator M^dag.M for this action
-    const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state) const;
+    const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state) const {
+      return new lmdagm<LatticeFermion>(linOp(state));
+    }
 
     //! Produce the gamma_5 hermitian operator H_w
     //  Actually, this operator is already Hermitian, so just return

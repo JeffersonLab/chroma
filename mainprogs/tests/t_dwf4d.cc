@@ -1,4 +1,4 @@
-// $Id: t_dwf4d.cc,v 1.2 2004-11-15 21:52:32 edwards Exp $
+// $Id: t_dwf4d.cc,v 1.3 2004-11-16 06:09:10 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -211,8 +211,7 @@ int main(int argc, char **argv)
   // eigenvectors, eigenvalues etc. The XML for this should be
   // stored as a string called "stateInfo" in the param struct.
 
-  try
-  {
+  try {
 
   // Make a reader for the stateInfo
   const string state_info_path_5d = "/Action5D/StateInfo";
@@ -221,56 +220,59 @@ int main(int argc, char **argv)
   XMLReader state_info_xml_4d(fermacttop_4d,state_info_path_4d);
 
 
-  // DWF-like 5D Wilson-Type stuff
+  // DWF-like 5D Wilson-Type stuff 
+  bool success = false; 
+
   QDPIO::cerr << "create dwf = " << fermact_5d << endl;
-  Handle< UnprecDWFermActBaseArray<LatticeFermion> >
-    S_f_5d(TheUnprecDWFermActBaseArrayFactory::Instance().createObject(fermact_5d,
+
+  Handle< EvenOddPrecDWFermActBaseArray<LatticeFermion> >
+    S_f_5d(TheEvenOddPrecDWFermActBaseArrayFactory::Instance().createObject(fermact_5d,
 								       fbc_a,
 								       fermacttop_5d,
 								       fermact_path_5d));
-
+  
   Handle<const ConnectState> state_5d(S_f_5d->createState(u,
 							  state_info_xml_5d,
-							  state_info_path_5d));
+							    state_info_path_5d));
   
-  // Overlap-like stuff
+    // Overlap-like stuff
   QDPIO::cerr << "create overlap" << endl;
   Handle< WilsonTypeFermAct<LatticeFermion> >
     S_f_4d(TheWilsonTypeFermActFactory::Instance().createObject(fermact_4d,
 								fbc,
 								fermacttop_4d,
 								fermact_path_4d));
-
-
+  
+  
   Handle<const ConnectState> state_4d(S_f_4d->createState(u,
 							  state_info_xml_4d,
 							  state_info_path_4d));
-
-
+  
+  
   //-------------------------------------------------------------------------------
   Handle<const LinearOperator<LatticeFermion> > A5(S_f_5d->linOp4D(state_5d,input.param.invParam));
   Handle<const LinearOperator<LatticeFermion> > A4(S_f_4d->linOp(state_4d));
-
+  
   LatticeFermion psi, chi;
-
+  
   random(psi);
   random(chi);
-
+    
   LatticeFermion tmp1;
   (*A5)(tmp1, psi, PLUS);
   DComplex nn5 = innerProduct(chi, tmp1);
-
+  
   LatticeFermion tmp2;
   (*A4)(tmp2, psi, PLUS);
   DComplex nn4 = innerProduct(chi, tmp2);
-
+  
   push(xml_out,"innerprods");
   write(xml_out, "nn5", nn5);
   write(xml_out, "nn4", nn4);
   write(xml_out, "norm_diff", Real(norm2(tmp1-tmp2)));
   pop(xml_out);
-
-    }
+  
+  }
   catch (const std::string& e) 
     {
       QDPIO::cerr << "Error in t_dwf4d: " << e << endl;
@@ -281,7 +283,7 @@ int main(int argc, char **argv)
       QDPIO::cerr << "Error in t_dwf4d: " << e << endl;
       throw;
     }
-
+  
   pop(xml_out);
 
   // Time to bolt

@@ -1,4 +1,4 @@
-// $Id: unprec_dwftransf_fermact_w.cc,v 1.2 2004-11-13 17:32:11 bjoo Exp $
+// $Id: unprec_dwftransf_fermact_w.cc,v 1.3 2004-11-16 06:09:09 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -102,12 +102,14 @@ namespace Chroma
 				    param.invParam);
   }
 
+
   //! Produce a M^dag.M linear operator for this action
   /*!
    * The operator acts on the entire lattice
    *
    * \param state    gauge field     	       (Read)
    */
+  /*
   const LinearOperator<LatticeFermion>*
   UnprecDWFTransfFermAct::lMdagM(Handle<const ConnectState> state) const
   {
@@ -117,7 +119,7 @@ namespace Chroma
 					 param.c5,
 					 param.invParam);
   }
-
+  */
 
 
   void
