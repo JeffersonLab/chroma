@@ -1,4 +1,4 @@
-// $Id: prec_dwf_linop_array_w.cc,v 1.17 2005-03-30 13:15:50 bjoo Exp $
+// $Id: prec_dwf_linop_array_w.cc,v 1.18 2005-04-02 21:58:13 bjoo Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned domain-wall linear operator
  */
@@ -272,7 +272,7 @@ namespace Chroma
 
 
       chi[0][rb[cb]] = TwoKappa*psi[0];
-      chi[N5-1][rb[cb]] = invDTwoKappa*psi[N5-1]-fact*chiralProjectMinus(psi[0]);
+      chi[N5-1][rb[cb]] = invDTwoKappa*psi[N5-1]-fact*chiralProjectPlus(psi[0]);
       fact *= TwoKappa;
       for(int s = 1; s < N5-1; s++) {
 	// 2Nc Ns flops
@@ -282,7 +282,7 @@ namespace Chroma
 	fact *= TwoKappa;
 
       }      
-      chi[N5-1][rb[cb]] += invDTwoKappa*chiralProjectPlus(chi[N5-2]);
+      chi[N5-1][rb[cb]] += invDTwoKappa*chiralProjectMinus(chi[N5-2]);
 
 
            
