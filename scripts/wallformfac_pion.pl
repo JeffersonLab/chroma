@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: wallformfac_pion.pl,v 1.3 2004-04-21 03:23:18 edwards Exp $
+# $Id: wallformfac_pion.pl,v 1.4 2004-05-07 03:49:40 edwards Exp $
 #
 # Usage
 #   formfact.pl
@@ -169,7 +169,7 @@ foreach $qx ( -$mommax_int .. $mommax_int ) {
 #   s10 is  (u or d)  quark contribution to pion form-fac
 #
 print "Electric";
-$s = "pion";
+$s = "h0_f0";
 $mes = "pion";
 $k = 3;
 $g = $Vector[$k];
