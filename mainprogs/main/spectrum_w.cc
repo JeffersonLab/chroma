@@ -1,10 +1,13 @@
-// $Id: spectrum_w.cc,v 1.8 2003-08-27 22:08:41 edwards Exp $
+// $Id: spectrum_w.cc,v 1.9 2003-09-02 15:52:02 edwards Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.8  2003-08-27 22:08:41  edwards
+//  Revision 1.9  2003-09-02 15:52:02  edwards
+//  Added return 0 at end of main. Some kind of return is required in C++.
+//
+//  Revision 1.8  2003/08/27 22:08:41  edwards
 //  Start major push to using xml.
 //
 //  Revision 1.7  2003/08/27 20:05:20  edwards
@@ -624,5 +627,5 @@ int main(int argc, char **argv)
   // Time to bolt
   QDP_finalize();
 
-  exit(0);
+  return 0;
 }
