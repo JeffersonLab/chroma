@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_dsdu_array_w.cc,v 1.1 2003-11-12 22:16:22 edwards Exp $
+// $Id: unprec_dwf_dsdu_array_w.cc,v 1.2 2003-11-13 04:11:35 edwards Exp $
 /*! \file
  *  \brief dS/dU_f for unpreconditioned domain-wall fermions
  */
@@ -21,8 +21,8 @@
  * psi -- [1./(M_dag*M)]*chi_  ( read ) 
  */
 
-multi1d<LatticeColorMatrix> UnprecDWFermAct::dsdu(const multi1d<LatticeColorMatrix>& u, 
-						  const multi1d<LatticeFermion>& psi) const
+multi1d<LatticeColorMatrix> UnprecDWFermActArray::dsdu(const multi1d<LatticeColorMatrix>& u, 
+						       const multi1d<LatticeFermion>& psi) const
 {
   multi1d<LatticeColorMatrix> ds_u(Nd);
 
