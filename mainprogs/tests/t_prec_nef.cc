@@ -1,4 +1,4 @@
-// $Id: t_prec_nef.cc,v 1.5 2005-03-01 03:50:29 edwards Exp $
+// $Id: t_prec_nef.cc,v 1.6 2005-03-01 23:22:57 edwards Exp $
 
 #include "chroma.h"
 
@@ -75,16 +75,18 @@ int main(int argc, char **argv)
   EvenOddPrecNEFFermActArray  S_nef(WilsonTypeFermBCArrayEnv::reader(xml_in, npath), 
 				    EvenOddPrecNEFFermActArrayParams(xml_in, npath));
 
+  Handle<const ConnectState> state(S_znef.createState(u));
+
   int N5 = S_znef.size();
   QDPIO::cout << "Znef size = " << S_znef.size() << endl;
   QDPIO::cout << "Nef  size = " << S_nef.size() << endl;
 
   {
     // Make the znef linOp
-    Handle< const LinearOperator< multi1d<LatticeFermion> > > M_z(S_znef.linOp(S_znef.createState(u)));
+    Handle< const LinearOperator< multi1d<LatticeFermion> > > M_z(S_znef.linOp(state));
   
     // Make the nef linOp
-    Handle< const LinearOperator< multi1d<LatticeFermion> > > M_n(S_nef.linOp(S_nef.createState(u)));
+    Handle< const LinearOperator< multi1d<LatticeFermion> > > M_n(S_nef.linOp(state));
 
     multi1d<LatticeFermion> psi5a(N5);
     multi1d<LatticeFermion> chi5(N5);
