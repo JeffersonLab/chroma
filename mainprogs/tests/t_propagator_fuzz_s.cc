@@ -1,4 +1,4 @@
-// $Id: t_propagator_fuzz_s.cc,v 1.8 2004-11-20 15:50:25 mcneile Exp $
+// $Id: t_propagator_fuzz_s.cc,v 1.9 2004-12-05 18:31:20 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  *
@@ -258,7 +258,7 @@ int main(int argc, char **argv)
   Propagator_input_t  input;
 
   // Instantiate xml reader for DATA
-  XMLReader xml_in("DATA");
+  XMLReader xml_in("../../tests/t_asqtad_prop/DATA");
 
   // Read data
   read(xml_in, "/propagator", input);
@@ -522,7 +522,7 @@ int main(int argc, char **argv)
       pseudoscalar.dump(t_source,xml_out);
       pop(xml_out);
 
-      pop(xml_out);
+      //      pop(xml_out);
 
 
 
@@ -541,7 +541,6 @@ int main(int argc, char **argv)
       push(xml_out, "baryon");
       write(xml_out, "nucleon", barprop);
       pop(xml_out);
-
 
       pop(xml_out); // end of document
 

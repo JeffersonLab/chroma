@@ -1,4 +1,4 @@
-// $Id: t_disc_loop_s.cc,v 1.5 2004-11-20 19:28:48 mcneile Exp $
+// $Id: t_disc_loop_s.cc,v 1.6 2004-12-05 18:31:20 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -263,7 +263,7 @@ int main(int argc, char **argv)
   Propagator_input_t  input;
 
   // Instantiate xml reader for DATA
-  XMLReader xml_in("DISC_DATA");
+  XMLReader xml_in("../../tests/t_asqtad_prop/DISC_DATA_v2");
 
   // Read data
   read(xml_in, "/propagator", input);
@@ -302,7 +302,7 @@ int main(int argc, char **argv)
 
 
   // Instantiate XML writer for XMLDAT
-  XMLFileWriter xml_out("DISC_XMLDAT");
+  XMLFileWriter xml_out("t_disc_loop_s.xml");
   push(xml_out, "DISCONNECTED");
 
   // Write out the input
@@ -386,25 +386,33 @@ int main(int argc, char **argv)
   int Nsamp = input.param.Nsamples;
   int t_length = input.param.nrow[3];
 
-  LatticeStaggeredFermion q_source, psi, psi_sca1, psi_eta3, psi_eta4;
-  //  multi1d<LatticeFermion> soln_vec(Nsamp);
+  LatticeStaggeredFermion q_source, psi ;
+
 
   // Timeslice sums of fermion loops.
-  // G_s is local scalar, G_eta3 is 3link eta', G_eta4 is 4link eta'
-  LatticeComplex TrG_s0, TrG_s1, TrG_eta3, TrG_eta4, corr_fn_s, corr_fn_p ;
+  // G_s is local scalar 
+  LatticeComplex TrG_s0 ;
+  LatticeComplex corr_fn_s, corr_fn_p ;
 
-  multi2d<DComplex> loop_s0(Nsamp, t_length), loop_s1(Nsamp, t_length), 
-                    loop_eta3(Nsamp, t_length), loop_eta4(Nsamp, t_length);
-  multi1d<DComplex> sca0_loop(t_length), sca1_loop(t_length), eta3_loop(t_length), 
-                    eta4_loop(t_length), conn_corr_s(t_length), conn_corr_p(t_length);
 
-  sca0_loop = sca1_loop = eta3_loop = eta4_loop = zero;
+  multi2d<DComplex> loop_s0(Nsamp, t_length) ;
+
+  multi1d<DComplex> sca0_loop(t_length), sca1_loop(t_length), 
+                    conn_corr_s(t_length), conn_corr_p(t_length);
+
+
+  sca0_loop = sca1_loop =  zero;
 
   using namespace StagPhases;
 
+  // the wrapped disconnected loops
+  local_scalar_loop scalar_one_loop(t_length,Nsamp) ; 
+  non_local_scalar_loop scalar_two_loop(t_length,Nsamp) ; 
+  threelink_pseudoscalar_loop eta3_loop(t_length,Nsamp) ; 
+  fourlink_pseudoscalar_loop eta4_loop(t_length,Nsamp) ; 
+
   // Connected Correlator, use a point source
   // THIS IS ONLY FOR THE SCALAR AT THE MOMENT.
-  // MORE THOUGHT IS NEEDED FOR THE ETA' BECAUSE OF NON-LOCALITY OF OPERATOR
   psi = zero;
   for(int color_source = 0; color_source < Nc; ++color_source) {
     int spin_source = 0;
@@ -440,6 +448,8 @@ int main(int argc, char **argv)
   seed = input.param.CFGNO;
   RNG::setrn(seed);
 
+
+
   for(int i = 0; i < Nsamp; ++i){
     psi = zero;   // note this is ``zero'' and not 0
 
@@ -464,54 +474,24 @@ int main(int argc, char **argv)
     write(xml_out, "n_count", n_count);
     pop(xml_out);
 
-    // Store the solution vectors for now; scrap this idea!
-    // soln_vec[i] = psi;
-    
-    // TrG_s = phase*Tr(M^-1) = Tr(conj(q_source)*psi) for scalar
+
+    scalar_one_loop.compute(q_source,psi,i) ;
+    scalar_two_loop.compute(q_source,psi,i) ;
+    eta3_loop.compute(q_source,psi,i) ;
+    eta4_loop.compute(q_source,psi,i) ;
+
 
     TrG_s0 = localInnerProduct(q_source, psi);
     
-    // 1-link scalar
-    
-    // The non-local operators have been commented out for now because
-    // of rubbish numbers coming out of tests. More thought is needed,
-    // especially for the non-local time operators (1-link scalar and
-    // 4-link eta').
-
-/*    psi_sca1 = shift(psi, FORWARD, 3);
-    TrG_s1 = alpha(3)*localInnerProduct(q_source, psi_sca1);
-  
-    psi_eta4 = shift(shift(shift(shift(psi, FORWARD, 0), FORWARD, 1), 
-              FORWARD, 2), FORWARD, 3);
- 
-    psi_eta3 = shift(shift(shift(psi, FORWARD, 0), FORWARD, 1), FORWARD, 2);
-
-    TrG_eta3 = -alpha(1)*alpha(2)*localInnerProduct(q_source, psi_eta3);
-    TrG_eta4 = -alpha(1)*alpha(2)*alpha(3)*localInnerProduct(q_source, psi_eta4);
-*/  
     // Do timeslice sums
     loop_s0[i] = sumMulti(TrG_s0, timeslice);    
     sca0_loop += loop_s0[i];
-/*    loop_s1[i] = sumMulti(TrG_s1, timeslice);
-    sca1_loop += loop_s1[i];
-    loop_eta3[i] = sumMulti(TrG_eta3, timeslice);
-    eta3_loop += loop_eta3[i];
-    loop_eta4[i] = sumMulti(TrG_eta4, timeslice);
-    eta4_loop += loop_eta4[i];
-*/
     push(xml_out, "LOOPS");
     write(xml_out, "scalar" , loop_s0[i]);
-/*    write(xml_out, "scalar1" , loop_s1[i]);
-    write(xml_out, "eta3" , loop_eta3[i]);
-    write(xml_out, "eta4" , loop_eta4[i]);*/
     pop(xml_out);
 
   } // Nsamples
 
-/*  multi1d<Real64> re_sc0(t_length), im_sc0(t_length), re_sc1(t_length), 
-                  im_sc1(t_length), re_eta3(t_length),
-                  im_eta3(t_length), re_eta4(t_length), im_eta4(t_length);
-*/
 
   multi1d<Real64> sig_sc0(t_length), imsig_sc0(t_length);
 
@@ -521,6 +501,13 @@ int main(int argc, char **argv)
   push(xml_out, "AV_FERMION_LOOP");
   write(xml_out, "SCALAR", sca0_loop);
   pop(xml_out);
+
+
+  // write output from the 
+  scalar_one_loop.dump(xml_out) ;
+  scalar_two_loop.dump(xml_out) ;
+  eta3_loop.dump(xml_out) ;
+  eta4_loop.dump(xml_out) ;
 
   // Write output to seperate files for easy reading into fitting code
 

@@ -1,4 +1,4 @@
-// $Id: t_propagator_s.cc,v 1.23 2004-11-13 14:04:39 mcneile Exp $
+// $Id: t_propagator_s.cc,v 1.24 2004-12-05 18:31:20 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -287,7 +287,7 @@ int main(int argc, char **argv)
 
 
   // Instantiate XML writer for the output file
-  XMLFileWriter xml_out("XMLDAT");
+  XMLFileWriter xml_out("t_propagator_s.xml");
   push(xml_out, "hadron_corr");
 
   // Write out the input
