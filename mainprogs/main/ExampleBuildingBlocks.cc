@@ -45,7 +45,7 @@ using namespace QDP;
 //###################################################################################//
 
 static const char* const CVSExampleBuildingBlocks_hh =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/mainprogs/main/ExampleBuildingBlocks.cc,v 1.17 2004-11-06 20:19:55 edwards Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/mainprogs/main/ExampleBuildingBlocks.cc,v 1.18 2004-11-06 20:32:42 edwards Exp $";
 
 //###################################################################################//
 // Accept All Link Patterns                                                          //
@@ -219,6 +219,7 @@ int main( int argc, char** argv )
   push(Xml, "Output_version");
   write(Xml, "out_version", 1);
   pop(Xml);
+  Xml.flush();
 
   //###############################################################################//
   // Read Gauge Field                                                              //
@@ -259,6 +260,7 @@ int main( int argc, char** argv )
   write(Xml, "ave_timelike_plaq", ave_timelike_plaq);
   write(Xml, "ave_link_trace", ave_link_trace);
   pop(Xml);
+  Xml.flush();
 
   //#################################################################################//
   // Read Forward Propagator                                                         //
@@ -293,9 +295,8 @@ int main( int argc, char** argv )
     write(Xml, "FrwdPropRecordXML", FrwdPropRecordXML);
     write(Xml, "FrwdPropCheck", FrwdPropCheck);
     pop(Xml);
+    Xml.flush();
   }
-
-  Xml.flush();
 
   //#################################################################################//
   // Read Backward (or Sequential) U Propagator                                      //
@@ -341,6 +342,7 @@ int main( int argc, char** argv )
     write(Xml, "BkwdUPropRecordXML", BkwdUPropRecordXML);
     write(Xml, "BkwdUPropCheck", BkwdUPropCheck);
     pop(Xml);
+    Xml.flush();
   }
   //#################################################################################//
   // Read Backward (or Sequential) D Propagator                                      //
@@ -384,6 +386,7 @@ int main( int argc, char** argv )
     write(Xml, "BkwdDPropRecordXML", BkwdDPropRecordXML);
     write(Xml, "BkwdDPropCheck", BkwdDPropCheck);
     pop(Xml);
+    Xml.flush();
   }
 
   //#################################################################################//
