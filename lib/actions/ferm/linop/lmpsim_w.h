@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lmpsim_w.h,v 1.2 2003-08-09 04:18:47 edwards Exp $
+// $Id: lmpsim_w.h,v 1.3 2003-09-16 13:38:37 bjoo Exp $
 
 // #pragma ident "Id"
 
@@ -11,7 +11,7 @@
 #define __wilson_prec_w_h__
 
 #include "linearop.h"
-#include "lwldslash_w.h"
+#include "dslash_w.h"
 
 using namespace QDP;
 

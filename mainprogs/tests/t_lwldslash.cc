@@ -1,4 +1,4 @@
-// $Id: t_lwldslash.cc,v 1.8 2003-09-13 10:30:54 bjoo Exp $
+// $Id: t_lwldslash.cc,v 1.9 2003-09-16 13:38:37 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -41,6 +41,7 @@ int main(int argc, char **argv)
     cout << "Constructing WilsonDslash" << endl;
   }
 
+  // WilsonDslash class can be optimised
   WilsonDslash D(u);
 
   if( Layout::primaryNode() ) { 

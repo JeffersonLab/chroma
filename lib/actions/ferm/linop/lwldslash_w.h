@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_w.h,v 1.2 2003-08-09 04:18:47 edwards Exp $
+// $Id: lwldslash_w.h,v 1.3 2003-09-16 13:38:37 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -41,20 +41,20 @@ using namespace QDP;
  *
  */
 
-class WilsonDslash : public DslashLinearOperator
+class QDPWilsonDslash : public DslashLinearOperator
 {
 public:
   //! Empty constructor. Must use create later
-  WilsonDslash() {}
+  QDPWilsonDslash() {}
 
   //! Full constructor
-  WilsonDslash(const multi1d<LatticeColorMatrix>& _u) {create(_u);}
+  QDPWilsonDslash(const multi1d<LatticeColorMatrix>& _u) {create(_u);}
 
   //! Creation routine
   void create(const multi1d<LatticeColorMatrix>& _u);
 
   //! No real need for cleanup here
-  ~WilsonDslash() {}
+  ~QDPWilsonDslash() {}
 
   /**
    * Apply a dslash

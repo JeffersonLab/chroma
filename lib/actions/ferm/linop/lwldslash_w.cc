@@ -1,4 +1,4 @@
-// $Id: lwldslash_w.cc,v 1.2 2003-04-09 19:43:22 edwards Exp $
+// $Id: lwldslash_w.cc,v 1.3 2003-09-16 13:38:37 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -38,7 +38,7 @@ using namespace QDP;
 
 
 //! Creation routine
-void WilsonDslash::create(const multi1d<LatticeColorMatrix>& _u)
+void QDPWilsonDslash::create(const multi1d<LatticeColorMatrix>& _u)
 {
   u = _u;
 
@@ -56,7 +56,7 @@ void WilsonDslash::create(const multi1d<LatticeColorMatrix>& _u)
  *  \param isign      D'^dag or D' ( MINUS | PLUS ) resp.		(Read)
  *  \param cb	      Checkerboard of OUTPUT vector			(Read) 
  */
-LatticeFermion WilsonDslash::apply (const LatticeFermion& psi, enum LinOpSign isign, int cb) const
+LatticeFermion QDPWilsonDslash::apply (const LatticeFermion& psi, enum LinOpSign isign, int cb) const
 {
   START_CODE("lWlDslash");
 

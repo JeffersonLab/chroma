@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_wilson_linop_w.h,v 1.2 2003-08-09 04:18:47 edwards Exp $
+// $Id: unprec_wilson_linop_w.h,v 1.3 2003-09-16 13:38:37 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -8,7 +8,7 @@
 #define __unprec_wilson_linop_w_h__
 
 #include "linearop.h"
-#include "actions/ferm/linop/lwldslash_w.h"
+#include "actions/ferm/linop/dslash_w.h"
 
 using namespace QDP;
 

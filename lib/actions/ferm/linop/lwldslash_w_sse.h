@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_w_sse.h,v 1.2 2003-09-12 16:21:26 bjoo Exp $
+// $Id: lwldslash_w_sse.h,v 1.3 2003-09-16 13:38:37 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -43,17 +43,7 @@ using namespace QDP;
  *
  */
 
-#if SSE_PRECISION == 32
-typedef float SSEREAL;
-#warning "Building Packer for 32 Bits"
-#elif SSE_PRECISION;
-typedef double SSEREAL double;
-#warning "Building Packer for 64 Bits"
-#else
-#error "Precision Not supported, define SSE_PRECISION"
-#endif
                                                                                 
-typedef SSEREAL u_mat_array[3][3][2];
 typedef PColorMatrix < RComplex <REAL>, Nc > PrimitiveSU3Matrix;
 
 class SSEWilsonDslash : public DslashLinearOperator
