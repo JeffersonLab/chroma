@@ -1,4 +1,4 @@
-/*   $Id: wilslp.cc,v 1.3 2004-05-17 14:11:58 mcneile Exp $ ($Date: 2004-05-17 14:11:58 $) */
+/*   $Id: wilslp.cc,v 1.4 2004-07-27 04:58:07 edwards Exp $ ($Date: 2004-07-27 04:58:07 $) */
 
 /* WILSLP -- calculates, depending on option, (1) "space-like" planar 	 */
 /*           Wilson loops in the directions perpendicular to j_decay     */
@@ -1155,5 +1155,7 @@ QDPIO::cout << "computing time-like Wilson loops" << endl;
 
   QDPIO::cout << "wils_loop3 data written to .xml file " << endl;  
   QDPIO::cout << "All wils_loop data written to .xml file " << endl;  
+
+  END_CODE("wilslp");
 } // end of wilslp
 

@@ -1,4 +1,4 @@
-/*  $Id: asq_dsl_s.cc,v 1.5 2004-03-03 11:00:50 mcneile Exp $  */
+/*  $Id: asq_dsl_s.cc,v 1.6 2004-07-27 05:01:11 edwards Exp $  */
 
 #include "chromabase.h"
 #include "linop.h"
@@ -129,6 +129,7 @@ mu);
   if(isign == MINUS)
     chi = -chi;
 
+  END_CODE("asqdslash")
 }
 
 
