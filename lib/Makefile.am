@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.200 2004-12-07 17:11:49 bjoo Exp $
+# $Id: Makefile.am,v 1.201 2004-12-09 03:58:52 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -42,7 +42,9 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/inv_rel_gmresr_cg.h \
 	actions/ferm/invert/inv_gmresr_cg_array.h \
 	actions/ferm/linop/asqtad_dslash.h actions/ferm/linop/linop.h \
-	actions/ferm/linop/lmdagm.h actions/ferm/linop/lopscl.h \
+	actions/ferm/linop/llincomb.h \
+	actions/ferm/linop/lmdagm.h \
+	actions/ferm/linop/lopscl.h \
 	actions/ferm/linop/partrat.h actions/ferm/qprop/qprop.h \
 	actions/gauge/gauge.h \
 	io/io.h \
