@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.208 2004-12-29 18:38:58 bjoo Exp $
+# $Id: Makefile.am,v 1.209 2004-12-29 22:04:53 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -204,6 +204,9 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/unprec_ppdwf4d_linop_w.h \
 	actions/ferm/qprop/qprop_w.h \
 	actions/ferm/qprop/unprec_qprop_w.h \
+	actions/ferm/qprop/quarkprop4_w.h \
+	actions/ferm/qprop/dwf_quarkprop4_w.h \
+	actions/ferm/qprop/nef_quarkprop4_w.h \
 	io/io_w.h io/barcomp_io.h io/kyuqprop_io.h \
         io/readszinferm_w.h io/readszinqprop_w.h \
 	io/writeszinqprop_w.h \
@@ -242,6 +245,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/asq_dsl_s.h \
 	actions/ferm/linop/improvement_terms_s.h \
 	actions/ferm/linop/linop_s.h \
+	actions/ferm/qprop/quarkprop4_s.h \
 	io/follana_io_s.h io/io_s.h \
 	meas/eig/eig_s.h meas/hadron/baryon_s.h \
 	meas/hadron/hadron_s.h \
@@ -479,6 +483,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/linop/asq_dsl_s.cc \
 	actions/ferm/linop/fat7_links_s.cc \
 	actions/ferm/linop/naik_term_s.cc \
+	actions/ferm/qprop/quarkprop4_s.cc \
 	io/follana_io_s.cc \
 	meas/hadron/baryon_s.cc meas/hadron/mesphas_follana_s.cc \
 	meas/hadron/mesphas_s.cc meas/hadron/pions_s.cc \
