@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.79 2003-11-10 03:05:09 edwards Exp $
+# $Id: Makefile.in,v 1.80 2003-11-10 05:07:10 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -45,7 +45,7 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@              sink_smear2_w.cc barcomp_w.cc transf_w.cc ldwfdslash_w.cc fermact_qprop.cc \
 @BUILD_WILSON_LIBS_TRUE@              unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc unprec_wilson_dsdu_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              unprec_dwf_fermact_w.cc unprec_dwf_linop_w.cc unprec_dwf_dsdu_w.cc \
-@BUILD_WILSON_LIBS_TRUE@              unprec_dwf_qprop_w.cc dwffld_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              unprec_dwf_qprop_w.cc dwffld_w.cc quarkprop4_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              readszinqprop_w.cc readszinferm_w.cc writeszinqprop_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              overlapbu_linop_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc
@@ -206,11 +206,11 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
 	unprec_wilson_dsdu_w.cc unprec_dwf_fermact_w.cc \
 	unprec_dwf_linop_w.cc unprec_dwf_dsdu_w.cc \
-	unprec_dwf_qprop_w.cc dwffld_w.cc readszinqprop_w.cc \
-	readszinferm_w.cc writeszinqprop_w.cc overlapbu_linop_w.cc \
-	p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc \
-	lwldslash_w_sse.cc mesphas_s.cc mesphas_follana_s.cc \
-	pions_follana_s.cc follana_io_s.cc
+	unprec_dwf_qprop_w.cc dwffld_w.cc quarkprop4_w.cc \
+	readszinqprop_w.cc readszinferm_w.cc writeszinqprop_w.cc \
+	overlapbu_linop_w.cc p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc \
+	BuildingBlocks_w.cc lwldslash_w_sse.cc mesphas_s.cc \
+	mesphas_follana_s.cc pions_follana_s.cc follana_io_s.cc
 @BUILD_WILSON_LIBS_TRUE@am__objects_1 = baryon_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	mesons_w.$(OBJEXT) curcor2_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	lwldslash_w.$(OBJEXT) \
@@ -227,6 +227,7 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 @BUILD_WILSON_LIBS_TRUE@	unprec_dwf_dsdu_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	unprec_dwf_qprop_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	dwffld_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	quarkprop4_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	readszinqprop_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	readszinferm_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	writeszinqprop_w.$(OBJEXT) \
@@ -281,7 +282,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/p_src_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/pions_follana_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/polylp.Po ./$(DEPDIR)/qprop_io.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/readmilc.Po ./$(DEPDIR)/readszin.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/quarkprop4_w.Po ./$(DEPDIR)/readmilc.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/readszin.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/readszinferm_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/readszinqprop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/reunit.Po ./$(DEPDIR)/rgauge.Po \
@@ -397,6 +399,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pions_follana_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/polylp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qprop_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quarkprop4_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readmilc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readszin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readszinferm_w.Po@am__quote@
