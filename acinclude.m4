@@ -214,7 +214,8 @@ dnl - set the parallel compiler environment
     const int foo[] = {2,2,2,2};
     multi1d<int> nrow(Nd);
     nrow = foo;  // Use only Nd elements
-    Layout::create(nrow);
+    Layout::setLattSize(nrow);
+    Layout::create();
     $10;
     $11;
     QDP_finalize(); ], pac_qdp_working=yes, pac_qdp_working=no )
