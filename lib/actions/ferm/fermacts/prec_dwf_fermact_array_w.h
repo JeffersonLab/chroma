@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_fermact_array_w.h,v 1.13 2005-01-02 05:21:09 edwards Exp $
+// $Id: prec_dwf_fermact_array_w.h,v 1.14 2005-01-07 05:00:10 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -94,6 +94,10 @@ namespace Chroma
     //! Produce an even-odd preconditioned linear operator for this action with arbitrary quark mass
     const EvenOddPrecDWLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >* precLinOp(Handle<const ConnectState> state, 
 												const Real& m_q) const;
+
+    //! Return possibly optimized quark prop solver, solution of preconditioned system
+    const SystemSolver< multi1d<LatticeFermion> >* qpropT(Handle<const ConnectState> state,
+							  const InvertParam_t& invParam) const;
 
     //! Destructor is automatic
     ~EvenOddPrecDWFermActArray() {}

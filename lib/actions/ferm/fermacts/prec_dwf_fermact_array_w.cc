@@ -1,4 +1,4 @@
-// $Id: prec_dwf_fermact_array_w.cc,v 1.15 2005-01-02 05:21:09 edwards Exp $
+// $Id: prec_dwf_fermact_array_w.cc,v 1.16 2005-01-07 05:00:10 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -14,6 +14,8 @@
 #include "actions/ferm/qprop/quarkprop4_w.h"
 #include "actions/ferm/qprop/dwf_quarkprop4_w.h"
 #include "io/param_io.h"
+
+#include "actions/ferm/qprop/dwf_qpropt_w.h"
 
 namespace Chroma
 {
@@ -108,6 +110,16 @@ namespace Chroma
     return new UnprecDWLinOpArray(state->getLinks(),OverMass,m_q,N5);
   }
   
+
+  // Return possibly optimized quark prop solver, solution of preconditioned system
+  const SystemSolver< multi1d<LatticeFermion> >* EvenOddPrecDWFermActArray::qpropT(
+    Handle<const ConnectState> state,
+    const InvertParam_t& invParam) const
+  {
+    return new DWFQpropT(linOp(state), state, OverMass, Mass, invParam);
+  }
+
+
   // Given a complete propagator as a source, this does all the inversions needed
   void 
   EvenOddPrecDWFermActArray::quarkProp(LatticePropagator& q_sol, 

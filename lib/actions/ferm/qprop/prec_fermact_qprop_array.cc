@@ -1,6 +1,11 @@
-// $Id: prec_fermact_qprop_array.cc,v 1.12 2005-01-02 05:21:10 edwards Exp $
+// $Id: prec_fermact_qprop_array.cc,v 1.13 2005-01-07 05:00:10 edwards Exp $
 // $Log: prec_fermact_qprop_array.cc,v $
-// Revision 1.12  2005-01-02 05:21:10  edwards
+// Revision 1.13  2005-01-07 05:00:10  edwards
+// Fixed up dwf_fermact to use specialized qpropT. Now, have exposed
+// a typedef version of DWFQpropT and the optimized version is defined
+// to this if --enable-dwf-cg is on.
+//
+// Revision 1.12  2005/01/02 05:21:10  edwards
 // Rearranged top-level fermion actions and linear operators.
 // The deriv is pushed up much higher. This has the effect that
 // now the "P" type (conjugate momentum type) is carried around
@@ -71,131 +76,95 @@
  */
 
 #include "chromabase.h"
-#include "fermact.h"
-#include "invtype.h"
+#include "actions/ferm/qprop/prec_fermact_qprop_array.h"
 #include "actions/ferm/invert/invcg2_array.h"
-
-using namespace QDP;
 
 namespace Chroma 
 {
   //! Propagator of a generic even-odd preconditioned fermion linear operator
-  /*! \ingroup qprop
-   *
-   * This routine is actually generic to all even-odd preconditioned fermions
+  /*!
+   * \param psi      quark propagator ( Modify )
+   * \param chi      source ( Read )
+   * \return number of CG iterations
    */
-  template<typename T, typename P>
-  class PrecFermAct5DQprop : public SystemSolver< multi1d<T> >
+  int PrecFermAct5DQprop<LatticeFermion, multi1d<LatticeColorMatrix> >::operator() (
+    multi1d<LatticeFermion>& psi, const multi1d<LatticeFermion>& chi) const
   {
-  public:
-    //! Constructor
-    /*!
-     * \param A_         Linear operator ( Read )
-     * \param invParam_  inverter parameters ( Read )
-     */
-    PrecFermAct5DQprop(Handle< const EvenOddPrecLinearOperator< multi1d<T>, P > > A_,
-		       const InvertParam_t& invParam_) : A(A_), invParam(invParam_) 
-      {}
+    START_CODE();
 
-    //! Destructor is automatic
-    ~PrecFermAct5DQprop() {}
-
-    //! Return the subset on which the operator acts
-    const OrderedSubset& subset() const {return all;}
-
-    //! Solver the linear system
-    /*!
-     * \param psi      quark propagator ( Modify )
-     * \param chi      source ( Read )
-     * \return number of CG iterations
-     */
-    int operator() (multi1d<T>& psi, const multi1d<T>& chi) const
+    int n_count;
+  
+    /* Step (i) */
+    /* chi_tmp_o =  chi_o - D_oe * A_ee^-1 * chi_e */
+    multi1d<LatticeFermion> chi_tmp(A->size());
     {
-      START_CODE();
+      multi1d<LatticeFermion> tmp1(A->size());
+      multi1d<LatticeFermion> tmp2(A->size());
 
-      int n_count;
-  
-      /* Step (i) */
-      /* chi_tmp_o =  chi_o - D_oe * A_ee^-1 * chi_e */
-      multi1d<T> chi_tmp(A->size());
-      {
-	multi1d<T> tmp1(A->size());
-	multi1d<T> tmp2(A->size());
-
-	A->evenEvenInvLinOp(tmp1, chi, PLUS);
-	A->oddEvenLinOp(tmp2, tmp1, PLUS);
-	for(int n=0; n < A->size(); ++n)
-	  chi_tmp[n][rb[1]] = chi[n] - tmp2[n];
-      }
-
-      switch(invParam.invType)
-      {
-      case CG_INVERTER: 
-      {
-	/* tmp = M_dag(u) * chi_tmp */
-	multi1d<T> tmp(A->size());
-	(*A)(tmp, chi_tmp, MINUS);
-
-	/* psi = (M^dag * M)^(-1) chi_tmp */
-	InvCG2 (*A, tmp, psi, invParam.RsdCG, invParam.MaxCG, n_count);
-      }
-      break;
-  
-#if 0
-      case MR_INVERTER:
-	/* psi = M^(-1) chi */
-	InvMR (*A, chi_tmp, psi, invParam.MRover, invParam.RsdCG, invParam.MaxCG, n_count);
-	break;
-
-      case BICG_INVERTER:
-	/* psi = M^(-1) chi */
-	InvBiCG (*A, chi_tmp, psi, invParam.RsdCG, invParam.MaxCG, n_count);
-	break;
-#endif
-  
-      default:
-	QDP_error_exit("Unknown inverter type", invParam.invType);
-      }
-  
-      if ( n_count == invParam.MaxCG )
-	QDP_error_exit("no convergence in the inverter", n_count);
-      
-      /* Step (ii) */
-      /* psi_e = A_ee^-1 * [chi_e  -  D_eo * psi_o] */
-      {
-	multi1d<T> tmp1(A->size());
-	multi1d<T> tmp2(A->size());
-
-	A->evenOddLinOp(tmp1, psi, PLUS);
-	for(int n=0; n < A->size(); ++n)
-	  tmp2[n][rb[0]] = chi[n] - tmp1[n];
-	A->evenEvenInvLinOp(psi, tmp2, PLUS);
-      }
-  
-      END_CODE();
-
-      return n_count;
+      A->evenEvenInvLinOp(tmp1, chi, PLUS);
+      A->oddEvenLinOp(tmp2, tmp1, PLUS);
+      for(int n=0; n < A->size(); ++n)
+	chi_tmp[n][rb[1]] = chi[n] - tmp2[n];
     }
 
-  private:
-    // Hide default constructor
-    PrecFermAct5DQprop() {}
+    switch(invParam.invType)
+    {
+    case CG_INVERTER: 
+    {
+      /* tmp = M_dag(u) * chi_tmp */
+      multi1d<LatticeFermion> tmp(A->size());
+      (*A)(tmp, chi_tmp, MINUS);
 
-    Handle< const EvenOddPrecLinearOperator< multi1d<T>, P > > A;
-    const InvertParam_t invParam;
-  };
+      /* psi = (M^dag * M)^(-1) chi_tmp */
+      InvCG2 (*A, tmp, psi, invParam.RsdCG, invParam.MaxCG, n_count);
+    }
+    break;
+  
+#if 0
+    case MR_INVERTER:
+      /* psi = M^(-1) chi */
+      InvMR (*A, chi_tmp, psi, invParam.MRover, invParam.RsdCG, invParam.MaxCG, n_count);
+      break;
+
+    case BICG_INVERTER:
+      /* psi = M^(-1) chi */
+      InvBiCG (*A, chi_tmp, psi, invParam.RsdCG, invParam.MaxCG, n_count);
+      break;
+#endif
+  
+    default:
+      QDP_error_exit("Unknown inverter type", invParam.invType);
+    }
+  
+    if ( n_count == invParam.MaxCG )
+      QDP_error_exit("no convergence in the inverter", n_count);
+      
+    /* Step (ii) */
+    /* psi_e = A_ee^-1 * [chi_e  -  D_eo * psi_o] */
+    {
+      multi1d<LatticeFermion> tmp1(A->size());
+      multi1d<LatticeFermion> tmp2(A->size());
+
+      A->evenOddLinOp(tmp1, psi, PLUS);
+      for(int n=0; n < A->size(); ++n)
+	tmp2[n][rb[0]] = chi[n] - tmp1[n];
+      A->evenEvenInvLinOp(psi, tmp2, PLUS);
+    }
+  
+    END_CODE();
+
+    return n_count;
+  }
 
 
-  typedef LatticeFermion LF;
-  typedef multi1d<LatticeColorMatrix> LCM;
-
-
+  //! Propagator of a generic even-odd preconditioned fermion linear operator
   template<>
-  const SystemSolver< multi1d<LF> >* 
-  EvenOddPrecWilsonTypeFermAct5D<LF,LCM>:: qpropT(Handle<const ConnectState> state,
-						  const InvertParam_t& invParam) const
+  const SystemSolver< multi1d<LatticeFermion> >* 
+  EvenOddPrecWilsonTypeFermAct5D<LatticeFermion, multi1d<LatticeColorMatrix> >:: qpropT(
+    Handle<const ConnectState> state,
+    const InvertParam_t& invParam) const
   {
-    return new PrecFermAct5DQprop<LF,LCM>(Handle< const EvenOddPrecLinearOperator<multi1d<LF>,LCM> >(linOp(state)), invParam);
+    return new PrecFermAct5DQprop<LatticeFermion, multi1d<LatticeColorMatrix> >(Handle< const EvenOddPrecLinearOperator<multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> > >(linOp(state)), invParam);
   }
   
 

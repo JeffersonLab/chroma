@@ -1,4 +1,4 @@
-// $Id: prec_dwf_qprop_array_sse_w.cc,v 1.2 2005-01-06 03:50:48 edwards Exp $
+// $Id: prec_dwf_qprop_array_sse_w.cc,v 1.3 2005-01-07 05:00:10 edwards Exp $
 /*! \file
  *  \brief SSE 5D DWF specific quark propagator solver
  */
@@ -264,23 +264,27 @@ namespace Chroma
 
 
   //! Need a real destructor
-  SSEDWFQprop::~SSEDWFQprop() {SSE_DWF_fini();}
+  void SSEDWFQpropT::fini() const
+  {
+    QDPIO::cout << "SSEDWFQpropT: calling destructor" << endl;
+    SSE_DWF_fini();
+  }
 
   //! Private internal initializer
   void 
-  SSEDWFQprop::init()
+  SSEDWFQpropT::init() const
   {
-    QDPIO::cout << "entering SSEEvenOddPrecDWFermActArray::init" << endl;
+    QDPIO::cout << "entering SSEDWFQpropT::init" << endl;
 
     if (Nd != 4 || Nc != 3)
     {
-      QDPIO::cerr << "SSEEvenOddPrecDWFermActArray: only supports Nd=4 and Nc=3" << endl;
+      QDPIO::cerr << "SSEDWFQpropT: only supports Nd=4 and Nc=3" << endl;
       QDP_abort(1);
     }
 
     if (invParam.invType != CG_INVERTER)
     {
-      QDPIO::cerr << "SSE EvenOddPrecDWF qpropT only supports CG" << endl;
+      QDPIO::cerr << "SSE qpropT only supports CG" << endl;
       QDP_abort(1);
     }
 
@@ -295,7 +299,7 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    QDPIO::cout << "exiting SSEEvenOddPrecDWFermActArray::init" << endl;
+    QDPIO::cout << "exiting SSEDWFQpropT::init" << endl;
   }
 
 
@@ -306,11 +310,13 @@ namespace Chroma
    * \param chi      source ( Read )
    * \return number of CG iterations
    */
-  int SSEDWFQprop::operator() (multi1d<LatticeFermion>& psi, const multi1d<LatticeFermion>& chi) const
+  int SSEDWFQpropT::operator() (multi1d<LatticeFermion>& psi, const multi1d<LatticeFermion>& chi) const
   {
-    QDPIO::cout << "entering SSEEvenOddPrecDWFermActArray::qpropT" << endl;
+    QDPIO::cout << "entering SSEDWFQpropT::operator()" << endl;
 
     START_CODE();
+
+//    init();   // only needed because 2 qpropT might be active - SSE CG does not allow this
 
     const multi1d<LatticeColorMatrix>& u = state->getLinks();
 
@@ -323,9 +329,11 @@ namespace Chroma
     int    n_count;
     SSEDWF::solve_cg5(psi, u, M5, m_f, chi, psi, rsd_sq, max_iter, n_count);
 
-    END_CODE();
+//    fini();   // only needed because 2 qpropT might be active - SSE CG does not allow this
 
-    QDPIO::cout << "exiting SSEEvenOddPrecDWFermActArray::qpropT" << endl;
+    QDPIO::cout << "exiting SSEDWFQpropT::operator()" << endl;
+
+    END_CODE();
 
     return n_count;
   }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_qprop_array_sse_w.h,v 1.2 2005-01-06 03:50:48 edwards Exp $
+// $Id: prec_dwf_qprop_array_sse_w.h,v 1.3 2005-01-07 05:00:10 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -19,24 +19,39 @@ namespace Chroma
    *
    * Propagator solver for DWF fermions
    */
-  class SSEDWFQprop : public SystemSolver< multi1d<LatticeFermion> >
+  class SSEDWFQpropT : public SystemSolver< multi1d<LatticeFermion> >
   {
   public:
     //! Constructor
     /*!
-     * \param qpropT_    5D solver ( Read )
-     * \param PV_        Pauli-Villars linear operator ( Read )
+     * Preferred constructor
+     *
      * \param m_q_       quark mass ( Read )
      */
-    SSEDWFQprop(Handle<const ConnectState> state_, 
-		const Real& OverMass_,
-		const Real& Mass_,
-		int N5_,
-		const InvertParam_t& invParam_) : 
-      state(state_), OverMass(OverMass_), Mass(Mass_), N5(N5_), invParam(invParam_) {init();}
+    SSEDWFQpropT(Handle<const ConnectState> state_, 
+		 const Real& OverMass_,
+		 const Real& Mass_,
+		 int N5_,
+		 const InvertParam_t& invParam_) : 
+      state(state_), OverMass(OverMass_), Mass(Mass_), 
+      N5(N5_), invParam(invParam_) 
+      {init();}
+
+    //! Alternative constructor for compatibility
+    /*!
+     * \param m_q_       quark mass ( Read )
+     */
+    SSEDWFQpropT(Handle< const EvenOddPrecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> > > A,
+		 Handle<const ConnectState> state_, 
+		 const Real& OverMass_,
+		 const Real& Mass_,
+		 const InvertParam_t& invParam_) : 
+      state(state_), OverMass(OverMass_), Mass(Mass_), 
+      N5(A->size()), invParam(invParam_) 
+      {init();}
 
     //! Need a real destructor
-    ~SSEDWFQprop();
+    ~SSEDWFQpropT() {fini();}
 
     //! Return the subset on which the operator acts
     const OrderedSubset& subset() const {return all;}
@@ -51,7 +66,10 @@ namespace Chroma
 
   protected:
     //! Private internal initializer
-    void init();
+    void init() const;
+      
+    //! Private internal destructor
+    void fini() const;
       
   private:
     Handle<const ConnectState> state;
