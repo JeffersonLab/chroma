@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.192 2004-11-20 15:17:03 mcneile Exp $
+# $Id: Makefile.am,v 1.193 2004-11-20 21:11:06 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -168,7 +168,7 @@ nobase_include_HEADERS = \
 
 nodist_include_HEADERS=chroma_config_internal.h
 
-if BUILD_WILSON_LIBS
+# Wilson specific headers
 nobase_include_HEADERS += \
 	actions/ferm/fermacts/fermacts_w.h \
 	actions/ferm/fermacts/fermfactory_w.h \
@@ -254,15 +254,7 @@ nobase_include_HEADERS += \
 	util/ferm/tdiractodr.h \
         util/ferm/paulitodr.h
 
-# Deprecated
-#	actions/ferm/fermacts/prec_dwf_fermact_base_w.h \
-#	actions/ferm/fermacts/unprec_dwf_fermact_base_w.h \
-#	actions/ferm/fermacts/unprec_dwf_fermact_w.h \
-#       actions/ferm/linop/ldwfdslash_w.h 
-#	actions/ferm/linop/unprec_dwf_linop_w.h 
-endif
-
-if BUILD_STAGGERED_LIBS
+# Staggered specific headers
 nobase_include_HEADERS += \
 	actions/ferm/fermacts/asqtad_fermact_s.h \
 	actions/ferm/fermacts/fermacts_s.h \
@@ -282,7 +274,6 @@ nobase_include_HEADERS += \
 	meas/hadron/vector_meson_s.h \
 	util/ferm/ferm_s.h \
 	util/gauge/gauge_s.h util/gauge/stag_phases_s.h
-endif
 
 #
 # Include Path
@@ -351,7 +342,7 @@ libchroma_a_SOURCES = gauge_startup.cc gaugebc_utils.cc gaugeact_utils.cc \
 # Object files to add if building the Wilson Builds...
 # This is OK, since Ns is determined at configure time
 #
-if BUILD_WILSON_LIBS
+# Wilson specific sources
 libchroma_a_SOURCES += baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
               loops_w.cc tdiractodr.cc diractodr.cc paulitodr.cc \
 	      gammasgn_w.cc \
@@ -401,15 +392,6 @@ libchroma_a_SOURCES += baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
 	      unprec_dwf4d_linop_w.cc unprec_pdwf4d_linop_w.cc \
 	      unprec_dwftransf_fermact_w.cc
 
-# These need to be reworked for new instantiation 
-#	zolotarev5d_fermact_array_w.cc 
-
-# Deprecated
-#             unprec_dwf_fermact_w.cc unprec_dwf_linop_w.cc
-#             ldwfdslash_w.cc 
-
-endif
-
 #
 # Hooks for optimized code
 #
@@ -429,17 +411,15 @@ libchroma_a_SOURCES += lwldslash_w_pab.cc
 endif
 
 #
-# This is the list of files to be used in Staggered Builds
+# Staggered specific sources
 # This is OK since Ns is determined at configure time 
 #
-if BUILD_STAGGERED_LIBS
-libchroma_a_SOURCES += mesphas_s.cc mesphas_follana_s.cc pions_s.cc \
+libchroma_a_SOURCES += mesphas_s.cc mesphas_follana_s.cc \
 	follana_io_s.cc fermact_qprop.cc walfil_s.cc baryon_s.cc \
-	stag_scalars_s.cc stag_propShift_s.cc vector_meson_s.cc  srcfil_s.cc  \
+	stag_propShift_s.cc srcfil_s.cc  \
 	asqtad_linop_s.cc asq_dsl_s.cc fat7_links_s.cc naik_term_s.cc  \
-	asqtad_fermact_s.cc asqtad_mdagm_s.cc staggered_qprop.cc stag_phases_s.cc
-endif
-
+	asqtad_fermact_s.cc asqtad_mdagm_s.cc staggered_qprop.cc stag_phases_s.cc \
+        pions_s.cc stag_scalars_s.cc vector_meson_s.cc  
 
 # Need this header as part of libchroma_a_sources
 #nodist_libchroma_a_SOURCES = $(HDRS)
