@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovdwf_linop_array_w.h,v 1.3 2003-11-23 06:16:24 edwards Exp $
+// $Id: unprec_ovdwf_linop_array_w.h,v 1.4 2004-09-02 22:39:25 kostas Exp $
 /*! \file
  *  \brief Unpreconditioned Overlap-DWF (Borici) linear operator
  */
@@ -44,6 +44,33 @@ public:
   //! Apply the operator onto a source vector
   void operator() (multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
 		   enum PlusMinus isign) const;
+
+  //! Apply the Dminus operator on a vector in Ls. See my notes ;-)
+  inline
+  void Dminus(multi1d<LatticeFermion>& chi,
+	      const multi1d<LatticeFermion>& psi,
+	      enum PlusMinus isign)
+  {
+    multi1d<LatticeFermion> tt(N5) ;
+    for(int s(0);s<N5;s++){
+      D.apply(tt[s],psi[s],isign,0);
+      D.apply(tt[s],psi[s],isign,1);
+      chi[s] = psi[s] - tt[s] ;
+    }
+  }
+  
+  //! Apply the Dminus operator on a lattice fermion. See my notes ;-)
+  inline
+  void Dminus(LatticeFermion chi,
+	      const LatticeFermion& psi,
+	      enum PlusMinus isign)
+  {
+    LatticeFermion tt ;
+    D.apply(tt,psi,isign,0);
+    D.apply(tt,psi,isign,1);
+    chi = psi - tt ;
+  }
+  
 
 private:
   Real WilsonMass;
