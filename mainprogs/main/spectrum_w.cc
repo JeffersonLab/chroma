@@ -1,10 +1,13 @@
-// $Id: spectrum_w.cc,v 1.27 2004-02-11 12:51:35 bjoo Exp $
+// $Id: spectrum_w.cc,v 1.28 2004-02-13 15:27:14 sbasak Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.27  2004-02-11 12:51:35  bjoo
+//  Revision 1.28  2004-02-13 15:27:14  sbasak
+//  The p-wave and d-wave part has been stripped off the qqq_w file.
+//
+//  Revision 1.27  2004/02/11 12:51:35  bjoo
 //  Stripped out Read() and Write()
 //
 //  Revision 1.26  2004/02/03 20:05:12  edwards
@@ -414,7 +417,7 @@ int main(int argc, char **argv)
   write(xml_out, "s_plaq", s_plaq);
   write(xml_out, "t_plaq", t_plaq);
   write(xml_out, "link", link);
-  write(xml_out, "pollp"< pollp);
+  write(xml_out, "pollp", pollp);
   pop(xml_out);
 
   xml_out.flush();
