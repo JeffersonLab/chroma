@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovdwf_fermact_array_w.h,v 1.6 2004-12-09 03:58:03 edwards Exp $
+// $Id: prec_ovdwf_fermact_array_w.h,v 1.7 2004-12-24 04:23:20 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned Overlap-DWF (Borici) action
  */
@@ -36,7 +36,7 @@ namespace Chroma
 
   // Reader/writers
   void read(XMLReader& xml, const string& path, EvenOddPrecOvDWFermActArrayParams& param);
-  void write(XMLReader& xml, const string& path, const EvenOddPrecOvDWFermActArrayParams& param);
+  void write(XMLWriter& xml, const string& path, const EvenOddPrecOvDWFermActArrayParams& param);
 
 
   //! 4D style even-odd preconditioned Overlap-DWF (Borici) action

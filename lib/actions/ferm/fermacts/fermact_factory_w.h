@@ -1,11 +1,11 @@
 // -*- C++ -*-
-// $Id: fermfactory_w.h,v 1.5 2004-12-12 21:22:14 edwards Exp $
+// $Id: fermact_factory_w.h,v 1.1 2004-12-24 04:23:19 edwards Exp $
 /*! \file
  *  \brief Fermion action factories
  */
 
-#ifndef __fermfactory_w_h__
-#define __fermfactory_w_h__
+#ifndef __fermact_factory_w_h__
+#define __fermact_factory_w_h__
 
 #include "singleton.h"
 #include "objfactory.h"
@@ -21,9 +21,8 @@ namespace Chroma
   typedef SingletonHolder< 
   ObjectFactory<WilsonTypeFermAct<LatticeFermion>, 
     std::string,
-    TYPELIST_3(Handle< FermBC<LatticeFermion> >, XMLReader&, const std::string&),
-    WilsonTypeFermAct<LatticeFermion>* (*)(Handle< FermBC<LatticeFermion> >, 
-					   XMLReader&,
+    TYPELIST_2(XMLReader&, const std::string&),
+    WilsonTypeFermAct<LatticeFermion>* (*)(XMLReader&,
 					   const std::string&), StringFactoryError> >
   TheWilsonTypeFermActFactory;
 
@@ -32,9 +31,8 @@ namespace Chroma
   typedef SingletonHolder< 
   ObjectFactory<WilsonTypeFermAct< multi1d<LatticeFermion> >, 
     std::string,
-    TYPELIST_3(Handle< FermBC< multi1d<LatticeFermion> > >, XMLReader&, const std::string&),
-    WilsonTypeFermAct< multi1d<LatticeFermion> >* (*)(Handle< FermBC< multi1d<LatticeFermion> > >, 
-					              XMLReader&,
+    TYPELIST_2(XMLReader&, const std::string&),
+    WilsonTypeFermAct< multi1d<LatticeFermion> >* (*)(XMLReader&,
 					              const std::string&), StringFactoryError> >
   TheWilsonTypeFermActArrayFactory;
 
@@ -42,10 +40,9 @@ namespace Chroma
   typedef SingletonHolder< 
   ObjectFactory<WilsonTypeFermAct< multi1d<LatticeFermion> >, 
     std::string,
-    TYPELIST_3(Handle< FermBC< multi1d<LatticeFermion> > >, XMLReader&, const std::string&),
-    EvenOddPrecWilsonTypeFermAct< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* (*)(Handle< FermBC< multi1d<LatticeFermion> > >, 
-					              XMLReader&,
-					              const std::string&), StringFactoryError> >
+    TYPELIST_2(XMLReader&, const std::string&),
+    EvenOddPrecWilsonTypeFermAct< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* (*)(XMLReader&,
+											      const std::string&), StringFactoryError> >
   TheEvenOddPrecWilsonTypeFermActArrayFactory;
 
 
@@ -53,9 +50,8 @@ namespace Chroma
   typedef SingletonHolder< 
   ObjectFactory<EvenOddPrecDWFermActBaseArray<LatticeFermion>, 
     std::string,
-    TYPELIST_3(Handle< FermBC< multi1d<LatticeFermion> > >, XMLReader&, const std::string&),
-    EvenOddPrecDWFermActBaseArray<LatticeFermion>* (*)(Handle< FermBC< multi1d<LatticeFermion> > >, 
-						       XMLReader&,
+    TYPELIST_2(XMLReader&, const std::string&),
+    EvenOddPrecDWFermActBaseArray<LatticeFermion>* (*)(XMLReader&,
 						       const std::string&), StringFactoryError> >
   TheEvenOddPrecDWFermActBaseArrayFactory;
 
@@ -64,9 +60,8 @@ namespace Chroma
   typedef SingletonHolder< 
   ObjectFactory<UnprecDWFermActBaseArray<LatticeFermion>, 
     std::string,
-    TYPELIST_3(Handle< FermBC< multi1d<LatticeFermion> > >, XMLReader&, const std::string&),
-    UnprecDWFermActBaseArray<LatticeFermion>* (*)(Handle< FermBC< multi1d<LatticeFermion> > >, 
-						  XMLReader&,
+    TYPELIST_2(XMLReader&, const std::string&),
+    UnprecDWFermActBaseArray<LatticeFermion>* (*)(XMLReader&,
 						  const std::string&), StringFactoryError> >
   TheUnprecDWFermActBaseArrayFactory;
 

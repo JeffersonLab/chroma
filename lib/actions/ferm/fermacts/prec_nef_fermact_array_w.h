@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_nef_fermact_array_w.h,v 1.8 2004-12-09 03:58:03 edwards Exp $
+// $Id: prec_nef_fermact_array_w.h,v 1.9 2004-12-24 04:23:20 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned NEF fermion action
  */
@@ -39,7 +39,7 @@ namespace Chroma
 
   // Reader/writers
   void read(XMLReader& xml, const string& path, EvenOddPrecNEFFermActArrayParams& param);
-  void write(XMLReader& xml, const string& path, const EvenOddPrecNEFFermActArrayParams& param);
+  void write(XMLWriter& xml, const string& path, const EvenOddPrecNEFFermActArrayParams& param);
 
 
   //! 4D style even-odd preconditioned domain-wall fermion action

@@ -1,4 +1,4 @@
-// $Id: prec_dwf_fermact_array_sse_w.cc,v 1.13 2004-12-17 01:47:39 edwards Exp $
+// $Id: prec_dwf_fermact_array_sse_w.cc,v 1.14 2004-12-24 04:23:20 edwards Exp $
 /*! \file
  *  \brief SSE 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -12,7 +12,8 @@
 
 #include <sse_dwf_cg.h>
 
-#include "actions/ferm/fermacts/fermfactory_w.h"
+#include "actions/ferm/fermacts/fermact_factory_w.h"
+#include "actions/ferm/fermbcs/fermbcs_w.h"
 
 namespace Chroma
 {
@@ -21,11 +22,11 @@ namespace Chroma
   namespace SSEEvenOddPrecDWFermActArrayEnv
   {
     //! Callback function
-    WilsonTypeFermAct< multi1d<LatticeFermion> >* createFermAct(Handle< FermBC< multi1d<LatticeFermion> > > fbc,
-								XMLReader& xml_in,
+    WilsonTypeFermAct< multi1d<LatticeFermion> >* createFermAct(XMLReader& xml_in,
 								const std::string& path)
     {
-      return new SSEEvenOddPrecDWFermActArray(fbc, SSEEvenOddPrecDWFermActArrayParams(xml_in, path));
+      return new SSEEvenOddPrecDWFermActArray(WilsonTypeFermBCArrayArrayEnv::reader(xml_in, path), 
+					      SSEEvenOddPrecDWFermActArrayParams(xml_in, path));
     }
 
     //! Callback function

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_fermact_array_w.h,v 1.13 2004-12-09 03:58:03 edwards Exp $
+// $Id: unprec_dwf_fermact_array_w.h,v 1.14 2004-12-24 04:23:20 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion action
  */
@@ -36,7 +36,7 @@ namespace Chroma
 
   // Reader/writers
   void read(XMLReader& xml, const string& path, UnprecDWFermActArrayParams& param);
-  void write(XMLReader& xml, const string& path, const UnprecDWFermActArrayParams& param);
+  void write(XMLWriter& xml, const string& path, const UnprecDWFermActArrayParams& param);
 
 
 

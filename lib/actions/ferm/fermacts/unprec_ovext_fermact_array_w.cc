@@ -1,4 +1,4 @@
-// $Id: unprec_ovext_fermact_array_w.cc,v 1.11 2004-12-12 21:22:15 edwards Exp $
+// $Id: unprec_ovext_fermact_array_w.cc,v 1.12 2004-12-24 04:23:20 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -10,7 +10,8 @@
 
 #include "actions/ferm/invert/invcg2_array.h"
 
-#include "actions/ferm/fermacts/fermfactory_w.h"
+#include "actions/ferm/fermacts/fermact_factory_w.h"
+#include "actions/ferm/fermbcs/fermbcs_w.h"
 
 namespace Chroma
 {
@@ -18,11 +19,11 @@ namespace Chroma
   namespace UnprecOvExtFermActArrayEnv
   {
     //! Callback function
-    WilsonTypeFermAct< multi1d<LatticeFermion> >* createFermAct(Handle< FermBC< multi1d<LatticeFermion> > > fbc,
-								XMLReader& xml_in,
+    WilsonTypeFermAct< multi1d<LatticeFermion> >* createFermAct(XMLReader& xml_in,
 								const std::string& path)
     {
-      return new UnprecOvExtFermActArray(fbc, UnprecOvExtFermActArrayParams(xml_in, path));
+      return new UnprecOvExtFermActArray(WilsonTypeFermBCArrayEnv::reader(xml_in, path), 
+					 UnprecOvExtFermActArrayParams(xml_in, path));
     }
 
     //! Name to be used

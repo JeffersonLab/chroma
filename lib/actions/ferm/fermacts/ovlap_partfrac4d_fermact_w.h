@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ovlap_partfrac4d_fermact_w.h,v 1.5 2004-12-12 21:22:15 edwards Exp $
+// $Id: ovlap_partfrac4d_fermact_w.h,v 1.6 2004-12-24 04:23:20 edwards Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -53,7 +53,7 @@ namespace Chroma
 
   // Reader/writers
   void read(XMLReader& xml, const string& path, OvlapPartFrac4DFermActParams& param);
-  void write(XMLReader& xml, const string& path, const OvlapPartFrac4DFermActParams& param);
+  void write(XMLWriter& xml, const string& path, const OvlapPartFrac4DFermActParams& param);
 
 
   //! 4D Zolotarev variant of Overlap-Dirac operator

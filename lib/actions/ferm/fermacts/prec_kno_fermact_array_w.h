@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_kno_fermact_array_w.h,v 1.3 2004-12-09 03:58:03 edwards Exp $
+// $Id: prec_kno_fermact_array_w.h,v 1.4 2004-12-24 04:23:20 edwards Exp $
 /*! \file
  *  \brief preconditioned KNO domain-wall fermion action
  */
@@ -40,7 +40,7 @@ namespace Chroma
 
   // Reader/writers
   void read(XMLReader& xml, const string& path, EvenOddPrecKNOFermActArrayParams& param);
-  void write(XMLReader& xml, const string& path, const EvenOddPrecKNOFermActArrayParams& param);
+  void write(XMLWriter& xml, const string& path, const EvenOddPrecKNOFermActArrayParams& param);
 
 
   //! EvenOddPreconditioned NEF fermion action

@@ -1,4 +1,4 @@
-// $Id: unprec_ovlap_contfrac5d_fermact_array_w.cc,v 1.8 2004-12-12 21:22:15 edwards Exp $
+// $Id: unprec_ovlap_contfrac5d_fermact_array_w.cc,v 1.9 2004-12-24 04:23:20 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -14,7 +14,9 @@
 #include "actions/ferm/invert/invcg2_array.h"
 #include "zolotarev.h"
 
-#include "actions/ferm/fermacts/fermfactory_w.h"
+#include "actions/ferm/fermacts/fermact_factory_w.h"
+#include "actions/ferm/fermbcs/fermbcs_w.h"
+
 #include "io/enum_io/enum_io.h"
 #include "io/overlap_state_info.h"
 
@@ -25,11 +27,11 @@ namespace Chroma
   namespace UnprecOvlapContFrac5DFermActArrayEnv
   {
     //! Callback function
-    WilsonTypeFermAct< multi1d<LatticeFermion> >* createFermAct(Handle< FermBC< multi1d<LatticeFermion> > > fbc,
-						     XMLReader& xml_in,
-						     const std::string& path)
+    WilsonTypeFermAct< multi1d<LatticeFermion> >* createFermAct(XMLReader& xml_in,
+								const std::string& path)
     {
-      return new UnprecOvlapContFrac5DFermActArray(fbc, UnprecOvlapContFrac5DFermActParams(xml_in, path));
+      return new UnprecOvlapContFrac5DFermActArray(WilsonTypeFermBCArrayEnv::reader(xml_in, path), 
+						   UnprecOvlapContFrac5DFermActParams(xml_in, path));
     }
     
     //! Name to be used
@@ -145,23 +147,9 @@ namespace Chroma
       read(fermacttop, fermact_path + "/FermAct", auxfermact);
       QDPIO::cout << "AuxFermAct: " << auxfermact << endl;
             
-      // I need a 4D FermAct for this beast so that I can create the
-      // 4D Auxiliary action -- WHAT FOLLOWS IS A BEASTLY HACK:
-      //
-      // I am going to create a 4D trivial (all periodic) BC to wire
-      // into the auxiliary operator. This is OK, because the 
-      // createState() will use the 5D one and the 4D one is redundant
-      // in this case. The auxiliary fermacts createState() with the 
-      // trivial BC's will NEVER be called. It would be nice if I could
-      // somehow convert the FermBC< multi1d<T> > to FermBC< T >
-      // but that is something I need to discuss with Robert.
-      Handle< FermBC<LatticeFermion> > fbc4( new PeriodicFermBC<LatticeFermion>() );
-      
-      
       // Generic Wilson-Type stuff
       WilsonTypeFermAct<LatticeFermion>* S_f =
 	TheWilsonTypeFermActFactory::Instance().createObject(auxfermact,
-							     fbc4,
 							     fermacttop,
 							     fermact_path);
       

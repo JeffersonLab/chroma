@@ -1,4 +1,4 @@
-// $Id: prec_zolo_nef_fermact_array_w.cc,v 1.9 2004-12-09 03:58:03 edwards Exp $
+// $Id: prec_zolo_nef_fermact_array_w.cc,v 1.10 2004-12-24 04:23:20 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF fermion action
  */
@@ -9,8 +9,10 @@
 #include "actions/ferm/linop/unprec_nef_linop_array_w.h"
 #include "actions/ferm/linop/prec_nef_general_linop_array_w.h"
 
-#include "actions/ferm/fermacts/fermfactory_w.h"
 #include "actions/ferm/fermacts/zolotarev.h"
+
+#include "actions/ferm/fermacts/fermact_factory_w.h"
+#include "actions/ferm/fermbcs/fermbcs_w.h"
 
 using namespace Chroma;
 
@@ -20,20 +22,20 @@ namespace Chroma
   namespace EvenOddPrecZoloNEFFermActArrayEnv
   {
     //! Callback function
-    WilsonTypeFermAct< multi1d<LatticeFermion> >* createFermAct(Handle< FermBC< multi1d<LatticeFermion> > > fbc,
-								XMLReader& xml_in,
+    WilsonTypeFermAct< multi1d<LatticeFermion> >* createFermAct(XMLReader& xml_in,
 								const std::string& path)
     {
-      return new EvenOddPrecZoloNEFFermActArray(fbc, EvenOddPrecZoloNEFFermActArrayParams(xml_in, path));
+      return new EvenOddPrecZoloNEFFermActArray(WilsonTypeFermBCArrayEnv::reader(xml_in, path), 
+						EvenOddPrecZoloNEFFermActArrayParams(xml_in, path));
     }
 
     //! Callback function
     /*! Differs in return type */
-    EvenOddPrecDWFermActBaseArray<LatticeFermion>* createDWFermAct(Handle< FermBC< multi1d<LatticeFermion> > > fbc,
-								   XMLReader& xml_in,
+    EvenOddPrecDWFermActBaseArray<LatticeFermion>* createDWFermAct(XMLReader& xml_in,
 								   const std::string& path)
     {
-      return new EvenOddPrecZoloNEFFermActArray(fbc, EvenOddPrecZoloNEFFermActArrayParams(xml_in, path));
+      return new EvenOddPrecZoloNEFFermActArray(WilsonTypeFermBCArrayEnv::reader(xml_in, path), 
+						EvenOddPrecZoloNEFFermActArrayParams(xml_in, path));
     }
 
     //! Name to be used

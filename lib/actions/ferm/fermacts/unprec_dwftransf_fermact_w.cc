@@ -1,4 +1,4 @@
-// $Id: unprec_dwftransf_fermact_w.cc,v 1.4 2004-12-12 21:22:15 edwards Exp $
+// $Id: unprec_dwftransf_fermact_w.cc,v 1.5 2004-12-24 04:23:20 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -8,7 +8,9 @@
 #include "actions/ferm/linop/unprec_dwftransf_linop_w.h"
 #include "actions/ferm/linop/lmdagm.h"
 #include "io/param_io.h"
-#include "actions/ferm/fermacts/fermfactory_w.h"
+
+#include "actions/ferm/fermacts/fermact_factory_w.h"
+#include "actions/ferm/fermbcs/fermbcs_w.h"
 
 #include <string>
 
@@ -23,11 +25,11 @@ namespace Chroma
   namespace UnprecDWFTransfFermActEnv
   {
     //! Callback function
-    WilsonTypeFermAct<LatticeFermion>* createFermAct(Handle< FermBC<LatticeFermion> > fbc,
-						     XMLReader& xml_in,
+    WilsonTypeFermAct<LatticeFermion>* createFermAct(XMLReader& xml_in,
 						     const std::string& path)
     {
-      return new UnprecDWFTransfFermAct(fbc, UnprecDWFTransfFermActParams(xml_in, path));
+      return new UnprecDWFTransfFermAct(WilsonTypeFermBCEnv::reader(xml_in, path), 
+					UnprecDWFTransfFermActParams(xml_in, path));
     }
 
     //! Name to be used

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_fermact_array_sse_w.h,v 1.10 2004-12-09 03:58:03 edwards Exp $
+// $Id: prec_dwf_fermact_array_sse_w.h,v 1.11 2004-12-24 04:23:20 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -36,7 +36,7 @@ namespace Chroma
 
   // Reader/writers
   void read(XMLReader& xml, const string& path, SSEEvenOddPrecDWFermActArrayParams& param);
-  void write(XMLReader& xml, const string& path, const SSEEvenOddPrecDWFermActArrayParams& param);
+  void write(XMLWriter& xml, const string& path, const SSEEvenOddPrecDWFermActArrayParams& param);
 
 
   //! 4D style even-odd preconditioned domain-wall fermion action

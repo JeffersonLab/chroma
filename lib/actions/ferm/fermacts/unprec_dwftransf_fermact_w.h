@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwftransf_fermact_w.h,v 1.4 2004-12-12 21:22:15 edwards Exp $
+// $Id: unprec_dwftransf_fermact_w.h,v 1.5 2004-12-24 04:23:20 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -41,7 +41,7 @@ namespace Chroma
 
   // Reader/writers
   void read(XMLReader& xml, const string& path, UnprecDWFTransfFermActParams& param);
-  void write(XMLReader& xml, const string& path, const UnprecDWFTransfFermActParams& param);
+  void write(XMLWriter& xml, const string& path, const UnprecDWFTransfFermActParams& param);
 
 
   //! Unpreconditioned DWFTransf fermion action

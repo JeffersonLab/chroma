@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_fermact_array_w.cc,v 1.6 2004-12-12 21:22:15 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_fermact_array_w.cc,v 1.7 2004-12-24 04:23:20 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -12,7 +12,9 @@
 #include "actions/ferm/invert/invcg2_array.h"
 #include "zolotarev.h"
 
-#include "actions/ferm/fermacts/fermfactory_w.h"
+#include "actions/ferm/fermacts/fermact_factory_w.h"
+#include "actions/ferm/fermbcs/fermbcs_w.h"
+
 #include "io/enum_io/enum_io.h"
 #include "io/overlap_state_info.h"
 
@@ -25,11 +27,11 @@ namespace Chroma
   namespace EvenOddPrecOvlapContFrac5DFermActArrayEnv
   {
     //! Callback function
-    WilsonTypeFermAct< multi1d<LatticeFermion> >* createFermAct(Handle< FermBC< multi1d<LatticeFermion> > > fbc,
-						     XMLReader& xml_in,
-						     const std::string& path)
+    WilsonTypeFermAct< multi1d<LatticeFermion> >* createFermAct(XMLReader& xml_in,
+								const std::string& path)
     {
-      return new EvenOddPrecOvlapContFrac5DFermActArray(fbc, EvenOddPrecOvlapContFrac5DFermActParams(xml_in, path));
+      return new EvenOddPrecOvlapContFrac5DFermActArray(WilsonTypeFermBCArrayEnv::reader(xml_in, path), 
+							EvenOddPrecOvlapContFrac5DFermActParams(xml_in, path));
     }
     
     //! Name to be used

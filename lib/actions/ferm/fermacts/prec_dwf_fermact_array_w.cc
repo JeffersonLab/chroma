@@ -1,4 +1,4 @@
-// $Id: prec_dwf_fermact_array_w.cc,v 1.11 2004-12-09 03:58:03 edwards Exp $
+// $Id: prec_dwf_fermact_array_w.cc,v 1.12 2004-12-24 04:23:20 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -8,7 +8,8 @@
 #include "actions/ferm/linop/unprec_dwf_linop_array_w.h"
 #include "actions/ferm/linop/prec_dwf_linop_array_w.h"
 
-#include "actions/ferm/fermacts/fermfactory_w.h"
+#include "actions/ferm/fermacts/fermact_factory_w.h"
+#include "actions/ferm/fermbcs/fermbcs_w.h"
 
 namespace Chroma
 {
@@ -17,20 +18,20 @@ namespace Chroma
   namespace EvenOddPrecDWFermActArrayEnv
   {
     //! Callback function
-    WilsonTypeFermAct< multi1d<LatticeFermion> >* createFermAct(Handle< FermBC< multi1d<LatticeFermion> > > fbc,
-								XMLReader& xml_in,
+    WilsonTypeFermAct< multi1d<LatticeFermion> >* createFermAct(XMLReader& xml_in,
 								const std::string& path)
     {
-      return new EvenOddPrecDWFermActArray(fbc, EvenOddPrecDWFermActArrayParams(xml_in, path));
+      return new EvenOddPrecDWFermActArray(WilsonTypeFermBCArrayEnv::reader(xml_in, path), 
+					   EvenOddPrecDWFermActArrayParams(xml_in, path));
     }
 
     //! Callback function
     /*! Differs in return type */
-    EvenOddPrecDWFermActBaseArray<LatticeFermion>* createDWFermAct(Handle< FermBC< multi1d<LatticeFermion> > > fbc,
-								   XMLReader& xml_in,
+    EvenOddPrecDWFermActBaseArray<LatticeFermion>* createDWFermAct(XMLReader& xml_in,
 								   const std::string& path)
     {
-      return new EvenOddPrecDWFermActArray(fbc, EvenOddPrecDWFermActArrayParams(xml_in, path));
+      return new EvenOddPrecDWFermActArray(WilsonTypeFermBCArrayEnv::reader(xml_in, path), 
+					   EvenOddPrecDWFermActArrayParams(xml_in, path));
     }
 
     //! Name to be used

@@ -1,4 +1,4 @@
-// $Id: unprec_clover_fermact_w.cc,v 1.7 2004-12-12 21:22:15 edwards Exp $
+// $Id: unprec_clover_fermact_w.cc,v 1.8 2004-12-24 04:23:20 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Clover fermion action
  */
@@ -8,7 +8,8 @@
 #include "actions/ferm/fermacts/unprec_clover_fermact_w.h"
 #include "actions/ferm/linop/lmdagm.h"
 
-#include "actions/ferm/fermacts/fermfactory_w.h"
+#include "actions/ferm/fermacts/fermact_factory_w.h"
+#include "actions/ferm/fermbcs/fermbcs_w.h"
 
 namespace Chroma
 {
@@ -17,11 +18,11 @@ namespace Chroma
   namespace UnprecCloverFermActEnv
   {
     //! Callback function
-    WilsonTypeFermAct<LatticeFermion>* createFermAct(Handle< FermBC<LatticeFermion> > fbc,
-						     XMLReader& xml_in,
+    WilsonTypeFermAct<LatticeFermion>* createFermAct(XMLReader& xml_in,
 						     const std::string& path)
     {
-      return new UnprecCloverFermAct(fbc, UnprecCloverFermActParams(xml_in, path));
+      return new UnprecCloverFermAct(WilsonTypeFermBCEnv::reader(xml_in, path), 
+				     UnprecCloverFermActParams(xml_in, path));
     }
 
     //! Name to be used

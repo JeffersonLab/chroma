@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_clover_fermact_w.h,v 1.8 2004-12-12 21:22:15 edwards Exp $
+// $Id: unprec_clover_fermact_w.h,v 1.9 2004-12-24 04:23:20 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Clover fermion action
  */
@@ -35,7 +35,7 @@ namespace Chroma
 
   // Reader/writers
   void read(XMLReader& xml, const string& path, UnprecCloverFermActParams& param);
-  void write(XMLReader& xml, const string& path, const UnprecCloverFermActParams& param);
+  void write(XMLWriter& xml, const string& path, const UnprecCloverFermActParams& param);
 
 
   //! Unpreconditioned Clover fermion action

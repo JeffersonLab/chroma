@@ -1,4 +1,4 @@
-// $Id: prec_wilson_fermact_w.cc,v 1.13 2004-12-12 21:22:15 edwards Exp $
+// $Id: prec_wilson_fermact_w.cc,v 1.14 2004-12-24 04:23:20 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action
  */
@@ -8,7 +8,8 @@
 #include "actions/ferm/linop/prec_wilson_linop_w.h"
 #include "actions/ferm/linop/lmdagm.h"
 
-#include "actions/ferm/fermacts/fermfactory_w.h"
+#include "actions/ferm/fermacts/fermact_factory_w.h"
+#include "actions/ferm/fermbcs/fermbcs_w.h"
 
 namespace Chroma
 {
@@ -16,11 +17,11 @@ namespace Chroma
   namespace EvenOddPrecWilsonFermActEnv
   {
     //! Callback function
-    WilsonTypeFermAct<LatticeFermion>* createFermAct(Handle< FermBC<LatticeFermion> > fbc,
-						     XMLReader& xml_in,
+    WilsonTypeFermAct<LatticeFermion>* createFermAct(XMLReader& xml_in,
 						     const std::string& path)
     {
-      return new EvenOddPrecWilsonFermAct(fbc, EvenOddPrecWilsonFermActParams(xml_in, path));
+      return new EvenOddPrecWilsonFermAct(WilsonTypeFermBCEnv::reader(xml_in, path), 
+					  EvenOddPrecWilsonFermActParams(xml_in, path));
     }
 
      //! Name to be used

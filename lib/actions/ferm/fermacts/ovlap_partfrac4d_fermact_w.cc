@@ -1,4 +1,4 @@
-// $Id: ovlap_partfrac4d_fermact_w.cc,v 1.11 2004-12-12 21:22:14 edwards Exp $
+// $Id: ovlap_partfrac4d_fermact_w.cc,v 1.12 2004-12-24 04:23:19 edwards Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -32,7 +32,8 @@
 using namespace std;
 using namespace Chroma;
 
-#include "actions/ferm/fermacts/fermfactory_w.h"
+#include "actions/ferm/fermacts/fermact_factory_w.h"
+#include "actions/ferm/fermbcs/fermbcs_w.h"
 
 namespace Chroma
 {
@@ -41,11 +42,11 @@ namespace Chroma
   namespace OvlapPartFrac4DFermActEnv
   {
     //! Callback function
-    WilsonTypeFermAct<LatticeFermion>* createFermAct(Handle< FermBC<LatticeFermion> > fbc,
-						     XMLReader& xml_in,
+    WilsonTypeFermAct<LatticeFermion>* createFermAct(XMLReader& xml_in,
 						     const std::string& path)
     {
-      return new OvlapPartFrac4DFermAct(fbc, OvlapPartFrac4DFermActParams(xml_in, path));
+      return new OvlapPartFrac4DFermAct(WilsonTypeFermBCEnv::reader(xml_in, path), 
+					OvlapPartFrac4DFermActParams(xml_in, path));
     }
 
     //! Name to be used
@@ -179,7 +180,6 @@ namespace Chroma
       // Generic Wilson-Type stuff
       WilsonTypeFermAct<LatticeFermion>* S_f =
 	TheWilsonTypeFermActFactory::Instance().createObject(auxfermact,
-							     fbc,
 							     fermacttop,
 							     fermact_path);
 

@@ -1,4 +1,4 @@
-// $Id: unprec_wilson_fermact_w.cc,v 1.23 2004-12-12 21:22:15 edwards Exp $
+// $Id: unprec_wilson_fermact_w.cc,v 1.24 2004-12-24 04:23:20 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -8,7 +8,8 @@
 #include "actions/ferm/linop/unprec_wilson_linop_w.h"
 #include "actions/ferm/linop/lmdagm.h"
 
-#include "actions/ferm/fermacts/fermfactory_w.h"
+#include "actions/ferm/fermacts/fermact_factory_w.h"
+#include "actions/ferm/fermbcs/fermbcs_w.h"
 
 namespace Chroma
 {
@@ -17,11 +18,11 @@ namespace Chroma
   namespace UnprecWilsonFermActEnv
   {
     //! Callback function
-    WilsonTypeFermAct<LatticeFermion>* createFermAct(Handle< FermBC<LatticeFermion> > fbc,
-						     XMLReader& xml_in,
+    WilsonTypeFermAct<LatticeFermion>* createFermAct(XMLReader& xml_in,
 						     const std::string& path)
     {
-      return new UnprecWilsonFermAct(fbc, UnprecWilsonFermActParams(xml_in, path));
+      return new UnprecWilsonFermAct(WilsonTypeFermBCEnv::reader(xml_in, path), 
+				     UnprecWilsonFermActParams(xml_in, path));
     }
 
     //! Name to be used

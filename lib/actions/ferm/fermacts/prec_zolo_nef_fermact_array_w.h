@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_zolo_nef_fermact_array_w.h,v 1.7 2004-12-09 03:58:03 edwards Exp $
+// $Id: prec_zolo_nef_fermact_array_w.h,v 1.8 2004-12-24 04:23:20 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF domain-wall fermion action
  */
@@ -41,7 +41,7 @@ namespace Chroma
 
   // Reader/writers
   void read(XMLReader& xml, const string& path, EvenOddPrecZoloNEFFermActArrayParams& param);
-  void write(XMLReader& xml, const string& path, const EvenOddPrecZoloNEFFermActArrayParams& param);
+  void write(XMLWriter& xml, const string& path, const EvenOddPrecZoloNEFFermActArrayParams& param);
 
 
   //! EvenOddPreconditioned NEF fermion action

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovext_fermact_array_w.h,v 1.10 2004-12-12 21:22:15 edwards Exp $
+// $Id: unprec_ovext_fermact_array_w.h,v 1.11 2004-12-24 04:23:20 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -36,7 +36,7 @@ namespace Chroma
 
   // Reader/writers
   void read(XMLReader& xml, const string& path, UnprecOvExtFermActArrayParams& param);
-  void write(XMLReader& xml, const string& path, const UnprecOvExtFermActArrayParams& param);
+  void write(XMLWriter& xml, const string& path, const UnprecOvExtFermActArrayParams& param);
 
 
   //! Unpreconditioned Extended-Overlap (N&N) linear operator

@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_fermact_array_w.cc,v 1.11 2004-12-09 03:58:03 edwards Exp $
+// $Id: unprec_dwf_fermact_array_w.cc,v 1.12 2004-12-24 04:23:20 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion action
  */
@@ -7,7 +7,8 @@
 #include "actions/ferm/fermacts/unprec_dwf_fermact_array_w.h"
 #include "actions/ferm/linop/unprec_dwf_linop_array_w.h"
 
-#include "actions/ferm/fermacts/fermfactory_w.h"
+#include "actions/ferm/fermacts/fermact_factory_w.h"
+#include "actions/ferm/fermbcs/fermbcs_w.h"
 
 using namespace Chroma;
 
@@ -18,20 +19,20 @@ namespace Chroma
   namespace UnprecDWFermActArrayEnv
   {
     //! Callback function
-    WilsonTypeFermAct< multi1d<LatticeFermion> >* createFermAct(Handle< FermBC< multi1d<LatticeFermion> > > fbc,
-								XMLReader& xml_in,
+    WilsonTypeFermAct< multi1d<LatticeFermion> >* createFermAct(XMLReader& xml_in,
 								const std::string& path)
     {
-      return new UnprecDWFermActArray(fbc, UnprecDWFermActArrayParams(xml_in, path));
+      return new UnprecDWFermActArray(WilsonTypeFermBCArrayEnv::reader(xml_in, path), 
+				      UnprecDWFermActArrayParams(xml_in, path));
     }
 
     //! Callback function
     /*! Only differs in return type */
-    UnprecDWFermActBaseArray<LatticeFermion>* createDWFermAct(Handle< FermBC< multi1d<LatticeFermion> > > fbc,
-							      XMLReader& xml_in,
+    UnprecDWFermActBaseArray<LatticeFermion>* createDWFermAct(XMLReader& xml_in,
 							      const std::string& path)
     {
-      return new UnprecDWFermActArray(fbc, UnprecDWFermActArrayParams(xml_in, path));
+      return new UnprecDWFermActArray(WilsonTypeFermBCArrayEnv::reader(xml_in, path), 
+				      UnprecDWFermActArrayParams(xml_in, path));
     }
 
     //! Name to be used

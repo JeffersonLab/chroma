@@ -1,4 +1,4 @@
-// $Id: prec_clover_fermact_w.cc,v 1.8 2004-12-12 21:22:15 edwards Exp $
+// $Id: prec_clover_fermact_w.cc,v 1.9 2004-12-24 04:23:20 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion action
  */
@@ -9,7 +9,8 @@
 #include "actions/ferm/linop/lmdagm.h"
 
 
-#include "actions/ferm/fermacts/fermfactory_w.h"
+#include "actions/ferm/fermacts/fermact_factory_w.h"
+#include "actions/ferm/fermbcs/fermbcs_w.h"
 
 namespace Chroma
 {
@@ -18,11 +19,11 @@ namespace Chroma
   namespace EvenOddPrecCloverFermActEnv
   {
     //! Callback function
-    WilsonTypeFermAct<LatticeFermion>* createFermAct(Handle< FermBC<LatticeFermion> > fbc,
-						     XMLReader& xml_in,
+    WilsonTypeFermAct<LatticeFermion>* createFermAct(XMLReader& xml_in,
 						     const std::string& path)
     {
-      return new EvenOddPrecCloverFermAct(fbc, EvenOddPrecCloverFermActParams(xml_in, path));
+      return new EvenOddPrecCloverFermAct(WilsonTypeFermBCEnv::reader(xml_in, path), 
+					  EvenOddPrecCloverFermActParams(xml_in, path));
     }
 
     //! Name to be used

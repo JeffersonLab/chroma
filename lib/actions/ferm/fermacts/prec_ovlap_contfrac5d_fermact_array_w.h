@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovlap_contfrac5d_fermact_array_w.h,v 1.2 2004-12-12 21:22:15 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_fermact_array_w.h,v 1.3 2004-12-24 04:23:20 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -49,7 +49,7 @@ namespace Chroma
   void read(XMLReader& xml, const string& path, EvenOddPrecOvlapContFrac5DFermActParams& param);
 
   //! Write the Continued Fraction parameters
-  void write(XMLReader& xml, const string& path, const EvenOddPrecOvlapContFrac5DFermActParams& param);
+  void write(XMLWriter& xml, const string& path, const EvenOddPrecOvlapContFrac5DFermActParams& param);
 
 
   //! 5D continued fraction overlap action (Borici,Wenger, Edwards)

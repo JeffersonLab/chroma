@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_parwilson_fermact_w.h,v 1.4 2004-12-12 21:22:15 edwards Exp $
+// $Id: prec_parwilson_fermact_w.h,v 1.5 2004-12-24 04:23:20 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action with parity breaking term
  */
@@ -34,7 +34,7 @@ namespace Chroma
 
   // Reader/writers
   void read(XMLReader& xml, const string& path, EvenOddPrecParWilsonFermActParams& param);
-  void write(XMLReader& xml, const string& path, const EvenOddPrecParWilsonFermActParams& param);
+  void write(XMLWriter& xml, const string& path, const EvenOddPrecParWilsonFermActParams& param);
 
 
   //! Even-odd preconditioned Wilson fermion action with parity breaking term
