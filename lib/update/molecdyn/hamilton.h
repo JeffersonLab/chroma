@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hamilton.h,v 1.1 2003-04-09 01:39:12 edwards Exp $
+// $Id: hamilton.h,v 1.2 2003-12-29 20:06:54 edwards Exp $
 
 /*! \file
  *  \brief Hamiltonian systems
@@ -19,8 +19,18 @@ using namespace QDP;
  * This is a really crude first attempt at a Hamiltonian system.
  * Lots more thought needed here.
  *
- * Maybe these functions should be global and not members except
- * for dsdu??
+ * Maybe these functions should be global? No, I think there is a case
+ * to be made for having an "MD Integrator" class with funcs.
+ * An HMDIntegrator should take a HamSys template param'd by action types.
+ * I suspect I should have a typelist of actions, (e.g., can have
+ * more than 1 ferm action). The HamSys constructor would then take
+ * instances of those actions. 
+ *
+ * There should be some general notion of "Coordinates" and "Conjugate Momenta".
+ * How pseudo-ferm cleanly fit in that picture in this code is not clear
+ * (to me, at least).
+ *
+ * NOTE: dsdu is found in the fermion (or gauge) action
  */
 
 class HamiltonianSystem
@@ -46,9 +56,6 @@ public:
 
   //! Leap a step in the gauge fields
   virtual void leapU() = 0;
-
-  //! Compute dS/dU
-  virtual multi1d<LatticeColorMatrix> dsdu(const multi1d<LatticeComplex>& u) const = 0;
 
   //! Virtual destructor
   virtual ~HamiltonianSystem() {}
