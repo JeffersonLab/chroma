@@ -1,4 +1,4 @@
-// $Id: unprec_dwf4d_linop_w.cc,v 1.4 2004-11-17 16:53:23 edwards Exp $
+// $Id: unprec_dwf4d_linop_w.cc,v 1.5 2004-12-09 03:55:30 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned projected DWF operator to 4D
  */
@@ -39,39 +39,63 @@ namespace Chroma
     multi1d<LatticeFermion> chi5(N5);
 
     switch(isign)
+    {
+    case PLUS:
+    {
+      // chi5 = D5(m_q) . tmp5 =  D5(m_q) . P . (chi,0,0,..,0)^T 
+      (*D)(chi5, tmp5, PLUS);
+
+      // Solve  D5(1) . psi5 = chi5
+      psi5 = chi5;
+  
+      switch(invParam.invType)
       {
-      case PLUS:
-	{
-	  // chi5 = D5(m_q) . tmp5 =  D5(m_q) . P . (chi,0,0,..,0)^T 
-	  (*D)(chi5, tmp5, PLUS);
-
-	  // Solve  D5(1) . psi5 = chi5
-	  psi5 = chi5;
-  
-	  switch(invParam.invType)
-	    {
-	    case CG_INVERTER: 
-	      {
-		/* tmp5 = M_dag(u) * chi5 */
-		(*PV)(tmp5, chi5, MINUS);
+      case CG_INVERTER: 
+      {
+	/* tmp5 = M_dag(u) * chi5 */
+	(*PV)(tmp5, chi5, MINUS);
 	  
-		/* psi5 = (M^dag * M)^(-1) chi5 */
-		InvCG2(*PV, tmp5, psi5, invParam.RsdCG, invParam.MaxCG, n_count);
-	      }
-	      break;
-  
-	    default:
-	      QDP_error_exit("Unknown inverter type", invParam.invType);
-	    }
-	}
-	break;
-
-      case MINUS:
-	{
-	  QDP_error_exit("MINUS not supported at the moment");
-	}
-	break;
+	/* psi5 = (M^dag * M)^(-1) chi5 */
+	InvCG2(*PV, tmp5, psi5, invParam.RsdCG, invParam.MaxCG, n_count);
       }
+      break;
+  
+      default:
+	QDP_error_exit("Unknown inverter type", invParam.invType);
+      }
+    }
+    break;
+
+    case MINUS:
+    {
+      // Solve  D5(1) . psi5 = tmp5
+      psi5 = tmp5;
+  
+      switch(invParam.invType)
+      {
+      case CG_INVERTER: 
+      {
+	/* psi5 = (M^dag * M)^(-1) tmp5 */
+	InvCG2(*PV, tmp5, psi5, invParam.RsdCG, invParam.MaxCG, n_count);
+
+	/* tmp5 = M_dag(u) * psi5 */
+	(*PV)(tmp5, psi5, PLUS);
+      }
+      break;
+  
+      default:
+	QDP_error_exit("Unknown inverter type", invParam.invType);
+      }
+
+      // psi5 = D5(m_q)^dag . tmp5 
+      (*D)(psi5, tmp5, MINUS);
+
+    }
+    break;
+
+    default:
+      QDP_error_exit("dwf4d: unknown isign");
+    }
     
     if ( n_count == invParam.MaxCG )
       QDP_error_exit("no convergence in the inverter", n_count);
