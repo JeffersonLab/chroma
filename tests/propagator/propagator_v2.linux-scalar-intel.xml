@@ -4,7 +4,7 @@
 <propagator>
   <Input><propagator>
 <annotation>
-; $Id: propagator_v2.linux-scalar-intel.xml,v 1.2 2004-01-07 22:00:10 edwards Exp $
+; $Id: propagator_v2.linux-scalar-intel.xml,v 1.3 2004-01-09 03:55:32 edwards Exp $
 ;
 ; PROPAGATOR input file.
 ;
@@ -42,7 +42,7 @@
  <cfg_file>../test_purgaug.cfg1</cfg_file>
 </Cfg>
 <Prop>
- <source_file>foo</source_file>
+ <source_file>source_0</source_file>
  <prop_file>propagator_0</prop_file>
 </Prop>
 </propagator>
@@ -89,7 +89,9 @@
     </szin>
 
   </Config_info>
-  <Source_info>
+  <Source_info><szin_prop>
+      <Kappa>3.14159</Kappa>
+    </szin_prop>
 
   </Source_info>
   <Output_version>
@@ -101,6 +103,9 @@
     <t_plaq>0.941947</t_plaq>
     <link>0.734641</link>
   </Observables>
+  <Source_correlator>
+    <source_corr>5.44616 0 0 0 0 0 0 0</source_corr>
+  </Source_correlator>
 <QuarkProp4>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
@@ -108,53 +113,54 @@
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>23</n_count>
+    <n_count>18</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>23</n_count>
+    <n_count>18</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>23</n_count>
+    <n_count>18</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>23</n_count>
+    <n_count>18</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>23</n_count>
+    <n_count>18</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>23</n_count>
+    <n_count>18</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>23</n_count>
+    <n_count>18</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>23</n_count>
+    <n_count>18</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>23</n_count>
+    <n_count>18</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>23</n_count>
+    <n_count>18</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>23</n_count>
+    <n_count>18</n_count>
   </Qprop>
 </QuarkProp4>
 
   <Relaxation_Iterations>
-    <ncg_had>271</ncg_had>
+    <ncg_had>216</ncg_had>
   </Relaxation_Iterations>
   <Pion_correlator>
-    <pion_corr>613.428 641.35 747.057 823.685 838.027 754.225 626.343 612.769</pion_corr>
+    <pion_corr>0.147564 0.00923145 0.0028872 0.00109399 0.00068348 0.00110199 0.00286503 0.00919643</pion_corr>
   </Pion_correlator>
+</propagator>
