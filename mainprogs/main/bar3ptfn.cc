@@ -1,7 +1,10 @@
-// $Id: bar3ptfn.cc,v 1.12 2003-07-04 17:08:36 edwards Exp $
+// $Id: bar3ptfn.cc,v 1.13 2003-08-27 20:04:14 edwards Exp $
 //
 // $Log: bar3ptfn.cc,v $
-// Revision 1.12  2003-07-04 17:08:36  edwards
+// Revision 1.13  2003-08-27 20:04:14  edwards
+// Changed readSzin to return an xml header.
+//
+// Revision 1.12  2003/07/04 17:08:36  edwards
 // Added more Seq_src types.
 //
 // Revision 1.11  2003/06/25 16:12:04  edwards
@@ -86,8 +89,6 @@ main(int argc, char *argv[])
   multi1d<int> t_srce(Nd) ;
 
   string cfg_file ;
-
-  Seed seed ; // Random number seed (see SETRN for meaning)
 
   // Instantiate namelist reader for DATA
   XMLReader xml_in("DATA") ;
@@ -458,17 +459,15 @@ main(int argc, char *argv[])
   cout << endl ;
 
   // Read in the configuration along with relevant information.
+  XMLReader gauge_xml;
   switch (cfg_type) {
   case CFG_TYPE_SZIN :
-    readSzin(u, cfg_file, seed) ;
+    readSzin(gauge_xml, u, cfg_file);
     break ;
   default :
     cerr << "Configuration type is unsupported." << endl ;
     QDP_abort(1) ;
   }
-
-  // The call to setrn MUST go after setbc
-  RNG::setrn(seed) ;
 
   // Instantiate namelist writer for NMLDAT
   XMLFileWriter xml_out("XMLDAT") ;
@@ -529,8 +528,6 @@ main(int argc, char *argv[])
   Write(xml_out, Seq_src) ;
 
   Write(xml_out, mom2_max) ;
-
-  Write(xml_out, seed) ;
 
   pop(xml_out) ;
 
