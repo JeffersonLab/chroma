@@ -1,4 +1,4 @@
-// $Id: make_source.cc,v 1.3 2003-08-27 22:08:41 edwards Exp $
+// $Id: make_source.cc,v 1.4 2003-08-28 03:07:47 edwards Exp $
 /*! \file
  *  \brief Main code for source generation
  */
@@ -6,15 +6,13 @@
 #include <iostream>
 #include <cstdio>
 
-#define MAIN
-
 #include "chroma.h"
 
 /*
  *  Here we have various temporary definitions
  */
 enum CfgType {
-  CFG_TYPE_MILC,
+  CFG_TYPE_MILC = 0,
   CFG_TYPE_NERSC,
   CFG_TYPE_SCIDAC,
   CFG_TYPE_SZIN,
@@ -22,7 +20,7 @@ enum CfgType {
 } ;
 
 enum PropType {
-  PROP_TYPE_SCIDAC,
+  PROP_TYPE_SCIDAC = 2,
   PROP_TYPE_SZIN,
   PROP_TYPE_UNKNOWN
 } ;
@@ -32,8 +30,6 @@ enum PropType {
 #define S_WAVE 0
 #define P_WAVE 1
 #define D_WAVE 2    /*added*/
-
-#define MAXLINE 80
 
 using namespace QDP;
 
@@ -51,19 +47,13 @@ int main(int argc, char **argv)
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
 
-  // Setup the layout
-  const int foo[] = {4,4,4,8};
-  multi1d<int> nrow(Nd);
-
-  // Useful parameters that should be read from an input file
-  int j_decay = Nd-1;
-  int length = Layout::lattSize()[j_decay]; // define the temporal direction
-
+  multi1d<int> nrow;
 
   // Read in params
   XMLReader xml_in("DATA");
 
 
+  int j_decay;
   int version; 		// The input-parameter version
 
   Real kappa_fake = 0.0;			// Kappa value
@@ -74,22 +64,26 @@ int main(int argc, char **argv)
   Real wvf_param;		// Parameter for the wave function
   int WvfIntPar;
 
+  multi1d<int> t_source(Nd);
+
   CfgType cfg_type;
   PropType prop_type;
 
-  Real RsdCG;
-  int MaxCG;			// Iteration parameters
+  string cfg_file;
 
-  string xml_in_root = "make_source";
+  string xml_in_root = "/make_source";
   string path = xml_in_root + "/IO_version"; // push into 'IO_version' group
 
+  try {
   read(xml_in, path + "/version", version) ;
 
   switch(version){	// The parameters we read in IO version
 
-  case 102:			
+  case 2:			
 
     path = xml_in_root + "/param"; // push into 'param' group
+
+    read(xml_in, path + "/j_decay", j_decay);
 
     read(xml_in, path + "/source_type", source_type);	// S-wave, P-wave etc
     read(xml_in, path + "/source_direction", source_direction);
@@ -97,18 +91,24 @@ int main(int argc, char **argv)
     read(xml_in, path + "/wf_type", wf_type);	// Point, Gaussian etc
     read(xml_in, path + "/wvf_param", wvf_param);
     read(xml_in, path + "/WvfIntPar", WvfIntPar);
+    read(xml_in, path + "/t_srce", t_source);
 
     {
-      int input_cfg_type ;
+      string input_cfg_type ;
       read(xml_in, path + "/cfg_type", input_cfg_type) ;
-      cfg_type = cfg_type;
+      if (input_cfg_type == "SZIN")
+        cfg_type = CFG_TYPE_SZIN ;
+      else 
+        cfg_type = CFG_TYPE_UNKNOWN ;
     }
     {
-      int input_prop_type ;
+      string input_prop_type ;
       read(xml_in, path + "/prop_type", input_prop_type) ;
-      prop_type = prop_type;
+      if (input_prop_type == "SZIN")
+        prop_type = PROP_TYPE_SZIN ;
+      else 
+        prop_type = PROP_TYPE_UNKNOWN ;
     }
-
     break;
 
   default:
@@ -121,10 +121,18 @@ int main(int argc, char **argv)
   read(xml_in, path + "/nrow", nrow);
 
   // Read in the gauge configuration file name
-  string cfg_file;
   ReadPath(xml_in, xml_in_root + "/Cfg", cfg_file) ;
 
+  } 
+  catch(const string& e)
+  {
+    QDP_error_exit("Error reading in make_source: %s", e.c_str());
+  }
+
   xml_in.close();
+
+  Layout::setLattSize(nrow);
+  Layout::create();
 
   switch(wf_type){
   case POINT_SOURCE:
@@ -137,14 +145,6 @@ int main(int argc, char **argv)
   default:
     QDP_error_exit("Unknown source_type", wf_type);
   }    
-
-  Layout::setLattSize(nrow);
-  Layout::create();
-
-
-
-  multi1d<int> t_source(Nd);
-  t_source = 0;
 
   // Read a gauge field
   multi1d<LatticeColorMatrix> u(Nd);
@@ -202,7 +202,7 @@ int main(int argc, char **argv)
 
 
   XMLFileWriter xml_out(xml_filename);
-    
+  push(xml_out,"make_source");
 
   push(xml_out,"lattice");
   Write(xml_out,Nd);
@@ -212,7 +212,13 @@ int main(int argc, char **argv)
   pop(xml_out);
 
   // Write out the config info
-  write(xml_out, "config_info", gauge_xml);
+  try {
+    write(xml_out, "config_info", gauge_xml);
+  } 
+  catch(const string& e)
+  {
+    QDP_error_exit("Error writing gauge_xml: %s",e.c_str());
+  }
 
   xml_out.flush();
 
@@ -308,6 +314,7 @@ int main(int argc, char **argv)
   }
 
 
+  pop(xml_out);  // make_source
   xml_out.close();
 
   // Time to bolt
