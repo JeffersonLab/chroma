@@ -1,4 +1,4 @@
-//  $Id: barcomp_w.cc,v 1.3 2003-04-01 02:38:26 edwards Exp $
+//  $Id: barcomp_w.cc,v 1.4 2003-04-01 03:15:41 edwards Exp $
 /*! \file
  *  \brief Construct all components of a baryon propagator
  */
@@ -30,14 +30,15 @@ private:
  *
  * This routine is specific to Wilson fermions!
  *
- * quark_propagator_1 -- first quark propagator  ( Read )
- * quark_propagator_2 -- second quark propagator ( Read )
- * quark_propagator_3 -- third quark propagator  ( Read )
- * barprop -- baryon correlation function (in real space) ( Write )
- * num_mom -- number of non-zero momenta ( Read )
- * t0      -- cartesian coordinates of the source in the j_decay direction( Read )
- * j_decay -- direction of the exponential decay ( Read )
- * bc_spec  -- boundary condition for spectroscopy ( Read )
+ * \param quark_propagator_1 -- first quark propagator  ( Read )
+ * \param quark_propagator_2 -- second quark propagator ( Read )
+ * \param quark_propagator_3 -- third quark propagator  ( Read )
+ * \param barprop -- baryon correlation function (in real space) ( Write )
+ * \param t0      -- cartesian coordinates of the source in the j_decay direction( Read )
+ * \param j_decay -- direction of the exponential decay ( Read )
+ * \param bc_spec -- boundary condition for spectroscopy ( Read )
+ * \param nml_group -- Group name for output ( Read )
+ * \param nml     -- namelist writer ( Read )
 
  * In all baryons the colour components are contracted with the totally
  * antisymmetric 'tensor' eps(a,b,c) = antisym_tensor(a,b,c).
