@@ -1,4 +1,4 @@
-// $Id: fuzz_smear.cc,v 1.3 2004-02-09 19:24:50 mcneile Exp $
+// $Id: fuzz_smear.cc,v 1.4 2004-11-20 14:49:52 mcneile Exp $
 
 #include "chromabase.h"
 #include "meas/smear/displacement.h"
@@ -154,6 +154,16 @@ void fuzz_smear(const multi1d<LatticeColorMatrix>& ufuzz,
 		int length, int j_decay)
 {
   fuzz_smear<LatticeFermion>(ufuzz, psi, psifuzz, 
+				length,j_decay) ;
+}
+
+
+void fuzz_smear(const multi1d<LatticeColorMatrix>& ufuzz, 
+		const LatticeStaggeredFermion  & psi, 
+		LatticeStaggeredFermion& psifuzz, 
+		int length, int j_decay)
+{
+  fuzz_smear<LatticeStaggeredFermion>(ufuzz, psi, psifuzz, 
 				length,j_decay) ;
 }
 
