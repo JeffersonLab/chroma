@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_linop_array_w.h,v 1.4 2003-11-20 05:43:41 edwards Exp $
+// $Id: unprec_dwf_linop_array_w.h,v 1.5 2003-11-22 21:28:11 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion linear operator
  */
@@ -26,11 +26,13 @@ public:
   UnprecDWLinOpArray() {}
 
   //! Full constructor
-  UnprecDWLinOpArray(const multi1d<LatticeColorMatrix>& u_, const Real& WilsonMass_, const Real& m_q, int N5_)
+  UnprecDWLinOpArray(const multi1d<LatticeColorMatrix>& u_, 
+		     const Real& WilsonMass_, const Real& m_q, int N5_)
     {create(u_,WilsonMass_,m_q,N5_);}
 
   //! Creation routine
-  void create(const multi1d<LatticeColorMatrix>& u_, const Real& WilsonMass_, const Real& m_q_, int N5_);
+  void create(const multi1d<LatticeColorMatrix>& u_, 
+	      const Real& WilsonMass_, const Real& m_q_, int N5_);
 
   //! Destructor is automatic
   ~UnprecDWLinOpArray() {}
@@ -39,7 +41,8 @@ public:
   const OrderedSubset& subset() const {return all;}
 
   //! Apply the operator onto a source vector
-  void operator() (multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
+  void operator() (multi1d<LatticeFermion>& chi, 
+		   const multi1d<LatticeFermion>& psi, 
 		   enum PlusMinus isign) const;
 
 private:
