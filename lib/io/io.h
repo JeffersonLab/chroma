@@ -1,7 +1,19 @@
-// $Id: io.h,v 1.2 2003-03-29 05:25:44 edwards Exp $
+// $Id: io.h,v 1.3 2003-04-02 06:59:20 edwards Exp $
 
-#ifndef IO_INCLUDE
-#define IO_INCLUDE
+#ifndef __io_h__
+#define __io_h__
+
+/*! \file
+ * \brief IO routines
+ *
+ * Readers and writers of gauge fields and propagators
+ */
+
+/*! \defgroup io IO routines
+ * \ingroup lib
+ *
+ * Readers and writers of gauge fields and propagators
+ */
 
 #include "readszin.h"
 #include "readszinqprop_w.h"

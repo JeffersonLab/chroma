@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hadron.h,v 1.4 2003-04-01 01:56:19 edwards Exp $
+// $Id: hadron.h,v 1.5 2003-04-02 06:59:20 edwards Exp $
 
 /*! \file
  * \brief Hadronic observables
@@ -7,7 +7,7 @@
  * Central include file for all measurements of hadronic observables
  */
 
-/*! \defgroup hadron Measurements of hadronic observables
+/*! \defgroup hadron Hadronic observables
  * \ingroup meas
  *
  * Measure hadronic observables like spectroscopy, form-factors,

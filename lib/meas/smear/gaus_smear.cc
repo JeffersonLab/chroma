@@ -1,4 +1,4 @@
-// $Id: gaus_smear.cc,v 1.6 2003-04-01 02:38:26 edwards Exp $
+// $Id: gaus_smear.cc,v 1.7 2003-04-02 06:59:20 edwards Exp $
 /*! \file
  *  \brief Gaussian smearing of color vector
  */
@@ -11,8 +11,6 @@ using namespace QDP;
 
 //! Do a covariant Gaussian smearing of a lattice field
 /*!
- * \ingroup smear
- *
  * Arguments:
  *
  *  \param u        gauge field ( Read )
@@ -43,7 +41,19 @@ void gausSmear(const multi1d<LatticeColorMatrix>& u,
 
 
 //! Do a covariant Gaussian smearing of a lattice color vector field
-/*! This is a wrapper over the template definition */
+/*! This is a wrapper over the template definition
+ *
+ * \ingroup smear
+ *
+ * Arguments:
+ *
+ *  \param u        gauge field ( Read )
+ *  \param chi      color vector field ( Modify )
+ *  \param width    width of "shell" wave function ( Read )
+ *  \param ItrGaus  number of iterations to approximate Gaussian ( Read )
+ *  \param j_decay  direction of decay ( Read )
+ */
+
 void gausSmear(const multi1d<LatticeColorMatrix>& u, 
 	       LatticeColorVector& chi, 
 	       const Real& width, int ItrGaus, int j_decay)
@@ -52,7 +62,19 @@ void gausSmear(const multi1d<LatticeColorMatrix>& u,
 }
 
 //! Do a covariant Gaussian smearing of a lattice propagator field
-/*! This is a wrapper over the template definition */
+/*! This is a wrapper over the template definition
+ *
+ * \ingroup smear
+ *
+ * Arguments:
+ *
+ *  \param u        gauge field ( Read )
+ *  \param chi      propagator field ( Modify )
+ *  \param width    width of "shell" wave function ( Read )
+ *  \param ItrGaus  number of iterations to approximate Gaussian ( Read )
+ *  \param j_decay  direction of decay ( Read )
+ */
+
 void gausSmear(const multi1d<LatticeColorMatrix>& u, 
 	       LatticePropagator& chi, 
 	       const Real& width, int ItrGaus, int j_decay)
