@@ -38,7 +38,7 @@ host_triplet = @host@
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_1 = -I@top_builddir@/other_libs/@SSE_DSLASH_DIR@/include
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_2 = -L@top_builddir@/other_libs/@SSE_DSLASH_DIR@/lib
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_3 = -llevel3 @QDPXX_LIBS@
-VPATH = @top_srcdir@/mainprogs/main @top_srcdir@/include
+VPATH = @top_srcdir@/mainprogs/main
 ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
@@ -144,7 +144,7 @@ TOPDIR = @top_srcdir@
 #
 # Include Path
 #
-INCFLAGS = -I@top_srcdir@/include -I@top_builddir@/include -I${TOPDIR}/lib
+INCFLAGS = -I$(TOPDIR)/mainprogs/main -I${TOPDIR}/lib
 
 #
 # Any other compiler flags
@@ -538,6 +538,9 @@ uninstall-am: uninstall-info-am
 	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
 	uninstall-am uninstall-info-am
 
+
+#mainparam_io_SOURCES= mainparam_io.cc
+#sink_smearing_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 
 #
 # The latter rule will always try to rebuild libchroma.a when you 
