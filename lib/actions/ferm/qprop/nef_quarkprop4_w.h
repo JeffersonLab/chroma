@@ -1,25 +1,16 @@
-// $Id: nef_quarkprop4_w.h,v 1.1 2004-09-02 22:39:25 kostas Exp $
+// $Id: nef_quarkprop4_w.h,v 1.2 2004-09-03 14:24:36 kostas Exp $
 // $Log: nef_quarkprop4_w.h,v $
-// Revision 1.1  2004-09-02 22:39:25  kostas
-// started adding the mres/Za measurement for NEF and (OvDWF)
+// Revision 1.2  2004-09-03 14:24:36  kostas
+// added mres measurement for NEF fermions
 //
-// Revision 1.4  2004/02/23 03:05:11  edwards
-// Pass in j_decay.
-//
-// Revision 1.3  2004/01/30 21:35:49  kostas
-// added uprec_dwf support
-//
-// Revision 1.2  2004/01/30 20:21:32  kostas
-// fixed the prototype
-// 
 /*! \file
- * \brief Full quark propagator solver for domain wall fermions
+ * \brief Full quark propagator solver for NEF domain wall fermions
  *
  * Given a complete propagator as a source, this does all the inversions needed
  */
 
-#ifndef __dwf_quarkprop4_w_h__
-#define __dwf_quarkprop4_w_h__
+#ifndef __nef_quarkprop4_w_h__
+#define __nef_quarkprop4_w_h__
 
 #include "fermact.h"
 #include "actions/ferm/fermacts/fermacts.h"
@@ -42,11 +33,11 @@ using namespace QDP;
  * \param ncg_had  number of CG iterations ( Write )
  */
 
-void dwf_quarkProp4(LatticePropagator& q_sol, 
+void nef_quarkProp4(LatticePropagator& q_sol, 
 		    XMLWriter& xml_out,
 		    const LatticePropagator& q_src,
 		    int t_src, int j_decay,
-		    const EvenOddPrecDWFermActBaseArray<LatticeFermion>& S_f,
+		    const EvenOddPrecNEFDWFermActArray<LatticeFermion>& S_f,
 		    Handle<const ConnectState> state,
 		    enum InvType invType,
 		    const Real& RsdCG, 
@@ -68,11 +59,11 @@ void dwf_quarkProp4(LatticePropagator& q_sol,
  * \param ncg_had  number of CG iterations ( Write )
  */
 
-void dwf_quarkProp4(LatticePropagator& q_sol, 
+void nef_quarkProp4(LatticePropagator& q_sol, 
 		    XMLWriter& xml_out,
 		    const LatticePropagator& q_src,
 		    int t_src, int j_decay,
-		    const UnprecDWFermActBaseArray<LatticeFermion>& S_f,
+		    const UnprecNEFDWFermActArray<LatticeFermion>& S_f,
 		    Handle<const ConnectState> state,
 		    enum InvType invType,
 		    const Real& RsdCG, 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovdwf_linop_array_w.h,v 1.4 2004-09-02 22:39:25 kostas Exp $
+// $Id: unprec_ovdwf_linop_array_w.h,v 1.5 2004-09-03 14:24:36 kostas Exp $
 /*! \file
  *  \brief Unpreconditioned Overlap-DWF (Borici) linear operator
  */
@@ -51,11 +51,12 @@ public:
 	      const multi1d<LatticeFermion>& psi,
 	      enum PlusMinus isign)
   {
+    Real c5InvTwoKappa =  1.0 - (Nd-WilsonMass) ;
     multi1d<LatticeFermion> tt(N5) ;
     for(int s(0);s<N5;s++){
       D.apply(tt[s],psi[s],isign,0);
       D.apply(tt[s],psi[s],isign,1);
-      chi[s] = psi[s] - tt[s] ;
+      chi[s] = c5InvTwoKappa*psi[s] - tt[s] ;
     }
   }
   
@@ -68,7 +69,7 @@ public:
     LatticeFermion tt ;
     D.apply(tt,psi,isign,0);
     D.apply(tt,psi,isign,1);
-    chi = psi - tt ;
+    chi = (1.0 - (Nd-WilsonMass))*psi - tt ;
   }
   
 

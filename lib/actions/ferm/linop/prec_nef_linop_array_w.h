@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_nef_linop_array_w.h,v 1.7 2004-09-02 22:39:25 kostas Exp $
+// $Id: prec_nef_linop_array_w.h,v 1.8 2004-09-03 14:24:35 kostas Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned NEF domain-wall fermion linear operator
  */
@@ -113,7 +113,7 @@ public:
     for(int s(0);s<N5;s++){
       D.apply(tt[s],psi[s],isign,0);
       D.apply(tt[s],psi[s],isign,1);
-      chi[s] = psi[s] - c5*tt[s] ;
+      chi[s] = c5InvTwoKappa*psi[s] - c5*tt[s] ;
     }
   }
 
@@ -126,7 +126,7 @@ public:
     LatticeFermion tt ;
     D.apply(tt,psi,isign,0);
     D.apply(tt,psi,isign,1);
-    chi = psi - c5*tt ;
+    chi = c5InvTwoKappa*psi - c5*tt ;
   }
 
 
