@@ -1,4 +1,4 @@
-// $Id: prec_dwf_fermact_array_w.cc,v 1.12 2004-12-24 04:23:20 edwards Exp $
+// $Id: prec_dwf_fermact_array_w.cc,v 1.13 2004-12-28 19:49:24 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -10,6 +10,8 @@
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/fermbcs/fermbcs_w.h"
+
+#include "io/param_io.h"    // only need this for obsolete ChiralParam below
 
 namespace Chroma
 {
@@ -49,15 +51,28 @@ namespace Chroma
   {
     XMLReader paramtop(xml, path);
 
-    // Read the stuff for the action
-    read(paramtop, "OverMass", OverMass);
-    read(paramtop, "Mass", Mass);
-    read(paramtop, "N5", N5);
-
-    if (paramtop.count("a5") != 0) 
-      read(paramtop, "a5", a5);
+    // Check for ancient obsolete tags - try to maintain some backwards compatibility
+    if (paramtop.count("ChiralParam") != 0)
+    {
+      ChiralParam_t pp;
+      read(paramtop, "ChiralParam", pp);
+      OverMass = pp.OverMass;
+      N5 = pp.N5;
+      a5 = pp.a5;
+    }
     else
-      a5 = 1.0;
+    {
+      // Read the stuff for the action
+      read(paramtop, "OverMass", OverMass);
+      read(paramtop, "N5", N5);
+
+      if (paramtop.count("a5") != 0) 
+	read(paramtop, "a5", a5);
+      else
+	a5 = 1.0;
+    }
+
+    read(paramtop, "Mass", Mass);
   }
 
 
