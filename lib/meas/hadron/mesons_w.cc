@@ -1,6 +1,9 @@
-//  $Id: mesons_w.cc,v 1.16 2003-10-01 03:01:39 edwards Exp $
+//  $Id: mesons_w.cc,v 1.17 2004-02-03 20:47:24 edwards Exp $
 //  $Log: mesons_w.cc,v $
-//  Revision 1.16  2003-10-01 03:01:39  edwards
+//  Revision 1.17  2004-02-03 20:47:24  edwards
+//  Small code tweaks.
+//
+//  Revision 1.16  2003/10/01 03:01:39  edwards
 //  Removed extraneous include.
 //
 //  Revision 1.15  2003/09/29 21:31:36  edwards
@@ -83,7 +86,7 @@ void mesons(const LatticePropagator& quark_prop_1,
   START_CODE("mesons");
 
   // Length of lattice in decay direction
-  int length = phases.numSubsets() ;
+  int length = phases.numSubsets();
 
   // Construct the anti-quark propagator from quark_prop_2
   int G5 = Ns*Ns-1;
@@ -106,12 +109,12 @@ void mesons(const LatticePropagator& quark_prop_1,
     Write(xml_gamma, gamma_value);
 
     // Construct the meson correlation function
-    LatticeComplex corr_fn ;
+    LatticeComplex corr_fn;
     corr_fn = trace(adj(anti_quark_prop) * Gamma(gamma_value) *
-                    quark_prop_1 * Gamma(gamma_value)) ;
+                    quark_prop_1 * Gamma(gamma_value));
 
-    multi2d<DComplex> hsum ;
-    hsum = phases.sft(corr_fn) ;
+    multi2d<DComplex> hsum;
+    hsum = phases.sft(corr_fn);
 
     // Loop over sink momenta
     XMLArrayWriter xml_sink_mom(xml_gamma,phases.numMom());
@@ -120,14 +123,14 @@ void mesons(const LatticePropagator& quark_prop_1,
     for (int sink_mom_num=0; sink_mom_num < phases.numMom(); ++sink_mom_num) 
     {
       push(xml_sink_mom);
-      Write(xml_sink_mom, sink_mom_num) ;
-      write(xml_sink_mom, "sink_mom", phases.numToMom(sink_mom_num)) ;
+      Write(xml_sink_mom, sink_mom_num);
+      write(xml_sink_mom, "sink_mom", phases.numToMom(sink_mom_num));
 
       multi1d<Real> mesprop(length);
       for (int t=0; t < length; ++t) 
       {
-        int t_eff = (t - t0 + length) % length ;
-	mesprop[t_eff] = real(hsum[sink_mom_num][t]) ;
+        int t_eff = (t - t0 + length) % length;
+	mesprop[t_eff] = real(hsum[sink_mom_num][t]);
       }
 
       Write(xml_sink_mom, mesprop);
