@@ -1,4 +1,4 @@
-// $Id: fermbcs_s.cc,v 1.1 2004-12-24 04:23:20 edwards Exp $
+// $Id: fermbcs_s.cc,v 1.2 2005-01-12 04:44:19 edwards Exp $
 /*! \file
  *  \brief All fermionic BC
  */
@@ -32,7 +32,7 @@ namespace Chroma
     {
       XMLReader top(xml_in, path);
 
-      bool success = StaggeredTypeSimpleFermBCEnv::registered;  // make sure all codes loaded
+      bool success = registered;  // make sure all codes loaded
 
       std::string fermbc;
       std::string fermbc_path;

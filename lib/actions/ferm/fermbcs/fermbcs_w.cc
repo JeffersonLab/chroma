@@ -1,10 +1,11 @@
-// $Id: fermbcs_w.cc,v 1.1 2004-12-24 04:23:20 edwards Exp $
+// $Id: fermbcs_w.cc,v 1.2 2005-01-12 04:44:19 edwards Exp $
 /*! \file
  *  \brief All fermionic BC
  */
 
 #include "actions/ferm/fermbcs/fermbc_factory_w.h"
 #include "actions/ferm/fermbcs/simple_fermbc_w.h"
+#include "actions/ferm/fermbcs/fermbcs_w.h"
 
 namespace Chroma
 {
@@ -31,7 +32,7 @@ namespace Chroma
     {
       XMLReader top(xml_in, path);
 
-      bool success = WilsonTypeSimpleFermBCEnv::registered;  // make sure all codes loaded
+      bool success = registered;  // make sure all codes loaded
 
       std::string fermbc;
       std::string fermbc_path;
@@ -83,7 +84,7 @@ namespace Chroma
     {
       XMLReader top(xml_in, path);
 
-      bool success = WilsonTypeSimpleFermBCEnv::registered;  // make sure all codes loaded
+      bool success = registered;  // make sure all codes loaded
 
       std::string fermbc;
       std::string fermbc_path;
