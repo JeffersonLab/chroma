@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev4d_fermact_w.h,v 1.24 2004-05-25 21:47:39 bjoo Exp $
+// $Id: zolotarev4d_fermact_w.h,v 1.25 2004-07-08 03:08:41 edwards Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -117,6 +117,11 @@ public:
   }
 
   // Create state functions
+
+  //! Given links, create the state needed for the linear operators
+  /*! Override the parent */
+  const OverlapConnectState<LatticeFermion>*
+  createState(const multi1d<LatticeColorMatrix>& u_) const ;
 
   // Just gauge field and epsilon -- Approx Max is 2*Nd 
   const OverlapConnectState<LatticeFermion>*

@@ -1,4 +1,4 @@
-// $Id: zolotarev4d_fermact_w.cc,v 1.23 2004-05-31 19:32:16 bjoo Exp $
+// $Id: zolotarev4d_fermact_w.cc,v 1.24 2004-07-08 03:08:41 edwards Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -551,6 +551,8 @@ Zolotarev4DFermAct::linOp(Handle<const ConnectState> state_) const
   }
   
   END_CODE("Zolotarev4DLinOp::create");
+
+  return 0;
 }
 
 //! Produce a linear operator for this action
@@ -617,6 +619,8 @@ Zolotarev4DFermAct::linOpPrecondition(Handle<const ConnectState> state_) const
   }
   
   END_CODE("Zolotarev4DLinOp::create");
+
+  return 0;
 }
 
 //! Produce a linear operator for gamma5 epsilon(H) psi
@@ -683,6 +687,8 @@ Zolotarev4DFermAct::lgamma5epsH(Handle<const ConnectState> state_) const
   }
   
   END_CODE("Zolotarev4DLinOp::create");
+
+  return 0;
 }
 
 //! Produce a linear operator for gamma5 epsilon(H) psi
@@ -749,6 +755,8 @@ Zolotarev4DFermAct::lgamma5epsHPrecondition(Handle<const ConnectState> state_) c
   }
   
   END_CODE("Zolotarev4DLinOp::create");
+
+  return 0;
 }
 
 //! Produce a linear operator for this action
@@ -820,6 +828,8 @@ Zolotarev4DFermAct::lMdagM(Handle<const ConnectState> state_, const Chirality& i
 
   }
   END_CODE("Zolotarev4DlMdagM");
+
+  return 0;
 }
 
 //! Produce a conventional MdagM operator for this action
@@ -910,6 +920,8 @@ Zolotarev4DFermAct::lMdagMPrecondition(Handle<const ConnectState> state_, const 
 
   }
   END_CODE("Zolotarev4DlMdagM");
+
+  return 0;
 }
 
 //! Produce a conventional MdagM operator for this action
@@ -927,6 +939,18 @@ Zolotarev4DFermAct::lMdagMPrecondition(Handle<const ConnectState> state_) const
   // lmdagm is the only owner
   // No need to grab linOp with handle at this stage.
   return new lmdagm<LatticeFermion>( linOpPrecondition(state_) );
+}
+
+
+const OverlapConnectState<LatticeFermion>*
+Zolotarev4DFermAct::createState(const multi1d<LatticeColorMatrix>& u_) const
+{
+  multi1d<LatticeColorMatrix> u_tmp = u_;
+  getFermBC().modifyU(u_tmp);
+
+  Real approxMin = 0.0;
+  Real approxMax = Real(2)*Real(Nd);
+  return new OverlapConnectState<LatticeFermion>(u_tmp, approxMin, approxMax);
 }
 
 
@@ -1108,4 +1132,6 @@ Zolotarev4DFermAct::createState(const multi1d<LatticeColorMatrix>& u_,
       QDP_abort(1);
     }
   }
+
+  return 0;
 }

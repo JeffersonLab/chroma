@@ -1,4 +1,4 @@
-// $Id: zolotarev5d_fermact_array_w.cc,v 1.11 2004-07-08 01:22:25 edwards Exp $
+// $Id: zolotarev5d_fermact_array_w.cc,v 1.12 2004-07-08 03:08:41 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -284,6 +284,18 @@ const LinearOperator<multi1d<LatticeFermion> >*
 Zolotarev5DFermActArray::lnonHermMdagM(Handle<const ConnectState> state) const
 {
   return new lmdagm<multi1d<LatticeFermion> >(lnonHermLinOp(state));
+}
+
+
+const OverlapConnectState<LatticeFermion>*
+Zolotarev5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_) const
+{
+  multi1d<LatticeColorMatrix> u_tmp = u_;
+  getFermBC().modifyU(u_tmp);
+
+  Real approxMin = 0.0;
+  Real approxMax = Real(2)*Real(Nd);
+  return new OverlapConnectState<LatticeFermion>(u_tmp, approxMin, approxMax);
 }
 
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev5d_fermact_array_w.h,v 1.8 2004-05-19 00:21:23 bjoo Exp $
+// $Id: zolotarev5d_fermact_array_w.h,v 1.9 2004-07-08 03:08:41 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -115,6 +115,12 @@ public:
 
 
   // Create state functions
+
+  //! Given links, create the state needed for the linear operators
+  /*! Override the parent */
+  const OverlapConnectState<LatticeFermion>*
+  createState(const multi1d<LatticeColorMatrix>& u_) const ;
+
 
   // Just gauge field and epsilon -- Approx Max is 2*Nd 
   const OverlapConnectState<LatticeFermion>*
