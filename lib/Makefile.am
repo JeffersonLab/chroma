@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.104 2004-01-29 20:56:16 edwards Exp $
+# $Id: Makefile.am,v 1.105 2004-01-29 20:59:06 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -92,7 +92,7 @@ nobase_include_HEADERS = \
 	util/gauge/rgauge.h util/gauge/su2extract.h util/gauge/su3proj.h \
 	util/gauge/sunfill.h util/gauge/sun_proj.h util/gauge/taproj.h \
 	util/gauge/unit_check.h \
-        util/info.h util/info/proginfo.h util/info/printgeom.h \
+        util/info/info.h util/info/proginfo.h util/info/printgeom.h \
         util/util.h
 
 
