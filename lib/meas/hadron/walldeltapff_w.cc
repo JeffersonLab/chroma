@@ -1,4 +1,4 @@
-// $Id: walldeltapff_w.cc,v 1.3 2004-06-01 04:00:44 edwards Exp $
+// $Id: walldeltapff_w.cc,v 1.4 2004-06-01 04:12:49 edwards Exp $
 /*! \file
  *  \brief Wall-sink delta^+ -> gamma+proton form-factors 
  *
@@ -351,8 +351,7 @@ void wallDeltaPFormFac(XMLWriter& xml,
   // Resize some things
   form.formFacs.resize(2*Nd*2);
   for (int seq_src = 0; seq_src < form.formFacs.size(); ++seq_src) 
-    for(int mu = 0; mu < Nd; ++mu)
-      form.formFacs[seq_src].insertions.resize(Nd);
+    form.formFacs[seq_src].insertions.resize(Nd);
 
 
   // For calculational purpose, loop over insertions first.
