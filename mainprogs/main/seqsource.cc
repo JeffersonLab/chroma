@@ -1,4 +1,4 @@
-// $Id: seqsource.cc,v 1.2 2004-04-27 21:30:37 edwards Exp $
+// $Id: seqsource.cc,v 1.3 2004-04-29 15:08:42 edwards Exp $
 /*! \file
  *  \brief Main code for sequential source construction
  */
@@ -326,8 +326,14 @@ int main(int argc, char **argv)
 
   case SNK_TYPE_WALL_SINK:
   {
-    LatticePropagator tmp_prop = quark_prop_src;
-    wall_qprop(quark_prop_src, tmp_prop, phases);
+//    LatticePropagator tmp_prop = quark_prop_src;
+//    wall_qprop(quark_prop_src, tmp_prop, phases);
+
+    int t_sink = input.param.t_sink;
+
+    // Project propagator onto zero momentum: Do a slice-wise sum.
+    DPropagator dprop_slice = sum(quark_prop_src, phases.getSet()[t_sink]);
+    quark_prop_src[phases.getSet()[t_sink]] = dprop_slice;
   }
   break;
 
