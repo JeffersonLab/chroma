@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hamilton.h,v 1.8 2004-01-07 20:54:29 edwards Exp $
+// $Id: hamilton.h,v 1.9 2004-03-29 21:33:42 edwards Exp $
 /*! \file
  *  \brief Hamiltonian systems
  */

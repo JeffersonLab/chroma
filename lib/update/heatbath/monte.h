@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: monte.h,v 1.1 2003-12-29 19:47:22 edwards Exp $
+// $Id: monte.h,v 1.2 2004-03-29 21:33:42 edwards Exp $
 /*! \file
  *  \brief Routine for doing the hybrid (monte carlo) algorithm. 
  */

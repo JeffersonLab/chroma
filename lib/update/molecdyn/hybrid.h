@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hybrid.h,v 1.1 2003-12-31 23:46:49 edwards Exp $
+// $Id: hybrid.h,v 1.2 2004-03-29 21:33:42 edwards Exp $
 /*! \file
  *  \brief HMC
  */
