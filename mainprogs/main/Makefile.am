@@ -35,15 +35,15 @@ HDRS =
 #noinst_PROGRAMS = propagator
 check_PROGRAMS = propagator propagator_comp multi_propagator \
         multi_propagator_comp collect_propcomp collect_multi_propcomp \
-        spectrum_w qqq_w seqprop seqprop_comp seqprop_collect\
-        dwf_seqprop bar3ptfn make_source \
+        spectrum_w qqq_w seqsource \
+        bar3ptfn make_source \
         ExampleBuildingBlocks hypsmear cfgtransf sink_smearing qproptransf \
         wallformfac
 
 ## These are programs still under development. They won't compile in
 ## the check_PROGRAMS line, so we put them here to keep from breaking
 ## make check
-EXTRA_PROGRAMS = qpropadd seqsource
+EXTRA_PROGRAMS = qpropadd seqprop dwf_seqprop seqprop_comp seqprop_collect
 
 
 #
