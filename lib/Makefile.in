@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.280 2004-12-21 18:01:05 bjoo Exp $
+# $Id: Makefile.in,v 1.281 2004-12-24 04:20:41 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -88,6 +88,7 @@ libchroma_a_LIBADD =
 am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/overlap_state.cc \
 	actions/ferm/fermacts/zolotarev_coeffs.cc \
+	actions/ferm/fermbcs/simple_fermbc.cc \
 	actions/ferm/invert/invbicgstab.cc \
 	actions/ferm/invert/invbicgstab_array.cc \
 	actions/ferm/invert/invcg1.cc \
@@ -176,6 +177,8 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/unprec_parwilson_fermact_w.cc \
 	actions/ferm/fermacts/unprec_wilson_fermact_w.cc \
 	actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.cc \
+	actions/ferm/fermbcs/fermbcs_w.cc \
+	actions/ferm/fermbcs/simple_fermbc_w.cc \
 	actions/ferm/invert/inv_borici_w.cc \
 	actions/ferm/linop/dwffld_w.cc \
 	actions/ferm/linop/lDeltaLs_w.cc \
@@ -233,6 +236,8 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc \
 	actions/ferm/linop/lwldslash_w_pab.cc \
 	actions/ferm/fermacts/asqtad_fermact_s.cc \
+	actions/ferm/fermbcs/fermbcs_s.cc \
+	actions/ferm/fermbcs/simple_fermbc_s.cc \
 	actions/ferm/linop/asqtad_linop_s.cc \
 	actions/ferm/linop/asqtad_mdagm_s.cc \
 	actions/ferm/linop/asq_dsl_s.cc \
@@ -252,17 +257,17 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 @BUILD_PAB_WILSON_DSLASH_TRUE@am__objects_3 =  \
 @BUILD_PAB_WILSON_DSLASH_TRUE@	lwldslash_w_pab.$(OBJEXT)
 am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
-	zolotarev_coeffs.$(OBJEXT) invbicgstab.$(OBJEXT) \
-	invbicgstab_array.$(OBJEXT) invcg1.$(OBJEXT) \
-	invcg1_array.$(OBJEXT) invcg2.$(OBJEXT) invcg2_array.$(OBJEXT) \
-	invcg2_timing_hacks.$(OBJEXT) invsumr.$(OBJEXT) \
-	inv_gmresr_cg_array.$(OBJEXT) inv_minres_array.$(OBJEXT) \
-	inv_rel_cg1.$(OBJEXT) inv_rel_cg2.$(OBJEXT) \
-	inv_rel_gmresr_cg.$(OBJEXT) inv_rel_gmresr_sumr.$(OBJEXT) \
-	inv_rel_sumr.$(OBJEXT) minvcg.$(OBJEXT) minvsumr.$(OBJEXT) \
-	minv_rel_cg.$(OBJEXT) minv_rel_sumr.$(OBJEXT) \
-	fermact_qprop.$(OBJEXT) fermact_qprop_array.$(OBJEXT) \
-	prec_fermact_qprop.$(OBJEXT) \
+	zolotarev_coeffs.$(OBJEXT) simple_fermbc.$(OBJEXT) \
+	invbicgstab.$(OBJEXT) invbicgstab_array.$(OBJEXT) \
+	invcg1.$(OBJEXT) invcg1_array.$(OBJEXT) invcg2.$(OBJEXT) \
+	invcg2_array.$(OBJEXT) invcg2_timing_hacks.$(OBJEXT) \
+	invsumr.$(OBJEXT) inv_gmresr_cg_array.$(OBJEXT) \
+	inv_minres_array.$(OBJEXT) inv_rel_cg1.$(OBJEXT) \
+	inv_rel_cg2.$(OBJEXT) inv_rel_gmresr_cg.$(OBJEXT) \
+	inv_rel_gmresr_sumr.$(OBJEXT) inv_rel_sumr.$(OBJEXT) \
+	minvcg.$(OBJEXT) minvsumr.$(OBJEXT) minv_rel_cg.$(OBJEXT) \
+	minv_rel_sumr.$(OBJEXT) fermact_qprop.$(OBJEXT) \
+	fermact_qprop_array.$(OBJEXT) prec_fermact_qprop.$(OBJEXT) \
 	prec_fermact_qprop_array.$(OBJEXT) staggered_qprop.$(OBJEXT) \
 	wilson_gaugeact.$(OBJEXT) barcomp_io.$(OBJEXT) \
 	eigen_io.$(OBJEXT) enum_cfgtype_io.$(OBJEXT) \
@@ -319,8 +324,9 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	unprec_ovlap_contfrac5d_fermact_array_w.$(OBJEXT) \
 	unprec_parwilson_fermact_w.$(OBJEXT) \
 	unprec_wilson_fermact_w.$(OBJEXT) \
-	unprec_zolo_nef_fermact_array_w.$(OBJEXT) \
-	inv_borici_w.$(OBJEXT) dwffld_w.$(OBJEXT) lDeltaLs_w.$(OBJEXT) \
+	unprec_zolo_nef_fermact_array_w.$(OBJEXT) fermbcs_w.$(OBJEXT) \
+	simple_fermbc_w.$(OBJEXT) inv_borici_w.$(OBJEXT) \
+	dwffld_w.$(OBJEXT) lDeltaLs_w.$(OBJEXT) \
 	lg5eps_double_pass_w.$(OBJEXT) lg5eps_w.$(OBJEXT) \
 	lovddag_double_pass_w.$(OBJEXT) lovddag_w.$(OBJEXT) \
 	lovlapms_w.$(OBJEXT) lovlap_double_pass_w.$(OBJEXT) \
@@ -361,7 +367,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	unprec_two_flavor_wilson_ferm_monomial_w.$(OBJEXT) \
 	prec_two_flavor_wilson_ferm_monomial_w.$(OBJEXT) \
 	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
-	asqtad_fermact_s.$(OBJEXT) asqtad_linop_s.$(OBJEXT) \
+	asqtad_fermact_s.$(OBJEXT) fermbcs_s.$(OBJEXT) \
+	simple_fermbc_s.$(OBJEXT) asqtad_linop_s.$(OBJEXT) \
 	asqtad_mdagm_s.$(OBJEXT) asq_dsl_s.$(OBJEXT) \
 	fat7_links_s.$(OBJEXT) naik_term_s.$(OBJEXT) \
 	follana_io_s.$(OBJEXT) baryon_s.$(OBJEXT) \
@@ -394,6 +401,8 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/fermacts/fermacts.h \
 	actions/ferm/fermacts/zolotarev.h \
 	actions/ferm/fermacts/overlap_state.h \
+	actions/ferm/fermbcs/fermbcs.h \
+	actions/ferm/fermbcs/simple_fermbc.h \
 	actions/ferm/invert/invcg1.h actions/ferm/invert/invcg2.h \
 	actions/ferm/invert/inv_rel_cg1.h \
 	actions/ferm/invert/inv_rel_cg2.h \
@@ -476,7 +485,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	update/molecdyn/global_metropolis_accrej.h \
 	update/molecdyn/abs_hmc.h update/molecdyn/pg_hmc.h \
 	update/molecdyn/ferm_hmc.h actions/ferm/fermacts/fermacts_w.h \
-	actions/ferm/fermacts/fermfactory_w.h \
+	actions/ferm/fermacts/fermact_factory_w.h \
 	actions/ferm/fermacts/overlap_fermact_base_w.h \
 	actions/ferm/fermacts/prec_clover_fermact_w.h \
 	actions/ferm/fermacts/prec_dwf_fermact_array_w.h \
@@ -500,6 +509,9 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/fermacts/unprec_ovlap_contfrac5d_fermact_array_w.h \
 	actions/ferm/fermacts/prec_ovlap_contfrac5d_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_dwftransf_fermact_w.h \
+	actions/ferm/fermbcs/fermbcs_w.h \
+	actions/ferm/fermbcs/fermbc_factory_w.h \
+	actions/ferm/fermbcs/simple_fermbc_w.h \
 	actions/ferm/invert/inv_borici_w.h \
 	actions/ferm/linop/lgherm_w.h \
 	actions/ferm/linop/unprec_ovlap_contfrac5d_linop_array_w.h \
@@ -557,6 +569,9 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	util/ferm/paulitodr.h actions/ferm/fermacts/asqtad_fermact_s.h \
 	actions/ferm/fermacts/fermacts_s.h \
 	actions/ferm/fermacts/stag_fermact_s.h \
+	actions/ferm/fermbcs/fermbcs_s.h \
+	actions/ferm/fermbcs/fermbc_factory_s.h \
+	actions/ferm/fermbcs/simple_fermbc_s.h \
 	actions/ferm/linop/asqtad_linop_s.h \
 	actions/ferm/linop/asqtad_mdagm_s.h \
 	actions/ferm/linop/asq_dsl_s.h \
@@ -709,6 +724,8 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/fermacts/fermacts.h \
 	actions/ferm/fermacts/zolotarev.h \
 	actions/ferm/fermacts/overlap_state.h \
+	actions/ferm/fermbcs/fermbcs.h \
+	actions/ferm/fermbcs/simple_fermbc.h \
 	actions/ferm/invert/invcg1.h actions/ferm/invert/invcg2.h \
 	actions/ferm/invert/inv_rel_cg1.h \
 	actions/ferm/invert/inv_rel_cg2.h \
@@ -792,7 +809,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	update/molecdyn/global_metropolis_accrej.h \
 	update/molecdyn/abs_hmc.h update/molecdyn/pg_hmc.h \
 	update/molecdyn/ferm_hmc.h actions/ferm/fermacts/fermacts_w.h \
-	actions/ferm/fermacts/fermfactory_w.h \
+	actions/ferm/fermacts/fermact_factory_w.h \
 	actions/ferm/fermacts/overlap_fermact_base_w.h \
 	actions/ferm/fermacts/prec_clover_fermact_w.h \
 	actions/ferm/fermacts/prec_dwf_fermact_array_w.h \
@@ -816,6 +833,9 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/fermacts/unprec_ovlap_contfrac5d_fermact_array_w.h \
 	actions/ferm/fermacts/prec_ovlap_contfrac5d_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_dwftransf_fermact_w.h \
+	actions/ferm/fermbcs/fermbcs_w.h \
+	actions/ferm/fermbcs/fermbc_factory_w.h \
+	actions/ferm/fermbcs/simple_fermbc_w.h \
 	actions/ferm/invert/inv_borici_w.h \
 	actions/ferm/linop/lgherm_w.h \
 	actions/ferm/linop/unprec_ovlap_contfrac5d_linop_array_w.h \
@@ -873,6 +893,9 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	util/ferm/paulitodr.h actions/ferm/fermacts/asqtad_fermact_s.h \
 	actions/ferm/fermacts/fermacts_s.h \
 	actions/ferm/fermacts/stag_fermact_s.h \
+	actions/ferm/fermbcs/fermbcs_s.h \
+	actions/ferm/fermbcs/fermbc_factory_s.h \
+	actions/ferm/fermbcs/simple_fermbc_s.h \
 	actions/ferm/linop/asqtad_linop_s.h \
 	actions/ferm/linop/asqtad_mdagm_s.h \
 	actions/ferm/linop/asq_dsl_s.h \
@@ -928,6 +951,7 @@ lib_LIBRARIES = libchroma.a
 libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/overlap_state.cc \
 	actions/ferm/fermacts/zolotarev_coeffs.cc \
+	actions/ferm/fermbcs/simple_fermbc.cc \
 	actions/ferm/invert/invbicgstab.cc \
 	actions/ferm/invert/invbicgstab_array.cc \
 	actions/ferm/invert/invcg1.cc \
@@ -1016,6 +1040,8 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/unprec_parwilson_fermact_w.cc \
 	actions/ferm/fermacts/unprec_wilson_fermact_w.cc \
 	actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.cc \
+	actions/ferm/fermbcs/fermbcs_w.cc \
+	actions/ferm/fermbcs/simple_fermbc_w.cc \
 	actions/ferm/invert/inv_borici_w.cc \
 	actions/ferm/linop/dwffld_w.cc \
 	actions/ferm/linop/lDeltaLs_w.cc \
@@ -1071,6 +1097,8 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/prec_two_flavor_wilson_ferm_monomial_w.cc \
 	$(am__append_4) $(am__append_6) $(am__append_8) \
 	actions/ferm/fermacts/asqtad_fermact_s.cc \
+	actions/ferm/fermbcs/fermbcs_s.cc \
+	actions/ferm/fermbcs/simple_fermbc_s.cc \
 	actions/ferm/linop/asqtad_linop_s.cc \
 	actions/ferm/linop/asqtad_mdagm_s.cc \
 	actions/ferm/linop/asq_dsl_s.cc \
@@ -1225,6 +1253,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fat7_links_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fermact_qprop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fermact_qprop_array.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fermbcs_s.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fermbcs_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/follana_io_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/formfac_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuzwilp.Po@am__quote@
@@ -1339,6 +1369,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scalar_loops_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seqpiontest_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sftmom.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simple_fermbc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simple_fermbc_s.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simple_fermbc_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sink_smear2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sn_jacob.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sn_jacob_array.Po@am__quote@
@@ -1456,6 +1489,20 @@ zolotarev_coeffs.obj: actions/ferm/fermacts/zolotarev_coeffs.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/zolotarev_coeffs.cc' object='zolotarev_coeffs.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o zolotarev_coeffs.obj `if test -f 'actions/ferm/fermacts/zolotarev_coeffs.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/zolotarev_coeffs.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/zolotarev_coeffs.cc'; fi`
+
+simple_fermbc.o: actions/ferm/fermbcs/simple_fermbc.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT simple_fermbc.o -MD -MP -MF "$(DEPDIR)/simple_fermbc.Tpo" -c -o simple_fermbc.o `test -f 'actions/ferm/fermbcs/simple_fermbc.cc' || echo '$(srcdir)/'`actions/ferm/fermbcs/simple_fermbc.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/simple_fermbc.Tpo" "$(DEPDIR)/simple_fermbc.Po"; else rm -f "$(DEPDIR)/simple_fermbc.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermbcs/simple_fermbc.cc' object='simple_fermbc.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o simple_fermbc.o `test -f 'actions/ferm/fermbcs/simple_fermbc.cc' || echo '$(srcdir)/'`actions/ferm/fermbcs/simple_fermbc.cc
+
+simple_fermbc.obj: actions/ferm/fermbcs/simple_fermbc.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT simple_fermbc.obj -MD -MP -MF "$(DEPDIR)/simple_fermbc.Tpo" -c -o simple_fermbc.obj `if test -f 'actions/ferm/fermbcs/simple_fermbc.cc'; then $(CYGPATH_W) 'actions/ferm/fermbcs/simple_fermbc.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermbcs/simple_fermbc.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/simple_fermbc.Tpo" "$(DEPDIR)/simple_fermbc.Po"; else rm -f "$(DEPDIR)/simple_fermbc.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermbcs/simple_fermbc.cc' object='simple_fermbc.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o simple_fermbc.obj `if test -f 'actions/ferm/fermbcs/simple_fermbc.cc'; then $(CYGPATH_W) 'actions/ferm/fermbcs/simple_fermbc.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermbcs/simple_fermbc.cc'; fi`
 
 invbicgstab.o: actions/ferm/invert/invbicgstab.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT invbicgstab.o -MD -MP -MF "$(DEPDIR)/invbicgstab.Tpo" -c -o invbicgstab.o `test -f 'actions/ferm/invert/invbicgstab.cc' || echo '$(srcdir)/'`actions/ferm/invert/invbicgstab.cc; \
@@ -3319,6 +3366,34 @@ unprec_zolo_nef_fermact_array_w.obj: actions/ferm/fermacts/unprec_zolo_nef_ferma
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_zolo_nef_fermact_array_w.obj `if test -f 'actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.cc'; fi`
 
+fermbcs_w.o: actions/ferm/fermbcs/fermbcs_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT fermbcs_w.o -MD -MP -MF "$(DEPDIR)/fermbcs_w.Tpo" -c -o fermbcs_w.o `test -f 'actions/ferm/fermbcs/fermbcs_w.cc' || echo '$(srcdir)/'`actions/ferm/fermbcs/fermbcs_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/fermbcs_w.Tpo" "$(DEPDIR)/fermbcs_w.Po"; else rm -f "$(DEPDIR)/fermbcs_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermbcs/fermbcs_w.cc' object='fermbcs_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o fermbcs_w.o `test -f 'actions/ferm/fermbcs/fermbcs_w.cc' || echo '$(srcdir)/'`actions/ferm/fermbcs/fermbcs_w.cc
+
+fermbcs_w.obj: actions/ferm/fermbcs/fermbcs_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT fermbcs_w.obj -MD -MP -MF "$(DEPDIR)/fermbcs_w.Tpo" -c -o fermbcs_w.obj `if test -f 'actions/ferm/fermbcs/fermbcs_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermbcs/fermbcs_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermbcs/fermbcs_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/fermbcs_w.Tpo" "$(DEPDIR)/fermbcs_w.Po"; else rm -f "$(DEPDIR)/fermbcs_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermbcs/fermbcs_w.cc' object='fermbcs_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o fermbcs_w.obj `if test -f 'actions/ferm/fermbcs/fermbcs_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermbcs/fermbcs_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermbcs/fermbcs_w.cc'; fi`
+
+simple_fermbc_w.o: actions/ferm/fermbcs/simple_fermbc_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT simple_fermbc_w.o -MD -MP -MF "$(DEPDIR)/simple_fermbc_w.Tpo" -c -o simple_fermbc_w.o `test -f 'actions/ferm/fermbcs/simple_fermbc_w.cc' || echo '$(srcdir)/'`actions/ferm/fermbcs/simple_fermbc_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/simple_fermbc_w.Tpo" "$(DEPDIR)/simple_fermbc_w.Po"; else rm -f "$(DEPDIR)/simple_fermbc_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermbcs/simple_fermbc_w.cc' object='simple_fermbc_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o simple_fermbc_w.o `test -f 'actions/ferm/fermbcs/simple_fermbc_w.cc' || echo '$(srcdir)/'`actions/ferm/fermbcs/simple_fermbc_w.cc
+
+simple_fermbc_w.obj: actions/ferm/fermbcs/simple_fermbc_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT simple_fermbc_w.obj -MD -MP -MF "$(DEPDIR)/simple_fermbc_w.Tpo" -c -o simple_fermbc_w.obj `if test -f 'actions/ferm/fermbcs/simple_fermbc_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermbcs/simple_fermbc_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermbcs/simple_fermbc_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/simple_fermbc_w.Tpo" "$(DEPDIR)/simple_fermbc_w.Po"; else rm -f "$(DEPDIR)/simple_fermbc_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermbcs/simple_fermbc_w.cc' object='simple_fermbc_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o simple_fermbc_w.obj `if test -f 'actions/ferm/fermbcs/simple_fermbc_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermbcs/simple_fermbc_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermbcs/simple_fermbc_w.cc'; fi`
+
 inv_borici_w.o: actions/ferm/invert/inv_borici_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inv_borici_w.o -MD -MP -MF "$(DEPDIR)/inv_borici_w.Tpo" -c -o inv_borici_w.o `test -f 'actions/ferm/invert/inv_borici_w.cc' || echo '$(srcdir)/'`actions/ferm/invert/inv_borici_w.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inv_borici_w.Tpo" "$(DEPDIR)/inv_borici_w.Po"; else rm -f "$(DEPDIR)/inv_borici_w.Tpo"; exit 1; fi
@@ -4327,6 +4402,34 @@ asqtad_fermact_s.obj: actions/ferm/fermacts/asqtad_fermact_s.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o asqtad_fermact_s.obj `if test -f 'actions/ferm/fermacts/asqtad_fermact_s.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/asqtad_fermact_s.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/asqtad_fermact_s.cc'; fi`
 
+fermbcs_s.o: actions/ferm/fermbcs/fermbcs_s.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT fermbcs_s.o -MD -MP -MF "$(DEPDIR)/fermbcs_s.Tpo" -c -o fermbcs_s.o `test -f 'actions/ferm/fermbcs/fermbcs_s.cc' || echo '$(srcdir)/'`actions/ferm/fermbcs/fermbcs_s.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/fermbcs_s.Tpo" "$(DEPDIR)/fermbcs_s.Po"; else rm -f "$(DEPDIR)/fermbcs_s.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermbcs/fermbcs_s.cc' object='fermbcs_s.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o fermbcs_s.o `test -f 'actions/ferm/fermbcs/fermbcs_s.cc' || echo '$(srcdir)/'`actions/ferm/fermbcs/fermbcs_s.cc
+
+fermbcs_s.obj: actions/ferm/fermbcs/fermbcs_s.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT fermbcs_s.obj -MD -MP -MF "$(DEPDIR)/fermbcs_s.Tpo" -c -o fermbcs_s.obj `if test -f 'actions/ferm/fermbcs/fermbcs_s.cc'; then $(CYGPATH_W) 'actions/ferm/fermbcs/fermbcs_s.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermbcs/fermbcs_s.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/fermbcs_s.Tpo" "$(DEPDIR)/fermbcs_s.Po"; else rm -f "$(DEPDIR)/fermbcs_s.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermbcs/fermbcs_s.cc' object='fermbcs_s.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o fermbcs_s.obj `if test -f 'actions/ferm/fermbcs/fermbcs_s.cc'; then $(CYGPATH_W) 'actions/ferm/fermbcs/fermbcs_s.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermbcs/fermbcs_s.cc'; fi`
+
+simple_fermbc_s.o: actions/ferm/fermbcs/simple_fermbc_s.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT simple_fermbc_s.o -MD -MP -MF "$(DEPDIR)/simple_fermbc_s.Tpo" -c -o simple_fermbc_s.o `test -f 'actions/ferm/fermbcs/simple_fermbc_s.cc' || echo '$(srcdir)/'`actions/ferm/fermbcs/simple_fermbc_s.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/simple_fermbc_s.Tpo" "$(DEPDIR)/simple_fermbc_s.Po"; else rm -f "$(DEPDIR)/simple_fermbc_s.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermbcs/simple_fermbc_s.cc' object='simple_fermbc_s.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o simple_fermbc_s.o `test -f 'actions/ferm/fermbcs/simple_fermbc_s.cc' || echo '$(srcdir)/'`actions/ferm/fermbcs/simple_fermbc_s.cc
+
+simple_fermbc_s.obj: actions/ferm/fermbcs/simple_fermbc_s.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT simple_fermbc_s.obj -MD -MP -MF "$(DEPDIR)/simple_fermbc_s.Tpo" -c -o simple_fermbc_s.obj `if test -f 'actions/ferm/fermbcs/simple_fermbc_s.cc'; then $(CYGPATH_W) 'actions/ferm/fermbcs/simple_fermbc_s.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermbcs/simple_fermbc_s.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/simple_fermbc_s.Tpo" "$(DEPDIR)/simple_fermbc_s.Po"; else rm -f "$(DEPDIR)/simple_fermbc_s.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermbcs/simple_fermbc_s.cc' object='simple_fermbc_s.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o simple_fermbc_s.obj `if test -f 'actions/ferm/fermbcs/simple_fermbc_s.cc'; then $(CYGPATH_W) 'actions/ferm/fermbcs/simple_fermbc_s.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermbcs/simple_fermbc_s.cc'; fi`
+
 asqtad_linop_s.o: actions/ferm/linop/asqtad_linop_s.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT asqtad_linop_s.o -MD -MP -MF "$(DEPDIR)/asqtad_linop_s.Tpo" -c -o asqtad_linop_s.o `test -f 'actions/ferm/linop/asqtad_linop_s.cc' || echo '$(srcdir)/'`actions/ferm/linop/asqtad_linop_s.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/asqtad_linop_s.Tpo" "$(DEPDIR)/asqtad_linop_s.Po"; else rm -f "$(DEPDIR)/asqtad_linop_s.Tpo"; exit 1; fi
@@ -4665,7 +4768,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/actions $(distdir)/actions/boson $(distdir)/actions/boson/operator $(distdir)/actions/ferm $(distdir)/actions/ferm/fermacts $(distdir)/actions/ferm/invert $(distdir)/actions/ferm/linop $(distdir)/actions/ferm/qprop $(distdir)/actions/gauge $(distdir)/io $(distdir)/io/enum_io $(distdir)/meas $(distdir)/meas/eig $(distdir)/meas/gfix $(distdir)/meas/glue $(distdir)/meas/hadron $(distdir)/meas/pbp $(distdir)/meas/schrfun $(distdir)/meas/smear $(distdir)/meas/sources $(distdir)/update $(distdir)/update/heatbath $(distdir)/update/molecdyn $(distdir)/util $(distdir)/util/ferm $(distdir)/util/ft $(distdir)/util/gauge $(distdir)/util/info
+	$(mkdir_p) $(distdir)/actions $(distdir)/actions/boson $(distdir)/actions/boson/operator $(distdir)/actions/ferm $(distdir)/actions/ferm/fermacts $(distdir)/actions/ferm/fermbcs $(distdir)/actions/ferm/invert $(distdir)/actions/ferm/linop $(distdir)/actions/ferm/qprop $(distdir)/actions/gauge $(distdir)/io $(distdir)/io/enum_io $(distdir)/meas $(distdir)/meas/eig $(distdir)/meas/gfix $(distdir)/meas/glue $(distdir)/meas/hadron $(distdir)/meas/pbp $(distdir)/meas/schrfun $(distdir)/meas/smear $(distdir)/meas/sources $(distdir)/update $(distdir)/update/heatbath $(distdir)/update/molecdyn $(distdir)/util $(distdir)/util/ferm $(distdir)/util/ft $(distdir)/util/gauge $(distdir)/util/info
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
