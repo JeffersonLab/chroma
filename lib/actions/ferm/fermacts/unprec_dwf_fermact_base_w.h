@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_fermact_base_w.h,v 1.5 2004-01-02 03:19:40 edwards Exp $
+// $Id: unprec_dwf_fermact_base_w.h,v 1.6 2004-01-23 17:59:07 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned domain-wall fermion action
  */
@@ -23,6 +23,15 @@ class UnprecDWFermActBase : public UnprecWilsonTypeFermAct<LatticeDWFermion>
 public:
   //! Return the quark mass
   virtual Real quark_mass() const = 0;
+
+  //! Produce a hermitian version of the linear operator
+  /*! This code is generic */
+  virtual const LinearOperator<LatticeDWFermion>* gamma5HermLinOp(Handle<const ConnectState> state) const
+    {
+      // Have not implemented this yet, but it is generic
+      QDPIO::cerr << "UnprecDWFermActBase::gamma5HermLinOp not implemented" << endl;
+      QDP_abort(1);
+    }
 
   //! Produce a linear operator for this action but with quark mass 1
   virtual const LinearOperator<LatticeDWFermion>* linOpPV(Handle<const ConnectState> state) const = 0;

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_fermact_array_w.h,v 1.7 2004-01-05 04:21:18 edwards Exp $
+// $Id: unprec_dwf_fermact_array_w.h,v 1.8 2004-01-23 17:59:07 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion action
  */
@@ -49,6 +49,15 @@ public:
 
   //! Produce a linear operator M^dag.M for this action
   const LinearOperator< multi1d<LatticeFermion> >* lMdagM(Handle<const ConnectState> state) const;
+
+  //! Produce a hermitian version of the linear operator
+  /*! This code is generic */
+  const LinearOperator< multi1d<LatticeFermion> >* gamma5HermLinOp(Handle<const ConnectState> state) const
+    {
+      // Have not implemented this yet, but it is generic
+      QDPIO::cerr << "UnprecDWFermActBaseArray::gamma5HermLinOp not implemented" << endl;
+      QDP_abort(1);
+    }
 
   //! Produce a linear operator for this action but with quark mass 1
   const LinearOperator< multi1d<LatticeFermion> >* linOpPV(Handle<const ConnectState> state) const;

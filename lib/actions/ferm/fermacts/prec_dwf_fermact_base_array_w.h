@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_fermact_base_array_w.h,v 1.5 2004-01-05 04:21:18 edwards Exp $
+// $Id: prec_dwf_fermact_base_array_w.h,v 1.6 2004-01-23 17:59:07 edwards Exp $
 /*! \file
  *  \brief Base class for even-odd preconditioned domain-wall-like fermion actions
  */
@@ -24,6 +24,15 @@ class EvenOddPrecDWFermActBaseArray : public EvenOddPrecWilsonTypeFermAct< multi
 public:
   //! Return the quark mass
   virtual Real quark_mass() const = 0;
+
+  //! Produce a hermitian version of the linear operator
+  /*! This code is generic */
+  virtual const LinearOperator< multi1d<T> >* gamma5HermLinOp(Handle<const ConnectState> state) const
+    {
+      // Have not implemented this yet, but it is generic
+      QDPIO::cerr << "EvenOddPrecDWFermActBaseArray::gamma5HermLinOp not implemented" << endl;
+      QDP_abort(1);
+    }
 
   //! Produce a linear operator for this action but with quark mass 1
   virtual const LinearOperator< multi1d<T> >* linOpPV(Handle<const ConnectState> state) const = 0;
