@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.110 2004-02-13 21:00:06 edwards Exp $
+# $Id: Makefile.am,v 1.111 2004-02-14 18:44:41 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -103,16 +103,13 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/overlap_fermact_base_w.h \
 	actions/ferm/fermacts/prec_clover_fermact_w.h \
 	actions/ferm/fermacts/prec_dwf_fermact_array_w.h \
-#	actions/ferm/fermacts/prec_ovdwf_fermact_array_w.h \
+	actions/ferm/fermacts/prec_ovdwf_fermact_array_w.h \
 	actions/ferm/fermacts/prec_dwf_fermact_base_array_w.h \
-	actions/ferm/fermacts/prec_dwf_fermact_base_w.h \
 	actions/ferm/fermacts/prec_wilson_fermact_w.h \
 	actions/ferm/fermacts/prec_parwilson_fermact_w.h \
 	actions/ferm/fermacts/unprec_clover_fermact_w.h \
 	actions/ferm/fermacts/unprec_dwf_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_dwf_fermact_base_array_w.h \
-	actions/ferm/fermacts/unprec_dwf_fermact_base_w.h \
-	actions/ferm/fermacts/unprec_dwf_fermact_w.h \
 	actions/ferm/fermacts/unprec_ovdwf_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_ovext_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_wilson_fermact_w.h \
@@ -123,16 +120,15 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/lgherm_w.h \
 	actions/ferm/linop/zolotarev5d_linop_array_w.h \
 	actions/ferm/linop/dslash_w.h actions/ferm/linop/dwffld_w.h \
-	actions/ferm/linop/ldwfdslash_w.h actions/ferm/linop/linop_w.h \
+	actions/ferm/linop/linop_w.h \
 	actions/ferm/linop/lmpsim_w.h actions/ferm/linop/lovddag_w.h \
 	actions/ferm/linop/lovlapms_w.h actions/ferm/linop/lwldslash_w.h \
 	actions/ferm/linop/overlapbu_linop_w.h \
 	actions/ferm/linop/prec_dwf_linop_array_w.h \
-#	actions/ferm/linop/prec_ovdwf_linop_array_w.h \
+	actions/ferm/linop/prec_ovdwf_linop_array_w.h \
 	actions/ferm/linop/prec_wilson_linop_w.h \
 	actions/ferm/linop/prec_parwilson_linop_w.h \
 	actions/ferm/linop/unprec_dwf_linop_array_w.h \
-	actions/ferm/linop/unprec_dwf_linop_w.h \
 	actions/ferm/linop/unprec_ovdwf_linop_array_w.h \
 	actions/ferm/linop/unprec_ovext_linop_array_w.h \
 	actions/ferm/linop/unprec_wilson_linop_w.h \
@@ -156,6 +152,14 @@ nobase_include_HEADERS += \
 	meas/hadron/wallpionff_w.h \
 	meas/smear/sink_smear2_w.h meas/sources/d_src_w.h \
 	meas/sources/p_src_w.h meas/sources/sources_w.h
+
+# Deprecated
+#	actions/ferm/fermacts/prec_dwf_fermact_base_w.h \
+#	actions/ferm/fermacts/unprec_dwf_fermact_base_w.h \
+#	actions/ferm/fermacts/unprec_dwf_fermact_w.h \
+#       actions/ferm/linop/ldwfdslash_w.h 
+#	actions/ferm/linop/unprec_dwf_linop_w.h 
+
 endif
 
 if BUILD_STAGGERED_LIBS
@@ -215,16 +219,15 @@ libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
 #
 if BUILD_WILSON_LIBS
 libchroma_a_SOURCES += baryon_w.cc mesons_w.cc hybmeson_w.cc \
-               loops_w.cc z2_src.cc \
+              loops_w.cc z2_src.cc \
               curcor2_w.cc lwldslash_w.cc formfac_w.cc \
               mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
-              sink_smear2_w.cc barcomp_w.cc ldwfdslash_w.cc walfil_w.cc \
+              sink_smear2_w.cc barcomp_w.cc walfil_w.cc \
               fermact_qprop.cc prec_fermact_qprop.cc \
               unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
               prec_wilson_fermact_w.cc prec_wilson_linop_w.cc \
               unprec_parwilson_fermact_w.cc unprec_parwilson_linop_w.cc \
               prec_parwilson_fermact_w.cc prec_parwilson_linop_w.cc \
-              unprec_dwf_fermact_w.cc unprec_dwf_linop_w.cc \
               dwffld_w.cc \
               fermact_qprop_array.cc prec_fermact_qprop_array.cc \
               unprec_dwf_fermact_base_w.cc unprec_dwf_fermact_qprop_array_w.cc \
@@ -233,7 +236,7 @@ libchroma_a_SOURCES += baryon_w.cc mesons_w.cc hybmeson_w.cc \
               unprec_ovext_fermact_array_w.cc unprec_ovext_linop_array_w.cc \
               prec_dwf_fermact_base_w.cc prec_dwf_fermact_qprop_array_w.cc \
               prec_dwf_fermact_array_w.cc prec_dwf_linop_array_w.cc \
-#              prec_ovdwf_fermact_array_w.cc prec_ovdwf_linop_array_w.cc \
+              prec_ovdwf_fermact_array_w.cc prec_ovdwf_linop_array_w.cc \
               readszinqprop_w.cc readszinferm_w.cc writeszinqprop_w.cc \
 	      dwf_quarkprop4_w.cc quarkprop4_w.cc quarkprop4_multi_w.cc \
               overlapbu_linop_w.cc \
@@ -242,8 +245,14 @@ libchroma_a_SOURCES += baryon_w.cc mesons_w.cc hybmeson_w.cc \
 	      zolotarev4d_fermact_w.cc ischiral_w.cc lovddag_w.cc \
 	      zolotarev5d_fermact_array_w.cc zolotarev5d_linop_array_w.cc \
               wallpionff_w.cc
+
 # wall_qprop_w.cc
 # zolotarev4d_linop_w.cc 
+
+# Deprecated
+#             unprec_dwf_fermact_w.cc unprec_dwf_linop_w.cc
+#             ldwfdslash_w.cc 
+
 endif
 
 #
