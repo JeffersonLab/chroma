@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 1.19 2004-01-05 15:32:18 edwards Exp $
+// $Id: fermact.h,v 1.20 2004-01-05 15:32:52 edwards Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -388,6 +388,7 @@ public:
 	     int MaxCG,
 	     int& ncg_had);
 
+  //! Return the quark mass
   virtual const Real  getQuarkMass() const;
 
   //! Produce a linear operator for this action
