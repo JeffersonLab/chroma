@@ -1,6 +1,9 @@
-// $Id: dwf_quarkprop4_w.cc,v 1.5 2004-01-29 16:17:50 kostas Exp $
+// $Id: dwf_quarkprop4_w.cc,v 1.6 2004-01-29 16:18:52 kostas Exp $
 // $Log: dwf_quarkprop4_w.cc,v $
-// Revision 1.5  2004-01-29 16:17:50  kostas
+// Revision 1.6  2004-01-29 16:18:52  kostas
+// Removed the if 1 directive
+//
+// Revision 1.5  2004/01/29 16:17:50  kostas
 // Fixed an ax-ps correlation function bug
 //
 // Revision 1.4  2004/01/29 14:59:46  kostas
@@ -213,7 +216,6 @@ void dwf_conserved_axial_ps_corr(LatticeComplex& corr,
 }
 
 
-#if 1
 //! Given a complete propagator as a source, this does all the inversions needed
 /*! \ingroup qprop
  *
@@ -238,4 +240,4 @@ void dwf_quarkProp4(LatticePropagator& q_sol,
 {
   dwf_quarkProp4_a(q_sol, xml_out, q_src, S_f, state, invType, RsdCG, MaxCG, ncg_had);
 }
-#endif
+
