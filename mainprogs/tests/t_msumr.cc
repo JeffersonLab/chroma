@@ -1,4 +1,4 @@
-// $Id: t_msumr.cc,v 1.2 2004-05-13 15:36:07 bjoo Exp $
+// $Id: t_msumr.cc,v 1.3 2004-05-21 15:31:50 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -124,7 +124,7 @@ int main(int argc, char **argv)
 	       input.param.MultiMasses,
 	       connect_state,
 	       chi,
-	       SUMR_INVERTER,
+	       REL_CG_INVERTER,
 	       input.param.invParam.RsdCG,
 	       1,
 	       input.param.invParam.MaxCG,
@@ -171,7 +171,7 @@ int main(int argc, char **argv)
   write(xml_out, "t" , t);
   pop(xml_out);
 
-
+#if 0
   gaussian(chi);
   chi /= sqrt(norm2(chi));
 
@@ -212,7 +212,7 @@ int main(int argc, char **argv)
 	       input.param.MultiMasses,
 	       connect_state,
 	       chi,
-	       CG_INVERTER,
+	       SUMR_INVERTER,
 	       input.param.invParam.RsdCG,
 	       1,
 	       input.param.invParam.MaxCG,
@@ -231,7 +231,7 @@ int main(int argc, char **argv)
   write(xml_out, "t" , t);
   pop(xml_out);
 
-
+#endif
 
   pop(xml_out);
   QDP_finalize();

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lmdagm.h,v 1.2 2004-05-14 18:10:20 bjoo Exp $
+// $Id: lmdagm.h,v 1.3 2004-05-21 15:31:50 bjoo Exp $
 
 #ifndef __lmdagm_w_h__
 #define __lmdagm_w_h__
@@ -130,8 +130,8 @@ public:
   inline void operator() (T& chi, const T& psi, enum PlusMinus isign, Real epsilon) const
     {
       T  tmp;
-      (*A)(tmp, psi, PLUS, epsilon);
-      (*A)(chi, tmp, MINUS, epsilon);
+      (*A)(tmp, psi, PLUS, epsilon/Real(2));
+      (*A)(chi, tmp, MINUS, epsilon/Real(2));
     }
 
 private:

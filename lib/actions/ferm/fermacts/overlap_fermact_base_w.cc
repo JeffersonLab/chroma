@@ -1,4 +1,4 @@
-// $Id: overlap_fermact_base_w.cc,v 1.13 2004-05-21 12:03:13 bjoo Exp $
+// $Id: overlap_fermact_base_w.cc,v 1.14 2004-05-21 15:31:49 bjoo Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -14,7 +14,10 @@
 #include "actions/ferm/invert/invsumr.h"
 #include "actions/ferm/invert/inv_rel_sumr.h"
 #include "actions/ferm/invert/minvsumr.h"
+#include "actions/ferm/invert/minv_rel_sumr.h"
 #include "actions/ferm/invert/minvcg.h"
+#include "actions/ferm/invert/minv_rel_cg.h"
+
 #include "actions/ferm/linop/lmdagm.h"
 #include "actions/ferm/linop/lopscl.h"
 #include "meas/eig/ischiral_w.h"
@@ -448,6 +451,151 @@ OverlapFermActBase::multiQprop(multi1d<LatticeFermion>& psi,
     }    
     break; // End of CG case
 
+  case REL_CG_INVERTER: 
+    {
+      // This is M_scaled = 2 D(0). 
+      // the fact that D has zero masss is enforced earlier 
+      //
+      const Handle< const ApproxLinearOperator<LatticeFermion> > 
+	// This is a really ugly construction but should work
+	M_scaled( new approx_lopscl<LatticeFermion, Real>(dynamic_cast<const ApproxLinearOperator<LatticeFermion>* >(linOp(state)),Real(2) ) );
+
+      Chirality ischiral;
+      ApproxLinearOperator<LatticeFermion>* MdagMPtr;
+      multi1d<Real> shifted_masses(n_mass);
+
+      for(int i = 0; i < n_mass; i++) { 
+	shifted_masses[i] = ( Real(1) + masses[i] )/( Real(1) - masses[i] );
+	shifted_masses[i] += ( Real(1) / shifted_masses[i] );
+	shifted_masses[i] -= Real(2);
+      }
+
+      
+      // This is icky. I have to new and delete, 
+      // and I can't drop in a handle as I
+      //    a) Can't declare variables in a case statement
+      //       in case it jumps.
+      // 
+      // Hence I have to deal directly with the f***ing pointer
+      // using new and delete.
+      //
+      //
+      // MdagMPtr = 4 D^{dag}(0) D(0)
+      //
+      // The Zero is enforced elsewhere
+      ischiral = isChiralVector(chi);
+      if( ischiral == CH_NONE || ( isChiral() == false ) ) {
+
+	// I have one scaled by 2. The MdagM fixes up the scale
+	// factor of 4. I don't need to recompute coeffs etc here.
+	//      
+	MdagMPtr = new approx_lmdagm<LatticeFermion>(M_scaled);
+      }
+      else { 
+	// Special lovddag version
+	// This is yet another ugly cast.
+	MdagMPtr = new approx_lopscl<LatticeFermion, Real> ( dynamic_cast<const ApproxLinearOperator<LatticeFermion>* >(lMdagM( state, ischiral )), Real(4) );
+      }
+      
+      // Do the solve
+      //
+      // This really solves with Kerel:
+      //
+      // (1/(1-m^2)) 4 D(m)^{dag} D(m)
+      //  
+      //  =  4 D(0)^{dag} D(0) + shift
+      //
+      // with shift = (1+m)/(1-m) + (1-m)/(1+m) - 2
+      // 
+      //
+      // result of  solution is:
+      //
+      // psi = [ (1 - m^2 ) / 4 ] [ D^{dag}(m) D(m) ]^{-1} chi
+      //
+      //     = [ ( 1 - m^2 ) / 2 ] (2 D^{dag}(m))^{-1} D(m)^{-1} chi
+      //
+      //     = [ ( 1 - m^2 ) / 2 ] ( 2 D(m))^{-1} D^{-dag}(m) chi
+
+      
+      MInvRelCG(*MdagMPtr, chi, psi, shifted_masses, RsdCG, MaxCG, n_count);
+
+      // Delete MdagMPtr. Do it right away before I forget.
+      delete MdagMPtr;
+
+      if ( n_count == MaxCG ) {
+	QDP_error_exit("no convergence in the inverter", n_count);    
+      }
+      
+      // Now make the solution(s)
+      switch(nsoln) { 
+      case 4:
+
+
+	// Compensate for the  4/(1-m^2) factor
+
+	for(int i = 0; i < n_mass; i++) { 
+	  psi[i] *= Real(4) / ( Real(1) - masses[i]*masses[i] );
+	}
+	break;
+	
+      case 3:
+	// Copy ofver the solutions of D^{-1} for solutions to D_dag^{-1}
+	for( int i = 0 ; i < n_mass; i++) {
+	  psi[n_mass + i] = psi[i];
+	}
+	// Fall through to the case below:
+
+      case 1:
+      case 2:
+	for(int iset=0; iset < nsets; iset++) {
+	  for(int i=0; i < n_mass; i++) {
+	    int j = i+iset*n_mass;
+	    LatticeFermion tmp1;
+	    	    
+	    // Need to multiply:
+	    //
+	    //  (2/(1-m^2)) (2D(m))  or  (2/(1-m^2)) (2D^{dag}(m))
+	    //
+	    //  as appropriate. D(m) = m + (1 - m) D(0)
+	    //  
+	    // so  2D(m) = 2m + (1-m) 2D(0)
+	    //           = [1+m-(1-m)] + (1-m) 2D(0)
+	    //
+	    // and 2/(1-m^2) = 2/((1+m)(1-m)
+	    //
+	    // finally: 
+	    //
+	    //  (2/(1-m^2)) (2D(m))  
+	    //  = 2/(1+m) * [ (1+m)/(1-m) - 1 + 2D(0) ]
+	    //  = 2/(1+m) * [ {(1+m)/(1-m) - 1} + M_scaled ]
+	    //
+	    //  
+	    (*M_scaled)(tmp1, psi[j], isign_set[iset]);
+	    
+	    ftmp = (Real(1) + masses[i])/(Real(1) - masses[i]) - Real(1);
+	
+	    tmp1 += ftmp*psi[j];
+
+	    tmp1 *= Real(2)/(Real(1) + masses[i]);
+	    
+	    
+	    // Subtract off contact term 
+	    psi[j] = tmp1 - chi;
+
+	    // overall noramalisation 
+	    ftmp = Real(1) / ( Real(1) - masses[i] );
+	    psi[j] *= ftmp;
+	    
+	  }
+	}
+	break;
+      default:
+	QDP_error_exit("This value of nsoln is not known about %d\n", nsoln);
+	break;
+      }  // End switch over nsoln;
+    }    
+    break; // End of CG case
+
   case SUMR_INVERTER:
     {
 
@@ -469,13 +617,101 @@ OverlapFermActBase::multiQprop(multi1d<LatticeFermion>& psi,
       multi1d<Real> rho(n_mass);
       rho = Real(1);
 
-      // Do the solve
-      MInvSUMR(*U, chi, psi, shifted_masses, rho, RsdCG, MaxCG,n_count);
+      multi1d<Real> scaledRsdCG(n_mass);
+      for(int i=0; i < n_mass; i++) {
+	scaledRsdCG[i] = RsdCG[i]*(Real(1) - masses[i])/Real(2);
+      }
 
-      if ( n_count == MaxCG ) {
-	QDP_error_exit("no convergence in the inverter", n_count);    
+      // Do the solve
+      MInvSUMR(*U, chi, psi, shifted_masses, rho, scaledRsdCG, MaxCG,n_count);
+
+#if 1 
+      for(int shift; shift < n_mass; shift++) { 
+
+	// Check back solutions
+	LatticeFermion r;
+	(*U)(r, psi[shift], PLUS);
+	r *= rho[shift];
+	r += shifted_masses[shift]*psi[shift];
+
+
+	r -= chi;
+	Double r_norm = sqrt(norm2(r))/sqrt(norm2(chi));
+	QDPIO::cout << "Check: shift="<<shift<<" || r ||/||b|| = " << r_norm << " RsdCG = " << RsdCG[shift] << endl;
+	
+      }
+#endif
+      
+      /* psi <- (D^(-1) - 1) chi */
+      for(int i=0; i < n_mass; ++i) {
+	
+	// Go back to (1/2)( 1 + mu + (1 - mu) normalisation
+	ftmp = Real(2) / ( Real(1) - masses[i] );
+	psi[i] *= ftmp;
+	
+	// Remove conact term
+	psi[i] -= chi;
+	
+	// overall noramalisation 
+	ftmp = Real(1) / ( Real(1) - masses[i] );
+	psi[i] *= ftmp;
+	
+      }
+    }
+    break; // End of MR inverter case
+  case REL_SUMR_INVERTER:
+    {
+
+      /* Only do psi = D^(-1) chi */
+      if (nsoln != 1) {
+	QDP_error_exit("SUMMR inverter does not solve for D_dag");
+      }
+
+      Handle<const ApproxLinearOperator<LatticeFermion> > U(dynamic_cast<const ApproxLinearOperator<LatticeFermion>* >(lgamma5epsH(state)));
+
+      multi1d<Complex> shifted_masses(n_mass);
+
+      // This is the code from SZIN. I checked the shifts . Should work ok
+      for(int i=0; i < n_mass; ++i) {
+	shifted_masses[i] = (Real(1) + masses[i]) / ( Real(1) - masses[i] );
       }
       
+      // For the case of the overlap rho, is always 1
+      multi1d<Real> rho(n_mass);
+      rho = Real(1);
+
+      // We are solving with a scaled operator 
+      //  shifted_masses[i] + gamma_5 eps
+      //
+      // which is the original scaled by 2/(1 - m)
+      // 
+      // So I should rescale each desired RsdCG by (1-m)/2
+      // where m is the smallest mass.
+      multi1d<Real> scaledRsdCG(n_mass);
+      for(int i=0; i < n_mass; i++) {
+	scaledRsdCG[i] = RsdCG[i]*(1-masses[i])/Real(2);
+      }
+
+      // Do the solve
+      MInvRelSUMR(*U, chi, psi, shifted_masses, rho, scaledRsdCG, MaxCG,n_count);
+ 
+#if 1 
+      for(int shift; shift < n_mass; shift++) { 
+
+	// Check back solutions
+	LatticeFermion r;
+	(*U)(r, psi[shift], PLUS);
+	r *= rho[shift];
+	r += shifted_masses[shift]*psi[shift];
+
+	r -= chi;
+	Double r_norm = sqrt(norm2(r))/sqrt(norm2(chi));
+	QDPIO::cout << "Check: shift="<<shift<<" || r ||/||b|| = " << r_norm << " RsdCG = " << RsdCG[shift] << endl;
+	
+      }
+#endif
+
+
       /* psi <- (D^(-1) - 1) chi */
       for(int i=0; i < n_mass; ++i) {
 	

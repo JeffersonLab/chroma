@@ -1,4 +1,4 @@
-// $Id: minvcg.cc,v 1.9 2004-05-21 15:31:50 bjoo Exp $
+// $Id: minv_rel_cg.cc,v 1.1 2004-05-21 15:31:49 bjoo Exp $
 
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator
@@ -8,7 +8,7 @@
 #include "chromabase.h"
 #include "linearop.h"
 
-#include "actions/ferm/invert/minvcg.h"
+#include "actions/ferm/invert/minv_rel_cg.h"
 
 using namespace QDP;
 
@@ -71,13 +71,13 @@ using namespace QDP;
  */
 
 template<typename T>
-void MInvCG_a(const LinearOperator<T>& A, 
-	      const T& chi, 
-	      multi1d<T>& psi,
-	      const multi1d<Real>& shifts, 
-	      const multi1d<Real>& RsdCG, 
-	      int MaxCG,
-	      int& n_count)
+void MInvRelCG_a(const ApproxLinearOperator<T>& A, 
+		 const T& chi, 
+		 multi1d<T>& psi,
+		 const multi1d<Real>& shifts, 
+		 const multi1d<Real>& RsdCG, 
+		 int MaxCG,
+		 int& n_count)
 {
   START_CODE("MinvCG");
 
@@ -143,6 +143,9 @@ void MInvCG_a(const LinearOperator<T>& A,
   T r;
   r[sub] = chi;
 
+  // Zeta relaxation factor 
+  Double zeta = 1 / norm2(r,sub);
+
   // Psi[0] := 0;
   multi1d<T> p(n_shift);
   for(s = 0; s < n_shift; ++s) {
@@ -154,7 +157,21 @@ void MInvCG_a(const LinearOperator<T>& A,
   //  First compute  d  =  < p, A.p > 
   //  Ap = A . p  */
   LatticeFermion Ap;
-  A(Ap, p[isz], PLUS);
+
+
+  // Relaxation -- apply A with espilon || chi ||^2 * sqrt(zeta)
+  // use the smallest active epsilon_i || chi ||^2 
+
+  // Find smallest active rsd_sq = epsilon_i
+  Real rsd_sq_min = rsd_sq[0];
+  for(s = 1; s < n_shift; ++s) {
+    if( toBool( rsd_sq[s] < rsd_sq_min ) ) { 
+      rsd_sq_min = rsd_sq[s];
+    }
+  }
+  
+  Real inner_tol = sqrt(rsd_sq_min)*sqrt(zeta);
+  A(Ap, p[isz], PLUS, inner_tol);
   Ap[sub] += p[isz] * shifts[isz];
 
   /*  d =  < p, A.p >  */
@@ -185,7 +202,7 @@ void MInvCG_a(const LinearOperator<T>& A,
 
   //  r[1] += b[0] A . p[0]; 
   r[sub] += Ap * Real(b);	                        // 2 Nc Ns  flops
-
+ 
   //  Psi[1] -= b[0] p[0] = - b[0] chi;
   for(s = 0; s < n_shift; ++s) {
     psi[s][sub] = - Real(bs[s])*chi;                      //  2 Nc Ns  flops 
@@ -193,6 +210,7 @@ void MInvCG_a(const LinearOperator<T>& A,
   
   //  c = |r[1]|^2   
   Double c = norm2(r,sub);   	       	         //  2 Nc Ns  flops 
+  zeta += Real(1)/c;
 
   // Check convergence of first solution
   multi1d<bool> convsP(n_shift);
@@ -250,7 +268,28 @@ void MInvCG_a(const LinearOperator<T>& A,
     //  b[k] := | r[k] |**2 / < p[k], Ap[k] > ;
     //  First compute  d  =  < p, A.p >  
     //  Ap = A . p 
-    A(Ap, p[isz], PLUS);
+
+    // Find smallest active rsd_sq = epsilon_i
+
+    // First find the smallest unconverged rsd_sq:
+    //   find first unconverged system
+    int unc=0;
+    while ( convsP[unc] == true ) { 
+      unc++;
+    }
+
+    //   compare its rsd_sq with other unconverged systems
+    rsd_sq_min = rsd_sq[unc];
+    for(s = unc+1; s < n_shift; ++s) {
+      if( !convsP[s] ) {
+	if( toBool( rsd_sq[s] < rsd_sq_min ) ) { 
+	  rsd_sq_min = rsd_sq[s];
+	}
+      }
+    }
+  
+    inner_tol = sqrt(rsd_sq_min)*sqrt(zeta);
+    A(Ap, p[isz], PLUS, inner_tol);
     Ap[sub] += p[isz] * shifts[isz];
 
     /*  d =  < p, A.p >  */
@@ -287,6 +326,7 @@ void MInvCG_a(const LinearOperator<T>& A,
 
     //  c  =  | r[k] |**2 
     c = norm2(r,sub);	                // 2 Nc Ns  flops 
+    zeta += Real(1)/c;
 
     //    IF |psi[k+1] - psi[k]| <= RsdCG |psi[k+1]| THEN RETURN;
     // or IF |r[k+1]| <= RsdCG |chi| THEN RETURN;
@@ -371,13 +411,13 @@ void MInvCG_a(const LinearOperator<T>& A,
 
 
 template<>
-void MInvCG(const LinearOperator<LatticeFermion>& M,
-	    const LatticeFermion& chi, 
-	    multi1d<LatticeFermion>& psi, 
-	    const multi1d<Real>& shifts,
-	    const multi1d<Real>& RsdCG, 
-	    int MaxCG,
-	    int &n_count)
+void MInvRelCG(const ApproxLinearOperator<LatticeFermion>& M,
+	       const LatticeFermion& chi, 
+	       multi1d<LatticeFermion>& psi, 
+	       const multi1d<Real>& shifts,
+	       const multi1d<Real>& RsdCG, 
+	       int MaxCG,
+	       int &n_count)
 {
-  MInvCG_a(M, chi, psi, shifts, RsdCG, MaxCG, n_count);
+  MInvRelCG_a(M, chi, psi, shifts, RsdCG, MaxCG, n_count);
 }
