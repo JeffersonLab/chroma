@@ -1,4 +1,4 @@
-// $Id: diractodr.cc,v 1.4 2004-06-16 14:51:34 dgr Exp $
+// $Id: diractodr.cc,v 1.5 2004-08-03 21:48:53 ikuro Exp $
 /*! \file
  *  \brief Basis rotation matrix from Dirac to Degrand-Rossi (and reverse)
  */
@@ -8,59 +8,54 @@
 
 using namespace QDP;
 
-//! The Dirac to Degrand-Rossi spin transformation matrix
+//! The Dirac to Degrand-Rossi spin transformation matrix (and reverse)
 /*!
  * \ingroup ferm
  *
  * Return the similarity transformation matrix from 
- * Euclidean Dirac to Euclidean Degrand-Rossi basis
+ * Euclidean Dirac to Euclidean Degrand-Rossi basis (or reverse)
  *
- * \returns The U in   Gamma_{Degrand-Rossi} = U Gamma_Dirac U^dag
+ * \returns the U such that  Gamma_{Dirac} = U^\dagger Gamma_{DeGrand-Rossi} U
+ *            (or such that  Gamma_{DeGrand-Rossi} = U Gamma_{Dirac} U^\dagger )
  */
 
 SpinMatrixD DiracToDRMat()
 {
   /*
-   * The magic basis transf is found from
+   * Following is the definition of unitary matrix which transforms
+   * the basis of gamma matrices from DeGrand-Rossi (DR) to Dirac-Pauli (DP).
+   * (Note: the default gamma matrices in chroma/qdp/szin is DeGrand-Rossi)
    *
-   * NOTE: DR = Degrand-Rossi - the spin basis of QDP
+   * \gamma_\mu(DP)       = U^\dagger \gamma_\mu(DR) U
+   * \psi(DP)             = U^\dagger \psi(DR)
+   * quark_propagator(DP) = U^\dagger quark_propagator(DR) U
    *
-   *  psi_DR = U psi_Dirac
-   *  psibar_DR Gamma_DR psi_DR = psibar_Dirac Gamma_Dirac psi_Dirac
+   * 
+   *        i     /  s2   -s2 \        1     /  0   1   0  -1 \
+   * U = ------- |             | =  ------- |  -1   0   1   0  |
+   *     sqrt(2) |             |    sqrt(2) |   0   1   0   1  |
+   *              \  s2    s2 /              \ -1   0  -1   0 /
    *
-   * implies
-   *  Gamma_DR = U Gamma_Dirac U^dag
+   * where s2 is Pauli sigma_2 matrix.
+   * 
+   * U_inverse = U^\dagger
    *
-   * and the magic formula is
-   *
-   *   U = (1/sqrt(2)) | i*sigma_2    i*sigma_2 |
-   *                   | -i*sigma_2   i*sigma_2 |
-   *
-   *     = (1/sqrt(2)) |   0   1        0   1   |
-   *                   |  -1   0       -1   0   |
-   *                   |   0  -1        0   1   |
-   *                   |   1   0       -1   0   |
-   *
-   *   U^dag = -U = U^transpose
    */
-  /*
-   * NOTE: I do not see some really short combination of 
-   * QDP Gamma matrices that can make this beasty, 
-   * so I'll just hardwire it...
-   */
+
   SpinMatrixD U = zero;
   RealD     foo = RealD(1) / sqrt(RealD(2));
   ComplexD  one = cmplx( foo,RealD(0));
   ComplexD mone = cmplx(-foo,RealD(0));
 
   pokeSpin(U,  one, 0, 1);
-  pokeSpin(U,  one, 0, 3);
+  pokeSpin(U, mone, 0, 3);
   pokeSpin(U, mone, 1, 0);
-  pokeSpin(U, mone, 1, 2);
-  pokeSpin(U, mone, 2, 1);
+  pokeSpin(U,  one, 1, 2);
+  pokeSpin(U,  one, 2, 1);
   pokeSpin(U,  one, 2, 3);
-  pokeSpin(U,  one, 3, 0);
+  pokeSpin(U, mone, 3, 0);
   pokeSpin(U, mone, 3, 2);
+
 
   return U;
 }
