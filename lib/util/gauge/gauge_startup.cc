@@ -1,5 +1,22 @@
+// $Id: gauge_startup.cc,v 1.2 2004-04-23 20:47:48 edwards Exp $
+/*! \file
+ *  \brief Initialize the gauge fields
+ */
+
+#include "chromabase.h"
 #include "util/gauge/gauge_startup.h"
 
+using namespace QDP;
+
+//! Initialize the gauge fields
+/*!
+ * \ingroup gauge
+ *
+ * \param gauge_file_xml  File xml
+ * \param gauge_xml       Record xml
+ * \param u               Gauge fields
+ * \param cfg             Configuration structure
+ */
 void gaugeStartup(XMLReader& gauge_file_xml,
 		  XMLReader& gauge_xml,
 		  multi1d<LatticeColorMatrix>& u,
