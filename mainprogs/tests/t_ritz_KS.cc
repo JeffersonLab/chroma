@@ -1,4 +1,4 @@
-// $Id: t_ritz_KS.cc,v 1.6 2004-02-11 12:51:36 bjoo Exp $
+// $Id: t_ritz_KS.cc,v 1.7 2004-02-13 16:44:31 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -331,6 +331,8 @@ int main(int argc, char **argv)
   write(xml_out, "szinLamda", lambda);
 
   pop(xml_out);
+  xml_out.close();
+
   QDP_finalize();
     
   exit(0);

@@ -1,4 +1,4 @@
-// $Id: t_ovlap_bj.cc,v 1.20 2004-02-11 12:51:35 bjoo Exp $
+// $Id: t_ovlap_bj.cc,v 1.21 2004-02-13 16:44:31 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -856,6 +856,8 @@ int main(int argc, char **argv)
   }
 
   pop(xml_out);
+  xml.close();
+
   QDP_finalize();
     
   exit(0);
