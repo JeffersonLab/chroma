@@ -167,7 +167,7 @@ check_PROGRAMS = t_mesplq t_io t_mesons_w t_conslinop t_hypsmear \
                   t_overbu t_ape_smear t_precact
 
 
-EXTRA_PROGRAMS = t_dslashm t_lwldslash t_spprod t_lwldslash_sse t_follana_io_s t_formfac  t_follana_pion_s t_dwflinop t_precdwf t_ovlap_bj t_propagator_s t_propagator_w t_gfix t_ovlap5d_bj t_ritz t_ritz_KS t_ritz5d_KS  t_fermion_loop_w t_propagator_fuzz_s t_disc_loop_s t_ov_pbp t_lwldslash_pab t_propagator_nrqcd t_dwflocality t_invert3_precwilson
+EXTRA_PROGRAMS = t_dslashm t_lwldslash t_spprod t_lwldslash_sse t_follana_io_s t_formfac  t_follana_pion_s t_dwflinop t_precdwf t_ovlap_bj t_propagator_s t_propagator_w t_gfix t_ovlap5d_bj t_ritz t_ritz_KS t_ritz5d_KS  t_fermion_loop_w t_propagator_fuzz_s t_disc_loop_s t_ov_pbp t_lwldslash_pab t_propagator_nrqcd t_dwflocality t_invert3_precwilson t_invert4_precwilson
 
 
 #
@@ -271,6 +271,9 @@ t_dwflocality_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_invert3_precwilson_SOURCES = t_invert3_precwilson.cc
 t_invert3_precwilson_DEPENDENCIES = build_chroma_libs rebuild_other_libs
+
+t_invert4_precwilson_SOURCES = t_invert3_precwilson.cc invcg2_timing_hacks_2.h invcg2_timing_hacks_2.cc
+t_invert4_precwilson_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 subdir = mainprogs/tests
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
 CONFIG_CLEAN_FILES =
@@ -284,7 +287,8 @@ EXTRA_PROGRAMS = t_dslashm$(EXEEXT) t_lwldslash$(EXEEXT) \
 	t_fermion_loop_w$(EXEEXT) t_propagator_fuzz_s$(EXEEXT) \
 	t_disc_loop_s$(EXEEXT) t_ov_pbp$(EXEEXT) \
 	t_lwldslash_pab$(EXEEXT) t_propagator_nrqcd$(EXEEXT) \
-	t_dwflocality$(EXEEXT) t_invert3_precwilson$(EXEEXT)
+	t_dwflocality$(EXEEXT) t_invert3_precwilson$(EXEEXT) \
+	t_invert4_precwilson$(EXEEXT)
 check_PROGRAMS = t_mesplq$(EXEEXT) t_io$(EXEEXT) t_mesons_w$(EXEEXT) \
 	t_conslinop$(EXEEXT) t_hypsmear$(EXEEXT) t_overbu$(EXEEXT) \
 	t_ape_smear$(EXEEXT) t_precact$(EXEEXT)
@@ -340,6 +344,11 @@ am_t_invert3_precwilson_OBJECTS = t_invert3_precwilson.$(OBJEXT)
 t_invert3_precwilson_OBJECTS = $(am_t_invert3_precwilson_OBJECTS)
 t_invert3_precwilson_LDADD = $(LDADD)
 t_invert3_precwilson_LDFLAGS =
+am_t_invert4_precwilson_OBJECTS = t_invert3_precwilson.$(OBJEXT) \
+	invcg2_timing_hacks_2.$(OBJEXT)
+t_invert4_precwilson_OBJECTS = $(am_t_invert4_precwilson_OBJECTS)
+t_invert4_precwilson_LDADD = $(LDADD)
+t_invert4_precwilson_LDFLAGS =
 am_t_io_OBJECTS = t_io.$(OBJEXT)
 t_io_OBJECTS = $(am_t_io_OBJECTS)
 t_io_LDADD = $(LDADD)
@@ -424,7 +433,8 @@ t_spprod_LDFLAGS =
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/t_ape_smear.Po \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/invcg2_timing_hacks_2.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_ape_smear.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_conslinop.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_disc_loop_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_dslashm.Po ./$(DEPDIR)/t_dwflinop.Po \
@@ -454,24 +464,28 @@ CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 DIST_SOURCES = $(t_ape_smear_SOURCES) $(t_conslinop_SOURCES) \
 	$(t_disc_loop_s_SOURCES) $(t_dslashm_SOURCES) \
 	$(t_dwflinop_SOURCES) $(t_dwflocality_SOURCES) \
 	$(t_fermion_loop_w_SOURCES) $(t_follana_io_s_SOURCES) \
 	$(t_follana_pion_s_SOURCES) $(t_formfac_SOURCES) \
 	$(t_gfix_SOURCES) $(t_hypsmear_SOURCES) \
-	$(t_invert3_precwilson_SOURCES) $(t_io_SOURCES) \
-	$(t_lwldslash_SOURCES) $(t_lwldslash_pab_SOURCES) \
-	$(t_lwldslash_sse_SOURCES) $(t_mesons_w_SOURCES) \
-	$(t_mesplq_SOURCES) $(t_ov_pbp_SOURCES) $(t_overbu_SOURCES) \
-	$(t_ovlap5d_bj_SOURCES) $(t_ovlap_bj_SOURCES) \
-	$(t_precact_SOURCES) $(t_precdwf_SOURCES) \
+	$(t_invert3_precwilson_SOURCES) $(t_invert4_precwilson_SOURCES) \
+	$(t_io_SOURCES) $(t_lwldslash_SOURCES) \
+	$(t_lwldslash_pab_SOURCES) $(t_lwldslash_sse_SOURCES) \
+	$(t_mesons_w_SOURCES) $(t_mesplq_SOURCES) $(t_ov_pbp_SOURCES) \
+	$(t_overbu_SOURCES) $(t_ovlap5d_bj_SOURCES) \
+	$(t_ovlap_bj_SOURCES) $(t_precact_SOURCES) $(t_precdwf_SOURCES) \
 	$(t_propagator_fuzz_s_SOURCES) $(t_propagator_nrqcd_SOURCES) \
 	$(t_propagator_s_SOURCES) $(t_propagator_w_SOURCES) \
 	$(t_ritz_SOURCES) $(t_ritz5d_KS_SOURCES) $(t_ritz_KS_SOURCES) \
 	$(t_spprod_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(t_ape_smear_SOURCES) $(t_conslinop_SOURCES) $(t_disc_loop_s_SOURCES) $(t_dslashm_SOURCES) $(t_dwflinop_SOURCES) $(t_dwflocality_SOURCES) $(t_fermion_loop_w_SOURCES) $(t_follana_io_s_SOURCES) $(t_follana_pion_s_SOURCES) $(t_formfac_SOURCES) $(t_gfix_SOURCES) $(t_hypsmear_SOURCES) $(t_invert3_precwilson_SOURCES) $(t_io_SOURCES) $(t_lwldslash_SOURCES) $(t_lwldslash_pab_SOURCES) $(t_lwldslash_sse_SOURCES) $(t_mesons_w_SOURCES) $(t_mesplq_SOURCES) $(t_ov_pbp_SOURCES) $(t_overbu_SOURCES) $(t_ovlap5d_bj_SOURCES) $(t_ovlap_bj_SOURCES) $(t_precact_SOURCES) $(t_precdwf_SOURCES) $(t_propagator_fuzz_s_SOURCES) $(t_propagator_nrqcd_SOURCES) $(t_propagator_s_SOURCES) $(t_propagator_w_SOURCES) $(t_ritz_SOURCES) $(t_ritz5d_KS_SOURCES) $(t_ritz_KS_SOURCES) $(t_spprod_SOURCES)
+SOURCES = $(t_ape_smear_SOURCES) $(t_conslinop_SOURCES) $(t_disc_loop_s_SOURCES) $(t_dslashm_SOURCES) $(t_dwflinop_SOURCES) $(t_dwflocality_SOURCES) $(t_fermion_loop_w_SOURCES) $(t_follana_io_s_SOURCES) $(t_follana_pion_s_SOURCES) $(t_formfac_SOURCES) $(t_gfix_SOURCES) $(t_hypsmear_SOURCES) $(t_invert3_precwilson_SOURCES) $(t_invert4_precwilson_SOURCES) $(t_io_SOURCES) $(t_lwldslash_SOURCES) $(t_lwldslash_pab_SOURCES) $(t_lwldslash_sse_SOURCES) $(t_mesons_w_SOURCES) $(t_mesplq_SOURCES) $(t_ov_pbp_SOURCES) $(t_overbu_SOURCES) $(t_ovlap5d_bj_SOURCES) $(t_ovlap_bj_SOURCES) $(t_precact_SOURCES) $(t_precdwf_SOURCES) $(t_propagator_fuzz_s_SOURCES) $(t_propagator_nrqcd_SOURCES) $(t_propagator_s_SOURCES) $(t_propagator_w_SOURCES) $(t_ritz_SOURCES) $(t_ritz5d_KS_SOURCES) $(t_ritz_KS_SOURCES) $(t_spprod_SOURCES)
 
 all: all-am
 
@@ -524,6 +538,9 @@ t_hypsmear$(EXEEXT): $(t_hypsmear_OBJECTS) $(t_hypsmear_DEPENDENCIES)
 t_invert3_precwilson$(EXEEXT): $(t_invert3_precwilson_OBJECTS) $(t_invert3_precwilson_DEPENDENCIES) 
 	@rm -f t_invert3_precwilson$(EXEEXT)
 	$(CXXLINK) $(t_invert3_precwilson_LDFLAGS) $(t_invert3_precwilson_OBJECTS) $(t_invert3_precwilson_LDADD) $(LIBS)
+t_invert4_precwilson$(EXEEXT): $(t_invert4_precwilson_OBJECTS) $(t_invert4_precwilson_DEPENDENCIES) 
+	@rm -f t_invert4_precwilson$(EXEEXT)
+	$(CXXLINK) $(t_invert4_precwilson_LDFLAGS) $(t_invert4_precwilson_OBJECTS) $(t_invert4_precwilson_LDADD) $(LIBS)
 t_io$(EXEEXT): $(t_io_OBJECTS) $(t_io_DEPENDENCIES) 
 	@rm -f t_io$(EXEEXT)
 	$(CXXLINK) $(t_io_LDFLAGS) $(t_io_OBJECTS) $(t_io_LDADD) $(LIBS)
@@ -591,6 +608,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/invcg2_timing_hacks_2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_ape_smear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_conslinop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_disc_loop_s.Po@am__quote@

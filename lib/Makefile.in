@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.161 2004-03-23 16:24:14 bjoo Exp $
+# $Id: Makefile.in,v 1.162 2004-03-24 16:17:12 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -145,7 +145,7 @@ host_triplet = @host@
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_5 = lwldslash_w_sse.cc
 @BUILD_PAB_WILSON_DSLASH_TRUE@am__append_6 = lwldslash_w_pab.cc
 @BUILD_STAGGERED_LIBS_TRUE@am__append_7 = mesphas_s.cc mesphas_follana_s.cc pions_follana_s.cc \
-@BUILD_STAGGERED_LIBS_TRUE@	follana_io_s.cc fermact_qprop.cc walfil_s.cc \
+@BUILD_STAGGERED_LIBS_TRUE@	follana_io_s.cc fermact_qprop.cc walfil_s.cc baryon_s.cc \
 @BUILD_STAGGERED_LIBS_TRUE@	stag_scalars_s.cc stag_propShift_s.cc \
 @BUILD_STAGGERED_LIBS_TRUE@	asqtad_linop_s.cc asq_dsl_s.cc fat7_links_s.cc naik_term_s.cc  \
 @BUILD_STAGGERED_LIBS_TRUE@	asqtad_fermact_s.cc asqtad_mdagm_s.cc staggered_qprop.cc stag_phases_s.cc
@@ -382,7 +382,7 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	zolotarev5d_fermact_array_w.cc zolotarev5d_linop_array_w.cc \
 	wallpionff_w.cc lwldslash_w_sse.cc lwldslash_w_pab.cc \
 	mesphas_s.cc mesphas_follana_s.cc pions_follana_s.cc \
-	follana_io_s.cc walfil_s.cc stag_scalars_s.cc \
+	follana_io_s.cc walfil_s.cc baryon_s.cc stag_scalars_s.cc \
 	stag_propShift_s.cc asqtad_linop_s.cc asq_dsl_s.cc \
 	fat7_links_s.cc naik_term_s.cc asqtad_fermact_s.cc \
 	asqtad_mdagm_s.cc staggered_qprop.cc stag_phases_s.cc
@@ -451,6 +451,7 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 @BUILD_STAGGERED_LIBS_TRUE@	follana_io_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	fermact_qprop.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	walfil_s.$(OBJEXT) \
+@BUILD_STAGGERED_LIBS_TRUE@	baryon_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	stag_scalars_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	stag_propShift_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	asqtad_linop_s.$(OBJEXT) \
@@ -494,9 +495,9 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/asqtad_mdagm_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/axgauge.Po ./$(DEPDIR)/barcomp_io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/barcomp_w.Po ./$(DEPDIR)/barseqsrc_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/baryon_w.Po ./$(DEPDIR)/coulgauge.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/curcor2_w.Po ./$(DEPDIR)/d_src_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/displacement.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/baryon_s.Po ./$(DEPDIR)/baryon_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/coulgauge.Po ./$(DEPDIR)/curcor2_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/d_src_w.Po ./$(DEPDIR)/displacement.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/dwf_quarkprop4_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/dwffld_w.Po ./$(DEPDIR)/eig_spec.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/eig_spec_array.Po ./$(DEPDIR)/expm12.Po \
@@ -659,6 +660,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/barcomp_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/barcomp_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/barseqsrc_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/baryon_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/baryon_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/coulgauge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/curcor2_w.Po@am__quote@
