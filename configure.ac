@@ -7,7 +7,6 @@ AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE
 # AC_PRO_MAKE_SET        # (RGE) Causes error: do not find in autoconf docs
 AC_PROG_RANLIB
-AC_PROG_CXX(g++ CC)
 
 dnl
 dnl --with-xxxx and --enable-xxxx switches 
@@ -61,6 +60,8 @@ if test "X${QDPXX_CONFIG}X" = "XX" ; then
 fi
 
 AC_MSG_NOTICE([Found QDP++ configuration program ${QDPXX_CONFIG}])
+AC_SUBST(CXX, "`${QDPXX_CONFIG} --cxx`")
+AC_MSG_NOTICE([QDP++ compiler: ${CXX}])
 AC_SUBST(QDPXX_CXXFLAGS, "`${QDPXX_CONFIG} --cxxflags`")
 AC_MSG_NOTICE([QDP++ compile flags: ${QDPXX_CXXFLAGS}])
 AC_SUBST(QDPXX_LDFLAGS,  "`${QDPXX_CONFIG} --ldflags`")
