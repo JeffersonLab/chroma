@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.190 2004-05-13 13:34:48 bjoo Exp $
+# $Id: Makefile.in,v 1.191 2004-05-14 00:20:39 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -85,7 +85,8 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/qprop/quarkprop4_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/qprop/quarkprop4_multi_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/qprop/unprec_qprop_w.h \
-@BUILD_WILSON_LIBS_TRUE@	io/io_w.h io/barcomp_io.h io/readszinferm_w.h io/readszinqprop_w.h \
+@BUILD_WILSON_LIBS_TRUE@	io/io_w.h io/barcomp_io.h io/kyuqprop_io.h \
+@BUILD_WILSON_LIBS_TRUE@        io/readszinferm_w.h io/readszinqprop_w.h \
 @BUILD_WILSON_LIBS_TRUE@	io/writeszinqprop_w.h \
 @BUILD_WILSON_LIBS_TRUE@        io/overlap_state_info.h io/zolotarev4d_fermact_paramio_w.h \
 @BUILD_WILSON_LIBS_TRUE@	io/zolotarev5d_fermact_paramio_w.h \
@@ -102,7 +103,8 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@	meas/hadron/walfil_w.h meas/hadron/wall_qprop_w.h \
 @BUILD_WILSON_LIBS_TRUE@	meas/hadron/wallpionff_w.h meas/hadron/wallnuclff_w.h \
 @BUILD_WILSON_LIBS_TRUE@	meas/smear/sink_smear2_w.h meas/sources/d_src_w.h \
-@BUILD_WILSON_LIBS_TRUE@	meas/sources/p_src_w.h meas/sources/sources_w.h
+@BUILD_WILSON_LIBS_TRUE@	meas/sources/p_src_w.h meas/sources/sources_w.h \
+@BUILD_WILSON_LIBS_TRUE@	util/ferm/ferm_w.h util/ferm/diractodr.h
 
 @BUILD_STAGGERED_LIBS_TRUE@am__append_2 = \
 @BUILD_STAGGERED_LIBS_TRUE@	actions/ferm/fermacts/asqtad_fermact_s.h \
@@ -119,11 +121,12 @@ host_triplet = @host@
 @BUILD_STAGGERED_LIBS_TRUE@	meas/hadron/pions_follana_s.h meas/hadron/walfil_s.h \
 @BUILD_STAGGERED_LIBS_TRUE@	meas/hadron/stag_scalars_s.h meas/sources/sources_s.h \
 @BUILD_STAGGERED_LIBS_TRUE@	meas/hadron/stag_propShift_s.h \
+@BUILD_STAGGERED_LIBS_TRUE@	util/ferm/ferm_s.h \
 @BUILD_STAGGERED_LIBS_TRUE@	util/gauge/gauge_s.h util/gauge/stag_phases_s.h
 
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_3 = -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
 @BUILD_WILSON_LIBS_TRUE@am__append_4 = baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
-@BUILD_WILSON_LIBS_TRUE@              loops_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              loops_w.cc diractodr.cc \
 @BUILD_WILSON_LIBS_TRUE@              curcor2_w.cc lwldslash_w.cc formfac_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              sink_smear2_w.cc barcomp_io.cc barcomp_w.cc walfil_w.cc \
@@ -294,7 +297,7 @@ nobase_include_HEADERS = \
 	actions/ferm/linop/partrat.h actions/ferm/qprop/qprop.h \
 	actions/gauge/gauge.h \
 	io/io.h io/eigen_io.h io/fermact_paramio.h \
-	io/gauge_io.h io/kyugauge_io.h io/kyuqprop_io.h \
+	io/gauge_io.h io/kyugauge_io.h  \
         io/milc_io.h io/param_io.h io/qprop_io.h io/readmilc.h \
 	io/readszin.h io/szin_io.h io/writemilc.h io/writeszin.h \
 	meas/eig/eig.h meas/eig/gramschm.h meas/eig/gramschm_array.h \
@@ -380,10 +383,10 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc rgauge.cc taproj.cc \
 	gramschm.cc gramschm_array.cc ritz.cc ritz_array.cc sn_jacob.cc \
 	sn_jacob_array.cc eig_spec.cc eig_spec_array.cc proginfo.cc \
 	printgeom.cc fuzwilp.cc invsumr.cc minvsumr.cc baryon_w.cc \
-	barhqlq_w.cc mesons_w.cc hybmeson_w.cc loops_w.cc curcor2_w.cc \
-	lwldslash_w.cc formfac_w.cc mesonseqsrc_w.cc barseqsrc_w.cc \
-	seqpiontest_w.cc sink_smear2_w.cc barcomp_io.cc barcomp_w.cc \
-	walfil_w.cc overlap_state_info.cc \
+	barhqlq_w.cc mesons_w.cc hybmeson_w.cc loops_w.cc diractodr.cc \
+	curcor2_w.cc lwldslash_w.cc formfac_w.cc mesonseqsrc_w.cc \
+	barseqsrc_w.cc seqpiontest_w.cc sink_smear2_w.cc barcomp_io.cc \
+	barcomp_w.cc walfil_w.cc overlap_state_info.cc \
 	zolotarev4d_fermact_paramio_w.cc \
 	zolotarev5d_fermact_paramio_w.cc fermact_qprop.cc \
 	prec_fermact_qprop.cc unprec_wilson_fermact_w.cc \
@@ -417,7 +420,7 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc rgauge.cc taproj.cc \
 @BUILD_WILSON_LIBS_TRUE@am__objects_1 = baryon_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	barhqlq_w.$(OBJEXT) mesons_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	hybmeson_w.$(OBJEXT) loops_w.$(OBJEXT) \
-@BUILD_WILSON_LIBS_TRUE@	curcor2_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	diractodr.$(OBJEXT) curcor2_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	lwldslash_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	formfac_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	mesonseqsrc_w.$(OBJEXT) \
@@ -540,6 +543,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/barseqsrc_w.Po ./$(DEPDIR)/baryon_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/baryon_w.Po ./$(DEPDIR)/coulgauge.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/curcor2_w.Po ./$(DEPDIR)/d_src_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/diractodr.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/displacement.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/dwf_quarkprop4_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/dwffld_w.Po ./$(DEPDIR)/eig_spec.Po \
@@ -743,6 +747,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/coulgauge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/curcor2_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/d_src_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/diractodr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/displacement.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dwf_quarkprop4_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dwffld_w.Po@am__quote@
