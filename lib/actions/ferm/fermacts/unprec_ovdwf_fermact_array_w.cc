@@ -1,4 +1,4 @@
-// $Id: unprec_ovdwf_fermact_array_w.cc,v 1.7 2004-09-09 15:51:31 edwards Exp $
+// $Id: unprec_ovdwf_fermact_array_w.cc,v 1.8 2004-09-18 17:14:45 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Overlap-DWF (Borici) action
  */
@@ -23,11 +23,21 @@ namespace Chroma
       return new UnprecOvDWFermActArray(fbc, UnprecOvDWFermActArrayParams(xml_in, path));
     }
 
+    //! Callback function
+    /*! Differs in return type */
+    UnprecDWFermActBaseArray<LatticeFermion>* createDWFermAct(Handle< FermBC< multi1d<LatticeFermion> > > fbc,
+							      XMLReader& xml_in,
+							      const std::string& path)
+    {
+      return new UnprecOvDWFermActArray(fbc, UnprecOvDWFermActArrayParams(xml_in, path));
+    }
+
     //! Name to be used
     const std::string name = "UNPRECONDITIONED_OVDWF";
 
     //! Register the Wilson fermact
-    const bool registered = Chroma::TheWilsonTypeFermActArrayFactory::Instance().registerObject(name, createFermAct); 
+    const bool registered = Chroma::TheWilsonTypeFermActArrayFactory::Instance().registerObject(name, createFermAct)
+                          & Chroma::TheUnprecDWFermActBaseArrayFactory::Instance().registerObject(name, createDWFermAct); 
   }
 
 

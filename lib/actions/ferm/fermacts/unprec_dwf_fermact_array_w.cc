@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_fermact_array_w.cc,v 1.8 2004-09-09 15:51:31 edwards Exp $
+// $Id: unprec_dwf_fermact_array_w.cc,v 1.9 2004-09-18 17:14:45 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion action
  */
@@ -24,11 +24,21 @@ namespace Chroma
       return new UnprecDWFermActArray(fbc, UnprecDWFermActArrayParams(xml_in, path));
     }
 
+    //! Callback function
+    /*! Only differs in return type */
+    UnprecDWFermActBaseArray<LatticeFermion>* createDWFermAct(Handle< FermBC< multi1d<LatticeFermion> > > fbc,
+							      XMLReader& xml_in,
+							      const std::string& path)
+    {
+      return new UnprecDWFermActArray(fbc, UnprecDWFermActArrayParams(xml_in, path));
+    }
+
     //! Name to be used
     const std::string name = "UNPRECONDITIONED_DWF";
 
     //! Register the Wilson fermact
-    const bool registered = Chroma::TheWilsonTypeFermActArrayFactory::Instance().registerObject(name, createFermAct); 
+    const bool registered = Chroma::TheWilsonTypeFermActArrayFactory::Instance().registerObject(name, createFermAct)
+                          & Chroma::TheUnprecDWFermActBaseArrayFactory::Instance().registerObject(name, createDWFermAct); 
   }
 
 

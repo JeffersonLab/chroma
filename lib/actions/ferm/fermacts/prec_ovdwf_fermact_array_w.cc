@@ -1,4 +1,4 @@
-// $Id: prec_ovdwf_fermact_array_w.cc,v 1.5 2004-09-16 19:29:37 kostas Exp $
+// $Id: prec_ovdwf_fermact_array_w.cc,v 1.6 2004-09-18 17:14:45 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned Overlap-DWF (Borici) action
  */
@@ -24,11 +24,21 @@ namespace Chroma
       return new EvenOddPrecOvDWFermActArray(fbc, EvenOddPrecOvDWFermActArrayParams(xml_in, path));
     }
 
+    //! Callback function
+    /*! Differs in return type */
+    EvenOddPrecDWFermActBaseArray<LatticeFermion>* createDWFermAct(Handle< FermBC< multi1d<LatticeFermion> > > fbc,
+								   XMLReader& xml_in,
+								   const std::string& path)
+    {
+      return new EvenOddPrecOvDWFermActArray(fbc, EvenOddPrecOvDWFermActArrayParams(xml_in, path));
+    }
+
     //! Name to be used
     const std::string name = "OVDWF"; 
 
     //! Register the Wilson fermact
-    const bool registered = Chroma::TheWilsonTypeFermActArrayFactory::Instance().registerObject(name, createFermAct); 
+    const bool registered = Chroma::TheWilsonTypeFermActArrayFactory::Instance().registerObject(name, createFermAct)
+                          & Chroma::TheEvenOddPrecDWFermActBaseArrayFactory::Instance().registerObject(name, createDWFermAct); 
   }
 
 

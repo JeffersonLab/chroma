@@ -1,4 +1,4 @@
-// $Id: prec_dwf_fermact_array_w.cc,v 1.7 2004-09-09 15:51:31 edwards Exp $
+// $Id: prec_dwf_fermact_array_w.cc,v 1.8 2004-09-18 17:14:45 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -25,11 +25,21 @@ namespace Chroma
       return new EvenOddPrecDWFermActArray(fbc, EvenOddPrecDWFermActArrayParams(xml_in, path));
     }
 
+    //! Callback function
+    /*! Differs in return type */
+    EvenOddPrecDWFermActBaseArray<LatticeFermion>* createDWFermAct(Handle< FermBC< multi1d<LatticeFermion> > > fbc,
+								   XMLReader& xml_in,
+								   const std::string& path)
+    {
+      return new EvenOddPrecDWFermActArray(fbc, EvenOddPrecDWFermActArrayParams(xml_in, path));
+    }
+
     //! Name to be used
     const std::string name = "DWF";
 
     //! Register the Wilson fermact
-    const bool registered = Chroma::TheWilsonTypeFermActArrayFactory::Instance().registerObject(name, createFermAct); 
+    const bool registered = Chroma::TheWilsonTypeFermActArrayFactory::Instance().registerObject(name, createFermAct)
+                          & Chroma::TheEvenOddPrecDWFermActBaseArrayFactory::Instance().registerObject(name, createDWFermAct); 
   }
 
 
