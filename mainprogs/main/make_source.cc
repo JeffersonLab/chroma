@@ -1,4 +1,4 @@
-// $Id: make_source.cc,v 1.7 2003-09-11 00:46:55 edwards Exp $
+// $Id: make_source.cc,v 1.8 2003-10-01 02:51:25 edwards Exp $
 /*! \file
  *  \brief Main code for source generation
  */
@@ -125,7 +125,7 @@ int main(int argc, char **argv)
   read(xml_in, path + "/nrow", nrow);
 
   // Read in the gauge configuration file name
-  ReadPath(xml_in, xml_in_root + "/Cfg", cfg_file) ;
+  read(xml_in, xml_in_root + "/Cfg", cfg_file);
 
   } 
   catch(const string& e)
