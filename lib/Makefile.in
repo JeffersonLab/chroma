@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.201 2004-06-01 03:55:45 edwards Exp $
+# $Id: Makefile.in,v 1.202 2004-06-02 03:33:28 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -103,7 +103,8 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@	meas/hadron/mesons_w.h meas/hadron/seqpiontest_w.h \
 @BUILD_WILSON_LIBS_TRUE@	meas/hadron/loops_w.h \
 @BUILD_WILSON_LIBS_TRUE@	meas/hadron/walfil_w.h meas/hadron/wall_qprop_w.h \
-@BUILD_WILSON_LIBS_TRUE@	meas/hadron/walldeltapff_w.h \
+@BUILD_WILSON_LIBS_TRUE@	meas/hadron/wallff_w.h \
+@BUILD_WILSON_LIBS_TRUE@	meas/hadron/walldeltaff_w.h meas/hadron/walldeltapff_w.h \
 @BUILD_WILSON_LIBS_TRUE@	meas/hadron/wallpionff_w.h meas/hadron/wallnuclff_w.h \
 @BUILD_WILSON_LIBS_TRUE@	meas/smear/sink_smear2_w.h meas/sources/d_src_w.h \
 @BUILD_WILSON_LIBS_TRUE@	meas/sources/p_src_w.h meas/sources/sources_w.h \
@@ -160,7 +161,7 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@	      lg5eps_w.cc lg5eps_double_pass_w.cc \
 @BUILD_WILSON_LIBS_TRUE@	      zolotarev5d_fermact_array_w.cc zolotarev5d_linop_array_w.cc \
 @BUILD_WILSON_LIBS_TRUE@	      zolotarev5d_nonhermop_array_w.cc \
-@BUILD_WILSON_LIBS_TRUE@              walldeltapff_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              wallff_w.cc walldeltaff_w.cc walldeltapff_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              wallpionff_w.cc wallnuclff_w.cc wall_qprop_w.cc
 
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_5 = lwldslash_w_sse.cc
@@ -434,12 +435,12 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc rgauge.cc taproj.cc \
 	lovlap_double_pass_w.cc lovddag_double_pass_w.cc lg5eps_w.cc \
 	lg5eps_double_pass_w.cc zolotarev5d_fermact_array_w.cc \
 	zolotarev5d_linop_array_w.cc zolotarev5d_nonhermop_array_w.cc \
-	walldeltapff_w.cc wallpionff_w.cc wallnuclff_w.cc \
-	wall_qprop_w.cc lwldslash_w_sse.cc lwldslash_w_pab.cc \
-	mesphas_s.cc mesphas_follana_s.cc pions_follana_s.cc \
-	follana_io_s.cc walfil_s.cc baryon_s.cc stag_scalars_s.cc \
-	stag_propShift_s.cc asqtad_linop_s.cc asq_dsl_s.cc \
-	fat7_links_s.cc naik_term_s.cc asqtad_fermact_s.cc \
+	wallff_w.cc walldeltaff_w.cc walldeltapff_w.cc wallpionff_w.cc \
+	wallnuclff_w.cc wall_qprop_w.cc lwldslash_w_sse.cc \
+	lwldslash_w_pab.cc mesphas_s.cc mesphas_follana_s.cc \
+	pions_follana_s.cc follana_io_s.cc walfil_s.cc baryon_s.cc \
+	stag_scalars_s.cc stag_propShift_s.cc asqtad_linop_s.cc \
+	asq_dsl_s.cc fat7_links_s.cc naik_term_s.cc asqtad_fermact_s.cc \
 	asqtad_mdagm_s.cc staggered_qprop.cc stag_phases_s.cc
 @BUILD_WILSON_LIBS_TRUE@am__objects_1 = baryon_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	barhqlq_w.$(OBJEXT) mesons_w.$(OBJEXT) \
@@ -509,6 +510,8 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc rgauge.cc taproj.cc \
 @BUILD_WILSON_LIBS_TRUE@	zolotarev5d_fermact_array_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	zolotarev5d_linop_array_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	zolotarev5d_nonhermop_array_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	wallff_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	walldeltaff_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	walldeltapff_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	wallpionff_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	wallnuclff_w.$(OBJEXT) \
@@ -681,8 +684,9 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_wilson_linop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/walfil_s.Po ./$(DEPDIR)/walfil_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/wall_qprop_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/walldeltaff_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/walldeltapff_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/wallnuclff_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/wallff_w.Po ./$(DEPDIR)/wallnuclff_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/wallpionff_w.Po ./$(DEPDIR)/wilslp.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/writemilc.Po ./$(DEPDIR)/writeszin.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/writeszinqprop_w.Po \
@@ -928,7 +932,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/walfil_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/walfil_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wall_qprop_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/walldeltaff_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/walldeltapff_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wallff_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wallnuclff_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wallpionff_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wilslp.Po@am__quote@
