@@ -121,6 +121,7 @@ case "$enable_sse_wilson_dslash" in
         AC_MSG_NOTICE( [Configuring SSE Wilson Dslash ] )
 	AC_CONFIG_SUBDIRS(other_libs/intel_sse_wilson_dslash)
 	AC_SUBST(SSE_DSLASH_DIR, [intel_sse_wilson_dslash])
+	AC_DEFINE(BUILD_SSE_WILSON_DSLASH)
 	;;
   *)
 	AC_SUBST(SSE_DSLASH_DIR)

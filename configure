@@ -1998,6 +1998,10 @@ subdirs="$subdirs other_libs/intel_sse_wilson_dslash"
 
 	SSE_DSLASH_DIR=intel_sse_wilson_dslash
 
+	cat >>confdefs.h <<\_ACEOF
+#define BUILD_SSE_WILSON_DSLASH 1
+_ACEOF
+
 	;;
   *)
 

@@ -1,4 +1,4 @@
-// $Id: t_lwldslash.cc,v 1.6 2003-09-12 12:21:36 bjoo Exp $
+// $Id: t_lwldslash.cc,v 1.7 2003-09-12 13:03:48 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -16,7 +16,7 @@ int main(int argc, char **argv)
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {2,2,2,2};
+  const int foo[] = {4,4,4,4};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -73,7 +73,7 @@ int main(int argc, char **argv)
       if( Layout::primaryNode() ) { 
 	cout << "cb = " << cb << " isign = " << isign << endl;
 	cout << "The time per lattice point is "<< mydt << " micro sec" 
-	     << " micro sec (" <<  (double)(1392.0f/mydt) << ") Mflops " << endl;
+	     << " (" <<  (double)(1392.0f/mydt) << ") Mflops " << endl;
 	
 	
       }
