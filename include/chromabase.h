@@ -1,4 +1,4 @@
-// $Id: chromabase.h,v 1.9 2003-11-09 22:36:13 edwards Exp $
+// $Id: chromabase.h,v 1.10 2003-11-10 05:08:43 edwards Exp $
 //
 // Absolute basic stuff to use chroma
 
@@ -16,6 +16,26 @@
 #else
 #error "Unknown architecture ARCH"
 #endif
+
+namespace QDP {
+
+// Trait classes to undo DW index
+template<class T>
+struct BaseType {};
+
+template<>
+struct BaseType<LatticeFermion>
+{
+  typedef LatticeFermion   Type_t;
+};
+
+template<>
+struct BaseType<LatticeDWFermion>
+{
+  typedef LatticeFermion   Type_t;
+};
+
+}
 
 using namespace QDP;
 
