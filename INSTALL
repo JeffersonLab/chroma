@@ -13,129 +13,12 @@ Some important options for CHROMA are
 
         --enable-fermion-type=<fermion-type>
 	--with-qdp=DIR
-	--with-qdp-cxxflags=QDP_CXXFLAGS
-	--with-qdp-ldflags=QDP_LDFLAGS
-	--with-qdp-libs=QDP_LIBS
-        --with-qmp-cxxflags=QMP_CXXFLAGS
-	--with-qmp-ldflags=QMP_LDFLAGS
-	--with-qmp-libs=QMP_LIBS
-	--with-qmp-comms-type=<comms-type>
-	--with-qmp-comms-cxxflags=QMP_COMMS_CXXFLAGS
-	--with-qmp-comms-ldflags=QMP_COMMS_LDFLAGS
-	--with-qmp-comms-libs=QMP_COMMS_LIBS
+        --enable-sse-wilson-dslash
         --prefix=<installation directory>
 
-If a recent version of qdp++ (v0.26 or higher) is being used, it will
-have created a file in the install directory called <installdir>/config/qdp_build_env.sh. This should contain the values for all the environment variables
-needed for compilation, namely: QDP_CXXFLAGS, QDP_LDFLAGS, QDP_LIBS,
-QMP_CXXFLAGS, QMP_LDFLAGS, QMP_LIBS and QMP_COMMS_CXXFLAGS, QMP_COMMS_LDFLAGS,
-QMP_COMMS_LIBS. If the command line option --with-qdp=DIR is given, 
-with DIR being the installation directory of the QDP++ system, the configure
-script will source the qdp_build_env.sh and pick up all the relevant 
-environment variables, but:
-
-CAVEAT 1: All the environment variables in the qdp_build_env.sh are guarded
-by an if test "x$QMP_ENV_VAR" == "x" ... construct, so that if the shell
-which sources the qdp_build_env.sh (which is usually the shell that runs
-configure) has the relevant environment variables already defined, the 
-ones provided by qdp_build_env.sh WILL NOT override the already existing 
-values. Likewise, the values in qdp_build_env.sh can be overridden 
-by the --with-qdp-xxxx=<value> options.
-
-CAVEAT 2: If QMP has been compiled with a wrapper script, such as mpicc
-then the values of QMP_COMMS_CXXFLAGS, QMP_COMMS_LDFLAGS, QMP_COMMS_LIBS
-environment variables may not be set in qdp_build_env.sh as the wrapper
-scripts hide these from the user. In this case one must EITHER:
-
-manually set these environment variables before calling ./configure for CHROMA
-
-OR 
-
-the user must use the mpiCC wrapper from the same MPI esque distribution
-that was used to build QMP
-
- OR 
-
-the user must set the values of these environment variables using the 
---with-qmp-comms-flags --with-qmp-comms-ldflags and --with-qmp-comms-libs 
-command line switches to ./configure
-
-The full description of the environment variables relating to QDP++ and 
-QMP are as follows:
-
-QDP_CXXFLAGS  -- Compiler flags to give the C++ compiler about QDP 
-		 in particular the include path flags to find QDP headers
-	         eg: QDP_CXXFLAGS="-I/usr/local/qdp++/include" 
-		 or  --with-qdp-cxxflags="-I/usr/local/qdp++/include" if
-		 QDP is installed in /usr/local/qdp++
-
-QDP_LDFLAGS   -- Linker flags to give to the linker for QDP
-	         in particular the link path flags to find the QDP library
-		 eg: QDP_LDFLAGS="-L/usr/local/qdp++/lib" or
-		     --with-qdp-ldflags="-L/usr/local/qdp++/lib" if QDP++
-		 is installed in /usr/local/qdp++
-
-QDP_LIBS      -- Linker library flags to give to the linker for QDP
-		 eg: QDP_LIBS="-lqdp" or --with-qdp-libs="-lqdp"
-
-
-QMP_CXXFLAGS  -- Compiler flags to give the C++ compiler about QMP 
-		 in particular the include path flags to find QMP headers
-	         eg: QMP_CXXFLAGS="-I/usr/local/qmp/include" 
-		 or  --with-qmp-cxxflags="-I/usr/local/qmp/include" if
-		 qmp is installed in /usr/local/qmp
-
-QMP_LDFLAGS   -- Linker flags to give to the linker for QMP
-	         in particular the link path flags to find the QMP library
-		 eg: QMP_LDFLAGS="-L/usr/local/qmp/lib" or
-		     --with-qmp-ldflags="-L/usr/local/qmp/lib" if qmp
-		 is installed in /usr/local/qmp
-
-QMP_LIBS      -- Linker library flags to give to the linker for QMP
-		 eg: QMP_LIBS="-lqmp" or --with-qmp-libs="-lqmp"
-
-QMP_COMMS_CXXFLAGS -- Compiler flags to give the C++ compiler about 
-		additional packages needed by QMP for its comms subsystem
-		eg: QMP_COMMS_CXXFLAGS="-I/usr/local/mpich/include" 
-		or --with-qmp-comms-cxxflags="-I/usr/local/mpich/include"
-		for a QMP built over MPI using mpich where mpich is 
-		installed in /usr/local/mpich
-
-QMP_COMMS_LDFLAGS -- Linker flags to give the C++ compiler about a
-		about additional packages needed by QMP for its comms
-		comms subsystem eg:
-		
-                QMP_COMMS_LDFLAGS="-L/usr/local/mpich/lib \
-				   -L/usr/local/gm/binary/lib"
-		
-		--with-qmp-comms-ldflags="-L/usr/local/mpich/lib \
-                  -L/usr/local/gm/binary/lib"
-
-		for QMP over MPI over GM, where the MPI is MPICH-GM installed
-		in /usr/local/mpich and the GM drivers are in /usr/local/gm
-
-QMP_COMMS_LIBS  -- additional libraries to do with QMP for its comms
-		subsystem eg:
-	
-		QMP_COMMS_LIBS="-lmpich -lpmpich" 
-		-- with-qmp-comms-libs="-lmpich -lpmpich"
-		
-		if QMP is built over a version of MPICH using Ethernet.
-
-In particular if your comms system underneath QMP is MPI, you may 
-have some wrapper script such as mpiCC. You can use this compiler, 
-which can hide QMP_COMMS_CXXFLAGS QMP_COMMS_LDFLAGS and QMP_LIBS 
-by say:
-
-./configure CXX=mpiCC \
-	    --with-qdp-cxxflags=/usr/local/qdp++/include   \
-	    --with-qdp-ldflags=/usr/local/qdp++/lib        \
-	    --with-qdp-libs="-lqdp"                        \
-            --with-qmp-cxxflags=/usr/local/qmp/include     \
-	    --with-qmp-ldflags=/usr/local/qmp/lib          \
-	    --with-qmp-libs="-lqmp"
-
-
+There must be a previously installed version of qdp++ with a path
+specified by "DIR" above. Whatever architecture was used for qdp++
+will be used by chroma - chroma just builds on top of qdp++.
 
 The other individual switches:
 
@@ -150,16 +33,6 @@ The other individual switches:
                                   and libraries should be installed 
                                   when you type: make install. 
 	                          By default it is set to /usr/local.
-
-
- --with-qmp-comms-type=<comms-type>    This specifies what comms harness QMP
-                                  is to be built over. Allowed values for
-	                          COMMS_TYPE are:
-				     MPI  -- Build over MPI (also MPI/GM)
-				     GM   -- Build over GM.
-
-				  this flag is only needed for non scalar
-				  builds. Its default value is MPI
 
 
 
@@ -181,7 +54,8 @@ Autoconf guesses some default compiler flags for you. On Linux this is
 usually "-g -O2 -Wall". You can override (specify more optimisations)
 by defining the CXXFLAGS variable which gets passed on by autoconf.
 Likewise if you need extra libraries (like -lm) you can specify these
-with LDFLAGS and LIBS environment variables eg:
+with LDFLAGS and LIBS environment variables. These flags are used in
+addition to those used in the provided installation of qdp++.
 
 ./configure CXX=g++ CXXFLAGS="-O3" LIBS="-lm"
 
@@ -235,70 +109,25 @@ you can then build say a scalar version in ./scalar-build as follows
 
 mkdir ./scalar-build
 cd ./scalar-build
-../qdp/configure --with-qdp-cxxflags="-I/usr/local/qdp++-scalar/include" \
-  --with-qdp-ldflags="-L/usr/local/qdp++-scalar/lib" --with-qdp-libs="-lqdp"
+../qdp/configure --with-qdp=/usr/local/qdp++-scalar" CXXFLAGS=""
 gmake
 
 should build everything (libraries, mainprogs) using a scalar version
-of QDP++ or you could try:
+of QDP++. If the installed version of QDP++ was a "parscalar"  build
+(a parallel version suitable for architectures like clusters of 
+workstations), then chroma will be built for this parscalar version.
 
-mkdir parscalar-build
-source chroma-parscalar-env.sh
-../qdp/configure --fermion-type=wilson
-gmake
-
-to build a parscalar version. In this case chroma-parscalar-env.sh
-will probably contain something like:
-
-CXX=/usr/local/mpich/bin/mpiCC
-QDP_CXXFLAGS="-I/usr/local/qdp-parscalar/include"
-QDP_LDFLAGS="-L/usr/local/qdp-parscalar/lib"
-QDP_LIB="-lqdp"
-QMP_CXXFLAGS="-I/usr/local/qmp-mpich/include"
-QMP_LDFLAGS="-L/usr/local/qmp-mpich/lib"
-QMP_LIBS="-lqmp"
-export CXX QDP_CXXFLAGS QDP_LDFLAGS QDP_LIB QMP_CXXFLAGS QMP_LDFLAGS QMP_LIBS
-
-Note that QDP now provides values for most of these environment variables
-automatically, by way of a script which can be sourced to set them (see
-in the examples etc etc)
+Note that QDP provides a bin/qdp++-config.sh  scripts which is used
+to query the include flags, libs, compiler, etc.
 
 4) Building the documentation
 -----------------------------
 
 All in good time ...
 
-5) More examples:
------------------
-
-Suppose you have configured QMP with mpicc, and have a QDP++ installation
-(QDP version >= 0.26) in /home/bj/qdp-parscalar-install. You could configure
-chroma with:
-
-./configure CXX=mpiCC --with-qdp=/home/bj/qdp-parscalar-install
-
-where mpiCC would be the C++ wrapper supplied with your MPI distribution.
-
-Suppose your MPI distribution didn't have a C++ wrapper, but you 
-knew that g++ could compile and link your program, and you knew
-that the MPI include files were in /usr/local/mpich-1.2.4/include
-and that the library files were in /usr/local/mpich-1.2.4/lib, and that
-mpicc linked libpmpich.a, libmpich.a and  libpmpich.a again, you could try:
-
-./configure --enable-fermion-type=wilson \
- 	    --with-qdp=/home/bj/Devel/qdp-parscalar-install \
-	    --with-qmp-comms-cxxflags="-I/usr/local/mpich-1.2.4/include" \
-	    --with-qmp-comms-ldflags="-L/usr/local/mpich-1.2.4/lib" \
-	    --with-qmp-comms-libs="-lpmpich -lmpich -lpmpich"
-
-Here the --with-qmp-comms-xxx options override the ones in the qdp_build_env.sh
-(where they probably weren't set anyway as mpicc hid them), but the rest of the
-environment variables QDP_CXXFLAGS, QDP_LDFLAGS, QDP_LIBS, QMP_CXXFLAGS, \
-QMP_LDFLAGS and QMP_LIBS are still picked up from the qdp_build_env.sh
-
-
-6) Reporting Bugs etc.
+5) Reporting Bugs etc.
 ---------------------
 
-Send bugreports to edwards@jlab.org
+There are no bugs! In the case you make a mistake, you can send a bug
+report to  edwards@jlab.org
  
