@@ -1,4 +1,4 @@
-// $Id: make_source.cc,v 1.2 2003-06-20 21:23:29 ikuro Exp $
+// $Id: make_source.cc,v 1.3 2003-08-27 22:08:41 edwards Exp $
 /*! \file
  *  \brief Main code for source generation
  */
@@ -13,6 +13,20 @@
 /*
  *  Here we have various temporary definitions
  */
+enum CfgType {
+  CFG_TYPE_MILC,
+  CFG_TYPE_NERSC,
+  CFG_TYPE_SCIDAC,
+  CFG_TYPE_SZIN,
+  CFG_TYPE_UNKNOWN
+} ;
+
+enum PropType {
+  PROP_TYPE_SCIDAC,
+  PROP_TYPE_SZIN,
+  PROP_TYPE_UNKNOWN
+} ;
+
 
 // First the source type
 #define S_WAVE 0
@@ -22,6 +36,7 @@
 #define MAXLINE 80
 
 using namespace QDP;
+
 
 //! Propagator generation
 /*! \defgroup propagator Propagator generation
@@ -45,13 +60,8 @@ int main(int argc, char **argv)
   int length = Layout::lattSize()[j_decay]; // define the temporal direction
 
 
-  /*
-   *  As a temporary measure, we will now read in the parameters from a file
-   *  DATA.  Eventually, this will use QIO or NML, but for the moment we will
-   *  just use the usual command-line reader
-   */
-
-  NmlReader nml_in("DATA");
+  // Read in params
+  XMLReader xml_in("DATA");
 
 
   int version; 		// The input-parameter version
@@ -64,26 +74,40 @@ int main(int argc, char **argv)
   Real wvf_param;		// Parameter for the wave function
   int WvfIntPar;
 
+  CfgType cfg_type;
+  PropType prop_type;
+
   Real RsdCG;
   int MaxCG;			// Iteration parameters
 
-  push(nml_in, "IO_version") ;
-  Read(nml_in, version) ;
-  pop(nml_in) ;
+  string xml_in_root = "make_source";
+  string path = xml_in_root + "/IO_version"; // push into 'IO_version' group
 
+  read(xml_in, path + "/version", version) ;
 
   switch(version){	// The parameters we read in IO version
 
-  case 101:			
+  case 102:			
 
-    push(nml_in,"param");	// Push into param group
+    path = xml_in_root + "/param"; // push into 'param' group
 
-    Read(nml_in, source_type);	// S-wave, P-wave etc
-    Read(nml_in, source_direction);
+    read(xml_in, path + "/source_type", source_type);	// S-wave, P-wave etc
+    read(xml_in, path + "/source_direction", source_direction);
 
-    Read(nml_in, wf_type);	// Point, Gaussian etc
-    Read(nml_in,  wvf_param);
-    Read(nml_in, WvfIntPar);
+    read(xml_in, path + "/wf_type", wf_type);	// Point, Gaussian etc
+    read(xml_in, path + "/wvf_param", wvf_param);
+    read(xml_in, path + "/WvfIntPar", WvfIntPar);
+
+    {
+      int input_cfg_type ;
+      read(xml_in, path + "/cfg_type", input_cfg_type) ;
+      cfg_type = cfg_type;
+    }
+    {
+      int input_prop_type ;
+      read(xml_in, path + "/prop_type", input_prop_type) ;
+      prop_type = prop_type;
+    }
 
     break;
 
@@ -94,10 +118,13 @@ int main(int argc, char **argv)
   }
   
   // Now get the lattice sizes etc
-  Read(nml_in, nrow);
+  read(xml_in, path + "/nrow", nrow);
 
+  // Read in the gauge configuration file name
+  string cfg_file;
+  ReadPath(xml_in, xml_in_root + "/Cfg", cfg_file) ;
 
-  nml_in.close();
+  xml_in.close();
 
   switch(wf_type){
   case POINT_SOURCE:
@@ -119,38 +146,52 @@ int main(int argc, char **argv)
   multi1d<int> t_source(Nd);
   t_source = 0;
 
-  // Generate a hot start gauge field
+  // Read a gauge field
   multi1d<LatticeColorMatrix> u(Nd);
-
-
-  /*  readArchiv(u, "nersc_freefield.cfg");*/
-
+  XMLReader gauge_xml;
   Seed seed_old;
-  readSzin(u, "szin.cfg", seed_old);
+
+  switch (cfg_type) 
+  {
+  case CFG_TYPE_SZIN:
+    readSzin(gauge_xml, u, cfg_file);
+    read(gauge_xml, "/szin/seed", seed_old);
+    break;
+
+  case CFG_TYPE_NERSC:
+    readArchiv(gauge_xml, u, cfg_file);
+    seed_old = 11;
+    break;
+  default :
+    QDP_error_exit("Configuration type is unsupported.");
+  }
+
+  // Set the rng seed
+  QDP::RNG::setrn (seed_old);
 
 
   // Useful info
 
-  string nml_filename;
+  string xml_filename;
   string source_filename;
 
 
   switch(source_type){
   case S_WAVE:
-    nml_filename = "source.nml";
+    xml_filename = "source.xml";
     source_filename = "source_0";
     break;
   case P_WAVE:
-    nml_filename = "p_source.nml";
+    xml_filename = "p_source.xml";
     source_filename = "p_source_0";
     break;
   case D_WAVE:    /* added */
     if (source_direction == 12) {
-      nml_filename = "dydz_propagator.nml";
+      xml_filename = "dydz_propagator.xml";
       source_filename = "dydz_source_0";
     }
     if (source_direction == 22) {
-      nml_filename = "dzdz_propagator.nml";
+      xml_filename = "dzdz_propagator.xml";
       source_filename = "dzdz_source_0";
     }
     break;
@@ -160,15 +201,21 @@ int main(int argc, char **argv)
   }
 
 
-  NmlWriter nml_out(nml_filename);
+  XMLFileWriter xml_out(xml_filename);
     
 
-  push(nml_out,"lattice");
-  Write(nml_out,Nd);
-  Write(nml_out,Nc);
-  Write(nml_out,Ns);
-  Write(nml_out,nrow);
-  pop(nml_out);
+  push(xml_out,"lattice");
+  Write(xml_out,Nd);
+  Write(xml_out,Nc);
+  Write(xml_out,Ns);
+  Write(xml_out,nrow);
+  pop(xml_out);
+
+  // Write out the config info
+  write(xml_out, "config_info", gauge_xml);
+
+  xml_out.flush();
+
 
   //
   // Loop over the source color and spin, creating the source
@@ -182,7 +229,6 @@ int main(int argc, char **argv)
   //
   LatticePropagator quark_propagator;
 
-#if 1
   PropHead header;		// Header information
   header.kappa = kappa_fake;
   header.source_smearingparam=wf_type;     // local (0)  gaussian (1)
@@ -191,7 +237,9 @@ int main(int argc, char **argv)
   header.sink_smearingparam=0;	// Always to local sinks
   header.sink_type=0;
   header.sink_direction=0;
-#endif
+
+  XMLBufferWriter source_xml;
+  write(source_xml, "source", header);
 
   int ncg_had = 0;
 
@@ -246,10 +294,21 @@ int main(int argc, char **argv)
   }
 
 
-  writeSzinQprop(quark_propagator, source_filename, kappa_fake);
+  switch (prop_type) 
+  {
+  case PROP_TYPE_SZIN:
+    writeSzinQprop(quark_propagator, source_filename, kappa_fake);
+    break;
+
+  case PROP_TYPE_SCIDAC:
+    writeQprop(source_filename, quark_propagator, header);
+    break;
+  default :
+    QDP_error_exit("Configuration type is unsupported.");
+  }
 
 
-  nml_out.close();
+  xml_out.close();
 
   // Time to bolt
   QDP_finalize();

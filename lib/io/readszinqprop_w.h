@@ -1,4 +1,4 @@
-// $Id: readszinqprop_w.h,v 1.4 2003-06-20 20:48:12 dgr Exp $
+// $Id: readszinqprop_w.h,v 1.5 2003-08-27 22:08:41 edwards Exp $
 
 #ifndef __readszinqprop_h__
 #define __readszinqprop_h__
@@ -9,11 +9,12 @@
 
 //! Read a SZIN propagator file. This is a simple memory dump reader.
 /*!
+ * \param xml        xml reader holding prop info ( Modify )
  * \param q          propagator ( Modify )
  * \param cfg_file   path ( Read )
  */    
 
-void readSzinQprop(LatticePropagator& q, const string& file);
+void readSzinQprop(XMLReader& xml, LatticePropagator& q, const string& file);
 
 //! Write a SZIN propagator file. This is a simple memory dump writer.
 /*!
@@ -26,5 +27,6 @@ void readSzinQprop(LatticePropagator& q, const string& file);
 
 void writeSzinQprop(const LatticePropagator& q, const string& file,
 		    const Real kappa);
+
 
 #endif

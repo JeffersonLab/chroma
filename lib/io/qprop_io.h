@@ -9,20 +9,27 @@
 #ifndef __qprop_io_h__
 #define __qprop_io_h__
 
+//! Source header read
+void read(XMLReader& xml, const string& path, PropHead& header);
+
+//! Source header writer
+void write(XMLWriter& xml, const string& path, const PropHead& header);
+
 /*
  *  Routines for reading and writing propagator
  */
 
-void readQprop(char file[], LatticePropagator& quark_prop, PropHead& header);
 
-void writeQprop(char file[], const LatticePropagator& quark_prop, 
+void readQprop(const string& file, LatticePropagator& quark_prop, PropHead& header);
+
+void writeQprop(const string& file, const LatticePropagator& quark_prop, 
 		const PropHead& header);
 
 /*
  *  Routines for reading and writing the QQQ correlators
  */
 
-void writeBarcomp(const char file[], const multiNd<Complex>& barprop, 
+void writeBarcomp(const string& file, const multiNd<Complex>& barprop, 
 		  const PropHead& head_1, const PropHead& head_2,
 		  const PropHead& head_3,
 		  const int j_decay);
@@ -30,7 +37,7 @@ void writeBarcomp(const char file[], const multiNd<Complex>& barprop,
 void readBarcomp(multiNd<Complex>& barprop, 
 		 PropHead& head_1, PropHead& head_2, 
 		 PropHead& head_3,
-		 const char file[],  
+		 const string& file,  
 		 const int j_decay);
 
 // Routines for reading/writing headers

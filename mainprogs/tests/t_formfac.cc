@@ -1,17 +1,23 @@
-// $Id: t_formfac.cc,v 1.3 2003-03-20 19:34:25 flemingg Exp $
+// $Id: t_formfac.cc,v 1.4 2003-08-27 22:08:41 edwards Exp $
 //
 //! \file
 //  \brief Test the form-factor routine
 //
 // $Log: t_formfac.cc,v $
-// Revision 1.3  2003-03-20 19:34:25  flemingg
+// Revision 1.4  2003-08-27 22:08:41  edwards
+// Start major push to using xml.
+//
+// Revision 1.3  2003/03/20 19:34:25  flemingg
 // Evolved formfac_w.cc to use SftMom class, which included some bug fixes
 // in features in SftMom which had been previously untested and evolution
 // of the corresponding test program.
 //
 // Revision 1.2  2003/03/06 00:27:29  flemingg
 // Added $Log: t_formfac.cc,v $
-// Added Revision 1.3  2003-03-20 19:34:25  flemingg
+// Added Revision 1.4  2003-08-27 22:08:41  edwards
+// Added Start major push to using xml.
+// Added
+// Added Revision 1.3  2003/03/20 19:34:25  flemingg
 // Added Evolved formfac_w.cc to use SftMom class, which included some bug fixes
 // Added in features in SftMom which had been previously untested and evolution
 // Added of the corresponding test program.
@@ -37,14 +43,14 @@ int main(int argc, char *argv[])
   Layout::setLattSize(nrow);
   Layout::create();
 
-  NmlWriter nml("t_formfac.nml");
+  XMLFileWriter xml("t_formfac.xml");
 
-  push(nml,"lattice");
-  Write(nml,Nd);
-  Write(nml,Nc);
-  Write(nml,Ns);
-  Write(nml,nrow);
-  pop(nml);
+  push(xml,"lattice");
+  Write(xml,Nd);
+  Write(xml,Nc);
+  Write(xml,Ns);
+  Write(xml,nrow);
+  pop(xml);
 
   // Randomize the gauge field
   multi1d<LatticeColorMatrix> u(Nd);
@@ -76,7 +82,7 @@ int main(int argc, char *argv[])
   // create Fourier phases with (mom-sink_mom)^2 <= 10 (NO AVERAGING)
   SftMom phases(10, sink_mom, false, j_decay) ;
 
-  FormFac(u, quark_prop_1, quark_prop_2, phases, t0, nml) ;
+  FormFac(u, quark_prop_1, quark_prop_2, phases, t0, xml) ;
 
   clock_t end_clock = clock() ;
 

@@ -1,10 +1,13 @@
-// $Id: spectrum_w.cc,v 1.7 2003-08-27 20:05:20 edwards Exp $
+// $Id: spectrum_w.cc,v 1.8 2003-08-27 22:08:41 edwards Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.7  2003-08-27 20:05:20  edwards
+//  Revision 1.8  2003-08-27 22:08:41  edwards
+//  Start major push to using xml.
+//
+//  Revision 1.7  2003/08/27 20:05:20  edwards
 //  Removed use of seed. Do not need random numbers here.
 //
 //  Revision 1.6  2003/06/24 03:25:06  edwards
@@ -523,9 +526,7 @@ int main(int argc, char **argv)
   pop(xml_out) ;
 
   // Write out the config info
-  push(xml_out, "config_info");
-  xml_out << gauge_xml;
-  pop(xml_out);
+  write(xml_out, "config_info", gauge_xml);
 
   xml_out.flush();
 
@@ -568,9 +569,10 @@ int main(int argc, char **argv)
     // Read the quark propagator
     LatticePropagator quark_propagator ;
     {
+      XMLReader prop_xml;
       stringstream prop_file ;
       prop_file << "propagator_" << loop ;
-      readSzinQprop(quark_propagator, prop_file.str()) ;
+      readSzinQprop(prop_xml, quark_propagator, prop_file.str()) ;
     }
 
     push(xml_array);         // next array element - name auto-written

@@ -1,4 +1,4 @@
-// $Id: readszinqprop_w.cc,v 1.8 2003-06-20 20:48:12 dgr Exp $
+// $Id: readszinqprop_w.cc,v 1.9 2003-08-27 22:08:41 edwards Exp $
 /*!
  * @file
  * @brief  Read an old SZIN-style (checkerboarded) quark propagator
@@ -15,11 +15,12 @@ using namespace QDP;
 /*!
  * \ingroup io
  *
+ * \param xml        xml reader holding prop info ( Modify )
  * \param q          propagator ( Modify )
  * \param file       path ( Read )
  */    
 
-void readSzinQprop(LatticePropagator& q, const string& file)
+void readSzinQprop(XMLReader& xml, LatticePropagator& q, const string& file)
 {
   BinaryReader cfg_in(file);
 
@@ -58,6 +59,25 @@ void readSzinQprop(LatticePropagator& q, const string& file)
   }
 
   cfg_in.close();
+
+
+  // Now, set up the XML header. Do this by first making a buffer
+  // writer that is then used to make the reader
+  XMLBufferWriter  xml_buf;
+
+  push(xml_buf, "szin_prop");
+  write(xml_buf,"Kappa",Kappa);
+  pop(xml_buf);
+
+  try 
+  {
+    xml.open(xml_buf);
+  }
+  catch(const string& e)
+  { 
+    QDP_error_exit("Error in readszinqprop: %s",e.c_str());
+  }
+
 }
 
 //! Write a SZIN propagator file. This is a simple memory dump writer.

@@ -1,5 +1,5 @@
 /*
- *  $Id: qprop_io.cc,v 1.3 2003-05-23 05:06:48 edwards Exp $
+ *  $Id: qprop_io.cc,v 1.4 2003-08-27 22:08:41 edwards Exp $
  *
  *  These are a few simple I/O routines that we can use until QIO makes its appearance
  *  I have tried to include a simple header by means of a structure.
@@ -14,6 +14,36 @@
 #include <string>
 using std::string;
 
+
+//! Source header read
+void read(XMLReader& xml, const string& path, PropHead& header)
+{
+  read(xml, path + "/kappa", header.kappa);
+  read(xml, path + "/source_smearingparam", header.source_smearingparam);
+  read(xml, path + "/source_type", header.source_type);
+  read(xml, path + "/source_direction",  header.source_direction);
+  read(xml, path + "/sink_smearingparam", header.sink_smearingparam);
+  read(xml, path + "/sink_type",  header.sink_type);
+  read(xml, path + "/sink_direction", header.sink_direction);
+}
+
+
+//! Source header writer
+void write(XMLWriter& xml, const string& path, const PropHead& header)
+{
+  push(xml, path);
+  write(xml, "kappa", header.kappa);
+  write(xml, "source_smearingparam", header.source_smearingparam);
+  write(xml, "source_type", header.source_type);
+  write(xml, "source_direction",  header.source_direction);
+  write(xml, "sink_smearingparam", header.sink_smearingparam);
+  write(xml, "sink_type",  header.sink_type);
+  write(xml, "sink_direction", header.sink_direction);
+  pop(xml);
+}
+
+
+
 /*
  *  A simple binary writer for the propagators
  *
@@ -23,7 +53,7 @@ using std::string;
  *  header: PropHead, defined in propagator.h
  */
 
-void writeQprop(char file[], const LatticePropagator& quark_prop, 
+void writeQprop(const string& file, const LatticePropagator& quark_prop, 
 		const PropHead& header){
 
   /*
@@ -38,7 +68,7 @@ void writeQprop(char file[], const LatticePropagator& quark_prop,
   
 }
 
-void readQprop(char file[], LatticePropagator& quark_prop, PropHead& header){
+void readQprop(const string& file, LatticePropagator& quark_prop, PropHead& header){
 
   /*
    *  Now the local variables
@@ -53,7 +83,7 @@ void readQprop(char file[], LatticePropagator& quark_prop, PropHead& header){
 }
 
 
-void writeBarcomp(const char file[], const multiNd<Complex>& barprop, 
+void writeBarcomp(const string& file, const multiNd<Complex>& barprop, 
 		  const PropHead& head_1, const PropHead& head_2,
 		  const PropHead& head_3,
 		  const int j_decay){
@@ -140,7 +170,7 @@ void readPropHead(PropHead& header, BinaryReader& prop_in){
 void readBarcomp(multiNd<Complex>& barprop, 
 		 PropHead& head_1, PropHead& head_2, 
 		 PropHead& head_3,
-		 const char file[],  
+		 const string& file,  
 		 const int j_decay){
 
   /*

@@ -24,7 +24,7 @@
 //#####################################################################################
 
 static const char* const CVSExampleBuildingBlocks_hh =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/mainprogs/main/ExampleBuildingBlocks.cc,v 1.2 2003-08-27 20:19:32 edwards Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/mainprogs/main/ExampleBuildingBlocks.cc,v 1.3 2003-08-27 22:08:41 edwards Exp $";
 
 //#####################################################################################
 //#####################################################################################
@@ -168,11 +168,11 @@ int main( int argc, char** argv )
   //#####################################################################################
 
   // Forward Quark Propagator
-
+  XMLReader ForwardPropXML;
   LatticePropagator* F = NULL;
   F = new LatticePropagator;
   Out << "reading forward propagator " << FrwdPropFileName << " ... ";  Out.flush();
-  readSzinQprop( *F, FrwdPropFileName );
+  readSzinQprop( ForwardPropXML, *F, FrwdPropFileName );
   Out << "done." << "\n";  Out.flush();
 
   int NF = 0;
@@ -184,20 +184,21 @@ int main( int argc, char** argv )
   {
     Bu = new LatticePropagator;
     Out << "reading proton sequential u propagator " << SeqUPropFileName << " ... ";  Out.flush();
-    readSzinQprop( *Bu, SeqUPropFileName );
+    readSzinQprop( ForwardPropXML, *Bu, SeqUPropFileName );
     Out << "done." << "\n";  Out.flush();
     HasU = 1;
     NF ++;
   }
 
   // Corresponding Sequential or Backward d Type Quark Propagator
+  XMLReader BackwardPropXML;
   int HasD = 0;
   LatticePropagator* Bd = NULL;
   if( strcmp( SeqDPropFileName, "NULL" ) != 0 )
   {
     Bd = new LatticePropagator;
     Out << "reading proton sequential d propagator " << SeqDPropFileName << " ... ";  Out. flush();
-    readSzinQprop( *Bd, SeqDPropFileName );
+    readSzinQprop( BackwardPropXML, *Bd, SeqDPropFileName );
     Out << "done." << "\n";  Out.flush();
     HasD = 1;
     NF ++;
@@ -286,17 +287,17 @@ int main( int argc, char** argv )
   // Read Gauge Field
   //#####################################################################################
 
-  XMLReader gauge_xml;
+  XMLReader GaugeXML;
   multi1d< LatticeColorMatrix >* U = NULL;
   U = new multi1d< LatticeColorMatrix >( Nd );
   Out << "reading gauge field " << GaugeFieldFileName << " ... ";  Out.flush();
   if( strcmp( GaugeFieldFormat, "archive" ) == 0 )
   {
-    readArchiv( gauge_xml, *U, GaugeFieldFileName );
+    readArchiv( GaugeXML, *U, GaugeFieldFileName );
   }
   if( strcmp( GaugeFieldFormat, "szin" ) == 0 )
   {
-    readSzin( gauge_xml, *U, GaugeFieldFileName );
+    readSzin( GaugeXML, *U, GaugeFieldFileName );
   }
   Out << "done." << "\n";  Out.flush();
 

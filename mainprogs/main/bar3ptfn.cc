@@ -1,7 +1,10 @@
-// $Id: bar3ptfn.cc,v 1.13 2003-08-27 20:04:14 edwards Exp $
+// $Id: bar3ptfn.cc,v 1.14 2003-08-27 22:08:41 edwards Exp $
 //
 // $Log: bar3ptfn.cc,v $
-// Revision 1.13  2003-08-27 20:04:14  edwards
+// Revision 1.14  2003-08-27 22:08:41  edwards
+// Start major push to using xml.
+//
+// Revision 1.13  2003/08/27 20:04:14  edwards
 // Changed readSzin to return an xml header.
 //
 // Revision 1.12  2003/07/04 17:08:36  edwards
@@ -577,9 +580,12 @@ main(int argc, char *argv[])
     // Read the quark propagator
     LatticePropagator quark_propagator ;
     {
+      XMLReader prop_xml;
       stringstream prop_file ;
       prop_file << "propagator_" << loop ;
-      readSzinQprop(quark_propagator, prop_file.str()) ;
+      readSzinQprop(prop_xml, quark_propagator, prop_file.str()) ;
+
+      write(xml_array, "Forward_prop_info", prop_xml);
     }
 
     XMLArrayWriter  xml_seq_src(xml_array, numSeq_src);
@@ -595,9 +601,12 @@ main(int argc, char *argv[])
 
       // Read the sequential propagator
       {
+	XMLReader seqprop_xml;
         stringstream prop_file ;
         prop_file << "seqprop_" << loop << "_" << seq_src_value ;
-        readSzinQprop(seq_quark_prop, prop_file.str()) ;
+        readSzinQprop(seqprop_xml, seq_quark_prop, prop_file.str()) ;
+
+	write(xml_array, "Backward_prop_info", seqprop_xml);
       }
 
       if ((0 <= seq_src_value) && (seq_src_value <= 9)) {

@@ -1,4 +1,4 @@
-// $Id: readszin.h,v 1.5 2003-08-27 20:18:49 edwards Exp $
+// $Id: readszin.h,v 1.6 2003-08-27 22:08:41 edwards Exp $
 
 #ifndef __readszin_h__
 #define __readszin_h__
@@ -20,17 +20,5 @@
  */    
 
 void readSzin(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_file);
-
-//! Read a SZIN configuration file
-/*!
- * \ingroup io
- *
- * Convenience function: throws away the header.
- *
- * \param u          gauge configuration ( Modify )
- * \param cfg_file   path ( Read )
- */    
-
-void readSzin(multi1d<LatticeColorMatrix>& u, const string& cfg_file);
 
 #endif
