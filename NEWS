@@ -1,3 +1,9 @@
+03/14/2005 -- Robert Edwards
+
+	Version 1.20.2. Fixed Building-Blocks stuff (ExampleBuildingBlocks)
+        to now do BB for each seqprop instead of all together. This
+        helps get around the max file-descriptor problem.
+
 03/12/2005 -- Robert Edwards
 
 	Version 1.20.1. Changed ExampleBuildingBlocks to use an XML
