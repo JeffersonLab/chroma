@@ -1,4 +1,4 @@
-// $Id: readszin.cc,v 1.8 2003-05-23 04:58:59 edwards Exp $
+// $Id: readszin.cc,v 1.9 2003-06-10 16:05:07 edwards Exp $
 
 /*! \file
  *  \brief Read in a configuration written by SZIN up to configuration version 7.
@@ -69,9 +69,6 @@ void readSzin(multi1d<LatticeColorMatrix>& u, const string& cfg_file, Seed& seed
   int i;
   int j;
 
-  string date;
-  string banner;
-
   int cfg_record_size; /* not used */
   int cfg_version;
   int date_size;
@@ -94,29 +91,19 @@ void readSzin(multi1d<LatticeColorMatrix>& u, const string& cfg_file, Seed& seed
    *  read (cfg_in) date(1:date_size), banner(1:banner_size), 
    *      cfg_version;
    */
-  char *old_date = new char[date_size+1];
-
+  string date(date_size+1,'\0');
   for(i=0; i < date_size; ++i)
   {
     read(cfg_in,j);
     date[i] = j;
   }
 
-  old_date[date_size] = '\0';
-  date = old_date;   // not being used at the moment
-  delete[] old_date;
-
-  char *old_banner = new char[banner_size+1];
-
+  string banner(banner_size+1,'\0');
   for(i=0; i < banner_size; ++i)
   {
     read(cfg_in,j);
     banner[i] = j;
-    // cerr << "HACK - not assigning banner" << endl;
   }
-  old_banner[banner_size] = '\0';
-  banner = old_banner;   // not being used at the moment
-  delete[] old_banner;
 
   read(cfg_in,cfg_version);
 
