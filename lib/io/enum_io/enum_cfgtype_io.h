@@ -20,7 +20,8 @@ namespace Chroma {
       CFG_TYPE_SZINQIO,
       CFG_TYPE_KYU,
       CFG_TYPE_DISORDERED,
-      CFG_TYPE_UNIT
+      CFG_TYPE_UNIT,
+      CFG_TYPE_CPPACS
   };
 
 
