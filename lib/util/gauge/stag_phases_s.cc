@@ -31,12 +31,22 @@ namespace StagPhases {
 
       // MILC Conventions: eta_t(x) = 1
       //                   eta_x    = -1^{t}
-      phases[3] = LatticeInteger(1);
-      phases[0] = where( x[3] % 2 == 0, LatticeInteger(1), LatticeInteger(-1));
+//      phases[3] = LatticeInteger(1);
+//      phases[0] = where( x[3] % 2 == 0, LatticeInteger(1), LatticeInteger(-1));
+//
+//      phases[1] = where( (x[3]+x[0]) % 2 == 0, LatticeInteger(1), LatticeInteger(-1));
+//      phases[2] = where( (x[3]+x[0]+x[1] ) % 2  == 0, LatticeInteger(1), LatticeInteger(-1));
+//      break;
 
-      phases[1] = where( (x[3]+x[0]) % 2 == 0, LatticeInteger(1), LatticeInteger(-1));
-      phases[2] = where( (x[3]+x[0]+x[1] ) % 2  == 0, LatticeInteger(1), LatticeInteger(-1));
+      // CPS conventions: eta_x = 1
+      //			eta_y = (-1)^x
+
+      phases[0] = LatticeInteger(1);
+      phases[1] = where( x[0] % 2 == 0, LatticeInteger(1), LatticeInteger(-1));
+      phases[2] = where( (x[0]+x[1] ) % 2  == 0, LatticeInteger(1), LatticeInteger(-1));
+      phases[3] = where( (x[0]+x[1]+x[2] ) % 2  == 0, LatticeInteger(1), LatticeInteger(-1));
       break;
+
     default:
       QDP_error_exit("Staggered phases  only supported for Nd=4 just now: Nd = %d\n", Nd);
       break;
