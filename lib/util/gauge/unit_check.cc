@@ -1,4 +1,4 @@
-// $Id: unit_check.cc,v 1.1 2003-10-02 03:26:21 edwards Exp $
+// $Id: unit_check.cc,v 1.2 2003-10-02 03:32:31 edwards Exp $
 
 /*! \file
  *  \brief Test a gauge field is unitarized
@@ -25,7 +25,7 @@ void unitarityCheck(const multi1d<LatticeColorMatrix>& u)
   for (int mu=0; mu < Nd; ++mu)
   {
     LatticeColorMatrix u_tmp = u[mu];
-    reunit(u_tmp[mu], lbad, numbad, REUNITARIZE_ERROR);
+    reunit(u_tmp, lbad, numbad, REUNITARIZE_ERROR);
   }
 }
 
