@@ -1,9 +1,9 @@
-// $Id: klein_gord.cc,v 1.2 2003-04-09 19:42:42 edwards Exp $
+// $Id: klein_gord.cc,v 1.3 2003-05-23 04:57:51 edwards Exp $
 /*! \file
  *  \brief Apply Klein-Gordon operator
  */
 
-#include "qdp.h"
+#include "chromabase.h"
 #include "actions/boson/operator/klein_gord.h"
 
 using namespace QDP;
