@@ -1,4 +1,4 @@
-// $Id: cfgtransf.cc,v 1.13 2004-04-13 03:07:01 edwards Exp $
+// $Id: cfgtransf.cc,v 1.14 2004-04-15 03:29:02 edwards Exp $
 /*! \file
  *  \brief Many-to-many gauge transformation routine
  */
@@ -449,17 +449,13 @@ int main(int argc, char **argv)
     break;
 #endif
 
-#if 0
-    // Not now...
   case 18:
     push(xml_out,"Kentucky_config");
     write(xml_out, "input_type", input_type);
     pop(xml_out);
     QDPIO::cout << "Read Kentucky gauge config from FE file\n";
-    readkyu (cfg_input_file, u);
-    savern (seed_old);
+    readKYU(u, cfg_input_file);
     break;
-#endif
 
 #if 0
     // Not now...
