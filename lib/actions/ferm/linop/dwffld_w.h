@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dwffld_w.h,v 1.1 2003-11-09 22:34:06 edwards Exp $
+// $Id: dwffld_w.h,v 1.2 2003-11-12 22:11:53 edwards Exp $
 /*! \file
  *  \brief DWF parity/rotation operator
  *
@@ -25,5 +25,17 @@ using namespace QDP;
  */
 
 void DwfFld(LatticeDWFermion& chi, const LatticeDWFermion& psi, enum PlusMinus isign);
+
+//! DWF parity/rotation operator
+/*! \ingroup linop
+ *
+ *  Chi  :=  P^{isign} . Psi    where  P is the rotation operator 
+ *
+ *  \param psi        Pseudofermion field                     (Read)
+ *  \param chi        Pseudofermion field                     (Write)
+ *  \param isign      Sign (Plus/Minus)    	              (Read)
+ */
+
+void DwfFld(multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, enum PlusMinus isign);
 
 #endif
