@@ -75,6 +75,9 @@ propagator_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 propagator_comp_SOURCES= propagator_comp.cc
 propagator_comp_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 
+seqsource_SOURCES= seqsource.cc
+seqsource_DEPENDENCIES= build_chroma_libs rebuild_other_libs
+
 multi_propagator_SOURCES= multi_propagator.cc
 multi_propagator_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 

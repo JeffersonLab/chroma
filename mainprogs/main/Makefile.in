@@ -39,7 +39,6 @@ host_triplet = @host@
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_2 = -L@top_builddir@/other_libs/@SSE_DSLASH_DIR@/lib
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_3 = -llevel3 @QDPXX_LIBS@
 @BUILD_WILSON_LIBS_TRUE@am__append_4 = spectrum_w qqq_w bar3ptfn qproptransf wallformfac
-@BUILD_WILSON_LIBS_TRUE@am__append_5 = dwf_seqprop
 VPATH = @top_srcdir@/mainprogs/main
 ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
@@ -177,7 +176,11 @@ $(am__append_4)
 # Currently empty
 #if BUILD_STAGGERED_LIBS
 #endif
-EXTRA_PROGRAMS = qpropadd seqprop seqprop_comp seqprop_collect $(am__append_5)
+EXTRA_PROGRAMS = qpropadd 
+
+# Currently empty
+#if BUILD_WILSON_LIBS
+#endif
 
 # Currently empty
 #if BUILD_STAGGERED_LIBS
@@ -209,21 +212,6 @@ spectrum_w_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 qqq_w_SOURCES = qqq_w.cc
 qqq_w_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
-seqprop_SOURCES = seqprop.cc
-seqprop_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
-seqsource_SOURCES = seqsource.cc
-seqsource_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
-seqprop_comp_SOURCES = seqprop_comp.cc
-seqprop_comp_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
-seqprop_collect_SOURCES = seqprop_collect.cc
-seqprop_collect_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
-dwf_seqprop_SOURCES = dwf_seqprop.cc
-dwf_seqprop_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 bar3ptfn_SOURCES = bar3ptfn.cc
 bar3ptfn_DEPENDENCIES = build_chroma_libs rebuild_other_libs
@@ -261,13 +249,7 @@ subdir = mainprogs/main
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/lib/chroma_config_internal.h
 CONFIG_CLEAN_FILES =
-@BUILD_WILSON_LIBS_TRUE@EXTRA_PROGRAMS = qpropadd$(EXEEXT) \
-@BUILD_WILSON_LIBS_TRUE@	seqprop$(EXEEXT) seqprop_comp$(EXEEXT) \
-@BUILD_WILSON_LIBS_TRUE@	seqprop_collect$(EXEEXT) \
-@BUILD_WILSON_LIBS_TRUE@	dwf_seqprop$(EXEEXT)
-@BUILD_WILSON_LIBS_FALSE@EXTRA_PROGRAMS = qpropadd$(EXEEXT) \
-@BUILD_WILSON_LIBS_FALSE@	seqprop$(EXEEXT) seqprop_comp$(EXEEXT) \
-@BUILD_WILSON_LIBS_FALSE@	seqprop_collect$(EXEEXT)
+EXTRA_PROGRAMS = qpropadd$(EXEEXT)
 @BUILD_WILSON_LIBS_TRUE@check_PROGRAMS = propagator$(EXEEXT) \
 @BUILD_WILSON_LIBS_TRUE@	propagator_comp$(EXEEXT) \
 @BUILD_WILSON_LIBS_TRUE@	multi_propagator$(EXEEXT) \
@@ -314,10 +296,6 @@ am_collect_propcomp_OBJECTS = collect_propcomp.$(OBJEXT)
 collect_propcomp_OBJECTS = $(am_collect_propcomp_OBJECTS)
 collect_propcomp_LDADD = $(LDADD)
 collect_propcomp_LDFLAGS =
-am_dwf_seqprop_OBJECTS = dwf_seqprop.$(OBJEXT)
-dwf_seqprop_OBJECTS = $(am_dwf_seqprop_OBJECTS)
-dwf_seqprop_LDADD = $(LDADD)
-dwf_seqprop_LDFLAGS =
 am_hypsmear_OBJECTS = hypsmear.$(OBJEXT)
 hypsmear_OBJECTS = $(am_hypsmear_OBJECTS)
 hypsmear_LDADD = $(LDADD)
@@ -362,21 +340,11 @@ am_qqq_w_OBJECTS = qqq_w.$(OBJEXT)
 qqq_w_OBJECTS = $(am_qqq_w_OBJECTS)
 qqq_w_LDADD = $(LDADD)
 qqq_w_LDFLAGS =
-am_seqprop_OBJECTS = seqprop.$(OBJEXT)
-seqprop_OBJECTS = $(am_seqprop_OBJECTS)
-seqprop_LDADD = $(LDADD)
-seqprop_LDFLAGS =
-am_seqprop_collect_OBJECTS = seqprop_collect.$(OBJEXT)
-seqprop_collect_OBJECTS = $(am_seqprop_collect_OBJECTS)
-seqprop_collect_LDADD = $(LDADD)
-seqprop_collect_LDFLAGS =
-am_seqprop_comp_OBJECTS = seqprop_comp.$(OBJEXT)
-seqprop_comp_OBJECTS = $(am_seqprop_comp_OBJECTS)
-seqprop_comp_LDADD = $(LDADD)
-seqprop_comp_LDFLAGS =
-am_seqsource_OBJECTS = seqsource.$(OBJEXT)
-seqsource_OBJECTS = $(am_seqsource_OBJECTS)
+seqsource_SOURCES = seqsource.c
+seqsource_OBJECTS = seqsource.$(OBJEXT)
 seqsource_LDADD = $(LDADD)
+@BUILD_SSE_WILSON_DSLASH_TRUE@seqsource_DEPENDENCIES =
+@BUILD_SSE_WILSON_DSLASH_FALSE@seqsource_DEPENDENCIES =
 seqsource_LDFLAGS =
 am_sink_smearing_OBJECTS = sink_smearing.$(OBJEXT)
 sink_smearing_OBJECTS = $(am_sink_smearing_OBJECTS)
@@ -398,21 +366,21 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/bar3ptfn.Po ./$(DEPDIR)/cfgtransf.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/collect_multi_propcomp.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/collect_propcomp.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/dwf_seqprop.Po ./$(DEPDIR)/hypsmear.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/make_source.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/hypsmear.Po ./$(DEPDIR)/make_source.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/multi_propagator.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/multi_propagator_comp.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/propagator.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/propagator_comp.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/qpropadd.Po ./$(DEPDIR)/qpropgfix.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/qproptransf.Po ./$(DEPDIR)/qproptrev.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/qqq_w.Po ./$(DEPDIR)/seqprop.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/seqprop_collect.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/seqprop_comp.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/seqsource.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/qqq_w.Po ./$(DEPDIR)/seqsource.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/sink_smearing.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/spectrum_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/wallformfac.Po
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -420,22 +388,21 @@ CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
 DIST_SOURCES = $(ExampleBuildingBlocks_SOURCES) $(bar3ptfn_SOURCES) \
 	$(cfgtransf_SOURCES) $(collect_multi_propcomp_SOURCES) \
-	$(collect_propcomp_SOURCES) $(dwf_seqprop_SOURCES) \
-	$(hypsmear_SOURCES) $(make_source_SOURCES) \
-	$(multi_propagator_SOURCES) $(multi_propagator_comp_SOURCES) \
-	$(propagator_SOURCES) $(propagator_comp_SOURCES) \
-	$(qpropadd_SOURCES) $(qpropgfix_SOURCES) $(qproptransf_SOURCES) \
-	$(qproptrev_SOURCES) $(qqq_w_SOURCES) $(seqprop_SOURCES) \
-	$(seqprop_collect_SOURCES) $(seqprop_comp_SOURCES) \
-	$(seqsource_SOURCES) $(sink_smearing_SOURCES) \
-	$(spectrum_w_SOURCES) $(wallformfac_SOURCES)
+	$(collect_propcomp_SOURCES) $(hypsmear_SOURCES) \
+	$(make_source_SOURCES) $(multi_propagator_SOURCES) \
+	$(multi_propagator_comp_SOURCES) $(propagator_SOURCES) \
+	$(propagator_comp_SOURCES) $(qpropadd_SOURCES) \
+	$(qpropgfix_SOURCES) $(qproptransf_SOURCES) \
+	$(qproptrev_SOURCES) $(qqq_w_SOURCES) seqsource.c \
+	$(sink_smearing_SOURCES) $(spectrum_w_SOURCES) \
+	$(wallformfac_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(ExampleBuildingBlocks_SOURCES) $(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) $(collect_multi_propcomp_SOURCES) $(collect_propcomp_SOURCES) $(dwf_seqprop_SOURCES) $(hypsmear_SOURCES) $(make_source_SOURCES) $(multi_propagator_SOURCES) $(multi_propagator_comp_SOURCES) $(propagator_SOURCES) $(propagator_comp_SOURCES) $(qpropadd_SOURCES) $(qpropgfix_SOURCES) $(qproptransf_SOURCES) $(qproptrev_SOURCES) $(qqq_w_SOURCES) $(seqprop_SOURCES) $(seqprop_collect_SOURCES) $(seqprop_comp_SOURCES) $(seqsource_SOURCES) $(sink_smearing_SOURCES) $(spectrum_w_SOURCES) $(wallformfac_SOURCES)
+SOURCES = $(ExampleBuildingBlocks_SOURCES) $(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) $(collect_multi_propcomp_SOURCES) $(collect_propcomp_SOURCES) $(hypsmear_SOURCES) $(make_source_SOURCES) $(multi_propagator_SOURCES) $(multi_propagator_comp_SOURCES) $(propagator_SOURCES) $(propagator_comp_SOURCES) $(qpropadd_SOURCES) $(qpropgfix_SOURCES) $(qproptransf_SOURCES) $(qproptrev_SOURCES) $(qqq_w_SOURCES) seqsource.c $(sink_smearing_SOURCES) $(spectrum_w_SOURCES) $(wallformfac_SOURCES)
 
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .cc .o .obj
+.SUFFIXES: .c .cc .o .obj
 $(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.ac $(ACLOCAL_M4)
 	cd $(top_srcdir) && \
 	  $(AUTOMAKE) --gnu  mainprogs/main/Makefile
@@ -459,9 +426,6 @@ collect_multi_propcomp$(EXEEXT): $(collect_multi_propcomp_OBJECTS) $(collect_mul
 collect_propcomp$(EXEEXT): $(collect_propcomp_OBJECTS) $(collect_propcomp_DEPENDENCIES) 
 	@rm -f collect_propcomp$(EXEEXT)
 	$(CXXLINK) $(collect_propcomp_LDFLAGS) $(collect_propcomp_OBJECTS) $(collect_propcomp_LDADD) $(LIBS)
-dwf_seqprop$(EXEEXT): $(dwf_seqprop_OBJECTS) $(dwf_seqprop_DEPENDENCIES) 
-	@rm -f dwf_seqprop$(EXEEXT)
-	$(CXXLINK) $(dwf_seqprop_LDFLAGS) $(dwf_seqprop_OBJECTS) $(dwf_seqprop_LDADD) $(LIBS)
 hypsmear$(EXEEXT): $(hypsmear_OBJECTS) $(hypsmear_DEPENDENCIES) 
 	@rm -f hypsmear$(EXEEXT)
 	$(CXXLINK) $(hypsmear_LDFLAGS) $(hypsmear_OBJECTS) $(hypsmear_LDADD) $(LIBS)
@@ -495,18 +459,9 @@ qproptrev$(EXEEXT): $(qproptrev_OBJECTS) $(qproptrev_DEPENDENCIES)
 qqq_w$(EXEEXT): $(qqq_w_OBJECTS) $(qqq_w_DEPENDENCIES) 
 	@rm -f qqq_w$(EXEEXT)
 	$(CXXLINK) $(qqq_w_LDFLAGS) $(qqq_w_OBJECTS) $(qqq_w_LDADD) $(LIBS)
-seqprop$(EXEEXT): $(seqprop_OBJECTS) $(seqprop_DEPENDENCIES) 
-	@rm -f seqprop$(EXEEXT)
-	$(CXXLINK) $(seqprop_LDFLAGS) $(seqprop_OBJECTS) $(seqprop_LDADD) $(LIBS)
-seqprop_collect$(EXEEXT): $(seqprop_collect_OBJECTS) $(seqprop_collect_DEPENDENCIES) 
-	@rm -f seqprop_collect$(EXEEXT)
-	$(CXXLINK) $(seqprop_collect_LDFLAGS) $(seqprop_collect_OBJECTS) $(seqprop_collect_LDADD) $(LIBS)
-seqprop_comp$(EXEEXT): $(seqprop_comp_OBJECTS) $(seqprop_comp_DEPENDENCIES) 
-	@rm -f seqprop_comp$(EXEEXT)
-	$(CXXLINK) $(seqprop_comp_LDFLAGS) $(seqprop_comp_OBJECTS) $(seqprop_comp_LDADD) $(LIBS)
 seqsource$(EXEEXT): $(seqsource_OBJECTS) $(seqsource_DEPENDENCIES) 
 	@rm -f seqsource$(EXEEXT)
-	$(CXXLINK) $(seqsource_LDFLAGS) $(seqsource_OBJECTS) $(seqsource_LDADD) $(LIBS)
+	$(LINK) $(seqsource_LDFLAGS) $(seqsource_OBJECTS) $(seqsource_LDADD) $(LIBS)
 sink_smearing$(EXEEXT): $(sink_smearing_OBJECTS) $(sink_smearing_DEPENDENCIES) 
 	@rm -f sink_smearing$(EXEEXT)
 	$(CXXLINK) $(sink_smearing_LDFLAGS) $(sink_smearing_OBJECTS) $(sink_smearing_LDADD) $(LIBS)
@@ -528,7 +483,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cfgtransf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/collect_multi_propcomp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/collect_propcomp.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dwf_seqprop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hypsmear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/make_source.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/multi_propagator.Po@am__quote@
@@ -540,9 +494,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qproptransf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qproptrev.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qqq_w.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seqprop.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seqprop_collect.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seqprop_comp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seqsource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sink_smearing.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/spectrum_w.Po@am__quote@
@@ -550,6 +501,28 @@ distclean-compile:
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
+
+.c.o:
+@am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o $@ `test -f '$<' || echo '$(srcdir)/'`$<; \
+@am__fastdepCC_TRUE@	then mv "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(COMPILE) -c `test -f '$<' || echo '$(srcdir)/'`$<
+
+.c.obj:
+@am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o $@ `if test -f '$<'; then $(CYGPATH_W) '$<'; else $(CYGPATH_W) '$(srcdir)/$<'; fi`; \
+@am__fastdepCC_TRUE@	then mv "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(COMPILE) -c `if test -f '$<'; then $(CYGPATH_W) '$<'; else $(CYGPATH_W) '$(srcdir)/$<'; fi`
 
 .cc.o:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" \
