@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: wallformfac_pion.pl,v 1.8 2004-06-24 04:51:59 edwards Exp $
+# $Id: wallformfac_pion.pl,v 1.9 2004-09-11 21:58:46 edwards Exp $
 #
 # Usage
 #   formfact.pl
@@ -29,15 +29,24 @@ do './config.pl';
 
 #$t_src = 7;
 #$t_snk = 25;
-#$spext = 'D600.DG2p5_1.P_1.SP';
-#$ssext = 'D600.DG2p5_1.DG2p5_1.SS';
+#$apext = 'D600.DG2p5_1.P_1.SP';
 #$norm = '1';
 
 #$t_src = 5;
 #$t_snk = 20;
-#$spext = 'D1480.DG3_1.P_1.SP';
-#$ssext = 'D1480.DG3_1.DG3_1.SS';
+#$apext = 'D1480.DG3_1.P_1.SP';
 #$norm = '(2*0.1480)';
+
+# example of smearing names
+# Mass
+# $Mass = "D-7104";
+# 3-pt is  AB
+# wave channel
+# $L = 1;
+# $A = 'W';  $Aext = 'W';
+# $B = 'S';  $Bext = "DG1p2";
+# $C = 'S';  $Cext = "DG1p2";
+# $X = 'W';  $Xext = $Aext  # used for energy only
 #### End of example
 
 die "Put the lattice spacing \'a\' in the config.pl file\n" unless defined(a);
@@ -54,6 +63,13 @@ foreach $i (0 .. 2)
 }
 
 @cp_f = &canonical_momenta(*p_f);
+
+# Extensions
+$apext = "${Aext}_${L}.P_${L}.${A}P";
+$cpext = "${Cext}_${L}.P_${L}.${C}P";
+$cbext = "${Cext}_${L}.${Bext}_${L}.${C}${B}";
+$xpext = "${Xext}_${L}.P_${L}.${X}P";
+
 
 # Vector form factors
 $Nd = 4;
@@ -91,22 +107,18 @@ foreach $x (-$mommax_int .. $mommax_int)
 
       if ($mom2 == 0)
       {
-	$pion_sp{$x, $y, $z} = "pion.$spext" ;
-	$pion_ss{$x, $y, $z} = "pion.$ssext" ;
-	$pion_sw{$x, $y, $z} = "pion.$swext" ;  printf "pion_sw = %s\n", $pion_sw{0,0,0};
-	$pion_wp{$x, $y, $z} = "pion.$ssext" ;
-	$pion_ws{$x, $y, $z} = "pion.$ssext" ;
-	$pion_ws{$x, $y, $z} = "pion.$ssext" ;
+	$pion_ap{$x, $y, $z} = "pion.$apext" ;
+	$pion_cp{$x, $y, $z} = "pion.$cpext" ;
+	$pion_cb{$x, $y, $z} = "pion.$cbext" ;
+	$pion_xp{$x, $y, $z} = "pion.$xpext" ;
       }
       else
       {
 	$mom_name = "pion" . "_px" . $p[0] . "_py" . $p[1] . "_pz" . $p[2];
-	$pion_sp{$x, $y, $z} = $mom_name . ".$spext" ;
-	$pion_ss{$x, $y, $z} = $mom_name . ".$ssext" ;
-	$pion_sw{$x, $y, $z} = $mom_name . ".$swext" ;
-	$pion_wp{$x, $y, $z} = $mom_name . ".$ssext" ;
-	$pion_ws{$x, $y, $z} = $mom_name . ".$ssext" ;
-	$pion_ws{$x, $y, $z} = $mom_name . ".$ssext" ;
+	$pion_ap{$x, $y, $z} = $mom_name . ".$apext" ;
+	$pion_cp{$x, $y, $z} = $mom_name . ".$cpext" ;
+	$pion_cb{$x, $y, $z} = $mom_name . ".$cbext" ;
+	$pion_xp{$x, $y, $z} = $mom_name . ".$xpext" ;
       }
     }
   }
@@ -118,10 +130,9 @@ foreach $x (-$mommax_int .. $mommax_int)
 print "Pion Electric form-factor";
 
 # Assume zero momenta pion exist
-if (-f pion.$ssext) {exit(1);}
-if (-f pion.$swext) {exit(1);}
+if (-f pion.$cbext) {exit(1);}
 
-&ensbc("pion_norm=extract($pion_sw{$p_f[0],$p_f[1],$p_f[2]}, $t_snk - $t_src)");
+&ensbc("pion_norm=extract($pion_cb{$p_f[0],$p_f[1],$p_f[2]}, $t_snk - $t_src)");
 
 # Use this as the insertion point - it is midway
 $t_ins = int(($t_snk - $t_src) / 2);
@@ -141,12 +152,12 @@ foreach $qx ( -$mommax_int .. $mommax_int ) {
 
       next if ($mom2 > $mom2_max) ;
 
-      if (-f $pion_sp{$qx,$qy,$qz})
+      if (-f $pion_xp{$qx,$qy,$qz})
       {
-	print "found for ", $pion_sp{$qx,$qy,$qz};
+	print "found for ", $pion_xp{$qx,$qy,$qz};
 
-	$pion_energy{$qx, $qy, $qz} = "energy." . $pion_sp{$qx, $qy, $qz};
-	&meff("$pion_energy{$qx, $qy, $qz}","$pion_sp{$qx,$qy,$qz}",$t_ins);
+	$pion_energy{$qx, $qy, $qz} = "energy." . $pion_xp{$qx, $qy, $qz};
+	&meff("$pion_energy{$qx, $qy, $qz}","$pion_xp{$qx,$qy,$qz}",$t_ins);
 	($mass, $mass_err) = &calc("$pion_energy{$qx, $qy, $qz}");
 
 	$pion_mass{$qx, $qy, $qz} = $mass;
@@ -199,24 +210,24 @@ foreach $qz (-$mommax_int .. $mommax_int)
 
       print "q=[$q[0],$q[1],$q[2]], qsq = $qsq,  p_i=[$p_i[0],$p_i[1],$p_i[2]], p_i_sq = $p_i_sq, p_f=[$p_f[0],$p_f[1],$p_f[2]]";
 
-      printf "Looking for file %s\n","${nam}_cur3ptfn_${s}_snk15_g8_src_15_qx$q[0]_qy$q[1]_qz$q[2]";
-      if (! -f "${nam}_cur3ptfn_${s}_snk15_g8_src15_qx$q[0]_qy$q[1]_qz$q[2]") {next;}
+      printf "Looking for file %s\n","${nam}_cur3ptfn_${s}_snk15_g8_src_15_qx$q[0]_qy$q[1]_qz$q[2].$abext";
+      if (! -f "${nam}_cur3ptfn_${s}_snk15_g8_src15_qx$q[0]_qy$q[1]_qz$q[2].$abext") {next;}
 
-      printf "Looking for file %s\n", "$pion_sp{$cp_f[0],$cp_f[1],$cp_f[2]}";
-      if (! -f "$pion_sp{$cp_f[0],$cp_f[1],$cp_f[2]}") {next;}
+      printf "Looking for file %s\n", "$pion_ap{$cp_f[0],$cp_f[1],$cp_f[2]}";
+      if (! -f "$pion_ap{$cp_f[0],$cp_f[1],$cp_f[2]}") {next;}
 
-      printf "Looking for file %s\n", "$pion_sp{$cp_i[0],$cp_i[1],$cp_i[2]}";
-      if (! -f "$pion_sp{$cp_i[0],$cp_i[1],$cp_i[2]}") {next;}
+      printf "Looking for file %s\n", "$pion_ap{$cp_i[0],$cp_i[1],$cp_i[2]}";
+      if (! -f "$pion_ap{$cp_i[0],$cp_i[1],$cp_i[2]}") {next;}
 
-      printf "Found file %s\n","${nam}_cur3ptfn_${s}_snk15_g8_src15_qx$q[0]_qy$q[1]_qz$q[2]";
+      printf "Found file %s\n","${nam}_cur3ptfn_${s}_snk15_g8_src15_qx$q[0]_qy$q[1]_qz$q[2].$abext";
 
       $pion_disp = -(($fmtoGeV/$a)**2)*&compute_disp_pipf_sq($pion_mass{0,0,0},*p_i,*p_f);
       printf "pion mass = %g +- %g,  qsq (via vector disp) = %g\n", 
       $pion_mass{$cp_i[0],$cp_i[1],$cp_i[2]}, $pion_mass_err{$cp_i[0],$cp_i[1],$cp_i[2]}, $pion_disp;
 
-      &realpart("${nam}_cur3ptfn_${s}_snk15_g8_src15_qx$q[0]_qy$q[1]_qz$q[2]","${cur}_${s}_mu3_$q[0]$q[1]$q[2]");
+      &realpart("${nam}_cur3ptfn_${s}_snk15_g8_src15_qx$q[0]_qy$q[1]_qz$q[2].$abext","${cur}_${s}_mu3_$q[0]$q[1]$q[2]");
 
-      $var = "$norm*(${cur}_${s}_mu3_$q[0]$q[1]$q[2] * $pion_sp{$cp_f[0],$cp_f[1],$cp_f[2]}) * (2 * $pion_energy{$cp_f[0],$cp_f[1],$cp_f[2]} / ($pion_energy{$cp_i[0],$cp_i[1],$cp_i[2]} + $pion_energy{$cp_f[0],$cp_f[1],$cp_f[2]}))/ ($pion_sp{$cp_i[0],$cp_i[1],$cp_i[2]} * pion_norm)";
+      $var = "$norm*(${cur}_${s}_mu3_$q[0]$q[1]$q[2] * $pion_cp{$cp_f[0],$cp_f[1],$cp_f[2]}) * (2 * $pion_energy{$cp_f[0],$cp_f[1],$cp_f[2]} / ($pion_energy{$cp_i[0],$cp_i[1],$cp_i[2]} + $pion_energy{$cp_f[0],$cp_f[1],$cp_f[2]}))/ ($pion_ap{$cp_i[0],$cp_i[1],$cp_i[2]} * pion_norm)";
 
       # Use some number of significant digits to uniquely identity the floating point qsq
       $qsq_int = int(10000*$pion_disp);
