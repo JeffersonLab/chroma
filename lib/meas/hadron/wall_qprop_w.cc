@@ -1,4 +1,4 @@
-// $Id: wall_qprop_w.cc,v 1.4 2004-04-05 04:12:14 edwards Exp $
+// $Id: wall_qprop_w.cc,v 1.5 2004-04-05 04:34:05 edwards Exp $
 /*! \file
  *  \brief Construct a wall-sink propagator
  */
@@ -45,10 +45,11 @@ void wall_qprop(LatticePropagator& wall_quark_prop,
   // Now copy onto the lattice
   LatticeInteger my_coord = Layout::latticeCoordinate(j_decay);
 
+  wall_quark_prop = zero;
   for(int t = 0; t < length; ++t)
-    wall_quark_prop = where(lbmask & (my_coord == t),
-			    LatticePropagator(dprop_slice[t]),
-			    LatticePropagator(zero));
+    copymask(wall_quark_prop, 
+	     LatticeBoolean(lbmask & (my_coord == t)),
+	     LatticePropagator(dprop_slice[t]));
             
   END_CODE("wall_qprop");
 }
