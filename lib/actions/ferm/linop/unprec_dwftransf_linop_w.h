@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwftransf_linop_w.h,v 1.1 2004-11-02 10:33:50 bjoo Exp $
+// $Id: unprec_dwftransf_linop_w.h,v 1.2 2004-11-02 12:21:54 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -15,6 +15,9 @@
 using namespace QDP;
 using namespace Chroma;
 
+
+// Apply   H_t =  (b5 + c5) H_w / ( 2 + (b5 + c5) D_w )
+//
 class UnprecDWFTransfLinOp : public LinearOperator<LatticeFermion>
 {
 public:
@@ -53,11 +56,14 @@ private:
   InvertParam_t inv_param;
   multi1d<LatticeColorMatrix> u;
   Handle< LinearOperator<LatticeFermion> > D_w;
+  Handle< LinearOperator<LatticeFermion> > H_w;
   Handle< LinearOperator<LatticeFermion> > D_denum;  
-  Handle< LinearOperator<LatticeFermion> > D_sq_denum;
 };
 
 
+// Apply H_t^{dagger]H_t =  (b5+c5)^2 H_w [ 1 / ( denum ) ] H_w
+//
+// with denum = (2 + (b5-c5)D_w^{dag})( 2 + (b5-c5)D_w )
 class UnprecDWFTransfMdagMLinOp : public LinearOperator<LatticeFermion>
 {
 public:
@@ -94,13 +100,17 @@ private:
   Real c5;
   InvertParam_t inv_param;
   multi1d<LatticeColorMatrix> u;
+  Handle< LinearOperator<LatticeFermion> > H_w;
   Handle< LinearOperator<LatticeFermion> > D_w;
-  Handle< LinearOperator<LatticeFermion> > D_sq_denum;
+  Handle< LinearOperator<LatticeFermion> > D_denum;
 
 };
 
 
 // Operators to apply the denominator
+//
+// ( 2 + (b5 - c5) D )
+
 class UnprecDWFTransfDenLinOp : public LinearOperator<LatticeFermion>
 {
 public:
@@ -137,49 +147,5 @@ private:
   Handle< LinearOperator<LatticeFermion> > D_w;
 };
 
-class UnprecDWFTransfMdagMDenLinOp : public LinearOperator<LatticeFermion>
-{
-public:
-  //! Partial constructor
-  UnprecDWFTransfMdagMDenLinOp() {}
-
-  //! Full constructor
-  UnprecDWFTransfMdagMDenLinOp(const multi1d<LatticeColorMatrix>& u_, 
-			      const Real& b5_minus_c5_,
-			      const Handle<LinearOperator<LatticeFermion> > D_w_ ) 
-    : u(u_), b5_minus_c5(b5_minus_c5_), D_w(D_w_) {}
-  
-
-  //! Destructor is automatic
-  ~UnprecDWFTransfMdagMDenLinOp() {}
-
-  //! Only defined on the odd subset
-  const OrderedSubset& subset() const {return all;}
-
-  //! Apply the operator onto a source vector
-  void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const 
-  {
-
-    // Apply chi (2 + (b5-c5)D^{dag})( 2 + (b5-c5) D_w ) psi
-
-    // First apply tmp = (2 + (b5-c5)D_w) psi
-    LatticeFermion tmp;
-    (*D_w)(tmp, psi, isign);
-    tmp *= b5_minus_c5;
-    tmp += Real(2)*psi;
-
-    // Now apply chi = ( 2 + (b5-c5)D_w^{dag}) tmp
-    enum PlusMinus isign_dag = (isign == PLUS) ? MINUS : PLUS ;
-    (*D_w)(chi, tmp, isign_dag);
-    chi *= b5_minus_c5;
-    chi +=Real(2)*tmp;
-  }
-
-
-private:
-  multi1d<LatticeColorMatrix> u;
-  Real b5_minus_c5;
-  Handle< LinearOperator<LatticeFermion> > D_w;
-};
 
 #endif

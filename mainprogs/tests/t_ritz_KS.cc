@@ -1,4 +1,4 @@
-// $Id: t_ritz_KS.cc,v 1.15 2004-11-02 10:33:50 bjoo Exp $
+// $Id: t_ritz_KS.cc,v 1.16 2004-11-02 12:21:54 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -226,8 +226,8 @@ int main(int argc, char **argv)
       // Special case UNPRECONDITIONED_WILSON
       QDPIO::cout << "Trying 4D Wilson Like actions: " << endl;
 
-      if( fermact == "UNPRECONDITIONED_WILSON"
-	  || fermact == "UNPRECONDITIONED_DWFTRANSF" ) {
+      if( fermact == "UNPRECONDITIONED_WILSON" ) {
+
 	QDPIO::cout << "Special case. Computing Hw e-values and evecs too" << endl;
 	// DWF-like 5D Wilson-Type stuff
 	Handle< WilsonTypeFermAct<LatticeFermion> >
@@ -249,7 +249,7 @@ int main(int argc, char **argv)
 	success = true;
       }
       else {
-// DWF-like 5D Wilson-Type stuff
+
 	Handle< WilsonTypeFermAct<LatticeFermion> >
 	  S_f(TheWilsonTypeFermActFactory::Instance().createObject(fermact,
 								   fbc,
@@ -396,7 +396,7 @@ void RitzCode4D(Handle< const LinearOperator<LatticeFermion> >& MM,
 		 n_cg_high,
 		 high_xml);
   
-  lambda_high_aux[0] = sqrt(fabs(lambda_high_aux[0]));
+  lambda_high_aux[0] = fabs(lambda_high_aux[0]);
   QDPIO::cout << "|| lambda_hi || = " << lambda_high_aux[0]  << " hi_Rsd_r = " << hi_RsdR << endl;
   
   pop(high_xml);
@@ -580,7 +580,7 @@ void RitzCode4DHw(Handle< const LinearOperator<LatticeFermion> >& MM,
   xml_out << high_xml;
   
   push(xml_out, "Highest");
-  write(xml_out, "lambda_Msq_hi", lambda_high_aux[0]);
+  write(xml_out, "lambda_hi", lambda_high_aux[0]);
   pop(xml_out);
 
   QDPIO::cout << "Writing low eigenvalues/vectors" << endl;
@@ -725,7 +725,7 @@ void RitzCode5D(Handle< const LinearOperator<multi1d<LatticeFermion> > >& MM,
 		 n_cg_high,
 		 high_xml);
   
-  lambda_high_aux[0] = sqrt(fabs(lambda_high_aux[0]));
+  lambda_high_aux[0] = fabs(lambda_high_aux[0]);
   QDPIO::cout << "|| lambda_hi || = " << lambda_high_aux[0]  << " hi_Rsd_r = " << hi_RsdR << endl;
   
   pop(high_xml);

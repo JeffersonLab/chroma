@@ -1,4 +1,4 @@
-// $Id: unprec_dwftransf_linop_w.cc,v 1.1 2004-11-02 10:33:50 bjoo Exp $
+// $Id: unprec_dwftransf_linop_w.cc,v 1.2 2004-11-02 12:21:54 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -6,6 +6,7 @@
 #include "chromabase.h"
 #include "actions/ferm/linop/unprec_wilson_linop_w.h"
 #include "actions/ferm/linop/unprec_dwftransf_linop_w.h"
+#include "actions/ferm/linop/lgherm_w.h"
 #include "invtype.h"
 #include "actions/ferm/invert/invcg2.h"
 
@@ -22,18 +23,19 @@ void UnprecDWFTransfLinOp::create(const multi1d<LatticeColorMatrix>& u_,
   b5 = b5_;
   c5 = c5_;
   inv_param = invParam_;
+
   // Need to create a handle for a wilson linop
-  // Drop into handle
   QDPIO::cout << "Creating UnprecDWFTransfLinOp with ";
   QDPIO::cout << " b5=" << b5 << " c5=" << c5 << " Mass=" << Mass;
   QDPIO::cout << " RsdCG=" << inv_param.RsdCG << endl;
-  D_w = new UnprecWilsonLinOp(u_, Mass_);
 
+  // FOr the numerator
+  H_w = new lgherm<LatticeFermion>(new UnprecWilsonLinOp(u_,Mass_));
+
+  // For the denominator
   Real b5_minus_c5 = b5 - c5;
-
+  D_w = new UnprecWilsonLinOp(u_, Mass_);
   D_denum = new UnprecDWFTransfDenLinOp(u, b5_minus_c5, D_w);
-  D_sq_denum = new UnprecDWFTransfMdagMDenLinOp(u, b5_minus_c5, D_w);
-
 }
 
 void UnprecDWFTransfMdagMLinOp::create(const multi1d<LatticeColorMatrix>& u_, 
@@ -52,11 +54,14 @@ void UnprecDWFTransfMdagMLinOp::create(const multi1d<LatticeColorMatrix>& u_,
   QDPIO::cout << "Creating UnprecDWFTransfMdagMLinOp with ";
   QDPIO::cout << " b5=" << b5 << " c5=" << c5 << " Mass=" << Mass;
   QDPIO::cout << " RsdCG=" << inv_param.RsdCG << endl;
-  D_w = new UnprecWilsonLinOp(u_, Mass_);
 
-  // Create D_denum = ( 2 + (b5-c5) D )
+  // For the numearator
+  H_w = new lgherm<LatticeFermion>(new UnprecWilsonLinOp(u_,Mass_));
+
+  // For the denominator
   Real b5_minus_c5 = b5 - c5;
-  D_sq_denum = new UnprecDWFTransfMdagMDenLinOp(u, b5_minus_c5, D_w);
+  D_w = new UnprecWilsonLinOp(u_, Mass_);
+  D_denum = new UnprecDWFTransfDenLinOp(u, b5_minus_c5, D_w);
 
 }
 
@@ -69,23 +74,62 @@ void UnprecDWFTransfLinOp::operator() (LatticeFermion& chi, const LatticeFermion
   // Apply   (b5+c5) D / ( 2 + (b5-c5) D )
 
   // First do tmp = (b5 + c5) D psi
-  LatticeFermion tmp,tmp2
-;
-  enum PlusMinus isign_dag = ( isign == PLUS ? MINUS : PLUS );
-  (*D_denum)(tmp2, psi, isign_dag);
-
+  LatticeFermion tmp,tmp2;
   int n_count;
-  InvCG2<LatticeFermion>(*D_sq_denum, 
-			 tmp2, 
-			 tmp, 
-			 inv_param.RsdCG, 
-			 inv_param.MaxCG,
-			 n_count);
 
-  (*D_w)(chi, tmp, isign);
+  switch( isign ) {
+  case PLUS :
+    {
+      // DO CGNE: 
+      //  i) tmp_2 = D_denum^{dag} psi (purely for CGNE)
+      
+      (*D_denum)(tmp2, psi, MINUS);
+      
+      // ii) Solve  tmp = [ D_denum^{dag} D_denum ]^{-1} tmp2
+      //               = D_denum^{-1} D_denum^{-dag} D_denum^{dag} psi
+      //               = D_denum^{-1} psi
+      InvCG2<LatticeFermion>(*D_denum, 
+			     tmp2, 
+			     tmp, 
+			     inv_param.RsdCG, 
+			     inv_param.MaxCG,
+			     n_count);
+      
+      // Now multiply in Numerator: 
+      (*H_w)(chi, tmp, isign);
+
+    }
+    break;
+  case MINUS:
+    {
+      int n_count;
+      // THis bit is hermitian already just order changes
+      (*H_w)(tmp, psi, PLUS);
+
+      // Now solve D^{dag} D tmp2 = tmp
+      // => tmp2 = D^{-1} D^{-dag} tmp
+      InvCG2<LatticeFermion>(*D_denum,
+			     tmp,
+			     tmp2,
+			     inv_param.RsdCG,
+			     inv_param.MaxCG,
+			     n_count);
+
+      // Now multiply by D
+      // chi = D * D^{-1} D^{-dag} tmp
+      //     = D^{-dag} tmp = D^{-dag} H psi
+      (*D_denum)(chi, tmp2, PLUS);
+      break;
+    }
+  default: 
+    {
+      QDPIO::cerr << "SHould never get here " << endl;
+      QDP_abort(1);
+      break;
+    }
+  };
+
   chi *= (b5 + c5);
-
-
   QDPIO::cout << "DWFTransf Denominator invert n_count = " << n_count << endl;
   
   END_CODE();
@@ -100,19 +144,26 @@ void UnprecDWFTransfMdagMLinOp::operator() (LatticeFermion& chi, const LatticeFe
 
   // Apply   (b5+c5)^2 D^{dag}D  / (2 + (b5 - c5) D^{dag} ) ( 2 + (b5-c5) D )
 
-  // First do tmp = (b5 + c5) D psi
+  // First do tmp = H_w psi
   LatticeFermion tmp, tmp2;
+  (*H_w)(tmp, psi, PLUS);
+
   int n_count;
-  InvCG2<LatticeFermion>(*D_sq_denum, 
-			 psi, 
+  // Now apply 1 /[ ( 2 + (b5-c5)D^{dag} ) ( 2 + (b5-c5)D ) ]
+  //
+  // solve D_denum^{dag} D_denum = tmp
+  InvCG2<LatticeFermion>(*D_denum, 
 			 tmp, 
+			 tmp2, 
 			 inv_param.RsdCG, 
 			 inv_param.MaxCG,
 			 n_count);
 
-  (*D_w)(tmp2, tmp, isign);
-  (*D_w)(chi, tmp2, isign_dag);
 
+  // Now multiply in the second H_w on top
+  (*H_w)(chi, tmp2, PLUS );
+
+  // Now multiply in the b5_c5 factor
   chi *= ((b5 + c5)*(b5 + c5));
   
 
