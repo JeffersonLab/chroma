@@ -1,11 +1,11 @@
-// $Id: unprec_wilson_fermact_w.cc,v 1.10 2003-12-02 15:45:04 edwards Exp $
+// $Id: unprec_wilson_fermact_w.cc,v 1.11 2003-12-02 21:30:35 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
 
 #include "chromabase.h"
-#include "actions/ferm/linop/unprec_wilson_linop_w.h"
 #include "actions/ferm/fermacts/unprec_wilson_fermact_w.h"
+#include "actions/ferm/linop/unprec_wilson_linop_w.h"
 #include "actions/ferm/linop/lmdagm_w.h"
 
 //! Creation routine

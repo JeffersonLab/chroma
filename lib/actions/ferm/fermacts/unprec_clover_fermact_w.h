@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_clover_fermact_w.h,v 1.3 2003-12-02 15:45:04 edwards Exp $
+// $Id: unprec_clover_fermact_w.h,v 1.4 2003-12-02 21:30:35 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Clover fermion action
  */
@@ -8,7 +8,6 @@
 #define __unprec_clover_fermact_w_h__
 
 #include "fermact.h"
-#include "actions/ferm/linop/unprec_clover_linop_w.h"
 
 using namespace QDP;
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_wilson_fermact_w.h,v 1.2 2003-12-02 15:45:04 edwards Exp $
+// $Id: prec_wilson_fermact_w.h,v 1.3 2003-12-02 21:30:35 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action
  */
@@ -8,7 +8,6 @@
 #define __prec_wilson_fermact_w_h__
 
 #include "fermact.h"
-#include "actions/ferm/linop/prec_wilson_linop_w.h"
 
 using namespace QDP;
 
