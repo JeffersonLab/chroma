@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.156 2004-08-01 20:21:47 edwards Exp $
+# $Id: Makefile.am,v 1.157 2004-08-07 03:25:43 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -118,6 +118,7 @@ nobase_include_HEADERS = \
         util/util.h \
 	update/update.h update/field_state.h \
 	update/heatbath/heatbath.h \
+        update/heatbath/su3over.h update/heatbath/su3hb.h \
 	update/molecdyn/molecdyn.h \
 	update/molecdyn/abs_hamiltonian.h \
 	update/molecdyn/abs_hmc.h \
@@ -276,9 +277,8 @@ libchroma_a_SOURCES = gauge_startup.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
 	       invsumr.cc minvsumr.cc inv_rel_sumr.cc minv_rel_sumr.cc \
 	       invbicgstab.cc invbicgstab_array.cc inv_rel_gmresr_sumr.cc \
 	       inv_rel_gmresr_cg.cc inv_gmresr_cg_array.cc \
-	       inv_minres_array.cc wilson_gaugeact.cc
-
-# 
+	       inv_minres_array.cc wilson_gaugeact.cc \
+               su3over.cc su3hb.cc
 
 #
 # Object files to add if building the Wilson Builds...
