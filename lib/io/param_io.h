@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: param_io.h,v 1.1 2004-01-06 01:30:48 edwards Exp $
+// $Id: param_io.h,v 1.2 2004-01-06 02:09:01 edwards Exp $
 /*! \file
  *  \brief Reunitarize (to a SU(N)) inplace the matrix A under some option
  */
@@ -7,6 +7,8 @@
 #ifndef __param_io_h__
 #define __param_io_h__
 
+#include "meas/smear/sink_smear2_w.h"
+#include "invtype.h"
 
 /*
  *  Here we have various temporary definitions
@@ -16,19 +18,16 @@ enum CfgType {
   CFG_TYPE_NERSC,
   CFG_TYPE_SCIDAC,
   CFG_TYPE_SZIN,
-  CFG_TYPE_UNKNOWN
-} ;
+};
 
 enum PropType {
   PROP_TYPE_SCIDAC = 2,
   PROP_TYPE_SZIN,
-  PROP_TYPE_UNKNOWN
-} ;
+};
 
 enum FermType {
   FERM_TYPE_WILSON,
   FERM_TYPE_STAGGERED,
-  FERM_TYPE_UNKNOWN
 };
 
 
@@ -38,6 +37,11 @@ enum FermType {
 struct IO_version_t
 {
   int version;
+};
+
+struct Cfg_t
+{
+  string       cfg_file;
 };
 
 
@@ -69,22 +73,6 @@ struct SmearingParam_t
   WvfType       wvf_type;
   multi1d<Real> wvf_param;
   multi1d<int>  wvfIntPar;
-};
-
-
-//! Parameters for sources and sinks
-struct SrceSinkParam_t
-{
-  bool             Pt_src;   // point source
-  bool             Sl_src;   // shell source
-  bool             Pt_snk;   // point sink
-  bool             Sl_snk;   // shell sink
-
-  SmearingParam_t  smearParam;
-
-  multi1d<int>     t_srce;
-  multi1d<int>     sink_mom;
-  int              t_sink;
 };
 
 
