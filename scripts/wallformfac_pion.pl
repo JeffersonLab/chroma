@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: wallformfac_pion.pl,v 1.14 2004-09-16 01:58:25 edwards Exp $
+# $Id: wallformfac_pion.pl,v 1.15 2004-09-16 02:06:53 edwards Exp $
 #
 # Usage
 #   formfact.pl
@@ -163,6 +163,8 @@ foreach $qx ( -$mommax_int .. $mommax_int ) {
       if (-f $pion_xp{$qx,$qy,$qz})
       {
 	print "found for ", $pion_xp{$qx,$qy,$qz};
+
+	@q = ($qx, $qy, $qz);
 
 	$pion_energy{$qx, $qy, $qz} = "energy." . $pion_xp{$qx, $qy, $qz};
 	if ($mom2 > 0)
