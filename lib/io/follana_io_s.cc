@@ -1,12 +1,12 @@
 /*
- *  $Id: follana_io.cc,v 1.4 2003-10-14 17:41:23 edwards Exp $
+ *  $Id: follana_io_s.cc,v 1.1 2003-10-23 09:44:31 bjoo Exp $
  *
  *  These are a few simple I/O routines that we can use until QIO makes its appearance
  *  I have tried to include a simple header by means of a structure.
  */
 
 #include "chromabase.h"
-#include "io/follana_io.h"
+#include "io/follana_io_s.h"
 
 #include <string>
 
