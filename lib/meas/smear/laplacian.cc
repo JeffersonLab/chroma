@@ -1,4 +1,4 @@
-// $Id: laplacian.cc,v 1.3 2004-01-09 03:01:26 edwards Exp $
+// $Id: laplacian.cc,v 1.4 2004-01-09 03:02:36 edwards Exp $
 /*! \file
  *  \brief Laplacian smearing of a source
  */
@@ -16,6 +16,7 @@ using namespace QDP;
  *  \param u        gauge field ( Read )
  *  \param chi      color vector field ( Modify )
  *  \param j_decay  direction of decay ( Read )
+ *  \param power    number of times to apply laplacian ( Read )
  */
 
 template<typename T>

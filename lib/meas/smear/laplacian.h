@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: laplacian.h,v 1.4 2004-01-09 03:01:26 edwards Exp $
+// $Id: laplacian.h,v 1.5 2004-01-09 03:02:36 edwards Exp $
 /*! \file
  *  \brief Laplacian smearing of a source
  */
@@ -14,6 +14,7 @@
  *  \param u        gauge field ( Read )
  *  \param chi      lattice color vector field ( Modify )
  *  \param j_decay  direction of decay ( Read )
+ *  \param power    number of times to apply laplacian ( Read )
  */
 void laplacian(const multi1d<LatticeColorMatrix>& u, 
 	       LatticeColorVector& chi, 
@@ -28,6 +29,7 @@ void laplacian(const multi1d<LatticeColorMatrix>& u,
  *  \param u        gauge field ( Read )
  *  \param chi      lattice propagator field ( Modify )
  *  \param j_decay  direction of decay ( Read )
+ *  \param power    number of times to apply laplacian ( Read )
  */
 void laplacian(const multi1d<LatticeColorMatrix>& u, 
 	       LatticePropagator& chi, 
