@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ev_state.h,v 1.1 2003-12-02 21:30:53 edwards Exp $
+// $Id: ev_state.h,v 1.2 2003-12-02 22:34:37 edwards Exp $
 /*! @file
  * @brief Connection state holding eigenvectors
  *
@@ -49,8 +49,12 @@ public:
     }
 
   //! Copy constructor
-  /*! Written as a deep copy, but not expected to be used */
-  EVConnectState(const EVConnectState& a) : u(a.u), eigVal(a.eigVal_), eigVec(a.eigVec_) 
+  /*! 
+   * Written as a deep copy, but not expected to be used 
+   *
+   * OOpps, need to convert this to a handle version
+   */
+  EVConnectState(const EVConnectState& a) : u(a.u), eigVal(a.eigVal), eigVec(a.eigVec) 
     {}
 
   //! Destructor
