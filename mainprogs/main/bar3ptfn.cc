@@ -1,4 +1,4 @@
-// $Id: bar3ptfn.cc,v 1.30 2004-04-06 04:20:33 edwards Exp $
+// $Id: bar3ptfn.cc,v 1.31 2004-04-17 03:36:36 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions
  *
@@ -93,7 +93,7 @@ void read(XMLReader& xml, const string& path, Bar3ptfn_input_t& input)
   catch (const string& e) 
   {
     QDPIO::cerr << "Error reading prop data: " << e << endl;
-    throw;
+    QDP_abort(1);
   }
 }
 
@@ -284,7 +284,7 @@ main(int argc, char *argv[])
     catch (const string& e) 
     {
       QDPIO::cerr << "Error extracting forward_prop header: " << e << endl;
-      throw;
+      QDP_abort(1);
     }
   }
   QDPIO::cout << "Forward propagator successfully read" << endl;
@@ -359,7 +359,7 @@ main(int argc, char *argv[])
       catch (const string& e) 
       {
 	QDPIO::cerr << "Error extracting seqprop header: " << e << endl;
-	throw;
+	QDP_abort(1);
       }
     }
     QDPIO::cout << "Sequential propagator successfully read" << endl;
