@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.323 2005-01-28 05:08:05 edwards Exp $
+# $Id: Makefile.in,v 1.324 2005-02-01 21:23:32 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -87,6 +87,7 @@ libchroma_a_AR = $(AR) $(ARFLAGS)
 libchroma_a_LIBADD =
 am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/overlap_state.cc \
+	actions/ferm/fermacts/remez_gmp.cc \
 	actions/ferm/fermacts/zolotarev_coeffs.cc \
 	actions/ferm/fermbcs/simple_fermbc.cc \
 	actions/ferm/invert/invbicgstab.cc \
@@ -292,18 +293,18 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 @BUILD_PAB_WILSON_DSLASH_TRUE@	lwldslash_w_pab.$(OBJEXT)
 @BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@am__objects_4 = asqtad_cps_wrapper_qprop.$(OBJEXT)
 am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
-	zolotarev_coeffs.$(OBJEXT) simple_fermbc.$(OBJEXT) \
-	invbicgstab.$(OBJEXT) invbicgstab_array.$(OBJEXT) \
-	invcg1.$(OBJEXT) invcg1_array.$(OBJEXT) invcg2.$(OBJEXT) \
-	invcg2_array.$(OBJEXT) invcg2_timing_hacks.$(OBJEXT) \
-	invsumr.$(OBJEXT) inv_gmresr_cg_array.$(OBJEXT) \
-	inv_minres_array.$(OBJEXT) inv_rel_cg1.$(OBJEXT) \
-	inv_rel_cg2.$(OBJEXT) inv_rel_gmresr_cg.$(OBJEXT) \
-	inv_rel_gmresr_sumr.$(OBJEXT) inv_rel_sumr.$(OBJEXT) \
-	minvcg.$(OBJEXT) minvcg_array.$(OBJEXT) minvsumr.$(OBJEXT) \
-	minv_rel_cg.$(OBJEXT) minv_rel_sumr.$(OBJEXT) \
-	fermact_qprop.$(OBJEXT) fermact_qprop_array.$(OBJEXT) \
-	prec_fermact_qprop.$(OBJEXT) \
+	remez_gmp.$(OBJEXT) zolotarev_coeffs.$(OBJEXT) \
+	simple_fermbc.$(OBJEXT) invbicgstab.$(OBJEXT) \
+	invbicgstab_array.$(OBJEXT) invcg1.$(OBJEXT) \
+	invcg1_array.$(OBJEXT) invcg2.$(OBJEXT) invcg2_array.$(OBJEXT) \
+	invcg2_timing_hacks.$(OBJEXT) invsumr.$(OBJEXT) \
+	inv_gmresr_cg_array.$(OBJEXT) inv_minres_array.$(OBJEXT) \
+	inv_rel_cg1.$(OBJEXT) inv_rel_cg2.$(OBJEXT) \
+	inv_rel_gmresr_cg.$(OBJEXT) inv_rel_gmresr_sumr.$(OBJEXT) \
+	inv_rel_sumr.$(OBJEXT) minvcg.$(OBJEXT) minvcg_array.$(OBJEXT) \
+	minvsumr.$(OBJEXT) minv_rel_cg.$(OBJEXT) \
+	minv_rel_sumr.$(OBJEXT) fermact_qprop.$(OBJEXT) \
+	fermact_qprop_array.$(OBJEXT) prec_fermact_qprop.$(OBJEXT) \
 	prec_fermact_qprop_array.$(OBJEXT) staggered_qprop.$(OBJEXT) \
 	asqtad_qprop.$(OBJEXT) gaugebc_aggregate.$(OBJEXT) \
 	gaugebc_periodic.$(OBJEXT) gaugebc_simple.$(OBJEXT) \
@@ -457,6 +458,9 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/boson/operator/klein_gord.h actions/ferm/ferm.h \
 	actions/ferm/fermacts/asqtad_state.h \
 	actions/ferm/fermacts/fermacts.h \
+	actions/ferm/fermacts/bigfloat.h actions/ferm/fermacts/remez.h \
+	actions/ferm/fermacts/remez_stub.h \
+	actions/ferm/fermacts/remez_gmp.h \
 	actions/ferm/fermacts/zolotarev.h \
 	actions/ferm/fermacts/overlap_state.h \
 	actions/ferm/fermbcs/fermbcs.h \
@@ -837,6 +841,9 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/boson/operator/klein_gord.h actions/ferm/ferm.h \
 	actions/ferm/fermacts/asqtad_state.h \
 	actions/ferm/fermacts/fermacts.h \
+	actions/ferm/fermacts/bigfloat.h actions/ferm/fermacts/remez.h \
+	actions/ferm/fermacts/remez_stub.h \
+	actions/ferm/fermacts/remez_gmp.h \
 	actions/ferm/fermacts/zolotarev.h \
 	actions/ferm/fermacts/overlap_state.h \
 	actions/ferm/fermbcs/fermbcs.h \
@@ -1126,6 +1133,7 @@ lib_LIBRARIES = libchroma.a
 # Staggered specific sources
 libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/overlap_state.cc \
+	actions/ferm/fermacts/remez_gmp.cc \
 	actions/ferm/fermacts/zolotarev_coeffs.cc \
 	actions/ferm/fermbcs/simple_fermbc.cc \
 	actions/ferm/invert/invbicgstab.cc \
@@ -1596,6 +1604,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readszinferm_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readszinqprop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rect_gaugeact.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/remez_gmp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/reunit.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rg_gaugeact.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rgauge.Po@am__quote@
@@ -1717,6 +1726,20 @@ overlap_state.obj: actions/ferm/fermacts/overlap_state.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/overlap_state.cc' object='overlap_state.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o overlap_state.obj `if test -f 'actions/ferm/fermacts/overlap_state.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/overlap_state.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/overlap_state.cc'; fi`
+
+remez_gmp.o: actions/ferm/fermacts/remez_gmp.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT remez_gmp.o -MD -MP -MF "$(DEPDIR)/remez_gmp.Tpo" -c -o remez_gmp.o `test -f 'actions/ferm/fermacts/remez_gmp.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/remez_gmp.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/remez_gmp.Tpo" "$(DEPDIR)/remez_gmp.Po"; else rm -f "$(DEPDIR)/remez_gmp.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/remez_gmp.cc' object='remez_gmp.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o remez_gmp.o `test -f 'actions/ferm/fermacts/remez_gmp.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/remez_gmp.cc
+
+remez_gmp.obj: actions/ferm/fermacts/remez_gmp.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT remez_gmp.obj -MD -MP -MF "$(DEPDIR)/remez_gmp.Tpo" -c -o remez_gmp.obj `if test -f 'actions/ferm/fermacts/remez_gmp.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/remez_gmp.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/remez_gmp.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/remez_gmp.Tpo" "$(DEPDIR)/remez_gmp.Po"; else rm -f "$(DEPDIR)/remez_gmp.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/remez_gmp.cc' object='remez_gmp.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o remez_gmp.obj `if test -f 'actions/ferm/fermacts/remez_gmp.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/remez_gmp.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/remez_gmp.cc'; fi`
 
 zolotarev_coeffs.o: actions/ferm/fermacts/zolotarev_coeffs.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT zolotarev_coeffs.o -MD -MP -MF "$(DEPDIR)/zolotarev_coeffs.Tpo" -c -o zolotarev_coeffs.o `test -f 'actions/ferm/fermacts/zolotarev_coeffs.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/zolotarev_coeffs.cc; \
