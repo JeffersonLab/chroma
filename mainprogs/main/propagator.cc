@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.20 2003-10-09 20:32:37 edwards Exp $
+// $Id: propagator.cc,v 1.21 2003-10-20 20:54:43 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -56,7 +56,7 @@ struct Param_t
   CfgType  cfg_type;       // storage order for stored gauge configuration
   PropType prop_type;      // storage order for stored propagator
 
-//  int  InvType;            // Inverter type
+  enum InvType  invType;            // Inverter type
   Real RsdCG;
   int MaxCG;		   // Iteration parameters
 
@@ -83,6 +83,26 @@ struct Propagator_input_t
   Cfg_t            cfg;
   Prop_t           prop;
 };
+
+
+//
+void read(XMLReader& xml, const string& path, Cfg_t& input)
+{
+  XMLReader inputtop(xml, path);
+
+  read(inputtop, "cfg_file", input.cfg_file);
+}
+
+
+//
+void read(XMLReader& xml, const string& path, Prop_t& input)
+{
+  XMLReader inputtop(xml, path);
+
+  read(inputtop, "source_file", input.source_file);
+  read(inputtop, "prop_file", input.prop_file);
+}
+
 
 
 // Reader for input parameters
@@ -203,6 +223,8 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
       }
     }
 
+//    read(paramtop, "invType", input.param.invType);
+//    input.param.invType = CG_INVERTER;   //need to fix this
     read(paramtop, "RsdCG", input.param.RsdCG);
     read(paramtop, "MaxCG", input.param.MaxCG);
 
@@ -217,11 +239,11 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
   }
 
 
-
   // Read in the gauge configuration file name
   try
   {
-    read(inputtop, "Cfg/cfg_file",input.cfg.cfg_file);
+    read(inputtop, "Cfg", input.cfg);
+    read(inputtop, "Prop", input.prop);
   }
   catch (const string& e) 
   {
@@ -325,10 +347,16 @@ int main(int argc, char **argv)
   //
   // Initialize fermion action
   //
+#if 1
   UnprecWilsonFermAct S_f(input.param.Kappa);
+#else
+  Real WilsonMass = 1.5;
+  Real m_q = 0.1;
+  UnprecDWFermAct S_f(WilsonMass, m_q);
+#endif
 
 //  FermAct = UNPRECONDITIONED_WILSON;  // global
-//  InvType = CG_INVERTER;  // global
+  input.param.invType = CG_INVERTER;  // enum
 
 
   //
@@ -357,15 +385,14 @@ int main(int argc, char **argv)
       // Compute the propagator for given source color/spin.
       int n_count;
 
-      S_f.qprop(psi, u, chi, input.param.RsdCG, input.param.MaxCG, n_count);
+      S_f.qprop(psi, u, chi, input.param.invType, 
+		input.param.RsdCG, input.param.MaxCG, n_count);
       ncg_had += n_count;
-	
-      push(xml_out,"Qprop");
 
+      push(xml_out,"Qprop");
       write(xml_out, "Kappa", input.param.Kappa);
       write(xml_out, "RsdCG", input.param.RsdCG);
       Write(xml_out, n_count);
-	  
       pop(xml_out);
 
       /*
