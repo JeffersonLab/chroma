@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.248 2005-02-03 03:15:29 edwards Exp $
+# $Id: Makefile.am,v 1.249 2005-02-04 19:25:44 sbasak Exp $
 #
 # Path for all files used in building the library
 
@@ -110,7 +110,8 @@ nobase_include_HEADERS = \
 	meas/meas.h meas/pbp/pbp.h meas/schrfun/schrfun.h \
 	meas/smear/ape_smear.h meas/smear/displacement.h \
 	meas/smear/fuzz_smear.h \
-	meas/smear/gaus_smear.h meas/smear/hyp_smear.h \
+	meas/smear/gaus_smear.h \
+	meas/smear/hyp_smear.h meas/smear/hyp_smear3d.h \
 	meas/smear/laplacian.h meas/smear/smear.h meas/smear/wvfkind.h \
 	meas/smear/sink_smear2.h meas/smear/stout_smear.h \
 	meas/sources/sources.h meas/sources/srcsnktype.h \
@@ -419,7 +420,8 @@ libchroma_a_SOURCES = \
 	meas/hadron/stoch_var.cc meas/hadron/z2_src.cc \
 	meas/smear/ape_smear.cc meas/smear/displacement.cc \
 	meas/smear/fuzz_smear.cc meas/smear/gaus_smear.cc \
-	meas/smear/hyp_smear.cc meas/smear/laplacian.cc \
+	meas/smear/hyp_smear.cc meas/smear/hyp_smear3d.cc \
+	meas/smear/laplacian.cc \
 	meas/smear/sink_smear2.cc meas/smear/stout_smear.cc \
 	util/ferm/diractodr.cc util/ferm/paulitodr.cc \
 	util/ferm/tdiractodr.cc util/ferm/transf.cc util/ft/sftmom.cc \

@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.329 2005-02-03 04:02:27 edwards Exp $
+# $Id: Makefile.in,v 1.330 2005-02-04 19:25:44 sbasak Exp $
 #
 # Path for all files used in building the library
 
@@ -162,14 +162,14 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/hadron/stoch_var.cc meas/hadron/z2_src.cc \
 	meas/smear/ape_smear.cc meas/smear/displacement.cc \
 	meas/smear/fuzz_smear.cc meas/smear/gaus_smear.cc \
-	meas/smear/hyp_smear.cc meas/smear/laplacian.cc \
-	meas/smear/sink_smear2.cc meas/smear/stout_smear.cc \
-	util/ferm/diractodr.cc util/ferm/paulitodr.cc \
-	util/ferm/tdiractodr.cc util/ferm/transf.cc util/ft/sftmom.cc \
-	util/gauge/eesu3.cc util/gauge/eeu1.cc util/gauge/expm12.cc \
-	util/gauge/expmat.cc util/gauge/expsu3.cc \
-	util/gauge/gauge_startup.cc util/gauge/hotst.cc \
-	util/gauge/reunit.cc util/gauge/rgauge.cc \
+	meas/smear/hyp_smear.cc meas/smear/hyp_smear3d.cc \
+	meas/smear/laplacian.cc meas/smear/sink_smear2.cc \
+	meas/smear/stout_smear.cc util/ferm/diractodr.cc \
+	util/ferm/paulitodr.cc util/ferm/tdiractodr.cc \
+	util/ferm/transf.cc util/ft/sftmom.cc util/gauge/eesu3.cc \
+	util/gauge/eeu1.cc util/gauge/expm12.cc util/gauge/expmat.cc \
+	util/gauge/expsu3.cc util/gauge/gauge_startup.cc \
+	util/gauge/hotst.cc util/gauge/reunit.cc util/gauge/rgauge.cc \
 	util/gauge/su2extract.cc util/gauge/su3proj.cc \
 	util/gauge/sunfill.cc util/gauge/sun_proj.cc \
 	util/gauge/taproj.cc util/gauge/unit_check.cc \
@@ -344,18 +344,18 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	polylp.$(OBJEXT) wilslp.$(OBJEXT) srcfil.$(OBJEXT) \
 	stoch_var.$(OBJEXT) z2_src.$(OBJEXT) ape_smear.$(OBJEXT) \
 	displacement.$(OBJEXT) fuzz_smear.$(OBJEXT) \
-	gaus_smear.$(OBJEXT) hyp_smear.$(OBJEXT) laplacian.$(OBJEXT) \
-	sink_smear2.$(OBJEXT) stout_smear.$(OBJEXT) \
-	diractodr.$(OBJEXT) paulitodr.$(OBJEXT) tdiractodr.$(OBJEXT) \
-	transf.$(OBJEXT) sftmom.$(OBJEXT) eesu3.$(OBJEXT) \
-	eeu1.$(OBJEXT) expm12.$(OBJEXT) expmat.$(OBJEXT) \
-	expsu3.$(OBJEXT) gauge_startup.$(OBJEXT) hotst.$(OBJEXT) \
-	reunit.$(OBJEXT) rgauge.$(OBJEXT) su2extract.$(OBJEXT) \
-	su3proj.$(OBJEXT) sunfill.$(OBJEXT) sun_proj.$(OBJEXT) \
-	taproj.$(OBJEXT) unit_check.$(OBJEXT) printgeom.$(OBJEXT) \
-	proginfo.$(OBJEXT) gauge_monomial.$(OBJEXT) \
-	genapprox.$(OBJEXT) lcm_pqp_leapfrog.$(OBJEXT) \
-	global_metropolis_accrej.$(OBJEXT) \
+	gaus_smear.$(OBJEXT) hyp_smear.$(OBJEXT) hyp_smear3d.$(OBJEXT) \
+	laplacian.$(OBJEXT) sink_smear2.$(OBJEXT) \
+	stout_smear.$(OBJEXT) diractodr.$(OBJEXT) paulitodr.$(OBJEXT) \
+	tdiractodr.$(OBJEXT) transf.$(OBJEXT) sftmom.$(OBJEXT) \
+	eesu3.$(OBJEXT) eeu1.$(OBJEXT) expm12.$(OBJEXT) \
+	expmat.$(OBJEXT) expsu3.$(OBJEXT) gauge_startup.$(OBJEXT) \
+	hotst.$(OBJEXT) reunit.$(OBJEXT) rgauge.$(OBJEXT) \
+	su2extract.$(OBJEXT) su3proj.$(OBJEXT) sunfill.$(OBJEXT) \
+	sun_proj.$(OBJEXT) taproj.$(OBJEXT) unit_check.$(OBJEXT) \
+	printgeom.$(OBJEXT) proginfo.$(OBJEXT) \
+	gauge_monomial.$(OBJEXT) genapprox.$(OBJEXT) \
+	lcm_pqp_leapfrog.$(OBJEXT) global_metropolis_accrej.$(OBJEXT) \
 	zero_guess_predictor.$(OBJEXT) \
 	last_solution_predictor.$(OBJEXT) \
 	linear_extrap_predictor.$(OBJEXT) $(am__objects_1) \
@@ -540,7 +540,8 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/pbp/pbp.h meas/schrfun/schrfun.h meas/smear/ape_smear.h \
 	meas/smear/displacement.h meas/smear/fuzz_smear.h \
 	meas/smear/gaus_smear.h meas/smear/hyp_smear.h \
-	meas/smear/laplacian.h meas/smear/smear.h meas/smear/wvfkind.h \
+	meas/smear/hyp_smear3d.h meas/smear/laplacian.h \
+	meas/smear/smear.h meas/smear/wvfkind.h \
 	meas/smear/sink_smear2.h meas/smear/stout_smear.h \
 	meas/sources/sources.h meas/sources/srcsnktype.h \
 	meas/sources/wavetype.h util/ferm/ferm.h util/ferm/transf.h \
@@ -930,7 +931,8 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/pbp/pbp.h meas/schrfun/schrfun.h meas/smear/ape_smear.h \
 	meas/smear/displacement.h meas/smear/fuzz_smear.h \
 	meas/smear/gaus_smear.h meas/smear/hyp_smear.h \
-	meas/smear/laplacian.h meas/smear/smear.h meas/smear/wvfkind.h \
+	meas/smear/hyp_smear3d.h meas/smear/laplacian.h \
+	meas/smear/smear.h meas/smear/wvfkind.h \
 	meas/smear/sink_smear2.h meas/smear/stout_smear.h \
 	meas/sources/sources.h meas/sources/srcsnktype.h \
 	meas/sources/wavetype.h util/ferm/ferm.h util/ferm/transf.h \
@@ -1218,14 +1220,14 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/hadron/stoch_var.cc meas/hadron/z2_src.cc \
 	meas/smear/ape_smear.cc meas/smear/displacement.cc \
 	meas/smear/fuzz_smear.cc meas/smear/gaus_smear.cc \
-	meas/smear/hyp_smear.cc meas/smear/laplacian.cc \
-	meas/smear/sink_smear2.cc meas/smear/stout_smear.cc \
-	util/ferm/diractodr.cc util/ferm/paulitodr.cc \
-	util/ferm/tdiractodr.cc util/ferm/transf.cc util/ft/sftmom.cc \
-	util/gauge/eesu3.cc util/gauge/eeu1.cc util/gauge/expm12.cc \
-	util/gauge/expmat.cc util/gauge/expsu3.cc \
-	util/gauge/gauge_startup.cc util/gauge/hotst.cc \
-	util/gauge/reunit.cc util/gauge/rgauge.cc \
+	meas/smear/hyp_smear.cc meas/smear/hyp_smear3d.cc \
+	meas/smear/laplacian.cc meas/smear/sink_smear2.cc \
+	meas/smear/stout_smear.cc util/ferm/diractodr.cc \
+	util/ferm/paulitodr.cc util/ferm/tdiractodr.cc \
+	util/ferm/transf.cc util/ft/sftmom.cc util/gauge/eesu3.cc \
+	util/gauge/eeu1.cc util/gauge/expm12.cc util/gauge/expmat.cc \
+	util/gauge/expsu3.cc util/gauge/gauge_startup.cc \
+	util/gauge/hotst.cc util/gauge/reunit.cc util/gauge/rgauge.cc \
 	util/gauge/su2extract.cc util/gauge/su3proj.cc \
 	util/gauge/sunfill.cc util/gauge/sun_proj.cc \
 	util/gauge/taproj.cc util/gauge/unit_check.cc \
@@ -1513,6 +1515,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hotst.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hybmeson_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyp_smear.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyp_smear3d.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_plaquette.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_polylp.Po@am__quote@
@@ -3129,6 +3132,20 @@ hyp_smear.obj: meas/smear/hyp_smear.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/hyp_smear.cc' object='hyp_smear.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o hyp_smear.obj `if test -f 'meas/smear/hyp_smear.cc'; then $(CYGPATH_W) 'meas/smear/hyp_smear.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/hyp_smear.cc'; fi`
+
+hyp_smear3d.o: meas/smear/hyp_smear3d.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT hyp_smear3d.o -MD -MP -MF "$(DEPDIR)/hyp_smear3d.Tpo" -c -o hyp_smear3d.o `test -f 'meas/smear/hyp_smear3d.cc' || echo '$(srcdir)/'`meas/smear/hyp_smear3d.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/hyp_smear3d.Tpo" "$(DEPDIR)/hyp_smear3d.Po"; else rm -f "$(DEPDIR)/hyp_smear3d.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/hyp_smear3d.cc' object='hyp_smear3d.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o hyp_smear3d.o `test -f 'meas/smear/hyp_smear3d.cc' || echo '$(srcdir)/'`meas/smear/hyp_smear3d.cc
+
+hyp_smear3d.obj: meas/smear/hyp_smear3d.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT hyp_smear3d.obj -MD -MP -MF "$(DEPDIR)/hyp_smear3d.Tpo" -c -o hyp_smear3d.obj `if test -f 'meas/smear/hyp_smear3d.cc'; then $(CYGPATH_W) 'meas/smear/hyp_smear3d.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/hyp_smear3d.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/hyp_smear3d.Tpo" "$(DEPDIR)/hyp_smear3d.Po"; else rm -f "$(DEPDIR)/hyp_smear3d.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/hyp_smear3d.cc' object='hyp_smear3d.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o hyp_smear3d.obj `if test -f 'meas/smear/hyp_smear3d.cc'; then $(CYGPATH_W) 'meas/smear/hyp_smear3d.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/hyp_smear3d.cc'; fi`
 
 laplacian.o: meas/smear/laplacian.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT laplacian.o -MD -MP -MF "$(DEPDIR)/laplacian.Tpo" -c -o laplacian.o `test -f 'meas/smear/laplacian.cc' || echo '$(srcdir)/'`meas/smear/laplacian.cc; \
