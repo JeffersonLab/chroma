@@ -83,7 +83,8 @@ namespace Chroma
   //! Chroma initialisation routine
   void initialize(int* argc, char ***argv) 
   {
-    QDP_initialize(argc, argv);
+    if (! QDP_isInitialized())
+      QDP_initialize(argc, argv);
     
     for(int i=0; i < *argc; i++) 
     {
@@ -179,6 +180,9 @@ namespace Chroma
   //! Chroma finalization routine
   void finalize(void)
   {
+    if (! QDP_isInitialized())
+      return;
+
     /*
     if( xmlInputP ) { 
       Chroma::getXMLInputInstance().close();
@@ -190,6 +194,7 @@ namespace Chroma
     if( xmlLogP ) {
       Chroma::getXMLLogInstance().close();
     }
+
     QDP_finalize();
   }
 
