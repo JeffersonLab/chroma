@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linop.h,v 1.1 2003-02-10 15:51:06 edwards Exp $
+// $Id: linop.h,v 1.2 2003-02-14 22:12:12 edwards Exp $
 
 /*! @file
  * @brief Linear Operators
@@ -37,8 +37,8 @@ public:
     {
       LatticeFermion d;
 
-      d[rb[0]] = this->(psi, isign, 0);
-      d[rb[1]] = this->(psi, isign, 1);
+      d[rb[0]] = this->operator()(psi, isign, 0);
+      d[rb[1]] = this->operator()(psi, isign, 1);
     }
 
   virtual LatticeFermion operator() (const LatticeFermion& psi, int isign, int cb) const = 0;
