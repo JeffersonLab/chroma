@@ -1,4 +1,4 @@
-// $Id: t_disc_loop_s.cc,v 1.2 2004-02-11 12:51:35 bjoo Exp $
+// $Id: t_disc_loop_s.cc,v 1.3 2004-03-03 09:41:46 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -59,7 +59,8 @@ struct Param_t
   Real RsdCG;
   int MaxCG;		   // Iteration parameters
   int Nsamples; 		  // Number of stochastic sources
-
+  int CFGNO;		  // Configuration Number used for seeding rng
+                          // This WILL be changed soon 
   Real GFAccu, OrPara;    // Gauge fixing tolerance and over-relaxation param
   int GFMax;              // Maximum gauge fixing iterations
 
@@ -77,7 +78,6 @@ struct Prop_t
 
 struct Propagator_input_t
 {
-  IO_version_t     io_version;
   Param_t          param;
   Cfg_t            cfg;
   Prop_t           prop;
@@ -106,9 +106,10 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
   // into QDP++
 
   // Read in the IO_version
+  int version;
   try
   {
-    read(inputtop, "IO_version/version", input.io_version.version);
+    read(inputtop, "IO_version/version", version);
   }
   catch (const string& e) 
   {
@@ -125,17 +126,17 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
   {
     XMLReader paramtop(inputtop, "param"); // push into 'param' group
 
-    switch (input.io_version.version) 
+    switch (version) 
     {
       /**************************************************************************/
-    case 1 :
+    case 2 :
       /**************************************************************************/
       break;
 
     default :
       /**************************************************************************/
 
-      QDPIO::cerr << "Input parameter version " << input.io_version.version << " unsupported." << endl;
+      QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
       QDP_abort(1);
     }
   }
@@ -188,17 +189,6 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     }
 
     {
-      string cfg_type_str;
-      read(paramtop, "cfg_type", cfg_type_str);
-      if (cfg_type_str == "NERSC") {
-	input.param.cfg_type = CFG_TYPE_NERSC;
-      } else {
-	QDP_error_exit("Dont know non NERSC files yet");
-      }
-
-    }
-
-    {
       string prop_type_str;
       read(paramtop, "prop_type", prop_type_str);
       if (prop_type_str == "SZIN") {
@@ -213,6 +203,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     read(paramtop, "RsdCG", input.param.RsdCG);
     read(paramtop, "MaxCG", input.param.MaxCG);
     read(paramtop, "Nsamples", input.param.Nsamples);
+    read(paramtop, "CFGNO", input.param.CFGNO);
     read(paramtop, "GFAccu", input.param.GFAccu);
     read(paramtop, "OrPara", input.param.OrPara);
     read(paramtop, "GFMax", input.param.GFMax);
@@ -287,7 +278,7 @@ int main(int argc, char **argv)
   
   XMLReader gauge_xml;
 
-  switch (input.param.cfg_type) 
+  switch (input.cfg.cfg_type) 
   {
   case CFG_TYPE_NERSC :
     readArchiv(gauge_xml, u, input.cfg.cfg_file);
@@ -295,27 +286,6 @@ int main(int argc, char **argv)
   default :
     QDP_error_exit("Configuration type is unsupported.");
   }
-
-
-  // 
-  //  gauge invariance test
-  //  
-
-
-  // gauge transformed gauge fields
-//  multi1d<LatticeColorMatrix> u_trans(Nd);
-
-  // gauge transform
-//  LatticeColorMatrix v ;
-  
-//  gaussian(v);
-//  reunit(v) ; 
-
-//  for(int dir = 0 ; dir < Nd ; ++dir)
-//    {
-//      u_trans[dir] = v*u[dir]*adj(shift(v,FORWARD,dir)) ;
-//    }
-
 
   // Read in the source along with relevant information.
   LatticePropagator quark_prop_source;
@@ -334,7 +304,7 @@ int main(int argc, char **argv)
 
   // Instantiate XML writer for XMLDAT
   XMLFileWriter xml_out("DISC_XMLDAT");
-  push(xml_out, "propagator");
+  push(xml_out, "DISCONNECTED");
 
   // Write out the input
   write(xml_out, "Input", xml_in);
@@ -366,21 +336,21 @@ int main(int argc, char **argv)
   pop(xml_out);
 
   // Fix to the coulomb gauge
-//  int n_gf;
+  int n_gf;
   int j_decay = Nd-1;
 
-/*  coulGauge(u, n_gf, j_decay, input.param.GFAccu, input.param.GFMax, true, input.param.OrPara);
-  QDPIO::cout << "No. of gauge fixing iterations =" << n_gf << endl;
+  //  coulGauge(u, n_gf, j_decay, input.param.GFAccu, input.param.GFMax, true, input.param.OrPara); 
+  //  QDPIO::cout << "No. of gauge fixing iterations =" << n_gf << endl;
 
   // Calcluate plaq on the gauge fixed field
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-  push(xml_out, "Is this gauge invariant?");
+  push(xml_out, "Is_this_gauge_invariant");
   write(xml_out, "w_plaq", w_plaq);
   write(xml_out, "s_plaq", s_plaq);
   write(xml_out, "t_plaq", t_plaq);
   write(xml_out, "link", link);
   pop(xml_out);
-*/
+
   xml_out.flush();
 
   // Create a fermion BC. Note, the handle is on an ABSTRACT type.
@@ -397,32 +367,6 @@ int main(int argc, char **argv)
 
   Handle<const ConnectState > state(S_f.createState(u));
   Handle<const EvenOddLinearOperator<LatticeFermion> > D_asqtad(S_f.linOp(state));
-
-  // Create a fermion to apply linop to.
-//  LatticeFermion tmp1, tmp2;
-
-//  tmp1 = zero;
-//  Test walfil code
-
-//  for(int src_ind = 0; src_ind < 8; ++src_ind){
-//    walfil(tmp1, 0, 3, 0, src_ind);
-
-//  Test the volume source code
-/*      
-  for(int i = 0; i < 2; ++i){
-    volfil(tmp1);
-
-    tmp2  =  zero;
-
-    // Apply Linop
-    (*D_asqtad).evenOddLinOp(tmp2, tmp1, PLUS); 
-
-    push(xml_out, "dslash");
-    write(xml_out, "tmp1", tmp1);
-    write(xml_out, "tmp2",  tmp2);
-    pop(xml_out);
-  }
-*/
   Handle<const LinearOperator<LatticeFermion> > MdagM_asqtad(S_f.lMdagM(state));
 
   // Machinery to do timeslice sums with
@@ -443,23 +387,70 @@ int main(int argc, char **argv)
   int Nsamp = input.param.Nsamples;
   int t_length = input.param.nrow[3];
 
-  LatticeFermion q_source, psi;
-  multi1d<LatticeFermion> soln_vec(Nsamp);
+  LatticeFermion q_source, psi, psi_sca1, psi_eta3, psi_eta4;
+  //  multi1d<LatticeFermion> soln_vec(Nsamp);
 
-  LatticeComplex TrG;
-//  LatticePropagator G;
+  // Timeslice sums of fermion loops.
+  // G_s is local scalar, G_eta3 is 3link eta', G_eta4 is 4link eta'
+  LatticeComplex TrG_s0, TrG_s1, TrG_eta3, TrG_eta4, corr_fn_s, corr_fn_p ;
 
-  multi2d<DComplex> loop(Nsamp, t_length);
-  multi1d<DComplex> sca_loop(t_length);
+  multi2d<DComplex> loop_s0(Nsamp, t_length), loop_s1(Nsamp, t_length), 
+                    loop_eta3(Nsamp, t_length), loop_eta4(Nsamp, t_length);
+  multi1d<DComplex> sca0_loop(t_length), sca1_loop(t_length), eta3_loop(t_length), 
+                    eta4_loop(t_length), conn_corr_s(t_length), conn_corr_p(t_length);
 
-  sca_loop = zero;
+  sca0_loop = sca1_loop = eta3_loop = eta4_loop = zero;
+
+  using namespace StagPhases;
+
+  // Connected Correlator, use a point source
+  // THIS IS ONLY FOR THE SCALAR AT THE MOMENT.
+  // MORE THOUGHT IS NEEDED FOR THE ETA' BECAUSE OF NON-LOCALITY OF OPERATOR
+  psi = zero;
+  for(int color_source = 0; color_source < Nc; ++color_source) {
+    int spin_source = 0;
+    q_source = zero;
+    srcfil(q_source, input.param.t_srce, color_source, spin_source);
+
+    S_f.qprop(psi, state, q_source, CG_INVERTER,
+              input.param.RsdCG, input.param.MaxCG, n_count);
+
+    ncg_had += n_count;
+
+    push(xml_out,"Qprop");
+    write(xml_out, "Mass" , input.param.Mass);
+    write(xml_out, "RsdCG", input.param.RsdCG);
+    write(xml_out, "n_count", n_count);
+    pop(xml_out);
+
+    FermToProp(psi, quark_propagator, color_source, spin_source);
+  }
+
+  corr_fn_s = - alpha(1)*beta(0)*trace(adj(quark_propagator)*quark_propagator);
+  conn_corr_s = sumMulti(corr_fn_s, timeslice);
+
+  corr_fn_p = trace(adj(quark_propagator)*quark_propagator);
+  conn_corr_p = sumMulti(corr_fn_p, timeslice);
+
+  push(xml_out, "CONNECTED");
+  write(xml_out, "local_scalar", conn_corr_s);
+  write(xml_out, "goldstone_pion", conn_corr_p);
+  pop(xml_out);
+
+  // Seed the RNG with the cfg number for now
+  Seed seed;
+  seed = input.param.CFGNO;
+  RNG::setrn(seed);
 
   for(int i = 0; i < Nsamp; ++i){
     psi = zero;   // note this is ``zero'' and not 0
 
     // Fill the volume with random noise, gaussian for now.
     // Add Z2 later.
-    gaussian(q_source);
+    RNG::savern(seed);
+    QDPIO::cout << "SEED = " << seed << endl;
+    //    gaussian(q_source);
+    z2_src(q_source);
 
     // Compute the solution vector for the particular source
     // int n_count;
@@ -475,106 +466,92 @@ int main(int argc, char **argv)
     write(xml_out, "n_count", n_count);
     pop(xml_out);
 
-    // Store the solution vectors for now
-    soln_vec[i] = psi;
+    // Store the solution vectors for now; scrap this idea!
+    // soln_vec[i] = psi;
     
-    // TrG = phase*Tr(M^-1) = Tr(conj(q_source)*psi) for scalar
-    // eta' will be added soon.
-    TrG = localInnerProduct(q_source, psi);
+    // TrG_s = phase*Tr(M^-1) = Tr(conj(q_source)*psi) for scalar
 
-    // Do a timeslice sum
+    TrG_s0 = localInnerProduct(q_source, psi);
+    
+    // 1-link scalar
+    
+    // The non-local operators have been commented out for now because
+    // of rubbish numbers coming out of tests. More thought is needed,
+    // especially for the non-local time operators (1-link scalar and
+    // 4-link eta').
 
-    loop[i] = sumMulti(TrG, timeslice);    
-    sca_loop += loop[i];
+/*    psi_sca1 = shift(psi, FORWARD, 3);
+    TrG_s1 = alpha(3)*localInnerProduct(q_source, psi_sca1);
+  
+    psi_eta4 = shift(shift(shift(shift(psi, FORWARD, 0), FORWARD, 1), 
+              FORWARD, 2), FORWARD, 3);
+ 
+    psi_eta3 = shift(shift(shift(psi, FORWARD, 0), FORWARD, 1), FORWARD, 2);
 
-    push(xml_out, "LOOP");
-    write(xml_out, "loop[i]",loop[i]);
+    TrG_eta3 = -alpha(1)*alpha(2)*localInnerProduct(q_source, psi_eta3);
+    TrG_eta4 = -alpha(1)*alpha(2)*alpha(3)*localInnerProduct(q_source, psi_eta4);
+*/  
+    // Do timeslice sums
+    loop_s0[i] = sumMulti(TrG_s0, timeslice);    
+    sca0_loop += loop_s0[i];
+/*    loop_s1[i] = sumMulti(TrG_s1, timeslice);
+    sca1_loop += loop_s1[i];
+    loop_eta3[i] = sumMulti(TrG_eta3, timeslice);
+    eta3_loop += loop_eta3[i];
+    loop_eta4[i] = sumMulti(TrG_eta4, timeslice);
+    eta4_loop += loop_eta4[i];
+*/
+    push(xml_out, "LOOPS");
+    write(xml_out, "scalar" , loop_s0[i]);
+/*    write(xml_out, "scalar1" , loop_s1[i]);
+    write(xml_out, "eta3" , loop_eta3[i]);
+    write(xml_out, "eta4" , loop_eta4[i]);*/
     pop(xml_out);
 
   } // Nsamples
 
-//  sca_loop = sca_loop/(Real)(Nsamp);
-  multi1d<Real64> re_sc(t_length), im_sc(t_length);
+/*  multi1d<Real64> re_sc0(t_length), im_sc0(t_length), re_sc1(t_length), 
+                  im_sc1(t_length), re_eta3(t_length),
+                  im_eta3(t_length), re_eta4(t_length), im_eta4(t_length);
+*/
 
-  // Average over stochastic samples
-  for(int t = 0; t < t_length ; ++t){
-    re_sc[t] = real(sca_loop[t])/Nsamp;
-    im_sc[t] = imag(sca_loop[t])/Nsamp;
-    sca_loop[t] = cmplx(re_sc[t], im_sc[t]);
+  multi1d<Real64> sig_sc0(t_length), imsig_sc0(t_length);
 
-    QDPIO::cout <<  t << sca_loop[t] <<endl;
-  }
+  stoch_var(sca0_loop, loop_s0, sig_sc0, imsig_sc0, t_length, Nsamp);
   
   // Write out timesclice sums for "offline" analysis
-  // Will also write out correlators here soon!
-
-  push(xml_out, "AV_LOOP");
-  write(xml_out, "sca_loop", sca_loop);
+  push(xml_out, "AV_FERMION_LOOP");
+  write(xml_out, "SCALAR", sca0_loop);
   pop(xml_out);
 
-  // Calculate the standard deviation on the average 
-  // sigma_stoc = 1/(sqrt(Nsamp-1) * SD
-  // write this to standard output for now
-  
-  multi1d<Real64> asq(t_length), s(t_length), aa(t_length), sigma(t_length);
-  multi1d<Real64> imasq(t_length), ims(t_length), imaa(t_length),
-                  imsigma(t_length);
+  // Write output to seperate files for easy reading into fitting code
 
-  QDPIO::cout << "Here are the standard deviations on the mean" << endl;
+  ofstream out("disc.out");
 
-  s = zero;
+  for (int t = 0; t < t_length; ++t){
+    out << real(sca0_loop[t]) << " " << imag(sca0_loop[t]) << " "
+        << sig_sc0[t] << " " << imsig_sc0[t] << endl;
+  }
 
-  for(int t = 0; t < t_length; ++t){
-    asq[t] = pow(re_sc[t], 2);
-    imasq[t] = pow(im_sc[t], 2);
+  out.close();
 
-    for(int i = 0; i < Nsamp; ++i){
-      s[t] += pow(real(loop[i][t]), 2);
-      ims[t] += pow(imag(loop[i][t]), 2);
-    }
-    
-    aa[t] = sqrt((s[t]/Nsamp) - asq[t]);
-    sigma[t] = (1/sqrt(Nsamp-1.0))*aa[t];
+  ofstream out1("con.out");
 
-    imaa[t] = sqrt((ims[t]/Nsamp) - imasq[t]);
-    imsigma[t] = (1/sqrt(Nsamp-1.0))*imaa[t];
+  for (int t = 0; t < t_length; ++t){
+    out1 << real(conn_corr_s[t]) <<endl;
+  }
 
-    QDPIO::cout << "Real = " << sigma[t] << " Imag = " << imsigma[t] << endl;
+  out1.close();
 
-  } 
-    
+  ofstream out2("gold.out");
 
-  // Instantiate XML buffer to make the propagator header
-  XMLBufferWriter prop_xml;
-  push(prop_xml, "propagator");
+  for (int t = 0; t < t_length; ++t){
+    out2 << real(conn_corr_p[t]) << endl;
+  }
 
-  // Write out the input
-  write(prop_xml, "Input", xml_in);
+  out2.close();
 
-  // Write out the config header
-  write(prop_xml, "Config_info", gauge_xml);
-
-  // Write out the source header
-  write(prop_xml, "Source_info", source_xml);
-
-  pop(prop_xml);
-
-
-  // Save the propagator
-//    switch (input.param.prop_type) 
-//    {
-//    case PROP_TYPE_SZIN:
-//     writeSzinQprop(quark_propagator, input.prop.prop_file, input.param.Mass);
-//    break;
-
-//  case PROP_TYPE_SCIDAC:
-//    writeQprop(prop_xml, quark_propagator, input.prop.prop_file);
-//    break;
- 
-//    default :
-//     QDP_error_exit("Propagator type is unsupported.");
-//    }
-
+  pop(xml_out);
 
   xml_out.close();
   xml_in.close();
