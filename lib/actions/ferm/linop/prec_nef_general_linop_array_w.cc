@@ -1,4 +1,4 @@
-// $Id: prec_nef_general_linop_array_w.cc,v 1.8 2005-03-02 18:32:04 bjoo Exp $
+// $Id: prec_nef_general_linop_array_w.cc,v 1.9 2005-03-15 17:23:41 bjoo Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned NEF domain-wall linear operator
  */
@@ -121,7 +121,6 @@ namespace Chroma
     case PLUS:
     {
       Real fact;
-      LatticeFermion tmp1, tmp2;
 
 
       // fplus[0]*psi[0] + fminus[0]P_- psi[1] - m fminus[0] P_+ psi[N5-1]
@@ -133,12 +132,23 @@ namespace Chroma
       // with tmp1 = psi[1] - m psi[N5-1]
       //      tmp2 = psi[1] + m psi[N5-1]
 
+      /* Old Code */
+      /*
+      LatticeFermion tmp1, tmp2;
+
       tmp1[rb[cb]] = psi[1] - m_q*psi[N5-1];
       tmp2[rb[cb]] = psi[1] + m_q*psi[N5-1];
       fact = Real(0.5)*f_minus[0];
       
       chi[0][rb[cb]] = f_plus[0]*psi[0] + 
 	fact*( tmp1 - GammaConst<Ns, Ns*Ns-1>()*tmp2 );
+      */
+
+      // Recoded using chiral projectors
+      fact = f_minus[0]*m_q;
+      chi[0][rb[cb]] = f_plus[0]*psi[0];
+      chi[0][rb[cb]] += f_minus[0]*chiralProjectMinus(psi[1]);
+      chi[0][rb[cb]] -= fact*chiralProjectPlus(psi[N5-1]);
 
 
       // -m fminus[N5-1] P_- psi[0] + f_minus[N5-1] P_+ psi[N5-2] 
@@ -157,26 +167,52 @@ namespace Chroma
       //
       //  tmp1 = psi[N5-2] - m psi[0]
       //  tmp2 = psi[N5-2] + m psi[0]
-      
+
+      /* OLD CODE */
+      /*
       fact = Real(0.5)*f_minus[N5-1];
       tmp1[rb[cb]] = psi[N5-2] - m_q * psi[0];
       tmp2[rb[cb]] = psi[N5-2] + m_q * psi[0];
       
       chi[N5-1][rb[cb]] = f_plus[N5-1]*psi[N5-1] 
 	+ fact*( tmp1 + GammaConst<Ns,Ns*Ns-1>() * tmp2);
-      
+      */
+
+      // Recoded using chiral projectors
+      // -m fminus[N5-1] P_- psi[0] + f_minus[N5-1] P_+ psi[N5-2] 
+      //     + f_plus[N5-1] psi[N5-1]
+      //
+      // fminus[N5-1] ( -m P_- psi[0] + P_+ psi[N5-2] ) 
+      //     + f_plus[N5-1] psi[N5-1]
+      fact = f_minus[N5-1]*m_q;
+      chi[N5-1][rb[cb]] = f_plus[N5-1]*psi[N5-1];
+      chi[N5-1][rb[cb]] += f_minus[N5-1]*chiralProjectPlus(psi[N5-2]);
+      chi[N5-1][rb[cb]] -= fact*chiralProjectMinus(psi[0]);
+
+
       for(int s=1; s<N5-1; s++) {
-	
+
+
 	// fminus[s] P_+ psi[s-1] + fplus[s] psi[s] + fminus[s] P_- psi[s+1]
 	//= fplus[s] psi[s] + fminus[s]( P_+ psi[s-1] + P_-psi[s+1])
         //= fplus[s] psi[s] + (fminus[s]/2)( psi[s-1] + psi[s+1] + 
 	//                                   g_5*{ psi[s-1] - psi[s + 1] } )
+
+	// OLD CODE 
+        /*
 	fact = Real(0.5)*f_minus[s];
 	tmp1[rb[cb]] = psi[s-1] + psi[s+1];
 	tmp2[rb[cb]] = psi[s-1] - psi[s+1];
 	
 	chi[s][rb[cb]] = f_plus[s]*psi[s] +
 	  fact*( tmp1 + GammaConst<Ns,Ns*Ns-1>() * tmp2  );
+	*/
+
+	// Recoded using chiral projectors
+	chi[s][rb[cb]] = f_plus[s]*psi[s];
+	chi[s][rb[cb]] += f_minus[s]*chiralProjectMinus(psi[s+1]);
+	chi[s][rb[cb]] += f_minus[s]*chiralProjectPlus(psi[s-1]);       
+
       }
       
 
@@ -191,6 +227,9 @@ namespace Chroma
       // varying along a row...
 
       Real fact;
+
+      // OLD CODE 
+      /*
       LatticeFermion tmp1, tmp2;
 
       // Fact is constant now.
@@ -202,22 +241,47 @@ namespace Chroma
 
       chi[0][rb[cb]] = f_plus[0]*psi[0] + 
 	fact*( tmp1 + GammaConst<Ns, Ns*Ns-1>()*tmp2 );
+      */
+
+      // Recoded using chiral projectors
+      fact = m_q * f_minus[N5-1];
+      chi[0][rb[cb]] = f_plus[0]*psi[0];
+      chi[0][rb[cb]] += f_minus[1]*chiralProjectPlus(psi[1]);
+      chi[0][rb[cb]] -= fact*chiralProjectMinus(psi[N5-1]);
 
 
+      // OLD CODE 
+      /*
       tmp1[rb[cb]] = f_minus[N5-2]*psi[N5-2] - m_q * f_minus[0]* psi[0];
       tmp2[rb[cb]] = f_minus[N5-2]*psi[N5-2] + m_q * f_minus[0]* psi[0];
       
       chi[N5-1][rb[cb]] = f_plus[N5-1]*psi[N5-1]
 	+ fact*( tmp1 - GammaConst<Ns,Ns*Ns-1>()*tmp2 ) ;
-	
+      */
+
+      // Recoded using Chiral Projectors
+      fact = m_q * f_minus[0];
+      chi[N5-1][rb[cb]]  = f_plus[N5-1]*psi[N5-1];
+      chi[N5-1][rb[cb]] += f_minus[N5-2]*chiralProjectMinus(psi[N5-2]);
+      chi[N5-1][rb[cb]] -= fact*chiralProjectPlus(psi[0]);
+
 
       for(int s=1; s<N5-1; s++) {
 
+	// OLD CODE
+	/*
 	tmp1[rb[cb]] = f_minus[s-1]*psi[s-1] + f_minus[s+1]*psi[s+1];
 	tmp2[rb[cb]] = f_minus[s-1]*psi[s-1] - f_minus[s+1]*psi[s+1];
 
 	chi[s][rb[cb]] = f_plus[s]*psi[s] +
 	  fact*( tmp1 - GammaConst<Ns,Ns*Ns-1>()*tmp2 );
+	*/
+
+	// Recoded using Chiral Projectors
+	chi[s][rb[cb]] = f_plus[s]*psi[s];
+	chi[s][rb[cb]] += f_minus[s-1]*chiralProjectMinus(psi[s-1]);
+	chi[s][rb[cb]] += f_minus[s+1]*chiralProjectPlus(psi[s+1]);
+
       }
 
     }
@@ -264,10 +328,15 @@ namespace Chroma
       for(int s=0; s < N5-1; s++){
 	z[s][rb[cb]] = psi[s];
 
+
+	// OLD CODE
 	// The factor of 1/2 is for the projection expression
-	fact = Real(0.5)*l[s];
-        z[N5-1][rb[cb]] -=  fact*(psi[s] - GammaConst<Ns,Ns*Ns-1>()*psi[s])  ;
+	//	fact = Real(0.5)*l[s];
+        //      z[N5-1][rb[cb]] -=  fact*(psi[s] - GammaConst<Ns,Ns*Ns-1>()*psi[s])  ;
        
+	// Recoded with projector
+	z[N5-1][rb[cb]] -= l[s]*chiralProjectMinus(psi[s]);
+
       }
       
       //Now apply the inverse of L. Forward elimination 
@@ -275,9 +344,15 @@ namespace Chroma
       // L z' = z
       z_prime[0][rb[cb]] = z[0];
       for(int s = 0; s < N5-1; s++) {
+
+	// OLD CODE 
 	// The factor of 1/2 is for the projection part
-	fact = Real(0.5)*a[s];
-	z_prime[s+1][rb[cb]] = z[s+1] - fact*(z_prime[s] + GammaConst<Ns,Ns*Ns-1>()*z_prime[s]);
+	//	fact = Real(0.5)*a[s];
+	// z_prime[s+1][rb[cb]] = z[s+1] - fact*(z_prime[s] + GammaConst<Ns,Ns*Ns-1>()*z_prime[s]);
+
+	// Recoded using chiralProjectors
+	z_prime[s+1][rb[cb]] = z[s+1] - a[s]*chiralProjectPlus(z_prime[s]);
+		     
       }
 	
       // z = D^{-1} z'
@@ -290,17 +365,28 @@ namespace Chroma
       //The inverse of R. Back substitution...... Getting there! 
       z_prime[N5-1][rb[cb]] = z[N5-1];
       for(int s=N5-2; s >=0; s-- ) { 
-	fact = Real(0.5)*b[s];
 
-	z_prime[s][rb[cb]] = z[s] - fact*(z_prime[s+1] - GammaConst<Ns,Ns*Ns-1>()*z_prime[s+1]);
+	// OLD CODE
+	// fact = Real(0.5)*b[s];
+
+	// z_prime[s][rb[cb]] = z[s] - fact*(z_prime[s+1] - GammaConst<Ns,Ns*Ns-1>()*z_prime[s+1]);
+
+	// Recoded Using ChiralProjectors
+	z_prime[s][rb[cb]] = z[s] - b[s]*chiralProjectMinus(z_prime[s+1]);
       }
 
       //Finally the inverse of Rm 
       chi[N5-1][rb[cb]] = z_prime[N5-1];
       for(int s=0; s < N5-1; s++) { 
-	fact = Real(0.5)*r[s]; 
 
-	chi[s][rb[cb]] = z_prime[s] - fact*(chi[N5-1] + GammaConst<Ns,Ns*Ns-1>()*chi[N5-1]);
+	// OLD CODE
+	// fact = Real(0.5)*r[s]; 
+
+	// chi[s][rb[cb]] = z_prime[s] - fact*(chi[N5-1] + GammaConst<Ns,Ns*Ns-1>()*chi[N5-1]);
+	
+	// Recoded using ChiralProjectors
+	chi[s][rb[cb]] = z_prime[s] - r[s]*chiralProjectPlus(chi[N5-1]);
+
       }
     }
     break ;
@@ -317,10 +403,12 @@ namespace Chroma
       for(int s=0; s < N5-1; s++){
 	z[s][rb[cb]] = psi[s];
 
+	// OLD CODE 
 	// The factor of 1/2 is for the projection expression
-	fact = Real(0.5)*r[s];
-        z[N5-1][rb[cb]] -=  fact*(psi[s] + GammaConst<Ns,Ns*Ns-1>()*psi[s])  ;
-       
+	// fact = Real(0.5)*r[s];
+        // z[N5-1][rb[cb]] -=  fact*(psi[s] + GammaConst<Ns,Ns*Ns-1>()*psi[s])  ;
+	// Recoded Using Chiral Projectors
+	z[N5-1][rb[cb]] -= r[s]*chiralProjectPlus(psi[s]);
       }
       
       //Now apply the inverse of U^{T}. Forward elimination 
@@ -330,9 +418,14 @@ namespace Chroma
 
       z_prime[0][rb[cb]] = z[0];
       for(int s = 0; s < N5-1; s++) {
+
+	// OLD CODE
 	// The factor of 1/2 is for the projection part
-	fact = Real(0.5)*b[s];
-	z_prime[s+1][rb[cb]] = z[s+1] - fact*(z_prime[s] - GammaConst<Ns,Ns*Ns-1>()*z_prime[s]);
+	// fact = Real(0.5)*b[s];
+	// z_prime[s+1][rb[cb]] = z[s+1] - fact*(z_prime[s] - GammaConst<Ns,Ns*Ns-1>()*z_prime[s]);
+
+	// Recoded using Chiral Projectors
+	z_prime[s+1][rb[cb]] = z[s+1] - b[s]*chiralProjectMinus(z_prime[s]);
       }
 	
       // z = D^{-1} z'
@@ -348,17 +441,27 @@ namespace Chroma
 
       z_prime[N5-1][rb[cb]] = z[N5-1];
       for(int s=N5-2; s >=0; s-- ) { 
-	fact = Real(0.5)*a[s];
-	z_prime[s][rb[cb]] = z[s] - fact*(z_prime[s+1] + GammaConst<Ns,Ns*Ns-1>()*z_prime[s+1]);
+
+	// OLD CODE
+	// fact = Real(0.5)*a[s];
+	//z_prime[s][rb[cb]] = z[s] - fact*(z_prime[s+1] + GammaConst<Ns,Ns*Ns-1>()*z_prime[s+1]);
+
+	// Recoded using Chiral Projectors
+	z_prime[s][rb[cb]] = z[s] - a[s]*chiralProjectPlus(z_prime[s+1]);
       }
 
       //Finally the inverse of Lm^T 
       //Same as the inverse of R above but with r P+ => l P-
       chi[N5-1][rb[cb]] = z_prime[N5-1];
       for(int s=0; s < N5-1; s++) { 
-	fact = Real(0.5)*l[s]; 
 
-	chi[s][rb[cb]] = z_prime[s] - fact*(chi[N5-1] - GammaConst<Ns,Ns*Ns-1>()*chi[N5-1]);
+	// OLD CODE
+	//	fact = Real(0.5)*l[s]; 
+	// chi[s][rb[cb]] = z_prime[s] - fact*(chi[N5-1] - GammaConst<Ns,Ns*Ns-1>()*chi[N5-1]);
+
+	
+	// Recoded using Chiral Projectors
+	chi[s][rb[cb]] = z_prime[s] - l[s]*chiralProjectMinus(chi[N5-1]);
       }
      
     }
@@ -392,48 +495,86 @@ namespace Chroma
     {
     case PLUS:
     {
-      LatticeFermion tmp;
-      LatticeFermion tmp1;
-      LatticeFermion tmp2;
+      multi1d<LatticeFermion> tmp(N5);
       Real fact1;
       Real fact2;
+      Real fact2mf;
+
       int otherCB = (cb + 1)%2 ;
- 
+
+      //  OLD CODE 
+      /*
+      LatticeFermion tmp1;
+      LatticeFermion tmp2;
+
+
       fact1 = -Real(0.5)*b5[0];
       fact2 = -Real(0.25)*c5[0];
       tmp1[rb[otherCB]] = psi[1] - m_q*psi[N5-1];
       tmp2[rb[otherCB]] = psi[1] + m_q*psi[N5-1];
       
-      tmp[rb[otherCB]] = fact1*psi[0] 
+      tmp[0][rb[otherCB]] = fact1*psi[0] 
 	+ fact2*(tmp1 - GammaConst<Ns, Ns*Ns-1>()*tmp2);
+      */
 
-      D.apply(chi[0], tmp, isign, cb);
-      
-      
+      // Recoded using Chiral Projectors
+      fact1 = -Real(0.5)*b5[0];
+      fact2 = -Real(0.5)*c5[0];
+      fact2mf = m_q*fact2;
+
+      tmp[0][rb[otherCB]] = fact1*psi[0];
+      tmp[0][rb[otherCB]] += fact2*chiralProjectMinus(psi[1]);
+      tmp[0][rb[otherCB]] -= fact2mf*chiralProjectPlus(psi[N5-1]);
+
+
+      // OLD CODE 
+      /*
       fact1 = -Real(0.5)*b5[N5-1];
       fact2 = -Real(0.25)*c5[N5-1];
 
       tmp1[rb[otherCB]]=psi[N5-2]-m_q*psi[0];
       tmp2[rb[otherCB]]=psi[N5-2]+m_q*psi[0];
 
-      tmp[rb[otherCB]] = fact1*psi[N5-1]
+      tmp[N5-1][rb[otherCB]] = fact1*psi[N5-1]
 	+ fact2*(tmp1 + GammaConst<Ns,Ns*Ns-1>()*tmp2 );
+      */
 
-      D.apply(chi[N5-1], tmp, isign, cb);
-      
+      // Recoded using Chiral Projectors
+      fact1 = -Real(0.5)*b5[N5-1];
+      fact2 = -Real(0.5)*c5[N5-1];
+      fact2mf = m_q*fact2;
+
+      tmp[N5-1][rb[otherCB]] = fact1*psi[N5-1];
+      tmp[N5-1][rb[otherCB]] += fact2*chiralProjectPlus(psi[N5-2]);
+      tmp[N5-1][rb[otherCB]] -= fact2mf*chiralProjectMinus(psi[0]);
 
       for(int s=1; s < N5-1; s++) { 
-	fact1 = -Real(0.5)*b5[s];
-	fact2 = -Real(0.25)*c5[s];
 
-	tmp1[rb[otherCB]]=psi[s-1] + psi[s+1];
-	tmp2[rb[otherCB]]=psi[s-1] - psi[s+1];
-	
-	tmp[rb[otherCB]]= fact1*psi[s] 
+	// OLD CODE 
+	/*
+	  fact1 = -Real(0.5)*b5[s];
+	  fact2 = -Real(0.25)*c5[s];
+	  
+	  tmp1[rb[otherCB]]=psi[s-1] + psi[s+1];
+	  tmp2[rb[otherCB]]=psi[s-1] - psi[s+1];
+	  
+	  tmp[s][rb[otherCB]]= fact1*psi[s] 
 	  + fact2*(tmp1 + GammaConst<Ns,Ns*Ns-1>()*tmp2) ;
-	
-	D.apply(chi[s], tmp, isign, cb);
+	*/
+
+	// Recoded using Chiral Projectors
+	fact1 = -Real(0.5)*b5[s];
+	fact2 = -Real(0.5)*c5[s];
+	tmp[s][rb[otherCB]] = fact1*psi[s];
+	tmp[s][rb[otherCB]] += fact2*chiralProjectPlus(psi[s-1]);
+	tmp[s][rb[otherCB]] += fact2*chiralProjectMinus(psi[s+1]);
       }
+
+      // Replace with vector dslash later
+      for(int s=0; s < N5; s++) { 
+	D.apply(chi[s], tmp[s], isign, cb);
+      }
+
     }
     break ;
     
@@ -441,10 +582,13 @@ namespace Chroma
     { 
       multi1d<LatticeFermion> tmp_d(N5) ;
 
+      // Replace with a vector dslash later
       for(int s=0; s<N5; s++){
 	D.apply(tmp_d[s], psi[s], isign, cb);
       }
 
+      // OLD CODE
+      /*
       LatticeFermion tmp1;
       LatticeFermion tmp2;
 
@@ -458,9 +602,20 @@ namespace Chroma
 
       chi[0][rb[cb]] = factb*tmp_d[0]
 	- one_quarter*( tmp1 + GammaConst<Ns,Ns*Ns-1>()*tmp2 );
+      */
+
+      // Recoded with Chiral Projector
+      Real factb = -Real(0.5)*b5[0];
+      Real factc1 = -Real(0.5)*c5[1];
+      Real factc2 = -Real(0.5)*m_q*c5[N5-1];
+
+      chi[0][rb[cb]] = factb*tmp_d[0];
+      chi[0][rb[cb]] += factc1*chiralProjectPlus(tmp_d[1]);
+      chi[0][rb[cb]] -= factc2*chiralProjectMinus(tmp_d[N5-1]);
 
 
-
+      // OLD CODE 
+      /*
       factb = -Real(0.5)*b5[N5-1];
       fact = m_q * c5[0];
       
@@ -469,16 +624,35 @@ namespace Chroma
 
       chi[N5-1][rb[cb]] = factb * tmp_d[N5-1]
 	- one_quarter * ( tmp1 - GammaConst<Ns, Ns*Ns-1>()*tmp2 );
+      */
+
+      // Recoded with Chiral Projector
+      factb = -Real(0.5)*b5[N5-1];
+      factc1 = -Real(0.5)*c5[N5-2];
+      factc2 = -Real(0.5)*m_q*c5[0];
+
+      chi[N5-1][rb[cb]] = factb*tmp_d[N5-1];
+      chi[N5-1][rb[cb]] += factc1*chiralProjectMinus(tmp_d[N5-2]);
+      chi[N5-1][rb[cb]] -= factc2*chiralProjectPlus(tmp_d[0]);
+
 
       for(int s=1; s<N5-1; s++){
 	factb = -Real(0.5) * b5[s];
-	
-	tmp1[rb[cb]] = c5[s-1]*tmp_d[s-1] + c5[s+1]*tmp_d[s+1];
-	tmp2[rb[cb]] = c5[s-1]*tmp_d[s-1] - c5[s+1]*tmp_d[s+1];
+	factc1 = -Real(0.5) * c5[s-1];
+	factc2 = -Real(0.5) * c5[s+1];
 
-	chi[s][rb[cb]] = factb*tmp_d[s] 
-	  - one_quarter*( tmp1 - GammaConst<Ns, Ns*Ns-1>()*tmp2 );
-	
+	// OLD CODE 
+	//	tmp1[rb[cb]] = c5[s-1]*tmp_d[s-1] + c5[s+1]*tmp_d[s+1];
+	//     tmp2[rb[cb]] = c5[s-1]*tmp_d[s-1] - c5[s+1]*tmp_d[s+1];
+
+	// chi[s][rb[cb]] = factb*tmp_d[s] 
+	//  - one_quarter*( tmp1 - GammaConst<Ns, Ns*Ns-1>()*tmp2 );
+
+	// Recoded with Chiral Projector
+	chi[s][rb[cb]] = factb*tmp_d[s];
+	chi[s][rb[cb]] += factc1*chiralProjectMinus(tmp_d[s-1]);
+	chi[s][rb[cb]] += factc2*chiralProjectPlus(tmp_d[s+1]);
+
       }
     }
     break ;
@@ -528,11 +702,16 @@ namespace Chroma
     case PLUS:
       {
 	LatticeFermion tmp;
-	LatticeFermion tmp1;
-	LatticeFermion tmp2;
 	Real fact1;
 	Real fact2;
+	Real fact2mf;
 	int otherCB = (cb + 1)%2 ;
+
+	// OLD CODE
+	/*
+	LatticeFermion tmp1;
+	LatticeFermion tmp2;
+
 	
 	fact1 = -Real(0.5)*b5[0];
 	fact2 = -Real(0.25)*c5[0];
@@ -541,10 +720,20 @@ namespace Chroma
 	
 	tmp[rb[otherCB]] = fact1*psi[0] 
 	  + fact2*(tmp1 - GammaConst<Ns, Ns*Ns-1>()*tmp2);
-	
+	*/
+
+	// Recoded with chiralProject
+	fact1 = -Real(0.5)*b5[0];
+	fact2 = -Real(0.5)*c5[0];
+	fact2mf = m_q*fact2;
+
+	tmp[rb[otherCB]] = fact1*psi[0];
+	tmp[rb[otherCB]] += fact2*chiralProjectMinus(psi[1]);
+	tmp[rb[otherCB]] -= fact2mf*chiralProjectPlus(psi[N5-1]);
+
 	D.deriv(ds_u, chi[0], tmp, isign, cb);
 	
-	
+	/*
 	fact1 = -Real(0.5)*b5[N5-1];
 	fact2 = -Real(0.25)*c5[N5-1];
 	
@@ -553,12 +742,25 @@ namespace Chroma
 	
 	tmp[rb[otherCB]] = fact1*psi[N5-1]
 	  + fact2*(tmp1 + GammaConst<Ns,Ns*Ns-1>()*tmp2 );
+	*/
+
+	// Recoded using Chiral Projectors
+	fact1 = -Real(0.5)*b5[N5-1];
+	fact2 = -Real(0.5)*c5[N5-1];
+	fact2mf = m_q*fact2;
 	
+	tmp[rb[otherCB]] = fact1*psi[N5-1];
+	tmp[rb[otherCB]] += fact2*chiralProjectPlus(psi[N5-2]);
+	tmp[rb[otherCB]] -= fact2mf*chiralProjectMinus(psi[0]);
+
 	D.deriv(ds_tmp, chi[N5-1], tmp, isign, cb);
 	ds_u += ds_tmp;
 	
 	
 	for(int s=1; s < N5-1; s++) { 
+
+	  // OLD CODE
+	  /*
 	  fact1 = -Real(0.5)*b5[s];
 	  fact2 = -Real(0.25)*c5[s];
 	  
@@ -567,7 +769,14 @@ namespace Chroma
 	  
 	  tmp[rb[otherCB]]= fact1*psi[s] 
 	    + fact2*(tmp1 + GammaConst<Ns,Ns*Ns-1>()*tmp2) ;
-	  
+	  */
+
+	  	// Recoded using Chiral Projectors
+	  fact1 = -Real(0.5)*b5[s];
+	  fact2 = -Real(0.5)*c5[s];
+	  tmp[rb[otherCB]] = fact1*psi[s];
+	  tmp[rb[otherCB]] += fact2*chiralProjectPlus(psi[s-1]);
+	  tmp[rb[otherCB]] += fact2*chiralProjectMinus(psi[s+1]);
 	  D.deriv(ds_tmp, chi[s], tmp, isign, cb);
 	  ds_u += ds_tmp;
 	}
@@ -610,13 +819,20 @@ namespace Chroma
 	multi1d<LatticeFermion> chi_plus(N5);
 	multi1d<LatticeFermion> chi_minus(N5);
 	
-	for(int s=0; s < N5; s++) { 
+	for(int s=0; s < N5; s++) {
+	  // OLD CODE
+	  /*
 	  chi_plus[s][rb[cb]]  = chi[s] + GammaConst<Ns,Ns*Ns-1>()*chi[s];
 	  chi_plus[s][rb[cb]] *= Real(0.5);
 	  
 	  chi_minus[s][rb[cb]] = chi[s] - GammaConst<Ns,Ns*Ns-1>()*chi[s];
 	  chi_minus[s][rb[cb]]*= Real(0.5);
-	  
+	  */
+
+	  // Recoded using chiralProject
+	  chi_plus[s][rb[cb]] = chiralProjectPlus(chi[s]);
+	  chi_minus[s][rb[cb]] = chiralProjectMinus(chi[s]);
+
 	  // Zero out unwanted checkerboard... May remove this later
 	  chi_plus[s][rb[1-cb]] = zero;
 	  chi_minus[s][rb[1-cb]] = zero;

@@ -1,4 +1,4 @@
-// $Id: prec_dwf_linop_array_w.cc,v 1.14 2005-03-02 18:32:04 bjoo Exp $
+// $Id: prec_dwf_linop_array_w.cc,v 1.15 2005-03-15 17:23:41 bjoo Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned domain-wall linear operator
  */
@@ -81,37 +81,68 @@ namespace Chroma
     
     case PLUS:
     {
-      for(int s(1);s<N5-1;s++) // 1/2k psi[s] + P_- * psi[s+1] + P_+ * psi[s-1]
-	chi[s][rb[cb]] = InvTwoKappa*psi[s] - 
-	  0.5*( psi[s+1] + psi[s-1] + GammaConst<Ns,Ns*Ns-1>()*(psi[s-1] - psi[s+1]) ) ;
-      
+
+      for(int s(1);s<N5-1;s++) { // 1/2k psi[s] - P_- * psi[s+1] - P_+ * psi[s-1]
+	//chi[s][rb[cb]] = InvTwoKappa*psi[s] - 
+	//   0.5*( psi[s+1] + psi[s-1] + GammaConst<Ns,Ns*Ns-1>()*(psi[s-1] - psi[s+1]) ) ;
+
+	// Recoded using chiralProject
+	chi[s][rb[cb]] = InvTwoKappa*psi[s] - chiralProjectPlus(psi[s-1]);
+	chi[s][rb[cb]] -= chiralProjectMinus(psi[s+1]);
+      }
+
       int N5m1(N5-1) ;
       //s=0 -- 1/2k psi[0] - P_- * psi[1] + mf* P_+ * psi[N5-1]
-      chi[0][rb[cb]] = InvTwoKappa*psi[0] - 
-	0.5*( psi[1]   - m_q*psi[N5m1] - GammaConst<Ns,Ns*Ns-1>()*(m_q*psi[N5m1] + psi[1]) ) ;
+      // chi[0][rb[cb]] = InvTwoKappa*psi[0] - 
+      //	0.5*( psi[1]   - m_q*psi[N5m1] - GammaConst<Ns,Ns*Ns-1>()*(m_q*psi[N5m1] + psi[1]) ) ;
+
+      // Recoded using chiralProject
+      chi[0][rb[cb]] = InvTwoKappa*psi[0] - chiralProjectMinus(psi[1]);
+      chi[0][rb[cb]] += m_q* chiralProjectPlus(psi[N5m1]);
       
       int N5m2(N5-2);
       //s=N5-1 -- 1/2k psi[N5-1] +mf* P_- * psi[0]  -  P_+ * psi[N5-2]
-      chi[N5m1][rb[cb]] = InvTwoKappa*psi[N5m1] - 
-	0.5*( psi[N5m2] - m_q *psi[0] + GammaConst<Ns,Ns*Ns-1>()*(psi[N5m2] + m_q * psi[0]) );
+      //chi[N5m1][rb[cb]] = InvTwoKappa*psi[N5m1] - 
+      //	0.5*( psi[N5m2] - m_q *psi[0] + GammaConst<Ns,Ns*Ns-1>()*(psi[N5m2] + m_q * psi[0]) );
+
+      // Recoded using chiralProject
+      chi[N5m1][rb[cb]] = InvTwoKappa*psi[N5m1] - chiralProjectPlus(psi[N5m2]);
+      chi[N5m1][rb[cb]] += m_q*chiralProjectMinus(psi[0]);
     }
     break ;
 
     case MINUS:
     {    
-      for(int s(1);s<N5-1;s++) // 1/2k psi[s] - P_+ * psi[s+1] - P_- * psi[s-1]
-	chi[s][rb[cb]] = InvTwoKappa*psi[s] - 
-	  0.5*( psi[s+1] + psi[s-1] + GammaConst<Ns,Ns*Ns-1>()*(psi[s+1] - psi[s-1]) ) ;
-      
+
+
+      for(int s(1);s<N5-1;s++) { // 1/2k psi[s] - P_+ * psi[s+1] - P_- * psi[s-1]
+	//	chi[s][rb[cb]] = InvTwoKappa*psi[s] - 
+	//  0.5*( psi[s+1] + psi[s-1] + GammaConst<Ns,Ns*Ns-1>()*(psi[s+1] - psi[s-1]) ) ;
+	
+
+	// Recoded using chiralProject
+	chi[s][rb[cb]] = InvTwoKappa*psi[s] - chiralProjectPlus(psi[s+1]);
+	chi[s][rb[cb]] -= chiralProjectMinus(psi[s-1]);
+
+      }
       int N5m1(N5-1) ;
       //s=0 -- 1/2k psi[0] - P_+ * psi[1] + mf* P_- * psi[N5-1]
-      chi[0][rb[cb]] = InvTwoKappa*psi[0] - 
-	0.5*( psi[1]   - m_q*psi[N5m1] + GammaConst<Ns,Ns*Ns-1>()*( psi[1]+m_q*psi[N5m1]) ) ;
-      
+      // chi[0][rb[cb]] = InvTwoKappa*psi[0] - 
+      //	0.5*( psi[1]   - m_q*psi[N5m1] + GammaConst<Ns,Ns*Ns-1>()*( psi[1]+m_q*psi[N5m1]) ) ;
+
+      // Recoded using chiralProject
+      chi[0][rb[cb]] = InvTwoKappa*psi[0] -  chiralProjectPlus(psi[1]);
+      chi[0][rb[cb]] += m_q*chiralProjectMinus(psi[N5m1]);
+
+
       int N5m2(N5-2);
       //s=N5-1 -- 1/2k psi[N5-1] + mf* P_+ * psi[0]  -  P_- * psi[N5-2]
-      chi[N5m1][rb[cb]] = InvTwoKappa*psi[N5m1] - 
-	0.5*( psi[N5m2] - m_q *psi[0] - GammaConst<Ns,Ns*Ns-1>()*(psi[N5m2] + m_q * psi[0]) );
+      // chi[N5m1][rb[cb]] = InvTwoKappa*psi[N5m1] - 
+      // 0.5*( psi[N5m2] - m_q *psi[0] - GammaConst<Ns,Ns*Ns-1>()*(psi[N5m2] + m_q * psi[0]) );
+      
+      // Recoded using chiralProject
+      chi[N5m1][rb[cb]] = InvTwoKappa*psi[N5m1]-chiralProjectMinus(psi[N5m2]);
+      chi[N5m1][rb[cb]] += m_q * chiralProjectPlus(psi[0]);
     }
     break ;
     }
@@ -149,28 +180,49 @@ namespace Chroma
 	chi[s][rb[cb]] = TwoKappa * psi[s] ;
       
       // First apply the inverse of Lm 
-      Real fact(0.5*m_q*TwoKappa) ;
+      //Real fact(0.5*m_q*TwoKappa) ;
+      // Recoded using ChiralProject which absorbs the factor of 0.5
+      Real fact = m_q*TwoKappa;
       for(int s(0);s<N5-1;s++){
-	chi[N5-1][rb[cb]] -= fact * (chi[s] - GammaConst<Ns,Ns*Ns-1>()*chi[s])  ;
+	//	chi[N5-1][rb[cb]] -= fact * (chi[s] - GammaConst<Ns,Ns*Ns-1>()*chi[s])  ;
+       
+	// Recoded using chiralProject 
+	chi[N5-1][rb[cb]] -= fact*chiralProjectMinus(chi[s]);
+
 	fact *= TwoKappa ;
       }
       
       //Now apply the inverse of L. Forward elimination 
-      for(int s(1);s<N5;s++)
-	chi[s][rb[cb]] += Kappa*(chi[s-1] + GammaConst<Ns,Ns*Ns-1>()*chi[s-1]) ;
-      
+      for(int s(1);s<N5;s++) {
+	
+	//chi[s][rb[cb]] += Kappa*(chi[s-1] + GammaConst<Ns,Ns*Ns-1>()*chi[s-1]) ;
+	// Recoded using chiral project
+	chi[s][rb[cb]] += TwoKappa*chiralProjectPlus(chi[s-1]);
+
+      }      
+
       //The inverse of D  now
       chi[N5-1][rb[cb]] *= invDfactor ;
       // That was easy....
       
       //The inverse of R. Back substitution...... Getting there! 
-      for(int s(N5-2);s>-1;s--)
-	chi[s][rb[cb]] += Kappa*(chi[s+1] - GammaConst<Ns,Ns*Ns-1>()*chi[s+1]) ;
       
+      for(int s(N5-2);s>-1;s--) {
+	// chi[s][rb[cb]] += Kappa*(chi[s+1] - GammaConst<Ns,Ns*Ns-1>()*chi[s+1]) ;
+	// Recoded using chiral Project
+	chi[s][rb[cb]] += TwoKappa*chiralProjectMinus(chi[s+1]);
+      }
+
       //Finally the inverse of Rm 
       LatticeFermion tt;
-      fact = 0.5*m_q*TwoKappa;
-      tt[rb[cb]] = fact*(chi[N5-1] + GammaConst<Ns,Ns*Ns-1>()*chi[N5-1]);
+
+      // fact = 0.5*m_q*TwoKappa;
+      // Recoded using chiralProject which absorbs factor of 0.5
+      fact = m_q*TwoKappa;
+
+      // tt[rb[cb]] = fact*(chi[N5-1] + GammaConst<Ns,Ns*Ns-1>()*chi[N5-1]);
+      tt[rb[cb]] = fact*chiralProjectPlus(chi[N5-1]);
+
       for(int s(0);s<N5-1;s++){
 	chi[s][rb[cb]] -= tt  ;
 	tt[rb[cb]] *= TwoKappa ;
@@ -185,27 +237,44 @@ namespace Chroma
 	chi[s][rb[cb]] = TwoKappa * psi[s] ;
       
       // First apply the inverse of Lm 
-      Real fact(0.5*m_q*TwoKappa) ;
+      // Real fact(0.5*m_q*TwoKappa) ;
+      // Recoded using chiralProject which absorbs factor of 0.5
+      Real fact=m_q*TwoKappa;
+
       for(int s(0);s<N5-1;s++){
-	chi[N5-1][rb[cb]] -= fact * (chi[s] + GammaConst<Ns,Ns*Ns-1>()*chi[s])  ;
+	// chi[N5-1][rb[cb]] -= fact * (chi[s] + GammaConst<Ns,Ns*Ns-1>()*chi[s])  ;
+	// Recoded using chiralProject
+	chi[N5-1][rb[cb]] -= fact*chiralProjectPlus(chi[s]);
+
 	fact *= TwoKappa ;
       }
       
       //Now apply the inverse of L. Forward elimination 
-      for(int s(1);s<N5;s++)
-	chi[s][rb[cb]] += Kappa*(chi[s-1] - GammaConst<Ns,Ns*Ns-1>()*chi[s-1]) ;
       
+      for(int s(1);s<N5;s++) {
+	// chi[s][rb[cb]] += Kappa*(chi[s-1] - GammaConst<Ns,Ns*Ns-1>()*chi[s-1]) ;
+	// Recoded using chiralProject
+	chi[s][rb[cb]] += TwoKappa*chiralProjectMinus(chi[s-1]);
+
+      }
       //The inverse of D  now
       chi[N5-1][rb[cb]] *= invDfactor ;
       // That was easy....
       
       //The inverse of R. Back substitution...... Getting there! 
-      for(int s(N5-2);s>-1;s--)
-	chi[s][rb[cb]] += Kappa*(chi[s+1] + GammaConst<Ns,Ns*Ns-1>()*chi[s+1]) ;
-      
+      for(int s(N5-2);s>-1;s--) {
+	//chi[s][rb[cb]] += Kappa*(chi[s+1] + GammaConst<Ns,Ns*Ns-1>()*chi[s+1]) ;
+	// Recoded using chiralProject
+	chi[s][rb[cb]] += TwoKappa*chiralProjectPlus(chi[s+1]);;
+
+      }
+
       //Finally the inverse of Rm 
       LatticeFermion tt;
-      tt[rb[cb]] = (0.5*m_q*TwoKappa)*(chi[N5-1] - GammaConst<Ns,Ns*Ns-1>()*chi[N5-1]);
+      
+      // Recoded using chiralProject
+      tt[rb[cb]] = (m_q*TwoKappa)*chiralProjectMinus(chi[N5-1]);
+
       for(int s(0);s<N5-1;s++){
 	chi[s][rb[cb]] -= tt  ;
 	tt[rb[cb]] *= TwoKappa ;
