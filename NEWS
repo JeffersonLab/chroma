@@ -1,3 +1,8 @@
+05/12/2004 -- Robert Edwards
+
+	Version 1.5.11. Tidying in the sequential source/prop reader/writers.
+        Working SUMR codes. Overlap under development to use new tricks.
+
 05/04/2004 -- Balint Joo
 
 	Version 1.5.10. Overlap double pass appears okay.
