@@ -1,10 +1,13 @@
-// $Id: spectrum_w.cc,v 1.38 2004-07-28 03:08:05 edwards Exp $
+// $Id: spectrum_w.cc,v 1.39 2004-09-09 04:01:44 edwards Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.38  2004-07-28 03:08:05  edwards
+//  Revision 1.39  2004-09-09 04:01:44  edwards
+//  Changed old FermActHandle to now get mass via XML.
+//
+//  Revision 1.38  2004/07/28 03:08:05  edwards
 //  Added START/END_CODE to all routines. Changed some to not pass an
 //  argument.
 //
@@ -396,9 +399,54 @@ int main(int argc, char **argv)
 
     // Derived from input prop
     int j_decay = source_header.j_decay;
-    Real Mass   = prop_header.FermActHandle->getMass();
     multi1d<int> boundary = prop_header.boundary;
     multi1d<int> t_source = source_header.t_source;
+
+    // Hunt around to find the mass
+    // NOTE: this may be problematic in the future if actions are used with no
+    // clear def. of a Mass
+    std::istringstream  xml_s(prop_header.fermact);
+    XMLReader  fermacttop(xml_s);
+    const string fermact_path = "/FermionAction";
+    string fermact;
+    Real Mass;
+
+    QDPIO::cout << "Try action and mass" << endl;
+    try
+    {
+      XMLReader top(fermacttop, fermact_path);
+
+      read(top, "FermAct", fermact);
+
+      // Yuk - need to hop some hoops. This should be isolated.
+      if (top.count("Mass") != 0) 
+      {
+        read(top, "Mass", Mass);
+      }
+      else if (top.count("Kappa") != 0)
+      {
+        Real Kappa;
+        read(top, "Kappa", Kappa);
+        Mass = kappaToMass(Kappa);    // Convert Kappa to Mass
+      }
+      else if (top.count("m_q") != 0) 
+      {
+        read(top, "m_q", Mass);
+      }
+      else
+      {
+        QDPIO::cerr << "Neither Mass nor Kappa found" << endl;
+        throw "Neither Mass nor Kappa found";
+      }
+    }
+    catch (const string& e) 
+    {
+      QDPIO::cerr << "Error reading fermact or mass: " << e << endl;
+      QDP_abort(1);
+    }
+    
+    QDPIO::cout << "FermAct = " << fermact << endl;
+    QDPIO::cout << "Mass = " << Mass << endl;
 
     // Flags
     int t0      = t_source[j_decay];
