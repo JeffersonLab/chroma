@@ -1,10 +1,10 @@
-// $Id: prec_kno_fermact_array_w.cc,v 1.2 2004-11-23 15:48:59 kostas Exp $
+// $Id: prec_kno_fermact_array_w.cc,v 1.3 2004-11-23 20:02:50 kostas Exp $
 /*! \file
  *  \brief preconditioned KNO fermion action
  */
 
 #include "chromabase.h"
-#include "actions/ferm/fermacts/prec_zolo_nef_fermact_array_w.h"
+#include "actions/ferm/fermacts/prec_kno_fermact_array_w.h"
 #include "actions/ferm/fermacts/unprec_wilson_fermact_w.h"
 #include "actions/ferm/linop/unprec_nef_linop_array_w.h"
 #include "actions/ferm/linop/prec_nef_general_linop_array_w.h"
@@ -38,7 +38,7 @@ namespace Chroma
     }
 
     //! Name to be used
-    const std::string name = "ZOLO_NEF";
+    const std::string name = "KNO";
 
     //! Register the Wilson fermact
     const bool registered = Chroma::TheWilsonTypeFermActArrayFactory::Instance().registerObject(name, createFermAct)
@@ -79,8 +79,7 @@ namespace Chroma
   }
 
   void EvenOddPrecKNOFermActArray::initCoeffs(multi1d<Real>& b5_arr,
-					     multi1d<Real>& c5_arr,
-					      const multi1d<Real>& sc) const
+					      multi1d<Real>& c5_arr) const
   {
     b5_arr.resize(N5);
     c5_arr.resize(N5);
@@ -89,12 +88,12 @@ namespace Chroma
     QDPIO::cout << "Initing General NEF Linop: N5=" << N5 <<endl ;
     QDPIO::cout << "                           a5=" << a5 <<endl ;
     for(int i = 0; i < N5; i++)
-      QDPIO::cout<<"                           coef("<<i<<") = "<<sc[i]<<endl ;
+      QDPIO::cout<<"                           coef("<<i<<") = "<<coefs[i]<<endl ;
 
     
     for(int i = 0; i < N5; i++) { 
-      b5_arr[i] = Real(0.5)*( sc[i]  + a5 );
-      c5_arr[i] = Real(0.5)*( sc[i] -  a5 );
+      b5_arr[i] = Real(0.5)*( coefs[i]  + a5 );
+      c5_arr[i] = Real(0.5)*( coefs[i] -  a5 );
     
       QDPIO::cout << " b5["<< i << "] ="<< b5_arr[i] 
 		  << " c5["<< i << "] ="<< c5_arr[i] << endl;
@@ -115,7 +114,7 @@ namespace Chroma
     multi1d<Real> c5_arr;
 
     // Cast the state up to an overlap state
-    initCoeffs(b5_arr,c5_arr,state);
+    initCoeffs(b5_arr,c5_arr);
     
     return new EvenOddPrecGenNEFDWLinOpArray(state->getLinks(),OverMass,b5_arr,c5_arr,Mass,N5);
   }
@@ -145,7 +144,7 @@ namespace Chroma
     multi1d<Real> c5_arr;
 
     // Cast the state up to an overlap state
-    initCoeffs(b5_arr,c5_arr,state);
+    initCoeffs(b5_arr,c5_arr);
     
     return new UnprecNEFDWLinOpArray(state->getLinks(),OverMass,b5_arr,c5_arr,1.0,N5);  // fixed to quark mass 1
   }
@@ -163,7 +162,7 @@ namespace Chroma
     multi1d<Real> c5_arr;
 
     // Cast the state up to an overlap state
-    initCoeffs(b5_arr,c5_arr,state);
+    initCoeffs(b5_arr,c5_arr);
     
     return new UnprecNEFDWLinOpArray(state->getLinks(),OverMass,b5_arr,c5_arr,Mass,N5);  // fixed to quark mass 1
   }
