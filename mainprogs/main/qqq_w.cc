@@ -1,5 +1,5 @@
 /*
- *  $Id: qqq_w.cc,v 1.3 2003-06-19 17:34:25 ikuro Exp $
+ *  $Id: qqq_w.cc,v 1.4 2003-08-27 20:01:13 edwards Exp $
  *
  *  This is the test program for the routine that reads in a quark propagator,
  *  stored in SZIN format, and computes the generalised quark propagators
@@ -32,12 +32,11 @@ int main(int argc, char **argv)
   int length = Layout::lattSize()[j_decay]; // define the temporal direction
 
   multi1d<LatticeColorMatrix> u(Nd);
-  // readArchiv(u, "nersc_freefield.cfg");	
 
-  Seed seed_old;
-  readSzin(u, "szin.cfg", seed_old);
+  XMLReader gauge_xml;
+  // readArchiv(gauge_xml, u, "nersc_freefield.cfg");	
+  readSzin(gauge_xml, u, "szin.cfg");
   
-
 
   // Now the lattice quark propagator, just a single one for this example, together
   // with the corresponding header
