@@ -28,13 +28,17 @@ HDRS =
 ##   Another option is to add it to check_PROGRAMS, which means it will only
 ##   be built by 'make check' and is not installed.
 #noinst_PROGRAMS = propagator
-check_PROGRAMS = propagator
+check_PROGRAMS = propagator spectrum_w
 
 #
 # The program and its dependencies
 #
 propagator_SOURCES= propagator.cc
 propagator_DEPENDENCIES= build_chroma_libs
+
+spectrum_w_SOURCES= spectrum_w.cc
+spectrum_w_DEPENDENCIES= build_chroma_libs
+
 
 #
 # The latter rule will always try to rebuild libchroma.a when you 

@@ -154,34 +154,42 @@ LDADD = -lchroma @QDPXX_LIBS@ @LIBS@
 HDRS = 
 
 #noinst_PROGRAMS = propagator
-check_PROGRAMS = propagator
+check_PROGRAMS = propagator spectrum_w
 
 #
 # The program and its dependencies
 #
 propagator_SOURCES = propagator.cc
 propagator_DEPENDENCIES = build_chroma_libs
+
+spectrum_w_SOURCES = spectrum_w.cc
+spectrum_w_DEPENDENCIES = build_chroma_libs
 subdir = mainprogs/main
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
 CONFIG_CLEAN_FILES =
-check_PROGRAMS = propagator$(EXEEXT)
+check_PROGRAMS = propagator$(EXEEXT) spectrum_w$(EXEEXT)
 am_propagator_OBJECTS = propagator.$(OBJEXT)
 propagator_OBJECTS = $(am_propagator_OBJECTS)
 propagator_LDADD = $(LDADD)
 propagator_LDFLAGS =
+am_spectrum_w_OBJECTS = spectrum_w.$(OBJEXT)
+spectrum_w_OBJECTS = $(am_spectrum_w_OBJECTS)
+spectrum_w_LDADD = $(LDADD)
+spectrum_w_LDFLAGS =
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/propagator.Po
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/propagator.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/spectrum_w.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
-DIST_SOURCES = $(propagator_SOURCES)
+DIST_SOURCES = $(propagator_SOURCES) $(spectrum_w_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(propagator_SOURCES)
+SOURCES = $(propagator_SOURCES) $(spectrum_w_SOURCES)
 
 all: all-am
 
@@ -198,6 +206,9 @@ clean-checkPROGRAMS:
 propagator$(EXEEXT): $(propagator_OBJECTS) $(propagator_DEPENDENCIES) 
 	@rm -f propagator$(EXEEXT)
 	$(CXXLINK) $(propagator_LDFLAGS) $(propagator_OBJECTS) $(propagator_LDADD) $(LIBS)
+spectrum_w$(EXEEXT): $(spectrum_w_OBJECTS) $(spectrum_w_DEPENDENCIES) 
+	@rm -f spectrum_w$(EXEEXT)
+	$(CXXLINK) $(spectrum_w_LDFLAGS) $(spectrum_w_OBJECTS) $(spectrum_w_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
@@ -206,6 +217,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/propagator.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/spectrum_w.Po@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
