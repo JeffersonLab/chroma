@@ -1,4 +1,4 @@
-// $Id: qprop_s.cc,v 1.1 2003-12-10 12:38:14 bjoo Exp $
+// $Id: staggered_qprop.cc,v 1.1 2003-12-11 17:11:17 bjoo Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *
@@ -9,7 +9,8 @@
 #include "fermact.h"
 #include "primitives.h"
 #include "common_declarations.h"
-#include "actions/ferm/invert/invcg2.h"
+#include "linearop.h"
+#include "actions/ferm/invert/invcg1.h"
 
 using namespace QDP;
 
@@ -31,67 +32,67 @@ using namespace QDP;
  * \param ncg_had  number of CG iterations ( Write )
  */
 
-void AsqtadFermTypeAction<LatticeFermion>::qprop(LatticeFermion& psi, 
-		                                const multi1d<LatticeColorMatrix>& u_fat,
-			  			const multi1d<LatticeColorMatrix>& u_triple, 
-	        	  			const LatticeFermion& chi, 
-			  			int invType,
-		          			const Real& RsdCG, 
-			  			int MaxCG, const Real& mass, int& ncg_had) const
+void EvenOddPrecStaggeredTypeFermAct<LatticeFermion>::qprop(
+						       LatticeFermion& psi, 
+						       const ConnectState& state,
+						       const LatticeFermion& chi,
+						       enum InvType invType,
+						       
+						       const Real& RsdCG, 
+						       int MaxCG, 
+						       int& ncg_had)
 {
-  START_CODE("AsqtadFermTypeAction::qprop");
+  START_CODE("EvenOddStaggeredTypeAction::qprop");
 
   int n_count;
   
   /* Construct the linear operator */
   /* This allocates field for the appropriate action */
-  const LinearOperator<LatticeFermion>* M = linOp(u_fat,u_triple);
-  const LinearOperator<LatticeFermion>* A = lMdagM(u_fat, u_triple);
+  const EvenOddPrecLinearOperatorProxy<LatticeFermion> M(linOp(state));
+  const LinearOperatorProxy<LatticeFermion> A(lMdagM(state));
 
   LatticeFermion tmp, tmp1, tmp2;
   Real invm;
 
-  XMLFileWriter xml_out("output3.xml");
-//  push(xml_out, "more_tests");
-//  Write(xml_out, u_fat);
-//  Write(xml_out, u_triple);
-//  pop(xml_out);
-
   switch(invType)
   {
   case CG_INVERTER: 
-    /* chi_1 = M_dag(u) * chi_1 */
-    (*M)(tmp, chi, MINUS);
-   
-//    tmp1[rb[0]] = tmp;
 
-    /* psi = (M^dag * M)^(-1) chi */
-    InvCG2 (*A, tmp, psi, RsdCG, MaxCG, n_count);
-   
-// psi[rb[0]] is returned, so reconstruct psi[rb[1]]
+    // Make preconditioned source:  tmp_1_e = M_ee chi_e + M_eo^{dag} chi_o
 
-    invm = Real(1)/(2*mass);
-
-    (*M)(tmp1, psi, PLUS);
-    tmp1 *= invm;
-    tmp2 = invm * chi;
-
-    psi[rb[1]] = tmp2 - tmp1;
-
-    push(xml_out, "psi");
-    Write(xml_out, psi);
-    pop(xml_out);
+    M.evenEvenLinOp(tmp, chi, PLUS);
+    M.evenOddLinOp(tmp2, chi, MINUS);
+    tmp += tmp2;
     
+
+    /* psi = (M^dag * M)^(-1) chi  = A^{-1} chi*/
+    InvCG1(A, tmp, psi, RsdCG, MaxCG, n_count);
+   
+    // psi[rb[0]] is returned, so reconstruct psi[rb[1]]
+    invm = Real(1)/(2*getQuarkMass());
+    
+    // tmp_1_o = D_oe psi_e 
+    M.oddEvenLinOp(tmp1, psi, PLUS);
+
+    // tmp_1_o = (1/2m) D_oe psi_e
+    tmp1[rb[1]] *= invm;
+
+    // tmp_2_o = (1/2m) chi_o
+    tmp2[rb[1]]  = invm * chi;
+
+    // psi_o = (1/2m) chi_o - (1/2m) D_oe psi_e 
+    psi[rb[1]] = tmp2 - tmp1;
     break;  
+
 #if 0
   case MR_INVERTER:
     /* psi = M^(-1) chi */
-    InvMR (*A, chi, psi, MRover, RsdCG, MaxCG, n_count);
+    InvMR (M, chi, psi, MRover, RsdCG, MaxCG, n_count);
     break;
 
   case BICG_INVERTER:
     /* psi = M^(-1) chi */
-    InvBiCG (*A, chi, psi, RsdCG, MaxCG, n_count);
+    InvBiCG (M, chi, psi, RsdCG, MaxCG, n_count);
     break;
 #endif
   
@@ -105,9 +106,9 @@ void AsqtadFermTypeAction<LatticeFermion>::qprop(LatticeFermion& psi,
   ncg_had = n_count;
   
   // Call the virtual destructor of A
-  delete A;
+  // delete A;
 
-  END_CODE("AsqtadFermTypeAction::qprop");
+  END_CODE("EvenOddStaggeredFermTypeAction::qprop");
 }
 
 

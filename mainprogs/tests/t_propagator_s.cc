@@ -1,4 +1,4 @@
-// $Id: t_propagator_s.cc,v 1.2 2003-12-10 16:21:00 bjoo Exp $
+// $Id: t_propagator_s.cc,v 1.3 2003-12-11 17:11:17 bjoo Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -9,7 +9,8 @@
 #define MAIN
 
 #include "chroma.h"
-#include "util/ferm/transf_w.h"
+#include "util/ferm/transf.h"
+#include "fermact.h"
 #include "actions/ferm/fermacts/prec_asqtad_fermact_s.h"
 #include "actions/ferm/linop/prec_asqtad_linop_s.h"
 
@@ -65,8 +66,7 @@ struct Param_t
 
   multi1d<int> nrow;
   multi1d<int> boundary;
-  multi1d<int> t_srce;
-};
+  multi1d<int> t_srce; };
 
 struct Cfg_t
 {
@@ -358,15 +358,20 @@ int main(int argc, char **argv)
   // Set up a state for the current u,
   // (compute fat & triple links)
   // Use S_f.createState so that S_f can pass in u0
-  // Use ConnectStateProxy to reference count and avoid pointer notation
 
-  AsqtadConnectStateProxy<LatticeFermion> state(S_f.createState(u));
-  EvenOddPrecLinearOperatorProxy<LatticeFermion> D_asqtad(S_f.linOp((ConnectState &)state));
+  const AsqtadConnectStateProxy<LatticeFermion> state(S_f.createState(u));
+  const EvenOddPrecLinearOperatorProxy<LatticeFermion> D_asqtad(S_f.linOp((ConnectState &)state));
 
   // Create a fermion to apply linop to.
   LatticeFermion psi;
-  random(psi);
 
+//  multi1d<int> t_source = zero;
+//  psi = zero;
+  srcfil(psi ,input.param.t_srce ,0, 0);
+//  random(psi);
+
+//  const peeksite(const LatticeFermion& psi, 0);
+  
   // Create a result vector 
   LatticeFermion chi;
   chi  =  zero;
@@ -374,31 +379,43 @@ int main(int argc, char **argv)
   // Apply Linop
   D_asqtad.evenOddLinOp(chi, psi, PLUS); 
 
+  push(xml_out, "dslash");
+  Write(xml_out, psi);
+  Write(xml_out, chi);
+  pop(xml_out);
+
+  const LinearOperatorProxy<LatticeFermion> MdagM_asqtad(S_f.lMdagM((ConnectState &)state));
+
+  chi = zero;
+  MdagM_asqtad(chi, psi, PLUS);
+
+  push(xml_out, "MdagM");
+  Write(xml_out, psi);
+  Write(xml_out, chi);
+  pop(xml_out);
+
+ 
+						       
   //
   // Loop over the source color, creating the source
   // and calling the relevant propagator routines. The QDP
   // terminology is that a staggered propagator is a matrix in color space
   // 
   //
-  // LatticePropagator quark_propagator;
-  //  XMLBufferWriter xml_buf;
-  // int ncg_had = 0;
+  LatticePropagator quark_propagator;
+  XMLBufferWriter xml_buf;
+  int ncg_had = 0;
+  int n_count;
 
-//  quarkprop4 is generic to Wilson not staggered, so explicitly
-//  call qprop from here as in the past.
+  psi = zero;   // note this is ``zero'' and not 0
 
-//  quarkProp4(quark_propagator, xml_buf, quark_prop_source,
-//	     S_f, u, input.param.invType, input.param.RsdCG, input.param.MaxCG, ncg_had);
-
-  // LatticeFermion psi = zero;   // note this is ``zero'' and not 0
-
-  // for(int color_source = 0; color_source < Nc; ++color_source)
-  // {
-  //  int spin_source = 0;
-  //  LatticeFermion chi;
+  for(int color_source = 0; color_source < Nc; ++color_source)
+  {
+    int spin_source = 0;
+    LatticeFermion chi;
 
     // Extract a fermion source
-   // PropToFerm(quark_prop_source, chi, color_source, spin_source);
+    PropToFerm(quark_prop_source, chi, color_source, spin_source);
 
     // push(xml_out, "SOURCE");
    //  Write(xml_out, psi);
@@ -410,22 +427,23 @@ int main(int argc, char **argv)
     // Compute the propagator for given source color/spin 
     // int n_count;
 
-    // S_f.qprop(psi, u_fat, u_triple, chi, CG_INVERTER, 
-    //           input.param.RsdCG, input.param.MaxCG, input.param.Mass, n_count);
-    // ncg_had += n_count;
+    S_f.qprop(psi, (ConnectState&) state, chi, CG_INVERTER, 
+              input.param.RsdCG, input.param.MaxCG, n_count);
+    
+    ncg_had += n_count;
       
-    // push(xml_out,"Qprop");
-    // write(xml_out, "Mass" , input.param.Mass);
-    // write(xml_out, "RsdCG", input.param.RsdCG);
-    // Write(xml_out, n_count);
-    // pop(xml_out);
+    push(xml_out,"Qprop");
+    write(xml_out, "Mass" , input.param.Mass);
+    write(xml_out, "RsdCG", input.param.RsdCG);
+    Write(xml_out, n_count);
+    pop(xml_out);
 
     /*
      * Move the solution to the appropriate components
      * of quark propagator.
      */
-    // FermToProp(psi, quark_propagator, color_source, spin_source);
- //  }
+    FermToProp(psi, quark_propagator, color_source, spin_source);
+  }
 
 
   // Instantiate XML buffer to make the propagator header

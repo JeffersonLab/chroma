@@ -1,4 +1,4 @@
-// $Id: prec_asqtad_linop_s.cc,v 1.2 2003-12-10 16:21:00 bjoo Exp $
+// $Id: prec_asqtad_linop_s.cc,v 1.3 2003-12-11 17:11:17 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -13,7 +13,7 @@ void EvenOddPrecAsqtadLinOp::evenEvenLinOp(LatticeFermion& chi,
 					   const LatticeFermion& psi, 
 					   enum PlusMinus isign) const 
 {
-  chi[rb[0]] = zero;
+  chi[rb[0]] = 2*Mass*psi;
 }
 
 
@@ -21,7 +21,7 @@ void EvenOddPrecAsqtadLinOp::oddOddLinOp(LatticeFermion& chi,
 					 const LatticeFermion& psi, 
 					 enum PlusMinus isign) const
 {
-  chi[rb[1]] = zero;
+  chi[rb[1]] = 2*Mass*psi;
 }
 
 void EvenOddPrecAsqtadLinOp::evenOddLinOp(LatticeFermion& chi, 
@@ -32,10 +32,8 @@ void EvenOddPrecAsqtadLinOp::evenOddLinOp(LatticeFermion& chi,
 
   LatticeFermion tmp;
 
-  D.apply(tmp, psi, isign, 0);
+  D.apply(chi, psi, isign, 0);
 
-  chi[rb[0]]  = 2*Mass*psi;
-  chi[rb[0]] += tmp;
 }
 
 void EvenOddPrecAsqtadLinOp::oddEvenLinOp(LatticeFermion& chi, 
@@ -46,9 +44,6 @@ void EvenOddPrecAsqtadLinOp::oddEvenLinOp(LatticeFermion& chi,
 
   LatticeFermion tmp;
 
-  PlusMinus isignNew = (isign == PLUS) ? MINUS : PLUS;
-  D.apply(tmp, psi, isignNew, 1);
+  D.apply(chi, psi, isign, 1);
 
-  chi[rb[1]] = 2*Mass*psi;
-  chi[rb[1]] += tmp;
 }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_asq_mdagm_s.h,v 1.2 2003-12-10 16:21:00 bjoo Exp $
+// $Id: prec_asq_mdagm_s.h,v 1.3 2003-12-11 17:11:17 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -68,6 +68,7 @@ private:
   Real Mass;
   multi1d<LatticeColorMatrix> u_fat;
   multi1d<LatticeColorMatrix> u_triple;
+
   AsqtadDslash D;
 };
 

@@ -1,4 +1,4 @@
-// $Id: quarkprop4_w.cc,v 1.5 2003-12-02 15:44:01 edwards Exp $
+// $Id: quarkprop4_w.cc,v 1.6 2003-12-11 17:11:17 bjoo Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -8,7 +8,7 @@
 #include "chromabase.h"
 #include "fermact.h"
 #include "actions/ferm/qprop/quarkprop4_w.h"
-#include "util/ferm/transf_w.h"
+#include "util/ferm/transf.h"
 
 using namespace QDP;
 

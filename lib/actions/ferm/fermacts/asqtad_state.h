@@ -11,7 +11,6 @@ template<typename T>
 class AsqtadConnectStateBase : public ConnectState {
  public: 
 
- //! Return the eigenvalues
   virtual const multi1d<LatticeColorMatrix>& getFatLinks() const = 0;
   virtual const multi1d<LatticeColorMatrix>& getTripleLinks() const = 0;
 

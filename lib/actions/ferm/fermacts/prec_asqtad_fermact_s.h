@@ -6,7 +6,7 @@
 
 using namespace QDP;
 
-class EvenOddPrecAsqtadFermAct : public EvenOddPrecAsqtadFermTypeAction<LatticeFermion>
+class EvenOddPrecAsqtadFermAct : public EvenOddPrecStaggeredTypeFermAct<LatticeFermion>
 {
 public:
   //! Partial constructor
@@ -47,9 +47,11 @@ public:
 
   //! Produce a linear operator M^dag.M for this action
   
-  const EvenOddPrecLinearOperator<LatticeFermion>* lMdagM(const ConnectState& state_) const {} ;
+  const LinearOperator<LatticeFermion>* lMdagM(const ConnectState& state_) 
+    const;
+
   //! accessors 
-  Real getQuarkMass() { 
+  const Real getQuarkMass() const { 
     return Mass;
   }
 
@@ -60,23 +62,13 @@ public:
 
   //! Create Connect State from u
   const AsqtadConnectStateBase<LatticeFermion>* createState(const multi1d<LatticeColorMatrix>& u) {
-    return new AsqtadConnectState<LatticeFermion>(u, u0, phases);
+    return (AsqtadConnectStateBase<LatticeFermion>*) new AsqtadConnectState<LatticeFermion>(u, u0, phases);
   }
 
-#if 0
-// THIS SHOULD NOT BE NEEDED
-  //! Compute quark propagator
-  void qprop(LatticeFermion& psi, 
-	     const multi1d<LatticeColorMatrix>& u, 
-	     const LatticeFermion& chi, 
-	     enum InvType invType,
-	     const Real& RsdCG, 
-	     int MaxCG, int& ncg_had) const;
-#endif
 
   //! Compute dS_f/dU      DO I NEED THIS??
-//  multi1d<LatticeColorMatrix> dsdu(const multi1d<LatticeColorMatrix>& u,
-//				   const LatticeFermion& psi) const;
+  //  multi1d<LatticeColorMatrix> dsdu(const multi1d<LatticeColorMatrix>& u,
+  //				   const LatticeFermion& psi) const;
 
   //! Destructor is automatic
   ~EvenOddPrecAsqtadFermAct() {}

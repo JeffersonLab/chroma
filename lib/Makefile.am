@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.67 2003-12-10 21:26:07 kostas Exp $
+# $Id: Makefile.am,v 1.68 2003-12-11 17:11:17 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -79,9 +79,10 @@ libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
                szin_io.cc readszin.cc writeszin.cc su3proj.cc sun_proj.cc \
                gaus_smear.cc hyp_smear.cc ape_smear.cc \
                klein_gord.cc laplacian.cc  \
-               su2extract.cc sunfill.cc invcg2.cc invcg2_array.cc qprop_io.cc \
+               su2extract.cc sunfill.cc invcg1.cc invcg2.cc invcg2_array.cc qprop_io.cc \
                milc_io.cc readmilc.cc writemilc.cc \
-               axgauge.cc coulgauge.cc grelax.cc polar_dec.cc rot_colvec.cc
+               axgauge.cc coulgauge.cc grelax.cc polar_dec.cc rot_colvec.cc \
+	       transf.cc
 
 #
 # Object files to add if building the Wilson Builds...
@@ -127,7 +128,7 @@ if BUILD_STAGGERED_LIBS
 libchroma_a_SOURCES += mesphas_s.cc mesphas_follana_s.cc pions_follana_s.cc \
 	follana_io_s.cc fermact_qprop.cc \
 	prec_asqtad_linop_s.cc asq_dsl_s.cc fat7_links_s.cc naik_term_s.cc  \
-	prec_asqtad_fermact_s.cc
+	prec_asqtad_fermact_s.cc prec_asq_mdagm_s.cc staggered_qprop.cc
 endif
 
 

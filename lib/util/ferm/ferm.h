@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ferm.h,v 1.2 2003-04-01 02:38:26 edwards Exp $
+// $Id: ferm.h,v 1.3 2003-12-11 17:11:17 bjoo Exp $
 
 /*! \file
  * \brief Utilities for manipulating fermion fields
@@ -16,7 +16,7 @@
 #ifndef __ferm_h__
 #define __ferm_h__
 
-#include "transf_w.h"
+#include "transf.h"
 
 #endif
 
