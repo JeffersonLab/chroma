@@ -1,4 +1,4 @@
-// $Id: quarkprop4_multi_w.cc,v 1.3 2004-04-20 13:08:11 bjoo Exp $
+// $Id: quarkprop4_multi_w.cc,v 1.4 2004-05-27 11:21:23 bjoo Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -59,10 +59,8 @@ void multiQuarkProp4_m(multi1d<LatticePropagator>& q_sol,
 
       // Compute the propagator for given source color/spin.
       int n_count;
-      for(int i=0; i < masses.size(); i++) {
-	psi[i] = zero;
-      }
 
+      // The psi-s are zeroed in multiQprop
       S_f.multiQprop(psi, masses, state, chi, invType, RsdCG, 
 		     1, MaxCG, n_count);
 

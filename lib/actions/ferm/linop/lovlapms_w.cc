@@ -1,4 +1,4 @@
-// $Id: lovlapms_w.cc,v 1.18 2004-05-18 12:54:49 bjoo Exp $
+// $Id: lovlapms_w.cc,v 1.19 2004-05-27 11:21:23 bjoo Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -421,7 +421,7 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
     if (k > 0 &&  !convP) {
 
       // Get target r^2 * || sgn (H) ||^2
-      chi_sq_new = rsdcg_sq * norm2(chi);
+      chi_sq_new = rsd_sq * norm2(chi);
 
       // Get || Delta sgn()
       chi_sq_diff = norm2(tmp1);      // the diff of old and new soln

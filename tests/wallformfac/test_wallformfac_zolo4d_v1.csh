@@ -1,10 +1,10 @@
 #!/bin/tcsh
 
-set builddir = ../../scalar/mainprogs/main
+set builddir = ../../build/double/mainprogs/main
 #set gauge_type = UNIT
 set gauge_type = SZINQIO
 set gauge_cfg = ../gfix.cfg1
-
+set inv_type = REL_CG_INVERTER
 #
 # Forward source
 #
@@ -88,8 +88,8 @@ cat << **EOF** >! DATA
   </AuxFermAct>
   <StateInfo>
     <!-- The ApproxMin and ApproxMax are ignored if NWilsVec &gt 0 -->
-    <ApproxMin>0.668668</ApproxMin>
-    <ApproxMax>6.46357</ApproxMax>
+    <ApproxMin>0.66</ApproxMin>
+    <ApproxMax>6.5</ApproxMax>
     <NWilsVec>0</NWilsVec>
     <Eig>
         <eigen_file_stem>../t_ritz/g5_wils_eigen</eigen_file_stem>
@@ -99,9 +99,11 @@ cat << **EOF** >! DATA
  </FermionAction>
 
  <InvertParam>
-   <invType>CG_INVERTER</invType>
+   <invType>${inv_type}</invType>
    <RsdCG>1.0e-6</RsdCG>
+   <RsdCGPrec>0.1</RsdCGPrec>
    <MaxCG>1000</MaxCG>
+   <MaxCGPrec>20</MaxCGPrec>
  </InvertParam>
  <nrow>4 4 4 8</nrow>
  <boundary>1 1 1 -1</boundary>
@@ -205,8 +207,8 @@ cat << **EOF** >! DATA
   </AuxFermAct>
   <StateInfo>
     <!-- The ApproxMin and ApproxMax are ignored if NWilsVec &gt 0 -->
-    <ApproxMin>0.668668</ApproxMin>
-    <ApproxMax>6.46357</ApproxMax>
+    <ApproxMin>0.66</ApproxMin>
+    <ApproxMax>6.5</ApproxMax>
     <NWilsVec>0</NWilsVec>
     <Eig>
         <eigen_file_stem>../t_ritz/g5_wils_eigen</eigen_file_stem>
@@ -215,9 +217,11 @@ cat << **EOF** >! DATA
   </StateInfo>
  </FermionAction>
  <InvertParam>
-   <invType>CG_INVERTER</invType>
+   <invType>${inv_type}</invType>
    <RsdCG>1.0e-6</RsdCG>
+   <RsdCGPrec>0.1</RsdCGPrec>
    <MaxCG>1000</MaxCG>
+   <MaxCGPrec>12</MaxCGPrec>
  </InvertParam>
  <nrow>4 4 4 8</nrow>
  <boundary>1 1 1 -1</boundary>

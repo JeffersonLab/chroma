@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.199 2004-05-25 21:47:39 bjoo Exp $
+# $Id: Makefile.in,v 1.200 2004-05-27 11:21:23 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -304,6 +304,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/invbicgstab_array.h \
 	actions/ferm/invert/inv_rel_gmresr_sumr.h \
 	actions/ferm/invert/inv_rel_gmresr_cg.h \
+	actions/ferm/invert/inv_gmresr_cg_array.h \
 	actions/ferm/linop/asqtad_dslash.h actions/ferm/linop/linop.h \
 	actions/ferm/linop/lmdagm.h actions/ferm/linop/lopscl.h \
 	actions/ferm/linop/partrat.h actions/ferm/qprop/qprop.h \
@@ -376,7 +377,7 @@ libchroma_a_SOURCES = gauge_startup.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
                proginfo.cc printgeom.cc fuzwilp.cc wilslp.cc \
 	       invsumr.cc minvsumr.cc inv_rel_sumr.cc minv_rel_sumr.cc \
 	       invbicgstab.cc invbicgstab_array.cc inv_rel_gmresr_sumr.cc \
-	       inv_rel_gmresr_cg.cc\
+	       inv_rel_gmresr_cg.cc inv_gmresr_cg_array.cc\
 $(am__append_4) $(am__append_5) $(am__append_6) $(am__append_7)
 subdir = lib
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
@@ -402,12 +403,12 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc rgauge.cc taproj.cc \
 	eig_spec_array.cc proginfo.cc printgeom.cc fuzwilp.cc wilslp.cc \
 	invsumr.cc minvsumr.cc inv_rel_sumr.cc minv_rel_sumr.cc \
 	invbicgstab.cc invbicgstab_array.cc inv_rel_gmresr_sumr.cc \
-	inv_rel_gmresr_cg.cc baryon_w.cc barhqlq_w.cc mesons_w.cc \
-	hybmeson_w.cc loops_w.cc diractodr.cc paulitodr.cc curcor2_w.cc \
-	lwldslash_w.cc formfac_w.cc mesonseqsrc_w.cc barseqsrc_w.cc \
-	seqpiontest_w.cc sink_smear2_w.cc barcomp_io.cc barcomp_w.cc \
-	walfil_w.cc overlap_state_info.cc \
-	zolotarev4d_fermact_paramio_w.cc \
+	inv_rel_gmresr_cg.cc inv_gmresr_cg_array.cc baryon_w.cc \
+	barhqlq_w.cc mesons_w.cc hybmeson_w.cc loops_w.cc diractodr.cc \
+	paulitodr.cc curcor2_w.cc lwldslash_w.cc formfac_w.cc \
+	mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
+	sink_smear2_w.cc barcomp_io.cc barcomp_w.cc walfil_w.cc \
+	overlap_state_info.cc zolotarev4d_fermact_paramio_w.cc \
 	zolotarev5d_fermact_paramio_w.cc fermact_qprop.cc \
 	prec_fermact_qprop.cc unprec_wilson_fermact_w.cc \
 	unprec_wilson_linop_w.cc prec_wilson_fermact_w.cc \
@@ -553,8 +554,9 @@ am_libchroma_a_OBJECTS = gauge_startup.$(OBJEXT) rgauge.$(OBJEXT) \
 	minvsumr.$(OBJEXT) inv_rel_sumr.$(OBJEXT) \
 	minv_rel_sumr.$(OBJEXT) invbicgstab.$(OBJEXT) \
 	invbicgstab_array.$(OBJEXT) inv_rel_gmresr_sumr.$(OBJEXT) \
-	inv_rel_gmresr_cg.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
-	$(am__objects_3) $(am__objects_4)
+	inv_rel_gmresr_cg.$(OBJEXT) inv_gmresr_cg_array.$(OBJEXT) \
+	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
+	$(am__objects_4)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I.
@@ -588,7 +590,9 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/gaus_smear.Po ./$(DEPDIR)/gramschm.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/gramschm_array.Po ./$(DEPDIR)/grelax.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/hotst.Po ./$(DEPDIR)/hybmeson_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/hyp_smear.Po ./$(DEPDIR)/inv_rel_cg1.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/hyp_smear.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/inv_gmresr_cg_array.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/inv_rel_cg1.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/inv_rel_cg2.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/inv_rel_gmresr_cg.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/inv_rel_gmresr_sumr.Po \
@@ -811,6 +815,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hotst.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hybmeson_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyp_smear.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inv_gmresr_cg_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inv_rel_cg1.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inv_rel_cg2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inv_rel_gmresr_cg.Po@am__quote@

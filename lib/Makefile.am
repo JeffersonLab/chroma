@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.143 2004-05-25 21:47:39 bjoo Exp $
+# $Id: Makefile.am,v 1.144 2004-05-27 11:21:22 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -75,6 +75,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/invbicgstab_array.h \
 	actions/ferm/invert/inv_rel_gmresr_sumr.h \
 	actions/ferm/invert/inv_rel_gmresr_cg.h \
+	actions/ferm/invert/inv_gmresr_cg_array.h \
 	actions/ferm/linop/asqtad_dslash.h actions/ferm/linop/linop.h \
 	actions/ferm/linop/lmdagm.h actions/ferm/linop/lopscl.h \
 	actions/ferm/linop/partrat.h actions/ferm/qprop/qprop.h \
@@ -248,7 +249,7 @@ libchroma_a_SOURCES = gauge_startup.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
                proginfo.cc printgeom.cc fuzwilp.cc wilslp.cc \
 	       invsumr.cc minvsumr.cc inv_rel_sumr.cc minv_rel_sumr.cc \
 	       invbicgstab.cc invbicgstab_array.cc inv_rel_gmresr_sumr.cc \
-	       inv_rel_gmresr_cg.cc
+	       inv_rel_gmresr_cg.cc inv_gmresr_cg_array.cc
 
 # 
 

@@ -1,4 +1,4 @@
-// $Id: invcg1_array.cc,v 1.1 2004-05-19 00:21:23 bjoo Exp $
+// $Id: invcg1_array.cc,v 1.2 2004-05-27 11:21:23 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -186,7 +186,7 @@ void InvCG1_a(const LinearOperator< multi1d<T> >& A,
       p[n][s] = r[n] + b*p[n];	/* Nc Ns  flops */
   }
   n_count = MaxCG;
-  QDP_error_exit("too many CG iterations: count = %d", n_count);
+  QDPIO::cerr << "Nonconvergence Warning" << endl;
 }
 
 

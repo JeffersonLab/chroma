@@ -1,4 +1,4 @@
-// $Id: overlap_fermact_base_w.cc,v 1.15 2004-05-25 21:47:39 bjoo Exp $
+// $Id: overlap_fermact_base_w.cc,v 1.16 2004-05-27 11:21:23 bjoo Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -53,27 +53,26 @@ OverlapFermActBase::qprop(LatticeFermion& psi,
   case CG_INVERTER:
     {
 
-      LatticeFermion tmp;
+      // We do our solve into tmp, so make sure this is the supplied initial guess
+      LatticeFermion tmp = psi;
       Handle< const LinearOperator<LatticeFermion> > M(linOp(state));
 	
       // Check whether the source is chiral.
       Chirality ichiral = isChiralVector(chi);
       if( ichiral == CH_NONE || ( isChiral() == false )) { 
-	
-	
 
-	(*M)(tmp, chi, MINUS);
-      
 	// Source is not chiral. In this case we should use,
 	// InvCG2 with M
-	InvCG2(*M, tmp, psi, RsdCG, MaxCG, n_count);
+	InvCG2(*M, chi, tmp, RsdCG, MaxCG, n_count);
+
+	// Do this at the end as otherwise it may mix chiralities?
+        (*M)(psi, tmp, MINUS);
       }
       else {
 	
 	// Source is chiral. In this case we should use InvCG1
 	// with the special MdagM
 	Handle< const LinearOperator<LatticeFermion> > MM(lMdagM(state, ichiral));
-
 	InvCG1(*MM, chi, tmp, RsdCG, MaxCG, n_count);
 	(*M)(psi, tmp, MINUS);	
       }
@@ -90,25 +89,25 @@ OverlapFermActBase::qprop(LatticeFermion& psi,
   case REL_CG_INVERTER:
     {
 
-      LatticeFermion tmp;
+      LatticeFermion tmp = psi;
       Handle< const ApproxLinearOperator<LatticeFermion> > M( dynamic_cast<const ApproxLinearOperator<LatticeFermion>* > ( linOp(state) ) );
 
 
       // Check whether the source is chiral.
       Chirality ichiral = isChiralVector(chi);
       if( ichiral == CH_NONE || ( isChiral() == false )) { 
-	
-	(*M)(tmp, chi, MINUS);
-      
+
 	// Source is not chiral. In this case we should use,
 	// InvCG2 with M
-	InvRelCG2(*M, tmp, psi, RsdCG, MaxCG, n_count);
+	InvRelCG2(*M, chi, tmp, RsdCG, MaxCG, n_count);
+	(*M)(psi, tmp, MINUS); 
       }
       else {
 	
 	// Source is chiral. In this case we should use InvCG1
 	// with the special MdagM
 	Handle< const ApproxLinearOperator<LatticeFermion> > MM( dynamic_cast<const ApproxLinearOperator<LatticeFermion>* >( lMdagM(state, ichiral) ) );
+
 
 	InvRelCG1(*MM, chi, tmp, RsdCG, MaxCG, n_count);
 	(*M)(psi, tmp, MINUS);	
@@ -157,8 +156,6 @@ OverlapFermActBase::qprop(LatticeFermion& psi,
 	// Restore to normal scaling
 	Real fact = Real(2)/(Real(1) - mu);
 	psi *= fact;
-	
-	
       }
 
       // Check back:
@@ -286,7 +283,7 @@ OverlapFermActBase::qprop(LatticeFermion& psi,
   case REL_GMRESR_CG_INVERTER:
     {
       
-      LatticeFermion tmp;
+      LatticeFermion tmp= psi;
       Chirality ichiral = isChiralVector(chi);
       const ApproxLinearOperator<LatticeFermion> *MM_ptr;
       const ApproxLinearOperator<LatticeFermion> *MM_prec_ptr;
@@ -415,8 +412,10 @@ OverlapFermActBase::multiQprop(multi1d<LatticeFermion>& psi,
 
   const int n_mass = masses.size();
 
-
-
+  // Generic feature of multi mass solvers, initial guesses psi have to be zero
+  for(int n=0; n < n_mass; n++) { 
+    psi[n] = zero;
+  }
   
   
   Real ftmp;
