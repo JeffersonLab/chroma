@@ -1,5 +1,5 @@
 /*
- *  $Id: hypsmear.cc,v 1.12 2004-07-14 18:38:20 dru Exp $
+ *  $Id: hypsmear.cc,v 1.13 2004-07-23 18:08:03 dru Exp $
  *
  *  This is the top-level routine for HYP smearing.
  *  It is a wrapper for Urs' and Robert's implmenetation of the HYP
@@ -244,6 +244,11 @@ int main(int argc, char *argv[])
     Hyp_Smear(u, u_hyp, 
 	      input.param.alpha1, input.param.alpha2, input.param.alpha3, 
 	      BlkAccu, BlkMax);
+    u = u_hyp;
+  }
+  if( input.param.num_smear == 0 )
+  {
+    u_hyp = u;
   }
   t2 = clock();
   QDPIO::cout << "Hypsmear took " << (double)((int)(t2)-(int)(t1))/(double)(CLOCKS_PER_SEC) << " secs" << endl;
