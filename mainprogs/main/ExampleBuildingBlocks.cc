@@ -24,7 +24,7 @@
 //#####################################################################################
 
 static const char* const CVSExampleBuildingBlocks_hh =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/mainprogs/main/ExampleBuildingBlocks.cc,v 1.8 2003-10-15 22:03:23 edwards Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/mainprogs/main/ExampleBuildingBlocks.cc,v 1.9 2003-11-20 05:33:53 edwards Exp $";
 
 //#####################################################################################
 //#####################################################################################
@@ -303,10 +303,10 @@ int main( int argc, char** argv )
   // Set Momenta
   //#####################################################################################
 
-  multi1d< int > SnkMom( ND - 1 );
+  multi1d< int > SnkMom( Nd - 1 );
   SnkMom = 0;
 
-  SftMom Phases( MaxQSquared, SnkMom, false, ND - 1 );
+  SftMom Phases( MaxQSquared, SnkMom, false, Nd - 1 );
 
   //#####################################################################################
   // Construct File Names
