@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.341 2005-03-18 13:26:41 bjoo Exp $
+# $Id: Makefile.in,v 1.342 2005-03-24 04:28:07 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -256,14 +256,15 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/hadron/curcor2_w.cc meas/hadron/DjDk_w.cc \
 	meas/hadron/D_j_w.cc meas/hadron/formfac_w.cc \
 	meas/hadron/hybmeson_w.cc meas/hadron/loops_w.cc \
-	meas/hadron/hadseqsrc_w.cc meas/hadron/mesonseqsrc_w.cc \
-	meas/hadron/mesons_w.cc meas/hadron/seqpiontest_w.cc \
-	meas/hadron/seqsrc_funcmap_w.cc meas/hadron/walfil_w.cc \
-	meas/hadron/walldeltaff_w.cc meas/hadron/walldeltapff_w.cc \
-	meas/hadron/wallff_w.cc meas/hadron/wallnuclff_w.cc \
-	meas/hadron/wallpionff_w.cc meas/hadron/wallrhoff_w.cc \
-	meas/hadron/wallrhopiff_w.cc meas/hadron/wall_qprop_w.cc \
-	meas/sources/d_src_w.cc meas/sources/p_src_w.cc \
+	meas/hadron/hadseqsrc_w.cc meas/hadron/multipole_w.cc \
+	meas/hadron/mesonseqsrc_w.cc meas/hadron/mesons_w.cc \
+	meas/hadron/seqpiontest_w.cc meas/hadron/seqsrc_funcmap_w.cc \
+	meas/hadron/walfil_w.cc meas/hadron/walldeltaff_w.cc \
+	meas/hadron/walldeltapff_w.cc meas/hadron/wallff_w.cc \
+	meas/hadron/wallnuclff_w.cc meas/hadron/wallpionff_w.cc \
+	meas/hadron/wallrhoff_w.cc meas/hadron/wallrhopiff_w.cc \
+	meas/hadron/wall_qprop_w.cc meas/sources/d_src_w.cc \
+	meas/sources/p_src_w.cc \
 	update/molecdyn/monomial/monomial_aggregate_w.cc \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.cc \
 	update/molecdyn/monomial/prec_one_flavor_rat_monomial_w.cc \
@@ -431,13 +432,14 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	BuildingBlocks_w.$(OBJEXT) curcor2_w.$(OBJEXT) \
 	DjDk_w.$(OBJEXT) D_j_w.$(OBJEXT) formfac_w.$(OBJEXT) \
 	hybmeson_w.$(OBJEXT) loops_w.$(OBJEXT) hadseqsrc_w.$(OBJEXT) \
-	mesonseqsrc_w.$(OBJEXT) mesons_w.$(OBJEXT) \
-	seqpiontest_w.$(OBJEXT) seqsrc_funcmap_w.$(OBJEXT) \
-	walfil_w.$(OBJEXT) walldeltaff_w.$(OBJEXT) \
-	walldeltapff_w.$(OBJEXT) wallff_w.$(OBJEXT) \
-	wallnuclff_w.$(OBJEXT) wallpionff_w.$(OBJEXT) \
-	wallrhoff_w.$(OBJEXT) wallrhopiff_w.$(OBJEXT) \
-	wall_qprop_w.$(OBJEXT) d_src_w.$(OBJEXT) p_src_w.$(OBJEXT) \
+	multipole_w.$(OBJEXT) mesonseqsrc_w.$(OBJEXT) \
+	mesons_w.$(OBJEXT) seqpiontest_w.$(OBJEXT) \
+	seqsrc_funcmap_w.$(OBJEXT) walfil_w.$(OBJEXT) \
+	walldeltaff_w.$(OBJEXT) walldeltapff_w.$(OBJEXT) \
+	wallff_w.$(OBJEXT) wallnuclff_w.$(OBJEXT) \
+	wallpionff_w.$(OBJEXT) wallrhoff_w.$(OBJEXT) \
+	wallrhopiff_w.$(OBJEXT) wall_qprop_w.$(OBJEXT) \
+	d_src_w.$(OBJEXT) p_src_w.$(OBJEXT) \
 	monomial_aggregate_w.$(OBJEXT) \
 	unprec_one_flavor_rat_monomial_w.$(OBJEXT) \
 	prec_one_flavor_rat_monomial_w.$(OBJEXT) \
@@ -689,13 +691,14 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/hadron/hybmeson_w.h meas/hadron/hadseqsrc_w.h \
 	meas/hadron/mesonseqsrc_w.h meas/hadron/mesons_w.h \
 	meas/hadron/seqpiontest_w.h meas/hadron/seqsrc_funcmap_w.h \
-	meas/hadron/loops_w.h meas/hadron/walfil_w.h \
-	meas/hadron/wall_qprop_w.h meas/hadron/wallff_w.h \
-	meas/hadron/walldeltaff_w.h meas/hadron/walldeltapff_w.h \
-	meas/hadron/wallpionff_w.h meas/hadron/wallnuclff_w.h \
-	meas/hadron/wallrhoff_w.h meas/hadron/wallrhopiff_w.h \
-	meas/sources/d_src_w.h meas/sources/p_src_w.h \
-	meas/sources/sources_w.h update/molecdyn/monomial/monomial_w.h \
+	meas/hadron/loops_w.h meas/hadron/multipole_w.h \
+	meas/hadron/walfil_w.h meas/hadron/wall_qprop_w.h \
+	meas/hadron/wallff_w.h meas/hadron/walldeltaff_w.h \
+	meas/hadron/walldeltapff_w.h meas/hadron/wallpionff_w.h \
+	meas/hadron/wallnuclff_w.h meas/hadron/wallrhoff_w.h \
+	meas/hadron/wallrhopiff_w.h meas/sources/d_src_w.h \
+	meas/sources/p_src_w.h meas/sources/sources_w.h \
+	update/molecdyn/monomial/monomial_w.h \
 	update/molecdyn/monomial/monomial_aggregate_w.h \
 	update/molecdyn/monomial/one_flavor_rat_monomial_w.h \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.h \
@@ -1093,13 +1096,14 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/hadron/hybmeson_w.h meas/hadron/hadseqsrc_w.h \
 	meas/hadron/mesonseqsrc_w.h meas/hadron/mesons_w.h \
 	meas/hadron/seqpiontest_w.h meas/hadron/seqsrc_funcmap_w.h \
-	meas/hadron/loops_w.h meas/hadron/walfil_w.h \
-	meas/hadron/wall_qprop_w.h meas/hadron/wallff_w.h \
-	meas/hadron/walldeltaff_w.h meas/hadron/walldeltapff_w.h \
-	meas/hadron/wallpionff_w.h meas/hadron/wallnuclff_w.h \
-	meas/hadron/wallrhoff_w.h meas/hadron/wallrhopiff_w.h \
-	meas/sources/d_src_w.h meas/sources/p_src_w.h \
-	meas/sources/sources_w.h update/molecdyn/monomial/monomial_w.h \
+	meas/hadron/loops_w.h meas/hadron/multipole_w.h \
+	meas/hadron/walfil_w.h meas/hadron/wall_qprop_w.h \
+	meas/hadron/wallff_w.h meas/hadron/walldeltaff_w.h \
+	meas/hadron/walldeltapff_w.h meas/hadron/wallpionff_w.h \
+	meas/hadron/wallnuclff_w.h meas/hadron/wallrhoff_w.h \
+	meas/hadron/wallrhopiff_w.h meas/sources/d_src_w.h \
+	meas/sources/p_src_w.h meas/sources/sources_w.h \
+	update/molecdyn/monomial/monomial_w.h \
 	update/molecdyn/monomial/monomial_aggregate_w.h \
 	update/molecdyn/monomial/one_flavor_rat_monomial_w.h \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.h \
@@ -1357,14 +1361,15 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/hadron/curcor2_w.cc meas/hadron/DjDk_w.cc \
 	meas/hadron/D_j_w.cc meas/hadron/formfac_w.cc \
 	meas/hadron/hybmeson_w.cc meas/hadron/loops_w.cc \
-	meas/hadron/hadseqsrc_w.cc meas/hadron/mesonseqsrc_w.cc \
-	meas/hadron/mesons_w.cc meas/hadron/seqpiontest_w.cc \
-	meas/hadron/seqsrc_funcmap_w.cc meas/hadron/walfil_w.cc \
-	meas/hadron/walldeltaff_w.cc meas/hadron/walldeltapff_w.cc \
-	meas/hadron/wallff_w.cc meas/hadron/wallnuclff_w.cc \
-	meas/hadron/wallpionff_w.cc meas/hadron/wallrhoff_w.cc \
-	meas/hadron/wallrhopiff_w.cc meas/hadron/wall_qprop_w.cc \
-	meas/sources/d_src_w.cc meas/sources/p_src_w.cc \
+	meas/hadron/hadseqsrc_w.cc meas/hadron/multipole_w.cc \
+	meas/hadron/mesonseqsrc_w.cc meas/hadron/mesons_w.cc \
+	meas/hadron/seqpiontest_w.cc meas/hadron/seqsrc_funcmap_w.cc \
+	meas/hadron/walfil_w.cc meas/hadron/walldeltaff_w.cc \
+	meas/hadron/walldeltapff_w.cc meas/hadron/wallff_w.cc \
+	meas/hadron/wallnuclff_w.cc meas/hadron/wallpionff_w.cc \
+	meas/hadron/wallrhoff_w.cc meas/hadron/wallrhopiff_w.cc \
+	meas/hadron/wall_qprop_w.cc meas/sources/d_src_w.cc \
+	meas/sources/p_src_w.cc \
 	update/molecdyn/monomial/monomial_aggregate_w.cc \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.cc \
 	update/molecdyn/monomial/prec_one_flavor_rat_monomial_w.cc \
@@ -1634,6 +1639,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/monomial_aggregate_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/monomial_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mre_extrap_predictor.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/multipole_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/naik_term_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nef_quarkprop4_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/overlap_fermact_base_w.Po@am__quote@
@@ -4866,6 +4872,20 @@ hadseqsrc_w.obj: meas/hadron/hadseqsrc_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/hadseqsrc_w.cc' object='hadseqsrc_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o hadseqsrc_w.obj `if test -f 'meas/hadron/hadseqsrc_w.cc'; then $(CYGPATH_W) 'meas/hadron/hadseqsrc_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/hadseqsrc_w.cc'; fi`
+
+multipole_w.o: meas/hadron/multipole_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT multipole_w.o -MD -MP -MF "$(DEPDIR)/multipole_w.Tpo" -c -o multipole_w.o `test -f 'meas/hadron/multipole_w.cc' || echo '$(srcdir)/'`meas/hadron/multipole_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/multipole_w.Tpo" "$(DEPDIR)/multipole_w.Po"; else rm -f "$(DEPDIR)/multipole_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/multipole_w.cc' object='multipole_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o multipole_w.o `test -f 'meas/hadron/multipole_w.cc' || echo '$(srcdir)/'`meas/hadron/multipole_w.cc
+
+multipole_w.obj: meas/hadron/multipole_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT multipole_w.obj -MD -MP -MF "$(DEPDIR)/multipole_w.Tpo" -c -o multipole_w.obj `if test -f 'meas/hadron/multipole_w.cc'; then $(CYGPATH_W) 'meas/hadron/multipole_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/multipole_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/multipole_w.Tpo" "$(DEPDIR)/multipole_w.Po"; else rm -f "$(DEPDIR)/multipole_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/multipole_w.cc' object='multipole_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o multipole_w.obj `if test -f 'meas/hadron/multipole_w.cc'; then $(CYGPATH_W) 'meas/hadron/multipole_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/multipole_w.cc'; fi`
 
 mesonseqsrc_w.o: meas/hadron/mesonseqsrc_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT mesonseqsrc_w.o -MD -MP -MF "$(DEPDIR)/mesonseqsrc_w.Tpo" -c -o mesonseqsrc_w.o `test -f 'meas/hadron/mesonseqsrc_w.cc' || echo '$(srcdir)/'`meas/hadron/mesonseqsrc_w.cc; \
