@@ -13,11 +13,11 @@ class vector_meson  : public staggered_hadron_corr
 {
 
 
-  public :
+public :
 
-    void
-    compute(multi1d<LatticeStaggeredPropagator>& quark_props,
-		      int j_decay);
+  void
+  compute(multi1d<LatticeStaggeredPropagator>& quark_props,
+	  int j_decay);
 
 
   vector_meson(int t_len, multi1d<LatticeColorMatrix> & uin)  
@@ -30,15 +30,15 @@ class vector_meson  : public staggered_hadron_corr
 
     }
 
-  ~vector_meson()
+  virtual ~vector_meson()
     {
     }
 
 
- protected:
+protected:
 
-  private :
-    static const int no_vector = 4 ; 
+private :
+  static const int no_vector = 4 ; 
 
 
 } ; 

@@ -10,8 +10,8 @@
 
 /*
 
- This is code to compute all 16 pseudoscalars 
- using staggered fermions.
+This is code to compute all 16 pseudoscalars 
+using staggered fermions.
 
 */
 
@@ -23,7 +23,7 @@ class staggered_pions  : public staggered_hadron_corr
 
   public :
     void compute(multi1d<LatticeStaggeredPropagator>& quark_props,
-	  int j_decay) ;
+		 int j_decay) ;
 
 
   staggered_pions(int t_len, multi1d<LatticeColorMatrix> & uin)  
@@ -34,15 +34,15 @@ class staggered_pions  : public staggered_hadron_corr
 
       tag_names.resize(no_pions) ; 
       for(int i = 0 ; i <  no_pions ; ++i ) 
-	{
-	  ostringstream tag;
-	  tag << "re_pion" << i;
-	  tag_names[i] = tag.str() ; 
-	}
+      {
+	ostringstream tag;
+	tag << "re_pion" << i;
+	tag_names[i] = tag.str() ; 
+      }
 
     }
 
-  ~staggered_pions()
+  virtual ~staggered_pions()
     {
     }
 

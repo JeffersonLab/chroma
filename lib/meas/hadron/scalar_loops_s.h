@@ -8,11 +8,11 @@ class staggered_loops ;
 
 class local_scalar_loop  : public staggered_loops
 {
-  public :
+public :
 
 
-    void compute(LatticeStaggeredFermion & q_source, 
-		 LatticeStaggeredFermion & psi, int isample) ; 
+  void compute(LatticeStaggeredFermion & q_source, 
+	       LatticeStaggeredFermion & psi, int isample) ; 
 
   local_scalar_loop(int t_len, int nsample,
 		    multi1d<LatticeColorMatrix> & uin)  
@@ -22,12 +22,12 @@ class local_scalar_loop  : public staggered_loops
       inner_tag = "loop" ; 
     }
 
-  ~local_scalar_loop()
+  virtual ~local_scalar_loop()
     {
     }
 
 
- protected:
+protected:
 
 
 } ; 
@@ -36,11 +36,11 @@ class local_scalar_loop  : public staggered_loops
 
 class non_local_scalar_loop  : public staggered_loops
 {
-  public :
+public :
 
 
-    void compute(LatticeStaggeredFermion & q_source, 
-		 LatticeStaggeredFermion & psi, int isample) ; 
+  void compute(LatticeStaggeredFermion & q_source, 
+	       LatticeStaggeredFermion & psi, int isample) ; 
 
   non_local_scalar_loop(int t_len, int nsample,
 			multi1d<LatticeColorMatrix> & uin)  
@@ -50,12 +50,12 @@ class non_local_scalar_loop  : public staggered_loops
       inner_tag = "loop" ; 
     }
 
-  ~non_local_scalar_loop()
+  virtual ~non_local_scalar_loop()
     {
     }
 
 
- protected:
+protected:
 
 
 } ; 

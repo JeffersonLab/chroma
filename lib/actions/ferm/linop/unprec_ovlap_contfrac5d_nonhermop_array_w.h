@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovlap_contfrac5d_nonhermop_array_w.h,v 1.2 2004-12-12 21:22:16 edwards Exp $
+// $Id: unprec_ovlap_contfrac5d_nonhermop_array_w.h,v 1.3 2005-01-10 18:17:11 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
  */
@@ -41,9 +41,9 @@ namespace Chroma
 					int _NEig,
 					const multi1d<Real>& _EigValFunc,
 					const multi1d<LatticeFermion>& _EigVec) :
-      m_q(_m_q), N5(_N5), scale_fac(_scale_fac), alpha(_alpha),
-      beta(_beta), NEig(_NEig), EigValFunc(_EigValFunc), EigVec(_EigVec),
-      M(S_aux.linOp(state)) {}
+      M(S_aux.linOp(state)), m_q(_m_q), N5(_N5), scale_fac(_scale_fac), alpha(_alpha),
+      beta(_beta), NEig(_NEig), EigVec(_EigVec), EigValFunc(_EigValFunc)
+      {}
 
     //! Length of DW flavor index/space
     int size() const {return N5;}

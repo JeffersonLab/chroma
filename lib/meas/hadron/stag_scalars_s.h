@@ -13,11 +13,11 @@ class staggered_scalars  : public staggered_hadron_corr
 {
 
 
-  public :
+public :
 
-    void
-    compute(multi1d<LatticeStaggeredPropagator>& quark_props,
-		      int j_decay);
+  void
+  compute(multi1d<LatticeStaggeredPropagator>& quark_props,
+	  int j_decay);
 
 
   staggered_scalars(int t_len, multi1d<LatticeColorMatrix> & uin)  
@@ -28,23 +28,23 @@ class staggered_scalars  : public staggered_hadron_corr
 
       tag_names.resize(no_scalar) ; 
       for(int i = 0 ; i <  no_scalar ; ++i ) 
-	{
-	  ostringstream tag;
-	  tag << "re_sc" << i;
-	  tag_names[i] = tag.str() ; 
-	}
+      {
+	ostringstream tag;
+	tag << "re_sc" << i;
+	tag_names[i] = tag.str() ; 
+      }
 
     }
 
-  ~staggered_scalars()
+  virtual ~staggered_scalars()
     {
     }
 
 
- protected:
+protected:
 
-  private :
-    static const int no_scalar = 16 ; 
+private :
+  static const int no_scalar = 16 ; 
 
 
 } ; 

@@ -8,11 +8,11 @@ class staggered_loops ;
 
 class threelink_pseudoscalar_loop  : public staggered_loops
 {
-  public :
+public :
 
 
-    void compute(LatticeStaggeredFermion & q_source, 
-		 LatticeStaggeredFermion & psi, int isample) ; 
+  void compute(LatticeStaggeredFermion & q_source, 
+	       LatticeStaggeredFermion & psi, int isample) ; 
 
   threelink_pseudoscalar_loop(int t_len, 
 			      int nsample, 
@@ -28,7 +28,7 @@ class threelink_pseudoscalar_loop  : public staggered_loops
     }
 
 
- protected:
+protected:
 
 
 } ; 
@@ -37,11 +37,11 @@ class threelink_pseudoscalar_loop  : public staggered_loops
 
 class fourlink_pseudoscalar_loop  : public staggered_loops
 {
-  public :
+public :
 
 
-    void compute(LatticeStaggeredFermion & q_source, 
-		 LatticeStaggeredFermion & psi, int isample) ; 
+  void compute(LatticeStaggeredFermion & q_source, 
+	       LatticeStaggeredFermion & psi, int isample) ; 
 
   fourlink_pseudoscalar_loop(int t_len, int nsample,
 			     multi1d<LatticeColorMatrix> & uin)  
@@ -51,12 +51,12 @@ class fourlink_pseudoscalar_loop  : public staggered_loops
       inner_tag = "loop" ; 
     }
 
-  ~fourlink_pseudoscalar_loop()
+  virtual ~fourlink_pseudoscalar_loop()
     {
     }
 
 
- protected:
+protected:
 
 
 } ; 

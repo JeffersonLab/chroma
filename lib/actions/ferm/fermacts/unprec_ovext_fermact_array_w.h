@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovext_fermact_array_w.h,v 1.14 2005-01-04 06:52:03 edwards Exp $
+// $Id: unprec_ovext_fermact_array_w.h,v 1.15 2005-01-10 18:17:11 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -89,6 +89,7 @@ namespace Chroma
     {
       QDPIO::cerr << "Ovext::linOpPV not implemented" << endl;
       QDP_abort(1);
+      return 0;
     }
 
     //! Produce a hermitian version of the linear operator
@@ -106,6 +107,7 @@ namespace Chroma
     {
       QDPIO::cerr << "linOp4D not implemented" << endl;
       QDP_abort(1);
+      return 0;
     }
     
     //! Produce a  DeltaLs = 1-epsilon^2(H) operator

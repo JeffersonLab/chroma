@@ -4,6 +4,7 @@
 
 #include "chromabase.h"
 #include "meas/hadron/stoch_var.h"
+#include "meas/hadron/stag_propShift_s.h"
 
 /*
 
@@ -15,9 +16,9 @@ This is generic code to compute staggered bubbles.
 class staggered_loops
 {
 
-  public :
-    virtual void compute(LatticeStaggeredFermion & q_source, 
-		    LatticeStaggeredFermion & psi, int isample) = 0 ;
+public :
+  virtual void compute(LatticeStaggeredFermion & q_source, 
+		       LatticeStaggeredFermion & psi, int isample) = 0 ;
 
   /*
     Write the correlators out
@@ -41,7 +42,7 @@ class staggered_loops
 
   staggered_loops(int t_len, int t_sample, 
 		  multi1d<LatticeColorMatrix> & uin) : t_length(t_len) ,
-    no_sample(t_sample)
+						       no_sample(t_sample)
     {
       corr_fn.resize(no_sample, t_length);
       corr_fn = zero ; 
@@ -52,14 +53,14 @@ class staggered_loops
       if( uin.size() != 4 ) { 
 	QDPIO::cerr << "staggered_hadron_corr: input guage config has wrong number of dimensions " << uin.size() << endl;
 	QDP_abort(1);
-  };
+      };
 
       u = uin ; 
-       type_of_shift = GAUGE_INVAR ; 
+      type_of_shift = GAUGE_INVAR ; 
 
     }
 
-  ~staggered_loops()
+  virtual ~staggered_loops()
     {
       corr_fn.resize(1, 1);
     }
@@ -72,7 +73,7 @@ class staggered_loops
 
     {
 
-    switch (type_of_shift)
+      switch (type_of_shift)
       {
       case NON_GAUGE_INVAR :
 	return shiftDeltaProp(delta,src) ;
@@ -93,14 +94,14 @@ class staggered_loops
 	QDP_abort(1);
       }
 
-  }
+    }
 
 
   void use_gauge_invar() { type_of_shift = GAUGE_INVAR ; } 
   void use_NON_gauge_invar() { type_of_shift = NON_GAUGE_INVAR ; } 
 
 
- protected:
+protected:
 
   multi2d<DComplex> corr_fn ; 
   multi1d<DComplex> corr ;
@@ -109,9 +110,9 @@ class staggered_loops
   string inner_tag ; 
   multi1d<LatticeColorMatrix> u ; // this should handle or state
 
-  private :
-    int no_sample ; 
+private :
   int t_length ; 
+  int no_sample ; 
 
   Stag_shift_option type_of_shift; 
 

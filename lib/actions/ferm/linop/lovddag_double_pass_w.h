@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lovddag_double_pass_w.h,v 1.3 2004-12-12 21:22:16 edwards Exp $
+// $Id: lovddag_double_pass_w.h,v 1.4 2005-01-10 18:17:11 edwards Exp $
 /*! \file
  *  \brief Internal Overlap-pole operator
  */
@@ -68,7 +68,7 @@ namespace Chroma
 			const Chirality _ichiral) :
       M(S_aux.linOp(state)), MdagM(S_aux.lMdagM(state)), m_q(_m_q), 
       numroot(_numroot), constP(_constP),
-      resP(_resP), rootQ(_rootQ), EigVec(_EigVec), EigValFunc(_EigValFunc),
+      rootQ(_rootQ), resP(_resP), EigVec(_EigVec), EigValFunc(_EigValFunc),
       NEig(_NEig), MaxCG(_MaxCG), RsdCG(_RsdCG), ReorthFreq(_ReorthFreq), ichiral(_ichiral) {};
 
     //! Destructor is automatic

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ht_contfrac5d_fermact_array_w.h,v 1.2 2005-01-05 21:44:07 edwards Exp $
+// $Id: unprec_ht_contfrac5d_fermact_array_w.h,v 1.3 2005-01-10 18:17:11 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned H_T kernel continued fraction (5D) action
  */
@@ -88,6 +88,7 @@ namespace Chroma
     {
       QDPIO::cerr << "UnprecHTCFZ::linOpPV not implemented" << endl;
       QDP_abort(1);
+      return 0;
     }
 
     //! Produce a linear operator M^dag.M for this action
@@ -98,6 +99,7 @@ namespace Chroma
     {
       QDPIO::cerr << "UnprecHTCFZ::linOpPV not implemented" << endl;
       QDP_abort(1);
+      return 0;
     }
 
     //! Produce an unpreconditioned linear operator projecting 5D to 4D (the inverse of qprop below)
@@ -107,6 +109,7 @@ namespace Chroma
     {
       QDPIO::cerr << "linOp4D not implemented" << endl;
       QDP_abort(1);
+      return 0;
     }
     
     //! Produce a  DeltaLs = 1-epsilon^2(H) operator
@@ -115,6 +118,7 @@ namespace Chroma
     {
       QDPIO::cerr << "DeltaLs not implemented" << endl;
       QDP_abort(1);
+      return 0;
     }
 
     //! Compute quark propagator over base type

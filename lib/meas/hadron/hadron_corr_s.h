@@ -80,7 +80,7 @@ class staggered_hadron_corr
   void use_gauge_invar() { type_of_shift = GAUGE_INVAR ; } 
   void use_NON_gauge_invar() { type_of_shift = NON_GAUGE_INVAR ; } 
 
-  ~staggered_hadron_corr()
+  virtual ~staggered_hadron_corr()
     {
       corr_fn.resize(1, 1);
     }
@@ -123,9 +123,9 @@ class staggered_hadron_corr
   }
 
 
-  private :
-    int no_channel ; 
+private :
   int t_length ; 
+  int no_channel ; 
 
   Stag_shift_option type_of_shift; 
 
