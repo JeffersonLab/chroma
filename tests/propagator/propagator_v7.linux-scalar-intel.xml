@@ -3,6 +3,11 @@
 
 <propagator>
   <ProgramInfo>
+    <code_version>
+      <chroma>1.19</chroma>
+      <qdp>1.11.8</qdp>
+    </code_version>
+    <run_date>17 Feb 05 21:42:51 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -13,7 +18,7 @@
   </ProgramInfo>
   <Input><propagator>
 <annotation>
-; $Id: propagator_v7.linux-scalar-intel.xml,v 1.1 2004-12-24 04:18:36 edwards Exp $
+; $Id: propagator_v7.linux-scalar-intel.xml,v 1.2 2005-02-18 02:42:07 edwards Exp $
 ;
 ; PROPAGATOR input file.
 </annotation>
