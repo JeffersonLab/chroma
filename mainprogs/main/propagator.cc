@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.84 2005-01-05 21:44:54 edwards Exp $
+// $Id: propagator.cc,v 1.85 2005-01-11 19:44:18 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -22,6 +22,9 @@ bool linkage_hack()
   foo &= EvenOddPrecWilsonFermActEnv::registered;
   foo &= UnprecWilsonFermActEnv::registered;
   foo &= OvlapPartFrac4DFermActEnv::registered;
+  foo &= EvenOddPrecParWilsonFermActEnv::registered;
+  foo &= UnprecParWilsonFermActEnv::registered;
+
   // 5D actions
   foo &= EvenOddPrecDWFermActArrayEnv::registered;
   foo &= UnprecDWFermActArrayEnv::registered;
