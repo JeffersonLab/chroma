@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gauge_startup.h,v 1.3 2004-04-28 14:31:19 edwards Exp $
+// $Id: gauge_startup.h,v 1.4 2004-04-28 14:31:59 edwards Exp $
 /*! \file
  *  \brief Initialize the gauge fields
  */
@@ -7,7 +7,6 @@
 #ifndef GAUGE_STARTUP_H
 #define GAUGE_STARTUP_H
 
-#include "qdp_iogauge.h"
 #include "io/param_io.h"
 
 //! Initialize the gauge fields
