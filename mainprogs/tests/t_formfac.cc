@@ -1,10 +1,13 @@
-// $Id: t_formfac.cc,v 1.4 2003-08-27 22:08:41 edwards Exp $
+// $Id: t_formfac.cc,v 1.5 2003-09-11 00:46:04 edwards Exp $
 //
 //! \file
 //  \brief Test the form-factor routine
 //
 // $Log: t_formfac.cc,v $
-// Revision 1.4  2003-08-27 22:08:41  edwards
+// Revision 1.5  2003-09-11 00:46:04  edwards
+// Changed all programs to exit(0) instead of return 0
+//
+// Revision 1.4  2003/08/27 22:08:41  edwards
 // Start major push to using xml.
 //
 // Revision 1.3  2003/03/20 19:34:25  flemingg
@@ -14,7 +17,10 @@
 //
 // Revision 1.2  2003/03/06 00:27:29  flemingg
 // Added $Log: t_formfac.cc,v $
-// Added Revision 1.4  2003-08-27 22:08:41  edwards
+// Added Revision 1.5  2003-09-11 00:46:04  edwards
+// Added Changed all programs to exit(0) instead of return 0
+// Added
+// Added Revision 1.4  2003/08/27 22:08:41  edwards
 // Added Start major push to using xml.
 // Added
 // Added Revision 1.3  2003/03/20 19:34:25  flemingg
@@ -91,6 +97,6 @@ int main(int argc, char *argv[])
   // Time to bolt
   QDP_finalize();
 
-  return 0;
+  exit(0);
 }
 

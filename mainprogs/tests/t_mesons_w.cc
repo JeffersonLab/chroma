@@ -1,10 +1,13 @@
-// $Id: t_mesons_w.cc,v 1.3 2003-06-24 03:24:44 edwards Exp $
+// $Id: t_mesons_w.cc,v 1.4 2003-09-11 00:46:04 edwards Exp $
 //
 //! \file
 //  \brief Test the Wilson mesons() routine
 //
 // $Log: t_mesons_w.cc,v $
-// Revision 1.3  2003-06-24 03:24:44  edwards
+// Revision 1.4  2003-09-11 00:46:04  edwards
+// Changed all programs to exit(0) instead of return 0
+//
+// Revision 1.3  2003/06/24 03:24:44  edwards
 // Changed from nml to xml.
 //
 // Revision 1.2  2003/03/14 05:14:32  flemingg
@@ -69,6 +72,6 @@ int main(int argc, char *argv[])
   // Time to bolt
   QDP_finalize();
 
-  return 0;
+  exit(0);
 }
 
