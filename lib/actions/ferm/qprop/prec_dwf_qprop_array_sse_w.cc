@@ -1,4 +1,4 @@
-// $Id: prec_dwf_qprop_array_sse_w.cc,v 1.1 2005-01-02 05:21:10 edwards Exp $
+// $Id: prec_dwf_qprop_array_sse_w.cc,v 1.2 2005-01-06 03:50:48 edwards Exp $
 /*! \file
  *  \brief SSE 5D DWF specific quark propagator solver
  */
@@ -10,6 +10,259 @@
 
 namespace Chroma
 {
+  namespace SSEDWF
+  {
+    ///////////////////////////////////////////////////////////////////////////////
+    //! Gauge field reader
+    double
+    gauge_reader(const void *ptr, void *env, 
+		 const int latt_coord[Nd], int mu, int row, int col, int reim)
+    {
+      /* Translate arg */
+      multi1d<LatticeColorMatrix>& u = *(multi1d<LatticeColorMatrix>*)ptr;
+
+      // Get node and index
+      multi1d<int> coord(Nd);
+      coord = latt_coord;
+      int node = Layout::nodeNumber(coord);
+      int linear = Layout::linearSiteIndex(coord);
+
+      if (node != Layout::nodeNumber())
+      {
+	QDPIO::cerr << __func__ << ": wrong coordinates for this node" << endl;
+	QDP_abort(1);
+      }
+ 
+      // Get the value
+      // NOTE: it would be nice to use the "peek" functions, but they will
+      // broadcast to all nodes the value since they are platform independent.
+      // We don't want that, so we poke into the on-node data
+      double val = (reim == 0) ? 
+	toDouble(u[mu].elem(linear).elem().elem(row,col).real()) : 
+	toDouble(u[mu].elem(linear).elem().elem(row,col).imag());
+
+      return val;
+    }
+
+
+    //! Fermion field reader
+    double
+    fermion_reader_rhs(const void *ptr, void *env, 
+		       const int latt_coord[5], int color, int spin, int reim)
+    {
+      /* Translate arg */
+      multi1d<LatticeFermion>& psi = *(multi1d<LatticeFermion>*)ptr;
+      int Ls1 = psi.size() - 1;
+
+      // Get node and index
+      int s = latt_coord[Nd];
+      multi1d<int> coord(Nd);
+      coord = latt_coord;
+      int node = Layout::nodeNumber(coord);
+      int linear = Layout::linearSiteIndex(coord);
+
+      if (node != Layout::nodeNumber())
+      {
+	QDPIO::cerr << __func__ << ": wrong coordinates for this node" << endl;
+	QDP_abort(1);
+      }
+ 
+      // Get the value
+      // NOTE: it would be nice to use the "peek" functions, but they will
+      // broadcast to all nodes the value since they are platform independent.
+      // We don't want that, so we poke into the on-node data
+      double val = (reim == 0) ? 
+	double(psi[Ls1-s].elem(linear).elem(spin).elem(color).real()) : 
+	double(psi[Ls1-s].elem(linear).elem(spin).elem(color).imag());
+
+      if (spin >= Ns/2)
+	val *= -1;
+
+      return val;
+    }
+
+
+    //! Fermion field reader
+    double
+    fermion_reader_guess(const void *ptr, void *env, 
+			 const int latt_coord[5], int color, int spin, int reim)
+    {
+      /* Translate arg */
+      multi1d<LatticeFermion>& psi = *(multi1d<LatticeFermion>*)ptr;
+      int Ls1 = psi.size() - 1;
+
+      // Get node and index
+      int s = latt_coord[Nd];
+      multi1d<int> coord(Nd);
+      coord = latt_coord;
+      int node = Layout::nodeNumber(coord);
+      int linear = Layout::linearSiteIndex(coord);
+
+      if (node != Layout::nodeNumber())
+      {
+	QDPIO::cerr << __func__ << ": wrong coordinates for this node" << endl;
+	QDP_abort(1);
+      }
+ 
+      // Get the value
+      // NOTE: it would be nice to use the "peek" functions, but they will
+      // broadcast to all nodes the value since they are platform independent.
+      // We don't want that, so we poke into the on-node data
+      double val = (reim == 0) ? 
+	double(psi[Ls1-s].elem(linear).elem(spin).elem(color).real()) : 
+	double(psi[Ls1-s].elem(linear).elem(spin).elem(color).imag());
+
+      if (spin >= Ns/2)
+	val *= -1;
+
+      val *= -0.5;
+
+      return val;
+    }
+
+
+    //! Fermion field writer
+    void
+    fermion_writer_solver(void *ptr, void *env, 
+			  const int latt_coord[5], int color, int spin, int reim,
+			  double val)
+    {
+      /* Translate arg */
+      multi1d<LatticeFermion>& psi = *(multi1d<LatticeFermion>*)ptr;
+      int Ls1 = psi.size() - 1;
+
+      // Get node and index
+      int s = latt_coord[Nd];
+      multi1d<int> coord(Nd);
+      coord = latt_coord;
+      int node = Layout::nodeNumber(coord);
+      int linear = Layout::linearSiteIndex(coord);
+
+      if (node != Layout::nodeNumber())
+      {
+	QDPIO::cerr << __func__ << ": wrong coordinates for this node" << endl;
+	QDP_abort(1);
+      }
+ 
+      // Rescale
+      if (spin >= Ns/2)
+	val *= -1;
+
+      val *= -2.0;
+
+      // Set the value
+      // NOTE: it would be nice to use the "peek" functions, but they will
+      // broadcast to all nodes the value since they are platform independent.
+      // We don't want that, so we poke into the on-node data
+      if (reim == 0)
+	psi[Ls1-s].elem(linear).elem(spin).elem(color).real() = val;
+      else
+	psi[Ls1-s].elem(linear).elem(spin).elem(color).imag() = val;
+
+      return;
+    }
+
+
+    //! Fermion field writer
+    void
+    fermion_writer_operator(void *ptr, void *env, 
+			    const int latt_coord[5], int color, int spin, int reim,
+			    double val)
+    {
+      /* Translate arg */
+      multi1d<LatticeFermion>& psi = *(multi1d<LatticeFermion>*)ptr;
+      int Ls1 = psi.size() - 1;
+
+      // Get node and index
+      int s = latt_coord[Nd];
+      multi1d<int> coord(Nd);
+      coord = latt_coord;
+      int node = Layout::nodeNumber(coord);
+      int linear = Layout::linearSiteIndex(coord);
+
+      if (node != Layout::nodeNumber())
+      {
+	QDPIO::cerr << __func__ << ": wrong coordinates for this node" << endl;
+	QDP_abort(1);
+      }
+ 
+      // Rescale
+      if (spin >= Ns/2)
+	val *= -1;
+
+      val *= -0.5;
+
+      // Set the value
+      // NOTE: it would be nice to use the "peek" functions, but they will
+      // broadcast to all nodes the value since they are platform independent.
+      // We don't want that, so we poke into the on-node data
+      if (reim == 0)
+	psi[Ls1-s].elem(linear).elem(spin).elem(color).real() = val;
+      else
+	psi[Ls1-s].elem(linear).elem(spin).elem(color).imag() = val;
+
+      return;
+    }
+
+
+
+    ///////////////////////////////////////////////////////////////////////////////
+    void
+    solve_cg5(multi1d<LatticeFermion> &solution,    // output
+	      const multi1d<LatticeColorMatrix> &U, // input
+	      double M5,                            // input
+	      double m_f,                           // input
+	      const multi1d<LatticeFermion> &rhs,   // input
+	      const multi1d<LatticeFermion> &x0,    // input
+	      double rsd,                           // input
+	      int max_iter,                         // input
+	      int &out_iter )                       // output
+    {
+      // Initialize internal structure of the solver
+      //    if (SSE_DWF_init(lattice_size, SSE_DWF_FLOAT, NULL, NULL)) {
+      //      error("SSE DWF init() failed");
+      //    }
+
+      // Construct shifted gauge field
+      multi1d<LatticeColorMatrix> V(Nd);
+      for (int i = 0; i < Nd; i++)
+	V[i] = shift(U[i], -1, i); // as viewed from the destination
+
+      SSE_DWF_Gauge *g = SSE_DWF_load_gauge(&U, &V, NULL, &SSEDWF::gauge_reader);
+      SSE_DWF_Fermion *eta = SSE_DWF_load_fermion(&rhs, NULL, &SSEDWF::fermion_reader_rhs);
+      SSE_DWF_Fermion *X0 = SSE_DWF_load_fermion(&x0, NULL, &SSEDWF::fermion_reader_guess);
+      SSE_DWF_Fermion *res = SSE_DWF_allocate_fermion();
+
+      QDPIO::cout << "Entering SSE DWF solver: rsd = " << rsd
+		  << ", max_iterations = " << max_iter
+		  << endl;
+
+      double M_0 = -2*(5.0-M5);
+      double out_eps;
+      out_eps = 0.0;
+      out_iter = 0;
+      int status = SSE_DWF_cg_solver(res, &out_eps, &out_iter,
+				     g, M_0, m_f, X0, eta, 
+				     rsd, max_iter);
+
+      QDPIO::cout << "SSE DWF solver: status = " << status
+		  << ", iterations = " << out_iter
+		  << ", resulting epsilon = " << out_eps
+		  << endl;
+
+      SSE_DWF_save_fermion(&solution, NULL, &SSEDWF::fermion_writer_solver, res);
+
+      SSE_DWF_delete_fermion(res);
+      SSE_DWF_delete_fermion(X0);
+      SSE_DWF_delete_fermion(eta);
+      SSE_DWF_delete_gauge(g);
+
+      // SSE_DWF_fini();
+    }
+
+  }  // end namespace SSEDWF
+
+
   //! Need a real destructor
   SSEDWFQprop::~SSEDWFQprop() {SSE_DWF_fini();}
 
@@ -32,7 +285,7 @@ namespace Chroma
     }
 
     multi1d<int> lattice_size(Nd+1);
-    lattice_size[Nd] = size();
+    lattice_size[Nd] = N5;
     for(int i=0; i < Nd; ++i)
       lattice_size[i] = Layout::lattSize()[i];
 
@@ -46,254 +299,6 @@ namespace Chroma
   }
 
 
-  ///////////////////////////////////////////////////////////////////////////////
-  //! Gauge field reader
-  double
-  SSEDWFQprop::gauge_reader(const void *ptr, void *env, 
-			    const int latt_coord[Nd], int mu, int row, int col, int reim)
-  {
-    /* Translate arg */
-    multi1d<LatticeColorMatrix>& u = *(multi1d<LatticeColorMatrix>*)ptr;
-
-    // Get node and index
-    multi1d<int> coord(Nd);
-    coord = latt_coord;
-    int node = Layout::nodeNumber(coord);
-    int linear = Layout::linearSiteIndex(coord);
-
-    if (node != Layout::nodeNumber())
-      {
-	QDPIO::cerr << __func__ << ": wrong coordinates for this node" << endl;
-	QDP_abort(1);
-      }
- 
-    // Get the value
-    // NOTE: it would be nice to use the "peek" functions, but they will
-    // broadcast to all nodes the value since they are platform independent.
-    // We don't want that, so we poke into the on-node data
-    double val = (reim == 0) ? 
-      toDouble(u[mu].elem(linear).elem().elem(row,col).real()) : 
-      toDouble(u[mu].elem(linear).elem().elem(row,col).imag());
-
-    return val;
-  }
-
-
-  //! Fermion field reader
-  double
-  SSEDWFQprop::fermion_reader_rhs(const void *ptr, void *env, 
-				  const int latt_coord[5], int color, int spin, int reim)
-  {
-    /* Translate arg */
-    multi1d<LatticeFermion>& psi = *(multi1d<LatticeFermion>*)ptr;
-    int Ls1 = psi.size() - 1;
-
-    // Get node and index
-    int s = latt_coord[Nd];
-    multi1d<int> coord(Nd);
-    coord = latt_coord;
-    int node = Layout::nodeNumber(coord);
-    int linear = Layout::linearSiteIndex(coord);
-
-    if (node != Layout::nodeNumber())
-      {
-	QDPIO::cerr << __func__ << ": wrong coordinates for this node" << endl;
-	QDP_abort(1);
-      }
- 
-    // Get the value
-    // NOTE: it would be nice to use the "peek" functions, but they will
-    // broadcast to all nodes the value since they are platform independent.
-    // We don't want that, so we poke into the on-node data
-    double val = (reim == 0) ? 
-      double(psi[Ls1-s].elem(linear).elem(spin).elem(color).real()) : 
-      double(psi[Ls1-s].elem(linear).elem(spin).elem(color).imag());
-
-    if (spin >= Ns/2)
-      val *= -1;
-
-    return val;
-  }
-
-
-  //! Fermion field reader
-  double
-  SSEDWFQprop::fermion_reader_guess(const void *ptr, void *env, 
-				    const int latt_coord[5], int color, int spin, int reim)
-  {
-    /* Translate arg */
-    multi1d<LatticeFermion>& psi = *(multi1d<LatticeFermion>*)ptr;
-    int Ls1 = psi.size() - 1;
-
-    // Get node and index
-    int s = latt_coord[Nd];
-    multi1d<int> coord(Nd);
-    coord = latt_coord;
-    int node = Layout::nodeNumber(coord);
-    int linear = Layout::linearSiteIndex(coord);
-
-    if (node != Layout::nodeNumber())
-      {
-	QDPIO::cerr << __func__ << ": wrong coordinates for this node" << endl;
-	QDP_abort(1);
-      }
- 
-    // Get the value
-    // NOTE: it would be nice to use the "peek" functions, but they will
-    // broadcast to all nodes the value since they are platform independent.
-    // We don't want that, so we poke into the on-node data
-    double val = (reim == 0) ? 
-      double(psi[Ls1-s].elem(linear).elem(spin).elem(color).real()) : 
-      double(psi[Ls1-s].elem(linear).elem(spin).elem(color).imag());
-
-    if (spin >= Ns/2)
-      val *= -1;
-
-    val *= -0.5;
-
-    return val;
-  }
-
-
-  //! Fermion field writer
-  void
-  SSEDWFQprop::fermion_writer_solver(void *ptr, void *env, 
-				     const int latt_coord[5], int color, int spin, int reim,
-				     double val)
-  {
-    /* Translate arg */
-    multi1d<LatticeFermion>& psi = *(multi1d<LatticeFermion>*)ptr;
-    int Ls1 = psi.size() - 1;
-
-    // Get node and index
-    int s = latt_coord[Nd];
-    multi1d<int> coord(Nd);
-    coord = latt_coord;
-    int node = Layout::nodeNumber(coord);
-    int linear = Layout::linearSiteIndex(coord);
-
-    if (node != Layout::nodeNumber())
-      {
-	QDPIO::cerr << __func__ << ": wrong coordinates for this node" << endl;
-	QDP_abort(1);
-      }
- 
-    // Rescale
-    if (spin >= Ns/2)
-      val *= -1;
-
-    val *= -2.0;
-
-    // Set the value
-    // NOTE: it would be nice to use the "peek" functions, but they will
-    // broadcast to all nodes the value since they are platform independent.
-    // We don't want that, so we poke into the on-node data
-    if (reim == 0)
-      psi[Ls1-s].elem(linear).elem(spin).elem(color).real() = val;
-    else
-      psi[Ls1-s].elem(linear).elem(spin).elem(color).imag() = val;
-
-    return;
-  }
-
-
-  //! Fermion field writer
-  void
-  SSEDWFQprop::fermion_writer_operator(void *ptr, void *env, 
-				       const int latt_coord[5], int color, int spin, int reim,
-				       double val)
-  {
-    /* Translate arg */
-    multi1d<LatticeFermion>& psi = *(multi1d<LatticeFermion>*)ptr;
-    int Ls1 = psi.size() - 1;
-
-    // Get node and index
-    int s = latt_coord[Nd];
-    multi1d<int> coord(Nd);
-    coord = latt_coord;
-    int node = Layout::nodeNumber(coord);
-    int linear = Layout::linearSiteIndex(coord);
-
-    if (node != Layout::nodeNumber())
-      {
-	QDPIO::cerr << __func__ << ": wrong coordinates for this node" << endl;
-	QDP_abort(1);
-      }
- 
-    // Rescale
-    if (spin >= Ns/2)
-      val *= -1;
-
-    val *= -0.5;
-
-    // Set the value
-    // NOTE: it would be nice to use the "peek" functions, but they will
-    // broadcast to all nodes the value since they are platform independent.
-    // We don't want that, so we poke into the on-node data
-    if (reim == 0)
-      psi[Ls1-s].elem(linear).elem(spin).elem(color).real() = val;
-    else
-      psi[Ls1-s].elem(linear).elem(spin).elem(color).imag() = val;
-
-    return;
-  }
-
-
-
-  ///////////////////////////////////////////////////////////////////////////////
-  void
-  SSEDWFQprop::solve_cg5(multi1d<LatticeFermion> &solution,    // output
-			 const multi1d<LatticeColorMatrix> &U, // input
-			 double M5,                            // input
-			 double m_f,                           // input
-			 const multi1d<LatticeFermion> &rhs,   // input
-			 const multi1d<LatticeFermion> &x0,    // input
-			 double rsd,                           // input
-			 int max_iter,                         // input
-			 int &out_iter )                       // output
-  {
-    // Initialize internal structure of the solver
-    //    if (SSE_DWF_init(lattice_size, SSE_DWF_FLOAT, NULL, NULL)) {
-    //      error("SSE DWF init() failed");
-    //    }
-
-    // Construct shifted gauge field
-    multi1d<LatticeColorMatrix> V(Nd);
-    for (int i = 0; i < Nd; i++)
-      V[i] = shift(U[i], -1, i); // as viewed from the destination
-
-    SSE_DWF_Gauge *g = SSE_DWF_load_gauge(&U, &V, NULL, gauge_reader);
-    SSE_DWF_Fermion *eta = SSE_DWF_load_fermion(&rhs, NULL, fermion_reader_rhs);
-    SSE_DWF_Fermion *X0 = SSE_DWF_load_fermion(&x0, NULL, fermion_reader_guess);
-    SSE_DWF_Fermion *res = SSE_DWF_allocate_fermion();
-
-    QDPIO::cout << "Entering SSE DWF solver: rsd = " << rsd
-		<< ", max_iterations = " << max_iter
-		<< endl;
-
-    double M_0 = -2*(5.0-M5);
-    double out_eps;
-    out_eps = 0.0;
-    out_iter = 0;
-    int status = SSE_DWF_cg_solver(res, &out_eps, &out_iter,
-				   g, M_0, m_f, X0, eta, 
-				   rsd, max_iter);
-
-    QDPIO::cout << "SSE DWF solver: status = " << status
-		<< ", iterations = " << out_iter
-		<< ", resulting epsilon = " << out_eps
-		<< endl;
-
-    SSE_DWF_save_fermion(&solution, NULL, fermion_writer_solver, res);
-
-    SSE_DWF_delete_fermion(res);
-    SSE_DWF_delete_fermion(X0);
-    SSE_DWF_delete_fermion(eta);
-    SSE_DWF_delete_gauge(g);
-
-    // SSE_DWF_fini();
-  }
-
 
   //! Solver the linear system
   /*!
@@ -301,7 +306,7 @@ namespace Chroma
    * \param chi      source ( Read )
    * \return number of CG iterations
    */
-  int operator() (LatticeFermion& psi, const LatticeFermion& chi) const
+  int SSEDWFQprop::operator() (multi1d<LatticeFermion>& psi, const multi1d<LatticeFermion>& chi) const
   {
     QDPIO::cout << "entering SSEEvenOddPrecDWFermActArray::qpropT" << endl;
 
@@ -315,8 +320,8 @@ namespace Chroma
     double rsd = toDouble(invParam.RsdCG);
     double rsd_sq = rsd * rsd;
     int    max_iter = invParam.MaxCG;
-    int    n_count
-    solve_cg5(psi, u, M5, m_f, chi, psi, rsd_sq, max_iter, n_count);
+    int    n_count;
+    SSEDWF::solve_cg5(psi, u, M5, m_f, chi, psi, rsd_sq, max_iter, n_count);
 
     END_CODE();
 

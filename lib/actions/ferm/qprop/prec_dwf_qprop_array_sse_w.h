@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_qprop_array_sse_w.h,v 1.1 2005-01-02 05:21:10 edwards Exp $
+// $Id: prec_dwf_qprop_array_sse_w.h,v 1.2 2005-01-06 03:50:48 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -29,9 +29,9 @@ namespace Chroma
      * \param m_q_       quark mass ( Read )
      */
     SSEDWFQprop(Handle<const ConnectState> state_, 
-		const Real& OverMass,
-		const Real& Mass,
-		const int N5,
+		const Real& OverMass_,
+		const Real& Mass_,
+		int N5_,
 		const InvertParam_t& invParam_) : 
       state(state_), OverMass(OverMass_), Mass(Mass_), N5(N5_), invParam(invParam_) {init();}
 
@@ -47,42 +47,13 @@ namespace Chroma
      * \param chi      source ( Read )
      * \return number of CG iterations
      */
-    int operator() (LatticeFermion& psi, const LatticeFermion& chi) const;
+    int operator() (multi1d<LatticeFermion>& psi, const multi1d<LatticeFermion>& chi) const;
 
   protected:
     //! Private internal initializer
     void init();
-    double gauge_reader(const void *ptr, void *env, 
-			const int latt_coord[Nd], int mu, int row, int col, int reim);
-
-    double fermion_reader_rhs(const void *ptr, void *env, 
-			      const int latt_coord[5], int color, int spin, int reim);
-
-    double fermion_reader_guess(const void *ptr, void *env, 
-				const int latt_coord[5], int color, int spin, int reim);
-
-    void fermion_writer_solver(void *ptr, void *env, 
-			       const int latt_coord[5], int color, int spin, int reim,
-			       double val);
-
-    void fermion_writer_operator(void *ptr, void *env, 
-				 const int latt_coord[5], int color, int spin, int reim,
-				 double val);
-
-    void solve_cg5(multi1d<LatticeFermion> &solution,    // output
-		   const multi1d<LatticeColorMatrix> &U, // input
-		   double M5,                            // input
-		   double m_f,                           // input
-		   const multi1d<LatticeFermion> &rhs,   // input
-		   const multi1d<LatticeFermion> &x0,    // input
-		   double rsd,                           // input
-		   int max_iter,                         // input
-		   int &out_iter );                      // output
       
   private:
-    // Hide default constructor
-    SSEDWFQprop() {}
-
     Handle<const ConnectState> state;
     const Real OverMass;
     const Real Mass;
