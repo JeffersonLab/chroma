@@ -1,4 +1,4 @@
-// $Id: kyugauge_io.cc,v 1.3 2004-04-15 03:33:54 edwards Exp $
+// $Id: kyugauge_io.cc,v 1.4 2004-04-15 03:43:11 edwards Exp $
 
 /*! \file
  *  \brief Read a Kentucky gauge configuration
@@ -52,7 +52,7 @@ void readKYU(multi1d<LatticeColorMatrix>& u, const string& cfg_file)
 
 	pokeColor(u[mu], 
 		  cmplx(LatticeReal(re),LatticeReal(im)), 
-		  col, row);   // transpose
+		  row, col);   // transpose
       }
 
   cfg_in.close();
