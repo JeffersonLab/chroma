@@ -1,4 +1,4 @@
-// $Id: chromainc.h,v 1.3 2003-03-14 05:11:46 flemingg Exp $
+// $Id: chromainc.h,v 1.4 2003-03-26 22:09:31 dgr Exp $
 //
 // Include file that includes all the include files.
 
@@ -10,6 +10,8 @@
 #include "util/util.h"
 #include "meas/meas.h"
 #include "update/update.h"
+#include "io/io.h"
+
 
 using namespace QDP;
 
