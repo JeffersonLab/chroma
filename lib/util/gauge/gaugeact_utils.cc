@@ -18,4 +18,6 @@ GaugeAction* getGaugeActFromParams(Handle< GaugeBC > gbc,
   default:
     QDPIO::cerr << "Unknown GaugeBCType_t " << b.getType() << endl;
   }
+
+  return 0;
 }
