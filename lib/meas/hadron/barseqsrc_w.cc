@@ -1,4 +1,4 @@
-// $Id: barseqsrc_w.cc,v 1.4 2004-01-10 05:52:17 edwards Exp $
+// $Id: barseqsrc_w.cc,v 1.5 2004-04-22 02:04:47 edwards Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */
@@ -251,8 +251,8 @@ void barSeqSource(const LatticePropagator& quark_propagator_1,
     break;
 
   case 8:
-    /* "\bar u O u" insertion in proton, ie. 
-     * "(u C gamma_5 (1/2)(1+gamma_5) d) u" */
+    /* "\bar u O u" insertion in NR proton, ie. 
+     * "(u C gamma_5 (1/2)(1+gamma_4) d) u" */
     /* T = \Sigma_3 (1 + gamma_4) / 2 = -i (Gamma(3) + Gamma(11)) / 2 */
     {
       /* C gamma_5 (1/2) (1 + gamma_4) = Cg5NR */
