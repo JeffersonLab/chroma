@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.76 2004-10-29 13:36:13 bjoo Exp $
+// $Id: propagator.cc,v 1.77 2004-11-08 06:09:51 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -34,6 +34,8 @@ bool linkage_hack()
   foo &= UnprecOvExtFermActArrayEnv::registered;
   foo &= UnprecZoloNEFFermActArrayEnv::registered;
   foo &= EvenOddPrecZoloNEFFermActArrayEnv::registered;
+  foo &= UnprecDWFTransfFermActEnv::registered;
+
   // Test stuff
 #if defined(BUILD_SSE_DWF_CG)
   foo &= SSEEvenOddPrecDWFermActArrayEnv::registered;
