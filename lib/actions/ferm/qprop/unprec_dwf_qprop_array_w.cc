@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_qprop_array_w.cc,v 1.3 2003-11-13 18:19:08 edwards Exp $
+// $Id: unprec_dwf_qprop_array_w.cc,v 1.4 2003-11-14 16:02:57 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion propagator solver
  *
@@ -12,7 +12,30 @@
 #include "actions/ferm/invert/invcg2_array.h"
 #include "actions/ferm/linop/dwffld_w.h"
 
+//---------------- HACK ----------------------------
+// WARNING - Inefficient; improve later - move into QDP
+#if 1
+namespace QDP {
+
+template<class T>
+inline typename UnaryReturn<OLattice<T>, FnNorm2>::Type_t
+norm2(const multi1d< OLattice<T> >& s1, const Subset& s)
+{
+  typename UnaryReturn<OLattice<T>, FnNorm2>::Type_t  d;
+
+  d = norm2(s1[0],s);
+  for(int n=1; n < s1.size(); ++n)
+    d += norm2(s1[n],s);
+
+  return d;
+}
+}
+#endif
+//---------------------------------------------------
+
+
 using namespace QDP;
+
 
 //! Propagator of an un-preconditioned DWF linear operator
 /*! \ingroup qprop
@@ -53,7 +76,7 @@ void UnprecDWFermActArray::qprop(LatticeFermion& psi,
     // Create a Pauli-Villars linop and use it for just this part
     const LinearOperator< multi1d<LatticeFermion> >* B = linOpPV(u);
 
-    tmp5 = (*B)(chi5, MINUS);
+    tmp5 = (*B)(chi5, PLUS);
 
     delete B;
   }
