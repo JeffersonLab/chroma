@@ -34,12 +34,13 @@ HDRS =
 ##   be built by 'make check' and is not installed.
 #noinst_PROGRAMS = propagator
 check_PROGRAMS = propagator spectrum_w qqq_w seqprop bar3ptfn make_source \
-        ExampleBuildingBlocks hypsmear cfgtransf sink_smearing qproptransf
+        ExampleBuildingBlocks hypsmear cfgtransf sink_smearing qproptransf \
+        wallformfac
 
 ## These are programs still under development. They won't compile in
 ## the check_PROGRAMS line, so we put them here to keep from breaking
 ## make check
-EXTRA_PROGRAMS = wallformfac
+EXTRA_PROGRAMS = 
 
 
 #
