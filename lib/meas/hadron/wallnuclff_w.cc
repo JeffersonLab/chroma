@@ -1,4 +1,4 @@
-// $Id: wallnuclff_w.cc,v 1.11 2004-04-29 17:33:41 edwards Exp $
+// $Id: wallnuclff_w.cc,v 1.12 2004-04-29 21:02:51 edwards Exp $
 /*! \file
  *  \brief Wall-sink nucleon form-factors 
  *
@@ -72,7 +72,7 @@ LatticeSpinMatrix wallNuclUContract(const LatticePropagator& insert_prop,
   // Term 3
   S -=  traceColor(insert_prop * traceSpin(quarkContract13(Gamma(5)*d_x2, u_x2*Gamma(5))));
   // Term 4
-  S +=  traceColor(u_x2*Gamma(5) * quarkContract13(Gamma(5)*d_x2, insert_prop));
+  S -=  traceColor(u_x2*Gamma(5) * quarkContract13(Gamma(5)*d_x2, insert_prop));
 
   return S;
 }
@@ -97,10 +97,11 @@ LatticeSpinMatrix wallNuclDContract(const LatticePropagator& insert_prop,
 {
   /* "\bar d O d" insertion in proton, ie. "(u C gamma_5 d) u" */
   /* T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2 */
-  LatticeSpinMatrix  S;
+  LatticeSpinMatrix  S; 
 
   // Term 5
   S  = -traceColor(u_x2 * Gamma(5) * quarkContract13(Gamma(5)*insert_prop, u_x2));
+
   // Term 6
   S -=  traceColor(u_x2 * traceSpin(quarkContract13(u_x2*Gamma(5), Gamma(5)*insert_prop)));
 
@@ -192,8 +193,6 @@ void wallNuclFormFac(XMLWriter& xml,
 
 	if (seq_src == 0)
 	{
-	  QDPIO::cerr << "do seq_src 0" << endl;
-
 	  /* "\bar u O u" insertion in proton, ie. "(u C gamma_5 d) u" */
 	  /* T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2 */
 	  /* C gamma_5 = Gamma(5) = - (C gamma_5)^T */
@@ -206,8 +205,6 @@ void wallNuclFormFac(XMLWriter& xml,
 	}
 	else
 	{
-	  QDPIO::cerr << "do seq_src 2" << endl;
-
 	  /* "\bar u O u" insertion in proton, ie. "(u C gamma_5 d) u" */
 	  /* T = \Sigma_3 (1 + gamma_4) / 2 = -i (Gamma(3) + Gamma(11)) / 2 */
 	  /* C gamma_5 = Gamma(5) = - (C gamma_5)^T */
@@ -227,18 +224,16 @@ void wallNuclFormFac(XMLWriter& xml,
 	// "\bar d O d" insertion in proton, ie. "(u C gamma_5 d) u"
 	// The local non-conserved current contraction
 	LatticeSpinMatrix local_contract = 
-	  wallNuclUContract(LatticePropagator(anti_d_prop*Gamma(gamma_value)*forw_d_prop), 
+	  wallNuclDContract(LatticePropagator(anti_d_prop*Gamma(gamma_value)*forw_d_prop), 
 			    u_x2, d_x2);
 
 	// Construct the non-local (possibly conserved) current contraction
 	LatticeSpinMatrix nonlocal_contract = 
-	  wallNuclUContract(nonlocalCurrentProp(u, mu, forw_d_prop, anti_d_prop), 
+	  wallNuclDContract(nonlocalCurrentProp(u, mu, forw_d_prop, anti_d_prop), 
 			    u_x2, d_x2);
 
 	if (seq_src == 1)
 	{
-	  QDPIO::cerr << "do seq_src 1" << endl;
-
 	  /* "\bar d O d" insertion in proton, ie. "(u C gamma_5 d) u" */
 	  /* T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2 */
 
@@ -250,8 +245,6 @@ void wallNuclFormFac(XMLWriter& xml,
 	}
 	else
 	{
-	  QDPIO::cerr << "do seq_src 3" << endl;
-
 	  /* "\bar d O d" insertion in proton, ie. "(u C gamma_5 d) u" */
 	  /* T = \Sigma_3 (1 + gamma_4) / 2 = -i (Gamma(3) + Gamma(11)) / 2 */
 	  /* C gamma_5 = Gamma(5) = - (C gamma_5)^T */
@@ -269,7 +262,13 @@ void wallNuclFormFac(XMLWriter& xml,
 	QDP_error_exit("Unknown sequential source type", seq_src);
       }
 
+      // Not sure why this minus sign is arising...
+      corr_local_fn *= -1;
+
       multi2d<DComplex> hsum_local = phases.sft(corr_local_fn);
+
+      // Not sure why this minus sign is arising...
+      corr_nonlocal_fn *= -1;
 
       multi2d<DComplex> hsum_nonlocal = phases.sft(corr_nonlocal_fn);
   
