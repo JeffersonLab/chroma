@@ -1,4 +1,4 @@
-// $Id: barseqsrc_w.cc,v 1.3 2004-01-10 05:40:36 edwards Exp $
+// $Id: barseqsrc_w.cc,v 1.4 2004-01-10 05:52:17 edwards Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */
@@ -64,19 +64,14 @@ void barSeqSource(const LatticePropagator& quark_propagator_1,
     /* T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2 */
     {
       /* C gamma_5 = Gamma(5) = - (C gamma_5)^T */
-      q1_tmp = quark_propagator_1 * Gamma(5);
-      q2_tmp = Gamma(5) * quark_propagator_2;
-      di_quark = quarkContract24(q1_tmp, q2_tmp);
-      src_prop_tmp = di_quark + Gamma(8) * di_quark;
-
-      col_mat = traceSpin(di_quark);
+      di_quark = quarkContract24(quark_propagator_1 * Gamma(5), 
+				 Gamma(5) * quark_propagator_2);
       q1_tmp = 1;
-      di_quark = 1;
-      di_quark += Gamma(8) * q1_tmp;
-      src_prop_tmp += col_mat * di_quark;
+      src_prop_tmp = (di_quark + Gamma(8)*di_quark) 
+	 + traceSpin(di_quark)*(q1_tmp + Gamma(8)*q1_tmp);
 
-      q1_tmp = q2_tmp * Gamma(5);
-      q2_tmp = quark_propagator_1 + quark_propagator_1 * Gamma(8);
+      q1_tmp = Gamma(5) * quark_propagator_2 * Gamma(5);
+      q2_tmp = quark_propagator_1 + quark_propagator_1*Gamma(8);
       src_prop_tmp -= quarkContract13(q1_tmp, q2_tmp) + quarkContract12(q2_tmp, q1_tmp);
       src_prop_tmp *= 0.5;
     }
