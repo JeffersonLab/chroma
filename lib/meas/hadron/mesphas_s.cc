@@ -1,4 +1,4 @@
-// $Id: mesphas_s.cc,v 1.2 2003-09-11 16:57:17 bjoo Exp $
+// $Id: mesphas_s.cc,v 1.3 2004-01-21 13:41:45 mcneile Exp $
 
 
 /* This routine is specific to staggered fermions! */
@@ -91,7 +91,7 @@ void MesPhas(multi1d<LatticeReal>& meson_phases,
 
     /*## phase(2) = (-1)**(x0+x1) + (-1)**(x0+x2) + (-1)**(x1+x2) */
     meson_phases[2] = where(((x[0]+x[1]) & 1) == 0, LatticeReal(1), LatticeReal(-1))
-                    + where(((x[1]+x[2]) & 1) == 0, LatticeReal(1), LatticeReal(-1))
+                    + where(((x[0]+x[2]) & 1) == 0, LatticeReal(1), LatticeReal(-1))
                     + where(((x[1]+x[2]) & 1) == 0, LatticeReal(1), LatticeReal(-1));
 
     /*## phase(3) = (-1)**(x0+x1+x2) */
