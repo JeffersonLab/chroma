@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_linop_w.h,v 1.1 2003-10-20 20:31:50 edwards Exp $
+// $Id: unprec_dwf_linop_w.h,v 1.2 2003-11-08 04:21:47 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion linear operator
  */
@@ -44,8 +44,8 @@ public:
 private:
   Real WilsonMass;
   Real m_q;
+  Real a5;
   multi1d<LatticeColorMatrix> u;
-  DWDslash D;
 };
 
 #endif

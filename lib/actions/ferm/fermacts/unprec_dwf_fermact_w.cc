@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_fermact_w.cc,v 1.1 2003-10-20 20:31:50 edwards Exp $
+// $Id: unprec_dwf_fermact_w.cc,v 1.2 2003-11-08 04:21:47 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion action
  */
@@ -18,6 +18,7 @@ void UnprecDWFermAct::create(const Real& WilsonMass_, const Real& m_q_)
 {
   WilsonMass = WilsonMass_;
   m_q = m_q_;
+  a5  = 1.0;
 //    CoeffWilsr_s = (AnisoP) ? Wilsr_s / xiF_0 : 1;
 }
 
@@ -78,16 +79,23 @@ void UnprecDWFermAct::qprop(LatticeFermion& psi,
 
   int n_count;
   
+  QDPIO::cout << "|psi|^2 = " << norm2(psi) << endl;
+  QDPIO::cout << "|chi|^2 = " << norm2(chi) << endl;
+
   /* Construct the linear operator */
   /* This allocates field for the appropriate action */
   const LinearOperator<LatticeDWFermion>* A = linOp(u);
 
   LatticeDWFermion tmp, psi_tmp, chi_tmp;
 
-  chi_tmp = zero;
   psi_tmp = zero;
+  pokeDW(psi_tmp, psi, 0);
+
+  chi_tmp = zero;
   pokeDW(chi_tmp, chi, 0);     // WRONG!!!
-  pokeDW(psi_tmp, psi, 0);     // WRONG!!!
+
+  QDPIO::cout << "|psi_tmp|^2 = " << norm2(psi_tmp) << endl;
+  QDPIO::cout << "|chi_tmp|^2 = " << norm2(chi_tmp) << endl;
 
   switch(invType)
   {
