@@ -4,7 +4,7 @@
 <seqprop>
   <Input><seqprop>
 <annotation>
-; $Id: seqprop_v1.linux-scalar-intel.xml,v 1.1 2004-01-07 21:57:45 edwards Exp $
+; $Id: seqprop_v1.linux-scalar-intel.xml,v 1.2 2004-01-09 04:25:15 edwards Exp $
 ;
 ; SEQPROP input file.
 ;
@@ -46,7 +46,7 @@
    <sink_mom>0 0 0</sink_mom>
    <SmearingParam>
      <Wvf_kind>GAUGE_INV_GAUSSIAN</Wvf_kind>
-     <wvf_param>1.5</wvf_param>
+     <wvf_param>2.0</wvf_param>
      <WvfIntPar>5</WvfIntPar>
    </SmearingParam>
  </SrceSinkParam>
@@ -113,67 +113,70 @@
     <elem>
       <loop>0</loop>
       <Forward_prop_info><szin_prop>
-      <Kappa>0.144737</Kappa>
+      <Kappa>0.11</Kappa>
     </szin_prop>
 
       </Forward_prop_info>
+      <Forward_prop_correlator>
+        <forward_prop_corr>0.147564 0.00923145 0.0028872 0.00109399 0.00068348 0.00110199 0.00286503 0.00919643</forward_prop_corr>
+      </Forward_prop_correlator>
       <Sequential_source>
         <elem>
           <seq_src_ctr>0</seq_src_ctr>
 <QuarkProp4>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>49</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>69</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>69</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>69</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>69</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>69</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>70</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>69</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>69</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>69</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>69</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>69</n_count>
+    <n_count>50</n_count>
   </Qprop>
 </QuarkProp4>
 
-  <Propagator_norm>
-    <prop_norm>4524.15</prop_norm>
-  </Propagator_norm>
+          <Backward_prop_correlator>
+            <backward_prop_corr>5.62535e-10 1.38601e-09 3.89479e-09 1.11502e-08 3.23768e-08 9.70012e-08 9.74229e-10 4.51844e-10</backward_prop_corr>
+          </Backward_prop_correlator>
         </elem>
         <elem>
           <seq_src_ctr>1</seq_src_ctr>
@@ -184,167 +187,167 @@
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>66</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>66</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>65</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>66</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>66</n_count>
+    <n_count>49</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>66</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>66</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>66</n_count>
+    <n_count>49</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>66</n_count>
+    <n_count>49</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>66</n_count>
+    <n_count>49</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>66</n_count>
+    <n_count>49</n_count>
   </Qprop>
 </QuarkProp4>
 
-  <Propagator_norm>
-    <prop_norm>4524.15</prop_norm>
-  </Propagator_norm>
+          <Backward_prop_correlator>
+            <backward_prop_corr>7.25909e-11 3.18573e-11 3.00714e-11 6.50508e-11 1.80231e-10 2.15567e-09 5.86589e-10 2.04126e-10</backward_prop_corr>
+          </Backward_prop_correlator>
         </elem>
         <elem>
           <seq_src_ctr>2</seq_src_ctr>
 <QuarkProp4>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>49</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>68</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>68</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>68</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>68</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>68</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>68</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>68</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>68</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>68</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>68</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>68</n_count>
+    <n_count>50</n_count>
   </Qprop>
 </QuarkProp4>
 
-  <Propagator_norm>
-    <prop_norm>4524.15</prop_norm>
-  </Propagator_norm>
+          <Backward_prop_correlator>
+            <backward_prop_corr>4.48592e-10 1.2389e-09 3.53545e-09 1.01416e-08 2.94791e-08 8.71842e-08 3.62054e-10 2.27858e-10</backward_prop_corr>
+          </Backward_prop_correlator>
         </elem>
         <elem>
           <seq_src_ctr>3</seq_src_ctr>
 <QuarkProp4>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>49</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>63</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>63</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>63</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>63</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>63</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>63</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>63</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>63</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>63</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>62</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>63</n_count>
+    <n_count>50</n_count>
   </Qprop>
 </QuarkProp4>
 
-  <Propagator_norm>
-    <prop_norm>4524.15</prop_norm>
-  </Propagator_norm>
+          <Backward_prop_correlator>
+            <backward_prop_corr>3.61447e-13 8.41655e-13 2.34628e-12 6.71028e-12 1.92902e-11 5.61388e-11 7.58498e-13 3.37156e-13</backward_prop_corr>
+          </Backward_prop_correlator>
         </elem>
         <elem>
           <seq_src_ctr>4</seq_src_ctr>
@@ -355,57 +358,57 @@
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>61</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>61</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>61</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>61</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>60</n_count>
+    <n_count>49</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>61</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>61</n_count>
+    <n_count>50</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>60</n_count>
+    <n_count>49</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>60</n_count>
+    <n_count>49</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>60</n_count>
+    <n_count>49</n_count>
   </Qprop>
   <Qprop>
     <RsdCG>1e-05</RsdCG>
-    <n_count>60</n_count>
+    <n_count>49</n_count>
   </Qprop>
 </QuarkProp4>
 
-  <Propagator_norm>
-    <prop_norm>4524.15</prop_norm>
-  </Propagator_norm>
+          <Backward_prop_correlator>
+            <backward_prop_corr>1.52107e-05 5.87716e-06 3.70159e-06 6.02341e-06 1.5725e-05 0.000391043 0.000124383 4.34192e-05</backward_prop_corr>
+          </Backward_prop_correlator>
   <Seq_propagator_test>
     <pion_src>
-      <re>-0.192132</re>
-      <im>0.000515946</im>
+      <re>0.00133071</re>
+      <im>4.30571e-06</im>
     </pion_src>
   </Seq_propagator_test>
         </elem>
@@ -413,6 +416,6 @@
     </elem>
   </Seqprop_calc>
   <Relaxation_Iterations>
-    <ncg_had>3836</ncg_had>
+    <ncg_had>2988</ncg_had>
   </Relaxation_Iterations>
 </seqprop>
