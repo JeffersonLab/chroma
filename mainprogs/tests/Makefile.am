@@ -44,7 +44,7 @@ HDRS =
 ##   be built by 'make check' and is not installed.
 check_PROGRAMS  = t_mesplq t_io t_mesons_w  t_conslinop t_hypsmear \
     t_ape_smear t_precact t_dwf4d t_propagator_s t_disc_loop_s \
-    t_remez
+    t_remez t_ritz t_ritz_KS
 
 ## Moved t_dslashm and t_lwldslash to EXTRA_PROGRAMS because they currently
 ## do not compile.  This way, they don't break 'make check' but the targets
@@ -54,7 +54,7 @@ check_PROGRAMS  = t_mesplq t_io t_mesons_w  t_conslinop t_hypsmear \
 EXTRA_PROGRAMS  = t_dslashm t_lwldslash t_spprod t_lwldslash_sse \
     t_follana_io_s t_formfac  t_follana_pion_s t_dwflinop t_precdwf \
     t_ovlap_bj t_propagator_s t_propagator_w t_gfix t_ovlap5d_bj \
-    t_ritz t_ritz_KS t_ritz5d_KS  t_fermion_loop_w t_propagator_fuzz_s \
+    t_ritz5d_KS  t_fermion_loop_w t_propagator_fuzz_s \
     t_disc_loop_s t_ov_pbp t_lwldslash_pab t_propagator_nrqcd \
     t_dwflocality t_invert3_precwilson t_invert4_precwilson t_read_eigen \
     t_fuzwilp t_ovlap_double_pass t_g5eps_bj t_sumr t_msumr t_invrelcg t_bicgstab \
