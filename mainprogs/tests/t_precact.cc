@@ -1,4 +1,4 @@
-// $Id: t_precact.cc,v 1.11 2005-01-21 05:26:35 edwards Exp $
+// $Id: t_precact.cc,v 1.12 2005-01-21 17:47:04 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -113,6 +113,54 @@ void check_linops(XMLWriter& xml_out, const string& prefix,
 }
 
 
+//! Apply the operator onto a source vector
+/*! User should make sure deriv routines do a resize  */
+multi1d<LatticeColorMatrix>
+deriv(const EvenOddPrecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >& AP,
+      const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
+      enum PlusMinus isign)
+{
+  // Need deriv of  (A_oo - D_oe*Ainv_ee*D_eo*psi_e)
+  enum PlusMinus msign = (isign == PLUS) ? MINUS : PLUS;
+
+  //
+  // Make sure the deriv routines do a resize !!!
+  //
+  multi1d<LatticeColorMatrix> ds_u, ds_1;
+  multi1d<LatticeFermion>  tmp1, tmp2, tmp3;
+
+  //
+  // NOTE: even with even-odd decomposition, the ds_u will still have contributions
+  // on all cb. So, no adding of ds_1 onto ds_u under a subset
+  //
+  //  ds_u  =  chi^dag * A'_oo * psi
+  AP.derivOddOddLinOp(ds_u, chi, psi, isign);
+
+  //  ds_u  -=  chi^dag * D'_oe * Ainv_ee * D_eo * psi_o
+  AP.evenOddLinOp(tmp1, psi, isign);
+  AP.evenEvenInvLinOp(tmp2, tmp1, isign);
+  AP.derivOddEvenLinOp(ds_1, chi, tmp2, isign);
+  ds_u -= ds_1;
+
+  //  ds_u  +=  chi^dag * D_oe * Ainv_ee * A'_ee * Ainv_ee * D_eo * psi_o
+  AP.evenOddLinOp(tmp1, psi, isign);
+  AP.evenEvenInvLinOp(tmp2, tmp1, isign);
+  AP.evenOddLinOp(tmp1, chi, msign);
+  AP.evenEvenInvLinOp(tmp3, tmp1, msign);
+  AP.derivEvenEvenLinOp(ds_1, tmp3, tmp2, isign);
+  ds_u += ds_1;
+
+  //  ds_u  -=  chi^dag * D_oe * Ainv_ee * D'_eo * psi_o
+  AP.evenOddLinOp(tmp1, chi, msign);
+  AP.evenEvenInvLinOp(tmp3, tmp1, msign);
+  AP.derivEvenOddLinOp(ds_1, tmp3, psi, isign);
+  ds_u -= ds_1;
+
+  return ds_u;
+}
+
+
+
 //! Check linops
 void check_derivs(XMLWriter& xml_out, const string& prefix,
   const EvenOddPrecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >& AP,
@@ -141,6 +189,15 @@ void check_derivs(XMLWriter& xml_out, const string& prefix,
   for(int m=0; m < Nd; ++m)
     norm_diff_prec += norm2(ds_1[m]-ds_2[m]);
 
+  multi1d<LatticeColorMatrix>  ds_tmp;
+  AP.deriv(ds_tmp, chi, psi, PLUS);
+  ds_tmp -= deriv(AP, chi, psi, PLUS);
+  Double norm_diff_check_prec_plus = norm2(ds_tmp);
+
+  AP.deriv(ds_tmp, chi, psi, MINUS);
+  ds_tmp -= deriv(AP, chi, psi, MINUS);
+  Double norm_diff_check_prec_minus = norm2(ds_tmp);
+
   multi1d<LatticeColorMatrix>  ds_3, ds_4;
   QDPIO::cout << "AU plus" << endl;
   AU.deriv(ds_3, chi, psi, PLUS);
@@ -154,6 +211,9 @@ void check_derivs(XMLWriter& xml_out, const string& prefix,
     norm_diff_unprec += norm2(ds_3[m]-ds_4[m]);
 
   push(xml_out,prefix+"DerivInnerprods");
+  write(xml_out, "norm_diff_check_prec_plus", norm_diff_check_prec_plus);
+  write(xml_out, "norm_diff_check_prec_minus", norm_diff_check_prec_minus);
+
   write(xml_out, "nnP_plus", nnP_plus);
   write(xml_out, "nnU_plus", nnU_plus);
   Double norm_diff_plus = zero;
