@@ -262,7 +262,7 @@ t_msumr_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 t_invrelcg_SOURCES = t_invrelcg.cc
 t_invrelcg_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
-t_neflinop_SOURCES = t_invrelcg.cc
+t_neflinop_SOURCES = t_neflinop.cc
 t_neflinop_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_ovlap5d_bj_SOURCES = t_ovlap5d_bj.cc
@@ -472,7 +472,7 @@ am_t_msumr_OBJECTS = t_msumr.$(OBJEXT)
 t_msumr_OBJECTS = $(am_t_msumr_OBJECTS)
 t_msumr_LDADD = $(LDADD)
 t_msumr_LDFLAGS =
-am_t_neflinop_OBJECTS = t_invrelcg.$(OBJEXT)
+am_t_neflinop_OBJECTS = t_neflinop.$(OBJEXT)
 t_neflinop_OBJECTS = $(am_t_neflinop_OBJECTS)
 t_neflinop_LDADD = $(LDADD)
 t_neflinop_LDFLAGS =
@@ -584,8 +584,9 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/t_lwldslash_pab.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_lwldslash_sse.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_mesons_w.Po ./$(DEPDIR)/t_mesplq.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_msumr.Po ./$(DEPDIR)/t_ov_pbp.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_overbu.Po ./$(DEPDIR)/t_ovlap5d_bj.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_msumr.Po ./$(DEPDIR)/t_neflinop.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_ov_pbp.Po ./$(DEPDIR)/t_overbu.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_ovlap5d_bj.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_ovlap_bj.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_ovlap_double_pass.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_precact.Po \
@@ -834,6 +835,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_mesons_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_mesplq.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_msumr.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_neflinop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_ov_pbp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_overbu.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_ovlap5d_bj.Po@am__quote@

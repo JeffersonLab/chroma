@@ -147,7 +147,7 @@ t_msumr_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 t_invrelcg_SOURCES = t_invrelcg.cc
 t_invrelcg_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
-t_neflinop_SOURCES = t_invrelcg.cc
+t_neflinop_SOURCES = t_neflinop.cc
 t_neflinop_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_ovlap5d_bj_SOURCES = t_ovlap5d_bj.cc
