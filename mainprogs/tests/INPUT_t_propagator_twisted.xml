@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+
+<propagator>
+  <IO_version>
+    <version>1</version>
+  </IO_version>
+  <param>
+    <Nc>4</Nc>
+    <Nd>4</Nd>
+    <FermTypeP>WILSON</FermTypeP>
+     <Twisted_mass>
+    <Mass>0.0</Mass>
+    <H>0.0</H>
+     </Twisted_mass>
+    <u0>0.463032</u0>
+
+    <prop_type>SZIN</prop_type>
+    <number_sample> 5  </number_sample>
+    <RsdCG>1.0e-5</RsdCG>
+    <MaxCG>1000</MaxCG>
+    <nrow>4 4 4 4</nrow>
+    <boundary>1 1 1 1</boundary>
+    <t_srce>0 0 0 0</t_srce>
+
+
+    <do_gauge_transform>false</do_gauge_transform>
+  </param>
+  <Cfg>
+    <cfg_type>DISORDERED</cfg_type>
+    <cfg_file>./t_nersc.cfg</cfg_file>
+  </Cfg>
+  <Prop>
+    <prop_file>prop.out</prop_file>
+  </Prop>
+
+</propagator>
+
