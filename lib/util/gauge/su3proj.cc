@@ -1,12 +1,12 @@
-//  $Id: su3proj.cc,v 1.1 2003-03-28 03:53:39 edwards Exp $
+//  $Id: su3proj.cc,v 1.2 2003-03-28 05:34:26 edwards Exp $
 /*! \file
  *  \brief Project a complex Nc x Nc matrix W onto SU(Nc) by maximizing Tr(VW)
  */
 
 #include "chromabase.h"
 #include "util/gauge/su3proj.h"
-
-#include "proto.h"   // from QDP++
+#include "util/gauge/su2extract.h"
+#include "util/gauge/sunfill.h"
 
 using namespace QDP;
 
