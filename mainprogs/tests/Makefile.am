@@ -30,19 +30,22 @@ HDRS =
 ##   in @prefix@/bin by 'make install' then add them to nodist_PROGRAMS.
 ##   Another option is to add it to check_PROGRAMS, which means it will only
 ##   be built by 'make check' and is not installed.
-noinst_PROGRAMS = t_mesplq t_dslashm t_io
-##check_PROGRAMS = t_mesplq t_dslashm t_io
+##noinst_PROGRAMS = t_mesplq t_dslashm t_io
+check_PROGRAMS = t_mesplq t_dslashm t_io t_lwldslash
+
+DEPENDENCIES = build_chroma_libs
 
 #
 # The programs and their dependencies
 #
 t_mesplq_SOURCES = t_mesplq.cc
-t_mesplq_DEPENDENCIES = build_chroma_libs
+# t_mesplq_DEPENDENCIES = build_chroma_libs
 
 t_dslashm_SOURCES = t_dslashm.cc
-t_dslashm_DEPENDENCIES = build_chroma_libs
+# t_dslashm_DEPENDENCIES = build_chroma_libs
 
 t_io_SOURCES = t_io.cc
+t_lwldslash_SOURCES = t_lwldslash.cc
 
 # build lib is a target that goes to the build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order

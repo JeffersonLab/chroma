@@ -152,51 +152,61 @@ HDRS =
 #
 # add the programs to build in here
 # 
-noinst_PROGRAMS = t_mesplq t_dslashm t_io
+check_PROGRAMS = t_mesplq t_dslashm t_io t_lwldslash
+
+DEPENDENCIES = build_chroma_libs
 
 #
 # The programs and their dependencies
 #
 t_mesplq_SOURCES = t_mesplq.cc
-t_mesplq_DEPENDENCIES = build_chroma_libs
 
+# t_mesplq_DEPENDENCIES = build_chroma_libs
 t_dslashm_SOURCES = t_dslashm.cc
-t_dslashm_DEPENDENCIES = build_chroma_libs
 
+# t_dslashm_DEPENDENCIES = build_chroma_libs
 t_io_SOURCES = t_io.cc
+t_lwldslash_SOURCES = t_lwldslash.cc
 subdir = mainprogs/tests
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
 CONFIG_CLEAN_FILES =
-noinst_PROGRAMS = t_mesplq$(EXEEXT) t_dslashm$(EXEEXT) t_io$(EXEEXT)
-PROGRAMS = $(noinst_PROGRAMS)
-
+check_PROGRAMS = t_mesplq$(EXEEXT) t_dslashm$(EXEEXT) t_io$(EXEEXT) \
+	t_lwldslash$(EXEEXT)
 am_t_dslashm_OBJECTS = t_dslashm.$(OBJEXT)
 t_dslashm_OBJECTS = $(am_t_dslashm_OBJECTS)
 t_dslashm_LDADD = $(LDADD)
+t_dslashm_DEPENDENCIES =
 t_dslashm_LDFLAGS =
 am_t_io_OBJECTS = t_io.$(OBJEXT)
 t_io_OBJECTS = $(am_t_io_OBJECTS)
 t_io_LDADD = $(LDADD)
 t_io_DEPENDENCIES =
 t_io_LDFLAGS =
+am_t_lwldslash_OBJECTS = t_lwldslash.$(OBJEXT)
+t_lwldslash_OBJECTS = $(am_t_lwldslash_OBJECTS)
+t_lwldslash_LDADD = $(LDADD)
+t_lwldslash_DEPENDENCIES =
+t_lwldslash_LDFLAGS =
 am_t_mesplq_OBJECTS = t_mesplq.$(OBJEXT)
 t_mesplq_OBJECTS = $(am_t_mesplq_OBJECTS)
 t_mesplq_LDADD = $(LDADD)
+t_mesplq_DEPENDENCIES =
 t_mesplq_LDFLAGS =
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/t_dslashm.Po ./$(DEPDIR)/t_io.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_mesplq.Po
+@AMDEP_TRUE@	./$(DEPDIR)/t_lwldslash.Po ./$(DEPDIR)/t_mesplq.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
-DIST_SOURCES = $(t_dslashm_SOURCES) $(t_io_SOURCES) $(t_mesplq_SOURCES)
+DIST_SOURCES = $(t_dslashm_SOURCES) $(t_io_SOURCES) \
+	$(t_lwldslash_SOURCES) $(t_mesplq_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(t_dslashm_SOURCES) $(t_io_SOURCES) $(t_mesplq_SOURCES)
+SOURCES = $(t_dslashm_SOURCES) $(t_io_SOURCES) $(t_lwldslash_SOURCES) $(t_mesplq_SOURCES)
 
 all: all-am
 
@@ -208,14 +218,17 @@ $(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.ac $(ACLOCAL_M4)
 Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
 
-clean-noinstPROGRAMS:
-	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
+clean-checkPROGRAMS:
+	-test -z "$(check_PROGRAMS)" || rm -f $(check_PROGRAMS)
 t_dslashm$(EXEEXT): $(t_dslashm_OBJECTS) $(t_dslashm_DEPENDENCIES) 
 	@rm -f t_dslashm$(EXEEXT)
 	$(CXXLINK) $(t_dslashm_LDFLAGS) $(t_dslashm_OBJECTS) $(t_dslashm_LDADD) $(LIBS)
 t_io$(EXEEXT): $(t_io_OBJECTS) $(t_io_DEPENDENCIES) 
 	@rm -f t_io$(EXEEXT)
 	$(CXXLINK) $(t_io_LDFLAGS) $(t_io_OBJECTS) $(t_io_LDADD) $(LIBS)
+t_lwldslash$(EXEEXT): $(t_lwldslash_OBJECTS) $(t_lwldslash_DEPENDENCIES) 
+	@rm -f t_lwldslash$(EXEEXT)
+	$(CXXLINK) $(t_lwldslash_LDFLAGS) $(t_lwldslash_OBJECTS) $(t_lwldslash_LDADD) $(LIBS)
 t_mesplq$(EXEEXT): $(t_mesplq_OBJECTS) $(t_mesplq_DEPENDENCIES) 
 	@rm -f t_mesplq$(EXEEXT)
 	$(CXXLINK) $(t_mesplq_LDFLAGS) $(t_mesplq_OBJECTS) $(t_mesplq_LDADD) $(LIBS)
@@ -228,6 +241,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_dslashm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_lwldslash.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_mesplq.Po@am__quote@
 
 distclean-depend:
@@ -342,8 +356,9 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 check-am: all-am
+	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS)
 check: check-am
-all-am: Makefile $(PROGRAMS)
+all-am: Makefile
 
 installdirs:
 
@@ -373,7 +388,7 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-generic clean-noinstPROGRAMS mostlyclean-am
+clean-am: clean-checkPROGRAMS clean-generic mostlyclean-am
 
 distclean: distclean-am
 
@@ -416,8 +431,8 @@ ps-am:
 
 uninstall-am: uninstall-info-am
 
-.PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
-	clean-noinstPROGRAMS ctags distclean distclean-compile \
+.PHONY: CTAGS GTAGS all all-am check check-am clean clean-checkPROGRAMS \
+	clean-generic ctags distclean distclean-compile \
 	distclean-depend distclean-generic distclean-tags distdir dvi \
 	dvi-am info info-am install install-am install-data \
 	install-data-am install-exec install-exec-am install-info \
