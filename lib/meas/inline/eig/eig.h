@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eig.h,v 1.1 2005-02-07 15:54:53 edwards Exp $
+// $Id: eig.h,v 1.2 2005-04-06 04:34:53 edwards Exp $
 
 /*! \file
  * \brief Inline measurements for eigenvalues
@@ -14,8 +14,8 @@
  * of eigenvalues of various linear operators.
  */
 
-#ifndef __eig_h__
-#define __eig_h__
+#ifndef __inline_eig_h__
+#define __inline_eig_h__
 
 #include "inline_eig_aggregate.h"
 

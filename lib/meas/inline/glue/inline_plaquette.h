@@ -1,4 +1,4 @@
-// $Id: inline_plaquette.h,v 1.4 2005-02-10 15:50:47 edwards Exp $
+// $Id: inline_plaquette.h,v 1.5 2005-04-06 04:34:53 edwards Exp $
 /*! \file
  *  \brief Inline plaquette
  */
@@ -42,6 +42,7 @@ namespace Chroma {
     unsigned long getFrequency(void) const {return frequency;}
 
     void operator()(const multi1d<LatticeColorMatrix>& u,
+		    XMLBufferWriter& gauge_xml,
 		    unsigned long update_no,
 		    XMLWriter& xml_out); 
 

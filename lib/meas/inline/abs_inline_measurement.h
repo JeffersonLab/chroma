@@ -17,6 +17,7 @@ namespace Chroma {
 
     // Do the measurement
     virtual void operator()(const multi1d<LatticeColorMatrix>& u,
+			    XMLBufferWriter& gauge_xml,
 			    unsigned long update_no,
 			    XMLWriter& xml_out) = 0;
   };

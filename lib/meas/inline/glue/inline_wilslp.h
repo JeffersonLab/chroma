@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_wilslp.h,v 1.1 2005-02-10 15:50:47 edwards Exp $
+// $Id: inline_wilslp.h,v 1.2 2005-04-06 04:34:53 edwards Exp $
 /*! \file
  *  \brief Inline Wilson loops
  */
@@ -41,6 +41,7 @@ namespace Chroma
 
     //! Do the measurement
     void operator()(const multi1d<LatticeColorMatrix>& u,
+		    XMLBufferWriter& gauge_xml,
 		    const unsigned long update_no,
 		    XMLWriter& xml_out); 
 

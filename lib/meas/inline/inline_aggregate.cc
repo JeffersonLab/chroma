@@ -1,4 +1,4 @@
-// $Id: inline_aggregate.cc,v 1.1 2005-02-07 04:11:27 edwards Exp $
+// $Id: inline_aggregate.cc,v 1.2 2005-04-06 04:34:53 edwards Exp $
 /*! \file
  *  \brief Inline measurement aggregator
  */
@@ -6,6 +6,7 @@
 #include "meas/inline/inline_aggregate.h"
 #include "meas/inline/eig/inline_eig_aggregate.h"
 #include "meas/inline/glue/inline_glue_aggregate.h"
+#include "meas/inline/hadron/inline_hadron_aggregate.h"
 
 namespace Chroma
 {
@@ -16,8 +17,9 @@ namespace Chroma
     bool registerAll() 
     {
       bool success = true; 
-      success &= InlineGlueAggregateEnv::registered;
       success &= InlineEigAggregateEnv::registered;
+      success &= InlineGlueAggregateEnv::registered;
+      success &= InlineHadronAggregateEnv::registered;
       return success;
     }
 

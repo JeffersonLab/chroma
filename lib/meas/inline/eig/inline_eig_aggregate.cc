@@ -1,6 +1,6 @@
-// $Id: inline_eig_aggregate.cc,v 1.3 2005-02-07 16:05:46 bjoo Exp $
+// $Id: inline_eig_aggregate.cc,v 1.4 2005-04-06 04:34:53 edwards Exp $
 /*! \file
- *  \brief Inline glue measurement aggregator
+ *  \brief Inline eig measurement aggregator
  */
 
 #include "meas/inline/eig/inline_eig_aggregate.h"

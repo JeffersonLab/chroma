@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_eigbnds.cc,v 1.2 2005-02-10 15:50:47 edwards Exp $
+// $Id: inline_eigbnds.cc,v 1.3 2005-04-06 04:34:53 edwards Exp $
 /*! \file
  * \brief Inline measurements for eigenvalue bounds
  *
@@ -211,6 +211,7 @@ namespace Chroma {
   // The "do" function
   void 
   InlineEigBndsMdagM::operator()(const multi1d<LatticeColorMatrix>& u,
+				 XMLBufferWriter& gauge_xml,
 				 unsigned long update_no,
 				 XMLWriter& xml_out) 
   {

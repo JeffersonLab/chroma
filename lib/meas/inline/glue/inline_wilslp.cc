@@ -1,4 +1,4 @@
-// $Id: inline_wilslp.cc,v 1.1 2005-02-10 15:50:47 edwards Exp $
+// $Id: inline_wilslp.cc,v 1.2 2005-04-06 04:34:53 edwards Exp $
 /*! \file
  *  \brief Inline Wilson loops
  */
@@ -46,8 +46,9 @@ namespace Chroma
 
   void 
   InlineWilsonLoop::operator()(const multi1d<LatticeColorMatrix>& u,
-			   unsigned long update_no,
-			   XMLWriter& xml_out) 
+			       XMLBufferWriter& gauge_xml,
+			       unsigned long update_no,
+			       XMLWriter& xml_out) 
   {
     push(xml_out, "WilsonLoop");
     write(xml_out, "update_no", update_no);
