@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linearop.h,v 1.20 2003-12-12 13:56:40 bjoo Exp $
+// $Id: linearop.h,v 1.21 2004-01-02 03:19:40 edwards Exp $
 
 /*! @file
  * @brief Linear Operators
@@ -9,9 +9,6 @@
 #define __linearop_h__
 
 using namespace QDP;
-
-#include "state.h"
-
 
 //! Linear Operator
 /*! @ingroup linop
@@ -59,89 +56,6 @@ public:
   //! Virtual destructor to help with cleanup;
   virtual ~LinearOperator() {}
 };
-
-
-
-//! Proxy for linear operator abstract class
-/*! @ingroup linop
- *
- * Supports creation and application for linear operators that
- * hold things like Dirac operators, etc.
- */
-
-template<typename T>
-class LinearOperatorProxy : public LinearOperator<T>
-{
-public:
-  //! Initialize pointer with existing pointer
-  /*! Requires that the pointer p is a return value of new */
-  explicit LinearOperatorProxy(const LinearOperator<T>* p=0) : linop(p) {}
-
-  //! Copy pointer (one more owner)
-  LinearOperatorProxy(const LinearOperatorProxy& a) : linop(a.linop) {}
-
-  //! Assignment
-  LinearOperatorProxy& operator=(const LinearOperatorProxy& a) 
-    {linop = a.linop; return *this;}
-
-  //! Access the value to which the pointer refers
-  const LinearOperator<T>& operator*() const {return linop.operator*();}
-  const LinearOperator<T>* operator->() const {return linop.operator->();}
-
-  //! Apply the operator onto a source vector
-  void operator() (T& chi, const T& psi, enum PlusMinus isign) const
-    {linop->operator()(chi, psi, isign);}
-
-  //! Return the subset on which the operator acts
-  const OrderedSubset& subset() const
-    {return linop->subset();}
-
-private:
-  Handle<const LinearOperator<T> >  linop;
-};
-
-
-
-//! Partial specialization of Linear Operator to arrays
-/*! @ingroup linop
- *
- * Supports creation and application for linear operators that
- * hold things like Dirac operators, etc.
- */
-template<typename T>
-class LinearOperatorProxy< multi1d<T> > : public LinearOperator< multi1d<T> >
-{
-public:
-  //! Initialize pointer with existing pointer
-  /*! Requires that the pointer p is a return value of new */
-  explicit LinearOperatorProxy(const LinearOperator< multi1d<T> >* p=0) : linop(p) {}
-
-  //! Copy pointer (one more owner)
-  LinearOperatorProxy(const LinearOperatorProxy& a) : linop(a.linop) {}
-
-  //! Assignment
-  LinearOperatorProxy& operator=(const LinearOperatorProxy& a) 
-    {linop = a.linop; return *this;}
-
-  //! Access the value to which the pointer refers
-  const LinearOperator< multi1d<T> >& operator*() const {return linop.operator*();}
-  const LinearOperator< multi1d<T> >* operator->() const {return linop.operator->();}
-
-  //! Expected length of array index
-  int size() const {return linop->size();}
-
-  //! Apply the operator onto a source vector
-  void operator() (multi1d<T>& chi, const multi1d<T>& psi, 
-		   enum PlusMinus isign) const
-    {linop->operator()(chi, psi, isign);}
-
-  //! Return the subset on which the operator acts
-  const OrderedSubset& subset() const {return linop->subset();}
-
-private:
-  Handle<const LinearOperator< multi1d<T> > >  linop;
-};
-
 
 
 //! Even-odd preconditioned linear operator
@@ -399,151 +313,6 @@ public:
 
 
 
-//! Proxy for even-odd preconditioned linear operator abstract class
-/*! @ingroup linop
- *
- * Support for even-odd preconditioned linear operators
- */
-template<typename T>
-class EvenOddPrecLinearOperatorProxy : public EvenOddPrecLinearOperator<T>
-{
-public:
-  //! Initialize pointer with existing pointer
-  /*! Requires that the pointer p is a return value of new */
-  explicit EvenOddPrecLinearOperatorProxy(const EvenOddPrecLinearOperator<T>* p=0) : linop(p) {}
-
-  //! Copy pointer (one more owner)
-  EvenOddPrecLinearOperatorProxy(const EvenOddPrecLinearOperatorProxy& a) : linop(a.linop) {}
-
-  //! Assignment
-  EvenOddPrecLinearOperatorProxy& operator=(const EvenOddPrecLinearOperatorProxy& a)
-    {linop = a.linop; return *this;}
-
-  //! Access the value to which the pointer refers
-  const EvenOddPrecLinearOperator<T>& operator*() const {return linop.operator*();}
-  const EvenOddPrecLinearOperator<T>* operator->() const {return linop.operator->();}
-
-  //! Only defined on the odd lattice
-  const OrderedSubset& subset() const {return linop->subset();}
-
-  //! Another way of saying only defined on the odd lattice
-  virtual int subsetCB() const {return linop->subsetCB();}
-
-  //! Apply the even-even block onto a source vector
-  /*! This does not need to be optimized */
-  virtual void evenEvenLinOp(T& chi, const T& psi, 
-			     enum PlusMinus isign) const
-    {linop->evenEvenLinOp(chi, psi, isign);}
-  
-  //! Apply the inverse of the even-even block onto a source vector
-  virtual void evenEvenInvLinOp(T& chi, const T& psi, 
-				enum PlusMinus isign) const
-    {linop->evenEvenInvLinOp(chi, psi, isign);}
-  
-  //! Apply the the even-odd block onto a source vector
-  virtual void evenOddLinOp(T& chi, const T& psi, 
-			    enum PlusMinus isign) const
-    {linop->evenOddLinOp(chi, psi, isign);}
-
-  //! Apply the the odd-even block onto a source vector
-  virtual void oddEvenLinOp(T& chi, const T& psi, 
-			    enum PlusMinus isign) const
-    {linop->oddEvenLinOp(chi, psi, isign);}
-
-  //! Apply the the odd-odd block onto a source vector
-  virtual void oddOddLinOp(T& chi, const T& psi, 
-			   enum PlusMinus isign) const
-    {linop->oddOddLinOp(chi, psi, isign);}
-
-  //! Apply the operator onto a source vector
-  virtual void operator() (T& chi, const T& psi, 
-			   enum PlusMinus isign) const
-    {linop->operator()(chi, psi, isign);}
-
-  //! Apply the UNPRECONDITIONED operator onto a source vector
-  /*! Mainly intended for debugging */
-  virtual void unprecLinOp(T& chi, const T& psi, 
-			   enum PlusMinus isign) const
-    {linop->unprecLinOp(chi, psi, isign);}
-
-private:
-  Handle<const EvenOddPrecLinearOperator<T> >  linop;
-};
-
-
-//! Proxy for even-odd preconditioned linear operator abstract class
-/*! @ingroup linop
- *
- * Support for even-odd preconditioned linear operators
- */
-template<typename T>
-class EvenOddPrecLinearOperatorProxy< multi1d<T> > : public EvenOddPrecLinearOperator< multi1d<T> >
-{
-public:
-  //! Initialize pointer with existing pointer
-  /*! Requires that the pointer p is a return value of new */
-  explicit EvenOddPrecLinearOperatorProxy(const EvenOddPrecLinearOperator< multi1d<T> >* p=0) : linop(p) {}
-
-  //! Copy pointer (one more owner)
-  EvenOddPrecLinearOperatorProxy(const EvenOddPrecLinearOperatorProxy& p) : linop(p.linop) {}
-
-  //! Assignment
-  EvenOddPrecLinearOperatorProxy& operator=(const EvenOddPrecLinearOperatorProxy& a)
-    {linop = a.linop; return *this;}
-
-  //! Access the value to which the pointer refers
-  const EvenOddPrecLinearOperator< multi1d<T> >& operator*() const {return linop.operator*();}
-  const EvenOddPrecLinearOperator< multi1d<T> >* operator->() const {return linop.operator->();}
-
-  //! Expected length of array index
-  int size() const {return linop->size();}
-
-  //! Only defined on the odd lattice
-  const OrderedSubset& subset() const {return linop->subset();}
-
-  //! Another way of saying only defined on the odd lattice
-  virtual int subsetCB() const {return linop->subsetCB();}
-
-  //! Apply the even-even block onto a source vector
-  /*! This does not need to be optimized */
-  virtual void evenEvenLinOp(multi1d<T>& chi, const multi1d<T>& psi, 
-			     enum PlusMinus isign) const
-    {linop->evenEvenLinOp(chi, psi, isign);}
-  
-  //! Apply the inverse of the even-even block onto a source vector
-  virtual void evenEvenInvLinOp(multi1d<T>& chi, const multi1d<T>& psi, 
-				enum PlusMinus isign) const
-    {linop->evenEvenInvLinOp(chi, psi, isign);}
-  
-  //! Apply the the even-odd block onto a source vector
-  virtual void evenOddLinOp(multi1d<T>& chi, const multi1d<T>& psi, 
-			    enum PlusMinus isign) const
-    {linop->evenOddLinOp(chi, psi, isign);}
-
-  //! Apply the the odd-even block onto a source vector
-  virtual void oddEvenLinOp(multi1d<T>& chi, const multi1d<T>& psi, 
-			    enum PlusMinus isign) const
-    {linop->oddEvenLinOp(chi, psi, isign);}
-
-  //! Apply the the odd-odd block onto a source vector
-  virtual void oddOddLinOp(multi1d<T>& chi, const multi1d<T>& psi, 
-			   enum PlusMinus isign) const
-    {linop->oddOddLinOp(chi, psi, isign);}
-
-  //! Apply the operator onto a source vector
-  virtual void operator() (multi1d<T>& chi, const multi1d<T>& psi, 
-			   enum PlusMinus isign) const
-    {linop->operator()(chi, psi, isign);}
-
-  //! Apply the UNPRECONDITIONED operator onto a source vector
-  /*! Mainly intended for debugging */
-  virtual void unprecLinOp(multi1d<T>& chi, const multi1d<T>& psi, 
-			   enum PlusMinus isign) const
-    {linop->unprecLinOp(chi, psi, isign);}
-
-private:
-  Handle<const EvenOddPrecLinearOperator< multi1d<T> > >  linop;
-};
 
 
 //! Even odd Linear Operator (for staggered like things )
@@ -598,63 +367,6 @@ public:
 
   //! Virtual destructor to help with cleanup;
   virtual ~EvenOddLinearOperator() {}
-};
-
-//! Proxy for even-odd staggered linear operator abstract class
-/*! @ingroup linop
- *
- * Support for even-odd staggered linear operators
- */
-template<typename T>
-class EvenOddLinearOperatorProxy : public EvenOddLinearOperator<T>
-{
-public:
-  //! Initialize pointer with existing pointer
-  /*! Requires that the pointer p is a return value of new */
-  explicit EvenOddLinearOperatorProxy(const EvenOddLinearOperator<T>* p=0) : linop(p) {}
-
-  //! Copy pointer (one more owner)
-  EvenOddLinearOperatorProxy(const EvenOddLinearOperatorProxy& a) : linop(a.linop) {}
-
-  //! Assignment
-  EvenOddLinearOperatorProxy& operator=(const EvenOddLinearOperatorProxy& a)
-    {linop = a.linop; return *this;}
-
-  //! Access the value to which the pointer refers
-  const EvenOddLinearOperator<T>& operator*() const {return linop.operator*();}
-  const EvenOddLinearOperator<T>* operator->() const {return linop.operator->();}
-
-  //! Only defined on the odd lattice
-  const OrderedSubset& subset() const {return linop->subset();}
-
-  //! Apply the even-even block onto a source vector
-  /*! This does not need to be optimized */
-  virtual void evenEvenLinOp(T& chi, const T& psi, 
-			     enum PlusMinus isign) const
-    {linop->evenEvenLinOp(chi, psi, isign);}
-    
-  //! Apply the the even-odd block onto a source vector
-  virtual void evenOddLinOp(T& chi, const T& psi, 
-			    enum PlusMinus isign) const
-    {linop->evenOddLinOp(chi, psi, isign);}
-
-  //! Apply the the odd-even block onto a source vector
-  virtual void oddEvenLinOp(T& chi, const T& psi, 
-			    enum PlusMinus isign) const
-    {linop->oddEvenLinOp(chi, psi, isign);}
-
-  //! Apply the the odd-odd block onto a source vector
-  virtual void oddOddLinOp(T& chi, const T& psi, 
-			   enum PlusMinus isign) const
-    {linop->oddOddLinOp(chi, psi, isign);}
-
-  //! Apply the operator onto a source vector
-  virtual void operator() (T& chi, const T& psi, 
-			   enum PlusMinus isign) const
-    {linop->operator()(chi, psi, isign);}
-
-  private:
-  Handle<const EvenOddLinearOperator<T> >  linop;
 };
 
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev4d_fermact_bj_w.h,v 1.3 2003-12-30 17:27:15 bjoo Exp $
+// $Id: zolotarev4d_fermact_bj_w.h,v 1.4 2004-01-02 03:19:41 edwards Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -28,14 +28,19 @@ class Zolotarev4DFermActBj : public OverlapFermActBase
 {
 public:
   //! Full constructor
-  Zolotarev4DFermActBj(const UnprecWilsonTypeFermAct<LatticeFermion>& Mact_, 
+  Zolotarev4DFermActBj(Handle<FermBC<LatticeFermion> > fbc_,
+		       Handle<UnprecWilsonTypeFermAct<LatticeFermion> > Mact_, 
 		       const Real& m_q_,
-		       int& RatPolyDeg_,
-		       Real& RsdCGinner_,
-		       int& MaxCGinner_,
+		       int RatPolyDeg_,
+		       const Real& RsdCGinner_,
+		       int MaxCGinner_,
 		       XMLBufferWriter& writer_) :
-    Mact(Mact_), m_q(m_q_), RatPolyDeg(RatPolyDeg_), RsdCGinner(RsdCGinner_), MaxCGinner(MaxCGinner_), writer(writer_)
+    fbc(fbc_), Mact(Mact_), m_q(m_q_), RatPolyDeg(RatPolyDeg_), 
+    RsdCGinner(RsdCGinner_), MaxCGinner(MaxCGinner_), writer(writer_)
     {}
+
+  //! Return the fermion BC object for this action
+  const FermBC<LatticeFermion>& getFermBC() const {return *fbc;}
 
   //! Return the quark mass
   Real quark_mass() const {return m_q;}
@@ -51,19 +56,19 @@ public:
   // Create state functions
 
   // Just gauge field and epsilon -- Approx Max is 2*Nd 
-  const ZolotarevConnectStateBase<LatticeFermion>*
+  const ZolotarevConnectState<LatticeFermion>*
   createState(const multi1d<LatticeColorMatrix>& u_, 
 	      const Real& approxMin_) const ;
  
   // Gauge field, epsilon, approx min, approx max
-  const ZolotarevConnectStateBase<LatticeFermion>*
+  const ZolotarevConnectState<LatticeFermion>*
   createState(const multi1d<LatticeColorMatrix>& u_, 
 	      const Real& approxMin_, 
 	      const Real& approxMax_) const;
 
 
   // Gauge field, e-values, e-vectors
-  const ZolotarevConnectStateBase<LatticeFermion>*
+  const ZolotarevConnectState<LatticeFermion>*
   createState(const multi1d<LatticeColorMatrix>& u_,
 	      const multi1d<Real>& lambda_lo_,
 	      const multi1d<LatticeFermion>& evecs_lo_, 
@@ -71,7 +76,7 @@ public:
 
   // Gauge field, e-values, e-vectors and explicit approx min and approx max
   /*
-  const ZolotarevConnectStateBase<LatticeFermion>*
+  const ZolotarevConnectState<LatticeFermion>*
   createState(const multi1d<LatticeColorMatrix>& u_, 
 	      const multi1d<Real>& lambda_lo_,
 	      const multi1d<LatticeFermion>& evecs_lo_,
@@ -85,15 +90,16 @@ public:
    * NOTE: the arg MUST be the original base because C++ requires it for a virtual func!
    * The function will have to downcast to get the correct state
    */
-  const LinearOperator<LatticeFermion>* linOp(const ConnectState& state) const;
+  const LinearOperator<LatticeFermion>* linOp(Handle<const ConnectState> state) const;
 
   //! Produce a linear operator M^dag.M for this action
   /*! 
    * NOTE: the arg MUST be the original base because C++ requires it for a virtual func!
    * The function will have to downcast to get the correct state
    */
-  //const LinearOperator<LatticeFermion>* lMdagM(const ConnectState& state) const;
-  const LinearOperator<LatticeFermion>* lMdagM(const ConnectState& state) const {};
+  //const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state) const;
+  const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state) const {};
+
   //! Destructor is automatic
   ~Zolotarev4DFermActBj() {}
 
@@ -105,15 +111,16 @@ protected:
 	    multi1d<Real>& rootQ, 
 	    int& NEig, 
 	    multi1d<Real>& EigValFunc,
-	    const ZolotarevConnectStateBase<LatticeFermion>& state) const;
+	    const ZolotarevConnectState<LatticeFermion>& state) const;
 
 private:
   //! Partial constructor not allowed
   Zolotarev4DFermActBj();
 
 private:
+  Handle<FermBC<LatticeFermion> >  fbc;   // fermion BC
   // Auxilliary action used for kernel of operator
-  const UnprecWilsonTypeFermAct<LatticeFermion>& Mact;
+  Handle<UnprecWilsonTypeFermAct<LatticeFermion> > Mact;
   Real m_q;
   int RatPolyDeg;   // degree of polynomial-ratio
   Real RsdCGinner;  // Residuum for inner iterations -- property of action

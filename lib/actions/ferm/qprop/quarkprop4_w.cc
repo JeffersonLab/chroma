@@ -1,4 +1,4 @@
-// $Id: quarkprop4_w.cc,v 1.6 2003-12-11 17:11:17 bjoo Exp $
+// $Id: quarkprop4_w.cc,v 1.7 2004-01-02 03:19:41 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -31,7 +31,7 @@ void quarkProp4_a(LatticePropagator& q_sol,
 		  XMLWriter& xml_out,
 		  const LatticePropagator& q_src,
 		  const C<T>& S_f,
-		  const ConnectState& state,
+		  Handle<const ConnectState> state,
 		  enum InvType invType,
 		  const Real& RsdCG, 
 		  int MaxCG, int& ncg_had)
@@ -109,7 +109,7 @@ void quarkProp4(LatticePropagator& q_sol,
 		XMLWriter& xml_out,
 		const LatticePropagator& q_src,
 		const WilsonTypeFermAct<LatticeFermion>& S_f,
-		const ConnectState& state,
+		Handle<const ConnectState> state,
 		enum InvType invType,
 		const Real& RsdCG, 
 		int MaxCG, int& ncg_had)
@@ -134,7 +134,7 @@ void quarkProp4(LatticePropagator& q_sol,
 		XMLWriter& xml_out,
 		const LatticePropagator& q_src,
 		const WilsonTypeFermAct<LatticeDWFermion>& S_f,
-		const ConnectState& state,
+		Handle<const ConnectState> state,
 		enum InvType invType,
 		const Real& RsdCG, 
 		int MaxCG, int& ncg_had)
@@ -160,7 +160,7 @@ void quarkProp4(LatticePropagator& q_sol,
 		XMLWriter& xml_out,
 		const LatticePropagator& q_src,
 		const WilsonTypeFermAct< multi1d<LatticeFermion> >& S_f,
-		const ConnectState& state,
+		Handle<const ConnectState> state,
 		enum InvType invType,
 		const Real& RsdCG, 
 		int MaxCG, int& ncg_had)

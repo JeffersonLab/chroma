@@ -1,4 +1,4 @@
-// $Id: t_dwflinop.cc,v 1.6 2003-12-16 01:57:20 edwards Exp $
+// $Id: t_dwflinop.cc,v 1.7 2004-01-02 03:19:41 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -80,18 +80,26 @@ int main(int argc, char **argv)
   readSzin(gauge_xml, u, "small.cfg");
 #endif
 
+  // Create the BC objects
+  const int bnd[] = {1,1,1,1};
+  multi1d<int> boundary(Nd);
+  boundary = bnd;
+
+  // Create a FermBC
+  Handle<FermBC<multi1d<LatticeFermion> > >  fbc_a(new SimpleFermBC<multi1d<LatticeFermion> >(boundary));
+
   Real WilsonMass = 1.5;
   Real m_q = 0.1;
 #if 1
   int  N5  = 8;
-  UnprecDWFermActArray S_f(WilsonMass, m_q, N5);
+  UnprecDWFermActArray S_f(fbc_a, WilsonMass, m_q, N5);
 #else
   int  N5  = 9;
-  UnprecOvExtFermActArray S_f(WilsonMass, m_q, N5);
+  UnprecOvExtFermActArray S_f(fbc_a, WilsonMass, m_q, N5);
 #endif
 
-  const ConnectStateProxy state(S_f.createState(u));
-  const LinearOperatorProxy< multi1d<LatticeFermion> > A(S_f.linOp(state));
+  Handle<const ConnectState> state(S_f.createState(u));
+  Handle<const LinearOperator< multi1d<LatticeFermion> > > A(S_f.linOp(state));
 
   multi1d<LatticeFermion> psi(N5), chi(N5);
 
@@ -107,13 +115,13 @@ int main(int argc, char **argv)
 #endif
 
   multi1d<LatticeFermion> tmp1(N5);
-  A(tmp1, psi, PLUS);
+  (*A)(tmp1, psi, PLUS);
   DComplex nn1 = innerProduct(chi[0], tmp1[0]);
   for(int m=1; m < N5; ++m)
     nn1 += innerProduct(chi[m], tmp1[m]);
 
   multi1d<LatticeFermion> tmp2(N5);
-  A(tmp2, chi, MINUS);
+  (*A)(tmp2, chi, MINUS);
   DComplex nn2 = innerProduct(tmp2[0], psi[0]);
   for(int m=1; m < N5; ++m)
     nn2 += innerProduct(tmp2[m], psi[m]);
@@ -130,7 +138,9 @@ int main(int argc, char **argv)
   if (N5 != Ls)
     QDP_error_exit("N5 != Ls");
 
-  UnprecDWFermAct S_f_dwf(WilsonMass, m_q);
+  // Create a FermBC
+  Handle< FermBC<LatticeFermion> >  fbc(new SimpleFermBC<LatticeFermion>(boundary));
+  UnprecDWFermAct S_f_dwf(fbc, WilsonMass, m_q);
   LatticeDWFermion psi5, chi5, tmp1a;
 
   for(int m=0; m < N5; ++m)

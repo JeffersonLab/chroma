@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.25 2003-12-16 22:25:55 edwards Exp $
+// $Id: propagator.cc,v 1.26 2004-01-02 03:19:41 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -344,32 +344,29 @@ int main(int argc, char **argv)
 
   xml_out.flush();
 
+  /*
+   * Construct fermionic BC. Need one for LatticeFermion and multi1d<LatticeFermion>
+   * Note, the handle is on an ABSTRACT type
+   */
+  Handle< FermBC<LatticeFermion> >  fbc(new SimpleFermBC<LatticeFermion>(input.param.boundary));
+  Handle< FermBC<multi1d<LatticeFermion> > >  fbc_a(new SimpleFermBC<multi1d<LatticeFermion> >(input.param.boundary));
+
   //
   // Initialize fermion action
   //
 #if 1
-  UnprecWilsonFermAct S_f(input.param.Kappa);
+  Real Mass = 1/(2*input.param.Kappa) - Nd;
+  UnprecWilsonFermAct S_f(fbc,Mass);
 #else
   Real WilsonMass = 1.5;
   Real m_q = 0.1;
   int  N5  = 8;
-  UnprecDWFermActArray S_f(WilsonMass, m_q, N5);
-//  UnprecDWFermAct S_f(WilsonMass, m_q);
+  UnprecDWFermActArray S_f(fbc_a,WilsonMass, m_q, N5);
+//  UnprecDWFermAct S_f(fbc_a, WilsonMass, m_q);
 #endif
 
 //  FermAct = UNPRECONDITIONED_WILSON;  // global
   input.param.invType = CG_INVERTER;  // enum
-
-
-  /*
-   * Turn on the boundary conditions through the phase factors.
-   *
-   * NOTE: this is not an optimal solution: this factor stuff should be
-   * set some other way
-   */
-  setph(input.param.boundary);              // initialize the BC factors
-  multi1d<LatticeColorMatrix> u_tmp = u;
-  phfctr(u_tmp);		// Boundary phases on
 
 
   //
@@ -383,7 +380,7 @@ int main(int argc, char **argv)
   int ncg_had;
 
   {
-    const ConnectStateProxy state(S_f.createState(u_tmp));  // uses phase-multiplied u-fields
+    Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
 
     quarkProp4(quark_propagator, xml_buf, quark_prop_source,
   	       S_f, state, input.param.invType, input.param.RsdCG, input.param.MaxCG, ncg_had);

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_wilson_fermact_w.h,v 1.3 2003-12-02 21:30:35 edwards Exp $
+// $Id: prec_wilson_fermact_w.h,v 1.4 2004-01-02 03:19:40 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action
  */
@@ -21,32 +21,38 @@ using namespace QDP;
 class EvenOddPrecWilsonFermAct : public EvenOddPrecWilsonTypeFermAct<LatticeFermion>
 {
 public:
-  //! Partial constructor
-  EvenOddPrecWilsonFermAct() {}
+  //! General FermBC
+  EvenOddPrecWilsonFermAct(Handle< FermBC<LatticeFermion> > fbc_, 
+		      const Real& Mass_) : 
+    fbc(fbc_), Mass(Mass_) {}
 
-  //! Full constructor
-  /*! Isotropic action */
-  EvenOddPrecWilsonFermAct(const Real& Mass_)
-    {create(Mass_);}
+  //! Copy constructor
+  EvenOddPrecWilsonFermAct(const EvenOddPrecWilsonFermAct& a) : 
+    fbc(a.fbc), Mass(a.Mass) {}
 
-  //! Creation routine
-  void create(const Real& Mass_);
+  //! Assignment
+  EvenOddPrecWilsonFermAct& operator=(const EvenOddPrecWilsonFermAct& a)
+    {fbc=a.fbc; Mass=a.Mass; return *this;}
+
+  //! Return the fermion BC object for this action
+  const FermBC<LatticeFermion>& getFermBC() const {return *fbc;}
 
   //! Produce a linear operator for this action
-  const EvenOddPrecLinearOperator<LatticeFermion>* linOp(const ConnectState& state) const;
+  const EvenOddPrecLinearOperator<LatticeFermion>* linOp(Handle<const ConnectState> state) const;
 
   //! Produce a linear operator M^dag.M for this action
-  const LinearOperator<LatticeFermion>* lMdagM(const ConnectState& state) const;
+  const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state) const;
 
   //! Override - compute dS_f/dU
   void dsdu(multi1d<LatticeColorMatrix>& result,
-	    const ConnectState& state,
+	    Handle<const ConnectState> state,
 	    const LatticeFermion& psi) const;
 
   //! Destructor is automatic
   ~EvenOddPrecWilsonFermAct() {}
 
 private:
+  Handle< FermBC<LatticeFermion> >  fbc;
   Real Mass;
 };
 

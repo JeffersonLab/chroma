@@ -1,4 +1,4 @@
-// $Id: prec_wilson_fermact_w.cc,v 1.3 2003-12-02 21:30:35 edwards Exp $
+// $Id: prec_wilson_fermact_w.cc,v 1.4 2004-01-02 03:19:40 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action
  */
@@ -8,15 +8,6 @@
 #include "actions/ferm/linop/prec_wilson_linop_w.h"
 #include "actions/ferm/linop/lmdagm_w.h"
 
-//! Creation routine
-/*!
- * \param Mass_        fermion mass    (Read)
- */
-void EvenOddPrecWilsonFermAct::create(const Real& Mass_)
-{
-  Mass = Mass_;
-}
-
 //! Produce a linear operator for this action
 /*!
  * The operator acts on the odd subset
@@ -24,9 +15,9 @@ void EvenOddPrecWilsonFermAct::create(const Real& Mass_)
  * \param state 	    gauge field     	       (Read)
  */
 const EvenOddPrecLinearOperator<LatticeFermion>* 
-EvenOddPrecWilsonFermAct::linOp(const ConnectState& state) const
+EvenOddPrecWilsonFermAct::linOp(Handle<const ConnectState> state) const
 {
-  return new EvenOddPrecWilsonLinOp(state.getLinks(),Mass);
+  return new EvenOddPrecWilsonLinOp(state->getLinks(),Mass);
 }
 
 //! Produce a M^dag.M linear operator for this action
@@ -36,11 +27,9 @@ EvenOddPrecWilsonFermAct::linOp(const ConnectState& state) const
  * \param state 	    gauge field     	       (Read)
  */
 const LinearOperator<LatticeFermion>* 
-EvenOddPrecWilsonFermAct::lMdagM(const ConnectState& state) const
+EvenOddPrecWilsonFermAct::lMdagM(Handle<const ConnectState> state) const
 {
-  LinearOperator<LatticeFermion>* mdagm = 
-    new lmdagm<LatticeFermion>(EvenOddPrecWilsonLinOp(state.getLinks(),Mass));
-  return mdagm;
+  return new lmdagm<LatticeFermion>(linOp(state));
 }
 
 
@@ -59,7 +48,7 @@ EvenOddPrecWilsonFermAct::lMdagM(const ConnectState& state) const
 
 void
 EvenOddPrecWilsonFermAct::dsdu(multi1d<LatticeColorMatrix>& ds_u,
-			       const ConnectState& state,
+			       Handle<const ConnectState> state,
 			       const LatticeFermion& psi) const
 {
   START_CODE("EvenOddPrecWilsonFermAct::dsdu");
@@ -71,7 +60,7 @@ EvenOddPrecWilsonFermAct::dsdu(multi1d<LatticeColorMatrix>& ds_u,
 
 #error "Not quite correct implementation"
 
-  const multi1d<LatticeColorMatrix>& u = state.getLinks();
+  const multi1d<LatticeColorMatrix>& u = state->getLinks();
 				 
   LatticeColorMatrix utmp_1;
   LatticeFermion phi;

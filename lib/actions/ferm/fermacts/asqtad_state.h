@@ -16,40 +16,6 @@ class AsqtadConnectStateBase : public ConnectState {
 
 };
 
-template<typename T>
-class AsqtadConnectStateProxy : public AsqtadConnectStateBase<T>
-{
-public:
-  //! Initialize pointer with existing pointer
-
-  /*! Requires that the pointer p is a return value of new */
-  explicit AsqtadConnectStateProxy(const AsqtadConnectStateBase<T>* p=0) : state(p) {}
-
-  //! Copy pointer (one more owner)
-  AsqtadConnectStateProxy(const AsqtadConnectStateProxy& p) : state(p.state) {}
-
-  //! Access the value to which the pointer refers
-  const AsqtadConnectStateBase<T>& operator*() const {return state.operator*();}
-  const AsqtadConnectStateBase<T>* operator->() const {return state.operator->();}
-
-  //! Return the link fields needed in constructing linear operators
-  const multi1d<LatticeColorMatrix>& getLinks() const
-    {state->getLinks(); }
-
-  const multi1d<LatticeColorMatrix>& getFatLinks() const 
-    {state->getFatLinks(); }
-
-  const multi1d<LatticeColorMatrix>& getTripleLinks() const 
-    { state->getTripleLinks(); }
-  
- protected:
-  //! Assignment
-  /*! Could easily be supported, but not sure why to do so... */
-  AsqtadConnectStateProxy& operator=(const AsqtadConnectStateProxy& p) {}
-
- private:
-  Handle<const AsqtadConnectStateBase<T> >  state;
-};
 
 //! The actual thing
 template<typename T>

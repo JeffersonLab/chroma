@@ -1,11 +1,11 @@
-// $Id: unprec_qprop_w.h,v 1.3 2003-12-02 15:44:01 edwards Exp $
+// $Id: unprec_qprop_w.h,v 1.4 2004-01-02 03:19:41 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *
  *  Solve for the propagator of a generic non-preconditioned fermion operator
  */
 
-// WARNING: NOT CURRENTLY USED!!!!
+#error "WARNING: NOT CURRENTLY USED!!!!"
 
 #ifndef __unprec_qprop_w_h__
 #define __unprec_qprop_w_h__
@@ -36,7 +36,7 @@ using namespace QDP;
 
 template<typename T>
 void UnprecWilsonTypeFermAct<T>::qprop(T& psi, 
-				       const ConnectionState& state, 
+				       Handle<const ConnectState> state, 
 				       const T& chi, 
 				       enum InvType invType,
 				       const Real& RsdCG, 
@@ -48,7 +48,7 @@ void UnprecWilsonTypeFermAct<T>::qprop(T& psi,
   
   /* Construct the linear operator */
   /* This allocates field for the appropriate action */
-  const LinearOperator<T>* A = linOp(state);
+  Handle<const LinearOperator<T> > A = linOp(state);
 
   T tmp;
 
@@ -83,9 +83,6 @@ void UnprecWilsonTypeFermAct<T>::qprop(T& psi,
   
   ncg_had = n_count;
   
-  // Call the virtual destructor of A
-  delete A;
-
   END_CODE("UnprecWilsonTypeFermAct::qprop");
 }
 

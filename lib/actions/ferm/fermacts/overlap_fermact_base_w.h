@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: overlap_fermact_base_w.h,v 1.1 2003-12-04 02:56:53 edwards Exp $
+// $Id: overlap_fermact_base_w.h,v 1.2 2004-01-02 03:19:40 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -38,7 +38,7 @@ public:
    * The function will have to downcast to get the correct state
    */
   void qprop(LatticeFermion& psi, 
-	     const ConnectState& state, 
+	     Handle<const ConnectState> state, 
 	     const LatticeFermion& chi, 
 	     enum InvType invType,
 	     const Real& RsdCG, 

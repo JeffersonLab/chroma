@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 1.16 2003-12-12 13:56:40 bjoo Exp $
+// $Id: fermact.h,v 1.17 2004-01-02 03:19:40 edwards Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -11,7 +11,9 @@
 using namespace QDP;
 
 #include "invtype.h"
+#include "state.h"
 #include "linearop.h"
+#include "fermbc.h"
 
 //! Base class for quadratic matter actions (e.g., fermions)
 /*! @ingroup actions
@@ -28,6 +30,8 @@ using namespace QDP;
  * is needed to create a specific dirac operator (linear operator)
  * on some background gauge field.
  *
+ * The FermBC is the type of boundary conditions used for this action
+ *
  * The linop and lmdagm functions create a linear operator on a 
  * fixed ConnectState
  *
@@ -43,22 +47,24 @@ template<typename T>
 class FermionAction
 {
 public:
-#if 0
-  //! Produce a foundry class for linear operators
-  /*! NOTE: maybe this should be abstracted to a foundry class */
-//  virtual LinOpFoundry* linop(const multi1d<LatticeColorMatrix>& _u) const = 0;
-#endif
-
   //! Given links, create the state needed for the linear operators
   /*! Default version uses a SimpleConnectState */
   virtual const ConnectState* createState(const multi1d<LatticeColorMatrix>& u) const
-    {return new SimpleConnectState(u);}
+    {
+      multi1d<LatticeColorMatrix> u_tmp = u;
+      getFermBC().modifyU(u_tmp);
+      return new SimpleConnectState(u_tmp);
+    }
+
+  //! Return the fermion BC object for this action
+  /*! The user will supply the FermBC in a derived class */
+  virtual const FermBC<T>& getFermBC() const = 0;
 
   //! Produce a linear operator for this action
-  virtual const LinearOperator<T>* linOp(const ConnectState& state) const = 0;
+  virtual const LinearOperator<T>* linOp(Handle<const ConnectState> state) const = 0;
 
   //! Produce a linear operator M^dag.M for this action
-  virtual const LinearOperator<T>* lMdagM(const ConnectState& state) const = 0;
+  virtual const LinearOperator<T>* lMdagM(Handle<const ConnectState> state) const = 0;
 
   //! Compute quark propagator over base type
   /*! 
@@ -74,7 +80,7 @@ public:
    *
    */
   virtual void qpropT(T& psi, 
-		      const ConnectState& state, 
+		      Handle<const ConnectState> state, 
 		      const T& chi, 
 		      enum InvType invType,
 		      const Real& RsdCG, 
@@ -94,15 +100,16 @@ public:
    *
    */
   virtual void qprop(typename BaseType<T>::Type_t& psi, 
-		     const ConnectState& state, 
+		     Handle<const ConnectState> state, 
 		     const typename BaseType<T>::Type_t& chi, 
 		     enum InvType invType,
 		     const Real& RsdCG, 
 		     int MaxCG, int& ncg_had) const;
   
   //! Compute dS_f/dU
+  /*! Default version. Derived class should override this if needed. */
   virtual void dsdu(multi1d<LatticeColorMatrix>& result,
-		    const ConnectState& state,
+		    Handle<const ConnectState> state,
 		    const T& psi) const
     {
       QDPIO::cerr << "FermionAction::dsdu not implemented" << endl;
@@ -131,14 +138,20 @@ public:
   /*! Default version uses a SimpleConnectState */
   virtual ConnectState* createState(const multi1d<LatticeColorMatrix>& u) const
     {
-      return new SimpleConnectState(u);
+      multi1d<LatticeColorMatrix> u_tmp = u;
+      getFermBC().modifyU(u_tmp);
+      return new SimpleConnectState(u_tmp);
     }
 
+  //! Return the fermion BC object for this action
+  /*! The user will supply the FermBC in a derived class */
+  virtual const FermBC< multi1d<T> >& getFermBC() const = 0;
+
   //! Produce a linear operator for this action
-  virtual const LinearOperator< multi1d<T> >* linOp(const ConnectState& state) const = 0;
+  virtual const LinearOperator< multi1d<T> >* linOp(Handle<const ConnectState> state) const = 0;
 
   //! Produce a linear operator M^dag.M for this action
-  virtual const LinearOperator< multi1d<T> >* lMdagM(const ConnectState& state) const = 0;
+  virtual const LinearOperator< multi1d<T> >* lMdagM(Handle<const ConnectState> state) const = 0;
 
   //! Compute quark propagator over base type
   /*! 
@@ -154,7 +167,7 @@ public:
    *
    */
   virtual void qpropT(multi1d<T>& psi, 
-		      const ConnectState& state, 
+		      Handle<const ConnectState> state, 
 		      const multi1d<T>& chi, 
 		      enum InvType invType,
 		      const Real& RsdCG, 
@@ -174,15 +187,16 @@ public:
    *
    */
   virtual void qprop(T& psi, 
-		     const ConnectState& state, 
+		     Handle<const ConnectState> state, 
 		     const T& chi, 
 		     enum InvType invType,
 		     const Real& RsdCG, 
 		     int MaxCG, int& ncg_had) const = 0;
 
   //! Compute dS_f/dU
+  /*! Default version. Derived class should override this if needed. */
   virtual void dsdu(multi1d<LatticeColorMatrix>& result,
-		    const ConnectState& state,
+		    Handle<const ConnectState> state,
 		    const multi1d<T>& psi) const
     {
       QDPIO::cerr << "FermionAction::dsdu not implemented" << endl;
@@ -218,7 +232,7 @@ public:
 #if 0
   //! Compute quark propagator
   void qprop(T& psi, 
-	     const ConnectState& state, 
+	     Handle<const ConnectState> state, 
 	     const T& chi, 
 	     enum InvType invType,
 	     const Real& RsdCG, 
@@ -238,7 +252,7 @@ class EvenOddPrecWilsonTypeFermAct : public WilsonTypeFermAct<T>
 public:
   //! Override to produce an even-odd prec. linear operator for this action
   /*! Covariant return rule - override base class function */
-  virtual const EvenOddPrecLinearOperator<T>* linOp(const ConnectState& state) const = 0;
+  virtual const EvenOddPrecLinearOperator<T>* linOp(Handle<const ConnectState> state) const = 0;
 
   //! Compute quark propagator over base type
   /*! 
@@ -255,7 +269,7 @@ public:
    * \param ncg_had  number of CG iterations ( Write )
    */
   virtual void qpropT(T& psi, 
-		      const ConnectState& state, 
+		      Handle<const ConnectState> state, 
 		      const T& chi, 
 		      enum InvType invType,
 		      const Real& RsdCG, 
@@ -276,7 +290,7 @@ public:
    * \param ncg_had  number of CG iterations ( Write )
    */
   virtual void qprop(typename BaseType<T>::Type_t& psi, 
-		     const ConnectState& state, 
+		     Handle<const ConnectState> state, 
 		     const typename BaseType<T>::Type_t& chi, 
 		     enum InvType invType,
 		     const Real& RsdCG, 
@@ -297,7 +311,7 @@ class EvenOddPrecWilsonTypeFermAct< multi1d<T> > : public WilsonTypeFermAct< mul
 public:
   //! Override to produce an even-odd prec. linear operator for this action
   /*! Covariant return rule - override base class function */
-  virtual const EvenOddPrecLinearOperator< multi1d<T> >* linOp(const ConnectState& state) const = 0;
+  virtual const EvenOddPrecLinearOperator< multi1d<T> >* linOp(Handle<const ConnectState> state) const = 0;
 
   //! Compute quark propagator over base type
   /*! 
@@ -314,7 +328,7 @@ public:
    * \param ncg_had  number of CG iterations ( Write )
    */
   virtual void qpropT(multi1d<T>& psi, 
-		      const ConnectState& state, 
+		      Handle<const ConnectState> state, 
 		      const multi1d<T>& chi, 
 		      enum InvType invType,
 		      const Real& RsdCG, 
@@ -335,7 +349,7 @@ public:
    * \param ncg_had  number of CG iterations ( Write )
    */
   virtual void qprop(typename BaseType<T>::Type_t& psi, 
-		     const ConnectState& state, 
+		     Handle<const ConnectState> state, 
 		     const typename BaseType<T>::Type_t& chi, 
 		     enum InvType invType,
 		     const Real& RsdCG, 
@@ -366,7 +380,7 @@ class EvenOddStaggeredTypeFermAct : public StaggeredTypeFermAct<T>
 {
 public:
   void qprop(LatticeFermion& psi,
-		     const ConnectState& state,
+		     Handle<const ConnectState> state,
 		     const LatticeFermion& chi,
 		     enum InvType invType,
 		     const Real& RsdCG, 
@@ -376,11 +390,11 @@ public:
 
   //! Produce a linear operator for this action
   /*! NOTE: maybe this should be abstracted to a foundry class object */
-  virtual const EvenOddLinearOperator<T>* linOp(const ConnectState& state) const = 0;
+  virtual const EvenOddLinearOperator<T>* linOp(Handle<const ConnectState> state) const = 0;
                                                                                                                                                  
   //! Produce a linear operator M^dag.M for this action
   /*! NOTE: maybe this should be abstracted to a foundry class object */
-  virtual const LinearOperator<T>* lMdagM(const ConnectState& state) const = 0;
+  virtual const LinearOperator<T>* lMdagM(Handle<const ConnectState> state) const = 0;
                                                                                                                                                  
   //! Virtual destructor to help with cleanup;
   virtual ~EvenOddStaggeredTypeFermAct() {}

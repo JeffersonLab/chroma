@@ -1,4 +1,4 @@
-// $Id: overlap_fermact_base_w.cc,v 1.1 2003-12-04 02:56:53 edwards Exp $
+// $Id: overlap_fermact_base_w.cc,v 1.2 2004-01-02 03:19:40 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -23,7 +23,7 @@ using namespace QDP;
 
 void 
 OverlapFermActBase::qprop(LatticeFermion& psi, 
-			  const ConnectState& state_, 
+			  Handle<const ConnectState> state_, 
 			  const LatticeFermion& chi, 
 			  enum InvType invType,
 			  const Real& RsdCG, 
@@ -31,14 +31,14 @@ OverlapFermActBase::qprop(LatticeFermion& psi,
 {
   START_CODE("OverlapFermActBase::qprop");
 
-  const EVConnectState<LatticeFermion>& state = dynamic_cast<const EVConnectState<LatticeFermion>&>(state_);
+  const EVConnectState<LatticeFermion>& state = dynamic_cast<const EVConnectState<LatticeFermion>&>(*state_);
 
   const Real m_q = quark_mass();
 
   int n_count;
   
   // Construct the linear operator
-  const LinearOperatorProxy<LatticeFermion> A(linOp(state));
+  Handle<const LinearOperator<LatticeFermion> > A(linOp(state_));
 
   switch(invType)
   {
@@ -48,9 +48,9 @@ OverlapFermActBase::qprop(LatticeFermion& psi,
 
 #if 1
     // For the moment, use simple minded inversion
-    A(tmp1, chi, MINUS);
+    (*A)(tmp1, chi, MINUS);
 
-    InvCG2(A, tmp1, psi, RsdCG, MaxCG, n_count);
+    InvCG2(*A, tmp1, psi, RsdCG, MaxCG, n_count);
 
 #else
     /* psi = (D^dag * D)^(-1) * D^dag * chi */
@@ -63,18 +63,18 @@ OverlapFermActBase::qprop(LatticeFermion& psi,
     if (ichiral == 0 || this->isChiral())  // also check if action is not chiral
     {
       // Source or action is not chiral: call the CG2 wrapper
-      A(tmp1, chi, MINUS);
+      (*A)(tmp1, chi, MINUS);
 
-      InvCG2(A, tmp1, psi, RsdCG, MaxCG, n_count);
+      InvCG2(*A, tmp1, psi, RsdCG, MaxCG, n_count);
     }
     else
     {
       // Source is chiral: use the CG1
       // Construct the linear operator
-      const LinearOperatorProxy<LatticeFermion> B(lMdagM(state));  // OOPS, NEED TO PASS ICHIRAL!!!!
+      Handle<const LinearOperator<LatticeFermion> > B(lMdagM(state_));  // OOPS, NEED TO PASS ICHIRAL!!!!
 
-      InvCG1(B, chi, tmp1, RsdCG, MaxCG, n_count);
-      A(psi, tmp1, MINUS);
+      InvCG1(*B, chi, tmp1, RsdCG, MaxCG, n_count);
+      (*A)(psi, tmp1, MINUS);
     }
 #endif
   }
@@ -83,12 +83,12 @@ OverlapFermActBase::qprop(LatticeFermion& psi,
 #if 0
   case MR_INVERTER:
     // psi = D^(-1)* chi
-    InvMR (A, chi, psi, MRover, RsdCG, MaxCG, n_count);
+    InvMR (*A, chi, psi, MRover, RsdCG, MaxCG, n_count);
     break;
 
   case BICG_INVERTER:
     // psi = D^(-1) chi
-    InvBiCG (A, chi, psi, RsdCG, MaxCG, n_count);
+    InvBiCG (*A, chi, psi, RsdCG, MaxCG, n_count);
     break;
 #endif
   

@@ -1,4 +1,4 @@
-// $Id: zolotarev4d_fermact_bj_w.cc,v 1.6 2003-12-30 17:27:15 bjoo Exp $
+// $Id: zolotarev4d_fermact_bj_w.cc,v 1.7 2004-01-02 03:19:41 edwards Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -24,7 +24,7 @@ Zolotarev4DFermActBj::init(int& numroot,
 			   multi1d<Real>& rootQ, 
 			   int& NEig, 
 			   multi1d<Real>& EigValFunc,
-			   const ZolotarevConnectStateBase<LatticeFermion>& state ) const
+			   const ZolotarevConnectState<LatticeFermion>& state ) const
 {
   /* A scale factor which should bring the spectrum of the hermitian
      Wilson Dirac operator H into |H| < 1. */
@@ -207,11 +207,11 @@ Zolotarev4DFermActBj::init(int& numroot,
  * \param state_	 gauge field state  	 (Read)
  */
 const LinearOperator<LatticeFermion>* 
-Zolotarev4DFermActBj::linOp(const ConnectState& state_) const
+Zolotarev4DFermActBj::linOp(Handle<const ConnectState> state_) const
 {
   START_CODE("Zolotarev4DLinOp::create");
 
-  const ZolotarevConnectStateBase<LatticeFermion>& state = dynamic_cast<const ZolotarevConnectStateBase<LatticeFermion>&>(state_);
+  const ZolotarevConnectState<LatticeFermion>& state = dynamic_cast<const ZolotarevConnectState<LatticeFermion>&>(*state_);
 
   if (state.getEigVec().size() != state.getEigVal().size())
     QDP_error_exit("Zolotarev4DLinOp: inconsistent sizes of eigenvectors and values");
@@ -249,7 +249,7 @@ Zolotarev4DFermActBj::linOp(const ConnectState& state_) const
   /* Finally construct and pack the operator */
   /* This is the operator of the form (1/2)*[(1+mu) + (1-mu)*gamma_5*eps] */
   
-  return new lovlapms(Mact, state, m_q,
+  return new lovlapms(*Mact, state_, m_q,
 		      numroot, coeffP, resP, rootQ, 
 		      NEig, EigValFunc, state.getEigVec(),
 		      MaxCGinner, RsdCGinner);
@@ -258,7 +258,7 @@ Zolotarev4DFermActBj::linOp(const ConnectState& state_) const
 }
 
 
-const ZolotarevConnectStateBase<LatticeFermion>*
+const ZolotarevConnectState<LatticeFermion>*
 Zolotarev4DFermActBj::createState(const multi1d<LatticeColorMatrix>& u_,
 				  const Real& approxMin_) const 
 {
@@ -269,12 +269,16 @@ Zolotarev4DFermActBj::createState(const multi1d<LatticeColorMatrix>& u_,
   }
   */
 
+  // First put in the BC
+  multi1d<LatticeColorMatrix>& u_tmp = u_;
+  getFermBC().modifyU(u_tmp);
+
   Real approxMax = Real(2)*Real(Nd);
-  return new ZolotarevConnectState<LatticeFermion>(u_, approxMin_, approxMax);
+  return new ZolotarevConnectState<LatticeFermion>(u_tmp, approxMin_, approxMax);
 }
 
 
-const ZolotarevConnectStateBase<LatticeFermion>*
+const ZolotarevConnectState<LatticeFermion>*
 Zolotarev4DFermActBj::createState(const multi1d<LatticeColorMatrix>& u_,
 				  const Real& approxMin_,
 				  const Real& approxMax_) const
@@ -293,12 +297,16 @@ Zolotarev4DFermActBj::createState(const multi1d<LatticeColorMatrix>& u_,
   }
   */
 
-  return new ZolotarevConnectState<LatticeFermion>(u_, approxMin_, approxMax_);
+  // First put in the BC
+  multi1d<LatticeColorMatrix>& u_tmp = u_;
+  getFermBC().modifyU(u_tmp);
+
+  return new ZolotarevConnectState<LatticeFermion>(u_tmp, approxMin_, approxMax_);
 }
 
 
 
-const ZolotarevConnectStateBase<LatticeFermion>*
+const ZolotarevConnectState<LatticeFermion>*
 Zolotarev4DFermActBj::createState(const multi1d<LatticeColorMatrix>& u_,
 				  const multi1d<Real>& lambda_lo_, 
 				  const multi1d<LatticeFermion>& evecs_lo_,
@@ -319,11 +327,15 @@ Zolotarev4DFermActBj::createState(const multi1d<LatticeColorMatrix>& u_,
   Real approxMax = lambda_hi_;
   Real approxMin = fabs(lambda_lo_[ lambda_lo_.size() - 1 ]);
 
-  return new ZolotarevConnectState<LatticeFermion>(u_, lambda_lo_, evecs_lo_, lambda_hi_, approxMin, approxMax);
+  // First put in the BC
+  multi1d<LatticeColorMatrix>& u_tmp = u_;
+  getFermBC().modifyU(u_tmp);
+
+  return new ZolotarevConnectState<LatticeFermion>(u_tmp, lambda_lo_, evecs_lo_, lambda_hi_, approxMin, approxMax);
 }
 
 /*
-const ZolotarevConnectStateBase<LatticeFermion>*
+const ZolotarevConnectState<LatticeFermion>*
 Zolotarev4DFermActBj::createState(const multi1d<LatticeColorMatrix>& u_,
 				  const multi1d<Real>& lambda_lo_, 
 				  const multi1d<LatticeFermion>& evecs_lo_,
@@ -348,6 +360,10 @@ Zolotarev4DFermActBj::createState(const multi1d<LatticeColorMatrix>& u_,
     throw error_str.str();
   }
 
-  return new ZolotarevConnectState<LatticeFermion>(u_, lambda_lo_, evecs_lo, lambda_hi, approxMin_, approxMax_);
+  // First put in the BC
+  multi1d<LatticeColorMatrix>& u_tmp = u_;
+  getFermBC().modifyU(u_tmp);
+
+  return new ZolotarevConnectState<LatticeFermion>(u_tmp, lambda_lo_, evecs_lo, lambda_hi, approxMin_, approxMax_);
 }
 */

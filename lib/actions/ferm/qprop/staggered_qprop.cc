@@ -1,4 +1,4 @@
-// $Id: staggered_qprop.cc,v 1.2 2003-12-12 13:56:41 bjoo Exp $
+// $Id: staggered_qprop.cc,v 1.3 2004-01-02 03:19:41 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *
@@ -32,15 +32,14 @@ using namespace QDP;
  * \param ncg_had  number of CG iterations ( Write )
  */
 
-void EvenOddStaggeredTypeFermAct<LatticeFermion>::qprop(
-							LatticeFermion& psi, 
-							const ConnectState& state,
-						       const LatticeFermion& chi,
-						       enum InvType invType,
-						       
-						       const Real& RsdCG, 
-						       int MaxCG, 
-						       int& ncg_had)
+void 
+EvenOddStaggeredTypeFermAct<LatticeFermion>::qprop(LatticeFermion& psi, 
+						   Handle<const ConnectState> state,
+						   const LatticeFermion& chi,
+						   enum InvType invType,
+						   const Real& RsdCG, 
+						   int MaxCG, 
+						   int& ncg_had)
 {
   START_CODE("EvenOddStaggeredTypeAction::qprop");
 
@@ -48,8 +47,8 @@ void EvenOddStaggeredTypeFermAct<LatticeFermion>::qprop(
   
   /* Construct the linear operator */
   /* This allocates field for the appropriate action */
-  const EvenOddLinearOperatorProxy<LatticeFermion> M(linOp(state));
-  const LinearOperatorProxy<LatticeFermion> A(lMdagM(state));
+  Handle<const EvenOddLinearOperator<LatticeFermion> > M(linOp(state));
+  Handle<const LinearOperator<LatticeFermion> > A(lMdagM(state));
 
   LatticeFermion tmp, tmp1, tmp2;
   Real invm;
@@ -60,19 +59,19 @@ void EvenOddStaggeredTypeFermAct<LatticeFermion>::qprop(
 
     // Make preconditioned source:  tmp_1_e = M_ee chi_e + M_eo^{dag} chi_o
 
-    M.evenEvenLinOp(tmp, chi, PLUS);
-    M.evenOddLinOp(tmp2, chi, MINUS);
+    M->evenEvenLinOp(tmp, chi, PLUS);
+    M->evenOddLinOp(tmp2, chi, MINUS);
     tmp += tmp2;
     
 
     /* psi = (M^dag * M)^(-1) chi  = A^{-1} chi*/
-    InvCG1(A, tmp, psi, RsdCG, MaxCG, n_count);
+    InvCG1(*A, tmp, psi, RsdCG, MaxCG, n_count);
    
     // psi[rb[0]] is returned, so reconstruct psi[rb[1]]
     invm = Real(1)/(2*getQuarkMass());
     
     // tmp_1_o = D_oe psi_e 
-    M.oddEvenLinOp(tmp1, psi, PLUS);
+    M->oddEvenLinOp(tmp1, psi, PLUS);
 
     // tmp_1_o = (1/2m) D_oe psi_e
     tmp1[rb[1]] *= invm;

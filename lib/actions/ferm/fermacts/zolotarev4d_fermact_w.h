@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev4d_fermact_w.h,v 1.12 2003-12-30 17:27:15 bjoo Exp $
+// $Id: zolotarev4d_fermact_w.h,v 1.13 2004-01-02 03:19:41 edwards Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -62,14 +62,14 @@ public:
    * NOTE: the arg MUST be the original base because C++ requires it for a virtual func!
    * The function will have to downcast to get the correct state
    */
-  const LinearOperator<LatticeFermion>* linOp(const ConnectState& state) const;
+  const LinearOperator<LatticeFermion>* linOp(Handle<const ConnectState> state) const;
 
   //! Produce a linear operator M^dag.M for this action
   /*! 
    * NOTE: the arg MUST be the original base because C++ requires it for a virtual func!
    * The function will have to downcast to get the correct state
    */
-  const LinearOperator<LatticeFermion>* lMdagM(const ConnectState& state) const;
+  const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state) const;
 
   //! Destructor is automatic
   ~Zolotarev4DFermAct() {}

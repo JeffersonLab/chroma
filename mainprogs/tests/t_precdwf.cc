@@ -1,4 +1,4 @@
-// $Id: t_precdwf.cc,v 1.4 2003-12-08 17:02:52 edwards Exp $
+// $Id: t_precdwf.cc,v 1.5 2004-01-02 03:19:41 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -10,11 +10,13 @@
 
 using namespace QDP;
 
-typedef  void (EvenOddPrecLinearOperator< multi1d<LatticeFermion> >::* EO_mem)(multi1d<LatticeFermion>&, const multi1d<LatticeFermion>&, enum PlusMinus) const;
+typedef multi1d<LatticeFermion>  MLF;
+
+typedef  void (EvenOddPrecLinearOperator< MLF >::* EO_mem)(MLF&, const MLF&, enum PlusMinus) const;
 
 
-double time_func(const EvenOddPrecLinearOperator< multi1d<LatticeFermion> > *p, EO_mem A,
-		 multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi,
+double time_func(const EvenOddPrecLinearOperator< MLF > *p, EO_mem A,
+		 MLF& chi, const MLF& psi,
 		 enum PlusMinus isign)
 {
   clock_t myt1, myt2;
@@ -66,7 +68,7 @@ int main(int argc, char **argv)
     gaussian(u[m]);
 
   int N5 = 8;
-  multi1d<LatticeFermion> psi(N5), chi(N5);
+  MLF psi(N5), chi(N5);
   for(int n=0; n < N5; ++n)
     random(psi[n]);
   chi = zero;
@@ -74,12 +76,15 @@ int main(int argc, char **argv)
   //! Create a linear operator
   QDPIO::cout << "Constructing DWDslash" << endl;
 
+  // Create a FermBC with only periodic BC. Note the handle is on an abstract type.
+  Handle<FermBC<MLF> >  fbc_a(new PeriodicFermBC<MLF>);
+
   // DWDslash class can be optimised
   Real WilsonMass = 1.5;
   Real m_q = 0.01;
-  EvenOddPrecDWFermActArray S_pdwf(WilsonMass,m_q,N5);
-  const ConnectStateProxy state(S_pdwf.createState(u));
-  const  EvenOddPrecLinearOperator< multi1d<LatticeFermion> >* D_pdwf = S_pdwf.linOp(state); 
+  EvenOddPrecDWFermActArray S_pdwf(fbc_a,WilsonMass,m_q,N5);
+  Handle<const ConnectState> state(S_pdwf.createState(u));
+  const EvenOddPrecLinearOperator< MLF >* D_pdwf = S_pdwf.linOp(state); 
 
   QDPIO::cout << "Done" << endl;
 
@@ -99,26 +104,26 @@ int main(int argc, char **argv)
     int Nflops = 2*Ndiag + 2*Neo + N5*24;
 
     // even-even-inv piece
-    mydt = time_func(D_pdwf, &EvenOddPrecLinearOperator<multi1d<LatticeFermion> >::evenEvenInvLinOp, chi, psi, is);
+    mydt = time_func(D_pdwf, &EvenOddPrecLinearOperator<MLF>::evenEvenInvLinOp, chi, psi, is);
     QDPIO::cout << "The time per lattice point is "<< mydt << " micro sec" 
 		<< " (" <<  ((double)(Ndiag)/mydt) << ") Mflops " << endl;
       
     // odd-odd piece
-    mydt = time_func(D_pdwf, &EvenOddPrecLinearOperator<multi1d<LatticeFermion> >::oddOddLinOp, chi, psi, is);
+    mydt = time_func(D_pdwf, &EvenOddPrecLinearOperator<MLF>::oddOddLinOp, chi, psi, is);
     QDPIO::cout << "The time per lattice point is "<< mydt << " micro sec" 
 		<< " (" <<  ((double)(Ndiag)/mydt) << ") Mflops " << endl;
       
     // even-odd
-    mydt = time_func(D_pdwf, &EvenOddPrecLinearOperator<multi1d<LatticeFermion> >::evenOddLinOp, chi, psi, is);
+    mydt = time_func(D_pdwf, &EvenOddPrecLinearOperator<MLF>::evenOddLinOp, chi, psi, is);
     QDPIO::cout << "The time per lattice point is "<< mydt << " micro sec" 
 		<< " (" <<  ((double)(Neo)/mydt) << ") Mflops " << endl;
     // odd-even
-    mydt = time_func(D_pdwf, &EvenOddPrecLinearOperator<multi1d<LatticeFermion> >::oddEvenLinOp, chi, psi, (isign == 1 ? PLUS : MINUS));
+    mydt = time_func(D_pdwf, &EvenOddPrecLinearOperator<MLF>::oddEvenLinOp, chi, psi, (isign == 1 ? PLUS : MINUS));
     QDPIO::cout << "The time per lattice point is "<< mydt << " micro sec" 
 		<< " (" <<  ((double)(Neo)/mydt) << ") Mflops " << endl;
 
     // Total thing
-    mydt = time_func(D_pdwf, &EvenOddPrecLinearOperator<multi1d<LatticeFermion> >::operator(), chi, psi, is);
+    mydt = time_func(D_pdwf, &EvenOddPrecLinearOperator<MLF>::operator(), chi, psi, is);
     QDPIO::cout << "The time per lattice point is "<< mydt << " micro sec" 
 		<< " (" <<  ((double)(Nflops)/mydt) << ") Mflops " << endl;
   }

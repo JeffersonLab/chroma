@@ -1,4 +1,4 @@
-// $Id: unprec_wilson_fermact_w.cc,v 1.13 2003-12-17 11:39:27 bjoo Exp $
+// $Id: unprec_wilson_fermact_w.cc,v 1.14 2004-01-02 03:19:41 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -8,16 +8,6 @@
 #include "actions/ferm/linop/unprec_wilson_linop_w.h"
 #include "actions/ferm/linop/lmdagm_w.h"
 
-//! Creation routine
-/*!
- * \param Mass_   fermion kappa    (Read)
- */
-void UnprecWilsonFermAct::create(const Real& Mass_)
-{
-  Mass = Mass_;
-//    CoeffWilsr_s = (AnisoP) ? Wilsr_s / xiF_0 : 1;
-}
-
 //! Produce a linear operator for this action
 /*!
  * The operator acts on the entire lattice
@@ -25,9 +15,9 @@ void UnprecWilsonFermAct::create(const Real& Mass_)
  * \param state	    gauge field     	       (Read)
  */
 const LinearOperator<LatticeFermion>*
-UnprecWilsonFermAct::linOp(const ConnectState& state) const
+UnprecWilsonFermAct::linOp(Handle<const ConnectState> state) const
 {
-  return new UnprecWilsonLinOp(state.getLinks(), Mass); 
+  return new UnprecWilsonLinOp(state->getLinks(), Mass); 
 }
 
 //! Produce a M^dag.M linear operator for this action
@@ -37,10 +27,9 @@ UnprecWilsonFermAct::linOp(const ConnectState& state) const
  * \param state    gauge field     	       (Read)
  */
 const LinearOperator<LatticeFermion>*
-UnprecWilsonFermAct::lMdagM(const ConnectState& state) const
+UnprecWilsonFermAct::lMdagM(Handle<const ConnectState> state) const
 {
-
-  return new lmdagm<LatticeFermion>(*(new UnprecWilsonLinOp(state.getLinks(), Mass)));
+  return new lmdagm<LatticeFermion>(linOp(state));
 }
 
 
@@ -59,7 +48,7 @@ UnprecWilsonFermAct::lMdagM(const ConnectState& state) const
 
 void
 UnprecWilsonFermAct::dsdu(multi1d<LatticeColorMatrix> & ds_u,
-			  const ConnectState& state,
+			  Handle<const ConnectState> state,
 			  const LatticeFermion& psi) const
 {
   START_CODE("UnprecWilsonFermAct::dsdu");

@@ -1,4 +1,4 @@
-// $Id: unprec_ovext_fermact_array_w.cc,v 1.4 2003-12-02 15:45:04 edwards Exp $
+// $Id: unprec_ovext_fermact_array_w.cc,v 1.5 2004-01-02 03:19:40 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -10,22 +10,6 @@
 
 #include "actions/ferm/invert/invcg2_array.h"
 
-//! Creation routine
-/*!
- * \param WilsonMass_   DWF height    (Read)
- * \param m_q_          quark mass    (Read)
- * \param N5_           extent of flavor space   (Read)
- */
-void UnprecOvExtFermActArray::create(const Real& WilsonMass_, const Real& m_q_, int N5_)
-{
-  WilsonMass = WilsonMass_;
-  m_q = m_q_;
-  N5  = N5_;
-
-  a5  = 1.0;
-}
-
-
 //! Produce a linear operator for this action
 /*!
  * The operator acts on the entire lattice
@@ -33,9 +17,9 @@ void UnprecOvExtFermActArray::create(const Real& WilsonMass_, const Real& m_q_, 
  * \param state	    gauge field     	       (Read)
  */
 const LinearOperator<multi1d<LatticeFermion> >* 
-UnprecOvExtFermActArray::linOp(const ConnectState& state) const
+UnprecOvExtFermActArray::linOp(Handle<const ConnectState> state) const
 {
-  return new UnprecOvExtLinOpArray(state.getLinks(),WilsonMass,m_q,N5);
+  return new UnprecOvExtLinOpArray(state->getLinks(),WilsonMass,m_q,N5);
 }
 
 
@@ -46,11 +30,9 @@ UnprecOvExtFermActArray::linOp(const ConnectState& state) const
  * \param state	    gauge field     	       (Read)
  */
 const LinearOperator<multi1d<LatticeFermion> >* 
-UnprecOvExtFermActArray::lMdagM(const ConnectState& state) const
+UnprecOvExtFermActArray::lMdagM(Handle<const ConnectState> state) const
 {
-  LinearOperator<multi1d<LatticeFermion> >* mdagm = 
-    new lmdagm<multi1d<LatticeFermion> >(UnprecOvExtLinOpArray(state.getLinks(),WilsonMass,m_q,N5));
-  return mdagm;
+  return new lmdagm<multi1d<LatticeFermion> >(linOp(state));
 }
 
 //! Propagator of an un-preconditioned Extended-Overlap linear operator
@@ -66,7 +48,7 @@ UnprecOvExtFermActArray::lMdagM(const ConnectState& state) const
 
 void 
 UnprecOvExtFermActArray::qprop(LatticeFermion& psi, 
-			       const ConnectState& state, 
+			       Handle<const ConnectState> state, 
 			       const LatticeFermion& chi, 
 			       enum InvType invType,
 			       const Real& RsdCG, 
@@ -90,16 +72,16 @@ UnprecOvExtFermActArray::qprop(LatticeFermion& psi,
   chi5[0] = Gamma(G5) * chi;
 
   // Construct the linear operator
-  const LinearOperatorProxy< multi1d<LatticeFermion> > A(linOp(state));
+  Handle<const LinearOperator< multi1d<LatticeFermion> > > A(linOp(state));
 
   switch(invType)
   {
   case CG_INVERTER: 
     // psi5 = (H_o)^(-2) chi5
-    InvCG2 (A, chi5, psi5, RsdCG, MaxCG, n_count);
+    InvCG2(*A, chi5, psi5, RsdCG, MaxCG, n_count);
 
     // chi5 = H_o * (H_o)^(-2) * gamma_5 * chi
-    A(chi5, psi5, MINUS);
+    (*A)(chi5, psi5, MINUS);
     break;
   
   case MR_INVERTER:

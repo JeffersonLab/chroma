@@ -1,4 +1,4 @@
-// $Id: prec_fermact_qprop_array.cc,v 1.2 2003-12-02 15:44:01 edwards Exp $
+// $Id: prec_fermact_qprop_array.cc,v 1.3 2004-01-02 03:19:41 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic even-odd preconditioned fermion operator
  *
@@ -29,7 +29,7 @@ template<typename T>
 static 
 void qprop_t(const EvenOddPrecWilsonTypeFermAct< multi1d<T> >& me,
 	     multi1d<T>& psi, 
-	     const ConnectState& state, 
+	     Handle<const ConnectState> state, 
 	     const multi1d<T>& chi, 
 	     enum InvType invType,
 	     const Real& RsdCG, 
@@ -41,7 +41,7 @@ void qprop_t(const EvenOddPrecWilsonTypeFermAct< multi1d<T> >& me,
   
   /* Construct the linear operator */
   /* This allocates field for the appropriate action */
-  const EvenOddPrecLinearOperatorProxy< multi1d<T> > A(me.linOp(state));
+  Handle<const EvenOddPrecLinearOperator< multi1d<T> > > A(me.linOp(state));
 
   /* Step (i) */
   /* chi_tmp =  chi_o - D_oe * A_ee^-1 * chi_o */
@@ -50,8 +50,8 @@ void qprop_t(const EvenOddPrecWilsonTypeFermAct< multi1d<T> >& me,
     multi1d<T> tmp1(me.size());
     multi1d<T> tmp2(me.size());
 
-    A.evenEvenInvLinOp(tmp1, chi, PLUS);
-    A.oddEvenLinOp(tmp2, tmp1, PLUS);
+    A->evenEvenInvLinOp(tmp1, chi, PLUS);
+    A->oddEvenLinOp(tmp2, tmp1, PLUS);
     for(int n=0; n < me.size(); ++n)
       chi_tmp[n][rb[1]] = chi[n] - tmp2[n];
   }
@@ -62,22 +62,22 @@ void qprop_t(const EvenOddPrecWilsonTypeFermAct< multi1d<T> >& me,
   {
     /* chi_1 = M_dag(u) * chi_1 */
     multi1d<T> tmp(me.size());
-    A(tmp, chi, MINUS);
+    (*A)(tmp, chi, MINUS);
     
     /* psi = (M^dag * M)^(-1) chi */
-    InvCG2 (A, tmp, psi, RsdCG, MaxCG, n_count);
+    InvCG2 (*A, tmp, psi, RsdCG, MaxCG, n_count);
   }
   break;
   
 #if 0
   case MR_INVERTER:
     /* psi = M^(-1) chi */
-    InvMR (A, chi, psi, MRover, RsdCG, MaxCG, n_count);
+    InvMR (*A, chi, psi, MRover, RsdCG, MaxCG, n_count);
     break;
 
   case BICG_INVERTER:
     /* psi = M^(-1) chi */
-    InvBiCG (A, chi, psi, RsdCG, MaxCG, n_count);
+    InvBiCG (*A, chi, psi, RsdCG, MaxCG, n_count);
     break;
 #endif
   
@@ -96,10 +96,10 @@ void qprop_t(const EvenOddPrecWilsonTypeFermAct< multi1d<T> >& me,
     multi1d<T> tmp1(me.size());
     multi1d<T> tmp2(me.size());
 
-    A.evenOddLinOp(tmp1, psi, PLUS);
+    A->evenOddLinOp(tmp1, psi, PLUS);
     for(int n=0; n < me.size(); ++n)
       tmp2[n][rb[0]] = chi[n] - tmp1[n];
-    A.evenEvenInvLinOp(psi, tmp2, PLUS);
+    A->evenEvenInvLinOp(psi, tmp2, PLUS);
   }
   
   END_CODE("EvenOddPrecWilsonTypeFermActArray::qprop");
@@ -109,7 +109,7 @@ void qprop_t(const EvenOddPrecWilsonTypeFermAct< multi1d<T> >& me,
 template<>
 void 
 EvenOddPrecWilsonTypeFermAct< multi1d<LatticeFermion> >::qpropT(multi1d<LatticeFermion>& psi, 
-								const ConnectState& state, 
+								Handle<const ConnectState> state, 
 								const multi1d<LatticeFermion>& chi, 
 								enum InvType invType,
 								const Real& RsdCG, 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_wilson_fermact_w.h,v 1.14 2003-12-15 17:52:51 bjoo Exp $
+// $Id: unprec_wilson_fermact_w.h,v 1.15 2004-01-02 03:19:41 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -21,33 +21,42 @@ using namespace QDP;
 class UnprecWilsonFermAct : public UnprecWilsonTypeFermAct<LatticeFermion>
 {
 public:
-  //! Partial constructor
-  UnprecWilsonFermAct() {}
+  //! General FermBC
+  UnprecWilsonFermAct(Handle< FermBC<LatticeFermion> > fbc_, 
+		      const Real& Mass_) : 
+    fbc(fbc_), Mass(Mass_) {}
 
-  //! Full constructor
-  UnprecWilsonFermAct(const Real& _Mass)
-    {create(_Mass);}
+  //! Copy constructor
+  UnprecWilsonFermAct(const UnprecWilsonFermAct& a) : 
+    fbc(a.fbc), Mass(a.Mass) {}
 
-  //! Creation routine
-  void create(const Real& _Mass);
+  //! Assignment
+  UnprecWilsonFermAct& operator=(const UnprecWilsonFermAct& a)
+    {fbc=a.fbc; Mass=a.Mass; return *this;}
+
+  //! Return the fermion BC object for this action
+  const FermBC<LatticeFermion>& getFermBC() const {return *fbc;}
 
   //! Produce a linear operator for this action
-  const LinearOperator<LatticeFermion>* linOp(const ConnectState& state) const;
+  const LinearOperator<LatticeFermion>* linOp(Handle<const ConnectState> state) const;
 
   //! Produce a linear operator M^dag.M for this action
-  const LinearOperator<LatticeFermion>* lMdagM(const ConnectState& state) const;
+  const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state) const;
 
   //! Compute dS_f/dU
   void dsdu(multi1d<LatticeColorMatrix>& result,
-	    const ConnectState& state,
+	    Handle<const ConnectState> state,
 	    const LatticeFermion& psi) const;
 
   //! Destructor is automatic
   ~UnprecWilsonFermAct() {}
 
 private:
+  UnprecWilsonFermAct() {} //hide default constructor
+  
+private:
+  Handle< FermBC<LatticeFermion> >  fbc;
   Real Mass;
-  UnprecWilsonLinOp D;
 };
 
 #endif

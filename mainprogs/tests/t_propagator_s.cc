@@ -1,4 +1,4 @@
-// $Id: t_propagator_s.cc,v 1.6 2003-12-30 17:27:16 bjoo Exp $
+// $Id: t_propagator_s.cc,v 1.7 2004-01-02 03:19:41 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -15,7 +15,7 @@
 #include "actions/ferm/linop/asqtad_linop_s.h"
 #include "meas/hadron/mesphas_follana_s.h"
 #include "meas/hadron/srcfil.h"
-#include "util/gauge/phfctr.h"
+//#include "util/gauge/phfctr.h"
 #include "util/gauge/stag_phases_s.h"
 #include "meas/hadron/mesphas_s.h"
 
@@ -493,20 +493,25 @@ int main(int argc, char **argv)
   //   u[mu] *= StagPhases::alpha(mu);
   // }
 
-  // Apply the boundary conditions
-  setph(input.param.boundary);
-  phfctr(u);
+  // Create a fermion BC. Note, the handle is on an ABSTRACT type.
+  Handle< FermBC<LatticeFermion> >  fbc(new SimpleFermBC<LatticeFermion>(input.param.boundary));
+
+  // NOTE: THIS METHOD IS NOW OBSOLETE
+//  // Apply the boundary conditions
+//  setph(input.param.boundary);
+//  phfctr(u);
+
   //
   // Initialize fermion action
   //
-  AsqtadFermAct S_f(input.param.Mass, input.param.u0);
+  AsqtadFermAct S_f(fbc, input.param.Mass, input.param.u0);
 
   // Set up a state for the current u,
   // (compute fat & triple links)
   // Use S_f.createState so that S_f can pass in u0
 
-  const AsqtadConnectStateProxy<LatticeFermion> state(S_f.createState(u));
-  const EvenOddLinearOperatorProxy<LatticeFermion> D_asqtad(S_f.linOp((ConnectState &)state));
+  Handle<const ConnectState<LatticeFermion> > state(S_f.createState(u));
+  Handle<const EvenOddLinearOperator<LatticeFermion> > D_asqtad(S_f.linOp(state));
 
   // Create a fermion to apply linop to.
   LatticeFermion tmp1, tmp2;
@@ -523,19 +528,19 @@ int main(int argc, char **argv)
 //  tmp2  =  zero;
 
   // Apply Linop
-//  D_asqtad.evenOddLinOp(tmp2, tmp1, PLUS); 
+//  (*D_asqtad).evenOddLinOp(tmp2, tmp1, PLUS); 
 
 //  push(xml_out, "dslash");
 //  Write(xml_out, tmp1);
 //  Write(xml_out, tmp2);
 //  pop(xml_out);
 
-  const LinearOperatorProxy<LatticeFermion> MdagM_asqtad(S_f.lMdagM((ConnectState &)state));
+  Handle<const LinearOperator<LatticeFermion> > MdagM_asqtad(S_f.lMdagM(state));
 
   
 //  srcfil(tmp1, t_src_even, 0, 0);
 
-//  MdagM_asqtad(tmp2, tmp1, PLUS);
+//  (*MdagM_asqtad)(tmp2, tmp1, PLUS);
 
 //  push(xml_out, "MdagM");
 //  Write(xml_out, tmp1);
@@ -581,7 +586,7 @@ int main(int argc, char **argv)
     // Compute the propagator for given source color/spin 
     // int n_count;
 
-    S_f.qprop(psi, (ConnectState&) state, q_source, CG_INVERTER, 
+    S_f.qprop(psi, state, q_source, CG_INVERTER, 
               input.param.RsdCG, input.param.MaxCG, n_count);
     
     ncg_had += n_count;
@@ -604,13 +609,13 @@ int main(int argc, char **argv)
 */
 /*  LatticeFermion phi = zero;
   LatticeFermion tmp3, tmp4 = zero;
-  D_asqtad.evenOddLinOp(tmp1, psi, PLUS);
+  D_asqtad->evenOddLinOp(tmp1, psi, PLUS);
   phi[rb[0]] = tmp1;
-  D_asqtad.evenEvenLinOp(tmp2, psi, PLUS);
+  D_asqtad->evenEvenLinOp(tmp2, psi, PLUS);
   phi[rb[0]] += tmp2;
-  D_asqtad.oddEvenLinOp(tmp3, psi, PLUS);
+  D_asqtad->oddEvenLinOp(tmp3, psi, PLUS);
   phi[rb[1]] = tmp3;
-  D_asqtad.oddOddLinOp(tmp4, psi, PLUS);
+  D_asqtad->oddOddLinOp(tmp4, psi, PLUS);
   phi[rb[1]] += tmp4;
 
 //  push(xml_out, "tests");

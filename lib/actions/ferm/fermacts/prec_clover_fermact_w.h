@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_clover_fermact_w.h,v 1.3 2003-12-02 21:30:35 edwards Exp $
+// $Id: prec_clover_fermact_w.h,v 1.4 2004-01-02 03:19:40 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion action
  */
@@ -21,32 +21,38 @@ using namespace QDP;
 class EvenOddPrecCloverFermAct : public EvenOddPrecWilsonTypeFermAct<LatticeFermion>
 {
 public:
-  //! Partial constructor
-  EvenOddPrecCloverFermAct() {}
+  //! General FermBC
+  EvenOddPrecCloverFermAct(Handle< FermBC<LatticeFermion> > fbc_, 
+			   const Real& Mass_, const Real& ClovCoeff_, const Real& u0_) : 
+    fbc(fbc_), Mass(Mass_), ClovCoeff(ClovCoeff_), u0(u0_) {}
 
-  //! Full constructor
-  /*! Isotropic action */
-  EvenOddPrecCloverFermAct(const Real& Mass_, const Real& ClovCoeff_, const Real& u0_)
-    {create(Mass_, ClovCoeff_, u0_);}
+  //! Copy constructor
+  EvenOddPrecCloverFermAct(const EvenOddPrecCloverFermAct& a) : 
+    fbc(a.fbc), Mass(a.Mass), ClovCoeff(a.ClovCoeff), u0(a.u0) {}
 
-  //! Creation routine
-  void create(const Real& Mass_, const Real& ClovCoeff_, const Real& u0_);
+  //! Assignment
+  EvenOddPrecCloverFermAct& operator=(const EvenOddPrecCloverFermAct& a)
+    {fbc=a.fbc; Mass=a.Mass; ClovCoeff=a.ClovCoeff; u0=a.u0; return *this;}
+
+  //! Return the fermion BC object for this action
+  const FermBC<LatticeFermion>& getFermBC() const {return *fbc;}
 
   //! Produce a linear operator for this action
-  const EvenOddPrecLinearOperator<LatticeFermion> linOp(const ConnectState& state) const;
+  const EvenOddPrecLinearOperator<LatticeFermion> linOp(Handle<const ConnectState> state) const;
 
   //! Produce a linear operator M^dag.M for this action
-  const LinearOperator<LatticeFermion> lMdagM(const ConnectState& state) const;
+  const LinearOperator<LatticeFermion> lMdagM(Handle<const ConnectState> state) const;
 
   //! Override - compute dS_f/dU
   void dsdu(multi1d<LatticeColorMatrix>& result,
-	    const ConnectState& state,
+	    Handle<const ConnectState> state,
 	    const LatticeFermion& psi) const;
 
   //! Destructor is automatic
   ~EvenOddPrecCloverFermAct() {}
 
 private:
+  Handle< FermBC<LatticeFermion> >  fbc;
   Real Mass;
   Real ClovCoeff;
   Real u0;

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ev_state.h,v 1.5 2003-12-09 17:44:47 bjoo Exp $
+// $Id: ev_state.h,v 1.6 2004-01-02 03:19:40 edwards Exp $
 /*! @file
  * @brief Connection state holding eigenvectors
  *
@@ -32,55 +32,9 @@ public:
 
   //! Return the eigenvectors
   virtual const Real& getEigValMax() const = 0;
+
   //! Virtual destructor to help with cleanup;
   virtual ~EVConnectStateBase() {}
-};
-
-
-//! Proxy for support class for fermion actions and linear operators
-/*! @ingroup state
- *
- * Holds things like color link fields and other info needed for linear
- * operators. 
- */
-template<typename T>
-class EVConnectStateProxy : public EVConnectStateBase<T>
-{
-public:
-  //! Initialize pointer with existing pointer
-  /*! Requires that the pointer p is a return value of new */
-  explicit EVConnectStateProxy(const EVConnectStateBase<T>* p=0) : state(p) {}
-
-  //! Copy pointer (one more owner)
-  EVConnectStateProxy(const EVConnectStateProxy& p) : state(p.state) {}
-
-  //! Access the value to which the pointer refers
-  const EVConnectStateBase<T>& operator*() const {return state.operator*();}
-  const EVConnectStateBase<T>* operator->() const {return state.operator->();}
-
-  //! Return the link fields needed in constructing linear operators
-  const multi1d<LatticeColorMatrix>& getLinks() const 
-    {state->getLinks();}
-
-  //! Return the eigenvalues
-  const multi1d<Real>& getEigVal() const
-    {state->getEigVal();}
-
-  //! Return the eigenvectors
-  const multi1d<T>& getEigVec() const
-    {state->getEigVec();}
-
-  //! Return the eigenvectors
-  const Real& getEigValMax() const
-    {state->getEigValMax();}
-
-protected:
-  //! Assignment
-  /*! Could easily be supported, but not sure why to do so... */
-  EVConnectStateProxy& operator=(const EVConnectStateProxy& p) {}
-
-private:
-  Handle<const EVConnectStateBase<T> >  state;
 };
 
 

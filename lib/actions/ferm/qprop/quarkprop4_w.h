@@ -1,4 +1,4 @@
-// $Id: quarkprop4_w.h,v 1.5 2003-12-10 21:26:07 kostas Exp $
+// $Id: quarkprop4_w.h,v 1.6 2004-01-02 03:19:41 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -9,7 +9,7 @@
 #define __quarkprop4_w_h__
 
 #include "fermact.h"
-#include "../ferm.h"
+#include "actions/ferm/fermacts/prec_dwf_fermact_base_array_w.h"
 
 //! Given a complete propagator as a source, this does all the inversions needed
 /*! \ingroup qprop
@@ -28,7 +28,7 @@ void quarkProp4(LatticePropagator& q_sol,
 		XMLWriter& xml_out,
 		const LatticePropagator& q_src,
 		const WilsonTypeFermAct<LatticeFermion>& S_f,
-		const ConnectState& state,
+		Handle<const ConnectState> state,
 		enum InvType invType,
 		const Real& RsdCG, 
 		int MaxCG, int& ncg_had);
@@ -50,7 +50,7 @@ void quarkProp4(LatticePropagator& q_sol,
 		XMLWriter& xml_out,
 		const LatticePropagator& q_src,
 		const WilsonTypeFermAct<LatticeDWFermion>& S_f,
-		const ConnectState& state,
+		Handle<const ConnectState> state,
 		enum InvType invType,
 		const Real& RsdCG, 
 		int MaxCG, int& ncg_had);
@@ -73,7 +73,7 @@ void quarkProp4(LatticePropagator& q_sol,
 		XMLWriter& xml_out,
 		const LatticePropagator& q_src,
 		const WilsonTypeFermAct< multi1d<LatticeFermion> >& S_f,
-		const ConnectState& state,
+		Handle<const ConnectState> state,
 		enum InvType invType,
 		const Real& RsdCG, 
 		int MaxCG, int& ncg_had);
@@ -96,7 +96,7 @@ void quarkProp4(LatticePropagator& q_sol,
 		XMLWriter& xml_out,
 		const LatticePropagator& q_src,
 		const EvenOddPrecDWFermActBaseArray& S_f,
-		const ConnectState& state,
+		Handle<const ConnectState> state,
 		enum InvType invType,
 		const Real& RsdCG, 
 		int MaxCG, int& ncg_had);

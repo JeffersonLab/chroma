@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_fermact_w.h,v 1.7 2003-12-02 15:45:04 edwards Exp $
+// $Id: unprec_dwf_fermact_w.h,v 1.8 2004-01-02 03:19:40 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion action
  */
@@ -22,32 +22,39 @@ using namespace QDP;
 class UnprecDWFermAct : public UnprecDWFermActBase
 {
 public:
-  //! Partial constructor
-  UnprecDWFermAct() {}
+  //! General FermBC
+  UnprecDWFermAct(Handle< FermBC<LatticeDWFermion> > fbc_, 
+		  const Real& WilsonMass_, const Real& m_q_) : 
+    fbc(fbc_), WilsonMass(WilsonMass_), m_q(m_q_) {a5=1;}
 
-  //! Full constructor
-  UnprecDWFermAct(const Real& WilsonMass, const Real& m_q)
-    {create(WilsonMass, m_q);}
+  //! Copy constructor
+  UnprecDWFermAct(const UnprecDWFermAct& a) : 
+    fbc(a.fbc), WilsonMass(a.WilsonMass), m_q(a.m_q), a5(a.a5) {}
 
-  //! Creation routine
-  void create(const Real& WilsonMass, const Real& m_q);
+  //! Assignment
+  UnprecDWFermAct& operator=(const UnprecDWFermAct& a)
+    {fbc=a.fbc; WilsonMass=a.WilsonMass; m_q=a.m_q; a5=a.a5; return *this;}
+
+  //! Return the fermion BC object for this action
+  const FermBC<LatticeDWFermion>& getFermBC() const {return *fbc;}
 
   //! Return the quark mass
   Real quark_mass() const {return m_q;}
 
   //! Produce a linear operator for this action
-  const LinearOperator<LatticeDWFermion>* linOp(const ConnectState& state) const;
+  const LinearOperator<LatticeDWFermion>* linOp(Handle<const ConnectState> state) const;
 
   //! Produce a linear operator M^dag.M for this action
-  const LinearOperator<LatticeDWFermion>* lMdagM(const ConnectState& state) const;
+  const LinearOperator<LatticeDWFermion>* lMdagM(Handle<const ConnectState> state) const;
 
   //! Produce a linear operator for this action but with quark mass 1
-  const LinearOperator<LatticeDWFermion>* linOpPV(const ConnectState& state) const;
+  const LinearOperator<LatticeDWFermion>* linOpPV(Handle<const ConnectState> state) const;
 
   //! Destructor is automatic
   ~UnprecDWFermAct() {}
 
 private:
+  Handle< FermBC<LatticeDWFermion> >  fbc;
   Real WilsonMass;
   Real m_q;
   Real a5;

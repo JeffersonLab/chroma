@@ -1,4 +1,4 @@
-// $Id: t_conslinop.cc,v 1.14 2003-12-06 22:13:10 edwards Exp $
+// $Id: t_conslinop.cc,v 1.15 2004-01-02 03:19:41 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -37,6 +37,8 @@ int main(int argc, char *argv[])
   for(int m=0; m < u.size(); ++m)
     gaussian(u[m]);
 
+  // Create a fermion BC. Note, the handle is on an ABSTRACT type
+  Handle<FermBC<LatticeFermion> >  fbc(new PeriodicFermBC<LatticeFermion>);
 
   Real Mass = 0.1;
   WilsonDslash D(u);
@@ -55,9 +57,9 @@ int main(int argc, char *argv[])
   M(chi, psi, PLUS); 
   QDPIO::cout << "after wilson call" << endl;
   
-  UnprecWilsonFermAct S(Mass);
-  const ConnectStateProxy state(S.createState(u));
-  const LinearOperatorProxy<LatticeFermion> A(S.linOp(state));
+  UnprecWilsonFermAct S(fbc,Mass);
+  Handle<const ConnectState> state(S.createState(u));
+  Handle<const LinearOperator<LatticeFermion> > A(S.linOp(state));
 
   LatticeFermion   tmp;
   D(tmp, psi, PLUS);

@@ -1,4 +1,4 @@
-// $Id: zolotarev4d_fermact_w.cc,v 1.7 2003-12-09 17:44:47 bjoo Exp $
+// $Id: zolotarev4d_fermact_w.cc,v 1.8 2004-01-02 03:19:41 edwards Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -205,11 +205,11 @@ Zolotarev4DFermAct::init(int& numroot, Real& coeffP, multi1d<Real>& resP, multi1
  * \param state_	 gauge field state  	 (Read)
  */
 const LinearOperator<LatticeFermion>* 
-Zolotarev4DFermAct::linOp(const ConnectState& state_) const
+Zolotarev4DFermAct::linOp(Handle<const ConnectState> state_) const
 {
   START_CODE("Zolotarev4DLinOp::create");
 
-  const EVConnectState<LatticeFermion>& state = dynamic_cast<const EVConnectState<LatticeFermion>&>(state_);
+  const EVConnectState<LatticeFermion>& state = dynamic_cast<const EVConnectState<LatticeFermion>&>(*state_);
 
   if (state.getEigVec().size() != state.getEigVal().size())
     QDP_error_exit("Zolotarev4DLinOp: inconsistent sizes of eigenvectors and values");
@@ -266,12 +266,12 @@ Zolotarev4DFermAct::linOp(const ConnectState& state_) const
  * \param state	    gauge field state   	       (Read)
  */
 const LinearOperator<LatticeFermion>* 
-Zolotarev4DFermAct::lMdagM(const ConnectState& state_) const
+Zolotarev4DFermAct::lMdagM(Handle<const ConnectState> state_) const
 {
   //  *****NOTE***** 
   // Should use special form when we know we have exact chiral symmetry
 
-  const EVConnectState<LatticeFermion>& state = dynamic_cast<const EVConnectState<LatticeFermion>&>(state_);
+  const EVConnectState<LatticeFermion>& state = dynamic_cast<const EVConnectState<LatticeFermion>&>(*state_);
 
   if (state.getEigVec().size() != state.getEigVal().size())
     QDP_error_exit("Zolotarev4DLinOp: inconsistent sizes of eigenvectors and values");

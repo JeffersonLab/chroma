@@ -1,6 +1,6 @@
-// $Id: asqtad_fermact_s.cc,v 1.4 2003-12-30 17:27:15 bjoo Exp $
+// $Id: asqtad_fermact_s.cc,v 1.5 2004-01-02 03:19:40 edwards Exp $
 /*! \file
- *  \brief Unpreconditioned Wilson fermion action
+ *  \brief Asqtad staggered fermion action
  */
 // NEW $Id: asqtad_fermact_s.cc 2003/11/12 steve
 
@@ -26,7 +26,7 @@
  * \u has already had KS phases multiplied in.
  */
 const EvenOddLinearOperator<LatticeFermion>* 
-AsqtadFermAct::linOp(const ConnectState& state_) const
+AsqtadFermAct::linOp(Handle<const ConnectState> state_) const
 {
 
   // Why in fact are we casting to the base class on both sides of
@@ -57,7 +57,7 @@ AsqtadFermAct::linOp(const ConnectState& state_) const
  */
 
 const LinearOperator<LatticeFermion>* 
-AsqtadFermAct::lMdagM(const ConnectState& state_) const
+AsqtadFermAct::lMdagM(Handle<const ConnectState> state_) const
 {
   const AsqtadConnectStateBase<LatticeFermion>& state = 
     dynamic_cast<const AsqtadConnectStateBase<LatticeFermion>&>(state_);
@@ -76,11 +76,15 @@ AsqtadFermAct::createState(const multi1d<LatticeColorMatrix>& u_) const
   multi1d<LatticeColorMatrix> u_fat(Nd);
   multi1d<LatticeColorMatrix> u_triple(Nd);
 
-  // Multiply in phases first
+  // First put in the BC
+  u_with_phases = u_;
+  getFermBC().modifyU(u_with_phases);
+
+  // Now multiply in phases
   //
   // alpha comes from the StagPhases:: namespace
   for(int i = 0; i < Nd; i++) { 
-    u_with_phases[i] = alpha(i)*u_[i];
+    u_with_phases[i] *= alpha(i);
   }
 
   // Make Fat7 and triple links

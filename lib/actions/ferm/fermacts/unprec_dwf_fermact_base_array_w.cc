@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_fermact_base_array_w.cc,v 1.6 2003-12-02 15:45:04 edwards Exp $
+// $Id: unprec_dwf_fermact_base_array_w.cc,v 1.7 2004-01-02 03:19:40 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned domain-wall-like fermion actions
  */
@@ -24,7 +24,7 @@ using namespace QDP;
 
 void 
 UnprecDWFermActBaseArray::qprop(LatticeFermion& psi, 
-				const ConnectState& state, 
+				Handle<const ConnectState> state, 
 				const LatticeFermion& chi, 
 				enum InvType invType,
 				const Real& RsdCG, 
@@ -49,9 +49,9 @@ UnprecDWFermActBaseArray::qprop(LatticeFermion& psi,
   // tmp5 = D5(1) . chi5 =  D5(1) . P . (chi,0,0,..,0)^T 
   {
     // Create a Pauli-Villars linop and use it for just this part
-    const LinearOperatorProxy< multi1d<LatticeFermion> > B(linOpPV(state));
+    Handle<const LinearOperator< multi1d<LatticeFermion> > > B(linOpPV(state));
 
-    B(tmp5, chi5, PLUS);
+    (*B)(tmp5, chi5, PLUS);
   }
 
   //  psi5 = (psi,0,0,0,...,0)^T
@@ -60,27 +60,27 @@ UnprecDWFermActBaseArray::qprop(LatticeFermion& psi,
   psi5[0] = psi;
 
   // Construct the linear operator
-  const LinearOperatorProxy< multi1d<LatticeFermion> > A(linOp(state));
+  Handle<const LinearOperator< multi1d<LatticeFermion> > > A(linOp(state));
 
   switch(invType)
   {
   case CG_INVERTER: 
     // chi5 = D5^\dagger(m) . tmp5 =  D5^dagger(m) . D5(1) . P . (chi,0,0,..,0)^T
-    A(chi5, tmp5, MINUS);
+    (*A)(chi5, tmp5, MINUS);
     
     // psi5 = (D^dag * D)^(-1) chi5
-    InvCG2 (A, chi5, psi5, RsdCG, MaxCG, n_count);
+    InvCG2(*A, chi5, psi5, RsdCG, MaxCG, n_count);
     break;
   
 #if 0
   case MR_INVERTER:
     // psi5 = D^(-1) * tmp5
-    InvMR (A, tmp5, psi5, MRover, RsdCG, MaxCG, n_count);
+    InvMR(*A, tmp5, psi5, MRover, RsdCG, MaxCG, n_count);
     break;
 
   case BICG_INVERTER:
     // psi5 = D^(-1) tmp5
-    InvBiCG (A, tmp5, psi5, RsdCG, MaxCG, n_count);
+    InvBiCG(*A, tmp5, psi5, RsdCG, MaxCG, n_count);
     break;
 #endif
   

@@ -1,4 +1,4 @@
-// $Id: fermact_qprop.cc,v 1.5 2003-12-02 15:44:01 edwards Exp $
+// $Id: fermact_qprop.cc,v 1.6 2004-01-02 03:19:41 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *
@@ -34,7 +34,7 @@ template<typename T>
 static 
 void qprop_t(const FermionAction<T>& me,
 	     T& psi, 
-	     const ConnectState& state, 
+	     Handle<const ConnectState> state, 
 	     const T& chi, 
 	     enum InvType invType,
 	     const Real& RsdCG, 
@@ -46,7 +46,7 @@ void qprop_t(const FermionAction<T>& me,
   
   /* Construct the linear operator */
   /* This allocates field for the appropriate action */
-  const LinearOperatorProxy<T> A(me.linOp(state));
+  Handle<const LinearOperator<T> > A(me.linOp(state));
 
   switch(invType)
   {
@@ -54,22 +54,22 @@ void qprop_t(const FermionAction<T>& me,
   {
     /* tmp = M_dag(u) * chi_1 */
     T  tmp;
-    A(tmp, chi, MINUS);
+    (*A)(tmp, chi, MINUS);
     
     /* psi = (M^dag * M)^(-1) chi */
-    InvCG2 (A, tmp, psi, RsdCG, MaxCG, n_count);
+    InvCG2 (*A, tmp, psi, RsdCG, MaxCG, n_count);
   }
   break;
   
 #if 0
   case MR_INVERTER:
     /* psi = M^(-1) chi */
-    InvMR (A, chi, psi, MRover, RsdCG, MaxCG, n_count);
+    InvMR (*A, chi, psi, MRover, RsdCG, MaxCG, n_count);
     break;
 
   case BICG_INVERTER:
     /* psi = M^(-1) chi */
-    InvBiCG (A, chi, psi, RsdCG, MaxCG, n_count);
+    InvBiCG (*A, chi, psi, RsdCG, MaxCG, n_count);
     break;
 #endif
   
@@ -88,7 +88,7 @@ void qprop_t(const FermionAction<T>& me,
 
 template<>
 void FermionAction<LatticeFermion>::qpropT(LatticeFermion& psi, 
-					   const ConnectState& state, 
+					   Handle<const ConnectState> state, 
 					   const LatticeFermion& chi, 
 					   enum InvType invType,
 					   const Real& RsdCG, 
@@ -99,7 +99,7 @@ void FermionAction<LatticeFermion>::qpropT(LatticeFermion& psi,
 
 template<>
 void FermionAction<LatticeFermion>::qprop(LatticeFermion& psi, 
-					  const ConnectState& state, 
+					  Handle<const ConnectState> state, 
 					  const LatticeFermion& chi, 
 					  enum InvType invType,
 					  const Real& RsdCG, 
@@ -112,7 +112,7 @@ void FermionAction<LatticeFermion>::qprop(LatticeFermion& psi,
 
 template<>
 void FermionAction<LatticeDWFermion>::qpropT(LatticeDWFermion& psi, 
-					     const ConnectState& state, 
+					     Handle<const ConnectState> state, 
 					     const LatticeDWFermion& chi, 
 					     enum InvType invType,
 					     const Real& RsdCG, 
@@ -123,7 +123,7 @@ void FermionAction<LatticeDWFermion>::qpropT(LatticeDWFermion& psi,
 
 template<>
 void FermionAction<LatticeDWFermion>::qprop(LatticeFermion& psi, 
-					    const ConnectState& state, 
+					    Handle<const ConnectState> state, 
 					    const LatticeFermion& chi, 
 					    enum InvType invType,
 					    const Real& RsdCG, 

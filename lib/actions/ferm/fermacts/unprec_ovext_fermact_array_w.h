@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovext_fermact_array_w.h,v 1.4 2003-12-02 15:45:04 edwards Exp $
+// $Id: unprec_ovext_fermact_array_w.h,v 1.5 2004-01-02 03:19:40 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -23,15 +23,21 @@ using namespace QDP;
 class UnprecOvExtFermActArray : public UnprecWilsonTypeFermAct< multi1d<LatticeFermion> >
 {
 public:
-  //! Partial constructor
-  UnprecOvExtFermActArray() {}
+  //! General FermBC
+  UnprecOvExtFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
+		       const Real& WilsonMass_, const Real& m_q_, int N5_) : 
+    fbc(fbc_), WilsonMass(WilsonMass_), m_q(m_q_), N5(N5_) {a5=1;}
 
-  //! Full constructor
-  UnprecOvExtFermActArray(const Real& WilsonMass_, const Real& m_q_, int N5_)
-    {create(WilsonMass_, m_q_, N5_);}
+  //! Copy constructor
+  UnprecOvExtFermActArray(const UnprecOvExtFermActArray& a) : 
+    fbc(a.fbc), WilsonMass(a.WilsonMass), m_q(a.m_q), a5(a.a5), N5(a.N5) {}
 
-  //! Creation routine
-  void create(const Real& WilsonMass_, const Real& m_q_, int N5_);
+  //! Assignment
+  UnprecOvExtFermActArray& operator=(const UnprecOvExtFermActArray& a)
+    {fbc=a.fbc; WilsonMass=a.WilsonMass; m_q=a.m_q; a5=a.a5; N5=a.N5; return *this;}
+
+  //! Return the fermion BC object for this action
+  const FermBC< multi1d<LatticeFermion> >& getFermBC() const {return *fbc;}
 
   //! Length of DW flavor index/space
   int size() const {return N5;}
@@ -40,10 +46,10 @@ public:
   Real quark_mass() const {return m_q;}
 
   //! Produce a linear operator for this action
-  const LinearOperator< multi1d<LatticeFermion> >* linOp(const ConnectState& state) const;
+  const LinearOperator< multi1d<LatticeFermion> >* linOp(Handle<const ConnectState> state) const;
 
   //! Produce a linear operator M^dag.M for this action
-  const LinearOperator< multi1d<LatticeFermion> >* lMdagM(const ConnectState& state) const;
+  const LinearOperator< multi1d<LatticeFermion> >* lMdagM(Handle<const ConnectState> state) const;
 
   //! Compute quark propagator over base type
   /*! 
@@ -60,7 +66,7 @@ public:
    * NOTE: maybe this should produce a quark prop foundry class object 
    */
   void qprop(LatticeFermion& psi, 
-	     const ConnectState& state, 
+	     Handle<const ConnectState> state, 
 	     const LatticeFermion& chi, 
 	     enum InvType invType,
 	     const Real& RsdCG, 
@@ -70,6 +76,11 @@ public:
   ~UnprecOvExtFermActArray() {}
 
 private:
+  // Hide partial constructor
+  UnprecOvExtFermActArray() {}
+
+private:
+  Handle< FermBC< multi1d<LatticeFermion> > >  fbc;
   Real WilsonMass;
   Real m_q;
   Real a5;

@@ -1,4 +1,4 @@
-// $Id: t_ovlap_bj.cc,v 1.7 2003-12-30 17:27:16 bjoo Exp $
+// $Id: t_ovlap_bj.cc,v 1.8 2004-01-02 03:19:41 edwards Exp $
 
 #include <iostream>
 #include <sstream>
@@ -153,8 +153,8 @@ void readEigenVecs(const multi1d<LatticeColorMatrix>& u,
 
 
   // Create a connect State
-  const ConnectStateProxy  s(new SimpleConnectState(u));
-  const LinearOperatorProxy<LatticeFermion> D_w( S_aux.linOp(s) );
+  Handle<const ConnectState>  s(new SimpleConnectState(u));
+  Handle<const LinearOperator<LatticeFermion> > D_w( S_aux.linOp(s) );
 
 
   // Create Space for the eigen vecs
@@ -177,7 +177,7 @@ void readEigenVecs(const multi1d<LatticeColorMatrix>& u,
     LatticeFermion D_ev, tmp_ev, lambda_e;
 
     // D_ew = D ev(i)
-    D_w(tmp_ev, eigen_vec[i], PLUS);
+    (*D_w)(tmp_ev, eigen_vec[i], PLUS);
     D_ev = Gamma(15)*tmp_ev;
 
     // Lambda_e 
@@ -228,9 +228,8 @@ int main(int argc, char **argv)
   dumpParams(xml_out, params);
 
 
-  // Set up the BC phases
-  setph(params.boundary);
-
+  // Create a FermBC
+  Handle<FermBC<LatticeFermion> >  fbc(new SimpleFermBC<LatticeFermion>(params.boundary));
   
   // The Gauge Field
   multi1d<LatticeColorMatrix> u(Nd);
@@ -310,13 +309,16 @@ int main(int argc, char **argv)
   pop(xml_out);
 
   //! Wilsoniums;
-  const UnprecWilsonFermAct S_w(params.wilson_mass);
+  // Put this puppy into a handle to allow Zolo to copy it around as a **BASE** class
+  // WARNING: the handle now owns the data. The use of a bare S_w below is legal,
+  // but just don't delete it.
+  Handle<UnprecWilsonTypeFermAct<LatticeFermion> >  S_w(new UnprecWilsonFermAct(fbc, params.wilson_mass));
 
   Real m_q = 0.0;
   XMLBufferWriter my_writer;
 
   //! N order Zolo approx, with wilson action.
-  Zolotarev4DFermActBj   S(S_w, 
+  Zolotarev4DFermActBj   S(fbc, S_w, 
 			   params.quark_mass,
 			   params.approx_order, 
 			   params.rsd_cg,
@@ -324,12 +326,12 @@ int main(int argc, char **argv)
 			   my_writer);
 
 
-  const ZolotarevConnectStateBase<LatticeFermion>* connect_state_ptr;
+  const ConnectState* connect_state_ptr;
   multi1d<LatticeFermion> eigen_vecs;
 
 
-  // Flick on BC's
-  phfctr(u);
+  // Flick on BC's  - do not do this. Now let it be down in createState
+//  phfctr(u);
 
   if( params.lambda.size() == 0 ) { 
 
@@ -341,7 +343,7 @@ int main(int argc, char **argv)
   else {
 
     // Connect State with eigenvectors
-    readEigenVecs(u, S_w, params.lambda, eigen_vecs, xml_out);
+    readEigenVecs(u, dynamic_cast<UnprecWilsonFermAct&>(*S_w), params.lambda, eigen_vecs, xml_out);
 
     connect_state_ptr = S.createState(u, 
 				      params.lambda,
@@ -350,12 +352,12 @@ int main(int argc, char **argv)
   }
 
 
-  // Proxify the state.
-  ZolotarevConnectStateProxy<LatticeFermion> connect_state(connect_state_ptr);
+  // Stuff the pointer into a handle. Now, the handle owns the data.
+  Handle<const ConnectState> connect_state(connect_state_ptr);
 						     
 
   // Make me a linop (this callls the initialise function)
-  const LinearOperatorProxy<LatticeFermion> D_op(S.linOp((ConnectState &)connect_state));
+  Handle<const LinearOperator<LatticeFermion> > D_op(S.linOp(connect_state));
 
   LatticeFermion psi;
   gaussian(psi);
@@ -365,11 +367,11 @@ int main(int argc, char **argv)
   LatticeFermion s1, s2, s3, tmp2;
   s1 = s2 = s3 = tmp2 = zero;
 
-  D_op(s1,psi,PLUS);
-  D_op(s2,psi,MINUS);
+  (*D_op)(s1,psi,PLUS);
+  (*D_op)(s2,psi,MINUS);
 
-  D_op(tmp2, psi, PLUS);
-  D_op(s3, tmp2, MINUS);
+  (*D_op)(tmp2, psi, PLUS);
+  (*D_op)(s3, tmp2, MINUS);
 
   s3 *= 2;
   s3 -= s1;

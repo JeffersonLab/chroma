@@ -1,17 +1,23 @@
+// -*- C++ -*-
+// $Id: zolotarev_state.h,v 1.3 2004-01-02 03:19:41 edwards Exp $
+/*! @file
+ * @brief Connection state holding eigenvectors
+ *
+ * Holds gauge fields and eigenvectors for overlap-ish thingies
+ */
+
 #ifndef __zolotarev_state_h__
 #define __zolotarev_state_h__
 
-#include "handle.h"
-
-
+#include "state.h"
 
 using namespace QDP;
 
 template<typename T>
-class ZolotarevConnectStateBase : public ConnectState {
- public: 
-
- //! Return the eigenvalues
+class ZolotarevConnectStateBase : public ConnectState 
+{
+public: 
+  //! Return the eigenvalues
   virtual const multi1d<Real>& getEigVal() const = 0;
 
   //! Return the eigenvectors
@@ -26,59 +32,11 @@ class ZolotarevConnectStateBase : public ConnectState {
 
 };
 
-template<typename T>
-class ZolotarevConnectStateProxy : public ZolotarevConnectStateBase<T>
-{
-public:
-  //! Initialize pointer with existing pointer
-
-  /*! Requires that the pointer p is a return value of new */
-  explicit ZolotarevConnectStateProxy(const ZolotarevConnectStateBase<T>* p=0) : state(p) {}
-
-  //! Copy pointer (one more owner)
-  ZolotarevConnectStateProxy(const ZolotarevConnectStateProxy& p) : state(p.state) {}
-
-  //! Access the value to which the pointer refers
-  const ZolotarevConnectStateBase<T>& operator*() const {return state.operator*();}
-  const ZolotarevConnectStateBase<T>* operator->() const {return state.operator->();}
-
-  //! Return the link fields needed in constructing linear operators
-  const multi1d<LatticeColorMatrix>& getLinks() const 
-    {state->getLinks();}
-
-  //! Return the eigenvalues
-  const multi1d<Real>& getEigVal() const
-    {state->getEigVal();}
-
-  //! Return the eigenvectors
-  const multi1d<T>& getEigVec() const
-    {state->getEigVec();}
-
-  //! Return the eigenvectors
-  const Real& getEigValMax() const
-    {state->getEigValMax();}
-
-  //! Return the epsilon
-  const Real& getApproxMin() const
-    { state->getApproxMin(); }
-
-  //! Return the upper end of the approximation
-  const Real& getApproxMax() const
-    { state->getApproxMax(); }
-
-protected:
-  //! Assignment
-  /*! Could easily be supported, but not sure why to do so... */
-  ZolotarevConnectStateProxy& operator=(const ZolotarevConnectStateProxy& p) {}
-
-private:
-  Handle<const ZolotarevConnectStateBase<T> >  state;
-};
 
 template<typename T>
 class ZolotarevConnectState : public ZolotarevConnectStateBase<T>
 {
- public:
+public:
 
   typedef Real WordBase_t;
   
@@ -86,7 +44,7 @@ class ZolotarevConnectState : public ZolotarevConnectStateBase<T>
   ZolotarevConnectState(const multi1d<LatticeColorMatrix>& u_,  // gauge field
 			const WordBase_t& approxMin_,          // epsilon
 			const WordBase_t& approxMax_           // approx max
-			)  {
+    )  {
     u = u_;
     eigValMax = 0;
     approxMin = approxMin_ ;
@@ -130,7 +88,7 @@ class ZolotarevConnectState : public ZolotarevConnectStateBase<T>
   const WordBase_t& getApproxMin() const { return approxMin; }
   const WordBase_t& getApproxMax() const { return approxMax; }
 
- private:
+private:
   ZolotarevConnectState() {}  // hide default constructur
   void operator=(const ZolotarevConnectState&) {} // hide =
 
