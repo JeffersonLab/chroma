@@ -65,8 +65,8 @@ private:
 using namespace StagPhases;
 
 void 
-pions(multi1d<LatticeStaggeredPropagator>& quark_props,
-		      multi2d<DComplex>& pion_corr_fn,
+staggered_pions::compute(multi1d<LatticeStaggeredPropagator>& quark_props,
+			 //		      multi2d<DComplex>& pion_corr_fn,
 		      int j_decay)
 {
 
@@ -98,10 +98,10 @@ pions(multi1d<LatticeStaggeredPropagator>& quark_props,
   const multi1d<int>& latt_size = Layout::lattSize();
   
   // resize output array appropriately
-  pion_corr_fn.resize(NUM_STAG_PIONS, latt_size[Nd-1]);
+  corr_fn.resize(NUM_STAG_PIONS, latt_size[Nd-1]);
 
   // Correlation functions before spatial sum
-  LatticeComplex corr_fn;
+  LatticeComplex latt_corr_fn;
 
   // Machinery to do timeslice sums with 
   UnorderedSet timeslice;
@@ -120,10 +120,10 @@ pions(multi1d<LatticeStaggeredPropagator>& quark_props,
   int mu, nu, rho;  
 
   // Goldstone Pion
-  corr_fn = trace(adj(quark_props[0])*quark_props[0]);
+  latt_corr_fn = trace(adj(quark_props[0])*quark_props[0]);
 
   // Slice Sum
-  pion_corr_fn[ pion_index ] = sumMulti(corr_fn, timeslice);
+  corr_fn[ pion_index ] = sumMulti(latt_corr_fn, timeslice);
   pion_index++;
 
 
@@ -136,16 +136,16 @@ pions(multi1d<LatticeStaggeredPropagator>& quark_props,
     delta = 0;
     delta[mu] = 1;
       
-    corr_fn =  beta(mu)*trace(shiftDeltaProp(delta,quark_props[0])
+    latt_corr_fn =  beta(mu)*trace(shiftDeltaProp(delta,quark_props[0])
 			     *adj(quark_props[ deltaToPropIndex(delta) ]));
     
-    pion_corr_fn[ pion_index ] = sumMulti(corr_fn, timeslice);
+    corr_fn[ pion_index ] = sumMulti(latt_corr_fn, timeslice);
     pion_index++;
   }
     
   // One link temporal
-  corr_fn = -  alpha(Nd-1)*trace(adj(quark_props[0])*quark_props[0]);
-  pion_corr_fn[ pion_index ] = sumMulti(corr_fn, timeslice);
+  latt_corr_fn = -  alpha(Nd-1)*trace(adj(quark_props[0])*quark_props[0]);
+  corr_fn[ pion_index ] = sumMulti(latt_corr_fn, timeslice);
   pion_index++;
 
   // Two link spatial
@@ -155,11 +155,11 @@ pions(multi1d<LatticeStaggeredPropagator>& quark_props,
       delta[mu] = 1;
       delta[nu] = 1;
 
-      corr_fn = - beta(mu)* beta(nu)
+      latt_corr_fn = - beta(mu)* beta(nu)
 	                      *trace(adj(shiftDeltaProp(delta,quark_props[0]))
 				     *quark_props[ deltaToPropIndex(delta) ]);
     
-      pion_corr_fn[ pion_index ] = sumMulti(corr_fn, timeslice);
+      corr_fn[ pion_index ] = sumMulti(latt_corr_fn, timeslice);
       pion_index++;
     }
   }
@@ -169,11 +169,11 @@ pions(multi1d<LatticeStaggeredPropagator>& quark_props,
       delta = 0;
       delta[mu] = 1;
     
-      corr_fn = - beta(mu)*  alpha(Nd-1)
+      latt_corr_fn = - beta(mu)*  alpha(Nd-1)
 	                      *trace(adj(shiftDeltaProp(delta,quark_props[0]))
 				     *quark_props[ deltaToPropIndex(delta) ]);
     
-      pion_corr_fn[ pion_index ] = sumMulti(corr_fn, timeslice);
+      corr_fn[ pion_index ] = sumMulti(latt_corr_fn, timeslice);
       pion_index++;
   }
 
@@ -188,11 +188,11 @@ pions(multi1d<LatticeStaggeredPropagator>& quark_props,
 	delta[rho] = 1;
 
 	
-	corr_fn = - beta(mu) * beta(nu)* beta(rho)
+	latt_corr_fn = - beta(mu) * beta(nu)* beta(rho)
 	  *trace(adj(shiftDeltaProp(delta,quark_props[0]))
 		 *quark_props[ deltaToPropIndex(delta) ]);
 	
-	pion_corr_fn[ pion_index ] = sumMulti(corr_fn, timeslice);
+	corr_fn[ pion_index ] = sumMulti(latt_corr_fn, timeslice);
 	pion_index++;
       }
     }
@@ -206,11 +206,11 @@ pions(multi1d<LatticeStaggeredPropagator>& quark_props,
 	delta[mu] = 1;
 	delta[nu] = 1;
 
-	corr_fn =  beta(mu)* beta(nu)*  alpha(Nd-1)
+	latt_corr_fn =  beta(mu)* beta(nu)*  alpha(Nd-1)
 	  *trace(adj(shiftDeltaProp(delta,quark_props[0]))
 		 *quark_props[ deltaToPropIndex(delta) ]);
 	
-	pion_corr_fn[ pion_index ] = sumMulti(corr_fn, timeslice);
+	corr_fn[ pion_index ] = sumMulti(latt_corr_fn, timeslice);
 	pion_index++;
     }
   }
@@ -218,11 +218,11 @@ pions(multi1d<LatticeStaggeredPropagator>& quark_props,
   // Four link temporal
   delta = 0;
   delta[0] = delta[1] = delta[2] = 1;
-  corr_fn = - alpha(3)* beta(0)* beta(1) * beta(2)
+  latt_corr_fn = - alpha(3)* beta(0)* beta(1) * beta(2)
     *trace(adj(shiftDeltaProp(delta, quark_props[0]))
 	   *quark_props[ deltaToPropIndex(delta) ] );
   
-  pion_corr_fn[ pion_index ] = sumMulti(corr_fn, timeslice);
+  corr_fn[ pion_index ] = sumMulti(latt_corr_fn, timeslice);
   pion_index++;
 
   if( pion_index != NUM_STAG_PIONS) { 
