@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 1.18 2004-01-05 04:57:54 edwards Exp $
+// $Id: fermact.h,v 1.19 2004-01-05 15:32:18 edwards Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -379,23 +379,25 @@ template<typename T>
 class EvenOddStaggeredTypeFermAct : public StaggeredTypeFermAct<T>
 {
 public:
+  //! Provide a default version of qprop
   void qprop(LatticeFermion& psi,
-		     Handle<const ConnectState> state,
-		     const LatticeFermion& chi,
-		     enum InvType invType,
-		     const Real& RsdCG, 
-		     int MaxCG, 
-		     int& ncg_had);			                                                                                  
+	     Handle<const ConnectState> state,
+	     const LatticeFermion& chi,
+	     enum InvType invType,
+	     const Real& RsdCG, 
+	     int MaxCG,
+	     int& ncg_had);
+
   virtual const Real  getQuarkMass() const;
 
   //! Produce a linear operator for this action
   /*! NOTE: maybe this should be abstracted to a foundry class object */
   virtual const EvenOddLinearOperator<T>* linOp(Handle<const ConnectState> state) const = 0;
-                                                                                                                                                 
+
   //! Produce a linear operator M^dag.M for this action
   /*! NOTE: maybe this should be abstracted to a foundry class object */
   virtual const LinearOperator<T>* lMdagM(Handle<const ConnectState> state) const = 0;
-                                                                                                                                                 
+
   //! Virtual destructor to help with cleanup;
   virtual ~EvenOddStaggeredTypeFermAct() {}
 
