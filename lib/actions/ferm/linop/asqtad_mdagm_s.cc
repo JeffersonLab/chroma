@@ -1,4 +1,4 @@
-// $Id: asqtad_mdagm_s.cc,v 1.3 2004-01-07 13:50:07 bjoo Exp $
+// $Id: asqtad_mdagm_s.cc,v 1.4 2004-03-03 10:54:08 mcneile Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -42,6 +42,7 @@ void AsqtadMdagM::operator() (LatticeFermion& chi, const LatticeFermion& psi, en
 
   Real mass_sq = Mass*Mass;
   LatticeFermion tmp1, tmp2;
+  tmp1 = tmp2 = zero;
 
   //
   //  Chi     =  4m**2 Psi     -  D'  D'      Psi
