@@ -1,4 +1,4 @@
-// $Id: prec_wilson_linop_w.cc,v 1.8 2004-12-12 21:22:16 edwards Exp $
+// $Id: prec_wilson_linop_w.cc,v 1.9 2004-12-14 05:21:32 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson linear operator
  */
@@ -148,6 +148,97 @@ namespace Chroma
   {
     START_CODE();
 
+    ds_u.resize(Nd);
+
+    D.deriv(ds_u, chi, psi, isign, 0);
+    for(int mu = 0; mu < Nd; ++mu)
+      ds_u[mu] *= Real(-0.5);
+
+    END_CODE();
+  }
+
+
+  //! Derivative of odd-even linop component
+  /*!
+   * The operator acts on the entire odd sublattice
+   *
+   * \param chi 	  Pseudofermion field     	       (Write)
+   * \param psi 	  Pseudofermion field     	       (Read)
+   * \param isign   Flag ( PLUS | MINUS )   	       (Read)
+   */
+  void 
+  EvenOddPrecWilsonLinOp::derivOddEvenLinOp(multi1d<LatticeColorMatrix>& ds_u,
+					    const LatticeFermion& chi, 
+					    const LatticeFermion& psi, 
+					    enum PlusMinus isign) const
+  {
+    START_CODE();
+
+    ds_u.resize(Nd);
+
+    D.deriv(ds_u, chi, psi, isign, 1);
+    for(int mu = 0; mu < Nd; ++mu)
+      ds_u[mu] *= Real(-0.5);
+
+    END_CODE();
+  }
+
+
+
+#if 0
+  // THIS IS AN OPTIMIZED VERSION OF THE DERIVATIVE
+  /*! ds_u = -(1/4)*(1/(Nd+m))*[\dot(D)_oe*D_eo + D_oe*\dot(D_eo)]*psi */
+  void 
+  EvenOddPrecWilsonLinOp::deriv(multi1d<LatticeColorMatrix>& ds_u,
+				const LatticeFermion& chi, 
+				const LatticeFermion& psi, 
+				enum PlusMinus isign) const
+  {
+    START_CODE();
+
+    enum PlusMinus msign = (isign == PLUS) ? MINUS : PLUS;
+
+    ds_u.resize(Nd);
+
+    // ds_u = -(1/4)*(1/(Nd+m))*[\dot(D)_oe*D_eo + D_oe*\dot(D_eo)]*psi
+
+    // First term
+    //   ds_u = chi_o^dag * \dot(D)_oe * (D_eo*psi_o)
+    LatticeFermion tmp;
+    D.apply(tmp, psi, isign, 0);
+    D.deriv(ds_u, chi, tmp, isign, 1);
+
+    // Second term
+    //   ds_tmp = (D_eo^dag*chi_o)^dag * \dot(D)_eo * psi_o
+    multi1d<LatticeColorMatrix> ds_tmp(Nd);
+    D.apply(tmp, chi, msign, 0);
+    D.deriv(ds_tmp, tmp, psi, isign, 0);
+
+    for(int mu = 0; mu < Nd; ++mu)
+    {
+      ds_u[mu] += ds_tmp[mu];
+      ds_u[mu] *= Real(-0.25)*invfact;
+    }
+
+    END_CODE();
+  }
+#endif
+
+
+
+  //--------------------------------------------------------------------
+#if 0
+  // THIS IS OLD CODE
+
+  //! Derivative of even-odd linop component
+  void 
+  EvenOddPrecWilsonLinOp::derivEvenOddLinOp(multi1d<LatticeColorMatrix>& ds_u,
+					    const LatticeFermion& chi, 
+					    const LatticeFermion& psi, 
+					    enum PlusMinus isign) const
+  {
+    START_CODE();
+
     QDPIO::cerr << "Prec wilson deriv: not implemented yet" << endl;
     QDP_abort(1);
   
@@ -208,8 +299,6 @@ namespace Chroma
   }
 
 
-
-#if 0
 
 #error "This should be split apart into the even, odd critters to test the generic deriv() function. However, for optimization it can be done here since the diag pieces are trivial"
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_w.h,v 1.7 2004-12-12 21:22:16 edwards Exp $
+// $Id: lwldslash_w.h,v 1.8 2004-12-14 05:21:32 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -58,6 +58,9 @@ public:
   //! No real need for cleanup here
   ~QDPWilsonDslash() {}
 
+  //! Subset is all here
+  const OrderedSubset& subset() const {return all;}
+
   /**
    * Apply a dslash
    *
@@ -70,8 +73,39 @@ public:
    */
   void apply (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign, int cb) const;
 
-  //! Subset is all here
-  const OrderedSubset& subset() const {return all;}
+  //! Take deriv of D
+  /*!
+   * \param chi     left vector                                 (Read)
+   * \param psi     right vector                                (Read)
+   * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
+   *
+   * \return Computes   chi^dag * \dot(D} * psi  
+   */
+  void deriv(multi1d<LatticeColorMatrix>& ds_u, 
+	     const LatticeFermion& chi, const LatticeFermion& psi, 
+	     enum PlusMinus isign) const
+  {
+    ds_u.resize(Nd);
+
+    multi1d<LatticeColorMatrix> ds_tmp(Nd);
+    deriv(ds_u, chi, psi, isign, 0);
+    deriv(ds_tmp, chi, psi, isign, 1);
+    ds_u += ds_tmp;
+  }
+
+
+  //! Take deriv of D
+  /*!
+   * \param chi     left vector on cb                           (Read)
+   * \param psi     right vector on 1-cb                        (Read)
+   * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
+   * \param cb	    Checkerboard of chi vector                  (Read)
+   *
+   * \return Computes   chi^dag * \dot(D} * psi  
+   */
+  void deriv(multi1d<LatticeColorMatrix>& ds_u, 
+	     const LatticeFermion& chi, const LatticeFermion& psi, 
+	     enum PlusMinus isign, int cb) const;
 
 private:
   multi1d<LatticeColorMatrix> u;

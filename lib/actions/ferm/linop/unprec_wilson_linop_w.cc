@@ -1,4 +1,4 @@
-// $Id: unprec_wilson_linop_w.cc,v 1.10 2004-12-12 21:22:17 edwards Exp $
+// $Id: unprec_wilson_linop_w.cc,v 1.11 2004-12-14 05:21:32 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -62,6 +62,32 @@ namespace Chroma
 
   //! Derivative of unpreconditioned Wilson dM/dU
   /*!
+   * \param chi     left vector on cb                           (Read)
+   * \param psi     right vector on 1-cb                        (Read)
+   * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
+   * \param cb	    Checkerboard of chi vector                  (Read)
+   *
+   * \return Computes   chi^dag * \dot(D} * psi  
+   */
+  void 
+  UnprecWilsonLinOp::deriv(multi1d<LatticeColorMatrix>& ds_u,
+			   const LatticeFermion& chi, const LatticeFermion& psi, 
+			   enum PlusMinus isign) const
+  {
+    START_CODE();
+
+    D.deriv(ds_u, chi, psi, isign);
+
+    for(int mu = 0; mu < Nd; ++mu)
+      ds_u[mu] *= Real(-0.5);
+
+    END_CODE();
+  }
+
+
+#if 0
+  //! Derivative of unpreconditioned Wilson dM/dU
+  /*!
    * This subroutine applies the derivative of the Unprecontitioned
    * Wilson Operator with respect to the gauge fields to a vector 
    * Psi,
@@ -120,8 +146,6 @@ namespace Chroma
     END_CODE();
   }
 
-
-#if 0
 
   //! Computes the derivative of the fermionic action respect to the link field
   /*!
