@@ -1,4 +1,4 @@
-// $Id: asqtad_fermact_s.cc,v 1.6 2004-01-06 13:59:49 bjoo Exp $
+// $Id: asqtad_fermact_s.cc,v 1.7 2004-11-06 11:27:27 mcneile Exp $
 /*! \file
  *  \brief Asqtad staggered fermion action
  */
@@ -25,7 +25,7 @@
  * \param u_fat, u_triple 	 fat7 and triple links    (Read)
  * \u has already had KS phases multiplied in.
  */
-const EvenOddLinearOperator<LatticeFermion>* 
+const EvenOddLinearOperator<LatticeStaggeredFermion>* 
 AsqtadFermAct::linOp(Handle<const ConnectState> state_) const
 {
 
@@ -41,8 +41,8 @@ AsqtadFermAct::linOp(Handle<const ConnectState> state_) const
   // OR from the Proxy. We then get access to all the virtual methods
   // in the AsqtadConnectState. Only Restriction: We have to use the
   // get() methods as they are all the base class provides.
-  const AsqtadConnectStateBase<LatticeFermion>& state = 
-    dynamic_cast<const AsqtadConnectStateBase<LatticeFermion>&>(*state_);
+  const AsqtadConnectStateBase<LatticeStaggeredFermion>& state = 
+    dynamic_cast<const AsqtadConnectStateBase<LatticeStaggeredFermion>&>(*state_);
 
   return new AsqtadLinOp(state.getFatLinks(), state.getTripleLinks(), Mass);
 }
@@ -56,11 +56,11 @@ AsqtadFermAct::linOp(Handle<const ConnectState> state_) const
  * \param u_fat, u_triple 	 fat7 and triple links	       (Read)
  */
 
-const LinearOperator<LatticeFermion>* 
+const LinearOperator<LatticeStaggeredFermion>* 
 AsqtadFermAct::lMdagM(Handle<const ConnectState> state_) const
 {
-  const AsqtadConnectStateBase<LatticeFermion>& state = 
-    dynamic_cast<const AsqtadConnectStateBase<LatticeFermion>&>(*state_);
+  const AsqtadConnectStateBase<LatticeStaggeredFermion>& state = 
+    dynamic_cast<const AsqtadConnectStateBase<LatticeStaggeredFermion>&>(*state_);
   
   return new AsqtadMdagM(state.getFatLinks(), state.getTripleLinks(), Mass);
 }
@@ -69,7 +69,7 @@ AsqtadFermAct::lMdagM(Handle<const ConnectState> state_) const
 
 using namespace StagPhases;
 
-const AsqtadConnectStateBase<LatticeFermion>*
+const AsqtadConnectStateBase<LatticeStaggeredFermion>*
 AsqtadFermAct::createState(const multi1d<LatticeColorMatrix>& u_) const
 {
   multi1d<LatticeColorMatrix> u_with_phases(Nd);
@@ -91,5 +91,5 @@ AsqtadFermAct::createState(const multi1d<LatticeColorMatrix>& u_) const
   Fat7_Links(u_with_phases, u_fat, u0);
   Triple_Links(u_with_phases, u_triple, u0);
 
-  return new AsqtadConnectState<LatticeFermion>(u_with_phases, u_fat, u_triple);
+  return new AsqtadConnectState<LatticeStaggeredFermion>(u_with_phases, u_fat, u_triple);
 }

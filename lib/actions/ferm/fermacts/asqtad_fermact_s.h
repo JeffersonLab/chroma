@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: asqtad_fermact_s.h,v 1.6 2004-01-06 13:59:49 bjoo Exp $
+// $Id: asqtad_fermact_s.h,v 1.7 2004-11-06 11:27:27 mcneile Exp $
 /*! \file
  *  \brief Asqtad staggered fermion action
  */
@@ -16,11 +16,11 @@ using namespace QDP;
 /*! \ingroup fermact
  *
  */
-class AsqtadFermAct : public EvenOddStaggeredTypeFermAct<LatticeFermion>
+class AsqtadFermAct : public EvenOddStaggeredTypeFermAct<LatticeStaggeredFermion>
 {
 public:
   //! General FermBC
-  AsqtadFermAct(Handle< FermBC<LatticeFermion> > fbc_, 
+  AsqtadFermAct(Handle< FermBC<LatticeStaggeredFermion> > fbc_, 
 		const Real Mass_, const Real u0_) : 
     fbc(fbc_), Mass(Mass_), u0(u0_) {}
   
@@ -33,17 +33,17 @@ public:
     {fbc=a.fbc; Mass=a.Mass, u0=a.u0; return *this;}
 
   //! Return the fermion BC object for this action
-  const FermBC<LatticeFermion>& getFermBC() const {return *fbc;}
+  const FermBC<LatticeStaggeredFermion>& getFermBC() const {return *fbc;}
 
   //! Create state should apply the BC
-  const AsqtadConnectStateBase<LatticeFermion>* createState(const multi1d<LatticeColorMatrix>& u_) const;
+  const AsqtadConnectStateBase<LatticeStaggeredFermion>* createState(const multi1d<LatticeColorMatrix>& u_) const;
 
   //! Produce a linear operator for this action
-  const EvenOddLinearOperator<LatticeFermion>* linOp( Handle< const ConnectState> state_) const;
+  const EvenOddLinearOperator<LatticeStaggeredFermion>* linOp( Handle< const ConnectState> state_) const;
 
   //! Produce a linear operator M^dag.M for this action
   
-  const LinearOperator<LatticeFermion>* lMdagM(Handle< const ConnectState >  state_) 
+  const LinearOperator<LatticeStaggeredFermion>* lMdagM(Handle< const ConnectState >  state_) 
     const;
 
   //! accessors 
@@ -65,7 +65,7 @@ private:
   AsqtadFermAct() {} //hide default constructor
   
 private:
-  Handle< FermBC<LatticeFermion> >  fbc;
+  Handle< FermBC<LatticeStaggeredFermion> >  fbc;
   Real Mass;
   Real u0;
 };

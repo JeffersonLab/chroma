@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: asqtad_mdagm_s.h,v 1.3 2004-01-07 13:50:07 bjoo Exp $
+// $Id: asqtad_mdagm_s.h,v 1.4 2004-11-06 11:35:07 mcneile Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -42,7 +42,7 @@ using namespace QDP;
  * 	     E             EO OE
  */
 
-class AsqtadMdagM : public LinearOperator<LatticeFermion>
+class AsqtadMdagM : public LinearOperator<LatticeStaggeredFermion>
 {
 public:
   //! Partial constructor
@@ -62,7 +62,7 @@ public:
   const OrderedSubset& subset() const {return rb[0];}
 
   //! Apply the operator onto a source vector
-  void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const;
+  void operator() (LatticeStaggeredFermion& chi, const LatticeStaggeredFermion& psi, enum PlusMinus isign) const;
 
 private:
   Real Mass;

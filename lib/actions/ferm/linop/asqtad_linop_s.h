@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: asqtad_linop_s.h,v 1.5 2004-01-07 13:50:07 bjoo Exp $
+// $Id: asqtad_linop_s.h,v 1.6 2004-11-06 11:30:45 mcneile Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -20,7 +20,7 @@ using namespace QDP;
  * This routine is specific to Staggered fermions!
  */
 
-class AsqtadLinOp : public EvenOddLinearOperator<LatticeFermion>
+class AsqtadLinOp : public EvenOddLinearOperator<LatticeStaggeredFermion>
 {
 public:
   //! Partial constructor - Must use create later
@@ -43,22 +43,22 @@ public:
   ~AsqtadLinOp() {}
 
   //! Apply the the even-even block onto a source vector
-  inline void evenEvenLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
+  inline void evenEvenLinOp(LatticeStaggeredFermion& chi, const LatticeStaggeredFermion& psi, 
 		     enum PlusMinus isign) const 
   {
     chi[ rb[0] ] = 2*Mass*psi;
   }
   
   //! Apply the the even-odd block onto a source vector
-  void evenOddLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
+  void evenOddLinOp(LatticeStaggeredFermion& chi, const LatticeStaggeredFermion& psi, 
 		    enum PlusMinus isign) const;
 
   //! Apply the the odd-even block onto a source vector
-  void oddEvenLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
+  void oddEvenLinOp(LatticeStaggeredFermion& chi, const LatticeStaggeredFermion& psi, 
 		    enum PlusMinus isign) const;
 
   //! Apply the the odd-odd block onto a source vector
-  inline void oddOddLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
+  inline void oddOddLinOp(LatticeStaggeredFermion& chi, const LatticeStaggeredFermion& psi, 
 		   enum PlusMinus isign) const
   {
     chi[ rb[1] ] = 2*Mass*psi;

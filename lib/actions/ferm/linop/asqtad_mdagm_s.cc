@@ -1,4 +1,4 @@
-// $Id: asqtad_mdagm_s.cc,v 1.6 2004-07-28 03:47:26 edwards Exp $
+// $Id: asqtad_mdagm_s.cc,v 1.7 2004-11-06 11:35:07 mcneile Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -35,12 +35,12 @@ void AsqtadMdagM::create(const multi1d<LatticeColorMatrix>& u_fat_, const multi1
  * \param isign   Flag ( PLUS | MINUS )   	       (Read)
  * \param cb      Checkerboard of OUTPUT VECTOR        (Read)
  */
-void AsqtadMdagM::operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const
+void AsqtadMdagM::operator() (LatticeStaggeredFermion& chi, const LatticeStaggeredFermion& psi, enum PlusMinus isign) const
 {
   START_CODE();
 
   Real mass_sq = Mass*Mass;
-  LatticeFermion tmp1, tmp2;
+  LatticeStaggeredFermion tmp1, tmp2;
   tmp1 = tmp2 = zero;
 
   //

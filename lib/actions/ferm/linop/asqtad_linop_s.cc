@@ -1,4 +1,4 @@
-// $Id: asqtad_linop_s.cc,v 1.5 2004-01-07 13:50:07 bjoo Exp $
+// $Id: asqtad_linop_s.cc,v 1.6 2004-11-06 11:30:45 mcneile Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -8,15 +8,15 @@
 #include "linop.h"
 
 
-void AsqtadLinOp::evenOddLinOp(LatticeFermion& chi, 
-					  const LatticeFermion& psi, 
+void AsqtadLinOp::evenOddLinOp(LatticeStaggeredFermion& chi, 
+					  const LatticeStaggeredFermion& psi, 
 					  enum PlusMinus isign) const
 {
   D.apply(chi, psi, isign, 0);
 }
 
-void AsqtadLinOp::oddEvenLinOp(LatticeFermion& chi, 
-					  const LatticeFermion& psi, 
+void AsqtadLinOp::oddEvenLinOp(LatticeStaggeredFermion& chi, 
+					  const LatticeStaggeredFermion& psi, 
 					  enum PlusMinus isign) const
 {
   D.apply(chi, psi, isign, 1);
