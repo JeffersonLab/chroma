@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.95 2004-01-16 15:24:40 kostas Exp $
+# $Id: Makefile.am,v 1.96 2004-01-16 15:38:37 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -76,7 +76,7 @@ nobase_include_HEADERS = \
 	actions/gauge/gauge.h \
 	io/io.h io/milc_io.h io/param_io.h io/qprop_io.h io/readmilc.h \
 	io/readszin.h io/szin_io.h io/writemilc.h io/writeszin.h \
-	meas/eig/eig.h \
+	meas/eig/eig.h meas/eig/gramschm.h meas/eig/ritz.h sn_jacob.h \
 	meas/gfix/axgauge.h meas/gfix/coulgauge.h \
 	meas/gfix/gfix.h meas/gfix/grelax.h meas/gfix/polar_dec.h \
 	meas/gfix/rot_colvec.h meas/glue/glue.h meas/glue/mesplq.h \
@@ -93,8 +93,8 @@ nobase_include_HEADERS = \
 	util/gauge/hotst.h util/gauge/phfctr.h util/gauge/reunit.h \
 	util/gauge/rgauge.h util/gauge/su2extract.h util/gauge/su3proj.h \
 	util/gauge/sunfill.h util/gauge/sun_proj.h util/gauge/taproj.h \
-	util/gauge/unit_check.h util/util.h
-#meas/eig/gramschm.h meas/eig/ritz.h 
+	util/gauge/unit_check.h util/util.h \
+	meas/eig/eig_spec_bj_w.h
 
 if BUILD_WILSON_LIBS
 nobase_include_HEADERS += \
@@ -203,7 +203,8 @@ libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	       minvcg.cc qprop_io.cc \
                milc_io.cc readmilc.cc writemilc.cc \
                axgauge.cc coulgauge.cc grelax.cc polar_dec.cc rot_colvec.cc \
-	       transf.cc param_io.cc  # ritz.cc gramschm.cc
+	       transf.cc param_io.cc gramschm.cc ritz.cc sn_jacob.cc \
+	       eig_spec_bj_w.cc
 
 #
 # Object files to add if building the Wilson Builds...

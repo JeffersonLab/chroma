@@ -1,12 +1,12 @@
-// $Id: sn_jacob.cc,v 1.1 2004-01-04 21:56:04 edwards Exp $
+// $Id: sn_jacob.cc,v 1.2 2004-01-16 15:38:37 bjoo Exp $
 /*! \file
  *  \brief Single-node Jacobi routine
  */
 
-#error "CONVERSION NOT COMPLETE"
 
 #include "chromabase.h"
-#include "meas/eig/ritz.h"
+#include "meas/eig/sn_jacob.h"
+
 
 using namespace QDP;
 
@@ -27,23 +27,19 @@ using namespace QDP;
  *  Ncb		Number of sublattices		(Read)
  *  N_Count	Number of Jacobi iters		(Write) 
  */
-
-void SN_Jacob(psi, N_eig, lambda, off_diag, Toler, N_max,
-	      Ncb, n_count)
-
-multi2d<LatticeFermion> psi(Ncb, N_eig);
-int N_eig;
-multi1d<Real> lambda(N_eig);
-multi1d<Complex> off_diag(N_eig*(N_eig-1)/2);
-Real Toler;
-int N_max;
-int Ncb;
-int n_count;
+template <typename T>
+void SN_Jacob_t(multi1d<T>& psi, 
+		const int N_eig, 
+		multi1d<Real>& lambda, 
+		multi1d<Complex>& off_diag, 
+		Real tolerance, 
+		int N_max,
+		int& n_count)
 {
   START_CODE("SN_Jacob");
   
-  LatticeFermion psi_t1;
-  LatticeFermion psi_t2;
+  T psi_t1;
+  T psi_t2;
   Complex ctmp1;
   Complex ctmp2;
   Complex v12;
@@ -67,50 +63,54 @@ int n_count;
   int mi;
   int mj;
   int i_rot;
-  
-  Real tol_sq = Toler * Toler;
+  int k;
+
+  Real tol_sq = tolerance * tolerance;
             
-  for(int k = 0; k <= N_max; k++)
-  {
+  for(k = 0; k <= N_max; k++) {
+    
     i_rot = 0;
     ij = 0;
-    for(j = 1; j < N_eig; j++)
-      for(i = 0; i < j; i++)
-      {
-	dd = real(adj(off_diag[ij]) * off_diag[ij]);
+    
+    for(j = 1; j < N_eig; j++) {
+      for(i = 0; i < j; i++) {
+	
+	dd = real(conj(off_diag[ij]) * off_diag[ij]);
 	ftmp = fabs(tol_sq * lambda[i] * lambda[j]);
 
-	if( dd > ftmp)
-	{
-	  /* Make a rotation to set off-diagonal part to zero */
+	if( toBool( dd > ftmp) ) {
+
+	  // Make a rotation to set off-diagonal part to zero 
 	  i_rot++;
 	  dd = sqrt(dd);
+
 	  acc = Real(100) * dd;
+
 	  diff_l = lambda[j] -  lambda[i];
 	  ftmp = fabs(diff_l);
 
-	  if( (ftmp+acc) == ftmp )
-	  {
+
+	  if( toBool( (ftmp+acc) == ftmp ) ) {
+	    
 	    t = dd / diff_l;
 	  }
-	  else
-	  {
-	    theta = 0.5 * diff_l / dd;
-	    t = sqrt(1.0 + theta*theta);
+	  else {
+	    theta = Real(0.5) * diff_l / dd;
+	    t = sqrt(Real(1) + theta*theta);
 	    ftmp = fabs(theta);
-	    t = 1.0 / (ftmp+t);
-	    if( theta < 0.0 ) 
+	    t = Real(1) / (ftmp+t);
+	    if( toBool( theta < Real(0) ) ) { 
 	      t = -t;
+	    }
 	  }
 
-	  if( diff_l >= 0 )
-	  {
-	    c = 1.0 / sqrt(1.0 + t*t);
+	  if( toBool( diff_l >= Real(0) ) ) {
+	    c = Real(1) / sqrt( Real(1) + t*t);
 	    s = - t * c;
 	  }
 	  else
 	  {
-	    s = 1.0 / sqrt(1.0 + t*t);
+	    s = Real(1) / sqrt( Real(1) + t*t);
 	    c = t * s;
 	  }
 
@@ -120,34 +120,32 @@ int n_count;
 	  ftmp = s * s;
 	  al1 += ftmp * lambda[j];
 	  al2 += ftmp * lambda[i];
-	  ftmp = 2.0 * dd * s * c;
+	  ftmp = Real(2) * dd * s * c;
 	  al1 += ftmp;
 	  al2 -= ftmp;
 	  lambda[i] = al1;
 	  lambda[j] = al2;
 	  v11 = c;
 	  v12 = (s / dd) * off_diag[ij];
-	  v21 = -adj(v12);
-	  off_diag[ij] = 0;
+	  v21 = -conj(v12);
+	  off_diag[ij] = Real(0);
 
-	  /* Now rotate the eigenvectors */
-	  for(cb = 0; cb < Ncb; cb++)
-	  {
-	    psi_t1 = psi[i][cb] * v11;
-	    /* psi_t1 += psi[j][cb] * adj(v12); Wrong?? */
-	    psi_t1 -= psi[j][cb] * v21;
-	    psi_t2 = psi[j][cb] * v11;
-	    psi_t2 -= psi[i][cb] * v12;
-	    psi[i][cb] = psi_t1;
-	    psi[j][cb] = psi_t2;
-	  }
+	  // Now rotate the eigenvectors */
+	  psi_t1 = psi[i] * v11;
+	  /* psi_t1 += psi[j][cb] * adj(v12); Wrong?? */
+	  psi_t1 -= psi[j] * v21;
+	  psi_t2 = psi[j] * v11;
+	  psi_t2 -= psi[i] * v12;
+	  psi[i] = psi_t1;
+	  psi[j] = psi_t2;
+	  
 
-	  /* Rotate the other matrix elements */
-	  for(m = 0; m < N_eig; m++)
-	    if( m != i && m != j )
-	    {
-	      if( m < i )
-	      {
+	  // Rotate the other matrix elements 
+	  for(m = 0; m < N_eig; m++) {
+	    if( m != i && m != j ) {
+	    
+	      if( m < i ) {
+	     
 		mi = i * (i-1) / 2 + m;
 		mj = j * (j-1) / 2 + m;
 		ctmp1 = off_diag[mi] * v11;
@@ -158,68 +156,79 @@ int n_count;
 		off_diag[mi] = ctmp1;
 		off_diag[mj] = ctmp2;
 	      }
-	      else if( m < j)
-	      {
+	      else if( m < j) {
+	      
 		mi = m * (m-1) / 2 + i;
 		mj = j * (j-1) / 2 + m;
-		ctmp1 = adj(off_diag[mi]) * v11;
+		ctmp1 = conj(off_diag[mi]) * v11;
 		ctmp1 -= off_diag[mj] * v21;
 		ctmp2 = off_diag[mj] * v11;
-		ctmp2 -= adj(off_diag[mi]) * v12;
-		off_diag[mi] = adj(ctmp1);
+		ctmp2 -= conj(off_diag[mi]) * v12;
+		off_diag[mi] = conj(ctmp1);
 		off_diag[mj] = ctmp2;
 	      }
-	      else
-	      {
+	      else {
+	      
 		mi = m * (m-1) / 2 + i;
 		mj = m * (m-1) / 2 + j;
-		ctmp1 = adj(off_diag[mi]) * v11;
-		ctmp1 -= adj(off_diag[mj]) * v21;
-		ctmp2 = adj(off_diag[mj]) * v11;
-		ctmp2 -= adj(off_diag[mi]) * v12;
-		off_diag[mi] = adj(ctmp1);
-		off_diag[mj] = adj(ctmp2);
+		ctmp1 = conj(off_diag[mi]) * v11;
+		ctmp1 -= conj(off_diag[mj]) * v21;
+		ctmp2 = conj(off_diag[mj]) * v11;
+		ctmp2 -= conj(off_diag[mi]) * v12;
+		off_diag[mi] = conj(ctmp1);
+		off_diag[mj] = conj(ctmp2);
 	      }
-	    }
-	}
-
-	ij++;
-      }
-
-    if( i_rot == 0 )
-    {
-      n_count = k;
-      QDPIO::cout << "Jacobi converged after " << k << " iters" << endl;
-
-      /* Sort the eigenvalues */
-      for(j = 1; j < N_eig; j++)
-	for(i = 0; i < j; i++)
-	{
-	  ftmp = fabs(lambda[j]);
-	  dd = fabs(lambda[i]);
-	  /* if( lambda[j] < lambda[i] ) */
-	  if( ftmp < dd )
-	  {
-	    ftmp = lambda[i];
-	    lambda[i] = lambda[j];
-	    lambda[j] = ftmp;
-	    for(cb = 0; cb < Ncb; cb++)
-	    {
-	      psi_t1 = psi[i][cb];
-	      psi_t2 = psi[j][cb];
-	      psi[j][cb] = psi_t1;
-	      psi[i][cb] = psi_t2;
 	    }
 	  }
 	}
+	
+	ij++;
+      }
+    }
 
+    if( i_rot == 0 ) {
+    
+      n_count = k;
+      QDPIO::cout << "Jacobi converged after " << k << " iters" << endl;
+      
+      /* Sort the eigenvalues */
+      for(j = 1; j < N_eig; j++) {
+	for(i = 0; i < j; i++) {
+	  
+	  ftmp = fabs(lambda[j]);
+	  dd = fabs(lambda[i]);
+	  /* if( lambda[j] < lambda[i] ) */
+	  if( toBool( ftmp < dd ) ) {
+	  
+	    ftmp = lambda[i];
+	    lambda[i] = lambda[j];
+	    lambda[j] = ftmp;
+	    
+	    
+	    psi_t1 = psi[i];
+	    psi[i] = psi[j];
+	    psi[j] = psi_t1;
+	  }
+	}
+      }
       END_CODE("SN_Jacob");
       return;
     }
   }
 
   n_count = k;
-  QDPIO::cerr << "too many Jacobi iterations " << k << endl;
-  QDP_abort(1);
+  QDP_error_exit("too many Jacobi iterations: %d\n" ,k );
   END_CODE("SN_Jacob");
+}
+
+
+void SN_Jacob(multi1d<LatticeFermion>& psi, 
+	      const int N_eig, 
+	      multi1d<Real>& lambda, 
+	      multi1d<Complex>& off_diag, 
+	      Real tolerance, 
+	      int N_max,
+	      int& n_count)
+{
+  SN_Jacob_t(psi, N_eig, lambda, off_diag, tolerance, N_max, n_count);
 }
