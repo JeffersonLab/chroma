@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_w_sse.h,v 1.13 2005-01-14 20:13:05 edwards Exp $
+// $Id: lwldslash_w_sse.h,v 1.14 2005-02-20 02:55:48 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -48,10 +48,10 @@ namespace Chroma
   {
   public:
     //! Empty constructor. Must use create later
-    SSEWilsonDslash() {}
+    SSEWilsonDslash() {init();}
 
     //! Full constructor
-    SSEWilsonDslash(const multi1d<LatticeColorMatrix>& u_) {create(u_);}
+    SSEWilsonDslash(const multi1d<LatticeColorMatrix>& u_) {init();create(u_);}
 
     //! Creation routine
     void create(const multi1d<LatticeColorMatrix>& u_);
@@ -74,6 +74,9 @@ namespace Chroma
   protected:
     //! Get the u field
     const multi1d<LatticeColorMatrix>& getU() const {return u;}
+
+    //! Init internals
+    void init();
 
   private:
     multi1d<PrimitiveSU3Matrix> packed_gauge;

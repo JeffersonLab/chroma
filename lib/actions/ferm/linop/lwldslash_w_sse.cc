@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_sse.cc,v 1.23 2005-01-14 20:13:05 edwards Exp $
+// $Id: lwldslash_w_sse.cc,v 1.24 2005-02-20 02:55:48 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -20,19 +20,26 @@ namespace Chroma
     void sse_su3dslash_wilson(SSEREAL* u, SSEREAL *psi, SSEREAL *res, int isign, int cb);
   }
 
-  //! Creation routine
-  void SSEWilsonDslash::create(const multi1d<LatticeColorMatrix>& u_)
+  //! Initialization routine
+  void SSEWilsonDslash::init()
   {
     // Initialize internal structures for DSLASH
 #if 0
     QDPIO::cout << "Calling init_sse_su3dslash()... " << endl;
 #endif
 
+    // Initialize using the total problem size
+    init_sse_su3dslash(Layout::lattSize().slice());
+  }
+
+
+  //! Creation routine
+  void SSEWilsonDslash::create(const multi1d<LatticeColorMatrix>& u_)
+  {
     // Save a copy of the original fields
     u = u_;
 
-    // Initialize using the total problem size
-    init_sse_su3dslash(Layout::lattSize().slice());
+    QDPIO::cout << "u.size=" << u.size() << " u_.size=" << u_.size() << endl;
 
     // Pack the gauge fields
     packed_gauge.resize( Nd * Layout::sitesOnNode() );
