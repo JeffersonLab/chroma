@@ -1,3 +1,3 @@
 SUBDIRS = include lib mainprogs
 
-EXTRA_DIST=lib root mainprogs
+## EXTRA_DIST=lib root mainprogs
