@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.27 2004-01-06 04:59:14 edwards Exp $
+// $Id: propagator.cc,v 1.28 2004-01-06 05:02:53 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -94,7 +94,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     switch (input.io_version.version) 
     {
       /**************************************************************************/
-    case 1 :
+    case 2 :
       /**************************************************************************/
       break;
 
@@ -131,12 +131,12 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
 
 #if 0
       for (int i=0; i < input.param.mass.size(); ++i) {
-	if (toBool(input.param.Kappa[i] < 0.0)) {
-	  QDPIO::cerr << "Unreasonable value for Kappa." << endl;
-	  QDPIO::cerr << "  Kappa[" << i << "] = " << input.param.Kappa[i] << endl;
+	if (toBool(input.param.mass[i] < 0.0)) {
+	  QDPIO::cerr << "Unreasonable value for mass." << endl;
+	  QDPIO::cerr << "  mass[" << i << "] = " << input.param.mass[i] << endl;
 	  QDP_abort(1);
 	} else {
-	  QDPIO::cout << " Spectroscopy Kappa: " << input.param.Kappa[i] << endl;
+	  QDPIO::cout << " Spectroscopy mass: " << input.param.mass[i] << endl;
 	}
       }
 #endif
