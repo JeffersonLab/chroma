@@ -1,4 +1,4 @@
-// $Id: stagpbp_s.cc,v 1.1 2004-10-04 02:59:47 edwards Exp $
+// $Id: stagpbp_s.cc,v 1.2 2004-11-20 19:48:53 edwards Exp $
 /*! \file
  *  \brief Calculates noise estimator for the staggered trace 
  */
@@ -55,9 +55,8 @@ void StagPbp(XMLWriter& xml_out,
   Double TrBdag_B_avg;
   multi1d<Double> TrBdag_Eta_avg(numMass);
   multi1d<Double> TrEtadag_Eta_avg(numMass);
-  multi1d<LatticeFermion> eta(numMass);
-  LatticeFermion tmp;
-  LatticeFermion b;
+  multi1d<LatticeStaggeredFermion> eta(numMass);
+  LatticeStaggeredFermion b;
   LatticeReal lrtrace_aux;
 
   Double ddummy1;

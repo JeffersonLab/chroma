@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.259 2004-11-17 16:51:53 edwards Exp $
+# $Id: Makefile.in,v 1.260 2004-11-20 19:48:53 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -135,7 +135,7 @@ host_triplet = @host@
 @BUILD_STAGGERED_LIBS_TRUE@	actions/ferm/linop/improvement_terms_s.h \
 @BUILD_STAGGERED_LIBS_TRUE@	actions/ferm/linop/linop_s.h \
 @BUILD_STAGGERED_LIBS_TRUE@	io/follana_io_s.h io/io_s.h \
-@BUILD_STAGGERED_LIBS_TRUE@	meas/eig/eig_s.h meas/hadron/baryon_w.h \
+@BUILD_STAGGERED_LIBS_TRUE@	meas/eig/eig_s.h meas/hadron/baryon_s.h \
 @BUILD_STAGGERED_LIBS_TRUE@	meas/hadron/hadron_s.h \
 @BUILD_STAGGERED_LIBS_TRUE@	meas/hadron/mesphas_follana_s.h meas/hadron/mesphas_s.h \
 @BUILD_STAGGERED_LIBS_TRUE@	meas/hadron/pions_s.h  meas/hadron/walfil_s.h \
