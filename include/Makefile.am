@@ -1,1 +1,1 @@
-include_HEADERS = common_declarations.h defs.h geom.h primitives.h szin.h
+include_HEADERS = common_declarations.h geom.h primitives.h szin.h
