@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hamilton.h,v 1.5 2003-12-31 23:59:28 edwards Exp $
+// $Id: hamilton.h,v 1.6 2004-01-01 22:14:43 edwards Exp $
 /*! \file
  *  \brief Hamiltonian systems
  */
@@ -11,11 +11,12 @@
 
 using namespace QDP;
 
+//----------------------------------------------------------------------------------
 //! Abstract Hamiltonian system
 /*!
  * \ingroup molecdyn
  *
- * This is a really crude first attempt at a Hamiltonian system.
+ * This is a crude first attempt at a Hamiltonian system.
  * Lots more thought needed here.
  *
  * Maybe these functions should be global? No, I think there is a case
@@ -28,18 +29,16 @@ using namespace QDP;
  * There should be some general notion of "Coordinates" and "Conjugate Momenta".
  * How pseudo-ferm cleanly fit in that picture in this code is not clear
  * (to me, at least).
- *
- * NOTE: dsdu is found in the fermion (or gauge) action
  */
 
 template<class GA, class FA> 
-class HamSys
+class AbstractHamSys
 {
 public:
   // Derived class constructor should take params like Npf
 
   //! Virtual destructor
-  virtual ~HamSys() {}
+  virtual ~AbstractHamSys() {}
 
   //! Generate new momenta and fermionic (fixed) fields
   /*! Default version */
@@ -49,12 +48,12 @@ public:
       newMom();    // new momenta
     }
 
-  //! Copy the non-field portion of another HamSys
-  virtual void copyNonFields(const HamSys& hs) = 0;
+  //! Copy the non-field portion of another AbstractHamSys
+  virtual void copyNonFields(const AbstractHamSys& hs) = 0;
 
-  //! Copy the field portion of another HamSys
+  //! Copy the field portion of another AbstractHamSys
   /*! Default version */
-  virtual void copyFields(const HamSys& hs)
+  virtual void copyFields(const AbstractHamSys& hs)
     {
       copyCoord(hs);
       copyMom(hs);
@@ -64,10 +63,10 @@ public:
   //! Compute dS/dU
   virtual void dsdu(multi1d<LatticeColorMatrix>& ds_u) = 0;
 
-protected:
   //! Refresh the momenta
-  virtual void newMom() = 0;
+  virtual void newMom() const = 0;
 
+protected:
   //! Form the fermionic noise
   /*! 
    * Assuming here some kind of opaque state .
@@ -75,20 +74,83 @@ protected:
    * What to do with NCG?? int& n_congrd, could return it
    */
   virtual void newFerm() = 0; 
+};
 
-#if 0
-// Probably shouldn't be here
-  //! Compute dS/dU
-  virtual void dsdu_g(multi1d<LatticeColorMatrix>& ds_u,
-		    multi1d<LatticeColorMatrix>& u) const = 0;
 
-  //! Compute dS_f/dU
-  virtual void dsdu_f(multi1d<LatticeColorMatrix>& result,
-		      multi1d<LatticeColorMatrix>& u,
-		      const multi1d<LatticeFermion>& psi) const = 0;
-#endif
+//! Abstract Hamiltonian system
+/*!
+ * \ingroup molecdyn
+ *
+ * This class is more specific to the case of having fermions
+ * and gauge fields as coordinates.
+ */
 
+template<class GA, class FA> 
+class HamSys : public AbstractHamSys<GA,FA>
+{
 public:
+  // Derived class constructor should take params like Npf
+
+  //! Virtual destructor
+  virtual ~HamSys() {}
+
+  //! Refresh the momenta
+  /*! Default version */
+  virtual void newMom()
+    {
+      /* Generate new momenta */
+      for(int mu = 0; mu < Nd; ++mu)
+      {
+	gaussian(getMom()[mu]);
+	taproj(getMom()[mu]);
+      }
+
+      // Zero out the momenta on boundaries where the gauge fields
+      // are held fixed.
+      getGaugeAct().zero(getMom());
+    }
+
+  //! Copy the coordinate portion of another HamSys
+  /*! Default version */
+  virtual void copyCoord(const HamSys& hs)
+    {
+      getU() = hs.getU();
+    }
+
+  //! Copy the momenta portion of another HamSys
+  /*! Default version */
+  virtual void copyMom(const HamSys& hs)
+    {
+      getMom() = hs.getMom();
+    }
+
+  //! Copy the fermion portion of another HamSys
+  /*! Default version */
+  virtual void copyFerm(const HamSys& hs)
+    {
+      getPF() = hs.getPF();
+      getPsi() = hs.getPsi();
+    }
+
+protected:
+  //! The number of pseudo-fermions in use
+  /*! This is a convenience function for getting the multi1d PF fields and using size() */
+  virtual int numPF() const = 0;
+
+  //! The gauge action in use.
+  /*! The return type could instead be GA. */
+  virtual const GaugeAction& getGaugeAct() const = 0;
+
+  //! The fermion action in use
+  /*! 
+   * Maybe should be a precond action? Don't think so here.
+   * Actually, maybe need appropriate derived FermAct to get precond. matrices.
+   *
+   * The return type could instead be FA .
+   */
+  virtual const FermionAction<LatticeFermion>& getFermAct() const = 0;
+
+protected:
   // Somehow this stuff should be less public - maybe in a derived class
   //! Access momenta
   virtual const multi1d<LatticeColorMatrix>& getMom() const = 0;
@@ -115,7 +177,6 @@ public:
  *  Suitable for use in a "Phi" HMD/HMC algorithm.
  *
  */
-
 template<class GA, class FA> 
 class ExactHamSys : public HamSys<GA,FA>
 {
@@ -138,6 +199,51 @@ public:
     {ke = mesKE(); pe = mesPE(); fe = mesFE();}
 
 protected:
+  //! Form the fermionic noise
+  virtual void newFerm()
+    {
+      // The connection state (of the gauge field) includes any fermion BC
+      Handle<const ConnectState> state(getFermAct().createState(getU()));
+
+      // Get the linop
+      /*! WARNING: need a generic template param here */
+      Handle<const LinearOperator<LatticeFermion> > A(getFermAct().linOp(state));
+
+      // Generate the pseudofermions
+      for(int i=0; i < numPF(); ++i)
+      {
+	// Initialize psi
+	LatticeFermion psi = zero;
+  
+	// Fill eta with random gaussian noise: < eta_dagger * eta > = 1
+	LatticeFermion eta = zero;
+	gaussian(eta, A.subset());
+  
+	// Zero out any potential constant boundaries
+	getFermAct().zero(eta);  // WARNING: WHAT ABOUT SUBSET HERE???
+
+	// chi = M_dag*eta
+	LatticeFermion chi;
+	A(chi, eta, MINUS);
+
+	// psi = (1/(M_dag*M))*chi
+	InvCG2(*A, chi, psi, RsdCG(), MaxCG(), n_count);
+
+	// Out of paranoia, zero out the boundaries here
+	/* NOTE: This may not be needed */
+	getFermAct().zero(psi);  // WARNING: WHAT ABOUT SUBSET HERE???
+
+	// Insert into the HamSys
+	getPsi()[i] = psi;
+      }
+    }
+
+  //! Get the residual
+  virtual Real getRsdCG() const = 0;
+
+  //! Get the max number of iterations
+  virtual Real getMaxCG() const = 0;
+
   //! Measure the potential energy
   virtual Double mesPE() = 0;
 
@@ -183,6 +289,8 @@ public:
       gauge().zero(ds_u);   // Zero out any potential constant boundaries
     }
 
+
+protected:
   //! Compute dS_g/dU
   /*! This routine should include all scale factors */
   virtual void dsdu_g(multi1d<LatticeColorMatrix>& ds_u)
@@ -206,27 +314,19 @@ public:
       // Evaluate dsdu_f with this fermact on this state and psi
       multi1d<LatticeColorMatrix> tmp(Nd);
 
-      getFermAct().dsdu(ds_u, state, getPsi()[0]);
-      for(int i=1; i < numPF(); ++i)    // unroll the loop
+      ds_u = 0;
+      for(int i=0; i < numPF(); ++i)
+      {
+	getFermAct().dsdu(ds_u, state, getPsi()[i]);
+
 	for(int mu=0; mu < Nd; ++mu)
 	  ds_u[mu] += tmp[mu];
+      }
 
 //    for(int mu=0; mu < Nd; ++mu)
 //      ds_u[mu] *= factors;     // possibly put in some ferm factors??
     }
 
-  //! The gauge action in use.
-  /*! The return type could instead be GA. */
-  virtual const GaugeAction& getGaugeAct() const = 0;
-
-  //! The fermion action in use
-  /*! 
-   * Maybe should be a precond action? Don't think so here.
-   * Actually, maybe need appropriate derived FermAct to get precond. matrices.
-   *
-   * The return type could instead be FA .
-   */
-  virtual const FermionAction<LatticeFermion>& getFermAct() const = 0;
 };
 
 
@@ -248,14 +348,20 @@ class RatExactHamSys : public ExactHamSys<GA,FA>
 public:
   // Derived class constructor should take params like Npf
 
+  //! Virtual destructor
+  virtual ~RatExactHamSys() {}
+
   // More blah blah blah
   // Now the dsdu_f is on the rat. approx. over the fermion action, which
   // at some point needs the fermion dsdu_f.
-
-  //! Virtual destructor
-  virtual ~RatExactHamSys() {}
 };
 
+
+
+//----------------------------------------------------------------------------------
+
+//! Type of trajectory termination
+enum AlgETrj_t {FIXED_LENGTH, EXPONENTIAL_LENGTH};
 
 
 //! Abstract molecular dynamics single trajectory integrator
@@ -279,11 +385,25 @@ template<class GA, class FA, template<class,int> class HS>
 class HybInt
 {
 public:
+  //! Virtual destructor
+  virtual ~HybInt() {}
+
   //! Do an integration
   virtual void operator()(HS<GA,FA>& ham) const = 0;
 
-  //! Leaps P forward step eps with optional monitor of DelH
-  virtual void leapPMX(HS<GA,FA>& ham) const = 0;
+  //! Leaps P forward step eps1 & eps2
+  /*! This default version is appropriate for all HamSys types */
+  virtual void leapPMX(HS<GA,FA>& ham, 
+		       const Real& eps1, const Real& eps2,
+		       bool EndP) const
+    {
+      if (EndP)    // the szin version has many things here
+	return;
+
+      Real eps12 = eps1 + eps2;
+      int niter = 0;
+      LeapP(ham, eps12);
+    }
 
   //! Leap a step in the momenta
   /*! Default version */
@@ -294,6 +414,7 @@ public:
        * This must include knowledge of say poly approx.
        * Also, ham should be ``Exact'' or ``Inexact'' for Phi or R alg's
        */
+      int niter = 0;
       ham.dsdu(ds_u);
 
       /* p_mom = p_mom - eps*[Ds/Du + DS_f/Du] */
@@ -302,11 +423,13 @@ public:
       
       for(int mu=0; mu<Nd; ++mu)
 	taproj(ham.getMom()[mu]);
+
+//      return niter;
     }
 
   //! Leap a step in the gauge fields
   /*! Default version */
-  virtual void leapU(HS<GA,FA>& ham) const
+  virtual void leapU(HS<GA,FA>& ham, const Real& eps) const
     {
       LatticeColorMatrix tmp_1;
       LatticeColorMatrix tmp_2;
@@ -328,18 +451,27 @@ public:
 	int numbad;
 	reunit(u[mu], REUNITARIZE_ERROR, numbad); 
       }
+
+      // Apply the BC to the gauge fields
+      /* NOTE: this may not be necessary if the reunit  */
+      getGaugeAct().modify(u);  // Something like this is used in SZIN
     }
 
-  //! Return expected trajectory length
+  //! Return the step size
+  virtual Real getStepSize() const = 0;
+
+  //! Return the expected trajectory length 
+  /*! In same units as step-size, e.g. NOT multiples of step-size */
   virtual Real getTrjLen() const = 0;
 
-  //! Type of termination for the trajectory
+  //! Type of termination for the end of trajectory
   virtual AlgETrj_t AlgETrjType() const = 0;    // Specify trajectory length algorithm
 
   //! Test for end of a trajectory
-  bool EndOfTrj(const Real& t) const
+  bool endOfTrj(const Real& t) const
     {
       Real r;
+      Real dt = getStepSize();
   
       switch (AlgETrjType())
       {
@@ -353,16 +485,194 @@ public:
 	break;
 
       default:
-	QDP_error_exit("unknown algorithm termination", AlgETrj);
+	QDPIO::cerr << "endOfTrj: unknown algorithm termination" << endl;
+	QDP_abort(1);
       }
     }
-
-
-  //! Virtual destructor
-  virtual ~HybInt() {}
 };
 
 
+
+
+//! Abstract leap-frog molecular dynamics single trajectory integrator
+/*!
+ * \ingroup molecdyn
+ *
+ *  NOTE: this class is not derived from exact integrator. 
+ */
+template<class GA, class FA, template<class,int> class HS>
+class LeapFrogHybInt : public HybInt<GA,FA,HS>
+{
+public:
+  //! Virtual destructor
+  virtual ~LeapFrogHybInt() {}
+
+  //! Do an integration
+  virtual void operator()(HS<GA,FA>& ham) const
+    {
+      bool EndP = false;
+      Real dt = getStepSize();
+      Real dtH = 0.5*dt;
+      Real t = 0;
+
+      int niter = 0;
+      LeapP(ham, dtH);   // first half step
+
+      while (! EndP)
+      {
+	t += dt;
+
+	LeapU(ham, dt);
+
+	// NOTE: SZIN uses an interpolation of the Psi field here
+
+	EndP = endOfTrj(t);
+	LeapPMX(han, dtH, dtH, EndP);  // full step
+
+	// NOTE: no monitoring here
+      }
+
+//      return niter;
+    }
+};
+
+
+
+
+
+//! Abstract Campostrini molecular dynamics single trajectory integrator
+/*!
+ * \ingroup molecdyn
+ *
+ *  NOTE: this class is not derived from exact integrator. 
+ */
+template<class GA, class FA, template<class,int> class HS>
+class CampHybInt : public HybInt<GA,FA,HS>
+{
+public:
+  //! Virtual destructor
+  virtual ~CampHybInt() {}
+
+  //! Do an integration
+  virtual void operator()(HS<GA,FA>& ham) const
+    {
+      bool EndP = false;
+      Real dt = getStepSize();
+      Real t = 0;
+      int niter = 0;
+
+      Real sigma    = pow(2.0, 1.0/3.0);
+      Real eps      = dt / (2 - sigma);
+      Real epsH     = 0.5 * eps;
+      Real epsuBac  = -sigma * eps;
+      Real epsSigH  = -sigma * epsH;
+      Real sigmaInv = 1.0 / sigma;
+
+      LeapP(ham, epsH);   // first half step
+
+      while (! EndP)
+      {
+	t += dt;
+	int wgl_cnt = 0;
+
+	// First step of wiggle
+	LeapU(ham, eps);
+
+	// WARNING: What about interpolation here???
+	// Interpol(psi, old_psi, Real(-1), Npf);
+
+	LeapPMX(ham, epsH, epsSigH, false);
+
+	// NOTE: no monitoring here
+
+	// Second step of wiggle
+	LeapU(ham, epsUBac);
+
+	// WARNING: What about interpolation here???
+	// interpol(psi, old_psi, sigma, Npf);
+
+	LeapPMX(ham, epsSigH, epsH, false);
+
+	// NOTE: no monitoring here
+
+	// Third step of wiggle
+	LeapU(ham, eps);
+
+	// WARNING: What about interpolation here???
+	// interpol(psi, old_psi, sigmainv, Npf);
+
+	EndP = endOfTrj(t);
+	LeapPMX(ham, epsH, epsH, EndP);
+
+	// NOTE: no monitoring here
+      }
+
+//      return niter;
+    }
+};
+
+
+
+//! Abstract molecular dynamics single trajectory integrator for exact actions
+/*!
+ * \ingroup molecdyn
+ *
+ * The inheritance here is a nuisance, I want leapPMX generic to leapfrog
+ * and Campostrini
+ */
+template<class GA, class FA, template<class,int> class HS>
+class ExactLeapFrogHybInt : public LeapFrogHybInt<GA,FA,HS>
+{
+public:
+  //! Virtual destructor
+  virtual ~ExactHybInt() {}
+
+  //! Monitor the integration?
+  /*! Default version */
+  virtual bool monitordH() const {return false;}
+
+  //! Leaps P forward step eps1 & eps2 with optional monitoring of dH
+  /*! This default version is appropriate for simple/single HamSys types */
+  virtual void leapPMX(HS<GA,FA>& ham, 
+		       const Real& eps1, const Real& eps2,
+		       bool EndP) const
+    {
+//      if (EndP)    // the szin version has many things here
+//	return;
+
+      int niter = 0;
+      Real eps12 = eps1 + eps2;
+
+      /*
+       * The getPsi could/should be lazy, but I will help it along here.
+       * Maybe this should go away since the idea of a psi is an optimization.
+       * We only need inverses when they are requested, namely for energies
+       * and force calcs.
+       * However, SZIN's leappmx exposes this to use for a trick, namely
+       * to watch the acceptance on a single step change as the resid. is
+       * decreased. This is too much an optimization to be used for a 
+       * first default version.
+       */
+      if ( ! monitordH() && ! EndP )
+      {
+	LeapP(ham, eps12);
+      }
+      else
+      {
+	LeapP(ham, eps1);
+	if ( monitordH() )
+	{
+//	  ham.mesE(ke,pe,fe);   // problem - wants to return E's in middle of traj.
+	}
+	LeapP(ham, eps2);
+      }
+      
+//      return niter;
+    }
+};
+
+
+//----------------------------------------------------------------------------------
 //! Abstract single trajectory Hybrid Monte Carlo(/HMD) integrator
 /*!
  * \ingroup molecdyn
@@ -377,7 +687,7 @@ public:
   // Constructor should take a MD integrator as an arg
 
   //! Do an integration
-  virtual void operator()(HS<GA,FA>& hmc, HS<GA,FA>& hmd) const
+  virtual bool operator()(HS<GA,FA>& hmc, HS<GA,FA>& hmd) const
     {
       hmc.newFields();       // new mom, ferm fields
       hmd.copyFields(hmc);   // coord, mom, ferm fields
