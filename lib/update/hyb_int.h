@@ -22,13 +22,16 @@ public:
 
   // Do the integration: The XMLBufferWriter is for monitoring
   virtual void operator()(AbsFieldState<P,Q>& s, 
-			  XMLBufferWriter& mon_traj) const = 0;
+			  XMLWriter& mon_traj) const = 0;
 
   // Get step size
   virtual Real getStepSize(void) const = 0;
 
   // Get traj length
   virtual Real getTrajLength(void) const = 0;
+
+  // Clone so we can copy through the base class
+  virtual AbsHybInt* clone(void) const = 0;
 
 };
 
@@ -42,7 +45,7 @@ public:
 
   // Do the integration: The XMLBufferWriter is for monitoring
   virtual void operator()(AbsPFFieldState<P,Q,Phi>& s, 
-			  XMLBufferWriter& mon_traj) const = 0;
+			  XMLWriter& mon_traj) const = 0;
 
   // Get step size
   virtual Real getStepSize(void) const = 0;
@@ -50,12 +53,14 @@ public:
   // Get traj length
   virtual Real getTrajLength(void) const = 0;
 
+  
+
 };
 
 
 //! A Concrete Leapfrog for Pure Gauge Systems.
 //  Templated on 
-template<class SympUpd>
+
 class PureGaugePQPLeapFrog : public AbsHybInt< multi1d<LatticeColorMatrix>, 
 				multi1d<LatticeColorMatrix> >
 {
@@ -63,15 +68,15 @@ class PureGaugePQPLeapFrog : public AbsHybInt< multi1d<LatticeColorMatrix>,
   // Virtual Destructor
   ~PureGaugePQPLeapFrog() {}
 
-  PureGaugePQPLeapFrog(SympUpd& symp_updates_,
+  PureGaugePQPLeapFrog(SymplecticUpdates<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& symp_updates_,
 		       Real delta_tau_, 
-		       Real tau_) : symp_updates(symp_updates_), delta_tau(delta_tau_), tau(tau_) {}
+		       Real tau_) : symp_updates(symp_updates_.clone()), delta_tau(delta_tau_), tau(tau_) {}
   
   // Get at the leap P and leap Q
   // through a Symplectic Updates step.
   // Use Base Class...
-  const SympUpd& getSympUpdates(void) const {
-    return symp_updates;
+  const SymplecticUpdates<multi1d<LatticeColorMatrix>,multi1d<LatticeColorMatrix> >& getSympUpdates(void) const {
+    return *symp_updates;
   }
 
   // Get step size
@@ -80,13 +85,34 @@ class PureGaugePQPLeapFrog : public AbsHybInt< multi1d<LatticeColorMatrix>,
   // Get traj length
   virtual Real getTrajLength(void) const { return tau; }
 
+  virtual void doReversedTraj(AbsFieldState<multi1d<LatticeColorMatrix>, 
+			                    multi1d<LatticeColorMatrix> > &s,
+			      XMLWriter& mon_traj) const
+  {
+    // DO Forward Traj
+    (*this)(s, mon_traj);
+
+    // Flip Momenta
+    for(int mu=0; mu < Nd; mu++) { 
+      s.getP()[mu] *= Double(-1);
+    }
+
+    // Do backward Traj
+    (*this)(s, mon_traj);
+
+    // Flip Momenta
+    for(int mu=0; mu < Nd; mu++) { 
+      s.getP()[mu] *= Double(-1);
+    }
+  }
+
   // This is the dumb one with no monitoring...
   // One can override...
   virtual void operator()(AbsFieldState<multi1d<LatticeColorMatrix>, 
 			                multi1d<LatticeColorMatrix> > &s,
-			  XMLBufferWriter& mon_traj) const
+			  XMLWriter& mon_traj) const
   {
-    const SympUpd& leaps = getSympUpdates();
+    const SymplecticUpdates<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& leaps = getSympUpdates();
     Real dt = getStepSize();
     Real dtby2 = dt / Real(2);
     Real t = 0; 
@@ -96,6 +122,7 @@ class PureGaugePQPLeapFrog : public AbsHybInt< multi1d<LatticeColorMatrix>,
     int PLeaps = 0;
     int QLeaps = 0;
 
+#if 0
     leaps.leapP(s, dtby2);
     halfPLeaps++;
 
@@ -124,6 +151,7 @@ class PureGaugePQPLeapFrog : public AbsHybInt< multi1d<LatticeColorMatrix>,
 	PLeaps++;
 	finished = false;
       }
+    
     }
 
     push(mon_traj, "PQPLeapFrogTraj");
@@ -134,12 +162,27 @@ class PureGaugePQPLeapFrog : public AbsHybInt< multi1d<LatticeColorMatrix>,
     write(mon_traj, "QLeaps", QLeaps);
     pop(mon_traj);
     
-
+#endif
+    bool finished = false;
+    while ( ! finished ) {
+      leaps.leapP(s, dtby2 );
+      leaps.leapQ(s, dt    );
+      leaps.leapP(s, dtby2 );
+      t += dt;
+      if( toBool( fabs(tau - t) < dtby2 )) { 
+	finished = true;
+      }
+    }
   }
 
+  PureGaugePQPLeapFrog(const PureGaugePQPLeapFrog& f) : symp_updates(f.symp_updates->clone()), delta_tau(f.delta_tau), tau(f.tau) {}
+  
+  virtual PureGaugePQPLeapFrog* clone(void) const {
+    return new PureGaugePQPLeapFrog(*this);
+  }
 
 protected:
-  SympUpd symp_updates;
+  Handle<SymplecticUpdates<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > symp_updates;
   Real delta_tau;
   Real tau;
 

@@ -75,10 +75,13 @@ public:
 
     // Zero out the momenta on boundaries where the gauge fields
     // are held fixed.
-    applyPBoundary(s.getP());
+    //applyPBoundary(s.getP());
   }
 
-  //! Measure the kinetic energy (per link)
+  //! Measure the kinetic energy
+  //! I am not going to normalise here, as it lets me
+  //! define acceptReject in the HMC without having to know
+  //! the stupid normalisations
   virtual Double mesKE(AbsFieldState<multi1d<LatticeColorMatrix>, 
 		       multi1d<LatticeColorMatrix> >& s) const
   {
@@ -86,7 +89,7 @@ public:
     // Once momenta have been refreshed, they are zeroed
     // on the gauge boundaries as requires so no need to mess
     // with gauge boundaries...
-    multi1d<LatticeColorMatrix> mom = s.getP();
+    multi1d<LatticeColorMatrix>& mom = s.getP();
 
     // Square it up
     Double p_mom_sq = Double(0);
@@ -100,26 +103,10 @@ public:
 
     // This bit here is stolen from SZIN's MesMom()
     for(int mu = 0; mu < Nd; mu++) { 
-      p_mom_sq += norm2(mom[mu]);
+      p_mom_sq += sum(real(trace(adj(mom[mu])*mom[mu])));
     }
-    p_mom_sq /= Double(Layout::vol()*Nd);
 
-
-    // The normalisation is stolen from SZIN's MesE
-    Double KE;
-
-    if( Nc >= 2 ) { 
-      KE = p_mom_sq /  Double(Nc*Nc - 1);
-    }
-    else if (Nc == 1 ) {
-      KE = p_mom_sq;
-    }
-    else {     
-      QDPIO::cerr << "Unsupported number of colours "<< Nc << endl;
-      QDP_abort(0);
-    }  
-
-    return KE;
+    return p_mom_sq;
   }
 
   //! Measure the potential energy (per link)

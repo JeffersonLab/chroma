@@ -124,7 +124,7 @@ public:
     }
 
     // Do I need boundary conditions here?
-    getHam().applyQBoundary(s.getQ());
+    // getHam().applyQBoundary(s.getQ());
   }
 };
 
