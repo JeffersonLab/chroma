@@ -21,6 +21,8 @@
     <nrow>4 4 4 4</nrow>
     <boundary>1 1 1 -1</boundary>
     <t_srce>0 0 0 0</t_srce>
+    <use_gauge_invar_oper>false</use_gauge_invar_oper>
+<volume_source>Z2NOISE</volume_source>
   </param>
   <Cfg>
     <cfg_type>NERSC</cfg_type>
