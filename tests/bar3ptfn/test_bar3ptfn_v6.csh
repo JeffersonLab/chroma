@@ -297,4 +297,5 @@ cat << **EOF** >! DATA
 # Run the bar3ptfn program
 $builddir/bar3ptfn
 /bin/mv XMLDAT bar3ptfn_v${version}.xml
+/bin/mv bar3ptfn.dat bar3ptfn_v${version}.dat
 
