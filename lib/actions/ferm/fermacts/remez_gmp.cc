@@ -1,4 +1,4 @@
-// $Id: remez_gmp.cc,v 1.2 2005-02-02 16:27:55 edwards Exp $
+// $Id: remez_gmp.cc,v 1.3 2005-02-02 22:43:55 edwards Exp $
 /*! \file
  *  \brief Remez algorithm for finding nth roots
  */
@@ -147,7 +147,7 @@ namespace Chroma
   }
 
   // Return the partial fraction expansion of the approximation x^(pnum/pden)
-  int RemezGMP::getPFE(multi1d<Real>& Res, multi1d<Real>& Pole, Real& Norm) 
+  RemezCoeff_t RemezGMP::getPFE()
   {
     START_CODE();
 
@@ -163,8 +163,9 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    Res.resize(n);
-    Pole.resize(d);
+    RemezCoeff_t coeff;
+    coeff.res.resize(n);
+    coeff.pole.resize(d);
 
     multi1d<bigfloat> r(n);
     multi1d<bigfloat> p(d);
@@ -176,18 +177,17 @@ namespace Chroma
     pfe(r, p, norm);
 
     // Convert to Real and return
-    Norm = (double)norm;
-    for (int i=0; i<n; i++) Res[i] = (double)r[i];
-    for (int i=0; i<d; i++) Pole[i] = (double)p[i];
+    coeff.norm = (double)norm;
+    for (int i=0; i<n; i++) coeff.res[i] = (double)r[i];
+    for (int i=0; i<d; i++) coeff.pole[i] = (double)p[i];
 
     END_CODE();
 
-    // Where the smallest shift is located
-    return 0;
+    return coeff;
   }
 
   // Return the partial fraction expansion of the approximation x^(-pnum/pden)
-  int RemezGMP::getIPFE(multi1d<Real>& Res, multi1d<Real>& Pole, Real& Norm) 
+  RemezCoeff_t RemezGMP::getIPFE()
   {
     START_CODE();
 
@@ -197,8 +197,9 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    Res.resize(n);
-    Pole.resize(d);
+    RemezCoeff_t coeff;
+    coeff.res.resize(n);
+    coeff.pole.resize(d);
 
     multi1d<bigfloat> r(d);
     multi1d<bigfloat> p(n);
@@ -213,16 +214,15 @@ namespace Chroma
     pfe(r, p, (bigfloat)1l/norm);
 
     // Convert to Real and return
-    Norm = (double)((bigfloat)1l/(norm));
+    coeff.norm = (double)((bigfloat)1l/(norm));
     for (int i=0; i<n; i++) {
-      Res[i] = (double)r[i];
-      Pole[i] = (double)p[i];
+      coeff.res[i] = (double)r[i];
+      coeff.pole[i] = (double)p[i];
     }
 
     END_CODE();
 
-    // Where the smallest shift is located
-    return 0;
+    return coeff;
   }
 
   // Initial values of maximal and minimal errors
@@ -760,18 +760,17 @@ namespace Chroma
 
 
   // Given a partial fraction expansion, evaluate it at x
-  Real RemezGMP::evalPFE(const Real& x, const multi1d<Real>& res, const multi1d<Real>& pole)
+  Real RemezGMP::evalPFE(const Real& x, const RemezCoeff_t& coeff)
   {
-    if ((res.size() != pole.size()) || res.size() == 0)
+    if ((coeff.res.size() != coeff.pole.size()) || coeff.res.size() == 0)
     {
       QDPIO::cerr << __func__ << ": invalid res and pole" << endl;
       QDP_abort(1);
     }
 
-    Real f = zero;
-    Real xsq = x*x;
-    for (int i=0; i < res.size(); ++i)
-      f += res[i] / (xsq - pole[i]);
+    Real f = coeff.norm;
+    for (int i=0; i < coeff.res.size(); ++i)
+      f += coeff.res[i] / (x + coeff.pole[i]);
 
     return f;
   }

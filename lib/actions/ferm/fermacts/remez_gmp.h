@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: remez_gmp.h,v 1.2 2005-02-02 16:27:55 edwards Exp $
+// $Id: remez_gmp.h,v 1.3 2005-02-02 22:43:55 edwards Exp $
 /*! \file
  *  \brief Remez algorithm for finding nth roots
  */
@@ -9,6 +9,7 @@
 
 #include "chromabase.h"
 #include "actions/ferm/fermacts/bigfloat.h"
+#include "actions/ferm/fermacts/remez_coeff.h"
 
 namespace Chroma
 {
@@ -38,17 +39,19 @@ namespace Chroma
     void setBounds(const Real& lower, const Real& upper);
 
     //! Generate the rational approximation x^(pnum/pden)
-    Real generateApprox(int num_degree, int den_degree, unsigned long power_num, unsigned long power_den);
-    Real generateApprox(int degree, unsigned long power_num, unsigned long power_den);
+    Real generateApprox(int num_degree, int den_degree, 
+			unsigned long power_num, unsigned long power_den);
+    Real generateApprox(int degree, 
+			unsigned long power_num, unsigned long power_den);
 
     //! Return the partial fraction expansion of the approximation x^(pnum/pden)
-    int getPFE(multi1d<Real>& res, multi1d<Real>& pole, Real& norm);
+    RemezCoeff_t getPFE();
 
     //! Return the partial fraction expansion of the approximation x^(-pnum/pden)
-    int getIPFE(multi1d<Real>& res, multi1d<Real>& pole, Real& norm);
+    RemezCoeff_t getIPFE();
 
     //! Given a partial fraction expansion, evaluate it at x
-    Real evalPFE(const Real& x, const multi1d<Real>& res, const multi1d<Real>& pole);
+    Real evalPFE(const Real& x,  const RemezCoeff_t& coeff);
 
   private:
     // The approximation parameters

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: remez_stub.h,v 1.2 2005-02-02 16:27:55 edwards Exp $
+// $Id: remez_stub.h,v 1.3 2005-02-02 22:43:55 edwards Exp $
 /*! \file
  *  \brief Remez algorithm for finding nth roots
  */
@@ -8,12 +8,12 @@
 #define __remez_stub_h__
 
 #include "chromabase.h"
+#include "actions/ferm/fermacts/remez_coeff.h"
 
 namespace Chroma
 {
 
   //! Dummy class for case when gmp is not present
-
   class RemezStub
   {
   public:
@@ -28,12 +28,24 @@ namespace Chroma
 			      unsigned long power_num, unsigned long power_den) {return 0;}
     const Real generateApprox(int degree, 
 			      unsigned long power_num, unsigned long power_den) {return 0;}
-    int getPFE(multi1d<Real>& res, multi1d<Real>& pole, Real& norm) {return 0;}
-    int getIPFE(multi1d<Real>& res, multi1d<Real>& pole, Real& norm) {return 0;}
+
+    //! Return the partial fraction expansion of the approximation x^(pnum/pden)
+    RemezCoeff_t getPFE()
+    {
+      QDP_error_exit("RemezStub not implemented");
+      return RemezCoeff_t();
+    }
+
+    //! Return the partial fraction expansion of the approximation x^(-pnum/pden)
+    RemezCoeff_t getIPFE()
+    {
+      QDP_error_exit("RemezStub not implemented");
+      return RemezCoeff_t();
+    }
 
     //! Given a partial fraction expansion, evaluate it at x
-    Real evalPFE(const Real& x, const multi1d<Real>& res, const multi1d<Real>& pole)
-      {QDP_error_exit("%s: not implemented",__func__);}
+    Real evalPFE(const Real& x,  const RemezCoeff_t& coeff)
+    {QDP_error_exit("RemezStub not implemented"); return Real(0);}
 
   };
 }  // end namespace Chroma
