@@ -19,7 +19,7 @@
 //#####################################################################################
 
 static const char* const CVSBuildingBlocks_cc =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/Attic/BuildingBlocks.cc,v 1.1 2003-08-11 20:57:46 dru Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/Attic/BuildingBlocks.cc,v 1.2 2003-08-11 22:00:06 dru Exp $";
 
 //#####################################################################################
 //#####################################################################################
@@ -45,22 +45,22 @@ void CVSBuildingBlocks( TextWriter & Out )
 // function object used for the time slice sums
 //#####################################################################################
 
-class TimeSliceFunc : public SetFunc
-{
-  public:
+//class TimeSliceFunc : public SetFunc
+//{
+//  public:
+//
+//    TimeSliceFunc( int dir ): dir_decay( dir ) {}
+//
+//    int operator() ( const multi1d< int > & coordinate ) const { return coordinate[ dir_decay ]; }
+//    int numSubsets() const { return Layout::lattSize()[ dir_decay ]; }
+//
+//    int dir_decay;
+//
+//  private:
+//
+//    TimeSliceFunc() {}  // hide default constructor
+//};
 
-    TimeSliceFunc( int dir ): dir_decay( dir ) {}
-
-    int operator() ( const multi1d< int > & coordinate ) const { return coordinate[ dir_decay ]; }
-    int numSubsets() const { return Layout::lattSize()[ dir_decay ]; }
-
-    int dir_decay;
-
-  private:
-
-    TimeSliceFunc() {}  // hide default constructor
-};
- 
 //#####################################################################################
 // backward forward trace
 //#####################################################################################
@@ -76,9 +76,10 @@ void BkwdFrwdTr( const LatticePropagator &             B,
 {
   const unsigned short int NLinks = LinkDirs.size();
   unsigned short int Link;
-  TimeSliceFunc SetTimeSlice( Nd - 1 );
-  const Set TimeSlice( SetTimeSlice );
-  const int T = SetTimeSlice.numSubsets();
+  //TimeSliceFunc SetTimeSlice( Nd - 1 );
+  //const Set TimeSlice( SetTimeSlice );
+  //const int T = SetTimeSlice.numSubsets();
+  const int T = Nd - 1;
   const int NQ = Phases.numMom();
 
   //#####################################################################################
