@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wallff_w.h,v 1.1 2004-06-02 02:00:03 edwards Exp $
+// $Id: wallff_w.h,v 1.2 2004-06-04 04:05:58 edwards Exp $
 /*! \file
  *  \brief Structures for wall-sink/source form-factors
  *
@@ -21,19 +21,37 @@ struct WallFormFac_momenta_t
 
 struct WallFormFac_insertion_t
 {
+  int              gamma_ctr;
+  int              mu;
   int              gamma_value;
   multi1d<WallFormFac_momenta_t> momenta;
 };
 
-struct WallFormFac_insertions_t
+struct WallFormFac_projector_t
 {
-  int              seq_src;
-  multi1d<WallFormFac_insertion_t>  insertions;
+  multi1d<WallFormFac_insertion_t>  insertion;
+};
+
+struct WallFormFac_formfac_t
+{
+  multi1d<WallFormFac_projector_t>  projector;
+};
+
+struct WallFormFac_lorentz_t
+{
+  int              snk_gamma;
+  int              src_gamma;
+  multi1d<WallFormFac_formfac_t>  formfac;
+};
+
+struct WallFormFac_quark_t
+{
+  multi1d<WallFormFac_lorentz_t>  lorentz;
 };
 
 struct WallFormFac_formfacs_t
 {
-  multi1d<WallFormFac_insertions_t>  formFacs;
+  multi1d<WallFormFac_quark_t>  quark;
 };
 
 
@@ -57,6 +75,25 @@ LatticePropagator nonlocalCurrentProp(const multi1d<LatticeColorMatrix>& u,
 				      const LatticePropagator& anti_prop);
 
 
+//! Do slow SFT over hadron correlator data
+/*!
+ * \ingroup hadron
+ *
+ * \param momenta            momenta structure ( Modify )
+ * \param corr_local_fn      contracted local current insertion ( Read )
+ * \param corr_nonlocal_fn   contracted nonlocal current insertion ( Read )
+ * \param phases             fourier transform phase factors ( Read )
+ * \param compute_nonlocal   compute the nonlocal current stuff?? ( Read )
+ * \param t0                 time coordinates of the source ( Read )
+ * \param t_sink             time coordinates of the sink ( Read )
+ */
+void wallFormFacSft(multi1d<WallFormFac_momenta_t>& momenta,
+		    const LatticeComplex& corr_local_fn,
+		    const LatticeComplex& corr_nonlocal_fn,
+		    const SftMom& phases,
+		    bool compute_nonlocal,
+		    int t0, int t_sink);
+
 // Writers
 
 //! Wallformfac momenta writer
@@ -65,8 +102,17 @@ void write(XMLWriter& xml, const string& path, const WallFormFac_momenta_t& head
 //! Wallformfac insertion writer
 void write(XMLWriter& xml, const string& path, const WallFormFac_insertion_t& header);
 
-//! Wallformfac insertions writer
-void write(XMLWriter& xml, const string& path, const WallFormFac_insertions_t& header);
+//! Wallformfac projector writer
+void write(XMLWriter& xml, const string& path, const WallFormFac_projector_t& header);
+
+//! Wallformfac formfac writer
+void write(XMLWriter& xml, const string& path, const WallFormFac_formfac_t& header);
+
+//! Wallformfac lorentz writer
+void write(XMLWriter& xml, const string& path, const WallFormFac_lorentz_t& header);
+
+//! Wallformfac quark writer
+void write(XMLWriter& xml, const string& path, const WallFormFac_quark_t& header);
 
 //! WallFormFac writer
 void write(XMLWriter& xml, const string& path, const WallFormFac_formfacs_t& header);

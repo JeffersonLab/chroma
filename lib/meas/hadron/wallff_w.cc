@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wallff_w.cc,v 1.1 2004-06-02 02:00:03 edwards Exp $
+// $Id: wallff_w.cc,v 1.2 2004-06-04 04:05:58 edwards Exp $
 /*! \file
  *  \brief Structures for wall-sink/source form-factors
  *
@@ -39,6 +39,71 @@ LatticePropagator nonlocalCurrentProp(const multi1d<LatticeColorMatrix>& u,
 
   return S;
 }
+
+
+//! Do slow SFT over hadron correlator data
+/*!
+ * \ingroup hadron
+ *
+ * \param momenta            momenta structure ( Modify )
+ * \param corr_local_fn      contracted local current insertion ( Read )
+ * \param corr_nonlocal_fn   contracted nonlocal current insertion ( Read )
+ * \param phases             fourier transform phase factors ( Read )
+ * \param compute_nonlocal   compute the nonlocal current stuff?? ( Read )
+ * \param t0                 time coordinates of the source ( Read )
+ * \param t_sink             time coordinates of the sink ( Read )
+ */
+void wallFormFacSft(multi1d<WallFormFac_momenta_t>& momenta,
+		    const LatticeComplex& corr_local_fn,
+		    const LatticeComplex& corr_nonlocal_fn,
+		    const SftMom& phases,
+		    bool compute_nonlocal,
+		    int t0, int t_sink)
+{
+  START_CODE("wallFormFacSft");
+
+  if ( momenta.size() != phases.numMom() )
+  {
+    QDPIO::cerr << "wallFormFacSft: momenta array size incorrect" << endl;
+    QDP_abort(1);
+  }
+
+  // Length of lattice in j_decay direction and 3pt correlations fcns
+  int length = phases.numSubsets();
+
+  multi2d<DComplex> hsum_local = phases.sft(corr_local_fn);
+  multi2d<DComplex> hsum_nonlocal;
+  if (compute_nonlocal)
+    hsum_nonlocal = phases.sft(corr_nonlocal_fn);
+  
+  // Loop over insertion momenta
+  for(int inser_mom_num=0; inser_mom_num < phases.numMom(); ++inser_mom_num) 
+  {
+    momenta[insert_mom_num].inser_mom_num = inser_mom_num;
+    momenta[insert_mom_num].inser_mom     = phases.numToMom(inser_mom_num);
+    
+    multi1d<Complex> local_cur3ptfn(length); // always compute
+    multi1d<Complex> nonlocal_cur3ptfn;
+    if (compute_nonlocal)
+      nonlocal_cur3ptfn.resize(length);      // possibly compute
+	    
+    for (int t=0; t < length; ++t) 
+    {
+      int t_eff = (t - t0 + length) % length;
+      
+      local_cur3ptfn[t_eff] = Complex(hsum_local[inser_mom_num][t]);
+      if (compute_nonlocal)
+	nonlocal_cur3ptfn[t_eff] = Complex(hsum_nonlocal[inser_mom_num][t]);
+    } // end for(t)
+
+    momenta[insert_mom_num].local_current    = local_cur3ptfn;
+    momenta[insert_mom_num].nonlocal_current = nonlocal_cur3ptfn;
+    
+  } // end for(inser_mom_num)
+
+  END_CODE("wallFormFacSft");
+}
+
 
 
 
