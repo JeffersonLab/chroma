@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hadron_s.h,v 1.6 2004-12-05 18:35:58 mcneile Exp $
+// $Id: hadron_s.h,v 1.7 2005-01-04 11:55:12 mcneile Exp $
 
 /*! \file
  * \brief Hadronic observables
@@ -28,6 +28,11 @@
 #include "walfil_s.h"
 #include "stag_propShift_s.h"
 #include "baryon_s.h"
+#include "pion_sing_s.h"
+
+#include "loops_s.h"
+#include "scalar_loops_s.h"
+#include "pseudoscalar_loops_s.h"
 
 #include "loops_s.h"
 #include "scalar_loops_s.h"

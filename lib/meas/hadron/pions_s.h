@@ -26,7 +26,8 @@ class staggered_pions  : public staggered_hadron_corr
 	  int j_decay) ;
 
 
-  staggered_pions(int t_len)  : staggered_hadron_corr(t_len,no_pions)
+  staggered_pions(int t_len, multi1d<LatticeColorMatrix> & uin)  
+    : staggered_hadron_corr(t_len,no_pions,uin)
     {
       outer_tag = "Pseudoscalar"  ; 
       inner_tag = "Pi" ; 

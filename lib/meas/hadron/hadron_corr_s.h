@@ -7,11 +7,22 @@
 
 #include "chromabase.h"
 
+
+#include "stag_propShift_s.h"
+
 /*
 
 This is generic code to compute staggered correlators.
 
 */
+
+enum Stag_shift_option {
+   NON_GAUGE_INVAR  = 0,
+   GAUGE_INVAR ,
+   SYM_NON_GAUGE_INVAR , 
+   SYM_GAUGE_INVAR
+};
+
 
 
 class staggered_hadron_corr
@@ -55,11 +66,26 @@ class staggered_hadron_corr
 
     }
 
-  staggered_hadron_corr(int t_len, int t_chan) : t_length(t_len) ,
+  staggered_hadron_corr(int t_len, int t_chan, multi1d<LatticeColorMatrix> & uin) 
+    : t_length(t_len) ,
     no_channel(t_chan)
     {
       corr_fn.resize(no_channel, t_length);
+      u.resize(4) ; 
+
+      if( uin.size() != 4 ) { 
+	QDPIO::cerr << "staggered_hadron_corr: input guage config has wrong number of dimensions " << uin.size() << endl;
+	QDP_abort(1);
+  };
+
+      u = uin ; 
+       type_of_shift = GAUGE_INVAR ; 
+      // type_of_shift = NON_GAUGE_INVAR  ; 
     }
+
+
+  void use_gauge_invar() { type_of_shift = GAUGE_INVAR ; } 
+  void use_NON_gauge_invar() { type_of_shift = NON_GAUGE_INVAR ; } 
 
   ~staggered_hadron_corr()
     {
@@ -73,10 +99,43 @@ class staggered_hadron_corr
   string outer_tag ; 
   string inner_tag ; 
   multi1d<string> tag_names ; 
+  multi1d<LatticeColorMatrix> u ; // this should handle or state
+
+  LatticeStaggeredPropagator shift_deltaProp(multi1d<int>& delta, 
+					    const LatticeStaggeredPropagator& src)
+
+  {
+
+    switch (type_of_shift)
+      {
+      case NON_GAUGE_INVAR :
+	return shiftDeltaProp(delta,src) ;
+	break ;
+      case GAUGE_INVAR :
+	return shiftDeltaPropCov(delta,src,u,false) ;
+    	break ;
+      case SYM_GAUGE_INVAR :
+	return shiftDeltaPropCov(delta,src,u,true) ; // symm shifting
+	break ;
+      case SYM_NON_GAUGE_INVAR:
+	return shiftDeltaProp(delta,src,true) ; // symm shifting
+    	break ;
+      default :
+	/**************************************************************************/
+ 
+	QDPIO::cerr << "Shift type " << type_of_shift << " unsupported." << endl;
+	QDP_abort(1);
+      }
+
+  }
+
 
   private :
     int no_channel ; 
   int t_length ; 
+
+  Stag_shift_option type_of_shift; 
+
 
 
 

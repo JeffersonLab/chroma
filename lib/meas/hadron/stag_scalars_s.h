@@ -20,7 +20,8 @@ class staggered_scalars  : public staggered_hadron_corr
 		      int j_decay);
 
 
-  staggered_scalars(int t_len)  : staggered_hadron_corr(t_len,no_scalar)
+  staggered_scalars(int t_len, multi1d<LatticeColorMatrix> & uin)  
+    : staggered_hadron_corr(t_len,no_scalar,uin)
     {
       outer_tag = "Here_are_all_16_scalars"  ; 
       inner_tag = "Sc" ; 

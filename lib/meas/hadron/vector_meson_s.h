@@ -20,7 +20,8 @@ class vector_meson  : public staggered_hadron_corr
 		      int j_decay);
 
 
-  vector_meson(int t_len)  : staggered_hadron_corr(t_len,no_vector)
+  vector_meson(int t_len, multi1d<LatticeColorMatrix> & uin)  
+    : staggered_hadron_corr(t_len,no_vector,uin)
     {
       outer_tag = "Vector_meson"  ; 
       inner_tag = "Vec" ; 
