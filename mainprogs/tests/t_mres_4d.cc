@@ -1,4 +1,4 @@
-// $Id: t_mres_4d.cc,v 1.1 2004-10-15 16:37:20 bjoo Exp $
+// $Id: t_mres_4d.cc,v 1.2 2004-11-02 15:43:03 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -34,6 +34,7 @@ bool linkage_hack()
 
   // 4D actions
   foo &= UnprecWilsonFermActEnv::registered;
+  foo &= UnprecDWFTransfFermActEnv::registered;
   foo &= OvlapPartFrac4DFermActEnv::registered;
   return foo;
 }

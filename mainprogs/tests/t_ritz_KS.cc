@@ -1,4 +1,4 @@
-// $Id: t_ritz_KS.cc,v 1.16 2004-11-02 12:21:54 bjoo Exp $
+// $Id: t_ritz_KS.cc,v 1.17 2004-11-02 15:43:03 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -226,7 +226,8 @@ int main(int argc, char **argv)
       // Special case UNPRECONDITIONED_WILSON
       QDPIO::cout << "Trying 4D Wilson Like actions: " << endl;
 
-      if( fermact == "UNPRECONDITIONED_WILSON" ) {
+      if( fermact == "UNPRECONDITIONED_WILSON" 
+	  || fermact == "UNPRECONDITIONED_DWFTRANSF" ) {
 
 	QDPIO::cout << "Special case. Computing Hw e-values and evecs too" << endl;
 	// DWF-like 5D Wilson-Type stuff
