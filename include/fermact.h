@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 1.11 2003-11-22 21:34:52 edwards Exp $
+// $Id: fermact.h,v 1.12 2003-11-23 05:51:05 edwards Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -235,6 +235,65 @@ public:
   virtual void qpropT(T& psi, 
 		      const multi1d<LatticeColorMatrix>& u, 
 		      const T& chi, 
+		      enum InvType invType,
+		      const Real& RsdCG, 
+		      int MaxCG, int& ncg_had) const;
+
+  //! Compute quark propagator over simpler type
+  /*! 
+   * Solves  M.psi = chi
+   *
+   * Provides a default version
+   *
+   * \param psi      quark propagator ( Modify )
+   * \param u        gauge field ( Read )
+   * \param chi      source ( Modify )
+   * \param invType  inverter type ( Read (
+   * \param RsdCG    CG (or MR) residual used here ( Read )
+   * \param MaxCG    maximum number of CG iterations ( Read )
+   * \param ncg_had  number of CG iterations ( Write )
+   */
+  virtual void qprop(typename BaseType<T>::Type_t& psi, 
+		     const multi1d<LatticeColorMatrix>& u, 
+		     const typename BaseType<T>::Type_t& chi, 
+		     enum InvType invType,
+		     const Real& RsdCG, 
+		     int MaxCG, int& ncg_had) const;
+  
+};
+
+
+//! Partial specialization of even-odd preconditioned Wilson-like fermion actions over arrays
+/*! @ingroup actions
+ *
+ * Even-odd preconditioned like Wilson-like fermion actions.
+ * Here, use arrays of matter fields.
+ */
+template<typename T>
+class EvenOddPrecWilsonTypeFermAct< multi1d<T> > : public WilsonTypeFermAct< multi1d<T> >
+{
+public:
+  //! Override to produce an even-odd prec. linear operator for this action
+  /*! Covariant return rule - override base class function */
+  virtual const EvenOddPrecLinearOperator< multi1d<T> >* linOp(const multi1d<LatticeColorMatrix>& u) const = 0;
+
+  //! Compute quark propagator over base type
+  /*! 
+   * Solves  M.psi = chi
+   *
+   * Provides a default version
+   *
+   * \param psi      quark propagator ( Modify )
+   * \param u        gauge field ( Read )
+   * \param chi      source ( Modify )
+   * \param invType  inverter type ( Read (
+   * \param RsdCG    CG (or MR) residual used here ( Read )
+   * \param MaxCG    maximum number of CG iterations ( Read )
+   * \param ncg_had  number of CG iterations ( Write )
+   */
+  virtual void qpropT(multi1d<T>& psi, 
+		      const multi1d<LatticeColorMatrix>& u, 
+		      const multi1d<T>& chi, 
 		      enum InvType invType,
 		      const Real& RsdCG, 
 		      int MaxCG, int& ncg_had) const;
