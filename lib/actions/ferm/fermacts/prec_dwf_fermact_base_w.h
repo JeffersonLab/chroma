@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_fermact_base_w.h,v 1.5 2004-01-23 17:59:07 edwards Exp $
+// $Id: prec_dwf_fermact_base_w.h,v 1.6 2004-03-17 03:10:51 edwards Exp $
 /*! \file
  *  \brief Base class for even-odd preconditioned domain-wall-like fermion actions
  */
@@ -31,6 +31,7 @@ public:
       // Have not implemented this yet, but it is generic
       QDPIO::cerr << "EvenOddPrecDWFermActBase::gamma5HermLinOp not implemented" << endl;
       QDP_abort(1);
+      return 0;
     }
 
   //! Produce a linear operator for this action but with quark mass 1
