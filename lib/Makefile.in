@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.267 2004-11-21 22:43:05 edwards Exp $
+# $Id: Makefile.in,v 1.268 2004-11-21 22:49:35 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -373,6 +373,7 @@ nobase_include_HEADERS = \
 	meas/hadron/hadron_corr_s.h \
 	meas/hadron/mesphas_follana_s.h meas/hadron/mesphas_s.h \
 	meas/hadron/pions_s.h  meas/hadron/walfil_s.h \
+	meas/hadron/loops_s.h \
 	meas/hadron/scalar_loops_s.h \
 	meas/hadron/stag_scalars_s.h meas/sources/sources_s.h \
 	meas/hadron/stag_propShift_s.h \
