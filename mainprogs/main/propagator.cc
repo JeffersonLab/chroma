@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.24 2003-12-11 16:31:18 edwards Exp $
+// $Id: propagator.cc,v 1.25 2003-12-16 22:25:55 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -361,6 +361,17 @@ int main(int argc, char **argv)
   input.param.invType = CG_INVERTER;  // enum
 
 
+  /*
+   * Turn on the boundary conditions through the phase factors.
+   *
+   * NOTE: this is not an optimal solution: this factor stuff should be
+   * set some other way
+   */
+  setph(input.param.boundary);              // initialize the BC factors
+  multi1d<LatticeColorMatrix> u_tmp = u;
+  phfctr(u_tmp);		// Boundary phases on
+
+
   //
   // Loop over the source color and spin, creating the source
   // and calling the relevant propagator routines. The QDP
@@ -372,7 +383,7 @@ int main(int argc, char **argv)
   int ncg_had;
 
   {
-    const ConnectStateProxy state(S_f.createState(u));
+    const ConnectStateProxy state(S_f.createState(u_tmp));  // uses phase-multiplied u-fields
 
     quarkProp4(quark_propagator, xml_buf, quark_prop_source,
   	       S_f, state, input.param.invType, input.param.RsdCG, input.param.MaxCG, ncg_had);
