@@ -1,4 +1,4 @@
-// $Id: make_source.cc,v 1.15 2004-01-09 03:52:19 edwards Exp $
+// $Id: make_source.cc,v 1.16 2004-01-13 04:01:38 edwards Exp $
 /*! \file
  *  \brief Main code for source generation
  */
@@ -7,14 +7,6 @@
 #include <cstdio>
 
 #include "chroma.h"
-
-/*
- *  Here we have various temporary definitions
- */
-// First the source type
-#define S_WAVE 0
-#define P_WAVE 1
-#define D_WAVE 2    /*added*/
 
 using namespace QDP;
 
@@ -37,24 +29,26 @@ int main(int argc, char **argv)
   // Read in params
   XMLReader xml_in("DATA");
 
-
   int j_decay;
   int version; 		// The input-parameter version
 
   Real kappa_fake = 3.14159265359;			// Kappa value
   
-  int source_type, source_direction; // S-wave(0), P-wave(1), D-wave(2)and direction
+  WaveStateType wave_state;       // S-wave(0), P-wave(1), D-wave(2)
+  int source_direction; // direction
 
-  int wf_type;			// Point (0) or Smeared (2)
-  Real wvf_param;		// smearing width
-  int WvfIntPar;                // number of iteration for smearing
-  int LaplacePower;             // power of laplacian operator: 0, 1, 2, etc.
+  SourceType source_type;	// POINT_SOURCE, SHELL_SOURCE, WALL_SOURCE
+  WvfKind wvf_kind = WVF_KIND_GAUGE_INV_GAUSSIAN; // shell source kind always GAUGE_INV_GAUSSIAN
+  Real wvf_param = 0;		// smearing width
+  int WvfIntPar = 0;            // number of iteration for smearing
+  int LaplacePower = 0;         // power of laplacian operator: 0, 1, 2, etc.
 
   multi1d<int> t_source(Nd);
 
   CfgType cfg_type;
   PropType prop_type;
 
+  string source_filename = "";
   string cfg_file;
 
   string xml_in_root = "/make_source";
@@ -68,18 +62,22 @@ int main(int argc, char **argv)
 
       switch(version)  	// The parameters we read in IO version
       {
-      case 2:
+      case 3:
       {
 	XMLReader paramtop(inputtop, "param");
 
 	read(paramtop, "j_decay", j_decay);
-	read(paramtop, "source_type", source_type);	// S-wave, P-wave etc
+	read(paramtop, "wave_state", wave_state);	// S-wave, P-wave etc
 	read(paramtop, "source_direction", source_direction);
 
-	read(paramtop, "wf_type", wf_type);	// Point, Gaussian etc
-	read(paramtop, "wvf_param", wvf_param);
-	read(paramtop, "WvfIntPar", WvfIntPar);
-	read(paramtop, "LaplacePower", LaplacePower);
+	read(paramtop, "source_type", source_type);	// Point, Gaussian etc
+
+	if (source_type == SRC_TYPE_SHELL_SOURCE)
+	{
+	  read(paramtop, "wvf_param", wvf_param);
+	  read(paramtop, "WvfIntPar", WvfIntPar);
+	  read(paramtop, "LaplacePower", LaplacePower);
+	}
 	read(paramtop, "t_srce", t_source);
 
 	read(paramtop, "cfg_type", cfg_type);
@@ -87,6 +85,9 @@ int main(int argc, char **argv)
 
 	// Now get the lattice sizes etc
 	read(paramtop, "nrow", nrow);
+
+	if (paramtop.count("source_file") != 0)
+	  read(paramtop, "source_file", source_filename);
       }
       break;
 
@@ -107,17 +108,21 @@ int main(int argc, char **argv)
   Layout::setLattSize(nrow);
   Layout::create();
 
-  switch(wf_type){
-  case POINT_SOURCE:
+  switch(source_type){
+  case SRC_TYPE_POINT_SOURCE:
     QDPIO::cout << "Point source" << endl;
     break;
-  case SHELL_SOURCE:
+  case SRC_TYPE_WALL_SOURCE:
+    QDPIO::cout << "Wall source" << endl;
+    break;
+  case SRC_TYPE_SHELL_SOURCE:
     QDPIO::cout << "Smeared source wvf_param= " << wvf_param <<": WvfIntPar= " 
 		<< WvfIntPar << endl
-		<< "Power of Laplacian operator" << LaplacePower << endl;
+		<< "Power of Laplacian operator= " << LaplacePower << endl;
     break;
   default:
-    QDP_error_exit("Unknown source_type", wf_type);
+    QDPIO::cout << "Unknown source_type" << endl;
+    QDP_abort(1);
   }    
 
   // Read a gauge field
@@ -147,31 +152,38 @@ int main(int argc, char **argv)
   // Useful info
 
   string xml_filename;
-  string source_filename;
 
-
-  switch(source_type){
-  case S_WAVE:
-    xml_filename = "source.xml";
-    source_filename = "source_0";
-    break;
-  case P_WAVE:
-    xml_filename = "p_source.xml";
-    source_filename = "p_source_0";
-    break;
-  case D_WAVE:    /* added */
-    if (source_direction == 12) {
-      xml_filename = "dydz_propagator.xml";
-      source_filename = "dydz_source_0";
+  if (source_filename == "")
+  {
+    // Set source filename and xml_filename
+    switch(wave_state)
+    {
+    case WAVE_TYPE_S_WAVE:
+      xml_filename = "source.xml";
+      source_filename = "source_0";
+      break;
+    case WAVE_TYPE_P_WAVE:
+      xml_filename = "p_source.xml";
+      source_filename = "p_source_0";
+      break;
+    case WAVE_TYPE_D_WAVE:    /* added */
+      if (source_direction == 12) {
+	xml_filename = "dydz_propagator.xml";
+	source_filename = "dydz_source_0";
+      }
+      if (source_direction == 22) {
+	xml_filename = "dzdz_propagator.xml";
+	source_filename = "dzdz_source_0";
+      }
+      break;
+    default: 
+      QDPIO::cerr<<"invaid wave_state\n";
+      break;
     }
-    if (source_direction == 22) {
-      xml_filename = "dzdz_propagator.xml";
-      source_filename = "dzdz_source_0";
-    }
-    break;
-  default: 
-    QDPIO::cerr<<"invaid source_type\n";
-    break;
+  }
+  else
+  {
+    xml_filename = "make_source.xml";
   }
 
 
@@ -202,13 +214,13 @@ int main(int argc, char **argv)
   // source is first constructed and then smeared. If a user
   // only wanted a point source, then remove the smearing stuff
   //
-  LatticePropagator quark_propagator;
+  LatticePropagator quark_source;
 
   PropHead header;		// Header information
   header.kappa = kappa_fake;
-  header.source_smearingparam=wf_type;     // local (0)  gaussian (1)
-  header.source_type=source_type; // S-wave or P-wave source
-  header.source_direction=source_direction;
+  header.source_smearingparam = source_type;     // local (0)  gaussian (1)
+  header.source_type = wave_state; // S-wave or P-wave source
+  header.source_direction = source_direction;
   header.source_laplace_power=LaplacePower;
   header.sink_smearingparam=0;	// Always to local sinks
   header.sink_type=0;
@@ -220,53 +232,94 @@ int main(int argc, char **argv)
 
   int ncg_had = 0;
 
-
-  for(int color_source = 0; color_source < Nc; ++color_source)
+  switch (source_type)
   {
-    QDPIO::cout << "color = " << color_source << endl;
-
-    LatticeColorVector src_color_vec = zero;
-
-    // Make a point source at coordinates t_source
-
-    srcfil(src_color_vec, t_source, color_source);
-
-    // Smear the colour source if specified
-
-    if(wf_type == SHELL_SOURCE) {
-      gausSmear(u, src_color_vec, wvf_param, WvfIntPar, j_decay);
-      laplacian(u, src_color_vec, j_decay, LaplacePower);
-      //power = 1 for one laplacian operator
-    }
-
-    for(int spin_source = 0; spin_source < Ns; ++spin_source)
+    //
+    // Gauge inv. point or shell sources within some S_WAVE, P_WAVE, state etc.
+    //
+  case SRC_TYPE_POINT_SOURCE:
+  case SRC_TYPE_SHELL_SOURCE:
+  {
+    for(int color_source = 0; color_source < Nc; ++color_source)
     {
-      QDPIO::cout << "spin = " << spin_source << endl;
+      QDPIO::cout << "color = " << color_source << endl;
 
-      // Insert a ColorVector into spin index spin_source
-      // This only overwrites sections, so need to initialize first
+      LatticeColorVector src_color_vec = zero;
 
+      // Make a point source at coordinates t_source
+      srcfil(src_color_vec, t_source, color_source);
 
-      LatticeFermion chi = zero;
+      // Smear the colour source if specified
+      if(source_type == SRC_TYPE_SHELL_SOURCE) 
+      {
+	gausSmear(u, src_color_vec, wvf_param, WvfIntPar, j_decay);
+	laplacian(u, src_color_vec, j_decay, LaplacePower);
+	//power = 1 for one laplacian operator
+      }
 
-      CvToFerm(src_color_vec, chi, spin_source);
+      for(int spin_source = 0; spin_source < Ns; ++spin_source)
+      {
+	QDPIO::cout << "spin = " << spin_source << endl;
+
+	// Insert a ColorVector into spin index spin_source
+	// This only overwrites sections, so need to initialize first
+	LatticeFermion chi = zero;
+
+	CvToFerm(src_color_vec, chi, spin_source);
       
-      if(source_type == P_WAVE)
-	p_src(u, chi, source_direction);
+	if(wave_state == WAVE_TYPE_P_WAVE)
+	  p_src(u, chi, source_direction);
 
-      if(source_type == D_WAVE)   /* added */
-	d_src(u, chi, source_direction);
+	if(wave_state == WAVE_TYPE_D_WAVE)   /* added */
+	  d_src(u, chi, source_direction);
 
-      // primitive initial guess for the linear sys solution
+	// primitive initial guess for the linear sys solution
       
-      /*
-       *  Move the solution to the appropriate components
-       *  of quark propagator.
-       */
+	/*
+	 *  Move the solution to the appropriate components
+	 *  of quark propagator.
+	 */
 
-      FermToProp(chi, quark_propagator, color_source, spin_source);
+	FermToProp(chi, quark_source, color_source, spin_source);
+      }
     }
   }
+  break;
+
+  case SRC_TYPE_WALL_SOURCE:
+  {
+#if 0
+    // This stuff is not needed here - should be in propagator.cc
+
+    // For a wall source, we must Coulomb gauge fix the gauge field
+    Real GFAccu = 1.0e-6;	// Gauge-fixing relaxation accuracy
+    Real OrPara = 1.0;	        // Over-relaxation parameter in gauge-fixing
+    int GFMax = 1000;	        // Maximum number of gauge-fixing relaxations
+    bool ORlxDo = false;        // Do Over-relaxation in gauge fixing
+    int nrl_gf;		        // Number of relaxations in gauge-fixing
+
+    coulGauge(u, j_decay, GFAccu, GFMax, nrl_gf, ORlxDo, OrPara);
+#endif
+
+    for(int color_source = 0; color_source < Nc; ++color_source)
+    {
+      for(int spin_source = 0; spin_source < Ns; ++spin_source)
+      {
+	// Wall fill a fermion source. Insert it into the propagator source
+	LatticeFermion chi;
+	walfil(chi, t_source[j_decay], j_decay, color_source, spin_source);
+	FermToProp(chi, quark_source, color_source, spin_source);
+      }
+    }
+  }
+  break;
+
+  default:
+    QDPIO::cout << "Unsupported source type" << endl;
+    QDP_abort(1);
+  }
+
+
 
   // Sanity check - write out the norm2 of the source in the Nd-1 direction
   // Use this for any possible verification
@@ -274,7 +327,7 @@ int main(int argc, char **argv)
     // Initialize the slow Fourier transform phases
     SftMom phases(0, true, Nd-1);
 
-    multi1d<Double> source_corr = sumMulti(localNorm2(quark_propagator), 
+    multi1d<Double> source_corr = sumMulti(localNorm2(quark_source), 
 					   phases.getSubset());
 
     push(xml_out, "Source_correlator");
@@ -286,11 +339,11 @@ int main(int argc, char **argv)
   switch (prop_type) 
   {
   case PROP_TYPE_SZIN:
-    writeSzinQprop(quark_propagator, source_filename, kappa_fake);
+    writeSzinQprop(quark_source, source_filename, kappa_fake);
     break;
 
   case PROP_TYPE_SCIDAC:
-    writeQprop(source_filename, quark_propagator, header);
+    writeQprop(source_filename, quark_source, header);
     break;
 
   default :
@@ -312,7 +365,7 @@ int main(int argc, char **argv)
     XMLBufferWriter record_xml;
     write(record_xml, "prop_header", header);
 
-    to.write(record_xml,quark_propagator);  // can keep repeating writes for more records
+    to.write(record_xml,quark_source);  // can keep repeating writes for more records
     to.close();
   }
 #endif
