@@ -1,4 +1,3 @@
-// $Id: stag_scalars_s.cc,v 1.5 2005-01-06 17:28:37 edwards Exp $
 /*! File: stag_scalars_s.cc 
  *
  * The routines in this file compute all 16 staggered scalars.
@@ -139,7 +138,7 @@ staggered_scalars::compute(
     delta = 0;
     delta[mu] = 1;
       
-    corr_fn_s =  alpha(mu+1)*trace(shiftDeltaProp(delta,quark_props[0])
+    corr_fn_s =  alpha(mu+1)*trace(shift_deltaProp(delta,quark_props[0])
                              *adj(quark_props[ deltaToPropIndex(delta) ]));
 
     corr_fn[ sca_index ] = sumMulti(corr_fn_s, timeslice);
@@ -160,7 +159,7 @@ staggered_scalars::compute(
       delta[nu] = 1;
 
       corr_fn_s = beta(mu)* alpha(nu+1)
-                              *trace(adj(shiftDeltaProp(delta,quark_props[0]))
+                              *trace(adj(shift_deltaProp(delta,quark_props[0]))
                                      *quark_props[ deltaToPropIndex(delta) ]);
 
       corr_fn[ sca_index ] = sumMulti(corr_fn_s, timeslice);
@@ -174,7 +173,7 @@ staggered_scalars::compute(
       delta[mu] = 1;
     
       corr_fn_s = - beta(mu)*  beta(2)
-                              *trace(adj(shiftDeltaProp(delta,quark_props[0]))
+                              *trace(adj(shift_deltaProp(delta,quark_props[0]))
                                      *quark_props[ deltaToPropIndex(delta) ]);
 
     
@@ -193,7 +192,7 @@ staggered_scalars::compute(
 	delta[rho] = 1;
 
         corr_fn_s = - alpha(mu+1) * alpha(nu+1)* alpha(rho+1)
-          *trace(adj(shiftDeltaProp(delta,quark_props[0]))
+          *trace(adj(shift_deltaProp(delta,quark_props[0]))
                  *quark_props[ deltaToPropIndex(delta) ]);
 
         corr_fn[ sca_index ] = sumMulti(corr_fn_s, timeslice);
@@ -211,7 +210,7 @@ staggered_scalars::compute(
 	delta[nu] = 1;
 
 	corr_fn_s =  beta(mu)* beta(nu)*  beta(2)
-          *trace(adj(shiftDeltaProp(delta,quark_props[0]))
+          *trace(adj(shift_deltaProp(delta,quark_props[0]))
                  *quark_props[ deltaToPropIndex(delta) ]);
 
 	corr_fn[ sca_index ] = sumMulti(corr_fn_s, timeslice);
@@ -224,7 +223,7 @@ staggered_scalars::compute(
   delta[0] = delta[1] = delta[2] = 1;
 
   corr_fn_s = beta(0)* beta(1)
-    *trace(adj(shiftDeltaProp(delta, quark_props[0]))
+    *trace(adj(shift_deltaProp(delta, quark_props[0]))
            *quark_props[ deltaToPropIndex(delta) ] );
 
   corr_fn[ sca_index ] = sumMulti(corr_fn_s, timeslice);
