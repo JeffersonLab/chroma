@@ -1,4 +1,4 @@
-// $Id: bar3ptfn.cc,v 1.38 2005-03-02 00:44:18 edwards Exp $
+// $Id: bar3ptfn.cc,v 1.39 2005-03-07 02:57:59 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions
  *
@@ -106,7 +106,7 @@ struct Output_version_t
 
 struct FormFac_sequential_source_t
 {
-  int               seq_src_value;
+  string            seq_src;
   multi1d<int>      t_source;
   int               t_sink;
   multi1d<int>      sink_mom;
@@ -145,7 +145,7 @@ void write(BinaryWriter& bin, const Param_t& param)
 // 
 void write(BinaryWriter& bin, const FormFac_sequential_source_t& src)
 {
-  write(bin, src.seq_src_value);
+  write(bin, src.seq_src);
   write(bin, src.t_source);
   write(bin, src.t_sink);
   write(bin, src.sink_mom);
@@ -234,7 +234,7 @@ main(int argc, char *argv[])
   write(xml_out, "Config_info", gauge_xml);
 
   push(xml_out, "Output_version");
-  write(xml_out, "out_version", 9);
+  write(xml_out, "out_version", 10);
   pop(xml_out);
 
   // First calculate some gauge invariant observables just for info.
@@ -297,14 +297,14 @@ main(int argc, char *argv[])
   // Big nested structure that is image of entire file
   //
   Bar3ptfn_t  bar3pt;
-  bar3pt.output_version.out_version = 9;  // bump this up everytime something changes
+  bar3pt.output_version.out_version = 10;  // bump this up everytime something changes
   bar3pt.param = input.param; // copy entire structure
 
   push(xml_out, "Wilson_3Pt_fn_measurements");
 
   // Big nested structure that is image of all form-factors
 //    FormFac_Wilson_3Pt_fn_measurements_t  formfacs;
-  bar3pt.bar.output_version = 2;  // bump this up everytime something changes
+  bar3pt.bar.output_version = 3;  // bump this up everytime something changes
   bar3pt.bar.seqsrc.resize(input.prop.seqprop_files.size());
 
   XMLArrayWriter  xml_seq_src(xml_out, input.prop.seqprop_files.size());
@@ -358,35 +358,28 @@ main(int argc, char *argv[])
       pop(xml_seq_src);
     }
 
+    xml_out.flush();
+
     // Derived from input seqprop
-    int seq_src_value = seqsource_header.seq_src;
+    string seq_src = seqsource_header.seq_src;
+    QDPIO::cout << "Seqsource name = " << seqsource_header.seq_src << endl;
     int           t_sink   = seqsource_header.t_sink;
     multi1d<int>  sink_mom = seqsource_header.sink_mom;
 
-    // Output is driven by the type of sequential propagator
-    if ((0 <= seq_src_value) && (seq_src_value <= 9)) {
-      write(xml_seq_src, "hadron_type", "BARYON");
-    } else if ((10 <= seq_src_value) && (seq_src_value <= 20)) {
-      write(xml_seq_src, "hadron_type", "MESON");
-    } else if ((21 <= seq_src_value) && (seq_src_value <= 30)) {
-      write(xml_seq_src, "hadron_type", "BARYON");
-    } else {
-      QDP_error_exit("Unknown sequential source type", seq_src_value);
-    }
-
-    write(xml_seq_src, "seq_src_value", seq_src_value);
+    write(xml_seq_src, "hadron_type", "HADRON");
+    write(xml_seq_src, "seq_src", seq_src);
     write(xml_seq_src, "t_source", t_source);
     write(xml_seq_src, "t_sink", t_sink);
     write(xml_seq_src, "sink_mom", sink_mom);
 	
-    bar3pt.bar.seqsrc[seq_src_ctr].seq_src_value = seq_src_value;
+    bar3pt.bar.seqsrc[seq_src_ctr].seq_src       = seq_src;
     bar3pt.bar.seqsrc[seq_src_ctr].t_source      = t_source;
     bar3pt.bar.seqsrc[seq_src_ctr].t_sink        = t_sink;
     bar3pt.bar.seqsrc[seq_src_ctr].sink_mom      = sink_mom;
     // This is no longer computed (or needed), but keep here to make binary happy
     bar3pt.bar.seqsrc[seq_src_ctr].seq_hadron_0  = zero;
 	
-//      xml_seq_src.flush();
+    xml_out.flush();
 
     // Now the 3pt contractions
     SftMom phases(input.param.mom2_max, sink_mom, false, j_decay);
