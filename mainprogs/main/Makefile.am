@@ -47,13 +47,11 @@ check_PROGRAMS = propagator \
         ExampleBuildingBlocks hypsmear cfgtransf sink_smearing qpropgfix \
         qproptrev
 
-if BUILD_WILSON_LIBS
+# Wilson specific programs
 check_PROGRAMS += spectrum_w qqq_w bar3ptfn qproptransf wallformfac
-endif
 
-# Currently empty
-#if BUILD_STAGGERED_LIBS
-#endif
+# Staggered specific programs
+#check_PROGRAMS += 
 
 
 
@@ -62,16 +60,13 @@ endif
 ## make check
 EXTRA_PROGRAMS = qpropadd 
 
-# Currently empty
-if BUILD_WILSON_LIBS
+# Wilson specific programs
 # Temporarily moved here while fixing codes.
 EXTRA_PROGRAMS += propagator_comp multi_propagator multi_propagator_comp \
        collect_multi_propcomp 
-endif
 
-# Currently empty
-#if BUILD_STAGGERED_LIBS
-#endif
+# Staggered specific programs
+#EXTRA_PROGRAMS += 
 
 
 #

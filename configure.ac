@@ -23,31 +23,6 @@ dnl
 dnl George T. Fleming, 12 February 2003
 dnl Complete rewrite of configure switches based on new config scripts.
 
-
-dnl --enable-fermion-type
-AC_ARG_ENABLE(
-  [fermion-type],
-  AC_HELP_STRING(
-    [--enable-fermion-type=<fermion type>],
-    [Set the fermion type (wilson or staggered) default is wilson]
-  ),
-  [
-    case "$enable_fermion_type" in
-      STAG*) ac_fermion_type="staggered" ;;
-      Stag*) ac_fermion_type="staggered" ;;
-      stag*) ac_fermion_type="staggered" ;;
-
-      WIL*)  ac_fermion_type="wilson" ;;
-      Wil*)  ac_fermion_type="wilson" ;;
-      wil*)  ac_fermion_type="wilson" ;;
-
-      *)     ac_fermion_type="$enable_fermion_type" ;;
-    esac
-  ],
-  [ac_fermion_type="wilson"]
-) 
-
-
 dnl --with-qdp=DIR
 AC_ARG_WITH(qdp,
   AC_HELP_STRING(
@@ -115,28 +90,9 @@ AC_MSG_NOTICE([QDP++ parallel arch: ${QDPXX_PARALLEL_ARCH}])
 AC_SUBST(QDPXX_PRECISION, "`${QDPXX_CONFIG} --precision`")
 AC_MSG_NOTICE([QDP++ precision: ${QDPXX_PRECISION}])
 
-dnl
-dnl
-case $ac_fermion_type in
-  staggered)
-    AC_DEFINE(CHROMA_BUILD_STAGGERED,[],[ Build Staggered Chroma ])
-    ;;
-  wilson)
-    AC_MSG_NOTICE([Configuring QDP++ Apps with WILSON-like fermions])
-    AC_DEFINE(CHROMA_BUILD_WILSON,[],[ Build Wilson Chroma ])
-    ;;
-  *)
-    AC_MSG_ERROR([${ac_fermion_type}-like fermions not supported yet.])
-    ;;
-esac
-
 dnl SSE Wilson Dslash stuff
 case "$enable_sse_wilson_dslash" in
   yes) 
-        if test "x$ac_fermion_type" != "xwilson";
-	then	
-	    AC_MSG_ERROR([ Attempting to build Assembler Wilson Dslash with NON Wilson fermion type ])
-	fi
         AC_MSG_NOTICE( [Configuring SSE Wilson Dslash ] )
 	AC_CONFIG_SUBDIRS(other_libs/intel_sse_wilson_dslash)
 	AC_SUBST(SSE_DSLASH_DIR, [intel_sse_wilson_dslash])
@@ -157,10 +113,6 @@ AM_CONDITIONAL(BUILD_SSE_WILSON_DSLASH,
 dnl SSE DWF CG stuff
 case "$enable_sse_dwf_cg" in
   yes) 
-        if test "x$ac_fermion_type" != "xwilson";
-	then	
-	    AC_MSG_ERROR([Attempting to build SSE DWF CG inverter with NON Wilson fermion type])
-	fi
         AC_MSG_NOTICE([Configuring SSE DWF CG])
 	AC_CONFIG_SUBDIRS(other_libs/intel_sse_dwf_cg)
 	AC_SUBST(SSE_DWF_CG_DIR, [intel_sse_dwf_cg])
@@ -181,10 +133,6 @@ dnl QCDOC Wilson Dslash stuff
 case "$enable_pab_wilson_dslash" in
   noarch)
 	ac_build_pab_wilson_dslash="yes" 
-        if test "x$ac_fermion_type" != "xwilson";
-	then	
-	    AC_MSG_ERROR([ Attempting to build Assembler Wilson Dslash with NON Wilson fermion type ])
-	fi
         AC_MSG_NOTICE( [Configuring PAB Wilson Dslash ] )
 	AC_DEFINE([BUILD_PAB_WILSON_DSLASH],[],[ Build Peters Dslash Op])
 	;;
@@ -198,12 +146,6 @@ esac
 AM_CONDITIONAL(BUILD_PAB_WILSON_DSLASH,
   [test "x${ac_build_pab_wilson_dslash}x" = "xyesx" ])
 
-
-dnl Fermion specific stuff
-AM_CONDITIONAL(BUILD_STAGGERED_LIBS,
-  [test "X${ac_fermion_type}X" = "XstaggeredX"])
-AM_CONDITIONAL(BUILD_WILSON_LIBS,
-  [test "X${ac_fermion_type}X" = "XwilsonX"])
 
 dnl Try to compile a QDP++ program to check the --with options
 AC_MSG_CHECKING([if we can compile/link a simple QDP++ program])

@@ -9,12 +9,6 @@
 /* Build SSE Dslash Op */
 #undef BUILD_SSE_WILSON_DSLASH
 
-/* Build Staggered Chroma */
-#undef CHROMA_BUILD_STAGGERED
-
-/* Build Wilson Chroma */
-#undef CHROMA_BUILD_WILSON
-
 /* Name of package */
 #undef PACKAGE
 
