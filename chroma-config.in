@@ -21,15 +21,20 @@ exec_prefix_set=no
 
 version="@VERSION@"
 
-parallel_arch="unknown"
-
+extra_libs=""
 sse_dslash_enabled="@SSE_DSLASH_ENABLED@"
 case $sse_dslash_enabled in
 yes)
-	dslash_libs="-llevel3"
+	extra_libs="$extra_libs -llevel3"
 	;;
-no)
-        dslash_libs=""
+*)
+	;;
+esac
+
+sse_dwf_cg_enabled="@SSE_DWF_CG_ENABLED@"
+case $sse_dwf_cg_enabled in
+yes)
+	extra_libs="$extra_libs -lsse_dwf_cg"
 	;;
 *)
 	;;
@@ -38,7 +43,7 @@ esac
 chroma_cxx="@CXX@"
 chroma_cxxflags="@CXXFLAGS@ -I@includedir@ @QDPXX_CXXFLAGS@"
 chroma_ldflags="@LDFLAGS@ -L@libdir@ @QDPXX_LDFLAGS@"
-chroma_libs="-lchroma "$dslash_libs" @QDPXX_LIBS@ @LIBS@"
+chroma_libs="-lchroma "$extra_libs" @QDPXX_LIBS@ @LIBS@"
 
 precision="@QDPXX_PRECISION@"
 
@@ -56,7 +61,7 @@ Options:
   [--Nc]
   [--Ns]
   [--parallel-arch]
-  [--precision ]
+  [--precision]
   [--cxx]
   [--cxxflags]
   [--ldflags]
