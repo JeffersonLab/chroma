@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_sse.cc,v 1.5 2003-09-17 16:27:40 bjoo Exp $
+// $Id: lwldslash_w_sse.cc,v 1.6 2003-09-22 20:59:27 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -37,7 +37,7 @@ using namespace QDP;
  */
 extern "C" {
   
-  void init_sse_su3dslash(int);
+  void init_sse_su3dslash(int *);
   void free_sse_su3dslash(void);
   void sse_su3dslash_wilson(SSEREAL* u, SSEREAL *psi, SSEREAL *res, int isign, int cb);
   void make_shift_tables(int *shift, int subgrid_vol_cb, int nrow[], int subgrid_cb_nrow[], int bound[], int Nd);
@@ -58,14 +58,21 @@ void SSEWilsonDslash::create(const multi1d<LatticeColorMatrix>& _u)
 #endif
 
   const multi1d<int>& subgrid_size = Layout::subgridLattSize();
+
+  // Subgrid size after checkerboarding
+  int s_size[4];
+
   int i;
   for(i=0 ; i < Nd; i++) { 
     if ( subgrid_size[i] % 2 != 0 ) { 
       QDP_error_exit("This SSE Dslash does not work for odd sublattice. Here the sublattice is odd in dimension %d with length %d\n", i, subgrid_size[i]);
     }
+    s_size[i]= subgrid_size[i];
   }
 
-  init_sse_su3dslash(Layout::sitesOnNode()/2);
+  s_size[0] /= 2;
+
+  init_sse_su3dslash(s_size);
 
   packed_gauge.resize( Nd * Layout::sitesOnNode() );
 
