@@ -1,4 +1,4 @@
-// $Id: mres.cc,v 1.2 2004-12-09 05:14:31 edwards Exp $
+// $Id: mres.cc,v 1.3 2004-12-10 05:48:36 edwards Exp $
 
 #include <iostream>
 #include <sstream>
@@ -329,11 +329,9 @@ int main(int argc, char **argv)
       // Possible actions
       const UnprecDWFermActBaseArray<LatticeFermion>* S_udwf = 
 	dynamic_cast<const UnprecDWFermActBaseArray<LatticeFermion>*>(S_f);
-      fprintf(stdout, "unprec S_f=0x%x\n", S_udwf);
 
       const EvenOddPrecDWFermActBaseArray<LatticeFermion>* S_pdwf = 
 	dynamic_cast<const EvenOddPrecDWFermActBaseArray<LatticeFermion>*>(S_f);
-      fprintf(stdout, "prec S_f=0x%x\n", S_pdwf);
 
       if (S_pdwf != 0)
       {
