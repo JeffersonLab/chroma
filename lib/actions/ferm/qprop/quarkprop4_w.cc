@@ -1,4 +1,4 @@
-// $Id: quarkprop4_w.cc,v 1.13 2004-05-28 16:47:33 bjoo Exp $
+// $Id: quarkprop4_w.cc,v 1.14 2004-07-27 06:03:04 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -252,34 +252,6 @@ void quarkProp4(LatticePropagator& q_sol,
 
   END_CODE("quarkProp4");
 }
-
-//! Given a complete propagator as a source, this does all the inversions needed
-/*! \ingroup qprop
- *
- * This routine is actually generic to all Wilson-like fermions
- *
- * \param q_sol    quark propagator ( Write )
- * \param q_src    source ( Read )
- * \param invType  inverter type ( Read (
- * \param RsdCG    CG (or MR) residual used here ( Read )
- * \param MaxCG    maximum number of CG iterations ( Read )
- * \param ncg_had  number of CG iterations ( Write )
- */
-
-void quarkProp4(LatticePropagator& q_sol, 
-		XMLWriter& xml_out,
-		const LatticePropagator& q_src,
-		const WilsonTypeFermAct<LatticeDWFermion>& S_f,
-		Handle<const ConnectState> state,
-		enum InvType invType,
-		const Real& RsdCG, 
-		int MaxCG, 
-		bool nonRelProp,
-		int& ncg_had)
-{
-  quarkProp4_a(q_sol, xml_out, q_src, S_f, state, invType, RsdCG, MaxCG, nonRelProp, ncg_had);
-}
-
 
 //! Given a complete propagator as a source, this does all the inversions needed
 /*! \ingroup qprop

@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_sse.cc,v 1.16 2004-02-06 21:22:09 edwards Exp $
+// $Id: lwldslash_w_sse.cc,v 1.17 2004-07-27 06:03:04 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -121,5 +121,7 @@ SSEWilsonDslash::apply (LatticeFermion& chi, const LatticeFermion& psi,
 		       (SSEREAL *)&(chi.elem(0).elem(0).elem(0).real()),
 		       (int)isign, (1-cb));
   
+
+  END_CODE("lWlDslash");
 }
 

@@ -1,4 +1,4 @@
-// $Id: prec_fermact_qprop.cc,v 1.3 2004-01-02 03:19:41 edwards Exp $
+// $Id: prec_fermact_qprop.cc,v 1.4 2004-07-27 06:03:04 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic even-odd preconditioned fermion operator
  *
@@ -127,30 +127,5 @@ EvenOddPrecWilsonTypeFermAct<LatticeFermion>::qprop(LatticeFermion& psi,
 }
 
 
-
-template<>
-void 
-EvenOddPrecWilsonTypeFermAct<LatticeDWFermion>::qpropT(LatticeDWFermion& psi, 
-						       Handle<const ConnectState> state, 
-						       const LatticeDWFermion& chi, 
-						       enum InvType invType,
-						       const Real& RsdCG, 
-						       int MaxCG, int& ncg_had) const
-{
-  qprop_t(*this, psi, state, chi, invType, RsdCG, MaxCG, ncg_had);
-}
-
-template<>
-void 
-EvenOddPrecWilsonTypeFermAct<LatticeDWFermion>::qprop(LatticeFermion& psi, 
-						      Handle<const ConnectState> state, 
-						      const LatticeFermion& chi, 
-						      enum InvType invType,
-						      const Real& RsdCG, 
-						      int MaxCG, int& ncg_had) const
-{
-  QDPIO::cerr << "EvenOddPrecWilsonTypeFermAct<DWF>::qprop - this implementation is empty" << endl;
-  QDP_abort(1);
-}
 
 

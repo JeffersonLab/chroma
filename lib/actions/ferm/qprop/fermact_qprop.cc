@@ -1,4 +1,4 @@
-// $Id: fermact_qprop.cc,v 1.6 2004-01-02 03:19:41 edwards Exp $
+// $Id: fermact_qprop.cc,v 1.7 2004-07-27 06:03:04 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *
@@ -108,29 +108,5 @@ void FermionAction<LatticeFermion>::qprop(LatticeFermion& psi,
   qprop_t(*this, psi, state, chi, invType, RsdCG, MaxCG, ncg_had);
 }
 
-
-
-template<>
-void FermionAction<LatticeDWFermion>::qpropT(LatticeDWFermion& psi, 
-					     Handle<const ConnectState> state, 
-					     const LatticeDWFermion& chi, 
-					     enum InvType invType,
-					     const Real& RsdCG, 
-					     int MaxCG, int& ncg_had) const
-{
-  qprop_t(*this, psi, state, chi, invType, RsdCG, MaxCG, ncg_had);
-}
-
-template<>
-void FermionAction<LatticeDWFermion>::qprop(LatticeFermion& psi, 
-					    Handle<const ConnectState> state, 
-					    const LatticeFermion& chi, 
-					    enum InvType invType,
-					    const Real& RsdCG, 
-					    int MaxCG, int& ncg_had) const
-{
-  QDPIO::cerr << "FermionAction<DWF>::qprop - this implementation is empty" << endl;
-  QDP_abort(1);
-}
 
 

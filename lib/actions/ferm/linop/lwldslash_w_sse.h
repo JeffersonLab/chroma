@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_w_sse.h,v 1.7 2003-11-20 05:43:41 edwards Exp $
+// $Id: lwldslash_w_sse.h,v 1.8 2004-07-27 06:03:04 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -44,7 +44,7 @@ using namespace QDP;
  */
 
                                                                                 
-typedef PColorMatrix < RComplex <PScalar<REAL> >, Nc > PrimitiveSU3Matrix;
+typedef PColorMatrix < RComplex <REAL>, Nc > PrimitiveSU3Matrix;
 
 class SSEWilsonDslash : public DslashLinearOperator<LatticeFermion>
 {

@@ -1,4 +1,4 @@
-// $Id: invcg2.cc,v 1.7 2003-12-02 15:43:03 edwards Exp $
+// $Id: invcg2.cc,v 1.8 2004-07-27 06:03:04 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -168,14 +168,3 @@ void InvCG2(const LinearOperator<LatticeFermion>& M,
   InvCG2_a(M, chi, psi, RsdCG, MaxCG, n_count);
 }
 
-// Fix here for now
-template<>
-void InvCG2(const LinearOperator<LatticeDWFermion>& M,
-	    const LatticeDWFermion& chi,
-	    LatticeDWFermion& psi,
-	    const Real& RsdCG, 
-	    int MaxCG, 
-	    int& n_count)
-{
-  InvCG2_a(M, chi, psi, RsdCG, MaxCG, n_count);
-}

@@ -1,4 +1,4 @@
-// $Id: invcg2_timing_hacks.cc,v 1.2 2004-03-22 15:29:29 bjoo Exp $
+// $Id: invcg2_timing_hacks.cc,v 1.3 2004-07-27 06:03:04 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -189,14 +189,3 @@ void InvCG2_timing_hacks(const LinearOperator<LatticeFermion>& M,
   InvCG2_timing_hacks_a(M, chi, psi, RsdCG, MaxCG, n_count);
 }
 
-// Fix here for now
-template<>
-void InvCG2_timing_hacks(const LinearOperator<LatticeDWFermion>& M,
-	    const LatticeDWFermion& chi,
-	    LatticeDWFermion& psi,
-	    const Real& RsdCG, 
-	    int MaxCG, 
-	    int& n_count)
-{
-  InvCG2_timing_hacks_a(M, chi, psi, RsdCG, MaxCG, n_count);
-}
