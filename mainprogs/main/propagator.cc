@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.2 2003-03-29 05:26:14 edwards Exp $
+// $Id: propagator.cc,v 1.3 2003-03-30 17:15:25 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -35,6 +35,8 @@ int main(int argc, char **argv)
   int  WvfIntPar = 10;   // number of hits for smearing
 
   Real Kappa = 0.1480;
+
+  InvType = CG_INVERTER;  // global
   Real RsdCG = 1.0e-6;
   int  MaxCG = 500;
 
