@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_kno_fermact_array_w.h,v 1.1 2004-11-21 16:44:17 kostas Exp $
+// $Id: prec_kno_fermact_array_w.h,v 1.2 2004-11-23 15:48:59 kostas Exp $
 /*! \file
  *  \brief preconditioned KNO domain-wall fermion action
  */
@@ -32,6 +32,7 @@ namespace Chroma
     
     Real OverMass;
     Real Mass;
+    Real a5 ;
     multi1d<Real> coefs;
     int  N5;
   };
@@ -56,18 +57,19 @@ namespace Chroma
     EvenOddPrecKNOFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
 				   const Real& OverMass_, 
 				   const Real& Mass_, 
+			           const Real& a5_, 
 				   const multi1d<Real>& c_,
 				   int N5_) : 
-      fbc(fbc_), OverMass(OverMass_), Mass(Mass_), coefs(c_), N5(N5_) {init();}
+      fbc(fbc_), OverMass(OverMass_), Mass(Mass_), a5(a5_), coefs(c_), N5(N5_) {init();}
 
     //! General FermBC
     EvenOddPrecKNOFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
 			      const EvenOddPrecKNOFermActArrayParams& param) :
-      fbc(fbc_), OverMass(param.OverMass), Mass(param.Mass), coefs(param.coefs), N5(param.N5) {init();}
+      fbc(fbc_), OverMass(param.OverMass), Mass(param.Mass), a5(param.a5), coefs(param.coefs), N5(param.N5) {init();}
 
     //! Copy constructor
     EvenOddPrecKNOFermActArray(const EvenOddPrecKNOFermActArray& a) : 
-      fbc(a.fbc), OverMass(a.OverMass), Mass(a.Mass), coefs(a.coefs), N5(a.N5) {}
+      fbc(a.fbc), OverMass(a.OverMass), Mass(a.Mass), a5(a.a5), coefs(a.coefs), N5(a.N5) {}
 
     //! Assignment
     EvenOddPrecKNOFermActArray& operator=(const EvenOddPrecKNOFermActArray& a)
@@ -75,6 +77,7 @@ namespace Chroma
 	fbc=a.fbc; 
 	OverMass=a.OverMass; 
 	Mass=a.Mass; 
+	a5 = a.a5 ;
 	coefs=a.coefs;
 	N5=a.N5; 
 
@@ -188,6 +191,7 @@ namespace Chroma
     Handle< FermBC< multi1d<LatticeFermion> > >  fbc;
     Real OverMass;
     Real Mass;
+    Real a5 ;
     multi1d<Real> coefs;
     int  N5;
   };

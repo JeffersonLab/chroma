@@ -1,4 +1,4 @@
-// $Id: prec_kno_fermact_array_w.cc,v 1.1 2004-11-21 16:43:18 kostas Exp $
+// $Id: prec_kno_fermact_array_w.cc,v 1.2 2004-11-23 15:48:59 kostas Exp $
 /*! \file
  *  \brief preconditioned KNO fermion action
  */
@@ -55,10 +55,8 @@ namespace Chroma
       // Read the stuff for the action
       read(paramtop, "OverMass", OverMass);
       read(paramtop, "Mass", Mass);
-      read(paramtop, "b5", b5);
-      read(paramtop, "c5", c5);
+      read(paramtop, "coefs", coefs);
       read(paramtop, "N5", N5);
-      read(paramtop, "ApproximationType", approximation_type);
     }
     catch(const string& e) { 
       QDPIO::cerr << "Caught Exception : " << e << endl;
@@ -82,89 +80,24 @@ namespace Chroma
 
   void EvenOddPrecKNOFermActArray::initCoeffs(multi1d<Real>& b5_arr,
 					     multi1d<Real>& c5_arr,
-					     Handle<const ConnectState>& state) const
+					      const multi1d<Real>& sc) const
   {
     b5_arr.resize(N5);
     c5_arr.resize(N5);
 
-    Real approxMin;
-    Real approxMax;
-    try {
-      const OverlapConnectState& ov_state=dynamic_cast<const OverlapConnectState&>(*state);
-      approxMin = ov_state.getApproxMin();
-      approxMax = ov_state.getApproxMax();
 
-      // You can do e-value stuff here later
-    }
-    catch( bad_cast ) {
-      QDPIO::cerr << "Failed to cast ConnectState to OverlapConnectState" <<endl;
-      QDPIO::cerr << " in EvenOddPrecNEFFermActArray::linOp() " << endl;
-      QDP_abort(1);
-    }
-
-
-    Real epsilon;
-    Real scale_fact;
-    zolotarev_data *rdata;
-
-    switch( approximation_type ) { 
-    case COEFF_TYPE_ZOLOTAREV: 
-      {
-	epsilon = approxMin / approxMax;
-	QDPIO::cout << "Epsilon= " << epsilon << endl << flush;
-	rdata=zolotarev(toFloat(epsilon), N5, 0);
-	scale_fact = approxMax;
-	break;
-      }
-    case COEFF_TYPE_TANH_UNSCALED:
-      {
-	epsilon = approxMin;
-	scale_fact=Real(1);
-	rdata=higham(toFloat(epsilon), N5);
-	break;
-      }
-    default:
-      {
-	QDPIO::cout << "Unsupported Coeff Type : " << approximation_type << endl;
-	QDP_abort(1);
-	break;
-      }
-    };
-
-    if( rdata->n != N5 ) { 
-      QDPIO::cerr << "Error:rdata->n != N5" << endl;
-      QDP_abort(1);
-    }
-
-    multi1d<Real> gamma(N5);
-    for(int i=0; i < N5; i++) { 
-      gamma[i] = Real(rdata->gamma[i])*scale_fact;
-    }
-
-    Real maxerr=rdata->Delta;
-    zolotarev_free(rdata);
-
-    QDPIO::cout << "Initing Zolo NEF Linop: N5=" << N5 
-		<< " b5+c5=" << b5+c5 
-		<<  " b5-c5=" << b5-c5 
-		<<  " epsilon=" << epsilon 
-                <<  " scale=" << approxMax 
-		<<  " maxerr=" << maxerr << endl;
+    QDPIO::cout << "Initing General NEF Linop: N5=" << N5 <<endl ;
+    QDPIO::cout << "                           a5=" << a5 <<endl ;
+    for(int i = 0; i < N5; i++)
+      QDPIO::cout<<"                           coef("<<i<<") = "<<sc[i]<<endl ;
 
     
     for(int i = 0; i < N5; i++) { 
-      Real omega = Real(1)/gamma[i];
-
-      b5_arr[i] = Real(0.5)*( (omega + Real(1))*b5 + (omega - Real(1))*c5 );
-      c5_arr[i] = Real(0.5)*( (omega - Real(1))*b5 + (omega + Real(1))*c5 );
+      b5_arr[i] = Real(0.5)*( sc[i]  + a5 );
+      c5_arr[i] = Real(0.5)*( sc[i] -  a5 );
     
-      QDPIO::cout << "i=" << i << " omega["<<i<<"]=" << omega
-		  << " b5["<< i << "] ="<< b5_arr[i] 
+      QDPIO::cout << " b5["<< i << "] ="<< b5_arr[i] 
 		  << " c5["<< i << "] ="<< c5_arr[i] << endl;
-      QDPIO::cout << "i=" << i 
-		  << " b5["<<i<<"]+c5["<<i<<"]/omega["<<i<<"] =" 
-		  << (b5_arr[i]+c5_arr[i])/omega
-		  << " b5["<<i<<"]-c5["<<i<<"]=" << b5_arr[i]-c5_arr[i] << endl;
     }
 
   }
