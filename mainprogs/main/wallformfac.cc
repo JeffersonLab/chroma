@@ -1,4 +1,4 @@
-// $Id: wallformfac.cc,v 1.13 2004-04-07 04:39:21 edwards Exp $
+// $Id: wallformfac.cc,v 1.14 2004-04-18 20:16:30 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions with a wall sink
  *
@@ -306,26 +306,28 @@ main(int argc, char *argv[])
   {
     int formfac_value = input.param.formfac_type[formfac_ctr];
 
+    QDPIO::cout << "Measurements for formfac_value = " << formfac_value << endl;
+
     switch (formfac_value)
     {
     case 0:
       wallPionFormFac(xml_out,
 		      u, forward_quark_prop, backward_quark_prop, 
 		      phases, 
-		      t_source[j_decay],
-		      t_sink);
+		      t_source[j_decay], t_sink);
       break;
 
-#if 0
     case 1:
-      wallNucleonFormFac(xml_out,
-			 u, forward_quark_prop, backward_quark_prop, phases, 
-			 t_source[j_decay]);
+      wallNuclFormFac(xml_out,
+		      u, 
+		      forward_quark_prop, backward_quark_prop, 
+		      forward_quark_prop, backward_quark_prop, 
+		      phases, 
+		      t_source[j_decay], t_sink);
       break;
-#endif
 
     default:
-      QDPIO::cerr << "Unknown value of " << endl;
+      QDPIO::cerr << "Unknown value of formfac_ctr " << formfac_ctr << endl;
       QDP_abort(1);
     }
   }
