@@ -1,6 +1,9 @@
-// $Id: propagator.cc,v 1.56 2004-04-28 02:54:12 edwards Exp $
+// $Id: propagator.cc,v 1.57 2004-04-28 14:56:11 bjoo Exp $
 // $Log: propagator.cc,v $
-// Revision 1.56  2004-04-28 02:54:12  edwards
+// Revision 1.57  2004-04-28 14:56:11  bjoo
+// Tested propagator_comp and collect_propcomp
+//
+// Revision 1.56  2004/04/28 02:54:12  edwards
 // Added sanity check on boundary.
 //
 // Revision 1.55  2004/04/27 21:30:01  edwards
@@ -174,7 +177,7 @@ int main(int argc, char **argv)
   int t0;
   int j_decay;
   multi1d<int> boundary;
-  bool make_sourceP = false;;
+  bool make_sourceP = false;
   bool seqsourceP = false;
   {
     // ONLY SciDAC mode is supported for propagators!!

@@ -1,7 +1,7 @@
-// $Id: collect_propcomp.cc,v 1.4 2004-04-28 14:34:43 edwards Exp $
+// $Id: collect_propcomp.cc,v 1.5 2004-04-28 14:56:11 bjoo Exp $
 // $Log: collect_propcomp.cc,v $
-// Revision 1.4  2004-04-28 14:34:43  edwards
-// Moved gauge initialization to calling gaugeStartup().
+// Revision 1.5  2004-04-28 14:56:11  bjoo
+// Tested propagator_comp and collect_propcomp
 //
 // Revision 1.3  2004/04/23 11:23:38  bjoo
 // Added component based propagator (non multishift) and added Zolotarev5D operator to propagator and propagator_comp. Reworked propagator collection scripts
@@ -205,30 +205,77 @@ int main(int argc, char **argv)
   multi1d<LatticeColorMatrix> u(Nd);
   XMLReader gauge_file_xml, gauge_xml;
 
-  // Startup gauge
+
+ // Start up the gauge field
   gaugeStartup(gauge_file_xml, gauge_xml, u, input.cfg);
 
   // Read in the source along with relevant information.
   LatticePropagator quark_prop_source;
   XMLReader source_file_xml, source_record_xml;
 
-  // ONLY SciDAC mode is supported for propagators!!
-  readQprop(source_file_xml, 
-	    source_record_xml, quark_prop_source,
-	    input.prop.source_file, QDPIO_SERIAL);
-
-  // Try to invert this record XML into a source struct
-  // Also pull out the id of this source
-  PropSource_t source_header;
-
-  try
+  int t0;
+  int j_decay;
+  multi1d<int> boundary;
+  bool make_sourceP = false;;
+  bool seqsourceP = false;
   {
-    read(source_record_xml, "/MakeSource/PropSource", source_header);
-  }
-  catch (const string& e) 
+    // ONLY SciDAC mode is supported for propagators!!
+    QDPIO::cout << "Attempt to read source" << endl;
+    readQprop(source_file_xml, 
+	      source_record_xml, quark_prop_source,
+	      input.prop.source_file, QDPIO_SERIAL);
+    QDPIO::cout << "Forward propagator successfully read" << endl;
+
+    // Try to invert this record XML into a source struct
+    try
+    {
+      // First identify what kind of source might be here
+      if (source_record_xml.count("/MakeSource") != 0)
+      {
+	PropSource_t source_header;
+
+	read(source_record_xml, "/MakeSource/PropSource", source_header);
+	j_decay = source_header.j_decay;
+	t0 = source_header.t_source[j_decay];
+	boundary = input.param.boundary;
+	make_sourceP = true;
+      }
+      else if (source_record_xml.count("/SequentialSource") != 0)
+      {
+	ChromaProp_t prop_header;
+	PropSource_t source_header;
+	SeqSource_t seqsource_header;
+
+	read(source_record_xml, "/SequentialSource/SeqSource", seqsource_header);
+	// Any source header will do for j_decay
+	read(source_record_xml, "/SequentialSource/ForwardProps/elem[1]/ForwardProp", 
+	     prop_header);
+	read(source_record_xml, "/SequentialSource/ForwardProps/elem[1]/PropSource", 
+	     source_header);
+	j_decay = source_header.j_decay;
+	t0 = seqsource_header.t_sink;
+	boundary = prop_header.boundary;
+	seqsourceP = true;
+      }
+      else
+	throw "No appropriate header found";
+    }
+    catch (const string& e) 
+    {
+      QDPIO::cerr << "Error extracting source_header: " << e << endl;
+      QDP_abort(1);
+    }
+  }    
+
+  // Sanity check
+  if (seqsourceP)
   {
-    QDPIO::cerr << "Error extracting source_header: " << e << endl;
-    throw;
+    for(int i=0; i < boundary.size(); ++i)
+      if (boundary[i] != input.param.boundary[i])
+      {
+	QDPIO::cerr << "Incompatible boundary between input and seqsource" << endl;
+	QDP_abort(1);
+      }
   }
 
 
@@ -296,7 +343,20 @@ int main(int argc, char **argv)
   XMLReader file_xml_in;
   XMLReader record_xml_in;
 
-  for(int spin=0; spin < Ns; spin++) { 
+  int max_spin;
+  if( make_sourceP ) { 
+    max_spin = Ns;
+  }
+  else if (seqsourceP ) { 
+    if( input.param.nonRelProp ) {
+      max_spin = Ns/2;
+    }
+    else {
+      max_spin = Ns;
+    }
+  }
+
+  for(int spin=0; spin < max_spin; spin++) { 
     for(int color=0; color < Nc; color++) {
       ostringstream filename ;
       filename << input.prop.prop_file << "_component_s" << spin
@@ -309,6 +369,19 @@ int main(int argc, char **argv)
 		  filename.str(), QDPIO_SERIAL);
       
       FermToProp(psi, quark_prop, color, spin);
+    }
+  }
+
+  if( seqsourceP ) {
+    if( input.param.nonRelProp ) { 
+      for(int spin = max_spin; spin < Ns; spin++) {
+	for(int color =0; color < Nc; color++) { 
+	  
+	  PropToFerm(quark_prop,psi, color, spin-max_spin);
+	  
+	  FermToProp((-psi), quark_prop, color, spin);
+	}
+      }
     }
   }
 
@@ -334,7 +407,7 @@ int main(int argc, char **argv)
     
   
   XMLBufferWriter record_xml;
-  push(record_xml, "Propagator");
+  if( make_sourceP) {
   
   // Jiggery pokery. Substitute the ChromaMultiProp_t with a 
   // ChromaProp. This is a pisser because of the FermActParams
@@ -342,21 +415,28 @@ int main(int argc, char **argv)
   // PARAM as well. However, at this stage we have no further need
   // for input param.
   // I Will eventually write Copy Constructors.
-
+    XMLReader xml_tmp(source_record_xml, "/MakeSource");
   
-  write(record_xml, "ForwardProp", input.param);
-  write(record_xml, "PropSource", source_header);
-  write(record_xml, "Config_info", gauge_xml);
-  pop(record_xml);
-  
-  ostringstream outfile;
-  outfile << input.prop.prop_file ;
+    push(record_xml, "Propagator");
+    write(record_xml, "ForwardProp", input.param);
+    record_xml << xml_tmp;
+    pop(record_xml);
+  }
+  else if (seqsourceP) {
+      XMLReader xml_tmp(source_record_xml, "/SequentialSource");
 
-  QDPIO::cout << "Attempting to write " << outfile.str() << endl;
+      push(record_xml, "SequentialProp");
+      write(record_xml, "SeqProp", input.param);
+      record_xml << xml_tmp;  // write out all the stuff under SequentialSource
+      pop(record_xml);
+    }
+
+
+  QDPIO::cout << "Attempting to write " << input.prop.prop_file << endl;
   
   // Write the source
   writeQprop(file_xml, record_xml, quark_prop,
-	     outfile.str(), input.prop.prop_volfmt, QDPIO_SERIAL);
+	     input.prop.prop_file, input.prop.prop_volfmt, QDPIO_SERIAL);
 
 
     

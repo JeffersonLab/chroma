@@ -1,4 +1,4 @@
-// $Id: seqprop_comp.cc,v 1.3 2004-04-27 21:29:32 edwards Exp $
+// $Id: seqprop_comp.cc,v 1.4 2004-04-28 14:56:11 bjoo Exp $
 /*! \file
  *  \brief Main code for sequential propagator generation
  */
@@ -354,8 +354,8 @@ int main(int argc, char **argv)
   //
   // Initialize fermion action
   //
-  WilsonTypeFermAct<LatticeFermion>* S_f_ptr = 0;
-  WilsonTypeFermAct< multi1d<LatticeFermion> >* S_f_a_ptr = 0;
+  FermionAction<LatticeFermion>* S_f_ptr = 0;
+  FermionAction< multi1d<LatticeFermion> >* S_f_a_ptr = 0;
 
   switch (prop_header.FermActHandle->getFermActType() )
   {
@@ -430,8 +430,8 @@ int main(int argc, char **argv)
 
   // Create a useable handle on the action
   // The handle now owns the pointer
-  Handle< WilsonTypeFermAct<LatticeFermion> > S_f(S_f_ptr);
-  Handle< WilsonTypeFermAct< multi1d<LatticeFermion> > > S_f_a(S_f_a_ptr);
+  Handle< FermionAction<LatticeFermion> > S_f(S_f_ptr);
+  Handle< FermionAction< multi1d<LatticeFermion> > > S_f_a(S_f_a_ptr);
 
   QDPIO::cout << "Seqprop: fermion action initialized" << endl;
 
