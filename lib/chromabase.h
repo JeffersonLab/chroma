@@ -1,4 +1,4 @@
-// $Id: chromabase.h,v 1.4 2004-07-28 02:38:00 edwards Exp $
+// $Id: chromabase.h,v 1.5 2004-11-08 16:18:49 mcneile Exp $
 //
 // Absolute basic stuff to use chroma
 //
@@ -26,6 +26,16 @@ struct BaseType<LatticeFermion>
 {
   typedef LatticeFermion   Type_t;
 };
+
+
+template<>
+struct BaseType<LatticeStaggeredFermion>
+{
+  typedef LatticeStaggeredFermion   Type_t;
+};
+
+
+
 }
 
 using namespace QDP;
