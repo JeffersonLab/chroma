@@ -1,4 +1,4 @@
-// $Id: t_dwflinop.cc,v 1.3 2003-11-20 05:43:41 edwards Exp $
+// $Id: t_dwflinop.cc,v 1.4 2003-11-21 22:38:51 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -105,8 +105,13 @@ int main(int argc, char **argv)
 
   Real WilsonMass = 1.5;
   Real m_q = 0.1;
+#if 1
+  int  N5  = 8;
+  UnprecDWFermActArray S_f(WilsonMass, m_q, N5);
+#else
   int  N5  = 9;
   UnprecOvExtFermActArray S_f(WilsonMass, m_q, N5);
+#endif
 
   const  LinearOperator< multi1d<LatticeFermion> >* A = S_f.linOp(u);
 
