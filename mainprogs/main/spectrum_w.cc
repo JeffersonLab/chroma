@@ -1,10 +1,14 @@
-// $Id: spectrum_w.cc,v 1.2 2003-05-08 23:02:12 flemingg Exp $
+// $Id: spectrum_w.cc,v 1.3 2003-05-13 22:00:50 flemingg Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.2  2003-05-08 23:02:12  flemingg
+//  Revision 1.3  2003-05-13 22:00:50  flemingg
+//  I'm done with spectrum_w and the test files for now. I'm happy
+//  enough with the output format. Somebody please write a stripper.
+//
+//  Revision 1.2  2003/05/08 23:02:12  flemingg
 //  Initial version of spectrum_w.  It compiles and reproduces szin meson
 //  correlation functions up to a sign.  Namelist input and output starting
 //  to evolve away from szin model: a work in progress.  Code runs but
@@ -90,122 +94,85 @@ int main(int argc, char **argv)
   pop(nml_in) ;
 
   switch (version) {
+
+  /**************************************************************************/
   case 5 :
-  case 6 :
+  /**************************************************************************/
+
     push(nml_in, "param") ; // push into 'param' group
 
-    int input_Nc ;
-    read(nml_in, "Nc", input_Nc) ;
-
-    if (input_Nc != Nc) {
-      cerr << "Input parameter Nc=" << input_Nc \
-        <<  " different from qdp++ value." << endl ;
-      QDP_abort(1) ;
-    }
-
-    int input_Nd ;
-    read(nml_in, "Nd", input_Nd) ;
-
-    if (input_Nd != Nd) {
-      cerr << "Input parameter Nd=" << input_Nd \
-        << " different from qdp++ value." << endl ;
-      QDP_abort(1) ;
-    }
-
-    pop(nml_in) ; // pop out of 'param' group
-
-    break ;
-  default :
-    cerr << "Input parameter version " << version << " unsupported." << endl ;
-    QDP_abort(1) ;
-  }
-
-  // Now determine 'FermTypeP' from namelist input
-
-  switch (version) {
-  case 5 :
-    push(nml_in, "param") ; // push into param group
-
-    int ferm_type_int ;
-    read(nml_in, "FermTypeP", ferm_type_int) ;
-    switch (ferm_type_int) {
-    case 1 :
-      FermTypeP = FERM_TYPE_WILSON ;
-      break ;
-    default :
-      FermTypeP = FERM_TYPE_UNKNOWN ;
-    }
-
-    pop(nml_in) ;
-
-    break ;
-  case 6 :
-    push(nml_in, "param") ; // push into param group
-
     {
-      string ferm_type_str ;
-      read(nml_in, "FermTypeP", ferm_type_str) ;
-      if (ferm_type_str == "WILSON_FERMIONS") {
+      int input_Nc ;
+      read(nml_in, "Nc", input_Nc) ;
+
+      if (input_Nc != Nc) {
+        cerr << "Input parameter Nc=" << input_Nc \
+          <<  " different from qdp++ value." << endl ;
+        QDP_abort(1) ;
+      }
+
+      int input_Nd ;
+      read(nml_in, "Nd", input_Nd) ;
+
+      if (input_Nd != Nd) {
+        cerr << "Input parameter Nd=" << input_Nd \
+          << " different from qdp++ value." << endl ;
+        QDP_abort(1) ;
+      }
+
+      int ferm_type_int ;
+      read(nml_in, "FermTypeP", ferm_type_int) ;
+      switch (ferm_type_int) {
+      case 1 :
         FermTypeP = FERM_TYPE_WILSON ;
-      } else {
+        break ;
+      default :
         FermTypeP = FERM_TYPE_UNKNOWN ;
       }
     }
 
-    pop(nml_in) ;
-    break ;
-  default :
-    cerr << "How did you manage to get here???" << endl ;
-    QDP_abort(1) ;
-  }
+    // GTF NOTE: I'm going to switch on FermTypeP here because I want
+    // to leave open the option of treating masses differently.
+    switch (FermTypeP) {
+    case FERM_TYPE_WILSON :
 
-  // Read the fermion masses from the namelist input
+      cout << " SPECTRUM_W: Spectroscopy for Wilson fermions" << endl ;
 
-  switch (FermTypeP) {
-  case FERM_TYPE_WILSON :
+      Read(nml_in, numKappa) ;
 
-    cout << " SPECTRUM_W: Spectroscopy for Wilson fermions" << endl ;
+      Kappa.resize(numKappa) ;
+      Read(nml_in, Kappa) ;
 
-    push(nml_in, "param") ;
-
-    Read(nml_in, numKappa) ;
-
-    Kappa.resize(numKappa) ;
-    Read(nml_in, Kappa) ;
-
-    for (i=0; i < numKappa; ++i) {
-      if (toBool(Kappa[i] < 0.0)) {
-        cerr << "Unreasonable value for Kappa." << endl ;
-        cerr << "  Kappa[" << i << "] = " << Kappa[i] << endl ;
-      } else {
-        cout << " Spectroscopy Kappa: " << Kappa[i] << endl ;
+      for (i=0; i < numKappa; ++i) {
+        if (toBool(Kappa[i] < 0.0)) {
+          cerr << "Unreasonable value for Kappa." << endl ;
+          cerr << "  Kappa[" << i << "] = " << Kappa[i] << endl ;
+          QDP_abort(1) ;
+        } else {
+          cout << " Spectroscopy Kappa: " << Kappa[i] << endl ;
+        }
       }
+
+      break ;
+
+    default :
+      cerr << "Fermion type not supported." << endl ;
+      if (FermTypeP == FERM_TYPE_UNKNOWN) {
+        cerr << "  FermTypeP = UNKNOWN" << endl ;
+      }
+      QDP_abort(1) ;
     }
 
-    pop(nml_in) ;
-
-    break ;
-
-  default :
-    cerr << "Unsupported fermion type" << endl ;
-    QDP_abort(1) ;
-  }
-
-  // Read the rest of namelist input
-  switch (version) {
-
-  case 5 :
-
-    push(nml_in, "param") ;
-
-    int input_cfg_type ;
-    read(nml_in, "cfg_type", input_cfg_type) ;
-    switch (input_cfg_type) {
-    case 1 :
-      cfg_type = CFG_TYPE_SZIN ;
-      break ;
-    default :
-      cfg_type = CFG_TYPE_UNKNOWN ;
+    {
+      int input_cfg_type ;
+      read(nml_in, "cfg_type", input_cfg_type) ;
+      switch (input_cfg_type) {
+      case 1 :
+        cfg_type = CFG_TYPE_SZIN ;
+        break ;
+      default :
+        cfg_type = CFG_TYPE_UNKNOWN ;
+      }
     }
 
     Read(nml_in, j_decay) ;
@@ -226,16 +193,18 @@ int main(int argc, char **argv)
     // GTF: avg_equiv_mom not part of version 5, true by default
     avg_equiv_mom = true ;
 
-    int input_wvf_kind ;
-    read(nml_in, "Wvf_kind", input_wvf_kind) ;
-    switch (input_wvf_kind) {
-    case 3 :
-      Wvf_kind = WVF_KIND_GAUGE_INV_GAUSSIAN ;
-      break ;
-    default :
-      cerr << "Unsupported gauge-invariant Wvf_kind." << endl ;
-      cerr << "  Wvf_kind = " << input_wvf_kind << endl ;
-      QDP_abort(1) ;
+    {
+      int input_wvf_kind ;
+      read(nml_in, "Wvf_kind", input_wvf_kind) ;
+      switch (input_wvf_kind) {
+      case 3 :
+        Wvf_kind = WVF_KIND_GAUGE_INV_GAUSSIAN ;
+        break ;
+      default :
+        cerr << "Unsupported gauge-invariant Wvf_kind." << endl ;
+        cerr << "  Wvf_kind = " << input_wvf_kind << endl ;
+        QDP_abort(1) ;
+      }
     }
 
     wvf_param.resize(numKappa) ;
@@ -269,8 +238,138 @@ int main(int argc, char **argv)
 
     break ;
 
+  /**************************************************************************/
+  case 6 :
+  /**************************************************************************/
+
+    push(nml_in, "param") ; // push into 'param' group
+
+    cerr << "DEBUG" << endl ;
+
+    {
+      int input_Nc ;
+      read(nml_in, "Nc", input_Nc) ;
+
+      if (input_Nc != Nc) {
+        cerr << "Input parameter Nc=" << input_Nc \
+          <<  " different from qdp++ value." << endl ;
+        QDP_abort(1) ;
+      }
+
+      int input_Nd ;
+      read(nml_in, "Nd", input_Nd) ;
+
+      if (input_Nd != Nd) {
+        cerr << "Input parameter Nd=" << input_Nd \
+          << " different from qdp++ value." << endl ;
+        QDP_abort(1) ;
+      }
+
+      string ferm_type_str ;
+      read(nml_in, "FermTypeP", ferm_type_str) ;
+      if (ferm_type_str == "WILSON") {
+        FermTypeP = FERM_TYPE_WILSON ;
+      } else {
+        FermTypeP = FERM_TYPE_UNKNOWN ;
+      }
+    }
+
+    // GTF NOTE: I'm going to switch on FermTypeP here because I want
+    // to leave open the option of treating masses differently.
+    switch (FermTypeP) {
+    case FERM_TYPE_WILSON :
+
+      cout << " SPECTRUM_W: Spectroscopy for Wilson fermions" << endl ;
+
+      Read(nml_in, numKappa) ;
+
+      Kappa.resize(numKappa) ;
+      Read(nml_in, Kappa) ;
+
+      for (i=0; i < numKappa; ++i) {
+        if (toBool(Kappa[i] < 0.0)) {
+          cerr << "Unreasonable value for Kappa." << endl ;
+          cerr << "  Kappa[" << i << "] = " << Kappa[i] << endl ;
+          QDP_abort(1) ;
+        } else {
+          cout << " Spectroscopy Kappa: " << Kappa[i] << endl ;
+        }
+      }
+
+      break ;
+
+    default :
+      cerr << "Fermion type not supported." << endl ;
+      if (FermTypeP == FERM_TYPE_UNKNOWN) {
+        cerr << "  FermTypeP = UNKNOWN" << endl ;
+      }
+      QDP_abort(1) ;
+    }
+
+    {
+      string cfg_type_str ;
+      read(nml_in, "cfg_type", cfg_type_str) ;
+      if (cfg_type_str == "SZIN") {
+        cfg_type = CFG_TYPE_SZIN ;
+      } else {
+        cfg_type = CFG_TYPE_UNKNOWN ;
+      }
+    }
+
+    Read(nml_in, j_decay) ;
+    if (j_decay < 0 || j_decay >= Nd) {
+      cerr << "Bad value: j_decay = " << j_decay << endl ;
+      QDP_abort(1) ;
+    }
+
+    Read(nml_in, Pt_src) ;
+    Read(nml_in, Sl_src) ;
+    Read(nml_in, Pt_snk) ;
+    Read(nml_in, Sl_snk) ;
+
+    Read(nml_in, MesonP) ;
+
+    Read(nml_in, mom2_max) ;
+    Read(nml_in, avg_equiv_mom) ;
+
+    {
+      string wvf_kind_str ;
+      read(nml_in, "Wvf_kind", wvf_kind_str) ;
+      if (wvf_kind_str == "GAUGE_INV_GAUSSIAN") {
+        Wvf_kind = WVF_KIND_GAUGE_INV_GAUSSIAN ;
+      } else {
+        cerr << "Unsupported gauge-invariant Wvf_kind." << endl ;
+        cerr << "  Wvf_kind = " << wvf_kind_str << endl ;
+        QDP_abort(1) ;
+      }
+    }
+
+    wvf_param.resize(numKappa) ;
+    Read(nml_in, wvf_param) ;
+
+    WvfIntPar.resize(numKappa) ;
+    Read(nml_in, WvfIntPar) ;
+
+    Read(nml_in, nrow) ;
+
+    Read(nml_in, boundary) ;
+
+    Read(nml_in, t_srce) ;
+
+    pop(nml_in) ;
+
+    // Read in the gauge configuration file name
+    push(nml_in, "Cfg") ;
+    Read(nml_in, cfg_file) ;
+    pop(nml_in) ;
+
+    break ;
+
+  /**************************************************************************/
   default :
-    cerr << "What are you doing in here??? Get out!!!" << endl ;
+  /**************************************************************************/
+
+    cerr << "Input parameter version " << version << " unsupported." << endl ;
     QDP_abort(1) ;
   }
 
@@ -355,7 +454,13 @@ int main(int argc, char **argv)
   push(nml_out, "param") ;
 
   // was "param1"
-  Write(nml_out, FermTypeP) ;
+  switch (FermTypeP) {
+  case FERM_TYPE_WILSON :
+    write(nml_out, "FermTypeP", "WILSON") ;
+    break ;
+  default :
+    write(nml_out, "FermTypeP", "UNKNOWN") ;
+  }
   Write(nml_out, Nd) ;
   Write(nml_out, Nc) ;
   Write(nml_out, Ns) ;
@@ -365,9 +470,11 @@ int main(int argc, char **argv)
   // was "param2"
 
   // was "param3"
-  if (cfg_type == CFG_TYPE_SZIN) {
+  switch (cfg_type) {
+  case CFG_TYPE_SZIN :
     write(nml_out, "cfg_type", "SZIN") ;
-  } else {
+    break ;
+  default :
     write(nml_out, "cfg_type", "UNKNOWN") ;
   }
   Write(nml_out, j_decay) ;
@@ -381,9 +488,11 @@ int main(int argc, char **argv)
   Write(nml_out, Sl_snk) ;
 
   // was "param6"
-  if (Wvf_kind == WVF_KIND_GAUGE_INV_GAUSSIAN) {
+  switch (Wvf_kind) {
+  case WVF_KIND_GAUGE_INV_GAUSSIAN :
     write(nml_out, "Wvf_kind", "GAUGE_INV_GAUSSIAN") ;
-  } else {
+    break ;
+  default :
     write(nml_out, "Wvf_kind", "UNKNOWN") ;
   }
   Write(nml_out, wvf_param) ;
@@ -399,6 +508,10 @@ int main(int argc, char **argv)
   Write(nml_out, MesonP) ;
 
   // was "param10"
+
+  // before seed, write out mom2_max and avg_equiv_mom
+  Write(nml_out, mom2_max) ;
+  Write(nml_out, avg_equiv_mom) ;
 
   // was "param11"
   Write(nml_out, seed) ;
