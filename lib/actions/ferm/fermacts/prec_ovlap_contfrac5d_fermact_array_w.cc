@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_fermact_array_w.cc,v 1.7 2004-12-24 04:23:20 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_fermact_array_w.cc,v 1.8 2004-12-29 22:13:40 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -27,18 +27,33 @@ namespace Chroma
   namespace EvenOddPrecOvlapContFrac5DFermActArrayEnv
   {
     //! Callback function
-    WilsonTypeFermAct< multi1d<LatticeFermion> >* createFermAct(XMLReader& xml_in,
-								const std::string& path)
+    WilsonTypeFermAct5D<LatticeFermion>* createFermAct5D(XMLReader& xml_in,
+							 const std::string& path)
     {
       return new EvenOddPrecOvlapContFrac5DFermActArray(WilsonTypeFermBCArrayEnv::reader(xml_in, path), 
 							EvenOddPrecOvlapContFrac5DFermActParams(xml_in, path));
     }
-    
+
+    //! Callback function
+    /*! Differs in return type */
+    FermionAction<LatticeFermion>* createFermAct(XMLReader& xml_in,
+						 const std::string& path)
+    {
+      return createFermAct5D(xml_in, path);
+    }
+
     //! Name to be used
     const std::string name = "OVERLAP_CONTINUED_FRACTION_5D";
     
-    //! Register the Wilson fermact
-    const bool registered = TheWilsonTypeFermActArrayFactory::Instance().registerObject(name, createFermAct);
+    //! Register all the factories
+    bool registerAll()
+    {
+      return Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct)
+	   & Chroma::TheWilsonTypeFermAct5DFactory::Instance().registerObject(name, createFermAct5D);
+    }
+
+    //! Register the fermact
+    const bool registered = registerAll();
   } // End Namespace EvenOddPrecOvlapContFrac5DFermActArrayEnv
 
   

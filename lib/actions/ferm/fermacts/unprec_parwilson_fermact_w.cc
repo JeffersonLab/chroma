@@ -1,4 +1,4 @@
-// $Id: unprec_parwilson_fermact_w.cc,v 1.5 2004-12-24 04:23:20 edwards Exp $
+// $Id: unprec_parwilson_fermact_w.cc,v 1.6 2004-12-29 22:13:41 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action with parity breaking term
  */
@@ -17,8 +17,8 @@ namespace Chroma
   namespace UnprecParWilsonFermActEnv
   {
     //! Callback function
-    WilsonTypeFermAct<LatticeFermion>* createFermAct(XMLReader& xml_in,
-						     const std::string& path)
+    FermionAction<LatticeFermion>* createFermAct(XMLReader& xml_in,
+						 const std::string& path)
     {
       return new UnprecParWilsonFermAct(WilsonTypeFermBCEnv::reader(xml_in, path), 
 					UnprecParWilsonFermActParams(xml_in, path));
@@ -28,7 +28,7 @@ namespace Chroma
     const std::string name = "PARWILSON";
 
     //! Register the ParWilson fermact
-    const bool registered = Chroma::TheWilsonTypeFermActFactory::Instance().registerObject(name, createFermAct); 
+    const bool registered = Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct); 
   }
 
 

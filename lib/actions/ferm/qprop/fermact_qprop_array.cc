@@ -1,4 +1,4 @@
-// $Id: fermact_qprop_array.cc,v 1.9 2004-10-08 13:20:15 bjoo Exp $
+// $Id: fermact_qprop_array.cc,v 1.10 2004-12-29 22:13:41 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *
@@ -34,7 +34,7 @@ namespace Chroma {
 
 template<typename T>
 static 
-void qprop_t(const FermionAction< multi1d<T> >& me,
+void qprop_t(const FermAct5D<T>& me,
 	     multi1d<T>& psi, 
 	     Handle<const ConnectState> state, 
 	     const multi1d<T>& chi, 
@@ -89,11 +89,11 @@ void qprop_t(const FermionAction< multi1d<T> >& me,
 
 template<>
 void 
-FermionAction< multi1d<LatticeFermion> >::qpropT(multi1d<LatticeFermion>& psi, 
-						 Handle<const ConnectState> state, 
-						 const multi1d<LatticeFermion>& chi, 
-						 const InvertParam_t& invParam,
-						  int& ncg_had) const
+FermAct5D<LatticeFermion>::qpropT(multi1d<LatticeFermion>& psi, 
+				  Handle<const ConnectState> state, 
+				  const multi1d<LatticeFermion>& chi, 
+				  const InvertParam_t& invParam,
+				  int& ncg_had) const
 {
   qprop_t<LatticeFermion>(*this, psi, state, chi, invParam, ncg_had);
 }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: overlap_fermact_base_w.h,v 1.16 2004-12-12 21:22:14 edwards Exp $
+// $Id: overlap_fermact_base_w.h,v 1.17 2004-12-29 22:13:40 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -108,13 +108,6 @@ namespace Chroma
 		    int & ncg_had) const;
 
 
-    void quarkProp4(LatticePropagator& q_sol, 
-		    XMLWriter& xml_out,
-		    const LatticePropagator& q_src,
-		    Handle<const ConnectState> state,
-		    const InvertParam_t& invParam,
-		    bool nonRelProp,
-		    int& ncg_had);
     /*! \ingroup qprop
      *
      * \param q_sol    quark propagator ( Write )
@@ -122,14 +115,14 @@ namespace Chroma
      * \param invParam inverter parameters ( Read )
      * \param ncg_had  number of CG iterations ( Write )
      */
-    void multiQuarkProp4(multi1d<LatticePropagator>& q_sol, 
-			 XMLWriter& xml_out,
-			 const LatticePropagator& q_src,
-			 Handle<const ConnectState> state,
-			 const multi1d<Real>& masses,
-			 const MultiInvertParam_t& invParam,
-			 const int n_soln,
-			 int& ncg_had);
+    void multiQuarkProp(multi1d<LatticePropagator>& q_sol, 
+			XMLWriter& xml_out,
+			const LatticePropagator& q_src,
+			Handle<const ConnectState> state,
+			const multi1d<Real>& masses,
+			const MultiInvertParam_t& invParam,
+			const int n_soln,
+			int& ncg_had);
   };
 
 }

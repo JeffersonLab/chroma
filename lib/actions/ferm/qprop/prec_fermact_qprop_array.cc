@@ -1,6 +1,11 @@
-// $Id: prec_fermact_qprop_array.cc,v 1.10 2004-12-12 21:22:17 edwards Exp $
+// $Id: prec_fermact_qprop_array.cc,v 1.11 2004-12-29 22:13:41 edwards Exp $
 // $Log: prec_fermact_qprop_array.cc,v $
-// Revision 1.10  2004-12-12 21:22:17  edwards
+// Revision 1.11  2004-12-29 22:13:41  edwards
+// Rearranged the top-level FermionAction structure. Moved up
+// 5d-style actions to be a  FermAct5D and there is a FermAct4D.
+// Consolidated quarkprop routines and fermact factories.
+//
+// Revision 1.10  2004/12/12 21:22:17  edwards
 // Major overhaul of fermact and linearop class structure. Merged ApproxLinOp
 // into LinOp. Removed dsdu stuff - now in linops.  Introduced levels of
 // fermacts (base or not) that have derivs. All low level fermacts/linops
@@ -80,7 +85,7 @@ namespace Chroma {
 
 template<typename T>
 static 
-void qprop_t(const EvenOddPrecWilsonTypeFermActBase< multi1d<T> >& me,
+void qprop_t(const EvenOddPrecWilsonTypeFermActBase5D<T>& me,
 	     multi1d<T>& psi, 
 	     Handle<const ConnectState> state, 
 	     const multi1d<T>& chi, 
@@ -160,11 +165,11 @@ void qprop_t(const EvenOddPrecWilsonTypeFermActBase< multi1d<T> >& me,
 
 template<>
 void 
-EvenOddPrecWilsonTypeFermActBase< multi1d<LatticeFermion> >::qpropT(multi1d<LatticeFermion>& psi, 
-								    Handle<const ConnectState> state, 
-								    const multi1d<LatticeFermion>& chi, 
-								    const InvertParam_t& invParam,
-								    int& ncg_had) const
+EvenOddPrecWilsonTypeFermActBase5D<LatticeFermion>::qpropT(multi1d<LatticeFermion>& psi, 
+							   Handle<const ConnectState> state, 
+							   const multi1d<LatticeFermion>& chi, 
+							   const InvertParam_t& invParam,
+							   int& ncg_had) const
 {
   qprop_t<LatticeFermion>(*this, psi, state, chi, invParam, ncg_had);
 }

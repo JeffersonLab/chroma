@@ -1,4 +1,4 @@
-// $Id: prec_wilson_fermact_w.cc,v 1.14 2004-12-24 04:23:20 edwards Exp $
+// $Id: prec_wilson_fermact_w.cc,v 1.15 2004-12-29 22:13:40 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action
  */
@@ -17,18 +17,33 @@ namespace Chroma
   namespace EvenOddPrecWilsonFermActEnv
   {
     //! Callback function
-    WilsonTypeFermAct<LatticeFermion>* createFermAct(XMLReader& xml_in,
-						     const std::string& path)
+    WilsonTypeFermAct<LatticeFermion>* createFermAct4D(XMLReader& xml_in,
+						       const std::string& path)
     {
       return new EvenOddPrecWilsonFermAct(WilsonTypeFermBCEnv::reader(xml_in, path), 
 					  EvenOddPrecWilsonFermActParams(xml_in, path));
     }
 
-     //! Name to be used
+    //! Callback function
+    /*! Differs in return type */
+    FermionAction<LatticeFermion>* createFermAct(XMLReader& xml_in,
+						 const std::string& path)
+    {
+      return createFermAct4D(xml_in, path);
+    }
+
+    //! Name to be used
     const std::string name = "WILSON";
 
-    //! Register the Wilson fermact
-    const bool registered = Chroma::TheWilsonTypeFermActFactory::Instance().registerObject(name, createFermAct); 
+    //! Register all the factories
+    bool registerAll()
+    {
+      return Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct)
+	   & Chroma::TheWilsonTypeFermActFactory::Instance().registerObject(name, createFermAct4D);
+    }
+
+    //! Register the fermact
+    const bool registered = registerAll();
   }
 
 

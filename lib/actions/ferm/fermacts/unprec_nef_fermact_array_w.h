@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_nef_fermact_array_w.h,v 1.10 2004-12-24 04:23:20 edwards Exp $
+// $Id: unprec_nef_fermact_array_w.h,v 1.11 2004-12-29 22:13:40 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF domain-wall fermion action
  */
@@ -110,13 +110,15 @@ namespace Chroma
      * \param invParam inverter parameters ( Read )
      * \param ncg_had  number of CG iterations ( Write )
      */
-    void dwf_quarkProp4(LatticePropagator& q_sol, 
-			XMLWriter& xml_out,
-			const LatticePropagator& q_src,
-			int t_src, int j_decay,
-			Handle<const ConnectState> state,
-			const InvertParam_t& invParam,
-			int& ncg_had);
+    void quarkProp(LatticePropagator& q_sol,
+		   XMLWriter& xml_out,
+		   const LatticePropagator& q_src,
+		   int t_src, int j_decay,
+		   Handle<const ConnectState> state,
+		   const InvertParam_t& invParam,
+		   bool nonRelProp,
+		   bool obsvP,
+		   int& ncg_had);
       
   private:
     Handle< FermBC< multi1d<LatticeFermion> > >  fbc;

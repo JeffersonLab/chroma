@@ -1,4 +1,4 @@
-// $Id: prec_dwf_fermact_array_sse_w.cc,v 1.14 2004-12-24 04:23:20 edwards Exp $
+// $Id: prec_dwf_fermact_array_sse_w.cc,v 1.15 2004-12-29 22:13:40 edwards Exp $
 /*! \file
  *  \brief SSE 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -22,11 +22,19 @@ namespace Chroma
   namespace SSEEvenOddPrecDWFermActArrayEnv
   {
     //! Callback function
-    WilsonTypeFermAct< multi1d<LatticeFermion> >* createFermAct(XMLReader& xml_in,
-								const std::string& path)
+    WilsonTypeFermAct5D<LatticeFermion>* createFermAct5D(XMLReader& xml_in,
+							 const std::string& path)
     {
       return new SSEEvenOddPrecDWFermActArray(WilsonTypeFermBCArrayArrayEnv::reader(xml_in, path), 
 					      SSEEvenOddPrecDWFermActArrayParams(xml_in, path));
+    }
+
+    //! Callback function
+    /*! Differs in return type */
+    FermionAction<LatticeFermion>* createFermAct(XMLReader& xml_in,
+						 const std::string& path)
+    {
+      return createFermAct5D(xml_in, path);
     }
 
     //! Callback function
@@ -41,9 +49,15 @@ namespace Chroma
     //! Name to be used
     const std::string name = "SSE_DWF";    // TEMPORARY HACK
 
-    //! Register the Wilson fermact
-    const bool registered = Chroma::TheWilsonTypeFermActArrayFactory::Instance().registerObject(name, createFermAct)
-      & Chroma::TheEvenOddPrecDWFermActBaseArrayFactory::Instance().registerObject(name, createDWFermAct); 
+    //! Register all the factories
+    bool registerAll()
+    {
+      return Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct)
+	   & Chroma::TheWilsonTypeFermAct5DFactory::Instance().registerObject(name, createFermAct5D);
+    }
+
+    //! Register the fermact
+    const bool registered = registerAll();
   }
 
 

@@ -1,4 +1,4 @@
-// $Id: fermact_qprop.cc,v 1.12 2004-11-12 18:50:25 mcneile Exp $
+// $Id: fermact_qprop.cc,v 1.13 2004-12-29 22:13:41 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *
@@ -32,7 +32,7 @@ namespace Chroma {
  */
 
 template<typename T>
-void qprop_t(const FermionAction<T>& me,
+void qprop_t(const FermAct4D<T>& me,
 	     T& psi, 
 	     Handle<const ConnectState> state, 
 	     const T& chi, 
@@ -86,32 +86,11 @@ void qprop_t(const FermionAction<T>& me,
 
 
 template<>
-void FermionAction<LatticeFermion>::qpropT(LatticeFermion& psi, 
-					   Handle<const ConnectState> state, 
-					   const LatticeFermion& chi, 
-					   const InvertParam_t& invParam,
-					   int& ncg_had) const
-{
-  qprop_t(*this, psi, state, chi, invParam, ncg_had);
-}
-
-
-void FermionAction<LatticeStaggeredFermion>::qpropT(LatticeStaggeredFermion& psi, 
-					   Handle<const ConnectState> state, 
-					   const LatticeStaggeredFermion& chi, 
-					   const InvertParam_t& invParam,
-					   int& ncg_had) const
-{
-  qprop_t(*this, psi, state, chi, invParam, ncg_had);
-}
-
-
-template<>
-void FermionAction<LatticeFermion>::qprop(LatticeFermion& psi, 
-					  Handle<const ConnectState> state, 
-					  const LatticeFermion& chi, 
-					  const InvertParam_t& invParam,
-					  int& ncg_had) const
+void FermAct4D<LatticeFermion>::qprop(LatticeFermion& psi, 
+				      Handle<const ConnectState> state, 
+				      const LatticeFermion& chi, 
+				      const InvertParam_t& invParam,
+				      int& ncg_had) const
 {
   qprop_t(*this, psi, state, chi, invParam, ncg_had);
 }
@@ -119,11 +98,11 @@ void FermionAction<LatticeFermion>::qprop(LatticeFermion& psi,
 
 
 template<>
-void FermionAction<LatticeStaggeredFermion>::qprop(LatticeStaggeredFermion& psi, 
-					  Handle<const ConnectState> state, 
-					  const LatticeStaggeredFermion& chi, 
-					  const InvertParam_t& invParam,
-					  int& ncg_had) const
+void FermAct4D<LatticeStaggeredFermion>::qprop(LatticeStaggeredFermion& psi, 
+					       Handle<const ConnectState> state, 
+					       const LatticeStaggeredFermion& chi, 
+					       const InvertParam_t& invParam,
+					       int& ncg_had) const
 {
   qprop_t(*this, psi, state, chi, invParam, ncg_had);
 }

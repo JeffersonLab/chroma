@@ -1,4 +1,4 @@
-// $Id: ovlap_partfrac4d_fermact_w.cc,v 1.12 2004-12-24 04:23:19 edwards Exp $
+// $Id: ovlap_partfrac4d_fermact_w.cc,v 1.13 2004-12-29 22:13:40 edwards Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -42,19 +42,33 @@ namespace Chroma
   namespace OvlapPartFrac4DFermActEnv
   {
     //! Callback function
-    WilsonTypeFermAct<LatticeFermion>* createFermAct(XMLReader& xml_in,
-						     const std::string& path)
+    WilsonTypeFermAct<LatticeFermion>* createFermAct4D(XMLReader& xml_in,
+						       const std::string& path)
     {
       return new OvlapPartFrac4DFermAct(WilsonTypeFermBCEnv::reader(xml_in, path), 
 					OvlapPartFrac4DFermActParams(xml_in, path));
     }
 
+    //! Callback function
+    /*! Differs in return type */
+    FermionAction<LatticeFermion>* createFermAct(XMLReader& xml_in,
+						 const std::string& path)
+    {
+      return createFermAct4D(xml_in, path);
+    }
+
     //! Name to be used
     const std::string name ="OVERLAP_PARTIAL_FRACTION_4D";
 
-    //! Register the Wilson fermact
-    const bool registered = TheWilsonTypeFermActFactory::Instance().registerObject(name, createFermAct);
+    //! Register all the factories
+    bool registerAll()
+    {
+      return Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct)
+	   & Chroma::TheWilsonTypeFermActFactory::Instance().registerObject(name, createFermAct4D);
+    }
 
+    //! Register the fermact
+    const bool registered = registerAll();
   }
 
 
@@ -178,10 +192,10 @@ namespace Chroma
       read(fermacttop, fermact_path + "/Mass", params.AuxMass);
       QDPIO::cout << "AuxFermAct Mass: " << params.AuxMass << endl;
       // Generic Wilson-Type stuff
-      WilsonTypeFermAct<LatticeFermion>* S_f =
-	TheWilsonTypeFermActFactory::Instance().createObject(auxfermact,
-							     fermacttop,
-							     fermact_path);
+      FermionAction<LatticeFermion>* S_f =
+	TheFermionActionFactory::Instance().createObject(auxfermact,
+							 fermacttop,
+							 fermact_path);
 
       UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* S_aux; 
       S_aux = dynamic_cast<UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >*>(S_f);

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovlap_contfrac5d_fermact_array_w.h,v 1.3 2004-12-24 04:23:20 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_fermact_array_w.h,v 1.4 2004-12-29 22:13:40 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -61,7 +61,7 @@ namespace Chroma
    *   Chi  =   ((1+Mass)/(1-Mass)*gamma_5 + B) . Psi
    *  where  B  is the continued fraction of the zolotarev approx. to eps(H(m))
    */
-  class EvenOddPrecOvlapContFrac5DFermActArray : public EvenOddPrecWilsonTypeFermAct< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >
+  class EvenOddPrecOvlapContFrac5DFermActArray : public EvenOddPrecWilsonTypeFermAct5D<LatticeFermion, multi1d<LatticeColorMatrix> >
   {
   public:
 
@@ -94,6 +94,15 @@ namespace Chroma
       return new lgherm<multi1d<LatticeFermion> >(linOp(state));
     }
 
+    //! Produce an unpreconditioned linear operator projecting 5D to 4D (the inverse of qprop below)
+    const LinearOperator<LatticeFermion>* linOp4D(Handle<const ConnectState> state,
+						  const Real& m_q,
+						  const InvertParam_t& invParam) const
+    {
+      QDPIO::cerr << "linOp4D not implemented" << endl;
+      QDP_abort(1);
+    }
+    
     //! Compute quark propagator over base type
     /*! 
      * Solves  M.psi = chi

@@ -1,4 +1,4 @@
-// $Id: unprec_zolo_nef_fermact_array_w.cc,v 1.9 2004-12-24 04:23:20 edwards Exp $
+// $Id: unprec_zolo_nef_fermact_array_w.cc,v 1.10 2004-12-29 22:13:41 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF fermion action
  */
@@ -13,7 +13,8 @@
 
 #include "actions/ferm/fermacts/zolotarev.h"
 
-using namespace Chroma;
+#include "actions/ferm/qprop/quarkprop4_w.h"
+#include "actions/ferm/qprop/nef_quarkprop4_w.h"
 
 namespace Chroma
 {
@@ -21,8 +22,8 @@ namespace Chroma
   namespace UnprecZoloNEFFermActArrayEnv
   {
     //! Callback function
-    WilsonTypeFermAct< multi1d<LatticeFermion> >* createFermAct(XMLReader& xml_in,
-								const std::string& path)
+    WilsonTypeFermAct5D<LatticeFermion>* createFermAct5D(XMLReader& xml_in,
+							 const std::string& path)
     {
       return new UnprecZoloNEFFermActArray(WilsonTypeFermBCArrayEnv::reader(xml_in, path), 
 					   UnprecZoloNEFFermActArrayParams(xml_in, path));
@@ -30,19 +31,24 @@ namespace Chroma
 
     //! Callback function
     /*! Differs in return type */
-    UnprecDWFermActBaseArray<LatticeFermion>* createDWFermAct(XMLReader& xml_in,
-							      const std::string& path)
+    FermionAction<LatticeFermion>* createFermAct(XMLReader& xml_in,
+						 const std::string& path)
     {
-      return new UnprecZoloNEFFermActArray(WilsonTypeFermBCArrayEnv::reader(xml_in, path), 
-					   UnprecZoloNEFFermActArrayParams(xml_in, path));
+      return createFermAct5D(xml_in, path);
     }
 
     //! Name to be used
     const std::string name = "UNPRECONDITIONED_ZOLO_NEF";
 
-    //! Register the Wilson fermact
-    const bool registered = Chroma::TheWilsonTypeFermActArrayFactory::Instance().registerObject(name, createFermAct)
-                          & Chroma::TheUnprecDWFermActBaseArrayFactory::Instance().registerObject(name, createDWFermAct); 
+    //! Register all the factories
+    bool registerAll()
+    {
+      return Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct)
+	   & Chroma::TheWilsonTypeFermAct5DFactory::Instance().registerObject(name, createFermAct5D);
+    }
+
+    //! Register the fermact
+    const bool registered = registerAll();
   }
 
 
@@ -344,6 +350,25 @@ namespace Chroma
     
     return ret_val;
 
+  }
+
+  
+  // Given a complete propagator as a source, this does all the inversions needed
+  void 
+  UnprecZoloNEFFermActArray::quarkProp(LatticePropagator& q_sol, 
+				       XMLWriter& xml_out,
+				       const LatticePropagator& q_src,
+				       int t_src, int j_decay,
+				       Handle<const ConnectState> state,
+				       const InvertParam_t& invParam,
+				       bool nonRelProp,
+				       bool obsvP,
+				       int& ncg_had)
+  {
+    if (obsvP)
+      nef_quarkProp4(q_sol, xml_out, q_src, t_src, j_decay, *this, state, invParam, ncg_had);
+    else
+      quarkProp4(q_sol, xml_out, q_src, *this, state, invParam, nonRelProp, ncg_had);
   }
 
 

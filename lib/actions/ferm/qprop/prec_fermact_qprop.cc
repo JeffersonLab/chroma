@@ -1,4 +1,4 @@
-// $Id: prec_fermact_qprop.cc,v 1.9 2004-12-12 21:22:17 edwards Exp $
+// $Id: prec_fermact_qprop.cc,v 1.10 2004-12-29 22:13:41 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic even-odd preconditioned fermion operator
  *
@@ -106,17 +106,6 @@ void qprop_t(const EvenOddPrecWilsonTypeFermActBase<T>& me,
   END_CODE();
 }
 
-
-template<>
-void 
-EvenOddPrecWilsonTypeFermActBase<LatticeFermion>::qpropT(LatticeFermion& psi, 
-							 Handle<const ConnectState> state, 
-							 const LatticeFermion& chi, 
-							 const InvertParam_t& invParam,
-							 int& ncg_had) const
-{
-  qprop_t(*this, psi, state, chi, invParam, ncg_had);
-}
 
 template<>
 void 

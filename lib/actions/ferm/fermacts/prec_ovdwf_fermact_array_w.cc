@@ -1,4 +1,4 @@
-// $Id: prec_ovdwf_fermact_array_w.cc,v 1.10 2004-12-24 04:23:20 edwards Exp $
+// $Id: prec_ovdwf_fermact_array_w.cc,v 1.11 2004-12-29 22:13:40 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned Overlap-DWF (Borici) action
  */
@@ -17,8 +17,8 @@ namespace Chroma
   namespace EvenOddPrecOvDWFermActArrayEnv
   {
     //! Callback function
-    WilsonTypeFermAct< multi1d<LatticeFermion> >* createFermAct(XMLReader& xml_in,
-								const std::string& path)
+    WilsonTypeFermAct5D<LatticeFermion>* createFermAct5D(XMLReader& xml_in,
+							 const std::string& path)
     {
       return new EvenOddPrecOvDWFermActArray(WilsonTypeFermBCArrayEnv::reader(xml_in, path), 
 					     EvenOddPrecOvDWFermActArrayParams(xml_in, path));
@@ -26,19 +26,24 @@ namespace Chroma
 
     //! Callback function
     /*! Differs in return type */
-    EvenOddPrecDWFermActBaseArray<LatticeFermion>* createDWFermAct(XMLReader& xml_in,
-								   const std::string& path)
+    FermionAction<LatticeFermion>* createFermAct(XMLReader& xml_in,
+						 const std::string& path)
     {
-      return new EvenOddPrecOvDWFermActArray(WilsonTypeFermBCArrayEnv::reader(xml_in, path), 
-					     EvenOddPrecOvDWFermActArrayParams(xml_in, path));
+      return createFermAct5D(xml_in, path);
     }
 
     //! Name to be used
     const std::string name = "OVDWF"; 
 
-    //! Register the Wilson fermact
-    const bool registered = Chroma::TheWilsonTypeFermActArrayFactory::Instance().registerObject(name, createFermAct)
-                          & Chroma::TheEvenOddPrecDWFermActBaseArrayFactory::Instance().registerObject(name, createDWFermAct); 
+    //! Register all the factories
+    bool registerAll()
+    {
+      return Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct)
+	   & Chroma::TheWilsonTypeFermAct5DFactory::Instance().registerObject(name, createFermAct5D);
+    }
+
+    //! Register the fermact
+    const bool registered = registerAll();
   }
 
 

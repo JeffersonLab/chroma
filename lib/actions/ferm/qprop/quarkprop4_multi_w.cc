@@ -1,4 +1,4 @@
-// $Id: quarkprop4_multi_w.cc,v 1.7 2004-10-15 16:37:19 bjoo Exp $
+// $Id: quarkprop4_multi_w.cc,v 1.8 2004-12-29 22:13:41 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -105,14 +105,14 @@ namespace Chroma {
  * \param ncg_had  number of CG iterations ( Write )
  */
 
-  void OverlapFermActBase::multiQuarkProp4(multi1d<LatticePropagator>& q_sol, 
-					   XMLWriter& xml_out,
-					   const LatticePropagator& q_src,
-					   Handle<const ConnectState> state,
-					   const multi1d<Real>& masses,
-					   const MultiInvertParam_t& invParam,
-					   const int n_soln,
-					   int& ncg_had)
+  void OverlapFermActBase::multiQuarkProp(multi1d<LatticePropagator>& q_sol, 
+					  XMLWriter& xml_out,
+					  const LatticePropagator& q_src,
+					  Handle<const ConnectState> state,
+					  const multi1d<Real>& masses,
+					  const MultiInvertParam_t& invParam,
+					  const int n_soln,
+					  int& ncg_had)
   {
     multiQuarkProp4_m<LatticeFermion, OverlapFermActBase>(q_sol, 
 							  xml_out, 

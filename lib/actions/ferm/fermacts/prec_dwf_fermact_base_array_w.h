@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_fermact_base_array_w.h,v 1.18 2004-12-12 21:22:15 edwards Exp $
+// $Id: prec_dwf_fermact_base_array_w.h,v 1.19 2004-12-29 22:13:40 edwards Exp $
 /*! \file
  *  \brief Base class for even-odd preconditioned domain-wall-like fermion actions
  */
@@ -26,7 +26,7 @@ namespace Chroma
    * are specified in Phys.Rev.D63:094505,2001 (hep-lat/0005002).
    */
   template<typename T>
-  class EvenOddPrecDWFermActBaseArray : public EvenOddPrecWilsonTypeFermAct< multi1d<T>, multi1d<LatticeColorMatrix> >
+  class EvenOddPrecDWFermActBaseArray : public EvenOddPrecWilsonTypeFermAct5D<T, multi1d<LatticeColorMatrix> >
   {
   public:
     //! Return the quark mass
@@ -89,39 +89,11 @@ namespace Chroma
 	       const InvertParam_t& invParam,
 	       int& ncg_had) const;
 
-    //! Given a complete propagator as a source, this does all the inversions needed
-    /*! \ingroup qprop
-     *
-     * This routine is actually generic to Domain Wall fermions (Array) fermions
-     *
-     * \param q_sol    quark propagator ( Write )
-     * \param q_src    source ( Read )
-     * \param xml_out  diagnostic output ( Modify )
-     * \param state    gauge connection state ( Read )
-     * \param t_src    time slice of source ( Read )
-     * \param j_decay  direction of decay ( Read )
-     * \param invParam inverter parameters ( Read )
-     * \param ncg_had  number of CG iterations ( Write )
-     */
-    virtual 
-    void dwf_quarkProp4(LatticePropagator& q_sol, 
-			XMLWriter& xml_out,
-			const LatticePropagator& q_src,
-			int t_src, int j_decay,
-			Handle<const ConnectState> state,
-			const InvertParam_t& invParam,
-			int& ncg_had)
-      {
-	// Simply call corresponding quarkProp4 routine
-	// Assumes nonRelProp = false
-	quarkProp4(q_sol, xml_out, q_src, state, invParam, false, ncg_had);
-      }
-    
     //! Apply the Dminus operator on a fermion.
     /*! 
      * Slightly more than a convenience function, 
      * it avoids specifying the type of the linOp. 
-     * Used in the dwf_quarkProp4 routine.
+     * Used in the dwf_quarkProp routine.
      */
     void Dminus(T& chi,
 		const T& psi,

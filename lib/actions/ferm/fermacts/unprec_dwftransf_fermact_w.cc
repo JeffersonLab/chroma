@@ -1,4 +1,4 @@
-// $Id: unprec_dwftransf_fermact_w.cc,v 1.5 2004-12-24 04:23:20 edwards Exp $
+// $Id: unprec_dwftransf_fermact_w.cc,v 1.6 2004-12-29 22:13:40 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -25,18 +25,33 @@ namespace Chroma
   namespace UnprecDWFTransfFermActEnv
   {
     //! Callback function
-    WilsonTypeFermAct<LatticeFermion>* createFermAct(XMLReader& xml_in,
-						     const std::string& path)
+    WilsonTypeFermAct<LatticeFermion>* createFermAct4D(XMLReader& xml_in,
+						       const std::string& path)
     {
       return new UnprecDWFTransfFermAct(WilsonTypeFermBCEnv::reader(xml_in, path), 
 					UnprecDWFTransfFermActParams(xml_in, path));
     }
 
+    //! Callback function
+    /*! Differs in return type */
+    FermionAction<LatticeFermion>* createFermAct(XMLReader& xml_in,
+						 const std::string& path)
+    {
+      return createFermAct4D(xml_in, path);
+    }
+
     //! Name to be used
     const std::string name = "UNPRECONDITIONED_DWFTRANSF";
 
-    //! Register the DWFTransf fermact
-    const bool registered = TheWilsonTypeFermActFactory::Instance().registerObject(name, createFermAct);
+    //! Register all the factories
+    bool registerAll()
+    {
+      return Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct)
+	   & Chroma::TheWilsonTypeFermActFactory::Instance().registerObject(name, createFermAct4D);
+    }
+
+    //! Register the fermact
+    const bool registered = registerAll();
   }
 
 

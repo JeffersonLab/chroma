@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_fermact_array_w.h,v 1.11 2004-12-09 03:58:03 edwards Exp $
+// $Id: prec_dwf_fermact_array_w.h,v 1.12 2004-12-29 22:13:40 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -112,14 +112,15 @@ namespace Chroma
      * \param invParam inverter parameters ( Read )
      * \param ncg_had  number of CG iterations ( Write )
      */
-    void dwf_quarkProp4(LatticePropagator& q_sol, 
-			XMLWriter& xml_out,
-			const LatticePropagator& q_src,
-			int t_src, int j_decay,
-			Handle<const ConnectState> state,
-			const InvertParam_t& invParam,
-			int& ncg_had);
-
+    void quarkProp(LatticePropagator& q_sol,   // Oops, need to make propagator type more general
+		   XMLWriter& xml_out,
+		   const LatticePropagator& q_src,
+		   int t_src, int j_decay,
+		   Handle<const ConnectState> state,
+		   const InvertParam_t& invParam,
+		   bool nonRelProp,
+		   bool obsvP,
+		   int& ncg_had);
 
   private:
     Handle< FermBC< multi1d<LatticeFermion> > >  fbc;

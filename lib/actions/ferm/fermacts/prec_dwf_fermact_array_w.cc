@@ -1,4 +1,4 @@
-// $Id: prec_dwf_fermact_array_w.cc,v 1.13 2004-12-28 19:49:24 edwards Exp $
+// $Id: prec_dwf_fermact_array_w.cc,v 1.14 2004-12-29 22:13:40 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -11,7 +11,9 @@
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/fermbcs/fermbcs_w.h"
 
-#include "io/param_io.h"    // only need this for obsolete ChiralParam below
+#include "actions/ferm/qprop/quarkprop4_w.h"
+#include "actions/ferm/qprop/dwf_quarkprop4_w.h"
+#include "io/param_io.h"
 
 namespace Chroma
 {
@@ -20,8 +22,8 @@ namespace Chroma
   namespace EvenOddPrecDWFermActArrayEnv
   {
     //! Callback function
-    WilsonTypeFermAct< multi1d<LatticeFermion> >* createFermAct(XMLReader& xml_in,
-								const std::string& path)
+    WilsonTypeFermAct5D<LatticeFermion>* createFermAct5D(XMLReader& xml_in,
+							 const std::string& path)
     {
       return new EvenOddPrecDWFermActArray(WilsonTypeFermBCArrayEnv::reader(xml_in, path), 
 					   EvenOddPrecDWFermActArrayParams(xml_in, path));
@@ -29,19 +31,24 @@ namespace Chroma
 
     //! Callback function
     /*! Differs in return type */
-    EvenOddPrecDWFermActBaseArray<LatticeFermion>* createDWFermAct(XMLReader& xml_in,
-								   const std::string& path)
+    FermionAction<LatticeFermion>* createFermAct(XMLReader& xml_in,
+						 const std::string& path)
     {
-      return new EvenOddPrecDWFermActArray(WilsonTypeFermBCArrayEnv::reader(xml_in, path), 
-					   EvenOddPrecDWFermActArrayParams(xml_in, path));
+      return createFermAct5D(xml_in, path);
     }
 
     //! Name to be used
     const std::string name = "DWF";
 
-    //! Register the Wilson fermact
-    const bool registered = Chroma::TheWilsonTypeFermActArrayFactory::Instance().registerObject(name, createFermAct)
-                          & Chroma::TheEvenOddPrecDWFermActBaseArrayFactory::Instance().registerObject(name, createDWFermAct); 
+    //! Register all the factories
+    bool registerAll()
+    {
+      return Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct)
+	   & Chroma::TheWilsonTypeFermAct5DFactory::Instance().registerObject(name, createFermAct5D);
+    }
+
+    //! Register the fermact
+    const bool registered = registerAll();
   }
 
 
@@ -99,6 +106,24 @@ namespace Chroma
 					 const Real& m_q) const
   {
     return new UnprecDWLinOpArray(state->getLinks(),OverMass,m_q,N5);
+  }
+  
+  // Given a complete propagator as a source, this does all the inversions needed
+  void 
+  EvenOddPrecDWFermActArray::quarkProp(LatticePropagator& q_sol, 
+				       XMLWriter& xml_out,
+				       const LatticePropagator& q_src,
+				       int t_src, int j_decay,
+				       Handle<const ConnectState> state,
+				       const InvertParam_t& invParam,
+				       bool nonRelProp,
+				       bool obsvP,
+				       int& ncg_had)
+  {
+    if (obsvP)
+      dwf_quarkProp4(q_sol, xml_out, q_src, t_src, j_decay, *this, state, invParam, ncg_had);
+    else
+      quarkProp4(q_sol, xml_out, q_src, *this, state, invParam, nonRelProp, ncg_had);
   }
 
 }

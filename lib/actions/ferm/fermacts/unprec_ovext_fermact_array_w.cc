@@ -1,4 +1,4 @@
-// $Id: unprec_ovext_fermact_array_w.cc,v 1.12 2004-12-24 04:23:20 edwards Exp $
+// $Id: unprec_ovext_fermact_array_w.cc,v 1.13 2004-12-29 22:13:41 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -19,18 +19,33 @@ namespace Chroma
   namespace UnprecOvExtFermActArrayEnv
   {
     //! Callback function
-    WilsonTypeFermAct< multi1d<LatticeFermion> >* createFermAct(XMLReader& xml_in,
-								const std::string& path)
+    WilsonTypeFermAct5D<LatticeFermion>* createFermAct5D(XMLReader& xml_in,
+							 const std::string& path)
     {
       return new UnprecOvExtFermActArray(WilsonTypeFermBCArrayEnv::reader(xml_in, path), 
 					 UnprecOvExtFermActArrayParams(xml_in, path));
     }
 
+    //! Callback function
+    /*! Differs in return type */
+    FermionAction<LatticeFermion>* createFermAct(XMLReader& xml_in,
+						 const std::string& path)
+    {
+      return createFermAct5D(xml_in, path);
+    }
+
     //! Name to be used
     const std::string name = "UNPRECONDITIONED_OVEXT";
 
-    //! Register the Wilson fermact
-    const bool registered = Chroma::TheWilsonTypeFermActArrayFactory::Instance().registerObject(name, createFermAct); 
+    //! Register all the factories
+    bool registerAll()
+    {
+      return Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct)
+	   & Chroma::TheWilsonTypeFermAct5DFactory::Instance().registerObject(name, createFermAct5D);
+    }
+
+    //! Register the fermact
+    const bool registered = registerAll();
   }
 
 
