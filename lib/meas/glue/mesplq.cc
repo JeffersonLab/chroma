@@ -1,11 +1,8 @@
-// $Id: mesplq.cc,v 1.2 2003-01-04 05:10:20 edwards Exp $
+// $Id: mesplq.cc,v 1.3 2003-01-04 05:22:49 edwards Exp $
 //
 #include "szin.h"
 
 using namespace QDP;
-
-// Primitive way to indicate the time direction
-static int tDir() {return Nd-1;}
 
 //! Return the value of the average plaquette normalized to 1
 /*!
@@ -45,7 +42,7 @@ void MesPlq(const multi1d<LatticeColorMatrix>& u, Double& w_plaq, Double& s_plaq
 #endif
       w_plaq += tmp;
 
-      if (mu == tDir() || nu == tDir())
+      if (mu == Geometry::tDir() || nu == Geometry::tDir())
 	t_plaq += tmp;
       else 
 	s_plaq += tmp;
