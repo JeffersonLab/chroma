@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.59 2003-11-23 05:46:53 edwards Exp $
+# $Id: Makefile.am,v 1.60 2003-12-03 06:10:12 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -103,8 +103,9 @@ libchroma_a_SOURCES += baryon_w.cc mesons_w.cc curcor2_w.cc lwldslash_w.cc formf
               prec_dwf_fermact_array_w.cc prec_dwf_linop_array_w.cc \
               readszinqprop_w.cc readszinferm_w.cc writeszinqprop_w.cc quarkprop4_w.cc \
               overlapbu_linop_w.cc \
-              p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc
-#              zolotarev4d_fermact_w.cc zolotarev4d_linop_w.cc lovlapms_w.cc
+              p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc \
+              zolotarev4d_fermact_w.cc lovlapms_w.cc
+# zolotarev4d_linop_w.cc 
 # dslashm_w.cc 
 endif
 
