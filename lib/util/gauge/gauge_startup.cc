@@ -1,4 +1,4 @@
-// $Id: gauge_startup.cc,v 1.4 2004-04-28 14:31:18 edwards Exp $
+// $Id: gauge_startup.cc,v 1.5 2004-04-28 14:48:34 edwards Exp $
 /*! \file
  *  \brief Initialize the gauge fields
  */
@@ -51,19 +51,22 @@ void gaugeStartup(XMLReader& gauge_file_xml,
 
   case CFG_TYPE_DISORDERED:
     QDPIO::cout << "Starting up disordered (random/hot) config" << endl;
-    for(int dim=0; dim < Nd; dim++) { 
-	random(u[dim]);
-	reunit(u[dim]);
+    for(int dim=0; dim < u.size(); dim++) 
+    { 
+      random(u[dim]);
+      reunit(u[dim]);
     }
     break;
+
   case CFG_TYPE_UNIT:
     QDPIO::cout << "Starting up unit gauge (free) config" << endl;
-    for(int dim=0; dim < Nd; dim++) { 
-	u[dim] = Real(1);
-    }
+    for(int dim=0; dim < u.size(); dim++) 
+      u[dim] = Real(1);
     break; 
-  default :
-    QDP_error_exit("Configuration type is unsupported.");
+
+  default:
+    QDPIO::cerr << "gaugeStartup: Configuration type is unsupported." << endl;
+    QDP_abort(1);
   }
 
 }
