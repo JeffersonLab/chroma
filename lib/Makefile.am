@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.168 2004-09-23 14:29:08 bjoo Exp $
+# $Id: Makefile.am,v 1.169 2004-09-23 15:20:12 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -375,7 +375,8 @@ libchroma_a_SOURCES += baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
               wallpionff_w.cc wallnuclff_w.cc \
               walldeltaff_w.cc walldeltapff_w.cc \
 	      inv_borici_w.cc \
-	      ferm_refresh.cc mom_refresh.cc global_metropolis_accrej.cc
+	      ferm_refresh.cc mom_refresh.cc global_metropolis_accrej.cc \
+	      zolotarev4d_fermact_w.cc
 
 # These need to be reworked for new instantiation 
 #	zolotarev4d_fermact_w.cc 

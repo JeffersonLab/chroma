@@ -1,4 +1,4 @@
-// $Id: zolotarev4d_fermact_w.cc,v 1.28 2004-09-11 16:37:07 edwards Exp $
+// $Id: zolotarev4d_fermact_w.cc,v 1.29 2004-09-23 15:20:13 bjoo Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -7,9 +7,18 @@
 #include <chromabase.h>
 #include <linearop.h>
 
+#include "io/enum_io/enum_io.h"  // Read/Write OverlapInnerSolver Type
+
+// For creating auxiliary actions
 #include "actions/ferm/fermacts/unprec_wilson_fermact_w.h"
+
+// My defs
 #include "actions/ferm/fermacts/zolotarev4d_fermact_w.h"
+
+// the zolo coeffs
 #include "actions/ferm/fermacts/zolotarev.h"
+
+// Linops I can make
 #include "actions/ferm/linop/lovlapms_w.h"
 #include "actions/ferm/linop/lovlap_double_pass_w.h"
 #include "actions/ferm/linop/lovddag_w.h"
@@ -47,55 +56,7 @@ namespace Chroma
   }
 
 
-  void read(XMLReader& xml_in, const string& path, OverlapInnerSolverType& p)
-  {
-    string param_string;
-    try {
-      read(xml_in, path, param_string);
-    }
-    catch (const string& e) {
-      QDPIO::cerr << "Caught exception: " << e << endl;
-      QDP_abort(1);
-    }
-
-    if( param_string == "SINGLE_PASS" ) { 
-      p = OVERLAP_INNER_CG_SINGLE_PASS;
-    }
-    else if ( param_string == "DOUBLE_PASS" ) { 
-      p = OVERLAP_INNER_CG_DOUBLE_PASS;
-    }
-    else {
-      QDPIO::cerr << "Unknown OverlapInnerSolverType " << param_string << endl;
-      QDPIO::cerr << "Allowed values are : " << endl;
-      QDPIO::cerr << "   SINGLE_PASS -- Single Pass Inner CG" << endl;
-      QDPIO::cerr << "   DOUBLE_PASS -- Double Pass Inner CG" << endl;
-      QDP_abort(1);
-    }
-  }
-
-  void write(XMLWriter& xml_out, const string& path, const OverlapInnerSolverType& p)
-  {
-    switch ( p ) { 
-    case OVERLAP_INNER_CG_SINGLE_PASS:
-    {
-      string out_string = "SINGLE_PASS";
-      write(xml_out, path, out_string);
-    }
-    break;
-    case OVERLAP_INNER_CG_DOUBLE_PASS:
-    {
-      string out_string = "DOUBLE_PASS";
-      write(xml_out, path, out_string);
-    }
-    break;
-    default:
-      QDPIO::cerr << "Unknown OverlapInnerSolverType " << p << endl;
-      QDP_abort(1);
-    }
-  }
-
-
-  Zolotarev4DFermActParams::Zolotarev4DFermActParams(XMLReader& xml, const std::string& path)
+  Zolotarev4DFermActParams::Zolotarev4DFermActParams(XMLReader& xml, const std::string& path) : ReorthFreqInner(10), inner_solver_type(OVERLAP_INNER_CG_SINGLE_PASS)
   {
     XMLReader in(xml, path);
 
@@ -103,7 +64,7 @@ namespace Chroma
     { 
       if(in.count("AuxFermAct") == 1 )
       { 
-	XMLReader xml_tmp(xml, "AuxFermAct");
+	XMLReader xml_tmp(in, "AuxFermAct");
 	std::ostringstream os;
 	xml_tmp.print(os);
 	AuxFermAct = os.str();
@@ -129,17 +90,19 @@ namespace Chroma
 	read(in, "InnerSolve/ReorthFreq", ReorthFreqInner);
       }
       else {
-	ReorthFreqInner = 10; // Some default
+	// ReorthFreqInner = 10; // Some default
+	// This is now set automagically -- constructor initialisation
       }
 
       if( in.count("InnerSolve/SolverType") == 1 ) { 
 	read(in, "InnerSolve/SolverType", inner_solver_type);
       }
       else {
-	inner_solver_type = OVERLAP_INNER_CG_SINGLE_PASS;
+	// inner_solver_type = OVERLAP_INNER_CG_SINGLE_PASS;
+	// This is now set automagically -- constructor initialisation
       }
 	
-//      read(in, "StateInfo", state_info);
+      //      read(in, "StateInfo", state_info);
     }
     catch( const string &e ) {
       QDPIO::cerr << "Caught Exception reading Zolo4D Fermact params: " << e << endl;
@@ -422,7 +385,6 @@ namespace Chroma
       }
     }
 
-    writer << my_writer;
 
     // Free the arrays allocate by Tony's zolo
     free( rdata->a );

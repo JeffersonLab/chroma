@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev4d_fermact_w.h,v 1.28 2004-09-11 16:37:07 edwards Exp $
+// $Id: zolotarev4d_fermact_w.h,v 1.29 2004-09-23 15:20:13 bjoo Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -29,7 +29,7 @@ namespace Chroma
   //! Params for overlap ferm acts
   struct Zolotarev4DFermActParams
   {
-    Zolotarev4DFermActParams() {ReorthFreqInner=10;inner_solver_type=OVERLAP_INNER_CG_SINGLE_PASS;}
+    Zolotarev4DFermActParams() : ReorthFreqInner(10), inner_solver_type(OVERLAP_INNER_CG_SINGLE_PASS) {};
     Zolotarev4DFermActParams(XMLReader& in, const std::string& path);
     
     Real Mass;
@@ -63,6 +63,7 @@ namespace Chroma
   {
   public:
     //! Full constructor
+    /*
     Zolotarev4DFermAct(Handle<FermBC<LatticeFermion> > fbc_,
 		       Handle<UnprecWilsonTypeFermAct<LatticeFermion> > Mact_, 
 		       const Real& Mass_,
@@ -86,7 +87,9 @@ namespace Chroma
 	// Default Preconditioner degree is RatPolyDeg
 	params.RatPolyDegPrecond = RatPolyDeg_;
       }
+    */
 
+    /*
     Zolotarev4DFermAct(Handle<FermBC<LatticeFermion> > fbc_,
 		       Handle<UnprecWilsonTypeFermAct<LatticeFermion> > Mact_, 
 		       const Real& Mass_,
@@ -105,6 +108,7 @@ namespace Chroma
 	params.invParamInner.MaxCG = MaxCGinner_;
 	params.ReorthFreqInner = ReorthFreqInner_; params.inner_solver_type = inner_solver_type_;
       }
+    */
 
     //! Construct from param struct
     Zolotarev4DFermAct(Handle<FermBC<LatticeFermion> > fbc_,
