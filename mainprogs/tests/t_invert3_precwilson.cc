@@ -1,4 +1,4 @@
-// $Id: t_invert3_precwilson.cc,v 1.6 2004-03-23 16:24:15 bjoo Exp $
+// $Id: t_invert3_precwilson.cc,v 1.7 2004-03-25 23:18:33 edwards Exp $
 
 #include <iostream>
 #include <sstream>
@@ -80,6 +80,7 @@ int main(int argc, char **argv)
 
   XMLFileWriter xml("XMLDAT");
   push(xml,"t_invert");
+  proginfo(xml);    // Print out basic program info
   push(xml,"params");
   write(xml, "nrow", params.nrow);
   write(xml, "boundary", params.boundary);
