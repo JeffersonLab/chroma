@@ -39,7 +39,7 @@ check_PROGRAMS = propagator propagator_comp multi_propagator \
         multi_propagator_comp collect_propcomp collect_multi_propcomp \
         seqsource \
 	make_source \
-        ExampleBuildingBlocks hypsmear cfgtransf sink_smearing
+        ExampleBuildingBlocks hypsmear cfgtransf sink_smearing qpropgfix
 
 if BUILD_WILSON_LIBS
 check_PROGRAMS += spectrum_w qqq_w bar3ptfn qproptransf wallformfac
@@ -124,6 +124,9 @@ qproptransf_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 
 qpropadd_SOURCES= qpropadd.cc
 qpropadd_DEPENDENCIES= build_chroma_libs rebuild_other_libs
+
+qpropgfix_SOURCES= qpropgfix.cc
+qpropgfix_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 
 ExampleBuildingBlocks_SOURCES= ExampleBuildingBlocks.cc
 ExampleBuildingBlocks_DEPENDENCIES= build_chroma_libs rebuild_other_libs
