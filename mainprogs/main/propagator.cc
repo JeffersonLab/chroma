@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.10 2003-04-09 21:14:01 edwards Exp $
+// $Id: propagator.cc,v 1.11 2003-04-10 17:20:10 dgr Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -26,7 +26,7 @@ int main(int argc, char **argv)
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {2,2,2,4};
+  const int foo[] = {4,4,4,8};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -54,16 +54,17 @@ int main(int argc, char **argv)
   // Generate a hot start gauge field
   multi1d<LatticeColorMatrix> u(Nd);
 
-  for(int mu=0; mu < u.size(); ++mu)
+  /*  for(int mu=0; mu < u.size(); ++mu)
   {
     gaussian(u[mu]);
     reunit(u[mu]);
-  }
+    }
+  */
 
   /*  readArchiv(u, "nersc_freefield.cfg");*/
 
-  //  Seed seed_old;
-  //  readSzin(u, 0, "szin.cfg", seed_old);
+  Seed seed_old;
+  readSzin2(u, "szin.cfg", seed_old);
 
   // Useful info
   NmlWriter nml("propagator.nml");
@@ -87,7 +88,7 @@ int main(int argc, char **argv)
   //
   LatticePropagator quark_propagator;
 
-#if 0
+#if 1
   PropHead header;		// Header information
   header.kappa = Kappa;
   header.source_smearingparam=0;     // local (0)  gaussian (1)
@@ -142,6 +143,7 @@ int main(int argc, char **argv)
 
 	cerr << "DEBUG before qprop " << endl;
 	S_f.qprop(psi, u, chi, RsdCG, MaxCG, n_count);
+	cerr << "DEBUG: n_count is " << n_count << endl;
 	cerr << "DEBUG after qprop " << endl;
 	ncg_had += n_count;
 	
@@ -160,10 +162,11 @@ int main(int argc, char **argv)
     }
   }
 
-//  writeQprop("propagator_0", quark_propagator, header);
-  BinaryWriter cfg_out("propagator_0");
+  writeQprop("propagator_0", quark_propagator, header);
+/*  BinaryWriter cfg_out("propagator_0");
   write(cfg_out,quark_propagator);
-  cfg_out.close();
+  cfg_out.close();*/
+
 
   nml.close();
 
