@@ -1,8 +1,9 @@
-// $Id: chromabase.h,v 1.4 2003-04-03 19:28:06 edwards Exp $
+// $Id: chromabase.h,v 1.5 2003-06-11 19:02:41 edwards Exp $
 //
 // Absolute basic stuff to use chroma
 
 #include "qdp.h"
+#include "qdp_util.h"
 
 using namespace QDP;
 
