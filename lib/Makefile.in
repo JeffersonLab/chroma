@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.324 2005-02-01 21:23:32 edwards Exp $
+# $Id: Makefile.in,v 1.325 2005-02-02 04:45:40 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -45,21 +45,26 @@ build_triplet = @build@
 host_triplet = @host@
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_1 = -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
 @BUILD_SSE_DWF_CG_TRUE@am__append_2 = -I$(TOPDIR)/other_libs/@SSE_DWF_CG_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DWF_CG_DIR@/include
+#	actions/ferm/invert/invbicg.cc
+#       actions/ferm/invert/invmr.cc 
+#       util/gauge/eesu2.cc 
+@BUILD_GMP_REMEZ_TRUE@am__append_3 = actions/ferm/fermacts/remez_gmp.h
+@BUILD_GMP_REMEZ_TRUE@am__append_4 = actions/ferm/fermacts/remez_gmp.cc
 
 #
 # Hooks for optimized code
 #
-@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_3 = actions/ferm/linop/lwldslash_w_sse.h
-@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_4 = actions/ferm/linop/lwldslash_w_sse.cc
-@BUILD_SSE_DWF_CG_TRUE@am__append_5 = actions/ferm/qprop/prec_dwf_qprop_array_sse_w.h
-@BUILD_SSE_DWF_CG_TRUE@am__append_6 = actions/ferm/qprop/prec_dwf_qprop_array_sse_w.cc
-@BUILD_PAB_WILSON_DSLASH_TRUE@am__append_7 = actions/ferm/linop/lwldslash_w_pab.h
-@BUILD_PAB_WILSON_DSLASH_TRUE@am__append_8 = actions/ferm/linop/lwldslash_w_pab.cc
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_5 = actions/ferm/linop/lwldslash_w_sse.h
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_6 = actions/ferm/linop/lwldslash_w_sse.cc
+@BUILD_SSE_DWF_CG_TRUE@am__append_7 = actions/ferm/qprop/prec_dwf_qprop_array_sse_w.h
+@BUILD_SSE_DWF_CG_TRUE@am__append_8 = actions/ferm/qprop/prec_dwf_qprop_array_sse_w.cc
+@BUILD_PAB_WILSON_DSLASH_TRUE@am__append_9 = actions/ferm/linop/lwldslash_w_pab.h
+@BUILD_PAB_WILSON_DSLASH_TRUE@am__append_10 = actions/ferm/linop/lwldslash_w_pab.cc
 
 #	actions/ferm/fermacts/stag_fermact_s.cc
 #	meas/pbp/mespbp_s.cc meas/pbp/stagpbp_s.cc
-@BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@am__append_9 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.h
-@BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@am__append_10 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc		
+@BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@am__append_11 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.h
+@BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@am__append_12 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc		
 subdir = lib
 DIST_COMMON = $(am__nobase_include_HEADERS_DIST) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/chroma_config_internal.h.in
@@ -87,7 +92,6 @@ libchroma_a_AR = $(AR) $(ARFLAGS)
 libchroma_a_LIBADD =
 am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/overlap_state.cc \
-	actions/ferm/fermacts/remez_gmp.cc \
 	actions/ferm/fermacts/zolotarev_coeffs.cc \
 	actions/ferm/fermbcs/simple_fermbc.cc \
 	actions/ferm/invert/invbicgstab.cc \
@@ -176,6 +180,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/predictor/zero_guess_predictor.cc \
 	update/molecdyn/predictor/last_solution_predictor.cc \
 	update/molecdyn/predictor/linear_extrap_predictor.cc \
+	actions/ferm/fermacts/remez_gmp.cc \
 	actions/ferm/fermacts/overlap_fermact_base_w.cc \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.cc \
 	actions/ferm/fermacts/prec_dwf_fermact_array_w.cc \
@@ -285,26 +290,27 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/hadron/pseudoscalar_loops_s.cc \
 	actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc \
 	init/chroma_init.cc
-@BUILD_SSE_WILSON_DSLASH_TRUE@am__objects_1 =  \
+@BUILD_GMP_REMEZ_TRUE@am__objects_1 = remez_gmp.$(OBJEXT)
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__objects_2 =  \
 @BUILD_SSE_WILSON_DSLASH_TRUE@	lwldslash_w_sse.$(OBJEXT)
-@BUILD_SSE_DWF_CG_TRUE@am__objects_2 =  \
+@BUILD_SSE_DWF_CG_TRUE@am__objects_3 =  \
 @BUILD_SSE_DWF_CG_TRUE@	prec_dwf_qprop_array_sse_w.$(OBJEXT)
-@BUILD_PAB_WILSON_DSLASH_TRUE@am__objects_3 =  \
+@BUILD_PAB_WILSON_DSLASH_TRUE@am__objects_4 =  \
 @BUILD_PAB_WILSON_DSLASH_TRUE@	lwldslash_w_pab.$(OBJEXT)
-@BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@am__objects_4 = asqtad_cps_wrapper_qprop.$(OBJEXT)
+@BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@am__objects_5 = asqtad_cps_wrapper_qprop.$(OBJEXT)
 am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
-	remez_gmp.$(OBJEXT) zolotarev_coeffs.$(OBJEXT) \
-	simple_fermbc.$(OBJEXT) invbicgstab.$(OBJEXT) \
-	invbicgstab_array.$(OBJEXT) invcg1.$(OBJEXT) \
-	invcg1_array.$(OBJEXT) invcg2.$(OBJEXT) invcg2_array.$(OBJEXT) \
-	invcg2_timing_hacks.$(OBJEXT) invsumr.$(OBJEXT) \
-	inv_gmresr_cg_array.$(OBJEXT) inv_minres_array.$(OBJEXT) \
-	inv_rel_cg1.$(OBJEXT) inv_rel_cg2.$(OBJEXT) \
-	inv_rel_gmresr_cg.$(OBJEXT) inv_rel_gmresr_sumr.$(OBJEXT) \
-	inv_rel_sumr.$(OBJEXT) minvcg.$(OBJEXT) minvcg_array.$(OBJEXT) \
-	minvsumr.$(OBJEXT) minv_rel_cg.$(OBJEXT) \
-	minv_rel_sumr.$(OBJEXT) fermact_qprop.$(OBJEXT) \
-	fermact_qprop_array.$(OBJEXT) prec_fermact_qprop.$(OBJEXT) \
+	zolotarev_coeffs.$(OBJEXT) simple_fermbc.$(OBJEXT) \
+	invbicgstab.$(OBJEXT) invbicgstab_array.$(OBJEXT) \
+	invcg1.$(OBJEXT) invcg1_array.$(OBJEXT) invcg2.$(OBJEXT) \
+	invcg2_array.$(OBJEXT) invcg2_timing_hacks.$(OBJEXT) \
+	invsumr.$(OBJEXT) inv_gmresr_cg_array.$(OBJEXT) \
+	inv_minres_array.$(OBJEXT) inv_rel_cg1.$(OBJEXT) \
+	inv_rel_cg2.$(OBJEXT) inv_rel_gmresr_cg.$(OBJEXT) \
+	inv_rel_gmresr_sumr.$(OBJEXT) inv_rel_sumr.$(OBJEXT) \
+	minvcg.$(OBJEXT) minvcg_array.$(OBJEXT) minvsumr.$(OBJEXT) \
+	minv_rel_cg.$(OBJEXT) minv_rel_sumr.$(OBJEXT) \
+	fermact_qprop.$(OBJEXT) fermact_qprop_array.$(OBJEXT) \
+	prec_fermact_qprop.$(OBJEXT) \
 	prec_fermact_qprop_array.$(OBJEXT) staggered_qprop.$(OBJEXT) \
 	asqtad_qprop.$(OBJEXT) gaugebc_aggregate.$(OBJEXT) \
 	gaugebc_periodic.$(OBJEXT) gaugebc_simple.$(OBJEXT) \
@@ -350,7 +356,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	lcm_pqp_leapfrog.$(OBJEXT) global_metropolis_accrej.$(OBJEXT) \
 	zero_guess_predictor.$(OBJEXT) \
 	last_solution_predictor.$(OBJEXT) \
-	linear_extrap_predictor.$(OBJEXT) \
+	linear_extrap_predictor.$(OBJEXT) $(am__objects_1) \
 	overlap_fermact_base_w.$(OBJEXT) \
 	ovlap_partfrac4d_fermact_w.$(OBJEXT) \
 	prec_dwf_fermact_array_w.$(OBJEXT) \
@@ -424,8 +430,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	unprec_two_flavor_monomial5d_w.$(OBJEXT) \
 	prec_two_flavor_monomial5d_w.$(OBJEXT) gammasgn_w.$(OBJEXT) \
 	inline_io.$(OBJEXT) inline_plaquette.$(OBJEXT) \
-	inline_polylp.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
-	$(am__objects_3) asqtad_fermact_s.$(OBJEXT) \
+	inline_polylp.$(OBJEXT) $(am__objects_2) $(am__objects_3) \
+	$(am__objects_4) asqtad_fermact_s.$(OBJEXT) \
 	fermbcs_s.$(OBJEXT) simple_fermbc_s.$(OBJEXT) \
 	asqtad_linop_s.$(OBJEXT) asqtad_mdagm_s.$(OBJEXT) \
 	asq_dsl_s.$(OBJEXT) fat7_links_s.$(OBJEXT) \
@@ -437,7 +443,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	vector_meson_s.$(OBJEXT) walfil_s.$(OBJEXT) \
 	stag_phases_s.$(OBJEXT) pion_sing_s.$(OBJEXT) \
 	scalar_loops_s.$(OBJEXT) pseudoscalar_loops_s.$(OBJEXT) \
-	$(am__objects_4) chroma_init.$(OBJEXT)
+	$(am__objects_5) chroma_init.$(OBJEXT)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I.
 depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
@@ -460,7 +466,6 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/fermacts/fermacts.h \
 	actions/ferm/fermacts/bigfloat.h actions/ferm/fermacts/remez.h \
 	actions/ferm/fermacts/remez_stub.h \
-	actions/ferm/fermacts/remez_gmp.h \
 	actions/ferm/fermacts/zolotarev.h \
 	actions/ferm/fermacts/overlap_state.h \
 	actions/ferm/fermbcs/fermbcs.h \
@@ -701,6 +706,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/inline/abs_inline_measurement_factory.h \
 	meas/inline/glue/glue.h meas/inline/glue/inline_plaquette.h \
 	meas/inline/glue/inline_polylp.h \
+	actions/ferm/fermacts/remez_gmp.h \
 	actions/ferm/linop/lwldslash_w_sse.h \
 	actions/ferm/qprop/prec_dwf_qprop_array_sse_w.h \
 	actions/ferm/linop/lwldslash_w_pab.h \
@@ -721,6 +727,8 @@ AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 BUILD_ASQTAD_CPS_INVERTER_WRAPPER_FALSE = @BUILD_ASQTAD_CPS_INVERTER_WRAPPER_FALSE@
 BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE = @BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@
+BUILD_GMP_REMEZ_FALSE = @BUILD_GMP_REMEZ_FALSE@
+BUILD_GMP_REMEZ_TRUE = @BUILD_GMP_REMEZ_TRUE@
 BUILD_PAB_WILSON_DSLASH_FALSE = @BUILD_PAB_WILSON_DSLASH_FALSE@
 BUILD_PAB_WILSON_DSLASH_TRUE = @BUILD_PAB_WILSON_DSLASH_TRUE@
 BUILD_SSE_DWF_CG_FALSE = @BUILD_SSE_DWF_CG_FALSE@
@@ -843,7 +851,6 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/fermacts/fermacts.h \
 	actions/ferm/fermacts/bigfloat.h actions/ferm/fermacts/remez.h \
 	actions/ferm/fermacts/remez_stub.h \
-	actions/ferm/fermacts/remez_gmp.h \
 	actions/ferm/fermacts/zolotarev.h \
 	actions/ferm/fermacts/overlap_state.h \
 	actions/ferm/fermbcs/fermbcs.h \
@@ -1085,7 +1092,8 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/abs_inline_measurement_factory.h \
 	meas/inline/glue/glue.h meas/inline/glue/inline_plaquette.h \
 	meas/inline/glue/inline_polylp.h $(am__append_3) \
-	$(am__append_5) $(am__append_7) $(am__append_9)
+	$(am__append_5) $(am__append_7) $(am__append_9) \
+	$(am__append_11)
 nodist_include_HEADERS = chroma_config_internal.h
 
 #
@@ -1106,9 +1114,6 @@ lib_LIBRARIES = libchroma.a
 # NOTE: these lines were autogenerated by  
 #     chroma/scripts/build_libchroma_sources.pl
 #
-#	actions/ferm/invert/invbicg.cc
-#       actions/ferm/invert/invmr.cc 
-#       util/gauge/eesu2.cc 
 
 #
 # Object files to add if building the Wilson Builds...
@@ -1133,7 +1138,6 @@ lib_LIBRARIES = libchroma.a
 # Staggered specific sources
 libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/overlap_state.cc \
-	actions/ferm/fermacts/remez_gmp.cc \
 	actions/ferm/fermacts/zolotarev_coeffs.cc \
 	actions/ferm/fermbcs/simple_fermbc.cc \
 	actions/ferm/invert/invbicgstab.cc \
@@ -1222,6 +1226,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/predictor/zero_guess_predictor.cc \
 	update/molecdyn/predictor/last_solution_predictor.cc \
 	update/molecdyn/predictor/linear_extrap_predictor.cc \
+	$(am__append_4) \
 	actions/ferm/fermacts/overlap_fermact_base_w.cc \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.cc \
 	actions/ferm/fermacts/prec_dwf_fermact_array_w.cc \
@@ -1309,8 +1314,8 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/monomial/prec_two_flavor_monomial5d_w.cc \
 	util/ferm/gammasgn_w.cc io/inline_io.cc \
 	meas/inline/glue/inline_plaquette.cc \
-	meas/inline/glue/inline_polylp.cc $(am__append_4) \
-	$(am__append_6) $(am__append_8) \
+	meas/inline/glue/inline_polylp.cc $(am__append_6) \
+	$(am__append_8) $(am__append_10) \
 	actions/ferm/fermacts/asqtad_fermact_s.cc \
 	actions/ferm/fermbcs/fermbcs_s.cc \
 	actions/ferm/fermbcs/simple_fermbc_s.cc \
@@ -1326,7 +1331,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/hadron/stag_scalars_s.cc meas/hadron/vector_meson_s.cc \
 	meas/hadron/walfil_s.cc util/gauge/stag_phases_s.cc \
 	meas/hadron/pion_sing_s.cc meas/hadron/scalar_loops_s.cc \
-	meas/hadron/pseudoscalar_loops_s.cc $(am__append_10) \
+	meas/hadron/pseudoscalar_loops_s.cc $(am__append_12) \
 	init/chroma_init.cc
 all: chroma_config_internal.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -1726,20 +1731,6 @@ overlap_state.obj: actions/ferm/fermacts/overlap_state.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/overlap_state.cc' object='overlap_state.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o overlap_state.obj `if test -f 'actions/ferm/fermacts/overlap_state.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/overlap_state.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/overlap_state.cc'; fi`
-
-remez_gmp.o: actions/ferm/fermacts/remez_gmp.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT remez_gmp.o -MD -MP -MF "$(DEPDIR)/remez_gmp.Tpo" -c -o remez_gmp.o `test -f 'actions/ferm/fermacts/remez_gmp.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/remez_gmp.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/remez_gmp.Tpo" "$(DEPDIR)/remez_gmp.Po"; else rm -f "$(DEPDIR)/remez_gmp.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/remez_gmp.cc' object='remez_gmp.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o remez_gmp.o `test -f 'actions/ferm/fermacts/remez_gmp.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/remez_gmp.cc
-
-remez_gmp.obj: actions/ferm/fermacts/remez_gmp.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT remez_gmp.obj -MD -MP -MF "$(DEPDIR)/remez_gmp.Tpo" -c -o remez_gmp.obj `if test -f 'actions/ferm/fermacts/remez_gmp.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/remez_gmp.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/remez_gmp.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/remez_gmp.Tpo" "$(DEPDIR)/remez_gmp.Po"; else rm -f "$(DEPDIR)/remez_gmp.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/remez_gmp.cc' object='remez_gmp.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o remez_gmp.obj `if test -f 'actions/ferm/fermacts/remez_gmp.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/remez_gmp.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/remez_gmp.cc'; fi`
 
 zolotarev_coeffs.o: actions/ferm/fermacts/zolotarev_coeffs.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT zolotarev_coeffs.o -MD -MP -MF "$(DEPDIR)/zolotarev_coeffs.Tpo" -c -o zolotarev_coeffs.o `test -f 'actions/ferm/fermacts/zolotarev_coeffs.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/zolotarev_coeffs.cc; \
@@ -3560,6 +3551,20 @@ linear_extrap_predictor.obj: update/molecdyn/predictor/linear_extrap_predictor.c
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/predictor/linear_extrap_predictor.cc' object='linear_extrap_predictor.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o linear_extrap_predictor.obj `if test -f 'update/molecdyn/predictor/linear_extrap_predictor.cc'; then $(CYGPATH_W) 'update/molecdyn/predictor/linear_extrap_predictor.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/predictor/linear_extrap_predictor.cc'; fi`
+
+remez_gmp.o: actions/ferm/fermacts/remez_gmp.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT remez_gmp.o -MD -MP -MF "$(DEPDIR)/remez_gmp.Tpo" -c -o remez_gmp.o `test -f 'actions/ferm/fermacts/remez_gmp.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/remez_gmp.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/remez_gmp.Tpo" "$(DEPDIR)/remez_gmp.Po"; else rm -f "$(DEPDIR)/remez_gmp.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/remez_gmp.cc' object='remez_gmp.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o remez_gmp.o `test -f 'actions/ferm/fermacts/remez_gmp.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/remez_gmp.cc
+
+remez_gmp.obj: actions/ferm/fermacts/remez_gmp.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT remez_gmp.obj -MD -MP -MF "$(DEPDIR)/remez_gmp.Tpo" -c -o remez_gmp.obj `if test -f 'actions/ferm/fermacts/remez_gmp.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/remez_gmp.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/remez_gmp.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/remez_gmp.Tpo" "$(DEPDIR)/remez_gmp.Po"; else rm -f "$(DEPDIR)/remez_gmp.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/remez_gmp.cc' object='remez_gmp.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o remez_gmp.obj `if test -f 'actions/ferm/fermacts/remez_gmp.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/remez_gmp.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/remez_gmp.cc'; fi`
 
 overlap_fermact_base_w.o: actions/ferm/fermacts/overlap_fermact_base_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT overlap_fermact_base_w.o -MD -MP -MF "$(DEPDIR)/overlap_fermact_base_w.Tpo" -c -o overlap_fermact_base_w.o `test -f 'actions/ferm/fermacts/overlap_fermact_base_w.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/overlap_fermact_base_w.cc; \
