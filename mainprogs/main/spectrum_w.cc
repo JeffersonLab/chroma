@@ -1,10 +1,14 @@
-// $Id: spectrum_w.cc,v 1.35 2004-04-28 14:34:43 edwards Exp $
+// $Id: spectrum_w.cc,v 1.36 2004-04-29 00:55:06 edwards Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.35  2004-04-28 14:34:43  edwards
+//  Revision 1.36  2004-04-29 00:55:06  edwards
+//  Split tests for source type into a switch statement - allows
+//  error detection.
+//
+//  Revision 1.35  2004/04/28 14:34:43  edwards
 //  Moved gauge initialization to calling gaugeStartup().
 //
 //  Revision 1.34  2004/04/16 19:27:39  bjoo
@@ -419,9 +423,29 @@ int main(int argc, char **argv)
     }
 
     // Determine what kind of source to use
-    bool Pt_src = (source_header.source_type == SRC_TYPE_POINT_SOURCE) ? true : false;
-    bool Sl_src = (source_header.source_type == SRC_TYPE_SHELL_SOURCE) ? true : false;
-    bool Wl_src = (source_header.source_type == SRC_TYPE_WALL_SOURCE)  ? true : false;
+    bool Pt_src = false;
+    bool Sl_src = false;
+    bool Wl_src = false;
+
+    switch (source_header.source_type)
+    {
+    case SRC_TYPE_POINT_SOURCE:
+      Pt_src = true;
+      break;
+
+    case SRC_TYPE_SHELL_SOURCE:
+      Sl_src = true;
+      break;
+
+    case SRC_TYPE_WALL_SOURCE:
+      Wl_src = true;
+      break;
+
+    default:
+      QDPIO::cerr << "Unsupported source type" << endl;
+      QDP_abort(1);
+    }
+
 
     // Do the mesons first
     if (input.param.MesonP) 
