@@ -1,4 +1,4 @@
-// $Id: qqq_w.cc,v 1.21 2005-01-14 20:13:09 edwards Exp $
+// $Id: qqq_w.cc,v 1.22 2005-02-27 21:03:58 edwards Exp $
 /*! \file
  *  \brief Main code for generalized quark propagator
  *
@@ -6,9 +6,6 @@
  *  stored in SZIN format, and computes the generalised quark propagators
  *  that will be the basis of our baryon code
  */
-
-#include <iostream>
-#include <cstdio>
 
 #include "chroma.h"
 
@@ -29,43 +26,28 @@ struct Param_t
   multi1d<int> nrow;		// Lattice dimension
 };
 
-//! Propagators
-struct Prop_t
-{
-  multi1d<string>  prop_file;  // The file is expected to be in SciDAC format!
-};
-
-//! Barcomp info
+//! Propagators and Barcomp info
 struct Barcomp_t
 {
-  string           qqq_file;  // The file is expected to be in SciDAC format!
+  multi1d<string>  prop_file;  // The file is expected to be in SciDAC format!
+  string           qqq_file;   // The file is expected to be in SciDAC format!
 };
 
 //! Mega-structure of all input
 struct QQQ_input_t
 {
-  Param_t          param;
-  Cfg_t            cfg;
-  Prop_t           prop;
-  Barcomp_t        barcomp;
+  Param_t             param;
+  Cfg_t               cfg;
+  multi1d<Barcomp_t>  barcomp;
 };
 
 
-
-//! Input propagator file
-void read(XMLReader& xml, const string& path, Prop_t& input)
-{
-  XMLReader inputtop(xml, path);
-
-  read(inputtop, "prop_file", input.prop_file);
-}
-
-
-//! Output barcomp file
+//! Input propagator files and output barcomp file
 void read(XMLReader& xml, const string& path, Barcomp_t& input)
 {
   XMLReader inputtop(xml, path);
 
+  read(inputtop, "prop_file", input.prop_file);
   read(inputtop, "qqq_file", input.qqq_file);
 }
 
@@ -80,14 +62,7 @@ void read(XMLReader& xml, const string& path, Param_t& param)
 
   switch (version) 
   {
-    /**************************************************************************/
-  case 2:
-    param.Dirac_basis = false;
-    break;
-    
-    /**************************************************************************/
-  case 3:
-    read(paramtop, "Dirac_basis", param.Dirac_basis);
+  case 4:
     break;
 
   default:
@@ -96,6 +71,7 @@ void read(XMLReader& xml, const string& path, Param_t& param)
     QDP_abort(1);
   }
 
+  read(paramtop, "Dirac_basis", param.Dirac_basis);
   read(paramtop, "nrow", param.nrow);
 }
 
@@ -113,9 +89,6 @@ void read(XMLReader& xml, const string& path, QQQ_input_t& input)
 
     // Read in the gauge configuration info
     read(inputtop, "Cfg", input.cfg);
-
-    // Read in the propagator file info
-    read(inputtop, "Prop", input.prop);
 
     // Read in the barcomp file info
     read(inputtop, "Barcomp", input.barcomp);
@@ -151,23 +124,6 @@ int main(int argc, char **argv)
 
   QDPIO::cout << " QQQ: Generalized propagator generation" << endl;
 
-  // Check to make sure there are 3 files
-  const int Nprops = 3;
-  if (input.prop.prop_file.size() == 1)
-  {
-    string foo = input.prop.prop_file[0];
-    input.prop.prop_file.resize(Nprops);
-    input.prop.prop_file[0] = foo;
-    input.prop.prop_file[1] = foo;
-    input.prop.prop_file[2] = foo;
-  }
-  else if (input.prop.prop_file.size() != Nprops)
-  {
-    QDPIO::cerr << "Error on input params - expecting 1 or 3 filenames" << endl;
-    QDP_abort(1);
-  }
-
-
   // Read a gauge field
   multi1d<LatticeColorMatrix> u(Nd);
   XMLReader gauge_file_xml, gauge_xml;
@@ -194,11 +150,8 @@ int main(int argc, char **argv)
   write(xml_out, "Config_info", gauge_xml);
 
   push(xml_out, "Output_version");
-  write(xml_out, "out_version", 3);
+  write(xml_out, "out_version", 4);
   pop(xml_out);
-
-  xml_out.flush();
-
 
   // Calculate some gauge invariant observables just for info.
   Double w_plaq, s_plaq, t_plaq, link;
@@ -210,120 +163,170 @@ int main(int argc, char **argv)
   write(xml_out, "t_plaq", t_plaq);
   write(xml_out, "link", link);
 
+  xml_out.flush();
 
-  /*
-   * Read the quark propagators and extract headers
-   *
-   * For now, only 1 propagator is supported.
-   */
-  multi1d<LatticePropagator> quark_propagator(Nprops);
-  QQQBarcomp_t  qqq;
-  qqq.Dirac_basis = false;
-  qqq.forward_props.resize(Nprops);
-  for(int i=0; i < Nprops; ++i)
+  // Check the barcomp size
+  if (input.barcomp.size() == 0)
   {
-    XMLReader prop_file_xml, prop_record_xml;
-    QDPIO::cout << "Attempt to read forward propagator XX" 
-		<< input.prop.prop_file[i] << "XX" << endl;
-    readQprop(prop_file_xml, 
-	      prop_record_xml, quark_propagator[i],
-	      input.prop.prop_file[i], QDPIO_SERIAL);
-    QDPIO::cout << "Forward propagator successfully read" << endl;
-   
-    // Try to invert this record XML into a ChromaProp struct
-    // Also pull out the id of this source
-    try
-    {
-      read(prop_record_xml, "/SinkSmear/PropSink", qqq.forward_props[i].sink_header);
-      read(prop_record_xml, "/SinkSmear/ForwardProp", qqq.forward_props[i].prop_header);
-      read(prop_record_xml, "/SinkSmear/PropSource", qqq.forward_props[i].source_header);
-    }
-    catch (const string& e) 
-    {
-      QDPIO::cerr << "Error extracting forward_prop header: " << e << endl;
-      throw;
-    }
+    QDPIO::cerr << "Expecting some propagator and barcomp files" << endl;
+    QDP_abort(1);
   }
 
-  // Save prop input
-  write(xml_out, "Propagator_input", qqq);
+  //
+  // Big loop over all the barcomp input
+  //
+  XMLArrayWriter xml_array(xml_out,input.barcomp.size());
+  push(xml_array, "Barcomp_measurements");
 
-  // Derived from input prop
-  int j_decay = qqq.forward_props[0].source_header.j_decay;
-  multi1d<int> boundary = getFermActBoundary(qqq.forward_props[0].prop_header.fermact);
-  multi1d<int> t_source = qqq.forward_props[0].source_header.t_source;
-  int t0      = t_source[j_decay];
-  int bc_spec = boundary[j_decay];
-
-  // Initialize the slow Fourier transform phases
-  SftMom phases(0, true, j_decay);
-
-  // Sanity check - write out the propagator (pion) correlator in the j_decay direction
-  for(int i=0; i < Nprops; ++i)
+  for(int loop = 0; loop < input.barcomp.size(); ++loop)
   {
-    multi1d<Double> prop_corr = sumMulti(localNorm2(quark_propagator[i]), 
-					 phases.getSet());
+    push(xml_array);
+    write(xml_array, "loop", loop);
 
-    push(xml_out, "SinkSmearedProp_correlator");
-    write(xml_out, "correlator_num", i);
-    write(xml_out, "sink_smeared_prop_corr", prop_corr);
-    pop(xml_out);
-  }
+    QDPIO::cout << "Barcomp loop = " << loop << endl;
 
-  /*
-   * Generalized propagator calculation
-   */
-  multiNd<Complex> barprop;
+    const Barcomp_t&  bar = input.barcomp[loop];  // make a short-cut reference
 
-  // Switch to Dirac-basis if desired.
-  if (input.param.Dirac_basis)
-  {
-    qqq.Dirac_basis = true;
+    // Check to make sure there are 3 files
+    const int Nprops = 3;
+    if (bar.prop_file.size() != Nprops)
+    {
+      QDPIO::cerr << "Error on input params - expecting 3 filenames" << endl;
+      QDP_abort(1);
+    }
 
-    // The spin basis matrix
-    SpinMatrix U = DiracToDRMat();
+    write(xml_array, "propFiles", bar.prop_file);
+    write(xml_array, "barcompFile", bar.qqq_file);
 
-    LatticePropagator q_tmp;
+    /*
+     * Read the quark propagators and extract headers
+     */
+    multi1d<LatticePropagator> quark_propagator(Nprops);
+    QQQBarcomp_t  qqq;
+    qqq.Dirac_basis = false;
+    qqq.forward_props.resize(Nprops);
     for(int i=0; i < Nprops; ++i)
     {
-      q_tmp = adj(U) * quark_propagator[i] * U;   // DeGrand-Rossi ---> Dirac
-      quark_propagator[i] = q_tmp;
+      // Optimize the read - if the filename is the same, no need to read
+      if ((i == 0) || (bar.prop_file[i] != bar.prop_file[0]))
+      {
+	XMLReader prop_file_xml, prop_record_xml;
+
+	QDPIO::cout << "Attempt to read forward propagator XX" 
+		    << bar.prop_file[i] << "XX" << endl;
+	readQprop(prop_file_xml, 
+		  prop_record_xml, quark_propagator[i],
+		  bar.prop_file[i], QDPIO_SERIAL);
+	QDPIO::cout << "Forward propagator successfully read" << endl;
+   
+	// Try to invert this record XML into a ChromaProp struct
+	// Also pull out the id of this source
+	try
+	{
+	  read(prop_record_xml, "/SinkSmear/PropSink", qqq.forward_props[i].sink_header);
+	  read(prop_record_xml, "/SinkSmear/ForwardProp", qqq.forward_props[i].prop_header);
+	  read(prop_record_xml, "/SinkSmear/PropSource", qqq.forward_props[i].source_header);
+	}
+	catch (const string& e) 
+	{
+	  QDPIO::cerr << "Error extracting forward_prop header: " << e << endl;
+	  QDP_abort(1);
+	}
+      }
+      else
+      {
+	QDPIO::cout << "Same prop: optimize away read of propagator "  << i << endl;
+	quark_propagator[i] = quark_propagator[0];
+	qqq.forward_props[i].sink_header = qqq.forward_props[0].sink_header;
+	qqq.forward_props[i].prop_header = qqq.forward_props[0].prop_header;
+	qqq.forward_props[i].source_header = qqq.forward_props[0].source_header;
+      }
     }
-  }
 
-  // Compute generation propagator
-  barcomp(barprop,
-	  quark_propagator[0],
-	  quark_propagator[1],
-	  quark_propagator[2],
-	  phases, t0, bc_spec);
+    // Save prop input
+    write(xml_array, "Propagator_input", qqq);
 
-  // Convert the data into a mult1d
-  multi1d<Complex> barprop_1d;
-  convertBarcomp(barprop_1d, barprop, j_decay);
+    // Derived from input prop
+    int j_decay = qqq.forward_props[0].source_header.j_decay;
+    multi1d<int> boundary = getFermActBoundary(qqq.forward_props[0].prop_header.fermact);
+    multi1d<int> t_source = qqq.forward_props[0].source_header.t_source;
+    int t0      = t_source[j_decay];
+    int bc_spec = boundary[j_decay];
 
-  // Save the qqq output
-  // ONLY SciDAC output format is supported!
-  {
-    XMLBufferWriter file_xml;
-    push(file_xml, "qqq");
-    int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
-    write(file_xml, "id", id);
-    pop(file_xml);
+    // Initialize the slow Fourier transform phases
+    SftMom phases(0, true, j_decay);
 
-    XMLBufferWriter record_xml;
-    push(record_xml, "QQQ");
-    write(record_xml, ".", qqq);  // do not write the outer group
-    write(record_xml, "Config_info", gauge_xml);
-    pop(record_xml);  // QQQ
+    // Sanity check - write out the propagator (pion) correlator in the j_decay direction
+    for(int i=0; i < Nprops; ++i)
+    {
+      multi1d<Double> prop_corr = sumMulti(localNorm2(quark_propagator[i]), 
+					   phases.getSet());
 
-    // Write the scalar data
-    QDPFileWriter to(file_xml, input.barcomp.qqq_file, 
-		     QDPIO_SINGLEFILE, QDPIO_SERIAL, QDPIO_OPEN);
-    write(to,record_xml,barprop_1d);
-    close(to);
-  }
+      push(xml_array, "SinkSmearedProp_correlator");
+      write(xml_array, "correlator_num", i);
+      write(xml_array, "sink_smeared_prop_corr", prop_corr);
+      pop(xml_array);
+    }
 
+    /*
+     * Generalized propagator calculation
+     */
+    multiNd<Complex> barprop;
+
+    // Switch to Dirac-basis if desired.
+    if (input.param.Dirac_basis)
+    {
+      qqq.Dirac_basis = true;
+
+      // The spin basis matrix
+      SpinMatrix U = DiracToDRMat();
+
+      LatticePropagator q_tmp;
+      for(int i=0; i < Nprops; ++i)
+      {
+	q_tmp = adj(U) * quark_propagator[i] * U;   // DeGrand-Rossi ---> Dirac
+	quark_propagator[i] = q_tmp;
+      }
+    }
+
+    // Compute generation propagator
+    barcomp(barprop,
+	    quark_propagator[0],
+	    quark_propagator[1],
+	    quark_propagator[2],
+	    phases, t0, bc_spec);
+
+    // Convert the data into a mult1d
+    multi1d<Complex> barprop_1d;
+    convertBarcomp(barprop_1d, barprop, j_decay);
+
+    // Save the qqq output
+    // ONLY SciDAC output format is supported!
+    {
+      XMLBufferWriter file_xml;
+      push(file_xml, "qqq");
+      int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
+      write(file_xml, "id", id);
+      pop(file_xml);
+
+      XMLBufferWriter record_xml;
+      push(record_xml, "QQQ");
+      write(record_xml, ".", qqq);  // do not write the outer group
+      write(record_xml, "Config_info", gauge_xml);
+      pop(record_xml);  // QQQ
+
+      // Write the scalar data
+      QDPFileWriter to(file_xml, bar.qqq_file, 
+		       QDPIO_SINGLEFILE, QDPIO_SERIAL, QDPIO_OPEN);
+      write(to,record_xml,barprop_1d);
+      close(to);
+    }
+
+    pop(xml_array);  // array element
+
+  } // end for(loop)
+
+  pop(xml_array);  // Barcomp_measurements
   pop(xml_out);    // qqq
 
   END_CODE();
