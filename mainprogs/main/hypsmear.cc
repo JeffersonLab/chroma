@@ -1,5 +1,5 @@
 /*
- *  $Id: hypsmear.cc,v 1.17 2005-02-03 20:16:15 sbasak Exp $
+ *  $Id: hypsmear.cc,v 1.18 2005-02-06 22:37:46 edwards Exp $
  *
  *  This is the top-level routine for HYP smearing.
  *  Reading in gauge fields and writing out hyp-smear gauge fields
@@ -23,7 +23,6 @@ struct Param_t
 
   int link_smear_num;           // Number of smearing iterations
 
-  int j_decay;			// Time direction
   multi1d<int> nrow;		// Lattice dimension
 
 };
@@ -90,7 +89,6 @@ void read(XMLReader& xml, const string& path, Param_t& param)
   read(paramtop, "alpha3", param.alpha3);
 
   read(paramtop, "nrow", param.nrow);
-  read(paramtop, "j_decay", param.j_decay);
 }
 
 
@@ -202,7 +200,7 @@ int main(int argc, char *argv[])
     {
     Hyp_Smear(u, u_hyp, 
 	      input.param.alpha1, input.param.alpha2, input.param.alpha3, 
-	      BlkAccu, BlkMax,input.param.j_decay);
+	      BlkAccu, BlkMax);
     u = u_hyp;
     }
     QDPIO::cout << "Gauge field HYP-smeared!" << endl;
@@ -214,7 +212,6 @@ int main(int argc, char *argv[])
     write(xml_out, "alpha1",input.param.alpha1);
     write(xml_out, "alpha2",input.param.alpha2);
     write(xml_out, "alpha3",input.param.alpha3);
-    write(xml_out, "j_decay",input.param.j_decay);
     pop(xml_out);
     xml_out.flush();
   }
