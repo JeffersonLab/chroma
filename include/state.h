@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: state.h,v 1.1 2003-12-02 04:46:07 edwards Exp $
+// $Id: state.h,v 1.2 2003-12-11 21:40:39 edwards Exp $
 
 /*! @file
  * @brief Support class for fermion actions and linear operators
@@ -54,12 +54,12 @@ public:
 
   //! Return the link fields needed in constructing linear operators
   const multi1d<LatticeColorMatrix>& getLinks() const 
-    {state->getLinks();}
+    {return state->getLinks();}
 
 protected:
   //! Assignment
   /*! Could easily be supported, but not sure why to do so... */
-  ConnectStateProxy& operator=(const ConnectStateProxy& p) {}
+  ConnectStateProxy& operator=(const ConnectStateProxy& p) {state = p.state; return *this;}
 
 private:
   Handle<const ConnectState>  state;
