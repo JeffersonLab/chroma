@@ -1,6 +1,9 @@
-// $Id: dwf_quarkprop4_w.cc,v 1.19 2004-09-08 02:48:26 edwards Exp $
+// $Id: dwf_quarkprop4_w.cc,v 1.20 2004-10-19 03:25:03 edwards Exp $
 // $Log: dwf_quarkprop4_w.cc,v $
-// Revision 1.19  2004-09-08 02:48:26  edwards
+// Revision 1.20  2004-10-19 03:25:03  edwards
+// Added SSE even/odd CG inverter hooks for now.
+//
+// Revision 1.19  2004/09/08 02:48:26  edwards
 // Big switch-over of fermact IO. New fermact startup mechanism -
 // now using Singleton Factory object. Moved  quarkprop4 to be
 // a virtual func with top level FermionAction. Disconnected
@@ -94,6 +97,10 @@
 #include "actions/ferm/linop/dwffld_w.h"
 #include "util/ferm/transf.h"
 #include "util/ft/sftmom.h"
+
+#if defined(BUILD_SSE_DWF_CG)
+#include "actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.h"
+#endif
 
 using namespace QDP;
 using namespace Chroma;
@@ -416,6 +423,42 @@ EvenOddPrecDWFermActArray::dwf_quarkProp4(LatticePropagator& q_sol,
 								 invParam, 
 								 ncg_had);
 }
+
+
+#if defined(BUILD_SSE_DWF_CG)
+//! Given a complete propagator as a source, this does all the inversions needed
+/*! \ingroup qprop
+ *
+ * This routine is actually generic to Domain Wall fermions (Array) fermions
+ *
+ * \param q_sol    quark propagator ( Write )
+ * \param q_src    source ( Read )
+ * \param t_src    time slice of source ( Read )
+ * \param j_decay  direction of decay ( Read )
+ * \param invParam inverter parameters ( Read )
+ * \param ncg_had  number of CG iterations ( Write )
+ */
+
+void
+SSEEvenOddPrecDWFermActArray::dwf_quarkProp4(LatticePropagator& q_sol, 
+					     XMLWriter& xml_out,
+					     const LatticePropagator& q_src,
+					     int t_src, int j_decay,
+					     Handle<const ConnectState> state,
+					     const InvertParam_t& invParam,
+					     int& ncg_had)
+{
+  dwf_quarkProp4_a<LatticeFermion,EvenOddPrecDWFermActBaseArray>(q_sol, 
+								 xml_out, 
+								 q_src, 
+								 t_src, 
+								 j_decay, 
+								 *this, 
+								 state, 
+								 invParam, 
+								 ncg_had);
+}
+#endif
 
 //! Given a complete propagator as a source, this does all the inversions needed
 /*! \ingroup qprop

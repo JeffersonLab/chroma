@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermacts_w.h,v 1.12 2004-09-30 18:14:31 bjoo Exp $
+// $Id: fermacts_w.h,v 1.13 2004-10-19 03:25:03 edwards Exp $
 
 /*! \file
  * \brief Fermion actions
@@ -34,6 +34,10 @@
 #include "prec_dwf_fermact_array_w.h"
 #include "prec_nef_fermact_array_w.h"
 #include "prec_ovdwf_fermact_array_w.h"
+
+#if defined(BUILD_SSE_DWF_CG)
+#include "prec_dwf_fermact_array_sse_w.h"
+#endif
 
 #include "overlap_fermact_base_w.h"
 #include "overlap_state.h"
