@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: mesons_w.h,v 1.5 2003-04-01 01:56:19 edwards Exp $
+// $Id: mesons_w.h,v 1.6 2003-04-01 03:27:26 edwards Exp $
 
 #ifndef __mesons_h__
 #define __mesons_h__
@@ -27,7 +27,7 @@
 
 void mesons(const LatticePropagator& quark_prop_1,
             const LatticePropagator& quark_prop_2,
-            SftMom& phases,
+            const SftMom& phases,
             int t0,
             NmlWriter& nml,
             char* nml_group) ;

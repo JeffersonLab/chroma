@@ -1,6 +1,9 @@
-//  $Id: mesons_w.cc,v 1.11 2003-04-01 02:38:26 edwards Exp $
+//  $Id: mesons_w.cc,v 1.12 2003-04-01 03:27:26 edwards Exp $
 //  $Log: mesons_w.cc,v $
-//  Revision 1.11  2003-04-01 02:38:26  edwards
+//  Revision 1.12  2003-04-01 03:27:26  edwards
+//  Added const to sftmom.
+//
+//  Revision 1.11  2003/04/01 02:38:26  edwards
 //  Added doxygen comments.
 //
 //  Revision 1.10  2003/03/14 21:51:54  flemingg
@@ -61,7 +64,7 @@ using namespace QDP;
 
 void mesons(const LatticePropagator& quark_prop_1,
             const LatticePropagator& quark_prop_2, 
-            SftMom& phases,
+            const SftMom& phases,
             int t0,
             NmlWriter& nml,
 	    char* nml_group)
