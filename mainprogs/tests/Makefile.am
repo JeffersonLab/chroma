@@ -42,8 +42,9 @@ HDRS =
 ##   in @prefix@/bin by 'make install' then add them to nodist_PROGRAMS.
 ##   Another option is to add it to check_PROGRAMS, which means it will only
 ##   be built by 'make check' and is not installed.
-check_PROGRAMS  = t_mesplq t_io t_mesons_w t_conslinop t_hypsmear \
-                  t_ape_smear t_precact t_dwf4d t_propagator_s t_disc_loop_s
+check_PROGRAMS  = t_mesplq t_io t_mesons_w  t_conslinop t_hypsmear \
+    t_ape_smear t_precact t_dwf4d t_propagator_s t_disc_loop_s \
+    t_remez
 
 ## Moved t_dslashm and t_lwldslash to EXTRA_PROGRAMS because they currently
 ## do not compile.  This way, they don't break 'make check' but the targets
@@ -85,6 +86,9 @@ t_su3_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_mesplq_SOURCES = t_mesplq.cc
 t_mesplq_DEPENDENCIES = build_chroma_libs rebuild_other_libs
+
+t_remez_SOURCES = t_remez.cc
+t_remez_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_ape_smear_SOURCES = t_ape_smear.cc
 t_ape_smear_DEPENDENCIES = build_chroma_libs rebuild_other_libs
