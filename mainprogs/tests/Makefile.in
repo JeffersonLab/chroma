@@ -154,19 +154,22 @@ HDRS =
 # 
 check_PROGRAMS = t_mesplq t_dslashm t_io t_lwldslash
 
-DEPENDENCIES = build_chroma_libs
+# DEPENDENCIES = build_chroma_libs
 
 #
 # The programs and their dependencies
 #
 t_mesplq_SOURCES = t_mesplq.cc
+t_mesplq_DEPENDENCIES = build_chroma_libs
 
-# t_mesplq_DEPENDENCIES = build_chroma_libs
 t_dslashm_SOURCES = t_dslashm.cc
+t_dslashm_DEPENDENCIES = build_chroma_libs
 
-# t_dslashm_DEPENDENCIES = build_chroma_libs
 t_io_SOURCES = t_io.cc
+t_io_DEPENDENCIES = build_chroma_libs
+
 t_lwldslash_SOURCES = t_lwldslash.cc
+t_lwldslash_DEPENDENCIES = build_chroma_libs
 subdir = mainprogs/tests
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
 CONFIG_CLEAN_FILES =
@@ -175,22 +178,18 @@ check_PROGRAMS = t_mesplq$(EXEEXT) t_dslashm$(EXEEXT) t_io$(EXEEXT) \
 am_t_dslashm_OBJECTS = t_dslashm.$(OBJEXT)
 t_dslashm_OBJECTS = $(am_t_dslashm_OBJECTS)
 t_dslashm_LDADD = $(LDADD)
-t_dslashm_DEPENDENCIES =
 t_dslashm_LDFLAGS =
 am_t_io_OBJECTS = t_io.$(OBJEXT)
 t_io_OBJECTS = $(am_t_io_OBJECTS)
 t_io_LDADD = $(LDADD)
-t_io_DEPENDENCIES =
 t_io_LDFLAGS =
 am_t_lwldslash_OBJECTS = t_lwldslash.$(OBJEXT)
 t_lwldslash_OBJECTS = $(am_t_lwldslash_OBJECTS)
 t_lwldslash_LDADD = $(LDADD)
-t_lwldslash_DEPENDENCIES =
 t_lwldslash_LDFLAGS =
 am_t_mesplq_OBJECTS = t_mesplq.$(OBJEXT)
 t_mesplq_OBJECTS = $(am_t_mesplq_OBJECTS)
 t_mesplq_LDADD = $(LDADD)
-t_mesplq_DEPENDENCIES =
 t_mesplq_LDFLAGS =
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
