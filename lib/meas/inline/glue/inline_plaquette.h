@@ -1,10 +1,13 @@
-#ifndef INLINE_PLAQUETTE_H
-#define INLINE_PLAQUETTE_H
+// $Id: inline_plaquette.h,v 1.3 2005-02-07 04:11:27 edwards Exp $
+/*! \file
+ *  \brief Inline plaquette
+ */
+
+#ifndef __inline_plaquette_h__
+#define __inline_plaquette_h__
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
-
-
 
 namespace Chroma { 
   namespace InlinePlaquetteEnv {
