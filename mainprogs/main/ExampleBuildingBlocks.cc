@@ -45,7 +45,121 @@ using namespace Chroma;
 //###################################################################################//
 
 static const char* const CVSExampleBuildingBlocks_hh =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/mainprogs/main/ExampleBuildingBlocks.cc,v 1.19 2005-01-14 20:13:08 edwards Exp $";
+"$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/mainprogs/main/ExampleBuildingBlocks.cc,v 1.20 2005-03-12 18:42:34 edwards Exp $";
+
+
+/*
+ * Input 
+ */
+//! Parameters for running program
+struct Param_t
+{
+  int mom2_max;            // (mom)^2 <= mom2_max
+  int links_max;           // maximum number of links
+  multi1d<int> nrow;       // lattice size
+};
+
+//! Propagators
+struct Prop_t
+{
+  string   BkwdPropFileName;   // backward propagator
+  string   BkwdPropG5Format;   // backward propagators Gamma5 Format
+  int      GammaInsertion;     // second gamma insertion
+  string   BBFileNamePattern;  // BB output file name pattern
+};
+
+//! BB output
+struct BB_out_t
+{
+  string            OutFileName;
+  string            FrwdPropFileName;   // input forward prop
+  multi1d<Prop_t>   BkwdProps;
+};
+
+//! Mega-structure of all input
+struct BB_input_t
+{
+  Param_t          param;
+  Cfg_t            cfg;
+  BB_out_t         bb;
+};
+
+
+//! Propagator parameters
+void read(XMLReader& xml, const string& path, Prop_t& input)
+{
+  XMLReader inputtop(xml, path);
+
+  read(inputtop, "BkwdPropFileName", input.BkwdPropFileName);
+  read(inputtop, "BkwdPropG5Format", input.BkwdPropG5Format);
+  read(inputtop, "GammaInsertion", input.GammaInsertion);
+  read(inputtop, "BBFileNamePattern", input.BBFileNamePattern);
+}
+
+
+
+//! BB parameters
+void read(XMLReader& xml, const string& path, BB_out_t& input)
+{
+  XMLReader inputtop(xml, path);
+
+  read(inputtop, "OutFileName", input.OutFileName);
+  read(inputtop, "FrwdPropFileName", input.FrwdPropFileName);
+  read(inputtop, "BkwdProps", input.BkwdProps);
+}
+
+
+// Reader for input parameters
+void read(XMLReader& xml, const string& path, Param_t& param)
+{
+  XMLReader paramtop(xml, path);
+
+  int version;
+  read(paramtop, "version", version);
+
+  switch (version) 
+  {
+  case 1:
+    /**************************************************************************/
+    break;
+
+  default :
+    /**************************************************************************/
+
+    QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+    QDP_abort(1);
+  }
+
+  read(paramtop, "links_max", param.links_max);
+  read(paramtop, "mom2_max", param.mom2_max);
+  read(paramtop, "nrow", param.nrow);
+}
+
+
+// Reader for input parameters
+void read(XMLReader& xml, const string& path, BB_input_t& input)
+{
+  XMLReader inputtop(xml, path);
+
+  // Read all the input groups
+  try
+  {
+    // Read program parameters
+    read(inputtop, "Param", input.param);
+
+    // Read in the gauge configuration info
+    read(inputtop, "Cfg", input.cfg);
+
+    // Read in the building block setup
+    read(inputtop, "BuildingBlocks", input.bb);
+  }
+  catch (const string& e) 
+  {
+    QDPIO::cerr << "Error reading ExampleBuildingBlocks data: " << e << endl;
+    QDP_abort(1);
+  }
+}
+
 
 //###################################################################################//
 // Accept All Link Patterns                                                          //
@@ -68,101 +182,64 @@ void AllLinkPatterns( bool &                          DoThisPattern,
 int main( int argc, char** argv )
 {
   //#################################################################################//
-  // Initialize QDP                                                                  //
+  // Initialize Chroma                                                               //
   //#################################################################################//
 
-  QDP_initialize( & argc, & argv );
+  Chroma::initialize(&argc, &argv);
 
   START_CODE();
 
   //#################################################################################//
-  // Check Arguments                                                                 //
+  // Read input parameters                                                           //
   //#################################################################################//
 
-  if( argc != 21 )
-  {
-    QDPIO::cout << ""                                                                                                  << endl;
-    QDPIO::cout << "Arguments:"                                                                                        << endl;
-    QDPIO::cout << ""                                                                                                  << endl;
-    QDPIO::cout << "(1)  NX                                  - \"1\", \"2\", ..."                                      << endl;
-    QDPIO::cout << "(2)  NY                                  - \"1\", \"2\", ..."                                      << endl;
-    QDPIO::cout << "(3)  NZ                                  - \"1\", \"2\", ..."                                      << endl;
-    QDPIO::cout << "(4)  NT                                  - \"1\", \"2\", ..."                                      << endl;
-    QDPIO::cout << "(5)  Gauge Field                         - Input File Name"                                        << endl;
-    QDPIO::cout << "(6)  Gauge Field Format                  - \"archive\" or \"szin\""                                << endl;
-    QDPIO::cout << "(7)  Forward Propagator                  - Input File Name"                                        << endl;
-    QDPIO::cout << "(8)  Forward Propagator Format           - \"chroma\" or \"szin\""                                 << endl;
-    QDPIO::cout << "(9)  Proton Backward U Propagator        - Input File Name (\"NULL\" if u not available)"          << endl;
-    QDPIO::cout << "(10) Backward U Propagator Format        - \"chroma\" or \"szin\""                                 << endl;
-    QDPIO::cout << "(11) Backward U Propagator Gamma5 Format - \"B\", \"G5_B\", \"B_G5\", or \"G5_B_G5\""              << endl;
-    QDPIO::cout << "(12) Proton Backward D Propagator        - Input File Name (\"NULL\" if d not available)"          << endl;
-    QDPIO::cout << "(13) Backward D Propagator Format        - \"chroma\" or \"szin\""                                 << endl;
-    QDPIO::cout << "(14) Backward D Propagator Gamma5 Format - \"B\", \"G5_B\", \"B_G5\", or \"G5_B_G5\""              << endl;
-    QDPIO::cout << "(15) Maximum Number of Links             - \"0\", \"1\", ..."                                      << endl;
-    QDPIO::cout << "(16) Maximum Spatial Momentum Squared    - \"0\", \"1\", ..."                                      << endl;
-    QDPIO::cout << "(17) Proton U Building Blocks            - Output File Name Pattern (\"NULL\" if u not available)" << endl;
-    QDPIO::cout << "(18) Proton D Building Blocks            - Output File Name Pattern (\"NULL\" if d not available)" << endl;
-    QDPIO::cout << "(19) Text Output File Name               - Output File Name"                                       << endl;
-    QDPIO::cout << "(20) XML Output File Name                - XML Output File Name"                                   << endl;
-    QDPIO::cout << ""                                                                                                  << endl;
+  // Input parameter structure
+  BB_input_t  input;
 
-    exit( 1 );
+  // Instantiate xml reader for DATA
+  XMLReader XmlIn(Chroma::getXMLInputFileName());
+
+  // Read data
+  read(XmlIn, "/ExampleBuildingBlocks", input);
+
+  QDPIO::cout << " ExampleBuildingBlocks" << endl;
+  QDPIO::cout << "     volume: " << input.param.nrow[0];
+  for (int i=1; i<Nd; ++i) {
+    QDPIO::cout << " x " << input.param.nrow[i];
   }
-
-  //#################################################################################//
-  // Capture Arguments                                                               //
-  //#################################################################################//
-
-  const unsigned short int NX            = atoi( argv[1] );
-  const unsigned short int NY            = atoi( argv[2] );
-  const unsigned short int NZ            = atoi( argv[3] );
-  const unsigned short int NT            = atoi( argv[4] );
-  const char* const GaugeFieldFileName   = argv[5];
-  const char* const GaugeFieldFormat     = argv[6];
-  const char* const FrwdPropFileName     = argv[7];
-  const char* const FrwdPropFormat       = argv[8];
-  const char* const BkwdUPropFileName    = argv[9];
-  const char* const BkwdUPropFormat      = argv[10];
-  const char* const BkwdUPropG5Format    = argv[11];
-  const char* const BkwdDPropFileName    = argv[12];
-  const char* const BkwdDPropFormat      = argv[13];
-  const char* const BkwdDPropG5Format    = argv[14];
-  const unsigned short int MaxNLinks     = atoi( argv[15] );
-  const unsigned short int MaxQSquared   = atoi( argv[16] );
-  const char* const UBBFileNamePattern   = argv[17];
-  const char* const DBBFileNamePattern   = argv[18];
-  const char* const OutFileName          = argv[19];
-  const char* const XMLFileName          = argv[20];
+  QDPIO::cout << endl;
 
   //#################################################################################//
   // Echo Arguments                                                                  //
   //#################################################################################//
 
   // will capture all would-be standard output
-  TextWriter Out( OutFileName );
+  TextWriter Out( input.bb.OutFileName );
 
-  Out <<                                                                        "\n";
-  Out << "(1)  NX                                  = " << NX                 << "\n";
-  Out << "(2)  NY                                  = " << NY                 << "\n";
-  Out << "(3)  NZ                                  = " << NZ                 << "\n";
-  Out << "(4)  NT                                  = " << NT                 << "\n";
-  Out << "(5)  Gauge Field                         = " << GaugeFieldFileName << "\n";
-  Out << "(6)  Gauge Field Format                  = " << GaugeFieldFormat   << "\n";
-  Out << "(7)  Forward Propagator                  = " << FrwdPropFileName   << "\n";
-  Out << "(8)  Forward Propagator Format           = " << FrwdPropFormat     << "\n";
-  Out << "(9)  Proton Backward U Propagator        = " << BkwdUPropFileName  << "\n";
-  Out << "(10) Backward U Propagator Format        = " << BkwdUPropFormat    << "\n";
-  Out << "(11) Backward U Propagator Gamma5 Format = " << BkwdUPropG5Format  << "\n";
-  Out << "(12) Proton Backward D Propagator        = " << BkwdDPropFileName  << "\n";
-  Out << "(13) Backward D Propagator Format        = " << BkwdDPropFormat    << "\n";
-  Out << "(14) Backward D Propagator Gamma5 Format = " << BkwdDPropG5Format  << "\n";
-  Out << "(15) Maximum Number of Links             = " << MaxNLinks          << "\n";
-  Out << "(16) Maximum Spatial Momentum Squared    = " << MaxQSquared        << "\n";
-  Out << "(17) Proton U Building Blocks            = " << UBBFileNamePattern << "\n";
-  Out << "(18) Proton D Building Blocks            = " << DBBFileNamePattern << "\n";
-  Out << "(19) Text Output File Name               = " << OutFileName        << "\n";
-  Out << "(20) XML Output File Name                = " << XMLFileName        << "\n";
-  Out <<                                                                        "\n";
+  Out <<                                                                      "\n";
+  Out << "  NX                                  = " << input.param.nrow[0] << "\n";
+  Out << "  NY                                  = " << input.param.nrow[1] << "\n";
+  Out << "  NZ                                  = " << input.param.nrow[2] << "\n";
+  Out << "  NT                                  = " << input.param.nrow[3] << "\n";
+  Out << "  Gauge Field                         = " << input.cfg.cfg_file  << "\n";
+  Out << "  Forward Propagator                  = " << input.bb.FrwdPropFileName          << "\n";
+  Out <<                                                                                     "\n";
+  for(int loop=0; loop < input.bb.BkwdProps.size(); ++loop)
+  {
+    const Prop_t& prop = input.bb.BkwdProps[loop];
+    Out << "  Backward Propagator                 = " << prop.BkwdPropFileName            << "\n";
+    Out << "  Backward Propagator Gamma5 Format   = " << prop.BkwdPropG5Format            << "\n";
+    Out << "  Gamma Insertion                     = " << prop.GammaInsertion              << "\n";
+    Out << "  Building Blocks                     = " << prop.BBFileNamePattern           << "\n";
+    Out <<                                                                                   "\n";
+  }
+
+  Out << "  Maximum Number of Links             = " << input.param.links_max              << "\n";
+  Out << "  Maximum Spatial Momentum Squared    = " << input.param.mom2_max               << "\n"; 
+
+  Out << "  Text Output File Name               = " << input.bb.OutFileName               << "\n";
+  Out << "  XML Output File Name                = " << Chroma::getXMLOutputFileName()     << "\n";
+  Out <<                                                                                     "\n";
   Out.flush();
 
   //#################################################################################//
@@ -177,14 +254,7 @@ int main( int argc, char** argv )
   // Set Lattice Geometry                                                            //
   //#################################################################################//
 
-  multi1d< int > N ( Nd );
-
-  N[0] = NX;
-  N[1] = NY;
-  N[2] = NZ;
-  N[3] = NT;
-
-  Layout::setLattSize( N );
+  Layout::setLattSize( input.param.nrow );
   Layout::create();
 
   //#################################################################################//
@@ -192,294 +262,226 @@ int main( int argc, char** argv )
   //#################################################################################//
 
   // capture XML output
-  XMLFileWriter Xml( XMLFileName );
-  push(Xml, "ExampleBuildingBlocks");
+  XMLFileWriter& XmlOut = Chroma::getXMLOutputInstance();
+  push(XmlOut, "ExampleBuildingBlocks");
 
-  proginfo(Xml);    // Print out basic program info
+  proginfo(XmlOut);    // Print out basic program info
 
-  push(Xml, "Input");
-  write(Xml, "N", N);
-  write(Xml, "GaugeFieldFileName", GaugeFieldFileName);
-  write(Xml, "GaugeFieldFormat", GaugeFieldFormat);
-  write(Xml, "FrwdPropFileName", FrwdPropFileName);
-  write(Xml, "FrwdPropFormat", FrwdPropFormat);
-  write(Xml, "BkwdUPropFileName", BkwdUPropFileName);
-  write(Xml, "BkwdUPropFormat", BkwdUPropFormat);
-  write(Xml, "BkwdUPropG5Format", BkwdUPropG5Format);
-  write(Xml, "BkwdDPropFileName", BkwdDPropFileName);
-  write(Xml, "BkwdDPropFormat", BkwdDPropFormat);
-  write(Xml, "MaxNLinks", MaxNLinks);
-  write(Xml, "MaxQSquared", MaxQSquared);
-  write(Xml, "UBBFileNamePattern", UBBFileNamePattern);
-  write(Xml, "DBBFileNamePattern", DBBFileNamePattern);
-  write(Xml, "OutFileName", OutFileName);
-  write(Xml, "XMLFileName", XMLFileName);
-  pop(Xml);
-
-  push(Xml, "Output_version");
-  write(Xml, "out_version", 1);
-  pop(Xml);
-  Xml.flush();
+  push(XmlOut, "Output_version");
+  write(XmlOut, "out_version", 2);
+  pop(XmlOut);
 
   //###############################################################################//
   // Read Gauge Field                                                              //
   //###############################################################################//
 
-  XMLReader GaugeFieldXML;
-  multi1d< LatticeColorMatrix >* U = NULL;
-  U = new multi1d< LatticeColorMatrix >( Nd );
-  Out << "reading gauge field " << GaugeFieldFileName << " ... " << "\n";  Out.flush();
-  if( strcmp( GaugeFieldFormat, "archive" ) == 0 )
-  {
-    Out << "assuming archive format for gauge field" << "\n";  Out.flush();
-    readArchiv( GaugeFieldXML, *U, GaugeFieldFileName );
-  }
-  if( strcmp( GaugeFieldFormat, "szin" ) == 0 )
-  {
-    Out << "assuming szin format for gauge field" << "\n";  Out.flush();
-    readSzin( GaugeFieldXML, *U, GaugeFieldFileName );
-  }
-  Out << "finished reading gauge field " << GaugeFieldFileName << "\n";  Out.flush();
+  Out << "Attempt to initialize the gauge field" << "\n";  Out.flush();
 
-  // Write out the config header
-  write(Xml, "Config_info", GaugeFieldXML);
+  multi1d<LatticeColorMatrix> U(Nd);
+  {
+    XMLReader GaugeFileXml, GaugeXml;
+
+    Out << "reading gauge field " << input.cfg.cfg_file << " ... " << "\n";  Out.flush();
+    gaugeStartup(GaugeFileXml, GaugeXml, U, input.cfg);
+    Out << "finished reading gauge field " << input.cfg.cfg_file << "\n";  Out.flush();
+
+    // Write out the input
+    write(XmlOut, "Input", XmlIn);
+
+    // Write out the config info
+    write(XmlOut, "Config_info", GaugeXml);
+  }
 
   // check that the gauge field seems normal
-  unitarityCheck( *U );
+  unitarityCheck( U );
   Double ave_plaq, ave_spacelike_plaq, ave_timelike_plaq, ave_link_trace;
-  MesPlq( *U, ave_plaq, ave_spacelike_plaq, ave_timelike_plaq, ave_link_trace );
+  MesPlq( U, ave_plaq, ave_spacelike_plaq, ave_timelike_plaq, ave_link_trace );
   Out << "basic gauge field observables"                         << "\n";
   Out << "average plaquette            = " << ave_plaq           << "\n";
   Out << "average space-like plaquette = " << ave_spacelike_plaq << "\n";
   Out << "average time-like plaquette  = " << ave_timelike_plaq  << "\n";
   Out << "average link trace           = " << ave_link_trace     << "\n";
 
-  push(Xml, "Observables");
-  write(Xml, "ave_plaq", ave_plaq);
-  write(Xml, "ave_spacelike_plaq", ave_spacelike_plaq);
-  write(Xml, "ave_timelike_plaq", ave_timelike_plaq);
-  write(Xml, "ave_link_trace", ave_link_trace);
-  pop(Xml);
-  Xml.flush();
+  push(XmlOut, "Observables");
+  write(XmlOut, "ave_plaq", ave_plaq);
+  write(XmlOut, "ave_spacelike_plaq", ave_spacelike_plaq);
+  write(XmlOut, "ave_timelike_plaq", ave_timelike_plaq);
+  write(XmlOut, "ave_link_trace", ave_link_trace);
+  pop(XmlOut);
+  XmlOut.flush();
 
   //#################################################################################//
   // Read Forward Propagator                                                         //
   //#################################################################################//
 
   XMLReader FrwdPropXML, FrwdPropRecordXML;
-  LatticePropagator* F = NULL;
-  F = new LatticePropagator;
-  Out << "reading forward propagator " << FrwdPropFileName << " ... " << "\n";  Out.flush();
-  if( strcmp( FrwdPropFormat, "chroma" ) == 0 )
+  LatticePropagator F;
+  ChromaProp_t prop_header;
+  PropSource_t source_header;
+  Out << "reading forward propagator " << input.bb.FrwdPropFileName << " ... " << "\n";  Out.flush();
   {
     Out << "assuming chroma format for forward propagator" << "\n";  Out.flush();
-    readQprop( FrwdPropXML, FrwdPropRecordXML, *F, FrwdPropFileName, QDPIO_SERIAL );
+    readQprop( FrwdPropXML, FrwdPropRecordXML, F, input.bb.FrwdPropFileName, QDPIO_SERIAL );
+   
+    // Try to invert this record XML into a ChromaProp struct
+    try
+    {
+      read(FrwdPropRecordXML, "/Propagator/ForwardProp", prop_header);
+      read(FrwdPropRecordXML, "/Propagator/PropSource", source_header);
+    }
+    catch (const string& e) 
+    {
+      QDPIO::cerr << "Error extracting forward_prop header: " << e << endl;
+      QDP_abort(1);
+    }
   }
-  if( strcmp( FrwdPropFormat, "szin" ) == 0 )
-  {
-    Out << "assuming szin format for forward propagator" << "\n";  Out.flush();
-    readSzinQprop( FrwdPropXML, *F, FrwdPropFileName );
-  }
-  Out << "finished reading forward propagator " << FrwdPropFileName << "\n";  Out.flush();
+  Out << "finished reading forward propagator " << input.bb.FrwdPropFileName << "\n";  Out.flush();
 
-  {
-    SftMom phases( 0, true, Nd-1 );
 
-    multi1d<Double> FrwdPropCheck = sumMulti( localNorm2( *F ), phases.getSet() );
+  // Derived from input prop
+  int  j_decay = source_header.j_decay;
+  multi1d<int> t_source = source_header.t_source;
+
+  // Sanity check - write out the norm2 of the forward prop in the j_decay direction
+  // Use this for any possible verification
+  {
+    SftMom phases( 0, true, j_decay );
+
+    multi1d<Double> FrwdPropCheck = sumMulti( localNorm2( F ), phases.getSet() );
 
     Out << "forward propagator check = " << FrwdPropCheck[0] << "\n";  Out.flush();
 
     // Write out the forward propagator header
-    push(Xml, "ForwardProp");
-    write(Xml, "FrwdPropXML", FrwdPropXML);
-    write(Xml, "FrwdPropRecordXML", FrwdPropRecordXML);
-    write(Xml, "FrwdPropCheck", FrwdPropCheck);
-    pop(Xml);
-    Xml.flush();
+    push(XmlOut, "ForwardProp");
+    write(XmlOut, "FrwdPropFileName", input.bb.FrwdPropFileName);
+    write(XmlOut, "FrwdPropXML", FrwdPropXML);
+    write(XmlOut, "FrwdPropRecordXML", FrwdPropRecordXML);
+    write(XmlOut, "FrwdPropCheck", FrwdPropCheck);
+    pop(XmlOut);
+    XmlOut.flush();
   }
 
   //#################################################################################//
-  // Read Backward (or Sequential) U Propagator                                      //
+  // Read Backward (or Sequential) Propagators                                       //
   //#################################################################################//
 
-  int NF = 0;
+  const int NF = input.bb.BkwdProps.size();
 
-  int HasU = 0;
-  XMLReader BkwdUPropXML, BkwdUPropRecordXML;
-  LatticePropagator* Bu = NULL;
-  Out << "reading backward u propagator " << BkwdUPropFileName << " ... " << "\n";  Out.flush();
-  if( strcmp( BkwdUPropFileName, "NULL" ) != 0 )
+  multi1d< LatticePropagator > B( NF );
+  multi1d< int > GammaInsertions( NF );
+
+  XMLArrayWriter  XmlSeqSrc(XmlOut, NF);
+  push(XmlSeqSrc, "SequentialSource");
+
+  for(int loop = 0; loop < NF; ++loop)
   {
-    Bu = new LatticePropagator;
+    push(XmlSeqSrc);
+    write(XmlSeqSrc, "loop_ctr", loop);
 
-    if( strcmp( BkwdUPropFormat, "chroma" ) == 0 )
+    XMLReader BkwdPropXML, BkwdPropRecordXML;
+    LatticePropagator Bu;
+    SeqSource_t seqsource_header;
+    Out << "reading backward u propagator " << input.bb.BkwdProps[loop].BkwdPropFileName << " ... " << "\n";  Out.flush();
     {
       Out << "assuming chroma format for backward u propagator" << "\n";  Out.flush();
-      readQprop( BkwdUPropXML, BkwdUPropRecordXML, *Bu, BkwdUPropFileName, QDPIO_SERIAL );
+      readQprop( BkwdPropXML, BkwdPropRecordXML, Bu, input.bb.BkwdProps[loop].BkwdPropFileName, QDPIO_SERIAL );
+
+      // Try to invert this record XML into a ChromaProp struct
+      // Also pull out the id of this source
+      // NEED SECURITY HERE - need a way to cross check props. Use the ID.
+      try
+      {
+	read(BkwdPropRecordXML, "/SequentialProp/SeqSource", seqsource_header);
+      }
+      catch (const string& e) 
+      {
+	QDPIO::cerr << "Error extracting seqprop header: " << e << endl;
+	QDP_abort(1);
+      }
     }
-    if( strcmp( BkwdUPropFormat, "szin" ) == 0 )
+    Out << "finished reading backward u propagator " << input.bb.BkwdProps[loop].BkwdPropFileName << " ... " << "\n";  Out.flush();
+      
+    // Sanity check - write out the norm2 of the forward prop in the j_decay direction
+    // Use this for any possible verification
     {
-      Out << "assuming szin format for backward u propagator" << "\n";  Out.flush();
-      readSzinQprop( BkwdUPropXML, *Bu, BkwdUPropFileName );
+      SftMom phases( 0, true, j_decay );
+
+      multi1d<Double> BkwdPropCheck = sumMulti( localNorm2( Bu ), phases.getSet() );
+
+      Out << "backward u propagator check = " << BkwdPropCheck[0] << "\n";  Out.flush();
+      
+      // Write out the forward propagator header
+      push(XmlSeqSrc, "BackwardProp");
+      write(XmlSeqSrc, "BkwdPropFileName", input.bb.BkwdProps[loop].BkwdPropFileName);
+      write(XmlSeqSrc, "BkwdPropG5Format", input.bb.BkwdProps[loop].BkwdPropG5Format);
+      write(XmlSeqSrc, "SequentialSourceType", seqsource_header.seq_src);
+      write(XmlSeqSrc, "BkwdPropXML", BkwdPropXML);
+      write(XmlSeqSrc, "BkwdPropRecordXML", BkwdPropRecordXML);
+      write(XmlSeqSrc, "BkwdPropCheck", BkwdPropCheck);
+      pop(XmlSeqSrc);
+      XmlOut.flush();
     }
 
-    HasU = 1;
-    NF ++;
-  }
-  Out << "finished reading backward u propagator " << BkwdUPropFileName << " ... " << "\n";  Out.flush();
+    // Derived from input seqprop
+    string seq_src = seqsource_header.seq_src;
+    QDPIO::cout << "Seqsource name = " << seqsource_header.seq_src << endl;
+    int           t_sink   = seqsource_header.t_sink;
+    multi1d<int>  sink_mom = seqsource_header.sink_mom;
 
-  if ( HasU == 1 )
-  {
-    SftMom phases( 0, true, Nd-1 );
+    write(XmlSeqSrc, "seq_src", seq_src);
+    write(XmlSeqSrc, "t_source", t_source);
+    write(XmlSeqSrc, "t_sink", t_sink);
+    write(XmlSeqSrc, "sink_mom", sink_mom);
+	
+    //#################################################################################//
+    // Additional Gamma Matrix Insertions                                              //
+    //#################################################################################//
+    
+    GammaInsertions[loop] = input.bb.BkwdProps[loop].GammaInsertion;
 
-    multi1d<Double> BkwdUPropCheck = sumMulti( localNorm2( *Bu ), phases.getSet() );
-
-    Out << "backward u propagator check = " << BkwdUPropCheck[0] << "\n";  Out.flush();
-
-    // Write out the forward propagator header
-    push(Xml, "BackwardUProp");
-    write(Xml, "BkwdUPropXML", BkwdUPropXML);
-    write(Xml, "BkwdUPropRecordXML", BkwdUPropRecordXML);
-    write(Xml, "BkwdUPropCheck", BkwdUPropCheck);
-    pop(Xml);
-    Xml.flush();
-  }
-  //#################################################################################//
-  // Read Backward (or Sequential) D Propagator                                      //
-  //#################################################################################//
-
-  int HasD = 0;
-  XMLReader BkwdDPropXML, BkwdDPropRecordXML;
-  LatticePropagator* Bd = NULL;
-  Out << "reading backward d propagator " << BkwdDPropFileName << " ... " << "\n";  Out.flush();
-  if( strcmp( BkwdDPropFileName, "NULL" ) != 0 )
-  {
-    Bd = new LatticePropagator;
-
-    if( strcmp( BkwdDPropFormat, "chroma" ) == 0 )
+    if (GammaInsertions[loop] < 0 || GammaInsertions[loop] >= Ns*Ns)
     {
-      Out << "assuming chroma format for backward d propagator" << "\n";  Out.flush();
-      readQprop( BkwdDPropXML, BkwdDPropRecordXML, *Bd, BkwdDPropFileName, QDPIO_SERIAL );
+      QDPIO::cerr << argv[0] << ": Gamma insertion out of bounds: " << GammaInsertions[loop] << endl;
+      QDP_abort(1);
     }
-    if( strcmp( BkwdDPropFormat, "szin" ) == 0 )
+
+    //#################################################################################//
+    // Convert Backward Propagator Format                                              //
+    //#################################################################################//
+    
+    if( input.bb.BkwdProps[loop].BkwdPropG5Format == "G5_B" )
     {
-      Out << "assuming szin format for backward d propagator" << "\n";  Out.flush();
-      readSzinQprop( BkwdDPropXML, *Bd, BkwdDPropFileName );
+      B[loop] = Gamma( 15 ) * Bu;
+    }
+    else if( input.bb.BkwdProps[loop].BkwdPropG5Format == "B_G5" )
+    {
+      B[loop] = Bu * Gamma( 15 );
+    }
+    else if( input.bb.BkwdProps[loop].BkwdPropG5Format == "G5_B_G5" )
+    {
+      B[loop] = Gamma( 15 ) * Bu * Gamma( 15 );
+    }
+    else
+    {
+      B[loop] = Bu;
     }
 
-    HasD = 1;
-    NF ++;
-  }
-  Out << "finished reading backward d propagator " << BkwdDPropFileName << " ... " << "\n";  Out.flush();
- 
-  if ( HasD == 1 )
-  {
-    SftMom phases( 0, true, Nd-1 );
+    pop(XmlSeqSrc);   // elem
+  } // end loop over sequential sources
 
-    multi1d<Double> BkwdDPropCheck = sumMulti( localNorm2( *Bd ), phases.getSet() );
-
-    Out << "backward d propagator check = " << BkwdDPropCheck[0] << "\n";  Out.flush();
-
-    // Write out the forward propagator header
-    push(Xml, "BackwardDProp");
-    write(Xml, "BkwdDPropXML", BkwdDPropXML);
-    write(Xml, "BkwdDPropRecordXML", BkwdDPropRecordXML);
-    write(Xml, "BkwdDPropCheck", BkwdDPropCheck);
-    pop(Xml);
-    Xml.flush();
-  }
-
-  //#################################################################################//
-  // Basic Information                                                               //
-  //#################################################################################//
-
-  Out << "NF = " << NF << "\n";
-  if( HasU == 1 )
-  {
-    Out << "u flavor available" << "\n";
-  }
-  else
-  {
-    Out << "u flavor not available" << "\n";
-  }
-  if( HasD == 1 )
-  {
-    Out << "d flavor available" << "\n";
-  }
-  else
-  {
-    Out << "d flavor not available" << "\n";
-  }
-  Out.flush();
-
-  if( NF != 2 )
-  {
-    Out << "NF must be 2 due to simple assumption in BuildingBlocks.cc when writing Flavor entry in footer" << "\n";
-    QDP_finalize();
-  }
-
-  //#################################################################################//
-  // Convert Backward Propagator Format                                              //
-  //#################################################################################//
-
-  if( HasU == 1 )
-  {
-  if( strcmp( BkwdUPropG5Format, "G5_B" ) == 0 )
-  {
-    *Bu = Gamma( 15 ) * *Bu;
-  }
-  if( strcmp( BkwdUPropG5Format, "B_G5" ) == 0 )
-  {
-    *Bu = *Bu * Gamma( 15 );
-  }
-  if( strcmp( BkwdUPropG5Format, "G5_B_G5" ) == 0 )
-  {
-    *Bu = Gamma( 15 ) * *Bu * Gamma( 15 );
-  }
-  }
-
-  if( HasD == 1 )
-  {
-  if( strcmp( BkwdDPropG5Format, "G5_B" ) == 0 )
-  {
-    *Bd = Gamma( 15 ) * *Bd;
-  }
-  if( strcmp( BkwdDPropG5Format, "B_G5" ) == 0 )
-  {
-    *Bd = *Bd * Gamma( 15 );
-  }
-  if( strcmp( BkwdDPropG5Format, "G5_B_G5" ) == 0 )
-  {
-    *Bd = Gamma( 15 ) * *Bd * Gamma( 15 );
-  }
-  }
-
-  multi1d< LatticePropagator >* B = NULL;
-  B = new multi1d< LatticePropagator >( NF );
-  int f = 0;
-  if( HasU == 1 )
-  {
-    (*B)[ f ] = *Bu;
-    assert( Bu != NULL );
-    delete Bu;  Bu = NULL;
-    f ++;
-  }
-  if( HasD == 1 )
-  {
-    (*B)[ f ] = *Bd;
-    assert( Bd != NULL );
-    delete Bd;  Bd = NULL;
-    f ++;
-  }
+  pop(XmlSeqSrc);  // SequentialSource
 
   //#################################################################################//
   // Set Momenta                                                                     //
   //#################################################################################//
 
+  // WARNING: DRU HAD SnkMom HARDWIRED TO ZERO. I THINK IT SHOULD FLOAT
+  // THIS CHANGES THE INSERTION MOMENTA!
   multi1d< int > SnkMom( Nd - 1 );
   SnkMom = 0;
 
-  SftMom Phases( MaxQSquared, SnkMom, false, Nd - 1 );
+//  SftMom Phases( input.param.mom2_max, input.param.sink_mom, false, j_decay );
+  SftMom Phases( input.param.mom2_max, SnkMom, false, j_decay );
 
   //#################################################################################//
   // Construct File Names                                                            //
@@ -487,56 +489,39 @@ int main( int argc, char** argv )
 
   int NQ = Phases.numMom();
 
-  multi1d< char* > UBBFileNames( NQ );
-  multi1d< char* > DBBFileNames( NQ );
+  multi2d< string > Files( NF, NQ );
 
-  const int UBBFileNameLength = strlen( UBBFileNamePattern ) + 3 * 3 + 1;
-  const int DBBFileNameLength = strlen( DBBFileNamePattern ) + 3 * 3 + 1;
-
-  for( int q = 0; q < NQ; q ++ )
+  for(int loop = 0; loop < NF; ++loop)
   {
-    UBBFileNames[ q ] = (char*) malloc( UBBFileNameLength * sizeof( char ) );
-    DBBFileNames[ q ] = (char*) malloc( DBBFileNameLength * sizeof( char ) );
-    assert( UBBFileNames[ q ] != NULL );
-    assert( DBBFileNames[ q ] != NULL );
+    const int BBFileNameLength = input.bb.BkwdProps[loop].BBFileNamePattern.length() + 3 * 3 + 1;
 
-    multi1d< int > Q = Phases.numToMom( q );
-
-    char XSign = '+';
-    char YSign = '+';
-    char ZSign = '+';
-
-    if( Q[0] < 0 )
+    for( int q = 0; q < NQ; q ++ )
     {
-      XSign = '-';
-    }
-    if( Q[1] < 0 )
-    {
-      YSign = '-';
-    }
-    if( Q[2] < 0 )
-    {
-      ZSign = '-';
-    }
+      multi1d< int > Q = Phases.numToMom( q );
 
-    sprintf( UBBFileNames[q], UBBFileNamePattern, ZSign, abs(Q[2]), YSign, abs(Q[1]), XSign, abs(Q[0]) );
-    sprintf( DBBFileNames[q], DBBFileNamePattern, ZSign, abs(Q[2]), YSign, abs(Q[1]), XSign, abs(Q[0]) );
-  }
+      char XSign = '+';
+      char YSign = '+';
+      char ZSign = '+';
 
-  multi2d< const char* > Files( NF, NQ );
+      if( Q[0] < 0 )
+      {
+	XSign = '-';
+      }
+      if( Q[1] < 0 )
+      {
+	YSign = '-';
+      }
+      if( Q[2] < 0 )
+      {
+	ZSign = '-';
+      }
 
-  for( int q = 0; q < NQ; q ++ )
-  {
-    f = 0;
-    if( HasU == 1 )
-    {
-      Files[ f ][ q ] = UBBFileNames[ q ];
-      f ++;
-    }
-    if( HasD == 1 )
-    {
-      Files[ f ][ q ] = DBBFileNames[ q ];
-      f ++;
+      char* bbf = new char[BBFileNameLength + 1];
+      sprintf( bbf, input.bb.BkwdProps[loop].BBFileNamePattern.c_str(), ZSign, abs(Q[2]), YSign, abs(Q[1]), XSign, abs(Q[0]) );
+
+      Files(loop,q) = bbf;
+
+      delete[] bbf;
     }
   }
 
@@ -545,31 +530,33 @@ int main( int argc, char** argv )
   //#################################################################################//
 
   Out << "calculating building blocks ..." << "\n";  Out.flush();
+  QDPIO::cout << "calculating building blocks ..." << endl;
 
   const signed short int T1 = 0;
-  const signed short int T2 = NT - 1;
+  const signed short int T2 = input.param.nrow[j_decay] - 1;
 
-  BuildingBlocks( *B, *F, *U, MaxNLinks, AllLinkPatterns, Phases, Files, T1, T2 );
+  BuildingBlocks( B, F, U, GammaInsertions,
+		  input.param.links_max, AllLinkPatterns, Phases, Files, T1, T2 );
 
   Out << "finished calculating building blocks" << "\n";  Out.flush();
+  QDPIO::cout << "finished calculating building blocks" << endl;
 
   //#################################################################################//
   // Close QDP                                                                       //
   //#################################################################################//
 
-  delete B;
-  delete F;
-  delete U;
+  XmlIn.close();
 
-  pop(Xml);
-  Xml.close();
+  pop(XmlOut);   // ExampleBuildingBlocks
+  XmlOut.close();
 
   Out << "\n" << "FINISHED" << "\n" << "\n";
   Out.close();
 
   END_CODE();
 
-  QDP_finalize();
+  // Time to bolt
+  Chroma::finalize();
 
   exit( 0 );
 }
