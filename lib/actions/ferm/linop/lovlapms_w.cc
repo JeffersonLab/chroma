@@ -1,4 +1,4 @@
-// $Id: lovlapms_w.cc,v 1.14 2004-05-03 18:03:43 bjoo Exp $
+// $Id: lovlapms_w.cc,v 1.15 2004-05-11 13:29:29 bjoo Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -65,22 +65,36 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
   // chi  +=  func(lambda) * EigVec * <EigVec, psi>  
   // Usually "func(.)" is sgn(.); it is precomputed in EigValFunc. 
   // for all the eigenvalues
+  //
+  //  Also we must bear in mind that if we want the dagger of the 
+  // operator we must use gamma_5 psi instead of psi
+  //
+  // at this stage tmp1 holds either psi or gamma_5 psi as required
+  // so we must project from tmp1
+
   if (NEig > 0)
   {
     Complex cconsts;
+    LatticeFermion tmp3 = tmp1;
 
     for(int i = 0; i < NEig; ++i)
     {
-      cconsts = innerProduct(EigVec[i], tmp1);
+
+      // BUG Should this not be innerProduct(EigVec[i], psi) ???
+      //                     or innerProduct(EigVec[i], g5 psi) ????
+
+      cconsts = innerProduct(EigVec[i], tmp3);
       tmp1 -= EigVec[i] * cconsts;
 
       cconsts *= EigValFunc[i];
       chi += EigVec[i] * cconsts;
     }
+
+    // tmp3 should go out of scope here and be freed.
   }
 
-  // tmp1 <- H * Projected psi 
-  //      <- gamma_5 * M * psi 
+  // tmp1 <- H * Projected tmp_1, where tmp1 = psi or gamma_5 psi as needed
+  //      <- gamma_5 * M * tmp1
   (*M)(tmp2, tmp1, PLUS);
   tmp1 = Gamma(G5) * tmp2;
   
@@ -97,7 +111,11 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
 
 
   // *******************************************************************
-  // Solve  (MdagM + rootQ_n) chi_n = H * tmp1
+  // Solve  (MdagM + rootQ_n) chi_n = tmp1 where
+  //
+  // tmp1 = H psi or H_gamma_5 psi
+  //
+
   LatticeFermion Ap;
   LatticeFermion r;
   multi1d<LatticeFermion> p(numroot);

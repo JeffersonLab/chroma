@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev4d_fermact_w.h,v 1.22 2004-05-03 11:21:43 bjoo Exp $
+// $Id: zolotarev4d_fermact_w.h,v 1.23 2004-05-11 13:29:28 bjoo Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -143,6 +143,9 @@ public:
   //  to a vector of known chirality. Chirality is passed in
   const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state, const Chirality& chirality) const;
 
+
+  //! Produce a linear operator that gives back gamma_5 eps(H)
+  const LinearOperator<LatticeFermion>* lgamma5epsH(Handle<const ConnectState> state) const;
 
   // Special qprop for now
   /*

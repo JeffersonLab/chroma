@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lg5eps_w.h,v 1.1 2004-05-10 22:02:26 bjoo Exp $
+// $Id: lg5eps_w.h,v 1.2 2004-05-11 13:29:28 bjoo Exp $
 /*! \file
  *  \brief Internal pole epsilon operator. Just the unitary part
  *
@@ -87,8 +87,8 @@ private:
   const Real constP;
   const multi1d<Real> resP;
   const multi1d<Real> rootQ;
-  const multi1d<LatticeFermion>& EigVec;
-  const multi1d<Real>& EigValFunc;
+  const multi1d<LatticeFermion> EigVec;
+  const multi1d<Real> EigValFunc;
   int NEig;
   int MaxCG;
   const Real RsdCG;

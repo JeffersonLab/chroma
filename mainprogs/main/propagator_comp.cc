@@ -1,6 +1,9 @@
-// $Id: propagator_comp.cc,v 1.3 2004-04-28 14:04:17 bjoo Exp $
+// $Id: propagator_comp.cc,v 1.4 2004-05-11 13:29:29 bjoo Exp $
 // $Log: propagator_comp.cc,v $
-// Revision 1.3  2004-04-28 14:04:17  bjoo
+// Revision 1.4  2004-05-11 13:29:29  bjoo
+// Tested lg5eps_w.cc
+//
+// Revision 1.3  2004/04/28 14:04:17  bjoo
 // Fixed propagator_comp for new propagator structure. Propagator stuff appears to work. Yet to check seqsource
 //
 // Revision 1.2  2004/04/26 11:19:13  bjoo
@@ -305,7 +308,7 @@ int main(int argc, char **argv)
 
   // Instantiate XML writer for XMLDAT
   XMLFileWriter xml_out("XMLDAT");
-  push(xml_out, "multiPropagatorComp");
+  push(xml_out, "propagatorComp");
 
   proginfo(xml_out);    // Print out basic program info
 

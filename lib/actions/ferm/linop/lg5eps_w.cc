@@ -1,4 +1,4 @@
-// $Id: lg5eps_w.cc,v 1.1 2004-05-10 22:02:25 bjoo Exp $
+// $Id: lg5eps_w.cc,v 1.2 2004-05-11 13:29:28 bjoo Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -8,25 +8,18 @@
 #include "meas/eig/gramschm.h"
 
 using namespace QDP;
-
-//! Apply the GW operator onto a source vector
-/*! \ingroup linop
+//! Internal Overlap-pole operator
+/*!
+ * \ingroup linop
  *
- * This routine applies the 4D GW operator onto a source
- * vector. The coeffiecients for the approximation get 
- * wired into the class by the constructor and should
- * come fromt fermion action.
+ * This routine is specific to Wilson fermions!
  *
- * The operator applied is:
- *       D       =    (1/2)[  (1+m) + (1-m)gamma_5 sgn(H_w) ] psi
- * or    D^{dag} =    (1/2)[  (1+m) + (1-m) sgn(H_w) gamma_5 psi
- * 
- * 
- * \param chi     result vector                              (Write)  
- * \param psi 	  source vector         	             (Read)
- * \param isign   Hermitian Conjugation Flag 
- *                ( PLUS = no dagger| MINUS = dagger )       (Read)
+ *   Chi  =   gamma_5 * B . Psi 
+ *  where  B  is the pole approx. to eps(H(m)) 
+ *
+ *  We note that gamma_5*B is unitary.
  */
+
 void lg5eps::operator() (LatticeFermion& chi, const LatticeFermion& psi, 
 			   enum PlusMinus isign) const
 {
@@ -37,19 +30,45 @@ void lg5eps::operator() (LatticeFermion& chi, const LatticeFermion& psi,
   int G5 = Ns*Ns - 1;
   
   chi = zero;
-  tmp1 = psi;
+
+
+  switch (isign)
+  {
+  case PLUS:
+    //  Non-Dagger: psi is source and tmp1 
+    //  chi  :=  gamma_5 * (gamma_5 * mass + sgn(H)) * Psi  
+    tmp1 = psi;
+    break;
+
+  case MINUS:
+    // Dagger: apply gamma_5 to source psi to make tmp1 
+    //  chi  :=  (mass + sgn(H) * gamma_5) * Psi  
+    tmp1 = Gamma(G5) * psi;
+    break;
+
+  default:
+    QDP_error_exit("unknown isign value", isign);
+  }
+
+
 
   // Project out eigenvectors of source if desired 
+  //
+  // psi_proj = tmp1 = (1-P) psi
+  //
+  // with P = sum_i e_i > < e_i | psi >
+  //
+  // so that psi_proj = 
   // chi  +=  func(lambda) * EigVec * <EigVec, psi>  
   // Usually "func(.)" is sgn(.); it is precomputed in EigValFunc. 
   // for all the eigenvalues
   if (NEig > 0)
   {
     Complex cconsts;
-
+    LatticeFermion tmp3 = tmp1;
     for(int i = 0; i < NEig; ++i)
     {
-      cconsts = innerProduct(EigVec[i], psi);
+      cconsts = innerProduct(EigVec[i], tmp3);
       tmp1 -= EigVec[i] * cconsts;
 
       cconsts *= EigValFunc[i];
@@ -62,8 +81,6 @@ void lg5eps::operator() (LatticeFermion& chi, const LatticeFermion& psi,
   (*M)(tmp2, tmp1, PLUS);
   tmp1 = Gamma(G5) * tmp2;
   
- 
-
   Double c = norm2(tmp1);
 
   /* If exactly 0 norm, then solution must be 0 (for pos. def. operator) */
@@ -73,11 +90,13 @@ void lg5eps::operator() (LatticeFermion& chi, const LatticeFermion& psi,
     return;
   }
 
+  // Multiply in P(0) -- this may well be 0 for type 0 rational approximations
+  chi +=  constP*tmp1;
 
   // *******************************************************************
-  // Solve  (MdagM + rootQ_n) chi_n = H * tmp1
+  // Solve  (MdagM + rootQ_n) chi_n = tmp1
   LatticeFermion Ap;
-  LatticeFermion r;
+  LatticeFermion r; 
   multi1d<LatticeFermion> p(numroot);
 
   Real a;              // Alpha for unshifted (isz) system
@@ -114,8 +133,6 @@ void lg5eps::operator() (LatticeFermion& chi, const LatticeFermion& psi,
   int isz = numroot-1;             // isz identifies system with smalles shift
   
 
-  // Multiply in P(0) -- this may well be 0 for type 0 rational approximations
-  chi += tmp1 * constP;
 
 
   // r[0] := p[0] := tmp1 
@@ -378,6 +395,13 @@ void lg5eps::operator() (LatticeFermion& chi, const LatticeFermion& psi,
     }
     
   }
+
+
+  if(isign == PLUS) {
+    tmp1 = chi;
+    chi = Gamma(G5)*tmp1;
+  }
+
 
   QDPIO::cout << "Overlap Inner Solve (lg5eps): " << k << " iterations " << endl;
   // End of MULTI SHIFTERY 

@@ -1,4 +1,4 @@
-// $Id: t_ovlap_bj.cc,v 1.24 2004-04-16 14:58:30 bjoo Exp $
+// $Id: t_ovlap_bj.cc,v 1.25 2004-05-11 13:29:29 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -833,9 +833,12 @@ int main(int argc, char **argv)
   
   // Do this. The function came for free as it was written for
   // all wilson type fermacts.
+  multi1d<Real> rsd_cg_array(shifts.size());
+  rsd_cg_array = params.rsd_cg;
+
   multiQuarkProp4(multi_q_sol, xml_out, multi_q_src, S_multi, 
 		  connect_state, CG_INVERTER,
-		  shifts, params.rsd_cg, params.max_cg,  qprop_ncount);
+		  shifts, rsd_cg_array, params.max_cg,  qprop_ncount);
 
 
   // Get the pion

@@ -1,4 +1,4 @@
-// $Id: lovddag_w.cc,v 1.7 2004-04-27 09:34:36 bjoo Exp $
+// $Id: lovddag_w.cc,v 1.8 2004-05-11 13:29:28 bjoo Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -43,12 +43,13 @@ void lovddag::operator() (LatticeFermion& chi, const LatticeFermion& psi,
 
     for(int i = 0; i < NEig; ++i)
     {
-      cconsts = innerProduct(EigVec[i], psi_proj);
+      
+      cconsts = innerProduct(EigVec[i], psi);
       
       psi_proj -= cconsts * EigVec[i];
 
    
-      // Construct  tmp1 = (gamma_5 + ichiral) * EigVec 
+      // Construct  tmp1 = (gamma_5 +/- 1) * EigVec 
       tmp1 = Gamma(G5)*EigVec[i];
 
       switch (ichiral) {
@@ -95,7 +96,7 @@ void lovddag::operator() (LatticeFermion& chi, const LatticeFermion& psi,
   }
 
   
-  /*  chi  +=  constP*(gamma_5 + ichiral) * H * Psi  */
+  /*  chi  +=  constP*(gamma_5 +/-1) * H * Psi  */
   switch (ichiral) {
   case CH_PLUS:
     ltmp += tmp1;

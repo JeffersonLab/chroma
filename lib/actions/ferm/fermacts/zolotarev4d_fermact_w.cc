@@ -1,4 +1,4 @@
-// $Id: zolotarev4d_fermact_w.cc,v 1.19 2004-05-03 11:21:43 bjoo Exp $
+// $Id: zolotarev4d_fermact_w.cc,v 1.20 2004-05-11 13:29:28 bjoo Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -15,6 +15,7 @@
 #include "actions/ferm/linop/lovddag_w.h"
 #include "actions/ferm/linop/lovddag_double_pass_w.h"
 #include "actions/ferm/linop/lmdagm.h"
+#include "actions/ferm/linop/lg5eps_w.h"
 #include "meas/eig/ischiral_w.h"
 
 using namespace std;
@@ -331,6 +332,59 @@ Zolotarev4DFermAct::linOp(Handle<const ConnectState> state_) const
     QDP_abort(1);
   }
   
+  END_CODE("Zolotarev4DLinOp::create");
+}
+
+//! Produce a linear operator for gamma5 epsilon(H) psi
+/*!
+ * The operator acts on the entire lattice
+ *
+ * \param state_	 gauge field state  	 (Read)
+ */
+const LinearOperator<LatticeFermion>* 
+Zolotarev4DFermAct::lgamma5epsH(Handle<const ConnectState> state_) const
+{
+  START_CODE("Zolotarev4DLinOp::lgamma5epsH");
+
+  const OverlapConnectState<LatticeFermion>& state = dynamic_cast<const OverlapConnectState<LatticeFermion>&>(*state_);
+
+  if (state.getEigVec().size() != state.getEigVal().size())
+    QDP_error_exit("Zolotarev4DLinOp: inconsistent sizes of eigenvectors and values");
+
+  int NEigVal = state.getEigVal().size();
+
+  /* The actual number of eigenvectors to project out.
+     The highest of the valid low eigenmodes is not
+     projected out. So we will put NEig = NEigVal - 1 */  
+  int NEig;
+
+  /* The number of residuals and poles */
+  int numroot;
+
+  /* The roots, i.e., the shifts in the partial fraction expansion */
+  multi1d<Real> rootQ;
+
+  /* The residuals in the partial fraction expansion */
+  multi1d<Real> resP;
+
+  /* This will be our alpha(0) which can be 0 depending on type */
+  /* an even- or oddness of RatPolyDeg*/
+  Real coeffP; 
+
+  /* Array of values of the sign function evaluated on the eigenvectors of H */
+  multi1d<Real> EigValFunc(NEigVal);
+
+  // Common initialization
+  init(numroot, coeffP, resP, rootQ, NEig, EigValFunc, state);
+
+  
+  /* Finally construct and pack the operator */
+  /* This is the operator of the form (1/2)*[(1+mu) + (1-mu)*gamma_5*eps] */
+  return new lg5eps(*Mact, state_,
+			numroot, coeffP, resP, rootQ, 
+			NEig, EigValFunc, state.getEigVec(),
+			MaxCGinner, RsdCGinner, ReorthFreqInner);
+    
   END_CODE("Zolotarev4DLinOp::create");
 }
 
