@@ -1,11 +1,14 @@
 // -*- C++ -*-
-// $Id: gaugebc.h,v 1.4 2004-03-29 21:31:15 edwards Exp $
+// $Id: gaugebc.h,v 1.5 2004-08-19 16:32:03 bjoo Exp $
 /*! @file
  * @brief Gauge boundary conditions
  */
 
 #ifndef __gaugebc_h__
 #define __gaugebc_h__
+
+#include "chromabase.h"
+#include "io/gaugebc_io.h"
 
 using namespace QDP;
 
@@ -40,15 +43,6 @@ public:
 };
 
 
-//! Schroedinger Functional type Boundary Conditions
-enum SchrFunType_t {
-  SF_NONE = 0, 
-  SF_TRIVIAL = 1,
-  SF_NONPERT = 2,
-  SF_COUPLING = 3,
-  SF_CHROMOMAG = 4,
-  SF_DIRICHLET = 10,
-};
 
 
 
@@ -88,7 +82,19 @@ public:
    * \param SchrFun_      type of Schroedinger BC
    * \param SchrPhiMult_  factor to rescale fixed field
    */
-  Schr1LinkGaugeBC(SchrFunType_t SchrFun_, const Real& SchrPhiMult_);
+  Schr1LinkGaugeBC(const SchrFunType_t SchrFun_, const Real& SchrPhiMult_)
+  {
+    initFunc(SchrFun_, SchrPhiMult_);
+  }
+
+
+
+  //! Initialise from params struct
+  Schr1LinkGaugeBC(const GaugeBCSchrParams& params) 
+  {
+    initFunc(params.getSchrFun(), params.getSchrPhiMult());
+  }
+
 
   //! Copy constructor
   Schr1LinkGaugeBC(const Schr1LinkGaugeBC& a) : SchrFun(a.SchrFun), 
@@ -136,6 +142,7 @@ public:
 private:
   // Hide default constuctor
   Schr1LinkGaugeBC() {}
+  void initFunc(const SchrFunType_t SchrFun_, const Real& SchrPhiMult_)  ;
 
 private:
   SchrFunType_t SchrFun;
@@ -159,7 +166,16 @@ public:
    * \param SchrFun_      type of Schroedinger BC
    * \param SchrPhiMult_  factor to rescale fixed field
    */
-  Schr2LinkGaugeBC(SchrFunType_t SchrFun_, const Real& SchrPhiMult_);
+  Schr2LinkGaugeBC(const SchrFunType_t SchrFun_, const Real& SchrPhiMult_)
+  {
+    initFunc(SchrFun_, SchrPhiMult_);
+  }
+
+  //! Initialise from params struct
+  Schr2LinkGaugeBC(const GaugeBCSchrParams& params)
+  {
+    initFunc(params.getSchrFun(), params.getSchrPhiMult());
+  }
 
   //! Copy constructor
   Schr2LinkGaugeBC(const Schr2LinkGaugeBC& a) : SchrFun(a.SchrFun), 
@@ -208,6 +224,7 @@ private:
   // Hide default constuctor
   Schr2LinkGaugeBC() {}
 
+  void initFunc(const SchrFunType_t SchrFun_, const Real& SchrPhiMult_);
 private:
   SchrFunType_t SchrFun;
   int decay_dir;
@@ -279,6 +296,9 @@ public:
    * NOTE: the type of boundary can be generalized
    */
   SimpleGaugeBC(const multi1d<Complex>& boundary_) : boundary(boundary_) {}
+
+  //! From param struct 
+  SimpleGaugeBC(const GaugeBCSimpleParams& p) : boundary(p.getBoundary()) {}
 
   //! Copy constructor
   SimpleGaugeBC(const SimpleGaugeBC& a) : boundary(a.boundary) {}

@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.158 2004-08-10 13:27:37 bjoo Exp $
+# $Id: Makefile.am,v 1.159 2004-08-19 16:32:03 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -87,6 +87,7 @@ nobase_include_HEADERS = \
 	io/gauge_io.h io/kyugauge_io.h  \
         io/milc_io.h io/param_io.h io/qprop_io.h io/readmilc.h \
 	io/readszin.h io/szin_io.h io/writemilc.h io/writeszin.h \
+	io/bc_io.h io/gaugebc_io.h  io/gaugeact_io.h io/wilson_gaugeact_io.h \
 	meas/eig/eig.h meas/eig/gramschm.h meas/eig/gramschm_array.h \
 	meas/eig/ritz.h meas/eig/ritz_array.h meas/eig/sn_jacob.h \
 	meas/eig/sn_jacob_array.h \
@@ -110,6 +111,7 @@ nobase_include_HEADERS = \
 	util/gauge/expm12.h util/gauge/expmat.h util/gauge/expsu3.h \
 	util/gauge/gauge.h \
 	util/gauge/gauge_startup.h \
+	util/gauge/gaugebc_utils.h \
 	util/gauge/hotst.h util/gauge/phfctr.h util/gauge/reunit.h \
 	util/gauge/rgauge.h util/gauge/su2extract.h util/gauge/su3proj.h \
 	util/gauge/sunfill.h util/gauge/sun_proj.h util/gauge/taproj.h \
@@ -264,7 +266,8 @@ lib_LIBRARIES = libchroma.a
 #
 # Fermion independent sources
 #
-libchroma_a_SOURCES = gauge_startup.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
+libchroma_a_SOURCES = gauge_startup.cc gaugebc_utils.cc rgauge.cc taproj.cc \
+	       hotst.cc expm12.cc \
                expmat.cc expsu3.cc mesplq.cc polylp.cc reunit.cc unit_check.cc \
                sftmom.cc srcfil.cc \
                szin_io.cc readszin.cc writeszin.cc su3proj.cc sun_proj.cc \
@@ -285,7 +288,8 @@ libchroma_a_SOURCES = gauge_startup.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
 	       invbicgstab.cc invbicgstab_array.cc inv_rel_gmresr_sumr.cc \
 	       inv_rel_gmresr_cg.cc inv_gmresr_cg_array.cc \
 	       inv_minres_array.cc wilson_gaugeact.cc \
-               su3over.cc su3hb.cc
+               su3over.cc su3hb.cc \
+	       bc_io.cc gaugebc_io.cc gaugeact_io.cc wilson_gaugeact_io.cc
 
 #
 # Object files to add if building the Wilson Builds...

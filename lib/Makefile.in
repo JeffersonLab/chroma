@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.221 2004-08-10 13:27:37 bjoo Exp $
+# $Id: Makefile.in,v 1.222 2004-08-19 16:32:03 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -334,6 +334,7 @@ nobase_include_HEADERS = \
 	io/gauge_io.h io/kyugauge_io.h  \
         io/milc_io.h io/param_io.h io/qprop_io.h io/readmilc.h \
 	io/readszin.h io/szin_io.h io/writemilc.h io/writeszin.h \
+	io/bc_io.h io/gaugebc_io.h  io/gaugeact_io.h io/wilson_gaugeact_io.h \
 	meas/eig/eig.h meas/eig/gramschm.h meas/eig/gramschm_array.h \
 	meas/eig/ritz.h meas/eig/ritz_array.h meas/eig/sn_jacob.h \
 	meas/eig/sn_jacob_array.h \
@@ -357,6 +358,7 @@ nobase_include_HEADERS = \
 	util/gauge/expm12.h util/gauge/expmat.h util/gauge/expsu3.h \
 	util/gauge/gauge.h \
 	util/gauge/gauge_startup.h \
+	util/gauge/gaugebc_utils.h \
 	util/gauge/hotst.h util/gauge/phfctr.h util/gauge/reunit.h \
 	util/gauge/rgauge.h util/gauge/su2extract.h util/gauge/su3proj.h \
 	util/gauge/sunfill.h util/gauge/sun_proj.h util/gauge/taproj.h \
@@ -401,7 +403,8 @@ lib_LIBRARIES = libchroma.a
 #
 # Fermion independent sources
 #
-libchroma_a_SOURCES = gauge_startup.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
+libchroma_a_SOURCES = gauge_startup.cc gaugebc_utils.cc rgauge.cc taproj.cc \
+	       hotst.cc expm12.cc \
                expmat.cc expsu3.cc mesplq.cc polylp.cc reunit.cc unit_check.cc \
                sftmom.cc srcfil.cc \
                szin_io.cc readszin.cc writeszin.cc su3proj.cc sun_proj.cc \
@@ -422,7 +425,8 @@ libchroma_a_SOURCES = gauge_startup.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
 	       invbicgstab.cc invbicgstab_array.cc inv_rel_gmresr_sumr.cc \
 	       inv_rel_gmresr_cg.cc inv_gmresr_cg_array.cc \
 	       inv_minres_array.cc wilson_gaugeact.cc \
-               su3over.cc su3hb.cc\
+               su3over.cc su3hb.cc \
+	       bc_io.cc gaugebc_io.cc gaugeact_io.cc wilson_gaugeact_io.cc\
 $(am__append_5) $(am__append_7) $(am__append_9) $(am__append_11) $(am__append_12)
 subdir = lib
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
@@ -432,25 +436,26 @@ LIBRARIES = $(lib_LIBRARIES)
 
 libchroma_a_AR = $(AR) cru
 libchroma_a_LIBADD =
-am__libchroma_a_SOURCES_DIST = gauge_startup.cc rgauge.cc taproj.cc \
-	hotst.cc expm12.cc expmat.cc expsu3.cc mesplq.cc polylp.cc \
-	reunit.cc unit_check.cc sftmom.cc srcfil.cc szin_io.cc \
-	readszin.cc writeszin.cc su3proj.cc sun_proj.cc gaus_smear.cc \
-	hyp_smear.cc ape_smear.cc fuzz_smear.cc klein_gord.cc \
-	laplacian.cc displacement.cc sink_smear2.cc su2extract.cc \
-	sunfill.cc invcg1.cc inv_rel_cg1.cc invcg2.cc inv_rel_cg2.cc \
-	invcg1_array.cc invcg2_array.cc invcg2_timing_hacks.cc \
-	minvcg.cc minv_rel_cg.cc qprop_io.cc eigen_io.cc stoch_var.cc \
-	z2_src.cc gauge_io.cc milc_io.cc readmilc.cc writemilc.cc \
-	axgauge.cc coulgauge.cc grelax.cc polar_dec.cc rot_colvec.cc \
-	transf.cc param_io.cc fermact_paramio.cc gramschm.cc \
-	gramschm_array.cc ritz.cc ritz_array.cc sn_jacob.cc \
-	sn_jacob_array.cc eig_spec.cc eig_spec_array.cc proginfo.cc \
-	printgeom.cc fuzwilp.cc wilslp.cc invsumr.cc minvsumr.cc \
-	inv_rel_sumr.cc minv_rel_sumr.cc invbicgstab.cc \
-	invbicgstab_array.cc inv_rel_gmresr_sumr.cc \
+am__libchroma_a_SOURCES_DIST = gauge_startup.cc gaugebc_utils.cc \
+	rgauge.cc taproj.cc hotst.cc expm12.cc expmat.cc expsu3.cc \
+	mesplq.cc polylp.cc reunit.cc unit_check.cc sftmom.cc srcfil.cc \
+	szin_io.cc readszin.cc writeszin.cc su3proj.cc sun_proj.cc \
+	gaus_smear.cc hyp_smear.cc ape_smear.cc fuzz_smear.cc \
+	klein_gord.cc laplacian.cc displacement.cc sink_smear2.cc \
+	su2extract.cc sunfill.cc invcg1.cc inv_rel_cg1.cc invcg2.cc \
+	inv_rel_cg2.cc invcg1_array.cc invcg2_array.cc \
+	invcg2_timing_hacks.cc minvcg.cc minv_rel_cg.cc qprop_io.cc \
+	eigen_io.cc stoch_var.cc z2_src.cc gauge_io.cc milc_io.cc \
+	readmilc.cc writemilc.cc axgauge.cc coulgauge.cc grelax.cc \
+	polar_dec.cc rot_colvec.cc transf.cc param_io.cc \
+	fermact_paramio.cc gramschm.cc gramschm_array.cc ritz.cc \
+	ritz_array.cc sn_jacob.cc sn_jacob_array.cc eig_spec.cc \
+	eig_spec_array.cc proginfo.cc printgeom.cc fuzwilp.cc wilslp.cc \
+	invsumr.cc minvsumr.cc inv_rel_sumr.cc minv_rel_sumr.cc \
+	invbicgstab.cc invbicgstab_array.cc inv_rel_gmresr_sumr.cc \
 	inv_rel_gmresr_cg.cc inv_gmresr_cg_array.cc inv_minres_array.cc \
-	wilson_gaugeact.cc su3over.cc su3hb.cc baryon_w.cc barhqlq_w.cc \
+	wilson_gaugeact.cc su3over.cc su3hb.cc bc_io.cc gaugebc_io.cc \
+	gaugeact_io.cc wilson_gaugeact_io.cc baryon_w.cc barhqlq_w.cc \
 	mesons_w.cc hybmeson_w.cc loops_w.cc tdiractodr.cc diractodr.cc \
 	paulitodr.cc gammasgn_w.cc curcor2_w.cc lwldslash_w.cc \
 	formfac_w.cc mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
@@ -588,15 +593,15 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc rgauge.cc taproj.cc \
 @BUILD_STAGGERED_LIBS_TRUE@	asqtad_mdagm_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	staggered_qprop.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	stag_phases_s.$(OBJEXT)
-am_libchroma_a_OBJECTS = gauge_startup.$(OBJEXT) rgauge.$(OBJEXT) \
-	taproj.$(OBJEXT) hotst.$(OBJEXT) expm12.$(OBJEXT) \
-	expmat.$(OBJEXT) expsu3.$(OBJEXT) mesplq.$(OBJEXT) \
-	polylp.$(OBJEXT) reunit.$(OBJEXT) unit_check.$(OBJEXT) \
-	sftmom.$(OBJEXT) srcfil.$(OBJEXT) szin_io.$(OBJEXT) \
-	readszin.$(OBJEXT) writeszin.$(OBJEXT) su3proj.$(OBJEXT) \
-	sun_proj.$(OBJEXT) gaus_smear.$(OBJEXT) hyp_smear.$(OBJEXT) \
-	ape_smear.$(OBJEXT) fuzz_smear.$(OBJEXT) klein_gord.$(OBJEXT) \
-	laplacian.$(OBJEXT) displacement.$(OBJEXT) \
+am_libchroma_a_OBJECTS = gauge_startup.$(OBJEXT) gaugebc_utils.$(OBJEXT) \
+	rgauge.$(OBJEXT) taproj.$(OBJEXT) hotst.$(OBJEXT) \
+	expm12.$(OBJEXT) expmat.$(OBJEXT) expsu3.$(OBJEXT) \
+	mesplq.$(OBJEXT) polylp.$(OBJEXT) reunit.$(OBJEXT) \
+	unit_check.$(OBJEXT) sftmom.$(OBJEXT) srcfil.$(OBJEXT) \
+	szin_io.$(OBJEXT) readszin.$(OBJEXT) writeszin.$(OBJEXT) \
+	su3proj.$(OBJEXT) sun_proj.$(OBJEXT) gaus_smear.$(OBJEXT) \
+	hyp_smear.$(OBJEXT) ape_smear.$(OBJEXT) fuzz_smear.$(OBJEXT) \
+	klein_gord.$(OBJEXT) laplacian.$(OBJEXT) displacement.$(OBJEXT) \
 	sink_smear2.$(OBJEXT) su2extract.$(OBJEXT) sunfill.$(OBJEXT) \
 	invcg1.$(OBJEXT) inv_rel_cg1.$(OBJEXT) invcg2.$(OBJEXT) \
 	inv_rel_cg2.$(OBJEXT) invcg1_array.$(OBJEXT) \
@@ -617,9 +622,10 @@ am_libchroma_a_OBJECTS = gauge_startup.$(OBJEXT) rgauge.$(OBJEXT) \
 	invbicgstab_array.$(OBJEXT) inv_rel_gmresr_sumr.$(OBJEXT) \
 	inv_rel_gmresr_cg.$(OBJEXT) inv_gmresr_cg_array.$(OBJEXT) \
 	inv_minres_array.$(OBJEXT) wilson_gaugeact.$(OBJEXT) \
-	su3over.$(OBJEXT) su3hb.$(OBJEXT) $(am__objects_1) \
-	$(am__objects_2) $(am__objects_3) $(am__objects_4) \
-	$(am__objects_5)
+	su3over.$(OBJEXT) su3hb.$(OBJEXT) bc_io.$(OBJEXT) \
+	gaugebc_io.$(OBJEXT) gaugeact_io.$(OBJEXT) \
+	wilson_gaugeact_io.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
+	$(am__objects_3) $(am__objects_4) $(am__objects_5)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I.
@@ -634,9 +640,9 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/axgauge.Po ./$(DEPDIR)/barcomp_io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/barcomp_w.Po ./$(DEPDIR)/barhqlq_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/barseqsrc_w.Po ./$(DEPDIR)/baryon_s.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/baryon_w.Po ./$(DEPDIR)/coulgauge.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/curcor2_w.Po ./$(DEPDIR)/d_src_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/diractodr.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/baryon_w.Po ./$(DEPDIR)/bc_io.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/coulgauge.Po ./$(DEPDIR)/curcor2_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/d_src_w.Po ./$(DEPDIR)/diractodr.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/displacement.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/dwf_quarkprop4_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/dwffld_w.Po ./$(DEPDIR)/eig_spec.Po \
@@ -653,6 +659,9 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/fuzz_smear.Po ./$(DEPDIR)/gammasgn_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/gauge_io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/gauge_startup.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/gaugeact_io.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/gaugebc_io.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/gaugebc_utils.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/gaus_smear.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/global_metropolis_accrej.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/gramschm.Po \
@@ -755,6 +764,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/wallrhoff_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/wallrhopiff_w.Po ./$(DEPDIR)/wilslp.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/wilson_gaugeact.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/wilson_gaugeact_io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/writemilc.Po ./$(DEPDIR)/writeszin.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/writeszinqprop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/z2_src.Po \
@@ -862,6 +872,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/barseqsrc_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/baryon_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/baryon_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bc_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/coulgauge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/curcor2_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/d_src_w.Po@am__quote@
@@ -887,6 +898,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gammasgn_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gauge_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gauge_startup.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gaugeact_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gaugebc_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gaugebc_utils.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gaus_smear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/global_metropolis_accrej.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gramschm.Po@am__quote@
@@ -1018,6 +1032,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wallrhopiff_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wilslp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wilson_gaugeact.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wilson_gaugeact_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writemilc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writeszin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writeszinqprop_w.Po@am__quote@

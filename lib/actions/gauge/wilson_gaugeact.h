@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wilson_gaugeact.h,v 1.4 2004-08-10 13:27:37 bjoo Exp $
+// $Id: wilson_gaugeact.h,v 1.5 2004-08-19 16:32:04 bjoo Exp $
 /*! \file
  *  \brief Wilson gauge action
  */
@@ -8,6 +8,9 @@
 #define __wilson_gaugeact_h__
 
 #include "gaugeact.h"
+#include "io/gaugebc_io.h"
+#include "io/wilson_gaugeact_io.h"
+#include "util/gauge/gaugebc_utils.h"
 
 using namespace QDP;
 
@@ -24,6 +27,12 @@ public:
   WilsonGaugeAct(Handle< GaugeBC > gbc_, 
 		 const Real& beta_) : 
     gbc(gbc_), beta(beta_) {}
+
+  //! Read beta from a param struct
+  WilsonGaugeAct(const GaugeBCParamsBase& gbc_, 
+		 const WilsonGaugeActParams& p) : 
+    gbc(getGaugeBCFromParams(gbc_)), beta(p.getBeta()) {}
+
 
   //! Constructor with different MD beta
   WilsonGaugeAct(Handle< GaugeBC > gbc_,

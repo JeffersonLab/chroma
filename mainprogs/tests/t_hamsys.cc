@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
   QDP_initialize(&argc, &argv);
 
   // Setup a small lattice
-  const int nrow_arr[] = {2, 2, 2, 2};
+  const int nrow_arr[] = {4, 4, 4, 4};
   multi1d<int> nrow(Nd);
   nrow=nrow_arr;
   Layout::setLattSize(nrow);
@@ -29,13 +29,15 @@ int main(int argc, char *argv[])
 
     
   multi1d<LatticeColorMatrix> p(Nd);
- 
+
+#if 0 
   for(int mu = 0; mu < Nd; mu++) { 
     
     gaussian(p[mu]);
     taproj(p[mu]);
   
   }
+#endif 
 
   // Get Periodic Gauge Boundaries
   Handle<GaugeBC> gbc(new PeriodicGaugeBC);
@@ -58,7 +60,7 @@ int main(int argc, char *argv[])
   PureGaugeSympUpdates leaps(H_MD);
 
   // Test the integrator -- for energy conservation, and reversibility 
-
+#if 0
   XMLFileWriter lf_xml("./LEAPFROG_TESTS");
   push(lf_xml, "LeapFrogTests");
 
@@ -125,6 +127,7 @@ int main(int argc, char *argv[])
   }    
   pop(lf_xml);
   lf_xml.close();
+#endif 
   
   // Step Sizes
   Real tau = Real(1);
@@ -141,7 +144,7 @@ int main(int argc, char *argv[])
  
 
 
-  for(int i=0; i < 1000; i++) { 
+  for(int i=0; i < 100000; i++) { 
 
     // Do trajectory
     HMC(mc_state, true, monitorHMC);

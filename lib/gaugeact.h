@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gaugeact.h,v 1.4 2004-08-10 13:27:37 bjoo Exp $
+// $Id: gaugeact.h,v 1.5 2004-08-19 16:32:03 bjoo Exp $
 
 /*! @file
  * @brief Class structure for gauge actions
@@ -34,10 +34,10 @@ public:
     }
 
   //! Return the set on which the gauge action is defined
-  virtual const OrderedSet& getSet() const = 0;
+  virtual const OrderedSet& getSet(void) const = 0;
 
   //! Produce a gauge boundary condition object
-  virtual const GaugeBC& getGaugeBC() const = 0;
+  virtual const GaugeBC& getGaugeBC(void) const = 0;
 
   //! Compute staple
   /*! Default version. Derived class should override this if needed. */
