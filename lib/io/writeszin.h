@@ -1,4 +1,4 @@
-// $Id: writeszin.h,v 1.2 2003-10-08 04:37:50 edwards Exp $
+// $Id: writeszin.h,v 1.3 2003-10-08 16:01:37 edwards Exp $
 
 /*! \file
  *  \brief Write a SZIN configuration written at configuration version 7.
@@ -37,4 +37,21 @@ void writeSzin(XMLBufferWriter& xml, const multi1d<LatticeColorMatrix>& u, const
 
 void writeSzin(const SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u, const string& cfg_file);
 
+
+
+//! Write a truncated SZIN configuration file
+/*!
+ * \ingroup io
+ *
+ * \param header     structure holding config info ( Modify )
+ * \param u          gauge configuration ( Read )
+ * \param j_decay    direction which will be truncated ( Read )
+ * \param t_start    starting slice in j_decay direction ( Read )
+ * \param t_end      ending slice in j_decay direction ( Read )
+ * \param cfg_file   path ( Read )
+ */    
+
+void writeSzinTrunc(SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u, 
+		    int j_decay, int t_start, int t_end, 
+		    const string& cfg_file);
 #endif
