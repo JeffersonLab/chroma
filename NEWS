@@ -1,5 +1,10 @@
 01/10/2005 -- Robert Edwards
 
+	Version 1.15.2. Changed HMC monomial routines to more generic
+        method.
+
+01/10/2005 -- Robert Edwards
+
 	Version 1.15.1. Some more HMC suport. Small code cleanups
         to make code pass -Wall.
 
