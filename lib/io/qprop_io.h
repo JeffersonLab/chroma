@@ -1,4 +1,5 @@
-// $Id: qprop_io.h,v 1.15 2004-05-12 01:13:51 edwards Exp $
+// -*- C++ -*-
+// $Id: qprop_io.h,v 1.16 2004-05-14 00:21:17 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -168,6 +169,14 @@ struct SequentialProp_t
 };
 
 
+//! Mega structure holding QQQ props (except gauge)
+struct QQQBarcomp_t
+{
+  bool             Dirac_basis;  // spin component basis
+  multi1d<ForwardProp_t> forward_props;
+};
+
+
 
 //! Initialize header with default values
 void initHeader(PropSource_t& header);
@@ -183,6 +192,9 @@ void initHeader(ChromaProp_t& header);
 
 //! Initialize header with default values
 void initHeader(ChromaMultiProp_t& header);
+
+//! Initialize header with default values
+void initHeader(QQQBarcomp_t& header);
 
 //! Propagator source read
 void read(XMLReader& xml, const std::string& path, PropSource_t& header);
@@ -245,6 +257,13 @@ void read(XMLReader& xml, const std::string& path, SequentialProp_t& header);
 
 //! SequentialProp writer
 void write(XMLWriter& xml, const std::string& path, const SequentialProp_t& header);
+
+
+//! QQQBarcomp reader
+void read(XMLReader& xml, const std::string& path, QQQBarcomp_t& header);
+
+//! QQQBarcomp writer
+void write(XMLWriter& xml, const std::string& path, const QQQBarcomp_t& header);
 
 
 //! Write a Chroma propagator

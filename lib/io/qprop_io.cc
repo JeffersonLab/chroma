@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 1.19 2004-05-12 01:14:32 edwards Exp $
+// $Id: qprop_io.cc,v 1.20 2004-05-14 00:21:17 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -121,6 +121,14 @@ void initHeader(ChromaMultiProp_t& header)
 
   // initHeader(header.anisoParam);
   // initHeader(header.chiralParam);
+}
+
+
+// Initialize header with default values
+void initHeader(QQQBarcomp_t& header)
+{
+  header.Dirac_basis = true;
+  header.forward_props.resize(3);
 }
 
 
@@ -435,6 +443,51 @@ void read(XMLReader& xml, const string& path, SequentialProp_t& param)
 }
 
 
+//! QQQBarcomp header reader
+void read(XMLReader& xml, const string& path, QQQBarcomp_t& param)
+{
+  XMLReader paramtop(xml, path);
+
+  initHeader(param);
+
+  int version = 1;
+  if (paramtop.count("version") != 0)
+    read(paramtop, "version", version);
+
+  switch (version) 
+  {
+    /**************************************************************************/
+  case 1:
+    header.Dirac_basis = false;
+    header.forward_props.resize(3);
+    read(paramtop, "Propagator1", header.forward_props[0]);
+    read(paramtop, "Propagator2", header.forward_props[1]);
+    read(paramtop, "Propagator3", header.forward_props[2]);
+    break;
+
+    /**************************************************************************/
+  case 2:
+    read(paramtop, "Dirac_basis", header.Dirac_basis);
+    read(paramtop, "ForwardProps", header.forward_props);
+    break;
+
+  default:
+    /**************************************************************************/
+    QDPIO::cerr << "QQQBarcomp parameter version " << version 
+		<< " unsupported." << endl;
+    QDP_abort(1);
+  }
+
+  if (header.forward_props.size() != 3)
+  {
+    QDPIO::cerr << "QQQBarcomp: unexpected number of forward_props = " 
+		<< header.forward_props.size() << endl; 
+    QDP_abort(1);
+  }
+}
+
+
+
 
 //---------------------------------------------------------------------------
 // Source header writer
@@ -595,6 +648,8 @@ void write(XMLWriter& xml, const string& path, const ForwardProp_t& param)
   if( path != "." )
     push(xml, path);
 
+  int version = 1;
+  write(xml, "version", version);
   write(xml, "PropSink", param.sink_header);
   write(xml, "ForwardProp", param.prop_header);
   write(xml, "PropSource", param.source_header);
@@ -610,6 +665,8 @@ void write(XMLWriter& xml, const string& path, const SequentialSource_t& param)
   if( path != "." )
     push(xml, path);
 
+  int version = 1;
+  write(xml, "version", version);
   write(xml, "SeqSourceSinkSmear", param.sink_header);
   write(xml, "SeqSource", param.seqsource_header);
   write(xml, "ForwardProps", param.forward_props);
@@ -625,9 +682,27 @@ void write(XMLWriter& xml, const string& path, const SequentialProp_t& param)
   if( path != "." )
     push(xml, path);
 
+  int version = 1;
+  write(xml, "version", version);
   write(xml, "SeqProp", param.seqprop_header);
   write(xml, "SeqSourceSinkSmear", param.sink_header);
   write(xml, "SeqSource", param.seqsource_header);
+  write(xml, "ForwardProps", param.forward_props);
+
+  if( path != "." )
+    pop(xml);
+}
+
+
+//! QQQBarcomp header writer
+void write(XMLWriter& xml, const string& path, const QQQBarcomp_t& param)
+{
+  if( path != "." )
+    push(xml, path);
+
+  int version = 2;
+  write(xml, "version", version);
+  write(xml, "Dirac_basis", param.Dirac_basis);
   write(xml, "ForwardProps", param.forward_props);
 
   if( path != "." )
