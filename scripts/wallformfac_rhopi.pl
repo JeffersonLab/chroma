@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: wallformfac_rhopi.pl,v 1.5 2004-06-24 07:42:39 edwards Exp $
+# $Id: wallformfac_rhopi.pl,v 1.6 2004-06-24 07:50:58 edwards Exp $
 #
 # Usage
 #   wallformfac_rhopi.pl
@@ -331,12 +331,12 @@ foreach $h ('RHO_PI')
 		
 		if (! defined($rhopi_cnt{$h}{$k}{$j}{$qsq_int}))
 		{
-		  &ensbc("RHO_PI_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int} = foo0 * foo1");
+		  &ensbc("${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int} = foo0 * foo1");
 		  $rhopi_cnt{$h}{$k}{$j}{$qsq_int} = 1;
 		}
 		else
 		{
-		  &ensbc("RHO_PI_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int} = RHO_PI_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int} + foo0 * foo1");
+		  &ensbc("${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int} = ${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int} + foo0 * foo1");
 		  ++$rhopi_cnt{$h}{$k}{$j}{$qsq_int};
 		}
 
@@ -365,8 +365,7 @@ foreach $h (keys %rhopi_cnt)
 	if ($rhopi_cnt{$h}{$k}{$j}{$qsq_int} > 0)
 	{
 	  # Correct for double counting by multiplying by 2
-	  &ensbc("P_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int} = 2* P_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int} / $rhopi_cnt{$h}{$k}{$j}{$qsq_int}");
-	  &ensbc("N_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int} = 2* N_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int} / $rhopi_cnt{$h}{$k}{$j}{$qsq_int}");
+	  &ensbc("${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int} = 2* ${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int} / $rhopi_cnt{$h}{$k}{$j}{$qsq_int}");
 	}
       }
     }
@@ -378,8 +377,11 @@ foreach $h (keys %rhopi_cnt)
 #
 # Extract Z_V for analysis
 #
-print "Extract Z_V";
-&ensbc("Z_V = 1 / extract(${mes}_r_mu3_q0,$t_ins)");
+print "Will expect Z_V";
+die "Ooops, file Z_V not found" if (! -f "Z_V");
+
+#print "Extract Z_V";
+#&ensbc("Z_V = 1 / extract(${mes}_${cur}_r_${h}_s${k}_mu${j}_q0,$t_ins)");
 
 
 #
@@ -388,8 +390,8 @@ print "Extract Z_V";
 print "Printing pion electric form-factors";
 foreach $h (keys %rhopi_cnt)
 {
-  print "Printing baryon electric and magnetic form-factors";
-  foreach $nuc ("P", "N")
+  print "Printing rho->pi form-factors";
+  foreach $mes ("RHO_PI")
   {
     $t_ext = $t_snk - $t_src + 1;
     $t_ext_m1 = $t_ext - 1;
@@ -407,26 +409,35 @@ foreach $h (keys %rhopi_cnt)
 
 	    print "qsq_int=", $qsq_int;
 
-	    open(FOO,"> ${mes}_r_mu3_q${qsq_int}.ax");
+	    open(FOO,"> ${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int}.ax");
 	    print FOO '#e c \cr';
 	    printf FOO "! a = %s fm = %g GeV^{-1}\n", $a, $fmtoGeV/$a;
 	    printf FOO "! Qsq = %g GeV^{2}\n", $qsq;
 	    close(FOO);
 	    
-	    open(FOO,"> ${mes}_r_mu3_q${qsq_int}_norm.ax");
+	    open(FOO,"> ${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int}_norm.ax");
 	    print FOO '#e c \cr';
 	    printf FOO "! a = %s fm = %g GeV^{-1}\n", $a, $fmtoGeV/$a;
 	    printf FOO "! Qsq = %g GeV^{2}\n", $qsq;
 	    close(FOO);
 	    
-#    system("calc ${mes}_r_mu3_q${qsq_int} | head -$t_ext >> ${mes}_r_mu3_q${qsq_int}.ax");
-#    system("calcbc \"${mes}_r_mu3_q${qsq_int} / pion_r_mu3_q0\" | head -$t_ext_m1 > ${mes}_r_mu3_q${qsq_int}_norm.ax");
-	    system("calc ${mes}_r_mu3_q${qsq_int} >> ${mes}_r_mu3_q${qsq_int}.ax");
-	    system("calcbc \"${mes}_r_mu3_q${qsq_int} / ${mes}_r_mu3_q0\" > ${mes}_r_mu3_q${qsq_int}_norm.ax");
+	    system("calc ${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int} >> ${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int}.ax");
+	    system("calcbc \"${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int} * Z_V\" >> ${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int}_norm.ax");
+
+#	    system("calcbc \"${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int} / ${mes}_${cur}_r_${h}_s${k}_mu${j}_q0\" >> ${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int}_norm.ax");
 
 	    # Define the FF at the midpoint insertion
-	    ($ff, $ff_err) = &calc("extract(${mes}_r_mu3_q${qsq_int} / ${mes}_r_mu3_q0,$t_ins)");
-	    open(FOO,"> ${mes}_r_mu3_q${qsq_int}_ff.ax");
+	    ($ff, $ff_err) = &calc("extract(${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int} * Z_V,$t_ins)");
+	    open(FOO,"> ${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int}_ff.ax");
+	    printf FOO "%g  %g %g\n", $qsq, $ff, $ff_err;
+	    close(FOO);
+
+	    $f = "${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int}_ff";
+	    &ensbc("$f = extract(${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int} * Z_V,$t_ins - 1, $t_ins + 1)");
+	    system("~/bin/i386-linux/polyfit -t 0 -T 2 -p 0 -E eig.jknf -i $f -o foo.jknf");
+	    &ensbc("${f}_fit = extract(foo.jknf, 0)");
+	    ($ff, $ff_err) = &calc("${f}_fit");
+	    open(FOO,"> ${f}_fit.ax");
 	    printf FOO "%g  %g %g\n", $qsq, $ff, $ff_err;
 	    close(FOO);
 	  }
