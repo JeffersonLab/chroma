@@ -1,5 +1,9 @@
 06/27/2004 -- Robert Edwards
 
+	Version 1.6.2. Changed START/END_CODE() to not have first arg.
+
+06/27/2004 -- Robert Edwards
+
 	Version 1.6.1. Changed sink_smear2_w.{h,cc} to fermion indep.
         sink_smear2.{h,cc}. Other small lib/Makefile.am fixes.
 
