@@ -1,10 +1,13 @@
-// $Id: spectrum_w.cc,v 1.16 2003-10-30 02:32:16 edwards Exp $
+// $Id: spectrum_w.cc,v 1.17 2003-12-17 17:34:36 edwards Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.16  2003-10-30 02:32:16  edwards
+//  Revision 1.17  2003-12-17 17:34:36  edwards
+//  Removed tests of boundary.
+//
+//  Revision 1.16  2003/10/30 02:32:16  edwards
 //  Changed output format and number of vector currents measured.
 //
 //  Revision 1.15  2003/10/10 17:50:32  edwards
@@ -359,16 +362,6 @@ int main(int argc, char **argv)
     QDPIO::cerr << "Error if Pt_src and Sl_src are both set." << endl;
     QDPIO::cerr << "Choose the one which matches the stored propagators." << endl;
     QDP_abort(1);
-  }
-
-  // Figure out what to do about boundary conditions
-  // GTF HACK: only allow periodic boundary conditions
-  for (int i=0; i<Nd; ++i) {
-    if (input.param.boundary[i] != 1) {
-      QDPIO::cerr << "Only periodic boundary conditions supported." << endl;
-      QDPIO::cerr << "  boundary[" << i << "] = " << input.param.boundary[i] << endl;
-      QDP_abort(1);
-    }
   }
 
   for (int i=0; i<Nd; ++i) {
