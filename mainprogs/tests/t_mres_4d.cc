@@ -1,17 +1,8 @@
-// $Id: t_mres_4d.cc,v 1.5 2004-12-24 04:19:23 edwards Exp $
-
-#include <iostream>
-#include <sstream>
-#include <iomanip>
-#include <string>
-
-#include <cstdio>
-
-#include <stdlib.h>
-#include <sys/time.h>
-#include <math.h>
+// $Id: t_mres_4d.cc,v 1.6 2005-02-16 22:22:38 edwards Exp $
 
 #include "chroma.h"
+
+using namespace Chroma;
 
 struct Prop_t
 {
@@ -33,24 +24,8 @@ bool linkage_hack()
 {
   bool foo = true;
 
-  // 4D actions
-  foo &= EvenOddPrecWilsonFermActEnv::registered;
-  foo &= UnprecWilsonFermActEnv::registered;
-  foo &= UnprecDWFTransfFermActEnv::registered;
-  foo &= OvlapPartFrac4DFermActEnv::registered;
-  // 5D actions
-  foo &= EvenOddPrecDWFermActArrayEnv::registered;
-  foo &= UnprecDWFermActArrayEnv::registered;
-  foo &= EvenOddPrecNEFFermActArrayEnv::registered;
-  foo &= UnprecNEFFermActArrayEnv::registered;
-  foo &= UnprecOvlapContFrac5DFermActArrayEnv::registered;
-  foo &= EvenOddPrecOvlapContFrac5DFermActArrayEnv::registered;
-  foo &= UnprecOvDWFermActArrayEnv::registered;
-  foo &= EvenOddPrecOvDWFermActArrayEnv::registered;
-  foo &= UnprecOvExtFermActArrayEnv::registered;
-  foo &= UnprecZoloNEFFermActArrayEnv::registered;
-  foo &= EvenOddPrecZoloNEFFermActArrayEnv::registered;
-  foo &= UnprecDWFTransfFermActEnv::registered;
+  // All actions
+  foo &= WilsonTypeFermActsEnv::registered;
 
   return foo;
 }
@@ -121,7 +96,7 @@ int main(int argc, char **argv)
   try {
     read(xml_in, "/mres4D", input);
   }
-   catch( const string& e) { 
+  catch( const string& e) { 
     QDPIO::cerr << "Caught Exception : " << e << endl;
     QDP_abort(1);
   }
@@ -215,7 +190,7 @@ int main(int argc, char **argv)
 
   QDPIO::cout << "FermAct = " << fermact << endl;
  
-   // Make a reader for the stateInfo
+  // Make a reader for the stateInfo
   std::istringstream state_info_is(input.stateInfo);
   XMLReader state_info_xml(state_info_is);
   string state_info_path="/StateInfo";
@@ -225,39 +200,57 @@ int main(int argc, char **argv)
   LatticePropagator delta_prop;
   LatticePropagator deltaSq_prop;
 
-  try { 
+  try 
+  {
+    // Generic Wilson-Type Array stuff
+    FermionAction<LatticeFermion>* S_f =
+      TheFermionActionFactory::Instance().createObject(fermact,
+						       fermacttop,
+						       fermact_path);
+    
+    Handle<const ConnectState> state(S_f->createState(u,
+						      state_info_xml,
+						      state_info_path)); 
+    
+    LinearOperator<LatticeFermion>* DelLs;
 
-          // Generic Wilson-Type stuff
-      Handle< WilsonTypeFermAct<LatticeFermion> >
-	S_f(TheWilsonTypeFermActFactory::Instance().createObject(fermact,
-								 fermacttop,
-								 fermact_path));
+    // Possible actions
+    const WilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >* S_dwf = 
+      dynamic_cast<const WilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >*>(S_f);
 
+    const OverlapFermActBase* S_ov = dynamic_cast<const OverlapFermActBase*>(S_f);
 
-      Handle<const ConnectState> state(S_f->createState(u,
-							state_info_xml,
-							state_info_path)); 
-
-      const OverlapFermActBase& S_ov = dynamic_cast<const OverlapFermActBase&>(*S_f);
-
-
-      Handle<const LinearOperator<LatticeFermion> > DelLs = S_ov.DeltaLs(state);
-
-      for(int col = 0; col < Nc; col++) { 
-	for(int spin = 0; spin < Ns; spin++) {
-	  LatticeFermion tmp1, tmp2;
-
-	  // Move component from prop to ferm
-	  PropToFerm(quark_propagator, tmp1, col, spin);
-
-	  // Apply DeltaLs -> tmp2 = Delta_Ls tmp1
-	  (*DelLs)(tmp2, tmp1, PLUS);
-
-	  FermToProp(tmp2, delta_prop, col, spin);
+    if (S_dwf != 0)
+    {
+      DelLs = const_cast<LinearOperator<LatticeFermion>*>(S_dwf->DeltaLs(state,prop_header.invParam));
+    }
+    else if (S_ov != 0)
+    {
+      DelLs = const_cast<LinearOperator<LatticeFermion>*>(S_ov->DeltaLs(state));
+    }
+    else
+    {
+      throw string("no suitable cast found");
+    }
 	
+    for(int col = 0; col < Nc; col++) 
+    {
+      for(int spin = 0; spin < Ns; spin++) 
+      {
+	LatticeFermion tmp1, tmp2;
 
-	}
+	// Move component from prop to ferm
+	PropToFerm(quark_propagator, tmp1, col, spin);
+
+	// Apply DeltaLs -> tmp2 = Delta_Ls tmp1
+	(*DelLs)(tmp2, tmp1, PLUS);
+
+	FermToProp(tmp2, delta_prop, col, spin);
       }
+    }
+    
+    delete DelLs;
+    delete S_f;
   }
   catch(const string& e) { 
     QDPIO::cout << "Wilson Factory Error: " << e << endl;
@@ -268,13 +261,15 @@ int main(int argc, char **argv)
   }
 
 
-  multi1d<Double> pseudo_prop_corr = sumMulti(localNorm2(quark_propagator),                                    				 phases.getSet());
-  
 
+  multi1d<Double> pseudo_prop_corr = sumMulti(localNorm2(quark_propagator),
+					      phases.getSet());
 
-  multi1d<DComplex> delta_prop_corr = sumMulti(trace(adj(quark_propagator)*delta_prop),phases.getSet());
+  multi1d<DComplex> delta_prop_corr = sumMulti(trace(adj(quark_propagator)*delta_prop),
+					       phases.getSet());
   
-  multi1d<DComplex> deltaSq_prop_corr = sumMulti(trace(adj(delta_prop)*delta_prop), phases.getSet());
+  multi1d<DComplex> deltaSq_prop_corr = sumMulti(trace(adj(delta_prop)*delta_prop), 
+						 phases.getSet());
    
   int length = pseudo_prop_corr.size();
   multi1d<Real> shifted_pseudo(length);
@@ -289,10 +284,6 @@ int main(int argc, char **argv)
     shifted_deltaSq[t_eff]= real(deltaSq_prop_corr[t]);
   }
   
-  push(xml_out, "time_direction");
-  write(xml_out, "t_dir",j_decay);
-  pop(xml_out);
-  
   push(xml_out, "DeltaProp_correlator");
   write(xml_out, "delta_prop_corr", shifted_delta);
   pop(xml_out);
@@ -301,12 +292,11 @@ int main(int argc, char **argv)
   write(xml_out, "delta_sq_prop_corr", shifted_deltaSq);
   pop(xml_out);
   
-  
   push(xml_out, "PsuedoPseudo_correlator");
   write(xml_out, "pseudo_prop_corr", shifted_pseudo);
   pop(xml_out);
   
-  
+
   pop(xml_out);
   xml_out.close();
   
