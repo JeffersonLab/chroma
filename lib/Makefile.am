@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.201 2004-12-09 03:58:52 edwards Exp $
+# $Id: Makefile.am,v 1.202 2004-12-10 02:51:21 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -191,6 +191,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/unprec_dwftransf_linop_w.h \
 	actions/ferm/linop/unprec_dwf4d_linop_w.h \
 	actions/ferm/linop/unprec_pdwf4d_linop_w.h \
+	actions/ferm/linop/unprec_ppdwf4d_linop_w.h \
 	actions/ferm/qprop/qprop_w.h \
 	actions/ferm/qprop/unprec_qprop_w.h \
 	io/io_w.h io/barcomp_io.h io/kyuqprop_io.h \
@@ -396,6 +397,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/linop/unprec_ovlap_contfrac5d_nonhermop_array_w.cc \
 	actions/ferm/linop/unprec_parwilson_linop_w.cc \
 	actions/ferm/linop/unprec_pdwf4d_linop_w.cc \
+	actions/ferm/linop/unprec_ppdwf4d_linop_w.cc \
 	actions/ferm/linop/unprec_wilson_linop_w.cc \
 	actions/ferm/linop/unprec_wilson_dmdu_w.cc \
 	actions/ferm/qprop/dwf_fermact_qprop_array_w.cc \
