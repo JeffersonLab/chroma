@@ -1,5 +1,20 @@
-#ifndef molecdyn_h
-#define molecdyn_h
+// -*- C++ -*-
+// $Id: molecdyn.h,v 1.19 2005-02-07 04:11:55 edwards Exp $
+
+/*! \file
+ * \brief Molecular dynamics support
+ *
+ * Update routines for including Hybrid Monte Carlo
+ */
+
+/*! \defgroup molecdyn Molecular dynamics support
+ * \ingroup update
+ *
+ * Update routines for Hybrid Monte Carlo.
+ */
+
+#ifndef __molecdyn_h__
+#define __molecdyn_h__
 
 
 #include "update/molecdyn/field_state.h"

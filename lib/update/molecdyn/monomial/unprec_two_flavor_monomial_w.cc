@@ -1,4 +1,4 @@
-// $Id: unprec_two_flavor_monomial_w.cc,v 1.1 2005-01-28 02:15:33 edwards Exp $
+// $Id: unprec_two_flavor_monomial_w.cc,v 1.2 2005-02-07 04:11:55 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 4D ferm monomials
  */
@@ -16,6 +16,7 @@
 
 #include "update/molecdyn/predictor/chrono_predictor_factory.h"
 #include "update/molecdyn/predictor/zero_guess_predictor.h"
+
 namespace Chroma 
 { 
  

@@ -1,6 +1,8 @@
 #ifndef __monomial_w_h__
 #define __monomial_w_h__
 
+#include "monomial_aggregate_w.h"
+
 #include "two_flavor_monomial_w.h"
 #include "unprec_two_flavor_monomial_w.h"
 #include "prec_two_flavor_monomial_w.h"
