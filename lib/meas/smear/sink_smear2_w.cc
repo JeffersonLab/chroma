@@ -1,31 +1,32 @@
-// $Id: sink_smear2_w.cc,v 1.5 2003-10-20 20:59:35 edwards Exp $
+// $Id: sink_smear2_w.cc,v 1.6 2003-12-27 04:28:31 edwards Exp $
 /*! \file
  *  \brief Control routine for types of propagator smearing
  */
 
 #include "chromabase.h"
+#include "meas/smear/gaus_smear.h"
 #include "meas/smear/sink_smear2_w.h"
 
 using namespace QDP;
 
 //! "Smear" the quark propagator at the sink by a covariant Gaussian
-//!
-// \ingroup smear
-//
-// This routine is specific to Wilson fermions!
-//
-// Arguments:
-//
-//  \param u                   gauge field ( Read )
-//  \param quark_propagator    quark propagator ( Modify )
-//  \param Wvf_kind            wave function kind: Gaussian or exponential
-//                             ( Read )
-//  \param wvf_param           wvf_param of "shell" wave function ( Read )
-//  \param WvfIntPar           number of iterations to approximate Gaussian
-//                             or terminate CG inversion for Wuppertal smearing
-//                             ( Read )
-//  \param j_decay             direction of decay ( Read ) 
-//
+/*!
+ * \ingroup smear
+ *
+ * This routine is specific to Wilson fermions!
+ *
+ * Arguments:
+ *
+ *  \param u                   gauge field ( Read )
+ *  \param quark_propagator    quark propagator ( Modify )
+ *  \param Wvf_kind            wave function kind: Gaussian or exponential
+ *                             ( Read )
+ *  \param wvf_param           wvf_param of "shell" wave function ( Read )
+ *  \param WvfIntPar           number of iterations to approximate Gaussian
+ *                             or terminate CG inversion for Wuppertal smearing
+ *                             ( Read )
+ *  \param j_decay             direction of decay ( Read ) 
+ */
 
 void sink_smear2(const multi1d<LatticeColorMatrix>& u,
                  LatticePropagator& quark_propagator, WvfKind Wvf_kind,
