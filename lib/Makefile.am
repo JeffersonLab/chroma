@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.213 2005-01-02 05:02:26 edwards Exp $
+# $Id: Makefile.am,v 1.214 2005-01-04 06:49:38 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -127,7 +127,9 @@ nobase_include_HEADERS = \
 	update/molecdyn/md_integrator_factory.h \
 	update/molecdyn/lcm_pqp_leapfrog.h \
 	update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.h \
-	update/molecdyn/prec_two_flavor_wilson_ferm_monomial_w.h
+	update/molecdyn/prec_two_flavor_wilson_ferm_monomial_w.h \
+	update/molecdyn/unprec_two_flavor_wilson5d_monomial_w.h \
+	update/molecdyn/prec_two_flavor_wilson5d_monomial_w.h
 
 nodist_include_HEADERS=chroma_config_internal.h
 
@@ -438,7 +440,9 @@ libchroma_a_SOURCES += \
 	meas/sources/d_src_w.cc meas/sources/p_src_w.cc \
 	util/ferm/gammasgn_w.cc \
 	update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.cc \
-	update/molecdyn/prec_two_flavor_wilson_ferm_monomial_w.cc
+	update/molecdyn/prec_two_flavor_wilson_ferm_monomial_w.cc \
+	update/molecdyn/unprec_two_flavor_wilson5d_monomial_w.cc \
+	update/molecdyn/prec_two_flavor_wilson5d_monomial_w.cc
 
 #	actions/ferm/fermacts/unprec_clover_fermact_w.cc
 #	actions/ferm/fermacts/prec_clover_fermact_w.cc
