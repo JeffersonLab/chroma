@@ -2,6 +2,7 @@
 #define abs_hmc_h
 
 #include "chromabase.h"
+#include "io/xmllog_io.h"
 #include "update/molecdyn/field_state.h"
 #include "update/molecdyn/abs_hamiltonian.h"
 #include "update/molecdyn/abs_integrator.h"
@@ -31,6 +32,12 @@ namespace Chroma {
       ExactAbsHamiltonian<P,Q>& H_MC = getMCHamiltonian();
       AbsHamiltonian<P,Q>& H_MD = MD.getHamiltonian();
 
+      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+
+      push(xml_out, "HMCTrajectory");
+      write(xml_out, "WarmUpP", WarmUpP);
+
+
       // HMC Algorithm.
       // 1) Refresh momenta
       //
@@ -44,8 +51,16 @@ namespace Chroma {
       
       // Measure energy of the old state
       Double KE_old, PE_old;
+
+      push(xml_out, "H_old");
+
       H_MC.mesE(*s_old, KE_old, PE_old);
- 
+      write(xml_out, "KE_old", KE_old);
+      write(xml_out, "PE_old", PE_old);
+
+      pop(xml_out); // pop H_old
+      
+      
       // Set fields in the MD Hamiltonian
       MD.getHamiltonian().setInternalFields(H_MC);
 
@@ -54,12 +69,21 @@ namespace Chroma {
            
       //  Measure the energy of the new state
       Double KE, PE;
+
+
+      push(xml_out, "H_new");
       H_MC.mesE(s, KE, PE);
-      
+      write(xml_out, "KE_new", KE);
+      write(xml_out, "PE_new", PE);
+      pop(xml_out);
+
       // Work out energy differences
       Double DeltaKE = KE - KE_old;
       Double DeltaPE = PE - PE_old;
       Double DeltaH  = DeltaKE + DeltaPE;
+      write(xml_out, "deltaKE", DeltaKE);
+      write(xml_out, "deltaPE", DeltaPE);
+      write(xml_out, "deltaH", DeltaH);
 
       QDPIO::cout << "Delta H = " << DeltaH << endl;
 
@@ -69,6 +93,7 @@ namespace Chroma {
 	
 	// Measure Acceptance
 	bool acceptTestResult = acceptReject(DeltaH);
+	write(xml_out, "AcceptP", acceptTestResult);
 
 	QDPIO::cout << "AcceptP = " << acceptTestResult << endl;
 
@@ -85,6 +110,8 @@ namespace Chroma {
 	  s.getP() = s_old->getP();
 	}
       }
+
+      pop(xml_out); // HMCTrajectory
     }
     
   protected:

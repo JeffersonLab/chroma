@@ -270,7 +270,6 @@ namespace Chroma {
 	
 	bool warm_up_p = cur_update  <= mc_control.n_warm_up_updates;
 	QDPIO::cout << "Doing Update: " << cur_update << " warm_up_p = " << warm_up_p << endl;
-	write(xml_out, "WarmUpP", warm_up_p);
 	
 	// Do the trajectory without accepting 
 	theHMCTrj( gauge_state, warm_up_p );
