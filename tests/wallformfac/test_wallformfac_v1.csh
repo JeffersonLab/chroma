@@ -2,7 +2,13 @@
 
 set builddir = ../../scalar/mainprogs/main
 set gauge_type = SZINQIO
+#set gauge_type = UNIT
 set gauge_cfg = ../gfix.cfg1
+
+set nrow = "4 4 4 8"
+set boundary = "1 1 1 0"
+set t_source = "0 0 0 2"
+set t_sink = "0 0 0 6"
 
 #
 # Forward source
@@ -28,9 +34,9 @@ cat << **EOF** >! DATA
  <wave_state>S_WAVE</wave_state>
  <source_type>POINT_SOURCE</source_type>
  <j_decay>3</j_decay>
- <t_source>0 0 0 1</t_source>
+ <t_source>${t_source}</t_source>
 
- <nrow>4 4 4 8</nrow>
+ <nrow>${nrow}</nrow>
 </Param>
 <Cfg>
  <cfg_type>${gauge_type}</cfg_type>
@@ -80,8 +86,8 @@ cat << **EOF** >! DATA
    <RsdCG>1.0e-10</RsdCG>
    <MaxCG>1000</MaxCG>
  </InvertParam>
- <nrow>4 4 4 8</nrow>
- <boundary>1 1 1 0</boundary>
+ <nrow>${nrow}</nrow>
+ <boundary>${boundary}</boundary>
 </Param>
 <Cfg>
  <cfg_type>${gauge_type}</cfg_type>
@@ -124,9 +130,9 @@ cat << **EOF** >! DATA
  <wave_state>S_WAVE</wave_state>
  <source_type>WALL_SOURCE</source_type>
  <j_decay>3</j_decay>
- <t_source>0 0 0 6</t_source>
+ <t_source>${t_sink}</t_source>
 
- <nrow>4 4 4 8</nrow>
+ <nrow>${nrow}</nrow>
 </Param>
 <Cfg>
  <cfg_type>${gauge_type}</cfg_type>
@@ -176,8 +182,8 @@ cat << **EOF** >! DATA
    <RsdCG>1.0e-10</RsdCG>
    <MaxCG>1000</MaxCG>
  </InvertParam>
- <nrow>4 4 4 8</nrow>
- <boundary>1 1 1 0</boundary>
+ <nrow>${nrow}</nrow>
+ <boundary>${boundary}</boundary>
 </Param>
 <Cfg>
  <cfg_type>${gauge_type}</cfg_type>
@@ -226,7 +232,7 @@ cat << **EOF** >! DATA
  <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
  <wvf_param>0</wvf_param>
  <wvfIntPar>0</wvfIntPar>
- <nrow>4 4 4 8</nrow>
+ <nrow>${nrow}</nrow>
 </Param>
 <Cfg>
  <cfg_type>${gauge_type}</cfg_type>
@@ -275,7 +281,7 @@ cat << **EOF** >! DATA
  <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
  <wvf_param>0</wvf_param>
  <wvfIntPar>0</wvfIntPar>
- <nrow>4 4 4 8</nrow>
+ <nrow>${nrow}</nrow>
 </Param>
 <Cfg>
  <cfg_type>${gauge_type}</cfg_type>
@@ -316,7 +322,7 @@ cat << **EOF** >! DATA
  <version>${version}</version>
  <formfac_type>0 1</formfac_type>
  <mom2_max>3</mom2_max>
- <nrow>4 4 4 8</nrow>
+ <nrow>${nrow}</nrow>
 </Param>
 <Cfg>
  <cfg_type>${gauge_type}</cfg_type>
