@@ -1,4 +1,4 @@
-// $Id: t_precdwf.cc,v 1.2 2003-12-04 04:26:44 edwards Exp $
+// $Id: t_precdwf.cc,v 1.3 2003-12-04 21:52:15 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -26,9 +26,8 @@ double time_func(const EvenOddPrecLinearOperator< multi1d<LatticeFermion> > *p, 
     QDPIO::cout << "Applying D " << iter << " times" << endl;
 
     myt1=clock();
-    for(int i=iter; i-- > 0; ) {
+    for(int i=iter; i-- > 0; )
       (p->*A)(chi, psi, isign);
-    }
     myt2=clock();
 
     mydt=double(myt2-myt1)/double(CLOCKS_PER_SEC);
@@ -37,7 +36,7 @@ double time_func(const EvenOddPrecLinearOperator< multi1d<LatticeFermion> > *p, 
   }
 
   myt1=clock();
-  for(int i=0; i < iter; i++)
+  for(int i=iter; i-- > 0; )
     (p->*A)(chi, psi, isign);
   myt2=clock();
 
