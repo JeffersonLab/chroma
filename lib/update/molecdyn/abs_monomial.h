@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_monomial.h,v 1.12 2005-01-05 17:28:11 bjoo Exp $
+// $Id: abs_monomial.h,v 1.13 2005-01-06 11:21:30 bjoo Exp $
 
 /*! @file
  * @brief Monomials - gauge action or fermion binlinear contributions for HMC
@@ -382,7 +382,7 @@ namespace Chroma
 	getPhi() = fm.getPhi();
       }
       catch(bad_cast) { 
-	QDPIO::cerr << "Failed to cast ,,," << endl;
+	QDPIO::cerr << "Failed to cast input Monomial to TwoFlavorExactWilsonTypeFermMonomial " << endl;
 	QDP_abort(1);
       }
     }
@@ -533,7 +533,7 @@ namespace Chroma
 	}
       }
       catch(bad_cast) { 
-	QDPIO::cerr << "Failed to cast ,,," << endl;
+	QDPIO::cerr << "Failed to cast input Monomial to TwoFlavorExactWilsonTypeFermMonomial" << endl;
 	QDP_abort(1);
       }
     }

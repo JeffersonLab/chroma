@@ -59,6 +59,13 @@ namespace Chroma {
     // ! Destruction is automagic
     ~LatColMatPQPLeapfrogIntegrator(void) {};
 
+    //! Get at the MD Hamiltonian
+    AbsHamiltonian<multi1d<LatticeColorMatrix>,
+		   multi1d<LatticeColorMatrix> >& getHamiltonian(void) {
+      return *H_MD;
+    }
+
+
   protected:
 
     void leapP(const Real& dt, 
@@ -70,11 +77,6 @@ namespace Chroma {
 	                     multi1d<LatticeColorMatrix> >& s);
 
  
-    //! Get at the MD Hamiltonian
-    AbsHamiltonian<multi1d<LatticeColorMatrix>,
-		   multi1d<LatticeColorMatrix> >& getHamiltonian(void) const {
-      return *H_MD;
-    }
 
     //! Get the trajectory length
     const Real getTrajLength(void) const {

@@ -56,7 +56,6 @@ namespace Chroma {
 	KE += norm2((s.getP())[mu]);
       }
 
-      QDPIO::cout << "MesKE: KE = " << KE << endl;
       return KE;
     }
     

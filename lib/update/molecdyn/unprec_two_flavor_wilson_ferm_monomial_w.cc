@@ -145,7 +145,6 @@ namespace Chroma {
 	// Solve MdagM X = phi
 	X=zero;
 	InvCG2(*M, getPhi(), X, inv_param.RsdCG, inv_param.MaxCG, n_count);
-	QDPIO::cout << "getX: n_count = " << n_count << endl;
       }
       break;
     default:

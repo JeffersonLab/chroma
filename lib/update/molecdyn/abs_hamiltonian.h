@@ -45,7 +45,30 @@ namespace Chroma {
       }
     }
 
-    //! Copy Pseudo
+    //! Copy Pseudofermions 
+    //! This default goes through the monomials in order and 
+    //  for each one copies the fields
+    //
+    // CAVEAT: Source and target hamiltonians have to have the same
+    // number of terms. Also the types need to be the same otherwise
+    // an exception will occur. If you don't like this behavior, you
+    // should override it in your code.
+    virtual void copyPseudofermions(const AbsHamiltonian<P,Q>& H_from) {
+      int num_terms = numMonomials();
+
+      // Minimal sanity checking -- Check the number of terms are the same
+      int num_terms_from = H_from.numMonomials();
+      
+      if( num_terms_from != num_terms ) { 
+	QDPIO::cerr << "Error in copyPseudofermions: Source Hamiltonian and Target Hamiltonian contain different number of monomials" << endl;
+	QDP_abort(1);
+      }
+
+      for(int i=0; i < num_terms; i++) { 
+	getMonomial(i).copyPseudofermions(H_from.getMonomial(i));
+      }
+    }
+
     protected:
     
     //! Get hold of monomial with index i
@@ -127,14 +150,11 @@ namespace Chroma {
       Double PE=Double(0);
       if( num_terms > 0 ) {
 	PE = getMonomial(0).S(s);
-	QDPIO::cout << "MesPE: PE[0] = " << PE << endl;
 	for(int i=1; i < num_terms; i++) { 
 	  Double tmp = getMonomial(i).S(s);
 	  PE += tmp;
-	  QDPIO::cout <<"MesPE: PE["<<i<<"] = " << tmp << endl;
 	}
       }
-      QDPIO::cout << "MesPE: Total PE = " << PE << endl;
       return PE;
     }
     

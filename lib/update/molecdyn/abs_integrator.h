@@ -21,6 +21,10 @@ namespace Chroma {
     // Do a trajectory -- that is all HMD/HMC needs to know
     virtual void operator()(AbsFieldState<P,Q>& s) = 0;
 
+    //! Get at the MD Hamiltonian
+    //  This needs to be exposed to initialise the PF fields.
+    virtual AbsHamiltonian<P,Q>& getHamiltonian(void)  = 0;
+
   }; // End class MD integrator
 
 
@@ -70,6 +74,10 @@ namespace Chroma {
 	}
       } // end while
     } // end function
+
+    //! Get at the MD Hamiltonian
+    //  This needs to be exposed to initialise the PF fields.
+    virtual AbsHamiltonian<P,Q>& getHamiltonian(void)  = 0;
   
   protected:
     //! Leap with P
@@ -78,8 +86,7 @@ namespace Chroma {
     //! Leap with Q
     virtual void leapQ(const Real& dt, AbsFieldState<P,Q>& s) = 0;
 
-    //! Get at the MD Hamiltonian
-    virtual AbsHamiltonian<P,Q>& getHamiltonian(void) const = 0;
+
 
     //! Get the trajectory length
     virtual const Real getTrajLength(void) const = 0;

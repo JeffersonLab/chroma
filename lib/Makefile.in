@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.290 2005-01-05 21:42:25 edwards Exp $
+# $Id: Makefile.in,v 1.291 2005-01-06 11:21:30 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -160,6 +160,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/gauge/wilson_gaugeact.cc \
 	update/molecdyn/wilson_gauge_monomial.cc \
 	update/molecdyn/lcm_pqp_leapfrog.cc \
+	update/molecdyn/global_metropolis_accrej.cc \
 	actions/ferm/fermacts/overlap_fermact_base_w.cc \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.cc \
 	actions/ferm/fermacts/prec_dwf_fermact_array_w.cc \
@@ -312,6 +313,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	proginfo.$(OBJEXT) gaugebc_periodic.$(OBJEXT) \
 	gaugebc_simple.$(OBJEXT) wilson_gaugeact.$(OBJEXT) \
 	wilson_gauge_monomial.$(OBJEXT) lcm_pqp_leapfrog.$(OBJEXT) \
+	global_metropolis_accrej.$(OBJEXT) \
 	overlap_fermact_base_w.$(OBJEXT) \
 	ovlap_partfrac4d_fermact_w.$(OBJEXT) \
 	prec_dwf_fermact_array_w.$(OBJEXT) \
@@ -490,11 +492,13 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	update/molecdyn/exact_hamiltonian.h \
 	update/molecdyn/abs_integrator.h \
 	update/molecdyn/md_integrator_factory.h \
-	update/molecdyn/lcm_pqp_leapfrog.h \
+	update/molecdyn/lcm_pqp_leapfrog.h update/molecdyn/abs_hmc.h \
+	update/molecdyn/lcm_hmc.h \
 	update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.h \
 	update/molecdyn/prec_two_flavor_wilson_ferm_monomial_w.h \
 	update/molecdyn/unprec_two_flavor_wilson5d_monomial_w.h \
 	update/molecdyn/prec_two_flavor_wilson5d_monomial_w.h \
+	update/molecdyn/global_metropolis_accrej.h \
 	actions/ferm/fermacts/fermacts_w.h \
 	actions/ferm/fermacts/fermact_factory_w.h \
 	actions/ferm/fermacts/overlap_fermact_base_w.h \
@@ -819,11 +823,13 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	update/molecdyn/exact_hamiltonian.h \
 	update/molecdyn/abs_integrator.h \
 	update/molecdyn/md_integrator_factory.h \
-	update/molecdyn/lcm_pqp_leapfrog.h \
+	update/molecdyn/lcm_pqp_leapfrog.h update/molecdyn/abs_hmc.h \
+	update/molecdyn/lcm_hmc.h \
 	update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.h \
 	update/molecdyn/prec_two_flavor_wilson_ferm_monomial_w.h \
 	update/molecdyn/unprec_two_flavor_wilson5d_monomial_w.h \
 	update/molecdyn/prec_two_flavor_wilson5d_monomial_w.h \
+	update/molecdyn/global_metropolis_accrej.h \
 	actions/ferm/fermacts/fermacts_w.h \
 	actions/ferm/fermacts/fermact_factory_w.h \
 	actions/ferm/fermacts/overlap_fermact_base_w.h \
@@ -1043,6 +1049,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/gauge/wilson_gaugeact.cc \
 	update/molecdyn/wilson_gauge_monomial.cc \
 	update/molecdyn/lcm_pqp_leapfrog.cc \
+	update/molecdyn/global_metropolis_accrej.cc \
 	actions/ferm/fermacts/overlap_fermact_base_w.cc \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.cc \
 	actions/ferm/fermacts/prec_dwf_fermact_array_w.cc \
@@ -1292,6 +1299,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gaugebc_periodic.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gaugebc_simple.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gaus_smear.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/global_metropolis_accrej.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gramschm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gramschm_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/grelax.Po@am__quote@
@@ -3101,6 +3109,20 @@ lcm_pqp_leapfrog.obj: update/molecdyn/lcm_pqp_leapfrog.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/lcm_pqp_leapfrog.cc' object='lcm_pqp_leapfrog.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lcm_pqp_leapfrog.obj `if test -f 'update/molecdyn/lcm_pqp_leapfrog.cc'; then $(CYGPATH_W) 'update/molecdyn/lcm_pqp_leapfrog.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/lcm_pqp_leapfrog.cc'; fi`
+
+global_metropolis_accrej.o: update/molecdyn/global_metropolis_accrej.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT global_metropolis_accrej.o -MD -MP -MF "$(DEPDIR)/global_metropolis_accrej.Tpo" -c -o global_metropolis_accrej.o `test -f 'update/molecdyn/global_metropolis_accrej.cc' || echo '$(srcdir)/'`update/molecdyn/global_metropolis_accrej.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/global_metropolis_accrej.Tpo" "$(DEPDIR)/global_metropolis_accrej.Po"; else rm -f "$(DEPDIR)/global_metropolis_accrej.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/global_metropolis_accrej.cc' object='global_metropolis_accrej.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o global_metropolis_accrej.o `test -f 'update/molecdyn/global_metropolis_accrej.cc' || echo '$(srcdir)/'`update/molecdyn/global_metropolis_accrej.cc
+
+global_metropolis_accrej.obj: update/molecdyn/global_metropolis_accrej.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT global_metropolis_accrej.obj -MD -MP -MF "$(DEPDIR)/global_metropolis_accrej.Tpo" -c -o global_metropolis_accrej.obj `if test -f 'update/molecdyn/global_metropolis_accrej.cc'; then $(CYGPATH_W) 'update/molecdyn/global_metropolis_accrej.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/global_metropolis_accrej.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/global_metropolis_accrej.Tpo" "$(DEPDIR)/global_metropolis_accrej.Po"; else rm -f "$(DEPDIR)/global_metropolis_accrej.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/global_metropolis_accrej.cc' object='global_metropolis_accrej.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o global_metropolis_accrej.obj `if test -f 'update/molecdyn/global_metropolis_accrej.cc'; then $(CYGPATH_W) 'update/molecdyn/global_metropolis_accrej.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/global_metropolis_accrej.cc'; fi`
 
 overlap_fermact_base_w.o: actions/ferm/fermacts/overlap_fermact_base_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT overlap_fermact_base_w.o -MD -MP -MF "$(DEPDIR)/overlap_fermact_base_w.Tpo" -c -o overlap_fermact_base_w.o `test -f 'actions/ferm/fermacts/overlap_fermact_base_w.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/overlap_fermact_base_w.cc; \

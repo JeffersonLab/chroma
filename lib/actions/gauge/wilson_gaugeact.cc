@@ -1,4 +1,4 @@
-// $Id: wilson_gaugeact.cc,v 1.11 2005-01-05 16:15:23 bjoo Exp $
+// $Id: wilson_gaugeact.cc,v 1.12 2005-01-06 11:21:30 bjoo Exp $
 /*! \file
  *  \brief Wilson gauge action
  */
@@ -183,7 +183,7 @@ namespace Chroma
       // It is 1/(4Nc) to account for normalisation relevant to fermions
       // in the taproj, which is a factor of 2 different from the 
       // one used here.
-      ds_u[mu] *= Real(-1)*Real(beta)/(Real(4*Nc));
+      ds_u[mu] *= Real(-1)*Real(beta)/(Real(2*Nc));
     }
 
 
@@ -255,7 +255,7 @@ namespace Chroma
     // Undo Mes Plaq Normalisation
     S_pg = Double(Layout::vol()*Nd*(Nd-1)*Nc)/Double(2);
 
-    S_pg *= Double(-1)*Double(beta)/Double(2*Nc);
+    S_pg *= Double(-1)*Double(beta)/Double(Nc);
 
     // Took out minus sign -- may need to put back in...
     S_pg *= w_plaq;

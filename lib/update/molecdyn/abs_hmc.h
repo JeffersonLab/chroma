@@ -24,12 +24,13 @@ namespace Chroma {
 
     // Do the HMC trajectory
     virtual void operator()(AbsFieldState<P,Q>& s,
-			    const bool doAccep)
+			    const bool doAccept)
       
     {
-      const AbsMDIntegrator<P,Q>& MD = getMDIntegrator();
-      const ExactAbsHamiltonian<P,Q>& H_MC = getMCHamiltonian();
-      
+      AbsMDIntegrator<P,Q>& MD = getMDIntegrator();
+      ExactAbsHamiltonian<P,Q>& H_MC = getMCHamiltonian();
+      AbsHamiltonian<P,Q>& H_MD = MD.getHamiltonian();
+
       // HMC Algorithm.
       // 1) Refresh momenta
       //
@@ -41,6 +42,9 @@ namespace Chroma {
       // 2) SaveState -- Perhaps this could be done better?
       Handle< AbsFieldState<P,Q> >  s_old(s.clone());
       
+      // 3) Set fields in the MD Hamiltonian
+      MD.getHamiltonian().copyPseudofermions(H_MC);
+
       // 3) Integrate MD trajectory
       MD(s);
       
@@ -56,25 +60,29 @@ namespace Chroma {
       Double DeltaKE = KE - KE_old;
       Double DeltaPE = PE - PE_old;
       Double DeltaH  = DeltaKE + DeltaPE;
-      
+
+      QDPIO::cout << "Delta H = " << DeltaH << endl;
+
       // If we intend to do an accept reject step
       // (ie we are not warming up)
       if( doAccept ) { 
 	
 	// Measure Acceptance
 	bool acceptTestResult = acceptReject(DeltaH);
-	
+
+	QDPIO::cout << "AcceptP = " << acceptTestResult << endl;
+
 	// If rejected restore fields
 	// If accepted no need to do anything
 	if ( ! acceptTestResult ) { 
-	  s.getQ() = old_state->getQ();
+	  s.getQ() = s_old->getQ();
 	  
 	  // I am going to refresh these so maybe these copies 
 	  //  for the momenta and the pseudofermions
 	  // are not really needed...
 	  //
 	  // restore momenta
-	  s.getP() = old_state->getP();
+	  s.getP() = s_old->getP();
 	}
       }
     }
@@ -83,12 +91,12 @@ namespace Chroma {
     // Get at the Exact Hamiltonian -- It would be great if I could
     // enforce this to be exact. Perhaps I should request that it be
     // an AbsExactHamiltonian<P,Q> 
-    virtual ExactAbsHamiltonian<P,Q>& getMCHamiltonian(void) const = 0;
+    virtual ExactAbsHamiltonian<P,Q>& getMCHamiltonian(void) = 0;
     
     // Get at the HybridIntegrator -- Again I could ask for this
     // to come from a base class but this one may be a complex beastie
     // with monitoring and such so it is bes to template this
-    virtual AbsMDIntegrator<P,Q>& getMDIntegrator(void) const = 0;
+    virtual AbsMDIntegrator<P,Q>& getMDIntegrator(void)  = 0;
     
 
     virtual void refreshP(AbsFieldState<P,Q>& state) const = 0;

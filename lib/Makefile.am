@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.215 2005-01-05 21:42:15 edwards Exp $
+# $Id: Makefile.am,v 1.216 2005-01-06 11:21:30 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -126,11 +126,14 @@ nobase_include_HEADERS = \
 	update/molecdyn/abs_integrator.h \
 	update/molecdyn/md_integrator_factory.h \
 	update/molecdyn/lcm_pqp_leapfrog.h \
+	update/molecdyn/abs_hmc.h \
+	update/molecdyn/lcm_hmc.h \
 	update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.h \
 	update/molecdyn/prec_two_flavor_wilson_ferm_monomial_w.h \
 	update/molecdyn/unprec_two_flavor_wilson5d_monomial_w.h \
-	update/molecdyn/prec_two_flavor_wilson5d_monomial_w.h
-
+	update/molecdyn/prec_two_flavor_wilson5d_monomial_w.h \
+	update/molecdyn/global_metropolis_accrej.h
+	
 nodist_include_HEADERS=chroma_config_internal.h
 
 # Wilson specific headers
@@ -358,7 +361,8 @@ libchroma_a_SOURCES = \
 	actions/gauge/gaugebc_simple.cc \
 	actions/gauge/wilson_gaugeact.cc \
 	update/molecdyn/wilson_gauge_monomial.cc \
-	update/molecdyn/lcm_pqp_leapfrog.cc
+	update/molecdyn/lcm_pqp_leapfrog.cc \
+	update/molecdyn/global_metropolis_accrej.cc
 #	actions/ferm/invert/invbicg.cc
 #       actions/ferm/invert/invmr.cc 
 #       util/gauge/eesu2.cc 

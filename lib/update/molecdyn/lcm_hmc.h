@@ -1,0 +1,78 @@
+#ifndef LAT_COL_MAT_HMC_H
+#define LAT_COL_MAT_HMC_H
+
+#include "chromabase.h"
+#include "update/molecdyn/field_state.h"
+#include "update/molecdyn/abs_hamiltonian.h"
+#include "update/molecdyn/abs_integrator.h"
+#include "update/molecdyn/abs_hmc.h"
+
+// The accept Reject
+#include "update/molecdyn/global_metropolis_accrej.h"
+
+#include "util/gauge/taproj.h" 
+
+using namespace QDP;
+using namespace Chroma;
+using namespace std;
+
+namespace Chroma {
+
+
+
+  class LatColMatHMCTrj : public AbsHMCTrj<multi1d<LatticeColorMatrix>, 
+    multi1d<LatticeColorMatrix> > {
+    public:
+
+    // Destructor
+    ~LatColMatHMCTrj(void) {} 
+
+    // Constructor
+    LatColMatHMCTrj( Handle< ExactAbsHamiltonian< multi1d<LatticeColorMatrix>, 
+		     multi1d<LatticeColorMatrix> > >& _H_MC,
+		     Handle< AbsMDIntegrator< multi1d<LatticeColorMatrix>, 
+		     multi1d<LatticeColorMatrix> > >& _MD_integrator ) : the_MD(_MD_integrator), the_H_MC(_H_MC) {}
+
+    private:
+    Handle< AbsMDIntegrator<multi1d<LatticeColorMatrix>, 
+      multi1d<LatticeColorMatrix> > > the_MD;
+
+    Handle< ExactAbsHamiltonian< multi1d<LatticeColorMatrix>, 
+      multi1d<LatticeColorMatrix> > > the_H_MC;
+
+    protected:
+
+    ExactAbsHamiltonian< multi1d<LatticeColorMatrix>, 
+      multi1d<LatticeColorMatrix> >& getMCHamiltonian(void) { 
+      return *the_H_MC;
+    }
+
+    AbsMDIntegrator< multi1d<LatticeColorMatrix>, 
+      multi1d<LatticeColorMatrix> >& getMDIntegrator(void) {
+      return *the_MD;
+    }
+
+    bool acceptReject( const Double& DeltaH ) const {
+      return globalMetropolisAcceptReject(DeltaH);
+    }
+
+
+    void refreshP(AbsFieldState<multi1d<LatticeColorMatrix>, 
+		  multi1d<LatticeColorMatrix> >& s) const {
+      
+      // Loop over direcsions
+      for(int mu = 0; mu < Nd; mu++) {
+
+	// Pull the gaussian noise
+	gaussian(s.getP()[mu]);
+	s.getP()[mu] *= sqrt(0.5);  // Gaussian Normalisation
+
+	// Make traceless and antihermitian
+	taproj(s.getP()[mu]);
+
+      }
+    }
+  };
+};
+
+#endif

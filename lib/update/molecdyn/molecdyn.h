@@ -16,6 +16,7 @@
 #include "update/molecdyn/lcm_pqp_leapfrog.h"
 
 #include "update/molecdyn/abs_hmc.h"
+#include "update/molecdyn/lcm_hmc.h"
 
 // #include "update/molecdyn/abs_hamiltonian.h"
 /*
