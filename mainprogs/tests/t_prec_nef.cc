@@ -1,19 +1,13 @@
-// $Id: t_prec_nef.cc,v 1.3 2005-02-28 03:34:47 edwards Exp $
+// $Id: t_prec_nef.cc,v 1.4 2005-02-28 19:43:40 edwards Exp $
 
-#include <iostream>
-#include <cstdio>
 #include "chroma.h"
-
-#include "actions/ferm/fermacts/zolotarev.h"
-#include "actions/ferm/linop/prec_nef_general_linop_array_w.h"
 
 using namespace Chroma;
 
 struct App_input_t {
-  Cfg_t        cfg;
-  std::string  stateInfo;
-  multi1d<int> nrow;
-  multi1d<int> boundary;
+  InvertParam_t   invParam;   // Inverter parameters
+  Cfg_t           cfg;
+  multi1d<int>    nrow;
 };
 
 // Reader for input parameters
@@ -26,14 +20,8 @@ void read(XMLReader& xml, const string& path, App_input_t& input)
   {
     // Read in the gauge configuration info
     read(inputtop, "Cfg", input.cfg);
-
-    XMLReader xml_state_info(inputtop, "StateInfo");
-    std::ostringstream os;
-    xml_state_info.print(os);
-    input.stateInfo = os.str();
-    
-    read(inputtop, "boundary", input.boundary);
     read(inputtop, "nrow", input.nrow);
+    read(inputtop, "InvertParam", input.invParam);
   }
   catch (const string& e) 
   {
@@ -65,8 +53,10 @@ int main(int argc, char **argv)
   Layout::create();
 
   multi1d<LatticeColorMatrix> u(Nd);
-  XMLReader gauge_file_xml, gauge_xml;
-  gaugeStartup(gauge_file_xml, gauge_xml, u, input.cfg);
+  {
+    XMLReader gauge_file_xml, gauge_xml;
+    gaugeStartup(gauge_file_xml, gauge_xml, u, input.cfg);
+  }
 
   XMLFileWriter xml_out("XMLDAT");
   push(xml_out,"NEFTest");
@@ -76,254 +66,139 @@ int main(int argc, char **argv)
   MesPlq(xml_out, "Observables", u);
   xml_out.flush();
 
-  // Params
-  int N5=6;
-  multi1d<Real> b5(N5);
-  multi1d<Real> c5(N5);
-  Real m_q = Real(0.06);
-  Real OverMass = 1.4;
+  // Create actions
+  string zpath = "/NEFTest/ZNEF";
+  EvenOddPrecZoloNEFFermActArray  S_znef(WilsonTypeFermBCArrayEnv::reader(xml_in, zpath), 
+					 EvenOddPrecZoloNEFFermActArrayParams(xml_in, zpath));
 
+  string npath = "/NEFTest/NEF";
+  EvenOddPrecNEFFermActArray  S_nef(WilsonTypeFermBCArrayEnv::reader(xml_in, npath), 
+				    EvenOddPrecNEFFermActArrayParams(xml_in, npath));
 
-  for(int i=0; i< N5; i++) {
-    b5[i]=Real(1);
-    c5[i]=Real(1);
-  }
+  int N5 = S_znef.size();
+  QDPIO::cout << "Znef size = " << S_znef.size() << endl;
+  QDPIO::cout << "Nef  size = " << S_nef.size() << endl;
 
-  // Create a FermBC
-  Handle< FermBC< multi1d< LatticeFermion> > >  fbc(new SimpleFermBC< multi1d< LatticeFermion> >(input.boundary));
- 
-  Handle< FermBC< LatticeFermion > > fbc4( new SimpleFermBC<LatticeFermion>(input.boundary));
-  // Create an overlap state
-  std::istringstream state_info_is(input.stateInfo);
-  XMLReader state_info_xml(state_info_is);
-  string state_info_path="/StateInfo";
-
-  // Stupid auxiliary operator
-  Real foo = -OverMass;
-  UnprecWilsonFermAct  Sw( fbc4, foo );
-  Handle< const ConnectState> simple_state( new SimpleConnectState(u));
-  Handle< const LinearOperator<LatticeFermion> > H_w = Sw.gamma5HermLinOp(simple_state);
-
-  Real approxMin=Real(0.66);
-  Real approxMax=Real(6.46357);
-  Handle< const ConnectState > state(OverlapConnectStateEnv::createOverlapState(u, *fbc4, approxMin, approxMax));
-
-  Real epsilon = approxMin / approxMax;
-  
-  zolotarev_data *rdata;
-  rdata=zolotarev(toFloat(epsilon), N5, 0);
-  
-  if( rdata->n != N5 ) { 
-    QDPIO::cerr << "Error:rdata->n != N5" << endl;
-    QDP_abort(1);
-  }
-  
-  multi1d<Real> gamma(N5);
-  for(int i=0; i < N5; i++) { 
-    gamma[i] = Real(rdata->gamma[i]);
-  }
-  
-  zolotarev_free(rdata);
-  
-  for(int i=0; i < N5; i++) { 
-    QDPIO::cout << "gamma[" << i << "] = " << gamma[i] << endl;
-  }
-  
-  for(int i = 0; i < N5; i++) { 
-    Real tmp = gamma[i]*approxMax;
-    b5[i] = Real(1)/tmp;
-    c5[i] = b5[i];
-  }
-  
-  
-  // Make an unprec linOp
-  Handle< const LinearOperator< multi1d<LatticeFermion> > > M_u( 
- new UnprecNEFDWLinOpArray( state->getLinks(), OverMass, b5, c5, m_q, N5  ) );
-  
-  // Make the prec linOp
-  Handle< const EvenOddPrecLinearOperator< multi1d<LatticeFermion> > > M_e( 
- new EvenOddPrecGenNEFDWLinOpArray( state->getLinks(), OverMass, b5, c5, m_q, N5) );
-
-  QDPIO::cout << "Unprec LinOp size = " << M_u->size() << endl;
-  QDPIO::cout << "Prec   LinOp size = " << M_e->size() << endl;
-
-  //  int N5 = M_u->size();
-  multi1d<LatticeFermion> s(N5);
-  multi1d<LatticeFermion> Mu_s(N5);
-  multi1d<LatticeFermion> Me_s(N5);
-  multi1d<LatticeFermion> r(N5);
-
-  for(int i=0; i<N5; i++) { 
-    gaussian(s[i]);
-    Mu_s[i]=zero;
-    Me_s[i]=zero;
-    r[i] = zero;
-  }
-
-  (*M_u)(Mu_s, s, PLUS);
-  (*M_e).unprecLinOp(Me_s, s, PLUS);
-
-  for(int i=0; i < N5; i++) { 
-    r[i] = Mu_s[i] - Me_s[i];
-    QDPIO::cout << "i = " << i << " || r [" << i << "] || = " 
-		<< sqrt(norm2(r[i])) << endl;
-  }
-
-  Mu_s = zero;
-  Me_s = zero;
- (*M_u)(Mu_s, s, MINUS);
-  (*M_e).unprecLinOp(Me_s, s, MINUS);
-
-  for(int i=0; i < N5; i++) { 
-    r[i] = Mu_s[i] - Me_s[i];
-    QDPIO::cout << "i = " << i << " || r [" << i << "] || = " 
-		<< sqrt(norm2(r[i])) << endl;
-  }
-
-  // Now some solver tests
-  multi1d<LatticeFermion> source(N5);
-  for(int i=0; i < N5; i++) { 
-    gaussian(source[i]);
-  }
-  Double source_norm = sqrt(norm2(source));
-  for(int i=0; i < N5; i++) { 
-    source[i] /= source_norm;
-  }
-
-  multi1d<LatticeFermion> unprec_source(N5);
-  multi1d<LatticeFermion> prec_source(N5);
-  for(int i=0; i < N5; i++) { 
-    unprec_source[i] = source[i];
-    prec_source[i] = source[i];
-  }
-
-  multi1d<LatticeFermion> unprec_soln(N5);
-  multi1d<LatticeFermion> prec_soln(N5);
-  unprec_soln = zero;
-  prec_soln = zero;
-
-  Real RsdCG = Real(1.0e-6);
-  int  MaxCG = 500;
-  int  n_count_prec=0;
-  int  n_count_unprec=0;
-
-  // Solve the unpreconditioned system:
   {
-    multi1d<LatticeFermion> tmp(N5);
-    (*M_u)(tmp, unprec_source, MINUS);
-    InvCG2(*M_u, tmp, unprec_soln, RsdCG, MaxCG, n_count_unprec);
+    // Make the znef linOp
+    Handle< const LinearOperator< multi1d<LatticeFermion> > > M_z(S_znef.linOp(S_znef.createState(u)));
+  
+    // Make the nef linOp
+    Handle< const LinearOperator< multi1d<LatticeFermion> > > M_n(S_nef.linOp(S_nef.createState(u)));
+
+    multi1d<LatticeFermion> psi5a(N5);
+    multi1d<LatticeFermion> chi5(N5);
+    multi1d<LatticeFermion> psi5b(N5);
+    multi1d<LatticeFermion> tmp5(N5);
+
+    for(int n=0; n<N5; n++) 
+    {
+      gaussian(psi5a[n]);
+      gaussian(psi5b[n]);
+      gaussian(chi5[n]);
+    }
+
+    (*M_z)(psi5a, chi5, PLUS);
+    (*M_n)(psi5b, chi5, PLUS);
+    for(int n=0; n < N5; ++n)
+    {
+      tmp5[n][M_z->subset()] = psi5a[n];
+      tmp5[n][M_z->subset()] -= psi5b[n];
+    }
+    QDPIO::cout << "PLUS: norm2(psi5a-psi5b)=" << norm2(tmp5,M_z->subset()) << endl;
+
+    (*M_z)(psi5a, chi5, MINUS);
+    (*M_n)(psi5b, chi5, MINUS);
+    for(int n=0; n < N5; ++n)
+    {
+      tmp5[n][M_z->subset()] = psi5a[n];
+      tmp5[n][M_z->subset()] -= psi5b[n];
+    }
+    QDPIO::cout << "MINUS: norm2(psi5a-psi5b)=" << norm2(tmp5,M_z->subset()) << endl;
+
+
+    // Make the znef unprec linOp
+    Handle< const LinearOperator< multi1d<LatticeFermion> > > 
+      U_z(S_znef.unprecLinOp(S_znef.createState(u),Real(1)));
+  
+    // Make the nef unprec linOp
+    Handle< const LinearOperator< multi1d<LatticeFermion> > > 
+      U_n(S_nef.unprecLinOp(S_nef.createState(u),Real(1)));
+
+    (*U_z)(psi5a, chi5, PLUS);
+    (*U_n)(psi5b, chi5, PLUS);
+    for(int n=0; n < N5; ++n)
+    {
+      tmp5[n][U_z->subset()] = psi5a[n];
+      tmp5[n][U_z->subset()] -= psi5b[n];
+    }
+    QDPIO::cout << "PLUS: norm2(psi5a-psi5b)=" << norm2(tmp5,U_z->subset()) << endl;
+
+    (*U_z)(psi5a, chi5, MINUS);
+    (*U_n)(psi5b, chi5, MINUS);
+    for(int n=0; n < N5; ++n)
+    {
+      tmp5[n][U_z->subset()] = psi5a[n];
+      tmp5[n][U_z->subset()] -= psi5b[n];
+    }
+    QDPIO::cout << "MINUS: norm2(psi5a-psi5b)=" << norm2(tmp5,U_z->subset()) << endl;
   }
 
-  // Solve the preconditioned system.
-  //
-  // Set up source on odd checkerboards
-  //  S_e = source_e 
-  //  S_o = source_o - QoeQee^{-1} source_e
   {
-    multi1d<LatticeFermion> tmp(N5);
-    multi1d<LatticeFermion> tmp2(N5);
-    tmp=zero;
-    tmp2=zero;
-    M_e->evenEvenInvLinOp(tmp, prec_source, PLUS);
-    M_e->oddEvenLinOp(tmp2, tmp, PLUS);
+    Handle< const SystemSolver< multi1d<LatticeFermion> > > ZQ(S_znef.qpropT(S_znef.createState(u), input.invParam));
+    Handle< const SystemSolver< multi1d<LatticeFermion> > > NQ(S_nef.qpropT(S_nef.createState(u), input.invParam));
 
-    multi1d<LatticeFermion> tmp_source(N5);
-    for(int i=0; i < N5; i++) { 
-      // Take the even piece of the normal source
-      tmp_source[i][rb[0]] = prec_source[i];
+    multi1d<LatticeFermion> psi5a(N5);
+    multi1d<LatticeFermion> chi5(N5);
+    multi1d<LatticeFermion> psi5b(N5);
+    multi1d<LatticeFermion> tmp5(N5);
 
-      // Take the odd piece  - QoeQee^{-1} even piece
-      tmp_source[i][rb[1]] = prec_source[i] - tmp2[i];
-    } 
-
-    // CGNE on the odd source only
-    multi1d<LatticeFermion> cgne_source(N5);
-    multi1d<LatticeFermion> tmp_soln(N5);
-    cgne_source=zero;
-    tmp_soln=zero;
-
-    (*M_e)(cgne_source, tmp_source, MINUS);
-    InvCG2(*M_e, cgne_source, tmp_soln, RsdCG, MaxCG, n_count_prec);
-
-    // Now reconstruct the solutions. 
-    tmp = zero;
-    tmp2 = zero;
-    // tmp1 = D_eo tmp_soln_o
-    M_e->evenOddLinOp(tmp, tmp_soln, PLUS);
-    
-    // tmp2 = S_e - tmp_1
-    for(int i=0; i < N5; i++) { 
-      tmp2[i][rb[0]] = tmp_source[i] - tmp[i];
+    for(int n=0; n<N5; n++) 
+    {
+      gaussian(psi5a[n]);
+      gaussian(psi5b[n]);
+      gaussian(chi5[n]);
     }
-    M_e->evenEvenInvLinOp(prec_soln, tmp2, PLUS);
-    
-    // Copy off parts
-    for(int i=0; i < N5; i++) { 
-     prec_soln[i][rb[1]] = tmp_soln[i];
-    }
+
+    int n_counta = (*ZQ)(psi5a, chi5);
+    int n_countb = (*NQ)(psi5b, chi5);
+    for(int n=0; n<N5; n++)
+      tmp5[n] = psi5b[n] - psi5a[n];
+
+    QDPIO::cout << "norm(qpropT_diff)=" << Real(norm2(tmp5)) 
+		<< "  norm2(psi5a)=" << Real(norm2(psi5a)) 
+		<< "  norm2(psi5b)=" << Real(norm2(psi5b)) 
+		<< endl;
+    for(int n=0; n < N5; ++n)
+      QDPIO::cout << "QpropT: norm2(tmp5[" << n << "])= " << Real(norm2(tmp5[n])) << endl;
+
+#if 1
+    push(xml_out,"QpropT");
+    write(xml_out,"psi5a",psi5a);
+    write(xml_out,"psi5b",psi5b);
+    write(xml_out,"tmp5",tmp5);
+    pop(xml_out);
+#endif
   }
 
-  // Check the solutions
-  (*M_u)(r, unprec_soln, PLUS);
-  Double r_norm =Double(0);
-  for(int i=0; i < N5; i++) {
-    r[i] -= source[i];
-    r_norm += norm2(r[i]);
-  }
-  QDPIO::cout << "|| source - M_u unprec_soln || = " << sqrt(r_norm) << endl;
-
-  (*M_u)(r, prec_soln, PLUS);
-  r_norm=0;
-  for(int i=0; i < N5; i++) {
-    r[i] -= source[i];
-    r_norm += norm2(r[i]);
-  }
-  QDPIO::cout << "|| source - M_u prec_soln || = " << sqrt(r_norm) << endl;
-
- (*M_e).unprecLinOp(r, unprec_soln, PLUS);
-  r_norm=0;
-  for(int i=0; i < N5; i++) {
-    r[i] -= source[i];
-    r_norm += norm2(r[i]);
-  }
-  QDPIO::cout << "|| source - M_e unprec_soln || = " << sqrt(r_norm) << endl;
-
- (*M_e).unprecLinOp(r, prec_soln, PLUS);
-  r_norm=0;
-  for(int i=0; i < N5; i++) {
-    r[i] -= source[i];
-    r_norm += norm2(r[i]);
-  }
-  QDPIO::cout << "|| source - M_e prec_soln || = " << sqrt(r_norm) << endl;
-
-  // Test EvenEvenInv LinOp
   {
-    multi1d<LatticeFermion> f_even(N5);
-    multi1d<LatticeFermion> t1(N5);
-    multi1d<LatticeFermion> t2(N5);
-    
-    f_even = zero;
-    t1=zero;
-    t2=zero;
-    for(int i=0; i < N5; i++) { 
-      f_even[i][rb[1]] = zero ; // Zilch out the odd ones
-      f_even[i][rb[0]] = source[i];
-    }
-    
-    M_e->evenEvenLinOp(t1, f_even, PLUS);
-    M_e->evenEvenInvLinOp(t2, t1, PLUS);
+    Handle< const SystemSolver<LatticeFermion> > ZQ(S_znef.qprop(S_znef.createState(u), input.invParam));
+    Handle< const SystemSolver<LatticeFermion> > NQ(S_nef.qprop(S_nef.createState(u), input.invParam));
 
-    r_norm=0;
-    for(int i=0; i < N5; i++) {
-      r[i][rb[0]] = t2[i];
-      r[i][rb[0]] -= f_even[i];
+    LatticeFermion psia, psib, chi;
+    gaussian(chi);
+    gaussian(psia);
+    gaussian(psib);
 
-      r_norm += norm2(r[i], rb[0]);
+    int n_counta = (*ZQ)(psia, chi);
+    int n_countb = (*NQ)(psib, chi);
+
+    QDPIO::cout << "norm(qprop_diff)=" << Real(norm2(psib - psia))
+		<< "  norm2(psia)=" << Real(norm2(psia)) 
+		<< "  norm2(psib)=" << Real(norm2(psib)) 
+		<< endl;
   }
-  QDPIO::cout << "|| source_even - Qee^{-1}Qee sorce_even || = " 
-	      << sqrt(r_norm) << endl;
 
-  }
   pop(xml_out);
   QDP_finalize();
     
