@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.44 2003-10-08 03:43:52 edwards Exp $
+# $Id: Makefile.am,v 1.45 2003-10-08 18:38:34 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -75,7 +75,7 @@ HDRS =  chroma.h chromabase.h chromainc.h primitives.h common_declarations.h \
 # Fermion independent sources
 #
 libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
-               mesplq.cc reunit.cc unit_check.cc sftmom.cc srcfil.cc \
+               mesplq.cc polylp.cc reunit.cc unit_check.cc sftmom.cc srcfil.cc \
                readszin.cc writeszin.cc su3proj.cc sun_proj.cc \
                gaus_smear.cc hyp_smear.cc ape_smear.cc \
                klein_gord.cc laplacian.cc  \
