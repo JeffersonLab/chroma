@@ -1,4 +1,4 @@
-// $Id: invcg1_array.cc,v 1.3 2004-07-28 03:47:26 edwards Exp $
+// $Id: invcg1_array.cc,v 1.4 2004-11-01 12:52:47 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -184,6 +184,9 @@ void InvCG1_a(const LinearOperator< multi1d<T> >& A,
 
     //  b[k+1] := |r[k]|**2 / |r[k-1]|**2
     b = Real(cp) / Real(c);
+#if 1
+    QDPIO::cout << "InvCGev: k = " << k << "  alpha = " << a << "  beta = " << b << endl;
+#endif 
 
     //  p[k+1] := r[k] + b[k+1] p[k]
     for(int n=0; n < N; ++n)

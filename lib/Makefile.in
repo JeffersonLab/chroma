@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.252 2004-10-29 13:36:13 bjoo Exp $
+# $Id: Makefile.in,v 1.253 2004-11-01 12:52:46 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -134,9 +134,10 @@ host_triplet = @host@
 @BUILD_STAGGERED_LIBS_TRUE@	meas/eig/eig_s.h meas/hadron/baryon_w.h \
 @BUILD_STAGGERED_LIBS_TRUE@	meas/hadron/hadron_s.h \
 @BUILD_STAGGERED_LIBS_TRUE@	meas/hadron/mesphas_follana_s.h meas/hadron/mesphas_s.h \
-@BUILD_STAGGERED_LIBS_TRUE@	meas/hadron/pions_follana_s.h meas/hadron/walfil_s.h \
+@BUILD_STAGGERED_LIBS_TRUE@	meas/hadron/pions_s.h  meas/hadron/walfil_s.h \
 @BUILD_STAGGERED_LIBS_TRUE@	meas/hadron/stag_scalars_s.h meas/sources/sources_s.h \
 @BUILD_STAGGERED_LIBS_TRUE@	meas/hadron/stag_propShift_s.h \
+@BUILD_STAGGERED_LIBS_TRUE@	meas/hadron/vector_meson_s.h \
 @BUILD_STAGGERED_LIBS_TRUE@	util/ferm/ferm_s.h \
 @BUILD_STAGGERED_LIBS_TRUE@	util/gauge/gauge_s.h util/gauge/stag_phases_s.h
 
@@ -194,9 +195,9 @@ host_triplet = @host@
 @BUILD_SSE_DWF_CG_TRUE@am__append_9 = actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc
 @BUILD_PAB_WILSON_DSLASH_TRUE@am__append_10 = actions/ferm/linop/lwldslash_w_pab.h
 @BUILD_PAB_WILSON_DSLASH_TRUE@am__append_11 = lwldslash_w_pab.cc
-@BUILD_STAGGERED_LIBS_TRUE@am__append_12 = mesphas_s.cc mesphas_follana_s.cc pions_follana_s.cc \
+@BUILD_STAGGERED_LIBS_TRUE@am__append_12 = mesphas_s.cc mesphas_follana_s.cc pions_s.cc \
 @BUILD_STAGGERED_LIBS_TRUE@	follana_io_s.cc fermact_qprop.cc walfil_s.cc baryon_s.cc \
-@BUILD_STAGGERED_LIBS_TRUE@	stag_scalars_s.cc stag_propShift_s.cc \
+@BUILD_STAGGERED_LIBS_TRUE@	stag_scalars_s.cc stag_propShift_s.cc vector_meson_s.cc \
 @BUILD_STAGGERED_LIBS_TRUE@	asqtad_linop_s.cc asq_dsl_s.cc fat7_links_s.cc naik_term_s.cc  \
 @BUILD_STAGGERED_LIBS_TRUE@	asqtad_fermact_s.cc asqtad_mdagm_s.cc staggered_qprop.cc stag_phases_s.cc
 
@@ -554,9 +555,9 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc gaugebc_utils.cc \
 	prec_nef_general_linop_array_w.cc \
 	prec_zolo_nef_fermact_array_w.cc lwldslash_w_sse.cc \
 	actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc \
-	lwldslash_w_pab.cc mesphas_s.cc mesphas_follana_s.cc \
-	pions_follana_s.cc follana_io_s.cc walfil_s.cc baryon_s.cc \
-	stag_scalars_s.cc stag_propShift_s.cc asqtad_linop_s.cc \
+	lwldslash_w_pab.cc mesphas_s.cc mesphas_follana_s.cc pions_s.cc \
+	follana_io_s.cc walfil_s.cc baryon_s.cc stag_scalars_s.cc \
+	stag_propShift_s.cc vector_meson_s.cc asqtad_linop_s.cc \
 	asq_dsl_s.cc fat7_links_s.cc naik_term_s.cc asqtad_fermact_s.cc \
 	asqtad_mdagm_s.cc staggered_qprop.cc stag_phases_s.cc
 @BUILD_WILSON_LIBS_TRUE@am__objects_1 = baryon_w.$(OBJEXT) \
@@ -652,13 +653,14 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc gaugebc_utils.cc \
 @BUILD_PAB_WILSON_DSLASH_TRUE@am__objects_4 = lwldslash_w_pab.$(OBJEXT)
 @BUILD_STAGGERED_LIBS_TRUE@am__objects_5 = mesphas_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	mesphas_follana_s.$(OBJEXT) \
-@BUILD_STAGGERED_LIBS_TRUE@	pions_follana_s.$(OBJEXT) \
+@BUILD_STAGGERED_LIBS_TRUE@	pions_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	follana_io_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	fermact_qprop.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	walfil_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	baryon_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	stag_scalars_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	stag_propShift_s.$(OBJEXT) \
+@BUILD_STAGGERED_LIBS_TRUE@	vector_meson_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	asqtad_linop_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	asq_dsl_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	fat7_links_s.$(OBJEXT) \
@@ -815,8 +817,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/ovlap_partfrac4d_fermact_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/p_src_w.Po ./$(DEPDIR)/param_io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/paulitodr.Po ./$(DEPDIR)/pg_hmc_io.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/pions_follana_s.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/polar_dec.Po ./$(DEPDIR)/polylp.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/pions_s.Po ./$(DEPDIR)/polar_dec.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/polylp.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/prec_dwf_fermact_array_sse_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/prec_dwf_fermact_array_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/prec_dwf_linop_array_w.Po \
@@ -873,6 +875,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_wilson_fermact_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_wilson_linop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_zolo_nef_fermact_array_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/vector_meson_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/walfil_s.Po ./$(DEPDIR)/walfil_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/wall_qprop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/walldeltaff_w.Po \
@@ -1095,7 +1098,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/param_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paulitodr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pg_hmc_io.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pions_follana_s.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pions_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/polar_dec.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/polylp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_dwf_fermact_array_sse_w.Po@am__quote@
@@ -1167,6 +1170,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_wilson_fermact_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_wilson_linop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_zolo_nef_fermact_array_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vector_meson_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/walfil_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/walfil_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wall_qprop_w.Po@am__quote@

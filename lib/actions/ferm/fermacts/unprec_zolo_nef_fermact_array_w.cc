@@ -1,4 +1,4 @@
-// $Id: unprec_zolo_nef_fermact_array_w.cc,v 1.3 2004-10-29 19:50:40 bjoo Exp $
+// $Id: unprec_zolo_nef_fermact_array_w.cc,v 1.4 2004-11-01 12:52:47 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned NEF fermion action
  */
@@ -54,7 +54,8 @@ namespace Chroma
       // Read the stuff for the action
       read(paramtop, "OverMass", OverMass);
       read(paramtop, "Mass", Mass);
-      read(paramtop, "a5", a5);
+      read(paramtop, "b5", b5);
+      read(paramtop, "c5", c5);
       read(paramtop, "N5", N5);
     }
     catch(const string& e) { 
@@ -77,12 +78,12 @@ namespace Chroma
   {
   }
 
-  void UnprecZoloNEFFermActArray::initCoeffs(multi1d<Real>& b5,
-					     multi1d<Real>& c5,
+  void UnprecZoloNEFFermActArray::initCoeffs(multi1d<Real>& b5_arr,
+					     multi1d<Real>& c5_arr,
 					     Handle<const ConnectState>& state) const
   {
-    b5.resize(N5);
-    c5.resize(N5);
+    b5_arr.resize(N5);
+    c5_arr.resize(N5);
 
     Real approxMin;
     Real approxMax;
@@ -109,12 +110,21 @@ namespace Chroma
       QDP_abort(1);
     }
 
+    Real maxerr = rdata->Delta;
+
     multi1d<Real> gamma(N5);
     for(int i=0; i < N5; i++) { 
       gamma[i] = Real(rdata->gamma[i]);
     }
 
     zolotarev_free(rdata);
+
+    QDPIO::cout << "Initing Zolo NEF Linop: N5=" << N5 
+		<< " b5+c5=" << b5+c5 
+		<<  " b5-c5=" << b5-c5 
+		<<  " epsilon=" << epsilon
+                <<  " scale=" << approxMax 
+		<<  " Maxerr=" << maxerr << endl;
 
     for(int i=0; i < N5; i++) { 
       QDPIO::cout << "gamma[" << i << "] = " << gamma[i] << endl;
@@ -124,8 +134,15 @@ namespace Chroma
       Real tmp = gamma[i]*approxMax;
       Real omega = Real(1)/tmp;
 
-      b5[i] = omega + Real(0.5)*a5;
-      c5[i] = omega - Real(0.5)*a5;
+      b5_arr[i] = Real(0.5)*( (omega + Real(1) )*b5  + (omega - Real(1) )*c5 );
+      c5_arr[i] = Real(0.5)*( (omega - Real(1) )*b5  + (omega + Real(1) )*c5 );
+
+      QDPIO::cout << "i=" << i << " omega["<<i<<"]=" << omega
+		  << " b5["<< i << "] ="<< b5_arr[i] 
+		  << " c5["<< i << "] ="<< c5_arr[i] << endl;
+      QDPIO::cout << "i=" << i << " b5["<<i<<"]+c5["<<i<<"]/omega["<<i<<"] =" 
+		  << (b5_arr[i]+c5_arr[i])/omega
+		  << " b5["<<i<<"]-c5["<<i<<"]=" << b5_arr[i]-c5_arr[i] << endl;
     }
   }
 
@@ -140,13 +157,13 @@ namespace Chroma
   const UnprecDWLinOpBaseArray<LatticeFermion>* 
   UnprecZoloNEFFermActArray::linOp(Handle<const ConnectState> state) const
   {
-    multi1d<Real> b5;
-    multi1d<Real> c5;
+    multi1d<Real> b5_arr;
+    multi1d<Real> c5_arr;
 
     // Cast the state up to an overlap state
-    initCoeffs(b5,c5,state);
+    initCoeffs(b5_arr,c5_arr,state);
     
-    return new UnprecNEFDWLinOpArray(state->getLinks(),OverMass,b5,c5,Mass,N5);
+    return new UnprecNEFDWLinOpArray(state->getLinks(),OverMass,b5_arr,c5_arr,Mass,N5);
   }
 
   //! Produce a M^dag.M linear operator for this action
@@ -174,13 +191,13 @@ namespace Chroma
   const UnprecDWLinOpBaseArray<LatticeFermion>* 
   UnprecZoloNEFFermActArray::linOpPV(Handle<const ConnectState> state) const
   {
-    multi1d<Real> b5;
-    multi1d<Real> c5;
+    multi1d<Real> b5_arr;
+    multi1d<Real> c5_arr;
 
     // Cast the state up to an overlap state
-    initCoeffs(b5,c5,state);
+    initCoeffs(b5_arr,c5_arr,state);
     
-    return new UnprecNEFDWLinOpArray(state->getLinks(),OverMass,b5,c5,1.0,N5);  // fixed to quark mass 1
+    return new UnprecNEFDWLinOpArray(state->getLinks(),OverMass,b5_arr,c5_arr,1.0,N5);  // fixed to quark mass 1
   }
 
   //! Create a ConnectState with just the gauge fields
