@@ -1,7 +1,8 @@
 06/08/2004 -- Robert Edwards
 
 	Version 1.5.18. Wallformfac codes debugged to some
-	extent. Time for major tests.
+	extent. Added new delta operators in baryons_w.cc .
+	Time for major tests.
 
 05/28/2004 -- Robert Edwards
 
