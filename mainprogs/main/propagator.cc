@@ -1,6 +1,9 @@
-// $Id: propagator.cc,v 1.54 2004-04-26 11:19:13 bjoo Exp $
+// $Id: propagator.cc,v 1.55 2004-04-27 21:30:01 edwards Exp $
 // $Log: propagator.cc,v $
-// Revision 1.54  2004-04-26 11:19:13  bjoo
+// Revision 1.55  2004-04-27 21:30:01  edwards
+// Now supports input from seqsource as well as make_source.
+//
+// Revision 1.54  2004/04/26 11:19:13  bjoo
 // Added support for Reading EV-s in SZIN format. Must provide e-values in XML tho.
 //
 // Revision 1.53  2004/04/23 11:23:38  bjoo
@@ -160,28 +163,58 @@ int main(int argc, char **argv)
   gaugeStartup(gauge_file_xml, gauge_xml, u, input.cfg);
 
 
+  //
   // Read in the source along with relevant information.
+  // 
   LatticePropagator quark_prop_source;
   XMLReader source_file_xml, source_record_xml;
-
-  // ONLY SciDAC mode is supported for propagators!!
-  readQprop(source_file_xml, 
-	    source_record_xml, quark_prop_source,
-	    input.prop.source_file, QDPIO_SERIAL);
-
-  // Try to invert this record XML into a source struct
-  // Also pull out the id of this source
-  PropSource_t source_header;
-
-  try
+  int t0;
+  int j_decay;
+  bool make_sourceP = false;;
+  bool seqsourceP = false;
   {
-    read(source_record_xml, "/MakeSource/PropSource", source_header);
-  }
-  catch (const string& e) 
-  {
-    QDPIO::cerr << "Error extracting source_header: " << e << endl;
-    throw;
-  }
+    // ONLY SciDAC mode is supported for propagators!!
+    QDPIO::cout << "Attempt to read source" << endl;
+    readQprop(source_file_xml, 
+	      source_record_xml, quark_prop_source,
+	      input.prop.source_file, QDPIO_SERIAL);
+    QDPIO::cout << "Forward propagator successfully read" << endl;
+
+    // Try to invert this record XML into a source struct
+    try
+    {
+      // First identify what kind of source might be here
+      if (source_record_xml.count("/MakeSource") != 0)
+      {
+	PropSource_t source_header;
+
+	read(source_record_xml, "/MakeSource/PropSource", source_header);
+	j_decay = source_header.j_decay;
+	t0 = source_header.t_source[j_decay];
+	make_sourceP = true;
+      }
+      else if (source_record_xml.count("/SequentialSource") != 0)
+      {
+	PropSource_t source_header;
+	SeqSource_t seqsource_header;
+
+	read(source_record_xml, "/SequentialSource/SeqSource", seqsource_header);
+	// Any source header will do for j_decay
+	read(source_record_xml, "/SequentialSource/ForwardProps/elem[1]/PropSource", 
+	     source_header);
+	j_decay = source_header.j_decay;
+	t0 = seqsource_header.t_sink;
+	seqsourceP = true;
+      }
+      else
+	throw "No appropriate header found";
+    }
+    catch (const string& e) 
+    {
+      QDPIO::cerr << "Error extracting source_header: " << e << endl;
+      QDP_abort(1);
+    }
+  }    
 
 
   // Instantiate XML writer for XMLDAT
@@ -273,7 +306,7 @@ int main(int argc, char **argv)
 	       input.param.invParam.invType, 
 	       input.param.invParam.RsdCG, 
 	       input.param.invParam.MaxCG, 
-	       false,
+	       input.param.nonRelProp,
 	       ncg_had);
   }
   break;
@@ -293,7 +326,7 @@ int main(int argc, char **argv)
 	       input.param.invParam.invType, 
 	       input.param.invParam.RsdCG, 
 	       input.param.invParam.MaxCG, 
-	       false,
+	       input.param.nonRelProp,
 	       ncg_had);
   }
   break;
@@ -311,24 +344,24 @@ int main(int argc, char **argv)
 				  dwf_params.chiralParam.N5);
     Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
 
-#ifndef MRES_CALCULATION
-    quarkProp4(quark_propagator, xml_out, quark_prop_source,
-	       S_f, state, 
-	       input.param.invParam.invType, 
-	       input.param.invParam.RsdCG, 
-	       input.param.invParam.MaxCG, 
-	       false,
-	       ncg_had);
-#else
-    dwf_quarkProp4(quark_propagator, xml_out, quark_prop_source,
-		   source_header.t_source[source_header.j_decay],
-		   source_header.j_decay,
-		   S_f, state, 
-		   input.param.invParam.invType, 
-		   input.param.invParam.RsdCG, 
-		   input.param.invParam.MaxCG, 
-		   ncg_had);
+#ifdef MRES_CALCULATION
+    if (! input.param.nonRelProp)
+      dwf_quarkProp4(quark_propagator, xml_out, quark_prop_source,
+		     t0, j_decay, 
+		     S_f, state, 
+		     input.param.invParam.invType, 
+		     input.param.invParam.RsdCG, 
+		     input.param.invParam.MaxCG, 
+		     ncg_had);
+    else
 #endif
+      quarkProp4(quark_propagator, xml_out, quark_prop_source,
+		 S_f, state, 
+		 input.param.invParam.invType, 
+		 input.param.invParam.RsdCG, 
+		 input.param.invParam.MaxCG, 
+		 input.param.nonRelProp,
+		 ncg_had);
   }
   break;
 
@@ -343,24 +376,26 @@ int main(int argc, char **argv)
 			     dwf_params.Mass, 
 			     dwf_params.chiralParam.N5);
     Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
-#ifndef MRES_CALCULATION
-    quarkProp4(quark_propagator, xml_out, quark_prop_source,
-  	       S_f, state, 
-	       input.param.invParam.invType, 
-	       input.param.invParam.RsdCG, 
-	       input.param.invParam.MaxCG, 
-	       false,
-	       ncg_had);
-#else
-    dwf_quarkProp4(quark_propagator, xml_out, quark_prop_source,
-		   source_header.t_source[source_header.j_decay],
-		   source_header.j_decay,
-		   S_f, state, 
-		   input.param.invParam.invType, 
-		   input.param.invParam.RsdCG, 
-		   input.param.invParam.MaxCG, 
-		   ncg_had);
+
+#ifdef MRES_CALCULATION
+    if (! input.param.nonRelProp)
+      dwf_quarkProp4(quark_propagator, xml_out, quark_prop_source,
+		     t0, j_decay, 
+		     S_f, state, 
+		     input.param.invParam.invType, 
+		     input.param.invParam.RsdCG, 
+		     input.param.invParam.MaxCG, 
+		     ncg_had);
+    else
 #endif
+      quarkProp4(quark_propagator, xml_out, quark_prop_source,
+		 S_f, state, 
+		 input.param.invParam.invType, 
+		 input.param.invParam.RsdCG, 
+		 input.param.invParam.MaxCG, 
+		 input.param.nonRelProp,
+		 ncg_had);
+
   }
   break;
 
@@ -381,63 +416,63 @@ int main(int argc, char **argv)
 	       input.param.invParam.invType, 
 	       input.param.invParam.RsdCG, 
 	       input.param.invParam.MaxCG, 
-	       false,
+	       input.param.nonRelProp,
 	       ncg_had);
   }
   break;
   
   case FERM_ACT_ZOLOTAREV_4D:
-    {
-      QDPIO::cout << "FERM_ACT_ZOLOTAREV_4D" << endl;
-      const Zolotarev4DFermActParams& zolo4d = dynamic_cast<const Zolotarev4DFermActParams& > (*(input.param.FermActHandle));
+  {
+    QDPIO::cout << "FERM_ACT_ZOLOTAREV_4D" << endl;
+    const Zolotarev4DFermActParams& zolo4d = dynamic_cast<const Zolotarev4DFermActParams& > (*(input.param.FermActHandle));
       
-      // Construct Fermact -- now uses constructor from the zolo4d params
-      // struct
-      Zolotarev4DFermAct S(fbc, zolo4d, xml_out);
+    // Construct Fermact -- now uses constructor from the zolo4d params
+    // struct
+    Zolotarev4DFermAct S(fbc, zolo4d, xml_out);
 
       
-      // Make a state. Now calls create state with the state info 
-      // params struct. Loads Evalues etc if needed, will in the 
-      // future recompute them as needed
-      Handle<const ConnectState> state(S.createState(u, zolo4d.StateInfo, xml_out, zolo4d.AuxFermActHandle->getMass() )  );
+    // Make a state. Now calls create state with the state info 
+    // params struct. Loads Evalues etc if needed, will in the 
+    // future recompute them as needed
+    Handle<const ConnectState> state(S.createState(u, zolo4d.StateInfo, xml_out, zolo4d.AuxFermActHandle->getMass() )  );
   
-      // Call the propagator... Hooray.
-      quarkProp4(quark_propagator, xml_out, quark_prop_source,
-		 S, state, 
-		 input.param.invParam.invType, 
-		 input.param.invParam.RsdCG, 
-		 input.param.invParam.MaxCG, 
-		 false,
-		 ncg_had);	  
+    // Call the propagator... Hooray.
+    quarkProp4(quark_propagator, xml_out, quark_prop_source,
+	       S, state, 
+	       input.param.invParam.invType, 
+	       input.param.invParam.RsdCG, 
+	       input.param.invParam.MaxCG, 
+	       input.param.nonRelProp,
+	       ncg_had);	  
 		      
-    }
-    break;
+  }
+  break;
   case FERM_ACT_ZOLOTAREV_5D:
-    {
-      QDPIO::cout << "FERM_ACT_ZOLOTAREV_5D" << endl;
-      const Zolotarev5DFermActParams& zolo5d = dynamic_cast<const Zolotarev5DFermActParams& > (*(input.param.FermActHandle));
+  {
+    QDPIO::cout << "FERM_ACT_ZOLOTAREV_5D" << endl;
+    const Zolotarev5DFermActParams& zolo5d = dynamic_cast<const Zolotarev5DFermActParams& > (*(input.param.FermActHandle));
       
-      // Construct Fermact -- now uses constructor from the zolo4d params
-      // struct
-      Zolotarev5DFermActArray S(fbc_a, fbc, zolo5d, xml_out);
+    // Construct Fermact -- now uses constructor from the zolo4d params
+    // struct
+    Zolotarev5DFermActArray S(fbc_a, fbc, zolo5d, xml_out);
 
       
-      // Make a state. Now calls create state with the state info 
-      // params struct. Loads Evalues etc if needed, will in the 
-      // future recompute them as needed
-      Handle<const ConnectState> state(S.createState(u, zolo5d.StateInfo, xml_out, zolo5d.AuxFermActHandle->getMass()));
+    // Make a state. Now calls create state with the state info 
+    // params struct. Loads Evalues etc if needed, will in the 
+    // future recompute them as needed
+    Handle<const ConnectState> state(S.createState(u, zolo5d.StateInfo, xml_out, zolo5d.AuxFermActHandle->getMass()));
   
-      // Call the propagator... Hooray.
-      quarkProp4(quark_propagator, xml_out, quark_prop_source,
-		 S, state, 
-		 input.param.invParam.invType, 
-		 input.param.invParam.RsdCG, 
-		 input.param.invParam.MaxCG, 
-		 false,
-		 ncg_had);	  
+    // Call the propagator... Hooray.
+    quarkProp4(quark_propagator, xml_out, quark_prop_source,
+	       S, state, 
+	       input.param.invParam.invType, 
+	       input.param.invParam.RsdCG, 
+	       input.param.invParam.MaxCG, 
+	       input.param.nonRelProp,
+	       ncg_had);	  
 		      
-    }
-    break;
+  }
+  break;
 
   default:
     QDPIO::cerr << "Unsupported fermion action" << endl;
@@ -473,17 +508,30 @@ int main(int argc, char **argv)
     pop(file_xml);
 
     XMLBufferWriter record_xml;
-    push(record_xml, "Propagator");
-    write(record_xml, "ForwardProp", input.param);
-    write(record_xml, "PropSource", source_header);
-//    record_xml << source_file_xml;
-//    record_xml << source_record_xml;
-    write(record_xml, "Config_info", gauge_xml);
-    pop(record_xml);
+    if (make_sourceP)
+    {
+      XMLReader xml_tmp(source_record_xml, "/MakeSource");
+
+      push(record_xml, "Propagator");
+      write(record_xml, "ForwardProp", input.param);
+      record_xml << xml_tmp;  // write out all the stuff under MakeSource
+      pop(record_xml);
+    } 
+    else if (seqsourceP)
+    {
+      XMLReader xml_tmp(source_record_xml, "/SequentialSource");
+
+      push(record_xml, "SequentialProp");
+      write(record_xml, "SeqProp", input.param);
+      record_xml << xml_tmp;  // write out all the stuff under SequentialSource
+      pop(record_xml);
+    }
 
     // Write the source
     writeQprop(file_xml, record_xml, quark_propagator,
 	       input.prop.prop_file, input.prop.prop_volfmt, QDPIO_SERIAL);
+
+    QDPIO::cout << "Propagator successfully written" << endl;
   }
 
   pop(xml_out);  // propagator
