@@ -31,13 +31,14 @@
 #define INTERNAL_PRECISION long double
 #endif
 
-#include <zolotarev.h>
+#include "actions/ferm/fermacts/zolotarev.h"
+
 #define ZOLOTAREV_INTERNAL
 #undef ZOLOTAREV_DATA
 #define ZOLOTAREV_DATA izd
 #undef ZPRECISION
 #define ZPRECISION INTERNAL_PRECISION
-#include <zolotarev.h>
+#include "actions/ferm/fermacts/zolotarev.h"
 #undef ZOLOTAREV_INTERNAL
 
 /* The ANSI standard appears not to know what pi is */
