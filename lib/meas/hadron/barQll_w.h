@@ -1,4 +1,4 @@
-$Id: barQll_w.h,v 1.1 2004-09-08 14:00:13 kostas Exp $
+// $Id: barQll_w.h,v 1.2 2004-09-08 14:32:20 edwards Exp $
 /*! \file
  *  \brief Heavy Baryon (Qll)  2-pt function : Orginos and Savage
  */
@@ -49,4 +49,5 @@ void Qll(const multi1d<LatticeColorMatrix>& u,
 void HeavyQuarkProp(LatticeColorMatrix& Qprop,
 		    const multi1d<LatticeColorMatrix>& u,
 		    const multi1d<int>& src_coord);
-#end
+
+#endif
