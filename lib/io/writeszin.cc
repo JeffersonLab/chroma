@@ -1,4 +1,4 @@
-// $Id: writeszin.cc,v 1.7 2004-04-06 15:27:14 bjoo Exp $
+// $Id: writeszin.cc,v 1.8 2004-04-13 03:06:13 edwards Exp $
 
 /*! \file
  *  \brief Write out a configuration written by SZIN up to configuration version 7.
@@ -269,5 +269,84 @@ void writeSzinTrunc(SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u,
   header.nrow[j_decay] = Layout::lattSize()[j_decay];  // restore the header
 
   END_CODE("writeSzinTrunc");
+}
+
+
+//! Write a replicated (in time direction) SZIN configuration file
+/*!
+ * \ingroup io
+ *
+ * \param header     structure holding config info ( Modify )
+ * \param u          gauge configuration ( Read )
+ * \param j_decay    direction for replication ( Read )
+ * \param n_replica  number of replicas in j_decay direction ( Read )
+ * \param cfg_file   path ( Read )
+ */    
+
+void writeSzinReplica(SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u, 
+		      int j_decay, int n_replica, 
+		      const string& cfg_file)
+{
+  START_CODE("writeSzinReplica");
+
+  // The object where data is written
+  BinaryWriter cfg_out(cfg_file); // for now, cfg_io_location not used
+
+  // Force nrow in header to be correct replicated size
+  header.nrow = Layout::lattSize();
+  if (j_decay < 0 || j_decay >= Nd)
+    QDP_error_exit("writeSzinReplica: invalid direction for replication, j_decay=%d",j_decay);
+
+  if (n_replica < 1)
+    QDP_error_exit("writeSzinReplica: invalid n_replica=%d", n_replica);
+
+  header.nrow[j_decay] *= n_replica;   // replicate in j_decay direction
+
+  // Dump the header
+  writeSzinHeader(cfg_out, header);
+
+  /*
+   *  SZIN stores data "checkerboarded".  We must therefore "fake" a checkerboarding
+   *  Force a replication along the j_decay direction
+   */
+
+  multi1d<int> lattsize_cb = header.nrow;
+  lattsize_cb[0] /= 2;		// Evaluate the coords on the checkerboard lattice
+
+  // Construct the volume of this replicated problem
+  int vol_cb = 1;
+  for(int j = 0; j < Nd; j++)
+    vol_cb *= lattsize_cb[j];
+
+  // The slowest moving index is the direction
+  for(int j = 0; j < Nd; j++)
+  {
+    LatticeColorMatrix  u_old = transpose(u[j]); // Take the transpose
+  
+    for(int cb=0; cb < 2; ++cb)
+      for(int sitecb=0; sitecb < vol_cb; ++sitecb)
+      {
+	multi1d<int> coord = crtesn(sitecb, lattsize_cb); // The coordinate
+      
+	// construct the checkerboard offset
+	int sum = 0;
+	for(int m=1; m<Nd; m++)
+	  sum += coord[m];
+
+	// The true lattice x-coord
+	coord[0] = 2*coord[0] + ((sum + cb) & 1);
+
+	// Adjust to find the lattice coordinate within the original problem
+	coord[j_decay] = coord[j_decay] % Layout::lattSize()[j_decay];
+
+	write(cfg_out, u_old, coord); 	// Write out a SU(3) matrix
+      }
+  }
+
+  cfg_out.close();
+
+  header.nrow[j_decay] = Layout::lattSize()[j_decay];  // restore the header
+
+  END_CODE("writeSzinReplica");
 }
 

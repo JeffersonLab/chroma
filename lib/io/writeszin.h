@@ -1,4 +1,4 @@
-// $Id: writeszin.h,v 1.4 2003-10-10 03:46:46 edwards Exp $
+// $Id: writeszin.h,v 1.5 2004-04-13 03:06:13 edwards Exp $
 
 /*! \file
  *  \brief Write a SZIN configuration written at configuration version 7.
@@ -54,4 +54,21 @@ void writeSzin(const SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u, 
 void writeSzinTrunc(SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u, 
 		    int j_decay, int t_start, int t_end, 
 		    const string& cfg_file);
+
+
+//! Write a replicated (in time direction) SZIN configuration file
+/*!
+ * \ingroup io
+ *
+ * \param header     structure holding config info ( Modify )
+ * \param u          gauge configuration ( Read )
+ * \param j_decay    direction for replication ( Read )
+ * \param n_replica  number of replicas in j_decay direction ( Read )
+ * \param cfg_file   path ( Read )
+ */    
+
+void writeSzinReplica(SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u, 
+		      int j_decay, int n_replica, 
+		      const string& cfg_file);
 #endif
+
