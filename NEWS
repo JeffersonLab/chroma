@@ -1,3 +1,9 @@
+06/26/2004 -- Robert Edwards
+
+	Version 1.6.0. New profiling support. Changed mem. layout to remove
+        PDWVector layer - only matters for SSE routines. Removed
+        completely all uses, decls, files with LatticeDWFermion. 
+
 06/08/2004 -- Robert Edwards
 
 	Version 1.5.20. Final version before minor release of QDP breaks old
