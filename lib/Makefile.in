@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.81 2003-11-13 04:17:07 edwards Exp $
+# $Id: Makefile.in,v 1.82 2003-11-13 18:15:44 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -185,7 +185,7 @@ libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
                szin_io.cc readszin.cc writeszin.cc su3proj.cc sun_proj.cc \
                gaus_smear.cc hyp_smear.cc ape_smear.cc \
                klein_gord.cc laplacian.cc  \
-               su2extract.cc sunfill.cc invcg2.cc qprop_io.cc \
+               su2extract.cc sunfill.cc invcg2.cc invcg2_array.cc qprop_io.cc \
                milc_io.cc readmilc.cc writemilc.cc\
 $(am__append_2) $(am__append_3) $(am__append_4)
 
@@ -202,21 +202,21 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	mesplq.cc polylp.cc reunit.cc unit_check.cc sftmom.cc srcfil.cc \
 	szin_io.cc readszin.cc writeszin.cc su3proj.cc sun_proj.cc \
 	gaus_smear.cc hyp_smear.cc ape_smear.cc klein_gord.cc \
-	laplacian.cc su2extract.cc sunfill.cc invcg2.cc qprop_io.cc \
-	milc_io.cc readmilc.cc writemilc.cc baryon_w.cc mesons_w.cc \
-	curcor2_w.cc lwldslash_w.cc formfac_w.cc sink_smear2_w.cc \
-	barcomp_w.cc transf_w.cc ldwfdslash_w.cc fermact_qprop.cc \
-	unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
-	unprec_wilson_dsdu_w.cc unprec_dwf_fermact_w.cc \
-	unprec_dwf_linop_w.cc unprec_dwf_dsdu_w.cc \
-	unprec_dwf_qprop_w.cc dwffld_w.cc fermact_qprop_array.cc \
-	unprec_dwf_fermact_array_w.cc unprec_dwf_linop_array_w.cc \
-	unprec_dwf_dsdu_array_w.cc unprec_dwf_qprop_array_w.cc \
-	readszinqprop_w.cc readszinferm_w.cc writeszinqprop_w.cc \
-	quarkprop4_w.cc overlapbu_linop_w.cc p_src_w.cc d_src_w.cc \
-	D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc lwldslash_w_sse.cc \
-	mesphas_s.cc mesphas_follana_s.cc pions_follana_s.cc \
-	follana_io_s.cc
+	laplacian.cc su2extract.cc sunfill.cc invcg2.cc invcg2_array.cc \
+	qprop_io.cc milc_io.cc readmilc.cc writemilc.cc baryon_w.cc \
+	mesons_w.cc curcor2_w.cc lwldslash_w.cc formfac_w.cc \
+	sink_smear2_w.cc barcomp_w.cc transf_w.cc ldwfdslash_w.cc \
+	fermact_qprop.cc unprec_wilson_fermact_w.cc \
+	unprec_wilson_linop_w.cc unprec_wilson_dsdu_w.cc \
+	unprec_dwf_fermact_w.cc unprec_dwf_linop_w.cc \
+	unprec_dwf_dsdu_w.cc unprec_dwf_qprop_w.cc dwffld_w.cc \
+	fermact_qprop_array.cc unprec_dwf_fermact_array_w.cc \
+	unprec_dwf_linop_array_w.cc unprec_dwf_dsdu_array_w.cc \
+	unprec_dwf_qprop_array_w.cc readszinqprop_w.cc \
+	readszinferm_w.cc writeszinqprop_w.cc quarkprop4_w.cc \
+	overlapbu_linop_w.cc p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc \
+	BuildingBlocks_w.cc lwldslash_w_sse.cc mesphas_s.cc \
+	mesphas_follana_s.cc pions_follana_s.cc follana_io_s.cc
 @BUILD_WILSON_LIBS_TRUE@am__objects_1 = baryon_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	mesons_w.$(OBJEXT) curcor2_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	lwldslash_w.$(OBJEXT) \
@@ -260,9 +260,9 @@ am_libchroma_a_OBJECTS = rgauge.$(OBJEXT) taproj.$(OBJEXT) \
 	sun_proj.$(OBJEXT) gaus_smear.$(OBJEXT) hyp_smear.$(OBJEXT) \
 	ape_smear.$(OBJEXT) klein_gord.$(OBJEXT) laplacian.$(OBJEXT) \
 	su2extract.$(OBJEXT) sunfill.$(OBJEXT) invcg2.$(OBJEXT) \
-	qprop_io.$(OBJEXT) milc_io.$(OBJEXT) readmilc.$(OBJEXT) \
-	writemilc.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
-	$(am__objects_3)
+	invcg2_array.$(OBJEXT) qprop_io.$(OBJEXT) milc_io.$(OBJEXT) \
+	readmilc.$(OBJEXT) writemilc.$(OBJEXT) $(am__objects_1) \
+	$(am__objects_2) $(am__objects_3)
 am__objects_4 =
 nodist_libchroma_a_OBJECTS = $(am__objects_4)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS) \
@@ -281,8 +281,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/follana_io_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/formfac_w.Po ./$(DEPDIR)/gaus_smear.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/hotst.Po ./$(DEPDIR)/hyp_smear.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/invcg2.Po ./$(DEPDIR)/klein_gord.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/laplacian.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/invcg2.Po ./$(DEPDIR)/invcg2_array.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/klein_gord.Po ./$(DEPDIR)/laplacian.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ldwfdslash_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/lwldslash_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/lwldslash_w_sse.Po \
@@ -401,6 +401,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hotst.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyp_smear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/invcg2.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/invcg2_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/klein_gord.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/laplacian.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ldwfdslash_w.Po@am__quote@
