@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_qprop_array_w.cc,v 1.2 2003-11-13 04:15:31 edwards Exp $
+// $Id: unprec_dwf_qprop_array_w.cc,v 1.3 2003-11-13 18:19:08 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion propagator solver
  *
@@ -38,9 +38,6 @@ void UnprecDWFermActArray::qprop(LatticeFermion& psi,
 //  const int N5 = chi.size();
   int n_count;
   
-  // Construct the linear operator
-  const LinearOperator< multi1d<LatticeFermion> >* A = linOp(u);
-
   // Initialize the 5D fields
   //  tmp5 = (chi,0,0,0,..,0)^T
   multi1d<LatticeFermion> chi5(N5);
@@ -69,6 +66,9 @@ void UnprecDWFermActArray::qprop(LatticeFermion& psi,
 
 //  QDPIO::cout << "|psi5|^2 = " << norm2(psi5) << endl;
 //  QDPIO::cout << "|chi5|^2 = " << norm2(chi5) << endl;
+
+  // Construct the linear operator
+  const LinearOperator< multi1d<LatticeFermion> >* A = linOp(u);
 
   switch(invType)
   {
