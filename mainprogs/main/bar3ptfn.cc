@@ -1,7 +1,10 @@
-// $Id: bar3ptfn.cc,v 1.11 2003-06-25 16:12:04 edwards Exp $
+// $Id: bar3ptfn.cc,v 1.12 2003-07-04 17:08:36 edwards Exp $
 //
 // $Log: bar3ptfn.cc,v $
-// Revision 1.11  2003-06-25 16:12:04  edwards
+// Revision 1.12  2003-07-04 17:08:36  edwards
+// Added more Seq_src types.
+//
+// Revision 1.11  2003/06/25 16:12:04  edwards
 // Changed from nml to xml.
 //
 // Revision 1.10  2003/06/08 05:02:27  edwards
@@ -604,6 +607,8 @@ main(int argc, char *argv[])
         write(xml_seq_src, "hadron_type", "BARYON") ;
       } else if ((10 <= seq_src_value) && (seq_src_value <= 20)) {
         write(xml_seq_src, "hadron_type", "MESON") ;
+      } else if ((21 <= seq_src_value) && (seq_src_value <= 30)) {
+        write(xml_seq_src, "hadron_type", "BARYON") ;
       } else {
         QDP_error_exit("Unknown sequential source type", seq_src_value) ;
       }
