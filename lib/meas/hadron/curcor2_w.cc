@@ -1,4 +1,4 @@
-// $Id: curcor2_w.cc,v 1.3 2003-10-01 03:02:12 edwards Exp $
+// $Id: curcor2_w.cc,v 1.4 2003-10-01 20:23:12 edwards Exp $
 /*! \file
  *  \brief Mesonic current correlators
  */
@@ -87,7 +87,7 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
       if( k != j_decay )
       {
 	push(xml_dir);     // next array element
-	Write(xml_dir, k);
+	write(xml_dir, "ortho_dir_num", k);
 
 	int n = 1 << k;
 	kv = kv + 1;
@@ -158,6 +158,9 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
     {
       if( k != j_decay )
       {
+	push(xml_dir);     // next array element
+	write(xml_dir, "ortho_dir_num", k);
+
 	int n = 1 << k;
 	kv = kv + 1;
 	psi_sq = 0;
@@ -198,6 +201,9 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
     {
       if( k != j_decay )
       {
+	push(xml_dir);     // next array element
+	write(xml_dir, "ortho_dir_num", k);
+
 	int n = 1 << k;
 	kv = kv + 1;
 	psi_sq = 0;
