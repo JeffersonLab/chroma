@@ -1,4 +1,4 @@
-// $Id: wallnuclff_w.cc,v 1.1 2004-01-12 03:08:38 edwards Exp $
+// $Id: wallnuclff_w.cc,v 1.2 2004-01-14 21:41:26 edwards Exp $
 /*! \file
  *  \brief Wall-sink nucleon form-factors 
  *
@@ -48,7 +48,7 @@ void wallNuclFormFac(XMLWriter& xml,
 		     const SftMom& phases,
 		     int t0, int t_sink)
 {
-  START_CODE("FormFac");
+  START_CODE("wallNuclFormFac");
 
   // Length of lattice in j_decay direction and 3pt correlations fcns
   int length = phases.numSubsets();
@@ -58,23 +58,11 @@ void wallNuclFormFac(XMLWriter& xml,
   Real e_u = 2.0/3.0;
   Real e_d = -1.0/3.0;
 
-  LatticePropagator src_prop_tmp;
   LatticePropagator q1_tmp;
-  LatticePropagator q2_tmp;
-  LatticePropagator di_quark;
-  LatticeColorMatrix col_mat;
-
-  // Construct the anti-quark propagator from the seq. quark prop.
-  LatticePropagator anti_u_prop = adj(Gamma(G5) * back_u_prop * Gamma(G5));
-  LatticePropagator anti_d_prop = adj(Gamma(G5) * back_d_prop * Gamma(G5));
 
   // Project propagator onto zero momentum: Do a slice-wise sum.
-  multi1d<DPropagator> dprop_slice;
-  dprop_slice = sumMulti(forw_u_prop, phases.getSubset());
-  Propagator u_x2 = dprop_slice[t_sink];
-
-  dprop_slice = sumMulti(forw_d_prop, phases.getSubset());
-  Propagator d_x2 = dprop_slice[t_sink];
+  Propagator u_x2 = sum(forw_u_prop, phases.getSubset()[t_sink]);
+  Propagator d_x2 = sum(forw_d_prop, phases.getSubset()[t_sink]);
 
 //  form.formFac.resize(Nd*Nd);
 
@@ -205,5 +193,5 @@ void wallNuclFormFac(XMLWriter& xml,
     } // end for(inser_mom_num)
   } // end for(gamma_value)
                             
-  END_CODE("FormFac");
+  END_CODE("wallNuclFormFac");
 }
