@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.155 2004-07-28 00:44:32 edwards Exp $
+# $Id: Makefile.am,v 1.156 2004-08-01 20:21:47 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -150,8 +150,6 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/zolotarev4d_fermact_w.h \
 	actions/ferm/fermacts/zolotarev5d_fermact_array_w.h \
 	actions/ferm/invert/inv_borici_w.h \
-	actions/ferm/linop/lwldslash_w_sse.h \
-	actions/ferm/linop/lwldslash_w_pab.h \
 	actions/ferm/linop/lgherm_w.h \
 	actions/ferm/linop/zolotarev5d_linop_array_w.h \
 	actions/ferm/linop/zolotarev5d_nonhermop_array_w.h \
@@ -249,6 +247,10 @@ if BUILD_SSE_WILSON_DSLASH
 AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
 endif
 
+if BUILD_SSE_DWF_CG
+AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@SSE_DWF_CG_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DWF_CG_DIR@/include
+endif
+
 lib_LIBRARIES = libchroma.a
 
 #
@@ -333,10 +335,17 @@ endif
 # Hooks for optimized code
 #
 if BUILD_SSE_WILSON_DSLASH
+nobase_include_HEADERS += actions/ferm/linop/lwldslash_w_sse.h
 libchroma_a_SOURCES += lwldslash_w_sse.cc
 endif
 
+if BUILD_SSE_DWF_CG
+nobase_include_HEADERS += actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.h
+libchroma_a_SOURCES += actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc
+endif
+
 if BUILD_PAB_WILSON_DSLASH
+nobase_include_HEADERS += actions/ferm/linop/lwldslash_w_pab.h
 libchroma_a_SOURCES += lwldslash_w_pab.cc
 endif
 
