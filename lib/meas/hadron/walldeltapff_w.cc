@@ -1,4 +1,4 @@
-// $Id: walldeltapff_w.cc,v 1.7 2004-06-02 01:59:17 edwards Exp $
+// $Id: walldeltapff_w.cc,v 1.8 2004-06-02 02:06:37 edwards Exp $
 /*! \file
  *  \brief Wall-sink delta^+ -> gamma+proton form-factors 
  *
@@ -7,110 +7,10 @@
 
 #include "chromabase.h"
 #include "util/ft/sftmom.h"
+#include "meas/hadron/wallff_w.h"
 #include "meas/hadron/walldeltapff_w.h"
 
 using namespace QDP;
-
-//! Structures to hold form-factors
-struct WallFormFac_momenta_t
-{
-  int              inser_mom_num;
-  multi1d<int>     inser_mom;
-  multi1d<Complex> local_current;
-  multi1d<Complex> nonlocal_current;
-};
-
-struct WallFormFac_insertion_t
-{
-  int              gamma_value;
-  multi1d<WallFormFac_momenta_t> momenta;
-};
-
-struct WallFormFac_insertions_t
-{
-  int              seq_src;
-  multi1d<WallFormFac_insertion_t>  insertions;
-};
-
-struct WallFormFac_formfacs_t
-{
-  multi1d<WallFormFac_insertions_t>  formFacs;
-};
-
-
-// Writers
-//! Wallformfac momenta writer
-void write(XMLWriter& xml, const string& path, const WallFormFac_momenta_t& header)
-{
-  push(xml, path);
-
-  write(xml, "inser_mom_num", header.inser_mom_num);
-  write(xml, "inser_mom", header.inser_mom);
-  write(xml, "local_cur3ptfn", header.local_current);
-
-  if (header.nonlocal_current.size() > 0)
-    write(xml, "nonlocal_cur3ptfn", header.nonlocal_current);
-
-  pop(xml);
-}
-
-//! Wallformfac insertion writer
-void write(XMLWriter& xml, const string& path, const WallFormFac_insertion_t& header)
-{
-  push(xml, path);
-
-  write(xml, "gamma_value", header.gamma_value);
-  write(xml, "Momenta", header.momenta);
-
-  pop(xml);
-}
-
-//! Wallformfac insertions writer
-void write(XMLWriter& xml, const string& path, const WallFormFac_insertions_t& header)
-{
-  push(xml, path);
-
-  write(xml, "seq_src", header.seq_src);
-  write(xml, "Insertions", header.insertions);
-
-  pop(xml);
-}
-
-//! WallFormFac writer
-void write(XMLWriter& xml, const string& path, const WallFormFac_formfacs_t& header)
-{
-  write(xml, path, header.formFacs);
-}
-
-
-//! Compute nonlocal current propagator
-/*!
- * \ingroup hadron
- *
- * The form of J_mu = (1/2)*[psibar(x+mu)*U^dag_mu*(1+gamma_mu)*psi(x) -
- *                           psibar(x)*U_mu*(1-gamma_mu)*psi(x+mu)]
- *
- * \param u                  gauge fields ( Read )
- * \param mu                 direction ( Read )
- * \param forw_prop          forward propagator ( Read )
- * \param anti_prop          anti-quark version of forward propagator ( Read )
- *
- * \return nonlocal current propagator
- */
-static
-LatticePropagator nonlocalCurrentProp(const multi1d<LatticeColorMatrix>& u, 
-				      int mu, 
-				      const LatticePropagator& forw_prop,
-				      const LatticePropagator& anti_prop)
-{
-  int gamma_value = 1 << mu;
-
-  LatticePropagator S = shift(anti_prop, FORWARD, mu) * adj(u[mu])
-    * (forw_prop + Gamma(gamma_value)*forw_prop)
-    - anti_prop * u[mu] * shift(forw_prop - Gamma(gamma_value)*forw_prop, FORWARD, mu);
-
-  return S;
-}
 
 
 //! Compute the 123-123 contraction of a delta and P
