@@ -1,13 +1,14 @@
 #
 # VPATH
 #
-VPATH = @top_srcdir@/mainprogs/tests
-VPATH += @top_srcdir@/include
+TOPDIR=@top_srcdir@
+VPATH = $(TOPDIR)/mainprogs/tests
+VPATH += $(TOPDIR)/include
 
 #
 # Include Path
 #
-INCFLAGS=-I@top_srcdir@/include -I@top_builddir@/include
+INCFLAGS=-I$(TOPDIR)/include -I@top_builddir@/include -I$(TOPDIR)/lib
 
 #
 # Any other compiler flags

@@ -35,11 +35,7 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_triplet = @host@
-
-#
-# VPATH
-#
-VPATH = @top_srcdir@/mainprogs/tests @top_srcdir@/include
+VPATH = $(TOPDIR)/mainprogs/tests $(TOPDIR)/include
 ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
@@ -132,9 +128,14 @@ target_os = @target_os@
 target_vendor = @target_vendor@
 
 #
+# VPATH
+#
+TOPDIR = @top_srcdir@
+
+#
 # Include Path
 #
-INCFLAGS = -I@top_srcdir@/include -I@top_builddir@/include
+INCFLAGS = -I$(TOPDIR)/include -I@top_builddir@/include -I$(TOPDIR)/lib
 
 #
 # Any other compiler flags
