@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovdwf_linop_array_w.h,v 1.5 2004-09-03 14:24:36 kostas Exp $
+// $Id: unprec_ovdwf_linop_array_w.h,v 1.6 2004-09-17 13:30:43 kostas Exp $
 /*! \file
  *  \brief Unpreconditioned Overlap-DWF (Borici) linear operator
  */
@@ -56,7 +56,7 @@ public:
     for(int s(0);s<N5;s++){
       D.apply(tt[s],psi[s],isign,0);
       D.apply(tt[s],psi[s],isign,1);
-      chi[s] = c5InvTwoKappa*psi[s] - tt[s] ;
+      chi[s] = c5InvTwoKappa*psi[s] +0.5*tt[s] ;  //really -(-.5)D
     }
   }
   
@@ -69,7 +69,7 @@ public:
     LatticeFermion tt ;
     D.apply(tt,psi,isign,0);
     D.apply(tt,psi,isign,1);
-    chi = (1.0 - (Nd-WilsonMass))*psi - tt ;
+    chi = (1.0 - (Nd-WilsonMass))*psi +0.5*tt ; //really -(-.5)D
   }
   
 
