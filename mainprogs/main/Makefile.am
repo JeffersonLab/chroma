@@ -48,7 +48,7 @@ check_PROGRAMS = propagator \
         qproptrev
 
 # Wilson specific programs
-check_PROGRAMS += spectrum_w qqq_w bar3ptfn qproptransf wallformfac
+check_PROGRAMS += spectrum_w qqq_w bar3ptfn qproptransf wallformfac mres
 
 # Staggered specific programs
 #check_PROGRAMS += 
@@ -63,7 +63,7 @@ EXTRA_PROGRAMS = qpropadd
 # Wilson specific programs
 # Temporarily moved here while fixing codes.
 EXTRA_PROGRAMS += propagator_comp multi_propagator multi_propagator_comp \
-       collect_multi_propcomp mres
+       collect_multi_propcomp
 
 # Staggered specific programs
 #EXTRA_PROGRAMS += 
