@@ -1,4 +1,4 @@
-// $Id: formfac_w.cc,v 1.15 2004-01-05 00:47:20 edwards Exp $
+// $Id: formfac_w.cc,v 1.16 2004-01-06 01:31:27 edwards Exp $
 /*! \file
  *  \brief Form-factors 
  *
@@ -11,6 +11,13 @@
 
 using namespace QDP;
 
+/*
+ * Structures for hadron parts
+ *
+ * \ingroup hadron
+ *
+ * @{
+ */
 
 // Read a momenta struct
 void read(BinaryReader& bin, FormFac_momenta_t& mom)
@@ -64,6 +71,7 @@ void write(BinaryWriter& bin, const FormFac_insertions_t& form)
   write(bin, form.formFac);
 }
 
+/*! @} */  // end of group hadron
 
 
 //! Compute contractions for current insertion 3-point functions.

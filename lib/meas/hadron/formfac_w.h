@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: formfac_w.h,v 1.10 2004-01-05 00:47:20 edwards Exp $
+// $Id: formfac_w.h,v 1.11 2004-01-06 01:31:27 edwards Exp $
 /*! \file
  *  \brief Form-factors 
  *
@@ -11,6 +11,10 @@
 
 /*
  * Structures for hadron parts
+ *
+ * \ingroup hadron
+ *
+ * @{
  */
 struct FormFac_momenta_t
 {
@@ -42,6 +46,7 @@ void write(BinaryWriter& bin, const FormFac_insertion_t& mes);
 void write(BinaryWriter& bin, const FormFac_insertions_t& form);
 
 
+/*! @} */  // end of group hadron
 
 
 
@@ -65,5 +70,4 @@ void FormFac(FormFac_insertions_t& form,
              const LatticePropagator& seq_quark_prop, 
              const SftMom& phases,
              int t0);
-
 #endif
