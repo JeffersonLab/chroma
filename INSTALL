@@ -11,9 +11,9 @@ To configure you have to execute the command:
 
 Some important options for CHROMA are
 
-        --enable-fermion-type=<fermion-type>
 	--with-qdp=DIR
         --enable-sse-wilson-dslash
+        --enable-sse-dwf-cg
         --prefix=<installation directory>
 
 There must be a previously installed version of qdp++ with a path
@@ -22,17 +22,14 @@ will be used by chroma - chroma just builds on top of qdp++.
 
 The other individual switches:
 
---enable-fermion-type=<fermion-type> Specifies which fermion type should
-				  be used. Allowed values are:
-			            wilson  -- Wilsonesque Fermions
-				    staggered -- Staggeredesque Fermions
-				  
-				  The default value is 'wilson'.
-
- --prefix=<installdir>            specifies where the QDP headers 
+ --prefix=<installdir>            specifies where the Chroma headers 
                                   and libraries should be installed 
                                   when you type: make install. 
 	                          By default it is set to /usr/local.
+
+ --enable-sse-wilson-dslash       enables the SSE Wilson dslash code
+
+ --enable-sse-dwf-cg              enables the SSE DWF CG inverter code
 
 
 
