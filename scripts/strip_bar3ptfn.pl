@@ -1,6 +1,6 @@
-#!/usr/local/bin/perl
+#!/usr/bin/perl
 #
-# $Id: strip_bar3ptfn.pl,v 1.4 2003-06-23 21:02:49 edwards Exp $
+# $Id: strip_bar3ptfn.pl,v 1.5 2004-04-27 02:41:14 flemingg Exp $
 #
 # Strip out all data of bar3ptfn.m output
 #
