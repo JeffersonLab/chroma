@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ferm.h,v 1.4 2004-01-30 01:39:29 edwards Exp $
+// $Id: ferm.h,v 1.5 2004-12-24 04:21:09 edwards Exp $
 
 /*! \file
  * \brief Fermion action support
@@ -19,6 +19,7 @@
 #define __actfermm_h__
 
 #include "fermacts/fermacts.h"
+#include "fermbcs/fermbcs.h"
 #include "invert/invert.h"
 #include "linop/linop.h"
 #include "qprop/qprop.h"
