@@ -1,4 +1,4 @@
-// $Id: wallformfac.cc,v 1.21 2004-06-01 03:57:40 edwards Exp $
+// $Id: wallformfac.cc,v 1.22 2004-06-01 04:28:55 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions with a wall sink
  *
@@ -313,14 +313,14 @@ main(int argc, char *argv[])
     switch (formfac_value)
     {
     case 0:
-      wallPionFormFac(xml_out,
+      wallPionFormFac(xml_seq_src,
 		      u, forward_quark_prop, backward_quark_prop, 
 		      phases, 
 		      t_source[j_decay], t_sink);
       break;
 
     case 1:
-      wallNuclFormFac(xml_out,
+      wallNuclFormFac(xml_seq_src,
 		      u, 
 		      forward_quark_prop, backward_quark_prop, 
 		      forward_quark_prop, backward_quark_prop, 
@@ -335,7 +335,7 @@ main(int argc, char *argv[])
       LatticePropagator qf_tmp = - (Gamma(7) * forward_quark_prop * Gamma(7));
       LatticePropagator qb_tmp = - (Gamma(7) * backward_quark_prop * Gamma(7));
 
-      wallNuclFormFac(xml_out,
+      wallNuclFormFac(xml_seq_src,
 		      u, 
 		      qf_tmp, qb_tmp,
 		      qf_tmp, qb_tmp,
@@ -345,7 +345,7 @@ main(int argc, char *argv[])
     break;
 
     case 3:
-      wallDeltaPFormFac(xml_out,
+      wallDeltaPFormFac(xml_seq_src,
 			u, 
 			forward_quark_prop, backward_quark_prop, 
 			forward_quark_prop, backward_quark_prop, 
