@@ -1,4 +1,4 @@
-// $Id: fermact_qprop.cc,v 1.1 2003-11-10 03:07:03 edwards Exp $
+// $Id: fermact_qprop.cc,v 1.2 2003-11-10 05:06:07 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *
@@ -89,6 +89,17 @@ void qprop_t(const FermionAction<T>& me,
 
 
 template<>
+void FermionAction<LatticeFermion>::qpropT(LatticeFermion& psi, 
+					   const multi1d<LatticeColorMatrix>& u, 
+					   const LatticeFermion& chi, 
+					   enum InvType invType,
+					   const Real& RsdCG, 
+					   int MaxCG, int& ncg_had) const
+{
+  qprop_t(*this, psi, u, chi, invType, RsdCG, MaxCG, ncg_had);
+}
+
+template<>
 void FermionAction<LatticeFermion>::qprop(LatticeFermion& psi, 
 					  const multi1d<LatticeColorMatrix>& u, 
 					  const LatticeFermion& chi, 
@@ -99,14 +110,29 @@ void FermionAction<LatticeFermion>::qprop(LatticeFermion& psi,
   qprop_t(*this, psi, u, chi, invType, RsdCG, MaxCG, ncg_had);
 }
 
+
+
 template<>
-void FermionAction<LatticeDWFermion>::qprop(LatticeDWFermion& psi, 
+void FermionAction<LatticeDWFermion>::qpropT(LatticeDWFermion& psi, 
+					     const multi1d<LatticeColorMatrix>& u, 
+					     const LatticeDWFermion& chi, 
+					     enum InvType invType,
+					     const Real& RsdCG, 
+					     int MaxCG, int& ncg_had) const
+{
+  qprop_t(*this, psi, u, chi, invType, RsdCG, MaxCG, ncg_had);
+}
+
+template<>
+void FermionAction<LatticeDWFermion>::qprop(LatticeFermion& psi, 
 					    const multi1d<LatticeColorMatrix>& u, 
-					    const LatticeDWFermion& chi, 
+					    const LatticeFermion& chi, 
 					    enum InvType invType,
 					    const Real& RsdCG, 
 					    int MaxCG, int& ncg_had) const
 {
-  qprop_t(*this, psi, u, chi, invType, RsdCG, MaxCG, ncg_had);
+  QDPIO::cerr << "FermionAction<DWF>::qprop - this implementation is empty" << endl;
+  QDP_abort(1);
 }
+
 
