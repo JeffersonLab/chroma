@@ -1,4 +1,4 @@
-// $Id: t_propagator_fuzz_s.cc,v 1.1 2004-02-08 12:22:24 mcneile Exp $
+// $Id: t_propagator_fuzz_s.cc,v 1.2 2004-02-08 14:29:27 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  *
@@ -13,6 +13,8 @@
 
 // Include everything...
 #include "chroma.h"
+
+#include "meas/smear/fuzz_smear.h"
 
 /*
  *  Here we have various temporary definitions
@@ -286,40 +288,38 @@ int main(int argc, char **argv)
   //  gauge invariance test
   //  
 
+  // this parameter will be read from the input file
+  bool do_gauge_transform ;
+  //    do_gauge_transform = false ;
+  do_gauge_transform = true ;
 
-  // gauge transformed gauge fields
-//  multi1d<LatticeColorMatrix> u_trans(Nd);
 
-  // gauge transform
-//  LatticeColorMatrix v ;
+  if( do_gauge_transform )
+    {
+      // gauge transform the gauge fields
+      multi1d<LatticeColorMatrix> u_trans(Nd);
+
+      // create a random gauge transform
+       LatticeColorMatrix v ;
   
-//  gaussian(v);
-//  reunit(v) ; 
+       gaussian(v);
+       reunit(v) ; 
 
-//  for(int dir = 0 ; dir < Nd ; ++dir)
-//    {
-//      u_trans[dir] = v*u[dir]*adj(shift(v,FORWARD,dir)) ;
-//    }
+       for(int dir = 0 ; dir < Nd ; ++dir)
+	 {
+	   u_trans[dir] = v*u[dir]*adj(shift(v,FORWARD,dir)) ;
+	   u[dir] = u_trans[dir] ;
+	 }
 
+       QDPIO::cout << "Random gauge transform done" << endl;
 
-  // Read in the source along with relevant information.
-  LatticePropagator quark_prop_source;
-  XMLReader source_xml;
+    } // end of gauge transform
 
-  switch (input.param.prop_type) 
-  {
-  case PROP_TYPE_SZIN :
-//    readSzinQprop(source_xml, quark_prop_source, input.prop.source_file);
-    quark_prop_source = zero;
-    break;
-  default :
-    QDP_error_exit("Propagator type is unsupported.");
-  }
 
 
   // Instantiate XML writer for XMLDAT
   XMLFileWriter xml_out("XMLDAT");
-  push(xml_out, "propagator");
+  push(xml_out, "fuzzed_hadron_corr");
 
   // Write out the input
   write(xml_out, "Input", xml_in);
@@ -327,8 +327,6 @@ int main(int argc, char **argv)
   // Write out the config header
   write(xml_out, "Config_info", gauge_xml);
 
-  // Write out the source header
-  write(xml_out, "Source_info", source_xml);
 
   push(xml_out, "Output_version");
   write(xml_out, "out_version", 1);
@@ -354,12 +352,45 @@ int main(int argc, char **argv)
   int n_gf;
   int j_decay = Nd-1;
 
+#ifdef NNNNNNNNNNNNNN
   coulGauge(u, n_gf, j_decay, input.param.GFAccu, input.param.GFMax, true, input.param.OrPara);
   QDPIO::cout << "No. of gauge fixing iterations =" << n_gf << endl;
+#endif
+
+  // 
+  // Ape fuzz the gauge fields
+  //
+
+  Real sm_fact = 2.5;   // typical parameter
+  int sm_numb = 10;     // number of smearing hits
+
+  int BlkMax = 100;    // max iterations in max-ing trace
+  Real BlkAccu = 1.0e-5;  // accuracy of max-ing
+
+  multi1d<LatticeColorMatrix> u_smr(Nd);
+  u_smr = u;
+  for(int i=0; i < sm_numb; ++i)
+  {
+    multi1d<LatticeColorMatrix> u_tmp(Nd);
+
+    for(int mu = 0; mu < Nd; ++mu)
+      if ( mu != j_decay )
+	APE_Smear(u_smr, u_tmp[mu], mu, 0, sm_fact, BlkAccu, BlkMax, j_decay);
+      else
+	u_tmp[mu] = u_smr[mu];
+    
+    u_smr = u_tmp;
+  }
+
+  //
+  //  --- end of APE smearing -----
+  //
+
+
 
   // Calcluate plaq on the gauge fixed field
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-  push(xml_out, "Is this gauge invariant?");
+  push(xml_out, "Is_this_gauge_invariant");
   Write(xml_out, w_plaq);
   Write(xml_out, s_plaq);
   Write(xml_out, t_plaq);
@@ -383,26 +414,6 @@ int main(int argc, char **argv)
   Handle<const ConnectState > state(S_f.createState(u));
   Handle<const EvenOddLinearOperator<LatticeFermion> > D_asqtad(S_f.linOp(state));
 
-  // Create a fermion to apply linop to.
-  LatticeFermion tmp1, tmp2;
-
-  tmp1 = zero;
-//  Test walfil code
-
-//  for(int src_ind = 0; src_ind < 8; ++src_ind){
-//    walfil(tmp1, 0, 3, 0, src_ind);
-
-//      tmp2  =  zero;
-
-      // Apply Linop
-//      (*D_asqtad).evenOddLinOp(tmp2, tmp1, PLUS); 
-//
-//       push(xml_out, "dslash");
-//       Write(xml_out, tmp1);
-//       Write(xml_out, tmp2);
-//       pop(xml_out);
-//    }
-
    Handle<const LinearOperator<LatticeFermion> > MdagM_asqtad(S_f.lMdagM(state));
 
   //
@@ -417,11 +428,16 @@ int main(int argc, char **argv)
   int n_count;
 
   LatticeFermion q_source, psi;
+  LatticeFermion q_source_fuzz ; 
   multi1d<LatticePropagator> stag_prop(8);
 
-//  for(int t_source = 0; t_source < 17; t_source += 16) {
+  // the staggered spectroscopy code is hardwired
+  // for many pions
+  for(int src_ind = 0; src_ind < 0; ++src_ind)
+    stag_prop[src_ind] = zero ;
 
-    for(int src_ind = 0; src_ind < 8; ++src_ind){
+    // just look at the local pion
+    for(int src_ind = 0; src_ind < 1; ++src_ind){
       psi = zero;   // note this is ``zero'' and not 0
       int t_source = 0;
 
@@ -433,8 +449,38 @@ int main(int argc, char **argv)
         q_source = zero ;
         
 
-//  Use a wall source
-	walfil(q_source, t_source, j_decay, color_source, src_ind);
+	//  Start to develop fuzzed source code
+	enum stag_src_type { LOCAL_SRC , FUZZED_SRC } ;
+	enum stag_src_type type_of_src = FUZZED_SRC  ;
+
+	if( type_of_src == LOCAL_SRC )
+	  {
+        QDPIO::cout << "****> LOCAL SOURCE <****" << endl;
+
+	    q_source = zero ;
+	    multi1d<int> coord(Nd);
+	    coord[0]=0; coord[1] = 0; coord[2] = 0; coord[3] = 0;
+	    srcfil(q_source, coord,color_source , 0) ;
+	  }
+	else if( type_of_src == FUZZED_SRC )
+	  {
+	    int fuzz_width = 4 ; 
+	    QDPIO::cout << "***> FUZZED SOURCE ****" << endl;
+	    QDPIO::cout << "fuzz width = " << fuzz_width  << endl;
+
+	    q_source = zero ;
+	    multi1d<int> coord(Nd);
+	    coord[0]=0; coord[1] = 0; coord[2] = 0; coord[3] = 0;
+	    srcfil(q_source, coord,color_source , 0) ;
+
+
+	    fuzz_smear(u, q_source,q_source_fuzz, 
+		       fuzz_width, j_decay) ; 
+
+	    q_source = q_source_fuzz  ;
+	  }
+
+
 
         // Use the last initial guess as the current guess
 
@@ -462,10 +508,12 @@ int main(int argc, char **argv)
       stag_prop[src_ind] = quark_propagator;
       } // end src_ind
   
+  
+
       multi2d<DComplex> pion(16, input.param.nrow[3]);
       staggeredPionsFollana(stag_prop, pion, j_decay);
 
-    push(xml_out, "Here are all 16 pions");
+    push(xml_out, "Here_are_all_16_pions");
       for(int i=0; i < NUM_STAG_PIONS; i++) {
       ostringstream tag;
       tag << "pion" << i;
@@ -473,40 +521,9 @@ int main(int argc, char **argv)
       Write(xml_out, pion[i]);
       pop(xml_out);
       }
+      pop(xml_out);
 
-    // Instantiate XML buffer to make the propagator header
-    XMLBufferWriter prop_xml;
-    push(prop_xml, "propagator");
-
-    // Write out the input
-    write(prop_xml, "Input", xml_in);
-
-    // Write out the config header
-    write(prop_xml, "Config_info", gauge_xml);
-
-    // Write out the source header
-    write(prop_xml, "Source_info", source_xml);
-
-    pop(prop_xml);
-
-
-  // Save the propagator
-//    switch (input.param.prop_type) 
-//    {
-//    case PROP_TYPE_SZIN:
-//     writeSzinQprop(quark_propagator, input.prop.prop_file, input.param.Mass);
-//    break;
-
-//  case PROP_TYPE_SCIDAC:
-//    writeQprop(prop_xml, quark_propagator, input.prop.prop_file);
-//    break;
- 
-//    default :
-//     QDP_error_exit("Propagator type is unsupported.");
-//    }
-
-//  } //t_source;
-
+      pop(xml_out);
   xml_out.close();
   xml_in.close();
 
