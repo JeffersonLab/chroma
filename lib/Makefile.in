@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.242 2004-09-30 14:52:47 bjoo Exp $
+# $Id: Makefile.in,v 1.243 2004-09-30 18:14:30 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -60,6 +60,7 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/unprec_parwilson_fermact_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/unprec_ovlap_contfrac5d_fermact_array_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/prec_ovlap_contfrac5d_fermact_array_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/invert/inv_borici_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/lgherm_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/unprec_ovlap_contfrac5d_linop_array_w.h \
@@ -177,6 +178,7 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@	      ferm_refresh.cc mom_refresh.cc global_metropolis_accrej.cc \
 @BUILD_WILSON_LIBS_TRUE@	      ovlap_partfrac4d_fermact_w.cc overlap_state_info.cc \
 @BUILD_WILSON_LIBS_TRUE@	      unprec_ovlap_contfrac5d_fermact_array_w.cc \
+@BUILD_WILSON_LIBS_TRUE@	      prec_ovlap_contfrac5d_fermact_array_w.cc \
 @BUILD_WILSON_LIBS_TRUE@	      prec_ovlap_contfrac5d_linop_array_w.cc
 
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_6 = actions/ferm/linop/lwldslash_w_sse.h
@@ -537,6 +539,7 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc gaugebc_utils.cc \
 	global_metropolis_accrej.cc ovlap_partfrac4d_fermact_w.cc \
 	overlap_state_info.cc \
 	unprec_ovlap_contfrac5d_fermact_array_w.cc \
+	prec_ovlap_contfrac5d_fermact_array_w.cc \
 	prec_ovlap_contfrac5d_linop_array_w.cc lwldslash_w_sse.cc \
 	actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc \
 	lwldslash_w_pab.cc mesphas_s.cc mesphas_follana_s.cc \
@@ -626,6 +629,7 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc gaugebc_utils.cc \
 @BUILD_WILSON_LIBS_TRUE@	ovlap_partfrac4d_fermact_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	overlap_state_info.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	unprec_ovlap_contfrac5d_fermact_array_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	prec_ovlap_contfrac5d_fermact_array_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	prec_ovlap_contfrac5d_linop_array_w.$(OBJEXT)
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__objects_2 = lwldslash_w_sse.$(OBJEXT)
 @BUILD_SSE_DWF_CG_TRUE@am__objects_3 = \
@@ -805,6 +809,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/prec_nef_linop_array_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/prec_ovdwf_fermact_array_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/prec_ovdwf_linop_array_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/prec_ovlap_contfrac5d_fermact_array_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/prec_ovlap_contfrac5d_linop_array_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/prec_parwilson_fermact_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/prec_parwilson_linop_w.Po \
@@ -1081,6 +1086,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_nef_linop_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_ovdwf_fermact_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_ovdwf_linop_array_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_ovlap_contfrac5d_fermact_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_ovlap_contfrac5d_linop_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_parwilson_fermact_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_parwilson_linop_w.Po@am__quote@

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermfactory_w.h,v 1.3 2004-09-18 17:12:53 edwards Exp $
+// $Id: fermfactory_w.h,v 1.4 2004-09-30 18:14:31 bjoo Exp $
 /*! \file
  *  \brief Fermion action factories
  */
@@ -37,6 +37,16 @@ namespace Chroma
 					              XMLReader&,
 					              const std::string&), StringFactoryError> >
   TheWilsonTypeFermActArrayFactory;
+
+  //! Wilson-like fermion array factory (foundry)
+  typedef SingletonHolder< 
+  ObjectFactory<WilsonTypeFermAct< multi1d<LatticeFermion> >, 
+    std::string,
+    TYPELIST_3(Handle< FermBC< multi1d<LatticeFermion> > >, XMLReader&, const std::string&),
+    EvenOddPrecWilsonTypeFermAct< multi1d<LatticeFermion> >* (*)(Handle< FermBC< multi1d<LatticeFermion> > >, 
+					              XMLReader&,
+					              const std::string&), StringFactoryError> >
+  TheEvenOddPrecWilsonTypeFermActArrayFactory;
 
 
   //! DWF-like fermion array factory (foundry)
