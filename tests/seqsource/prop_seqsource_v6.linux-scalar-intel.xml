@@ -13,7 +13,7 @@
   </ProgramInfo>
   <Input><propagator>
 <annotation>
-; $Id: prop_seqsource_v6.linux-scalar-intel.xml,v 1.1 2004-04-27 21:33:07 edwards Exp $
+; $Id: prop_seqsource_v6.linux-scalar-intel.xml,v 1.2 2004-10-30 02:15:05 edwards Exp $
 ;
 ; PROPAGATOR input file.
 ;
@@ -105,6 +105,7 @@
 
   </Source_file_info>
   <Source_record_info><SequentialSource>
+      <version>1</version>
       <SeqSourceSinkSmear>
         <version>4</version>
         <wave_state>S_WAVE</wave_state>
@@ -132,6 +133,7 @@
       </SeqSource>
       <ForwardProps>
         <elem>
+          <version>1</version>
           <PropSink>
             <version>4</version>
             <wave_state>S_WAVE</wave_state>
@@ -156,7 +158,7 @@
             <nonRelProp>false</nonRelProp>
             <FermionAction>
               <FermAct>WILSON</FermAct>
-              <Mass>0.545455</Mass>
+              <Kappa>0.11</Kappa>
               <AnisoParam>
                 <anisoP>false</anisoP>
                 <t_dir>3</t_dir>
@@ -166,9 +168,11 @@
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
+              <RsdCG>1e-05</RsdCG>
               <MaxCG>1000</MaxCG>
               <MROver>1</MROver>
+              <RsdCGPrec>1e-05</RsdCGPrec>
+              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
             <boundary>1 1 1 -1</boundary>
             <nrow>4 4 4 8</nrow>
@@ -249,7 +253,7 @@
     <link>0.734641</link>
   </Observables>
   <Source_correlator>
-    <source_corr>0 0 0 0 0 0.000672891 0 0</source_corr>
+    <source_corr>0 0 0 0 0 0.000672877 0 0</source_corr>
   </Source_correlator>
   <QuarkProp4>
     <Qprop>
@@ -305,6 +309,6 @@
     <ncg_had>432</ncg_had>
   </Relaxation_Iterations>
   <Prop_correlator>
-    <prop_corr>7.72962e-06 2.98708e-06 1.8843e-06 3.07742e-06 8.13746e-06 0.000204099 6.35867e-05 2.2092e-05</prop_corr>
+    <prop_corr>7.72964e-06 2.98709e-06 1.88429e-06 3.07738e-06 8.13737e-06 0.000204099 6.35869e-05 2.20921e-05</prop_corr>
   </Prop_correlator>
 </propagator>

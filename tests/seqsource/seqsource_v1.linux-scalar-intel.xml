@@ -13,7 +13,7 @@
   </ProgramInfo>
   <Input><seqsource>
 <annotation>
-; $Id: seqsource_v1.linux-scalar-intel.xml,v 1.2 2004-05-13 00:31:13 edwards Exp $
+; $Id: seqsource_v1.linux-scalar-intel.xml,v 1.3 2004-10-30 02:15:05 edwards Exp $
 ;
 ; SEQSOURCE input file.
 ;
@@ -119,7 +119,7 @@
         <nonRelProp>false</nonRelProp>
         <FermionAction>
           <FermAct>WILSON</FermAct>
-          <Mass>0.545455</Mass>
+          <Kappa>0.11</Kappa>
           <AnisoParam>
             <anisoP>false</anisoP>
             <t_dir>3</t_dir>
@@ -129,9 +129,11 @@
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-10</RsdCG>
+          <RsdCG>1e-05</RsdCG>
           <MaxCG>1000</MaxCG>
           <MROver>1</MROver>
+          <RsdCGPrec>1e-05</RsdCGPrec>
+          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
         <boundary>1 1 1 -1</boundary>
         <nrow>4 4 4 8</nrow>
@@ -201,9 +203,9 @@
 
   </Propagator_info>
   <Forward_prop_correlator>
-    <forward_prop_corr>0.147564 0.00923146 0.00288721 0.00109399 0.000683482 0.00110198 0.00286504 0.00919642</forward_prop_corr>
+    <forward_prop_corr>0.147564 0.00923146 0.0028872 0.00109399 0.000683482 0.00110199 0.00286503 0.00919643</forward_prop_corr>
   </Forward_prop_correlator>
   <SeqSource_correlator>
-    <seqsource_corr>0 0 0 0 0 0.000672891 0 0</seqsource_corr>
+    <seqsource_corr>0 0 0 0 0 0.000672877 0 0</seqsource_corr>
   </SeqSource_correlator>
 </seqsource>
