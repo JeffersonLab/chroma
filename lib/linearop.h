@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linearop.h,v 1.2 2004-05-14 15:08:42 bjoo Exp $
+// $Id: linearop.h,v 1.3 2004-05-14 18:10:20 bjoo Exp $
 
 /*! @file
  * @brief Linear Operators
@@ -70,6 +70,12 @@ class ApproxLinearOperator : public LinearOperator<T>
 {
 public:
   //! Apply the operator onto a source vector
+  virtual void operator() (T& chi, const T& psi, enum PlusMinus isign) const = 0;
+
+  //! Return the subset on which the operator acts
+  virtual const OrderedSubset& subset() const = 0;
+
+  //! Apply the operator onto a source vector
   virtual void operator() (T& chi, const T& psi, enum PlusMinus isign, Real epsilon) const = 0;  
 
   virtual ~ApproxLinearOperator() {}
@@ -90,6 +96,18 @@ template<typename T>
 class ApproxLinearOperator< multi1d<T> >: public LinearOperator< multi1d<T> >
 {
 public:
+
+  //! Return the subset on which the operator acts
+  virtual const OrderedSubset& subset() const = 0;
+
+  //! Expected length of array index
+  virtual int size() const = 0;
+
+  //! Apply the operator onto a source vector
+  virtual void operator() (multi1d<T>& chi, const multi1d<T>& psi, 
+			   enum PlusMinus isign) const = 0;
+
+
   //! Apply the operator onto a source vector
   virtual void operator() (multi1d<T>& chi, const multi1d<T>& psi, 
 			   enum PlusMinus isign, Real epsilon) const = 0;  

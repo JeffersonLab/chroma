@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lopscl.h,v 1.2 2004-01-20 10:13:11 bjoo Exp $
+// $Id: lopscl.h,v 1.3 2004-05-14 18:10:20 bjoo Exp $
 
 #ifndef __lopscl_h__
 #define __lopscl_h__
@@ -9,7 +9,7 @@
 
 using namespace QDP;
 
-//! M^dag.M linear operator
+//! Scaled Linear Operator
 /*!
  * \ingroup linop
  *
@@ -45,6 +45,54 @@ public:
 
 private:
   const Handle< const LinearOperator<T> > A;
+  const C scale_fact;
+};
+
+//! Scaled Linear Operator
+/*!
+ * \ingroup linop
+ *
+ * This routine is specific to Wilson fermions!
+ *
+ * This operator scales its input operator
+ */
+template<typename T, class C>
+class approx_lopscl : public ApproxLinearOperator<T>
+{
+public:
+  //! Initialize pointer with existing pointer
+  /*! Requires that the pointer p is a return value of new */
+  approx_lopscl(const ApproxLinearOperator<T>* p, const C& scale_fact_) : A(p), scale_fact(scale_fact_)  {}
+
+  //! Copy pointer (one more owner)
+  approx_lopscl(Handle<const ApproxLinearOperator<T> > p, const C& scale_fact_) : A(p), scale_fact(scale_fact_) {}
+
+  //! Destructor
+  ~approx_lopscl() {}
+
+  //! Subset comes from underlying operator
+  inline const OrderedSubset& subset() const {return A->subset();}
+
+  //! Apply the operator onto a source vector
+  /*! For this operator, the sign is ignored */
+  inline void operator() (T& chi, const T& psi, enum PlusMinus isign) const
+    {
+      const OrderedSubset& sub = A->subset();
+      (*A)(chi, psi, isign);
+      chi[sub] *= scale_fact;
+    }
+
+  //! Apply the operator onto a source vector
+  /*! For this operator, the sign is ignored */
+  inline void operator() (T& chi, const T& psi, enum PlusMinus isign, Real epsilon) const
+    {
+      const OrderedSubset& sub = A->subset();
+      (*A)(chi, psi, isign, epsilon);
+      chi[sub] *= scale_fact;
+    }
+
+private:
+  const Handle< const ApproxLinearOperator<T> > A;
   const C scale_fact;
 };
 

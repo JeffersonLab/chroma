@@ -1,4 +1,4 @@
-// $Id: param_io.cc,v 1.27 2004-05-12 15:45:10 bjoo Exp $
+// $Id: param_io.cc,v 1.28 2004-05-14 18:10:20 bjoo Exp $
 /*! \file
  *  \brief Various parameter readers/writers for main programs
  */
@@ -226,6 +226,8 @@ void read(XMLReader& xml, const string& path, InvType& param)
     param = BICG_INVERTER;
   else if (inv_type_str == "SUMR_INVERTER")
     param = SUMR_INVERTER;
+  else if (inv_type_str == "REL_CG_INVERTER")
+    param = REL_CG_INVERTER;
   else 
   {
     QDPIO::cerr << "Unsupported inverter type" << endl;
@@ -639,6 +641,8 @@ void write(XMLWriter& xml, const string& path, InvType param)
     inv_type_str = "BICG_INVERTER";
   else if (param == SUMR_INVERTER)
     inv_type_str = "SUMR_INVERTER";
+  else if (param == REL_CG_INVERTER)
+    inv_type_str = "REL_CG_INVERTER";
   else 
   {
     QDPIO::cerr << "Unsupported inverter type" << endl;

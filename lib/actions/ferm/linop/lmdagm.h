@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lmdagm.h,v 1.1 2004-01-07 13:50:08 bjoo Exp $
+// $Id: lmdagm.h,v 1.2 2004-05-14 18:10:20 bjoo Exp $
 
 #ifndef __lmdagm_w_h__
 #define __lmdagm_w_h__
@@ -49,6 +49,7 @@ private:
 
 
 
+
 //! Partial specialization of M^dag.M linear operator over arrays
 /*!
  * \ingroup linop
@@ -88,6 +89,53 @@ public:
 
 private:
   const Handle< const LinearOperator< multi1d<T> > > A;
+};
+
+//! M^dag.M linear operator
+/*!
+ * \ingroup linop
+ *
+ * This routine is specific to Wilson fermions!
+ *
+ * Linear operator forming M^dag.M from an operator M
+ */
+template<typename T>
+class approx_lmdagm : public ApproxLinearOperator<T>
+{
+public:
+  //! Initialize pointer with existing pointer
+  /*! Requires that the pointer p is a return value of new */
+  approx_lmdagm(const ApproxLinearOperator<T>* p) : A(p) {}
+
+  //! Copy pointer (one more owner)
+  approx_lmdagm(Handle<const ApproxLinearOperator<T> > p) : A(p) {}
+
+  //! Destructor
+  ~approx_lmdagm() {}
+
+  //! Subset comes from underlying operator
+  inline const OrderedSubset& subset() const {return A->subset();}
+
+  //! Apply the operator onto a source vector
+  /*! For this operator, the sign is ignored */
+  inline void operator() (T& chi, const T& psi, enum PlusMinus isign) const
+    {
+      T  tmp;
+      (*A)(tmp, psi, PLUS);
+      (*A)(chi, tmp, MINUS);
+    }
+
+  //! Apply the operator onto a source vector
+  /*! For this operator, the sign is ignored */
+  inline void operator() (T& chi, const T& psi, enum PlusMinus isign, Real epsilon) const
+    {
+      T  tmp;
+      (*A)(tmp, psi, PLUS, epsilon);
+      (*A)(chi, tmp, MINUS, epsilon);
+    }
+
+private:
+  const Handle< const ApproxLinearOperator<T> > A;
 };
 
 #endif

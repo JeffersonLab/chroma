@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.135 2004-05-14 00:20:23 edwards Exp $
+# $Id: Makefile.am,v 1.136 2004-05-14 18:10:19 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -62,6 +62,7 @@ nobase_include_HEADERS = \
 	actions/ferm/fermacts/zolotarev.h \
 	actions/ferm/fermacts/overlap_state.h \
 	actions/ferm/invert/invcg1.h actions/ferm/invert/invcg2.h \
+	actions/ferm/invert/inv_rel_cg1.h actions/ferm/invert/inv_rel_cg2.h \
 	actions/ferm/invert/invcg2_array.h actions/ferm/invert/invert.h \
 	actions/ferm/invert/invmr.h actions/ferm/invert/minvcg.h \
 	actions/ferm/invert/invcg2_timing_hacks.h \
@@ -224,8 +225,10 @@ libchroma_a_SOURCES = gauge_startup.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
                szin_io.cc readszin.cc writeszin.cc su3proj.cc sun_proj.cc \
                gaus_smear.cc hyp_smear.cc ape_smear.cc fuzz_smear.cc \
                klein_gord.cc laplacian.cc displacement.cc \
-               su2extract.cc sunfill.cc invcg1.cc invcg2.cc invcg2_array.cc \
-	       invcg2_timing_hacks.cc minvcg.cc qprop_io.cc eigen_io.cc stoch_var.cc \
+               su2extract.cc sunfill.cc invcg1.cc inv_rel_cg1.cc \
+	       invcg2.cc inv_rel_cg2.cc \
+	       invcg2_array.cc invcg2_timing_hacks.cc minvcg.cc qprop_io.cc \
+	       eigen_io.cc stoch_var.cc \
 	       z2_src.cc gauge_io.cc milc_io.cc readmilc.cc writemilc.cc \
                axgauge.cc coulgauge.cc grelax.cc polar_dec.cc rot_colvec.cc \
 	       transf.cc param_io.cc fermact_paramio.cc  \

@@ -1,10 +1,10 @@
-// $Id: inv_rel_cg2.cc,v 1.1 2004-05-14 15:13:03 bjoo Exp $
+// $Id: inv_rel_cg2.cc,v 1.2 2004-05-14 18:10:20 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
 
 #include "chromabase.h"
-#include "actions/ferm/invert/invcg2.h"
+#include "actions/ferm/invert/inv_rel_cg2.h"
 
 //! Conjugate-Gradient (CGNE) algorithm for a generic Linear Operator
 /*! \ingroup invert
@@ -60,16 +60,17 @@
  */
 
 template<typename T>
-void InvCG2_a(const LinearOperator<T>& M,
-	      const T& chi,
-	      T& psi,
-	      const Real& RsdCG, 
-	      int MaxCG, 
-	      int& n_count)
+void InvRelCG2_a(const ApproxLinearOperator<T>& M,
+		 const T& chi,
+		 T& psi,
+		 const Real& rho,
+		 const Real& RsdCG, 
+		 int MaxCG, 
+		 int& n_count)
 {
   const OrderedSubset& s = M.subset();
-
-//  Real rsd_sq = (RsdCG * RsdCG) * Real(norm2(chi,s));
+  
+  //  Real rsd_sq = (RsdCG * RsdCG) * Real(norm2(chi,s));
   Real chi_sq =  Real(norm2(chi,s));
 
   QDPIO::cout << "chi_norm = " << sqrt(chi_sq) << endl;
@@ -81,21 +82,30 @@ void InvCG2_a(const LinearOperator<T>& M,
   //                      +
   //  r  :=  [ Chi  -  M(u)  . M(u) . psi ]
   T  r, mp, mmp;
+  r=zero;
+  mp=zero;
+  mmp=zero;
+
   M(mp, psi, PLUS);
   M(mmp, mp, MINUS);
+
   r[s] = chi - mmp;
 
   //  p[1]  :=  r[0]
   T p;
+  p = zero;
   p[s] = r;
   
   //  Cp = |r[0]|^2
-  Double cp = norm2(r, s);   	       	   /* 2 Nc Ns  flops */
+  Double c = norm2(r, s);   	       	   /* 2 Nc Ns  flops */
+  Double cp = c;
 
-  QDPIO::cout << "InvCG: k = 0  cp = " << cp << "  rsd_sq = " << rsd_sq << endl;
+  Double zeta = Double(1)/c;
+
+  QDPIO::cout << "InvRelCG2: k = 0  c = " << cp << "  rsd_sq = " << rsd_sq << endl;
 
   //  IF |r[0]| <= RsdCG |Chi| THEN RETURN;
-  if ( toBool(cp  <=  rsd_sq) )
+  if ( toBool(c  <=  rsd_sq) )
   {
     n_count = 0;
     return;
@@ -104,38 +114,50 @@ void InvCG2_a(const LinearOperator<T>& M,
   //
   //  FOR k FROM 1 TO MaxCG DO
   //
-  Real a, b;
-  Double c, d;
+  Real a;
+  Double d;
   
   for(int k = 1; k <= MaxCG; ++k)
   {
-    //  c  =  | r[k-1] |**2
-    c = cp;
+    // Inner tolerance = epsilon || chi || || p || sqrt(zeta) / 2
+    Real inner_tol = RsdCG*sqrt(chi_sq)*sqrt(norm2(p))*sqrt(zeta)/(Real(8)*rho);
 
-    //  a[k] := | r[k-1] |**2 / < p[k], Ap[k] > ;
-    //      	       	       	       	       	  +
-    //  First compute  d  =  < p, A.p >  =  < p, M . M . p >  =  < M.p, M.p >
-    //  Mp = M(u) * p
-    M(mp, p, PLUS);
+    // Compute M^{dag} M p
+    M(mp, p, PLUS, inner_tol);
+    M(mmp, mp, MINUS, inner_tol);
 
-    //  d = | mp | ** 2
-    d = norm2(mp, s);	/* 2 Nc Ns  flops */
+    //  d = < M^{dag} M p, p>
+    d = innerProductReal(mmp, p, s);	/* 2 Nc Ns  flops */
 
+    //  a[k] := | r |**2 / < p[k], Ap[k] > ;
     a = Real(c)/Real(d);
 
     //  Psi[k] += a[k] p[k]
     psi[s] += a * p;	/* 2 Nc Ns  flops */
 
-    //  r[k] -= a[k] A . p[k] ;
-    //      	       +            +
-    //  r  =  r  -  M(u)  . Mp  =  M  . M . p  =  A . p
-    M(mmp, mp, MINUS);
+    //  r[k] -= a[k] M^{dag}M. p[k] ;
     r[s] -= a * mmp;
 
     //  IF |r[k]| <= RsdCG |Chi| THEN RETURN;
 
     //  cp  =  | r[k] |**2
-    cp = norm2(r, s);	                /* 2 Nc Ns  flops */
+    c = norm2(r, s);	                /* 2 Nc Ns  flops */
+
+    // update relaxation factor
+    zeta += Double(1)/c;
+
+    // Update p as:
+    // p[k+1] := r[k] + c/cp * p
+    //
+    // we put c/cp into b
+    //
+    //  b[k+1] := |r[k]|**2 / |r[k-1]|**2
+    Real b = Real(c) / Real(cp);
+
+    //  p[k+1] := r[k] + b[k+1] p[k]
+    p[s] = r + b*p;	/* Nc Ns  flops */
+
+    cp = c;
 
     QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << endl;
 
@@ -144,12 +166,6 @@ void InvCG2_a(const LinearOperator<T>& M,
       n_count = k;
       return;
     }
-
-    //  b[k+1] := |r[k]|**2 / |r[k-1]|**2
-    b = Real(cp) / Real(c);
-
-    //  p[k+1] := r[k] + b[k+1] p[k]
-    p[s] = r + b*p;	/* Nc Ns  flops */
   }
   n_count = MaxCG;
   QDP_error_exit("too many CG iterations: count = %d", n_count);
@@ -158,24 +174,13 @@ void InvCG2_a(const LinearOperator<T>& M,
 
 // Fix here for now
 template<>
-void InvCG2(const LinearOperator<LatticeFermion>& M,
-	    const LatticeFermion& chi,
-	    LatticeFermion& psi,
-	    const Real& RsdCG, 
-	    int MaxCG, 
-	    int& n_count)
+void InvRelCG2(const ApproxLinearOperator<LatticeFermion>& M,
+	       const LatticeFermion& chi,
+	       LatticeFermion& psi,
+	       const Real& rho,
+	       const Real& RsdCG, 
+	       int MaxCG, 
+	       int& n_count)
 {
-  InvCG2_a(M, chi, psi, RsdCG, MaxCG, n_count);
-}
-
-// Fix here for now
-template<>
-void InvCG2(const LinearOperator<LatticeDWFermion>& M,
-	    const LatticeDWFermion& chi,
-	    LatticeDWFermion& psi,
-	    const Real& RsdCG, 
-	    int MaxCG, 
-	    int& n_count)
-{
-  InvCG2_a(M, chi, psi, RsdCG, MaxCG, n_count);
+  InvRelCG2_a(M, chi, psi, rho, RsdCG, MaxCG, n_count);
 }

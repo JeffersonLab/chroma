@@ -1,40 +1,49 @@
 // -*- C++ -*-
-// $Id: inv_rel_cg2.h,v 1.1 2004-05-14 15:13:04 bjoo Exp $
+// $Id: inv_rel_cg2.h,v 1.2 2004-05-14 18:10:20 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
 
-#ifndef __invcg2__
-#define __invcg2__
+#ifndef __inv_rel_cg2__
+#define __inv_rel_cg2__
 
 #include "linearop.h"
 
-//! Conjugate-Gradient (CGNE) algorithm for a generic Linear Operator
+//! Relaxed Conjugate-Gradient (CGNE) algorithm for a generic Linear Operator
 /*! \ingroup invert
  * This subroutine uses the Conjugate Gradient (CG) algorithm to find
  * the solution of the set of linear equations
  *
- *   	    Chi  =  A . Psi
+ *   	    Chi  =  M^{dag}M . Psi
  *
- * where       A = M^dag . M
  *
  * Algorithm:
-
+ * 
  *  Psi[0]  :=  initial guess;    	       Linear interpolation (argument)
  *  r[0]    :=  Chi - M^dag . M . Psi[0] ;     Initial residual
  *  p[1]    :=  r[0] ;	       	       	       Initial direction
+ *  c = cp  := || r[0] ||^2                 
+ *  zeta    := 1/c;
+ *
  *  IF |r[0]| <= RsdCG |Chi| THEN RETURN;      Converged?
+ *
  *  FOR k FROM 1 TO MaxCG DO    	       CG iterations
- *      a[k] := |r[k-1]|**2 / <Mp[k],Mp[k]> ;
+ *
+ *      inner_tol := RsdCG*||chi||*||p||*sqrt(zeta)/2;
+ *      q := M^{dag}(tol) M(tol) p;
+ *      a[k] := c / <q , p>
  *      Psi[k] += a[k] p[k] ;   	       New solution vector
- *      r[k] -= a[k] M^dag . M . p[k] ;        New residual
- *      IF |r[k]| <= RsdCG |Chi| THEN RETURN;  Converged?
- *      b[k+1] := |r[k]|**2 / |r[k-1]|**2 ;
+ *      r[k] -= a[k] q;                        New residual
+ *      c := || r[k]^2 ||
+ *      zeta = zeta + 1/c;
+ *      b[k+1] := |r[k]|**2 / |r[k-1]|**2 = c/cp;
  *      p[k+1] := r[k] + b[k+1] p[k];          New direction
+ *      cp := c;
+ *      IF |r[k]| <= RsdCG |Chi| THEN RETURN;  Converged?
  *
  * Arguments:
  *
- *  \param M       Linear Operator    	       (Read)
+ *  \param M       ApproxLinear Operator       (Read)
  *  \param chi     Source	               (Read)
  *  \param psi     Solution    	    	       (Modify)
  *  \param RsdCG   CG residual accuracy        (Read)
@@ -63,11 +72,12 @@
  */
 
 template<typename T>
-void InvCG2(const LinearOperator<T>& M,
-	    const T& chi,
-	    T& psi,
-	    const Real& RsdCG, 
-	    int MaxCG, 
-	    int& n_count);
+void InvRelCG2(const ApproxLinearOperator<T>& M,
+	       const T& chi,
+	       T& psi,
+	       const Real& rho,
+	       const Real& RsdCG, 
+	       int MaxCG, 
+	       int& n_count);
 
 #endif

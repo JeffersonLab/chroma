@@ -1,11 +1,11 @@
 // -*- C++ -*-
-// $Id: inv_rel_cg1.h,v 1.1 2004-05-14 15:13:03 bjoo Exp $
+// $Id: inv_rel_cg1.h,v 1.2 2004-05-14 18:10:20 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
 
-#ifndef __invcg1__
-#define __invcg1__
+#ifndef __inv_rel_cg1__
+#define __inv_rel_cg1__
 
 #include "linearop.h"
 
@@ -23,14 +23,26 @@
  *  Psi[0]  :=  initial guess;    	       Linear interpolation (argument)
  *  r[0]    :=  Chi - A. Psi[0] ;     Initial residual
  *  p[1]    :=  r[0] ;	       	       	       Initial direction
+ *  c := cp := || r[0] ||^2
+ *  zeta    := 1/c;
+ *
  *  IF |r[0]| <= RsdCG |Chi| THEN RETURN;      Converged?
  *  FOR k FROM 1 TO MaxCG DO    	       CG iterations
- *      a[k] := |r[k-1]|**2 / <p[k],A p[k]> ;
+ *      inner_tol := RsdCG*||chi||*||p||*sqrt(zeta)
+ *
+ *      q    := A(inner_tol) p
+ *
+ *      a[k] := |r[k-1]|**2 / <q,p[k]> ;
  *      Psi[k] += a[k] p[k] ;   	       New solution vector
- *      r[k] -= a[k] A p[k] ;        New residual
- *      IF |r[k]| <= RsdCG |Chi| THEN RETURN;  Converged?
- *      b[k+1] := |r[k]|**2 / |r[k-1]|**2 ;
+ *      r[k] -= a[k] q ;        New residual
+ *      c := <r , r>
+ *      zeta := zeta + 1/c
+ *
+ *      b[k+1] := |r[k]|**2 / |r[k-1]|**2 = c/cp;
  *      p[k+1] := r[k] + b[k+1] p[k];          New direction
+ *
+ *      cp := c
+ *      IF ( c < RsdCG^2 || chi || ) RETURN
  *
  * Arguments:
  *
@@ -63,11 +75,12 @@
  */
 
 template<typename T>
-void InvCG1(const LinearOperator<T>& A,
-	    const T& chi,
-	    T& psi,
-	    const Real& RsdCG, 
-	    int MaxCG, 
-	    int& n_count);
+void InvRelCG1(const ApproxLinearOperator<T>& A,
+	       const T& chi,
+	       T& psi,
+	       const Real& rho,
+	       const Real& RsdCG, 
+	       int MaxCG, 
+	       int& n_count);
 
 #endif
