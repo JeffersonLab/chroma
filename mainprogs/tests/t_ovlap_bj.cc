@@ -1,4 +1,4 @@
-// $Id: t_ovlap_bj.cc,v 1.10 2004-01-06 10:42:36 bjoo Exp $
+// $Id: t_ovlap_bj.cc,v 1.11 2004-01-06 15:35:42 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -19,6 +19,7 @@
 #include "actions/ferm/linop/lovlapms_w.h"
 #include "meas/eig/eig_w.h"
 #include "meas/hadron/srcfil.h"
+#include "actions/ferm/invert/invcg1.h"
 
 using namespace QDP;
 using namespace std;
@@ -495,7 +496,7 @@ int main(int argc, char **argv)
   cout << " || MdagM - M^{dag}M || = " << internal_norm << endl;
   Write(xml_out, internal_norm);
 
-  xml_out << S.getWriter();  
+
 
 
   // Make a Source
@@ -542,8 +543,7 @@ int main(int argc, char **argv)
   pokeSite(source, f, coord);
 
   cout << "(1,0,1,0) has chirality " << isChiralVector(source) << endl;
-  pop(xml_out);
-
+ 
   gaussian(source);
   cout << "Gaussian source has chirality: " << isChiralVector(source) << endl;
 
@@ -585,7 +585,67 @@ int main(int argc, char **argv)
   cout << "Non Chiral Source: || M dag M - MdagM(chi=0)  || = " << sqrt(norm2(s3)) << endl;
 
 
-  QDP_finalize();
+  cout << "Beginning qprop test" << endl;
+  cout << "Chiral Sources" << endl;
+  
+  try { 
+    push(xml_out, "QpropTest");
+  } catch( string& e) { 
+    cerr << e << endl;
+    throw;
+  }
 
+  source = zero;
+  cout << "No chirality" << endl;
+  gaussian(source);
+
+  // D_dag source
+  int n_count=0;
+  S.qprop(s2, connect_state, source, CG_INVERTER, Real(1.0e-7), 500, n_count);
+
+  s2 *= (Real(1) - params.quark_mass );
+  s2 += source;
+
+  // s2 = D D^{-1} source = source
+  (*D_op)(s3, s2, PLUS);
+  s3 -= source;
+
+  Real r = sqrt(norm2(s3)/norm2(source));
+
+  cout << " || source - M solution || / || source || = " << r << endl;
+  push(xml_out, "NonChiralInv2");
+  write(xml_out, "r", r);
+  pop(xml_out);
+
+
+  for(int i=0; i < Ns; i++) { 
+    source = zero;
+    srcfil(source, coord, 0, i);
+
+
+    S.qprop(s2, connect_state, source, CG_INVERTER, Real(1.0e-7), 500, n_count);
+    s2 *= Real(1) - params.quark_mass;
+    s2 += source;
+
+    // s2 = D D^{-1} source = source
+    (*D_op)(s3, s2, PLUS);
+    s3 -= source;
+    
+    Real r = sqrt(norm2(s3)/norm2(source));
+    cout << "Chiral:" << i << " || source - M solution || / || source || = " <<r  << endl;
+
+    push(xml_out, "ChiralInv1");
+    write(xml_out, "spin", i);
+    write(xml_out, "r", r);
+    pop(xml_out);
+
+  }
+
+  
+  pop(xml_out);
+
+
+  QDP_finalize();
+    
   exit(0);
 }

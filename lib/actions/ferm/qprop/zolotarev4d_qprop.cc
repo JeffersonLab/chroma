@@ -22,17 +22,16 @@ Zolotarev4DFermActBj::qprop(LatticeFermion& psi,
   switch( invType ) {
   case CG_INVERTER:
     {
-      // We are doing CGNE
-      //  M^{dag} M psi = M^{dag} chi
-      
-      // First make M^{dag} chi
+
       LatticeFermion tmp;
-      (*M)(tmp, chi, MINUS);
       
       // Check whether the source is chiral.
       Chirality ichiral = isChiralVector(chi);
       if( ichiral == CH_NONE ) { 
 	
+	
+	(*M)(tmp, chi, MINUS);
+      
 	// Source is not chiral. In this case we should use,
 	// InvCG2 with M
 	InvCG2(*M, tmp, psi, RsdCG, MaxCG, n_count);
@@ -42,7 +41,8 @@ Zolotarev4DFermActBj::qprop(LatticeFermion& psi,
 	// Source is chiral. In this case we should use InvCG1
 	// with the special MdagM
 	Handle< const LinearOperator<LatticeFermion> > MM(lMdagM(state, ichiral));
-	InvCG1(*MM, tmp, psi, RsdCG, MaxCG, n_count);
+	InvCG1(*MM, chi, tmp, RsdCG, MaxCG, n_count);
+	(*M)(psi, tmp, MINUS);
       }
     }
     break;

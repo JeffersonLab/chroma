@@ -1,4 +1,4 @@
-// $Id: invcg1.cc,v 1.1 2003-12-11 17:11:17 bjoo Exp $
+// $Id: invcg1.cc,v 1.2 2004-01-06 15:35:41 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -109,7 +109,8 @@ void InvCG1_a(const LinearOperator<T>& A,
   T    ap;
   Real b;
   Double c;
-  Complex a, d;
+  Complex a;
+  Real d;
 
   for(int k = 1; k <= MaxCG; ++k)
   {
@@ -127,7 +128,7 @@ void InvCG1_a(const LinearOperator<T>& A,
     A(ap, p, PLUS);
     
     // d = <p,A.p>
-    d = innerProduct(p, ap, s);
+    d = innerProductReal(p, ap, s);
 
     //    a = Real(c);
     a = Real(c)/d;
