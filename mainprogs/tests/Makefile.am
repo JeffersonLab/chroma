@@ -18,9 +18,9 @@ AM_LDFLAGS = -L@top_builddir@/lib @LDFLAGS@ @QDPXX_LDFLAGS@
 LDADD = -lchroma @QDPXX_LIBS@ @LIBS@
 
 if BUILD_SSE_WILSON_DSLASH
-AM_CXXFLAGS += -I$(TOPDIR)/other_libs/intel_sse_dslash/include
-AM_LDFLAGS += -L@top_builddir@/other_libs/intel_sse_dslash/lib
-LDADD += -llevel3 @QDPXX_CFLAGS@
+AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include
+AM_LDFLAGS += -L@top_builddir@/other_libs/@SSE_DSLASH_DIR@/lib
+LDADD += -llevel3 @QDPXX_LIBS@
 endif
 
 #

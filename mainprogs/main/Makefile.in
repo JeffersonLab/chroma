@@ -35,6 +35,9 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_triplet = @host@
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_1 = -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_2 = -L@top_builddir@/other_libs/@SSE_DSLASH_DIR@/lib
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_3 = -llevel3 @QDPXX_LIBS@
 VPATH = @top_srcdir@/mainprogs/main @top_srcdir@/include
 ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
@@ -146,9 +149,9 @@ INCFLAGS = -I@top_srcdir@/include -I@top_builddir@/include -I${TOPDIR}/lib
 #
 # Any other compiler flags
 #
-AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDPXX_CXXFLAGS@
-AM_LDFLAGS = -L@top_builddir@/lib @LDFLAGS@ @QDPXX_LDFLAGS@
-LDADD = -lchroma @QDPXX_LIBS@ @LIBS@
+AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDPXX_CXXFLAGS@ $(am__append_1)
+AM_LDFLAGS = -L@top_builddir@/lib @LDFLAGS@ @QDPXX_LDFLAGS@ $(am__append_2)
+LDADD = -lchroma @QDPXX_LIBS@ @LIBS@ $(am__append_3)
 
 #
 # Local Headers

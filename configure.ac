@@ -2,7 +2,6 @@ AC_INIT(chroma,0.2,edwards@jlab.org)
 AC_PREREQ([2.57])
 AC_CONFIG_AUX_DIR(./config)
 AC_CANONICAL_HOST
-AC_CANONICAL_BUILD
 
 AM_INIT_AUTOMAKE
 # AC_PRO_MAKE_SET        # (RGE) Causes error: do not find in autoconf docs
@@ -52,7 +51,7 @@ AC_ARG_WITH(qdp,
 AC_ARG_ENABLE(sse_wilson_dslash,
   AC_HELP_STRING( 
     [--enable-sse-wilson-dslash],
-    [Build and Use the SSE2 Wilson Dslash Library ]),
+    [Build and Use the SSE2 Wilson Dslash Library ])
 )
 
 if test "X${QDPXX_HOME}X" = "XX" ; then
@@ -123,13 +122,10 @@ case "$enable_sse_wilson_dslash" in
 	AC_CONFIG_SUBDIRS(other_libs/intel_sse_wilson_dslash)
 	AC_SUBST(SSE_DSLASH_DIR, [intel_sse_wilson_dslash])
 	;;
-  no)
+  *)
 	AC_SUBST(SSE_DSLASH_DIR)
 	AC_MSG_NOTICE( [Not building SSE Dslash ] )
         ;;
-  *)
-	AC_MSG_ERROR( [Unknown value for --enable-sse-wilson-dslash ] )
-  ;;
 esac 
 
 

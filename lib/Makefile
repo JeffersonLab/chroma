@@ -14,7 +14,7 @@
 
 
 
-# $Id: Makefile,v 1.7 2003-09-04 15:05:33 bjoo Exp $
+# $Id: Makefile,v 1.8 2003-09-04 15:36:18 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -40,6 +40,7 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_triplet = i686-pc-linux-gnu
+am__append_1 = -I$(TOPDIR)/other_libs/intel_sse_wilson_dslash/include
 VPATH = $(TOPDIR) $(TOPDIR)/lib $(TOPDIR)/lib/actions $(TOPDIR)/lib/actions/boson $(TOPDIR)/lib/actions/boson/operator $(TOPDIR)/lib/actions/ferm $(TOPDIR)/lib/actions/ferm/fermacts $(TOPDIR)/lib/actions/ferm/invert $(TOPDIR)/lib/actions/ferm/linop $(TOPDIR)/lib/actions/ferm/qprop $(TOPDIR)/lib/actions/gauge $(TOPDIR)/lib/geom $(TOPDIR)/lib/info $(TOPDIR)/lib/io $(TOPDIR)/lib/meas $(TOPDIR)/lib/meas/eig $(TOPDIR)/lib/meas/gfix $(TOPDIR)/lib/meas/glue $(TOPDIR)/lib/meas/hadron $(TOPDIR)/lib/meas/pbp $(TOPDIR)/lib/meas/schrfun $(TOPDIR)/lib/meas/smear $(TOPDIR)/lib/meas/sources $(TOPDIR)/lib/update $(TOPDIR)/lib/update/heatbath $(TOPDIR)/lib/update/molecdyn $(TOPDIR)/lib/update/molecdyn/dsdu $(TOPDIR)/lib/update/molecdyn/est $(TOPDIR)/lib/update/molecdyn/mese $(TOPDIR)/lib/update/molecdyn/noise $(TOPDIR)/lib/update/molecdyn/step $(TOPDIR)/lib/util $(TOPDIR)/lib/util/comm $(TOPDIR)/lib/util/ferm $(TOPDIR)/lib/util/ft $(TOPDIR)/lib/util/gauge $(TOPDIR)/lib/util/misc $(TOPDIR)/lib/util/random $(TOPDIR)/include $(TOPDIR)/mainprogs $(TOPDIR)/mainprogs/main $(TOPDIR)/mainprogs/tests $(TOPDIR)/root
 ACLOCAL = ${SHELL} /home/bj/Devel/SciDAC/packages/tmp/chroma/config/missing --run aclocal-1.7
 AMDEP_FALSE = #
@@ -99,7 +100,7 @@ QDPXX_PRECISION = single
 RANLIB = ranlib
 SET_MAKE = 
 SHELL = /bin/sh
-SSE_DSLASH_DIR = intel_sse_dslash
+SSE_DSLASH_DIR = intel_sse_wilson_dslash
 STRIP = 
 VERSION = 0.2
 ac_ct_CXX = 
@@ -134,7 +135,7 @@ prefix = /usr/local
 program_transform_name = s,x,x,
 sbindir = ${exec_prefix}/sbin
 sharedstatedir = ${prefix}/com
-subdirs =  other_libs/intel_sse_dslash
+subdirs =  other_libs/intel_sse_wilson_dslash
 sysconfdir = ${prefix}/etc
 target_alias = 
 
@@ -148,7 +149,7 @@ INCFLAGS = -I$(TOPDIR)/include
 #
 # Any other compiler flags
 # 
-AM_CXXFLAGS = $(INCFLAGS) -g -O2 -O2 -finline-limit=50000 -I/home/bj/Devel/SciDAC/install/qdp++-parscalar-32bit/include -I/usr/include/libxml2 -I/home/bj/Devel/SciDAC/install/qmp/include
+AM_CXXFLAGS = $(INCFLAGS) -g -O2 -O2 -finline-limit=50000 -I/home/bj/Devel/SciDAC/install/qdp++-parscalar-32bit/include -I/usr/include/libxml2 -I/home/bj/Devel/SciDAC/install/qmp/include $(am__append_1)
 
 lib_LIBRARIES = libchroma.a
 
@@ -576,8 +577,6 @@ uninstall-am: uninstall-info-am uninstall-libLIBRARIES
 	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
 	uninstall-am uninstall-info-am uninstall-libLIBRARIES
 
-
-	INCFLAGS += -I$(TOPDIR)/other_libs/intel_sse_dslash
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

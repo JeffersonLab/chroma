@@ -272,7 +272,7 @@ PACKAGE_VERSION='0.2'
 PACKAGE_STRING='chroma 0.2'
 PACKAGE_BUGREPORT='edwards@jlab.org'
 
-ac_subdirs_all="$ac_subdirs_all other_libs/intel_sse_dslash"
+ac_subdirs_all="$ac_subdirs_all other_libs/intel_sse_wilson_dslash"
 ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE RANLIB ac_ct_RANLIB QDPXX_CONFIG CXX QDPXX_CXXFLAGS QDPXX_LDFLAGS QDPXX_LIBS QDPXX_ND QDPXX_NC QDPXX_NS QDPXX_PARALLEL_ARCH QDPXX_PRECISION subdirs SSE_DSLASH_DIR BUILD_SSE_WILSON_DSLASH_TRUE BUILD_SSE_WILSON_DSLASH_FALSE BUILD_STAGGERED_LIBS_TRUE BUILD_STAGGERED_LIBS_FALSE BUILD_WILSON_LIBS_TRUE BUILD_WILSON_LIBS_FALSE CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE LATEX DVIPS DVIPDF DOXYGEN LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
@@ -816,6 +816,7 @@ Optional Features:
                           is wilson
   --enable-sse-wilson-dslash
                           Build and Use the SSE2 Wilson Dslash Library
+
   --disable-dependency-tracking Speeds up one-time builds
   --enable-dependency-tracking  Do not reject slow dependency extractors
 
@@ -1328,7 +1329,6 @@ host=$ac_cv_host
 host_cpu=`echo $ac_cv_host | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\1/'`
 host_vendor=`echo $ac_cv_host | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\2/'`
 host_os=`echo $ac_cv_host | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\3/'`
-
 
 
 
@@ -1960,41 +1960,6 @@ QDPXX_PRECISION="`${QDPXX_CONFIG} --precision`"
 { echo "$as_me:$LINENO: QDP++ precision: ${QDPXX_PRECISION}" >&5
 echo "$as_me: QDP++ precision: ${QDPXX_PRECISION}" >&6;}
 
-case "$enable_sse_wilson_dslash" in
-  yes)
-        { echo "$as_me:$LINENO: Configuring SSE Dslash  " >&5
-echo "$as_me: Configuring SSE Dslash  " >&6;}
-
-
-subdirs="$subdirs other_libs/intel_sse_dslash"
-
-	SSE_DSLASH_DIR=intel_sse_dslash
-
-	;;
-  no)
-
-	{ echo "$as_me:$LINENO: Not building SSE Dslash  " >&5
-echo "$as_me: Not building SSE Dslash  " >&6;}
-        ;;
-  *)
-	{ { echo "$as_me:$LINENO: error: Unknown value for --enable-sse-wilson-dslash  " >&5
-echo "$as_me: error: Unknown value for --enable-sse-wilson-dslash  " >&2;}
-   { (exit 1); exit 1; }; }
-  ;;
-esac
-
-
-
-
-if test "x${enable_sse_wilson_dslash}x" = "xyesx" ; then
-  BUILD_SSE_WILSON_DSLASH_TRUE=
-  BUILD_SSE_WILSON_DSLASH_FALSE='#'
-else
-  BUILD_SSE_WILSON_DSLASH_TRUE='#'
-  BUILD_SSE_WILSON_DSLASH_FALSE=
-fi
-
-
 case $ac_fermion_type in
   staggered)
     if test $QDPXX_NS -ne 1 ; then
@@ -2016,6 +1981,42 @@ echo "$as_me: error: ${ac_fermion_type}-like fermions not supported yet." >&2;}
    { (exit 1); exit 1; }; }
     ;;
 esac
+
+case "$enable_sse_wilson_dslash" in
+  yes)
+        if test "x$ac_fermion_type" != "xwilson";
+	then
+	    { { echo "$as_me:$LINENO: error:  Attempting to build Assembler Wilson Dslash with NON Wilson fermion type " >&5
+echo "$as_me: error:  Attempting to build Assembler Wilson Dslash with NON Wilson fermion type " >&2;}
+   { (exit 1); exit 1; }; }
+	fi
+        { echo "$as_me:$LINENO: Configuring SSE Wilson Dslash  " >&5
+echo "$as_me: Configuring SSE Wilson Dslash  " >&6;}
+
+
+subdirs="$subdirs other_libs/intel_sse_wilson_dslash"
+
+	SSE_DSLASH_DIR=intel_sse_wilson_dslash
+
+	;;
+  *)
+
+	{ echo "$as_me:$LINENO: Not building SSE Dslash  " >&5
+echo "$as_me: Not building SSE Dslash  " >&6;}
+        ;;
+esac
+
+
+
+
+if test "x${enable_sse_wilson_dslash}x" = "xyesx" ; then
+  BUILD_SSE_WILSON_DSLASH_TRUE=
+  BUILD_SSE_WILSON_DSLASH_FALSE='#'
+else
+  BUILD_SSE_WILSON_DSLASH_TRUE='#'
+  BUILD_SSE_WILSON_DSLASH_FALSE=
+fi
+
 
 
 

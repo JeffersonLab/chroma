@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.50 2003-09-04 15:05:33 bjoo Exp $
+# $Id: Makefile.in,v 1.51 2003-09-04 15:36:18 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -40,6 +40,7 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_triplet = @host@
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_1 = -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include
 VPATH = $(TOPDIR) $(TOPDIR)/lib $(TOPDIR)/lib/actions $(TOPDIR)/lib/actions/boson $(TOPDIR)/lib/actions/boson/operator $(TOPDIR)/lib/actions/ferm $(TOPDIR)/lib/actions/ferm/fermacts $(TOPDIR)/lib/actions/ferm/invert $(TOPDIR)/lib/actions/ferm/linop $(TOPDIR)/lib/actions/ferm/qprop $(TOPDIR)/lib/actions/gauge $(TOPDIR)/lib/geom $(TOPDIR)/lib/info $(TOPDIR)/lib/io $(TOPDIR)/lib/meas $(TOPDIR)/lib/meas/eig $(TOPDIR)/lib/meas/gfix $(TOPDIR)/lib/meas/glue $(TOPDIR)/lib/meas/hadron $(TOPDIR)/lib/meas/pbp $(TOPDIR)/lib/meas/schrfun $(TOPDIR)/lib/meas/smear $(TOPDIR)/lib/meas/sources $(TOPDIR)/lib/update $(TOPDIR)/lib/update/heatbath $(TOPDIR)/lib/update/molecdyn $(TOPDIR)/lib/update/molecdyn/dsdu $(TOPDIR)/lib/update/molecdyn/est $(TOPDIR)/lib/update/molecdyn/mese $(TOPDIR)/lib/update/molecdyn/noise $(TOPDIR)/lib/update/molecdyn/step $(TOPDIR)/lib/util $(TOPDIR)/lib/util/comm $(TOPDIR)/lib/util/ferm $(TOPDIR)/lib/util/ft $(TOPDIR)/lib/util/gauge $(TOPDIR)/lib/util/misc $(TOPDIR)/lib/util/random $(TOPDIR)/include $(TOPDIR)/mainprogs $(TOPDIR)/mainprogs/main $(TOPDIR)/mainprogs/tests $(TOPDIR)/root
 ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
@@ -148,7 +149,7 @@ INCFLAGS = -I$(TOPDIR)/include
 #
 # Any other compiler flags
 # 
-AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDPXX_CXXFLAGS@
+AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDPXX_CXXFLAGS@ $(am__append_1)
 
 lib_LIBRARIES = libchroma.a
 
@@ -576,8 +577,6 @@ uninstall-am: uninstall-info-am uninstall-libLIBRARIES
 	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
 	uninstall-am uninstall-info-am uninstall-libLIBRARIES
 
-
-@BUILD_SSE_WILSON_DSLASH_TRUE@	INCFLAGS += -I$(TOPDIR)/other_libs/intel_sse_dslash
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
