@@ -40,8 +40,8 @@ HDRS =
 ##   Another option is to add it to check_PROGRAMS, which means it will only
 ##   be built by 'make check' and is not installed.
 #noinst_PROGRAMS = propagator
-check_PROGRAMS = propagator propagator_comp multi_propagator \
-        multi_propagator_comp collect_propcomp collect_multi_propcomp \
+check_PROGRAMS = propagator \
+        collect_propcomp \
         seqsource \
 	make_source \
         ExampleBuildingBlocks hypsmear cfgtransf sink_smearing qpropgfix \
@@ -63,8 +63,11 @@ endif
 EXTRA_PROGRAMS = qpropadd 
 
 # Currently empty
-#if BUILD_WILSON_LIBS
-#endif
+if BUILD_WILSON_LIBS
+# Temporarily moved here while fixing codes.
+EXTRA_PROGRAMS += propagator_comp multi_propagator multi_propagator_comp \
+       collect_multi_propcomp 
+endif
 
 # Currently empty
 #if BUILD_STAGGERED_LIBS
