@@ -1,4 +1,4 @@
-// $Id: prec_dwf_linop_array_w.cc,v 1.3 2003-11-23 06:14:38 edwards Exp $
+// $Id: prec_dwf_linop_array_w.cc,v 1.4 2003-11-24 16:11:37 kostas Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned domain-wall linear operator
  */
@@ -28,11 +28,13 @@ EvenOddPrecDWLinOpArray::create(const multi1d<LatticeColorMatrix>& u_,
 
   D.create(u_);
 
-  InvTwoKappa = 5.0 - WilsonMass ;
+  InvTwoKappa = 5.0 - WilsonMass ; 
+  //InvTwoKappa =  WilsonMass - 5.0;
   TwoKappa = 1.0 / InvTwoKappa ;
   Kappa = TwoKappa/2.0 ;
   
-  invDfactor =1.0/(1.0 + m_q/pow(InvTwoKappa,N5)) ;
+  invDfactor =1.0/(1.0  + m_q/pow(InvTwoKappa,N5)) ;
+  
 }
 
 
@@ -57,36 +59,36 @@ EvenOddPrecDWLinOpArray::applyDiag(multi1d<LatticeFermion>& chi,
   case PLUS:
     {
       for(int s(1);s<N5-1;s++) // 1/2k psi[s] + P_- * psi[s+1] + P_+ * psi[s-1]
-	chi[s][rb[cb]] = InvTwoKappa*psi[s] + 
+	chi[s][rb[cb]] = InvTwoKappa*psi[s] - 
 	  0.5*( psi[s+1] + psi[s-1] + Gamma(15)*(psi[s-1] - psi[s+1]) ) ;
       
       int N5m1(N5-1) ;
-      //s=0 -- 1/2k psi[0] + P_- * psi[1] - mf* P_+ * psi[N5-1]
-      chi[0][rb[cb]] = InvTwoKappa*psi[0] + 
-	0.5*( psi[1]   - m_f*psi[N5m1] - Gamma(15)*(m_f*psi[N5m1] + psi[1]) ) ;
+      //s=0 -- 1/2k psi[0] - P_- * psi[1] + mf* P_+ * psi[N5-1]
+      chi[0][rb[cb]] = InvTwoKappa*psi[0] - 
+	0.5*( psi[1]   - m_q*psi[N5m1] - Gamma(15)*(m_q*psi[N5m1] + psi[1]) ) ;
       
       int N5m2(N5-2);
-      //s=N5-1 -- 1/2k psi[N5-1] -mf* P_- * psi[0]  +  P_+ * psi[N5-2]
-      chi[N5m1][rb[cb]] = InvTwoKappa*psi[N5m1] + 
-	0.5*( psi[N5m2] - m_f *psi[0] + Gamma(15)*(psi[N5m2] + m_f * psi[0]) );
+      //s=N5-1 -- 1/2k psi[N5-1] +mf* P_- * psi[0]  -  P_+ * psi[N5-2]
+      chi[N5m1][rb[cb]] = InvTwoKappa*psi[N5m1] - 
+	0.5*( psi[N5m2] - m_q *psi[0] + Gamma(15)*(psi[N5m2] + m_q * psi[0]) );
     }
     break ;
 
   case MINUS:
     {    
-      for(int s(1);s<N5-1;s++) // 1/2k psi[s] + P_+ * psi[s+1] + P_- * psi[s-1]
-	chi[s][rb[cb]] = InvTwoKappa*psi[s] + 
+      for(int s(1);s<N5-1;s++) // 1/2k psi[s] - P_+ * psi[s+1] - P_- * psi[s-1]
+	chi[s][rb[cb]] = InvTwoKappa*psi[s] - 
 	  0.5*( psi[s+1] + psi[s-1] + Gamma(15)*(psi[s+1] - psi[s-1]) ) ;
       
       int N5m1(N5-1) ;
-      //s=0 -- 1/2k psi[0] + P_+ * psi[1] - mf* P_- * psi[N5-1]
-      chi[0][rb[cb]] = InvTwoKappa*psi[0] + 
-	0.5*( psi[1]   - m_f*psi[N5m1] + Gamma(15)*( psi[1]+m_f*psi[N5m1]) ) ;
+      //s=0 -- 1/2k psi[0] - P_+ * psi[1] + mf* P_- * psi[N5-1]
+      chi[0][rb[cb]] = InvTwoKappa*psi[0] - 
+	0.5*( psi[1]   - m_q*psi[N5m1] + Gamma(15)*( psi[1]+m_q*psi[N5m1]) ) ;
       
       int N5m2(N5-2);
-      //s=N5-1 -- 1/2k psi[N5-1] -mf* P_+ * psi[0]  +  P_- * psi[N5-2]
-      chi[N5m1][rb[cb]] = InvTwoKappa*psi[N5m1] + 
-	0.5*( psi[N5m2] - m_f *psi[0] - Gamma(15)*(psi[N5m2] + m_f * psi[0]) );
+      //s=N5-1 -- 1/2k psi[N5-1] + mf* P_+ * psi[0]  -  P_- * psi[N5-2]
+      chi[N5m1][rb[cb]] = InvTwoKappa*psi[N5m1] - 
+	0.5*( psi[N5m2] - m_q *psi[0] - Gamma(15)*(psi[N5m2] + m_q * psi[0]) );
     }
     break ;
   }
@@ -118,15 +120,15 @@ EvenOddPrecDWLinOpArray::applyDiagInv(multi1d<LatticeFermion>& chi,
 	chi[s][rb[cb]] = TwoKappa * psi[s] ;
       
       // First apply the inverse of Lm 
-      Real fact(0.5*m_f*TwoKappa) ;
+      Real fact(0.5*m_q*TwoKappa) ;
       for(int s(0);s<N5-1;s++){
-	chi[N5-1][rb[cb]] += fact * (chi[s] - Gamma(15)*chi[s])  ;
-	fact *= -TwoKappa ;
+	chi[N5-1][rb[cb]] -= fact * (chi[s] - Gamma(15)*chi[s])  ;
+	fact *= TwoKappa ;
       }
       
       //Now apply the inverse of L. Forward elimination 
       for(int s(1);s<N5;s++)
-	chi[s][rb[cb]] -= Kappa*(chi[s-1] + Gamma(15)*chi[s-1]) ;
+	chi[s][rb[cb]] += Kappa*(chi[s-1] + Gamma(15)*chi[s-1]) ;
       
       //The inverse of D  now
       chi[N5-1][rb[cb]] *= invDfactor ;
@@ -134,14 +136,14 @@ EvenOddPrecDWLinOpArray::applyDiagInv(multi1d<LatticeFermion>& chi,
       
       //The inverse of R. Back substitution...... Getting there! 
       for(int s(N5-2);s>-1;s--)
-	chi[s][rb[cb]] -= Kappa*(chi[s+1] - Gamma(15)*chi[s+1]) ;
+	chi[s][rb[cb]] += Kappa*(chi[s+1] - Gamma(15)*chi[s+1]) ;
       
       //Finally the inverse of Rm 
       LatticeFermion tt;
-      tt[rb[cb]] = (0.5*m_f*TwoKappa)*(chi[N5-1] + Gamma(15)*chi[N5-1]);
+      tt[rb[cb]] = (0.5*m_q*TwoKappa)*(chi[N5-1] + Gamma(15)*chi[N5-1]);
       for(int s(0);s<N5-1;s++){
-	chi[s][rb[cb]] += tt  ;
-	tt[rb[cb]] *= -TwoKappa ;
+	chi[s][rb[cb]] -= tt  ;
+	tt[rb[cb]] *= TwoKappa ;
       }
     }
     break ;
@@ -153,15 +155,15 @@ EvenOddPrecDWLinOpArray::applyDiagInv(multi1d<LatticeFermion>& chi,
 	chi[s][rb[cb]] = TwoKappa * psi[s] ;
       
       // First apply the inverse of Lm 
-      Real fact(0.5*m_f*TwoKappa) ;
+      Real fact(0.5*m_q*TwoKappa) ;
       for(int s(0);s<N5-1;s++){
-	chi[N5-1][rb[cb]] += fact * (chi[s] + Gamma(15)*chi[s])  ;
-	fact *= -TwoKappa ;
+	chi[N5-1][rb[cb]] -= fact * (chi[s] + Gamma(15)*chi[s])  ;
+	fact *= TwoKappa ;
       }
       
       //Now apply the inverse of L. Forward elimination 
       for(int s(1);s<N5;s++)
-	chi[s][rb[cb]] -= Kappa*(chi[s-1] - Gamma(15)*chi[s-1]) ;
+	chi[s][rb[cb]] += Kappa*(chi[s-1] - Gamma(15)*chi[s-1]) ;
       
       //The inverse of D  now
       chi[N5-1][rb[cb]] *= invDfactor ;
@@ -169,14 +171,14 @@ EvenOddPrecDWLinOpArray::applyDiagInv(multi1d<LatticeFermion>& chi,
       
       //The inverse of R. Back substitution...... Getting there! 
       for(int s(N5-2);s>-1;s--)
-	chi[s][rb[cb]] -= Kappa*(chi[s+1] + Gamma(15)*chi[s+1]) ;
+	chi[s][rb[cb]] += Kappa*(chi[s+1] + Gamma(15)*chi[s+1]) ;
       
       //Finally the inverse of Rm 
       LatticeFermion tt;
-      tt[rb[cb]] = (0.5*m_f*TwoKappa)*(chi[N5-1] - Gamma(15)*chi[N5-1]);
+      tt[rb[cb]] = (0.5*m_q*TwoKappa)*(chi[N5-1] - Gamma(15)*chi[N5-1]);
       for(int s(0);s<N5-1;s++){
-	chi[s][rb[cb]] += tt  ;
-	tt[rb[cb]] *= -TwoKappa ;
+	chi[s][rb[cb]] -= tt  ;
+	tt[rb[cb]] *= TwoKappa ;
       }
     }
     break ;

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_linop_array_w.h,v 1.2 2003-11-23 06:04:24 edwards Exp $
+// $Id: prec_dwf_linop_array_w.h,v 1.3 2003-11-24 16:11:37 kostas Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned domain-wall fermion linear operator
  */
@@ -66,7 +66,7 @@ public:
       for(int s(0);s<N5;s++)
       {
 	D.apply(chi[s],psi[s],isign,0);
-	chi[s][rb[0]] *= 0.5;
+	chi[s][rb[0]] *= (-0.5);
       }
     }
 
@@ -78,7 +78,7 @@ public:
       for(int s(0);s<N5;s++)
       {
 	D.apply(chi[s],psi[s],isign,1);
-	chi[s][rb[1]] *= 0.5;
+	chi[s][rb[1]] *= (-0.5);
       }
     }
 
@@ -91,6 +91,14 @@ public:
       applyDiag(chi, psi, isign, 1);
     }
 
+  //! Apply the inverse of the odd-odd block onto a source vector
+  inline
+  void oddOddInvLinOp(multi1d<LatticeFermion>& chi, 
+			const multi1d<LatticeFermion>& psi, 
+			enum PlusMinus isign) const
+    {
+      applyDiagInv(chi, psi, isign, 1);
+    }
 
 protected:
 
@@ -128,7 +136,6 @@ private:
   Real InvTwoKappa ;
   Real TwoKappa ;
   Real Kappa;
-  Real m_f ;
   Real invDfactor ;
 
   WilsonDslash  D;
