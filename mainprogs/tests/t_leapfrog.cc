@@ -123,7 +123,7 @@ int main(int argc, char *argv[])
   Double KE_old, PE_old;
 
   // Put some noise into the pseudofermions...
-  H_exact.refresh(gauge_state);
+  H_exact.refreshInternalFields(gauge_state);
   H_exact.mesE(gauge_state, KE_old, PE_old);
   QDPIO::cout << "Initial energies: KE =" << KE_old << " PE = " << PE_old <<endl;
 

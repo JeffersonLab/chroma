@@ -84,7 +84,7 @@ int main(int argc, char *argv[])
   GaugeFieldState gauge_state(p,u);
 
   // Refresh Pseudofermions
-  H_handle->refresh(gauge_state);
+  H_handle->refreshInternalFields(gauge_state);
 
   // Compute Force from Monomial
   multi1d<LatticeColorMatrix> dsdq(Nd);

@@ -37,13 +37,13 @@ namespace Chroma {
       refreshP(s);
       
       // Refresh Pseudofermions
-      H_MC.refresh(s);
+      H_MC.refreshInternalFields(s);
       
       // 2) SaveState -- Perhaps this could be done better?
       Handle< AbsFieldState<P,Q> >  s_old(s.clone());
       
       // 3) Set fields in the MD Hamiltonian
-      MD.getHamiltonian().copyPseudofermions(H_MC);
+      MD.getHamiltonian().setInternalFields(H_MC);
 
       // 3) Integrate MD trajectory
       MD(s);

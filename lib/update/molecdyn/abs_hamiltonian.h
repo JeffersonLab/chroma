@@ -38,10 +38,10 @@ namespace Chroma {
     }
     
     //! Refresh pseudofermsions (if any)
-    virtual void refresh(const AbsFieldState<P,Q>& s) {
+    virtual void refreshInternalFields(const AbsFieldState<P,Q>& s) {
       int num_terms = numMonomials();
       for(int i=0; i < num_terms; i++) { 
-	getMonomial(i).refresh(s);
+	getMonomial(i).refreshInternalFields(s);
       }
     }
 
@@ -53,19 +53,19 @@ namespace Chroma {
     // number of terms. Also the types need to be the same otherwise
     // an exception will occur. If you don't like this behavior, you
     // should override it in your code.
-    virtual void copyPseudofermions(const AbsHamiltonian<P,Q>& H_from) {
+    virtual void setInternalFields(const AbsHamiltonian<P,Q>& H_from) {
       int num_terms = numMonomials();
 
       // Minimal sanity checking -- Check the number of terms are the same
       int num_terms_from = H_from.numMonomials();
       
       if( num_terms_from != num_terms ) { 
-	QDPIO::cerr << "Error in copyPseudofermions: Source Hamiltonian and Target Hamiltonian contain different number of monomials" << endl;
+	QDPIO::cerr << "Error in setInternalFields: Source Hamiltonian and Target Hamiltonian contain different number of monomials" << endl;
 	QDP_abort(1);
       }
 
       for(int i=0; i < num_terms; i++) { 
-	getMonomial(i).copyPseudofermions(H_from.getMonomial(i));
+	getMonomial(i).setInternalFields(H_from.getMonomial(i));
       }
     }
 
@@ -115,10 +115,10 @@ namespace Chroma {
     }
 
     //! Refresh pseudofermsions (if any)
-    virtual void refresh(const AbsFieldState<P,Q>& s) {
+    virtual void refreshInternalFields(const AbsFieldState<P,Q>& s) {
       int num_terms = numMonomials();
       for(int i=0; i < num_terms; i++) { 
-	getMonomial(i).refresh(s);
+	getMonomial(i).refreshInternalFields(s);
       }
     }
     

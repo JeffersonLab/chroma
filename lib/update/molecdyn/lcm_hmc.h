@@ -65,8 +65,16 @@ namespace Chroma {
 
 	// Pull the gaussian noise
 	gaussian(s.getP()[mu]);
-	s.getP()[mu] *= sqrt(0.5);  // Gaussian Normalisation
 
+	// Old conventions
+	//s.getP()[mu] *= sqrt(0.5);  // Gaussian Normalisation
+
+	// Normalisation factor in variance of momenta 
+	// one factor of sqrt(2) to move the variance of the noise
+	// one factor of sqrt(2) to account for Taproj normalisation
+	// => sqrt(1/2)*sqrt(1/2) = sqrt(1/4) = 1/2 
+	s.getP()[mu] *= sqrt(Real(0.5)); 
+                         
 	// Make traceless and antihermitian
 	taproj(s.getP()[mu]);
 

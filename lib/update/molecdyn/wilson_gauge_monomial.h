@@ -50,14 +50,14 @@ namespace Chroma {
       }
 	
 	
-      void refresh(const AbsFieldState<multi1d<LatticeColorMatrix>,
-		   multi1d<LatticeColorMatrix> >& s) {
-	//Nop
+      void refreshInternalFields(const AbsFieldState<multi1d<LatticeColorMatrix>,
+				 multi1d<LatticeColorMatrix> >& s) {
+	//No internal fields to refresh => Nop
       }
 
-      void copyPseudofermions(const Monomial<multi1d<LatticeColorMatrix>, 
+      void setInternalFields(const Monomial<multi1d<LatticeColorMatrix>, 
 	                                     multi1d<LatticeColorMatrix> >& m) {
-	// Nop
+	// No internal fields to refresh => Nop
       }
     protected:
       const WilsonGaugeAct& getGaugeAct(void) const { 

@@ -188,6 +188,7 @@ int main(int argc, char *argv[])
     for(; trj < params.n_prod + params.n_warm_up; trj++) { 
       
       theHMCTrj( gauge_state, true ) ;
+
       Double w_plaq, s_plaq, t_plaq, link;
       MesPlq(gauge_state.getQ(), w_plaq, s_plaq, t_plaq, link);
       push(xml_out, "HMCTrjObservables");
