@@ -1,4 +1,4 @@
-// $Id: unprec_wilson_dsdu_w.cc,v 1.2 2003-11-09 22:32:09 edwards Exp $
+// $Id: unprec_wilson_dsdu_w.cc,v 1.3 2003-11-13 15:33:32 edwards Exp $
 /*! \file
  *  \brief dS/dU_f for unpreconditioned Wilson fermions
  */
@@ -24,6 +24,8 @@ using namespace QDP;
 multi1d<LatticeColorMatrix> UnprecWilsonFermAct::dsdu(const multi1d<LatticeColorMatrix>& u, 
 						      const LatticeFermion& psi) const
 {
+  START_CODE("UnprecWilsonFermAct::dsdu");
+  
   multi1d<LatticeColorMatrix> ds_u(Nd);
 
   // hack
@@ -42,8 +44,6 @@ multi1d<LatticeColorMatrix> UnprecWilsonFermAct::dsdu(const multi1d<LatticeColor
   int nu;
   int cb;
 
-  START_CODE("UnprecWilsonFermAct::Qprop");
-  
   // Do the usual Wilson fermion dS_f/dU
   const LinearOperator* A = linOp(u);
 
@@ -98,7 +98,7 @@ multi1d<LatticeColorMatrix> UnprecWilsonFermAct::dsdu(const multi1d<LatticeColor
   delete A;
 #endif
 
-  END_CODE("UnprecWilsonFermAct::Qprop");
+  END_CODE("UnprecWilsonFermAct::dsdu");
 
   return ds_u;
 }
