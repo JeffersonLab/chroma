@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.31 2003-08-11 21:29:34 dru Exp $
+# $Id: Makefile.am,v 1.32 2003-08-20 11:33:51 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -72,8 +72,7 @@ HDRS =  chroma.h chromabase.h chromainc.h primitives.h common_declarations.h \
 GENERIC_SRCS = $(HDRS) gaus_smear.cc taproj.cc hotst.cc expm12.cc \
                klein_gord.cc mesplq.cc reunit.cc sftmom.cc srcfil.cc \
                readszin.cc su3proj.cc sun_proj.cc hyp_smear.cc laplacian.cc\
-               su2extract.cc sunfill.cc invcg2.cc qprop_io.cc p_src.cc \
-               d_src.cc D_j.cc DjDk.cc laplacian.cc BuildingBlocks.cc
+               su2extract.cc sunfill.cc invcg2.cc qprop_io.cc
 #
 # Object files to add if building the Wilson Builds...
 # This is OK, since Ns is determined at configure time
@@ -83,7 +82,8 @@ WILSON_SRCS = baryon_w.cc mesons_w.cc lwldslash_w.cc formfac_w.cc \
               unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
               unprec_wilson_dsdu_w.cc  unprec_qprop_w.cc readszinqprop_w.cc \
               readszinferm_w.cc \
-              overlapbu_linop_w.cc
+              overlapbu_linop_w.cc \
+	      p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc
 #              zolotarev4d_fermact_w.cc zolotarev4d_linop_w.cc lovlapms_w.cc
 
 # dslashm_w.cc 

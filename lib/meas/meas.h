@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: meas.h,v 1.5 2003-04-17 14:50:22 dgr Exp $
+// $Id: meas.h,v 1.6 2003-08-20 11:33:51 bjoo Exp $
 
 /*! \file
  * \brief Include all measurement routines
@@ -22,11 +22,11 @@
 #include "eig/eig.h"
 #include "gfix/gfix.h"
 #include "glue/glue.h"
-#include "hadron/hadron.h"
+#include "hadron/hadron_w.h"
 #include "pbp/pbp.h"
 #include "schrfun/schrfun.h"
 #include "smear/smear.h"
-#include "sources/sources.h"
+#include "sources/sources_w.h"
 
 #endif
 

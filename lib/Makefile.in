@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.46 2003-08-11 21:47:21 dru Exp $
+# $Id: Makefile.in,v 1.47 2003-08-20 11:33:51 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -163,8 +163,7 @@ HDRS = chroma.h chromabase.h chromainc.h primitives.h common_declarations.h \
 GENERIC_SRCS = $(HDRS) gaus_smear.cc taproj.cc hotst.cc expm12.cc \
                klein_gord.cc mesplq.cc reunit.cc sftmom.cc srcfil.cc \
                readszin.cc su3proj.cc sun_proj.cc hyp_smear.cc laplacian.cc\
-               su2extract.cc sunfill.cc invcg2.cc qprop_io.cc p_src.cc \
-               d_src.cc D_j.cc DjDk.cc laplacian.cc BuildingBlocks.cc
+               su2extract.cc sunfill.cc invcg2.cc qprop_io.cc
 
 #
 # Object files to add if building the Wilson Builds...
@@ -175,7 +174,8 @@ WILSON_SRCS = baryon_w.cc mesons_w.cc lwldslash_w.cc formfac_w.cc \
               unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
               unprec_wilson_dsdu_w.cc  unprec_qprop_w.cc readszinqprop_w.cc \
               readszinferm_w.cc \
-              overlapbu_linop_w.cc
+              overlapbu_linop_w.cc \
+	      p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc
 
 #              zolotarev4d_fermact_w.cc zolotarev4d_linop_w.cc lovlapms_w.cc
 
@@ -208,12 +208,12 @@ am__libchroma_a_SOURCES_DIST = chroma.h chromabase.h chromainc.h \
 	taproj.cc hotst.cc expm12.cc klein_gord.cc mesplq.cc reunit.cc \
 	sftmom.cc srcfil.cc readszin.cc su3proj.cc sun_proj.cc \
 	hyp_smear.cc laplacian.cc su2extract.cc sunfill.cc invcg2.cc \
-	qprop_io.cc p_src.cc d_src.cc D_j.cc DjDk.cc baryon_w.cc \
-	mesons_w.cc lwldslash_w.cc formfac_w.cc sink_smear2_w.cc \
-	barcomp_w.cc transf_w.cc unprec_wilson_fermact_w.cc \
-	unprec_wilson_linop_w.cc unprec_wilson_dsdu_w.cc \
-	unprec_qprop_w.cc readszinqprop_w.cc readszinferm_w.cc \
-	overlapbu_linop_w.cc BuildingBlocks.cc
+	qprop_io.cc baryon_w.cc mesons_w.cc lwldslash_w.cc formfac_w.cc \
+	sink_smear2_w.cc barcomp_w.cc transf_w.cc \
+	unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
+	unprec_wilson_dsdu_w.cc unprec_qprop_w.cc readszinqprop_w.cc \
+	readszinferm_w.cc overlapbu_linop_w.cc p_src_w.cc d_src_w.cc \
+	D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc
 am__objects_1 =
 am__objects_2 = $(am__objects_1) gaus_smear.$(OBJEXT) taproj.$(OBJEXT) \
 	hotst.$(OBJEXT) expm12.$(OBJEXT) klein_gord.$(OBJEXT) \
@@ -221,15 +221,16 @@ am__objects_2 = $(am__objects_1) gaus_smear.$(OBJEXT) taproj.$(OBJEXT) \
 	srcfil.$(OBJEXT) readszin.$(OBJEXT) su3proj.$(OBJEXT) \
 	sun_proj.$(OBJEXT) hyp_smear.$(OBJEXT) laplacian.$(OBJEXT) \
 	su2extract.$(OBJEXT) sunfill.$(OBJEXT) invcg2.$(OBJEXT) \
-	qprop_io.$(OBJEXT) p_src.$(OBJEXT) d_src.$(OBJEXT) \
-	D_j.$(OBJEXT) DjDk.$(OBJEXT) laplacian.$(OBJEXT) BuildingBlocks.$(OBJEXT)
+	qprop_io.$(OBJEXT)
 am__objects_3 = baryon_w.$(OBJEXT) mesons_w.$(OBJEXT) \
 	lwldslash_w.$(OBJEXT) formfac_w.$(OBJEXT) \
 	sink_smear2_w.$(OBJEXT) barcomp_w.$(OBJEXT) transf_w.$(OBJEXT) \
 	unprec_wilson_fermact_w.$(OBJEXT) \
 	unprec_wilson_linop_w.$(OBJEXT) unprec_wilson_dsdu_w.$(OBJEXT) \
 	unprec_qprop_w.$(OBJEXT) readszinqprop_w.$(OBJEXT) \
-	readszinferm_w.$(OBJEXT) overlapbu_linop_w.$(OBJEXT)
+	readszinferm_w.$(OBJEXT) overlapbu_linop_w.$(OBJEXT) \
+	p_src_w.$(OBJEXT) d_src_w.$(OBJEXT) D_j_w.$(OBJEXT) \
+	DjDk_w.$(OBJEXT) BuildingBlocks_w.$(OBJEXT)
 @BUILD_STAGGERED_LIBS_TRUE@am_libchroma_a_OBJECTS = $(am__objects_2) \
 @BUILD_STAGGERED_LIBS_TRUE@	$(am__objects_1)
 @BUILD_WILSON_LIBS_TRUE@am_libchroma_a_OBJECTS = $(am__objects_2) \
@@ -238,7 +239,8 @@ am__EXTRA_libchroma_a_SOURCES_DIST = baryon_w.cc mesons_w.cc \
 	lwldslash_w.cc formfac_w.cc sink_smear2_w.cc barcomp_w.cc \
 	transf_w.cc unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
 	unprec_wilson_dsdu_w.cc unprec_qprop_w.cc readszinqprop_w.cc \
-	readszinferm_w.cc overlapbu_linop_w.cc
+	readszinferm_w.cc overlapbu_linop_w.cc p_src_w.cc d_src_w.cc \
+	D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc
 nodist_libchroma_a_OBJECTS = $(am__objects_1)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS) \
 	$(nodist_libchroma_a_OBJECTS)
@@ -246,17 +248,17 @@ libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS) \
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/D_j.Po ./$(DEPDIR)/DjDk.Po \
-@AMDEP_TRUE@    ./$(DEPDIR)/BuildingBlocks.Po \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/BuildingBlocks_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/D_j_w.Po ./$(DEPDIR)/DjDk_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/barcomp_w.Po ./$(DEPDIR)/baryon_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/d_src.Po ./$(DEPDIR)/expm12.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/d_src_w.Po ./$(DEPDIR)/expm12.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/formfac_w.Po ./$(DEPDIR)/gaus_smear.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/hotst.Po ./$(DEPDIR)/hyp_smear.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/invcg2.Po ./$(DEPDIR)/klein_gord.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/laplacian.Po ./$(DEPDIR)/lwldslash_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/mesons_w.Po ./$(DEPDIR)/mesplq.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/overlapbu_linop_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/p_src.Po ./$(DEPDIR)/qprop_io.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/p_src_w.Po ./$(DEPDIR)/qprop_io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/readszin.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/readszinferm_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/readszinqprop_w.Po \
@@ -335,12 +337,12 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/D_j.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DjDk.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BuildingBlocks.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BuildingBlocks_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/D_j_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DjDk_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/barcomp_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/baryon_w.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/d_src.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/d_src_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/expm12.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/formfac_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gaus_smear.Po@am__quote@
@@ -353,7 +355,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesons_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesplq.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/overlapbu_linop_w.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/p_src.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/p_src_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qprop_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readszin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readszinferm_w.Po@am__quote@

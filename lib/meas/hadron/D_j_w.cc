@@ -1,11 +1,11 @@
-// $Id: D_j_w.cc,v 1.1 2003-08-19 17:15:24 bjoo Exp $
+// $Id: D_j_w.cc,v 1.2 2003-08-20 11:33:51 bjoo Exp $
 /*
  *
  */
 //
 
 #include "chromabase.h"
-#include "meas/hadron/D_j.h"
+#include "meas/hadron/D_j_w.h"
 
 using namespace QDP;
 

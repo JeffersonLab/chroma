@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hadron.h,v 1.8 2003-08-11 21:11:20 dru Exp $
+// $Id: hadron_w.h,v 1.1 2003-08-20 11:33:52 bjoo Exp $
 
 /*! \file
  * \brief Hadronic observables
@@ -22,8 +22,8 @@
 #include "formfac_w.h"
 #include "mesons_w.h"
 #include "srcfil.h"
-#include "D_j.h"
-#include "DjDk.h"
-#include "BuildingBlocks.hh"
+#include "D_j_w.h"
+#include "DjDk_w.h"
+#include "BuildingBlocks_w.h"
 
 #endif
