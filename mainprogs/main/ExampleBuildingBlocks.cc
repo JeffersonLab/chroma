@@ -45,7 +45,7 @@ using namespace Chroma;
 //###################################################################################//
 
 static const char* const CVSExampleBuildingBlocks_hh =
-"$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/mainprogs/main/ExampleBuildingBlocks.cc,v 1.20 2005-03-12 18:42:34 edwards Exp $";
+"$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/mainprogs/main/ExampleBuildingBlocks.cc,v 1.21 2005-03-15 04:13:22 edwards Exp $";
 
 
 /*
@@ -367,9 +367,6 @@ int main( int argc, char** argv )
 
   const int NF = input.bb.BkwdProps.size();
 
-  multi1d< LatticePropagator > B( NF );
-  multi1d< int > GammaInsertions( NF );
-
   XMLArrayWriter  XmlSeqSrc(XmlOut, NF);
   push(XmlSeqSrc, "SequentialSource");
 
@@ -378,13 +375,16 @@ int main( int argc, char** argv )
     push(XmlSeqSrc);
     write(XmlSeqSrc, "loop_ctr", loop);
 
+    Out << "Loop = " << loop << "\n";  Out.flush();
+    QDPIO::cout << "Loop = " << loop << endl;
+
     XMLReader BkwdPropXML, BkwdPropRecordXML;
-    LatticePropagator Bu;
+    multi1d< LatticePropagator > B( 1 );
     SeqSource_t seqsource_header;
     Out << "reading backward u propagator " << input.bb.BkwdProps[loop].BkwdPropFileName << " ... " << "\n";  Out.flush();
     {
       Out << "assuming chroma format for backward u propagator" << "\n";  Out.flush();
-      readQprop( BkwdPropXML, BkwdPropRecordXML, Bu, input.bb.BkwdProps[loop].BkwdPropFileName, QDPIO_SERIAL );
+      readQprop( BkwdPropXML, BkwdPropRecordXML, B[0], input.bb.BkwdProps[loop].BkwdPropFileName, QDPIO_SERIAL );
 
       // Try to invert this record XML into a ChromaProp struct
       // Also pull out the id of this source
@@ -406,7 +406,7 @@ int main( int argc, char** argv )
     {
       SftMom phases( 0, true, j_decay );
 
-      multi1d<Double> BkwdPropCheck = sumMulti( localNorm2( Bu ), phases.getSet() );
+      multi1d<Double> BkwdPropCheck = sumMulti( localNorm2( B[0] ), phases.getSet() );
 
       Out << "backward u propagator check = " << BkwdPropCheck[0] << "\n";  Out.flush();
       
@@ -422,77 +422,74 @@ int main( int argc, char** argv )
       XmlOut.flush();
     }
 
-    // Derived from input seqprop
-    string seq_src = seqsource_header.seq_src;
-    QDPIO::cout << "Seqsource name = " << seqsource_header.seq_src << endl;
-    int           t_sink   = seqsource_header.t_sink;
-    multi1d<int>  sink_mom = seqsource_header.sink_mom;
-
-    write(XmlSeqSrc, "seq_src", seq_src);
-    write(XmlSeqSrc, "t_source", t_source);
-    write(XmlSeqSrc, "t_sink", t_sink);
-    write(XmlSeqSrc, "sink_mom", sink_mom);
-	
     //#################################################################################//
     // Additional Gamma Matrix Insertions                                              //
     //#################################################################################//
     
-    GammaInsertions[loop] = input.bb.BkwdProps[loop].GammaInsertion;
+    multi1d<int> GammaInsertions(1);
+    GammaInsertions[0] = input.bb.BkwdProps[loop].GammaInsertion;
 
-    if (GammaInsertions[loop] < 0 || GammaInsertions[loop] >= Ns*Ns)
+    if (GammaInsertions[0] < 0 || GammaInsertions[0] >= Ns*Ns)
     {
-      QDPIO::cerr << argv[0] << ": Gamma insertion out of bounds: " << GammaInsertions[loop] << endl;
+      QDPIO::cerr << argv[0] << ": Gamma insertion out of bounds: " << GammaInsertions[0] << endl;
       QDP_abort(1);
     }
 
+    //#################################################################################//
+    // Some output                                                                     //
+    //#################################################################################//
+    
+    QDPIO::cout << "Seqsource name  = " << seqsource_header.seq_src << endl;
+    QDPIO::cout << "Gamma insertion = " << input.bb.BkwdProps[loop].GammaInsertion << endl;
+    int           t_sink   = seqsource_header.t_sink;
+    multi1d<int>  sink_mom = seqsource_header.sink_mom;
+
+    write(XmlSeqSrc, "seq_src", seqsource_header.seq_src);
+    write(XmlSeqSrc, "gamma_insertion", GammaInsertions[0]);
+    write(XmlSeqSrc, "t_source", t_source);
+    write(XmlSeqSrc, "t_sink", t_sink);
+    write(XmlSeqSrc, "sink_mom", sink_mom);
+	
     //#################################################################################//
     // Convert Backward Propagator Format                                              //
     //#################################################################################//
     
     if( input.bb.BkwdProps[loop].BkwdPropG5Format == "G5_B" )
     {
-      B[loop] = Gamma( 15 ) * Bu;
+      LatticePropagator Bu = B[0];
+      B[0] = Gamma( 15 ) * Bu;
     }
     else if( input.bb.BkwdProps[loop].BkwdPropG5Format == "B_G5" )
     {
-      B[loop] = Bu * Gamma( 15 );
+      LatticePropagator Bu = B[0];
+      B[0] = Bu * Gamma( 15 );
     }
     else if( input.bb.BkwdProps[loop].BkwdPropG5Format == "G5_B_G5" )
     {
-      B[loop] = Gamma( 15 ) * Bu * Gamma( 15 );
-    }
-    else
-    {
-      B[loop] = Bu;
+      LatticePropagator Bu = B[0];
+      B[0] = Gamma( 15 ) * Bu * Gamma( 15 );
     }
 
-    pop(XmlSeqSrc);   // elem
-  } // end loop over sequential sources
+    //#################################################################################//
+    // Set Momenta                                                                     //
+    //#################################################################################//
 
-  pop(XmlSeqSrc);  // SequentialSource
-
-  //#################################################################################//
-  // Set Momenta                                                                     //
-  //#################################################################################//
-
-  // WARNING: DRU HAD SnkMom HARDWIRED TO ZERO. I THINK IT SHOULD FLOAT
-  // THIS CHANGES THE INSERTION MOMENTA!
-  multi1d< int > SnkMom( Nd - 1 );
-  SnkMom = 0;
+    // WARNING: DRU HAD SnkMom HARDWIRED TO ZERO. I THINK IT SHOULD FLOAT
+    // THIS CHANGES THE INSERTION MOMENTA!
+    multi1d< int > SnkMom( Nd - 1 );
+    SnkMom = 0;
 
 //  SftMom Phases( input.param.mom2_max, input.param.sink_mom, false, j_decay );
-  SftMom Phases( input.param.mom2_max, SnkMom, false, j_decay );
+    SftMom Phases( input.param.mom2_max, SnkMom, false, j_decay );
 
-  //#################################################################################//
-  // Construct File Names                                                            //
-  //#################################################################################//
+    //#################################################################################//
+    // Construct File Names                                                            //
+    //#################################################################################//
 
-  int NQ = Phases.numMom();
+    int NQ = Phases.numMom();
 
-  multi2d< string > Files( NF, NQ );
+    multi2d< string > Files( 1, NQ );
 
-  for(int loop = 0; loop < NF; ++loop)
-  {
     const int BBFileNameLength = input.bb.BkwdProps[loop].BBFileNamePattern.length() + 3 * 3 + 1;
 
     for( int q = 0; q < NQ; q ++ )
@@ -519,27 +516,34 @@ int main( int argc, char** argv )
       char* bbf = new char[BBFileNameLength + 1];
       sprintf( bbf, input.bb.BkwdProps[loop].BBFileNamePattern.c_str(), ZSign, abs(Q[2]), YSign, abs(Q[1]), XSign, abs(Q[0]) );
 
-      Files(loop,q) = bbf;
+      Files(0,q) = bbf;
 
       delete[] bbf;
     }
-  }
 
-  //#################################################################################//
-  // Construct Building Blocks                                                       //
-  //#################################################################################//
+    //#################################################################################//
+    // Construct Building Blocks                                                       //
+    //#################################################################################//
+    
+    Out << "calculating building blocks" << "\n";  Out.flush();
+    QDPIO::cout << "calculating building blocks" << endl;
 
-  Out << "calculating building blocks ..." << "\n";  Out.flush();
-  QDPIO::cout << "calculating building blocks ..." << endl;
+    multi1d< int > Flavors( 1 );
+    Flavors[0] = loop;                    // Dru puts a Flavor into the BB
 
-  const signed short int T1 = 0;
-  const signed short int T2 = input.param.nrow[j_decay] - 1;
+    const signed short int T1 = 0;
+    const signed short int T2 = input.param.nrow[j_decay] - 1;
 
-  BuildingBlocks( B, F, U, GammaInsertions,
-		  input.param.links_max, AllLinkPatterns, Phases, Files, T1, T2 );
+    BuildingBlocks( B, F, U, GammaInsertions, Flavors,
+		    input.param.links_max, AllLinkPatterns, Phases, Files, T1, T2 );
 
-  Out << "finished calculating building blocks" << "\n";  Out.flush();
-  QDPIO::cout << "finished calculating building blocks" << endl;
+    Out << "finished calculating building blocks for loop = " << loop << "\n";  Out.flush();
+    QDPIO::cout << "finished calculating building blocks for loop = " << loop << endl;
+
+    pop(XmlSeqSrc);   // elem
+  } // end loop over sequential sources
+
+  pop(XmlSeqSrc);  // SequentialSource
 
   //#################################################################################//
   // Close QDP                                                                       //

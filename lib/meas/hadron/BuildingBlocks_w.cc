@@ -47,7 +47,7 @@ namespace Chroma {
 //###################################################################################//
 
 static const char* const CVSBuildingBlocks_cc =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 1.13 2005-03-12 18:41:49 edwards Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 1.14 2005-03-15 04:13:22 edwards Exp $";
 
 //###################################################################################//
 // record the CVS info                                                               //
@@ -270,6 +270,7 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
                      const LatticePropagator &             F,
                      const multi1d< LatticeColorMatrix > & U,
                      const multi1d< int > &                GammaInsertions,
+                     const multi1d< int > &                Flavors,
                      const unsigned short int              MaxNLinks,
                      const BBLinkPattern                   LinkPattern,
                      const SftMom &                        Phases,
@@ -277,6 +278,8 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
                      const signed short int T1,
                      const signed short int T2 )
 {
+  GBB_NLinkPatterns = 0;
+
   //#################################################################################//
   // open building blocks data files                                                 //
   //#################################################################################//
@@ -325,7 +328,7 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
 
   for( int f = 0; f < NF; f ++ )
   {
-    const signed short int Flavor = f;  // currently assumes u and d are given as f=0 and f=1
+    const signed short int Flavor = Flavors[f];  // currently assumes u and d are given as f=0 and f=1
 
   for( int q = 0; q < NQ; q ++ )
   {
