@@ -14,10 +14,9 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.264 2004-11-20 22:00:33 edwards Exp $
+# $Id: Makefile.in,v 1.265 2004-11-21 04:51:23 edwards Exp $
 #
 # Path for all files used in building the library
-# This file was automatically generated
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -409,7 +408,6 @@ lib_LIBRARIES = libchroma.a
 # Object files to add if building the Wilson Builds...
 # This is OK, since Ns is determined at configure time
 #
-# Wilson specific sources
 # Wilson specific sources
 
 #

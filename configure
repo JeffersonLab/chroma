@@ -3001,8 +3001,8 @@ fi
 # Set up the doxygen file
 # Substitute the right directories
 #
-          ac_config_files="$ac_config_files docs/chromadoc"
-
+# The docs stuff needs more work. Turn it all off for now.
+# AC_CONFIG_FILES(docs/chromadoc)
 
           ac_config_files="$ac_config_files Makefile"
 
@@ -3016,8 +3016,7 @@ fi
 
           ac_config_files="$ac_config_files mainprogs/main/Makefile"
 
-          ac_config_files="$ac_config_files docs/Makefile"
-
+# AC_CONFIG_FILES(docs/Makefile)
           ac_config_files="$ac_config_files other_libs/Makefile"
 
 cat >confcache <<\_ACEOF
@@ -3589,14 +3588,12 @@ for ac_config_target in $ac_config_targets
 do
   case "$ac_config_target" in
   # Handling of arguments.
-  "docs/chromadoc" ) CONFIG_FILES="$CONFIG_FILES docs/chromadoc" ;;
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
   "chroma-config" ) CONFIG_FILES="$CONFIG_FILES chroma-config" ;;
   "lib/Makefile" ) CONFIG_FILES="$CONFIG_FILES lib/Makefile" ;;
   "mainprogs/Makefile" ) CONFIG_FILES="$CONFIG_FILES mainprogs/Makefile" ;;
   "mainprogs/tests/Makefile" ) CONFIG_FILES="$CONFIG_FILES mainprogs/tests/Makefile" ;;
   "mainprogs/main/Makefile" ) CONFIG_FILES="$CONFIG_FILES mainprogs/main/Makefile" ;;
-  "docs/Makefile" ) CONFIG_FILES="$CONFIG_FILES docs/Makefile" ;;
   "other_libs/Makefile" ) CONFIG_FILES="$CONFIG_FILES other_libs/Makefile" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
   "lib/chroma_config_internal.h" ) CONFIG_HEADERS="$CONFIG_HEADERS lib/chroma_config_internal.h" ;;
