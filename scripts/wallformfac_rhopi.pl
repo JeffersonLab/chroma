@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: wallformfac_rhopi.pl,v 1.4 2004-06-24 07:29:01 edwards Exp $
+# $Id: wallformfac_rhopi.pl,v 1.5 2004-06-24 07:42:39 edwards Exp $
 #
 # Usage
 #   wallformfac_rhopi.pl
@@ -303,20 +303,20 @@ foreach $h ('RHO_PI')
 
 		printf "Found file %s\n","${nam}_cur3ptfn_${s}_snk15_g${g}_src${gk}_qx$q[0]_qy$q[1]_qz$q[2]";
 
-		$f0 = "${cur}_${h}_f0_${s}_s{$k}_mu${j}_$q[0]$q[1]$q[2]";
+		$f0 = "${cur}_${h}_f0_${s}_s${k}_mu${j}_$q[0]$q[1]$q[2]";
 		&imagpart("${nam}_cur3ptfn_${h}_f0_${s}_p0_snk15_g${g}_src${gk}_qx$q[0]_qy$q[1]_qz$q[2]",$f0);
-		$f1 = "${cur}_${h}_f1_${s}_s{$k}_mu${j}_$q[0]$q[1]$q[2]";
+		$f1 = "${cur}_${h}_f1_${s}_s${k}_mu${j}_$q[0]$q[1]$q[2]";
 		&imagpart("${nam}_cur3ptfn_${h}_f1_${s}_p0_snk${gk}_g${g}_src15_qx$q[0]_qy$q[1]_qz$q[2]",$f1);
 
-		$qsq_dim = -&compute_disp_pipf_sq($rho_mass{0,0,0},*p_i,$pion_mass{0,0,0},*p_f);
-		$pion_disp = -(($fmtoGeV/$a)**2)*$qsq_dim;
+		$qsq_dim = &compute_disp_pipf_sq($rho_mass{0,0,0},*p_i,$pion_mass{0,0,0},*p_f);
+		$rhopi_disp = -(($fmtoGeV/$a)**2)*$qsq_dim;
 		printf "pion mass = %g +- %g,  rho mass = %g +- %g,   qsq (via vector disp) = %g, qsq (GeV^2) = %g\n", 
 		$pion_mass{$cp_i[0],$cp_i[1],$cp_i[2]}, $pion_mass_err{$cp_i[0],$cp_i[1],$cp_i[2]}, 
 		$rho_mass{$cp_i[0],$cp_i[1],$cp_i[2]}, $rho_mass_err{$cp_i[0],$cp_i[1],$cp_i[2]}, 
-		$qsq_dim, $pion_disp;
+		$qsq_dim, $rhopi_disp;
 
 		# Use some number of significant digits to uniquely identity the floating point qsq
-		$qsq_int = int(10000*$pion_disp);
+		$qsq_int = int(10000*$rhopi_disp);
 
 		$e = ($eps{$j,$k,$l} / $p_i[$l]);
 
