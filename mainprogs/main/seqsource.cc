@@ -1,4 +1,4 @@
-// $Id: seqsource.cc,v 1.10 2005-03-02 00:44:18 edwards Exp $
+// $Id: seqsource.cc,v 1.11 2005-03-07 02:57:14 edwards Exp $
 /*! \file
  *  \brief Main code for sequential source construction
  */
@@ -92,6 +92,10 @@ int main(int argc, char **argv)
   Chroma::initialize(&argc, &argv);
 
   START_CODE();
+
+  // Insure linkage
+  bool foo = SeqSourceCallMapEnv::registered;
+  QDPIO::cout << "linkage=" << foo << endl;
 
   // Input parameter structure
   SeqSource_input_t  input;
@@ -261,43 +265,14 @@ int main(int argc, char **argv)
   //
   // Construct the sequential source
   //
-  // Allocate space for the sequential source
-  LatticePropagator quark_prop_src;
-
-  /*
-   *  Sources 0 -> 9 corresponding to Baryon sequential sources
-   *  Sources 10 -> 19 corresponds to a Meson sequential source
-   *  Souces  21 -> 29 are additional Baryon ones we thought of
-   *
-   *  Note that not all the source values are necessarily implemented
-   *
-   */
-
-  SeqSourceType seq_src = input.param.seq_src;
-
-
-  if(((0 <= seq_src) && (seq_src <= 9)) ||
-     ((21 <= seq_src) && (seq_src <= 29))) 
-  {
-    // Computation of the Baryon sequential source
-    barSeqSource(quark_propagator, quark_propagator, quark_prop_src, 
+  LatticePropagator quark_prop_src = 
+    hadSeqSource(quark_propagator, 
+		 quark_propagator, 
+		 quark_propagator, 
 		 input.param.t_sink, 
 		 input.param.sink_mom, 
 		 j_decay, 
-		 seq_src);
-  }
-  else if ((10 <= seq_src) && (seq_src <= 20))
-  {
-    // Computation of the Meson sequential source
-    mesonSeqSource(quark_propagator, quark_prop_src, 
-		   input.param.t_sink, 
-		   input.param.sink_mom, 
-		   j_decay, 
-		   seq_src);
-  }
-  else{
-    QDP_error_exit("Unknown sequential source type", seq_src);
-  }
+		 input.param.seq_src);
 
 
   // Do the sink smearing AFTER the interpolating operator
