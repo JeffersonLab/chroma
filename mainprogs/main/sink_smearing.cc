@@ -1,4 +1,4 @@
-// $Id: sink_smearing.cc,v 1.7 2004-04-06 04:20:33 edwards Exp $
+// $Id: sink_smearing.cc,v 1.8 2004-04-24 00:07:29 ikuro Exp $
 /*! \file
  * \brief Main program for sink-smearing quark propagators
  *
@@ -199,7 +199,8 @@ int main(int argc, char **argv)
   multi1d<LatticeColorMatrix> u_smr(Nd);
   u_smr = u;
 
-  if (input.param.link_smear_num > 0)
+  if (input.param.sink_type == SNK_TYPE_SHELL_SINK &&
+      input.param.link_smear_num > 0)
   {
     int BlkMax = 100;	// Maximum number of blocking/smearing iterations
     Real BlkAccu = 1.0-5;	// Blocking/smearing accuracy
