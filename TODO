@@ -1,8 +1,8 @@
-      Laundry List   -  22 Feb 2005
+      Laundry List   -  23 Feb 2005
 
 \item (*) Implement full Chrono predictor for HMC. This could win
 a factor of 2 based on comparisons of CG counts for linear pred.
-and RBC full chrono cg counts.
+and RBC full chrono cg counts. {\em B\'alint: 4D DONE, 23/02/05. 5D Still to do}
 
 \item (*) H_T ContFrac cost-vs-mres tests
 
@@ -10,7 +10,9 @@ and RBC full chrono cg counts.
 contributions for each monomial. More useful is contributions to force
 for each monomial. This monitor is simply  norm2(ds_u)
 
-\item (*) Bagel/QMP-2 tests for IBM Bluegene/L and NERSC SP
+\item (*) Bagel/QMP-2 tests for IBM Bluegene/L and NERSC SP. {\em B\'alint: BAGEL QMP2 Runs on BlueGene/L. QMP-2 is a big but fixed hit. NERSC Still to be Done}
+
+\item (*) PARTFILE I/O in QIO, for efficient I/O on QCDOC.
 
 Based on force monitoring tests:
   \item Fractional power monomials??? 
@@ -45,3 +47,6 @@ in chroma/mainprogs/main
 
 \item Simple aniso for DWF - fix weirdness
 
+\item 4D Chrono Predictor Done. - 5D Still to do.
+
+\item BAGEL Running on Bluegene/L using QCDOC target and QMP_v2. IBM needs checking/porting still (potential XLC/isms). Detailed report to write.

@@ -1,4 +1,4 @@
-// $Id: predictor_aggregate.cc,v 1.2 2005-02-23 22:24:15 bjoo Exp $
+// $Id: predictor_aggregate.cc,v 1.3 2005-02-23 23:48:10 bjoo Exp $
 /*! \file
  *  \brief Chrono predictor aggregator
  */
@@ -8,6 +8,7 @@
 #include "update/molecdyn/predictor/zero_guess_predictor.h"
 #include "update/molecdyn/predictor/last_solution_predictor.h"
 #include "update/molecdyn/predictor/linear_extrap_predictor.h"
+#include "update/molecdyn/predictor/mre_extrap_predictor.h"
 
 namespace Chroma
 {

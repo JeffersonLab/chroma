@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial_w.h,v 1.2 2005-02-23 14:51:56 bjoo Exp $
+// $Id: two_flavor_monomial_w.h,v 1.3 2005-02-23 23:48:10 bjoo Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -177,6 +177,7 @@ namespace Chroma
       // Energy calc doesnt use Chrono Predictor
       X = zero;
 
+      (getMDSolutionPredictor()).reset();
       int n_count = getX(X,s);
 
       // Action on the entire lattice
@@ -243,6 +244,8 @@ namespace Chroma
       // Action calc doesnt use chrono predictor use zero guess
       X[ lin->subset() ] = zero;
 
+      // getX noe always uses chrono predictor. Best to Nuke it therefore
+      (getMDSolutionPredictor()).reset();
       int n_count = getX(X, s);
       Double action = innerProductReal(getPhi(), X, lin->subset());
       

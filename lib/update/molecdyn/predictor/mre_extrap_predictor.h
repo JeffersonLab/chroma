@@ -43,9 +43,9 @@ namespace Chroma {
 
     // Ignore new vector
     void newVector(const LatticeFermion& psi) {
-      QDPIO::cout << "MinimalResidualExtrapolationPredictor: registering new solution. ";
+      QDPIO::cout << "MREPredictor: registering new solution. " << endl;
       chrono_buf->push(psi);
-      QDPIO::cout << " number of vectors stored is = " << chrono_buf->size() << endl;
+      QDPIO::cout << "MREPredictor: number of vectors stored is = " << chrono_buf->size() << endl;
     }
 
   };
@@ -128,9 +128,9 @@ namespace Chroma {
     // Ignore new vector
     // Ignore new vector
     void newVector(const multi1d<LatticeFermion>& psi) {
-      QDPIO::cout << "MinimalResidualExtrapolationPredictor: registering new solution. ";
+      QDPIO::cout << "MRE Predictor: registering new solution. " << endl;
       chrono_buf->push(psi);
-      QDPIO::cout << " number of vectors stored is = " << chrono_buf->size() << endl;
+      QDPIO::cout << "MRE Predictor: number of vectors stored is = " << chrono_buf->size() << endl;
     }
 
 

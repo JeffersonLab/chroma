@@ -41,22 +41,23 @@ namespace Chroma {
 								 const LatticeFermion& chi) 
   {
 
-    switch(chrono_buf->size()) { 
+    int Nvec = chrono_buf->size();
+    switch(Nvec) { 
     case 0:
       {
-	QDPIO::cout << "Minimal Residual Extrapolation: zero vectors stored. Giving you zero guess" << endl;
+	QDPIO::cout << "MRE Predictor: Zero vectors stored. Giving you zero guess" << endl;
 	psi = zero;
       }
       break;
     case 1:
       {
-	QDPIO::cout << "Minimal Residual Extrapolation: Only 1 vector stored. Giving you last solution " << endl;
+	QDPIO::cout << "MRE Predictor: Only 1 vector stored. Giving you last solution " << endl;
 	chrono_buf->get(0,psi);
       }
       break;
     default:
       {
-	QDPIO::cout << "Minimal Residual Extrapolation: Trying to find you the minimal residual extrapolation " << endl;
+	QDPIO::cout << "MRE Predictor: Finding  extrapolation with "<< Nvec << " vectors" << endl;
 	find_extrap_solution(psi, M, chi);
       }
       break;
@@ -75,9 +76,8 @@ namespace Chroma {
     
     int Nvec = chrono_buf->size();
 
-    QDPIO::cout << "Number of chrono vectors: " << Nvec << endl;
 
-    // Construct an orthogonal (but not orthonormal basis from the 
+    // Construct an orthonormal basis from the 
     // vectors in the buffer. Stick to notation of paper and call these
     // v
     multi1d<LatticeFermion> v(Nvec);
@@ -105,6 +105,11 @@ namespace Chroma {
 	GramSchm(tmpvec, v, i, s);
 	v[i][s] = tmpvec;
       }
+      // QDPIO::cout << "Norm v[i] = " << norm2(v[i],s) << endl;
+      // Normalise v[i]
+      Double norm = sqrt(norm2(v[i], s));
+      v[i][s] /= norm;
+			 
     }
 
     // Now I need to form G_n m = v_[n]^{dag} A v[m]
@@ -148,10 +153,12 @@ namespace Chroma {
       r[i] = b[i]-Ga[i];
     }
 
+#if 0
     QDPIO::cout << "Constraint Eq Solution Check" << endl;
     for(int i=0; i < Nvec; i++) { 
       QDPIO::cout << "   r[ " << i << "] = " << r[i] << endl;
     }
+#endif
 
     // Create teh lnear combination
     psi[s] = Complex(a[0])*v[0];

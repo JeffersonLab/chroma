@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial5d_w.h,v 1.2 2005-02-23 14:51:56 bjoo Exp $
+// $Id: two_flavor_monomial5d_w.h,v 1.3 2005-02-23 23:48:10 bjoo Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -228,7 +228,12 @@ namespace Chroma
 
       // Energy calc does not use chrono predictor
       X = zero;
+
       // X is now (M^dagM)^{-1} V^{dag} phi
+
+      // getX() now always uses Chrono predictor. Best to Nuke it for
+      // energy calcs
+      (getMDSolutionPredictor()).reset();
       int n_count = getX(X,s);
 
       // tmp is now V (M^dag M)^{-1} V^{dag} phi
@@ -305,6 +310,9 @@ namespace Chroma
 
       // Chrono predictor not used in energy calculation
       X = zero;
+
+      // Get X now always uses predictor. Best to nuke it therefore
+      (getMDSolutionPredictor()).reset();
       int n_count = getX(X, s);
 
       multi1d<Phi> tmp(FA.size());
