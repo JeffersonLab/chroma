@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linop.h,v 1.18 2004-11-20 21:18:08 edwards Exp $
+// $Id: linop.h,v 1.19 2004-12-07 20:21:48 edwards Exp $
 
 /*! \file
  * \brief Linear operators
@@ -18,6 +18,7 @@
 
 #include "lmdagm.h"
 #include "lopscl.h"
+#include "llincomb.h"
 
 #include "linop_w.h"
 #include "linop_s.h"
