@@ -1,4 +1,4 @@
-// $Id: staggered_qprop.cc,v 1.8 2004-10-14 14:19:32 mcneile Exp $
+// $Id: staggered_qprop.cc,v 1.9 2004-11-06 13:03:46 mcneile Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *
@@ -31,9 +31,9 @@ using namespace QDP;
  */
 
 void 
-EvenOddStaggeredTypeFermAct<LatticeFermion>::qprop(LatticeFermion& psi, 
+EvenOddStaggeredTypeFermAct<LatticeStaggeredFermion>::qprop(LatticeStaggeredFermion& psi, 
 						   Handle<const ConnectState> state,
-						   const LatticeFermion& chi,
+						   const LatticeStaggeredFermion& chi,
 						   const InvertParam_t& invParam,
 						   int& ncg_had)
 {
@@ -43,10 +43,10 @@ EvenOddStaggeredTypeFermAct<LatticeFermion>::qprop(LatticeFermion& psi,
   
   /* Construct the linear operator */
   /* This allocates field for the appropriate action */
-  Handle<const EvenOddLinearOperator<LatticeFermion> > M(linOp(state));
-  Handle<const LinearOperator<LatticeFermion> > A(lMdagM(state));
+  Handle<const EvenOddLinearOperator<LatticeStaggeredFermion> > M(linOp(state));
+  Handle<const LinearOperator<LatticeStaggeredFermion> > A(lMdagM(state));
 
-  LatticeFermion tmp, tmp1, tmp2;
+  LatticeStaggeredFermion tmp, tmp1, tmp2;
   tmp = tmp1 = tmp2 = zero;
   Real invm;
 
@@ -109,12 +109,12 @@ EvenOddStaggeredTypeFermAct<LatticeFermion>::qprop(LatticeFermion& psi,
 
 
 //template<>
-//void AsqtadFermAction<LatticeFermion>::qprop(LatticeFermion& psi,
+//void AsqtadFermAction<LatticeStaggeredFermion>::qprop(LatticeStaggeredFermion& psi,
 //                                           const 
 //multi1d<LatticeColorMatrix>& u_fat,
 //					   const 
 //multi1d<LatticeColorMatrix>& u_triple,
-//                                           const LatticeFermion& chi,
+//                                           const LatticeStaggeredFermion& chi,
 //                                           int invType,
 //                                           const Real& RsdCG,
 //                                           int MaxCG, int& ncg_had) 
