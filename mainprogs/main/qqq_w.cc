@@ -1,4 +1,4 @@
-// $Id: qqq_w.cc,v 1.22 2005-02-27 21:03:58 edwards Exp $
+// $Id: qqq_w.cc,v 1.23 2005-02-27 22:47:19 edwards Exp $
 /*! \file
  *  \brief Main code for generalized quark propagator
  *
@@ -27,29 +27,25 @@ struct Param_t
 };
 
 //! Propagators and Barcomp info
-struct Barcomp_t
+struct Prop_t
 {
   multi1d<string>  prop_file;  // The file is expected to be in SciDAC format!
   string           qqq_file;   // The file is expected to be in SciDAC format!
 };
 
+//! Sink-smear
+struct QQQParam_t
+{
+  Param_t          qqq_param;
+  Prop_t           prop;
+};
+
 //! Mega-structure of all input
 struct QQQ_input_t
 {
-  Param_t             param;
-  Cfg_t               cfg;
-  multi1d<Barcomp_t>  barcomp;
+  multi1d<QQQParam_t>  param;
+  Cfg_t                cfg;
 };
-
-
-//! Input propagator files and output barcomp file
-void read(XMLReader& xml, const string& path, Barcomp_t& input)
-{
-  XMLReader inputtop(xml, path);
-
-  read(inputtop, "prop_file", input.prop_file);
-  read(inputtop, "qqq_file", input.qqq_file);
-}
 
 
 //! Parameters for running code
@@ -76,6 +72,26 @@ void read(XMLReader& xml, const string& path, Param_t& param)
 }
 
 
+//! Input propagator files and output barcomp file
+void read(XMLReader& xml, const string& path, Prop_t& input)
+{
+  XMLReader inputtop(xml, path);
+
+  read(inputtop, "prop_file", input.prop_file);
+  read(inputtop, "qqq_file", input.qqq_file);
+}
+
+
+//! Input propagator files and output barcomp file
+void read(XMLReader& xml, const string& path, QQQParam_t& input)
+{
+  XMLReader inputtop(xml, path);
+
+  read(inputtop, "QQQParam", input.qqq_param);
+  read(inputtop, "Prop", input.prop);
+}
+
+
 // Reader for input parameters
 void read(XMLReader& xml, const string& path, QQQ_input_t& input)
 {
@@ -89,9 +105,6 @@ void read(XMLReader& xml, const string& path, QQQ_input_t& input)
 
     // Read in the gauge configuration info
     read(inputtop, "Cfg", input.cfg);
-
-    // Read in the barcomp file info
-    read(inputtop, "Barcomp", input.barcomp);
   }
   catch (const string& e) 
   {
@@ -118,8 +131,11 @@ int main(int argc, char **argv)
   // Read data
   read(xml_in, "/qqq_w", input);
 
+  if (input.param.size() == 0)
+    QDP_error_exit("QQ input empty");
+
   // Specify lattice size, shape, etc.
-  Layout::setLattSize(input.param.nrow);
+  Layout::setLattSize(input.param[0].qqq_param.nrow);
   Layout::create();
 
   QDPIO::cout << " QQQ: Generalized propagator generation" << endl;
@@ -166,7 +182,7 @@ int main(int argc, char **argv)
   xml_out.flush();
 
   // Check the barcomp size
-  if (input.barcomp.size() == 0)
+  if (input.param.size() == 0)
   {
     QDPIO::cerr << "Expecting some propagator and barcomp files" << endl;
     QDP_abort(1);
@@ -175,28 +191,28 @@ int main(int argc, char **argv)
   //
   // Big loop over all the barcomp input
   //
-  XMLArrayWriter xml_array(xml_out,input.barcomp.size());
+  XMLArrayWriter xml_array(xml_out,input.param.size());
   push(xml_array, "Barcomp_measurements");
 
-  for(int loop = 0; loop < input.barcomp.size(); ++loop)
+  for(int loop = 0; loop < xml_array.size(); ++loop)
   {
     push(xml_array);
     write(xml_array, "loop", loop);
 
     QDPIO::cout << "Barcomp loop = " << loop << endl;
 
-    const Barcomp_t&  bar = input.barcomp[loop];  // make a short-cut reference
+    const QQQParam_t&  param = input.param[loop];  // make a short-cut reference
 
     // Check to make sure there are 3 files
     const int Nprops = 3;
-    if (bar.prop_file.size() != Nprops)
+    if (param.prop.prop_file.size() != Nprops)
     {
       QDPIO::cerr << "Error on input params - expecting 3 filenames" << endl;
       QDP_abort(1);
     }
 
-    write(xml_array, "propFiles", bar.prop_file);
-    write(xml_array, "barcompFile", bar.qqq_file);
+    write(xml_array, "propFiles", param.prop.prop_file);
+    write(xml_array, "barcompFile", param.prop.qqq_file);
 
     /*
      * Read the quark propagators and extract headers
@@ -208,15 +224,15 @@ int main(int argc, char **argv)
     for(int i=0; i < Nprops; ++i)
     {
       // Optimize the read - if the filename is the same, no need to read
-      if ((i == 0) || (bar.prop_file[i] != bar.prop_file[0]))
+      if ((i == 0) || (param.prop.prop_file[i] != param.prop.prop_file[0]))
       {
 	XMLReader prop_file_xml, prop_record_xml;
 
 	QDPIO::cout << "Attempt to read forward propagator XX" 
-		    << bar.prop_file[i] << "XX" << endl;
+		    << param.prop.prop_file[i] << "XX" << endl;
 	readQprop(prop_file_xml, 
 		  prop_record_xml, quark_propagator[i],
-		  bar.prop_file[i], QDPIO_SERIAL);
+		  param.prop.prop_file[i], QDPIO_SERIAL);
 	QDPIO::cout << "Forward propagator successfully read" << endl;
    
 	// Try to invert this record XML into a ChromaProp struct
@@ -274,7 +290,7 @@ int main(int argc, char **argv)
     multiNd<Complex> barprop;
 
     // Switch to Dirac-basis if desired.
-    if (input.param.Dirac_basis)
+    if (param.qqq_param.Dirac_basis)
     {
       qqq.Dirac_basis = true;
 
@@ -316,7 +332,7 @@ int main(int argc, char **argv)
       pop(record_xml);  // QQQ
 
       // Write the scalar data
-      QDPFileWriter to(file_xml, bar.qqq_file, 
+      QDPFileWriter to(file_xml, param.prop.qqq_file, 
 		       QDPIO_SINGLEFILE, QDPIO_SERIAL, QDPIO_OPEN);
       write(to,record_xml,barprop_1d);
       close(to);
