@@ -1,6 +1,11 @@
-//  $Id: mesons_w.cc,v 1.7 2003-03-06 03:38:35 edwards Exp $
+//  $Id: mesons_w.cc,v 1.8 2003-03-14 05:14:32 flemingg Exp $
 //  $Log: mesons_w.cc,v $
-//  Revision 1.7  2003-03-06 03:38:35  edwards
+//  Revision 1.8  2003-03-14 05:14:32  flemingg
+//  rewrite of mesons_w.cc to use the new SftMom class.  mesons_w.cc still
+//  needs to be cleaned up once the best strategy is resolved.  But for now,
+//  the library and test program compiles and runs.
+//
+//  Revision 1.7  2003/03/06 03:38:35  edwards
 //  Added start/end_code.
 //
 //  Revision 1.6  2003/03/06 02:07:12  flemingg
@@ -13,49 +18,12 @@
 //
 
 #include "chromabase.h"
+#include "util/ft/sftmom.h"
 #include "meas/hadron/mesons_w.h"
 #include "proto.h"                 // part of QDP++, for crtesn()
 
 using namespace QDP;
 
-//! Function object used for constructing the time-slice set
-class TimeSliceFunc : public SetFunc
-{
-public:
-  TimeSliceFunc(int dir): dir_decay(dir) {}
-
-  int operator() (const multi1d<int>& coordinate) const {return coordinate[dir_decay];}
-  int numSubsets() const {return Layout::lattSize()[dir_decay];}
-
-  int dir_decay;
-
-private:
-  TimeSliceFunc() {}  // hide default constructor
-};
-
-
-class MomList
-{
-public:
-  MomList(int mom2_max) ;
-
-  int momToNum(const multi1d<int>& mom);
-
-  int numMom() {return num_mom ;}
-
-  multi1d<int> numToMom(int num);
-
-  ~MomList() ;
-
-private:
-  MomList() {} // hide default constructor
-
-  multi2d<int> *mom_list ;
-
-  int num_mom;
-};
-
- 
 //! Meson 2-pt functions
 /* This routine is specific to Wilson fermions!
  *
@@ -64,10 +32,10 @@ private:
  *
  * \param quark_prop_1 -- first quark propagator ( Read )
  * \param quark_prop_2 -- second (anti-) quark propagator ( Read )
- * \param t_source -- cartesian coordinates of the source ( Read )
- * \param sink_mom2_max -- max sink hadron mom squared ( Read )
- * \param j_decay -- direction of the exponential decay ( Read )
+ * \param t0 -- timeslice coordinate of the source ( Read )
+ * \param phases -- object holds list of momenta and Fourier phases ( Read )
  * \param nml -- namelist file object ( Read )
+ * \param nml_group -- string used for writing nml data ( Read )
  *
  *        ____
  *        \
@@ -79,253 +47,156 @@ private:
 
 void mesons(const LatticePropagator& quark_prop_1,
             const LatticePropagator& quark_prop_2, 
-            const multi1d<int>& t_source,
-            int sink_mom2_max,
-            int j_decay,
-            NmlWriter& nml)
+            SftMom& phases,
+            int t0,
+            NmlWriter& nml,
+	    char* nml_group)
 {
   START_CODE("mesons");
 
-  // Create the time-slice set
-  Set timeslice;
-  timeslice.make(TimeSliceFunc(j_decay));
-
-  // Length of lattice in j_decay direction
-  int length = timeslice.numSubsets();
-
-  // Create the MomList object
-  MomList list(sink_mom2_max) ;
-
-  // Meson correlations function.
-  LatticeComplex corr_fn;
-
-  // Create 2-D array for the meson correlation function on each timeslice
-  // for each unique momentum.
-  multi2d<Double> hsum(list.numMom(), length) ;
-
-  // Coordinates for sink momenta
-  multi1d<LatticeInteger> my_coord(Nd);
-  for (int mu=0; mu < Nd; ++mu)
-    my_coord[mu] = Layout::latticeCoordinate(mu);
+  // Length of lattice in decay direction
+  int length = phases.numSubsets() ;
 
   // Construct the anti-quark propagator from quark_prop_2
-  int t0 = t_source[j_decay];
   int G5 = Ns*Ns-1;
   LatticePropagator anti_quark_prop =  Gamma(G5) * quark_prop_2 * Gamma(G5);
+
+  // GTF: We're going to consider several working variants here to see
+  // which one works best.
+
+#if 0    // Variant 1 // Not working because SftMom::sft() is broken
+
+  // This variant uses the function SftMom::sft() to do all the work
+  // computing the Fourier transform of the meson correlation function
+  // inside the class SftMom where all the of the Fourier phases and
+  // momenta are stored.  It's primary disadvantage is that it
+  // requires more memory because it does all of the Fourier transforms
+  // at the same time.
 
   // Loop over gamma matrix insertions
   for (int gamma_value=0; gamma_value < (Ns*Ns); ++gamma_value) {
 
     // Construct the meson correlation function
-    corr_fn = trace(adj(anti_quark_prop) * Gamma(gamma_value) * quark_prop_1 *
-                    Gamma(gamma_value));
+    LatticeComplex corr_fn ;
+    corr_fn = trace(adj(anti_quark_prop) * Gamma(gamma_value) *
+                    quark_prop_1 * Gamma(gamma_value)) ;
 
-    // Loop over allowed sink momenta: (sink_mom)^2 <= sink_mom2_max.
-    // Do this by constructing a L^(Nd-1) grid in momenta centered about the
-    // origin. Loop lexicographically over all the "sites" (momenta value)
-    // and toss out ones that are too large.
-    // 
-    // NOTE: spatial anisotropy is no allowed here
-    int Ndm1 = Nd-1 ;
-    multi1d<int> sink_mom_size(Ndm1);
-    int L ;
-    int sink_mom_vol = 1 ;
-  
-    for (L=0; (L+1)*(L+1) <= sink_mom2_max; ++L) ;
+    multi2d<Double> hsum ;
+    hsum = real(phases.sft(corr_fn)) ;
 
-    for (int mu=0; mu < Ndm1; ++mu) {
-      sink_mom_vol *= (2*L)+1 ;
-      sink_mom_size[mu] = (2*L)+1 ;
-    }
+    for (int sink_mom_num=0; sink_mom_num < phases.numMom(); ++sink_mom_num) {
+      multi1d<Double> mesprop(phases.numSubsets()) ;
 
-    // Keep track of |sink_mom| degeneracy for averaging
-    multi1d<int> sink_mom_degen(list.numMom()) ;
-
-    sink_mom_degen = 0 ;
-    hsum = 0. ;
-
-    for (int n=0; n < sink_mom_vol; ++n) {
-      multi1d<int> sink_mom = crtesn(n, sink_mom_size) ;
-
-      int sink_mom2 = 0 ;
-      for (int mu=0; mu<Ndm1; ++mu) {
-        sink_mom[mu] -= L ;
-        sink_mom2 += sink_mom[mu] * sink_mom[mu] ;
-      }
-
-      // skip when (sink_mom)^2 > (sink_mom_max)^2
-      if (sink_mom2 > sink_mom2_max) continue ;
-
-      int sink_mom_num = list.momToNum(sink_mom) ;
-      sink_mom_degen[sink_mom_num]++ ;
-
-      LatticeReal p_dot_x(float(0.0)) ;
-
-      int j = 0;
-      for(int mu = 0; mu < Nd; ++mu) {
-        const Real twopi = 6.283185307179586476925286;
-
-        if (mu == j_decay) continue ;
-
-        p_dot_x += LatticeReal(my_coord[mu]) * twopi * Real(sink_mom[j]) /
-                     Layout::lattSize()[mu];
-        j++;
-      } // end for(mu)
-
-      // The complex phases exp(i p.x)
-      LatticeComplex phasefac = cmplx(cos(p_dot_x), sin(p_dot_x));
-
-      hsum[sink_mom_num] += sumMulti(real(phasefac*corr_fn), timeslice) ;
-
-    } // end for(n)
-
-    for (int sink_mom_num=0; sink_mom_num < list.numMom(); ++sink_mom_num) {
-      multi1d<Double> mesprop(length) ;
-
-      for (int t=0; t < length; ++t) {
+      for (int t=0; t < phases.numSubsets(); ++t) {
         int t_eff = (t - t0 + length) % length ;
 
-        // Finish averaging
-        mesprop[t_eff] = hsum[sink_mom_num][t] /
-                           Double(sink_mom_degen[sink_mom_num]) ;
+        mesprop[t_eff] = hsum[sink_mom_num][t] ;
       }
 
       // Print out the results
-      push(nml, "Wilson_Mesons") ;
+      push(nml, nml_group) ;
       Write(nml, gamma_value) ;
-      Write(nml, j_decay) ;
-      write(nml, "sink_mom", list.numToMom(sink_mom_num)) ;
+      write(nml, "sink_mom", phases.numToMom(sink_mom_num)) ;
       Write(nml, mesprop) ;
       pop(nml) ;
-    }
+
+    } // end for(sink_mom_num)
 
   } // end for(gamma_value)
 
-  END_CODE("mesons");
-}
+#elif 1  // Variant 2
 
+  // This variant does the Fourier transform in this code after getting
+  // a copy of the Fourier phases from the SftMom object.  It should require
+  // less memory than Variant 1 since the Fourier transform for each momenta
+  // is done separately.  The outer loop is gamma matrix insertions, which
+  // means that corr_fn is only computed once per gamma_value.  Since the
+  // inner loop is sink_mom, this means that the implicit copy done by
+  // phases[sink_mom_num] is redone for each gamma_value.  Whether this
+  // is cheaper than Variant 3 must be tested.  According to my test code,
+  // this variant is about 10 times faster than Variant 3.
 
-MomList::MomList(int mom2_max)
-{
-  int Ndm1 = Nd - 1;
+  // Loop over gamma matrix insertions
+  for (int gamma_value=0; gamma_value < (Ns*Ns); ++gamma_value) {
 
-  // determine the number of unique momenta with mom^2 <= (mom_max)^2
-  multi1d<int> mom_size(Ndm1);
-  int L;
-  int mom_vol = 1;
+    // Construct the meson correlation function
+    LatticeComplex corr_fn ;
+    corr_fn = trace(adj(anti_quark_prop) * Gamma(gamma_value) *
+                    quark_prop_1 * Gamma(gamma_value)) ;
 
-  for (L=1; L*L <= mom2_max; ++L) ;
+    for (int sink_mom_num=0; sink_mom_num < phases.numMom(); ++sink_mom_num) {
 
-  for(int mu=0; mu<Ndm1; ++mu)
-  {
-    mom_vol *= L;
-    mom_size[mu] = L;
-  }
+      multi1d<Double> hsum ;
 
-  num_mom = 0;
+      hsum = sumMulti(real(phases[sink_mom_num]*corr_fn), phases.getSubset()) ;
 
-  for(int n=0; n < mom_vol; ++n)
-  {
-    multi1d<int> mom = crtesn(n, mom_size);
+      // This is obviously a copy with simple relabeling which might
+      // be eliminated in the future.  It is done to match what was
+      // done in the past with NML.
+      multi1d<Double> mesprop(hsum.size()) ;
 
-    int mom2 = 0 ;
-
-    for(int mu=0; mu<Ndm1; ++mu)
-      mom2 += mom[mu]*mom[mu];
-
-    if (mom2 > mom2_max) {
-      continue;
-    } else {
-      // Ensure mom[0] >= mom[1] >= ... >= mom[Ndm1]
-      int skip=0;
-      for(int mu=0; mu<Ndm1-1; ++mu)
-        for(int nu=mu+1; nu<Ndm1; ++nu)
-          if (mom[nu] > mom[mu]) skip=1;
-
-      if (!skip) num_mom++ ;
-    }
-  }
-
-  // After all that shenanigans just to get num_mom, create the momentum list
-  mom_list = new multi2d<int>(num_mom,Ndm1) ;
-
-  // Now we do exactly the same thing we did when counting, except this time
-  // we can acutally fill the list
-  int mom_num = 0;
-
-  for(int n=0; n < mom_vol; ++n)
-  {
-    multi1d<int> mom = crtesn(n, mom_size);
-
-    int mom2 = 0 ;
-
-    for(int mu=0; mu<Ndm1; ++mu)
-      mom2 += mom[mu]*mom[mu];
-
-    if (mom2 > mom2_max) {
-      continue;
-    } else {
-      // Ensure mom[0] >= mom[1] >= ... >= mom[Ndm1]
-      int skip=0;
-      for(int mu=0; mu<Ndm1-1; ++mu)
-        for(int nu=mu+1; nu<Ndm1; ++nu)
-          if (mom[nu] > mom[mu]) skip=1;
-
-      if (!skip) (*mom_list)[mom_num++] = mom;
-    }
-  }
-}
-
-
-int
-MomList::momToNum(const multi1d<int>& mom_in)
-{
-  int Ndm1 = Nd-1;
-  multi1d<int> mom = mom_in ;
-
-  // make all the compontents positive
-  for (int mu=0; mu<Ndm1; ++mu)
-    if (mom[mu] < 0) mom[mu] = -mom[mu];
-
-  // sort the components (Insertion sort: hope Ndm1 <~ 10)
-  // Initially, the first item is considered sorted.  mu divides mom
-  // into a sorted region (<mu) and an unsorted one (>=mu)
-  for (int mu=1; mu<Ndm1; ++mu) {
-    // Select the item at the beginning of the unsorted region
-    int v = mom[mu];
-    // Work backwards, finding where v should go
-    int nu = mu;
-    // If this element is less than v, move it up one
-    while (mom[nu-1] < v) {
-      mom[nu] = mom[nu-1] ;
-      --nu ;
-      if (nu < 1) break ;
-    }
-    // Stopped when mom[nu-1] >= v, so put v at postion nu
-    mom[nu] = v ;
-  }
-
-  for(int mom_num=0; mom_num<num_mom; ++mom_num) {
-    int match=1;
-    for (int mu=0; mu<Ndm1; ++mu)
-      if ((*mom_list)[mom_num][mu] != mom[mu]) {
-        match=0;
-        break;
+      for (int t=0; t < phases.numSubsets(); ++t) {
+        int t_eff = (t - t0 + length) % length ;
+        mesprop[t_eff] = hsum[t] ;
       }
-    if (match) return mom_num ;
-  }
-  return -1;
-}
 
+      // Print out the results
+      push(nml, nml_group) ;
+      Write(nml, gamma_value) ;
+      write(nml, "sink_mom", phases.numToMom(sink_mom_num)) ;
+      Write(nml, mesprop) ;
+      pop(nml) ;
 
-multi1d<int>
-MomList::numToMom(int mom_num)
-{
-  return (*mom_list)[mom_num] ;
-}
+    } // end for(sink_mom_num)
 
+  } // end for(gamma_value)
 
-MomList::~MomList()
-{
-  delete mom_list ;
+#elif 1  // Variant 3
+
+  // This variant is like Variant 2 with the inner and outer loops swapped.
+  // This means that the implicit copy phases[sink_mom_num] is only done
+  // as few times as necessary but now the computation of the meson
+  // correlation function is repeated SftMom::numMom() times.
+
+  // Loop over sink momenta first
+  for (int sink_mom_num=0; sink_mom_num < phases.numMom(); ++sink_mom_num) {
+
+    LatticeComplex phasefac = phases[sink_mom_num] ;
+
+    // Loop over gamma matrix insertions
+    for (int gamma_value=0; gamma_value < (Ns*Ns); ++gamma_value) {
+
+      // Construct the meson correlation function
+      LatticeComplex corr_fn ;
+      corr_fn = trace(adj(anti_quark_prop) * Gamma(gamma_value) *
+                      quark_prop_1 * Gamma(gamma_value)) ;
+
+      multi1d<Double> hsum ;
+
+      hsum = sumMulti(real(phasefac*corr_fn), phases.getSubset()) ;
+
+      // This is obviously a copy with simple relabeling which might
+      // be eliminated in the future.  It is done to match what was
+      // done in the past with NML.
+      multi1d<Double> mesprop(hsum.size()) ;
+
+      for (int t=0; t < phases.numSubsets(); ++t) {
+        int t_eff = (t - t0 + length) % length ;
+        mesprop[t_eff] = hsum[t] ;
+      }
+
+      // Print out the results
+      push(nml, nml_group) ;
+      Write(nml, gamma_value) ;
+      write(nml, "sink_mom", phases.numToMom(sink_mom_num)) ;
+      Write(nml, mesprop) ;
+      pop(nml) ;
+
+    } // end for(gamma_value)
+
+  } // end for(sink_mom_num)
+
+#endif
+
+  END_CODE("mesons");
 }

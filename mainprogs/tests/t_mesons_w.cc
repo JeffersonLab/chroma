@@ -1,17 +1,18 @@
-// $Id: t_mesons_w.cc,v 1.1 2003-03-06 00:30:15 flemingg Exp $
+// $Id: t_mesons_w.cc,v 1.2 2003-03-14 05:14:32 flemingg Exp $
 //
 //! \file
 //  \brief Test the Wilson mesons() routine
 //
 // $Log: t_mesons_w.cc,v $
-// Revision 1.1  2003-03-06 00:30:15  flemingg
-// Complete rewrite of lib/meas/hadron/mesons_w.cc, including a simple test
-// program in mainprogs/tests built with 'make check' and various other
-// changes to autoconf/make files to support this rewrite.
+// Revision 1.2  2003-03-14 05:14:32  flemingg
+// rewrite of mesons_w.cc to use the new SftMom class.  mesons_w.cc still
+// needs to be cleaned up once the best strategy is resolved.  But for now,
+// the library and test program compiles and runs.
 //
 
 #include <iostream>
 #include <cstdio>
+#include <time.h>
 
 #include "chroma.h"
 
@@ -42,12 +43,22 @@ int main(int argc, char *argv[])
   gaussian(quark_prop_1);
   gaussian(quark_prop_2);
 
-  int j_decay = Nd-1;
-  int length = Layout::lattSize()[j_decay];
-  multi1d<int> t_source(Nd);
-  t_source = 0;
+  // propagation direction
+  int j_decay = Nd-1 ;
 
-  mesons(quark_prop_1, quark_prop_2, t_source, 10, j_decay, nml);
+  // source timeslice
+  int t0 = 0 ;
+
+  clock_t start_clock = clock() ;
+  // create averaged Fourier phases with (mom)^2 <= 10
+  SftMom phases(10, true, j_decay) ;
+
+  mesons(quark_prop_1, quark_prop_2, phases, t0, nml,
+         "Point_Point_Wilson_Mesons") ;
+
+  clock_t end_clock = clock() ;
+
+  cerr << "Test took " << end_clock - start_clock << " clocks.\n" ;
 
   // Time to bolt
   QDP_finalize();

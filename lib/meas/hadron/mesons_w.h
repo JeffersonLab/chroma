@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: mesons_w.h,v 1.3 2003-03-06 00:30:14 flemingg Exp $
+// $Id: mesons_w.h,v 1.4 2003-03-14 05:14:32 flemingg Exp $
 
 #ifndef MESONS_INCLUDE
 #define MESONS_INCLUDE
@@ -12,10 +12,10 @@
  *
  * \param quark_prop_1 -- first quark propagator ( Read )
  * \param quark_prop_2 -- second (anti-) quark propagator ( Read )
- * \param t_source -- cartesian coordinates of the source ( Read )
- * \param sink_mom2_max -- max sink hadron mom squared ( Read )
- * \param j_decay -- direction of the exponential decay ( Read )
+ * \param t0 -- timeslice coordinate of the source ( Read )
+ * \param phases -- object holds list of momenta and Fourier phases ( Read )
  * \param nml -- namelist file object ( Read )
+ * \param nml_group -- string used for writing nml data ( Read )
  *
  *        ____
  *        \
@@ -24,11 +24,12 @@
  *        ----
  *          x
  */
+
 void mesons(const LatticePropagator& quark_prop_1,
             const LatticePropagator& quark_prop_2,
-            const multi1d<int>& t_source,
-            int sink_mom2_max,
-            int j_decay,
-            NmlWriter& nml);
+            SftMom& phases,
+            int t0,
+            NmlWriter& nml,
+            char* nml_group) ;
 
 #endif
