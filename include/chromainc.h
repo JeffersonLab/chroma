@@ -1,4 +1,4 @@
-// $Id: chromainc.h,v 1.9 2003-07-02 15:03:01 edwards Exp $
+// $Id: chromainc.h,v 1.10 2003-10-14 17:39:02 edwards Exp $
 //
 // Include file that includes all the include files.
 
@@ -10,7 +10,6 @@
 #include "linearop.h"
 #include "primitives.h"
 #include "common_declarations.h"
-#include "common_io.h"
 
 #include "lib.h"
 
