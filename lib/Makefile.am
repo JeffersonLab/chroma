@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.22 2003-04-09 20:48:01 edwards Exp $
+# $Id: Makefile.am,v 1.23 2003-04-10 17:16:25 dgr Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -18,7 +18,6 @@ VPATH += $(TOPDIR)/lib/actions/gauge
 VPATH += $(TOPDIR)/lib/geom
 VPATH += $(TOPDIR)/lib/info
 VPATH += $(TOPDIR)/lib/io
-VPATH += ${TOPDIR}/lib/io/ioqprop
 VPATH += $(TOPDIR)/lib/meas
 VPATH += $(TOPDIR)/lib/meas/eig
 VPATH += $(TOPDIR)/lib/meas/gfix
@@ -70,7 +69,7 @@ HDRS =  chroma.h chromabase.h chromainc.h primitives.h defs.h common_declaration
 GENERIC_SRCS = $(HDRS) gaus_smear.cc taproj.cc hotst.cc expm12.cc \
                klein_gord.cc mesplq.cc reunit.cc sftmom.cc srcfil.cc \
                readszin.cc su3proj.cc sun_proj.cc hyp_smear.cc \
-               su2extract.cc sunfill.cc invcg2.cc
+               su2extract.cc sunfill.cc invcg2.cc qprop_io.cc
 
 #
 # Object files to add if building the Wilson Builds...

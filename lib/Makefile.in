@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.30 2003-04-09 20:48:55 edwards Exp $
+# $Id: Makefile.in,v 1.31 2003-04-10 17:16:25 dgr Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -40,7 +40,7 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_triplet = @host@
-VPATH = $(TOPDIR) $(TOPDIR)/lib $(TOPDIR)/lib/actions $(TOPDIR)/lib/actions/boson $(TOPDIR)/lib/actions/boson/operator $(TOPDIR)/lib/actions/ferm $(TOPDIR)/lib/actions/ferm/fermacts $(TOPDIR)/lib/actions/ferm/invert $(TOPDIR)/lib/actions/ferm/linop $(TOPDIR)/lib/actions/ferm/qprop $(TOPDIR)/lib/actions/gauge $(TOPDIR)/lib/geom $(TOPDIR)/lib/info $(TOPDIR)/lib/io ${TOPDIR}/lib/io/ioqprop $(TOPDIR)/lib/meas $(TOPDIR)/lib/meas/eig $(TOPDIR)/lib/meas/gfix $(TOPDIR)/lib/meas/glue $(TOPDIR)/lib/meas/hadron $(TOPDIR)/lib/meas/pbp $(TOPDIR)/lib/meas/schrfun $(TOPDIR)/lib/meas/smear $(TOPDIR)/lib/update $(TOPDIR)/lib/update/heatbath $(TOPDIR)/lib/update/molecdyn $(TOPDIR)/lib/update/molecdyn/dsdu $(TOPDIR)/lib/update/molecdyn/est $(TOPDIR)/lib/update/molecdyn/mese $(TOPDIR)/lib/update/molecdyn/noise $(TOPDIR)/lib/update/molecdyn/step $(TOPDIR)/lib/util $(TOPDIR)/lib/util/comm $(TOPDIR)/lib/util/ferm $(TOPDIR)/lib/util/ft $(TOPDIR)/lib/util/gauge $(TOPDIR)/lib/util/misc $(TOPDIR)/lib/util/random $(TOPDIR)/include $(TOPDIR)/mainprogs $(TOPDIR)/mainprogs/main $(TOPDIR)/mainprogs/tests $(TOPDIR)/root
+VPATH = $(TOPDIR) $(TOPDIR)/lib $(TOPDIR)/lib/actions $(TOPDIR)/lib/actions/boson $(TOPDIR)/lib/actions/boson/operator $(TOPDIR)/lib/actions/ferm $(TOPDIR)/lib/actions/ferm/fermacts $(TOPDIR)/lib/actions/ferm/invert $(TOPDIR)/lib/actions/ferm/linop $(TOPDIR)/lib/actions/ferm/qprop $(TOPDIR)/lib/actions/gauge $(TOPDIR)/lib/geom $(TOPDIR)/lib/info $(TOPDIR)/lib/io $(TOPDIR)/lib/meas $(TOPDIR)/lib/meas/eig $(TOPDIR)/lib/meas/gfix $(TOPDIR)/lib/meas/glue $(TOPDIR)/lib/meas/hadron $(TOPDIR)/lib/meas/pbp $(TOPDIR)/lib/meas/schrfun $(TOPDIR)/lib/meas/smear $(TOPDIR)/lib/update $(TOPDIR)/lib/update/heatbath $(TOPDIR)/lib/update/molecdyn $(TOPDIR)/lib/update/molecdyn/dsdu $(TOPDIR)/lib/update/molecdyn/est $(TOPDIR)/lib/update/molecdyn/mese $(TOPDIR)/lib/update/molecdyn/noise $(TOPDIR)/lib/update/molecdyn/step $(TOPDIR)/lib/util $(TOPDIR)/lib/util/comm $(TOPDIR)/lib/util/ferm $(TOPDIR)/lib/util/ft $(TOPDIR)/lib/util/gauge $(TOPDIR)/lib/util/misc $(TOPDIR)/lib/util/random $(TOPDIR)/include $(TOPDIR)/mainprogs $(TOPDIR)/mainprogs/main $(TOPDIR)/mainprogs/tests $(TOPDIR)/root
 ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
@@ -160,7 +160,7 @@ HDRS = chroma.h chromabase.h chromainc.h primitives.h defs.h common_declarations
 GENERIC_SRCS = $(HDRS) gaus_smear.cc taproj.cc hotst.cc expm12.cc \
                klein_gord.cc mesplq.cc reunit.cc sftmom.cc srcfil.cc \
                readszin.cc su3proj.cc sun_proj.cc hyp_smear.cc \
-               su2extract.cc sunfill.cc invcg2.cc
+               su2extract.cc sunfill.cc invcg2.cc qprop_io.cc
 
 
 #
@@ -201,18 +201,18 @@ am__libchroma_a_SOURCES_DIST = chroma.h chromabase.h chromainc.h \
 	primitives.h defs.h common_declarations.h geom.h gaus_smear.cc \
 	taproj.cc hotst.cc expm12.cc klein_gord.cc mesplq.cc reunit.cc \
 	sftmom.cc srcfil.cc readszin.cc su3proj.cc sun_proj.cc \
-	hyp_smear.cc su2extract.cc sunfill.cc invcg2.cc baryon_w.cc \
-	mesons_w.cc lwldslash_w.cc formfac_w.cc sink_smear2_w.cc \
-	barcomp_w.cc transf_w.cc unprec_wilson_fermact_w.cc \
-	unprec_wilson_linop_w.cc unprec_wilson_dsdu_w.cc \
-	unprec_qprop_w.cc readszinqprop_w.cc
+	hyp_smear.cc su2extract.cc sunfill.cc invcg2.cc qprop_io.cc \
+	baryon_w.cc mesons_w.cc lwldslash_w.cc formfac_w.cc \
+	sink_smear2_w.cc barcomp_w.cc transf_w.cc \
+	unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
+	unprec_wilson_dsdu_w.cc unprec_qprop_w.cc readszinqprop_w.cc
 am__objects_1 =
 am__objects_2 = $(am__objects_1) gaus_smear.$(OBJEXT) taproj.$(OBJEXT) \
 	hotst.$(OBJEXT) expm12.$(OBJEXT) klein_gord.$(OBJEXT) \
 	mesplq.$(OBJEXT) reunit.$(OBJEXT) sftmom.$(OBJEXT) \
 	srcfil.$(OBJEXT) readszin.$(OBJEXT) su3proj.$(OBJEXT) \
 	sun_proj.$(OBJEXT) hyp_smear.$(OBJEXT) su2extract.$(OBJEXT) \
-	sunfill.$(OBJEXT) invcg2.$(OBJEXT)
+	sunfill.$(OBJEXT) invcg2.$(OBJEXT) qprop_io.$(OBJEXT)
 am__objects_3 = baryon_w.$(OBJEXT) mesons_w.$(OBJEXT) \
 	lwldslash_w.$(OBJEXT) formfac_w.$(OBJEXT) \
 	sink_smear2_w.$(OBJEXT) barcomp_w.$(OBJEXT) transf_w.$(OBJEXT) \
@@ -238,7 +238,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/hyp_smear.Po ./$(DEPDIR)/invcg2.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/klein_gord.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/lwldslash_w.Po ./$(DEPDIR)/mesons_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/mesplq.Po ./$(DEPDIR)/readszin.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/mesplq.Po ./$(DEPDIR)/qprop_io.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/readszin.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/readszinqprop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/reunit.Po ./$(DEPDIR)/sftmom.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/sink_smear2_w.Po ./$(DEPDIR)/srcfil.Po \
@@ -327,6 +328,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesons_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesplq.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qprop_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readszin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readszinqprop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/reunit.Po@am__quote@
