@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-SOURCES = $(ExampleBuildingBlocks_SOURCES) $(apesmear_SOURCES) $(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) $(collect_multi_propcomp_SOURCES) $(collect_propcomp_SOURCES) $(hmc_SOURCES) $(hypsmear_SOURCES) $(hypsmear3d_SOURCES) $(hypsmear4d_SOURCES) $(make_source_SOURCES) $(mres_SOURCES) $(multi_propagator_SOURCES) $(multi_propagator_comp_SOURCES) $(propagator_SOURCES) $(propagator_comp_SOURCES) $(propagator_hack_SOURCES) $(qpropadd_SOURCES) $(qpropgfix_SOURCES) $(qproptransf_SOURCES) $(qproptrev_SOURCES) $(qqq_w_SOURCES) $(seqsource_SOURCES) $(sink_smearing_SOURCES) $(spectrum_w_SOURCES) $(stoutsmear_SOURCES) $(wallformfac_SOURCES)
+SOURCES = $(ExampleBuildingBlocks_SOURCES) $(apesmear_SOURCES) $(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) $(collect_multi_propcomp_SOURCES) $(collect_propcomp_SOURCES) $(hmc_SOURCES) $(hypsmear_SOURCES) $(hypsmear3d_SOURCES) $(hypsmear4d_SOURCES) $(make_source_SOURCES) $(mres_SOURCES) $(multi_propagator_SOURCES) $(multi_propagator_comp_SOURCES) $(propagator_SOURCES) $(propagator_comp_SOURCES) $(propagator_hack_SOURCES) $(qpropadd_SOURCES) $(qpropgfix_SOURCES) $(qpropqio_SOURCES) $(qproptransf_SOURCES) $(qproptrev_SOURCES) $(qqq_w_SOURCES) $(seqsource_SOURCES) $(sink_smearing_SOURCES) $(spectrum_w_SOURCES) $(stoutsmear_SOURCES) $(wallformfac_SOURCES)
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -51,7 +51,7 @@ bin_PROGRAMS = propagator$(EXEEXT) collect_propcomp$(EXEEXT) \
 	hmc$(EXEEXT) hypsmear3d$(EXEEXT) hypsmear4d$(EXEEXT) \
 	spectrum_w$(EXEEXT) qqq_w$(EXEEXT) bar3ptfn$(EXEEXT) \
 	qproptransf$(EXEEXT) wallformfac$(EXEEXT) mres$(EXEEXT) \
-	propagator_hack$(EXEEXT)
+	propagator_hack$(EXEEXT) qpropqio$(EXEEXT)
 EXTRA_PROGRAMS = qpropadd$(EXEEXT) propagator_comp$(EXEEXT) \
 	multi_propagator$(EXEEXT) multi_propagator_comp$(EXEEXT) \
 	collect_multi_propcomp$(EXEEXT)
@@ -126,6 +126,9 @@ qpropadd_LDADD = $(LDADD)
 am_qpropgfix_OBJECTS = qpropgfix.$(OBJEXT)
 qpropgfix_OBJECTS = $(am_qpropgfix_OBJECTS)
 qpropgfix_LDADD = $(LDADD)
+am_qpropqio_OBJECTS = qpropqio.$(OBJEXT)
+qpropqio_OBJECTS = $(am_qpropqio_OBJECTS)
+qpropqio_LDADD = $(LDADD)
 am_qproptransf_OBJECTS = qproptransf.$(OBJEXT)
 qproptransf_OBJECTS = $(am_qproptransf_OBJECTS)
 qproptransf_LDADD = $(LDADD)
@@ -166,10 +169,11 @@ SOURCES = $(ExampleBuildingBlocks_SOURCES) $(apesmear_SOURCES) \
 	$(multi_propagator_SOURCES) $(multi_propagator_comp_SOURCES) \
 	$(propagator_SOURCES) $(propagator_comp_SOURCES) \
 	$(propagator_hack_SOURCES) $(qpropadd_SOURCES) \
-	$(qpropgfix_SOURCES) $(qproptransf_SOURCES) \
-	$(qproptrev_SOURCES) $(qqq_w_SOURCES) $(seqsource_SOURCES) \
-	$(sink_smearing_SOURCES) $(spectrum_w_SOURCES) \
-	$(stoutsmear_SOURCES) $(wallformfac_SOURCES)
+	$(qpropgfix_SOURCES) $(qpropqio_SOURCES) \
+	$(qproptransf_SOURCES) $(qproptrev_SOURCES) $(qqq_w_SOURCES) \
+	$(seqsource_SOURCES) $(sink_smearing_SOURCES) \
+	$(spectrum_w_SOURCES) $(stoutsmear_SOURCES) \
+	$(wallformfac_SOURCES)
 DIST_SOURCES = $(ExampleBuildingBlocks_SOURCES) $(apesmear_SOURCES) \
 	$(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) \
 	$(collect_multi_propcomp_SOURCES) $(collect_propcomp_SOURCES) \
@@ -178,10 +182,11 @@ DIST_SOURCES = $(ExampleBuildingBlocks_SOURCES) $(apesmear_SOURCES) \
 	$(multi_propagator_SOURCES) $(multi_propagator_comp_SOURCES) \
 	$(propagator_SOURCES) $(propagator_comp_SOURCES) \
 	$(propagator_hack_SOURCES) $(qpropadd_SOURCES) \
-	$(qpropgfix_SOURCES) $(qproptransf_SOURCES) \
-	$(qproptrev_SOURCES) $(qqq_w_SOURCES) $(seqsource_SOURCES) \
-	$(sink_smearing_SOURCES) $(spectrum_w_SOURCES) \
-	$(stoutsmear_SOURCES) $(wallformfac_SOURCES)
+	$(qpropgfix_SOURCES) $(qpropqio_SOURCES) \
+	$(qproptransf_SOURCES) $(qproptrev_SOURCES) $(qqq_w_SOURCES) \
+	$(seqsource_SOURCES) $(sink_smearing_SOURCES) \
+	$(spectrum_w_SOURCES) $(stoutsmear_SOURCES) \
+	$(wallformfac_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -367,6 +372,8 @@ stoutsmear_SOURCES = stoutsmear.cc
 stoutsmear_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 qproptransf_SOURCES = qproptransf.cc
 qproptransf_DEPENDENCIES = build_chroma_libs rebuild_other_libs
+qpropqio_SOURCES = qpropqio.cc
+qpropqio_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 qpropadd_SOURCES = qpropadd.cc
 qpropadd_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 qpropgfix_SOURCES = qpropgfix.cc
@@ -492,6 +499,9 @@ qpropadd$(EXEEXT): $(qpropadd_OBJECTS) $(qpropadd_DEPENDENCIES)
 qpropgfix$(EXEEXT): $(qpropgfix_OBJECTS) $(qpropgfix_DEPENDENCIES) 
 	@rm -f qpropgfix$(EXEEXT)
 	$(CXXLINK) $(qpropgfix_LDFLAGS) $(qpropgfix_OBJECTS) $(qpropgfix_LDADD) $(LIBS)
+qpropqio$(EXEEXT): $(qpropqio_OBJECTS) $(qpropqio_DEPENDENCIES) 
+	@rm -f qpropqio$(EXEEXT)
+	$(CXXLINK) $(qpropqio_LDFLAGS) $(qpropqio_OBJECTS) $(qpropqio_LDADD) $(LIBS)
 qproptransf$(EXEEXT): $(qproptransf_OBJECTS) $(qproptransf_DEPENDENCIES) 
 	@rm -f qproptransf$(EXEEXT)
 	$(CXXLINK) $(qproptransf_LDFLAGS) $(qproptransf_OBJECTS) $(qproptransf_LDADD) $(LIBS)
@@ -542,6 +552,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/propagator_hack.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qpropadd.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qpropgfix.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qpropqio.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qproptransf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qproptrev.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qqq_w.Po@am__quote@
