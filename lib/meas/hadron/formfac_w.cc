@@ -1,11 +1,14 @@
-// $Id: formfac_w.cc,v 1.3 2003-03-05 01:25:47 flemingg Exp $
+// $Id: formfac_w.cc,v 1.4 2003-03-06 00:25:23 flemingg Exp $
 /*! \file
  *  \brief Form-factors 
  *
  * Form factors constructed from a quark and a sequential quark propagator
  *
  * $Log: formfac_w.cc,v $
- * Revision 1.3  2003-03-05 01:25:47  flemingg
+ * Revision 1.4  2003-03-06 00:25:23  flemingg
+ * Added some comments about things that need to be looked at more carefully.
+ *
+ * Revision 1.3  2003/03/05 01:25:47  flemingg
  * Modified to insert all Nd^2 Gamma matrices in the local current.  For
  * vector and axial vector insertions, the non-local currents are computed
  * as well.
@@ -209,7 +212,7 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
 	j++;
       }
 
-      // The complex phases  exp(i p.x )
+      // The complex phases exp(i p.x).  GTF CHECK p vs. -p
       LatticeComplex  phasefac = cmplx(cos(p_dot_x), sin(p_dot_x));
 
       // Local current
@@ -239,6 +242,8 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
       // Print out the results
       push(nml,"Wilson_Current_3Pt_fn");
       Write(nml,gamma_value);
+      // GTF comment: we should decide here whether to always write mu
+      //   or only when mu is meaningful, i.e. 0 <= mu < Nd
       Write(nml,mu);
       Write(nml,j_decay);
       Write(nml,inser_mom);
