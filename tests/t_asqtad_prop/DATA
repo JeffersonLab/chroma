@@ -8,14 +8,17 @@
     <Nc>3</Nc>
     <Nd>4</Nd>
     <FermTypeP>STAGGERED</FermTypeP>
-    <Mass>0.00</Mass>
+    <Mass>0.1</Mass>
     <u0>0.463032</u0>
     <cfg_type>NERSC</cfg_type>
     <prop_type>SZIN</prop_type>
     <RsdCG>1.0e-5</RsdCG>
     <MaxCG>1000</MaxCG>
+    <GFAccu>1.0e-5</GFAccu>
+    <GFMax>10000</GFMax>
+    <OrPara>1.1</OrPara>
     <nrow>4 4 4 4</nrow>
-    <boundary>1 1 1 1</boundary>
+    <boundary>1 1 1 -1</boundary>
     <t_srce>0 0 0 0</t_srce>
   </param>
   <Cfg>
