@@ -1,4 +1,8 @@
-// $Id: propagator.cc,v 1.37 2004-01-30 04:22:56 edwards Exp $
+// $Id: propagator.cc,v 1.38 2004-01-30 21:35:22 kostas Exp $
+// $Log: propagator.cc,v $
+// Revision 1.38  2004-01-30 21:35:22  kostas
+// added calls to calculate mres for dwf
+// 
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -10,6 +14,9 @@
 
 using namespace QDP;
 
+// define MRES_CALCULATION in order to run the code computing the residual mass
+// and the pseudoscalar to concerved axial current correlator
+#define MRES_CALCULATION
 
 /*
  * Input 
@@ -367,12 +374,23 @@ int main(int argc, char **argv)
 				  input.param.chiralParam.N5);
     Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
 
+#ifndef MRES_CALCULATION
     quarkProp4(quark_propagator, xml_buf, quark_prop_source,
 	       S_f, state, 
 	       input.param.invParam.invType, 
 	       input.param.invParam.RsdCG, 
 	       input.param.invParam.MaxCG, 
 	       ncg_had);
+#else
+    //dwf_quarkProp4 has hard coded jdecay = 3
+    dwf_quarkProp4(quark_propagator, xml_buf, quark_prop_source,
+		   input.param.t_srce[3],
+		   S_f, state, 
+		   input.param.invParam.invType, 
+		   input.param.invParam.RsdCG, 
+		   input.param.invParam.MaxCG, 
+		   ncg_had);
+#endif
   }
   break;
 
@@ -385,13 +403,23 @@ int main(int argc, char **argv)
 			     input.param.Mass, 
 			     input.param.chiralParam.N5);
     Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
-
+#ifndef MRES_CALCULATION
     quarkProp4(quark_propagator, xml_buf, quark_prop_source,
   	       S_f, state, 
 	       input.param.invParam.invType, 
 	       input.param.invParam.RsdCG, 
 	       input.param.invParam.MaxCG, 
 	       ncg_had);
+#else
+    //dwf_quarkProp4 has hard coded jdecay = 3
+    dwf_quarkProp4(quark_propagator, xml_buf, quark_prop_source,
+		   input.param.t_srce[3],
+		   S_f, state, 
+		   input.param.invParam.invType, 
+		   input.param.invParam.RsdCG, 
+		   input.param.invParam.MaxCG, 
+		   ncg_had);
+#endif
   }
   break;
 
