@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.333 2005-02-10 18:04:02 edwards Exp $
+# $Id: Makefile.in,v 1.334 2005-02-17 02:50:05 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -157,8 +157,8 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/eig/sn_jacob_array.cc meas/gfix/axgauge.cc \
 	meas/gfix/coulgauge.cc meas/gfix/grelax.cc \
 	meas/gfix/polar_dec.cc meas/gfix/rot_colvec.cc \
-	meas/glue/fuzwilp.cc meas/glue/mesplq.cc meas/glue/polylp.cc \
-	meas/glue/wilslp.cc meas/hadron/srcfil.cc \
+	meas/glue/fuzwilp.cc meas/glue/mesfield.cc meas/glue/mesplq.cc \
+	meas/glue/polylp.cc meas/glue/wilslp.cc meas/hadron/srcfil.cc \
 	meas/hadron/stoch_var.cc meas/hadron/z2_src.cc \
 	meas/smear/ape_smear.cc meas/smear/displacement.cc \
 	meas/smear/fuzz_smear.cc meas/smear/gaus_smear.cc \
@@ -348,22 +348,23 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	gramschm_array.$(OBJEXT) ritz.$(OBJEXT) ritz_array.$(OBJEXT) \
 	sn_jacob.$(OBJEXT) sn_jacob_array.$(OBJEXT) axgauge.$(OBJEXT) \
 	coulgauge.$(OBJEXT) grelax.$(OBJEXT) polar_dec.$(OBJEXT) \
-	rot_colvec.$(OBJEXT) fuzwilp.$(OBJEXT) mesplq.$(OBJEXT) \
-	polylp.$(OBJEXT) wilslp.$(OBJEXT) srcfil.$(OBJEXT) \
-	stoch_var.$(OBJEXT) z2_src.$(OBJEXT) ape_smear.$(OBJEXT) \
-	displacement.$(OBJEXT) fuzz_smear.$(OBJEXT) \
-	gaus_smear.$(OBJEXT) hyp_smear.$(OBJEXT) hyp_smear3d.$(OBJEXT) \
-	laplacian.$(OBJEXT) sink_smear2.$(OBJEXT) \
-	stout_smear.$(OBJEXT) diractodr.$(OBJEXT) paulitodr.$(OBJEXT) \
-	tdiractodr.$(OBJEXT) transf.$(OBJEXT) sftmom.$(OBJEXT) \
-	eesu3.$(OBJEXT) eeu1.$(OBJEXT) expm12.$(OBJEXT) \
-	expmat.$(OBJEXT) expsu3.$(OBJEXT) gauge_startup.$(OBJEXT) \
-	hotst.$(OBJEXT) reunit.$(OBJEXT) rgauge.$(OBJEXT) \
-	su2extract.$(OBJEXT) su3proj.$(OBJEXT) sunfill.$(OBJEXT) \
-	sun_proj.$(OBJEXT) taproj.$(OBJEXT) unit_check.$(OBJEXT) \
-	printgeom.$(OBJEXT) proginfo.$(OBJEXT) \
-	gauge_monomial.$(OBJEXT) genapprox.$(OBJEXT) \
-	lcm_pqp_leapfrog.$(OBJEXT) global_metropolis_accrej.$(OBJEXT) \
+	rot_colvec.$(OBJEXT) fuzwilp.$(OBJEXT) mesfield.$(OBJEXT) \
+	mesplq.$(OBJEXT) polylp.$(OBJEXT) wilslp.$(OBJEXT) \
+	srcfil.$(OBJEXT) stoch_var.$(OBJEXT) z2_src.$(OBJEXT) \
+	ape_smear.$(OBJEXT) displacement.$(OBJEXT) \
+	fuzz_smear.$(OBJEXT) gaus_smear.$(OBJEXT) hyp_smear.$(OBJEXT) \
+	hyp_smear3d.$(OBJEXT) laplacian.$(OBJEXT) \
+	sink_smear2.$(OBJEXT) stout_smear.$(OBJEXT) \
+	diractodr.$(OBJEXT) paulitodr.$(OBJEXT) tdiractodr.$(OBJEXT) \
+	transf.$(OBJEXT) sftmom.$(OBJEXT) eesu3.$(OBJEXT) \
+	eeu1.$(OBJEXT) expm12.$(OBJEXT) expmat.$(OBJEXT) \
+	expsu3.$(OBJEXT) gauge_startup.$(OBJEXT) hotst.$(OBJEXT) \
+	reunit.$(OBJEXT) rgauge.$(OBJEXT) su2extract.$(OBJEXT) \
+	su3proj.$(OBJEXT) sunfill.$(OBJEXT) sun_proj.$(OBJEXT) \
+	taproj.$(OBJEXT) unit_check.$(OBJEXT) printgeom.$(OBJEXT) \
+	proginfo.$(OBJEXT) gauge_monomial.$(OBJEXT) \
+	genapprox.$(OBJEXT) lcm_pqp_leapfrog.$(OBJEXT) \
+	global_metropolis_accrej.$(OBJEXT) \
 	predictor_aggregate.$(OBJEXT) zero_guess_predictor.$(OBJEXT) \
 	last_solution_predictor.$(OBJEXT) \
 	linear_extrap_predictor.$(OBJEXT) $(am__objects_1) \
@@ -546,10 +547,11 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/eig/eig_spec_array.h meas/gfix/axgauge.h \
 	meas/gfix/coulgauge.h meas/gfix/gfix.h meas/gfix/grelax.h \
 	meas/gfix/polar_dec.h meas/gfix/rot_colvec.h meas/glue/glue.h \
-	meas/glue/mesplq.h meas/glue/polylp.h meas/hadron/hadron.h \
-	meas/hadron/srcfil.h meas/glue/fuzwilp.h meas/glue/wilslp.h \
-	meas/hadron/stoch_var.h meas/hadron/z2_src.h meas/meas.h \
-	meas/pbp/pbp.h meas/schrfun/schrfun.h meas/smear/ape_smear.h \
+	meas/glue/mesfield.h meas/glue/mesplq.h meas/glue/polylp.h \
+	meas/hadron/hadron.h meas/hadron/srcfil.h meas/glue/fuzwilp.h \
+	meas/glue/wilslp.h meas/hadron/stoch_var.h \
+	meas/hadron/z2_src.h meas/meas.h meas/pbp/pbp.h \
+	meas/schrfun/schrfun.h meas/smear/ape_smear.h \
 	meas/smear/displacement.h meas/smear/fuzz_smear.h \
 	meas/smear/gaus_smear.h meas/smear/hyp_smear.h \
 	meas/smear/hyp_smear3d.h meas/smear/laplacian.h \
@@ -945,10 +947,11 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/eig/eig_spec_array.h meas/gfix/axgauge.h \
 	meas/gfix/coulgauge.h meas/gfix/gfix.h meas/gfix/grelax.h \
 	meas/gfix/polar_dec.h meas/gfix/rot_colvec.h meas/glue/glue.h \
-	meas/glue/mesplq.h meas/glue/polylp.h meas/hadron/hadron.h \
-	meas/hadron/srcfil.h meas/glue/fuzwilp.h meas/glue/wilslp.h \
-	meas/hadron/stoch_var.h meas/hadron/z2_src.h meas/meas.h \
-	meas/pbp/pbp.h meas/schrfun/schrfun.h meas/smear/ape_smear.h \
+	meas/glue/mesfield.h meas/glue/mesplq.h meas/glue/polylp.h \
+	meas/hadron/hadron.h meas/hadron/srcfil.h meas/glue/fuzwilp.h \
+	meas/glue/wilslp.h meas/hadron/stoch_var.h \
+	meas/hadron/z2_src.h meas/meas.h meas/pbp/pbp.h \
+	meas/schrfun/schrfun.h meas/smear/ape_smear.h \
 	meas/smear/displacement.h meas/smear/fuzz_smear.h \
 	meas/smear/gaus_smear.h meas/smear/hyp_smear.h \
 	meas/smear/hyp_smear3d.h meas/smear/laplacian.h \
@@ -1243,8 +1246,8 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/eig/sn_jacob_array.cc meas/gfix/axgauge.cc \
 	meas/gfix/coulgauge.cc meas/gfix/grelax.cc \
 	meas/gfix/polar_dec.cc meas/gfix/rot_colvec.cc \
-	meas/glue/fuzwilp.cc meas/glue/mesplq.cc meas/glue/polylp.cc \
-	meas/glue/wilslp.cc meas/hadron/srcfil.cc \
+	meas/glue/fuzwilp.cc meas/glue/mesfield.cc meas/glue/mesplq.cc \
+	meas/glue/polylp.cc meas/glue/wilslp.cc meas/hadron/srcfil.cc \
 	meas/hadron/stoch_var.cc meas/hadron/z2_src.cc \
 	meas/smear/ape_smear.cc meas/smear/displacement.cc \
 	meas/smear/fuzz_smear.cc meas/smear/gaus_smear.cc \
@@ -1598,6 +1601,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_w_pab.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_w_sse.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesfield.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesons_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesonseqsrc_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesphas_follana_s.Po@am__quote@
@@ -3021,6 +3025,20 @@ fuzwilp.obj: meas/glue/fuzwilp.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/glue/fuzwilp.cc' object='fuzwilp.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o fuzwilp.obj `if test -f 'meas/glue/fuzwilp.cc'; then $(CYGPATH_W) 'meas/glue/fuzwilp.cc'; else $(CYGPATH_W) '$(srcdir)/meas/glue/fuzwilp.cc'; fi`
+
+mesfield.o: meas/glue/mesfield.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT mesfield.o -MD -MP -MF "$(DEPDIR)/mesfield.Tpo" -c -o mesfield.o `test -f 'meas/glue/mesfield.cc' || echo '$(srcdir)/'`meas/glue/mesfield.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/mesfield.Tpo" "$(DEPDIR)/mesfield.Po"; else rm -f "$(DEPDIR)/mesfield.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/glue/mesfield.cc' object='mesfield.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o mesfield.o `test -f 'meas/glue/mesfield.cc' || echo '$(srcdir)/'`meas/glue/mesfield.cc
+
+mesfield.obj: meas/glue/mesfield.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT mesfield.obj -MD -MP -MF "$(DEPDIR)/mesfield.Tpo" -c -o mesfield.obj `if test -f 'meas/glue/mesfield.cc'; then $(CYGPATH_W) 'meas/glue/mesfield.cc'; else $(CYGPATH_W) '$(srcdir)/meas/glue/mesfield.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/mesfield.Tpo" "$(DEPDIR)/mesfield.Po"; else rm -f "$(DEPDIR)/mesfield.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/glue/mesfield.cc' object='mesfield.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o mesfield.obj `if test -f 'meas/glue/mesfield.cc'; then $(CYGPATH_W) 'meas/glue/mesfield.cc'; else $(CYGPATH_W) '$(srcdir)/meas/glue/mesfield.cc'; fi`
 
 mesplq.o: meas/glue/mesplq.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT mesplq.o -MD -MP -MF "$(DEPDIR)/mesplq.Tpo" -c -o mesplq.o `test -f 'meas/glue/mesplq.cc' || echo '$(srcdir)/'`meas/glue/mesplq.cc; \
