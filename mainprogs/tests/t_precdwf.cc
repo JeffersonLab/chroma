@@ -1,4 +1,4 @@
-// $Id: t_precdwf.cc,v 1.11 2005-03-01 19:18:17 edwards Exp $
+// $Id: t_precdwf.cc,v 1.12 2005-03-01 19:23:40 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -73,12 +73,6 @@ int main(int argc, char **argv)
   for(int m=0; m < u.size(); ++m)
     gaussian(u[m]);
 
-  int N5 = 8;
-  MLF psi(N5), chi(N5);
-  for(int n=0; n < N5; ++n)
-    random(psi[n]);
-  chi = zero;
-
   //! Create a linear operator
   QDPIO::cout << "Constructing DWDslash" << endl;
 
@@ -86,13 +80,34 @@ int main(int argc, char **argv)
   Handle<FermBC<MLF> >  fbc_a(new PeriodicFermBC<MLF>);
 
   // DWDslash class can be optimised
+  int N5 = 8;
   Real WilsonMass = 1.5;
   Real m_q = 0.01;
+
+#if 0
   EvenOddPrecDWFermActArray S_pdwf(fbc_a,WilsonMass,m_q,N5);
+#else
+  EvenOddPrecZoloNEFFermActArrayParams params;
+  params.OverMass = WilsonMass;
+  params.Mass = m_q;
+  params.b5 = 1.0;
+  params.c5 = 0.0;
+  params.N5 = N5;
+  params.approximation_type = COEFF_TYPE_TANH_UNSCALED;
+  params.ApproxMin = 0.0;
+  params.ApproxMax = 0.0;
+  EvenOddPrecZoloNEFFermActArray S_pdwf(fbc_a,params);
+#endif
+
   Handle<const ConnectState> state(S_pdwf.createState(u));
   const EvenOddPrecLinearOperator< MLF, LCM >* D_pdwf = S_pdwf.linOp(state); 
 
   QDPIO::cout << "Done" << endl;
+
+  MLF psi(S_pdwf.size()), chi(S_pdwf.size());
+  for(int n=0; n < S_pdwf.size(); ++n)
+    random(psi[n]);
+  chi = zero;
 
   for(int isign = 1; isign >= -1; isign -= 2) 
   {
