@@ -1,4 +1,4 @@
-// $Id: unit_check.cc,v 1.2 2003-10-02 03:32:31 edwards Exp $
+// $Id: unit_check.cc,v 1.3 2004-01-01 15:32:55 edwards Exp $
 
 /*! \file
  *  \brief Test a gauge field is unitarized
@@ -19,13 +19,12 @@ using namespace QDP;
  */
 void unitarityCheck(const multi1d<LatticeColorMatrix>& u)
 {
-  LatticeBoolean lbad;
   int numbad;
 
   for (int mu=0; mu < Nd; ++mu)
   {
     LatticeColorMatrix u_tmp = u[mu];
-    reunit(u_tmp, lbad, numbad, REUNITARIZE_ERROR);
+    reunit(u_tmp, numbad, REUNITARIZE_ERROR);
   }
 }
 
