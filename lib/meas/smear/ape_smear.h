@@ -1,4 +1,4 @@
-//  $Id: ape_smear.h,v 1.2 2003-09-25 22:21:48 edwards Exp $
+//  $Id: ape_smear.h,v 1.3 2003-10-08 01:39:34 edwards Exp $
 
 #ifndef __ape_smear__
 #define __ape_smear__
@@ -29,7 +29,7 @@
  * \param sm_fact  smearing factor ( Read )
  * \param BlkAccu  accuracy in fuzzy link projection ( Read )
  * \param BlkMax   maximum number of iterations in fuzzy link projection ( Read )
- * \paramj_decay   no staple in direction j_decay ( Read )
+ * \param j_decay  no staple in direction j_decay ( Read )
  */
 
 void APE_Smear(const multi1d<LatticeColorMatrix>& u,
