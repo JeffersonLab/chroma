@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<params>
+  <!-- Lattice Dimensions etc -->
+  <lattice>
+    <nrow>4 4 4 8</nrow>
+    <boundary>1 1 1 -1</boundary>
+  </lattice>
+
+  <!-- RNG Seed for initing Gaussians and the like -->
+  <RNG>
+    <seed>11 0 0 0</seed>
+  </RNG>
+
+  <!-- Start up config details -->
+  <Cfg>
+     <!-- This will probably soon be standardised. 2 means from file  -->
+     <startType>2</startType>
+     <gaugeFilename>../test_purgaug.cfg1</gaugeFilename>
+
+     <!-- Format = 0 means SZIN format -->
+     <gaugeFileFormat>0</gaugeFileFormat>
+  </Cfg>
+  <quarkMass>0.1</quarkMass>
+  <eig>
+     <RsdR>1.0e-5</RsdR>
+     <RsdA>1.0e-7</RsdA>
+     <RsdZero>5.0e-6</RsdZero>
+     <ProjApsiP>false</ProjApsiP>    
+     <Neig>4</Neig>
+     <Ndummy>2</Ndummy>
+     <gammaFactor>0.1</gammaFactor>
+     <MaxKS>100</MaxKS>
+     <MaxCG>10000</MaxCG>
+  </eig>
+
+  <zolotarev>
+	<approxOrder>11</approxOrder>
+	<approxMin>0.668</approxMin>
+	<approxMax>6.9</approxMax>
+	<wilsonMass>-1.4</wilsonMass>
+  </zolotarev>
+</params>
