@@ -7,5 +7,6 @@
 #define __sources_h__
 
 #include "p_src.h"
+#include "d_src.h"
 
 #endif

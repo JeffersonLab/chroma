@@ -1,4 +1,4 @@
-// $Id: laplacian.cc,v 1.1 2003-05-27 17:45:29 ikuro Exp $
+// $Id: laplacian.cc,v 1.2 2003-06-19 17:40:42 ikuro Exp $
 /*! \file
  *  \brief Gaussian smearing of color vector
  */
@@ -21,26 +21,33 @@ using namespace QDP;
 template<typename T>
 void laplacian(const multi1d<LatticeColorMatrix>& u, 
 	       T& chi, 
-	       int j_decay)
+	       int j_decay,
+	       int power)
 {
-  T psi = -1 * chi;
+  T psi;
 
-  /* hit with laplacian (Klein-Gordon with m=0) */
-  klein_gord(u, psi, chi, 0, j_decay);
+  for (int p=0; p<power; p++) {
+    psi = -1 * chi;
+
+    /* hit with laplacian (Klein-Gordon with m=0) */
+    klein_gord(u, psi, chi, 0, j_decay);
+  }
 }
 
 void laplacian(const multi1d<LatticeColorMatrix>& u, 
 	       LatticeColorVector& chi, 
-	       int j_decay)
+	       int j_decay,
+	       int power)
 {
-  laplacian<LatticeColorVector>(u, chi, j_decay);
+  laplacian<LatticeColorVector>(u, chi, j_decay, power);
 }
 
 void laplacian(const multi1d<LatticeColorMatrix>& u, 
 	       LatticePropagator& chi, 
-	       int j_decay)
+	       int j_decay,
+	       int power)
 {
-  laplacian<LatticePropagator>(u, chi, j_decay);
+  laplacian<LatticePropagator>(u, chi, j_decay, power);
 }
 
 

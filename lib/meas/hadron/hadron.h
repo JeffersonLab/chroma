@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hadron.h,v 1.6 2003-04-17 20:08:20 dgr Exp $
+// $Id: hadron.h,v 1.7 2003-06-19 17:45:27 ikuro Exp $
 
 /*! \file
  * \brief Hadronic observables
@@ -23,5 +23,6 @@
 #include "mesons_w.h"
 #include "srcfil.h"
 #include "D_j.h"
+#include "DjDk.h"
 
 #endif
