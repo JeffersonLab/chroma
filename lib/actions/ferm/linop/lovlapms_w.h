@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lovlapms_w.h,v 1.6 2003-11-20 05:43:41 edwards Exp $
+// $Id: lovlapms_w.h,v 1.7 2003-12-03 06:12:41 edwards Exp $
 /*! \file
  *  \brief Internal Overlap-pole operator
  */
@@ -46,18 +46,23 @@ public:
    * \param _OperEigVec     eigenvectors      	               (Read)
    * \param _EigValFunc     eigenvalues      	               (Read)
    * \param _NEig           number of eigenvalues              (Read)
+   * \param _MaxCG          MaxCG inner CG                     (Read)
    * \param _RsdCG          residual for inner CG              (Read)
    */
-  lovlapms(const LinearOperator<LatticeFermion>& _MdagM, const LinearOperator<LatticeFermion>& _M, 
-	   const Real& _m_q, int _numroot, const Real& _constP, 
+  lovlapms(const LinearOperatorProxy<LatticeFermion> _MdagM, 
+	   const LinearOperator<LatticeFermion>& _M, 
+	   const Real& _m_q, int _numroot, 
+	   const Real& _constP, 
 	   const multi1d<Real>& _resP,
 	   const multi1d<Real>& _rootQ, 
-	   const multi1d<LatticeFermion>& _EigVec,
+	   int _NEig,
 	   const multi1d<Real>& _EigValFunc,
-	   int _NEig, const Real& _RsdCG) :
+	   const multi1d<LatticeFermion>& _EigVec,
+	   int _MaxCG,
+	   const Real& _RsdCG) :
     MdagM(_MdagM), M(_M), m_q(_m_q), numroot(_numroot), constP(_constP),
-    resP(_resP), rootQ(_rootQ), OperEigVec(_OperEigVec), EigValFunc(_EigValFunc),
-    NEig(_NEig), RsdCG(_RsdCG) {}
+    resP(_resP), rootQ(_rootQ), EigVec(_EigVec), EigValFunc(_EigValFunc),
+    NEig(_NEig), MaxCG(_MaxCG), RsdCG(_RsdCG) {}
 
   //! Destructor is automatic
   ~lovlapms() {}
@@ -69,7 +74,7 @@ public:
   void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const;
 
 private:
-  const LinearOperator<LatticeFermion>& MdagM;
+  const LinearOperatorProxy<LatticeFermion> MdagM;
   const LinearOperator<LatticeFermion>& M;
   const Real& m_q;
   int numroot;
@@ -79,6 +84,7 @@ private:
   const multi1d<LatticeFermion>& EigVec;
   const multi1d<Real>& EigValFunc;
   int NEig;
+  int MaxCG;
   const Real& RsdCG;
 
 };
