@@ -45,10 +45,11 @@ namespace Chroma {
 
       // First half step by leapP
       leapP(dtby2, s);
-
+	
       while(! endP ) { 
-	// Full step with leapQ;
+
 	leapQ(dt, s);
+	
 	t += dt;
 	
 	// Check if this was the last gauge update
@@ -64,9 +65,7 @@ namespace Chroma {
 	  endP = true;
 	  
 	}
-	else { 
-	  // Time left is more than dtby2
-	  // Make a full P Leap
+	else {
 	  leapP(dt, s);
 	}
       } // end while

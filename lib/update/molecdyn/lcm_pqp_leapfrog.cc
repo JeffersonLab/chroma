@@ -69,7 +69,7 @@ namespace Chroma {
     multi1d<LatticeColorMatrix> dsdQ(Nd);
     
     // Compute the force 
-    H.dsdq(s.getP(), s);
+    H.dsdq(dsdQ, s);
     
     // Zero boundaries ? -- where would this be done then?
     // There is a zero boundary in GaugeBC?
@@ -103,20 +103,20 @@ namespace Chroma {
     for(int mu = 0; mu < Nd; mu++) { 
       
       //  dt*p[mu]
-      tmp_1 = dt*p_mom[mu];
+      tmp_1 = dt*(s.getP())[mu];
       
       // tmp_1 = exp(dt*p[mu])  
       expmat(tmp_1, EXP_TWELFTH_ORDER);
       
       // tmp_2 = exp(dt*p[mu]) u[mu] = tmp_1 * u[mu]
-      tmp_2 = tmp_1*u[mu];
+      tmp_2 = tmp_1*(s.getQ())[mu];
       
       // u[mu] =  tmp_1 * u[mu] =  tmp_2 
-      u[mu] = tmp_2;
+      (s.getQ())[mu] = tmp_2;
       
       // Reunitarize u[mu]
       int numbad;
-      reunit(u[mu], numbad, REUNITARIZE_ERROR);
+      reunit((s.getQ())[mu], numbad, REUNITARIZE_ERROR);
     }
     
     // Do I need boundary conditions here?

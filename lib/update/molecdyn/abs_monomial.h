@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_monomial.h,v 1.7 2005-01-04 06:53:41 edwards Exp $
+// $Id: abs_monomial.h,v 1.8 2005-01-04 14:57:25 bjoo Exp $
 
 /*! @file
  * @brief Monomials - gauge action or fermion binlinear contributions for HMC
@@ -316,10 +316,12 @@ namespace Chroma
       P F_tmp;
       lin->deriv(F_tmp, Y, X, PLUS);
       F += F_tmp;
-      
+ 
+      /*
       for(int mu=0; mu < Nd; mu++) { 
-      F[mu] *= Real(-1);   // IS THIS SIGN CORRECT???
+	 F[mu] *= Real(-1);   // IS THIS SIGN CORRECT???
       }
+      */
     }
   
     //! Refresh pseudofermions

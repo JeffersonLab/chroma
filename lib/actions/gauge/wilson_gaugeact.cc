@@ -1,4 +1,4 @@
-// $Id: wilson_gaugeact.cc,v 1.9 2004-12-31 17:17:03 bjoo Exp $
+// $Id: wilson_gaugeact.cc,v 1.10 2005-01-04 14:57:25 bjoo Exp $
 /*! \file
  *  \brief Wilson gauge action
  */
@@ -165,10 +165,9 @@ namespace Chroma
 
     for(int mu = 0; mu < Nd; ++mu)
     {
-      for(int nu=mu+1; nu<Nd; nu++)
-      {
+      for(int nu=mu+1; nu<Nd; nu++) {
 	for(int cb=0; cb < 2; cb++) { 
-	
+	  
 	  tmp_0[rb[cb]] = shift(u[mu], FORWARD, nu)*shift(adj(u[nu]), FORWARD, mu);
 	  tmp_1[rb[cb]] = tmp_0*adj(u[mu]);
 	  tmp_2[rb[cb]] = u[nu]*tmp_1;
@@ -177,19 +176,50 @@ namespace Chroma
 	  ds_u[mu][rb[1-cb]] += shift(tmp_1, BACKWARD, nu)*shift(u[nu], BACKWARD, nu);
 	  tmp_1[rb[cb]] = adj(u[nu])*u[mu];
 	  ds_u[nu][rb[1-cb]] += shift(adj(tmp_0),BACKWARD,mu)*shift(tmp_1, BACKWARD, mu);
-	
+	  
 	}
       }
-
+      
+      ds_u[mu] *= Real(1)*Real(beta)/(Real(4*Nc));
     }
 
+
+#if 0
+    ds_u.resize(Nd);
+    ds_u =zero;
+
+    const multi1d<LatticeColorMatrix>& u = state->getLinks();
+
+    for(int mu=0; mu < Nd; mu++) { 
+      LatticeColorMatrix G;
+      G = zero;
+      
+      for(int nu = mu+1; nu < Nd; nu++) { 
+	
+	LatticeColorMatrix up_staple;
+	LatticeColorMatrix down_staple;
+	
+	LatticeColorMatrix tmp_1;
+	LatticeColorMatrix tmp_2;
+	
+	tmp_1 = shift( u[nu], FORWARD, mu);
+	tmp_2 = shift( u[mu], FORWARD, nu);
+
+	up_staple = tmp_1*adj(tmp_2)*adj(u[nu]);
+	down_staple = adj(tmp_1)*adj(u[mu])*u[nu];
+
+	G += up_staple + shift(down_staple, BACKWARD, nu);
+      }
+
+      ds_u[mu] = u[mu]*G;
+    }
 
     // Pure Gauge factor (-beta/Nc and a factor of 2 because of the forward
     // and backward staple of the force)
     for(int mu=0; mu < Nd; mu++) { 
-      ds_u[mu] *= Double(beta)/(Real(2*Nc));
+      ds_u[mu] *= Real(beta)/(Real(2*Nc));
     }
-
+#endif
 
     END_CODE();
   }
@@ -220,10 +250,12 @@ namespace Chroma
     MesPlq(state->getLinks(), w_plaq, s_plaq, t_plaq, link);
 
     // Undo Mes Plaq Normalisation
-    S_pg = Double(Layout::vol()*Nd*(Nd-1))/Double(2);
+    S_pg = Double(Layout::vol()*Nd*(Nd-1)*Nc)/Double(2);
+
+    S_pg *= Double(-1)*Double(beta)/Double(2*Nc);
 
     // Took out minus sign -- may need to put back in...
-    S_pg *= -Double(beta)*w_plaq;
+    S_pg *= w_plaq;
     
     return S_pg;
   } 

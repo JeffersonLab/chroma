@@ -1,5 +1,5 @@
 #include "chromabase.h"
-#include "update/molecdyn/unprec_two_flavor_wilson5D_monomial_w.h"
+#include "update/molecdyn/unprec_two_flavor_wilson5d_monomial_w.h"
 #include "update/molecdyn/monomial_factory.h"
 
 #include "io/param_io.h"

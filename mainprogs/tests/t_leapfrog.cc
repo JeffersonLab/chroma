@@ -26,6 +26,7 @@ bool linkage_hack()
   foo &= EvenOddPrecWilsonFermActEnv::registered;
  
   // 4D Ferm Monomials
+  foo &= UnprecTwoFlavorWilsonFermMonomialEnv::registered;
   foo &= EvenOddPrecTwoFlavorWilsonFermMonomialEnv::registered;
 
   // 5D Ferm Monomials
@@ -53,15 +54,6 @@ int main(int argc, char *argv[])
   Layout::create();
 
 
-  multi1d<LatticeColorMatrix> u(Nd);
-  {
-    XMLReader file_xml;
-    XMLReader config_xml;
-    Cfg_t foo; foo.cfg_type=CFG_TYPE_UNIT;
-//    Cfg_t foo; foo.cfg_type=CFG_TYPE_DISORDERED;
-    // Cfg_t foo; foo.cfg_type=CFG_TYPE_SZIN; foo.cfg_file="./CFGIN";
-    gaugeStartup(file_xml, config_xml, u, foo);
-  }
 
   // Dump output
   XMLFileWriter xml_out("./XMLDAT");
@@ -71,8 +63,28 @@ int main(int argc, char *argv[])
   multi1d<int> boundary(Nd);           // Ferm BC's
   std::string monomial_name;           // String for Factory
   XMLReader param_in("DATA");
+
   // Snarf it all
   XMLReader paramtop(param_in, "/HamiltonianTest");
+
+  Cfg_t cfg;
+  try { 
+    read(paramtop, "./GaugeStartup", cfg);
+  }
+  catch( const std::string& e ) { 
+    QDPIO::cerr << " Error reading XML " << e << endl;
+    QDP_abort(1);
+  }
+
+  multi1d<LatticeColorMatrix> u(Nd);
+  {
+    XMLReader file_xml;
+    XMLReader config_xml;
+
+    gaugeStartup(file_xml, config_xml, u, cfg);
+  }
+
+
   Handle<AbsHamiltonian<multi1d<LatticeColorMatrix>,multi1d<LatticeColorMatrix> > > H(new ExactLatColMatHamiltonian(paramtop, "./Hamiltonian"));
 
   std::string integrator_name;
