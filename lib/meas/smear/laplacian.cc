@@ -1,6 +1,6 @@
-// $Id: laplacian.cc,v 1.2 2003-06-19 17:40:42 ikuro Exp $
+// $Id: laplacian.cc,v 1.3 2004-01-09 03:01:26 edwards Exp $
 /*! \file
- *  \brief Gaussian smearing of color vector
+ *  \brief Laplacian smearing of a source
  */
 
 #include "chromabase.h"
