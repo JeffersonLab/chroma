@@ -1,4 +1,4 @@
-// $Id: t_ritz_KS.cc,v 1.11 2004-05-19 11:43:19 bjoo Exp $
+// $Id: t_ritz_KS.cc,v 1.12 2004-09-06 10:45:58 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -259,7 +259,8 @@ int main(int argc, char **argv)
 
   lambda_high_aux[0] = sqrt(fabs(lambda_high_aux[0]));
   QDPIO::cout << "|| lambda_hi || = " << lambda_high_aux[0]  << " hi_Rsd_r = " << hi_RsdR << endl;
-
+ 
+  pop(high_xml);
   xml_out << high_xml;
 
   push(xml_out, "Highest");
