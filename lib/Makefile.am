@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.181 2004-10-22 03:38:29 edwards Exp $
+# $Id: Makefile.am,v 1.182 2004-10-29 00:31:28 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -168,6 +168,7 @@ nodist_include_HEADERS=chroma_config_internal.h
 if BUILD_WILSON_LIBS
 nobase_include_HEADERS += \
 	actions/ferm/fermacts/fermacts_w.h \
+	actions/ferm/fermacts/fermfactory_w.h \
 	actions/ferm/fermacts/overlap_fermact_base_w.h \
 	actions/ferm/fermacts/prec_clover_fermact_w.h \
 	actions/ferm/fermacts/prec_dwf_fermact_array_w.h \
