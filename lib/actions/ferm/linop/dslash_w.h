@@ -24,12 +24,5 @@ typedef SSEWilsonDslash WilsonDslash;
 typedef QDPWilsonDslash WilsonDslash;
 #endif
 
-//The QDP EvenOdd4dDWDslashArray class
-#include "eo4d_dwf_factors_array_w.h"
-
-//There is no sse version of this routine yet
-typedef QDPEvenOdd4dDWDslashArray EvenOdd4dDWDslashArray;
-typedef QDPEvenOdd4dDWDiagArray EvenOdd4dDWDiagArray;
-
 
 #endif
