@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: param_io.h,v 1.20 2004-04-26 11:19:13 bjoo Exp $
+// $Id: param_io.h,v 1.21 2004-05-03 20:26:16 edwards Exp $
 /*! \file
  *  \brief Reunitarize (to a SU(N)) inplace the matrix A under some option
  */
@@ -25,7 +25,7 @@ Real massToKappa(const Real& Mass);
 multi1d<Real> massToKappa(const multi1d<Real>& Mass);
 
 
-/*
+/*!
  * Types and structures
  *
  * \ingroup io
