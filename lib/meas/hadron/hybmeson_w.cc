@@ -1,4 +1,4 @@
-// $Id: hybmeson_w.cc,v 1.3 2004-02-11 12:51:34 bjoo Exp $
+// $Id: hybmeson_w.cc,v 1.4 2004-07-28 02:38:04 edwards Exp $
 /*! \file
  *  \brief Hybrid meson 2-pt functions
  */
@@ -82,7 +82,7 @@ void hybmeson(const multi1d<LatticeColorMatrix>& f,
   QDP_error_exit("hybmeson not tested!!");   // NEED TO CHECK THIS ROUTINE
 
 
-  START_CODE("hybmeson");
+  START_CODE();
 
   // Group
   XMLArrayWriter xml_hyb(xml,15);
@@ -90,7 +90,7 @@ void hybmeson(const multi1d<LatticeColorMatrix>& f,
 
   if ( Nd != 4 )		/* Code is specific to Nd=4. */
   {
-    END_CODE("hybmeson");
+    END_CODE();
     return;
   }
 
@@ -432,5 +432,5 @@ void hybmeson(const multi1d<LatticeColorMatrix>& f,
 
   pop(xml_hyb);
 
-  END_CODE("hybmeson");
+  END_CODE();
 }

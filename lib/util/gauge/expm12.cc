@@ -1,4 +1,4 @@
-// $Id: expm12.cc,v 1.5 2003-03-31 19:46:08 edwards Exp $
+// $Id: expm12.cc,v 1.6 2004-07-28 02:38:06 edwards Exp $
 /*! \file
  *  \brief 12-th order exponentiation of a lattice color matrix
  */
@@ -21,7 +21,7 @@ using namespace QDP;
 
 void expm12(LatticeColorMatrix& a)
 {
-  START_CODE("expm12");
+  START_CODE();
         
   // aux1 = aux2 = a;  a = ONE + a 
   LatticeColorMatrix aux1 = a;
@@ -39,5 +39,5 @@ void expm12(LatticeColorMatrix& a)
     a += aux2;
   }
   
-  END_CODE("expm12");
+  END_CODE();
 }

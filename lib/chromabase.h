@@ -1,4 +1,4 @@
-// $Id: chromabase.h,v 1.3 2004-07-27 06:00:07 edwards Exp $
+// $Id: chromabase.h,v 1.4 2004-07-28 02:38:00 edwards Exp $
 //
 // Absolute basic stuff to use chroma
 //
@@ -48,8 +48,8 @@ const Real twopi = 6.283185307179586476925286;
 
 // Hooks for various things
 // NOTE: can get rid of unused arg "a" !!
-#define START_CODE(a) QDP_PUSH_PROFILE(QDP::getProfileLevel())
-#define END_CODE(a)   QDP_POP_PROFILE()
+#define START_CODE() QDP_PUSH_PROFILE(QDP::getProfileLevel())
+#define END_CODE()   QDP_POP_PROFILE()
 
 
 #endif

@@ -1,4 +1,4 @@
-// $Id: gammasgn_w.cc,v 1.4 2004-06-11 20:44:16 edwards Exp $
+// $Id: gammasgn_w.cc,v 1.5 2004-07-28 02:38:06 edwards Exp $
 /*! \file
  *  \brief Compute gamma matrix multiplication table factors
  */
@@ -21,7 +21,7 @@ static bool initP = false;
 
 static void gammaSgn_init()
 {
-  START_CODE("gammasgn_init");
+  START_CODE();
 
   if (Ns != 4)
   {
@@ -60,7 +60,7 @@ static void gammaSgn_init()
   
   initP = true;
 
-  END_CODE("gammasgn_init");
+  END_CODE();
 }
 
 //! Return gamma matrix multiplication table factors

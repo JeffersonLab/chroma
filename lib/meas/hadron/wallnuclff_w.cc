@@ -1,4 +1,4 @@
-// $Id: wallnuclff_w.cc,v 1.19 2004-06-05 03:00:48 edwards Exp $
+// $Id: wallnuclff_w.cc,v 1.20 2004-07-28 02:38:04 edwards Exp $
 /*! \file
  *  \brief Wall-sink nucleon form-factors 
  *
@@ -64,7 +64,7 @@ void wallNuclFormFac(WallFormFac_formfacs_t& form,
 		     const SftMom& phases,
 		     int t0, int t_sink)
 {
-  START_CODE("wallNuclFormFac");
+  START_CODE();
 
   if ( Ns != 4 || Nc != 3 || Nd != 4 )	// Code is specific to Ns=4, Nc=3, Nd=4
     return;
@@ -306,5 +306,5 @@ void wallNuclFormFac(WallFormFac_formfacs_t& form,
     } // end for(lorz)
   } // end for(gamma_ctr)
 
-  END_CODE("wallNuclFormFac");
+  END_CODE();
 }

@@ -1,4 +1,4 @@
-// $Id: writeszin.cc,v 1.8 2004-04-13 03:06:13 edwards Exp $
+// $Id: writeszin.cc,v 1.9 2004-07-28 02:38:03 edwards Exp $
 
 /*! \file
  *  \brief Write out a configuration written by SZIN up to configuration version 7.
@@ -27,7 +27,7 @@ using namespace QDP;
 
 static void writeSzinHeader(BinaryWriter& cfg_out, const SzinGauge_t& header)
 {
-  START_CODE("writeSzinheader");
+  START_CODE();
 
   int cfg_record_size = 0;
 
@@ -93,7 +93,7 @@ static void writeSzinHeader(BinaryWriter& cfg_out, const SzinGauge_t& header)
   wstat = 0;
   write(cfg_out, wstat, wstat.size());
 
-  END_CODE("writeSzinHeader");
+  END_CODE();
 }
 
 
@@ -115,7 +115,7 @@ static void writeSzinHeader(BinaryWriter& cfg_out, const SzinGauge_t& header)
 void writeSzin(const SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u, 
 	       const string& cfg_file)
 {
-  START_CODE("writeSzin");
+  START_CODE();
 
   // The object where data is written
   BinaryWriter cfg_out(cfg_file); // for now, cfg_io_location not used
@@ -154,7 +154,7 @@ void writeSzin(const SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u,
   }
 
   cfg_out.close();
-  END_CODE("writeSzin");
+  END_CODE();
 }
 
 
@@ -174,7 +174,7 @@ void writeSzin(const SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u,
 
 void writeSzin(XMLBufferWriter& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_file)
 {
-  START_CODE("writeSzin");
+  START_CODE();
 
   SzinGauge_t header;
   XMLReader  xml_in(xml);   // use the buffer writer to instantiate a reader
@@ -182,7 +182,7 @@ void writeSzin(XMLBufferWriter& xml, multi1d<LatticeColorMatrix>& u, const strin
 
   writeSzin(header, u, cfg_file);
 
-  END_CODE("writeSzin");
+  END_CODE();
 }
 
 
@@ -202,7 +202,7 @@ void writeSzinTrunc(SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u,
 		    int j_decay, int t_start, int t_end, 
 		    const string& cfg_file)
 {
-  START_CODE("writeSzinTrunc");
+  START_CODE();
 
   // The object where data is written
   BinaryWriter cfg_out(cfg_file); // for now, cfg_io_location not used
@@ -268,7 +268,7 @@ void writeSzinTrunc(SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u,
 
   header.nrow[j_decay] = Layout::lattSize()[j_decay];  // restore the header
 
-  END_CODE("writeSzinTrunc");
+  END_CODE();
 }
 
 
@@ -287,7 +287,7 @@ void writeSzinReplica(SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u,
 		      int j_decay, int n_replica, 
 		      const string& cfg_file)
 {
-  START_CODE("writeSzinReplica");
+  START_CODE();
 
   // The object where data is written
   BinaryWriter cfg_out(cfg_file); // for now, cfg_io_location not used
@@ -347,6 +347,6 @@ void writeSzinReplica(SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u,
 
   header.nrow[j_decay] = Layout::lattSize()[j_decay];  // restore the header
 
-  END_CODE("writeSzinReplica");
+  END_CODE();
 }
 

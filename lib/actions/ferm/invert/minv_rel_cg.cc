@@ -1,4 +1,4 @@
-// $Id: minv_rel_cg.cc,v 1.1 2004-05-21 15:31:49 bjoo Exp $
+// $Id: minv_rel_cg.cc,v 1.2 2004-07-28 02:38:01 edwards Exp $
 
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator
@@ -79,7 +79,7 @@ void MInvRelCG_a(const ApproxLinearOperator<T>& A,
 		 int MaxCG,
 		 int& n_count)
 {
-  START_CODE("MinvCG");
+  START_CODE();
 
   const OrderedSubset& sub = A.subset();
 
@@ -404,7 +404,7 @@ void MInvRelCG_a(const ApproxLinearOperator<T>& A,
     QDPIO::cout << "MinvCG: " << n_count << " iterations" << endl;
   }
 
-  END_CODE("MinvCG");
+  END_CODE();
   return;
   
 }

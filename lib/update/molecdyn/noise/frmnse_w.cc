@@ -1,4 +1,4 @@
-// $Id: frmnse_w.cc,v 1.1 2003-12-30 20:07:56 edwards Exp $
+// $Id: frmnse_w.cc,v 1.2 2004-07-28 02:38:05 edwards Exp $
 
 #error "NOT FULLY CONVERTED - NEED TO FIT TO USE VIRTUAL FUNCS"
 
@@ -33,7 +33,7 @@ void FrmNse(multi1d<LatticeColorMatrix>& u,
 	    int& n_congrd;
 	    int n_zero)
 {
-  START_CODE("FrmNse");
+  START_CODE();
   
   int n_count;
   n_congrd = 0;
@@ -60,5 +60,5 @@ void FrmNse(multi1d<LatticeColorMatrix>& u,
     n_congrd += n_count;
   }
 
-  END_CODE("FrmNse");
+  END_CODE();
 }

@@ -1,4 +1,4 @@
-/* $Id: zolotarev5d_nonhermop_array_w.cc,v 1.3 2004-05-19 11:43:19 bjoo Exp $
+/* $Id: zolotarev5d_nonhermop_array_w.cc,v 1.4 2004-07-28 02:38:02 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
  */
@@ -21,7 +21,7 @@ Zolotarev5DNonHermOpArray::operator() (multi1d<LatticeFermion>& chi,
 				   const multi1d<LatticeFermion>& psi, 
 				   enum PlusMinus isign) const
 {
-  START_CODE("Zolotarev5DLinOpArray");
+  START_CODE();
 
 
   int G5 = Ns*Ns - 1;
@@ -156,6 +156,6 @@ Zolotarev5DNonHermOpArray::operator() (multi1d<LatticeFermion>& chi,
 
   }
 
-  END_CODE("Zolotarev5DLinOpArray");
+  END_CODE();
 }
 

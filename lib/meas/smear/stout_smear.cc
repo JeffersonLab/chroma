@@ -1,4 +1,4 @@
-//  $Id: stout_smear.cc,v 1.1 2004-02-03 22:39:06 edwards Exp $
+//  $Id: stout_smear.cc,v 1.2 2004-07-28 02:38:05 edwards Exp $
 /*! \file
  *  \brief Stout-link smearing of the gauge configuration
  */
@@ -30,7 +30,7 @@ void stout_smear(LatticeColorMatrix& u_smear,
 		 int mu, 
 		 const Real& sm_fact, int j_decay)
 {
-  START_CODE("APE_Smear");
+  START_CODE();
   
   // Construct and add the staples, except in direction j_decay
   LatticeColorMatrix u_staple = 0;
@@ -64,6 +64,6 @@ void stout_smear(LatticeColorMatrix& u_smear,
   // Undo the back link
   u_smear = u_tmp * u[mu];
 
-  END_CODE("stout_smear");
+  END_CODE();
 }
 

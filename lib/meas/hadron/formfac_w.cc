@@ -1,4 +1,4 @@
-// $Id: formfac_w.cc,v 1.17 2004-05-03 20:25:27 edwards Exp $
+// $Id: formfac_w.cc,v 1.18 2004-07-28 02:38:04 edwards Exp $
 /*! \file
  *  \brief Form-factors 
  *
@@ -95,7 +95,7 @@ void FormFac(FormFac_insertions_t& form,
              const SftMom& phases,
              int t0)
 {
-  START_CODE("FormFac");
+  START_CODE();
 
   // Length of lattice in j_decay direction and 3pt correlations fcns
   int length = phases.numSubsets();
@@ -206,5 +206,5 @@ void FormFac(FormFac_insertions_t& form,
     } // end for(inser_mom_num)
   } // end for(gamma_value)
                             
-  END_CODE("FormFac");
+  END_CODE();
 }

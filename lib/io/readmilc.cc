@@ -1,4 +1,4 @@
-// $Id: readmilc.cc,v 1.6 2004-07-23 12:37:12 bjoo Exp $
+// $Id: readmilc.cc,v 1.7 2004-07-28 02:38:03 edwards Exp $
 
 /*! \file
  *  \brief Read a MILC gauge configuration written in the 1997 format
@@ -25,7 +25,7 @@ using namespace QDP;
 
 void readMILC(MILCGauge_t& header, multi1d<LatticeColorMatrix>& u, const string& cfg_file)
 {
-  START_CODE("readMILC");
+  START_CODE();
 
   MILCGaugeInit(header);  // initialize the header with defaults
 
@@ -106,7 +106,7 @@ void readMILC(MILCGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
 	QDPUtil::byte_swap((void *)&u[mu].elem(s).elem(),sizeof(Real),2*Nc*Nc);
   }
 
-  END_CODE("readMILC");
+  END_CODE();
 }
 
 
@@ -122,7 +122,7 @@ void readMILC(MILCGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
 
 void readMILC(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_file)
 {
-  START_CODE("readMILC");
+  START_CODE();
 
   MILCGauge_t header;
 
@@ -143,6 +143,6 @@ void readMILC(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_
     QDP_error_exit("Error in readMILC: %s",e.c_str());
   }
 
-  END_CODE("readMILC");
+  END_CODE();
 }
 

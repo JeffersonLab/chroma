@@ -1,4 +1,4 @@
-// $Id: unprec_parwilson_fermact_w.cc,v 1.1 2004-01-12 04:48:00 edwards Exp $
+// $Id: unprec_parwilson_fermact_w.cc,v 1.2 2004-07-28 02:38:01 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action with parity breaking term
  */
@@ -52,10 +52,10 @@ UnprecParWilsonFermAct::dsdu(multi1d<LatticeColorMatrix> & ds_u,
 			     Handle<const ConnectState> state,
 			     const LatticeFermion& psi) const
 {
-  START_CODE("UnprecParWilsonFermAct::dsdu");
+  START_CODE();
   
   QDPIO::cerr << "UnprecParWilsonFermAct::dsdu not implemented" << endl;
   QDP_abort(1);
 
-  END_CODE("UnprecParWilsonFermAct::dsdu");
+  END_CODE();
 }

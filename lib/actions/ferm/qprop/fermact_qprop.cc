@@ -1,4 +1,4 @@
-// $Id: fermact_qprop.cc,v 1.7 2004-07-27 06:03:04 edwards Exp $
+// $Id: fermact_qprop.cc,v 1.8 2004-07-28 02:38:02 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *
@@ -40,7 +40,7 @@ void qprop_t(const FermionAction<T>& me,
 	     const Real& RsdCG, 
 	     int MaxCG, int& ncg_had)
 {
-  START_CODE("FermionAction::qprop");
+  START_CODE();
 
   int n_count;
   
@@ -82,7 +82,7 @@ void qprop_t(const FermionAction<T>& me,
   
   ncg_had = n_count;
   
-  END_CODE("FermionAction::qprop");
+  END_CODE();
 }
 
 

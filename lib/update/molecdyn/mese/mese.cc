@@ -1,4 +1,4 @@
-// $Id: mese.cc,v 1.1 2003-12-30 19:50:25 edwards Exp $
+// $Id: mese.cc,v 1.2 2004-07-28 02:38:05 edwards Exp $
 
 #error "NOT FULLY CONVERTED"
 
@@ -37,7 +37,7 @@ void MesE(const multi1d<LatticeColorMatrix>& u,
                                 /* in case of rational approximations */
 	  int Npf)
 {
-  START_CODE("MesE");
+  START_CODE();
   
   cg_ct = 0;
 
@@ -99,7 +99,7 @@ void MesE(const multi1d<LatticeColorMatrix>& u,
     fe = Double(FerFactor) * fe;
   }
 
-  END_CODE("MesE");
+  END_CODE();
 }
 
 

@@ -1,4 +1,4 @@
-//  $Id: su3proj.cc,v 1.5 2003-12-06 20:59:21 edwards Exp $
+//  $Id: su3proj.cc,v 1.6 2004-07-28 02:38:06 edwards Exp $
 /*! \file
  *  \brief Project a complex Nc x Nc matrix W onto SU(Nc) by maximizing Tr(VW)
  */
@@ -23,7 +23,7 @@ using namespace QDP;
 
 void su3proj(LatticeColorMatrix& u, const LatticeColorMatrix& w, int su2_index)
 {
-  START_CODE("su3proj");
+  START_CODE();
 
   // V = U*W
   LatticeColorMatrix v = u * w;
@@ -63,5 +63,5 @@ void su3proj(LatticeColorMatrix& u, const LatticeColorMatrix& w, int su2_index)
   LatticeColorMatrix tmp = v * u;
   u = tmp;
 
-  END_CODE("su3proj");
+  END_CODE();
 }

@@ -1,6 +1,9 @@
-//  $Id: mesons_w.cc,v 1.18 2004-02-11 12:51:34 bjoo Exp $
+//  $Id: mesons_w.cc,v 1.19 2004-07-28 02:38:04 edwards Exp $
 //  $Log: mesons_w.cc,v $
-//  Revision 1.18  2004-02-11 12:51:34  bjoo
+//  Revision 1.19  2004-07-28 02:38:04  edwards
+//  Changed {START,END}_CODE("foo") to {START,END}_CODE().
+//
+//  Revision 1.18  2004/02/11 12:51:34  bjoo
 //  Stripped out Read() and Write()
 //
 //  Revision 1.17  2004/02/03 20:47:24  edwards
@@ -86,7 +89,7 @@ void mesons(const LatticePropagator& quark_prop_1,
             XMLWriter& xml,
 	    const string& xml_group)
 {
-  START_CODE("mesons");
+  START_CODE();
 
   // Length of lattice in decay direction
   int length = phases.numSubsets();
@@ -147,5 +150,5 @@ void mesons(const LatticePropagator& quark_prop_1,
 
   pop(xml_gamma);
 
-  END_CODE("mesons");
+  END_CODE();
 }

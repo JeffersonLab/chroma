@@ -1,4 +1,4 @@
-// $Id: minvcg.cc,v 1.9 2004-05-21 15:31:50 bjoo Exp $
+// $Id: minvcg.cc,v 1.10 2004-07-28 02:38:01 edwards Exp $
 
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator
@@ -79,7 +79,7 @@ void MInvCG_a(const LinearOperator<T>& A,
 	      int MaxCG,
 	      int& n_count)
 {
-  START_CODE("MinvCG");
+  START_CODE();
 
   const OrderedSubset& sub = A.subset();
 
@@ -364,7 +364,7 @@ void MInvCG_a(const LinearOperator<T>& A,
     QDPIO::cout << "MinvCG: " << n_count << " iterations" << endl;
   }
 
-  END_CODE("MinvCG");
+  END_CODE();
   return;
   
 }

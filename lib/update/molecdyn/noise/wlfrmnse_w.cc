@@ -1,4 +1,4 @@
-// $Id: wlfrmnse_w.cc,v 1.1 2003-12-30 20:07:56 edwards Exp $
+// $Id: wlfrmnse_w.cc,v 1.2 2004-07-28 02:38:05 edwards Exp $
 
 #error "NOT FULLY CONVERTED"
 
@@ -27,7 +27,7 @@ void WlFrmNse(const multi1d<LatticeColorMatrix>& u,
 	      LatticeFermion& psi,
 	      int& n_congrd,
 {
-  START_CODE("WlFrmNse");
+  START_CODE();
   
   LINEAR_OPERATOR(A);
 
@@ -64,5 +64,5 @@ void WlFrmNse(const multi1d<LatticeColorMatrix>& u,
     
   phfctr (u, BACKWARD);              /* OFF */
 
-  END_CODE("WlFrmNse");
+  END_CODE();
 }

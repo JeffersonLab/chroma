@@ -1,4 +1,4 @@
-// $Id: wlmesferm_w.cc,v 1.1 2003-12-30 19:50:25 edwards Exp $
+// $Id: wlmesferm_w.cc,v 1.2 2004-07-28 02:38:05 edwards Exp $
 
 #error "NOT FULLY CONVERTED"
 
@@ -30,7 +30,7 @@ void WlMesFerm(const multi1d<LatticeColorMatrix>& u,
 	       Double& w_ferm,
 	       const OrderedSubset& sub)
 {
-  START_CODE("WlMesFerm");
+  START_CODE();
   
   w_ferm = 0;
 
@@ -40,5 +40,5 @@ void WlMesFerm(const multi1d<LatticeColorMatrix>& u,
     w_ferm = innerProduct(chi,psi,sub) / Double(Layout::vol()*Nc*Ns);
   }
   
-  END_CODE("WlMesFerm");
+  END_CODE();
 }

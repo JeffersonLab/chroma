@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_fermact_qprop_array_w.cc,v 1.1 2004-01-05 04:21:18 edwards Exp $
+// $Id: unprec_dwf_fermact_qprop_array_w.cc,v 1.2 2004-07-28 02:38:02 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned domain-wall-like fermion actions
  */
@@ -32,7 +32,7 @@ void qprop_t(const UnprecDWFermActBaseArray<T>& me,
 	     const Real& RsdCG, 
 	     int MaxCG, int& ncg_had)
 {
-  START_CODE("UnprecDWTypeFermActBaseArray::qprop");
+  START_CODE();
 
   const int  N5 = me.size();   // array size better match
   const Real m_q = me.quark_mass();
@@ -104,7 +104,7 @@ void qprop_t(const UnprecDWFermActBaseArray<T>& me,
   // Normalize and remove contact term
   psi = ftmp1*(tmp5[0] - chi);
 
-  END_CODE("UnprecDWTypeFermActBaseArray::qprop");
+  END_CODE();
 }
 
 

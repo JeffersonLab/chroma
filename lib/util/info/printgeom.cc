@@ -1,4 +1,4 @@
-//  $Id: printgeom.cc,v 1.3 2004-02-06 17:34:53 edwards Exp $
+//  $Id: printgeom.cc,v 1.4 2004-07-28 02:38:06 edwards Exp $
 /*! \file
  *  \brief Print out machine geometry and problem size info
  */
@@ -19,7 +19,7 @@ using namespace QDP;
 
 void printgeom(XMLWriter& xml)
 {
-  START_CODE("printgeom");
+  START_CODE();
 
   push(xml,"Setgeom");
   write(xml,"latt_size",Layout::lattSize());
@@ -29,5 +29,5 @@ void printgeom(XMLWriter& xml)
   write(xml,"subgrid_volume",Layout::sitesOnNode());
   pop(xml);
 
-  END_CODE("printgeom");
+  END_CODE();
 }

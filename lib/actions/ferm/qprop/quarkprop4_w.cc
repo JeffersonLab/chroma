@@ -1,4 +1,4 @@
-// $Id: quarkprop4_w.cc,v 1.14 2004-07-27 06:03:04 edwards Exp $
+// $Id: quarkprop4_w.cc,v 1.15 2004-07-28 02:38:02 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -38,7 +38,7 @@ void quarkProp4_a(LatticePropagator& q_sol,
 		  bool nonRelProp,
 		  int& ncg_had)
 {
-  START_CODE("quarkProp4");
+  START_CODE();
 
   push(xml_out, "QuarkProp4");
 
@@ -121,7 +121,7 @@ void quarkProp4_a(LatticePropagator& q_sol,
 
   pop(xml_out);
 
-  END_CODE("quarkProp4");
+  END_CODE();
 }
 
 
@@ -167,7 +167,7 @@ void quarkProp4(LatticePropagator& q_sol,
 		bool nonRelProp,
 		int& ncg_had)
 {
-  START_CODE("quarkProp4");
+  START_CODE();
 
   push(xml_out, "QuarkProp4");
 
@@ -250,7 +250,7 @@ void quarkProp4(LatticePropagator& q_sol,
 
   pop(xml_out);
 
-  END_CODE("quarkProp4");
+  END_CODE();
 }
 
 //! Given a complete propagator as a source, this does all the inversions needed

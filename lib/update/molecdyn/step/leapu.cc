@@ -1,4 +1,4 @@
-// $Id: leapu.cc,v 1.1 2003-12-30 19:52:28 edwards Exp $
+// $Id: leapu.cc,v 1.2 2004-07-28 02:38:06 edwards Exp $
 
 #warning "NEED TO DEAL WITH SCHRFUN"
 
@@ -20,7 +20,7 @@ void LeapU(multi1d<LatticeColorMatrix>& u,
 	   const multi1d<LatticeColorMatrix>& p_mom,
 	   const Real& eps)
 {
-  START_CODE("LeapU");
+  START_CODE();
 
   LatticeColorMatrix tmp_1;
   LatticeColorMatrix tmp_2;
@@ -60,6 +60,6 @@ void LeapU(multi1d<LatticeColorMatrix>& u,
   }
 #endif
 
-  END_CODE("LeapU");
+  END_CODE();
 }
 

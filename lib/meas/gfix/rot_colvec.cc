@@ -1,4 +1,4 @@
-// $Id: rot_colvec.cc,v 1.1 2003-12-06 20:56:56 edwards Exp $
+// $Id: rot_colvec.cc,v 1.2 2004-07-28 02:38:03 edwards Exp $
 /*! \file
  *  \brief Rotate a color vector
  */
@@ -32,7 +32,7 @@ void rot_colvec(LatticeColorMatrix& g,
   multi1d<LatticeComplex> psi_e(Nc);
   multi1d<LatticeComplex> chi_e(Nc);
 
-  START_CODE("rot_colvec");
+  START_CODE();
 
   if ( s_index < 0 || (s_index > (Nc-2) && Nc > 1) ||
        (s_index > 0 && Nc == 1) )
@@ -109,5 +109,5 @@ void rot_colvec(LatticeColorMatrix& g,
     pokeColor(g, g_e[0][0], 0, 0);
   }
            
-  END_CODE("rot_colvec");
+  END_CODE();
 }

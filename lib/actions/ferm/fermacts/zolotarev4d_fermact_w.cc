@@ -1,4 +1,4 @@
-// $Id: zolotarev4d_fermact_w.cc,v 1.24 2004-07-08 03:08:41 edwards Exp $
+// $Id: zolotarev4d_fermact_w.cc,v 1.25 2004-07-28 02:38:01 edwards Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -496,7 +496,7 @@ Zolotarev4DFermAct::initPrec(int& numroot,
 const LinearOperator<LatticeFermion>* 
 Zolotarev4DFermAct::linOp(Handle<const ConnectState> state_) const
 {
-  START_CODE("Zolotarev4DLinOp::create");
+  START_CODE();
 
   const OverlapConnectState<LatticeFermion>& state = dynamic_cast<const OverlapConnectState<LatticeFermion>&>(*state_);
 
@@ -550,7 +550,7 @@ Zolotarev4DFermAct::linOp(Handle<const ConnectState> state_) const
     QDP_abort(1);
   }
   
-  END_CODE("Zolotarev4DLinOp::create");
+  END_CODE();
 
   return 0;
 }
@@ -564,7 +564,7 @@ Zolotarev4DFermAct::linOp(Handle<const ConnectState> state_) const
 const LinearOperator<LatticeFermion>* 
 Zolotarev4DFermAct::linOpPrecondition(Handle<const ConnectState> state_) const
 {
-  START_CODE("Zolotarev4DLinOp::create");
+  START_CODE();
 
   const OverlapConnectState<LatticeFermion>& state = dynamic_cast<const OverlapConnectState<LatticeFermion>&>(*state_);
 
@@ -618,7 +618,7 @@ Zolotarev4DFermAct::linOpPrecondition(Handle<const ConnectState> state_) const
     QDP_abort(1);
   }
   
-  END_CODE("Zolotarev4DLinOp::create");
+  END_CODE();
 
   return 0;
 }
@@ -632,7 +632,7 @@ Zolotarev4DFermAct::linOpPrecondition(Handle<const ConnectState> state_) const
 const LinearOperator<LatticeFermion>* 
 Zolotarev4DFermAct::lgamma5epsH(Handle<const ConnectState> state_) const
 {
-  START_CODE("Zolotarev4DLinOp::lgamma5epsH");
+  START_CODE();
 
   const OverlapConnectState<LatticeFermion>& state = dynamic_cast<const OverlapConnectState<LatticeFermion>&>(*state_);
 
@@ -686,7 +686,7 @@ Zolotarev4DFermAct::lgamma5epsH(Handle<const ConnectState> state_) const
     QDP_abort(1);
   }
   
-  END_CODE("Zolotarev4DLinOp::create");
+  END_CODE();
 
   return 0;
 }
@@ -700,7 +700,7 @@ Zolotarev4DFermAct::lgamma5epsH(Handle<const ConnectState> state_) const
 const LinearOperator<LatticeFermion>* 
 Zolotarev4DFermAct::lgamma5epsHPrecondition(Handle<const ConnectState> state_) const
 {
-  START_CODE("Zolotarev4DLinOp::lgamma5epsHPrecondition");
+  START_CODE();
   
   const OverlapConnectState<LatticeFermion>& state = dynamic_cast<const OverlapConnectState<LatticeFermion>&>(*state_);
 
@@ -754,7 +754,7 @@ Zolotarev4DFermAct::lgamma5epsHPrecondition(Handle<const ConnectState> state_) c
     QDP_abort(1);
   }
   
-  END_CODE("Zolotarev4DLinOp::create");
+  END_CODE();
 
   return 0;
 }
@@ -827,7 +827,7 @@ Zolotarev4DFermAct::lMdagM(Handle<const ConnectState> state_, const Chirality& i
     }
 
   }
-  END_CODE("Zolotarev4DlMdagM");
+  END_CODE();
 
   return 0;
 }
@@ -919,7 +919,7 @@ Zolotarev4DFermAct::lMdagMPrecondition(Handle<const ConnectState> state_, const 
     }
 
   }
-  END_CODE("Zolotarev4DlMdagM");
+  END_CODE();
 
   return 0;
 }

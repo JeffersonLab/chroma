@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_sse.cc,v 1.17 2004-07-27 06:03:04 edwards Exp $
+// $Id: lwldslash_w_sse.cc,v 1.18 2004-07-28 02:38:02 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -98,7 +98,7 @@ void
 SSEWilsonDslash::apply (LatticeFermion& chi, const LatticeFermion& psi, 
 			enum PlusMinus isign, int cb) const
 {
-  START_CODE("lWlDslash");
+  START_CODE();
 
   /* Pass the right parities. 
    *
@@ -122,6 +122,6 @@ SSEWilsonDslash::apply (LatticeFermion& chi, const LatticeFermion& psi,
 		       (int)isign, (1-cb));
   
 
-  END_CODE("lWlDslash");
+  END_CODE();
 }
 

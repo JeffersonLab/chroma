@@ -1,4 +1,4 @@
-// $Id: quarkprop4_multi_w.cc,v 1.4 2004-05-27 11:21:23 bjoo Exp $
+// $Id: quarkprop4_multi_w.cc,v 1.5 2004-07-28 02:38:02 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -23,7 +23,7 @@ void multiQuarkProp4_m(multi1d<LatticePropagator>& q_sol,
 		       const multi1d<Real>& RsdCG, 
 		       int MaxCG, int& ncg_had)
 {
-  START_CODE("multiQuarkProp4");
+  START_CODE();
   
   push(xml_out, "multiQuarkProp4");
 
@@ -89,7 +89,7 @@ void multiQuarkProp4_m(multi1d<LatticePropagator>& q_sol,
 
   pop(xml_out);
 
-  END_CODE("multiQuarkProp4");
+  END_CODE();
 }
 
 //! Given a complete propagator as a source, this does all the inversions needed

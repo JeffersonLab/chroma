@@ -1,4 +1,4 @@
-// $Id: su2extract.cc,v 1.5 2003-12-06 20:59:21 edwards Exp $
+// $Id: su2extract.cc,v 1.6 2004-07-28 02:38:06 edwards Exp $
 /*! \file
  *  \brief  Extract an unnormalized SU(2) matrix from a GL(3,C) matrix
  */
@@ -36,7 +36,7 @@ su2Extract_t(multi1d<LatticeReal>& r,
 	     int su2_index, 
 	     const S& s)
 {
-  START_CODE("su2Extract");
+  START_CODE();
 
   if (r.size() != 4)
   {
@@ -75,7 +75,7 @@ su2Extract_t(multi1d<LatticeReal>& r,
   r[2][s] = real(peekColor(source,i1,i2)) - real(peekColor(source,i2,i1));
   r[3][s] = imag(peekColor(source,i1,i1)) - imag(peekColor(source,i2,i2));
 
-  END_CODE("su2Extract");
+  END_CODE();
 }
 
 

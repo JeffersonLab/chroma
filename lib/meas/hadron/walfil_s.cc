@@ -1,4 +1,4 @@
-// $Id: walfil_s.cc,v 1.5 2004-01-21 13:37:49 mcneile Exp $
+// $Id: walfil_s.cc,v 1.6 2004-07-28 02:38:04 edwards Exp $
 /*! \file
  *  \brief Wall source construction
  */
@@ -36,7 +36,7 @@ using namespace QDP;
 
 void walfil(LatticeFermion& a, int slice, int mu, int color_index, int src_index)
 {
-  START_CODE("walfil");
+  START_CODE();
 
   if ( color_index >= Nc )
     QDP_error_exit("Color index out of bounds", color_index, Nc);
@@ -140,5 +140,5 @@ void walfil(LatticeFermion& a, int slice, int mu, int color_index, int src_index
 
   a = where(ltest, tmp, LatticeFermion(zero));
 
-  END_CODE("walfil");
+  END_CODE();
 }

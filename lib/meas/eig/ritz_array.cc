@@ -1,4 +1,4 @@
-// $Id: ritz_array.cc,v 1.1 2004-01-28 15:34:41 bjoo Exp $
+// $Id: ritz_array.cc,v 1.2 2004-07-28 02:38:03 edwards Exp $
 /*! \file
  *  \brief Ritz code for eigenvalues
  */
@@ -119,7 +119,7 @@ void RitzArray_t(const LinearOperator< multi1d<T> >& A, // Herm Pos Def
 	    const Real& delta_cycle,    // Initial error estimate (KS mode)
 	    const Real& gamma_factor)   // Convergence factor Gamma
 {
-  START_CODE("Ritz");
+  START_CODE();
   
   int N5 = psi_all.size1();
   int n;
@@ -270,7 +270,7 @@ void RitzArray_t(const LinearOperator< multi1d<T> >& A, // Herm Pos Def
 
   if ( convP ) {
     n_count = 0;
-    END_CODE("Ritz");
+    END_CODE();
     return;
   }
 
@@ -508,7 +508,7 @@ void RitzArray_t(const LinearOperator< multi1d<T> >& A, // Herm Pos Def
       dd = sqrt(dd);
       final_grad = Real(dd);
 
-      END_CODE("Ritz");
+      END_CODE();
       return;
 
     }
@@ -647,7 +647,7 @@ void RitzArray_t(const LinearOperator< multi1d<T> >& A, // Herm Pos Def
 	      << ", rsd_r =" << sqrt(rsd_r_sq) <<" rsd_a=" << Rsd_a << ", ||g||=" << sqrt(g2) << ", p2=" << p2
 	      << ", lambda" << lambda << endl;
   QDP_abort(1);
-  END_CODE("Ritz");
+  END_CODE();
 }
 
 

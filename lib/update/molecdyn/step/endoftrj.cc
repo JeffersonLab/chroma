@@ -1,4 +1,4 @@
-// $Id: endoftrj.cc,v 1.2 2003-12-31 23:47:20 edwards Exp $
+// $Id: endoftrj.cc,v 1.3 2004-07-28 02:38:05 edwards Exp $
 
 #error "NOT FULLY CONVERTED - NEED TO MOVE AlgETrj into params of Integ. functor"
 
@@ -19,7 +19,7 @@ bool EndOfTrj(const Real& tau0, const Real& t)
 {
   Real r;
   
-  START_CODE("EndOfTrj");
+  START_CODE();
   
   switch (AlgETrj)
   {
@@ -36,5 +36,5 @@ bool EndOfTrj(const Real& tau0, const Real& t)
     QDP_error_exit("unknown algorithm termination", AlgETrj);
   }
   
-  END_CODE("EndOfTrj");
+  END_CODE();
 }

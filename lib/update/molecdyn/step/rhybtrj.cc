@@ -1,4 +1,4 @@
-// $Id: rhybtrj.cc,v 1.2 2004-02-11 12:51:34 bjoo Exp $
+// $Id: rhybtrj.cc,v 1.3 2004-07-28 02:38:06 edwards Exp $
 
 #error "NOT FULLY CONVERTED - NEED TO MOVE GLOBAL params of Integ. functor"
 
@@ -32,7 +32,7 @@ void RHybTrj(multi1d<LatticeColorMatrix>& u,
 	     Double& fe,			/* Fermionic action (fermion energy) */
 	     int Npf)
 {
-  START_CODE("RHybTrj");
+  START_CODE();
 
   int nn_count;
   Real t;
@@ -114,6 +114,6 @@ void RHybTrj(multi1d<LatticeColorMatrix>& u,
 
   pop(xml_out);
 
-  END_CODE("RHybTrj");
+  END_CODE();
 }
 

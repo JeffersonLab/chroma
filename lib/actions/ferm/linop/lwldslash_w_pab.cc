@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_pab.cc,v 1.2 2004-03-23 16:24:14 bjoo Exp $
+// $Id: lwldslash_w_pab.cc,v 1.3 2004-07-28 02:38:02 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -103,7 +103,7 @@ void
 PABWilsonDslash::apply (LatticeFermion& chi, const LatticeFermion& psi, 
 			enum PlusMinus isign, int cb) const
 {
-  START_CODE("lWlDslash");
+  START_CODE();
 
   /* Pass the right parities. 
    *

@@ -1,4 +1,4 @@
-// $Id: mesonseqsrc_w.cc,v 1.3 2003-12-18 04:05:36 edwards Exp $
+// $Id: mesonseqsrc_w.cc,v 1.4 2004-07-28 02:38:04 edwards Exp $
 /*! \file
  *  \brief Construct meson sequential sources.
  */
@@ -32,11 +32,11 @@ void mesonSeqSource(const LatticePropagator& quark_propagator,
 {
   LatticePropagator src_prop_tmp;
 
-  START_CODE("mesonSeqSource");
+  START_CODE();
 
   if ( Ns != 4 || Nc != 3 )		// Code is specific to Ns=4 and Nc=3
   {
-    END_CODE("mesonSeqSource");
+    END_CODE();
     return;
   }
 
@@ -113,5 +113,5 @@ void mesonSeqSource(const LatticePropagator& quark_propagator,
 		       src_prop_tmp,
 		       LatticePropagator(zero));
         
-  END_CODE("mesonSeqSource");
+  END_CODE();
 }

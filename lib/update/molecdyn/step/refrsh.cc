@@ -1,4 +1,4 @@
-// $Id: refrsh.cc,v 1.1 2003-12-30 19:52:28 edwards Exp $
+// $Id: refrsh.cc,v 1.2 2004-07-28 02:38:06 edwards Exp $
 
 #include "chromabase.h"
 
@@ -13,7 +13,7 @@ using namespace QDP;
 
 void Refrsh(multi1d<LatticeColorMatrix>& p_mom)
 {
-  START_CODE("Refrsh");
+  START_CODE();
 
   /* Generate new momenta */
   for(int mu = 0; mu < Nd; ++mu)
@@ -30,5 +30,5 @@ void Refrsh(multi1d<LatticeColorMatrix>& p_mom)
   }
 #endif
 
-  END_CODE("Refrsh");
+  END_CODE();
 }

@@ -1,4 +1,4 @@
-// $Id: unprec_ovext_fermact_array_w.cc,v 1.7 2004-03-29 21:32:28 edwards Exp $
+// $Id: unprec_ovext_fermact_array_w.cc,v 1.8 2004-07-28 02:38:01 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -54,7 +54,7 @@ UnprecOvExtFermActArray::qprop(LatticeFermion& psi,
 			       const Real& RsdCG, 
 			       int MaxCG, int& ncg_had) const
 {
-  START_CODE("UnprecOvExtFermActArray::qprop");
+  START_CODE();
 
   const int  N5 = size();   // array size better match
   const Real m_q = quark_mass();
@@ -104,5 +104,5 @@ UnprecOvExtFermActArray::qprop(LatticeFermion& psi,
   // Normalize and remove contact term
   psi = ftmp1*(chi5[0] - chi);
 
-  END_CODE("UnprecOvExtFermActArray::qprop");
+  END_CODE();
 }

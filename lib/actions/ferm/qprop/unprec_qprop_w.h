@@ -1,4 +1,4 @@
-// $Id: unprec_qprop_w.h,v 1.5 2004-03-29 21:32:28 edwards Exp $
+// $Id: unprec_qprop_w.h,v 1.6 2004-07-28 02:38:02 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *
@@ -42,7 +42,7 @@ void UnprecWilsonTypeFermAct<T>::qprop(T& psi,
 				       const Real& RsdCG, 
 				       int MaxCG, int& ncg_had) const
 {
-  START_CODE("UnprecWilsonTypeFermAct::qprop");
+  START_CODE();
 
   int n_count;
   
@@ -83,7 +83,7 @@ void UnprecWilsonTypeFermAct<T>::qprop(T& psi,
   
   ncg_had = n_count;
   
-  END_CODE("UnprecWilsonTypeFermAct::qprop");
+  END_CODE();
 }
 
 

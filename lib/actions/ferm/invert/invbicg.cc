@@ -1,4 +1,4 @@
-// $Id: invbicg.cc,v 1.1 2003-04-21 11:10:20 edwards Exp $
+// $Id: invbicg.cc,v 1.2 2004-07-28 02:38:01 edwards Exp $
 
 // THIS ROUTINE IS NOT FUNCTIONAL YET - SIMPLE CLEANUP EDITING IS REQUIRED
 
@@ -120,7 +120,7 @@ Real RsdBiCG;
   int cb;
   Real rsd_sq;
 
-  START_CODE("subroutine");;
+  START_CODE();
 
   rsd_sq = (RsdBiCG * chi_norm)* (RsdBiCG * chi_norm);
 
@@ -148,7 +148,7 @@ Real RsdBiCG;
   if ( TO_REAL(cp)  <=  rsd_sq )
   {
     n_count = 0;
-        END_CODE("subroutine");;
+        END_CODE();
     return;
   }
 
@@ -237,7 +237,7 @@ Real RsdBiCG;
     if ( TO_REAL(cp)  <=  rsd_sq )
     {
       n_count = k;
-                                                                                          END_CODE("subroutine");;
+                                                                                          END_CODE();
       return;
     }
 
@@ -288,5 +288,5 @@ Real RsdBiCG;
 
                             
   QDP_error_exit("too many BiCG iterations", n_count, rsd_sq, cp, c, re_rvr, im_rvr, re_a, im_a, re_b, im_b);
-  END_CODE("subroutine");;
+  END_CODE();
 }

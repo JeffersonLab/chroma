@@ -1,4 +1,4 @@
-// $Id: zolotarev5d_fermact_array_w.cc,v 1.12 2004-07-08 03:08:41 edwards Exp $
+// $Id: zolotarev5d_fermact_array_w.cc,v 1.13 2004-07-28 02:38:01 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -192,7 +192,7 @@ Zolotarev5DFermActArray::init(Real& scale_fac,
 const LinearOperator<multi1d<LatticeFermion> >* 
 Zolotarev5DFermActArray::linOp(Handle<const ConnectState> state_) const
 {
-  START_CODE("Zolotarev5DFermActArray::linOp");
+  START_CODE();
   const OverlapConnectState<LatticeFermion>& state = dynamic_cast<const OverlapConnectState<LatticeFermion>&>(*state_);
 
   if (state.getEigVec().size() != state.getEigVal().size())
@@ -232,7 +232,7 @@ Zolotarev5DFermActArray::linOp(Handle<const ConnectState> state_) const
 const LinearOperator<multi1d<LatticeFermion> >* 
 Zolotarev5DFermActArray::lnonHermLinOp(Handle<const ConnectState> state_) const
 {
-  START_CODE("Zolotarev5DFermActArray::linOp");
+  START_CODE();
   const OverlapConnectState<LatticeFermion>& state = dynamic_cast<const OverlapConnectState<LatticeFermion>&>(*state_);
 
   if (state.getEigVec().size() != state.getEigVal().size())
@@ -397,7 +397,7 @@ Zolotarev5DFermActArray::qprop(LatticeFermion& psi,
 			       int MaxCG, int& ncg_had) const
 {
 
-  START_CODE("Zolotarev5DFermActArray::qprop");
+  START_CODE();
 
   const int  N5 = size();   // array size better match
   const Real m_q = quark_mass();
@@ -482,7 +482,7 @@ Zolotarev5DFermActArray::qprop(LatticeFermion& psi,
   Real ftmp1 = Real(1) / (Real(1) - m_q);
   psi *= ftmp1;
 
-  END_CODE("Zolotarev5DFermActArray::qprop");
+  END_CODE();
 }
 
 

@@ -1,4 +1,4 @@
-//  $Id: hyp_smear.cc,v 1.4 2003-10-10 03:46:47 edwards Exp $
+//  $Id: hyp_smear.cc,v 1.5 2004-07-28 02:38:04 edwards Exp $
 /*! \file
  *  \brief Hyp-smearing of the gauge configuration
  */
@@ -44,7 +44,7 @@ void Hyp_Smear(const multi1d<LatticeColorMatrix>& u,
   int jj;
   int kk;
 
-  START_CODE("hyp_smear");
+  START_CODE();
   
   if (Nd > 4)
      QDP_error_exit("Hyp-smearing only implemented for Nd<=4",Nd);
@@ -263,5 +263,5 @@ void Hyp_Smear(const multi1d<LatticeColorMatrix>& u,
     }
   }
 
-  END_CODE("hyp_smear");
+  END_CODE();
 }

@@ -1,4 +1,4 @@
-// $Id: mesferm_w.cc,v 1.1 2003-12-30 19:50:25 edwards Exp $
+// $Id: mesferm_w.cc,v 1.2 2004-07-28 02:38:05 edwards Exp $
 
 #error "NOT FULLY CONVERTED"
 
@@ -36,7 +36,7 @@ void MesFerm(const multi1d<LatticeColorMatrix>& u,
 	     int Npf,
 	     const OrderedSubset& sub)
 {
-  START_CODE("MesFerm");
+  START_CODE();
   
   n_congrd = 0;
   fe = 0;
@@ -68,5 +68,5 @@ void MesFerm(const multi1d<LatticeColorMatrix>& u,
     }
   }
   
-  END_CODE("MesFerm");
+  END_CODE();
 }

@@ -1,4 +1,4 @@
-// $Id: unprec_parwilson_linop_w.cc,v 1.2 2004-01-12 04:54:04 edwards Exp $
+// $Id: unprec_parwilson_linop_w.cc,v 1.3 2004-07-28 02:38:02 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator with parity breaking term
  */
@@ -38,7 +38,7 @@ void UnprecParWilsonLinOp::create(const multi1d<LatticeColorMatrix>& u_,
 void UnprecParWilsonLinOp::operator() (LatticeFermion& chi, const LatticeFermion& psi, 
 				       enum PlusMinus isign) const
 {
-  START_CODE("UnprecParWilsonLinOp");
+  START_CODE();
 
   //
   //  Chi   =  (Nd+Mass)*Psi  -  (1/2) * D' Psi
@@ -52,5 +52,5 @@ void UnprecParWilsonLinOp::operator() (LatticeFermion& chi, const LatticeFermion
 
   chi = fact1*psi + Gamma(Ns*Ns-1)*(H*timesI(psi)) + fact2*tmp;
   
-  END_CODE("UnprecParWilsonLinOp");
+  END_CODE();
 }

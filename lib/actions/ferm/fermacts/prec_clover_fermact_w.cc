@@ -1,4 +1,4 @@
-// $Id: prec_clover_fermact_w.cc,v 1.5 2004-01-07 13:50:07 bjoo Exp $
+// $Id: prec_clover_fermact_w.cc,v 1.6 2004-07-28 02:38:01 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion action
  */
@@ -51,12 +51,12 @@ EvenOddPrecCloverFermAct::dsdu(multi1d<LatticeColorMatrix>& ds_u,
 			       Handle<const ConnectState> state,
 			       const LatticeFermion& psi) const
 {
-  START_CODE("EvenOddPrecCloverFermAct::dsdu");
+  START_CODE();
   
   QDPIO::cerr << "EvenOddPrecCloverFermAct::dsdu not implemented" << endl;
   QDP_abort(1);
 
-  END_CODE("EvenOddPrecCloverFermAct::dsdu");
+  END_CODE();
 }
 
 
@@ -114,7 +114,7 @@ void ClovDsDuf(multi1d<LatticeColorMatrix>& ds_u,
   int it1;
   int it2;
   
-  START_CODE("subroutine");;
+  START_CODE();
   
   
   /* Do the clover fermion dS_f/dU */
@@ -370,7 +370,7 @@ void ClovDsDuf(multi1d<LatticeColorMatrix>& ds_u,
 
   FREE_LINEAR_OPERATOR(A);
           
-  END_CODE("subroutine");
+  END_CODE();
 }
 
 /*# This routine is specific to Wilson fermions! */
@@ -406,7 +406,7 @@ void triacntr(LatticeColorMatrix& B,
 	      const LATTICE_TRIANG& clov,
 	      int mat)
 {
-  START_CODE("subroutine");;
+  START_CODE();
   
   if ( mat < 0  ||  mat > 15 )
     QDP_error_exit("Gamma out of range", mat);
@@ -776,6 +776,6 @@ void triacntr(LatticeColorMatrix& B,
   }
   
 
-  END_CODE("subroutine");;
+  END_CODE();
 }
 #endif

@@ -1,4 +1,4 @@
-// $Id: wall_qprop_w.cc,v 1.5 2004-04-05 04:34:05 edwards Exp $
+// $Id: wall_qprop_w.cc,v 1.6 2004-07-28 02:38:04 edwards Exp $
 /*! \file
  *  \brief Construct a wall-sink propagator
  */
@@ -27,7 +27,7 @@ void wall_qprop(LatticePropagator& wall_quark_prop,
 		const LatticePropagator& quark_propagator, 
 		const SftMom& phases)
 {
-  START_CODE("wall_qprop");
+  START_CODE();
 
   // Length of lattice in decay direction
   int length  = phases.numSubsets();
@@ -51,6 +51,6 @@ void wall_qprop(LatticePropagator& wall_quark_prop,
 	     LatticeBoolean(lbmask & (my_coord == t)),
 	     LatticePropagator(dprop_slice[t]));
             
-  END_CODE("wall_qprop");
+  END_CODE();
 }
 

@@ -1,4 +1,4 @@
-// $Id: hotst.cc,v 1.5 2003-03-31 19:46:08 edwards Exp $
+// $Id: hotst.cc,v 1.6 2004-07-28 02:38:06 edwards Exp $
 // HOTST
 
 /*! \file
@@ -33,7 +33,7 @@ using namespace QDP;
 
 void HotSt(multi1d<LatticeColorMatrix>& u)
 {
-  START_CODE("HotSt");
+  START_CODE();
 
   for(int mu=0; mu<u.size(); ++mu)
   {
@@ -43,5 +43,5 @@ void HotSt(multi1d<LatticeColorMatrix>& u)
     reunit(u[mu]);   // Reunitarize
   }
 
-  END_CODE("HotSt");
+  END_CODE();
 }

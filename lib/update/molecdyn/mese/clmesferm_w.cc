@@ -1,4 +1,4 @@
-// $Id: clmesferm_w.cc,v 1.1 2003-12-30 19:50:25 edwards Exp $
+// $Id: clmesferm_w.cc,v 1.2 2004-07-28 02:38:05 edwards Exp $
 
 #error "NOT FULLY CONVERTED - MAJOR CHANGES OR SUPPORT FOR FIELD-STRENGTH F NEEDED. HERE FOR IDEAS TO HELP WITH OVERALL CLASS STRUCTURE"
 
@@ -35,7 +35,7 @@ void ClMesFerm(const multi1d<LatticeColorMatrix>& u,
   Double logdet;
   Real Kappa_cl;
   
-  START_CODE("ClMesFerm");
+  START_CODE();
   
   if ( FermiP == YES )
   {
@@ -69,5 +69,5 @@ void ClMesFerm(const multi1d<LatticeColorMatrix>& u,
     w_ferm = 0;
   }
   
-  END_CODE("ClMesFerm");
+  END_CODE();
 }

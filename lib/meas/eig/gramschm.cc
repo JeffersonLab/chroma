@@ -1,4 +1,4 @@
-// $Id: gramschm.cc,v 1.4 2004-01-27 11:50:08 bjoo Exp $
+// $Id: gramschm.cc,v 1.5 2004-07-28 02:38:03 edwards Exp $
 /*! \file
  *  \brief Gramm-Schmidt orthogonolization
  */
@@ -23,7 +23,7 @@ template< typename T>
 void GramSchm_T(multi1d<T>& psi, const int Npsi,
 	      const multi1d<T>& vec, const int Nvec) {
 
-  START_CODE("GramSchm");
+  START_CODE();
 
   // if I was paranoid I'd assert that Npsi and Nvec are 
   // reasonable
@@ -40,7 +40,7 @@ void GramSchm_T(multi1d<T>& psi, const int Npsi,
     }
   }
         
-  END_CODE("GramSchm");
+  END_CODE();
 }
 
 //! Gram Schmidt rothogonalisation
@@ -62,7 +62,7 @@ void GramSchm_T(T& psi,
 		const int Nvec)
 {
 
-  START_CODE("GramSchm");
+  START_CODE();
 #if 0 
   if ( Nvec > vec.size() ) { 
     QDP_error_exit("Nvec out of range in GramSchm");
@@ -73,7 +73,7 @@ void GramSchm_T(T& psi,
     psi -= vec[i] * xp;
   }
 
-  END_CODE("GramSchm");
+  END_CODE();
 }
 
 //! Gram Schmidt rothogonalisation
@@ -94,12 +94,12 @@ void GramSchm_T(T& psi,
 		const T& vec)
 {
 
-  START_CODE("GramSchm");
+  START_CODE();
 
   Complex xp = innerProduct(vec, psi);
   psi -= vec * xp;
   
-  END_CODE("GramSchm");
+  END_CODE();
 }
 
 
@@ -140,7 +140,7 @@ void GramSchm(LatticeFermion& psi,
 
   GramSchm_T(psi, vec, Nvec);
 
-  END_CODE("GramSchm");
+  END_CODE();
 }
 
 //! Gram Schmidt rothogonalisation
@@ -216,10 +216,10 @@ void GramSchm(LatticeFermion& psi,
 		const LatticeFermion& vec)
 {
 
-  START_CODE("GramSchm");
+  START_CODE();
 
   Complex xp = innerProduct(vec, psi);
   psi -= vec * xp;
   
-  END_CODE("GramSchm");
+  END_CODE();
 }

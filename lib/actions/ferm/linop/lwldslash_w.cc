@@ -1,4 +1,4 @@
-// $Id: lwldslash_w.cc,v 1.6 2003-11-20 05:43:41 edwards Exp $
+// $Id: lwldslash_w.cc,v 1.7 2004-07-28 02:38:02 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -61,7 +61,7 @@ void
 QDPWilsonDslash::apply (LatticeFermion& chi, const LatticeFermion& psi, 
 			enum PlusMinus isign, int cb) const
 {
-  START_CODE("lWlDslash");
+  START_CODE();
 
   /*     F 
    *   a2  (x)  :=  U  (x) (1 - isign gamma  ) psi(x)
@@ -127,6 +127,6 @@ QDPWilsonDslash::apply (LatticeFermion& chi, const LatticeFermion& psi,
     break;
   }
 
-  END_CODE("lWlDslash");
+  END_CODE();
 }
 

@@ -1,4 +1,4 @@
-// $Id: reunit.cc,v 1.8 2003-12-31 23:58:46 edwards Exp $
+// $Id: reunit.cc,v 1.9 2004-07-28 02:38:06 edwards Exp $
 
 /*! \file
  *  \brief Reunitarize (to a SU(N)) inplace the matrix A under some option
@@ -73,7 +73,7 @@ void reunit(LatticeColorMatrix& xa, LatticeBoolean& bad,
   LatticeReal sigmasq;
   multi1d<LatticeComplex> row(Nc);
   
-  START_CODE("reunit");;
+  START_CODE();
   
   // The initial number of matrices violating unitarity.
   numbad = 0;
@@ -452,5 +452,5 @@ void reunit(LatticeColorMatrix& xa, LatticeBoolean& bad,
     for(int j=0; j < Nc; ++j)
       pokeColor(xa, a[i][j], i, j);
 
-  END_CODE("reunit");
+  END_CODE();
 }

@@ -1,4 +1,4 @@
-// $Id: dwffld_w.cc,v 1.4 2004-07-27 06:03:04 edwards Exp $
+// $Id: dwffld_w.cc,v 1.5 2004-07-28 02:38:01 edwards Exp $
 /*! \file
  *  \brief DWF parity/rotation operator
  *
@@ -24,7 +24,7 @@ using namespace QDP;
 
 void DwfFld(multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, enum PlusMinus isign)
 {
-  START_CODE("DwfFld");
+  START_CODE();
     
   const int N5 = psi.size();
 
@@ -47,7 +47,7 @@ void DwfFld(multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, en
     QDP_error_exit("invalid option", isign);
   }
 
-  END_CODE("DwfFld");
+  END_CODE();
 }
 
 

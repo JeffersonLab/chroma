@@ -1,4 +1,4 @@
-// $Id: camptrj.cc,v 1.2 2004-02-11 12:51:34 bjoo Exp $
+// $Id: camptrj.cc,v 1.3 2004-07-28 02:38:05 edwards Exp $
 
 #error "NOT FULLY CONVERTED - NEED TO MOVE AlgETrj into params of Integ. functor"
 
@@ -33,7 +33,7 @@ void campTrj(multi1d<LatticeColorMatrix> u,
 	     Double& fe,			/* Fermionic action (fermion energy) */
 	     int Npf)
 {
-  START_CODE("campTrj");
+  START_CODE();
   
   multi1d<LatticeFermion> old_psi(Npf);
   Real sigma;			/* This is 2**(1/3) */
@@ -226,5 +226,5 @@ void campTrj(multi1d<LatticeColorMatrix> u,
   
   pop(xml_out);
 
-  END_CODE("campTrj");
+  END_CODE();
 }

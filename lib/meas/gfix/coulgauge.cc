@@ -1,4 +1,4 @@
-// $Id: coulgauge.cc,v 1.5 2004-05-29 01:49:14 edwards Exp $
+// $Id: coulgauge.cc,v 1.6 2004-07-28 02:38:03 edwards Exp $
 /*! \file
  *  \brief Coulomb (and Landau) gauge fixing 
  */
@@ -80,7 +80,7 @@ void coulGauge(multi1d<LatticeColorMatrix>& u,
   int num_sdir;
   bool tdirp;
 
-  START_CODE("coulGauge");
+  START_CODE();
 
   Real xi_sq = pow(xi_0(),2);
   if( j_decay >= 0 && j_decay < Nd )
@@ -243,5 +243,5 @@ void coulGauge(multi1d<LatticeColorMatrix>& u,
   pop(xml_out);
 #endif
 
-  END_CODE("coulGauge");
+  END_CODE();
 }

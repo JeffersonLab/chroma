@@ -1,4 +1,4 @@
-// $Id: curcor2_w.cc,v 1.9 2004-02-03 20:04:53 edwards Exp $
+// $Id: curcor2_w.cc,v 1.10 2004-07-28 02:38:04 edwards Exp $
 /*! \file
  *  \brief Mesonic current correlators
  */
@@ -51,7 +51,7 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
 	     XMLWriter& xml,
 	     const string& xml_group)
 {
-  START_CODE("curcor2");
+  START_CODE();
 
   if ( no_vec_cur < 2 || no_vec_cur > 4 )
     QDP_error_exit("no_vec_cur must be 2 or 3 or 4", no_vec_cur);
@@ -277,5 +277,5 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
 
   pop(xml);  // xml_group
               
-  END_CODE("curcor2");
+  END_CODE();
 }

@@ -1,4 +1,4 @@
-// $Id: monte.cc,v 1.2 2004-02-11 12:51:34 bjoo Exp $
+// $Id: monte.cc,v 1.3 2004-07-28 02:38:05 edwards Exp $
 /*! \file
  *  \brief Routine for doing the hybrid (monte carlo) algorithm. 
  */
@@ -88,7 +88,7 @@ void monte(multi1d<LatticeColorMatrix>& u(Nd),	/* New gauge field cfg. */
 	   )
 {
   /* Include any hooks in the start macro */
-  START_CODE("monte");			/*# May include declarations and/or code. */
+  START_CODE();			/*# May include declarations and/or code. */
 
   multi1d<LatticeColorMatrix> u_tmp(Nd); /* temp. gauge field cfg. */
   multi1d<LatticeColorMatrix> u_sm(Nd); /* smeared gauge field */
@@ -251,5 +251,5 @@ void monte(multi1d<LatticeColorMatrix>& u(Nd),	/* New gauge field cfg. */
   }                     /* end loop over iterations */
   
   /* Close out any other code */
-  END_CODE("monte");
+  END_CODE();
 }

@@ -1,4 +1,4 @@
-// $Id: mciter.cc,v 1.2 2004-01-22 22:51:37 edwards Exp $
+// $Id: mciter.cc,v 1.3 2004-07-28 02:38:05 edwards Exp $
 /*! \file
  *  \brief One heatbath interation of updating the gauge field configuration
  */
@@ -36,7 +36,7 @@ void mciter(multi1d<LatticeColorMatrix>& u,
 	    int n_over, int nheat,
 	    int& ntrials, int& nfails)
 {
-  START_CODE("mciter");
+  START_CODE();
 
   LatticeColorMatrix tmp_1;
   LatticeColorMatrix u_staple;
@@ -126,5 +126,5 @@ void mciter(multi1d<LatticeColorMatrix>& u,
   }
 
   
-  END_CODE("mciter");
+  END_CODE();
 }

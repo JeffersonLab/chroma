@@ -1,4 +1,4 @@
-// $Id: ritz.cc,v 1.9 2004-04-14 12:53:21 bjoo Exp $
+// $Id: ritz.cc,v 1.10 2004-07-28 02:38:03 edwards Exp $
 /*! \file
  *  \brief Ritz code for eigenvalues
  */
@@ -119,7 +119,7 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
 	    const Real& delta_cycle,    // Initial error estimate (KS mode)
 	    const Real& gamma_factor)   // Convergence factor Gamma
 {
-  START_CODE("Ritz");
+  START_CODE();
   
   T psi;
   T p;
@@ -246,7 +246,7 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
 
   if ( convP ) {
     n_count = 0;
-    END_CODE("Ritz");
+    END_CODE();
     return;
   }
 
@@ -452,7 +452,7 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
       // Work out final gradient 
       Ap = Apsi - psi*lambda;
       final_grad = sqrt(norm2(Ap));
-      END_CODE("Ritz");
+      END_CODE();
       return;
 
     }
@@ -557,7 +557,7 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
 	      << ", rsd_r =" << sqrt(rsd_r_sq) <<" rsd_a=" << Rsd_a << ", ||g||=" << sqrt(g2) << ", p2=" << p2
 	      << ", lambda" << lambda << endl;
   QDP_abort(1);
-  END_CODE("Ritz");
+  END_CODE();
 }
 
 

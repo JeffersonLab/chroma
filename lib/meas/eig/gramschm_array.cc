@@ -1,4 +1,4 @@
-// $Id: gramschm_array.cc,v 1.1 2004-01-27 11:50:08 bjoo Exp $
+// $Id: gramschm_array.cc,v 1.2 2004-07-28 02:38:03 edwards Exp $
 /*! \file
  *  \brief Gramm-Schmidt orthogonolization
  */
@@ -27,7 +27,7 @@ template< typename T>
 void GramSchmArray_T(multi2d<T>& psi, const int Npsi,
 		     const multi2d<T>& vec, const int Nvec) {
 
-  START_CODE("GramSchm");
+  START_CODE();
 
   // if I was paranoid I'd assert that Npsi and Nvec are 
   // reasonable
@@ -59,7 +59,7 @@ void GramSchmArray_T(multi2d<T>& psi, const int Npsi,
     }
   }
    
-  END_CODE("GramSchm");
+  END_CODE();
 }
 
 //! Gram Schmidt rothogonalisation
@@ -86,7 +86,7 @@ void GramSchmArray_T(multi1d<T>& psi,
 		const int Nvec)
 {
 
-  START_CODE("GramSchm");
+  START_CODE();
 #if 0 
   if ( Nvec > vec.size2() ) { 
     QDP_error_exit("Nvec out of range in GramSchm. Nvec=%d vec.size2()=%d\n",
@@ -110,7 +110,7 @@ void GramSchmArray_T(multi1d<T>& psi,
     }
   }
 
-  END_CODE("GramSchm");
+  END_CODE();
 }
 
 //! Gram Schmidt rothogonalisation
@@ -130,7 +130,7 @@ void GramSchmArray_T(multi1d<T>& psi,
 		     const multi1d<T>& vec)
 {
 
-  START_CODE("GramSchm");
+  START_CODE();
 
 #if 0
   if( psi.size() != vec.size() ) { 
@@ -149,7 +149,7 @@ void GramSchmArray_T(multi1d<T>& psi,
     psi[i] -= vec[i] * xp;
   }
 
-  END_CODE("GramSchm");
+  END_CODE();
 }
 
 
@@ -190,7 +190,7 @@ void GramSchmArray(multi1d<LatticeFermion>& psi,
 
   GramSchmArray_T(psi, vec, Nvec);
 
-  END_CODE("GramSchm");
+  END_CODE();
 }
 
 //! Gram Schmidt rothogonalisation

@@ -1,4 +1,4 @@
-//  $Id: ape_smear.cc,v 1.5 2004-02-11 12:51:34 bjoo Exp $
+//  $Id: ape_smear.cc,v 1.6 2004-07-28 02:38:04 edwards Exp $
 
 /*! \file
  *  \brief APE-smearing of the gauge configuration
@@ -73,7 +73,7 @@ void APE_Smear(const multi1d<LatticeColorMatrix>& u,
 	       const Real& sm_fact, const Real& BlkAccu, 
 	       int BlkMax, int j_decay)
 {
-  START_CODE("APE_Smear");
+  START_CODE();
   
   // Initialize smeared link: sm_fact * "old" link
   u_smear = u[mu] * sm_fact;
@@ -171,6 +171,6 @@ void APE_Smear(const multi1d<LatticeColorMatrix>& u,
   }
 #endif
 
-  END_CODE("APE_Smear");
+  END_CODE();
 }
 

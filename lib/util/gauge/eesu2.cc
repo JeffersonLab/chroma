@@ -1,4 +1,4 @@
-// $Id: eesu2.cc,v 1.2 2004-01-05 00:47:20 edwards Exp $
+// $Id: eesu2.cc,v 1.3 2004-07-28 02:38:06 edwards Exp $
 /*! \file
  *  \brief Exactly exponentiate a SU(2) lie algebra element
  */
@@ -17,7 +17,7 @@ using namespace QDP;
 
 void eesu2(LatticeColorMatrix& m)
 {
-  START_CODE("eesu2");
+  START_CODE();
 
   if ( Nc != 1 )
   {
@@ -55,5 +55,5 @@ void eesu2(LatticeColorMatrix& m)
    */
   sunFill(m, a, 0, all);
 
-  END_CODE("eesu2");
+  END_CODE();
 }

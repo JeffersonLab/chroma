@@ -1,6 +1,9 @@
-// $Id: dwf_quarkprop4_w.cc,v 1.17 2004-02-23 03:05:11 edwards Exp $
+// $Id: dwf_quarkprop4_w.cc,v 1.18 2004-07-28 02:38:02 edwards Exp $
 // $Log: dwf_quarkprop4_w.cc,v $
-// Revision 1.17  2004-02-23 03:05:11  edwards
+// Revision 1.18  2004-07-28 02:38:02  edwards
+// Changed {START,END}_CODE("foo") to {START,END}_CODE().
+//
+// Revision 1.17  2004/02/23 03:05:11  edwards
 // Pass in j_decay.
 //
 // Revision 1.16  2004/02/11 12:51:33  bjoo
@@ -142,7 +145,7 @@ void dwf_quarkProp4_a(LatticePropagator& q_sol,
 		      const Real& RsdCG, 
 		      int MaxCG, int& ncg_had)
 {
-  START_CODE("dwf_quarkProp4");
+  START_CODE();
 
   push(xml_out, "DWF_QuarkProp4");
 
@@ -293,7 +296,7 @@ void dwf_quarkProp4_a(LatticePropagator& q_sol,
 			  j_decay);
 
 
-  END_CODE("dwf_quarkProp4");
+  END_CODE();
 }
 
 

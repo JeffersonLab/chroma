@@ -1,4 +1,4 @@
-// $Id: prec_parwilson_linop_w.cc,v 1.1 2004-01-12 04:32:22 edwards Exp $
+// $Id: prec_parwilson_linop_w.cc,v 1.2 2004-07-28 02:38:02 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion linear operator with parity breaking term
  */
@@ -40,14 +40,14 @@ EvenOddPrecParWilsonLinOp::evenOddLinOp(LatticeFermion& chi,
 					const LatticeFermion& psi, 
 					enum PlusMinus isign) const
 {
-  START_CODE("EvenOddPrecParWilsonLinOp::evenOddLinOp");
+  START_CODE();
 
   Real mhalf = -0.5;
 
   D.apply(chi, psi, isign, 0);
   chi[rb[0]] *= mhalf;
   
-  END_CODE("EvenOddPrecParWilsonLinOp::evenOddLinOp");
+  END_CODE();
 }
 
 //! Apply odd-even linop component
@@ -63,13 +63,13 @@ EvenOddPrecParWilsonLinOp::oddEvenLinOp(LatticeFermion& chi,
 					const LatticeFermion& psi, 
 					enum PlusMinus isign) const
 {
-  START_CODE("EvenOddPrecParWilsonLinOp::oddEvenLinOp");
+  START_CODE();
 
   Real mhalf = -0.5;
 
   D.apply(chi, psi, isign, 1);
   chi[rb[1]] *= mhalf;
   
-  END_CODE("EvenOddPrecParWilsonLinOp::oddEvenLinOp");
+  END_CODE();
 }
 

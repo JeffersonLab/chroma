@@ -1,4 +1,4 @@
-// $Id: wilson_gaugeact.cc,v 1.4 2004-07-23 12:37:12 bjoo Exp $
+// $Id: wilson_gaugeact.cc,v 1.5 2004-07-28 02:38:02 edwards Exp $
 /*! \file
  *  \brief Wilson gauge action
  */
@@ -74,7 +74,7 @@ WilsonGaugeAct::staple(LatticeColorMatrix& u_staple,
     u_staple[actionSet[cb]] += shift(adj(tmp_1), BACKWARD, nu) * shift(u[nu], BACKWARD, nu);
   }  // closes nu loop */
 
-  END_CODE("WilsonGaugeAct::staple");
+  END_CODE();
 }
 
 
@@ -93,7 +93,7 @@ void
 WilsonGaugeAct::dsdu(multi1d<LatticeColorMatrix>& ds_u,
 		     const multi1d<LatticeColorMatrix>& u) const
 {
-  START_CODE("WilsonGaugeAct::dsdu");
+  START_CODE();
 
   LatticeColorMatrix tmp_0;
   LatticeColorMatrix tmp_1;
@@ -143,7 +143,7 @@ WilsonGaugeAct::dsdu(multi1d<LatticeColorMatrix>& ds_u,
   QDPIO::cout << "dsdu: S = " << S_act << " Re Tr U dsdu = " << tr << endl;
   QDPIO::cout << "      Ratio = " << tr/S_act << endl;
   */
-  END_CODE("WilsonGaugeAct::dsdu");
+  END_CODE();
 }
 
 // Get the gauge action

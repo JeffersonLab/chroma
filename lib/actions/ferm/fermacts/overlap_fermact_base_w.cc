@@ -1,4 +1,4 @@
-// $Id: overlap_fermact_base_w.cc,v 1.17 2004-07-08 03:19:49 edwards Exp $
+// $Id: overlap_fermact_base_w.cc,v 1.18 2004-07-28 02:38:00 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -45,7 +45,7 @@ OverlapFermActBase::qprop(LatticeFermion& psi,
 			  const Real& RsdCG, 
 			  int MaxCG, int& n_count) const
 {
-  START_CODE("OverlapFermActBase::qprop");
+  START_CODE();
 
   Real mass = quark_mass();
 
@@ -223,7 +223,7 @@ OverlapFermActBase::qprop(LatticeFermion& psi,
   psi -= chi;
   psi *= ftmp;
 
-  END_CODE("OverlapFermActBase::qprop");
+  END_CODE();
 }
 
 void 
@@ -235,7 +235,7 @@ OverlapFermActBase::qprop(LatticeFermion& psi,
 			  const Real& RsdCGPrec,
 			  int MaxCG, int MaxCGPrec, int& n_count) const
 {
-  START_CODE("OverlapFermActBase::qprop");
+  START_CODE();
 
   Real mass = quark_mass();
   switch( invType ) {  
@@ -336,7 +336,7 @@ OverlapFermActBase::qprop(LatticeFermion& psi,
   psi -= chi;
   psi *= ftmp;
 
-  END_CODE("OverlapFermActBase::qprop");
+  END_CODE();
 }
 
 /* This routine is Wilson type Overlap fermions */
@@ -887,7 +887,7 @@ OverlapFermActBase::multiQprop(multi1d<LatticeFermion>& psi,
   }
 
 
-  END_CODE("qprop");
+  END_CODE();
 }
   
   

@@ -1,6 +1,9 @@
-// $Id: prec_fermact_qprop_array.cc,v 1.5 2004-02-05 20:01:47 kostas Exp $
+// $Id: prec_fermact_qprop_array.cc,v 1.6 2004-07-28 02:38:02 edwards Exp $
 // $Log: prec_fermact_qprop_array.cc,v $
-// Revision 1.5  2004-02-05 20:01:47  kostas
+// Revision 1.6  2004-07-28 02:38:02  edwards
+// Changed {START,END}_CODE("foo") to {START,END}_CODE().
+//
+// Revision 1.5  2004/02/05 20:01:47  kostas
 // Fixed the chi_tmp bug to all inverters
 //
 /*! \file
@@ -39,7 +42,7 @@ void qprop_t(const EvenOddPrecWilsonTypeFermAct< multi1d<T> >& me,
 	     const Real& RsdCG, 
 	     int MaxCG, int& ncg_had)
 {
-  START_CODE("EvenOddPrecWilsonTypeFermActArray::qpropT");
+  START_CODE();
 
   int n_count;
   
@@ -106,7 +109,7 @@ void qprop_t(const EvenOddPrecWilsonTypeFermAct< multi1d<T> >& me,
     A->evenEvenInvLinOp(psi, tmp2, PLUS);
   }
   
-  END_CODE("EvenOddPrecWilsonTypeFermActArray::qpropT");
+  END_CODE();
 }
 
 

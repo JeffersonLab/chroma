@@ -1,4 +1,4 @@
-// $Id: sn_jacob.cc,v 1.4 2004-04-14 12:53:21 bjoo Exp $
+// $Id: sn_jacob.cc,v 1.5 2004-07-28 02:38:03 edwards Exp $
 /*! \file
  *  \brief Single-node Jacobi routine
  */
@@ -36,7 +36,7 @@ void SN_Jacob_t(multi1d<T>& psi,
 		int N_max,
 		int& n_count)
 {
-  START_CODE("SN_Jacob");
+  START_CODE();
   
   T psi_t1;
   T psi_t2;
@@ -213,14 +213,14 @@ void SN_Jacob_t(multi1d<T>& psi,
 	  }
 	}
       }
-      END_CODE("SN_Jacob");
+      END_CODE();
       return;
     }
   }
 
   n_count = k;
   QDP_error_exit("too many Jacobi iterations: %d\n" ,k );
-  END_CODE("SN_Jacob");
+  END_CODE();
 }
 
 

@@ -1,4 +1,4 @@
-// $Id: wallpionff_w.cc,v 1.13 2004-06-05 03:00:48 edwards Exp $
+// $Id: wallpionff_w.cc,v 1.14 2004-07-28 02:38:04 edwards Exp $
 /*! \file
  *  \brief Wall-sink pion form-factors 
  *
@@ -35,7 +35,7 @@ void wallPionFormFac(WallFormFac_formfacs_t& form,
 		     const SftMom& phases,
 		     int t0, int t_sink)
 {
-  START_CODE("wallPionFormFac");
+  START_CODE();
 
   form.subroutine = "wallPionFormFac";
 
@@ -259,5 +259,5 @@ void wallPionFormFac(WallFormFac_formfacs_t& form,
     } // end for(ud)
   } // end for(gamma_ctr)
 
-  END_CODE("wallPionFormFac");
+  END_CODE();
 }

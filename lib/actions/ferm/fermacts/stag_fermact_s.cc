@@ -1,4 +1,4 @@
-// $Id: stag_fermact_s.cc,v 1.2 2004-03-29 21:32:28 edwards Exp $
+// $Id: stag_fermact_s.cc,v 1.3 2004-07-28 02:38:01 edwards Exp $
 /*! \file
  *  \brief Staggered fermion action
  */
@@ -64,7 +64,7 @@ StagFermAct::dsdu(multi1d<LatticeColorMatrix> & ds_u,
   int mu;
   int cb;
 
-  START_CODE("subroutine");
+  START_CODE();
 
   /* rho = Dslash(1<-0) * psi */
   dslash (u, psi, rho, PLUS, 0);
@@ -100,7 +100,7 @@ StagFermAct::dsdu(multi1d<LatticeColorMatrix> & ds_u,
     ds_u[mu][cb] += u_psi * adj(rho);
   }
       
-  END_CODE("subroutine");
+  END_CODE();
 }
 
 #endif

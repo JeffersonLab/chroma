@@ -1,4 +1,4 @@
-// $Id: eig_spec.cc,v 1.2 2004-01-28 16:04:42 bjoo Exp $
+// $Id: eig_spec.cc,v 1.3 2004-07-28 02:38:03 edwards Exp $
 /*! \file
  *  \brief Compute low lying eigenvalues of the hermitian H
  */
@@ -60,7 +60,7 @@ void EigSpecRitzCG(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
 		   XMLBufferWriter& xml_out          // Diagnostics
 	     )
 {
-  START_CODE("EigSpecRitzCG");
+  START_CODE();
   
   
   push(xml_out, "EigSpecRitzCG");
@@ -118,7 +118,7 @@ void EigSpecRitzCG(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
   pop(xml_out); // EigSpecRitz
 
       
-  END_CODE("EigSpecRitzCG");
+  END_CODE();
 }
 
 
@@ -148,7 +148,7 @@ void EigSpecRitzKS(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
 		   XMLBufferWriter& xml_out         // Diagnostics
 	      )
 {
-  START_CODE("EigSpecRitzKS");
+  START_CODE();
 
   // Sanity Checks: 
   // Make sure lambda_H is large enough
@@ -302,7 +302,7 @@ void EigSpecRitzKS(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
 
       write(xml_out, "lambda_H", lambda_H);
       pop(xml_out); // EigSpecRitzKS
-      END_CODE("EigSpecRitzKS");
+      END_CODE();
       return;
     }
 
@@ -314,7 +314,7 @@ void EigSpecRitzKS(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
   
   // If we reached here then we have done more than n_max KS
   QDP_error_exit("n_max_KS reached with no convergence");
-  END_CODE("EigSpecRitzKS");
+  END_CODE();
 }
 
 

@@ -1,4 +1,4 @@
-/*# $Id: eesu3.cc,v 1.4 2004-07-23 12:37:13 bjoo Exp $ ($Date: 2004-07-23 12:37:13 $) */
+/*# $Id: eesu3.cc,v 1.5 2004-07-28 02:38:06 edwards Exp $ ($Date: 2004-07-28 02:38:06 $) */
 
 /*# EESU3: exactly exponentiate a SU(3) lie algebra element */
 
@@ -70,7 +70,7 @@ Real dummy;
 /*#int temp; */
 
 include(COMMON_DECLARATIONS)
-START_CODE("subroutine");;
+START_CODE();
 
 if ( Nc != 3 )
    QDP_error_exit("can only handle SU[3], Nc);
@@ -428,5 +428,5 @@ aux1 += m_sq * ap;
 m = aux1;
 
 
-END_CODE("subroutine");;
+END_CODE();
 }

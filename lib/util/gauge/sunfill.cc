@@ -1,4 +1,4 @@
-// $Id: sunfill.cc,v 1.5 2003-12-06 20:59:21 edwards Exp $
+// $Id: sunfill.cc,v 1.6 2004-07-28 02:38:06 edwards Exp $
 /*! \file
  *  \brief  Fill an SU(Nc) matrix with an SU(2) submatrix
  */
@@ -37,7 +37,7 @@ sunFill_t(LatticeColorMatrix& dest,
 	  int su2_index,
 	  const S& s)
 {
-  START_CODE("sunFill");
+  START_CODE();
 
   /* Determine the SU(N) indices corresponding to the SU(2) indices */
   /* of the SU(2) subgroup $3 */
@@ -75,7 +75,7 @@ sunFill_t(LatticeColorMatrix& dest,
   pokeColor(dest[s], cmplx(-r[2], r[1]), i2, i1);
   pokeColor(dest[s], cmplx( r[0],-r[3]), i2, i2);
 
-  END_CODE("sunFill");
+  END_CODE();
 }
 
 

@@ -1,4 +1,4 @@
-// $Id: walldeltapff_w.cc,v 1.12 2004-06-07 00:43:42 edwards Exp $
+// $Id: walldeltapff_w.cc,v 1.13 2004-07-28 02:38:04 edwards Exp $
 /*! \file
  *  \brief Wall-sink delta^+ -> gamma+proton form-factors 
  *
@@ -213,7 +213,7 @@ void wallDeltaPFormFac(WallFormFac_formfacs_t& form,
 		       const SftMom& phases,
 		       int t0, int t_sink)
 {
-  START_CODE("wallDeltaPFormFac");
+  START_CODE();
 
   if ( Ns != 4 || Nc != 3 || Nd != 4 )	// Code is specific to Ns=4, Nc=3, Nd=4
     return;
@@ -503,5 +503,5 @@ void wallDeltaPFormFac(WallFormFac_formfacs_t& form,
     } // end for(ud)
   } // end for(gamma_ctr)
 
-  END_CODE("wallDeltaFormFac");
+  END_CODE();
 }

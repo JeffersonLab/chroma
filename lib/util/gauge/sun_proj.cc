@@ -1,4 +1,4 @@
-//  $Id: sun_proj.cc,v 1.5 2004-02-11 12:51:35 bjoo Exp $
+//  $Id: sun_proj.cc,v 1.6 2004-07-28 02:38:06 edwards Exp $
 /*! \file
  *  \brief Project a complex Nc x Nc matrix W onto SU(Nc) by maximizing Tr(VW)
  */
@@ -28,7 +28,7 @@ void sun_proj(const LatticeColorMatrix& w, LatticeColorMatrix& v,
   Double new_tr;
   Double ddummy;
 
-  START_CODE("sun_proj");
+  START_CODE();
 
   /*
    * Project back to SU(3) by maximizing tr(v w).
@@ -79,5 +79,5 @@ void sun_proj(const LatticeColorMatrix& w, LatticeColorMatrix& v,
     QDPIO::cout << "new_tr = " << new_tr << endl;
   }
 
-  END_CODE("sun_proj");
+  END_CODE();
 }

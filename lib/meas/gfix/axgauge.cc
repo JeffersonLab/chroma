@@ -1,4 +1,4 @@
-// $Id: axgauge.cc,v 1.1 2003-12-06 20:56:56 edwards Exp $
+// $Id: axgauge.cc,v 1.2 2004-07-28 02:38:03 edwards Exp $
 /*! \file
  *  \brief Axial gauge fixing 
  */
@@ -24,7 +24,7 @@ using namespace QDP;
 
 void axGauge(multi1d<LatticeColorMatrix>& ug, int j_decay)
 {
-  START_CODE("axGauge");
+  START_CODE();
 
   int lsizet = Layout::lattSize()[j_decay];
 
@@ -62,5 +62,5 @@ void axGauge(multi1d<LatticeColorMatrix>& ug, int j_decay)
   }
 
 
-  END_CODE("axGauge");
+  END_CODE();
 }

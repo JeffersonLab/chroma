@@ -1,4 +1,4 @@
-//  $Id: barcomp_w.cc,v 1.10 2004-02-06 04:22:28 edwards Exp $
+//  $Id: barcomp_w.cc,v 1.11 2004-07-28 02:38:03 edwards Exp $
 /*! \file
  *  \brief Construct all components of a baryon propagator
  */
@@ -34,7 +34,7 @@ void barcomp(multiNd<Complex>& barprop,
 	     const SftMom& phases,
 	     int t0, int bc_spec)
 {
-  START_CODE("barcomp");
+  START_CODE();
 
   // Length of lattice in decay direction
   int length  = phases.numSubsets();
@@ -79,5 +79,5 @@ void barcomp(multiNd<Complex>& barprop,
 	      }
 	    }
 
-  END_CODE("barcomp");
+  END_CODE();
 }

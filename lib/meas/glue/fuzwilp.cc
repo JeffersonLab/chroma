@@ -1,4 +1,4 @@
-// $Id: fuzwilp.cc,v 1.2 2004-04-27 20:29:07 edwards Exp $ fuzwilp.h,v 1.1 2004/04/26 16:12:49 mcneile Exp $
+// $Id: fuzwilp.cc,v 1.3 2004-07-28 02:38:03 edwards Exp $ fuzwilp.h,v 1.1 2004/04/26 16:12:49 mcneile Exp $
 /*! \file
  *  \brief Calculate ape-fuzzed Wilson loops
  */
@@ -42,7 +42,7 @@ void fuzwilp( const multi1d<LatticeColorMatrix>& u,
 	XMLWriter& xml, const string& xml_group)
 
 { 
-  START_CODE("fuzwilp");
+  START_CODE();
 
     
   int lengthr; 

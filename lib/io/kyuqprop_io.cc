@@ -1,4 +1,4 @@
-// $Id: kyuqprop_io.cc,v 1.11 2004-07-01 21:12:33 edwards Exp $
+// $Id: kyuqprop_io.cc,v 1.12 2004-07-28 02:38:03 edwards Exp $
 /*!
  * @file
  * @brief  Read/write a Kentucky quark propagator
@@ -22,7 +22,7 @@ using namespace QDP;
 
 void readKYUQprop(LatticePropagator& q, const string& file)
 {
-  START_CODE("readKYUQprop");
+  START_CODE();
 
   if (Nc != 3)
   {
@@ -165,5 +165,5 @@ void readKYUQprop(LatticePropagator& q, const string& file)
 #endif
 
 
-  END_CODE("readKYUQprop");
+  END_CODE();
 }

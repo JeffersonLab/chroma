@@ -1,4 +1,4 @@
-// $Id: walldeltaff_w.cc,v 1.9 2004-06-11 21:09:28 edwards Exp $
+// $Id: walldeltaff_w.cc,v 1.10 2004-07-28 02:38:04 edwards Exp $
 /*! \file
  *  \brief Wall-sink delta^+ -> gamma+delta^+ form-factors 
  *
@@ -157,7 +157,7 @@ void wallDeltaFormFac(WallFormFac_formfacs_t& form,
 		      const SftMom& phases,
 		      int t0, int t_sink)
 {
-  START_CODE("wallDeltaFormFac");
+  START_CODE();
 
   if ( Ns != 4 || Nc != 3 || Nd != 4 )	// Code is specific to Ns=4, Nc=3, Nd=4
     return;
@@ -444,5 +444,5 @@ void wallDeltaFormFac(WallFormFac_formfacs_t& form,
   QDPIO::cout << "Time(wallDeltaFormFac): " << swatch.getTimeInMicroseconds() << " s" << endl;
   QDPIO::cout << "Exiting wallDeltaFormFac" << endl;
 
-  END_CODE("wallDeltaFormFac");
+  END_CODE();
 }

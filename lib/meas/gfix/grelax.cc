@@ -1,4 +1,4 @@
-// $Id: grelax.cc,v 1.6 2004-05-29 01:49:14 edwards Exp $
+// $Id: grelax.cc,v 1.7 2004-07-28 02:38:03 edwards Exp $
 /*! \file
  *  \brief Perform a single gauge fixing iteration
  */
@@ -43,7 +43,7 @@ void grelax(LatticeColorMatrix& g,
   multi1d<LatticeReal> r(4);
   multi1d<LatticeReal> a(4);
   
-  START_CODE("grelax");
+  START_CODE();
       
   // Rotate the matrices using the current gauge rotation
   multi1d<LatticeColorMatrix> ug(Nd);
@@ -183,5 +183,5 @@ void grelax(LatticeColorMatrix& g,
   u_tmp[rb[cb]] = v * g;
   g[rb[cb]] = u_tmp;
   
-  END_CODE("grelax");
+  END_CODE();
 }

@@ -1,4 +1,4 @@
-// $Id: baryon_w.cc,v 1.19 2004-06-09 01:07:40 edwards Exp $ 
+// $Id: baryon_w.cc,v 1.20 2004-07-28 02:38:04 edwards Exp $ 
 /*! \file
  *  \brief Baryon 2-pt functions
  */
@@ -41,7 +41,7 @@ void baryon(LatticePropagator& quark_propagator,
             XMLWriter& xml,
 	    const string& xml_group)
 {
-  START_CODE("baryon");
+  START_CODE();
 
   if ( Ns != 4 || Nc != 3 )		/* Code is specific to Ns=4 and Nc=3. */
     return;
@@ -131,7 +131,7 @@ void baryon(LatticePropagator& quark_propagator,
 
   pop(xml_bar);
 
-  END_CODE("baryon");
+  END_CODE();
 }
 
 
@@ -189,7 +189,7 @@ void baryon(LatticePropagator& quark_propagator,
             const SftMom& phases,
 	    multi3d<DComplex>& barprop)
 {
-  START_CODE("baryon");
+  START_CODE();
 
   // Length of lattice in decay direction
   int length = phases.numSubsets() ;
@@ -548,5 +548,5 @@ void baryon(LatticePropagator& quark_propagator,
 
   } // end loop over baryons
 
-  END_CODE("baryon");
+  END_CODE();
 }

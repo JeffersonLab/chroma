@@ -1,4 +1,4 @@
-// $Id: walfil_w.cc,v 1.4 2004-04-11 05:35:12 edwards Exp $
+// $Id: walfil_w.cc,v 1.5 2004-07-28 02:38:04 edwards Exp $
 /*! \file
  *  \brief Wall source construction
  */
@@ -23,7 +23,7 @@ using namespace QDP;
 
 void walfil(LatticeFermion& a, int slice, int mu, int color_index, int spin_index)
 {
-  START_CODE("walfil");
+  START_CODE();
 
   if (color_index >= Nc || color_index < 0)
     QDP_error_exit("invalid color index", color_index);
@@ -47,5 +47,5 @@ void walfil(LatticeFermion& a, int slice, int mu, int color_index, int spin_inde
 
   a = where(Layout::latticeCoordinate(mu) == slice, tmp, LatticeFermion(zero));
 
-  END_CODE("color_index");
+  END_CODE();
 }

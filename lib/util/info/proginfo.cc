@@ -1,4 +1,4 @@
-//  $Id: proginfo.cc,v 1.2 2004-01-29 20:46:29 edwards Exp $
+//  $Id: proginfo.cc,v 1.3 2004-07-28 02:38:06 edwards Exp $
 /*! \file
  *  \brief Print out basic info about this program
  */
@@ -20,7 +20,7 @@ using namespace QDP;
 
 void proginfo(XMLWriter& xml)
 {
-  START_CODE("proginfo");
+  START_CODE();
 
   push(xml,"ProgramInfo");
 
@@ -29,5 +29,5 @@ void proginfo(XMLWriter& xml)
 
   pop(xml);
 
-  END_CODE("proginfo");
+  END_CODE();
 }

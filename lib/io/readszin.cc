@@ -1,4 +1,4 @@
-// $Id: readszin.cc,v 1.21 2004-04-06 15:27:14 bjoo Exp $
+// $Id: readszin.cc,v 1.22 2004-07-28 02:38:03 edwards Exp $
 
 /*! \file
  *  \brief Read in a configuration written by SZIN up to configuration version 7.
@@ -33,7 +33,7 @@ using namespace QDP;
 
 void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string& cfg_file)
 {
-  START_CODE("readSzin");
+  START_CODE();
 
   initHeader(header);  // initialize the header with defaults
 
@@ -274,7 +274,7 @@ void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
 
   cfg_in.close();
 
-  END_CODE("readSzin");
+  END_CODE();
 }
 
 
@@ -295,7 +295,7 @@ void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
 
 void readSzin(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_file)
 {
-  START_CODE("readSzin");
+  START_CODE();
 
   SzinGauge_t header;
 
@@ -316,6 +316,6 @@ void readSzin(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_
     QDP_error_exit("Error in readszin: %s",e.c_str());
   }
 
-  END_CODE("readSzin");
+  END_CODE();
 }
 

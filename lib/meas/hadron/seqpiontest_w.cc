@@ -1,4 +1,4 @@
-// $Id: seqpiontest_w.cc,v 1.1 2003-12-17 05:03:40 edwards Exp $
+// $Id: seqpiontest_w.cc,v 1.2 2004-07-28 02:38:04 edwards Exp $
 /*! \file
  *  \brief Test a pion sequential source
  */
@@ -35,7 +35,7 @@ void seqPionTest(Complex& pion_src,
 		 const LatticePropagator& seq_quark_prop,
 		 const multi1d<int>& t_source)
 {
-  START_CODE("seqPionTest");
+  START_CODE();
 
   /*
    *  We now pick out the particular component of the quark propagator
@@ -44,6 +44,6 @@ void seqPionTest(Complex& pion_src,
 
   pion_src = trace(peekSite(seq_quark_prop, t_source));
 
-  END_CODE("seqPionTest");
+  END_CODE();
 }
   

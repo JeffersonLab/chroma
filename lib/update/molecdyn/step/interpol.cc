@@ -1,4 +1,4 @@
-// $Id: interpol.cc,v 1.1 2003-12-30 19:52:28 edwards Exp $
+// $Id: interpol.cc,v 1.2 2004-07-28 02:38:05 edwards Exp $
 
 #error "NOT FULLY CONVERTED - NEED TO MOVE IntrplOrd into params of Integ. functor"
 
@@ -22,11 +22,11 @@ void Interpol(multi1d<LatticeFermion>& psi,
 	      const Real& fract,
 	      int Npf)
 {
-  START_CODE("Interpol");
+  START_CODE();
   
   if ( FermiP == NO ) 
   {
-    END_CODE("Interpol");
+    END_CODE();
     return;
   }
   
@@ -56,5 +56,5 @@ void Interpol(multi1d<LatticeFermion>& psi,
     QDP_error_exit("interpolation order not implemented", IntrplOrd);
   }
   
-  END_CODE("Interpol");
+  END_CODE();
 }

@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_linop_array_w.cc,v 1.6 2003-12-15 22:30:34 edwards Exp $
+// $Id: unprec_dwf_linop_array_w.cc,v 1.7 2004-07-28 02:38:02 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall linear operator
  */
@@ -42,7 +42,7 @@ void UnprecDWLinOpArray::operator() (multi1d<LatticeFermion>& chi,
 {
 //  multi1d<LatticeFermion> chi(N5);   // probably should check psi.size() == N5
 
-  START_CODE("UnprecDWLinOpArray");
+  START_CODE();
 
   //
   //  Chi   =  D' Psi
@@ -88,5 +88,5 @@ void UnprecDWLinOpArray::operator() (multi1d<LatticeFermion>& chi,
     break;
   }
 
-  END_CODE("UnprecDWLinOpArray");
+  END_CODE();
 }

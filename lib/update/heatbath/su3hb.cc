@@ -1,4 +1,4 @@
-// $Id: su3hb.cc,v 1.2 2004-01-05 00:47:20 edwards Exp $
+// $Id: su3hb.cc,v 1.3 2004-07-28 02:38:05 edwards Exp $
 /*! \file
  *  \brief Do one SU(2) subgroup heatbath update of SU(Nc) matrix U with action
  */
@@ -39,7 +39,7 @@ void su3hb(LatticeColorMatrix& u,
 	   int& nfails,
 	   const OrderedSubset& sub)
 {
-  START_CODE("su3hb");
+  START_CODE();
   
   LatticeColorMatrix v;
   LatticeReal lftmp1;
@@ -243,5 +243,5 @@ void su3hb(LatticeColorMatrix& u,
   LatticeColorMatrix tmp[sub] = v * u;
   u[sub] = tmp;
 
-  END_CODE("su3hb");
+  END_CODE();
 }

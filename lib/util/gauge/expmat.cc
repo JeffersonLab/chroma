@@ -1,4 +1,4 @@
-// $Id: expmat.cc,v 1.3 2004-07-23 12:37:13 bjoo Exp $
+// $Id: expmat.cc,v 1.4 2004-07-28 02:38:06 edwards Exp $
 /*! \file
  *  \brief Exponentiate a SU(n) lie algebra element by some method,
  */
@@ -30,7 +30,7 @@ using namespace QDP;
 void expmat(LatticeColorMatrix& a,
 	    enum ExpMat_t opt)
 {
-  START_CODE("expmat");
+  START_CODE();
 
   switch (Nc)
   {
@@ -81,5 +81,5 @@ void expmat(LatticeColorMatrix& a,
     }
   }
 
-  END_CODE("expmat");
+  END_CODE();
 }

@@ -1,4 +1,4 @@
-// $Id: unprec_ovdwf_linop_array_w.cc,v 1.6 2003-12-15 22:30:34 edwards Exp $
+// $Id: unprec_ovdwf_linop_array_w.cc,v 1.7 2004-07-28 02:38:02 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Overlap-DWF (Borici) linear operator
  */
@@ -41,7 +41,7 @@ UnprecOvDWLinOpArray::operator() (multi1d<LatticeFermion>& chi,
 {
 //  multi1d<LatticeFermion> chi(N5);   // probably should check psi.size() == N5
 
-  START_CODE("UnprecOvDWLinOpArray");
+  START_CODE();
 
   //
   //  Chi   =  D' Psi
@@ -109,5 +109,5 @@ UnprecOvDWLinOpArray::operator() (multi1d<LatticeFermion>& chi,
     }          
   }
 
-  END_CODE("UnprecOvDWLinOpArray");
+  END_CODE();
 }

@@ -1,4 +1,4 @@
-// $Id: staggered_qprop.cc,v 1.6 2004-03-03 10:50:43 mcneile Exp $
+// $Id: staggered_qprop.cc,v 1.7 2004-07-28 02:38:02 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *
@@ -39,7 +39,7 @@ EvenOddStaggeredTypeFermAct<LatticeFermion>::qprop(LatticeFermion& psi,
 						   int MaxCG, 
 						   int& ncg_had)
 {
-  START_CODE("EvenOddStaggeredTypeAction::qprop");
+  START_CODE();
 
   int n_count;
   
@@ -106,7 +106,7 @@ EvenOddStaggeredTypeFermAct<LatticeFermion>::qprop(LatticeFermion& psi,
   // Call the virtual destructor of A
   // delete A;
 
-  END_CODE("EvenOddStaggeredFermTypeAction::qprop");
+  END_CODE();
 }
 
 

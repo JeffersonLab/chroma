@@ -1,4 +1,4 @@
-// $Id: kyugauge_io.cc,v 1.6 2004-05-28 00:53:16 edwards Exp $
+// $Id: kyugauge_io.cc,v 1.7 2004-07-28 02:38:02 edwards Exp $
 
 /*! \file
  *  \brief Read/write a Kentucky gauge configuration
@@ -19,7 +19,7 @@ using namespace QDP;
 
 void readKYU(multi1d<LatticeColorMatrix>& u, const string& cfg_file)
 {
-  START_CODE("readKYU");
+  START_CODE();
 
   if (Nc != 3)
   {
@@ -56,7 +56,7 @@ void readKYU(multi1d<LatticeColorMatrix>& u, const string& cfg_file)
 
   cfg_in.close();
 
-  END_CODE("readKYU");
+  END_CODE();
 }
 
 
@@ -70,7 +70,7 @@ void readKYU(multi1d<LatticeColorMatrix>& u, const string& cfg_file)
 
 void writeKYU(const multi1d<LatticeColorMatrix>& u, const string& cfg_file)
 {
-  START_CODE("writeKYU");
+  START_CODE();
 
   if (Nc != 3)
   {
@@ -108,7 +108,7 @@ void writeKYU(const multi1d<LatticeColorMatrix>& u, const string& cfg_file)
 
   cfg_out.close();
 
-  END_CODE("writeKYU");
+  END_CODE();
 }
 
 

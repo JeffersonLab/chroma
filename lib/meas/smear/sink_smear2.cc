@@ -1,4 +1,4 @@
-// $Id: sink_smear2.cc,v 1.1 2004-07-28 00:46:13 edwards Exp $
+// $Id: sink_smear2.cc,v 1.2 2004-07-28 02:38:04 edwards Exp $
 /*! \file
  *  \brief Control routine for types of propagator smearing
  */
@@ -36,7 +36,7 @@ void sink_smear2(const multi1d<LatticeColorMatrix>& u,
 {
   Real RsdCG;
 
-  START_CODE("sink_smear2");
+  START_CODE();
 
   switch (Wvf_kind) 
   {
@@ -61,6 +61,6 @@ void sink_smear2(const multi1d<LatticeColorMatrix>& u,
     QDP_abort(1);
   }
     
-  END_CODE("sink_smear2");
+  END_CODE();
 }
 

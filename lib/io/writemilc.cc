@@ -1,4 +1,4 @@
-// $Id: writemilc.cc,v 1.4 2004-03-23 20:17:16 kostas Exp $
+// $Id: writemilc.cc,v 1.5 2004-07-28 02:38:03 edwards Exp $
 
 /*! \file
  *  \brief Writer a MILC gauge configuration in the 1997 format
@@ -27,7 +27,7 @@ using namespace QDP;
 void writeMILC(const MILCGauge_t& header, const multi1d<LatticeColorMatrix>& u, 
 	       const string& cfg_file)
 {
-  START_CODE("writeMILC");
+  START_CODE();
 
   BinaryWriter cfg_out(cfg_file); // for now, cfg_io_location not used
 
@@ -71,7 +71,7 @@ void writeMILC(const MILCGauge_t& header, const multi1d<LatticeColorMatrix>& u,
 
   cfg_out.close();
 
-  END_CODE("writeMILC");
+  END_CODE();
 }
 
 
@@ -87,7 +87,7 @@ void writeMILC(const MILCGauge_t& header, const multi1d<LatticeColorMatrix>& u,
 
 void writeMILC(XMLBufferWriter& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_file)
 {
-  START_CODE("writeMILC");
+  START_CODE();
 
   MILCGauge_t header;
   XMLReader  xml_in(xml);   // use the buffer writer to instantiate a reader
@@ -95,6 +95,6 @@ void writeMILC(XMLBufferWriter& xml, multi1d<LatticeColorMatrix>& u, const strin
 
   writeMILC(header, u, cfg_file);
 
-  END_CODE("writeMILC");
+  END_CODE();
 }
 

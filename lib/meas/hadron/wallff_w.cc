@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wallff_w.cc,v 1.4 2004-06-08 20:56:50 edwards Exp $
+// $Id: wallff_w.cc,v 1.5 2004-07-28 02:38:04 edwards Exp $
 /*! \file
  *  \brief Structures for wall-sink/source form-factors
  *
@@ -60,7 +60,7 @@ void wallFormFacSft(multi1d<WallFormFac_momenta_t>& momenta,
 		    bool compute_nonlocal,
 		    int t0, int t_sink)
 {
-  START_CODE("wallFormFacSft");
+  START_CODE();
 
   momenta.resize(phases.numMom());  // hold momenta output
 
@@ -97,7 +97,7 @@ void wallFormFacSft(multi1d<WallFormFac_momenta_t>& momenta,
     
   } // end for(inser_mom_num)
 
-  END_CODE("wallFormFacSft");
+  END_CODE();
 }
 
 

@@ -1,4 +1,4 @@
-// $Id: phfctr.cc,v 1.3 2004-01-02 03:00:07 edwards Exp $
+// $Id: phfctr.cc,v 1.4 2004-07-28 02:38:06 edwards Exp $
 /*! \file
  *  \brief  This routine is specific to Wilson fermions!
  */
@@ -29,7 +29,7 @@ static multi1d<LatticeInteger> phases;
 
 void setph(const multi1d<int>& boundary)
 {
-  START_CODE("setph");
+  START_CODE();
   
   if (boundary.size() != Nd)
     QDP_error_exit("setph: error in size of boundary");
@@ -50,7 +50,7 @@ void setph(const multi1d<int>& boundary)
   
   // Time to skeedattle
       
-  END_CODE("setph");
+  END_CODE();
 }
 
 
@@ -66,7 +66,7 @@ void setph(const multi1d<int>& boundary)
 
 void phfctr(multi1d<LatticeColorMatrix>& u)
 {
-  START_CODE("phfctr");
+  START_CODE();
 
   if (! initP)
   {
@@ -117,5 +117,5 @@ void phfctr(multi1d<LatticeColorMatrix>& u)
   }
 #endif
 
-  END_CODE("phfctr");
+  END_CODE();
 }

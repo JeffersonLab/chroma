@@ -1,4 +1,4 @@
-// $Id: barhqlq_w.cc,v 1.2 2004-05-01 20:15:42 edwards Exp $
+// $Id: barhqlq_w.cc,v 1.3 2004-07-28 02:38:03 edwards Exp $
 /*! \file
  *  \brief Heavy-light baryon 2-pt functions
  */
@@ -43,7 +43,7 @@ void barhqlq(LatticePropagator& propagator_1,
 	     XMLWriter& xml,
 	     const string& xml_group)
 {
-  START_CODE("barhqlq");
+  START_CODE();
 
   if ( Ns != 4 || Nc != 3 )		/* Code is specific to Ns=4 and Nc=3. */
     return;
@@ -134,7 +134,7 @@ void barhqlq(LatticePropagator& propagator_1,
 
   pop(xml_bar);
 
-  END_CODE("barhqlq");
+  END_CODE();
 }
 
 
@@ -214,7 +214,7 @@ void barhqlq(LatticePropagator& quark_propagator_1,
 	     const SftMom& phases,
 	     multi3d<DComplex>& barprop)
 {
-  START_CODE("barhqlq");
+  START_CODE();
 
   // Length of lattice in decay direction
   int length = phases.numSubsets() ;
@@ -482,5 +482,5 @@ void barhqlq(LatticePropagator& quark_propagator_1,
 
   } // end loop over baryons
 
-  END_CODE("barhqlq");
+  END_CODE();
 }

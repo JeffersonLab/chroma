@@ -1,4 +1,4 @@
-// $Id: leapp.cc,v 1.2 2003-12-31 23:47:55 edwards Exp $
+// $Id: leapp.cc,v 1.3 2004-07-28 02:38:06 edwards Exp $
 
 #error "NOT FULLY CONVERTED - NEED TO MOVE GLOBAL PARAMS INTO FUNCTOR"
 
@@ -29,7 +29,7 @@ void LeapP(const multi1d<LatticeColorMatrix>& u,
 	   int Npf,
 	   int& cg_count)
 {
-  START_CODE("LeapP");
+  START_CODE();
 
   multi1d<LatticeColorMatrix> ds_u(Nd);
   Real FerFactor;              /* Nf/2Npf for Wilson, Nf/4Npf Staggered */
@@ -107,5 +107,5 @@ void LeapP(const multi1d<LatticeColorMatrix>& u,
   for(int mu=0; mu<Nd; ++mu)
     taproj(p_mom[mu]);
   
-  END_CODE("LeapP");
+  END_CODE();
 }

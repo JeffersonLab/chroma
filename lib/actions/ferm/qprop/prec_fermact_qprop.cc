@@ -1,4 +1,4 @@
-// $Id: prec_fermact_qprop.cc,v 1.4 2004-07-27 06:03:04 edwards Exp $
+// $Id: prec_fermact_qprop.cc,v 1.5 2004-07-28 02:38:02 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic even-odd preconditioned fermion operator
  *
@@ -35,7 +35,7 @@ void qprop_t(const EvenOddPrecWilsonTypeFermAct<T>& me,
 	     const Real& RsdCG, 
 	     int MaxCG, int& ncg_had)
 {
-  START_CODE("EvenOddPrecWilsonTypeFermAct::qprop");
+  START_CODE();
 
   int n_count;
   
@@ -98,7 +98,7 @@ void qprop_t(const EvenOddPrecWilsonTypeFermAct<T>& me,
     A->evenEvenInvLinOp(psi, tmp2, PLUS);
   }
   
-  END_CODE("EvenOddPrecWilsonTypeFermAct::qprop");
+  END_CODE();
 }
 
 

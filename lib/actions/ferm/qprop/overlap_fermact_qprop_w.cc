@@ -1,4 +1,4 @@
-// $Id: overlap_fermact_qprop_w.cc,v 1.2 2004-05-12 15:45:10 bjoo Exp $
+// $Id: overlap_fermact_qprop_w.cc,v 1.3 2004-07-28 02:38:02 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -34,7 +34,7 @@ void qprop_t(const OverlapFermActBase<T>& me,
 	     const Real& RsdCG, 
 	     int MaxCG, int& ncg_had) const
 {
-  START_CODE("OverlapFermActBase::qprop");
+  START_CODE();
 
   const EVConnectState<T>& state = dynamic_cast<const EVConnectState<T>&>(*state_);
 
@@ -161,7 +161,7 @@ void qprop_t(const OverlapFermActBase<T>& me,
   psi -= chi;
   psi *= ftmp1;
 
-  END_CODE("OverlapFermActBase::qprop");
+  END_CODE();
 }
 
 

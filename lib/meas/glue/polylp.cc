@@ -1,4 +1,4 @@
-// $Id: polylp.cc,v 1.2 2003-10-08 18:42:08 edwards Exp $
+// $Id: polylp.cc,v 1.3 2004-07-28 02:38:03 edwards Exp $
 /*! \file
  *  \brief Calculate the global normalized sum of the Polyakov loop
  */
@@ -20,7 +20,7 @@ using namespace QDP;
 
 void polylp(const multi1d<LatticeColorMatrix>& u, DComplex& poly_loop, int mu)
 {
-  START_CODE("polylp");
+  START_CODE();
         
   // Initial Polyakov loop
   LatticeColorMatrix poly = u[mu];
@@ -34,5 +34,5 @@ void polylp(const multi1d<LatticeColorMatrix>& u, DComplex& poly_loop, int mu)
   /* Take the trace and sum up */
   poly_loop = sum(trace(poly)) / Double(Nc*Layout::vol());
 
-  END_CODE("polylp");
+  END_CODE();
 }

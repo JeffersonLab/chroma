@@ -1,4 +1,4 @@
-// $Id: mesmom.cc,v 1.1 2003-12-30 19:50:25 edwards Exp $
+// $Id: mesmom.cc,v 1.2 2004-07-28 02:38:05 edwards Exp $
 
 #warning "SHOULD ADD INCLUDE OF PROTOTYPE"
 
@@ -18,7 +18,7 @@ using namespace QDP;
 void MesMom(const multi1d<LatticeColorMatrix>& p_mom,
 	    Double& p_mom_sq)
 {
-  START_CODE("MesMom");
+  START_CODE();
 
   p_mom_sq = 0;
   for(int mu=0; mu < Nd; ++mu)
@@ -26,5 +26,5 @@ void MesMom(const multi1d<LatticeColorMatrix>& p_mom,
   
   p_mom_sq /= Double(Layout::vol()*Nd);
 
-  END_CODE("MesMom");
+  END_CODE();
 }

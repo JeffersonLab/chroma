@@ -1,4 +1,4 @@
-// $Id: prec_parwilson_fermact_w.cc,v 1.1 2004-01-12 04:32:22 edwards Exp $
+// $Id: prec_parwilson_fermact_w.cc,v 1.2 2004-07-28 02:38:01 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action with parity breaking term
  */
@@ -53,7 +53,7 @@ EvenOddPrecParWilsonFermAct::dsdu(multi1d<LatticeColorMatrix>& ds_u,
 				  Handle<const ConnectState> state,
 				  const LatticeFermion& psi) const
 {
-  START_CODE("EvenOddPrecParWilsonFermAct::dsdu");
+  START_CODE();
   
 #if 1
   QDPIO::cerr << "EvenOddPrecParWilsonFermAct::dsdu not implemented" << endl;
@@ -131,5 +131,5 @@ EvenOddPrecParWilsonFermAct::dsdu(multi1d<LatticeColorMatrix>& ds_u,
         
 #endif
 
-  END_CODE("EvenOddPrecParWilsonFermAct::dsdu");
+  END_CODE();
 }

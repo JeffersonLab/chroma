@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_fermact_base_array_w.cc,v 1.7 2004-01-02 03:19:40 edwards Exp $
+// $Id: unprec_dwf_fermact_base_array_w.cc,v 1.8 2004-07-28 02:38:01 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned domain-wall-like fermion actions
  */
@@ -30,7 +30,7 @@ UnprecDWFermActBaseArray::qprop(LatticeFermion& psi,
 				const Real& RsdCG, 
 				int MaxCG, int& ncg_had) const
 {
-  START_CODE("UnprecDWTypeFermActBaseArray::qprop");
+  START_CODE();
 
   const int  N5 = size();   // array size better match
   const Real m_q = quark_mass();
@@ -102,6 +102,6 @@ UnprecDWFermActBaseArray::qprop(LatticeFermion& psi,
   // Normalize and remove contact term
   psi = ftmp1*(tmp5[0] - chi);
 
-  END_CODE("UnprecDWTypeFermActBaseArray::qprop");
+  END_CODE();
 }
 

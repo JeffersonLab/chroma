@@ -1,4 +1,4 @@
-// $Id: mesplq.cc,v 1.9 2004-07-23 12:37:12 bjoo Exp $
+// $Id: mesplq.cc,v 1.10 2004-07-28 02:38:03 edwards Exp $
 /*! \file
  *  \brief Plaquette measurement
  */
@@ -26,7 +26,7 @@ static int tDir() {return Nd-1;}
 void MesPlq(const multi1d<LatticeColorMatrix>& u, Double& w_plaq, Double& s_plaq, 
 	    Double& t_plaq, Double& link)
 {
-  START_CODE("MesPlq");
+  START_CODE();
 
   s_plaq = t_plaq = w_plaq = link = 0.0;
 
@@ -76,5 +76,5 @@ void MesPlq(const multi1d<LatticeColorMatrix>& u, Double& w_plaq, Double& s_plaq
 
   link /= double(Layout::vol()*Nd*Nc);
 
-  END_CODE("MesPlq");
+  END_CODE();
 }

@@ -1,4 +1,4 @@
-// $Id: hybtrj.cc,v 1.3 2004-02-11 12:51:34 bjoo Exp $
+// $Id: hybtrj.cc,v 1.4 2004-07-28 02:38:05 edwards Exp $
 
 #error "NOT FULLY CONVERTED - NEED TO MOVE AlgETrj into params of Integ. functor"
 
@@ -46,7 +46,7 @@ void HybTrj(multi1d<LatticeColorMatrix>& u,
   int i;                   /* Scratch variable: counter */
   int ichiral;
 
-  START_CODE("HybTrj");
+  START_CODE();
 
   push(xml_out,"HybTrj");
 
@@ -108,6 +108,6 @@ void HybTrj(multi1d<LatticeColorMatrix>& u,
 
   pop(xml_out);
   
-  END_CODE("HybTrj");
+  END_CODE();
 }
 

@@ -1,4 +1,4 @@
-// $Id: mciter32.cc,v 1.1 2003-12-29 19:47:22 edwards Exp $
+// $Id: mciter32.cc,v 1.2 2004-07-28 02:38:05 edwards Exp $
 /*! \file
  *  \brief One heatbath interation of updating the gauge field configuration
  */
@@ -47,7 +47,7 @@ void mciter32(multi1d<LatticeColorMatrix>& u,
 	      const OrderedSet& ss,
 	      const multi3d<int>& neighsubl)
 {
-  START_CODE("mciter32");
+  START_CODE();
 
   // Expect neighsubl to be declared  multi3d<int> neighsubl(Nd,2,ss.numSubsets());
 
@@ -545,5 +545,5 @@ void mciter32(multi1d<LatticeColorMatrix>& u,
       }
   }
   
-  END_CODE("mciter32");
+  END_CODE();
 }

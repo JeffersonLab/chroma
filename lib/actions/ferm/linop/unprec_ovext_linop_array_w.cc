@@ -1,4 +1,4 @@
-/* $Id: unprec_ovext_linop_array_w.cc,v 1.3 2003-11-20 05:43:41 edwards Exp $
+/* $Id: unprec_ovext_linop_array_w.cc,v 1.4 2004-07-28 02:38:02 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
  */
@@ -61,7 +61,7 @@ UnprecOvExtLinOpArray::operator() (multi1d<LatticeFermion>& chi,
 {
 //  multi1d<LatticeFermion> chi(N5);
 
-  START_CODE("UnprecOvExtLinOpArray");
+  START_CODE();
 
   int G5 = Ns*Ns - 1;
 
@@ -90,6 +90,6 @@ UnprecOvExtLinOpArray::operator() (multi1d<LatticeFermion>& chi,
     }
   }
 
-  END_CODE("UnprecOvExtLinOpArray");
+  END_CODE();
 }
 

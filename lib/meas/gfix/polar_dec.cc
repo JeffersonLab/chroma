@@ -1,4 +1,4 @@
-// $Id: polar_dec.cc,v 1.2 2004-02-11 12:51:34 bjoo Exp $
+// $Id: polar_dec.cc,v 1.3 2004-07-28 02:38:03 edwards Exp $
 /*! \file
  *  \brief Decompose a complex matrix as C = exp(i\alpha) V P
  */
@@ -65,7 +65,7 @@ void polar_dec(LatticeColorMatrix& c, LatticeColorMatrix& v,
   int n_rot;
   int numbad;
 
-  START_CODE("polar_dec");
+  START_CODE();
   
   Real acc_sq = JacAccu * JacAccu / Real(100);
               
@@ -352,5 +352,5 @@ void polar_dec(LatticeColorMatrix& c, LatticeColorMatrix& v,
   pop(xml_out);
 #endif
   
-  END_CODE("polar_dec");
+  END_CODE();
 }

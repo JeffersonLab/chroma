@@ -1,4 +1,4 @@
-// $Id: wallrhopiff_w.cc,v 1.4 2004-06-07 01:33:17 edwards Exp $
+// $Id: wallrhopiff_w.cc,v 1.5 2004-07-28 02:38:04 edwards Exp $
 /*! \file
  *  \brief Wall-sink rho^+ <-> gamma+pi^+ form-factors 
  *
@@ -38,7 +38,7 @@ void wallRhoPiFormFac(WallFormFac_formfacs_t& form,
 		      const SftMom& phases,
 		      int t0, int t_sink)
 {
-  START_CODE("wallRhoPiFormFac");
+  START_CODE();
 
   if ( Ns != 4 || Nc != 3 || Nd != 4 )	// Code is specific to Ns=4, Nc=3, Nd=4
     return;
@@ -278,5 +278,5 @@ void wallRhoPiFormFac(WallFormFac_formfacs_t& form,
     } // end for(ud)
   } // end for(gamma_ctr)
 
-  END_CODE("wallRhoPiFormFac");
+  END_CODE();
 }

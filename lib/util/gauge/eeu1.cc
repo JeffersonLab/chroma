@@ -1,4 +1,4 @@
-// $Id: eeu1.cc,v 1.2 2004-01-05 00:47:20 edwards Exp $
+// $Id: eeu1.cc,v 1.3 2004-07-28 02:38:06 edwards Exp $
 /*! \file
  *  \brief Exactly exponentiate a U(1) lie algebra element
  */
@@ -17,7 +17,7 @@ using namespace QDP;
 
 void eeu1(LatticeColorMatrix& lambda)
 {
-  START_CODE("eeu1");
+  START_CODE();
 
   if ( Nc != 1 )
   {
@@ -29,5 +29,5 @@ void eeu1(LatticeColorMatrix& lambda)
   LatticeComplex a = cmplx(cos(phi),sin(phi));
   pokeColor(lambda, a, 0,0);
     
-  END_CODE("eeu1");
+  END_CODE();
 }
