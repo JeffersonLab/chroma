@@ -1,4 +1,4 @@
-// $Id: qproptrev.cc,v 1.4 2005-01-14 20:13:09 edwards Exp $
+// $Id: qproptrev.cc,v 1.5 2005-03-02 00:44:18 edwards Exp $
 /*! \file
  *  \brief Time-reverse a propagator
  */
@@ -105,8 +105,7 @@ void read(XMLReader& xml, const string& path, QpropTRev_input_t& input)
 int main(int argc, char *argv[])
 {
   // Put the machine into a known state
-  ChromaInitialize(&argc, &argv);
-
+  Chroma::initialize(&argc, &argv);
 
   START_CODE();
   
@@ -114,7 +113,7 @@ int main(int argc, char *argv[])
   QpropTRev_input_t input;
 
   // Instantiate xml reader for DATA
-  XMLReader xml_in("./DATA");
+  XMLReader xml_in(Chroma::getXMLInputFileName());
 
   // Read data
   read(xml_in, "/qproptrev", input);
@@ -125,7 +124,7 @@ int main(int argc, char *argv[])
 
   QDPIO::cout << "QPROPTREV: propagator gauge fixing utility" << endl;
 
-  XMLFileWriter& xml_out = TheXMLOutputWriter::Instance();
+  XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
   push(xml_out, "qproptrev");
 
   proginfo(xml_out);    // Print out basic program info
@@ -290,7 +289,7 @@ int main(int argc, char *argv[])
   END_CODE();
 
   // Time to bolt
-  ChromaFinalize();
+  Chroma::finalize();
 
   exit(0);
 }

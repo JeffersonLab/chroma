@@ -9,7 +9,7 @@ using namespace std;
 int main(int argc, char *argv[])
 {
   // Initialise QDP
-  QDP_initialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
 
   // Setup a small lattice
   const int nrow_arr[] = {4, 4, 4, 4};
@@ -169,7 +169,7 @@ int main(int argc, char *argv[])
   monitorHMC.close();
   // Finish
 
-  QDP_finalize();
+  Chroma::finalize();
   exit(0);
 }
 

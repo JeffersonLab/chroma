@@ -1,4 +1,4 @@
-// $Id: wallformfac.cc,v 1.32 2005-02-28 03:34:47 edwards Exp $
+// $Id: wallformfac.cc,v 1.33 2005-03-02 00:44:18 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions with a wall sink
  *
@@ -222,7 +222,7 @@ int
 main(int argc, char *argv[])
 {
   // Put the machine into a known state
-  ChromaInitialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
 
   START_CODE();
 
@@ -230,7 +230,7 @@ main(int argc, char *argv[])
   WallFormFac_input_t  input;
 
   // Instantiate xml reader for DATA
-  XMLReader xml_in("./DATA");
+  XMLReader xml_in(Chroma::getXMLInputFileName());
 
   // Read data
   read(xml_in, "/WallFormFac", input);
@@ -263,7 +263,7 @@ main(int argc, char *argv[])
 
 
   // Instantiate XML writer for XMLDAT
-  XMLFileWriter&  xml_out = TheXMLOutputWriter::Instance();
+  XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
 
   push(xml_out, "wallFormFac");
 
@@ -612,7 +612,7 @@ main(int argc, char *argv[])
   END_CODE();
 
   // Time to bolt
-  ChromaFinalize();
+  Chroma::finalize();
 
   exit(0);
 }

@@ -1,4 +1,4 @@
-// $Id: t_mesplq.cc,v 1.14 2005-01-14 18:42:38 edwards Exp $
+// $Id: t_mesplq.cc,v 1.15 2005-03-02 00:44:19 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -10,7 +10,7 @@ using namespace Chroma;
 int main(int argc, char *argv[])
 {
   // Put the machine into a known state
-  QDP_initialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
 
   // Setup the layout
   const int foo[] = {4,4,4,8};
@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
   pop(xml);
 
   // Time to bolt
-  QDP_finalize();
+  Chroma::finalize();
 
   exit(0);
 }

@@ -1,4 +1,4 @@
-// $Id: qpropadd.cc,v 1.5 2005-01-14 20:13:09 edwards Exp $
+// $Id: qpropadd.cc,v 1.6 2005-03-02 00:44:18 edwards Exp $
 /*! \file
  * \brief Add two quark propagators
  *
@@ -107,7 +107,7 @@ int
 main(int argc, char *argv[])
 {
   // Put the machine into a known state
-  QDP_initialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
 
   START_CODE();
 
@@ -115,7 +115,7 @@ main(int argc, char *argv[])
   Qpropadd_input_t  input;
 
   // Instantiate xml reader for DATA
-  XMLReader xml_in("DATA");
+  XMLReader xml_in(Chroma::getXMLInputFileName());
 
   // Read data
   read(xml_in, "/qpropadd", input);
@@ -127,7 +127,8 @@ main(int argc, char *argv[])
   QDPIO::cout << " QPROPADD: Add 2 propagators" << endl;
 
   // Instantiate XML writer for XMLDAT
-  XMLFileWriter xml_out("XMLDAT");
+  // XMLFileWriter  xml_out(Chroma::getXMLOutputFileName());
+  XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
   push(xml_out, "qpropadd");
 
   proginfo(xml_out);    // Print out basic program info

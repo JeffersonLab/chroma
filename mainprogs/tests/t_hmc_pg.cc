@@ -11,15 +11,15 @@ using namespace Chroma;
 int main(int argc, char *argv[])
 {
   // Initialise QDP
-  QDP_initialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
 
-  XMLReader xml_in("DATA");
+  XMLReader xml_in(Chroma::getXMLInputFileName());
 
   struct PureGaugeHMCParams input;
 
   read(xml_in, "/PureGaugeHMC/params", input);
 
-  XMLFileWriter xml_out("XMLDAT");
+  XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
   push(xml_out, "PureGaugeHMC");
   write(xml_out, "params", input);
   pop(xml_out);
@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
     QDP_abort(1);
   }
 
-  QDP_finalize();
+  Chroma::finalize();
   exit(0);
 }
 

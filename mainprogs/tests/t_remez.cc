@@ -1,4 +1,4 @@
-// $Id: t_remez.cc,v 1.1 2005-02-02 23:19:11 edwards Exp $
+// $Id: t_remez.cc,v 1.2 2005-03-02 00:44:19 edwards Exp $
 /*! \file
  *  \brief Test the Remez code
  */
@@ -10,7 +10,7 @@ using namespace Chroma;
 int main(int argc, char *argv[])
 {
   // Put the machine into a known state
-  QDP_initialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
 
   // Setup the layout
   const int foo[] = {2,2,2,2};
@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
   xml_out.close();
 
   // Time to bolt
-  QDP_finalize();
+  Chroma::finalize();
 
   exit(0);
 }

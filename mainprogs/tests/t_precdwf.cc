@@ -1,4 +1,4 @@
-// $Id: t_precdwf.cc,v 1.12 2005-03-01 19:23:40 edwards Exp $
+// $Id: t_precdwf.cc,v 1.13 2005-03-02 00:44:19 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -57,7 +57,7 @@ double time_func(const EvenOddPrecLinearOperator< MLF, LCM > *p, EO_mem A,
 int main(int argc, char **argv)
 {
   // Put the machine into a known state
-  QDP_initialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
 
   // Setup the layout
   const int foo[] = {8,8,8,8};
@@ -66,7 +66,7 @@ int main(int argc, char **argv)
   Layout::setLattSize(nrow);
   Layout::create();
 
-  XMLFileWriter xml("t_lwldslash.xml");
+  XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
 
   //! Test out dslash
   multi1d<LatticeColorMatrix> u(Nd);
@@ -152,7 +152,7 @@ int main(int argc, char **argv)
   delete D_pdwf;
 
   // Time to bolt
-  QDP_finalize();
+  Chroma::finalize();
 
   exit(0);
 }

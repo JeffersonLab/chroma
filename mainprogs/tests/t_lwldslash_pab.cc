@@ -1,4 +1,4 @@
-// $Id: t_lwldslash_pab.cc,v 1.7 2005-03-01 23:23:50 edwards Exp $
+// $Id: t_lwldslash_pab.cc,v 1.8 2005-03-02 00:44:19 edwards Exp $
 
 
 #include "chroma.h"
@@ -9,7 +9,7 @@ using namespace Chroma;
 int main(int argc, char **argv)
 {
   // Put the machine into a known state
-  QDP_initialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
 
   // Read parameters
   XMLReader xml_in("input.xml");
@@ -231,7 +231,7 @@ int main(int argc, char **argv)
 
   
   // Time to bolt
-  QDP_finalize();
+  Chroma::finalize();
 
   exit(0);
 }

@@ -76,7 +76,7 @@ void wilson_dsdu(const UnprecWilsonFermAct& S,
 int main(int argc, char *argv[]) 
 {
   // Initialise QDP
-  QDP_initialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
 
   // Setup a small lattice
   const int nrow_arr[] = {2, 2, 2, 2};
@@ -96,12 +96,13 @@ int main(int argc, char *argv[])
   }
 
   // Dump output
-  XMLFileWriter xml_out("./XMLDAT");
+  XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
   push(xml_out, "t_monomial");
 
   // Read Parameters
   std::string monomial_name;           // String for Factory
-  XMLReader param_in("DATA");
+  XMLReader param_in(Chroma::getXMLInputFileName());
+
   Handle< ExactMonomial<multi1d<LatticeColorMatrix>, 
     multi1d<LatticeColorMatrix> > > S_w;
   try { 
@@ -185,7 +186,7 @@ int main(int argc, char *argv[])
   xml_out.close();
 
     // Finish
-  QDP_finalize();
+  Chroma::finalize();
 
   exit(0);
 }

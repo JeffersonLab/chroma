@@ -1,4 +1,4 @@
-// $Id: t_prec_nef.cc,v 1.6 2005-03-01 23:22:57 edwards Exp $
+// $Id: t_prec_nef.cc,v 1.7 2005-03-02 00:44:19 edwards Exp $
 
 #include "chroma.h"
 
@@ -34,10 +34,10 @@ void read(XMLReader& xml, const string& path, App_input_t& input)
 int main(int argc, char **argv)
 {
   // Put the machine into a known state
-  QDP_initialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
 
   App_input_t input;
-  XMLReader xml_in("DATA");
+  XMLReader xml_in(Chroma::getXMLInputFileName());
 
   try {
     read(xml_in, "/NEFTest", input);
@@ -58,7 +58,7 @@ int main(int argc, char **argv)
     gaugeStartup(gauge_file_xml, gauge_xml, u, input.cfg);
   }
 
-  XMLFileWriter xml_out("XMLDAT");
+  XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
   push(xml_out,"NEFTest");
 
 
@@ -208,7 +208,7 @@ int main(int argc, char **argv)
   }
 
   pop(xml_out);
-  QDP_finalize();
+  Chroma::finalize();
     
   exit(0);
 }

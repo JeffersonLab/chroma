@@ -1,4 +1,4 @@
-// $Id: bar3ptfn.cc,v 1.37 2005-02-28 03:34:46 edwards Exp $
+// $Id: bar3ptfn.cc,v 1.38 2005-03-02 00:44:18 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions
  *
@@ -180,7 +180,7 @@ int
 main(int argc, char *argv[])
 {
   // Put the machine into a known state
-  ChromaInitialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
 
   START_CODE();
 
@@ -188,7 +188,7 @@ main(int argc, char *argv[])
   Bar3ptfn_input_t  input;
 
   // Instantiate xml reader for DATA
-  XMLReader xml_in("./DATA");
+  XMLReader xml_in(Chroma::getXMLInputFileName());
 
   // Read data
   read(xml_in, "/bar3ptfn", input);
@@ -221,7 +221,8 @@ main(int argc, char *argv[])
 
 
   // Instantiate XML writer for XMLDAT
-  XMLFileWriter& xml_out = TheXMLOutputWriter::Instance();
+//  XMLFileWriter xml_out(Chroma::getXMLOutputFileName());
+  XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
   push(xml_out, "bar3ptfn");
 
   proginfo(xml_out);    // Print out basic program info
@@ -414,7 +415,7 @@ main(int argc, char *argv[])
   END_CODE();
 
   // Time to bolt
-  ChromaFinalize();
+  Chroma::finalize();
 
   exit(0);
 }

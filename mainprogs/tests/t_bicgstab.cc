@@ -1,4 +1,4 @@
-// $Id: t_bicgstab.cc,v 1.3 2005-02-28 03:34:47 edwards Exp $
+// $Id: t_bicgstab.cc,v 1.4 2005-03-02 00:44:18 edwards Exp $
 
 #include <iostream>
 #include <sstream>
@@ -47,12 +47,10 @@ void read(XMLReader& xml, const string& path, App_input_t& input)
 int main(int argc, char **argv)
 {
   // Put the machine into a known state
-  QDP_initialize(&argc, &argv);
-
-
+  Chroma::initialize(&argc, &argv);
 
   App_input_t input;
-  XMLReader xml_in("DATA");
+  XMLReader xml_in(Chroma::getXMLInputFileName());
 
   try {
     read(xml_in, "/BiCGStabTest", input);
@@ -71,7 +69,7 @@ int main(int argc, char **argv)
   XMLReader gauge_file_xml, gauge_xml;
   gaugeStartup(gauge_file_xml, gauge_xml, u, input.cfg);
 
-  XMLFileWriter xml_out("XMLDAT");
+  XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
   push(xml_out,"BiCGStabTest");
 
 
@@ -294,7 +292,7 @@ int main(int argc, char **argv)
 
 
   pop(xml_out);
-  QDP_finalize();
+  Chroma::finalize();
     
   exit(0);
 }

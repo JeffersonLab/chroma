@@ -1,4 +1,4 @@
-// $Id: sink_smearing.cc,v 1.17 2005-02-28 03:34:47 edwards Exp $
+// $Id: sink_smearing.cc,v 1.18 2005-03-02 00:44:18 edwards Exp $
 /*! \file
  * \brief Main program for sink-smearing quark propagators
  *
@@ -95,7 +95,7 @@ void read(XMLReader& xml, const string& path, SinkSmear_input_t& input)
 int main(int argc, char **argv)
 {
   // Put the machine into a known state
-  ChromaInitialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
 
   START_CODE();
 
@@ -103,7 +103,7 @@ int main(int argc, char **argv)
   SinkSmear_input_t  input;
 
   // Instantiate xml reader for DATA
-  XMLReader xml_in("./DATA");
+  XMLReader xml_in(Chroma::getXMLInputFileName());
 
   if (xml_in.count("/sink_smearing/Param/elem") == 0)
   {
@@ -137,7 +137,8 @@ int main(int argc, char **argv)
 
 
   // Output
-  XMLFileWriter& xml_out = TheXMLOutputWriter::Instance();
+//  XMLFileWriter xml_out(Chroma::getXMLOutputFileName());
+  XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
   push(xml_out,"sink_smear");
 
   xml_out << xml_in;  // save a copy of the input
@@ -337,7 +338,7 @@ int main(int argc, char **argv)
   END_CODE();
 
   // Time to bolt
-  ChromaFinalize();
+  Chroma::finalize();
 
   exit(0);
 }

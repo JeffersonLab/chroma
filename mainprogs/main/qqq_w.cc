@@ -1,4 +1,4 @@
-// $Id: qqq_w.cc,v 1.25 2005-02-28 03:34:46 edwards Exp $
+// $Id: qqq_w.cc,v 1.26 2005-03-02 00:44:18 edwards Exp $
 /*! \file
  *  \brief Main code for generalized quark propagator
  *
@@ -118,7 +118,7 @@ void read(XMLReader& xml, const string& path, QQQ_input_t& input)
 int main(int argc, char **argv)
 {
   // Put the machine into a known state
-  ChromaInitialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
 
   START_CODE();
 
@@ -126,7 +126,7 @@ int main(int argc, char **argv)
   QQQ_input_t input;
 
   // Instantiate xml reader for DATA
-  XMLReader xml_in("./DATA");
+  XMLReader xml_in(Chroma::getXMLInputFileName());
 
   if (xml_in.count("/qqq_w/Param/elem") == 0)
   {
@@ -160,7 +160,8 @@ int main(int argc, char **argv)
 
 
   // Output
-  XMLFileWriter& xml_out = TheXMLOutputWriter::Instance();
+  // XMLFileWriter xml_out(Chroma::getXMLOutputFileName());
+  XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
   push(xml_out,"qqq");
 
   proginfo(xml_out);    // Print out basic program info
@@ -346,9 +347,7 @@ int main(int argc, char **argv)
   END_CODE();
 
   // Time to bolt
-  ChromaFinalize();
-
-
+  Chroma::finalize();
 
   exit(0);
 }

@@ -1,4 +1,4 @@
-// $Id: t_read_eigen.cc,v 1.4 2005-02-28 03:34:47 edwards Exp $
+// $Id: t_read_eigen.cc,v 1.5 2005-03-02 00:44:19 edwards Exp $
 
 #include <iostream>
 #include <sstream>
@@ -46,10 +46,10 @@ void read(XMLReader& xml, const string& path, ReadEigen_t& param)
 int main(int argc, char **argv)
 {
   // Put the machine into a known state
-  QDP_initialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
 
   ReadEigen_t input;
-  XMLReader xml_in("DATA");
+  XMLReader xml_in(Chroma::getXMLInputFileName());
 
   try { 
     read(xml_in, "/ReadEigen", input);
@@ -91,7 +91,7 @@ int main(int argc, char **argv)
     QDP_error_exit("Configuration type is unsupported.");
   }
 
-  XMLFileWriter xml_out("XMLDAT");
+  XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
   push(xml_out, "ReadEigen");
 
   //  write((XMLWriter &)xml_out, "InputParams", input);
@@ -140,7 +140,7 @@ int main(int argc, char **argv)
   write(xml_out, "check_norm", check_norm);
   pop(xml_out);
 
-  QDP_finalize();
+  Chroma::finalize();
     
   exit(0);
 }

@@ -244,13 +244,14 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
 int main(int argc, char **argv)
 {
   // Put the machine into a known state
-  QDP_initialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
 
   // Input parameter structure
   Propagator_input_t  input;
 
   // Instantiate xml reader for DATA
-  XMLReader xml_in("../../tests/t_asqtad_prop/DISC_DATA_v2");
+//  XMLReader xml_in("../../tests/t_asqtad_prop/DISC_DATA_v2");
+  XMLReader xml_in(Chroma::getXMLInputFileName());
 
   // Read data
   read(xml_in, "/propagator", input);
@@ -266,7 +267,8 @@ int main(int argc, char **argv)
   gaugeStartup(gauge_file_xml, gauge_xml, u, input.cfg);
 
   // Instantiate XML writer for output
-  XMLFileWriter xml_out("t_disc_loop_s.xml");
+  // XMLFileWriter xml_out("t_disc_loop_s.xml");
+  XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
   push(xml_out, "DISCONNECTED");
 
   // Write out the input
@@ -487,7 +489,7 @@ int main(int argc, char **argv)
   xml_in.close();
 
   // Time to bolt
-  QDP_finalize();
+  Chroma::finalize();
 
   exit(0);
 }

@@ -1,4 +1,4 @@
-// $Id: mres.cc,v 1.12 2005-02-28 03:34:46 edwards Exp $
+// $Id: mres.cc,v 1.13 2005-03-02 00:44:18 edwards Exp $
 
 #include "chroma.h"
 
@@ -79,10 +79,10 @@ void read(XMLReader& xml, const string& path, AppInput_t& input)
 int main(int argc, char **argv)
 {
   // Put the machine into a known state
-  ChromaInitialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
 
   AppInput_t input;
-  XMLReader xml_in("./DATA");
+  XMLReader xml_in(Chroma::getXMLInputFileName());
 
   try {
     read(xml_in, "/mres", input);
@@ -142,7 +142,8 @@ int main(int argc, char **argv)
     }
   }
 
-  XMLFileWriter& xml_out = TheXMLOutputWriter::Instance();
+//  XMLFileWriter  xml_out(Chroma::getXMLOutputFileName());
+  XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
   push(xml_out,"mres");
 
   proginfo(xml_out);    // Print out basic program info
@@ -314,7 +315,7 @@ int main(int argc, char **argv)
   write(xml_out, "pseudo_prop_corr", shifted_pseudo);
   pop(xml_out);
   
-  
-  ChromaFinalize();
+  Chroma::finalize();
+
   exit(0);
 }

@@ -31,16 +31,13 @@ bool linkageHack(void)
 
 int main(int argc, char *argv[]) 
 {
+  Chroma::initialize(&argc, &argv);
+  
   // Chroma Init stuff -- Open DATA and XMLDAT
   linkageHack();
 
-  ChromaInitialize(&argc, &argv);
-  
-  // Initialise QDP
-//  QDP_initialize(&argc, &argv);
-
   // Snarf it all
-  XMLReader param_in("DATA");
+  XMLReader param_in(Chroma::getXMLInputFileName());
   XMLReader paramtop(param_in, "/LeapfrogTest");
 
   multi1d<int> nrow(Nd);
@@ -58,8 +55,7 @@ int main(int argc, char *argv[])
 
 
   // Dump output
-  XMLWriter& xml_out = TheXMLOutputWriter::Instance();
-//  XMLFileWriter xml_out("./XMLDAT");
+  XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
   push(xml_out, "t_leapfrog");
 
   // Read Parameters
@@ -151,7 +147,6 @@ int main(int argc, char *argv[])
 
 
   // Finish
-//  QDP_finalize();
-  ChromaFinalize();
+  Chroma::finalize();
   exit(0);
 }

@@ -1,4 +1,4 @@
-// $Id: qpropgfix.cc,v 1.5 2005-01-14 20:13:09 edwards Exp $
+// $Id: qpropgfix.cc,v 1.6 2005-03-02 00:44:18 edwards Exp $
 /*! \file
  *  \brief Applies gauge transformation matrices on a propagator
  */
@@ -111,7 +111,7 @@ void read(XMLReader& xml, const string& path, QpropGFix_input_t& input)
 int main(int argc, char *argv[])
 {
   // Put the machine into a known state
-  ChromaInitialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
 
   START_CODE();
   
@@ -119,7 +119,7 @@ int main(int argc, char *argv[])
   QpropGFix_input_t input;
 
   // Instantiate xml reader for DATA
-  XMLReader xml_in("./DATA");
+  XMLReader xml_in(Chroma::getXMLInputFileName());
 
   // Read data
   read(xml_in, "/qpropgfix", input);
@@ -130,7 +130,7 @@ int main(int argc, char *argv[])
 
   QDPIO::cout << "QPROPGFIX: propagator gauge fixing utility" << endl;
 
-  XMLFileWriter& xml_out = TheXMLOutputWriter::Instance();
+  XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
   push(xml_out, "qpropgfix");
 
   proginfo(xml_out);    // Print out basic program info
@@ -271,7 +271,7 @@ int main(int argc, char *argv[])
   END_CODE();
 
   // Time to bolt
-  ChromaFinalize();
+  Chroma::finalize();
 
   exit(0);
 }

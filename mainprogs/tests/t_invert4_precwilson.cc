@@ -1,4 +1,4 @@
-// $Id: t_invert4_precwilson.cc,v 1.6 2005-02-28 03:34:47 edwards Exp $
+// $Id: t_invert4_precwilson.cc,v 1.7 2005-03-02 00:44:19 edwards Exp $
 
 #include <iostream>
 #include <sstream>
@@ -90,12 +90,13 @@ void checkInverter(multi1d<LatticeColorMatrix>& u)
 int main(int argc, char **argv)
 {
   // Put the machine into a known state
-  QDP_initialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
 
   Params_t params;
 
   // Read params
-  XMLReader reader("DATA");
+  XMLReader reader(Chroma::getXMLInputFileName());
+
   string stype;
   try { 
     read(reader, "/t_invert/params/nrow", params.nrow);
@@ -138,7 +139,7 @@ int main(int argc, char **argv)
   Layout::setLattSize(params.nrow);
   Layout::create();
 
-  XMLFileWriter xml("XMLDAT");
+  XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
   push(xml,"t_invert");
   push(xml,"params");
   write(xml, "nrow", params.nrow);
@@ -271,7 +272,7 @@ int main(int argc, char **argv)
   pop(xml);
   xml.close();
 
-  QDP_finalize();
+  Chroma::finalize();
     
   exit(0);
 }

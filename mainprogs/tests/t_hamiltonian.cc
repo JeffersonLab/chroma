@@ -31,7 +31,7 @@ bool linkage_hack()
 int main(int argc, char *argv[]) 
 {
   // Initialise QDP
-  QDP_initialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
 
   // Setup a small lattice
   const int nrow_arr[] = {2, 2, 2, 2};
@@ -51,13 +51,13 @@ int main(int argc, char *argv[])
   }
 
   // Dump output
-  XMLFileWriter xml_out("./XMLDAT");
+  XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
   push(xml_out, "t_gauge_ferm_monomials");
 
   // Read Parameters
   multi1d<int> boundary(Nd);           // Ferm BC's
   std::string monomial_name;           // String for Factory
-  XMLReader param_in("DATA");
+  XMLReader param_in(Chroma::getXMLInputFileName());
   // Snarf it all
   XMLReader paramtop(param_in, "/HamiltonianTest");
     
@@ -100,7 +100,7 @@ int main(int argc, char *argv[])
   xml_out.close();
 
     // Finish
-  QDP_finalize();
+  Chroma::finalize();
 
   exit(0);
 }

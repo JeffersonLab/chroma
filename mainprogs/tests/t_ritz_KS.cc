@@ -1,4 +1,4 @@
-// $Id: t_ritz_KS.cc,v 1.22 2005-02-28 03:34:47 edwards Exp $
+// $Id: t_ritz_KS.cc,v 1.23 2005-03-02 00:44:19 edwards Exp $
 
 #include "chroma.h"
 
@@ -29,10 +29,10 @@ void RitzCode4DHw(Handle< const LinearOperator<LatticeFermion> >& MM,
 int main(int argc, char **argv)
 {
   // Put the machine into a known state
-  QDP_initialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
 
   ChromaWilsonRitz_t input;
-  XMLReader xml_in("DATA");
+  XMLReader xml_in(Chroma::getXMLInputFileName());
 
   try { 
     read(xml_in, "/WilsonRitzEigen", input);
@@ -55,7 +55,7 @@ int main(int argc, char **argv)
   XMLReader gauge_file_xml, gauge_xml;
   gaugeStartup(gauge_file_xml, gauge_xml, u, input.cfg);
 
-  XMLFileWriter xml_out("XMLDAT");
+  XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
   push(xml_out, "RitzEigen");
   proginfo(xml_out);
 
@@ -184,7 +184,7 @@ int main(int argc, char **argv)
   pop(xml_out);
   xml_out.flush();
   xml_out.close();
-  QDP_finalize();
+  Chroma::finalize();
     
   exit(0);
 }

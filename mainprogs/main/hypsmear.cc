@@ -1,5 +1,5 @@
 /*
- *  $Id: hypsmear.cc,v 1.21 2005-02-28 03:34:46 edwards Exp $
+ *  $Id: hypsmear.cc,v 1.22 2005-03-02 00:44:18 edwards Exp $
  *
  *  This is the top-level routine for HYP smearing.
  *  It is a wrapper for Urs' and Robert's implmenetation of the HYP
@@ -159,7 +159,7 @@ void read(XMLReader& xml, const string& path, Hypsmear_input_t& input)
 int main(int argc, char *argv[])
 {
   // Put the machine into a known state
-  ChromaInitialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
 
   START_CODE();
 
@@ -167,7 +167,7 @@ int main(int argc, char *argv[])
   Hypsmear_input_t input;
 
   // Instantiate xml reader for DATA
-  XMLReader xml_in("./DATA");
+  XMLReader xml_in(Chroma::getXMLInputFileName());
 
   // Read data
   read(xml_in, "/hypsmear", input);
@@ -191,7 +191,9 @@ int main(int argc, char *argv[])
 
 
   // Instantiate XML writer for XMLDAT
-  XMLFileWriter& xml_out = TheXMLOutputWriter::Instance();
+//  XMLFileWriter  xml_out(Chroma::getXMLOutputFileName());
+  XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
+
   push(xml_out, "hypsmear");
 
   proginfo(xml_out);    // Print out basic program info
@@ -291,7 +293,7 @@ int main(int argc, char *argv[])
   END_CODE();
 
   // Time to bolt
-  ChromaFinalize();
+  Chroma::finalize();
 
   exit(0);
 }

@@ -22,7 +22,7 @@ HBParams::HBParams(int x1, double x2, double x3, bool x4)
 
 int main(int argc, char *argv[]) {
 	// Put the machine into a known state
-	QDP_initialize(&argc, &argv);
+	Chroma::initialize(&argc, &argv);
 
 	//set parameters: (NmaxHB, BetaMC,XiBare,AnisoP)
 	HBParams hbp(-5,5.6,1.0,false);
@@ -53,6 +53,6 @@ int main(int argc, char *argv[]) {
 	}
 	
 	Layout::destroy();
-	QDP_finalize();
+	Chroma::finalize();
 	return 1;
 }

@@ -92,7 +92,7 @@ void funky_new_dsdu(const UnprecLinearOperator<LatticeFermion, multi1d<LatticeCo
 int main(int argc, char *argv[])
 {
   // Initialise QDP
-  QDP_initialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
 
   // Setup a small lattice
   const int nrow_arr[] = {2, 2, 2, 2};
@@ -318,7 +318,7 @@ int main(int argc, char *argv[])
   */
 
     // Finish
-  QDP_finalize();
+  Chroma::finalize();
 
   exit(0);
 }

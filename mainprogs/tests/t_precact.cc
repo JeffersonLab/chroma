@@ -1,4 +1,4 @@
-// $Id: t_precact.cc,v 1.16 2005-02-28 03:34:47 edwards Exp $
+// $Id: t_precact.cc,v 1.17 2005-03-02 00:44:19 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -321,7 +321,7 @@ void read(XMLReader& xml, const string& path, Test_input_t& input)
 int main(int argc, char **argv)
 {
   // Put the machine into a known state
-  QDP_initialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
 
   QDPIO::cout << "linkage=" << linkage_hack() << endl;
 
@@ -329,7 +329,7 @@ int main(int argc, char **argv)
   Test_input_t  input;
 
   // Instantiate xml reader for DATA
-  XMLReader xml_in("DATA");
+  XMLReader xml_in(Chroma::getXMLInputFileName());
 
   // Read data
   read(xml_in, "/t_precact", input);
@@ -348,7 +348,7 @@ int main(int argc, char **argv)
   gaugeStartup(gauge_file_xml, gauge_xml, u, input.cfg);
 
   // Instantiate XML writer for XMLDAT
-  XMLFileWriter xml_out("t_precact.xml");
+  XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
   push(xml_out, "t_precact");
 
   proginfo(xml_out);    // Print out basic program info
@@ -499,7 +499,7 @@ int main(int argc, char **argv)
   pop(xml_out);
 
   // Time to bolt
-  QDP_finalize();
+  Chroma::finalize();
 
   exit(0);
 }

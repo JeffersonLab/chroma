@@ -1,4 +1,4 @@
-// $Id: t_wilslp.cc,v 1.3 2005-02-11 16:04:57 edwards Exp $
+// $Id: t_wilslp.cc,v 1.4 2005-03-02 00:44:20 edwards Exp $
 //
 // Test driver for wilslp
 // default test uses the usual NERSC 4^4 config.
@@ -16,7 +16,7 @@ using namespace Chroma;
 int main(int argc, char *argv[])
 {
   // Put the machine into a known state
-  QDP_initialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
 
   // Setup the layout
     const int foo[] = {4,4,4,4}; 
@@ -127,7 +127,7 @@ int main(int argc, char *argv[])
   pop(xml);
 
   // Time to bolt
-  QDP_finalize();
+  Chroma::finalize();
 
   exit(0);
 }

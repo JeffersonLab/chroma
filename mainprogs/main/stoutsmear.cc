@@ -106,7 +106,7 @@ void read(XMLReader& xml, const string& path, Stoutsmear_input_t& input)
 int main(int argc, char *argv[])
 {
   // Put the machine into a known state
-  QDP_initialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
 
   START_CODE();
 
@@ -114,7 +114,7 @@ int main(int argc, char *argv[])
   Stoutsmear_input_t input;
 
   // Instantiate xml reader for DATA
-  XMLReader xml_in("DATA");
+  XMLReader xml_in(Chroma::getXMLInputFileName());
 
   // Read data
   read(xml_in, "/stoutsmear", input);
@@ -136,7 +136,8 @@ int main(int argc, char *argv[])
   read(gauge_xml, "/szin", szin_gauge_header);
 
   // Instantiate XML writer
-  XMLFileWriter xml_out("XMLDAT");
+  // XMLFileWriter xml_out("XMLDAT");
+  XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
   push(xml_out, "stoutsmear");
   proginfo(xml_out);    // Print out basic program info
 
@@ -213,7 +214,7 @@ int main(int argc, char *argv[])
   END_CODE();
 
   // Time to bolt
-  QDP_finalize();
+  Chroma::finalize();
 
   exit(0);
 }

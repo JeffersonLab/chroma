@@ -1,4 +1,4 @@
-// $Id: t_lwldslash.cc,v 1.15 2005-01-14 20:13:09 edwards Exp $
+// $Id: t_lwldslash.cc,v 1.16 2005-03-02 00:44:19 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -12,7 +12,7 @@ using namespace Chroma;
 int main(int argc, char **argv)
 {
   // Put the machine into a known state
-  QDP_initialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
 
   // Setup the layout
   const int foo[] = {4,4,4,4};
@@ -79,7 +79,7 @@ int main(int argc, char **argv)
   */
 
   // Time to bolt
-  QDP_finalize();
+  Chroma::finalize();
 
   exit(0);
 }

@@ -1,4 +1,4 @@
-// $Id: t_ritz5d_KS.cc,v 1.6 2005-02-28 03:34:47 edwards Exp $
+// $Id: t_ritz5d_KS.cc,v 1.7 2005-03-02 00:44:19 edwards Exp $
 
 #include "chroma.h"
 
@@ -104,13 +104,13 @@ void dumpParams(XMLWriter& writer, Param_t& params)
 int main(int argc, char **argv)
 {
   // Put the machine into a known state
-  QDP_initialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
 
   // Read the parameters 
   Param_t params;
 
   try { 
-    readParams("./DATA", params);
+    readParams(Chroma::getXMLInputFileName(), params);
   }
   catch(const string& s) { 
     QDPIO::cerr << "Caught exception " << s << endl;
@@ -123,7 +123,7 @@ int main(int argc, char **argv)
   Layout::create();
 
   // Write out the params
-  XMLFileWriter xml_out("t_ritz.xml");
+  XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
   push(xml_out, "ritzTest");
 
   dumpParams(xml_out, params);
@@ -309,7 +309,7 @@ UnprecOvlapContFrac5DFermActArray S(fbc5,
   write(xml_out, "szinLamda", lambda);
   
   pop(xml_out);
-  QDP_finalize();
+  Chroma::finalize();
     
   exit(0);
 }

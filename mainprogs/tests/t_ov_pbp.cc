@@ -1,4 +1,4 @@
-// $Id: t_ov_pbp.cc,v 1.4 2005-02-28 03:34:47 edwards Exp $
+// $Id: t_ov_pbp.cc,v 1.5 2005-03-02 00:44:19 edwards Exp $
 
 #include <iostream>
 #include <sstream>
@@ -334,7 +334,7 @@ void readEigenVecs(const multi1d<LatticeColorMatrix>& u,
 int main(int argc, char **argv)
 {
   // Put the machine into a known state
-  QDP_initialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
 
   std::string root_prefix="";
 
@@ -587,7 +587,7 @@ int main(int argc, char **argv)
   pop(xml_out);
   xml_out.close();
 
-  QDP_finalize();
+  Chroma::finalize();
     
   exit(0);
 }

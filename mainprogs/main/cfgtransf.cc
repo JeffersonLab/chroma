@@ -1,4 +1,4 @@
-// $Id: cfgtransf.cc,v 1.20 2005-02-28 03:34:46 edwards Exp $
+// $Id: cfgtransf.cc,v 1.21 2005-03-02 00:44:18 edwards Exp $
 /*! \file
  *  \brief Many-to-many gauge transformation routine
  */
@@ -17,7 +17,7 @@ using namespace Chroma;
 int main(int argc, char **argv)
 {
   // Put the machine into a known state
-  QDP_initialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
 
   START_CODE();
   
@@ -29,7 +29,9 @@ int main(int argc, char **argv)
   Layout::setLattSize(nrow);
   Layout::create();
 
-  XMLFileWriter xml_out("cfgtransf.xml");
+//  XMLFileWriter xml_out("cfgtransf.xml");
+  Chroma::setXMLOutputFileName("cfgtransf.xml");
+  XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
   push(xml_out, "cfgtransf");
 
   proginfo(xml_out);    // Print out basic program info
@@ -752,7 +754,7 @@ int main(int argc, char **argv)
   END_CODE();
   
   // Time to bolt
-  QDP_finalize();
+  Chroma::finalize();
 
   exit(0);
 }

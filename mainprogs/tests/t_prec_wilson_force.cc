@@ -124,7 +124,7 @@ void funky_new_dsdu(const EvenOddPrecLinearOperator<LatticeFermion, multi1d<Latt
 int main(int argc, char *argv[])
 {
   // Initialise QDP
-  QDP_initialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
 
   // Setup a small lattice
   const int nrow_arr[] = {2, 2, 2, 2};
@@ -214,7 +214,7 @@ int main(int argc, char *argv[])
   xml_out.close();
 
     // Finish
-  QDP_finalize();
+  Chroma::finalize();
 
   exit(0);
 }

@@ -1,4 +1,4 @@
-// $Id: qproptransf.cc,v 1.14 2005-01-14 20:13:09 edwards Exp $
+// $Id: qproptransf.cc,v 1.15 2005-03-02 00:44:18 edwards Exp $
 /*! \file
  *  \brief Converts quark propagators in one format into another format.
  */
@@ -144,7 +144,7 @@ void read(XMLReader& xml, const string& path, QpropTransf_input_t& input)
 int main(int argc, char *argv[])
 {
   // Put the machine into a known state
-  ChromaInitialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
 
   START_CODE();
   
@@ -152,7 +152,7 @@ int main(int argc, char *argv[])
   QpropTransf_input_t input;
 
   // Instantiate xml reader for DATA
-  XMLReader xml_in("./DATA");
+  XMLReader xml_in(Chroma::getXMLInputFileName());
 
   // Read data
   read(xml_in, "/qproptransf", input);
@@ -163,7 +163,7 @@ int main(int argc, char *argv[])
 
   QDPIO::cout << "QPROPTRANSF: propagator transformation utility" << endl;
 
-  XMLFileWriter& xml_out = TheXMLOutputWriter::Instance();
+  XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
   push(xml_out, "qproptransf");
 
   proginfo(xml_out);    // Print out basic program info
@@ -404,7 +404,7 @@ int main(int argc, char *argv[])
   END_CODE();
 
   // Time to bolt
-  ChromaFinalize();
+  Chroma::finalize();
 
   exit(0);
 }

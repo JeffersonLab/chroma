@@ -1,4 +1,4 @@
-// $Id: t_propagator_twisted.cc,v 1.4 2005-02-28 03:34:47 edwards Exp $
+// $Id: t_propagator_twisted.cc,v 1.5 2005-03-02 00:44:19 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation of twisted mass QCD
  *   
@@ -188,13 +188,14 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
 int main(int argc, char **argv)
 {
   // Put the machine into a known state
-  QDP_initialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
 
   // Input parameter structure
   Propagator_input_t  input;
 
   // Instantiate xml reader for DATA
-  XMLReader xml_in("INPUT_t_propagator_twisted.xml");
+  // XMLReader xml_in("INPUT_t_propagator_twisted.xml");
+  XMLReader xml_in(Chroma::getXMLInputFileName());
 
   // Read data
   read(xml_in, "/propagator", input);
@@ -217,7 +218,8 @@ int main(int argc, char **argv)
   unitarityCheck(u);
 
   // Instantiate XML writer for output
-  XMLFileWriter xml_out("t_propagator_twisted.xml");
+  // XMLFileWriter xml_out("t_propagator_twisted.xml");
+  XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
   push(xml_out, "propagator");
 
   // Write out the input
@@ -353,7 +355,7 @@ int main(int argc, char **argv)
   xml_in.close();
 
   // Time to bolt
-  QDP_finalize();
+  Chroma::finalize();
 
   exit(0);
 }

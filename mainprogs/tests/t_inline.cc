@@ -1,4 +1,4 @@
-// $Id: t_inline.cc,v 1.1 2005-02-08 03:17:22 edwards Exp $
+// $Id: t_inline.cc,v 1.2 2005-03-02 00:44:19 edwards Exp $
 // Test driver for inline measurements
 
 #include "chroma.h"
@@ -65,19 +65,19 @@ bool linkageHack(void)
 
 int main(int argc, char *argv[]) 
 {
-  ChromaInitialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
   
   // Chroma Init stuff -- Open DATA and XMLDAT
   linkageHack();
 
-  XMLWriter& xml_out = TheXMLOutputWriter::Instance();
-  push(xml_out, "t_inline");
-
-  XMLReader xml_in("./DATA");
+  XMLReader xml_in(Chroma::getXMLInputFileName());
 
   // Input parameter structure
   Inline_input_t  input;
   read(xml_in, "/t_inline", input);
+
+  XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
+  push(xml_out, "t_inline");
 
   // Write out the input
   write(xml_out, "Input", xml_in);
@@ -128,10 +128,10 @@ int main(int argc, char *argv[])
     }
   }
   pop(xml_out); // pop("InlineObservables");
-
   pop(xml_out);
 
-  ChromaFinalize();
+  Chroma::finalize();
+
   exit(0);
 }
 

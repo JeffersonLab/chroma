@@ -1,4 +1,4 @@
-// $Id: t_lower_tests.cc,v 1.2 2005-01-14 20:13:09 edwards Exp $
+// $Id: t_lower_tests.cc,v 1.3 2005-03-02 00:44:19 edwards Exp $
 //
 //  This is a collection of simple 
 //  tests to make sure that none of 
@@ -18,7 +18,7 @@ using namespace Chroma;
 int main(int argc, char *argv[])
 {
   // Put the machine into a known state
-  QDP_initialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
 
   // Setup the layout
   const int foo[] = {4,4,4,4};
@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
   pop(xml);
 
   // Time to bolt
-  QDP_finalize();
+  Chroma::finalize();
 
   exit(0);
 }

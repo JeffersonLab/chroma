@@ -1,11 +1,10 @@
 #include "chroma.h"
 
-using namespace QDP;
 using namespace Chroma;
 
-int main(int argc, char *argv[]) { 
-
-  ChromaInitialize(&argc, &argv);
+int main(int argc, char *argv[]) 
+{ 
+  Chroma::initialize(&argc, &argv);
 
   CircularBuffer<int> c(3);
 
@@ -64,5 +63,6 @@ int main(int argc, char *argv[]) {
   }
 
 
-  ChromaFinalize();
+  Chroma::finalize();
+  exit(0);
 }

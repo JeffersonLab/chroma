@@ -1,4 +1,4 @@
-// $Id: hmc.cc,v 1.2 2005-02-18 17:40:02 edwards Exp $
+// $Id: hmc.cc,v 1.3 2005-03-02 00:44:18 edwards Exp $
 /*! \file
  *  \brief Main code for HMC with dynamical fermion generation
  */
@@ -391,20 +391,20 @@ using namespace Chroma;
 
 int main(int argc, char *argv[]) 
 {
+  Chroma::initialize(&argc, &argv);
+  
   // Chroma Init stuff -- Open DATA and XMLDAT
   linkageHack();
 
-  ChromaInitialize(&argc, &argv);
-  
-  XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+  XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
   push(xml_out, "hmc");
 
   HMCTrjParams trj_params;
   MCControl    mc_control;
 
-  try{ 
-
-    XMLReader xml_in("./DATA");
+  try
+  {
+    XMLReader xml_in(Chroma::getXMLInputFileName());
 
     XMLReader paramtop(xml_in, "/Params");
     read( paramtop, "./HMCTrj", trj_params);
@@ -478,7 +478,7 @@ int main(int argc, char *argv[])
 
   pop(xml_out);
 
-  ChromaFinalize();
+  Chroma::finalize();
   exit(0);
 }
 

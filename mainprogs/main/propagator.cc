@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.92 2005-02-28 03:34:46 edwards Exp $
+// $Id: propagator.cc,v 1.93 2005-03-02 00:44:18 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -103,12 +103,8 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
 int main(int argc, char **argv)
 {
   // Put the machine into a known state
-  /*
-  QDP_initialize(&argc, &argv);
- 
-  
-  */
-  ChromaInitialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
+
   QDPIO::cout << "linkage=" << linkage_hack() << endl;
 
   START_CODE();
@@ -117,7 +113,7 @@ int main(int argc, char **argv)
   Propagator_input_t  input;
 
   // Instantiate xml reader for DATA
-  XMLReader xml_in("./DATA");
+  XMLReader xml_in(Chroma::getXMLInputFileName());
 
   // Read data
   read(xml_in, "/propagator", input);
@@ -195,9 +191,9 @@ int main(int argc, char **argv)
 
   
   // Instantiate XML writer for XMLDAT
-  //  XMLFileWriter xml_out("XMLDAT");
-  XMLFileWriter& xml_out = TheXMLOutputWriter::Instance();
- 
+  // XMLFileWriter xml_out("XMLDAT");
+  // XMLFileWriter xml_out(Chroma::getXMLOutputFileName());
+  XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
   push(xml_out, "propagator");
 
   proginfo(xml_out);    // Print out basic program info
@@ -285,7 +281,7 @@ int main(int argc, char **argv)
   // Try the factories
   //
   bool success = false;
-  bool mresP = true;
+  bool mresP = false;
 
   if (! success)
   {
@@ -389,12 +385,12 @@ int main(int argc, char **argv)
   pop(xml_out);  // propagator
 
   // xml_out.close();
-  // xml_in.close();
+  xml_in.close();
 
   END_CODE();
 
   // Time to bolt
-  ChromaFinalize();
+  Chroma::finalize();
 
   exit(0);
 }

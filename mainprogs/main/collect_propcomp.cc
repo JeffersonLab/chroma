@@ -1,6 +1,11 @@
-// $Id: collect_propcomp.cc,v 1.12 2005-02-28 03:34:46 edwards Exp $
+// $Id: collect_propcomp.cc,v 1.13 2005-03-02 00:44:18 edwards Exp $
 // $Log: collect_propcomp.cc,v $
-// Revision 1.12  2005-02-28 03:34:46  edwards
+// Revision 1.13  2005-03-02 00:44:18  edwards
+// Changed to new Chroma initialize/finalize format. Changed
+// all XMLReader("DATA") to use a command-line param arg.
+// Changed all XMLFileWriter(XMLDAT) to use the singleton instance.
+//
+// Revision 1.12  2005/02/28 03:34:46  edwards
 // Collapsed code surrounding MesPlq call to a single sub call.
 //
 // Revision 1.11  2005/01/14 20:13:08  edwards
@@ -198,10 +203,7 @@ void read(XMLReader& xml, const string& path, PropagatorComponent_input_t& input
 
 int main(int argc, char **argv)
 {
-  // Put the machine into a known state
-  //  QDP_initialize(&argc, &argv);
-
-  ChromaInitialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
 
   START_CODE();
 
@@ -209,7 +211,7 @@ int main(int argc, char **argv)
   PropagatorComponent_input_t  input;
 
   // Instantiate xml reader for DATA
-  XMLReader xml_in("./DATA");
+  XMLReader xml_in(Chroma::getXMLInputFileName());
 
   // Read data
   try { 
@@ -292,7 +294,8 @@ int main(int argc, char **argv)
 
 
   // Instantiate XML writer for XMLDAT
-  XMLFileWriter& xml_out = TheXMLOutputWriter::Instance();
+//  XMLFileWriter xml_out(Chroma::getXMLOutputFileName());
+  XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
 
   push(xml_out, "collectPropcomp");
 
@@ -454,7 +457,7 @@ int main(int argc, char **argv)
   END_CODE();
 
   // Time to bolt
-  ChromaFinalize();
+  Chroma::finalize();
   
   exit(0);
 }
