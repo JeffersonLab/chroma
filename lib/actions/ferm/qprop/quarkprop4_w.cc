@@ -1,4 +1,4 @@
-// $Id: quarkprop4_w.cc,v 1.1 2003-11-10 05:06:21 edwards Exp $
+// $Id: quarkprop4_w.cc,v 1.2 2003-11-13 18:18:22 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -7,6 +7,7 @@
 
 #include "chromabase.h"
 #include "fermact.h"
+#include "fermact_array.h"
 #include "actions/ferm/qprop/quarkprop4_w.h"
 #include "util/ferm/transf_w.h"
 
@@ -25,11 +26,11 @@ using namespace QDP;
  * \param ncg_had  number of CG iterations ( Write )
  */
 
-template<typename T>
+template<typename T, template<class> class C>
 void quarkProp4_a(LatticePropagator& q_sol, 
 		  XMLWriter& xml_out,
 		  const LatticePropagator& q_src,
-		  const WilsonTypeFermAct<T>& S_f,
+		  const C<T>& S_f,
 		  const multi1d<LatticeColorMatrix>& u,
 		  enum InvType invType,
 		  const Real& RsdCG, 
@@ -133,6 +134,32 @@ void quarkProp4(LatticePropagator& q_sol,
 		XMLWriter& xml_out,
 		const LatticePropagator& q_src,
 		const WilsonTypeFermAct<LatticeDWFermion>& S_f,
+		const multi1d<LatticeColorMatrix>& u,
+		enum InvType invType,
+		const Real& RsdCG, 
+		int MaxCG, int& ncg_had)
+{
+  quarkProp4_a(q_sol, xml_out, q_src, S_f, u, invType, RsdCG, MaxCG, ncg_had);
+}
+
+
+//! Given a complete propagator as a source, this does all the inversions needed
+/*! \ingroup qprop
+ *
+ * This routine is actually generic to all Wilson-like fermions
+ *
+ * \param q_sol    quark propagator ( Write )
+ * \param q_src    source ( Read )
+ * \param invType  inverter type ( Read (
+ * \param RsdCG    CG (or MR) residual used here ( Read )
+ * \param MaxCG    maximum number of CG iterations ( Read )
+ * \param ncg_had  number of CG iterations ( Write )
+ */
+
+void quarkProp4(LatticePropagator& q_sol, 
+		XMLWriter& xml_out,
+		const LatticePropagator& q_src,
+		const WilsonTypeFermActArray<LatticeFermion>& S_f,
 		const multi1d<LatticeColorMatrix>& u,
 		enum InvType invType,
 		const Real& RsdCG, 
