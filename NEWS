@@ -1,5 +1,11 @@
 11/20/2003 -- Robert Edwards
 
+	Version 1.1.4. Switched LinearOperator and FermionAction interfaces to
+        pass what was return type as instead argument to operator() & apply (linop)
+        and dsdu (fermact).
+
+11/20/2003 -- Robert Edwards
+
 	Version 1.1.3. Small tweaks.
 
 11/16/2003 -- Robert Edwards
