@@ -10,61 +10,54 @@
 #include "util/gauge/expmat.h"
 
 // Interface definitions. Are these useful at all?
-template<typename P, typename Q>
-class SymplecticUpdates {
+template<typename P, typename Q, typename FS, typename H>
+class AbsSymplecticUpdates {
 public:
   // Virtual destructor
-  virtual ~SymplecticUpdates() {}
+  virtual ~AbsSymplecticUpdates<P,Q,FS,H>() {}
+  
+  // Virtual copy like clone function
+  virtual AbsSymplecticUpdates<P,Q,FS,H>* clone(void) const = 0;
 
-  // Virtual Copy like clone function
-  virtual SymplecticUpdates* clone(void) const = 0;
+  // access but not mutate the hamiltonian
+  virtual const H& getHam(void) const = 0;
 
-  // Access but not mutate the hamiltonian
-  virtual const AbsHamiltonian<P,Q>& getHam(void) const = 0;
+  // Integrate the momenta forward a step of length eps
+  virtual void leapP(FS& s, Real eps) const = 0;
 
-  // Integrate the momenta a step of length eps
-  virtual void leapP(AbsFieldState<P,Q>& s, Real eps) const = 0;
+  // Integrate the coordinates forward a step of length eps
+  virtual void leapQ(FS& s, Real eps) const = 0;
 
-  // Integrate the coordinates a step of length eps
-  virtual void leapQ(AbsFieldState<P,Q>& s, Real eps) const = 0;
 };
 
-
-// Now something a little more concrete so that we can work
-class AbsPureGaugeSympUpdates
-  : public SymplecticUpdates< multi1d<LatticeColorMatrix>, 
-			      multi1d<LatticeColorMatrix> >
-{
+/* Specialisation to P = LatColMat, Q = LatColMat 
+   at this stage we can add templated leapP and leapQ code
+   which works for both fermionic and non fermionic FS and H 
+*/
+template<typename FS, typename H>
+class AbsLatColMatSympUpdates : public 
+AbsSymplecticUpdates<multi1d<LatticeColorMatrix>,
+		     multi1d<LatticeColorMatrix>,
+		     FS, H> {
 public:
 
-  virtual ~AbsPureGaugeSympUpdates() {}
+  // Virtual destructor
+  virtual ~AbsLatColMatSympUpdates<FS,H>(void) {};
 
-  virtual AbsPureGaugeSympUpdates* clone(void) const = 0;
-
-  // Extension of the interface, so that we can write
- 
-  // Satisfy the interfaces
-
-  // Get Hamiltonian 
-  // Note for the symplectic updates, it does not need to be 
-  // an Exact Hamiltonian, since we only need the force which they all do
-  virtual const  AbsHamiltonian<multi1d<LatticeColorMatrix>, 
-				multi1d<LatticeColorMatrix> >& getHam(void) const = 0;
-
+  // Virtual copy like clone function
+  virtual AbsLatColMatSympUpdates<FS,H>* clone(void) const = 0;
   
   // Leap P
-  virtual void leapP(AbsFieldState<multi1d<LatticeColorMatrix>, 
-		                   multi1d<LatticeColorMatrix> >& s, 
+  virtual void leapP(FS& s, 
 		     Real eps) const
   {
-   const  AbsHamiltonian<multi1d<LatticeColorMatrix>, 
-                         multi1d<LatticeColorMatrix> >& H = getHam();
+    const  H& Ham = getHam();
 
     multi1d<LatticeColorMatrix> dSdQ(Nd);
     
     // Compute the force into dSdQ
-    H.dsdq(s, dSdQ);
-    H.applyPBoundary(dSdQ);
+    Ham.dsdq(s, dSdQ);
+    Ham.applyPBoundary(dSdQ);
 
     for(int mu = 0; mu < Nd; mu++) { 
       // p = p - dt dSdQ
@@ -77,8 +70,7 @@ public:
 
 
   // Leap Q
-  virtual void leapQ(AbsFieldState<multi1d<LatticeColorMatrix>, 
-		                   multi1d<LatticeColorMatrix> >& s,
+  virtual void leapQ(FS& s,
 		     Real eps) const
   {
     LatticeColorMatrix tmp_1;
@@ -113,6 +105,43 @@ public:
     // getHam().applyQBoundary(s.getQ());
   }
 };
+
+// Now Specialise to field state and hamiltonian with no Fermions 
+class AbsPureGaugeSympUpdates
+  : public AbsLatColMatSympUpdates< AbsFieldState<multi1d<LatticeColorMatrix>,
+					           multi1d<LatticeColorMatrix> >,
+				 AbsHamiltonian<multi1d<LatticeColorMatrix>,
+						multi1d<LatticeColorMatrix> > >
+{
+public:
+
+  virtual ~AbsPureGaugeSympUpdates() {}
+
+  virtual AbsPureGaugeSympUpdates* clone(void) const = 0;
+
+  virtual const  AbsHamiltonian<multi1d<LatticeColorMatrix>, 
+				multi1d<LatticeColorMatrix> >& getHam(void) const = 0;
+};
+
+class AbsGaugeFermSympUpdates
+  : public AbsLatColMatSympUpdates< AbsPFFieldState<multi1d<LatticeColorMatrix>,
+					           multi1d<LatticeColorMatrix>,
+						    LatticeFermion >,
+				 AbsFermHamiltonian<multi1d<LatticeColorMatrix>,
+						    multi1d<LatticeColorMatrix>,
+						    LatticeFermion> >
+{
+public:
+
+  virtual ~AbsGaugeFermSympUpdates() {}
+
+  virtual AbsGaugeFermSympUpdates* clone(void) const = 0;
+
+  virtual const  AbsFermHamiltonian<multi1d<LatticeColorMatrix>, 
+				    multi1d<LatticeColorMatrix>,
+				    LatticeFermion>& getHam(void) const = 0;
+};
+
 
 
 #endif

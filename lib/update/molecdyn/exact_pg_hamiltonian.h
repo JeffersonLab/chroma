@@ -52,7 +52,8 @@ public:
     // Call CreateState to return a copy with BC's applied
 
     // Call dsdu from the gauge action
-    S_g.dsdu(F, s.getQ());
+    Handle< const ConnectState> g_state(S_g.createState(s.getQ()));
+    S_g.dsdu(F, g_state);
 
     // ConnectState now gets freed
   }
@@ -61,14 +62,14 @@ public:
   //! I am not going to normalise here, as it lets me
   //! define acceptReject in the HMC without having to know
   //! the stupid normalisations
-  virtual Double mesKE(AbsFieldState<multi1d<LatticeColorMatrix>, 
+  virtual Double mesKE(const AbsFieldState<multi1d<LatticeColorMatrix>, 
 		       multi1d<LatticeColorMatrix> >& s) const
   {
     // Extract momenta from the state
     // Once momenta have been refreshed, they are zeroed
     // on the gauge boundaries as requires so no need to mess
     // with gauge boundaries...
-    multi1d<LatticeColorMatrix>& mom = s.getP();
+    const multi1d<LatticeColorMatrix>& mom = s.getP();
 
     // Square it up
     Double p_mom_sq = Double(0);
@@ -89,7 +90,7 @@ public:
   }
 
   //! Measure the potential energy (per link)
-  virtual Double mesPE(AbsFieldState<multi1d<LatticeColorMatrix>,
+  virtual Double mesPE(const AbsFieldState<multi1d<LatticeColorMatrix>,
 		       multi1d<LatticeColorMatrix> >& s) const
   {
 
@@ -97,7 +98,8 @@ public:
     // There are too many S's in this line.
 
     // The S() function of S_g applies boundaries
-    Double PE = S_g.S(s.getQ());
+    Handle< const ConnectState> g_state(S_g.createState(s.getQ()));
+    Double PE = S_g.S(g_state);
     return PE;
   }
 

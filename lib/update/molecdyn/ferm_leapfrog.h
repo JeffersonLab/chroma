@@ -1,5 +1,5 @@
-#ifndef pg_leapfrog_h
-#define pg_leapfrog_h
+#ifndef fermion_leapfrog_h
+#define fermion_leapfrog_h
 
 #include "chromabase.h"
 #include "update/field_state.h"
@@ -12,25 +12,25 @@ using namespace std;
 //! A Concrete Leapfrog for Pure Gauge Systems.
 //  Templated on 
 
-class PureGaugePQPLeapFrog : public AbsLatColMatPQPLeapFrog<
-  AbsFieldState<multi1d<LatticeColorMatrix>,
-	        multi1d<LatticeColorMatrix> >,
-  AbsHamiltonian< multi1d<LatticeColorMatrix>,
-		   multi1d<LatticeColorMatrix> >
+class GaugeFermPQPLeapFrog : public AbsLatColMatPQPLeapFrog<
+  AbsPFFieldState< multi1d<LatticeColorMatrix>,
+			   multi1d<LatticeColorMatrix>, LatticeFermion >,
+  AbsFermHamiltonian< multi1d<LatticeColorMatrix>,
+		      multi1d<LatticeColorMatrix>, LatticeFermion >
  >
 {
  public: 
   // Virtual Destructor
-  ~PureGaugePQPLeapFrog() {}
+  ~GaugeFermPQPLeapFrog() {}
 
-  PureGaugePQPLeapFrog(AbsPureGaugeSympUpdates& symp_updates_,
+  GaugeFermPQPLeapFrog(AbsGaugeFermSympUpdates& symp_updates_,
 		       Real delta_tau_, 
 		       Real tau_) : symp_updates(symp_updates_.clone()), delta_tau(delta_tau_), tau(tau_) {}
   
   // Get at the leap P and leap Q
   // through a Symplectic Updates step.
   // Use Base Class...
-  const AbsPureGaugeSympUpdates& getSympUpdates(void) const {
+  const AbsGaugeFermSympUpdates& getSympUpdates(void) const {
     return *symp_updates;
   }
 
@@ -42,14 +42,14 @@ class PureGaugePQPLeapFrog : public AbsLatColMatPQPLeapFrog<
   virtual Real getTrajLength(void) const { return tau; }
 
 
-  PureGaugePQPLeapFrog(const PureGaugePQPLeapFrog& f) : symp_updates(f.symp_updates->clone()), delta_tau(f.delta_tau), tau(f.tau) {}
+  GaugeFermPQPLeapFrog(const GaugeFermPQPLeapFrog& f) : symp_updates(f.symp_updates->clone()), delta_tau(f.delta_tau), tau(f.tau) {}
   
-  virtual PureGaugePQPLeapFrog* clone(void) const {
-    return new PureGaugePQPLeapFrog(*this);
+  virtual GaugeFermPQPLeapFrog* clone(void) const {
+    return new GaugeFermPQPLeapFrog(*this);
   }
 
 protected:
-  Handle<AbsPureGaugeSympUpdates> symp_updates;
+  Handle<AbsGaugeFermSympUpdates> symp_updates;
   const Real delta_tau;
   const Real tau;
 };

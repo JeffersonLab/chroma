@@ -3,6 +3,7 @@
 
 #include "chromabase.h"
 #include "update/field_state.h"
+#include "fermact.h"
 
 /*! An abstract hamiltonian class, for inexact algorithms.
   
@@ -62,7 +63,7 @@ class ExactAbsHamiltonian : public AbsHamiltonian<P, Q> {
 public:
   
   //! virtual descructor:
-  ~ExactAbsHamiltonian() {}
+  virtual ~ExactAbsHamiltonian() {}
 
   //! clone function for virtual copy constructs
   virtual ExactAbsHamiltonian<P,Q>* clone(void) const = 0;
@@ -81,16 +82,98 @@ public:
   //! Compute the energies 
 
   //! The total energy
-  virtual void mesE(AbsFieldState<P,Q>& s, Double& KE, Double& PE) const {
+  virtual void  mesE(const AbsFieldState<P,Q>& s, Double& KE, Double& PE) const {
     KE = mesKE(s);
     PE = mesPE(s);
   }
 
   //! The Kinetic Energy
-  virtual Double mesKE(AbsFieldState<P,Q>& s) const = 0;
+  virtual Double mesKE(const AbsFieldState<P,Q>& s) const = 0;
 
   //! The Potential Energy 
-  virtual Double mesPE(AbsFieldState<P,Q>& s) const = 0;
+  virtual Double mesPE(const AbsFieldState<P,Q>& s) const = 0;
 };
+
+template<typename P, typename Q, typename Phi>
+class AbsFermHamiltonian  {
+public:
+  
+  //! virtual descructor:
+  ~AbsFermHamiltonian() {}
+
+  //! clone function for virtual copy constructs
+  virtual AbsFermHamiltonian<P,Q,Phi>* clone(void) const = 0;
+
+  //! Get at the i-th fermion action
+  virtual const FermionAction<Phi>& getFermAct(const int i) const = 0;
+
+  //! Compute dsdq for the system... Not specified how to actually do this
+  //  s is the state, F is the computed force
+  virtual void dsdq(const AbsPFFieldState<P,Q,Phi>& s, Q& F) const = 0;
+
+  virtual void applyQBoundary(Q& q) const = 0;
+
+  //! Apply any BC's to P
+  virtual void applyPBoundary(P& p) const = 0;
+};
+
+
+/*! Now define similar classes for exact algorithms.
+ * These are basically the same as before but they can compute
+ * energies too. Do these need to inerit?
+ * Yes. Reason: We can always give it to an inexact algorithm through
+ * a downcast. In that case the energy calculations would be hidden.
+ */
+
+template<typename P, typename Q, typename Phi>
+class ExactAbsFermHamiltonian : public AbsFermHamiltonian<P, Q, Phi> {
+public:
+  
+  //! virtual descructor:
+  virtual ~ExactAbsFermHamiltonian() {}
+
+  //! clone function for virtual copy constructs
+  virtual ExactAbsFermHamiltonian<P,Q,Phi>* clone(void) const = 0;
+
+  //! Compute dsdq for the system... Not specified how to actually do this
+  //  s is the state, F is the computed force
+  virtual void dsdq(const AbsPFFieldState<P,Q,Phi>& s, Q& F) const = 0;
+
+
+  //! Apply any BC's to Q
+  virtual void applyQBoundary(Q& q) const = 0;
+
+  //! Apply any BC's to P
+  virtual void applyPBoundary(P& p) const = 0;
+
+
+  //! Get at the i-th fermion action
+  virtual const FermionAction<Phi>& getFermAct(const int i) const = 0;
+
+
+  //! Compute the energies 
+
+  //! The total energy
+  virtual void mesE(const AbsPFFieldState<P,Q,Phi>& s,
+		    Double& KE, 
+		    Double& GE, 
+		    Double& FE
+		   ) const {
+    KE = mesKE(s);
+    GE = mesGE(s);
+    FE = mesFE(s);
+
+  }
+
+  //! The Kinetic Energy
+  virtual Double mesKE(const AbsPFFieldState<P,Q,Phi>& s) const = 0;
+
+  //! The Potential Energy 
+  virtual Double mesGE(const AbsPFFieldState<P,Q,Phi>& s) const = 0;
+
+  virtual Double mesFE(const AbsPFFieldState<P,Q,Phi>& s) const = 0;
+  
+};
+
 
 #endif

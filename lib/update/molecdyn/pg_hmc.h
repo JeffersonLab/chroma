@@ -5,10 +5,15 @@
 #include "update/molecdyn/abs_hamiltonian.h"
 #include "update/molecdyn/abs_hyb_int.h"
 #include "update/molecdyn/abs_hmc.h" 
-#include "update/molecdyn/mom_refresh.h"
 
 class PureGaugeHMCTraj : 
-public HMCTraj< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
+public AbsNoFermionHMCTraj< multi1d<LatticeColorMatrix>, 
+                            multi1d<LatticeColorMatrix>,
+                            AbsFieldState, 
+                            ExactAbsHamiltonian,
+                            AbsHamiltonian, 
+                            AbsLatColMatHybInt
+                          >
 {
  public:
   ~PureGaugeHMCTraj() {};
@@ -17,8 +22,16 @@ public HMCTraj< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   //
   // Takes H_MC -- the MC Hamiltonian
   //       MD_Integrator -- the MD Integrator
-  PureGaugeHMCTraj(const ExactAbsHamiltonian<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& H_MC_, 
-		   const AbsHybInt< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >&  MD_integrator_) : H_MC(H_MC_.clone()), MD_integrator(MD_integrator_.clone()) {
+  PureGaugeHMCTraj(const ExactAbsHamiltonian<
+                             multi1d<LatticeColorMatrix>, 
+                             multi1d<LatticeColorMatrix> >& H_MC_, 
+		   const AbsLatColMatHybInt< 
+                             AbsFieldState<multi1d<LatticeColorMatrix>,
+                                           multi1d<LatticeColorMatrix> >,
+                             AbsHamiltonian< multi1d<LatticeColorMatrix>,
+                                             multi1d<LatticeColorMatrix> >  
+                          >&  MD_integrator_) : 
+    H_MC(H_MC_.clone()), MD_integrator(MD_integrator_.clone()) {
     traj_done = 0;
   }
 
@@ -27,13 +40,14 @@ public HMCTraj< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
     return *H_MC;
   }
 
-  const AbsHybInt<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& getMDIntegrator(void) const { 
+  const AbsLatColMatHybInt< AbsFieldState<multi1d<LatticeColorMatrix>,
+                                          multi1d<LatticeColorMatrix> >,
+                            AbsHamiltonian< multi1d<LatticeColorMatrix>,
+                                            multi1d<LatticeColorMatrix> > >& 
+  getMDIntegrator(void) const { 
     return *MD_integrator;
   }
 
-  const AbsMomGaussianHeatbath< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& getMomRefresh(void) const {
-    return mom_refresh;
-  }
 
   const int& getTrajNum(void) const { 
     return traj_done;
@@ -48,8 +62,10 @@ public HMCTraj< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
 private:
   int traj_done;
   Handle< const ExactAbsHamiltonian<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > H_MC;
-  Handle< const AbsHybInt<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > MD_integrator;
-  const su3MomGaussianHeatbath mom_refresh;
+  Handle< const AbsLatColMatHybInt<AbsFieldState<multi1d<LatticeColorMatrix>,
+                                                 multi1d<LatticeColorMatrix> >,
+                                   AbsHamiltonian< multi1d<LatticeColorMatrix>,
+                                                   multi1d<LatticeColorMatrix> > > > MD_integrator;
 		   
 };
 
