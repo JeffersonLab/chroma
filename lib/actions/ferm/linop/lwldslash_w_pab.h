@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_w_pab.h,v 1.6 2005-01-14 20:13:05 edwards Exp $
+// $Id: lwldslash_w_pab.h,v 1.7 2005-02-16 16:18:37 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -85,6 +85,7 @@ namespace Chroma
 
     WilsonArg wil;
     unsigned long wil_cbsize;
+
     // Real CoeffWilsr_s;
   };
 

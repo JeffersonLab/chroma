@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_pab.cc,v 1.9 2005-01-14 20:13:05 edwards Exp $
+// $Id: lwldslash_w_pab.cc,v 1.10 2005-02-16 16:18:37 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -10,7 +10,12 @@
 
 
 namespace Chroma 
-{ 
+{
+  namespace PABDslashEnv { 
+        static wfm the_dslash;
+	static int refcount = 0;
+  };
+ 
   //! Creation routine
   void PABWilsonDslash::create(const multi1d<LatticeColorMatrix>& u_)
   {
@@ -35,10 +40,9 @@ namespace Chroma
       }
       else {
 	wil.local_comm[i] = 0;
-	wil.instruction_reg_num++;
       }
     }
-
+    wil.instruction_reg_num=1;
     // Rearrange the gauge
     packed_gauge.resize(Nd * Layout::sitesOnNode());
 
@@ -55,14 +59,21 @@ namespace Chroma
       }
     }
 
-
-    wfm_init(&wil);
+    if ( PABDslashEnv::refcount == 0 ) { 
+         PABDslashEnv::the_dslash.init(&wil);
+    }
+    PABDslashEnv::refcount++;
   }
 
 
   PABWilsonDslash::~PABWilsonDslash(void) 
   {
-    wfm_end(&wil);
+    if( PABDslashEnv::refcount > 0 ) {
+	PABDslashEnv::refcount--;
+    }
+    if( PABDslashEnv::refcount == 0 ) {
+	PABDslashEnv::the_dslash.end();
+    }
   }
 
   //! Apply Wilson-Dirac dslash
@@ -104,11 +115,11 @@ namespace Chroma
        (int)isign, (1-cb));
     */
 
-    wfm_dslash((Float *)&(chi.elem(wil_cbsize*(cb)).elem(0).elem(0).real()),
-	       (Float *)&(packed_gauge[0]),
-	       (Float *)&(psi.elem(wil_cbsize*(1-cb)).elem(0).elem(0).real()),
-	       1-cb,
-	       (isign == (enum PlusMinus)PLUS ? 0 : 1));
+    PABDslashEnv::the_dslash.dslash((Float *)&(chi.elem(wil_cbsize*(cb)).elem(0).elem(0).real()),
+	       		  (Float *)&(packed_gauge[0]),
+	       		  (Float *)&(psi.elem(wil_cbsize*(1-cb)).elem(0).elem(0).real()),
+	       		  1-cb,
+	       		  (isign == (enum PlusMinus)PLUS ? 0 : 1));
 	     
   
   }
