@@ -1,4 +1,4 @@
-// $Id: prec_wilson_linop_w.cc,v 1.10 2004-12-17 17:45:04 bjoo Exp $
+// $Id: prec_wilson_linop_w.cc,v 1.11 2005-01-11 19:02:47 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson linear operator
  */
@@ -160,14 +160,6 @@ namespace Chroma
 
 
   //! Derivative of odd-even linop component
-  /*!
-   * The operator acts on the entire odd sublattice
-   *
-   * \param chi 	  Pseudofermion field     	       (Write)
-   * \param psi 	  Pseudofermion field     	       (Read)
-   * \param isign   Flag ( PLUS | MINUS )   	       (Read)
-   */
-
   void 
   EvenOddPrecWilsonLinOp::derivOddEvenLinOp(multi1d<LatticeColorMatrix>& ds_u,
 					    const LatticeFermion& chi, 
