@@ -1,4 +1,4 @@
-// $Id: prec_zolo_nef_fermact_array_w.cc,v 1.7 2004-11-16 06:09:09 bjoo Exp $
+// $Id: prec_zolo_nef_fermact_array_w.cc,v 1.8 2004-11-16 18:50:25 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned NEF fermion action
  */
@@ -111,6 +111,7 @@ namespace Chroma
     case COEFF_TYPE_ZOLOTAREV: 
       {
 	epsilon = approxMin / approxMax;
+	QDPIO::cout << "Epsilon= " << epsilon << endl << flush;
 	rdata=zolotarev(toFloat(epsilon), N5, 0);
 	scale_fact = approxMax;
 	break;

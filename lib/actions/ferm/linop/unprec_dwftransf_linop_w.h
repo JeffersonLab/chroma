@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwftransf_linop_w.h,v 1.3 2004-11-13 17:32:11 bjoo Exp $
+// $Id: unprec_dwftransf_linop_w.h,v 1.4 2004-11-16 18:50:26 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -57,51 +57,6 @@ private:
   multi1d<LatticeColorMatrix> u;
   Handle< LinearOperator<LatticeFermion> > D_w;
   Handle< LinearOperator<LatticeFermion> > D_denum;  
-};
-
-
-// Apply H_t^{dagger]H_t =  (b5+c5)^2 H_w [ 1 / ( denum ) ] H_w
-//
-// with denum = (2 + (b5-c5)D_w^{dag})( 2 + (b5-c5)D_w )
-class UnprecDWFTransfMdagMLinOp : public LinearOperator<LatticeFermion>
-{
-public:
-  //! Partial constructor
-  UnprecDWFTransfMdagMLinOp() {}
-
-  //! Full constructor
-  UnprecDWFTransfMdagMLinOp(const multi1d<LatticeColorMatrix>& u_, 
-			    const Real& Mass_,
-			    const Real& b5_,
-			    const Real& c5_,
-			    const InvertParam_t& invParam_)
-  {create(u_,Mass_, b5_, c5_, invParam_);}
-
-  //! Destructor is automatic
-  ~UnprecDWFTransfMdagMLinOp() {}
-
-  //! Only defined on the odd subset
-  const OrderedSubset& subset() const {return all;}
-
-  //! Creation routine
-  void create(const multi1d<LatticeColorMatrix>& u_, 
-	      const Real& Mass_,
-	      const Real& b5_,
-	      const Real& c5_,
-	      const InvertParam_t& invParam_);
-
-  //! Apply the operator onto a source vector
-  void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const;
-
-private:
-  Real Mass;
-  Real b5;
-  Real c5;
-  InvertParam_t inv_param;
-  multi1d<LatticeColorMatrix> u;
-  Handle< LinearOperator<LatticeFermion> > D_w;
-  Handle< LinearOperator<LatticeFermion> > D_denum;
-
 };
 
 
