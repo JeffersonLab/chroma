@@ -1,4 +1,4 @@
-// $Id: pg_gaugeact.cc,v 1.3 2005-01-14 02:27:11 edwards Exp $
+// $Id: pg_gaugeact.cc,v 1.4 2005-01-14 03:13:32 edwards Exp $
 /*! \file
  *  \brief Parallelogram gauge action
  */
@@ -101,7 +101,7 @@ namespace Chroma
     // in the taproj, which is a factor of 2 different from the 
     // one used here.
 
-    Real coeff_tmp = Real(1)*Real(coeff)/(Real(2*Nc));
+    Real coeff_tmp = Real(-1)*Real(coeff)/(Real(2*Nc));
 
     for(int mu = 0; mu < Nd; ++mu)
     {
@@ -356,7 +356,7 @@ namespace Chroma
     }
 
     Double S_pg = sum(lgimp);
-    S_pg *= coeff / Real(Nc);      // what about norms here
+    S_pg *= -coeff / Real(Nc);      // note sign
   
     return S_pg;
   } 
