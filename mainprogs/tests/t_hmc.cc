@@ -17,6 +17,8 @@ namespace Chroma {
     unsigned int  save_interval;
     std::string   save_prefix;
     QDP_volfmt_t  save_volfmt;
+    std::string   inline_measurement_xml;
+
   };
 
   void read(XMLReader& xml, const std::string& path, MCControl& p) {
@@ -31,6 +33,11 @@ namespace Chroma {
       read(paramtop, "./SaveInterval", p.save_interval);
       read(paramtop, "./SavePrefix", p.save_prefix);
       read(paramtop, "./SaveVolfmt", p.save_volfmt);
+      
+      XMLReader measurements_xml(paramtop, "./InlineMeasurements");
+      std::ostringstream inline_os;
+      measurements_xml.print(inline_os);
+      p.inline_measurement_xml = inline_os.str();
 
     }
     catch(const std::string& e ) { 
@@ -51,6 +58,8 @@ namespace Chroma {
       write(xml, "SaveInterval", p.save_interval);
       write(xml, "SavePrefix", p.save_prefix);
       write(xml, "SaveVolfmt", p.save_volfmt);
+      xml << p.inline_measurement_xml;
+
       pop(xml);
 
     }
@@ -80,7 +89,6 @@ namespace Chroma {
       xml << p.H_MC_xml;
       xml << p.H_MD_xml;
       xml << p.Integrator_xml;
-
       pop(xml);
     }
     catch(const std::string& e ) { 
@@ -228,7 +236,8 @@ namespace Chroma {
 	     AbsHMCTrj<multi1d<LatticeColorMatrix>,
 	               multi1d<LatticeColorMatrix> >& theHMCTrj,
 	     MCControl& mc_control, 
-	     const UpdateParams& update_params) {
+	     const UpdateParams& update_params,
+	     multi1d< Handle<AbsInlineMeasurement> >& measurements) {
 
     XMLWriter& xml_out = TheXMLOutputWriter::Instance();
     try {
@@ -274,23 +283,18 @@ namespace Chroma {
 	// Do the trajectory without accepting 
 	theHMCTrj( gauge_state, warm_up_p );
 
-	push(xml_out, "Observables");	
-	
-	Double w_plaq, s_plaq, t_plaq, link;
-	MesPlq(gauge_state.getQ(), w_plaq, s_plaq, t_plaq, link);
-
-
-	write(xml_out, "w_plaq", w_plaq);
-
-
-
-	pop(xml_out); // pop("Observables");
+	push(xml_out, "InlineObservables");	
+	for(int m=0; m < measurements.size(); m++) {
+	  AbsInlineMeasurement& the_meas = *(measurements[m]);
+	  if( cur_update % the_meas.getFrequency() == 0 ) { 
+	    the_meas( gauge_state.getQ(), cur_update, xml_out );
+	  }
+	}
+	pop(xml_out); // pop("InlineObservables");
 
 
 
 	pop(xml_out); // pop("MCUpdate");
-	QDPIO::cout << "Update: " << cur_update << "  w_plaq = " << w_plaq << endl;
-	
 	
 	if( cur_update % mc_control.save_interval == 0 ) {
 	  // Save state
@@ -336,12 +340,15 @@ namespace Chroma {
     foo &= ZeroGuess5DChronoPredictorEnv::registered;
     foo &= LastSolution4DChronoPredictorEnv::registered;  
     foo &= LastSolution5DChronoPredictorEnv::registered;
+
+    // Inline Measurements
+    foo &= InlinePlaquetteEnv::registered;
     
     return foo;
   }
-  };
+};
 
-  using namespace Chroma;
+using namespace Chroma;
 
 int main(int argc, char *argv[]) 
 {
@@ -359,7 +366,7 @@ int main(int argc, char *argv[])
 
     XMLReader paramtop(xml_in, "/Params");
     read( paramtop, "./HMCTrj", trj_params);
-    read( paramtop, ".//MCControl", mc_control);
+    read( paramtop, "./MCControl", mc_control);
   }
   catch(const std::string& e) {
     QDPIO::cerr << "Caught Exception: " << e << endl;
@@ -402,14 +409,18 @@ int main(int argc, char *argv[])
   // Get the Leapfrog 
   Handle< AbsMDIntegrator<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > MD( TheMDIntegratorFactory::Instance().createObject(integrator_name, MD_xml, "/MDIntegrator", H_MD) );
   
-  
   // Get the HMC
   LatColMatHMCTrj theHMCTrj( H_MC, MD );
   
 
+  // Get the measurements
+  std::istringstream Measurements_is(mc_control.inline_measurement_xml);
+  XMLReader MeasXML(Measurements_is);
+  multi1d < Handle< AbsInlineMeasurement > > the_measurements;
+  read(MeasXML, "/InlineMeasurements", the_measurements);
   
   // Run
-  doHMC<HMCTrjParams>(u, theHMCTrj, mc_control, trj_params);
+  doHMC<HMCTrjParams>(u, theHMCTrj, mc_control, trj_params, the_measurements);
 
 
   ChromaFinalize();

@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.227 2005-01-13 04:31:42 edwards Exp $
+# $Id: Makefile.am,v 1.228 2005-01-13 12:40:13 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -478,6 +478,23 @@ libchroma_a_SOURCES += \
 	update/molecdyn/prec_two_flavor_wilson_monomial_w.cc \
 	update/molecdyn/unprec_two_flavor_wilson5d_monomial_w.cc \
 	update/molecdyn/prec_two_flavor_wilson5d_monomial_w.cc
+
+#
+# Inline measurement headers
+#
+nobase_include_HEADERS += \
+	meas/inline/inline.h \
+	meas/inline/abs_inline_measurement.h \
+	meas/inline/abs_inline_measurement_factory.h \
+	meas/inline/glue/glue.h \
+	meas/inline/glue/inline_plaquette.h \
+	io/inline_io.h
+
+# Inline measurement sources 
+
+libchroma_a_SOURCES += \
+	io/inline_io.cc \
+	meas/inline/glue/inline_plaquette.cc
 
 #	actions/ferm/fermacts/unprec_clover_fermact_w.cc
 #	actions/ferm/fermacts/prec_clover_fermact_w.cc
