@@ -14,7 +14,7 @@
 
 
 
-# $Id: Makefile,v 1.4 2003-08-11 21:40:11 dru Exp $
+# $Id: Makefile,v 1.5 2003-08-11 21:47:21 dru Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -247,6 +247,7 @@ DEFAULT_INCLUDES =  -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
 am__depfiles_maybe = depfiles
 DEP_FILES = ./$(DEPDIR)/D_j.Po ./$(DEPDIR)/DjDk.Po \
+        ./$(DEPDIR)/BuildingBlocks.Po \
 	./$(DEPDIR)/barcomp_w.Po ./$(DEPDIR)/baryon_w.Po \
 	./$(DEPDIR)/d_src.Po ./$(DEPDIR)/expm12.Po \
 	./$(DEPDIR)/formfac_w.Po ./$(DEPDIR)/gaus_smear.Po \

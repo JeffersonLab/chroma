@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.45 2003-08-11 21:37:12 dru Exp $
+# $Id: Makefile.in,v 1.46 2003-08-11 21:47:21 dru Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -247,6 +247,7 @@ DEFAULT_INCLUDES =  -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/D_j.Po ./$(DEPDIR)/DjDk.Po \
+@AMDEP_TRUE@    ./$(DEPDIR)/BuildingBlocks.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/barcomp_w.Po ./$(DEPDIR)/baryon_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/d_src.Po ./$(DEPDIR)/expm12.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/formfac_w.Po ./$(DEPDIR)/gaus_smear.Po \
