@@ -1,9 +1,9 @@
+// $Id: chroma_init.h,v 1.3 2005-01-17 21:08:29 edwards Exp $
+
 #ifndef __CHROMA_INIT_H__
 #define __CHROMA_INIT_H__
 
-#include "chroma.h"
-#include <string>
-
+#include "chromabase.h"
 
 namespace Chroma {
 

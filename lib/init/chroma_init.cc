@@ -1,6 +1,10 @@
+// $Id: chroma_init.cc,v 1.4 2005-01-17 21:08:29 edwards Exp $
+
+
+//#include "chroma.h"
 #include "init/chroma_init.h"
-
-
+#include "io/xmllog_io.h"
+#include <string>
 
 namespace Chroma { 
 
@@ -63,7 +67,7 @@ namespace Chroma {
     */
 
     if( ! output_found ) { 
-      output_filename = "./XMLDAT";
+      output_filename = "./XMLLOG";
     }
     
 
