@@ -1,4 +1,4 @@
-// $Id: rgauge.cc,v 1.2 2003-09-10 01:33:12 edwards Exp $
+// $Id: rgauge.cc,v 1.3 2003-10-08 18:54:37 edwards Exp $
 /*! \file
  *  \brief Do a random gauge transformation on the u fields
  */
@@ -46,3 +46,27 @@ void rgauge(multi1d<LatticeColorMatrix>& u, LatticeColorMatrix& g)
     
   END_CODE("rgauge");
 }
+
+
+//! Do a random gauge transformation on the u fields
+/*!
+ * \ingroup gauge
+ *
+ * Convenience function: does not return gauge transformation matrices
+ *
+ * Arguments:
+ *
+ *  \param u          Gauge field                   (Modify)
+ */
+
+void rgauge(multi1d<LatticeColorMatrix>& u)
+{
+  START_CODE("rgauge");
+  
+  LatticeColorMatrix g;
+  rgauge(u, g);
+
+  END_CODE("rgauge");
+}
+
+
