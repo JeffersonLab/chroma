@@ -1,5 +1,5 @@
 /* + */
-/* $Id: baryon_s.cc,v 1.1 2004-03-23 19:21:17 mcneile Exp $ ($Date: 2004-03-23 19:21:17 $) */
+/* $Id: baryon_s.cc,v 1.2 2004-03-23 20:46:28 mcneile Exp $ ($Date: 2004-03-23 20:46:28 $) */
 
 /* This routine is specific to staggered fermions! */
 
@@ -51,11 +51,17 @@ private:
 
 //  multi1d<Complex> barprop(length)
 
-void baryon_s(LatticeColorMatrix & quark_propagator, 
+void baryon_s(LatticePropagator & quark_propagator_in, 
 	      multi1d<Complex> & barprop,
 	      multi1d<int> & t_source,
 	      int j_decay, int bc_spec)
 { 
+  LatticeColorMatrix  quark_propagator;
+
+  quark_propagator =
+    peekSpin(quark_propagator_in,0,0);
+
+
   LatticeComplex b_prop;
   LatticeComplex uu_quark;
 

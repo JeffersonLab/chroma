@@ -3,7 +3,7 @@
 
 #include "chromabase.h"
 
-void baryon_s(LatticeColorMatrix & quark_propagator, 
+void baryon_s(LatticePropagator & quark_propagator_in, 
 	      multi1d<Complex> & barprop,
 	      multi1d<int> & t_source,
 	      int j_decay, int bc_spec) ;
