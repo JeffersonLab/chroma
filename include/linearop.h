@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linearop.h,v 1.3 2003-03-28 03:58:50 edwards Exp $
+// $Id: linearop.h,v 1.4 2003-03-29 05:22:18 edwards Exp $
 
 /*! @file
  * @brief Linear Operators
@@ -20,10 +20,13 @@ class LinearOperator
 {
 public:
   //! Apply the operator onto a source vector
-  virtual LatticeFermion operator() (const LatticeFermion& psi, int isign) const = 0;
+  virtual LatticeFermion operator() (const LatticeFermion& psi, int isign) const;
 
   //! Return the subset on which the operator acts
-  virtual const Subset& subset() const = 0;
+  virtual const Subset& subset() const;
+
+  //! Virtual destructor to help with cleanup;
+  virtual ~LinearOperator();
 };
 
 
@@ -42,6 +45,9 @@ public:
     }
 
   virtual LatticeFermion operator() (const LatticeFermion& psi, int isign, int cb) const = 0;
+
+  //! Virtual destructor to help in cleanup
+  virtual ~DslashLinearOperator();
 };
 
 
