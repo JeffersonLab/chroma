@@ -1,4 +1,4 @@
-// $Id: minvcg.cc,v 1.3 2004-01-12 14:54:08 bjoo Exp $
+// $Id: minvcg.cc,v 1.4 2004-04-17 09:48:57 bjoo Exp $
 
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator
@@ -285,8 +285,8 @@ void MInvCG_a(const LinearOperator<T>& A,
 
     //    IF |psi[k+1] - psi[k]| <= RsdCG |psi[k+1]| THEN RETURN;
     // or IF |r[k+1]| <= RsdCG |chi| THEN RETURN;
+    convP = true;
     for(s = 0; s < n_shift; s++) {
-      convP = true;
       if (! convsP[s] ) {
 
 	// Convergence methods 
