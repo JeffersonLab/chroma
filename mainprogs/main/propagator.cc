@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.3 2003-03-30 17:15:25 edwards Exp $
+// $Id: propagator.cc,v 1.4 2003-04-04 05:30:28 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -36,6 +36,7 @@ int main(int argc, char **argv)
 
   Real Kappa = 0.1480;
 
+  FermAct = UNPRECONDITIONED_WILSON;  // global
   InvType = CG_INVERTER;  // global
   Real RsdCG = 1.0e-6;
   int  MaxCG = 500;
@@ -150,6 +151,9 @@ int main(int argc, char **argv)
   }
 
 //  writeQprop("propagator_0", quark_propagator, header);
+  BinaryWriter cfg_out("propagator_0");
+  write(cfg_out,quark_propagator);
+  cfg_out.close();
 
   nml.close();
 
