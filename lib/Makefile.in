@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.230 2004-09-16 16:40:53 kostas Exp $
+# $Id: Makefile.in,v 1.231 2004-09-19 02:34:31 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -74,11 +74,13 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/lg5eps_double_pass_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/lwldslash_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/overlapbu_linop_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/prec_dwf_linop_base_array_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/prec_dwf_linop_array_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/prec_ovdwf_linop_array_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/prec_nef_linop_array_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/prec_wilson_linop_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/prec_parwilson_linop_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/unprec_dwf_linop_base_array_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/unprec_dwf_linop_array_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/unprec_ovdwf_linop_array_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/unprec_nef_linop_array_w.h \
