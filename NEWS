@@ -1,5 +1,11 @@
 01/16/2005 -- Robert Edwards
 
+	Version 1.18.4. Mainprogs including HMC finally appears
+        stable after all the XML singleton instances, etc. More
+        Chrono predictors.
+
+01/16/2005 -- Robert Edwards
+
 	Version 1.18.3. Added more 5D monomials. Added Pauli-Villars
         for contfrac5d.
 
