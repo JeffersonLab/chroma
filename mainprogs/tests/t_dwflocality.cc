@@ -1,4 +1,4 @@
-// $Id: t_dwflocality.cc,v 1.1 2004-03-17 02:23:27 kostas Exp $
+// $Id: t_dwflocality.cc,v 1.2 2004-03-17 15:33:03 kostas Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -72,6 +72,18 @@ int main(int argc, char **argv)
   XMLReader gauge_xml;
   readSzin(gauge_xml, u, cnf);
 
+  Double w_plaq, s_plaq, t_plaq, link;
+  MesPlq(u, w_plaq, s_plaq, t_plaq, link);
+  QDPIO::cout << " Initial plaqettes and link: " << w_plaq
+              << " " << s_plaq << " " << t_plaq << " " << link << endl;
+  push(xml,"gauge_observables");
+  write(xml, "w_plaq", w_plaq);
+  write(xml, "s_plaq", s_plaq);
+  write(xml, "t_plaq", t_plaq);
+  write(xml, "link", link);
+  pop(xml);
+
+
 
   MLF psi(N5), chi(N5);
 
@@ -87,6 +99,7 @@ int main(int argc, char **argv)
   Handle<const ConnectState> state(S_pdwf.createState(u));
 
   LatticeFermion chi4;
+  LatticeFermion res4;
 
   //! Create source
   QDPIO::cout << "Constructing source" << endl;
@@ -110,11 +123,12 @@ QDPIO::cout << "5D source norm :" << norm2(chi)<< endl;
 
   S_pdwf.qpropT(psi, state, chi, invType, RsdCG, MaxCG, n_count);
   
-  chi4 = chiralProjectMinus(psi[0]) + chiralProjectPlus(psi[N5-1]) ;
+  res4 = chiralProjectMinus(psi[0]) + chiralProjectPlus(psi[N5-1]) ;
 
   LatticeReal mag ;
   
-  mag = localNorm2(chi4) ;
+  mag = sqrt(localNorm2(chi4 - 0.5*res4)) ;
+  //mag = localNorm2(chi4) ;
   multi1d<int> c(4) ;
   {
     multi1d<Real> val(nrow[0]); 
