@@ -1,4 +1,4 @@
-// $Id: t_lwldslash_pab.cc,v 1.5 2005-02-16 10:41:49 bjoo Exp $
+// $Id: t_lwldslash_pab.cc,v 1.6 2005-02-22 17:11:52 bjoo Exp $
 
 
 #include "chroma.h"
@@ -216,6 +216,13 @@ int main(int argc, char **argv)
   }
 	  
   pop(xml);
+
+  {
+	WilsonDslash D1;
+	WilsonDslash D2;
+	WilsonDslash D3;
+  }
+
   
   // Time to bolt
   QDP_finalize();

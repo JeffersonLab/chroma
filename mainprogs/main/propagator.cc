@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.90 2005-02-07 04:15:19 edwards Exp $
+// $Id: propagator.cc,v 1.91 2005-02-22 17:11:52 bjoo Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -152,7 +152,7 @@ int main(int argc, char **argv)
     readQprop(source_file_xml, 
 	      source_record_xml, quark_prop_source,
 	      input.prop.source_file, QDPIO_SERIAL);
-    QDPIO::cout << "Source successfully read" << endl;
+    QDPIO::cout << "Source successfully read" << flush << endl;
 
     // Try to invert this record XML into a source struct
     try
@@ -193,13 +193,15 @@ int main(int argc, char **argv)
     }
   }    
 
+  
   // Instantiate XML writer for XMLDAT
   //  XMLFileWriter xml_out("XMLDAT");
   XMLFileWriter& xml_out = TheXMLOutputWriter::Instance();
-
+ 
   push(xml_out, "propagator");
 
   proginfo(xml_out);    // Print out basic program info
+
 
   // Write out the input
   write(xml_out, "Input", xml_in);
@@ -209,6 +211,7 @@ int main(int argc, char **argv)
 
   // Write out the source header
   write(xml_out, "Source_file_info", source_file_xml);
+
   write(xml_out, "Source_record_info", source_record_xml);
 
   push(xml_out, "Output_version");
@@ -216,7 +219,6 @@ int main(int argc, char **argv)
   pop(xml_out);
 
   xml_out.flush();
-
 
   // Check if the gauge field configuration is unitarized
   unitarityCheck(u);

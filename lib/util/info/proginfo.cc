@@ -1,4 +1,4 @@
-//  $Id: proginfo.cc,v 1.7 2005-01-31 18:02:22 edwards Exp $
+//  $Id: proginfo.cc,v 1.8 2005-02-22 17:11:52 bjoo Exp $
 /*! \file
  *  \brief Print out basic info about this program
  */
@@ -31,6 +31,7 @@ void proginfo(XMLWriter& xml)
     pop(xml);
 
     std::time_t now;
+
     if(std::time(&now)==-1)
 	QDPIO::cerr<<"proginfo: Cannot get the time.\n";
     std::tm *tp = std::localtime(&now);
@@ -40,7 +41,6 @@ void proginfo(XMLWriter& xml)
     write(xml,"run_date", date);
 
     printgeom(xml);
-
     pop(xml);
 
     END_CODE();
