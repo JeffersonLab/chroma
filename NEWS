@@ -1,5 +1,15 @@
 01/01/2005 -- Robert Edwards
 
+	Version 1.14.0. Another major overhaul of FermionAction
+        classes. The concept of derivative is pushed up higher in
+        the tree. All fermacts now have some default derivative
+        support (possibly nothing more than Not Implemented message).
+        Qprop and QpropT now produced via factory functions ala
+        LinearOperators. Now have a SystemSolver class - can be used
+        for all solvers.
+
+01/01/2005 -- Robert Edwards
+
 	Version 1.13.1. HMC now runs, but still needs work.
 
 12/29/2004 -- Robert Edwards
