@@ -26,6 +26,14 @@ class FermActParams {
 
 };
 
+
+// Top level reader. Constructs appropriate from reader and
+// returns as base class
+FermActParams *read(XMLReader& reader, const string& path);
+
+void write(XMLWriter &xml_out, const string& path, const FermActParams& p);
+
+
 // Params for wilson ferm acts
 class WilsonFermActParams : public FermActParams {
  private:
@@ -51,6 +59,8 @@ class WilsonFermActParams : public FermActParams {
     return  new WilsonFermActParams(*this);
   }
 };
+
+void write(XMLWriter &xml_out, const string& path, const WilsonFermActParams& p);
 
 class DWFFermActParams : public FermActParams { 
  private:
@@ -79,12 +89,9 @@ class DWFFermActParams : public FermActParams {
 
 };
 
-// Top level reader. Constructs appropriate from reader and
-// returns as base class
-FermActParams *read(XMLReader& reader, const string& path);
-
-void write(XMLWriter &xml_out, const string& path, const FermActParams& p);
-void write(XMLWriter &xml_out, const string& path, const WilsonFermActParams& p);
 void write(XMLWriter &xml_out, const string& path, const DWFFermActParams& p);
+
+
+
 
 #endif

@@ -1,9 +1,10 @@
-// $Id: io_w.h,v 1.4 2004-04-16 14:58:29 bjoo Exp $
+// $Id: io_w.h,v 1.5 2004-04-23 08:55:42 bjoo Exp $
 
 #ifndef __io_w_h__
 #define __io_w_h__
 
-#include "zolotarev4d_fermact_paramio.h"
+#include "zolotarev4d_fermact_paramio_w.h"
+#include "zolotarev5d_fermact_paramio_w.h"
 
 #include "barcomp_io.h"
 

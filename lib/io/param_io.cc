@@ -1,4 +1,4 @@
-// $Id: param_io.cc,v 1.23 2004-04-21 17:25:22 edwards Exp $
+// $Id: param_io.cc,v 1.24 2004-04-23 08:55:42 bjoo Exp $
 /*! \file
  *  \brief Various parameter readers/writers for main programs
  */
@@ -101,6 +101,8 @@ void read(XMLReader& xml, const string& path, FermActType& param)
     param = FERM_ACT_PROJECTED_DWF;
   else if (ferm_type_str == "ZOLOTAREV_4D")
     param = FERM_ACT_ZOLOTAREV_4D;
+  else if (ferm_type_str == "ZOLOTAREV_5D")
+    param = FERM_ACT_ZOLOTAREV_5D;
   else if (ferm_type_str == "OVERLAP_DWF")
     param = FERM_ACT_OVERLAP_DWF;
   else if (ferm_type_str == "EXTENDED_OVERLAP")
@@ -447,6 +449,8 @@ void write(XMLWriter& xml, const string& path, FermActType param)
     ferm_type_str = "PROJECTED_DWF";
   else if (param == FERM_ACT_ZOLOTAREV_4D)
     ferm_type_str = "ZOLOTAREV_4D";
+  else if (param == FERM_ACT_ZOLOTAREV_5D)
+    ferm_type_str = "ZOLOTAREV_5D";
   else if (param == FERM_ACT_OVERLAP_DWF)
     ferm_type_str = "OVERLAP_DWF";
   else if (param == FERM_ACT_EXTENDED_OVERLAP)
