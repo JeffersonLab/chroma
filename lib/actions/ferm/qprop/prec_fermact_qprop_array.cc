@@ -1,4 +1,4 @@
-// $Id: prec_fermact_qprop_array.cc,v 1.3 2004-01-02 03:19:41 edwards Exp $
+// $Id: prec_fermact_qprop_array.cc,v 1.4 2004-02-04 17:48:36 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic even-odd preconditioned fermion operator
  *
@@ -44,7 +44,7 @@ void qprop_t(const EvenOddPrecWilsonTypeFermAct< multi1d<T> >& me,
   Handle<const EvenOddPrecLinearOperator< multi1d<T> > > A(me.linOp(state));
 
   /* Step (i) */
-  /* chi_tmp =  chi_o - D_oe * A_ee^-1 * chi_o */
+  /* chi_tmp =  chi_o - D_oe * A_ee^-1 * chi_e */
   multi1d<T> chi_tmp(me.size());
   {
     multi1d<T> tmp1(me.size());
@@ -62,7 +62,7 @@ void qprop_t(const EvenOddPrecWilsonTypeFermAct< multi1d<T> >& me,
   {
     /* chi_1 = M_dag(u) * chi_1 */
     multi1d<T> tmp(me.size());
-    (*A)(tmp, chi, MINUS);
+    (*A)(tmp, chi_tmp, MINUS);
     
     /* psi = (M^dag * M)^(-1) chi */
     InvCG2 (*A, tmp, psi, RsdCG, MaxCG, n_count);
