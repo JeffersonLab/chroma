@@ -104,9 +104,9 @@ foreach $x (-$mommax_int .. $mommax_int)
 	$proton_sp{$x, $y, $z} = "proton.$spext" ;
 	$proton_ss{$x, $y, $z} = "proton.$ssext" ;
 	$proton_sw{$x, $y, $z} = "proton.$swext" ;  printf "proton_sw = %s\n", $proton_sw{0,0,0};
-	$proton_wp{$x, $y, $z} = "proton.$ssext" ;
-	$proton_ws{$x, $y, $z} = "proton.$ssext" ;
-	$proton_ws{$x, $y, $z} = "proton.$ssext" ;
+	$proton_wp{$x, $y, $z} = "proton.$wpext" ;
+	$proton_ws{$x, $y, $z} = "proton.$wsext" ;
+	$proton_ww{$x, $y, $z} = "proton.$wwext" ;
       }
       else
       {
@@ -114,9 +114,9 @@ foreach $x (-$mommax_int .. $mommax_int)
 	$proton_sp{$x, $y, $z} = $mom_name . ".$spext" ;
 	$proton_ss{$x, $y, $z} = $mom_name . ".$ssext" ;
 	$proton_sw{$x, $y, $z} = $mom_name . ".$swext" ;
-	$proton_wp{$x, $y, $z} = $mom_name . ".$ssext" ;
-	$proton_ws{$x, $y, $z} = $mom_name . ".$ssext" ;
-	$proton_ws{$x, $y, $z} = $mom_name . ".$ssext" ;
+	$proton_wp{$x, $y, $z} = $mom_name . ".$wpext" ;
+	$proton_ws{$x, $y, $z} = $mom_name . ".$wsext" ;
+	$proton_ww{$x, $y, $z} = $mom_name . ".$wwext" ;
       }
     }
   }
