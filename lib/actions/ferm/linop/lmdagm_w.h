@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lmdagm_w.h,v 1.9 2003-12-17 11:45:05 bjoo Exp $
+// $Id: lmdagm_w.h,v 1.10 2004-01-02 03:08:52 edwards Exp $
 
 #ifndef __lmdagm_w_h__
 #define __lmdagm_w_h__
@@ -21,8 +21,12 @@ template<typename T>
 class lmdagm : public LinearOperator<T>
 {
 public:
-  //! Full constructor
-  lmdagm(const LinearOperator<T> &A_) : A(&A_) {}
+  //! Initialize pointer with existing pointer
+  /*! Requires that the pointer p is a return value of new */
+  lmdagm(const LinearOperator<T>* p) : A(p) {}
+
+  //! Copy pointer (one more owner)
+  lmdagm(Handle<const LinearOperator<T> > p) : A(p) {}
 
   //! Destructor
   ~lmdagm() {}
@@ -57,8 +61,12 @@ template<typename T>
 class lmdagm< multi1d<T> > : public LinearOperator< multi1d<T> >
 {
 public:
-  //! Full constructor
-  lmdagm(const LinearOperator< multi1d<T> >& A_) : A(&A_) {}
+  //! Initialize pointer with existing pointer
+  /*! Requires that the pointer p is a return value of new */
+  lmdagm(const LinearOperator< multi1d<T> >* p) : A(p) {}
+
+  //! Copy pointer (one more owner)
+  lmdagm(Handle<const LinearOperator< multi1d<T> > > p) : A(p) {}
 
   //! Destructor
   ~lmdagm() {}
