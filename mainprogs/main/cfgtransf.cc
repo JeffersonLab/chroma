@@ -1,4 +1,4 @@
-// $Id: cfgtransf.cc,v 1.15 2004-05-28 00:56:41 edwards Exp $
+// $Id: cfgtransf.cc,v 1.16 2004-05-29 02:07:58 edwards Exp $
 /*! \file
  *  \brief Many-to-many gauge transformation routine
  */
@@ -216,6 +216,8 @@ int main(int argc, char **argv)
   bool OrlxDo;
   Real GFAccu;
   Real OrPara;
+  string gauge_rotate_file;
+
   if ( GFixP )
   {
     QDPIO::cout << "Enter the direction of decay\n";
@@ -232,6 +234,9 @@ int main(int argc, char **argv)
 
     QDPIO::cout << "Enter the over-relaxtion parameter\n";
     QDPIO::cin >> OrPara;
+
+    QDPIO::cout << "Enter gauge rotation file name\n";
+    QDPIO::cin >> gauge_rotate_file;
   }
 
   QDPIO::cout << "I am working on it...\n";
@@ -602,10 +607,11 @@ int main(int argc, char **argv)
     pop(xml_out);
   }
 
+  LatticeColorMatrix g;
   int nrl_gf;
   if ( GFixP  )
   {
-    coulGauge(u, nrl_gf, j_decay, GFAccu, GFMax, OrlxDo, OrPara);
+    coulGauge(u, g, nrl_gf, j_decay, GFAccu, GFMax, OrlxDo, OrPara);
 
     MesPlq(u, w_plaq, s_plaq, t_plaq, link);
     for(int mu = 0; mu < Nd; ++mu)
@@ -749,6 +755,33 @@ int main(int argc, char **argv)
     write(gauge_record_xml_out, "szin", szin_gauge_header);
     writeGauge(gauge_file_xml_out, gauge_record_xml_out, u, cfg_output_file,
 	       volfmt, QDPIO_SERIAL);
+
+    // Save the gauge rotation matrices if gauge fixed
+    if ( GFixP  )
+    {
+      XMLBufferWriter transf_file_xml_out, transf_record_xml_out;
+
+      push(transf_file_xml_out, "gauge_transf");
+      write(transf_file_xml_out, "id", int(0));   // need something better here
+      pop(transf_file_xml_out);
+      
+      push(transf_record_xml_out, "szin_transf");
+      push(transf_record_xml_out,"Gauge_fixing_parameters");
+      write(transf_record_xml_out, "j_decay", j_decay);
+      write(transf_record_xml_out, "GFAccu", GFAccu);
+      write(transf_record_xml_out, "GFMax", GFMax);
+      write(transf_record_xml_out, "OrlxDo",OrlxDo);
+      write(transf_record_xml_out, "OrPara", OrPara);
+      pop(transf_record_xml_out);
+      write(transf_record_xml_out, "szin", szin_gauge_header);
+      pop(transf_record_xml_out);
+
+      QDPFileWriter to(transf_file_xml_out,gauge_rotate_file,volfmt,QDPIO_SERIAL,QDPIO_OPEN);
+
+      LatticeColorMatrixF g_f = g;
+      write(to,transf_record_xml_out,g_f);         // Always save in single precision!
+      close(to);
+    }
   }
   break;
 
