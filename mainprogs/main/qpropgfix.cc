@@ -1,4 +1,4 @@
-// $Id: qpropgfix.cc,v 1.2 2004-06-03 20:45:15 edwards Exp $
+// $Id: qpropgfix.cc,v 1.3 2004-07-28 03:08:04 edwards Exp $
 /*! \file
  *  \brief Applies gauge transformation matrices on a propagator
  */
@@ -113,7 +113,7 @@ int main(int argc, char *argv[])
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
 
-  START_CODE("qpropgfix");
+  START_CODE();
   
   // Parameter structure for the input
   QpropGFix_input_t input;
@@ -271,7 +271,7 @@ int main(int argc, char *argv[])
   xml_out.close();
   xml_in.close();
 
-  END_CODE("qpropgfix");
+  END_CODE();
 
   // Time to bolt
   QDP_finalize();

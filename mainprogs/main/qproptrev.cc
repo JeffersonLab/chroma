@@ -1,4 +1,4 @@
-// $Id: qproptrev.cc,v 1.1 2004-06-03 21:42:53 edwards Exp $
+// $Id: qproptrev.cc,v 1.2 2004-07-28 03:08:04 edwards Exp $
 /*! \file
  *  \brief Time-reverse a propagator
  */
@@ -107,7 +107,7 @@ int main(int argc, char *argv[])
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
 
-  START_CODE("qproptrev");
+  START_CODE();
   
   // Parameter structure for the input
   QpropTRev_input_t input;
@@ -289,7 +289,7 @@ int main(int argc, char *argv[])
   xml_out.close();
   xml_in.close();
 
-  END_CODE("qproptrev");
+  END_CODE();
 
   // Time to bolt
   QDP_finalize();

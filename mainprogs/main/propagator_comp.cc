@@ -1,6 +1,10 @@
-// $Id: propagator_comp.cc,v 1.6 2004-05-28 16:47:33 bjoo Exp $
+// $Id: propagator_comp.cc,v 1.7 2004-07-28 03:08:04 edwards Exp $
 // $Log: propagator_comp.cc,v $
-// Revision 1.6  2004-05-28 16:47:33  bjoo
+// Revision 1.7  2004-07-28 03:08:04  edwards
+// Added START/END_CODE to all routines. Changed some to not pass an
+// argument.
+//
+// Revision 1.6  2004/05/28 16:47:33  bjoo
 // Wired in REL_GMRESR_SUMR and REL_GMRESR_CG inverters to propagator and propagator_comp
 //
 // Revision 1.5  2004/05/19 11:43:19  bjoo
@@ -207,6 +211,8 @@ int main(int argc, char **argv)
 {
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
+
+  START_CODE();
 
   // Input parameter structure
   PropagatorComponent_input_t  input;
@@ -611,6 +617,8 @@ int main(int argc, char **argv)
   xml_out.close();
   xml_in.close();
   
+  END_CODE();
+
   // Time to bolt
   QDP_finalize();
   
@@ -627,6 +635,7 @@ void saveComponent(const ChromaProp_t& param,
 		   bool make_sourceP,
 		   bool seqsourceP)
 {
+  START_CODE();
 
   SftMom phases(0, true, Nd-1);
   multi1d<Double> prop_corr = sumMulti(localNorm2(psi), 
@@ -680,4 +689,6 @@ void saveComponent(const ChromaProp_t& param,
   // Write the source
   writeFermion(file_xml, record_xml, psi,
 	       outfile.str(), prop.prop_volfmt, QDPIO_SERIAL);
+
+  END_CODE();
 }

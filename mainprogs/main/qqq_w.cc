@@ -1,4 +1,4 @@
-// $Id: qqq_w.cc,v 1.16 2004-05-14 00:36:49 edwards Exp $
+// $Id: qqq_w.cc,v 1.17 2004-07-28 03:08:05 edwards Exp $
 /*! \file
  *  \brief Main code for generalized quark propagator
  *
@@ -133,6 +133,8 @@ int main(int argc, char **argv)
 {
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
+
+  START_CODE();
 
   // Parameter structure for the input
   QQQ_input_t input;
@@ -330,7 +332,7 @@ int main(int argc, char **argv)
   // Time to bolt
   QDP_finalize();
 
-  END_CODE("seqprop");
+  END_CODE();
 
   exit(0);
 }

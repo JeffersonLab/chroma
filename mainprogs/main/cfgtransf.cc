@@ -1,4 +1,4 @@
-// $Id: cfgtransf.cc,v 1.16 2004-05-29 02:07:58 edwards Exp $
+// $Id: cfgtransf.cc,v 1.17 2004-07-28 03:08:04 edwards Exp $
 /*! \file
  *  \brief Many-to-many gauge transformation routine
  */
@@ -19,7 +19,7 @@ int main(int argc, char **argv)
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
 
-  START_CODE("cfgtransf");
+  START_CODE();
   
   multi1d<int> nrow(Nd);
   QDPIO::cout << "Enter lattice size\n";
@@ -806,6 +806,8 @@ int main(int argc, char **argv)
 
   pop(xml_out);
         
+  END_CODE();
+  
   // Time to bolt
   QDP_finalize();
 

@@ -1,5 +1,5 @@
 /*
- *  $Id: hypsmear.cc,v 1.13 2004-07-23 18:08:03 dru Exp $
+ *  $Id: hypsmear.cc,v 1.14 2004-07-28 03:08:04 edwards Exp $
  *
  *  This is the top-level routine for HYP smearing.
  *  It is a wrapper for Urs' and Robert's implmenetation of the HYP
@@ -161,6 +161,8 @@ int main(int argc, char *argv[])
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
 
+  START_CODE();
+
   // Parameter structure for the input
   Hypsmear_input_t input;
 
@@ -298,6 +300,7 @@ int main(int argc, char *argv[])
 
   pop(xml_out);
 
+  END_CODE();
 
   // Time to bolt
   QDP_finalize();

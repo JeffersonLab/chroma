@@ -1,4 +1,4 @@
-// $Id: wallformfac.cc,v 1.26 2004-06-08 20:54:37 edwards Exp $
+// $Id: wallformfac.cc,v 1.27 2004-07-28 03:08:05 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions with a wall sink
  *
@@ -214,6 +214,8 @@ main(int argc, char *argv[])
 {
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
+
+  START_CODE();
 
   // Input parameter structure
   WallFormFac_input_t  input;
@@ -534,6 +536,8 @@ main(int argc, char *argv[])
 
   xml_in.close();
   xml_out.close();
+
+  END_CODE();
 
   // Time to bolt
   QDP_finalize();

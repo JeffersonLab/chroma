@@ -1,6 +1,10 @@
-// $Id: propagator.cc,v 1.58 2004-05-28 16:47:33 bjoo Exp $
+// $Id: propagator.cc,v 1.59 2004-07-28 03:08:04 edwards Exp $
 // $Log: propagator.cc,v $
-// Revision 1.58  2004-05-28 16:47:33  bjoo
+// Revision 1.59  2004-07-28 03:08:04  edwards
+// Added START/END_CODE to all routines. Changed some to not pass an
+// argument.
+//
+// Revision 1.58  2004/05/28 16:47:33  bjoo
 // Wired in REL_GMRESR_SUMR and REL_GMRESR_CG inverters to propagator and propagator_comp
 //
 // Revision 1.57  2004/04/28 14:56:11  bjoo
@@ -147,6 +151,8 @@ int main(int argc, char **argv)
 {
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
+
+  START_CODE();
 
   // Input parameter structure
   Propagator_input_t  input;
@@ -581,6 +587,8 @@ int main(int argc, char **argv)
 
   xml_out.close();
   xml_in.close();
+
+  END_CODE();
 
   // Time to bolt
   QDP_finalize();

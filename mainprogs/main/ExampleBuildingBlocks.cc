@@ -45,7 +45,7 @@ using namespace QDP;
 //###################################################################################//
 
 static const char* const CVSExampleBuildingBlocks_hh =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/mainprogs/main/ExampleBuildingBlocks.cc,v 1.14 2004-05-28 00:14:16 dru Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/mainprogs/main/ExampleBuildingBlocks.cc,v 1.15 2004-07-28 03:08:04 edwards Exp $";
 
 //###################################################################################//
 // Accept All Link Patterns                                                          //
@@ -72,6 +72,8 @@ int main( int argc, char** argv )
   //#################################################################################//
 
   QDP_initialize( & argc, & argv );
+
+  START_CODE();
 
   //#################################################################################//
   // Check Arguments                                                                 //
@@ -488,6 +490,8 @@ int main( int argc, char** argv )
 
   Out << "\n" << "FINISHED" << "\n" << "\n";
   Out.close();
+
+  END_CODE();
 
   QDP_finalize();
 

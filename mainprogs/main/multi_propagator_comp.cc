@@ -1,6 +1,10 @@
-// $Id: multi_propagator_comp.cc,v 1.4 2004-04-28 16:37:53 bjoo Exp $
+// $Id: multi_propagator_comp.cc,v 1.5 2004-07-28 03:08:04 edwards Exp $
 // $Log: multi_propagator_comp.cc,v $
-// Revision 1.4  2004-04-28 16:37:53  bjoo
+// Revision 1.5  2004-07-28 03:08:04  edwards
+// Added START/END_CODE to all routines. Changed some to not pass an
+// argument.
+//
+// Revision 1.4  2004/04/28 16:37:53  bjoo
 // Adheres to new propagator structure
 //
 // Revision 1.3  2004/04/26 11:19:13  bjoo
@@ -193,6 +197,8 @@ int main(int argc, char **argv)
 {
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
+
+  START_CODE();
 
   // Input parameter structure
   PropagatorComponent_input_t  input;
@@ -432,6 +438,8 @@ int main(int argc, char **argv)
   xml_out.close();
   xml_in.close();
   
+  END_CODE();
+
   // Time to bolt
   QDP_finalize();
   
@@ -446,6 +454,7 @@ void saveComponents(const ChromaMultiProp_t& param,
 		    XMLWriter& xml_out,
 		    const multi1d<LatticeFermion>& psi)
 {
+  START_CODE();
 
   // Initialize the slow Fourier transform phases
   int num_mass = param.MultiMasses.size();
@@ -500,4 +509,6 @@ void saveComponents(const ChromaMultiProp_t& param,
     writeFermion(file_xml, record_xml, psi[m],
 		 outfile.str(), prop.prop_volfmt, QDPIO_SERIAL);
   }
+
+  END_CODE();
 }

@@ -1,4 +1,4 @@
-// $Id: seqsource.cc,v 1.4 2004-05-13 00:35:59 edwards Exp $
+// $Id: seqsource.cc,v 1.5 2004-07-28 03:08:05 edwards Exp $
 /*! \file
  *  \brief Main code for sequential source construction
  */
@@ -91,7 +91,7 @@ int main(int argc, char **argv)
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
 
-  START_CODE("seqsource");
+  START_CODE();
 
   // Input parameter structure
   SeqSource_input_t  input;
@@ -395,7 +395,7 @@ int main(int argc, char **argv)
   // Time to bolt
   QDP_finalize();
 
-  END_CODE("seqsource");
+  END_CODE();
 
   exit(0);
 }

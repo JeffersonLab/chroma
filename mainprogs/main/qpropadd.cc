@@ -1,4 +1,4 @@
-// $Id: qpropadd.cc,v 1.2 2004-04-12 18:26:28 edwards Exp $
+// $Id: qpropadd.cc,v 1.3 2004-07-28 03:08:04 edwards Exp $
 /*! \file
  * \brief Add two quark propagators
  *
@@ -108,6 +108,8 @@ main(int argc, char *argv[])
 {
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
+
+  START_CODE();
 
   // Input parameter structure
   Qpropadd_input_t  input;
@@ -320,6 +322,8 @@ main(int argc, char *argv[])
 
   xml_in.close();
   xml_out.close();
+
+  END_CODE();
 
   // Time to bolt
   QDP_finalize();

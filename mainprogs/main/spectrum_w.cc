@@ -1,10 +1,14 @@
-// $Id: spectrum_w.cc,v 1.37 2004-06-08 14:19:44 edwards Exp $
+// $Id: spectrum_w.cc,v 1.38 2004-07-28 03:08:05 edwards Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.37  2004-06-08 14:19:44  edwards
+//  Revision 1.38  2004-07-28 03:08:05  edwards
+//  Added START/END_CODE to all routines. Changed some to not pass an
+//  argument.
+//
+//  Revision 1.37  2004/06/08 14:19:44  edwards
 //  Changed out_version to 11.
 //
 //  Revision 1.36  2004/04/29 00:55:06  edwards
@@ -276,6 +280,8 @@ int main(int argc, char **argv)
 {
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
+
+  START_CODE();
 
   // Input parameter structure
   Spectrum_input_t  input;
@@ -621,6 +627,8 @@ int main(int argc, char **argv)
 
   xml_out.close();
   xml_in.close();
+
+  END_CODE();
 
   // Time to bolt
   QDP_finalize();

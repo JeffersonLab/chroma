@@ -1,6 +1,10 @@
-// $Id: collect_multi_propcomp.cc,v 1.3 2004-04-28 16:37:53 bjoo Exp $
+// $Id: collect_multi_propcomp.cc,v 1.4 2004-07-28 03:08:04 edwards Exp $
 // $Log: collect_multi_propcomp.cc,v $
-// Revision 1.3  2004-04-28 16:37:53  bjoo
+// Revision 1.4  2004-07-28 03:08:04  edwards
+// Added START/END_CODE to all routines. Changed some to not pass an
+// argument.
+//
+// Revision 1.3  2004/04/28 16:37:53  bjoo
 // Adheres to new propagator structure
 //
 // Revision 1.1  2004/04/23 11:23:38  bjoo
@@ -179,6 +183,8 @@ int main(int argc, char **argv)
 {
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
+
+  START_CODE();
 
   // Input parameter structure
   PropagatorComponent_input_t  input;
@@ -415,6 +421,8 @@ int main(int argc, char **argv)
   xml_out.close();
   xml_in.close();
   
+  END_CODE();
+
   // Time to bolt
   QDP_finalize();
   

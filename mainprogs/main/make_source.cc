@@ -1,4 +1,4 @@
-// $Id: make_source.cc,v 1.31 2004-05-07 16:06:35 edwards Exp $
+// $Id: make_source.cc,v 1.32 2004-07-28 03:08:04 edwards Exp $
 /*! \file
  *  \brief Main code for source generation
  */
@@ -72,6 +72,8 @@ int main(int argc, char **argv)
 {
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
+
+  START_CODE();
 
   // Input parameter structure
   Propagator_input_t  input;
@@ -322,6 +324,8 @@ int main(int argc, char **argv)
   pop(xml_out);  // make_source
   xml_out.close();
   xml_in.close();
+
+  END_CODE();
 
   // Time to bolt
   QDP_finalize();

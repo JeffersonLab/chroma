@@ -1,4 +1,4 @@
-// $Id: sink_smearing.cc,v 1.9 2004-04-28 14:34:43 edwards Exp $
+// $Id: sink_smearing.cc,v 1.10 2004-07-28 03:08:05 edwards Exp $
 /*! \file
  * \brief Main program for sink-smearing quark propagators
  *
@@ -83,6 +83,8 @@ int main(int argc, char **argv)
 {
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
+
+  START_CODE();
 
   // Input parameter structure
   SinkSmear_input_t  input;
@@ -302,6 +304,8 @@ int main(int argc, char **argv)
 
   xml_out.close();
   xml_in.close();
+
+  END_CODE();
 
   // Time to bolt
   QDP_finalize();

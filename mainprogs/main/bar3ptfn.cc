@@ -1,4 +1,4 @@
-// $Id: bar3ptfn.cc,v 1.33 2004-04-28 14:34:43 edwards Exp $
+// $Id: bar3ptfn.cc,v 1.34 2004-07-28 03:08:04 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions
  *
@@ -181,6 +181,8 @@ main(int argc, char *argv[])
 {
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
+
+  START_CODE();
 
   // Input parameter structure
   Bar3ptfn_input_t  input;
@@ -419,6 +421,8 @@ main(int argc, char *argv[])
 
   xml_in.close();
   xml_out.close();
+
+  END_CODE();
 
   // Time to bolt
   QDP_finalize();

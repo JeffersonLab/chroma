@@ -1,4 +1,4 @@
-// $Id: qproptransf.cc,v 1.11 2004-05-13 00:44:06 edwards Exp $
+// $Id: qproptransf.cc,v 1.12 2004-07-28 03:08:04 edwards Exp $
 /*! \file
  *  \brief Converts quark propagators in one format into another format.
  */
@@ -146,7 +146,7 @@ int main(int argc, char *argv[])
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
 
-  START_CODE("qproptransf");
+  START_CODE();
   
   // Parameter structure for the input
   QpropTransf_input_t input;
@@ -404,7 +404,7 @@ int main(int argc, char *argv[])
   xml_out.close();
   xml_in.close();
 
-  END_CODE("qproptransf");
+  END_CODE();
 
   // Time to bolt
   QDP_finalize();
