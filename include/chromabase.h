@@ -1,4 +1,4 @@
-// $Id: chromabase.h,v 1.3 2003-03-30 17:14:36 edwards Exp $
+// $Id: chromabase.h,v 1.4 2003-04-03 19:28:06 edwards Exp $
 //
 // Absolute basic stuff to use chroma
 
@@ -11,9 +11,6 @@ using namespace QDP;
 #define CREATE_NAMELIST(a,b) 
 
 // #define WRITE_NAMELIST(grp,...) Write(cout, #grp , ##__VA_ARGS__)
-
-#define PLUS  1
-#define MINUS  -1
 
 const float fuzz = 1.0e-5;
 const float twopi = 6.283185307179586476925286;
