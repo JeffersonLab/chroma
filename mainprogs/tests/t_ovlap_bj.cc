@@ -1,7 +1,8 @@
-// $Id: t_ovlap_bj.cc,v 1.8 2004-01-02 03:19:41 edwards Exp $
+// $Id: t_ovlap_bj.cc,v 1.9 2004-01-03 14:54:42 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
+#include <iomanip>
 #include <string>
 
 #include <cstdio>
@@ -20,7 +21,6 @@
 using namespace QDP;
 using namespace std;
 
-enum BC { ANTIPERIODIC=-1,  PERIODIC =1 };
 enum GaugeStartType { HOT_START = 0, COLD_START = 1, FILE_START = 2 };
 enum GaugeFormat { SZIN_GAUGE_FORMAT = 0, NERSC_GAUGE_FORMAT = 1 };
 
@@ -34,6 +34,7 @@ typedef struct {
   multi1d<int> rng_seed;
   multi1d<Real> lambda;
   Real lambda_max;
+  bool szin_eig;
   int gauge_start_type;
   int gauge_file_format;
   string gauge_filename;
@@ -57,15 +58,38 @@ void readParams(const string& filename, Param_t& params)
     read(reader, "/params/lattice/nrow", params.nrow);
     read(reader, "/params/lattice/boundary", params.boundary);
     read(reader, "/params/RNG/seed", params.rng_seed);
-    if ( reader.count("/params/eValues") > 0 ) { 
+    read(reader, "/params/zolotarev/wilsonMass", params.wilson_mass);
+
+    // Read EigenValues: 
+    //
+    
+    if ( reader.count("/params/SZINEValues") > 0 ) {
+
+      // SZIN EValues
+      read(reader, "/params/SZINEValues/lambda", params.lambda);
+      read(reader, "/params/SZINEValues/lambdaMax", params.lambda_max);
+      for(int i=0; i < params.lambda.size(); i++) { 
+	params.lambda[i] *= Real(Nd) + params.wilson_mass;
+      }
+      params.lambda_max *= Real(Nd) + params.wilson_mass;
+      params.szin_eig = true;
+    }
+    else if ( reader.count("/params/eValues") > 0 ) { 
+
+      // Chroma EValues
       read(reader, "/params/eValues/lambda", params.lambda);
       read(reader, "/params/eValues/lambdaMax", params.lambda_max);
+      params.szin_eig = false;
     }
-    else { 
+    else {
+
+      // No EValues
       params.lambda.resize(0);
+      params.szin_eig = false;
     }
-   read(reader, "/params/Cfg/startType", params.gauge_start_type);
-   if( params.gauge_start_type == FILE_START ) { 
+
+    read(reader, "/params/Cfg/startType", params.gauge_start_type);
+    if( params.gauge_start_type == FILE_START ) { 
       read(reader, "/params/Cfg/gaugeFilename", params.gauge_filename);
       read(reader, "/params/Cfg/gaugeFileFormat", params.gauge_file_format);
     }
@@ -86,7 +110,7 @@ void readParams(const string& filename, Param_t& params)
      params.approx_max = -1;
    }
 
-   read(reader, "/params/zolotarev/wilsonMass", params.wilson_mass);
+
    read(reader, "/params/zolotarev/quarkMass",  params.quark_mass);
    read(reader, "/params/zolotarev/RsdCG", params.rsd_cg);
    read(reader, "/params/zolotarev/MaxCG", params.max_cg);
@@ -111,10 +135,32 @@ void dumpParams(XMLWriter& writer, Param_t& params)
   pop(writer); // RNG
 
   if( params.lambda.size() >  0 ) { 
-    push(writer, "eValues");
-    write(writer, "lambda", params.lambda);
-    write(writer, "lambdaMax", params.lambda_max);
-    pop(writer); // eValues
+    if ( params.szin_eig ) {
+
+      push(writer, "eValues");
+      write(writer, "lambda", params.lambda);
+      write(writer, "lambdaMax", params.lambda_max);
+      pop(writer); // eValues
+
+      push(writer, "SZINEValues");
+      multi1d<Real> szin_lambda(params.lambda);
+      Real szin_lambda_max = params.lambda_max;
+
+      for(int i = 0; i < params.lambda.size(); i++) { 
+	szin_lambda[i] /= (Real(Nd) + params.wilson_mass);
+      }
+      szin_lambda_max /= (Real(Nd) + params.wilson_mass);
+
+      write(writer, "lambda", szin_lambda);
+      write(writer, "lambdaMax", szin_lambda_max);
+      pop(writer); // SZINEValues
+    }
+    else { 
+      push(writer, "eValues");
+      write(writer, "lambda", params.lambda);
+      write(writer, "lambdaMax", params.lambda_max);
+      pop(writer); // eValues
+    }
   }
   push(writer, "Cfg");
   write(writer, "startType", params.gauge_start_type);
@@ -143,23 +189,44 @@ void dumpParams(XMLWriter& writer, Param_t& params)
   pop(writer); // params
 }
 
-
+//! Read in the old SZIN eigenvectors.
+//  Not only do we read the eigenvectors but we also check them
+//  by computing the norm:
+//
+//  ||  gamma_5 D_wils e_i - lambda_i e_i ||
+//
+//  Since D_wils = (Nd + m_wils) D_wils_szin, we expect this
+//  norm to be 
+//
+//   (Nd + m_wils) || gamma_5 D_wils_szin e_i - lambda_i e_i ||
+//
+// We also compute the old SZIN norm:
+//  
+//       || gamma_5 D_wils_szin e_i - lambda_i e_i || 
+// 
+// by dividing our original eigen nom by (Nd + m_wils)
+//
+// This latter norm can be checked against SZIN NMLDAT files.
+//
 void readEigenVecs(const multi1d<LatticeColorMatrix>& u,
 		   const UnprecWilsonFermAct& S_aux,
 		   const multi1d<Real>& lambda_lo, 
 		   multi1d<LatticeFermion>& eigen_vec,
+		   const Real wilson_mass,
+		   const bool szin_eig,
 		   XMLWriter& xml_out)
 {
 
 
   // Create a connect State
-  Handle<const ConnectState>  s(new SimpleConnectState(u));
+  // This is where the boundary conditions are applied.
+
+  Handle<const ConnectState>  s( S_aux.createState(u) );
   Handle<const LinearOperator<LatticeFermion> > D_w( S_aux.linOp(s) );
 
 
   // Create Space for the eigen vecs
   eigen_vec.resize(lambda_lo.size());
-  char filename[60];
   
   // Create Space for the eigenvector norms
   multi1d<Real> e_norms(lambda_lo.size());
@@ -167,23 +234,33 @@ void readEigenVecs(const multi1d<LatticeColorMatrix>& u,
 
   for(int i = 0; i < lambda_lo.size(); i++) { 
  
-    sprintf(filename, "eigenvector_%03d", i);
-    string filename_string(filename);
+    // Make up the filename
+    ostringstream filename;
 
-    cout << "Reading eigenvector: " << filename_string << endl;
+    // this will produce eigenvector_XXX
+    // where XXX is a 0 padded integer -- eg 001, 002, 010 etc
+    filename << "eigenvector_" << setw(3) << setfill('0') << i;
 
-    readSzinFerm(eigen_vec[i], filename_string);
+    
+    cout << "Reading eigenvector: " << filename.str() << endl;
+    readSzinFerm(eigen_vec[i], filename.str());
+
+    // Check e-vectors are normalized
     evec_norms[i] = (Real)sqrt(norm2(eigen_vec[i]));
+
+    // Check the norm || Gamma_5 D e_v - lambda 
     LatticeFermion D_ev, tmp_ev, lambda_e;
 
     // D_ew = D ev(i)
     (*D_w)(tmp_ev, eigen_vec[i], PLUS);
+
     D_ev = Gamma(15)*tmp_ev;
 
     // Lambda_e 
     lambda_e = lambda_lo[i]*eigen_vec[i];
 
     D_ev -= lambda_e;
+
     e_norms[i] = (Real)sqrt(norm2(D_ev));        
   }    
   push(xml_out, "EigenvectorTest");
@@ -193,7 +270,16 @@ void readEigenVecs(const multi1d<LatticeColorMatrix>& u,
   push(xml_out, "EigenTestNorms");
   Write(xml_out, e_norms);
   pop(xml_out);
-  pop(xml_out);
+
+  if( szin_eig ) { 
+    multi1d<Real> szin_enorms(e_norms);
+    for(int i=0; i < lambda_lo.size(); i++) {
+      szin_enorms[i] /= (Real(Nd)+wilson_mass);
+    }
+    push(xml_out, "SZINEigenTestNorms");
+    Write(xml_out, szin_enorms);
+    pop(xml_out);
+  }
 }
   
 int main(int argc, char **argv)
@@ -201,6 +287,7 @@ int main(int argc, char **argv)
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
 
+  // Read the parameters 
   Param_t params;
 
   try { 
@@ -211,11 +298,6 @@ int main(int argc, char **argv)
     exit(1);
   }
 
-  /* Real kappa = Real(1) / ( Real(2)*(Real(Nd) + params.wilson_mass) );
-  for(int scaleit=0; scaleit < params.lambda.size(); scaleit++) {
-    params.lambda[scaleit] /= ( Real(2)*kappa );
-  }
-  */
 
   // Setup the lattice
   Layout::setLattSize(params.nrow);
@@ -343,7 +425,18 @@ int main(int argc, char **argv)
   else {
 
     // Connect State with eigenvectors
-    readEigenVecs(u, dynamic_cast<UnprecWilsonFermAct&>(*S_w), params.lambda, eigen_vecs, xml_out);
+    if( params.szin_eig ) {
+      readEigenVecs(u, 
+		    dynamic_cast<UnprecWilsonFermAct&>(*S_w), 
+		    params.lambda, 
+		    eigen_vecs, 
+		    params.wilson_mass, 
+		    params.szin_eig, 
+		    xml_out);
+    }
+    else {
+      QDP_error_exit("Non SZIN e-values not yet implmeneted");
+    }
 
     connect_state_ptr = S.createState(u, 
 				      params.lambda,
