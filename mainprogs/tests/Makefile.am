@@ -31,7 +31,8 @@ HDRS =
 ##   Another option is to add it to check_PROGRAMS, which means it will only
 ##   be built by 'make check' and is not installed.
 ##noinst_PROGRAMS = t_mesplq t_dslashm t_io
-check_PROGRAMS = t_mesplq t_dslashm t_io t_lwldslash t_formfac t_mesons_w t_conslinop
+check_PROGRAMS = t_mesplq t_dslashm t_io t_lwldslash t_formfac t_mesons_w \
+		t_conslinop t_hypsmear
 
 ## DEPENDENCIES = build_chroma_libs
 
@@ -49,6 +50,9 @@ check_PROGRAMS = t_mesplq t_dslashm t_io t_lwldslash t_formfac t_mesons_w t_cons
 
 t_mesplq_SOURCES = t_mesplq.cc
 t_mesplq_DEPENDENCIES = build_chroma_libs
+
+t_hypsmear_SOURCES = t_hypsmear.cc
+t_hypsmear_DEPENDENCIES = build_chroma_libs
 
 t_dslashm_SOURCES = t_dslashm.cc
 t_dslashm_DEPENDENCIES = build_chroma_libs
