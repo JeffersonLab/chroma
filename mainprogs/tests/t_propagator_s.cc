@@ -1,4 +1,4 @@
-// $Id: t_propagator_s.cc,v 1.4 2003-12-12 13:56:41 bjoo Exp $
+// $Id: t_propagator_s.cc,v 1.5 2003-12-20 12:12:46 bjoo Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -13,6 +13,10 @@
 #include "fermact.h"
 #include "actions/ferm/fermacts/asqtad_fermact_s.h"
 #include "actions/ferm/linop/asqtad_linop_s.h"
+#include "meas/hadron/mesphas_follana_s.h"
+#include "meas/hadron/srcfil.h"
+#include "util/gauge/phfctr.h"
+#include "meas/hadron/mesphas_s.h"
 
 /*
  *  Here we have various temporary definitions
@@ -256,6 +260,102 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
   }
 }
 
+//
+//  **** Pion correlator code *****
+//
+// These will put in a separate file one day
+//
+
+
+
+//! Function object used for constructing the time-slice set
+class TimeSliceFunc : public SetFunc
+{
+public:
+  TimeSliceFunc(int dir): dir_decay(dir) {}
+
+  int operator() (const multi1d<int>& coordinate) const {return coordinate[dir_decay];}
+  int numSubsets() const {return Layout::lattSize()[dir_decay];}
+
+  int dir_decay;
+
+private:
+  TimeSliceFunc() {}  // hide default constructor
+};
+
+
+//
+//
+//
+
+
+void mesons_s(const LatticePropagator & psi,
+              const multi1d<LatticeReal>& meson_phases,
+              multi2d<Real> & meson_propagator,
+              const multi1d<int>& t_source,
+              int j_decay)
+{
+  LatticeReal psi_sq;
+  LatticeReal meson_tmp;
+
+
+// --- pasted from mesons_w ---
+// Create the time-slice set
+ UnorderedSet timeslice;
+ timeslice.make(TimeSliceFunc(j_decay));
+
+ // Length of lattice in j_decay direction
+ int length = timeslice.numSubsets();
+
+ // ----- end of paste -----
+
+  multi1d<Double> hsum(length);
+
+  int t0;
+  int t;
+  int t_eff;
+  int n;
+
+
+
+  t0 = t_source[j_decay];              /* Note j_decay = 0 is not permitted! */
+
+/* Compute Psi^dag * Psi */
+  psi_sq = real(trace(psi * adj(psi)));
+
+ for(n = 0;n  < Nd; ++n )
+   {
+     /* Multiply with the appropriate meson phase */
+          meson_tmp = meson_phases[n] * psi_sq;
+     //     meson_tmp = psi_sq;
+
+     /* Do a slice-wise sum. */
+#ifdef WHY_OH_WHY
+     // not sure why recode did this
+     meson_tmp[0] += meson_tmp[1];
+     hsum = sumMulti(meson_tmp[0], timeslice);
+#endif
+
+     hsum = sumMulti(meson_tmp, timeslice);
+
+     //     for(t = 0;t  < ( length); ++t )
+     //  {
+     //  t_eff = (t - t0 + length)% length;
+     //  meson_propagator[n][t_eff] += Real(hsum[t]);
+     //  }
+
+
+     for(t = 0;t  < ( length); ++t )
+       {
+         meson_propagator[n][t] = Real(hsum[t]);
+       }
+
+
+
+   }
+
+
+}
 
 
 //! Propagator generation
@@ -298,6 +398,26 @@ int main(int argc, char **argv)
   }
 
 
+  // 
+  //  gauge invariance test
+  //  
+
+
+  // gauge transformed gauge fields
+//  multi1d<LatticeColorMatrix> u_trans(Nd);
+
+  // gauge transform
+//  LatticeColorMatrix v ;
+  
+//  gaussian(v);
+//  reunit(v) ; 
+
+//  for(int dir = 0 ; dir < Nd ; ++dir)
+//    {
+//      u_trans[dir] = v*u[dir]*adj(shift(v,FORWARD,dir)) ;
+//    }
+
+
   // Read in the source along with relevant information.
   LatticePropagator quark_prop_source;
   XMLReader source_xml;
@@ -306,7 +426,7 @@ int main(int argc, char **argv)
   {
   case PROP_TYPE_SZIN :
 //    readSzinQprop(source_xml, quark_prop_source, input.prop.source_file);
-    quark_prop_source = 1;
+    quark_prop_source = zero;
     break;
   default :
     QDP_error_exit("Propagator type is unsupported.");
@@ -332,6 +452,8 @@ int main(int argc, char **argv)
 
   xml_out.flush();
 
+  // Check if the gauge field configuration is unitarized
+  unitarityCheck(u);
 
   // Calculate some gauge invariant observables just for info.
   Double w_plaq, s_plaq, t_plaq, link;
@@ -344,12 +466,35 @@ int main(int argc, char **argv)
   Write(xml_out, link);
   pop(xml_out);
 
-  push(xml_out, "Gauge_Field");
-  Write(xml_out, u);
-  pop(xml_out);
+  // Calcluate plaq on the transformed field
+//  MesPlq(u_trans, w_plaq, s_plaq, t_plaq, link);
+//  push(xml_out, "Is this gauge invariant?");
+//  Write(xml_out, w_plaq);
+//  Write(xml_out, s_plaq);
+//  Write(xml_out, t_plaq);
+//  Write(xml_out, link);
+//  pop(xml_out);
+
+//  push(xml_out, "Gauge_Field");
+//  Write(xml_out, u);
+//  pop(xml_out);
 
   xml_out.flush();
 
+    // Phases
+  multi1d<LatticeInteger> alpha(Nd); // KS Phases
+  multi1d<LatticeInteger> beta(Nd);  // Auxiliary phases for this work (not needed here)
+
+  // Turn on KS phases
+  // first get them!
+    mesPhasFollana(alpha, beta);
+    for(int mu=0; mu<Nd; mu++) {
+      u[mu] *= alpha[mu];
+    }
+  // Apply the boundary conditions
+
+  setph(input.param.boundary);
+  phfctr(u);
   //
   // Initialize fermion action
   //
@@ -373,28 +518,28 @@ int main(int argc, char **argv)
   multi1d<int> t_src_odd(4);
   t_src_odd = odd_source;
 
-  srcfil(tmp1, t_src_odd ,0, 0);
-  tmp2  =  zero;
+//  srcfil(tmp1, t_src_odd ,0, 0);
+//  tmp2  =  zero;
 
   // Apply Linop
-  D_asqtad.evenOddLinOp(tmp2, tmp1, PLUS); 
+//  D_asqtad.evenOddLinOp(tmp2, tmp1, PLUS); 
 
-  push(xml_out, "dslash");
-  Write(xml_out, tmp1);
-  Write(xml_out, tmp2);
-  pop(xml_out);
+//  push(xml_out, "dslash");
+//  Write(xml_out, tmp1);
+//  Write(xml_out, tmp2);
+//  pop(xml_out);
 
   const LinearOperatorProxy<LatticeFermion> MdagM_asqtad(S_f.lMdagM((ConnectState &)state));
 
   
-  srcfil(tmp1, t_src_even, 0, 0);
+//  srcfil(tmp1, t_src_even, 0, 0);
 
-  MdagM_asqtad(tmp2, tmp1, PLUS);
+//  MdagM_asqtad(tmp2, tmp1, PLUS);
 
-  push(xml_out, "MdagM");
-  Write(xml_out, tmp1);
-  Write(xml_out, tmp2);
-  pop(xml_out);
+//  push(xml_out, "MdagM");
+//  Write(xml_out, tmp1);
+//  Write(xml_out, tmp2);
+//  pop(xml_out);
 
  
 						       
@@ -409,29 +554,33 @@ int main(int argc, char **argv)
   int ncg_had = 0;
   int n_count;
 
-  LatticeFermion psi, chi;
+  LatticeFermion q_source, psi;
 
-  chi = zero;   // note this is ``zero'' and not 0
-  srcfil(psi, t_src_even, 0, 0);
+  psi = zero;   // note this is ``zero'' and not 0
 
-  for(int color_source = 0; color_source < Nc; ++color_source)
+
+/*  for(int color_source = 0; color_source < Nc; ++color_source)
   {
+    QDPIO::cout << "Inversion for Color =  " << color_source << endl;
     int spin_source = 0;
+
+    q_source = zero ;
+    srcfil(q_source, t_src_even, color_source, 0);
 
     // Extract a fermion source
     //PropToFerm(quark_prop_source, chi, color_source, spin_source);
 
-    // push(xml_out, "SOURCE");
-   //  Write(xml_out, psi);
+    //    push(xml_out, "SOURCE");
+    // Write(xml_out, q_source);
    //  Write(xml_out, chi);
-   //  pop(xml_out);
+    // pop(xml_out);
 
     // Use the last initial guess as the current guess
 
     // Compute the propagator for given source color/spin 
     // int n_count;
 
-    S_f.qprop(chi, (ConnectState&) state, psi, CG_INVERTER, 
+    S_f.qprop(psi, (ConnectState&) state, q_source, CG_INVERTER, 
               input.param.RsdCG, input.param.MaxCG, n_count);
     
     ncg_had += n_count;
@@ -441,30 +590,54 @@ int main(int argc, char **argv)
     write(xml_out, "RsdCG", input.param.RsdCG);
     Write(xml_out, n_count);
     pop(xml_out);
-
+*/
     /*
      * Move the solution to the appropriate components
      * of quark propagator.
      */
-    FermToProp(chi, quark_propagator, color_source, spin_source);
-    
+/*    FermToProp(psi, quark_propagator, color_source, spin_source);
+//    push(xml_out, "psi");
+//    Write(xml_out, psi);
+//    pop(xml_out);
   }
+*/
+/*  LatticeFermion phi = zero;
+  LatticeFermion tmp3, tmp4 = zero;
+  D_asqtad.evenOddLinOp(tmp1, psi, PLUS);
+  phi[rb[0]] = tmp1;
+  D_asqtad.evenEvenLinOp(tmp2, psi, PLUS);
+  phi[rb[0]] += tmp2;
+  D_asqtad.oddEvenLinOp(tmp3, psi, PLUS);
+  phi[rb[1]] = tmp3;
+  D_asqtad.oddOddLinOp(tmp4, psi, PLUS);
+  phi[rb[1]] += tmp4;
 
+//  push(xml_out, "tests");
+//  Write(xml_out, tmp1);
+//  Write(xml_out, tmp2);
+//  Write(xml_out, tmp3);
+//  Write(xml_out, tmp4);
+//  pop(xml_out);
 
-  // Instantiate XML buffer to make the propagator header
-  // XMLBufferWriter prop_xml;
-  // push(prop_xml, "propagator");
+  push(xml_out, "PHI");
+  Write(xml_out, phi);
+  pop(xml_out);
+*/
+  
+   // Instantiate XML buffer to make the propagator header
+   XMLBufferWriter prop_xml;
+   push(prop_xml, "propagator");
 
-  // Write out the input
-  // write(prop_xml, "Input", xml_in);
+   // Write out the input
+   write(prop_xml, "Input", xml_in);
 
-  // Write out the config header
-  // write(prop_xml, "Config_info", gauge_xml);
+   // Write out the config header
+   write(prop_xml, "Config_info", gauge_xml);
 
-  // Write out the source header
-  // write(prop_xml, "Source_info", source_xml);
+   // Write out the source header
+   write(prop_xml, "Source_info", source_xml);
 
-  // pop(prop_xml);
+   pop(prop_xml);
 
 
   // Save the propagator
@@ -472,15 +645,63 @@ int main(int argc, char **argv)
 //   {
 //   case PROP_TYPE_SZIN:
 //     writeSzinQprop(quark_propagator, input.prop.prop_file, input.param.Mass);
-  //   break;
+//   break;
 
 //  case PROP_TYPE_SCIDAC:
 //    writeQprop(prop_xml, quark_propagator, input.prop.prop_file);
 //    break;
-// 
+ 
 //   default :
-  //   QDP_error_exit("Propagator type is unsupported.");
+//     QDP_error_exit("Propagator type is unsupported.");
 //   }
+
+  //
+  //  compute the pion correlator
+  //
+  cout << "Computing meson spectroscopy..." << endl ;
+
+  multi1d<LatticeReal> meson_phases(Nd) ;
+  int j_decay = Nd -1;
+  int length = Layout::lattSize()[j_decay] ;
+
+
+  MesPhas(meson_phases,j_decay) ;
+
+
+  multi2d<Real>  meson_propagator(Nd,length) ;
+  multi1d<Real> meson_prop(length);
+
+    string meson_snames[4] =
+      {  "M_PS"  , "M_VT"  ,
+         "M_PV"  , "M_SC"
+      };
+
+    mesons_s(quark_propagator,meson_phases,meson_propagator,
+             t_src_even,j_decay) ;
+
+    push(xml_out,"Point_Point_Staggered_Hadron");
+    Write(xml_out,j_decay);
+
+    push(xml_out,"Ontology");
+    string paper_reference = "Nucl.Phys.B284:299,1987, Bowler et al." ;
+    Write(xml_out,paper_reference );
+    string Equation = "2.18" ;
+    Write(xml_out,Equation);
+    pop(xml_out) ;
+
+    push(xml_out,"Point_Point_Staggered_Meson");
+    for(int stag_oper = 0; stag_oper < 4 ; stag_oper++)
+      {
+        for(int tt=0 ; tt < length ; ++tt)
+          meson_prop[tt] = meson_propagator[stag_oper][tt] ;
+
+        push(xml_out,meson_snames[stag_oper]);
+        Write(xml_out, meson_prop);
+        pop(xml_out) ;
+      }
+    pop(xml_out) ; // meson
+
+    pop(xml_out) ; // hadron
 
 
   xml_out.close();

@@ -71,11 +71,11 @@ class AsqtadConnectState : public AsqtadConnectStateBase<T>
       Fat7_Links(u, u_fat, u0);
       Triple_Links(u, u_triple, u0);
 
-      int mu;
-      for(mu=0; mu < Nd; mu++) { 
-	u_fat(mu) *= phases(mu);
-	u_triple(mu) *= phases(mu);
-      }
+//      int mu;
+//      for(mu=0; mu < Nd; mu++) { 
+//	u_fat(mu) *= phases(mu);
+//	u_triple(mu) *= phases(mu);
+//      }
 
     }
 
