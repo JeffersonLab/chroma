@@ -1,4 +1,4 @@
-// $Id: sunfill.cc,v 1.2 2003-03-31 19:46:08 edwards Exp $
+// $Id: sunfill.cc,v 1.3 2003-04-02 22:24:58 edwards Exp $
 /*! \file
  *  \brief  Fill an SU(Nc) matrix with an SU(2) submatrix
  */
@@ -31,7 +31,7 @@ using namespace QDP;
  */
 
 LatticeColorMatrix
-sunFill(const multi1d<LatticeReal> r,
+sunFill(const multi1d<LatticeReal>& r,
 	int su2_index,
 	const Subset& s)
 {
