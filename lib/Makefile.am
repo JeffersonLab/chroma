@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.221 2005-01-11 16:22:41 bjoo Exp $
+# $Id: Makefile.am,v 1.222 2005-01-12 04:41:24 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -53,6 +53,9 @@ nobase_include_HEADERS = \
 	actions/gauge/gaugebc_schroedinger.h \
 	actions/gauge/gaugeact_factory.h \
 	actions/gauge/wilson_gaugeact.h \
+	actions/gauge/plaq_gaugeact.h \
+	actions/gauge/rect_gaugeact.h \
+	actions/gauge/pg_gaugeact.h \
 	io/io.h \
 	io/enum_io/enum_io.h \
 	io/enum_io/enum_type_map.h \
@@ -120,7 +123,7 @@ nobase_include_HEADERS = \
 	update/molecdyn/field_state.h \
 	update/molecdyn/abs_monomial.h \
 	update/molecdyn/monomial_factory.h \
-	update/molecdyn/wilson_gauge_monomial.h \
+	update/molecdyn/gauge_monomial.h \
 	update/molecdyn/abs_hamiltonian.h \
 	update/molecdyn/exact_hamiltonian.h \
 	update/molecdyn/abs_integrator.h \
@@ -365,8 +368,12 @@ libchroma_a_SOURCES = \
 	util/info/printgeom.cc util/info/proginfo.cc \
 	actions/gauge/gaugebc_periodic.cc \
 	actions/gauge/gaugebc_simple.cc \
+	actions/gauge/gaugebcs.cc \
 	actions/gauge/wilson_gaugeact.cc \
-	update/molecdyn/wilson_gauge_monomial.cc \
+	actions/gauge/plaq_gaugeact.cc \
+	actions/gauge/rect_gaugeact.cc \
+	actions/gauge/pg_gaugeact.cc \
+	update/molecdyn/gauge_monomial.cc \
 	update/molecdyn/lcm_pqp_leapfrog.cc \
 	update/molecdyn/global_metropolis_accrej.cc \
 	update/molecdyn/zero_guess_predictor.cc \
