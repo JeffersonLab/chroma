@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.11 2003-04-10 17:20:10 dgr Exp $
+// $Id: propagator.cc,v 1.12 2003-04-17 14:56:16 dgr Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -9,6 +9,16 @@
 #define MAIN
 
 #include "chroma.h"
+
+/*
+ *  Here we have various temporary definitions
+ */
+
+// First the source type
+#define S_WAVE 0
+#define P_WAVE 1
+
+#define MAXLINE 80
 
 using namespace QDP;
 
@@ -36,20 +46,80 @@ int main(int argc, char **argv)
   int j_decay = Nd-1;
   int length = Layout::lattSize()[j_decay]; // define the temporal direction
 
+
+  /*
+   *  As a temporary measure, we will now read in the parameters from a file
+   *  DATA.  Eventually, this will use QIO or NML, but for the moment we will
+   *  just use the usual command-line reader
+   */
+
+  TextReader params_in("DATA");
+
+
+  int io_version_in; 		// The I/O version that we are reading....
+
+  Real Kappa;			// Kappa value
+  
+  int source_type, source_direction; // S-wave, P-wave etc, and direction
+
+  int wf_type;			// Point (0) or Smeared (1)
+  Real wvf_param;		// Parameter for the wave function
+  int WvfIntPar;
+
+  Real RsdCG;
+  int MaxCG;			// Iteration parameters
+
+
+
+  params_in >> io_version_in;
+
+  switch(io_version_in){	// The parameters we read in IO version
+
+  case 101:			// 
+
+    params_in >> Kappa;
+
+    params_in >> source_type;	// S-wave, P-wave etc
+    params_in >> source_direction;
+
+    params_in >> wf_type;	// Point, Gaussian etc
+    params_in >> wvf_param;
+    params_in >> WvfIntPar;
+
+    params_in >> RsdCG;		// Target residue and maximum iterations
+    params_in >> MaxCG;
+    break;
+
+  default:
+
+    QDP_error_exit("Unknown io version", io_version_in);
+
+  }
+  
+  cout << "Kappa is " << Kappa << endl;
+
+  switch(wf_type){
+  case POINT_SOURCE:
+    cout << "Point source" << endl;
+    break;
+  case SHELL_SOURCE:
+    cout << "Smeared source wvf_param= " << wvf_param <<": WvfIntPar= " 
+	 << WvfIntPar << endl;
+    break;
+  default:
+    QDP_error_exit("Unknown source_type", wf_type);
+  }    
+
+  cout << "RsdCG= " << RsdCG << ": MaxCG= " << MaxCG << endl;
+
   multi1d<int> t_source(Nd);
   t_source = 0;
 
-  Real wvf_param = 1.1;  // smearing width
-  int  WvfIntPar = 10;   // number of hits for smearing
-
-  Real Kappa = 0.1480;
 
   UnprecWilsonFermAct S_f(Kappa);
 
   FermAct = UNPRECONDITIONED_WILSON;  // global
   InvType = CG_INVERTER;  // global
-  Real RsdCG = 1.0e-6;
-  int  MaxCG = 500;
 
   // Generate a hot start gauge field
   multi1d<LatticeColorMatrix> u(Nd);
@@ -67,7 +137,19 @@ int main(int argc, char **argv)
   readSzin2(u, "szin.cfg", seed_old);
 
   // Useful info
-  NmlWriter nml("propagator.nml");
+
+  char nml_filename[MAXLINE];
+
+  switch(source_type){
+  case S_WAVE:
+    sprintf(nml_filename, "propagator.nml");
+    break;
+  case P_WAVE:
+    sprintf(nml_filename, "p_propagator.nml");
+  }
+
+  NmlWriter nml(nml_filename);
+    
 
   push(nml,"lattice");
   Write(nml,Nd);
@@ -91,10 +173,10 @@ int main(int argc, char **argv)
 #if 1
   PropHead header;		// Header information
   header.kappa = Kappa;
-  header.source_smearingparam=0;     // local (0)  gaussian (1)
-  header.source_type=0;		// S-wave source
-  header.source_direction=0;
-  header.sink_smearingparam=0;
+  header.source_smearingparam=wf_type;     // local (0)  gaussian (1)
+  header.source_type=source_type; // S-wave or P-wave source
+  header.source_direction=source_direction;
+  header.sink_smearingparam=0;	// Always to local sinks
   header.sink_type=0;
   header.sink_direction=0;
 #endif
@@ -113,8 +195,11 @@ int main(int argc, char **argv)
 
     srcfil(src_color_vec, t_source, color_source);
 
-    // Smear the color source
-    //    gausSmear(u, src_color_vec, wvf_param, WvfIntPar, j_decay);	
+    // Smear the colour source if specified
+
+    if(wf_type == SHELL_SOURCE)
+      gausSmear(u, src_color_vec, wvf_param, WvfIntPar, j_decay);
+
 
     for(int spin_source = 0; spin_source < Ns; ++spin_source)
     {
@@ -132,7 +217,8 @@ int main(int argc, char **argv)
 
 	CvToFerm(src_color_vec, chi, spin_source);
 
-	cerr << "DEBUG After CvToFerm " << endl;
+	if(source_type == P_WAVE)
+	  p_src(u, chi, source_direction);
 
 
 	// primitive initial guess for the linear sys solution
@@ -141,10 +227,7 @@ int main(int argc, char **argv)
 	push(nml,"qprop");
 	int n_count;
 
-	cerr << "DEBUG before qprop " << endl;
 	S_f.qprop(psi, u, chi, RsdCG, MaxCG, n_count);
-	cerr << "DEBUG: n_count is " << n_count << endl;
-	cerr << "DEBUG after qprop " << endl;
 	ncg_had += n_count;
 	
 	Write(nml, Kappa);
@@ -162,11 +245,18 @@ int main(int argc, char **argv)
     }
   }
 
-  writeQprop("propagator_0", quark_propagator, header);
-/*  BinaryWriter cfg_out("propagator_0");
-  write(cfg_out,quark_propagator);
-  cfg_out.close();*/
 
+  switch(source_type){
+  case S_WAVE:
+
+    writeQprop("propagator_0", quark_propagator, header);
+    break;
+  case P_WAVE:
+    writeQprop("p_propagator_0", quark_propagator, header);
+    break;
+  default:
+    QDP_error_exit("Unknown io version", io_version_in);
+  }    
 
   nml.close();
 
