@@ -1,4 +1,4 @@
-// $Id: cfgtransf.cc,v 1.5 2003-10-15 22:10:16 edwards Exp $
+// $Id: cfgtransf.cc,v 1.6 2003-10-16 00:44:32 edwards Exp $
 /*! \file
  *  \brief Many-to-many gauge transformation routine
  */
@@ -411,7 +411,7 @@ int main(int argc, char **argv)
     Write(xml_out, input_type);
     pop(xml_out);
     QDPIO::cout << "Read QCD Archive u from FE file\n";
-    readArchiv(gauge_xml_in, u, cfg_output_file);
+    readArchiv(gauge_xml_in, u, cfg_input_file);
     break;
 
 #if 0
@@ -496,6 +496,8 @@ int main(int argc, char **argv)
   Write(xml_out, link);
   Write(xml_out, pollp);
   pop(xml_out);
+
+  xml_out.flush();
   
   if ( RGaugeP )
   {
@@ -606,6 +608,8 @@ int main(int argc, char **argv)
   }
 
 
+  xml_out.flush();
+  
   /* Now write parameters to file cfg_output_file */
   switch (output_type)
   {
