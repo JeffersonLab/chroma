@@ -1,4 +1,4 @@
-// $Id: monte.cc,v 1.3 2004-07-28 02:38:05 edwards Exp $
+// $Id: monte.cc,v 1.4 2005-01-14 18:42:37 edwards Exp $
 /*! \file
  *  \brief Routine for doing the hybrid (monte carlo) algorithm. 
  */
@@ -14,6 +14,8 @@
 #include "meas/glue/topol.h"
 #include "meas/smear/smear.h"
 #include "meas/gfix/gfix.h"
+
+namespace Chroma {
 
 //! Routine for doing the hybrid (monte carlo) algorithm.
 /*!
@@ -253,3 +255,5 @@ void monte(multi1d<LatticeColorMatrix>& u(Nd),	/* New gauge field cfg. */
   /* Close out any other code */
   END_CODE();
 }
+
+}  // end namespace Chroma

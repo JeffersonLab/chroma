@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sink_smear2.h,v 1.2 2004-09-22 17:25:00 bjoo Exp $
+// $Id: sink_smear2.h,v 1.3 2005-01-14 18:42:37 edwards Exp $
 /*! \file
  *  \brief Control routine for types of propagator smearing
  */
@@ -8,6 +8,8 @@
 #define __sink_smear2_h__
 
 #include "meas/smear/wvfkind.h"
+
+namespace Chroma {
 
 //! "Smear" the quark propagator at the sink by a covariant Gaussian
 /*!
@@ -33,5 +35,7 @@ void
 sink_smear2(const multi1d<LatticeColorMatrix>& u,
             LatticePropagator& quark_propagator, WvfKind Wvf_kind,
             const Real& wvf_param, int WvfIntPar, int j_decay);
+
+}  // end namespace Chroma
 
 #endif

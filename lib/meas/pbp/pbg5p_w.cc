@@ -1,4 +1,7 @@
-/* $Id: pbg5p_w.cc,v 1.1 2004-10-04 02:59:47 edwards Exp $ */
+namespace Chroma {
+
+
+/* $Id: pbg5p_w.cc,v 1.2 2005-01-14 18:42:37 edwards Exp $ */
 
 /* PBG5P - Calculates noise estimator for the trace used in the
 /*         following constructions */
@@ -156,3 +159,5 @@ void Pbg5p(XMLWriter& xml_out,
        
   END_CODE();
 }
+
+}  // end namespace Chroma

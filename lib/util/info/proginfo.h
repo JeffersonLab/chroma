@@ -1,11 +1,13 @@
 // -*- C++ -*-
-// $Id: proginfo.h,v 1.2 2004-01-29 20:46:29 edwards Exp $
+// $Id: proginfo.h,v 1.3 2005-01-14 18:42:38 edwards Exp $
 /*! \file
  *  \brief Print out basic info about this program
  */
 
 #ifndef __proginfo_h__
 #define __proginfo_h__
+
+namespace Chroma {
 
 //! Print out basic info about this program
 /*!
@@ -17,5 +19,7 @@
  */
 
 void proginfo(XMLWriter& xml);
+
+}  // end namespace Chroma
 
 #endif

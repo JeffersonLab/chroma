@@ -1,4 +1,4 @@
-// $Id: srcfil.cc,v 1.4 2003-04-01 02:38:26 edwards Exp $
+// $Id: srcfil.cc,v 1.5 2005-01-14 18:42:36 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */
@@ -6,7 +6,7 @@
 #include "chromabase.h"
 #include "meas/hadron/srcfil.h"
 
-using namespace QDP;
+namespace Chroma {
 
 //! Fill a specific color and spin index with 1.0
 /*!
@@ -66,4 +66,5 @@ void srcfil(LatticeColorVector& a, multi1d<int>& coord, int color_index)
 	   coord);
 }
 
+}  // end namespace Chroma
 

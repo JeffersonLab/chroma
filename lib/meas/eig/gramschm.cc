@@ -1,10 +1,13 @@
-// $Id: gramschm.cc,v 1.5 2004-07-28 02:38:03 edwards Exp $
+// $Id: gramschm.cc,v 1.6 2005-01-14 18:42:35 edwards Exp $
 /*! \file
  *  \brief Gramm-Schmidt orthogonolization
  */
 
 
 #include "meas/eig/gramschm.h"
+
+namespace Chroma {
+
 
 //! Gramm-Schmidt orthogonolization
 /*!
@@ -223,3 +226,5 @@ void GramSchm(LatticeFermion& psi,
   
   END_CODE();
 }
+
+}  // end namespace Chroma

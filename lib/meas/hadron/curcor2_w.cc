@@ -1,4 +1,4 @@
-// $Id: curcor2_w.cc,v 1.10 2004-07-28 02:38:04 edwards Exp $
+// $Id: curcor2_w.cc,v 1.11 2005-01-14 18:42:36 edwards Exp $
 /*! \file
  *  \brief Mesonic current correlators
  */
@@ -8,7 +8,7 @@
 #include "meas/hadron/mesons_w.h"
 #include "qdp_util.h"                 // part of QDP++, for crtesn()
 
-using namespace QDP;
+namespace Chroma {
 
 //! Construct current correlators 
 /*!
@@ -279,3 +279,5 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
               
   END_CODE();
 }
+
+}  // end namespace Chroma

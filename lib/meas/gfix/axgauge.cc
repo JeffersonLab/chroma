@@ -1,4 +1,4 @@
-// $Id: axgauge.cc,v 1.2 2004-07-28 02:38:03 edwards Exp $
+// $Id: axgauge.cc,v 1.3 2005-01-14 18:42:35 edwards Exp $
 /*! \file
  *  \brief Axial gauge fixing 
  */
@@ -6,7 +6,7 @@
 #include "chromabase.h"
 #include "meas/gfix/axgauge.h"
 
-using namespace QDP;
+namespace Chroma {
 
 //! Axial gauge fixing
 /*!
@@ -64,3 +64,5 @@ void axGauge(multi1d<LatticeColorMatrix>& ug, int j_decay)
 
   END_CODE();
 }
+
+}  // end namespace Chroma

@@ -1,4 +1,4 @@
-//  $Id: ape_smear.cc,v 1.7 2005-01-14 15:59:00 bjoo Exp $
+//  $Id: ape_smear.cc,v 1.8 2005-01-14 18:42:37 edwards Exp $
 
 /*! \file
  *  \brief APE-smearing of the gauge configuration
@@ -8,9 +8,6 @@
 #include "meas/smear/ape_smear.h"
 #include "util/gauge/reunit.h"
 #include "util/gauge/su3proj.h"
-
-using namespace QDP;
-using namespace Chroma;
 
 namespace Chroma { 
 //! A simple not-fancy power of 2 shift

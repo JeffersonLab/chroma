@@ -1,9 +1,14 @@
 // -*- C++ -*-
-// $Id: loops_w.h,v 1.1 2004-02-08 11:23:01 mcneile Exp $
+// $Id: loops_w.h,v 1.2 2005-01-14 18:42:36 edwards Exp $
 /*! \file
  *  \brief Quark loop via noise
  */
 
+
+#ifndef  LOOPS_W_INC
+#define  LOOPS_W_INC 
+
+namespace Chroma {
 
 //
 //  Compute 
@@ -11,10 +16,6 @@
 //  using noise sources.
 //
 //
-
-#ifndef  LOOPS_W_INC
-#define  LOOPS_W_INC 
-
 void loops(const LatticeFermion &q_source,
 	   const LatticeFermion &psi,
 	   int length,
@@ -22,5 +23,6 @@ void loops(const LatticeFermion &q_source,
 	   XMLWriter& xml_gamma,
 	   const string& xml_tag) ; 
 
+}  // end namespace Chroma
 
 #endif

@@ -1,11 +1,13 @@
 // -*- C++ -*-
-// $Id: baryon_w.h,v 1.7 2004-05-01 20:16:04 edwards Exp $
+// $Id: baryon_w.h,v 1.8 2005-01-14 18:42:36 edwards Exp $
 /*! \file
  *  \brief Baryon 2-pt functions
  */
 
 #ifndef __baryon_h__
 #define __baryon_h__
+
+namespace Chroma {
 
 //! Baryon 2-pt functions
 /*!
@@ -93,5 +95,7 @@ void baryon(LatticePropagator& quark_propagator,
 void baryon(LatticePropagator& quark_propagator, 
             const SftMom& phases,
 	    multi3d<DComplex>& barprop);
+
+}  // end namespace Chroma
 
 #endif

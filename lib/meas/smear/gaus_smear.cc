@@ -1,4 +1,4 @@
-// $Id: gaus_smear.cc,v 1.8 2003-04-09 19:43:40 edwards Exp $
+// $Id: gaus_smear.cc,v 1.9 2005-01-14 18:42:37 edwards Exp $
 /*! \file
  *  \brief Gaussian smearing of color vector
  */
@@ -7,7 +7,7 @@
 #include "meas/smear/gaus_smear.h"
 #include "actions/boson/operator/klein_gord.h"
 
-using namespace QDP;
+namespace Chroma {
 
 //! Do a covariant Gaussian smearing of a lattice field
 /*!
@@ -83,3 +83,4 @@ void gausSmear(const multi1d<LatticeColorMatrix>& u,
 }
 
 
+}  // end namespace Chroma

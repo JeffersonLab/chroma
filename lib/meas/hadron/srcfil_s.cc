@@ -1,4 +1,4 @@
-// $Id: srcfil_s.cc,v 1.1 2004-11-20 15:10:38 mcneile Exp $
+// $Id: srcfil_s.cc,v 1.2 2005-01-14 18:42:36 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */
@@ -6,7 +6,7 @@
 #include "chromabase.h"
 #include "meas/hadron/srcfil.h"
 
-using namespace QDP;
+namespace Chroma {
 
 //! Fill a specific color and spin index with 1.0
 /*!
@@ -38,3 +38,5 @@ void srcfil(LatticeStaggeredFermion& a, multi1d<int>& coord, int color_index)
 		    spin_index), 
 	   coord);
 }
+
+}  // end namespace Chroma

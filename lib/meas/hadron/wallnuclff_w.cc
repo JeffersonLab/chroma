@@ -1,4 +1,4 @@
-// $Id: wallnuclff_w.cc,v 1.21 2004-08-21 01:40:12 edwards Exp $
+// $Id: wallnuclff_w.cc,v 1.22 2005-01-14 18:42:36 edwards Exp $
 /*! \file
  *  \brief Wall-sink nucleon form-factors 
  *
@@ -8,7 +8,7 @@
 #include "chromabase.h"
 #include "meas/hadron/wallnuclff_w.h"
 
-using namespace QDP;
+namespace Chroma {
 
 
 //! Compute dbar-d current insertion in nucleon
@@ -311,3 +311,5 @@ void wallNuclFormFac(WallFormFac_formfacs_t& form,
 
   END_CODE();
 }
+
+}  // end namespace Chroma

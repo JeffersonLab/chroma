@@ -1,4 +1,4 @@
-// $Id: mesphas_follana_s.cc,v 1.1 2003-10-23 15:28:17 bjoo Exp $
+// $Id: mesphas_follana_s.cc,v 1.2 2005-01-14 18:42:36 edwards Exp $
 
 
 /* This routine is specific to staggered fermions! */
@@ -22,45 +22,48 @@
 #include "chromabase.h"
 #include "mesphas_follana_s.h"
 
-void mesPhasFollana(multi1d<LatticeInteger>& alpha,
-	     multi1d<LatticeInteger>& beta 
-	    )
-{
-  multi1d<LatticeInteger> x(Nd);
-  int mu;
+namespace Chroma {
 
-  alpha.resize(Nd);
-  beta.resize(Nd);
+  void mesPhasFollana(multi1d<LatticeInteger>& alpha,
+		      multi1d<LatticeInteger>& beta)
+  {
+    multi1d<LatticeInteger> x(Nd);
+    int mu;
+
+    alpha.resize(Nd);
+    beta.resize(Nd);
 
    
-  /* Start off by getting the coordinates of x(0), x(1), ..., x(Nd-3) */
-  for( mu = 0; mu < Nd; mu++) { 
-    x[ mu ] = Layout::latticeCoordinate(mu);
-  }
+    /* Start off by getting the coordinates of x(0), x(1), ..., x(Nd-3) */
+    for( mu = 0; mu < Nd; mu++) { 
+      x[ mu ] = Layout::latticeCoordinate(mu);
+    }
   
   
-  /* NOTE: in the comments below I mean x0 is the true *non*-checkerboard */
-  /*   x coordinate. */
-  switch(Nd)
-  {
-  case 4:
+    /* NOTE: in the comments below I mean x0 is the true *non*-checkerboard */
+    /*   x coordinate. */
+    switch(Nd)
+    {
+    case 4:
             
-    alpha[0] = LatticeInteger(1);
-    alpha[1] = where((x[0] % 2) == 0, LatticeInteger(1), LatticeInteger(-1));
-    alpha[2] = where( ((x[0]+x[1])%2) == 0, LatticeInteger(1), LatticeInteger(-1));
-    alpha[3] = where( ((x[0]+x[1]+x[2])%2) == 0, LatticeInteger(1), LatticeInteger(-1));
+      alpha[0] = LatticeInteger(1);
+      alpha[1] = where((x[0] % 2) == 0, LatticeInteger(1), LatticeInteger(-1));
+      alpha[2] = where( ((x[0]+x[1])%2) == 0, LatticeInteger(1), LatticeInteger(-1));
+      alpha[3] = where( ((x[0]+x[1]+x[2])%2) == 0, LatticeInteger(1), LatticeInteger(-1));
 
-    beta[0] = where( ((x[1]+x[2]+x[3])%2) == 0, LatticeInteger(1), LatticeInteger(-1));
-    beta[1] = where( ((x[2] + x[3])%2) == 0, LatticeInteger(1), LatticeInteger(-1));
-    beta[2] = where( (x[3] % 2) == 0, LatticeInteger(1), LatticeInteger(-1) );
+      beta[0] = where( ((x[1]+x[2]+x[3])%2) == 0, LatticeInteger(1), LatticeInteger(-1));
+      beta[1] = where( ((x[2] + x[3])%2) == 0, LatticeInteger(1), LatticeInteger(-1));
+      beta[2] = where( (x[3] % 2) == 0, LatticeInteger(1), LatticeInteger(-1) );
 
-    beta[3] = LatticeInteger(1);
+      beta[3] = LatticeInteger(1);
 
-    break;
+      break;
 
-  default:
-    QDP_error_exit("Can only handle d=4 dimensions for now", Nd);
-  }
+    default:
+      QDP_error_exit("Can only handle d=4 dimensions for now", Nd);
+    }
   
             
-}
+  }
+
+}  // end namespace Chroma

@@ -1,11 +1,13 @@
 // -*- C++ -*-
-// $Id: walfil_s.h,v 1.3 2004-11-12 10:24:02 mcneile Exp $
+// $Id: walfil_s.h,v 1.4 2005-01-14 18:42:36 edwards Exp $
 /*! \file
  *  \brief Wall source construction
  */
 
 #ifndef __wallfil_s_h__
 #define __wallfil_s_h__
+
+namespace Chroma {
 
 //! Fill a specific color and spin index with 1.0 on a wall
 /*!
@@ -31,5 +33,7 @@
  */
 
 void walfil(LatticeStaggeredFermion& a, int slice, int mu, int color_index, int src_index);
+
+}  // end namespace Chroma
 
 #endif

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wallff_w.h,v 1.5 2004-08-21 01:40:12 edwards Exp $
+// $Id: wallff_w.h,v 1.6 2005-01-14 18:42:36 edwards Exp $
 /*! \file
  *  \brief Structures for wall-sink/source form-factors
  *
@@ -11,6 +11,7 @@
 
 #include "util/ft/sftmom.h"
 
+namespace Chroma {
 
 //! Structures to hold form-factors
 struct WallFormFac_momenta_t
@@ -149,5 +150,6 @@ void write(BinaryWriter& bin, const WallFormFac_quark_t& header);
 //! WallFormFac writer
 void write(BinaryWriter& bin, const WallFormFac_formfacs_t& header);
 
+}  // end namespace Chroma
 
 #endif

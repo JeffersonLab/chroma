@@ -1,4 +1,4 @@
-// $Id: su3hb.cc,v 1.5 2004-09-22 17:25:01 bjoo Exp $
+// $Id: su3hb.cc,v 1.6 2005-01-14 18:42:37 edwards Exp $
 /*! \file
  *  \brief Do one SU(2) subgroup heatbath update of SU(Nc) matrix U with action
  */
@@ -8,7 +8,7 @@
 #include "util/gauge/su2extract.h"
 #include "util/gauge/sunfill.h"
 
-using namespace QDP;
+namespace Chroma {
 
 //! Do one SU(2) subgroup heatbath update of SU(Nc) matrix U with action
 /*!
@@ -223,3 +223,5 @@ void su3hb(LatticeColorMatrix& u,
 
   END_CODE();
 }
+
+}  // end namespace Chroma

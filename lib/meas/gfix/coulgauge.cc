@@ -1,4 +1,4 @@
-// $Id: coulgauge.cc,v 1.7 2005-01-14 15:59:00 bjoo Exp $
+// $Id: coulgauge.cc,v 1.8 2005-01-14 18:42:35 edwards Exp $
 /*! \file
  *  \brief Coulomb (and Landau) gauge fixing 
  */
@@ -7,10 +7,6 @@
 #include "meas/gfix/coulgauge.h"
 #include "meas/gfix/grelax.h"
 #include "util/gauge/reunit.h"
-
-using namespace QDP;
-using namespace Chroma;
-
 
 namespace Chroma {
 

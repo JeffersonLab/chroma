@@ -1,14 +1,12 @@
-// $Id: sn_jacob.cc,v 1.5 2004-07-28 02:38:03 edwards Exp $
+// $Id: sn_jacob.cc,v 1.6 2005-01-14 18:42:35 edwards Exp $
 /*! \file
  *  \brief Single-node Jacobi routine
  */
 
-
 #include "chromabase.h"
 #include "meas/eig/sn_jacob.h"
 
-
-using namespace QDP;
+namespace Chroma {
 
 //! Single-node Jacobi rotation
 /*!
@@ -234,3 +232,5 @@ void SN_Jacob(multi1d<LatticeFermion>& psi,
 {
   SN_Jacob_t(psi, N_eig, lambda, off_diag, tolerance, N_max, n_count);
 }
+
+}  // end namespace Chroma

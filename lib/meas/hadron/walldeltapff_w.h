@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: walldeltapff_w.h,v 1.3 2004-08-21 01:40:12 edwards Exp $
+// $Id: walldeltapff_w.h,v 1.4 2005-01-14 18:42:36 edwards Exp $
 /*! \file
  *  \brief Wall-sink delta^+ -> gamma+proton form-factors 
  *
@@ -12,6 +12,7 @@
 #include "util/ft/sftmom.h"
 #include "meas/hadron/wallff_w.h"
 
+namespace Chroma {
 
 //! Wall-sink delta <-> gamma+delta form-factors 
 /*!
@@ -43,5 +44,7 @@ void wallDeltaPFormFac(WallFormFac_formfacs_t& form,
 		       const SftMom& phases,
 		       const multi1d<int>& t_source,
 		       bool wall_source);
+
+}  // end namespace Chroma
 
 #endif

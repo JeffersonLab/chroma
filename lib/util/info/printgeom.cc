@@ -1,4 +1,4 @@
-//  $Id: printgeom.cc,v 1.4 2004-07-28 02:38:06 edwards Exp $
+//  $Id: printgeom.cc,v 1.5 2005-01-14 18:42:38 edwards Exp $
 /*! \file
  *  \brief Print out machine geometry and problem size info
  */
@@ -6,7 +6,7 @@
 #include "chromabase.h"
 #include "util/info/printgeom.h"
 
-using namespace QDP;
+namespace Chroma {
 
 //! Print out machine geometry and problem size info
 /*!
@@ -31,3 +31,5 @@ void printgeom(XMLWriter& xml)
 
   END_CODE();
 }
+
+}  // end namespace Chroma

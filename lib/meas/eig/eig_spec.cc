@@ -1,4 +1,4 @@
-// $Id: eig_spec.cc,v 1.3 2004-07-28 02:38:03 edwards Exp $
+// $Id: eig_spec.cc,v 1.4 2005-01-14 18:42:35 edwards Exp $
 /*! \file
  *  \brief Compute low lying eigenvalues of the hermitian H
  */
@@ -8,14 +8,11 @@
 
 #include <sstream>
 
-using namespace std;
-
 #include "meas/eig/eig_spec.h"
 #include "meas/eig/ritz.h"
 #include "meas/eig/sn_jacob.h"
 
-
-using namespace QDP;
+namespace Chroma {
 
 //! Compute low lying eigenvalues of the hermitian H 
 /*!
@@ -505,3 +502,5 @@ void fixMMev2Mev(const LinearOperator<LatticeFermion>& M,  // The Op to fix to
   // we are done 
   return;
 }
+
+}  // end namespace Chroma

@@ -1,11 +1,13 @@
 // -*- C++ -*-
-// $Id: axgauge.h,v 1.1 2003-12-06 20:56:56 edwards Exp $
+// $Id: axgauge.h,v 1.2 2005-01-14 18:42:35 edwards Exp $
 /*! \file
  *  \brief Axial gauge fixing 
  */
 
 #ifndef __axgauge_h__
 #define __axgauge_h__
+
+namespace Chroma {
 
 //! Axial gauge fixing
 /*!
@@ -22,5 +24,7 @@
  */
 
 void axGauge(multi1d<LatticeColorMatrix>& ug, int j_decay);
+
+}  // end namespace Chroma
 
 #endif

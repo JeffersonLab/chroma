@@ -1,10 +1,10 @@
-// $Id: fuzz_smear.cc,v 1.4 2004-11-20 14:49:52 mcneile Exp $
+// $Id: fuzz_smear.cc,v 1.5 2005-01-14 18:42:37 edwards Exp $
 
 #include "chromabase.h"
 #include "meas/smear/displacement.h"
 #include "meas/smear/fuzz_smear.h"
 
-using namespace QDP;
+namespace Chroma {
 
 // mcneile: this routine is still being checked **
 // mcneile: I have now checked that it is gauge invariant
@@ -167,4 +167,5 @@ void fuzz_smear(const multi1d<LatticeColorMatrix>& ufuzz,
 				length,j_decay) ;
 }
 
+}  // end namespace Chroma
 

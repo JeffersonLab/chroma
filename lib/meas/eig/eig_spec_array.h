@@ -1,10 +1,12 @@
-/* ! $Id: eig_spec_array.h,v 1.1 2004-01-28 15:34:41 bjoo Exp $ */
+/* ! $Id: eig_spec_array.h,v 1.2 2005-01-14 18:42:35 edwards Exp $ */
 
 #ifndef __eig_spec_bj_array_w_h__
 #define __eig_spec_bj_array_w_h__
 
 #include "chromabase.h"
 #include "linearop.h"
+
+namespace Chroma {
 
 void EigSpecRitzCG(const LinearOperator< multi1d<LatticeFermion> >& H, // Herm pos def operator
 		   multi1d<Real>& lambda_H,          // E-values
@@ -65,5 +67,7 @@ void fixMMev2Mev(const LinearOperator<multi1d<LatticeFermion> >& M,  // The Op t
 		 int& n_valid,                             // No of valids  (Write)
 		 int& n_jacob                              // How many Jacobis were done
 		 );
+
+}  // end namespace Chroma
 
 #endif

@@ -1,10 +1,11 @@
-// $Id: gramschm_array.cc,v 1.2 2004-07-28 02:38:03 edwards Exp $
+// $Id: gramschm_array.cc,v 1.3 2005-01-14 18:42:35 edwards Exp $
 /*! \file
  *  \brief Gramm-Schmidt orthogonolization
  */
 
-
 #include "meas/eig/gramschm_array.h"
+
+namespace Chroma {
 
 //! Gramm-Schmidt orthogonolization
 /*!
@@ -268,3 +269,5 @@ void GramSchmArray(multi1d<LatticeFermion>& psi,
 
   GramSchmArray_T(psi,vec);
 }
+
+}  // end namespace Chroma

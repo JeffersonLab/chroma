@@ -1,4 +1,4 @@
-// $Id: seqpiontest_w.cc,v 1.2 2004-07-28 02:38:04 edwards Exp $
+// $Id: seqpiontest_w.cc,v 1.3 2005-01-14 18:42:36 edwards Exp $
 /*! \file
  *  \brief Test a pion sequential source
  */
@@ -7,7 +7,7 @@
 #include "util/ft/sftmom.h"
 #include "meas/hadron/seqpiontest_w.h"
 
-using namespace QDP;
+namespace Chroma {
 
 //! Test a pion sequential source.
 /*!
@@ -47,3 +47,4 @@ void seqPionTest(Complex& pion_src,
   END_CODE();
 }
   
+}  // end namespace Chroma

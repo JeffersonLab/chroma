@@ -1,11 +1,13 @@
 // -*- C++ -*-
-// $Id: taproj.h,v 1.2 2003-12-29 19:52:57 edwards Exp $
+// $Id: taproj.h,v 1.3 2005-01-14 18:42:38 edwards Exp $
 /*! \file
  *  \brief Take the traceless antihermitian projection of a color matrix
  */
 
 #ifndef __taproj_h__
 #define __taproj_h__
+
+namespace Chroma {
 
 //! Take the traceless antihermitian projection of a color matrix
 /*!
@@ -21,5 +23,7 @@
  */
 
 void taproj(LatticeColorMatrix& a);
+
+}  // end namespace Chroma
 
 #endif

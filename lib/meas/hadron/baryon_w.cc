@@ -1,4 +1,4 @@
-// $Id: baryon_w.cc,v 1.20 2004-07-28 02:38:04 edwards Exp $ 
+// $Id: baryon_w.cc,v 1.21 2005-01-14 18:42:36 edwards Exp $ 
 /*! \file
  *  \brief Baryon 2-pt functions
  */
@@ -7,8 +7,7 @@
 #include "util/ft/sftmom.h"
 #include "meas/hadron/baryon_w.h"
 
-using namespace QDP;
- 
+namespace Chroma {
 
 //! Baryon 2-pt functions
 /*!
@@ -550,3 +549,5 @@ void baryon(LatticePropagator& quark_propagator,
 
   END_CODE();
 }
+
+}  // end namespace Chroma

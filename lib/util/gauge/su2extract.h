@@ -1,11 +1,13 @@
 // -*- C++ -*-
-// $Id: su2extract.h,v 1.4 2003-12-06 20:59:21 edwards Exp $
+// $Id: su2extract.h,v 1.5 2005-01-14 18:42:38 edwards Exp $
 /*! \file
  *  \brief  Extract an unnormalized SU(2) matrix from a GL(3,C) matrix
  */
 
 #ifndef __su2extract__
 #define __su2extract__
+
+namespace Chroma {
 
 //! Su2_extract: r_0,r_1,r_2,r_3 <- source(su2_index)  [SU(N) field]  under a subset
 /*! 
@@ -59,5 +61,7 @@ su2Extract(multi1d<LatticeReal>& r,
 	   const LatticeColorMatrix& source, 
 	   int su2_index, 
 	   const OrderedSubset& s);
+
+}  // end namespace Chroma
 
 #endif

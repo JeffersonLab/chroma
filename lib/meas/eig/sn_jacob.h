@@ -1,5 +1,8 @@
+// $Id: sn_jacob.h,v 1.2 2005-01-14 18:42:35 edwards Exp $
 #ifndef __sn_jacob_h__
 #define __sn_jacob_h__
+
+namespace Chroma {
 
 //! Single-node Jacobi rotation
 /*!
@@ -53,5 +56,6 @@ void SN_Jacob(multi1d<LatticeFermion>& psi,
 	      int N_max,
 	      int& n_count);
 
+}  // end namespace Chroma
 
 #endif

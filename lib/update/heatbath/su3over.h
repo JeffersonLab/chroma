@@ -1,11 +1,13 @@
 // -*- C++ -*-
-// $Id: su3over.h,v 1.4 2004-08-07 03:26:24 edwards Exp $
+// $Id: su3over.h,v 1.5 2005-01-14 18:42:37 edwards Exp $
 /*! \file
  *  \brief Do one SU(2) subgroup microcanonical overrelaxation update of SU(Nc)
  */
 
 #ifndef __su3over_h__
 #define __su3over_h__
+
+namespace Chroma {
 
 //! Do one SU(2) subgroup microcanonical overrelaxation update of SU(Nc) matrix
 /*!
@@ -24,5 +26,8 @@ void su3over(LatticeColorMatrix& u,
 	     const LatticeColorMatrix& w,
 	     int su2_index,
 	     const OrderedSubset& sub);
+
+}  // end namespace Chroma
+
 
 #endif

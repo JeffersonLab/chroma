@@ -1,11 +1,13 @@
 // -*- C++ -*-
-// $Id: gaus_smear.h,v 1.5 2003-12-27 04:27:55 edwards Exp $
+// $Id: gaus_smear.h,v 1.6 2005-01-14 18:42:37 edwards Exp $
 /*! \file
  *  \brief Gaussian smearing of color vector
  */
 
 #ifndef __gaus_smear_h__
 #define __gaus_smear_h__
+
+namespace Chroma {
 
 //! Do a covariant Gaussian smearing of a lattice color vector field
 /*! This is a wrapper over the template definition
@@ -41,5 +43,7 @@ void gausSmear(const multi1d<LatticeColorMatrix>& u,
 void gausSmear(const multi1d<LatticeColorMatrix>& u, 
 	       LatticePropagator& chi, 
 	       const Real& width, int ItrGaus, int j_decay);
+
+}  // end namespace Chroma
 
 #endif

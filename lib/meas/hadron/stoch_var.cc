@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stoch_var.cc,v 1.2 2004-04-05 19:28:57 edwards Exp $
+// $Id: stoch_var.cc,v 1.3 2005-01-14 18:42:36 edwards Exp $
 /*! \file
  *  \brief Stochastic variable construction
  *
@@ -8,7 +8,7 @@
 #include "chromabase.h"
 #include "meas/hadron/stoch_var.h"
 
-using namespace QDP;
+namespace Chroma {
 
 //! Stochastic variable construction
 /*!
@@ -71,3 +71,5 @@ stoch_var(multi1d<DComplex>& ferm_loop_sum, multi2d<DComplex>& ferm_loop,
   }
 
 }    
+
+}  // end namespace Chroma

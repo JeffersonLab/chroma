@@ -1,10 +1,13 @@
-/* ! $Id: eig_spec.h,v 1.1 2004-01-28 15:34:41 bjoo Exp $ */
+// $Id: eig_spec.h,v 1.2 2005-01-14 18:42:35 edwards Exp $
 
 #ifndef __eig_spec_bj_w_h__
 #define __eig_spec_bj_w_h__
 
 #include "chromabase.h"
 #include "linearop.h"
+
+namespace Chroma {
+
 
 void EigSpecRitzCG(const LinearOperator<LatticeFermion>& H, // Herm pos def operator
 		   multi1d<Real>& lambda_H,          // E-values
@@ -67,5 +70,6 @@ void fixMMev2Mev(const LinearOperator<LatticeFermion>& M,  // The Op to fix to
 		 );
 
 
+}  // end namespace Chroma
 
 #endif

@@ -1,4 +1,4 @@
-// $Id: polar_dec.cc,v 1.4 2005-01-14 15:59:00 bjoo Exp $
+// $Id: polar_dec.cc,v 1.5 2005-01-14 18:42:35 edwards Exp $
 /*! \file
  *  \brief Decompose a complex matrix as C = exp(i\alpha) V P
  */
@@ -6,10 +6,6 @@
 #include "chromabase.h"
 #include "meas/gfix/polar_dec.h"
 #include "util/gauge/reunit.h"
-
-using namespace QDP;
-using namespace Chroma; 
-
 
 namespace Chroma { 
 //! Decompose a complex matrix as C = exp(i\alpha) V P

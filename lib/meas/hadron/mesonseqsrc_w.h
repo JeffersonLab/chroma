@@ -1,11 +1,13 @@
 // -*- C++ -*-
-// $Id: mesonseqsrc_w.h,v 1.2 2004-04-11 05:35:12 edwards Exp $
+// $Id: mesonseqsrc_w.h,v 1.3 2005-01-14 18:42:36 edwards Exp $
 /*! \file
  *  \brief Construct meson sequential sources.
  */
 
 #ifndef __mesonseqsrc_w_h__
 #define __mesonseqsrc_w_h__
+
+namespace Chroma {
 
 //! Construct a meson sequential source.
 /*!
@@ -26,5 +28,7 @@ void mesonSeqSource(const LatticePropagator& quark_propagator,
 		    LatticePropagator& seq_src_prop, 
 		    int t_sink, multi1d<int>& sink_mom, 
 		    int j_decay, int seq_src);
+
+}  // end namespace Chroma
 
 #endif

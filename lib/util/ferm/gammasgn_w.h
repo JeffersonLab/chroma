@@ -1,11 +1,13 @@
 // -*- C++ -*-
-// $Id: gammasgn_w.h,v 1.1 2004-06-11 20:31:25 edwards Exp $
+// $Id: gammasgn_w.h,v 1.2 2005-01-14 18:42:37 edwards Exp $
 /*! \file
  *  \brief Compute gamma matrix multiplication table factors
  */
 
 #ifndef __gammasgn_h__
 #define __gammasgn_h__
+
+namespace Chroma {
 
 //! Return gamma matrix multiplication table factors
 /*!
@@ -15,5 +17,7 @@
  */
 
 int gammaSgn(int n, int m);
+
+}  // end namespace Chroma
 
 #endif

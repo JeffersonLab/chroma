@@ -1,11 +1,13 @@
 // -*- C++ -*-
-// $Id: expm12.h,v 1.2 2003-12-29 19:52:57 edwards Exp $
+// $Id: expm12.h,v 1.3 2005-01-14 18:42:38 edwards Exp $
 /*! \file
  *  \brief 12-th order exponentiation of a lattice color matrix
  */
 
 #ifndef __expm12_h__
 #define __expm12_h__
+
+namespace Chroma {
 
 //! 12-th order exponentiation of a lattice color matrix
 /*!
@@ -19,5 +21,7 @@
  */
 
 void expm12(LatticeColorMatrix& a);
+
+}  // end namespace Chroma
 
 #endif

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: formfac_w.h,v 1.11 2004-01-06 01:31:27 edwards Exp $
+// $Id: formfac_w.h,v 1.12 2005-01-14 18:42:36 edwards Exp $
 /*! \file
  *  \brief Form-factors 
  *
@@ -8,6 +8,8 @@
 
 #ifndef __formfac_h__
 #define __formfac_h__
+
+namespace Chroma {
 
 /*
  * Structures for hadron parts
@@ -70,4 +72,7 @@ void FormFac(FormFac_insertions_t& form,
              const LatticePropagator& seq_quark_prop, 
              const SftMom& phases,
              int t0);
+
+}  // end namespace Chroma
+
 #endif

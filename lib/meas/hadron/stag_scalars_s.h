@@ -7,47 +7,50 @@
 
 #include "meas/hadron/hadron_corr_s.h"
 
-class staggered_hadron_corr ; 
+namespace Chroma {
 
-class staggered_scalars  : public staggered_hadron_corr
-{
+  class staggered_hadron_corr ; 
 
-
-public :
-
-  void
-  compute(multi1d<LatticeStaggeredPropagator>& quark_props,
-	  int j_decay);
+  class staggered_scalars  : public staggered_hadron_corr
+  {
 
 
-  staggered_scalars(int t_len, multi1d<LatticeColorMatrix> & uin)  
-    : staggered_hadron_corr(t_len,no_scalar,uin)
-    {
-      outer_tag = "Here_are_all_16_scalars"  ; 
-      inner_tag = "Sc" ; 
+  public :
 
-      tag_names.resize(no_scalar) ; 
-      for(int i = 0 ; i <  no_scalar ; ++i ) 
+    void
+    compute(multi1d<LatticeStaggeredPropagator>& quark_props,
+	    int j_decay);
+
+
+    staggered_scalars(int t_len, multi1d<LatticeColorMatrix> & uin)  
+      : staggered_hadron_corr(t_len,no_scalar,uin)
       {
-	ostringstream tag;
-	tag << "re_sc" << i;
-	tag_names[i] = tag.str() ; 
+	outer_tag = "Here_are_all_16_scalars"  ; 
+	inner_tag = "Sc" ; 
+
+	tag_names.resize(no_scalar) ; 
+	for(int i = 0 ; i <  no_scalar ; ++i ) 
+	{
+	  ostringstream tag;
+	  tag << "re_sc" << i;
+	  tag_names[i] = tag.str() ; 
+	}
+
       }
 
-    }
-
-  virtual ~staggered_scalars()
-    {
-    }
+    virtual ~staggered_scalars()
+      {
+      }
 
 
-protected:
+  protected:
 
-private :
-  static const int no_scalar = 16 ; 
+  private :
+    static const int no_scalar = 16 ; 
 
 
-} ; 
+  } ; 
 
+}  // end namespace Chroma
 
 #endif

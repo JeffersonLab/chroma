@@ -1,4 +1,4 @@
-// $Id: rot_colvec.cc,v 1.2 2004-07-28 02:38:03 edwards Exp $
+// $Id: rot_colvec.cc,v 1.3 2005-01-14 18:42:35 edwards Exp $
 /*! \file
  *  \brief Rotate a color vector
  */
@@ -7,7 +7,7 @@
 #include "meas/gfix/polar_dec.h"
 #include "util/gauge/sunfill.h"
 
-using namespace QDP;
+namespace Chroma {
 
 //! Rotate a color vector
 /*!
@@ -111,3 +111,5 @@ void rot_colvec(LatticeColorMatrix& g,
            
   END_CODE();
 }
+
+}  // end namespace Chroma

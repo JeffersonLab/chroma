@@ -1,12 +1,10 @@
-// $Id: transf.cc,v 1.4 2004-12-29 22:08:48 edwards Exp $
+// $Id: transf.cc,v 1.5 2005-01-14 18:42:38 edwards Exp $
 /*! \file
  *  \brief Insertion/Extraction utilities for vectors/fermions/propagators
  */
 
 #include "chromabase.h"
 #include "util/ferm/transf.h"
-
-using namespace QDP;
 
 namespace Chroma
 {

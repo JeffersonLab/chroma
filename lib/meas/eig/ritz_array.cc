@@ -1,4 +1,4 @@
-// $Id: ritz_array.cc,v 1.2 2004-07-28 02:38:03 edwards Exp $
+// $Id: ritz_array.cc,v 1.3 2005-01-14 18:42:35 edwards Exp $
 /*! \file
  *  \brief Ritz code for eigenvalues
  */
@@ -7,7 +7,7 @@
 #include "meas/eig/ritz_array.h"
 #include "meas/eig/gramschm_array.h"
 
-using namespace QDP;
+namespace Chroma {
 
 //! Minimizes the Ritz functional with a CG based algorithm
 /*!
@@ -676,3 +676,5 @@ void Ritz(const LinearOperator<multi1d<LatticeFermion> >& A,   // Herm Pos Def
 	 ProjApsiP, n_count, final_grad, 
 	 Kalk_Sim, delta_cycle, gamma_factor);
 }
+
+}  // end namespace Chroma

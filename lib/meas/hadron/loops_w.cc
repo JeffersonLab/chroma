@@ -1,10 +1,9 @@
-//  $Id: loops_w.cc,v 1.2 2004-02-11 12:51:34 bjoo Exp $
+//  $Id: loops_w.cc,v 1.3 2005-01-14 18:42:36 edwards Exp $
 //
 
 #include "chromabase.h"
 
-using namespace QDP;
-
+namespace Chroma {
 
 
 // I cant forward declare this for some reason
@@ -94,3 +93,5 @@ void loops(const LatticeFermion &q_source,
   pop(xml_gamma);
 
 }
+
+}  // end namespace Chroma

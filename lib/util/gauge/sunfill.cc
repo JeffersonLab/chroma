@@ -1,4 +1,4 @@
-// $Id: sunfill.cc,v 1.6 2004-07-28 02:38:06 edwards Exp $
+// $Id: sunfill.cc,v 1.7 2005-01-14 18:42:38 edwards Exp $
 /*! \file
  *  \brief  Fill an SU(Nc) matrix with an SU(2) submatrix
  */
@@ -6,7 +6,7 @@
 #include "chromabase.h"
 #include "util/gauge/sunfill.h"
 
-using namespace QDP;
+namespace Chroma {
 
 //! Fill a dest(su2_index) <- r_0,r_1,r_2,r_3  under a subset
 /*!
@@ -98,4 +98,5 @@ sunFill(LatticeColorMatrix& d,
   sunFill_t(d, r, su2_index, s);
 }
 
+}  // end namespace Chroma
 

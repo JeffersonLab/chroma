@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wall_qprop_w.h,v 1.1 2003-12-16 04:34:32 edwards Exp $
+// $Id: wall_qprop_w.h,v 1.2 2005-01-14 18:42:36 edwards Exp $
 /*! \file
  *  \brief Construct a wall-sink propagator
  */
@@ -8,6 +8,8 @@
 #define __wall_qprop_w_h__
 
 #include "util/ft/sftmom.h"
+
+namespace Chroma {
 
 //! Construct a wall-sink propagator:
 /*!
@@ -26,5 +28,7 @@
 void wall_qprop(LatticePropagator& wall_quark_prop, 
 		const LatticePropagator& quark_propagator, 
 		const SftMom& phases);
+
+}  // end namespace Chroma
 
 #endif

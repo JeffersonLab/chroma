@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wallnuclff_w.h,v 1.4 2004-08-21 01:40:13 edwards Exp $
+// $Id: wallnuclff_w.h,v 1.5 2005-01-14 18:42:37 edwards Exp $
 /*! \file
  *  \brief Wall-sink nucleon form-factors 
  *
@@ -11,6 +11,9 @@
 
 #include "util/ft/sftmom.h"
 #include "meas/hadron/wallff_w.h"
+
+namespace Chroma {
+
 
 //! Wall-sink nucleon-> gamma+nucleon form-factors
 /*!
@@ -42,5 +45,7 @@ void wallNuclFormFac(WallFormFac_formfacs_t& form,
 		     const SftMom& phases,
 		     const multi1d<int>& t_source,
 		     bool wall_source);
+
+}  // end namespace Chroma
 
 #endif

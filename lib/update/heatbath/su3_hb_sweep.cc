@@ -6,7 +6,7 @@
 #include "update/heatbath/su2_hb_update.h"
 #include "util/gauge/reunit.h"
 
-using namespace std;
+namespace Chroma {
 
 void su3_hb_sweep(multi1d<LatticeColorMatrix>& u, 
 			HBParams& hbp) 
@@ -28,3 +28,5 @@ void su3_hb_sweep(multi1d<LatticeColorMatrix>& u,
 		} // close mu loop
 	}	
 }
+
+}  // end namespace Chroma

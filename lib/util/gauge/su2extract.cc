@@ -1,4 +1,4 @@
-// $Id: su2extract.cc,v 1.6 2004-07-28 02:38:06 edwards Exp $
+// $Id: su2extract.cc,v 1.7 2005-01-14 18:42:38 edwards Exp $
 /*! \file
  *  \brief  Extract an unnormalized SU(2) matrix from a GL(3,C) matrix
  */
@@ -6,7 +6,7 @@
 #include "chromabase.h"
 #include "util/gauge/su2extract.h"
 
-using namespace QDP;
+namespace Chroma {
 
 //! Su2_extract: r_0,r_1,r_2,r_3 <- source(su2_index)  [SU(N) field]  under a subset
 /*! 
@@ -97,4 +97,4 @@ su2Extract(multi1d<LatticeReal>& r,
   su2Extract_t(r, source, su2_index, s);
 }
 
-
+}  // end namespace Chroma

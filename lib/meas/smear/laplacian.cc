@@ -1,4 +1,4 @@
-// $Id: laplacian.cc,v 1.4 2004-01-09 03:02:36 edwards Exp $
+// $Id: laplacian.cc,v 1.5 2005-01-14 18:42:37 edwards Exp $
 /*! \file
  *  \brief Laplacian smearing of a source
  */
@@ -7,7 +7,7 @@
 #include "meas/smear/laplacian.h"
 #include "actions/boson/operator/klein_gord.h"
 
-using namespace QDP;
+namespace Chroma {
 
 //! Do a covariant Gaussian smearing of a lattice field
 /*!
@@ -51,4 +51,5 @@ void laplacian(const multi1d<LatticeColorMatrix>& u,
   laplacian<LatticePropagator>(u, chi, j_decay, power);
 }
 
+}  // end namespace Chroma
 

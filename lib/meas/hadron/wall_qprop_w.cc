@@ -1,4 +1,4 @@
-// $Id: wall_qprop_w.cc,v 1.6 2004-07-28 02:38:04 edwards Exp $
+// $Id: wall_qprop_w.cc,v 1.7 2005-01-14 18:42:36 edwards Exp $
 /*! \file
  *  \brief Construct a wall-sink propagator
  */
@@ -7,7 +7,7 @@
 #include "util/ft/sftmom.h"
 #include "meas/hadron/wall_qprop_w.h"
 
-using namespace QDP;
+namespace Chroma {
 
 //! Construct a wall-sink propagator:
 /*!
@@ -53,4 +53,6 @@ void wall_qprop(LatticePropagator& wall_quark_prop,
             
   END_CODE();
 }
+
+}  // end namespace Chroma
 

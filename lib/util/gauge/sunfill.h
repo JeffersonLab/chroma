@@ -1,11 +1,13 @@
 // -*- C++ -*-
-// $Id: sunfill.h,v 1.5 2003-12-06 20:59:21 edwards Exp $
+// $Id: sunfill.h,v 1.6 2005-01-14 18:42:38 edwards Exp $
 /*! \file
  *  \brief  Fill an SU(Nc) matrix with an SU(2) submatrix
  */
 
 #ifndef __sunfill_h__
 #define __sunfill_h__
+
+namespace Chroma {
 
 //! Fill a dest(su2_index) <- r_0,r_1,r_2,r_3  under a subset
 /*!
@@ -59,5 +61,8 @@ sunFill(LatticeColorMatrix& dest,
 	const multi1d<LatticeReal>& r,
 	int su2_index,
 	const OrderedSubset& s);
+
+
+}  // end namespace Chroma
 
 #endif

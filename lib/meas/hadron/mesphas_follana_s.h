@@ -3,6 +3,10 @@
 
 #include "chromabase.h"
 
+namespace Chroma {
+
 void mesPhasFollana(multi1d<LatticeInteger>& alpha, multi1d<LatticeInteger>& beta);
+
+}  // end namespace Chroma
 
 #endif

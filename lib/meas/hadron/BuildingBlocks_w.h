@@ -33,12 +33,13 @@
 #ifndef INCLUDE_BuildingBlocks_hh
 #define INCLUDE_BuildingBlocks_hh
 
+namespace Chroma {
 //###################################################################################//
 // CVS Header                                                                        //
 //###################################################################################//
 
 static const char* const CVSBuildingBlocks_hh =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.h,v 1.4 2004-05-28 00:13:17 dru Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.h,v 1.5 2005-01-14 18:42:35 edwards Exp $";
 
 //###################################################################################//
 // Record CVS Info for BuildingBlocks.hh and BuildingBlocks.cc                       //
@@ -94,6 +95,8 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
 //                                                                                   //
 //###################################################################################//
 //###################################################################################//
+
+}  // end namespace Chroma
 
 #endif
 

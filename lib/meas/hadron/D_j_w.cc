@@ -1,4 +1,4 @@
-// $Id: D_j_w.cc,v 1.3 2004-01-27 21:06:46 ikuro Exp $
+// $Id: D_j_w.cc,v 1.4 2005-01-14 18:42:35 edwards Exp $
 /*
  *
  */
@@ -7,7 +7,7 @@
 #include "chromabase.h"
 #include "meas/hadron/D_j_w.h"
 
-using namespace QDP;
+namespace Chroma {
 
 void D_j(const multi1d<LatticeColorMatrix>& u,
 	 const LatticePropagator& prop,
@@ -18,3 +18,5 @@ void D_j(const multi1d<LatticeColorMatrix>& u,
 
   prop_j = 0.5*(u[d]*shift(prop, FORWARD, d) - shift(adj(u[d])*prop, BACKWARD, d));
 }
+
+}  // end namespace Chroma

@@ -1,6 +1,9 @@
-//  $Id: sftmom.cc,v 1.8 2004-04-28 18:55:38 edwards Exp $
+//  $Id: sftmom.cc,v 1.9 2005-01-14 18:42:38 edwards Exp $
 //  $Log: sftmom.cc,v $
-//  Revision 1.8  2004-04-28 18:55:38  edwards
+//  Revision 1.9  2005-01-14 18:42:38  edwards
+//  Converted all lib files to be in chroma namespace.
+//
+//  Revision 1.8  2004/04/28 18:55:38  edwards
 //  Added numSites().
 //
 //  Revision 1.7  2004/02/03 20:04:05  edwards
@@ -32,8 +35,7 @@
 #include "util/ft/sftmom.h"
 #include "qdp_util.h"                 // part of QDP++, for crtesn()
 
-using namespace QDP;
-
+namespace Chroma {
 
 //! Function object used for constructing the time-slice set
 class TimeSliceFunc : public SetFunc
@@ -423,3 +425,4 @@ SftMom::sft(const LatticeReal& cf) const
   return hsum ;
 }
 
+}  // end namespace Chroma

@@ -1,4 +1,4 @@
-// $Id: walldeltaff_w.cc,v 1.11 2004-08-21 01:40:12 edwards Exp $
+// $Id: walldeltaff_w.cc,v 1.12 2005-01-14 18:42:36 edwards Exp $
 /*! \file
  *  \brief Wall-sink delta^+ -> gamma+delta^+ form-factors 
  *
@@ -9,8 +9,7 @@
 #include "meas/hadron/walldeltaff_w.h"
 #include "util/ferm/gammasgn_w.h"
 
-using namespace QDP;
-
+namespace Chroma {
 
 //! Compute the 123-123 contraction of a delta and P
 /*!
@@ -449,3 +448,5 @@ void wallDeltaFormFac(WallFormFac_formfacs_t& form,
 
   END_CODE();
 }
+
+}  // end namespace Chroma

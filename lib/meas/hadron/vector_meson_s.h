@@ -7,41 +7,44 @@
 
 #include "meas/hadron/hadron_corr_s.h"
 
-class staggered_hadron_corr ; 
+namespace Chroma {
 
-class vector_meson  : public staggered_hadron_corr
-{
+  class staggered_hadron_corr ; 
 
-
-public :
-
-  void
-  compute(multi1d<LatticeStaggeredPropagator>& quark_props,
-	  int j_decay);
+  class vector_meson  : public staggered_hadron_corr
+  {
 
 
-  vector_meson(int t_len, multi1d<LatticeColorMatrix> & uin)  
-    : staggered_hadron_corr(t_len,no_vector,uin)
-    {
-      outer_tag = "Vector_meson"  ; 
-      inner_tag = "Vec" ; 
+  public :
 
-      tag_names.resize(no_vector) ; 
-
-    }
-
-  virtual ~vector_meson()
-    {
-    }
+    void
+    compute(multi1d<LatticeStaggeredPropagator>& quark_props,
+	    int j_decay);
 
 
-protected:
+    vector_meson(int t_len, multi1d<LatticeColorMatrix> & uin)  
+      : staggered_hadron_corr(t_len,no_vector,uin)
+      {
+	outer_tag = "Vector_meson"  ; 
+	inner_tag = "Vec" ; 
 
-private :
-  static const int no_vector = 4 ; 
+	tag_names.resize(no_vector) ; 
+
+      }
+
+    virtual ~vector_meson()
+      {
+      }
 
 
-} ; 
+  protected:
 
+  private :
+    static const int no_vector = 4 ; 
+
+
+  } ; 
+
+}  // end namespace Chroma
 
 #endif

@@ -1,7 +1,7 @@
 #include "chromabase.h"
 #include "util/gauge/stag_phases_s.h"
 
-using namespace std;
+namespace Chroma {
 
 namespace StagPhases { 
   
@@ -102,4 +102,6 @@ namespace StagPhases {
   }
     
 
-};
+}  // end namespace stagphases
+
+}  // end namespace Chroma

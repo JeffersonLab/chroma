@@ -1,4 +1,4 @@
-// $Id: walldeltapff_w.cc,v 1.15 2004-08-21 01:40:12 edwards Exp $
+// $Id: walldeltapff_w.cc,v 1.16 2005-01-14 18:42:36 edwards Exp $
 /*! \file
  *  \brief Wall-sink delta^+ -> gamma+proton form-factors 
  *
@@ -8,7 +8,7 @@
 #include "chromabase.h"
 #include "meas/hadron/walldeltapff_w.h"
 
-using namespace QDP;
+namespace Chroma {
 
 
 //! Compute the 123-123 contraction of a delta and P
@@ -502,3 +502,5 @@ void wallDeltaPFormFac(WallFormFac_formfacs_t& form,
 
   END_CODE();
 }
+
+}  // end namespace Chroma

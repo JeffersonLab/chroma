@@ -1,7 +1,9 @@
-// $Id: fuzz_smear.h,v 1.3 2004-11-20 14:54:56 mcneile Exp $
+// $Id: fuzz_smear.h,v 1.4 2005-01-14 18:42:37 edwards Exp $
 
 #ifndef __fuzz_smear__
 #define __fuzz_smear__
+
+namespace Chroma {
 
 //
 //  Fuzzed source 
@@ -29,5 +31,7 @@ void fuzz_smear(const multi1d<LatticeColorMatrix>& ufuzz,
 		const LatticeStaggeredFermion  & psi, 
 		LatticeStaggeredFermion& psifuzz, 
 		int length, int j_decay) ; 
+
+}  // end namespace Chroma
 
 #endif

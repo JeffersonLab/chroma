@@ -1,4 +1,4 @@
-// $Id: mespbp_w.cc,v 1.1 2004-10-04 02:59:47 edwards Exp $
+// $Id: mespbp_w.cc,v 1.2 2005-01-14 18:42:37 edwards Exp $
 /*! \file
  *  \brief  Calculates noise estimator for psi_bar_psi
  */
@@ -9,9 +9,7 @@
 #include "meas/pbp/ovpbg5p_w.h"
 
 
-using namespace QDP;
-
-
+namespace Chroma {
 
 //! Calculates noise estimator for psi_bar_psi
 /*!
@@ -103,3 +101,5 @@ void MesPbp(XMLWriter& xml_out,
 
   END_CODE();
 }
+
+}  // end namespace Chroma

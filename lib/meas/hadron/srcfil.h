@@ -1,11 +1,13 @@
 // -*- C++ -*-
-// $Id: srcfil.h,v 1.5 2004-11-20 15:11:50 mcneile Exp $
+// $Id: srcfil.h,v 1.6 2005-01-14 18:42:36 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */
 
 #ifndef __srcfil_h__
 #define __srcfil_h__
+
+namespace Chroma {
 
 //! Fill a specific color and spin index with 1.0
 /*!
@@ -42,5 +44,8 @@ void srcfil(LatticeColorVector& a, multi1d<int>& coord, int color_index);
  */
 
 void srcfil(LatticeStaggeredFermion& a, multi1d<int>& coord, int color_index) ;
+
+}  // end namespace Chroma
+
 
 #endif

@@ -1,5 +1,5 @@
 /* + */
-/* $Id: baryon_s.cc,v 1.3 2004-11-20 15:42:04 mcneile Exp $ ($Date: 2004-11-20 15:42:04 $) */
+/* $Id: baryon_s.cc,v 1.4 2005-01-14 18:42:36 edwards Exp $ ($Date: 2005-01-14 18:42:36 $) */
 
 /* This routine is specific to staggered fermions! */
 
@@ -21,171 +21,169 @@
 /* 'tensor' eps(a,b,c) = antisym_tensor(a,b,c). */
 
 /*
- Run through reorder by mcneile
- Also move output to outside this file.
+  Run through reorder by mcneile
+  Also move output to outside this file.
 
 */
 
 #include "chromabase.h"
 
-using namespace QDP;
+namespace Chroma {
 
 
 //! Function object used for constructing the time-slice set
-class TimeSliceFunc : public SetFunc
-{
-public:
-  TimeSliceFunc(int dir): dir_decay(dir) {}
+  class TimeSliceFunc : public SetFunc
+  {
+  public:
+    TimeSliceFunc(int dir): dir_decay(dir) {}
 
-  int operator() (const multi1d<int>& coordinate) const {return coordinate[dir_decay];}
-  int numSubsets() const {return Layout::lattSize()[dir_decay];}
+    int operator() (const multi1d<int>& coordinate) const {return coordinate[dir_decay];}
+    int numSubsets() const {return Layout::lattSize()[dir_decay];}
 
-  int dir_decay;
+    int dir_decay;
 
-private:
-  TimeSliceFunc() {}  // hide default constructor
-};
+  private:
+    TimeSliceFunc() {}  // hide default constructor
+  };
 
 
 
 
 //  multi1d<Complex> barprop(length)
 
-void baryon_s(LatticeStaggeredPropagator & quark_propagator_in, 
-	      multi1d<Complex> & barprop,
-	      multi1d<int> & t_source,
-	      int j_decay, int bc_spec)
-{ 
-  LatticeColorMatrix  quark_propagator;
+  void baryon_s(LatticeStaggeredPropagator & quark_propagator_in, 
+		multi1d<Complex> & barprop,
+		multi1d<int> & t_source,
+		int j_decay, int bc_spec)
+  { 
+    LatticeColorMatrix  quark_propagator;
 
-  quark_propagator =
-    peekSpin(quark_propagator_in,0,0);
-
-
-  LatticeComplex b_prop;
-  LatticeComplex uu_quark;
-
-  LatticeComplex quark_cpt_A ; 
-  LatticeComplex quark_cpt_B ;
-
-  Complex cdummy;
-  int t0;
-  int t;
-  int t_eff;
-  int c;
-  int cc;
-  int tmp;
-
-  /* Loop counters */
-  int ci_1;
-  int ci_2;
-  int ci_3;
-  int cf_1;
-  int cf_2;
-  int cf_3;
+    quark_propagator =
+      peekSpin(quark_propagator_in,0,0);
 
 
+    LatticeComplex b_prop;
+    LatticeComplex uu_quark;
 
-  /*# 3 dimensional totally antisymmetric tensor */
+    LatticeComplex quark_cpt_A ; 
+    LatticeComplex quark_cpt_B ;
 
-  int antisym_tensor[3][3][3] ; 
-  for(int ii=0 ; ii < 3 ; ++ii)
-    for(int jj=0 ; jj < 3 ; ++jj)
-      for(int kk=0 ; kk < 3 ; ++kk)
-	antisym_tensor[ii][jj][kk] = 0 ; 
+    Complex cdummy;
+    int t0;
+    int t;
+    int t_eff;
+    int c;
+    int cc;
+    int tmp;
 
-  antisym_tensor[2][1][0] =  1;
-  antisym_tensor[1][2][0] = -1;
-  antisym_tensor[2][0][1] = -1;
-  antisym_tensor[0][2][1] =  1;
-  antisym_tensor[1][0][2] =  1;
-  antisym_tensor[0][1][2] = -1;
+    /* Loop counters */
+    int ci_1;
+    int ci_2;
+    int ci_3;
+    int cf_1;
+    int cf_2;
+    int cf_3;
 
 
 
+    /*# 3 dimensional totally antisymmetric tensor */
 
-  // --- pasted from mesons_w ---
-  // Create the time-slice set
-  UnorderedSet timeslice;
- timeslice.make(TimeSliceFunc(j_decay));
+    int antisym_tensor[3][3][3] ; 
+    for(int ii=0 ; ii < 3 ; ++ii)
+      for(int jj=0 ; jj < 3 ; ++jj)
+	for(int kk=0 ; kk < 3 ; ++kk)
+	  antisym_tensor[ii][jj][kk] = 0 ; 
 
- // Length of lattice in j_decay direction
- int length = timeslice.numSubsets();
-
-
- // not sure why this had to be Dcomplex
- multi1d<DComplex> hsum(length);
-
- t0 = t_source[j_decay]; 	     /* Note j_decay = 0 is not permitted! */
-
-
- /* Set baryon propagator to zero */
- b_prop = 0;
-
- ci_3 = 2;
- ci_1 = 0;
- ci_2 = 1;
- c = 1;
-
-
- /* Sum over second sink u-quark colour */
- for(cf_3 = 0;cf_3  < ( Nc); ++cf_3 )
-   {
-
-     /* Sum over sink d-u diquark colour */
-     for(cf_1 = 0;cf_1  < ( Nc); ++cf_1 )
-       for(cf_2 = 0;cf_2  < ( Nc); ++cf_2 )
-	 {
-	   tmp = antisym_tensor[cf_3][cf_2][cf_1];
-	   if(tmp != 0)            /* otherwise no contribution! */
-	     {
-	       cc = c * tmp;
-
-
-	       /* Build the u-u "diquark" [only direct term (23-->23) is needed!] */
-
-	       quark_cpt_A = peekColor(quark_propagator,cf_2,ci_2 );
-	       quark_cpt_B = peekColor(quark_propagator,cf_3,ci_3);
-
-	       uu_quark =  quark_cpt_A * quark_cpt_B ;
-
-	       /* Finally tie the u-u "diquark" to the d-quark (1) to form the baryon */
-
-	       quark_cpt_A = peekColor(quark_propagator,cf_1,ci_1);
-	       switch(cc)
-		 {
-		 case +1:
-		   b_prop +=  quark_cpt_A * uu_quark;
-		   break;
-		 case -1:
-		   b_prop -=  quark_cpt_A * uu_quark;
-		   break;
-              }
-
-
-	     }    /* end if cc (sink diquark colour) */
-	 }      /* end sum sink diquark colour (cf_1, cf_2) */
-   }        /* end sum second sink u-quark colour (cf_3) */
-
- /* Project on zero momentum: Do a slice-wise sum. */
- hsum = sumMulti(b_prop, timeslice);
-
- for(t = 0;t  < ( length); ++t )
-   {
-     t_eff = (t - t0 + length) % length;
-
-     if ( bc_spec < 0 && (t_eff+t0) >= length)
-       {
-	 barprop[t_eff] = -hsum[t] ; 
-       }
-     else
-       barprop[t_eff] = hsum[t];
-   }
+    antisym_tensor[2][1][0] =  1;
+    antisym_tensor[1][2][0] = -1;
+    antisym_tensor[2][0][1] = -1;
+    antisym_tensor[0][2][1] =  1;
+    antisym_tensor[1][0][2] =  1;
+    antisym_tensor[0][1][2] = -1;
 
 
 
-}
+
+    // --- pasted from mesons_w ---
+    // Create the time-slice set
+    UnorderedSet timeslice;
+    timeslice.make(TimeSliceFunc(j_decay));
+
+    // Length of lattice in j_decay direction
+    int length = timeslice.numSubsets();
 
 
-//}
+    // not sure why this had to be Dcomplex
+    multi1d<DComplex> hsum(length);
 
+    t0 = t_source[j_decay]; 	     /* Note j_decay = 0 is not permitted! */
+
+
+    /* Set baryon propagator to zero */
+    b_prop = 0;
+
+    ci_3 = 2;
+    ci_1 = 0;
+    ci_2 = 1;
+    c = 1;
+
+
+    /* Sum over second sink u-quark colour */
+    for(cf_3 = 0;cf_3  < ( Nc); ++cf_3 )
+    {
+
+      /* Sum over sink d-u diquark colour */
+      for(cf_1 = 0;cf_1  < ( Nc); ++cf_1 )
+	for(cf_2 = 0;cf_2  < ( Nc); ++cf_2 )
+	{
+	  tmp = antisym_tensor[cf_3][cf_2][cf_1];
+	  if(tmp != 0)            /* otherwise no contribution! */
+	  {
+	    cc = c * tmp;
+
+
+	    /* Build the u-u "diquark" [only direct term (23-->23) is needed!] */
+
+	    quark_cpt_A = peekColor(quark_propagator,cf_2,ci_2 );
+	    quark_cpt_B = peekColor(quark_propagator,cf_3,ci_3);
+
+	    uu_quark =  quark_cpt_A * quark_cpt_B ;
+
+	    /* Finally tie the u-u "diquark" to the d-quark (1) to form the baryon */
+
+	    quark_cpt_A = peekColor(quark_propagator,cf_1,ci_1);
+	    switch(cc)
+	    {
+	    case +1:
+	      b_prop +=  quark_cpt_A * uu_quark;
+	      break;
+	    case -1:
+	      b_prop -=  quark_cpt_A * uu_quark;
+	      break;
+	    }
+
+
+	  }    /* end if cc (sink diquark colour) */
+	}      /* end sum sink diquark colour (cf_1, cf_2) */
+    }        /* end sum second sink u-quark colour (cf_3) */
+
+    /* Project on zero momentum: Do a slice-wise sum. */
+    hsum = sumMulti(b_prop, timeslice);
+
+    for(t = 0;t  < ( length); ++t )
+    {
+      t_eff = (t - t0 + length) % length;
+
+      if ( bc_spec < 0 && (t_eff+t0) >= length)
+      {
+	barprop[t_eff] = -hsum[t] ; 
+      }
+      else
+	barprop[t_eff] = hsum[t];
+    }
+
+
+
+  }
+
+}  // end namespace Chroma

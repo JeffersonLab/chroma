@@ -1,4 +1,4 @@
-// $Id: taproj.cc,v 1.7 2004-07-28 02:38:06 edwards Exp $
+// $Id: taproj.cc,v 1.8 2005-01-14 18:42:38 edwards Exp $
 // TAPROJ
 
 /*! \file
@@ -8,7 +8,7 @@
 #include "chromabase.h"
 #include "util/gauge/taproj.h"
 
-using namespace QDP;
+namespace Chroma {
 
 //! Take the traceless antihermitian projection of a color matrix
 /*!
@@ -48,3 +48,5 @@ void taproj(LatticeColorMatrix& a)
   
   END_CODE();
 }
+
+}  // end namespace Chroma

@@ -1,4 +1,4 @@
-// $Id: stagpbp_s.cc,v 1.2 2004-11-20 19:48:53 edwards Exp $
+// $Id: stagpbp_s.cc,v 1.3 2005-01-14 18:42:37 edwards Exp $
 /*! \file
  *  \brief Calculates noise estimator for the staggered trace 
  */
@@ -8,7 +8,7 @@
 #include "chromabase.h"
 #include "meas/pbp/stagpbp_s.h"
 
-using namespace QDP;
+namespace Chroma {
 
 //! Calculates noise estimator for the staggered trace 
 
@@ -195,3 +195,5 @@ void StagPbp(XMLWriter& xml_out,
         
   END_CODE();
 }
+
+}  // end namespace Chroma

@@ -3,9 +3,9 @@
 
 #include <chromabase.h>
 
-namespace StagPhases {
+namespace Chroma {
 
-  
+namespace StagPhases {
 
   // These are the K-S Phases (aka alpha in Eduardo's notation)
   class alphaClass {
@@ -42,4 +42,8 @@ namespace StagPhases {
   }
 
 };
+
+}  // end namespace Chroma
+
+
 #endif

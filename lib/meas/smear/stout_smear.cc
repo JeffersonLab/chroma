@@ -1,4 +1,4 @@
-//  $Id: stout_smear.cc,v 1.5 2005-01-14 15:59:00 bjoo Exp $
+//  $Id: stout_smear.cc,v 1.6 2005-01-14 18:42:37 edwards Exp $
 /*! \file
  *  \brief Stout-link smearing of the gauge configuration
  */
@@ -7,9 +7,6 @@
 #include "meas/smear/stout_smear.h"
 #include "util/gauge/expmat.h"
 #include "util/gauge/taproj.h"
-
-using namespace QDP;
-using namespace Chroma; 
 
 namespace Chroma { 
 //! Stout-link smearing of the gauge configuration

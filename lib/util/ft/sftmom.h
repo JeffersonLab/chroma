@@ -1,10 +1,12 @@
-//  $Id: sftmom.h,v 1.9 2004-04-28 18:55:38 edwards Exp $
+//  $Id: sftmom.h,v 1.10 2005-01-14 18:42:38 edwards Exp $
 /*! \file
  *  \brief Fourier transform phase factor support
  */
 
 #ifndef SFTMOM_INCLUDE
 #define SFTMOM_INCLUDE
+
+namespace Chroma {
 
 //! Fourier transform phase factor support
 /*!
@@ -61,5 +63,7 @@ private:
   multi1d<LatticeComplex> phases;
   UnorderedSet sft_set;
 };
+
+}  // end namespace Chroma
 
 #endif

@@ -1,4 +1,4 @@
-// $Id: walfil_s.cc,v 1.8 2004-11-12 14:49:09 mcneile Exp $
+// $Id: walfil_s.cc,v 1.9 2005-01-14 18:42:36 edwards Exp $
 /*! \file
  *  \brief Wall source construction
  */
@@ -6,7 +6,7 @@
 #include "chromabase.h"
 #include "meas/hadron/walfil_s.h"
 
-using namespace QDP;
+namespace Chroma {
 
 //! Fill a specific color and spin index with 1.0 on a wall
 /*!
@@ -142,3 +142,5 @@ void walfil(LatticeStaggeredFermion& a, int slice, int mu, int color_index, int 
 
   END_CODE();
 }
+
+}  // end namespace Chroma

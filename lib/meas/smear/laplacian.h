@@ -1,11 +1,13 @@
 // -*- C++ -*-
-// $Id: laplacian.h,v 1.5 2004-01-09 03:02:36 edwards Exp $
+// $Id: laplacian.h,v 1.6 2005-01-14 18:42:37 edwards Exp $
 /*! \file
  *  \brief Laplacian smearing of a source
  */
 
 #ifndef __laplacian_h__
 #define __laplacian_h__
+
+namespace Chroma {
 
 //! Do a covariant Gaussian smearing of a lattice field
 /*!
@@ -36,5 +38,6 @@ void laplacian(const multi1d<LatticeColorMatrix>& u,
 	       int j_decay,
 	       int power);
 
+}  // end namespace Chroma
 
 #endif

@@ -2,6 +2,9 @@
 // calculate the sum of all staples for a particular u_mu link
 #ifndef __u_staple__
 #define __u_staple__
+
+namespace Chroma {
+
 /* ****************************************
  * u                    link field
  * mu                   direction of the link
@@ -14,4 +17,7 @@ void u_staple(const multi1d<LatticeColorMatrix>& u,
                 LatticeColorMatrix& u_mu_staple,
                 const OrderedSubset& sub,
                 HBParams& );
+
+}  // end namespace Chroma
+
 #endif

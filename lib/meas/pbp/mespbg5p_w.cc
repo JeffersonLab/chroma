@@ -1,5 +1,11 @@
+
+namespace Chroma {
+
+
+include(types.mh)
+
 /* + */
-/* $Id: mespbg5p_w.cc,v 1.1 2004-10-04 02:59:47 edwards Exp $ ($Date: 2004-10-04 02:59:47 $) */
+/* $Id: mespbg5p_w.cc,v 1.2 2005-01-14 18:42:37 edwards Exp $ ($Date: 2005-01-14 18:42:37 $) */
 
 /* MESPBG5P - Calculates noise estimator for psi_bar_psi, psi_bar gamma_5 psi, */
 /*            <psi_bar gamma_5 psi psi_bar gamma_5 psi>,  */
@@ -12,8 +18,6 @@
 /* pbp_st      -- estimator of psi_bar_psi from first hit ( Write ) */
 /* n_congrd    -- Number of CG iteration ( Write ) */
 /* - */
-include(types.mh)
-
 SUBROUTINE(MesPbg5p, u, nhit, pbp_st, n_congrd)
 
 multi1d<LatticeColorMatrix> u(Nd);
@@ -169,3 +173,5 @@ pop(xml_out);
       
   END_CODE();
 }
+
+}  // end namespace Chroma

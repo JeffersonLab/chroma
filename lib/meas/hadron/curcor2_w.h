@@ -1,8 +1,10 @@
 // -*- C++ -*-
-// $Id: curcor2_w.h,v 1.4 2004-02-03 20:04:53 edwards Exp $
+// $Id: curcor2_w.h,v 1.5 2005-01-14 18:42:36 edwards Exp $
 
 #ifndef __curcor2_h__
 #define __curcor2_h__
+
+namespace Chroma {
 
 //! Construct current correlators 
 /*!
@@ -43,5 +45,7 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
 	     int no_vec_cur,
 	     XMLWriter& xml,
 	     const string& xml_group);
+
+}  // end namespace Chroma
 
 #endif

@@ -1,11 +1,13 @@
 // -*- C++ -*-
-// $Id: mciter32.h,v 1.2 2004-03-29 21:33:42 edwards Exp $
+// $Id: mciter32.h,v 1.3 2005-01-14 18:42:37 edwards Exp $
 /*! \file
  *  \brief One heatbath interation of updating the gauge field configuration
  */
 
 #ifndef __mciter32_h__
 #define __mciter32_h__
+
+namespace Chroma {
 
 //! One heatbath interation of updating the gauge field configuration
 /*!
@@ -36,6 +38,8 @@ void mciter32(multi1d<LatticeColorMatrix>& u,
 	      int& ntrials, int& nfails,
 	      const OrderedSet& ss,
 	      const multi3d<int>& neighsubl);
+
+}  // end namespace Chroma
 
 #endif
 

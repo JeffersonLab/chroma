@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gauge_startup.h,v 1.4 2004-04-28 14:31:59 edwards Exp $
+// $Id: gauge_startup.h,v 1.5 2005-01-14 18:42:38 edwards Exp $
 /*! \file
  *  \brief Initialize the gauge fields
  */
@@ -9,18 +9,22 @@
 
 #include "io/param_io.h"
 
-//! Initialize the gauge fields
-/*!
- * \ingroup gauge
- *
- * \param gauge_file_xml  File xml
- * \param gauge_xml       Record xml
- * \param u               Gauge fields
- * \param cfg             Configuration structure
- */
-void gaugeStartup(XMLReader& gauge_file_xml,
-		  XMLReader& gauge_xml,
-		  multi1d<LatticeColorMatrix>& u,
-		  Cfg_t& cfg);
+namespace Chroma {
+
+  //! Initialize the gauge fields
+  /*!
+   * \ingroup gauge
+   *
+   * \param gauge_file_xml  File xml
+   * \param gauge_xml       Record xml
+   * \param u               Gauge fields
+   * \param cfg             Configuration structure
+   */
+  void gaugeStartup(XMLReader& gauge_file_xml,
+		    XMLReader& gauge_xml,
+		    multi1d<LatticeColorMatrix>& u,
+		    Cfg_t& cfg);
+
+}  // end namespace Chroma
 
 #endif

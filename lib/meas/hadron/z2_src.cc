@@ -1,4 +1,4 @@
-// $Id: z2_src.cc,v 1.2 2004-11-20 19:26:25 mcneile Exp $
+// $Id: z2_src.cc,v 1.3 2005-01-14 18:42:37 edwards Exp $
 /*! \file
  *  \brief Variety of Z2 noise sources
  */
@@ -6,7 +6,7 @@
 #include "chromabase.h"
 //#include "meas/hadron/z2_src.h"
 
-using namespace QDP;
+namespace Chroma {
 
 //! Volume source of complex Z2 noise
 /*!
@@ -96,3 +96,6 @@ void z2_src(LatticeFermion& a, int slice, int mu)
 
   a = where(Layout::latticeCoordinate(mu) == slice, tmp, LatticeFermion(zero));
 }
+
+}  // end namespace Chroma
+

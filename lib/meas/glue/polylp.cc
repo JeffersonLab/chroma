@@ -1,4 +1,4 @@
-// $Id: polylp.cc,v 1.3 2004-07-28 02:38:03 edwards Exp $
+// $Id: polylp.cc,v 1.4 2005-01-14 18:42:35 edwards Exp $
 /*! \file
  *  \brief Calculate the global normalized sum of the Polyakov loop
  */
@@ -6,8 +6,7 @@
 #include "chromabase.h"
 #include "meas/glue/mesplq.h"
 
-
-using namespace QDP;
+namespace Chroma {
 
 //! Return the value of the average plaquette normalized to 1
 /*!
@@ -36,3 +35,5 @@ void polylp(const multi1d<LatticeColorMatrix>& u, DComplex& poly_loop, int mu)
 
   END_CODE();
 }
+
+}  // end namespace Chroma

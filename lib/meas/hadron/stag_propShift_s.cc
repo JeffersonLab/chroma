@@ -6,6 +6,8 @@
 #include "meas/hadron/stag_propShift_s.h"
 #include "meas/smear/displacement.h"
 
+namespace Chroma {
+
 int deltaToPropIndex(multi1d<int>& delta)
 {
 
@@ -324,3 +326,4 @@ LatticeStaggeredPropagator shiftDeltaProp(multi1d<int>& delta,
   return ret_val;
 }
 
+}  // end namespace Chroma

@@ -1,4 +1,4 @@
-// $Id: mesplq.cc,v 1.10 2004-07-28 02:38:03 edwards Exp $
+// $Id: mesplq.cc,v 1.11 2005-01-14 18:42:35 edwards Exp $
 /*! \file
  *  \brief Plaquette measurement
  */
@@ -7,7 +7,7 @@
 #include "meas/glue/mesplq.h"
 
 
-using namespace QDP;
+namespace Chroma {
 
 // Primitive way for now to indicate the time direction
 static int tDir() {return Nd-1;}
@@ -78,3 +78,5 @@ void MesPlq(const multi1d<LatticeColorMatrix>& u, Double& w_plaq, Double& s_plaq
 
   END_CODE();
 }
+
+}  // end namespace Chroma

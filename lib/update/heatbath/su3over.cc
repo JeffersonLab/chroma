@@ -1,4 +1,4 @@
-// $Id: su3over.cc,v 1.4 2004-08-07 03:26:24 edwards Exp $
+// $Id: su3over.cc,v 1.5 2005-01-14 18:42:37 edwards Exp $
 /*! \file
  *  \brief Do one SU(2) subgroup microcanonical overrelaxation update of SU(Nc)
  */
@@ -8,7 +8,8 @@
 #include "util/gauge/su2extract.h"
 #include "util/gauge/sunfill.h"
 
-using namespace QDP;
+namespace Chroma {
+
 
 //! Do one SU(2) subgroup microcanonical overrelaxation update of SU(Nc) matrix
 /*!
@@ -81,3 +82,5 @@ void su3over(LatticeColorMatrix& u,
   
   END_CODE();
 }
+
+}  // end namespace Chroma

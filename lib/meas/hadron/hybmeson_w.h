@@ -1,11 +1,13 @@
 // -*- C++ -*-
-// $Id: hybmeson_w.h,v 1.2 2004-02-03 21:51:09 edwards Exp $
+// $Id: hybmeson_w.h,v 1.3 2005-01-14 18:42:36 edwards Exp $
 /*! \file
  *  \brief Hybrid meson 2-pt functions
  */
 
 #ifndef __hybmeson_h__
 #define __hybmeson_h__
+
+namespace Chroma {
 
 //! Hybrid meson 2-pt functions
 /*!
@@ -41,5 +43,7 @@ void hybmeson(const multi1d<LatticeColorMatrix>& f,
 	      multi1d<int> t_source,
 	      XMLWriter& xml,
 	      const string& xml_group);
+
+}  // end namespace Chroma
 
 #endif

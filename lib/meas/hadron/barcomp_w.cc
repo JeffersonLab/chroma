@@ -1,4 +1,4 @@
-//  $Id: barcomp_w.cc,v 1.11 2004-07-28 02:38:03 edwards Exp $
+//  $Id: barcomp_w.cc,v 1.12 2005-01-14 18:42:35 edwards Exp $
 /*! \file
  *  \brief Construct all components of a baryon propagator
  */
@@ -6,8 +6,7 @@
 #include "chromabase.h"
 #include "meas/hadron/barcomp_w.h"
 
-using namespace QDP;
-
+namespace Chroma {
  
 //! Construct all components of a baryon propagator
 /*!
@@ -81,3 +80,5 @@ void barcomp(multiNd<Complex>& barprop,
 
   END_CODE();
 }
+
+}  // end namespace Chroma

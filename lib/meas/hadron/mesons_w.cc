@@ -1,6 +1,9 @@
-//  $Id: mesons_w.cc,v 1.19 2004-07-28 02:38:04 edwards Exp $
+//  $Id: mesons_w.cc,v 1.20 2005-01-14 18:42:36 edwards Exp $
 //  $Log: mesons_w.cc,v $
-//  Revision 1.19  2004-07-28 02:38:04  edwards
+//  Revision 1.20  2005-01-14 18:42:36  edwards
+//  Converted all lib files to be in chroma namespace.
+//
+//  Revision 1.19  2004/07/28 02:38:04  edwards
 //  Changed {START,END}_CODE("foo") to {START,END}_CODE().
 //
 //  Revision 1.18  2004/02/11 12:51:34  bjoo
@@ -56,7 +59,7 @@
 #include "util/ft/sftmom.h"
 #include "meas/hadron/mesons_w.h"
 
-using namespace QDP;
+namespace Chroma {
 
 //! Meson 2-pt functions
 /*!
@@ -152,3 +155,5 @@ void mesons(const LatticePropagator& quark_prop_1,
 
   END_CODE();
 }
+
+}  // end namespace Chroma

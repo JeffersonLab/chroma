@@ -1,11 +1,13 @@
 // -*- C++ -*-
-// $Id: seqpiontest_w.h,v 1.1 2003-12-17 05:03:40 edwards Exp $
+// $Id: seqpiontest_w.h,v 1.2 2005-01-14 18:42:36 edwards Exp $
 /*! \file
  *  \brief Test a pion sequential source
  */
 
 #ifndef __seqpiontest_w_h__
 #define __seqpiontest_w_h__
+
+namespace Chroma {
 
 //! Test a pion sequential source.
 /*!
@@ -32,5 +34,7 @@
 void seqPionTest(Complex& pion_src,
 		 const LatticePropagator& seq_quark_prop,
 		 const multi1d<int>& t_source);
+
+}  // end namespace Chroma
 
 #endif

@@ -1,4 +1,4 @@
-// $Id: diractodr.cc,v 1.5 2004-08-03 21:48:53 ikuro Exp $
+// $Id: diractodr.cc,v 1.6 2005-01-14 18:42:37 edwards Exp $
 /*! \file
  *  \brief Basis rotation matrix from Dirac to Degrand-Rossi (and reverse)
  */
@@ -7,6 +7,8 @@
 #include "util/ferm/diractodr.h"
 
 using namespace QDP;
+
+namespace Chroma {
 
 //! The Dirac to Degrand-Rossi spin transformation matrix (and reverse)
 /*!
@@ -59,3 +61,5 @@ SpinMatrixD DiracToDRMat()
 
   return U;
 }
+
+}  // end namespace Chroma

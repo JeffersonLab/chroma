@@ -1,4 +1,4 @@
-//  $Id: proginfo.cc,v 1.3 2004-07-28 02:38:06 edwards Exp $
+//  $Id: proginfo.cc,v 1.4 2005-01-14 18:42:38 edwards Exp $
 /*! \file
  *  \brief Print out basic info about this program
  */
@@ -7,7 +7,7 @@
 #include "util/info/printgeom.h"
 #include "util/info/proginfo.h"
 
-using namespace QDP;
+namespace Chroma {
 
 //! Print out basic info about this program
 /*!
@@ -31,3 +31,5 @@ void proginfo(XMLWriter& xml)
 
   END_CODE();
 }
+
+}  // end namespace Chroma

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wallff_w.cc,v 1.6 2004-08-21 01:40:12 edwards Exp $
+// $Id: wallff_w.cc,v 1.7 2005-01-14 18:42:36 edwards Exp $
 /*! \file
  *  \brief Structures for wall-sink/source form-factors
  *
@@ -9,7 +9,7 @@
 #include "chromabase.h"
 #include "meas/hadron/wallff_w.h"
 
-using namespace QDP;
+namespace Chroma {
 
 
 //! Compute nonlocal current propagator
@@ -250,3 +250,5 @@ void write(BinaryWriter& bin, const WallFormFac_formfacs_t& header)
   write(bin, header.subroutine);
   write(bin, header.quark);
 }
+
+}  // end namespace Chroma

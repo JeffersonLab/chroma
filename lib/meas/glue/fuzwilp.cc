@@ -1,4 +1,4 @@
-// $Id: fuzwilp.cc,v 1.4 2005-01-14 15:59:00 bjoo Exp $ fuzwilp.h,v 1.1 2004/04/26 16:12:49 mcneile Exp $
+// $Id: fuzwilp.cc,v 1.5 2005-01-14 18:42:35 edwards Exp $ fuzwilp.h,v 1.1 2004/04/26 16:12:49 mcneile Exp $
 /*! \file
  *  \brief Calculate ape-fuzzed Wilson loops
  */
@@ -6,9 +6,6 @@
 #include "chromabase.h"
 #include "meas/smear/ape_smear.h"
 #include "meas/glue/fuzwilp.h"
-
-using namespace QDP;
-using namespace Chroma;
 
 namespace Chroma { 
 //! Calculate ape-fuzzed Wilson loops

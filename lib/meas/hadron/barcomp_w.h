@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: barcomp_w.h,v 1.7 2004-02-06 04:22:28 edwards Exp $
+// $Id: barcomp_w.h,v 1.8 2005-01-14 18:42:35 edwards Exp $
 /*! \file
  *  \brief Construct all components of a baryon propagator
  */
@@ -9,6 +9,8 @@
 
 #include "io/qprop_io.h"
 #include "util/ft/sftmom.h"
+
+namespace Chroma {
 
 //! Construct all components of a baryon propagator
 /*!
@@ -34,5 +36,7 @@ void barcomp(multiNd<Complex>& barprop,
 	     const LatticePropagator& quark_propagator_3,
 	     const SftMom& phases,
 	     int t0, int bc_spec);
+
+}  // end namespace Chroma
 
 #endif

@@ -1,5 +1,8 @@
 #ifndef HB_PARAMS_H
 #define HB_PARAMS_H
+
+namespace Chroma {
+
 class HBParams 
 {
 	public:
@@ -24,4 +27,7 @@ class HBParams
 		Double xi02;
 		bool AnisoP;
 };
+
+}  // end namespace Chroma
+
 #endif

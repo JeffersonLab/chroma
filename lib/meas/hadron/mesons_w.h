@@ -1,11 +1,13 @@
 // -*- C++ -*-
-// $Id: mesons_w.h,v 1.9 2004-02-03 21:13:23 edwards Exp $
+// $Id: mesons_w.h,v 1.10 2005-01-14 18:42:36 edwards Exp $
 /*! \file
  *  \brief Meson 2-pt functions
  */
 
 #ifndef __mesons_h__
 #define __mesons_h__
+
+namespace Chroma {
 
 //! Meson 2-pt functions
 /* This routine is specific to Wilson fermions!
@@ -34,5 +36,7 @@ void mesons(const LatticePropagator& quark_prop_1,
             int t0,
             XMLWriter& xml,
             const string& xml_group) ;
+
+}  // end namespace Chroma
 
 #endif

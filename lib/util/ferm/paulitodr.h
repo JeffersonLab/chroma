@@ -1,11 +1,13 @@
 // -*- C++ -*-
-// $Id: paulitodr.h,v 1.1 2004-05-25 16:17:01 edwards Exp $
+// $Id: paulitodr.h,v 1.2 2005-01-14 18:42:37 edwards Exp $
 /*! \file
  *  \brief Basis rotation matrix from Pauli-Schwinger (Euclidean Sakurai) to Degrand-Rossi (and reverse)
  */
 
 #ifndef __paulitodr_h__
 #define __paulitodr_h__
+
+namespace Chroma {
 
 //! The Pauli-Schwinger (Euclidean Sakurai) to Degrand-Rossi spin transformation matrix
 /*!
@@ -18,5 +20,7 @@
  */
 
 SpinMatrixD PauliToDRMat();
+
+}  // end namespace Chroma
 
 #endif

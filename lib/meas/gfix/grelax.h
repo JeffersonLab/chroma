@@ -1,11 +1,13 @@
 // -*- C++ -*-
-// $Id: grelax.h,v 1.4 2004-05-29 01:49:14 edwards Exp $
+// $Id: grelax.h,v 1.5 2005-01-14 18:42:35 edwards Exp $
 /*! \file
  *  \brief Perform a single gauge fixing iteration
  */
 
 #ifndef __grelax_h__
 #define __grelax_h__
+
+namespace Chroma {
 
 //! Perform a single gauge fixing iteration
 /*!
@@ -28,5 +30,7 @@ void grelax(LatticeColorMatrix& g,
 	    const multi1d<LatticeColorMatrix>& u, 
 	    int j_decay, int su2_index, int cb, bool ordo,
 	    const Real& orpara);
+
+}  // end namespace Chroma
 
 #endif

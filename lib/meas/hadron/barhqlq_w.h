@@ -1,11 +1,13 @@
 // -*- C++ -*-
-// $Id: barhqlq_w.h,v 1.3 2004-06-04 04:01:03 edwards Exp $
+// $Id: barhqlq_w.h,v 1.4 2005-01-14 18:42:35 edwards Exp $
 /*! \file
  *  \brief Heavy-light baryon 2-pt functions
  */
 
 #ifndef __barhqlq_h__
 #define __barhqlq_h__
+
+namespace Chroma {
 
 //! Heavy-light baryon 2-pt functions
 /*!
@@ -117,5 +119,8 @@ void barhqlq(LatticePropagator& propagator_1,
 	     LatticePropagator& propagator_2,
 	     const SftMom& phases,
 	     multi3d<DComplex>& barprop);
+
+}  // end namespace Chroma
+
 
 #endif

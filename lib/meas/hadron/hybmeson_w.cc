@@ -1,4 +1,4 @@
-// $Id: hybmeson_w.cc,v 1.4 2004-07-28 02:38:04 edwards Exp $
+// $Id: hybmeson_w.cc,v 1.5 2005-01-14 18:42:36 edwards Exp $
 /*! \file
  *  \brief Hybrid meson 2-pt functions
  */
@@ -7,7 +7,7 @@
 #include "util/ft/sftmom.h"
 #include "meas/hadron/hybmeson_w.h"
 
-using namespace QDP;
+namespace Chroma {
 
 
 static void print_disp(XMLWriter& xml_hyb, const LatticeReal& corr_fn,
@@ -434,3 +434,5 @@ void hybmeson(const multi1d<LatticeColorMatrix>& f,
 
   END_CODE();
 }
+
+}  // end namespace Chroma

@@ -2,6 +2,8 @@
 #ifndef STAG_PROPSHIFT_S_H
 #define STAG_PROPSHIFT_S_H
 
+namespace Chroma {
+
 /* Forward declarations for the shifting of the staggered propagator
  * index to co-incide with the corect delta for meson spectroscopy
  */
@@ -38,5 +40,6 @@ enum Stag_shift_option {
 };
 
 
+}  // end namespace Chroma
 
 #endif

@@ -1,10 +1,12 @@
-//  $Id: displacement.h,v 1.5 2004-12-19 13:52:51 mcneile Exp $
+//  $Id: displacement.h,v 1.6 2005-01-14 18:42:37 edwards Exp $
 /*! \file
  *  \brief Parallel transport a lattice field
  */
 
 #ifndef __displacement_h__
 #define __displacement_h__
+
+namespace Chroma {
 
 //! Apply a displacement operator to a lattice field
 /*!
@@ -84,5 +86,6 @@ void displacement(const multi1d<LatticeColorMatrix>& u,
 		  LatticeStaggeredPropagator& chi, 
 		  int length, int dir) ;  
 
+}  // end namespace Chroma
 
 #endif

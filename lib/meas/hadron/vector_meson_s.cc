@@ -15,6 +15,7 @@
 #include "meas/hadron/stag_propShift_s.h"
 #include "util/gauge/stag_phases_s.h"
 
+namespace Chroma {
 
 // I cant forward declare this for some reason
 // Standard Time Slicery
@@ -175,3 +176,5 @@ vector_meson::compute(
 
 
 }
+
+}  // end namespace Chroma

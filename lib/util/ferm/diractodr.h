@@ -1,11 +1,13 @@
 // -*- C++ -*-
-// $Id: diractodr.h,v 1.2 2004-05-23 21:43:40 edwards Exp $
+// $Id: diractodr.h,v 1.3 2005-01-14 18:42:37 edwards Exp $
 /*! \file
  *  \brief Basis rotation matrix from Dirac to Degrand-Rossi (and reverse)
  */
 
 #ifndef __diractodr_h__
 #define __diractodr_h__
+
+namespace Chroma {
 
 //! The Dirac to Degrand-Rossi spin transformation matrix
 /*!
@@ -18,5 +20,7 @@
  */
 
 SpinMatrixD DiracToDRMat();
+
+}  // end namespace Chroma
 
 #endif

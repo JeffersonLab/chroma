@@ -33,7 +33,8 @@
 #include "util/ft/sftmom.h"
 #include "meas/hadron/BuildingBlocks_w.h"
 
-using namespace QDP;
+namespace Chroma {
+
 
 //###################################################################################//
 // debug flag                                                                        //
@@ -46,7 +47,7 @@ using namespace QDP;
 //###################################################################################//
 
 static const char* const CVSBuildingBlocks_cc =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 1.11 2004-05-28 00:13:17 dru Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 1.12 2005-01-14 18:42:35 edwards Exp $";
 
 //###################################################################################//
 // record the CVS info                                                               //
@@ -382,3 +383,5 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
 
 //###################################################################################//
 //###################################################################################//
+
+}  // end namespace Chroma

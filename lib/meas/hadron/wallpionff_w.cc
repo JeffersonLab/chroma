@@ -1,4 +1,4 @@
-// $Id: wallpionff_w.cc,v 1.15 2004-08-21 01:40:13 edwards Exp $
+// $Id: wallpionff_w.cc,v 1.16 2005-01-14 18:42:37 edwards Exp $
 /*! \file
  *  \brief Wall-sink pion form-factors 
  *
@@ -8,7 +8,7 @@
 #include "chromabase.h"
 #include "meas/hadron/wallpionff_w.h"
 
-using namespace QDP;
+namespace Chroma {
 
 //! Compute contractions for current insertion 3-point functions.
 /*!
@@ -265,3 +265,5 @@ void wallPionFormFac(WallFormFac_formfacs_t& form,
 
   END_CODE();
 }
+
+}  // end namespace Chroma

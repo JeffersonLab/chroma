@@ -1,4 +1,4 @@
-// $Id: sink_smear2.cc,v 1.3 2004-09-22 17:25:00 bjoo Exp $
+// $Id: sink_smear2.cc,v 1.4 2005-01-14 18:42:37 edwards Exp $
 /*! \file
  *  \brief Control routine for types of propagator smearing
  */
@@ -7,9 +7,7 @@
 #include "meas/smear/sink_smear2.h"
 #include "meas/smear/gaus_smear.h"
 
-using namespace QDP;
-using namespace Chroma;
-
+namespace Chroma {
 
 //! "Smear" the quark propagator at the sink by a covariant Gaussian
 /*!
@@ -66,4 +64,5 @@ void sink_smear2(const multi1d<LatticeColorMatrix>& u,
 }
 
 
+}  // end namespace Chroma
 

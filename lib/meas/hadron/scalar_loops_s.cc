@@ -1,7 +1,10 @@
+// $Id: scalar_loops_s.cc,v 1.5 2005-01-14 18:42:36 edwards Exp $
 
 #include "chromabase.h"
 #include"scalar_loops_s.h"
 #include "util/gauge/stag_phases_s.h"
+
+namespace Chroma {
 
 // Standard Time Slicery
 class TimeSliceFunc : public SetFunc
@@ -52,3 +55,5 @@ void non_local_scalar_loop::compute(LatticeStaggeredFermion & q_source,
   corr += corr_fn[isample] ;
 
 }
+
+}  // end namespace Chroma

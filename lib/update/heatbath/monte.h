@@ -1,11 +1,13 @@
 // -*- C++ -*-
-// $Id: monte.h,v 1.2 2004-03-29 21:33:42 edwards Exp $
+// $Id: monte.h,v 1.3 2005-01-14 18:42:37 edwards Exp $
 /*! \file
  *  \brief Routine for doing the hybrid (monte carlo) algorithm. 
  */
 
 #ifndef __monte_h__
 #define __monte_h__
+
+namespace Chroma {
 
 //! Routine for doing the hybrid (monte carlo) algorithm.
 /*!
@@ -77,5 +79,7 @@ void monte(multi1d<LatticeColorMatrix>& u(Nd),	/* New gauge field cfg. */
 	   int ORlxDo,		/* Do Over-relaxation in gauge fixing */
 	   Real OrPara,			/* Over-relaxation parameter in gauge-fixing */
 	   );
+
+}  // end namespace Chroma
 
 #endif

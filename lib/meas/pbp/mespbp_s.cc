@@ -1,4 +1,7 @@
-/* $Id: mespbp_s.cc,v 1.2 2004-11-20 19:50:11 edwards Exp $ ($Date: 2004-11-20 19:50:11 $) */
+namespace Chroma {
+
+
+/* $Id: mespbp_s.cc,v 1.3 2005-01-14 18:42:37 edwards Exp $ ($Date: 2005-01-14 18:42:37 $) */
 
 /* This routine is specific to staggered fermions! */
 
@@ -76,3 +79,5 @@ Double psi_bar_psi;
   
   END_CODE();
 }
+
+}  // end namespace Chroma

@@ -1,4 +1,4 @@
-// $Id: expm12.cc,v 1.6 2004-07-28 02:38:06 edwards Exp $
+// $Id: expm12.cc,v 1.7 2005-01-14 18:42:38 edwards Exp $
 /*! \file
  *  \brief 12-th order exponentiation of a lattice color matrix
  */
@@ -6,7 +6,7 @@
 #include "chromabase.h"
 #include "util/gauge/expm12.h"
 
-using namespace QDP;
+namespace Chroma {
 
 //! 12-th order exponentiation of a lattice color matrix
 /*!
@@ -41,3 +41,5 @@ void expm12(LatticeColorMatrix& a)
   
   END_CODE();
 }
+
+}  // end namespace Chroma

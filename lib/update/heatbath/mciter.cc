@@ -1,4 +1,4 @@
-// $Id: mciter.cc,v 1.3 2004-07-28 02:38:05 edwards Exp $
+// $Id: mciter.cc,v 1.4 2005-01-14 18:42:37 edwards Exp $
 /*! \file
  *  \brief One heatbath interation of updating the gauge field configuration
  */
@@ -12,7 +12,7 @@
 #include "update/heatbath/su3over.h"
 #include "update/heatbath/su3hb.h"
 
-using namespace QDP;
+namespace Chroma {
 
 //! One heatbath interation of updating the gauge field configuration
 /*!
@@ -128,3 +128,5 @@ void mciter(multi1d<LatticeColorMatrix>& u,
   
   END_CODE();
 }
+
+}  // end namespace Chroma

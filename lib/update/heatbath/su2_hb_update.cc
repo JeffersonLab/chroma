@@ -3,6 +3,8 @@
 #include "util/gauge/su2extract.h"
 #include "util/gauge/sunfill.h"
 
+namespace Chroma {
+
 void print_field(const LatticeReal& a0);
 void su2_a_0(const LatticeReal&, LatticeReal& ,
 				const OrderedSubset& sub, const int NmaxHB,
@@ -176,3 +178,5 @@ void print_field(const LatticeReal& a0) {
 	cout<<endl;
 
 }
+
+}  // end namespace Chroma

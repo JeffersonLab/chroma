@@ -1,9 +1,9 @@
-// $Id: d_src_w.cc,v 1.3 2004-08-12 20:55:37 ikuro Exp $
+// $Id: d_src_w.cc,v 1.4 2005-01-14 18:42:37 edwards Exp $
 
 #include "chromabase.h"
 #include "meas/sources/p_src_w.h"
 
-using namespace QDP;
+namespace Chroma {
 
 //
 // Take second derivative to a source.
@@ -52,3 +52,4 @@ void d_src(const multi1d<LatticeColorMatrix>& u,
   d_src<LatticeFermion>(u, chi, direction);
 }
 
+}  // end namespace Chroma

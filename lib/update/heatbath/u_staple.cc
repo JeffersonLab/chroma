@@ -4,6 +4,8 @@
 #include "update/heatbath/hb_params.h"
 //#include "update/heatbath/u_staple.h"
 
+namespace Chroma {
+
 void u_staple(const multi1d<LatticeColorMatrix>& u,
 		const int mu,
 		LatticeColorMatrix& u_mu_staple, 
@@ -49,3 +51,5 @@ void u_staple(const multi1d<LatticeColorMatrix>& u,
 	}
 	END_CODE();
 }
+
+}  // end namespace Chroma

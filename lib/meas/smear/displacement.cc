@@ -1,4 +1,4 @@
-//  $Id: displacement.cc,v 1.7 2004-12-19 13:52:51 mcneile Exp $
+//  $Id: displacement.cc,v 1.8 2005-01-14 18:42:37 edwards Exp $
 /*! \file
  *  \brief Parallel transport a lattice field
  */
@@ -6,7 +6,7 @@
 #include "chromabase.h"
 #include "meas/smear/displacement.h"
 
-using namespace QDP;
+namespace Chroma {
 
 //! Apply a displacement operator to a lattice field
 /*!
@@ -95,3 +95,4 @@ void displacement(const multi1d<LatticeColorMatrix>& u,
   displacement<LatticeStaggeredPropagator>(u, chi, length, dir);
 }
 
+}  // end namespace Chroma

@@ -2,6 +2,9 @@
 // one su(2) hb update kennedy-pendleton or creutz
 #ifndef __su2_hb_update__
 #define __su2_hb_update__
+
+namespace Chroma {
+
 /* ********************************
  * u_mu 		link field
  * u_mu_staple          staple attached to the link u_mu
@@ -16,4 +19,7 @@ void su2_hb_update(LatticeColorMatrix& u_mu,
 			const int su2_index,
 			const OrderedSubset& sub, 
 			const int NmaxHB);
+
+}  // end namespace Chroma
+
 #endif

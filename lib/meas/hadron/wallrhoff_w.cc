@@ -1,4 +1,4 @@
-// $Id: wallrhoff_w.cc,v 1.5 2004-08-21 01:40:13 edwards Exp $
+// $Id: wallrhoff_w.cc,v 1.6 2005-01-14 18:42:37 edwards Exp $
 /*! \file
  *  \brief Wall-sink rho-> gamma+rho form-factors 
  *
@@ -8,7 +8,7 @@
 #include "chromabase.h"
 #include "meas/hadron/wallrhoff_w.h"
 
-using namespace QDP;
+namespace Chroma {
 
 
 //! Wall-sink rho-> gamma+rho form-factors 
@@ -279,3 +279,4 @@ void wallRhoFormFac(WallFormFac_formfacs_t& form,
   END_CODE();
 }
 
+}  // end namespace Chroma

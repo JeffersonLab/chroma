@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stoch_var.h,v 1.2 2004-04-05 19:27:04 edwards Exp $
+// $Id: stoch_var.h,v 1.3 2005-01-14 18:42:36 edwards Exp $
 /*! \file
  *  \brief Stochastic variable construction
  *
@@ -7,6 +7,8 @@
 
 #ifndef __stoch_var_h__
 #define __stoch_var_h__
+
+namespace Chroma {
 
 //! Stochastic variable construction
 /*!
@@ -31,5 +33,7 @@ void
 stoch_var(multi1d<DComplex>& ferm_loop_sum, multi2d<DComplex>& ferm_loop, 
           multi1d<Real64>& sigma, multi1d<Real64>& imsigma, 
           int t_length, int Nsamp);
+
+}  // end namespace Chroma
 
 #endif

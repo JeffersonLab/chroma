@@ -1,4 +1,4 @@
-// $Id: ovpbg5p_w.cc,v 1.1 2004-08-19 16:41:40 edwards Exp $
+// $Id: ovpbg5p_w.cc,v 1.2 2005-01-14 18:42:37 edwards Exp $
 /*! \file
  *  \brief Calculates noise estimator for the overlap trace 
  */
@@ -9,8 +9,7 @@
 #include "meas/pbp/ovpbg5p_w.h"
 
 
-using namespace QDP;
-
+namespace Chroma {
 
 //! OVPBG5P - Calculates noise estimator for the overlap trace
 /*!
@@ -204,3 +203,5 @@ void OvPbg5p(XMLWriter& xml_out,
 
   END_CODE();
 }
+
+}  // end namespace Chroma

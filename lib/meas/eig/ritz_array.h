@@ -1,8 +1,12 @@
+// $Id: ritz_array.h,v 1.2 2005-01-14 18:42:35 edwards Exp $
 #ifndef __ritz_array_h__
 #define __ritz_array_h__
 
 #include "chromabase.h"
 #include "linearop.h"
+
+namespace Chroma {
+
 //! Minimizes the Ritz functional with a CG based algorithm
 /*!
  * \ingroup eig
@@ -131,4 +135,7 @@ void Ritz(const LinearOperator<multi1d<LatticeFermion> >& A,   // Herm Pos Def
 	  bool Kalk_Sim,              // Are we in Kalk Simma mode?
 	  const Real& delta_cycle,    // Initial error estimate (KS mode)
 	  const Real& gamma_factor) ;  // Convergence factor Gamma
+
+}  // end namespace Chroma
+
 #endif

@@ -10,10 +10,12 @@
  * YOU HAVE BEEN WARNED.
  */
 
+#include "chromabase.h"
 #include "meas/hadron/stag_propShift_s.h"
 #include "meas/hadron/stag_scalars_s.h"
 #include "util/gauge/stag_phases_s.h"
 
+namespace Chroma {
 
 // I cant forward declare this for some reason
 // Standard Time Slicery
@@ -234,3 +236,5 @@ staggered_scalars::compute(
     QDP_abort(1);
   }
 }
+
+}  // end namespace Chroma

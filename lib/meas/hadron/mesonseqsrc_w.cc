@@ -1,4 +1,4 @@
-// $Id: mesonseqsrc_w.cc,v 1.4 2004-07-28 02:38:04 edwards Exp $
+// $Id: mesonseqsrc_w.cc,v 1.5 2005-01-14 18:42:36 edwards Exp $
 /*! \file
  *  \brief Construct meson sequential sources.
  */
@@ -7,7 +7,7 @@
 #include "util/ft/sftmom.h"
 #include "meas/hadron/mesonseqsrc_w.h"
 
-using namespace QDP;
+namespace Chroma {
 
 //! Construct a meson sequential source.
 /*!
@@ -115,3 +115,5 @@ void mesonSeqSource(const LatticePropagator& quark_propagator,
         
   END_CODE();
 }
+
+}  // end namespace Chroma

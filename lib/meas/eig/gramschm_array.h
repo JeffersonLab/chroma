@@ -1,10 +1,13 @@
+// $Id: gramschm_array.h,v 1.2 2005-01-14 18:42:35 edwards Exp $
+/*! \file
+ *  \brief Gramm-Schmidt orthogonolization
+ */
 #ifndef __gramschm_array_w__
 #define __gramschm_array_w__
 
 #include "chromabase.h"
-/*! \file
- *  \brief Gramm-Schmidt orthogonolization
- */
+
+namespace Chroma {
 
 //! Gram Schmidt rothogonalisation
 /*!
@@ -99,4 +102,7 @@ void GramSchmArray(multi1d<LatticeFermion>& psi,
  */
 void GramSchmArray(multi1d<LatticeFermion>& psi,
 		   const multi1d<LatticeFermion>& vec);
+
+}  // end namespace Chroma
+
 #endif

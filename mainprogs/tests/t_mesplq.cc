@@ -1,11 +1,11 @@
-// $Id: t_mesplq.cc,v 1.13 2004-05-24 22:34:40 edwards Exp $
+// $Id: t_mesplq.cc,v 1.14 2005-01-14 18:42:38 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
 
 #include "chroma.h"
 
-using namespace QDP;
+using namespace Chroma;
 
 int main(int argc, char *argv[])
 {

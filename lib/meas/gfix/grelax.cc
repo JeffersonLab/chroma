@@ -1,4 +1,4 @@
-// $Id: grelax.cc,v 1.7 2004-07-28 02:38:03 edwards Exp $
+// $Id: grelax.cc,v 1.8 2005-01-14 18:42:35 edwards Exp $
 /*! \file
  *  \brief Perform a single gauge fixing iteration
  */
@@ -8,7 +8,8 @@
 #include "util/gauge/su2extract.h"
 #include "util/gauge/sunfill.h"
 
-using namespace QDP;
+namespace Chroma {
+
 
 /********************** HACK ******************************/
 // Primitive way for now to indicate the time direction
@@ -185,3 +186,5 @@ void grelax(LatticeColorMatrix& g,
   
   END_CODE();
 }
+
+}  // end namespace Chroma

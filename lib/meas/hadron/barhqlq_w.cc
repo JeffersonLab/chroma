@@ -1,4 +1,4 @@
-// $Id: barhqlq_w.cc,v 1.3 2004-07-28 02:38:03 edwards Exp $
+// $Id: barhqlq_w.cc,v 1.4 2005-01-14 18:42:35 edwards Exp $
 /*! \file
  *  \brief Heavy-light baryon 2-pt functions
  */
@@ -7,8 +7,7 @@
 #include "util/ft/sftmom.h"
 #include "meas/hadron/barhqlq_w.h"
 
-using namespace QDP;
- 
+namespace Chroma {
 
 //! Heavy-light baryon 2-pt functions
 /*!
@@ -484,3 +483,5 @@ void barhqlq(LatticePropagator& quark_propagator_1,
 
   END_CODE();
 }
+
+}  // end namespace Chroma

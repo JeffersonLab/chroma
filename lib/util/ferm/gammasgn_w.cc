@@ -1,4 +1,4 @@
-// $Id: gammasgn_w.cc,v 1.5 2004-07-28 02:38:06 edwards Exp $
+// $Id: gammasgn_w.cc,v 1.6 2005-01-14 18:42:37 edwards Exp $
 /*! \file
  *  \brief Compute gamma matrix multiplication table factors
  */
@@ -6,7 +6,7 @@
 #include "chromabase.h"
 #include "util/ferm/gammasgn_w.h"
 
-using namespace QDP;
+namespace Chroma {
 
 static multi2d<int> meson_eta2;
 static bool initP = false;
@@ -78,3 +78,4 @@ int gammaSgn(int n, int m)
   return meson_eta2(n,m);
 }
 
+}  // end namespace Chroma

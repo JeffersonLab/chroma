@@ -1,4 +1,4 @@
-// $Id: barseqsrc_w.cc,v 1.7 2004-07-28 02:38:04 edwards Exp $
+// $Id: barseqsrc_w.cc,v 1.8 2005-01-14 18:42:35 edwards Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */
@@ -7,7 +7,7 @@
 #include "util/ft/sftmom.h"
 #include "meas/hadron/barseqsrc_w.h"
 
-using namespace QDP;
+namespace Chroma {
 
 //! Construct baryon sequential sources
 /*!
@@ -487,3 +487,5 @@ void barSeqSource(const LatticePropagator& quark_propagator_1,
         
   END_CODE();
 }
+
+}  // end namespace Chroma

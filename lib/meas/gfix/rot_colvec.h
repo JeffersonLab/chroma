@@ -1,11 +1,13 @@
 // -*- C++ -*-
-// $Id: rot_colvec.h,v 1.2 2003-12-06 21:59:22 edwards Exp $
+// $Id: rot_colvec.h,v 1.3 2005-01-14 18:42:35 edwards Exp $
 /*! \file
  *  \brief Rotate a color vector
  */
 
 #ifndef __rot_colvec_h__
 #define __rot_colvec_h__
+
+namespace Chroma {
 
 //! Rotate a color vector
 /*!
@@ -25,5 +27,7 @@ void rot_colvec(LatticeColorMatrix& g,
 		const LatticeColorVector& psi,
 		LatticeColorVector& chi,
 		int s_index);
+
+}  // end namespace Chroma
 
 #endif
