@@ -1,0 +1,18 @@
+// $Id: p_src_w.cc.~1.3.~,v 1.1 2004-08-12 20:55:38 ikuro Exp $
+
+#include "chromabase.h"
+#include "meas/sources/p_src_w.h"
+
+using namespace QDP;
+
+void p_src(const multi1d<LatticeColorMatrix>& u, 
+              LatticeFermion& chi,
+	      int direction)
+{
+  int d=direction;
+
+  LatticeFermion psi = chi;
+
+  chi = 0.5*(u[d]*shift(psi, FORWARD, d) - shift(adj(u[d])*psi, BACKWARD, d));
+}
+
