@@ -1,4 +1,4 @@
-// $Id: seqsource.cc,v 1.1 2004-04-24 03:26:32 edwards Exp $
+// $Id: seqsource.cc,v 1.2 2004-04-27 21:30:37 edwards Exp $
 /*! \file
  *  \brief Main code for sequential source construction
  */
@@ -192,12 +192,12 @@ int main(int argc, char **argv)
     }
 
     // Save prop input
-    write(xml_out, "Forward_propagator", prop_record_xml);
+    write(xml_out, "Propagator_info", prop_record_xml);
   }
 
   // Derived from input prop
   int  j_decay = source_header.j_decay;
-  multi1d<int> boundary = prop_header.boundary;
+// multi1d<int> boundary = prop_header.boundary;   // not currently needed
   multi1d<int> t_source = source_header.t_source;
 
   // Initialize the slow Fourier transform phases
@@ -377,11 +377,14 @@ int main(int argc, char **argv)
     pop(xml_props);  // ForwardProps
 
     write(record_xml, "Config_info", gauge_xml);
+    pop(record_xml);  // SequentialSource
 
     // Write the seqsource
     writeQprop(file_xml, record_xml, quark_prop_src,
 	       input.prop.seqsource_file, 
 	       input.prop.seqsource_volfmt, QDPIO_SERIAL);
+
+    QDPIO::cout << "Sequential source successfully written" << endl;
   }
 
   pop(xml_out);    // seqsource
