@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.101 2004-01-29 20:39:35 edwards Exp $
+# $Id: Makefile.am,v 1.102 2004-01-29 20:45:32 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -17,7 +17,7 @@ VPATH += $(TOPDIR)/lib/actions/ferm/invert
 VPATH += $(TOPDIR)/lib/actions/ferm/linop
 VPATH += $(TOPDIR)/lib/actions/ferm/qprop
 VPATH += $(TOPDIR)/lib/actions/gauge
-VPATH += $(TOPDIR)/lib/geom
+#VPATH += $(TOPDIR)/lib/geom
 VPATH += $(TOPDIR)/lib/info
 VPATH += $(TOPDIR)/lib/io
 VPATH += $(TOPDIR)/lib/meas
@@ -55,7 +55,7 @@ VPATH += $(TOPDIR)/root
 nobase_include_HEADERS = \
 	chroma.h chroma_scalarsite_defs.h chroma_scalarsite_dwdefs.h \
 	chromabase.h chromainc.h common_declarations.h fermact.h \
-	fermbc.h gaugeact.h gaugebc.h geom.h handle.h invtype.h lib.h \
+	fermbc.h gaugeact.h gaugebc.h handle.h invtype.h lib.h \
 	linearop.h primitives.h state.h \
 	actions/actions.h actions/boson/boson.h \
 	actions/boson/operator/klein_gord.h actions/ferm/dslash/dslash.h \
@@ -188,12 +188,6 @@ AM_CXXFLAGS += -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
 endif
 
 lib_LIBRARIES = libchroma.a
-
-#
-# Various header files. 
-#
-#HDRS =  chroma.h chromabase.h chromainc.h primitives.h common_declarations.h \
-#        geom.h
 
 #
 # Fermion independent sources
