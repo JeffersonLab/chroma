@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_fermact_base_array_w.h,v 1.20 2005-01-02 05:21:09 edwards Exp $
+// $Id: prec_dwf_fermact_base_array_w.h,v 1.21 2005-01-04 06:52:03 edwards Exp $
 /*! \file
  *  \brief Base class for even-odd preconditioned domain-wall-like fermion actions
  */
@@ -50,6 +50,13 @@ namespace Chroma
     virtual const LinearOperator< multi1d<T> >* lMdagM(Handle<const ConnectState> state) const
     {
       return new lmdagm< multi1d<T> >(linOp(state));
+    }
+
+    //! Override to produce a DWF-link even-odd prec. Pauli-Villars linear operator for this action
+    /*! Covariant return rule - override base class function */
+    virtual const EvenOddPrecDWLinOpBaseArray<T,P>* linOpPV(Handle<const ConnectState> state) const
+    {
+      return precLinOp(state,Real(1));
     }
 
     //! Produce a hermitian version of the linear operator

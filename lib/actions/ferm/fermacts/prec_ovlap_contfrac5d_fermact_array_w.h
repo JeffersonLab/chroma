@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovlap_contfrac5d_fermact_array_w.h,v 1.5 2005-01-02 05:21:09 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_fermact_array_w.h,v 1.6 2005-01-04 06:52:03 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -86,6 +86,13 @@ namespace Chroma
 
     //! Produce a linear operator for this action
     const EvenOddPrecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* linOp(Handle<const ConnectState> state) const;
+
+    //! Produce a Pauli-Villars linear operator for this action
+    const EvenOddPrecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* linOpPV(Handle<const ConnectState> state) const
+    {
+      QDPIO::cerr << "EOCFZ::linOpPV not implemented" << endl;
+      QDP_abort(1);
+    }
 
     //! Produce a linear operator M^dag.M for this action
     const LinearOperator< multi1d<LatticeFermion> >* lMdagM(Handle<const ConnectState> state) const;

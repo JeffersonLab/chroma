@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_fermact_base_array_w.h,v 1.20 2005-01-02 05:21:10 edwards Exp $
+// $Id: unprec_dwf_fermact_base_array_w.h,v 1.21 2005-01-04 06:52:03 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned domain-wall-like fermion actions
  */
@@ -46,6 +46,13 @@ namespace Chroma
     virtual const LinearOperator< multi1d<T> >* lMdagM(Handle<const ConnectState> state) const
     {
       return new lmdagm< multi1d<T> >(linOp(state));
+    }
+
+    //! Override to produce a DWF-link unprec. Pauli-Villars linear operator for this action
+    /*! Covariant return rule - override base class function */
+    virtual const UnprecDWLinOpBaseArray<T,P>* linOpPV(Handle<const ConnectState> state) const
+    {
+      return unprecLinOp(state,Real(1));
     }
 
     //! Produce a hermitian version of the linear operator

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_linop_array_w.h,v 1.10 2005-01-02 05:21:10 edwards Exp $
+// $Id: unprec_dwf_linop_array_w.h,v 1.11 2005-01-04 06:52:03 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion linear operator
  */
@@ -60,6 +60,12 @@ namespace Chroma
       QDPIO::cerr << "Dminus not implemented" << endl;
       QDP_abort(1);
     }
+
+    //! Derivative
+    void deriv(multi1d<LatticeColorMatrix>& ds_u, 
+	       const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
+	       enum PlusMinus isign) const;
+
 
   private:
     Real WilsonMass;
