@@ -1,4 +1,4 @@
-// $Id: gauge_startup.cc,v 1.10 2005-01-13 16:46:09 mcneile Exp $
+// $Id: gauge_startup.cc,v 1.11 2005-01-13 18:15:54 edwards Exp $
 /*! \file
  *  \brief Initialize the gauge fields
  */
@@ -42,6 +42,7 @@ void gaugeStartup(XMLReader& gauge_file_xml,
     break;
 
   case CFG_TYPE_SZINQIO:
+  case CFG_TYPE_SCIDAC:
     readGauge(gauge_file_xml, gauge_xml, u, cfg.cfg_file, QDPIO_SERIAL);
     break;
 
