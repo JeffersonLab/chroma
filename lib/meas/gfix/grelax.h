@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: grelax.h,v 1.3 2004-01-02 22:48:02 edwards Exp $
+// $Id: grelax.h,v 1.4 2004-05-29 01:49:14 edwards Exp $
 /*! \file
  *  \brief Perform a single gauge fixing iteration
  */
@@ -15,8 +15,8 @@
  * subgroup only, for gauge fixing to Coulomb gauge in slices perpendicular
  * to the direction "j_decay".
  *
- * \param ug         (gauge fixed) gauge field ( Modify )
- * \param u_neg      (gauge fixed) gauge field, negative links ( Read )
+ * \param g          Current (global) gauge transformation matrices ( Modify )
+ * \param u          original gauge field ( Read )
  * \param j_decay    direction perpendicular to slices to be gauge fixed ( Read )
  * \param su2_index  SU(2) subgroup index ( Read )
  * \param cb         checkerboard index ( Read )
@@ -24,8 +24,8 @@
  * \param orpara     overrelaxation parameter ( Read ) 
  */
 
-void grelax(multi1d<LatticeColorMatrix>& ug, 
-	    const multi1d<LatticeColorMatrix>& u_neg,
+void grelax(LatticeColorMatrix& g,
+	    const multi1d<LatticeColorMatrix>& u, 
 	    int j_decay, int su2_index, int cb, bool ordo,
 	    const Real& orpara);
 

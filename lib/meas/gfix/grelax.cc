@@ -1,4 +1,4 @@
-// $Id: grelax.cc,v 1.5 2004-01-02 22:48:02 edwards Exp $
+// $Id: grelax.cc,v 1.6 2004-05-29 01:49:14 edwards Exp $
 /*! \file
  *  \brief Perform a single gauge fixing iteration
  */
@@ -25,8 +25,8 @@ static bool anisoP() {return false;}
  * subgroup only, for gauge fixing to Coulomb gauge in slices perpendicular
  * to the direction "j_decay".
  *
- * \param ug         (gauge fixed) gauge field ( Modify )
- * \param u_neg      (gauge fixed) gauge field, negative links ( Read )
+ * \param g          Current (global) gauge transformation matrices ( Modify )
+ * \param u          original gauge field ( Read )
  * \param j_decay    direction perpendicular to slices to be gauge fixed ( Read )
  * \param su2_index  SU(2) subgroup index ( Read )
  * \param cb         checkerboard index ( Read )
@@ -34,8 +34,8 @@ static bool anisoP() {return false;}
  * \param orpara     overrelaxation parameter ( Read ) 
  */
 
-void grelax(multi1d<LatticeColorMatrix>& ug, 
-	    const multi1d<LatticeColorMatrix>& u_neg,
+void grelax(LatticeColorMatrix& g,
+	    const multi1d<LatticeColorMatrix>& u, 
 	    int j_decay, int su2_index, int cb, bool ordo,
 	    const Real& orpara)
 {
@@ -45,6 +45,17 @@ void grelax(multi1d<LatticeColorMatrix>& ug,
   
   START_CODE("grelax");
       
+  // Rotate the matrices using the current gauge rotation
+  multi1d<LatticeColorMatrix> ug(Nd);
+  for(int mu = 0; mu < Nd; ++mu)
+    ug[mu] = g * u[mu] * shift(adj(g), FORWARD, mu);
+    
+  /* Gather the Nd negative links attached to a site: */
+  /* u_tmp(x,mu) = U(x-mu,mu) */
+  multi1d<LatticeColorMatrix> u_neg(Nd);
+  for(int mu=0; mu<Nd; ++mu)
+    u_neg[mu][rb[cb]] = shift(ug[mu], BACKWARD, mu);
+  
   /* Sum links to be gauge transformed on site x not in the direction */
   /* j_decay into matrix V: */
   v = 0;
@@ -166,18 +177,11 @@ void grelax(multi1d<LatticeColorMatrix>& ug,
   }
 
     
-  /* Now do the gauge transformation with matrix V:  */
+  // Now do the gauge transformation with matrix V:
+  // Multiply into the global "g" field
   LatticeColorMatrix u_tmp;
-  for(int mu = 0; mu < Nd; ++mu)
-  {
-    /* Forward link (ug(x,mu) = v(x)*ug(x,mu)) */
-    u_tmp[rb[cb]] = v * ug[mu];
-    ug[mu][rb[cb]] = u_tmp;
-
-    /* Backward link ug(x,mu) = u_neg(x+mu,mu)*v_dag(x+mu) */
-    u_tmp[rb[cb]] = u_neg[mu] * adj(v);
-    ug[mu][rb[1-cb]] = shift(u_tmp, FORWARD, mu);
-  }
+  u_tmp[rb[cb]] = v * g;
+  g[rb[cb]] = u_tmp;
   
   END_CODE("grelax");
 }

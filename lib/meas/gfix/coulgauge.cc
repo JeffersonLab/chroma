@@ -1,4 +1,4 @@
-// $Id: coulgauge.cc,v 1.4 2004-02-11 12:51:33 bjoo Exp $
+// $Id: coulgauge.cc,v 1.5 2004-05-29 01:49:14 edwards Exp $
 /*! \file
  *  \brief Coulomb (and Landau) gauge fixing 
  */
@@ -26,7 +26,7 @@ static Real xi_0() {return 1.0;}
  * If j_decay >= Nd: fix to Landau gauge.
  * Note: as written this works only for SU(2) and SU(3)!
 
- * \param ug       (gauge fixed) gauge field ( Modify )
+ * \param u        (gauge fixed) gauge field ( Modify )
  * \param n_gf     number of gauge fixing iterations ( Write )
  * \param j_decay  direction perpendicular to slices to be gauge fixed ( Read )
  * \param GFAccu   desired accuracy for gauge fixing ( Read )
@@ -35,7 +35,40 @@ static Real xi_0() {return 1.0;}
  * \param OrPara   overrelaxation parameter ( Read )
  */
 
-void coulGauge(multi1d<LatticeColorMatrix>& ug, int& n_gf, 
+void coulGauge(multi1d<LatticeColorMatrix>& u, 
+	       int& n_gf, 
+	       int j_decay, const Real& GFAccu, int GFMax, 
+	       bool OrDo, const Real& OrPara)
+{
+  LatticeColorMatrix g;
+
+  coulGauge(u, g, n_gf, j_decay, GFAccu, GFMax, OrDo, OrPara);
+}
+
+
+
+//! Coulomb (and Landau) gauge fixing
+/*!
+ * \ingroup gfix
+ *
+ * Driver for gauge fixing to Coulomb gauge in slices perpendicular
+ * to the direction "j_decay".
+ * If j_decay >= Nd: fix to Landau gauge.
+ * Note: as written this works only for SU(2) and SU(3)!
+
+ * \param u        (gauge fixed) gauge field ( Modify )
+ * \param g        Gauge transformation matrices (Write)
+ * \param n_gf     number of gauge fixing iterations ( Write )
+ * \param j_decay  direction perpendicular to slices to be gauge fixed ( Read )
+ * \param GFAccu   desired accuracy for gauge fixing ( Read )
+ * \param GFMax    maximal number of gauge fixing iterations ( Read )
+ * \param OrDo     use overrelaxation or not ( Read )
+ * \param OrPara   overrelaxation parameter ( Read )
+ */
+
+void coulGauge(multi1d<LatticeColorMatrix>& u, 
+	       LatticeColorMatrix& g,
+	       int& n_gf, 
 	       int j_decay, const Real& GFAccu, int GFMax, 
 	       bool OrDo, const Real& OrPara)
 {
@@ -88,12 +121,12 @@ void coulGauge(multi1d<LatticeColorMatrix>& ug, int& n_gf,
   for(int mu=0; mu<Nd; ++mu)
     if( mu != j_decay )
     {
+      Double tgf_tmp = sum(real(trace(u[mu])));
+
       if( mu != tDir() )
-      {
-	tgf_s += sum(real(trace(ug[mu])));
-      }
+	tgf_s += tgf_tmp;
       else
-	tgf_t += sum(real(trace(ug[mu])));
+	tgf_t += tgf_tmp;
     }
 
   if( tdirp )
@@ -108,12 +141,14 @@ void coulGauge(multi1d<LatticeColorMatrix>& ug, int& n_gf,
     tgfold = tgf_s;
   }
   
+  // Gauge transf. matrices always start from identity
+  g = 1; 
+
+  /* Gauge fix until converged or too many iterations */
   n_gf = 0;
   bool wrswitch = true;    /* switch for writing of gauge fixing term */
   Double conver = 1;        /* convergence criterion */
-  multi1d<LatticeColorMatrix> u_tmp(Nd);
 
-  /* Gauge fix until converged or too many iterations */
   while( toBool(conver > GFAccu)  &&  n_gf < GFMax )
   {
     n_gf = n_gf + 1;
@@ -128,32 +163,20 @@ void coulGauge(multi1d<LatticeColorMatrix>& ug, int& n_gf,
 	/* Loop over SU(2) subgroup index */
 	for(int su2_index=0; su2_index < Nc*(Nc-1)/2; ++su2_index)
 	{
-	  /* Gather the Nd negative links attached to a site: */
-	  /* u_tmp(x,mu) = U(x-mu,mu) */
-	  for(int mu=0; mu<Nd; ++mu)
-	    u_tmp[mu][rb[cb]] = shift(ug[mu], BACKWARD, mu);
-
 	  /* Now do a gauge fixing relaxation step */
-	  grelax(ug, u_tmp, j_decay, su2_index, cb, OrDo, OrPara);
-
+	  grelax(g, u, j_decay, su2_index, cb, OrDo, OrPara);
 	}   /* end su2_index loop */
       }
       else
       {
-	/* Gather the Nd negative links attached to a site: */
-	/* u_tmp(x,mu) = U(x-mu,mu) */
-	for(int mu=0; mu<Nd; ++mu)
-	  u_tmp[mu][rb[cb]] = shift(ug[mu], BACKWARD, mu);
-
 	int su2_index = -1;
 	/* Now do a gauge fixing relaxation step */
-	grelax(ug, u_tmp, j_decay, su2_index, cb, OrDo, OrPara);
+	grelax(g, u, j_decay, su2_index, cb, OrDo, OrPara);
       }
     }     /* end cb loop */
 
     /* Reunitarize */
-    for(int mu=0; mu<Nd; ++mu)
-      reunit(ug[mu]);
+    reunit(g);
 
     /* Compute new gauge fixing term: sum(trace(U_spacelike)): */
     tgf_t = 0;
@@ -161,12 +184,12 @@ void coulGauge(multi1d<LatticeColorMatrix>& ug, int& n_gf,
     for(int mu=0; mu<Nd; ++mu)
       if( mu != j_decay )
       {
+	Double tgf_tmp = sum(real(trace(g * u[mu] * shift(adj(g), FORWARD, mu))));
+
 	if( mu != tDir() )
-	{
-	  tgf_s += sum(real(trace(ug[mu])));
-	}
+	  tgf_s += tgf_tmp;
 	else
-	  tgf_t += sum(real(trace(ug[mu])));
+	  tgf_t += tgf_tmp;
       }
 
     if( tdirp )
@@ -200,6 +223,13 @@ void coulGauge(multi1d<LatticeColorMatrix>& ug, int& n_gf,
 		<< "  tgf_s= " << tgf_s 
 		<< "  tgf_t= " << tgf_t << endl;
 
+  // Finally, gauge rotate the original matrices and overwrite them
+  for(int mu = 0; mu < Nd; ++mu)
+  {
+    LatticeColorMatrix u_tmp = g * u[mu];
+    u[mu] = u_tmp * shift(adj(g), FORWARD, mu);
+  }
+    
 #if 0
   /*+ debugging */
   XMLBufferWriter xml_out;
