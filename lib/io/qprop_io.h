@@ -1,4 +1,4 @@
-// $Id: qprop_io.h,v 1.11 2004-04-20 13:08:11 bjoo Exp $
+// $Id: qprop_io.h,v 1.12 2004-04-27 21:22:38 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -25,13 +25,12 @@
 //! Propagator source header
 struct PropSource_t
 {
-  int              version;
   SourceType       source_type;   // Point, Shell, Wall, etc.
   WaveStateType    wave_state;    // S-wave or P-wave
   SmearingParam_t  sourceSmearParam;
-                             // wvf-function smearing type (Gaussian, Exponential, etc.)
-                             // smearing width
-                             // number of iteration for smearing
+  // wvf-function smearing type (Gaussian, Exponential, etc.)
+  // smearing width
+  // number of iteration for smearing
   int              j_decay;         // Decay direction
   int              direction;       // S-wave;   P-wave x(0) y(1) z(2)
   int              laplace_power;   // power=1 implies 1 laplacian
@@ -47,13 +46,12 @@ struct PropSource_t
 //! Propagator sink header
 struct PropSink_t
 {
-  int              version;
   SinkType         sink_type;       // Point, Shell, Wall, etc.
   WaveStateType    wave_state;      // S-wave or P-wave
   SmearingParam_t  sinkSmearParam;
-                             // wvf-function smearing type (Gaussian, Exponential, etc.)
-                             // smearing width
-                             // number of iteration for smearing
+  // wvf-function smearing type (Gaussian, Exponential, etc.)
+  // smearing width
+  // number of iteration for smearing
   int              direction;       // S-wave;   P-wave x(0) y(1) z(2)
   int              laplace_power;   // power=1 implies 1 laplacian
   int              disp_length;     // displacement length
@@ -64,11 +62,12 @@ struct PropSink_t
 };
 
 
-class ChromaMultiProp_t { 
- public:
-  int             version;
+class ChromaMultiProp_t 
+{ 
+public:
   FermType        FermTypeP;
-  
+  bool            nonRelProp;   // compute only the nonrelativistic portion of this prop?
+
   // Uninitialised to start with (should hold null pointer)
   FermActParams* FermActHandle;
   
@@ -81,12 +80,14 @@ class ChromaMultiProp_t {
   ~ChromaMultiProp_t(void) { if ( FermActHandle != 0x0 ) delete FermActHandle ; }
 };
 
+
 //! Propagator inversion parameters
-class ChromaProp_t { 
- public:
-  int             version;
+class ChromaProp_t 
+{ 
+public:
   FermType        FermTypeP;
-  
+  bool            nonRelProp;   // compute only the nonrelativistic portion of this prop?
+
   // Uninitialised to start with (should hold null pointer)
   FermActParams* FermActHandle;
   
@@ -98,24 +99,32 @@ class ChromaProp_t {
   ChromaProp_t(void) { FermActHandle = 0x0 ; }
   ~ChromaProp_t(void) { if ( FermActHandle != 0x0 ) delete FermActHandle ; }
 
-  ChromaProp_t(const ChromaMultiProp_t &p, int m) : version(p.version), FermTypeP(p.FermTypeP), boundary(p.boundary), nrow(p.nrow) {
-    
-    // Clone through virtualt fucntions
-    FermActHandle = p.FermActHandle->clone();
+  ChromaProp_t(const ChromaMultiProp_t &p, int m) : 
+    FermTypeP(p.FermTypeP), nonRelProp(p.nonRelProp),
+    boundary(p.boundary), nrow(p.nrow) 
+    {
+      // Clone through virtualt fucntions
+      FermActHandle = p.FermActHandle->clone();
 
-    // Set up the mass
-    FermActHandle->setMass( p.MultiMasses[m] );
+      // Set up the mass
+      FermActHandle->setMass( p.MultiMasses[m] );
 
-    // Get the right inv param
-    invParam.invType = p.invParam.invType;
-    invParam.MROver  = p.invParam.MROver;
-    invParam.MaxCG   = p.invParam.MaxCG;
-    invParam.RsdCG   = p.invParam.RsdCG[m];
-  }
+      // Get the right inv param
+      invParam.invType = p.invParam.invType;
+      invParam.MROver  = p.invParam.MROver;
+      invParam.MaxCG   = p.invParam.MaxCG;
+      invParam.RsdCG   = p.invParam.RsdCG[m];
+    }
+};
 
-    
-      
-    
+
+//! Structure for writing to seqsource files
+struct SeqSource_t
+{
+  SeqSourceType    seq_src;
+  multi1d<int>     sink_mom;
+  int              t_sink;
+  multi1d<int>     nrow;
 };
 
 
@@ -124,13 +133,11 @@ struct ChromaSeqProp_t
 {
   bool             nonRelSeqProp;
   InvertParam_t    invParam;
-  int              Seq_src;
+  SeqSourceType    seq_src;
   multi1d<int>     sink_mom;
   int              t_sink;
   multi1d<int>     nrow;
 };
-
-
 
 
 //! Initialize header with default values
@@ -176,10 +183,17 @@ void write(XMLWriter& xml, const std::string& path, const ChromaProp_t& header);
 void write(XMLWriter& xml, const std::string& path, const ChromaMultiProp_t& header);
 
 
-//! SeqPropagator header read
+//! SeqSource header read
+void read(XMLReader& xml, const std::string& path, SeqSource_t& header);
+
+//! SeqSource header writer
+void write(XMLWriter& xml, const std::string& path, const SeqSource_t& header);
+
+
+//! SeqProp header read
 void read(XMLReader& xml, const std::string& path, ChromaSeqProp_t& header);
 
-//! SeqPropagator header writer
+//! SeqProp header writer
 void write(XMLWriter& xml, const std::string& path, const ChromaSeqProp_t& header);
 
 

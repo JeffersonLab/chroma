@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 1.16 2004-04-20 13:08:11 bjoo Exp $
+// $Id: qprop_io.cc,v 1.17 2004-04-27 21:22:38 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -14,7 +14,6 @@ using std::string;
 // Initialize header with default values
 void initHeader(PropSource_t& header)
 {
-  header.version     = 5;
   header.source_type = SRC_TYPE_POINT_SOURCE;
   header.wave_state  = WAVE_TYPE_S_WAVE;
 
@@ -35,7 +34,6 @@ void initHeader(PropSource_t& header)
 // Initialize header with default values
 void initHeader(PropSink_t& header)
 {
-  header.version       = 4;
   header.sink_type     = SNK_TYPE_POINT_SINK;
   header.wave_state    = WAVE_TYPE_S_WAVE;
 
@@ -53,8 +51,6 @@ void initHeader(PropSink_t& header)
 // Initialize header with default values
 void initHeader(PropSink_t& header, const PropSource_t& source)
 {
-  header.version = 4;
-
   // Convert the source to a sink type
   switch(source.source_type)
   {
@@ -112,7 +108,6 @@ void initHeader(PropSink_t& header, const PropSource_t& source)
 // Initialize header with default values
 void initHeader(ChromaProp_t& header)
 {
-  header.version     = 5;
   header.nrow        = Layout::lattSize();
 
   // initHeader(header.anisoParam);
@@ -122,7 +117,6 @@ void initHeader(ChromaProp_t& header)
 // Initialize header with default values
 void initHeader(ChromaMultiProp_t& header)
 {
-  header.version     = 5;
   header.nrow        = Layout::lattSize();
 
   // initHeader(header.anisoParam);
@@ -155,12 +149,13 @@ void read(XMLReader& xml, const string& path, PropSource_t& header)
     QDP_abort(1);
   }
 
-  read(paramtop, "source_type", header.source_type);
   read(paramtop, "wave_state", header.wave_state);
-  read(paramtop, "j_decay",  header.j_decay);
-  read(paramtop, "direction",  header.direction);
-  read(paramtop, "t_source", header.t_source);
+  if (header.wave_state != WAVE_TYPE_S_WAVE)
+  {
+    read(paramtop, "direction",  header.direction);
+  }
 
+  read(paramtop, "source_type", header.source_type);
   if (header.source_type == SRC_TYPE_SHELL_SOURCE)
   {
     XMLReader shelltop(paramtop, "ShellSource");
@@ -172,6 +167,10 @@ void read(XMLReader& xml, const string& path, PropSource_t& header)
     read(shelltop, "disp_length", header.disp_length);
     read(shelltop, "disp_dir", header.disp_dir);
   }		
+
+  read(paramtop, "j_decay",  header.j_decay);
+  read(paramtop, "t_source", header.t_source);
+
   read(paramtop, "nrow", header.nrow);
 }
 
@@ -199,10 +198,13 @@ void read(XMLReader& xml, const string& path, PropSink_t& header)
     QDP_abort(1);
   }
 
-  read(paramtop, "sink_type", header.sink_type);
   read(paramtop, "wave_state", header.wave_state);
-  read(paramtop, "direction",  header.direction);
+  if (header.wave_state != WAVE_TYPE_S_WAVE)
+  {
+    read(paramtop, "direction",  header.direction);
+  }
 
+  read(paramtop, "sink_type", header.sink_type);
   if (header.sink_type == SNK_TYPE_SHELL_SINK)
   {
     XMLReader shelltop(paramtop, "ShellSink");
@@ -227,28 +229,63 @@ void read(XMLReader& xml, const string& path, ChromaSeqProp_t& param)
   int version;
   read(paramtop, "version", version);
 
+  int seq_src_value;
   switch (version) 
   {
-    /**************************************************************************/
   case 1:
     param.nonRelSeqProp = false;
-    /**************************************************************************/
+    read(paramtop, "Seq_src", seq_src_value);
+    param.seq_src = SeqSourceType(seq_src_value);
     break;
 
-    /**************************************************************************/
   case 2:
     read(paramtop, "nonRelSeqProp", param.nonRelSeqProp);
+    read(paramtop, "Seq_src", seq_src_value);
+    param.seq_src = SeqSourceType(seq_src_value);
+    break;
+
+  case 3:
+    read(paramtop, "nonRelSeqProp", param.nonRelSeqProp);
+    read(paramtop, "seq_src", param.seq_src);
     break;
 
   default:
-    /**************************************************************************/
     QDPIO::cerr << "ChromaSeqProp parameter version " << version 
 		<< " unsupported." << endl;
     QDP_abort(1);
   }
 
-  read(paramtop, "Seq_src", param.Seq_src);
   read(paramtop, "InvertParam", param.invParam);
+  read(paramtop, "t_sink", param.t_sink);
+  read(paramtop, "sink_mom", param.sink_mom);
+  read(paramtop, "nrow", param.nrow);
+}
+
+
+//! SeqSource header reader
+void read(XMLReader& xml, const string& path, SeqSource_t& param)
+{
+  XMLReader paramtop(xml, path);
+
+//  initHeader(param);
+
+  int version;
+  read(paramtop, "version", version);
+
+  switch (version) 
+  {
+    /**************************************************************************/
+  case 1:
+    break;
+
+  default:
+    /**************************************************************************/
+    QDPIO::cerr << "SeqSource parameter version " << version 
+		<< " unsupported." << endl;
+    QDP_abort(1);
+  }
+
+  read(paramtop, "seq_src", param.seq_src);
   read(paramtop, "t_sink", param.t_sink);
   read(paramtop, "sink_mom", param.sink_mom);
   read(paramtop, "nrow", param.nrow);
@@ -262,24 +299,23 @@ void read(XMLReader& xml, const string& path, ChromaProp_t& param)
 
   initHeader(param);
 
-  read(paramtop, "version", param.version);
+  int version;
+  read(paramtop, "version", version);
 
-  switch (param.version) 
+  switch (version) 
   {
     /**************************************************************************/
   case 4:
-    /**************************************************************************/
-
     read(paramtop, "FermTypeP", param.FermTypeP);
     param.FermActHandle = read(paramtop, ".");
     read(paramtop, "InvertParam", param.invParam);
     read(paramtop, "boundary", param.boundary);
     read(paramtop, "nrow", param.nrow);
-    
+    param.nonRelProp = false;
     break;
 
+    /**************************************************************************/
   case 5:
-
     // In this modified version of v4, the fermion action specific stuff
     // goes into a <FermionAction> tag beneath <Param>
     read(paramtop, "FermTypeP", param.FermTypeP);
@@ -287,11 +323,22 @@ void read(XMLReader& xml, const string& path, ChromaProp_t& param)
     read(paramtop, "InvertParam", param.invParam);
     read(paramtop, "boundary", param.boundary);
     read(paramtop, "nrow", param.nrow);
-
+    param.nonRelProp = false;
     break;
+
+    /**************************************************************************/
+  case 6:
+    read(paramtop, "FermTypeP", param.FermTypeP);
+    param.FermActHandle = read(paramtop, "FermionAction");
+    read(paramtop, "InvertParam", param.invParam);
+    read(paramtop, "boundary", param.boundary);
+    read(paramtop, "nrow", param.nrow);
+    read(paramtop, "nonRelProp", param.nonRelProp); // new - is this prop non-relativistic
+    break;
+
   default:
     /**************************************************************************/
-    QDPIO::cerr << "ChromaProp parameter version " << param.version 
+    QDPIO::cerr << "ChromaProp parameter version " << version 
 		<< " unsupported." << endl;
     QDP_abort(1);
   }
@@ -305,9 +352,10 @@ void read(XMLReader& xml, const string& path, ChromaMultiProp_t& param)
 
   initHeader(param);
 
-  read(paramtop, "version", param.version);
+  int version;
+  read(paramtop, "version", version);
 
-  switch (param.version) 
+  switch (version) 
   {
     /**************************************************************************/
   case 5:  // Backward compatibility with non Multi ChromaProp_t
@@ -318,11 +366,24 @@ void read(XMLReader& xml, const string& path, ChromaMultiProp_t& param)
     read(paramtop, "InvertParam", param.invParam);
     read(paramtop, "boundary", param.boundary);
     read(paramtop, "nrow", param.nrow);
-    
+    param.nonRelProp = false;
     break;
+
+    /**************************************************************************/
+  case 6:  // Backward compatibility with non Multi ChromaProp_t
+    /**************************************************************************/
+    read(paramtop, "MultiMasses", param.MultiMasses);
+    read(paramtop, "FermTypeP", param.FermTypeP);
+    param.FermActHandle = read(paramtop, "FermionAction");
+    read(paramtop, "InvertParam", param.invParam);
+    read(paramtop, "boundary", param.boundary);
+    read(paramtop, "nrow", param.nrow);
+    read(paramtop, "nonRelProp", param.nonRelProp); // new - is this prop non-relativistic
+    break;
+
   default:
     /**************************************************************************/
-    QDPIO::cerr << "ChromaMultiProp parameter version " << param.version 
+    QDPIO::cerr << "ChromaMultiProp parameter version " << version 
 		<< " unsupported." << endl;
     QDP_abort(1);
   }
@@ -346,13 +407,15 @@ void write(XMLWriter& xml, const string& path, const PropSource_t& header)
 {
   push(xml, path);
 
-  write(xml, "version", header.version);
-  write(xml, "source_type", header.source_type);
+  int version = 5;
+  write(xml, "version", version);
   write(xml, "wave_state", header.wave_state);
-  write(xml, "j_decay",  header.j_decay);
-  write(xml, "direction",  header.direction);
-  write(xml, "t_source",  header.t_source);
+  if (header.wave_state != WAVE_TYPE_S_WAVE)
+  {
+    write(xml, "direction",  header.direction);
+  }
 
+  write(xml, "source_type", header.source_type);
   if (header.source_type == SRC_TYPE_SHELL_SOURCE)
   {
     push(xml, "ShellSource");
@@ -365,6 +428,9 @@ void write(XMLWriter& xml, const string& path, const PropSource_t& header)
     pop(xml);
   }
 
+  write(xml, "j_decay",  header.j_decay);
+  write(xml, "t_source",  header.t_source);
+
   write(xml, "nrow",  header.nrow);
 
   pop(xml);
@@ -376,11 +442,15 @@ void write(XMLWriter& xml, const string& path, const PropSink_t& header)
 {
   push(xml, path);
 
-  write(xml, "version", header.version);
-  write(xml, "sink_type", header.sink_type);
+  int version = 4;
+  write(xml, "version", version);
   write(xml, "wave_state", header.wave_state);
-  write(xml, "direction",  header.direction);
+  if (header.wave_state != WAVE_TYPE_S_WAVE)
+  {
+    write(xml, "direction",  header.direction);
+  }
 
+  write(xml, "sink_type", header.sink_type);
   if (header.sink_type == SNK_TYPE_SHELL_SINK)
   {
     push(xml, "ShellSink");
@@ -404,44 +474,22 @@ void write(XMLWriter& xml, const string& path, const ChromaProp_t& header)
 {
   push(xml, path);
 
-  switch( header.version) { 
-  case 4:
-    write(xml, "version", header.version);
-    write(xml, "FermTypeP", header.FermTypeP);
+  int version = 6;
+  write(xml, "version", version);
+  write(xml, "FermTypeP", header.FermTypeP);
+  write(xml, "nonRelProp", header.nonRelProp); // new - is this prop non-relativistic
 
-    if( header.FermActHandle != 0x0 ) { 
-      write(xml, ".", *(header.FermActHandle));
-    }
-    else {
-      QDPIO::cerr << "Attempting to print Uninitialised FermActHandle" << endl;
-      QDP_abort(1);
-    }
-        
-    write(xml, "InvertParam", header.invParam);
-    write(xml, "boundary", header.boundary);
-    write(xml, "nrow", header.nrow);
-    break;
-  case 5:
-    write(xml, "version", header.version);
-    write(xml, "FermTypeP", header.FermTypeP);
-
-    if( header.FermActHandle != 0x0 ) { 
-      write(xml, "FermionAction", *(header.FermActHandle));
-    }
-    else {
-      QDPIO::cerr << "Attempting to print Uninitialised FermActHandle" << endl;
-      QDP_abort(1);
-    }
-        
-    write(xml, "InvertParam", header.invParam);
-    write(xml, "boundary", header.boundary);
-    write(xml, "nrow", header.nrow);
-    break;
-  default:
-    QDPIO::cerr << "ChromaProp parameter version " << header.version 
-		<< " unsupported." << endl;
+  if( header.FermActHandle != 0x0 ) { 
+    write(xml, "FermionAction", *(header.FermActHandle));
+  }
+  else {
+    QDPIO::cerr << "Attempting to print Uninitialised FermActHandle" << endl;
     QDP_abort(1);
   }
+        
+  write(xml, "InvertParam", header.invParam);
+  write(xml, "boundary", header.boundary);
+  write(xml, "nrow", header.nrow);
 
   pop(xml);
 }
@@ -451,28 +499,22 @@ void write(XMLWriter& xml, const string& path, const ChromaMultiProp_t& header)
 {
   push(xml, path);
 
-  switch( header.version) { 
-  case 5: // Backward compatibility with non Multi version
-    write(xml, "version", header.version);
-    write(xml, "FermTypeP", header.FermTypeP);
-    write(xml, "MultiMasses", header.MultiMasses);
-    if( header.FermActHandle != 0x0 ) { 
-      write(xml, "FermionAction", *(header.FermActHandle));
-    }
-    else {
-      QDPIO::cerr << "Attempting to print Uninitialised FermActHandle" << endl;
-      QDP_abort(1);
-    }
-        
-    write(xml, "InvertParam", header.invParam);
-    write(xml, "boundary", header.boundary);
-    write(xml, "nrow", header.nrow);
-    break;
-  default:
-    QDPIO::cerr << "ChromaMultiProp parameter version " << header.version 
-		<< " unsupported." << endl;
+  int version = 6;
+  write(xml, "version", version);
+  write(xml, "FermTypeP", header.FermTypeP);
+  write(xml, "nonRelProp", header.nonRelProp); // new - is this prop non-relativistic
+  write(xml, "MultiMasses", header.MultiMasses);
+  if( header.FermActHandle != 0x0 ) { 
+    write(xml, "FermionAction", *(header.FermActHandle));
+  }
+  else {
+    QDPIO::cerr << "Attempting to print Uninitialised FermActHandle" << endl;
     QDP_abort(1);
   }
+  
+  write(xml, "InvertParam", header.invParam);
+  write(xml, "boundary", header.boundary);
+  write(xml, "nrow", header.nrow);
 
   pop(xml);
 }
@@ -483,11 +525,27 @@ void write(XMLWriter& xml, const string& path, const ChromaSeqProp_t& param)
 {
   push(xml, path);
 
-  int version = 2;
+  int version = 3;
   write(xml, "version", version);
   write(xml, "nonRelSeqProp", param.nonRelSeqProp);
-  write(xml, "Seq_src", param.Seq_src);
+  write(xml, "seq_src", param.seq_src);
   write(xml, "InvertParam", param.invParam);
+  write(xml, "t_sink", param.t_sink);
+  write(xml, "sink_mom", param.sink_mom);
+  write(xml, "nrow", param.nrow);
+
+  pop(xml);
+}
+
+
+//! SeqSource header writer
+void write(XMLWriter& xml, const string& path, const SeqSource_t& param)
+{
+  push(xml, path);
+
+  int version = 1;
+  write(xml, "version", version);
+  write(xml, "seq_src", param.seq_src);
   write(xml, "t_sink", param.t_sink);
   write(xml, "sink_mom", param.sink_mom);
   write(xml, "nrow", param.nrow);
