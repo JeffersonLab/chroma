@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_fermact_array_w.h,v 1.8 2004-01-23 17:59:07 edwards Exp $
+// $Id: unprec_dwf_fermact_array_w.h,v 1.9 2004-03-17 03:37:22 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion action
  */
@@ -57,6 +57,7 @@ public:
       // Have not implemented this yet, but it is generic
       QDPIO::cerr << "UnprecDWFermActBaseArray::gamma5HermLinOp not implemented" << endl;
       QDP_abort(1);
+      return 0;
     }
 
   //! Produce a linear operator for this action but with quark mass 1

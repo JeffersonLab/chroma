@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovext_fermact_array_w.h,v 1.6 2004-01-23 20:38:17 edwards Exp $
+// $Id: unprec_ovext_fermact_array_w.h,v 1.7 2004-03-17 03:37:22 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -56,6 +56,7 @@ public:
     {
       QDPIO::cerr << "UnprecOvExtFermActArray::gamma5HermLinOp not implemented" << endl;
       QDP_abort(1);
+      return 0;
     }
 
   //! Compute quark propagator over base type
