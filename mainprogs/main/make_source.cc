@@ -1,4 +1,4 @@
-// $Id: make_source.cc,v 1.30 2004-04-24 03:28:21 edwards Exp $
+// $Id: make_source.cc,v 1.31 2004-05-07 16:06:35 edwards Exp $
 /*! \file
  *  \brief Main code for source generation
  */
@@ -84,6 +84,8 @@ int main(int argc, char **argv)
 
   Layout::setLattSize(input.param.nrow);
   Layout::create();
+
+  QDPIO::cout << "MAKE_SOURCE: propagator source constructor" << endl;
 
   switch(input.param.source_type)
   {
