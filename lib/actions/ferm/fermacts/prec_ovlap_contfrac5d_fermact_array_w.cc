@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_fermact_array_w.cc,v 1.12 2005-01-19 03:29:32 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_fermact_array_w.cc,v 1.13 2005-02-13 18:16:28 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -647,7 +647,7 @@ namespace Chroma
     getFermBC().modifyU(u_tmp);
 
     Handle< FermBC<LatticeFermion> > fbc4 = new PeriodicFermBC<LatticeFermion>();
-    UnprecWilsonFermAct S_w(fbc4, params.OverMass);
+    UnprecWilsonFermAct S_w(fbc4, Real(-params.OverMass));
 
     Handle< const ConnectState > state_aux = new SimpleConnectState(u_tmp);
     Handle< const LinearOperator<LatticeFermion> > Maux = 
@@ -683,7 +683,7 @@ namespace Chroma
     getFermBC().modifyU(u_tmp);
 
     Handle< FermBC<LatticeFermion> > fbc4 = new PeriodicFermBC<LatticeFermion>();
-    UnprecWilsonFermAct S_w(fbc4, params.OverMass);
+    UnprecWilsonFermAct S_w(fbc4, Real(-params.OverMass));
 
     Handle< const ConnectState > state_aux = new SimpleConnectState(u_tmp);
     Handle< const LinearOperator<LatticeFermion> > Maux = 

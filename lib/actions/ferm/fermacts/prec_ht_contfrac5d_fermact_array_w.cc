@@ -1,4 +1,4 @@
-// $Id: prec_ht_contfrac5d_fermact_array_w.cc,v 1.3 2005-01-31 15:05:25 bjoo Exp $
+// $Id: prec_ht_contfrac5d_fermact_array_w.cc,v 1.4 2005-02-13 18:16:28 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -319,18 +319,15 @@ namespace Chroma
       init(scale_factor, alpha, beta, state);
       
       return new EvenOddPrecHtContFrac5DLinOpArray(state_,
-						      params.Mass,
-						      -params.OverMass,
-						      N5,
-						      scale_factor,
-						      alpha,
-						      beta,
-						      params.b5,
-						      params.c5,
-						      isLastZeroP);
-      
-      
-      
+						   params.Mass,
+						   params.OverMass,
+						   N5,
+						   scale_factor,
+						   alpha,
+						   beta,
+						   params.b5,
+						   params.c5,
+						   isLastZeroP);
     }
     catch( bad_cast ) { 
       QDPIO::cerr << "EvenOddPrecHtContFrac5DFermActArray::linOp(): ";
@@ -377,13 +374,13 @@ namespace Chroma
       
       // Hmm, not sure about what all the rescaling does to the PV....
       return new EvenOddPrecHtContFrac5DPVLinOpArray(state_,
-							params.Mass,
-							-params.OverMass,
-							N5,
-							scale_factor,
-							alpha,
-							beta,
-							isLastZeroP);
+						     params.Mass,
+						     params.OverMass,
+						     N5,
+						     scale_factor,
+						     alpha,
+						     beta,
+						     isLastZeroP);
     }
     catch( bad_cast ) { 
       QDPIO::cerr << "EvenOddPrecHtContFrac5DFermActArray::linOp(): ";
@@ -681,7 +678,7 @@ namespace Chroma
     getFermBC().modifyU(u_tmp);
 
     Handle< FermBC<LatticeFermion> > fbc4 = new PeriodicFermBC<LatticeFermion>();
-    UnprecWilsonFermAct S_w(fbc4, -params.OverMass);
+    UnprecWilsonFermAct S_w(fbc4, Real(-params.OverMass));
 
     Handle< const ConnectState > state_aux = new SimpleConnectState(u_tmp);
     Handle< const LinearOperator<LatticeFermion> > Maux = 
@@ -717,7 +714,7 @@ namespace Chroma
     getFermBC().modifyU(u_tmp);
 
     Handle< FermBC<LatticeFermion> > fbc4 = new PeriodicFermBC<LatticeFermion>();
-    UnprecWilsonFermAct S_w(fbc4, -params.OverMass);
+    UnprecWilsonFermAct S_w(fbc4, Real(-params.OverMass));
 
     Handle< const ConnectState > state_aux = new SimpleConnectState(u_tmp);
     Handle< const LinearOperator<LatticeFermion> > Maux = 

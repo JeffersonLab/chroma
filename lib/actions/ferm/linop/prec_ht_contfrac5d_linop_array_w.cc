@@ -1,4 +1,4 @@
-// $Id: prec_ht_contfrac5d_linop_array_w.cc,v 1.1 2005-01-27 17:57:48 bjoo Exp $
+// $Id: prec_ht_contfrac5d_linop_array_w.cc,v 1.2 2005-02-13 18:16:28 edwards Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned domain-wall linear operator
  */
@@ -65,7 +65,7 @@ namespace Chroma
     alpha_tilde.resize(N5-1);
     for(int i=0; i < N5-1; i++) { 
 
-      alpha_tilde[i] = alpha[i]*(Real(2) + f_minus*(Nd + OverMass));
+      alpha_tilde[i] = alpha[i]*(Real(2) + f_minus*(Nd - OverMass));
       
     }
 
@@ -73,13 +73,13 @@ namespace Chroma
     // Now the a_i's and b_i's
     a.resize(N5);
     for(int i=0; i < N5-1; i++) { 
-      a[i] = beta_tilde[i]*(Nd + OverMass);
+      a[i] = beta_tilde[i]*(Nd - OverMass);
     }
-    a[N5-1] = mass*(Real(2) + f_minus*(Nd + OverMass))
-      + (beta_tilde[N5-1]*(Nd + OverMass));
+    a[N5-1] = mass*(Real(2) + f_minus*(Nd - OverMass))
+      + (beta_tilde[N5-1]*(Nd - OverMass));
 
     /*
-      QDPIO::cout << "Nd + OverMass = " << Nd+ OverMass << endl;
+      QDPIO::cout << "Nd - OverMass = " << Nd - OverMass << endl;
       for(int i=0; i < N5; i++) { 
       QDPIO::cout << "a["<<i<<"]= " << a[i] << endl;
       }

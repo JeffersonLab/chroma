@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_pv_linop_array_w.cc,v 1.4 2005-02-12 06:21:25 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_pv_linop_array_w.cc,v 1.5 2005-02-13 18:16:28 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Pauli-Villars Continued Fraction 5D
  */
@@ -58,12 +58,12 @@ namespace Chroma
     // Now the a_i's and b_i's
     a.resize(N5);
     for(int i=0; i < N5-1; i++) { 
-      a[i] = beta_tilde[i]*(Nd + OverMass);
+      a[i] = beta_tilde[i]*(Nd - OverMass);
     }
     a[N5-1] = 1;         // CHECK THIS: WHAT IS THE NORM OF THE 1 IN THE PV TERM
 
     /*
-      QDPIO::cout << "Nd + OverMass = " << Nd+ OverMass << endl;
+      QDPIO::cout << "Nd - OverMass = " << Nd - OverMass << endl;
       for(int i=0; i < N5; i++) { 
       QDPIO::cout << "a["<<i<<"]= " << a[i] << endl;
       }
