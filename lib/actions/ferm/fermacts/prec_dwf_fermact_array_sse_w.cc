@@ -1,4 +1,4 @@
-// $Id: prec_dwf_fermact_array_sse_w.cc,v 1.8 2004-10-20 02:30:13 edwards Exp $
+// $Id: prec_dwf_fermact_array_sse_w.cc,v 1.9 2004-10-20 03:22:03 edwards Exp $
 /*! \file
  *  \brief SSE 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -8,6 +8,8 @@
 #include "actions/ferm/linop/unprec_dwf_linop_array_w.h"
 #include "actions/ferm/linop/prec_dwf_linop_array_w.h"
 #include "actions/ferm/linop/lmdagm.h"
+
+#include "actions/ferm/linop/dwffld_w.h"
 
 #include <sse_dwf_cg.h>
 
@@ -400,7 +402,60 @@ namespace Chroma
   }
 
 
-  //! Optimized inverter
+  // Propagator of an even-odd preconditioned DWF linear operator
+  void 
+  SSEEvenOddPrecDWFermActArray::qprop(LatticeFermion& psi, 
+				      Handle<const ConnectState> state, 
+				      const LatticeFermion& chi, 
+				      const InvertParam_t& invParam,
+				      int& ncg_had) const
+  {
+    START_CODE();
+
+    const int  N5 = size();   // array size better match
+    const Real m_q = quark_mass();
+    int n_count;
+  
+    // Initialize the 5D fields
+    multi1d<LatticeFermion> chi5(N5);
+    {
+      //  chi5 = (chi,0,0,0,..,0)^T
+      chi5 = zero;
+      chi5[0] = chi;
+
+      // tmp5 = P . chi5
+      multi1d<LatticeFermion> tmp5(N5);
+      DwfFld(tmp5, chi5, PLUS);
+      
+      // chi5 = D5(1) . tmp5 =  D5(1) . P . (chi,0,0,..,0)^T 
+      // Create a Pauli-Villars linop and use it for just this part
+      Handle<const LinearOperator< multi1d<LatticeFermion> > > B(linOpPV(state));
+
+      (*B)(chi5, tmp5, PLUS);
+    }
+
+    //  psi5 = (psi,0,0,0,...,0)^T
+    multi1d<LatticeFermion> psi5(N5);
+    psi5 = zero;
+    psi5[0] = psi;
+
+    // Call 5D inverter
+    qpropT(psi5, state, chi5, invParam, ncg_had);
+
+    // Overall normalization
+    Real ftmp1 = Real(1) / Real(1 - m_q);
+
+    // Project out first slice after  chi5 <- P^(-1) . psi5
+    DwfFld(chi5, psi5, MINUS);
+
+    // Normalize and remove contact term
+    psi = ftmp1*(chi5[0] - chi);
+
+    END_CODE();
+  }
+
+
+  // Optimized inverter
   void 
   SSEEvenOddPrecDWFermActArray::qpropT(multi1d<LatticeFermion>& psi, 
 				       Handle<const ConnectState> state, 
@@ -413,6 +468,12 @@ namespace Chroma
     START_CODE();
 
     const multi1d<LatticeColorMatrix>& u = state->getLinks();
+
+    if (invParam.invType != CG_INVERTER)
+    {
+      QDPIO::cerr << "SSE EvenOddPrecDWF qpropT only supports CG" << endl;
+      QDP_abort(1);
+    }
 
     // Apply SSE inverter
     double M5  = toDouble(OverMass);
