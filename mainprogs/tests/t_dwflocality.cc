@@ -1,4 +1,4 @@
-// $Id: t_dwflocality.cc,v 1.4 2004-03-29 21:34:13 edwards Exp $
+// $Id: t_dwflocality.cc,v 1.5 2004-09-08 23:59:06 kostas Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -43,11 +43,13 @@ int main(int argc, char **argv)
   write(xml,"bc",boundary);
   pop(xml);
 
+  InvertParam_t invParam ;
   int N5 ;
   Real WilsonMass ;
   Real m_q = 1.0;
-  Real  RsdCG = 1.0e-7 ;
-  int MaxCG = 5000 ;
+  invParam.RsdCG = 1.0e-7 ;
+  invParam.MaxCG = 5000 ;
+  invParam.invType = CG_INVERTER ;
 
   QDPIO::cout << "Enter Ls" << endl;
   QDPIO::cin >> N5;
@@ -58,19 +60,33 @@ int main(int argc, char **argv)
   write(xml,"WilsonMass",WilsonMass);
   pop(xml);
 
-  string cnf ;
-  QDPIO::cout << "Enter SZIN gaugefield" << endl;
-  QDPIO::cin >> cnf;
+  Cfg_t            cfg;
+  QDPIO::cout << "Enter gaugefield type" << endl;
+  QDPIO::cout << " (0) MILC"   <<endl ;
+  QDPIO::cout << " (1) NERSC"  <<endl ;
+  QDPIO::cout << " (2) SCIDAC" <<endl ;
+  QDPIO::cout << " (3) SZIN"   <<endl ;
+  QDPIO::cout << " (4) SZINQIO"<<endl ;
+  QDPIO::cout << " (5) HOT"    <<endl ;
+  QDPIO::cout << " (6) COLD"   <<endl ;
+
+  int tmp ;
+  QDPIO::cin >> tmp ;
+  cfg.cfg_type = CfgType(tmp);
+  QDPIO::cout << "Enter gaugefield file" << endl;
+  QDPIO::cin >> cfg.cfg_file;
+
+
 
   push(xml,"Configuration");
-  write(xml, "cfg", cnf);
+  write(xml, "cfg", cfg);
   pop(xml);
-  QDPIO::cout << "Read SZIN config from " << cnf << endl;
+  QDPIO::cout << "Read config from " << cfg.cfg_file << endl;
 
 
   multi1d<LatticeColorMatrix> u(Nd);    // Gauge field
-  XMLReader gauge_xml;
-  readSzin(gauge_xml, u, cnf);
+  XMLReader gauge_file_xml, gauge_xml;
+  gaugeStartup(gauge_file_xml, gauge_xml, u, cfg);
 
   Double w_plaq, s_plaq, t_plaq, link;
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
@@ -93,7 +109,7 @@ int main(int argc, char **argv)
   // DWDslash class can be optimised
   int n_count;
 
-  InvType invType(CG_INVERTER) ;
+
 
   EvenOddPrecDWFermActArray S_pdwf(fbc, WilsonMass, m_q,N5);
   Handle<const ConnectState> state(S_pdwf.createState(u));
@@ -121,7 +137,7 @@ int main(int argc, char **argv)
   
 QDPIO::cout << "5D source norm :" << norm2(chi)<< endl;
 
-  S_pdwf.qpropT(psi, state, chi, invType, RsdCG, MaxCG, n_count);
+  S_pdwf.qpropT(psi, state, chi, invParam, n_count);
   
   res4 = chiralProjectMinus(psi[0]) + chiralProjectPlus(psi[N5-1]) ;
 
