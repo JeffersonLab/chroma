@@ -1,3 +1,8 @@
+03/12/2005 -- Robert Edwards
+
+	Version 1.20.1. Changed ExampleBuildingBlocks to use an XML
+        interface.
+
 03/06/2005 -- Robert Edwards
 
 	Version 1.20.0. Overhauled sequential source construction.
