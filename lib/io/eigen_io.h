@@ -43,7 +43,6 @@ struct ChromaWilsonRitz_t
   int            version;
   std::string    fermact;
   std::string    state_info;
-  multi1d<int>   boundary;
   multi1d<int>   nrow;
   QDP::Seed      seed;
   RitzParams_t    ritz_params;

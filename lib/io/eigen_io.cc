@@ -88,8 +88,6 @@ void write(XMLWriter& xml, const string& path, const EigenIO_t& io_header)
 
 void read(XMLReader &xml, const string& path, ChromaWilsonRitz_t& param)
 {
-
-
   multi1d<int> seed_int(4);
   try { 
     XMLReader paramtop(xml, path);
@@ -101,7 +99,6 @@ void read(XMLReader &xml, const string& path, ChromaWilsonRitz_t& param)
     xml_tmp.print(os);
     param.fermact = os.str();
 
-    read(paramtop, "Param/boundary", param.boundary);
     read(paramtop, "Param/nrow",     param.nrow);
     read(paramtop, "Param/rng",     param.seed);
     read(paramtop, "RitzParams", param.ritz_params);
@@ -135,7 +132,6 @@ void write(XMLWriter &xml, const string& path, const ChromaWilsonRitz_t& param)
   push( xml, "Param");
   write(xml, "version", param.version);
   write(xml, "FermionAction",    param.fermact);
-  write(xml, "boundary", param.boundary);
   write(xml, "nrow",     param.nrow);
   write(xml, "rng",     param.seed);
   pop(xml);

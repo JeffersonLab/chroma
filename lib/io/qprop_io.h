@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qprop_io.h,v 1.22 2004-10-15 16:37:19 bjoo Exp $
+// $Id: qprop_io.h,v 1.23 2004-12-24 04:24:41 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -65,14 +65,12 @@ struct PropSink_t
 
 struct ChromaMultiProp_t 
 { 
-  FermType        FermTypeP;
   bool            nonRelProp;   // compute only the nonrelativistic portion of this prop?
 
   // String holding XML of the FermionAction section
   std::string     fermact;
 
   MultiInvertParam_t   invParam;   // Inverter parameters
-  multi1d<int>    boundary;
   multi1d<int>    nrow;          // lattice size
  
   multi1d<Real>   MultiMasses;
@@ -82,7 +80,6 @@ struct ChromaMultiProp_t
 //! Propagator inversion parameters
 struct ChromaProp_t 
 { 
-  FermType        FermTypeP;
   bool            nonRelProp;   // compute only the nonrelativistic portion of this prop?
 
   // String holding XML of the FermionAction section
@@ -90,7 +87,6 @@ struct ChromaProp_t
   
   // String holding XML for auxiliary state information
   InvertParam_t   invParam;   // Inverter parameters
-  multi1d<int>    boundary;
   multi1d<int>    nrow;          // lattice size
 };
 
@@ -153,6 +149,8 @@ struct QQQBarcomp_t
 };
 
 
+//! Given a fermion action in string form, return the boundary
+multi1d<int> getFermActBoundary(const std::string& fermact);
 
 //! Initialize header with default values
 void initHeader(PropSource_t& header);

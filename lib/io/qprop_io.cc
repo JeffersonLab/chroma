@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 1.26 2004-09-28 13:01:48 bjoo Exp $
+// $Id: qprop_io.cc,v 1.27 2004-12-24 04:24:41 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -10,6 +10,46 @@
 #include <string>
 using namespace std;
 using namespace Chroma;
+
+
+// Given a fermion action in string form, return the boundary
+/* HACK - THIS DEFINITELY NEEDS IMPROVEMENT */
+multi1d<int> getFermActBoundary(const string& fermact)
+{
+  //
+  // Initialize fermion action
+  //
+  std::istringstream  xml_s(fermact);
+  XMLReader  fermacttop(xml_s);
+  XMLReader  top(fermacttop, "/FermionAction");
+
+  multi1d<int> boundary;
+
+  try
+  {
+    if (top.count("FermionBC/boundary") != 0)
+    {
+      read(top, "FermionBC/boundary", boundary);
+    }
+    else if (top.count("boundary") != 0)
+    {
+      read(top, "boundary", boundary);
+    }
+    else
+    {
+      QDPIO::cerr << "Error: neither FermionBC group nor boundary found" << endl;
+      throw string("Error: neither FermionBC group nor boundary found");
+    }
+  }
+  catch (const std::string& e) 
+  {
+    QDPIO::cerr << "Error reading fermact: " << e << endl;
+    throw e;
+  }
+
+  return boundary;
+}
+
 
 // Initialize header with default values
 void initHeader(PropSource_t& header)
@@ -312,60 +352,70 @@ void read(XMLReader& xml, const string& path, ChromaProp_t& param)
   int version;
   read(paramtop, "version", version);
 
+  multi1d<int> boundary;
+
   switch (version) 
   {
-#if 0
-    /**************************************************************************/
-  case 4:
-  {
-    read(paramtop, "FermTypeP", param.FermTypeP);
-    XMLReader xml_tmp(paramtop, "FermionAction");
-    std::ostringstream os;
-    xml_tmp.print(os);
-    param.fermact = os.str();
-
-
-    read(paramtop, "InvertParam", param.invParam);
-    read(paramtop, "boundary", param.boundary);
-    read(paramtop, "nrow", param.nrow);
-    param.nonRelProp = false;
-  }
-  break;
-#endif
-
     /**************************************************************************/
   case 5:
   {
     // In this modified version of v4, the fermion action specific stuff
     // goes into a <FermionAction> tag beneath <Param>
-    read(paramtop, "FermTypeP", param.FermTypeP);
+    param.nonRelProp = false;
+
+    read(paramtop, "InvertParam", param.invParam);
+    read(paramtop, "boundary", boundary);
+    read(paramtop, "nrow", param.nrow);
 
     XMLReader xml_tmp(paramtop, "FermionAction");
-    std::ostringstream os;
-    xml_tmp.print(os);
-    param.fermact = os.str();
 
-     read(paramtop, "InvertParam", param.invParam);
-    read(paramtop, "boundary", param.boundary);
-    read(paramtop, "nrow", param.nrow);
-    param.nonRelProp = false;
+    XMLBufferWriter xml_out;
+    push(xml_out,"FermionAction");
+    xml_out << xml_tmp;
+    write(xml_out, "boundary", boundary);
+    pop(xml_out);
+
+    param.fermact = xml_out.printCurrentContext();
   }
   break;
 
     /**************************************************************************/
   case 6:
   {
-    read(paramtop, "FermTypeP", param.FermTypeP);
+    read(paramtop, "nonRelProp", param.nonRelProp); // new - is this prop non-relativistic
+    read(paramtop, "InvertParam", param.invParam);
+    read(paramtop, "boundary", boundary);
+    read(paramtop, "nrow", param.nrow);
 
+    XMLReader xml_tmp(paramtop, "FermionAction");
+
+    XMLBufferWriter xml_out;
+    push(xml_out,"FermionAction");
+    xml_out << xml_tmp;
+    write(xml_out, "boundary", boundary);
+    pop(xml_out);
+
+    param.fermact = xml_out.printCurrentContext();
+  }
+  break;
+
+    /**************************************************************************/
+  case 7:
+  {
     XMLReader xml_tmp(paramtop, "FermionAction");
     std::ostringstream os;
     xml_tmp.print(os);
     param.fermact = os.str();
 
     read(paramtop, "InvertParam", param.invParam);
-    read(paramtop, "boundary", param.boundary);
     read(paramtop, "nrow", param.nrow);
-    read(paramtop, "nonRelProp", param.nonRelProp); // new - is this prop non-relativistic
+    read(paramtop, "nonRelProp", param.nonRelProp);
+
+    if (paramtop.count("boundary") != 0)
+    {
+      QDPIO::cerr << "ChromaProp: paranoia check - found a misplaced boundary" << endl; 
+      QDP_abort(1);
+    }
   }
   break;
 
@@ -388,6 +438,8 @@ void read(XMLReader& xml, const string& path, ChromaMultiProp_t& param)
   int version;
   read(paramtop, "version", version);
 
+  multi1d<int> boundary;
+
   switch (version) 
   {
     /**************************************************************************/
@@ -395,17 +447,21 @@ void read(XMLReader& xml, const string& path, ChromaMultiProp_t& param)
     /**************************************************************************/
   {
     read(paramtop, "MultiMasses", param.MultiMasses);
-    read(paramtop, "FermTypeP", param.FermTypeP);
+    
+    param.nonRelProp = false;
+    read(paramtop, "InvertParam", param.invParam);
+    read(paramtop, "boundary", boundary);
+    read(paramtop, "nrow", param.nrow);
 
     XMLReader xml_tmp(paramtop, "FermionAction");
-    std::ostringstream os;
-    xml_tmp.print(os);
-    param.fermact = os.str();
 
-    read(paramtop, "InvertParam", param.invParam);
-    read(paramtop, "boundary", param.boundary);
-    read(paramtop, "nrow", param.nrow);
-    param.nonRelProp = false;
+    XMLBufferWriter xml_out;
+    push(xml_out,"FermionAction");
+    xml_out << xml_tmp;
+    write(xml_out, "boundary", boundary);
+    pop(xml_out);
+
+    param.fermact = xml_out.printCurrentContext();
   }
   break;
 
@@ -414,16 +470,44 @@ void read(XMLReader& xml, const string& path, ChromaMultiProp_t& param)
     /**************************************************************************/
   {
     read(paramtop, "MultiMasses", param.MultiMasses);
-    read(paramtop, "FermTypeP", param.FermTypeP);
+
+    read(paramtop, "nonRelProp", param.nonRelProp); // new - is this prop non-relativistic
+    read(paramtop, "InvertParam", param.invParam);
+    read(paramtop, "boundary", boundary);
+    read(paramtop, "nrow", param.nrow);
+
+    XMLReader xml_tmp(paramtop, "FermionAction");
+
+    XMLBufferWriter xml_out;
+    push(xml_out,"FermionAction");
+    xml_out << xml_tmp;
+    write(xml_out, "boundary", boundary);
+    pop(xml_out);
+
+    param.fermact = xml_out.printCurrentContext();
+  }
+  break;
+
+    /**************************************************************************/
+  case 7:
+    /**************************************************************************/
+  {
+    read(paramtop, "MultiMasses", param.MultiMasses);
+
     XMLReader xml_tmp(paramtop, "FermionAction");
     std::ostringstream os;
     xml_tmp.print(os);
     param.fermact = os.str();
 
     read(paramtop, "InvertParam", param.invParam);
-    read(paramtop, "boundary", param.boundary);
     read(paramtop, "nrow", param.nrow);
-    read(paramtop, "nonRelProp", param.nonRelProp); // new - is this prop non-relativistic
+    read(paramtop, "nonRelProp", param.nonRelProp);
+
+    if (paramtop.count("boundary") != 0)
+    {
+      QDPIO::cerr << "ChromaMultiProp: paranoia check - found a misplaced boundary" << endl; 
+      QDP_abort(1);
+    }
   }
   break;
 
@@ -600,13 +684,11 @@ void write(XMLWriter& xml, const string& path, const ChromaProp_t& header)
 {
   push(xml, path);
 
-  int version = 6;
+  int version = 7;
   write(xml, "version", version);
-  write(xml, "FermTypeP", header.FermTypeP);
   write(xml, "nonRelProp", header.nonRelProp); // new - is this prop non-relativistic
   xml << header.fermact;
   write(xml, "InvertParam", header.invParam);
-  write(xml, "boundary", header.boundary);
   write(xml, "nrow", header.nrow);
 
   pop(xml);
@@ -617,14 +699,12 @@ void write(XMLWriter& xml, const string& path, const ChromaMultiProp_t& header)
 {
   push(xml, path);
 
-  int version = 6;
+  int version = 7;
   write(xml, "version", version);
-  write(xml, "FermTypeP", header.FermTypeP);
   write(xml, "nonRelProp", header.nonRelProp); // new - is this prop non-relativistic
   write(xml, "MultiMasses", header.MultiMasses);
   xml << header.fermact;
   write(xml, "InvertParam", header.invParam);
-  write(xml, "boundary", header.boundary);
   write(xml, "nrow", header.nrow);
 
   pop(xml);
