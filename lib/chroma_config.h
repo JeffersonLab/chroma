@@ -13,15 +13,14 @@
 #include "chroma_config_internal.h"
 
 /* Prefix everything with CHROMA_QDP_ */
-#define CHROMA_PACKAGE PACKAGE
-#define CHROMA_PACKAGE_BUGREPORT PACKAGE_BUGREPORT
-#define CHROMA_PACKAGE_NAME PACKAGE_NAME
-#define CHROMA_PACKAGE_STRING PACKAGE_STRING
-#define CHROMA_PACKAGE_TARNAME PACKAGE_TARNAME
-#define CHROMA_QDP_PACKAGE_VERSION PACKAGE_VERSION
-#define CHROMA_VERSION VERSION
-                                                                                
-                                                                                
+static const char* const CHROMA_PACKAGE(PACKAGE);
+static const char* const CHROMA_PACKAGE_BUGREPORT(PACKAGE_BUGREPORT);
+static const char* const CHROMA_PACKAGE_NAME(PACKAGE_NAME);
+static const char* const CHROMA_PACKAGE_STRING(PACKAGE_STRING);
+static const char* const CHROMA_PACKAGE_TARNAME(PACKAGE_TARNAME);
+static const char* const CHROMA_PACKAGE_VERSION(PACKAGE_VERSION);
+static const char* const CHROMA_VERSION(VERSION);
+
 /* Undef the unwanted */
 #undef PACKAGE
 #undef PACKAGE_BUGREPORT
