@@ -1,4 +1,4 @@
-// $Id: su2extract.cc,v 1.3 2003-08-09 03:56:11 edwards Exp $
+// $Id: su2extract.cc,v 1.4 2003-08-09 03:57:19 edwards Exp $
 /*! \file
  *  \brief  Extract an unnormalized SU(2) matrix from a GL(3,C) matrix
  */
@@ -82,7 +82,7 @@ su2Extract(const LatticeColorMatrix& source,
 	   int su2_index, 
 	   const UnorderedSubset& s)
 {
-  return su2Extract_t(source, su2index, s);
+  return su2Extract_t(source, su2_index, s);
 }
 
 
@@ -91,7 +91,7 @@ su2Extract(const LatticeColorMatrix& source,
 	   int su2_index, 
 	   const OrderedSubset& s)
 {
-  return su2Extract_t(source, su2index, s);
+  return su2Extract_t(source, su2_index, s);
 }
 
 
