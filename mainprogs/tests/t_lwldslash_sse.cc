@@ -1,4 +1,4 @@
-// $Id: t_lwldslash_sse.cc,v 1.23 2005-01-14 20:13:09 edwards Exp $
+// $Id: t_lwldslash_sse.cc,v 1.24 2005-02-16 10:41:49 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -13,15 +13,8 @@ int main(int argc, char **argv)
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
 
-  std::string root="";
-
-  if(argc == 2 ) { 
-	root += argv[1];
-        root += "/";
-  }
-
   // Read parameters
-  XMLReader xml_in((root+"input.xml"));
+  XMLReader xml_in("input.xml");
 
   // Lattice Size
   multi1d<int> nrow(Nd);
@@ -33,7 +26,7 @@ int main(int argc, char **argv)
   Layout::setLattSize(nrow);
   Layout::create();
 
-  XMLFileWriter xml(root+"t_lwldslash.xml");
+  XMLFileWriter xml("t_lwldslash.xml");
 
   push(xml,"t_lwldslash");
 
@@ -58,7 +51,6 @@ int main(int argc, char **argv)
 
   QDPIO::cout << "Done" << endl;
 
-#undef DEBUG
 
   push(xml,"Unoptimized_test");
 
@@ -69,9 +61,8 @@ int main(int argc, char **argv)
 
       clock_t myt1;
       clock_t myt2;
-      double mydt;
+      double mydt=2.0;
      
-#ifndef DEBUG
       if (first) 
       {
 	for(iter=1; ; iter <<= 1)
@@ -85,13 +76,14 @@ int main(int argc, char **argv)
 	  myt2=clock();
 
 	  mydt=double(myt2-myt1)/double(CLOCKS_PER_SEC);
+	  Internal::broadcast(mydt);
+
 	  if (mydt > 1) {
 	    first = false;
 	    break;
 	  }
 	}
       }
-#endif
 	
       QDPIO::cout << "Applying D for timings" << endl;
       
@@ -103,7 +95,8 @@ int main(int argc, char **argv)
       
       mydt=double(myt2-myt1)/double(CLOCKS_PER_SEC);
       mydt=1.0e6*mydt/double(iter*(Layout::sitesOnNode()/2));
-      
+      Internal::broadcast(mydt);
+ 
       float mflops = float(1320.0f/mydt);
       QDPIO::cout << "cb = " << cb << " isign = " << isign << endl;
       QDPIO::cout << "The time per lattice point is "<< mydt 
@@ -134,9 +127,8 @@ int main(int argc, char **argv)
 
       clock_t myt1;
       clock_t myt2;
-      double mydt;
+      double mydt= 2.0;
       
-#ifndef DEBUG
       if (first) 
       {
 	for(iter=1; ; iter <<= 1)
@@ -150,13 +142,13 @@ int main(int argc, char **argv)
 	  myt2=clock();
 
 	  mydt=double(myt2-myt1)/double(CLOCKS_PER_SEC);
+	  Internal::broadcast(mydt);
 	  if (mydt > 1) {
 	    first = false;
 	    break;
 	  }
 	}
       }
-#endif
 
       QDPIO::cout << "Applying D for timings" << endl;
       
@@ -168,7 +160,8 @@ int main(int argc, char **argv)
       
       mydt=double(myt2-myt1)/double(CLOCKS_PER_SEC);
       mydt=1.0e6*mydt/double(iter*(Layout::sitesOnNode()/2));
-      
+      Internal::broadcast(mydt);
+ 
       float mflops = float(1320.0f/mydt);
       QDPIO::cout << "cb = " << cb << " isign = " << isign << endl;
       QDPIO::cout << "After " << iter << " calls, the time per lattice point is "<< mydt 
@@ -219,13 +212,6 @@ int main(int argc, char **argv)
       
       n2 = norm2( chi2 - chi );
 
-#if 0
-      QDPIO::cout << "|D(psi, "
-		  << (isign > 0 ? "+, " : "-, ") <<  cb << ") = " << norm2(chi) << endl
-		  << "D_opt(psi, " 
-		  << (isign > 0 ? "+, " : "-, ") <<  cb << ") = " << norm2(chi2) << endl; 
-#endif
-
       QDPIO::cout << "OPT test: || D(psi, "
 		  << (isign > 0 ? "+, " : "-, ") <<  cb 
 		  << ") - D_opt(psi, " 
@@ -234,7 +220,7 @@ int main(int argc, char **argv)
 
       push(xml,"OPT test");
       write(xml,"isign", isign);
-      write(xml,"co", cb);
+      write(xml,"cb", cb);
       write(xml,"norm2_diff",n2);
       pop(xml);
     }

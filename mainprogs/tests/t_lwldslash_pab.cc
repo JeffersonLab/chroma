@@ -1,8 +1,7 @@
-// $Id: t_lwldslash_pab.cc,v 1.4 2005-01-14 20:13:09 edwards Exp $
+// $Id: t_lwldslash_pab.cc,v 1.5 2005-02-16 10:41:49 bjoo Exp $
 
 
 #include "chroma.h"
-#include "actions/ferm/linop/lwldslash_w_pab.h"
 
 using namespace Chroma;
 
@@ -54,7 +53,6 @@ int main(int argc, char **argv)
 
   QDPIO::cout << "Done" << endl;
 
-#undef DEBUG
   StopWatch swatch;
 
 
@@ -63,9 +61,8 @@ int main(int argc, char **argv)
   for(isign = 1; isign >= -1; isign -= 2) {
     for(cb = 0; cb < 2; ++cb) { 
 
-      double mydt;
+      double mydt=0;
      
-#ifndef DEBUG
       if (first) 
       {
 	for(iter=1; ; iter <<= 1)
@@ -79,13 +76,13 @@ int main(int argc, char **argv)
 	  swatch.stop();
 
 	  mydt=swatch.getTimeInSeconds();
+          Internal::broadcast(mydt);
 	  if (mydt > 1) {
 	    first = false;
 	    break;
 	  }
 	}
       }
-#endif
 	
       QDPIO::cout << "Applying D for timings" << endl;
       
@@ -97,6 +94,8 @@ int main(int argc, char **argv)
       swatch.stop();
       
       mydt=swatch.getTimeInSeconds();
+      Internal::broadcast(mydt);
+
       mydt=1.0e6*mydt/double(iter*(Layout::sitesOnNode()/2));
       
       QDPIO::cout << "cb = " << cb << " isign = " << isign << endl;
@@ -108,7 +107,7 @@ int main(int argc, char **argv)
   //! Create a linear operator
   QDPIO::cout << "Constructing (possibly optimized) WilsonDslash" << endl;
 
-  PABWilsonDslash D_opt(u);
+  WilsonDslash D_opt(u);
 
   QDPIO::cout << "Done" << endl;
 
@@ -117,9 +116,8 @@ int main(int argc, char **argv)
   for(isign = 1; isign >= -1; isign -= 2) {
     for(cb = 0; cb < 2; ++cb) { 
 
-      double mydt;
+      double mydt=0;
       
-#ifndef DEBUG
       if (first) 
       {
 	for(iter=1; ; iter <<= 1)
@@ -133,13 +131,13 @@ int main(int argc, char **argv)
 	  swatch.stop();
 
 	  mydt=swatch.getTimeInSeconds();
-	  if (mydt > 1) {
+ 	  Internal::broadcast(mydt);
+          if (mydt > 1) {
 	    first = false;
 	    break;
 	  }
 	}
       }
-#endif
 
       QDPIO::cout << "Applying D for timings" << endl;
       
@@ -151,6 +149,7 @@ int main(int argc, char **argv)
       swatch.stop();
       
       mydt=swatch.getTimeInSeconds();
+      Internal::broadcast(mydt);
       mydt=1.0e6*mydt/double(iter*(Layout::sitesOnNode()/2));
       
       QDPIO::cout << "cb = " << cb << " isign = " << isign << endl;
@@ -172,8 +171,10 @@ int main(int argc, char **argv)
       chi2 = chi3;
       D.apply(chi, psi, (isign > 0 ? PLUS : MINUS), cb);
       D.apply(chi2, psi, (isign > 0 ? PLUS : MINUS), cb);
-      
-      n2 = norm2( chi2 - chi );
+     
+      LatticeFermion r;
+      r = chi2 - chi; 
+      n2 = norm2( r );
 
       QDPIO::cout << "Paranoia test: || D(psi, "
 		  << (isign > 0 ? "+, " : "-, ") <<  cb 
@@ -192,25 +193,23 @@ int main(int argc, char **argv)
       chi2 = chi3;
       D.apply(chi, psi, (isign > 0 ? PLUS : MINUS), cb);
       D_opt.apply(chi2, psi, (isign > 0 ? PLUS : MINUS), cb);
-      
-      n2 = norm2( chi2 - chi );
-
-#if 0
-      QDPIO::cout << "|D(psi, "
-		  << (isign > 0 ? "+, " : "-, ") <<  cb << ") = " << norm2(chi) << endl
-		  << "D_opt(psi, " 
-		  << (isign > 0 ? "+, " : "-, ") <<  cb << ") = " << norm2(chi2) << endl; 
-#endif
+     
+      LatticeFermion r;
+      r = chi2 - chi;
+      n2 = norm2( r );
 
       QDPIO::cout << "OPT test: || D(psi, "
 		  << (isign > 0 ? "+, " : "-, ") <<  cb 
 		  << ") - D_opt(psi, " 
 		  << (isign > 0 ? "+, " : "-, ") <<  cb << " ) ||  = " << n2 
 		  << endl;
+ 
+      QDPIO::cout << flush;
+      QDPIO::cout << endl << flush;
 
       push(xml,"OPT test");
       write(xml,"isign", isign);
-      write(xml,"co", cb);
+      write(xml,"cb", cb);
       write(xml,"norm2_diff",n2);
       pop(xml);
     }
