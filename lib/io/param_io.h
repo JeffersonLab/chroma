@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: param_io.h,v 1.9 2004-01-13 03:57:32 edwards Exp $
+// $Id: param_io.h,v 1.10 2004-01-30 04:21:56 edwards Exp $
 /*! \file
  *  \brief Reunitarize (to a SU(N)) inplace the matrix A under some option
  */
@@ -103,14 +103,12 @@ struct ChiralParam_t
 
 
 //! Parameters for anisotropy
-/*! NOT USED YET */
 struct AnisoParam_t
 {
   bool       anisoP;
   int        t_dir;
   Real       xi_0;
-  Real       xiF_0;
-  Real       Wilsr_s;
+  Real       nu;
 };
 
 
@@ -165,6 +163,12 @@ void read(XMLReader& xml, const string& path, IO_version_t& param);
 
 //! Configuration input
 void read(XMLReader& xml, const string& path, Cfg_t& input);
+
+//! Initialize a anisotropy param struct
+void anisoParamInit(AnisoParam_t& param);
+
+//! Read a anisotropy param struct
+void read(XMLReader& xml, const string& path, AnisoParam_t& param);
 
 //! Read a smearing param struct
 void read(XMLReader& xml, const string& path, SmearingParam_t& param);

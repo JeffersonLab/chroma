@@ -1,4 +1,4 @@
-// $Id: param_io.cc,v 1.11 2004-01-13 03:57:32 edwards Exp $
+// $Id: param_io.cc,v 1.12 2004-01-30 04:21:56 edwards Exp $
 /*! \file
  *  \brief Various parameter readers/writers for main programs
  */
@@ -262,6 +262,27 @@ void read(XMLReader& xml, const string& path, Cfg_t& input)
   XMLReader inputtop(xml, path);
 
   read(inputtop, "cfg_file", input.cfg_file);
+}
+
+
+//! Initialize a anisotropy param struct
+void anisoParamInit(AnisoParam_t& param)
+{
+  param.anisoP = false;
+  param.t_dir  = Nd-1;   // doesn't matter - should not be used
+  param.xi_0   = 1;
+  param.nu     = 1;
+}
+
+//! Read a anisotropy param struct
+void read(XMLReader& xml, const string& path, AnisoParam_t& param)
+{
+  XMLReader paramtop(xml, path);
+
+  read(paramtop, "anisoP", param.anisoP);
+  read(paramtop, "t_dir", param.t_dir);
+  read(paramtop, "xi_0", param.xi_0);
+  read(paramtop, "nu", param.nu);
 }
 
 
