@@ -1,4 +1,4 @@
-// $Id: unprec_dwftransf_linop_w.cc,v 1.3 2004-11-13 17:32:11 bjoo Exp $
+// $Id: unprec_dwftransf_linop_w.cc,v 1.4 2004-11-15 21:52:18 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -66,6 +66,7 @@ void UnprecDWFTransfLinOp::operator() (LatticeFermion& chi, const LatticeFermion
   START_CODE();
 
   // Apply   (b5+c5) D / ( 2 + (b5-c5) D )
+  chi = zero;
 
   // First do tmp = (b5 + c5) D psi
   LatticeFermion tmp,tmp2;
