@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.315 2005-01-17 03:56:59 edwards Exp $
+# $Id: Makefile.in,v 1.316 2005-01-20 11:50:24 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -59,6 +59,10 @@ host_triplet = @host@
 @BUILD_SSE_DWF_CG_TRUE@am__append_6 = actions/ferm/qprop/prec_dwf_qprop_array_sse_w.cc
 @BUILD_PAB_WILSON_DSLASH_TRUE@am__append_7 = actions/ferm/linop/lwldslash_w_pab.h
 @BUILD_PAB_WILSON_DSLASH_TRUE@am__append_8 = actions/ferm/linop/lwldslash_w_pab.cc
+@BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@am__append_9 = 
+@BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@am__append_10 = \
+@BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@	actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc		
+
 subdir = lib
 DIST_COMMON = $(am__nobase_include_HEADERS_DIST) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/chroma_config_internal.h.in
@@ -111,6 +115,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/qprop/prec_fermact_qprop.cc \
 	actions/ferm/qprop/prec_fermact_qprop_array.cc \
 	actions/ferm/qprop/staggered_qprop.cc \
+	actions/ferm/qprop/asqtad_qprop.cc \
 	actions/gauge/gaugebcs/gaugebc_aggregate.cc \
 	actions/gauge/gaugebcs/gaugebc_periodic.cc \
 	actions/gauge/gaugebcs/gaugebc_simple.cc \
@@ -269,13 +274,16 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/hadron/stag_scalars_s.cc meas/hadron/vector_meson_s.cc \
 	meas/hadron/walfil_s.cc util/gauge/stag_phases_s.cc \
 	meas/hadron/pion_sing_s.cc meas/hadron/scalar_loops_s.cc \
-	meas/hadron/pseudoscalar_loops_s.cc init/chroma_init.cc
+	meas/hadron/pseudoscalar_loops_s.cc \
+	actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc \
+	init/chroma_init.cc
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__objects_1 =  \
 @BUILD_SSE_WILSON_DSLASH_TRUE@	lwldslash_w_sse.$(OBJEXT)
 @BUILD_SSE_DWF_CG_TRUE@am__objects_2 =  \
 @BUILD_SSE_DWF_CG_TRUE@	prec_dwf_qprop_array_sse_w.$(OBJEXT)
 @BUILD_PAB_WILSON_DSLASH_TRUE@am__objects_3 =  \
 @BUILD_PAB_WILSON_DSLASH_TRUE@	lwldslash_w_pab.$(OBJEXT)
+@BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@am__objects_4 = asqtad_cps_wrapper_qprop.$(OBJEXT)
 am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	zolotarev_coeffs.$(OBJEXT) simple_fermbc.$(OBJEXT) \
 	invbicgstab.$(OBJEXT) invbicgstab_array.$(OBJEXT) \
@@ -289,12 +297,12 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	minv_rel_sumr.$(OBJEXT) fermact_qprop.$(OBJEXT) \
 	fermact_qprop_array.$(OBJEXT) prec_fermact_qprop.$(OBJEXT) \
 	prec_fermact_qprop_array.$(OBJEXT) staggered_qprop.$(OBJEXT) \
-	gaugebc_aggregate.$(OBJEXT) gaugebc_periodic.$(OBJEXT) \
-	gaugebc_simple.$(OBJEXT) plaq_gaugeact.$(OBJEXT) \
-	rect_gaugeact.$(OBJEXT) pg_gaugeact.$(OBJEXT) \
-	wilson_gaugeact.$(OBJEXT) lw_tree_gaugeact.$(OBJEXT) \
-	lw_1loop_gaugeact.$(OBJEXT) rg_gaugeact.$(OBJEXT) \
-	barcomp_io.$(OBJEXT) eigen_io.$(OBJEXT) \
+	asqtad_qprop.$(OBJEXT) gaugebc_aggregate.$(OBJEXT) \
+	gaugebc_periodic.$(OBJEXT) gaugebc_simple.$(OBJEXT) \
+	plaq_gaugeact.$(OBJEXT) rect_gaugeact.$(OBJEXT) \
+	pg_gaugeact.$(OBJEXT) wilson_gaugeact.$(OBJEXT) \
+	lw_tree_gaugeact.$(OBJEXT) lw_1loop_gaugeact.$(OBJEXT) \
+	rg_gaugeact.$(OBJEXT) barcomp_io.$(OBJEXT) eigen_io.$(OBJEXT) \
 	enum_cfgtype_io.$(OBJEXT) enum_coeffs_io.$(OBJEXT) \
 	enum_eigenvectype_io.$(OBJEXT) enum_fermtype_io.$(OBJEXT) \
 	enum_gaugeacttype_io.$(OBJEXT) enum_gaugebc_io.$(OBJEXT) \
@@ -412,7 +420,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	vector_meson_s.$(OBJEXT) walfil_s.$(OBJEXT) \
 	stag_phases_s.$(OBJEXT) pion_sing_s.$(OBJEXT) \
 	scalar_loops_s.$(OBJEXT) pseudoscalar_loops_s.$(OBJEXT) \
-	chroma_init.$(OBJEXT)
+	$(am__objects_4) chroma_init.$(OBJEXT)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I.
 depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
@@ -643,9 +651,11 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/linop/asqtad_mdagm_s.h \
 	actions/ferm/linop/asq_dsl_s.h \
 	actions/ferm/linop/improvement_terms_s.h \
-	actions/ferm/linop/linop_s.h actions/ferm/qprop/quarkprop4_s.h \
-	io/follana_io_s.h io/io_s.h meas/eig/eig_s.h \
-	meas/hadron/baryon_s.h meas/hadron/hadron_s.h \
+	actions/ferm/linop/linop_s.h \
+	actions/ferm/qprop/prec_staggered_qprop.h \
+	actions/ferm/qprop/asqtad_qprop.h \
+	actions/ferm/qprop/quarkprop4_s.h io/follana_io_s.h io/io_s.h \
+	meas/eig/eig_s.h meas/hadron/baryon_s.h meas/hadron/hadron_s.h \
 	meas/hadron/hadron_corr_s.h meas/hadron/mesphas_follana_s.h \
 	meas/hadron/mesphas_s.h meas/hadron/pions_s.h \
 	meas/hadron/walfil_s.h meas/hadron/loops_s.h \
@@ -676,6 +686,8 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
+BUILD_ASQTAD_CPS_INVERTER_WRAPPER_FALSE = @BUILD_ASQTAD_CPS_INVERTER_WRAPPER_FALSE@
+BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE = @BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@
 BUILD_PAB_WILSON_DSLASH_FALSE = @BUILD_PAB_WILSON_DSLASH_FALSE@
 BUILD_PAB_WILSON_DSLASH_TRUE = @BUILD_PAB_WILSON_DSLASH_TRUE@
 BUILD_SSE_DWF_CG_FALSE = @BUILD_SSE_DWF_CG_FALSE@
@@ -1007,9 +1019,11 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/linop/asqtad_mdagm_s.h \
 	actions/ferm/linop/asq_dsl_s.h \
 	actions/ferm/linop/improvement_terms_s.h \
-	actions/ferm/linop/linop_s.h actions/ferm/qprop/quarkprop4_s.h \
-	io/follana_io_s.h io/io_s.h meas/eig/eig_s.h \
-	meas/hadron/baryon_s.h meas/hadron/hadron_s.h \
+	actions/ferm/linop/linop_s.h \
+	actions/ferm/qprop/prec_staggered_qprop.h \
+	actions/ferm/qprop/asqtad_qprop.h \
+	actions/ferm/qprop/quarkprop4_s.h io/follana_io_s.h io/io_s.h \
+	meas/eig/eig_s.h meas/hadron/baryon_s.h meas/hadron/hadron_s.h \
 	meas/hadron/hadron_corr_s.h meas/hadron/mesphas_follana_s.h \
 	meas/hadron/mesphas_s.h meas/hadron/pions_s.h \
 	meas/hadron/walfil_s.h meas/hadron/loops_s.h \
@@ -1023,7 +1037,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/abs_inline_measurement_factory.h \
 	meas/inline/glue/glue.h meas/inline/glue/inline_plaquette.h \
 	meas/inline/glue/inline_polylp.h $(am__append_3) \
-	$(am__append_5) $(am__append_7)
+	$(am__append_5) $(am__append_7) $(am__append_9)
 nodist_include_HEADERS = chroma_config_internal.h
 
 #
@@ -1089,6 +1103,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/ferm/qprop/prec_fermact_qprop.cc \
 	actions/ferm/qprop/prec_fermact_qprop_array.cc \
 	actions/ferm/qprop/staggered_qprop.cc \
+	actions/ferm/qprop/asqtad_qprop.cc \
 	actions/gauge/gaugebcs/gaugebc_aggregate.cc \
 	actions/gauge/gaugebcs/gaugebc_periodic.cc \
 	actions/gauge/gaugebcs/gaugebc_simple.cc \
@@ -1245,7 +1260,8 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/hadron/stag_scalars_s.cc meas/hadron/vector_meson_s.cc \
 	meas/hadron/walfil_s.cc util/gauge/stag_phases_s.cc \
 	meas/hadron/pion_sing_s.cc meas/hadron/scalar_loops_s.cc \
-	meas/hadron/pseudoscalar_loops_s.cc init/chroma_init.cc
+	meas/hadron/pseudoscalar_loops_s.cc $(am__append_10) \
+	init/chroma_init.cc
 all: chroma_config_internal.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -1342,9 +1358,11 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DjDk_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ape_smear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/asq_dsl_s.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/asqtad_cps_wrapper_qprop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/asqtad_fermact_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/asqtad_linop_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/asqtad_mdagm_s.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/asqtad_qprop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/axgauge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/barcomp_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/barcomp_w.Po@am__quote@
@@ -1996,6 +2014,20 @@ staggered_qprop.obj: actions/ferm/qprop/staggered_qprop.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/qprop/staggered_qprop.cc' object='staggered_qprop.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o staggered_qprop.obj `if test -f 'actions/ferm/qprop/staggered_qprop.cc'; then $(CYGPATH_W) 'actions/ferm/qprop/staggered_qprop.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/qprop/staggered_qprop.cc'; fi`
+
+asqtad_qprop.o: actions/ferm/qprop/asqtad_qprop.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT asqtad_qprop.o -MD -MP -MF "$(DEPDIR)/asqtad_qprop.Tpo" -c -o asqtad_qprop.o `test -f 'actions/ferm/qprop/asqtad_qprop.cc' || echo '$(srcdir)/'`actions/ferm/qprop/asqtad_qprop.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/asqtad_qprop.Tpo" "$(DEPDIR)/asqtad_qprop.Po"; else rm -f "$(DEPDIR)/asqtad_qprop.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/qprop/asqtad_qprop.cc' object='asqtad_qprop.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o asqtad_qprop.o `test -f 'actions/ferm/qprop/asqtad_qprop.cc' || echo '$(srcdir)/'`actions/ferm/qprop/asqtad_qprop.cc
+
+asqtad_qprop.obj: actions/ferm/qprop/asqtad_qprop.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT asqtad_qprop.obj -MD -MP -MF "$(DEPDIR)/asqtad_qprop.Tpo" -c -o asqtad_qprop.obj `if test -f 'actions/ferm/qprop/asqtad_qprop.cc'; then $(CYGPATH_W) 'actions/ferm/qprop/asqtad_qprop.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/qprop/asqtad_qprop.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/asqtad_qprop.Tpo" "$(DEPDIR)/asqtad_qprop.Po"; else rm -f "$(DEPDIR)/asqtad_qprop.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/qprop/asqtad_qprop.cc' object='asqtad_qprop.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o asqtad_qprop.obj `if test -f 'actions/ferm/qprop/asqtad_qprop.cc'; then $(CYGPATH_W) 'actions/ferm/qprop/asqtad_qprop.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/qprop/asqtad_qprop.cc'; fi`
 
 gaugebc_aggregate.o: actions/gauge/gaugebcs/gaugebc_aggregate.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gaugebc_aggregate.o -MD -MP -MF "$(DEPDIR)/gaugebc_aggregate.Tpo" -c -o gaugebc_aggregate.o `test -f 'actions/gauge/gaugebcs/gaugebc_aggregate.cc' || echo '$(srcdir)/'`actions/gauge/gaugebcs/gaugebc_aggregate.cc; \
@@ -5133,6 +5165,20 @@ pseudoscalar_loops_s.obj: meas/hadron/pseudoscalar_loops_s.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o pseudoscalar_loops_s.obj `if test -f 'meas/hadron/pseudoscalar_loops_s.cc'; then $(CYGPATH_W) 'meas/hadron/pseudoscalar_loops_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/pseudoscalar_loops_s.cc'; fi`
 
+asqtad_cps_wrapper_qprop.o: actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT asqtad_cps_wrapper_qprop.o -MD -MP -MF "$(DEPDIR)/asqtad_cps_wrapper_qprop.Tpo" -c -o asqtad_cps_wrapper_qprop.o `test -f 'actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc' || echo '$(srcdir)/'`actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/asqtad_cps_wrapper_qprop.Tpo" "$(DEPDIR)/asqtad_cps_wrapper_qprop.Po"; else rm -f "$(DEPDIR)/asqtad_cps_wrapper_qprop.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc' object='asqtad_cps_wrapper_qprop.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o asqtad_cps_wrapper_qprop.o `test -f 'actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc' || echo '$(srcdir)/'`actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc
+
+asqtad_cps_wrapper_qprop.obj: actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT asqtad_cps_wrapper_qprop.obj -MD -MP -MF "$(DEPDIR)/asqtad_cps_wrapper_qprop.Tpo" -c -o asqtad_cps_wrapper_qprop.obj `if test -f 'actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc'; then $(CYGPATH_W) 'actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/asqtad_cps_wrapper_qprop.Tpo" "$(DEPDIR)/asqtad_cps_wrapper_qprop.Po"; else rm -f "$(DEPDIR)/asqtad_cps_wrapper_qprop.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc' object='asqtad_cps_wrapper_qprop.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o asqtad_cps_wrapper_qprop.obj `if test -f 'actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc'; then $(CYGPATH_W) 'actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc'; fi`
+
 chroma_init.o: init/chroma_init.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT chroma_init.o -MD -MP -MF "$(DEPDIR)/chroma_init.Tpo" -c -o chroma_init.o `test -f 'init/chroma_init.cc' || echo '$(srcdir)/'`init/chroma_init.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/chroma_init.Tpo" "$(DEPDIR)/chroma_init.Po"; else rm -f "$(DEPDIR)/chroma_init.Tpo"; exit 1; fi
@@ -5357,6 +5403,7 @@ uninstall-am: uninstall-info-am uninstall-libLIBRARIES \
 	uninstall-libLIBRARIES uninstall-nobase_includeHEADERS \
 	uninstall-nodist_includeHEADERS
 
+@BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@	actions/ferm/qprop/asqtad_cps_wrapper_qprop.h
 #	actions/ferm/fermacts/stag_fermact_s.cc
 #	
 #	meas/pbp/mespbp_s.cc meas/pbp/stagpbp_s.cc

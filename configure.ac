@@ -50,6 +50,12 @@ AC_ARG_ENABLE(pab_wilson_dslash,
     [Use PABs Wilson Dslash Library])
 )
 
+AC_ARG_ENABLE(asqtad_cps_inverter,
+   AC_HELP_STRING(
+    [--enable-asqtad-cps-inverter],
+    [Wrap the CPS asqtad inverter])
+)
+
 if test "X${QDPXX_HOME}X" = "XX" ; then
   AC_PATH_PROG(QDPXX_CONFIG, [qdp++-config], [])
 else
@@ -145,6 +151,20 @@ esac
 
 AM_CONDITIONAL(BUILD_PAB_WILSON_DSLASH,
   [test "x${ac_build_pab_wilson_dslash}x" = "xyesx" ])
+
+dnl QCDOC Asqtad Inverter stuff
+case "$enable_asqtad_cps_inverter" in
+ yes)
+        AC_MSG_NOTICE([Configuring Asqtad CPS Inverter Wrapper])
+	AC_DEFINE([BUILD_CPS_ASQTAD_INVERTER],[],[Build CPS ASQTAD INVERTER])
+	;;
+ *) 
+        AC_MSG_NOTICE([Not Configuring Asqtad CPS Inverter Wrapper])
+        ;;	
+esac
+
+AM_CONDITIONAL(BUILD_ASQTAD_CPS_INVERTER_WRAPPER,
+  [test "x${enable_asqtad_cps_inverter}x" = "xyesx" ])
 
 
 dnl Try to compile a QDP++ program to check the --with options

@@ -1,5 +1,8 @@
 /* lib/chroma_config_internal.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Build CPS ASQTAD INVERTER */
+#undef BUILD_CPS_ASQTAD_INVERTER
+
 /* Build Peters Dslash Op */
 #undef BUILD_PAB_WILSON_DSLASH
 

@@ -275,7 +275,7 @@ PACKAGE_BUGREPORT='edwards@jlab.org'
 
 ac_subdirs_all="$ac_subdirs_all other_libs/intel_sse_wilson_dslash"
 ac_subdirs_all="$ac_subdirs_all other_libs/intel_sse_dwf_cg"
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot AMTAR am__tar am__untar RANLIB ac_ct_RANLIB QDPXX_CONFIG CXX QDPXX_CXXFLAGS QDPXX_LDFLAGS QDPXX_LIBS QDPXX_ND QDPXX_NC QDPXX_NS QDPXX_PARALLEL_ARCH QDPXX_PRECISION subdirs SSE_DSLASH_DIR SSE_DSLASH_ENABLED BUILD_SSE_WILSON_DSLASH_TRUE BUILD_SSE_WILSON_DSLASH_FALSE SSE_DWF_CG_DIR SSE_DWF_CG_ENABLED BUILD_SSE_DWF_CG_TRUE BUILD_SSE_DWF_CG_FALSE BUILD_PAB_WILSON_DSLASH_TRUE BUILD_PAB_WILSON_DSLASH_FALSE CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE LATEX DVIPS DVIPDF DOXYGEN LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot AMTAR am__tar am__untar RANLIB ac_ct_RANLIB QDPXX_CONFIG CXX QDPXX_CXXFLAGS QDPXX_LDFLAGS QDPXX_LIBS QDPXX_ND QDPXX_NC QDPXX_NS QDPXX_PARALLEL_ARCH QDPXX_PRECISION subdirs SSE_DSLASH_DIR SSE_DSLASH_ENABLED BUILD_SSE_WILSON_DSLASH_TRUE BUILD_SSE_WILSON_DSLASH_FALSE SSE_DWF_CG_DIR SSE_DWF_CG_ENABLED BUILD_SSE_DWF_CG_TRUE BUILD_SSE_DWF_CG_FALSE BUILD_PAB_WILSON_DSLASH_TRUE BUILD_PAB_WILSON_DSLASH_FALSE BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE BUILD_ASQTAD_CPS_INVERTER_WRAPPER_FALSE CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE LATEX DVIPS DVIPDF DOXYGEN LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -820,6 +820,9 @@ Optional Features:
 
   --enable-pab-wilson-dslash
                           Use PABs Wilson Dslash Library
+
+  --enable-asqtad-cps-inverter
+                          Wrap the CPS asqtad inverter
 
   --disable-dependency-tracking  speeds up one-time build
   --enable-dependency-tracking   do not reject slow dependency extractors
@@ -1895,6 +1898,12 @@ if test "${enable_pab_wilson_dslash+set}" = set; then
 
 fi;
 
+# Check whether --enable-asqtad_cps_inverter or --disable-asqtad_cps_inverter was given.
+if test "${enable_asqtad_cps_inverter+set}" = set; then
+  enableval="$enable_asqtad_cps_inverter"
+
+fi;
+
 if test "X${QDPXX_HOME}X" = "XX" ; then
   # Extract the first word of "qdp++-config", so it can be a program name with args.
 set dummy qdp++-config; ac_word=$2
@@ -2139,6 +2148,33 @@ if test "x${ac_build_pab_wilson_dslash}x" = "xyesx" ; then
 else
   BUILD_PAB_WILSON_DSLASH_TRUE='#'
   BUILD_PAB_WILSON_DSLASH_FALSE=
+fi
+
+
+case "$enable_asqtad_cps_inverter" in
+ yes)
+        { echo "$as_me:$LINENO: Configuring Asqtad CPS Inverter Wrapper" >&5
+echo "$as_me: Configuring Asqtad CPS Inverter Wrapper" >&6;}
+
+cat >>confdefs.h <<\_ACEOF
+#define BUILD_CPS_ASQTAD_INVERTER
+_ACEOF
+
+	;;
+ *)
+        { echo "$as_me:$LINENO: Not Configuring Asqtad CPS Inverter Wrapper" >&5
+echo "$as_me: Not Configuring Asqtad CPS Inverter Wrapper" >&6;}
+        ;;
+esac
+
+
+
+if test "x${enable_asqtad_cps_inverter}x" = "xyesx" ; then
+  BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE=
+  BUILD_ASQTAD_CPS_INVERTER_WRAPPER_FALSE='#'
+else
+  BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE='#'
+  BUILD_ASQTAD_CPS_INVERTER_WRAPPER_FALSE=
 fi
 
 
@@ -3274,6 +3310,13 @@ echo "$as_me: error: conditional \"BUILD_PAB_WILSON_DSLASH\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
+if test -z "${BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE}" && test -z "${BUILD_ASQTAD_CPS_INVERTER_WRAPPER_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"BUILD_ASQTAD_CPS_INVERTER_WRAPPER\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"BUILD_ASQTAD_CPS_INVERTER_WRAPPER\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
 if test -z "${AMDEP_TRUE}" && test -z "${AMDEP_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"AMDEP\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
@@ -3879,6 +3922,8 @@ s,@BUILD_SSE_DWF_CG_TRUE@,$BUILD_SSE_DWF_CG_TRUE,;t t
 s,@BUILD_SSE_DWF_CG_FALSE@,$BUILD_SSE_DWF_CG_FALSE,;t t
 s,@BUILD_PAB_WILSON_DSLASH_TRUE@,$BUILD_PAB_WILSON_DSLASH_TRUE,;t t
 s,@BUILD_PAB_WILSON_DSLASH_FALSE@,$BUILD_PAB_WILSON_DSLASH_FALSE,;t t
+s,@BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@,$BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE,;t t
+s,@BUILD_ASQTAD_CPS_INVERTER_WRAPPER_FALSE@,$BUILD_ASQTAD_CPS_INVERTER_WRAPPER_FALSE,;t t
 s,@CXXFLAGS@,$CXXFLAGS,;t t
 s,@LDFLAGS@,$LDFLAGS,;t t
 s,@CPPFLAGS@,$CPPFLAGS,;t t

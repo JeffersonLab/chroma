@@ -1,4 +1,4 @@
-// $Id: t_propagator_s.cc,v 1.28 2005-01-14 20:13:10 edwards Exp $
+// $Id: t_propagator_s.cc,v 1.29 2005-01-20 11:50:25 bjoo Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -248,7 +248,7 @@ int main(int argc, char **argv)
   Propagator_input_t  input;
 
   // Instantiate xml reader for DATA
-  XMLReader xml_in("../../tests/t_asqtad_prop/DATA_v2");
+  XMLReader xml_in("./DATA_v2");
 
   // Read data
   read(xml_in, "/propagator", input);

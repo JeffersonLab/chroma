@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: asqtad_fermact_s.h,v 1.9 2005-01-14 20:13:04 edwards Exp $
+// $Id: asqtad_fermact_s.h,v 1.10 2005-01-20 11:50:25 bjoo Exp $
 /*! \file
  *  \brief Asqtad staggered fermion action
  */
@@ -33,6 +33,7 @@ namespace Chroma
     AsqtadFermAct& operator=(const AsqtadFermAct& a)
       {fbc=a.fbc; Mass=a.Mass, u0=a.u0; return *this;}
 
+
     //! Return the fermion BC object for this action
     const FermBC<LatticeStaggeredFermion>& getFermBC() const {return *fbc;}
 
@@ -46,6 +47,11 @@ namespace Chroma
   
     const LinearOperator<LatticeStaggeredFermion>* lMdagM(Handle< const ConnectState >  state_) 
       const;
+
+    //! Return quark prop solver, solution of unpreconditioned system
+    /*! Default implementation provided */
+    virtual const SystemSolver<LatticeStaggeredFermion>* qprop(Handle<const ConnectState> state,
+					 const InvertParam_t& invParam) const;
 
     //! accessors 
     const Real getQuarkMass() const { 

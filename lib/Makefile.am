@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.234 2005-01-17 03:56:36 edwards Exp $
+# $Id: Makefile.am,v 1.235 2005-01-20 11:50:24 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -270,6 +270,8 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/asq_dsl_s.h \
 	actions/ferm/linop/improvement_terms_s.h \
 	actions/ferm/linop/linop_s.h \
+	actions/ferm/qprop/prec_staggered_qprop.h \
+	actions/ferm/qprop/asqtad_qprop.h \
 	actions/ferm/qprop/quarkprop4_s.h \
 	io/follana_io_s.h io/io_s.h \
 	meas/eig/eig_s.h meas/hadron/baryon_s.h \
@@ -353,6 +355,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/qprop/prec_fermact_qprop.cc \
 	actions/ferm/qprop/prec_fermact_qprop_array.cc \
 	actions/ferm/qprop/staggered_qprop.cc \
+	actions/ferm/qprop/asqtad_qprop.cc \
 	actions/gauge/gaugebcs/gaugebc_aggregate.cc \
 	actions/gauge/gaugebcs/gaugebc_periodic.cc \
 	actions/gauge/gaugebcs/gaugebc_simple.cc \
@@ -564,7 +567,17 @@ libchroma_a_SOURCES += \
 	util/gauge/stag_phases_s.cc\
 	meas/hadron/pion_sing_s.cc \
         meas/hadron/scalar_loops_s.cc\
-        meas/hadron/pseudoscalar_loops_s.cc 
+        meas/hadron/pseudoscalar_loops_s.cc
+
+if BUILD_ASQTAD_CPS_INVERTER_WRAPPER
+
+nobase_include_HEADERS += 
+	actions/ferm/qprop/asqtad_cps_wrapper_qprop.h
+
+libchroma_a_SOURCES += \
+	actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc		
+
+endif
 
 
 libchroma_a_SOURCES += \
