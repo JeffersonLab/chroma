@@ -1,4 +1,4 @@
-// $Id: wallnuclff_w.cc,v 1.10 2004-04-21 03:14:30 edwards Exp $
+// $Id: wallnuclff_w.cc,v 1.11 2004-04-29 17:33:41 edwards Exp $
 /*! \file
  *  \brief Wall-sink nucleon form-factors 
  *
@@ -10,6 +10,102 @@
 #include "meas/hadron/wallnuclff_w.h"
 
 using namespace QDP;
+
+
+//! Compute nonlocal current propagator
+/*!
+ * \ingroup hadron
+ *
+ * The form of J_mu = (1/2)*[psibar(x+mu)*U^dag_mu*(1+gamma_mu)*psi(x) -
+ *                           psibar(x)*U_mu*(1-gamma_mu)*psi(x+mu)]
+ *
+ * \param u                  gauge fields ( Read )
+ * \param mu                 direction ( Read )
+ * \param forw_prop          forward propagator ( Read )
+ * \param anti_prop          anti-quark version of forward propagator ( Read )
+ *
+ * \return nonlocal current propagator
+ */
+LatticePropagator nonlocalCurrentProp(const multi1d<LatticeColorMatrix>& u, 
+				      int mu, 
+				      const LatticePropagator& forw_prop,
+				      const LatticePropagator& anti_prop)
+{
+  int gamma_value = 1 << mu;
+
+  LatticePropagator S = shift(anti_prop, FORWARD, mu) * adj(u[mu])
+    * (forw_prop + Gamma(gamma_value)*forw_prop)
+    - anti_prop * u[mu] * shift(forw_prop - Gamma(gamma_value)*forw_prop, FORWARD, mu);
+
+  return S;
+}
+
+
+
+//! Compute ubar-u current insertion in nucleon
+/*!
+ * \ingroup hadron
+ *
+ * "\bar u O u" insertion in proton, ie. "(u C gamma_5 d) u"
+ *
+ * \param insert_prop        U insertion propagator ( Read )
+ * \param u_x2               wall sink forward U propagator ( Read )
+ * \param d_x2               wall sink forward D propagator ( Read )
+ *
+ * \return nonlocal ubar-u insertion
+ */
+static
+LatticeSpinMatrix wallNuclUContract(const LatticePropagator& insert_prop,
+				    const Propagator& u_x2, 
+				    const Propagator& d_x2)
+{
+  /* "\bar u O u" insertion in proton, ie. "(u C gamma_5 d) u" */
+  /* T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2 */
+  /* C gamma_5 = Gamma(5) = - (C gamma_5)^T */
+
+  LatticeSpinMatrix  S;
+
+  // Term 1
+  S  = -traceColor(insert_prop * Gamma(5) * quarkContract13(Gamma(5)*d_x2, u_x2));
+  // Term 2
+  S -=  traceColor(u_x2 * traceSpin(quarkContract13(insert_prop*Gamma(5), Gamma(5)*d_x2)));
+  // Term 3
+  S -=  traceColor(insert_prop * traceSpin(quarkContract13(Gamma(5)*d_x2, u_x2*Gamma(5))));
+  // Term 4
+  S +=  traceColor(u_x2*Gamma(5) * quarkContract13(Gamma(5)*d_x2, insert_prop));
+
+  return S;
+}
+
+      
+//! Compute dbar-d current insertion in nucleon
+/*!
+ * \ingroup hadron
+ *
+ * "\bar d O d" insertion in proton, ie. "(u C gamma_5 d) u"
+ *
+ * \param insert_prop        D insertion propagator ( Read )
+ * \param u_x2               wall sink forward U propagator ( Read )
+ * \param d_x2               wall sink forward D propagator ( Read )
+ *
+ * \return nonlocal dbar-d insertion
+ */
+static
+LatticeSpinMatrix wallNuclDContract(const LatticePropagator& insert_prop,
+				    const Propagator& u_x2, 
+				    const Propagator& d_x2)
+{
+  /* "\bar d O d" insertion in proton, ie. "(u C gamma_5 d) u" */
+  /* T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2 */
+  LatticeSpinMatrix  S;
+
+  // Term 5
+  S  = -traceColor(u_x2 * Gamma(5) * quarkContract13(Gamma(5)*insert_prop, u_x2));
+  // Term 6
+  S -=  traceColor(u_x2 * traceSpin(quarkContract13(u_x2*Gamma(5), Gamma(5)*insert_prop)));
+
+  return S;
+}
 
 
 //! Compute contractions for current insertion 3-point functions.
@@ -78,156 +174,94 @@ void wallNuclFormFac(XMLWriter& xml,
       LatticeComplex corr_local_fn;
       LatticeComplex corr_nonlocal_fn;
 
-      // For non-local (possibly) conserved current
-      LatticePropagator tmp_prop1 = u[mu] * shift(forw_u_prop, FORWARD, mu);
-      LatticePropagator tmp_prop2 = shift(anti_u_prop, FORWARD, mu) * adj(u[mu])
-	* (forw_u_prop + Gamma(gamma_value)*forw_u_prop)
-	- anti_u_prop * (tmp_prop1 - Gamma(gamma_value)*tmp_prop1);
-
       switch (seq_src)
       {
       case 0:
-      {
-	/* "\bar u O u" insertion in proton, ie. "(u C gamma_5 d) u" */
-	/* T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2 */
-	/* C gamma_5 = Gamma(5) = - (C gamma_5)^T */
-	
-	// The local non-conserved vector-current matrix element 
-	// Term 1
-	corr_local_fn = -trace(anti_u_prop*Gamma(gamma_value)*forw_u_prop*Gamma(5)*
-			       quarkContract13(Gamma(5)*d_x2, u_x2+u_x2*Gamma(8)));
-	// Term 2
-	corr_local_fn -= trace(traceSpin(u_x2+Gamma(8)*u_x2) *
-			       traceSpin(quarkContract13(anti_u_prop*Gamma(gamma_value)*forw_u_prop*Gamma(5),
-							 Gamma(5)*d_x2)));
-	// Term 3
-	corr_local_fn -= trace(traceSpin(anti_u_prop*Gamma(gamma_value)*(forw_u_prop+forw_u_prop*Gamma(8)))*
-			       traceSpin(quarkContract13(Gamma(5)*d_x2, u_x2*Gamma(5))));
-	// Term 4
-	corr_local_fn += trace(anti_u_prop*Gamma(gamma_value)*(forw_u_prop+forw_u_prop*Gamma(8))*
-			       quarkContract13(u_x2*Gamma(5), Gamma(5)*d_x2));
-
-	/*
-	 * Construct the non-local current matrix element 
-	 *
-	 * The form of J_mu = (1/2)*[psibar(x+mu)*U^dag_mu*(1+gamma_mu)*psi(x) -
-	 *                           psibar(x)*U_mu*(1-gamma_mu)*psi(x+mu)]
-	 */
-	// Term 1
-	corr_nonlocal_fn = -trace(tmp_prop2 * Gamma(5) * 
-				  quarkContract13(Gamma(5)*d_x2, u_x2+u_x2*Gamma(8)));
-	// Term 2
-	corr_nonlocal_fn -= trace(traceSpin(u_x2+Gamma(8)*u_x2) *
-				  traceSpin(quarkContract13(tmp_prop2*Gamma(5), 
-							    Gamma(5)*d_x2)));
-	// Term 3
-	corr_nonlocal_fn -= trace(traceSpin(tmp_prop2 + tmp_prop2*Gamma(8))*
-				  traceSpin(quarkContract13(Gamma(5)*d_x2, u_x2*Gamma(5))));
-	// Term 4
-	corr_nonlocal_fn += trace((tmp_prop2 + tmp_prop2*Gamma(8))*
-				  quarkContract13(u_x2*Gamma(5), Gamma(5)*d_x2));
-      }
-      break;
-      
-      case 1:
-      {
-	/* "\bar d O d" insertion in proton, ie. "(u C gamma_5 d) u" */
-	/* T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2 */
-
-	// The local non-conserved vector-current matrix element 
-	// Term 5
-	corr_local_fn = -trace(Gamma(5)*anti_d_prop*Gamma(gamma_value)*forw_d_prop * 
-			       quarkContract14(u_x2*Gamma(5), u_x2+u_x2*Gamma(8)));
-	// Term 6
-	corr_local_fn -= trace(traceSpin(u_x2+Gamma(8)*u_x2) * 
-			       traceSpin(quarkContract13(u_x2*Gamma(5), 
-							 Gamma(5)*anti_d_prop*Gamma(gamma_value)*forw_d_prop)));
-
-	// Construct the non-local current matrix element 
-	// Term 5
-	corr_local_fn = -trace(Gamma(5)*tmp_prop2*
-			       quarkContract14(u_x2*Gamma(5), u_x2+u_x2*Gamma(8)));
-	// Term 6
-	corr_local_fn -= trace(traceSpin(u_x2+Gamma(8)*u_x2) * 
-			       traceSpin(quarkContract13(u_x2*Gamma(5), Gamma(5)*tmp_prop2)));
-      }
-      break;
-	
       case 2:
       {
-	/* "\bar u O u" insertion in proton, ie. "(u C gamma_5 d) u" */
-	/* T = \Sigma_3 (1 + gamma_4) / 2 = -i (Gamma(3) + Gamma(11)) / 2 */
-	/* C gamma_5 = Gamma(5) = - (C gamma_5)^T */
+	// "\bar u O u" insertion in proton, ie. "(u C gamma_5 d) u"
+	// The local non-conserved current contraction
+	LatticeSpinMatrix local_contract = 
+	  wallNuclUContract(LatticePropagator(anti_u_prop*Gamma(gamma_value)*forw_u_prop), 
+			    u_x2, d_x2);
 
-	// The local non-conserved vector-current matrix element 
-	// NOTE: extract the common  "-i" piece
-	LatticeComplex local_tmp;
-	// Term 1
-	local_tmp = -trace(anti_u_prop*Gamma(gamma_value)*forw_u_prop*Gamma(5)*
-			   quarkContract13(Gamma(5)*d_x2, u_x2*Gamma(3)+u_x2*Gamma(11)));
-	// Term 2
-	local_tmp -= trace(traceSpin(Gamma(3)*u_x2+Gamma(11)*u_x2) *
-			   traceSpin(quarkContract13(anti_u_prop*Gamma(gamma_value)*forw_u_prop*Gamma(5),
-						     Gamma(5)*d_x2)));
-	// Term 3
-	local_tmp -= trace(traceSpin(anti_u_prop*Gamma(gamma_value)*(forw_u_prop*Gamma(3)+forw_u_prop*Gamma(11)))*
-			   traceSpin(quarkContract13(Gamma(5)*d_x2, u_x2*Gamma(5))));
-	// Term 4
-	local_tmp += trace(anti_u_prop*Gamma(gamma_value)*(forw_u_prop*Gamma(3)+forw_u_prop*Gamma(11))*
-			   quarkContract13(u_x2*Gamma(5), Gamma(5)*d_x2));
-	corr_local_fn = timesMinusI(local_tmp);
+	// Construct the non-local (possibly conserved) current contraction
+	LatticeSpinMatrix nonlocal_contract = 
+	  wallNuclUContract(nonlocalCurrentProp(u, mu, forw_u_prop, anti_u_prop), 
+			    u_x2, d_x2);
 
-	/*
-	 * Construct the non-local current matrix element 
-	 *
-	 * The form of J_mu = (1/2)*[psibar(x+mu)*U^dag_mu*(1+gamma_mu)*psi(x) -
-	 *                           psibar(x)*U_mu*(1-gamma_mu)*psi(x+mu)]
-	 */
-	LatticeComplex nonlocal_tmp;
-	// Term 1
-	nonlocal_tmp = -trace(tmp_prop2 * Gamma(5) * 
-			      quarkContract13(Gamma(5)*d_x2, u_x2*Gamma(3)+u_x2*Gamma(11)));
-	// Term 2
-	nonlocal_tmp -= trace(traceSpin(Gamma(3)*u_x2+Gamma(11)*u_x2) *
-			      traceSpin(quarkContract13(tmp_prop2*Gamma(5), Gamma(5)*d_x2)));
-	// Term 3
-	nonlocal_tmp -= trace(traceSpin(tmp_prop2*Gamma(3) + tmp_prop2*Gamma(11))*
-			      traceSpin(quarkContract13(Gamma(5)*d_x2, u_x2*Gamma(5))));
-	// Term 4
-	nonlocal_tmp += trace((tmp_prop2*Gamma(3) + tmp_prop2*Gamma(11))*
-			      quarkContract13(u_x2*Gamma(5), Gamma(5)*d_x2));
-	corr_nonlocal_fn = timesMinusI(nonlocal_tmp);
+	if (seq_src == 0)
+	{
+	  QDPIO::cerr << "do seq_src 0" << endl;
+
+	  /* "\bar u O u" insertion in proton, ie. "(u C gamma_5 d) u" */
+	  /* T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2 */
+	  /* C gamma_5 = Gamma(5) = - (C gamma_5)^T */
+	
+	  // The local non-conserved vector-current matrix element 
+	  corr_local_fn = 0.5 * traceSpin(local_contract + Gamma(8)*local_contract);
+
+	  // The nonlocal (possibly conserved) current matrix element 
+	  corr_nonlocal_fn = 0.25 * traceSpin(nonlocal_contract + Gamma(8)*nonlocal_contract);
+	}
+	else
+	{
+	  QDPIO::cerr << "do seq_src 2" << endl;
+
+	  /* "\bar u O u" insertion in proton, ie. "(u C gamma_5 d) u" */
+	  /* T = \Sigma_3 (1 + gamma_4) / 2 = -i (Gamma(3) + Gamma(11)) / 2 */
+	  /* C gamma_5 = Gamma(5) = - (C gamma_5)^T */
+
+	  // The local non-conserved vector-current matrix element 
+	  corr_local_fn = 0.5 * timesMinusI(traceSpin(Gamma(3)*local_contract + Gamma(11)*local_contract));
+
+	  // The nonlocal (possibly conserved) current matrix element 
+	  corr_nonlocal_fn = 0.25 * timesMinusI(traceSpin(Gamma(3)*nonlocal_contract + Gamma(11)*nonlocal_contract));
+	}
       }
       break;
 
+      case 1:
       case 3:
       {
-	/* "\bar d O d" insertion in proton, ie. "(u C gamma_5 d) u" */
-	/* T = \Sigma_3 (1 + gamma_4) / 2 = -i (Gamma(3) + Gamma(11)) / 2 */
-	/* C gamma_5 = Gamma(5) = - (C gamma_5)^T */
+	// "\bar d O d" insertion in proton, ie. "(u C gamma_5 d) u"
+	// The local non-conserved current contraction
+	LatticeSpinMatrix local_contract = 
+	  wallNuclUContract(LatticePropagator(anti_d_prop*Gamma(gamma_value)*forw_d_prop), 
+			    u_x2, d_x2);
 
-	// The local non-conserved vector-current matrix element 
-	// NOTE: extract the common  "-i" piece
-	LatticeComplex local_tmp;
-	// Term 5
-	local_tmp = -trace(Gamma(5)*anti_d_prop*Gamma(gamma_value)*forw_d_prop * 
-			   quarkContract14(u_x2*Gamma(5), u_x2*Gamma(3)+u_x2*Gamma(11)));
-	// Term 6
-	local_tmp -= trace(traceSpin(Gamma(3)*u_x2+Gamma(11)*u_x2) * 
-			   traceSpin(quarkContract13(u_x2*Gamma(5), 
-						     Gamma(5)*anti_d_prop*Gamma(gamma_value)*forw_d_prop)));
-	corr_local_fn = timesMinusI(local_tmp); 
+	// Construct the non-local (possibly conserved) current contraction
+	LatticeSpinMatrix nonlocal_contract = 
+	  wallNuclUContract(nonlocalCurrentProp(u, mu, forw_d_prop, anti_d_prop), 
+			    u_x2, d_x2);
 
-	// Construct the non-local current matrix element 
-	// NOTE: extract the common  "-i" piece
-	LatticeComplex nonlocal_tmp;
-	// Term 5
-	nonlocal_tmp = -trace(Gamma(5)*tmp_prop2*
-			      quarkContract14(u_x2*Gamma(5), u_x2*Gamma(3)+u_x2*Gamma(11)));
-	// Term 6
-	nonlocal_tmp -= trace(traceSpin(Gamma(3)*u_x2+Gamma(11)*u_x2) * 
-			      traceSpin(quarkContract13(u_x2*Gamma(5), Gamma(5)*tmp_prop2)));
-	corr_nonlocal_fn = timesMinusI(nonlocal_tmp);
+	if (seq_src == 1)
+	{
+	  QDPIO::cerr << "do seq_src 1" << endl;
+
+	  /* "\bar d O d" insertion in proton, ie. "(u C gamma_5 d) u" */
+	  /* T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2 */
+
+	  // The local non-conserved vector-current matrix element 
+	  corr_local_fn = 0.5 * traceSpin(local_contract + Gamma(8)*local_contract);
+
+	  // The nonlocal (possibly conserved) current matrix element 
+	  corr_nonlocal_fn = 0.25 * traceSpin(nonlocal_contract + Gamma(8)*nonlocal_contract);
+	}
+	else
+	{
+	  QDPIO::cerr << "do seq_src 3" << endl;
+
+	  /* "\bar d O d" insertion in proton, ie. "(u C gamma_5 d) u" */
+	  /* T = \Sigma_3 (1 + gamma_4) / 2 = -i (Gamma(3) + Gamma(11)) / 2 */
+	  /* C gamma_5 = Gamma(5) = - (C gamma_5)^T */
+
+	  // The local non-conserved vector-current matrix element 
+	  corr_local_fn = 0.5 * timesMinusI(traceSpin(Gamma(3)*local_contract + Gamma(11)*local_contract));
+
+	  // The nonlocal (possibly conserved) current matrix element 
+	  corr_nonlocal_fn = 0.25 * timesMinusI(traceSpin(Gamma(3)*nonlocal_contract + Gamma(11)*nonlocal_contract));
+	}
       }
       break;
 
@@ -235,10 +269,8 @@ void wallNuclFormFac(XMLWriter& xml,
 	QDP_error_exit("Unknown sequential source type", seq_src);
       }
 
-      corr_local_fn *= 0.5;
       multi2d<DComplex> hsum_local = phases.sft(corr_local_fn);
 
-      corr_local_fn *= 0.25;
       multi2d<DComplex> hsum_nonlocal = phases.sft(corr_nonlocal_fn);
   
       XMLArrayWriter xml_inser_mom(xml_array, phases.numMom());
