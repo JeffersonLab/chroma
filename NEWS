@@ -1,3 +1,7 @@
+01/26/2004 -- Robert Edwards
+	Version 1.4.2. More eigenvalue stuff. Tagging pre-release of the
+        new SSE Wilson dslash support.
+
 01/07/2004 -- Robert Edwards
 	Version 1.4.1. Functioning Zolotarev code by Balint Joo.
 	Also, added WILSON and STAGGERED build control.
