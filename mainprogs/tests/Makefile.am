@@ -164,7 +164,7 @@ t_dwflocality_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 t_invert3_precwilson_SOURCES = t_invert3_precwilson.cc
 t_invert3_precwilson_DEPENDENCIES =  build_chroma_libs rebuild_other_libs
 
-t_invert4_precwilson_SOURCES = t_invert3_precwilson.cc invcg2_timing_hacks_2.h invcg2_timing_hacks_2.cc
+t_invert4_precwilson_SOURCES = t_invert4_precwilson.cc invcg2_timing_hacks_2.h invcg2_timing_hacks_2.cc
 t_invert4_precwilson_DEPENDENCIES =  build_chroma_libs rebuild_other_libs
 
 # build lib is a target that goes to the build dir of the library and 

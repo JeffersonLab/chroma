@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: invcg2_timing_hacks_2.h,v 1.1 2004-03-24 16:17:13 bjoo Exp $
+// $Id: invcg2_timing_hacks_2.h,v 1.2 2004-03-24 17:38:58 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -21,7 +21,7 @@ extern "C" {
 typedef OLattice< PSpinVector< PColorVector< RComplex< PScalar<REAL> >, Nc>, Ns> > LFerm;
                                                                                 
 typedef OScalar< PScalar < PScalar < RScalar< PScalar < REAL > > > > > LScal;
-                                                                                
+typedef OScalar< PScalar < PScalar < RScalar< PScalar < DOUBLE > > > > > LDble;                                                                                
 // Get at the REAL embedded in an LScal
 #define AT_REAL(a)  (a.elem().elem().elem().elem().elem())
                                                                                 

@@ -1,4 +1,4 @@
-// $Id: t_invert4_precwilson.cc,v 1.1 2004-03-24 16:17:13 bjoo Exp $
+// $Id: t_invert4_precwilson.cc,v 1.2 2004-03-24 17:38:58 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -175,19 +175,20 @@ int main(int argc, char **argv)
   multi1d<Double> mflops(10);
   multi1d<Double> mydt_a(10);
   
-  for (j=0; j < 10; ++j)
+  for (int j=0; j < 10; ++j)
   {
     psi = zero;
 
     swatch.reset();
     swatch.start();
 
-    InvCG2_timing_hacks(*D_op, 
-			chi, 
-			psi,
-			Real(1.0e-7),
-			100000,
-			iter);
+    InvCG2EvenOddPrecWilsLinOp(D,
+                               chi,
+                               psi,
+                               mass,
+                               Real(1.0e-6),
+                               10000,
+                               iter);
 
     swatch.stop();
 										    mydt=Double(swatch.getTimeInSeconds());

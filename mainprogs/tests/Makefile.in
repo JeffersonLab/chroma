@@ -272,7 +272,7 @@ t_dwflocality_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 t_invert3_precwilson_SOURCES = t_invert3_precwilson.cc
 t_invert3_precwilson_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
-t_invert4_precwilson_SOURCES = t_invert3_precwilson.cc invcg2_timing_hacks_2.h invcg2_timing_hacks_2.cc
+t_invert4_precwilson_SOURCES = t_invert4_precwilson.cc invcg2_timing_hacks_2.h invcg2_timing_hacks_2.cc
 t_invert4_precwilson_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 subdir = mainprogs/tests
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
@@ -344,7 +344,7 @@ am_t_invert3_precwilson_OBJECTS = t_invert3_precwilson.$(OBJEXT)
 t_invert3_precwilson_OBJECTS = $(am_t_invert3_precwilson_OBJECTS)
 t_invert3_precwilson_LDADD = $(LDADD)
 t_invert3_precwilson_LDFLAGS =
-am_t_invert4_precwilson_OBJECTS = t_invert3_precwilson.$(OBJEXT) \
+am_t_invert4_precwilson_OBJECTS = t_invert4_precwilson.$(OBJEXT) \
 	invcg2_timing_hacks_2.$(OBJEXT)
 t_invert4_precwilson_OBJECTS = $(am_t_invert4_precwilson_OBJECTS)
 t_invert4_precwilson_LDADD = $(LDADD)
@@ -445,6 +445,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/t_formfac.Po ./$(DEPDIR)/t_gfix.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_hypsmear.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_invert3_precwilson.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_invert4_precwilson.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_io.Po ./$(DEPDIR)/t_lwldslash.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_lwldslash_pab.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_lwldslash_sse.Po \
@@ -622,6 +623,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_gfix.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_hypsmear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_invert3_precwilson.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_invert4_precwilson.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_lwldslash.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_lwldslash_pab.Po@am__quote@

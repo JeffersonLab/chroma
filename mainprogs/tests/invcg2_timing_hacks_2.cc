@@ -1,4 +1,4 @@
-// $Id: invcg2_timing_hacks_2.cc,v 1.1 2004-03-24 16:17:13 bjoo Exp $
+// $Id: invcg2_timing_hacks_2.cc,v 1.2 2004-03-24 17:38:57 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -64,7 +64,7 @@
  *  2 A + 2 Nc Ns + N_Count ( 2 A + 10 Nc Ns )
  */
 
-void InvCG2_timing_hacks_a(const PABWilsonDslash &D,
+void InvCG2EvenOddPrecWilsLinOp(const PABWilsonDslash &D,
 			   const LFerm& chi,
 			   LFerm& psi,
 			   const LScal& mass,
@@ -72,10 +72,10 @@ void InvCG2_timing_hacks_a(const PABWilsonDslash &D,
 			   int MaxCG, 
 			   int& n_count)
 {
-  // Always work on checkerboard 1.
+  // Always work on checkerboard 1. -- Chroma convention for even odd prec solver
   const OrderedSubset s = rb[1];
 
-  // Length of vectors;
+  // Length of vectors; -- subset length times Ns (Nc*Complex taken care of below)
   int n_3vec = (s.end() - s.start() + 1)*Ns;
 
   // Useful Coefficient
@@ -94,9 +94,11 @@ void InvCG2_timing_hacks_a(const PABWilsonDslash &D,
 
   //  Real rsd_sq = (RsdCG * RsdCG) * Real(norm2(chi,s));
 
+  // Initial norm -- could be passed in I suppose
   REAL chi_sq =(REAL)AT_REAL(norm2(chi,s));
-
   // QDPIO::cout << "chi_norm = " << sqrt(chi_sq) << endl;
+
+  // ( Target residuum * || chi || )^2. Ignored in this test
   REAL rsd_sq = (AT_REAL(RsdCG) * AT_REAL(RsdCG)) * chi_sq;
 
   //                                            +
@@ -110,24 +112,35 @@ void InvCG2_timing_hacks_a(const PABWilsonDslash &D,
 
   // Apply M^{dag}M to psi
   
-  // M
+  // M -- cb issues taken care of by D.apply 
+  // could save on function call overhead here by calling
+  // Pete's routines directly
+
   D.apply(tmp1, psi, PLUS, 0);
   D.apply(tmp2, tmp1,PLUS , 1);
-  tmp2[rb[1]] = mquarterinvfact*tmp2;
+
+  // One day there will be a single routine for these
+  tmp3[rb[1]] = mquarterinvfact*tmp2;
   mp[rb[1]] = fact*psi + tmp3;
 
   // Mdag
   D.apply(tmp1, mp, MINUS, 0);
   D.apply(tmp2, tmp1, MINUS, 1);
-  tmp2[rb[1]] = mquarterinvfact*tmp2;
+  tmp3[rb[1]] = mquarterinvfact*tmp2;
   mmp[rb[1]] = fact*psi + tmp3;
 
+  // Do a vaxpy3 norm here to get r and LOCAL || r ||^2 together
   REAL cp;
- 
+  LDble sum; 
   //r[s] = chi - mmp; and || r[s] ||^2
   vaxpy3_norm( FIRST_ELEM(r,s), &mone, FIRST_ELEM(mmp,s), (REAL *)FIRST_ELEM(chi,s), 
 	       n_3vec, &cp);
- 
+
+  // Do DP sum. Could save function call overhead here
+  AT_REAL(sum) = (DOUBLE)cp; 
+  Internal::globalSum(sum);
+  cp = (REAL)AT_REAL(sum); 
+
   //  p[1]  :=  r[0]
   LFerm p;
   p[s] = r;
@@ -138,6 +151,7 @@ void InvCG2_timing_hacks_a(const PABWilsonDslash &D,
   // Disable early termination
 #if 0
   //  IF |r[0]| <= RsdCG |Chi| THEN RETURN;
+  // cp is now a REAL so no need for the Chroma toBool() ism
   if ( cp  <=  rsd_sq )
   {
     n_count = 0;
@@ -150,7 +164,7 @@ void InvCG2_timing_hacks_a(const PABWilsonDslash &D,
   //
   REAL a, b, c, d;
   REAL *aptr;
-  LScal as,bs;
+  LScal as,bs; // For expressions
   REAL ma;
 
   // Go to n_count iters
@@ -165,17 +179,23 @@ void InvCG2_timing_hacks_a(const PABWilsonDslash &D,
     //  Mp = M(u) * p
     D.apply(tmp1, p, PLUS, 0);
     D.apply(tmp2, tmp1,PLUS , 1);
-    tmp2[rb[1]] = mquarterinvfact*tmp2;
+    tmp3[rb[1]] = mquarterinvfact*tmp2;
 
+    // replace this with a vaxpy norm
+    // in the future will need a vaxpby_norm
     // mp[rb[1]] = fact*psi + tmp3;
-
     //  d = | mp | ** 2
     vaxpy3_norm(FIRST_ELEM(mp,s), 
 		&AT_REAL(fact), 
-		FIRST_ELEM(psi,s), FIRST_ELEM(tmp3,s), 
+		FIRST_ELEM(psi,s), 
+                FIRST_ELEM(tmp3,s), 
 		n_3vec, 
 		&d);
-
+  
+     // Global sum the local norm 
+     AT_REAL(sum) = (DOUBLE)d;
+     Internal::globalSum(sum);
+     d = (REAL)AT_REAL(sum);
 
     // Disable this. Set a = 1 to stop convergence
 #if 0
@@ -185,7 +205,7 @@ void InvCG2_timing_hacks_a(const PABWilsonDslash &D,
 #endif
 
     //  Psi[k] += a[k] p[k]
-    AT_REAL(as)  = a;
+    AT_REAL(as)  = a;   // For expressions below
     psi[s] += as * p;	/* 2 Nc Ns  flops */
 
     //  r[k] -= a[k] A . p[k] ;
@@ -193,9 +213,10 @@ void InvCG2_timing_hacks_a(const PABWilsonDslash &D,
     //  r  =  r  -  M(u)  . Mp  =  M  . M . p  =  A . p
     D.apply(tmp1, mp, MINUS, 0);
     D.apply(tmp2, tmp1, MINUS, 1);
-    tmp2[rb[1]] = mquarterinvfact*tmp2;
+    tmp3[rb[1]] = mquarterinvfact*tmp2;
     mmp[rb[1]] = fact*psi + tmp3;
 
+    // replace these with a vaxpy3 norm. 
     //r[s] -= a * mmp;
     //  cp  =  | r[k] |**2
     ma = -a;
@@ -204,12 +225,17 @@ void InvCG2_timing_hacks_a(const PABWilsonDslash &D,
 		FIRST_ELEM(mmp,s), 
 		FIRST_ELEM(r,s), n_3vec, &cp);
 
+     // Global sum the local norm
+     AT_REAL(sum)=(DOUBLE)cp;
+     Internal::globalSum(sum);
+     cp = (REAL)AT_REAL(sum);
 
 
     // QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << endl;
 
     // Disable termination
 #if 0
+    // cp and rsd_sq are now REAL so no need for Chroma toBool() ism
     if ( cp  <=  rsd_sq )
     {
       n_count = k;
@@ -217,12 +243,15 @@ void InvCG2_timing_hacks_a(const PABWilsonDslash &D,
     }
 #endif
 
+    // Disable convergence
 #if 0
     //  b[k+1] := |r[k]|**2 / |r[k-1]|**2
     b = cp / c;
 #else
     b = 1/1;
 #endif
+
+    // For expressions
     AT_REAL(bs) = b;
     //  p[k+1] := r[k] + b[k+1] p[k]
     p[s] = r + bs*p;	/* Nc Ns  flops */
