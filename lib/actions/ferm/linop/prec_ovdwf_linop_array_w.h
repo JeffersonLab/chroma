@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovdwf_linop_array_w.h,v 1.2 2004-02-14 18:48:35 edwards Exp $
+// $Id: prec_ovdwf_linop_array_w.h,v 1.3 2004-09-02 20:00:02 kostas Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned Overlap-DWF (Borici) linear operator
  */
@@ -137,7 +137,11 @@ private:
   Real a5;
   int  N5;
 
-  Real InvTwoKappa ;
+  Real c5TwoKappa ;
+  Real c5InvTwoKappa ;
+  Real b5TwoKappa ;
+  Real b5InvTwoKappa ;
+
   Real TwoKappa ;
   Real Kappa;
   Real invDfactor ;

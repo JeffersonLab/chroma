@@ -1,4 +1,4 @@
-// $Id: prec_nef_linop_array_w.cc,v 1.3 2004-09-01 23:35:06 kostas Exp $
+// $Id: prec_nef_linop_array_w.cc,v 1.4 2004-09-02 20:00:02 kostas Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned NEF domain-wall linear operator
  */
@@ -24,20 +24,28 @@ EvenOddPrecNEFDWLinOpArray::create(const multi1d<LatticeColorMatrix>& u_,
 				   const Real &c5_, const Real& m_q_, int N5_)
 {
   START_CODE();
-
+  
   WilsonMass = WilsonMass_;
   m_q = m_q_;
   b5  = b5_;
   c5  = c5_;
   N5  = N5_;
-
+  
   D.create(u_);
-
-  InvTwoKappa = 1.0 + b5*(Nd-WilsonMass) ; 
-  TwoKappa = 1.0 / InvTwoKappa ;
+  
+  
+  c5InvTwoKappa = 1.0 - c5*(Nd-WilsonMass) ;
+  c5TwoKappa = 1.0 / c5InvTwoKappa ;
+  
+  b5InvTwoKappa = 1.0 + b5*(Nd-WilsonMass) ;
+  b5TwoKappa = 1.0 / b5InvTwoKappa ;
+  
+  //InvTwoKappa = b5InvTwoKappa/c5InvTwoKappa ; 
+  TwoKappa =  c5InvTwoKappa/b5InvTwoKappa ;
   Kappa = TwoKappa/2.0 ;
   
-  invDfactor =1.0/(1.0  + m_q/pow(InvTwoKappa,N5)) ;
+  invDfactor =1.0/(1.0  + m_q*pow(TwoKappa,N5)) ;
+
 
   END_CODE();
 }
@@ -61,41 +69,43 @@ EvenOddPrecNEFDWLinOpArray::applyDiag(multi1d<LatticeFermion>& chi,
 {
   START_CODE();
 
+  Real c5Fact(0.5*c5InvTwoKappa) ; // The 0.5 is for the P+ and P-
+
   switch ( isign ) {
     
   case PLUS:
     {
       for(int s(1);s<N5-1;s++) // 1/2k psi[s] + P_- * psi[s+1] + P_+ * psi[s-1]
-	chi[s][rb[cb]] = InvTwoKappa*psi[s] - 
-	  0.5*( psi[s+1] + psi[s-1] + GammaConst<Ns,Ns*Ns-1>()*(psi[s-1] - psi[s+1]) ) ;
+	chi[s][rb[cb]] = b5InvTwoKappa*psi[s] - 
+	  c5Fact*( psi[s+1] + psi[s-1] + GammaConst<Ns,Ns*Ns-1>()*(psi[s-1] - psi[s+1]) ) ;
       
       int N5m1(N5-1) ;
       //s=0 -- 1/2k psi[0] - P_- * psi[1] + mf* P_+ * psi[N5-1]
-      chi[0][rb[cb]] = InvTwoKappa*psi[0] - 
-	0.5*( psi[1]   - m_q*psi[N5m1] - GammaConst<Ns,Ns*Ns-1>()*(m_q*psi[N5m1] + psi[1]) ) ;
+      chi[0][rb[cb]] = b5InvTwoKappa*psi[0] - 
+	c5Fact*( psi[1]   - m_q*psi[N5m1] - GammaConst<Ns,Ns*Ns-1>()*(m_q*psi[N5m1] + psi[1]) ) ;
       
       int N5m2(N5-2);
       //s=N5-1 -- 1/2k psi[N5-1] +mf* P_- * psi[0]  -  P_+ * psi[N5-2]
-      chi[N5m1][rb[cb]] = InvTwoKappa*psi[N5m1] - 
-	0.5*( psi[N5m2] - m_q *psi[0] + GammaConst<Ns,Ns*Ns-1>()*(psi[N5m2] + m_q * psi[0]) );
+      chi[N5m1][rb[cb]] = b5InvTwoKappa*psi[N5m1] - 
+	c5Fact*( psi[N5m2] - m_q *psi[0] + GammaConst<Ns,Ns*Ns-1>()*(psi[N5m2] + m_q * psi[0]) );
     }
     break ;
 
   case MINUS:
     {    
       for(int s(1);s<N5-1;s++) // 1/2k psi[s] - P_+ * psi[s+1] - P_- * psi[s-1]
-	chi[s][rb[cb]] = InvTwoKappa*psi[s] - 
-	  0.5*( psi[s+1] + psi[s-1] + GammaConst<Ns,Ns*Ns-1>()*(psi[s+1] - psi[s-1]) ) ;
+	chi[s][rb[cb]] = b5InvTwoKappa*psi[s] - 
+	  c5Fact*( psi[s+1] + psi[s-1] + GammaConst<Ns,Ns*Ns-1>()*(psi[s+1] - psi[s-1]) ) ;
       
       int N5m1(N5-1) ;
       //s=0 -- 1/2k psi[0] - P_+ * psi[1] + mf* P_- * psi[N5-1]
-      chi[0][rb[cb]] = InvTwoKappa*psi[0] - 
-	0.5*( psi[1]   - m_q*psi[N5m1] + GammaConst<Ns,Ns*Ns-1>()*( psi[1]+m_q*psi[N5m1]) ) ;
+      chi[0][rb[cb]] = b5InvTwoKappa*psi[0] - 
+	c5Fact*( psi[1]   - m_q*psi[N5m1] + GammaConst<Ns,Ns*Ns-1>()*( psi[1]+m_q*psi[N5m1]) ) ;
       
       int N5m2(N5-2);
       //s=N5-1 -- 1/2k psi[N5-1] + mf* P_+ * psi[0]  -  P_- * psi[N5-2]
-      chi[N5m1][rb[cb]] = InvTwoKappa*psi[N5m1] - 
-	0.5*( psi[N5m2] - m_q *psi[0] - GammaConst<Ns,Ns*Ns-1>()*(psi[N5m2] + m_q * psi[0]) );
+      chi[N5m1][rb[cb]] = b5InvTwoKappa*psi[N5m1] - 
+	c5Fact*( psi[N5m2] - m_q *psi[0] - GammaConst<Ns,Ns*Ns-1>()*(psi[N5m2] + m_q * psi[0]) );
     }
     break ;
   }
@@ -122,13 +132,15 @@ EvenOddPrecNEFDWLinOpArray::applyDiagInv(multi1d<LatticeFermion>& chi,
 {
   START_CODE();
 
+  // Copy and scale by TwoKappa (1/M0)
+  for(int s(0);s<N5;s++)
+    chi[s][rb[cb]] = b5TwoKappa * psi[s] ;
+
+
   switch ( isign ) {
 
   case PLUS:
     {
-      // Copy and scale by TwoKappa (1/M0)
-      for(int s(0);s<N5;s++)
-	chi[s][rb[cb]] = TwoKappa * psi[s] ;
       
       // First apply the inverse of Lm 
       Real fact(0.5*m_q*TwoKappa) ;
@@ -162,10 +174,7 @@ EvenOddPrecNEFDWLinOpArray::applyDiagInv(multi1d<LatticeFermion>& chi,
     
   case MINUS:
     {
-      // Copy and scale by TwoKappa (1/M0)
-      for(int s(0);s<N5;s++)
-	chi[s][rb[cb]] = TwoKappa * psi[s] ;
-      
+       
       // First apply the inverse of Lm 
       Real fact(0.5*m_q*TwoKappa) ;
       for(int s(0);s<N5-1;s++){
@@ -196,6 +205,11 @@ EvenOddPrecNEFDWLinOpArray::applyDiagInv(multi1d<LatticeFermion>& chi,
     break ;
   }
 
+  //Fixup the normalization. This step can probably be incorporated into
+  // the above algerbra for more efficiency
+  //for(int s(0);s<N5;s++)
+  //  chi[s][rb[cb]] *= c5TwoKappa ;
+
   //Done! That was not that bad after all....
   //See, I told you so...
   END_CODE();
@@ -219,6 +233,8 @@ EvenOddPrecNEFDWLinOpArray::applyOffDiag(multi1d<LatticeFermion>& chi,
 {
   START_CODE();
 
+  Real fb5 = -0.5*b5 ;
+  Real fc5 = -0.25*c5 ;
   
   switch ( isign ) 
   {
@@ -226,28 +242,28 @@ EvenOddPrecNEFDWLinOpArray::applyOffDiag(multi1d<LatticeFermion>& chi,
     {
       LatticeFermion tmp;
       int otherCB = (cb + 1)%2 ;
-
+      
       for(int s(1);s<N5-1;s++){
-	tmp[rb[otherCB]] = b5*psi[s] + 
-	  0.5*c5*(psi[s+1] + psi[s-1] +
-		  GammaConst<Ns,Ns*Ns-1>()*(psi[s-1]-psi[s+1]));
+	tmp[rb[otherCB]] = fb5*psi[s] + 
+	  fc5*(psi[s+1] + psi[s-1] +
+	       GammaConst<Ns,Ns*Ns-1>()*(psi[s-1]-psi[s+1]));
 	D.apply(chi[s],tmp,isign,cb);
-	chi[s][rb[cb]] *= (-0.5);
+	//chi[s][rb[cb]] *= (-0.5);
       }
       
       int N5m1(N5-1);
-      tmp[rb[otherCB]] = b5*psi[0]  + 
-	(0.5*c5)*(psi[1] - m_q*psi[N5m1] 
-		  - GammaConst<Ns,Ns*Ns-1>()*(m_q*psi[N5m1] + psi[1]));
+      tmp[rb[otherCB]] = fb5*psi[0]  + 
+	fc5*(psi[1] - m_q*psi[N5m1] 
+	     - GammaConst<Ns,Ns*Ns-1>()*(m_q*psi[N5m1] + psi[1]));
       D.apply(chi[0],tmp,isign,cb);
-      chi[0][rb[cb]] *= (-0.5);
+      //chi[0][rb[cb]] *= (-0.5);
       
       int N5m2(N5-2);
-      tmp[rb[otherCB]] = b5*psi[N5m1] + 
-	(0.5*c5)*( psi[N5m2] - m_q *psi[0] +
-		   GammaConst<Ns,Ns*Ns-1>()*(psi[N5m2] + m_q * psi[0]));
+      tmp[rb[otherCB]] = fb5*psi[N5m1] + 
+	fc5*( psi[N5m2] - m_q *psi[0] +
+	      GammaConst<Ns,Ns*Ns-1>()*(psi[N5m2] + m_q * psi[0]));
       D.apply(chi[N5m1],tmp,isign,cb);
-      chi[N5m1][rb[cb]] *= (-0.5);
+      //chi[N5m1][rb[cb]] *= (-0.5);
       
     }
     break ;
@@ -257,22 +273,22 @@ EvenOddPrecNEFDWLinOpArray::applyOffDiag(multi1d<LatticeFermion>& chi,
       multi1d<LatticeFermion> tmp(N5) ;
       for(int s(0);s<N5;s++){
 	D.apply(tmp[s],psi[s],isign,cb);
-	tmp[s][rb[cb]] *= (-0.5) ;
+	//tmp[s][rb[cb]] *= (-0.5) ;
       }
       for(int s(1);s<N5-1;s++){
-	chi[s][rb[cb]] = b5*tmp[s] + 
-	  0.5*c5*(tmp[s+1] + tmp[s-1] -
+	chi[s][rb[cb]] = fb5*tmp[s] + 
+	  fc5*(tmp[s+1] + tmp[s-1] -
 		  GammaConst<Ns,Ns*Ns-1>()*(tmp[s-1]-tmp[s+1]));
       }
       int N5m1(N5-1);
-      chi[0][rb[cb]] = b5*tmp[0]  + 
-	(0.5*c5)*(tmp[1] - m_q*tmp[N5m1] + 
+      chi[0][rb[cb]] = fb5*tmp[0]  + 
+	fc5*(tmp[1] - m_q*tmp[N5m1] + 
 		  GammaConst<Ns,Ns*Ns-1>()*(m_q*tmp[N5m1] + tmp[1]));
 
       
       int N5m2(N5-2);
-      chi[N5m1][rb[cb]] = b5*tmp[N5m1] + 
-	(0.5*c5)*( tmp[N5m2] - m_q *tmp[0] +
+      chi[N5m1][rb[cb]] = fb5*tmp[N5m1] + 
+	fc5*( tmp[N5m2] - m_q *tmp[0] -
 		   GammaConst<Ns,Ns*Ns-1>()*(tmp[N5m2] + m_q * tmp[0]));
       
 

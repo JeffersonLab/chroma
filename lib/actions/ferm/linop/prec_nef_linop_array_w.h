@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_nef_linop_array_w.h,v 1.5 2004-09-01 23:35:06 kostas Exp $
+// $Id: prec_nef_linop_array_w.h,v 1.6 2004-09-02 20:00:02 kostas Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned NEF domain-wall fermion linear operator
  */
@@ -68,81 +68,13 @@ public:
     {
       applyDiagInv(chi, psi, isign, 0);
     }
-  
-  void CompbineHoppingVectors(multi1d<LatticeFermion>& tmp,
-			      const multi1d<LatticeFermion>& chi,
-			      enum PlusMinus isign,
-			      const int cb) const
-  {
-    switch (isign){
-    case PLUS:
-      for(int s(1);s<N5-1;s++)
-	tmp[s][rb[cb]] = b5*chi[s] + 
-	  0.5*c5*(chi[s+1] + chi[s-1] + 
-		  GammaConst<Ns,Ns*Ns-1>()*(chi[s-1] - chi[s+1])) ;
-      //Now the boundary terms
-      tmp[0][rb[cb]] = b5*chi[0] +
-	0.5*c5*(chi[1] - m_q*chi[N5-1] -
-		GammaConst<Ns,Ns*Ns-1>()*( m_q*chi[N5-1] + chi[1])) ;
-      tmp[N5-1][rb[cb]] = b5*chi[N5-1] + 
-	0.5*c5*(chi[N5-2]  - m_q*chi[0] + 
-		GammaConst<Ns,Ns*Ns-1>()*(chi[N5-2] + m_q*chi[0]));
-      break ;
-    case MINUS:
-      for(int s(1);s<N5-1;s++)
-	tmp[s][rb[cb]] = b5*chi[s] + 
-	  0.5*c5*(chi[s+1] + chi[s-1] - 
-		  GammaConst<Ns,Ns*Ns-1>()*(chi[s-1] - chi[s+1])) ;
-      //Now the boundary terms
-      tmp[0][rb[cb]] = b5*chi[0] +
-	0.5*c5*(chi[1] - m_q*chi[N5-1] +
-		GammaConst<Ns,Ns*Ns-1>()*( m_q*chi[N5-1] +chi[1])) ;
-      tmp[N5-1][rb[cb]] = b5*chi[N5-1] + 
-	0.5*c5*(chi[N5-2]  - m_q*chi[0] - 
-		GammaConst<Ns,Ns*Ns-1>()*(chi[N5-2] + m_q*chi[0]));
-      break ;
-    }
-  }
-
-//! Apply the even-odd (odd-even) coupling piece of the NEF operator
-/*!
- * \ingroup linop
- *
- * The operator acts on the entire lattice
- *
- * \param psi 	  Pseudofermion field     	       (Read)
- * \param isign   Flag ( PLUS | MINUS )   	       (Read)
- * \param cb      checkerboard ( 0 | 1 )               (Read)
- */
-  void  applyOffDiag(multi1d<LatticeFermion>& chi, 
-		     const multi1d<LatticeFermion>& psi, 
-		     enum PlusMinus isign,
-		     const int cb) const ;
 
   //! Apply the the even-odd block onto a source vector
   void evenOddLinOp(multi1d<LatticeFermion>& chi, 
 		    const multi1d<LatticeFermion>& psi, 
 		    enum PlusMinus isign) const
     {
-      multi1d<LatticeFermion> tmp(N5) ;
-
-      switch ( isign ){
-      case PLUS:
-	CompbineHoppingVectors(tmp,psi,isign,1) ;
-	for(int s(0);s<N5;s++)
-	  {
-	    D.apply(chi[s],tmp[s],isign,0);
-	    chi[s][rb[0]] *= (-0.5);
-	  }
-	break;
-      case MINUS:
-	for(int s(0);s<N5;s++){
-	  D.apply(tmp[s],psi[s],isign,0);
-	  tmp[s][rb[0]] *= (-0.5) ;
-	}
-	CompbineHoppingVectors(chi,tmp,isign,0) ;
-	break ;
-      }
+      applyOffDiag(chi, psi, isign, 0);
     }
 
   //! Apply the the odd-even block onto a source vector
@@ -150,24 +82,7 @@ public:
 		    const multi1d<LatticeFermion>& psi, 
 		    enum PlusMinus isign) const
     {
-      multi1d<LatticeFermion> tmp(N5) ;
-      switch ( isign ){
-      case PLUS:
-	CompbineHoppingVectors(tmp,psi,isign,0) ;
-	for(int s(0);s<N5;s++)
-	  {
-	    D.apply(chi[s],tmp[s],isign,1);
-	    chi[s][rb[1]] *= (-0.5);
-	  }
-	break ;
-      case MINUS:
-	for(int s(0);s<N5;s++){
-	  D.apply(tmp[s],psi[s],isign,1);
-	  tmp[s][rb[1]] *= (-0.5) ;
-	}
-	CompbineHoppingVectors(chi,tmp,isign,1) ;
-	break ;
-      }
+      applyOffDiag(chi, psi, isign, 1);
     }
 
   //! Apply the the odd-odd block onto a source vector
@@ -215,6 +130,21 @@ protected:
 		    const int cb) const;
     
 
+//! Apply the even-odd (odd-even) coupling piece of the NEF operator
+/*!
+ * \ingroup linop
+ *
+ * The operator acts on the entire lattice
+ *
+ * \param psi 	  Pseudofermion field     	       (Read)
+ * \param isign   Flag ( PLUS | MINUS )   	       (Read)
+ * \param cb      checkerboard ( 0 | 1 )               (Read)
+ */
+  void  applyOffDiag(multi1d<LatticeFermion>& chi, 
+		     const multi1d<LatticeFermion>& psi, 
+		     enum PlusMinus isign,
+		     const int cb) const ;
+
 private:
   Real WilsonMass;
   Real c5;
@@ -222,7 +152,12 @@ private:
   Real m_q;
   int  N5;
 
-  Real InvTwoKappa ;
+  Real c5TwoKappa ;
+  Real c5InvTwoKappa ;
+  Real b5TwoKappa ;
+  Real b5InvTwoKappa ;
+
+  //Real InvTwoKappa ;
   Real TwoKappa ;
   Real Kappa;
   Real invDfactor ;

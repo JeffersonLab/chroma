@@ -1,4 +1,4 @@
-// $Id: t_neflinop.cc,v 1.3 2004-09-01 23:35:06 kostas Exp $
+// $Id: t_neflinop.cc,v 1.4 2004-09-02 20:00:02 kostas Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -181,7 +181,7 @@ int main(int argc, char **argv)
   multi1d<LatticeFermion> tmp2(N5);
   (*Anef)(tmp2, psi, PLUS);
 
-  (*Adwf).unprecLinOp(savePrec,psi,PLUS);
+  (*Anef).unprecLinOp(savePrec,psi,PLUS);
 
   for(int m=0; m < N5; ++m){
     tmp2[m][rb[0]] = tmp1[m] ;
@@ -276,7 +276,7 @@ int main(int argc, char **argv)
   for(int m=0; m < N5; ++m)
     diff_oe[m] = tmp2[m]-tmp1[m] ;
 
-  push(xml,"prec_pieces");
+  push(xml,"prec_pieces_PLUS");
   write(xml, "norm_ee" , Real(norm2(diff_ee)));
   write(xml, "norm_oo" , Real(norm2(diff_oo)));
   write(xml, "norm_eo" , Real(norm2(diff_eo)));
@@ -285,6 +285,47 @@ int main(int argc, char **argv)
   write(xml, "norm_inv_ee" , Real(norm2(diff_inv_ee)));
 
   pop(xml);
+
+  (*Adwf).evenEvenLinOp(tmp1, psi, MINUS);
+  (*Anef).evenEvenLinOp(tmp2, psi, MINUS);
+  
+  for(int m=0; m < N5; ++m)
+    diff_ee[m] = tmp2[m]-tmp1[m] ;
+
+  (*Adwf).oddOddLinOp(tmp1, psi, MINUS);
+  (*Anef).oddOddLinOp(tmp2, psi, MINUS);
+  
+  for(int m=0; m < N5; ++m)
+    diff_oo[m] = tmp2[m]-tmp1[m] ;
+
+  (*Adwf).evenEvenInvLinOp(tmp1, psi, MINUS);
+  (*Anef).evenEvenInvLinOp(tmp2, psi, MINUS);
+  
+  for(int m=0; m < N5; ++m)
+    diff_inv_ee[m] = tmp2[m]-tmp1[m] ;
+
+  (*Adwf).evenOddLinOp(tmp1, psi, MINUS);
+  (*Anef).evenOddLinOp(tmp2, psi, MINUS);
+  
+  for(int m=0; m < N5; ++m)
+    diff_eo[m] = tmp2[m]-tmp1[m] ;
+
+  (*Adwf).oddEvenLinOp(tmp1, psi, MINUS);
+  (*Anef).oddEvenLinOp(tmp2, psi, MINUS);
+  
+  for(int m=0; m < N5; ++m)
+    diff_oe[m] = tmp2[m]-tmp1[m] ;
+
+  push(xml,"prec_pieces_MINUS");
+  write(xml, "norm_ee" , Real(norm2(diff_ee)));
+  write(xml, "norm_oo" , Real(norm2(diff_oo)));
+  write(xml, "norm_eo" , Real(norm2(diff_eo)));
+  write(xml, "norm_oe" , Real(norm2(diff_oe)));
+
+  write(xml, "norm_inv_ee" , Real(norm2(diff_inv_ee)));
+
+  pop(xml);
+
  }
 
  pop(xml);
