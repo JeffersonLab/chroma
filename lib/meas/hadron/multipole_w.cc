@@ -1,4 +1,4 @@
-// $Id: multipole_w.cc,v 1.2 2005-03-24 04:34:16 edwards Exp $
+// $Id: multipole_w.cc,v 1.3 2005-03-27 18:10:17 edwards Exp $
 /*! \file
  *  \brief Multipole moments
  *
@@ -16,6 +16,14 @@ namespace Chroma
   // Write a Multipole_t
   void write(BinaryWriter& bin, const Multipole_t& pole)
   {
+    int version = 1;
+    int max_L = pole.corr.size();
+    int Lt    = Layout::lattSize()[pole.j_decay];
+
+    write(bin,version);
+    write(bin,max_L);
+    write(bin,Lt);
+
     // Loop over possible "L" values
     for(int L = 0; L < pole.corr.size(); ++L)
     {
@@ -25,6 +33,8 @@ namespace Chroma
       // Loop over possible "M" values
       for(int MM = 0; MM < pole.corr[L].size(); ++MM)
       {
+	write(bin, L);
+	write(bin, MM);
 	write(bin, pole.corr[L][MM].electric);
 	write(bin, pole.corr[L][MM].magnetic);
       }
@@ -114,6 +124,8 @@ namespace Chroma
 
     // Initialize the slow Fourier transform phases
     SftMom phases(0, true, j_decay);
+
+    pole.j_decay = j_decay;
 
     // Length of lattice in j_decay direction and 3pt correlations fcns
     int length = phases.numSubsets();

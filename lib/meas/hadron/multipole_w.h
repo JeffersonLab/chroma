@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: multipole_w.h,v 1.2 2005-03-24 04:34:16 edwards Exp $
+// $Id: multipole_w.h,v 1.3 2005-03-27 18:10:17 edwards Exp $
 /*! \file
  *  \brief Multipole moments
  *
@@ -27,6 +27,7 @@ namespace Chroma
       multi1d<Complex>  magnetic;
     };
 
+    int  j_decay;
     multi1d< multi1d< ElecMag_t > >  corr;
   };
 
