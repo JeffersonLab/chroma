@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linop.h,v 1.13 2003-11-22 19:37:23 kostas Exp $
+// $Id: linop.h,v 1.14 2003-11-23 06:02:57 edwards Exp $
 
 /*! \file
  * \brief Linear operators
@@ -21,6 +21,7 @@
 #include "dslash_w.h"
 
 #include "unprec_wilson_linop_w.h"
+#include "prec_wilson_linop_w.h"
 #include "overlapbu_linop_w.h"
 
 #include "unprec_dwf_linop_w.h"
@@ -29,9 +30,7 @@
 #include "dwffld_w.h"
 #include "ldwfdslash_w.h"
 
-#include "eo4d_dwf_factors_array_w.h"
-#include "eo4d_dwf_linop_array_w.h"
-
+#include "prec_dwf_linop_array_w.h"
 
 #include "unprec_ovext_linop_array_w.h"
 
