@@ -1,4 +1,4 @@
-// $Id: cfgtransf.cc,v 1.7 2003-10-16 01:40:11 edwards Exp $
+// $Id: cfgtransf.cc,v 1.8 2004-01-13 05:49:10 edwards Exp $
 /*! \file
  *  \brief Many-to-many gauge transformation routine
  */
@@ -584,8 +584,7 @@ int main(int argc, char **argv)
   int nrl_gf;
   if ( GFixP  )
   {
-//    gfix(u, j_decay, GFAccu, GFMax, nrl_gf, OrlxDo, OrPara);
-    QDP_error_exit("gauge fixing not implemented");
+    coulGauge(u, nrl_gf, j_decay, GFAccu, GFMax, OrlxDo, OrPara);
 
     MesPlq(u, w_plaq, s_plaq, t_plaq, link);
     for(int mu = 0; mu < Nd; ++mu)
