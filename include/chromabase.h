@@ -1,4 +1,4 @@
-// $Id: chromabase.h,v 1.6 2003-07-02 15:03:01 edwards Exp $
+// $Id: chromabase.h,v 1.7 2003-10-20 20:23:48 edwards Exp $
 //
 // Absolute basic stuff to use chroma
 
@@ -7,6 +7,18 @@
 
 #include "qdp.h"
 #include "qdp_util.h"
+
+#if defined(ARCH_SCALAR) || defined(ARCH_PARSCALAR)
+#include "chroma_scalarsite_defs.h"
+
+#elif defined(ARCH_SCALARVEC) || defined(ARCH_PARSCALARVEC)
+// #include "chroma_scalarvecsite_defs.h"
+
+#else
+#error "Unknown architecture ARCH"
+#endif
+
+
 
 using namespace QDP;
 
