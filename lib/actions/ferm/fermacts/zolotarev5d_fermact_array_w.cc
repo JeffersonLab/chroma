@@ -1,4 +1,4 @@
-// $Id: zolotarev5d_fermact_array_w.cc,v 1.3 2004-01-13 13:14:49 bjoo Exp $
+// $Id: zolotarev5d_fermact_array_w.cc,v 1.4 2004-01-13 17:52:15 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -8,6 +8,7 @@
 #include "actions/ferm/fermacts/zolotarev5d_fermact_array_w.h"
 #include "actions/ferm/linop/zolotarev5d_linop_array_w.h"
 #include "actions/ferm/linop/lmdagm.h"
+#include "actions/ferm/invert/invcg2_array.h"
 #include "zolotarev.h"
 
 
@@ -278,7 +279,7 @@ Zolotarev5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
  * \param ncg_had  number of CG iterations ( Write )
  */
 
-/*
+
 void 
 Zolotarev5DFermActArray::qprop(LatticeFermion& psi, 
 			       Handle<const ConnectState> state, 
@@ -287,6 +288,7 @@ Zolotarev5DFermActArray::qprop(LatticeFermion& psi,
 			       const Real& RsdCG, 
 			       int MaxCG, int& ncg_had) const
 {
+
   START_CODE("Zolotarev5DFermActArray::qprop");
 
   const int  N5 = size();   // array size better match
@@ -298,26 +300,53 @@ Zolotarev5DFermActArray::qprop(LatticeFermion& psi,
   // Initialize the 5D fields
   multi1d<LatticeFermion> chi5(N5);
   multi1d<LatticeFermion> psi5(N5);
-  psi5 = zero;
-  chi5 = zero;
+  
+ 
+  // For reasons I do not appreciate doing the solve as
+  //  M^{dag} M psi = M^{dag} chi
+  //  seems a few iterations faster and more accurate than
+  //  Doing M^{dag} M psi = chi
+  //  and then applying M^{dag}
 
-  psi5[0] = psi;
-  chi5[0] = Gamma(G5) * chi;
+  // So first get  M^{dag} gamma_5 chi into the source.
 
   // Construct the linear operator
   Handle<const LinearOperator< multi1d<LatticeFermion> > > A(linOp(state));
+  LinearOperator< multi1d<LatticeFermion> >* AdagA;
 
-  switch(invType)
-  {
+  switch(invType) {
   case CG_INVERTER: 
-    // psi5 = (H_o)^(-2) chi5
+
+    // Zero out 5D vectors
+    for(int i=0; i < N5; i++) {
+      psi5[i] = zero;
+      chi5[i] = zero;
+   }
+
+
+   
+    // Use psi5 as temporary
+    psi5[N5-1] = Gamma(G5) * chi;
+
+    // chi5 now holds  D^{dag} gamma_5 chi
+    (*A)(chi5, psi5, MINUS);
+
+    // Now use psi5 as it was meant to be
+    psi5[N5-1] = psi;
+
+    // psi5 = (M^{dag} M)^(-1) M^{dag} * gamma_5 * chi5
+    // psi5[N5]  = (1 - m)/2 D^{-1}(m) chi [N5]
     InvCG2(*A, chi5, psi5, RsdCG, MaxCG, n_count);
 
-    // chi5 = H_o * (H_o)^(-2) * gamma_5 * chi
-    (*A)(chi5, psi5, MINUS);
+
+   
+
     break;
   
   case MR_INVERTER:
+    QDP_error_exit("Unsupported inverter type", invType);
+    break;
+
   case BICG_INVERTER:
     QDP_error_exit("Unsupported inverter type", invType);
     break;
@@ -330,13 +359,21 @@ Zolotarev5DFermActArray::qprop(LatticeFermion& psi,
     QDP_error_exit("no convergence in the inverter", n_count);
   
   ncg_had = n_count;
-  
-  // Overall normalization
-  Real ftmp1 = Real(1) / Real(1 - m_q);
 
-  // Normalize and remove contact term
-  psi = ftmp1*(chi5[0] - chi);
+  // Solution now lives in chi5
+
+  // Multiply back in factor 2/(1-m) to return to 
+  // (1/2)( 1 + m + (1-m) gamma_5 epsilon  )
+  // normalisatoin
+  psi5[N5-1] *= Real(2)/(Real(1)-m_q);
+  
+  // Remove contact term
+  psi = psi5[N5-1] - chi;
+
+  // Overall normalization
+  Real ftmp1 = Real(1) / (Real(1) - m_q);
+  psi *= ftmp1;
 
   END_CODE("Zolotarev5DFermActArray::qprop");
 }
-*/
+

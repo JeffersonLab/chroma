@@ -1,4 +1,4 @@
-// $Id: overlap_fermact_base_w.cc,v 1.5 2004-01-12 18:09:29 bjoo Exp $
+// $Id: overlap_fermact_base_w.cc,v 1.6 2004-01-13 17:52:15 bjoo Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -63,8 +63,9 @@ OverlapFermActBase::qprop(LatticeFermion& psi,
 	// Source is chiral. In this case we should use InvCG1
 	// with the special MdagM
 	Handle< const LinearOperator<LatticeFermion> > MM(lMdagM(state, ichiral));
+
 	InvCG1(*MM, chi, tmp, RsdCG, MaxCG, n_count);
-	(*M)(psi, tmp, MINUS);
+	(*M)(psi, tmp, MINUS);	
       }
     }
     break;

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev5d_fermact_array_w.h,v 1.3 2004-01-13 13:14:49 bjoo Exp $
+// $Id: zolotarev5d_fermact_array_w.h,v 1.4 2004-01-13 17:52:15 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -89,7 +89,7 @@ public:
 	     const LatticeFermion& chi, 
 	     enum InvType invType,
 	     const Real& RsdCG, 
-    int MaxCG, int& ncg_had) const {}
+	     int MaxCG, int& ncg_had) const;
 
   //! Destructor is automatic
   ~Zolotarev5DFermActArray() {}

@@ -1,4 +1,4 @@
-// $Id: t_ovlap5d_bj.cc,v 1.1 2004-01-13 14:43:01 bjoo Exp $
+// $Id: t_ovlap5d_bj.cc,v 1.2 2004-01-13 17:52:15 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -439,11 +439,9 @@ int main(int argc, char **argv)
 			      params.approx_order, 
 			      my_writer);
   
-  
-  const ConnectState* connect_state_ptr;
+   const ConnectState* connect_state_ptr;
   multi1d<LatticeFermion> eigen_vecs;
 
-  cout << "params.lambda.size = " << params.lambda.size() << endl;
 
   if( params.lambda.size() == 0 ) { 
 
@@ -474,11 +472,10 @@ int main(int argc, char **argv)
 				      params.lambda_max);
   }
 
-  
+
   // Stuff the pointer into a handle. Now, the handle owns the data.
   Handle<const ConnectState> connect_state(connect_state_ptr);
-						     
-
+    
   // Make me a linop (this callls the initialise function)
   Handle<const LinearOperator< multi1d< LatticeFermion > > > D_op(S.linOp(connect_state));
 
@@ -509,9 +506,28 @@ int main(int argc, char **argv)
   int n_count;
 
   // CGNE
-  (*D_op)(tmp5_1, chi, MINUS);
-  InvCG2( *D_op, tmp5_1, psi, params.rsd_cg, params.max_cg, n_count);
+  //
+  //  tmp5_1 = ( M^{dag} M )^{-1} chi
+  //
+  //  M^{dag} M is hermitian so M^{dag}M = M M^{dag}
+  //
+  // hence tmp5_1 = M^{-dag} M^{-1} chi
+  
+  /*
+  InvCG2( *D_op, chi, tmp5_1, params.rsd_cg, params.max_cg, n_count);
 
+  // Put solution into psi  check inverse
+  (*D_op)(psi, tmp5_1, MINUS);
+  
+  // Multiply back to check inverse
+  (*D_op)(tmp5_1, psi, PLUS);
+  */
+
+ // Put solution into psi  check inverse
+  (*D_op)(tmp5_1, chi, MINUS);
+ 
+  InvCG2( *D_op, tmp5_1, psi, params.rsd_cg, params.max_cg, n_count);
+  
   // Multiply back to check inverse
   (*D_op)(tmp5_1, psi, PLUS);
   
@@ -546,11 +562,11 @@ int main(int argc, char **argv)
 			  S_w, 
 			  params.quark_mass,
 			  params.approx_order, 
-			  Real(1.0e-7),
+			  1.0e-9,
 			  500,
 			  my_writer);
 
-  
+
   Handle<const LinearOperator< LatticeFermion > > D_op4(S4.linOp(connect_state));  
 
   (*D_op4)(r, psi4, PLUS);
@@ -561,8 +577,42 @@ int main(int argc, char **argv)
   push(xml_out, "Inv4Dcheck");
   write(xml_out, "r_norm", r_norm4);
   pop(xml_out);
+
+  // Qprop Test
+  multi1d<int> coord(Nd);
+  coord[0]=0; coord[1] = 0; coord[2] = 0; coord[3] = 0;
+
+  chi4 = zero;
+
+  // Point source
+  srcfil(chi4, coord, 0, 0);
+  psi4 = zero;
+
+  S4.qprop(psi4, connect_state, chi4, CG_INVERTER, params.rsd_cg, params.max_cg, n_count);
+
+  // Check original solution. psi4 contains 1/(1-m)[D^{-1} - 1 ]
+  psi4 *= (Real(1)-params.quark_mass);
+  psi4 += chi4; // add back contact term  psi4 = D^{-1} chi4
+  (*D_op4)(r, psi4, PLUS);         // r = D psi4
+  r -= chi4;                       // r = D psi4 - chi4
+  
+  QDPIO::cout << "4D Qprop || r || = " << sqrt(norm2(r)) << endl;
+
+
+  LatticeFermion psi4_2=zero;
+  S.qprop(psi4_2, connect_state, chi4, CG_INVERTER, params.rsd_cg, params.max_cg, n_count);
+
+  psi4_2 *= (Real(1)-params.quark_mass);  // Multiply out overall normalisation
+  psi4_2 += chi4;                         // add back in contact term
+  (*D_op4)(r, psi4_2, PLUS);         // r = D psi4
+  r -= chi4;                       // r = D psi4 - chi4
+
+  QDPIO::cout << "5D Qprop || r || = " << sqrt(norm2(r)) << endl;
+
+
   pop(xml_out);
   QDP_finalize();
     
   exit(0);
 }
+ 
