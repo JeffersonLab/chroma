@@ -1,5 +1,10 @@
 12/09/2004 -- Robert Edwards
 
+	Version 1.10.2. Changed prec. DWF-base to have linOp4D only
+        use prec. 5D operators.
+
+12/09/2004 -- Robert Edwards
+
 	Version 1.10.1. Small fixes/tweaks
 
 12/09/2004 -- Robert Edwards
