@@ -1,4 +1,4 @@
-// $Id: prec_dwf_fermact_array_sse_w.cc,v 1.5 2004-10-18 20:40:57 edwards Exp $
+// $Id: prec_dwf_fermact_array_sse_w.cc,v 1.6 2004-10-19 03:24:37 edwards Exp $
 /*! \file
  *  \brief SSE 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -49,6 +49,8 @@ namespace Chroma
   SSEEvenOddPrecDWFermActArrayParams::SSEEvenOddPrecDWFermActArrayParams(XMLReader& xml, 
 									 const std::string& path)
   {
+    QDPIO::cout << "SSEDWF param read" << endl;
+
     XMLReader paramtop(xml, path);
 
     // Read the stuff for the action
@@ -286,7 +288,13 @@ namespace Chroma
     SSE_DWF_Fermion *X0 = SSE_DWF_load_fermion(&x0, NULL, fermion_reader);
     SSE_DWF_Fermion *res = SSE_DWF_allocate_fermion();
 
+    QDPIO::cout << "Entering SSE DWF solver: rsd = " << rsd
+		<< ", max_iterations = " << max_iter
+		<< endl;
+
     double out_eps;
+    out_eps = 0.0;
+    out_iter = 0;
     int status = SSE_DWF_cg_solver(res, &out_eps, &out_iter,
 				   g, M_0, m_f, X0, eta, 
 				   rsd, max_iter);
@@ -307,15 +315,15 @@ namespace Chroma
   }
 
 
-  //! Optimized inverter - this is temporary
+  //! Optimized inverter
   void 
-  SSEEvenOddPrecDWFermActArray::opt_qpropT(multi1d<LatticeFermion>& psi, 
-					   Handle<const ConnectState> state, 
-					   const multi1d<LatticeFermion>& chi, 
-					   const InvertParam_t& invParam,
-					   int& ncg_had) const
+  SSEEvenOddPrecDWFermActArray::qpropT(multi1d<LatticeFermion>& psi, 
+				       Handle<const ConnectState> state, 
+				       const multi1d<LatticeFermion>& chi, 
+				       const InvertParam_t& invParam,
+				       int& ncg_had) const
   {
-    QDPIO::cout << "entering SSEEvenOddPrecDWFermActArray::opt_qpropT" << endl;
+    QDPIO::cout << "entering SSEEvenOddPrecDWFermActArray::qpropT" << endl;
 
     START_CODE();
 
@@ -346,7 +354,7 @@ namespace Chroma
 
     END_CODE();
 
-    QDPIO::cout << "exiting SSEEvenOddPrecDWFermActArray::opt_qpropT" << endl;
+    QDPIO::cout << "exiting SSEEvenOddPrecDWFermActArray::qpropT" << endl;
   }
 
 }

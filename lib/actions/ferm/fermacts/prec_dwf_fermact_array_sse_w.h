@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_fermact_array_sse_w.h,v 1.4 2004-10-18 20:40:57 edwards Exp $
+// $Id: prec_dwf_fermact_array_sse_w.h,v 1.5 2004-10-19 03:24:37 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -109,14 +109,37 @@ namespace Chroma
      * \param invParam inverter parameters ( Read (
      * \param ncg_had  number of CG iterations ( Write )
      */
-    void opt_qpropT(multi1d<LatticeFermion>& psi, 
-		    Handle<const ConnectState> state, 
-		    const multi1d<LatticeFermion>& chi, 
-		    const InvertParam_t& invParam,
-		    int& ncg_had) const;
+    void qpropT(multi1d<LatticeFermion>& psi, 
+		Handle<const ConnectState> state, 
+		const multi1d<LatticeFermion>& chi, 
+		const InvertParam_t& invParam,
+		int& ncg_had) const;
   
     //! Destructor is automatic
     ~SSEEvenOddPrecDWFermActArray() {fini();}
+
+    //! Given a complete propagator as a source, this does all the inversions needed
+    /*! \ingroup qprop
+     *
+     * This routine is actually generic to Domain Wall fermions (Array) fermions
+     *
+     * \param q_sol    quark propagator ( Write )
+     * \param q_src    source ( Read )
+     * \param xml_out  diagnostic output ( Modify )
+     * \param state    gauge connection state ( Read )
+     * \param t_src    time slice of source ( Read )
+     * \param j_decay  direction of decay ( Read )
+     * \param invParam inverter parameters ( Read )
+     * \param ncg_had  number of CG iterations ( Write )
+     */
+    void dwf_quarkProp4(LatticePropagator& q_sol, 
+			XMLWriter& xml_out,
+			const LatticePropagator& q_src,
+			int t_src, int j_decay,
+			Handle<const ConnectState> state,
+			const InvertParam_t& invParam,
+			int& ncg_had);
+
 
   protected:
     //! Private internal initializer
