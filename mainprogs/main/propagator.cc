@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.14 2003-04-30 21:25:23 edwards Exp $
+// $Id: propagator.cc,v 1.15 2003-06-19 17:34:25 ikuro Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -17,6 +17,7 @@
 // First the source type
 #define S_WAVE 0
 #define P_WAVE 1
+#define D_WAVE 2    /*added*/
 
 #define MAXLINE 80
 
@@ -60,7 +61,7 @@ int main(int argc, char **argv)
 
   Real Kappa;			// Kappa value
   
-  int source_type, source_direction; // S-wave, P-wave etc, and direction
+  int source_type, source_direction; // S-wave(0), P-wave(1), D-wave(2), and direction
 
   int wf_type;			// Point (0) or Smeared (1)
   Real wvf_param;		// Parameter for the wave function
@@ -77,10 +78,10 @@ int main(int argc, char **argv)
 
     params_in >> Kappa;
 
-    params_in >> source_type;	// S-wave, P-wave etc
-    params_in >> source_direction;
+    params_in >> source_type;	// S-wave, P-wave D-wave, etc
+    params_in >> source_direction; // dx(0) dy(1) dz(2) dydz(3) dzdz(4)
 
-    params_in >> wf_type;	// Point, Gaussian etc
+    params_in >> wf_type;	// Point, Gaussian(2) etc
     params_in >> wvf_param;
     params_in >> WvfIntPar;
 
@@ -97,10 +98,10 @@ int main(int argc, char **argv)
   cout << "Kappa is " << Kappa << endl;
 
   switch(wf_type){
-  case POINT_SOURCE:
+  case POINT_SOURCE:  // 0
     cout << "Point source" << endl;
     break;
-  case SHELL_SOURCE:
+  case SHELL_SOURCE:  // 2
     cout << "Smeared source wvf_param= " << wvf_param <<": WvfIntPar= " 
 	 << WvfIntPar << endl;
     break;
@@ -134,10 +135,10 @@ int main(int argc, char **argv)
     }
   */
 
-  /*  readArchiv(u, "nersc_freefield.cfg");*/
+  readArchiv(u, "nersc_freefield.cfg");
 
-  Seed seed_old;
-  readSzin(u, "szin.cfg", seed_old);
+  //Seed seed_old;
+  //readSzin(u, "szin.cfg", seed_old);
 
   cerr << "DEBUG 2" << endl;
 
@@ -151,7 +152,17 @@ int main(int argc, char **argv)
     nml_filename = "propagator.nml";
     break;
   case P_WAVE:
-    nml_filename = "p_propagator.nml";
+    nml_filename = "dz_propagator.nml";
+    break;
+  case D_WAVE:    /* added */
+    if (source_direction == 12)
+      nml_filename = "dydz_propagator.nml";
+    if (source_direction == 22)
+      nml_filename = "dzdz_propagator.nml";
+    break;
+  default: 
+    cerr<<"invaid source_type\n";
+    break;
   }
 
   cerr << "DEBUG 3" << endl;
@@ -181,12 +192,12 @@ int main(int argc, char **argv)
 #if 1
   PropHead header;		// Header information
   header.kappa = Kappa;
-  header.source_smearingparam=wf_type;     // local (0)  gaussian (1)
-  header.source_type=source_type; // S-wave or P-wave source
-  header.source_direction=source_direction;
+  header.source_smearingparam=wf_type;     // local (0)  gaussian (2)
+  header.source_type=source_type; // S-wave, P-wave or D-wave source
+  header.source_direction=source_direction; 
   header.sink_smearingparam=0;	// Always to local sinks
   header.sink_type=0;
-  header.sink_direction=0;
+  header.sink_direction=0;   // dx(0) dy(1) dz(2) dydy(11) dydz(12) dzdz(22)
 #endif
 
   int ncg_had = 0;
@@ -205,8 +216,12 @@ int main(int argc, char **argv)
 
     // Smear the colour source if specified
 
-    if(wf_type == SHELL_SOURCE)
+    if(wf_type == SHELL_SOURCE) {
       gausSmear(u, src_color_vec, wvf_param, WvfIntPar, j_decay);
+      //laplacian(u, src_color_vec, j_decay, power); 
+      // power = 1 for one laplacian operator
+      //         2 for two 
+    }
 
 
     for(int spin_source = 0; spin_source < Ns; ++spin_source)
@@ -227,6 +242,10 @@ int main(int argc, char **argv)
 
 	if(source_type == P_WAVE)
 	  p_src(u, chi, source_direction);
+
+	if(source_type == D_WAVE)   /* added */
+	  d_src(u, chi, source_direction);
+
 
 
 	// primitive initial guess for the linear sys solution
@@ -255,15 +274,22 @@ int main(int argc, char **argv)
 
   switch(source_type){
   case S_WAVE:
-
     writeQprop("propagator_0", quark_propagator, header);
     break;
   case P_WAVE:
-    writeQprop("p_propagator_0", quark_propagator, header);
+    writeQprop("dz_propagator_0", quark_propagator, header);
+    break;
+  case D_WAVE:       /* added */
+    if (source_direction ==12)
+      writeQprop("dydz_propagator_0", quark_propagator, header);
+    if (source_direction ==22)
+      writeQprop("dzdz_propagator_0", quark_propagator, header);
     break;
   default:
     QDP_error_exit("Unknown io version", io_version_in);
   }    
+
+  //Write(nml, quark_propagator);
 
   nml.close();
 
