@@ -140,7 +140,7 @@ staggered_pions::compute(multi1d<LatticeStaggeredPropagator>& quark_props,
     delta = 0;
     delta[mu] = 1;
       
-    latt_corr_fn =  beta(mu)*trace(shiftDeltaProp(delta,quark_props[0])
+    latt_corr_fn =  beta(mu)*trace(shift_deltaProp(delta,quark_props[0])
 			     *adj(quark_props[ deltaToPropIndex(delta) ]));
     
     corr_fn[ pion_index ] = sumMulti(latt_corr_fn, timeslice);
@@ -165,7 +165,7 @@ staggered_pions::compute(multi1d<LatticeStaggeredPropagator>& quark_props,
       delta[nu] = 1;
 
       latt_corr_fn = - beta(mu)* beta(nu)
-	                      *trace(adj(shiftDeltaProp(delta,quark_props[0]))
+	                      *trace(adj(shift_deltaProp(delta,quark_props[0]))
 				     *quark_props[ deltaToPropIndex(delta) ]);
     
       corr_fn[ pion_index ] = sumMulti(latt_corr_fn, timeslice);
@@ -184,7 +184,7 @@ staggered_pions::compute(multi1d<LatticeStaggeredPropagator>& quark_props,
       delta[mu] = 1;
     
       latt_corr_fn = - beta(mu)*  alpha(Nd-1)
-	                      *trace(adj(shiftDeltaProp(delta,quark_props[0]))
+	                      *trace(adj(shift_deltaProp(delta,quark_props[0]))
 				     *quark_props[ deltaToPropIndex(delta) ]);
     
       corr_fn[ pion_index ] = sumMulti(latt_corr_fn, timeslice);
@@ -205,7 +205,7 @@ staggered_pions::compute(multi1d<LatticeStaggeredPropagator>& quark_props,
 
 	
 	latt_corr_fn = - beta(mu) * beta(nu)* beta(rho)
-	  *trace(adj(shiftDeltaProp(delta,quark_props[0]))
+	  *trace(adj(shift_deltaProp(delta,quark_props[0]))
 		 *quark_props[ deltaToPropIndex(delta) ]);
 	
 	corr_fn[ pion_index ] = sumMulti(latt_corr_fn, timeslice);
@@ -227,7 +227,7 @@ staggered_pions::compute(multi1d<LatticeStaggeredPropagator>& quark_props,
 	delta[nu] = 1;
 
 	latt_corr_fn =  beta(mu)* beta(nu)*  alpha(Nd-1)
-	  *trace(adj(shiftDeltaProp(delta,quark_props[0]))
+	  *trace(adj(shift_deltaProp(delta,quark_props[0]))
 		 *quark_props[ deltaToPropIndex(delta) ]);
 	
 	corr_fn[ pion_index ] = sumMulti(latt_corr_fn, timeslice);
@@ -241,7 +241,7 @@ staggered_pions::compute(multi1d<LatticeStaggeredPropagator>& quark_props,
   delta = 0;
   delta[0] = delta[1] = delta[2] = 1;
   latt_corr_fn = - alpha(3)* beta(0)* beta(1) * beta(2)
-    *trace(adj(shiftDeltaProp(delta, quark_props[0]))
+    *trace(adj(shift_deltaProp(delta, quark_props[0]))
 	   *quark_props[ deltaToPropIndex(delta) ] );
   
   corr_fn[ pion_index ] = sumMulti(latt_corr_fn, timeslice);
