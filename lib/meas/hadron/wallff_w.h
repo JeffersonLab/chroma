@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wallff_w.h,v 1.3 2004-06-04 21:13:15 edwards Exp $
+// $Id: wallff_w.h,v 1.4 2004-06-08 20:56:50 edwards Exp $
 /*! \file
  *  \brief Structures for wall-sink/source form-factors
  *
@@ -126,6 +126,28 @@ void write(XMLWriter& xml, const string& path, const WallFormFac_quark_t& header
 
 //! WallFormFac writer
 void write(XMLWriter& xml, const string& path, const WallFormFac_formfacs_t& header);
+
+
+//! Wallformfac momenta writer
+void write(BinaryWriter& bin, const WallFormFac_momenta_t& header);
+
+//! Wallformfac insertion writer
+void write(BinaryWriter& bin, const WallFormFac_insertion_t& header);
+
+//! Wallformfac projector writer
+void write(BinaryWriter& bin, const WallFormFac_projector_t& header);
+
+//! Wallformfac formfac writer
+void write(BinaryWriter& bin, const WallFormFac_formfac_t& header);
+
+//! Wallformfac lorentz writer
+void write(BinaryWriter& bin, const WallFormFac_lorentz_t& header);
+
+//! Wallformfac quark writer
+void write(BinaryWriter& bin, const WallFormFac_quark_t& header);
+
+//! WallFormFac writer
+void write(BinaryWriter& bin, const WallFormFac_formfacs_t& header);
 
 
 #endif

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wallff_w.cc,v 1.3 2004-06-04 21:13:15 edwards Exp $
+// $Id: wallff_w.cc,v 1.4 2004-06-08 20:56:50 edwards Exp $
 /*! \file
  *  \brief Structures for wall-sink/source form-factors
  *
@@ -192,3 +192,63 @@ void write(XMLWriter& xml, const string& path, const WallFormFac_formfacs_t& hea
   pop(xml);
 }
 
+
+//! Wallformfac momenta writer
+void write(BinaryWriter& bin, const WallFormFac_momenta_t& header)
+{
+  int magic = 20301;
+  write(bin, magic);
+  write(bin, header.inser_mom_num);
+  write(bin, header.inser_mom);
+  write(bin, header.local_current);
+  write(bin, header.nonlocal_current);
+}
+
+//! Wallformfac insertion writer
+void write(BinaryWriter& bin, const WallFormFac_insertion_t& header)
+{
+  write(bin, header.gamma_ctr);
+  write(bin, header.mu);
+  write(bin, header.gamma_value);
+  write(bin, header.momenta);
+}
+
+//! Wallformfac projector writer
+void write(BinaryWriter& bin, const WallFormFac_projector_t& header)
+{
+  write(bin, header.proj_ctr);
+  write(bin, header.proj_name);
+  write(bin, header.insertion);
+}
+
+//! Wallformfac lorentz writer
+void write(BinaryWriter& bin, const WallFormFac_lorentz_t& header)
+{
+  write(bin, header.lorentz_ctr);
+  write(bin, header.snk_gamma);
+  write(bin, header.src_gamma);
+  write(bin, header.projector);
+}
+
+//! Wallformfac formfac writer
+void write(BinaryWriter& bin, const WallFormFac_formfac_t& header)
+{
+  write(bin, header.formfac_ctr);
+  write(bin, header.formfac_name);
+  write(bin, header.lorentz);
+}
+
+//! Wallformfac quark writer
+void write(BinaryWriter& bin, const WallFormFac_quark_t& header)
+{
+  write(bin, header.quark_ctr);
+  write(bin, header.quark_name);
+  write(bin, header.formfac);
+}
+
+//! WallFormFac writer
+void write(BinaryWriter& bin, const WallFormFac_formfacs_t& header)
+{
+  write(bin, header.subroutine);
+  write(bin, header.quark);
+}
