@@ -88,7 +88,6 @@ void read(XMLReader& xml, const string& path, Prop_t& input)
 {
   XMLReader inputtop(xml, path);
 
-//  read(inputtop, "source_file", input.source_file);
   read(inputtop, "prop_file", input.prop_file);
 }
 
@@ -168,18 +167,6 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
 
       read(paramtop, "Mass", input.param.Mass);
       read(paramtop, "u0" , input.param.u0);
-
-#if 0
-      for (int i=0; i < input.param.numKappa; ++i) {
-	if (toBool(input.param.Kappa[i] < 0.0)) {
-	  QDPIO::cerr << "Unreasonable value for Kappa." << endl;
-	  QDPIO::cerr << "  Kappa[" << i << "] = " << input.param.Kappa[i] << endl;
-	  QDP_abort(1);
-	} else {
-	  QDPIO::cout << " Spectroscopy Kappa: " << input.param.Kappa[i] << endl;
-	}
-      }
-#endif
 
       break;
 
@@ -286,22 +273,8 @@ int main(int argc, char **argv)
     QDP_error_exit("Configuration type is unsupported.");
   }
 
-  // Read in the source along with relevant information.
-  LatticeStaggeredPropagator quark_prop_source;
-  XMLReader source_xml;
 
-  switch (input.param.prop_type) 
-  {
-  case PROP_TYPE_SZIN :
-//    readSzinQprop(source_xml, quark_prop_source, input.prop.source_file);
-    quark_prop_source = zero;
-    break;
-  default :
-    QDP_error_exit("Propagator type is unsupported.");
-  }
-
-
-  // Instantiate XML writer for XMLDAT
+  // Instantiate XML writer for output
   XMLFileWriter xml_out("t_disc_loop_s.xml");
   push(xml_out, "DISCONNECTED");
 
@@ -310,9 +283,6 @@ int main(int argc, char **argv)
 
   // Write out the config header
   write(xml_out, "Config_info", gauge_xml);
-
-  // Write out the source header
-  write(xml_out, "Source_info", source_xml);
 
   push(xml_out, "Output_version");
   write(xml_out, "out_version", 1);
@@ -352,17 +322,15 @@ int main(int argc, char **argv)
 
   xml_out.flush();
 
-  // Create a fermion BC. Note, the handle is on an ABSTRACT type.
+  // Create the fermion boundary conditions
   Handle< FermBC<LatticeStaggeredFermion> >  fbc(new SimpleFermBC<LatticeStaggeredFermion>(input.param.boundary));
 
   //
   // Initialize fermion action
   //
   AsqtadFermAct S_f(fbc, input.param.Mass, input.param.u0);
-
   Handle<const ConnectState > state(S_f.createState(u));
-//  Handle<const EvenOddLinearOperatorBase<LatticeStaggeredFermion> > D_asqtad(S_f.linOp(state));
-//  Handle<const LinearOperator<LatticeStaggeredFermion> > MdagM_asqtad(S_f.lMdagM(state));
+  Handle<const SystemSolver<LatticeStaggeredFermion> > qprop(S_f.qprop(state,input.param.invParam));
 
   // Machinery to do timeslice sums with
   UnorderedSet timeslice;
@@ -406,7 +374,7 @@ int main(int argc, char **argv)
   fourlink_pseudoscalar_loop eta4_loop(t_length,Nsamp,u) ; 
 
   // Connected Correlator, use a point source
-  Handle<const SystemSolver<LatticeStaggeredFermion> > qprop(S_f.qprop(state,input.param.invParam));
+
 
   psi = zero;
   for(int color_source = 0; color_source < Nc; ++color_source) {
@@ -453,17 +421,14 @@ int main(int argc, char **argv)
     coord[0]=1; coord[1] = 1; coord[2] = 1; coord[3] = 1;
     srcfil(q_source, coord,color_source ) ;
 
-    //    S_f.qprop(psi, state, q_source, input.param.invParam, n_count);
     int n_count = (*qprop)(psi, q_source);
 
     ncg_had += n_count;
-#ifdef NNNNNNNNNNNNNN
     push(xml_out,"Qprop");
     write(xml_out, "Mass" , input.param.Mass);
     write(xml_out, "RsdCG", input.param.invParam.RsdCG);
     write(xml_out, "n_count", n_count);
     pop(xml_out);
-#endif
 
     FermToProp(psi, quark_propagator_4link, color_source);
   }
@@ -516,27 +481,7 @@ int main(int argc, char **argv)
     eta3_loop.compute(q_source,psi,i) ;
     eta4_loop.compute(q_source,psi,i) ;
 
-
-    TrG_s0 = localInnerProduct(q_source, psi);
-    
-    // Do timeslice sums
-    loop_s0[i] = sumMulti(TrG_s0, timeslice);    
-    sca0_loop += loop_s0[i];
-    push(xml_out, "LOOPS");
-    write(xml_out, "scalar" , loop_s0[i]);
-    pop(xml_out);
-
   } // Nsamples
-
-
-  multi1d<Real64> sig_sc0(t_length), imsig_sc0(t_length);
-
-  stoch_var(sca0_loop, loop_s0, sig_sc0, imsig_sc0, t_length, Nsamp);
-  
-  // Write out timesclice sums for "offline" analysis
-  push(xml_out, "AV_FERMION_LOOP");
-  write(xml_out, "SCALAR", sca0_loop);
-  pop(xml_out);
 
 
   // write output from the 
@@ -545,32 +490,6 @@ int main(int argc, char **argv)
   eta3_loop.dump(xml_out) ;
   eta4_loop.dump(xml_out) ;
 
-  // Write output to seperate files for easy reading into fitting code
-
-  ofstream out("disc.out");
-
-  for (int t = 0; t < t_length; ++t){
-    out << real(sca0_loop[t]) << " " << imag(sca0_loop[t]) << " "
-        << sig_sc0[t] << " " << imsig_sc0[t] << endl;
-  }
-
-  out.close();
-
-  ofstream out1("con.out");
-
-  for (int t = 0; t < t_length; ++t){
-    out1 << real(conn_corr_s[t]) <<endl;
-  }
-
-  out1.close();
-
-  ofstream out2("gold.out");
-
-  for (int t = 0; t < t_length; ++t){
-    out2 << real(conn_corr_p[t]) << endl;
-  }
-
-  out2.close();
 
   pop(xml_out);
 
