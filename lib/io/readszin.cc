@@ -1,4 +1,4 @@
-// $Id: readszin.cc,v 1.9 2003-06-10 16:05:07 edwards Exp $
+// $Id: readszin.cc,v 1.10 2003-08-27 19:58:21 edwards Exp $
 
 /*! \file
  *  \brief Read in a configuration written by SZIN up to configuration version 7.
@@ -24,13 +24,12 @@ using namespace QDP;
  *
  *
  * \param u          gauge configuration ( Modify )
+ * \param xml        xml reader holding config info ( Modify )
  * \param cfg_file   path ( Read )
- * \param seed_old   seed in configuration ( Modify )            
  */    
 
-void readSzin(multi1d<LatticeColorMatrix>& u, const string& cfg_file, Seed& seed_old)
+void readSzin(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_file)
 {
-  ColorMatrixF u_old;
   multi1d<int> nrow_old(Nd); /* Lattice size (from CFGIN) */
   int Nd_old; /* Number of spacetime dimensions (from CFGIN) */
   int Nc_old; /* Number of colours (from CFGIN) */
@@ -65,6 +64,7 @@ void readSzin(multi1d<LatticeColorMatrix>& u, const string& cfg_file, Seed& seed
   Real32 LamMi_old;
   Real32 AlpLog_old;
   Real32 AlpExp_old;
+  Seed   seed_old;
 
   int i;
   int j;
@@ -87,23 +87,30 @@ void readSzin(multi1d<LatticeColorMatrix>& u, const string& cfg_file, Seed& seed
     QDP_error_exit("Apparently wrong configuration file, date_size=%d",date_size);
 
   /*
-   * This marvelous piece of code is logically equivalent to
-   *  read (cfg_in) date(1:date_size), banner(1:banner_size), 
-   *      cfg_version;
+   * Read in the date & banner. They are written as int's. Use a new
+   * instead of declaring a size in the constructor for the strings 
+   * to avoid extra space. I found that nulls in the strings made xmlreader
+   * blow up down below.
    */
-  string date(date_size+1,'\0');
+  char *date_tmp = new char[date_size+1];
   for(i=0; i < date_size; ++i)
   {
     read(cfg_in,j);
-    date[i] = j;
+    date_tmp[i] = j;
   }
+  date_tmp[date_size] = '\0';
+  string date = date_tmp;
+  delete[] date_tmp;
 
-  string banner(banner_size+1,'\0');
+  char *banner_tmp = new char[banner_size+1];
   for(i=0; i < banner_size; ++i)
   {
     read(cfg_in,j);
-    banner[i] = j;
+    banner_tmp[i] = j;
   }
+  banner_tmp[banner_size] = '\0';
+  string banner = banner_tmp;
+  delete[] banner_tmp;
 
   read(cfg_in,cfg_version);
 
@@ -332,11 +339,10 @@ void readSzin(multi1d<LatticeColorMatrix>& u, const string& cfg_file, Seed& seed
    *  We use as a model the propagator routines
    */
 
-  ColorMatrix u_tmp;
+  ColorMatrix u_tmp, u_old;
   
   multi1d<int> lattsize_cb = Layout::lattSize();
   lattsize_cb[0] /= 2;		// Evaluate the coords on the checkerboard lattice
-
 
   // The slowest moving index is the direction
   for(j = 0; j < Nd; j++)
@@ -363,6 +369,59 @@ void readSzin(multi1d<LatticeColorMatrix>& u, const string& cfg_file, Seed& seed
 
   cfg_in.close();
 
-  END_CODE("readSzin");
+
+  // Now, set up the XML header. Do this by first making a buffer
+  // writer that is then used to make the reader
+  XMLBufferWriter  xml_buf;
+  push(xml_buf, "szin");
+
+  write(xml_buf,"cfg_version",cfg_version);
+
+  write(xml_buf,"date",date);
+  write(xml_buf,"banner",banner);
+
+  write(xml_buf,"FermTypeP",FermTypeP_old);
+  write(xml_buf,"Nd",Nd_old);
+  write(xml_buf,"Nc",Nc_old);
+  write(xml_buf,"BetaMC",BetaMC_old);
+  write(xml_buf,"BetaMD",BetaMD_old);
+
+  write(xml_buf,"KappaMC",KappaMC_old);
+  write(xml_buf,"KappaMD",KappaMD_old);
+  write(xml_buf,"MassMC",MassMC_old);
+  write(xml_buf,"MassMD",MassMD_old);
+  write(xml_buf,"dt",dt_old);
+  write(xml_buf,"MesTrj",MesTrj_old);
+  write(xml_buf,"TotalCG",TotalCG_old);
+  write(xml_buf,"TotalTrj",TotalTrj_old);
+  write(xml_buf,"spec_acc",spec_acc);
+
+  write(xml_buf,"NOver",NOver_old);
+  write(xml_buf,"TotalTry",TotalTry_old);
+  write(xml_buf,"TotalFail",TotalFail_old);
+  write(xml_buf,"Nf",Nf_old);
+  write(xml_buf,"Npf",Npf_old);
+  write(xml_buf,"RefMomTrj",RefMomTrj_old);
+  write(xml_buf,"RefFnoiseTrj",RefFnoiseTrj_old);
+  write(xml_buf,"LamPl",LamPl_old);
+  write(xml_buf,"LamMi",LamMi_old);
+  write(xml_buf,"AlpLog",AlpLog_old);
+  write(xml_buf,"AlpExp",toFloat(AlpExp_old));
+
+  write(xml_buf,"nrow",nrow_old);
+  write(xml_buf,"seed",seed_old);
+
+  pop(xml_buf);
+
+  try 
+  {
+    xml.open(xml_buf);
+  }
+  catch(const string& e)
+  { 
+    QDP_error_exit("Error in readszin: %s",e.c_str());
+  }
+
+  END_CODE("writeSzin");
 }
 

@@ -1,4 +1,4 @@
-// $Id: readszin.h,v 1.3 2003-04-30 21:19:33 edwards Exp $
+// $Id: readszin.h,v 1.4 2003-08-27 19:58:21 edwards Exp $
 
 #ifndef __readszin_h__
 #define __readszin_h__
@@ -14,11 +14,11 @@
  *         = u(2,Nc,Nc,VOL_CB,2,4)
  *
  *
+ * \param xml        xml reader holding config info ( Modify )
  * \param u          gauge configuration ( Modify )
  * \param cfg_file   path ( Read )
- * \param seed_old   seed in configuration ( Modify )            
  */    
 
-void readSzin(multi1d<LatticeColorMatrix>& u, const string& cfg_file, Seed& seed_old);
+void readSzin(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_file);
 
 #endif
