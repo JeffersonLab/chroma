@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ev_state.h,v 1.3 2003-12-03 03:04:37 edwards Exp $
+// $Id: ev_state.h,v 1.4 2003-12-03 04:35:23 edwards Exp $
 /*! @file
  * @brief Connection state holding eigenvectors
  *
@@ -24,17 +24,14 @@ template<typename T>
 class EVConnectStateBase : public ConnectState
 {
 public:
-  //! Return the link fields needed in constructing linear operators
-  virtual const multi1d<LatticeColorMatrix>& getLinks() const = 0;
-
   //! Return the eigenvalues
-  virtual const multi1d<WordBase_t>& getEigVal() const = 0;
+  virtual const multi1d<Real>& getEigVal() const = 0;
 
   //! Return the eigenvectors
   virtual const multi1d<T>& getEigVec() const = 0;
 
   //! Return the eigenvectors
-  virtual const WordBase_t& getEigValMax() const = 0;
+  virtual const Real& getEigValMax() const = 0;
 
   //! Virtual destructor to help with cleanup;
   virtual ~EVConnectStateBase() {}
@@ -47,26 +44,27 @@ public:
  * Holds things like color link fields and other info needed for linear
  * operators. 
  */
-class EVConnectStateProxy : public EVConnectStateBase
+template<typename T>
+class EVConnectStateProxy : public EVConnectStateBase<T>
 {
 public:
   //! Initialize pointer with existing pointer
   /*! Requires that the pointer p is a return value of new */
-  explicit EVConnectStateProxy(const EVConnectStateBase* p=0) : state(p) {}
+  explicit EVConnectStateProxy(const EVConnectStateBase<T>* p=0) : state(p) {}
 
   //! Copy pointer (one more owner)
   EVConnectStateProxy(const EVConnectStateProxy& p) : state(p.state) {}
 
   //! Access the value to which the pointer refers
-  const EVConnectStateBase& operator*() const {return state.operator*();}
-  const EVConnectStateBase* operator->() const {return state.operator->();}
+  const EVConnectStateBase<T>& operator*() const {return state.operator*();}
+  const EVConnectStateBase<T>* operator->() const {return state.operator->();}
 
   //! Return the link fields needed in constructing linear operators
   const multi1d<LatticeColorMatrix>& getLinks() const 
     {state->getLinks();}
 
   //! Return the eigenvalues
-  const multi1d<WordBase_t>& getEigVal() const
+  const multi1d<Real>& getEigVal() const
     {state->getEigVal();}
 
   //! Return the eigenvectors
@@ -74,7 +72,7 @@ public:
     {state->getEigVec();}
 
   //! Return the eigenvectors
-  const WordBase_t& getEigValMax() const
+  const Real& getEigValMax() const
     {state->getEigValMax();}
 
 protected:
@@ -83,7 +81,7 @@ protected:
   EVConnectStateProxy& operator=(const EVConnectStateProxy& p) {}
 
 private:
-  Handle<const EVConnectStateBase>  state;
+  Handle<const EVConnectStateBase<T> >  state;
 };
 
 
@@ -95,7 +93,7 @@ private:
  * The template type is that of the eigenvectors
  */
 template<typename T>
-class EVConnectState : public EVConnectStateBase
+class EVConnectState : public EVConnectStateBase<T>
 {
 public:
   /*! 
