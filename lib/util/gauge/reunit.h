@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: reunit.h,v 1.4 2003-12-29 19:52:57 edwards Exp $
+// $Id: reunit.h,v 1.5 2003-12-31 23:58:46 edwards Exp $
 /*! \file
  *  \brief Reunitarize (to a SU(N)) inplace the matrix A under some option
  */
@@ -17,6 +17,22 @@ enum Reunitarize {REUNITARIZE, REUNITARIZE_ERROR, REUNITARIZE_LABEL};
  *            Must be of type LatticeColorMatrix
  */
 void reunit(LatticeColorMatrix& xa);
+
+
+//! Reunitarize in place a color matrix to SU(N)
+/*!
+ * \ingroup gauge
+ *
+ * \param xa  The descriptor of matrices to be reunitarized.
+ *            Must be of type LatticeColorMatrix
+ * \param ruflag Can also be REUNITARIZE in which case the
+ *            matrices are reunitarized but no complaints are made.
+ * \param numbad Total number of matrices violating unitarity.
+ *            ONLY USED IF ruflag is testing for ERROR or LABEL. 
+ */
+void reunit(LatticeColorMatrix& xa,
+	    int& numbad, enum Reunitarize ruflag);
+
 
 //! Reunitarize in place a color matrix to SU(N)
 /*!

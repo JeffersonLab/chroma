@@ -1,4 +1,4 @@
-// $Id: reunit.cc,v 1.7 2003-10-09 21:06:29 edwards Exp $
+// $Id: reunit.cc,v 1.8 2003-12-31 23:58:46 edwards Exp $
 
 /*! \file
  *  \brief Reunitarize (to a SU(N)) inplace the matrix A under some option
@@ -25,6 +25,28 @@ void reunit(LatticeColorMatrix& xa)
 }
 
 
+
+//! Reunitarize in place a color matrix to SU(N)
+/*!
+ * \ingroup gauge
+ *
+ * \param xa  The descriptor of matrices to be reunitarized.
+ *            Must be of type LatticeColorMatrix
+ * \param ruflag Can also be REUNITARIZE in which case the
+ *            matrices are reunitarized but no complaints are made.
+ * \param numbad Total number of matrices violating unitarity.
+ *            ONLY USED IF ruflag is testing for ERROR or LABEL. 
+ */
+void reunit(LatticeColorMatrix& xa,
+	    int& numbad, enum Reunitarize ruflag)
+{
+  LatticeBoolean bad;
+
+  reunit(xa, bad, numbad, REUNITARIZE);
+}
+
+
+
 //! Reunitarize in place a color matrix to SU(N)
 /*!
  * \ingroup gauge
@@ -39,7 +61,6 @@ void reunit(LatticeColorMatrix& xa)
  * \param numbad Total number of matrices violating unitarity.
  *            ONLY USED IF ruflag is testing for ERROR or LABEL. 
  */
-
 void reunit(LatticeColorMatrix& xa, LatticeBoolean& bad, 
 	    int& numbad, enum Reunitarize ruflag)
 {
