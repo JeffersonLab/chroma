@@ -1,4 +1,4 @@
-// $Id: diractodr.cc,v 1.1 2004-05-14 00:23:41 edwards Exp $
+// $Id: diractodr.cc,v 1.2 2004-05-23 21:43:40 edwards Exp $
 /*! \file
  *  \brief Basis rotation matrix from Dirac to Degrand-Rossi (and reverse)
  */
@@ -18,7 +18,7 @@ using namespace QDP;
  * \returns The U in   Gamma_{Degrand-Rossi} = U Gamma_Dirac U^dag
  */
 
-SpinMatrix DiracToDRMat()
+SpinMatrixD DiracToDRMat()
 {
   /*
    * The magic basis transf is found from
@@ -47,10 +47,10 @@ SpinMatrix DiracToDRMat()
    * QDP Gamma matrices that can make this beasty, 
    * so I'll just hardwire it...
    */
-  SpinMatrix U = zero;
-  Real     foo = 1 / sqrt(Real(2));
-  Complex  one = cmplx( foo,Real(0));
-  Complex mone = cmplx(-foo,Real(0));
+  SpinMatrixD U = zero;
+  RealD     foo = RealD(1) / sqrt(RealD(2));
+  ComplexD  one = cmplx( foo,RealD(0));
+  ComplexD mone = cmplx(-foo,RealD(0));
 
   pokeSpin(U,  one, 0, 1);
   pokeSpin(U,  one, 0, 3);

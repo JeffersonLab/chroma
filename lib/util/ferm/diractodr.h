@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: diractodr.h,v 1.1 2004-05-14 00:23:41 edwards Exp $
+// $Id: diractodr.h,v 1.2 2004-05-23 21:43:40 edwards Exp $
 /*! \file
  *  \brief Basis rotation matrix from Dirac to Degrand-Rossi (and reverse)
  */
@@ -17,6 +17,6 @@
  * \returns The U in   Gamma_{Degrand-Rossi} = U Gamma_Dirac U^dag
  */
 
-SpinMatrix DiracToDRMat();
+SpinMatrixD DiracToDRMat();
 
 #endif
