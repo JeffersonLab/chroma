@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_fermact_array_sse_w.h,v 1.5 2004-10-19 03:24:37 edwards Exp $
+// $Id: prec_dwf_fermact_array_sse_w.h,v 1.6 2004-10-19 03:49:20 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -69,7 +69,7 @@ namespace Chroma
     //! General FermBC
     SSEEvenOddPrecDWFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
 				 const SSEEvenOddPrecDWFermActArrayParams& param) :
-      fbc(fbc_), OverMass(param.OverMass), Mass(param.Mass), a5(param.a5), N5(param.N5) {}
+      fbc(fbc_), OverMass(param.OverMass), Mass(param.Mass), a5(param.a5), N5(param.N5) {init();}
 
     //! Copy constructor
     SSEEvenOddPrecDWFermActArray(const SSEEvenOddPrecDWFermActArray& a) : 
@@ -142,6 +142,9 @@ namespace Chroma
 
 
   protected:
+    //! Hide default constructor
+    SSEEvenOddPrecDWFermActArray() {}
+
     //! Private internal initializer
     void init();
 
