@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_linop_array_w.cc,v 1.11 2005-01-05 17:28:11 bjoo Exp $
+// $Id: unprec_dwf_linop_array_w.cc,v 1.12 2005-01-17 18:25:50 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall linear operator
  */
@@ -99,6 +99,8 @@ namespace Chroma
 			    const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
 			    enum PlusMinus isign) const
   {
+    START_CODE();
+
     ds_u.resize(Nd);
     ds_u = zero;
 
@@ -111,6 +113,8 @@ namespace Chroma
       for(int mu(0);mu<Nd;mu++)
 	ds_u[mu] += fact2*ds_tmp[mu];
     }
+
+    END_CODE();
   }
 
 }; // End Namespace Chroma
