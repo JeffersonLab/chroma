@@ -1,4 +1,4 @@
-// $Id: readszin.cc,v 1.18 2003-10-16 01:41:01 edwards Exp $
+// $Id: readszin.cc,v 1.19 2004-01-08 03:49:14 edwards Exp $
 
 /*! \file
  *  \brief Read in a configuration written by SZIN up to configuration version 7.
@@ -7,11 +7,13 @@
 #include "chromabase.h"
 #include "io/szin_io.h"
 #include "io/readszin.h"
-#include "primitives.h"
+// #include "io/param_io.h"
 #include "qdp_util.h"    // from QDP
 
 #include <string>
 using std::string;
+
+#define SZIN_WILSON_FERMIONS  1
 
 using namespace QDP;
 
@@ -92,7 +94,7 @@ void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
     read(cfg_in, header.KappaMC);
     header.BetaMD = header.BetaMC;
     header.KappaMD = header.KappaMC;
-    header.FermTypeP = WILSON_FERMIONS;
+    header.FermTypeP = SZIN_WILSON_FERMIONS;
     break;
 
   case 2:
@@ -107,7 +109,7 @@ void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
     read(cfg_in, header.TotalTrj); 
     header.BetaMD = header.BetaMC;
     header.KappaMD = header.KappaMC;
-    header.FermTypeP = WILSON_FERMIONS;
+    header.FermTypeP = SZIN_WILSON_FERMIONS;
     break;
 
   case 3:
@@ -123,7 +125,7 @@ void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
     read(cfg_in, header.spec_acc);
     header.BetaMD = header.BetaMC;
     header.KappaMD = header.KappaMC;
-    header.FermTypeP = WILSON_FERMIONS;
+    header.FermTypeP = SZIN_WILSON_FERMIONS;
     break;
 
   case 4:
@@ -139,7 +141,7 @@ void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
     read(cfg_in, header.TotalCG); 
     read(cfg_in, header.TotalTrj); 
     read(cfg_in, header.spec_acc);
-    header.FermTypeP = WILSON_FERMIONS;
+    header.FermTypeP = SZIN_WILSON_FERMIONS;
     break;
 
   case 5:

@@ -1,4 +1,4 @@
-// $Id: writeszin.cc,v 1.5 2003-10-16 01:41:01 edwards Exp $
+// $Id: writeszin.cc,v 1.6 2004-01-08 03:49:14 edwards Exp $
 
 /*! \file
  *  \brief Write out a configuration written by SZIN up to configuration version 7.
@@ -7,7 +7,7 @@
 #include "chromabase.h"
 #include "io/szin_io.h"
 #include "io/writeszin.h"
-#include "primitives.h"
+// #include "io/param_io.h"
 #include "qdp_util.h"    // from QDP
 
 #include <string>
