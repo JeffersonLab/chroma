@@ -1,9 +1,10 @@
-// $Id: szin.h,v 1.2 2003-01-04 05:13:45 edwards Exp $
+// $Id: szin.h,v 1.3 2003-02-10 15:51:06 edwards Exp $
 //
 // Include file for test suite
 
 #include <qdp.h>
-#include <geom.h>
+#include "linop.h"
+#include "geom.h"
 
 using namespace QDP;
 
