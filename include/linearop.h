@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linearop.h,v 1.11 2003-04-03 19:51:32 edwards Exp $
+// $Id: linearop.h,v 1.12 2003-08-09 04:18:21 edwards Exp $
 
 /*! @file
  * @brief Linear Operators
@@ -27,7 +27,7 @@ public:
   virtual LatticeFermion operator() (const LatticeFermion& psi, enum LinOpSign isign) const = 0;
 
   //! Return the subset on which the operator acts
-  virtual const Subset& subset() const = 0;
+  virtual const OrderedSubset& subset() const = 0;
 
   //! Virtual destructor to help with cleanup;
   virtual ~LinearOperator() {}
