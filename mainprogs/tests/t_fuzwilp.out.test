@@ -1,0 +1,44 @@
+Finished init of RNG
+Finished lattice layout
+Reading config: /raidd/aci/chromaqdp/chroma/tests/t_asqtad_prop/t_nersc.cfg
+Start of header
+BEGIN_HEADER
+CHECKSUM = 717938df
+LINK_TRACE = 0.4630322094
+PLAQUETTE = 0.0382422893
+DATATYPE = 4D_SU3_GAUGE
+HDR_VERSION = 1.0
+STORAGE_FORMAT = 1.0
+DIMENSION_1 = 4
+DIMENSION_2 = 4
+DIMENSION_3 = 4
+DIMENSION_4 = 4
+BOUNDARY_1 = PERIODIC
+BOUNDARY_2 = PERIODIC
+BOUNDARY_3 = PERIODIC
+BOUNDARY_4 = PERIODIC
+ENSEMBLE_ID = 0
+ENSEMBLE_LABEL = SZIN
+SEQUENCE_NUMBER = 0
+CREATOR = SZIN
+CREATOR_HARDWARE = (Tue Feb  4 16:34:12 EST 2003) Source=qcdi01 Target=linux Release= Quarks=g
+CREATION_DATE = Fri Aug 22 22:05:48 2003
+ARCHIVE_DATE = Fri Aug 22 22:05:48 2003
+FLOATING_POINT = IEEE32BIG
+END_HEADER
+End of header
+Measure the plaquette and link 
+w_plaq = 0.0382423
+s_plaq = 0.0441657
+t_plaq = 0.0323188
+link = 0.463032
+Measurement took 0.002935 secs
+Measure ape-smeared Wilson loops
+sm_fact: 2.5
+n_smear: 0
+Average link after smearing: 0.463032
+t= 0
+t= 1
+fuz_wlp1 and fuz_wlp2 written to .xml file 
+Loop measurements complete
+Measurement took 0.095721 secs
