@@ -1,10 +1,10 @@
-// $Id: geom.cc,v 1.2 2003-01-04 05:10:56 edwards Exp $
+// $Id: geom.cc,v 1.3 2003-02-16 04:15:55 edwards Exp $
 //
 // QDP data parallel interface
 //
 // Geometry
 
-#include <szin.h>
+#include "chroma.h"
 
 namespace Geometry
 {
