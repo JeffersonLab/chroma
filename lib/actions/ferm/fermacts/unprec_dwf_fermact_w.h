@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_fermact_w.h,v 1.5 2003-11-10 05:05:18 edwards Exp $
+// $Id: unprec_dwf_fermact_w.h,v 1.6 2003-11-15 04:25:42 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion action
  */
@@ -8,7 +8,7 @@
 #define __unprec_dwf_fermact_w_h__
 
 #include "fermact.h"
-#include "actions/ferm/linop/unprec_dwf_linop_w.h"
+#include "actions/ferm/fermacts/unprec_dwf_fermact_base_w.h"
 
 using namespace QDP;
 
@@ -19,7 +19,7 @@ using namespace QDP;
  * are specified in Phys.Rev.D63:094505,2001 (hep-lat/0005002).
  */
 
-class UnprecDWFermAct : public UnprecWilsonTypeFermAct<LatticeDWFermion>
+class UnprecDWFermAct : public UnprecDWFermActBase
 {
 public:
   //! Partial constructor
@@ -32,6 +32,9 @@ public:
   //! Creation routine
   void create(const Real& WilsonMass, const Real& m_q);
 
+  //! Return the quark mass
+  Real quark_mass() const {return m_q;}
+
   //! Produce a linear operator for this action
   const LinearOperator<LatticeDWFermion>* linOp(const multi1d<LatticeColorMatrix>& u) const;
 
@@ -40,18 +43,6 @@ public:
 
   //! Produce a linear operator for this action but with quark mass 1
   const LinearOperator<LatticeDWFermion>* linOpPV(const multi1d<LatticeColorMatrix>& u) const;
-
-  //! Redefine quark propagator routine for 4D fermions
-  void qprop(LatticeFermion& psi, 
-	     const multi1d<LatticeColorMatrix>& u, 
-	     const LatticeFermion& chi, 
-	     enum InvType invType,
-	     const Real& RsdCG, 
-	     int MaxCG, int& ncg_had) const;
-
-  //! Compute dS_f/dU
-  multi1d<LatticeColorMatrix> dsdu(const multi1d<LatticeColorMatrix>& u,
-				   const LatticeDWFermion& psi) const;
 
   //! Destructor is automatic
   ~UnprecDWFermAct() {}
