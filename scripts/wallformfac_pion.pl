@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: wallformfac_pion.pl,v 1.9 2004-09-11 21:58:46 edwards Exp $
+# $Id: wallformfac_pion.pl,v 1.10 2004-09-11 22:09:25 edwards Exp $
 #
 # Usage
 #   formfact.pl
@@ -65,6 +65,7 @@ foreach $i (0 .. 2)
 @cp_f = &canonical_momenta(*p_f);
 
 # Extensions
+# $abext = "${Aext}_${L}.${Bext}_${L}.${A}${B}";   # not used
 $apext = "${Aext}_${L}.P_${L}.${A}P";
 $cpext = "${Cext}_${L}.P_${L}.${C}P";
 $cbext = "${Cext}_${L}.${Bext}_${L}.${C}${B}";
@@ -210,8 +211,8 @@ foreach $qz (-$mommax_int .. $mommax_int)
 
       print "q=[$q[0],$q[1],$q[2]], qsq = $qsq,  p_i=[$p_i[0],$p_i[1],$p_i[2]], p_i_sq = $p_i_sq, p_f=[$p_f[0],$p_f[1],$p_f[2]]";
 
-      printf "Looking for file %s\n","${nam}_cur3ptfn_${s}_snk15_g8_src_15_qx$q[0]_qy$q[1]_qz$q[2].$abext";
-      if (! -f "${nam}_cur3ptfn_${s}_snk15_g8_src15_qx$q[0]_qy$q[1]_qz$q[2].$abext") {next;}
+      printf "Looking for file %s\n","${nam}_cur3ptfn_${s}_snk15_g8_src_15_qx$q[0]_qy$q[1]_qz$q[2]";
+      if (! -f "${nam}_cur3ptfn_${s}_snk15_g8_src15_qx$q[0]_qy$q[1]_qz$q[2]") {next;}
 
       printf "Looking for file %s\n", "$pion_ap{$cp_f[0],$cp_f[1],$cp_f[2]}";
       if (! -f "$pion_ap{$cp_f[0],$cp_f[1],$cp_f[2]}") {next;}
@@ -219,13 +220,13 @@ foreach $qz (-$mommax_int .. $mommax_int)
       printf "Looking for file %s\n", "$pion_ap{$cp_i[0],$cp_i[1],$cp_i[2]}";
       if (! -f "$pion_ap{$cp_i[0],$cp_i[1],$cp_i[2]}") {next;}
 
-      printf "Found file %s\n","${nam}_cur3ptfn_${s}_snk15_g8_src15_qx$q[0]_qy$q[1]_qz$q[2].$abext";
+      printf "Found file %s\n","${nam}_cur3ptfn_${s}_snk15_g8_src15_qx$q[0]_qy$q[1]_qz$q[2]";
 
       $pion_disp = -(($fmtoGeV/$a)**2)*&compute_disp_pipf_sq($pion_mass{0,0,0},*p_i,*p_f);
       printf "pion mass = %g +- %g,  qsq (via vector disp) = %g\n", 
       $pion_mass{$cp_i[0],$cp_i[1],$cp_i[2]}, $pion_mass_err{$cp_i[0],$cp_i[1],$cp_i[2]}, $pion_disp;
 
-      &realpart("${nam}_cur3ptfn_${s}_snk15_g8_src15_qx$q[0]_qy$q[1]_qz$q[2].$abext","${cur}_${s}_mu3_$q[0]$q[1]$q[2]");
+      &realpart("${nam}_cur3ptfn_${s}_snk15_g8_src15_qx$q[0]_qy$q[1]_qz$q[2]","${cur}_${s}_mu3_$q[0]$q[1]$q[2]");
 
       $var = "$norm*(${cur}_${s}_mu3_$q[0]$q[1]$q[2] * $pion_cp{$cp_f[0],$cp_f[1],$cp_f[2]}) * (2 * $pion_energy{$cp_f[0],$cp_f[1],$cp_f[2]} / ($pion_energy{$cp_i[0],$cp_i[1],$cp_i[2]} + $pion_energy{$cp_f[0],$cp_f[1],$cp_f[2]}))/ ($pion_ap{$cp_i[0],$cp_i[1],$cp_i[2]} * pion_norm)";
 
