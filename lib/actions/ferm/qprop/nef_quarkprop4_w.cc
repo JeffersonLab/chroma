@@ -1,6 +1,9 @@
-// $Id: nef_quarkprop4_w.cc,v 1.9 2004-11-20 21:16:41 edwards Exp $
+// $Id: nef_quarkprop4_w.cc,v 1.10 2004-11-20 22:28:45 edwards Exp $
 // $Log: nef_quarkprop4_w.cc,v $
-// Revision 1.9  2004-11-20 21:16:41  edwards
+// Revision 1.10  2004-11-20 22:28:45  edwards
+// Narrowed include dependencies.
+//
+// Revision 1.9  2004/11/20 21:16:41  edwards
 // Tried to simplify number of include lines.
 //
 // Revision 1.8  2004/10/29 13:36:13  bjoo
@@ -35,8 +38,10 @@
 
 
 #include "chromabase.h"
-#include "actions/ferm/fermacts/fermacts.h"
-// #include "actions/ferm/linop/dwffld_w.h"
+#include "actions/ferm/fermacts/unprec_nef_fermact_array_w.h"
+#include "actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.h"
+#include "actions/ferm/fermacts/prec_nef_fermact_array_w.h"
+#include "actions/ferm/fermacts/prec_zolo_nef_fermact_array_w.h"
 #include "util/ferm/transf.h"
 #include "util/ft/sftmom.h"
 
