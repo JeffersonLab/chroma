@@ -272,7 +272,7 @@ PACKAGE_VERSION='1.2'
 PACKAGE_STRING='szin 1.2'
 PACKAGE_BUGREPORT='edwards@jlab.org'
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE RANLIB ac_ct_RANLIB CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE QDP_CXXFLAGS QDP_LDFLAGS QDP_LIBS QMP_CXXFLAGS QMP_LDFLAGS QMP_LIBS QMP_COMMS_CXXFLAGS QMP_COMMS_LDFLAGS QMP_COMMS_LIBS BUILD_WILSON_LIBS_TRUE BUILD_WILSON_LIBS_FALSE LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE RANLIB ac_ct_RANLIB CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE QDPXX_CONFIG QDPXX_CXXFLAGS QDPXX_LDFLAGS QDPXX_LIBS QDPXX_ND QDPXX_NC QDPXX_NS BUILD_STAGGERED_LIBS_TRUE BUILD_STAGGERED_LIBS_FALSE BUILD_WILSON_LIBS_TRUE BUILD_WILSON_LIBS_FALSE LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -820,36 +820,8 @@ Optional Features:
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
-  --with-qdp=DIR          Build SZIN++ on top of QDP++ where QDP++ is
+  --with-qdp=DIR          Build QDP++ Apps on top of QDP++ where QDP++ is
                           installed in DIR
-  --with-qdp-cxxflags=QDP_CXXFLAGS
-                          To pass include path to QDP header files via
-                          compiler flag -I
-  --with-qdp-ldflags=QDP_LDFLAGS
-                          To pass QDP library search path via compiler flag -L
-  --with-qdp-libs=QDP_LIBS
-                          To pass optional list of QDP libraries to linker via
-                          compiler flag -l
-  --with-qmp-cxxflags=QMP_CXXFLAGS
-                          To pass optional include path to QMP header files
-                          via compiler flag -I
-  --with-qmp-ldflags=QMP_LDFLAGS
-                          To pass optional link path to QMP libraries via
-                          compiler flag -L
-  -with-qmp-libs=QMP_LIBS To pass optional libraries to QMP libraries via
-                          compiler flag -l
-  --with-qmp-comms-type=TYPE
-                          Build QMP on top of MPI or GM. If MPI over GM is
-                          desired, choose MPI. Default is MPI.
-  --with-qmp-comms-cxxflags=QMP_COMMS_CXXFLAGS
-                          To pass optional include path to comms header files
-                          via compiler flag -I
-  --with-qmp-comms-ldflags=QMP_COMMS_LDFLAGS
-                          To pass optional library search path to comms
-                          libraries via compiler flag -L
-  --with-qmp-comms-libs=QMP_COMMS_LIBS
-                          To pass optional list of comms libraries to linker
-                          via compiler flag -l
 
 Some influential environment variables:
   CXX         C++ compiler command
@@ -2538,12 +2510,26 @@ fi
 
 
 
+
 # Check whether --enable-fermion-type or --disable-fermion-type was given.
 if test "${enable_fermion_type+set}" = set; then
   enableval="$enable_fermion_type"
-   ac_fermion_type="$enable_fermion_type"
+
+    case "$enable_fermion_type" in
+      STAG*) ac_fermion_type="staggered" ;;
+      Stag*) ac_fermion_type="staggered" ;;
+      stag*) ac_fermion_type="staggered" ;;
+
+      WIL*)  ac_fermion_type="wilson" ;;
+      Wil*)  ac_fermion_type="wilson" ;;
+      wil*)  ac_fermion_type="wilson" ;;
+
+      *)     ac_fermion_type="$enable_fermion_type" ;;
+    esac
+
 else
-   ac_fermion_type="wilson"
+  ac_fermion_type="wilson"
+
 fi;
 
 
@@ -2551,144 +2537,191 @@ fi;
 # Check whether --with-qdp or --without-qdp was given.
 if test "${with_qdp+set}" = set; then
   withval="$with_qdp"
-   QDP_HOME="$with_qdp"
-      echo "$as_me:$LINENO: checking if $QDP_HOME/config/qdp_build_env.sh exists" >&5
-echo $ECHO_N "checking if $QDP_HOME/config/qdp_build_env.sh exists... $ECHO_C" >&6
-      if test -f $QDP_HOME/config/qdp_build_env.sh ;
-      then
-	      echo "$as_me:$LINENO: result: yes" >&5
-echo "${ECHO_T}yes" >&6
-	      { echo "$as_me:$LINENO:  Sourcing qdp_build_env.sh in $QDP_HOME/config " >&5
-echo "$as_me:  Sourcing qdp_build_env.sh in $QDP_HOME/config " >&6;}
-	      source $QDP_HOME/config/qdp_build_env.sh
-      else
-	      echo "$as_me:$LINENO: result: no" >&5
-echo "${ECHO_T}no" >&6
-	      { echo "$as_me:$LINENO:  configuration may still work if you set the " >&5
-echo "$as_me:  configuration may still work if you set the " >&6;}
-	      { echo "$as_me:$LINENO:  --with-xxxx switches or environment variables" >&5
-echo "$as_me:  --with-xxxx switches or environment variables" >&6;}
-      fi
+  QDPXX_HOME="$with_qdp"
 
 fi;
 
-
-# Check whether --with-qdp-cxxflags or --without-qdp-cxxflags was given.
-if test "${with_qdp_cxxflags+set}" = set; then
-  withval="$with_qdp_cxxflags"
-  QDP_CXXFLAGS="$with_qdp_cxxflags"
-fi;
-
-
-
-# Check whether --with-qdp-ldflags or --without-qdp-ldflags was given.
-if test "${with_qdp_ldflags+set}" = set; then
-  withval="$with_qdp_ldflags"
-  QDP_LDFLAGS="$with_qdp_ldflags"
-fi;
-
-
-
-# Check whether --with-qdp-libs or --without-qdp-libs was given.
-if test "${with_qdp_libs+set}" = set; then
-  withval="$with_qdp_libs"
-  QDP_LIBS="$with_qdp_libs"
-fi;
-
-
-
-# Check whether --with-qmp-cxxflags or --without-qmp-cxxflags was given.
-if test "${with_qmp_cxxflags+set}" = set; then
-  withval="$with_qmp_cxxflags"
-  QMP_CXXFLAGS="$with_qmp_cxxflags"
-fi;
-
-
-
-# Check whether --with-qmp-ldflags or --without-qmp-ldflags was given.
-if test "${with_qmp_ldflags+set}" = set; then
-  withval="$with_qmp_ldflags"
-  QMP_LDFLAGS="$with_qmp_ldflags"
-fi;
-
-
-
-# Check whether --with-qmp-libs or --without-qmp-libs was given.
-if test "${with_qmp_libs+set}" = set; then
-  withval="$with_qmp_libs"
-  QMP_LIBS="$with_qmp_libs"
-fi;
-
-
-
-
-# Check whether --with-qmp-comms-type or --without-qmp-comms-type was given.
-if test "${with_qmp_comms_type+set}" = set; then
-  withval="$with_qmp_comms_type"
-  case "${with_qmp_comms_type}" in
-    MPI) ;;
-    mpi) with_qmp_comms_type=MPI ;;
-    GM)  ;;
-    gm) with_qmp_comms_type=GM ;;
-    *) { { echo "$as_me:$LINENO: error: bad value \"${with_qmp_comms_type}\"
-      for --with-qmp-comms-type" >&5
-echo "$as_me: error: bad value \"${with_qmp_comms_type}\"
-      for --with-qmp-comms-type" >&2;}
-   { (exit 1); exit 1; }; } ;;
-    esac
+if test "X${QDPXX_HOME}X" = "XX" ; then
+  # Extract the first word of "qdp++-config", so it can be a program name with args.
+set dummy qdp++-config; ac_word=$2
+echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
+if test "${ac_cv_path_QDPXX_CONFIG+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
 else
-  with_qmp_comms_type=MPI
-fi;
+  case $QDPXX_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_QDPXX_CONFIG="$QDPXX_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_QDPXX_CONFIG="$as_dir/$ac_word$ac_exec_ext"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
 
+  ;;
+esac
+fi
+QDPXX_CONFIG=$ac_cv_path_QDPXX_CONFIG
 
-# Check whether --with-qmp-comms-cxxflags or --without-qmp-comms-cxxflags was given.
-if test "${with_qmp_comms_cxxflags+set}" = set; then
-  withval="$with_qmp_comms_cxxflags"
-  QMP_COMMS_CXXFLAGS="$with_qmp_comms_cxxflags"
-fi;
+if test -n "$QDPXX_CONFIG"; then
+  echo "$as_me:$LINENO: result: $QDPXX_CONFIG" >&5
+echo "${ECHO_T}$QDPXX_CONFIG" >&6
+else
+  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+fi
 
+else
+  # Extract the first word of "qdp++-config", so it can be a program name with args.
+set dummy qdp++-config; ac_word=$2
+echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
+if test "${ac_cv_path_QDPXX_CONFIG+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  case $QDPXX_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_QDPXX_CONFIG="$QDPXX_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+as_dummy="${QDPXX_HOME}/bin:${PATH}"
+for as_dir in $as_dummy
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_QDPXX_CONFIG="$as_dir/$ac_word$ac_exec_ext"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
 
+  ;;
+esac
+fi
+QDPXX_CONFIG=$ac_cv_path_QDPXX_CONFIG
 
-# Check whether --with-qmp-comms-ldflags or --without-qmp-comms-ldflags was given.
-if test "${with_qmp_comms_ldflags+set}" = set; then
-  withval="$with_qmp_comms_ldflags"
-  QMP_COMMS_LDFLAGS="$with_qmp_comms_ldflags"
-fi;
+if test -n "$QDPXX_CONFIG"; then
+  echo "$as_me:$LINENO: result: $QDPXX_CONFIG" >&5
+echo "${ECHO_T}$QDPXX_CONFIG" >&6
+else
+  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+fi
 
+fi
 
+if test "X${QDPXX_CONFIG}X" = "XX" ; then
+  { { echo "$as_me:$LINENO: error: QDP++ configuration program qdp++-config not found." >&5
+echo "$as_me: error: QDP++ configuration program qdp++-config not found." >&2;}
+   { (exit 1); exit 1; }; }
+fi
 
-# Check whether --with-qmp-comms-libs or --without-qmp-comms-libs was given.
-if test "${with_qmp_comms_libs+set}" = set; then
-  withval="$with_qmp_comms_libs"
-  QMP_COMMS_LIBS="$with_qmp_comms_libs"
-fi;
+{ echo "$as_me:$LINENO: Found QDP++ configuration program ${QDPXX_CONFIG}" >&5
+echo "$as_me: Found QDP++ configuration program ${QDPXX_CONFIG}" >&6;}
+QDPXX_CXXFLAGS="`${QDPXX_CONFIG} --cxxflags`"
 
+{ echo "$as_me:$LINENO: QDP++ compile flags: ${QDPXX_CXXFLAGS}" >&5
+echo "$as_me: QDP++ compile flags: ${QDPXX_CXXFLAGS}" >&6;}
+QDPXX_LDFLAGS="`${QDPXX_CONFIG} --ldflags`"
+
+{ echo "$as_me:$LINENO: QDP++ linking flags: ${QDPXX_LDFLAGS}" >&5
+echo "$as_me: QDP++ linking flags: ${QDPXX_LDFLAGS}" >&6;}
+QDPXX_LIBS="`${QDPXX_CONFIG} --libs`"
+
+{ echo "$as_me:$LINENO: QDP++ libraries flags: ${QDPXX_LIBS}" >&5
+echo "$as_me: QDP++ libraries flags: ${QDPXX_LIBS}" >&6;}
+QDPXX_ND="`${QDPXX_CONFIG} --Nd`"
+
+if test "X${QDPXX_ND}X" = "XX" ; then
+  { { echo "$as_me:$LINENO: error: Cannot determine QDP++ spacetime dimension" >&5
+echo "$as_me: error: Cannot determine QDP++ spacetime dimension" >&2;}
+   { (exit 1); exit 1; }; }
+else
+  { echo "$as_me:$LINENO: QDP++ spacetime dimension: ${QDPXX_ND}" >&5
+echo "$as_me: QDP++ spacetime dimension: ${QDPXX_ND}" >&6;}
+fi
+QDPXX_NC="`${QDPXX_CONFIG} --Nc`"
+
+{ echo "$as_me:$LINENO: QDP++ number of colors: ${QDPXX_NC}" >&5
+echo "$as_me: QDP++ number of colors: ${QDPXX_NC}" >&6;}
+QDPXX_NS="`${QDPXX_CONFIG} --Ns`"
+
+if test "X${QDPXX_NS}X" = "XX" ; then
+  { { echo "$as_me:$LINENO: error: Cannot determine number of spin components in QDP++" >&5
+echo "$as_me: error: Cannot determine number of spin components in QDP++" >&2;}
+   { (exit 1); exit 1; }; }
+else
+  { echo "$as_me:$LINENO: QDP++ number of spin components: ${QDPXX_NS}" >&5
+echo "$as_me: QDP++ number of spin components: ${QDPXX_NS}" >&6;}
+fi
 
 
 case $ac_fermion_type in
-  wilson)
-    { echo "$as_me:$LINENO:  Configuring SZIN++ with WILSON-like fermions " >&5
-echo "$as_me:  Configuring SZIN++ with WILSON-like fermions " >&6;}
-    ;;
   staggered)
-    { echo "$as_me:$LINENO:  Configuring SZIN++ with STAGGERED-like fermions " >&5
-echo "$as_me:  Configuring SZIN++ with STAGGERED-like fermions " >&6;}
+    if test $QDPXX_NS -ne 1 ; then
+      { { echo "$as_me:$LINENO: error: STAGGERED-like fermions should have Ns=1. Check QDP++" >&5
+echo "$as_me: error: STAGGERED-like fermions should have Ns=1. Check QDP++" >&2;}
+   { (exit 1); exit 1; }; }
+    else
+      { echo "$as_me:$LINENO: Configuring QDP++ Apps with STAGGERED-like fermions" >&5
+echo "$as_me: Configuring QDP++ Apps with STAGGERED-like fermions" >&6;}
+    fi
+    ;;
+  wilson)
+    { echo "$as_me:$LINENO: Configuring QDP++ Apps with WILSON-like fermions" >&5
+echo "$as_me: Configuring QDP++ Apps with WILSON-like fermions" >&6;}
     ;;
   *)
-    { { echo "$as_me:$LINENO: error:  must specify either wilson or staggered with --enable-fermion-type" >&5
-echo "$as_me: error:  must specify either wilson or staggered with --enable-fermion-type" >&2;}
+    { { echo "$as_me:$LINENO: error: ${ac_fermion_type}-like fermions not supported yet." >&5
+echo "$as_me: error: ${ac_fermion_type}-like fermions not supported yet." >&2;}
    { (exit 1); exit 1; }; }
     ;;
 esac
+
+
+
+if test "X${ac_fermion_type}X" = "XstaggeredX"; then
+  BUILD_STAGGERED_LIBS_TRUE=
+  BUILD_STAGGERED_LIBS_FALSE='#'
+else
+  BUILD_STAGGERED_LIBS_TRUE='#'
+  BUILD_STAGGERED_LIBS_FALSE=
+fi
+
+
+
+if test "X${ac_fermion_type}X" = "XwilsonX"; then
+  BUILD_WILSON_LIBS_TRUE=
+  BUILD_WILSON_LIBS_FALSE='#'
+else
+  BUILD_WILSON_LIBS_TRUE='#'
+  BUILD_WILSON_LIBS_FALSE=
+fi
+
+
 
 echo "$as_me:$LINENO: checking if we can compile/link a simple QDP++ program" >&5
 echo $ECHO_N "checking if we can compile/link a simple QDP++ program... $ECHO_C" >&6
 
 
 
-    pac_QDP_CXXFLAGS="${QDP_CXXFLAGS}                        ${QMP_CXXFLAGS} 		       ${QMP_COMMS_CXXFLAGS}"
-    pac_QDP_LDFLAGS="${QDP_LDFLAGS} ${QMP_LDFLAGS} ${QMP_COMMS_LDFLAGS}"
-    pac_QDP_LIBS="${QDP_LIBS} ${QMP_LIBS}                        ${QMP_COMMS_LIBS}"
+    pac_QDPXX_CXXFLAGS="${QDPXX_CXXFLAGS}"
+    pac_QDPXX_LDFLAGS="${QDPXX_LDFLAGS}"
+    pac_QDPXX_LIBS="${QDPXX_LIBS}"
 
 
     ac_ext=cc
@@ -2700,9 +2733,9 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
     pac_saved_CXXFLAGS="$CXXFLAGS"
     pac_saved_LDFLAGS="$LDFLAGS"
     pac_saved_LIBS="$LIBS"
-    CXXFLAGS="$CXXFLAGS $pac_QDP_CXXFLAGS"
-    LDFLAGS="$LDFLAGS $pac_QDP_LDFLAGS"
-    LIBS="$LIBS $pac_QDP_LIBS"
+    CXXFLAGS="$CXXFLAGS $pac_QDPXX_CXXFLAGS"
+    LDFLAGS="$LDFLAGS $pac_QDPXX_LDFLAGS"
+    LIBS="$LIBS $pac_QDPXX_LIBS"
     cat >conftest.$ac_ext <<_ACEOF
 #line $LINENO "configure"
 /* confdefs.h.  */
@@ -2710,24 +2743,27 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-#include <qdp.h>
-		 using namespace QDP;
+
+        #include <qdp.h>
+        using namespace QDP;
+
 int
 main ()
 {
 
-    int argc; char **argv;
-    // Turn on the machine
-    QDP_initialize(&argc, &argv);
-    // Create the layout
-    const int foo[] = {2,2,2,2};
-    multi1d<int> nrow(Nd);
-    nrow = foo;  // Use only Nd elements
-    Layout::setLattSize(nrow);
-    Layout::create();
-    ;
-    ;
-    QDP_finalize();
+        int argc ; char **argv ;
+        // Turn on the machine
+        QDP_initialize(&argc, &argv) ;
+        // Create the layout
+        const int foo[] = {2,2,2,2} ;
+        multi1d<int> nrow(Nd) ;
+        nrow = foo ; // Use only Nd elements
+        Layout::setLattSize(nrow) ;
+        Layout::create() ;
+         ;
+         ;
+        QDP_finalize() ;
+
   ;
   return 0;
 }
@@ -2744,12 +2780,13 @@ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  pac_qdp_working=yes
+  pac_qdpxx_working=yes
 else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-pac_qdp_working=no
+pac_qdpxx_working=no
+
 fi
 rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
     CXXFLAGS="$pac_saved_CXXFLAGS"
@@ -2761,37 +2798,26 @@ ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
-    if test "$pac_qdp_working" = "yes" ; then
-       qdp_link_ok=yes
+    if test "X${pac_qdpxx_working}X" = "XyesX" ; then
+       qdpxx_link_ok=yes
     else
-       qdp_link_ok=no
+       qdpxx_link_ok=no
+
     fi
 
-if test "X${qdp_link_ok}X" = "XyesX" ; then
+
+if test "X${qdpxx_link_ok}X" = "XyesX" ; then
   echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6
 else
   echo "$as_me:$LINENO: result: no" >&5
 echo "${ECHO_T}no" >&6
-  { { echo "$as_me:$LINENO: error:  Cannot compile/link a program with QDP please check/set
-   the values of QDP_CXXFLAGS, QDP_LDFLAGS, QDP_LIBS, QMP_CXXFLAGS, QMP_LDFLAGS
-   QMP_LIBS, QMP_COMMS_CXXFLAGS, QMP_COMMS_LDFLAGS, QMP_COMMS_LIBS  " >&5
-echo "$as_me: error:  Cannot compile/link a program with QDP please check/set
-   the values of QDP_CXXFLAGS, QDP_LDFLAGS, QDP_LIBS, QMP_CXXFLAGS, QMP_LDFLAGS
-   QMP_LIBS, QMP_COMMS_CXXFLAGS, QMP_COMMS_LDFLAGS, QMP_COMMS_LIBS  " >&2;}
+  { { echo "$as_me:$LINENO: error: Cannot compile/link a program with QDP++.
+    Use --with-qdp++=<dir> to select a working version." >&5
+echo "$as_me: error: Cannot compile/link a program with QDP++.
+    Use --with-qdp++=<dir> to select a working version." >&2;}
    { (exit 1); exit 1; }; }
 fi
-
-
-
-if test "X${ac_fermion_type}X" = "XwilsonX" ; then
-  BUILD_WILSON_LIBS_TRUE=
-  BUILD_WILSON_LIBS_FALSE='#'
-else
-  BUILD_WILSON_LIBS_TRUE='#'
-  BUILD_WILSON_LIBS_FALSE=
-fi
-
 
           ac_config_files="$ac_config_files Makefile"
 
@@ -2938,6 +2964,13 @@ if test -z "${am__fastdepCXX_TRUE}" && test -z "${am__fastdepCXX_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"am__fastdepCXX\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 echo "$as_me: error: conditional \"am__fastdepCXX\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${BUILD_STAGGERED_LIBS_TRUE}" && test -z "${BUILD_STAGGERED_LIBS_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"BUILD_STAGGERED_LIBS\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"BUILD_STAGGERED_LIBS\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -3525,15 +3558,15 @@ s,@AMDEPBACKSLASH@,$AMDEPBACKSLASH,;t t
 s,@CXXDEPMODE@,$CXXDEPMODE,;t t
 s,@am__fastdepCXX_TRUE@,$am__fastdepCXX_TRUE,;t t
 s,@am__fastdepCXX_FALSE@,$am__fastdepCXX_FALSE,;t t
-s,@QDP_CXXFLAGS@,$QDP_CXXFLAGS,;t t
-s,@QDP_LDFLAGS@,$QDP_LDFLAGS,;t t
-s,@QDP_LIBS@,$QDP_LIBS,;t t
-s,@QMP_CXXFLAGS@,$QMP_CXXFLAGS,;t t
-s,@QMP_LDFLAGS@,$QMP_LDFLAGS,;t t
-s,@QMP_LIBS@,$QMP_LIBS,;t t
-s,@QMP_COMMS_CXXFLAGS@,$QMP_COMMS_CXXFLAGS,;t t
-s,@QMP_COMMS_LDFLAGS@,$QMP_COMMS_LDFLAGS,;t t
-s,@QMP_COMMS_LIBS@,$QMP_COMMS_LIBS,;t t
+s,@QDPXX_CONFIG@,$QDPXX_CONFIG,;t t
+s,@QDPXX_CXXFLAGS@,$QDPXX_CXXFLAGS,;t t
+s,@QDPXX_LDFLAGS@,$QDPXX_LDFLAGS,;t t
+s,@QDPXX_LIBS@,$QDPXX_LIBS,;t t
+s,@QDPXX_ND@,$QDPXX_ND,;t t
+s,@QDPXX_NC@,$QDPXX_NC,;t t
+s,@QDPXX_NS@,$QDPXX_NS,;t t
+s,@BUILD_STAGGERED_LIBS_TRUE@,$BUILD_STAGGERED_LIBS_TRUE,;t t
+s,@BUILD_STAGGERED_LIBS_FALSE@,$BUILD_STAGGERED_LIBS_FALSE,;t t
 s,@BUILD_WILSON_LIBS_TRUE@,$BUILD_WILSON_LIBS_TRUE,;t t
 s,@BUILD_WILSON_LIBS_FALSE@,$BUILD_WILSON_LIBS_FALSE,;t t
 s,@LIBOBJS@,$LIBOBJS,;t t
