@@ -1,4 +1,4 @@
-// $Id: ritz.cc,v 1.5 2004-01-20 20:51:10 bjoo Exp $
+// $Id: ritz.cc,v 1.6 2004-01-21 15:34:52 bjoo Exp $
 /*! \file
  *  \brief Ritz code for eigenvalues
  */
@@ -106,6 +106,8 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
 	    multi1d<T>& psi_all,        // E-vector array
 	    int N_eig,                  // Current evec index
 	    const Real& Rsd_r,          // Target relative residue
+	    const Real& zero_cutoff,    // if ev-slips below this 
+	                                // we consider it to be a zero
 	    int n_renorm,               // Renormalise frequency
 	    int n_min, int n_max,       // minimum / maximum no of iters to do
 	    int MaxCG,                  // Max iters after which we bomb
@@ -186,6 +188,7 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
   bool convP;
   bool minItersDoneP = n_min <= 0;
   bool maxItersDoneP = n_max <= 0;
+  bool zeroFoundP;
   bool CGConvP;
   bool KSConvP;
   bool deltaCycleConvP;
@@ -195,6 +198,11 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
   // omega | mu | 
   rsd =  fabs(Rsd_r * mu);      // Pessimistic according to KS
   CGConvP = toBool( g2 < rsd*rsd );
+  zeroFoundP = toBool( fabs(mu) < zero_cutoff );
+
+  if( zeroFoundP ) { 
+    QDPIO::cout << "Zero found" << endl;
+  }
 
   // error based on delta_cycle
   Double delta_cycle_err = delta_cycle;
@@ -203,7 +211,7 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
     // Normal CG stopping criterion
     // The stopping criterion is satisfied AND 
     // we have performed the minimum number of iterations
-    convP = minItersDoneP && CGConvP;
+    convP = minItersDoneP && ( CGConvP || zeroFoundP );
   }
   else { 
     // Kalk-Sim stopping criterion
@@ -212,7 +220,7 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
     // initial first two iterations where delta_cycle is not known
     // I may revisit this condition...
     KSConvP = toBool( delta_cycle_err < rsd );
-    convP = minItersDoneP && ( KSConvP || CGConvP );
+    convP = minItersDoneP && ( KSConvP || CGConvP || zeroFoundP );
   }
 
   if ( convP ) {
@@ -326,13 +334,17 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
     // Conservative CG test
     rsd =fabs(Rsd_r * mu);
     CGConvP = toBool( g2 < rsd*rsd );
+    zeroFoundP = toBool( fabs(mu) < zero_cutoff );
+    if( zeroFoundP) {
+      QDPIO::cout << "Zero Found" << endl;
+    }
 
     if( Kalk_Sim == false ) {
 
       // Non Kalk Sim criteria. We have done the minimum 
       // Number of iterations, and we have either done the maximum
       // number too or we have converged
-      convP = minItersDoneP && ( maxItersDoneP || CGConvP );
+      convP = minItersDoneP && ( maxItersDoneP || CGConvP || zeroFoundP );
     }
     else { 
       // Kalk Sim criteria
@@ -348,7 +360,7 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
       // Ignore delta_cycle_err for now
       // KSConvP = toBool ( g2_g0_ratio <= Double(gamma_factor));
 
-      convP = minItersDoneP && ( maxItersDoneP || CGConvP || KSConvP );
+      convP = minItersDoneP && ( maxItersDoneP || CGConvP || KSConvP || zeroFoundP );
 
     }
 
@@ -515,6 +527,8 @@ void Ritz(const LinearOperator<LatticeFermion>& A,   // Herm Pos Def
 	  multi1d<LatticeFermion>& psi_all,        // E-vector array
 	  int N_eig,                  // Current evec index
 	  const Real& Rsd_r,          // Target relative residue
+	  const Real& zero_cutoff,    // If ev-slips below this we consider it
+	                              // to be zero
 	  int n_renorm,               // Renormalise frequency
 	  int n_min, int n_max,       // minimum / maximum no of iters to do
 	  int MaxCG,                  // Max no of iters after which we bomb
@@ -525,6 +539,8 @@ void Ritz(const LinearOperator<LatticeFermion>& A,   // Herm Pos Def
 	  const Real& delta_cycle,    // Initial error estimate (KS mode)
 	  const Real& gamma_factor)   // Convergence factor Gamma
 {
-  Ritz_t(A, lambda, psi_all, N_eig, Rsd_r, n_renorm, n_min, n_max, MaxCG,
-	 ProjApsiP, n_count, final_grad, Kalk_Sim, delta_cycle, gamma_factor);
+  Ritz_t(A, lambda, psi_all, N_eig, Rsd_r, zero_cutoff, 
+	 n_renorm, n_min, n_max, MaxCG,
+	 ProjApsiP, n_count, final_grad, 
+	 Kalk_Sim, delta_cycle, gamma_factor);
 }

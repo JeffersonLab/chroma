@@ -1,4 +1,4 @@
-/* ! $Id: eig_spec_bj_w.h,v 1.5 2004-01-20 20:51:10 bjoo Exp $ */
+/* ! $Id: eig_spec_bj_w.h,v 1.6 2004-01-21 15:34:52 bjoo Exp $ */
 
 #ifndef __eig_spec_bj_w_h__
 #define __eig_spec_bj_w_h__
@@ -15,6 +15,8 @@ void EigSpecRitzCG(const LinearOperator<LatticeFermion>& H, // Herm pos def oper
 		   int MaxCG,                       // Max no of CG iters
 		   const Real& Rsd_r,               // relative residuum of each 
 		                                  // e-value
+		   const Real& zero_cutoff,         // if evalue slips below this 
+                                                    // we consider it as zero
 		   const bool ProjApsiP,            // Project in Ritz?
 		   
 		   int& n_cg_tot,                   // Total no of CG iters
@@ -36,6 +38,8 @@ void EigSpecRitzKS(const LinearOperator<LatticeFermion>& H, // Herm pos def oper
 		   int MaxCG,                       // Max no of CG iters
 		   const Real& Rsd_r,               // relative residuum of each 
 		                                  // e-value
+		   const Real& zero_cutoff,         // if an ev slips below this
+		                                    // we consider it zero
 		   const bool ProjApsiP,            // Project in Ritz?
 		   
 		   int& n_cg_tot,                   // Total no of CG iters
@@ -51,6 +55,8 @@ void fixMMev2Mev(const LinearOperator<LatticeFermion>& M,  // The Op to fix to
 		 multi1d<LatticeFermion>& ev_psi,          // The Evecs corresponding to lambda
 		 const int n_eig,                          // The no of evals/evecs to deal with
 		 const Real& validity_tolerance,           // Tolerance for validity
+		 const Real& zero_cutoff,                  // if EV slips below this we consider
+		                                           // it to be zero
 		 multi1d<bool>& valid_eig,                 // Validity mask (Write)
 		 int& n_valid,                             // No of valids  (Write)
 		 const Real& jacobi_tolerance,             // How far to run the Jacobi

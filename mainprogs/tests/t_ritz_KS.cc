@@ -1,4 +1,4 @@
-// $Id: t_ritz_KS.cc,v 1.2 2004-01-20 20:51:10 bjoo Exp $
+// $Id: t_ritz_KS.cc,v 1.3 2004-01-21 15:34:52 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -250,6 +250,7 @@ int main(int argc, char **argv)
 		Real(0.1),       // Gamma factor
 		params.max_cg,
 		params.rsd_r,
+		Real(1.0e-3),   // Zero cutoff value
 		ProjApsiP,
 		n_CG_count,
 		n_KS_count,
@@ -267,7 +268,6 @@ int main(int argc, char **argv)
     lambda_e = lambda[i]*psi[i];
     LatticeFermion r_norm = Me - lambda_e;
     check_norm[i] = sqrt(norm2(r_norm))/fabs(lambda[i]);
-    QDPIO::cout << "check_norm["<<i+1<<"] = " << check_norm[i] << endl;
   }
   write(xml_out, "check_norm_rel", check_norm);
 
@@ -279,8 +279,8 @@ int main(int argc, char **argv)
   int n_valid;
   int n_jacob;
 
-  fixMMev2Mev(*H, lambda, psi, params.n_eig+n_dummy, sqrt(params.rsd_r), 
-	      valid_eig, n_valid, params.rsd_r, n_jacob);
+  fixMMev2Mev(*H, lambda, psi, params.n_eig+n_dummy, Real(10)*params.rsd_r, 
+	      Real(1.0e-3), valid_eig, n_valid, params.rsd_r, n_jacob);
 
   push(xml_out, "eigFix");
   write(xml_out, "lambda", lambda);
@@ -297,16 +297,6 @@ int main(int argc, char **argv)
   }
   write(xml_out, "check_norm_rel", check_norm);
   pop(xml_out);
-
-
-  for(int i=0; i < params.n_eig; i++) { 
-    lambda[i] /= (Real(Nd) + params.quark_mass);
-  }
-
-  push(xml_out, "SZINEv");
-  write(xml_out, "lambda_szin", lambda);
-  pop(xml_out);
-
 
   pop(xml_out);
   QDP_finalize();

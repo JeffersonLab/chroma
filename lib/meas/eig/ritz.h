@@ -100,6 +100,8 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
 	    multi1d<T>& psi_all,        // E-vector array
 	    int N_eig,                  // Current evec index
 	    const Real& Rsd_r,          // Target relative residue
+	    const Real& zero_cutoff,    // If ev slips below this we consider
+	                                // if to be zero
 	    int n_renorm,               // Renormalise frequency
 	    int n_min, int n_max,       // minimum / maximum no of iters to do
 	    int MaxCG,                  // Max iters after which we bomb
@@ -116,6 +118,8 @@ void Ritz(const LinearOperator<LatticeFermion>& A,   // Herm Pos Def
 	  multi1d<LatticeFermion>& psi_all,        // E-vector array
 	  int N_eig,                  // Current evec index
 	  const Real& Rsd_r,          // Target relative residue
+	  const Real& zero_cutoff,    // if ev slips below this we consider 
+	                              // if to be zero.
 	  int n_renorm,               // Renormalise frequency
 	  int n_min, int n_max,       // minimum / maximum no of iters to do
 	  int MaxCG,                  // Maximum no if iters after which we bomb

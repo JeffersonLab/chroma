@@ -1,4 +1,4 @@
-// $Id: eig_spec_bj_w.cc,v 1.5 2004-01-20 20:51:10 bjoo Exp $
+// $Id: eig_spec_bj_w.cc,v 1.6 2004-01-21 15:34:52 bjoo Exp $
 /*! \file
  *  \brief Compute low lying eigenvalues of the hermitian H
  */
@@ -43,18 +43,20 @@ using namespace QDP;
 
 
 void EigSpecRitzCG(const LinearOperator<LatticeFermion>& M, // Herm pos def operator
-		 multi1d<Real>& lambda_H,            // E-values
-		 multi1d<LatticeFermion>& psi,       // E-vectors
-		 int n_eig,                        // No of e-values to find
-		 int n_renorm,                      // renorm frequency
-		 int n_min,                         // minimum iters / e_value
-		 int MaxCG,                         // Max no of CG iters
-		 const Real& Rsd_r,                 // relative residuum of each 
-	     // e-value
-		 const bool ProjApsiP,              // Project in Ritz?
-	     
-		 int& n_cg_tot,                     // Total no of CG iters
-		 XMLBufferWriter& xml_out           // Diagnostics
+		   multi1d<Real>& lambda_H,          // E-values
+		   multi1d<LatticeFermion>& psi,     // E-vectors
+		   int n_eig,                        // No of e-values to find
+		   int n_renorm,                     // renorm frequency
+		   int n_min,                        // minimum iters / e_value
+		   int MaxCG,                        // Max no of CG iters
+		   const Real& Rsd_r,                // relative residuum of each 
+		                                     // e-value
+		   const Real& zero_cutoff,          // if ev slips below this
+		                                     // we consider it zero
+		   const bool ProjApsiP,             // Project in Ritz?
+		   
+		   int& n_cg_tot,                    // Total no of CG iters
+		   XMLBufferWriter& xml_out          // Diagnostics
 	     )
 {
   START_CODE("EigSpecRitzCG");
@@ -77,29 +79,32 @@ void EigSpecRitzCG(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
     lambda_H[i] = Real(1);
     
     // Do the Ritz
-    Ritz(M, lambda_H[i], psi, n, Rsd_r, n_renorm, n_min, n_max, 	   
+    Ritz(M, lambda_H[i], psi, n, Rsd_r, zero_cutoff, n_renorm, n_min, n_max, 	   
 	 MaxCG, ProjApsiP, n_count, final_grad, false, Real(1), Real(1));
 
     // Add n_count
     n_cg_tot += n_count;
     
     // Check e-value
-    LatticeFermion   D_e;
-    LatticeFermion  lambda_e;
-    M(D_e, psi[i], PLUS);
-    lambda_e = lambda_H[i]*psi[i];
-    D_e -= lambda_e;
-    Double r_norm = sqrt(norm2(D_e));
-    resid_rel[i] = Real(r_norm)/lambda_H[i];
-    QDPIO::cout << "Evalue["<<n<<"]: eigen_norm = " << r_norm << " resid_rel = " << resid_rel[i] << endl << endl;
-    // Dump info 
     ostringstream s;
     s << "eval" << n;
     push(xml_out, s.str());
     write(xml_out, "n_count", n_count);
-    write(xml_out, "e_norm", r_norm);
-    write(xml_out, "rel_e_norm", resid_rel[i]);
     pop(xml_out);
+
+    if( toBool( fabs(lambda_H[i]) < zero_cutoff ) ) { 
+      QDPIO::cout << "Evalue["<< n << "] = " << lambda_H[i] << " is considered zero" << endl;
+    }
+    else {
+      LatticeFermion   D_e;
+      LatticeFermion  lambda_e;
+      M(D_e, psi[i], PLUS);
+      lambda_e = lambda_H[i]*psi[i];
+      D_e -= lambda_e;
+      Double r_norm = sqrt(norm2(D_e));
+      resid_rel[i] = Real(r_norm)/lambda_H[i];
+      QDPIO::cout << "Evalue["<<n<<"]: eigen_norm = " << r_norm << " resid_rel = " << resid_rel[i] << endl << endl;
+    }
   }
 
   // All EV-s done. Dump-em
@@ -130,6 +135,8 @@ void EigSpecRitzKS(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
 		   int MaxCG,                       // Max no of CG iters
 		   const Real& Rsd_r,               // relative residuum of each 
 		                                  // e-value
+		   const Real& zero_cutoff,         // if e-value slips below this, we 
+		                                    // consider it zero
 		   const bool ProjApsiP,            // Project in Ritz?
 		   
 		   int& n_cg_tot,                   // Total no of CG iters
@@ -151,9 +158,17 @@ void EigSpecRitzKS(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
     QDP_error_exit("psi is too small to hold n_eig + n_dummy values\n");
   }
 
-  // Make sure algorithm is applicable
-  if( n_eig <=1 ) { 
-    QDP_error_exit("Kalkreuter Simma does not work for just 1 e-value. Use EigSpecRitzCG instead");
+  if( n_eig <=0 ) { 
+    QDP_error_exit("n_eig must be > 0. it is %d\n", n_eig);
+  }
+
+
+  if( n_eig ==1 ) { 
+    // if n_eig is one, KS algorithm is not applicable. We revert to the 
+    // Normal CG method
+    EigSpecRitzCG(M, lambda_H, psi, n_eig, n_renorm, n_min, MaxCG, Rsd_r,
+		  zero_cutoff, ProjApsiP, n_cg_tot, xml_out);
+    return;
   }
 
   // Internal lambda's
@@ -198,7 +213,7 @@ void EigSpecRitzKS(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
     for(ev = 1, i=0; ev <= n_working_eig; ev++, i++) {
 
       // Do the Ritz for all working eigenvalues
-      Ritz(M, lambda_intern[i], psi, ev, Rsd_r, n_renorm, n_min, n_max, 
+      Ritz(M, lambda_intern[i], psi, ev, Rsd_r, zero_cutoff,  n_renorm, n_min, n_max, 
 	   MaxCG, ProjApsiP, n_count, final_grad[i], true, Real(1), 
 	   gamma_factor);
 
@@ -235,23 +250,15 @@ void EigSpecRitzKS(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
 
     write(xml_out, "n_jacob", n_jacob);
 
-    // delta_cycle = | mu - mu' | / (1 - gamma );
-    // push(xml_out, "delta_cycle");
-    // for(i=0; i < n_working_eig; i++) {
-    // delta_cycle[i] = fabs( lambda_previous[i] - lambda_intern[i]);
-    // delta_cycle[i] /= Real(1) - gamma_factor;
-    //  write(xml_out, "dc", delta_cycle[i]);
-    //  lambda_previous[i] = lambda_intern[i];
-    // }
-    // pop(xml_out);
-
+    
     // Now we should check convergence
-    // Pessimistic but safe criterion || g ||/lambda  < omega  sqrt(n_eig) 
+    // Pessimistic but safe criterion || g ||/lambda  < omega
+    // but can also be converged if we consider something to have a zero ev
     // we only check convergence of the wanted n_eig
     bool convP = true;
-    for(i=0; i < n_eig; i++) { 
-      convP &= ( toBool(final_grad[i] < Rsd_r*fabs(lambda_intern[i])));
-      // convP = toBool(delta_cycle[i] < Rsd_r*fabs(lambda_intern[i]) );
+    for(i=0; i < n_eig; i++) {
+      bool zeroReachedP = toBool( fabs(lambda_intern[i]) < zero_cutoff );
+      convP &= ( toBool(final_grad[i] < Rsd_r*fabs(lambda_intern[i])) || zeroReachedP );
     }
 
     pop(xml_out); // KS_iter
@@ -305,6 +312,7 @@ void fixMMev2Mev(const LinearOperator<LatticeFermion>& M,  // The Op to fix to
 		 multi1d<LatticeFermion>& ev_psi,          // The Evecs corresponding to lambda
 		 const int n_eig,                          // The no of evals/evecs to deal with
 		 const Real& validity_tolerance,           // Tolerance for validity
+		 const Real& zero_cutoff, 
 		 multi1d<bool>& valid_eig,                 // Validity mask (Write)
 		 int& n_valid,                             // No of valids  (Write)
 		 const Real& jacobi_tolerance,             // How far to run the Jacobi
@@ -329,6 +337,7 @@ void fixMMev2Mev(const LinearOperator<LatticeFermion>& M,  // The Op to fix to
   Double lambda_H_sq;
   Double delta_lambda;
 
+  bool zeroMatchedP;
   // We are all set -- lets do it
 
   if( n_eig == 1 ) {                  // only one eigenvalue
@@ -336,59 +345,122 @@ void fixMMev2Mev(const LinearOperator<LatticeFermion>& M,  // The Op to fix to
     Double lambda_fix_single = innerProductReal(ev_psi[0], tmp);
     
     // No diagonalisation needed -- only 1 eval
+
+    // We square lambda_fix_single.
     lambda_H_sq = lambda_fix_single*lambda_fix_single;
-    delta_lambda = fabs( lambda_H_sq - Double( lambda[0] )*Double( lambda[0] ) );
-    
-    lambda[0] = Real(lambda_fix_single);
 
-    // Check relative error is satisfied
-    if ( toBool( delta_lambda < Double(validity_tolerance) * fabs(Double(lambda[0])) ) ) { 
-      // Condition is satisfied
-      valid_eig[0] = true;
-      n_valid = 1;
-    } else {
-      // Condition is not satisfied
-      valid_eig[0] = false;
-      n_valid = 0;
+
+    // Different validity criteria, depending on whether lambda_fix_single^2 
+    // is less than our zero cutoff
+    if( toBool( lambda_H_sq < zero_cutoff ) ) {
+
+            
+      // Yes, the square of our estimate for lambda is less than the cutoff
+      // Check whether the original lambda was also less than the cutoff
+      // if so, our ev is considered a valid zero e-value
+      if( toBool( lambda[0] < zero_cutoff ) ) {
+	valid_eig[0] = true;
+	n_valid = 1;
+      }
+      else { 
+	// No, the square of our estimate was not zero. Mismatch
+	// BTW what else can we do here?
+	valid_eig[0] = false;
+	n_valid = 1;
+      }
+    
+      // Whatever happened lambda_fix_single is our estimate for
+      // lambda[0]
+      lambda[0] = Real(lambda_fix_single);
+      return;
     }
+    else { 
+      // Check relative error is satisfied
+      delta_lambda = fabs( lambda_H_sq - Double( lambda[0] ) );
     
-    return;
-  }
-  else { 
-    
-    // Interesting case multiple ev-s
-    // Construct new ev-s and off diagonal matrix
-    multi1d<Complex> off_diag(n_eig*(n_eig-1)/2 );
-    multi1d<Real>    lambda_fix(n_eig);
-    for(int i = 0; i < n_eig; i++) { 
-      valid_eig[i] = false;
-    }
-
-    for(int i=0, ij=0; i < n_eig; i++) { 
-      M(tmp, ev_psi[i], PLUS); 
-      lambda_fix[i] = innerProductReal(ev_psi[i], tmp);
-
-      for(int j=0; j < i; j++) { 
-	off_diag[ij] = innerProduct(ev_psi[j], tmp);
-	ij++;
+      if ( toBool( delta_lambda < Double(validity_tolerance) * fabs(Double(lambda[0])) ) ) { 
+	// Condition is satisfied
+	valid_eig[0] = true;
+	n_valid = 1;
+      } else {
+	// Condition is not satisfied
+	valid_eig[0] = false;
+	n_valid = 0;
       }
     }
-    
-    // Diagonalise and sort according to size
-    SN_Jacob(ev_psi, n_eig, lambda_fix, off_diag, jacobi_tolerance, 50, n_jacob);
+ 
+    // Whatever happened lambda_fix_single is our estimate for
+    // lambda[0]
+    lambda[0] = Real(lambda_fix_single);
+    return;
+  }  // end if (n_eig == 1)
 
-    // Now the tricky business of matching up with ev-s of H^2
-    n_valid = 0;
     
-    for(int i=0; i < n_eig; i++) { 
-      lambda_H_sq = Double(lambda_fix[i])*Double(lambda_fix[i]);
+  // Interesting case multiple ev-s
+  // Construct new ev-s and off diagonal matrix
+  multi1d<Complex> off_diag(n_eig*(n_eig-1)/2 );
+  multi1d<Real>    lambda_fix(n_eig);
+  for(int i = 0; i < n_eig; i++) { 
+    valid_eig[i] = false;
+  }
+
+  for(int i=0, ij=0; i < n_eig; i++) { 
+    M(tmp, ev_psi[i], PLUS); 
+    lambda_fix[i] = innerProductReal(ev_psi[i], tmp);
+    
+    for(int j=0; j < i; j++) { 
+      off_diag[ij] = innerProduct(ev_psi[j], tmp);
+      ij++;
+    }
+  }
+    
+  // Diagonalise and sort according to size
+  SN_Jacob(ev_psi, n_eig, lambda_fix, off_diag, jacobi_tolerance, 50, n_jacob);
+
+  // Now the tricky business of matching up with ev-s of H^2
+  n_valid = 0;
+    
+  for(int i=0; i < n_eig; i++) { 
+    lambda_H_sq = Double(lambda_fix[i])*Double(lambda_fix[i]);
+
+
+
+    if( toBool(lambda_H_sq < zero_cutoff ) ) {
 
       // Now compare with all the invalid ev-s
       for(int j = n_valid; ( j < n_eig ) && ( valid_eig[i] == false ); j++ ) {
-	delta_lambda = fabs( lambda_H_sq - Double(lambda[j])*Double(lambda[j]) );
+
+	// If we find an original zero lambda, we match it with this 
+	// and consider this matched
+	if( toBool( lambda[j] < zero_cutoff ) ) { 
+	  
+	  // lambda_fix[i] matches lambda[j] 
+	  valid_eig[i] = true;
+	  
+	  // swap lambda[j] with lambda[valid_eig];
+	  // so we don't search it again
+	  Real tmp = lambda[j];
+	  lambda[j] = lambda[n_valid];
+	  lambda[n_valid] = tmp;
+	  
+	  // Increase the validity count
+	  n_valid++;
+	}
+
+	// Else compare with next j
+      }
+      // At this point either valid_eig[i] is true, or we were unable to match
+      // in which case valid_eig[i] is false from initialisation
+      // in any case time for next_eig
+
+    }
+    else {
+      // Now compare with all the invalid ev-s
+      for(int j = n_valid; ( j < n_eig ) && ( valid_eig[i] == false ); j++ ) {
+	delta_lambda = fabs( lambda_H_sq - Double(lambda[j]) );
 	
 	if( toBool( delta_lambda < Double(validity_tolerance)*fabs(Double(lambda[j])) ) ) {
-
+	  
 	  // lambda_fix[i] matches lambda[j] 
 	  valid_eig[i] = true;
 	  
@@ -407,17 +479,17 @@ void fixMMev2Mev(const LinearOperator<LatticeFermion>& M,  // The Op to fix to
       // At this point either valid_eig[i] is true, or we were unable to match
       // in which case valid_eig[i] is false from initialisation
       // in any case time for next_eig
-
-    } // We are done
-
-    // Now we can overwrite lambda with lambda_fix
-    // A desirable feature would be to move the invalid ev-s to the end
-    // but I cannot be bothered
-    for(int i = 0; i < n_eig; i++ ) { 
-      lambda[i] = lambda_fix[i];
     }
-  } // End of if( n_eig == 1 ) .. else { } 
+  } // We are done
 
+  // Now we can overwrite lambda with lambda_fix
+  // A desirable feature would be to move the invalid ev-s to the end
+  // but I cannot be bothered
+  for(int i = 0; i < n_eig; i++ ) { 
+    lambda[i] = lambda_fix[i];
+  }
+  
+  
   // we are done 
   return;
 }
