@@ -1,4 +1,4 @@
-// $Id: t_precdwf.cc,v 1.3 2003-12-04 21:52:15 edwards Exp $
+// $Id: t_precdwf.cc,v 1.4 2003-12-08 17:02:52 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -93,7 +93,8 @@ int main(int argc, char **argv)
     clock_t myt2;
     double mydt;
 
-    int Ndiag  = (N5-2)*(5*24) + 2*(8*24);
+//    int Ndiag  = (N5-2)*(5*24) + 2*(8*24);
+    int Ndiag  = N5*(4*24) + (N5-1)*(8*24) + 3*24;   // this is what I get counting flops in code
     int Neo    = N5*(1320+24);
     int Nflops = 2*Ndiag + 2*Neo + N5*24;
 
