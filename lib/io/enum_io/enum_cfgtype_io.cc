@@ -16,6 +16,8 @@ namespace Chroma {
       success &= theCfgTypeMap::Instance().registerPair( string("SCIDAC"), CFG_TYPE_SCIDAC );
       success &= theCfgTypeMap::Instance().registerPair( string("SZIN" ), CFG_TYPE_SZIN );
       success &= theCfgTypeMap::Instance().registerPair( string("SZINQIO"), CFG_TYPE_SZINQIO );
+      
+      success &= theCfgTypeMap::Instance().registerPair( string("KYU"), CFG_TYPE_KYU );
       success &= theCfgTypeMap::Instance().registerPair( string("DISORDERED"), CFG_TYPE_DISORDERED );
       success &= theCfgTypeMap::Instance().registerPair( string("UNIT"), CFG_TYPE_UNIT );
       

@@ -1,4 +1,4 @@
-// $Id: unprec_zolo_nef_fermact_array_w.cc,v 1.4 2004-11-01 12:52:47 bjoo Exp $
+// $Id: unprec_zolo_nef_fermact_array_w.cc,v 1.5 2004-11-13 17:32:11 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned NEF fermion action
  */
@@ -114,7 +114,7 @@ namespace Chroma
 
     multi1d<Real> gamma(N5);
     for(int i=0; i < N5; i++) { 
-      gamma[i] = Real(rdata->gamma[i]);
+      gamma[i] = Real(rdata->gamma[i])*approxMax;
     }
 
     zolotarev_free(rdata);
@@ -131,11 +131,10 @@ namespace Chroma
     }
     
     for(int i = 0; i < N5; i++) { 
-      Real tmp = gamma[i]*approxMax;
-      Real omega = Real(1)/tmp;
+      Real omega = Real(1)/gamma[i];
 
-      b5_arr[i] = Real(0.5)*( (omega + Real(1) )*b5  + (omega - Real(1) )*c5 );
-      c5_arr[i] = Real(0.5)*( (omega - Real(1) )*b5  + (omega + Real(1) )*c5 );
+      b5_arr[i] = Real(0.5)*( (omega + Real(1))*b5 + (omega - Real(1))*c5 );
+      c5_arr[i] = Real(0.5)*( (omega - Real(1))*b5 + (omega + Real(1))*c5 );
 
       QDPIO::cout << "i=" << i << " omega["<<i<<"]=" << omega
 		  << " b5["<< i << "] ="<< b5_arr[i] 

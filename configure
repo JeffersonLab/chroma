@@ -1985,14 +1985,6 @@ echo "$as_me: QDP++ precision: ${QDPXX_PRECISION}" >&6;}
 
 case $ac_fermion_type in
   staggered)
-    if test $QDPXX_NS -ne 1 ; then
-      { { echo "$as_me:$LINENO: error: STAGGERED-like fermions should have Ns=1. Check QDP++" >&5
-echo "$as_me: error: STAGGERED-like fermions should have Ns=1. Check QDP++" >&2;}
-   { (exit 1); exit 1; }; }
-    else
-      { echo "$as_me:$LINENO: Configuring QDP++ Apps with STAGGERED-like fermions" >&5
-echo "$as_me: Configuring QDP++ Apps with STAGGERED-like fermions" >&6;}
-    fi
 
 cat >>confdefs.h <<\_ACEOF
 #define CHROMA_BUILD_STAGGERED

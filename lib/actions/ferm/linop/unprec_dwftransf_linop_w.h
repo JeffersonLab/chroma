@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwftransf_linop_w.h,v 1.2 2004-11-02 12:21:54 bjoo Exp $
+// $Id: unprec_dwftransf_linop_w.h,v 1.3 2004-11-13 17:32:11 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -56,7 +56,6 @@ private:
   InvertParam_t inv_param;
   multi1d<LatticeColorMatrix> u;
   Handle< LinearOperator<LatticeFermion> > D_w;
-  Handle< LinearOperator<LatticeFermion> > H_w;
   Handle< LinearOperator<LatticeFermion> > D_denum;  
 };
 
@@ -100,7 +99,6 @@ private:
   Real c5;
   InvertParam_t inv_param;
   multi1d<LatticeColorMatrix> u;
-  Handle< LinearOperator<LatticeFermion> > H_w;
   Handle< LinearOperator<LatticeFermion> > D_w;
   Handle< LinearOperator<LatticeFermion> > D_denum;
 

@@ -1,4 +1,4 @@
-// $Id: unprec_dwftransf_fermact_w.cc,v 1.1 2004-11-02 10:33:49 bjoo Exp $
+// $Id: unprec_dwftransf_fermact_w.cc,v 1.2 2004-11-13 17:32:11 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -62,9 +62,6 @@ namespace Chroma
 	QDP_abort(1);
       }
       
-      // Negate mass 
-      Mass *= Real(-1);
-
       // Read b5 c5 and the solver params
       read(paramtop, "b5", b5);
       read(paramtop, "c5", c5);

@@ -18,6 +18,7 @@ namespace Chroma {
       CFG_TYPE_SCIDAC,
       CFG_TYPE_SZIN,
       CFG_TYPE_SZINQIO,
+      CFG_TYPE_KYU,
       CFG_TYPE_DISORDERED,
       CFG_TYPE_UNIT
   };
