@@ -3,7 +3,7 @@
 
 <make_source><make_source>
 <annotation>
-; $Id: make_source_v2.linux-scalar-intel.xml,v 1.1 2004-01-09 03:34:09 edwards Exp $
+; $Id: make_source_v2.linux-scalar-intel.xml,v 1.2 2004-01-09 03:54:09 edwards Exp $
 ;
 ; MAKE_SOURCE input file.
 ;
@@ -75,4 +75,7 @@
     </szin>
 
   </config_info>
+  <Source_correlator>
+    <source_corr>5.44616 0 0 0 0 0 0 0</source_corr>
+  </Source_correlator>
 </make_source>
