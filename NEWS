@@ -1,3 +1,136 @@
+09/28/2004 -- Balint
+
+     -- ZolotarevStateInfo has been renamed to OverlapStateInfo
+	( and the previous empty OverlapStateInfo base class has been removed)
+
+     -- I have added the state_info field to Propagator_Input_t 
+	  as a standard string. I had it in ChromaProp_t first but I 
+	  believe it should not be part of the <Param> </Param>
+	  tagset but rather live at the same level as Cfg_t in the
+	  top level applications. Look in propagator.cc to see how 
+	  I manage it. Essentially I do this (propagator.cc line 84):
+
+    // Read any auxiliary state information
+    // if it exists
+    if( inputtop.count("StateInfo") == 1 ) {
+      XMLReader xml_state_info(inputtop, "StateInfo");
+      std::ostringstream os;
+      xml_state_info.print(os);
+      input.stateInfo = os.str();
+    }
+    else {
+    // Write an empty <?xml ... ><StateInfo/> document if not 
+    // found 
+      XMLBufferWriter s_i_xml;
+      push(s_i_xml, "StateInfo");
+      pop(s_i_xml);
+      input.stateInfo = s_i_xml.str();
+    }
+
+    I have added dummy createState() functions to the various
+    fermacts that read from an XML containing StateInfo. Apart
+    from the overlap, these createState()-s just ignore
+    the XML, but this virtual func could be a good hook for you
+    if you add StateInfo to some ZolotarevCoeff-ed DWF fermacts.
+    In fact, if you just write these, they'll be picked up appropriately
+    by propagator...
+
+    A sample usage of state info is in 
+	chroma/tests/propagator/propagator_zolo4d_v6.xml.in
+
+    -- As agreed, I have removed backward compatibility with 
+    SZIN - type vectors in createOverlapState() -- now just 
+    uses my evecs.
+
+    -- I have written factory functions for creating OverlapConnectState-s
+    in overlap_state.h overlap_state.cc. I originally wrote these
+    as templated funcs, but then I couldn't shove them into the .cc file
+    - they'd needed to have stayed in the .h file where the prototypes
+    are defined. So I did similar things to the Inverter functions. 
+    I wrote out the "specialisations" in the .h file and wrapped a templated
+    version in the .cc. Your fermact's createState()-s can just dive on these
+    see ovlap_partfrac_4d_fermact_w.[h,cc]. The issue of 4D and 5D BC's is
+    hacked around as discussed:
+
+  	i) The aux ferm act gets trivial BC-s. This doesn't matter as 
+	   we never use them. We always use the BC-s of the parent.
+       ii) the createOverlapState() function is passed a linOp which
+	   the caller FermAct constructs. AuxMass is therefore no longer
+	   passed
+       iii) the createOverlapState() function creates a SimpleConnectState
+           internally to call the passed linOp with, after applying
+	   the modifyU() function of the passed FermBC
+
+    -- Zolotarev4DFermAct and Zolotarev5DFermActArray have been renamed:
+     as  OverlapPartFrac4DFermAct
+     and 
+	 UnprecOverlapContFrac5DFermActArray
+
+     and put in ovlap_partfrac4d_fermact_w.[h,cc] 
+         and    unprec_ovlap_contfrac4d_fermact_array_w.[h,cc] 
+
+    the zolotarev5d_linop_array_w.[h,cc] is still there but will
+    also be renamed real soon now.  
+
+    -- I have removed the double mappings for backward compatibility
+    ZOLOTAREV_4D and ZOLOTAREV_5D are dead. Now you need to specify
+    something like:
+
+  <FermionAction>
+    <FermAct>OVERLAP_PARTIAL_FRACTION_4D</FermAct>
+    <IsChiral>true</IsChiral>
+    <ApproximationType>ZOLOTAREV</ApproximationType>
+    <Mass>0.04</Mass>
+    <RatPolyDeg>17</RatPolyDeg>
+    <InnerSolve>
+      <MaxCG>1000</MaxCG>
+      <RsdCG>1.0e-7</RsdCG>
+      <ReorthFreq>20</ReorthFreq>
+    </InnerSolve>
+    <AuxFermAct>
+      <FermAct>UNPRECONDITIONED_WILSON</FermAct>
+      <Mass>-1.4</Mass>
+    </AuxFermAct>
+  </FermionAction>
+
+   Other new FermActs:
+
+ 	"UNPRECONDITIONED_OVERLAP_CONTINUED_FRACTION_5D"
+and soon "OVERLAP_CONTINUED_FRACTION_5D" (which will be preconditioned)
+
+    
+    ApproximationType can be "ZOLOTAREV" or "TANH" for now.
+    Robert feel free to add your own here if you want. 
+
+	io/enum_io/enum_coeffs_io.[h,cc]
+	io/enum_io/enum_fermacttype_io.[h,cc]
+
+    I have removed therefore the old XML input files from the repository
+    and added in the new ones.
+
+    -- Approximation type can now also be TANH with the following caveats:
+
+	i) rescaling: I am still not clear on this. I may not need
+	to do this at all or I may need to do it the same way 
+	as done in the ZOLO case. I'll ask Tony.
+	
+	ii) projection: I saw in your paper that in the Borici 
+	(TANH) case, the EigValFunc is not signum but in fact 
+	the polar approximation: \epsilon_{Ls/2}
+
+
+    -- Also note from the above XML, that as agreed, I pushed the IsChiral
+    to be a user supplied parameter. So that if we have a bad approximation
+    for Zolotarev we can set it to false. Likewise if we have a supremely
+    high order tanh approximation with projection so that we are effectively
+    chiral then you can set it to true.
+
+    -- fermact_paramio.h fermact_paramio.cc zolotarev4d_fermact_paramio.h
+       zolotarev4d_fermact_paramio.cc are GONE (removed from CVS)
+       zolotarev5d_fermact_paramio.[h,cc] are still around but 
+       will be gone real soon now.
+
+
 08/30/2004 -- Robert Edwards
 
 	Version 1.7.4. Really, these are the last changes before 1.8
