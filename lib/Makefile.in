@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.183 2004-04-29 16:12:17 bjoo Exp $
+# $Id: Makefile.in,v 1.184 2004-05-01 20:16:43 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -87,7 +87,8 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@	io/zolotarev5d_fermact_paramio_w.h \
 @BUILD_WILSON_LIBS_TRUE@	meas/eig/eig_w.h meas/eig/ischiral_w.h \
 @BUILD_WILSON_LIBS_TRUE@	meas/hadron/barcomp_w.h \
-@BUILD_WILSON_LIBS_TRUE@	meas/hadron/barseqsrc_w.h meas/hadron/baryon_w.h \
+@BUILD_WILSON_LIBS_TRUE@	meas/hadron/barseqsrc_w.h \
+@BUILD_WILSON_LIBS_TRUE@	meas/hadron/barhqlq_w.h meas/hadron/baryon_w.h \
 @BUILD_WILSON_LIBS_TRUE@	meas/hadron/BuildingBlocks_w.h meas/hadron/curcor2_w.h \
 @BUILD_WILSON_LIBS_TRUE@	meas/hadron/DjDk_w.h meas/hadron/D_j_w.h meas/hadron/formfac_w.h \
 @BUILD_WILSON_LIBS_TRUE@	meas/hadron/hadron_w.h meas/hadron/hybmeson_w.h \
@@ -117,7 +118,7 @@ host_triplet = @host@
 @BUILD_STAGGERED_LIBS_TRUE@	util/gauge/gauge_s.h util/gauge/stag_phases_s.h
 
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_3 = -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
-@BUILD_WILSON_LIBS_TRUE@am__append_4 = baryon_w.cc mesons_w.cc hybmeson_w.cc \
+@BUILD_WILSON_LIBS_TRUE@am__append_4 = baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              loops_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              curcor2_w.cc lwldslash_w.cc formfac_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
@@ -370,9 +371,9 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc rgauge.cc taproj.cc \
 	rot_colvec.cc transf.cc param_io.cc fermact_paramio.cc \
 	gramschm.cc gramschm_array.cc ritz.cc ritz_array.cc sn_jacob.cc \
 	sn_jacob_array.cc eig_spec.cc eig_spec_array.cc proginfo.cc \
-	printgeom.cc fuzwilp.cc baryon_w.cc mesons_w.cc hybmeson_w.cc \
-	loops_w.cc curcor2_w.cc lwldslash_w.cc formfac_w.cc \
-	mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
+	printgeom.cc fuzwilp.cc baryon_w.cc barhqlq_w.cc mesons_w.cc \
+	hybmeson_w.cc loops_w.cc curcor2_w.cc lwldslash_w.cc \
+	formfac_w.cc mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
 	sink_smear2_w.cc barcomp_io.cc barcomp_w.cc walfil_w.cc \
 	overlap_state_info.cc zolotarev4d_fermact_paramio_w.cc \
 	zolotarev5d_fermact_paramio_w.cc fermact_qprop.cc \
@@ -404,8 +405,9 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc rgauge.cc taproj.cc \
 	asqtad_fermact_s.cc asqtad_mdagm_s.cc staggered_qprop.cc \
 	stag_phases_s.cc
 @BUILD_WILSON_LIBS_TRUE@am__objects_1 = baryon_w.$(OBJEXT) \
-@BUILD_WILSON_LIBS_TRUE@	mesons_w.$(OBJEXT) hybmeson_w.$(OBJEXT) \
-@BUILD_WILSON_LIBS_TRUE@	loops_w.$(OBJEXT) curcor2_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	barhqlq_w.$(OBJEXT) mesons_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	hybmeson_w.$(OBJEXT) loops_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	curcor2_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	lwldslash_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	formfac_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	mesonseqsrc_w.$(OBJEXT) \
@@ -520,10 +522,11 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/asqtad_linop_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/asqtad_mdagm_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/axgauge.Po ./$(DEPDIR)/barcomp_io.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/barcomp_w.Po ./$(DEPDIR)/barseqsrc_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/baryon_s.Po ./$(DEPDIR)/baryon_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/coulgauge.Po ./$(DEPDIR)/curcor2_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/d_src_w.Po ./$(DEPDIR)/displacement.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/barcomp_w.Po ./$(DEPDIR)/barhqlq_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/barseqsrc_w.Po ./$(DEPDIR)/baryon_s.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/baryon_w.Po ./$(DEPDIR)/coulgauge.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/curcor2_w.Po ./$(DEPDIR)/d_src_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/displacement.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/dwf_quarkprop4_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/dwffld_w.Po ./$(DEPDIR)/eig_spec.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/eig_spec_array.Po \
@@ -715,6 +718,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/axgauge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/barcomp_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/barcomp_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/barhqlq_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/barseqsrc_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/baryon_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/baryon_w.Po@am__quote@
