@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.282 2004-12-24 04:27:41 edwards Exp $
+# $Id: Makefile.in,v 1.283 2004-12-29 18:38:58 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -471,7 +471,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	update/heatbath/su3_hb_sweep.h update/molecdyn/molecdyn.h \
 	update/molecdyn/molecdyn_w.h update/molecdyn/field_state.h \
 	update/molecdyn/abs_monomial.h \
-	update/molecdyn/monomial_factory_w.h \
+	update/molecdyn/monomial_factory.h \
 	update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.h \
 	update/molecdyn/prec_two_flavor_wilson_ferm_monomial_w.h \
 	update/molecdyn/exact_pg_hamiltonian.h \
@@ -795,7 +795,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	update/heatbath/su3_hb_sweep.h update/molecdyn/molecdyn.h \
 	update/molecdyn/molecdyn_w.h update/molecdyn/field_state.h \
 	update/molecdyn/abs_monomial.h \
-	update/molecdyn/monomial_factory_w.h \
+	update/molecdyn/monomial_factory.h \
 	update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.h \
 	update/molecdyn/prec_two_flavor_wilson_ferm_monomial_w.h \
 	update/molecdyn/exact_pg_hamiltonian.h \

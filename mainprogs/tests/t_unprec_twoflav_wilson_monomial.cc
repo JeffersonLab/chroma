@@ -117,11 +117,10 @@ int main(int argc, char *argv[])
   QDPIO::cout << "Monomial name = " << monomial_name << endl;
 
   // Get the monomial from the factory... Looks gross but is generic
-  Handle<ExactFermMonomial<multi1d<LatticeColorMatrix>,
-                           multi1d<LatticeColorMatrix>,
-                           LatticeFermion >  >
+  Handle<ExactMonomial<multi1d<LatticeColorMatrix>,
+                       multi1d<LatticeColorMatrix> > > 
                                             S_w(
-     TheExactFermMonomialFactory::Instance().createObject(
+     TheExactMonomialFactory::Instance().createObject(
 						      monomial_name, 
 						      param_in, 
 						      "/MonomialTest/Monomial")

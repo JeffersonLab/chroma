@@ -1,7 +1,7 @@
 #include "chromabase.h"
 #include "update/molecdyn/field_state.h"
 #include "update/molecdyn/abs_monomial.h"
-#include "update/molecdyn/monomial_factory_w.h"
+#include "update/molecdyn/monomial_factory.h"
 
 #include "io/param_io.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
@@ -19,14 +19,13 @@ namespace Chroma {
  
   namespace EvenOddPrecTwoFlavorWilsonFermMonomialEnv {
     //! Callback function for the factory
-    ExactFermMonomial< multi1d<LatticeColorMatrix>,		   
-		       multi1d<LatticeColorMatrix>,
-		       LatticeFermion>* createMonomial(XMLReader& xml, const string& path) {
+    ExactMonomial< multi1d<LatticeColorMatrix>,		   
+		   multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const string& path) {
       return new EvenOddPrecTwoFlavorWilsonFermMonomial(EvenOddPrecTwoFlavorWilsonFermMonomialParams(xml, path));
     }
     
     const std::string name="TWO_FLAVOR_WILSON_FERM_MONOMIAL";
-    const bool registered=TheExactFermMonomialFactory::Instance().registerObject(name, createMonomial);
+    const bool registered=TheExactMonomialFactory::Instance().registerObject(name, createMonomial);
     
   }; //end namespace EvenOddPrec TwoFlavorWilsonFermMonomialEnv
 
@@ -43,10 +42,6 @@ namespace Chroma {
       std::ostringstream os;
       xml_tmp.print(os);
       ferm_act = os.str();
-
-      // Read the boundary -- this can get pushed down into fermact later
-      read(paramtop, "./boundary", boundary);
-      
     }
     catch(const string& s) {
       QDPIO::cerr << "Caught Exception while reading parameters: " << s <<endl;

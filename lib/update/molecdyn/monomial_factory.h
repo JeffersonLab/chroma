@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: monomial_factory_w.h,v 1.3 2004-12-23 14:55:35 bjoo Exp $
+// $Id: monomial_factory.h,v 1.1 2004-12-29 18:38:58 bjoo Exp $
 /*! \file
  *  \brief Fermion action factories
  */
@@ -17,7 +17,23 @@
 
 namespace Chroma
 {
-  //! A factory for exact UnprecWilsonTypeFermMonomials
+  //! A factory for exact non-fermionic monomials
+  typedef SingletonHolder< 
+  ObjectFactory<
+    ExactMonomial< multi1d<LatticeColorMatrix>, 
+		   multi1d<LatticeColorMatrix> >,
+    std::string,
+    TYPELIST_2(XMLReader&, const std::string&),
+   
+    ExactMonomial< multi1d<LatticeColorMatrix>, 
+		   multi1d<LatticeColorMatrix> >* (*)(XMLReader&,
+						      const std::string&), 
+    StringFactoryError> >
+  TheExactMonomialFactory;
+
+
+  /*
+  //! A factory for exact fermionic monomials
   typedef SingletonHolder< 
   ObjectFactory<
     ExactFermMonomial< multi1d<LatticeColorMatrix>, 
@@ -31,6 +47,7 @@ namespace Chroma
 		       LatticeFermion>* (*)(XMLReader&,
 					    const std::string&), StringFactoryError> >
   TheExactFermMonomialFactory;
+  */
 
 }; // End namespace Chroma
 

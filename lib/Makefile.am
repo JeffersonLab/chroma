@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.207 2004-12-24 04:20:02 edwards Exp $
+# $Id: Makefile.am,v 1.208 2004-12-29 18:38:58 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -117,7 +117,7 @@ nobase_include_HEADERS = \
 	update/molecdyn/molecdyn_w.h \
 	update/molecdyn/field_state.h \
 	update/molecdyn/abs_monomial.h \
-	update/molecdyn/monomial_factory_w.h \
+	update/molecdyn/monomial_factory.h \
 	update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.h \
 	update/molecdyn/prec_two_flavor_wilson_ferm_monomial_w.h \
 	update/molecdyn/exact_pg_hamiltonian.h \

@@ -4,7 +4,7 @@
 
 #include "update/molecdyn/field_state.h"
 #include "update/molecdyn/abs_monomial.h"
-
+#include "update/molecdyn/monomial_factory.h"
 
 #include "update/molecdyn/molecdyn_w.h"
 

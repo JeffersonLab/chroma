@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_monomial.h,v 1.3 2004-12-21 18:01:06 bjoo Exp $
+// $Id: abs_monomial.h,v 1.4 2004-12-29 18:38:58 bjoo Exp $
 
 /*! @file
  * @brief Monomials - gauge action or fermion binlinear contributions for HMC
@@ -48,6 +48,12 @@ namespace Chroma
     //! Compute dsdq for the system... 
     /*! Not specified how to actually do this s is the state, F is the computed force */
     virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) const = 0;
+
+    //! Refresh pseudofermion fields if any
+    virtual void refresh(const AbsFieldState<P,Q>& field_state) =0 ;
+
+
+    
   };
 
 
@@ -75,6 +81,11 @@ namespace Chroma
 
     //! Compute the total action
     virtual Double S(const AbsFieldState<P,Q>& s) const = 0;
+
+    //! Refresh pseudofermion fields if any
+    virtual void refresh(const AbsFieldState<P,Q>& field_state) = 0;
+
+
   };
 
   //! Fermionic monomials (binlinears in fermion fields)
@@ -100,7 +111,7 @@ namespace Chroma
 
 
     // Refresh all pseudofermions
-    virtual void refresh(const AbsFieldState<P,Q>& field_state) = 0;
+    virtual void refresh(const AbsFieldState<P,Q>& field_state) = 0 ;
   };
 
 

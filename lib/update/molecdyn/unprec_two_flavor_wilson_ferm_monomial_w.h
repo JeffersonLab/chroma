@@ -27,8 +27,6 @@ namespace Chroma {
     UnprecTwoFlavorWilsonFermMonomialParams(XMLReader& in, const std::string&  path);
     InvertParam_t inv_param; // Inverter Parameters
     string ferm_act;
-    multi1d<int> boundary;   // BC Hook -- To be pushed further down into 
-                             // FermAct-s
   };
 
   void read(XMLReader& xml, const string& path, UnprecTwoFlavorWilsonFermMonomialParams& param);
