@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linearop.h,v 1.18 2003-12-02 15:41:31 edwards Exp $
+// $Id: linearop.h,v 1.19 2003-12-11 21:41:16 edwards Exp $
 
 /*! @file
  * @brief Linear Operators
@@ -202,7 +202,7 @@ public:
   const OrderedSubset& subset() const {return rb[1];}
 
   //! Another way of saying only defined on the odd lattice
-  virtual const int subsetCB() const {return 1;}
+  virtual int subsetCB() const {return 1;}
 
   //! Apply the even-even block onto a source vector
   /*! This does not need to be optimized */
@@ -326,7 +326,7 @@ public:
   const OrderedSubset& subset() const {return rb[1];}
 
   //! Another way of saying only defined on the odd lattice
-  virtual const int subsetCB() const {return 1;}
+  virtual int subsetCB() const {return 1;}
 
   //! Apply the even-even block onto a source vector
   /*! This does not need to be optimized */
@@ -427,7 +427,7 @@ public:
   const OrderedSubset& subset() const {return linop->subset();}
 
   //! Another way of saying only defined on the odd lattice
-  virtual const int subsetCB() const {return linop->subsetCB();}
+  virtual int subsetCB() const {return linop->subsetCB();}
 
   //! Apply the even-even block onto a source vector
   /*! This does not need to be optimized */
@@ -502,7 +502,7 @@ public:
   const OrderedSubset& subset() const {return linop->subset();}
 
   //! Another way of saying only defined on the odd lattice
-  virtual const int subsetCB() const {return linop->subsetCB();}
+  virtual int subsetCB() const {return linop->subsetCB();}
 
   //! Apply the even-even block onto a source vector
   /*! This does not need to be optimized */
