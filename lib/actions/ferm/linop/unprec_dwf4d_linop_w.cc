@@ -1,6 +1,6 @@
-// $Id: unprec_dwf4d_linop_w.cc,v 1.3 2004-11-09 05:42:45 edwards Exp $
+// $Id: unprec_dwf4d_linop_w.cc,v 1.4 2004-11-17 16:53:23 edwards Exp $
 /*! \file
- *  \brief Unpreconditioned Wilson linear operator
+ *  \brief Unpreconditioned projected DWF operator to 4D
  */
 
 #include "chromabase.h"
