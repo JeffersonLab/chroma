@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_fermact_base_array_w.cc,v 1.2 2003-11-15 03:54:19 edwards Exp $
+// $Id: unprec_dwf_fermact_base_array_w.cc,v 1.3 2003-11-15 04:23:50 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned domain-wall-like fermion actions
  */
@@ -129,15 +129,15 @@ UnprecDWFermActBaseArray::dsdu(const multi1d<LatticeColorMatrix>& u,
 {
   multi1d<LatticeColorMatrix> ds_u(Nd);
 
-  START_CODE("UnprecDWFermActBase::dsdu");
+  START_CODE("UnprecDWFermActBaseArray::dsdu");
 
   // hack
   ds_u = 0;
 
-  QDPIO::cerr << "UnprecDWFermActBase::dsdu not implemented" << endl;
+  QDPIO::cerr << "UnprecDWFermActBaseArray::dsdu not implemented" << endl;
   QDP_abort(1);
 
-  END_CODE("UnprecDWFermActBase::dsdu");
+  END_CODE("UnprecDWFermActBaseArray::dsdu");
 
   return ds_u;
 }
