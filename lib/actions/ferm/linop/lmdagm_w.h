@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lmdagm_w.h,v 1.6 2003-11-20 05:43:41 edwards Exp $
+// $Id: lmdagm_w.h,v 1.7 2003-11-23 06:03:15 edwards Exp $
 
 #ifndef __lmdagm_w_h__
 #define __lmdagm_w_h__
@@ -16,7 +16,6 @@ using namespace QDP;
  *
  * Linear operator forming M^dag.M from an operator M
  */
-
 template<typename T>
 class lmdagm : public LinearOperator<T>
 {
@@ -41,6 +40,45 @@ public:
 
 private:
   const LinearOperator<T>& A;
+};
+
+
+
+//! Partial specialization of M^dag.M linear operator over arrays
+/*!
+ * \ingroup linop
+ *
+ * This routine is specific to Wilson fermions!
+ *
+ * Linear operator forming M^dag.M from an operator M
+ */
+template<typename T>
+class lmdagm< multi1d<T> > : public LinearOperator< multi1d<T> >
+{
+public:
+  //! Full constructor
+  lmdagm(const LinearOperator< multi1d<T> >& A_) : A(A_) {}
+
+  //! Destructor
+  ~lmdagm() {}
+
+  //! Length of array index
+  int size() const {return A.size();}
+
+  //! Subset comes from underlying operator
+  inline const OrderedSubset& subset() const {return A.subset();}
+
+  //! Apply the operator onto a source vector
+  /*! For this operator, the sign is ignored */
+  inline void operator() (multi1d<T>& chi, const multi1d<T>& psi, enum PlusMinus isign) const
+    {
+      multi1d<T>  tmp(size());
+      A(tmp, psi, PLUS);
+      A(chi, tmp, MINUS);
+    }
+
+private:
+  const LinearOperator< multi1d<T> >& A;
 };
 
 #endif
