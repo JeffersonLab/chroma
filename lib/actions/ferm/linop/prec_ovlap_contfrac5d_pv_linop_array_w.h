@@ -1,11 +1,11 @@
 // -*- C++ -*-
-// $Id: prec_ovlap_contfrac5d_linop_array_w.h,v 1.6 2005-01-17 03:57:57 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_pv_linop_array_w.h,v 1.1 2005-01-17 03:57:57 edwards Exp $
 /*! \file
- *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
+ *  \brief Even-odd preconditioned Pauli-Villars Continued Fraction 5D
  */
 
-#ifndef __prec_ovlap_contfrac5d_linop_array_w_h__
-#define __prec_ovlap_contfrac5d_linop_array_w_h__
+#ifndef __prec_ovlap_contfrac5d_pv_linop_array_w_h__
+#define __prec_ovlap_contfrac5d_pv_linop_array_w_h__
 
 #include "linearop.h"
 #include "fermact.h"
@@ -14,18 +14,14 @@
 
 namespace Chroma 
 { 
-  //! Unpreconditioned Extended-Overlap (N&N) linear operator
+  //! Even-odd preconditioned Pauli-Villars Continued Fraction 5D
   /*!
    * \ingroup linop
    *
-   * This operator applies the extended version of the hermitian overlap operator
-   *   Chi  =   ((1+m_q)/(1-m_q)*gamma_5 + B) . Psi
-   *  where  B  is the continued fraction of the pole approx. to eps(H(m))
-   *
-   * This operator implements  hep-lat/0005004
+   * Even-odd precond. Pauli-Villars Cont. Frac. linop
    */
 
-  class EvenOddPrecOvlapContFrac5DLinOpArray : public EvenOddPrecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >
+  class EvenOddPrecOvlapContFrac5DPVLinOpArray : public EvenOddPrecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >
   {
   public:
 
@@ -34,25 +30,21 @@ namespace Chroma
       except that the auxiliary linop M is no longer supplied, 
       but is created here 
     */
-    EvenOddPrecOvlapContFrac5DLinOpArray(Handle<const ConnectState> state,
-					 const Real& _m_q,
-					 const Real& _OverMass,
-					 int _N5,
-					 const Real& _scale_fac,
-					 const multi1d<Real>& _alpha,
-					 const multi1d<Real>& _beta,
-					 const bool _isLastZeroP );
+    EvenOddPrecOvlapContFrac5DPVLinOpArray(Handle<const ConnectState> state,
+					   const Real& _m_q,
+					   const Real& _OverMass,
+					   int _N5,
+					   const Real& _scale_fac,
+					   const multi1d<Real>& _alpha,
+					   const multi1d<Real>& _beta,
+					   const bool _isLastZeroP );
 
   
     //! Length of DW flavor index/space
     int size() const {return N5;}
 
     //! Destructor is automatic
-    ~EvenOddPrecOvlapContFrac5DLinOpArray() {}
-
-    //! Only defined on the entire lattice
-    // INHERIT THIS?
-    // const OrderedSubset& subset() const {return all;}
+    ~EvenOddPrecOvlapContFrac5DPVLinOpArray() {}
 
     //! Apply the even-even block onto a source vector
     inline
@@ -211,9 +203,6 @@ namespace Chroma
     const bool isLastZeroP;
     multi1d<Real> beta_tilde; // The beta_tilde_i
     multi1d<Real> a;  // The a_i
-    multi1d<Real> d;  // The d_i
-    multi1d<Real> u;  // The u_i = l_i
-
   };
 
 }; // End Namespace Chroma

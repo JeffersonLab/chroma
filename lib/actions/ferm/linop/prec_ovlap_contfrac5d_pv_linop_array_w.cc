@@ -1,16 +1,16 @@
-// $Id: prec_ovlap_contfrac5d_linop_array_w.cc,v 1.7 2005-01-17 03:57:57 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_pv_linop_array_w.cc,v 1.1 2005-01-17 03:57:57 edwards Exp $
 /*! \file
- *  \brief  4D-style even-odd preconditioned domain-wall linear operator
+ *  \brief Even-odd preconditioned Pauli-Villars Continued Fraction 5D
  */
 
 #include "chromabase.h"
 #include "actions/ferm/linop/dslash_w.h"
-#include "actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_w.h"
+#include "actions/ferm/linop/prec_ovlap_contfrac5d_pv_linop_array_w.h"
 
 
 namespace Chroma 
 { 
-  EvenOddPrecOvlapContFrac5DLinOpArray::EvenOddPrecOvlapContFrac5DLinOpArray(
+  EvenOddPrecOvlapContFrac5DPVLinOpArray::EvenOddPrecOvlapContFrac5DPVLinOpArray(
     Handle<const ConnectState> state,
     const Real& _m_q,
     const Real& _OverMass,
@@ -27,36 +27,23 @@ namespace Chroma
     Handle< const DslashLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> > > Ds(new WilsonDslash(state->getLinks()));
     Dslash  = Ds;  // Copy Handle -- M now owns dslash
 
-    // The mass ratio
-    Real mass = ( Real(1) + m_q ) / (Real(1) - m_q);
-
     // Now compute some coefficients.
     // First the beta_tilde_i
-    // Basically this is beta[n]*Hsign*scale_fac
+    // Basically this is beta[n]*scale_fac
     // Now N5 is always odd. So the first Hsign is +
     // and the last one should also be
     // Hence at the end of this loop Hsign should be flipped from +->-
     beta_tilde.resize(N5);
-    int Hsign = 1;
-    for(int i=0; i < N5; i++) { 
-
-      // Flip Hsign
-      beta_tilde[i] = beta[i]*Hsign*scale_fac; 
+    for(int i=0; i < N5; i++) 
+    {
+      beta_tilde[i] = beta[i]*scale_fac; 
 
       /*
 	QDPIO::cout << "beta["<<i<<"]=" << beta[i]
-	<< "  Hsign=" << Hsign
 	<< "  scale_fac=" << scale_fac 
 	<< "  beta_tilde["<<i<<"]=" << beta_tilde[i] << endl;
 
       */
-      Hsign = -Hsign;
-    }
-
-    // Sanity Check
-    if ( Hsign > 0 ) {
-      QDPIO::cerr << "Something is wrong. At the end of this loop"
-		  << " Hsign should be -ve" << endl;
     }
 
     // Now the a_i's and b_i's
@@ -64,7 +51,7 @@ namespace Chroma
     for(int i=0; i < N5-1; i++) { 
       a[i] = beta_tilde[i]*(Nd + OverMass);
     }
-    a[N5-1] = mass + (beta_tilde[N5-1]*(Nd + OverMass));
+    a[N5-1] = beta_tilde[N5-1]*(Nd + OverMass);
 
     /*
       QDPIO::cout << "Nd + OverMass = " << Nd+ OverMass << endl;
@@ -72,30 +59,7 @@ namespace Chroma
       QDPIO::cout << "a["<<i<<"]= " << a[i] << endl;
       }
     */
-    // Now the d-s
-    d.resize(N5);
-    d[0] = a[0];
-    for(int i=1; i < N5; i++) { 
-      d[i] = a[i] - (alpha[i-1]*alpha[i-1])/d[i-1];
-    }
-    
-    /*
-      for(int i=0; i < N5; i++) { 
-      QDPIO::cout << "d["<<i<<"]=" << d[i] << endl;
-      }
-    */
 
-    // Now the u-s
-    u.resize(N5-1);
-    for(int i=0; i < N5-1; i++) { 
-      u[i] = alpha[i]/d[i];
-    }
-
-    /*
-      for(int i=0; i < N5-1; i++) { 
-      QDPIO::cout << "u["<<i<<"] = " << u[i] << endl;
-      }
-    */
     END_CODE();
   }
 
@@ -113,10 +77,10 @@ namespace Chroma
    * \param cb      checkerboard ( 0 | 1 )               (Read)
    */
   void 
-  EvenOddPrecOvlapContFrac5DLinOpArray::applyDiag(multi1d<LatticeFermion>& chi, 
-						  const multi1d<LatticeFermion>& psi, 
-						  enum PlusMinus isign,
-						  const int cb) const
+  EvenOddPrecOvlapContFrac5DPVLinOpArray::applyDiag(multi1d<LatticeFermion>& chi, 
+						    const multi1d<LatticeFermion>& psi, 
+						    enum PlusMinus isign,
+						    const int cb) const
   {
     START_CODE();
 
@@ -133,30 +97,14 @@ namespace Chroma
     // With A_i = gamma_5 a_i = a_i gamma_5
     // and  B_i = b_i I = alpha_i I
 
-    LatticeFermion tmp;
     int G5=Ns*Ns-1;
 
-    // First 0ne 
-    tmp[rb[cb]] = Gamma(G5)*psi[0];
-    chi[0][rb[cb]] = a[0]*tmp;
-    if( N5 > 1 ) { 
-      chi[0][rb[cb]] += alpha[0]*psi[1];
-    }
-
-    // All the rest
-    for(int i=1; i < N5; i++) { 
-
-      // B_{i-1} psi_[i-1]
-      chi[i][rb[cb]] = alpha[i-1]*psi[i-1];
-
+    // All in one shot
+    for(int i=0; i < N5; i++) 
+    {
       // A_{i} psi[i] = a_{i} g_5 psi[i]
-      tmp[rb[cb]] = Gamma(G5)*psi[i];
-      chi[i][rb[cb]] += a[i]*tmp;
-
-      // When i hits N5-1, we don't have the B_N5-1 term
-      if(i < N5-1) {
-	chi[i][rb[cb]] += alpha[i]*psi[i+1];
-      }
+      chi[i][rb[cb]] = Gamma(G5)*psi[i];
+      chi[i][rb[cb]] *= a[i];
     }
 
     END_CODE();
@@ -174,7 +122,7 @@ namespace Chroma
    * \param cb      checkerboard ( 0 | 1 )               (Read)
    */
   void 
-  EvenOddPrecOvlapContFrac5DLinOpArray::applyDiagInv(
+  EvenOddPrecOvlapContFrac5DPVLinOpArray::applyDiagInv(
     multi1d<LatticeFermion>& chi, 
     const multi1d<LatticeFermion>& psi, 
     enum PlusMinus isign,
@@ -184,40 +132,21 @@ namespace Chroma
 
     chi.resize(N5);
 
-    multi1d<LatticeFermion> y(N5);
-
-    LatticeFermion tmp;
     Real coeff;
 
     const int G5 = Ns*Ns-1;
 
-    // Solve L y = psi
-    y[0][rb[cb]] = psi[0];
-
-    for(int i = 1; i < N5; i++) { 
-      tmp[rb[cb]] = Gamma(G5)*y[i-1];
-      y[i][rb[cb]] = psi[i] - u[i-1]*tmp;
-    } 
-
-    // Invert diagonal piece  y <- D^{-1} y
-    for(int i = 0; i < N5; i++) { 
-      tmp[rb[cb]] = Gamma(G5)*y[i];
-      coeff = Real(1)/d[i];
-      y[i][rb[cb]] = coeff*tmp;
+    // Invert diagonal piece  chi <- D^{-1} psi
+    for(int i = 0; i < N5; i++) 
+    {
+      chi[i][rb[cb]] = Gamma(G5)*psi[i];
+      coeff = Real(1)/a[i];
+      chi[i][rb[cb]] *= coeff;
     }
 
-    // Backsubstitute U chi = y
-    chi[N5-1][rb[cb]] = y[N5-1];
-
-    for(int i = N5-2; i >= 0; i--) {
-      tmp = Gamma(G5)*chi[i+1];
-      chi[i][rb[cb]] = y[i] - u[i]*tmp;
-    }
-
-    //Done! That was not that bad after all....
-    //See, I told you so...
     END_CODE();
   }
+
 
   //! Apply the off diagonal block
   /*!
@@ -226,7 +155,7 @@ namespace Chroma
    * \param isign   Flag ( PLUS | MINUS )   	   (Read)
    * \param cb      checkerboard ( 0 | 1 )         (Read)
    */
-  void EvenOddPrecOvlapContFrac5DLinOpArray::applyOffDiag(
+  void EvenOddPrecOvlapContFrac5DPVLinOpArray::applyOffDiag(
     multi1d<LatticeFermion>& chi, 
     const multi1d<LatticeFermion>& psi,
     enum PlusMinus isign,
@@ -241,7 +170,8 @@ namespace Chroma
     int G5 = Ns*Ns-1;
 
     // Optimisation... do up to the penultimate block...
-    for(int i=0; i < N5-1; i++) { 
+    for(int i=0; i < N5-1; i++) 
+    {
       // CB is CB of TARGET
       // gamma_5 Dslash is hermitian so I can ignore isign
 
@@ -258,20 +188,11 @@ namespace Chroma
 
  
     // Only do last block if beta_tilde[i] is not zero
-    if( !isLastZeroP ) {
-      Dslash->apply(tmp, psi[N5-1], PLUS, cb);
-      chi[N5-1][rb[cb]] = Gamma(G5)*tmp;
-
-      // Multiply coefficient
-      coeff = -Real(0.5)*beta_tilde[N5-1];
-
-      // Chi_i is now -(1/2) beta_tilde_i Dslash 
-      chi[N5-1][rb[cb]] *= coeff;
-    }
-    else { 
-      chi[N5-1][rb[cb]] = zero;
-    }
+//    if( !isLastZeroP ) {
+//    }
   
+    chi[N5-1][rb[cb]] = psi[N5-1];
+
     END_CODE();
   }
 
@@ -282,11 +203,11 @@ namespace Chroma
    * by  D.deriv(ds_tmp,...) like calls.
    */
   void 
-  EvenOddPrecOvlapContFrac5DLinOpArray::applyDerivOffDiag(multi1d<LatticeColorMatrix>& ds_u,
-							  const multi1d<LatticeFermion>& chi, 
-							  const multi1d<LatticeFermion>& psi, 
-							  enum PlusMinus isign,
-							  int cb) const 
+  EvenOddPrecOvlapContFrac5DPVLinOpArray::applyDerivOffDiag(multi1d<LatticeColorMatrix>& ds_u,
+							    const multi1d<LatticeFermion>& chi, 
+							    const multi1d<LatticeFermion>& psi, 
+							    enum PlusMinus isign,
+							    int cb) const 
   {
     START_CODE();
 
@@ -318,21 +239,12 @@ namespace Chroma
       ds_u += ds_tmp;
     }
 
-    // Only do last block if beta_tilde[i] is not zero
-    if( !isLastZeroP ) 
-    {
-      tmp[rb[cb]] = Gamma(G5)*chi[N5-1];
+//    if( !isLastZeroP ) 
+//    {
+//      // This term does not contribute to PV
+//    }
 
-      // Multiply coefficient
-      coeff = -Real(0.5)*beta_tilde[N5-1];
-
-      // Chi_i is now -(1/2) beta_tilde_i Dslash 
-      tmp[rb[cb]] *= coeff;
-
-      Dslash->deriv(ds_tmp, tmp, psi[N5-1], PLUS, cb);
-      ds_u += ds_tmp;
-    }
-  
+ 
     END_CODE();
   }
 

@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_fermact_array_w.cc,v 1.10 2005-01-14 20:13:04 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_fermact_array_w.cc,v 1.11 2005-01-17 03:57:57 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -8,6 +8,7 @@
 #include "actions/ferm/fermacts/unprec_wilson_fermact_w.h"
 #include "actions/ferm/fermacts/prec_ovlap_contfrac5d_fermact_array_w.h"
 #include "actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_w.h"
+#include "actions/ferm/linop/prec_ovlap_contfrac5d_pv_linop_array_w.h"
 #include "actions/ferm/linop/lmdagm.h"
 #include "actions/ferm/invert/invcg2_array.h"
 #include "zolotarev.h"
@@ -279,8 +280,6 @@ namespace Chroma
 
   //! Produce a linear operator for this action
   /*!
-   * The operator acts on the entire lattice
-   *
    * \param state	    gauge field     	       (Read)
    */
   const EvenOddPrecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* 
@@ -325,7 +324,6 @@ namespace Chroma
   
   //! Produce a M^dag.M linear operator for this action
   /*!
-   * The operator acts on the entire lattice *
    * \param state	    gauge field     	       (Read)
    */
   const LinearOperator<multi1d<LatticeFermion> >* 
@@ -334,6 +332,48 @@ namespace Chroma
     return new lmdagm<multi1d<LatticeFermion> >(linOp(state));
   }
 
+
+  //! Produce a Pauli-Villars linear operator for this action
+  /*!
+   * \param state	    gauge field     	       (Read)
+   */
+  const EvenOddPrecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* 
+  EvenOddPrecOvlapContFrac5DFermActArray::linOpPV(Handle<const ConnectState> state_) const
+  {
+    try { 
+      
+      // This throws a bad cast exception if the cast fails
+      // Hence the "try" above
+      const OverlapConnectState& state = 
+	dynamic_cast<const OverlapConnectState&>(*state_);
+      
+      multi1d<Real> alpha;
+      multi1d<Real> beta;
+      Real scale_factor;
+      
+      init(scale_factor, alpha, beta, state);
+      
+      // Hmm, not sure about what all the rescaling does to the PV....
+      return new EvenOddPrecOvlapContFrac5DPVLinOpArray(state_,
+							params.Mass,
+							params.OverMass,
+							N5,
+							scale_factor,
+							alpha,
+							beta,
+							isLastZeroP);
+    }
+    catch( bad_cast ) { 
+      QDPIO::cerr << "EvenOddPrecOvlapContFrac5DFermActArray::linOp(): ";
+      QDPIO::cerr << "Couldnt cast ConnectState to OverlapConnectState " 
+		  << endl;
+      QDP_abort(1);
+    }
+    
+    // Should never get here... Just to satisfy type system
+    return 0;
+  }
+  
   
 
   //! Propagator of an un-preconditioned Extended-Overlap linear operator

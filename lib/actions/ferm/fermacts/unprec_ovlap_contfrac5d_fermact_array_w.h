@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovlap_contfrac5d_fermact_array_w.h,v 1.9 2005-01-14 20:13:04 edwards Exp $
+// $Id: unprec_ovlap_contfrac5d_fermact_array_w.h,v 1.10 2005-01-17 03:57:57 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -98,12 +98,7 @@ namespace Chroma
     const UnprecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* linOp(Handle<const ConnectState> state) const;
 
     //! Produce a Pauli-Villars linear operator for this action
-    const UnprecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* linOpPV(Handle<const ConnectState> state) const
-    {
-      QDPIO::cerr << "UnprecCFZ::linOpPV not implemented" << endl;
-      QDP_abort(1);
-      return 0;
-    }
+    const UnprecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* linOpPV(Handle<const ConnectState> state) const;
 
     //! Produce a linear operator for this action
     const LinearOperator< multi1d<LatticeFermion> >* lnonHermLinOp(Handle<const ConnectState> state) const;

@@ -1,4 +1,4 @@
-/* $Id: unprec_ovlap_contfrac5d_linop_array_w.cc,v 1.5 2005-01-04 06:52:04 edwards Exp $
+/* $Id: unprec_ovlap_contfrac5d_linop_array_w.cc,v 1.6 2005-01-17 03:57:57 edwards Exp $
 /*! \file
 *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
 */
@@ -138,6 +138,91 @@ namespace Chroma
 
     }
 
+
+    END_CODE();
+  }
+
+
+  //! Derivative
+  void 
+  UnprecOvlapContFrac5DLinOpArray::deriv(multi1d<LatticeColorMatrix>& ds_u, 
+					 const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
+					 enum PlusMinus isign) const
+  {
+    START_CODE();
+
+    ds_u.resize(Nd);
+    ds_u = zero;
+
+    multi1d<LatticeColorMatrix> ds_tmp(Nd);
+    int G5 = Ns*Ns - 1;
+
+    // This is the upper limit for the index of the 5th dimension, i.e.
+    //  it runs from 0 to TwoN. (altogether TwoN + 1 numbers. This
+    // makes sense since N5 is ALWAYS odd. )
+    int TwoN = N5 - 1;
+
+    // The sign of the diagonal terms.
+    // We flip Hsign BEFORE using it 
+    // This makes the first element always have a PLUS sign
+    int Hsign=-1;
+
+    /* N5 is ALWAYS ODD hence the explicit setting above */
+    /*
+      if( N5%2 == 0 ) {
+      Hsign = 1;
+      }
+      else {
+      Hsign = -1;
+      }
+    */
+
+    // Run through all the pseudofermion fields:
+    //   chi(0) = beta(0)*H*psi(0) + alpha(0)*psi(1)
+    //   chi(n) = alpha(n-1)*psi(n-1)
+    //              + (-)^n*beta(n)*H*psi(n) + alpha(n)*psi(n+1)
+    //   chi(TwoN) = alpha(TwoN-1)*psi(TwoN-1)
+    //                      + (-)^TwoN*beta(TwoN)*H*psi(TwoN)         
+    
+    LatticeFermion tmp1, tmp2;
+    Real pmscale;
+
+    for(int n = 0; n < TwoN; ++n) 
+    {
+      tmp2 = Gamma(G5)*chi[n];        // tmp2 = gamma_5 M chi
+
+      // Scale factor and sign for the diagonal term proportional to H
+      // The scale factor should be chosen in conszolotarev5d_w.m such
+      //  that scale_fac * gamma5 * M has eigenvalues between -1 and 1 
+      Hsign = -Hsign;
+      pmscale = beta[n]*Hsign*scale_fac;
+      tmp1 = pmscale*tmp2;
+
+      M->deriv(ds_tmp, tmp1, psi[n], PLUS);
+      ds_u += ds_tmp;
+    }
+
+    // Last Component
+    if(  NEig > 0 ) 
+    {
+      QDPIO::cerr << "contfrac5d deriv - projection not supported" << endl;
+      QDP_abort(1);
+    }
+                            
+    // Complete the last component
+    // chi(N) = chi(N) + beta_{N}*gamma_5*M*psi_{N}
+    //  The contribution beta_{N}*gamma_5*M*psi_{N} is
+    //   caluclated only if betaa_{N} != 0 */
+
+    if( !isLastZeroP ) 
+    {
+      pmscale = beta[TwoN]*scale_fac;
+      tmp2 = Gamma(G5)*chi[TwoN];
+      tmp1 = pmscale*tmp2;
+
+      M->deriv(ds_tmp, tmp1, psi[TwoN], PLUS);
+      ds_u += ds_tmp;
+    }
 
     END_CODE();
   }

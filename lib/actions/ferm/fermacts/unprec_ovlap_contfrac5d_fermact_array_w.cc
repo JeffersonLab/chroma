@@ -1,4 +1,4 @@
-// $Id: unprec_ovlap_contfrac5d_fermact_array_w.cc,v 1.11 2005-01-02 05:21:10 edwards Exp $
+// $Id: unprec_ovlap_contfrac5d_fermact_array_w.cc,v 1.12 2005-01-17 03:57:57 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -9,6 +9,7 @@
 #include "actions/ferm/fermacts/unprec_ovlap_contfrac5d_fermact_array_w.h"
 #include "actions/ferm/linop/unprec_ovlap_contfrac5d_linop_array_w.h"
 #include "actions/ferm/linop/unprec_ovlap_contfrac5d_nonhermop_array_w.h"
+#include "actions/ferm/linop/unprec_ovlap_contfrac5d_pv_linop_array_w.h"
 
 #include "actions/ferm/linop/lmdagm.h"
 #include "actions/ferm/invert/invcg2_array.h"
@@ -371,6 +372,7 @@ namespace Chroma
     zolotarev_free(rdata);
   }
 
+
   //! Produce a linear operator for this action
   /*!
    * The operator acts on the entire lattice
@@ -420,6 +422,67 @@ namespace Chroma
 						  isLastZeroP);
       
       
+      
+    }
+    catch( bad_cast ) { 
+      QDPIO::cerr << "UnprecOvlapContFrac5DFermActArray::linOp(): ";
+      QDPIO::cerr << "Couldnt cast ConnectState to OverlapConnectState " 
+		  << endl;
+      QDP_abort(1);
+    }
+    
+    // Should never get here... Just to satisfy type system
+    return 0;
+  }
+  
+
+  //! Produce a linear operator for this action
+  /*!
+   * The operator acts on the entire lattice
+   *
+   * \param state	    gauge field     	       (Read)
+   */
+  const UnprecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* 
+  UnprecOvlapContFrac5DFermActArray::linOpPV(Handle<const ConnectState> state_) const
+  {
+    START_CODE();
+    try { 
+      
+      // This throws a bad cast exception if the cast fails
+      // Hence the "try" above
+      const OverlapConnectState& state = 
+	dynamic_cast<const OverlapConnectState&>(*state_);
+      
+      if (state.getEigVec().size() != state.getEigVal().size()) {
+	QDPIO::cerr << "UnprecOvlapContFrac5DFermActArray::linOp(): ";
+	QDPIO::cerr << "UnprecOvlapContFrac5DFermActArray: inconsistent sizes of eigenvectors and values" 
+		    << "state.getEigVec.size() = " << state.getEigVec().size() 
+		    << " state.getEigVal.size() = " << state.getEigVal().size()
+		    << endl;
+	QDP_abort(1);
+      }
+      
+      int NEigVal = state.getEigVal().size();
+      int NEig;
+      
+      multi1d<Real> alpha;
+      multi1d<Real> beta;
+      Real scale_factor;
+      multi1d<Real> EigValFunc(NEigVal);
+      
+      init(scale_factor, alpha, beta, NEig, EigValFunc, state);
+      
+      return new UnprecOvlapContFrac5DPVLinOpArray( *S_aux,
+						    state_,
+						    params.Mass,
+						    N5,
+						    scale_factor,
+						    alpha,
+						    beta,
+						    NEig,
+						    EigValFunc,
+						    state.getEigVec(),
+						    isLastZeroP);
       
     }
     catch( bad_cast ) { 
