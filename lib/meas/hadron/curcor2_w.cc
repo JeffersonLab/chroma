@@ -1,4 +1,4 @@
-// $Id: curcor2_w.cc,v 1.6 2003-10-30 01:53:57 edwards Exp $
+// $Id: curcor2_w.cc,v 1.7 2003-10-30 01:55:20 edwards Exp $
 /*! \file
  *  \brief Mesonic current correlators
  */
@@ -58,6 +58,8 @@ void curcor2(const multi1d<LatticeColorMatrix>& u,
 
   // Initial group
   push(xml, xml_group);
+
+  write(xml, "num_vec_cur", no_vec_cur);
 
   // Length of lattice in decay direction
   int length = phases.numSubsets() ;
