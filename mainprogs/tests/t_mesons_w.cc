@@ -1,10 +1,13 @@
-// $Id: t_mesons_w.cc,v 1.2 2003-03-14 05:14:32 flemingg Exp $
+// $Id: t_mesons_w.cc,v 1.3 2003-06-24 03:24:44 edwards Exp $
 //
 //! \file
 //  \brief Test the Wilson mesons() routine
 //
 // $Log: t_mesons_w.cc,v $
-// Revision 1.2  2003-03-14 05:14:32  flemingg
+// Revision 1.3  2003-06-24 03:24:44  edwards
+// Changed from nml to xml.
+//
+// Revision 1.2  2003/03/14 05:14:32  flemingg
 // rewrite of mesons_w.cc to use the new SftMom class.  mesons_w.cc still
 // needs to be cleaned up once the best strategy is resolved.  But for now,
 // the library and test program compiles and runs.
@@ -30,14 +33,15 @@ int main(int argc, char *argv[])
   Layout::setLattSize(nrow);
   Layout::create();
 
-  NmlWriter nml("t_mesons_w.nml");
+  XMLFileWriter xml("t_mesons_w.xml");
+  push(xml,"t_mesons_w");
 
-  push(nml,"lattice");
-  Write(nml,Nd);
-  Write(nml,Nc);
-  Write(nml,Ns);
-  Write(nml,nrow);
-  pop(nml);
+  push(xml,"lattice");
+  Write(xml,Nd);
+  Write(xml,Nc);
+  Write(xml,Ns);
+  Write(xml,nrow);
+  pop(xml);
 
   LatticePropagator quark_prop_1, quark_prop_2;
   gaussian(quark_prop_1);
@@ -53,12 +57,14 @@ int main(int argc, char *argv[])
   // create averaged Fourier phases with (mom)^2 <= 10
   SftMom phases(10, true, j_decay) ;
 
-  mesons(quark_prop_1, quark_prop_2, phases, t0, nml,
+  mesons(quark_prop_1, quark_prop_2, phases, t0, xml,
          "Point_Point_Wilson_Mesons") ;
 
   clock_t end_clock = clock() ;
 
   cerr << "Test took " << end_clock - start_clock << " clocks.\n" ;
+
+  pop(xml);
 
   // Time to bolt
   QDP_finalize();

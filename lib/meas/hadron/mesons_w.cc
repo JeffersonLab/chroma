@@ -1,6 +1,9 @@
-//  $Id: mesons_w.cc,v 1.13 2003-04-02 22:28:22 edwards Exp $
+//  $Id: mesons_w.cc,v 1.14 2003-06-24 03:25:27 edwards Exp $
 //  $Log: mesons_w.cc,v $
-//  Revision 1.13  2003-04-02 22:28:22  edwards
+//  Revision 1.14  2003-06-24 03:25:27  edwards
+//  Changed from nml to xml.
+//
+//  Revision 1.13  2003/04/02 22:28:22  edwards
 //  Changed proto.h to qdp_util.h
 //
 //  Revision 1.12  2003/04/01 03:27:26  edwards
@@ -54,8 +57,8 @@ using namespace QDP;
  * \param quark_prop_2 -- second (anti-) quark propagator ( Read )
  * \param t0 -- timeslice coordinate of the source ( Read )
  * \param phases -- object holds list of momenta and Fourier phases ( Read )
- * \param nml -- namelist file object ( Read )
- * \param nml_group -- string used for writing nml data ( Read )
+ * \param xml -- namelist file object ( Read )
+ * \param xml_group -- string used for writing xml data ( Read )
  *
  *        ____
  *        \
@@ -69,8 +72,8 @@ void mesons(const LatticePropagator& quark_prop_1,
             const LatticePropagator& quark_prop_2, 
             const SftMom& phases,
             int t0,
-            NmlWriter& nml,
-	    char* nml_group)
+            XMLWriter& xml,
+	    const string& xml_group)
 {
   START_CODE("mesons");
 
@@ -81,25 +84,6 @@ void mesons(const LatticePropagator& quark_prop_1,
   int G5 = Ns*Ns-1;
   LatticePropagator anti_quark_prop =  Gamma(G5) * quark_prop_2 * Gamma(G5);
 
-  // GTF: the szin strippers expect nml output to conform to
-  //   &nml_group
-  //     ...
-  //     sink_mom( mu ) = integer ,
-  //     ...
-  //     mesprop( t_eff , gamma_value ) = real ,
-  //     ...
-  //   &END
-  // In some of the Variants, sink_mom is not in the outer loop, so we
-  // have to save all the data and flatten.
-
-  // GTF: We're going to consider several working variants here to see
-  // which one works best.  Current timings in arbitrary units:
-  //   Variant 1:  25
-  //   Variant 2:  32
-  //   Variant 3: 297
-
-#if 1    // Variant 1
-
   // This variant uses the function SftMom::sft() to do all the work
   // computing the Fourier transform of the meson correlation function
   // inside the class SftMom where all the of the Fourier phases and
@@ -107,10 +91,14 @@ void mesons(const LatticePropagator& quark_prop_1,
   // requires more memory because it does all of the Fourier transforms
   // at the same time.
 
-  multi3d<Real> mespropall(phases.numMom(), phases.numSubsets(), Ns*Ns) ;
-
   // Loop over gamma matrix insertions
-  for (int gamma_value=0; gamma_value < (Ns*Ns); ++gamma_value) {
+  XMLArrayWriter xml_gamma(xml,Ns*Ns);
+  push(xml_gamma, xml_group);
+
+  for (int gamma_value=0; gamma_value < (Ns*Ns); ++gamma_value)
+  {
+    push(xml_gamma);     // next array element
+    Write(xml_gamma, gamma_value);
 
     // Construct the meson correlation function
     LatticeComplex corr_fn ;
@@ -120,120 +108,33 @@ void mesons(const LatticePropagator& quark_prop_1,
     multi2d<DComplex> hsum ;
     hsum = phases.sft(corr_fn) ;
 
-    for (int sink_mom_num=0; sink_mom_num < phases.numMom(); ++sink_mom_num) {
+    // Loop over sink momenta
+    XMLArrayWriter xml_sink_mom(xml_gamma,phases.numMom());
+    push(xml_sink_mom, "momenta");
 
-      for (int t=0; t < phases.numSubsets(); ++t) {
+    for (int sink_mom_num=0; sink_mom_num < phases.numMom(); ++sink_mom_num) 
+    {
+      push(xml_sink_mom);
+      Write(xml_sink_mom, sink_mom_num) ;
+      write(xml_sink_mom, "sink_mom", phases.numToMom(sink_mom_num)) ;
+
+      multi1d<Real> mesprop(phases.numSubsets());
+      for (int t=0; t < phases.numSubsets(); ++t) 
+      {
         int t_eff = (t - t0 + length) % length ;
-
-        mespropall[sink_mom_num][t_eff][gamma_value] =
-          real(hsum[sink_mom_num][t]) ;
+	mesprop[t_eff] = real(hsum[sink_mom_num][t]) ;
       }
+
+      Write(xml_sink_mom, mesprop);
+      pop(xml_sink_mom);
 
     } // end for(sink_mom_num)
-
+ 
+    pop(xml_sink_mom);
+    pop(xml_gamma);
   } // end for(gamma_value)
 
-  // Print out the results
-  for (int sink_mom_num=0; sink_mom_num < phases.numMom(); ++sink_mom_num) {
-    push(nml, nml_group) ;
-    write(nml, "sink_mom", phases.numToMom(sink_mom_num)) ;
-    write(nml, "mesprop", mespropall[sink_mom_num]) ;
-    pop(nml) ;
-  }
-
-#elif 1  // Variant 2
-
-  // This variant does the Fourier transform in this code after getting
-  // a copy of the Fourier phases from the SftMom object.  It should require
-  // less memory than Variant 1 since the Fourier transform for each momenta
-  // is done separately.  The outer loop is gamma matrix insertions, which
-  // means that corr_fn is only computed once per gamma_value.  Since the
-  // inner loop is sink_mom, this means that the implicit copy done by
-  // phases[sink_mom_num] is redone for each gamma_value.  Whether this
-  // is cheaper than Variant 3 must be tested.  According to my test code,
-  // this variant is about 10 times faster than Variant 3.
-
-  multi3d<Real> mespropall(phases.numMom(), phases.numSubsets(), Ns*Ns) ;
-
-  // Loop over gamma matrix insertions
-  for (int gamma_value=0; gamma_value < (Ns*Ns); ++gamma_value) {
-
-    // Construct the meson correlation function
-    LatticeComplex corr_fn ;
-    corr_fn = trace(adj(anti_quark_prop) * Gamma(gamma_value) *
-                    quark_prop_1 * Gamma(gamma_value)) ;
-
-    for (int sink_mom_num=0; sink_mom_num < phases.numMom(); ++sink_mom_num) {
-
-      multi1d<Double> hsum ;
-
-      hsum = sumMulti(real(phases[sink_mom_num]*corr_fn), phases.getSubset()) ;
-
-      // This is obviously a copy with simple relabeling which might
-      // be eliminated in the future.  It is done to match what was
-      // done in the past with NML.
-      for (int t=0; t < phases.numSubsets(); ++t) {
-        int t_eff = (t - t0 + length) % length ;
-        mespropall[sink_mom_num][t_eff][gamma_value] = hsum[t] ;
-      }
-
-    } // end for(sink_mom_num)
-
-  } // end for(gamma_value)
-
-  // Print out the results
-  for (int sink_mom_num=0; sink_mom_num < phases.numMom(); ++sink_mom_num) {
-    push(nml, nml_group) ;
-    write(nml, "sink_mom", phases.numToMom(sink_mom_num)) ;
-    write(nml, "mesprop", mespropall[sink_mom_num]) ;
-    pop(nml) ;
-  }
-
-#elif 1  // Variant 3
-
-  // This variant is like Variant 2 with the inner and outer loops swapped.
-  // This means that the implicit copy phases[sink_mom_num] is only done
-  // as few times as necessary but now the computation of the meson
-  // correlation function is repeated SftMom::numMom() times.
-
-  // Loop over sink momenta first
-  for (int sink_mom_num=0; sink_mom_num < phases.numMom(); ++sink_mom_num) {
-
-    LatticeComplex phasefac = phases[sink_mom_num] ;
-
-    multi2d<Real> mesprop(phases.numSubsets(), Ns*Ns) ;
-
-    // Loop over gamma matrix insertions
-    for (int gamma_value=0; gamma_value < (Ns*Ns); ++gamma_value) {
-
-      // Construct the meson correlation function
-      LatticeComplex corr_fn ;
-      corr_fn = trace(adj(anti_quark_prop) * Gamma(gamma_value) *
-                      quark_prop_1 * Gamma(gamma_value)) ;
-
-      multi1d<Double> hsum ;
-
-      hsum = sumMulti(real(phasefac*corr_fn), phases.getSubset()) ;
-
-      // This is obviously a copy with simple relabeling which might
-      // be eliminated in the future.  It is done to match what was
-      // done in the past with NML.
-      for (int t=0; t < phases.numSubsets(); ++t) {
-        int t_eff = (t - t0 + length) % length ;
-        mesprop[t_eff][gamma_value] = hsum[t] ;
-      }
-
-    } // end for(gamma_value)
-
-    // Print out the results
-    push(nml, nml_group) ;
-    write(nml, "sink_mom", phases.numToMom(sink_mom_num)) ;
-    Write(nml, mesprop) ;
-    pop(nml) ;
-
-  } // end for(sink_mom_num)
-
-#endif
+  pop(xml_gamma);
 
   END_CODE("mesons");
 }

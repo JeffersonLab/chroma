@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: mesons_w.h,v 1.6 2003-04-01 03:27:26 edwards Exp $
+// $Id: mesons_w.h,v 1.7 2003-06-24 03:25:27 edwards Exp $
 
 #ifndef __mesons_h__
 #define __mesons_h__
@@ -29,7 +29,7 @@ void mesons(const LatticePropagator& quark_prop_1,
             const LatticePropagator& quark_prop_2,
             const SftMom& phases,
             int t0,
-            NmlWriter& nml,
-            char* nml_group) ;
+            XMLWriter& xml,
+            const string& xml_group) ;
 
 #endif
