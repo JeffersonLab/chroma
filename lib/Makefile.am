@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.50 2003-11-09 22:26:46 edwards Exp $
+# $Id: Makefile.am,v 1.51 2003-11-10 03:04:51 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -88,7 +88,7 @@ libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
 #
 if BUILD_WILSON_LIBS
 libchroma_a_SOURCES += baryon_w.cc mesons_w.cc curcor2_w.cc lwldslash_w.cc formfac_w.cc \
-              sink_smear2_w.cc barcomp_w.cc transf_w.cc ldwfdslash_w.cc unprec_qprop_w.cc \
+              sink_smear2_w.cc barcomp_w.cc transf_w.cc ldwfdslash_w.cc fermact_qprop.cc \
               unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc unprec_wilson_dsdu_w.cc \
               unprec_dwf_fermact_w.cc unprec_dwf_linop_w.cc unprec_dwf_dsdu_w.cc \
               unprec_dwf_qprop_w.cc dwffld_w.cc \
@@ -112,7 +112,8 @@ endif
 # This is OK since Ns is determined at configure time 
 #
 if BUILD_STAGGERED_LIBS
-libchroma_a_SOURCES += mesphas_s.cc mesphas_follana_s.cc pions_follana_s.cc follana_io_s.cc
+libchroma_a_SOURCES += mesphas_s.cc mesphas_follana_s.cc pions_follana_s.cc follana_io_s.cc \
+              fermact_qprop.cc 
 endif
 
 
