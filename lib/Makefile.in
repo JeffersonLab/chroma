@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.143 2004-01-29 20:40:24 edwards Exp $
+# $Id: Makefile.in,v 1.144 2004-01-29 20:45:52 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -88,7 +88,8 @@ host_triplet = @host@
 @BUILD_STAGGERED_LIBS_TRUE@	asqtad_linop_s.cc asq_dsl_s.cc fat7_links_s.cc naik_term_s.cc  \
 @BUILD_STAGGERED_LIBS_TRUE@	asqtad_fermact_s.cc asqtad_mdagm_s.cc staggered_qprop.cc stag_phases_s.cc
 
-VPATH = $(TOPDIR) $(TOPDIR)/lib $(TOPDIR)/lib/actions $(TOPDIR)/lib/actions/boson $(TOPDIR)/lib/actions/boson/operator $(TOPDIR)/lib/actions/ferm $(TOPDIR)/lib/actions/ferm/dsdu $(TOPDIR)/lib/actions/ferm/fermacts $(TOPDIR)/lib/actions/ferm/invert $(TOPDIR)/lib/actions/ferm/linop $(TOPDIR)/lib/actions/ferm/qprop $(TOPDIR)/lib/actions/gauge $(TOPDIR)/lib/geom $(TOPDIR)/lib/info $(TOPDIR)/lib/io $(TOPDIR)/lib/meas $(TOPDIR)/lib/meas/eig $(TOPDIR)/lib/meas/gfix $(TOPDIR)/lib/meas/glue $(TOPDIR)/lib/meas/hadron $(TOPDIR)/lib/meas/pbp $(TOPDIR)/lib/meas/schrfun $(TOPDIR)/lib/meas/smear $(TOPDIR)/lib/meas/sources $(TOPDIR)/lib/update $(TOPDIR)/lib/update/heatbath $(TOPDIR)/lib/update/molecdyn $(TOPDIR)/lib/update/molecdyn/est $(TOPDIR)/lib/update/molecdyn/mese $(TOPDIR)/lib/update/molecdyn/noise $(TOPDIR)/lib/update/molecdyn/step $(TOPDIR)/lib/util $(TOPDIR)/lib/util/ferm $(TOPDIR)/lib/util/ft $(TOPDIR)/lib/util/gauge $(TOPDIR)/lib/util/info $(TOPDIR)/mainprogs $(TOPDIR)/mainprogs/main $(TOPDIR)/mainprogs/tests $(TOPDIR)/root
+#VPATH += $(TOPDIR)/lib/geom
+VPATH = $(TOPDIR) $(TOPDIR)/lib $(TOPDIR)/lib/actions $(TOPDIR)/lib/actions/boson $(TOPDIR)/lib/actions/boson/operator $(TOPDIR)/lib/actions/ferm $(TOPDIR)/lib/actions/ferm/dsdu $(TOPDIR)/lib/actions/ferm/fermacts $(TOPDIR)/lib/actions/ferm/invert $(TOPDIR)/lib/actions/ferm/linop $(TOPDIR)/lib/actions/ferm/qprop $(TOPDIR)/lib/actions/gauge $(TOPDIR)/lib/info $(TOPDIR)/lib/io $(TOPDIR)/lib/meas $(TOPDIR)/lib/meas/eig $(TOPDIR)/lib/meas/gfix $(TOPDIR)/lib/meas/glue $(TOPDIR)/lib/meas/hadron $(TOPDIR)/lib/meas/pbp $(TOPDIR)/lib/meas/schrfun $(TOPDIR)/lib/meas/smear $(TOPDIR)/lib/meas/sources $(TOPDIR)/lib/update $(TOPDIR)/lib/update/heatbath $(TOPDIR)/lib/update/molecdyn $(TOPDIR)/lib/update/molecdyn/est $(TOPDIR)/lib/update/molecdyn/mese $(TOPDIR)/lib/update/molecdyn/noise $(TOPDIR)/lib/update/molecdyn/step $(TOPDIR)/lib/util $(TOPDIR)/lib/util/ferm $(TOPDIR)/lib/util/ft $(TOPDIR)/lib/util/gauge $(TOPDIR)/lib/util/info $(TOPDIR)/mainprogs $(TOPDIR)/mainprogs/main $(TOPDIR)/mainprogs/tests $(TOPDIR)/root
 ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
@@ -198,7 +199,7 @@ BUILDDIR = @top_builddir@
 nobase_include_HEADERS = \
 	chroma.h chroma_scalarsite_defs.h chroma_scalarsite_dwdefs.h \
 	chromabase.h chromainc.h common_declarations.h fermact.h \
-	fermbc.h gaugeact.h gaugebc.h geom.h handle.h invtype.h lib.h \
+	fermbc.h gaugeact.h gaugebc.h handle.h invtype.h lib.h \
 	linearop.h primitives.h state.h \
 	actions/actions.h actions/boson/boson.h \
 	actions/boson/operator/klein_gord.h actions/ferm/dslash/dslash.h \
@@ -251,12 +252,6 @@ INCFLAGS = -I$(TOPDIR)/lib
 AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDPXX_CXXFLAGS@ $(am__append_2)
 
 lib_LIBRARIES = libchroma.a
-
-#
-# Various header files. 
-#
-#HDRS =  chroma.h chromabase.h chromainc.h primitives.h common_declarations.h \
-#        geom.h
 
 #
 # Fermion independent sources
