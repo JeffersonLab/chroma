@@ -1,75 +1,29 @@
-// $Id: zolotarev4d_linop_w.cc,v 1.5 2003-11-20 05:43:41 edwards Exp $
+// $Id: zolotarev4d_linop_w.cc,v 1.6 2003-12-02 22:35:46 edwards Exp $
 /*! \file
  *  \brief 4D Zolotarev operator
  */
 
 #include "chromabase.h"
 #include "actions/ferm/linop/lmdagm_w.h"
-#include "actions/ferm/linop/zolotarev4d_w.h"
+#include "actions/ferm/linop/zolotarev4d_linop_w.h"
 #include "actions/ferm/linop/zolotarev.h"
 // #include "primitives.h"
-#include "common_declarations.h"
-
-//! Creation routine
-/*!
- * \ingroup linop
- *
- * \param u_ 	  gauge field  	       (Read)
- * \param m_q_    quark mass   	       (Read)
- */
-
-void Zolotarev4D::create(const multi1d<LatticeColorMatrix>& u_, const Real& m_q_)
-{
-  START_CODE("Zolotarev4D::create");
-
-  u = u_;
-  m_q = m_q_;
-
-  RsdCGinner = 1.0e-7;  // Hardwired the accuracy
-
-  NEigVal = 0;
-
-  make();
-};
-
-//! Creation routine
-/*!
- * \ingroup linop
- *
- * \param u_ 	  gauge field  	       (Read)
- * \param m_q_    quark mass   	       (Read)
- * \param EigVec_ eigenvectors 	       (Read)
- * \param EigVal_ eigenvalues 	       (Read)
- */
-
-void Zolotarev4D::create(const multi1d<LatticeColorMatrix>& u_, const Real& m_q_,
-			 const multi1d<LatticeFermion>& EigVec_, const multi1d<Real>& EigVal_)
-{
-  START_CODE("Zolotarev4D::create");
-
-  u = u_;
-  m_q = m_q_;
-
-  RsdCGinner = 1.0e-7;  // Hardwired the accuracy
-
-  NEigVal = EigVal_.size();
-  EigVec = EigVec_;
-  EigVal = EigVal_;
-
-  if (EigVec.size() != EigVal.size())
-    QDP_error_exit("Zolotarev4D::create: inconsistent sizes of eigenvectors and values");
-
-  make();
-};
+//#include "common_declarations.h"
 
 //! Internal creation routine
 /*!
- * \ingroup linop
  */
-
-void Zolotarev4D::make()
+void 
+Zolotarev4DLinOp::init()
 {
-  START_CODE("Zolotarev4D::create");
+  START_CODE("Zolotarev4DLinOp::create");
+
+  RsdCGinner = 1.0e-7;  // Hardwired the accuracy
+
+  if (EigVec.size() != EigVal.size())
+    QDP_error_exit("Zolotarev4DLinOp: inconsistent sizes of eigenvectors and values");
+
+  NEigVal = state.getEigVal().size();
 
   /* The residual for the solutions of the multi-shift linear system */
   Real RsdCG;
@@ -204,7 +158,7 @@ void Zolotarev4D::make()
   type = 0;
   rdata = zolotarev(toFloat(eps), RatPolyDeg, type);
   maxerr = rdata -> Delta;
-  push(nml_out,"ConsZolotarev4D");
+  push(nml_out,"ConsZolotarev4DLinOp");
   Write(nml_out, eps);
   Write(nml_out, RatPolyDeg);
   Write(nml_out, type);
@@ -291,7 +245,7 @@ void Zolotarev4D::make()
 						   numroot, coeffP, resP, rootQ, 
 						   EigVec, EigValFunc, NEig, RsdCG);
   
-  END_CODE("Zolotarev4D::create");
+  END_CODE("Zolotarev4DLinOp::create");
 }
 
 
@@ -300,10 +254,10 @@ void Zolotarev4D::make()
 /*!
  * \ingroup linop
  */
-void Zolotarev4D::~Zolotarev()
+void Zolotarev4DLinOp::~Zolotarev()
 {
-  delete MdagM;
-  delete A;
+//  delete MdagM;
+//  delete A;
 }
 
 
@@ -317,14 +271,14 @@ void Zolotarev4D::~Zolotarev()
  * \param psi 	  Pseudofermion field     	       (Read)
  * \param isign   Flag ( PLUS | MINUS )   	       (Read)
  */
-void Zolotarev4D::operator() (LatticeFermion& chi, const LatticeFermion& psi, 
-			      enum PlusMinus isign) const
+void Zolotarev4DLinOp::operator() (LatticeFermion& chi, const LatticeFermion& psi, 
+				   enum PlusMinus isign) const
 {
-  START_CODE("Zolotarev4D");
+  START_CODE("Zolotarev4DLinOp");
 
   // Call underlying lovlapms operator
   (*A)(chi, psi, isign);
 
-  END_CODE("Zolotarev4D");
+  END_CODE("Zolotarev4DLinOp");
 }
 
