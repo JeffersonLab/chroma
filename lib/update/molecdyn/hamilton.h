@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hamilton.h,v 1.6 2004-01-01 22:14:43 edwards Exp $
+// $Id: hamilton.h,v 1.7 2004-01-02 02:57:26 edwards Exp $
 /*! \file
  *  \brief Hamiltonian systems
  */
@@ -368,17 +368,8 @@ enum AlgETrj_t {FIXED_LENGTH, EXPONENTIAL_LENGTH};
 /*!
  * \ingroup molecdyn
  *
- * This is a really crude first attempt at a molecular dynamics integrator
+ * This is a crude first attempt at a molecular dynamics integrator
  * Lots more thought needed here.
- *
- * An HMDIntegrator should take a HamSys template param'd by action types.
- * I suspect I should have a typelist of actions, (e.g., can have
- * more than 1 ferm action). The HamSys constructor would then take
- * instances of those actions. 
- *
- * There should be some general notion of "Coordinates" and "Conjugate Momenta".
- * How pseudo-ferm cleanly fit in that picture in this code is not clear
- * (to me, at least).
  */
 
 template<class GA, class FA, template<class,int> class HS>
