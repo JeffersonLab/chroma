@@ -1,4 +1,4 @@
-// $Id: baryon_w.cc,v 1.8 2003-10-01 20:23:00 edwards Exp $ 
+// $Id: baryon_w.cc,v 1.9 2003-10-10 17:22:05 edwards Exp $ 
 /*! \file
  *  \brief Baryon 2-pt functions
  */
@@ -66,9 +66,9 @@ void baryon(LatticePropagator& quark_propagator,
   }
 
 
-  int num_baryons = bardisp1.size1();
+  int num_baryons = bardisp1.size3();
   int num_mom = bardisp1.size2();
-  int length  = bardisp1.size3();
+  int length  = bardisp1.size1();
 
   // Loop over baryons
   XMLArrayWriter xml_bar(xml,num_baryons);
