@@ -1,6 +1,9 @@
-// $Id: dwf_quarkprop4_w.cc,v 1.16 2004-02-11 12:51:33 bjoo Exp $
+// $Id: dwf_quarkprop4_w.cc,v 1.17 2004-02-23 03:05:11 edwards Exp $
 // $Log: dwf_quarkprop4_w.cc,v $
-// Revision 1.16  2004-02-11 12:51:33  bjoo
+// Revision 1.17  2004-02-23 03:05:11  edwards
+// Pass in j_decay.
+//
+// Revision 1.16  2004/02/11 12:51:33  bjoo
 // Stripped out Read() and Write()
 //
 // Revision 1.15  2004/02/10 22:59:46  kostas
@@ -66,7 +69,8 @@ void check_dwf_ward_identity(const multi1d<LatticeColorMatrix>& u,
 			     const LatticePropagator& src,
 			     const LatticePropagator& q_q,
 			     const LatticePropagator& q_mp_q,
-			     const Real& m_q)
+			     const Real& m_q,
+			     int j_decay)
 {
   QDPIO::cout<<"check_dwf_ward_identity: Checking the chiral Ward Identity...";
   QDPIO::cout<<endl ;
@@ -90,7 +94,7 @@ void check_dwf_ward_identity(const multi1d<LatticeColorMatrix>& u,
   diff = divA - 2.0 * m_q * ps_ps - 2.0*mpps_ps + 2.0*q_bar_q;
 
   multi1d<Double> corr ;     
-  SftMom trick(0,false,3) ;
+  SftMom trick(0,false,j_decay) ;
   corr = sumMulti(localNorm2(diff), trick.getSet());
   QDPIO::cout<<"check_dwf_ward_identity: ";
   QDPIO::cout<<"Ward Identity violation per timeslice: "<<endl;
@@ -119,6 +123,8 @@ void check_dwf_ward_identity(const multi1d<LatticeColorMatrix>& u,
  *
  * \param q_sol    quark propagator ( Write )
  * \param q_src    source ( Read )
+ * \param t_src    time slice of source ( Read )
+ * \param j_decay  direction of decay ( Read )
  * \param invType  inverter type ( Read )
  * \param RsdCG    CG (or MR) residual used here ( Read )
  * \param MaxCG    maximum number of CG iterations ( Read )
@@ -129,7 +135,7 @@ static
 void dwf_quarkProp4_a(LatticePropagator& q_sol, 
 		      XMLWriter& xml_out,
 		      const LatticePropagator& q_src,
-		      const int t_src,
+		      int t_src, int j_decay,
 		      const C<T>& S_f,
 		      Handle<const ConnectState> state,
 		      enum InvType invType,
@@ -139,8 +145,6 @@ void dwf_quarkProp4_a(LatticePropagator& q_sol,
   START_CODE("dwf_quarkProp4");
 
   push(xml_out, "DWF_QuarkProp4");
-
-  int t_dir = Nd-1 ; // Hard code Nd-1 to be the time direction 
 
   ncg_had = 0;
 
@@ -226,11 +230,11 @@ void dwf_quarkProp4_a(LatticePropagator& q_sol,
 
   // constuct the conserved axial current correlator
   LatticeComplex cfield ;
-  dwf_conserved_axial_ps_corr(cfield,state->getLinks(),prop5d,t_dir);
+  dwf_conserved_axial_ps_corr(cfield,state->getLinks(),prop5d,j_decay);
 			       
   multi1d<DComplex> corr ;  
    
-  SftMom trick(0,false,t_dir) ;
+  SftMom trick(0,false,j_decay) ;
    
   corr = sumMulti(cfield, trick.getSet());
   // Length of lattice in time direction
@@ -242,14 +246,14 @@ void dwf_quarkProp4_a(LatticePropagator& q_sol,
   }
 
   push(xml_out, "time_direction");
-  write(xml_out, "t_dir",t_dir);
+  write(xml_out, "t_dir",j_decay);
   pop(xml_out);
   push(xml_out, "DWF_ConservedAxial");
   write(xml_out, "mesprop", mesprop); 
   pop(xml_out);
 
   // The local axial corruent pseudoscalar correlator
-  int d(1<<t_dir);
+  int d(1<<j_decay);
   cfield = trace( adj(q_sol)*Gamma(d)*q_sol ) ;
   corr = sumMulti(cfield, trick.getSet()) ;
   for(int t(0);t<length; t++){
@@ -285,7 +289,8 @@ void dwf_quarkProp4_a(LatticePropagator& q_sol,
   pop(xml_out);   // DWF_QuarkProp4
 
   check_dwf_ward_identity(state->getLinks(),prop5d,q_src,
-			  q_sol,q_mp,S_f.quark_mass());
+			  q_sol,q_mp,S_f.quark_mass(),
+			  j_decay);
 
 
   END_CODE("dwf_quarkProp4");
@@ -350,6 +355,8 @@ void dwf_conserved_axial_ps_corr(LatticeComplex& corr,
  *
  * \param q_sol    quark propagator ( Write )
  * \param q_src    source ( Read )
+ * \param t_src    time slice of source ( Read )
+ * \param j_decay  direction of decay ( Read )
  * \param invType  inverter type ( Read )
  * \param RsdCG    CG (or MR) residual used here ( Read )
  * \param MaxCG    maximum number of CG iterations ( Read )
@@ -359,14 +366,15 @@ void dwf_conserved_axial_ps_corr(LatticeComplex& corr,
 void dwf_quarkProp4(LatticePropagator& q_sol, 
 		    XMLWriter& xml_out,
 		    const LatticePropagator& q_src,
-		    const int t_src,
+		    int t_src, int j_decay,
 		    const EvenOddPrecDWFermActBaseArray<LatticeFermion>& S_f,
 		    Handle<const ConnectState> state,
 		    enum InvType invType,
 		    const Real& RsdCG, 
 		    int MaxCG, int& ncg_had)
 {
-  dwf_quarkProp4_a(q_sol, xml_out, q_src, t_src, S_f, state, invType, RsdCG, MaxCG, ncg_had);
+  dwf_quarkProp4_a(q_sol, xml_out, q_src, t_src, j_decay, S_f, state, 
+		   invType, RsdCG, MaxCG, ncg_had);
 }
 
 //! Given a complete propagator as a source, this does all the inversions needed
@@ -376,6 +384,8 @@ void dwf_quarkProp4(LatticePropagator& q_sol,
  *
  * \param q_sol    quark propagator ( Write )
  * \param q_src    source ( Read )
+ * \param t_src    time slice of source ( Read )
+ * \param j_decay  direction of decay ( Read )
  * \param invType  inverter type ( Read )
  * \param RsdCG    CG (or MR) residual used here ( Read )
  * \param MaxCG    maximum number of CG iterations ( Read )
@@ -385,13 +395,14 @@ void dwf_quarkProp4(LatticePropagator& q_sol,
 void dwf_quarkProp4(LatticePropagator& q_sol, 
 		    XMLWriter& xml_out,
 		    const LatticePropagator& q_src,
-		    const int t_src,
+		    int t_src, int j_decay,
 		    const UnprecDWFermActBaseArray<LatticeFermion>& S_f,
 		    Handle<const ConnectState> state,
 		    enum InvType invType,
 		    const Real& RsdCG, 
 		    int MaxCG, int& ncg_had)
 {
-  dwf_quarkProp4_a(q_sol, xml_out, q_src, t_src, S_f, state, invType, RsdCG, MaxCG, ncg_had);
+  dwf_quarkProp4_a(q_sol, xml_out, q_src, t_src, j_decay, S_f, state, 
+		   invType, RsdCG, MaxCG, ncg_had);
 }
 
