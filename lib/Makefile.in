@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.214 2004-07-27 06:15:46 edwards Exp $
+# $Id: Makefile.in,v 1.216 2004-07-28 00:45:32 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -108,7 +108,7 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@	meas/hadron/walldeltaff_w.h meas/hadron/walldeltapff_w.h \
 @BUILD_WILSON_LIBS_TRUE@	meas/hadron/wallpionff_w.h meas/hadron/wallnuclff_w.h \
 @BUILD_WILSON_LIBS_TRUE@	meas/hadron/wallrhoff_w.h meas/hadron/wallrhopiff_w.h \
-@BUILD_WILSON_LIBS_TRUE@	meas/smear/sink_smear2_w.h meas/sources/d_src_w.h \
+@BUILD_WILSON_LIBS_TRUE@	meas/sources/d_src_w.h \
 @BUILD_WILSON_LIBS_TRUE@	meas/sources/p_src_w.h meas/sources/sources_w.h \
 @BUILD_WILSON_LIBS_TRUE@	util/ferm/ferm_w.h util/ferm/diractodr.h util/ferm/gammasgn_w.h \
 @BUILD_WILSON_LIBS_TRUE@	util/ferm/tdiractodr.h \
@@ -124,7 +124,8 @@ host_triplet = @host@
 @BUILD_STAGGERED_LIBS_TRUE@	actions/ferm/linop/improvement_terms_s.h \
 @BUILD_STAGGERED_LIBS_TRUE@	actions/ferm/linop/linop_s.h \
 @BUILD_STAGGERED_LIBS_TRUE@	io/follana_io_s.h io/io_s.h \
-@BUILD_STAGGERED_LIBS_TRUE@	meas/eig/eig_s.h meas/hadron/hadron_s.h \
+@BUILD_STAGGERED_LIBS_TRUE@	meas/eig/eig_s.h meas/hadron/baryon_w.h \
+@BUILD_STAGGERED_LIBS_TRUE@	meas/hadron/hadron_s.h \
 @BUILD_STAGGERED_LIBS_TRUE@	meas/hadron/mesphas_follana_s.h meas/hadron/mesphas_s.h \
 @BUILD_STAGGERED_LIBS_TRUE@	meas/hadron/pions_follana_s.h meas/hadron/walfil_s.h \
 @BUILD_STAGGERED_LIBS_TRUE@	meas/hadron/stag_scalars_s.h meas/sources/sources_s.h \
@@ -138,7 +139,7 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@	      gammasgn_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              curcor2_w.cc lwldslash_w.cc formfac_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
-@BUILD_WILSON_LIBS_TRUE@              sink_smear2_w.cc barcomp_io.cc barcomp_w.cc walfil_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              barcomp_io.cc barcomp_w.cc walfil_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              overlap_state_info.cc zolotarev4d_fermact_paramio_w.cc \
 @BUILD_WILSON_LIBS_TRUE@	      zolotarev5d_fermact_paramio_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              fermact_qprop.cc prec_fermact_qprop.cc \
@@ -341,6 +342,7 @@ nobase_include_HEADERS = \
 	meas/smear/fuzz_smear.h \
 	meas/smear/gaus_smear.h meas/smear/hyp_smear.h \
 	meas/smear/laplacian.h meas/smear/smear.h meas/smear/wvfkind.h \
+	meas/smear/sink_smear2.h \
 	meas/sources/sources.h meas/sources/srcsnktype.h \
 	meas/sources/wavetype.h \
 	util/ferm/ferm.h util/ferm/transf.h util/ft/ft.h \
@@ -385,10 +387,11 @@ lib_LIBRARIES = libchroma.a
 # Fermion independent sources
 #
 libchroma_a_SOURCES = gauge_startup.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
-               expmat.cc expsu3.cc mesplq.cc polylp.cc reunit.cc unit_check.cc sftmom.cc srcfil.cc \
+               expmat.cc expsu3.cc mesplq.cc polylp.cc reunit.cc unit_check.cc \
+               sftmom.cc srcfil.cc \
                szin_io.cc readszin.cc writeszin.cc su3proj.cc sun_proj.cc \
                gaus_smear.cc hyp_smear.cc ape_smear.cc fuzz_smear.cc \
-               klein_gord.cc laplacian.cc displacement.cc \
+               klein_gord.cc laplacian.cc displacement.cc sink_smear2.cc \
                su2extract.cc sunfill.cc invcg1.cc inv_rel_cg1.cc \
 	       invcg2.cc inv_rel_cg2.cc invcg1_array.cc \
 	       invcg2_array.cc invcg2_timing_hacks.cc minvcg.cc minv_rel_cg.cc\
@@ -418,24 +421,25 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc rgauge.cc taproj.cc \
 	reunit.cc unit_check.cc sftmom.cc srcfil.cc szin_io.cc \
 	readszin.cc writeszin.cc su3proj.cc sun_proj.cc gaus_smear.cc \
 	hyp_smear.cc ape_smear.cc fuzz_smear.cc klein_gord.cc \
-	laplacian.cc displacement.cc su2extract.cc sunfill.cc invcg1.cc \
-	inv_rel_cg1.cc invcg2.cc inv_rel_cg2.cc invcg1_array.cc \
-	invcg2_array.cc invcg2_timing_hacks.cc minvcg.cc minv_rel_cg.cc \
-	qprop_io.cc eigen_io.cc stoch_var.cc z2_src.cc gauge_io.cc \
-	milc_io.cc readmilc.cc writemilc.cc axgauge.cc coulgauge.cc \
-	grelax.cc polar_dec.cc rot_colvec.cc transf.cc param_io.cc \
-	fermact_paramio.cc gramschm.cc gramschm_array.cc ritz.cc \
-	ritz_array.cc sn_jacob.cc sn_jacob_array.cc eig_spec.cc \
-	eig_spec_array.cc proginfo.cc printgeom.cc fuzwilp.cc wilslp.cc \
-	invsumr.cc minvsumr.cc inv_rel_sumr.cc minv_rel_sumr.cc \
-	invbicgstab.cc invbicgstab_array.cc inv_rel_gmresr_sumr.cc \
+	laplacian.cc displacement.cc sink_smear2.cc su2extract.cc \
+	sunfill.cc invcg1.cc inv_rel_cg1.cc invcg2.cc inv_rel_cg2.cc \
+	invcg1_array.cc invcg2_array.cc invcg2_timing_hacks.cc \
+	minvcg.cc minv_rel_cg.cc qprop_io.cc eigen_io.cc stoch_var.cc \
+	z2_src.cc gauge_io.cc milc_io.cc readmilc.cc writemilc.cc \
+	axgauge.cc coulgauge.cc grelax.cc polar_dec.cc rot_colvec.cc \
+	transf.cc param_io.cc fermact_paramio.cc gramschm.cc \
+	gramschm_array.cc ritz.cc ritz_array.cc sn_jacob.cc \
+	sn_jacob_array.cc eig_spec.cc eig_spec_array.cc proginfo.cc \
+	printgeom.cc fuzwilp.cc wilslp.cc invsumr.cc minvsumr.cc \
+	inv_rel_sumr.cc minv_rel_sumr.cc invbicgstab.cc \
+	invbicgstab_array.cc inv_rel_gmresr_sumr.cc \
 	inv_rel_gmresr_cg.cc inv_gmresr_cg_array.cc inv_minres_array.cc \
 	wilson_gaugeact.cc baryon_w.cc barhqlq_w.cc mesons_w.cc \
 	hybmeson_w.cc loops_w.cc tdiractodr.cc diractodr.cc \
 	paulitodr.cc gammasgn_w.cc curcor2_w.cc lwldslash_w.cc \
 	formfac_w.cc mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
-	sink_smear2_w.cc barcomp_io.cc barcomp_w.cc walfil_w.cc \
-	overlap_state_info.cc zolotarev4d_fermact_paramio_w.cc \
+	barcomp_io.cc barcomp_w.cc walfil_w.cc overlap_state_info.cc \
+	zolotarev4d_fermact_paramio_w.cc \
 	zolotarev5d_fermact_paramio_w.cc fermact_qprop.cc \
 	prec_fermact_qprop.cc unprec_wilson_fermact_w.cc \
 	unprec_wilson_linop_w.cc prec_wilson_fermact_w.cc \
@@ -478,7 +482,6 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc rgauge.cc taproj.cc \
 @BUILD_WILSON_LIBS_TRUE@	mesonseqsrc_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	barseqsrc_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	seqpiontest_w.$(OBJEXT) \
-@BUILD_WILSON_LIBS_TRUE@	sink_smear2_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	barcomp_io.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	barcomp_w.$(OBJEXT) walfil_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	overlap_state_info.$(OBJEXT) \
@@ -570,9 +573,10 @@ am_libchroma_a_OBJECTS = gauge_startup.$(OBJEXT) rgauge.$(OBJEXT) \
 	readszin.$(OBJEXT) writeszin.$(OBJEXT) su3proj.$(OBJEXT) \
 	sun_proj.$(OBJEXT) gaus_smear.$(OBJEXT) hyp_smear.$(OBJEXT) \
 	ape_smear.$(OBJEXT) fuzz_smear.$(OBJEXT) klein_gord.$(OBJEXT) \
-	laplacian.$(OBJEXT) displacement.$(OBJEXT) su2extract.$(OBJEXT) \
-	sunfill.$(OBJEXT) invcg1.$(OBJEXT) inv_rel_cg1.$(OBJEXT) \
-	invcg2.$(OBJEXT) inv_rel_cg2.$(OBJEXT) invcg1_array.$(OBJEXT) \
+	laplacian.$(OBJEXT) displacement.$(OBJEXT) \
+	sink_smear2.$(OBJEXT) su2extract.$(OBJEXT) sunfill.$(OBJEXT) \
+	invcg1.$(OBJEXT) inv_rel_cg1.$(OBJEXT) invcg2.$(OBJEXT) \
+	inv_rel_cg2.$(OBJEXT) invcg1_array.$(OBJEXT) \
 	invcg2_array.$(OBJEXT) invcg2_timing_hacks.$(OBJEXT) \
 	minvcg.$(OBJEXT) minv_rel_cg.$(OBJEXT) qprop_io.$(OBJEXT) \
 	eigen_io.$(OBJEXT) stoch_var.$(OBJEXT) z2_src.$(OBJEXT) \
@@ -690,8 +694,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/ritz.Po ./$(DEPDIR)/ritz_array.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/rot_colvec.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/seqpiontest_w.Po ./$(DEPDIR)/sftmom.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/sink_smear2_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/sn_jacob.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/sink_smear2.Po ./$(DEPDIR)/sn_jacob.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/sn_jacob_array.Po ./$(DEPDIR)/srcfil.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/stag_phases_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/stag_propShift_s.Po \
@@ -938,7 +941,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rot_colvec.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seqpiontest_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sftmom.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sink_smear2_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sink_smear2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sn_jacob.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sn_jacob_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/srcfil.Po@am__quote@
