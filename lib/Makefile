@@ -14,7 +14,7 @@
 
 
 
-# $Id: Makefile,v 1.3 2003-06-19 18:12:30 ikuro Exp $
+# $Id: Makefile,v 1.4 2003-08-11 21:40:11 dru Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -164,7 +164,7 @@ GENERIC_SRCS = $(HDRS) gaus_smear.cc taproj.cc hotst.cc expm12.cc \
                klein_gord.cc mesplq.cc reunit.cc sftmom.cc srcfil.cc \
                readszin.cc su3proj.cc sun_proj.cc hyp_smear.cc laplacian.cc\
                su2extract.cc sunfill.cc invcg2.cc qprop_io.cc p_src.cc \
-               d_src.cc D_j.cc DjDk.cc laplacian.cc
+               d_src.cc D_j.cc DjDk.cc laplacian.cc BuildingBlocks.cc
 
 #
 # Object files to add if building the Wilson Builds...
@@ -213,7 +213,7 @@ am__libchroma_a_SOURCES_DIST = chroma.h chromabase.h chromainc.h \
 	barcomp_w.cc transf_w.cc unprec_wilson_fermact_w.cc \
 	unprec_wilson_linop_w.cc unprec_wilson_dsdu_w.cc \
 	unprec_qprop_w.cc readszinqprop_w.cc readszinferm_w.cc \
-	overlapbu_linop_w.cc
+	overlapbu_linop_w.cc BuildingBlocks.cc
 am__objects_1 =
 am__objects_2 = $(am__objects_1) gaus_smear.$(OBJEXT) taproj.$(OBJEXT) \
 	hotst.$(OBJEXT) expm12.$(OBJEXT) klein_gord.$(OBJEXT) \
@@ -222,7 +222,7 @@ am__objects_2 = $(am__objects_1) gaus_smear.$(OBJEXT) taproj.$(OBJEXT) \
 	sun_proj.$(OBJEXT) hyp_smear.$(OBJEXT) laplacian.$(OBJEXT) \
 	su2extract.$(OBJEXT) sunfill.$(OBJEXT) invcg2.$(OBJEXT) \
 	qprop_io.$(OBJEXT) p_src.$(OBJEXT) d_src.$(OBJEXT) \
-	D_j.$(OBJEXT) DjDk.$(OBJEXT) laplacian.$(OBJEXT)
+	D_j.$(OBJEXT) DjDk.$(OBJEXT) laplacian.$(OBJEXT) BuildingBlocks.$(OBJEXT)
 am__objects_3 = baryon_w.$(OBJEXT) mesons_w.$(OBJEXT) \
 	lwldslash_w.$(OBJEXT) formfac_w.$(OBJEXT) \
 	sink_smear2_w.$(OBJEXT) barcomp_w.$(OBJEXT) transf_w.$(OBJEXT) \
@@ -336,6 +336,7 @@ distclean-compile:
 
 include ./$(DEPDIR)/D_j.Po
 include ./$(DEPDIR)/DjDk.Po
+include ./$(DEPDIR)/BuildingBlocks.Po
 include ./$(DEPDIR)/barcomp_w.Po
 include ./$(DEPDIR)/baryon_w.Po
 include ./$(DEPDIR)/d_src.Po
