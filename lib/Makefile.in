@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.103 2003-12-16 21:54:13 edwards Exp $
+# $Id: Makefile.in,v 1.104 2003-12-16 22:20:14 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -198,7 +198,7 @@ libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
                su2extract.cc sunfill.cc invcg1.cc invcg2.cc invcg2_array.cc qprop_io.cc \
                milc_io.cc readmilc.cc writemilc.cc \
                axgauge.cc coulgauge.cc grelax.cc polar_dec.cc rot_colvec.cc \
-	       transf.cc setph.cc\
+	       transf.cc phfctr.cc\
 $(am__append_2) $(am__append_3) $(am__append_4)
 
 # Need this header as part of libchroma_a_sources
@@ -217,7 +217,7 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	laplacian.cc su2extract.cc sunfill.cc invcg1.cc invcg2.cc \
 	invcg2_array.cc qprop_io.cc milc_io.cc readmilc.cc writemilc.cc \
 	axgauge.cc coulgauge.cc grelax.cc polar_dec.cc rot_colvec.cc \
-	transf.cc setph.cc baryon_w.cc mesons_w.cc curcor2_w.cc \
+	transf.cc phfctr.cc baryon_w.cc mesons_w.cc curcor2_w.cc \
 	lwldslash_w.cc formfac_w.cc sink_smear2_w.cc barcomp_w.cc \
 	ldwfdslash_w.cc walfil_w.cc fermact_qprop.cc \
 	prec_fermact_qprop.cc unprec_wilson_fermact_w.cc \
@@ -310,7 +310,7 @@ am_libchroma_a_OBJECTS = rgauge.$(OBJEXT) taproj.$(OBJEXT) \
 	milc_io.$(OBJEXT) readmilc.$(OBJEXT) writemilc.$(OBJEXT) \
 	axgauge.$(OBJEXT) coulgauge.$(OBJEXT) grelax.$(OBJEXT) \
 	polar_dec.$(OBJEXT) rot_colvec.$(OBJEXT) transf.$(OBJEXT) \
-	setph.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
+	phfctr.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
 	$(am__objects_3)
 am__objects_4 =
 nodist_libchroma_a_OBJECTS = $(am__objects_4)
@@ -350,7 +350,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/milc_io.Po ./$(DEPDIR)/naik_term_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/overlap_fermact_base_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/overlapbu_linop_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/p_src_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/p_src_w.Po ./$(DEPDIR)/phfctr.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/pions_follana_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/polar_dec.Po ./$(DEPDIR)/polylp.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/prec_dwf_fermact_array_w.Po \
@@ -366,9 +366,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/readszinferm_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/readszinqprop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/reunit.Po ./$(DEPDIR)/rgauge.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/rot_colvec.Po ./$(DEPDIR)/setph.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/sftmom.Po ./$(DEPDIR)/sink_smear2_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/srcfil.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/rot_colvec.Po ./$(DEPDIR)/sftmom.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/sink_smear2_w.Po ./$(DEPDIR)/srcfil.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/staggered_qprop.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/su2extract.Po ./$(DEPDIR)/su3proj.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/sun_proj.Po ./$(DEPDIR)/sunfill.Po \
@@ -500,6 +499,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/overlap_fermact_base_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/overlapbu_linop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/p_src_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/phfctr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pions_follana_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/polar_dec.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/polylp.Po@am__quote@
@@ -520,7 +520,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/reunit.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rgauge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rot_colvec.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/setph.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sftmom.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sink_smear2_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/srcfil.Po@am__quote@
