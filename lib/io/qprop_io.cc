@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 1.17 2004-04-27 21:22:38 edwards Exp $
+// $Id: qprop_io.cc,v 1.18 2004-05-03 20:06:39 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -401,7 +401,31 @@ void read(XMLReader& xml, const string& path, ChromaMultiProp_t& param)
 }
 
 
+//! SeqPropagator header reader
+void read(XMLReader& xml, const string& path, ForwardProp_t& param)
+{
+  XMLReader paramtop(xml, path);
 
+  read(paramtop, "PropSink", param.sink_header);
+  read(paramtop, "ForwardProp", param.prop_header);
+  read(paramtop, "PropSource", param.source_header);
+}
+
+
+//! SequentialProp header reader
+void read(XMLReader& xml, const string& path, SequentialProp_t& param)
+{
+  XMLReader paramtop(xml, path);
+
+  read(paramtop, "SeqProp", param.seqprop_header);
+  read(paramtop, "SeqSourceSinkSmear", param.sink_header);
+  read(paramtop, "SeqSource", param.seqsource_header);
+  read(paramtop, "ForwardProps", param.forward_props);
+}
+
+
+
+//---------------------------------------------------------------------------
 // Source header writer
 void write(XMLWriter& xml, const string& path, const PropSource_t& header)
 {
@@ -549,6 +573,33 @@ void write(XMLWriter& xml, const string& path, const SeqSource_t& param)
   write(xml, "t_sink", param.t_sink);
   write(xml, "sink_mom", param.sink_mom);
   write(xml, "nrow", param.nrow);
+
+  pop(xml);
+}
+
+
+//! SeqPropagator header writer
+void write(XMLWriter& xml, const string& path, const ForwardProp_t& param)
+{
+  push(xml, path);
+
+  write(xml, "PropSink", param.sink_header);
+  write(xml, "ForwardProp", param.prop_header);
+  write(xml, "PropSource", param.source_header);
+
+  pop(xml);
+}
+
+
+//! SequentialProp header writer
+void write(XMLWriter& xml, const string& path, const SequentialProp_t& param)
+{
+  push(xml, path);
+
+  write(xml, "SeqProp", param.seqprop_header);
+  write(xml, "SeqSourceSinkSmear", param.sink_header);
+  write(xml, "SeqSource", param.seqsource_header);
+  write(xml, "ForwardProps", param.forward_props);
 
   pop(xml);
 }

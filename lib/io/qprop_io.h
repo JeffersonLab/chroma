@@ -1,4 +1,4 @@
-// $Id: qprop_io.h,v 1.12 2004-04-27 21:22:38 edwards Exp $
+// $Id: qprop_io.h,v 1.13 2004-05-03 20:06:39 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -140,6 +140,26 @@ struct ChromaSeqProp_t
 };
 
 
+//! Mega structure holding a full forward prop (except gauge)
+struct ForwardProp_t
+{
+  PropSink_t       sink_header;
+  ChromaProp_t     prop_header;
+  PropSource_t     source_header;
+};
+
+
+//! Mega structure holding a full sequential prop (except gauge)
+struct SequentialProp_t
+{
+  ChromaProp_t     seqprop_header;
+  PropSink_t       sink_header;
+  SeqSource_t      seqsource_header;
+  multi1d<ForwardProp_t> forward_props;
+};
+
+
+
 //! Initialize header with default values
 void initHeader(PropSource_t& header);
 
@@ -195,6 +215,20 @@ void read(XMLReader& xml, const std::string& path, ChromaSeqProp_t& header);
 
 //! SeqProp header writer
 void write(XMLWriter& xml, const std::string& path, const ChromaSeqProp_t& header);
+
+
+//! ForwardProp reader
+void read(XMLReader& xml, const std::string& path, ForwardProp_t& header);
+
+//! ForwardProp writer
+void write(XMLWriter& xml, const std::string& path, const ForwardProp_t& header);
+
+
+//! SequentialProp reader
+void read(XMLReader& xml, const std::string& path, SequentialProp_t& header);
+
+//! SequentialProp writer
+void write(XMLWriter& xml, const std::string& path, const SequentialProp_t& header);
 
 
 //! Write a Chroma propagator
