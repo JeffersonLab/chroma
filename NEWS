@@ -1,3 +1,7 @@
+01/15/2005 -- Balint Joo
+
+	Version 1.18.1. Added missing include files to lib/Makefile.am
+
 01/14/2005 -- Robert Edwards
 
 	Version 1.18.0. Major housecleaning. All lib routines now in
