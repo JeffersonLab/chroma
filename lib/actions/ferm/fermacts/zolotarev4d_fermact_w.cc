@@ -1,4 +1,4 @@
-// $Id: zolotarev4d_fermact_w.cc,v 1.4 2003-12-02 22:35:26 edwards Exp $
+// $Id: zolotarev4d_fermact_w.cc,v 1.5 2003-12-03 03:04:44 edwards Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -24,9 +24,9 @@ Zolotarev4DFermAct::init()
  * \param state	    gauge field state  	       (Read)
  */
 const LinearOperator<LatticeFermion>* 
-Zolotarev4DFermAct::linOp(const EVConnectState<LatticeFermion>& state) const
+Zolotarev4DFermAct::linOp(const ConnectState& state) const
 {
-  return new Zolotarev4DLinOp(state,M,m_q);
+  return new Zolotarev4DLinOp(dynamic_cast<EVConnectState<LatticeFermion>&>(state),M,m_q);
 }
 
 //! Produce a M^dag.M linear operator for this action
@@ -38,10 +38,10 @@ Zolotarev4DFermAct::linOp(const EVConnectState<LatticeFermion>& state) const
  * \param state	    gauge field state   	       (Read)
  */
 const LinearOperator<LatticeFermion>* 
-Zolotarev4DFermAct::lMdagM(const EVConnectState<LatticeFermion>& state) const
+Zolotarev4DFermAct::lMdagM(const ConnectState& state) const
 {
   //  *****NOTE***** 
   // Should use special form when we know we have exact chiral symmetry
-  return new lmdagm<LatticeFermion>(Zolotarev4DLinOp(state,M,m_q));
+  return new lmdagm<LatticeFermion>(Zolotarev4DLinOp(dynamic_cast<EVConnectState<LatticeFermion>&>(state),M,m_q));
 }
 

@@ -1,4 +1,4 @@
-// $Id: zolotarev4d_linop_w.cc,v 1.6 2003-12-02 22:35:46 edwards Exp $
+// $Id: zolotarev4d_linop_w.cc,v 1.7 2003-12-03 03:04:54 edwards Exp $
 /*! \file
  *  \brief 4D Zolotarev operator
  */
@@ -7,6 +7,7 @@
 #include "actions/ferm/linop/lmdagm_w.h"
 #include "actions/ferm/linop/zolotarev4d_linop_w.h"
 #include "actions/ferm/linop/zolotarev.h"
+
 // #include "primitives.h"
 //#include "common_declarations.h"
 
@@ -18,19 +19,14 @@ Zolotarev4DLinOp::init()
 {
   START_CODE("Zolotarev4DLinOp::create");
 
-  RsdCGinner = 1.0e-7;  // Hardwired the accuracy
-
-  if (EigVec.size() != EigVal.size())
+  if (state.getEigVec().size() != state.getEigVal().size())
     QDP_error_exit("Zolotarev4DLinOp: inconsistent sizes of eigenvectors and values");
 
   NEigVal = state.getEigVal().size();
 
   /* The residual for the solutions of the multi-shift linear system */
-  Real RsdCG;
+  RsdCGinner = 1.0e-7;  // Hardwired the accuracy
 
-  /* The kappa value of the Wilson Dirac operator corresponding to the
-     negative mass*/
-  Real Kappa_t;
   /* A scale factor which should bring the spectrum of the hermitian
      Wilson Dirac operator H into |H| < 1. */
   Real scale_fac;
@@ -61,6 +57,7 @@ Zolotarev4DLinOp::init()
 
   /* Array of values of the sign function evaluated on the eigenvectors of H */
   multi1d<Real> EigValFunc(NEigVal);
+
   /* The actual number of eigenvectors to project out.
      The highest of the valid low eigenmodes is not
      projected out. So we will put NEig = NEigVal - 1 */  
@@ -72,9 +69,6 @@ Zolotarev4DLinOp::init()
   Real t;
   Real c;
 
-  /* More local variables here perhaps ? */
-  START_CODE("subroutine");;
-
     
   /* Accuracy to compute Q^(-1) */
   RsdCG = RsdCGinner;
@@ -84,31 +78,10 @@ Zolotarev4DLinOp::init()
      approximation to sgn. Here, H = 1/2 * gamma_5 * (1/kappa - D'). 
      The coefficients are computed by Zolotarev's formula. */
 
-  /* Basic Wilson operator for H. Kappa_t is the kappa corresponding
-     to OverMass, Kappa_t = 1/2 / (Nd - OverMass). For GW OverMass >
-     0, corresponding to a negative shift, i.e. the negative sign of 
-     OverMass is taken explicitely care of. Normally, one has 
-     kappa = 0.5 / (Nd + mass). */
-  Kappa_t = TO_REAL(0.5) / (TO_REAL(Nd) - OverMass);
-
-  /* Construct the auxilliary (Wilson) operator for use within Neuberger's
-     form. Here, M = (1 - kappa_t * D') */
-
-  /* Basic Wilson operator for H */
-  if (OverAuxAct == PLANAR_WILSON)
-    Kappa_t = - OverMass;
-  else
-    Kappa_t = TO_REAL(0.5) / (TO_REAL(Nd) - OverMass);
-
-  /* A linear operator containing the non-hermitian Wilson Dirac
-     operator with negative mass */
-  LinearOperator<LatticeFermion>* M = ConsLinOp (u, Kappa_t, OverAuxAct);
-  QDP_info("Auxiliary fermion action: OverAuxAct = %d",OverAuxAct);
-  
   /* The square M^dagger*M of the Wilson Dirac operators, used for
      solving the multi-shift linear system */
   /* H^2 = M^dag . M */
-  LinearOperator<LatticeFermion>* MdagM = new lmdagm(*M); 
+  LinearOperatorProxy<LatticeFermion>* MdagM = new lmdagm(M); 
   
   /* The operator gamma_5 * M with the M constructed here has its eigenvalues
      in the range m/(m + Nd) <= |gamma_5 * M| <= (m + 2*Nd)/(m + Nd) (in the 
