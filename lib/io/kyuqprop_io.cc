@@ -1,4 +1,4 @@
-// $Id: kyuqprop_io.cc,v 1.4 2004-05-14 00:27:35 edwards Exp $
+// $Id: kyuqprop_io.cc,v 1.5 2004-05-19 03:31:23 edwards Exp $
 /*!
  * @file
  * @brief  Read/write a Kentucky quark propagator
@@ -29,6 +29,12 @@ void readKYUQprop(LatticePropagator& q, const string& file)
     QDP_abort(1);
   }
 
+  if (Ns != 4)
+  {
+    QDPIO::cerr << "readKYUQprop - only supports Ns=4" << endl;
+    QDP_abort(1);
+  }
+
   BinaryReader bin(file);
 
   /* KY Indices: 
@@ -36,35 +42,36 @@ void readKYUQprop(LatticePropagator& q, const string& file)
      x is fastest (Fortran Order)
   */
   LatticePropagator q_old;
-  multi2d<LatticeReal> re(3,4);
-  multi2d<LatticeReal> im(3,4);
+  multi2d<LatticeFermion> source(Nc,Ns);
+  multi2d<LatticeReal> re(Nc,Ns);
+  multi2d<LatticeReal> im(Nc,Ns);
   LatticeFermion f;
   LatticeColorVector  cv;
 
 //  LatticeReal64  tmp;  // KYU always uses 64 bits
   LatticeDouble  tmp;  // KYU always uses 64 bits
 
-  for(int src_spin=0; src_spin < 4; ++src_spin)
-    for(int src_color=0; src_color < 3; ++src_color)
+  for(int src_spin=0; src_spin < Ns; ++src_spin)
+    for(int src_color=0; src_color < Nc; ++src_color)
     {
-      for(int snk_spin=0; snk_spin < 4; ++snk_spin)
-	for(int snk_color=0; snk_color < 3; ++snk_color)
+      for(int snk_spin=0; snk_spin < Ns; ++snk_spin)
+	for(int snk_color=0; snk_color < Nc; ++snk_color)
 	{
 	  read(bin, tmp);
 	  re(snk_color,snk_spin) = tmp;
 	}
 
-      for(int snk_spin=0; snk_spin < 4; ++snk_spin)
-	for(int snk_color=0; snk_color < 3; ++snk_color)
+      for(int snk_spin=0; snk_spin < Ns; ++snk_spin)
+	for(int snk_color=0; snk_color < Nc; ++snk_color)
 	{
 	  read(bin, tmp);
 	  im(snk_color,snk_spin) = tmp;
 	}
 
       // Stuff into a fermion
-      for(int snk_spin=0; snk_spin < 4; ++snk_spin)
+      for(int snk_spin=0; snk_spin < Ns; ++snk_spin)
       {
-	for(int snk_color=0; snk_color < 3; ++snk_color)
+	for(int snk_color=0; snk_color < Nc; ++snk_color)
 	{
 	  pokeColor(cv, 
 		    cmplx(re(snk_color,snk_spin), im(snk_color,snk_spin)),
@@ -74,11 +81,30 @@ void readKYUQprop(LatticePropagator& q, const string& file)
 	pokeSpin(f, cv, snk_spin);
       }
 
-      // Stuff into the propagator
-      FermToProp(f, q_old, src_color, src_spin);
+      // Hold temporarily in a multi2d - will need to rearrange src_spin later
+      source(src_color,src_spin) = f;
     }
 
   bin.close();
+
+  // Now rotate the src_spin indices back to original Dirac basis
+  // The source spin had to be in a chiral-like basis to use the 
+  // source chirality trick of overlap.
+  // Finally, stuff the rotated result into the propagator
+  for(int src_color=0; src_color < Nc; ++src_color)
+  {
+    FermToProp(LatticeFermion(source(src_color,0)+source(src_color,2)),
+	       q_old, src_color, 0);
+    FermToProp(LatticeFermion(source(src_color,1)+source(src_color,3)),
+	       q_old, src_color, 1);
+    FermToProp(LatticeFermion(source(src_color,2)-source(src_color,0)),
+	       q_old, src_color, 2);
+    FermToProp(LatticeFermion(source(src_color,3)-source(src_color,1)),
+	       q_old, src_color, 3);
+  }
+
+  // Rescale
+  q_old *= Real(1.0 / sqrt(2.0));
 
   // Now that we have read the prop, need to change the spin basis
   SpinMatrix U = DiracToDRMat();
