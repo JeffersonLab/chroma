@@ -1,4 +1,4 @@
-// $Id: unprec_wilson_fermact_w.cc,v 1.19 2004-08-05 15:59:03 bjoo Exp $
+// $Id: unprec_wilson_fermact_w.cc,v 1.20 2004-08-10 13:21:06 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -81,20 +81,18 @@ UnprecWilsonFermAct::dsdu(multi1d<LatticeColorMatrix> & ds_u,
     f_tmp = Gamma(1<<mu)*Y;
     f_tmp += Y;
 
-    //   trace_spin ( X^{dag}_x ( 1 + gamma_mu ) Y_x+mu )
-    // = trace_spin(  Y_x+mu X^dag_x (1 + gamma_mu )  )
-    u_tmp = trace(adj(psi)*shift(f_tmp, FORWARD, mu));
+    //   trace_spin ( ( 1 + gamma_mu ) Y_x+mu X^{dag}_x )
+    u_tmp = traceSpin(outerProduct(shift(f_tmp, FORWARD, mu),psi));
 
     // f_tmp = -(1 -gamma_mu) X
     f_tmp = Gamma(1<<mu)*psi;
     f_tmp -= psi;
 
-    //  -trace_spin( -Y^{dag}_x( 1 - gamma_mu) X_x+mu )
-    //= +trace_spin( X_{x+mu} Y^{dag}_x ( 1 - gamma_mu ) 
-    u_tmp -= trace(adj(Y)*shift(f_tmp, FORWARD, mu));
+    //  +trace_spin( ( 1 - gamma_mu) X_x+mu Y^{dag}_x)
+    u_tmp -= traceSpin(outerProduct(shift(f_tmp, FORWARD, mu),Y));
     
     // accumulate with prefactor
-    ds_u[mu] += prefactor*u[mu]*u_tmp;
+    ds_u[mu] += prefactor*( u[mu]*u_tmp );
   }
 
      

@@ -1,4 +1,4 @@
-// $Id: prec_wilson_fermact_w.cc,v 1.10 2004-08-05 15:56:25 bjoo Exp $
+// $Id: prec_wilson_fermact_w.cc,v 1.11 2004-08-10 13:21:06 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action
  */
@@ -69,8 +69,7 @@ EvenOddPrecWilsonFermAct::dsdu(multi1d<LatticeColorMatrix>& ds_u,
     QDP_abort(1);
   }
 
-  Real prefactor = -Real(1)/(Real(4)*(Real(Nd) + Mass));
-
+  Real prefactor = -Real(1)/(4*(Real(Nd) + Mass));
 				 
   LatticeColorMatrix utmp_1;
   LatticeFermion phi;
@@ -87,33 +86,36 @@ EvenOddPrecWilsonFermAct::dsdu(multi1d<LatticeColorMatrix>& ds_u,
   // Use u from state with BC's on 
   const multi1d<LatticeColorMatrix>& u = state->getLinks();
   WilsonDslash  D(u);
+
   //  phi = M(u)*psi
+
   (*M)(phi, psi, PLUS);
-    
+
   /* rho = Dslash(0<-1) * psi */
-  D.apply(rho, psi, PLUS, 1);
- 
+  D.apply(rho, psi, PLUS, 0);
+
   /* sigma = Dslash_dag(0 <- 1) * phi */
-  D.apply(sigma, phi, MINUS, 1);
-    
+  D.apply(sigma, phi, MINUS, 0);
+
   for(int mu = 0; mu < Nd; ++mu)
   {
 
     // ftmp_2(x) = -(psi(x) - ftmp_2(x)) = -(1 - gamma(mu))*psi( x )
     ftmp_2[rb[1]] = Gamma(1<<mu) * psi;
-    ftmp_2[rb[1]] -= psi;
+    ftmp_2[rb[1]]  -= psi;
+
 
     // utmp_1 = - Trace_spin [ ( 1 - gamma(mu) )*psi_{x+mu)*sigma^{dagger} ]
     //        = - Trace_spin [ sigma^{dagger} ( 1 - gamma_mu ) psi_{x+mu} ]
+    utmp_1[rb[0]] = -traceSpin( outerProduct( shift(ftmp_2, FORWARD, mu), sigma) );
 
-    utmp_1[rb[0]] = - trace(adj(sigma)*shift(ftmp_2, FORWARD, mu));
- 
+    
     // ftmp_2 = phi + ftmp_2 = (1 + gamma(mu))*phi( x) 
     ftmp_2[rb[1]] = Gamma(1<<mu) * phi;
     ftmp_2[rb[1]] += phi;
 
     // utmp_1 += ( 1 + gamma(mu) )*phi_{x+mu)*rho^{dagger}_x 
-    utmp_1[rb[0]] += trace(adj(rho)*shift(ftmp_2, FORWARD, mu));
+    utmp_1[rb[0]] += traceSpin( outerProduct( shift(ftmp_2, FORWARD, mu), rho) );
 
     // dsdu[mu][0] += u[mu][0] * utmp_1 
     //                = u[mu][0] [   ( 1 - gamma(mu) )*psi_{x+mu)*sigma^{dagger}_x
@@ -127,14 +129,14 @@ EvenOddPrecWilsonFermAct::dsdu(multi1d<LatticeColorMatrix>& ds_u,
     ftmp_2[rb[0]] -= rho;
 
     // utmp_1 = ( 1 - gamma(mu) )*rho_{x+mu)*phi^{dagger}_x
-    utmp_1[rb[1]] = -trace(adj(phi)*shift(ftmp_2, FORWARD, mu));
+    utmp_1[rb[1]] = -traceSpin( outerProduct( shift(ftmp_2, FORWARD, mu), phi) );
       
     // ftmp_2 = (gamma(mu))*sigma 
     ftmp_2[rb[0]] = Gamma(1<<mu)*sigma;
     ftmp_2[rb[0]] += sigma;
 
 
-    utmp_1[rb[1]] += trace(adj(psi)*shift(ftmp_2, FORWARD, mu));
+    utmp_1[rb[1]] += traceSpin( outerProduct( shift(ftmp_2, FORWARD, mu), psi) );
     ds_u[mu][rb[1]] += prefactor * u[mu] * utmp_1;
 
   }
