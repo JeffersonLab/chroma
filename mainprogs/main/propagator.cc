@@ -1,6 +1,9 @@
-// $Id: propagator.cc,v 1.50 2004-04-16 14:58:30 bjoo Exp $
+// $Id: propagator.cc,v 1.51 2004-04-16 22:03:59 bjoo Exp $
 // $Log: propagator.cc,v $
-// Revision 1.50  2004-04-16 14:58:30  bjoo
+// Revision 1.51  2004-04-16 22:03:59  bjoo
+// Added Zolo 4D test files and tidyed up
+//
+// Revision 1.50  2004/04/16 14:58:30  bjoo
 // Propagator now does Zolo4D
 //
 // Revision 1.49  2004/04/15 14:43:25  bjoo
@@ -551,6 +554,7 @@ void propagatorZolotarev4D(multi1d<LatticeColorMatrix>& u,
     push(xml_out, "EigenSystem");
     write(xml_out, "OriginalRitzHeader", ritz_header);
     write(xml_out, "lambda_lo", lambda_lo);
+    write(xml_out, "lambda_high", lambda_hi);
     
     // Test the low eigenvectors
     Handle< const ConnectState > wils_connect_state = S_w->createState(u);
@@ -574,8 +578,9 @@ void propagatorZolotarev4D(multi1d<LatticeColorMatrix>& u,
     }
     write(xml_out, "eigen_norm", check_norm);
     write(xml_out, "eigen_rel_norm", check_norm_rel);
-    write(xml_out, "lambda_high", lambda_hi);
-      
+
+    pop(xml_out); // Eigensystem
+ 
     connect_state_ptr = S.createState(u,
 				      lambda_lo,
 				      eigv_lo,

@@ -1,6 +1,9 @@
-// $Id: multi_propagator.cc,v 1.2 2004-04-16 20:18:03 bjoo Exp $
+// $Id: multi_propagator.cc,v 1.3 2004-04-16 22:03:59 bjoo Exp $
 // $Log: multi_propagator.cc,v $
-// Revision 1.2  2004-04-16 20:18:03  bjoo
+// Revision 1.3  2004-04-16 22:03:59  bjoo
+// Added Zolo 4D test files and tidyed up
+//
+// Revision 1.2  2004/04/16 20:18:03  bjoo
 // Zolo seems to work now
 //
 // Revision 1.1  2004/04/16 17:04:49  bjoo
@@ -446,8 +449,10 @@ void multiPropagatorZolotarev4D(multi1d<LatticeColorMatrix>& u,
 	      QDPIO_SERIAL);
     
     push(xml_out, "EigenSystem");
+
     write(xml_out, "OriginalRitzHeader", ritz_header);
     write(xml_out, "lambda_lo", lambda_lo);
+    write(xml_out, "lambda_high", lambda_hi);
     
     // Test the low eigenvectors
     Handle< const ConnectState > wils_connect_state = S_w->createState(u);
@@ -471,13 +476,15 @@ void multiPropagatorZolotarev4D(multi1d<LatticeColorMatrix>& u,
     }
     write(xml_out, "eigen_norm", check_norm);
     write(xml_out, "eigen_rel_norm", check_norm_rel);
-    write(xml_out, "lambda_high", lambda_hi);
+
       
     connect_state_ptr = S.createState(u,
 				      lambda_lo,
 				      eigv_lo,
 				      lambda_hi);
   }
+
+  pop(xml_out); // Eigensystem 
 
   // Stuff the pointer into a handle. Now, the handle owns the data.
   Handle<const ConnectState> state(connect_state_ptr);

@@ -1,4 +1,4 @@
-// $Id: overlap_fermact_base_w.cc,v 1.6 2004-01-13 17:52:15 bjoo Exp $
+// $Id: overlap_fermact_base_w.cc,v 1.7 2004-04-16 22:03:58 bjoo Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -33,11 +33,10 @@ OverlapFermActBase::qprop(LatticeFermion& psi,
 			  const LatticeFermion& chi, 
 			  enum InvType invType,
 			  const Real& RsdCG, 
-			  int MaxCG, int& ncg_had) const
+			  int MaxCG, int& n_count) const
 {
   START_CODE("OverlapFermActBase::qprop");
   Handle< const LinearOperator<LatticeFermion> > M(linOp(state));
-  int n_count;
 
   Real mass = quark_mass();
 
@@ -91,9 +90,6 @@ OverlapFermActBase::qprop(LatticeFermion& psi,
     QDP_error_exit("Zolotarev4DFermAct::qprop: No convergence in solver: n_count = %d\n", n_count);
   }
 
-  // Update the ncg_had counter
-  ncg_had = n_count;
-  
   // Normalize and remove contact term 
   Real ftmp = Real(1) / ( Real(1) - mass );
   
@@ -134,7 +130,7 @@ OverlapFermActBase::multiQprop(multi1d<LatticeFermion>& psi,
 			       const multi1d<Real>& RsdCG, 
 			       int nsoln,
 			       int MaxCG, 
-			       int& ncg_had) const
+			       int& n_count) const
 
 {
 
@@ -189,7 +185,7 @@ OverlapFermActBase::multiQprop(multi1d<LatticeFermion>& psi,
   
   Chirality ischiral;
   LinearOperator<LatticeFermion>* MdagMPtr;
-  int n_count;
+  
   Real ftmp;
   switch( invType ) { 
   case CG_INVERTER:
@@ -337,7 +333,7 @@ OverlapFermActBase::multiQprop(multi1d<LatticeFermion>& psi,
     }
     
     // Do the solve
-    MInvMR (*M_scaled, chi, psi, shifted_masses, RsdCG, n_count);
+    MInvMR (*M_scaled, chi, psi, shifted_masses, RsdCG, ncg_had);
     if ( n_count == MaxCG ) {
       QDP_error_exit("no convergence in the inverter", n_count);    
     }
@@ -364,8 +360,6 @@ OverlapFermActBase::multiQprop(multi1d<LatticeFermion>& psi,
     QDP_error_exit("Unknown inverter type %d\n", invType);
   }
 
-
-  ncg_had += n_count;
 
   END_CODE("qprop");
 }
