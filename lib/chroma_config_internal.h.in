@@ -3,6 +3,9 @@
 /* Build CPS ASQTAD INVERTER */
 #undef BUILD_CPS_ASQTAD_INVERTER
 
+/* Build GMP Remez code */
+#undef BUILD_GMP_REMEZ
+
 /* Build Peters Dslash Op */
 #undef BUILD_PAB_WILSON_DSLASH
 
