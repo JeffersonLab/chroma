@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.256 2005-03-24 04:27:36 edwards Exp $
+# $Id: Makefile.am,v 1.257 2005-04-06 04:33:40 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -334,7 +334,16 @@ nobase_include_HEADERS += \
 	meas/inline/glue/inline_glue_aggregate.h \
 	meas/inline/glue/inline_plaquette.h \
 	meas/inline/glue/inline_polylp.h \
-	meas/inline/glue/inline_wilslp.h
+	meas/inline/glue/inline_wilslp.h \
+	meas/inline/hadron/hadron.h \
+	meas/inline/hadron/inline_hadron_aggregate.h \
+	meas/inline/hadron/inline_make_source_w.h \
+	meas/inline/hadron/inline_propagator_w.h \
+	meas/inline/hadron/inline_seqsource_w.h \
+	meas/inline/hadron/inline_spectrum_w.h \
+	meas/inline/hadron/inline_sink_smear_w.h \
+	meas/inline/hadron/inline_qqq_w.h \
+	meas/inline/hadron/inline_building_blocks_w.h
 
 #
 # Include Path
@@ -586,7 +595,15 @@ libchroma_a_SOURCES += \
 	meas/inline/glue/inline_glue_aggregate.cc \
 	meas/inline/glue/inline_plaquette.cc \
 	meas/inline/glue/inline_polylp.cc \
-	meas/inline/glue/inline_wilslp.cc
+	meas/inline/glue/inline_wilslp.cc \
+	meas/inline/hadron/inline_hadron_aggregate.cc \
+	meas/inline/hadron/inline_make_source_w.cc \
+	meas/inline/hadron/inline_propagator_w.cc \
+	meas/inline/hadron/inline_seqsource_w.cc \
+	meas/inline/hadron/inline_spectrum_w.cc \
+	meas/inline/hadron/inline_sink_smear_w.cc \
+	meas/inline/hadron/inline_qqq_w.cc \
+	meas/inline/hadron/inline_building_blocks_w.cc
 
 
 #
