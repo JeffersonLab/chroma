@@ -1,4 +1,4 @@
-// $Id: barhqlq_w.cc,v 1.1 2004-05-01 19:58:49 edwards Exp $
+// $Id: barhqlq_w.cc,v 1.2 2004-05-01 20:15:42 edwards Exp $
 /*! \file
  *  \brief Heavy-light baryon 2-pt functions
  */
@@ -52,7 +52,7 @@ void barhqlq(LatticePropagator& propagator_1,
   multi3d<DComplex> bardisp2;
 
   // Forward
-  barhqlq(propagator_1, propagator_2, phases, t0, bardisp1);
+  barhqlq(propagator_1, propagator_2, phases, bardisp1);
 
   // Possibly add in a time-reversed contribution
   bool time_revP = (bc_spec*bc_spec == 1) ? time_rev : false;
@@ -62,9 +62,9 @@ void barhqlq(LatticePropagator& propagator_1,
     /* Time-charge reverse the quark propagators */
     /* S_{CT} = gamma_5 gamma_4 = gamma_1 gamma_2 gamma_3 = Gamma(7) */
     LatticePropagator q1_tmp = - (Gamma(7) * propagator_1 * Gamma(7));
-    LatticePropagator q1_tmp = - (Gamma(7) * propagator_2 * Gamma(7));
+    LatticePropagator q2_tmp = - (Gamma(7) * propagator_2 * Gamma(7));
 
-    barhqlq(q1_tmp, q2_tmp, phases, t0, bardisp2);
+    barhqlq(q1_tmp, q2_tmp, phases, bardisp2);
   }
 
 
@@ -165,12 +165,8 @@ void barhqlq(LatticePropagator& propagator_1,
 
  * \param quark_propagator_1   "s" quark propagator ( Read )
  * \param quark_propagator_2   "u" quark propagator ( Read )
- * \param t0             cartesian coordinates of the source ( Read )
- * \param bc_spec        boundary condition for spectroscopy ( Read )
- * \param time_rev       add in time reversed contribution if true ( Read )
- * \param phases         object holds list of momenta and Fourier phases ( Read )
- * \param xml            xml file object ( Read )
- * \param xml_group      group name for xml data ( Read )
+ * \param barprop              baryon propagator ( Modify )
+ * \param phases               object holds list of momenta and Fourier phases ( Read )
  *
  *        ____
  *        \
@@ -216,7 +212,6 @@ void barhqlq(LatticePropagator& propagator_1,
 void barhqlq(LatticePropagator& quark_propagator_1,
 	     LatticePropagator& quark_propagator_2,
 	     const SftMom& phases,
-	     int t0,
 	     multi3d<DComplex>& barprop)
 {
   START_CODE("barhqlq");
@@ -319,7 +314,7 @@ void barhqlq(LatticePropagator& quark_propagator_1,
 				 Cgm * quark_propagator_2);
       b_prop += trace(S_proj * traceColor(quark_propagator_1 * di_quark));
       b_prop *= 2;
-      b_prop += trace(S_proj * traceColor(quark_propagator_1 * traceSpin(di_quark)))
+      b_prop += trace(S_proj * traceColor(quark_propagator_1 * traceSpin(di_quark)));
       break;
 
     case 3:
@@ -374,7 +369,7 @@ void barhqlq(LatticePropagator& quark_propagator_1,
 				 Cg4m * quark_propagator_2);
       b_prop += trace(S_proj * traceColor(quark_propagator_1 * di_quark));
       b_prop *= 2;
-      b_prop += trace(S_proj * traceColor(quark_propagator_1 * traceSpin(di_quark)))
+      b_prop += trace(S_proj * traceColor(quark_propagator_1 * traceSpin(di_quark)));
       break;
 
     case 6:
@@ -430,7 +425,7 @@ void barhqlq(LatticePropagator& quark_propagator_1,
 				 CgmNR * quark_propagator_2);
       b_prop += trace(S_proj * traceColor(quark_propagator_1 * di_quark));
       b_prop *= 2;
-      b_prop += trace(S_proj * traceColor(quark_propagator_1 * traceSpin(di_quark)))
+      b_prop += trace(S_proj * traceColor(quark_propagator_1 * traceSpin(di_quark)));
       break;
 
 

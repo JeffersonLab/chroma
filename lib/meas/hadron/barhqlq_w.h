@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: barhqlq_w.h,v 1.1 2004-05-01 19:58:49 edwards Exp $
+// $Id: barhqlq_w.h,v 1.2 2004-05-01 20:15:42 edwards Exp $
 /*! \file
  *  \brief Heavy-light baryon 2-pt functions
  */
@@ -67,14 +67,10 @@ void barhqlq(LatticePropagator& propagator_1,
  * The routine also computes time-charge reversed baryons and adds them
  * in for increased statistics.
 
- * \param propagator_1   "s" quark propagator ( Read )
- * \param propagator_2   "u" quark propagator ( Read )
- * \param t0             cartesian coordinates of the source ( Read )
- * \param bc_spec        boundary condition for spectroscopy ( Read )
- * \param time_rev       add in time reversed contribution if true ( Read )
- * \param phases         object holds list of momenta and Fourier phases ( Read )
- * \param xml            xml file object ( Read )
- * \param xml_group      group name for xml data ( Read )
+ * \param quark_propagator_1   "s" quark propagator ( Read )
+ * \param quark_propagator_2   "u" quark propagator ( Read )
+ * \param barprop              baryon propagator ( Modify )
+ * \param phases               object holds list of momenta and Fourier phases ( Read )
  *
  *        ____
  *        \
@@ -120,7 +116,6 @@ void barhqlq(LatticePropagator& propagator_1,
 void barhqlq(LatticePropagator& propagator_1,
 	     LatticePropagator& propagator_2,
 	     const SftMom& phases,
-	     int t0,
 	     multi3d<DComplex>& barprop);
 
 #endif
