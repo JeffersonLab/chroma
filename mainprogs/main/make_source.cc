@@ -1,4 +1,4 @@
-// $Id: make_source.cc,v 1.9 2003-10-09 20:32:37 edwards Exp $
+// $Id: make_source.cc,v 1.10 2003-10-09 22:24:07 edwards Exp $
 /*! \file
  *  \brief Main code for source generation
  */
@@ -313,7 +313,7 @@ int main(int argc, char **argv)
   }
 
 
-#if 1
+#if 0
   // SciDAC output format - move up into switch statement or a subroutine
   {
     XMLBufferWriter file_xml;
