@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: wallformfac_rhopi.pl,v 1.9 2004-06-30 19:42:38 edwards Exp $
+# $Id: wallformfac_rhopi.pl,v 1.10 2004-07-07 16:41:59 edwards Exp $
 #
 # Usage
 #   wallformfac_rhopi.pl
@@ -362,8 +362,7 @@ foreach $h (keys %rhopi_cnt)
 	printf "norm(h=%s,k=%s,j=%s,qsq=%s)=%s\n",$h,$k,$j,$qsq_int,$rhopi_cnt{$h}{$k}{$j}{$qsq_int};
 	if ($rhopi_cnt{$h}{$k}{$j}{$qsq_int} > 0)
 	{
-	  # Correct for double counting by multiplying by 2
-	  &ensbc("${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int} = 2* ${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int} / $rhopi_cnt{$h}{$k}{$j}{$qsq_int}");
+	  &ensbc("${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int} = ${mes}_${cur}_r_${h}_s${k}_mu${j}_q${qsq_int} / $rhopi_cnt{$h}{$k}{$j}{$qsq_int}");
 	}
       }
     }
