@@ -1,4 +1,4 @@
-// $Id: hotst.cc,v 1.1 2003-01-26 04:28:41 edwards Exp $
+// $Id: hotst.cc,v 1.2 2003-01-26 04:30:41 edwards Exp $
 // HOTST
 
 /*! \file
@@ -21,7 +21,7 @@
  */
 
 #include "qdp.h"
-#include "propagator.h"
+#include "szin.h"
 
 using namespace QDP;
 
