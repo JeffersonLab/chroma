@@ -1,4 +1,4 @@
-// $Id: t_propagator_fuzz_s.cc,v 1.11 2004-12-30 14:56:30 mcneile Exp $
+// $Id: t_propagator_fuzz_s.cc,v 1.12 2005-01-04 12:15:51 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  *
@@ -14,31 +14,19 @@
 // Include everything...
 #include "chroma.h"
 
+  // more work -- this should be in chroma.h
 #include "meas/smear/fuzz_smear.h"
 
 /*
  *  Here we have various temporary definitions
  */
 /*
-enum CfgType {
-  CFG_TYPE_MILC = 0,
-  CFG_TYPE_NERSC,
-  CFG_TYPE_SCIDAC,
-  CFG_TYPE_SZIN,
-  CFG_TYPE_UNKNOWN
-} ;
 
-enum PropType {
-  PROP_TYPE_SCIDAC = 2,
-  PROP_TYPE_SZIN,
-  PROP_TYPE_UNKNOWN
-} ;
 
 enum FermType {
   FERM_TYPE_STAGGERED,
   FERM_TYPE_UNKNOWN
 };
-*/
 
 
 using namespace QDP;
@@ -57,7 +45,6 @@ struct Param_t
   Real         Mass;      // Staggered mass
   Real         u0;        // Tadpole Factor
  
-  CfgType  cfg_type;       // storage order for stored gauge configuration
   PropType prop_type;      // storage order for stored propagator
 
   InvertParam_t  invParam;
@@ -177,27 +164,6 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
       QDP_error_exit("Fermion type not supported\n.");
     }
 
-    {
-      string cfg_type_str;
-      read(paramtop, "cfg_type", cfg_type_str);
-      if (cfg_type_str == "NERSC") {
-	input.param.cfg_type = CFG_TYPE_NERSC;
-      } else {
-	QDP_error_exit("Dont know non NERSC files yet");
-      }
-
-    }
-
-    {
-      string prop_type_str;
-      read(paramtop, "prop_type", prop_type_str);
-      if (prop_type_str == "SZIN") {
-	input.param.prop_type = PROP_TYPE_SZIN;
-      } else {
-	QDP_error_exit("Dont know non SZIN files yet");
-      }
-    }
-
 //    read(paramtop, "invType", input.param.invType);
     input.param.invParam.invType = CG_INVERTER;   //need to fix this
     read(paramtop, "RsdCG", input.param.invParam.RsdCG);
@@ -220,7 +186,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
   // Read in the gauge configuration file name
   try
   {
-    //    read(inputtop, "Cfg", input.cfg);
+    read(inputtop, "Cfg", input.cfg);
     read(inputtop, "Prop", input.prop);
   }
   catch (const string& e) 
@@ -309,19 +275,8 @@ int main(int argc, char **argv)
   // Read in the configuration along with relevant information.
   multi1d<LatticeColorMatrix> u(Nd);
   
-  XMLReader gauge_xml;
-
-  string nersc = "../../tests/t_asqtad_prop/t_nersc.cfg" ; 
-  switch (input.param.cfg_type) 
-  {
-  case CFG_TYPE_NERSC :
-    /*    readArchiv(gauge_xml, u, input.cfg.cfg_file);  */
-    readArchiv(gauge_xml, u, nersc );
-    break;
-  default :
-    QDP_error_exit("Configuration type is unsupported.");
-  }
-
+  XMLReader  gauge_file_xml,  gauge_xml;
+  gaugeStartup(gauge_file_xml, gauge_xml, u, input.cfg);
 
   // 
   //  gauge invariance test
@@ -480,7 +435,6 @@ int main(int argc, char **argv)
 
   stag_src_type type_of_src = 
     get_stag_src(xml_in,"/propagator/param/src_type")   ;
-
 
   // just look at the local pion (8 should be system constant)
   for(int src_ind = 0; src_ind < 8 ; ++src_ind){
