@@ -1,4 +1,4 @@
-// $Id: t_propagator_fuzz_s.cc,v 1.7 2004-09-09 15:52:52 edwards Exp $
+// $Id: t_propagator_fuzz_s.cc,v 1.8 2004-11-20 15:50:25 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  *
@@ -400,7 +400,7 @@ int main(int argc, char **argv)
   xml_out.flush();
 
   // Create a fermion BC. Note, the handle is on an ABSTRACT type.
-  Handle< FermBC<LatticeFermion> >  fbc(new SimpleFermBC<LatticeFermion>(input.param.boundary));
+  Handle< FermBC<LatticeStaggeredFermion> >  fbc(new SimpleFermBC<LatticeStaggeredFermion>(input.param.boundary));
 
   //
   // Initialize fermion action
@@ -412,9 +412,9 @@ int main(int argc, char **argv)
   // Use S_f.createState so that S_f can pass in u0
 
   Handle<const ConnectState > state(S_f.createState(u));
-  Handle<const EvenOddLinearOperator<LatticeFermion> > D_asqtad(S_f.linOp(state));
+  Handle<const EvenOddLinearOperator<LatticeStaggeredFermion> > D_asqtad(S_f.linOp(state));
 
-  Handle<const LinearOperator<LatticeFermion> > MdagM_asqtad(S_f.lMdagM(state));
+  Handle<const LinearOperator<LatticeStaggeredFermion> > MdagM_asqtad(S_f.lMdagM(state));
 
   //
   // Loop over the source color, creating the source
@@ -422,24 +422,27 @@ int main(int argc, char **argv)
   // terminology is that a staggered propagator is a matrix in color space
   // 
   //
-  LatticePropagator quark_propagator;
+  LatticeStaggeredPropagator quark_propagator;
   XMLBufferWriter xml_buf;
   int ncg_had = 0;
   int n_count;
 
-  LatticeFermion q_source, psi;
-  LatticeFermion q_source_fuzz ; 
-  multi1d<LatticePropagator> stag_prop(8);
+  LatticeStaggeredFermion q_source, psi;
+  LatticeStaggeredFermion q_source_fuzz ; 
+  multi1d<LatticeStaggeredPropagator> stag_prop(8);
 
   // the staggered spectroscopy code is hardwired
   // for many pions
   for(int src_ind = 0; src_ind < 0; ++src_ind)
     stag_prop[src_ind] = zero ;
 
-    // just look at the local pion
-    for(int src_ind = 0; src_ind < 1; ++src_ind){
-      psi = zero;   // note this is ``zero'' and not 0
-      int t_source = 0;
+
+  int t_source = 0;
+
+  // just look at the local pion
+  for(int src_ind = 0; src_ind < 1; ++src_ind){
+    psi = zero;   // note this is ``zero'' and not 0
+    
 
       for(int color_source = 0; color_source < Nc; ++color_source) {
         QDPIO::cout << "Inversion for Color =  " << color_source << endl;
@@ -461,7 +464,7 @@ int main(int argc, char **argv)
 	    q_source = zero ;
 	    multi1d<int> coord(Nd);
 	    coord[0]=0; coord[1] = 0; coord[2] = 0; coord[3] = 0;
-	    srcfil(q_source, coord,color_source , 0) ;
+	    srcfil(q_source, coord,color_source ) ;
 	  }
 	else if( type_of_src == FUZZED_SRC )
 	  {
@@ -472,7 +475,7 @@ int main(int argc, char **argv)
 	    q_source = zero ;
 	    multi1d<int> coord(Nd);
 	    coord[0]=0; coord[1] = 0; coord[2] = 0; coord[3] = 0;
-	    srcfil(q_source, coord,color_source , 0) ;
+	    srcfil(q_source, coord,color_source ) ;
 
 
 	    fuzz_smear(u_smr, q_source,q_source_fuzz, 
@@ -502,7 +505,7 @@ int main(int argc, char **argv)
          * Move the solution to the appropriate components
          * of quark propagator.
         */
-        FermToProp(psi, quark_propagator, color_source, spin_source);
+        FermToProp(psi, quark_propagator, color_source);
       }  //color_source
     
       stag_prop[src_ind] = quark_propagator;
@@ -510,21 +513,15 @@ int main(int argc, char **argv)
   
   
 
-      multi2d<DComplex> pion(16, input.param.nrow[3]);
-      multi1d<DComplex> pion_out(input.param.nrow[3]);
+  int t_length = input.param.nrow[3];
+      push(xml_out, "Hadrons_from_time_source");
+      write(xml_out, "source_time", t_source);
 
-      staggeredPionsFollana(stag_prop, pion, j_decay);
-
-    push(xml_out, "Here_are_all_16_pions");
-      for(int i=0; i < NUM_STAG_PIONS; i++) {
-      ostringstream tag;
-      tag << "pion" << i;
-      push(xml_out, tag.str());
-      for(int tt=0 ; tt < input.param.nrow[3] ; ++tt)
-	pion_out[tt] = pion[i][tt] ;
-      write(xml_out, "pion_oper", pion_out);
+      staggered_pions pseudoscalar(t_length) ; 
+      pseudoscalar.compute(stag_prop, j_decay);
+      pseudoscalar.dump(t_source,xml_out);
       pop(xml_out);
-      }
+
       pop(xml_out);
 
 
