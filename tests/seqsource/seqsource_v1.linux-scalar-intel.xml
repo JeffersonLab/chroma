@@ -13,7 +13,7 @@
   </ProgramInfo>
   <Input><seqsource>
 <annotation>
-; $Id: seqsource_v1.linux-scalar-intel.xml,v 1.1 2004-04-27 21:33:07 edwards Exp $
+; $Id: seqsource_v1.linux-scalar-intel.xml,v 1.2 2004-05-13 00:31:13 edwards Exp $
 ;
 ; SEQSOURCE input file.
 ;
@@ -56,7 +56,7 @@
 </Cfg>
 <Prop>
  <prop_file>../propagator/propagator_0</prop_file>
- <seqsource_file>seqsource_0_10</seqsource_file>
+ <seqsource_file>seqsource_0_PION</seqsource_file>
  <seqsource_volfmt>SINGLEFILE</seqsource_volfmt>
 </Prop>
 </seqsource>
@@ -114,8 +114,9 @@
   </Observables>
   <Propagator_info><Propagator>
       <ForwardProp>
-        <version>5</version>
+        <version>6</version>
         <FermTypeP>WILSON</FermTypeP>
+        <nonRelProp>false</nonRelProp>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Mass>0.545455</Mass>
@@ -132,16 +133,13 @@
           <MaxCG>1000</MaxCG>
           <MROver>1</MROver>
         </InvertParam>
-        <boundary>1 1 1 0</boundary>
+        <boundary>1 1 1 -1</boundary>
         <nrow>4 4 4 8</nrow>
       </ForwardProp>
       <PropSource>
         <version>5</version>
-        <source_type>SHELL_SOURCE</source_type>
         <wave_state>S_WAVE</wave_state>
-        <j_decay>3</j_decay>
-        <direction>2</direction>
-        <t_source>0 0 0 1</t_source>
+        <source_type>SHELL_SOURCE</source_type>
         <ShellSource>
           <SourceSmearingParam>
             <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
@@ -154,6 +152,8 @@
           <disp_length>0</disp_length>
           <disp_dir>0</disp_dir>
         </ShellSource>
+        <j_decay>3</j_decay>
+        <t_source>0 0 0 0</t_source>
         <nrow>4 4 4 8</nrow>
       </PropSource>
       <Config_info>
@@ -201,9 +201,9 @@
 
   </Propagator_info>
   <Forward_prop_correlator>
-    <forward_prop_corr>0.00993882 0.15527 0.00995142 0.00307901 0.00106723 0.00037501 0.000130131 4.5101e-05</forward_prop_corr>
+    <forward_prop_corr>0.147564 0.00923146 0.00288721 0.00109399 0.000683482 0.00110198 0.00286504 0.00919642</forward_prop_corr>
   </Forward_prop_correlator>
   <SeqSource_correlator>
-    <seqsource_corr>0 0 0 0 0 0.000197001 0 0</seqsource_corr>
+    <seqsource_corr>0 0 0 0 0 0.000672891 0 0</seqsource_corr>
   </SeqSource_correlator>
 </seqsource>
