@@ -1,11 +1,14 @@
-// $Id: formfac_w.cc,v 1.4 2003-03-06 00:25:23 flemingg Exp $
+// $Id: formfac_w.cc,v 1.5 2003-03-06 03:38:35 edwards Exp $
 /*! \file
  *  \brief Form-factors 
  *
  * Form factors constructed from a quark and a sequential quark propagator
  *
  * $Log: formfac_w.cc,v $
- * Revision 1.4  2003-03-06 00:25:23  flemingg
+ * Revision 1.5  2003-03-06 03:38:35  edwards
+ * Added start/end_code.
+ *
+ * Revision 1.4  2003/03/06 00:25:23  flemingg
  * Added some comments about things that need to be looked at more carefully.
  *
  * Revision 1.3  2003/03/05 01:25:47  flemingg
@@ -72,7 +75,7 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
   multi1d<Complex> local_cur3ptfn(length);
   multi1d<Complex> nonlocal_cur3ptfn(length);
   
-//  START_CODE("formfac");
+  START_CODE("FormFac");
 
   int t0 = t_source[j_decay];
   int G5 = Ns*Ns-1;
@@ -253,5 +256,5 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
     }
   }
                             
-//  END_CODE();
+  END_CODE("FormFac");
 }

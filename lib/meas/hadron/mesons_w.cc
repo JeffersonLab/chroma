@@ -1,6 +1,9 @@
-//  $Id: mesons_w.cc,v 1.6 2003-03-06 02:07:12 flemingg Exp $
+//  $Id: mesons_w.cc,v 1.7 2003-03-06 03:38:35 edwards Exp $
 //  $Log: mesons_w.cc,v $
-//  Revision 1.6  2003-03-06 02:07:12  flemingg
+//  Revision 1.7  2003-03-06 03:38:35  edwards
+//  Added start/end_code.
+//
+//  Revision 1.6  2003/03/06 02:07:12  flemingg
 //  Changed the MomList class to eliminate an unneeded class member.
 //
 //  Revision 1.5  2003/03/06 00:30:14  flemingg
@@ -81,6 +84,8 @@ void mesons(const LatticePropagator& quark_prop_1,
             int j_decay,
             NmlWriter& nml)
 {
+  START_CODE("mesons");
+
   // Create the time-slice set
   Set timeslice;
   timeslice.make(TimeSliceFunc(j_decay));
@@ -195,6 +200,8 @@ void mesons(const LatticePropagator& quark_prop_1,
     }
 
   } // end for(gamma_value)
+
+  END_CODE("mesons");
 }
 
 
