@@ -1,4 +1,4 @@
-// $Id: prec_dwf_qprop_array_sse_w.cc,v 1.3 2005-01-07 05:00:10 edwards Exp $
+// $Id: prec_dwf_qprop_array_sse_w.cc,v 1.4 2005-01-28 17:32:55 edwards Exp $
 /*! \file
  *  \brief SSE 5D DWF specific quark propagator solver
  */
@@ -292,6 +292,12 @@ namespace Chroma
     lattice_size[Nd] = N5;
     for(int i=0; i < Nd; ++i)
       lattice_size[i] = Layout::lattSize()[i];
+
+    if (N5 % 4 != 0)
+    {
+      QDPIO::cerr << "SSE qpropT only N5 that is multiple of 4" << endl;
+      QDP_abort(1);
+    }
 
     if (SSE_DWF_init(lattice_size.slice(), SSE_DWF_FLOAT, NULL, NULL) != 0)
     {
