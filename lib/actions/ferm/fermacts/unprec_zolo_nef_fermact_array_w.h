@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_zolo_nef_fermact_array_w.h,v 1.1 2004-10-21 16:43:20 bjoo Exp $
+// $Id: unprec_zolo_nef_fermact_array_w.h,v 1.2 2004-10-29 19:50:40 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned NEF domain-wall fermion action
  */
@@ -32,6 +32,7 @@ namespace Chroma
     
     Real OverMass;
     Real Mass;
+    Real a5;
     int  N5;
   };
 
@@ -55,17 +56,18 @@ namespace Chroma
     UnprecZoloNEFFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
 			      const Real& OverMass_, 
 			      const Real& Mass_, 
+			      const Real& a5_,
 			      int N5_) : 
-      fbc(fbc_), OverMass(OverMass_), Mass(Mass_), N5(N5_) {init();}
+      fbc(fbc_), OverMass(OverMass_), Mass(Mass_), a5(a5_), N5(N5_) {init();}
 
     //! General FermBC
     UnprecZoloNEFFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
 			      const UnprecZoloNEFFermActArrayParams& param) :
-      fbc(fbc_), OverMass(param.OverMass), Mass(param.Mass), N5(param.N5) {init();}
+      fbc(fbc_), OverMass(param.OverMass), Mass(param.Mass), a5(param.a5), N5(param.N5) {init();}
 
     //! Copy constructor
     UnprecZoloNEFFermActArray(const UnprecZoloNEFFermActArray& a) : 
-      fbc(a.fbc), OverMass(a.OverMass), Mass(a.Mass), N5(a.N5) {}
+      fbc(a.fbc), OverMass(a.OverMass), Mass(a.Mass), a5(a.a5), N5(a.N5) {}
 
     //! Assignment
     UnprecZoloNEFFermActArray& operator=(const UnprecZoloNEFFermActArray& a)
@@ -73,6 +75,7 @@ namespace Chroma
 	fbc=a.fbc; 
 	OverMass=a.OverMass; 
 	Mass=a.Mass; 
+	a5=a.a5;
 	N5=a.N5; 
 	return *this;
       }
@@ -183,6 +186,7 @@ namespace Chroma
     Handle< FermBC< multi1d<LatticeFermion> > >  fbc;
     Real OverMass;
     Real Mass;
+    Real a5;
     int  N5;
   };
 

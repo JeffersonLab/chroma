@@ -1,4 +1,4 @@
-// $Id: unprec_zolo_nef_fermact_array_w.cc,v 1.2 2004-10-22 03:16:31 edwards Exp $
+// $Id: unprec_zolo_nef_fermact_array_w.cc,v 1.3 2004-10-29 19:50:40 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned NEF fermion action
  */
@@ -54,6 +54,7 @@ namespace Chroma
       // Read the stuff for the action
       read(paramtop, "OverMass", OverMass);
       read(paramtop, "Mass", Mass);
+      read(paramtop, "a5", a5);
       read(paramtop, "N5", N5);
     }
     catch(const string& e) { 
@@ -121,10 +122,11 @@ namespace Chroma
     
     for(int i = 0; i < N5; i++) { 
       Real tmp = gamma[i]*approxMax;
-      b5[i] = Real(1)/tmp;
-      c5[i] = b5[i];
-    }
+      Real omega = Real(1)/tmp;
 
+      b5[i] = omega + Real(0.5)*a5;
+      c5[i] = omega - Real(0.5)*a5;
+    }
   }
 
   //! Produce a linear operator for this action
