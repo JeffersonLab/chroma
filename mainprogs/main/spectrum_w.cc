@@ -1,10 +1,14 @@
-// $Id: spectrum_w.cc,v 1.22 2004-01-16 15:05:09 kostas Exp $
+// $Id: spectrum_w.cc,v 1.23 2004-01-29 16:44:36 edwards Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.22  2004-01-16 15:05:09  kostas
+//  Revision 1.23  2004-01-29 16:44:36  edwards
+//  Removed reading of Nd, Nc, and numKappa. Changed from Kappa to Mass!
+//  Can also read Kappa for back compatibility.
+//
+//  Revision 1.22  2004/01/16 15:05:09  kostas
 //  fixed the second occurrence of the shell sink bug
 //
 //  Revision 1.21  2004/01/16 15:01:06  kostas
@@ -93,8 +97,7 @@ using namespace QDP;
 struct Param_t
 {
   FermType     FermTypeP;
-  int          numKappa;   // number of Wilson masses
-  multi1d<Real>  Kappa;    // array of Wilson mass values - someday use a mass instead
+  multi1d<Real> Mass;      // Quark Mass and **NOT** kappa
 
   CfgType cfg_type;        // storage order for stored gauge configuration
   int j_decay;             // direction to measure propagation
@@ -175,6 +178,7 @@ void read(XMLReader& xml, const string& path, Spectrum_input_t& input)
       break;
 
     case 7:
+    case 8:
       /**************************************************************************/
       read(paramtop, "CurrentP", input.param.CurrentP);
       read(paramtop, "BaryonP", input.param.BaryonP);
@@ -200,54 +204,42 @@ void read(XMLReader& xml, const string& path, Spectrum_input_t& input)
   {
     XMLReader paramtop(inputtop, "param"); // push into 'param' group
 
+    read(paramtop, "FermTypeP", input.param.FermTypeP);
+
+    if (paramtop.count("Mass") != 0)
     {
-      int input_Nc;
-      read(paramtop, "Nc", input_Nc);
-	
-      if (input_Nc != Nc) {
-	QDPIO::cerr << "Input parameter Nc=" << input_Nc \
-		    <<  " different from qdp++ value." << endl;
+      read(paramtop, "Mass", input.param.Mass);
+
+      if (paramtop.count("Kappa") != 0)
+      {
+	QDPIO::cerr << "Error: found both a Kappa and a Mass tag" << endl;
 	QDP_abort(1);
       }
-
-      int input_Nd;
-      read(paramtop, "Nd", input_Nd);
-
-      if (input_Nd != Nd) {
-	QDPIO::cerr << "Input parameter Nd=" << input_Nd \
-		    << " different from qdp++ value." << endl;
-	QDP_abort(1);
-      }
-
-      read(paramtop, "FermTypeP", input.param.FermTypeP);
     }
-
-    // GTF NOTE: I'm going to switch on FermTypeP here because I want
-    // to leave open the option of treating masses differently.
-    switch (input.param.FermTypeP) {
-    case FERM_TYPE_WILSON :
-
-      QDPIO::cout << " SPECTRUM_W: Spectroscopy for Wilson fermions" << endl;
-
-      read(paramtop, "numKappa", input.param.numKappa);
-      read(paramtop, "Kappa", input.param.Kappa);
-
-      for (int i=0; i < input.param.numKappa; ++i) {
-	if (toBool(input.param.Kappa[i] < 0.0)) {
-	  QDPIO::cerr << "Unreasonable value for Kappa." << endl;
-	  QDPIO::cerr << "  Kappa[" << i << "] = " << input.param.Kappa[i] << endl;
-	  QDP_abort(1);
-	} else {
-	  QDPIO::cout << " Spectroscopy Kappa: " << input.param.Kappa[i] << endl;
-	}
-      }
-
-      break;
-
-    default :
-      QDPIO::cerr << "Fermion type not supported." << endl;
+    else if (paramtop.count("Kappa") != 0)
+    {
+      multi1d<Real> Kappa;
+      read(paramtop, "Kappa", Kappa);
+      
+      input.param.Mass = kappaToMass(Kappa);    // Convert Kappa to Mass
+    }
+    else
+    {
+      QDPIO::cerr << "Error: neither Mass or Kappa found" << endl;
       QDP_abort(1);
+    }    
+
+#if 0
+    for (int i=0; i < input.param.Mass.size(); ++i) {
+      if (toBool(input.param.Mass[i] < 0.0)) {
+	QDPIO::cerr << "Unreasonable value for Mass." << endl;
+	QDPIO::cerr << "  Mass[" << i << "] = " << input.param.Mass[i] << endl;
+	QDP_abort(1);
+      } else {
+	QDPIO::cout << " Spectroscopy Mass: " << input.param.Mass[i] << endl;
+      }
     }
+#endif
 
     read(paramtop, "cfg_type", input.param.cfg_type);
     read(paramtop, "j_decay", input.param.j_decay);
@@ -316,6 +308,8 @@ int main(int argc, char **argv)
   Layout::setLattSize(input.param.nrow);
   Layout::create();
 
+  QDPIO::cout << " SPECTRUM_W: Spectroscopy for Wilson fermions" << endl;
+
   /*
    * Sanity checks
    */
@@ -374,7 +368,7 @@ int main(int argc, char **argv)
   write(xml_out, "Config_info", gauge_xml);
 
   push(xml_out, "Output_version");
-  write(xml_out, "out_version", 7);
+  write(xml_out, "out_version", 8);
   pop(xml_out);
 
   xml_out.flush();
@@ -402,7 +396,7 @@ int main(int argc, char **argv)
   SftMom phases(input.param.mom2_max, input.param.avg_equiv_mom, input.param.j_decay);
 
   // Keep an array of all the xml output buffers
-  XMLArrayWriter xml_array(xml_out,input.param.numKappa);
+  XMLArrayWriter xml_array(xml_out,input.param.Mass.size());
   push(xml_array, "Wilson_hadron_measurements");
 
 
@@ -411,7 +405,7 @@ int main(int argc, char **argv)
   int bc_spec = input.param.boundary[input.param.j_decay];
 
   // Now loop over the various fermion masses
-  for (int loop=0; loop < input.param.numKappa; ++loop)
+  for (int loop=0; loop < input.param.Mass.size(); ++loop)
   {
     // Read the quark propagator
     LatticePropagator quark_propagator;
@@ -424,7 +418,7 @@ int main(int argc, char **argv)
 
     push(xml_array);         // next array element - name auto-written
     Write(xml_array, loop);
-    write(xml_array, "Kappa_mes", input.param.Kappa[loop]);
+    write(xml_array, "Mass_mes", input.param.Mass[loop]);
     write(xml_array, "t_srce", input.param.t_srce);
 
     // Do the mesons first
