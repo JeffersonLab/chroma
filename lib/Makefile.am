@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.33 2003-09-04 15:05:33 bjoo Exp $
+# $Id: Makefile.am,v 1.34 2003-09-10 01:26:27 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -74,7 +74,7 @@ HDRS =  chroma.h chromabase.h chromainc.h primitives.h common_declarations.h \
 #
 # Fermion independent sources
 #
-GENERIC_SRCS = $(HDRS) gaus_smear.cc taproj.cc hotst.cc expm12.cc \
+GENERIC_SRCS = $(HDRS) gaus_smear.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
                klein_gord.cc mesplq.cc reunit.cc sftmom.cc srcfil.cc \
                readszin.cc su3proj.cc sun_proj.cc hyp_smear.cc laplacian.cc\
                su2extract.cc sunfill.cc invcg2.cc qprop_io.cc
