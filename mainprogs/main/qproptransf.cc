@@ -1,4 +1,4 @@
-// $Id: qproptransf.cc,v 1.4 2004-04-06 04:20:33 edwards Exp $
+// $Id: qproptransf.cc,v 1.5 2004-04-14 21:00:53 edwards Exp $
 /*! \file
  *  \brief Converts quark propagators in one format into another format.
  */
@@ -197,6 +197,17 @@ int main(int argc, char *argv[])
 
     write(xml_out, "File_xml", prop_in_file_xml);
     write(xml_out, "Record_xml", prop_in_xml);
+    pop(xml_out);
+    break;
+
+  case PROP_TYPE_KYU:
+    // Kentucky
+    push(xml_out,"KYU_propagator");
+    write(xml_out, "prop_in_type", input.prop.prop_in_type);
+    write(xml_out, "prop_in_file", input.prop.prop_in_file);
+
+    readKYUQprop(prop, input.prop.prop_in_file);
+
     pop(xml_out);
     break;
 
