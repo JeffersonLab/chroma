@@ -1,4 +1,4 @@
-// $Id: szin_io.cc,v 1.3 2003-10-08 16:00:50 edwards Exp $
+// $Id: szin_io.cc,v 1.4 2004-02-23 03:08:02 edwards Exp $
 
 /*! \file
  *  \brief Reader/writers for szin headers
@@ -9,8 +9,8 @@
 
 using namespace QDP;
 
-//! Initialize header with default values
-void szinGaugeInit(SzinGauge_t& header)
+// Initialize header with default values
+void initHeader(SzinGauge_t& header)
 {
   header.cfg_version = 7;
 
@@ -51,7 +51,7 @@ void szinGaugeInit(SzinGauge_t& header)
 
 
 
-//! Source header read
+// Source header read
 void read(XMLReader& xml, const string& path, SzinGauge_t& header)
 {
   XMLReader paramtop(xml, path);

@@ -1,4 +1,4 @@
-// $Id: readszin.cc,v 1.19 2004-01-08 03:49:14 edwards Exp $
+// $Id: readszin.cc,v 1.20 2004-02-23 03:08:24 edwards Exp $
 
 /*! \file
  *  \brief Read in a configuration written by SZIN up to configuration version 7.
@@ -35,7 +35,7 @@ void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
 {
   START_CODE("readSzin");
 
-  szinGaugeInit(header);  // initialize the header with defaults
+  initHeader(header);  // initialize the header with defaults
 
   int cfg_record_size; // must read but will ignore - not used
   int date_size;

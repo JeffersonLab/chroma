@@ -1,4 +1,4 @@
-// $Id: szin_io.h,v 1.3 2004-02-13 14:59:04 bjoo Exp $
+// $Id: szin_io.h,v 1.4 2004-02-23 03:08:02 edwards Exp $
 
 /*! \file
  *  \brief  Routines associated with SZIN gauge field IO
@@ -51,7 +51,7 @@ struct SzinGauge_t
 
 
 //! Initialize header with default values
-void szinGaugeInit(SzinGauge_t& header);
+void initHeader(SzinGauge_t& header);
 
 //! Source header read
 void read(XMLReader& xml, const std::string& path, SzinGauge_t& header);
