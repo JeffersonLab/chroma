@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: plaq_gaugeact.h,v 1.2 2005-01-14 20:13:06 edwards Exp $
+// $Id: plaq_gaugeact.h,v 1.3 2005-02-23 19:26:12 edwards Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */
@@ -9,6 +9,7 @@
 
 #include "gaugeact.h"
 #include "gaugebc.h"
+#include "io/aniso_io.h"
 
 namespace Chroma
 {
@@ -23,12 +24,13 @@ namespace Chroma
   struct PlaqGaugeActParams 
   {
     // Base Constructor
-    PlaqGaugeActParams();
+    PlaqGaugeActParams() {}
     
     // Read params from some root path
     PlaqGaugeActParams(XMLReader& xml_in, const std::string& path);
 
     Real coeff;  
+    AnisoParam_t aniso;
   };
   
   void read(XMLReader& xml, const string& path, PlaqGaugeActParams& param);
@@ -45,30 +47,31 @@ namespace Chroma
   public:
     //! General GaugeBC
     PlaqGaugeAct(Handle< GaugeBC > gbc_, 
-		 const Real& coeff_) : 
-      gbc(gbc_), coeff(coeff_) {}
+		 const Real& coeff,
+		 const AnisoParam_t& aniso) : 
+      gbc(gbc_) {param.coeff = coeff; param.aniso = aniso;}
 
     //! Read coeff from a param struct
     PlaqGaugeAct(Handle< GaugeBC > gbc_, 
 		 const PlaqGaugeActParams& p) :
-      gbc(gbc_), coeff(p.coeff) {}
+      gbc(gbc_), param(p) {}
 
     //! Copy constructor
     PlaqGaugeAct(const PlaqGaugeAct& a) : 
-      gbc(a.gbc), coeff(a.coeff) {}
+      gbc(a.gbc), param(a.param) {}
 
     //! Assignment
     PlaqGaugeAct& operator=(const PlaqGaugeAct& a)
-    {gbc=a.gbc; coeff=a.coeff; return *this;}
+    {gbc=a.gbc; param=a.param; return *this;}
 
     //! Is anisotropy used?
-    bool anisoP() const {return false;}
+    bool anisoP() const {return param.aniso.anisoP;}
 
     //! Anisotropy factor
-    const Real anisoFactor() const {return Real(1);}
+    const Real anisoFactor() const {return param.aniso.xi_0;}
 
     //! Anisotropic direction
-    int tDir() const {return Nd-1;}
+    int tDir() const {return param.aniso.t_dir;}
 
     //! Return the set on which the gauge action is defined
     /*! Defined on the even-off (red/black) set */
@@ -94,11 +97,11 @@ namespace Chroma
     ~PlaqGaugeAct() {}
 
     // Accessors -- non mutable members.
-    const Real getCoeff(void) const { return coeff; }
+    const Real getCoeff(void) const {return param.coeff;}
 
   private:
     Handle< GaugeBC >  gbc;  // Gauge Boundary Condition
-    Real coeff;              // The coupling coefficient
+    PlaqGaugeActParams  param; // The parameters
 
   };
 

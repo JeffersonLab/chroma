@@ -1,4 +1,4 @@
-// $Id: rbc_gaugeact.cc,v 1.1 2005-01-25 02:19:02 edwards Exp $
+// $Id: rbc_gaugeact.cc,v 1.2 2005-02-23 19:26:12 edwards Exp $
 /*! \file
  *  \brief RG style plaquette + rectangle gauge action following RBC conventions
  */
@@ -50,8 +50,9 @@ namespace Chroma
   {
     // Fold in normalizations and create action
     // Here, the rectangle weight is relative to the plaquette
+    AnisoParam_t aniso;  // empty aniso
     Real coeff0 = beta*(1 - 8*c1);
-    plaq = new PlaqGaugeAct(gbc,coeff0);
+    plaq = new PlaqGaugeAct(gbc,coeff0,aniso);
 
     Real coeff1 = beta*c1;
     rect = new RectGaugeAct(gbc,coeff1);

@@ -1,4 +1,4 @@
-// $Id: lw_tree_gaugeact.cc,v 1.2 2005-01-15 20:29:06 edwards Exp $
+// $Id: lw_tree_gaugeact.cc,v 1.3 2005-02-23 19:26:12 edwards Exp $
 /*! \file
  *  \brief Tree-level tadpole-improved Luscher-Weisz gauge action
  */
@@ -50,8 +50,9 @@ namespace Chroma
   {
     // Fold in normalizations and create action
     // NOTE: the 5/3 is folded into beta, hence divided out of c1
+    AnisoParam_t aniso;  // empty aniso
     Real c0 = beta;
-    plaq = new PlaqGaugeAct(gbc,c0);
+    plaq = new PlaqGaugeAct(gbc,c0,aniso);
 
     Real c1 = -c0 * (1/(20*u0*u0));
     rect = new RectGaugeAct(gbc,c1);

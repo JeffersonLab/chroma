@@ -1,4 +1,4 @@
-// $Id: plaq_gaugeact.cc,v 1.3 2005-01-14 02:26:41 edwards Exp $
+// $Id: plaq_gaugeact.cc,v 1.4 2005-02-23 19:26:12 edwards Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */
@@ -33,6 +33,10 @@ namespace Chroma
 
     try {
       read(paramtop, "./coeff", coeff);
+
+      //  Read optional anisoParam.
+      if (paramtop.count("AnisoParam") != 0) 
+	read(paramtop, "AnisoParam", aniso);
     }
     catch( const std::string& e ) { 
       QDPIO::cerr << "Error reading XML: " <<  e << endl;
@@ -40,7 +44,9 @@ namespace Chroma
     }
   }
 
-  void read(XMLReader& xml, const string& path, PlaqGaugeActParams& p) {
+
+  void read(XMLReader& xml, const string& path, PlaqGaugeActParams& p) 
+  {
     PlaqGaugeActParams tmp(xml, path);
     p=tmp;
   }
@@ -162,7 +168,7 @@ namespace Chroma
       // It is 1/(4Nc) to account for normalisation relevant to fermions
       // in the taproj, which is a factor of 2 different from the 
       // one used here.
-      ds_u[mu] *= Real(-1)*Real(coeff)/(Real(2*Nc));
+      ds_u[mu] *= Real(-1)*Real(param.coeff)/(Real(2*Nc));
     }
 
 
@@ -199,7 +205,7 @@ namespace Chroma
     // Pure Gauge factor (-coeff/Nc and a factor of 2 because of the forward
     // and backward staple of the force)
     for(int mu=0; mu < Nd; mu++) { 
-      ds_u[mu] *= Real(-coeff)/(Real(2*Nc));
+      ds_u[mu] *= Real(-param.coeff)/(Real(2*Nc));
     }
 #endif
 
@@ -222,23 +228,30 @@ namespace Chroma
   Double
   PlaqGaugeAct::S(const Handle<const ConnectState> state) const
   {
-    Double S_pg;
+    Double S_pg = zero;
 
     // Handle< const ConnectState> u_bc(createState(u));
     // Apply boundaries
-    Double w_plaq, s_plaq, t_plaq, link;
+    const multi1d<LatticeColorMatrix>& u = state->getLinks();
 
-    // Measure the plaquette
-    MesPlq(state->getLinks(), w_plaq, s_plaq, t_plaq, link);
+    // Compute the average plaquettes
+    for(int mu=1; mu < Nd; ++mu)
+    {
+      for(int nu=0; nu < mu; ++nu)
+      {
+	/* tmp_0 = u(x+mu,nu)*u_dag(x+nu,mu) */
+	/* tmp_1 = tmp_0*u_dag(x,nu)=u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu) */
+	/* wplaq_tmp = tr(u(x,mu)*tmp_1=u(x,mu)*u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu)) */
+	Double tmp = 
+	  sum(real(trace(u[mu]*shift(u[nu],FORWARD,mu)*adj(shift(u[mu],FORWARD,nu))*adj(u[nu]))));
 
-    // Undo Mes Plaq Normalisation
-    S_pg = Double(Layout::vol()*Nd*(Nd-1)*Nc)/Double(2);
+	S_pg += tmp;
+      }
+    }
 
-    S_pg *= Double(-1)*Double(coeff)/Double(Nc);
+    // Normalize
+    S_pg *= Double(-1)*Double(param.coeff)/Double(Nc);
 
-    // Took out minus sign -- may need to put back in...
-    S_pg *= w_plaq;
-    
     return S_pg;
   } 
 

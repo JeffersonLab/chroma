@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wilson_gaugeact.h,v 1.3 2005-01-14 20:13:06 edwards Exp $
+// $Id: wilson_gaugeact.h,v 1.4 2005-02-23 19:26:12 edwards Exp $
 /*! \file
  *  \brief Wilson gauge action
  */
@@ -20,7 +20,8 @@ namespace Chroma
   }
 
   // Parameter structure
-  struct WilsonGaugeActParams {
+  struct WilsonGaugeActParams 
+  {
     // Base Constructor
     WilsonGaugeActParams();
     
@@ -28,6 +29,7 @@ namespace Chroma
     WilsonGaugeActParams(XMLReader& xml_in, const std::string& path);
 
     Real beta;  
+    AnisoParam_t aniso;
   };
   
   void read(XMLReader& xml, const string& path, WilsonGaugeActParams& param);
@@ -44,30 +46,36 @@ namespace Chroma
   public:
     //! General GaugeBC
     WilsonGaugeAct(Handle< GaugeBC > gbc_, 
-		   const Real& beta_) : 
-      beta(beta_) {init(gbc_);}
+		   const Real& beta)
+      {param.beta = beta; init(gbc_);}
+
+    //! General GaugeBC
+    WilsonGaugeAct(Handle< GaugeBC > gbc_, 
+		   const Real& beta,
+		   const AnisoParam_t& aniso)
+      {param.beta = beta; param.aniso = aniso; init(gbc_);}
 
     //! Read beta from a param struct
     WilsonGaugeAct(Handle< GaugeBC > gbc_, 
 		   const WilsonGaugeActParams& p) :
-      beta(p.beta) {init(gbc_);}
+      param(p) {init(gbc_);}
 
     //! Copy constructor
     WilsonGaugeAct(const WilsonGaugeAct& a) : 
-      beta(a.beta), plaq(a.plaq) {}
+      param(a.param) {}
 
     //! Assignment
     WilsonGaugeAct& operator=(const WilsonGaugeAct& a)
-    {beta=a.beta; plaq=a.plaq; return *this;}
+    {param=a.param; return *this;}
 
     //! Is anisotropy used?
-    bool anisoP() const {return false;}
+    bool anisoP() const {return param.aniso.anisoP;}
 
     //! Anisotropy factor
-    const Real anisoFactor() const {return Real(1);}
+    const Real anisoFactor() const {return param.aniso.xi_0;}
 
     //! Anisotropic direction
-    int tDir() const {return Nd-1;}
+    int tDir() const {return param.aniso.t_dir;}
 
     //! Return the set on which the gauge action is defined
     /*! Defined on the even-off (red/black) set */
@@ -102,19 +110,18 @@ namespace Chroma
     ~WilsonGaugeAct() {}
 
     // Accessors -- non mutable members.
-    const Real getBeta(void) const { return beta; }
+    const Real getBeta(void) const {return param.beta;}
 
   protected:
     //! Private initializer
     void init(Handle< GaugeBC > gbc);
 
   private:
-    Real   beta;               // The coupling Beta
-    Handle<PlaqGaugeAct> plaq; // Hold a plaquette gaugeact
-
+    Handle<PlaqGaugeAct> plaq;  // Hold a plaquette gaugeact
+    WilsonGaugeActParams param; // parameters
   };
 
-};
+} // end namespace Chroma
 
 
 #endif
