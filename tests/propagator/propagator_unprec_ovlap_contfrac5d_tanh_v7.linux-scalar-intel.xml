@@ -13,7 +13,7 @@
   </ProgramInfo>
   <Input><propagator>
 <annotation>
-; $Id: propagator_unprec_zolo_nef.v6.linux-scalar-intel.xml,v 1.2 2005-01-02 05:06:59 edwards Exp $
+; $Id: propagator_unprec_ovlap_contfrac5d_tanh_v7.linux-scalar-intel.xml,v 1.1 2005-01-02 05:06:59 edwards Exp $
 ;
 ; PROPAGATOR input file.
 ;
@@ -27,16 +27,19 @@
 ;   1) stuff
 </annotation>
 <Param>
-  <version>6</version>
+  <version>7</version>
   <FermTypeP>WILSON</FermTypeP>
   <FermionAction>
-    <FermAct>UNPRECONDITIONED_ZOLO_NEF</FermAct>
-    <ApproximationType>ZOLOTAREV</ApproximationType>
+    <FermAct>UNPRECONDITIONED_OVERLAP_CONTINUED_FRACTION_5D</FermAct>
+    <ApproximationType>TANH_UNSCALED</ApproximationType>
     <Mass>0.06</Mass>
-    <N5>6</N5>
-    <b5>1</b5>
-    <c5>1</c5>
-    <OverMass>1.4</OverMass>
+    <RatPolyDeg>6</RatPolyDeg>
+    <AuxFermAct>
+      <FermAct>UNPRECONDITIONED_WILSON</FermAct>
+      <Mass>-1.4</Mass>
+      <boundary>1 1 1 -1</boundary>
+    </AuxFermAct>
+    <boundary>1 1 1 -1</boundary>
   </FermionAction>
   <InvertParam>
     <invType>CG_INVERTER</invType>
@@ -44,10 +47,7 @@
     <MaxCG>1000</MaxCG>
   </InvertParam>
   <nrow>4 4 4 8</nrow>
-  <boundary>1 1 1 -1</boundary>
-  <t_source>0 0 0 0</t_source>
   <nonRelProp>false</nonRelProp>
-  <mresP>true</mresP>
 </Param>
 <Cfg>
   <cfg_type>SZIN</cfg_type>
@@ -55,8 +55,8 @@
 </Cfg>
 <StateInfo>
   <!-- The ApproxMin and ApproxMax are ignored if NWilsVec &gt 0 -->
- <ApproxMin>0.66</ApproxMin>
- <ApproxMax>6.46357</ApproxMax>
+  <ApproxMin>0.668668</ApproxMin>
+  <ApproxMax>6.46357</ApproxMax>
   <NWilsVec>0</NWilsVec>
   <Eig>
     <eigen_file_stem>../t_ritz/g5_wils_eigen</eigen_file_stem>
@@ -182,69 +182,60 @@
   <Source_correlator>
     <source_corr>12 0 0 0 0 0 0 0</source_corr>
   </Source_correlator>
-  <DWF_QuarkProp4>
+  <QuarkProp>
     <Qprop>
       <RsdCG>1e-06</RsdCG>
-      <n_count>192</n_count>
+      <n_count>204</n_count>
     </Qprop>
     <Qprop>
       <RsdCG>1e-06</RsdCG>
-      <n_count>197</n_count>
+      <n_count>206</n_count>
     </Qprop>
     <Qprop>
       <RsdCG>1e-06</RsdCG>
-      <n_count>217</n_count>
+      <n_count>204</n_count>
     </Qprop>
     <Qprop>
       <RsdCG>1e-06</RsdCG>
-      <n_count>218</n_count>
+      <n_count>225</n_count>
     </Qprop>
     <Qprop>
       <RsdCG>1e-06</RsdCG>
-      <n_count>195</n_count>
+      <n_count>207</n_count>
     </Qprop>
     <Qprop>
       <RsdCG>1e-06</RsdCG>
-      <n_count>191</n_count>
+      <n_count>224</n_count>
     </Qprop>
     <Qprop>
       <RsdCG>1e-06</RsdCG>
-      <n_count>217</n_count>
+      <n_count>224</n_count>
     </Qprop>
     <Qprop>
       <RsdCG>1e-06</RsdCG>
-      <n_count>218</n_count>
+      <n_count>225</n_count>
     </Qprop>
     <Qprop>
       <RsdCG>1e-06</RsdCG>
-      <n_count>195</n_count>
+      <n_count>206</n_count>
     </Qprop>
     <Qprop>
       <RsdCG>1e-06</RsdCG>
-      <n_count>194</n_count>
+      <n_count>210</n_count>
     </Qprop>
     <Qprop>
       <RsdCG>1e-06</RsdCG>
-      <n_count>218</n_count>
+      <n_count>225</n_count>
     </Qprop>
     <Qprop>
       <RsdCG>1e-06</RsdCG>
-      <n_count>217</n_count>
+      <n_count>208</n_count>
     </Qprop>
-    <time_direction>
-      <t_dir>3</t_dir>
-    </time_direction>
-    <DWF_MidPoint_Pseudo>
-      <mesprop>0.00549712 0.00181744 0.000439567 0.00017375 0.000149254 0.000181692 0.000440811 0.00181923</mesprop>
-    </DWF_MidPoint_Pseudo>
-    <DWF_Psuedo_Pseudo>
-      <mesprop>1.23253 0.6154 0.279717 0.213996 0.200358 0.217926 0.276966 0.607379</mesprop>
-    </DWF_Psuedo_Pseudo>
-  </DWF_QuarkProp4>
+  </QuarkProp>
   <Relaxation_Iterations>
-    <ncg_had>2469</ncg_had>
+    <ncg_had>2568</ncg_had>
   </Relaxation_Iterations>
   <Prop_correlator>
-    <prop_corr>1.23253 0.6154 0.279717 0.213996 0.200358 0.217926 0.276966 0.607379</prop_corr>
+    <prop_corr>1.24861 0.616507 0.279986 0.214303 0.200652 0.218193 0.277161 0.608433</prop_corr>
   </Prop_correlator>
 </propagator>
