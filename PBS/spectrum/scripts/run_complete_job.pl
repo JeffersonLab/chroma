@@ -781,7 +781,7 @@ else
 fi
 
 rm -f *PS*
-rm -f qqq_*
+rm -f qqq_*.cfg*
 rm -f RESULT*
 rm -f *xmldat*
 
