@@ -1,4 +1,4 @@
-// $Id: lovddag_w.cc,v 1.16 2005-01-14 20:13:05 edwards Exp $
+// $Id: lovddag_w.cc,v 1.17 2005-02-10 22:22:05 edwards Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -219,7 +219,7 @@ namespace Chroma
 
 	/* Project out eigenvectors */
 	if (k % ReorthFreq  == 0){
-	  GramSchm(Ap, EigVec, NEig);
+	  GramSchm(Ap, EigVec, NEig, all);
 	}
 
 	/*  d =  < p, A.p >  */
@@ -265,7 +265,7 @@ namespace Chroma
 
 	/* Project out eigenvectors */
 	if (k % ReorthFreq == 0) {
-	  GramSchm (r, EigVec, NEig);
+	  GramSchm (r, EigVec, NEig, all);
 	}
     
 	// Work out new iterate for sgn(H).
@@ -359,7 +359,7 @@ namespace Chroma
 #if 0
 	/* Project out eigenvectors */
 	if (k % ReorthFreq == 0)
-	  GramSchm (p, numroot, EigVec, NEig);
+	  GramSchm (p, numroot, EigVec, NEig, all);
 #endif
 
 	// Convergence tests start here.

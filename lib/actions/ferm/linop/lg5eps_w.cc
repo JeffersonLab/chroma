@@ -1,4 +1,4 @@
-// $Id: lg5eps_w.cc,v 1.7 2005-01-14 20:13:05 edwards Exp $
+// $Id: lg5eps_w.cc,v 1.8 2005-02-10 22:22:05 edwards Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -194,7 +194,7 @@ void lg5eps::operator() (LatticeFermion& chi, const LatticeFermion& psi,
 
     // Project out eigenvectors
     if (k % ReorthFreq == 0) {
-      GramSchm(Ap, EigVec, NEig);
+      GramSchm(Ap, EigVec, NEig, all);
     }
 
     //  d =  < p, A.p >
@@ -242,7 +242,7 @@ void lg5eps::operator() (LatticeFermion& chi, const LatticeFermion& psi,
 
     // Project out eigenvectors 
     if (k % ReorthFreq == 0) {
-      GramSchm (r, EigVec, NEig);
+      GramSchm (r, EigVec, NEig, all);
     }
     
     // Work out new iterate for sgn(H).
