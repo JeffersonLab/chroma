@@ -1,4 +1,4 @@
-// $Id: qproptransf.cc,v 1.8 2004-05-07 16:04:28 edwards Exp $
+// $Id: qproptransf.cc,v 1.9 2004-05-07 16:04:51 edwards Exp $
 /*! \file
  *  \brief Converts quark propagators in one format into another format.
  */
@@ -161,7 +161,7 @@ int main(int argc, char *argv[])
   Layout::setLattSize(input.param.nrow);
   Layout::create();
 
-  QDPIO::cout << "Qproptransf" << endl;
+  QDPIO::cout << "QPROPTRANSF" << endl;
 
   XMLFileWriter xml_out("qproptransf.xml");
   push(xml_out, "qproptransf");
