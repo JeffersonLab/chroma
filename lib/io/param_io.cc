@@ -1,4 +1,4 @@
-// $Id: param_io.cc,v 1.2 2004-01-06 02:09:01 edwards Exp $
+// $Id: param_io.cc,v 1.3 2004-01-06 02:52:06 edwards Exp $
 /*! \file
  *  \brief Various parameter readers/writers for main programs
  */
@@ -121,7 +121,7 @@ void read(XMLReader& xml, const string& path, SmearingParam_t& param)
 }
 
 
-//
+//! Read chiral action like parameters
 void read(XMLReader& xml, const string& path, ChiralParam_t& param)
 {
   XMLReader paramtop(xml, path);

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: param_io.h,v 1.2 2004-01-06 02:09:01 edwards Exp $
+// $Id: param_io.h,v 1.3 2004-01-06 02:52:06 edwards Exp $
 /*! \file
  *  \brief Reunitarize (to a SU(N)) inplace the matrix A under some option
  */
@@ -11,8 +11,14 @@
 #include "invtype.h"
 
 /*
- *  Here we have various temporary definitions
+ * Types and structures
+ *
+ * \ingroup io
+ *
+ * @{
  */
+
+//! Configuration type
 enum CfgType {
   CFG_TYPE_MILC = 0,
   CFG_TYPE_NERSC,
@@ -20,14 +26,39 @@ enum CfgType {
   CFG_TYPE_SZIN,
 };
 
+//! Propagator type
 enum PropType {
   PROP_TYPE_SCIDAC = 2,
   PROP_TYPE_SZIN,
 };
 
+
+//! Types of fermion
 enum FermType {
   FERM_TYPE_WILSON,
   FERM_TYPE_STAGGERED,
+};
+
+
+//! Types of fermion actions
+enum FermActType {
+  FERM_ACT_WILSON,
+  FERM_ACT_UNPRECONDITIONED_WILSON,
+  FERM_ACT_PARITY_BREAKING_WILSON,
+  FERM_ACT_CLOVER,
+  FERM_ACT_UNPRECONDITIONED_CLOVER,
+  FERM_ACT_DWF,
+  FERM_ACT_UNPRECONDITIONED_DWF,
+  FERM_ACT_PROJECTED_PRECONDITIONED_DWF,
+  FERM_ACT_ZOLOTAREV_4D,
+  FERM_ACT_EXTENDED_OVERLAP,
+  FERM_ACT_UNPRECONDITIONED_EXTENDED_OVERLAP,
+  FERM_ACT_SMEARED_LAPLACIAN_WILSON,
+  FERM_ACT_PLANAR_WILSON,
+  FERM_ACT_HAMBER_WU,
+  FERM_ACT_STAGGERED,
+  FERM_ACT_NAIK,
+  FERM_ACT_ASQTAD,
 };
 
 
@@ -84,5 +115,39 @@ struct InvertParam_t
   Real          RsdCG;
   int           MaxCG;	   // Iteration parameters
 };
+
+
+//! Read a fermion type enum
+void read(XMLReader& xml, const string& path, FermType& param);
+
+//! Read a configuration type enum
+void read(XMLReader& xml, const string& path, CfgType& param);
+
+//! Read a propagator type enum
+void read(XMLReader& xml, const string& path, PropType& param);
+
+//! Read a wave-function type enum
+void read(XMLReader& xml, const string& path, WvfType& param);
+
+//! Read a inverter type enum
+void read(XMLReader& xml, const string& path, InvType& param);
+
+//! Read the input version
+void read(XMLReader& xml, const string& path, IO_version_t& param);
+
+//! Configuration input
+void read(XMLReader& xml, const string& path, Cfg_t& input);
+
+//! Read a smearing param struct
+void read(XMLReader& xml, const string& path, SmearingParam_t& param);
+
+//! Read chiral action like parameters
+void read(XMLReader& xml, const string& path, ChiralParam_t& param);
+
+//! Read inverter parameters
+void read(XMLReader& xml, const string& path, InvertParam_t& param);
+
+
+/*! @} */  // end of group io
 
 #endif
