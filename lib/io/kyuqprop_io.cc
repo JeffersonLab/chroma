@@ -1,4 +1,4 @@
-// $Id: kyuqprop_io.cc,v 1.2 2004-04-15 03:22:52 edwards Exp $
+// $Id: kyuqprop_io.cc,v 1.3 2004-05-14 00:21:46 edwards Exp $
 /*!
  * @file
  * @brief  Read/write a Kentucky quark propagator
@@ -6,65 +6,9 @@
 
 #include "chromabase.h"
 #include "io/kyuqprop_io.h"
-#include "util/ferm/transf.h"
+#include "util/ferm/diractodr.h"
 
 using namespace QDP;
-
-//! Initialize the Dirac to Degrand-Rossi spin transformation matrix
-/*!
- * \ingroup io
- *
- * Initialize the similarity transformation matrix from 
- * Euclidean Dirac to Euclidean Degrand-Rossi basis
- *
- * \param U          spin matrix ( Modify )
- *
- * \returns The U in   Gamma_{Degrand-Rossi} = U Gamma_Dirac U^dag
- */    
-void initDiracToDRMat(SpinMatrix& U)
-{
-  /*
-   * The magic basis transf is found from
-   *
-   * NOTE: DR = Degrand-Rossi - the spin basis of QDP
-   *
-   *  psi_DR = U psi_Dirac
-   *  psibar_DR Gamma_DR psi_DR = psibar_Dirac Gamma_Dirac psi_Dirac
-   *
-   * implies
-   *  Gamma_DR = U Gamma_Dirac U^dag
-   *
-   * and the magic formula is
-   *
-   *   U = (1/sqrt(2)) | i*sigma_2    i*sigma_2 |
-   *                   | i*sigma_2   -i*sigma_2 |
-   *     = (1/sqrt(2)) |   0   1        0   1   |
-   *                   |  -1   0       -1   0   |
-   *                   |   0   1        0  -1   |
-   *                   |  -1   0        1   0   |
-   *
-   *   U^dag = -U = U^transpose
-   */
-  /*
-   * NOTE: I do not see some really short combination of 
-   * QDP Gamma matrices that can make this beasty, 
-   * so I'll just hardwire it...
-   */
-  U = zero;
-  Real     foo = 1 / sqrt(Real(2));
-  Complex  one = cmplx( foo,Real(0));
-  Complex mone = cmplx(-foo,Real(0));
-  pokeSpin(U,  one, 0, 1);
-  pokeSpin(U,  one, 0, 3);
-  pokeSpin(U, mone, 1, 0);
-  pokeSpin(U, mone, 1, 2);
-  pokeSpin(U,  one, 2, 1);
-  pokeSpin(U, mone, 2, 3);
-  pokeSpin(U, mone, 3, 0);
-  pokeSpin(U,  one, 3, 2);
-
-}
-
 
 //! Read a Kentucky quark propagator
 /*!
@@ -136,8 +80,7 @@ void readKYUQprop(LatticePropagator& q, const string& file)
   bin.close();
 
   // Now that we have read the prop, need to change the spin basis
-  SpinMatrix U;
-  initDiracToDRMat(U);
+  SpinMatrix U = DiracToDRMat();
 
   // And finally...
   q = U * q_old * adj(U);   // note, adj(U) = -U
