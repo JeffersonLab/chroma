@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gauge.h,v 1.1 2003-02-15 05:54:26 edwards Exp $
+// $Id: gauge.h,v 1.2 2003-03-30 21:42:20 heller Exp $
 
 #ifndef GAUGE_INCLUDE
 #define GAUGE_INCLUDE
@@ -8,6 +8,10 @@
 #include "hotst.h"
 #include "reunit.h"
 #include "taproj.h"
+#include "sun_proj.h"
+#include "su3proj.h"
+#include "su2extract.h"
+#include "sunfill.h"
 
 #endif
 
