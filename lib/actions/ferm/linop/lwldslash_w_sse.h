@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_w_sse.h,v 1.1 2003-09-10 18:15:05 bjoo Exp $
+// $Id: lwldslash_w_sse.h,v 1.2 2003-09-12 16:21:26 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -54,6 +54,7 @@ typedef double SSEREAL double;
 #endif
                                                                                 
 typedef SSEREAL u_mat_array[3][3][2];
+typedef PColorMatrix < RComplex <REAL>, Nc > PrimitiveSU3Matrix;
 
 class SSEWilsonDslash : public DslashLinearOperator
 {
@@ -85,7 +86,7 @@ public:
   const OrderedSubset& subset() const {return all;}
 
 private:
-  multi3d<ColorMatrix> myu;
+  multi1d<PrimitiveSU3Matrix> packed_gauge;
   
 // Real CoeffWilsr_s;
 };

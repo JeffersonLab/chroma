@@ -1,4 +1,4 @@
-// $Id: t_lwldslash_sse.cc,v 1.3 2003-09-12 13:03:48 bjoo Exp $
+// $Id: t_lwldslash_sse.cc,v 1.4 2003-09-12 16:21:26 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -30,11 +30,11 @@ int main(int argc, char **argv)
   for(int m=0; m < u.size(); ++m)
     gaussian(u[m]);
 
-  LatticeFermion psi, chi;
-  random(psi);
+  LatticeFermion psi, chi, chi2;
+  gaussian(psi);
   chi = zero;
 
-  int iter = 10000;
+  int iter = 100;
   cout << "Iters is " << iter << endl;
 
   //! Create a linear operator
@@ -122,14 +122,313 @@ int main(int argc, char **argv)
     }
   }
   
-  //! Create and try a more sophisticated operator
-  /* Real Kappa = 0.1;
-  PreconditionedWilson  M(u,Kappa);
-  LatticeFermion eta;
-  eta = M(psi, PLUS);
+  // Correctness and consistency test
+  // chi = D.apply(psi, PLUS, 0);
 
-  Write(nml,eta);
-  */
+  Double n2;
+  // Fill chi1 and make chi2 equal to it.
+  LatticeFermion chi3;
+  gaussian(chi3);
+  
+  chi = chi3; 
+  chi2 = chi3;
+
+  chi = D.apply(psi, PLUS, 0);
+  chi2 = D.apply(psi, PLUS, 0); 
+  n2 = norm2( chi2 - chi );
+
+  if( Layout::primaryNode() ) { 
+    cout << "|| D(psi, +, 0) - D(psi, +, 0) || = " << n2 << endl;
+  } 
+
+  chi = chi3; 
+  chi2 = chi3;
+
+  chi = D.apply(psi, PLUS, 0);
+  chi2 = D.apply(psi, PLUS, 1); 
+  n2 = norm2( chi2 - chi );
+
+  if( Layout::primaryNode() ) { 
+    cout << "|| D(psi, +, 1) - D(psi, +, 0) || = " << n2 << endl;
+  } 
+
+  chi = chi3; 
+  chi2 = chi3;
+
+  chi = D.apply(psi, PLUS, 1);
+  chi2 = D.apply(psi, PLUS, 0); 
+  n2 = norm2( chi2 - chi );
+
+  if( Layout::primaryNode() ) { 
+    cout << "|| D(psi, +, 0) - D(psi, +, 1) || = " << n2 << endl;
+  } 
+
+  chi = chi3; 
+  chi2 = chi3;
+
+  chi = D.apply(psi, PLUS, 1);
+  chi2 = D.apply(psi, PLUS, 1); 
+  n2 = norm2( chi2 - chi );
+
+  if( Layout::primaryNode() ) { 
+    cout << "|| D(psi, +, 1) - D(psi, +, 1) || = " << n2 << endl;
+  } 
+
+
+  // MINUS
+
+  chi = chi3; 
+  chi2 = chi3;
+  
+
+  chi = D.apply(psi, MINUS, 0);
+  chi2 = D.apply(psi, MINUS, 0); 
+  n2 = norm2( chi2 - chi );
+
+  if( Layout::primaryNode() ) { 
+    cout << "|| D(psi, -, 0) - D(psi, -, 0) || = " << n2 << endl;
+  } 
+
+  chi = chi3; 
+  chi2 = chi3;
+
+  chi = D.apply(psi, MINUS, 0);
+  chi2 = D.apply(psi, MINUS, 1); 
+  n2 = norm2( chi2 - chi );
+
+  if( Layout::primaryNode() ) { 
+    cout << "|| D(psi, -, 1) - D(psi, -, 0) || = " << n2 << endl;
+  } 
+
+  chi = chi3; 
+  chi2 = chi3;
+
+  chi = D.apply(psi, MINUS, 1);
+  chi2 = D.apply(psi, MINUS, 0); 
+  n2 = norm2( chi2 - chi );
+
+  if( Layout::primaryNode() ) { 
+    cout << "|| D(psi, -, 0) - D(psi, -, 1) || = " << n2 << endl;
+  } 
+
+
+  chi = chi3; 
+  chi2 = chi3;
+
+  chi = D.apply(psi, MINUS, 1);
+  chi2 = D.apply(psi, MINUS, 1); 
+  n2 = norm2( chi2 - chi );
+
+  if( Layout::primaryNode() ) { 
+    cout << "|| D(psi, -, 1) - D(psi, -, 1) || = " << n2 << endl;
+  } 
+
+  // PLUS
+  
+  chi = chi3; 
+  chi2 = chi3;
+
+  chi = D_sse.apply(psi, PLUS, 0);
+  chi2 = D_sse.apply(psi, PLUS, 0); 
+  n2 = norm2( chi2 - chi );
+
+  if( Layout::primaryNode() ) { 
+    cout << "|| D_sse(psi, +, 0) - D_sse(psi, +, 0) || = " << n2 << endl;
+  } 
+
+  chi = chi3; 
+  chi2 = chi3;
+
+  chi = D_sse.apply(psi, PLUS, 0);
+  chi2 = D_sse.apply(psi, PLUS, 1); 
+  n2 = norm2( chi2 - chi );
+
+  if( Layout::primaryNode() ) { 
+    cout << "|| D_sse(psi, +, 1) - D_sse(psi, +, 0) || = " << n2 << endl;
+  } 
+
+  chi = chi3; 
+  chi2 = chi3;
+
+  chi = D_sse.apply(psi, PLUS, 1);
+  chi2 = D_sse.apply(psi, PLUS, 0); 
+  n2 = norm2( chi2 - chi );
+
+  if( Layout::primaryNode() ) { 
+    cout << "|| D_sse(psi, +, 0) - D_sse(psi, +, 1) || = " << n2 << endl;
+  } 
+
+  chi = chi3; 
+  chi2 = chi3;
+
+  chi = D_sse.apply(psi, PLUS, 1);
+  chi2 = D_sse.apply(psi, PLUS, 1); 
+  n2 = norm2( chi2 - chi );
+
+  if( Layout::primaryNode() ) { 
+    cout << "|| D_sse(psi, +, 1) - D_sse(psi, +, 1) || = " << n2 << endl;
+  } 
+
+
+  // MINUS
+
+  
+  chi = chi3; 
+  chi2 = chi3;
+
+  chi = D_sse.apply(psi, MINUS, 0);
+  chi2 = D_sse.apply(psi, MINUS, 0); 
+  n2 = norm2( chi2 - chi );
+
+  if( Layout::primaryNode() ) { 
+    cout << "|| D_sse(psi, -, 0) - D_sse(psi, -, 0) || = " << n2 << endl;
+  } 
+
+  chi = chi3; 
+  chi2 = chi3;
+
+  chi = D_sse.apply(psi, MINUS, 0);
+  chi2 = D_sse.apply(psi, MINUS, 1); 
+  n2 = norm2( chi2 - chi );
+
+  if( Layout::primaryNode() ) { 
+    cout << "|| D_sse(psi, -, 1) - D_sse(psi, -, 0) || = " << n2 << endl;
+  } 
+
+  chi = chi3; 
+  chi2 = chi3;
+
+  chi = D_sse.apply(psi, MINUS, 1);
+  chi2 = D_sse.apply(psi, MINUS, 0); 
+  n2 = norm2( chi2 - chi );
+
+  if( Layout::primaryNode() ) { 
+    cout << "|| D_sse(psi, -, 0) - D_sse(psi, -, 1) || = " << n2 << endl;
+  } 
+
+  chi = chi3; 
+  chi2 = chi3;
+
+  chi = D_sse.apply(psi, MINUS, 1);
+  chi2 = D_sse.apply(psi, MINUS, 1); 
+  n2 = norm2( chi2 - chi );
+
+  if( Layout::primaryNode() ) { 
+    cout << "|| D_sse(psi, -, 1) - D_sse(psi, -, 1) || = " << n2 << endl;
+  } 
+
+
+  // Mixed
+  chi = chi3; 
+  chi2 = chi3;
+
+  chi = D.apply(psi, PLUS, 0);
+  chi2 = D_sse.apply(psi, PLUS, 0); 
+  n2 = norm2( chi2 - chi );
+
+  if( Layout::primaryNode() ) { 
+    cout << "|| D_sse(psi, +, 0) - D(psi, +, 0) || = " << n2 << endl;
+  } 
+
+  chi = chi3; 
+  chi2 = chi3;
+
+  chi = D.apply(psi, PLUS, 0);
+  chi2 = D_sse.apply(psi, PLUS, 1); 
+  n2 = norm2( chi2 - chi );
+
+  if( Layout::primaryNode() ) { 
+    cout << "|| D_sse(psi, +, 1) - D(psi, +, 0) || = " << n2 << endl;
+  } 
+
+  chi = chi3; 
+  chi2 = chi3;
+
+  chi = D.apply(psi, PLUS, 1);
+  chi2 = D_sse.apply(psi, PLUS, 0); 
+  n2 = norm2( chi2 - chi );
+
+  if( Layout::primaryNode() ) { 
+    cout << "|| D_sse(psi, +, 0) - D(psi, +, 1) || = " << n2 << endl;
+  } 
+
+  chi = chi3; 
+  chi2 = chi3;
+
+  chi = D.apply(psi, PLUS, 1);
+  chi2 = D_sse.apply(psi, PLUS, 1); 
+  n2 = norm2( chi2 - chi );
+
+  if( Layout::primaryNode() ) { 
+    cout << "|| D_sse(psi, +, 1) - D(psi, +, 1) || = " << n2 << endl;
+  } 
+
+
+  // MINUS
+
+  
+  chi = chi3; 
+  chi2 = chi3;
+
+  chi = D.apply(psi, MINUS, 0);
+  chi2 = D_sse.apply(psi, MINUS, 0); 
+  n2 = norm2( chi2 - chi );
+
+  if( Layout::primaryNode() ) { 
+    cout << "|| D_sse(psi, -, 0) - D(psi, -, 0) || = " << n2 << endl;
+  } 
+
+  chi = chi3; 
+  chi2 = chi3;
+
+  chi = D.apply(psi, MINUS, 0);
+  chi2 = D_sse.apply(psi, MINUS, 1); 
+  n2 = norm2( chi2 - chi );
+
+  if( Layout::primaryNode() ) { 
+    cout << "|| D_sse(psi, -, 1) - D(psi, -, 0) || = " << n2 << endl;
+  } 
+
+  chi = chi3; 
+  chi2 = chi3;
+
+  chi = D.apply(psi, MINUS, 1);
+  chi2 = D_sse.apply(psi, MINUS, 0); 
+  n2 = norm2( chi2 - chi );
+
+  if( Layout::primaryNode() ) { 
+    cout << "|| D_sse(psi, -, 0) - D(psi, -, 1) || = " << n2 << endl;
+  } 
+
+  chi = chi3; 
+  chi2 = chi3;
+
+  chi = D.apply(psi, MINUS, 1);
+  chi2 = D_sse.apply(psi, MINUS, 1); 
+  n2 = norm2( chi2 - chi );
+
+  if( Layout::primaryNode() ) { 
+    cout << "|| D_sse(psi, -, 1) - D(psi, -, 1) || = " << n2 << endl;
+  } 
+
+  chi =zero;
+  psi= zero;
+  chi = D.apply(psi, PLUS, 0);
+
+  NmlWriter nml("dump.nml");
+  push(nml, "vectors");
+  Write(nml, psi);
+  Write(nml, chi);
+  pop(nml);
+
+  chi = zero;
+  psi = zero;
+  chi = D_sse.apply(psi, PLUS, 0);
+  NmlWriter nml2("dump_sse.nml");
+  push(nml2, "vectors");
+  Write(nml2, psi);
+  Write(nml2, chi);
+  pop(nml2);
 
   // Time to bolt
   QDP_finalize();
