@@ -1,14 +1,70 @@
-// $Id: wilson_gaugeact.cc,v 1.7 2004-12-15 04:49:03 edwards Exp $
+// $Id: wilson_gaugeact.cc,v 1.8 2004-12-30 10:29:36 bjoo Exp $
 /*! \file
  *  \brief Wilson gauge action
  */
 
 #include "chromabase.h"
+#include "gaugebc.h"
+
+#include "gaugeact_factory.h"
+#include "gaugebc_factory.h"
+
 #include "actions/gauge/wilson_gaugeact.h"
 #include "meas/glue/mesplq.h"
 
+
+using namespace std;
+using namespace QDP;
+using namespace Chroma;
+
 namespace Chroma
 {
+ 
+  namespace WilsonGaugeActEnv { 
+    GaugeAction* createGaugeAct(XMLReader& xml, const std::string& path) {
+      return new WilsonGaugeAct(WilsonGaugeActParams(xml, path));
+    }
+
+    const std::string name = "WILSON_GAUGEACT";
+    const bool registered = TheGaugeActFactory::Instance().registerObject(name, 
+									  createGaugeAct);
+  };
+
+
+  WilsonGaugeActParams::WilsonGaugeActParams(XMLReader& xml_in, const std::string& path) {
+    XMLReader paramtop(xml_in, path);
+
+    try {
+      read(paramtop, "./beta", beta);
+
+      
+      XMLReader bc_xml(paramtop, "./GaugeBC");
+      read(bc_xml, "./Name", bc_xml_name);
+
+      std::ostringstream os;
+      bc_xml.print(os);
+      bc_xml_string = os.str();
+    }
+    catch( const std::string& e ) { 
+      QDPIO::cerr << "Error reading XML: " <<  e << endl;
+      QDP_abort(1);
+    }
+  }
+
+  void read(XMLReader& xml, const string& path, WilsonGaugeActParams& p) {
+    WilsonGaugeActParams tmp(xml, path);
+    p=tmp;
+  }
+
+  WilsonGaugeAct::WilsonGaugeAct(const WilsonGaugeActParams& p) {
+    beta = p.beta;
+    std::string tmpstring = p.bc_xml_string;
+    std::istringstream bc_is(tmpstring);
+    XMLReader bc_xml_tmp(bc_is);
+    
+    gbc = TheGaugeBCFactory::Instance().createObject(p.bc_xml_name, bc_xml_tmp , "/GaugeBC");
+  }
+
   //! Compute staple
   /*!
    * \param u_staple   result      ( Write )
@@ -94,6 +150,8 @@ namespace Chroma
 		       const Handle< const ConnectState> state) const
   {
     START_CODE();
+
+    ds_u.resize(Nd);
 
     LatticeColorMatrix tmp_0;
     LatticeColorMatrix tmp_1;

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gaugeact.h,v 1.6 2004-12-15 04:49:03 edwards Exp $
+// $Id: gaugeact.h,v 1.7 2004-12-30 10:29:36 bjoo Exp $
 
 /*! @file
  * @brief Class structure for gauge actions
@@ -62,9 +62,6 @@ namespace Chroma
     
     //! Virtual destructor to help with cleanup;
     virtual ~GaugeAction() {}
-
-    //! CloneFunction for virtual copy constructor
-    virtual GaugeAction* clone(void) const = 0;
 
     //! Compute the action on a gauge configuration
     virtual Double S(const Handle<const ConnectState> state) const = 0;

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermbc.h,v 1.8 2004-12-24 04:25:39 edwards Exp $
+// $Id: fermbc.h,v 1.9 2004-12-30 10:29:36 bjoo Exp $
 /*! @file
  * @brief Fermion action boundary conditions
  */
@@ -9,6 +9,10 @@
 
 #include "gaugebc.h"
 #include "handle.h"
+
+#include "actions/gauge/gaugebc_simple.h"
+#include "actions/gauge/gaugebc_periodic.h"
+#include "actions/gauge/gaugebc_schroedinger.h"
 
 namespace Chroma
 {

@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.209 2004-12-29 22:04:53 edwards Exp $
+# $Id: Makefile.am,v 1.210 2004-12-30 10:29:36 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -19,8 +19,6 @@ nobase_include_HEADERS = \
 	singleton.h state.h typeinfo.h typelist.h typemanip.h typetraits.h \
 	actions/actions.h actions/boson/boson.h \
 	actions/boson/operator/klein_gord.h \
-	actions/gauge/gauge.h \
-	actions/gauge/wilson_gaugeact.h \
 	actions/ferm/ferm.h actions/ferm/fermacts/asqtad_state.h \
 	actions/ferm/fermacts/fermacts.h \
 	actions/ferm/fermacts/zolotarev.h \
@@ -49,6 +47,12 @@ nobase_include_HEADERS = \
 	actions/ferm/linop/lopscl.h \
 	actions/ferm/linop/partrat.h actions/ferm/qprop/qprop.h \
 	actions/gauge/gauge.h \
+	actions/gauge/gaugebc_factory.h \
+	actions/gauge/gaugebc_simple.h \
+	actions/gauge/gaugebc_periodic.h \
+	actions/gauge/gaugebc_schroedinger.h \
+	actions/gauge/gaugeact_factory.h \
+	actions/gauge/wilson_gaugeact.h \
 	io/io.h \
 	io/enum_io/enum_io.h \
 	io/enum_io/enum_type_map.h \
@@ -73,8 +77,6 @@ nobase_include_HEADERS = \
 	io/gauge_io.h io/kyugauge_io.h  \
         io/milc_io.h io/param_io.h io/qprop_io.h io/readmilc.h \
 	io/readszin.h io/szin_io.h io/writemilc.h io/writeszin.h \
-        io/gaugebc_io.h  io/gaugeact_io.h io/wilson_gaugeact_io.h \
-	io/mc_io.h io/md_io.h io/pg_hmc_io.h \
 	meas/eig/eig.h meas/eig/gramschm.h meas/eig/gramschm_array.h \
 	meas/eig/ritz.h meas/eig/ritz_array.h meas/eig/sn_jacob.h \
 	meas/eig/sn_jacob_array.h \
@@ -99,8 +101,6 @@ nobase_include_HEADERS = \
 	util/gauge/eesu3.h \
 	util/gauge/gauge.h \
 	util/gauge/gauge_startup.h \
-	util/gauge/gaugebc_utils.h \
-	util/gauge/gaugeact_utils.h \
 	util/gauge/hotst.h util/gauge/reunit.h \
 	util/gauge/rgauge.h util/gauge/su2extract.h util/gauge/su3proj.h \
 	util/gauge/sunfill.h util/gauge/sun_proj.h util/gauge/taproj.h \
@@ -315,7 +315,6 @@ libchroma_a_SOURCES = \
 	actions/ferm/qprop/prec_fermact_qprop.cc \
 	actions/ferm/qprop/prec_fermact_qprop_array.cc \
 	actions/ferm/qprop/staggered_qprop.cc \
-	actions/gauge/wilson_gaugeact.cc \
 	io/barcomp_io.cc io/eigen_io.cc io/enum_io/enum_cfgtype_io.cc \
 	io/enum_io/enum_coeffs_io.cc io/enum_io/enum_eigenvectype_io.cc \
 	io/enum_io/enum_fermtype_io.cc \
@@ -328,11 +327,11 @@ libchroma_a_SOURCES = \
 	io/enum_io/enum_seqsrctype_io.cc \
 	io/enum_io/enum_simplebctype_io.cc \
 	io/enum_io/enum_srcsnktype_io.cc io/enum_io/enum_wavetype_io.cc \
-	io/enum_io/enum_wvfkind_io.cc io/gaugeact_io.cc io/gaugebc_io.cc \
+	io/enum_io/enum_wvfkind_io.cc \
 	io/gauge_io.cc io/kyugauge_io.cc io/kyuqprop_io.cc \
-	io/mc_io.cc io/md_io.cc io/milc_io.cc io/overlap_state_info.cc \
-	io/param_io.cc io/pg_hmc_io.cc io/qprop_io.cc io/readmilc.cc \
-	io/readszin.cc io/szin_io.cc io/wilson_gaugeact_io.cc \
+	io/milc_io.cc io/overlap_state_info.cc \
+	io/param_io.cc io/qprop_io.cc io/readmilc.cc \
+	io/readszin.cc io/szin_io.cc \
 	io/writemilc.cc io/writeszin.cc \
 	meas/eig/eig_spec.cc meas/eig/eig_spec_array.cc \
 	meas/eig/gramschm.cc meas/eig/gramschm_array.cc \
@@ -351,14 +350,15 @@ libchroma_a_SOURCES = \
 	util/ferm/tdiractodr.cc util/ferm/transf.cc util/ft/sftmom.cc \
 	util/gauge/eesu3.cc util/gauge/eeu1.cc \
 	util/gauge/expm12.cc util/gauge/expmat.cc util/gauge/expsu3.cc \
-	util/gauge/gaugeact_utils.cc util/gauge/gaugebc_utils.cc \
 	util/gauge/gauge_startup.cc util/gauge/hotst.cc \
 	util/gauge/reunit.cc util/gauge/rgauge.cc \
 	util/gauge/su2extract.cc util/gauge/su3proj.cc \
 	util/gauge/sunfill.cc util/gauge/sun_proj.cc \
 	util/gauge/taproj.cc util/gauge/unit_check.cc \
-	util/info/printgeom.cc util/info/proginfo.cc
-
+	util/info/printgeom.cc util/info/proginfo.cc \
+	actions/gauge/gaugebc_periodic.cc \
+	actions/gauge/gaugebc_simple.cc \
+	actions/gauge/wilson_gaugeact.cc
 #	actions/ferm/invert/invbicg.cc
 #       actions/ferm/invert/invmr.cc 
 #       util/gauge/eesu2.cc 

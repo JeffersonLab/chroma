@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wilson_gaugeact.h,v 1.7 2004-12-15 04:49:03 edwards Exp $
+// $Id: wilson_gaugeact.h,v 1.8 2004-12-30 10:29:36 bjoo Exp $
 /*! \file
  *  \brief Wilson gauge action
  */
@@ -8,14 +8,36 @@
 #define __wilson_gaugeact_h__
 
 #include "gaugeact.h"
-#include "io/gaugebc_io.h"
-#include "io/wilson_gaugeact_io.h"
-#include "util/gauge/gaugebc_utils.h"
+#include "gaugebc.h"
 
+using namespace std;
 using namespace QDP;
+using namespace Chroma;
 
 namespace Chroma
 {
+
+  namespace WilsonGaugeActEnv { 
+    extern const string name;
+    extern const bool registered;
+  }
+
+  // Parameter structure
+  struct WilsonGaugeActParams {
+    // Base Constructor
+    WilsonGaugeActParams();
+    
+    // Read params from some root path
+    WilsonGaugeActParams(XMLReader& xml_in, const std::string& path);
+
+    Real beta;  
+    std::string bc_xml_string;
+    std::string bc_xml_name;
+  };
+  
+  void read(XMLReader& xml, const string& path, WilsonGaugeActParams& param);
+  
+
   //! Wilson gauge action
   /*! \ingroup gaugeact
    *
@@ -31,16 +53,8 @@ namespace Chroma
       gbc(gbc_), beta(beta_) {}
 
     //! Read beta from a param struct
-    WilsonGaugeAct(Handle< GaugeBC > gbc_, 
-		   const WilsonGaugeActParams& p) : 
-      gbc(gbc_), beta(p.getBeta()) {}
+    WilsonGaugeAct(const WilsonGaugeActParams& p);
 
-
-    //! Constructor with different MD beta
-    WilsonGaugeAct(Handle< GaugeBC > gbc_,
-		   const Real& beta_,
-		   const Real& betaMD_) :
-      gbc(gbc_), beta(beta_) {}
 
     //! Copy constructor
     WilsonGaugeAct(const WilsonGaugeAct& a) : 
@@ -50,11 +64,6 @@ namespace Chroma
     //! Assignment
     WilsonGaugeAct& operator=(const WilsonGaugeAct& a)
     {gbc=a.gbc; beta=a.beta; return *this;}
-
-    //! Clone function for virtual copy
-    WilsonGaugeAct* clone(void) const {
-      return new WilsonGaugeAct(*this);
-    }
 
     //! Is anisotropy used?
     bool anisoP() const {return false;}
@@ -97,7 +106,7 @@ namespace Chroma
 
   };
 
-}
+};
 
 using namespace Chroma;
 

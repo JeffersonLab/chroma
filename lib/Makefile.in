@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.284 2004-12-29 22:07:17 edwards Exp $
+# $Id: Makefile.in,v 1.285 2004-12-30 10:29:36 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -111,8 +111,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/qprop/fermact_qprop_array.cc \
 	actions/ferm/qprop/prec_fermact_qprop.cc \
 	actions/ferm/qprop/prec_fermact_qprop_array.cc \
-	actions/ferm/qprop/staggered_qprop.cc \
-	actions/gauge/wilson_gaugeact.cc io/barcomp_io.cc \
+	actions/ferm/qprop/staggered_qprop.cc io/barcomp_io.cc \
 	io/eigen_io.cc io/enum_io/enum_cfgtype_io.cc \
 	io/enum_io/enum_coeffs_io.cc \
 	io/enum_io/enum_eigenvectype_io.cc \
@@ -128,12 +127,10 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	io/enum_io/enum_simplebctype_io.cc \
 	io/enum_io/enum_srcsnktype_io.cc \
 	io/enum_io/enum_wavetype_io.cc io/enum_io/enum_wvfkind_io.cc \
-	io/gaugeact_io.cc io/gaugebc_io.cc io/gauge_io.cc \
-	io/kyugauge_io.cc io/kyuqprop_io.cc io/mc_io.cc io/md_io.cc \
+	io/gauge_io.cc io/kyugauge_io.cc io/kyuqprop_io.cc \
 	io/milc_io.cc io/overlap_state_info.cc io/param_io.cc \
-	io/pg_hmc_io.cc io/qprop_io.cc io/readmilc.cc io/readszin.cc \
-	io/szin_io.cc io/wilson_gaugeact_io.cc io/writemilc.cc \
-	io/writeszin.cc meas/eig/eig_spec.cc \
+	io/qprop_io.cc io/readmilc.cc io/readszin.cc io/szin_io.cc \
+	io/writemilc.cc io/writeszin.cc meas/eig/eig_spec.cc \
 	meas/eig/eig_spec_array.cc meas/eig/gramschm.cc \
 	meas/eig/gramschm_array.cc meas/eig/ritz.cc \
 	meas/eig/ritz_array.cc meas/eig/sn_jacob.cc \
@@ -151,13 +148,15 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	util/ferm/tdiractodr.cc util/ferm/transf.cc util/ft/sftmom.cc \
 	util/gauge/eesu3.cc util/gauge/eeu1.cc util/gauge/expm12.cc \
 	util/gauge/expmat.cc util/gauge/expsu3.cc \
-	util/gauge/gaugeact_utils.cc util/gauge/gaugebc_utils.cc \
 	util/gauge/gauge_startup.cc util/gauge/hotst.cc \
 	util/gauge/reunit.cc util/gauge/rgauge.cc \
 	util/gauge/su2extract.cc util/gauge/su3proj.cc \
 	util/gauge/sunfill.cc util/gauge/sun_proj.cc \
 	util/gauge/taproj.cc util/gauge/unit_check.cc \
 	util/info/printgeom.cc util/info/proginfo.cc \
+	actions/gauge/gaugebc_periodic.cc \
+	actions/gauge/gaugebc_simple.cc \
+	actions/gauge/wilson_gaugeact.cc \
 	actions/ferm/fermacts/overlap_fermact_base_w.cc \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.cc \
 	actions/ferm/fermacts/prec_dwf_fermact_array_w.cc \
@@ -270,25 +269,22 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	minv_rel_sumr.$(OBJEXT) fermact_qprop.$(OBJEXT) \
 	fermact_qprop_array.$(OBJEXT) prec_fermact_qprop.$(OBJEXT) \
 	prec_fermact_qprop_array.$(OBJEXT) staggered_qprop.$(OBJEXT) \
-	wilson_gaugeact.$(OBJEXT) barcomp_io.$(OBJEXT) \
-	eigen_io.$(OBJEXT) enum_cfgtype_io.$(OBJEXT) \
-	enum_coeffs_io.$(OBJEXT) enum_eigenvectype_io.$(OBJEXT) \
-	enum_fermtype_io.$(OBJEXT) enum_gaugeacttype_io.$(OBJEXT) \
-	enum_gaugebc_io.$(OBJEXT) enum_heatbathtype_io.$(OBJEXT) \
+	barcomp_io.$(OBJEXT) eigen_io.$(OBJEXT) \
+	enum_cfgtype_io.$(OBJEXT) enum_coeffs_io.$(OBJEXT) \
+	enum_eigenvectype_io.$(OBJEXT) enum_fermtype_io.$(OBJEXT) \
+	enum_gaugeacttype_io.$(OBJEXT) enum_gaugebc_io.$(OBJEXT) \
+	enum_heatbathtype_io.$(OBJEXT) \
 	enum_inner_solver_type_io.$(OBJEXT) enum_invtype_io.$(OBJEXT) \
 	enum_md_integrator_type_io.$(OBJEXT) \
 	enum_proptype_io.$(OBJEXT) enum_qdpvolfmt_io.$(OBJEXT) \
 	enum_seqsrctype_io.$(OBJEXT) enum_simplebctype_io.$(OBJEXT) \
 	enum_srcsnktype_io.$(OBJEXT) enum_wavetype_io.$(OBJEXT) \
-	enum_wvfkind_io.$(OBJEXT) gaugeact_io.$(OBJEXT) \
-	gaugebc_io.$(OBJEXT) gauge_io.$(OBJEXT) kyugauge_io.$(OBJEXT) \
-	kyuqprop_io.$(OBJEXT) mc_io.$(OBJEXT) md_io.$(OBJEXT) \
-	milc_io.$(OBJEXT) overlap_state_info.$(OBJEXT) \
-	param_io.$(OBJEXT) pg_hmc_io.$(OBJEXT) qprop_io.$(OBJEXT) \
-	readmilc.$(OBJEXT) readszin.$(OBJEXT) szin_io.$(OBJEXT) \
-	wilson_gaugeact_io.$(OBJEXT) writemilc.$(OBJEXT) \
-	writeszin.$(OBJEXT) eig_spec.$(OBJEXT) \
-	eig_spec_array.$(OBJEXT) gramschm.$(OBJEXT) \
+	enum_wvfkind_io.$(OBJEXT) gauge_io.$(OBJEXT) \
+	kyugauge_io.$(OBJEXT) kyuqprop_io.$(OBJEXT) milc_io.$(OBJEXT) \
+	overlap_state_info.$(OBJEXT) param_io.$(OBJEXT) \
+	qprop_io.$(OBJEXT) readmilc.$(OBJEXT) readszin.$(OBJEXT) \
+	szin_io.$(OBJEXT) writemilc.$(OBJEXT) writeszin.$(OBJEXT) \
+	eig_spec.$(OBJEXT) eig_spec_array.$(OBJEXT) gramschm.$(OBJEXT) \
 	gramschm_array.$(OBJEXT) ritz.$(OBJEXT) ritz_array.$(OBJEXT) \
 	sn_jacob.$(OBJEXT) sn_jacob_array.$(OBJEXT) axgauge.$(OBJEXT) \
 	coulgauge.$(OBJEXT) grelax.$(OBJEXT) polar_dec.$(OBJEXT) \
@@ -301,12 +297,12 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	diractodr.$(OBJEXT) paulitodr.$(OBJEXT) tdiractodr.$(OBJEXT) \
 	transf.$(OBJEXT) sftmom.$(OBJEXT) eesu3.$(OBJEXT) \
 	eeu1.$(OBJEXT) expm12.$(OBJEXT) expmat.$(OBJEXT) \
-	expsu3.$(OBJEXT) gaugeact_utils.$(OBJEXT) \
-	gaugebc_utils.$(OBJEXT) gauge_startup.$(OBJEXT) \
-	hotst.$(OBJEXT) reunit.$(OBJEXT) rgauge.$(OBJEXT) \
-	su2extract.$(OBJEXT) su3proj.$(OBJEXT) sunfill.$(OBJEXT) \
-	sun_proj.$(OBJEXT) taproj.$(OBJEXT) unit_check.$(OBJEXT) \
-	printgeom.$(OBJEXT) proginfo.$(OBJEXT) \
+	expsu3.$(OBJEXT) gauge_startup.$(OBJEXT) hotst.$(OBJEXT) \
+	reunit.$(OBJEXT) rgauge.$(OBJEXT) su2extract.$(OBJEXT) \
+	su3proj.$(OBJEXT) sunfill.$(OBJEXT) sun_proj.$(OBJEXT) \
+	taproj.$(OBJEXT) unit_check.$(OBJEXT) printgeom.$(OBJEXT) \
+	proginfo.$(OBJEXT) gaugebc_periodic.$(OBJEXT) \
+	gaugebc_simple.$(OBJEXT) wilson_gaugeact.$(OBJEXT) \
 	overlap_fermact_base_w.$(OBJEXT) \
 	ovlap_partfrac4d_fermact_w.$(OBJEXT) \
 	prec_dwf_fermact_array_w.$(OBJEXT) \
@@ -396,8 +392,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	linearop.h objfactory.h objfunctor.h primitives.h singleton.h \
 	state.h typeinfo.h typelist.h typemanip.h typetraits.h \
 	actions/actions.h actions/boson/boson.h \
-	actions/boson/operator/klein_gord.h actions/gauge/gauge.h \
-	actions/gauge/wilson_gaugeact.h actions/ferm/ferm.h \
+	actions/boson/operator/klein_gord.h actions/ferm/ferm.h \
 	actions/ferm/fermacts/asqtad_state.h \
 	actions/ferm/fermacts/fermacts.h \
 	actions/ferm/fermacts/zolotarev.h \
@@ -424,7 +419,12 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/linop/asqtad_dslash.h actions/ferm/linop/linop.h \
 	actions/ferm/linop/llincomb.h actions/ferm/linop/lmdagm.h \
 	actions/ferm/linop/lopscl.h actions/ferm/linop/partrat.h \
-	actions/ferm/qprop/qprop.h io/io.h io/enum_io/enum_io.h \
+	actions/ferm/qprop/qprop.h actions/gauge/gauge.h \
+	actions/gauge/gaugebc_factory.h actions/gauge/gaugebc_simple.h \
+	actions/gauge/gaugebc_periodic.h \
+	actions/gauge/gaugebc_schroedinger.h \
+	actions/gauge/gaugeact_factory.h \
+	actions/gauge/wilson_gaugeact.h io/io.h io/enum_io/enum_io.h \
 	io/enum_io/enum_type_map.h io/enum_io/enum_cfgtype_io.h \
 	io/enum_io/enum_coeffs_io.h io/enum_io/enum_proptype_io.h \
 	io/enum_io/enum_eigenvectype_io.h \
@@ -438,10 +438,9 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	io/enum_io/enum_inner_solver_type_io.h io/eigen_io.h \
 	io/gauge_io.h io/kyugauge_io.h io/milc_io.h io/param_io.h \
 	io/qprop_io.h io/readmilc.h io/readszin.h io/szin_io.h \
-	io/writemilc.h io/writeszin.h io/gaugebc_io.h io/gaugeact_io.h \
-	io/wilson_gaugeact_io.h io/mc_io.h io/md_io.h io/pg_hmc_io.h \
-	meas/eig/eig.h meas/eig/gramschm.h meas/eig/gramschm_array.h \
-	meas/eig/ritz.h meas/eig/ritz_array.h meas/eig/sn_jacob.h \
+	io/writemilc.h io/writeszin.h meas/eig/eig.h \
+	meas/eig/gramschm.h meas/eig/gramschm_array.h meas/eig/ritz.h \
+	meas/eig/ritz_array.h meas/eig/sn_jacob.h \
 	meas/eig/sn_jacob_array.h meas/eig/eig_spec.h \
 	meas/eig/eig_spec_array.h meas/gfix/axgauge.h \
 	meas/gfix/coulgauge.h meas/gfix/gfix.h meas/gfix/grelax.h \
@@ -459,8 +458,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	util/ft/ft.h util/ft/sftmom.h util/gauge/eesu2.h \
 	util/gauge/eeu1.h util/gauge/expm12.h util/gauge/expmat.h \
 	util/gauge/expsu3.h util/gauge/eesu3.h util/gauge/gauge.h \
-	util/gauge/gauge_startup.h util/gauge/gaugebc_utils.h \
-	util/gauge/gaugeact_utils.h util/gauge/hotst.h \
+	util/gauge/gauge_startup.h util/gauge/hotst.h \
 	util/gauge/reunit.h util/gauge/rgauge.h \
 	util/gauge/su2extract.h util/gauge/su3proj.h \
 	util/gauge/sunfill.h util/gauge/sun_proj.h util/gauge/taproj.h \
@@ -724,8 +722,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	objfactory.h objfunctor.h primitives.h singleton.h state.h \
 	typeinfo.h typelist.h typemanip.h typetraits.h \
 	actions/actions.h actions/boson/boson.h \
-	actions/boson/operator/klein_gord.h actions/gauge/gauge.h \
-	actions/gauge/wilson_gaugeact.h actions/ferm/ferm.h \
+	actions/boson/operator/klein_gord.h actions/ferm/ferm.h \
 	actions/ferm/fermacts/asqtad_state.h \
 	actions/ferm/fermacts/fermacts.h \
 	actions/ferm/fermacts/zolotarev.h \
@@ -752,10 +749,14 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/linop/asqtad_dslash.h actions/ferm/linop/linop.h \
 	actions/ferm/linop/llincomb.h actions/ferm/linop/lmdagm.h \
 	actions/ferm/linop/lopscl.h actions/ferm/linop/partrat.h \
-	actions/ferm/qprop/qprop.h actions/gauge/gauge.h io/io.h \
-	io/enum_io/enum_io.h io/enum_io/enum_type_map.h \
-	io/enum_io/enum_cfgtype_io.h io/enum_io/enum_coeffs_io.h \
-	io/enum_io/enum_proptype_io.h \
+	actions/ferm/qprop/qprop.h actions/gauge/gauge.h \
+	actions/gauge/gaugebc_factory.h actions/gauge/gaugebc_simple.h \
+	actions/gauge/gaugebc_periodic.h \
+	actions/gauge/gaugebc_schroedinger.h \
+	actions/gauge/gaugeact_factory.h \
+	actions/gauge/wilson_gaugeact.h io/io.h io/enum_io/enum_io.h \
+	io/enum_io/enum_type_map.h io/enum_io/enum_cfgtype_io.h \
+	io/enum_io/enum_coeffs_io.h io/enum_io/enum_proptype_io.h \
 	io/enum_io/enum_eigenvectype_io.h \
 	io/enum_io/enum_fermtype_io.h io/enum_io/enum_seqsrctype_io.h \
 	io/enum_io/enum_simplebctype_io.h \
@@ -767,10 +768,9 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	io/enum_io/enum_inner_solver_type_io.h io/eigen_io.h \
 	io/gauge_io.h io/kyugauge_io.h io/milc_io.h io/param_io.h \
 	io/qprop_io.h io/readmilc.h io/readszin.h io/szin_io.h \
-	io/writemilc.h io/writeszin.h io/gaugebc_io.h io/gaugeact_io.h \
-	io/wilson_gaugeact_io.h io/mc_io.h io/md_io.h io/pg_hmc_io.h \
-	meas/eig/eig.h meas/eig/gramschm.h meas/eig/gramschm_array.h \
-	meas/eig/ritz.h meas/eig/ritz_array.h meas/eig/sn_jacob.h \
+	io/writemilc.h io/writeszin.h meas/eig/eig.h \
+	meas/eig/gramschm.h meas/eig/gramschm_array.h meas/eig/ritz.h \
+	meas/eig/ritz_array.h meas/eig/sn_jacob.h \
 	meas/eig/sn_jacob_array.h meas/eig/eig_spec.h \
 	meas/eig/eig_spec_array.h meas/gfix/axgauge.h \
 	meas/gfix/coulgauge.h meas/gfix/gfix.h meas/gfix/grelax.h \
@@ -788,8 +788,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	util/ft/ft.h util/ft/sftmom.h util/gauge/eesu2.h \
 	util/gauge/eeu1.h util/gauge/expm12.h util/gauge/expmat.h \
 	util/gauge/expsu3.h util/gauge/eesu3.h util/gauge/gauge.h \
-	util/gauge/gauge_startup.h util/gauge/gaugebc_utils.h \
-	util/gauge/gaugeact_utils.h util/gauge/hotst.h \
+	util/gauge/gauge_startup.h util/gauge/hotst.h \
 	util/gauge/reunit.h util/gauge/rgauge.h \
 	util/gauge/su2extract.h util/gauge/su3proj.h \
 	util/gauge/sunfill.h util/gauge/sun_proj.h util/gauge/taproj.h \
@@ -943,7 +942,6 @@ lib_LIBRARIES = libchroma.a
 # NOTE: these lines were autogenerated by  
 #     chroma/scripts/build_libchroma_sources.pl
 #
-
 #	actions/ferm/invert/invbicg.cc
 #       actions/ferm/invert/invmr.cc 
 #       util/gauge/eesu2.cc 
@@ -985,8 +983,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/ferm/qprop/fermact_qprop_array.cc \
 	actions/ferm/qprop/prec_fermact_qprop.cc \
 	actions/ferm/qprop/prec_fermact_qprop_array.cc \
-	actions/ferm/qprop/staggered_qprop.cc \
-	actions/gauge/wilson_gaugeact.cc io/barcomp_io.cc \
+	actions/ferm/qprop/staggered_qprop.cc io/barcomp_io.cc \
 	io/eigen_io.cc io/enum_io/enum_cfgtype_io.cc \
 	io/enum_io/enum_coeffs_io.cc \
 	io/enum_io/enum_eigenvectype_io.cc \
@@ -1002,12 +999,10 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	io/enum_io/enum_simplebctype_io.cc \
 	io/enum_io/enum_srcsnktype_io.cc \
 	io/enum_io/enum_wavetype_io.cc io/enum_io/enum_wvfkind_io.cc \
-	io/gaugeact_io.cc io/gaugebc_io.cc io/gauge_io.cc \
-	io/kyugauge_io.cc io/kyuqprop_io.cc io/mc_io.cc io/md_io.cc \
+	io/gauge_io.cc io/kyugauge_io.cc io/kyuqprop_io.cc \
 	io/milc_io.cc io/overlap_state_info.cc io/param_io.cc \
-	io/pg_hmc_io.cc io/qprop_io.cc io/readmilc.cc io/readszin.cc \
-	io/szin_io.cc io/wilson_gaugeact_io.cc io/writemilc.cc \
-	io/writeszin.cc meas/eig/eig_spec.cc \
+	io/qprop_io.cc io/readmilc.cc io/readszin.cc io/szin_io.cc \
+	io/writemilc.cc io/writeszin.cc meas/eig/eig_spec.cc \
 	meas/eig/eig_spec_array.cc meas/eig/gramschm.cc \
 	meas/eig/gramschm_array.cc meas/eig/ritz.cc \
 	meas/eig/ritz_array.cc meas/eig/sn_jacob.cc \
@@ -1025,13 +1020,15 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	util/ferm/tdiractodr.cc util/ferm/transf.cc util/ft/sftmom.cc \
 	util/gauge/eesu3.cc util/gauge/eeu1.cc util/gauge/expm12.cc \
 	util/gauge/expmat.cc util/gauge/expsu3.cc \
-	util/gauge/gaugeact_utils.cc util/gauge/gaugebc_utils.cc \
 	util/gauge/gauge_startup.cc util/gauge/hotst.cc \
 	util/gauge/reunit.cc util/gauge/rgauge.cc \
 	util/gauge/su2extract.cc util/gauge/su3proj.cc \
 	util/gauge/sunfill.cc util/gauge/sun_proj.cc \
 	util/gauge/taproj.cc util/gauge/unit_check.cc \
 	util/info/printgeom.cc util/info/proginfo.cc \
+	actions/gauge/gaugebc_periodic.cc \
+	actions/gauge/gaugebc_simple.cc \
+	actions/gauge/wilson_gaugeact.cc \
 	actions/ferm/fermacts/overlap_fermact_base_w.cc \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.cc \
 	actions/ferm/fermacts/prec_dwf_fermact_array_w.cc \
@@ -1274,10 +1271,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gammasgn_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gauge_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gauge_startup.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gaugeact_io.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gaugeact_utils.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gaugebc_io.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gaugebc_utils.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gaugebc_periodic.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gaugebc_simple.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gaus_smear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gramschm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gramschm_array.Po@am__quote@
@@ -1318,8 +1313,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_w_pab.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_w_sse.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mc_io.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/md_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesons_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesonseqsrc_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesphas_follana_s.Po@am__quote@
@@ -1340,7 +1333,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/p_src_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/param_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paulitodr.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pg_hmc_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pions_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/polar_dec.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/polylp.Po@am__quote@
@@ -1440,7 +1432,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wallrhopiff_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wilslp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wilson_gaugeact.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wilson_gaugeact_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writemilc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writeszin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writeszinqprop_w.Po@am__quote@
@@ -1853,20 +1844,6 @@ staggered_qprop.obj: actions/ferm/qprop/staggered_qprop.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o staggered_qprop.obj `if test -f 'actions/ferm/qprop/staggered_qprop.cc'; then $(CYGPATH_W) 'actions/ferm/qprop/staggered_qprop.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/qprop/staggered_qprop.cc'; fi`
 
-wilson_gaugeact.o: actions/gauge/wilson_gaugeact.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT wilson_gaugeact.o -MD -MP -MF "$(DEPDIR)/wilson_gaugeact.Tpo" -c -o wilson_gaugeact.o `test -f 'actions/gauge/wilson_gaugeact.cc' || echo '$(srcdir)/'`actions/gauge/wilson_gaugeact.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/wilson_gaugeact.Tpo" "$(DEPDIR)/wilson_gaugeact.Po"; else rm -f "$(DEPDIR)/wilson_gaugeact.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/wilson_gaugeact.cc' object='wilson_gaugeact.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o wilson_gaugeact.o `test -f 'actions/gauge/wilson_gaugeact.cc' || echo '$(srcdir)/'`actions/gauge/wilson_gaugeact.cc
-
-wilson_gaugeact.obj: actions/gauge/wilson_gaugeact.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT wilson_gaugeact.obj -MD -MP -MF "$(DEPDIR)/wilson_gaugeact.Tpo" -c -o wilson_gaugeact.obj `if test -f 'actions/gauge/wilson_gaugeact.cc'; then $(CYGPATH_W) 'actions/gauge/wilson_gaugeact.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/wilson_gaugeact.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/wilson_gaugeact.Tpo" "$(DEPDIR)/wilson_gaugeact.Po"; else rm -f "$(DEPDIR)/wilson_gaugeact.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/wilson_gaugeact.cc' object='wilson_gaugeact.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o wilson_gaugeact.obj `if test -f 'actions/gauge/wilson_gaugeact.cc'; then $(CYGPATH_W) 'actions/gauge/wilson_gaugeact.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/wilson_gaugeact.cc'; fi`
-
 barcomp_io.o: io/barcomp_io.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT barcomp_io.o -MD -MP -MF "$(DEPDIR)/barcomp_io.Tpo" -c -o barcomp_io.o `test -f 'io/barcomp_io.cc' || echo '$(srcdir)/'`io/barcomp_io.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/barcomp_io.Tpo" "$(DEPDIR)/barcomp_io.Po"; else rm -f "$(DEPDIR)/barcomp_io.Tpo"; exit 1; fi
@@ -2133,34 +2110,6 @@ enum_wvfkind_io.obj: io/enum_io/enum_wvfkind_io.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o enum_wvfkind_io.obj `if test -f 'io/enum_io/enum_wvfkind_io.cc'; then $(CYGPATH_W) 'io/enum_io/enum_wvfkind_io.cc'; else $(CYGPATH_W) '$(srcdir)/io/enum_io/enum_wvfkind_io.cc'; fi`
 
-gaugeact_io.o: io/gaugeact_io.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gaugeact_io.o -MD -MP -MF "$(DEPDIR)/gaugeact_io.Tpo" -c -o gaugeact_io.o `test -f 'io/gaugeact_io.cc' || echo '$(srcdir)/'`io/gaugeact_io.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/gaugeact_io.Tpo" "$(DEPDIR)/gaugeact_io.Po"; else rm -f "$(DEPDIR)/gaugeact_io.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='io/gaugeact_io.cc' object='gaugeact_io.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o gaugeact_io.o `test -f 'io/gaugeact_io.cc' || echo '$(srcdir)/'`io/gaugeact_io.cc
-
-gaugeact_io.obj: io/gaugeact_io.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gaugeact_io.obj -MD -MP -MF "$(DEPDIR)/gaugeact_io.Tpo" -c -o gaugeact_io.obj `if test -f 'io/gaugeact_io.cc'; then $(CYGPATH_W) 'io/gaugeact_io.cc'; else $(CYGPATH_W) '$(srcdir)/io/gaugeact_io.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/gaugeact_io.Tpo" "$(DEPDIR)/gaugeact_io.Po"; else rm -f "$(DEPDIR)/gaugeact_io.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='io/gaugeact_io.cc' object='gaugeact_io.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o gaugeact_io.obj `if test -f 'io/gaugeact_io.cc'; then $(CYGPATH_W) 'io/gaugeact_io.cc'; else $(CYGPATH_W) '$(srcdir)/io/gaugeact_io.cc'; fi`
-
-gaugebc_io.o: io/gaugebc_io.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gaugebc_io.o -MD -MP -MF "$(DEPDIR)/gaugebc_io.Tpo" -c -o gaugebc_io.o `test -f 'io/gaugebc_io.cc' || echo '$(srcdir)/'`io/gaugebc_io.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/gaugebc_io.Tpo" "$(DEPDIR)/gaugebc_io.Po"; else rm -f "$(DEPDIR)/gaugebc_io.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='io/gaugebc_io.cc' object='gaugebc_io.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o gaugebc_io.o `test -f 'io/gaugebc_io.cc' || echo '$(srcdir)/'`io/gaugebc_io.cc
-
-gaugebc_io.obj: io/gaugebc_io.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gaugebc_io.obj -MD -MP -MF "$(DEPDIR)/gaugebc_io.Tpo" -c -o gaugebc_io.obj `if test -f 'io/gaugebc_io.cc'; then $(CYGPATH_W) 'io/gaugebc_io.cc'; else $(CYGPATH_W) '$(srcdir)/io/gaugebc_io.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/gaugebc_io.Tpo" "$(DEPDIR)/gaugebc_io.Po"; else rm -f "$(DEPDIR)/gaugebc_io.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='io/gaugebc_io.cc' object='gaugebc_io.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o gaugebc_io.obj `if test -f 'io/gaugebc_io.cc'; then $(CYGPATH_W) 'io/gaugebc_io.cc'; else $(CYGPATH_W) '$(srcdir)/io/gaugebc_io.cc'; fi`
-
 gauge_io.o: io/gauge_io.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gauge_io.o -MD -MP -MF "$(DEPDIR)/gauge_io.Tpo" -c -o gauge_io.o `test -f 'io/gauge_io.cc' || echo '$(srcdir)/'`io/gauge_io.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/gauge_io.Tpo" "$(DEPDIR)/gauge_io.Po"; else rm -f "$(DEPDIR)/gauge_io.Tpo"; exit 1; fi
@@ -2203,34 +2152,6 @@ kyuqprop_io.obj: io/kyuqprop_io.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kyuqprop_io.obj `if test -f 'io/kyuqprop_io.cc'; then $(CYGPATH_W) 'io/kyuqprop_io.cc'; else $(CYGPATH_W) '$(srcdir)/io/kyuqprop_io.cc'; fi`
 
-mc_io.o: io/mc_io.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT mc_io.o -MD -MP -MF "$(DEPDIR)/mc_io.Tpo" -c -o mc_io.o `test -f 'io/mc_io.cc' || echo '$(srcdir)/'`io/mc_io.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/mc_io.Tpo" "$(DEPDIR)/mc_io.Po"; else rm -f "$(DEPDIR)/mc_io.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='io/mc_io.cc' object='mc_io.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o mc_io.o `test -f 'io/mc_io.cc' || echo '$(srcdir)/'`io/mc_io.cc
-
-mc_io.obj: io/mc_io.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT mc_io.obj -MD -MP -MF "$(DEPDIR)/mc_io.Tpo" -c -o mc_io.obj `if test -f 'io/mc_io.cc'; then $(CYGPATH_W) 'io/mc_io.cc'; else $(CYGPATH_W) '$(srcdir)/io/mc_io.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/mc_io.Tpo" "$(DEPDIR)/mc_io.Po"; else rm -f "$(DEPDIR)/mc_io.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='io/mc_io.cc' object='mc_io.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o mc_io.obj `if test -f 'io/mc_io.cc'; then $(CYGPATH_W) 'io/mc_io.cc'; else $(CYGPATH_W) '$(srcdir)/io/mc_io.cc'; fi`
-
-md_io.o: io/md_io.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT md_io.o -MD -MP -MF "$(DEPDIR)/md_io.Tpo" -c -o md_io.o `test -f 'io/md_io.cc' || echo '$(srcdir)/'`io/md_io.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/md_io.Tpo" "$(DEPDIR)/md_io.Po"; else rm -f "$(DEPDIR)/md_io.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='io/md_io.cc' object='md_io.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o md_io.o `test -f 'io/md_io.cc' || echo '$(srcdir)/'`io/md_io.cc
-
-md_io.obj: io/md_io.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT md_io.obj -MD -MP -MF "$(DEPDIR)/md_io.Tpo" -c -o md_io.obj `if test -f 'io/md_io.cc'; then $(CYGPATH_W) 'io/md_io.cc'; else $(CYGPATH_W) '$(srcdir)/io/md_io.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/md_io.Tpo" "$(DEPDIR)/md_io.Po"; else rm -f "$(DEPDIR)/md_io.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='io/md_io.cc' object='md_io.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o md_io.obj `if test -f 'io/md_io.cc'; then $(CYGPATH_W) 'io/md_io.cc'; else $(CYGPATH_W) '$(srcdir)/io/md_io.cc'; fi`
-
 milc_io.o: io/milc_io.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT milc_io.o -MD -MP -MF "$(DEPDIR)/milc_io.Tpo" -c -o milc_io.o `test -f 'io/milc_io.cc' || echo '$(srcdir)/'`io/milc_io.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/milc_io.Tpo" "$(DEPDIR)/milc_io.Po"; else rm -f "$(DEPDIR)/milc_io.Tpo"; exit 1; fi
@@ -2272,20 +2193,6 @@ param_io.obj: io/param_io.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='io/param_io.cc' object='param_io.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o param_io.obj `if test -f 'io/param_io.cc'; then $(CYGPATH_W) 'io/param_io.cc'; else $(CYGPATH_W) '$(srcdir)/io/param_io.cc'; fi`
-
-pg_hmc_io.o: io/pg_hmc_io.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT pg_hmc_io.o -MD -MP -MF "$(DEPDIR)/pg_hmc_io.Tpo" -c -o pg_hmc_io.o `test -f 'io/pg_hmc_io.cc' || echo '$(srcdir)/'`io/pg_hmc_io.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/pg_hmc_io.Tpo" "$(DEPDIR)/pg_hmc_io.Po"; else rm -f "$(DEPDIR)/pg_hmc_io.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='io/pg_hmc_io.cc' object='pg_hmc_io.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o pg_hmc_io.o `test -f 'io/pg_hmc_io.cc' || echo '$(srcdir)/'`io/pg_hmc_io.cc
-
-pg_hmc_io.obj: io/pg_hmc_io.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT pg_hmc_io.obj -MD -MP -MF "$(DEPDIR)/pg_hmc_io.Tpo" -c -o pg_hmc_io.obj `if test -f 'io/pg_hmc_io.cc'; then $(CYGPATH_W) 'io/pg_hmc_io.cc'; else $(CYGPATH_W) '$(srcdir)/io/pg_hmc_io.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/pg_hmc_io.Tpo" "$(DEPDIR)/pg_hmc_io.Po"; else rm -f "$(DEPDIR)/pg_hmc_io.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='io/pg_hmc_io.cc' object='pg_hmc_io.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o pg_hmc_io.obj `if test -f 'io/pg_hmc_io.cc'; then $(CYGPATH_W) 'io/pg_hmc_io.cc'; else $(CYGPATH_W) '$(srcdir)/io/pg_hmc_io.cc'; fi`
 
 qprop_io.o: io/qprop_io.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT qprop_io.o -MD -MP -MF "$(DEPDIR)/qprop_io.Tpo" -c -o qprop_io.o `test -f 'io/qprop_io.cc' || echo '$(srcdir)/'`io/qprop_io.cc; \
@@ -2342,20 +2249,6 @@ szin_io.obj: io/szin_io.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='io/szin_io.cc' object='szin_io.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o szin_io.obj `if test -f 'io/szin_io.cc'; then $(CYGPATH_W) 'io/szin_io.cc'; else $(CYGPATH_W) '$(srcdir)/io/szin_io.cc'; fi`
-
-wilson_gaugeact_io.o: io/wilson_gaugeact_io.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT wilson_gaugeact_io.o -MD -MP -MF "$(DEPDIR)/wilson_gaugeact_io.Tpo" -c -o wilson_gaugeact_io.o `test -f 'io/wilson_gaugeact_io.cc' || echo '$(srcdir)/'`io/wilson_gaugeact_io.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/wilson_gaugeact_io.Tpo" "$(DEPDIR)/wilson_gaugeact_io.Po"; else rm -f "$(DEPDIR)/wilson_gaugeact_io.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='io/wilson_gaugeact_io.cc' object='wilson_gaugeact_io.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o wilson_gaugeact_io.o `test -f 'io/wilson_gaugeact_io.cc' || echo '$(srcdir)/'`io/wilson_gaugeact_io.cc
-
-wilson_gaugeact_io.obj: io/wilson_gaugeact_io.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT wilson_gaugeact_io.obj -MD -MP -MF "$(DEPDIR)/wilson_gaugeact_io.Tpo" -c -o wilson_gaugeact_io.obj `if test -f 'io/wilson_gaugeact_io.cc'; then $(CYGPATH_W) 'io/wilson_gaugeact_io.cc'; else $(CYGPATH_W) '$(srcdir)/io/wilson_gaugeact_io.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/wilson_gaugeact_io.Tpo" "$(DEPDIR)/wilson_gaugeact_io.Po"; else rm -f "$(DEPDIR)/wilson_gaugeact_io.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='io/wilson_gaugeact_io.cc' object='wilson_gaugeact_io.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o wilson_gaugeact_io.obj `if test -f 'io/wilson_gaugeact_io.cc'; then $(CYGPATH_W) 'io/wilson_gaugeact_io.cc'; else $(CYGPATH_W) '$(srcdir)/io/wilson_gaugeact_io.cc'; fi`
 
 writemilc.o: io/writemilc.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT writemilc.o -MD -MP -MF "$(DEPDIR)/writemilc.Tpo" -c -o writemilc.o `test -f 'io/writemilc.cc' || echo '$(srcdir)/'`io/writemilc.cc; \
@@ -2917,34 +2810,6 @@ expsu3.obj: util/gauge/expsu3.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o expsu3.obj `if test -f 'util/gauge/expsu3.cc'; then $(CYGPATH_W) 'util/gauge/expsu3.cc'; else $(CYGPATH_W) '$(srcdir)/util/gauge/expsu3.cc'; fi`
 
-gaugeact_utils.o: util/gauge/gaugeact_utils.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gaugeact_utils.o -MD -MP -MF "$(DEPDIR)/gaugeact_utils.Tpo" -c -o gaugeact_utils.o `test -f 'util/gauge/gaugeact_utils.cc' || echo '$(srcdir)/'`util/gauge/gaugeact_utils.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/gaugeact_utils.Tpo" "$(DEPDIR)/gaugeact_utils.Po"; else rm -f "$(DEPDIR)/gaugeact_utils.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/gauge/gaugeact_utils.cc' object='gaugeact_utils.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o gaugeact_utils.o `test -f 'util/gauge/gaugeact_utils.cc' || echo '$(srcdir)/'`util/gauge/gaugeact_utils.cc
-
-gaugeact_utils.obj: util/gauge/gaugeact_utils.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gaugeact_utils.obj -MD -MP -MF "$(DEPDIR)/gaugeact_utils.Tpo" -c -o gaugeact_utils.obj `if test -f 'util/gauge/gaugeact_utils.cc'; then $(CYGPATH_W) 'util/gauge/gaugeact_utils.cc'; else $(CYGPATH_W) '$(srcdir)/util/gauge/gaugeact_utils.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/gaugeact_utils.Tpo" "$(DEPDIR)/gaugeact_utils.Po"; else rm -f "$(DEPDIR)/gaugeact_utils.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/gauge/gaugeact_utils.cc' object='gaugeact_utils.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o gaugeact_utils.obj `if test -f 'util/gauge/gaugeact_utils.cc'; then $(CYGPATH_W) 'util/gauge/gaugeact_utils.cc'; else $(CYGPATH_W) '$(srcdir)/util/gauge/gaugeact_utils.cc'; fi`
-
-gaugebc_utils.o: util/gauge/gaugebc_utils.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gaugebc_utils.o -MD -MP -MF "$(DEPDIR)/gaugebc_utils.Tpo" -c -o gaugebc_utils.o `test -f 'util/gauge/gaugebc_utils.cc' || echo '$(srcdir)/'`util/gauge/gaugebc_utils.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/gaugebc_utils.Tpo" "$(DEPDIR)/gaugebc_utils.Po"; else rm -f "$(DEPDIR)/gaugebc_utils.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/gauge/gaugebc_utils.cc' object='gaugebc_utils.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o gaugebc_utils.o `test -f 'util/gauge/gaugebc_utils.cc' || echo '$(srcdir)/'`util/gauge/gaugebc_utils.cc
-
-gaugebc_utils.obj: util/gauge/gaugebc_utils.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gaugebc_utils.obj -MD -MP -MF "$(DEPDIR)/gaugebc_utils.Tpo" -c -o gaugebc_utils.obj `if test -f 'util/gauge/gaugebc_utils.cc'; then $(CYGPATH_W) 'util/gauge/gaugebc_utils.cc'; else $(CYGPATH_W) '$(srcdir)/util/gauge/gaugebc_utils.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/gaugebc_utils.Tpo" "$(DEPDIR)/gaugebc_utils.Po"; else rm -f "$(DEPDIR)/gaugebc_utils.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/gauge/gaugebc_utils.cc' object='gaugebc_utils.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o gaugebc_utils.obj `if test -f 'util/gauge/gaugebc_utils.cc'; then $(CYGPATH_W) 'util/gauge/gaugebc_utils.cc'; else $(CYGPATH_W) '$(srcdir)/util/gauge/gaugebc_utils.cc'; fi`
-
 gauge_startup.o: util/gauge/gauge_startup.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gauge_startup.o -MD -MP -MF "$(DEPDIR)/gauge_startup.Tpo" -c -o gauge_startup.o `test -f 'util/gauge/gauge_startup.cc' || echo '$(srcdir)/'`util/gauge/gauge_startup.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/gauge_startup.Tpo" "$(DEPDIR)/gauge_startup.Po"; else rm -f "$(DEPDIR)/gauge_startup.Tpo"; exit 1; fi
@@ -3112,6 +2977,48 @@ proginfo.obj: util/info/proginfo.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/info/proginfo.cc' object='proginfo.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o proginfo.obj `if test -f 'util/info/proginfo.cc'; then $(CYGPATH_W) 'util/info/proginfo.cc'; else $(CYGPATH_W) '$(srcdir)/util/info/proginfo.cc'; fi`
+
+gaugebc_periodic.o: actions/gauge/gaugebc_periodic.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gaugebc_periodic.o -MD -MP -MF "$(DEPDIR)/gaugebc_periodic.Tpo" -c -o gaugebc_periodic.o `test -f 'actions/gauge/gaugebc_periodic.cc' || echo '$(srcdir)/'`actions/gauge/gaugebc_periodic.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/gaugebc_periodic.Tpo" "$(DEPDIR)/gaugebc_periodic.Po"; else rm -f "$(DEPDIR)/gaugebc_periodic.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugebc_periodic.cc' object='gaugebc_periodic.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o gaugebc_periodic.o `test -f 'actions/gauge/gaugebc_periodic.cc' || echo '$(srcdir)/'`actions/gauge/gaugebc_periodic.cc
+
+gaugebc_periodic.obj: actions/gauge/gaugebc_periodic.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gaugebc_periodic.obj -MD -MP -MF "$(DEPDIR)/gaugebc_periodic.Tpo" -c -o gaugebc_periodic.obj `if test -f 'actions/gauge/gaugebc_periodic.cc'; then $(CYGPATH_W) 'actions/gauge/gaugebc_periodic.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugebc_periodic.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/gaugebc_periodic.Tpo" "$(DEPDIR)/gaugebc_periodic.Po"; else rm -f "$(DEPDIR)/gaugebc_periodic.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugebc_periodic.cc' object='gaugebc_periodic.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o gaugebc_periodic.obj `if test -f 'actions/gauge/gaugebc_periodic.cc'; then $(CYGPATH_W) 'actions/gauge/gaugebc_periodic.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugebc_periodic.cc'; fi`
+
+gaugebc_simple.o: actions/gauge/gaugebc_simple.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gaugebc_simple.o -MD -MP -MF "$(DEPDIR)/gaugebc_simple.Tpo" -c -o gaugebc_simple.o `test -f 'actions/gauge/gaugebc_simple.cc' || echo '$(srcdir)/'`actions/gauge/gaugebc_simple.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/gaugebc_simple.Tpo" "$(DEPDIR)/gaugebc_simple.Po"; else rm -f "$(DEPDIR)/gaugebc_simple.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugebc_simple.cc' object='gaugebc_simple.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o gaugebc_simple.o `test -f 'actions/gauge/gaugebc_simple.cc' || echo '$(srcdir)/'`actions/gauge/gaugebc_simple.cc
+
+gaugebc_simple.obj: actions/gauge/gaugebc_simple.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gaugebc_simple.obj -MD -MP -MF "$(DEPDIR)/gaugebc_simple.Tpo" -c -o gaugebc_simple.obj `if test -f 'actions/gauge/gaugebc_simple.cc'; then $(CYGPATH_W) 'actions/gauge/gaugebc_simple.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugebc_simple.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/gaugebc_simple.Tpo" "$(DEPDIR)/gaugebc_simple.Po"; else rm -f "$(DEPDIR)/gaugebc_simple.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugebc_simple.cc' object='gaugebc_simple.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o gaugebc_simple.obj `if test -f 'actions/gauge/gaugebc_simple.cc'; then $(CYGPATH_W) 'actions/gauge/gaugebc_simple.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugebc_simple.cc'; fi`
+
+wilson_gaugeact.o: actions/gauge/wilson_gaugeact.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT wilson_gaugeact.o -MD -MP -MF "$(DEPDIR)/wilson_gaugeact.Tpo" -c -o wilson_gaugeact.o `test -f 'actions/gauge/wilson_gaugeact.cc' || echo '$(srcdir)/'`actions/gauge/wilson_gaugeact.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/wilson_gaugeact.Tpo" "$(DEPDIR)/wilson_gaugeact.Po"; else rm -f "$(DEPDIR)/wilson_gaugeact.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/wilson_gaugeact.cc' object='wilson_gaugeact.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o wilson_gaugeact.o `test -f 'actions/gauge/wilson_gaugeact.cc' || echo '$(srcdir)/'`actions/gauge/wilson_gaugeact.cc
+
+wilson_gaugeact.obj: actions/gauge/wilson_gaugeact.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT wilson_gaugeact.obj -MD -MP -MF "$(DEPDIR)/wilson_gaugeact.Tpo" -c -o wilson_gaugeact.obj `if test -f 'actions/gauge/wilson_gaugeact.cc'; then $(CYGPATH_W) 'actions/gauge/wilson_gaugeact.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/wilson_gaugeact.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/wilson_gaugeact.Tpo" "$(DEPDIR)/wilson_gaugeact.Po"; else rm -f "$(DEPDIR)/wilson_gaugeact.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/wilson_gaugeact.cc' object='wilson_gaugeact.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o wilson_gaugeact.obj `if test -f 'actions/gauge/wilson_gaugeact.cc'; then $(CYGPATH_W) 'actions/gauge/wilson_gaugeact.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/wilson_gaugeact.cc'; fi`
 
 overlap_fermact_base_w.o: actions/ferm/fermacts/overlap_fermact_base_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT overlap_fermact_base_w.o -MD -MP -MF "$(DEPDIR)/overlap_fermact_base_w.Tpo" -c -o overlap_fermact_base_w.o `test -f 'actions/ferm/fermacts/overlap_fermact_base_w.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/overlap_fermact_base_w.cc; \
