@@ -8,6 +8,7 @@ set gauge_cfg = ../gfix.cfg1
 # Forward source
 #
 /bin/rm -f DATA
+set version = 5
 
 cat << **EOF** >! DATA
 <?xml version="1.0"?>
@@ -23,7 +24,7 @@ cat << **EOF** >! DATA
 </annotation>
 
 <Param>
- <version>5</version>
+ <version>${version}</version>
  <wave_state>S_WAVE</wave_state>
  <source_type>POINT_SOURCE</source_type>
  <j_decay>3</j_decay>
@@ -44,13 +45,14 @@ cat << **EOF** >! DATA
 
 # Run the make_source program
 $builddir/make_source
-/bin/mv XMLDAT make_source_pt.xml
+/bin/mv XMLDAT make_source_pt_v${version}.xml
 
 
 #
 # Forward propagators
 #
 /bin/rm -f DATA
+set version = 6
 
 cat << **EOF** >! DATA
 <?xml version="1.0"?>
@@ -66,7 +68,7 @@ cat << **EOF** >! DATA
 </annotation>
 
 <Param>
- <version>6</version>
+ <version>${version}</version>
  <FermTypeP>WILSON</FermTypeP>
  <nonRelProp>false</nonRelProp>
  <FermionAction>
@@ -95,13 +97,14 @@ cat << **EOF** >! DATA
 
 # Run the propagator program
 $builddir/propagator
-/bin/mv XMLDAT prop_pt.xml
+/bin/mv XMLDAT prop_pt_v${version}.xml
 
 
 #
 # Backward source
 #
 /bin/rm -f DATA
+set version = 5
 
 cat << **EOF** >! DATA
 <?xml version="1.0"?>
@@ -117,7 +120,7 @@ cat << **EOF** >! DATA
 </annotation>
 
 <Param>
- <version>5</version>
+ <version>${version}</version>
  <wave_state>S_WAVE</wave_state>
  <source_type>WALL_SOURCE</source_type>
  <j_decay>3</j_decay>
@@ -138,13 +141,14 @@ cat << **EOF** >! DATA
 
 # Run the make_source program
 $builddir/make_source
-/bin/mv XMLDAT make_source_wl.xml
+/bin/mv XMLDAT make_source_wl_v${version}.xml
 
 
 #
 # Forward propagators
 #
 /bin/rm -f DATA
+set version = 6
 
 cat << **EOF** >! DATA
 <?xml version="1.0"?>
@@ -160,7 +164,7 @@ cat << **EOF** >! DATA
 </annotation>
 
 <Param>
- <version>6</version>
+ <version>${version}</version>
  <FermTypeP>WILSON</FermTypeP>
  <nonRelProp>false</nonRelProp>
  <FermionAction>
@@ -189,13 +193,14 @@ cat << **EOF** >! DATA
 
 # Run the propagator program
 $builddir/propagator
-/bin/mv XMLDAT prop_wl.xml
+/bin/mv XMLDAT prop_wl_v${version}.xml
 
 
 #
 # Forward spectrum
 #
 /bin/rm -f DATA
+set version = 10
 
 cat << **EOF** >! DATA
 <?xml version="1.0"?>
@@ -208,7 +213,7 @@ cat << **EOF** >! DATA
 </annotation>
 
 <Param>
- <version>10</version>
+ <version>${version}</version>
  <Pt_snk>true</Pt_snk>
  <Sl_snk>false</Sl_snk>
  <Wl_snk>true</Wl_snk>
@@ -237,13 +242,14 @@ cat << **EOF** >! DATA
 
 # Run the spectrum program
 $builddir/spectrum_w
-/bin/mv XMLDAT spectrum_pt.xml
+/bin/mv XMLDAT spectrum_pt_v${version}.xml
 
 
 #
 # Backward spectrum
 #
 /bin/rm -f DATA
+set version = 10
 
 cat << **EOF** >! DATA
 <?xml version="1.0"?>
@@ -256,7 +262,7 @@ cat << **EOF** >! DATA
 </annotation>
 
 <Param>
- <version>10</version>
+ <version>${version}</version>
  <Pt_snk>true</Pt_snk>
  <Sl_snk>false</Sl_snk>
  <Wl_snk>true</Wl_snk>
@@ -285,13 +291,14 @@ cat << **EOF** >! DATA
 
 # Run the spectrum program
 $builddir/spectrum_w
-/bin/mv XMLDAT spectrum_wl.xml
+/bin/mv XMLDAT spectrum_wl_v${version}.xml
 
 
 #
 # Wallformfac
 #
 /bin/rm -f DATA
+set version = 1
 
 cat << **EOF** >! DATA
 <?xml version="1.0"?>
@@ -306,7 +313,7 @@ cat << **EOF** >! DATA
 </annotation>
 
 <Param>
- <version>1</version>
+ <version>${version}</version>
  <formfac_type>0 1</formfac_type>
  <mom2_max>3</mom2_max>
  <nrow>4 4 4 8</nrow>
@@ -324,5 +331,5 @@ cat << **EOF** >! DATA
 
 # Run the wallformfac program
 $builddir/wallformfac
-/bin/mv XMLDAT wallformfac.xml
+/bin/mv XMLDAT wallformfac_v${version}.xml
 
