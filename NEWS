@@ -1,5 +1,9 @@
 02/27/2005 -- Robert Edwards
 
+	Version 1.19.11. Small code simplifications.
+
+02/27/2005 -- Robert Edwards
+
 	Version 1.19.10. 5D versions of Chrono predictor in place.
         Changed input format of sink_smear and qqq_w to take arrays.
 
