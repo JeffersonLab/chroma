@@ -10,8 +10,9 @@
  *
  * YOU HAVE BEEN WARNED.
  */
-#include "chroma.h"
-#include "vector_meson_s.h"
+
+#include "meas/hadron/vector_meson_s.h"
+#include "meas/hadron/stag_propShift_s.h"
 #include "util/gauge/stag_phases_s.h"
 
 

@@ -6,11 +6,11 @@
  * index to co-incide with the corect delta for meson spectroscopy
  */
 
-#include "chroma.h"
+#include "chromabase.h"
 
 int deltaToPropIndex(multi1d<int>& delta);
 
 LatticeStaggeredPropagator shiftDeltaProp(multi1d<int>& delta, 
-                                 const LatticeStaggeredPropagator& src);
+					  const LatticeStaggeredPropagator& src);
 
 #endif

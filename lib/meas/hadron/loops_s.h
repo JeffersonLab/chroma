@@ -2,7 +2,7 @@
 #define LOOP_S_H
 
 
-#include "chroma.h"
+#include "chromabase.h"
 
 /*
 

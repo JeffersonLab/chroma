@@ -5,7 +5,7 @@
 #define NUM_STAG_PIONS   16
 
 
-#include "chroma.h"
+#include "chromabase.h"
 
 /*
 

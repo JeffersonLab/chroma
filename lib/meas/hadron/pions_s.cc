@@ -9,8 +9,8 @@
  *
  * YOU HAVE BEEN WARNED.
  */
-#include "chroma.h"
-#include "pions_s.h"
+
+#include "meas/hadron/pions_s.h"
 #include "util/gauge/stag_phases_s.h"
 
 

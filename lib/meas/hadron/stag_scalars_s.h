@@ -5,7 +5,7 @@
 #define NUM_STAG_PIONS   16
 
 
-#include "chroma.h"
+#include "meas/hadron/hadron_corr_s.h"
 
 class staggered_hadron_corr ; 
 

@@ -9,8 +9,9 @@
  *
  * YOU HAVE BEEN WARNED.
  */
-#include "chroma.h"
-#include "stag_scalars_s.h"
+
+#include "meas/hadron/stag_propShift_s.h"
+#include "meas/hadron/stag_scalars_s.h"
 #include "util/gauge/stag_phases_s.h"
 
 

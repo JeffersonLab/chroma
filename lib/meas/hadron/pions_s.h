@@ -5,7 +5,8 @@
 #define NUM_STAG_PIONS   16
 
 
-#include "chroma.h"
+#include "meas/hadron/hadron_corr_s.h"
+#include "meas/hadron/stag_propShift_s.h"
 
 /*
 
