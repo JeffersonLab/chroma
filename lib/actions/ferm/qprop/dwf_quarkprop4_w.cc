@@ -1,4 +1,4 @@
-// $Id: dwf_quarkprop4_w.cc,v 1.2 2004-01-02 03:19:41 edwards Exp $
+// $Id: dwf_quarkprop4_w.cc,v 1.3 2004-01-06 20:16:47 edwards Exp $
 /*! \file
  * \brief Full quark propagator solver for domain wall fermions
  *
@@ -8,7 +8,9 @@
 
 #include "chromabase.h"
 #include "fermact.h"
-#include "actions/ferm/qprop/quarkprop4_w.h"
+#include "actions/ferm/qprop/dwf_quarkprop4_w.h"
+#include "actions/ferm/linop/dwffld_w.h"
+#include "util/ferm/transf.h"
 #include "util/ft/sftmom.h"
 
 using namespace QDP;
@@ -27,14 +29,14 @@ using namespace QDP;
  */
 template<typename T, template<class> class C>
 static 
-void dwf_quarkProp4(LatticePropagator& q_sol, 
-		    XMLWriter& xml_out,
-		    const LatticePropagator& q_src,
-		    const C<T>& S_f,
-		    Handle<const ConnectState> state,
-		    enum InvType invType,
-		    const Real& RsdCG, 
-		    int MaxCG, int& ncg_had)
+void dwf_quarkProp4_a(LatticePropagator& q_sol, 
+		      XMLWriter& xml_out,
+		      const LatticePropagator& q_src,
+		      const C<T>& S_f,
+		      Handle<const ConnectState> state,
+		      enum InvType invType,
+		      const Real& RsdCG, 
+		      int MaxCG, int& ncg_had)
 {
   START_CODE("dwf_quarkProp4");
 
@@ -66,8 +68,8 @@ void dwf_quarkProp4(LatticePropagator& q_sol,
        */
 
       Real fact = Real(1) / sqrt(norm2(tmp[0]));
-
-      tmp *= fact; 
+      for(int i = 0; i < tmp.size(); ++i)
+	tmp[i] *= fact; 
 	   
       multi1d<LatticeFermion> chi(S_f.size()) ;
 	   
@@ -90,7 +92,8 @@ void dwf_quarkProp4(LatticePropagator& q_sol,
       // Unnormalize the source following the inverse 
       // of the normalization above
       fact = Real(1) / fact;
-      psi *= fact;
+      for(int i = 0; i < tmp.size(); ++i)
+	psi[i] *= fact; 
 
       /*
        * Move the solution to the appropriate components
@@ -116,9 +119,6 @@ void dwf_quarkProp4(LatticePropagator& q_sol,
     }	/* end loop over spin_source */
   } /* end loop over color_source */
 
-  pop(xml_out);
-
- 
   // constuct the conserved axial current correlator
   LatticeComplex cfield ;
   dwf_conserved_axial_ps_corr(cfield,state->getLinks(),prop5d,3,S_f.size());
@@ -137,13 +137,14 @@ void dwf_quarkProp4(LatticePropagator& q_sol,
   pop(xml_out);
 
   //Now the midpoint Pseudoscalar correlator
-  cfield = trace(prop_mp * adj(prop_mp));
+  cfield = trace(prop_mp * adj(prop_mp));    // ERROR: prop_mp not defined!!
 
   corr = trick.sft(cfield);
   push(xml_out, "DWF_MidPoint_Pseudo");
   Write(xml_out, corr);
   pop(xml_out);
 
+  pop(xml_out);   // DWF_QuarkProp4
 
   END_CODE("dwf_quarkProp4");
 }
@@ -182,3 +183,30 @@ void dwf_conserved_axial_ps_corr(LatticeComplex& corr,
   }  
 }
 
+
+#if 0
+//! Given a complete propagator as a source, this does all the inversions needed
+/*! \ingroup qprop
+ *
+ * This routine is actually generic to Domain Wall fermions (Array) fermions
+ *
+ * \param q_sol    quark propagator ( Write )
+ * \param q_src    source ( Read )
+ * \param invType  inverter type ( Read )
+ * \param RsdCG    CG (or MR) residual used here ( Read )
+ * \param MaxCG    maximum number of CG iterations ( Read )
+ * \param ncg_had  number of CG iterations ( Write )
+ */
+
+void dwf_quarkProp4(LatticePropagator& q_sol, 
+		    XMLWriter& xml_out,
+		    const LatticePropagator& q_src,
+		    const EvenOddPrecDWFermActBaseArray<LatticeFermion>& S_f,
+		    Handle<const ConnectState> state,
+		    enum InvType invType,
+		    const Real& RsdCG, 
+		    int MaxCG, int& ncg_had)
+{
+  dwf_quarkProp4_a(q_sol, xml_out, q_src, S_f, state, invType, RsdCG, MaxCG, ncg_had);
+}
+#endif

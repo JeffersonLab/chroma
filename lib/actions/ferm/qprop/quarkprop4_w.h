@@ -1,4 +1,4 @@
-// $Id: quarkprop4_w.h,v 1.7 2004-01-05 04:21:18 edwards Exp $
+// $Id: quarkprop4_w.h,v 1.8 2004-01-06 20:16:47 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -9,7 +9,6 @@
 #define __quarkprop4_w_h__
 
 #include "fermact.h"
-#include "actions/ferm/fermacts/prec_dwf_fermact_base_array_w.h"
 
 //! Given a complete propagator as a source, this does all the inversions needed
 /*! \ingroup qprop
@@ -78,6 +77,8 @@ void quarkProp4(LatticePropagator& q_sol,
 		const Real& RsdCG, 
 		int MaxCG, int& ncg_had);
 
+
+#include "actions/ferm/fermacts/prec_dwf_fermact_base_array_w.h"
 
 //! Given a complete propagator as a source, this does all the inversions needed
 /*! \ingroup qprop
