@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: param_io.h,v 1.11 2004-02-23 03:09:39 edwards Exp $
+// $Id: param_io.h,v 1.12 2004-02-24 02:40:58 edwards Exp $
 /*! \file
  *  \brief Reunitarize (to a SU(N)) inplace the matrix A under some option
  */
@@ -81,6 +81,12 @@ enum FermActType {
 /*
  * Input 
  */
+struct IO_version_t
+{
+  int version;
+};
+
+
 struct Cfg_t
 {
   CfgType      cfg_type;   // storage order for stored gauge configuration

@@ -1,4 +1,4 @@
-// $Id: param_io.cc,v 1.13 2004-02-23 03:09:39 edwards Exp $
+// $Id: param_io.cc,v 1.14 2004-02-24 02:40:58 edwards Exp $
 /*! \file
  *  \brief Various parameter readers/writers for main programs
  */
@@ -260,6 +260,15 @@ void read(XMLReader& xml, const string& path, WaveStateType& param)
     QDPIO::cerr << "Unsupported particle wave-state type" << endl;
     QDP_abort(1);
   }
+}
+
+
+//! Read the input version
+void read(XMLReader& xml, const string& path, IO_version_t& param)
+{
+  XMLReader paramtop(xml, path);
+
+  read(paramtop, "version", param.version);
 }
 
 
