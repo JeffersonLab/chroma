@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linop.h,v 1.17 2004-05-06 16:48:21 bjoo Exp $
+// $Id: linop.h,v 1.18 2004-11-20 21:18:08 edwards Exp $
 
 /*! \file
  * \brief Linear operators
@@ -19,11 +19,8 @@
 #include "lmdagm.h"
 #include "lopscl.h"
 
-#ifdef CHROMA_BUILD_WILSON
 #include "linop_w.h"
-#elif defined CHROMA_BUILD_STAGGERED
 #include "linop_s.h"
-#endif
 
 #endif
 
