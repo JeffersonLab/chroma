@@ -1,4 +1,4 @@
-/// $Id: t_gfix.cc,v 1.1 2004-01-02 21:19:39 edwards Exp $
+/// $Id: t_gfix.cc,v 1.2 2004-01-02 21:54:49 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -21,21 +21,12 @@ int main(int argc, char *argv[])
   Layout::setLattSize(nrow);
   Layout::create();
 
-  XMLFileWriter xml("t_mesplq.xml");
-  push(xml, "t_mesplq");
-
-  push(xml,"lattis");
-  Write(xml,Nd);
-  Write(xml,Nc);
-  Write(xml,nrow);
-  pop(xml);
-
   int type;
   QDPIO::cout << "Enter Gauge field type\n"
 	      << "  (1) Free field\n"
 	      << "  (2) Random-transformed free field\n"
 	      << "  (3) Hot start (call hotst)\n"
-	      << "  (4) SZIN configuration" << endl;
+	      << "  (4) SZIN configuration\n"
 	      << "  (5) NERSC configuration" << endl;
   QDPIO::cin >> type;
 
@@ -64,14 +55,17 @@ int main(int argc, char *argv[])
 
   QDPIO::cout << "Now, I am running..." << endl;
 
+  XMLFileWriter xml_out("t_gfix.xml");
+  push(xml_out, "t_gfix");
+
   push(xml_out,"Lattice_dimensions");
   Write(xml_out, Nc);
   Write(xml_out, Nd);
   Write(xml_out, nrow);
   pop(xml_out);
-  push(xml_out,"Boundary_conditions");
-  Write(xml_out, boundary);
-  pop(xml_out);
+
+  multi1d<LatticeColorMatrix> u(Nd);    // Gauge field
+  LatticeColorMatrix g;
 
   switch (type)
   {
@@ -112,7 +106,7 @@ int main(int argc, char *argv[])
     QDPIO::cout << "Read SZIN config from " << cfg_file_in << endl;
 
     XMLReader gauge_xml;
-    readSzin(gauge_xml, u, cfg_file);
+    readSzin(gauge_xml, u, cfg_file_in);
   }
   break;
 
@@ -128,7 +122,7 @@ int main(int argc, char *argv[])
     QDPIO::cout << "Read NERSC config from " << cfg_file_in << endl;
 
     XMLReader gauge_xml;
-    readArchiv(gauge_xml, u, cfg_file);
+    readArchiv(gauge_xml, u, cfg_file_in);
   }
   break;
 
@@ -137,7 +131,7 @@ int main(int argc, char *argv[])
   }
 
   string cfg_file_out;
-  QDPIO::cout << "Enter output file name" << endl;
+  QDPIO::cout << "Enter NERSC output file name" << endl;
   QDPIO::cin >> cfg_file_out;
 
 
@@ -149,6 +143,7 @@ int main(int argc, char *argv[])
   Write(xml_out, OrPara);
   pop(xml_out);
 
+  Double w_plaq, s_plaq, t_plaq, link;
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
   QDPIO::cout << " Initial plaqettes and link: " << w_plaq
 	      << " " << s_plaq << " " << t_plaq << " " << link << endl;
@@ -161,7 +156,8 @@ int main(int argc, char *argv[])
   pop(xml_out);
 
   // Now gauge fix
-  gfix(u, j_decay, GFAccu, GFMax, nrl_gf, OrlxDo, OrPara);
+  int nrl_gf;
+  coulGauge(u, nrl_gf, j_decay, GFAccu, GFMax, OrlxDo, OrPara);
 
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
   QDPIO::cout << " Final plaqettes and link: " << w_plaq
@@ -179,10 +175,10 @@ int main(int argc, char *argv[])
   pop(xml_out);
 
   // Now write the gauge field in NERSC format
-  QDPIO::cout << "Trying to write NERSC Archive  t_nersc.cfg" << endl;
-  writeArchiv(u, "t_nersc.cfg");
+  QDPIO::cout << "Trying to write NERSC Archive to file  " << cfg_file_out << endl;
+  writeArchiv(u, cfg_file_out);
     
-  pop(xml);
+  pop(xml_out);
 
   // Time to bolt
   QDP_finalize();
