@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 1.20 2004-05-14 00:21:17 edwards Exp $
+// $Id: qprop_io.cc,v 1.21 2004-05-14 00:26:44 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -458,17 +458,17 @@ void read(XMLReader& xml, const string& path, QQQBarcomp_t& param)
   {
     /**************************************************************************/
   case 1:
-    header.Dirac_basis = false;
-    header.forward_props.resize(3);
-    read(paramtop, "Propagator1", header.forward_props[0]);
-    read(paramtop, "Propagator2", header.forward_props[1]);
-    read(paramtop, "Propagator3", header.forward_props[2]);
+    param.Dirac_basis = false;
+    param.forward_props.resize(3);
+    read(paramtop, "Propagator1", param.forward_props[0]);
+    read(paramtop, "Propagator2", param.forward_props[1]);
+    read(paramtop, "Propagator3", param.forward_props[2]);
     break;
 
     /**************************************************************************/
   case 2:
-    read(paramtop, "Dirac_basis", header.Dirac_basis);
-    read(paramtop, "ForwardProps", header.forward_props);
+    read(paramtop, "Dirac_basis", param.Dirac_basis);
+    read(paramtop, "ForwardProps", param.forward_props);
     break;
 
   default:
@@ -478,10 +478,10 @@ void read(XMLReader& xml, const string& path, QQQBarcomp_t& param)
     QDP_abort(1);
   }
 
-  if (header.forward_props.size() != 3)
+  if (param.forward_props.size() != 3)
   {
     QDPIO::cerr << "QQQBarcomp: unexpected number of forward_props = " 
-		<< header.forward_props.size() << endl; 
+		<< param.forward_props.size() << endl; 
     QDP_abort(1);
   }
 }
