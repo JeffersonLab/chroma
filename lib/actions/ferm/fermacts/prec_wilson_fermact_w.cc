@@ -1,4 +1,4 @@
-// $Id: prec_wilson_fermact_w.cc,v 1.7 2004-01-23 10:35:36 bjoo Exp $
+// $Id: prec_wilson_fermact_w.cc,v 1.8 2004-01-30 04:22:20 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action
  */
@@ -18,7 +18,14 @@
 const EvenOddPrecLinearOperator<LatticeFermion>* 
 EvenOddPrecWilsonFermAct::linOp(Handle<const ConnectState> state) const
 {
-  return new EvenOddPrecWilsonLinOp(state->getLinks(),Mass);
+  const EvenOddPrecLinearOperator<LatticeFermion>* foo;
+
+  if (aniso.anisoP)
+    foo = new EvenOddPrecWilsonLinOp(state->getLinks(),Mass,aniso);
+  else
+    foo = new EvenOddPrecWilsonLinOp(state->getLinks(),Mass);
+
+  return foo;
 }
 
 //! Produce a M^dag.M linear operator for this action
@@ -61,6 +68,12 @@ EvenOddPrecWilsonFermAct::dsdu(multi1d<LatticeColorMatrix>& ds_u,
 
 #error "Not quite correct implementation"
 
+  if (aniso.anisoP)
+  {
+    QDPIO::cerr << "Currently do not support anisotropy" << endl;
+    QDP_abort(1);
+  }
+
   const multi1d<LatticeColorMatrix>& u = state->getLinks();
 				 
   LatticeColorMatrix utmp_1;
@@ -84,7 +97,7 @@ EvenOddPrecWilsonFermAct::dsdu(multi1d<LatticeColorMatrix>& ds_u,
     
   /* rho = Dslash(0<-1) * psi */
   D.apply(rho, psi, PLUS, 1);
-    
+ 
   /* phi = (KappaMD^2)*phi = -(KappaMD^2)*M*psi */
   dummy = -(KappaMD*KappaMD);
   phi *= dummy;

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_wilson_linop_w.h,v 1.2 2003-11-23 06:15:16 edwards Exp $
+// $Id: prec_wilson_linop_w.h,v 1.3 2004-01-30 04:22:20 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion linear operator
  */
@@ -9,6 +9,7 @@
 
 #include "linearop.h"
 #include "actions/ferm/linop/dslash_w.h"
+#include "io/param_io.h"       // to get AnisoParam_t
 
 using namespace QDP;
 
@@ -33,11 +34,22 @@ public:
   EvenOddPrecWilsonLinOp(const multi1d<LatticeColorMatrix>& u_, const Real& Mass_)
     {create(u_,Mass_);}
 
+  //! Full constructor with Anisotropy
+  EvenOddPrecWilsonLinOp(const multi1d<LatticeColorMatrix>& u_, 
+			 const Real& Mass_,
+			 const AnisoParam_t& aniso)
+    {create(u_,Mass_,aniso);}
+
   //! Destructor is automatic
   ~EvenOddPrecWilsonLinOp() {}
 
   //! Creation routine
   void create(const multi1d<LatticeColorMatrix>& u_, const Real& Mass_);
+
+  //! Creation routine with Anisotropy
+  void create(const multi1d<LatticeColorMatrix>& u_, 
+	      const Real& Mass_,
+	      const AnisoParam_t& aniso);
 
   //! Apply the the even-even block onto a source vector
   inline
@@ -76,7 +88,6 @@ private:
   Real invfact;  // tmp holding  1/(Nd+Mass)
 
   Real Mass;
-  multi1d<LatticeColorMatrix> u;
   WilsonDslash D;
 };
 

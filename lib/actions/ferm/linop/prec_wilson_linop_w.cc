@@ -1,4 +1,4 @@
-// $Id: prec_wilson_linop_w.cc,v 1.2 2003-11-23 06:15:42 edwards Exp $
+// $Id: prec_wilson_linop_w.cc,v 1.3 2004-01-30 04:22:20 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson linear operator
  */
@@ -15,10 +15,40 @@ void EvenOddPrecWilsonLinOp::create(const multi1d<LatticeColorMatrix>& u_,
 				    const Real& Mass_)
 {
   Mass = Mass_;
-  u = u_;
-  D.create(u);
+  D.create(u_);
 
   fact = Nd + Mass;
+  invfact = 1/fact;
+}
+
+
+//! Creation routine with Anisotropy
+/*!
+ * \param u_ 	  gauge field     	       (Read)
+ * \param Mass_   fermion kappa   	       (Read)
+ * \param aniso   anisotropy struct   	       (Read)
+ */
+void EvenOddPrecWilsonLinOp::create(const multi1d<LatticeColorMatrix>& u_, 
+				    const Real& Mass_,
+				    const AnisoParam_t& aniso)
+{
+  Mass = Mass_;
+
+  multi1d<LatticeColorMatrix> u = u_;
+  Real ff = where(aniso.anisoP, aniso.nu / aniso.xi_0, Real(1));
+  
+  if (aniso.anisoP)
+  {
+    // Rescale the u fields by the anisotropy
+    for(int mu=0; mu < u.size(); ++mu)
+    {
+      if (mu != aniso.t_dir)
+	u[mu] *= ff;
+    }
+  }
+  D.create(u);
+
+  fact = 1 + (Nd-1)*ff + Mass;
   invfact = 1/fact;
 }
 

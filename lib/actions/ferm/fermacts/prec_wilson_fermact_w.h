@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_wilson_fermact_w.h,v 1.5 2004-01-23 10:35:36 bjoo Exp $
+// $Id: prec_wilson_fermact_w.h,v 1.6 2004-01-30 04:22:20 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action
  */
@@ -9,6 +9,7 @@
 
 #include "fermact.h"
 #include "actions/ferm/linop/lgherm_w.h"
+#include "io/param_io.h"       // to get AnisoParam_t
 
 using namespace QDP;
 
@@ -24,16 +25,22 @@ class EvenOddPrecWilsonFermAct : public EvenOddPrecWilsonTypeFermAct<LatticeFerm
 public:
   //! General FermBC
   EvenOddPrecWilsonFermAct(Handle< FermBC<LatticeFermion> > fbc_, 
-		      const Real& Mass_) : 
-    fbc(fbc_), Mass(Mass_) {}
+			   const Real& Mass_) : 
+    fbc(fbc_), Mass(Mass_) {anisoParamInit(aniso);}
+
+  //! General FermBC with Anisotropy
+  EvenOddPrecWilsonFermAct(Handle< FermBC<LatticeFermion> > fbc_, 
+			   const Real& Mass_,
+			   const AnisoParam_t& aniso_) :
+    fbc(fbc_), Mass(Mass_), aniso(aniso_) {}
 
   //! Copy constructor
   EvenOddPrecWilsonFermAct(const EvenOddPrecWilsonFermAct& a) : 
-    fbc(a.fbc), Mass(a.Mass) {}
+    fbc(a.fbc), Mass(a.Mass), aniso(a.aniso) {}
 
   //! Assignment
   EvenOddPrecWilsonFermAct& operator=(const EvenOddPrecWilsonFermAct& a)
-    {fbc=a.fbc; Mass=a.Mass; return *this;}
+    {fbc=a.fbc; Mass=a.Mass; aniso=a.aniso; return *this;}
 
   //! Return the fermion BC object for this action
   const FermBC<LatticeFermion>& getFermBC() const {return *fbc;}
@@ -60,6 +67,7 @@ public:
 private:
   Handle< FermBC<LatticeFermion> >  fbc;
   Real Mass;
+  AnisoParam_t aniso;
 };
 
 #endif

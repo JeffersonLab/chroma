@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.36 2004-01-14 22:24:38 kostas Exp $
+// $Id: propagator.cc,v 1.37 2004-01-30 04:22:56 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -24,6 +24,7 @@ struct Param_t
   FermActType     FermAct;
   Real            Mass;       // quark mass (bare units)
  
+  AnisoParam_t    anisoParam;
   ChiralParam_t   chiralParam;
 
   CfgType         cfg_type;   // storage order for stored gauge configuration
@@ -96,13 +97,15 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     {
       /**************************************************************************/
     case 2:
+    case 3:
       /**************************************************************************/
+      anisoParamInit(input.param.anisoParam);
       break;
 
     default:
       /**************************************************************************/
-
-      QDPIO::cerr << "Input parameter version " << input.io_version.version << " unsupported." << endl;
+      QDPIO::cerr << "Input parameter version " << input.io_version.version 
+		  << " unsupported." << endl;
       QDP_abort(1);
     }
   }
@@ -111,7 +114,6 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     QDPIO::cerr << "Error reading data: " << e << endl;
     throw;
   }
-
 
   // Read the common bits
   try 
@@ -155,6 +157,9 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
       }
     }
 #endif
+
+    if (paramtop.count("AnisoParam") != 0)
+      read(paramtop, "AnisoParam", input.param.anisoParam);
 
     if (paramtop.count("ChiralParam") != 0)
       read(paramtop, "ChiralParam", input.param.chiralParam);
@@ -323,7 +328,8 @@ int main(int argc, char **argv)
   {
     QDPIO::cout << "FERM_ACT_WILSON" << endl;
 
-    EvenOddPrecWilsonFermAct S_f(fbc,input.param.Mass);
+    EvenOddPrecWilsonFermAct S_f(fbc,input.param.Mass,
+				 input.param.anisoParam);
     Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
 
     quarkProp4(quark_propagator, xml_buf, quark_prop_source,
