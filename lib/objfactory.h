@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: objfactory.h,v 1.3 2004-09-18 17:12:22 edwards Exp $
+// $Id: objfactory.h,v 1.4 2004-10-04 21:41:22 edwards Exp $
 
 /*! @file
  * @brief Factory class for objects from XML input
@@ -31,7 +31,6 @@ namespace Chroma
         
     static AbstractProduct* OnUnknownType(const IdentifierType& id)
       {
-	cerr << "Factory error: unknown identifier: id = " << id << endl;
 	throw Exception();
       }
   };
@@ -98,8 +97,6 @@ namespace Chroma
      */
     bool registerObject(const IdentifierType& id, ProductCreator creator)
       {
-	cerr << "Factory: registering id=" << id << endl;
-
 	return associations_.insert(
 	  IdToProductMap::value_type(id, creator)).second;
       }
@@ -121,8 +118,6 @@ namespace Chroma
      */
     AbstractProduct* createObject(const IdentifierType& id)
       {
-	cerr << "Factory(1): create id=" << id << endl;
-
 	typename IdToProductMap::const_iterator i = associations_.find(id);
 	if (i == associations_.end())
 	  return OnUnknownType(id);
@@ -147,8 +142,6 @@ namespace Chroma
         
     AbstractProduct* createObject(const IdentifierType& id, Parm1 p1, Parm2 p2)
       {
-	cerr << "Factory(3): create id=" << id << endl;
-
 	typename IdToProductMap::const_iterator i = associations_.find(id);
 	if (i == associations_.end())
 	  return OnUnknownType(id);
@@ -158,8 +151,6 @@ namespace Chroma
         
     AbstractProduct* createObject(const IdentifierType& id, Parm1 p1, Parm2 p2, Parm3 p3)
       {
-	cerr << "Factory(4): create id=" << id << endl;
-
 	typename IdToProductMap::const_iterator i = associations_.find(id);
 	if (i == associations_.end())
 	  return OnUnknownType(id);
