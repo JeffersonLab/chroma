@@ -1,10 +1,11 @@
-// $Id: readszin.cc,v 1.13 2003-08-27 22:08:41 edwards Exp $
+// $Id: readszin.cc,v 1.14 2003-10-08 04:37:50 edwards Exp $
 
 /*! \file
  *  \brief Read in a configuration written by SZIN up to configuration version 7.
  */
 
 #include "chromabase.h"
+#include "io/szin_io.h"
 #include "io/readszin.h"
 #include "primitives.h"
 #include "qdp_util.h"    // from QDP
@@ -23,58 +24,21 @@ using namespace QDP;
  *         = u(2,Nc,Nc,VOL_CB,2,4)
  *
  *
- * \param xml        xml reader holding config info ( Modify )
+ * \param header     structure holding config info ( Modify )
  * \param u          gauge configuration ( Modify )
  * \param cfg_file   path ( Read )
  */    
 
-void readSzin(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_file)
+void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string& cfg_file)
 {
-  multi1d<int> nrow_old(Nd); /* Lattice size (from CFGIN) */
-  int Nd_old; /* Number of spacetime dimensions (from CFGIN) */
-  int Nc_old; /* Number of colours (from CFGIN) */
+  START_CODE("readSzin");
 
-  multi2d<Real> wstat(41, 20); /* On-line statistical accumulators */
-  multi2d<Real32> wstat_old(41, 20); /* WStat values from CFGIN file */
+  multi2d<Real> wstat(41, 20); /* On-line statistical accumulators - throw away */
 
-  int TotalTrj_old; /* Total number of trajectories */
-  int TotalCG_old; /* Total number of CG iterations */
-  int FermTypeP_old; /* Fermion type (from CFGIN) */
-  Real32 MesTrj_old;
-  int spec_acc;
-  int MesItr_old;
-//int TotalItr_old;
-  int NOver_old;
-  int TotalTry_old;
-  int TotalFail_old;
-  int Npf_old;
-  int RefMomTrj_old;
-  int RefFnoiseTrj_old;
-  Real32 MesTrj; /* Trajectories per measurement (as a Float) */
-  Real32 BetaMC_old;
-  Real32 BetaMD_old;
-  Real32 bh_old;
-  Real32 dt_old;
-  Real32 KappaMC_old;
-  Real32 KappaMD_old;
-  Real32 MassMC_old;
-  Real32 MassMD_old;
-  Real32 Nf_old;
-  Real32 LamPl_old;
-  Real32 LamMi_old;
-  Real32 AlpLog_old;
-  Real32 AlpExp_old;
-  Seed   seed_old;
-
-  int i;
-  int j;
-
-  int cfg_record_size; /* not used */
-  int cfg_version;
+  int cfg_record_size; // must read but will ignore - not used
   int date_size;
   int banner_size;
-
-  START_CODE("readSzin");
+  Real32 bh = 0;       // old beta used for higgs term - not used
 
   // Read in the configuration along with relevant information
   BinaryReader cfg_in(cfg_file); // for now, cfg_io_location not used
@@ -93,245 +57,249 @@ void readSzin(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_
    * blow up down below.
    */
   char *date_tmp = new char[date_size+1];
-  for(i=0; i < date_size; ++i)
+  for(int i=0; i < date_size; ++i)
   {
+    int j;
     read(cfg_in,j);
     date_tmp[i] = j;
   }
   date_tmp[date_size] = '\0';
-  string date = date_tmp;
+  header.date = date_tmp;
   delete[] date_tmp;
 
   char *banner_tmp = new char[banner_size+1];
-  for(i=0; i < banner_size; ++i)
+  for(int i=0; i < banner_size; ++i)
   {
+    int j;
     read(cfg_in,j);
     banner_tmp[i] = j;
   }
   banner_tmp[banner_size] = '\0';
-  string banner = banner_tmp;
+  header.banner = banner_tmp;
   delete[] banner_tmp;
 
-  read(cfg_in,cfg_version);
+  read(cfg_in, header.cfg_version);
 
-  switch(cfg_version) /* just add new cases if the CFG format changes */
+  switch(header.cfg_version) /* just add new cases if the CFG format changes */
   {
   case 1:
-    read(cfg_in,Nd_old); 
-    read(cfg_in,Nc_old); 
-    read(cfg_in,BetaMC_old); 
-    read(cfg_in,bh_old); 
-    read(cfg_in,dt_old); 
-    read(cfg_in,MesTrj);
-    read(cfg_in,KappaMC_old);
-    TotalTrj_old = 0;
-    BetaMD_old = BetaMC_old;
-    KappaMD_old = KappaMC_old;
-    MassMC_old = 0;
-    MassMD_old = 0;
-    spec_acc = 1;
-    FermTypeP_old = WILSON_FERMIONS;
-    NOver_old = 0;
-    TotalTry_old = 0;
-    TotalFail_old = 0;
-    Nf_old = 0;
-    Npf_old = 0;
-    RefMomTrj_old = 0;
-    RefFnoiseTrj_old = 0;
-    LamPl_old = 0;
-    LamMi_old = 0;
-    AlpLog_old = 0;
-    AlpExp_old = 0;
+    read(cfg_in, header.Nd); 
+    read(cfg_in, header.Nc); 
+    read(cfg_in, header.BetaMC); 
+    read(cfg_in, bh); 
+    read(cfg_in, header.dt); 
+    read(cfg_in, header.MesTrj);
+    read(cfg_in, header.KappaMC);
+    header.TotalTrj = 0;
+    header.BetaMD = header.BetaMC;
+    header.KappaMD = header.KappaMC;
+    header.MassMC = 0;
+    header.MassMD = 0;
+    header.spec_acc = 1;
+    header.FermTypeP = WILSON_FERMIONS;
+    header.NOver = 0;
+    header.TotalTry = 0;
+    header.TotalFail = 0;
+    header.Nf = 0;
+    header.Npf = 0;
+    header.RefMomTrj = 0;
+    header.RefFnoiseTrj = 0;
+    header.LamPl = 0;
+    header.LamMi = 0;
+    header.AlpLog = 0;
+    header.AlpExp = 0;
     break;
   case 2:
-    read(cfg_in,Nd_old); 
-    read(cfg_in,Nc_old); 
-    read(cfg_in,BetaMC_old); 
-    read(cfg_in,bh_old); 
-    read(cfg_in,dt_old); 
-    read(cfg_in,MesTrj);
-    read(cfg_in,KappaMC_old);
-    read(cfg_in,TotalCG_old); 
-    read(cfg_in,TotalTrj_old); 
-    BetaMD_old = BetaMC_old;
-    KappaMD_old = KappaMC_old;
-    MassMC_old = 0;
-    MassMD_old = 0;
-    FermTypeP_old = WILSON_FERMIONS;
-    NOver_old = 0;
-    TotalTry_old = 0;
-    TotalFail_old = 0;
-    Nf_old = 0;
-    Npf_old = 0;
-    RefMomTrj_old = 0;
-    RefFnoiseTrj_old = 0;
-    LamPl_old = 0;
-    LamMi_old = 0;
-    AlpLog_old = 0;
-    AlpExp_old = 0;
+    read(cfg_in, header.Nd); 
+    read(cfg_in, header.Nc); 
+    read(cfg_in, header.BetaMC); 
+    read(cfg_in, bh); 
+    read(cfg_in, header.dt); 
+    read(cfg_in, header.MesTrj);
+    read(cfg_in, header.KappaMC);
+    read(cfg_in, header.TotalCG); 
+    read(cfg_in, header.TotalTrj); 
+    header.BetaMD = header.BetaMC;
+    header.KappaMD = header.KappaMC;
+    header.MassMC = 0;
+    header.MassMD = 0;
+    header.FermTypeP = WILSON_FERMIONS;
+    header.NOver = 0;
+    header.TotalTry = 0;
+    header.TotalFail = 0;
+    header.Nf = 0;
+    header.Npf = 0;
+    header.RefMomTrj = 0;
+    header.RefFnoiseTrj = 0;
+    header.LamPl = 0;
+    header.LamMi = 0;
+    header.AlpLog = 0;
+    header.AlpExp = 0;
     break;
   case 3:
-    read(cfg_in,Nd_old); 
-    read(cfg_in,Nc_old); 
-    read(cfg_in,BetaMC_old); 
-    read(cfg_in,bh_old); 
-    read(cfg_in,dt_old); 
-    read(cfg_in,MesTrj);
-    read(cfg_in,KappaMC_old);
-    read(cfg_in,TotalCG_old); 
-    read(cfg_in,TotalTrj_old); 
-    read(cfg_in,spec_acc);
-    BetaMD_old = BetaMC_old;
-    KappaMD_old = KappaMC_old;
-    MassMC_old = 0;
-    MassMD_old = 0;
-    FermTypeP_old = WILSON_FERMIONS;
-    NOver_old = 0;
-    TotalTry_old = 0;
-    TotalFail_old = 0;
-    Nf_old = 0;
-    Npf_old = 0;
-    RefMomTrj_old = 0;
-    RefFnoiseTrj_old = 0;
-    LamPl_old = 0;
-    LamMi_old = 0;
-    AlpLog_old = 0;
-    AlpExp_old = 0;
+    read(cfg_in, header.Nd); 
+    read(cfg_in, header.Nc); 
+    read(cfg_in, header.BetaMC); 
+    read(cfg_in, bh); 
+    read(cfg_in, header.dt); 
+    read(cfg_in, header.MesTrj);
+    read(cfg_in, header.KappaMC);
+    read(cfg_in, header.TotalCG); 
+    read(cfg_in, header.TotalTrj); 
+    read(cfg_in, header.spec_acc);
+    header.BetaMD = header.BetaMC;
+    header.KappaMD = header.KappaMC;
+    header.MassMC = 0;
+    header.MassMD = 0;
+    header.FermTypeP = WILSON_FERMIONS;
+    header.NOver = 0;
+    header.TotalTry = 0;
+    header.TotalFail = 0;
+    header.Nf = 0;
+    header.Npf = 0;
+    header.RefMomTrj = 0;
+    header.RefFnoiseTrj = 0;
+    header.LamPl = 0;
+    header.LamMi = 0;
+    header.AlpLog = 0;
+    header.AlpExp = 0;
     break;
   case 4:
-    read(cfg_in,Nd_old); 
-    read(cfg_in,Nc_old); 
-    read(cfg_in,BetaMC_old); 
-    read(cfg_in,BetaMD_old); 
-    read(cfg_in,bh_old); 
-    read(cfg_in,dt_old); 
-    read(cfg_in,MesTrj);
-    read(cfg_in,KappaMC_old); 
-    read(cfg_in,KappaMD_old); 
-    read(cfg_in,TotalCG_old); 
-    read(cfg_in,TotalTrj_old); 
-    read(cfg_in,spec_acc);
-    MassMC_old = 0;
-    MassMD_old = 0;
-    FermTypeP_old = WILSON_FERMIONS;
-    NOver_old = 0;
-    TotalTry_old = 0;
-    TotalFail_old = 0;
-    Nf_old = 0;
-    Npf_old = 0;
-    RefMomTrj_old = 0;
-    RefFnoiseTrj_old = 0;
-    LamPl_old = 0;
-    LamMi_old = 0;
-    AlpLog_old = 0;
-    AlpExp_old = 0;
+    read(cfg_in, header.Nd); 
+    read(cfg_in, header.Nc); 
+    read(cfg_in, header.BetaMC); 
+    read(cfg_in, header.BetaMD); 
+    read(cfg_in, bh); 
+    read(cfg_in, header.dt); 
+    read(cfg_in, header.MesTrj);
+    read(cfg_in, header.KappaMC); 
+    read(cfg_in, header.KappaMD); 
+    read(cfg_in, header.TotalCG); 
+    read(cfg_in, header.TotalTrj); 
+    read(cfg_in, header.spec_acc);
+    header.MassMC = 0;
+    header.MassMD = 0;
+    header.FermTypeP = WILSON_FERMIONS;
+    header.NOver = 0;
+    header.TotalTry = 0;
+    header.TotalFail = 0;
+    header.Nf = 0;
+    header.Npf = 0;
+    header.RefMomTrj = 0;
+    header.RefFnoiseTrj = 0;
+    header.LamPl = 0;
+    header.LamMi = 0;
+    header.AlpLog = 0;
+    header.AlpExp = 0;
     break;
   case 5:
-    read(cfg_in,FermTypeP_old); 
-    read(cfg_in,Nd_old); 
-    read(cfg_in,Nc_old);
-    read(cfg_in,BetaMC_old); 
-    read(cfg_in,BetaMD_old);
-    read(cfg_in,KappaMC_old); 
-    read(cfg_in,KappaMD_old);
-    read(cfg_in,MassMC_old); 
-    read(cfg_in,MassMD_old);
-    read(cfg_in,dt_old); 
-    read(cfg_in,MesTrj_old); 
-    read(cfg_in,TotalCG_old); 
-    read(cfg_in,TotalTrj_old);
-    NOver_old = 0;
-    TotalTry_old = 0;
-    TotalFail_old = 0;
-    Nf_old = 0;
-    Npf_old = 0;
-    RefMomTrj_old = 0;
-    RefFnoiseTrj_old = 0;
-    LamPl_old = 0;
-    LamMi_old = 0;
-    AlpLog_old = 0;
-    AlpExp_old = 0;
+    read(cfg_in, header.FermTypeP); 
+    read(cfg_in, header.Nd); 
+    read(cfg_in, header.Nc);
+    read(cfg_in, header.BetaMC); 
+    read(cfg_in, header.BetaMD);
+    read(cfg_in, header.KappaMC); 
+    read(cfg_in, header.KappaMD);
+    read(cfg_in, header.MassMC); 
+    read(cfg_in, header.MassMD);
+    read(cfg_in, header.dt); 
+    read(cfg_in, header.MesTrj); 
+    read(cfg_in, header.TotalCG); 
+    read(cfg_in, header.TotalTrj);
+    header.NOver = 0;
+    header.TotalTry = 0;
+    header.TotalFail = 0;
+    header.Nf = 0;
+    header.Npf = 0;
+    header.RefMomTrj = 0;
+    header.RefFnoiseTrj = 0;
+    header.LamPl = 0;
+    header.LamMi = 0;
+    header.AlpLog = 0;
+    header.AlpExp = 0;
     break;
   case 6:
-    read(cfg_in,FermTypeP_old); 
-    read(cfg_in,Nd_old); 
-    read(cfg_in,Nc_old); 
-    read(cfg_in,BetaMC_old); 
-    read(cfg_in,BetaMD_old);
-    read(cfg_in,KappaMC_old); 
-    read(cfg_in,KappaMD_old);
-    read(cfg_in,MassMC_old); 
-    read(cfg_in,MassMD_old);
-    read(cfg_in,dt_old); 
-    read(cfg_in,MesItr_old); 
-    read(cfg_in,TotalCG_old); 
-    read(cfg_in,TotalTrj_old); 
-    read(cfg_in,spec_acc);
-    read(cfg_in,NOver_old); 
-    read(cfg_in,TotalTry_old); 
-    read(cfg_in,TotalFail_old);
-    Nf_old = 0;
-    Npf_old = 0;
-    RefMomTrj_old = 0;
-    RefFnoiseTrj_old = 0;
-    LamPl_old = 0;
-    LamMi_old = 0;
-    AlpLog_old = 0;
-    AlpExp_old = 0;
+    read(cfg_in, header.FermTypeP); 
+    read(cfg_in, header.Nd); 
+    read(cfg_in, header.Nc); 
+    read(cfg_in, header.BetaMC); 
+    read(cfg_in, header.BetaMD);
+    read(cfg_in, header.KappaMC); 
+    read(cfg_in, header.KappaMD);
+    read(cfg_in, header.MassMC); 
+    read(cfg_in, header.MassMD);
+    read(cfg_in, header.dt); 
+    read(cfg_in, header.MesTrj); 
+    read(cfg_in, header.TotalCG); 
+    read(cfg_in, header.TotalTrj); 
+    read(cfg_in, header.spec_acc);
+    read(cfg_in, header.NOver); 
+    read(cfg_in, header.TotalTry); 
+    read(cfg_in, header.TotalFail);
+    header.Nf = 0;
+    header.Npf = 0;
+    header.RefMomTrj = 0;
+    header.RefFnoiseTrj = 0;
+    header.LamPl = 0;
+    header.LamMi = 0;
+    header.AlpLog = 0;
+    header.AlpExp = 0;
     break;
 
   case 7:
-    read(cfg_in,FermTypeP_old);
-    read(cfg_in,Nd_old);
-    read(cfg_in,Nc_old);
-    read(cfg_in,BetaMC_old);
-    read(cfg_in,BetaMD_old);
+    read(cfg_in, header.FermTypeP);
+    read(cfg_in, header.Nd);
+    read(cfg_in, header.Nc);
+    read(cfg_in, header.BetaMC);
+    read(cfg_in, header.BetaMD);
 
-    read(cfg_in,KappaMC_old);
-    read(cfg_in,KappaMD_old);
-    read(cfg_in,MassMC_old);
-    read(cfg_in,MassMD_old);
-    read(cfg_in,dt_old);
-    read(cfg_in,MesTrj_old);
-    read(cfg_in,TotalCG_old);
-    read(cfg_in,TotalTrj_old);
-    read(cfg_in,spec_acc);
+    read(cfg_in, header.KappaMC);
+    read(cfg_in, header.KappaMD);
+    read(cfg_in, header.MassMC);
+    read(cfg_in, header.MassMD);
+    read(cfg_in, header.dt);
+    read(cfg_in, header.MesTrj);
+    read(cfg_in, header.TotalCG);
+    read(cfg_in, header.TotalTrj);
+    read(cfg_in, header.spec_acc);
 
-    read(cfg_in,NOver_old);
-    read(cfg_in,TotalTry_old);
-    read(cfg_in,TotalFail_old);
-    read(cfg_in,Nf_old);
-    read(cfg_in,Npf_old);
-    read(cfg_in,RefMomTrj_old);
-    read(cfg_in,RefFnoiseTrj_old);
-    read(cfg_in,LamPl_old);
-    read(cfg_in,LamMi_old);
-    read(cfg_in,AlpLog_old);
-    read(cfg_in,AlpExp_old);
+    read(cfg_in, header.NOver);
+    read(cfg_in, header.TotalTry);
+    read(cfg_in, header.TotalFail);
+    read(cfg_in, header.Nf);
+    read(cfg_in, header.Npf);
+    read(cfg_in, header.RefMomTrj);
+    read(cfg_in, header.RefFnoiseTrj);
+    read(cfg_in, header.LamPl);
+    read(cfg_in, header.LamMi);
+    read(cfg_in, header.AlpLog);
+    read(cfg_in, header.AlpExp);
     break;
+
   default:
-    QDP_error_exit("configuration file version is invalid: version=%d",cfg_version);
+    QDP_error_exit("configuration file version is invalid: version=%d",header.cfg_version);
   }
 
   // Check that old and new parameters are compatible
-  if ( Nd_old != Nd )
-    QDP_error_exit("number of dimensions specified different from configuration file: Nd_old=%d",
-                   Nd_old);
+  if ( Nd != header.Nd )
+    QDP_error_exit("number of dimensions specified different from configuration file: header.Nd=%d",
+                   header.Nd);
 
-  if ( Nc_old != Nc )
-    QDP_error_exit("number of colors specified different from configuration file: Nc_old=%d",
-                   Nc_old);
+  if ( Nc != header.Nc )
+    QDP_error_exit("number of colors specified different from configuration file: header.Nc=%d",
+                   header.Nc);
 
-  read(cfg_in,nrow_old);
+  header.nrow.resize(Nd);
+  read(cfg_in, header.nrow);
 
-  for(j = 0; j < Nd; ++j)
-    if ( nrow_old[j] != Layout::lattSize()[j] )
-      QDP_error_exit("lattice size specified different from configuration file: nrow_old[%d]=%d",
-                     j,nrow_old[j]);
+  for(int j = 0; j < Nd; ++j)
+    if ( header.nrow[j] != Layout::lattSize()[j] )
+      QDP_error_exit("lattice size specified different from configuration file: nrow[%d]=%d",
+                     j,header.nrow[j]);
 
 
-  read(cfg_in,seed_old);
-  read(cfg_in,wstat_old);
+  read(cfg_in, header.seed);
+  read(cfg_in, wstat);    // will not use
 
 
   /*
@@ -345,7 +313,7 @@ void readSzin(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_
   lattsize_cb[0] /= 2;		// Evaluate the coords on the checkerboard lattice
 
   // The slowest moving index is the direction
-  for(j = 0; j < Nd; j++)
+  for(int j = 0; j < Nd; j++)
   {
     for(int cb=0; cb < 2; ++cb)
       for(int sitecb=0; sitecb < Layout::vol()/2; ++sitecb)
@@ -369,49 +337,38 @@ void readSzin(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_
 
   cfg_in.close();
 
+  END_CODE("writeSzin");
+}
+
+
+
+//! Read a SZIN configuration file
+/*!
+ * \ingroup io
+ *
+ *   Gauge field layout is (fortran ordering)
+ *     u(real/imag,color_row,color_col,site,cb,Nd)
+ *         = u(2,Nc,Nc,VOL_CB,2,4)
+ *
+ *
+ * \param xml        xml reader holding config info ( Modify )
+ * \param u          gauge configuration ( Modify )
+ * \param cfg_file   path ( Read )
+ */    
+
+void readSzin(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_file)
+{
+  START_CODE("readSzin");
+
+  SzinGauge_t header;
+
+  // Read the config and its binary header
+  readSzin(header, u, cfg_file);
 
   // Now, set up the XML header. Do this by first making a buffer
   // writer that is then used to make the reader
   XMLBufferWriter  xml_buf;
-  push(xml_buf, "szin");
-
-  write(xml_buf,"cfg_version",cfg_version);
-
-  write(xml_buf,"date",date);
-  write(xml_buf,"banner",banner);
-
-  write(xml_buf,"FermTypeP",FermTypeP_old);
-  write(xml_buf,"Nd",Nd_old);
-  write(xml_buf,"Nc",Nc_old);
-  write(xml_buf,"BetaMC",BetaMC_old);
-  write(xml_buf,"BetaMD",BetaMD_old);
-
-  write(xml_buf,"KappaMC",KappaMC_old);
-  write(xml_buf,"KappaMD",KappaMD_old);
-  write(xml_buf,"MassMC",MassMC_old);
-  write(xml_buf,"MassMD",MassMD_old);
-  write(xml_buf,"dt",dt_old);
-  write(xml_buf,"MesTrj",MesTrj_old);
-  write(xml_buf,"TotalCG",TotalCG_old);
-  write(xml_buf,"TotalTrj",TotalTrj_old);
-  write(xml_buf,"spec_acc",spec_acc);
-
-  write(xml_buf,"NOver",NOver_old);
-  write(xml_buf,"TotalTry",TotalTry_old);
-  write(xml_buf,"TotalFail",TotalFail_old);
-  write(xml_buf,"Nf",Nf_old);
-  write(xml_buf,"Npf",Npf_old);
-  write(xml_buf,"RefMomTrj",RefMomTrj_old);
-  write(xml_buf,"RefFnoiseTrj",RefFnoiseTrj_old);
-  write(xml_buf,"LamPl",LamPl_old);
-  write(xml_buf,"LamMi",LamMi_old);
-  write(xml_buf,"AlpLog",AlpLog_old);
-  write(xml_buf,"AlpExp",toFloat(AlpExp_old));
-
-  write(xml_buf,"nrow",nrow_old);
-  write(xml_buf,"seed",seed_old);
-
-  pop(xml_buf);
+  write(xml_buf, "szin", header);
 
   try 
   {
