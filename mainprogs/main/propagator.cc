@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.12 2003-04-17 14:56:16 dgr Exp $
+// $Id: propagator.cc,v 1.13 2003-04-17 20:13:58 dgr Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -69,8 +69,6 @@ int main(int argc, char **argv)
   Real RsdCG;
   int MaxCG;			// Iteration parameters
 
-
-
   params_in >> io_version_in;
 
   switch(io_version_in){	// The parameters we read in IO version
@@ -121,8 +119,13 @@ int main(int argc, char **argv)
   FermAct = UNPRECONDITIONED_WILSON;  // global
   InvType = CG_INVERTER;  // global
 
+  cerr << "DEBUG 1" << endl;
+
   // Generate a hot start gauge field
   multi1d<LatticeColorMatrix> u(Nd);
+
+  cerr << "DEBUG 1" << endl;
+
 
   /*  for(int mu=0; mu < u.size(); ++mu)
   {
@@ -136,6 +139,9 @@ int main(int argc, char **argv)
   Seed seed_old;
   readSzin2(u, "szin.cfg", seed_old);
 
+  cerr << "DEBUG 2" << endl;
+
+
   // Useful info
 
   char nml_filename[MAXLINE];
@@ -147,6 +153,8 @@ int main(int argc, char **argv)
   case P_WAVE:
     sprintf(nml_filename, "p_propagator.nml");
   }
+
+  cerr << "DEBUG 3" << endl;
 
   NmlWriter nml(nml_filename);
     
@@ -244,7 +252,6 @@ int main(int argc, char **argv)
       FermToProp(psi, quark_propagator, color_source, spin_source);
     }
   }
-
 
   switch(source_type){
   case S_WAVE:
