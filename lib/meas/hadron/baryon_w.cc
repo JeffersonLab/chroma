@@ -1,4 +1,4 @@
-// $Id: baryon_w.cc,v 1.7 2003-10-01 03:03:32 edwards Exp $ 
+// $Id: baryon_w.cc,v 1.8 2003-10-01 20:23:00 edwards Exp $ 
 /*! \file
  *  \brief Baryon 2-pt functions
  */
@@ -77,7 +77,7 @@ void baryon(LatticePropagator& quark_propagator,
   for(int baryons = 0; baryons < num_baryons; ++baryons)
   {
     push(xml_bar);     // next array element
-    Write(xml_bar, baryons);
+    write(xml_bar, "baryon_num", baryons);
 
     // Loop over sink momenta
     XMLArrayWriter xml_sink_mom(xml_bar,num_mom);
