@@ -1,4 +1,4 @@
-// $Id: grelax.cc,v 1.1 2003-12-06 20:56:56 edwards Exp $
+// $Id: grelax.cc,v 1.2 2003-12-06 21:57:16 edwards Exp $
 /*! \file
  *  \brief Perform a single gauge fixing iteration
  */
@@ -43,9 +43,6 @@ void grelax(multi1d<LatticeColorMatrix> ug,
   multi2d<LatticeComplex> vv(Nc, Nc);
   multi1d<LatticeReal> r(4);
   multi1d<LatticeReal> a(4);
-  LatticeReal r_l;
-  LatticeReal lftmp1;
-  LatticeReal lftmp2;
   
   START_CODE("grelax");
       
@@ -82,62 +79,41 @@ void grelax(multi1d<LatticeColorMatrix> ug,
      */
     LatticeReal r_l = sqrt(r[0]*r[0] + r[1]*r[1] + r[2]*r[2] + r[3]*r[3]);
   
-    /* Normalize */
-             
-    lftmp1 = 1;
+    // Normalize
     LatticeBoolean lbtmp = r_l > fuzz;
-    copymask(lftmp1, lbtmp, r_l);
-  
-    lftmp2 = 1;
-    lftmp1 = lftmp2 / lftmp1;
-    a[0] = r[0] * lftmp1;
-    a[1] = -(r[1] * lftmp1);
-    a[2] = -(r[2] * lftmp1);
-    a[3] = -(r[3] * lftmp1);
-  
-    /* Fill with (1,0,0,0) the sites with r_l < FUZZ */
-    lbtmp = !lbtmp;
-    lftmp1 = 0;
-    copymask(a[0], lbtmp, lftmp2);
-    copymask(a[1], lbtmp, lftmp1);
-    copymask(a[2], lbtmp, lftmp1);
-    copymask(a[3], lbtmp, lftmp1);
-  
+    LatticeReal lftmp = 1.0 / where(lbtmp, r_l, LatticeReal(1));
+
+    // Fill   (r[0]/r_l, -r[1]/r_l, -r[2]/r_l, -r[3]/r_l) for r_l > fuzz
+    //  and   (1,0,0,0)  for sites with r_l < fuzz
+    multi1d<LatticeReal> a(4);
+    a[0] = where(lbtmp, r[0] * lftmp, LatticeReal(1));
+    a[1] = where(lbtmp, -(r[1] * lftmp), LatticeReal(0));
+    a[2] = where(lbtmp, -(r[2] * lftmp), LatticeReal(0));
+    a[3] = where(lbtmp, -(r[3] * lftmp), LatticeReal(0));
       
     /* Now do the overrelaxation, if desired */
     if( ordo )
     {
       /* get angle */
-      r[0] = acos(a[0]);
+      LatticeReal theta_old = acos(a[0]);
 
-      /* get the old sin */
-      r_l = sin(r[0]);
+      /* old sin */
+      LatticeReal oldsin = sin(theta_old);
 
       /* overrelax, i.e. multiply by the angle */
-      r[1] = r[0] * orpara;
-
-      /* get the new cos = a[0] */
-      a[0] = cos(r[1]);
-
-      /* get the new sin */
-      r[0] = sin(r[1]);
+      LatticeReal theta_new = theta_old * orpara;
 
       /* compute sin(new)/sin(old) */
-      lftmp1 = 1;
-      lbtmp = r_l > fuzz;
-      copymask(lftmp1, lbtmp, r_l);
-
-      r[1] = r[0] / lftmp1;
-
       /* set the ratio to 0, if sin(old) < FUZZ */
-      lbtmp = !lbtmp;
-      lftmp1 = 0;
-      copymask(r[1], lbtmp, lftmp1);
+      lftmp = where(oldsin > fuzz, sin(theta_new) / oldsin, LatticeReal(0));
+
+      /* get the new cos = a[0] */
+      a[0] = cos(theta_new);
 
       /* get the new a_k, k = 1, 2, 3 */
-      a[1] *= r[1];
-      a[2] *= r[1];
-      a[3] *= r[1];
+      a[1] *= lftmp;
+      a[2] *= lftmp;
+      a[3] *= lftmp;
     }
   
           
@@ -154,46 +130,34 @@ void grelax(multi1d<LatticeColorMatrix> ug,
 
     r[0] = real(vv[0][0]);
     r[1] = imag(vv[0][0]);
-    r_l = r[0] * r[0];
-    r_l += r[1] * r[1];
-    r_l = sqrt(r_l);
+    LatticeReal r_l = sqrt(r[0] * r[0] + r[1] * r[1]);
 
-    /* Normalize */
-            
-    lftmp1 = 1;
+    // Normalize
     LatticeBoolean lbtmp = r_l > fuzz;
-    copymask(lftmp1, lbtmp, r_l);
+    LatticeReal lftmp = 1.0 / where(lbtmp, r_l, LatticeReal(1));
 
-    lftmp2 = 1;
-    lftmp1 = lftmp2 / lftmp1;
-    a[0] = r[0] * lftmp1;
-    a[1] = -(r[1] * lftmp1);
-
-    /* Fill with (1,0) the sites with r_l < FUZZ */
-    lbtmp = !lbtmp;
-    lftmp1 = 0;
-    copymask(a[0], lbtmp, lftmp2);
-    copymask(a[1], lbtmp, lftmp1);
-
-    
+    // Fill   (r[0]/r_l, -r[1]/r_l, -r[2]/r_l, -r[3]/r_l) for r_l > fuzz
+    //  and   (1,0,0,0)  for sites with r_l < fuzz
+    multi1d<LatticeReal> a(4);
+    a[0] = where(lbtmp, r[0] * lftmp, LatticeReal(1));
+    a[1] = where(lbtmp, -(r[1] * lftmp), LatticeReal(0));
+      
     /* Now do the overrelaxation, if desired */
     if( ordo )
     {
-      /* get angle */
-      r[0] = acos(a[0]);
+      Real pi = 0.5 * twopi;
 
-//      lbtmp = a[1] < 0;    ?????? this was in SZIN, do not know why...
-      lftmp1 = 0.5 * twopi;
-      r[0] += lftmp1;
+      /* get angle */
+      LatticeReal theta = acos(a[0]) + pi;     // Do I really want to add pi ??? This was in szin
 
       /* overrelax, i.e. multiply by the angle */
-      r[1] = r[0] * orpara;
+      theta *= orpara;
 
       /* get the new cos = a[0] */
-      a[0] = cos(r[1]);
+      a[0] = cos(theta);
 
       /* get the new sin */
-      a[1] = sin(r[1]);
+      a[1] = sin(theta);
     }
 
     vv[0][0] = cmplx(a[0],a[1]);
