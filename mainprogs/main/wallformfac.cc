@@ -1,4 +1,4 @@
-// $Id: wallformfac.cc,v 1.15 2004-04-18 20:39:33 edwards Exp $
+// $Id: wallformfac.cc,v 1.16 2004-04-18 20:41:24 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions with a wall sink
  *
@@ -301,7 +301,7 @@ main(int argc, char *argv[])
   push(xml_out, "Wilson_3Pt_fn_measurements");
   write(xml_out, "formfac_type", input.param.formfac_type);
 
-  XMLArrayWriter  xml_seq_src(xml_out, input.prop.formfac_type.size());
+  XMLArrayWriter  xml_seq_src(xml_out, input.param.formfac_type.size());
   push(xml_seq_src, "Formfac_contractions");
 
   // Loop over types of form-factor
