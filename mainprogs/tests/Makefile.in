@@ -172,40 +172,40 @@ EXTRA_PROGRAMS = t_dslashm t_lwldslash t_spprod t_lwldslash_sse t_follana_io_s
 # The programs and their dependencies
 #
 t_mesplq_SOURCES = t_mesplq.cc
-t_mesplq_DEPENDENCIES = build_chroma_libs
+t_mesplq_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_hypsmear_SOURCES = t_hypsmear.cc
-t_hypsmear_DEPENDENCIES = build_chroma_libs
+t_hypsmear_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_dslashm_SOURCES = t_dslashm.cc
-t_dslashm_DEPENDENCIES = build_chroma_libs
+t_dslashm_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_io_SOURCES = t_io.cc
-t_io_DEPENDENCIES = build_chroma_libs
+t_io_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_lwldslash_SOURCES = t_lwldslash.cc
-t_lwldslash_DEPENDENCIES = build_chroma_libs
+t_lwldslash_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_formfac_SOURCES = t_formfac.cc
-t_formfac_DEPENDENCIES = build_chroma_libs
+t_formfac_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_mesons_w_SOURCES = t_mesons_w.cc
-t_mesons_w_DEPENDENCIES = build_chroma_libs
+t_mesons_w_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_conslinop_SOURCES = t_conslinop.cc
-t_conslinop_DEPENDENCIES = build_chroma_libs
+t_conslinop_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_overbu_SOURCES = t_overbu.cc
-t_overbu_DEPENDENCIES = build_chroma_libs
+t_overbu_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_spprod_SOURCES = t_spprod.cc
-t_spprod_DEPENDENCIES = build_chroma_libs
+t_spprod_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_follana_io_s_SOURCES = t_follana_io_s.cc
-t_follana_io_s_DEPENDENCIES = build_chroma_libs
+t_follana_io_s_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_lwldslash_sse_SOURCES = t_lwldslash_sse.cc
-t_lwldslash_sse_DEPENDENCIES = build_chroma_libs
+t_lwldslash_sse_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 subdir = mainprogs/tests
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
 CONFIG_CLEAN_FILES =
@@ -561,6 +561,10 @@ uninstall-am: uninstall-info-am
 .PHONY: build_chroma_libs
 build_chroma_libs:
 	cd @top_builddir@/lib ; $(MAKE)
+
+.PHONY: rebuild_other_libs
+rebuild_other_libs:
+	cd @top_builddir@/other_libs ; $(MAKE)
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

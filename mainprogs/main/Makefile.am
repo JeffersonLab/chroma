@@ -40,22 +40,22 @@ check_PROGRAMS = propagator spectrum_w qqq_w bar3ptfn make_source ExampleBuildin
 # The program and its dependencies
 #
 propagator_SOURCES= propagator.cc
-propagator_DEPENDENCIES= build_chroma_libs
+propagator_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 
 spectrum_w_SOURCES= spectrum_w.cc
-spectrum_w_DEPENDENCIES= build_chroma_libs
+spectrum_w_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 
 qqq_w_SOURCES= qqq_w.cc
-qqq_w_DEPENDENCIES= build_chroma_libs
+qqq_w_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 
 bar3ptfn_SOURCES= bar3ptfn.cc
-bar3ptfn_DEPENDENCIES= build_chroma_libs
+bar3ptfn_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 
 make_source_SOURCES= make_source.cc
-make_source_DEPENDENCIES= build_chroma_libs
+make_source_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 
 ExampleBuildingBlocks_SOURCES= ExampleBuildingBlocks.cc
-ExampleBuildingBlocks_DEPENDENCIES= build_chroma_libs
+ExampleBuildingBlocks_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 
 
 #
@@ -68,3 +68,7 @@ ExampleBuildingBlocks_DEPENDENCIES= build_chroma_libs
 .PHONY: build_chroma_libs
 build_chroma_libs:
 	cd @top_builddir@/lib ; $(MAKE)
+
+.PHONY: rebuild_other_libs
+rebuild_other_libs:
+	cd @top_builddir@/other_libs ; $(MAKE)

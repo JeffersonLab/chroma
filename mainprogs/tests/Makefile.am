@@ -60,40 +60,40 @@ EXTRA_PROGRAMS  = t_dslashm t_lwldslash t_spprod t_lwldslash_sse t_follana_io_s
 ## check_DEPENDENCIES = build_chroma_libs
 
 t_mesplq_SOURCES = t_mesplq.cc
-t_mesplq_DEPENDENCIES = build_chroma_libs
+t_mesplq_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_hypsmear_SOURCES = t_hypsmear.cc
-t_hypsmear_DEPENDENCIES = build_chroma_libs
+t_hypsmear_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_dslashm_SOURCES = t_dslashm.cc
-t_dslashm_DEPENDENCIES = build_chroma_libs
+t_dslashm_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_io_SOURCES = t_io.cc
-t_io_DEPENDENCIES = build_chroma_libs
+t_io_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_lwldslash_SOURCES = t_lwldslash.cc
-t_lwldslash_DEPENDENCIES = build_chroma_libs
+t_lwldslash_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_formfac_SOURCES = t_formfac.cc
-t_formfac_DEPENDENCIES = build_chroma_libs
+t_formfac_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_mesons_w_SOURCES = t_mesons_w.cc
-t_mesons_w_DEPENDENCIES = build_chroma_libs
+t_mesons_w_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_conslinop_SOURCES = t_conslinop.cc
-t_conslinop_DEPENDENCIES = build_chroma_libs
+t_conslinop_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_overbu_SOURCES = t_overbu.cc
-t_overbu_DEPENDENCIES = build_chroma_libs
+t_overbu_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_spprod_SOURCES = t_spprod.cc
-t_spprod_DEPENDENCIES = build_chroma_libs
+t_spprod_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_follana_io_s_SOURCES = t_follana_io_s.cc
-t_follana_io_s_DEPENDENCIES = build_chroma_libs
+t_follana_io_s_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_lwldslash_sse_SOURCES = t_lwldslash_sse.cc
-t_lwldslash_sse_DEPENDENCIES = build_chroma_libs
+t_lwldslash_sse_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 # build lib is a target that goes to the build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order
@@ -101,3 +101,7 @@ t_lwldslash_sse_DEPENDENCIES = build_chroma_libs
 .PHONY: build_chroma_libs
 build_chroma_libs:
 	cd @top_builddir@/lib ; $(MAKE)
+
+.PHONY: rebuild_other_libs
+rebuild_other_libs:
+	cd @top_builddir@/other_libs ; $(MAKE)
