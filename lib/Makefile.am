@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.225 2005-01-12 15:23:25 bjoo Exp $
+# $Id: Makefile.am,v 1.226 2005-01-13 02:49:03 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -47,15 +47,18 @@ nobase_include_HEADERS = \
 	actions/ferm/linop/lopscl.h \
 	actions/ferm/linop/partrat.h actions/ferm/qprop/qprop.h \
 	actions/gauge/gauge.h \
-	actions/gauge/gaugebc_factory.h \
-	actions/gauge/gaugebc_simple.h \
-	actions/gauge/gaugebc_periodic.h \
-	actions/gauge/gaugebc_schroedinger.h \
-	actions/gauge/gaugeact_factory.h \
-	actions/gauge/wilson_gaugeact.h \
-	actions/gauge/plaq_gaugeact.h \
-	actions/gauge/rect_gaugeact.h \
-	actions/gauge/pg_gaugeact.h \
+	actions/gauge/gaugeacts/gaugeacts.h \
+	actions/gauge/gaugeacts/gaugeact_factory.h \
+	actions/gauge/gaugeacts/wilson_gaugeact.h \
+	actions/gauge/gaugeacts/plaq_gaugeact.h \
+	actions/gauge/gaugeacts/rect_gaugeact.h \
+	actions/gauge/gaugeacts/pg_gaugeact.h \
+	actions/gauge/gaugebcs/gaugebcs.h \
+	actions/gauge/gaugebcs/gaugebc_aggregate.h \
+	actions/gauge/gaugebcs/gaugebc_factory.h \
+	actions/gauge/gaugebcs/gaugebc_simple.h \
+	actions/gauge/gaugebcs/gaugebc_periodic.h \
+	actions/gauge/gaugebcs/gaugebc_schroedinger.h \
 	init/chroma_init.h \
 	io/io.h \
 	io/xmllog_io.h \
@@ -326,6 +329,13 @@ libchroma_a_SOURCES = \
 	actions/ferm/qprop/prec_fermact_qprop.cc \
 	actions/ferm/qprop/prec_fermact_qprop_array.cc \
 	actions/ferm/qprop/staggered_qprop.cc \
+	actions/gauge/gaugebcs/gaugebc_aggregate.cc \
+	actions/gauge/gaugebcs/gaugebc_periodic.cc \
+	actions/gauge/gaugebcs/gaugebc_simple.cc \
+	actions/gauge/gaugeacts/wilson_gaugeact.cc \
+	actions/gauge/gaugeacts/plaq_gaugeact.cc \
+	actions/gauge/gaugeacts/rect_gaugeact.cc \
+	actions/gauge/gaugeacts/pg_gaugeact.cc \
 	io/barcomp_io.cc io/eigen_io.cc io/enum_io/enum_cfgtype_io.cc \
 	io/enum_io/enum_coeffs_io.cc io/enum_io/enum_eigenvectype_io.cc \
 	io/enum_io/enum_fermtype_io.cc \
@@ -368,13 +378,6 @@ libchroma_a_SOURCES = \
 	util/gauge/sunfill.cc util/gauge/sun_proj.cc \
 	util/gauge/taproj.cc util/gauge/unit_check.cc \
 	util/info/printgeom.cc util/info/proginfo.cc \
-	actions/gauge/gaugebc_periodic.cc \
-	actions/gauge/gaugebc_simple.cc \
-	actions/gauge/gaugebcs.cc \
-	actions/gauge/wilson_gaugeact.cc \
-	actions/gauge/plaq_gaugeact.cc \
-	actions/gauge/rect_gaugeact.cc \
-	actions/gauge/pg_gaugeact.cc \
 	update/molecdyn/gauge_monomial.cc \
 	update/molecdyn/lcm_pqp_leapfrog.cc \
 	update/molecdyn/global_metropolis_accrej.cc \
