@@ -1,4 +1,4 @@
-// $Id: qqq_w.cc,v 1.11 2004-04-06 04:20:33 edwards Exp $
+// $Id: qqq_w.cc,v 1.12 2004-04-11 05:05:34 edwards Exp $
 /*! \file
  *  \brief Main code for generalized quark propagator
  *
@@ -31,7 +31,7 @@ struct Param_t
 //! Propagators
 struct Prop_t
 {
-  string           prop_file;  // The file is expected to be in SciDAC format!
+  multi1d<string>  prop_file;  // The file is expected to be in SciDAC format!
 };
 
 //! Barcomp info
@@ -143,6 +143,22 @@ int main(int argc, char **argv)
 
   QDPIO::cout << " QQQ: Generalized propagator generation" << endl;
 
+  // Check to make sure there are 3 files
+  const int Nprops = 3;
+  if (input.prop.prop_file.size() == 1)
+  {
+    string foo = input.prop.prop_file[0];
+    input.prop.prop_file.resize(Nprops);
+    input.prop.prop_file[0] = foo;
+    input.prop.prop_file[1] = foo;
+    input.prop.prop_file[2] = foo;
+  }
+  else if (input.prop.prop_file.size() != Nprops)
+  {
+    QDPIO::cerr << "Error on input params - expecting 1 or 3 filenames" << endl;
+    QDP_abort(1);
+  }
+
 
   // Read a gauge field
   multi1d<LatticeColorMatrix> u(Nd);
@@ -190,29 +206,31 @@ int main(int argc, char **argv)
 
 
   /*
-   * Read the quark propagator and extract headers
+   * Read the quark propagators and extract headers
    *
    * For now, only 1 propagator is supported.
    */
-  XMLReader prop_file_xml, prop_record_xml;
-  LatticePropagator quark_propagator;
-  ChromaProp_t prop_header;
-  PropSource_t source_header;
-  PropSink_t   sink_header;
+  multi1d<LatticePropagator> quark_propagator(Nprops);
+  multi1d<ChromaProp_t> prop_header(Nprops);
+  multi1d<PropSource_t> source_header(Nprops);
+  multi1d<PropSink_t>   sink_header(Nprops);
+  for(int i=0; i < Nprops; ++i)
   {
-    QDPIO::cout << "Attempt to read forward propagator" << endl;
+    XMLReader prop_file_xml, prop_record_xml;
+    QDPIO::cout << "Attempt to read forward propagator XX" 
+		<< input.prop.prop_file[i] << "XX" << endl;
     readQprop(prop_file_xml, 
-	      prop_record_xml, quark_propagator,
-	      input.prop.prop_file, QDPIO_SERIAL);
+	      prop_record_xml, quark_propagator[i],
+	      input.prop.prop_file[i], QDPIO_SERIAL);
     QDPIO::cout << "Forward propagator successfully read" << endl;
    
     // Try to invert this record XML into a ChromaProp struct
     // Also pull out the id of this source
     try
     {
-      read(prop_record_xml, "/SinkSmear/PropSink", sink_header);
-      read(prop_record_xml, "/SinkSmear/ForwardProp", prop_header);
-      read(prop_record_xml, "/SinkSmear/PropSource", source_header);
+      read(prop_record_xml, "/SinkSmear/PropSink", sink_header[i]);
+      read(prop_record_xml, "/SinkSmear/ForwardProp", prop_header[i]);
+      read(prop_record_xml, "/SinkSmear/PropSource", source_header[i]);
     }
     catch (const string& e) 
     {
@@ -227,9 +245,9 @@ int main(int argc, char **argv)
   write(xml_out, "PropSink", sink_header);
 
   // Derived from input prop
-  int j_decay = source_header.j_decay;
-  multi1d<int> boundary = prop_header.boundary;
-  multi1d<int> t_source = source_header.t_source;
+  int j_decay = source_header[0].j_decay;
+  multi1d<int> boundary = prop_header[0].boundary;
+  multi1d<int> t_source = source_header[0].t_source;
   int t0      = t_source[j_decay];
   int bc_spec = boundary[j_decay];
 
@@ -237,11 +255,13 @@ int main(int argc, char **argv)
   SftMom phases(0, true, j_decay);
 
   // Sanity check - write out the propagator (pion) correlator in the j_decay direction
+  for(int i=0; i < Nprops; ++i)
   {
-    multi1d<Double> prop_corr = sumMulti(localNorm2(quark_propagator), 
+    multi1d<Double> prop_corr = sumMulti(localNorm2(quark_propagator[i]), 
 					 phases.getSet());
 
     push(xml_out, "SinkSmearedProp_correlator");
+    write(xml_out, "correlator_num", i);
     write(xml_out, "sink_smeared_prop_corr", prop_corr);
     pop(xml_out);
   }
@@ -255,9 +275,9 @@ int main(int argc, char **argv)
   // quark_propagator = quark_prop * 1.0e10;
   //
   barcomp(barprop,
-	  quark_propagator,
-	  quark_propagator,
-	  quark_propagator,
+	  quark_propagator[0],
+	  quark_propagator[1],
+	  quark_propagator[2],
 	  phases, t0, bc_spec);
 
   // Convert the data into a mult1d
@@ -279,21 +299,21 @@ int main(int argc, char **argv)
     // For the moment, the single propagator header is replicated.
     // However, 3 distinct propagators are supported
     push(record_xml, "Propagator1");
-    write(record_xml, "PropSink", sink_header);
-    write(record_xml, "ForwardProp", prop_header);
-    write(record_xml, "PropSource", source_header);
+    write(record_xml, "PropSink", sink_header[0]);
+    write(record_xml, "ForwardProp", prop_header[0]);
+    write(record_xml, "PropSource", source_header[0]);
     pop(record_xml);
 
     push(record_xml, "Propagator2");
-    write(record_xml, "PropSink", sink_header);
-    write(record_xml, "ForwardProp", prop_header);
-    write(record_xml, "PropSource", source_header);
+    write(record_xml, "PropSink", sink_header[1]);
+    write(record_xml, "ForwardProp", prop_header[1]);
+    write(record_xml, "PropSource", source_header[1]);
     pop(record_xml);
 
     push(record_xml, "Propagator3");
-    write(record_xml, "PropSink", sink_header);
-    write(record_xml, "ForwardProp", prop_header);
-    write(record_xml, "PropSource", source_header);
+    write(record_xml, "PropSink", sink_header[2]);
+    write(record_xml, "ForwardProp", prop_header[2]);
+    write(record_xml, "PropSource", source_header[2]);
     pop(record_xml);
 
     write(record_xml, "Config_info", gauge_xml);
@@ -302,8 +322,7 @@ int main(int argc, char **argv)
     // Write the scalar data
     QDPFileWriter to(file_xml, input.barcomp.qqq_file, 
 		     QDPIO_SINGLEFILE, QDPIO_SERIAL, QDPIO_OPEN);
-//   write(to,record_xml,barprop_1d);    // OOOPS, need to make a function in QDP !!!
-    QDPIO::cout << "OOOOPSS, need a new QDP function here" << endl;
+    write(to,record_xml,barprop_1d);
     close(to);
   }
 
