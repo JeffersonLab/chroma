@@ -1,4 +1,4 @@
-// $Id: zolotarev5d_fermact_array_w.cc,v 1.5 2004-02-11 12:51:33 bjoo Exp $
+// $Id: zolotarev5d_fermact_array_w.cc,v 1.6 2004-03-29 21:32:28 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */

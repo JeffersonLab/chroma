@@ -1,4 +1,4 @@
-// $Id: prec_dwf_fermact_base_array_w.cc,v 1.5 2004-01-02 03:19:40 edwards Exp $
+// $Id: prec_dwf_fermact_base_array_w.cc,v 1.6 2004-03-29 21:32:28 edwards Exp $
 /*! \file
  *  \brief Base class for even-odd preconditioned domain-wall-like fermion actions
  */

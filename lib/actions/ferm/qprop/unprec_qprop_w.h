@@ -1,4 +1,4 @@
-// $Id: unprec_qprop_w.h,v 1.4 2004-01-02 03:19:41 edwards Exp $
+// $Id: unprec_qprop_w.h,v 1.5 2004-03-29 21:32:28 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *

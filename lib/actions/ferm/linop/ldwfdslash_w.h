@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ldwfdslash_w.h,v 1.3 2003-11-20 05:43:41 edwards Exp $
+// $Id: ldwfdslash_w.h,v 1.4 2004-03-29 21:32:28 edwards Exp $
 /*! \file
  *  \brief DW Dslash linear operator
  */

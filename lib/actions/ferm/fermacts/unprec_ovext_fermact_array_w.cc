@@ -1,4 +1,4 @@
-// $Id: unprec_ovext_fermact_array_w.cc,v 1.6 2004-01-07 13:50:07 bjoo Exp $
+// $Id: unprec_ovext_fermact_array_w.cc,v 1.7 2004-03-29 21:32:28 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
