@@ -1,4 +1,4 @@
-//  $Id: stout_smear.cc,v 1.3 2004-10-13 22:17:21 ikuro Exp $
+//  $Id: stout_smear.cc,v 1.4 2004-11-01 18:43:11 ikuro Exp $
 /*! \file
  *  \brief Stout-link smearing of the gauge configuration
  */
@@ -35,7 +35,14 @@ void stout_smear(LatticeColorMatrix& u_smear,
 
   for(int nu = 0; nu < Nd; ++nu)
   {
-    if( nu != mu && nu != j_decay )
+    if( nu != mu 
+
+
+
+	/* && nu != j_decay */ )
+
+
+
     {
       // Forward staple
       u_staple += u[nu] * shift(u[mu], FORWARD, nu) * adj(shift(u[nu], FORWARD, mu));
