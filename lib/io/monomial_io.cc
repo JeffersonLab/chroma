@@ -1,6 +1,6 @@
 #include "chromabase.h"
 #include "io/monomial_io.h"
-#include "update/molecdyn/monomial_factory.h"
+#include "update/molecdyn/monomial/monomial_factory.h"
 
 using namespace QDP;
 using namespace Chroma;
