@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linop.h,v 1.5 2003-09-11 02:25:43 edwards Exp $
+// $Id: linop.h,v 1.6 2003-09-11 11:12:21 bjoo Exp $
 
 /*! \file
  * \brief Linear operators
@@ -19,7 +19,9 @@
 // #include "lmpsim_w.h"
 #include "lwldslash_w.h"
 
-//#include "lwldslash_w_sse.h"    FIX  !!!
+#ifdef BUILD_SSE_WILSON_DSLASH
+#include "lwldslash_w_sse.h" 
+#endif
 
 #include "unprec_wilson_linop_w.h"
 #include "overlapbu_linop_w.h"
