@@ -1,4 +1,4 @@
-// $Id: t_disc_loop_s.cc,v 1.4 2004-09-09 15:52:51 edwards Exp $
+// $Id: t_disc_loop_s.cc,v 1.5 2004-11-20 19:28:48 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -287,7 +287,7 @@ int main(int argc, char **argv)
   }
 
   // Read in the source along with relevant information.
-  LatticePropagator quark_prop_source;
+  LatticeStaggeredPropagator quark_prop_source;
   XMLReader source_xml;
 
   switch (input.param.prop_type) 
@@ -353,7 +353,7 @@ int main(int argc, char **argv)
   xml_out.flush();
 
   // Create a fermion BC. Note, the handle is on an ABSTRACT type.
-  Handle< FermBC<LatticeFermion> >  fbc(new SimpleFermBC<LatticeFermion>(input.param.boundary));
+  Handle< FermBC<LatticeStaggeredFermion> >  fbc(new SimpleFermBC<LatticeStaggeredFermion>(input.param.boundary));
 
   //
   // Initialize fermion action
@@ -365,8 +365,8 @@ int main(int argc, char **argv)
   // Use S_f.createState so that S_f can pass in u0
 
   Handle<const ConnectState > state(S_f.createState(u));
-  Handle<const EvenOddLinearOperator<LatticeFermion> > D_asqtad(S_f.linOp(state));
-  Handle<const LinearOperator<LatticeFermion> > MdagM_asqtad(S_f.lMdagM(state));
+  Handle<const EvenOddLinearOperator<LatticeStaggeredFermion> > D_asqtad(S_f.linOp(state));
+  Handle<const LinearOperator<LatticeStaggeredFermion> > MdagM_asqtad(S_f.lMdagM(state));
 
   // Machinery to do timeslice sums with
   UnorderedSet timeslice;
@@ -378,7 +378,7 @@ int main(int argc, char **argv)
   // terminology is that a staggered propagator is a matrix in color space
   // 
   //
-  LatticePropagator quark_propagator;
+  LatticeStaggeredPropagator quark_propagator;
   XMLBufferWriter xml_buf;
   int ncg_had = 0;
   int n_count;
@@ -386,7 +386,7 @@ int main(int argc, char **argv)
   int Nsamp = input.param.Nsamples;
   int t_length = input.param.nrow[3];
 
-  LatticeFermion q_source, psi, psi_sca1, psi_eta3, psi_eta4;
+  LatticeStaggeredFermion q_source, psi, psi_sca1, psi_eta3, psi_eta4;
   //  multi1d<LatticeFermion> soln_vec(Nsamp);
 
   // Timeslice sums of fermion loops.
@@ -409,7 +409,7 @@ int main(int argc, char **argv)
   for(int color_source = 0; color_source < Nc; ++color_source) {
     int spin_source = 0;
     q_source = zero;
-    srcfil(q_source, input.param.t_srce, color_source, spin_source);
+    srcfil(q_source, input.param.t_srce, color_source);
 
     S_f.qprop(psi, state, q_source, input.param.invParam, n_count);
 
@@ -421,7 +421,7 @@ int main(int argc, char **argv)
     write(xml_out, "n_count", n_count);
     pop(xml_out);
 
-    FermToProp(psi, quark_propagator, color_source, spin_source);
+    FermToProp(psi, quark_propagator, color_source);
   }
 
   corr_fn_s = - alpha(1)*beta(0)*trace(adj(quark_propagator)*quark_propagator);
