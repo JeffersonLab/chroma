@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.186 2004-05-03 18:03:43 bjoo Exp $
+# $Id: Makefile.in,v 1.187 2004-05-10 16:41:11 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -286,6 +286,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/invcg2_array.h actions/ferm/invert/invert.h \
 	actions/ferm/invert/invmr.h actions/ferm/invert/minvcg.h \
 	actions/ferm/invert/invcg2_timing_hacks.h \
+	actions/ferm/invert/invsumr.h \
 	actions/ferm/linop/asqtad_dslash.h actions/ferm/linop/linop.h \
 	actions/ferm/linop/lmdagm.h actions/ferm/linop/lopscl.h \
 	actions/ferm/linop/partrat.h actions/ferm/qprop/qprop.h \
@@ -354,6 +355,7 @@ libchroma_a_SOURCES = gauge_startup.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
 	       gramschm_array.cc ritz.cc ritz_array.cc sn_jacob.cc \
 	       sn_jacob_array.cc eig_spec.cc eig_spec_array.cc \
                proginfo.cc printgeom.cc fuzwilp.cc \
+	       invsumr.cc\
 $(am__append_4) $(am__append_5) $(am__append_6) $(am__append_7)
 subdir = lib
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
@@ -375,11 +377,12 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc rgauge.cc taproj.cc \
 	rot_colvec.cc transf.cc param_io.cc fermact_paramio.cc \
 	gramschm.cc gramschm_array.cc ritz.cc ritz_array.cc sn_jacob.cc \
 	sn_jacob_array.cc eig_spec.cc eig_spec_array.cc proginfo.cc \
-	printgeom.cc fuzwilp.cc baryon_w.cc barhqlq_w.cc mesons_w.cc \
-	hybmeson_w.cc loops_w.cc curcor2_w.cc lwldslash_w.cc \
-	formfac_w.cc mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
-	sink_smear2_w.cc barcomp_io.cc barcomp_w.cc walfil_w.cc \
-	overlap_state_info.cc zolotarev4d_fermact_paramio_w.cc \
+	printgeom.cc fuzwilp.cc invsumr.cc baryon_w.cc barhqlq_w.cc \
+	mesons_w.cc hybmeson_w.cc loops_w.cc curcor2_w.cc \
+	lwldslash_w.cc formfac_w.cc mesonseqsrc_w.cc barseqsrc_w.cc \
+	seqpiontest_w.cc sink_smear2_w.cc barcomp_io.cc barcomp_w.cc \
+	walfil_w.cc overlap_state_info.cc \
+	zolotarev4d_fermact_paramio_w.cc \
 	zolotarev5d_fermact_paramio_w.cc fermact_qprop.cc \
 	prec_fermact_qprop.cc unprec_wilson_fermact_w.cc \
 	unprec_wilson_linop_w.cc prec_wilson_fermact_w.cc \
@@ -515,8 +518,8 @@ am_libchroma_a_OBJECTS = gauge_startup.$(OBJEXT) rgauge.$(OBJEXT) \
 	gramschm_array.$(OBJEXT) ritz.$(OBJEXT) ritz_array.$(OBJEXT) \
 	sn_jacob.$(OBJEXT) sn_jacob_array.$(OBJEXT) eig_spec.$(OBJEXT) \
 	eig_spec_array.$(OBJEXT) proginfo.$(OBJEXT) printgeom.$(OBJEXT) \
-	fuzwilp.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
-	$(am__objects_3) $(am__objects_4)
+	fuzwilp.$(OBJEXT) invsumr.$(OBJEXT) $(am__objects_1) \
+	$(am__objects_2) $(am__objects_3) $(am__objects_4)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I.
@@ -552,7 +555,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/hyp_smear.Po ./$(DEPDIR)/invcg1.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/invcg2.Po ./$(DEPDIR)/invcg2_array.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/invcg2_timing_hacks.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/ischiral_w.Po ./$(DEPDIR)/klein_gord.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/invsumr.Po ./$(DEPDIR)/ischiral_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/klein_gord.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/kyugauge_io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/kyuqprop_io.Po ./$(DEPDIR)/laplacian.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/loops_w.Po \
@@ -763,6 +767,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/invcg2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/invcg2_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/invcg2_timing_hacks.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/invsumr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ischiral_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/klein_gord.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kyugauge_io.Po@am__quote@
