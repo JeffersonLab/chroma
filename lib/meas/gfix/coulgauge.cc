@@ -1,4 +1,4 @@
-// $Id: coulgauge.cc,v 1.2 2004-01-02 21:55:37 edwards Exp $
+// $Id: coulgauge.cc,v 1.3 2004-01-02 22:48:02 edwards Exp $
 /*! \file
  *  \brief Coulomb (and Landau) gauge fixing 
  */
@@ -120,32 +120,36 @@ void coulGauge(multi1d<LatticeColorMatrix>& ug, int& n_gf,
     if( GFMax - n_gf < 11 ) 
       wrswitch = true;
     
-    if (Nc > 1)
+    /* Loop over checkerboards for gauge fixing */
+    for(int cb=0; cb<2; ++cb)
     {
-      /* Loop over SU(2) subgroup index */
-      for(int su2_index=0; su2_index < Nc*(Nc-1)/2; ++su2_index)
+      if (Nc > 1)
+      {
+	/* Loop over SU(2) subgroup index */
+	for(int su2_index=0; su2_index < Nc*(Nc-1)/2; ++su2_index)
+	{
+	  /* Gather the Nd negative links attached to a site: */
+	  /* u_tmp(x,mu) = U(x-mu,mu) */
+	  for(int mu=0; mu<Nd; ++mu)
+	    u_tmp[mu][rb[cb]] = shift(ug[mu], BACKWARD, mu);
+
+	  /* Now do a gauge fixing relaxation step */
+	  grelax(ug, u_tmp, j_decay, su2_index, cb, OrDo, OrPara);
+
+	}   /* end su2_index loop */
+      }
+      else
       {
 	/* Gather the Nd negative links attached to a site: */
 	/* u_tmp(x,mu) = U(x-mu,mu) */
 	for(int mu=0; mu<Nd; ++mu)
-	  u_tmp[mu] = shift(ug[mu], BACKWARD, mu);
+	  u_tmp[mu][rb[cb]] = shift(ug[mu], BACKWARD, mu);
 
+	int su2_index = -1;
 	/* Now do a gauge fixing relaxation step */
-	grelax(ug, u_tmp, j_decay, su2_index, OrDo, OrPara);
-	
-      }   /* end su2_index loop */
-    }
-    else
-    {
-      /* Gather the Nd negative links attached to a site: */
-      /* u_tmp(x,mu) = U(x-mu,mu) */
-      for(int mu=0; mu<Nd; ++mu)
-	u_tmp[mu] = shift(ug[mu], BACKWARD, mu);
-
-      int su2_index = -1;
-      /* Now do a gauge fixing relaxation step */
-      grelax(ug, u_tmp, j_decay, su2_index, OrDo, OrPara);
-    }
+	grelax(ug, u_tmp, j_decay, su2_index, cb, OrDo, OrPara);
+      }
+    }     /* end cb loop */
 
     /* Reunitarize */
     for(int mu=0; mu<Nd; ++mu)

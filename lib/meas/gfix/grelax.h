@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: grelax.h,v 1.2 2004-01-02 20:53:25 edwards Exp $
+// $Id: grelax.h,v 1.3 2004-01-02 22:48:02 edwards Exp $
 /*! \file
  *  \brief Perform a single gauge fixing iteration
  */
@@ -19,13 +19,14 @@
  * \param u_neg      (gauge fixed) gauge field, negative links ( Read )
  * \param j_decay    direction perpendicular to slices to be gauge fixed ( Read )
  * \param su2_index  SU(2) subgroup index ( Read )
+ * \param cb         checkerboard index ( Read )
  * \param ordo       use overrelaxation or not ( Read )
  * \param orpara     overrelaxation parameter ( Read ) 
  */
 
 void grelax(multi1d<LatticeColorMatrix>& ug, 
 	    const multi1d<LatticeColorMatrix>& u_neg,
-	    int j_decay, int su2_index, bool ordo,
+	    int j_decay, int su2_index, int cb, bool ordo,
 	    const Real& orpara);
 
 #endif
