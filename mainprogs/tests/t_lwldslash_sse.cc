@@ -1,4 +1,4 @@
-// $Id: t_lwldslash_sse.cc,v 1.6 2003-09-13 10:30:54 bjoo Exp $
+// $Id: t_lwldslash_sse.cc,v 1.7 2003-09-13 11:03:09 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -17,9 +17,12 @@ int main(int argc, char **argv)
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {4,4,4,4};
+  XMLReader xml_in("input.xml");
   multi1d<int> nrow(Nd);
-  nrow = foo;  // Use only Nd elements
+ 
+  read(xml_in, "/param/nrow", nrow);
+  xml_in.close();
+
   Layout::setLattSize(nrow);
   Layout::create();
 
@@ -73,7 +76,7 @@ int main(int argc, char **argv)
       
       if( Layout::primaryNode() ) { 
 	cout << "cb = " << cb << " isign = " << isign << endl;
-	cout << "The time per lattice point is "<< mydt << " micro sec" 
+	cout << "The time per lattice point is "<< mydt 
 	     << " micro sec (" <<  (double)(1392.0f/mydt) << ") Mflops " << endl;
 	
 	
@@ -114,7 +117,7 @@ int main(int argc, char **argv)
       
       if( Layout::primaryNode() ) { 
 	cout << "cb = " << cb << " isign = " << isign << endl;
-	cout << "The time per lattice point is "<< mydt << " micro sec" 
+	cout << "The time per lattice point is "<< mydt 
 	     << " micro sec (" <<  (double)(1392.0f/mydt) << ") Mflops " << endl;
 	
 	
