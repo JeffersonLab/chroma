@@ -13,7 +13,7 @@
   </ProgramInfo>
   <Input><seqprop>
 <annotation>
-; $Id: seqprop_nonrel_v3.linux-scalar-intel.xml,v 1.1 2004-04-01 21:07:42 edwards Exp $
+; $Id: seqprop_nonrel_v3.linux-scalar-intel.xml,v 1.2 2004-04-01 21:44:46 edwards Exp $
 ;
 ; SEQPROP input file.
 ;
@@ -30,7 +30,7 @@
 <Param>
  <version>3</version>
  <nonRelSeqProp>true</nonRelSeqProp>
- <Seq_src>6 7</Seq_src>
+ <Seq_src>21 22</Seq_src>
  <InvertParam>
    <invType>CG_INVERTER</invType>
    <RsdCG>1.0e-10</RsdCG>
@@ -47,8 +47,8 @@
 <Prop>
  <prop_file>../propagator/propagator_0</prop_file>
  <seqprop_files>
-   <elem>seqprop_0_6</elem>
-   <elem>seqprop_0_7</elem>
+   <elem>seqprop_0_21</elem>
+   <elem>seqprop_0_22</elem>
  </seqprop_files>
  <seqprop_volfmt>SINGLEFILE</seqprop_volfmt>
 </Prop>
@@ -204,7 +204,7 @@
         </Qprop>
       </QuarkProp4>
       <Backward_prop_correlator>
-        <backward_prop_corr>8.43845e-16 7.26034e-16 3.90627e-15 3.07351e-14 2.64619e-13 2.35996e-12 4.71465e-14 5.49158e-15</backward_prop_corr>
+        <backward_prop_corr>1.24691e-15 1.07806e-15 5.71652e-15 4.47009e-14 3.83798e-13 3.41498e-12 6.78174e-14 7.9567e-15</backward_prop_corr>
       </Backward_prop_correlator>
     </elem>
     <elem>
@@ -236,7 +236,7 @@
         </Qprop>
       </QuarkProp4>
       <Backward_prop_correlator>
-        <backward_prop_corr>2.12536e-16 1.85747e-16 9.89088e-16 7.72032e-15 6.62544e-14 5.90216e-13 1.17784e-14 1.37309e-15</backward_prop_corr>
+        <backward_prop_corr>2.36602e-16 2.12175e-16 1.11748e-15 8.63265e-15 7.37825e-14 6.57346e-13 1.31521e-14 1.52778e-15</backward_prop_corr>
       </Backward_prop_correlator>
     </elem>
   </Sequential_source>
