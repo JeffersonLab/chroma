@@ -1,10 +1,10 @@
-// $Id: walfil_w.cc,v 1.1 2003-12-15 04:23:32 edwards Exp $
+// $Id: walfil_w.cc,v 1.2 2003-12-16 02:15:29 edwards Exp $
 /*! \file
  *  \brief Wall source construction
  */
 
 #include "chromabase.h"
-#include "meas/hadron/walfil.h"
+#include "meas/hadron/walfil_w.h"
 
 using namespace QDP;
 

@@ -1,16 +1,18 @@
-// $Id: walfil_s.cc,v 1.1 2003-12-15 04:23:32 edwards Exp $
+// $Id: walfil_s.cc,v 1.2 2003-12-16 02:15:29 edwards Exp $
 /*! \file
  *  \brief Wall source construction
  */
 
 #include "chromabase.h"
-#include "meas/hadron/walfil.h"
+#include "meas/hadron/walfil_s.h"
 
 using namespace QDP;
 
 //! Fill a specific color and spin index with 1.0 on a wall
 /*!
  * \ingroup hadron
+ *
+ * This routine is specific to Staggered fermions! 
  *
  * Fill a specific color index with 1.0, on sites in a slice
  * where everything has even coordinates.
@@ -19,18 +21,14 @@ using namespace QDP;
  * \param slice        time slice
  * \param mu           direction of slice
  * \param color_index  Color index
- * \param spin_index   Spin index
  */
 
-void walfil(LatticeFermion& a, int slice, int mu, int color_index, int spin_index)
+void walfil(LatticeFermion& a, int slice, int mu, int color_index)
 {
   START_CODE("walfil");
 
   if ( color_index >= Nc )
     QDP_error_exit("Color index out of bounds", color_index, Nc);
-
-  if ( spin_index != 0 )
-    QDP_error_exit("Spin index out of bounds", spin_index, Ns);
 
   if ( (slice % 2) != 0 )
     QDP_error_exit("Require an even valued slice", slice);
@@ -40,6 +38,7 @@ void walfil(LatticeFermion& a, int slice, int mu, int color_index, int spin_inde
    * Note: staggered fermions are represented as "Ns=1" spinors! 
    */
   // Write ONE to all field
+  int spin_index = 0;
   Real one = 1;
   Complex sitecomp = cmplx(one,0);
   ColorVector sitecolor = zero;
