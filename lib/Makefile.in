@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.258 2004-11-17 15:22:59 bjoo Exp $
+# $Id: Makefile.in,v 1.259 2004-11-17 16:51:53 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -97,6 +97,7 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/unprec_dwftransf_linop_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/unprec_dwf4d_linop_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/unprec_pdwf4d_linop_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/qprop/qprop_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/qprop/unprec_qprop_w.h \
 @BUILD_WILSON_LIBS_TRUE@	io/io_w.h io/barcomp_io.h io/kyuqprop_io.h \
@@ -192,7 +193,7 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@              prec_nef_general_linop_array_w.cc \
 @BUILD_WILSON_LIBS_TRUE@	      prec_zolo_nef_fermact_array_w.cc \
 @BUILD_WILSON_LIBS_TRUE@	      unprec_dwftransf_linop_w.cc \
-@BUILD_WILSON_LIBS_TRUE@	      unprec_dwf4d_linop_w.cc \
+@BUILD_WILSON_LIBS_TRUE@	      unprec_dwf4d_linop_w.cc unprec_pdwf4d_linop_w.cc \
 @BUILD_WILSON_LIBS_TRUE@	      unprec_dwftransf_fermact_w.cc
 
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_6 = actions/ferm/linop/lwldslash_w_sse.h
@@ -567,8 +568,8 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc gaugebc_utils.cc \
 	unprec_zolo_nef_fermact_array_w.cc \
 	prec_nef_general_linop_array_w.cc \
 	prec_zolo_nef_fermact_array_w.cc unprec_dwftransf_linop_w.cc \
-	unprec_dwf4d_linop_w.cc unprec_dwftransf_fermact_w.cc \
-	lwldslash_w_sse.cc \
+	unprec_dwf4d_linop_w.cc unprec_pdwf4d_linop_w.cc \
+	unprec_dwftransf_fermact_w.cc lwldslash_w_sse.cc \
 	actions/ferm/fermacts/prec_dwf_fermact_array_sse_w.cc \
 	lwldslash_w_pab.cc mesphas_s.cc mesphas_follana_s.cc pions_s.cc \
 	follana_io_s.cc walfil_s.cc baryon_s.cc stag_scalars_s.cc \
@@ -664,6 +665,7 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc gaugebc_utils.cc \
 @BUILD_WILSON_LIBS_TRUE@	prec_zolo_nef_fermact_array_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	unprec_dwftransf_linop_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	unprec_dwf4d_linop_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	unprec_pdwf4d_linop_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	unprec_dwftransf_fermact_w.$(OBJEXT)
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__objects_2 = lwldslash_w_sse.$(OBJEXT)
 @BUILD_SSE_DWF_CG_TRUE@am__objects_3 = \
@@ -897,6 +899,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_ovlap_contfrac5d_nonhermop_array_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_parwilson_fermact_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_parwilson_linop_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/unprec_pdwf4d_linop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_wilson_fermact_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_wilson_linop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_zolo_nef_fermact_array_w.Po \
@@ -1199,6 +1202,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_ovlap_contfrac5d_nonhermop_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_parwilson_fermact_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_parwilson_linop_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_pdwf4d_linop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_wilson_fermact_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_wilson_linop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_zolo_nef_fermact_array_w.Po@am__quote@
