@@ -1,3 +1,8 @@
+03/02/2005 -- Robert Edwards
+
+	Version 1.19.12. Argh - bug fix. Resize's in linop array routines
+        caused problems. Updated command-line args to all main programs.
+
 02/27/2005 -- Robert Edwards
 
 	Version 1.19.11. Small code simplifications.
