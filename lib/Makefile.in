@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.23 2003-03-28 05:37:03 edwards Exp $
+# $Id: Makefile.in,v 1.24 2003-03-30 17:17:16 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -156,7 +156,8 @@ HDRS = chroma.h chromabase.h chromainc.h primitives.h defs.h common_declarations
 #
 GENERIC_SRCS = $(HDRS) gaus_smear.cc taproj.cc hotst.cc expm12.cc \
                klein_gord.cc mesplq.cc reunit.cc sftmom.cc srcfil.cc \
-               readszin.cc su3proj.cc hyp_smear.cc su2extract.cc sunfill.cc
+               readszin.cc su3proj.cc sun_proj.cc hyp_smear.cc \
+               su2extract.cc sunfill.cc invcg2m.cc
 
 
 #
@@ -192,17 +193,18 @@ libchroma_a_LIBADD =
 am__libchroma_a_SOURCES_DIST = chroma.h chromabase.h chromainc.h \
 	primitives.h defs.h common_declarations.h geom.h gaus_smear.cc \
 	taproj.cc hotst.cc expm12.cc klein_gord.cc mesplq.cc reunit.cc \
-	sftmom.cc srcfil.cc readszin.cc su3proj.cc hyp_smear.cc \
-	su2extract.cc sunfill.cc dslashm_w.cc baryon_w.cc mesons_w.cc \
-	lwldslash_w.cc lmpsim_w.cc formfac_w.cc sink_smear2_w.cc \
-	barcomp_w.cc transf_w.cc npqprop_w.cc wilson_unprec_w.cc \
-	conslinop_w.cc readszinqprop_w.cc
+	sftmom.cc srcfil.cc readszin.cc su3proj.cc sun_proj.cc \
+	hyp_smear.cc su2extract.cc sunfill.cc invcg2m.cc dslashm_w.cc \
+	baryon_w.cc mesons_w.cc lwldslash_w.cc lmpsim_w.cc formfac_w.cc \
+	sink_smear2_w.cc barcomp_w.cc transf_w.cc npqprop_w.cc \
+	wilson_unprec_w.cc conslinop_w.cc readszinqprop_w.cc
 am__objects_1 =
 am__objects_2 = $(am__objects_1) gaus_smear.$(OBJEXT) taproj.$(OBJEXT) \
 	hotst.$(OBJEXT) expm12.$(OBJEXT) klein_gord.$(OBJEXT) \
 	mesplq.$(OBJEXT) reunit.$(OBJEXT) sftmom.$(OBJEXT) \
 	srcfil.$(OBJEXT) readszin.$(OBJEXT) su3proj.$(OBJEXT) \
-	hyp_smear.$(OBJEXT) su2extract.$(OBJEXT) sunfill.$(OBJEXT)
+	sun_proj.$(OBJEXT) hyp_smear.$(OBJEXT) su2extract.$(OBJEXT) \
+	sunfill.$(OBJEXT) invcg2m.$(OBJEXT)
 am__objects_3 = dslashm_w.$(OBJEXT) baryon_w.$(OBJEXT) \
 	mesons_w.$(OBJEXT) lwldslash_w.$(OBJEXT) lmpsim_w.$(OBJEXT) \
 	formfac_w.$(OBJEXT) sink_smear2_w.$(OBJEXT) barcomp_w.$(OBJEXT) \
@@ -226,16 +228,17 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/conslinop_w.Po ./$(DEPDIR)/dslashm_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/expm12.Po ./$(DEPDIR)/formfac_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/gaus_smear.Po ./$(DEPDIR)/hotst.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/hyp_smear.Po ./$(DEPDIR)/klein_gord.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/lmpsim_w.Po ./$(DEPDIR)/lwldslash_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/mesons_w.Po ./$(DEPDIR)/mesplq.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/npqprop_w.Po ./$(DEPDIR)/readszin.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/hyp_smear.Po ./$(DEPDIR)/invcg2m.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/klein_gord.Po ./$(DEPDIR)/lmpsim_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/lwldslash_w.Po ./$(DEPDIR)/mesons_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/mesplq.Po ./$(DEPDIR)/npqprop_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/readszin.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/readszinqprop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/reunit.Po ./$(DEPDIR)/sftmom.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/sink_smear2_w.Po ./$(DEPDIR)/srcfil.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/su2extract.Po ./$(DEPDIR)/su3proj.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/sunfill.Po ./$(DEPDIR)/taproj.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/transf_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/sun_proj.Po ./$(DEPDIR)/sunfill.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/taproj.Po ./$(DEPDIR)/transf_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/wilson_unprec_w.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -312,6 +315,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gaus_smear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hotst.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyp_smear.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/invcg2m.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/klein_gord.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lmpsim_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_w.Po@am__quote@
@@ -326,6 +330,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/srcfil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/su2extract.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/su3proj.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sun_proj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sunfill.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/taproj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/transf_w.Po@am__quote@
