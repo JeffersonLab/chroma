@@ -1,4 +1,4 @@
-// $Id: endoftrj.cc,v 1.1 2003-12-30 19:52:28 edwards Exp $
+// $Id: endoftrj.cc,v 1.2 2003-12-31 23:47:20 edwards Exp $
 
 #error "NOT FULLY CONVERTED - NEED TO MOVE AlgETrj into params of Integ. functor"
 
@@ -10,11 +10,12 @@ using namespace QDP;
 /*!
  * \ingroup molecdyn
  *
+ * \param tau0   desired length of trajectory ( Read )
  * \param t      integration time so far ( Read )
  * \return EndP  flag indicating end of trajectory ( Write ) 
  */
 
-bool EndOfTrj(const Real& t)
+bool EndOfTrj(const Real& tau0, const Real& t)
 {
   Real r;
   
@@ -23,20 +24,14 @@ bool EndOfTrj(const Real& t)
   switch (AlgETrj)
   {
   case FIXED_LENGTH:
-    if ( t > tau0+dt/TO_REAL(2) )
-      EndP = true;
-    else
-      EndP = false;
-
+    EndP = ( toBool(t > 0.5*(tau0+dt)) ) ? true : false;
     break;
+
   case EXPONENTIAL_LENGTH:
     random(r);
-    if ( r < dt/max(tau0-dt,dt) )
-      EndP = true;
-    else
-      EndP = false;
-
+    EndP = ( toBool(r < dt/max(tau0-dt,dt)) ) ? true : false;
     break;
+
   default:
     QDP_error_exit("unknown algorithm termination", AlgETrj);
   }
