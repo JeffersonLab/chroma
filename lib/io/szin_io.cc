@@ -1,4 +1,4 @@
-// $Id: szin_io.cc,v 1.2 2003-10-08 03:45:11 edwards Exp $
+// $Id: szin_io.cc,v 1.3 2003-10-08 16:00:50 edwards Exp $
 
 /*! \file
  *  \brief Reader/writers for szin headers
@@ -28,7 +28,7 @@ void szinGaugeInit(SzinGauge_t& header)
   header.MesTrj = 0;
   header.TotalCG = 0;
   header.TotalTrj = 0;
-  header.spec_acc = 0;
+  header.spec_acc = 1;
 
   header.NOver = 0;
   header.TotalTry = 0;
