@@ -22,7 +22,9 @@ namespace Chroma {
     ~ZeroGuess4DChronoPredictor(void) {}
 
     // Zero out psi -- it is a zero guess after all
-    void operator()(LatticeFermion& psi) {
+    void operator()(LatticeFermion& psi,
+		    const LinearOperator<LatticeFermion> &A,
+		    const LatticeFermion& chi) {
       QDPIO::cout << "ZeroGuessPredictor: zeroing initial guess" << endl;
       psi = zero;
     }
@@ -60,7 +62,9 @@ namespace Chroma {
       N5(p.N5) {}
 
     // Zero out psi -- it is a zero guess after all
-    void operator()(multi1d<LatticeFermion>& psi) { 
+    void operator()(multi1d<LatticeFermion>& psi,
+		    const LinearOperator<multi1d<LatticeFermion> >& A,
+		    const multi1d<LatticeFermion>& chi) { 
 
       QDPIO::cout << "ZeroGuessPredictor: zeroing initial guess" << endl;
       psi.resize(N5);

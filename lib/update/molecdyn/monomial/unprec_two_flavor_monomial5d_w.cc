@@ -1,4 +1,4 @@
-// $Id: unprec_two_flavor_monomial5d_w.cc,v 1.1 2005-01-28 02:15:33 edwards Exp $
+// $Id: unprec_two_flavor_monomial5d_w.cc,v 1.2 2005-02-23 14:51:56 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 5D ferm monomials
  */
@@ -246,7 +246,7 @@ namespace Chroma
   int
   UnprecTwoFlavorWilsonTypeFermMonomial5D::getX(
     multi1d<LatticeFermion>& X, 
-    const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const
+    const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s)
   {
     // Upcast the fermact
     const FermAct5D<LatticeFermion>& FA = getFermAct();
@@ -266,10 +266,31 @@ namespace Chroma
     multi1d<LatticeFermion> VdagPhi(FA.size());
     (*PV)(VdagPhi, getPhi(), MINUS);
 
-    /*
-    int n_count = invert(X, *M, getPhi());
-    */
-    int n_count = invert(X, *M, VdagPhi);
+    int n_count;
+
+    // Get the chrono prediction
+    switch( inv_param.invType) {
+    case CG_INVERTER:
+      {
+	// CG Chrono predictor needs MdagM
+	Handle< const LinearOperator< multi1d<LatticeFermion> > > MdagM(FA.lMdagM(state));
+	(getMDSolutionPredictor())(X, *MdagM, VdagPhi);
+	
+	// Do the inversion
+	n_count = invert(X, *M, VdagPhi);
+	
+	// Register the new vector
+	(getMDSolutionPredictor()).newVector(X);
+      }
+      break;
+    default:
+      {
+	QDPIO::cerr << "Currently only CG Inverter is implemented" << endl;
+	QDP_abort(1);
+      }
+      break;
+    };
+    
     return n_count;
   }
 

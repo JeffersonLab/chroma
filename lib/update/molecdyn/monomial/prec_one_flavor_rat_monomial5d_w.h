@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_one_flavor_rat_monomial5d_w.h,v 1.2 2005-02-03 03:16:41 edwards Exp $
+// $Id: prec_one_flavor_rat_monomial5d_w.h,v 1.3 2005-02-23 14:51:56 bjoo Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 5D ferm monomials
  */
@@ -66,7 +66,7 @@ namespace Chroma
 
       //! Even even contribution (eg ln det Clover)
       Double S_even_even(const AbsFieldState<multi1d<LatticeColorMatrix>,
-			                     multi1d<LatticeColorMatrix> >& s) const {
+			                     multi1d<LatticeColorMatrix> >& s) {
 	return Double(0);
       }
 

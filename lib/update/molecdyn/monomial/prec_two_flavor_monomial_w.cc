@@ -1,4 +1,4 @@
-// $Id: prec_two_flavor_monomial_w.cc,v 1.1 2005-01-28 02:15:33 edwards Exp $
+// $Id: prec_two_flavor_monomial_w.cc,v 1.2 2005-02-23 14:51:56 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -193,7 +193,7 @@ namespace Chroma
   int
   EvenOddPrecTwoFlavorWilsonTypeFermMonomial::getX(
     LatticeFermion& X, 
-    const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const
+    const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s)
   {
     // Upcast the fermact
     const FermAct4D<LatticeFermion>& FA = getFermAct();
@@ -205,9 +205,31 @@ namespace Chroma
    
     // Get linop
     Handle< const LinearOperator<LatticeFermion> > M(FA.linOp(state));
+    int n_count;
 
     // Do the inversion...
-    int n_count = invert(X, *M, getPhi());
+    switch( inv_param.invType) {
+    case CG_INVERTER:
+    {
+      // Solve MdagM X = eta
+      // Do the inversion...
+
+      // Need MdagM for CG based predictor
+      Handle< const LinearOperator<LatticeFermion> > MdagM(FA.lMdagM(state));
+      (getMDSolutionPredictor())(X, *MdagM, getPhi());
+      n_count = invert(X, *M, getPhi());
+      (getMDSolutionPredictor()).newVector(X);
+
+    }
+    break;
+    default:
+    {
+      QDPIO::cerr << "Currently only CG Inverter is implemented" << endl;
+      QDP_abort(1);
+    }
+    break;
+    };
+
     return n_count;
   }
 

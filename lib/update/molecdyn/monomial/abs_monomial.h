@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_monomial.h,v 1.5 2005-01-28 02:15:32 edwards Exp $
+// $Id: abs_monomial.h,v 1.6 2005-02-23 14:51:56 bjoo Exp $
 
 /*! @file
  * @brief Monomials - gauge action or fermion binlinear contributions for HMC
@@ -82,7 +82,7 @@ namespace Chroma
     // Compute the energies 
 
     //! Compute the total action
-    virtual Double S(const AbsFieldState<P,Q>& s) const  = 0;
+    virtual Double S(const AbsFieldState<P,Q>& s)  = 0;
 
     //! Refresh pseudofermion fields if any
     virtual void refreshInternalFields(const AbsFieldState<P,Q>& field_state) = 0;
@@ -140,7 +140,7 @@ namespace Chroma
     ~ExactFermMonomial() {}
 
     //! Compute the total action
-    virtual Double S(const AbsFieldState<P,Q>& s) const = 0;
+    virtual Double S(const AbsFieldState<P,Q>& s)  = 0;
 
     //! Compute dsdq for the system... Not specified how to actually do this
     /*! s is the state, F is the computed force */
@@ -170,7 +170,7 @@ namespace Chroma
     ~ExactFermMonomial4D() {}
 
     //! Compute the total action
-    virtual Double S(const AbsFieldState<P,Q>& s) const = 0;
+    virtual Double S(const AbsFieldState<P,Q>& s)  = 0;
 
     //! Compute dsdq for the system... Not specified how to actually do this
     /*! s is the state, F is the computed force */
@@ -200,7 +200,7 @@ namespace Chroma
     ~ExactFermMonomial5D() {}
 
     //! Compute the total action
-    virtual Double S(const AbsFieldState<P,Q>& s) const = 0;
+    virtual Double S(const AbsFieldState<P,Q>& s)  = 0;
 
     //! Compute dsdq for the system... Not specified how to actually do this
     //  s is the state, F is the computed force
@@ -229,7 +229,7 @@ namespace Chroma
     ~ExactWilsonTypeFermMonomial() {}
 
     //! Compute the total action
-    virtual Double S(const AbsFieldState<P,Q>& s) const = 0;
+    virtual Double S(const AbsFieldState<P,Q>& s)  = 0;
 
     //! Compute dsdq for the system... Not specified how to actually do this
     /*! s is the state, F is the computed force */
@@ -263,7 +263,7 @@ namespace Chroma
     ~ExactWilsonTypeFermMonomial5D() {}
 
     //! Compute the total action
-    virtual Double S(const AbsFieldState<P,Q>& s) const = 0;
+    virtual Double S(const AbsFieldState<P,Q>& s)  = 0;
 
     //! Compute dsdq for the system... Not specified how to actually do this
     /*! s is the state, F is the computed force */

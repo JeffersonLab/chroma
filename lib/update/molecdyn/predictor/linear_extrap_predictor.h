@@ -28,7 +28,9 @@ namespace Chroma {
     ~LinearExtrapolation4DChronoPredictor(void) {}
 
 
-    void operator()(LatticeFermion& psi) {
+    void operator()(LatticeFermion& psi,
+		    const LinearOperator<LatticeFermion>& A, 
+		    const LatticeFermion& chi) {
       switch( chrono_buf->size() ) { 
       case 0:
 	{
@@ -105,7 +107,9 @@ namespace Chroma {
     LinearExtrapolation5DChronoPredictor(const LinearExtrapolation5DChronoPredictor& p) : chrono_buf(p.chrono_buf), N5(p.N5) {}
 
     // Zero out psi -- it is a zero guess after all
-    void operator()(multi1d<LatticeFermion>& psi) { 
+    void operator()(multi1d<LatticeFermion>& psi,
+		    const LinearOperator< multi1d<LatticeFermion> >& A,
+		    const multi1d<LatticeFermion>& chi) { 
 
       switch( chrono_buf->size() ) { 
       case 0:

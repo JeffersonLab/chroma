@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_two_flavor_monomial_w.h,v 1.1 2005-01-28 02:15:33 edwards Exp $
+// $Id: prec_two_flavor_monomial_w.h,v 1.2 2005-02-23 14:51:56 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -58,6 +58,7 @@ namespace Chroma
       // Copy Constructor
       EvenOddPrecTwoFlavorWilsonTypeFermMonomial(const EvenOddPrecTwoFlavorWilsonTypeFermMonomial& m) : phi(m.phi), fermact(m.fermact), inv_param(m.inv_param), chrono_predictor(m.chrono_predictor) {}
 
+#if 0
       const LatticeFermion& debugGetPhi(void) const {
 	return getPhi();
       }
@@ -65,6 +66,7 @@ namespace Chroma
       void debugGetX(LatticeFermion& X, const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s)  {
 	getX(X,s);
       }
+#endif
 
       const EvenOddPrecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >& debugGetFermAct(void) const { 
 	return getFermAct();
@@ -73,7 +75,7 @@ namespace Chroma
  
       //! Even even contribution (eg ln det Clover)
       Double S_even_even(const AbsFieldState<multi1d<LatticeColorMatrix>,
-			                     multi1d<LatticeColorMatrix> >& s) const {
+			                     multi1d<LatticeColorMatrix> >& s) {
 	return Double(0);
       }
 
@@ -93,7 +95,7 @@ namespace Chroma
       }
 
       // Do inversion M^dag M X = phi
-      int getX(LatticeFermion& X, const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const;
+      int getX(LatticeFermion& X, const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s);
 
 
       //! Get X = (A^dag*A)^{-1} eta

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial5d_w.h,v 1.3 2005-02-03 03:16:41 edwards Exp $
+// $Id: one_flavor_rat_monomial5d_w.h,v 1.4 2005-02-23 14:51:56 bjoo Exp $
 
 /*! @file
  * @brief One flavor monomials using RHMC
@@ -29,7 +29,7 @@ namespace Chroma
     ~OneFlavorRatExactWilsonTypeFermMonomial5D() {}
 
     //! Compute the total action
-    virtual Double S(const AbsFieldState<P,Q>& s) const = 0;
+    virtual Double S(const AbsFieldState<P,Q>& s)  = 0;
 
     //! Compute dsdq for the system... 
     /*! Actions of the form  chi^dag*(M^dag*M)*chi */
@@ -470,7 +470,7 @@ namespace Chroma
     ~OneFlavorRatExactUnprecWilsonTypeFermMonomial5D() {}
 
     //! Compute the total action
-    virtual Double S(const AbsFieldState<P,Q>& s) const
+    virtual Double S(const AbsFieldState<P,Q>& s) 
     {
       XMLWriter& xml_out=TheXMLOutputWriter::Instance();
       push(xml_out, "OneFlavorRatExactUnprecWilsonTypeFermMonomial5D");
@@ -546,16 +546,16 @@ namespace Chroma
     ~OneFlavorRatExactEvenOddPrecWilsonTypeFermMonomial5D() {}
 
     //! Even even contribution (eg ln det Clover)
-    virtual Double S_even_even(const AbsFieldState<P,Q>& s) const = 0;
+    virtual Double S_even_even(const AbsFieldState<P,Q>& s)  = 0;
 
     //! Compute the odd odd contribution (eg
-    virtual Double S_odd_odd(const AbsFieldState<P,Q>& s) const
+    virtual Double S_odd_odd(const AbsFieldState<P,Q>& s) 
     {
       return S_subset(s);
     }
 
     //! Compute the total action
-    Double S(const AbsFieldState<P,Q>& s)  const 
+    Double S(const AbsFieldState<P,Q>& s) 
     {
       XMLWriter& xml_out=TheXMLOutputWriter::Instance();
       push(xml_out, "OneFlavorRatExactEvenOddPrecWilsonTypeFermMonomial5D");

@@ -25,8 +25,11 @@ namespace Chroma {
 
     LastSolution4DChronoPredictor(const LastSolution4DChronoPredictor& p) :
       last_solution(p.last_solution), last_solution_available(p.last_solution_available) {}
+
     // Zero out psi -- it is a zero guess after all
-    void operator()(LatticeFermion& psi) {
+    void operator()(LatticeFermion& psi,
+		    const LinearOperator<LatticeFermion>& A,
+		    const LatticeFermion& chi) {
       QDPIO::cout << "LastSolution4DChronoPredictor: ";
       if( last_solution_available ) { 
 	QDPIO::cout << "Giving you the last solution" << endl;
@@ -81,7 +84,9 @@ namespace Chroma {
       N5(p.N5), last_solution(p.last_solution), last_solution_available(p.last_solution_available) {}
 
     // Zero out psi -- it is a zero guess after all
-    void operator()(multi1d<LatticeFermion>& psi) { 
+    void operator()(multi1d<LatticeFermion>& psi,
+		    const LinearOperator< multi1d<LatticeFermion> >& A,
+		    const multi1d<LatticeFermion>& chi) { 
 
       QDPIO::cout << "LastSolutionPredictor:";
       psi.resize(N5);

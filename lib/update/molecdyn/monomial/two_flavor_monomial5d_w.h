@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial5d_w.h,v 1.1 2005-01-28 02:15:33 edwards Exp $
+// $Id: two_flavor_monomial5d_w.h,v 1.2 2005-02-23 14:51:56 bjoo Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -32,7 +32,7 @@ namespace Chroma
     ~TwoFlavorExactWilsonTypeFermMonomial5D() {}
 
     //! Compute the total action
-    virtual Double S(const AbsFieldState<P,Q>& s) const = 0;
+    virtual Double S(const AbsFieldState<P,Q>& s) = 0;
 
     //! Compute dsdq for the system... 
     /*! Actions of the form  chi^dag*(M^dag*M)*chi */
@@ -78,9 +78,10 @@ namespace Chroma
       // Get/construct the pseudofermion solution
       multi1d<Phi> X(FA.size()), Y(FA.size());
 
-      (getMDSolutionPredictor())(X);
+      // Move these to get X
+      //(getMDSolutionPredictor())(X);
       int n_count = getX(X,s);
-      (getMDSolutionPredictor()).newVector(X);
+      //(getMDSolutionPredictor()).newVector(X);
 
       (*M)(Y, X, PLUS);
 
@@ -180,7 +181,7 @@ namespace Chroma
     virtual const WilsonTypeFermAct5D<Phi,P>& getFermAct(void) const = 0;
 
     //! Get (M^dagM)^{-1} phi
-    virtual int getX(multi1d<Phi>& X, const AbsFieldState<P,Q>& s) const = 0;
+    virtual int getX(multi1d<Phi>& X, const AbsFieldState<P,Q>& s)  = 0;
 
     //! Get X = (PV^dag*PV)^{-1} eta
     virtual int getXPV(multi1d<Phi>& X, const multi1d<Phi>& eta, const AbsFieldState<P,Q>& s) const = 0;
@@ -206,7 +207,7 @@ namespace Chroma
     ~TwoFlavorExactUnprecWilsonTypeFermMonomial5D() {}
 
     //! Compute the total action
-    virtual Double S(const AbsFieldState<P,Q>& s) const
+    virtual Double S(const AbsFieldState<P,Q>& s) 
     {
       // SelfEncapsulation/Identification Rule
       XMLWriter& xml_out = TheXMLOutputWriter::Instance();
@@ -257,7 +258,7 @@ namespace Chroma
     virtual const UnprecWilsonTypeFermAct5D<Phi,P>& getFermAct(void) const = 0;
 
     //! Get (M^dagM)^{-1} phi
-    virtual int getX(multi1d<Phi>& X, const AbsFieldState<P,Q>& s) const  = 0;
+    virtual int getX(multi1d<Phi>& X, const AbsFieldState<P,Q>& s)  = 0;
 
     //! Get X = (PV^dag*PV)^{-1} eta
     virtual int getXPV(multi1d<Phi>& X, const multi1d<Phi>& eta, const AbsFieldState<P,Q>& s) const = 0;
@@ -281,10 +282,10 @@ namespace Chroma
     ~TwoFlavorExactEvenOddPrecWilsonTypeFermMonomial5D() {}
 
     //! Even even contribution (eg ln det Clover)
-    virtual Double S_even_even(const AbsFieldState<P,Q>& s) const = 0;
+    virtual Double S_even_even(const AbsFieldState<P,Q>& s)  = 0;
 
     //! Compute the odd odd contribution (eg
-    virtual Double S_odd_odd(const AbsFieldState<P,Q>& s) const
+    virtual Double S_odd_odd(const AbsFieldState<P,Q>& s) 
     {
       XMLWriter& xml_out = TheXMLOutputWriter::Instance();
       push(xml_out, "S_odd_odd");
@@ -323,7 +324,7 @@ namespace Chroma
     }
 
     //! Compute the total action
-    Double S(const AbsFieldState<P,Q>& s)  const {
+    Double S(const AbsFieldState<P,Q>& s)  {
       XMLWriter& xml_out=TheXMLOutputWriter::Instance();
       push(xml_out, "TwoFlavorExactEvenOddPrecWilsonTypeFermMonomial5D");
 
@@ -346,7 +347,7 @@ namespace Chroma
     virtual multi1d<Phi>& getPhi(void) = 0;    
 
     //! Get (M^dagM)^{-1} phi
-    virtual int getX(multi1d<Phi>& X, const AbsFieldState<P,Q>& s) const  = 0;
+    virtual int getX(multi1d<Phi>& X, const AbsFieldState<P,Q>& s)  = 0;
 
     //! Get X = (PV^dag*PV)^{-1} eta
     virtual int getXPV(multi1d<Phi>& X, const multi1d<Phi>& eta, const AbsFieldState<P,Q>& s) const  = 0;

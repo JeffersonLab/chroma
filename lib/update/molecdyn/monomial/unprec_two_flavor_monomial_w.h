@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_two_flavor_monomial_w.h,v 1.1 2005-01-28 02:15:33 edwards Exp $
+// $Id: unprec_two_flavor_monomial_w.h,v 1.2 2005-02-23 14:51:56 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 4D ferm monomials
  */
@@ -54,13 +54,16 @@ namespace Chroma
       // Copy Constructor
       UnprecTwoFlavorWilsonTypeFermMonomial(const UnprecTwoFlavorWilsonTypeFermMonomial& m) : phi(m.phi), fermact((m.fermact)), inv_param(m.inv_param), chrono_predictor(m.chrono_predictor) {}
 
+#if 0
       const LatticeFermion& debugGetPhi(void) const {
 	return getPhi();
       }
 
-      void debugGetX(LatticeFermion& X, const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const  {
+
+      void debugGetX(LatticeFermion& X, const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) {
 	getX(X,s);
       }
+#endif
 
       const UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >& debugGetFermAct(void) const { 
 	return getFermAct();
@@ -84,7 +87,7 @@ namespace Chroma
 
       //! Do inversion M^dag M X = phi
       int getX(LatticeFermion& X, 
-		const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const ;
+		const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) ;
 
       //! Get X = (A^dag*A)^{-1} eta
       int invert(LatticeFermion& X, 

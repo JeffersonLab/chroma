@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gauge_monomial.h,v 1.3 2005-01-14 15:59:00 bjoo Exp $
+// $Id: gauge_monomial.h,v 1.4 2005-02-23 14:51:56 bjoo Exp $
 /*! \file
  *  \brief Generic gauge action monomial wrapper
  */
@@ -65,7 +65,7 @@ namespace Chroma
 
 
       Double S(const AbsFieldState<multi1d<LatticeColorMatrix>,
-	       multi1d<LatticeColorMatrix> >& s) const {
+	       multi1d<LatticeColorMatrix> >& s)  {
 
 	XMLWriter& xml_out = TheXMLOutputWriter::Instance();
 	push(xml_out, "GaugeMonomial");

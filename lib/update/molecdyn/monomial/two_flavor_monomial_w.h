@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial_w.h,v 1.1 2005-01-28 02:15:33 edwards Exp $
+// $Id: two_flavor_monomial_w.h,v 1.2 2005-02-23 14:51:56 bjoo Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -32,7 +32,7 @@ namespace Chroma
     ~TwoFlavorExactWilsonTypeFermMonomial() {}
 
     //! Compute the total action
-    virtual Double S(const AbsFieldState<P,Q>& s) const = 0;
+    virtual Double S(const AbsFieldState<P,Q>& s) = 0;
 
     //! Compute dsdq for the system... 
     /*! Actions of the form  chi^dag*(M^dag*M)*chi */
@@ -67,9 +67,9 @@ namespace Chroma
       Phi X, Y;
 
       // Get X out here
-      (getMDSolutionPredictor())(X);
+      // (getMDSolutionPredictor())(X);
       int n_count = getX(X,s);
-      (getMDSolutionPredictor()).newVector(X);
+      // (getMDSolutionPredictor()).newVector(X);
       
       (*lin)(Y, X, PLUS);
 
@@ -142,7 +142,7 @@ namespace Chroma
     virtual const WilsonTypeFermAct<Phi,P>& getFermAct(void) const = 0;
 
     //! Get (M^dagM)^{-1} phi
-    virtual int getX(Phi& X, const AbsFieldState<P,Q>& s) const = 0;
+    virtual int getX(Phi& X, const AbsFieldState<P,Q>& s) = 0;
 
     //! Get the initial guess predictor
     virtual AbsChronologicalPredictor4D<Phi>& getMDSolutionPredictor(void) = 0;
@@ -166,7 +166,7 @@ namespace Chroma
     ~TwoFlavorExactUnprecWilsonTypeFermMonomial() {}
 
     //! Compute the total action
-    virtual Double S(const AbsFieldState<P,Q>& s)   const
+    virtual Double S(const AbsFieldState<P,Q>& s)
     {
       // Self identification/encapsulation Rule
       XMLWriter& xml_out = TheXMLOutputWriter::Instance();
@@ -201,7 +201,7 @@ namespace Chroma
     virtual const UnprecWilsonTypeFermAct<Phi,P>& getFermAct(void) const = 0;
 
     //! Get (M^dagM)^{-1} phi
-    virtual int  getX(Phi& X, const AbsFieldState<P,Q>& s) const = 0;
+    virtual int  getX(Phi& X, const AbsFieldState<P,Q>& s) = 0;
     
     //! Get at the chronological predcitor
     virtual AbsChronologicalPredictor4D<Phi>& getMDSolutionPredictor(void) = 0;
@@ -223,10 +223,10 @@ namespace Chroma
     ~TwoFlavorExactEvenOddPrecWilsonTypeFermMonomial() {}
 
     //! Even even contribution (eg ln det Clover)
-    virtual Double S_even_even(const AbsFieldState<P,Q>& s) const = 0;
+    virtual Double S_even_even(const AbsFieldState<P,Q>& s)  = 0;
 
     //! Compute the odd odd contribution (eg
-    virtual Double S_odd_odd(const AbsFieldState<P,Q>& s) const
+    virtual Double S_odd_odd(const AbsFieldState<P,Q>& s)
     {
       XMLWriter& xml_out = TheXMLOutputWriter::Instance();
       push(xml_out, "S_odd_odd");
@@ -254,7 +254,7 @@ namespace Chroma
     }
 
     //! Compute the total action
-    Double S(const AbsFieldState<P,Q>& s)  const {
+    Double S(const AbsFieldState<P,Q>& s)  {
       XMLWriter& xml_out=TheXMLOutputWriter::Instance();
       push(xml_out, "TwoFlavorExactEvenOddPrecWilsonTypeFermMonomial");
 
@@ -277,7 +277,7 @@ namespace Chroma
     virtual Phi& getPhi(void) = 0;    
 
     //! Get (M^dagM)^{-1} phi
-    virtual int getX(Phi& X, const AbsFieldState<P,Q>& s) const  = 0;
+    virtual int getX(Phi& X, const AbsFieldState<P,Q>& s) = 0;
 
     virtual AbsChronologicalPredictor4D<Phi>& getMDSolutionPredictor(void) = 0;
   };
