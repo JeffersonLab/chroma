@@ -1,10 +1,13 @@
-// $Id: spectrum_w.cc,v 1.39 2004-09-09 04:01:44 edwards Exp $
+// $Id: spectrum_w.cc,v 1.40 2004-11-17 15:23:00 bjoo Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.39  2004-09-09 04:01:44  edwards
+//  Revision 1.40  2004-11-17 15:23:00  bjoo
+//  t_su3 removed from make check. Throws stringified
+//
+//  Revision 1.39  2004/09/09 04:01:44  edwards
 //  Changed old FermActHandle to now get mass via XML.
 //
 //  Revision 1.38  2004/07/28 03:08:05  edwards
@@ -436,7 +439,7 @@ int main(int argc, char **argv)
       else
       {
         QDPIO::cerr << "Neither Mass nor Kappa found" << endl;
-        throw "Neither Mass nor Kappa found";
+        throw std::string("Neither Mass nor Kappa found");
       }
     }
     catch (const string& e) 

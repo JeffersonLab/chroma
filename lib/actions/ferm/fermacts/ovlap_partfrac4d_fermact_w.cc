@@ -1,4 +1,4 @@
-// $Id: ovlap_partfrac4d_fermact_w.cc,v 1.8 2004-10-22 03:36:43 edwards Exp $
+// $Id: ovlap_partfrac4d_fermact_w.cc,v 1.9 2004-11-17 15:22:59 bjoo Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -73,7 +73,7 @@ namespace Chroma
       }
       else
       {
-	throw "No auxilliary action";
+	throw std::string("No auxilliary action");
       }
   	
       read(in, "Mass", Mass);

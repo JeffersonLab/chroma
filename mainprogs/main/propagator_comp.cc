@@ -1,6 +1,9 @@
-// $Id: propagator_comp.cc,v 1.8 2004-09-27 12:00:18 bjoo Exp $
+// $Id: propagator_comp.cc,v 1.9 2004-11-17 15:23:00 bjoo Exp $
 // $Log: propagator_comp.cc,v $
-// Revision 1.8  2004-09-27 12:00:18  bjoo
+// Revision 1.9  2004-11-17 15:23:00  bjoo
+// t_su3 removed from make check. Throws stringified
+//
+// Revision 1.8  2004/09/27 12:00:18  bjoo
 // Renamed Zolotarev4D to OverlapPartFrac4D. Moved files to ovlap_partfrac4d_fermact.xx
 //
 // Revision 1.7  2004/07/28 03:08:04  edwards
@@ -300,7 +303,7 @@ int main(int argc, char **argv)
 	seqsourceP = true;
       }
       else
-	throw "No appropriate header found";
+	throw std::string("No appropriate header found");
     }
     catch (const string& e) 
     {

@@ -1,6 +1,9 @@
-// $Id: collect_multi_propcomp.cc,v 1.4 2004-07-28 03:08:04 edwards Exp $
+// $Id: collect_multi_propcomp.cc,v 1.5 2004-11-17 15:23:00 bjoo Exp $
 // $Log: collect_multi_propcomp.cc,v $
-// Revision 1.4  2004-07-28 03:08:04  edwards
+// Revision 1.5  2004-11-17 15:23:00  bjoo
+// t_su3 removed from make check. Throws stringified
+//
+// Revision 1.4  2004/07/28 03:08:04  edwards
 // Added START/END_CODE to all routines. Changed some to not pass an
 // argument.
 //
@@ -264,7 +267,7 @@ int main(int argc, char **argv)
 	seqsourceP = true;
       }
       else
-	throw "No appropriate header found";
+	throw std::string("No appropriate header found");
     }
     catch (const string& e) 
     {

@@ -1,6 +1,9 @@
-// $Id: multi_propagator.cc,v 1.10 2004-10-15 16:37:20 bjoo Exp $
+// $Id: multi_propagator.cc,v 1.11 2004-11-17 15:23:00 bjoo Exp $
 // $Log: multi_propagator.cc,v $
-// Revision 1.10  2004-10-15 16:37:20  bjoo
+// Revision 1.11  2004-11-17 15:23:00  bjoo
+// t_su3 removed from make check. Throws stringified
+//
+// Revision 1.10  2004/10/15 16:37:20  bjoo
 // Added t_mres4d and lDeltaLs files for 4D m_res calculations
 //
 // Revision 1.9  2004/07/28 03:08:04  edwards
@@ -249,7 +252,7 @@ int main(int argc, char **argv)
 	seqsourceP = true;
       }
       else
-	throw "No appropriate header found";
+	throw std::string("No appropriate header found");
     }
     catch (const string& e) 
     {

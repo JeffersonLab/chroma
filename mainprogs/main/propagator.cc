@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.77 2004-11-08 06:09:51 edwards Exp $
+// $Id: propagator.cc,v 1.78 2004-11-17 15:23:00 bjoo Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -204,7 +204,7 @@ int main(int argc, char **argv)
 	seqsourceP = true;
       }
       else
-	throw "No appropriate header found";
+	throw std::string("No appropriate header found");
     }
     catch (const string& e) 
     {

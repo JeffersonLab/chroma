@@ -1,4 +1,4 @@
-// $Id: unprec_ovlap_contfrac5d_fermact_array_w.cc,v 1.6 2004-10-22 03:36:43 edwards Exp $
+// $Id: unprec_ovlap_contfrac5d_fermact_array_w.cc,v 1.7 2004-11-17 15:23:00 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -53,7 +53,7 @@ namespace Chroma
 	AuxFermAct = os.str();
       }
       else {
-	throw "No auxilliary action";
+	throw std::string("No auxilliary action");
       }
       
       

@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.257 2004-11-15 21:51:45 edwards Exp $
+# $Id: Makefile.in,v 1.258 2004-11-17 15:22:59 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -415,6 +415,9 @@ nobase_include_HEADERS = \
 	update/update.h update/field_state.h \
 	update/heatbath/heatbath.h \
         update/heatbath/su3over.h update/heatbath/su3hb.h \
+	update/heatbath/u_staple.h update/heatbath/hb_params.h \
+	update/heatbath/su2_hb_update.h \
+	update/heatbath/su3_hb_sweep.h \
 	update/molecdyn/molecdyn.h \
 	update/molecdyn/abs_hamiltonian.h \
 	update/molecdyn/exact_pg_hamiltonian.h \
@@ -484,6 +487,8 @@ libchroma_a_SOURCES = gauge_startup.cc gaugebc_utils.cc gaugeact_utils.cc \
 	       inv_rel_gmresr_cg.cc inv_gmresr_cg_array.cc \
 	       inv_minres_array.cc wilson_gaugeact.cc \
                su3over.cc su3hb.cc \
+	       u_staple.cc su2_hb_update.cc \
+	       su3_hb_sweep.cc \
 	       gaugebc_io.cc gaugeact_io.cc wilson_gaugeact_io.cc \
 	       mc_io.cc md_io.cc pg_hmc_io.cc\
 $(am__append_5) $(am__append_7) $(am__append_9) $(am__append_11) $(am__append_12)
@@ -521,13 +526,14 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc gaugebc_utils.cc \
 	invsumr.cc minvsumr.cc inv_rel_sumr.cc minv_rel_sumr.cc \
 	invbicgstab.cc invbicgstab_array.cc inv_rel_gmresr_sumr.cc \
 	inv_rel_gmresr_cg.cc inv_gmresr_cg_array.cc inv_minres_array.cc \
-	wilson_gaugeact.cc su3over.cc su3hb.cc gaugebc_io.cc \
-	gaugeact_io.cc wilson_gaugeact_io.cc mc_io.cc md_io.cc \
-	pg_hmc_io.cc baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
-	loops_w.cc tdiractodr.cc diractodr.cc paulitodr.cc \
-	gammasgn_w.cc curcor2_w.cc lwldslash_w.cc formfac_w.cc \
-	mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc barcomp_io.cc \
-	barcomp_w.cc walfil_w.cc fermact_qprop.cc prec_fermact_qprop.cc \
+	wilson_gaugeact.cc su3over.cc su3hb.cc u_staple.cc \
+	su2_hb_update.cc su3_hb_sweep.cc gaugebc_io.cc gaugeact_io.cc \
+	wilson_gaugeact_io.cc mc_io.cc md_io.cc pg_hmc_io.cc \
+	baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc loops_w.cc \
+	tdiractodr.cc diractodr.cc paulitodr.cc gammasgn_w.cc \
+	curcor2_w.cc lwldslash_w.cc formfac_w.cc mesonseqsrc_w.cc \
+	barseqsrc_w.cc seqpiontest_w.cc barcomp_io.cc barcomp_w.cc \
+	walfil_w.cc fermact_qprop.cc prec_fermact_qprop.cc \
 	unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
 	prec_wilson_fermact_w.cc prec_wilson_linop_w.cc \
 	unprec_parwilson_fermact_w.cc unprec_parwilson_linop_w.cc \
@@ -720,11 +726,12 @@ am_libchroma_a_OBJECTS = gauge_startup.$(OBJEXT) gaugebc_utils.$(OBJEXT) \
 	invbicgstab_array.$(OBJEXT) inv_rel_gmresr_sumr.$(OBJEXT) \
 	inv_rel_gmresr_cg.$(OBJEXT) inv_gmresr_cg_array.$(OBJEXT) \
 	inv_minres_array.$(OBJEXT) wilson_gaugeact.$(OBJEXT) \
-	su3over.$(OBJEXT) su3hb.$(OBJEXT) gaugebc_io.$(OBJEXT) \
-	gaugeact_io.$(OBJEXT) wilson_gaugeact_io.$(OBJEXT) \
-	mc_io.$(OBJEXT) md_io.$(OBJEXT) pg_hmc_io.$(OBJEXT) \
-	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
-	$(am__objects_4) $(am__objects_5)
+	su3over.$(OBJEXT) su3hb.$(OBJEXT) u_staple.$(OBJEXT) \
+	su2_hb_update.$(OBJEXT) su3_hb_sweep.$(OBJEXT) \
+	gaugebc_io.$(OBJEXT) gaugeact_io.$(OBJEXT) \
+	wilson_gaugeact_io.$(OBJEXT) mc_io.$(OBJEXT) md_io.$(OBJEXT) \
+	pg_hmc_io.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
+	$(am__objects_3) $(am__objects_4) $(am__objects_5)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I.
@@ -866,12 +873,14 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/stag_scalars_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/staggered_qprop.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/stoch_var.Po ./$(DEPDIR)/stout_smear.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/su2extract.Po ./$(DEPDIR)/su3hb.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/su2_hb_update.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/su2extract.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/su3_hb_sweep.Po ./$(DEPDIR)/su3hb.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/su3over.Po ./$(DEPDIR)/su3proj.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/sun_proj.Po ./$(DEPDIR)/sunfill.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/szin_io.Po ./$(DEPDIR)/taproj.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/tdiractodr.Po ./$(DEPDIR)/transf.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/unit_check.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/u_staple.Po ./$(DEPDIR)/unit_check.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_dwf4d_linop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_dwf_fermact_array_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_dwf_linop_array_w.Po \
@@ -1160,7 +1169,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/staggered_qprop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stoch_var.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stout_smear.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/su2_hb_update.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/su2extract.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/su3_hb_sweep.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/su3hb.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/su3over.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/su3proj.Po@am__quote@
@@ -1170,6 +1181,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/taproj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tdiractodr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/transf.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/u_staple.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unit_check.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_dwf4d_linop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_dwf_fermact_array_w.Po@am__quote@

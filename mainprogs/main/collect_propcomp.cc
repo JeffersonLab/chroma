@@ -1,6 +1,9 @@
-// $Id: collect_propcomp.cc,v 1.7 2004-09-08 14:41:36 edwards Exp $
+// $Id: collect_propcomp.cc,v 1.8 2004-11-17 15:23:00 bjoo Exp $
 // $Log: collect_propcomp.cc,v $
-// Revision 1.7  2004-09-08 14:41:36  edwards
+// Revision 1.8  2004-11-17 15:23:00  bjoo
+// t_su3 removed from make check. Throws stringified
+//
+// Revision 1.7  2004/09/08 14:41:36  edwards
 // Ifdef'ed out old FermActHandle code to get to compile.
 //
 // Revision 1.6  2004/07/28 03:08:04  edwards
@@ -267,7 +270,7 @@ int main(int argc, char **argv)
 	seqsourceP = true;
       }
       else
-	throw "No appropriate header found";
+	throw std::string("No appropriate header found");
     }
     catch (const string& e) 
     {
