@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.116 2004-03-23 19:19:23 mcneile Exp $
+# $Id: Makefile.am,v 1.117 2004-04-05 04:12:50 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -248,9 +248,8 @@ libchroma_a_SOURCES += baryon_w.cc mesons_w.cc hybmeson_w.cc \
 	      zolotarev_coeffs.cc overlap_fermact_base_w.cc lovlapms_w.cc  \
 	      zolotarev4d_fermact_w.cc ischiral_w.cc lovddag_w.cc \
 	      zolotarev5d_fermact_array_w.cc zolotarev5d_linop_array_w.cc \
-              wallpionff_w.cc 
+              wallpionff_w.cc wall_qprop_w.cc
 
-# wall_qprop_w.cc
 # zolotarev4d_linop_w.cc 
 
 # Deprecated
