@@ -1,4 +1,4 @@
-// $Id: zolotarev4d_linop_w.cc,v 1.7 2003-12-03 03:04:54 edwards Exp $
+// $Id: zolotarev4d_linop_w.cc,v 1.8 2003-12-03 06:13:03 edwards Exp $
 /*! \file
  *  \brief 4D Zolotarev operator
  */
@@ -64,14 +64,12 @@ Zolotarev4DLinOp::init()
   int NEig;
 
   /* Auxiliary variables and counters */
-  int n;
-  int i;
   Real t;
   Real c;
 
     
   /* Accuracy to compute Q^(-1) */
-  RsdCG = RsdCGinner;
+  RsdCGinner;
   
   /* Hermitian 4D overlap operator 1/2 ( 1 + m_q + (1 - m_q) gamma5 * sgn(H)) 
      using a partial fraction expansion of the optimal rational function
@@ -90,23 +88,25 @@ Zolotarev4DLinOp::init()
      |gamma_5 * M| <= 1. */
   if(NEigVal == 0 ) 
   {
-    scale_fac = (TO_REAL(Nd) - OverMass)/(TO_REAL(2)*TO_REAL(Nd) - OverMass);
+    scale_fac = (Real(Nd) - OverMass)/(Real(2)*Real(Nd) - OverMass);
     /* Choose some arbitrary value for the lower bound of the
        approximation interval <=> dangerous! */
-    eps = TO_REAL(0.00089);
+    eps = Real(0.00089);
     NEig = 0;
   }
   else
   {
-    scale_fac = TO_REAL(1.) / PolyRangUp ;
+    scale_fac = Real(1.) / PolyRangUp ;
     eps = PolyRangLow / PolyRangUp ;
     /* The highest of the valid low eigenmodes is not
        projected out. */
     NEig = NEigVal - 1;
+#if 0   
     push(nml_out,"Number of Wilson eigenmodes to be projected out");
     Write(nml_out, NEigVal);
     Write(nml_out, NEig);
     pop(nml_out);
+#endif
   }
  
 
@@ -131,12 +131,14 @@ Zolotarev4DLinOp::init()
   type = 0;
   rdata = zolotarev(toFloat(eps), RatPolyDeg, type);
   maxerr = rdata -> Delta;
+#if 0
   push(nml_out,"ConsZolotarev4DLinOp");
   Write(nml_out, eps);
   Write(nml_out, RatPolyDeg);
   Write(nml_out, type);
   Write(nml_out, maxerr);
   pop(nml_out);
+#endif
 
   /* Allocate the roots and residua */
   numroot = rdata -> dd;
@@ -148,18 +150,20 @@ Zolotarev4DLinOp::init()
      Here, we write them out for the sake of bookkeeping. */
   resP = 0;
   rootQ = 0;
-  for(n=0; n < numroot; ++n)
+  for(int n=0; n < numroot; ++n)
   {
     resP[n] = rdata -> alpha[n];
     rootQ[n] = rdata -> ap[n];
     rootQ[n] = -rootQ[n];
   }
+#if 0
   push(nml_out,"Original partial fraction Zolotarev coeff");
   Write(nml_out, scale_fac);
   Write(nml_out, coeffP);
   Write(nml_out, resP);
   Write(nml_out, rootQ);
   pop(nml_out);
+#endif
 
   /* Now fill in the coefficients for real, i.e., taking the rescaling
      into account */
@@ -169,14 +173,15 @@ Zolotarev4DLinOp::init()
   /* Make sure that the smallest shift is in the last value rootQ(numroot-1)*/
   resP = 0;
   rootQ = 0;
-  t = TO_REAL(1) / (scale_fac * scale_fac);
-  for(n=0; n < numroot; ++n)
+  t = Real(1) / (scale_fac * scale_fac);
+  for(int n=0; n < numroot; ++n)
   {
     resP[n] = rdata -> alpha[n] / scale_fac;
     rootQ[n] = rdata -> ap[n];
     rootQ[n] = -(rootQ[n] * t);
   }
 
+#if 0
   /* Write them out into the namelist */
   push(nml_out,"Rescaled partial fraction Zolotarev coeff");
   Write(nml_out, scale_fac);
@@ -184,10 +189,11 @@ Zolotarev4DLinOp::init()
   Write(nml_out, resP);
   Write(nml_out, rootQ);
   pop(nml_out);
+#endif
 
   QDP_info("ZOLOTAREV_4d: Mass= %g n= %d scale= %g coeff= %g  Nwils= %d  m_q= %g  Rsd= %g",
 	 toFloat(OverMass),RatPolyDeg,toFloat(scale_fac),toFloat(coeffP),NEigVal,
-	   toReal(m_q),toReal(RsdCG));
+	   toReal(m_q),toReal(RsdCGinner));
   QDP_info("Auxiliary fermion action: OverAuxAct = %d",OverAuxAct);
   QDP_info("Approximation on [-1,-eps] U [eps,1] with eps = %g",toReal(eps));
   maxerr = rdata -> Delta;
@@ -200,7 +206,7 @@ Zolotarev4DLinOp::init()
   if (NEig > 0)
   {
       
-    for(i = 0; i < NEigVal; i++)
+    for(int i = 0; i < NEigVal; i++)
     {
       if (toBool(EigVal[i] > 0.0))
 	EigValFunc[i] = 1.0;
@@ -216,7 +222,8 @@ Zolotarev4DLinOp::init()
   /* This is the operator of the form (1/2)*[(1+mu) + (1-mu)*gamma_5*eps] */
   LinearOperator<LatticeFermion>* A = new lovlapms(*MdagM, M, m_q,
 						   numroot, coeffP, resP, rootQ, 
-						   EigVec, EigValFunc, NEig, RsdCG);
+						   EigVec, EigValFunc, NEig, 
+						   MaxCG, RsdCGinner);
   
   END_CODE("Zolotarev4DLinOp::create");
 }
