@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.65 2004-09-18 17:11:06 edwards Exp $
+// $Id: propagator.cc,v 1.66 2004-09-18 20:24:03 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -298,7 +298,7 @@ int main(int argc, char **argv)
 
   bool mresP = true;
 
-  if (mresP && ! success)
+  if (mresP && ! input.param.nonRelProp && ! success)
   {
     try
     {
@@ -328,7 +328,7 @@ int main(int argc, char **argv)
   }
 
 
-  if (mresP && ! success)
+  if (mresP && ! input.param.nonRelProp && ! success)
   {
     try
     {
