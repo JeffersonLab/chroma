@@ -1,4 +1,4 @@
-// $Id: wallformfac.cc,v 1.18 2004-04-28 14:34:43 edwards Exp $
+// $Id: wallformfac.cc,v 1.19 2004-05-10 00:22:34 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions with a wall sink
  *
@@ -189,6 +189,7 @@ main(int argc, char *argv[])
     readQprop(forwprop_file_xml, 
 	      forwprop_record_xml, forward_quark_prop,
 	      input.prop.forwprop_file, QDPIO_SERIAL);
+    QDPIO::cout << "Forward propagator successfully read" << endl;
    
     // Try to invert this record XML into a ChromaProp struct
     // Also pull out the id of this source
@@ -203,7 +204,6 @@ main(int argc, char *argv[])
       throw;
     }
   }
-  QDPIO::cout << "Forward propagator successfully read" << endl;
 
   // Derived from input prop
   int  j_decay = forward_source_header.j_decay;
@@ -327,6 +327,24 @@ main(int argc, char *argv[])
 		      phases, 
 		      t_source[j_decay], t_sink);
       break;
+
+    case 2:
+    {
+      /* Time-charge reverse the quark propagators */
+      /* S_{CT} = gamma_5 gamma_4 = gamma_1 gamma_2 gamma_3 = Gamma(7) */
+//      LatticePropagator qf_tmp = - (Gamma(7) * forward_quark_prop * Gamma(7));
+//      LatticePropagator qb_tmp = - (Gamma(7) * backward_quark_prop * Gamma(7));
+      LatticePropagator qf_tmp = conj(Gamma(5) * forward_quark_prop * Gamma(5));
+      LatticePropagator qb_tmp = conj(Gamma(5) * backward_quark_prop * Gamma(5));
+
+      wallNuclFormFac(xml_out,
+		      u, 
+		      qf_tmp, qb_tmp,
+		      qf_tmp, qb_tmp,
+		      phases, 
+		      t_source[j_decay], t_sink);
+    }
+    break;
 
     default:
       QDPIO::cerr << "Unknown value of formfac_ctr " << formfac_ctr << endl;
