@@ -1,5 +1,8 @@
       Laundry List   -  19 Feb 2005
 
+\item Change check_PROGRAMS to bin_PROGRAMS and install binaries
+in chroma/mainprogs/main
+
 \item (*) Implement full Chrono predictor for HMC. This could win
 a factor of 2 based on comparisons of CG counts for linear pred.
 and RBC full chrono cg counts.
