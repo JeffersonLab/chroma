@@ -1,10 +1,10 @@
-// $Id: lovddag_w.cc,v 1.1 2003-04-09 05:57:15 edwards Exp $
+// $Id: lovddag_w.cc,v 1.2 2003-04-09 19:43:22 edwards Exp $
 /*! \file
  *  \brief Internal Overlap-pole operator for D^dag.D
  */
 
 #include "chromabase.h"
-#include "actions/linop/lovlapms_w.h"
+#include "actions/ferm/linop/lovlapms_w.h"
 
 using namespace QDP;
 
