@@ -1,12 +1,14 @@
 #!/bin/tcsh
 
 set builddir = ../../scalar/mainprogs/main
+set gauge_type = SZINQIO
 set gauge_cfg = ../gfix.cfg1
 
 #
 # Forward source
 #
 /bin/rm -f DATA
+set version = 5
 
 cat << **EOF** >! DATA
 <?xml version="1.0"?>
@@ -22,7 +24,7 @@ cat << **EOF** >! DATA
 </annotation>
 
 <Param>
- <version>5</version>
+ <version>${version}</version>
  <wave_state>S_WAVE</wave_state>
  <source_type>POINT_SOURCE</source_type>
  <j_decay>3</j_decay>
@@ -31,7 +33,7 @@ cat << **EOF** >! DATA
  <nrow>4 4 4 8</nrow>
 </Param>
 <Cfg>
- <cfg_type>SZINQIO</cfg_type>
+ <cfg_type>${gauge_type}</cfg_type>
  <cfg_file>${gauge_cfg}</cfg_file>
 </Cfg>
 <Prop>
@@ -43,13 +45,14 @@ cat << **EOF** >! DATA
 
 # Run the make_source program
 $builddir/make_source
-/bin/mv XMLDAT make_source.xml
+/bin/mv XMLDAT make_source_pt_v{$version}.xml
 
 
 #
 # Forward propagators
 #
 /bin/rm -f DATA
+set version = 6
 
 cat << **EOF** >! DATA
 <?xml version="1.0"?>
@@ -65,7 +68,7 @@ cat << **EOF** >! DATA
 </annotation>
 
 <Param>
- <version>6</version>
+ <version>${version}</version>
  <FermTypeP>WILSON</FermTypeP>
  <nonRelProp>false</nonRelProp>
  <FermionAction>
@@ -81,7 +84,7 @@ cat << **EOF** >! DATA
  <boundary>1 1 1 0</boundary>
 </Param>
 <Cfg>
- <cfg_type>SZINQIO</cfg_type>
+ <cfg_type>${gauge_type}</cfg_type>
  <cfg_file>${gauge_cfg}</cfg_file>
 </Cfg>
 <Prop>
@@ -94,7 +97,7 @@ cat << **EOF** >! DATA
 
 # Run the propagator program
 $builddir/propagator
-/bin/mv XMLDAT prop.xml
+/bin/mv XMLDAT prop_pt_v${version}.xml
 
 
 #
@@ -132,7 +135,7 @@ cat << **EOF** >! DATA
 </PropSink>
 
 <Cfg>
- <cfg_type>SZINQIO</cfg_type>
+ <cfg_type>${gauge_type}</cfg_type>
  <cfg_file>${gauge_cfg}</cfg_file>
 </Cfg>
 <Prop>
@@ -145,11 +148,12 @@ cat << **EOF** >! DATA
 
 # Run the seqsource program
 $builddir/seqsource
-/bin/mv XMLDAT seqsource.$i.xml
+/bin/mv XMLDAT seqsource_v${version}.$i.xml
 
 
-
+# Now the sequential propagator
 /bin/rm -f DATA
+set version = 6
 
 cat << **EOF** >! DATA
 <?xml version="1.0"?>
@@ -165,7 +169,7 @@ cat << **EOF** >! DATA
 </annotation>
 
 <Param>
- <version>6</version>
+ <version>${version}</version>
  <FermTypeP>WILSON</FermTypeP>
  <nonRelProp>false</nonRelProp>
  <FermionAction>
@@ -181,7 +185,7 @@ cat << **EOF** >! DATA
  <boundary>1 1 1 0</boundary>
 </Param>
 <Cfg>
- <cfg_type>SZINQIO</cfg_type>
+ <cfg_type>${gauge_type}</cfg_type>
  <cfg_file>${gauge_cfg}</cfg_file>
 </Cfg>
 <Prop>
@@ -203,6 +207,7 @@ end
 # Bar3ptfn
 #
 /bin/rm -f DATA
+set version = 10
 
 cat << **EOF** >! DATA
 <?xml version="1.0"?>
@@ -215,7 +220,7 @@ cat << **EOF** >! DATA
 </annotation>
 
 <Param>
- <version>10</version>
+ <version>${version}</version>
  <Pt_snk>true</Pt_snk>
  <Sl_snk>false</Sl_snk>
  <Wl_snk>true</Wl_snk>
@@ -231,7 +236,7 @@ cat << **EOF** >! DATA
  <nrow>4 4 4 8</nrow>
 </Param>
 <Cfg>
- <cfg_type>SZINQIO</cfg_type>
+ <cfg_type>${gauge_type}</cfg_type>
  <cfg_file>${gauge_cfg}</cfg_file>
 </Cfg>
 <Prop>
@@ -244,13 +249,14 @@ cat << **EOF** >! DATA
 
 # Run the spectrum program
 $builddir/spectrum_w
-/bin/mv XMLDAT spectrum.xml
+/bin/mv XMLDAT spectrum_pt_v${version}.xml
 
 
 #
 # Bar3ptfn
 #
 /bin/rm -f DATA
+set version = 6
 
 cat << **EOF** >! DATA
 <?xml version="1.0"?>
@@ -267,12 +273,12 @@ cat << **EOF** >! DATA
 </annotation>
 
 <Param>
- <version>6</version>
+ <version>${version}</version>
  <nrow>4 4 4 8</nrow>
  <mom2_max>3</mom2_max>
 </Param>
 <Cfg>
- <cfg_type>SZINQIO</cfg_type>
+ <cfg_type>${gauge_type}</cfg_type>
  <cfg_file>${gauge_cfg}</cfg_file>
 </Cfg>
 <Prop>
@@ -290,5 +296,5 @@ cat << **EOF** >! DATA
 
 # Run the bar3ptfn program
 $builddir/bar3ptfn
-/bin/mv XMLDAT bar3ptfn.xml
+/bin/mv XMLDAT bar3ptfn_v${version}.xml
 
