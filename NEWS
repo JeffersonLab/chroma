@@ -1,3 +1,9 @@
+05/19/2004 -- Robert Edwards
+
+	Version 1.5.14. Relaxed solvers for overlap appear to work. Now have
+        BiCG codes, SUMR, CG, etc. and multi-mass variants. Fixed KYU qprop
+        reader.
+
 05/13/2004 -- Robert Edwards
 
 	Version 1.5.13. QQQ program now can output in Dirac or Degrand-Rossi
