@@ -1,4 +1,4 @@
-// $Id: t_mres_4d.cc,v 1.2 2004-11-02 15:43:03 bjoo Exp $
+// $Id: t_mres_4d.cc,v 1.3 2004-11-18 03:15:56 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -123,6 +123,8 @@ int main(int argc, char **argv)
   XMLFileWriter xml_out("XMLDAT");
   push(xml_out,"t_mres4D");
 
+  proginfo(xml_out);
+  write(xml_out, "Input", xml_in);
 
   // Measure the plaquette on the gauge
   Double w_plaq, s_plaq, t_plaq, link;
@@ -210,6 +212,7 @@ int main(int argc, char **argv)
 
   // 
   LatticePropagator delta_prop;
+  LatticePropagator deltaSq_prop;
 
   try { 
 
@@ -237,10 +240,12 @@ int main(int argc, char **argv)
 	  // Move component from prop to ferm
 	  PropToFerm(quark_propagator, tmp1, col, spin);
 
-	  // Apply DeltaLs 
+	  // Apply DeltaLs -> tmp2 = Delta_Ls tmp1
 	  (*DelLs)(tmp2, tmp1, PLUS);
 
 	  FermToProp(tmp2, delta_prop, col, spin);
+	
+
 	}
       }
   }
@@ -252,51 +257,49 @@ int main(int argc, char **argv)
     QDPIO::cout << "Action entered is not suitable to be cast to OverlapFermActBase " << endl;
   }
 
-  {
-    multi1d<Double> pseudo_prop_corr = sumMulti(localNorm2(quark_propagator),                                                                                
-						phases.getSet());
-                                                                                
+
+  multi1d<Double> pseudo_prop_corr = sumMulti(localNorm2(quark_propagator),                                    				 phases.getSet());
+  
 
 
-    multi1d<DComplex> delta_prop_corr = sumMulti(trace(adj(quark_propagator)*delta_prop),phases.getSet());
-
-    int length = pseudo_prop_corr.size();
-    multi1d<Real> shifted_pseudo(length);
-    multi1d<Real> shifted_delta(length);
-
-    int t_src = t_source[j_decay];
-
-    for(int t=0; t<length; t++){
-      int t_eff( (t - t_src + length) % length ) ;
-      shifted_pseudo[t_eff] = real(pseudo_prop_corr[t]);
-      shifted_delta[t_eff]  = real(delta_prop_corr[t]);
-    }
-
-    push(xml_out, "time_direction");
-    write(xml_out, "t_dir",j_decay);
-    pop(xml_out);
-
-    push(xml_out, "DeltaProp_correlator");
-    write(xml_out, "delta_prop_corr", shifted_delta);
-    pop(xml_out);
-    
-    push(xml_out, "PsuedoPseudo_correlator");
-    write(xml_out, "psudo_prop_corr", shifted_pseudo);
-    pop(xml_out);
-
-    multi1d<Real> m_res_ratio(length);
-    for(int t=0; t < length; t++) { 
-      m_res_ratio[t] = shifted_delta[t]/shifted_pseudo[t];
-    }
-
-    push(xml_out, "Mres4D_correlator");
-    write(xml_out, "m_res_corr", m_res_ratio);
-    pop(xml_out);
+  multi1d<DComplex> delta_prop_corr = sumMulti(trace(adj(quark_propagator)*delta_prop),phases.getSet());
+  
+  multi1d<DComplex> deltaSq_prop_corr = sumMulti(trace(adj(delta_prop)*delta_prop), phases.getSet());
+   
+  int length = pseudo_prop_corr.size();
+  multi1d<Real> shifted_pseudo(length);
+  multi1d<Real> shifted_delta(length);
+  multi1d<Real> shifted_deltaSq(length);
+  int t_src = t_source[j_decay];
+  
+  for(int t=0; t<length; t++){
+    int t_eff( (t - t_src + length) % length ) ;
+    shifted_pseudo[t_eff] = real(pseudo_prop_corr[t]);
+    shifted_delta[t_eff]  = real(delta_prop_corr[t]);
+    shifted_deltaSq[t_eff]= real(deltaSq_prop_corr[t]);
   }
-
+  
+  push(xml_out, "time_direction");
+  write(xml_out, "t_dir",j_decay);
+  pop(xml_out);
+  
+  push(xml_out, "DeltaProp_correlator");
+  write(xml_out, "delta_prop_corr", shifted_delta);
+  pop(xml_out);
+  
+  push(xml_out, "DeltaSqProp_correlator");
+  write(xml_out, "delta_sq_prop_corr", shifted_deltaSq);
+  pop(xml_out);
+  
+  
+  push(xml_out, "PsuedoPseudo_correlator");
+  write(xml_out, "pseudo_prop_corr", shifted_pseudo);
+  pop(xml_out);
+  
+  
   pop(xml_out);
   xml_out.close();
-
+  
   QDP_finalize();
   exit(0);
 }
