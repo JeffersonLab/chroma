@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: chroma_scalarsite_defs.h,v 1.1 2003-10-20 20:23:23 edwards Exp $
+// $Id: chroma_scalarsite_defs.h,v 1.2 2003-11-02 02:36:24 edwards Exp $
 
 /*! \file
  * \brief Additional QDP type definitions
@@ -18,7 +18,7 @@ QDP_BEGIN_NAMESPACE(QDP);
  * @{
  */
 
-const int Ls = 8;   // HACK - FOR now fixed DW index here
+const int Ls = 4;   // HACK - FOR now fixed DW index here
 
 // Aliases for a scalar architecture
 
