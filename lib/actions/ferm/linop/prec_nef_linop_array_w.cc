@@ -1,4 +1,4 @@
-// $Id: prec_nef_linop_array_w.cc,v 1.1 2004-08-08 10:29:33 kostas Exp $
+// $Id: prec_nef_linop_array_w.cc,v 1.2 2004-08-08 11:12:19 kostas Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned NEF domain-wall linear operator
  */
@@ -33,7 +33,7 @@ EvenOddPrecNEFDWLinOpArray::create(const multi1d<LatticeColorMatrix>& u_,
 
   D.create(u_);
 
-  InvTwoKappa = 1.0 + b5*(4-WilsonMass) ; 
+  InvTwoKappa = 1.0 + b5*(Nd-WilsonMass) ; 
   TwoKappa = 1.0 / InvTwoKappa ;
   Kappa = TwoKappa/2.0 ;
   

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_nef_linop_array_w.h,v 1.1 2004-08-08 10:29:33 kostas Exp $
+// $Id: prec_nef_linop_array_w.h,v 1.2 2004-08-08 11:12:19 kostas Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned NEF domain-wall fermion linear operator
  */
@@ -25,9 +25,10 @@ public:
   //! Partial constructor
   EvenOddPrecNEFDWLinOpArray() {}
 
-  //! Full constructor
-  /*! Set b5 = 1.0 and c5=0.0 to get Shamir DWF with a5=1.
-      Set b5 = 1.0 and c5=1.0 to get Borichi DWF.
+  /*!
+    Full constructor 
+    Set b5 = 1.0 and c5=0.0 to get Shamir DWF with a5=1.
+    Set b5 = 1.0 and c5=1.0 to get Borichi DWF.
    */
   EvenOddPrecNEFDWLinOpArray(const multi1d<LatticeColorMatrix>& u_, 
 			     const Real& WilsonMass_, const Real &b5_, 
@@ -91,10 +92,10 @@ public:
 		    enum PlusMinus isign) const
     {
       multi1d<LatticeFermion> tmp(N5) ;
-      CompbineHoppingVectors(tmp,chi,0) ;
+      CompbineHoppingVectors(tmp,psi,0) ;
       for(int s(0);s<N5;s++)
 	{
-	  D.apply(tmp[s],psi[s],isign,0);
+	  D.apply(chi[s],tmp[s],isign,0);
 	  chi[s][rb[0]] *= (-0.5);
 	}
     }
@@ -104,10 +105,10 @@ public:
 		    const multi1d<LatticeFermion>& psi, 
 		    enum PlusMinus isign) const
     {
-      CompbineHoppingVectors(tmp,chi,1) ;
+      CompbineHoppingVectors(tmp,psi,1) ;
       for(int s(0);s<N5;s++)
       {
-	D.apply(chi[s],psi[s],isign,1);
+	D.apply(chi[s],tmp[s],isign,1);
 	chi[s][rb[1]] *= (-0.5);
       }
     }
