@@ -1,5 +1,5 @@
 /*
- *  $Id: follana_io.cc,v 1.2 2003-09-11 16:10:46 bjoo Exp $
+ *  $Id: follana_io.cc,v 1.3 2003-10-09 21:03:33 edwards Exp $
  *
  *  These are a few simple I/O routines that we can use until QIO makes its appearance
  *  I have tried to include a simple header by means of a structure.
@@ -36,9 +36,8 @@ void readQpropFollana(char file[], LatticePropagator& quark_prop){
   /* Read the file somehow */
 
   for( t = 0; t < latt_size[3]; t++) {  
-    if( Layout::primaryNode() ) { 
-	   cout << "Reading timeslice: " << t << endl;
-    }
+    QDPIO::cout << "Reading timeslice: " << t << endl;
+
     for( z = 0; z < latt_size[2]; z++) { 
       for( y = 0; y < latt_size[1]; y++ ) {
 

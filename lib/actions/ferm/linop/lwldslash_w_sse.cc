@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_sse.cc,v 1.6 2003-09-22 20:59:27 bjoo Exp $
+// $Id: lwldslash_w_sse.cc,v 1.7 2003-10-09 21:03:33 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -52,9 +52,7 @@ void SSEWilsonDslash::create(const multi1d<LatticeColorMatrix>& _u)
 {
   // Initialize internal structures for DSLASH
 #if 0
-  if( Layout::primaryNode() ) { 
-    cout << "Calling init_sse_su3dslash()... " << flush;
-  }
+  QDPIO::cout << "Calling init_sse_su3dslash()... " << flush;
 #endif
 
   const multi1d<int>& subgrid_size = Layout::subgridLattSize();
@@ -77,21 +75,15 @@ void SSEWilsonDslash::create(const multi1d<LatticeColorMatrix>& _u)
   packed_gauge.resize( Nd * Layout::sitesOnNode() );
 
 #if 0
-  if( Layout::primaryNode() ) { 
-    cout << "Done " << endl << flush;
-  }
+  QDPIO::cout << "Done " << endl << flush;
 
-  if( Layout::primaryNode() ) { 
-    cout << "Calling pack_gauge_field..." << flush;
-  }
+  QDPIO::cout << "Calling pack_gauge_field..." << flush;
 #endif
 
   qdp_pack_gauge(_u, packed_gauge);
   
 #if 0
-  if( Layout::primaryNode() ) { 
-    cout << "Done" << endl << flush;
-  }
+  QDPIO::cout << "Done" << endl << flush;
 #endif
 }
 
