@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gaugeact.h,v 1.1 2004-01-08 03:11:47 edwards Exp $
+// $Id: gaugeact.h,v 1.2 2004-03-03 01:51:13 edwards Exp $
 
 /*! @file
  * @brief Class structure for gauge actions
@@ -32,8 +32,21 @@ public:
       return new SimpleConnectState(u_tmp);
     }
 
+  //! Return the set on which the gauge action is defined
+  virtual const OrderedSet& getSet() const = 0;
+
   //! Produce a gauge boundary condition object
   virtual const GaugeBC& getGaugeBC() const = 0;
+
+  //! Compute staple
+  /*! Default version. Derived class should override this if needed. */
+  virtual void staple(LatticeColorMatrix& result,
+		      Handle<const ConnectState> state,
+		      int mu, int cb) const
+    {
+      QDPIO::cerr << "GaugeAction::staple not implemented" << endl;
+      QDP_abort(1);
+    }
 
   //! Compute dS/dU
   /*! Default version. Derived class should override this if needed. */
