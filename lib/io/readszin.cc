@@ -1,4 +1,4 @@
-// $Id: readszin.cc,v 1.7 2003-05-08 22:53:41 flemingg Exp $
+// $Id: readszin.cc,v 1.8 2003-05-23 04:58:59 edwards Exp $
 
 /*! \file
  *  \brief Read in a configuration written by SZIN up to configuration version 7.
@@ -379,5 +379,3 @@ void readSzin(multi1d<LatticeColorMatrix>& u, const string& cfg_file, Seed& seed
   END_CODE("readSzin");
 }
 
-
-QDP_END_NAMESPACE();
