@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_linop_array_w.cc,v 1.10 2005-01-21 17:44:53 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_linop_array_w.cc,v 1.11 2005-02-12 06:21:25 edwards Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned domain-wall linear operator
  */
@@ -38,8 +38,8 @@ namespace Chroma
     // Hence at the end of this loop Hsign should be flipped from +->-
     beta_tilde.resize(N5);
     int Hsign = 1;
-    for(int i=0; i < N5; i++) { 
-
+    for(int i=0; i < N5; i++) 
+    { 
       // Flip Hsign
       beta_tilde[i] = beta[i]*Hsign*scale_fac; 
 

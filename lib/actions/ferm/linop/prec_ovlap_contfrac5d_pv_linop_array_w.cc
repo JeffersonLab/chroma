@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_pv_linop_array_w.cc,v 1.3 2005-01-21 05:26:22 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_pv_linop_array_w.cc,v 1.4 2005-02-12 06:21:25 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Pauli-Villars Continued Fraction 5D
  */
@@ -29,14 +29,16 @@ namespace Chroma
 
     // Now compute some coefficients.
     // First the beta_tilde_i
-    // Basically this is beta[n]*scale_fac
+    // Basically this is beta[n]*Hsign*scale_fac
     // Now N5 is always odd. So the first Hsign is +
     // and the last one should also be
     // Hence at the end of this loop Hsign should be flipped from +->-
     beta_tilde.resize(N5);
+    int Hsign = 1;
     for(int i=0; i < N5; i++) 
     {
-      beta_tilde[i] = beta[i]*scale_fac; 
+      // Flip Hsign
+      beta_tilde[i] = beta[i]*Hsign*scale_fac; 
 
       /*
 	QDPIO::cout << "beta["<<i<<"]=" << beta[i]
@@ -44,6 +46,13 @@ namespace Chroma
 	<< "  beta_tilde["<<i<<"]=" << beta_tilde[i] << endl;
 
       */
+      Hsign = -Hsign;
+    }
+
+    // Sanity Check
+    if ( Hsign > 0 ) {
+      QDPIO::cerr << "Something is wrong. At the end of this loop"
+		  << " Hsign should be -ve" << endl;
     }
 
     // Now the a_i's and b_i's
@@ -60,6 +69,33 @@ namespace Chroma
       }
     */
 
+    // Now the d-s
+    d.resize(N5);
+    d[0] = a[0];
+    d[N5-1] = a[N5-1];
+    for(int i=1; i < N5-1; i++) { 
+      d[i] = a[i] - (alpha[i-1]*alpha[i-1])/d[i-1];
+    }
+    
+    /*
+      for(int i=0; i < N5; i++) { 
+      QDPIO::cout << "d["<<i<<"]=" << d[i] << endl;
+      }
+    */
+
+    // Now the u-s
+    u.resize(N5-1);
+    u[N5-2] = 0.0;
+    for(int i=0; i < N5-2; i++) { 
+      u[i] = alpha[i]/d[i];
+    }
+
+    /*
+      for(int i=0; i < N5-1; i++) { 
+      QDPIO::cout << "u["<<i<<"] = " << u[i] << endl;
+      }
+    */
+    
     END_CODE();
   }
 
@@ -97,14 +133,29 @@ namespace Chroma
     // With A_i = gamma_5 a_i = a_i gamma_5
     // and  B_i = b_i I = alpha_i I
 
+    LatticeFermion tmp;
     int G5=Ns*Ns-1;
 
-    // All in one shot
-    for(int i=0; i < N5-1; i++) 
-    {
+    // First 0ne 
+    tmp[rb[cb]] = Gamma(G5)*psi[0];
+    chi[0][rb[cb]] = a[0]*tmp;
+    if( N5 > 1 ) { 
+      chi[0][rb[cb]] += alpha[0]*psi[1];
+    }
+
+    // All the rest
+    for(int i=1; i < N5-1; i++) 
+    { 
+      // B_{i-1} psi_[i-1]
+      chi[i][rb[cb]] = alpha[i-1]*psi[i-1];
+
       // A_{i} psi[i] = a_{i} g_5 psi[i]
-      chi[i][rb[cb]] = Gamma(G5)*psi[i];
-      chi[i][rb[cb]] *= a[i];
+      tmp[rb[cb]] = Gamma(G5)*psi[i];
+      chi[i][rb[cb]] += a[i]*tmp;
+
+      // When i hits N5-1, we don't have the B_N5-1 term
+      if(i < N5-2) 
+	chi[i][rb[cb]] += alpha[i]*psi[i+1];
     }
 
     chi[N5-1][rb[cb]] = psi[N5-1];
@@ -134,19 +185,37 @@ namespace Chroma
 
     chi.resize(N5);
 
+    multi1d<LatticeFermion> y(N5);
+
+    LatticeFermion tmp;
     Real coeff;
 
     const int G5 = Ns*Ns-1;
 
-    // Invert diagonal piece  chi <- D^{-1} psi
+    // Solve L y = psi
+    y[0][rb[cb]] = psi[0];
+
+    for(int i = 1; i < N5-1; i++) 
+    {
+      tmp[rb[cb]] = Gamma(G5)*y[i-1];
+      y[i][rb[cb]] = psi[i] - u[i-1]*tmp;
+    } 
+
+    // Invert diagonal piece  y <- D^{-1} y
     for(int i = 0; i < N5-1; i++) 
     {
-      chi[i][rb[cb]] = Gamma(G5)*psi[i];
-      coeff = Real(1)/a[i];
-      chi[i][rb[cb]] *= coeff;
+      tmp[rb[cb]] = Gamma(G5)*y[i];
+      coeff = Real(1)/d[i];
+      y[i][rb[cb]] = coeff*tmp;
     }
 
+    // Backsubstitute U chi = y
     chi[N5-1][rb[cb]] = psi[N5-1];
+
+    for(int i = N5-2; i >= 0; i--) {
+      tmp = Gamma(G5)*chi[i+1];
+      chi[i][rb[cb]] = y[i] - u[i]*tmp;
+    }
 
     END_CODE();
   }

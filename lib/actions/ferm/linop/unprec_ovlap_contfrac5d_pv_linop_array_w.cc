@@ -1,4 +1,4 @@
-// $Id: unprec_ovlap_contfrac5d_pv_linop_array_w.cc,v 1.2 2005-01-19 03:30:38 edwards Exp $
+// $Id: unprec_ovlap_contfrac5d_pv_linop_array_w.cc,v 1.3 2005-02-12 06:21:25 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Pauli-Villars Continued Fraction 5D
  */
@@ -32,6 +32,11 @@ namespace Chroma
     // makes sense since N5 is ALWAYS odd. )
     int TwoN = N5 - 1;
 
+    // The sign of the diagonal terms.
+    // We flip Hsign BEFORE using it 
+    // This makes the first element always have a PLUS sign
+    int Hsign=-1;
+
     // Run through all the pseudofermion fields:
     //   chi(n) = beta(n)*H*psi(0)
     //   chi(TwoN) = beta(TwoN)*H*psi(TwoN)         
@@ -45,10 +50,19 @@ namespace Chroma
       tmp2 = Gamma(G5)*tmp1;        // tmp2 = gamma_5 M psi
 
       // Scale factor and sign for the diagonal term proportional to H
-      // The scale factor should be chosen in conszolotarev5d_w.m such
-      //  that scale_fac * gamma5 * M has eigenvalues between -1 and 1 
-      pmscale = beta[n]*scale_fac;
+      // The scale factor should be chosen in the fermact call such that
+      //  that scale_fac * gamma5 * M has eigenvalues between -1 and 1  
+      Hsign = -Hsign;
+      pmscale = beta[n]*Hsign*scale_fac;
       chi[n] = pmscale*tmp2;
+
+      if( n < TwoN-1 ) { 
+	chi[n] += alpha[n] * psi[n+1];
+      }
+
+      if( n > 0 ) {
+	chi[n] += alpha[n-1]*psi[n-1];
+      }
     }
 
     // Last Component
@@ -79,7 +93,8 @@ namespace Chroma
   //! Derivative
   void 
   UnprecOvlapContFrac5DPVLinOpArray::deriv(multi1d<LatticeColorMatrix>& ds_u, 
-					   const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
+					   const multi1d<LatticeFermion>& chi, 
+					   const multi1d<LatticeFermion>& psi, 
 					   enum PlusMinus isign) const
   {
     START_CODE();
@@ -94,6 +109,11 @@ namespace Chroma
     //  it runs from 0 to TwoN. (altogether TwoN + 1 numbers. This
     // makes sense since N5 is ALWAYS odd. )
     int TwoN = N5 - 1;
+
+    // The sign of the diagonal terms.
+    // We flip Hsign BEFORE using it 
+    // This makes the first element always have a PLUS sign
+    int Hsign=-1;
 
     // Run through all the pseudofermion fields:
     //   chi(n) = beta(n)*H*psi(0)
@@ -110,9 +130,10 @@ namespace Chroma
 	tmp2 = Gamma(G5)*chi[n];        // tmp2 = gamma_5 M chi
 
 	// Scale factor and sign for the diagonal term proportional to H
-	// The scale factor should be chosen in conszolotarev5d_w.m such
+	// The scale factor should be chosen in fermact call such
 	//  that scale_fac * gamma5 * M has eigenvalues between -1 and 1 
-	pmscale = beta[n]*scale_fac;
+	Hsign = -Hsign;
+	pmscale = beta[n]*Hsign*scale_fac;
 	tmp1 = pmscale*tmp2;
 
 	M->deriv(ds_tmp, tmp1, psi[n], PLUS);      // tmp1 = M psi[n]
@@ -126,9 +147,10 @@ namespace Chroma
 	tmp2 = Gamma(G5)*psi[n];        // tmp2 = M^dag gamma_5 psi
 
 	// Scale factor and sign for the diagonal term proportional to H
-	// The scale factor should be chosen in conszolotarev5d_w.m such
+	// The scale factor should be chosen in fermact call such
 	//  that scale_fac * gamma5 * M has eigenvalues between -1 and 1 
-	pmscale = beta[n]*scale_fac;
+	Hsign = -Hsign;
+	pmscale = beta[n]*Hsign*scale_fac;
 	tmp1 = pmscale*tmp2;
 
 	M->deriv(ds_tmp, chi[n], tmp1, MINUS);      // tmp1 = M psi[n]

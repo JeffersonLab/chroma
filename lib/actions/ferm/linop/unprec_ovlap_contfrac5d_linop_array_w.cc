@@ -1,4 +1,4 @@
-/* $Id: unprec_ovlap_contfrac5d_linop_array_w.cc,v 1.7 2005-01-19 03:30:38 edwards Exp $
+/* $Id: unprec_ovlap_contfrac5d_linop_array_w.cc,v 1.8 2005-02-12 06:21:25 edwards Exp $
 /*! \file
 *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
 */
@@ -68,7 +68,7 @@ namespace Chroma
       tmp2 = Gamma(G5)*tmp1;        // tmp2 = gamma_5 M psi
 
       // Scale factor and sign for the diagonal term proportional to H
-      // The scale factor should be chosen in conszolotarev5d_w.m such
+      // The scale factor should be chosen in the fermact call such
       //  that scale_fac * gamma5 * M has eigenvalues between -1 and 1 
       Hsign = -Hsign;
       pmscale = beta[n]*Hsign*scale_fac;
@@ -197,7 +197,7 @@ namespace Chroma
 	tmp2 = Gamma(G5)*chi[n];        // tmp2 = gamma_5 M chi
 
 	// Scale factor and sign for the diagonal term proportional to H
-	// The scale factor should be chosen in conszolotarev5d_w.m such
+	// The scale factor should be chosen in fermact call such
 	//  that scale_fac * gamma5 * M has eigenvalues between -1 and 1 
 	Hsign = -Hsign;
 	pmscale = beta[n]*Hsign*scale_fac;
