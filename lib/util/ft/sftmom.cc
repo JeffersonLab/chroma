@@ -1,6 +1,10 @@
-//  $Id: sftmom.cc,v 1.6 2003-12-17 04:50:42 edwards Exp $
+//  $Id: sftmom.cc,v 1.7 2004-02-03 20:04:05 edwards Exp $
 //  $Log: sftmom.cc,v $
-//  Revision 1.6  2003-12-17 04:50:42  edwards
+//  Revision 1.7  2004-02-03 20:04:05  edwards
+//  Added sft for LatticeReal. Changed  getSubset() to the more accurate
+//  getSet().
+//
+//  Revision 1.6  2003/12/17 04:50:42  edwards
 //  Added function to return decay direction. Added some doxygen comments.
 //
 //  Revision 1.5  2003/04/02 22:28:22  edwards
@@ -101,7 +105,7 @@ SftMom::init(int mom2_max, multi1d<int> mom_offset,
     }
   }
 
-  sft_subsets.make(TimeSliceFunc(j_decay)) ;
+  sft_set.make(TimeSliceFunc(j_decay)) ;
 
   // determine the number of momenta with mom^2 <= (mom_max)^2
   // If avg_equiv_mom is true then only consider momenta with
@@ -380,10 +384,22 @@ SftMom::init(int mom2_max, multi1d<int> mom_offset,
 multi2d<DComplex>
 SftMom::sft(const LatticeComplex& cf) const
 {
-  multi2d<DComplex> hsum(num_mom, sft_subsets.numSubsets()) ;
+  multi2d<DComplex> hsum(num_mom, sft_set.numSubsets()) ;
 
   for (int mom_num=0; mom_num < num_mom; ++mom_num)
-    hsum[mom_num] = sumMulti(phases[mom_num]*cf, sft_subsets) ;
+    hsum[mom_num] = sumMulti(phases[mom_num]*cf, sft_set) ;
 
   return hsum ;
 }
+
+multi2d<DComplex>
+SftMom::sft(const LatticeReal& cf) const
+{
+  multi2d<DComplex> hsum(num_mom, sft_set.numSubsets()) ;
+
+  for (int mom_num=0; mom_num < num_mom; ++mom_num)
+    hsum[mom_num] = sumMulti(phases[mom_num]*cf, sft_set) ;
+
+  return hsum ;
+}
+
