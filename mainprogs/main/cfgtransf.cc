@@ -1,4 +1,4 @@
-// $Id: cfgtransf.cc,v 1.1 2003-10-10 03:40:37 edwards Exp $
+// $Id: cfgtransf.cc,v 1.2 2003-10-10 04:13:38 edwards Exp $
 /*! \file
  *  \brief Many-to-many gauge transformation routine
  */
@@ -75,7 +75,7 @@ int main(int argc, char **argv)
 #if 0
   Real SchrPhiMult;            /* Multiplier for Schr. BC fields */
   bool SchrFermP;           /* Set Schroedinger fermion phases? */
-  multi1d<Real> theta((Nd-1));          /* Angles (units of pi) for Schroedinger phases */
+  multi1d<Real> theta(Nd-1);          /* Angles (units of pi) for Schroedinger phases */
 
   // Cannot handle Symanzik or Schroedinger BC yet
   if ( input_type == 9 )
