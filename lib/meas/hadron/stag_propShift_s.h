@@ -29,4 +29,14 @@ LatticeStaggeredPropagator shiftDeltaProp(multi1d<int>& delta,
                                  const LatticeStaggeredPropagator& src, 
 					  bool sym_flag) ;
 
+
+enum Stag_shift_option {
+   NON_GAUGE_INVAR  = 0,
+   GAUGE_INVAR ,
+   SYM_NON_GAUGE_INVAR , 
+   SYM_GAUGE_INVAR
+};
+
+
+
 #endif
