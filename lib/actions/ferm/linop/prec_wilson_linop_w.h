@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_wilson_linop_w.h,v 1.7 2004-12-12 21:22:16 edwards Exp $
+// $Id: prec_wilson_linop_w.h,v 1.8 2004-12-17 17:45:04 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion linear operator
  */
@@ -95,9 +95,11 @@ namespace Chroma
 			    enum PlusMinus isign) const
     {
       ds_u.resize(Nd);
-      ds_u = zero;
+      for(int mu=0; mu < Nd; mu++) { 
+	ds_u[mu] = zero;
+      }
     }
-  
+
     //! Apply the the even-odd block onto a source vector
     void derivEvenOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
 			   const LatticeFermion& chi, const LatticeFermion& psi, 
@@ -114,9 +116,15 @@ namespace Chroma
 			  enum PlusMinus isign) const
     {
       ds_u.resize(Nd);
-      ds_u = zero;
+      for(int mu=0; mu < Nd; mu++) { 
+	ds_u[mu] = zero;
+      }
     }
 
+    // Override virtual function for efficiency.
+    void deriv(multi1d<LatticeColorMatrix>& ds_u, const LatticeFermion& chi, 
+	       const LatticeFermion& psi, 
+	       enum PlusMinus isign) const;
   private:
     Real fact;  // tmp holding  Nd+Mass
     Real invfact;  // tmp holding  1/(Nd+Mass)

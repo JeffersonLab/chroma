@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_sse.cc,v 1.20 2004-12-14 05:21:32 edwards Exp $
+// $Id: lwldslash_w_sse.cc,v 1.21 2004-12-17 17:45:04 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -143,22 +143,57 @@ namespace Chroma
 
     ds_u.resize(Nd);
 
+    LatticeColorMatrix ds_tmp;
     for(int mu = 0; mu < Nd; ++mu)
     {
+      LatticeFermion f_tmp;
       switch (isign)
       {
       case PLUS:
 	// Undaggered:
-	ds_u[mu][rb[cb]]    = u[mu]*traceSpin(outerProduct(shift(psi - Gamma(1 << mu)*psi, FORWARD, mu),chi));
- 	ds_u[mu][rb[1-cb]]  = adj(u[mu])*traceSpin(outerProduct(psi + Gamma(1 << mu)*psi,shift(chi, FORWARD, mu)));
- 	ds_u[mu][rb[1-cb]] *= -1;
+        ds_u[mu][rb[cb]]    = u[mu]*traceSpin(outerProduct(shift(psi - Gamma(1 << mu)*psi, FORWARD, mu),chi));	
+	ds_u[mu][rb[1-cb]]  = zero;
+
+	// The piece that comes from the U^daggered term. 
+	// This piece is just -dagger() of the piece from applying
+	// this function on the opposite checkerboard. It therefore
+	// only contributes a factor of 2 to the traceless antihermitian
+	// part of the result. Which should be swept into the taproj
+	// normalisation. Right now until then, I explicitly multiply
+	// the result by 0.5 below.
+
+	// ds_u[mu][rb[1-cb]]  = traceSpin(outerProduct(psi + Gamma(1 << mu)*psi,shift(chi, FORWARD, mu)))*adj(u[mu]);
+       	// ds_u[mu][rb[1-cb]] *= -Real(1);
+	//
+	// From factor of 2 that comes from the U^daggered piece.
+	// This maybe should be absorbed into the taproj normalisation
+	//
+	// ds_u[mu] *= Real(0.5);
+
 	break;
 
       case MINUS:
 	// Daggered:
 	ds_u[mu][rb[cb]]    = u[mu]*traceSpin(outerProduct(shift(psi + Gamma(1 << mu)*psi, FORWARD, mu),chi));
-	ds_u[mu][rb[1-cb]]  = adj(u[mu])*traceSpin(outerProduct(psi - Gamma(1 << mu)*psi,shift(chi, FORWARD, mu)));
- 	ds_u[mu][rb[1-cb]] *= -1;
+	
+	ds_u[mu][rb[1-cb]] = zero;
+	
+	// The piece that comes from the U^daggered term. 
+	// This piece is just -dagger() of the piece from applying
+	// this function on the opposite checkerboard. It therefore
+	// only contributes a factor of 2 to the traceless antihermitian
+	// part of the result. Which should be swept into the taproj
+	// normalisation. Right now until then, I explicitly multiply
+	// the result by 0.5 below.
+	//
+	//        ds_u[mu][rb[1-cb]]  = traceSpin(outerProduct(psi - Gamma(1 << mu)*psi,shift(chi, FORWARD, mu)))*adj(u[mu]);
+	//        ds_u[mu][rb[1-cb]] *= -Real(1);
+	//	 
+	// From factor of 2 that comes from the U^daggered piece.
+	// This maybe should be absorbed into the taproj normalisation
+	//
+	// ds_u[mu] *= Real(0.5);
+
 	break;
 
       default:

@@ -1,4 +1,4 @@
-// $Id: prec_wilson_linop_w.cc,v 1.9 2004-12-14 05:21:32 edwards Exp $
+// $Id: prec_wilson_linop_w.cc,v 1.10 2004-12-17 17:45:04 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson linear operator
  */
@@ -151,8 +151,9 @@ namespace Chroma
     ds_u.resize(Nd);
 
     D.deriv(ds_u, chi, psi, isign, 0);
-    for(int mu = 0; mu < Nd; ++mu)
-      ds_u[mu] *= Real(-0.5);
+    for(int mu=0; mu < Nd; mu++) {
+      ds_u[mu] *=  Real(-0.5);
+    }
 
     END_CODE();
   }
@@ -166,6 +167,7 @@ namespace Chroma
    * \param psi 	  Pseudofermion field     	       (Read)
    * \param isign   Flag ( PLUS | MINUS )   	       (Read)
    */
+
   void 
   EvenOddPrecWilsonLinOp::derivOddEvenLinOp(multi1d<LatticeColorMatrix>& ds_u,
 					    const LatticeFermion& chi, 
@@ -177,15 +179,13 @@ namespace Chroma
     ds_u.resize(Nd);
 
     D.deriv(ds_u, chi, psi, isign, 1);
-    for(int mu = 0; mu < Nd; ++mu)
-      ds_u[mu] *= Real(-0.5);
-
+    for(int mu=0; mu < Nd; mu++) { 
+      ds_u[mu]  *= Real(-0.5);
+    }
     END_CODE();
   }
 
 
-
-#if 0
   // THIS IS AN OPTIMIZED VERSION OF THE DERIVATIVE
   /*! ds_u = -(1/4)*(1/(Nd+m))*[\dot(D)_oe*D_eo + D_oe*\dot(D_eo)]*psi */
   void 
@@ -222,180 +222,5 @@ namespace Chroma
 
     END_CODE();
   }
-#endif
-
-
-
-  //--------------------------------------------------------------------
-#if 0
-  // THIS IS OLD CODE
-
-  //! Derivative of even-odd linop component
-  void 
-  EvenOddPrecWilsonLinOp::derivEvenOddLinOp(multi1d<LatticeColorMatrix>& ds_u,
-					    const LatticeFermion& chi, 
-					    const LatticeFermion& psi, 
-					    enum PlusMinus isign) const
-  {
-    START_CODE();
-
-    QDPIO::cerr << "Prec wilson deriv: not implemented yet" << endl;
-    QDP_abort(1);
-  
-    ds_u.resize(Nd);
-
-    LatticeFermion tmp;
-    LatticeFermion gamma_mu_psi;
-    
-    for(int mu = 0; mu < Nd; ++mu)
-    {
-      // Get gamma_mu * psi
-      gamma_mu_psi = Gamma(1 << mu)*psi;
-
-      // Construct the right derivative term...
-      if( isign == PLUS ) 
-      {
-	// Undaggered:
-	// ( 1 - gamma_mu ) psi
-	tmp = psi - gamma_mu_psi;
-      }
-      else 
-      { 
-	// Daggered:
-	// ( 1 + gamma_mu) psi
-	tmp = psi + gamma_mu_psi;
-      }
-    
-      // Do the shift here for delta_y, x+mu and form derivative
-      ds_u[mu] = traceSpin(outerProduct(-Real(0.5)*shift(tmp, FORWARD, mu),chi));
-    }
-  
-    END_CODE();
-  }
-
-
-  //! Derivative of odd-even linop component
-  /*!
-   * The operator acts on the entire odd sublattice
-   *
-   * \param chi 	  Pseudofermion field     	       (Write)
-   * \param psi 	  Pseudofermion field     	       (Read)
-   * \param isign   Flag ( PLUS | MINUS )   	       (Read)
-   */
-  void 
-  EvenOddPrecWilsonLinOp::derivOddEvenLinOp(multi1d<LatticeColorMatrix>& ds_u,
-					    const LatticeFermion& chi, 
-					    const LatticeFermion& psi, 
-					    enum PlusMinus isign) const
-  {
-    START_CODE();
-
-    ds_u.resize(Nd);
-
-    QDPIO::cerr << "Prec wilson deriv: not implemented yet" << endl;
-    QDP_abort(1);
-  
-    END_CODE();
-  }
-
-
-
-#error "This should be split apart into the even, odd critters to test the generic deriv() function. However, for optimization it can be done here since the diag pieces are trivial"
-
-  //! Derivative of even-odd preconditioned linear operator
-  /*!
-   * In this function I assume that ds_u may already have the gauge piece in there...
-   */
-  void
-  EvenOddPrecWilsonLinOp::deriv(multi1d<LatticeColorMatrix>& ds_u,
-				const LatticeFermion& chi, const LatticeFermion& psi, 
-				enum PlusMinus isign) const
-  {
-    START_CODE();
-  
-    ds_u.resize(Nd);
-
-    if (param.anisoParam.anisoP)
-    {
-      QDPIO::cerr << "Currently do not support anisotropy" << endl;
-      QDP_abort(1);
-    }
-
-    Real prefactor = -Real(1)/(4*(Real(Nd) + param.Mass));
-				 
-    LatticeColorMatrix utmp_1;
-    LatticeFermion phi;
-    LatticeFermion rho;
-    LatticeFermion sigma;
-
-    LatticeFermion ftmp_2;
-
-    // Do the usual Wilson fermion dS_f/dU
-    // const LinearOperatorProxy<LatticeFermion> A(linOp(u));
-    const Handle< const LinearOperator<LatticeFermion> >&  M(linOp(state));
-
-    // Need the wilson dslash
-    // Use u from state with BC's on 
-    const multi1d<LatticeColorMatrix>& u = state->getLinks();
-    WilsonDslash  D(u);
-
-    //  phi = M(u)*psi
-
-    (*M)(phi, psi, PLUS);
-
-    /* rho = Dslash(0<-1) * psi */
-    D.apply(rho, psi, PLUS, 0);
-
-    /* sigma = Dslash_dag(0 <- 1) * phi */
-    D.apply(sigma, phi, MINUS, 0);
-
-    for(int mu = 0; mu < Nd; ++mu)
-    {
-
-      // ftmp_2(x) = -(psi(x) - ftmp_2(x)) = -(1 - gamma(mu))*psi( x )
-      ftmp_2[rb[1]] = Gamma(1<<mu) * psi;
-      ftmp_2[rb[1]]  -= psi;
-
-
-      // utmp_1 = - Trace_spin [ ( 1 - gamma(mu) )*psi_{x+mu)*sigma^{dagger} ]
-      //        = - Trace_spin [ sigma^{dagger} ( 1 - gamma_mu ) psi_{x+mu} ]
-      utmp_1[rb[0]] = -traceSpin( outerProduct( shift(ftmp_2, FORWARD, mu), sigma) );
-
-    
-      // ftmp_2 = phi + ftmp_2 = (1 + gamma(mu))*phi( x) 
-      ftmp_2[rb[1]] = Gamma(1<<mu) * phi;
-      ftmp_2[rb[1]] += phi;
-
-      // utmp_1 += ( 1 + gamma(mu) )*phi_{x+mu)*rho^{dagger}_x 
-      utmp_1[rb[0]] += traceSpin( outerProduct( shift(ftmp_2, FORWARD, mu), rho) );
-
-      // ds_u[mu][0] += u[mu][0] * utmp_1 
-      //              = u[mu][0] [   ( 1 - gamma(mu) )*psi_{x+mu)*sigma^{dagger}_x
-      //                           + ( 1 + gamma(mu) )*phi_{x+mu)*rho^{dagger}_x   ]
-      ds_u[mu][rb[0]] += prefactor * u[mu] * utmp_1;
-      
-      // Checkerboard 1
-
-      // ftmp_2 = -(rho - ftmp_2) = -(1 - gamma(mu))*rho( x ) 
-      ftmp_2[rb[0]] = Gamma(1<<mu)*rho;
-      ftmp_2[rb[0]] -= rho;
-
-      // utmp_1 = ( 1 - gamma(mu) )*rho_{x+mu)*phi^{dagger}_x
-      utmp_1[rb[1]] = -traceSpin( outerProduct( shift(ftmp_2, FORWARD, mu), phi) );
-      
-      // ftmp_2 = (gamma(mu))*sigma 
-      ftmp_2[rb[0]] = Gamma(1<<mu)*sigma;
-      ftmp_2[rb[0]] += sigma;
-
-
-      utmp_1[rb[1]] += traceSpin( outerProduct( shift(ftmp_2, FORWARD, mu), psi) );
-      ds_u[mu][rb[1]] += prefactor * u[mu] * utmp_1;
-
-    }
-
-    END_CODE();
-  }
-
-#endif
 
 }; // End Namespace Chroma

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_w.h,v 1.8 2004-12-14 05:21:32 edwards Exp $
+// $Id: lwldslash_w.h,v 1.9 2004-12-17 17:45:04 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -90,7 +90,9 @@ public:
     multi1d<LatticeColorMatrix> ds_tmp(Nd);
     deriv(ds_u, chi, psi, isign, 0);
     deriv(ds_tmp, chi, psi, isign, 1);
-    ds_u += ds_tmp;
+    for(int mu = 0; mu < Nd; mu++) { 
+      ds_u[mu] += ds_tmp[mu];
+    }
   }
 
 

@@ -1,4 +1,4 @@
-// $Id: unprec_wilson_linop_w.cc,v 1.11 2004-12-14 05:21:32 edwards Exp $
+// $Id: unprec_wilson_linop_w.cc,v 1.12 2004-12-17 17:45:04 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -76,8 +76,10 @@ namespace Chroma
   {
     START_CODE();
 
+    // This does both parities
     D.deriv(ds_u, chi, psi, isign);
 
+    // Factor from the -1/2 in front of the dslash
     for(int mu = 0; mu < Nd; ++mu)
       ds_u[mu] *= Real(-0.5);
 
