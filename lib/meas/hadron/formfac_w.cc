@@ -1,11 +1,14 @@
-// $Id: formfac_w.cc,v 1.6 2003-03-20 19:34:25 flemingg Exp $
+// $Id: formfac_w.cc,v 1.7 2003-03-31 19:54:15 edwards Exp $
 /*! \file
  *  \brief Form-factors 
  *
  *  Form factors constructed from a quark and a sequential quark propagator
  */
 // $Log: formfac_w.cc,v $
-// Revision 1.6  2003-03-20 19:34:25  flemingg
+// Revision 1.7  2003-03-31 19:54:15  edwards
+// Fixed doxygen comments.
+//
+// Revision 1.6  2003/03/20 19:34:25  flemingg
 // Evolved formfac_w.cc to use SftMom class, which included some bug fixes
 // in features in SftMom which had been previously untested and evolution
 // of the corresponding test program.
@@ -23,21 +26,17 @@ using namespace QDP;
  *
  * This routine is specific to Wilson fermions!
  *
- * \param u    -- gauge fields (used for non-local currents) ( Read )
+ * \param u        -- gauge fields (used for non-local currents) ( Read )
  * \param quark_propagator -- quark propagator ( Read )
  * \param seq_quark_prop -- sequential quark propagator ( Read )
- * \param t_source -- cartesian coordinates of the source ( Read )
- * \param source_mom2_max -- max source hadron mom squared ( Read )
- * \param t_sink -- time coordinate of the sink ( Read )
- * \param sink_mom -- sink hadron momentum ( Read )
- * \param j_decay -- direction of the exponential decay ( Read ) 
- * \param nml   -- namelist file object ( Read )
+ * \param t0       -- cartesian coordinates of the source ( Read )
+ * \param nml      -- namelist file object ( Read )
  */
 
 void FormFac(const multi1d<LatticeColorMatrix>& u, 
              const LatticePropagator& quark_propagator,
              const LatticePropagator& seq_quark_prop, 
-             SftMom& phases,
+             const SftMom& phases,
              int t0,
              NmlWriter& nml)
 {
