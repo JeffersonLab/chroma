@@ -1,4 +1,4 @@
-// $Id: eig_spec_bj_w.cc,v 1.6 2004-01-21 15:34:52 bjoo Exp $
+// $Id: eig_spec_bj_w.cc,v 1.7 2004-01-27 11:50:08 bjoo Exp $
 /*! \file
  *  \brief Compute low lying eigenvalues of the hermitian H
  */
@@ -51,6 +51,7 @@ void EigSpecRitzCG(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
 		   int MaxCG,                        // Max no of CG iters
 		   const Real& Rsd_r,                // relative residuum of each 
 		                                     // e-value
+		   const Real& Rsd_a,                // absolute residuum
 		   const Real& zero_cutoff,          // if ev slips below this
 		                                     // we consider it zero
 		   const bool ProjApsiP,             // Project in Ritz?
@@ -79,8 +80,9 @@ void EigSpecRitzCG(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
     lambda_H[i] = Real(1);
     
     // Do the Ritz
-    Ritz(M, lambda_H[i], psi, n, Rsd_r, zero_cutoff, n_renorm, n_min, n_max, 	   
-	 MaxCG, ProjApsiP, n_count, final_grad, false, Real(1), Real(1));
+    Ritz(M, lambda_H[i], psi, n, Rsd_r, Rsd_a, zero_cutoff, n_renorm, n_min, 
+	 n_max, MaxCG, ProjApsiP, n_count, final_grad, false, Real(1), 
+	 Real(1));
 
     // Add n_count
     n_cg_tot += n_count;
@@ -135,6 +137,7 @@ void EigSpecRitzKS(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
 		   int MaxCG,                       // Max no of CG iters
 		   const Real& Rsd_r,               // relative residuum of each 
 		                                  // e-value
+		   const Real& Rsd_a,               // Absolute residuum
 		   const Real& zero_cutoff,         // if e-value slips below this, we 
 		                                    // consider it zero
 		   const bool ProjApsiP,            // Project in Ritz?
@@ -166,8 +169,8 @@ void EigSpecRitzKS(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
   if( n_eig ==1 ) { 
     // if n_eig is one, KS algorithm is not applicable. We revert to the 
     // Normal CG method
-    EigSpecRitzCG(M, lambda_H, psi, n_eig, n_renorm, n_min, MaxCG, Rsd_r,
-		  zero_cutoff, ProjApsiP, n_cg_tot, xml_out);
+    EigSpecRitzCG(M, lambda_H, psi, n_eig, n_renorm, n_min, MaxCG, Rsd_r, 
+		  Rsd_a, zero_cutoff, ProjApsiP, n_cg_tot, xml_out);
     return;
   }
 
@@ -213,9 +216,9 @@ void EigSpecRitzKS(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
     for(ev = 1, i=0; ev <= n_working_eig; ev++, i++) {
 
       // Do the Ritz for all working eigenvalues
-      Ritz(M, lambda_intern[i], psi, ev, Rsd_r, zero_cutoff,  n_renorm, n_min, n_max, 
-	   MaxCG, ProjApsiP, n_count, final_grad[i], true, Real(1), 
-	   gamma_factor);
+      Ritz(M, lambda_intern[i], psi, ev, Rsd_r, Rsd_a, zero_cutoff,  n_renorm, 
+	   n_min, n_max, MaxCG, ProjApsiP, n_count, final_grad[i], true, 
+	   Real(1), gamma_factor);
 
       // Count the CG cycles
       n_cg_tot += n_count;
@@ -245,7 +248,8 @@ void EigSpecRitzKS(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
 
     // Now diagonalise it, rotate evecs, and sort
     // 
-    SN_Jacob(psi, n_working_eig, lambda_intern, off_diag, Rsd_r, 50, n_jacob);
+    // Jacobi at the moment works with the absolute error
+    SN_Jacob(psi, n_working_eig, lambda_intern, off_diag, Rsd_a, 50, n_jacob);
     n_jacob_tot += n_jacob;
 
     write(xml_out, "n_jacob", n_jacob);
@@ -258,7 +262,15 @@ void EigSpecRitzKS(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
     bool convP = true;
     for(i=0; i < n_eig; i++) {
       bool zeroReachedP = toBool( fabs(lambda_intern[i]) < zero_cutoff );
-      convP &= ( toBool(final_grad[i] < Rsd_r*fabs(lambda_intern[i])) || zeroReachedP );
+
+      // This ev is converged if either 
+      //   i)  Pessimistic absolute error is reached 
+      //  ii)  Pessimistic relative error is reached 
+      // iii)  if the ev is below the zero cutoff
+      // 
+      convP &= ( toBool( final_grad[i] < Rsd_a ) 
+		 || toBool( final_grad[i] < Rsd_r*fabs(lambda_intern[i]) ) 
+		 || zeroReachedP );
     }
 
     pop(xml_out); // KS_iter
@@ -277,7 +289,7 @@ void EigSpecRitzKS(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
       }
 
       // Diagonalise, rotate, sort
-      SN_Jacob(psi, n_eig, lambda_intern, off_diag, Rsd_r, 50, n_jacob);
+      SN_Jacob(psi, n_eig, lambda_intern, off_diag, Rsd_a, 50, n_jacob);
       write(xml_out, "final_n_jacob", n_jacob);
       write(xml_out, "n_cg_tot", n_cg_tot);
       write(xml_out, "n_KS", n_KS);
@@ -307,16 +319,16 @@ void EigSpecRitzKS(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
 
 
 void fixMMev2Mev(const LinearOperator<LatticeFermion>& M,  // The Op to fix to
-		 multi1d<Real>& lambda,                    // The Evals of M^{dag}M on input
-		                                           // The Evals of M on output        
-		 multi1d<LatticeFermion>& ev_psi,          // The Evecs corresponding to lambda
-		 const int n_eig,                          // The no of evals/evecs to deal with
-		 const Real& validity_tolerance,           // Tolerance for validity
-		 const Real& zero_cutoff, 
-		 multi1d<bool>& valid_eig,                 // Validity mask (Write)
-		 int& n_valid,                             // No of valids  (Write)
-		 const Real& jacobi_tolerance,             // How far to run the Jacobi
-		 int& n_jacob                              // How many Jacobis were done
+		 multi1d<Real>& lambda,       // The Evals of M^{dag}M on input
+		                             // The Evals of M on output 
+		 multi1d<LatticeFermion>& ev_psi,  // The Evecs 
+		 const int n_eig,             // The no of evals/evecs 
+		 const Real& Rsd_r,           // Relative error for validity
+		 const Real& Rsd_a,           // Absolute error for validity
+		 const Real& zero_cutoff,     // Zero cutoff
+		 multi1d<bool>& valid_eig,    // Validity mask (Write)
+		 int& n_valid,                // No of valids  (Write)
+		 int& n_jacob                 // How many Jacobis were done
 		 )
 {
 
@@ -336,8 +348,8 @@ void fixMMev2Mev(const LinearOperator<LatticeFermion>& M,  // The Op to fix to
   LatticeFermion tmp;
   Double lambda_H_sq;
   Double delta_lambda;
-
   bool zeroMatchedP;
+  bool convP;
   // We are all set -- lets do it
 
   if( n_eig == 1 ) {                  // only one eigenvalue
@@ -368,17 +380,15 @@ void fixMMev2Mev(const LinearOperator<LatticeFermion>& M,  // The Op to fix to
 	valid_eig[0] = false;
 	n_valid = 1;
       }
-    
-      // Whatever happened lambda_fix_single is our estimate for
-      // lambda[0]
-      lambda[0] = Real(lambda_fix_single);
-      return;
     }
     else { 
-      // Check relative error is satisfied
+      // Check relative error or absolute error is satisfied
       delta_lambda = fabs( lambda_H_sq - Double( lambda[0] ) );
-    
-      if ( toBool( delta_lambda < Double(validity_tolerance) * fabs(Double(lambda[0])) ) ) { 
+      
+      convP = toBool( delta_lambda < Double(Rsd_a) )
+	|| toBool( delta_lambda < Double(Rsd_r)*fabs(Double(lambda[0])) );
+      
+      if ( convP ) { 
 	// Condition is satisfied
 	valid_eig[0] = true;
 	n_valid = 1;
@@ -415,14 +425,14 @@ void fixMMev2Mev(const LinearOperator<LatticeFermion>& M,  // The Op to fix to
   }
     
   // Diagonalise and sort according to size
-  SN_Jacob(ev_psi, n_eig, lambda_fix, off_diag, jacobi_tolerance, 50, n_jacob);
+  SN_Jacob(ev_psi, n_eig, lambda_fix, off_diag, Rsd_a, 50, n_jacob);
 
   // Now the tricky business of matching up with ev-s of H^2
   n_valid = 0;
     
   for(int i=0; i < n_eig; i++) { 
+    
     lambda_H_sq = Double(lambda_fix[i])*Double(lambda_fix[i]);
-
 
 
     if( toBool(lambda_H_sq < zero_cutoff ) ) {
@@ -459,7 +469,9 @@ void fixMMev2Mev(const LinearOperator<LatticeFermion>& M,  // The Op to fix to
       for(int j = n_valid; ( j < n_eig ) && ( valid_eig[i] == false ); j++ ) {
 	delta_lambda = fabs( lambda_H_sq - Double(lambda[j]) );
 	
-	if( toBool( delta_lambda < Double(validity_tolerance)*fabs(Double(lambda[j])) ) ) {
+	convP = toBool( delta_lambda < Double(Rsd_a) ) 
+	  || toBool( delta_lambda < Double(Rsd_r) * fabs( Double(lambda[j]) ) );
+	if( convP ) {
 	  
 	  // lambda_fix[i] matches lambda[j] 
 	  valid_eig[i] = true;

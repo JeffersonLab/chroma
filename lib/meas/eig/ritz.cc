@@ -1,4 +1,4 @@
-// $Id: ritz.cc,v 1.6 2004-01-21 15:34:52 bjoo Exp $
+// $Id: ritz.cc,v 1.7 2004-01-27 11:50:09 bjoo Exp $
 /*! \file
  *  \brief Ritz code for eigenvalues
  */
@@ -106,6 +106,7 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
 	    multi1d<T>& psi_all,        // E-vector array
 	    int N_eig,                  // Current evec index
 	    const Real& Rsd_r,          // Target relative residue
+	    const Real& Rsd_a,          // Target absolute residue
 	    const Real& zero_cutoff,    // if ev-slips below this 
 	                                // we consider it to be a zero
 	    int n_renorm,               // Renormalise frequency
@@ -193,19 +194,29 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
   bool KSConvP;
   bool deltaCycleConvP;
 
-  Double rsd;
+  Double rsd_r_sq;
+  Double rsd_a_sq;
+ 
+  // Make up the stopping criteria
+  rsd_a_sq = Rsd_a * Rsd_a;                // Absolute
+  rsd_r_sq = Rsd_r * Rsd_r * mu * mu;      // Relative
+  
+  // Converged if g2 < Max( absolute_target, relative-target) 
+  // This is necessary for low lying non-zero modes, where 
+  // the relative error can reach below machine precision
+  // (ie g2 never gets smaller than it )
+  CGConvP = toBool( g2 < rsd_r_sq  ) || toBool(g2 < rsd_a_sq );
 
-  // omega | mu | 
-  rsd =  fabs(Rsd_r * mu);      // Pessimistic according to KS
-  CGConvP = toBool( g2 < rsd*rsd );
+  // Zero Ev-s can reach the cutoff value quickly, also 
+  // the absolute error doesn't apply to them.
+  // I could try and use the absolute error as a zero cutoff...
+  // But lets allow this flexibility 
   zeroFoundP = toBool( fabs(mu) < zero_cutoff );
 
-  if( zeroFoundP ) { 
-    QDPIO::cout << "Zero found" << endl;
-  }
-
   // error based on delta_cycle
+  // NOT USED AT THIS TIME BUT POSSIBLY IN THE FUTURE
   Double delta_cycle_err = delta_cycle;
+
   if( Kalk_Sim == false ) { 
 
     // Normal CG stopping criterion
@@ -215,11 +226,21 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
   }
   else { 
     // Kalk-Sim stopping criterion
-    // initial error is delta_cycle
-    // but non KS condition is needed also for the 
-    // initial first two iterations where delta_cycle is not known
-    // I may revisit this condition...
-    KSConvP = toBool( delta_cycle_err < rsd );
+    // The iteration terminates if
+    //    
+    //    i) The minimum no of iters is done and max iters is also done
+    //    (this is iteration 0 so I ignore max iters at this pint
+    // 
+    // AND either the following is true
+    //
+    //      i) The delta cycle bound is reached  (*)
+    //     ii) If the normal CG criterion is satisfied
+    //    iii) If mu has reached the zero cutoff
+    //
+    //  (*) KS delta cycle bount is not in use at this time.
+    //KSConvP = toBool( delta_cycle_err < rsd );
+    KSConvP = false;         // Not in use
+
     convP = minItersDoneP && ( KSConvP || CGConvP || zeroFoundP );
   }
 
@@ -328,17 +349,26 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
     g2 = norm2(Ap);
 
     // Convergence test
+    // Check for min_KS / max_KS iters done
     minItersDoneP = ( k >= n_min );
     maxItersDoneP = ( k >= n_max );
     
     // Conservative CG test
-    rsd =fabs(Rsd_r * mu);
-    CGConvP = toBool( g2 < rsd*rsd );
-    zeroFoundP = toBool( fabs(mu) < zero_cutoff );
-    if( zeroFoundP) {
-      QDPIO::cout << "Zero Found" << endl;
-    }
+    rsd_a_sq = Rsd_a*Rsd_a;
+    rsd_r_sq = Rsd_r*Rsd_r*mu*mu;
 
+    // Converged if g2 < Max( absolute_target, relative-target) 
+    // This is necessary for low lying non-zero modes, where 
+    // the relative error can reach below machine precision
+    // (ie g2 never gets smaller than it )
+    CGConvP = toBool( g2 < rsd_a_sq ) || toBool( g2 < rsd_r_sq);
+
+    // Zero Ev-s can reach the cutoff value quickly, also 
+    // the absolute error doesn't apply to them.
+    // I could try and use the absolute error as a zero cutoff...
+    // But lets allow this flexibility 
+    zeroFoundP = toBool( fabs(mu) < zero_cutoff );
+    
     if( Kalk_Sim == false ) {
 
       // Non Kalk Sim criteria. We have done the minimum 
@@ -347,24 +377,37 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
       convP = minItersDoneP && ( maxItersDoneP || CGConvP || zeroFoundP );
     }
     else { 
-      // Kalk Sim criteria
+      // Kalk-Sim stopping criterion
+      // The iteration terminates if
+      //    
+      //    i) The minimum no of iters is done
+      // AND either the following is true
+      //      i) KS_max iters is also done
+      //     ii) The delta cycle bound is reached  (*)
+      //    iii) If the normal CG criterion is satisfied
+      //     vi) If mu has reached the zero cutoff
+      //
+      //  (*) KS delta cycle bount is not in use at this time.
+      
+      /* The following commented lines were a stab at the delta_cycle bound
+	 
       // work out decrease in || g^2 ||.
       Double g_decr_factor = g2 / g2_p;
-
+      
       // "Extrapolate the delta_cycle error with the decrease in g"
       delta_cycle_err *= fabs(g_decr_factor);
-      Double g2_g0_ratio = g2 / g2_0;
+      
       deltaCycleConvP = toBool( delta_cycle_err < rsd );
+      */
+
+      deltaCycleConvP = false;
+      Double g2_g0_ratio = g2 / g2_0;
       KSConvP = deltaCycleConvP || toBool( g2_g0_ratio <= Double(gamma_factor)) ;
-
-      // Ignore delta_cycle_err for now
-      // KSConvP = toBool ( g2_g0_ratio <= Double(gamma_factor));
-
       convP = minItersDoneP && ( maxItersDoneP || CGConvP || KSConvP || zeroFoundP );
 
     }
 
-      
+    
     if( convP ) { 
       n_count = k;
 
@@ -377,7 +420,7 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
       d = sqrt(norm2(psi));
       psi /= d;
       d -= one;
-
+      
 
       // Print out info about convergence 
 #if 0
@@ -513,7 +556,7 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
   n_count = MaxCG;
   final_grad = sqrt(g2);
   QDPIO::cerr << "too many CG/Ritz iterations: n_count=" << n_count
-	      << ", rsd=" << rsd << ", ||g||=" << sqrt(g2) << ", p2=" << p2
+	      << ", rsd_r =" << sqrt(rsd_r_sq) <<" rsd_a=" << Rsd_a << ", ||g||=" << sqrt(g2) << ", p2=" << p2
 	      << ", lambda" << lambda << endl;
   QDP_abort(1);
   END_CODE("Ritz");
@@ -527,6 +570,7 @@ void Ritz(const LinearOperator<LatticeFermion>& A,   // Herm Pos Def
 	  multi1d<LatticeFermion>& psi_all,        // E-vector array
 	  int N_eig,                  // Current evec index
 	  const Real& Rsd_r,          // Target relative residue
+	  const Real& Rsd_a,          // Absolute target residue
 	  const Real& zero_cutoff,    // If ev-slips below this we consider it
 	                              // to be zero
 	  int n_renorm,               // Renormalise frequency
@@ -539,7 +583,7 @@ void Ritz(const LinearOperator<LatticeFermion>& A,   // Herm Pos Def
 	  const Real& delta_cycle,    // Initial error estimate (KS mode)
 	  const Real& gamma_factor)   // Convergence factor Gamma
 {
-  Ritz_t(A, lambda, psi_all, N_eig, Rsd_r, zero_cutoff, 
+  Ritz_t(A, lambda, psi_all, N_eig, Rsd_r, Rsd_a, zero_cutoff, 
 	 n_renorm, n_min, n_max, MaxCG,
 	 ProjApsiP, n_count, final_grad, 
 	 Kalk_Sim, delta_cycle, gamma_factor);

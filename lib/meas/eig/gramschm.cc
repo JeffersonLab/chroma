@@ -1,4 +1,4 @@
-// $Id: gramschm.cc,v 1.3 2004-01-16 14:16:14 bjoo Exp $
+// $Id: gramschm.cc,v 1.4 2004-01-27 11:50:08 bjoo Exp $
 /*! \file
  *  \brief Gramm-Schmidt orthogonolization
  */
@@ -96,8 +96,8 @@ void GramSchm_T(T& psi,
 
   START_CODE("GramSchm");
 
-  Complex xp = innerProduct(vec[i], psi);
-  psi -= vec[i] * xp;
+  Complex xp = innerProduct(vec, psi);
+  psi -= vec * xp;
   
   END_CODE("GramSchm");
 }

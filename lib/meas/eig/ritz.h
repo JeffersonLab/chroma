@@ -100,6 +100,7 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
 	    multi1d<T>& psi_all,        // E-vector array
 	    int N_eig,                  // Current evec index
 	    const Real& Rsd_r,          // Target relative residue
+	    const Real& Rsd_a,          // Target absolute residue
 	    const Real& zero_cutoff,    // If ev slips below this we consider
 	                                // if to be zero
 	    int n_renorm,               // Renormalise frequency
@@ -118,6 +119,7 @@ void Ritz(const LinearOperator<LatticeFermion>& A,   // Herm Pos Def
 	  multi1d<LatticeFermion>& psi_all,        // E-vector array
 	  int N_eig,                  // Current evec index
 	  const Real& Rsd_r,          // Target relative residue
+	  const Real& Rsd_a,          // Target absolute residue
 	  const Real& zero_cutoff,    // if ev slips below this we consider 
 	                              // if to be zero.
 	  int n_renorm,               // Renormalise frequency

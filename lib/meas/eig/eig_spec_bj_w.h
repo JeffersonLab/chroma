@@ -1,4 +1,4 @@
-/* ! $Id: eig_spec_bj_w.h,v 1.6 2004-01-21 15:34:52 bjoo Exp $ */
+/* ! $Id: eig_spec_bj_w.h,v 1.7 2004-01-27 11:50:08 bjoo Exp $ */
 
 #ifndef __eig_spec_bj_w_h__
 #define __eig_spec_bj_w_h__
@@ -15,6 +15,8 @@ void EigSpecRitzCG(const LinearOperator<LatticeFermion>& H, // Herm pos def oper
 		   int MaxCG,                       // Max no of CG iters
 		   const Real& Rsd_r,               // relative residuum of each 
 		                                  // e-value
+		   const Real& Rsd_a,               // absolute target residuum
+		                                    // (for small ev-s)
 		   const Real& zero_cutoff,         // if evalue slips below this 
                                                     // we consider it as zero
 		   const bool ProjApsiP,            // Project in Ritz?
@@ -38,6 +40,7 @@ void EigSpecRitzKS(const LinearOperator<LatticeFermion>& H, // Herm pos def oper
 		   int MaxCG,                       // Max no of CG iters
 		   const Real& Rsd_r,               // relative residuum of each 
 		                                  // e-value
+		   const Real& Rsd_a,               // absolute residuum (for small ev's)
 		   const Real& zero_cutoff,         // if an ev slips below this
 		                                    // we consider it zero
 		   const bool ProjApsiP,            // Project in Ritz?
@@ -54,12 +57,12 @@ void fixMMev2Mev(const LinearOperator<LatticeFermion>& M,  // The Op to fix to
 		                                           // The Evals of M on output        
 		 multi1d<LatticeFermion>& ev_psi,          // The Evecs corresponding to lambda
 		 const int n_eig,                          // The no of evals/evecs to deal with
-		 const Real& validity_tolerance,           // Tolerance for validity
+		 const Real& Rsd_r,                       // Relative error
+		 const Real& Rsd_a,                       // Absolute error
 		 const Real& zero_cutoff,                  // if EV slips below this we consider
 		                                           // it to be zero
 		 multi1d<bool>& valid_eig,                 // Validity mask (Write)
 		 int& n_valid,                             // No of valids  (Write)
-		 const Real& jacobi_tolerance,             // How far to run the Jacobi
 		 int& n_jacob                              // How many Jacobis were done
 		 );
 
