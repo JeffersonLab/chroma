@@ -1,10 +1,11 @@
-// $Id: t_lwldslash.cc,v 1.5 2003-09-11 00:46:04 edwards Exp $
+// $Id: t_lwldslash.cc,v 1.6 2003-09-12 12:21:36 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
 
 #include "chroma.h"
 #include "primitives.h" // GTF: for PLUS
+
 
 using namespace QDP;
 
@@ -21,7 +22,7 @@ int main(int argc, char **argv)
   Layout::setLattSize(nrow);
   Layout::create();
 
-  NmlWriter nml("t_lwldslash.nml");
+  XMLFileWriter xml("t_lwldslash.xml");
 
   //! Test out dslash
   multi1d<LatticeColorMatrix> u(Nd);
@@ -32,24 +33,62 @@ int main(int argc, char **argv)
   random(psi);
   chi = zero;
 
-  //! Create a linear operator
-  WilsonDslash D(u);
-  chi = D(psi, PLUS, 0);
+  int iter = 10000;
+  cout << "Iters is " << iter << endl;
 
-  Write(nml,Nd);
-  Write(nml,Nc);
-  Write(nml,Ns);
-  Write(nml,nrow);
-  Write(nml,psi);
-  Write(nml,chi);
+  //! Create a linear operator
+  if( Layout::primaryNode() ) { 
+    cout << "Constructing WilsonDslash" << endl;
+  }
+
+  WilsonDslash D(u);
+
+  if( Layout::primaryNode() ) { 
+    cout << "Done" << endl;
+  }
+
+  int i;
+
+  int isign, cb, loop;
+  for(isign = 1; isign >= -1; isign -= 2) {
+    for(cb = 0; cb < 2; ++cb) { 
+
+      clock_t myt1;
+      clock_t myt2;
+      double mydt;
+      
+      if( Layout::primaryNode() ) { 
+	cout << "Applying D" << endl;
+      }
+      
+      myt1=clock();
+      for(i=0; i < iter; i++) { 
+	chi = D.apply(psi, (isign == 1 ? PLUS : MINUS ) , cb);
+      }
+      myt2=clock();
+      
+      mydt=(double)(myt2-myt1)/((double)(CLOCKS_PER_SEC));
+      mydt=1.0e6*mydt/((double)(iter*(Layout::vol())));
+      
+      if( Layout::primaryNode() ) { 
+	cout << "cb = " << cb << " isign = " << isign << endl;
+	cout << "The time per lattice point is "<< mydt << " micro sec" 
+	     << " micro sec (" <<  (double)(1392.0f/mydt) << ") Mflops " << endl;
+	
+	
+      }
+    }
+  }
+  
 
   //! Create and try a more sophisticated operator
-  Real Kappa = 0.1;
+  /* Real Kappa = 0.1;
   PreconditionedWilson  M(u,Kappa);
   LatticeFermion eta;
   eta = M(psi, PLUS);
 
   Write(nml,eta);
+  */
 
   // Time to bolt
   QDP_finalize();
