@@ -182,7 +182,7 @@ spectrum_w qqq_w bar3ptfn qproptransf wallformfac
 # Wilson specific programs
 # Temporarily moved here while fixing codes.
 EXTRA_PROGRAMS = qpropadd  propagator_comp multi_propagator multi_propagator_comp \
-       collect_multi_propcomp 
+       collect_multi_propcomp mres
 
 
 # Staggered specific programs
@@ -214,6 +214,9 @@ collect_multi_propcomp_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 spectrum_w_SOURCES = spectrum_w.cc
 spectrum_w_DEPENDENCIES = build_chroma_libs rebuild_other_libs
+
+mres_SOURCES = mres.cc
+mres_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 qqq_w_SOURCES = qqq_w.cc
 qqq_w_DEPENDENCIES = build_chroma_libs rebuild_other_libs
@@ -256,7 +259,7 @@ CONFIG_HEADER = $(top_builddir)/lib/chroma_config_internal.h
 CONFIG_CLEAN_FILES =
 EXTRA_PROGRAMS = qpropadd$(EXEEXT) propagator_comp$(EXEEXT) \
 	multi_propagator$(EXEEXT) multi_propagator_comp$(EXEEXT) \
-	collect_multi_propcomp$(EXEEXT)
+	collect_multi_propcomp$(EXEEXT) mres$(EXEEXT)
 check_PROGRAMS = propagator$(EXEEXT) collect_propcomp$(EXEEXT) \
 	seqsource$(EXEEXT) make_source$(EXEEXT) \
 	ExampleBuildingBlocks$(EXEEXT) hypsmear$(EXEEXT) \
@@ -291,6 +294,10 @@ am_make_source_OBJECTS = make_source.$(OBJEXT)
 make_source_OBJECTS = $(am_make_source_OBJECTS)
 make_source_LDADD = $(LDADD)
 make_source_LDFLAGS =
+am_mres_OBJECTS = mres.$(OBJEXT)
+mres_OBJECTS = $(am_mres_OBJECTS)
+mres_LDADD = $(LDADD)
+mres_LDFLAGS =
 am_multi_propagator_OBJECTS = multi_propagator.$(OBJEXT)
 multi_propagator_OBJECTS = $(am_multi_propagator_OBJECTS)
 multi_propagator_LDADD = $(LDADD)
@@ -352,7 +359,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/collect_multi_propcomp.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/collect_propcomp.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/hypsmear.Po ./$(DEPDIR)/make_source.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/multi_propagator.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/mres.Po ./$(DEPDIR)/multi_propagator.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/multi_propagator_comp.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/propagator.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/propagator_comp.Po \
@@ -370,15 +377,15 @@ CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 DIST_SOURCES = $(ExampleBuildingBlocks_SOURCES) $(bar3ptfn_SOURCES) \
 	$(cfgtransf_SOURCES) $(collect_multi_propcomp_SOURCES) \
 	$(collect_propcomp_SOURCES) $(hypsmear_SOURCES) \
-	$(make_source_SOURCES) $(multi_propagator_SOURCES) \
-	$(multi_propagator_comp_SOURCES) $(propagator_SOURCES) \
-	$(propagator_comp_SOURCES) $(qpropadd_SOURCES) \
-	$(qpropgfix_SOURCES) $(qproptransf_SOURCES) \
+	$(make_source_SOURCES) $(mres_SOURCES) \
+	$(multi_propagator_SOURCES) $(multi_propagator_comp_SOURCES) \
+	$(propagator_SOURCES) $(propagator_comp_SOURCES) \
+	$(qpropadd_SOURCES) $(qpropgfix_SOURCES) $(qproptransf_SOURCES) \
 	$(qproptrev_SOURCES) $(qqq_w_SOURCES) $(seqsource_SOURCES) \
 	$(sink_smearing_SOURCES) $(spectrum_w_SOURCES) \
 	$(wallformfac_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(ExampleBuildingBlocks_SOURCES) $(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) $(collect_multi_propcomp_SOURCES) $(collect_propcomp_SOURCES) $(hypsmear_SOURCES) $(make_source_SOURCES) $(multi_propagator_SOURCES) $(multi_propagator_comp_SOURCES) $(propagator_SOURCES) $(propagator_comp_SOURCES) $(qpropadd_SOURCES) $(qpropgfix_SOURCES) $(qproptransf_SOURCES) $(qproptrev_SOURCES) $(qqq_w_SOURCES) $(seqsource_SOURCES) $(sink_smearing_SOURCES) $(spectrum_w_SOURCES) $(wallformfac_SOURCES)
+SOURCES = $(ExampleBuildingBlocks_SOURCES) $(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) $(collect_multi_propcomp_SOURCES) $(collect_propcomp_SOURCES) $(hypsmear_SOURCES) $(make_source_SOURCES) $(mres_SOURCES) $(multi_propagator_SOURCES) $(multi_propagator_comp_SOURCES) $(propagator_SOURCES) $(propagator_comp_SOURCES) $(qpropadd_SOURCES) $(qpropgfix_SOURCES) $(qproptransf_SOURCES) $(qproptrev_SOURCES) $(qqq_w_SOURCES) $(seqsource_SOURCES) $(sink_smearing_SOURCES) $(spectrum_w_SOURCES) $(wallformfac_SOURCES)
 
 all: all-am
 
@@ -413,6 +420,9 @@ hypsmear$(EXEEXT): $(hypsmear_OBJECTS) $(hypsmear_DEPENDENCIES)
 make_source$(EXEEXT): $(make_source_OBJECTS) $(make_source_DEPENDENCIES) 
 	@rm -f make_source$(EXEEXT)
 	$(CXXLINK) $(make_source_LDFLAGS) $(make_source_OBJECTS) $(make_source_LDADD) $(LIBS)
+mres$(EXEEXT): $(mres_OBJECTS) $(mres_DEPENDENCIES) 
+	@rm -f mres$(EXEEXT)
+	$(CXXLINK) $(mres_LDFLAGS) $(mres_OBJECTS) $(mres_LDADD) $(LIBS)
 multi_propagator$(EXEEXT): $(multi_propagator_OBJECTS) $(multi_propagator_DEPENDENCIES) 
 	@rm -f multi_propagator$(EXEEXT)
 	$(CXXLINK) $(multi_propagator_LDFLAGS) $(multi_propagator_OBJECTS) $(multi_propagator_LDADD) $(LIBS)
@@ -466,6 +476,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/collect_propcomp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hypsmear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/make_source.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mres.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/multi_propagator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/multi_propagator_comp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/propagator.Po@am__quote@
