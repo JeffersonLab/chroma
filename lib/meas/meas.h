@@ -1,8 +1,8 @@
 // -*- C++ -*-
-// $Id: meas.h,v 1.1 2003-02-15 05:54:25 edwards Exp $
+// $Id: meas.h,v 1.2 2003-02-16 18:39:36 edwards Exp $
 
-#ifndef ACTIONS_INCLUDE
-#define ACTIONS_INCLUDE
+#ifndef MEAS_INCLUDE
+#define MEAS_INCLUDE
 
 #include "smear/smear.h"
 #include "glue/glue.h"
