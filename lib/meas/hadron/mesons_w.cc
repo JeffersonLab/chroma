@@ -1,6 +1,10 @@
-//  $Id: mesons_w.cc,v 1.9 2003-03-14 17:16:13 flemingg Exp $
+//  $Id: mesons_w.cc,v 1.10 2003-03-14 21:51:54 flemingg Exp $
 //  $Log: mesons_w.cc,v $
-//  Revision 1.9  2003-03-14 17:16:13  flemingg
+//  Revision 1.10  2003-03-14 21:51:54  flemingg
+//  Changes the way in which the nml data is output to match what's done
+//  in szin.
+//
+//  Revision 1.9  2003/03/14 17:16:13  flemingg
 //  Variant 1 is now working with SftMom::sft().  In arbitrary units,
 //  the relative performance seems to be: V1) 7.5, V2) 10, V3) 100.
 //
@@ -65,9 +69,22 @@ void mesons(const LatticePropagator& quark_prop_1,
   int G5 = Ns*Ns-1;
   LatticePropagator anti_quark_prop =  Gamma(G5) * quark_prop_2 * Gamma(G5);
 
+  // GTF: the szin strippers expect nml output to conform to
+  //   &nml_group
+  //     ...
+  //     sink_mom( mu ) = integer ,
+  //     ...
+  //     mesprop( t_eff , gamma_value ) = real ,
+  //     ...
+  //   &END
+  // In some of the Variants, sink_mom is not in the outer loop, so we
+  // have to save all the data and flatten.
+
   // GTF: We're going to consider several working variants here to see
-  // which one works best.  Now that Variant 1 is working, it seems to be
-  // 25% faster than Variant 2 in the test program.
+  // which one works best.  Current timings in arbitrary units:
+  //   Variant 1:  25
+  //   Variant 2:  32
+  //   Variant 3: 297
 
 #if 1    // Variant 1
 
@@ -77,6 +94,8 @@ void mesons(const LatticePropagator& quark_prop_1,
   // momenta are stored.  It's primary disadvantage is that it
   // requires more memory because it does all of the Fourier transforms
   // at the same time.
+
+  multi3d<Real> mespropall(phases.numMom(), phases.numSubsets(), Ns*Ns) ;
 
   // Loop over gamma matrix insertions
   for (int gamma_value=0; gamma_value < (Ns*Ns); ++gamma_value) {
@@ -90,24 +109,25 @@ void mesons(const LatticePropagator& quark_prop_1,
     hsum = phases.sft(corr_fn) ;
 
     for (int sink_mom_num=0; sink_mom_num < phases.numMom(); ++sink_mom_num) {
-      multi1d<Double> mesprop(phases.numSubsets()) ;
 
       for (int t=0; t < phases.numSubsets(); ++t) {
         int t_eff = (t - t0 + length) % length ;
 
-        mesprop[t_eff] = real(hsum[sink_mom_num][t]) ;
+        mespropall[sink_mom_num][t_eff][gamma_value] =
+          real(hsum[sink_mom_num][t]) ;
       }
-
-      // Print out the results
-      push(nml, nml_group) ;
-      Write(nml, gamma_value) ;
-      write(nml, "sink_mom", phases.numToMom(sink_mom_num)) ;
-      Write(nml, mesprop) ;
-      pop(nml) ;
 
     } // end for(sink_mom_num)
 
   } // end for(gamma_value)
+
+  // Print out the results
+  for (int sink_mom_num=0; sink_mom_num < phases.numMom(); ++sink_mom_num) {
+    push(nml, nml_group) ;
+    write(nml, "sink_mom", phases.numToMom(sink_mom_num)) ;
+    write(nml, "mesprop", mespropall[sink_mom_num]) ;
+    pop(nml) ;
+  }
 
 #elif 1  // Variant 2
 
@@ -120,6 +140,8 @@ void mesons(const LatticePropagator& quark_prop_1,
   // phases[sink_mom_num] is redone for each gamma_value.  Whether this
   // is cheaper than Variant 3 must be tested.  According to my test code,
   // this variant is about 10 times faster than Variant 3.
+
+  multi3d<Real> mespropall(phases.numMom(), phases.numSubsets(), Ns*Ns) ;
 
   // Loop over gamma matrix insertions
   for (int gamma_value=0; gamma_value < (Ns*Ns); ++gamma_value) {
@@ -138,23 +160,22 @@ void mesons(const LatticePropagator& quark_prop_1,
       // This is obviously a copy with simple relabeling which might
       // be eliminated in the future.  It is done to match what was
       // done in the past with NML.
-      multi1d<Double> mesprop(hsum.size()) ;
-
       for (int t=0; t < phases.numSubsets(); ++t) {
         int t_eff = (t - t0 + length) % length ;
-        mesprop[t_eff] = hsum[t] ;
+        mespropall[sink_mom_num][t_eff][gamma_value] = hsum[t] ;
       }
-
-      // Print out the results
-      push(nml, nml_group) ;
-      Write(nml, gamma_value) ;
-      write(nml, "sink_mom", phases.numToMom(sink_mom_num)) ;
-      Write(nml, mesprop) ;
-      pop(nml) ;
 
     } // end for(sink_mom_num)
 
   } // end for(gamma_value)
+
+  // Print out the results
+  for (int sink_mom_num=0; sink_mom_num < phases.numMom(); ++sink_mom_num) {
+    push(nml, nml_group) ;
+    write(nml, "sink_mom", phases.numToMom(sink_mom_num)) ;
+    write(nml, "mesprop", mespropall[sink_mom_num]) ;
+    pop(nml) ;
+  }
 
 #elif 1  // Variant 3
 
@@ -167,6 +188,8 @@ void mesons(const LatticePropagator& quark_prop_1,
   for (int sink_mom_num=0; sink_mom_num < phases.numMom(); ++sink_mom_num) {
 
     LatticeComplex phasefac = phases[sink_mom_num] ;
+
+    multi2d<Real> mesprop(phases.numSubsets(), Ns*Ns) ;
 
     // Loop over gamma matrix insertions
     for (int gamma_value=0; gamma_value < (Ns*Ns); ++gamma_value) {
@@ -183,21 +206,18 @@ void mesons(const LatticePropagator& quark_prop_1,
       // This is obviously a copy with simple relabeling which might
       // be eliminated in the future.  It is done to match what was
       // done in the past with NML.
-      multi1d<Double> mesprop(hsum.size()) ;
-
       for (int t=0; t < phases.numSubsets(); ++t) {
         int t_eff = (t - t0 + length) % length ;
-        mesprop[t_eff] = hsum[t] ;
+        mesprop[t_eff][gamma_value] = hsum[t] ;
       }
 
-      // Print out the results
-      push(nml, nml_group) ;
-      Write(nml, gamma_value) ;
-      write(nml, "sink_mom", phases.numToMom(sink_mom_num)) ;
-      Write(nml, mesprop) ;
-      pop(nml) ;
-
     } // end for(gamma_value)
+
+    // Print out the results
+    push(nml, nml_group) ;
+    write(nml, "sink_mom", phases.numToMom(sink_mom_num)) ;
+    Write(nml, mesprop) ;
+    pop(nml) ;
 
   } // end for(sink_mom_num)
 
