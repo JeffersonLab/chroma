@@ -19,7 +19,7 @@
 //#####################################################################################
 
 static const char* const CVSBuildingBlocks_cc =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 1.5 2003-10-18 03:21:24 edwards Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 1.6 2004-05-27 16:00:27 dru Exp $";
 
 //#####################################################################################
 //#####################################################################################
@@ -30,6 +30,8 @@ static const char* const CVSBuildingBlocks_cc =
 #include "meas/hadron/BuildingBlocks_w.h"
 
 using namespace QDP;
+
+#define _DEBUG_BB_C_ 1
 
 //#####################################################################################
 // record the CVS info
@@ -79,7 +81,9 @@ void BkwdFrwdTr( const LatticePropagator &             B,
   //TimeSliceFunc SetTimeSlice( Nd - 1 );
   //const Set TimeSlice( SetTimeSlice );
   //const int T = SetTimeSlice.numSubsets();
-  const int T = Nd - 1;
+  //const int T = Nd - 1;
+  const int T1 = 0;
+  const int T2 = 7;
   const int NQ = Phases.numMom();
 
   //#####################################################################################
@@ -90,12 +94,28 @@ void BkwdFrwdTr( const LatticePropagator &             B,
   {
     BinaryWriters[f][q]->write( NLinks );
 
+    #if _DEBUG_BB_C_ == 1
+    {
+      QDPIO::cout << "DEBUG: " << __FILE__ << " " << __LINE__ << "\n";
+      QDPIO::cout << "q = " << q << "\n";
+      QDPIO::cout << "f = " << f << "\n";
+      QDPIO::cout << "NLinks = " << NLinks << "\n";
+    }
+    #endif
+
     for( Link = 0; Link < NLinks; Link ++ )
     {
       BinaryWriters[f][q]->write( LinkDirs[ Link ] );
+
+      #if _DEBUG_BB_C_ == 1
+      {
+        QDPIO::cout << "Link = " << Link << "\n";
+        QDPIO::cout << "LinkDirs[ Link ] = " << LinkDirs[ Link ] << "\n";
+      }
+      #endif
     }
 
-    if( f == 0 )
+    if( f == 0 )  // counts number of link patterns per flavor - assumes that u quark is always present - problem
     {
       GBB_NLinkPatterns ++;
     }
@@ -111,13 +131,24 @@ void BkwdFrwdTr( const LatticePropagator &             B,
     {
       multi1d< DComplex > Projection = Projections[ q ];
 
-      for( int t = 0; t < T; t ++ )
+      for( int t = T1; t <= T2; t ++ )
       {
         float r = toFloat( real( Projection[ t ] ) );
         float i = toFloat( imag( Projection[ t ] ) );
 
         BinaryWriters[f][q]->write( r );
         BinaryWriters[f][q]->write( i );
+
+        #if _DEBUG_BB_C_ == 1
+        {
+          QDPIO::cout << "DEBUG: " << __FILE__ << " " << __LINE__ << "\n";
+          QDPIO::cout << "q = " << q << "\n";
+          QDPIO::cout << "f = " << f << "\n";
+          QDPIO::cout << "t = " << t << "\n";
+          QDPIO::cout << "r = " << r << "\n";
+          QDPIO::cout << "i = " << i << "\n";
+        }
+        #endif
       }
     }
   }
@@ -349,3 +380,5 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
 
 //#####################################################################################
 //#####################################################################################
+
+#undef _DEBUG_BB_C_
