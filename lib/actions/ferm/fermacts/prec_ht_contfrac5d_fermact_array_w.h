@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ht_contfrac5d_fermact_array_w.h,v 1.1 2005-01-27 17:57:48 bjoo Exp $
+// $Id: prec_ht_contfrac5d_fermact_array_w.h,v 1.2 2005-02-14 02:05:34 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Continued Fraction 5D
  */
@@ -11,7 +11,6 @@
 #include "actions/ferm/fermacts/overlap_state.h"
 #include "actions/ferm/linop/lgherm_w.h"
 #include "actions/ferm/linop/lDeltaLs_w.h"
-#include "io/overlap_state_info.h"
 
 
 namespace Chroma
@@ -33,16 +32,16 @@ namespace Chroma
     //! Read params from XML
     EvenOddPrecHtContFrac5DFermActParams(XMLReader& in, const std::string& path);
   
-    
     Real Mass;     //!< Fermion Mass
 
     int RatPolyDeg; //!<  Degree of the Rational Poly
     CoeffType approximation_type;  //!< ZOLOTAREV | TANH | Other approximation coeffs
     // AuxFermAct is Gone. Use only Unprec Wilson (and the linOp creates its own Dslash
-    Real OverMass; //!< Mass of auxiliary Wilson action
-
-    Real b5;      //!< b5 Moebius parameter
-    Real c5;      //!< c5 Moebius parameter
+    Real OverMass;  //!< Mass of auxiliary Wilson action
+    Real ApproxMin; //!< Approximate min eigenvalue of H_T
+    Real ApproxMax; //!< Approximate max eigenvalue of H_T
+    Real b5;        //!< b5 Moebius parameter
+    Real c5;        //!< c5 Moebius parameter
   };
 
 

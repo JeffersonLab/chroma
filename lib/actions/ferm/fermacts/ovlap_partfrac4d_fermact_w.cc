@@ -1,4 +1,4 @@
-// $Id: ovlap_partfrac4d_fermact_w.cc,v 1.17 2005-02-08 13:14:14 bjoo Exp $
+// $Id: ovlap_partfrac4d_fermact_w.cc,v 1.18 2005-02-14 02:05:34 edwards Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -232,12 +232,12 @@ namespace Chroma
   /*! */
   void 
   OvlapPartFrac4DFermAct::init(int& numroot, 
-			   Real& coeffP, 
-			   multi1d<Real>& resP,
-			   multi1d<Real>& rootQ, 
-			   int& NEig, 
-			   multi1d<Real>& EigValFunc,
-			   const OverlapConnectState& state ) const
+			       Real& coeffP, 
+			       multi1d<Real>& resP,
+			       multi1d<Real>& rootQ, 
+			       int& NEig, 
+			       multi1d<Real>& EigValFunc,
+			       const OverlapConnectState& state ) const
   {
     /* A scale factor which should bring the spectrum of the hermitian
        Wilson Dirac operator H into |H| < 1. */
@@ -347,8 +347,8 @@ namespace Chroma
 	 where da = dd for type 0 and da = dd + 1 with ap[dd] = 0 for type 1. 
       */
       rdata = higham(toFloat(eps), params.RatPolyDeg);
-     
       break;
+
     case COEFF_TYPE_TANH_UNSCALED:
       scale_fac = Real(1) ;
       eps = state.getApproxMin();
@@ -371,7 +371,6 @@ namespace Chroma
 	 where da = dd for type 0 and da = dd + 1 with ap[dd] = 0 for type 1. 
       */
       rdata = higham(toFloat(eps), params.RatPolyDeg);
-     
       break;
 
     default:

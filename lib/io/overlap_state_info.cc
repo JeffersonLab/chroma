@@ -33,8 +33,6 @@ OverlapStateInfo::OverlapStateInfo(void)
 
 void read(XMLReader& xml_in, const string& path, OverlapStateInfo& info)
 {
-
-  
   bool initedP;
   Real ApproxMin;
   Real ApproxMax;
@@ -66,8 +64,10 @@ void read(XMLReader& xml_in, const string& path, OverlapStateInfo& info)
   ritzery.Nrenorm = 0;
   
   XMLReader reader(xml_in, path);
-  try {
-    read(reader, "NWilsVec", NWilsVec);
+  try 
+  {
+    if( reader.count("NWilsVec") != 0 )
+      read(reader, "NWilsVec", NWilsVec);
   }
   catch(const string& e) { 
     QDPIO::cerr << "Caught exception : " << e << endl;
@@ -75,7 +75,8 @@ void read(XMLReader& xml_in, const string& path, OverlapStateInfo& info)
   }
 
 
-  if( NWilsVec == 0 ) {
+  if( NWilsVec == 0 ) 
+  {
     // No eigenbeasties
     eigen_io.eigen_file="";
     eigen_io.eigen_volfmt = QDPIO_SINGLEFILE;
@@ -83,13 +84,15 @@ void read(XMLReader& xml_in, const string& path, OverlapStateInfo& info)
     // Try reading approx min and optional approx max
     // if approx max is not specified set it to 2*Nd
     try { 
-      read(reader, "ApproxMin", ApproxMin);
-      if( reader.count("ApproxMax") == 0 ) {
+      if( reader.count("ApproxMin") == 0 )
+	ApproxMin = 0.0;
+      else
+	read(reader, "ApproxMin", ApproxMin);
+
+      if( reader.count("ApproxMax") == 0 )
 	ApproxMax = 2*Nd;
-      }
-      else {
+      else
 	read(reader, "ApproxMax", ApproxMax);
-      }
     }
     catch( const string& e) {
       QDPIO::cerr << "Caught exception : " << e << endl;

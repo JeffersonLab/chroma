@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovlap_contfrac5d_fermact_array_w.h,v 1.9 2005-01-17 03:57:57 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_fermact_array_w.h,v 1.10 2005-02-14 02:05:34 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Continued Fraction 5D
  */
@@ -11,8 +11,6 @@
 #include "actions/ferm/fermacts/overlap_state.h"
 #include "actions/ferm/linop/lgherm_w.h"
 #include "actions/ferm/linop/lDeltaLs_w.h"
-#include "io/overlap_state_info.h"
-
 
 namespace Chroma
 {
@@ -39,7 +37,9 @@ namespace Chroma
     int RatPolyDeg; //!<  Degree of the Rational Poly
     CoeffType approximation_type;  //!< ZOLOTAREV | TANH | Other approximation coeffs
     // AuxFermAct is Gone. Use only Unprec Wilson (and the linOp creates its own Dslash
-    Real OverMass; //!< Mass of auxiliary Wilson action
+    Real OverMass;  //!< Mass of auxiliary Wilson action
+    Real ApproxMin; //!< Approximate min eigenvalue of H_T
+    Real ApproxMax; //!< Approximate max eigenvalue of H_T
   };
 
 
@@ -64,13 +64,11 @@ namespace Chroma
   class EvenOddPrecOvlapContFrac5DFermActArray : public EvenOddPrecWilsonTypeFermAct5D<LatticeFermion, multi1d<LatticeColorMatrix> >
   {
   public:
-
-    // Construct the action out of a parameter structure
+    //! Construct the action out of a parameter structure
     EvenOddPrecOvlapContFrac5DFermActArray(
-			     Handle< FermBC< multi1d< LatticeFermion> > > fbc_,
-			     const EvenOddPrecOvlapContFrac5DFermActParams& param);
+      Handle< FermBC< multi1d< LatticeFermion> > > fbc_,
+      const EvenOddPrecOvlapContFrac5DFermActParams& param);
   
-
     //! Copy constructor
     EvenOddPrecOvlapContFrac5DFermActArray(const EvenOddPrecOvlapContFrac5DFermActArray& a) : 
       fbc(a.fbc), params(a.params), N5(a.N5), isLastZeroP(a.isLastZeroP)  {};

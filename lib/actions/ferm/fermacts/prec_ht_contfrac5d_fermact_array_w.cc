@@ -1,4 +1,4 @@
-// $Id: prec_ht_contfrac5d_fermact_array_w.cc,v 1.4 2005-02-13 18:16:28 edwards Exp $
+// $Id: prec_ht_contfrac5d_fermact_array_w.cc,v 1.5 2005-02-14 02:05:34 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -63,24 +63,37 @@ namespace Chroma
   {
     XMLReader in(xml, path);
     
-    try {
-      
+    try 
+    {
       read(in, "Mass", Mass);
       read(in, "RatPolyDeg", RatPolyDeg);
-      
-      if( in.count("ApproximationType") == 1 ) { 
-	read(in, "ApproximationType", approximation_type);
-      }
-      else { 
-	// Default coeffs are Zolotarev
-	approximation_type = COEFF_TYPE_ZOLOTAREV;
-      }
       read(in, "OverMass", OverMass);
+
+      if( in.count("ApproximationType") == 1 ) 
+      { 
+      	read(in, "ApproximationType", approximation_type);
+      }
+      else 
+      {
+	// Default coeffs are unscaled tanh
+	approximation_type = COEFF_TYPE_TANH_UNSCALED;
+      }
+
+      if (approximation_type == COEFF_TYPE_ZOLOTAREV)
+      {
+	read(in, "ApproxMin", ApproxMin);
+	read(in, "ApproxMax", ApproxMax);
+      }
+      else
+      {
+	ApproxMin = ApproxMax = 0.0;
+      }
 
       int count_b5 = in.count("b5");
       int count_c5 = in.count("c5");
 
-      if( count_b5 == 0 && count_c5 == 0 ) {
+      if( count_b5 == 0 && count_c5 == 0 ) 
+      {
 	QDPIO::cout << "b5 and c5 not specified. Using Shamir values: b5=1 c5=0" << endl;
 	b5 = Real(1);
 	c5 = Real(0);
@@ -89,10 +102,9 @@ namespace Chroma
 	read(in, "b5", b5);
 	read(in, "c5", c5);
       }
-
     }
     catch( const string &e ) {
-      QDPIO::cerr << "Caught Exception reading Zolo5D Fermact params: " << e << endl;
+      QDPIO::cerr << "Caught Exception reading HT ContFrac Fermact params: " << e << endl;
       QDP_abort(1);
     }
   }
@@ -117,6 +129,8 @@ namespace Chroma
     write(xml_out, "ApproximationType", p.approximation_type);
     write(xml_out, "b5", p.b5);
     write(xml_out, "c5", p.c5);
+    write(xml_out, "ApproxMin", p.ApproxMin);
+    write(xml_out, "ApproxMax", p.ApproxMax);
 
     pop(xml_out);
     
@@ -154,40 +168,31 @@ namespace Chroma
 
   void
   EvenOddPrecHtContFrac5DFermActArray::init(Real& scale_fac,
-					       multi1d<Real>& alpha,
-					       multi1d<Real>& beta,
-					       const OverlapConnectState& state) const
+					    multi1d<Real>& alpha,
+					    multi1d<Real>& beta,
+					    const OverlapConnectState& state) const
   {
-  
     int type = 0;
     zolotarev_data *rdata;
-    Real eps;
+    Real epsilon;
 
-    switch(params.approximation_type) { 
+    Real approxMin = (state.getEigVal().size() != 0) ? state.getApproxMin() : params.ApproxMin;
+    Real approxMax = (state.getEigVal().size() != 0) ? state.getApproxMax() : params.ApproxMax;
+
+    switch(params.approximation_type) 
+    {
     case COEFF_TYPE_ZOLOTAREV:
-      scale_fac = Real(1) / state.getApproxMax();
-
-      eps = state.getApproxMin() *  scale_fac;
-
-      QDPIO::cout << "Initing Linop with Zolotarev Coefficients" << endl;
-      rdata = zolotarev(toFloat(eps), params.RatPolyDeg, type);    
+      epsilon = approxMin / approxMax;
+      QDPIO::cout << "Initing Linop with Zolotarev Coefficients: epsilon = " << epsilon << endl;
+      rdata = zolotarev(toFloat(epsilon), params.RatPolyDeg, type);    
+      scale_fac = Real(1) / approxMax;
       break;
 
-    case COEFF_TYPE_TANH:
-      scale_fac = state.getApproxMax();
-      eps = state.getApproxMin() / scale_fac;
-
-      QDPIO::cout << "Initing Linop with Higham Rep tanh Coefficients" << endl;
-      rdata = higham(toFloat(eps), params.RatPolyDeg);
-
-      break;
     case COEFF_TYPE_TANH_UNSCALED:
+      epsilon = approxMin;
+      QDPIO::cout << "Initing Linop with Higham Rep tanh Coefficients" << endl;
+      rdata = higham(toFloat(epsilon), params.RatPolyDeg);
       scale_fac = Real(1);
-      eps = state.getApproxMin();
-
-      QDPIO::cout << "Initing Linop with Unscaled Higham Rep tanh Coefficients" << endl;
-      rdata = higham(toFloat(eps), params.RatPolyDeg);
-
       break;
 
     default:
@@ -207,7 +212,6 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    
     // The coefficients from the continued fraction
     beta.resize(N5);
     for(int i = 0; i < N5; i++) { 
@@ -255,7 +259,7 @@ namespace Chroma
 		<< "  OverMass=" << params.OverMass 
 		<< "  IsLastZeroP=" << isLastZeroP << endl;
 
-    QDPIO::cout << "Approximation on [-1,eps] U [eps,1] with eps = " << eps <<endl;
+    QDPIO::cout << "Approximation on [-1,eps] U [eps,1] with eps = " << epsilon <<endl;
     
     QDPIO::cout << "Maximum error | R(x) - sgn(x) | <= Delta = " << maxerr << endl;
     /*
@@ -562,7 +566,7 @@ namespace Chroma
   //! Propagator of an un-preconditioned Extended-Overlap linear operator
   const SystemSolver<LatticeFermion>* 
   EvenOddPrecHtContFrac5DFermActArray::qprop(Handle<const ConnectState> state,
-						const InvertParam_t& invParam) const
+					     const InvertParam_t& invParam) const
   {
     const multi1d<LatticeColorMatrix>& u = state->getLinks();
     Real a5 = params.b5- params.c5;
@@ -600,7 +604,7 @@ namespace Chroma
   //  approximation bound
   const OverlapConnectState*
   EvenOddPrecHtContFrac5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
-						      const Real& approxMin_) const 
+						   const Real& approxMin_) const 
   {
     const OverlapConnectState *ret_val;
     try { 
@@ -621,8 +625,8 @@ namespace Chroma
   //! Create a connect State with just approximation range bounds
   const OverlapConnectState*
   EvenOddPrecHtContFrac5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
-						      const Real& approxMin_,
-						      const Real& approxMax_) const
+						   const Real& approxMin_,
+						   const Real& approxMax_) const
   {
     const OverlapConnectState *ret_val;
     try { 
@@ -644,9 +648,9 @@ namespace Chroma
   //! Create OverlapConnectState with eigenvalues/vectors
   const OverlapConnectState*
   EvenOddPrecHtContFrac5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
-						      const multi1d<Real>& lambda_lo_, 
-						      const multi1d<LatticeFermion>& evecs_lo_,
-						      const Real& lambda_hi_) const
+						   const multi1d<Real>& lambda_lo_, 
+						   const multi1d<LatticeFermion>& evecs_lo_,
+						   const Real& lambda_hi_) const
   {
     const OverlapConnectState *ret_val;
     try { 
@@ -669,8 +673,8 @@ namespace Chroma
   //! Create OverlapConnectState from XML
   const OverlapConnectState*
   EvenOddPrecHtContFrac5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
-						      XMLReader& state_info_xml,
-						      const string& state_info_path) const
+						   XMLReader& state_info_xml,
+						   const string& state_info_path) const
   {
     multi1d<LatticeColorMatrix> u_tmp = u_;
     
@@ -707,7 +711,7 @@ namespace Chroma
   //! Create OverlapConnectState from XML
   const OverlapConnectState*
   EvenOddPrecHtContFrac5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
-						      const OverlapStateInfo& state_info) const
+						   const OverlapStateInfo& state_info) const
   {
     // HACK UP A LINEAR OPERATOR TO CHECK EIGENVALUES/VECTORS WITH
     multi1d<LatticeColorMatrix> u_tmp = u_;

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ht_contfrac5d_fermact_array_w.h,v 1.4 2005-01-14 20:13:04 edwards Exp $
+// $Id: unprec_ht_contfrac5d_fermact_array_w.h,v 1.5 2005-02-14 02:05:34 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned H_T kernel continued fraction (5D) action
  */
@@ -8,6 +8,7 @@
 #define __unprec_ht_contfrac5d_fermact_array_w_h__
 
 #include "fermact.h"
+#include "actions/ferm/fermacts/overlap_state.h"
 
 
 namespace Chroma

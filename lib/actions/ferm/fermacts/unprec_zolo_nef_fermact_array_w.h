@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_zolo_nef_fermact_array_w.h,v 1.9 2005-01-14 20:13:04 edwards Exp $
+// $Id: unprec_zolo_nef_fermact_array_w.h,v 1.10 2005-02-14 02:05:34 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF domain-wall fermion action
  */
@@ -10,7 +10,6 @@
 #include "fermact.h"
 #include "actions/ferm/fermacts/unprec_dwf_fermact_base_array_w.h"
 #include "actions/ferm/fermacts/overlap_state.h"
-#include "io/overlap_state_info.h"
 
 
 namespace Chroma
@@ -29,12 +28,14 @@ namespace Chroma
     UnprecZoloNEFFermActArrayParams() {}
     UnprecZoloNEFFermActArrayParams(XMLReader& in, const std::string& path);
     
-    Real OverMass;
-    Real Mass;
-    Real b5;
-    Real c5;
-    int  N5;
-    CoeffType approximation_type;
+    Real OverMass;  //!< Mass of auxiliary Wilson action
+    Real Mass;      //!< Fermion Mass
+    Real b5;        //!< b5 in H_T expression
+    Real c5;        //!< c5 in H_T expression
+    int N5;         //!< Size of 5D extent
+    CoeffType approximation_type;  //!< ZOLOTAREV | TANH | Other approximation coeffs
+    Real ApproxMin; //!< Approximate min eigenvalue of H_T
+    Real ApproxMax; //!< Approximate max eigenvalue of H_T
   };
 
 
@@ -55,44 +56,29 @@ namespace Chroma
   public:
     //! General FermBC
     UnprecZoloNEFFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
-			      const Real& OverMass_, 
-			      const Real& Mass_, 
-			      const Real& b5_,
-			      const Real& c5_,
-			      int N5_,
-			      const CoeffType& approx_type_) : 
-      fbc(fbc_), OverMass(OverMass_), Mass(Mass_), b5(b5_), c5(c5_), N5(N5_), approximation_type(approx_type_) {init();}
-
-    //! General FermBC
-    UnprecZoloNEFFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
-			      const UnprecZoloNEFFermActArrayParams& param) :
-      fbc(fbc_), OverMass(param.OverMass), Mass(param.Mass), b5(param.b5), c5(param.c5), N5(param.N5), approximation_type(param.approximation_type) {init();}
+			      const UnprecZoloNEFFermActArrayParams& param_) :
+      fbc(fbc_), params(param_) {}
 
     //! Copy constructor
     UnprecZoloNEFFermActArray(const UnprecZoloNEFFermActArray& a) : 
-      fbc(a.fbc), OverMass(a.OverMass), Mass(a.Mass), b5(a.b5), c5(a.c5), N5(a.N5), approximation_type(a.approximation_type)  {}
+      fbc(a.fbc), params(a.params) {}
 
     //! Assignment
     UnprecZoloNEFFermActArray& operator=(const UnprecZoloNEFFermActArray& a)
-      {
-	fbc=a.fbc; 
-	OverMass=a.OverMass; 
-	Mass=a.Mass; 
-	b5=a.b5;
-	c5=a.c5;
-	N5=a.N5; 
-	approximation_type = a.approximation_type;
-	return *this;
-      }
+    {
+      fbc = a.fbc; 
+      params = a.params;
+      return *this;
+    }
 
     //! Return the fermion BC object for this action
     const FermBC< multi1d<LatticeFermion> >& getFermBC() const {return *fbc;}
 
     //! Length of DW flavor index/space
-    int size() const {return N5;}
+    int size() const {return params.N5;}
 
     //! Return the quark mass
-    Real getQuarkMass() const {return Mass;}
+    Real getQuarkMass() const {return params.Mass;}
 
     //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
     const UnprecDWLinOpBaseArray<LatticeFermion, multi1d<LatticeColorMatrix> >* unprecLinOp(Handle<const ConnectState> state, 
@@ -168,20 +154,13 @@ namespace Chroma
 
 
   private:
-    void init();
-
     void initCoeffs(multi1d<Real>& b5_arr,
 		    multi1d<Real>& c5_arr,
 		    Handle<const ConnectState>& state) const ;
 
   private:
     Handle< FermBC< multi1d<LatticeFermion> > >  fbc;
-    Real OverMass;
-    Real Mass;
-    Real b5;
-    Real c5;
-    int  N5;
-    CoeffType approximation_type;
+    UnprecZoloNEFFermActArrayParams params;
   };
 
 }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovlap_contfrac5d_fermact_array_w.h,v 1.10 2005-01-17 03:57:57 edwards Exp $
+// $Id: unprec_ovlap_contfrac5d_fermact_array_w.h,v 1.11 2005-02-14 02:05:34 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -11,8 +11,6 @@
 #include "actions/ferm/fermacts/overlap_state.h"
 #include "actions/ferm/linop/lgherm_w.h"
 #include "actions/ferm/linop/lDeltaLs_w.h"
-#include "io/overlap_state_info.h"
-
 
 namespace Chroma
 {
@@ -39,6 +37,8 @@ namespace Chroma
     CoeffType approximation_type;  //!< ZOLOTAREV | TANH | Other approximation coeffs
     std::string AuxFermAct;        //!<  The auxiliary ferm act
     std::string AuxFermActGrp;     //!<  The group name for the auxiliary fermion action
+    Real ApproxMin;                //!< Approximate min eigenvalue of H_T
+    Real ApproxMax;                //!< Approximate max eigenvalue of H_T
   };
 
 

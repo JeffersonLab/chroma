@@ -1,4 +1,4 @@
-// $Id: unprec_ht_contfrac5d_fermact_array_w.cc,v 1.4 2005-01-31 15:05:25 bjoo Exp $
+// $Id: unprec_ht_contfrac5d_fermact_array_w.cc,v 1.5 2005-02-14 02:05:34 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned H_T kernel continued fraction (5D) action
  */
@@ -65,26 +65,47 @@ namespace Chroma
     
     try 
     {
-      read(in, "OverMass", OverMass);
       read(in, "Mass", Mass);
-      read(in, "b5", b5);
-      read(in, "c5", c5);
       read(in, "RatPolyDeg", RatPolyDeg);
+      read(in, "OverMass", OverMass);
 
-      read(in, "ApproxMin", ApproxMin);
-      read(in, "ApproxMax", ApproxMax);
-      
-      if( in.count("ApproximationType") == 1 ) { 
-	read(in, "ApproximationType", approximation_type);
+      if( in.count("ApproximationType") == 1 ) 
+      { 
+      	read(in, "ApproximationType", approximation_type);
       }
-      else { 
-	// Default coeffs are Zolotarev
-	approximation_type = COEFF_TYPE_ZOLOTAREV;
+      else 
+      {
+	// Default coeffs are unscaled tanh
+	approximation_type = COEFF_TYPE_TANH_UNSCALED;
       }
-      
+
+      if (approximation_type == COEFF_TYPE_ZOLOTAREV)
+      {
+	read(in, "ApproxMin", ApproxMin);
+	read(in, "ApproxMax", ApproxMax);
+      }
+      else
+      {
+	ApproxMin = ApproxMax = 0.0;
+      }
+     
+      int count_b5 = in.count("b5");
+      int count_c5 = in.count("c5");
+
+      if( count_b5 == 0 && count_c5 == 0 ) 
+      {
+	QDPIO::cout << "b5 and c5 not specified. Using Shamir values: b5=1 c5=0" << endl;
+	b5 = Real(1);
+	c5 = Real(0);
+      }
+      else {
+	read(in, "b5", b5);
+	read(in, "c5", c5);
+      }
+
     }
     catch( const string &e ) {
-      QDPIO::cerr << "Caught Exception reading Zolo5D Fermact params: " << e << endl;
+      QDPIO::cerr << "Caught Exception reading Unprec HT ContFrac Fermact params: " << e << endl;
       QDP_abort(1);
     }
   }
@@ -160,7 +181,7 @@ namespace Chroma
     Real scale_fac;
 				       
     switch(params.approximation_type) 
-    { 
+    {
     case COEFF_TYPE_ZOLOTAREV:
       epsilon = params.ApproxMin / params.ApproxMax;
       QDPIO::cout << "Initing Linop with Zolotarev Coefficients: epsilon = " << epsilon << endl;
@@ -176,11 +197,13 @@ namespace Chroma
       break;
 
     default:
-      QDPIO::cout << "Unsupported Coefficient Type : " << params.approximation_type << endl;
+      // The map system should ensure that we never get here but 
+      // just for style
+      QDPIO::cerr << "Unknown coefficient type: " << params.approximation_type
+		  << endl;
       QDP_abort(1);
-      break;
-    };
-      
+    }
+    
     Real maxerr = (Real)(rdata->Delta);
 
     // Check N5 is good:
@@ -300,15 +323,15 @@ namespace Chroma
       
     init(alpha, beta);
       
-    return new UnprecHTContFrac5DLinOpArray( state->getLinks(),
-					     params.OverMass,
-					     params.Mass,
-					     N5,
-					     params.b5,
-					     params.c5,
-					     alpha,
-					     beta,
-					     isLastZeroP);
+    return new UnprecHTContFrac5DLinOpArray(state->getLinks(),
+					    params.OverMass,
+					    params.Mass,
+					    N5,
+					    params.b5,
+					    params.c5,
+					    alpha,
+					    beta,
+					    isLastZeroP);
   }
   
 

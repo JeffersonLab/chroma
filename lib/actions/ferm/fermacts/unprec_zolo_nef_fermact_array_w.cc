@@ -1,4 +1,4 @@
-// $Id: unprec_zolo_nef_fermact_array_w.cc,v 1.11 2005-01-02 05:21:10 edwards Exp $
+// $Id: unprec_zolo_nef_fermact_array_w.cc,v 1.12 2005-02-14 02:05:34 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF fermion action
  */
@@ -64,7 +64,26 @@ namespace Chroma
       read(paramtop, "b5", b5);
       read(paramtop, "c5", c5);
       read(paramtop, "N5", N5);
-      read(paramtop, "ApproximationType", approximation_type);
+
+      if( paramtop.count("ApproximationType") == 1 ) 
+      { 
+      	read(paramtop, "ApproximationType", approximation_type);
+      }
+      else 
+      {
+	// Default coeffs are unscaled tanh
+	approximation_type = COEFF_TYPE_TANH_UNSCALED;
+      }
+
+      if (approximation_type == COEFF_TYPE_ZOLOTAREV)
+      {
+	read(paramtop, "ApproxMin", ApproxMin);
+	read(paramtop, "ApproxMax", ApproxMax);
+      }
+      else
+      {
+	ApproxMin = ApproxMax = 0.0;
+      }
     }
     catch(const string& e) { 
       QDPIO::cerr << "Caught Exception : " << e << endl;
@@ -81,24 +100,19 @@ namespace Chroma
 
 
 
-  //! Check stuff
-  void UnprecZoloNEFFermActArray::init()
-  {
-  }
-
   void UnprecZoloNEFFermActArray::initCoeffs(multi1d<Real>& b5_arr,
 					     multi1d<Real>& c5_arr,
 					     Handle<const ConnectState>& state) const
   {
-    b5_arr.resize(N5);
-    c5_arr.resize(N5);
+    b5_arr.resize(params.N5);
+    c5_arr.resize(params.N5);
 
     Real approxMin;
     Real approxMax;
     try {
       const OverlapConnectState& ov_state=dynamic_cast<const OverlapConnectState&>(*state);
-      approxMin = ov_state.getApproxMin();
-      approxMax = ov_state.getApproxMax();
+      approxMin = (ov_state.getEigVal().size() != 0) ? ov_state.getApproxMin() : params.ApproxMin;
+      approxMax = (ov_state.getEigVal().size() != 0) ? ov_state.getApproxMax() : params.ApproxMax;
 
       // You can do e-value stuff here later
     }
@@ -108,63 +122,65 @@ namespace Chroma
       QDP_abort(1);
     }
 
+    int type = 0;
     zolotarev_data *rdata;
     Real epsilon;
-    Real scale_factor;
-    switch(approximation_type) { 
+    Real scale_fac;
+
+    switch(params.approximation_type) 
+    {
     case COEFF_TYPE_ZOLOTAREV:
-      {
-	epsilon = approxMin / approxMax;
-	QDPIO::cout << "Epsilon = "<< epsilon << endl << flush;
-	rdata=zolotarev(toFloat(epsilon), N5, 0);
-	scale_factor = approxMax;
-	break;
-      }
+      epsilon = approxMin / approxMax;
+      QDPIO::cout << "Initing Linop with Zolotarev Coefficients: epsilon = " << epsilon << endl;
+      rdata = zolotarev(toFloat(epsilon), params.N5, type);    
+      scale_fac = Real(1) / approxMax;
+      break;
+
     case COEFF_TYPE_TANH_UNSCALED:
-      {
-	epsilon = approxMin;
-	rdata=higham(toFloat(epsilon), N5);
-	scale_factor = Real(1);
-	break;
-      }
+      epsilon = approxMin;
+      QDPIO::cout << "Initing Linop with Higham Rep tanh Coefficients" << endl;
+      rdata = higham(toFloat(epsilon), params.N5);
+      scale_fac = Real(1);
+      break;
+
     default:
-      { 
-	QDPIO::cout << "Unsupported Coefficient Type : " << approximation_type << endl;
-	QDP_abort(1);
-	break;
-      }
-    };
-      
-    if( rdata->n != N5 ) { 
+      // The map system should ensure that we never get here but 
+      // just for style
+      QDPIO::cerr << "Unknown coefficient type: " << params.approximation_type
+		  << endl;
+      QDP_abort(1);
+    }
+
+    if( rdata->n != params.N5 ) { 
       QDPIO::cerr << "Error:rdata->n != N5" << endl;
       QDP_abort(1);
     }
 
     Real maxerr = rdata->Delta;
 
-    multi1d<Real> gamma(N5);
-    for(int i=0; i < N5; i++) { 
-      gamma[i] = Real(rdata->gamma[i])*scale_factor;
+    multi1d<Real> gamma(params.N5);
+    for(int i=0; i < params.N5; i++) { 
+      gamma[i] = Real(rdata->gamma[i])*scale_fac;
     }
 
     zolotarev_free(rdata);
 
-    QDPIO::cout << "Initing Zolo NEF Linop: N5=" << N5 
-		<< " b5+c5=" << b5+c5 
-		<<  " b5-c5=" << b5-c5 
+    QDPIO::cout << "Initing Zolo NEF Linop: N5=" << params.N5 
+		<< " b5+c5=" << params.b5+params.c5 
+		<<  " b5-c5=" << params.b5-params.c5 
 		<<  " epsilon=" << epsilon
                 <<  " scale=" << approxMax 
 		<<  " Maxerr=" << maxerr << endl;
 
-    for(int i=0; i < N5; i++) { 
+    for(int i=0; i < params.N5; i++) { 
       QDPIO::cout << "gamma[" << i << "] = " << gamma[i] << endl;
     }
     
-    for(int i = 0; i < N5; i++) { 
+    for(int i = 0; i < params.N5; i++) { 
       Real omega = Real(1)/gamma[i];
 
-      b5_arr[i] = Real(0.5)*( (omega + Real(1))*b5 + (omega - Real(1))*c5 );
-      c5_arr[i] = Real(0.5)*( (omega - Real(1))*b5 + (omega + Real(1))*c5 );
+      b5_arr[i] = Real(0.5)*( (omega + Real(1))*params.b5 + (omega - Real(1))*params.c5 );
+      c5_arr[i] = Real(0.5)*( (omega - Real(1))*params.b5 + (omega + Real(1))*params.c5 );
 
       QDPIO::cout << "i=" << i << " omega["<<i<<"]=" << omega
 		  << " b5["<< i << "] ="<< b5_arr[i] 
@@ -187,7 +203,7 @@ namespace Chroma
     // Cast the state up to an overlap state
     initCoeffs(b5_arr,c5_arr,state);
     
-    return new UnprecNEFDWLinOpArray(state->getLinks(),OverMass,b5_arr,c5_arr,m_q,N5);
+    return new UnprecNEFDWLinOpArray(state->getLinks(),params.OverMass,b5_arr,c5_arr,m_q,params.N5);
   }
 
 
@@ -292,7 +308,7 @@ namespace Chroma
     getFermBC().modifyU(u_tmp);
     Handle< const ConnectState > state_aux = new SimpleConnectState(u_tmp);
     Handle< FermBC<LatticeFermion> > fbc_aux = new PeriodicFermBC<LatticeFermion>;
-    Real aux_over_mass = -OverMass;
+    Real aux_over_mass = -params.OverMass;
     UnprecWilsonFermAct S_aux( fbc_aux, aux_over_mass );
     
     Handle< const LinearOperator<LatticeFermion> > Maux = 
@@ -328,7 +344,7 @@ namespace Chroma
     Handle< const ConnectState > state_aux = new SimpleConnectState(u_tmp);
     Handle< FermBC<LatticeFermion> > fbc_aux = new PeriodicFermBC<LatticeFermion>;
 
-    Real aux_over_mass = -OverMass;
+    Real aux_over_mass = -params.OverMass;
     UnprecWilsonFermAct S_aux( fbc_aux, aux_over_mass );
     
     Handle< const LinearOperator<LatticeFermion> > Maux = 

@@ -1,4 +1,4 @@
-// $Id: unprec_ovlap_contfrac5d_fermact_array_w.cc,v 1.13 2005-01-19 03:29:32 edwards Exp $
+// $Id: unprec_ovlap_contfrac5d_fermact_array_w.cc,v 1.14 2005-02-14 02:05:34 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -74,21 +74,31 @@ namespace Chroma
 	throw std::string("No auxilliary action");
       }
       
-      
       read(in, "Mass", Mass);
       read(in, "RatPolyDeg", RatPolyDeg);
       
-      if( in.count("ApproximationType") == 1 ) { 
-	read(in, "ApproximationType", approximation_type);
+      if( in.count("ApproximationType") == 1 ) 
+      { 
+      	read(in, "ApproximationType", approximation_type);
       }
-      else { 
-	// Default coeffs are Zolotarev
-	approximation_type = COEFF_TYPE_ZOLOTAREV;
+      else 
+      {
+	// Default coeffs are unscaled tanh
+	approximation_type = COEFF_TYPE_TANH_UNSCALED;
       }
-      
+
+      if (approximation_type == COEFF_TYPE_ZOLOTAREV)
+      {
+	read(in, "ApproxMin", ApproxMin);
+	read(in, "ApproxMax", ApproxMax);
+      }
+      else
+      {
+	ApproxMin = ApproxMax = 0.0;
+      }
     }
     catch( const string &e ) {
-      QDPIO::cerr << "Caught Exception reading Zolo5D Fermact params: " << e << endl;
+      QDPIO::cerr << "Caught Exception reading unprec ContFrac Fermact params: " << e << endl;
       QDP_abort(1);
     }
   }
@@ -111,6 +121,8 @@ namespace Chroma
     write(xml_out, "Mass", p.Mass);
     write(xml_out, "RatPolyDeg", p.RatPolyDeg);
     write(xml_out, "ApproximationType", p.approximation_type);
+    write(xml_out, "ApproxMin", p.ApproxMin);
+    write(xml_out, "ApproxMax", p.ApproxMax);
     
     pop(xml_out);
     
@@ -213,7 +225,6 @@ namespace Chroma
 					  multi1d<Real>& EigValFunc,
 					  const OverlapConnectState& state) const
   {
-  
     int NEigVal = state.getEigVal().size();
     if( NEigVal == 0 ) {
       NEig = 0;
@@ -224,32 +235,25 @@ namespace Chroma
     
     int type = 0;
     zolotarev_data *rdata;
-    Real eps;
+    Real epsilon;
 
-    switch(params.approximation_type) { 
+    Real approxMin = (state.getEigVal().size() != 0) ? state.getApproxMin() : params.ApproxMin;
+    Real approxMax = (state.getEigVal().size() != 0) ? state.getApproxMax() : params.ApproxMax;
+
+    switch(params.approximation_type) 
+    {
     case COEFF_TYPE_ZOLOTAREV:
-      scale_fac = Real(1) / state.getApproxMax();
-      eps = state.getApproxMin() * scale_fac;
-
-      QDPIO::cout << "Initing Linop with Zolotarev Coefficients" << endl;
-      rdata = zolotarev(toFloat(eps), params.RatPolyDeg, type);    
+      epsilon = approxMin / approxMax;
+      QDPIO::cout << "Initing Linop with Zolotarev Coefficients: epsilon = " << epsilon << endl;
+      rdata = zolotarev(toFloat(epsilon), params.RatPolyDeg, type);    
+      scale_fac = Real(1) / approxMax;
       break;
 
-    case COEFF_TYPE_TANH:
-      scale_fac = Real(1) / state.getApproxMax();
-      eps = state.getApproxMin() * scale_fac;
-
-      QDPIO::cout << "Initing Linop with Higham Rep tanh Coefficients" << endl;
-      rdata = higham(toFloat(eps), params.RatPolyDeg);
-
-      break;
     case COEFF_TYPE_TANH_UNSCALED:
+      epsilon = approxMin;
+      QDPIO::cout << "Initing Linop with Higham Rep tanh Coefficients" << endl;
+      rdata = higham(toFloat(epsilon), params.RatPolyDeg);
       scale_fac = Real(1);
-      eps = state.getApproxMin();
-
-      QDPIO::cout << "Initing Linop with Unscaled Higham Rep tanh Coefficients" << endl;
-      rdata = higham(toFloat(eps), params.RatPolyDeg);
-
       break;
 
     default:
@@ -314,7 +318,7 @@ namespace Chroma
                 << "  Degree=" << params.RatPolyDeg 
 		<< "  N5=" << N5 << " scale=" << scale_fac
 		<< "  Nwils = " << NEigVal << " Mass=" << params.Mass << endl ;
-    QDPIO::cout << "Approximation on [-1,eps] U [eps,1] with eps = " << eps <<endl;
+    QDPIO::cout << "Approximation on [-1,eps] U [eps,1] with eps = " << epsilon <<endl;
     
     QDPIO::cout << "Maximum error | R(x) - sgn(x) | <= Delta = " << maxerr << endl;
     /*
@@ -739,7 +743,7 @@ namespace Chroma
   //  approximation bound
   const OverlapConnectState*
   UnprecOvlapContFrac5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
-				      const Real& approxMin_) const 
+						 const Real& approxMin_) const 
   {
     const OverlapConnectState *ret_val;
     try { 
@@ -760,8 +764,8 @@ namespace Chroma
   //! Create a connect State with just approximation range bounds
   const OverlapConnectState*
   UnprecOvlapContFrac5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
-				      const Real& approxMin_,
-				      const Real& approxMax_) const
+						 const Real& approxMin_,
+						 const Real& approxMax_) const
   {
     const OverlapConnectState *ret_val;
     try { 
@@ -783,9 +787,9 @@ namespace Chroma
   //! Create OverlapConnectState with eigenvalues/vectors
   const OverlapConnectState*
   UnprecOvlapContFrac5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
-				      const multi1d<Real>& lambda_lo_, 
-				      const multi1d<LatticeFermion>& evecs_lo_,
-				      const Real& lambda_hi_) const
+						 const multi1d<Real>& lambda_lo_, 
+						 const multi1d<LatticeFermion>& evecs_lo_,
+						 const Real& lambda_hi_) const
   {
     const OverlapConnectState *ret_val;
     try { 
@@ -808,8 +812,8 @@ namespace Chroma
   //! Create OverlapConnectState from XML
   const OverlapConnectState*
   UnprecOvlapContFrac5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
-				      XMLReader& state_info_xml,
-				      const string& state_info_path) const
+						 XMLReader& state_info_xml,
+						 const string& state_info_path) const
   {
     multi1d<LatticeColorMatrix> u_tmp = u_;
     
