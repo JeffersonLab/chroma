@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 1.3 2003-04-09 20:47:16 edwards Exp $
+// $Id: fermact.h,v 1.4 2003-04-09 21:14:01 edwards Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -48,7 +48,7 @@ public:
    *
    * NOTE: maybe this should produce a quark prop foundry class object 
    */
-  virtual void Qprop(LatticeFermion& psi, 
+  virtual void qprop(LatticeFermion& psi, 
 		     const multi1d<LatticeColorMatrix>& u, 
 		     const LatticeFermion& chi, 
 		     const Real& RsdCG, 
@@ -85,7 +85,7 @@ class UnprecWilsonTypeFermAct : public WilsonTypeFermAct
 public:
   //! Compute quark propagator
   /*! NOTE: maybe this should produce a quark prop foundry */
-  void Qprop(LatticeFermion& psi, 
+  void qprop(LatticeFermion& psi, 
 	     const multi1d<LatticeColorMatrix>& u, 
 	     const LatticeFermion& chi, 
 	     const Real& RsdCG, 
@@ -114,7 +114,7 @@ class DiagEvenOddPrecWilsonTypeFermAct : public EvenOddPrecWilsonTypeFermAct
 public:
   //! Compute quark propagator
   /*! NOTE: maybe this should produce a quark prop foundry */
-  void Qprop(LatticeFermion& psi, 
+  void qprop(LatticeFermion& psi, 
 	     const multi1d<LatticeColorMatrix>& u, 
 	     const LatticeFermion& chi, 
 	     const Real& RsdCG, 
@@ -143,7 +143,7 @@ class UnprecStaggeredTypeFermAct : public StaggeredTypeFermAct
 public:
   //! Compute quark propagator
   /*! NOTE: maybe this should produce a quark prop foundry */
-  void Qprop(LatticeFermion& psi, 
+  void qprop(LatticeFermion& psi, 
 	     const multi1d<LatticeColorMatrix>& u, 
 	     const LatticeFermion& chi, 
 	     const Real& RsdCG, 
@@ -172,7 +172,7 @@ class DiagEvenOddPrecStaggeredTypeFermAct : public EvenOddPrecStaggeredTypeFermA
 public:
   //! Compute quark propagator
   /*! NOTE: maybe this should produce a quark prop foundry */
-  void Qprop(LatticeFermion& psi, 
+  void qprop(LatticeFermion& psi, 
 	     const multi1d<LatticeColorMatrix>& u, 
 	     const LatticeFermion& chi, 
 	     const Real& RsdCG, 

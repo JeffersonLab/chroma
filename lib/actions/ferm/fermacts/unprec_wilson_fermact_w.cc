@@ -1,4 +1,4 @@
-// $Id: unprec_wilson_fermact_w.cc,v 1.2 2003-04-09 21:11:01 edwards Exp $
+// $Id: unprec_wilson_fermact_w.cc,v 1.3 2003-04-09 21:14:01 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -76,13 +76,13 @@ const LinearOperator* UnprecWilsonFermAct::lMdagM(const multi1d<LatticeColorMatr
  * \param ncg_had  number of CG iterations ( Write )
  */
 
-void UnprecWilsonFermAct::Qprop(LatticeFermion& psi, 
+void UnprecWilsonFermAct::qprop(LatticeFermion& psi, 
 				const multi1d<LatticeColorMatrix>& u, 
 				const LatticeFermion& chi, 
 				const Real& RsdCG, 
 				int MaxCG, int& ncg_had) const
 {
-  START_CODE("UnprecWilsonTypeFermAct::Qprop");
+  START_CODE("UnprecWilsonTypeFermAct::qprop");
 
   int n_count;
   
@@ -126,6 +126,6 @@ void UnprecWilsonFermAct::Qprop(LatticeFermion& psi,
   // Call the virtual destructor of A
   delete A;
 
-  END_CODE("UnprecWilsonTypeFermAct::Qprop");
+  END_CODE("UnprecWilsonTypeFermAct::qprop");
 }
 #endif

@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.9 2003-04-09 21:00:47 edwards Exp $
+// $Id: propagator.cc,v 1.10 2003-04-09 21:14:01 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -137,12 +137,12 @@ int main(int argc, char **argv)
 	// primitive initial guess for the linear sys solution
 
 	// Compute the propagator for given source color/spin.
-	push(nml,"Qprop");
+	push(nml,"qprop");
 	int n_count;
 
-	cerr << "DEBUG before NPQprop " << endl;
-	S_f.Qprop(psi, u, chi, RsdCG, MaxCG, n_count);
-	cerr << "DEBUG after NPQprop " << endl;
+	cerr << "DEBUG before qprop " << endl;
+	S_f.qprop(psi, u, chi, RsdCG, MaxCG, n_count);
+	cerr << "DEBUG after qprop " << endl;
 	ncg_had += n_count;
 	
 	Write(nml, Kappa);

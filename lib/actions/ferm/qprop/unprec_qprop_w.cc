@@ -1,4 +1,4 @@
-// $Id: unprec_qprop_w.cc,v 1.1 2003-04-09 05:57:16 edwards Exp $
+// $Id: unprec_qprop_w.cc,v 1.2 2003-04-09 21:14:01 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *
@@ -31,13 +31,13 @@ using namespace QDP;
  * \param ncg_had  number of CG iterations ( Write )
  */
 
-void UnprecWilsonTypeFermAct::Qprop(LatticeFermion& psi, 
+void UnprecWilsonTypeFermAct::qprop(LatticeFermion& psi, 
 				    const multi1d<LatticeColorMatrix>& u, 
 				    const LatticeFermion& chi, 
 				    const Real& RsdCG, 
 				    int MaxCG, int& ncg_had) const
 {
-  START_CODE("UnprecWilsonTypeFermAct::Qprop");
+  START_CODE("UnprecWilsonTypeFermAct::qprop");
 
   int n_count;
   
@@ -81,5 +81,5 @@ void UnprecWilsonTypeFermAct::Qprop(LatticeFermion& psi,
   // Call the virtual destructor of A
   delete A;
 
-  END_CODE("UnprecWilsonTypeFermAct::Qprop");
+  END_CODE("UnprecWilsonTypeFermAct::qprop");
 }

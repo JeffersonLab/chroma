@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_wilson_fermact_w.h,v 1.5 2003-04-09 21:11:01 edwards Exp $
+// $Id: unprec_wilson_fermact_w.h,v 1.6 2003-04-09 21:14:01 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -40,7 +40,7 @@ public:
 #if 1
 // THIS SHOULD NOT BE NEEDED
   //! Compute quark propagator
-  void Qprop(LatticeFermion& psi, 
+  void qprop(LatticeFermion& psi, 
 	     const multi1d<LatticeColorMatrix>& u, 
 	     const LatticeFermion& chi, 
 	     const Real& RsdCG, 
