@@ -54,9 +54,14 @@
      <!-- This is RsdCG and MaxCG for the inner CG -->
      <quarkMass>0.0</quarkMass>
      <RsdCG>1.0e-7</RsdCG>
-     <MaxCG>500</MaxCG>
+     <MaxCG>250</MaxCG>
   </zolotarev>   
 
+  <!-- Target Residuum and Max Iter Count for Qprop -->
+  <qprop>
+     <RsdCG>1.0e-6</RsdCG>
+     <MaxCG>100</MaxCG>
+  </qprop>
   <!-- Zero momentum pion, produced by SZIN using same source and approx -->
   <!-- to check the results against ( this is optional if not supplied  --> 
   <!-- we cant do the test obviously -->
