@@ -33,7 +33,8 @@ HDRS =
 ##   Another option is to add it to check_PROGRAMS, which means it will only
 ##   be built by 'make check' and is not installed.
 #noinst_PROGRAMS = propagator
-check_PROGRAMS = propagator multi_propagator spectrum_w qqq_w seqprop bar3ptfn make_source \
+check_PROGRAMS = propagator multi_propagator spectrum_w qqq_w seqprop \
+        dwf_seqprop bar3ptfn make_source \
         ExampleBuildingBlocks hypsmear cfgtransf sink_smearing qproptransf \
         wallformfac
 
@@ -60,6 +61,9 @@ qqq_w_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 
 seqprop_SOURCES= seqprop.cc
 seqprop_DEPENDENCIES= build_chroma_libs rebuild_other_libs
+
+dwf_seqprop_SOURCES= dwf_seqprop.cc
+dwf_seqprop_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 
 bar3ptfn_SOURCES= bar3ptfn.cc
 bar3ptfn_DEPENDENCIES= build_chroma_libs rebuild_other_libs
