@@ -1,4 +1,4 @@
-// $Id: cfgtransf.cc,v 1.6 2003-10-16 00:44:32 edwards Exp $
+// $Id: cfgtransf.cc,v 1.7 2003-10-16 01:40:11 edwards Exp $
 /*! \file
  *  \brief Many-to-many gauge transformation routine
  */
@@ -478,6 +478,10 @@ int main(int argc, char **argv)
   }
     
 
+  // Dump a copy of the input gauge xml
+  write(xml_out, "input_gauge_header", gauge_xml_in);
+  
+
   // So what's the plaquette?
   Double w_plaq;
   Double s_plaq;
@@ -608,6 +612,11 @@ int main(int argc, char **argv)
   }
 
 
+  // Compute the plaquette again
+  MesPlq (u, w_plaq, s_plaq, t_plaq, link);
+  for(int mu = 0; mu < Nd; ++mu)
+    polylp (u, pollp[mu], mu);
+  
   xml_out.flush();
   
   /* Now write parameters to file cfg_output_file */
@@ -672,9 +681,15 @@ int main(int argc, char **argv)
   break;
 
   case 4:
+  {
     /* Write a QCD Archive format file on FE */
-    writeArchiv(u, cfg_output_file);
-    break;
+    ArchivGauge_t arc_out;
+    archivGaugeInit(arc_out);
+    arc_out.w_plaq = w_plaq;
+    arc_out.link   = link;
+    writeArchiv(arc_out, u, cfg_output_file);
+  }
+  break;
 
 #if 0
     // Not yet...
