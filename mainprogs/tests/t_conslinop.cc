@@ -1,4 +1,4 @@
-// $Id: t_conslinop.cc,v 1.4 2003-04-03 19:51:32 edwards Exp $
+// $Id: t_conslinop.cc,v 1.5 2003-04-03 20:06:52 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -37,7 +37,6 @@ int main(int argc, char *argv[])
 
 
   Real Kappa = 0.1;
-//  LinearOperator* A = ConsLinOp(u, Kappa, UNPRECONDITIONED_WILSON);
   WilsonDslash D(u);
 //  WilsonDslash D;
 
@@ -54,6 +53,8 @@ int main(int argc, char *argv[])
   chi[rb[1]] = M(psi, PLUS); 
   cerr << "after wilson call" << endl;
   
+  LinearOperator* A = ConsLinOp(u, Kappa, UNPRECONDITIONED_WILSON);
+
   // Time to bolt
   QDP_finalize();
 }
