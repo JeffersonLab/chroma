@@ -1,4 +1,4 @@
-// $Id: unprec_ht_contfrac5d_fermact_array_w.cc,v 1.3 2005-01-05 21:51:02 edwards Exp $
+// $Id: unprec_ht_contfrac5d_fermact_array_w.cc,v 1.4 2005-01-31 15:05:25 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned H_T kernel continued fraction (5D) action
  */
@@ -165,7 +165,7 @@ namespace Chroma
       epsilon = params.ApproxMin / params.ApproxMax;
       QDPIO::cout << "Initing Linop with Zolotarev Coefficients: epsilon = " << epsilon << endl;
       rdata = zolotarev(toFloat(epsilon), params.RatPolyDeg, type);    
-      scale_fac = params.ApproxMax;
+      scale_fac = Real(1) / params.ApproxMax;
       break;
 
     case COEFF_TYPE_TANH_UNSCALED:

@@ -1,4 +1,4 @@
-// $Id: prec_ht_contfrac5d_fermact_array_w.cc,v 1.2 2005-01-31 13:06:47 bjoo Exp $
+// $Id: prec_ht_contfrac5d_fermact_array_w.cc,v 1.3 2005-01-31 15:05:25 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -165,8 +165,9 @@ namespace Chroma
 
     switch(params.approximation_type) { 
     case COEFF_TYPE_ZOLOTAREV:
-      scale_fac = state.getApproxMax();
-      eps = state.getApproxMin() /  scale_fac;
+      scale_fac = Real(1) / state.getApproxMax();
+
+      eps = state.getApproxMin() *  scale_fac;
 
       QDPIO::cout << "Initing Linop with Zolotarev Coefficients" << endl;
       rdata = zolotarev(toFloat(eps), params.RatPolyDeg, type);    

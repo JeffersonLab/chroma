@@ -7,7 +7,7 @@
       <chroma>1.18</chroma>
       <qdp++>1.11.4</qdp++>
     </code_version>
-    <run_date>31 Jan 05 13:03:51 GMT</run_date>
+    <run_date>31 Jan 05 13:53:04 GMT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -18,7 +18,7 @@
   </ProgramInfo>
   <Input><propagator>
 <annotation>
-; $Id: propagator_prec_ht_contfrac5d_zolo_v7.linux-scalar-intel.xml,v 1.1 2005-01-31 13:06:47 bjoo Exp $
+; $Id: propagator_prec_ht_contfrac5d_zolo_v7.linux-scalar-intel.xml,v 1.2 2005-01-31 15:05:25 bjoo Exp $
 ;
 ; PROPAGATOR input file.
 ;
@@ -34,8 +34,6 @@
     <c5>0</c5>
     <OverMass>1.4</OverMass>
     <boundary>1 1 1 -1</boundary>
-    <ApproxMin>0.21</ApproxMin>
-    <ApproxMax>1.5</ApproxMax>
   </FermionAction>
   <InvertParam>
     <invType>CG_INVERTER</invType>
@@ -52,8 +50,8 @@
 </Cfg>
 <StateInfo>
   <!-- The ApproxMin and ApproxMax are ignored if NWilsVec &gt 0 -->
- <ApproxMin>0.21</ApproxMin>
- <ApproxMax>1.5</ApproxMax>
+  <ApproxMin>0.21</ApproxMin>
+  <ApproxMax>1.5</ApproxMax>
   <NWilsVec>0</NWilsVec>
   <Eig>
     <eigen_file_stem>../t_ritz/g5_wils_eigen</eigen_file_stem>
@@ -182,57 +180,57 @@
   <QuarkProp4>
     <Qprop>
       <RsdCG>1e-06</RsdCG>
-      <n_count>92</n_count>
+      <n_count>153</n_count>
     </Qprop>
     <Qprop>
       <RsdCG>1e-06</RsdCG>
-      <n_count>97</n_count>
+      <n_count>156</n_count>
     </Qprop>
     <Qprop>
       <RsdCG>1e-06</RsdCG>
-      <n_count>92</n_count>
+      <n_count>156</n_count>
     </Qprop>
     <Qprop>
       <RsdCG>1e-06</RsdCG>
-      <n_count>98</n_count>
+      <n_count>156</n_count>
     </Qprop>
     <Qprop>
       <RsdCG>1e-06</RsdCG>
-      <n_count>96</n_count>
+      <n_count>156</n_count>
     </Qprop>
     <Qprop>
       <RsdCG>1e-06</RsdCG>
-      <n_count>98</n_count>
+      <n_count>156</n_count>
     </Qprop>
     <Qprop>
       <RsdCG>1e-06</RsdCG>
-      <n_count>97</n_count>
+      <n_count>156</n_count>
     </Qprop>
     <Qprop>
       <RsdCG>1e-06</RsdCG>
-      <n_count>98</n_count>
+      <n_count>156</n_count>
     </Qprop>
     <Qprop>
       <RsdCG>1e-06</RsdCG>
-      <n_count>93</n_count>
+      <n_count>156</n_count>
     </Qprop>
     <Qprop>
       <RsdCG>1e-06</RsdCG>
-      <n_count>97</n_count>
+      <n_count>156</n_count>
     </Qprop>
     <Qprop>
       <RsdCG>1e-06</RsdCG>
-      <n_count>98</n_count>
+      <n_count>156</n_count>
     </Qprop>
     <Qprop>
       <RsdCG>1e-06</RsdCG>
-      <n_count>97</n_count>
+      <n_count>156</n_count>
     </Qprop>
   </QuarkProp4>
   <Relaxation_Iterations>
-    <ncg_had>1153</ncg_had>
+    <ncg_had>1869</ncg_had>
   </Relaxation_Iterations>
   <Prop_correlator>
-    <prop_corr>0.275387 0.154657 0.0507852 0.033653 0.030046 0.0343648 0.0505926 0.152955</prop_corr>
+    <prop_corr>0.269643 0.154616 0.0547533 0.040632 0.0381565 0.041432 0.0543886 0.152663</prop_corr>
   </Prop_correlator>
 </propagator>
