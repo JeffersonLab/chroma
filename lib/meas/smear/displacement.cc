@@ -26,6 +26,8 @@ using namespace QDP;
  *  D_j^{(p)} q(x) = U_j(x) U_j(x+j) U_j(x+2j)...U_j(x+(p-1)j) q(x+pj),
  *  where U is the gauge-link.
  *
+ *  dir: x(0), y(1), z(2)
+ *
  */
 
 template<typename T>
