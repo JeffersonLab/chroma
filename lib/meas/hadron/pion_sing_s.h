@@ -1,10 +1,6 @@
 #ifndef PION_SING_S_H
 #define PION_SING_S_H
 
-#define NUM_STAG_PROPS   8
-#define NUM_STAG_SING_PIONS   1
-
-
 #include "chroma.h"
 
 class staggered_hadron_corr ; 
@@ -15,9 +11,15 @@ class staggered_pion_singlet  : public staggered_hadron_corr
 
   public :
 
+    void compute(
+		 LatticeStaggeredPropagator local_quark_prop,
+		 LatticeStaggeredPropagator four_shift_quark_prop,
+		 int j_decay) ;
+
+
     void
     compute(multi1d<LatticeStaggeredPropagator>& quark_props,
-		      int j_decay);
+	    int j_decay) { } 
 
 
   staggered_pion_singlet(int t_len, multi1d<LatticeColorMatrix> & uin)  

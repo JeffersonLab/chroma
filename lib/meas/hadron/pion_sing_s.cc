@@ -59,7 +59,8 @@ using namespace StagPhases;
 
 void 
 staggered_pion_singlet::compute(
-   multi1d<LatticeStaggeredPropagator>& quark_props,
+   LatticeStaggeredPropagator local_quark_prop,
+   LatticeStaggeredPropagator four_shift_quark_prop,
    int j_decay)
 {
 
@@ -71,11 +72,6 @@ staggered_pion_singlet::compute(
     QDP_abort(1);
   }
 
-  // Check for 8 props
-  if( quark_props.size() != NUM_STAG_PROPS ) { 
-    QDPIO::cerr << "pion_sing_s: input quark props has the wrong number of elements. It should be 8 but is " << quark_props.size() << endl;
-    QDP_abort(1);
-  };
 
   // Also for now we want j_decay to be 3.
   switch( j_decay ) { 
@@ -91,7 +87,7 @@ staggered_pion_singlet::compute(
   const multi1d<int>& latt_size = Layout::lattSize();
   
   // resize output array appropriately
-  corr_fn.resize(NUM_STAG_SING_PIONS, latt_size[Nd-1]);
+  corr_fn.resize(no_pion_sings, latt_size[Nd-1]);
 
   // Correlation functions before spatial sum
   LatticeComplex corr_fn_s;
@@ -101,12 +97,6 @@ staggered_pion_singlet::compute(
   timeslice.make(TimeSliceFunc(Nd-1));
 
   // Phases
-  //multi1d<LatticeInteger> alpha(Nd); // KS Phases
-  //multi1d<LatticeInteger> beta(Nd);  // Auxiliary phases for this work
-
-  // Get the phases -- now done elsewhere
-  // mesPhasFollana(alpha, beta);
-  
   // Counters/Indices
   int pion_index = 0;
   int i;
@@ -125,13 +115,13 @@ staggered_pion_singlet::compute(
   delta = 0;
   delta[0] = delta[1] = delta[2] = delta[3] = 1;
   corr_fn_s = beta(0)* beta(1) * beta(2) * beta(3)
-    *trace(adj(shiftDeltaProp(delta, quark_props[0]))
-	   *quark_props[ deltaToPropIndex(delta) ] );
+    *trace(adj(shiftDeltaProp(delta,local_quark_prop ))
+	   *four_shift_quark_prop);
   
   corr_fn[ pion_index ] = sumMulti(corr_fn_s, timeslice);
   pion_index++;
 
-  if( pion_index != NUM_STAG_SING_PIONS) { 
+  if( pion_index !=  no_pion_sings ) { 
     QDPIO::cerr << "Panic! Panic! Something has gone horribly wrong" << endl;
     QDP_abort(1);
   }
