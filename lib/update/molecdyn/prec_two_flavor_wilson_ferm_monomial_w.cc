@@ -96,7 +96,7 @@ namespace Chroma {
       QDP_abort(1);
     }
 
-    const WilsonTypeFermAct<LatticeFermion>* tmp_act = TheWilsonTypeFermActFactory::Instance().createObject(fermact_string, fermact_reader, "./FermionAction");
+    const FermionAction<LatticeFermion>* tmp_act = TheFermionActionFactory::Instance().createObject(fermact_string, fermact_reader, "./FermionAction");
   
 
     const EvenOddPrecWilsonFermAct* downcast=dynamic_cast<const EvenOddPrecWilsonFermAct*>(tmp_act);

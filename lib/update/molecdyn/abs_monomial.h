@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_monomial.h,v 1.4 2004-12-29 18:38:58 bjoo Exp $
+// $Id: abs_monomial.h,v 1.5 2004-12-29 22:09:19 edwards Exp $
 
 /*! @file
  * @brief Monomials - gauge action or fermion binlinear contributions for HMC
@@ -312,13 +312,13 @@ namespace Chroma
        // Heatbath all the fields
       
       // Get at the ferion action for piece i
-      const FermionAction<Phi>& S_f = getFermAct();
+      const UnprecWilsonTypeFermAct<Phi,P>& S_f = getFermAct();
       
       // Create a Connect State, apply fermionic boundaries
       Handle< const ConnectState > f_state(S_f.createState(field_state.getQ()));
       
       // Create a linear operator
-      Handle< const LinearOperator<Phi> > M(S_f.linOp(f_state));
+      Handle< const UnprecLinearOperator<Phi,P> > M(S_f.linOp(f_state));
       
       Phi eta=zero;
       
@@ -390,13 +390,13 @@ namespace Chroma
     virtual void refresh(const AbsFieldState<P,Q>& s) { 
       
       // Get at the ferion action for piece i
-      const FermionAction<Phi>& S_f = getFermAct();
+      const EvenOddPrecWilsonTypeFermAct<Phi,P>& S_f = getFermAct();
       
       // Create a Connect State, apply fermionic boundaries
       Handle< const ConnectState > f_state(S_f.createState(s.getQ()));
       
       // Create a linear operator
-      Handle< const LinearOperator<Phi> > M(S_f.linOp(f_state));
+      Handle< const EvenOddPrecLinearOperator<Phi,P> > M(S_f.linOp(f_state));
       
       Phi eta=zero;
       
