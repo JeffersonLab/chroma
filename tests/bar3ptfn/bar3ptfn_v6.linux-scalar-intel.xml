@@ -4,10 +4,10 @@
 <bar3ptfn>
   <ProgramInfo>
     <code_version>
-      <chroma>1.19</chroma>
+      <chroma>1.20</chroma>
       <qdp>1.11.8</qdp>
     </code_version>
-    <run_date>06 Mar 05 22:07:40 EST</run_date>
+    <run_date>12 Mar 05 13:35:00 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -18,7 +18,7 @@
   </ProgramInfo>
   <Input><bar3ptfn>
 <annotation>
-; $Id: bar3ptfn_v6.linux-scalar-intel.xml,v 1.4 2005-03-07 03:06:54 edwards Exp $
+; $Id: bar3ptfn_v6.linux-scalar-intel.xml,v 1.5 2005-03-12 18:43:57 edwards Exp $
 ;
 ; BAR3PTFN input file.
 ;

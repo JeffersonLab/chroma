@@ -7,7 +7,7 @@
       <chroma>1.20</chroma>
       <qdp>1.11.8</qdp>
     </code_version>
-    <run_date>10 Mar 05 22:23:14 EST</run_date>
+    <run_date>12 Mar 05 12:58:50 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -21,7 +21,7 @@
   </Output_version>
   <Input><ExampleBuildingBlocks>
 <annotation>
-; $Id: examplebb_v1.linux-scalar.xml,v 1.1 2005-03-11 03:59:07 edwards Exp $
+; $Id: examplebb_v1.linux-scalar.xml,v 1.2 2005-03-12 18:43:57 edwards Exp $
 ;
 ; ExampleBuildingBlock input file.
 ;
