@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.63 2004-09-16 21:17:33 edwards Exp $
+// $Id: propagator.cc,v 1.64 2004-09-16 22:32:24 kostas Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -353,6 +353,61 @@ int main(int argc, char **argv)
     
     success = true;
   }
+
+  ///THE NEF variant
+
+  if (fermact == EvenOddPrecNEFFermActArrayEnv::name)  // FERM_ACT_NEFF
+  {
+    QDPIO::cout << EvenOddPrecNEFFermActArrayEnv::name << endl;
+
+    EvenOddPrecNEFFermActArray S_f(fbc_a, EvenOddPrecNEFFermActArrayParams(fermacttop, fermact_path));
+    Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
+
+#ifdef MRES_CALCULATION
+    if (! input.param.nonRelProp)
+      S_f.dwf_quarkProp4(quark_propagator, xml_out, quark_prop_source,
+			 t0, j_decay, 
+			 state, 
+			 input.param.invParam, 
+			 ncg_had);
+    else
+#endif
+      S_f.quarkProp4(quark_propagator, xml_out, quark_prop_source,
+		     state, 
+		     input.param.invParam, 
+		     input.param.nonRelProp,
+		     ncg_had);
+      
+    success = true;
+  }
+
+
+  if (fermact == UnprecNEFFermActArrayEnv::name)  // FERM_ACT_UNPRECONDITIONED_NEFF:
+  {
+    QDPIO::cout << UnprecNEFFermActArrayEnv::name << endl;
+
+    UnprecNEFFermActArray S_f(fbc_a, UnprecNEFFermActArrayParams(fermacttop, fermact_path));
+    Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
+
+#ifdef MRES_CALCULATION
+    if (! input.param.nonRelProp)
+      S_f.dwf_quarkProp4(quark_propagator, xml_out, quark_prop_source,
+			 t0, j_decay, 
+			 state, 
+			 input.param.invParam, 
+			 ncg_had);
+    else
+#endif
+      S_f.quarkProp4(quark_propagator, xml_out, quark_prop_source,
+		     state, 
+		     input.param.invParam, 
+		     input.param.nonRelProp,
+		     ncg_had);
+    
+    success = true;
+  }
+
+
 #endif
 		      
 
