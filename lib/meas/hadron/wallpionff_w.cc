@@ -1,4 +1,4 @@
-// $Id: wallpionff_w.cc,v 1.5 2004-02-11 12:51:34 bjoo Exp $
+// $Id: wallpionff_w.cc,v 1.6 2004-04-06 21:46:28 edwards Exp $
 /*! \file
  *  \brief Wall-sink pion form-factors 
  *
@@ -57,10 +57,24 @@ void wallPionFormFac(XMLWriter& xml,
     LatticeComplex corr_local_fn =
       trace(back_prop*Gamma(G5)*q_x2*adj(forw_prop)*Gamma(G5)*Gamma(gamma_value));
 
-    multi2d<DComplex> hsum;
-//    multi2d<DComplex> hsum_nonlocal;
-    hsum = phases.sft(corr_local_fn);
+    multi2d<DComplex> hsum_local = phases.sft(corr_local_fn);
 
+    // Construct the non-local current matrix element 
+    //
+    // The form of J_mu = (1/2)*[psibar(x+mu)*U^dag_mu*(1+gamma_mu)*psi(x) -
+    //                           psibar(x)*U_mu*(1-gamma_mu)*psi(x+mu)]
+    // NOTE: the 1/2  is included down below in the sumMulti stuff
+    LatticePropagator tmp_prop1 = back_prop * Gamma(15) * q_x2;
+    LatticePropagator tmp_prop2 = shift(tmp_prop1, FORWARD, mu);
+    LatticeComplex corr_nonlocal_fn =
+      trace(adj(u[mu] * shift(forw_prop, FORWARD, mu)) * Gamma(15) * 
+	    (tmp_prop1 + Gamma(gamma_value) * tmp_prop1)) -
+      trace(adj(forw_prop) * Gamma(15) *
+	    (tmp_prop2 - Gamma(gamma_value) * tmp_prop2));
+
+    multi2d<DComplex> hsum_nonlocal = phases.sft(corr_nonlocal_fn);
+
+  
     XMLArrayWriter xml_inser_mom(xml_array, phases.numMom());
     push(xml_inser_mom, "Momenta");
 
@@ -73,25 +87,20 @@ void wallPionFormFac(XMLWriter& xml,
 
 //      form.formFac[gamma_value].momenta[inser_mom_num].inser_mom = phases.numToMom(inser_mom_num);
 
-      multi1d<Real> local_cur3ptfn(length); // always compute
-//      multi1d<Real> nonlocal_cur3ptfn;
-//      if (compute_nonlocal)
-//	nonlocal_cur3ptfn.resize(length);      // possibly compute
+      multi1d<Complex> local_cur3ptfn(length);
+      multi1d<Complex> nonlocal_cur3ptfn(length);
 
       for (int t=0; t < length; ++t) 
       {
         int t_eff = (t - t0 + length) % length;
 
-        local_cur3ptfn[t_eff] = real(hsum[inser_mom_num][t]);
-//        if (compute_nonlocal)
-//          nonlocal_cur3ptfn[t_eff] = 0.5 * real(hsum_nonlocal[inser_mom_num][t]);
-
+        local_cur3ptfn[t_eff] = hsum_local[inser_mom_num][t];
+	nonlocal_cur3ptfn[t_eff] = 0.5 * hsum_nonlocal[inser_mom_num][t];
       } // end for(t)
 
       // Print out the results
-      push(xml_inser_mom, "Wilson_Local_Current_3Pt_fn");
       write(xml_inser_mom, "local_cur3ptfn", local_cur3ptfn);
-      pop(xml_inser_mom);
+      write(xml_inser_mom, "nonlocal_cur3ptfn", nonlocal_cur3ptfn);
 
 //      form.formFac[gamma_value].momenta[inser_mom_num].local_current    = local_cur3ptfn;
 //      form.formFac[gamma_value].momenta[inser_mom_num].nonlocal_current = nonlocal_cur3ptfn;
