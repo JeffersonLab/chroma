@@ -1,11 +1,13 @@
 // -*- C++ -*-
-// $Id: baryon_w.h,v 1.3 2003-04-01 01:56:19 edwards Exp $
+// $Id: baryon_w.h,v 1.4 2003-10-01 03:03:32 edwards Exp $
 
 #ifndef __baryon_h__
 #define __baryon_h__
 
 //! Baryon 2-pt functions
 /*!
+ * \ingroup hadron
+ *
  * This routine is specific to Wilson fermions! 
  *
  * Construct baryon propagators for the Proton and the Delta^+ with
@@ -13,19 +15,44 @@
  * addition, a degenerate "s" quark. For these degenerate quarks, the
  * Lambda is degenerate with the Proton, but we keep it for compatibility
  * with the sister routine that treats non-degenerate quarks.
+  multi3d<DComplex>& bardisp1;
 
- * The routine also computes time-charge reversed baryons and adds them
+ * The routine optionally computes time-charge reversed baryons and adds them
  * in for increased statistics.
 
- * \param quark_propagator -- quark propagator ( Read )
- * \param barprop -- baryon propagator ( Modify )
- * \param bardisp -- baryon props. at non-zero momenta ( Modify )
- * \param num_mom -- number of non-zero momenta ( Read )
- * \param t_source -- cartesian coordinates of the source ( Read )
- * \param j_decay -- direction of the exponential decay ( Read ) 
- * \param bc_spec  -- boundary condition for spectroscopy ( Read )
+ * \param quark_propagator   quark propagator ( Read )
+ * \param t0         cartesian coordinates of the source ( Read )
+ * \param bc_spec    boundary condition for spectroscopy ( Read )
+ * \param time_rev   add in time reversed contribution if true ( Read )
+ * \param phases     object holds list of momenta and Fourier phases ( Read )
+ * \param xml        xml file object ( Read )
+ * \param xml_group  group name for xml data ( Read )
  *
- * FftP    -- flag for use of fft or sft ( Read )
+ */
+
+void baryon(LatticePropagator& quark_propagator, 
+            const SftMom& phases,
+            int t0, int bc_spec, bool time_rev,
+            XMLWriter& xml,
+	    const string& xml_group);
+
+
+//! Baryon 2-pt functions
+/*!
+ * \ingroup hadron
+ *
+ * This routine is specific to Wilson fermions! 
+ *
+ * Construct baryon propagators for the Proton and the Delta^+ with
+ * degenerate "u" and "d" quarks, as well as the Lambda for, in
+ * addition, a degenerate "s" quark. For these degenerate quarks, the
+ * Lambda is degenerate with the Proton, but we keep it for compatibility
+ * with the sister routine that treats non-degenerate quarks.
+ *
+ * \param quark_propagator  quark propagator ( Read )
+ * \param barprop    baryon propagator ( Modify )
+ * \param t0         cartesian coordinates of the source ( Read )
+ * \param phases     object holds list of momenta and Fourier phases ( Read )
  *
  *        ____
  *        \
@@ -62,7 +89,8 @@
  */
 
 void baryon(LatticePropagator& quark_propagator, 
-	    multi2d<Complex>& barprop, 
-	    const multi1d<int>& t_source, int j_decay, int bc_spec);
+            const SftMom& phases,
+            int t0,
+	    multi3d<DComplex>& barprop);
 
 #endif

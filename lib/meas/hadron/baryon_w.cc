@@ -1,29 +1,15 @@
-// $Id: baryon_w.cc,v 1.6 2003-08-09 04:19:14 edwards Exp $ 
+// $Id: baryon_w.cc,v 1.7 2003-10-01 03:03:32 edwards Exp $ 
 /*! \file
  *  \brief Baryon 2-pt functions
  */
 
 #include "chromabase.h"
+#include "util/ft/sftmom.h"
 #include "meas/hadron/baryon_w.h"
 
 using namespace QDP;
-
-//! Function object used for constructing the time-slice set
-class TimeSliceFunc : public SetFunc
-{
-public:
-  TimeSliceFunc(int dir): dir_decay(dir) {}
-
-  int operator() (const multi1d<int>& coordinate) const {return coordinate[dir_decay];}
-  int numSubsets() const {return Layout::lattSize()[dir_decay];}
-
-  int dir_decay;
-
-private:
-  TimeSliceFunc() {}  // hide default constructor
-};
-
  
+
 //! Baryon 2-pt functions
 /*!
  * \ingroup hadron
@@ -35,19 +21,131 @@ private:
  * addition, a degenerate "s" quark. For these degenerate quarks, the
  * Lambda is degenerate with the Proton, but we keep it for compatibility
  * with the sister routine that treats non-degenerate quarks.
+  multi3d<DComplex>& bardisp1;
 
- * The routine also computes time-charge reversed baryons and adds them
+ * The routine optionally computes time-charge reversed baryons and adds them
  * in for increased statistics.
 
- * \param quark_propagator -- quark propagator ( Read )
- * \param barprop -- baryon propagator ( Modify )
- * \param bardisp -- baryon props. at non-zero momenta ( Modify )
- * \param num_mom -- number of non-zero momenta ( Read )
- * \param t_source -- cartesian coordinates of the source ( Read )
- * \param j_decay -- direction of the exponential decay ( Read ) 
- * \param bc_spec  -- boundary condition for spectroscopy ( Read )
+ * \param quark_propagator   quark propagator ( Read )
+ * \param t0         cartesian coordinates of the source ( Read )
+ * \param bc_spec    boundary condition for spectroscopy ( Read )
+ * \param time_rev   add in time reversed contribution if true ( Read )
+ * \param phases     object holds list of momenta and Fourier phases ( Read )
+ * \param xml        xml file object ( Read )
+ * \param xml_group  group name for xml data ( Read )
  *
- * FftP    -- flag for use of fft or sft ( Read )
+ */
+
+void baryon(LatticePropagator& quark_propagator, 
+            const SftMom& phases,
+            int t0, int bc_spec, bool time_rev,
+            XMLWriter& xml,
+	    const string& xml_group)
+{
+  START_CODE("baryon");
+
+  if ( Ns != 4 || Nc != 3 )		/* Code is specific to Ns=4 and Nc=3. */
+    return;
+
+  multi3d<DComplex> bardisp1;
+  multi3d<DComplex> bardisp2;
+
+  // Forward
+  baryon(quark_propagator, phases, t0, bardisp1);
+
+  // Possibly add in a time-reversed contribution
+  bool time_revP = (bc_spec*bc_spec == 1) ? time_rev : false;
+
+  if (time_revP)
+  {
+    /* Time-charge reverse the quark propagators */
+    /* S_{CT} = gamma_5 gamma_4 = gamma_1 gamma_2 gamma_3 = Gamma(7) */
+    LatticePropagator q1_tmp = - (Gamma(7) * quark_propagator * Gamma(7));
+
+    baryon(q1_tmp, phases, t0, bardisp2);
+  }
+
+
+  int num_baryons = bardisp1.size1();
+  int num_mom = bardisp1.size2();
+  int length  = bardisp1.size3();
+
+  // Loop over baryons
+  XMLArrayWriter xml_bar(xml,num_baryons);
+  push(xml_bar, xml_group);
+
+  for(int baryons = 0; baryons < num_baryons; ++baryons)
+  {
+    push(xml_bar);     // next array element
+    Write(xml_bar, baryons);
+
+    // Loop over sink momenta
+    XMLArrayWriter xml_sink_mom(xml_bar,num_mom);
+    push(xml_sink_mom, "momenta");
+
+    for(int sink_mom_num = 0; sink_mom_num < num_mom; ++sink_mom_num)
+    {
+      push(xml_sink_mom);
+      Write(xml_sink_mom, sink_mom_num) ;
+      write(xml_sink_mom, "sink_mom", phases.numToMom(sink_mom_num)) ;
+
+      multi1d<Complex> barprop(length);
+
+      /* forward */
+      for(int t = 0; t < length; ++t)
+      {
+	int t_eff = (t - t0 + length) % length;
+	    
+	if ( bc_spec < 0 && (t_eff+t0) >= length)
+	  barprop[t_eff] = -bardisp1[baryons][sink_mom_num][t];
+	else
+	  barprop[t_eff] =  bardisp1[baryons][sink_mom_num][t];
+      }
+
+      if (time_revP)
+      {
+	/* backward */
+	for(int t = 0; t < length; ++t)
+	{
+	  int t_eff = (length - t + t0) % length;
+	
+	  if ( bc_spec < 0 && (t_eff-t0) > 0)
+	    barprop[t_eff] -= bardisp2[baryons][sink_mom_num][t];
+	  else
+	    barprop[t_eff] += bardisp2[baryons][sink_mom_num][t];
+	}
+      }
+
+      Write(xml_sink_mom, barprop);
+      pop(xml_sink_mom);
+    } // end for(sink_mom_num)
+ 
+    pop(xml_sink_mom);
+    pop(xml_bar);
+  } // end for(gamma_value)
+
+  pop(xml_bar);
+
+  END_CODE("baryon");
+}
+
+
+//! Baryon 2-pt functions
+/*!
+ * \ingroup hadron
+ *
+ * This routine is specific to Wilson fermions! 
+ *
+ * Construct baryon propagators for the Proton and the Delta^+ with
+ * degenerate "u" and "d" quarks, as well as the Lambda for, in
+ * addition, a degenerate "s" quark. For these degenerate quarks, the
+ * Lambda is degenerate with the Proton, but we keep it for compatibility
+ * with the sister routine that treats non-degenerate quarks.
+ *
+ * \param quark_propagator  quark propagator ( Read )
+ * \param barprop    baryon propagator ( Modify )
+ * \param t0         cartesian coordinates of the source ( Read )
+ * \param phases     object holds list of momenta and Fourier phases ( Read )
  *
  *        ____
  *        \
@@ -84,21 +182,23 @@ private:
  */
 
 void baryon(LatticePropagator& quark_propagator, 
-	    multi2d<Complex>& barprop, 
-	    const multi1d<int>& t_source, int j_decay, int bc_spec)
+            const SftMom& phases,
+            int t0,
+	    multi3d<DComplex>& barprop)
 {
-  // Create the time-slice set
-  UnorderedSet timeslice;
-  timeslice.make(TimeSliceFunc(j_decay));
+  START_CODE("baryon");
 
-  // Length of lattice in j_decay direction
-  int length = timeslice.numSubsets();
+  // Length of lattice in decay direction
+  int length = phases.numSubsets() ;
 
   if ( Ns != 4 || Nc != 3 )		/* Code is specific to Ns=4 and Nc=3. */
     return;
 
-  int t0 = t_source[j_decay];
-  
+  // Setup the return stuff
+  const int num_baryons = 12;
+  int num_mom = phases.numMom();
+  barprop.resize(num_baryons,num_mom,length);
+
   SpinMatrix Cgm;
   SpinMatrix Cg4m;
   SpinMatrix CgmNR;
@@ -116,181 +216,137 @@ void baryon(LatticePropagator& quark_propagator,
   SpinMatrix S_proj = 
     0.5*((g_one + Gamma(8) * g_one) - timesI(Gamma(3) * g_one  +  Gamma(11) * g_one));
 
-  /*Loop over time-charge reversals */
-  for(int time_rev = 0; time_rev < 2; ++time_rev)
+  /* S_proj_unpol = (1/2)(1 + gamma_4) */
+  SpinMatrix S_proj_unpol = 0.5 * (g_one + (g_one * Gamma(8)));
+
+  /* C g_5 NR = (1/2)*C gamma_5 * ( 1 + g_4 ) */ 
+  SpinMatrix Cg5NR = Gamma(5) * S_proj_unpol;
+
+
+  LatticeComplex b_prop;
+
+  // Loop over baryons
+  for(int baryons = 0; baryons < num_baryons; ++baryons)
   {
-    LatticeComplex b_prop;
+    LatticePropagator di_quark;
 
-    /* Loop over baryons */
-    for(int baryons = 0; baryons < 9; ++baryons)
+    switch (baryons)
     {
-      LatticePropagator di_quark;
-
-      switch (baryons)
-      {
-      case 0:
-        /* Proton_1; use also for Lambda_1! */
-	/* C gamma_5 = Gamma(5) */
-	di_quark = quarkContract13(quark_propagator * Gamma(5),
-				   Gamma(5) * quark_propagator);
-	b_prop = trace(S_proj * traceColor(quark_propagator * traceSpin(di_quark)))
-	  + trace(S_proj * traceColor(quark_propagator * di_quark));
-	break;
+    case 0:
+      /* Proton_1; use also for Lambda_1! */
+      /* C gamma_5 = Gamma(5) */
+      di_quark = quarkContract13(quark_propagator * Gamma(5),
+				 Gamma(5) * quark_propagator);
+      b_prop = trace(S_proj * traceColor(quark_propagator * traceSpin(di_quark)))
+	+ trace(S_proj * traceColor(quark_propagator * di_quark));
+      break;
 		  
-      case 1:
-        /* Lambda_1 = 3*Proton_1 (for compatibility with heavy-light routine) */
-	b_prop *= 3.0;
-	break;
+    case 1:
+      /* Lambda_1 = 3*Proton_1 (for compatibility with heavy-light routine) */
+      b_prop *= 3.0;
+      break;
 
-      case 2:
-	/* Delta^+_1 */
-	di_quark = quarkContract13(quark_propagator * Cgm, 
-				   Cgm * quark_propagator);
-	b_prop = trace(S_proj * traceColor(quark_propagator * traceSpin(di_quark)))
-	  + 2*trace(S_proj * traceColor(quark_propagator * di_quark));
+    case 2:
+      /* Delta^+_1 */
+      di_quark = quarkContract13(quark_propagator * Cgm, 
+				 Cgm * quark_propagator);
+      b_prop = trace(S_proj * traceColor(quark_propagator * traceSpin(di_quark)))
+	+ 2*trace(S_proj * traceColor(quark_propagator * di_quark));
 
-	/* Multiply by 3 for compatibility with heavy-light routine */
-	b_prop *= 3.0;
-	break;
+      /* Multiply by 3 for compatibility with heavy-light routine */
+      b_prop *= 3.0;
+      break;
 
-      case 3:
-        /* Proton_2; use also for Lambda_2! */
-	/* C gamma_5 gamma_4 = - Gamma(13) */
-	di_quark = quarkContract13(quark_propagator * Gamma(13),
-				   Gamma(13) * quark_propagator);
-	b_prop = trace(S_proj * traceColor(quark_propagator * traceSpin(di_quark)))
-	  + trace(S_proj * traceColor(quark_propagator * di_quark));
-	break;
+    case 3:
+      /* Proton_2; use also for Lambda_2! */
+      /* C gamma_5 gamma_4 = - Gamma(13) */
+      di_quark = quarkContract13(quark_propagator * Gamma(13),
+				 Gamma(13) * quark_propagator);
+      b_prop = trace(S_proj * traceColor(quark_propagator * traceSpin(di_quark)))
+	+ trace(S_proj * traceColor(quark_propagator * di_quark));
+      break;
 
-      case 4:
-        /* Lambda_2 = 3*Proton_2 (for compatibility with heavy-light routine) */
-	b_prop *= 3.0;
-	break;
+    case 4:
+      /* Lambda_2 = 3*Proton_2 (for compatibility with heavy-light routine) */
+      b_prop *= 3.0;
+      break;
 
-      case 5:
-        /* Sigma^{*+}_2 */
-	di_quark = quarkContract13(quark_propagator * Cg4m,
-				   Cg4m * quark_propagator);
-	b_prop = trace(S_proj * traceColor(quark_propagator * traceSpin(di_quark)))
-	  + 2*trace(S_proj * traceColor(quark_propagator * di_quark));
+    case 5:
+      /* Sigma^{*+}_2 */
+      di_quark = quarkContract13(quark_propagator * Cg4m,
+				 Cg4m * quark_propagator);
+      b_prop = trace(S_proj * traceColor(quark_propagator * traceSpin(di_quark)))
+	+ 2*trace(S_proj * traceColor(quark_propagator * di_quark));
 
-	/* Multiply by 3 for compatibility with heavy-light routine */
-	b_prop *= 3.0;
-	break;
+      /* Multiply by 3 for compatibility with heavy-light routine */
+      b_prop *= 3.0;
+      break;
 
-      case 6:
-        /* Proton^+_3; use also for Lambda_3! */
-	/* C gamma_5 - C gamma_5 gamma_4 = Gamma(5) + Gamma(13) */
-	di_quark = quarkContract13(quark_propagator * Gamma(5) + quark_propagator * Gamma(13),  
-				   Gamma(5) * quark_propagator + Gamma(13) * quark_propagator);
-	b_prop = trace(S_proj * traceColor(quark_propagator * traceSpin(di_quark)))
-	  + trace(S_proj * traceColor(quark_propagator * di_quark));
-	break;
+    case 6:
+      /* Proton^+_3; use also for Lambda_3! */
+      /* C gamma_5 - C gamma_5 gamma_4 = Gamma(5) + Gamma(13) */
+      di_quark = quarkContract13(quark_propagator * Gamma(5) + quark_propagator * Gamma(13),  
+				 Gamma(5) * quark_propagator + Gamma(13) * quark_propagator);
+      b_prop = trace(S_proj * traceColor(quark_propagator * traceSpin(di_quark)))
+	+ trace(S_proj * traceColor(quark_propagator * di_quark));
+      break;
 
-      case 7:
-        /* Lambda_3 = 3*Proton_3 (for compatibility with heavy-light routine) */
-	b_prop *= 3.0;
-	break;
+    case 7:
+      /* Lambda_3 = 3*Proton_3 (for compatibility with heavy-light routine) */
+      b_prop *= 3.0;
+      break;
 
-      case 8:
-        /* Sigma^{*+}_3 */
-	di_quark = quarkContract13(quark_propagator * CgmNR,
-				   CgmNR * quark_propagator);
-	b_prop = trace(S_proj * traceColor(quark_propagator * traceSpin(di_quark)))
-	  + 2*trace(S_proj * traceColor(quark_propagator * di_quark));
+    case 8:
+      /* Sigma^{*+}_3 */
+      di_quark = quarkContract13(quark_propagator * CgmNR,
+				 CgmNR * quark_propagator);
+      b_prop = trace(S_proj * traceColor(quark_propagator * traceSpin(di_quark)))
+	+ 2*trace(S_proj * traceColor(quark_propagator * di_quark));
 
-	/* Multiply by 3 for compatibility with heavy-light routine */
-	b_prop *= 3.0;
-	break;
+      /* Multiply by 3 for compatibility with heavy-light routine */
+      b_prop *= 3.0;
+      break;
 
-      default:
-	QDP_error_exit("Unknown baryon: baryons=%d",baryons);
-      }
+    case 9:
+      /* Proton_1 -- but unpolarised ; use also for Lambda_1! */
+      /* C gamma_5 = Gamma(5) */
+      di_quark = quarkContract13(quark_propagator * Gamma(5),
+				 Gamma(5) * quark_propagator);
+      b_prop = trace(S_proj_unpol * trace(quark_propagator * trace(di_quark)));
+             + trace(S_proj_unpol * trace(quark_propagator * di_quark));
+      break;
 
-      /* Project on zero momentum: Do a slice-wise sum. */
-      multi1d<DComplex> hsum(length);
-      hsum = sumMulti(b_prop, timeslice);
+    case 10:
+      /* Proton_2; use also for Lambda_2! */
+      /* C gamma_5 gamma_4 = - Gamma(13) */
+      di_quark = quarkContract13(quark_propagator * Gamma(13),
+				 Gamma(13) * quark_propagator);
+      b_prop = trace(S_proj_unpol * trace(quark_propagator * trace(di_quark)));
+             + trace(S_proj_unpol * trace(quark_propagator * di_quark));
+      break;
+    
+    case 11:
+      /* Proton^+_3; use also for Lambda_3! */
+      /* C gamma_5 = Gamma(5) */
+      di_quark = quarkContract13(quark_propagator * Cg5NR,
+				 Cg5NR * quark_propagator);
+      b_prop = trace(S_proj_unpol * trace(quark_propagator * trace(di_quark)));
+             + trace(S_proj_unpol * trace(quark_propagator * di_quark));
+      break;
 
-      switch (time_rev)
-      {
-      case 0:
-        /* forward */
-        for(int t = 0; t < length; ++t)
-        {
-          int t_eff = (t - t0 + length) % length;
+    default:
+      QDP_error_exit("Unknown baryon: baryons=%d",baryons);
+    }
 
-          if ( bc_spec < 0 && (t_eff+t0) >= length)
-          {
-            barprop[baryons][t_eff] = -0.5 * Complex(hsum[t]);
-          }
-          else
-            barprop[baryons][t_eff] =  0.5 * Complex(hsum[t]);
-        }
-	break;
+    // Project onto zero and if desired non-zero momentum
+    multi2d<DComplex> hsum;
+    hsum = phases.sft(b_prop);
 
-      case 1:
-        /* backward */
-        for(int t = 0; t < length; ++t)
-        {
-          int t_eff = (length - t + t0) % length;
+    for(int sink_mom_num=0; sink_mom_num < num_mom; ++sink_mom_num) 
+      for(int t = 0; t < length; ++t)
+	barprop[baryons][sink_mom_num][t] = 0.5 * hsum[sink_mom_num][t];
 
-          if ( bc_spec < 0 && (t_eff-t0) > 0)
-          {
-            barprop[baryons][t_eff] -=  0.5 * Complex(hsum[t]);
-          }
-          else
-            barprop[baryons][t_eff] +=  0.5 * Complex(hsum[t]);
-        }
-      }
+  } /* end loop over baryons */
 
-#if 0
-      /* Project onto non-zero momentum if desired */
-      if ( num_mom != 0 )
-      {
-	Complex disp(num_mom, length);
-  
-	sftmom(b_prop, disp, FftP, num_mom, j_decay);
-
-	for(int m = 0; m < num_mom; ++m)
-	{
-	  switch (time_rev)
-	  {
-          case 0:
-            /* forward */
-            for(int t = 0; t < length; ++t)
-            {
-              int t_eff = (t - t0 + length) % length;
-              if ( bc_spec < 0 && (t_eff+t0) >= length)
-              {
-                bardisp[baryons][m][t_eff] = -0.5 * disp(m,t);
-              }
-              else
-                bardisp[baryons][m][t_eff] =  0.5 * disp(m,t);
-            }
-	    break;
-
-          case 1:
-            /* backward */
-            for(int t = 0; t < length; ++t)
-            {
-              int t_eff = (length - t + t0) % length;
-              if ( bc_spec < 0 && (t_eff-t0) > 0)
-              {
-                bardisp[baryons][m][t_eff] -=  0.5 * disp[m][t];
-              }
-              else
-                bardisp[baryons][m][t_eff] +=  0.5 * disp[m][t];
-            }
-	  }
-	}
-      }
-#endif
-
-    } /* end loop over baryons */
-
-    /* Time-charge reverse the quark propagators */
-    /* S_{CT} = gamma_5 gamma_4 = gamma_1 gamma_2 gamma_3 = Gamma(7) */
-    LatticePropagator q1_tmp = - (Gamma(7) * quark_propagator);
-    quark_propagator = q1_tmp * Gamma(7);
-  }
+  END_CODE("baryon");
 }
