@@ -1,4 +1,4 @@
-// $Id: invcg1.cc,v 1.2 2004-01-06 15:35:41 bjoo Exp $
+// $Id: invcg1.cc,v 1.3 2004-03-03 10:48:17 mcneile Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -78,6 +78,7 @@ void InvCG1_a(const LinearOperator<T>& A,
   //  r  :=  [ Chi  -  A . psi ]
 
   T tmp1, tmp2;
+  tmp1 = tmp2 = zero; 
   T r = zero;
 
   // A is Hermitian
@@ -87,7 +88,7 @@ void InvCG1_a(const LinearOperator<T>& A,
   r[s] = chi - tmp1;
 
   //  p[1]  :=  r[0]
-  T p;
+  T p = zero;
   p[s] = r;
   
   //  Cp = |r[0]|^2
@@ -123,7 +124,7 @@ void InvCG1_a(const LinearOperator<T>& A,
    
 
     // SCRAP THIS IDEA FOR NOW AND DO <p, A.p> TO KEEP TRACK OF 
-    // "PRECONDITIONING" So mp =MdagMp
+    // "PRECONDITIONING" So ap =MdagMp
 
     A(ap, p, PLUS);
     
