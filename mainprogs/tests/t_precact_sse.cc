@@ -1,4 +1,4 @@
-// $Id: t_precact_sse.cc,v 1.1 2004-08-01 20:27:27 edwards Exp $
+// $Id: t_precact_sse.cc,v 1.2 2004-09-06 16:17:03 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -17,7 +17,7 @@ int main(int argc, char **argv)
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {4,4,4,4};
+  const int foo[] = {4,2,2,2};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -29,15 +29,33 @@ int main(int argc, char **argv)
   // Init the gauge field
   multi1d<LatticeColorMatrix> u(Nd);
 //  HotSt(u);
-  u = 1.0;
+//  u = 1.0;
+//  XMLReader gauge_xml;
+//  readSzin(gauge_xml, u, "test_purgaug.cfg1");
+  for(int m=0; m < Nd; ++m)
+  {
+    ColorMatrix t;
+    t = 0;
+    for(int i=0; i < Nc; ++i)
+      for(int j=0; j < Nc; ++j)
+	pokeColor(t,cmplx(Real((m+1)*((i+j)*0.02)),Real(-(m+1)*((i+j)*0.00))),i,j);
+
+#if 1
+    for(int site=0; site < Layout::vol(); ++site)
+      pokeSite(u[m],ColorMatrix(site+t),Layout::siteCoords(0,site));
+#else
+    u[m] = t;
+#endif
+//    reunit(u[m]);
+  }
 
   InvType invType = CG_INVERTER;
-  Real RsdCG = 1.0e-5;
-  int MaxCG = 1000;
+  Real RsdCG = 1.0e-12;
+  int MaxCG = 3000;
   int n_count = 0;
 
   // Create the BC objects
-  const int bnd[] = {1,1,1,-1};
+  const int bnd[] = {1,1,1,1};
   multi1d<int> boundary(Nd);
   boundary = bnd;
 
@@ -46,27 +64,29 @@ int main(int argc, char **argv)
     Handle< FermBC<multi1d<LatticeFermion> > >  fbc(new SimpleFermBC<multi1d<LatticeFermion> >(boundary));
     
     // The standard DWF fermact
-    Real WilsonMass = 1.0;
+    Real WilsonMass = 1.1;
     int N5 = 8;
     Real m_q = 0.3;
-    EvenOddPrecDWFermActArray S_pdwf(fbc,WilsonMass,m_q,N5);
+    UnprecDWFermActArray S_pdwf(fbc,WilsonMass,m_q,N5);
     Handle<const ConnectState> state(S_pdwf.createState(u));
-    Handle<const EvenOddPrecLinearOperator< multi1d<LatticeFermion> > > A_pdwf(S_pdwf.linOp(state));
   
     SSEEvenOddPrecDWFermActArray S_sdwf(fbc,WilsonMass,m_q,N5);
-    Handle<const EvenOddPrecLinearOperator< multi1d<LatticeFermion> > > A_sdwf(S_sdwf.linOp(state));
   
+    multi1d<int> coord(Nd);
+    coord = 0;
+
     // try the qprop
     multi1d<LatticeFermion>  psi5a(N5), psi5b(N5), chi5(N5), tmp1(N5);
     for(int m=0; m < N5; ++m)
     {
       gaussian(chi5[m]);
-//      random(psi5a[m]);
-      psi5a[m] = zero;
+      random(psi5a[m]);
+//      srcfil(chi5[m], coord, 0, 0);
+//      psi5a[m] = zero;
     }
     psi5b = psi5a;
 
-    QDPIO::cout << "Prec inverter" << endl;
+    QDPIO::cout << "UnPrec inverter" << endl;
     S_pdwf.qpropT(psi5a, state, chi5, invType, RsdCG, MaxCG, n_count);
     QDPIO::cout << "SSE prec inverter" << endl;
     S_sdwf.opt_qpropT(psi5b, state, chi5, invType, RsdCG, MaxCG, n_count);
@@ -79,6 +99,16 @@ int main(int argc, char **argv)
 		<< "|sDWF|^2 = " << norm2(psi5b) << endl
 		<< "|pDWF - sDWF|^2 = " << norm2(tmp1) << endl;
 
+    
+    push(xml,"Unprec");
+    write(xml,"psi5a",psi5a);
+    pop(xml);
+
+    push(xml,"Prec");
+    write(xml,"psi5b",psi5b);
+    pop(xml);
+
+
 #if 0
     // try the qpropT
     LatticeFermion chi, psia, psib;
@@ -86,7 +116,7 @@ int main(int argc, char **argv)
     random(psia);
     psib = psia;
 
-    QDPIO::cout << "Prec inverter" << endl;
+    QDPIO::cout << "UnPrec inverter" << endl;
     S_pdwf.qprop(psia, state, chi, invType, RsdCG, MaxCG, n_count);
     QDPIO::cout << "SSE prec inverter" << endl;
     S_sdwf.qprop(psib, state, chi, invType, RsdCG, MaxCG, n_count);
