@@ -1,4 +1,4 @@
-// $Id: mres.cc,v 1.5 2004-12-29 22:08:26 edwards Exp $
+// $Id: mres.cc,v 1.6 2005-01-02 05:07:45 edwards Exp $
 
 #include <iostream>
 #include <sstream>
@@ -268,21 +268,14 @@ int main(int argc, char **argv)
     LinearOperator<LatticeFermion>* DelLs;
 
     // Possible actions
-    const UnprecDWFermActBaseArray<LatticeFermion>* S_udwf = 
-      dynamic_cast<const UnprecDWFermActBaseArray<LatticeFermion>*>(S_f);
-
-    const EvenOddPrecDWFermActBaseArray<LatticeFermion>* S_pdwf = 
-      dynamic_cast<const EvenOddPrecDWFermActBaseArray<LatticeFermion>*>(S_f);
+    const WilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >* S_dwf = 
+      dynamic_cast<const WilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >*>(S_f);
 
     const OverlapFermActBase* S_ov = dynamic_cast<const OverlapFermActBase*>(S_f);
 
-    if (S_pdwf != 0)
+    if (S_dwf != 0)
     {
-      DelLs = const_cast<LinearOperator<LatticeFermion>*>(S_pdwf->DeltaLs(state,prop_header.invParam));
-    }
-    else if (S_udwf != 0)
-    {
-      DelLs = const_cast<LinearOperator<LatticeFermion>*>(S_udwf->DeltaLs(state,prop_header.invParam));
+      DelLs = const_cast<LinearOperator<LatticeFermion>*>(S_dwf->DeltaLs(state,prop_header.invParam));
     }
     else if (S_ov != 0)
     {
