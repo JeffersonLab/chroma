@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 1.9 2004-09-08 02:45:50 edwards Exp $
+// $Id: fermact.h,v 1.10 2004-09-24 09:14:05 edwards Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -213,8 +213,7 @@ namespace Chroma
     virtual const LinearOperator<T>* gamma5HermLinOp(Handle<const ConnectState> state) const = 0;
 
     //! Given a complete propagator as a source, this does all the inversions needed
-    /*! \ingroup qprop
-     *
+    /*!
      * Provides a default version
      *
      * \param q_sol    quark propagator ( Write )
