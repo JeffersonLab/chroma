@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.83 2003-11-15 03:56:39 edwards Exp $
+# $Id: Makefile.in,v 1.84 2003-11-15 04:22:33 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -43,13 +43,13 @@ host_triplet = @host@
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_1 = -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
 @BUILD_WILSON_LIBS_TRUE@am__append_2 = baryon_w.cc mesons_w.cc curcor2_w.cc lwldslash_w.cc formfac_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              sink_smear2_w.cc barcomp_w.cc transf_w.cc ldwfdslash_w.cc fermact_qprop.cc \
-@BUILD_WILSON_LIBS_TRUE@              unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc unprec_wilson_dsdu_w.cc \
-@BUILD_WILSON_LIBS_TRUE@              unprec_dwf_fermact_w.cc unprec_dwf_linop_w.cc unprec_dwf_dsdu_w.cc \
-@BUILD_WILSON_LIBS_TRUE@              unprec_dwf_qprop_w.cc dwffld_w.cc \
-@BUILD_WILSON_LIBS_TRUE@              fermact_qprop_array.cc unprec_dwf_fermact_base_array_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              unprec_dwf_fermact_w.cc unprec_dwf_linop_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              dwffld_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              fermact_qprop_array.cc unprec_dwf_fermact_base_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              unprec_dwf_fermact_base_array_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              unprec_dwf_fermact_array_w.cc unprec_dwf_linop_array_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              unprec_ovdwf_fermact_array_w.cc unprec_ovdwf_linop_array_w.cc \
-@BUILD_WILSON_LIBS_TRUE@              unprec_dwf_fermact_base_array_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              readszinqprop_w.cc readszinferm_w.cc writeszinqprop_w.cc quarkprop4_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              overlapbu_linop_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc
@@ -208,10 +208,9 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	mesons_w.cc curcor2_w.cc lwldslash_w.cc formfac_w.cc \
 	sink_smear2_w.cc barcomp_w.cc transf_w.cc ldwfdslash_w.cc \
 	fermact_qprop.cc unprec_wilson_fermact_w.cc \
-	unprec_wilson_linop_w.cc unprec_wilson_dsdu_w.cc \
-	unprec_dwf_fermact_w.cc unprec_dwf_linop_w.cc \
-	unprec_dwf_dsdu_w.cc unprec_dwf_qprop_w.cc dwffld_w.cc \
-	fermact_qprop_array.cc unprec_dwf_fermact_base_array_w.cc \
+	unprec_wilson_linop_w.cc unprec_dwf_fermact_w.cc \
+	unprec_dwf_linop_w.cc dwffld_w.cc fermact_qprop_array.cc \
+	unprec_dwf_fermact_base_w.cc unprec_dwf_fermact_base_array_w.cc \
 	unprec_dwf_fermact_array_w.cc unprec_dwf_linop_array_w.cc \
 	unprec_ovdwf_fermact_array_w.cc unprec_ovdwf_linop_array_w.cc \
 	readszinqprop_w.cc readszinferm_w.cc writeszinqprop_w.cc \
@@ -229,19 +228,16 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 @BUILD_WILSON_LIBS_TRUE@	fermact_qprop.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	unprec_wilson_fermact_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	unprec_wilson_linop_w.$(OBJEXT) \
-@BUILD_WILSON_LIBS_TRUE@	unprec_wilson_dsdu_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	unprec_dwf_fermact_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	unprec_dwf_linop_w.$(OBJEXT) \
-@BUILD_WILSON_LIBS_TRUE@	unprec_dwf_dsdu_w.$(OBJEXT) \
-@BUILD_WILSON_LIBS_TRUE@	unprec_dwf_qprop_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	dwffld_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	fermact_qprop_array.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	unprec_dwf_fermact_base_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	unprec_dwf_fermact_base_array_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	unprec_dwf_fermact_array_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	unprec_dwf_linop_array_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	unprec_ovdwf_fermact_array_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	unprec_ovdwf_linop_array_w.$(OBJEXT) \
-@BUILD_WILSON_LIBS_TRUE@	unprec_dwf_fermact_base_array_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	readszinqprop_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	readszinferm_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	writeszinqprop_w.$(OBJEXT) \
@@ -309,16 +305,14 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/sunfill.Po ./$(DEPDIR)/szin_io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/taproj.Po ./$(DEPDIR)/transf_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unit_check.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/unprec_dwf_dsdu_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_dwf_fermact_array_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_dwf_fermact_base_array_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/unprec_dwf_fermact_base_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_dwf_fermact_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_dwf_linop_array_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_dwf_linop_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/unprec_dwf_qprop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_ovdwf_fermact_array_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_ovdwf_linop_array_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/unprec_wilson_dsdu_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_wilson_fermact_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_wilson_linop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/writemilc.Po ./$(DEPDIR)/writeszin.Po \
@@ -440,16 +434,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/taproj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/transf_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unit_check.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_dwf_dsdu_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_dwf_fermact_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_dwf_fermact_base_array_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_dwf_fermact_base_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_dwf_fermact_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_dwf_linop_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_dwf_linop_w.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_dwf_qprop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_ovdwf_fermact_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_ovdwf_linop_array_w.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_wilson_dsdu_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_wilson_fermact_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_wilson_linop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writemilc.Po@am__quote@
