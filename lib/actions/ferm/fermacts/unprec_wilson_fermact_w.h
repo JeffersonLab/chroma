@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_wilson_fermact_w.h,v 1.11 2003-11-20 05:43:41 edwards Exp $
+// $Id: unprec_wilson_fermact_w.h,v 1.12 2003-12-02 15:45:04 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -32,25 +32,14 @@ public:
   void create(const Real& _Mass);
 
   //! Produce a linear operator for this action
-  const LinearOperator<LatticeFermion>* linOp(const multi1d<LatticeColorMatrix>& u) const;
+  const LinearOperator<LatticeFermion>* linOp(const ConnectState& state) const;
 
   //! Produce a linear operator M^dag.M for this action
-  const LinearOperator<LatticeFermion>* lMdagM(const multi1d<LatticeColorMatrix>& u) const;
-
-#if 0
-// THIS SHOULD NOT BE NEEDED
-  //! Compute quark propagator
-  void qprop(LatticeFermion& psi, 
-	     const multi1d<LatticeColorMatrix>& u, 
-	     const LatticeFermion& chi, 
-	     enum InvType invType,
-	     const Real& RsdCG, 
-	     int MaxCG, int& ncg_had) const;
-#endif
+  const LinearOperator<LatticeFermion>* lMdagM(const ConnectState& state) const;
 
   //! Compute dS_f/dU
   void dsdu(multi1d<LatticeColorMatrix>& result,
-	    const multi1d<LatticeColorMatrix>& u,
+	    const ConnectState& state,
 	    const LatticeFermion& psi) const;
 
   //! Destructor is automatic

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev4d_fermact_w.h,v 1.5 2003-11-23 05:54:57 edwards Exp $
+// $Id: zolotarev4d_fermact_w.h,v 1.6 2003-12-02 15:45:04 edwards Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -26,6 +26,10 @@ using namespace QDP;
 class Zolotarev4DFermAct : UnprecWilsonTypeFermAct<LatticeFermion>
 {
 public:
+private:
+  //! Partial constructor
+  Zolotarev4DFermAct();
+
   //! Full constructor
   Zolotarev4DFermAct(const Real& _m_q, const UnprecWilsonTypeFermAct& _M);
 
@@ -36,22 +40,18 @@ public:
    * NOTE: could/should generalize this to some object holding underlying kernel
    * and eigenmodes
    */
-  Zolotarev4dLinOp(const multi1d<LatticeColorMatrix>& _u, 
+  Zolotarev4dLinOp(const EVConnectState<LatticeFermion>& state, 
 		   const Real& _m_q, const UnprecWilsonTypeFermAct& _M,
 		   const multi1d<LatticeFermion>& _EigVec, const multi1d<Real>& _EigVal);
 
   //! Produce a linear operator for this action
-  const LinearOperator<LatticeFermion>* linOp(const multi1d<LatticeColorMatrix>& u) const;
+  const LinearOperator<LatticeFermion> linOp(const EVConnectState<LatticeFermion>& state) const;
 
   //! Produce a linear operator M^dag.M for this action
-  const LinearOperator<LatticeFermion>* lMdagM(const multi1d<LatticeColorMatrix>& u) const;
+  const LinearOperator<LatticeFermion> lMdagM(const EVConnectState<LatticeFermion>& state) const;
 
   //! Destructor is automatic
   ~Zolotarev4DFermAct() {}
-
-private:
-  //! Partial constructor is hidden
-  Zolotarev4DFermAct() {}
 
 private:
   Real m_q;

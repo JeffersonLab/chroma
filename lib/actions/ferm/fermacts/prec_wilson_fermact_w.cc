@@ -1,4 +1,4 @@
-// $Id: prec_wilson_fermact_w.cc,v 1.1 2003-11-22 21:34:01 edwards Exp $
+// $Id: prec_wilson_fermact_w.cc,v 1.2 2003-12-02 15:45:04 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action
  */
@@ -21,25 +21,25 @@ void EvenOddPrecWilsonFermAct::create(const Real& Mass_)
 /*!
  * The operator acts on the odd subset
  *
- * \param u 	    gauge field     	       (Read)
+ * \param state 	    gauge field     	       (Read)
  */
 const EvenOddPrecLinearOperator<LatticeFermion>* 
-EvenOddPrecWilsonFermAct::linOp(const multi1d<LatticeColorMatrix>& u) const
+EvenOddPrecWilsonFermAct::linOp(const ConnectState& state) const
 {
-  return new EvenOddPrecWilsonLinOp(u,Mass);
+  return new EvenOddPrecWilsonLinOp(state.getLinks(),Mass);
 }
 
 //! Produce a M^dag.M linear operator for this action
 /*!
  * The operator acts on the odd subset
  *
- * \param u 	    gauge field     	       (Read)
+ * \param state 	    gauge field     	       (Read)
  */
 const LinearOperator<LatticeFermion>* 
-EvenOddPrecWilsonFermAct::lMdagM(const multi1d<LatticeColorMatrix>& u) const
+EvenOddPrecWilsonFermAct::lMdagM(const ConnectState& state) const
 {
   LinearOperator<LatticeFermion>* mdagm = 
-    new lmdagm<LatticeFermion>(EvenOddPrecWilsonLinOp(u,Mass));
+    new lmdagm<LatticeFermion>(EvenOddPrecWilsonLinOp(state.getLinks(),Mass));
   return mdagm;
 }
 
@@ -53,13 +53,13 @@ EvenOddPrecWilsonFermAct::lMdagM(const multi1d<LatticeColorMatrix>& u) const
  * psi -- [1./(M_dag*M)]*chi_  ( read ) 
  *
  * \param ds_u     result      ( Write )
- * \param u        gauge field ( Read )
+ * \param state    gauge field ( Read )
  * \param psi      solution to linear system ( Read )
  */
 
 void
 EvenOddPrecWilsonFermAct::dsdu(multi1d<LatticeColorMatrix>& ds_u,
-			       const multi1d<LatticeColorMatrix>& u, 
+			       const ConnectState& state,
 			       const LatticeFermion& psi) const
 {
   START_CODE("EvenOddPrecWilsonFermAct::dsdu");
@@ -71,6 +71,8 @@ EvenOddPrecWilsonFermAct::dsdu(multi1d<LatticeColorMatrix>& ds_u,
 
 #error "Not quite correct implementation"
 
+  const multi1d<LatticeColorMatrix>& u = state.getLinks();
+				 
   LatticeColorMatrix utmp_1;
   LatticeFermion phi;
   LatticeFermion rho;
@@ -82,22 +84,23 @@ EvenOddPrecWilsonFermAct::dsdu(multi1d<LatticeColorMatrix>& ds_u,
   int cb;
 
   // Do the usual Wilson fermion dS_f/dU
-  const LinearOperator* A = linOp(u);
+  const LinearOperatorProxy<LatticeFermion> A(linOp(u));
 
   WilsonDslash  D(u);
 
   //  phi = M(u)*psi
-  LatticeFermion phi = A(psi, PLUS);
+  LatticeFermion phi;
+  A(phi, psi, PLUS);
     
-    /* rho = Dslash(0<-1) * psi */
-  rho = D.apply(psi, PLUS, 1);
+  /* rho = Dslash(0<-1) * psi */
+  D.apply(rho, psi, PLUS, 1);
     
   /* phi = (KappaMD^2)*phi = -(KappaMD^2)*M*psi */
   dummy = -(KappaMD*KappaMD);
   phi *= dummy;
     
-    /* sigma = Dslash_dag(0 <- 1) * phi */
-  sigma = D.apply(phi, MINUS, 1);
+  /* sigma = Dslash_dag(0 <- 1) * phi */
+  D.apply(sigma, phi, MINUS, 1);
     
   for(int mu = 0; mu < Nd; ++mu)
   {
@@ -132,8 +135,6 @@ EvenOddPrecWilsonFermAct::dsdu(multi1d<LatticeColorMatrix>& ds_u,
     ds_u[mu][cb] += u[mu][cb] * utmp_1;
       
   }
-
-  delete A;
 #endif
 
   END_CODE("EvenOddPrecWilsonFermAct::dsdu");

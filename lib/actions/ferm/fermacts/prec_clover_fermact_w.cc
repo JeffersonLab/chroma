@@ -1,4 +1,4 @@
-// $Id: prec_clover_fermact_w.cc,v 1.1 2003-11-22 21:34:01 edwards Exp $
+// $Id: prec_clover_fermact_w.cc,v 1.2 2003-12-02 15:45:04 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion action
  */
@@ -25,26 +25,24 @@ void EvenOddPrecCloverFermAct::create(const Real& Mass_, const Real& ClovCoeff_,
 /*!
  * The operator acts on the odd subset
  *
- * \param u 	    gauge field     	       (Read)
+ * \param state	    gauge field     	       (Read)
  */
-const LinearOperator<LatticeFermion>* 
-EvenOddPrecCloverFermAct::linOp(const multi1d<LatticeColorMatrix>& u) const
+const LinearOperator<LatticeFermion>
+EvenOddPrecCloverFermAct::linOp(const ConnectState& state) const
 {
-  return new EvenOddPrecCloverLinOp(u,Mass,ClovCoeff,u0);
+  return LinearOperator<LatticeFermion>(new EvenOddPrecCloverLinOp(state.getLinks(),Mass,ClovCoeff,u0));
 }
 
 //! Produce a M^dag.M linear operator for this action
 /*!
  * The operator acts on the odd subset
  *
- * \param u 	    gauge field     	       (Read)
+ * \param state	    gauge field     	       (Read)
  */
-const LinearOperator<LatticeFermion>* 
-EvenOddPrecCloverFermAct::lMdagM(const multi1d<LatticeColorMatrix>& u) const
+const LinearOperator<LatticeFermion>
+EvenOddPrecCloverFermAct::lMdagM(const ConnectState& state) const
 {
-  LinearOperator<LatticeFermion>* mdagm = 
-    new lmdagm<LatticeFermion>(EvenOddPrecCloverLinOp(u,Mass,ClovCoeff,u0));
-  return mdagm;
+  return LinearOperator<LatticeFermion>(EvenOddPrecCloverLinOp(state.getLinks(),Mass,ClovCoeff,u0));
 }
 
 
@@ -57,13 +55,13 @@ EvenOddPrecCloverFermAct::lMdagM(const multi1d<LatticeColorMatrix>& u) const
  * psi -- [1./(M_dag*M)]*chi_  ( read ) 
  *
  * \param ds_u     result      ( Write )
- * \param u        gauge field ( Read )
+ * \param state    gauge field ( Read )
  * \param psi      solution to linear system ( Read )
  */
 
 void
 EvenOddPrecCloverFermAct::dsdu(multi1d<LatticeColorMatrix>& ds_u,
-			       const multi1d<LatticeColorMatrix>& u, 
+			       const ConnectState& state,
 			       const LatticeFermion& psi) const
 {
   START_CODE("EvenOddPrecCloverFermAct::dsdu");

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovdwf_fermact_array_w.h,v 1.3 2003-11-23 05:56:16 edwards Exp $
+// $Id: unprec_ovdwf_fermact_array_w.h,v 1.4 2003-12-02 15:45:04 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Overlap-DWF (Borici) action
  */
@@ -39,13 +39,13 @@ public:
   Real quark_mass() const {return m_q;}
 
   //! Produce a linear operator for this action
-  const LinearOperator< multi1d<LatticeFermion> >* linOp(const multi1d<LatticeColorMatrix>& u) const;
+  const LinearOperator< multi1d<LatticeFermion> >* linOp(const ConnectState& state) const;
 
   //! Produce a linear operator M^dag.M for this action
-  const LinearOperator< multi1d<LatticeFermion> >* lMdagM(const multi1d<LatticeColorMatrix>& u) const;
+  const LinearOperator< multi1d<LatticeFermion> >* lMdagM(const ConnectState& state) const;
 
   //! Produce a linear operator for this action but with quark mass 1
-  const LinearOperator< multi1d<LatticeFermion> >* linOpPV(const multi1d<LatticeColorMatrix>& u) const;
+  const LinearOperator< multi1d<LatticeFermion> >* linOpPV(const ConnectState& state) const;
 
   //! Destructor is automatic
   ~UnprecOvDWFermActArray() {}

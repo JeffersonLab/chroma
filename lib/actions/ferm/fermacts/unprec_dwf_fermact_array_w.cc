@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_fermact_array_w.cc,v 1.3 2003-11-15 03:54:40 edwards Exp $
+// $Id: unprec_dwf_fermact_array_w.cc,v 1.4 2003-12-02 15:45:04 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion action
  */
@@ -33,12 +33,12 @@ void UnprecDWFermActArray::create(const Real& WilsonMass_, const Real& m_q_, int
  *
  * The operator acts on the entire lattice
  *
- * \param u 	    gauge field     	       (Read)
+ * \param state	    gauge field     	       (Read)
  */
 const LinearOperator<multi1d<LatticeFermion> >* 
-UnprecDWFermActArray::linOp(const multi1d<LatticeColorMatrix>& u) const
+UnprecDWFermActArray::linOp(const ConnectState& state) const
 {
-  return new UnprecDWLinOpArray(u,WilsonMass,m_q,N5);
+  return new UnprecDWLinOpArray(state.getLinks(),WilsonMass,m_q,N5);
 }
 
 //! Produce a M^dag.M linear operator for this action
@@ -47,14 +47,12 @@ UnprecDWFermActArray::linOp(const multi1d<LatticeColorMatrix>& u) const
  *
  * The operator acts on the entire lattice
  *
- * \param u 	    gauge field     	       (Read)
+ * \param state	    gauge field     	       (Read)
  */
 const LinearOperator<multi1d<LatticeFermion> >* 
-UnprecDWFermActArray::lMdagM(const multi1d<LatticeColorMatrix>& u) const
+UnprecDWFermActArray::lMdagM(const ConnectState& state) const
 {
-  LinearOperator<multi1d<LatticeFermion> >* mdagm = 
-    new lmdagm<multi1d<LatticeFermion> >(UnprecDWLinOpArray(u,WilsonMass,m_q,N5));
-  return mdagm;
+  return new lmdagm<multi1d<LatticeFermion> >(UnprecDWLinOpArray(state.getLinks(),WilsonMass,m_q,N5));
 }
 
 //! Produce a linear operator for this action but with quark mass 1
@@ -63,11 +61,11 @@ UnprecDWFermActArray::lMdagM(const multi1d<LatticeColorMatrix>& u) const
  *
  * The operator acts on the entire lattice
  *
- * \param u 	    gauge field     	       (Read)
+ * \param state	    gauge field     	       (Read)
  */
 const LinearOperator<multi1d<LatticeFermion> >* 
-UnprecDWFermActArray::linOpPV(const multi1d<LatticeColorMatrix>& u) const
+UnprecDWFermActArray::linOpPV(const ConnectState& state) const
 {
-  return new UnprecDWLinOpArray(u,WilsonMass,1.0,N5);  // fixed to quark mass 1
+  return new UnprecDWLinOpArray(state.getLinks(),WilsonMass,1.0,N5);  // fixed to quark mass 1
 }
 

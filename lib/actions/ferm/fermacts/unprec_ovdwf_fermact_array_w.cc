@@ -1,4 +1,4 @@
-// $Id: unprec_ovdwf_fermact_array_w.cc,v 1.2 2003-11-15 03:53:31 edwards Exp $
+// $Id: unprec_ovdwf_fermact_array_w.cc,v 1.3 2003-12-02 15:45:04 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Overlap-DWF (Borici) action
  */
@@ -33,12 +33,12 @@ void UnprecOvDWFermActArray::create(const Real& WilsonMass_, const Real& m_q_, i
  *
  * The operator acts on the entire lattice
  *
- * \param u 	    gauge field     	       (Read)
+ * \param state	    gauge field     	       (Read)
  */
 const LinearOperator<multi1d<LatticeFermion> >* 
-UnprecOvDWFermActArray::linOp(const multi1d<LatticeColorMatrix>& u) const
+UnprecOvDWFermActArray::linOp(const ConnectState& state) const
 {
-  return new UnprecOvDWLinOpArray(u,WilsonMass,m_q,N5);
+  return new UnprecOvDWLinOpArray(state.getLinks(),WilsonMass,m_q,N5);
 }
 
 
@@ -48,14 +48,12 @@ UnprecOvDWFermActArray::linOp(const multi1d<LatticeColorMatrix>& u) const
  *
  * The operator acts on the entire lattice
  *
- * \param u 	    gauge field     	       (Read)
+ * \param state	    gauge field     	       (Read)
  */
 const LinearOperator<multi1d<LatticeFermion> >* 
-UnprecOvDWFermActArray::lMdagM(const multi1d<LatticeColorMatrix>& u) const
+UnprecOvDWFermActArray::lMdagM(const ConnectState& state) const
 {
-  LinearOperator<multi1d<LatticeFermion> >* mdagm = 
-    new lmdagm<multi1d<LatticeFermion> >(UnprecOvDWLinOpArray(u,WilsonMass,m_q,N5));
-  return mdagm;
+  return new lmdagm<multi1d<LatticeFermion> >(UnprecOvDWLinOpArray(state.getLinks(),WilsonMass,m_q,N5));
 }
 
 
@@ -65,11 +63,11 @@ UnprecOvDWFermActArray::lMdagM(const multi1d<LatticeColorMatrix>& u) const
  *
  * The operator acts on the entire lattice
  *
- * \param u 	    gauge field     	       (Read)
+ * \param state	    gauge field     	       (Read)
  */
 const LinearOperator<multi1d<LatticeFermion> >* 
-UnprecOvDWFermActArray::linOpPV(const multi1d<LatticeColorMatrix>& u) const
+UnprecOvDWFermActArray::linOpPV(const ConnectState& state) const
 {
-  return new UnprecOvDWLinOpArray(u,WilsonMass,1.0,N5);  // fixed to quark mass 1
+  return new UnprecOvDWLinOpArray(state.getLinks(),WilsonMass,1.0,N5);  // fixed to quark mass 1
 }
 

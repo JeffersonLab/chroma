@@ -1,4 +1,4 @@
-// $Id: zolotarev4d_fermact_w.cc,v 1.2 2003-10-20 20:31:50 edwards Exp $
+// $Id: zolotarev4d_fermact_w.cc,v 1.3 2003-12-02 15:45:04 edwards Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -23,30 +23,29 @@ void Zolotarev4DFermAct::Zolotarev4DFermAct(const Real& _m_q, const UnprecWilson
 
 //! Produce a linear operator for this action
 /*!
- * \ingroup fermact
- *
  * The operator acts on the entire lattice
  *
- * \param u 	    gauge field     	       (Read)
+ * \param state	    gauge field     	       (Read)
  */
 const LinearOperator<LatticeFermion>* 
-Zolotarev4DFermAct::linOp(const multi1d<LatticeColorMatrix>& u) const
+Zolotarev4DFermAct::linOp(const ConnectState& state) const
 {
-  return new UnprecWilsonLinOp(u,Kappa);
+  return new UnprecWilsonLinOp(state.getLinks(),Kappa);
 }
 
 //! Produce a M^dag.M linear operator for this action
 /*!
- * \ingroup fermact
+ * Should use special form when we know we have exact chiral symmetry
  *
  * The operator acts on the entire lattice
  *
- * \param u 	    gauge field     	       (Read)
+ * \param state	    gauge field     	       (Read)
  */
 const LinearOperator<LatticeFermion>* 
-Zolotarev4DFermAct::lMdagM(const multi1d<LatticeColorMatrix>& u) const
+Zolotarev4DFermAct::lMdagM(const ConnectState& state) const
 {
-  LinearOperator<LatticeFermion>* mdagm = new lmdagm(UnprecWilsonLinOp(u,Kappa));
-  return mdagm;
+  //  *****NOTE***** 
+  // Should use special form when we know we have exact chiral symmetry
+  return new lmdagm(UnprecWilsonLinOp(state.getLinks(),Kappa));
 }
 

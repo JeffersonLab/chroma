@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovext_fermact_array_w.h,v 1.3 2003-11-23 05:55:46 edwards Exp $
+// $Id: unprec_ovext_fermact_array_w.h,v 1.4 2003-12-02 15:45:04 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -40,10 +40,10 @@ public:
   Real quark_mass() const {return m_q;}
 
   //! Produce a linear operator for this action
-  const LinearOperator< multi1d<LatticeFermion> >* linOp(const multi1d<LatticeColorMatrix>& u) const;
+  const LinearOperator< multi1d<LatticeFermion> >* linOp(const ConnectState& state) const;
 
   //! Produce a linear operator M^dag.M for this action
-  const LinearOperator< multi1d<LatticeFermion> >* lMdagM(const multi1d<LatticeColorMatrix>& u) const;
+  const LinearOperator< multi1d<LatticeFermion> >* lMdagM(const ConnectState& state) const;
 
   //! Compute quark propagator over base type
   /*! 
@@ -60,7 +60,7 @@ public:
    * NOTE: maybe this should produce a quark prop foundry class object 
    */
   void qprop(LatticeFermion& psi, 
-	     const multi1d<LatticeColorMatrix>& u, 
+	     const ConnectState& state, 
 	     const LatticeFermion& chi, 
 	     enum InvType invType,
 	     const Real& RsdCG, 

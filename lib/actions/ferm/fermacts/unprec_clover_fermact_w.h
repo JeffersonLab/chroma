@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_clover_fermact_w.h,v 1.2 2003-11-23 05:58:23 edwards Exp $
+// $Id: unprec_clover_fermact_w.h,v 1.3 2003-12-02 15:45:04 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Clover fermion action
  */
@@ -33,10 +33,10 @@ public:
   void create(const Real& Mass_, const Real& ClovCoeff_, const Real& u0_);
 
   //! Produce a linear operator for this action
-  const LinearOperator<LatticeFermion>* linOp(const multi1d<LatticeColorMatrix>& u) const;
+  const LinearOperator<LatticeFermion> linOp(const ConnectState& state) const;
 
   //! Produce a linear operator M^dag.M for this action
-  const LinearOperator<LatticeFermion>* lMdagM(const multi1d<LatticeColorMatrix>& u) const;
+  const LinearOperator<LatticeFermion> lMdagM(const ConnectState& state) const;
 
   //! Destructor is automatic
   ~UnprecCloverFermAct() {}

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_clover_fermact_w.h,v 1.1 2003-11-22 21:34:01 edwards Exp $
+// $Id: prec_clover_fermact_w.h,v 1.2 2003-12-02 15:45:04 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion action
  */
@@ -34,14 +34,14 @@ public:
   void create(const Real& Mass_, const Real& ClovCoeff_, const Real& u0_);
 
   //! Produce a linear operator for this action
-  const EvenOddPrecLinearOperator<LatticeFermion>* linOp(const multi1d<LatticeColorMatrix>& u) const;
+  const EvenOddPrecLinearOperator<LatticeFermion> linOp(const ConnectState& state) const;
 
   //! Produce a linear operator M^dag.M for this action
-  const LinearOperator<LatticeFermion>* lMdagM(const multi1d<LatticeColorMatrix>& u) const;
+  const LinearOperator<LatticeFermion> lMdagM(const ConnectState& state) const;
 
   //! Override - compute dS_f/dU
   void dsdu(multi1d<LatticeColorMatrix>& result,
-	    const multi1d<LatticeColorMatrix>& u,
+	    const ConnectState& state,
 	    const LatticeFermion& psi) const;
 
   //! Destructor is automatic

@@ -1,4 +1,4 @@
-// $Id: unprec_wilson_fermact_w.cc,v 1.9 2003-11-22 21:32:10 edwards Exp $
+// $Id: unprec_wilson_fermact_w.cc,v 1.10 2003-12-02 15:45:04 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -9,8 +9,7 @@
 #include "actions/ferm/linop/lmdagm_w.h"
 
 //! Creation routine
-/*! \ingroup fermact
- *
+/*!
  * \param Mass_   fermion kappa    (Read)
  */
 void UnprecWilsonFermAct::create(const Real& Mass_)
@@ -21,31 +20,26 @@ void UnprecWilsonFermAct::create(const Real& Mass_)
 
 //! Produce a linear operator for this action
 /*!
- * \ingroup fermact
- *
  * The operator acts on the entire lattice
  *
- * \param u 	    gauge field     	       (Read)
+ * \param state	    gauge field     	       (Read)
  */
-const LinearOperator<LatticeFermion>* 
-UnprecWilsonFermAct::linOp(const multi1d<LatticeColorMatrix>& u) const
+const LinearOperator<LatticeFermion>*
+UnprecWilsonFermAct::linOp(const ConnectState& state) const
 {
-  return new UnprecWilsonLinOp(u,Mass);
+  return new UnprecWilsonLinOp(state.getLinks(),Mass);
 }
 
 //! Produce a M^dag.M linear operator for this action
 /*!
- * \ingroup fermact
- *
  * The operator acts on the entire lattice
  *
- * \param u 	    gauge field     	       (Read)
+ * \param state    gauge field     	       (Read)
  */
-const LinearOperator<LatticeFermion>* 
-UnprecWilsonFermAct::lMdagM(const multi1d<LatticeColorMatrix>& u) const
+const LinearOperator<LatticeFermion>*
+UnprecWilsonFermAct::lMdagM(const ConnectState& state) const
 {
-  LinearOperator<LatticeFermion>* mdagm = new lmdagm<LatticeFermion>(UnprecWilsonLinOp(u,Mass));
-  return mdagm;
+  return new lmdagm<LatticeFermion>(UnprecWilsonLinOp(state.getLinks(),Mass));
 }
 
 
@@ -58,13 +52,13 @@ UnprecWilsonFermAct::lMdagM(const multi1d<LatticeColorMatrix>& u) const
  * psi -- [1./(M_dag*M)]*chi_  ( read ) 
  *
  * \param ds_u     result      ( Write )
- * \param u        gauge field ( Read )
+ * \param state    gauge field ( Read )
  * \param psi      solution to linear system ( Read )
  */
 
 void
 UnprecWilsonFermAct::dsdu(multi1d<LatticeColorMatrix> & ds_u,
-			  const multi1d<LatticeColorMatrix>& u, 
+			  const ConnectState& state,
 			  const LatticeFermion& psi) const
 {
   START_CODE("UnprecWilsonFermAct::dsdu");

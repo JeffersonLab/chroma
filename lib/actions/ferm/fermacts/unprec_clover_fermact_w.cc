@@ -1,4 +1,4 @@
-// $Id: unprec_clover_fermact_w.cc,v 1.2 2003-11-23 05:58:23 edwards Exp $
+// $Id: unprec_clover_fermact_w.cc,v 1.3 2003-12-02 15:45:04 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Clover fermion action
  */
@@ -25,25 +25,23 @@ void UnprecCloverFermAct::create(const Real& Mass_, const Real& ClovCoeff_, cons
 /*!
  * The operator acts on the entire lattice
  *
- * \param u 	    gauge field     	       (Read)
+ * \param state	    gauge field     	       (Read)
  */
 const LinearOperator<LatticeFermion>* 
-UnprecCloverFermAct::linOp(const multi1d<LatticeColorMatrix>& u) const
+UnprecCloverFermAct::linOp(const ConnectState& state) const
 {
-  return new UnprecCloverLinOp(u,Mass,ClovCoeff,u0);
+  return new UnprecCloverLinOp(state.getLinks(),Mass,ClovCoeff,u0);
 }
 
 //! Produce a M^dag.M linear operator for this action
 /*!
  * The operator acts on the entire lattice
  *
- * \param u 	    gauge field     	       (Read)
+ * \param state	    gauge field     	       (Read)
  */
 const LinearOperator<LatticeFermion>* 
-UnprecCloverFermAct::lMdagM(const multi1d<LatticeColorMatrix>& u) const
+UnprecCloverFermAct::lMdagM(const ConnectState& state) const
 {
-  LinearOperator<LatticeFermion>* mdagm = 
-    new lmdagm<LatticeFermion>(UnprecCloverLinOp(u,Mass,ClovCoeff,u0));
-  return mdagm;
+  return new lmdagm<LatticeFermion>(UnprecCloverLinOp(state.getLinks(),Mass,ClovCoeff,u0));
 }
 

@@ -1,4 +1,4 @@
-// $Id: prec_dwf_fermact_base_array_w.cc,v 1.3 2003-11-25 04:16:42 edwards Exp $
+// $Id: prec_dwf_fermact_base_array_w.cc,v 1.4 2003-12-02 15:45:04 edwards Exp $
 /*! \file
  *  \brief Base class for even-odd preconditioned domain-wall-like fermion actions
  */
@@ -15,7 +15,7 @@ using namespace QDP;
 //! Propagator of an even-odd preconditioned DWF linear operator
 /*!
  * \param psi      quark propagator ( Modify )
- * \param u        gauge field ( Read )
+ * \param state    gauge field ( Read )
  * \param chi      source ( Read )
  * \param invType  inverter type ( Read (
  * \param RsdCG    CG (or MR) residual used here ( Read )
@@ -25,7 +25,7 @@ using namespace QDP;
 
 void 
 EvenOddPrecDWFermActBaseArray::qprop(LatticeFermion& psi, 
-				     const multi1d<LatticeColorMatrix>& u, 
+				     const ConnectState& state, 
 				     const LatticeFermion& chi, 
 				     enum InvType invType,
 				     const Real& RsdCG, 
@@ -50,11 +50,9 @@ EvenOddPrecDWFermActBaseArray::qprop(LatticeFermion& psi,
   // tmp5 = D5(1) . chi5 =  D5(1) . P . (chi,0,0,..,0)^T 
   {
     // Create a Pauli-Villars linop and use it for just this part
-    const LinearOperator< multi1d<LatticeFermion> >* B = linOpPV(u);
+    const LinearOperatorProxy< multi1d<LatticeFermion> > B(linOpPV(state));
 
-    (*B)(tmp5, chi5, PLUS);
-
-    delete B;
+    B(tmp5, chi5, PLUS);
   }
 
   //  psi5 = (psi,0,0,0,...,0)^T
@@ -63,16 +61,16 @@ EvenOddPrecDWFermActBaseArray::qprop(LatticeFermion& psi,
   psi5[0] = psi;
 
   // Construct the linear operator
-  const EvenOddPrecLinearOperator< multi1d<LatticeFermion> >* A = linOp(u);
+  const EvenOddPrecLinearOperatorProxy< multi1d<LatticeFermion> > A(linOp(state));
 
   /* Step (i) */
-  /* chi5 = L^(-1) * tmp5 = [ tmp5_o - D_oe*A_ee^-1*tmp5_e ] */
+  /* chi5 = L^(-1) * tmp5 = [ tmp5_o - D_oeA_ee^-1*tmp5_e ] */
   {
     multi1d<LatticeFermion> tmp1(N5);
     multi1d<LatticeFermion> tmp2(N5);
 
-    A->evenEvenInvLinOp(tmp1, tmp5, PLUS);
-    A->oddEvenLinOp(tmp2, tmp1, PLUS);
+    A.evenEvenInvLinOp(tmp1, tmp5, PLUS);
+    A.oddEvenLinOp(tmp2, tmp1, PLUS);
     for(int n=0; n < N5; ++n)
     {
       chi5[n][rb[0]] = tmp5[n];
@@ -84,21 +82,21 @@ EvenOddPrecDWFermActBaseArray::qprop(LatticeFermion& psi,
   {
   case CG_INVERTER: 
     // tmp5 = D5^\dagger(m) . chi5 =  D5^dagger(m) . L^-1 . D5(1) . P . (chi,0,0,..,0)^T
-    (*A)(tmp5, chi5, MINUS);
+    A(tmp5, chi5, MINUS);
     
     // psi5 = (D^dag * D)^(-1) tmp5
-    InvCG2 (*A, tmp5, psi5, RsdCG, MaxCG, n_count);
+    InvCG2 (A, tmp5, psi5, RsdCG, MaxCG, n_count);
     break;
   
 #if 0
   case MR_INVERTER:
     // psi5 = D^(-1) * chi5
-    InvMR (*A, chi5, psi5, MRover, RsdCG, MaxCG, n_count);
+    InvMR (A, chi5, psi5, MRover, RsdCG, MaxCG, n_count);
     break;
 
   case BICG_INVERTER:
     // psi5 = D^(-1) chi5
-    InvBiCG (*A, chi5, psi5, RsdCG, MaxCG, n_count);
+    InvBiCG (A, chi5, psi5, RsdCG, MaxCG, n_count);
     break;
 #endif
   
@@ -117,10 +115,10 @@ EvenOddPrecDWFermActBaseArray::qprop(LatticeFermion& psi,
     multi1d<LatticeFermion> tmp1(N5);
     multi1d<LatticeFermion> tmp2(N5);
 
-    A->evenOddLinOp(tmp1, psi5, PLUS);
+    A.evenOddLinOp(tmp1, psi5, PLUS);
     for(int n=0; n < N5; ++n)
       tmp2[n][rb[0]] = chi5[n] - tmp1[n];
-    A->evenEvenInvLinOp(psi5, tmp2, PLUS);
+    A.evenEvenInvLinOp(psi5, tmp2, PLUS);
   }
 
   // Overall normalization
@@ -131,9 +129,6 @@ EvenOddPrecDWFermActBaseArray::qprop(LatticeFermion& psi,
 
   // Normalize and remove contact term
   psi = ftmp1*(tmp5[0] - chi);
-
-  // Call the virtual destructor of A
-  delete A;
 
   END_CODE("EvenOddPrecDWTypeFermActBaseArray::qprop");
 }

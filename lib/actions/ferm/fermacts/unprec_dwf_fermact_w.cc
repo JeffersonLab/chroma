@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_fermact_w.cc,v 1.3 2003-11-09 22:33:01 edwards Exp $
+// $Id: unprec_dwf_fermact_w.cc,v 1.4 2003-12-02 15:45:04 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion action
  */
@@ -24,31 +24,26 @@ void UnprecDWFermAct::create(const Real& WilsonMass_, const Real& m_q_)
 
 //! Produce a linear operator for this action
 /*!
- * \ingroup fermact
- *
  * The operator acts on the entire lattice
  *
- * \param u 	    gauge field     	       (Read)
+ * \param state	    gauge field     	       (Read)
  */
 const LinearOperator<LatticeDWFermion>* 
-UnprecDWFermAct::linOp(const multi1d<LatticeColorMatrix>& u) const
+UnprecDWFermAct::linOp(const ConnectState& state) const
 {
-  return new UnprecDWLinOp(u,WilsonMass,m_q);
+  return new UnprecDWLinOp(state.getLinks(),WilsonMass,m_q);
 }
 
 //! Produce a M^dag.M linear operator for this action
 /*!
- * \ingroup fermact
- *
  * The operator acts on the entire lattice
  *
- * \param u 	    gauge field     	       (Read)
+ * \param state	    gauge field     	       (Read)
  */
 const LinearOperator<LatticeDWFermion>* 
-UnprecDWFermAct::lMdagM(const multi1d<LatticeColorMatrix>& u) const
+UnprecDWFermAct::lMdagM(const ConnectState& state) const
 {
-  LinearOperator<LatticeDWFermion>* mdagm = new lmdagm<LatticeDWFermion>(UnprecDWLinOp(u,WilsonMass,m_q));
-  return mdagm;
+  return new lmdagm<LatticeDWFermion>(UnprecDWLinOp(state.getLinks(),WilsonMass,m_q));
 }
 
 //! Produce a linear operator for this action but with quark mass 1
@@ -57,11 +52,11 @@ UnprecDWFermAct::lMdagM(const multi1d<LatticeColorMatrix>& u) const
  *
  * The operator acts on the entire lattice
  *
- * \param u 	    gauge field     	       (Read)
+ * \param state	    gauge field     	       (Read)
  */
 const LinearOperator<LatticeDWFermion>* 
-UnprecDWFermAct::linOpPV(const multi1d<LatticeColorMatrix>& u) const
+UnprecDWFermAct::linOpPV(const ConnectState& state) const
 {
-  return new UnprecDWLinOp(u,WilsonMass,1.0);  // fixed to quark mass 1
+  return new UnprecDWLinOp(state.getLinks(),WilsonMass,1.0);  // fixed to quark mass 1
 }
 

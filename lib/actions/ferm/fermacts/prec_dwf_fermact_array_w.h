@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_fermact_array_w.h,v 1.1 2003-11-23 05:54:14 edwards Exp $
+// $Id: prec_dwf_fermact_array_w.h,v 1.2 2003-12-02 15:45:04 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -42,13 +42,13 @@ public:
   Real quark_mass() const {return m_q;}
 
   //! Produce a linear operator for this action
-  const EvenOddPrecLinearOperator< multi1d<LatticeFermion> >* linOp(const multi1d<LatticeColorMatrix>& u) const;
+  const EvenOddPrecLinearOperator< multi1d<LatticeFermion> >* linOp(const ConnectState& state) const;
 
   //! Produce a linear operator M^dag.M for this action
-  const LinearOperator< multi1d<LatticeFermion> >* lMdagM(const multi1d<LatticeColorMatrix>& u) const;
+  const LinearOperator< multi1d<LatticeFermion> >* lMdagM(const ConnectState& state) const;
 
   //! Produce a linear operator for this action but with quark mass 1
-  const LinearOperator< multi1d<LatticeFermion> >* linOpPV(const multi1d<LatticeColorMatrix>& u) const;
+  const LinearOperator< multi1d<LatticeFermion> >* linOpPV(const ConnectState& state) const;
 
   //! Destructor is automatic
   ~EvenOddPrecDWFermActArray() {}

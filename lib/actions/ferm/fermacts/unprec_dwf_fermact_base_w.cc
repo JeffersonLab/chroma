@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_fermact_base_w.cc,v 1.3 2003-11-23 05:56:51 edwards Exp $
+// $Id: unprec_dwf_fermact_base_w.cc,v 1.4 2003-12-02 15:45:04 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned domain-wall-like fermion actions
  */
@@ -14,7 +14,7 @@ using namespace QDP;
 /*!
  *
  * \param psi      quark propagator ( Modify )
- * \param u        gauge field ( Read )
+ * \param state    gauge field ( Read )
  * \param chi      source ( Read )
  * \param invType  inverter type ( Read (
  * \param RsdCG    CG (or MR) residual used here ( Read )
@@ -24,7 +24,7 @@ using namespace QDP;
 
 void 
 UnprecDWFermActBase::qprop(LatticeFermion& psi, 
-			   const multi1d<LatticeColorMatrix>& u, 
+			   const ConnectState& state, 
 			   const LatticeFermion& chi, 
 			   enum InvType invType,
 			   const Real& RsdCG, 
@@ -47,11 +47,9 @@ UnprecDWFermActBase::qprop(LatticeFermion& psi,
   // tmp5 = D5(1) . chi5 =  D5(1) . P . (chi,0,0,..,0)^T 
   {
     // Create a Pauli-Villars linop and use it for just this part
-    const LinearOperator<LatticeDWFermion>* B = linOpPV(u);
+    const LinearOperatorProxy<LatticeDWFermion> B(linOpPV(state));
 
-    (*B)(tmp5, chi5, PLUS);
-
-    delete B;
+    B(tmp5, chi5, PLUS);
   }
 
   //  psi5 = (psi,0,0,0,...,0)^T
@@ -62,27 +60,27 @@ UnprecDWFermActBase::qprop(LatticeFermion& psi,
   QDPIO::cout << "|chi5|^2 = " << norm2(chi5) << endl;
 
   // Construct the linear operator
-  const LinearOperator<LatticeDWFermion>* A = linOp(u);
+  const LinearOperatorProxy<LatticeDWFermion> A(linOp(state));
 
   switch(invType)
   {
   case CG_INVERTER: 
     // chi5 = D5^\dagger(m) . tmp5 =  D5^dagger(m) . D5(1) . P . (chi,0,0,..,0)^T
-    (*A)(chi5, tmp5, MINUS);
+    A(chi5, tmp5, MINUS);
     
     // psi5 = (D^dag * D)^(-1) chi5
-    InvCG2 (*A, chi5, psi5, RsdCG, MaxCG, n_count);
+    InvCG2 (A, chi5, psi5, RsdCG, MaxCG, n_count);
     break;
   
 #if 0
   case MR_INVERTER:
     // psi5 = D^(-1) * tmp5
-    InvMR (*A, tmp5, psi5, MRover, RsdCG, MaxCG, n_count);
+    InvMR (A, tmp5, psi5, MRover, RsdCG, MaxCG, n_count);
     break;
 
   case BICG_INVERTER:
     // psi5 = D^(-1) tmp5
-    InvBiCG (*A, tmp5, psi5, RsdCG, MaxCG, n_count);
+    InvBiCG (A, tmp5, psi5, RsdCG, MaxCG, n_count);
     break;
 #endif
   
@@ -103,9 +101,6 @@ UnprecDWFermActBase::qprop(LatticeFermion& psi,
 
   // Normalize and remove contact term
   psi = ftmp1*(peekDW(tmp5, 0) - chi);
-
-  // Call the virtual destructor of A
-  delete A;
 
   END_CODE("UnprecDWFermActBase::qprop");
 }
