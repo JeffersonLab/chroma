@@ -7,6 +7,8 @@
 #include "io/eigen_io.h"
 #include "io/overlap_state_info.h"
 
+#include "actions/ferm/fermacts/overlap_fermact_base_w.h"
+
 using namespace std;
 using namespace QDP;
 
@@ -31,6 +33,7 @@ class Zolotarev4DFermActParams : public FermActParams {
   int   ReorthFreqInner;
 
   ZolotarevStateInfo StateInfo;
+  OverlapInnerSolverType InnerSolverType;
 
   // Destructor
   ~Zolotarev4DFermActParams() {
@@ -43,7 +46,7 @@ class Zolotarev4DFermActParams : public FermActParams {
   }
 
   // Copy
-  Zolotarev4DFermActParams(const Zolotarev4DFermActParams& p) : AuxFermActHandle(p.AuxFermActHandle->clone()), Mass(p.Mass), RatPolyDeg(p.RatPolyDeg), RsdCGInner(p.RsdCGInner), MaxCGInner(p.MaxCGInner), ReorthFreqInner(p.ReorthFreqInner), StateInfo(p.StateInfo) {}
+  Zolotarev4DFermActParams(const Zolotarev4DFermActParams& p) : AuxFermActHandle(p.AuxFermActHandle->clone()), Mass(p.Mass), RatPolyDeg(p.RatPolyDeg), RsdCGInner(p.RsdCGInner), MaxCGInner(p.MaxCGInner), ReorthFreqInner(p.ReorthFreqInner), StateInfo(p.StateInfo), InnerSolverType(p.InnerSolverType) {}
 
   // Virtual constructor 
   Zolotarev4DFermActParams* clone(void) const { 
@@ -56,6 +59,8 @@ class Zolotarev4DFermActParams : public FermActParams {
 };
 
 
+void read(XMLReader& xml_in, const string& path, OverlapInnerSolverType& p);
+void write(XMLWriter& xml_out, const string& path, const OverlapInnerSolverType& p);
 void write(XMLWriter& xml_out, const string& path, const Zolotarev4DFermActParams& p);
 
 #endif

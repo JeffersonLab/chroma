@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: overlap_fermact_base_w.h,v 1.6 2004-01-23 10:35:36 bjoo Exp $
+// $Id: overlap_fermact_base_w.h,v 1.7 2004-05-03 11:21:43 bjoo Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -11,6 +11,11 @@
 #include "meas/eig/ischiral_w.h"
 #include "actions/ferm/linop/lgherm_w.h"
 using namespace QDP;
+
+enum OverlapInnerSolverType { 
+  OVERLAP_INNER_CG_SINGLE_PASS,
+  OVERLAP_INNER_CG_DOUBLE_PASS
+};
 
 //! Base class for unpreconditioned overlap-like fermion actions
 /*! \ingroup fermact

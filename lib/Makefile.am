@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.130 2004-05-01 20:16:26 edwards Exp $
+# $Id: Makefile.am,v 1.131 2004-05-03 11:21:42 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -129,7 +129,10 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/dslash_w.h actions/ferm/linop/dwffld_w.h \
 	actions/ferm/linop/linop_w.h \
 	actions/ferm/linop/lmpsim_w.h actions/ferm/linop/lovddag_w.h \
-	actions/ferm/linop/lovlapms_w.h actions/ferm/linop/lwldslash_w.h \
+	actions/ferm/linop/lovlapms_w.h \
+	actions/ferm/linop/lovlap_double_pass_w.h \
+	actions/ferm/linop/lovddag_double_pass_w.h \
+	actions/ferm/linop/lwldslash_w.h \
 	actions/ferm/linop/overlapbu_linop_w.h \
 	actions/ferm/linop/prec_dwf_linop_array_w.h \
 	actions/ferm/linop/prec_ovdwf_linop_array_w.h \
@@ -261,6 +264,7 @@ libchroma_a_SOURCES += baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
               p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc \
 	      zolotarev_coeffs.cc overlap_fermact_base_w.cc lovlapms_w.cc  \
 	      zolotarev4d_fermact_w.cc ischiral_w.cc lovddag_w.cc \
+	      lovlap_double_pass_w.cc lovddag_double_pass_w.cc \
 	      zolotarev5d_fermact_array_w.cc zolotarev5d_linop_array_w.cc \
               wallpionff_w.cc wallnuclff_w.cc wall_qprop_w.cc
 

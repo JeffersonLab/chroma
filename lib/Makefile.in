@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.184 2004-05-01 20:16:43 edwards Exp $
+# $Id: Makefile.in,v 1.185 2004-05-03 11:21:42 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -65,7 +65,10 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/dslash_w.h actions/ferm/linop/dwffld_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/linop_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/lmpsim_w.h actions/ferm/linop/lovddag_w.h \
-@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/lovlapms_w.h actions/ferm/linop/lwldslash_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/lovlapms_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/lovlap_double_pass_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/lovddag_double_pass_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/lwldslash_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/overlapbu_linop_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/prec_dwf_linop_array_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/prec_ovdwf_linop_array_w.h \
@@ -146,6 +149,7 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@              p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc \
 @BUILD_WILSON_LIBS_TRUE@	      zolotarev_coeffs.cc overlap_fermact_base_w.cc lovlapms_w.cc  \
 @BUILD_WILSON_LIBS_TRUE@	      zolotarev4d_fermact_w.cc ischiral_w.cc lovddag_w.cc \
+@BUILD_WILSON_LIBS_TRUE@	      lovlap_double_pass_w.cc lovddag_double_pass_w.cc \
 @BUILD_WILSON_LIBS_TRUE@	      zolotarev5d_fermact_array_w.cc zolotarev5d_linop_array_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              wallpionff_w.cc wallnuclff_w.cc wall_qprop_w.cc
 
@@ -396,6 +400,7 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc rgauge.cc taproj.cc \
 	p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc \
 	zolotarev_coeffs.cc overlap_fermact_base_w.cc lovlapms_w.cc \
 	zolotarev4d_fermact_w.cc ischiral_w.cc lovddag_w.cc \
+	lovlap_double_pass_w.cc lovddag_double_pass_w.cc \
 	zolotarev5d_fermact_array_w.cc zolotarev5d_linop_array_w.cc \
 	wallpionff_w.cc wallnuclff_w.cc wall_qprop_w.cc \
 	lwldslash_w_sse.cc lwldslash_w_pab.cc mesphas_s.cc \
@@ -464,6 +469,8 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc rgauge.cc taproj.cc \
 @BUILD_WILSON_LIBS_TRUE@	zolotarev4d_fermact_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	ischiral_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	lovddag_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	lovlap_double_pass_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	lovddag_double_pass_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	zolotarev5d_fermact_array_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	zolotarev5d_linop_array_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	wallpionff_w.$(OBJEXT) \
@@ -548,7 +555,10 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/ischiral_w.Po ./$(DEPDIR)/klein_gord.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/kyugauge_io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/kyuqprop_io.Po ./$(DEPDIR)/laplacian.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/loops_w.Po ./$(DEPDIR)/lovddag_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/loops_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/lovddag_double_pass_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/lovddag_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/lovlap_double_pass_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/lovlapms_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/lwldslash_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/lwldslash_w_pab.Po \
@@ -759,7 +769,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kyuqprop_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/laplacian.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/loops_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lovddag_double_pass_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lovddag_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lovlap_double_pass_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lovlapms_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_w_pab.Po@am__quote@

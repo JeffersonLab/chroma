@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev4d_fermact_w.h,v 1.21 2004-04-26 11:19:12 bjoo Exp $
+// $Id: zolotarev4d_fermact_w.h,v 1.22 2004-05-03 11:21:43 bjoo Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -16,6 +16,7 @@
 #include "io/overlap_state_info.h"
 
 using namespace QDP;
+
 
 //! 4D Zolotarev variant of Overlap-Dirac operator
 /*!
@@ -39,11 +40,12 @@ public:
 		     const Real& RsdCGinner_,
 		     int MaxCGinner_,
 		     XMLWriter& writer_,
-		     const int ReorthFreqInner_=10
+		     const int ReorthFreqInner_=10,
+		     const OverlapInnerSolverType inner_solver_type_=OVERLAP_INNER_CG_SINGLE_PASS
 		     ) :
     fbc(fbc_), Mact(Mact_), m_q(m_q_), RatPolyDeg(RatPolyDeg_), 
     RsdCGinner(RsdCGinner_), MaxCGinner(MaxCGinner_), writer(writer_),
-    ReorthFreqInner(ReorthFreqInner_)
+    ReorthFreqInner(ReorthFreqInner_), inner_solver_type(inner_solver_type_)
     {}
 
   //! Construct from param struct
@@ -55,7 +57,7 @@ public:
   Zolotarev4DFermAct(const Zolotarev4DFermAct& a) :
     fbc(a.fbc), Mact(a.Mact), m_q(a.m_q), RatPolyDeg(a.RatPolyDeg),
     RsdCGinner(a.RsdCGinner), MaxCGinner(a.MaxCGinner), writer(a.writer),
-    ReorthFreqInner(a.ReorthFreqInner)
+    ReorthFreqInner(a.ReorthFreqInner), inner_solver_type(a.inner_solver_type)
   {};
   
 
@@ -180,6 +182,7 @@ private:
 
   XMLWriter& writer;
   const int ReorthFreqInner;  // How often should we reorthogonalize
+  OverlapInnerSolverType inner_solver_type;
 };
 
 #endif

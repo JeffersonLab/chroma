@@ -1,4 +1,4 @@
-// $Id: zolotarev4d_fermact_w.cc,v 1.18 2004-04-26 15:47:20 bjoo Exp $
+// $Id: zolotarev4d_fermact_w.cc,v 1.19 2004-05-03 11:21:43 bjoo Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -11,7 +11,9 @@
 #include "actions/ferm/fermacts/zolotarev4d_fermact_w.h"
 #include "actions/ferm/fermacts/zolotarev.h"
 #include "actions/ferm/linop/lovlapms_w.h"
+#include "actions/ferm/linop/lovlap_double_pass_w.h"
 #include "actions/ferm/linop/lovddag_w.h"
+#include "actions/ferm/linop/lovddag_double_pass_w.h"
 #include "actions/ferm/linop/lmdagm.h"
 #include "meas/eig/ischiral_w.h"
 
@@ -20,7 +22,7 @@ using namespace std;
 
 Zolotarev4DFermAct::Zolotarev4DFermAct(Handle<FermBC<LatticeFermion> > fbc_,
 				       const Zolotarev4DFermActParams& params,
-				       XMLWriter& writer_) : fbc(fbc_), m_q( params.Mass), RatPolyDeg(params.RatPolyDeg), RsdCGinner(params.RsdCGInner), MaxCGinner(params.MaxCGInner), writer(writer_), ReorthFreqInner(params.ReorthFreqInner)
+				       XMLWriter& writer_) : fbc(fbc_), m_q( params.Mass), RatPolyDeg(params.RatPolyDeg), RsdCGinner(params.RsdCGInner), MaxCGinner(params.MaxCGInner), writer(writer_), ReorthFreqInner(params.ReorthFreqInner), inner_solver_type(params.InnerSolverType)
 {
 
   UnprecWilsonTypeFermAct<LatticeFermion>* S_aux;
@@ -150,6 +152,7 @@ Zolotarev4DFermAct::init(int& numroot,
   write(my_writer, "RatPolyDeg", RatPolyDeg);
   write(my_writer, "type", type);
   write(my_writer, "maxerr", maxerr);
+  write(my_writer, "InnerSolverType", inner_solver_type);
   pop(my_writer);
   
   /* The number of residuals and poles */
@@ -207,6 +210,7 @@ Zolotarev4DFermAct::init(int& numroot,
   write(my_writer, "rootQ", rootQ);
   pop(my_writer);
   
+
   pop(my_writer);
   
   
@@ -225,7 +229,19 @@ Zolotarev4DFermAct::init(int& numroot,
   else {
     QDPIO::cout << "Approximation type " << type << " with R(0) =  infinity"                    << endl;
   }
-  
+
+  switch(inner_solver_type) { 
+  case OVERLAP_INNER_CG_SINGLE_PASS:
+    QDPIO::cout << "Using Single Pass Inner Solver" << endl;
+    break;
+  case OVERLAP_INNER_CG_DOUBLE_PASS:
+    QDPIO::cout << "Using Neuberger/Chu Double Pass Inner Solver" << endl;
+    break;
+  default:
+    QDPIO::cerr << "Unknown inner solver type " << endl;
+    QDP_abort(1);
+  }
+
   /* We will also compute the 'function' of the eigenvalues */
   /* for the Wilson vectors to be projected out. */
   if (NEig > 0)
@@ -297,11 +313,23 @@ Zolotarev4DFermAct::linOp(Handle<const ConnectState> state_) const
   
   /* Finally construct and pack the operator */
   /* This is the operator of the form (1/2)*[(1+mu) + (1-mu)*gamma_5*eps] */
-  
-  return new lovlapms(*Mact, state_, m_q,
-		      numroot, coeffP, resP, rootQ, 
-		      NEig, EigValFunc, state.getEigVec(),
-		      MaxCGinner, RsdCGinner, ReorthFreqInner);
+  switch( inner_solver_type ) {
+  case OVERLAP_INNER_CG_SINGLE_PASS:
+    return new lovlapms(*Mact, state_, m_q,
+			numroot, coeffP, resP, rootQ, 
+			NEig, EigValFunc, state.getEigVec(),
+			MaxCGinner, RsdCGinner, ReorthFreqInner);
+    break;
+  case OVERLAP_INNER_CG_DOUBLE_PASS:
+    return new lovlap_double_pass(*Mact, state_, m_q,
+			numroot, coeffP, resP, rootQ, 
+			NEig, EigValFunc, state.getEigVec(),
+			MaxCGinner, RsdCGinner, ReorthFreqInner);
+    break;
+  default:
+    QDPIO::cerr << "Unknown OverlapInnerSolverType " << inner_solver_type << endl;
+    QDP_abort(1);
+  }
   
   END_CODE("Zolotarev4DLinOp::create");
 }
@@ -355,11 +383,24 @@ Zolotarev4DFermAct::lMdagM(Handle<const ConnectState> state_, const Chirality& i
   
     // Finally construct and pack the operator 
     // This is the operator of the form (1/2)*[(1+mu) + (1-mu)*gamma_5*eps]
-    return new lovddag(*Mact, state_, m_q,
-		       numroot, coeffP, resP, rootQ, 
-		       NEig, EigValFunc, state.getEigVec(),
-		       MaxCGinner, RsdCGinner, ReorthFreqInner, ichiral);
-  
+    switch( inner_solver_type ) { 
+    case OVERLAP_INNER_CG_SINGLE_PASS:
+      return new lovddag(*Mact, state_, m_q,
+			 numroot, coeffP, resP, rootQ, 
+			 NEig, EigValFunc, state.getEigVec(),
+			 MaxCGinner, RsdCGinner, ReorthFreqInner, ichiral);
+      break;
+    case OVERLAP_INNER_CG_DOUBLE_PASS:
+      return new lovddag_double_pass(*Mact, state_, m_q,
+				     numroot, coeffP, resP, rootQ, 
+				     NEig, EigValFunc, state.getEigVec(),
+				     MaxCGinner, RsdCGinner, ReorthFreqInner, ichiral);
+      break;
+    default:
+      QDPIO::cerr << "Unknown OverlapInnerSolverType " << inner_solver_type << endl;
+      QDP_abort(1);
+    }
+
   }
   END_CODE("Zolotarev4DlMdagM");
 }
