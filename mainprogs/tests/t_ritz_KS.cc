@@ -1,4 +1,4 @@
-// $Id: t_ritz_KS.cc,v 1.20 2005-02-07 04:16:55 edwards Exp $
+// $Id: t_ritz_KS.cc,v 1.21 2005-02-25 03:14:47 edwards Exp $
 
 #include "chroma.h"
 
@@ -7,22 +7,8 @@ using namespace Chroma;
 bool linkage_hack()
 {
   bool foo = true;
-
-  // 4D actions
-  foo &= EvenOddPrecWilsonFermActEnv::registered;
-  foo &= UnprecWilsonFermActEnv::registered;
-  foo &= OvlapPartFrac4DFermActEnv::registered;
-  // 5D actions
-  foo &= EvenOddPrecDWFermActArrayEnv::registered;
-  foo &= UnprecDWFermActArrayEnv::registered;
-  foo &= EvenOddPrecNEFFermActArrayEnv::registered;
-  foo &= UnprecNEFFermActArrayEnv::registered;
-  foo &= UnprecOvlapContFrac5DFermActArrayEnv::registered;
-  foo &= EvenOddPrecOvlapContFrac5DFermActArrayEnv::registered;
-  foo &= UnprecOvDWFermActArrayEnv::registered;
-  foo &= EvenOddPrecOvDWFermActArrayEnv::registered;
-  foo &= UnprecOvExtFermActArrayEnv::registered;
-  foo &= UnprecDWFTransfFermActEnv::registered;
+  // All actions
+  foo &= WilsonTypeFermActsEnv::registered;
   return foo;
 }
 
