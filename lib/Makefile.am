@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.254 2005-02-23 22:24:14 bjoo Exp $
+# $Id: Makefile.am,v 1.255 2005-03-07 02:53:01 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -14,7 +14,7 @@ BUILDDIR=@top_builddir@
 nobase_include_HEADERS = \
 	chroma_config.h chroma.h \
 	chromabase.h chromainc.h common_declarations.h fermact.h \
-	fermbc.h syssolver.h gaugeact.h gaugebc.h handle.h invtype.h lib.h \
+	fermbc.h funcmap.h syssolver.h gaugeact.h gaugebc.h handle.h invtype.h lib.h \
 	linearop.h objfactory.h objfunctor.h primitives.h \
 	singleton.h state.h typeinfo.h typelist.h typemanip.h typetraits.h \
 	actions/actions.h actions/boson/boson.h \
@@ -78,7 +78,6 @@ nobase_include_HEADERS = \
 	io/enum_io/enum_proptype_io.h \
 	io/enum_io/enum_eigenvectype_io.h \
 	io/enum_io/enum_fermtype_io.h \
-	io/enum_io/enum_seqsrctype_io.h \
 	io/enum_io/enum_simplebctype_io.h \
 	io/enum_io/enum_gaugeacttype_io.h \
 	io/enum_io/enum_invtype_io.h \
@@ -256,8 +255,10 @@ nobase_include_HEADERS += \
 	meas/hadron/BuildingBlocks_w.h meas/hadron/curcor2_w.h \
 	meas/hadron/DjDk_w.h meas/hadron/D_j_w.h meas/hadron/formfac_w.h \
 	meas/hadron/hadron_w.h meas/hadron/hybmeson_w.h \
+	meas/hadron/hadseqsrc_w.h \
 	meas/hadron/mesonseqsrc_w.h \
 	meas/hadron/mesons_w.h meas/hadron/seqpiontest_w.h \
+	meas/hadron/seqsrc_funcmap_w.h \
 	meas/hadron/loops_w.h \
 	meas/hadron/walfil_w.h meas/hadron/wall_qprop_w.h \
 	meas/hadron/wallff_w.h \
@@ -411,7 +412,6 @@ libchroma_a_SOURCES = \
 	io/enum_io/enum_invtype_io.cc \
 	io/enum_io/enum_md_integrator_type_io.cc \
 	io/enum_io/enum_proptype_io.cc io/enum_io/enum_qdpvolfmt_io.cc \
-	io/enum_io/enum_seqsrctype_io.cc \
 	io/enum_io/enum_simplebctype_io.cc \
 	io/enum_io/enum_srcsnktype_io.cc io/enum_io/enum_wavetype_io.cc \
 	io/enum_io/enum_wvfkind_io.cc \
@@ -545,8 +545,10 @@ libchroma_a_SOURCES += \
 	meas/hadron/curcor2_w.cc meas/hadron/DjDk_w.cc \
 	meas/hadron/D_j_w.cc meas/hadron/formfac_w.cc \
 	meas/hadron/hybmeson_w.cc meas/hadron/loops_w.cc \
+        meas/hadron/hadseqsrc_w.cc \
 	meas/hadron/mesonseqsrc_w.cc meas/hadron/mesons_w.cc \
-	meas/hadron/seqpiontest_w.cc meas/hadron/walfil_w.cc \
+	meas/hadron/seqpiontest_w.cc meas/hadron/seqsrc_funcmap_w.cc \
+        meas/hadron/walfil_w.cc \
 	meas/hadron/walldeltaff_w.cc meas/hadron/walldeltapff_w.cc \
 	meas/hadron/wallff_w.cc meas/hadron/wallnuclff_w.cc \
 	meas/hadron/wallpionff_w.cc meas/hadron/wallrhoff_w.cc \
