@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.54 2003-11-13 18:15:35 edwards Exp $
+# $Id: Makefile.am,v 1.55 2003-11-15 03:56:30 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -92,9 +92,10 @@ libchroma_a_SOURCES += baryon_w.cc mesons_w.cc curcor2_w.cc lwldslash_w.cc formf
               unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc unprec_wilson_dsdu_w.cc \
               unprec_dwf_fermact_w.cc unprec_dwf_linop_w.cc unprec_dwf_dsdu_w.cc \
               unprec_dwf_qprop_w.cc dwffld_w.cc \
-              fermact_qprop_array.cc \
-              unprec_dwf_fermact_array_w.cc unprec_dwf_linop_array_w.cc unprec_dwf_dsdu_array_w.cc \
-              unprec_dwf_qprop_array_w.cc \
+              fermact_qprop_array.cc unprec_dwf_fermact_base_array_w.cc \
+              unprec_dwf_fermact_array_w.cc unprec_dwf_linop_array_w.cc \
+              unprec_ovdwf_fermact_array_w.cc unprec_ovdwf_linop_array_w.cc \
+              unprec_dwf_fermact_base_array_w.cc \
               readszinqprop_w.cc readszinferm_w.cc writeszinqprop_w.cc quarkprop4_w.cc \
               overlapbu_linop_w.cc \
               p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc
