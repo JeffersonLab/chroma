@@ -22,10 +22,6 @@ bool linkage_hack()
   // Gauge Monomials
   foo &= WilsonGaugeMonomialEnv::registered;
 
-  // 4D Ferm actions
-  foo &= EvenOddPrecWilsonFermActEnv::registered;
-  foo &= UnprecWilsonFermActEnv::registered;
-
   // 4D Ferm Monomials
   foo &= UnprecTwoFlavorWilsonTypeFermMonomialEnv::registered;
   foo &= EvenOddPrecTwoFlavorWilsonTypeFermMonomialEnv::registered;
