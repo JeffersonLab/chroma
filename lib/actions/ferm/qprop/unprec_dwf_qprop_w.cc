@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_qprop_w.cc,v 1.3 2003-11-13 18:19:43 edwards Exp $
+// $Id: unprec_dwf_qprop_w.cc,v 1.4 2003-11-14 22:06:51 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion propagator solver
  *
@@ -50,7 +50,7 @@ void UnprecDWFermAct::qprop(LatticeFermion& psi,
     // Create a Pauli-Villars linop and use it for just this part
     const LinearOperator<LatticeDWFermion>* B = linOpPV(u);
 
-    tmp5 = (*B)(chi5, MINUS);
+    tmp5 = (*B)(chi5, PLUS);
 
     delete B;
   }

@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_linop_w.cc,v 1.4 2003-11-09 22:35:19 edwards Exp $
+// $Id: unprec_dwf_linop_w.cc,v 1.5 2003-11-14 22:06:51 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall linear operator
  */
@@ -108,7 +108,7 @@ LatticeDWFermion UnprecDWLinOp::operator() (const LatticeDWFermion& psi, enum Pl
   //
   LatticeDWFermion tmp1, tmp2;
 
-  Real fact1 = a5*(2*Nd - WilsonMass) + 1;
+  Real fact1 = a5*(Nd - WilsonMass) + 1;
   Real fact2 = -0.5*a5;
 
   /* Why are these lines split? An array syntax would help, but the problem is deeper.
@@ -119,12 +119,12 @@ LatticeDWFermion UnprecDWLinOp::operator() (const LatticeDWFermion& psi, enum Pl
   switch (isign)
   {
   case PLUS:
-    tmp1 = chiralProjectMinus(cycleDownDW(psi));
-    pokeDW(tmp1, -m_q*chiralProjectPlus(LatticeFermion(peekDW(psi,Ls-1))), 0);
-    tmp2 = chiralProjectPlus(cycleUpDW(psi));
-    pokeDW(tmp2, -m_q*chiralProjectMinus(LatticeFermion(peekDW(psi,0))), Ls-1);
+    tmp1 = chiralProjectMinus(cycleUpDW(psi));
+    pokeDW(tmp1, -m_q*chiralProjectMinus(LatticeFermion(peekDW(psi,0))), Ls-1);
+    tmp2 = chiralProjectPlus(cycleDownDW(psi));
+    pokeDW(tmp2, -m_q*chiralProjectPlus(LatticeFermion(peekDW(psi,Ls-1))), 0);
 
-    chi = fact1*psi + tmp1 + tmp2
+    chi = fact1*psi - tmp1 - tmp2
         + fact2*(spinReconstructDir0Minus(u[0] * shift(spinProjectDir0Minus(psi), FORWARD, 0)) +
 		 spinReconstructDir0Plus(shift(adj(u[0]) * spinProjectDir0Plus(psi), BACKWARD, 0)) +
 		 spinReconstructDir1Minus(u[1] * shift(spinProjectDir1Minus(psi), FORWARD, 1)) +
@@ -137,12 +137,12 @@ LatticeDWFermion UnprecDWLinOp::operator() (const LatticeDWFermion& psi, enum Pl
     break;
 
   case MINUS:
-    tmp1 = chiralProjectPlus(cycleDownDW(psi));
-    pokeDW(tmp1, -m_q*chiralProjectMinus(LatticeFermion(peekDW(psi,Ls-1))), 0);
-    tmp2 = chiralProjectMinus(cycleUpDW(psi));
-    pokeDW(tmp2, -m_q*chiralProjectPlus(LatticeFermion(peekDW(psi,0))), Ls-1);
+    tmp1 = chiralProjectPlus(cycleUpDW(psi));
+    pokeDW(tmp1, -m_q*chiralProjectPlus(LatticeFermion(peekDW(psi,0))), Ls-1);
+    tmp2 = chiralProjectMinus(cycleDownDW(psi));
+    pokeDW(tmp2, -m_q*chiralProjectMinus(LatticeFermion(peekDW(psi,Ls-1))), 0);
 
-    chi = fact1*psi + tmp1 + tmp2
+    chi = fact1*psi - tmp1 - tmp2
         + fact2*(spinReconstructDir0Plus(u[0] * shift(spinProjectDir0Plus(psi), FORWARD, 0)) +
 		 spinReconstructDir0Minus(shift(adj(u[0]) * spinProjectDir0Minus(psi), BACKWARD, 0)) +
 		 spinReconstructDir1Plus(u[1] * shift(spinProjectDir1Plus(psi), FORWARD, 1)) +
