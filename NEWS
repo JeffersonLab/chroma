@@ -1,8 +1,14 @@
+06/27/2004 -- Robert Edwards
+
+	Version 1.6.1. Changed sink_smear2_w.{h,cc} to fermion indep.
+        sink_smear2.{h,cc}. Other small lib/Makefile.am fixes.
+
 06/26/2004 -- Robert Edwards
 
-	Version 1.6.0. New profiling support. Changed mem. layout to remove
-        PDWVector layer - only matters for SSE routines. Removed
-        completely all uses, decls, files with LatticeDWFermion. 
+	Version 1.6.0. New HMC support. New profiling support.
+	Changed mem. layout to remove PDWVector layer - only matters
+	for SSE routines. Removed completely all uses, decls, files
+	with LatticeDWFermion.
 
 06/08/2004 -- Robert Edwards
 
