@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.124 2004-01-09 02:47:51 edwards Exp $
+# $Id: Makefile.in,v 1.125 2004-01-12 04:33:01 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -49,6 +49,7 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/prec_dwf_fermact_base_array_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/prec_dwf_fermact_base_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/prec_wilson_fermact_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/prec_parwilson_fermact_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/unprec_clover_fermact_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/unprec_dwf_fermact_array_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/unprec_dwf_fermact_base_array_w.h \
@@ -65,6 +66,7 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/overlapbu_linop_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/prec_dwf_linop_array_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/prec_wilson_linop_w.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/prec_parwilson_linop_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/unprec_dwf_linop_array_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/unprec_dwf_linop_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/unprec_ovdwf_linop_array_w.h \
@@ -108,6 +110,7 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@              fermact_qprop.cc prec_fermact_qprop.cc \
 @BUILD_WILSON_LIBS_TRUE@              unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              prec_wilson_fermact_w.cc prec_wilson_linop_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              prec_parwilson_fermact_w.cc prec_parwilson_linop_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              unprec_dwf_fermact_w.cc unprec_dwf_linop_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              dwffld_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              fermact_qprop_array.cc prec_fermact_qprop_array.cc \
@@ -327,6 +330,7 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	fermact_qprop.cc prec_fermact_qprop.cc \
 	unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
 	prec_wilson_fermact_w.cc prec_wilson_linop_w.cc \
+	prec_parwilson_fermact_w.cc prec_parwilson_linop_w.cc \
 	unprec_dwf_fermact_w.cc unprec_dwf_linop_w.cc dwffld_w.cc \
 	fermact_qprop_array.cc prec_fermact_qprop_array.cc \
 	unprec_dwf_fermact_base_w.cc \
@@ -363,6 +367,8 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 @BUILD_WILSON_LIBS_TRUE@	unprec_wilson_linop_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	prec_wilson_fermact_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	prec_wilson_linop_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	prec_parwilson_fermact_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	prec_parwilson_linop_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	unprec_dwf_fermact_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	unprec_dwf_linop_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	dwffld_w.$(OBJEXT) \
@@ -472,6 +478,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/prec_dwf_linop_array_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/prec_fermact_qprop.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/prec_fermact_qprop_array.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/prec_parwilson_fermact_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/prec_parwilson_linop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/prec_wilson_fermact_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/prec_wilson_linop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/qprop_io.Po ./$(DEPDIR)/quarkprop4_w.Po \
@@ -628,6 +636,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_dwf_linop_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_fermact_qprop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_fermact_qprop_array.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_parwilson_fermact_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_parwilson_linop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_wilson_fermact_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_wilson_linop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qprop_io.Po@am__quote@
