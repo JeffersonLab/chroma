@@ -50,7 +50,7 @@ check_PROGRAMS  = t_mesplq t_io t_mesons_w t_conslinop t_hypsmear \
 ## 'make t_dslashm' and 'make t_lwldslash' are still there for further
 ## development
 
-EXTRA_PROGRAMS  = t_dslashm t_lwldslash t_spprod t_lwldslash_sse t_follana_io_s t_formfac  t_follana_pion_s t_dwflinop t_precdwf t_ovlap_bj t_propagator_s t_propagator_w t_gfix t_ovlap5d_bj t_ritz t_ritz_KS t_ritz5d_KS  t_fermion_loop_w t_propagator_fuzz_s t_disc_loop_s t_ov_pbp t_lwldslash_pab t_propagator_nrqcd t_dwflocality t_invert3_precwilson t_invert4_precwilson t_read_eigen t_fuzwilp t_ovlap_double_pass t_g5eps_bj t_sumr t_msumr t_invrelcg t_bicgstab t_wilslp t_rel_gmresr t_invborici t_hamsys t_hamsys_ferm t_precact_sse t_hmc_pg t_neflinop t_prec_contfrac t_mres_4d t_prec_nef
+EXTRA_PROGRAMS  = t_dslashm t_lwldslash t_spprod t_lwldslash_sse t_follana_io_s t_formfac  t_follana_pion_s t_dwflinop t_precdwf t_ovlap_bj t_propagator_s t_propagator_w t_gfix t_ovlap5d_bj t_ritz t_ritz_KS t_ritz5d_KS  t_fermion_loop_w t_propagator_fuzz_s t_disc_loop_s t_ov_pbp t_lwldslash_pab t_propagator_nrqcd t_dwflocality t_invert3_precwilson t_invert4_precwilson t_read_eigen t_fuzwilp t_ovlap_double_pass t_g5eps_bj t_sumr t_msumr t_invrelcg t_bicgstab t_wilslp t_rel_gmresr t_invborici t_hamsys t_hamsys_ferm t_precact_sse t_hmc_pg t_neflinop t_prec_contfrac t_mres_4d t_prec_nef t_dwf4d
 
 ## DEPENDENCIES = build_chroma_libs
 
@@ -92,6 +92,9 @@ t_lwldslash_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_dwflinop_SOURCES = t_dwflinop.cc
 t_dwflinop_DEPENDENCIES = build_chroma_libs rebuild_other_libs
+
+t_dwf4d_SOURCES = t_dwf4d.cc
+t_dwf4d_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_precact_SOURCES = t_precact.cc
 t_precact_DEPENDENCIES = build_chroma_libs rebuild_other_libs
