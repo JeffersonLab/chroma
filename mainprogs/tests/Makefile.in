@@ -110,7 +110,7 @@ HDRS =
 #
 # add the programs to build in here
 # 
-check_PROGRAMS = t_mesplq t_dslashm t_io t_lwldslash
+check_PROGRAMS = t_mesplq t_dslashm t_io t_lwldslash t_formfac
 
 # DEPENDENCIES = build_chroma_libs
 
@@ -128,15 +128,22 @@ t_io_DEPENDENCIES = build_chroma_libs
 
 t_lwldslash_SOURCES = t_lwldslash.cc
 t_lwldslash_DEPENDENCIES = build_chroma_libs
+
+t_formfac_SOURCES = t_formfac.cc
+t_formfac_DEPENDENCIES = build_chroma_libs
 subdir = mainprogs/tests
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
 CONFIG_CLEAN_FILES =
 check_PROGRAMS = t_mesplq$(EXEEXT) t_dslashm$(EXEEXT) t_io$(EXEEXT) \
-	t_lwldslash$(EXEEXT)
+	t_lwldslash$(EXEEXT) t_formfac$(EXEEXT)
 am_t_dslashm_OBJECTS = t_dslashm.$(OBJEXT)
 t_dslashm_OBJECTS = $(am_t_dslashm_OBJECTS)
 t_dslashm_LDADD = $(LDADD)
 t_dslashm_LDFLAGS =
+am_t_formfac_OBJECTS = t_formfac.$(OBJEXT)
+t_formfac_OBJECTS = $(am_t_formfac_OBJECTS)
+t_formfac_LDADD = $(LDADD)
+t_formfac_LDFLAGS =
 am_t_io_OBJECTS = t_io.$(OBJEXT)
 t_io_OBJECTS = $(am_t_io_OBJECTS)
 t_io_LDADD = $(LDADD)
@@ -157,7 +164,8 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/t_dslashm.Po ./$(DEPDIR)/t_io.Po \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/t_dslashm.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_formfac.Po ./$(DEPDIR)/t_io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_lwldslash.Po ./$(DEPDIR)/t_mesplq.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -165,10 +173,10 @@ CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
 CXXFLAGS = @CXXFLAGS@
-DIST_SOURCES = $(t_dslashm_SOURCES) $(t_io_SOURCES) \
+DIST_SOURCES = $(t_dslashm_SOURCES) $(t_formfac_SOURCES) $(t_io_SOURCES) \
 	$(t_lwldslash_SOURCES) $(t_mesplq_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(t_dslashm_SOURCES) $(t_io_SOURCES) $(t_lwldslash_SOURCES) $(t_mesplq_SOURCES)
+SOURCES = $(t_dslashm_SOURCES) $(t_formfac_SOURCES) $(t_io_SOURCES) $(t_lwldslash_SOURCES) $(t_mesplq_SOURCES)
 
 all: all-am
 
@@ -185,6 +193,9 @@ clean-checkPROGRAMS:
 t_dslashm$(EXEEXT): $(t_dslashm_OBJECTS) $(t_dslashm_DEPENDENCIES) 
 	@rm -f t_dslashm$(EXEEXT)
 	$(CXXLINK) $(t_dslashm_LDFLAGS) $(t_dslashm_OBJECTS) $(t_dslashm_LDADD) $(LIBS)
+t_formfac$(EXEEXT): $(t_formfac_OBJECTS) $(t_formfac_DEPENDENCIES) 
+	@rm -f t_formfac$(EXEEXT)
+	$(CXXLINK) $(t_formfac_LDFLAGS) $(t_formfac_OBJECTS) $(t_formfac_LDADD) $(LIBS)
 t_io$(EXEEXT): $(t_io_OBJECTS) $(t_io_DEPENDENCIES) 
 	@rm -f t_io$(EXEEXT)
 	$(CXXLINK) $(t_io_LDFLAGS) $(t_io_OBJECTS) $(t_io_LDADD) $(LIBS)
@@ -202,6 +213,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_dslashm.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_formfac.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_lwldslash.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_mesplq.Po@am__quote@
