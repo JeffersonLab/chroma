@@ -1,4 +1,4 @@
-// $Id: cfgtransf.cc,v 1.14 2004-04-15 03:29:02 edwards Exp $
+// $Id: cfgtransf.cc,v 1.15 2004-05-28 00:56:41 edwards Exp $
 /*! \file
  *  \brief Many-to-many gauge transformation routine
  */
@@ -732,13 +732,10 @@ int main(int argc, char **argv)
     break;
 #endif
 
-#if 0
-    // Not yet...
   case 6:
     /* Write a Kentucky gauge format file on FE */
-    wrtkyu (cfg_output_file, u);
+    writeKYU(u, cfg_output_file);
     break;
-#endif
 
   case 7:
   case 8:
