@@ -7,7 +7,7 @@
       <chroma>1.19</chroma>
       <qdp>1.11.8</qdp>
     </code_version>
-    <run_date>27 Feb 05 16:03:36 EST</run_date>
+    <run_date>27 Feb 05 17:43:59 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -18,7 +18,7 @@
   </ProgramInfo>
   <Input><qqq_w>
 <annotation>
-; $Id: qqq_w_v4.linux-scalar-intel.xml,v 1.3 2005-02-27 21:03:25 edwards Exp $
+; $Id: qqq_w_v4.linux-scalar-intel.xml,v 1.4 2005-02-27 22:48:01 edwards Exp $
 ;
 ; QQQ_W input file.
 ;
@@ -28,32 +28,41 @@
 </annotation>
 
 <Param>
- <version>4</version>
- <Dirac_basis>true</Dirac_basis>
- <nrow>4 4 4 8</nrow>
+ <elem>
+   <QQQParam>
+      <version>4</version>
+      <Dirac_basis>true</Dirac_basis>
+      <nrow>4 4 4 8</nrow>
+   </QQQParam>
+   <Prop>
+     <prop_file>
+       <elem>../sink_smearing/pt_prop</elem>
+       <elem>../sink_smearing/pt_prop</elem>
+       <elem>../../tests/sink_smearing/pt_prop</elem>
+     </prop_file>
+     <qqq_file>qqq_w_v4.linux-scalar-intel.qqq_pt</qqq_file>
+   </Prop>
+ </elem>
+ <elem>
+   <QQQParam>
+      <version>4</version>
+      <Dirac_basis>true</Dirac_basis>
+      <nrow>4 4 4 8</nrow>
+   </QQQParam>
+   <Prop>
+     <prop_file>
+       <elem>../sink_smearing/smeared_prop</elem>
+       <elem>../../tests/sink_smearing/smeared_prop</elem>
+       <elem>../sink_smearing/smeared_prop</elem>
+     </prop_file>
+     <qqq_file>qqq_w_v4.linux-scalar-intel.qqq_smeared</qqq_file>
+   </Prop>
+ </elem>
 </Param>
 <Cfg>
- <cfg_type>SZIN</cfg_type>
- <cfg_file>../test_purgaug.cfg1</cfg_file>
+  <cfg_type>SZIN</cfg_type>
+  <cfg_file>../test_purgaug.cfg1</cfg_file>
 </Cfg>
-<Barcomp>
- <elem>
-   <prop_file>
-     <elem>../sink_smearing/smeared_prop_0</elem>
-     <elem>../sink_smearing/smeared_prop_0</elem>
-     <elem>../../tests/sink_smearing/smeared_prop_0</elem>
-   </prop_file>
-   <qqq_file>qqq_barcomp0</qqq_file>
- </elem>
- <elem>
-   <prop_file>
-     <elem>../sink_smearing/smeared_prop_0</elem>
-     <elem>../../tests/sink_smearing/smeared_prop_0</elem>
-     <elem>../sink_smearing/smeared_prop_0</elem>
-   </prop_file>
-   <qqq_file>qqq_barcomp1</qqq_file>
- </elem>
-</Barcomp>
 </qqq_w>
 
   </Input>
@@ -110,11 +119,11 @@
       <elem>
         <loop>0</loop>
         <propFiles>
-          <elem>../sink_smearing/smeared_prop_0</elem>
-          <elem>../sink_smearing/smeared_prop_0</elem>
-          <elem>../../tests/sink_smearing/smeared_prop_0</elem>
+          <elem>../sink_smearing/pt_prop</elem>
+          <elem>../sink_smearing/pt_prop</elem>
+          <elem>../../tests/sink_smearing/pt_prop</elem>
         </propFiles>
-        <barcompFile>qqq_barcomp0</barcompFile>
+        <barcompFile>qqq_w_v4.linux-scalar-intel.qqq_pt</barcompFile>
         <Propagator_input>
           <version>2</version>
           <Dirac_basis>false</Dirac_basis>
@@ -124,19 +133,7 @@
               <PropSink>
                 <version>4</version>
                 <wave_state>S_WAVE</wave_state>
-                <sink_type>SHELL_SINK</sink_type>
-                <ShellSink>
-                  <SinkSmearingParam>
-                    <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-                    <wvf_param>4.5</wvf_param>
-                    <wvfIntPar>5</wvfIntPar>
-                  </SinkSmearingParam>
-                  <laplace_power>0</laplace_power>
-                  <link_smear_fact>2.5</link_smear_fact>
-                  <link_smear_num>0</link_smear_num>
-                  <disp_length>0</disp_length>
-                  <disp_dir>0</disp_dir>
-                </ShellSink>
+                <sink_type>POINT_SINK</sink_type>
                 <nrow>4 4 4 8</nrow>
               </PropSink>
               <ForwardProp>
@@ -186,19 +183,7 @@
               <PropSink>
                 <version>4</version>
                 <wave_state>S_WAVE</wave_state>
-                <sink_type>SHELL_SINK</sink_type>
-                <ShellSink>
-                  <SinkSmearingParam>
-                    <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-                    <wvf_param>4.5</wvf_param>
-                    <wvfIntPar>5</wvfIntPar>
-                  </SinkSmearingParam>
-                  <laplace_power>0</laplace_power>
-                  <link_smear_fact>2.5</link_smear_fact>
-                  <link_smear_num>0</link_smear_num>
-                  <disp_length>0</disp_length>
-                  <disp_dir>0</disp_dir>
-                </ShellSink>
+                <sink_type>POINT_SINK</sink_type>
                 <nrow>4 4 4 8</nrow>
               </PropSink>
               <ForwardProp>
@@ -248,19 +233,7 @@
               <PropSink>
                 <version>4</version>
                 <wave_state>S_WAVE</wave_state>
-                <sink_type>SHELL_SINK</sink_type>
-                <ShellSink>
-                  <SinkSmearingParam>
-                    <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-                    <wvf_param>4.5</wvf_param>
-                    <wvfIntPar>5</wvfIntPar>
-                  </SinkSmearingParam>
-                  <laplace_power>0</laplace_power>
-                  <link_smear_fact>2.5</link_smear_fact>
-                  <link_smear_num>0</link_smear_num>
-                  <disp_length>0</disp_length>
-                  <disp_dir>0</disp_dir>
-                </ShellSink>
+                <sink_type>POINT_SINK</sink_type>
                 <nrow>4 4 4 8</nrow>
               </PropSink>
               <ForwardProp>
@@ -309,25 +282,25 @@
         </Propagator_input>
         <SinkSmearedProp_correlator>
           <correlator_num>0</correlator_num>
-          <sink_smeared_prop_corr>1.99359e+09 1.77429e+07 309560 6947.59 1179.92 6675.13 310875 1.76066e+07</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>0.147564 0.00923146 0.0028872 0.00109399 0.000683482 0.00110199 0.00286503 0.00919643</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
         <SinkSmearedProp_correlator>
           <correlator_num>1</correlator_num>
-          <sink_smeared_prop_corr>1.99359e+09 1.77429e+07 309560 6947.59 1179.92 6675.13 310875 1.76066e+07</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>0.147564 0.00923146 0.0028872 0.00109399 0.000683482 0.00110199 0.00286503 0.00919643</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
         <SinkSmearedProp_correlator>
           <correlator_num>2</correlator_num>
-          <sink_smeared_prop_corr>1.99359e+09 1.77429e+07 309560 6947.59 1179.92 6675.13 310875 1.76066e+07</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>0.147564 0.00923146 0.0028872 0.00109399 0.000683482 0.00110199 0.00286503 0.00919643</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </elem>
       <elem>
         <loop>1</loop>
         <propFiles>
-          <elem>../sink_smearing/smeared_prop_0</elem>
-          <elem>../../tests/sink_smearing/smeared_prop_0</elem>
-          <elem>../sink_smearing/smeared_prop_0</elem>
+          <elem>../sink_smearing/smeared_prop</elem>
+          <elem>../../tests/sink_smearing/smeared_prop</elem>
+          <elem>../sink_smearing/smeared_prop</elem>
         </propFiles>
-        <barcompFile>qqq_barcomp1</barcompFile>
+        <barcompFile>qqq_w_v4.linux-scalar-intel.qqq_smeared</barcompFile>
         <Propagator_input>
           <version>2</version>
           <Dirac_basis>false</Dirac_basis>
