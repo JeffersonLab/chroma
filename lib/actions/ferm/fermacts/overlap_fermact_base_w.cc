@@ -1,4 +1,4 @@
-// $Id: overlap_fermact_base_w.cc,v 1.22 2004-09-28 17:39:55 bjoo Exp $
+// $Id: overlap_fermact_base_w.cc,v 1.23 2004-10-19 12:54:50 bjoo Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -73,14 +73,16 @@ OverlapFermActBase::qprop(LatticeFermion& psi,
 
     }
     else {
-	
+
+      // If we have a chiral source we have M^{dag} M = M^{2}
+      // but applying M at the front might mix chiralities hurting
+      // convergence so we do it last
       Handle< const LinearOperator<LatticeFermion> > MM(lMdagM(state,ichiral));
 
-      (*M)(tmp, chi, MINUS);	
       // Source is chiral. In this case we should use InvCG1
       // with the special MdagM
-      InvCG1(*MM, tmp, psi, invParam.RsdCG, invParam.MaxCG, n_count);
-
+      InvCG1(*MM, chi,tmp, invParam.RsdCG, invParam.MaxCG, n_count);
+      (*M)(psi,tmp, MINUS);
     }
   
     LatticeFermion Mpsi;

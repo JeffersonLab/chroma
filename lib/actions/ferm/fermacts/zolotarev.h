@@ -1,15 +1,12 @@
 /* -*- Mode: C; comment-column: 22; fill-column: 79; -*- */
-#define ZOLOTAREV_HVERSION Header Time-stamp: <05-APR-2002 11:01:25.00 adk@grubb.ph.ed.ac.uk>
+#define HVERSION Header Time-stamp: <14-OCT-2004 09:26:51.00 adk@MISSCONTRARY>
 
 #ifndef ZOLOTAREV_INTERNAL
-
 #ifndef PRECISION
 #define PRECISION double
 #endif
-
 #define ZPRECISION PRECISION
 #define ZOLOTAREV_DATA zolotarev_data
-
 #endif
 
 /* This struct contains the coefficients which parameterise an optimal rational
@@ -42,7 +39,14 @@
  * R(x) = beta[db-1] * x + 1 / (beta[db-2] * x + 1 / (beta[db-3] * x + ...))
  *
  * with the final coefficient being beta[0], with d' = 2 * dd + 1 for type 0
- * and db = 2 * dd + 2 for type 1. */
+ * and db = 2 * dd + 2 for type 1.
+ *
+ * Cayley form (Chiu's domain wall formulation)
+ *
+ * R(x) = (1 - T(x)) / (1 + T(x))
+ *
+ * where T(x) = prod((x - gamma[j]) / (x + gamma[j]), j = 0 .. n-1)
+ */
 
 typedef struct {
   ZPRECISION *a,      /* zeros of numerator, a[0 .. dn-1] */
@@ -50,6 +54,7 @@ typedef struct {
     A,		      /* overall factor */
     *alpha,	      /* coefficients of partial fraction, alpha[0 .. da-1] */
     *beta,	      /* coefficients of continued fraction, beta[0 .. db-1] */
+    *gamma,	      /* zeros of numerator of T in Cayley form */
     Delta,	      /* maximum error, |R(x) - sgn(x)| <= Delta */
     epsilon;	      /* minimum x value, epsilon < |x| < 1 */
   int n,	      /* approximation degree */

@@ -1,5 +1,5 @@
 /* -*- Mode: C; comment-column: 22; fill-column: 79; compile-command: "gcc -o zolotarev zolotarev.c -ansi -pedantic -lm -DTEST"; -*- */
-#define VERSION Source Time-stamp: <06-SEP-2004 18:59:26.00 adk@MISSCONTRARY>
+#define VERSION Source Time-stamp: <19-OCT-2004 09:33:22.00 adk@MISSCONTRARY>
 
 /* These C routines evalute the optimal rational approximation to the signum
  * function for epsilon < |x| < 1 using Zolotarev's theorem.
@@ -32,7 +32,7 @@
 #define ZOLOTAREV_DATA izd
 #undef ZPRECISION
 #define ZPRECISION INTERNAL_PRECISION
-#include "actions/ferm/fermacts/zolotarev.h"
+#include "zolotarev.h"
 #undef ZOLOTAREV_INTERNAL
 
 /* The ANSI standard appears not to know what pi is */
@@ -45,6 +45,8 @@
 #define ZERO ((INTERNAL_PRECISION) 0)
 #define ONE ((INTERNAL_PRECISION) 1)
 #define TWO ((INTERNAL_PRECISION) 2)
+#define THREE ((INTERNAL_PRECISION) 3)
+#define FOUR ((INTERNAL_PRECISION) 4)
 #define HALF (ONE/TWO)
 
 /* The following obscenity seems to be the simplest (?) way to coerce the C
@@ -217,51 +219,69 @@ static INTERNAL_PRECISION *contfrac_B(INTERNAL_PRECISION *beta,
   return rb + 1;
 }
 
+/* The global variable U is used to hold the argument u throughout the AGM
+ * recursion. The global variables F and K are set in the innermost
+ * instantiation of the recursive function AGM to the values of the elliptic
+ * integrals F(u,k) and K(k) respectively. They must be made thread local to
+ * make this code thread-safe in a multithreaded environment. */
+
+static INTERNAL_PRECISION U, F, K;	/* THREAD LOCAL */
+
 /* Recursive implementation of Gauss' arithmetico-geometric mean, which is the
- * kernel of the method used to compute the Jacobian elliptic functions with
- * parameter k where 0 < k < 1.
+ * kernel of the method used to compute the Jacobian elliptic functions
+ * sn(u,k), cn(u,k), and dn(u,k) with parameter k (where 0 < k < 1), as well
+ * as the elliptic integral F(s,k) satisfying F(sn(u,k)) = u and the complete
+ * elliptic integral K(k).
  *
- * The function returns a value related to sn(z,k'), and also sets the value of
- * *agm to the arithmetico-geometric mean. This value is simply related to the
- * K(k') and also determines the sign of cn(z,k').
+ * The algorithm used is a recursive implementation of the Gauss (Landen)
+ * transformation.
  *
- * The algorithm is deemed to have converged when b ceases to increase. This 
+ * The function returns the value of sn(u,k'), where k' is the dual parameter,
+ * and also sets the values of the global variables F and K.  The latter is
+ * used to determine the sign of cn(u,k').
+ *
+ * The algorithm is deemed to have converged when b ceases to increase. This
  * works whatever INTERNAL_PRECISION is specified. */
 
-static INTERNAL_PRECISION arithgeom(INTERNAL_PRECISION z,
-				    INTERNAL_PRECISION a,
-				    INTERNAL_PRECISION b,
-				    INTERNAL_PRECISION* agm) {
+static INTERNAL_PRECISION AGM(INTERNAL_PRECISION a,
+			      INTERNAL_PRECISION b,
+			      INTERNAL_PRECISION s) {
   static INTERNAL_PRECISION pb = -ONE;
-  INTERNAL_PRECISION xi;
+  INTERNAL_PRECISION c, d, xi;
 
   if (b <= pb) {
     pb = -ONE;
-    *agm = a;
-    return sin(z * a);
+    F = asin(s) / a;		/* Here, a is the AGM */
+    K = M_PI / (TWO * a);
+    return sin(U * a);
   }
   pb = b;
-  xi = arithgeom(z, HALF*(a+b), sqrt(a*b), agm);
-  return 2*a*xi / ((a+b) + (a-b)*xi*xi);
+  c = a - b;
+  d = a + b;
+  xi = AGM(HALF*d, sqrt(a*b), ONE + c*c == ONE ?
+	   HALF*s*d/a : (a - sqrt(a*a - s*s*c*d))/(c*s));
+  return 2*a*xi / (d + c*xi*xi);
 }
 
-/* Computes sn(z,k), cn(z,k), dn(z,k), and K(k). It is essentially a wrapper
- * for the routine arithgeom. The sign of cn(z,k) is defined to be -1 if K(k) <
- * z < 3*K(k) and +1 otherwise, and thus sign is computed by some quite
+/* Computes sn(u,k), cn(u,k), dn(u,k), F(u,k), and K(k). It is essentially a
+ * wrapper for the routine AGM. The sign of cn(u,k) is defined to be -1 if
+ * K(k) < u < 3*K(k) and +1 otherwise, and thus sign is computed by some quite
  * unnecessarily obfuscated bit manipulations. */
 
-static void sncndnK(INTERNAL_PRECISION z, INTERNAL_PRECISION k,
-		    INTERNAL_PRECISION* sn, INTERNAL_PRECISION* cn,
-		    INTERNAL_PRECISION* dn, INTERNAL_PRECISION* K) {
-  INTERNAL_PRECISION agm;
+static void sncndnFK(INTERNAL_PRECISION u, INTERNAL_PRECISION k,
+		     INTERNAL_PRECISION* sn, INTERNAL_PRECISION* cn,
+		     INTERNAL_PRECISION* dn, INTERNAL_PRECISION* elF,
+		     INTERNAL_PRECISION* elK) {
   int sgn;
-  *sn = arithgeom(z, ONE, sqrt(ONE - k*k), &agm);
-  *K = M_PI / (TWO * agm);
-  sgn = ((int) (fabs(z) / *K)) % 4; /* sgn = 0, 1, 2, 3 */
+  U = u;
+  *sn = AGM(ONE, sqrt(ONE - k*k), u);
+  sgn = ((int) (fabs(u) / K)) % 4; /* sgn = 0, 1, 2, 3 */
   sgn ^= sgn >> 1;    /* (sgn & 1) = 0, 1, 1, 0 */
   sgn = 1 - ((sgn & 1) << 1);	/* sgn = 1, -1, -1, 1 */
   *cn = ((INTERNAL_PRECISION) sgn) * sqrt(ONE - *sn * *sn);
   *dn = sqrt(ONE - k*k* *sn * *sn);
+  *elF = F;
+  *elK = K;
 }
 
 /* Compute the coefficients for the optimal rational approximation R(x) to
@@ -272,8 +292,8 @@ static void sncndnK(INTERNAL_PRECISION z, INTERNAL_PRECISION k,
  * type = 1 for the approximation which is infinite at x = 0. */
 
 zolotarev_data* zolotarev(PRECISION epsilon, int n, int type) {
-  INTERNAL_PRECISION A, c, cp, kp, ksq, sn, cn, dn, Kp, z, z0, t, M,
-    invlambda, xi, xisq, *tv;
+  INTERNAL_PRECISION A, c, cp, kp, ksq, sn, cn, dn, Kp, Kj, z, z0, t, M, F,
+    l, invlambda, xi, xisq, *tv, s, opl;
   int m, czero, ts;
   zolotarev_data *zd;
   izd *d = (izd*) malloc(sizeof(izd));
@@ -292,12 +312,12 @@ zolotarev_data* zolotarev(PRECISION epsilon, int n, int type) {
 					 sizeof(INTERNAL_PRECISION));
   ksq = d -> epsilon * d -> epsilon;
   kp = sqrt(ONE - ksq);
-  sncndnK(ZERO, kp, &sn, &cn, &dn, &Kp); /* compute Kp = K(kp) */
+  sncndnFK(ZERO, kp, &sn, &cn, &dn, &F, &Kp); /* compute Kp = K(kp) */
   z0 = TWO * Kp / (INTERNAL_PRECISION) n;
   M = ONE;
   A = ONE / d -> epsilon;
 
-  sncndnK(HALF * z0, kp, &sn, &cn, &dn, &Kp); /* compute xi */
+  sncndnFK(HALF * z0, kp, &sn, &cn, &dn, &F, &Kj); /* compute xi */
   xi = ONE / dn;
   xisq = xi * xi;
   invlambda = xi;
@@ -306,13 +326,13 @@ zolotarev_data* zolotarev(PRECISION epsilon, int n, int type) {
     czero = 2 * (m + 1) == n; /* n even and m = dd -1 */
 
     z = z0 * ((INTERNAL_PRECISION) m + ONE);
-    sncndnK(z, kp, &sn, &cn, &dn, &Kp);
+    sncndnFK(z, kp, &sn, &cn, &dn, &F, &Kj);
     t = cn / sn;
     c = - t*t;
     if (!czero) (d -> a)[d -> dn - 1 - m] = ksq / c;
 
     z = z0 * ((INTERNAL_PRECISION) m + HALF);
-    sncndnK(z, kp, &sn, &cn, &dn, &Kp);
+    sncndnFK(z, kp, &sn, &cn, &dn, &F, &Kj);
     t = cn / sn;
     cp = - t*t;
     (d -> ap)[d -> dd - 1 - m] = ksq / cp;
@@ -324,6 +344,20 @@ zolotarev_data* zolotarev(PRECISION epsilon, int n, int type) {
   invlambda /= M;
   d -> A = TWO / (ONE + invlambda) * A;
   d -> Delta = (invlambda - ONE) / (invlambda + ONE);
+
+  d -> gamma = (INTERNAL_PRECISION*) malloc((1 + d -> n) *
+					    sizeof(INTERNAL_PRECISION));
+  l = ONE / invlambda;
+  opl = ONE + l;
+  sncndnFK(sqrt( d -> type == 1
+		   ? (THREE + l) / (FOUR * opl)
+		   : (ONE + THREE*l) / (opl*opl*opl)
+	       ), sqrt(ONE - l*l), &sn, &cn, &dn, &F, &Kj);
+  s = M * F;
+  for (m = 0; m < d -> n; m++) {
+    sncndnFK(s + TWO*Kp*m/n, kp, &sn, &cn, &dn, &F, &Kj);
+    d -> gamma[m] = d -> epsilon / dn;
+  }
 
   /* If R(x) is a Zolotarev rational approximation of degree (n,m) with maximum
    * error Delta, then (1 - Delta^2) / R(x) is also an optimal Chebyshev
@@ -369,6 +403,10 @@ zolotarev_data* zolotarev(PRECISION epsilon, int n, int type) {
   zd -> beta = (PRECISION*) malloc(zd -> db * sizeof(PRECISION));
   for (m = 0; m < zd -> db; m++) zd -> beta[m] = (PRECISION) d -> beta[m];
   free(d -> beta);
+
+  zd -> gamma = (PRECISION*) malloc(zd -> n * sizeof(PRECISION));
+  for (m = 0; m < zd -> n; m++) zd -> gamma[m] = (PRECISION) d -> gamma[m];
+  free(d -> gamma);
 
   free(d);
   return zd;
@@ -416,6 +454,10 @@ zolotarev_data* higham(PRECISION epsilon, int n) {
     M /= epssq - cp;
   }
 
+  d -> gamma = (INTERNAL_PRECISION*) malloc((1 + d -> n) *
+					    sizeof(INTERNAL_PRECISION));
+  for (m = 0; m < d -> n; m++) d -> gamma[m] = ONE;
+
   d -> A = A;
   d -> Delta = ONE - M;
 
@@ -452,6 +494,10 @@ zolotarev_data* higham(PRECISION epsilon, int n) {
   zd -> beta = (PRECISION*) malloc(zd -> db * sizeof(PRECISION));
   for (m = 0; m < zd -> db; m++) zd -> beta[m] = (PRECISION) d -> beta[m];
   free(d -> beta);
+
+  zd -> gamma = (PRECISION*) malloc(zd -> n * sizeof(PRECISION));
+  for (m = 0; m < zd -> n; m++) zd -> gamma[m] = (PRECISION) d -> gamma[m];
+  free(d -> gamma);
 
   free(d);
   return zd;
@@ -512,6 +558,18 @@ static PRECISION zolotarev_contfrac_eval(PRECISION x, zolotarev_data* rdata) {
   return R;
 }    
 
+/* Evaluate the rational approximation R(x) using Cayley form */
+
+static PRECISION zolotarev_cayley_eval(PRECISION x, zolotarev_data* rdata) {
+  int m;
+  PRECISION T;
+
+  T = rdata -> type == 0 ? ONE : -ONE;
+  for (m = 0; m < rdata -> n; m++)
+    T *= (rdata -> gamma[m] - x) / (rdata -> gamma[m] + x);
+  return (ONE - T) / (ONE + T);
+}
+
 /* Test program. Apart from printing out the parameters for R(x) it produces
  * the following data files for plotting (unless NPLOT is defined):
  *
@@ -529,10 +587,11 @@ static PRECISION zolotarev_contfrac_eval(PRECISION x, zolotarev_data* rdata) {
 int main(int argc, char** argv) {
   
   int m, n, plotpts = 5000, type = 0;
-  float eps, x, ypferr, ycferr, maxypferr, maxycferr;
+  float eps, x, ypferr, ycferr, ycaylerr, maxypferr, maxycferr, maxycaylerr;
   zolotarev_data *rdata;
   PRECISION y;
-  FILE *plot_function, *plot_error, *plot_partfrac, *plot_contfrac;
+  FILE *plot_function, *plot_error, 
+    *plot_partfrac, *plot_contfrac, *plot_cayley;
 
   if (argc < 3 || argc > 4) {
     fprintf(stderr, "Usage: %s epsilon n [type]\n", *argv);
@@ -541,6 +600,12 @@ int main(int argc, char** argv) {
   sscanf(argv[1], "%g", &eps);	/* First argument is epsilon */
   sscanf(argv[2], "%d", &n);	/* Second argument is n */
   if (argc == 4) sscanf(argv[3], "%d", &type); /* Third argument is type */
+
+  if (type < 0 || type > 2) {
+    fprintf(stderr, "%s: type must be 0 (Zolotarev R(0) = 0),\n"
+	    "\t\t1 (Zolotarev R(0) = Inf, or 2 (Higham)\n", *argv);
+    exit(EXIT_FAILURE);
+  }
 
   rdata = type == 2 
     ? higham((PRECISION) eps, n) 
@@ -582,14 +647,19 @@ int main(int argc, char** argv) {
   for (m = 0; m < rdata -> db; m++)
     printf("\tbeta[%2d] = %14.8g\n", m, (float) rdata -> beta[m]);
 
+  printf("\n\tCayley transform coefficients\n");
+  for (m = 0; m < rdata -> n; m++)
+    printf("\tgamma[%2d] = %14.8g\n", m, (float) rdata -> gamma[m]);
+
 #ifndef NPLOT
   plot_function = fopen("zolotarev-fn.dat", "w");
   plot_error = fopen("zolotarev-err.dat", "w");
 #ifdef ALLPLOTS
   plot_partfrac = fopen("zolotarev-partfrac.dat", "w");
   plot_contfrac = fopen("zolotarev-contfrac.dat", "w");
+  plot_cayley = fopen("zolotarev-cayley.dat", "w");
 #endif /* ALLPLOTS */
-  for (m = 0, maxypferr = maxycferr = 0.0; m <= plotpts; m++) {
+  for (m = 0, maxypferr = maxycferr = maxycaylerr = 0.0; m <= plotpts; m++) {
     x = 2.4 * (float) m / plotpts - 1.2;
     if (rdata -> type == 0 || fabs(x) * (float) plotpts > 1.0) {
       /* skip x = 0 for type 1, as R(0) is singular */
@@ -601,17 +671,22 @@ int main(int argc, char** argv) {
 		       / rdata -> Delta);
       ycferr = (float)((zolotarev_contfrac_eval((PRECISION) x, rdata) - y)
 		       / rdata -> Delta);
+      ycaylerr = (float)((zolotarev_cayley_eval((PRECISION) x, rdata) - y)
+		       / rdata -> Delta);
       if (fabs(x) < 1.0 && fabs(x) > rdata -> epsilon) {
 	maxypferr = MAX(maxypferr, fabs(ypferr));
 	maxycferr = MAX(maxycferr, fabs(ycferr));
+	maxycaylerr = MAX(maxycaylerr, fabs(ycaylerr));
       }
 #ifdef ALLPLOTS
       fprintf(plot_partfrac, "%g %g\n", x, ypferr);
       fprintf(plot_contfrac, "%g %g\n", x, ycferr);
+      fprintf(plot_cayley, "%g %g\n", x, ycaylerr);
 #endif /* ALLPLOTS */
     }
   }
 #ifdef ALLPLOTS
+  fclose(plot_cayley);
   fclose(plot_contfrac);
   fclose(plot_partfrac);
 #endif /* ALLPLOTS */
@@ -620,12 +695,14 @@ int main(int argc, char** argv) {
 
   printf("\n\tMaximum PF error = %g (relative to Delta)\n", maxypferr);
   printf("\tMaximum CF error = %g (relative to Delta)\n", maxycferr);
+  printf("\tMaximum Cayley error = %g (relative to Delta)\n", maxycaylerr);
 #endif /* NPLOT */
 
   free(rdata -> a);
   free(rdata -> ap);
   free(rdata -> alpha);
   free(rdata -> beta);
+  free(rdata -> gamma);
   free(rdata);
 
   return EXIT_SUCCESS;
