@@ -3,12 +3,11 @@
 #
 TOPDIR=@top_srcdir@
 VPATH = @top_srcdir@/mainprogs/main
-VPATH += @top_srcdir@/include
 
 #
 # Include Path
 #
-INCFLAGS=-I@top_srcdir@/include -I@top_builddir@/include -I${TOPDIR}/lib
+INCFLAGS=-I$(TOPDIR)/mainprogs/main -I${TOPDIR}/lib
 
 #
 # Any other compiler flags
@@ -78,6 +77,9 @@ cfgtransf_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 
 sink_smearing_SOURCES= sink_smearing.cc
 sink_smearing_DEPENDENCIES= build_chroma_libs rebuild_other_libs
+
+#mainparam_io_SOURCES= mainparam_io.cc
+#sink_smearing_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 
 #
 # The latter rule will always try to rebuild libchroma.a when you 
