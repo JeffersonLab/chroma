@@ -1,4 +1,4 @@
-// $Id: t_mesplq.cc,v 1.5 2003-02-16 04:14:37 edwards Exp $
+// $Id: t_mesplq.cc,v 1.6 2003-02-16 18:30:50 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -6,8 +6,6 @@
 #include "chroma.h"
 
 using namespace QDP;
-
-NmlWriter nml;
 
 int main(int argc, char *argv[])
 {
@@ -21,7 +19,7 @@ int main(int argc, char *argv[])
   Layout::setLattSize(nrow);
   Layout::create();
 
-  nml.open("t_mesplq.nml");
+  NmlWriter nml("t_mesplq.nml");
 
   push(nml,"lattis");
   Write(nml,Nd);
