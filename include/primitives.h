@@ -1,4 +1,4 @@
-// $Id: primitives.h,v 1.2 2003-03-07 05:44:26 edwards Exp $
+// $Id: primitives.h,v 1.3 2003-03-26 22:08:14 dgr Exp $
 
 #ifndef PRIMITIVES_INCLUDE
 #define PRIMITIVES_INCLUDE
@@ -28,6 +28,8 @@
 #define OVERLAP_POLE  7
 #define OVERLAP_INVERSE  8
 #define TRUNC_OVERLAP  9
+#define ZOLOTAREV_4D  12
+#define ZOLOTAREV_5D  14
 #define OVERLAP_5D  15
 #define OVERLAP_DWF  16
 #define DWF  17
@@ -42,9 +44,16 @@
 #define SMEARED_LAPLACIAN_WILSON  26
 #define PLANAR_WILSON  27
 #define HAMBER_WU  28
+#define PROJECTED_PRECONDITIONED_DWF  29
+
+#define WILSON_DSLASH  501
+#define DWF_DSLASH  502
+
 #define STAGGERED  10
 #define NAIK  11
+
 #define QUADRATIC_BOSON  30
+
 #define CG_INVERTER  21
 #define MR_INVERTER  22
 #define BICG_INVERTER  23
