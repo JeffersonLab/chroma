@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.63 2003-09-29 21:32:38 edwards Exp $
+# $Id: Makefile.in,v 1.64 2003-09-30 21:02:02 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -41,13 +41,13 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_triplet = @host@
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_1 = -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
-@BUILD_WILSON_LIBS_TRUE@am__append_2 = baryon_w.cc mesons_w.cc lwldslash_w.cc formfac_w.cc \
+@BUILD_WILSON_LIBS_TRUE@am__append_2 = baryon_w.cc mesons_w.cc curcor2_w.cc lwldslash_w.cc formfac_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              sink_smear2_w.cc barcomp_w.cc transf_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              unprec_wilson_dsdu_w.cc  unprec_qprop_w.cc readszinqprop_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              readszinferm_w.cc writeszinqprop_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              overlapbu_linop_w.cc \
-@BUILD_WILSON_LIBS_TRUE@	      p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc 
+@BUILD_WILSON_LIBS_TRUE@	      p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc
 
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_3 = lwldslash_w_sse.cc
 @BUILD_STAGGERED_LIBS_TRUE@am__append_4 = mesphas_s.cc
@@ -196,15 +196,15 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	writeszin.cc su3proj.cc sun_proj.cc gaus_smear.cc hyp_smear.cc \
 	ape_smear.cc klein_gord.cc laplacian.cc su2extract.cc \
 	sunfill.cc invcg2.cc qprop_io.cc follana_io.cc baryon_w.cc \
-	mesons_w.cc lwldslash_w.cc formfac_w.cc sink_smear2_w.cc \
-	barcomp_w.cc transf_w.cc unprec_wilson_fermact_w.cc \
-	unprec_wilson_linop_w.cc unprec_wilson_dsdu_w.cc \
-	unprec_qprop_w.cc readszinqprop_w.cc readszinferm_w.cc \
-	writeszinqprop_w.cc overlapbu_linop_w.cc p_src_w.cc d_src_w.cc \
-	D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc lwldslash_w_sse.cc \
-	mesphas_s.cc
+	mesons_w.cc curcor2_w.cc lwldslash_w.cc formfac_w.cc \
+	sink_smear2_w.cc barcomp_w.cc transf_w.cc \
+	unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
+	unprec_wilson_dsdu_w.cc unprec_qprop_w.cc readszinqprop_w.cc \
+	readszinferm_w.cc writeszinqprop_w.cc overlapbu_linop_w.cc \
+	p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc \
+	lwldslash_w_sse.cc mesphas_s.cc
 @BUILD_WILSON_LIBS_TRUE@am__objects_1 = baryon_w.$(OBJEXT) \
-@BUILD_WILSON_LIBS_TRUE@	mesons_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	mesons_w.$(OBJEXT) curcor2_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	lwldslash_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	formfac_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	sink_smear2_w.$(OBJEXT) \
@@ -242,12 +242,13 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/BuildingBlocks_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/D_j_w.Po ./$(DEPDIR)/DjDk_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ape_smear.Po ./$(DEPDIR)/barcomp_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/baryon_w.Po ./$(DEPDIR)/d_src_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/expm12.Po ./$(DEPDIR)/follana_io.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/formfac_w.Po ./$(DEPDIR)/gaus_smear.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/hotst.Po ./$(DEPDIR)/hyp_smear.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/invcg2.Po ./$(DEPDIR)/klein_gord.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/laplacian.Po ./$(DEPDIR)/lwldslash_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/baryon_w.Po ./$(DEPDIR)/curcor2_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/d_src_w.Po ./$(DEPDIR)/expm12.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/follana_io.Po ./$(DEPDIR)/formfac_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/gaus_smear.Po ./$(DEPDIR)/hotst.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/hyp_smear.Po ./$(DEPDIR)/invcg2.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/klein_gord.Po ./$(DEPDIR)/laplacian.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/lwldslash_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/lwldslash_w_sse.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/mesons_w.Po ./$(DEPDIR)/mesphas_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/mesplq.Po \
@@ -339,6 +340,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ape_smear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/barcomp_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/baryon_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/curcor2_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/d_src_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/expm12.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/follana_io.Po@am__quote@
