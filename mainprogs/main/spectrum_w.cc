@@ -1,10 +1,14 @@
-// $Id: spectrum_w.cc,v 1.31 2004-04-05 04:19:13 edwards Exp $
+// $Id: spectrum_w.cc,v 1.32 2004-04-05 16:26:27 edwards Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.31  2004-04-05 04:19:13  edwards
+//  Revision 1.32  2004-04-05 16:26:27  edwards
+//  Moved init of sftmom down after prop is read. Eliminated read
+//  of j_decay from input.
+//
+//  Revision 1.31  2004/04/05 04:19:13  edwards
 //  Added initial support for Wall sources/sinks.
 //
 //  Revision 1.30  2004/02/26 16:38:22  edwards
@@ -124,8 +128,6 @@ using namespace QDP;
 // and written to the XML output
 struct Param_t
 {
-  int j_decay;             // direction to measure propagation
-
   bool Pt_snk;             // point sink
   bool Sl_snk;             // shell sink
   bool Wl_snk;             // wall sink
@@ -197,13 +199,6 @@ void read(XMLReader& xml, const string& path, Param_t& param)
   default:
     /**************************************************************************/
     QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
-    QDP_abort(1);
-  }
-
-  read(paramtop, "j_decay", param.j_decay);
-  if (param.j_decay < 0 || param.j_decay >= Nd) 
-  {
-    QDPIO::cerr << "Bad value: j_decay = " << param.j_decay << endl;
     QDP_abort(1);
   }
 
@@ -354,12 +349,6 @@ int main(int argc, char **argv)
 
   xml_out.flush();
 
-  // Initialize the slow Fourier transform phases
-  SftMom phases(input.param.mom2_max, input.param.avg_equiv_mom, input.param.j_decay);
-
-  // Keep a copy of the phases with NO momenta
-  SftMom phases_nomom(0, true, input.param.j_decay);
-
   // Keep an array of all the xml output buffers
   XMLArrayWriter xml_array(xml_out,input.prop.prop_files.size());
   push(xml_array, "Wilson_hadron_measurements");
@@ -393,14 +382,20 @@ int main(int argc, char **argv)
     }
 
     // Derived from input prop
-    Real Mass = prop_header.Mass;
+    int j_decay = source_header.j_decay;
+    Real Mass   = prop_header.Mass;
     multi1d<int> boundary = prop_header.boundary;
     multi1d<int> t_source = source_header.t_source;
 
     // Flags
-    int t0      = t_source[input.param.j_decay];
-    int bc_spec = boundary[input.param.j_decay];
+    int t0      = t_source[j_decay];
+    int bc_spec = boundary[j_decay];
 
+    // Initialize the slow Fourier transform phases
+    SftMom phases(input.param.mom2_max, input.param.avg_equiv_mom, j_decay);
+
+    // Keep a copy of the phases with NO momenta
+    SftMom phases_nomom(0, true, j_decay);
 
     // Next array element - name auto-written
     push(xml_array);
@@ -458,7 +453,7 @@ int main(int argc, char **argv)
 		    input.param.wvf_kind, 
 		    input.param.wvf_param[loop],
 		    input.param.wvfIntPar[loop], 
-		    input.param.j_decay);
+		    j_decay);
 
 	if (Pt_src)
 	  mesons(quark_prop_smr, quark_prop_smr, phases, t0,
@@ -477,7 +472,7 @@ int main(int argc, char **argv)
       if (input.param.Wl_snk) 
       {
 	LatticePropagator wall_quark_prop;
-	wall_qprop(wall_quark_prop, quark_propagator, input.param.j_decay);
+	wall_qprop(wall_quark_prop, quark_propagator, phases_nomom);
 
 	if (Pt_src)
 	  mesons(wall_quark_prop, wall_quark_prop, phases_nomom, t0,
@@ -549,7 +544,7 @@ int main(int argc, char **argv)
 		    input.param.wvf_kind, 
 		    input.param.wvf_param[loop],
 		    input.param.wvfIntPar[loop], 
-		    input.param.j_decay);
+		    j_decay);
 	if (Pt_src)
 	  baryon(quark_prop_smr, phases, 
 		 t0, bc_spec, input.param.time_rev, 
@@ -570,7 +565,7 @@ int main(int argc, char **argv)
       if (input.param.Wl_snk) 
       {
 	LatticePropagator wall_quark_prop;
-	wall_qprop(wall_quark_prop, quark_propagator, input.param.j_decay);
+	wall_qprop(wall_quark_prop, quark_propagator, phases_nomom);
 
 	if (Pt_src)
 	  baryon(wall_quark_prop, phases_nomom, 
