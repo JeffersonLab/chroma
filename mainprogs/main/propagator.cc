@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.62 2004-09-16 19:31:15 kostas Exp $
+// $Id: propagator.cc,v 1.63 2004-09-16 21:17:33 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -107,6 +107,7 @@ int main(int argc, char **argv)
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
  
+  QDPIO::cout << "linkage=" << linkage_hack() << endl;
 
   START_CODE();
 
@@ -355,12 +356,12 @@ int main(int argc, char **argv)
 #endif
 		      
 
-  QDPIO::cout << "Try the various factories" << endl;
-
   if (! success)
   {
     try
     {
+      QDPIO::cout << "Try the various 4D factories" << endl;
+
       // Generic Wilson-Type stuff
 
       Handle< WilsonTypeFermAct<LatticeFermion> >
@@ -381,8 +382,7 @@ int main(int argc, char **argv)
     }
     catch (const std::exception& e) 
     {
-      QDPIO::cerr << "Error reading data: " << e.what() << endl;
-      throw;
+      QDPIO::cout << "The id does not correspond to a 4D fermact" << endl;
     }
   }
 
@@ -391,13 +391,15 @@ int main(int argc, char **argv)
   {
     try
     {
+      QDPIO::cout << "Try the various 5D factories" << endl;
+
       // Generic 5D Wilson-Type stuff
 
-      Handle< WilsonTypeFermAct<LatticeFermion> >
-	S_f(TheWilsonTypeFermActFactory::Instance().createObject(fermact,
-								 fbc,
-								 fermacttop,
-								 fermact_path));
+      Handle< WilsonTypeFermAct< multi1d<LatticeFermion> > >
+	S_f(TheWilsonTypeFermActArrayFactory::Instance().createObject(fermact,
+								      fbc_a,
+								      fermacttop,
+								      fermact_path));
 
       Handle<const ConnectState> state(S_f->createState(u));  // uses phase-multiplied u-fields
 
@@ -411,11 +413,16 @@ int main(int argc, char **argv)
     }
     catch (const std::exception& e) 
     {
-      QDPIO::cerr << "Error reading data: " << e.what() << endl;
-      throw;
+      QDPIO::cout << "The id does not correspond to a 5D fermact" << endl;
     }
   }
 
+
+  if (! success)
+  {
+    QDPIO::cerr << "Error: no fermact found" << endl;
+    QDP_abort(1);
+  }
 
 
   push(xml_out,"Relaxation_Iterations");
