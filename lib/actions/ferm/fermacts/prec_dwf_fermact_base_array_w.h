@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_fermact_base_array_w.h,v 1.9 2004-09-18 17:13:42 edwards Exp $
+// $Id: prec_dwf_fermact_base_array_w.h,v 1.10 2004-09-18 20:15:54 edwards Exp $
 /*! \file
  *  \brief Base class for even-odd preconditioned domain-wall-like fermion actions
  */
@@ -69,8 +69,9 @@ namespace Chroma
 			const InvertParam_t& invParam,
 			int& ncg_had)
       {
-	QDPIO::cerr << "dwf_quarkProp4 not implemented" << endl;
-	QDP_abort(1);
+	// Simply call corresponding quarkProp4 routine
+	// Assumes nonRelProp = false
+	quarkProp4(q_sol, xml_out, q_src, state, invParam, false, ncg_had);
       }
     
   };
