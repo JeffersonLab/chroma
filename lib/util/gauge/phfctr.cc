@@ -1,10 +1,10 @@
-// $Id: phfctr.cc,v 1.1 2003-12-16 22:18:48 edwards Exp $
+// $Id: phfctr.cc,v 1.2 2003-12-16 22:21:47 edwards Exp $
 /*! \file
  *  \brief  This routine is specific to Wilson fermions!
  */
 
 #include "chromabase.h"
-#include "geom/setph.h"
+#include "util/gauge/phfctr.h"
 
 using namespace QDP;
 
