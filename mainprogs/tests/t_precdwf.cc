@@ -1,4 +1,4 @@
-// $Id: t_precdwf.cc,v 1.13 2005-03-02 00:44:19 edwards Exp $
+// $Id: t_precdwf.cc,v 1.14 2005-03-18 13:26:42 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -84,7 +84,7 @@ int main(int argc, char **argv)
   Real WilsonMass = 1.5;
   Real m_q = 0.01;
 
-#if 0
+#if 1
   EvenOddPrecDWFermActArray S_pdwf(fbc_a,WilsonMass,m_q,N5);
 #else
   EvenOddPrecZoloNEFFermActArrayParams params;
@@ -120,7 +120,8 @@ int main(int argc, char **argv)
     double mydt;
 
 //    int Ndiag  = (N5-2)*(5*24) + 2*(8*24);
-    int Ndiag  = N5*(4*24) + (N5-1)*(8*24) + 3*24;   // this is what I get counting flops in code
+    // int Ndiag  = N5*(4*24) + (N5-1)*(8*24) + 3*24;   // this is what I get counting flops in code
+    int Ndiag  = (4*(N5-2)+10)*Nc*Ns; // This is my count with the blas / chiral proj ops
     int Neo    = N5*(1320+24);
     int Nflops = 2*Ndiag + 2*Neo + N5*24;
 

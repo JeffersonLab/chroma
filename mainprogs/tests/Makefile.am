@@ -35,7 +35,7 @@ endif
 HDRS =
 
 ## Production tests:
-bin_PROGRAMS = t_lwldslash_sse t_lwldslash_pab
+bin_PROGRAMS = t_lwldslash_sse t_lwldslash_pab t_ritz_KS
 
 #
 # add the programs to build in here
@@ -47,7 +47,7 @@ bin_PROGRAMS = t_lwldslash_sse t_lwldslash_pab
 ##   be built by 'make check' and is not installed.
 check_PROGRAMS  = t_mesplq t_io t_mesons_w  t_conslinop t_hypsmear \
     t_ape_smear t_precact t_dwf4d t_propagator_s t_disc_loop_s \
-    t_remez t_ritz t_ritz_KS t_inline
+    t_remez t_ritz t_inline
 
 ## Moved t_dslashm and t_lwldslash to EXTRA_PROGRAMS because they currently
 ## do not compile.  This way, they don't break 'make check' but the targets

@@ -43,12 +43,13 @@ host_triplet = @host@
 @BUILD_SSE_DWF_CG_TRUE@am__append_4 = -I$(TOPDIR)/other_libs/@SSE_DWF_CG_DIR@/include
 @BUILD_SSE_DWF_CG_TRUE@am__append_5 = -L$(BUILDDIR)/other_libs/@SSE_DWF_CG_DIR@/lib
 @BUILD_SSE_DWF_CG_TRUE@am__append_6 = -lsse_dwf_cg 
-bin_PROGRAMS = t_lwldslash_sse$(EXEEXT) t_lwldslash_pab$(EXEEXT)
+bin_PROGRAMS = t_lwldslash_sse$(EXEEXT) t_lwldslash_pab$(EXEEXT) \
+	t_ritz_KS$(EXEEXT)
 check_PROGRAMS = t_mesplq$(EXEEXT) t_io$(EXEEXT) t_mesons_w$(EXEEXT) \
 	t_conslinop$(EXEEXT) t_hypsmear$(EXEEXT) t_ape_smear$(EXEEXT) \
 	t_precact$(EXEEXT) t_dwf4d$(EXEEXT) t_propagator_s$(EXEEXT) \
 	t_disc_loop_s$(EXEEXT) t_remez$(EXEEXT) t_ritz$(EXEEXT) \
-	t_ritz_KS$(EXEEXT) t_inline$(EXEEXT)
+	t_inline$(EXEEXT)
 EXTRA_PROGRAMS = t_dslashm$(EXEEXT) t_lwldslash$(EXEEXT) \
 	t_spprod$(EXEEXT) t_follana_io_s$(EXEEXT) t_formfac$(EXEEXT) \
 	t_follana_pion_s$(EXEEXT) t_dwflinop$(EXEEXT) \

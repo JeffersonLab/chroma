@@ -1,4 +1,4 @@
-// $Id: prec_nef_linop_array_w.cc,v 1.11 2005-03-15 17:23:41 bjoo Exp $
+// $Id: prec_nef_linop_array_w.cc,v 1.12 2005-03-18 13:26:41 bjoo Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned NEF domain-wall linear operator
  */
@@ -57,7 +57,8 @@ namespace Chroma
   /*!
    * \ingroup linop
    *
-   * The operator acts on the entire lattice
+   * The operator acts on the entire lattice. 
+   * Total flopcount: 6 *N5*Nc*Ns flops/site
    *
    * \param psi 	  Pseudofermion field     	       (Read)
    * \param isign   Flag ( PLUS | MINUS )   	       (Read)
@@ -80,6 +81,9 @@ namespace Chroma
     
     case PLUS:
     {
+      // Total flopcount:6 N5 Nc Ns flops/site
+ 
+      // This loop (N5-2) * 6 Nc Ns flops/site
       for(int s(1);s<N5-1;s++) { // 1/2k psi[s] - P_- * psi[s+1] - P_+ * psi[s-1]
 
 
@@ -87,7 +91,9 @@ namespace Chroma
 	//  c5Fact*( psi[s+1] + psi[s-1] + GammaConst<Ns,Ns*Ns-1>()*(psi[s-1] - psi[s+1]) ) ;
 
 	// Recoded using chiralProject and BLASology
+	// 4Nc Ns flops/site
 	chi[s][rb[cb]] = b5InvTwoKappa*psi[s] - c5InvTwoKappa*chiralProjectPlus(psi[s-1]);
+	// 2Nc Ns flops/site
 	chi[s][rb[cb]] -= c5InvTwoKappa*chiralProjectMinus(psi[s+1]);
 
       }
@@ -100,7 +106,11 @@ namespace Chroma
 
       // Recoded using chiralProject with BLAS-ology. c5Fact-s factor of 
       // 1/2 absorbed by projectors
+
+      // These two lines 6Nc Ns flops
+      // 4Nc Ns flops/site
       chi[0][rb[cb]] = b5InvTwoKappa*psi[0] - c5InvTwoKappa*chiralProjectMinus(psi[1]);
+      // 2Nc Ns flops/site
       chi[0][rb[cb]] += c5InvTwoKappamf*chiralProjectPlus(psi[N5-1]);
 
 
@@ -109,7 +119,11 @@ namespace Chroma
       //	c5Fact*( psi[N5m2] - m_q *psi[0] + GammaConst<Ns,Ns*Ns-1>()*(psi[N5m2] + m_q * psi[0]) );
 
       // Recoded with chiral projector and BLAS ology
+      // These two lines: 6Nc Ns flops /site
+      // 4Nc Ns flops/site
       chi[N5-1][rb[cb]] = b5InvTwoKappa*psi[N5-1] - c5InvTwoKappa*chiralProjectPlus(psi[N5-2]);
+
+      // 2Nc Ns flops/site
       chi[N5-1][rb[cb]] += c5InvTwoKappamf*chiralProjectMinus(psi[0]);
     }
     break ;
@@ -153,6 +167,7 @@ namespace Chroma
    * \ingroup linop
    *
    * The operator acts on the entire lattice
+   * Total flopcount: (12N5 - 7)*Nc*Ns flops
    *
    * \param psi 	  Pseudofermion field     	       (Read)
    * \param isign   Flag ( PLUS | MINUS )   	       (Read)
@@ -169,9 +184,12 @@ namespace Chroma
     if( chi.size() != N5 ) chi.resize(N5);
    
     // Copy and scale by TwoKappa (1/M0)
-    for(int s(0);s<N5;s++)
-      chi[s][rb[cb]] = b5TwoKappa * psi[s] ;
+    // N5*2NcNs flops
+    for(int s(0);s<N5;s++) {
 
+      // 2Nc Ns flops/site
+      chi[s][rb[cb]] = b5TwoKappa * psi[s] ;
+    }
 
     switch ( isign ) {
 
@@ -185,20 +203,24 @@ namespace Chroma
       // factor of 0.5 in fact absorbed into projectors
       Real fact = m_q*TwoKappa;
 
+      // (N5 - 1) * (2Nc Ns flops) / site
       for(int s(0);s<N5-1;s++){
 	chi[N5-1][rb[cb]] -= fact * chiralProjectMinus(chi[s]);
 	fact *= TwoKappa ;
       }
       
       //Now apply the inverse of L. Forward elimination 
+      // (N5 -1) * (2Nc Ns flops) / site
       for(int s(1);s<N5;s++)
 	chi[s][rb[cb]] += TwoKappa*chiralProjectPlus(chi[s-1]);
       
       //The inverse of D  now
+      // 2Nc Ns flops
       chi[N5-1][rb[cb]] *= invDfactor ;
       // That was easy....
       
       //The inverse of R. Back substitution...... Getting there! 
+      // N5 -1 * (2Nc Ns flops) / site
       for(int s(N5-2);s>-1;s--)
 	chi[s][rb[cb]] += TwoKappa*chiralProjectMinus(chi[s+1]);
 
@@ -208,9 +230,14 @@ namespace Chroma
 
       // Former factor of 0.5 in fact is absorbed into chiralProjector
       fact = m_q*TwoKappa;
+      // Nc Ns flops
       tt[rb[cb]] = fact*chiralProjectPlus(chi[N5-1]);
+
+      // (N5 -1) * 4Nc Ns flops 
       for(int s(0);s<N5-1;s++){
+	// 2Nc Ns flops
 	chi[s][rb[cb]] -= tt  ;
+	// 2Nc Ns flops
 	tt[rb[cb]] *= TwoKappa ;
       }
     }
@@ -268,6 +295,7 @@ namespace Chroma
    * \ingroup linop
    *
    * The operator acts on the entire lattice
+   * Total flopcount 6 N5 Nc Ns + N5 * checkerboarded Dslash flops per site
    *
    * \param psi 	  Pseudofermion field     	       (Read)
    * \param isign   Flag ( PLUS | MINUS )   	       (Read)
@@ -296,14 +324,19 @@ namespace Chroma
     {
       multi1d<LatticeFermion> tmp(N5);
       int otherCB = (cb + 1)%2 ;
-      
+
+
+      // (N5 -2 )*6 *Nc*Ns flops 
       for(int s = 1; s < N5-1; s++){
 	//	tmp[s][rb[otherCB]] = fb5*psi[s] + 
 	//   fc5*(psi[s+1] + psi[s-1] +
 	//       GammaConst<Ns,Ns*Ns-1>()*(psi[s-1]-psi[s+1]));
 	//
 	// Recoded with chiral projectors and BLAS ology.
+	// 4Nc Ns flops
 	tmp[s][rb[otherCB]] = fb5*psi[s] + fc5*chiralProjectPlus(psi[s-1]);
+
+	// 2Nc Ns flops
 	tmp[s][rb[otherCB]]+= fc5*chiralProjectMinus(psi[s+1]);
       }
       
@@ -313,13 +346,24 @@ namespace Chroma
       //     - GammaConst<Ns,Ns*Ns-1>()*(m_q*psi[N5-1] + psi[1]));
       //
       // Recoded with chiralProjec and BLAS ology
+      // 6Nc Ns flops/site
+      //
+      // 4Nc Ns flops/site
       tmp[0][rb[otherCB]] = fb5*psi[0] +fc5*chiralProjectMinus(psi[1]);
+      // 2Nc Ns flops/site
       tmp[0][rb[otherCB]] -= fc5mf*chiralProjectPlus(psi[N5-1]);
 
       // tmp[N5-1][rb[otherCB]] = fb5*psi[N5-1] + 
       //	fc5*( psi[N5-2] - m_q *psi[0] +
       //           GammaConst<Ns,Ns*Ns-1>()*(psi[N5-2] + m_q * psi[0]));
-      tmp[N5-1][rb[otherCB]] = fb5*psi[N5-1] + fc5*chiralProjectPlus(psi[N5-2]);      tmp[N5-1][rb[otherCB]] -= fc5mf*chiralProjectMinus(psi[0]);
+
+      // 6Nc Ns flops:
+      //    4Nc Ns flops
+      tmp[N5-1][rb[otherCB]] = fb5*psi[N5-1] + fc5*chiralProjectPlus(psi[N5-2]);
+      //   2Nc Ns flops
+      tmp[N5-1][rb[otherCB]] -= fc5mf*chiralProjectMinus(psi[0]);
+
+      
 
       // Replace this with a vector Dslash in time
       for(int s=0; s < N5; s++) { 
