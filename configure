@@ -273,7 +273,8 @@ PACKAGE_STRING='chroma 1.6'
 PACKAGE_BUGREPORT='edwards@jlab.org'
 
 ac_subdirs_all="$ac_subdirs_all other_libs/intel_sse_wilson_dslash"
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE RANLIB ac_ct_RANLIB QDPXX_CONFIG CXX QDPXX_CXXFLAGS QDPXX_LDFLAGS QDPXX_LIBS QDPXX_ND QDPXX_NC QDPXX_NS QDPXX_PARALLEL_ARCH QDPXX_PRECISION subdirs SSE_DSLASH_DIR SSE_DSLASH_ENABLED BUILD_SSE_WILSON_DSLASH_TRUE BUILD_SSE_WILSON_DSLASH_FALSE BUILD_PAB_WILSON_DSLASH_TRUE BUILD_PAB_WILSON_DSLASH_FALSE BUILD_STAGGERED_LIBS_TRUE BUILD_STAGGERED_LIBS_FALSE BUILD_WILSON_LIBS_TRUE BUILD_WILSON_LIBS_FALSE CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE LATEX DVIPS DVIPDF DOXYGEN LIBOBJS LTLIBOBJS'
+ac_subdirs_all="$ac_subdirs_all other_libs/intel_sse_dwf_cg"
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE RANLIB ac_ct_RANLIB QDPXX_CONFIG CXX QDPXX_CXXFLAGS QDPXX_LDFLAGS QDPXX_LIBS QDPXX_ND QDPXX_NC QDPXX_NS QDPXX_PARALLEL_ARCH QDPXX_PRECISION subdirs SSE_DSLASH_DIR SSE_DSLASH_ENABLED BUILD_SSE_WILSON_DSLASH_TRUE BUILD_SSE_WILSON_DSLASH_FALSE SSE_DWF_CG_DIR BUILD_SSE_DWF_CG_TRUE BUILD_SSE_DWF_CG_FALSE BUILD_PAB_WILSON_DSLASH_TRUE BUILD_PAB_WILSON_DSLASH_FALSE BUILD_STAGGERED_LIBS_TRUE BUILD_STAGGERED_LIBS_FALSE BUILD_WILSON_LIBS_TRUE BUILD_WILSON_LIBS_FALSE CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE LATEX DVIPS DVIPDF DOXYGEN LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -816,6 +817,8 @@ Optional Features:
                           is wilson
   --enable-sse-wilson-dslash
                           Build and Use the SSE2 Wilson Dslash Library
+
+  --enable-sse-dwf-cg     Build and Use the SSE DWF CG Library
 
   --enable-pab-wilson-dslash
                           Use PABs Wilson Dslash Library
@@ -1826,6 +1829,12 @@ if test "${enable_sse_wilson_dslash+set}" = set; then
 
 fi;
 
+# Check whether --enable-sse_dwf_cg or --disable-sse_dwf_cg was given.
+if test "${enable_sse_dwf_cg+set}" = set; then
+  enableval="$enable_sse_dwf_cg"
+
+fi;
+
 # Check whether --enable-pab_wilson_dslash or --disable-pab_wilson_dslash was given.
 if test "${enable_pab_wilson_dslash+set}" = set; then
   enableval="$enable_pab_wilson_dslash"
@@ -2049,6 +2058,50 @@ else
 fi
 
 
+
+case "$enable_sse_dwf_cg" in
+  yes)
+        if test "x$ac_fermion_type" != "xwilson";
+	then
+	    { { echo "$as_me:$LINENO: error: Attempting to build SSE DWF CG inverter with NON Wilson fermion type" >&5
+echo "$as_me: error: Attempting to build SSE DWF CG inverter with NON Wilson fermion type" >&2;}
+   { (exit 1); exit 1; }; }
+	fi
+        { echo "$as_me:$LINENO: Configuring SSE DWF CG" >&5
+echo "$as_me: Configuring SSE DWF CG" >&6;}
+
+
+subdirs="$subdirs other_libs/intel_sse_dwf_cg"
+
+	SSE_DWF_CG_DIR=intel_sse_dwf_cg
+
+
+cat >>confdefs.h <<\_ACEOF
+#define BUILD_SSE_DWF_CG
+_ACEOF
+
+	;;
+  *)
+
+	{ echo "$as_me:$LINENO: Not building SSE DWF CG" >&5
+echo "$as_me: Not building SSE DWF CG" >&6;}
+        ;;
+esac
+SSE_DSLASH_ENABLED=$enable_sse_dwf_cg
+
+
+
+
+if test "x${enable_sse_dwf_cg}x" = "xyesx" ; then
+  BUILD_SSE_DWF_CG_TRUE=
+  BUILD_SSE_DWF_CG_FALSE='#'
+else
+  BUILD_SSE_DWF_CG_TRUE='#'
+  BUILD_SSE_DWF_CG_FALSE=
+fi
+
+
+
 case "$enable_pab_wilson_dslash" in
   noarch)
 	ac_build_pab_wilson_dslash="yes"
@@ -2073,7 +2126,6 @@ _ACEOF
 echo "$as_me: Not building PAB Dslash  " >&6;}
         ;;
 esac
-
 
 
 
@@ -3163,6 +3215,13 @@ echo "$as_me: error: conditional \"BUILD_SSE_WILSON_DSLASH\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
+if test -z "${BUILD_SSE_DWF_CG_TRUE}" && test -z "${BUILD_SSE_DWF_CG_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"BUILD_SSE_DWF_CG\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"BUILD_SSE_DWF_CG\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
 if test -z "${BUILD_PAB_WILSON_DSLASH_TRUE}" && test -z "${BUILD_PAB_WILSON_DSLASH_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"BUILD_PAB_WILSON_DSLASH\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
@@ -3780,6 +3839,9 @@ s,@SSE_DSLASH_DIR@,$SSE_DSLASH_DIR,;t t
 s,@SSE_DSLASH_ENABLED@,$SSE_DSLASH_ENABLED,;t t
 s,@BUILD_SSE_WILSON_DSLASH_TRUE@,$BUILD_SSE_WILSON_DSLASH_TRUE,;t t
 s,@BUILD_SSE_WILSON_DSLASH_FALSE@,$BUILD_SSE_WILSON_DSLASH_FALSE,;t t
+s,@SSE_DWF_CG_DIR@,$SSE_DWF_CG_DIR,;t t
+s,@BUILD_SSE_DWF_CG_TRUE@,$BUILD_SSE_DWF_CG_TRUE,;t t
+s,@BUILD_SSE_DWF_CG_FALSE@,$BUILD_SSE_DWF_CG_FALSE,;t t
 s,@BUILD_PAB_WILSON_DSLASH_TRUE@,$BUILD_PAB_WILSON_DSLASH_TRUE,;t t
 s,@BUILD_PAB_WILSON_DSLASH_FALSE@,$BUILD_PAB_WILSON_DSLASH_FALSE,;t t
 s,@BUILD_STAGGERED_LIBS_TRUE@,$BUILD_STAGGERED_LIBS_TRUE,;t t
