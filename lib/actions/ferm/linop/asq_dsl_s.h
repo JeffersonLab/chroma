@@ -1,6 +1,7 @@
-/*  $Id: asq_dsl_s.h,v 1.1 2003-12-10 16:20:59 bjoo Exp $  */
-
-/* This routine is specific to staggered fermions! */
+//  $Id: asq_dsl_s.h,v 1.2 2004-01-02 03:08:13 edwards Exp $
+/*! \file
+ *  \brief The "asq" or "asqtad" dslash operator D'
+ */
 
 #ifndef __asqdslash_h__
 #define __asqdslash_h__
@@ -9,36 +10,41 @@
 
 using namespace QDP;
 
-/* Asq_Dsl */
-
-/* Description: */
-
-/* This routine applies the "asq" or "asqtad" operator D' to Psi,  */
-/* putting the result in Chi. */
-
-/*	       Nd-1 */
-/*	       --- */
-/*	       \                     F */                     
-/*   chi(x)  :=  >  isign eta  (x) [U  (x) psi(x+mu) */
-/*	       /             mu	     mu */
-/*	       --- */
-/*	       mu=0 */
-
-/*			+ c_3 U  (x) U  (x+mu) U  (x+2mu) psi(x+3mu) ] */
-/*                             mu     mu        mu */
-
-/*	             Nd-1 */
-/*	             --- */
-/*	             \                      +F */
-/*                -    >  isign eta  (x)  [U  (x-mu) psi(x-mu) */
-/*	             /             mu	    mu */
-/*	             --- */
-/*	             mu=0 */
-
-/*                             +      +          + */
-/*			+ c_3 U  (x) U  (x-2mu) U  (x-3mu) psi(x-3mu) ] */
-/*                             mu     mu         mu */
-/* Note the KS phase factors are already included in the U's! */
+//! The "asq" or "asqtad" dslash operator D'
+/*!
+ * \ingroup linop
+ *
+ * This routine is specific to staggered fermions!
+ *
+ * Description:
+ *
+ * This routine applies the "asq" or "asqtad" operator D' to Psi, 
+ * putting the result in Chi.
+ *
+ *	       Nd-1
+ *	       ---
+ *	       \                     F                     
+ *   chi(x)  :=  >  isign eta  (x) [U  (x) psi(x+mu)
+ *	       /             mu	     mu
+ *	       ---
+ *	       mu=0
+ *
+ *			+ c_3 U  (x) U  (x+mu) U  (x+2mu) psi(x+3mu) ]
+ *                             mu     mu        mu
+ *
+ *	             Nd-1
+ *	             ---
+ *	             \                      +F
+ *                -    >  isign eta  (x)  [U  (x-mu) psi(x-mu)
+ *	             /             mu	    mu
+ *	             ---
+ *	             mu=0
+ *
+ *                             +      +          +
+ *			+ c_3 U  (x) U  (x-2mu) U  (x-3mu) psi(x-3mu) ]
+ *                             mu     mu         mu
+ * Note the KS phase factors are already included in the U's!
+ */
 
 class QDPStaggeredDslash : public DslashLinearOperator<LatticeFermion>
 {  
@@ -56,15 +62,14 @@ public:
   //! No real need for cleanup here
   ~QDPStaggeredDslash() {}
 
-/* Arguments: */
-
-/*  u_fat     Fat7 links                	  		(Read) */
-/*  u_triple  triple links					(Read) */
-/*  Psi	      Pseudofermion field - Source		        (Read) */
-/*		      + */
-/*  ISign      D' or D'  ( +1 | -1 ) respectively		(Read) */
-/*  CB	      Checkerboard of OUTPUT vector			(Read) */
-
+  /*! Arguments:
+   *
+   *  \param u_fat     Fat7 links                	  		(Read)
+   *  \param u_triple  triple links					(Read)
+   *  \param psi       Pseudofermion field - Source		        (Read)
+   *  \param isign     D' or D'^+  ( +1 | -1 ) respectively		(Read)
+   *  \param cb	       Checkerboard of OUTPUT vector			(Read) 
+   */
   void apply (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign, int cb) const;
   
   //! Subset is all here
