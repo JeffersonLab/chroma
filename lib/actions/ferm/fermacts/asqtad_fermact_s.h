@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: asqtad_fermact_s.h,v 1.5 2004-01-02 03:19:40 edwards Exp $
+// $Id: asqtad_fermact_s.h,v 1.6 2004-01-06 13:59:49 bjoo Exp $
 /*! \file
  *  \brief Asqtad staggered fermion action
  */
@@ -26,7 +26,7 @@ public:
   
   //! Copy constructor
   AsqtadFermAct(const AsqtadFermAct& a) : 
-    fbc(a.fbc), Mass(a.Mass), u0(u0_) {}
+    fbc(a.fbc), Mass(a.Mass), u0(a.u0) {}
 
   //! Assignment
   AsqtadFermAct& operator=(const AsqtadFermAct& a)
@@ -39,11 +39,11 @@ public:
   const AsqtadConnectStateBase<LatticeFermion>* createState(const multi1d<LatticeColorMatrix>& u_) const;
 
   //! Produce a linear operator for this action
-  const EvenOddLinearOperator<LatticeFermion>* linOp(const ConnectState& state_) const;
+  const EvenOddLinearOperator<LatticeFermion>* linOp( Handle< const ConnectState> state_) const;
 
   //! Produce a linear operator M^dag.M for this action
   
-  const LinearOperator<LatticeFermion>* lMdagM(const ConnectState& state_) 
+  const LinearOperator<LatticeFermion>* lMdagM(Handle< const ConnectState >  state_) 
     const;
 
   //! accessors 

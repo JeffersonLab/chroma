@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.115 2004-01-06 10:42:36 bjoo Exp $
+# $Id: Makefile.in,v 1.116 2004-01-06 13:59:49 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -60,7 +60,7 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@	      dwf_quarkprop4_w.cc quarkprop4_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              overlapbu_linop_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc \
-@BUILD_WILSON_LIBS_TRUE@	      zolotarev_coeffs.cc overlap_fermact_base_w.cc lovlapms_w.cc  zolotarev4d_fermact_bj_w.cc ischiral_w.cc lovddag_w.cc
+@BUILD_WILSON_LIBS_TRUE@	      zolotarev_coeffs.cc overlap_fermact_base_w.cc lovlapms_w.cc  zolotarev4d_fermact_bj_w.cc ischiral_w.cc lovddag_w.cc zolotarev4d_qprop.cc
 
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_3 = lwldslash_w_sse.cc
 @BUILD_STAGGERED_LIBS_TRUE@am__append_4 = mesphas_s.cc mesphas_follana_s.cc pions_follana_s.cc \
@@ -240,11 +240,11 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc \
 	zolotarev_coeffs.cc overlap_fermact_base_w.cc lovlapms_w.cc \
 	zolotarev4d_fermact_bj_w.cc ischiral_w.cc lovddag_w.cc \
-	lwldslash_w_sse.cc mesphas_s.cc mesphas_follana_s.cc \
-	pions_follana_s.cc follana_io_s.cc walfil_s.cc \
-	asqtad_linop_s.cc asq_dsl_s.cc fat7_links_s.cc naik_term_s.cc \
-	asqtad_fermact_s.cc asqtad_mdagm_s.cc staggered_qprop.cc \
-	stag_phases_s.cc
+	zolotarev4d_qprop.cc lwldslash_w_sse.cc mesphas_s.cc \
+	mesphas_follana_s.cc pions_follana_s.cc follana_io_s.cc \
+	walfil_s.cc asqtad_linop_s.cc asq_dsl_s.cc fat7_links_s.cc \
+	naik_term_s.cc asqtad_fermact_s.cc asqtad_mdagm_s.cc \
+	staggered_qprop.cc stag_phases_s.cc
 @BUILD_WILSON_LIBS_TRUE@am__objects_1 = baryon_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	mesons_w.$(OBJEXT) curcor2_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	lwldslash_w.$(OBJEXT) \
@@ -293,7 +293,8 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 @BUILD_WILSON_LIBS_TRUE@	lovlapms_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	zolotarev4d_fermact_bj_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	ischiral_w.$(OBJEXT) \
-@BUILD_WILSON_LIBS_TRUE@	lovddag_w.$(OBJEXT)
+@BUILD_WILSON_LIBS_TRUE@	lovddag_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	zolotarev4d_qprop.$(OBJEXT)
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__objects_2 = lwldslash_w_sse.$(OBJEXT)
 @BUILD_STAGGERED_LIBS_TRUE@am__objects_3 = mesphas_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	mesphas_follana_s.$(OBJEXT) \
@@ -405,6 +406,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/writemilc.Po ./$(DEPDIR)/writeszin.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/writeszinqprop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/zolotarev4d_fermact_bj_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/zolotarev4d_qprop.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/zolotarev_coeffs.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -573,6 +575,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writeszin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writeszinqprop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zolotarev4d_fermact_bj_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zolotarev4d_qprop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zolotarev_coeffs.Po@am__quote@
 
 .cc.o:

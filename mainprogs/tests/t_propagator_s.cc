@@ -1,4 +1,4 @@
-// $Id: t_propagator_s.cc,v 1.7 2004-01-02 03:19:41 edwards Exp $
+// $Id: t_propagator_s.cc,v 1.8 2004-01-06 13:59:50 bjoo Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -10,18 +10,22 @@
 
 #include "chroma.h"
 #include "util/ferm/transf.h"
+#include "state.h"
+#include "handle.h"
+
 #include "fermact.h"
 #include "actions/ferm/fermacts/asqtad_fermact_s.h"
 #include "actions/ferm/linop/asqtad_linop_s.h"
 #include "meas/hadron/mesphas_follana_s.h"
 #include "meas/hadron/srcfil.h"
-//#include "util/gauge/phfctr.h"
+
 #include "util/gauge/stag_phases_s.h"
 #include "meas/hadron/mesphas_s.h"
 
 /*
  *  Here we have various temporary definitions
  */
+/*
 enum CfgType {
   CFG_TYPE_MILC = 0,
   CFG_TYPE_NERSC,
@@ -40,7 +44,7 @@ enum FermType {
   FERM_TYPE_STAGGERED,
   FERM_TYPE_UNKNOWN
 };
-
+*/
 
 
 using namespace QDP;
@@ -49,10 +53,7 @@ using namespace QDP;
 /*
  * Input 
  */
-struct IO_version_t
-{
-  int version;
-};
+
 
 // Parameters which must be determined from the XML input
 // and written to the XML output
@@ -71,12 +72,9 @@ struct Param_t
 
   multi1d<int> nrow;
   multi1d<int> boundary;
-  multi1d<int> t_srce; };
-
-struct Cfg_t
-{
-  string       cfg_file;
+  multi1d<int> t_srce; 
 };
+
 
 struct Prop_t
 {
@@ -91,15 +89,6 @@ struct Propagator_input_t
   Cfg_t            cfg;
   Prop_t           prop;
 };
-
-
-//
-void read(XMLReader& xml, const string& path, Cfg_t& input)
-{
-  XMLReader inputtop(xml, path);
-
-  read(inputtop, "cfg_file", input.cfg_file);
-}
 
 
 //
@@ -174,9 +163,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
       read(paramtop, "FermTypeP", ferm_type_str);
       if (ferm_type_str == "STAGGERED") {
 	input.param.FermTypeP = FERM_TYPE_STAGGERED;
-      } else {
-	input.param.FermTypeP = FERM_TYPE_UNKNOWN;
-      }
+      } 
     }
 
     // GTF NOTE: I'm going to switch on FermTypeP here because I want
@@ -205,11 +192,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
       break;
 
     default :
-      QDPIO::cerr << "Fermion type not supported." << endl;
-      if (input.param.FermTypeP == FERM_TYPE_UNKNOWN) {
-	QDPIO::cerr << "  FermTypeP = UNKNOWN" << endl;
-      }
-      QDP_abort(1);
+      QDP_error_exit("Fermion type not supported\n.");
     }
 
     {
@@ -218,8 +201,9 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
       if (cfg_type_str == "NERSC") {
 	input.param.cfg_type = CFG_TYPE_NERSC;
       } else {
-	input.param.cfg_type = CFG_TYPE_UNKNOWN;
+	QDP_error_exit("Dont know non NERSC files yet");
       }
+
     }
 
     {
@@ -228,7 +212,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
       if (prop_type_str == "SZIN") {
 	input.param.prop_type = PROP_TYPE_SZIN;
       } else {
-	input.param.prop_type = PROP_TYPE_UNKNOWN;
+	QDP_error_exit("Dont know non SZIN files yet");
       }
     }
 
@@ -510,7 +494,7 @@ int main(int argc, char **argv)
   // (compute fat & triple links)
   // Use S_f.createState so that S_f can pass in u0
 
-  Handle<const ConnectState<LatticeFermion> > state(S_f.createState(u));
+  Handle<const ConnectState > state(S_f.createState(u));
   Handle<const EvenOddLinearOperator<LatticeFermion> > D_asqtad(S_f.linOp(state));
 
   // Create a fermion to apply linop to.
@@ -524,18 +508,19 @@ int main(int argc, char **argv)
   multi1d<int> t_src_odd(4);
   t_src_odd = odd_source;
 
-//  srcfil(tmp1, t_src_odd ,0, 0);
-//  tmp2  =  zero;
+  tmp1 = zero;
+  srcfil(tmp1, t_src_odd ,0, 0);
+  tmp2  =  zero;
 
   // Apply Linop
-//  (*D_asqtad).evenOddLinOp(tmp2, tmp1, PLUS); 
+  (*D_asqtad).evenOddLinOp(tmp2, tmp1, PLUS); 
 
-//  push(xml_out, "dslash");
-//  Write(xml_out, tmp1);
-//  Write(xml_out, tmp2);
-//  pop(xml_out);
+   push(xml_out, "dslash");
+   Write(xml_out, tmp1);
+   Write(xml_out, tmp2);
+   pop(xml_out);
 
-  Handle<const LinearOperator<LatticeFermion> > MdagM_asqtad(S_f.lMdagM(state));
+   Handle<const LinearOperator<LatticeFermion> > MdagM_asqtad(S_f.lMdagM(state));
 
   
 //  srcfil(tmp1, t_src_even, 0, 0);

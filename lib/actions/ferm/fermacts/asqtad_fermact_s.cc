@@ -1,4 +1,4 @@
-// $Id: asqtad_fermact_s.cc,v 1.5 2004-01-02 03:19:40 edwards Exp $
+// $Id: asqtad_fermact_s.cc,v 1.6 2004-01-06 13:59:49 bjoo Exp $
 /*! \file
  *  \brief Asqtad staggered fermion action
  */
@@ -42,7 +42,7 @@ AsqtadFermAct::linOp(Handle<const ConnectState> state_) const
   // in the AsqtadConnectState. Only Restriction: We have to use the
   // get() methods as they are all the base class provides.
   const AsqtadConnectStateBase<LatticeFermion>& state = 
-    dynamic_cast<const AsqtadConnectStateBase<LatticeFermion>&>(state_);
+    dynamic_cast<const AsqtadConnectStateBase<LatticeFermion>&>(*state_);
 
   return new AsqtadLinOp(state.getFatLinks(), state.getTripleLinks(), Mass);
 }
@@ -60,7 +60,7 @@ const LinearOperator<LatticeFermion>*
 AsqtadFermAct::lMdagM(Handle<const ConnectState> state_) const
 {
   const AsqtadConnectStateBase<LatticeFermion>& state = 
-    dynamic_cast<const AsqtadConnectStateBase<LatticeFermion>&>(state_);
+    dynamic_cast<const AsqtadConnectStateBase<LatticeFermion>&>(*state_);
   
   return new AsqtadMdagM(state.getFatLinks(), state.getTripleLinks(), Mass);
 }

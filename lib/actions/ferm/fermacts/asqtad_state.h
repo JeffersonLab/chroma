@@ -1,7 +1,9 @@
-#ifndef __zolotarev_state_h__
-#define __zolotarev_state_h__
+#ifndef __asqtad_state_h__
+#define __asqtad_state_h__
+
 
 #include "handle.h"
+#include "state.h"
 #include "actions/ferm/linop/improvement_terms_s.h"
 
 using namespace QDP;
