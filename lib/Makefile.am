@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.30 2003-06-19 18:12:06 ikuro Exp $
+# $Id: Makefile.am,v 1.31 2003-08-11 21:29:34 dru Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -73,7 +73,7 @@ GENERIC_SRCS = $(HDRS) gaus_smear.cc taproj.cc hotst.cc expm12.cc \
                klein_gord.cc mesplq.cc reunit.cc sftmom.cc srcfil.cc \
                readszin.cc su3proj.cc sun_proj.cc hyp_smear.cc laplacian.cc\
                su2extract.cc sunfill.cc invcg2.cc qprop_io.cc p_src.cc \
-               d_src.cc D_j.cc DjDk.cc laplacian.cc
+               d_src.cc D_j.cc DjDk.cc laplacian.cc BuildingBlocks.cc
 #
 # Object files to add if building the Wilson Builds...
 # This is OK, since Ns is determined at configure time
