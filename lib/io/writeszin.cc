@@ -1,4 +1,4 @@
-// $Id: writeszin.cc,v 1.10 2005-01-14 20:13:07 edwards Exp $
+// $Id: writeszin.cc,v 1.11 2005-02-10 03:17:03 edwards Exp $
 
 /*! \file
  *  \brief Write out a configuration written by SZIN up to configuration version 7.
@@ -90,7 +90,7 @@ static void writeSzinHeader(BinaryWriter& cfg_out, const SzinGauge_t& header)
   write(cfg_out, header.seed);
 
   multi1d<Real32> wstat(41*20); /* On-line statistical accumulators - write junk */
-  wstat = 0;
+  wstat = 0.0;
   write(cfg_out, wstat, wstat.size());
 
   END_CODE();
