@@ -1,4 +1,4 @@
-// $Id: formfac_w.cc,v 1.13 2003-10-14 17:42:34 edwards Exp $
+// $Id: formfac_w.cc,v 1.14 2003-12-17 02:23:07 edwards Exp $
 /*! \file
  *  \brief Form-factors 
  *
@@ -8,7 +8,6 @@
 #include "chromabase.h"
 #include "util/ft/sftmom.h"
 #include "meas/hadron/formfac_w.h"
-#include "qdp_util.h"                  // part of QDP++, for crtesn()
 
 using namespace QDP;
 
