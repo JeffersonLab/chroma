@@ -1,10 +1,13 @@
-// $Id: spectrum_w.cc,v 1.9 2003-09-02 15:52:02 edwards Exp $
+// $Id: spectrum_w.cc,v 1.10 2003-09-10 18:04:22 edwards Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.9  2003-09-02 15:52:02  edwards
+//  Revision 1.10  2003-09-10 18:04:22  edwards
+//  Changed to new form of XMLReader - a clone.
+//
+//  Revision 1.9  2003/09/02 15:52:02  edwards
 //  Added return 0 at end of main. Some kind of return is required in C++.
 //
 //  Revision 1.8  2003/08/27 22:08:41  edwards
@@ -48,387 +51,401 @@ enum CfgType {
   CFG_TYPE_SCIDAC,
   CFG_TYPE_SZIN,
   CFG_TYPE_UNKNOWN
-} ;
+};
 
 enum FermType {
   FERM_TYPE_WILSON,
   FERM_TYPE_UNKNOWN
-} ;
+};
 
 int main(int argc, char **argv)
 {
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
 
-  int i, j ;
+  int i, j;
 
   // Parameters which must be determined from the namelist input
   // and written to the namelist output
 
-  int version ;              // input parameter version
+  int version;              // input parameter version
 
-  FermType FermTypeP ;
+  FermType FermTypeP;
   // GTF GRIPE: I would prefer masses rather than kappa values here,
   //   but I'll save that for another day.
-  int numKappa ;            // number of Wilson masses
-  multi1d<Real> Kappa ;     // array of Wilson mass values
+  int numKappa;            // number of Wilson masses
+  multi1d<Real> Kappa;     // array of Wilson mass values
 
-  CfgType cfg_type ;        // storage order for stored gauge configuration
-  int j_decay ;             // direction to measure propagation
+  CfgType cfg_type;        // storage order for stored gauge configuration
+  int j_decay;             // direction to measure propagation
 
-  bool Pt_src ;             // point source
-  bool Sl_src ;             // shell source
-  bool Pt_snk ;             // point sink
-  bool Sl_snk ;             // shell sink
+  bool Pt_src;             // point source
+  bool Sl_src;             // shell source
+  bool Pt_snk;             // point sink
+  bool Sl_snk;             // shell sink
 
-  bool MesonP ;             // Meson spectroscopy
+  bool MesonP;             // Meson spectroscopy
 
-  int mom2_max ;            // (mom)^2 <= mom2_max. mom2_max=7 in szin.
-  bool avg_equiv_mom ;      // average over equivalent momenta
-  WvfKind Wvf_kind ;        // Wave function kind: gauge invariant
-  multi1d<Real> wvf_param ; // Array of width's or other parameters
-                            //   for "shell" source/sink wave function
-  multi1d<int> WvfIntPar ;  // Array of iter numbers to approx. Gaussian or
-                            //   terminate CG inversion for Wuppertal smearing
+  int mom2_max;            // (mom)^2 <= mom2_max. mom2_max=7 in szin.
+  bool avg_equiv_mom;      // average over equivalent momenta
+  WvfKind Wvf_kind;        // Wave function kind: gauge invariant
+  multi1d<Real> wvf_param; // Array of width's or other parameters
+  //   for "shell" source/sink wave function
+  multi1d<int> WvfIntPar;  // Array of iter numbers to approx. Gaussian or
+  //   terminate CG inversion for Wuppertal smearing
 
-  multi1d<int> disk_prop ;
-  multi1d<int> nrow(Nd) ;
-  multi1d<int> boundary(Nd) ;
-  multi1d<int> t_srce(Nd) ;
+  multi1d<int> disk_prop;
+  multi1d<int> nrow(Nd);
+  multi1d<int> boundary(Nd);
+  multi1d<int> t_srce(Nd);
 
-  string cfg_file ;
+  string cfg_file;
 
   // Instantiate namelist reader for DATA
-  XMLReader xml_in("DATA") ;
+  XMLReader xml_in("DATA");
   string xml_in_root = "/spectrum_w";
 
   // First, read the input parameter version.  Then, if this version
   // includes 'Nc' and 'Nd', verify they agree with values compiled
   // into QDP++
 
-  string path = xml_in_root + "/IO_version";
-  ReadPath(xml_in, path, version) ;
+  // Read in the IO_version
+  read(xml_in, xml_in_root + "/IO_version/version", version);
 
-  switch (version) {
 
-  /**************************************************************************/
+  QDP_info("version = %d",version);
+
+  switch (version) 
+  {
+
+    /**************************************************************************/
   case 5 :
-  /**************************************************************************/
-
-    path = xml_in_root + "/param"; // push into 'param' group
-
+    /**************************************************************************/
+    try
     {
-      int input_Nc ;
-      read(xml_in, path + "/Nc", input_Nc) ;
+      XMLReader xml(xml_in, xml_in_root + "/param"); // push into 'param' group
 
-      if (input_Nc != Nc) {
-        cerr << "Input parameter Nc=" << input_Nc \
-          <<  " different from qdp++ value." << endl ;
-        QDP_abort(1) ;
+      {
+	int input_Nc;
+	read(xml, "Nc", input_Nc);
+
+	if (input_Nc != Nc) {
+	  cerr << "Input parameter Nc=" << input_Nc \
+	       <<  " different from qdp++ value." << endl;
+	  QDP_abort(1);
+	}
+
+	int input_Nd;
+	read(xml, "Nd", input_Nd);
+
+	if (input_Nd != Nd) {
+	  cerr << "Input parameter Nd=" << input_Nd \
+	       << " different from qdp++ value." << endl;
+	  QDP_abort(1);
+	}
+
+	int ferm_type_int;
+	read(xml, "FermTypeP", ferm_type_int);
+	switch (ferm_type_int) {
+	case 1 :
+	  FermTypeP = FERM_TYPE_WILSON;
+	  break;
+	default :
+	  FermTypeP = FERM_TYPE_UNKNOWN;
+	}
       }
 
-      int input_Nd ;
-      read(xml_in, path + "/Nd", input_Nd) ;
+      // GTF NOTE: I'm going to switch on FermTypeP here because I want
+      // to leave open the option of treating masses differently.
+      switch (FermTypeP) {
+      case FERM_TYPE_WILSON :
 
-      if (input_Nd != Nd) {
-        cerr << "Input parameter Nd=" << input_Nd \
-          << " different from qdp++ value." << endl ;
-        QDP_abort(1) ;
-      }
+	cout << " SPECTRUM_W: Spectroscopy for Wilson fermions" << endl;
 
-      int ferm_type_int ;
-      read(xml_in, path + "/FermTypeP", ferm_type_int) ;
-      switch (ferm_type_int) {
-      case 1 :
-        FermTypeP = FERM_TYPE_WILSON ;
-        break ;
+	Read(xml, numKappa);
+
+	Kappa.resize(numKappa);
+	Read(xml, Kappa);
+
+	for (i=0; i < numKappa; ++i) {
+	  if (toBool(Kappa[i] < 0.0)) {
+	    cerr << "Unreasonable value for Kappa." << endl;
+	    cerr << "  Kappa[" << i << "] = " << Kappa[i] << endl;
+	    QDP_abort(1);
+	  } else {
+	    cout << " Spectroscopy Kappa: " << Kappa[i] << endl;
+	  }
+	}
+
+	break;
+
       default :
-        FermTypeP = FERM_TYPE_UNKNOWN ;
-      }
-    }
-
-    // GTF NOTE: I'm going to switch on FermTypeP here because I want
-    // to leave open the option of treating masses differently.
-    switch (FermTypeP) {
-    case FERM_TYPE_WILSON :
-
-      cout << " SPECTRUM_W: Spectroscopy for Wilson fermions" << endl ;
-
-      ReadPath(xml_in, path, numKappa) ;
-
-      Kappa.resize(numKappa) ;
-      ReadPath(xml_in, path, Kappa) ;
-
-      for (i=0; i < numKappa; ++i) {
-        if (toBool(Kappa[i] < 0.0)) {
-          cerr << "Unreasonable value for Kappa." << endl ;
-          cerr << "  Kappa[" << i << "] = " << Kappa[i] << endl ;
-          QDP_abort(1) ;
-        } else {
-          cout << " Spectroscopy Kappa: " << Kappa[i] << endl ;
-        }
+	cerr << "Fermion type not supported." << endl;
+	if (FermTypeP == FERM_TYPE_UNKNOWN) {
+	  cerr << "  FermTypeP = UNKNOWN" << endl;
+	}
+	QDP_abort(1);
       }
 
-      break ;
-
-    default :
-      cerr << "Fermion type not supported." << endl ;
-      if (FermTypeP == FERM_TYPE_UNKNOWN) {
-        cerr << "  FermTypeP = UNKNOWN" << endl ;
+      {
+	int input_cfg_type;
+	read(xml, "cfg_type", input_cfg_type);
+	switch (input_cfg_type) {
+	case 1 :
+	  cfg_type = CFG_TYPE_SZIN;
+	  break;
+	default :
+	  cfg_type = CFG_TYPE_UNKNOWN;
+	}
       }
-      QDP_abort(1) ;
-    }
 
-    {
-      int input_cfg_type ;
-      read(xml_in, path + "/cfg_type", input_cfg_type) ;
-      switch (input_cfg_type) {
-      case 1 :
-        cfg_type = CFG_TYPE_SZIN ;
-        break ;
-      default :
-        cfg_type = CFG_TYPE_UNKNOWN ;
+      Read(xml, j_decay);
+      if (j_decay < 0 || j_decay >= Nd) {
+	cerr << "Bad value: j_decay = " << j_decay << endl;
+	QDP_abort(1);
       }
-    }
 
-    ReadPath(xml_in, path, j_decay) ;
-    if (j_decay < 0 || j_decay >= Nd) {
-      cerr << "Bad value: j_decay = " << j_decay << endl ;
-      QDP_abort(1) ;
-    }
+      Read(xml, Pt_src);
+      Read(xml, Sl_src);
+      Read(xml, Pt_snk);
+      Read(xml, Sl_snk);
 
-    ReadPath(xml_in, path, Pt_src) ;
-    ReadPath(xml_in, path, Sl_src) ;
-    ReadPath(xml_in, path, Pt_snk) ;
-    ReadPath(xml_in, path, Sl_snk) ;
+      Read(xml, MesonP);
 
-    ReadPath(xml_in, path, MesonP) ;
+      read(xml, "num_mom", mom2_max);
 
-    read(xml_in, path + "/num_mom", mom2_max) ;
+      // GTF: avg_equiv_mom not part of version 5, true by default
+      avg_equiv_mom = true;
 
-    // GTF: avg_equiv_mom not part of version 5, true by default
-    avg_equiv_mom = true ;
-
-    {
-      int input_wvf_kind ;
-      read(xml_in, path + "/Wvf_kind", input_wvf_kind) ;
-      switch (input_wvf_kind) {
-      case 3 :
-        Wvf_kind = WVF_KIND_GAUGE_INV_GAUSSIAN ;
-        break ;
-      default :
-        cerr << "Unsupported gauge-invariant Wvf_kind." << endl ;
-        cerr << "  Wvf_kind = " << input_wvf_kind << endl ;
-        QDP_abort(1) ;
+      {
+	int input_wvf_kind;
+	read(xml, "Wvf_kind", input_wvf_kind);
+	switch (input_wvf_kind) {
+	case 3 :
+	  Wvf_kind = WVF_KIND_GAUGE_INV_GAUSSIAN;
+	  break;
+	default :
+	  cerr << "Unsupported gauge-invariant Wvf_kind." << endl;
+	  cerr << "  Wvf_kind = " << input_wvf_kind << endl;
+	  QDP_abort(1);
+	}
       }
-    }
 
-    wvf_param.resize(numKappa) ;
-    ReadPath(xml_in, path, wvf_param) ;
+      wvf_param.resize(numKappa);
+      Read(xml, wvf_param);
 
-    WvfIntPar.resize(numKappa) ;
-    ReadPath(xml_in, path, WvfIntPar) ;
+      WvfIntPar.resize(numKappa);
+      Read(xml, WvfIntPar);
 
-    disk_prop.resize(numKappa) ;
-    ReadPath(xml_in, path, disk_prop) ;
-    for (i=0; i<numKappa; ++i) {
-      if (toBool(disk_prop[i] != 1)) {
-        cerr << "Only propagators on disk are supported." << endl ;
-        cerr << "  disk_prop[" << i << "] = " << disk_prop[i] << endl ;
-        QDP_abort(1) ;
+      disk_prop.resize(numKappa);
+      Read(xml, disk_prop);
+      for (i=0; i<numKappa; ++i) {
+	if (toBool(disk_prop[i] != 1)) {
+	  cerr << "Only propagators on disk are supported." << endl;
+	  cerr << "  disk_prop[" << i << "] = " << disk_prop[i] << endl;
+	  QDP_abort(1);
+	}
       }
-    }
 
-    ReadPath(xml_in, path, nrow) ;
-    ReadPath(xml_in, path, boundary) ;
-    ReadPath(xml_in, path, t_srce) ;
+      Read(xml, nrow);
+      Read(xml, boundary);
+      Read(xml, t_srce);
 
-    // Read in the gauge configuration file name
-    ReadPath(xml_in, xml_in_root + "/Cfg", cfg_file) ;
+      // Read in the gauge configuration file name
+      read(xml_in, xml_in_root + "/Cfg/cfg_file", cfg_file);
     
-    break ;
+    }
+    catch (const string& e) 
+    {
+      cerr << "Error reading data: " << e << endl;
+      throw;
+    }
+    break;
 
-  /**************************************************************************/
+    /**************************************************************************/
   case 6 :
-  /**************************************************************************/
+    /**************************************************************************/
+    QDP_info("try version 6");
 
-    path = xml_in_root + "/param" ; // push into 'param' group
-
-    cerr << "DEBUG" << endl ;
-
+    try 
     {
-      int input_Nc ;
-      read(xml_in, path + "/Nc", input_Nc) ;
+      XMLReader xml(xml_in, xml_in_root + "/param"); // push into 'param' group
 
-      if (input_Nc != Nc) {
-        cerr << "Input parameter Nc=" << input_Nc \
-          <<  " different from qdp++ value." << endl ;
-        QDP_abort(1) ;
+      QDP_info("just constructed xml");
+
+      {
+	int input_Nc;
+	read(xml, "Nc", input_Nc);
+	
+	if (input_Nc != Nc) {
+	  cerr << "Input parameter Nc=" << input_Nc \
+	       <<  " different from qdp++ value." << endl;
+	  QDP_abort(1);
+	}
+
+	QDP_info("input_Nc = %d",input_Nc);
+
+	int input_Nd;
+	read(xml, "Nd", input_Nd);
+
+	if (input_Nd != Nd) {
+	  cerr << "Input parameter Nd=" << input_Nd \
+	       << " different from qdp++ value." << endl;
+	  QDP_abort(1);
+	}
+
+	string ferm_type_str;
+	read(xml, "FermTypeP", ferm_type_str);
+	if (ferm_type_str == "WILSON") {
+	  FermTypeP = FERM_TYPE_WILSON;
+	} else {
+	  FermTypeP = FERM_TYPE_UNKNOWN;
+	}
       }
 
-      int input_Nd ;
-      read(xml_in, path + "/Nd", input_Nd) ;
+      // GTF NOTE: I'm going to switch on FermTypeP here because I want
+      // to leave open the option of treating masses differently.
+      switch (FermTypeP) {
+      case FERM_TYPE_WILSON :
 
-      if (input_Nd != Nd) {
-        cerr << "Input parameter Nd=" << input_Nd \
-          << " different from qdp++ value." << endl ;
-        QDP_abort(1) ;
+//	cout << " SPECTRUM_W: Spectroscopy for Wilson fermions" << endl;
+	QDP_info(" SPECTRUM_W: Spectroscopy for Wilson fermions");
+
+	Read(xml, numKappa);
+
+	Kappa.resize(numKappa);
+	Read(xml, Kappa);
+
+	for (i=0; i < numKappa; ++i) {
+	  if (toBool(Kappa[i] < 0.0)) {
+	    cerr << "Unreasonable value for Kappa." << endl;
+	    cerr << "  Kappa[" << i << "] = " << Kappa[i] << endl;
+	    QDP_abort(1);
+	  } else {
+	    cout << " Spectroscopy Kappa: " << Kappa[i] << endl;
+	  }
+	}
+
+	break;
+
+      default :
+	cerr << "Fermion type not supported." << endl;
+	if (FermTypeP == FERM_TYPE_UNKNOWN) {
+	  cerr << "  FermTypeP = UNKNOWN" << endl;
+	}
+	QDP_abort(1);
       }
 
-      string ferm_type_str ;
-      read(xml_in, path + "/FermTypeP", ferm_type_str) ;
-      if (ferm_type_str == "WILSON") {
-        FermTypeP = FERM_TYPE_WILSON ;
-      } else {
-        FermTypeP = FERM_TYPE_UNKNOWN ;
+      {
+	string cfg_type_str;
+	read(xml, "cfg_type", cfg_type_str);
+	if (cfg_type_str == "SZIN") {
+	  cfg_type = CFG_TYPE_SZIN;
+	} else {
+	  cfg_type = CFG_TYPE_UNKNOWN;
+	}
       }
+
+      Read(xml, j_decay);
+      if (j_decay < 0 || j_decay >= Nd) {
+	cerr << "Bad value: j_decay = " << j_decay << endl;
+	QDP_abort(1);
+      }
+
+      Read(xml, Pt_src);
+      Read(xml, Sl_src);
+      Read(xml, Pt_snk);
+      Read(xml, Sl_snk);
+
+      Read(xml, MesonP);
+
+      Read(xml, mom2_max);
+      Read(xml, avg_equiv_mom);
+
+      {
+	string wvf_kind_str;
+	read(xml, "Wvf_kind", wvf_kind_str);
+	if (wvf_kind_str == "GAUGE_INV_GAUSSIAN") {
+	  Wvf_kind = WVF_KIND_GAUGE_INV_GAUSSIAN;
+	} else {
+	  cerr << "Unsupported gauge-invariant Wvf_kind." << endl;
+	  cerr << "  Wvf_kind = " << wvf_kind_str << endl;
+	  QDP_abort(1);
+	}
+      }
+
+      wvf_param.resize(numKappa);
+      Read(xml, wvf_param);
+
+      WvfIntPar.resize(numKappa);
+      Read(xml, WvfIntPar);
+
+      Read(xml, nrow);
+      Read(xml, boundary);
+      Read(xml, t_srce);
+
+      // Read in the gauge configuration file name
+      read(xml_in, xml_in_root + "/Cfg/cfg_file", cfg_file);
     }
-
-    // GTF NOTE: I'm going to switch on FermTypeP here because I want
-    // to leave open the option of treating masses differently.
-    switch (FermTypeP) {
-    case FERM_TYPE_WILSON :
-
-      cout << " SPECTRUM_W: Spectroscopy for Wilson fermions" << endl ;
-
-      ReadPath(xml_in, path, numKappa) ;
-
-      Kappa.resize(numKappa) ;
-      ReadPath(xml_in, path, Kappa) ;
-
-      for (i=0; i < numKappa; ++i) {
-        if (toBool(Kappa[i] < 0.0)) {
-          cerr << "Unreasonable value for Kappa." << endl ;
-          cerr << "  Kappa[" << i << "] = " << Kappa[i] << endl ;
-          QDP_abort(1) ;
-        } else {
-          cout << " Spectroscopy Kappa: " << Kappa[i] << endl ;
-        }
-      }
-
-      break ;
-
-    default :
-      cerr << "Fermion type not supported." << endl ;
-      if (FermTypeP == FERM_TYPE_UNKNOWN) {
-        cerr << "  FermTypeP = UNKNOWN" << endl ;
-      }
-      QDP_abort(1) ;
-    }
-
+    catch (const string& e) 
     {
-      string cfg_type_str ;
-      read(xml_in, path + "/cfg_type", cfg_type_str) ;
-      if (cfg_type_str == "SZIN") {
-        cfg_type = CFG_TYPE_SZIN ;
-      } else {
-        cfg_type = CFG_TYPE_UNKNOWN ;
-      }
+      cerr << "Error reading data: " << e << endl;
+      throw;
     }
+    break;
 
-    ReadPath(xml_in, path, j_decay) ;
-    if (j_decay < 0 || j_decay >= Nd) {
-      cerr << "Bad value: j_decay = " << j_decay << endl ;
-      QDP_abort(1) ;
-    }
-
-    ReadPath(xml_in, path, Pt_src) ;
-    ReadPath(xml_in, path, Sl_src) ;
-    ReadPath(xml_in, path, Pt_snk) ;
-    ReadPath(xml_in, path, Sl_snk) ;
-
-    ReadPath(xml_in, path, MesonP) ;
-
-    ReadPath(xml_in, path, mom2_max) ;
-    ReadPath(xml_in, path, avg_equiv_mom) ;
-
-    {
-      string wvf_kind_str ;
-      read(xml_in, path + "/Wvf_kind", wvf_kind_str) ;
-      if (wvf_kind_str == "GAUGE_INV_GAUSSIAN") {
-        Wvf_kind = WVF_KIND_GAUGE_INV_GAUSSIAN ;
-      } else {
-        cerr << "Unsupported gauge-invariant Wvf_kind." << endl ;
-        cerr << "  Wvf_kind = " << wvf_kind_str << endl ;
-        QDP_abort(1) ;
-      }
-    }
-
-    wvf_param.resize(numKappa) ;
-    ReadPath(xml_in, path, wvf_param) ;
-
-    WvfIntPar.resize(numKappa) ;
-    ReadPath(xml_in, path, WvfIntPar) ;
-
-    ReadPath(xml_in, path, nrow) ;
-    ReadPath(xml_in, path, boundary) ;
-    ReadPath(xml_in, path, t_srce) ;
-
-    // Read in the gauge configuration file name
-    ReadPath(xml_in, xml_in_root + "/Cfg", cfg_file) ;
-
-    break ;
-
-  /**************************************************************************/
+    /**************************************************************************/
   default :
-  /**************************************************************************/
+    /**************************************************************************/
 
-    cerr << "Input parameter version " << version << " unsupported." << endl ;
-    QDP_abort(1) ;
+    cerr << "Input parameter version " << version << " unsupported." << endl;
+    QDP_abort(1);
   }
 
-  // GTF: ALL NAMELIST INPUT COMPLETED
-  xml_in.close() ;
+  xml_in.close();
 
-  // Check for valid parameter values
-  for (i=0; i<Nd; ++i) {
-    if ((nrow[i] % 2) != 0) {
-      cerr << "Lattice shape is invalid; odd linear size not allowed." \
-        << endl ;
-      cerr << "  nrow[" << i << "] = " << nrow[i] << endl ;
-      QDP_abort(1) ;
-    }
-  }
+  QDP_info("xml_in closed");
+
 
   // Check that only one type of source smearing is specified
   // Must match how the stored propagator was smeared
   if ((Pt_src == true) && (Sl_src == true)) {
-    cerr << "Error if Pt_src and Sl_src are both set." << endl ;
-    cerr << "Choose the one which matches the stored propagators." << endl ;
-    QDP_abort(1) ;
+    cerr << "Error if Pt_src and Sl_src are both set." << endl;
+    cerr << "Choose the one which matches the stored propagators." << endl;
+    QDP_abort(1);
   }
 
   // Specify lattice size, shape, etc.
-  Layout::setLattSize(nrow) ;
-  Layout::create() ;
+  Layout::setLattSize(nrow);
+  Layout::create();
 
   // Figure out what to do about boundary conditions
   // GTF HACK: only allow periodic boundary conditions
   for (i=0; i<Nd; ++i) {
     if (boundary[i] != 1) {
-      cerr << "Only periodic boundary conditions supported." << endl ;
-      cerr << "  boundary[" << i << "] = " << boundary[i] << endl ;
-      QDP_abort(1) ;
+      cerr << "Only periodic boundary conditions supported." << endl;
+      cerr << "  boundary[" << i << "] = " << boundary[i] << endl;
+      QDP_abort(1);
     }
   }
 
   for (i=0; i<Nd; ++i) {
     if (t_srce[i] < 0 || t_srce[i] >= nrow[i]) {
-      cerr << "Quark propagator source coordinate incorrect." << endl ;
-      cerr << "t_srce[" << i << "] = " << t_srce[i] << endl ;
-      QDP_abort(1) ;
+      cerr << "Quark propagator source coordinate incorrect." << endl;
+      cerr << "t_srce[" << i << "] = " << t_srce[i] << endl;
+      QDP_abort(1);
     }
   }
 
-  cout << endl << "     Gauge group: SU(" << Nc << ")" << endl ;
+  cout << endl << "     Gauge group: SU(" << Nc << ")" << endl;
 
-  multi1d<LatticeColorMatrix> u(Nd) ;
+  multi1d<LatticeColorMatrix> u(Nd);
 
-  cout << "     volume: " << nrow[0] ;
+  cout << "     volume: " << nrow[0];
   for (i=1; i<Nd; ++i) {
-    cout << " x " << nrow[i] ;
+    cout << " x " << nrow[i];
   }
-  cout << endl ;
+  cout << endl;
 
   // Read in the configuration along with relevant information.
   XMLReader gauge_xml;
@@ -437,96 +454,96 @@ int main(int argc, char **argv)
   {
   case CFG_TYPE_SZIN :
     readSzin(gauge_xml, u, cfg_file);
-    break ;
+    break;
   default :
     QDP_error_exit("Configuration type is unsupported.");
   }
 
   // Instantiate namelist writer for XMLDAT
-  XMLFileWriter xml_out("XMLDAT") ;
+  XMLFileWriter xml_out("XMLDAT");
 
   push(xml_out, "spectrum_w");
 
   // Write out configuration data to namelist output
-  push(xml_out, "IO_version") ;
-  Write(xml_out, version) ;
-  pop(xml_out) ;
+  push(xml_out, "IO_version");
+  Write(xml_out, version);
+  pop(xml_out);
 
   xml_out.flush();
 
-  push(xml_out, "Output_version") ;
-  write(xml_out, "out_version", 5) ;
-  pop(xml_out) ;
+  push(xml_out, "Output_version");
+  write(xml_out, "out_version", 5);
+  pop(xml_out);
 
-  push(xml_out, "param") ;
+  push(xml_out, "param");
 
   // was "param1"
   switch (FermTypeP) {
   case FERM_TYPE_WILSON :
-    write(xml_out, "FermTypeP", "WILSON") ;
-    break ;
+    write(xml_out, "FermTypeP", "WILSON");
+    break;
   default :
-    write(xml_out, "FermTypeP", "UNKNOWN") ;
+    write(xml_out, "FermTypeP", "UNKNOWN");
   }
-  Write(xml_out, Nd) ;
-  Write(xml_out, Nc) ;
-  Write(xml_out, Ns) ;
-  Write(xml_out, numKappa) ;
-  Write(xml_out, Kappa) ;
+  Write(xml_out, Nd);
+  Write(xml_out, Nc);
+  Write(xml_out, Ns);
+  Write(xml_out, numKappa);
+  Write(xml_out, Kappa);
 
   // was "param2"
 
   // was "param3"
   switch (cfg_type) {
   case CFG_TYPE_SZIN :
-    write(xml_out, "cfg_type", "SZIN") ;
-    break ;
+    write(xml_out, "cfg_type", "SZIN");
+    break;
   default :
-    write(xml_out, "cfg_type", "UNKNOWN") ;
+    write(xml_out, "cfg_type", "UNKNOWN");
   }
-  Write(xml_out, j_decay) ;
+  Write(xml_out, j_decay);
 
   // was "param4"
 
   // was "param5"
-  Write(xml_out, Pt_src) ;
-  Write(xml_out, Sl_src) ;
-  Write(xml_out, Pt_snk) ;
-  Write(xml_out, Sl_snk) ;
+  Write(xml_out, Pt_src);
+  Write(xml_out, Sl_src);
+  Write(xml_out, Pt_snk);
+  Write(xml_out, Sl_snk);
 
   // was "param6"
   switch (Wvf_kind) {
   case WVF_KIND_GAUGE_INV_GAUSSIAN :
-    write(xml_out, "Wvf_kind", "GAUGE_INV_GAUSSIAN") ;
-    break ;
+    write(xml_out, "Wvf_kind", "GAUGE_INV_GAUSSIAN");
+    break;
   default :
-    write(xml_out, "Wvf_kind", "UNKNOWN") ;
+    write(xml_out, "Wvf_kind", "UNKNOWN");
   }
-  Write(xml_out, wvf_param) ;
-  Write(xml_out, WvfIntPar) ;
+  Write(xml_out, wvf_param);
+  Write(xml_out, WvfIntPar);
 
   // was "param7"
   // GTF: don't bother since disk_prop is always true
-  //Write(xml_out, disk_prop) ;
+  //Write(xml_out, disk_prop);
 
   // was "param8"
 
   // was "param9"
-  Write(xml_out, MesonP) ;
+  Write(xml_out, MesonP);
 
   // was "param10"
 
   // before seed, write out mom2_max and avg_equiv_mom
-  Write(xml_out, mom2_max) ;
-  Write(xml_out, avg_equiv_mom) ;
+  Write(xml_out, mom2_max);
+  Write(xml_out, avg_equiv_mom);
 
-  pop(xml_out) ;
+  pop(xml_out);
 
-  push(xml_out, "lattis") ;
-  Write(xml_out, nrow) ;
-  Write(xml_out, boundary) ;
-  Write(xml_out, t_srce) ;
-  pop(xml_out) ;
+  push(xml_out, "lattis");
+  Write(xml_out, nrow);
+  Write(xml_out, boundary);
+  Write(xml_out, t_srce);
+  pop(xml_out);
 
   // Write out the config info
   write(xml_out, "config_info", gauge_xml);
@@ -535,32 +552,32 @@ int main(int argc, char **argv)
 
   // First calculate some gauge invariant observables just for info.
   // This is really cheap.
-  Double w_plaq, s_plaq, t_plaq, link ;
-  MesPlq(u, w_plaq, s_plaq, t_plaq, link) ;
+  Double w_plaq, s_plaq, t_plaq, link;
+  MesPlq(u, w_plaq, s_plaq, t_plaq, link);
 
-  push(xml_out, "Observables") ;
-  Write(xml_out, w_plaq) ;
-  Write(xml_out, s_plaq) ;
-  Write(xml_out, t_plaq) ;
-  Write(xml_out, link) ;
-  pop(xml_out) ;
+  push(xml_out, "Observables");
+  Write(xml_out, w_plaq);
+  Write(xml_out, s_plaq);
+  Write(xml_out, t_plaq);
+  Write(xml_out, link);
+  pop(xml_out);
 
   xml_out.flush();
 
   // Next check the gauge field configuration by reunitarizing.
   {
-    LatticeBoolean lbad ;
-    int numbad ;
-    multi1d<LatticeColorMatrix> u_tmp(Nd) ;
-    u_tmp = u ;
-    int mu ;
+    LatticeBoolean lbad;
+    int numbad;
+    multi1d<LatticeColorMatrix> u_tmp(Nd);
+    u_tmp = u;
+    int mu;
     for (mu=0; mu < Nd; ++mu) {
-      reunit(u_tmp[mu], lbad, numbad, REUNITARIZE_ERROR) ;
+      reunit(u_tmp[mu], lbad, numbad, REUNITARIZE_ERROR);
     }
   }
 
   // Initialize the slow Fourier transform phases
-  SftMom phases(mom2_max, avg_equiv_mom, j_decay) ;
+  SftMom phases(mom2_max, avg_equiv_mom, j_decay);
 
   // Keep an array of all the xml output buffers
   XMLArrayWriter xml_array(xml_out,numKappa);
@@ -570,18 +587,18 @@ int main(int argc, char **argv)
   for (int loop=0; loop < numKappa; ++loop)
   {
     // Read the quark propagator
-    LatticePropagator quark_propagator ;
+    LatticePropagator quark_propagator;
     {
       XMLReader prop_xml;
-      stringstream prop_file ;
-      prop_file << "propagator_" << loop ;
-      readSzinQprop(prop_xml, quark_propagator, prop_file.str()) ;
+      stringstream prop_file;
+      prop_file << "propagator_" << loop;
+      readSzinQprop(prop_xml, quark_propagator, prop_file.str());
     }
 
     push(xml_array);         // next array element - name auto-written
-    Write(xml_array, loop) ;
-    write(xml_array, "Kappa_mes", Kappa[loop]) ;
-    Write(xml_array, t_srce) ;
+    Write(xml_array, loop);
+    write(xml_array, "Kappa_mes", Kappa[loop]);
+    Write(xml_array, t_srce);
 
     // Do Point sink hadrons and the currents first
     if (MesonP == true) {
@@ -589,10 +606,10 @@ int main(int argc, char **argv)
       if (Pt_snk == true) {
         if (Pt_src == true) {
           mesons(quark_propagator, quark_propagator, phases, t_srce[j_decay],
-                 xml_array, "Point_Point_Wilson_Mesons") ;
+                 xml_array, "Point_Point_Wilson_Mesons");
         } else if (Sl_src == true) {
           mesons(quark_propagator, quark_propagator, phases, t_srce[j_decay],
-                 xml_array, "Shell_Point_Wilson_Mesons") ;
+                 xml_array, "Shell_Point_Wilson_Mesons");
         }
       } // end if (Pt_snk)
 
@@ -600,32 +617,32 @@ int main(int argc, char **argv)
       // Make a copy of the quark propagator and then overwrite it with
       // the convolution. 
       if (Sl_snk == true) {
-        LatticePropagator quark_prop_smr ;
-        quark_prop_smr = quark_propagator ;
+        LatticePropagator quark_prop_smr;
+        quark_prop_smr = quark_propagator;
         sink_smear2(u, quark_prop_smr, Wvf_kind, wvf_param[loop],
-                    WvfIntPar[loop], j_decay) ;
+                    WvfIntPar[loop], j_decay);
         if (Pt_src == true) {
           mesons(quark_prop_smr, quark_prop_smr, phases, t_srce[j_decay],
-                 xml_array, "Point_Shell_Wilson_Mesons") ;
+                 xml_array, "Point_Shell_Wilson_Mesons");
         } else if (Sl_src == true) {
           mesons(quark_prop_smr, quark_prop_smr, phases, t_srce[j_decay],
-                 xml_array, "Shell_Shell_Wilson_Mesons") ;
+                 xml_array, "Shell_Shell_Wilson_Mesons");
         }
       } // end if (Sl_snk)
 
     } // end if (MesonP)
 
-    pop(xml_array) ;  // array element
+    pop(xml_array);  // array element
 
   } // end for(loop)
 
-  pop(xml_array) ;  // Wilson_spectroscopy
-  pop(xml_out) ;  // spectrum_w
+  pop(xml_array);  // Wilson_spectroscopy
+  pop(xml_out);  // spectrum_w
 
-  xml_out.close() ;
+  xml_out.close();
 
   // Time to bolt
   QDP_finalize();
 
-  return 0;
+  exit(0);
 }
