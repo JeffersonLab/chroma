@@ -1,4 +1,4 @@
-// $Id: mesonseqsrc_w.cc,v 1.2 2003-12-17 05:17:13 edwards Exp $
+// $Id: mesonseqsrc_w.cc,v 1.3 2003-12-18 04:05:36 edwards Exp $
 /*! \file
  *  \brief Construct meson sequential sources.
  */
@@ -83,10 +83,8 @@ void mesonSeqSource(const LatticePropagator& quark_propagator,
     if (mu != j_decay)
     {
       if(sink_mom[j] != 0)
-      {
 	nonzero = true;
-	break;
-      }
+
       j++;
     }
   }
@@ -100,7 +98,7 @@ void mesonSeqSource(const LatticePropagator& quark_propagator,
       if (mu == j_decay)
         continue;
 
-      p_dot_x += my_coord[mu] * sink_mom[j] * twopi / real(Layout::lattSize()[mu]);
+      p_dot_x += my_coord[mu] * sink_mom[j] * twopi / Real(Layout::lattSize()[mu]);
       j++;
     }
             
