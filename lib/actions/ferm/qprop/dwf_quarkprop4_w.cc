@@ -1,6 +1,9 @@
-// $Id: dwf_quarkprop4_w.cc,v 1.11 2004-02-05 19:19:26 kostas Exp $
+// $Id: dwf_quarkprop4_w.cc,v 1.12 2004-02-05 20:10:38 kostas Exp $
 // $Log: dwf_quarkprop4_w.cc,v $
-// Revision 1.11  2004-02-05 19:19:26  kostas
+// Revision 1.12  2004-02-05 20:10:38  kostas
+// Changed remaining getSubset to getSet
+//
+// Revision 1.11  2004/02/05 19:19:26  kostas
 // few bugs fixed
 //
 // Revision 1.10  2004/02/03 20:04:53  edwards
@@ -235,7 +238,7 @@ QDPIO::cout<<" spin : "<< spin_source<<endl  ;
 
   // The local axial corruent pseudoscalar correlator
   cfield = trace( adj(q_sol)*Gamma(8)*q_sol ) ;
-  corr = sumMulti(cfield, trick.getSubset()) ;
+  corr = sumMulti(cfield, trick.getSet()) ;
   for(int t(0);t<length; t++){
     int t_eff( (t - t_src + length) % length ) ;
     mesprop[t_eff] = real(corr[t]) ; 
@@ -257,7 +260,7 @@ QDPIO::cout<<" spin : "<< spin_source<<endl  ;
   pop(xml_out);
 
 
-  tmp = sumMulti(localNorm2(q_sol), trick.getSubset());
+  tmp = sumMulti(localNorm2(q_sol), trick.getSet());
   for(int t(0);t<length; t++){
     int t_eff( (t - t_src + length) % length ) ;
     mesprop[t_eff] = tmp[t] ; // only need the zero momentum
