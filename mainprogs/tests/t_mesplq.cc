@@ -1,25 +1,26 @@
-// $Id: t_mesplq.cc,v 1.2 2002-12-16 07:12:17 edwards Exp $
+// $Id: t_mesplq.cc,v 1.3 2003-01-04 05:09:27 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
 
-#include <szin.h>
-
+#include "szin.h"
 
 using namespace QDP;
 
-void main_start(void)
+NmlWriter nml;
+
+int main(int argc, char *argv[])
 {
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
 
-  // Setup the geometry
+  // Setup the layout
   const int foo[] = {4,4,4,4};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::create(nrow);
 
-  NmlWriter nml("t_mesplq.nml");
+  nml.open("t_mesplq.nml");
 
   push(nml,"lattis");
   Write(nml,Nd);
@@ -29,7 +30,7 @@ void main_start(void)
 
   //! Example of calling a plaquette routine
   /*! NOTE: the STL is *not* used to hold gauge fields */
-  multi1d<LatticeGauge> u(Nd);
+  multi1d<LatticeColorMatrix> u(Nd);
   Double w_plaq, s_plaq, t_plaq, link;
 
   cerr << "Start gaussian\n";

@@ -1,18 +1,19 @@
-// $Id: t_io.cc,v 1.1 2002-12-16 07:08:33 edwards Exp $
+// $Id: t_io.cc,v 1.2 2003-01-04 05:09:27 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
 
-#include <szin.h>
+#include "szin.h"
 
 using namespace QDP;
 
-void main_start(void)
+
+int main(int argc, char **argv)
 {
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
 
-  // Setup the geometry
+  // Setup the layout
   const int foo[] = {2,2,2,2};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
