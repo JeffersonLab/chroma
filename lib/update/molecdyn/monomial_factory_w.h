@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: monomial_factory_w.h,v 1.1 2004-12-21 15:42:22 bjoo Exp $
+// $Id: monomial_factory_w.h,v 1.2 2004-12-21 18:01:06 bjoo Exp $
 /*! \file
  *  \brief Fermion action factories
  */
@@ -44,7 +44,7 @@ namespace Chroma
 
       ExactEvenOddPrecWilsonTypeFermMonomial< multi1d<LatticeColorMatrix>, 
 					      multi1d<LatticeColorMatrix>, 
-					      LatticeFermion>(*)(Handle< FermBC<LatticeFermion> >, 
+					      LatticeFermion>* (*)(Handle< FermBC<LatticeFermion> >, 
 							    XMLReader&,
 							    const std::string&), StringFactoryError> >
   TheExactEvenOddPrecWilsonTypeFermMonomialFactory;

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_monomial.h,v 1.2 2004-12-21 15:42:22 bjoo Exp $
+// $Id: abs_monomial.h,v 1.3 2004-12-21 18:01:06 bjoo Exp $
 
 /*! @file
  * @brief Monomials - gauge action or fermion binlinear contributions for HMC
@@ -209,6 +209,11 @@ namespace Chroma
     //  s is the state, F is the computed force
     virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) const = 0;
 
+    //! Even even contribution (eg ln det Clover)
+    virtual Double S_even_even(const AbsFieldState<P,Q>& s) const = 0;
+
+    virtual Double S_odd_odd(const AbsFieldState<P,Q>& s) const = 0;
+
     //! Compute the total action
     virtual Double S(const AbsFieldState<P,Q>& s) const = 0;
 
@@ -293,10 +298,7 @@ namespace Chroma
 
     
     virtual void refresh(const AbsFieldState<P,Q>& field_state) {
-      // Get at the gauge field
-      const Q& u = field_state.getQ();
-      
-      // Heatbath all the fields
+       // Heatbath all the fields
       
       // Get at the ferion action for piece i
       const FermionAction<Phi>& S_f = getFermAct();
@@ -364,20 +366,17 @@ namespace Chroma
       // Get the X fields
       Phi X;
       getX(X, s);
-      Double action = innerProductReal(getPhi, X, lin->subset());
+      Double action = innerProductReal(getPhi(), X, lin->subset());
       return action;
     }
 
     Double S(const AbsFieldState<P,Q>& s) const {
-      return S_even_even + S_odd_odd;
+      return S_even_even(s) + S_odd_odd(s);
     }
 
     //! Refresh any pseudo fermions
     /*! Can generically implement this method */
     virtual void refresh(const AbsFieldState<P,Q>& s) { 
-      
-      // Get at the gauge field
-      const Q& u = mc_state.getQ();
       
       // Get at the ferion action for piece i
       const FermionAction<Phi>& S_f = getFermAct();
@@ -422,10 +421,10 @@ namespace Chroma
       //
       const EvenOddPrecWilsonTypeFermAct<Phi,P>& FA = getFermAct();
 
-      Handle<const ConnectState> bc_g_state = FA->createState(s.getQ());
+      Handle<const ConnectState> bc_g_state = FA.createState(s.getQ());
 
       // Need way to get gauge state from AbsFieldState<P,Q>
-      Handle< const EvenOddPrecLinearOperator<Phi,P> > lin(FA->linOp(bc_g_state));
+      Handle< const EvenOddPrecLinearOperator<Phi,P> > lin(FA.linOp(bc_g_state));
       // Get the X fields
       Phi X;
       getX(X, s);
@@ -433,7 +432,7 @@ namespace Chroma
 
       // Assume we have X and chi
       Phi Y;
-      lin(Y, X, PLUS);
+      (*lin)(Y, X, PLUS);
       lin->deriv(F, X, Y, MINUS);
 
       // fold M^dag into X^dag ->  Y  !!
@@ -441,7 +440,9 @@ namespace Chroma
       lin->deriv(F_tmp, Y, X, PLUS);
       F += F_tmp;
 
-      F *= -Real(1);   // This is problematic. Need convention on where to put minus
+      for(int mu=0; mu < Nd; mu++) { 
+	F[mu] *= Real(-1);   // This is problematic. Need convention on where to put minus
+      }
     }
   protected:
     //! Get at fermion action
@@ -451,10 +452,10 @@ namespace Chroma
     virtual const Phi& getPhi(void) const = 0;
 
     //! mutator for pseudofermion with Pf index i 
-    virtual Phi& getPhi(void) const = 0;    
+    virtual Phi& getPhi(void) = 0;    
 
     //! Get (M^dagM)^{-1} phi
-    virtual void getX(Phi& X, AbsFieldState<P,Q> s) const = 0;
+    virtual void getX(Phi& X, const AbsFieldState<P,Q>& s) const = 0;
 
   };
 }

@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.205 2004-12-21 15:42:21 bjoo Exp $
+# $Id: Makefile.am,v 1.206 2004-12-21 18:01:05 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -117,6 +117,7 @@ nobase_include_HEADERS = \
 	update/molecdyn/abs_monomial.h \
 	update/molecdyn/monomial_factory_w.h \
 	update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.h \
+	update/molecdyn/prec_two_flavor_wilson_ferm_monomial_w.h \
 	update/molecdyn/exact_pg_hamiltonian.h \
 	update/molecdyn/degen_two_flavor_ferm_hamiltonian.h \
 	update/molecdyn/abs_symp_updates.h \
@@ -425,7 +426,8 @@ libchroma_a_SOURCES += \
 	meas/hadron/wallrhopiff_w.cc meas/hadron/wall_qprop_w.cc \
 	meas/sources/d_src_w.cc meas/sources/p_src_w.cc \
 	util/ferm/gammasgn_w.cc \
-	update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.cc
+	update/molecdyn/unprec_two_flavor_wilson_ferm_monomial_w.cc \
+	update/molecdyn/prec_two_flavor_wilson_ferm_monomial_w.cc
 
 #	actions/ferm/fermacts/unprec_clover_fermact_w.cc
 #	actions/ferm/fermacts/prec_clover_fermact_w.cc

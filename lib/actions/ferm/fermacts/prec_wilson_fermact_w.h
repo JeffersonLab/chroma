@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_wilson_fermact_w.h,v 1.9 2004-12-12 21:22:15 edwards Exp $
+// $Id: prec_wilson_fermact_w.h,v 1.10 2004-12-21 18:01:06 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action
  */
@@ -83,6 +83,10 @@ namespace Chroma
 
     //! Destructor is automatic
     ~EvenOddPrecWilsonFermAct() {}
+
+    Double getQuarkMass(void) const { 
+      return param.Mass;
+    }
 
   private:
     Handle< FermBC<LatticeFermion> >  fbc;
