@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sink_smear2_w.h,v 1.8 2004-01-06 04:56:47 edwards Exp $
+// $Id: sink_smear2_w.h,v 1.9 2004-01-09 02:47:51 edwards Exp $
 /*! \file
  *  \brief Control routine for types of propagator smearing
  */
@@ -8,9 +8,11 @@
 #define __sink_smear2_h__
 
 enum WvfKind {
+  WVF_KIND_GAUSSIAN,
+  WVF_KIND_EXPONENTIAL,
   WVF_KIND_GAUGE_INV_GAUSSIAN,
   WVF_KIND_WUPPERTAL,
-  WVF_KIND_UNKNOWN
+  WVF_KIND_JACOBI
 };
 
 

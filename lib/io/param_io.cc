@@ -1,4 +1,4 @@
-// $Id: param_io.cc,v 1.8 2004-01-07 21:58:27 edwards Exp $
+// $Id: param_io.cc,v 1.9 2004-01-09 02:47:51 edwards Exp $
 /*! \file
  *  \brief Various parameter readers/writers for main programs
  */
@@ -149,8 +149,16 @@ void read(XMLReader& xml, const string& path, WvfKind& param)
 {
   string wvf_kind_str;
   read(xml, path, wvf_kind_str);
-  if (wvf_kind_str == "GAUGE_INV_GAUSSIAN")
+  if (wvf_kind_str == "GAUSSIAN")
+    param = WVF_KIND_GAUSSIAN;
+  else if (wvf_kind_str == "EXPONENTIAL")
+    param = WVF_KIND_EXPONENTIAL;
+  else if (wvf_kind_str == "GAUGE_INV_GAUSSIAN")
     param = WVF_KIND_GAUGE_INV_GAUSSIAN;
+  else if (wvf_kind_str == "WUPPERTAL")
+    param = WVF_KIND_WUPPERTAL;
+  else if (wvf_kind_str == "JACOBI")
+    param = WVF_KIND_JACOBI;
   else 
   {
     QDPIO::cerr << "Unsupported gauge-invariant wvf_kind" << endl;
