@@ -1,4 +1,4 @@
-// $Id: qprop_io.h,v 1.13 2004-05-03 20:06:39 edwards Exp $
+// $Id: qprop_io.h,v 1.14 2004-05-03 20:24:13 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -13,7 +13,7 @@
 #include "meas/sources/wavetype.h"
 #include "meas/smear/wvfkind.h"
 
-/*
+/*!
  * Chroma propagator support
  *
  * \ingroup io
