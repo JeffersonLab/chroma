@@ -1,7 +1,7 @@
 // -*- C++ -*-
-// $Id: monomial_factory.h,v 1.1 2004-12-29 18:38:58 bjoo Exp $
+// $Id: monomial_factory.h,v 1.2 2004-12-30 02:03:15 edwards Exp $
 /*! \file
- *  \brief Fermion action factories
+ *  \brief Monomial factories
  */
 
 #ifndef __monomial_factory_w_h__
