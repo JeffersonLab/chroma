@@ -1,5 +1,5 @@
 /*
- *  $Id: qprop_io.cc,v 1.8 2004-02-04 16:57:21 sbasak Exp $
+ *  $Id: qprop_io.cc,v 1.9 2004-02-04 20:50:39 sbasak Exp $
  *
  *  These are a few simple I/O routines that we can use until QIO makes its appearance
  *  I have tried to include a simple header by means of a structure.
@@ -40,8 +40,8 @@ void write(XMLWriter& xml, const string& path, const PropHead& header)
   write(xml, "source_type", header.source_type);
   write(xml, "source_direction",  header.source_direction);
   write(xml, "source_laplace_power",  header.source_laplace_power);
-  write(xml, "source_disp_length", header.sink_disp_length);
-  write(xml, "source_disp_dir", header.sink_disp_dir);
+  write(xml, "source_disp_length", header.source_disp_length);
+  write(xml, "source_disp_dir", header.source_disp_dir);
   write(xml, "sink_smearingparam", header.sink_smearingparam);
   write(xml, "sink_type",  header.sink_type);
   write(xml, "sink_direction", header.sink_direction);
@@ -144,10 +144,14 @@ void writePropHead(const PropHead header, BinaryWriter& prop_out){
   write(prop_out, header.source_type);
   write(prop_out, header.source_direction);
   write(prop_out, header.source_laplace_power);
+  write(prop_out, header.source_disp_length);
+  write(prop_out, header.source_disp_dir);
   write(prop_out, header.sink_smearingparam);
   write(prop_out, header.sink_type);
   write(prop_out, header.sink_direction);
   write(prop_out, header.sink_laplace_power);
+  write(prop_out, header.sink_disp_length);
+  write(prop_out, header.sink_disp_dir);
 }
 
 void writePropHeadinNml(const PropHead header, NmlWriter& nml) {
@@ -156,10 +160,14 @@ void writePropHeadinNml(const PropHead header, NmlWriter& nml) {
   Write(nml, header.source_type);
   Write(nml, header.source_direction);
   Write(nml, header.source_laplace_power);
+  Write(nml, header.source_disp_length);
+  Write(nml, header.source_disp_dir);
   Write(nml, header.sink_smearingparam);
   Write(nml, header.sink_type);
   Write(nml, header.sink_direction);
   Write(nml, header.sink_laplace_power);
+  Write(nml, header.sink_disp_length);
+  Write(nml, header.sink_disp_dir);
 }
 
 void readPropHead(PropHead& header, BinaryReader& prop_in){
@@ -175,10 +183,14 @@ void readPropHead(PropHead& header, BinaryReader& prop_in){
   read(prop_in, header.source_type);
   read(prop_in, header.source_direction);
   read(prop_in, header.source_laplace_power);
+  read(prop_in, header.source_disp_length);
+  read(prop_in, header.source_disp_dir);
   read(prop_in, header.sink_smearingparam);
   read(prop_in, header.sink_type);
   read(prop_in, header.sink_direction);
   read(prop_in, header.sink_laplace_power);
+  read(prop_in, header.sink_disp_length);
+  read(prop_in, header.sink_disp_dir);
   
 }
 
@@ -216,3 +228,4 @@ void readBarcomp(multiNd<Complex>& barprop,
 		  read(qqq_in, barprop[ranks]);
 		}
 }
+
