@@ -1,4 +1,4 @@
-// $Id: t_disc_loop_s.cc,v 1.6 2004-12-05 18:31:20 mcneile Exp $
+// $Id: t_disc_loop_s.cc,v 1.7 2004-12-23 22:49:08 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -365,7 +365,7 @@ int main(int argc, char **argv)
   // Use S_f.createState so that S_f can pass in u0
 
   Handle<const ConnectState > state(S_f.createState(u));
-  Handle<const EvenOddLinearOperator<LatticeStaggeredFermion> > D_asqtad(S_f.linOp(state));
+  Handle<const EvenOddLinearOperatorBase<LatticeStaggeredFermion> > D_asqtad(S_f.linOp(state));
   Handle<const LinearOperator<LatticeStaggeredFermion> > MdagM_asqtad(S_f.lMdagM(state));
 
   // Machinery to do timeslice sums with
