@@ -1,4 +1,4 @@
-// $Id: invcg2.cc,v 1.4 2003-10-20 20:31:50 edwards Exp $
+// $Id: invcg2.cc,v 1.5 2003-11-14 22:02:49 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -69,7 +69,11 @@ void InvCG2_a(const LinearOperator<T>& M,
 {
   const OrderedSubset& s = M.subset();
 
-  Real rsd_sq = (RsdCG * RsdCG) * Real(norm2(chi,s));
+//  Real rsd_sq = (RsdCG * RsdCG) * Real(norm2(chi,s));
+  Real chi_sq =  Real(norm2(chi,s));
+
+  QDPIO::cout << "chi_norm = " << sqrt(chi_sq) << endl;
+  Real rsd_sq = (RsdCG * RsdCG) * chi_sq;
 
   //                                            +
   //  r[0]  :=  Chi - A . Psi[0]    where  A = M  . M
