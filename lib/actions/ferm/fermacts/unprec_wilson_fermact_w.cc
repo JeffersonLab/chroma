@@ -1,4 +1,4 @@
-// $Id: unprec_wilson_fermact_w.cc,v 1.3 2003-04-09 21:14:01 edwards Exp $
+// $Id: unprec_wilson_fermact_w.cc,v 1.4 2003-04-10 21:40:57 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -121,7 +121,7 @@ void UnprecWilsonFermAct::qprop(LatticeFermion& psi,
   if ( n_count == MaxCG )
     QDP_error_exit("no convergence in the inverter", n_count);
   
-  ncg_had += n_count;
+  ncg_had = n_count;
   
   // Call the virtual destructor of A
   delete A;
