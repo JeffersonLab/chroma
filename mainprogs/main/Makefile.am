@@ -40,7 +40,7 @@ check_PROGRAMS = propagator spectrum_w qqq_w seqprop bar3ptfn make_source \
 ## These are programs still under development. They won't compile in
 ## the check_PROGRAMS line, so we put them here to keep from breaking
 ## make check
-EXTRA_PROGRAMS = 
+EXTRA_PROGRAMS = qpropadd
 
 
 #
@@ -72,6 +72,9 @@ hypsmear_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 
 qproptransf_SOURCES= qproptransf.cc
 qproptransf_DEPENDENCIES= build_chroma_libs rebuild_other_libs
+
+qpropadd_SOURCES= qpropadd.cc
+qpropadd_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 
 ExampleBuildingBlocks_SOURCES= ExampleBuildingBlocks.cc
 ExampleBuildingBlocks_DEPENDENCIES= build_chroma_libs rebuild_other_libs
