@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linearop.h,v 1.10 2005-01-14 20:13:04 edwards Exp $
+// $Id: linearop.h,v 1.11 2005-01-20 03:08:38 edwards Exp $
 
 /*! @file
  * @brief Linear Operators
@@ -292,7 +292,7 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    //! Apply the operator onto a source vector
+    //! Apply the derivative of the operator onto a source vector
     /*! User should make sure deriv routines do a resize  */
     virtual void deriv(P& ds_u, const T& chi, const T& psi, 
 		       enum PlusMinus isign) const
@@ -333,6 +333,30 @@ namespace Chroma
       derivEvenOddLinOp(ds_1, tmp3, psi, isign);
       ds_u -= ds_1;
     }
+
+    //! Apply the derivative of the UNPRECONDITIONED operator onto a source vector
+    /*! Mainly intended for debugging */
+    virtual void derivUnprecLinOp(P& ds_u, const T& chi, const T& psi, 
+				  enum PlusMinus isign) const
+    {
+      T   tmp1, tmp2;  // if an array is used here, the space is not reserved
+      P   ds_tmp;  // deriv routines should resize
+
+      /*  Chi   =   A    Psi   +    D    Psi   */
+      /*     E       E,E    O        E,O    O  */
+      derivEvenEvenLinOp(ds_u, chi, psi, isign);
+      derivEvenOddLinOp(ds_tmp, chi, psi, isign);
+      ds_u += ds_tmp;
+
+      /*  Chi   =  A    Psi  -  Tmp1  */
+      /*     O      O,O    O        O */
+      derivOddEvenLinOp(ds_tmp, chi, psi, isign);
+      ds_u += ds_tmp;
+
+      derivOddOddLinOp(ds_tmp, chi, psi, isign);
+      ds_u += ds_tmp;
+    }
+
   };
 
 
@@ -554,6 +578,30 @@ namespace Chroma
       evenEvenInvLinOp(tmp3, tmp1, msign);
       derivEvenOddLinOp(ds_1, tmp3, psi, isign);
       ds_u -= ds_1;
+    }
+
+
+    //! Apply the derivative of the UNPRECONDITIONED operator onto a source vector
+    /*! Mainly intended for debugging */
+    virtual void derivUnprecLinOp(P& ds_u, const multi1d<T>& chi, const multi1d<T>& psi, 
+				  enum PlusMinus isign) const
+    {
+      T   tmp1, tmp2;  // if an array is used here, the space is not reserved
+      P   ds_tmp;  // deriv routines should resize
+
+      /*  Chi   =   A    Psi   +    D    Psi   */
+      /*     E       E,E    O        E,O    O  */
+      derivEvenEvenLinOp(ds_u, chi, psi, isign);
+      derivEvenOddLinOp(ds_tmp, chi, psi, isign);
+      ds_u += ds_tmp;
+
+      /*  Chi   =  A    Psi  -  Tmp1  */
+      /*     O      O,O    O        O */
+      derivOddEvenLinOp(ds_tmp, chi, psi, isign);
+      ds_u += ds_tmp;
+
+      derivOddOddLinOp(ds_tmp, chi, psi, isign);
+      ds_u += ds_tmp;
     }
   };
 
