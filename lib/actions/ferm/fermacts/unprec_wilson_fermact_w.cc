@@ -1,4 +1,4 @@
-// $Id: unprec_wilson_fermact_w.cc,v 1.12 2003-12-15 17:52:51 bjoo Exp $
+// $Id: unprec_wilson_fermact_w.cc,v 1.13 2003-12-17 11:39:27 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -27,9 +27,7 @@ void UnprecWilsonFermAct::create(const Real& Mass_)
 const LinearOperator<LatticeFermion>*
 UnprecWilsonFermAct::linOp(const ConnectState& state) const
 {
-  const UnprecWilsonLinOp* D = new UnprecWilsonLinOp(state.getLinks(), Mass);
-  return D;
-
+  return new UnprecWilsonLinOp(state.getLinks(), Mass); 
 }
 
 //! Produce a M^dag.M linear operator for this action
@@ -42,8 +40,7 @@ const LinearOperator<LatticeFermion>*
 UnprecWilsonFermAct::lMdagM(const ConnectState& state) const
 {
 
- const UnprecWilsonLinOp* D = new UnprecWilsonLinOp(state.getLinks(), Mass);
-  return new lmdagm<LatticeFermion>(*D);
+  return new lmdagm<LatticeFermion>(*(new UnprecWilsonLinOp(state.getLinks(), Mass)));
 }
 
 

@@ -1,4 +1,4 @@
-// $Id: t_ovlap_bj.cc,v 1.3 2003-12-17 11:03:04 bjoo Exp $
+// $Id: t_ovlap_bj.cc,v 1.4 2003-12-17 11:39:27 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -83,7 +83,7 @@ int main(int argc, char **argv)
   ZolotarevConnectState<LatticeFermion> connect_state(u, 0.05);
 
   // Make me a linop (this callls the initialise function)
-  const LinearOperatorProxy<LatticeFermion> D_op(D.linOp((ConnectState &)connect_state));
+  const LinearOperator<LatticeFermion>* D_op =D.linOp((ConnectState &)connect_state);
 
   Double n2 = norm2(psi);
   psi /= n2;
@@ -91,10 +91,10 @@ int main(int argc, char **argv)
   LatticeFermion s1, s2, s3, tmp2;
   s1 = s2 = s3 = tmp2 = zero;
 
-  (D_op)(s1,psi,PLUS);
-  (D_op)(s2,psi,MINUS);
-  (D_op)(tmp2, psi, PLUS);
-  (D_op)(s3, tmp2, MINUS);
+  (*D_op)(s1,psi,PLUS);
+  (*D_op)(s2,psi,MINUS);
+  (*D_op)(tmp2, psi, PLUS);
+  (*D_op)(s3, tmp2, MINUS);
 
   s3 *= 2;
   s3 -= s1;

@@ -1,9 +1,10 @@
 // -*- C++ -*-
-// $Id: lmdagm_w.h,v 1.7 2003-11-23 06:03:15 edwards Exp $
+// $Id: lmdagm_w.h,v 1.8 2003-12-17 11:39:27 bjoo Exp $
 
 #ifndef __lmdagm_w_h__
 #define __lmdagm_w_h__
 
+#include "handle.h"
 #include "linearop.h"
 
 using namespace QDP;
@@ -21,25 +22,25 @@ class lmdagm : public LinearOperator<T>
 {
 public:
   //! Full constructor
-  lmdagm(const LinearOperator<T>& A_) : A(A_) {}
+  lmdagm(const LinearOperator<T> &A_) : A(&A_) {}
 
   //! Destructor
   ~lmdagm() {}
 
   //! Subset comes from underlying operator
-  inline const OrderedSubset& subset() const {return A.subset();}
+  inline const OrderedSubset& subset() const {return A->subset();}
 
   //! Apply the operator onto a source vector
   /*! For this operator, the sign is ignored */
   inline void operator() (T& chi, const T& psi, enum PlusMinus isign) const
     {
       T  tmp;
-      A(tmp, psi, PLUS);
-      A(chi, tmp, MINUS);
+      (*A)(tmp, psi, PLUS);
+      (*A)(chi, tmp, MINUS);
     }
 
 private:
-  const LinearOperator<T>& A;
+  const Handle< const LinearOperator<T> > A;
 };
 
 
