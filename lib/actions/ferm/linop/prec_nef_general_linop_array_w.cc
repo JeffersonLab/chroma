@@ -1,4 +1,4 @@
-// $Id: prec_nef_general_linop_array_w.cc,v 1.3 2004-12-12 21:22:16 edwards Exp $
+// $Id: prec_nef_general_linop_array_w.cc,v 1.4 2005-01-03 04:23:09 edwards Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned NEF domain-wall linear operator
  */
@@ -10,115 +10,115 @@
 namespace Chroma 
 { 
 
-//! Creation routine
-/*! \ingroup fermact
- *
- * \param u_            gauge field   (Read)
- * \param WilsonMass_   DWF height    (Read)
- * \param b5_           NEF parameter array (Read)
- * \param c5_           NEF parameter array (Read)
- * \param m_q_          quark mass    (Read)
- * \param N5_           extent of 5D  (Read)
- */
-void 
-EvenOddPrecGenNEFDWLinOpArray::create(const multi1d<LatticeColorMatrix>& u_, 
-				      const Real& WilsonMass_, 
-				      const Real& m_q_,
-				      const multi1d<Real>& b5_, 
-				      const multi1d<Real>& c5_,
-				      int N5_)
-{
-  START_CODE();
+  //! Creation routine
+  /*! \ingroup fermact
+   *
+   * \param u_            gauge field   (Read)
+   * \param WilsonMass_   DWF height    (Read)
+   * \param b5_           NEF parameter array (Read)
+   * \param c5_           NEF parameter array (Read)
+   * \param m_q_          quark mass    (Read)
+   * \param N5_           extent of 5D  (Read)
+   */
+  void 
+  EvenOddPrecGenNEFDWLinOpArray::create(const multi1d<LatticeColorMatrix>& u_, 
+					const Real& WilsonMass_, 
+					const Real& m_q_,
+					const multi1d<Real>& b5_, 
+					const multi1d<Real>& c5_,
+					int N5_)
+  {
+    START_CODE();
   
-  WilsonMass = WilsonMass_;
-  m_q = m_q_;
+    WilsonMass = WilsonMass_;
+    m_q = m_q_;
 
-  // Sanity checking:
-  if( b5_.size() != N5_ ) { 
-    QDPIO::cerr << "b5 array size and N5 are inconsistent" << endl;
-    QDPIO::cerr << "b5_array.size() = " << b5_.size() << endl;
-    QDPIO::cerr << "N5_ = " << N5_ << endl << flush;
-    QDP_abort(1);
-  }
-  N5  = N5_;
-  D.create(u_);
+    // Sanity checking:
+    if( b5_.size() != N5_ ) { 
+      QDPIO::cerr << "b5 array size and N5 are inconsistent" << endl;
+      QDPIO::cerr << "b5_array.size() = " << b5_.size() << endl;
+      QDPIO::cerr << "N5_ = " << N5_ << endl << flush;
+      QDP_abort(1);
+    }
+    N5  = N5_;
+    D.create(u_);
 
-  b5.resize(N5);
-  c5.resize(N5);
-  for(int i=0; i < N5; i++) { 
-    b5[i] = b5_[i];
-    c5[i] = c5_[i];
-  }
+    b5.resize(N5);
+    c5.resize(N5);
+    for(int i=0; i < N5; i++) { 
+      b5[i] = b5_[i];
+      c5[i] = c5_[i];
+    }
 
-  f_plus.resize(N5);
-  f_minus.resize(N5);
-  for(int i=0; i < N5; i++) { 
-    f_plus[i] = b5[i]*( Real(Nd) - WilsonMass ) + 1;
-    f_minus[i]= c5[i]*( Real(Nd) - WilsonMass ) - 1;
-  }
+    f_plus.resize(N5);
+    f_minus.resize(N5);
+    for(int i=0; i < N5; i++) { 
+      f_plus[i] = b5[i]*( Real(Nd) - WilsonMass ) + 1;
+      f_minus[i]= c5[i]*( Real(Nd) - WilsonMass ) - 1;
+    }
 
 
-  l.resize(N5-1);
-  r.resize(N5-1);
+    l.resize(N5-1);
+    r.resize(N5-1);
   
-  l[0] = -m_q*f_minus[N5-1]/f_plus[0];
-  r[0] = -m_q*f_minus[0]/f_plus[0];
+    l[0] = -m_q*f_minus[N5-1]/f_plus[0];
+    r[0] = -m_q*f_minus[0]/f_plus[0];
 
-  for(int i=1; i < N5-1; i++) { 
-    l[i] = -(f_minus[i-1]/f_plus[i])*l[i-1];
-    r[i] = -(f_minus[i]/f_plus[i])*r[i-1];
-  }
+    for(int i=1; i < N5-1; i++) { 
+      l[i] = -(f_minus[i-1]/f_plus[i])*l[i-1];
+      r[i] = -(f_minus[i]/f_plus[i])*r[i-1];
+    }
 
-  a.resize(N5-1);
-  b.resize(N5-1);
-  for(int i=0; i < N5-1; i++) { 
-    a[i] = f_minus[i+1]/f_plus[i];
-    b[i] = f_minus[i]/f_plus[i];
-  }
+    a.resize(N5-1);
+    b.resize(N5-1);
+    for(int i=0; i < N5-1; i++) { 
+      a[i] = f_minus[i+1]/f_plus[i];
+      b[i] = f_minus[i]/f_plus[i];
+    }
 
-  d.resize(N5);
-  for(int i=0; i < N5; i++) { 
-    d[i] = f_plus[i];
-  }
-  // Last bits of d can be computed 2 ways which should be equal
-  Real tmp1 = f_minus[N5-2]*l[N5-2];
-  Real tmp2 = f_minus[N5-1]*r[N5-2];
+    d.resize(N5);
+    for(int i=0; i < N5; i++) { 
+      d[i] = f_plus[i];
+    }
+    // Last bits of d can be computed 2 ways which should be equal
+    Real tmp1 = f_minus[N5-2]*l[N5-2];
+    Real tmp2 = f_minus[N5-1]*r[N5-2];
 
-  // Sanity checking:
-  // QDPIO::cout << "  The following 2 should be equal: ";
-  // QDPIO::cout << tmp1 << " and " << tmp2 << endl;
+    // Sanity checking:
+    // QDPIO::cout << "  The following 2 should be equal: ";
+    // QDPIO::cout << tmp1 << " and " << tmp2 << endl;
 
   
-  // Subtrace ONLY ONE of them onto d[N5-1]
-  d[N5-1] -=  tmp1;
+    // Subtrace ONLY ONE of them onto d[N5-1]
+    d[N5-1] -=  tmp1;
  
-  END_CODE();
-}
+    END_CODE();
+  }
 
 
-//! Apply the even-even (odd-odd) coupling piece of the domain-wall fermion operator
-/*!
- * \ingroup linop
- *
- * The operator acts on the entire lattice
- *
- * \param psi 	  Pseudofermion field     	       (Read)
- * \param isign   Flag ( PLUS | MINUS )   	       (Read)
- * \param cb      checkerboard ( 0 | 1 )               (Read)
- */
-void 
-EvenOddPrecGenNEFDWLinOpArray::applyDiag(multi1d<LatticeFermion>& chi, 
-				      const multi1d<LatticeFermion>& psi, 
-				      enum PlusMinus isign,
-				      const int cb) const
-{
-  START_CODE();
+  //! Apply the even-even (odd-odd) coupling piece of the domain-wall fermion operator
+  /*!
+   * \ingroup linop
+   *
+   * The operator acts on the entire lattice
+   *
+   * \param psi 	  Pseudofermion field     	       (Read)
+   * \param isign   Flag ( PLUS | MINUS )   	       (Read)
+   * \param cb      checkerboard ( 0 | 1 )               (Read)
+   */
+  void 
+  EvenOddPrecGenNEFDWLinOpArray::applyDiag(multi1d<LatticeFermion>& chi, 
+					   const multi1d<LatticeFermion>& psi, 
+					   enum PlusMinus isign,
+					   int cb) const
+  {
+    START_CODE();
 
-  chi.resize(N5);
+    chi.resize(N5);
 
-  switch ( isign ) {
+    switch ( isign ) {
     
-  case PLUS:
+    case PLUS:
     {
       Real fact;
       LatticeFermion tmp1, tmp2;
@@ -183,7 +183,7 @@ EvenOddPrecGenNEFDWLinOpArray::applyDiag(multi1d<LatticeFermion>& chi,
     }
     break ;
 
-  case MINUS:
+    case MINUS:
     {    
 
       // Scarily different. Daggering in the 5th dimension
@@ -201,7 +201,7 @@ EvenOddPrecGenNEFDWLinOpArray::applyDiag(multi1d<LatticeFermion>& chi,
       tmp2[rb[cb]] = f_minus[1]*psi[1] + m_q*f_minus[N5-1]*psi[N5-1];
 
       chi[0][rb[cb]] = f_plus[0]*psi[0] + 
-	     fact*( tmp1 + GammaConst<Ns, Ns*Ns-1>()*tmp2 );
+	fact*( tmp1 + GammaConst<Ns, Ns*Ns-1>()*tmp2 );
 
 
       tmp1[rb[cb]] = f_minus[N5-2]*psi[N5-2] - m_q * f_minus[0]* psi[0];
@@ -222,40 +222,40 @@ EvenOddPrecGenNEFDWLinOpArray::applyDiag(multi1d<LatticeFermion>& chi,
 
     }
     break ;
+    }
+
+    END_CODE();
   }
 
-  END_CODE();
-}
 
+  //! Apply the inverse even-even (odd-odd) coupling piece of the domain-wall fermion operator
+  /*!
+   * \ingroup linop
+   *
+   * The operator acts on the entire lattice
+   *
+   * \param psi 	  Pseudofermion field     	       (Read)
+   * \param isign   Flag ( PLUS | MINUS )   	       (Read)
+   * \param cb      checkerboard ( 0 | 1 )               (Read)
+   */
+  void 
+  EvenOddPrecGenNEFDWLinOpArray::applyDiagInv(multi1d<LatticeFermion>& chi, 
+					      const multi1d<LatticeFermion>& psi, 
+					      enum PlusMinus isign,
+					      int cb) const
+  {
+    START_CODE();
 
-//! Apply the inverse even-even (odd-odd) coupling piece of the domain-wall fermion operator
-/*!
- * \ingroup linop
- *
- * The operator acts on the entire lattice
- *
- * \param psi 	  Pseudofermion field     	       (Read)
- * \param isign   Flag ( PLUS | MINUS )   	       (Read)
- * \param cb      checkerboard ( 0 | 1 )               (Read)
- */
-void 
-EvenOddPrecGenNEFDWLinOpArray::applyDiagInv(multi1d<LatticeFermion>& chi, 
-				      const multi1d<LatticeFermion>& psi, 
-				      enum PlusMinus isign,
-				      const int cb) const
-{
-  START_CODE();
+    chi.resize(N5);
 
-  chi.resize(N5);
+    // I use two temporaries
+    multi1d<LatticeFermion> z(N5);
+    multi1d<LatticeFermion> z_prime(N5);
+    Real fact;
 
-  // I use two temporaries
-  multi1d<LatticeFermion> z(N5);
-  multi1d<LatticeFermion> z_prime(N5);
-  Real fact;
+    switch ( isign ) {
 
-  switch ( isign ) {
-
-  case PLUS:
+    case PLUS:
     {
 
       // First apply the inverse of Lm :
@@ -305,7 +305,7 @@ EvenOddPrecGenNEFDWLinOpArray::applyDiagInv(multi1d<LatticeFermion>& chi,
     }
     break ;
     
-  case MINUS:
+    case MINUS:
     {
 
       // First apply the inverse of Rm :
@@ -363,34 +363,34 @@ EvenOddPrecGenNEFDWLinOpArray::applyDiagInv(multi1d<LatticeFermion>& chi,
      
     }
     break ;
+    }
+
+    END_CODE();
   }
 
-  END_CODE();
-}
-
-//! Apply the even-odd (odd-even) coupling piece of the NEF operator
-/*!
- * \ingroup linop
- *
- * The operator acts on the entire lattice
- *
- * \param psi 	  Pseudofermion field     	       (Read)
- * \param isign   Flag ( PLUS | MINUS )   	       (Read)
- * \param cb      checkerboard ( 0 | 1 )               (Read)
- */
-void 
-EvenOddPrecGenNEFDWLinOpArray::applyOffDiag(multi1d<LatticeFermion>& chi, 
-					 const multi1d<LatticeFermion>& psi, 
-					 enum PlusMinus isign,
-					 const int cb) const 
-{
-  START_CODE();
-
-  chi.resize(N5);
-
-  switch ( isign ) 
+  //! Apply the even-odd (odd-even) coupling piece of the NEF operator
+  /*!
+   * \ingroup linop
+   *
+   * The operator acts on the entire lattice
+   *
+   * \param psi 	  Pseudofermion field     	       (Read)
+   * \param isign   Flag ( PLUS | MINUS )   	       (Read)
+   * \param cb      checkerboard ( 0 | 1 )               (Read)
+   */
+  void 
+  EvenOddPrecGenNEFDWLinOpArray::applyOffDiag(multi1d<LatticeFermion>& chi, 
+					      const multi1d<LatticeFermion>& psi, 
+					      enum PlusMinus isign,
+					      int cb) const 
   {
-  case PLUS:
+    START_CODE();
+
+    chi.resize(N5);
+
+    switch ( isign ) 
+    {
+    case PLUS:
     {
       LatticeFermion tmp;
       LatticeFermion tmp1;
@@ -437,7 +437,7 @@ EvenOddPrecGenNEFDWLinOpArray::applyOffDiag(multi1d<LatticeFermion>& chi,
     }
     break ;
     
-  case MINUS:
+    case MINUS:
     { 
       multi1d<LatticeFermion> tmp_d(N5) ;
 
@@ -482,26 +482,198 @@ EvenOddPrecGenNEFDWLinOpArray::applyOffDiag(multi1d<LatticeFermion>& chi,
       }
     }
     break ;
+    }
+
+
+    END_CODE();
   }
 
 
-  END_CODE();
-}
+  //! Apply the Dminus operator on a lattice fermion. See my notes ;-)
+  void 
+  EvenOddPrecGenNEFDWLinOpArray::Dminus(LatticeFermion& chi,
+					const LatticeFermion& psi,
+					enum PlusMinus isign,
+					int s5) const
+  {
+    LatticeFermion tt ;
+    D.apply(tt,psi,isign,0);
+    D.apply(tt,psi,isign,1);
+    Real fact = Real(0.5)*c5[s5];
+    chi = f_minus[s5]*psi - fact*tt ;
+  }
 
 
-//! Apply the Dminus operator on a lattice fermion. See my notes ;-)
-void 
-EvenOddPrecGenNEFDWLinOpArray::Dminus(LatticeFermion& chi,
-				   const LatticeFermion& psi,
-				   enum PlusMinus isign,
-				   int s5) const
-{
-  LatticeFermion tt ;
-  D.apply(tt,psi,isign,0);
-  D.apply(tt,psi,isign,1);
-  Real fact = Real(0.5)*c5[s5];
-  chi = f_minus[s5]*psi - fact*tt ;
-}
+
+  // Derivative of even-odd linop component
+  /* 
+   * This is a copy of the above applyOffDiag with the D.apply(...) replaced
+   * by  D.deriv(ds_tmp,...) like calls.
+   */
+  void 
+  EvenOddPrecGenNEFDWLinOpArray::applyDerivOffDiag(multi1d<LatticeColorMatrix>& ds_u,
+						   const multi1d<LatticeFermion>& chi, 
+						   const multi1d<LatticeFermion>& psi, 
+						   enum PlusMinus isign,
+						   int cb) const 
+  {
+    START_CODE();
+
+    ds_u.resize(Nd);
+    multi1d<LatticeColorMatrix> ds_tmp(Nd);
+						   
+#if 1
+    ds_u = zero;
+    QDP_error_exit("NEF deriv stuff not working correctly yet");
+#else
+#warning "The MINUS PART IS NOT CORRECT"
+
+    switch ( isign ) 
+    {
+    case PLUS:
+    {
+      LatticeFermion tmp;
+      LatticeFermion tmp1;
+      LatticeFermion tmp2;
+      Real fact1;
+      Real fact2;
+      int otherCB = (cb + 1)%2 ;
+ 
+      fact1 = -Real(0.5)*b5[0];
+      fact2 = -Real(0.25)*c5[0];
+      tmp1[rb[otherCB]] = psi[1] - m_q*psi[N5-1];
+      tmp2[rb[otherCB]] = psi[1] + m_q*psi[N5-1];
+      
+      tmp[rb[otherCB]] = fact1*psi[0] 
+	+ fact2*(tmp1 - GammaConst<Ns, Ns*Ns-1>()*tmp2);
+
+      D.deriv(ds_u, chi[0], tmp, isign, cb);
+      
+      
+      fact1 = -Real(0.5)*b5[N5-1];
+      fact2 = -Real(0.25)*c5[N5-1];
+
+      tmp1[rb[otherCB]]=psi[N5-2]-m_q*psi[0];
+      tmp2[rb[otherCB]]=psi[N5-2]+m_q*psi[0];
+
+      tmp[rb[otherCB]] = fact1*psi[N5-1]
+	+ fact2*(tmp1 + GammaConst<Ns,Ns*Ns-1>()*tmp2 );
+
+      D.deriv(ds_tmp, chi[N5-1], tmp, isign, cb);
+      ds_u += ds_tmp;
+      
+
+      for(int s=1; s < N5-1; s++) { 
+	fact1 = -Real(0.5)*b5[s];
+	fact2 = -Real(0.25)*c5[s];
+
+	tmp1[rb[otherCB]]=psi[s-1] + psi[s+1];
+	tmp2[rb[otherCB]]=psi[s-1] - psi[s+1];
+	
+	tmp[rb[otherCB]]= fact1*psi[s] 
+	  + fact2*(tmp1 + GammaConst<Ns,Ns*Ns-1>()*tmp2) ;
+	
+	D.deriv(ds_tmp, chi[s], tmp, isign, cb);
+	ds_u += ds_tmp;
+      }
+    }
+    break ;
+    
+    case MINUS:
+    { 
+      multi1d<LatticeFermion> tmp_d(N5) ;
+
+      ds_u = zero;
+
+      for(int s=0; s<N5; s++){
+	D.deriv(ds_tmp, tmp_d[s], psi[s], isign, cb);
+	ds_u += ds_tmp;
+      }
+
+      LatticeFermion tmp1;
+      LatticeFermion tmp2;
+
+
+      Real one_quarter = Real(0.25);
+
+      Real factb= -Real(0.5)*b5[0];
+      Real fact  = m_q*c5[N5-1];
+      tmp1[rb[cb]] = c5[1]*tmp_d[1] - fact*tmp_d[N5-1];
+      tmp2[rb[cb]] = c5[1]*tmp_d[1] + fact*tmp_d[N5-1];
+
+      chi[0][rb[cb]] = factb*tmp_d[0]
+	- one_quarter*( tmp1 + GammaConst<Ns,Ns*Ns-1>()*tmp2 );
+
+
+
+      factb = -Real(0.5)*b5[N5-1];
+      fact = m_q * c5[0];
+      
+      tmp1[rb[cb]] = c5[N5-2]*tmp_d[N5-2] - fact * tmp_d[0];
+      tmp2[rb[cb]] = c5[N5-2]*tmp_d[N5-2] + fact * tmp_d[0];
+
+      chi[N5-1][rb[cb]] = factb * tmp_d[N5-1]
+	- one_quarter * ( tmp1 - GammaConst<Ns, Ns*Ns-1>()*tmp2 );
+
+      for(int s=1; s<N5-1; s++){
+	factb = -Real(0.5) * b5[s];
+	
+	tmp1[rb[cb]] = c5[s-1]*tmp_d[s-1] + c5[s+1]*tmp_d[s+1];
+	tmp2[rb[cb]] = c5[s-1]*tmp_d[s-1] - c5[s+1]*tmp_d[s+1];
+
+	chi[s][rb[cb]] = factb*tmp_d[s] 
+	  - one_quarter*( tmp1 - GammaConst<Ns, Ns*Ns-1>()*tmp2 );
+	
+      }
+    }
+    break ;
+    }
+#endif
+
+    END_CODE();
+  }
+
+
+#if 0
+  // NOT WORKING YET - USE SLOW DEFAULT
+
+  // THIS IS AN OPTIMIZED VERSION OF THE DERIVATIVE
+  /*! ds_u = -(1/4)*(1/(Nd+m))*[\dot(D)_oe*D_eo + D_oe*\dot(D_eo)]*psi */
+  void 
+  EvenOddPrecWilsonLinOp::deriv(multi1d<LatticeColorMatrix>& ds_u,
+				const multi1d<LatticeFermion>& chi, 
+				const multi1d<LatticeFermion>& psi, 
+				enum PlusMinus isign) const
+  {
+    START_CODE();
+
+    enum PlusMinus msign = (isign == PLUS) ? MINUS : PLUS;
+
+    ds_u.resize(Nd);
+
+    // ds_u = -(1/4)*(1/(Nd+m))*[\dot(D)_oe*D_eo + D_oe*\dot(D_eo)]*psi
+
+    // First term
+    //   ds_u = chi_o^dag * \dot(D)_oe * (D_eo*psi_o)
+    LatticeFermion tmp;
+    D.apply(tmp, psi, isign, 0);
+    D.deriv(ds_u, chi, tmp, isign, 1);
+
+    // Second term
+    //   ds_tmp = (D_eo^dag*chi_o)^dag * \dot(D)_eo * psi_o
+    multi1d<LatticeColorMatrix> ds_tmp(Nd);
+    D.apply(tmp, chi, msign, 0);
+    D.deriv(ds_tmp, tmp, psi, isign, 0);
+
+    for(int mu = 0; mu < Nd; ++mu)
+    {
+      ds_u[mu] += ds_tmp[mu];
+      ds_u[mu] *= Real(-0.25)*invfact;
+    }
+
+    END_CODE();
+  }
+#endif
 
 }; // End Namespace Chroma
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_nef_general_linop_array_w.h,v 1.4 2005-01-02 05:21:10 edwards Exp $
+// $Id: prec_nef_general_linop_array_w.h,v 1.5 2005-01-03 04:23:09 edwards Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned NEF domain-wall fermion linear operator
  *            generalised to take array of b_5 and c_5
@@ -134,6 +134,48 @@ namespace Chroma
       applyDiagInv(chi, psi, isign, 1);
     }
  
+
+    //! Apply the even-even block onto a source vector
+    void derivEvenEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
+			    const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
+			    enum PlusMinus isign) const
+    {
+      ds_u.resize(Nd);
+      ds_u = zero;
+    }
+
+    //! Apply the the odd-odd block onto a source vector
+    void derivOddOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
+			  const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
+			  enum PlusMinus isign) const
+    {
+      ds_u.resize(Nd);
+      ds_u = zero;
+    }
+
+    //! Apply the the even-odd block onto a source vector
+    void derivEvenOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
+			   const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
+			   enum PlusMinus isign) const
+    {
+      applyDerivOffDiag(ds_u, chi, psi, isign, 0);
+    }
+ 
+    //! Apply the the odd-even block onto a source vector
+    void derivOddEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
+			   const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
+			   enum PlusMinus isign) const
+    {
+      applyDerivOffDiag(ds_u, chi, psi, isign, 1);
+    }
+
+#if 0
+    // Override virtual function for efficiency.
+    void deriv(multi1d<LatticeColorMatrix>& ds_u, 
+	       const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
+	       enum PlusMinus isign) const;
+#endif
+
   protected:
 
     //! Apply the even-even (odd-odd) coupling piece of the domain-wall fermion operator
@@ -146,7 +188,7 @@ namespace Chroma
     void applyDiag(multi1d<LatticeFermion>& chi, 
 		   const multi1d<LatticeFermion>& psi, 
 		   enum PlusMinus isign,
-		   const int cb) const;
+		   int cb) const;
 
     //! Apply the inverse even-even (odd-odd) coupling piece of the domain-wall fermion operator
     /*!
@@ -158,7 +200,7 @@ namespace Chroma
     void applyDiagInv(multi1d<LatticeFermion>& chi, 
 		      const multi1d<LatticeFermion>& psi, 
 		      enum PlusMinus isign,
-		      const int cb) const;
+		      int cb) const;
     
 
     //! Apply the even-odd (odd-even) coupling piece of the NEF operator
@@ -171,16 +213,33 @@ namespace Chroma
      * \param isign   Flag ( PLUS | MINUS )   	       (Read)
      * \param cb      checkerboard ( 0 | 1 )               (Read)
      */
-    void  applyOffDiag(multi1d<LatticeFermion>& chi, 
-		       const multi1d<LatticeFermion>& psi, 
-		       enum PlusMinus isign,
-		       const int cb) const ;
+    void applyOffDiag(multi1d<LatticeFermion>& chi, 
+		      const multi1d<LatticeFermion>& psi, 
+		      enum PlusMinus isign,
+		      int cb) const ;
 
     //! Apply the Dminus operator on a lattice fermion. See my notes ;-)
     void Dminus(LatticeFermion& chi,
 		const LatticeFermion& psi,
 		enum PlusMinus isign,
 		int s5) const;
+
+    
+
+    //! Apply the even-odd (odd-even) coupling piece of the NEF operator
+    /*!
+     * \param ds_u    conjugate momenta	               (Read)
+     * \param psi     left pseudofermion field	       (Read)
+     * \param psi     right pseudofermion field        (Read)
+     * \param isign   Flag ( PLUS | MINUS )   	       (Read)
+     * \param cb      checkerboard ( 0 | 1 )           (Read)
+     */
+    void applyDerivOffDiag(multi1d<LatticeColorMatrix>& ds_u, 
+			   const multi1d<LatticeFermion>& chi, 
+			   const multi1d<LatticeFermion>& psi, 
+			   enum PlusMinus isign,
+			   int cb) const ;
+
 
   private:
     Real WilsonMass;
