@@ -1,4 +1,4 @@
-// $Id: t_conslinop.cc,v 1.7 2003-04-09 19:00:41 edwards Exp $
+// $Id: t_conslinop.cc,v 1.8 2003-04-09 19:56:11 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -57,8 +57,8 @@ int main(int argc, char *argv[])
   UnprecWilsonFermAct S(Kappa);
   const LinearOperator* A = S.linOp(u);
 
-  DComplex np = innerproduct(psi,D(psi,PLUS));
-  DComplex nm = innerproduct(psi,D(psi,MINUS));
+  DComplex np = innerProduct(psi,D(psi,PLUS));
+  DComplex nm = innerProduct(psi,D(psi,MINUS));
 
   push(nml,"norm_check");
   Write(nml,np);
