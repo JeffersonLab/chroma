@@ -1,4 +1,4 @@
-// $Id: seqprop.cc,v 1.11 2004-01-31 23:22:01 edwards Exp $
+// $Id: seqprop.cc,v 1.12 2004-02-04 17:01:56 edwards Exp $
 /*! \file
  *  \brief Main code for sequential propagator generation
  */
@@ -415,7 +415,7 @@ int main(int argc, char **argv)
       SftMom phases(0, true, Nd-1);
 
       multi1d<Double> forward_prop_corr = sumMulti(localNorm2(quark_propagator), 
-						   phases.getSubset());
+						   phases.getSet());
 
       push(xml_array, "Forward_prop_correlator");
       Write(xml_array, forward_prop_corr);
@@ -521,7 +521,7 @@ int main(int argc, char **argv)
 	SftMom phases(0, true, Nd-1);
 
 	multi1d<Double> backward_prop_corr = sumMulti(localNorm2(seq_quark_prop), 
-						      phases.getSubset());
+						      phases.getSet());
 	
 	push(xml_seq_src, "Backward_prop_correlator");
 	Write(xml_seq_src, backward_prop_corr);

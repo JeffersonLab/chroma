@@ -1,6 +1,9 @@
-// $Id: propagator.cc,v 1.39 2004-01-31 23:22:01 edwards Exp $
+// $Id: propagator.cc,v 1.40 2004-02-04 17:01:55 edwards Exp $
 // $Log: propagator.cc,v $
-// Revision 1.39  2004-01-31 23:22:01  edwards
+// Revision 1.40  2004-02-04 17:01:55  edwards
+// Changed getSubset() to the now correct getSet().
+//
+// Revision 1.39  2004/01/31 23:22:01  edwards
 // Added proginfo call.
 //
 // Revision 1.38  2004/01/30 21:35:22  kostas
@@ -307,7 +310,7 @@ int main(int argc, char **argv)
     SftMom phases(0, true, Nd-1);
 
     multi1d<Double> source_corr = sumMulti(localNorm2(quark_prop_source), 
-					   phases.getSubset());
+					   phases.getSet());
 
     push(xml_out, "Source_correlator");
     Write(xml_out, source_corr);
@@ -470,7 +473,7 @@ int main(int argc, char **argv)
     SftMom phases(0, true, Nd-1);
 
     multi1d<Double> prop_corr = sumMulti(localNorm2(quark_propagator), 
-					 phases.getSubset());
+					 phases.getSet());
 
     push(xml_out, "Prop_correlator");
     Write(xml_out, prop_corr);

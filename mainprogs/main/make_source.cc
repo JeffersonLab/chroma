@@ -1,4 +1,4 @@
-// $Id: make_source.cc,v 1.19 2004-02-04 16:59:40 sbasak Exp $
+// $Id: make_source.cc,v 1.20 2004-02-04 17:01:55 edwards Exp $
 /*! \file
  *  \brief Main code for source generation
  */
@@ -370,7 +370,7 @@ int main(int argc, char **argv)
   SftMom phases(0, true, Nd-1);
 
   multi1d<Double> source_corr = sumMulti(localNorm2(quark_source),
-                                         phases.getSubset());
+                                         phases.getSet());
 
   push(xml_out, "Source_correlator");
   Write(xml_out, source_corr);
