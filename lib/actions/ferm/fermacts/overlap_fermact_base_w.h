@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: overlap_fermact_base_w.h,v 1.14 2004-10-15 16:37:19 bjoo Exp $
+// $Id: overlap_fermact_base_w.h,v 1.15 2004-12-09 03:58:03 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -37,6 +37,17 @@ namespace Chroma
     //! Does this object really satisfy the Ginsparg-Wilson relation?
     virtual bool isChiral() const = 0;
 
+    //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
+    virtual const LinearOperator<LatticeFermion>* unprecLinOp(Handle<const ConnectState> state, 
+							      const Real& m_q) const = 0;
+
+    //! Override to produce a DWF-link unprec. linear operator for this action
+    /*! Covariant return rule - override base class function */
+    virtual const LinearOperator<LatticeFermion>* linOp(Handle<const ConnectState> state) const
+    {
+      return unprecLinOp(state,quark_mass());
+    }
+
     //! Robert's way: 
     //! Produce a linear operator M^dag.M for this action to be applied
     //  to a vector of known chirality. Chirality is passed in
@@ -49,8 +60,8 @@ namespace Chroma
     }
 
     virtual const LinearOperator<LatticeFermion>* DeltaLs(Handle< const ConnectState> state) const {
-      Handle< const LinearOperator<LatticeFermion> > g5eps=lgamma5epsH(state);
-      return new lDeltaLs(g5eps);
+      Handle< const LinearOperator<LatticeFermion> > lin(unprecLinOp(state,Real(0)));
+      return new lDeltaLs(lin);
     }
 
     //! Produce a linear operator that gives back gamma_5 eps(H)

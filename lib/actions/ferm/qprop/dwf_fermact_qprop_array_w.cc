@@ -1,4 +1,4 @@
-// $Id: dwf_fermact_qprop_array_w.cc,v 1.1 2004-10-22 03:43:36 edwards Exp $
+// $Id: dwf_fermact_qprop_array_w.cc,v 1.2 2004-12-09 03:58:04 edwards Exp $
 /*! \file
  *  \brief Base class for unprec and even-odd preconditioned DWF qprop
  */
@@ -13,7 +13,7 @@ using namespace QDP;
 
 namespace Chroma { 
 
-//! Propagator of an even-odd preconditioned DWF linear operator
+//! Propagator DWF linear operator
 /*!
  * \param psi      quark propagator ( Modify )
  * \param state    gauge field ( Read )
@@ -49,7 +49,7 @@ void qprop_t(const C<T>& me,
 
     // chi5 = D5(1) . tmp5 =  D5(1) . P . (chi,0,0,..,0)^T 
     // Create a Pauli-Villars linop and use it for just this part
-    Handle<const LinearOperator< multi1d<T> > > B(me.linOpPV(state));
+    Handle<const LinearOperator< multi1d<T> > > B(me.unprecLinOp(state,Real(1)));
 
     (*B)(chi5, tmp5, PLUS);
   }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_fermact_base_array_w.h,v 1.15 2004-11-17 16:56:22 edwards Exp $
+// $Id: prec_dwf_fermact_base_array_w.h,v 1.16 2004-12-09 03:58:03 edwards Exp $
 /*! \file
  *  \brief Base class for even-odd preconditioned domain-wall-like fermion actions
  */
@@ -11,6 +11,9 @@
 #include "actions/ferm/linop/prec_dwf_linop_base_array_w.h"
 #include "actions/ferm/linop/unprec_dwf_linop_base_array_w.h"
 #include "actions/ferm/linop/unprec_pdwf4d_linop_w.h"
+#include "actions/ferm/linop/lDeltaLs_w.h"
+#include "actions/ferm/linop/llincomb.h"
+#include "actions/ferm/linop/lmdagm.h"
 
 using namespace QDP;
 
@@ -29,37 +32,54 @@ namespace Chroma
     //! Return the quark mass
     virtual Real quark_mass() const = 0;
 
+    //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
+    virtual const UnprecDWLinOpBaseArray<T>* unprecLinOp(Handle<const ConnectState> state, 
+							 const Real& m_q) const = 0;
+
+    //! Produce an even-odd preconditioned linear operator for this action with arbitrary quark mass
+    virtual const EvenOddPrecDWLinOpBaseArray<T>* precLinOp(Handle<const ConnectState> state, 
+							    const Real& m_q) const = 0;
+
     //! Override to produce a DWF-link even-odd prec. linear operator for this action
     /*! Covariant return rule - override base class function */
-    virtual const EvenOddPrecDWLinOpBaseArray<T>* linOp(Handle<const ConnectState> state) const = 0;
+    virtual const EvenOddPrecDWLinOpBaseArray<T>* linOp(Handle<const ConnectState> state) const
+    {
+      return precLinOp(state,quark_mass());
+    }
+
+    //! Produce a linear operator M^dag.M for this action
+    virtual const LinearOperator< multi1d<LatticeFermion> >* lMdagM(Handle<const ConnectState> state) const
+    {
+      return new lmdagm< multi1d<LatticeFermion> >(linOp(state));
+    }
 
     //! Produce a hermitian version of the linear operator
     /*! This code is generic */
     virtual const LinearOperator< multi1d<T> >* gamma5HermLinOp(Handle<const ConnectState> state) const
-      {
-	// Have not implemented this yet, but it is generic
-	QDPIO::cerr << "EvenOddPrecDWFermActBaseArray::gamma5HermLinOp not implemented" << endl;
-	QDP_abort(1);
-	return 0;
-      }
-
-    //! Produce an unpreconditioned linear operator for this action
-    virtual const UnprecDWLinOpBaseArray<T>* unprecLinOp(Handle<const ConnectState> state) const = 0;
-
-    //! Produce an unpreconditioned linear operator for this action but with quark mass 1
-    virtual const UnprecDWLinOpBaseArray<T>* linOpPV(Handle<const ConnectState> state) const = 0;
+    {
+      // Have not implemented this yet, but it is generic
+      QDPIO::cerr << "EvenOddPrecDWFermActBaseArray::gamma5HermLinOp not implemented" << endl;
+      QDP_abort(1);
+      return 0;
+    }
 
     //! Produce an unpreconditioned linear operator projecting 5D to 4D (the inverse of qprop below)
-    /*!
-     * The operator acts on the entire lattice
-     *
-     * \param state	    gauge field     	       (Read)
-     * \param invParam	    inverter params    	       (Read)
-     */
+    /*! Use the fact that  linOp4D(m_q) = [P^{-1} (D^{(5)}(1))^{-1} D^{(5)}(m_q) P]_{11} */
     virtual const LinearOperator<T>* linOp4D(Handle<const ConnectState> state,
+					     const Real& m_q,
 					     const InvertParam_t& invParam) const
     {
-      return new UnprecPDWF4DLinOp<T>(linOp(state),linOpPV(state),invParam);
+      return new UnprecPDWF4DLinOp<T>(precLinOp(state,m_q),
+				      unprecLinOp(state,Real(1)),
+				      invParam);
+    }
+
+    //! Produce a  DeltaLs = 1-epsilon^2(H) operator
+    virtual const LinearOperator<LatticeFermion>* DeltaLs(Handle< const ConnectState> state,
+							  const InvertParam_t& invParam) const 
+    {
+      Handle< const LinearOperator<LatticeFermion> >  lin(linOp4D(state,Real(0),invParam));
+      return new lDeltaLs(lin);
     }
 
     //! Define quark propagator routine for 4D fermions

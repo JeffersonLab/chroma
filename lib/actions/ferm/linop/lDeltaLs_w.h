@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lDeltaLs_w.h,v 1.1 2004-10-15 16:37:19 bjoo Exp $
+// $Id: lDeltaLs_w.h,v 1.2 2004-12-09 03:58:03 edwards Exp $
 /*! \file
  *   Apply DeltaLs = (1/4)(1-eps^2) to a fermion field.
 
@@ -25,8 +25,8 @@ public:
    * \ingroup linop
    *
    */
-  lDeltaLs(Handle< const LinearOperator<LatticeFermion> > g5eps_ ) :
-    g5eps(g5eps_) {}
+  lDeltaLs(Handle< const LinearOperator<LatticeFermion> > D_ ) :
+    D(D_) {}
 
   //! Destructor is automatic
   ~lDeltaLs() {}
@@ -38,8 +38,11 @@ public:
   void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const;
 
 private:
-  Handle<const LinearOperator<LatticeFermion> > g5eps;
+  Handle<const LinearOperator<LatticeFermion> > D;
 };
 
 }
+
+using namespace Chroma;
+
 #endif

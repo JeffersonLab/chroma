@@ -1,4 +1,4 @@
-// $Id: prec_kno_fermact_array_w.cc,v 1.4 2004-11-24 04:16:56 kostas Exp $
+// $Id: prec_kno_fermact_array_w.cc,v 1.5 2004-12-09 03:58:03 edwards Exp $
 /*! \file
  *  \brief preconditioned KNO fermion action
  */
@@ -8,7 +8,6 @@
 #include "actions/ferm/fermacts/unprec_wilson_fermact_w.h"
 #include "actions/ferm/linop/unprec_nef_linop_array_w.h"
 #include "actions/ferm/linop/prec_nef_general_linop_array_w.h"
-#include "actions/ferm/linop/lmdagm.h"
 
 #include "actions/ferm/fermacts/fermfactory_w.h"
 #include "actions/ferm/fermacts/zolotarev.h"
@@ -103,14 +102,11 @@ namespace Chroma
 
   }
 
-  //! Produce a linear operator for this action
-  /*!
-   * The operator acts on the entire lattice
-   *
-   * \param state	    gauge field     	       (Read)
-   */
+
+  //! Produce a preconditioned linear operator for this action with arbitrary quark mass
   const EvenOddPrecDWLinOpBaseArray<LatticeFermion>* 
-  EvenOddPrecKNOFermActArray::linOp(Handle<const ConnectState> state) const
+  EvenOddPrecKNOFermActArray::precLinOp(Handle<const ConnectState> state,
+					const Real& m_q) const
   {
     multi1d<Real> b5_arr;
     multi1d<Real> c5_arr;
@@ -118,29 +114,13 @@ namespace Chroma
     // Cast the state up to an overlap state
     initCoeffs(b5_arr,c5_arr);
     
-    return new EvenOddPrecGenNEFDWLinOpArray(state->getLinks(),OverMass,b5_arr,c5_arr,Mass,N5);
+    return new EvenOddPrecGenNEFDWLinOpArray(state->getLinks(),OverMass,b5_arr,c5_arr,m_q,N5);
   }
 
-  //! Produce a M^dag.M linear operator for this action
-  /*!
-   * The operator acts on the entire lattice
-   *
-   * \param state	    gauge field     	       (Read)
-   */
-  const LinearOperator<multi1d<LatticeFermion> >* 
-  EvenOddPrecKNOFermActArray::lMdagM(Handle<const ConnectState> state) const
-  {
-    return new lmdagm<multi1d<LatticeFermion> >(linOp(state));
-  }
-
-  //! Produce a linear operator for this action but with quark mass 1
-  /*!
-   * The operator acts on the entire lattice
-   *
-   * \param state	    gauge field     	       (Read)
-   */
+  //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
   const UnprecDWLinOpBaseArray<LatticeFermion>* 
-  EvenOddPrecKNOFermActArray::linOpPV(Handle<const ConnectState> state) const
+  EvenOddPrecKNOFermActArray::unprecLinOp(Handle<const ConnectState> state,
+					  const Real& m_q) const
   {
     multi1d<Real> b5_arr;
     multi1d<Real> c5_arr;
@@ -148,25 +128,7 @@ namespace Chroma
     // Cast the state up to an overlap state
     initCoeffs(b5_arr,c5_arr);
     
-    return new UnprecNEFDWLinOpArray(state->getLinks(),OverMass,b5_arr,c5_arr,1.0,N5);  // fixed to quark mass 1
-  }
-
-  //! Produce an unpreconditioned linear operator for this action
-  /*!
-   * The operator acts on the entire lattice
-   *
-   * \param state	    gauge field     	       (Read)
-   */
-  const UnprecDWLinOpBaseArray<LatticeFermion>* 
-  EvenOddPrecKNOFermActArray::unprecLinOp(Handle<const ConnectState> state) const
-  {
-    multi1d<Real> b5_arr;
-    multi1d<Real> c5_arr;
-
-    // Cast the state up to an overlap state
-    initCoeffs(b5_arr,c5_arr);
-    
-    return new UnprecNEFDWLinOpArray(state->getLinks(),OverMass,b5_arr,c5_arr,Mass,N5);  // fixed to quark mass 1
+    return new UnprecNEFDWLinOpArray(state->getLinks(),OverMass,b5_arr,c5_arr,m_q,N5);
   }
 
   //! Create a ConnectState with just the gauge fields

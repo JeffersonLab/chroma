@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_kno_fermact_array_w.h,v 1.2 2004-11-23 15:48:59 kostas Exp $
+// $Id: prec_kno_fermact_array_w.h,v 1.3 2004-12-09 03:58:03 edwards Exp $
 /*! \file
  *  \brief preconditioned KNO domain-wall fermion action
  */
@@ -93,27 +93,13 @@ namespace Chroma
     //! Return the quark mass
     Real quark_mass() const {return Mass;}
 
-    //! Produce a linear operator for this action
-    const EvenOddPrecDWLinOpBaseArray<LatticeFermion>* linOp(Handle<const ConnectState> state) const;
+    //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
+    const UnprecDWLinOpBaseArray<LatticeFermion>* unprecLinOp(Handle<const ConnectState> state, 
+							      const Real& m_q) const;
 
-    //! Produce a linear operator M^dag.M for this action
-    const LinearOperator< multi1d<LatticeFermion> >* lMdagM(Handle<const ConnectState> state) const;
-
-    //! Produce a hermitian version of the linear operator
-    /*! This code is generic */
-    const LinearOperator< multi1d<LatticeFermion> >* gamma5HermLinOp(Handle<const ConnectState> state) const
-      {
-	// Have not implemented this yet, but it is generic
-	QDPIO::cerr << "EvenOddPrecKNOFermActBase::gamma5HermLinOp not implemented" << endl;
-	QDP_abort(1);
-	return 0;
-      }
-
-    //! Produce an unpreconditioned linear operator for this action
-    const UnprecDWLinOpBaseArray<LatticeFermion>* unprecLinOp(Handle<const ConnectState> state) const;
-
-    //! Produce a linear operator for this action but with quark mass 1
-    const UnprecDWLinOpBaseArray<LatticeFermion>* linOpPV(Handle<const ConnectState> state) const;
+    //! Produce an even-odd preconditioned linear operator for this action with arbitrary quark mass
+    const EvenOddPrecDWLinOpBaseArray<LatticeFermion>* precLinOp(Handle<const ConnectState> state, 
+								 const Real& m_q) const;
 
     //! Destructor is automatic
     ~EvenOddPrecKNOFermActArray() {}

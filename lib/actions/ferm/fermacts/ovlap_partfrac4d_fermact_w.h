@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ovlap_partfrac4d_fermact_w.h,v 1.3 2004-09-28 13:01:48 bjoo Exp $
+// $Id: ovlap_partfrac4d_fermact_w.h,v 1.4 2004-12-09 03:58:03 edwards Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -202,7 +202,7 @@ namespace Chroma
      * The function will have to downcast to get the correct state
      */
     const LinearOperator<LatticeFermion>* 
-    linOp(Handle<const ConnectState> state) const;
+    unprecLinOp(Handle<const ConnectState> state, const Real& m_q) const;
 
     const LinearOperator<LatticeFermion>* 
     linOpPrecondition(Handle<const ConnectState > state) const;

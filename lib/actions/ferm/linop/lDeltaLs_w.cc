@@ -1,4 +1,4 @@
-// $Id: lDeltaLs_w.cc,v 1.1 2004-10-15 16:37:19 bjoo Exp $
+// $Id: lDeltaLs_w.cc,v 1.2 2004-12-09 03:58:03 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -26,31 +26,18 @@ void lDeltaLs::operator() (LatticeFermion& chi, const LatticeFermion& psi,
   START_CODE();
 
   int G5 = Ns*Ns-1;
+  LatticeFermion tmp1, tmp2, tmp3;
 
-  LatticeFermion tmp1, tmp2;
+  // Construct  eps(H)*psi
+  (*D)(tmp1, psi, PLUS);
+  tmp2 = Gamma(G5)*(2*tmp1 - psi);
 
-  // Apply g5 epsilon psi
-  (*g5eps)(tmp1, psi, isign);
+  // Construct  eps(H)*eps(H)*psi
+  (*D)(tmp1, tmp2, PLUS);
+  tmp3 = Gamma(G5)*(2*tmp1 - tmp2);
 
-  // Multiply by g5 -> tmp2 = epsilon psi
-  tmp2 = Gamma(G5)*tmp1;
-
-  // Multiply by g5eps -> tmp1 = gamma_5 epsilon tmp2 
-  //                           = gamma_5 epsilon epsilon psi
-  (*g5eps)(tmp1, tmp2, isign);
-
-  // Multiply by gamma5 -> tmp2 = gamma_5*tmp1 = epsilon^2 psi
-  tmp2 = Gamma(G5)*tmp1;
-
-  // Chi = psi-tmp2 = psi - epsilon^2 psi
-  //     =           ( 1 - epsilon^2) psi
-  chi = psi - tmp2;
-
-  // Multiply in factor:
-  Real factor = Real(0.25);
-
-  // chi *= (1/4) = (1/4)(1-epsilon^2) psi = DeltaLs psi
-  chi *=factor;
+  // Construct  (1/4)(1 - eps(H)*eps(H))*psi
+  chi = 0.25*(psi - tmp3);
 
   END_CODE();
 }

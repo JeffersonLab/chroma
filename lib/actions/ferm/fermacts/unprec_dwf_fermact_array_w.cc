@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_fermact_array_w.cc,v 1.10 2004-09-19 02:39:45 edwards Exp $
+// $Id: unprec_dwf_fermact_array_w.cc,v 1.11 2004-12-09 03:58:03 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion action
  */
@@ -6,7 +6,6 @@
 #include "chromabase.h"
 #include "actions/ferm/fermacts/unprec_dwf_fermact_array_w.h"
 #include "actions/ferm/linop/unprec_dwf_linop_array_w.h"
-#include "actions/ferm/linop/lmdagm.h"
 
 #include "actions/ferm/fermacts/fermfactory_w.h"
 
@@ -70,48 +69,13 @@ namespace Chroma
   }
 
 
-
-  //! Produce a linear operator for this action
-  /*!
-   * \ingroup fermact
-   *
-   * The operator acts on the entire lattice
-   *
-   * \param state	    gauge field     	       (Read)
-   */
+  
+  //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
   const UnprecDWLinOpBaseArray<LatticeFermion>* 
-  UnprecDWFermActArray::linOp(Handle<const ConnectState> state) const
+  UnprecDWFermActArray::unprecLinOp(Handle<const ConnectState> state, 
+				    const Real& m_q) const
   {
-    return new UnprecDWLinOpArray(state->getLinks(),OverMass,Mass,N5);
+    return new UnprecDWLinOpArray(state->getLinks(),OverMass,m_q,N5);
   }
-
-  //! Produce a M^dag.M linear operator for this action
-  /*!
-   * \ingroup fermact
-   *
-   * The operator acts on the entire lattice
-   *
-   * \param state	    gauge field     	       (Read)
-   */
-  const LinearOperator<multi1d<LatticeFermion> >* 
-  UnprecDWFermActArray::lMdagM(Handle<const ConnectState> state) const
-  {
-    return new lmdagm<multi1d<LatticeFermion> >(linOp(state));
-  }
-
-  //! Produce a linear operator for this action but with quark mass 1
-  /*!
-   * \ingroup fermact
-   *
-   * The operator acts on the entire lattice
-   *
-   * \param state	    gauge field     	       (Read)
-   */
-  const UnprecDWLinOpBaseArray<LatticeFermion>* 
-  UnprecDWFermActArray::linOpPV(Handle<const ConnectState> state) const
-  {
-    return new UnprecDWLinOpArray(state->getLinks(),OverMass,1.0,N5);  // fixed to quark mass 1
-  }
-
 
 }

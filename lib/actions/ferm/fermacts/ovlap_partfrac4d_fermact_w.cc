@@ -1,4 +1,4 @@
-// $Id: ovlap_partfrac4d_fermact_w.cc,v 1.9 2004-11-17 15:22:59 bjoo Exp $
+// $Id: ovlap_partfrac4d_fermact_w.cc,v 1.10 2004-12-09 03:58:03 edwards Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -812,9 +812,10 @@ namespace Chroma
    * The operator acts on the entire lattice
    *
    * \param state_	 gauge field state  	 (Read)
+   * \param m_q	         mass for this operator	 (Read)
    */
   const LinearOperator<LatticeFermion>* 
-  OvlapPartFrac4DFermAct::linOp(Handle<const ConnectState> state_) const
+  OvlapPartFrac4DFermAct::unprecLinOp(Handle<const ConnectState> state_, const Real& m_q) const
   {
     START_CODE();
 
@@ -857,13 +858,13 @@ namespace Chroma
       /* This is the operator of the form (1/2)*[(1+mu) + (1-mu)*gamma_5*eps] */
       switch( params.inner_solver_type ) {
       case OVERLAP_INNER_CG_SINGLE_PASS:
-	return new lovlapms(*Mact, state_, params.Mass,
+	return new lovlapms(*Mact, state_, m_q,
 			    numroot, coeffP, resP, rootQ, 
 			    NEig, EigValFunc, state.getEigVec(),
-			  params.invParamInner.MaxCG, params.invParamInner.RsdCG, params.ReorthFreqInner);
+			    params.invParamInner.MaxCG, params.invParamInner.RsdCG, params.ReorthFreqInner);
 	break;
       case OVERLAP_INNER_CG_DOUBLE_PASS:
-	return new lovlap_double_pass(*Mact, state_, params.Mass,
+	return new lovlap_double_pass(*Mact, state_, m_q,
 				      numroot, coeffP, resP, rootQ, 
 				      NEig, EigValFunc, state.getEigVec(),
 				      params.invParamInner.MaxCG, params.invParamInner.RsdCG, params.ReorthFreqInner);
@@ -875,7 +876,7 @@ namespace Chroma
       
     }
     catch(bad_cast) { 
-      QDPIO::cerr << "OverlapPartFrac4DFermAct::linOp: "
+      QDPIO::cerr << "OverlapPartFrac4DFermAct::unprecLinOp: "
 		  << " Failed to downcast ConnectState to OverlapConnectState"
 		  << endl;
       QDP_abort(1);

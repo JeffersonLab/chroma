@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_fermact_array_w.h,v 1.10 2004-11-08 06:40:21 edwards Exp $
+// $Id: prec_dwf_fermact_array_w.h,v 1.11 2004-12-09 03:58:03 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -87,17 +87,13 @@ namespace Chroma
     //! Return the quark mass
     Real quark_mass() const {return Mass;}
 
-    //! Produce a linear operator for this action
-    const EvenOddPrecDWLinOpBaseArray<LatticeFermion>* linOp(Handle<const ConnectState> state) const;
+    //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
+    const UnprecDWLinOpBaseArray<LatticeFermion>* unprecLinOp(Handle<const ConnectState> state, 
+							      const Real& m_q) const;
 
-    //! Produce a linear operator M^dag.M for this action
-    const LinearOperator< multi1d<LatticeFermion> >* lMdagM(Handle<const ConnectState> state) const;
-
-    //! Produce an unpreconditioned linear operator for this action
-    const UnprecDWLinOpBaseArray<LatticeFermion>* unprecLinOp(Handle<const ConnectState> state) const;
-
-    //! Produce a linear operator for this action but with quark mass 1
-    const UnprecDWLinOpBaseArray<LatticeFermion>* linOpPV(Handle<const ConnectState> state) const;
+    //! Produce an even-odd preconditioned linear operator for this action with arbitrary quark mass
+    const EvenOddPrecDWLinOpBaseArray<LatticeFermion>* precLinOp(Handle<const ConnectState> state, 
+								 const Real& m_q) const;
 
     //! Destructor is automatic
     ~EvenOddPrecDWFermActArray() {}

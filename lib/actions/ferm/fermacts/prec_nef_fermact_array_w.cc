@@ -1,4 +1,4 @@
-// $Id: prec_nef_fermact_array_w.cc,v 1.10 2004-11-08 06:40:21 edwards Exp $
+// $Id: prec_nef_fermact_array_w.cc,v 1.11 2004-12-09 03:58:03 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned NEF fermion action
  */
@@ -66,40 +66,18 @@ namespace Chroma
 
 
 
-  //! Produce a linear operator for this action
-  /*!
-   * \ingroup fermact
-   *
-   * The operator acts on the odd sublattice
-   *
-   * \param state 	    gauge field     	       (Read)
-   */
+  //! Produce an even-odd preconditioned linear operator for this action with arbitrary quark mass
   const EvenOddPrecDWLinOpBaseArray<LatticeFermion>*
-  EvenOddPrecNEFFermActArray::linOp(Handle<const ConnectState> state) const
+  EvenOddPrecNEFFermActArray::precLinOp(Handle<const ConnectState> state,
+					const Real& m_q) const
   {
-    return new EvenOddPrecNEFDWLinOpArray(state->getLinks(),OverMass,b5,c5,Mass,N5);
+    return new EvenOddPrecNEFDWLinOpArray(state->getLinks(),OverMass,b5,c5,m_q,N5);
   }
 
-  //! Produce a M^dag.M linear operator for this action
-  /*!
-   * The operator acts on the odd sublattice
-   *
-   * \param state 	    gauge field     	       (Read)
-   */
-  const LinearOperator<multi1d<LatticeFermion> >*
-  EvenOddPrecNEFFermActArray::lMdagM(Handle<const ConnectState> state) const
-  {
-    return new lmdagm<multi1d<LatticeFermion> >(linOp(state));
-  }
-
-  //! Produce a linear operator for this action but with quark mass 1
-  /*!
-   * The operator acts on the entire lattice
-   *
-   * \param state	    gauge field     	       (Read)
-   */
+  //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
   const UnprecDWLinOpBaseArray<LatticeFermion>*
-  EvenOddPrecNEFFermActArray::linOpPV(Handle<const ConnectState> state) const
+  EvenOddPrecNEFFermActArray::unprecLinOp(Handle<const ConnectState> state,
+					  const Real& m_q) const
   {
     multi1d<Real> bb5(N5);
     multi1d<Real> cc5(N5);
@@ -107,28 +85,7 @@ namespace Chroma
     bb5 = b5;
     cc5 = c5;
 
-    // For the PV operator, use the **unpreconditioned** one
-    // fixed to quark mass 1
-    return new UnprecNEFDWLinOpArray(state->getLinks(),OverMass,bb5,cc5,1.0,N5);
-  }
-
-  //! Produce an unpreconditioned linear operator for this action
-  /*!
-   * The operator acts on the entire lattice
-   *
-   * \param state	    gauge field     	       (Read)
-   */
-  const UnprecDWLinOpBaseArray<LatticeFermion>*
-  EvenOddPrecNEFFermActArray::unprecLinOp(Handle<const ConnectState> state) const
-  {
-    multi1d<Real> bb5(N5);
-    multi1d<Real> cc5(N5);
-
-    bb5 = b5;
-    cc5 = c5;
-
-    // Use the **unpreconditioned** linop
-    return new UnprecNEFDWLinOpArray(state->getLinks(),OverMass,bb5,cc5,Mass,N5);
+    return new UnprecNEFDWLinOpArray(state->getLinks(),OverMass,bb5,cc5,m_q,N5);
   }
 
 }

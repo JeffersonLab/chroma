@@ -1,4 +1,4 @@
-// $Id: unprec_nef_fermact_array_w.cc,v 1.10 2004-10-22 03:36:14 edwards Exp $
+// $Id: unprec_nef_fermact_array_w.cc,v 1.11 2004-12-09 03:58:03 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF fermion action
  */
@@ -6,7 +6,6 @@
 #include "chromabase.h"
 #include "actions/ferm/fermacts/unprec_nef_fermact_array_w.h"
 #include "actions/ferm/linop/unprec_nef_linop_array_w.h"
-#include "actions/ferm/linop/lmdagm.h"
 
 #include "actions/ferm/fermacts/fermfactory_w.h"
 
@@ -64,57 +63,17 @@ namespace Chroma
   }
 
 
-
-  //! Produce a linear operator for this action
-  /*!
-   * \ingroup fermact
-   *
-   * The operator acts on the entire lattice
-   *
-   * \param state	    gauge field     	       (Read)
-   */
+  //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
   const UnprecDWLinOpBaseArray<LatticeFermion>* 
-  UnprecNEFFermActArray::linOp(Handle<const ConnectState> state) const
+  UnprecNEFFermActArray::unprecLinOp(Handle<const ConnectState> state, 
+				     const Real& m_q) const
   {
     multi1d<Real> bb5(N5);
     multi1d<Real> cc5(N5);
 
     bb5 = b5;
     cc5 = c5;
-    return new UnprecNEFDWLinOpArray(state->getLinks(),OverMass,bb5,cc5,Mass,N5);
-  }
-
-  //! Produce a M^dag.M linear operator for this action
-  /*!
-   * \ingroup fermact
-   *
-   * The operator acts on the entire lattice
-   *
-   * \param state	    gauge field     	       (Read)
-   */
-  const LinearOperator<multi1d<LatticeFermion> >* 
-  UnprecNEFFermActArray::lMdagM(Handle<const ConnectState> state) const
-  {
-    return new lmdagm<multi1d<LatticeFermion> >(linOp(state));
-  }
-
-  //! Produce a linear operator for this action but with quark mass 1
-  /*!
-   * \ingroup fermact
-   *
-   * The operator acts on the entire lattice
-   *
-   * \param state	    gauge field     	       (Read)
-   */
-  const UnprecDWLinOpBaseArray<LatticeFermion>* 
-  UnprecNEFFermActArray::linOpPV(Handle<const ConnectState> state) const
-  {
-    multi1d<Real> bb5(N5);
-    multi1d<Real> cc5(N5);
-
-    bb5 = b5;
-    cc5 = c5;
-    return new UnprecNEFDWLinOpArray(state->getLinks(),OverMass,bb5,cc5,1.0,N5);  // fixed to quark mass 1
+    return new UnprecNEFDWLinOpArray(state->getLinks(),OverMass,bb5,cc5,m_q,N5);
   }
 
 }
