@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_nef_fermact_array_w.h,v 1.4 2004-09-16 15:20:54 kostas Exp $
+// $Id: prec_nef_fermact_array_w.h,v 1.5 2004-09-16 16:40:53 kostas Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned NEF fermion action
  */
@@ -138,13 +138,13 @@ namespace Chroma
     void Dminus(multi1d<LatticeFermion>& chi,
 		const multi1d<LatticeFermion>& psi,
 		Handle<const ConnectState> state,
-		enum PlusMinus isign) ;
+		enum PlusMinus isign) const ;
 
     //! Apply the Dminus operator on a lattice fermion. See my notes ;-)
-    void Dminus(LatticeFermion chi,
+    void Dminus(LatticeFermion& chi,
 		const LatticeFermion& psi,
 		Handle<const ConnectState> state,
-		enum PlusMinus isign) ;
+		enum PlusMinus isign) const ;
   private:
     Handle< FermBC< multi1d<LatticeFermion> > >  fbc;
     Real OverMass;

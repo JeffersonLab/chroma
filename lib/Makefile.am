@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.164 2004-09-08 02:44:34 edwards Exp $
+# $Id: Makefile.am,v 1.165 2004-09-16 16:40:53 kostas Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -328,7 +328,8 @@ libchroma_a_SOURCES += baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
               prec_ovdwf_fermact_array_w.cc prec_ovdwf_linop_array_w.cc \
               kyugauge_io.cc kyuqprop_io.cc \
               readszinqprop_w.cc readszinferm_w.cc writeszinqprop_w.cc \
-	      dwf_quarkprop4_w.cc quarkprop4_w.cc quarkprop4_multi_w.cc \
+	      nef_quarkprop4_w.cc dwf_quarkprop4_w.cc \
+              quarkprop4_w.cc quarkprop4_multi_w.cc \
               overlapbu_linop_w.cc \
               p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc \
 	      zolotarev_coeffs.cc overlap_fermact_base_w.cc lovlapms_w.cc  \

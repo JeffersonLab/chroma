@@ -1,6 +1,9 @@
-// $Id: nef_quarkprop4_w.cc,v 1.3 2004-09-16 15:20:55 kostas Exp $
+// $Id: nef_quarkprop4_w.cc,v 1.4 2004-09-16 16:40:53 kostas Exp $
 // $Log: nef_quarkprop4_w.cc,v $
-// Revision 1.3  2004-09-16 15:20:55  kostas
+// Revision 1.4  2004-09-16 16:40:53  kostas
+// nef_quarkprop4 now compiles
+//
+// Revision 1.3  2004/09/16 15:20:55  kostas
 // fixed up mres for NEF
 //
 // Revision 1.2  2004/09/03 14:24:36  kostas
@@ -36,13 +39,13 @@ using namespace QDP;
  * \param MaxCG    maximum number of CG iterations ( Read )
  * \param ncg_had  number of CG iterations ( Write )
  */
-template<typename T, template<class> class C>
+template<class C>
 static 
 void nef_quarkProp4_a(LatticePropagator& q_sol, 
 		      XMLWriter& xml_out,
 		      const LatticePropagator& q_src,
 		      int t_src, int j_decay,
-		      const C<T>& S_f,
+		      const C& S_f,
 		      Handle<const ConnectState> state,
 		      const InvertParam_t& invParam,
 		      int& ncg_had)
@@ -88,9 +91,9 @@ void nef_quarkProp4_a(LatticePropagator& q_sol,
       // Split the source to oposite walls according to chirality
       // and apply Dminus
       tt = chiralProjectPlus(tmp) ;
-      S_f.Dminus(chi[0   ],tt,PLUS);
+      S_f.Dminus(chi[0   ],tt,state,PLUS);
       tt = chiralProjectMinus(tmp) ; 
-      S_f.Dminus(chi[N5-1],tt,PLUS) ;
+      S_f.Dminus(chi[N5-1],tt,state,PLUS) ;
 
       
 
@@ -103,7 +106,7 @@ void nef_quarkProp4_a(LatticePropagator& q_sol,
       ncg_had += n_count;
 
       push(xml_out,"Qprop");
-      write(xml_out, "RsdCG", RsdCG);
+      write(xml_out, "RsdCG", invParam.RsdCG);
       write(xml_out, "n_count", n_count);
       pop(xml_out);
 
@@ -137,9 +140,10 @@ void nef_quarkProp4_a(LatticePropagator& q_sol,
     }	/* end loop over spin_source */
   } /* end loop over color_source */
 
+  LatticeComplex cfield ;
+
   /**
   // constuct the conserved axial current correlator
-  LatticeComplex cfield ;
   nef_conserved_axial_ps_corr(cfield,state->getLinks(),prop5d,j_decay);
   **/
 		       
@@ -235,7 +239,7 @@ void UnprecNEFFermActArray::dwf_quarkProp4(LatticePropagator& q_sol,
 					   const InvertParam_t& invParam,
 					   int& ncg_had)
 {
-  nef_quarkProp4_a<LatticeFermion,UnprecNEFFermActArray>(q_sol, 
+  nef_quarkProp4_a<UnprecNEFFermActArray>(q_sol, 
 							 xml_out, 
 							 q_src, 
 							 t_src, 
@@ -269,7 +273,7 @@ EvenOddPrecNEFFermActArray::dwf_quarkProp4(LatticePropagator& q_sol,
 					   const InvertParam_t& invParam,
 					   int& ncg_had)
 {
-  nef_quarkProp4_a<LatticeFermion,EvenOddPrecNEFFermActArray>(q_sol, 
+  nef_quarkProp4_a<EvenOddPrecNEFFermActArray>(q_sol, 
 							      xml_out, 
 							      q_src, 
 							      t_src, 

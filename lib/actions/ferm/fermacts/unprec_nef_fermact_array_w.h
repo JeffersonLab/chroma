@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_nef_fermact_array_w.h,v 1.4 2004-09-16 15:20:54 kostas Exp $
+// $Id: unprec_nef_fermact_array_w.h,v 1.5 2004-09-16 16:40:53 kostas Exp $
 /*! \file
  *  \brief Unpreconditioned NEF domain-wall fermion action
  */
@@ -137,12 +137,12 @@ namespace Chroma
     void Dminus(multi1d<LatticeFermion>& chi,
 		const multi1d<LatticeFermion>& psi,
 		Handle<const ConnectState> state,
-		enum PlusMinus isign);
+		enum PlusMinus isign) const ;
     
-    void Dminus(LatticeFermion chi,
-		const LatticeFermion& psi,
-		Handle<const ConnectState> state,
-		enum PlusMinus isign) ;
+    void  Dminus(LatticeFermion& chi,
+		 const LatticeFermion& psi,
+		 Handle<const ConnectState> state,
+		 enum PlusMinus isign) const ;
       
   private:
     Handle< FermBC< multi1d<LatticeFermion> > >  fbc;
