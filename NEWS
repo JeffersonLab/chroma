@@ -1,3 +1,8 @@
+01/27/2005 -- Robert Edwards
+
+	Version 1.18.5. Split abs_monomial into separate
+        two flavor and new one flavor rational support.
+
 01/16/2005 -- Robert Edwards
 
 	Version 1.18.4. Mainprogs including HMC finally appears
