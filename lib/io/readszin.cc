@@ -1,4 +1,4 @@
-// $Id: readszin.cc,v 1.14 2003-10-08 04:37:50 edwards Exp $
+// $Id: readszin.cc,v 1.15 2003-10-08 16:00:35 edwards Exp $
 
 /*! \file
  *  \brief Read in a configuration written by SZIN up to configuration version 7.
@@ -32,6 +32,8 @@ using namespace QDP;
 void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string& cfg_file)
 {
   START_CODE("readSzin");
+
+  szinGaugeInit(header);  // initialize the header with defaults
 
   multi2d<Real> wstat(41, 20); /* On-line statistical accumulators - throw away */
 
@@ -90,25 +92,11 @@ void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
     read(cfg_in, header.dt); 
     read(cfg_in, header.MesTrj);
     read(cfg_in, header.KappaMC);
-    header.TotalTrj = 0;
     header.BetaMD = header.BetaMC;
     header.KappaMD = header.KappaMC;
-    header.MassMC = 0;
-    header.MassMD = 0;
-    header.spec_acc = 1;
     header.FermTypeP = WILSON_FERMIONS;
-    header.NOver = 0;
-    header.TotalTry = 0;
-    header.TotalFail = 0;
-    header.Nf = 0;
-    header.Npf = 0;
-    header.RefMomTrj = 0;
-    header.RefFnoiseTrj = 0;
-    header.LamPl = 0;
-    header.LamMi = 0;
-    header.AlpLog = 0;
-    header.AlpExp = 0;
     break;
+
   case 2:
     read(cfg_in, header.Nd); 
     read(cfg_in, header.Nc); 
@@ -121,21 +109,9 @@ void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
     read(cfg_in, header.TotalTrj); 
     header.BetaMD = header.BetaMC;
     header.KappaMD = header.KappaMC;
-    header.MassMC = 0;
-    header.MassMD = 0;
     header.FermTypeP = WILSON_FERMIONS;
-    header.NOver = 0;
-    header.TotalTry = 0;
-    header.TotalFail = 0;
-    header.Nf = 0;
-    header.Npf = 0;
-    header.RefMomTrj = 0;
-    header.RefFnoiseTrj = 0;
-    header.LamPl = 0;
-    header.LamMi = 0;
-    header.AlpLog = 0;
-    header.AlpExp = 0;
     break;
+
   case 3:
     read(cfg_in, header.Nd); 
     read(cfg_in, header.Nc); 
@@ -149,21 +125,9 @@ void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
     read(cfg_in, header.spec_acc);
     header.BetaMD = header.BetaMC;
     header.KappaMD = header.KappaMC;
-    header.MassMC = 0;
-    header.MassMD = 0;
     header.FermTypeP = WILSON_FERMIONS;
-    header.NOver = 0;
-    header.TotalTry = 0;
-    header.TotalFail = 0;
-    header.Nf = 0;
-    header.Npf = 0;
-    header.RefMomTrj = 0;
-    header.RefFnoiseTrj = 0;
-    header.LamPl = 0;
-    header.LamMi = 0;
-    header.AlpLog = 0;
-    header.AlpExp = 0;
     break;
+
   case 4:
     read(cfg_in, header.Nd); 
     read(cfg_in, header.Nc); 
@@ -177,21 +141,9 @@ void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
     read(cfg_in, header.TotalCG); 
     read(cfg_in, header.TotalTrj); 
     read(cfg_in, header.spec_acc);
-    header.MassMC = 0;
-    header.MassMD = 0;
     header.FermTypeP = WILSON_FERMIONS;
-    header.NOver = 0;
-    header.TotalTry = 0;
-    header.TotalFail = 0;
-    header.Nf = 0;
-    header.Npf = 0;
-    header.RefMomTrj = 0;
-    header.RefFnoiseTrj = 0;
-    header.LamPl = 0;
-    header.LamMi = 0;
-    header.AlpLog = 0;
-    header.AlpExp = 0;
     break;
+
   case 5:
     read(cfg_in, header.FermTypeP); 
     read(cfg_in, header.Nd); 
@@ -206,18 +158,8 @@ void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
     read(cfg_in, header.MesTrj); 
     read(cfg_in, header.TotalCG); 
     read(cfg_in, header.TotalTrj);
-    header.NOver = 0;
-    header.TotalTry = 0;
-    header.TotalFail = 0;
-    header.Nf = 0;
-    header.Npf = 0;
-    header.RefMomTrj = 0;
-    header.RefFnoiseTrj = 0;
-    header.LamPl = 0;
-    header.LamMi = 0;
-    header.AlpLog = 0;
-    header.AlpExp = 0;
     break;
+
   case 6:
     read(cfg_in, header.FermTypeP); 
     read(cfg_in, header.Nd); 
@@ -236,14 +178,6 @@ void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
     read(cfg_in, header.NOver); 
     read(cfg_in, header.TotalTry); 
     read(cfg_in, header.TotalFail);
-    header.Nf = 0;
-    header.Npf = 0;
-    header.RefMomTrj = 0;
-    header.RefFnoiseTrj = 0;
-    header.LamPl = 0;
-    header.LamMi = 0;
-    header.AlpLog = 0;
-    header.AlpExp = 0;
     break;
 
   case 7:
