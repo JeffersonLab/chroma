@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.235 2005-01-20 11:50:24 bjoo Exp $
+# $Id: Makefile.am,v 1.236 2005-01-21 00:20:33 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -569,20 +569,16 @@ libchroma_a_SOURCES += \
         meas/hadron/scalar_loops_s.cc\
         meas/hadron/pseudoscalar_loops_s.cc
 
+#	actions/ferm/fermacts/stag_fermact_s.cc
+#	meas/pbp/mespbp_s.cc meas/pbp/stagpbp_s.cc
+
+
 if BUILD_ASQTAD_CPS_INVERTER_WRAPPER
-
-nobase_include_HEADERS += 
-	actions/ferm/qprop/asqtad_cps_wrapper_qprop.h
-
-libchroma_a_SOURCES += \
-	actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc		
-
+nobase_include_HEADERS += actions/ferm/qprop/asqtad_cps_wrapper_qprop.h
+libchroma_a_SOURCES += actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc		
 endif
 
 
 libchroma_a_SOURCES += \
 	init/chroma_init.cc
-#	actions/ferm/fermacts/stag_fermact_s.cc
-#	
-#	meas/pbp/mespbp_s.cc meas/pbp/stagpbp_s.cc
 
