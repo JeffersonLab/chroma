@@ -169,7 +169,7 @@ check_PROGRAMS = propagator propagator_comp multi_propagator \
         multi_propagator_comp collect_propcomp collect_multi_propcomp \
         seqsource \
 	make_source \
-        ExampleBuildingBlocks hypsmear cfgtransf sink_smearing\
+        ExampleBuildingBlocks hypsmear cfgtransf sink_smearing qpropgfix\
 $(am__append_4)
 
 
@@ -242,6 +242,9 @@ qproptransf_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 qpropadd_SOURCES = qpropadd.cc
 qpropadd_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
+qpropgfix_SOURCES = qpropgfix.cc
+qpropgfix_DEPENDENCIES = build_chroma_libs rebuild_other_libs
+
 ExampleBuildingBlocks_SOURCES = ExampleBuildingBlocks.cc
 ExampleBuildingBlocks_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
@@ -271,8 +274,9 @@ CONFIG_CLEAN_FILES =
 @BUILD_WILSON_LIBS_TRUE@	ExampleBuildingBlocks$(EXEEXT) \
 @BUILD_WILSON_LIBS_TRUE@	hypsmear$(EXEEXT) cfgtransf$(EXEEXT) \
 @BUILD_WILSON_LIBS_TRUE@	sink_smearing$(EXEEXT) \
-@BUILD_WILSON_LIBS_TRUE@	spectrum_w$(EXEEXT) qqq_w$(EXEEXT) \
-@BUILD_WILSON_LIBS_TRUE@	bar3ptfn$(EXEEXT) qproptransf$(EXEEXT) \
+@BUILD_WILSON_LIBS_TRUE@	qpropgfix$(EXEEXT) spectrum_w$(EXEEXT) \
+@BUILD_WILSON_LIBS_TRUE@	qqq_w$(EXEEXT) bar3ptfn$(EXEEXT) \
+@BUILD_WILSON_LIBS_TRUE@	qproptransf$(EXEEXT) \
 @BUILD_WILSON_LIBS_TRUE@	wallformfac$(EXEEXT)
 @BUILD_WILSON_LIBS_FALSE@check_PROGRAMS = propagator$(EXEEXT) \
 @BUILD_WILSON_LIBS_FALSE@	propagator_comp$(EXEEXT) \
@@ -284,7 +288,8 @@ CONFIG_CLEAN_FILES =
 @BUILD_WILSON_LIBS_FALSE@	make_source$(EXEEXT) \
 @BUILD_WILSON_LIBS_FALSE@	ExampleBuildingBlocks$(EXEEXT) \
 @BUILD_WILSON_LIBS_FALSE@	hypsmear$(EXEEXT) cfgtransf$(EXEEXT) \
-@BUILD_WILSON_LIBS_FALSE@	sink_smearing$(EXEEXT)
+@BUILD_WILSON_LIBS_FALSE@	sink_smearing$(EXEEXT) \
+@BUILD_WILSON_LIBS_FALSE@	qpropgfix$(EXEEXT)
 am_ExampleBuildingBlocks_OBJECTS = ExampleBuildingBlocks.$(OBJEXT)
 ExampleBuildingBlocks_OBJECTS = $(am_ExampleBuildingBlocks_OBJECTS)
 ExampleBuildingBlocks_LDADD = $(LDADD)
@@ -337,6 +342,10 @@ am_qpropadd_OBJECTS = qpropadd.$(OBJEXT)
 qpropadd_OBJECTS = $(am_qpropadd_OBJECTS)
 qpropadd_LDADD = $(LDADD)
 qpropadd_LDFLAGS =
+am_qpropgfix_OBJECTS = qpropgfix.$(OBJEXT)
+qpropgfix_OBJECTS = $(am_qpropgfix_OBJECTS)
+qpropgfix_LDADD = $(LDADD)
+qpropgfix_LDFLAGS =
 am_qproptransf_OBJECTS = qproptransf.$(OBJEXT)
 qproptransf_OBJECTS = $(am_qproptransf_OBJECTS)
 qproptransf_LDADD = $(LDADD)
@@ -387,8 +396,9 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/multi_propagator_comp.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/propagator.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/propagator_comp.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/qpropadd.Po ./$(DEPDIR)/qproptransf.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/qqq_w.Po ./$(DEPDIR)/seqprop.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/qpropadd.Po ./$(DEPDIR)/qpropgfix.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/qproptransf.Po ./$(DEPDIR)/qqq_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/seqprop.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/seqprop_collect.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/seqprop_comp.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/seqsource.Po \
@@ -406,13 +416,13 @@ DIST_SOURCES = $(ExampleBuildingBlocks_SOURCES) $(bar3ptfn_SOURCES) \
 	$(hypsmear_SOURCES) $(make_source_SOURCES) \
 	$(multi_propagator_SOURCES) $(multi_propagator_comp_SOURCES) \
 	$(propagator_SOURCES) $(propagator_comp_SOURCES) \
-	$(qpropadd_SOURCES) $(qproptransf_SOURCES) $(qqq_w_SOURCES) \
-	$(seqprop_SOURCES) $(seqprop_collect_SOURCES) \
+	$(qpropadd_SOURCES) $(qpropgfix_SOURCES) $(qproptransf_SOURCES) \
+	$(qqq_w_SOURCES) $(seqprop_SOURCES) $(seqprop_collect_SOURCES) \
 	$(seqprop_comp_SOURCES) $(seqsource_SOURCES) \
 	$(sink_smearing_SOURCES) $(spectrum_w_SOURCES) \
 	$(wallformfac_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(ExampleBuildingBlocks_SOURCES) $(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) $(collect_multi_propcomp_SOURCES) $(collect_propcomp_SOURCES) $(dwf_seqprop_SOURCES) $(hypsmear_SOURCES) $(make_source_SOURCES) $(multi_propagator_SOURCES) $(multi_propagator_comp_SOURCES) $(propagator_SOURCES) $(propagator_comp_SOURCES) $(qpropadd_SOURCES) $(qproptransf_SOURCES) $(qqq_w_SOURCES) $(seqprop_SOURCES) $(seqprop_collect_SOURCES) $(seqprop_comp_SOURCES) $(seqsource_SOURCES) $(sink_smearing_SOURCES) $(spectrum_w_SOURCES) $(wallformfac_SOURCES)
+SOURCES = $(ExampleBuildingBlocks_SOURCES) $(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) $(collect_multi_propcomp_SOURCES) $(collect_propcomp_SOURCES) $(dwf_seqprop_SOURCES) $(hypsmear_SOURCES) $(make_source_SOURCES) $(multi_propagator_SOURCES) $(multi_propagator_comp_SOURCES) $(propagator_SOURCES) $(propagator_comp_SOURCES) $(qpropadd_SOURCES) $(qpropgfix_SOURCES) $(qproptransf_SOURCES) $(qqq_w_SOURCES) $(seqprop_SOURCES) $(seqprop_collect_SOURCES) $(seqprop_comp_SOURCES) $(seqsource_SOURCES) $(sink_smearing_SOURCES) $(spectrum_w_SOURCES) $(wallformfac_SOURCES)
 
 all: all-am
 
@@ -465,6 +475,9 @@ propagator_comp$(EXEEXT): $(propagator_comp_OBJECTS) $(propagator_comp_DEPENDENC
 qpropadd$(EXEEXT): $(qpropadd_OBJECTS) $(qpropadd_DEPENDENCIES) 
 	@rm -f qpropadd$(EXEEXT)
 	$(CXXLINK) $(qpropadd_LDFLAGS) $(qpropadd_OBJECTS) $(qpropadd_LDADD) $(LIBS)
+qpropgfix$(EXEEXT): $(qpropgfix_OBJECTS) $(qpropgfix_DEPENDENCIES) 
+	@rm -f qpropgfix$(EXEEXT)
+	$(CXXLINK) $(qpropgfix_LDFLAGS) $(qpropgfix_OBJECTS) $(qpropgfix_LDADD) $(LIBS)
 qproptransf$(EXEEXT): $(qproptransf_OBJECTS) $(qproptransf_DEPENDENCIES) 
 	@rm -f qproptransf$(EXEEXT)
 	$(CXXLINK) $(qproptransf_LDFLAGS) $(qproptransf_OBJECTS) $(qproptransf_LDADD) $(LIBS)
@@ -512,6 +525,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/propagator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/propagator_comp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qpropadd.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qpropgfix.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qproptransf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qqq_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seqprop.Po@am__quote@
