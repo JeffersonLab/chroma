@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermbc.h,v 1.3 2004-03-17 03:33:40 edwards Exp $
+// $Id: fermbc.h,v 1.4 2004-03-17 03:37:03 edwards Exp $
 /*! @file
  * @brief Fermion action boundary conditions
  */
@@ -82,7 +82,7 @@ public:
     {QDP_error_exit("modifyU not implemented");}
 
   //! Modify fermion fields in place
-  void modifyF(T& psi) const = 0;
+  void modifyF(T& psi) const
     {QDP_error_exit("modifyF not implemented");}
  
   //! Says if there are fixed links within the lattice
@@ -134,11 +134,11 @@ public:
   SchrFunType_t getSFermBC() const {return SchrFun;}
 
   //! Modify U fields in place
-  void modifyU(multi1d<LatticeColorMatrix>& u) const;
+  void modifyU(multi1d<LatticeColorMatrix>& u) const
     {QDP_error_exit("modifyU not implemented");}
 
   //! Modify fermion fields in place
-  void modifyF(T& psi) const;
+  void modifyF(T& psi) const
     {QDP_error_exit("modifyF not implemented");}
  
   //! Says if there are fixed links within the lattice
