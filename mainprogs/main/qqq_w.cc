@@ -1,5 +1,5 @@
 /*
- *  $Id: qqq_w.cc,v 1.1 2003-04-17 20:13:58 dgr Exp $
+ *  $Id: qqq_w.cc,v 1.2 2003-04-30 21:25:23 edwards Exp $
  *
  *  This is the test program for the routine that reads in a quark propagator,
  *  stored in SZIN format, and computes the generalised quark propagators
@@ -35,7 +35,7 @@ int main(int argc, char **argv)
   // readArchiv(u, "nersc_freefield.cfg");	
 
   Seed seed_old;
-  readSzin2(u, "szin.cfg", seed_old);
+  readSzin(u, "szin.cfg", seed_old);
   
 
 

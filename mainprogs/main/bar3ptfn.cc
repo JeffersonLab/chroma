@@ -1,7 +1,11 @@
-// $Id: bar3ptfn.cc,v 1.4 2003-04-30 06:11:35 flemingg Exp $
+// $Id: bar3ptfn.cc,v 1.5 2003-04-30 21:25:23 edwards Exp $
 //
 // $Log: bar3ptfn.cc,v $
-// Revision 1.4  2003-04-30 06:11:35  flemingg
+// Revision 1.5  2003-04-30 21:25:23  edwards
+// Changed all uses of char* to using string. Changed readSzin2,readSzinQprop2
+// to readSzin,readSzinQprop.
+//
+// Revision 1.4  2003/04/30 06:11:35  flemingg
 // Finally figured out what Wilson_hadron_2Pt_fn measurement was supposed
 // to do and made it do it.  I realized that it didn't involve a timeslice
 // sum at the source but just the trace at the source point.  So, I removed
@@ -29,7 +33,6 @@
 //
 
 #include "chroma.h"
-#include "qdp_util.h" // for readSzin()
 
 using namespace QDP ;
 
@@ -327,7 +330,7 @@ main(int argc, char *argv[])
   // Read in the configuration along with relevant information.
   switch (cfg_type) {
   case 1 :
-    readSzin2(u, (char *)cfg_file.c_str(), seed) ;
+    readSzin(u, cfg_file, seed) ;
     break ;
   default :
     QDP_error_exit("configuration type is unsupported", cfg_type) ;
@@ -495,8 +498,7 @@ main(int argc, char *argv[])
     {
       stringstream prop_file ;
       prop_file << "propagator_" << loop ;
-      // GTF HACK: arg 2 should be just string&
-      readSzinQprop2(quark_propagator, (char *)prop_file.str().c_str()) ;
+      readSzinQprop(quark_propagator, prop_file.str()) ;
     }
 
     int seq_src_ctr ;
@@ -509,8 +511,7 @@ main(int argc, char *argv[])
       {
         stringstream prop_file ;
         prop_file << "seqprop_" << loop << "_" << seq_src_value ;
-        // GTF HACK: arg 2 should be just string&
-        readSzinQprop2(seq_quark_prop, (char *)prop_file.str().c_str()) ;
+        readSzinQprop(seq_quark_prop, prop_file.str()) ;
       }
 
       if ((0 <= seq_src_value) && (seq_src_value <= 9)) {

@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.13 2003-04-17 20:13:58 dgr Exp $
+// $Id: propagator.cc,v 1.14 2003-04-30 21:25:23 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -137,21 +137,21 @@ int main(int argc, char **argv)
   /*  readArchiv(u, "nersc_freefield.cfg");*/
 
   Seed seed_old;
-  readSzin2(u, "szin.cfg", seed_old);
+  readSzin(u, "szin.cfg", seed_old);
 
   cerr << "DEBUG 2" << endl;
 
 
   // Useful info
 
-  char nml_filename[MAXLINE];
+  string nml_filename;
 
   switch(source_type){
   case S_WAVE:
-    sprintf(nml_filename, "propagator.nml");
+    nml_filename = "propagator.nml";
     break;
   case P_WAVE:
-    sprintf(nml_filename, "p_propagator.nml");
+    nml_filename = "p_propagator.nml";
   }
 
   cerr << "DEBUG 3" << endl;
