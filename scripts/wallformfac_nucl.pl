@@ -177,61 +177,67 @@ foreach $qx ( -$mommax_int .. $mommax_int ) {
 #   f1  is  d  quark contribution to E nucleon form-fac
 #
 print "Electric";
-foreach $s ('f0', 'f1')
+foreach $h ('h1', 'h2')
 {
-  $k = 3;
-  $g = $Vector[$k];
-
-  # Construct necessary real parts
-  # Average over all momenta
-  foreach $qz (-$mommax_int .. $mommax_int)
+  foreach $s ('f0', 'f1')
   {
-    foreach $qy (-$mommax_int .. $mommax_int)
+    $k = 3;
+    $g = $Vector[$k];
+
+    # Construct necessary real parts
+    # Average over all momenta
+    foreach $qz (-$mommax_int .. $mommax_int)
     {
-      foreach $qx (-$mommax_int .. $mommax_int)
+      foreach $qy (-$mommax_int .. $mommax_int)
       {
-	@q = ($qx, $qy, $qz);
-
-	$qsq = $qx*$qx + $qy*$qy + $qz*$qz;
-
-	next if ($qsq > $mom2_max);
-
-	print "qsq = $qsq";
-
-	if (! -f "${nam}_cur3ptfn_h1_${s}_g8_qx${qx}_qy${qy}_qz${qz}") {next;}
-
-	printf "Found file %s\n","${nam}_cur3ptfn_h1_${s}_g8_qx${qx}_qy${qy}_qz${qz}";
-
-	&realpart("${nam}_cur3ptfn_h1_${s}_g8_qx${qx}_qy${qy}_qz${qz}","${cur}_${s}_mu3_${qx}${qy}${qz}");
-
-	if ($cur_cnt{$s,3,$qsq} == 0)
+	foreach $qx (-$mommax_int .. $mommax_int)
 	{
-	  &ensbc("${cur}_${s}_mu3_q${qsq} = ${cur}_${s}_mu3_${qx}${qy}${qz}");
-	  $cur_cnt{$s,3,$qsq} = 1;
-	  ++$tot_cnt{$s};
-	}
-	else
-	{
-	  &ensbc("${cur}_${s}_mu3_q${qsq} = ${cur}_${s}_mu3_q${qsq} + ${cur}_${s}_mu3_${qx}${qy}${qz}");
-	  ++$cur_cnt{$s,3,$qsq};
-	  ++$tot_cnt{$s};
+	  @q = ($qx, $qy, $qz);
+
+	  $qsq = $qx*$qx + $qy*$qy + $qz*$qz;
+
+	  next if ($qsq > $mom2_max);
+	  
+	  print "qsq = $qsq";
+
+	  if (! -f "${nam}_cur3ptfn_${h}_${s}_g8_qx${qx}_qy${qy}_qz${qz}") {next;}
+
+	  printf "Found file %s\n","${nam}_cur3ptfn_${h}_${s}_g8_qx${qx}_qy${qy}_qz${qz}";
+
+	  &realpart("${nam}_cur3ptfn_${h}_${s}_g8_qx${qx}_qy${qy}_qz${qz}","${cur}_${h}_${s}_mu3_${qx}${qy}${qz}");
+
+	  if ($cur_cnt{$h,$s,3,$qsq} == 0)
+	  {
+	    &ensbc("${cur}_${h}_${s}_mu3_q${qsq} = ${cur}_${h}_${s}_mu3_${qx}${qy}${qz}");
+	    $cur_cnt{$h,$s,3,$qsq} = 1;
+	    ++$tot_cnt{$s};
+	  }
+	  else
+	  {
+	    &ensbc("${cur}_${h}_${s}_mu3_q${qsq} = ${cur}_${h}_${s}_mu3_q${qsq} + ${cur}_${h}_${s}_mu3_${qx}${qy}${qz}");
+	    ++$cur_cnt{$h,$s,3,$qsq};
+	    ++$tot_cnt{$s};
+	  }
 	}
       }
     }
-  }
 
-  # Normalize
-  print "normalize";
-  foreach $i (0 .. $mom2_max)
-  {
-    if ($cur_cnt{$s,3,$i} > 0)
+    # Normalize
+    print "normalize";
+    foreach $i (0 .. $mom2_max)
     {
-      &ensbc("${cur}_${s}_mu3_q${i} = ${cur}_${s}_mu3_q${i} / $cur_cnt{$s,3,$i}");
+      if ($cur_cnt{$h,$s,3,$i} > 0)
+      {
+	&ensbc("${cur}_${h}_${s}_mu3_q${i} = ${cur}_${h}_${s}_mu3_q${i} / $cur_cnt{$h,$s,3,$i}");
+      }
     }
   }
 }
 
+
 # Terms needed for magnetic form factors
+$h = "h1";
+
 print "Magnetic";
 foreach $s ('f2', 'f3')
 {
@@ -266,24 +272,24 @@ foreach $s ('f2', 'f3')
 
 	    print "qsq = $qsq";
 
-	    if (! -f "${nam}_cur3ptfn_h1_${s}_g${g}_qx${qx}_qy${qy}_qz${qz}") {next;}
+	    if (! -f "${nam}_cur3ptfn_${h}_${s}_g${g}_qx${qx}_qy${qy}_qz${qz}") {next;}
 
-	    &realpart("${nam}_cur3ptfn_h1_${s}_g${g}_qx${qx}_qy${qy}_qz${qz}","${cur}_${s}_mu${j}_${qx}${qy}${qz}");
+	    &realpart("${nam}_cur3ptfn_${h}_${s}_g${g}_qx${qx}_qy${qy}_qz${qz}","${cur}_${h}_${s}_mu${j}_${qx}${qy}${qz}");
 
 	    $e = $eps{$j,$k,$l} / $q[$l];
 
 	    print "qx=$qx, qy=$qy, qz=$qz, e=$e";
 
-	    if ($cur_cnt{$s,$j,$qsq} == 0)
+	    if ($cur_cnt{$h,$s,$j,$qsq} == 0)
 	    {
-	      &ensbc("${cur}_${s}_mu${j}_q${qsq} = $e * ${cur}_${s}_mu${j}_${qx}${qy}${qz}");
-	      $cur_cnt{$s,$j,$qsq} = 1;
+	      &ensbc("${cur}_${h}_${s}_mu${j}_q${qsq} = $e * ${cur}_${h}_${s}_mu${j}_${qx}${qy}${qz}");
+	      $cur_cnt{$h,$s,$j,$qsq} = 1;
 	      ++$tot_cnt{$s};
 	    }
 	    else
 	    {
-	      &ensbc("${cur}_${s}_mu${j}_q${qsq} = ${cur}_${s}_mu${j}_q${qsq} + $e * ${cur}_${s}_mu${j}_${qx}${qy}${qz}");
-	      ++$cur_cnt{$s,$j,$qsq};
+	      &ensbc("${cur}_${h}_${s}_mu${j}_q${qsq} = ${cur}_${h}_${s}_mu${j}_q${qsq} + $e * ${cur}_${h}_${s}_mu${j}_${qx}${qy}${qz}");
+	      ++$cur_cnt{$h,$s,$j,$qsq};
 	      ++$tot_cnt{$s};
 	    }
 	  }
@@ -294,9 +300,9 @@ foreach $s ('f2', 'f3')
       print "normalize";
       foreach $i (1 .. $mom2_max)
       {
-	if ($cur_cnt{$s,$j,$i} > 0)
+	if ($cur_cnt{$h,$s,$j,$i} > 0)
 	{
-	  &ensbc("${cur}_${s}_mu${j}_q${i} = ${cur}_${s}_mu${j}_q${i} / $cur_cnt{$s,$j,$i}");
+	  &ensbc("${cur}_${h}_${s}_mu${j}_q${i} = ${cur}_${h}_${s}_mu${j}_q${i} / $cur_cnt{$h,$s,$j,$i}");
 	}
       }
     }
@@ -341,14 +347,14 @@ if ($tot_cnt{"f0"} > 0)
   print "Computing nucleon electric form-factors";
   foreach $nuc ("P", "N")
   {
-    &ensbc("${nuc}_j_mu3_000 = $norm*($u_charge{$nuc}*${cur}_f0_mu3_000 + $d_charge{$nuc}*${cur}_f1_mu3_000)");
-    &ensbc("${nuc}_j_mu3_100 = $norm*($u_charge{$nuc}*${cur}_f0_mu3_100 + $d_charge{$nuc}*${cur}_f1_mu3_100)");
-    &ensbc("${nuc}_j_mu3_110 = $norm*($u_charge{$nuc}*${cur}_f0_mu3_110 + $d_charge{$nuc}*${cur}_f1_mu3_110)");
-    &ensbc("${nuc}_j_mu3_111 = $norm*($u_charge{$nuc}*${cur}_f0_mu3_111 + $d_charge{$nuc}*${cur}_f1_mu3_111)");
+    &ensbc("${nuc}_j_mu3_000 = $norm*($u_charge{$nuc}*${cur}_${h}_f0_mu3_000 + $d_charge{$nuc}*${cur}_${h}_f1_mu3_000)");
+    &ensbc("${nuc}_j_mu3_100 = $norm*($u_charge{$nuc}*${cur}_${h}_f0_mu3_100 + $d_charge{$nuc}*${cur}_${h}_f1_mu3_100)");
+    &ensbc("${nuc}_j_mu3_110 = $norm*($u_charge{$nuc}*${cur}_${h}_f0_mu3_110 + $d_charge{$nuc}*${cur}_${h}_f1_mu3_110)");
+    &ensbc("${nuc}_j_mu3_111 = $norm*($u_charge{$nuc}*${cur}_${h}_f0_mu3_111 + $d_charge{$nuc}*${cur}_${h}_f1_mu3_111)");
 
     foreach $i (0 .. $mom2_max)
     {
-      &ensbc("${nuc}_j_mu3_q$i = $norm*($u_charge{$nuc}*${cur}_f0_mu3_q$i + $d_charge{$nuc}*${cur}_f1_mu3_q$i)");
+      &ensbc("${nuc}_j_mu3_q$i = $norm*($u_charge{$nuc}*${cur}_${h}_f0_mu3_q$i + $d_charge{$nuc}*${cur}_${h}_f1_mu3_q$i)");
     }
     
     &ensbc("${nuc}_r_mu3_000 = (${nuc}_j_mu3_000 * had_f1_q0_sp) / (proton_norm * had_f1_q0_sp)");
