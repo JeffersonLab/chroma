@@ -1,4 +1,4 @@
-// $Id: t_conslinop.cc,v 1.16 2004-02-11 12:51:35 bjoo Exp $
+// $Id: t_conslinop.cc,v 1.17 2004-02-16 01:19:22 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -24,9 +24,9 @@ int main(int argc, char *argv[])
   NmlWriter nml("t_conslinop.nml");
 
   push(nml,"lattis");
-  write*nml,"Nd",  Nd);
-  write*nml,"Nc", Nc);
-  write*nml,"nrow", nrow);
+  write(nml,"Nd",  Nd);
+  write(nml,"Nc", Nc);
+  write(nml,"nrow", nrow);
   pop(nml);
 
   //! Example of calling a plaquette routine
@@ -68,8 +68,8 @@ int main(int argc, char *argv[])
   DComplex nm = innerProduct(psi,tmp);
 
   push(nml,"norm_check");
-  write*nml,"np", np);
-  write*nml,"nm", nm);
+  write(nml,"np", np);
+  write(nml,"nm", nm);
   pop(nml);
 
   // Time to bolt
