@@ -1,4 +1,4 @@
-// $Id: prec_dwf_fermact_qprop_array_w.cc,v 1.4 2004-09-08 02:48:26 edwards Exp $
+// $Id: prec_dwf_fermact_qprop_array_w.cc,v 1.5 2004-10-08 13:20:15 bjoo Exp $
 /*! \file
  *  \brief Base class for even-odd preconditioned domain-wall-like fermion actions
  */
@@ -11,6 +11,7 @@
 
 using namespace QDP;
 
+namespace Chroma { 
 
 //! Propagator of an even-odd preconditioned DWF linear operator
 /*!
@@ -145,3 +146,5 @@ EvenOddPrecDWFermActBaseArray<LatticeFermion>::qprop(LatticeFermion& psi,
 {
   qprop_t<LatticeFermion>(*this, psi, state, chi, invParam,ncg_had);
 }
+
+}; // namespace Chroma

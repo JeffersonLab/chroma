@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_fermact_qprop_array_w.cc,v 1.3 2004-09-08 02:48:26 edwards Exp $
+// $Id: unprec_dwf_fermact_qprop_array_w.cc,v 1.4 2004-10-08 13:20:15 bjoo Exp $
 /*! \file
  *  \brief Base class for unpreconditioned domain-wall-like fermion actions
  */
@@ -10,6 +10,7 @@
 
 using namespace QDP;
 
+namespace Chroma { 
 
 //! Propagator of an un-preconditioned DWF linear operator
 /*!
@@ -118,3 +119,4 @@ UnprecDWFermActBaseArray<LatticeFermion>::qprop(LatticeFermion& psi,
   qprop_t<LatticeFermion>(*this, psi, state, chi, invParam, ncg_had);
 }
 
+}; // namespace Chroma

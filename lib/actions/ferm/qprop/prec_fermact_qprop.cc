@@ -1,4 +1,4 @@
-// $Id: prec_fermact_qprop.cc,v 1.7 2004-09-08 02:48:26 edwards Exp $
+// $Id: prec_fermact_qprop.cc,v 1.8 2004-10-08 13:20:15 bjoo Exp $
 /*! \file
  *  \brief Propagator solver for a generic even-odd preconditioned fermion operator
  *
@@ -11,6 +11,7 @@
 #include "actions/ferm/invert/invcg2.h"
 
 using namespace QDP;
+namespace Chroma { 
 
 //! Propagator of a generic even-odd preconditioned fermion linear operator
 /*! \ingroup qprop
@@ -128,6 +129,4 @@ EvenOddPrecWilsonTypeFermAct<LatticeFermion>::qprop(LatticeFermion& psi,
   qprop_t(*this, psi, state, chi, invParam, ncg_had);
 }
 
-
-
-
+}; // namespace Chroma 

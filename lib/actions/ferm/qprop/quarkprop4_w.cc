@@ -1,4 +1,4 @@
-// $Id: quarkprop4_w.cc,v 1.16 2004-09-08 02:48:26 edwards Exp $
+// $Id: quarkprop4_w.cc,v 1.17 2004-10-08 13:20:15 bjoo Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -11,6 +11,8 @@
 #include "actions/ferm/fermacts/overlap_fermact_base_w.h"
 
 using namespace QDP;
+
+namespace Chroma { 
 
 //! Given a complete propagator as a source, this does all the inversions needed
 /*! \ingroup qprop
@@ -132,7 +134,7 @@ void quarkProp4_a(LatticePropagator& q_sol,
  * \param invParam inverter parameters ( Read )
  * \param ncg_had  number of CG iterations ( Write )
  */
-
+template <>
 void WilsonTypeFermAct<LatticeFermion>::quarkProp4(LatticePropagator& q_sol, 
 						   XMLWriter& xml_out,
 						   const LatticePropagator& q_src,
@@ -155,7 +157,7 @@ void WilsonTypeFermAct<LatticeFermion>::quarkProp4(LatticePropagator& q_sol,
  * \param invParam inverter parameters ( Read )
  * \param ncg_had  number of CG iterations ( Write )
  */
-
+template<>
 void WilsonTypeFermAct< multi1d<LatticeFermion> >::quarkProp4(LatticePropagator& q_sol, 
 							 XMLWriter& xml_out,
 							 const LatticePropagator& q_src,
@@ -263,4 +265,4 @@ void OverlapFermActBase::quarkProp4(LatticePropagator& q_sol,
   END_CODE();
 }
 
-
+}; // namespace Chroma

@@ -1,6 +1,9 @@
-// $Id: prec_fermact_qprop_array.cc,v 1.7 2004-09-08 02:48:26 edwards Exp $
+// $Id: prec_fermact_qprop_array.cc,v 1.8 2004-10-08 13:20:15 bjoo Exp $
 // $Log: prec_fermact_qprop_array.cc,v $
-// Revision 1.7  2004-09-08 02:48:26  edwards
+// Revision 1.8  2004-10-08 13:20:15  bjoo
+// IBM Fixes
+//
+// Revision 1.7  2004/09/08 02:48:26  edwards
 // Big switch-over of fermact IO. New fermact startup mechanism -
 // now using Singleton Factory object. Moved  quarkprop4 to be
 // a virtual func with top level FermionAction. Disconnected
@@ -50,6 +53,7 @@
 
 using namespace QDP;
 
+namespace Chroma {
 //! Propagator of a generic even-odd preconditioned fermion linear operator
 /*! \ingroup qprop
  *
@@ -155,7 +159,4 @@ EvenOddPrecWilsonTypeFermAct< multi1d<LatticeFermion> >::qpropT(multi1d<LatticeF
   qprop_t<LatticeFermion>(*this, psi, state, chi, invParam, ncg_had);
 }
 
-
-
-
-
+}; // namespace Chroma

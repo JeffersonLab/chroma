@@ -1,4 +1,4 @@
-// $Id: fermact_qprop_array.cc,v 1.8 2004-09-08 02:48:26 edwards Exp $
+// $Id: fermact_qprop_array.cc,v 1.9 2004-10-08 13:20:15 bjoo Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *
@@ -11,6 +11,7 @@
 #include "actions/ferm/invert/invcg2_array.h"
 
 using namespace QDP;
+namespace Chroma { 
 
 //! Propagator of a generic non-preconditioned fermion linear operator
 /*! \ingroup qprop
@@ -97,7 +98,4 @@ FermionAction< multi1d<LatticeFermion> >::qpropT(multi1d<LatticeFermion>& psi,
   qprop_t<LatticeFermion>(*this, psi, state, chi, invParam, ncg_had);
 }
 
-
-
-
-
+}; // Namespace Chroma

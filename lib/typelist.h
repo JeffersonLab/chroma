@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: typelist.h,v 1.1 2004-08-23 04:04:45 edwards Exp $
+// $Id: typelist.h,v 1.2 2004-10-08 13:20:14 bjoo Exp $
 /*! @file
  * @brief Typelist support
  */
@@ -408,7 +408,7 @@ namespace Chroma
 // If you pass an out-of-bounds index, the result is a compile-time error
 ////////////////////////////////////////////////////////////////////////////////
 
-    template <class TList, unsigned int index> struct TypeAt;
+    template <class TList, int index> struct TypeAt;
         
     template <class Head, class Tail>
     struct TypeAt<Typelist<Head, Tail>, 0>
@@ -416,7 +416,7 @@ namespace Chroma
       typedef Head Result;
     };
 
-    template <class Head, class Tail, unsigned int i>
+    template <class Head, class Tail, int i>
     struct TypeAt<Typelist<Head, Tail>, i>
     {
       typedef typename TypeAt<Tail, i - 1>::Result Result;
@@ -434,7 +434,7 @@ namespace Chroma
 // returns the type in position 'index' in TList, or D if index is out-of-bounds
 ////////////////////////////////////////////////////////////////////////////////
 
-    template <class TList, unsigned int index,
+    template <class TList, int index,
       typename DefaultType = NullType>
     struct TypeAtNonStrict
     {
@@ -447,7 +447,7 @@ namespace Chroma
       typedef Head Result;
     };
         
-    template <class Head, class Tail, unsigned int i, typename DefaultType>
+    template <class Head, class Tail, int i, typename DefaultType>
     struct TypeAtNonStrict<Typelist<Head, Tail>, i, DefaultType>
     {
       typedef typename 
