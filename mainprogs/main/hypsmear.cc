@@ -1,5 +1,5 @@
 /*
- *  $Id: hypsmear.cc,v 1.11 2004-04-28 14:34:43 edwards Exp $
+ *  $Id: hypsmear.cc,v 1.12 2004-07-14 18:38:20 dru Exp $
  *
  *  This is the top-level routine for HYP smearing.
  *  It is a wrapper for Urs' and Robert's implmenetation of the HYP
@@ -31,6 +31,8 @@ struct Param_t
   Real alpha1;			// Smearing parameters
   Real alpha2;
   Real alpha3;
+
+  int num_smear;                // Number of smearing iterations
 
   multi1d<int> nrow;		// Lattice dimension
   int j_decay;			// Direction corresponding to time
@@ -78,8 +80,25 @@ void read(XMLReader& xml, const string& path, Param_t& param)
 
   switch (version) 
   {
+  case 3:
+    /**************************************************************************/
+
+    /* this version allows a variable num_smear */
+    read(paramtop, "num_smear", param.num_smear);
+
+    if( param.num_smear < 0 )
+    {
+      QDP_error_exit( "hypsmear.cc: invalid number of hyp smearing iterations, num_smear = %d", param.num_smear );
+    }
+
+    break;
+
   case 2:
     /**************************************************************************/
+
+    /* this version only allows num_smear = 1 */
+    param.num_smear = 1;
+
     break;
 
   default :
@@ -220,10 +239,12 @@ int main(int argc, char *argv[])
 
 
   t1 = clock();
-  Hyp_Smear(u, u_hyp, 
-	    input.param.alpha1, input.param.alpha2, input.param.alpha3, 
-	    BlkAccu, BlkMax);
-
+  for( int n = 0; n < input.param.num_smear; n ++ )
+  {
+    Hyp_Smear(u, u_hyp, 
+	      input.param.alpha1, input.param.alpha2, input.param.alpha3, 
+	      BlkAccu, BlkMax);
+  }
   t2 = clock();
   QDPIO::cout << "Hypsmear took " << (double)((int)(t2)-(int)(t1))/(double)(CLOCKS_PER_SEC) << " secs" << endl;
 
