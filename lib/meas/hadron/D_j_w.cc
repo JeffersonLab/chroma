@@ -1,4 +1,4 @@
-// $Id: D_j_w.cc,v 1.2 2003-08-20 11:33:51 bjoo Exp $
+// $Id: D_j_w.cc,v 1.3 2004-01-27 21:06:46 ikuro Exp $
 /*
  *
  */
@@ -16,5 +16,5 @@ void D_j(const multi1d<LatticeColorMatrix>& u,
 {
   int d=direction;
 
-  prop_j = u[d]*shift(prop, FORWARD, d) - shift(adj(u[d])*prop, BACKWARD, d);
+  prop_j = 0.5*(u[d]*shift(prop, FORWARD, d) - shift(adj(u[d])*prop, BACKWARD, d));
 }

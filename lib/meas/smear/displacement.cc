@@ -1,4 +1,4 @@
-//  $Id: displacement.cc,v 1.3 2004-01-23 22:18:26 edwards Exp $
+//  $Id: displacement.cc,v 1.4 2004-01-27 21:03:37 ikuro Exp $
 /*! \file
  *  \brief Parallel transport a lattice field
  */
@@ -47,8 +47,8 @@ void displacement(const multi1d<LatticeColorMatrix>& u,
 	chi = u[dir] * tmp;
       }
 
-  else 
-    for(int n = 0; n < length; ++n)
+  else // If length = or < 0.  If length == 0, does nothing.
+    for(int n = 0; n > length; --n)
       {
 	T tmp = shift(adj(u[dir])*chi, BACKWARD, dir);
 	chi = tmp;
