@@ -5,6 +5,7 @@
 // The QDP naive dslash class: QDPWilsonDslash
 #include "lwldslash_w.h"
 
+
 // The following is an ifdef lis that switches in optimised
 // Dslash-es. Currently only optimised dslash is the SSE One;
 
@@ -22,6 +23,13 @@ typedef SSEWilsonDslash WilsonDslash;
 // becomes the WilsonDslash
 typedef QDPWilsonDslash WilsonDslash;
 #endif
+
+//The QDP EvenOdd4dDWDslashArray class
+#include "eo4d_dwf_factors_array_w.h"
+
+//There is no sse version of this routine yet
+typedef QDPEvenOdd4dDWDslashArray EvenOdd4dDWDslashArray;
+typedef QDPEvenOdd4dDWDiagArray EvenOdd4dDWDiagArray;
 
 
 #endif
