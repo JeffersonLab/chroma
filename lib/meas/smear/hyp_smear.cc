@@ -1,11 +1,11 @@
-//  $Id: hyp_smear.cc,v 1.1 2003-03-28 04:10:54 edwards Exp $
+//  $Id: hyp_smear.cc,v 1.2 2003-03-31 01:05:51 heller Exp $
 /*! \file
  *  \brief Hyp-smearing of the gauge configuration
  */
 
 #include "chromabase.h"
 #include "meas/smear/hyp_smear.h"
-// #include "util/gauge/sun_proj.h"    FIXME
+#include "util/gauge/sun_proj.h"
 
 using namespace QDP;
 
@@ -87,12 +87,12 @@ void Hyp_Smear(const multi1d<LatticeColorMatrix>& u,
       if (Nd == 2)
       {
 	u_hyp[mu] = u[mu];
-//	sun_proj(u_tmp, u_hyp[mu], BlkAccu, BlkMax);       FIXME
+  	sun_proj(u_tmp, u_hyp[mu], BlkAccu, BlkMax);
       }
       else
       {
 	u_lv1[ii] = u[mu];
-//	sun_proj(u_tmp, u_lv1[ii], BlkAccu, BlkMax);       FIXME
+  	sun_proj(u_tmp, u_lv1[ii], BlkAccu, BlkMax);
       }
     }
   }
@@ -148,7 +148,7 @@ void Hyp_Smear(const multi1d<LatticeColorMatrix>& u,
        * Project onto SU(Nc)
        */
       u_hyp[mu] = u[mu];
-//      sun_proj(u_tmp, u_hyp[mu], BlkAccu, BlkMax);    FIXME
+      sun_proj(u_tmp, u_hyp[mu], BlkAccu, BlkMax);
     }
   }
   else if (Nd == 4)
@@ -208,7 +208,7 @@ void Hyp_Smear(const multi1d<LatticeColorMatrix>& u,
 	 * Project onto SU(Nc)
 	 */
 	u_lv2[ii] = u[mu];
-//	sun_proj(u_tmp, u_lv2[ii], BlkAccu, BlkMax);    FIXME
+  	sun_proj(u_tmp, u_lv2[ii], BlkAccu, BlkMax);
       }
     }
 
@@ -256,6 +256,7 @@ void Hyp_Smear(const multi1d<LatticeColorMatrix>& u,
        * Project onto SU(Nc)
        */
       u_hyp[mu] = u[mu];
+      sun_proj(u_tmp, u_hyp[mu], BlkAccu, BlkMax);
     }
   }
 
