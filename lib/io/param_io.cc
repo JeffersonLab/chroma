@@ -1,4 +1,4 @@
-// $Id: param_io.cc,v 1.19 2004-04-14 20:59:09 edwards Exp $
+// $Id: param_io.cc,v 1.20 2004-04-14 21:23:43 edwards Exp $
 /*! \file
  *  \brief Various parameter readers/writers for main programs
  */
@@ -162,7 +162,7 @@ void read(XMLReader& xml, const string& path, PropType& param)
     param = PROP_TYPE_KYU;
   else 
   {
-    QDPIO::cerr << "Unsupported propagator type" << endl;
+    QDPIO::cerr << "Unsupported propagator type = " << prop_type_str << endl;
     QDP_abort(1);
   }
 }
@@ -497,6 +497,8 @@ void write(XMLWriter& xml, const string& path, PropType param)
     prop_type_str = "SZIN";
   else if (param == PROP_TYPE_SCIDAC)
     prop_type_str = "SCIDAC";
+  else if (param == PROP_TYPE_KYU)
+    prop_type_str = "KYU";
   else 
   {
     QDPIO::cerr << "Unsupported propagator type" << endl;
