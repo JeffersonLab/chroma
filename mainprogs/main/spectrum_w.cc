@@ -1,10 +1,13 @@
-// $Id: spectrum_w.cc,v 1.19 2004-01-06 04:59:14 edwards Exp $
+// $Id: spectrum_w.cc,v 1.20 2004-01-14 22:24:38 kostas Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.19  2004-01-06 04:59:14  edwards
+//  Revision 1.20  2004-01-14 22:24:38  kostas
+//  added reading capability for NERSC confs
+//
+//  Revision 1.19  2004/01/06 04:59:14  edwards
 //  Standardized the IO.
 //
 //  Revision 1.18  2004/01/05 21:48:36  edwards
@@ -343,6 +346,9 @@ int main(int argc, char **argv)
   {
   case CFG_TYPE_SZIN :
     readSzin(gauge_xml, u, input.cfg.cfg_file);
+    break;
+  case CFG_TYPE_NERSC:
+    readArchiv(gauge_xml, u, input.cfg.cfg_file);
     break;
   default :
     QDP_error_exit("Configuration type is unsupported.");

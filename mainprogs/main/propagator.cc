@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.35 2004-01-09 04:25:41 edwards Exp $
+// $Id: propagator.cc,v 1.36 2004-01-14 22:24:38 kostas Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -223,6 +223,9 @@ int main(int argc, char **argv)
   {
   case CFG_TYPE_SZIN :
     readSzin(gauge_xml, u, input.cfg.cfg_file);
+    break;
+  case CFG_TYPE_NERSC:
+    readArchiv(gauge_xml, u, input.cfg.cfg_file);
     break;
   default :
     QDP_error_exit("Configuration type is unsupported.");
