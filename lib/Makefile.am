@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.246 2005-02-02 22:46:35 edwards Exp $
+# $Id: Makefile.am,v 1.247 2005-02-02 22:47:40 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -262,6 +262,7 @@ nobase_include_HEADERS += \
 	update/molecdyn/monomial/one_flavor_rat_monomial_w.h \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.h \
 	update/molecdyn/monomial/prec_one_flavor_rat_monomial_w.h \
+	update/molecdyn/monomial/one_flavor_rat_monomial5d_w.h \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial5d_w.h \
 	update/molecdyn/monomial/prec_one_flavor_rat_monomial5d_w.h \
 	update/molecdyn/monomial/two_flavor_monomial_w.h \
