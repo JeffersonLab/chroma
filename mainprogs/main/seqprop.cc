@@ -1,4 +1,4 @@
-// $Id: seqprop.cc,v 1.18 2004-04-06 04:20:33 edwards Exp $
+// $Id: seqprop.cc,v 1.19 2004-04-16 19:27:39 bjoo Exp $
 /*! \file
  *  \brief Main code for sequential propagator generation
  */
@@ -307,41 +307,49 @@ int main(int argc, char **argv)
   WilsonTypeFermAct<LatticeFermion>* S_f_ptr = 0;
   WilsonTypeFermAct< multi1d<LatticeFermion> >* S_f_a_ptr = 0;
 
-  switch (prop_header.FermAct)
+  switch (prop_header.FermActHandle->getFermActType() )
   {
   case FERM_ACT_WILSON:
   {
+    const WilsonFermActParams& wils = dynamic_cast<const WilsonFermActParams&>(*(prop_header.FermActHandle));
+
     QDPIO::cout << "FERM_ACT_WILSON" << endl;
-    S_f_ptr = new EvenOddPrecWilsonFermAct(fbc, prop_header.Mass,
-					   prop_header.anisoParam);
+    S_f_ptr = new EvenOddPrecWilsonFermAct(fbc, wils.Mass,
+					   wils.anisoParam);
   }
   break;
 
   case FERM_ACT_UNPRECONDITIONED_WILSON:
   {
+    const WilsonFermActParams& wils = dynamic_cast<const WilsonFermActParams&>(*(prop_header.FermActHandle));
+
     QDPIO::cout << "FERM_ACT_UNPRECONDITIONED_WILSON" << endl;
-    S_f_ptr = new UnprecWilsonFermAct(fbc, prop_header.Mass);
+    S_f_ptr = new UnprecWilsonFermAct(fbc, wils.Mass);
   }
   break;
 
 #if 0
   case FERM_ACT_DWF:
   {
+    const DWFFermActParams& dwf = dynamic_cast<const DWFFermActParams&>(*(prop_header.FermActHandle));
+
     QDPIO::cout << "FERM_ACT_DWF" << endl;
     S_f_a_ptr = new EvenOddPrecDWFermActArray(fbc_a,
-					      prop_header.chiralParam.OverMass, 
-					      prop_header.Mass, 
-					      prop_header.chiralParam.N5);
+					      dwf.chiralParam.OverMass, 
+					      dwf.Mass, 
+					      dwf.chiralParam.N5);
   }
   break;
 
   case FERM_ACT_UNPRECONDITIONED_DWF:
   {
+    const DWFFermActParams& dwf = dynamic_cast<const DWFFermActParams&>(*(prop_header.FermActHandle));
+
     QDPIO::cout << "FERM_ACT_UNPRECONDITONED_DWF" << endl;
     S_f_a_ptr = new UnprecDWFermActArray(fbc_a,
-					 prop_header.chiralParam.OverMass, 
-					 prop_header.Mass, 
-					 prop_header.chiralParam.N5);
+					 dwf.chiralParam.OverMass, 
+					 dwf.Mass, 
+					 dwf.chiralParam.N5);
   }
   break;
 #endif

@@ -1,10 +1,13 @@
-// $Id: spectrum_w.cc,v 1.33 2004-04-06 04:20:33 edwards Exp $
+// $Id: spectrum_w.cc,v 1.34 2004-04-16 19:27:39 bjoo Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.33  2004-04-06 04:20:33  edwards
+//  Revision 1.34  2004-04-16 19:27:39  bjoo
+//  Fixed spectrum_w and seqprop
+//
+//  Revision 1.33  2004/04/06 04:20:33  edwards
 //  Added SZINQIO support.
 //
 //  Revision 1.32  2004/04/05 16:26:27  edwards
@@ -389,7 +392,7 @@ int main(int argc, char **argv)
 
     // Derived from input prop
     int j_decay = source_header.j_decay;
-    Real Mass   = prop_header.Mass;
+    Real Mass   = prop_header.FermActHandle->getMass();
     multi1d<int> boundary = prop_header.boundary;
     multi1d<int> t_source = source_header.t_source;
 
