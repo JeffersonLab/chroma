@@ -1,4 +1,4 @@
-// $Id: quarkprop4_w.cc,v 1.8 2004-01-06 20:16:47 edwards Exp $
+// $Id: quarkprop4_w.cc,v 1.9 2004-02-05 20:10:24 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -42,13 +42,15 @@ void quarkProp4_a(LatticePropagator& q_sol,
 
   ncg_had = 0;
 
-  LatticeFermion psi = zero;  // note this is ``zero'' and not 0
+//  LatticeFermion psi = zero;  // note this is ``zero'' and not 0
 
   // This version loops over all color and spin indices
   for(int color_source = 0; color_source < Nc; ++color_source)
   {
     for(int spin_source = 0; spin_source < Ns; ++spin_source)
     {
+      LatticeFermion psi = zero;  // note this is ``zero'' and not 0
+
       LatticeFermion chi;
 
       // Extract a fermion source
