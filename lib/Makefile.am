@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.25 2003-04-17 20:15:02 dgr Exp $
+# $Id: Makefile.am,v 1.26 2003-04-24 18:35:10 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -79,7 +79,8 @@ GENERIC_SRCS = $(HDRS) gaus_smear.cc taproj.cc hotst.cc expm12.cc \
 WILSON_SRCS = baryon_w.cc mesons_w.cc lwldslash_w.cc\
 	      formfac_w.cc sink_smear2_w.cc barcomp_w.cc transf_w.cc \
               unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc unprec_wilson_dsdu_w.cc \
-              unprec_qprop_w.cc readszinqprop_w.cc 
+              unprec_qprop_w.cc readszinqprop_w.cc \
+	      overlapbu_linop_w.cc
 #              zolotarev4d_fermact_w.cc zolotarev4d_linop_w.cc lovlapms_w.cc
 
 # dslashm_w.cc 
