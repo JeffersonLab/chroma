@@ -1,4 +1,4 @@
-// $Id: readszin.cc,v 1.10 2003-08-27 19:58:21 edwards Exp $
+// $Id: readszin.cc,v 1.11 2003-08-27 20:18:49 edwards Exp $
 
 /*! \file
  *  \brief Read in a configuration written by SZIN up to configuration version 7.
@@ -18,13 +18,30 @@ using namespace QDP;
 /*!
  * \ingroup io
  *
+ * Convenience function: throws away the header.
+ *
+ * \param u          gauge configuration ( Modify )
+ * \param cfg_file   path ( Read )
+ */    
+
+void readSzin(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_file)
+{
+  XMLReader xml;
+  readSzin(xml, u, cfg_file);
+}
+
+
+//! Read a SZIN configuration file
+/*!
+ * \ingroup io
+ *
  *   Gauge field layout is (fortran ordering)
  *     u(real/imag,color_row,color_col,site,cb,Nd)
  *         = u(2,Nc,Nc,VOL_CB,2,4)
  *
  *
- * \param u          gauge configuration ( Modify )
  * \param xml        xml reader holding config info ( Modify )
+ * \param u          gauge configuration ( Modify )
  * \param cfg_file   path ( Read )
  */    
 
