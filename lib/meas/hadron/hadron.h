@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hadron.h,v 1.10 2004-01-07 13:50:08 bjoo Exp $
+// $Id: hadron.h,v 1.11 2004-03-03 10:43:37 mcneile Exp $
 
 /*! \file
  * \brief Hadronic observables
@@ -18,6 +18,8 @@
 #define __hadron_h__
 
 #include "srcfil.h"
+#include "z2_src.h"
+#include "stoch_var.h"
 
 #ifdef CHROMA_BUILD_WILSON
 #include "hadron_w.h"
