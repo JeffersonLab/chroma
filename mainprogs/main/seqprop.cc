@@ -1,4 +1,4 @@
-// $Id: seqprop.cc,v 1.4 2003-12-27 04:29:06 edwards Exp $
+// $Id: seqprop.cc,v 1.5 2004-01-02 03:01:30 edwards Exp $
 /*! \file
  *  \brief Main code for sequential propagator generation
  */
@@ -339,12 +339,11 @@ void read(XMLReader& xml, const string& path, Seqprop_input_t& input)
     if (paramtop.count("ChiralParam") != 0)
       read(paramtop, "ChiralParam", param.chiralParam);
 
-    read(paramtop, "SrceSink", input.param.srceSinkParam);
+    read(paramtop, "SrceSinkParam", input.param.srceSinkParam);
     read(paramtop, "InvertParam", input.param.invParam);
 
     read(paramtop, "nrow", input.param.nrow);
     read(paramtop, "boundary", input.param.boundary);
-    read(paramtop, "t_srce", input.param.t_srce);
   }
   catch (const string& e) 
   {
@@ -400,15 +399,6 @@ int main(int argc, char **argv)
   // Specify lattice size, shape, etc.
   Layout::setLattSize(input.param.nrow);
   Layout::create();
-
-  /*
-   * Turn on the boundary conditions through the phase factors.
-   *
-   * NOTE: this is not an optimal solution: this factor stuff should be
-   * set some other way
-   */
-  setph(input.param.boundary);              // initialize the BC factors
-
 
   // Sanity checks
   for (int i=0; i<Nd; ++i) {
@@ -539,6 +529,13 @@ int main(int argc, char **argv)
   int ncg_had = 0;			/* Initialise iteration counter */
 
   /*
+   * Construct fermionic BC. Need one for LatticeFermion and multi1d<LatticeFermion>
+   * Note, the handle is on an ABSTRACT type
+   */
+  Handle< FermBC<LatticeFermion> >  fbc(new SimpleFermBC<LatticeFermion>(boundary));
+  Handle< FermBC<multi1d<LatticeFermion> > >  fbc_a(new SimpleFermBC<multi1d<LatticeFermion> >(boundary));
+
+  /*
    *  Now loop over the various kappas
    */
     
@@ -555,12 +552,13 @@ int main(int argc, char **argv)
     Real Mass_meas = input.param.Mass[loop];
 
 #if 1
-    UnprecWilsonFermAct S_f(Mass_meas);
+    UnprecWilsonFermAct S_f(fbc,Mass_meas);
 #else
-    UnprecDWFermActArray S_f(input.param.chiralParam.OverMass, 
+    UnprecDWFermActArray S_f(fbc_a,
+			     input.param.chiralParam.OverMass, 
 			     Mass_meas, 
 			     input.param.chiralParam.N5);
-//  UnprecDWFermAct S_f(WilsonMass, m_q);
+//  UnprecDWFermAct S_f(fbc_a, WilsonMass, m_q);
 #endif
 
     // Read the quark propagator
@@ -638,7 +636,7 @@ int main(int argc, char **argv)
       {
 	multi1d<LatticeColorMatrix> u_tmp = u;
 	phfctr(u_tmp);		// Boundary phases on
-	const ConnectStateProxy state(S_f.createState(u_tmp));  // uses phase-multiplied u-fields
+	Handle<const ConnectState state(S_f.createState(u_tmp));  // uses phase-multiplied u-fields
 
 	quarkProp4(seq_quark_prop, xml_buf, quark_prop_src,
 		   S_f, state, 
