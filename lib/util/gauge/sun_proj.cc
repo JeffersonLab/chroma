@@ -1,4 +1,4 @@
-//  $Id: sun_proj.cc,v 1.2 2003-03-31 19:46:08 edwards Exp $
+//  $Id: sun_proj.cc,v 1.3 2003-10-09 21:06:29 edwards Exp $
 /*! \file
  *  \brief Project a complex Nc x Nc matrix W onto SU(Nc) by maximizing Tr(VW)
  */
@@ -59,9 +59,9 @@ void sun_proj(const LatticeColorMatrix& w, LatticeColorMatrix& v,
 
     if( wrswitch == 1 )
     {
-      cerr << "iter = " << iter << endl;
-      cerr << "old_tr = " << old_tr << endl;
-      cerr << "new_tr = " << new_tr << endl;
+      QDPIO::cout << "iter = " << iter << endl;
+      QDPIO::cout << "old_tr = " << old_tr << endl;
+      QDPIO::cout << "new_tr = " << new_tr << endl;
     }
 
     // Normalized convergence criterion:
@@ -71,12 +71,12 @@ void sun_proj(const LatticeColorMatrix& w, LatticeColorMatrix& v,
 
   if ( wrswitch == 1 )
   {
-//    Push(nml,"Final_sun_proj");
+//    push(nml,"Final_sun_proj");
 //    Write(nml, iter);
 //    Write(nml, new_tr);
-//    Pop(nml);
-    cerr << "iter = " << iter << endl;
-    cerr << "new_tr = " << new_tr << endl;
+//    pop(nml);
+    QDPIO::cout << "iter = " << iter << endl;
+    QDPIO::cout << "new_tr = " << new_tr << endl;
   }
 
   END_CODE("sun_proj");

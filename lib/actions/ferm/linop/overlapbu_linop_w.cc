@@ -1,4 +1,4 @@
-// $Id: overlapbu_linop_w.cc,v 1.2 2003-04-24 20:56:39 edwards Exp $
+// $Id: overlapbu_linop_w.cc,v 1.3 2003-10-09 21:06:29 edwards Exp $
 /*! \file
  *  \brief Overlap operator
  */
@@ -176,7 +176,7 @@ LatticeFermion OverlapBULinOp::operator() (const LatticeFermion& psi, enum LinOp
   }
 
 
-  cerr << "Inner CG iters = " << n_count << endl;
+  QDPIO::cout << "Inner CG iters = " << n_count << endl;
 
   END_CODE("OverlapBULinOp");
 

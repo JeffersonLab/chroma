@@ -1,4 +1,4 @@
-// $Id: sink_smear2_w.cc,v 1.3 2003-05-08 22:55:49 flemingg Exp $
+// $Id: sink_smear2_w.cc,v 1.4 2003-10-09 21:06:29 edwards Exp $
 /*! \file
  *  \brief Control routine for types of propagator smearing
  */
@@ -49,9 +49,9 @@ void sink_smear2(const multi1d<LatticeColorMatrix>& u,
 #endif
 
   default :
-    cerr << "Unknown gauge invariant wave function" << endl ;
+    QDPIO::cerr << "Unknown gauge invariant wave function" << endl ;
     if (Wvf_kind == WVF_KIND_UNKNOWN) {
-      cerr << "  Wvf_kind = WVF_KIND_UNKNOWN" << endl ;
+      QDPIO::cerr << "  Wvf_kind = WVF_KIND_UNKNOWN" << endl ;
     }
     QDP_abort(1) ;
   }

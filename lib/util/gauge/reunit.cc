@@ -1,4 +1,4 @@
-// $Id: reunit.cc,v 1.6 2003-03-31 19:54:00 edwards Exp $
+// $Id: reunit.cc,v 1.7 2003-10-09 21:06:29 edwards Exp $
 
 /*! \file
  *  \brief Reunitarize (to a SU(N)) inplace the matrix A under some option
@@ -404,7 +404,6 @@ void reunit(LatticeColorMatrix& xa, LatticeBoolean& bad,
       }
 
       numbad = toInt(sum(where(sigmasq > fuzz, LatticeInteger(1), LatticeInteger(0))));
-      cerr << "numbad = " << numbad << endl;
 
       /* Do things depending on the mean squared deviation */
       switch (ruflag)
