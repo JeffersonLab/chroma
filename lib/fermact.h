@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 1.5 2004-01-29 20:14:09 bjoo Exp $
+// $Id: fermact.h,v 1.6 2004-03-17 04:06:24 edwards Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -356,7 +356,7 @@ public:
 		     const typename BaseType<T>::Type_t& chi, 
 		     enum InvType invType,
 		     const Real& RsdCG, 
-		     int MaxCG, int& ncg_had) const;
+		     int MaxCG, int& ncg_had) const = 0;
   
 };
 
