@@ -1,13 +1,15 @@
-// $Id: unprec_wilson_dsdu_w.cc,v 1.1 2003-04-09 20:35:03 edwards Exp $
+// $Id: unprec_wilson_dsdu_w.cc,v 1.2 2003-04-09 20:47:40 edwards Exp $
 /*! \file
  *  \brief dS/dU_f for unpreconditioned Wilson fermions
  */
 
 #include "chromabase.h"
 #include "fermact.h"
-#include "primitives.h"
-#include "common_declarations.h"
-#include "actions/ferm/invert/invcg2.h"
+//#include "primitives.h"
+//#include "common_declarations.h"
+//#include "actions/ferm/linop/unprec_wilson_linop_w.h"
+#include "actions/ferm/fermacts/unprec_wilson_fermact_w.h"
+
 
 
 //! Computes the derivative of the fermionic action respect to the link field
@@ -22,10 +24,13 @@
  * psi -- [1./(M_dag*M)]*chi_  ( read ) 
  */
 
-void UnprecWilsonFermAct::dsdu(const multi1d<LatticeColorMatrix>& u, 
-			       const LatticeFermion& psi)
+multi1d<LatticeColorMatrix> UnprecWilsonFermAct::dsdu(const multi1d<LatticeColorMatrix>& u, 
+						      const LatticeFermion& psi) const
 {
   multi1d<LatticeColorMatrix> ds_u(Nd);
+
+  // hack
+  ds_u = 0;
 
 #if 0
   LatticeColorMatrix utmp_1;
