@@ -1,4 +1,4 @@
-// $Id: param_io.cc,v 1.36 2005-02-21 19:28:59 edwards Exp $
+// $Id: param_io.cc,v 1.37 2005-02-22 02:49:59 edwards Exp $
 /*! \file
  *  \brief Various parameter readers/writers for main programs
  */
@@ -78,8 +78,6 @@ SmearingParam_t::SmearingParam_t()
 //! Initialize a anisotropy param struct
 AnisoParam_t::AnisoParam_t()
 {
-  QDPIO::cout << "Create AnisoParam_t" << endl;
-
   anisoP = false;
   t_dir  = Nd-1;   // doesn't matter - should not be used
   xi_0   = 1;
