@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ev_state.h,v 1.2 2003-12-02 22:34:37 edwards Exp $
+// $Id: ev_state.h,v 1.3 2003-12-03 03:04:37 edwards Exp $
 /*! @file
  * @brief Connection state holding eigenvectors
  *
@@ -13,6 +13,80 @@
 
 using namespace QDP;
 
+//! Support class for fermion actions and linear operators
+/*! @ingroup state
+ *
+ * Holds a gauge field and eigenvectors for some auxilliary fermion action
+ *
+ * The template type is that of the eigenvectors
+ */
+template<typename T>
+class EVConnectStateBase : public ConnectState
+{
+public:
+  //! Return the link fields needed in constructing linear operators
+  virtual const multi1d<LatticeColorMatrix>& getLinks() const = 0;
+
+  //! Return the eigenvalues
+  virtual const multi1d<WordBase_t>& getEigVal() const = 0;
+
+  //! Return the eigenvectors
+  virtual const multi1d<T>& getEigVec() const = 0;
+
+  //! Return the eigenvectors
+  virtual const WordBase_t& getEigValMax() const = 0;
+
+  //! Virtual destructor to help with cleanup;
+  virtual ~EVConnectStateBase() {}
+};
+
+
+//! Proxy for support class for fermion actions and linear operators
+/*! @ingroup state
+ *
+ * Holds things like color link fields and other info needed for linear
+ * operators. 
+ */
+class EVConnectStateProxy : public EVConnectStateBase
+{
+public:
+  //! Initialize pointer with existing pointer
+  /*! Requires that the pointer p is a return value of new */
+  explicit EVConnectStateProxy(const EVConnectStateBase* p=0) : state(p) {}
+
+  //! Copy pointer (one more owner)
+  EVConnectStateProxy(const EVConnectStateProxy& p) : state(p.state) {}
+
+  //! Access the value to which the pointer refers
+  const EVConnectStateBase& operator*() const {return state.operator*();}
+  const EVConnectStateBase* operator->() const {return state.operator->();}
+
+  //! Return the link fields needed in constructing linear operators
+  const multi1d<LatticeColorMatrix>& getLinks() const 
+    {state->getLinks();}
+
+  //! Return the eigenvalues
+  const multi1d<WordBase_t>& getEigVal() const
+    {state->getEigVal();}
+
+  //! Return the eigenvectors
+  const multi1d<T>& getEigVec() const
+    {state->getEigVec();}
+
+  //! Return the eigenvectors
+  const WordBase_t& getEigValMax() const
+    {state->getEigValMax();}
+
+protected:
+  //! Assignment
+  /*! Could easily be supported, but not sure why to do so... */
+  EVConnectStateProxy& operator=(const EVConnectStateProxy& p) {}
+
+private:
+  Handle<const EVConnectStateBase>  state;
+};
+
+
 //! Connection-State also containing eigenvectors
 /*! @ingroup fermact
  *
@@ -21,7 +95,7 @@ using namespace QDP;
  * The template type is that of the eigenvectors
  */
 template<typename T>
-class EVConnectState : public ConnectState
+class EVConnectState : public EVConnectStateBase
 {
 public:
   /*! 
@@ -35,26 +109,28 @@ public:
   EVConnectState(const multi1d<LatticeColorMatrix>& u_)
     {
       u = u_;   // hhmm, for now make a copy
+      eigValMax = 0;
     }
 
   //! Full constructor
   EVConnectState(const multi1d<LatticeColorMatrix>& u_,  
 		 const multi1d<WordBase_t>& val_, 
-		 const multi1d<T>& vec_)
+		 const multi1d<T>& vec_,
+		 const WordBase_t& val_max_)
     {
       // hhmm, for now make a copy
       u = u_;
       eigVal = val_;
       eigVec = vec_;
+      eigValMax = val_max_;
     }
 
   //! Copy constructor
   /*! 
    * Written as a deep copy, but not expected to be used 
-   *
-   * OOpps, need to convert this to a handle version
    */
-  EVConnectState(const EVConnectState& a) : u(a.u), eigVal(a.eigVal), eigVec(a.eigVec) 
+  EVConnectState(const EVConnectState& a) : u(a.u), eigVal(a.eigVal), eigVec(a.eigVec),
+					    eigValMax(a.eigValMax)
     {}
 
   //! Destructor
@@ -69,6 +145,9 @@ public:
   //! Return the eigenvectors
   const multi1d<T>& getEigVec() const {return eigVec;}
 
+  //! Return the max eigenvalues
+  const WordBase_t& getEigValMax() const {return eigValMax;}
+
 private:
   EVConnectState() {}  // hide default constructur
   void operator=(const EVConnectState&) {} // hide =
@@ -77,6 +156,7 @@ private:
   multi1d<LatticeColorMatrix> u;
   multi1d<WordBase_t>  eigVal;
   multi1d<T>           eigVec;
+  WordBase_t           eigValMax;
 };
 
 
