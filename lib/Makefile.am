@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.2 2003-01-04 05:11:43 edwards Exp $
+# $Id: Makefile.am,v 1.3 2003-02-14 22:11:42 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -64,7 +64,7 @@ HDRS =  szin.h primitives.h defs.h common_declarations.h geom.h
 # Object files to add if building the Wilson Builds...
 # This is OK, since Ns is determined at configure time
 #
-WILSON_SRCS = dslashm_w.cc baryon_w.cc mesons_w.cc
+WILSON_SRCS = dslashm_w.cc baryon_w.cc mesons_w.cc lwldslash_w.cc
 
 WILSON_OBJS = $(WILSON_SRCS:.cc=.o)
 #
