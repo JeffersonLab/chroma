@@ -1,31 +1,40 @@
-/*   $Id: fuzwilp.cc,v 1.1 2004-04-26 16:12:49 mcneile Exp $ ($Date: 2004-04-26 16:12:49 $) */
-
-/* Computes time-like APE_fuzzed Wilson loops, including non-planar loops, */
-/* Based on RE's SZIN code fuzwilp.m                                       */
-/* This version makes APE-smeared links with no blocking as required
-/*          for potential clculations                                      */
-/*									   */ 
-/* Warning: This version is VERY Slow as it has non-recursive shifting     */
-/*          of some link products                                               */
-/*          Search for 'cap' on loop values to control no of loops	   */
-/* 	    calculated							   */
-/* Warning: this works only for Nc = 2 and 3 ! (Projection of              */
-/*                                              smeared/blocked links)     */
-/* Warning: this version assumes the space-like directions (perpendicular  */
-/*          to j_decay) to have equal length.                              */
-
-/* u       -- gauge field ( Read ) */
-/* j_decay -- 'time' direction for 'fuzzed' Wilson loops ( Read ) */
-/* n_smear -- number of applying smearing to the gauge links ( Read ) */
-/* sm_fact -- "smearing" factor = weight of old link w. r. to staples ( Read ) */
-/* BlkAccu -- accuracy in fuzzy link projection ( Read ) */
-/* BlkMax  -- maximum number of iterations in fuzzy link projection ( Read ) */
+// $Id: fuzwilp.cc,v 1.2 2004-04-27 20:29:07 edwards Exp $ fuzwilp.h,v 1.1 2004/04/26 16:12:49 mcneile Exp $
+/*! \file
+ *  \brief Calculate ape-fuzzed Wilson loops
+ */
 
 #include "chromabase.h"
 #include "meas/smear/ape_smear.h"
 #include "meas/glue/fuzwilp.h"
 
 using namespace QDP;
+
+//! Calculate ape-fuzzed Wilson loops
+/*!
+ * \ingroup glue
+ *
+ * Computes time-like APE_fuzzed Wilson loops, including non-planar loops,
+ *
+ * This version makes APE-smeared links with no blocking as required
+ *          for potential clculations
+ *
+ * Warning: This version is VERY Slow as it has non-recursive shifting
+ *          of some link products
+ *          Search for 'cap' on loop values to control no of loops
+ * 	    calculated
+ * Warning: this works only for Nc = 2 and 3 ! (Projection of
+ *                                              smeared/blocked links)
+ *
+ * Warning: this version assumes the space-like directions (perpendicular
+ *          to j_decay) to have equal length.
+ *
+ * \param u         gauge field ( Read )
+ * \param j_decay   'time' direction for 'fuzzed' Wilson loops ( Read )
+ * \param n_smear   number of applying smearing to the gauge links ( Read )
+ * \param sm_fact   "smearing" factor = weight of old link w. r. to staples ( Read )
+ * \param BlkAccu   accuracy in fuzzy link projection ( Read )
+ * \param BlkMax    maximum number of iterations in fuzzy link projection ( Read ) 
+ */
 
 void fuzwilp( const multi1d<LatticeColorMatrix>& u, 
 	int j_decay, int n_smear, 
