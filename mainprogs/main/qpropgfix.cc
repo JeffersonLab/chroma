@@ -1,4 +1,4 @@
-// $Id: qpropgfix.cc,v 1.1 2004-06-03 18:34:26 edwards Exp $
+// $Id: qpropgfix.cc,v 1.2 2004-06-03 20:45:15 edwards Exp $
 /*! \file
  *  \brief Applies gauge transformation matrices on a propagator
  */
@@ -218,8 +218,6 @@ int main(int argc, char *argv[])
 
   xml_out.flush();
 
-
-  multi1d<int> t_source = source_header.t_source;
 
   /*
    * Gauge transform the beasty
