@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.78 2003-11-09 22:26:58 edwards Exp $
+# $Id: Makefile.in,v 1.79 2003-11-10 03:05:09 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -42,7 +42,7 @@ POST_UNINSTALL = :
 host_triplet = @host@
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_1 = -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
 @BUILD_WILSON_LIBS_TRUE@am__append_2 = baryon_w.cc mesons_w.cc curcor2_w.cc lwldslash_w.cc formfac_w.cc \
-@BUILD_WILSON_LIBS_TRUE@              sink_smear2_w.cc barcomp_w.cc transf_w.cc ldwfdslash_w.cc unprec_qprop_w.cc \
+@BUILD_WILSON_LIBS_TRUE@              sink_smear2_w.cc barcomp_w.cc transf_w.cc ldwfdslash_w.cc fermact_qprop.cc \
 @BUILD_WILSON_LIBS_TRUE@              unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc unprec_wilson_dsdu_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              unprec_dwf_fermact_w.cc unprec_dwf_linop_w.cc unprec_dwf_dsdu_w.cc \
 @BUILD_WILSON_LIBS_TRUE@              unprec_dwf_qprop_w.cc dwffld_w.cc \
@@ -51,7 +51,9 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@              p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc
 
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_3 = lwldslash_w_sse.cc
-@BUILD_STAGGERED_LIBS_TRUE@am__append_4 = mesphas_s.cc mesphas_follana_s.cc pions_follana_s.cc follana_io_s.cc
+@BUILD_STAGGERED_LIBS_TRUE@am__append_4 = mesphas_s.cc mesphas_follana_s.cc pions_follana_s.cc follana_io_s.cc \
+@BUILD_STAGGERED_LIBS_TRUE@              fermact_qprop.cc 
+
 VPATH = $(TOPDIR) $(TOPDIR)/lib $(TOPDIR)/lib/actions $(TOPDIR)/lib/actions/boson $(TOPDIR)/lib/actions/boson/operator $(TOPDIR)/lib/actions/ferm $(TOPDIR)/lib/actions/ferm/dsdu $(TOPDIR)/lib/actions/ferm/fermacts $(TOPDIR)/lib/actions/ferm/invert $(TOPDIR)/lib/actions/ferm/linop $(TOPDIR)/lib/actions/ferm/qprop $(TOPDIR)/lib/actions/gauge $(TOPDIR)/lib/geom $(TOPDIR)/lib/info $(TOPDIR)/lib/io $(TOPDIR)/lib/meas $(TOPDIR)/lib/meas/eig $(TOPDIR)/lib/meas/gfix $(TOPDIR)/lib/meas/glue $(TOPDIR)/lib/meas/hadron $(TOPDIR)/lib/meas/pbp $(TOPDIR)/lib/meas/schrfun $(TOPDIR)/lib/meas/smear $(TOPDIR)/lib/meas/sources $(TOPDIR)/lib/update $(TOPDIR)/lib/update/heatbath $(TOPDIR)/lib/update/molecdyn $(TOPDIR)/lib/update/molecdyn/est $(TOPDIR)/lib/update/molecdyn/mese $(TOPDIR)/lib/update/molecdyn/noise $(TOPDIR)/lib/update/molecdyn/step $(TOPDIR)/lib/util $(TOPDIR)/lib/util/comm $(TOPDIR)/lib/util/ferm $(TOPDIR)/lib/util/ft $(TOPDIR)/lib/util/gauge $(TOPDIR)/lib/util/misc $(TOPDIR)/lib/util/random $(TOPDIR)/include $(TOPDIR)/mainprogs $(TOPDIR)/mainprogs/main $(TOPDIR)/mainprogs/tests $(TOPDIR)/root
 ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
@@ -200,7 +202,7 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	laplacian.cc su2extract.cc sunfill.cc invcg2.cc qprop_io.cc \
 	milc_io.cc readmilc.cc writemilc.cc baryon_w.cc mesons_w.cc \
 	curcor2_w.cc lwldslash_w.cc formfac_w.cc sink_smear2_w.cc \
-	barcomp_w.cc transf_w.cc ldwfdslash_w.cc unprec_qprop_w.cc \
+	barcomp_w.cc transf_w.cc ldwfdslash_w.cc fermact_qprop.cc \
 	unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
 	unprec_wilson_dsdu_w.cc unprec_dwf_fermact_w.cc \
 	unprec_dwf_linop_w.cc unprec_dwf_dsdu_w.cc \
@@ -216,7 +218,7 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 @BUILD_WILSON_LIBS_TRUE@	sink_smear2_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	barcomp_w.$(OBJEXT) transf_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	ldwfdslash_w.$(OBJEXT) \
-@BUILD_WILSON_LIBS_TRUE@	unprec_qprop_w.$(OBJEXT) \
+@BUILD_WILSON_LIBS_TRUE@	fermact_qprop.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	unprec_wilson_fermact_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	unprec_wilson_linop_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	unprec_wilson_dsdu_w.$(OBJEXT) \
@@ -236,7 +238,8 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 @BUILD_STAGGERED_LIBS_TRUE@am__objects_3 = mesphas_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	mesphas_follana_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	pions_follana_s.$(OBJEXT) \
-@BUILD_STAGGERED_LIBS_TRUE@	follana_io_s.$(OBJEXT)
+@BUILD_STAGGERED_LIBS_TRUE@	follana_io_s.$(OBJEXT) \
+@BUILD_STAGGERED_LIBS_TRUE@	fermact_qprop.$(OBJEXT)
 am_libchroma_a_OBJECTS = rgauge.$(OBJEXT) taproj.$(OBJEXT) \
 	hotst.$(OBJEXT) expm12.$(OBJEXT) mesplq.$(OBJEXT) \
 	polylp.$(OBJEXT) reunit.$(OBJEXT) unit_check.$(OBJEXT) \
@@ -261,7 +264,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/ape_smear.Po ./$(DEPDIR)/barcomp_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/baryon_w.Po ./$(DEPDIR)/curcor2_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/d_src_w.Po ./$(DEPDIR)/dwffld_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/expm12.Po ./$(DEPDIR)/follana_io_s.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/expm12.Po ./$(DEPDIR)/fermact_qprop.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/follana_io_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/formfac_w.Po ./$(DEPDIR)/gaus_smear.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/hotst.Po ./$(DEPDIR)/hyp_smear.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/invcg2.Po ./$(DEPDIR)/klein_gord.Po \
@@ -291,7 +295,6 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_dwf_fermact_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_dwf_linop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_dwf_qprop_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/unprec_qprop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_wilson_dsdu_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_wilson_fermact_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_wilson_linop_w.Po \
@@ -372,6 +375,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/d_src_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dwffld_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/expm12.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fermact_qprop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/follana_io_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/formfac_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gaus_smear.Po@am__quote@
@@ -414,7 +418,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_dwf_fermact_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_dwf_linop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_dwf_qprop_w.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_qprop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_wilson_dsdu_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_wilson_fermact_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_wilson_linop_w.Po@am__quote@
