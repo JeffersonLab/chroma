@@ -1,4 +1,4 @@
-// $Id: t_propagator_fuzz_s.cc,v 1.10 2004-12-30 12:27:15 mcneile Exp $
+// $Id: t_propagator_fuzz_s.cc,v 1.11 2004-12-30 14:56:30 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  *
@@ -171,18 +171,6 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
       read(paramtop, "Mass", input.param.Mass);
       read(paramtop, "u0" , input.param.u0);
 
-#if 0
-      for (int i=0; i < input.param.numKappa; ++i) {
-	if (toBool(input.param.Kappa[i] < 0.0)) {
-	  QDPIO::cerr << "Unreasonable value for Kappa." << endl;
-	  QDPIO::cerr << "  Kappa[" << i << "] = " << input.param.Kappa[i] << endl;
-	  QDP_abort(1);
-	} else {
-	  QDPIO::cout << " Spectroscopy Kappa: " << input.param.Kappa[i] << endl;
-	}
-      }
-#endif
-
       break;
 
     default :
@@ -261,14 +249,17 @@ stag_src_type get_stag_src(XMLReader& xml, const string& path)
       read(xml, path, src_name);
       if (src_name == "LOCAL_SRC") 
 	{
+	  QDPIO::cout << "****> LOCAL SOURCE <****" << endl;
 	  ans = LOCAL_SRC ; 
 	} 
       else if (src_name == "GAUGE_INVAR_LOCAL_SOURCE") 
 	{
+	  QDPIO::cout << "****> GAUGE INVARIANT LOCAL SOURCE <****" << endl;
 	  ans = GAUGE_INVAR_LOCAL_SOURCE ; 
 	} 
       else if (src_name == "FUZZED_SRC") 
 	{
+	  QDPIO::cout << "***> FUZZED SOURCE ****" << endl;
 	  ans = FUZZED_SRC ; 
 	} 
 
@@ -305,7 +296,8 @@ int main(int argc, char **argv)
   Propagator_input_t  input;
 
   // Instantiate xml reader for DATA
-  XMLReader xml_in("../../tests/t_asqtad_prop/DATA");
+  //  XMLReader xml_in("../../tests/t_asqtad_prop/DATA");
+ XMLReader xml_in("./DATA");
 
   // Read data
   read(xml_in, "/propagator", input);
@@ -363,11 +355,11 @@ int main(int argc, char **argv)
 
 
 
-  // Instantiate XML writer for XMLDAT
+  // Instantiate XML writer for the output
   XMLFileWriter xml_out("t_propagator_fuzz_s.xml");
   push(xml_out, "fuzzed_hadron_corr");
 
-  // Write out the input
+  // Write out the input parameter file
   write(xml_out, "Input", xml_in);
 
   // Write out the config header
@@ -464,10 +456,9 @@ int main(int argc, char **argv)
 
   //
   // Loop over the source color, creating the source
-  // and calling the relevant propagator routines. The QDP
-  // terminology is that a staggered propagator is a matrix in color space
+  // and calling the relevant propagator routines.
   // 
-  //
+
   LatticeStaggeredPropagator quark_propagator;
   XMLBufferWriter xml_buf;
   int ncg_had = 0;
@@ -478,103 +469,85 @@ int main(int argc, char **argv)
   multi1d<LatticeStaggeredPropagator> stag_prop(8);
 
   // the staggered spectroscopy code is hardwired
-  // for many pions
+  // for many pions (why range of 0)
   for(int src_ind = 0; src_ind < 0; ++src_ind)
     stag_prop[src_ind] = zero ;
 
 
-  // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG 
-  multi1d<int> Coord(Nd);
-
-  for(int src_ind = 0; src_ind < 16; ++src_ind)
-    {
-      PropIndexTodelta(src_ind, Coord) ; 
-      cout << src_ind << " [] " << Coord[0] << " " << Coord[1] << " " << Coord[2] << " " ;
-      cout << Coord[3] << " ===> " <<  deltaToPropIndex(Coord)  << endl ; 
-    }
-
-
+  // pass the origin from input file
   int t_source = 0;
+  QDPIO::cout << "Source time slice = " << t_source << endl;
 
-  // just look at the local pion
+  stag_src_type type_of_src = 
+    get_stag_src(xml_in,"/propagator/param/src_type")   ;
+
+
+  // just look at the local pion (8 should be system constant)
   for(int src_ind = 0; src_ind < 8 ; ++src_ind){
     psi = zero;   // note this is ``zero'' and not 0
     
 
-      for(int color_source = 0; color_source < Nc; ++color_source) {
-        QDPIO::cout << "Inversion for Color =  " << color_source << endl;
-        QDPIO::cout << "Source time slice = " << t_source << endl;
-        int spin_source = 0;
+      for(int color_source = 0; color_source < Nc; ++color_source) 
+	{
+	  QDPIO::cout << "Inversion for Color =  " << color_source << endl;
 
-        q_source = zero ;
-        
+	  q_source = zero ;
 
-	//  Start to develop fuzzed source code
-	//	enum stag_src_type { LOCAL_SRC , FUZZED_SRC , GAUGE_INVAR_LOCAL_SOURCE } ;
-	//		enum stag_src_type type_of_src = FUZZED_SRC  ;
-	//	enum stag_src_type type_of_src = LOCAL_SRC  ;
-	 stag_src_type type_of_src = 
-	   get_stag_src(xml_in,"/propagator/param/src_type")   ;
+	  if( type_of_src == LOCAL_SRC )
+	    {
+	      q_source = zero ;
+	      multi1d<int> coord(Nd);
 
-	if( type_of_src == LOCAL_SRC )
-	  {
-	    QDPIO::cout << "****> LOCAL SOURCE <****" << endl;
-	
-	    q_source = zero ;
-	    multi1d<int> coord(Nd);
-	    //	    coord[0]=0; coord[1] = 0; coord[2] = 0; coord[3] = 0;
-	    PropIndexTodelta(src_ind, coord) ; 
-	    srcfil(q_source, coord,color_source ) ;
-	  }
-	else if( type_of_src == GAUGE_INVAR_LOCAL_SOURCE  )
-	  {
-	    QDPIO::cout << "****> GAUGE INVARIANT LOCAL SOURCE <****" << endl;
+	      PropIndexTodelta(src_ind, coord) ; 
+	      srcfil(q_source, coord,color_source ) ;
+	    }
+	  else if( type_of_src == GAUGE_INVAR_LOCAL_SOURCE  )
+	    {
+	      q_source = zero ;
+	      multi1d<int> coord(Nd);
+	      
+	      // start with local source 
+	      coord[0]=0; coord[1] = 0; coord[2] = 0; coord[3] = 0;
+	      srcfil(q_source, coord,color_source ) ;
+	      
+	      // now do the shift
+	      PropIndexTodelta(src_ind, coord) ; 
+	      q_source_fuzz = q_source  ;
+	      q_source = shiftDeltaPropCov(coord,q_source_fuzz,u,
+					   false); 
 
-	    q_source = zero ;
-	    multi1d<int> coord(Nd);
+	    }
+	  else if( type_of_src == FUZZED_SRC )
+	    {
+	      int fuzz_width = 2 ; 
 
-	    // start with local source 
-	    coord[0]=0; coord[1] = 0; coord[2] = 0; coord[3] = 0;
-	    srcfil(q_source, coord,color_source ) ;
+	      //	      QDPIO::cout << "fuzz width = " << fuzz_width  << endl;
+	    
+	      q_source = zero ;
+	      multi1d<int> coord(Nd);
 
-	    // now do the shift
-	    PropIndexTodelta(src_ind, coord) ; 
-	    q_source_fuzz = q_source  ;
-	    q_source = shiftDeltaPropCov(coord,q_source_fuzz,u,
-					 false); 
-
-	    // MORE WORK
-	  }
-	else if( type_of_src == FUZZED_SRC )
-	  {
-	    int fuzz_width = 2 ; 
-	    QDPIO::cout << "***> FUZZED SOURCE ****" << endl;
-	    QDPIO::cout << "fuzz width = " << fuzz_width  << endl;
-
-	    q_source = zero ;
-	    multi1d<int> coord(Nd);
-	    //	    coord[0]=0; coord[1] = 0; coord[2] = 0; coord[3] = 0;
-	    PropIndexTodelta(src_ind, coord) ; 
-	    srcfil(q_source, coord,color_source ) ;
+	      PropIndexTodelta(src_ind, coord) ; 
+	      srcfil(q_source, coord,color_source ) ;
 
 
-	    fuzz_smear(u_smr, q_source,q_source_fuzz, 
-		       fuzz_width, j_decay) ; 
+	      fuzz_smear(u_smr, q_source,q_source_fuzz, 
+			 fuzz_width, j_decay) ; 
 
-	    q_source = q_source_fuzz  ;
-	  }
+	      q_source = q_source_fuzz  ;
+	    }
 
 
 
-        // Use the last initial guess as the current guess
+	  // Use the last initial guess as the current guess
 
-        // Compute the propagator for given source color/spin 
-        // int n_count;
+	  // Compute the propagator for given source color/spin 
+	  // int n_count;
 
-        S_f.qprop(psi, state, q_source, input.param.invParam, n_count);
+	  S_f.qprop(psi, state, q_source, input.param.invParam, n_count);
     
-        ncg_had += n_count;
+	  ncg_had += n_count;
 
+	// this is done for xmldif reasons
 	if( src_ind == 0 )
 	  {
 	    push(xml_out,"Qprop");
@@ -594,58 +567,64 @@ int main(int argc, char **argv)
       stag_prop[src_ind] = quark_propagator;
       } // end src_ind
   
-      int t_length = input.param.nrow[3];
+
       push(xml_out, "Hadrons_from_time_source");
       write(xml_out, "source_time", t_source);
+      if( type_of_src == LOCAL_SRC )
+	{ write(xml_out, "source_type", "LOCAL_SRC"); }
+      else if( type_of_src == GAUGE_INVAR_LOCAL_SOURCE  )
+	{ write(xml_out, "source_type", "GAUGE_INVAR_LOCAL_SOURCE"); }
+      else if( type_of_src == FUZZED_SRC )
+	{ write(xml_out, "source_type", "FUZZED_SRC"); }
 
+      bool use_gauge_invar_oper ;
+      use_gauge_invar_oper = false ;
+      read(xml_in, "/propagator/param/use_gauge_invar_oper",use_gauge_invar_oper );
+
+      int t_length = input.param.nrow[3];
       staggered_pions pseudoscalar(t_length,u) ; 
 
-  bool use_gauge_invar_oper ;
-  use_gauge_invar_oper = false ;
-  read(xml_in, "/propagator/param/use_gauge_invar_oper",use_gauge_invar_oper );
+      write(xml_out, "use_gauge_invar_oper", use_gauge_invar_oper);
+      if( use_gauge_invar_oper )
+	{
+	  cout << "Using gauge invariant operators "  << endl ; 
+	  pseudoscalar.use_gauge_invar() ;
 
-  if( use_gauge_invar_oper )
-    {
-      cout << "Using gauge invariant operators "  << endl ; 
-      pseudoscalar.use_gauge_invar() ;
-    }
-  else
-    {
-      cout << "Using NON-gauge invariant operators "  << endl ; 
-      pseudoscalar.use_NON_gauge_invar()  ;
-    }
+	}
+      else
+	{
+	  cout << "Using NON-gauge invariant operators "  << endl ; 
+	  pseudoscalar.use_NON_gauge_invar()  ;
+	}
+
 
       pseudoscalar.compute(stag_prop, j_decay);
       pseudoscalar.dump(t_source,xml_out);
       pop(xml_out);
-
-      //      pop(xml_out);
-
-
-
+  
       //
       // compute some simple baryon operators
       //
       int bc_spec = 0 ;
       multi1d<int> coord(Nd);
       coord[0]=0; coord[1] = 0; coord[2] = 0; coord[3] = 0;
-
+      
       multi1d<Complex>  barprop(input.param.nrow[3]) ;
-
+      
       baryon_s(quark_propagator,barprop,
 	       coord,j_decay, bc_spec) ;
-	       
+      
       push(xml_out, "baryon");
       write(xml_out, "nucleon", barprop);
       pop(xml_out);
+      
+      
+      pop(xml_out);
+      xml_out.close();
+      xml_in.close();
 
-      pop(xml_out); // end of document
+      // Time to bolt
+      QDP_finalize();
 
-  xml_out.close();
-  xml_in.close();
-
-  // Time to bolt
-  QDP_finalize();
-
-  exit(0);
+      exit(0);
 }
