@@ -72,4 +72,5 @@ typedef struct {
 
 ZOLOTAREV_DATA* zolotarev(PRECISION epsilon, int n, int type);
 ZOLOTAREV_DATA* higham(PRECISION epsilon, int n);
+void zolotarev_free(ZOLOTAREV_DATA* f);
 #endif
