@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.26 2003-04-24 18:35:10 edwards Exp $
+# $Id: Makefile.am,v 1.27 2003-04-26 22:32:58 flemingg Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -62,7 +62,9 @@ lib_LIBRARIES = libchroma.a
 #
 # Various header files. 
 #
-HDRS =  chroma.h chromabase.h chromainc.h primitives.h defs.h common_declarations.h geom.h
+QDPXX_HDRS = defs.h
+HDRS =  chroma.h chromabase.h chromainc.h primitives.h common_declarations.h \
+        geom.h
 
 #
 # Fermion independent sources
@@ -76,11 +78,11 @@ GENERIC_SRCS = $(HDRS) gaus_smear.cc taproj.cc hotst.cc expm12.cc \
 # Object files to add if building the Wilson Builds...
 # This is OK, since Ns is determined at configure time
 #
-WILSON_SRCS = baryon_w.cc mesons_w.cc lwldslash_w.cc\
-	      formfac_w.cc sink_smear2_w.cc barcomp_w.cc transf_w.cc \
-              unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc unprec_wilson_dsdu_w.cc \
-              unprec_qprop_w.cc readszinqprop_w.cc \
-	      overlapbu_linop_w.cc
+WILSON_SRCS = baryon_w.cc mesons_w.cc lwldslash_w.cc formfac_w.cc \
+              sink_smear2_w.cc barcomp_w.cc transf_w.cc \
+              unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
+              unprec_wilson_dsdu_w.cc  unprec_qprop_w.cc readszinqprop_w.cc \
+              overlapbu_linop_w.cc
 #              zolotarev4d_fermact_w.cc zolotarev4d_linop_w.cc lovlapms_w.cc
 
 # dslashm_w.cc 
@@ -94,6 +96,7 @@ STAGGERED_SRCS =
 #
 # An AM_CONDITIONAL if statement to decide which fermion type
 #
+nodist_libchroma_a_SOURCES = $(QDPXX_HDRS)
 if BUILD_WILSON_LIBS
   libchroma_a_SOURCES = $(GENERIC_SRCS) $(WILSON_SRCS)
   EXTRA_libchroma_a_SOURCES = $(STAGGERED_SRCS)

@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.37 2003-04-26 03:49:59 flemingg Exp $
+# $Id: Makefile.in,v 1.38 2003-04-26 22:32:58 flemingg Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -110,7 +110,10 @@ lib_LIBRARIES = libchroma.a
 #
 # Various header files. 
 #
-HDRS = chroma.h chromabase.h chromainc.h primitives.h defs.h common_declarations.h geom.h
+QDPXX_HDRS = defs.h
+HDRS = chroma.h chromabase.h chromainc.h primitives.h common_declarations.h \
+        geom.h
+
 
 #
 # Fermion independent sources
@@ -125,11 +128,11 @@ GENERIC_SRCS = $(HDRS) gaus_smear.cc taproj.cc hotst.cc expm12.cc \
 # Object files to add if building the Wilson Builds...
 # This is OK, since Ns is determined at configure time
 #
-WILSON_SRCS = baryon_w.cc mesons_w.cc lwldslash_w.cc\
-	      formfac_w.cc sink_smear2_w.cc barcomp_w.cc transf_w.cc \
-              unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc unprec_wilson_dsdu_w.cc \
-              unprec_qprop_w.cc readszinqprop_w.cc \
-	      overlapbu_linop_w.cc
+WILSON_SRCS = baryon_w.cc mesons_w.cc lwldslash_w.cc formfac_w.cc \
+              sink_smear2_w.cc barcomp_w.cc transf_w.cc \
+              unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
+              unprec_wilson_dsdu_w.cc  unprec_qprop_w.cc readszinqprop_w.cc \
+              overlapbu_linop_w.cc
 
 #              zolotarev4d_fermact_w.cc zolotarev4d_linop_w.cc lovlapms_w.cc
 
@@ -144,6 +147,8 @@ STAGGERED_SRCS =
 #
 # An AM_CONDITIONAL if statement to decide which fermion type
 #
+nodist_libchroma_a_SOURCES = $(QDPXX_HDRS)
+
 @BUILD_STAGGERED_LIBS_TRUE@libchroma_a_SOURCES = $(GENERIC_SRCS) $(STAGGERED_SRCS)
 @BUILD_WILSON_LIBS_TRUE@libchroma_a_SOURCES = $(GENERIC_SRCS) $(WILSON_SRCS)
 @BUILD_STAGGERED_LIBS_TRUE@EXTRA_libchroma_a_SOURCES = $(WILSON_SRCS)
@@ -174,7 +179,9 @@ am__objects_3 = baryon_w.$(OBJEXT) mesons_w.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	$(am__objects_1)
 @BUILD_WILSON_LIBS_TRUE@am_libchroma_a_OBJECTS = $(am__objects_2) \
 @BUILD_WILSON_LIBS_TRUE@	$(am__objects_3)
-libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS)
+nodist_libchroma_a_OBJECTS = $(am__objects_1)
+libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS) \
+	$(nodist_libchroma_a_OBJECTS)
 
 DEFS = @DEFS@
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
@@ -216,7 +223,7 @@ CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 DIST_SOURCES = $(libchroma_a_SOURCES) $(EXTRA_libchroma_a_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(libchroma_a_SOURCES) $(EXTRA_libchroma_a_SOURCES)
+SOURCES = $(libchroma_a_SOURCES) $(EXTRA_libchroma_a_SOURCES) $(nodist_libchroma_a_SOURCES)
 
 all: all-am
 
