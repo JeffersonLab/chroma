@@ -23,7 +23,7 @@ class GaugeActParamsBase {
   virtual GaugeActParamsBase* clone(void) const = 0;
 
   // get Type
-  virtual const GaugeActType_t getType(void) const =0;
+  virtual GaugeActType_t getType(void) const =0;
 };
 
 GaugeActParamsBase* readGaugeActParams(XMLReader& xml, const string& path);
