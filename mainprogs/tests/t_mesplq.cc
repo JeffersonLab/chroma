@@ -1,4 +1,4 @@
-// $Id: t_mesplq.cc,v 1.8 2003-09-11 00:46:04 edwards Exp $
+// $Id: t_mesplq.cc,v 1.9 2003-10-08 18:54:00 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -19,13 +19,14 @@ int main(int argc, char *argv[])
   Layout::setLattSize(nrow);
   Layout::create();
 
-  NmlWriter nml("t_mesplq.nml");
+  XMLFileWriter xml("t_mesplq.xml");
+  push(xml, "t_mesplq");
 
-  push(nml,"lattis");
-  Write(nml,Nd);
-  Write(nml,Nc);
-  Write(nml,nrow);
-  pop(nml);
+  push(xml,"lattis");
+  Write(xml,Nd);
+  Write(xml,Nc);
+  Write(xml,nrow);
+  pop(xml);
 
   //! Example of calling a plaquette routine
   /*! NOTE: the STL is *not* used to hold gauge fields */
@@ -42,14 +43,39 @@ int main(int argc, char *argv[])
 
   // Try out the plaquette routine
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-  cerr << "w_plaq = " << w_plaq << endl;
-  cerr << "link = " << link << endl;
+  cout << "w_plaq = " << w_plaq << endl;
+  cout << "link = " << link << endl;
+
+  // Test polyakov routine
+  multi1d<DComplex> pollp(Nd);
+  for(int mu = 0; mu < Nd; ++mu)
+    polylp(u, pollp[mu], mu);
 
   // Write out the results
-  push(nml,"observables");
-  Write(nml,w_plaq);
-  Write(nml,link);
-  pop(nml);
+  push(xml,"Observables");
+  Write(xml,w_plaq);
+  Write(xml,link);
+  Write(xml,pollp);
+  pop(xml);
+
+
+  // Test gauge invariance
+  rgauge(u);
+
+  MesPlq(u, w_plaq, s_plaq, t_plaq, link);
+  for(int mu = 0; mu < Nd; ++mu)
+    polylp(u, pollp[mu], mu);
+
+  cout << "w_plaq = " << w_plaq << endl;
+  cout << "link = " << link << endl;
+
+  push(xml,"Observables_after_gt");
+  Write(xml,w_plaq);
+  Write(xml,link);
+  Write(xml,pollp);
+  pop(xml);
+
+  pop(xml);
 
   // Time to bolt
   QDP_finalize();
