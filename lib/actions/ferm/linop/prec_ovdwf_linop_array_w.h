@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovdwf_linop_array_w.h,v 1.1 2004-02-13 20:57:11 edwards Exp $
+// $Id: prec_ovdwf_linop_array_w.h,v 1.2 2004-02-14 18:48:35 edwards Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned Overlap-DWF (Borici) linear operator
  */
@@ -126,10 +126,10 @@ protected:
    * \param isign   Flag ( PLUS | MINUS )          (Read)
    * \param cb      checkerboard ( 0 | 1 )         (Read)
    */
-  void applyDiag(multi1d<LatticeFermion>& chi, 
-		 const multi1d<LatticeFermion>& psi, 
-		 enum PlusMinus isign,
-		 const int cb) const;
+  void applyOffDiag(multi1d<LatticeFermion>& chi, 
+		    const multi1d<LatticeFermion>& psi, 
+		    enum PlusMinus isign,
+		    const int cb) const;
 
 private:
   Real WilsonMass;
