@@ -1,4 +1,4 @@
-// $Id: param_io.cc,v 1.6 2004-01-07 04:15:11 edwards Exp $
+// $Id: param_io.cc,v 1.7 2004-01-07 21:01:14 edwards Exp $
 /*! \file
  *  \brief Various parameter readers/writers for main programs
  */
@@ -7,6 +7,25 @@
 #include "io/param_io.h"
 
 using namespace QDP;
+
+//! Convert a Kappa to a mass
+Real kappaToMass(const Real& Kappa)
+{
+  return 1.0/(2*Kappa) - Nd;
+}
+
+
+//! Convert a Kappa to a mass
+multi1d<Real> kappaToMass(const multi1d<Real>& Kappa)
+{
+  multi1d<Real> Mass(Kappa.size());
+
+  for(int i=0; i < Kappa.size(); ++i)
+    Mass[i] = 1.0/(2*Kappa[i]) - Nd;
+
+  return Mass;
+}
+
 
 //! Read a fermion type enum
 void read(XMLReader& xml, const string& path, FermType& param)
