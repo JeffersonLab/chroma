@@ -1,4 +1,4 @@
-// $Id: make_source.cc,v 1.21 2004-02-04 17:41:56 sbasak Exp $
+// $Id: make_source.cc,v 1.22 2004-02-04 19:37:37 edwards Exp $
 /*! \file
  *  \brief Main code for source generation
  */
@@ -46,8 +46,8 @@ int main(int argc, char **argv)
 
   Real sm_fact;		// smearing factor
   int sm_numb;		// number of smearing hits
-  int BlkMax;		// max iterations in max-ing trace
-  Real BlkAccu;		// accuracy of max-ing
+  int BlkMax = 100;	// Maximum number of blocking/smearing iterations
+  Real BlkAccu = 1.0-5;	// Blocking/smearing accuracy
 
   int disp_length;	// displacement length
   int disp_dir;		// displacement direction: x(0),y(1),z(2)
@@ -88,8 +88,6 @@ int main(int argc, char **argv)
 	  read(paramtop, "LaplacePower", LaplacePower);
 	  read(paramtop, "sm_fact", sm_fact);
 	  read(paramtop, "sm_numb", sm_numb);
-	  read(paramtop, "BlkMax", BlkMax);
-	  read(paramtop, "BlkAccu", BlkAccu);
 	  read(paramtop, "disp_length", disp_length);
 	  read(paramtop, "disp_dir", disp_dir);
 	}		
