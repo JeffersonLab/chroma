@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.64 2003-12-09 17:47:32 bjoo Exp $
+# $Id: Makefile.am,v 1.65 2003-12-10 12:38:13 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -123,8 +123,7 @@ endif
 # This is OK since Ns is determined at configure time 
 #
 if BUILD_STAGGERED_LIBS
-libchroma_a_SOURCES += mesphas_s.cc mesphas_follana_s.cc pions_follana_s.cc follana_io_s.cc \
-              fermact_qprop.cc 
+libchroma_a_SOURCES += mesphas_s.cc mesphas_follana_s.cc pions_follana_s.cc follana_io_s.cc fermact_qprop.cc  prec_asq_mdagm_s.cc asqtad_linop_s.cc asq_dsl_s.cc fat7_links_s.cc naik_term_s.cc  qprop_s.cc asqtad_fermact_s.cc invcg2_s.cc
 endif
 
 

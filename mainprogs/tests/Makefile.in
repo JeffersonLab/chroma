@@ -166,7 +166,7 @@ check_PROGRAMS = t_mesplq t_io t_mesons_w t_conslinop t_hypsmear \
                   t_overbu t_ape_smear t_ldwfdslash t_precact
 
 
-EXTRA_PROGRAMS = t_dslashm t_lwldslash t_spprod t_lwldslash_sse t_follana_io_s t_formfac  t_follana_pion_s t_dwflinop t_precdwf t_ovlap_bj
+EXTRA_PROGRAMS = t_dslashm t_lwldslash t_spprod t_lwldslash_sse t_follana_io_s t_formfac  t_follana_pion_s t_dwflinop t_precdwf t_ovlap_bj t_propagator_s
 
 
 #
@@ -228,6 +228,9 @@ t_lwldslash_sse_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_ovlap_bj_SOURCES = t_ovlap_bj.cc
 t_ovlap_bj_DEPENDENCIES = build_chroma_libs rebuild_other_libs
+
+t_propagator_s_SOURCES = t_propagator_s.cc
+t_propagator_s_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 subdir = mainprogs/tests
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
@@ -236,7 +239,7 @@ EXTRA_PROGRAMS = t_dslashm$(EXEEXT) t_lwldslash$(EXEEXT) \
 	t_spprod$(EXEEXT) t_lwldslash_sse$(EXEEXT) \
 	t_follana_io_s$(EXEEXT) t_formfac$(EXEEXT) \
 	t_follana_pion_s$(EXEEXT) t_dwflinop$(EXEEXT) \
-	t_precdwf$(EXEEXT) t_ovlap_bj$(EXEEXT)
+	t_precdwf$(EXEEXT) t_ovlap_bj$(EXEEXT) t_propagator_s$(EXEEXT)
 check_PROGRAMS = t_mesplq$(EXEEXT) t_io$(EXEEXT) t_mesons_w$(EXEEXT) \
 	t_conslinop$(EXEEXT) t_hypsmear$(EXEEXT) t_overbu$(EXEEXT) \
 	t_ape_smear$(EXEEXT) t_ldwfdslash$(EXEEXT) t_precact$(EXEEXT)
@@ -312,6 +315,10 @@ am_t_precdwf_OBJECTS = t_precdwf.$(OBJEXT)
 t_precdwf_OBJECTS = $(am_t_precdwf_OBJECTS)
 t_precdwf_LDADD = $(LDADD)
 t_precdwf_LDFLAGS =
+am_t_propagator_s_OBJECTS = t_propagator_s.$(OBJEXT)
+t_propagator_s_OBJECTS = $(am_t_propagator_s_OBJECTS)
+t_propagator_s_LDADD = $(LDADD)
+t_propagator_s_LDFLAGS =
 am_t_spprod_OBJECTS = t_spprod.$(OBJEXT)
 t_spprod_OBJECTS = $(am_t_spprod_OBJECTS)
 t_spprod_LDADD = $(LDADD)
@@ -332,6 +339,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/t_mesons_w.Po ./$(DEPDIR)/t_mesplq.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_overbu.Po ./$(DEPDIR)/t_ovlap_bj.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_precact.Po ./$(DEPDIR)/t_precdwf.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_propagator_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_spprod.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -345,9 +353,10 @@ DIST_SOURCES = $(t_ape_smear_SOURCES) $(t_conslinop_SOURCES) \
 	$(t_ldwfdslash_SOURCES) $(t_lwldslash_SOURCES) \
 	$(t_lwldslash_sse_SOURCES) $(t_mesons_w_SOURCES) \
 	$(t_mesplq_SOURCES) $(t_overbu_SOURCES) $(t_ovlap_bj_SOURCES) \
-	$(t_precact_SOURCES) $(t_precdwf_SOURCES) $(t_spprod_SOURCES)
+	$(t_precact_SOURCES) $(t_precdwf_SOURCES) \
+	$(t_propagator_s_SOURCES) $(t_spprod_SOURCES)
 DIST_COMMON = $(srcdir)/Makefile.in Makefile.am
-SOURCES = $(t_ape_smear_SOURCES) $(t_conslinop_SOURCES) $(t_dslashm_SOURCES) $(t_dwflinop_SOURCES) $(t_follana_io_s_SOURCES) $(t_follana_pion_s_SOURCES) $(t_formfac_SOURCES) $(t_hypsmear_SOURCES) $(t_io_SOURCES) $(t_ldwfdslash_SOURCES) $(t_lwldslash_SOURCES) $(t_lwldslash_sse_SOURCES) $(t_mesons_w_SOURCES) $(t_mesplq_SOURCES) $(t_overbu_SOURCES) $(t_ovlap_bj_SOURCES) $(t_precact_SOURCES) $(t_precdwf_SOURCES) $(t_spprod_SOURCES)
+SOURCES = $(t_ape_smear_SOURCES) $(t_conslinop_SOURCES) $(t_dslashm_SOURCES) $(t_dwflinop_SOURCES) $(t_follana_io_s_SOURCES) $(t_follana_pion_s_SOURCES) $(t_formfac_SOURCES) $(t_hypsmear_SOURCES) $(t_io_SOURCES) $(t_ldwfdslash_SOURCES) $(t_lwldslash_SOURCES) $(t_lwldslash_sse_SOURCES) $(t_mesons_w_SOURCES) $(t_mesplq_SOURCES) $(t_overbu_SOURCES) $(t_ovlap_bj_SOURCES) $(t_precact_SOURCES) $(t_precdwf_SOURCES) $(t_propagator_s_SOURCES) $(t_spprod_SOURCES)
 
 all: all-am
 
@@ -415,6 +424,9 @@ t_precact$(EXEEXT): $(t_precact_OBJECTS) $(t_precact_DEPENDENCIES)
 t_precdwf$(EXEEXT): $(t_precdwf_OBJECTS) $(t_precdwf_DEPENDENCIES) 
 	@rm -f t_precdwf$(EXEEXT)
 	$(CXXLINK) $(t_precdwf_LDFLAGS) $(t_precdwf_OBJECTS) $(t_precdwf_LDADD) $(LIBS)
+t_propagator_s$(EXEEXT): $(t_propagator_s_OBJECTS) $(t_propagator_s_DEPENDENCIES) 
+	@rm -f t_propagator_s$(EXEEXT)
+	$(CXXLINK) $(t_propagator_s_LDFLAGS) $(t_propagator_s_OBJECTS) $(t_propagator_s_LDADD) $(LIBS)
 t_spprod$(EXEEXT): $(t_spprod_OBJECTS) $(t_spprod_DEPENDENCIES) 
 	@rm -f t_spprod$(EXEEXT)
 	$(CXXLINK) $(t_spprod_LDFLAGS) $(t_spprod_OBJECTS) $(t_spprod_LDADD) $(LIBS)
@@ -443,6 +455,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_ovlap_bj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_precact.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_precdwf.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_propagator_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_spprod.Po@am__quote@
 
 .cc.o:
