@@ -1,4 +1,4 @@
-// $Id: ovlap_partfrac4d_fermact_w.cc,v 1.15 2005-01-14 20:13:04 edwards Exp $
+// $Id: ovlap_partfrac4d_fermact_w.cc,v 1.16 2005-02-08 12:21:06 bjoo Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -319,6 +319,10 @@ namespace Chroma
       */
       type = 0;
       rdata = zolotarev(toFloat(eps), params.RatPolyDeg, type);
+      if( rdata == 0x0 ) { 
+	QDPIO::cerr << "Failed to get Zolo Coeffs" << endl;
+        QDP_abort(1);
+      } 
       break;
 
     case COEFF_TYPE_TANH:
@@ -379,7 +383,7 @@ namespace Chroma
     }
     
     maxerr = (Real)(rdata -> Delta);
-    
+    QDPIO::cout << "Maxerr " << maxerr << flush << endl; 
       /*
 	push(my_writer, "ZolotarevApprox");
 	write(my_writer, "eps", eps);
@@ -394,12 +398,14 @@ namespace Chroma
       /* The number of residuals and poles */
       /* Allocate the roots and residua */
     numroot = rdata -> dd;
+    QDPIO::cout << "Numroot " << numroot << flush << endl;
     /* The roots, i.e., the shifts in the partial fraction expansion */
     rootQ.resize(numroot);
-  
+    QDPIO::cout << 0 << endl << flush; 
     /* The residuals in the partial fraction expansion */
     resP.resize(numroot);
-  
+ 
+    QDPIO::cout << 1 << endl << flush;
     /* Fill in alpha[0] = alpha[da] if it is not zero*/
     coeffP = 0;
     coeffP = rdata -> alpha[rdata -> da - 1];
@@ -412,7 +418,7 @@ namespace Chroma
       rootQ[n] = rdata -> ap[n];
       rootQ[n] = -rootQ[n];
     }
-  
+    QDPIO::cout << 2 << endl << flush;  
     /*
     push(my_writer,"ZolotarevPartFrac");
     write(my_writer, "scale_fac", scale_fac);
@@ -438,7 +444,7 @@ namespace Chroma
       rootQ[n] = -(rootQ[n] * t);
     }
   
-  
+     QDPIO::cout << "3" << endl << flush; 
     /* Write them out into the namelist */
     /*
     push(my_writer,"ZolotarevPartFracResc");
@@ -507,7 +513,8 @@ namespace Chroma
     for(int n=0; n < numroot; n++) { 
       QDPIO::cout <<"  rootQ[" << n<< "]= " << rootQ[n] << endl;
     }
-  
+ 
+    QDPIO::cout << "4" << endl << flush; 
     /* We will also compute the 'function' of the eigenvalues */
     /* for the Wilson vectors to be projected out. */
     if (NEig > 0)
@@ -526,6 +533,7 @@ namespace Chroma
 
     // Free the arrays allocate by Tony's zolo
     zolotarev_free(rdata);
+    QDPIO::cout << "5" << endl << flush;
   }
 
   void 
@@ -771,7 +779,7 @@ namespace Chroma
 		  << endl;
       break;
     }
-  
+    QDPIO::cout << flush;  
 
     switch(params.inner_solver_type) { 
     case OVERLAP_INNER_CG_SINGLE_PASS:
