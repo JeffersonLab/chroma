@@ -1,4 +1,4 @@
-// $Id: gauge_startup.cc,v 1.2 2004-04-23 20:47:48 edwards Exp $
+// $Id: gauge_startup.cc,v 1.3 2004-04-28 14:28:58 edwards Exp $
 /*! \file
  *  \brief Initialize the gauge fields
  */
@@ -37,6 +37,10 @@ void gaugeStartup(XMLReader& gauge_file_xml,
     readArchiv(gauge_xml, u, cfg.cfg_file);
     break;
   
+  case CFG_TYPE_MILC:
+    readMILC(gauge_xml, u, cfg.cfg_file);
+    break;
+
   case CFG_TYPE_DISORDERED:
     QDPIO::cout << "Starting up disordered (random/hot) config" << endl;
     for(int dim=0; dim < Nd; dim++) { 
