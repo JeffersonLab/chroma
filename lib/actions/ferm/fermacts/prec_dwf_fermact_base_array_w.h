@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_fermact_base_array_w.h,v 1.14 2004-11-08 06:40:21 edwards Exp $
+// $Id: prec_dwf_fermact_base_array_w.h,v 1.15 2004-11-17 16:56:22 edwards Exp $
 /*! \file
  *  \brief Base class for even-odd preconditioned domain-wall-like fermion actions
  */
@@ -10,7 +10,7 @@
 #include "fermact.h"
 #include "actions/ferm/linop/prec_dwf_linop_base_array_w.h"
 #include "actions/ferm/linop/unprec_dwf_linop_base_array_w.h"
-#include "actions/ferm/linop/unprec_dwf4d_linop_w.h"
+#include "actions/ferm/linop/unprec_pdwf4d_linop_w.h"
 
 using namespace QDP;
 
@@ -59,7 +59,7 @@ namespace Chroma
     virtual const LinearOperator<T>* linOp4D(Handle<const ConnectState> state,
 					     const InvertParam_t& invParam) const
     {
-      return new UnprecDWF4DLinOp<T>(unprecLinOp(state),linOpPV(state),invParam);
+      return new UnprecPDWF4DLinOp<T>(linOp(state),linOpPV(state),invParam);
     }
 
     //! Define quark propagator routine for 4D fermions
