@@ -34,7 +34,8 @@ HDRS =
 ##   Another option is to add it to check_PROGRAMS, which means it will only
 ##   be built by 'make check' and is not installed.
 #noinst_PROGRAMS = propagator
-check_PROGRAMS = propagator spectrum_w qqq_w bar3ptfn make_source ExampleBuildingBlocks hypsmear
+check_PROGRAMS = propagator spectrum_w qqq_w bar3ptfn make_source ExampleBuildingBlocks \
+	hypsmear cfgtransf
 
 #
 # The program and its dependencies
@@ -59,6 +60,9 @@ hypsmear_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 
 ExampleBuildingBlocks_SOURCES= ExampleBuildingBlocks.cc
 ExampleBuildingBlocks_DEPENDENCIES= build_chroma_libs rebuild_other_libs
+
+cfgtransf_SOURCES= cfgtransf.cc
+cfgtransf_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 
 
 #
