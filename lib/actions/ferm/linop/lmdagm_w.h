@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lmdagm_w.h,v 1.1 2003-04-09 05:57:15 edwards Exp $
+// $Id: lmdagm_w.h,v 1.2 2003-08-09 04:18:47 edwards Exp $
 
 #ifndef __lmdagm_w_h__
 #define __lmdagm_w_h__
@@ -27,7 +27,7 @@ public:
   ~lmdagm() {}
 
   //! Subset comes from underlying operator
-  inline const Subset& subset() const {return A.subset();}
+  inline const OrderedSubset& subset() const {return A.subset();}
 
   //! Apply the operator onto a source vector
   /*! For this operator, the sign is ignored */

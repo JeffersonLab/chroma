@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev4d_linop_w.h,v 1.1 2003-04-09 05:57:16 edwards Exp $
+// $Id: zolotarev4d_linop_w.h,v 1.2 2003-08-09 04:18:48 edwards Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -36,7 +36,7 @@ public:
   ~Zolotarev4dLinOp();
 
   //! Only defined on the odd subset
-  const Subset& subset() const {return all;}
+  const OrderedSubset& subset() const {return all;}
 
   //! Creation routine
   void create(const multi1d<LatticeColorMatrix>& _u, const Real& _m_q);

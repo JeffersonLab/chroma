@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: overlapbu_linop_w.h,v 1.1 2003-04-24 18:34:48 edwards Exp $
+// $Id: overlapbu_linop_w.h,v 1.2 2003-08-09 04:18:47 edwards Exp $
 /*! \file
  *  \brief A variant of the 4D overlap operator
  */
@@ -49,7 +49,7 @@ public:
   ~OverlapBULinOp() {}
 
   //! Only defined on the odd subset
-  const Subset& subset() const {return all;}
+  const OrderedSubset& subset() const {return all;}
 
   //! Creation routine
   void create(const multi1d<LatticeColorMatrix>& _u, const Real& _OverMass, const Real& _m_q);

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lovddag_w.h,v 1.1 2003-04-09 05:57:15 edwards Exp $
+// $Id: lovddag_w.h,v 1.2 2003-08-09 04:18:47 edwards Exp $
 /*! \file
  *  \brief Internal Overlap-pole operator for D^dag.D
  */
@@ -45,7 +45,7 @@ public:
   ~lovddag() {}
 
   //! Only defined on the entire lattice
-  const Subset& subset() const {return all;}
+  const OrderedSubset& subset() const {return all;}
 
   //! Apply the operator onto a chiral source vector
   LatticeFermion operator() (const LatticeFermion& psi, enum LinOpSign isign) const;

@@ -1,4 +1,4 @@
-// $Id: invcg2.cc,v 1.1 2003-04-08 21:36:13 edwards Exp $
+// $Id: invcg2.cc,v 1.2 2003-08-09 04:18:47 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -66,7 +66,7 @@ void InvCG2(const LinearOperator& M,
 	    int MaxCG, 
 	    int& n_count)
 {
-  const Subset& s = M.subset();
+  const OrderedSubset& s = M.subset();
 
   LatticeFermion mp;
   Real a;

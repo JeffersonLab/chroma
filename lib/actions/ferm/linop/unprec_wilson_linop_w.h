@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_wilson_linop_w.h,v 1.1 2003-04-09 05:57:15 edwards Exp $
+// $Id: unprec_wilson_linop_w.h,v 1.2 2003-08-09 04:18:47 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -50,7 +50,7 @@ public:
   ~UnprecWilsonLinOp() {}
 
   //! Only defined on the odd subset
-  const Subset& subset() const {return all;}
+  const OrderedSubset& subset() const {return all;}
 
   //! Creation routine
   void create(const multi1d<LatticeColorMatrix>& _u, const Real& _Kappa);

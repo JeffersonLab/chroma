@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_w.h,v 1.1 2003-04-09 05:57:15 edwards Exp $
+// $Id: lwldslash_w.h,v 1.2 2003-08-09 04:18:47 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -68,7 +68,7 @@ public:
   LatticeFermion apply (const LatticeFermion& psi, enum LinOpSign isign, int cb) const;
 
   //! Subset is all here
-  const Subset& subset() const {return all;}
+  const OrderedSubset& subset() const {return all;}
 
 private:
   multi1d<LatticeColorMatrix> u;

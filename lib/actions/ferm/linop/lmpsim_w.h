@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lmpsim_w.h,v 1.1 2003-04-09 05:57:15 edwards Exp $
+// $Id: lmpsim_w.h,v 1.2 2003-08-09 04:18:47 edwards Exp $
 
 // #pragma ident "Id"
 
@@ -89,7 +89,7 @@ public:
   ~PreconditionedWilson() {}
 
   //! Only defined on the odd subset
-  const Subset& subset() const {return rb[1];}
+  const OrderedSubset& subset() const {return rb[1];}
 
   //! Creation routine
   void create(const multi1d<LatticeColorMatrix>& _u, const Real& _Kappa);
