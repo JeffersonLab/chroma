@@ -1,4 +1,4 @@
-// $Id: chromabase.h,v 1.2 2004-04-29 13:41:21 bjoo Exp $
+// $Id: chromabase.h,v 1.3 2004-07-27 06:00:07 edwards Exp $
 //
 // Absolute basic stuff to use chroma
 //
@@ -15,16 +15,6 @@
 #include "qdp.h"
 #include "chroma_config.h"
 
-#if defined(ARCH_SCALAR) || defined(ARCH_PARSCALAR)
-#include "chroma_scalarsite_dwdefs.h"
-
-#elif defined(ARCH_SCALARVEC) || defined(ARCH_PARSCALARVEC)
-// #include "chroma_scalarvecsite_defs.h"
-
-#else
-#error "Unknown architecture ARCH"
-#endif
-
 namespace QDP {
 
 // Trait classes to undo DW index
@@ -36,13 +26,6 @@ struct BaseType<LatticeFermion>
 {
   typedef LatticeFermion   Type_t;
 };
-
-template<>
-struct BaseType<LatticeDWFermion>
-{
-  typedef LatticeFermion   Type_t;
-};
-
 }
 
 using namespace QDP;
@@ -64,8 +47,9 @@ const Real twopi = 6.283185307179586476925286;
 
 
 // Hooks for various things
-#define START_CODE(a)
-#define END_CODE(a)
+// NOTE: can get rid of unused arg "a" !!
+#define START_CODE(a) QDP_PUSH_PROFILE(QDP::getProfileLevel())
+#define END_CODE(a)   QDP_POP_PROFILE()
 
 
 #endif
