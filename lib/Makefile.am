@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.1 2002-12-16 06:53:33 edwards Exp $
+# $Id: Makefile.am,v 1.2 2003-01-04 05:11:43 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -56,13 +56,9 @@ INCFLAGS = -I$(TOPDIR)/include
 AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDP_CXXFLAGS@ @QMP_CXXFLAGS@
 
 #
-# Various header files. These may be out of date -- I just copied 
-# them from Roberts Previous Makefile
+# Various header files. 
 #
-HDRS =  word.h inner.h reality.h primitive.h outer.h qdptype.h 
-	defs.h special.h subset.h params.h multi.h random.h layout.h proto.h \
-	scalar_specific.h \
-	geom.h
+HDRS =  szin.h primitives.h defs.h common_declarations.h geom.h
 
 #
 # Object files to add if building the Wilson Builds...
