@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.4 2003-02-14 22:11:42 edwards Exp $
+# $Id: Makefile.in,v 1.5 2003-02-15 04:07:37 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -40,11 +40,7 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_triplet = @host@
-@BUILD_WILSON_LIBS_TRUE@am__append_1 = $(WILSON_OBJS)
-@BUILD_WILSON_LIBS_TRUE@am__append_2 = $(WILSON_OBJS)
-@BUILD_WILSON_LIBS_FALSE@am__append_3 = $(STAGGERED_OBJS)
-@BUILD_WILSON_LIBS_FALSE@am__append_4 = $(STAGGERED_OBJS)
-VPATH = $(TOPDIR) $(TOPDIR)/lib $(TOPDIR)/lib/actions $(TOPDIR)/lib/actions/construct $(TOPDIR)/lib/actions/dirac $(TOPDIR)/lib/actions/dslash $(TOPDIR)/lib/actions/gauge $(TOPDIR)/lib/actions/invert $(TOPDIR)/lib/actions/linop $(TOPDIR)/lib/actions/qprop $(TOPDIR)/lib/geom $(TOPDIR)/lib/info $(TOPDIR)/lib/io $(TOPDIR)/lib/meas $(TOPDIR)/lib/meas/eig $(TOPDIR)/lib/meas/gfix $(TOPDIR)/lib/meas/glue $(TOPDIR)/lib/meas/hadron $(TOPDIR)/lib/meas/pbp $(TOPDIR)/lib/meas/schrfun $(TOPDIR)/lib/meas/smear $(TOPDIR)/lib/update $(TOPDIR)/lib/update/heatbath $(TOPDIR)/lib/update/molecdyn $(TOPDIR)/lib/update/molecdyn/dsdu $(TOPDIR)/lib/update/molecdyn/est $(TOPDIR)/lib/update/molecdyn/mese $(TOPDIR)/lib/update/molecdyn/noise $(TOPDIR)/lib/update/molecdyn/step $(TOPDIR)/lib/util $(TOPDIR)/lib/util/comm $(TOPDIR)/lib/util/ferm $(TOPDIR)/lib/util/ft $(TOPDIR)/lib/util/gauge $(TOPDIR)/lib/util/misc $(TOPDIR)/lib/util/random $(TOPDIR)/include $(TOPDIR)/mainprogs $(TOPDIR)/mainprogs/main $(TOPDIR)/mainprogs/tests $(TOPDIR)/root
+VPATH = $(TOPDIR) $(TOPDIR)/lib $(TOPDIR)/lib/actions $(TOPDIR)/lib/actions/construct $(TOPDIR)/lib/actions/dirac $(TOPDIR)/lib/actions/dslash $(TOPDIR)/lib/actions/gauge $(TOPDIR)/lib/actions/invert $(TOPDIR)/lib/actions/linop $(TOPDIR)/lib/actions/qprop $(TOPDIR)/lib/geom $(TOPDIR)/lib/info $(TOPDIR)/lib/io $(TOPDIR)/lib/meas $(TOPDIR)/lib/meas/eig $(TOPDIR)/lib/meas/gfix $(TOPDIR)/lib/meas/glue $(TOPDIR)/lib/meas/hadron $(TOPDIR)/lib/meas/pbp $(TOPDIR)/lib/meas/schrfun $(TOPDIR)/lib/meas/smear $(TOPDIR)/lib/update $(TOPDIR)/lib/update/heatbath $(TOPDIR)/lib/update/molecdyn $(TOPDIR)/lib/update/molecdyn/dsdu $(TOPDIR)/lib/update/molecdyn/est $(TOPDIR)/lib/update/molecdyn/mese $(TOPDIR)/lib/update/molecdyn/noise $(TOPDIR)/lib/update/molecdyn/step $(TOPDIR)/lib/util $(TOPDIR)/lib/util/comm $(TOPDIR)/lib/util/ferm $(TOPDIR)/lib/util/ft $(TOPDIR)/lib/util/gauge $(TOPDIR)/lib/util/misc $(TOPDIR)/lib/util/random $(TOPDIR)/include $(TOPDIR)/mainprogs $(TOPDIR)/mainprogs/main $(TOPDIR)/mainprogs/tests
 ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
@@ -53,6 +49,8 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
+BUILD_STAGGERED_LIBS_FALSE = @BUILD_STAGGERED_LIBS_FALSE@
+BUILD_STAGGERED_LIBS_TRUE = @BUILD_STAGGERED_LIBS_TRUE@
 BUILD_WILSON_LIBS_FALSE = @BUILD_WILSON_LIBS_FALSE@
 BUILD_WILSON_LIBS_TRUE = @BUILD_WILSON_LIBS_TRUE@
 CPPFLAGS = @CPPFLAGS@
@@ -83,15 +81,13 @@ PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
-QDP_CXXFLAGS = @QDP_CXXFLAGS@
-QDP_LDFLAGS = @QDP_LDFLAGS@
-QDP_LIBS = @QDP_LIBS@
-QMP_COMMS_CXXFLAGS = @QMP_COMMS_CXXFLAGS@
-QMP_COMMS_LDFLAGS = @QMP_COMMS_LDFLAGS@
-QMP_COMMS_LIBS = @QMP_COMMS_LIBS@
-QMP_CXXFLAGS = @QMP_CXXFLAGS@
-QMP_LDFLAGS = @QMP_LDFLAGS@
-QMP_LIBS = @QMP_LIBS@
+QDPXX_CONFIG = @QDPXX_CONFIG@
+QDPXX_CXXFLAGS = @QDPXX_CXXFLAGS@
+QDPXX_LDFLAGS = @QDPXX_LDFLAGS@
+QDPXX_LIBS = @QDPXX_LIBS@
+QDPXX_NC = @QDPXX_NC@
+QDPXX_ND = @QDPXX_ND@
+QDPXX_NS = @QDPXX_NS@
 RANLIB = @RANLIB@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
@@ -145,7 +141,9 @@ INCFLAGS = -I$(TOPDIR)/include
 #
 # Any other compiler flags
 # 
-AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDP_CXXFLAGS@ @QMP_CXXFLAGS@
+AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDPXX_CXXFLAGS@
+
+lib_LIBRARIES = libszin.a
 
 #
 # Various header files. 
@@ -153,49 +151,64 @@ AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDP_CXXFLAGS@ @QMP_CXXFLAGS@
 HDRS = szin.h primitives.h defs.h common_declarations.h geom.h
 
 #
+# Fermion independent sources
+#
+GENERIC_SRCS = gaus_smear.cc taproj.cc hotst.cc expm12.cc \
+               klein_gord.cc \
+               mesplq.cc \
+               reunit.cc \
+               srcfil.cc
+
+
+#
 # Object files to add if building the Wilson Builds...
 # This is OK, since Ns is determined at configure time
 #
 WILSON_SRCS = dslashm_w.cc baryon_w.cc mesons_w.cc lwldslash_w.cc
 
-WILSON_OBJS = $(WILSON_SRCS:.cc=.o)
 #
 # This is the list of files to be used in Staggered Builds
-# This is OK since Ns is determined at configure time 
 #
 STAGGERED_SRCS = 
 
-STAGGERED_OBJS = $(STAGGERED_SRCS:.cc=.o)
-
-lib_LIBRARIES = libszin.a
+@BUILD_WILSON_LIBS_TRUE@nodist_libszin_a_SOURCES = $(HDRS) $(GENERIC_SRCS) $(WILSON_SRCS)
 
 #
-# These are the permanent source files
-# 
-nodist_libszin_a_SOURCES = $(HDRS) mesplq.cc reunit.cc geom.cc
-
+# An AM_CONDITIONAL if statement to decide which fermion type
 #
-# This may need to be substituted depending on arch but
-# for example on the QCDOC
-# 
-libszin_a_LIBADD = stand_main.o $(am__append_1) $(am__append_3)
-libszin_a_DEPENDENCIES = stand_main.o $(am__append_2) $(am__append_4)
+@BUILD_STAGGERED_LIBS_TRUE@nodist_libszin_a_SOURCES = $(HDRS) $(GENERIC_SRCS) $(STAGGERED_SRCS)
+@BUILD_WILSON_LIBS_TRUE@EXTRA_libszin_a_SOURCES = $(STAGGERED_SRCS)
+@BUILD_STAGGERED_LIBS_TRUE@EXTRA_libszin_a_SOURCES = $(WILSON_SRCS)
 subdir = lib
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
 CONFIG_CLEAN_FILES =
 LIBRARIES = $(lib_LIBRARIES)
 
 libszin_a_AR = $(AR) cru
-am__objects_1 =
-nodist_libszin_a_OBJECTS = $(am__objects_1) mesplq.$(OBJEXT) \
-	reunit.$(OBJEXT) geom.$(OBJEXT)
+libszin_a_LIBADD =
+am__EXTRA_libszin_a_SOURCES_DIST = dslashm_w.cc baryon_w.cc mesons_w.cc \
+	lwldslash_w.cc
+am__objects_2 =
+am__objects_3 = gaus_smear.$(OBJEXT) taproj.$(OBJEXT) hotst.$(OBJEXT) \
+	expm12.$(OBJEXT) klein_gord.$(OBJEXT) mesplq.$(OBJEXT) \
+	reunit.$(OBJEXT) srcfil.$(OBJEXT)
+am__objects_1 = dslashm_w.$(OBJEXT) baryon_w.$(OBJEXT) \
+	mesons_w.$(OBJEXT) lwldslash_w.$(OBJEXT)
+@BUILD_STAGGERED_LIBS_TRUE@nodist_libszin_a_OBJECTS = $(am__objects_2) \
+@BUILD_STAGGERED_LIBS_TRUE@	$(am__objects_3) $(am__objects_2)
+@BUILD_WILSON_LIBS_TRUE@nodist_libszin_a_OBJECTS = $(am__objects_2) \
+@BUILD_WILSON_LIBS_TRUE@	$(am__objects_3) $(am__objects_1)
 libszin_a_OBJECTS = $(nodist_libszin_a_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/geom.Po ./$(DEPDIR)/mesplq.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/reunit.Po
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/baryon_w.Po ./$(DEPDIR)/dslashm_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/expm12.Po ./$(DEPDIR)/gaus_smear.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/hotst.Po ./$(DEPDIR)/klein_gord.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/lwldslash_w.Po ./$(DEPDIR)/mesons_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/mesplq.Po ./$(DEPDIR)/reunit.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/srcfil.Po ./$(DEPDIR)/taproj.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -205,9 +218,9 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-DIST_SOURCES =
+DIST_SOURCES = $(am__EXTRA_libszin_a_SOURCES_DIST)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(nodist_libszin_a_SOURCES)
+SOURCES = $(EXTRA_libszin_a_SOURCES) $(nodist_libszin_a_SOURCES)
 
 all: all-am
 
@@ -261,9 +274,18 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/geom.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/baryon_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dslashm_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/expm12.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gaus_smear.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hotst.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/klein_gord.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesons_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesplq.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/reunit.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/srcfil.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/taproj.Po@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
