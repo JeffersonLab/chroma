@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovext_fermact_array_w.h,v 1.7 2004-03-17 03:37:22 edwards Exp $
+// $Id: unprec_ovext_fermact_array_w.h,v 1.8 2004-09-08 02:48:26 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -11,88 +11,122 @@
 
 using namespace QDP;
 
-//! Unpreconditioned Extended-Overlap (N&N) linear operator
-/*!
- * \ingroup fermact
- *
- * This operator applies the extended version of the hermitian overlap operator
- *   Chi  =   ((1+m_q)/(1-m_q)*gamma_5 + B) . Psi
- *  where  B  is the continued fraction of the pole approx. to eps(H(m))
- */
-
-class UnprecOvExtFermActArray : public UnprecWilsonTypeFermAct< multi1d<LatticeFermion> >
+namespace Chroma
 {
-public:
-  //! General FermBC
-  UnprecOvExtFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
-		       const Real& WilsonMass_, const Real& m_q_, int N5_) : 
-    fbc(fbc_), WilsonMass(WilsonMass_), m_q(m_q_), N5(N5_) {a5=1;}
+  //! Name and registration
+  namespace UnprecOvExtFermActArrayEnv
+  {
+    extern const std::string name;
+    extern const bool registered;
+  }
+  
 
-  //! Copy constructor
-  UnprecOvExtFermActArray(const UnprecOvExtFermActArray& a) : 
-    fbc(a.fbc), WilsonMass(a.WilsonMass), m_q(a.m_q), a5(a.a5), N5(a.N5) {}
+  //! Params for NEFF
+  struct UnprecOvExtFermActArrayParams
+  {
+    UnprecOvExtFermActArrayParams() {}
+    UnprecOvExtFermActArrayParams(XMLReader& in, const std::string& path);
+    
+    Real WilsonMass;
+    Real a5;
+    Real m_q;
+    int  N5;
+  };
 
-  //! Assignment
-  UnprecOvExtFermActArray& operator=(const UnprecOvExtFermActArray& a)
-    {fbc=a.fbc; WilsonMass=a.WilsonMass; m_q=a.m_q; a5=a.a5; N5=a.N5; return *this;}
 
-  //! Return the fermion BC object for this action
-  const FermBC< multi1d<LatticeFermion> >& getFermBC() const {return *fbc;}
+  // Reader/writers
+  void read(XMLReader& xml, const string& path, UnprecOvExtFermActArrayParams& param);
+  void write(XMLReader& xml, const string& path, const UnprecOvExtFermActArrayParams& param);
 
-  //! Length of DW flavor index/space
-  int size() const {return N5;}
 
-  //! Return the quark mass
-  Real quark_mass() const {return m_q;}
-
-  //! Produce a linear operator for this action
-  const LinearOperator< multi1d<LatticeFermion> >* linOp(Handle<const ConnectState> state) const;
-
-  //! Produce a linear operator M^dag.M for this action
-  const LinearOperator< multi1d<LatticeFermion> >* lMdagM(Handle<const ConnectState> state) const;
-
-  //! Produce a hermitian version of the linear operator
-  const LinearOperator< multi1d<LatticeFermion> >* gamma5HermLinOp(Handle<const ConnectState> state) const
-    {
-      QDPIO::cerr << "UnprecOvExtFermActArray::gamma5HermLinOp not implemented" << endl;
-      QDP_abort(1);
-      return 0;
-    }
-
-  //! Compute quark propagator over base type
-  /*! 
-   * Solves  M.psi = chi
+  //! Unpreconditioned Extended-Overlap (N&N) linear operator
+  /*!
+   * \ingroup fermact
    *
-   * \param psi      quark propagator ( Modify )
-   * \param u        gauge field ( Read )
-   * \param chi      source ( Modify )
-   * \param invType  inverter type ( Read (
-   * \param RsdCG    CG (or MR) residual used here ( Read )
-   * \param MaxCG    maximum number of CG iterations ( Read )
-   * \param ncg_had  number of CG iterations ( Write )
-   *
-   * NOTE: maybe this should produce a quark prop foundry class object 
+   * This operator applies the extended version of the hermitian overlap operator
+   *   Chi  =   ((1+m_q)/(1-m_q)*gamma_5 + B) . Psi
+   *  where  B  is the continued fraction of the pole approx. to eps(H(m))
    */
-  void qprop(LatticeFermion& psi, 
-	     Handle<const ConnectState> state, 
-	     const LatticeFermion& chi, 
-	     enum InvType invType,
-	     const Real& RsdCG, 
-	     int MaxCG, int& ncg_had) const;
+  class UnprecOvExtFermActArray : public UnprecWilsonTypeFermAct< multi1d<LatticeFermion> >
+  {
+  public:
+    //! General FermBC
+    UnprecOvExtFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
+			    const Real& WilsonMass_, const Real& m_q_, int N5_) : 
+      fbc(fbc_), WilsonMass(WilsonMass_), m_q(m_q_), N5(N5_) {a5=1;}
 
-  //! Destructor is automatic
-  ~UnprecOvExtFermActArray() {}
+    //! General FermBC
+    UnprecOvExtFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
+			    const UnprecOvExtFermActArrayParams& param) :
+      fbc(fbc_), WilsonMass(param.WilsonMass), m_q(param.m_q), a5(param.a5), N5(param.N5) {}
 
-private:
-  // Hide partial constructor
-  UnprecOvExtFermActArray() {}
+    //! Copy constructor
+    UnprecOvExtFermActArray(const UnprecOvExtFermActArray& a) : 
+      fbc(a.fbc), WilsonMass(a.WilsonMass), m_q(a.m_q), a5(a.a5), N5(a.N5) {}
 
-private:
-  Handle< FermBC< multi1d<LatticeFermion> > >  fbc;
-  Real WilsonMass;
-  Real m_q;
-  Real a5;
-  int  N5;
-};
+    //! Assignment
+    UnprecOvExtFermActArray& operator=(const UnprecOvExtFermActArray& a)
+      {fbc=a.fbc; WilsonMass=a.WilsonMass; m_q=a.m_q; a5=a.a5; N5=a.N5; return *this;}
+
+    //! Return the fermion BC object for this action
+    const FermBC< multi1d<LatticeFermion> >& getFermBC() const {return *fbc;}
+
+    //! Length of DW flavor index/space
+    int size() const {return N5;}
+
+    //! Return the quark mass
+    Real quark_mass() const {return m_q;}
+
+    //! Produce a linear operator for this action
+    const LinearOperator< multi1d<LatticeFermion> >* linOp(Handle<const ConnectState> state) const;
+
+    //! Produce a linear operator M^dag.M for this action
+    const LinearOperator< multi1d<LatticeFermion> >* lMdagM(Handle<const ConnectState> state) const;
+
+    //! Produce a hermitian version of the linear operator
+    const LinearOperator< multi1d<LatticeFermion> >* gamma5HermLinOp(Handle<const ConnectState> state) const
+      {
+	QDPIO::cerr << "UnprecOvExtFermActArray::gamma5HermLinOp not implemented" << endl;
+	QDP_abort(1);
+	return 0;
+      }
+
+    //! Compute quark propagator over base type
+    /*! 
+     * Solves  M.psi = chi
+     *
+     * \param psi      quark propagator ( Modify )
+     * \param u        gauge field ( Read )
+     * \param chi      source ( Modify )
+     * \param invParam inverter parameters ( Read (
+     * \param ncg_had  number of CG iterations ( Write )
+     *
+     * NOTE: maybe this should produce a quark prop foundry class object 
+     */
+    void qprop(LatticeFermion& psi, 
+	       Handle<const ConnectState> state, 
+	       const LatticeFermion& chi, 
+	       const InvertParam_t& invParam,
+	       int& ncg_had) const;
+
+    //! Destructor is automatic
+    ~UnprecOvExtFermActArray() {}
+
+  private:
+    // Hide partial constructor
+    UnprecOvExtFermActArray() {}
+
+  private:
+    Handle< FermBC< multi1d<LatticeFermion> > >  fbc;
+    Real WilsonMass;
+    Real m_q;
+    Real a5;
+    int  N5;
+  };
+
+}
+
+using namespace Chroma;
+
 
 #endif

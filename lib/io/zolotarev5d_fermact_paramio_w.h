@@ -3,7 +3,6 @@
 
 #include <string>
 #include "io/param_io.h"
-#include "io/fermact_paramio.h"
 #include "io/eigen_io.h"
 #include "io/overlap_state_info.h"
 

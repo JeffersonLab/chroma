@@ -1,4 +1,4 @@
-// $Id: overlap_fermact_qprop_w.cc,v 1.3 2004-07-28 02:38:02 edwards Exp $
+// $Id: overlap_fermact_qprop_w.cc,v 1.4 2004-09-08 02:48:26 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -26,13 +26,13 @@ using namespace QDP;
 
 template<typename T>
 static 
-void qprop_t(const OverlapFermActBase<T>& me,
+void qprop_t(const OverlapFermActBase& me,
 	     T& psi,
 	     Handle<const ConnectState> state_, 
 	     const T& chi, 
-	     enum InvType invType,
-	     const Real& RsdCG, 
-	     int MaxCG, int& ncg_had) const
+	     const InvertParam_t invParam,
+	    
+	     int& ncg_had) const
 {
   START_CODE();
 
@@ -43,7 +43,7 @@ void qprop_t(const OverlapFermActBase<T>& me,
   int n_count;
   
 
-  switch(invType)
+  switch(invParam.invType)
   {
   case CG_INVERTER: 
   {
@@ -57,7 +57,7 @@ void qprop_t(const OverlapFermActBase<T>& me,
     // For the moment, use simple minded inversion
     (*A)(tmp1, chi, MINUS);
 
-    InvCG2(*A, tmp1, psi, RsdCG, MaxCG, n_count);
+    InvCG2(*A, tmp1, psi, invParam.RsdCG, invParam.MaxCG, n_count);
 
 #else
     /* psi = (D^dag * D)^(-1) * D^dag * chi */
@@ -72,7 +72,7 @@ void qprop_t(const OverlapFermActBase<T>& me,
       // Source or action is not chiral: call the CG2 wrapper
       (*A)(tmp1, chi, MINUS);
 
-      InvCG2(*A, tmp1, psi, RsdCG, MaxCG, n_count);
+      InvCG2(*A, tmp1, psi, invParam.RsdCG, invParam.MaxCG, n_count);
     }
     else
     {
@@ -80,7 +80,7 @@ void qprop_t(const OverlapFermActBase<T>& me,
       // Construct the linear operator
       Handle<const LinearOperator<T> > B(me.lMdagM(state_));  // OOPS, NEED TO PASS ICHIRAL!!!!
 
-      InvCG1(*B, chi, tmp1, RsdCG, MaxCG, n_count);
+      InvCG1(*B, chi, tmp1, invParam.RsdCG, invParam.MaxCG, n_count);
       (*A)(psi, tmp1, MINUS);
     }
 #endif
@@ -94,7 +94,7 @@ void qprop_t(const OverlapFermActBase<T>& me,
       Handle<const LinearOperator<T> > A(me.linOp(state_));
       
       // psi = D^(-1)* chi
-      InvMR (*A, chi, psi, MRover, RsdCG, MaxCG, n_count);
+      InvMR (*A, chi, psi, invParam.MRover, invParam.RsdCG, invParam.MaxCG, n_count);
     }
     break;
       
@@ -104,7 +104,7 @@ void qprop_t(const OverlapFermActBase<T>& me,
       // Construct the linear operator
       Handle<const LinearOperator<T> > A(me.linOp(state_));
 
-      InvBiCG (*A, chi, psi, RsdCG, MaxCG, n_count);
+      InvBiCG (*A, chi, psi, invParam.RsdCG, invParam.MaxCG, n_count);
     }
     break;
 #endif
@@ -125,7 +125,7 @@ void qprop_t(const OverlapFermActBase<T>& me,
 	Handle<const LinearOperator<T> > U(me.lgamma5epsH(state_));
 	
 	// Now solve:
-	InvSUMR(*U, chi, psi, zeta, rho, RsdCG, MaxCG, n_count);
+	InvSUMR(*U, chi, psi, zeta, rho, invParam.RsdCG, invParam.MaxCG, n_count);
 	
 	// Restore to normal scaling
 	Real fact = Real(2)/(Real(1) - mu);
@@ -146,10 +146,10 @@ void qprop_t(const OverlapFermActBase<T>& me,
     break;
     
   default:
-    QDP_error_exit("Unknown inverter type", invType);
+    QDP_error_exit("Unknown inverter type", invParam.invType);
   }
   
-  if ( n_count == MaxCG )
+  if ( n_count == invParam.MaxCG )
     QDP_error_exit("no convergence in the inverter", n_count);
   
   ncg_had = n_count;
@@ -169,9 +169,8 @@ template<>
 void OverlapFermActBase<LatticeFermion>::qprop(LatticeFermion& psi, 
 					       Handle<const ConnectState> state, 
 					       const LatticeFermion& chi, 
-					       enum InvType invType,
-					       const Real& RsdCG, 
-					       int MaxCG, int& ncg_had) const
+					       const InvertParam_t invParam,,
+					       int& ncg_had) const
 {
-  qprop_t<LatticeFermion>(*this, psi, state, chi, invType, RsdCG, MaxCG, ncg_had);
+  qprop_t<LatticeFermion>(*this, psi, state, chi, invParam, ncg_had);
 }

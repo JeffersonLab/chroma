@@ -1,76 +1,4 @@
-// $Id: propagator.cc,v 1.59 2004-07-28 03:08:04 edwards Exp $
-// $Log: propagator.cc,v $
-// Revision 1.59  2004-07-28 03:08:04  edwards
-// Added START/END_CODE to all routines. Changed some to not pass an
-// argument.
-//
-// Revision 1.58  2004/05/28 16:47:33  bjoo
-// Wired in REL_GMRESR_SUMR and REL_GMRESR_CG inverters to propagator and propagator_comp
-//
-// Revision 1.57  2004/04/28 14:56:11  bjoo
-// Tested propagator_comp and collect_propcomp
-//
-// Revision 1.56  2004/04/28 02:54:12  edwards
-// Added sanity check on boundary.
-//
-// Revision 1.55  2004/04/27 21:30:01  edwards
-// Now supports input from seqsource as well as make_source.
-//
-// Revision 1.54  2004/04/26 11:19:13  bjoo
-// Added support for Reading EV-s in SZIN format. Must provide e-values in XML tho.
-//
-// Revision 1.53  2004/04/23 11:23:38  bjoo
-// Added component based propagator (non multishift) and added Zolotarev5D operator to propagator and propagator_comp. Reworked propagator collection scripts
-//
-// Revision 1.52  2004/04/22 16:25:25  bjoo
-// Added overlap_state_info Param struct and gauge startup convenience function. Tidyed up propagator zolo4d case
-//
-// Revision 1.51  2004/04/16 22:03:59  bjoo
-// Added Zolo 4D test files and tidyed up
-//
-// Revision 1.50  2004/04/16 14:58:30  bjoo
-// Propagator now does Zolo4D
-//
-// Revision 1.49  2004/04/15 14:43:25  bjoo
-// Added generalised qprop_io FermAct reading
-//
-// Revision 1.48  2004/04/06 04:20:33  edwards
-// Added SZINQIO support.
-//
-// Revision 1.47  2004/04/01 18:10:22  edwards
-// Added support for non-relativistic quark props.
-//
-// Revision 1.46  2004/02/23 03:13:58  edwards
-// Major overhaul of input/output model! Now using EXCLUSIVELY
-// SciDAC propagator format for propagators. Now, Param part of input
-// files directly matches source/sink/propagator/seqprop headers
-// of propagators. All ``known'' input of a propagator is derived
-// from its header(s) and used for subsequent calculations.
-//
-// Revision 1.45  2004/02/11 12:51:35  bjoo
-// Stripped out Read() and Write()
-//
-// Revision 1.44  2004/02/07 04:51:58  edwards
-// Removed SSE hack - pushed it down into the SSE code where it belongs.
-//
-// Revision 1.43  2004/02/06 22:31:00  edwards
-// Put in sse hack for the short term.
-//
-// Revision 1.42  2004/02/06 17:39:05  edwards
-// Added a flush to xml_out.
-//
-// Revision 1.41  2004/02/05 04:18:56  edwards
-// Changed call of quarkProp4 to write to xml_out instead of xml buffer.
-//
-// Revision 1.40  2004/02/04 17:01:55  edwards
-// Changed getSubset() to the now correct getSet().
-//
-// Revision 1.39  2004/01/31 23:22:01  edwards
-// Added proginfo call.
-//
-// Revision 1.38  2004/01/30 21:35:22  kostas
-// added calls to calculate mres for dwf
-// 
+// $Id: propagator.cc,v 1.60 2004-09-08 02:48:26 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -81,11 +9,37 @@
 #include "chroma.h"
 
 using namespace QDP;
+using namespace Chroma;
 
 
 // define MRES_CALCULATION in order to run the code computing the residual mass
 // and the pseudoscalar to conserved axial current correlator
 #define MRES_CALCULATION
+
+
+//! To insure linking of code, place the registered code flags here
+/*! This is the bit of code that dictates what fermacts are in use */
+bool linkage_hack()
+{
+  bool foo = true;
+
+  // 4D actions
+  foo &= EvenOddPrecWilsonFermActEnv::registered;
+  foo &= UnprecWilsonFermActEnv::registered;
+
+  // 5D actions
+  foo &= EvenOddPrecDWFermActArrayEnv::registered;
+  foo &= UnprecDWFermActArrayEnv::registered;
+  foo &= EvenOddPrecNEFFermActArrayEnv::registered;
+  foo &= UnprecNEFFermActArrayEnv::registered;
+  
+  foo &= UnprecOvDWFermActArrayEnv::registered;
+  foo &= UnprecOvExtFermActArrayEnv::registered;
+
+  return foo;
+}
+
+
 
 /*
  * Input 
@@ -151,6 +105,7 @@ int main(int argc, char **argv)
 {
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
+ 
 
   START_CODE();
 
@@ -320,213 +275,136 @@ int main(int argc, char **argv)
   //
   // Initialize fermion action
   //
-  switch (input.param.FermActHandle->getFermActType())
+  QDPIO::cout << "FermAct = " << input.param.fermact << endl;
+
+  std::istringstream  xml_s(input.param.fermactgrp);
+  XMLReader  fermacttop(xml_s);
+  const string fermact_path = "/FermionAction";
+
+  //
+  // Try each factory one-by-one
+  //
+  bool success = false;
+
+  QDPIO::cout << "Try the special cases first" << endl;
+
+
+#if 1
+  if (input.param.fermact == EvenOddPrecDWFermActArrayEnv::name)  // FERM_ACT_DWF
   {
-  case FERM_ACT_WILSON:
-  {
-    QDPIO::cout << "FERM_ACT_WILSON" << endl;
+    QDPIO::cout << EvenOddPrecDWFermActArrayEnv::name << endl;
 
-    const WilsonFermActParams& wilson_params=dynamic_cast<const WilsonFermActParams &>(*(input.param.FermActHandle));
-
-    EvenOddPrecWilsonFermAct S_f(fbc,wilson_params.Mass,
-				 wilson_params.anisoParam);
-    Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
-
-    quarkProp4(quark_propagator, xml_out, quark_prop_source,
-  	       S_f, state, 
-	       input.param.invParam.invType, 
-	       input.param.invParam.RsdCG, 
-	       input.param.invParam.MaxCG, 
-	       input.param.nonRelProp,
-	       ncg_had);
-  }
-  break;
-
-  case FERM_ACT_UNPRECONDITIONED_WILSON:
-  {
-    QDPIO::cout << "FERM_ACT_UNPRECONDITIONED_WILSON" << endl;
-
-    const WilsonFermActParams& wilson_params=dynamic_cast<const WilsonFermActParams &>(*(input.param.FermActHandle));
-
-
-    UnprecWilsonFermAct S_f(fbc,wilson_params.Mass);
-    Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
-
-    quarkProp4(quark_propagator, xml_out, quark_prop_source,
-  	       S_f, state, 
-	       input.param.invParam.invType, 
-	       input.param.invParam.RsdCG, 
-	       input.param.invParam.MaxCG, 
-	       input.param.nonRelProp,
-	       ncg_had);
-  }
-  break;
-
-  case FERM_ACT_DWF:
-  {
-    QDPIO::cout << "FERM_ACT_DWF" << endl;
-
-
-    const DWFFermActParams& dwf_params=dynamic_cast<const DWFFermActParams &>(*(input.param.FermActHandle));
-
-    EvenOddPrecDWFermActArray S_f(fbc_a,
-				  dwf_params.chiralParam.OverMass, 
-				  dwf_params.Mass, 
-				  dwf_params.chiralParam.N5);
+    EvenOddPrecDWFermActArray S_f(fbc_a, EvenOddPrecDWFermActArrayParams(fermacttop, fermact_path));
     Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
 
 #ifdef MRES_CALCULATION
     if (! input.param.nonRelProp)
-      dwf_quarkProp4(quark_propagator, xml_out, quark_prop_source,
-		     t0, j_decay, 
-		     S_f, state, 
-		     input.param.invParam.invType, 
-		     input.param.invParam.RsdCG, 
-		     input.param.invParam.MaxCG, 
-		     ncg_had);
+      S_f.dwf_quarkProp4(quark_propagator, xml_out, quark_prop_source,
+			 t0, j_decay, 
+			 state, 
+			 input.param.invParam, 
+			 ncg_had);
     else
 #endif
-      quarkProp4(quark_propagator, xml_out, quark_prop_source,
-		 S_f, state, 
-		 input.param.invParam.invType, 
-		 input.param.invParam.RsdCG, 
-		 input.param.invParam.MaxCG, 
-		 input.param.nonRelProp,
-		 ncg_had);
+      S_f.quarkProp4(quark_propagator, xml_out, quark_prop_source,
+		     state, 
+		     input.param.invParam, 
+		     input.param.nonRelProp,
+		     ncg_had);
+      
+    success = true;
   }
-  break;
 
-  case FERM_ACT_UNPRECONDITIONED_DWF:
+
+  if (input.param.fermact == UnprecDWFermActArrayEnv::name)  // FERM_ACT_UNPRECONDITIONED_DWF:
   {
-    QDPIO::cout << "FERM_ACT_UNPRECONDITONED_DWF" << endl;
+    QDPIO::cout << UnprecDWFermActArrayEnv::name << endl;
 
-    const DWFFermActParams& dwf_params=dynamic_cast<const DWFFermActParams &>(*(input.param.FermActHandle));
-
-    UnprecDWFermActArray S_f(fbc_a,
-			     dwf_params.chiralParam.OverMass, 
-			     dwf_params.Mass, 
-			     dwf_params.chiralParam.N5);
+    UnprecDWFermActArray S_f(fbc_a, UnprecDWFermActArrayParams(fermacttop, fermact_path));
     Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
 
 #ifdef MRES_CALCULATION
     if (! input.param.nonRelProp)
-      dwf_quarkProp4(quark_propagator, xml_out, quark_prop_source,
-		     t0, j_decay, 
-		     S_f, state, 
-		     input.param.invParam.invType, 
-		     input.param.invParam.RsdCG, 
-		     input.param.invParam.MaxCG, 
-		     ncg_had);
+      S_f.dwf_quarkProp4(quark_propagator, xml_out, quark_prop_source,
+			 t0, j_decay, 
+			 state, 
+			 input.param.invParam, 
+			 ncg_had);
     else
 #endif
-      quarkProp4(quark_propagator, xml_out, quark_prop_source,
-		 S_f, state, 
-		 input.param.invParam.invType, 
-		 input.param.invParam.RsdCG, 
-		 input.param.invParam.MaxCG, 
-		 input.param.nonRelProp,
-		 ncg_had);
-
+      S_f.quarkProp4(quark_propagator, xml_out, quark_prop_source,
+		     state, 
+		     input.param.invParam, 
+		     input.param.nonRelProp,
+		     ncg_had);
+    
+    success = true;
   }
-  break;
+#endif
+		      
 
+  QDPIO::cout << "Try the various factories" << endl;
 
-  case FERM_ACT_OVERLAP_DWF:
+  if (! success)
   {
-    QDPIO::cout << "FERM_ACT_OVERLAP_DWF" << endl;
-    const DWFFermActParams& dwf_params=dynamic_cast<const DWFFermActParams &>(*(input.param.FermActHandle));
+    try
+    {
+      // Generic Wilson-Type stuff
 
-    UnprecOvDWFermActArray S_f(fbc_a,
-			       dwf_params.chiralParam.OverMass, 
-			       dwf_params.Mass, 
-			       dwf_params.chiralParam.N5);
-    Handle<const ConnectState> state(S_f.createState(u));  // uses phase-multiplied u-fields
+      Handle< WilsonTypeFermAct<LatticeFermion> >
+	S_f(TheWilsonTypeFermActFactory::Instance().createObject(input.param.fermact,
+								 fbc,
+								 fermacttop,
+								 fermact_path));
 
-    quarkProp4(quark_propagator, xml_out, quark_prop_source,
-  	       S_f, state, 
-	       input.param.invParam.invType, 
-	       input.param.invParam.RsdCG, 
-	       input.param.invParam.MaxCG, 
-	       input.param.nonRelProp,
-	       ncg_had);
-  }
-  break;
-  
-  case FERM_ACT_ZOLOTAREV_4D:
-  {
-    QDPIO::cout << "FERM_ACT_ZOLOTAREV_4D" << endl;
-    const Zolotarev4DFermActParams& zolo4d = dynamic_cast<const Zolotarev4DFermActParams& > (*(input.param.FermActHandle));
+      Handle<const ConnectState> state(S_f->createState(u));  // uses phase-multiplied u-fields
+
+      S_f->quarkProp4(quark_propagator, xml_out, quark_prop_source,
+		      state, 
+		      input.param.invParam, 
+		      input.param.nonRelProp,
+		      ncg_had);
       
-    // Construct Fermact -- now uses constructor from the zolo4d params
-    // struct
-    Zolotarev4DFermAct S(fbc, zolo4d, xml_out);
-
-      
-    // Make a state. Now calls create state with the state info 
-    // params struct. Loads Evalues etc if needed, will in the 
-    // future recompute them as needed
-    Handle<const ConnectState> state(S.createState(u, zolo4d.StateInfo, xml_out, zolo4d.AuxFermActHandle->getMass() )  );
-
-
-    switch( input.param.invParam.invType ) {
-    case REL_GMRESR_SUMR_INVERTER:
-    case REL_GMRESR_CG_INVERTER:
-      // Call the propagator... Hooray.
-      quarkProp4(quark_propagator, xml_out, quark_prop_source,
-		 S, state, 
-		 input.param.invParam.invType, 
-		 input.param.invParam.RsdCG, 
-		 input.param.invParam.RsdCGPrec,
-		 input.param.invParam.MaxCG, 
-		 input.param.invParam.MaxCGPrec,
-		 input.param.nonRelProp,
-		 ncg_had);
-      break;
-    default:
-      // Call the propagator... Hooray.
-      quarkProp4(quark_propagator, xml_out, quark_prop_source,
-		 S, state, 
-		 input.param.invParam.invType, 
-		 input.param.invParam.RsdCG, 
-		 input.param.invParam.MaxCG, 
-		 input.param.nonRelProp,
-		 ncg_had);	
-      break;
+      success = true;
     }
-		      
+    catch (const std::exception& e) 
+    {
+      QDPIO::cerr << "Error reading data: " << e.what() << endl;
+      throw;
+    }
   }
-  break;
-  case FERM_ACT_ZOLOTAREV_5D:
+
+
+  if (! success)
   {
-    QDPIO::cout << "FERM_ACT_ZOLOTAREV_5D" << endl;
-    const Zolotarev5DFermActParams& zolo5d = dynamic_cast<const Zolotarev5DFermActParams& > (*(input.param.FermActHandle));
-      
-    // Construct Fermact -- now uses constructor from the zolo4d params
-    // struct
-    Zolotarev5DFermActArray S(fbc_a, fbc, zolo5d, xml_out);
+    try
+    {
+      // Generic 5D Wilson-Type stuff
 
-      
-    // Make a state. Now calls create state with the state info 
-    // params struct. Loads Evalues etc if needed, will in the 
-    // future recompute them as needed
-    Handle<const ConnectState> state(S.createState(u, zolo5d.StateInfo, xml_out, zolo5d.AuxFermActHandle->getMass()));
-  
-    // Call the propagator... Hooray.
-    quarkProp4(quark_propagator, xml_out, quark_prop_source,
-	       S, state, 
-	       input.param.invParam.invType, 
-	       input.param.invParam.RsdCG, 
-	       input.param.invParam.MaxCG, 
-	       input.param.nonRelProp,
-	       ncg_had);	  
-		      
-  }
-  break;
+      Handle< WilsonTypeFermAct<LatticeFermion> >
+	S_f(TheWilsonTypeFermActFactory::Instance().createObject(input.param.fermact,
+								 fbc,
+								 fermacttop,
+								 fermact_path));
 
-  default:
-    QDPIO::cerr << "Unsupported fermion action" << endl;
-    QDP_abort(1);
+      Handle<const ConnectState> state(S_f->createState(u));  // uses phase-multiplied u-fields
+
+      S_f->quarkProp4(quark_propagator, xml_out, quark_prop_source,
+		      state, 
+		      input.param.invParam, 
+		      input.param.nonRelProp,
+		      ncg_had);
+      
+      success = true;
+    }
+    catch (const std::exception& e) 
+    {
+      QDPIO::cerr << "Error reading data: " << e.what() << endl;
+      throw;
+    }
   }
+
+
 
   push(xml_out,"Relaxation_Iterations");
   write(xml_out, "ncg_had", ncg_had);

@@ -1,4 +1,4 @@
-// $Id: prec_fermact_qprop.cc,v 1.6 2004-08-02 14:57:07 bjoo Exp $
+// $Id: prec_fermact_qprop.cc,v 1.7 2004-09-08 02:48:26 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic even-odd preconditioned fermion operator
  *
@@ -7,6 +7,7 @@
 
 #include "chromabase.h"
 #include "fermact.h"
+#include "invtype.h"
 #include "actions/ferm/invert/invcg2.h"
 
 using namespace QDP;
@@ -30,9 +31,8 @@ void qprop_t(const EvenOddPrecWilsonTypeFermAct<T>& me,
 	     T& psi, 
 	     Handle<const ConnectState> state, 
 	     const T& chi, 
-	     enum InvType invType,
-	     const Real& RsdCG, 
-	     int MaxCG, int& ncg_had)
+	     const InvertParam_t& invParam,
+	     int& ncg_had)
 {
   START_CODE();
 
@@ -53,7 +53,7 @@ void qprop_t(const EvenOddPrecWilsonTypeFermAct<T>& me,
     chi_tmp[rb[1]] = chi - tmp2;
   }
 
-  switch(invType)
+  switch(invParam.invType)
   {
   case CG_INVERTER: 
   {
@@ -62,27 +62,32 @@ void qprop_t(const EvenOddPrecWilsonTypeFermAct<T>& me,
     (*A)(tmp, chi_tmp, MINUS);
     
     /* psi = (M^dag * M)^(-1) chi */
-    InvCG2(*A, tmp, psi, RsdCG, MaxCG, n_count);
+    InvCG2(*A, tmp, psi, invParam.RsdCG, invParam.MaxCG, n_count);
   }
   break;
   
 #if 0
   case MR_INVERTER:
     /* psi = M^(-1) chi_tmp */
-    InvMR(*A, chi_tmp, psi, MRover, RsdCG, MaxCG, n_count);
+    InvMR(*A, chi_tmp, psi, 
+	  invParam.MRover, 
+	  invParam.RsdCG, 
+	  invParam.MaxCG, n_count);
     break;
 
   case BICG_INVERTER:
     /* psi = M^(-1) chi_tmp */
-    InvBiCG(*A, chi_tmp, psi, RsdCG, MaxCG, n_count);
+    InvBiCG(*A, chi_tmp, psi, 
+	    invParam.RsdCG, 
+	    invParam.MaxCG, n_count);
     break;
 #endif
   
   default:
-    QDP_error_exit("Unknown inverter type", invType);
+    QDP_error_exit("Unknown inverter type", invParam.invType);
   }
   
-  if ( n_count == MaxCG )
+  if ( n_count == invParam.MaxCG )
     QDP_error_exit("no convergence in the inverter", n_count);
   
   ncg_had = n_count;
@@ -106,11 +111,10 @@ void
 EvenOddPrecWilsonTypeFermAct<LatticeFermion>::qpropT(LatticeFermion& psi, 
 						     Handle<const ConnectState> state, 
 						     const LatticeFermion& chi, 
-						     enum InvType invType,
-						     const Real& RsdCG, 
-						     int MaxCG, int& ncg_had) const
+						     const InvertParam_t& invParam,
+						     int& ncg_had) const
 {
-  qprop_t(*this, psi, state, chi, invType, RsdCG, MaxCG, ncg_had);
+  qprop_t(*this, psi, state, chi, invParam, ncg_had);
 }
 
 template<>
@@ -118,11 +122,10 @@ void
 EvenOddPrecWilsonTypeFermAct<LatticeFermion>::qprop(LatticeFermion& psi, 
 						    Handle<const ConnectState> state, 
 						    const LatticeFermion& chi, 
-						    enum InvType invType,
-						    const Real& RsdCG, 
-						    int MaxCG, int& ncg_had) const
+						    const InvertParam_t& invParam,
+						    int& ncg_had) const
 {
-  qprop_t(*this, psi, state, chi, invType, RsdCG, MaxCG, ncg_had);
+  qprop_t(*this, psi, state, chi, invParam, ncg_had);
 }
 
 

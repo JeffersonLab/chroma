@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 1.21 2004-05-14 00:26:44 edwards Exp $
+// $Id: qprop_io.cc,v 1.22 2004-09-08 02:48:26 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -312,37 +312,62 @@ void read(XMLReader& xml, const string& path, ChromaProp_t& param)
 
   switch (version) 
   {
+#if 0
     /**************************************************************************/
   case 4:
+  {
     read(paramtop, "FermTypeP", param.FermTypeP);
-    param.FermActHandle = read(paramtop, ".");
+    XMLReader xml_tmp(paramtop, "FermionAction");
+    read(xml_tmp, "FermAct", param.fermact);
+    std::ostringstream os;
+    xml_tmp.print(os);
+    param.fermactgrp = os.str();
+
     read(paramtop, "InvertParam", param.invParam);
     read(paramtop, "boundary", param.boundary);
     read(paramtop, "nrow", param.nrow);
     param.nonRelProp = false;
-    break;
+  }
+  break;
+#endif
 
     /**************************************************************************/
   case 5:
+  {
     // In this modified version of v4, the fermion action specific stuff
     // goes into a <FermionAction> tag beneath <Param>
     read(paramtop, "FermTypeP", param.FermTypeP);
-    param.FermActHandle = read(paramtop, "FermionAction");
+
+    XMLReader xml_tmp(paramtop, "FermionAction");
+    read(xml_tmp, "FermAct", param.fermact);
+    std::ostringstream os;
+    xml_tmp.print(os);
+    param.fermactgrp = os.str();
+
     read(paramtop, "InvertParam", param.invParam);
     read(paramtop, "boundary", param.boundary);
     read(paramtop, "nrow", param.nrow);
     param.nonRelProp = false;
-    break;
+  }
+  break;
 
     /**************************************************************************/
   case 6:
+  {
     read(paramtop, "FermTypeP", param.FermTypeP);
-    param.FermActHandle = read(paramtop, "FermionAction");
+
+    XMLReader xml_tmp(paramtop, "FermionAction");
+    read(xml_tmp, "FermAct", param.fermact);
+    std::ostringstream os;
+    xml_tmp.print(os);
+    param.fermactgrp = os.str();
+
     read(paramtop, "InvertParam", param.invParam);
     read(paramtop, "boundary", param.boundary);
     read(paramtop, "nrow", param.nrow);
     read(paramtop, "nonRelProp", param.nonRelProp); // new - is this prop non-relativistic
-    break;
+  }
+  break;
 
   default:
     /**************************************************************************/
@@ -368,26 +393,41 @@ void read(XMLReader& xml, const string& path, ChromaMultiProp_t& param)
     /**************************************************************************/
   case 5:  // Backward compatibility with non Multi ChromaProp_t
     /**************************************************************************/
+  {
     read(paramtop, "MultiMasses", param.MultiMasses);
     read(paramtop, "FermTypeP", param.FermTypeP);
-    param.FermActHandle = read(paramtop, "FermionAction");
+
+    XMLReader xml_tmp(paramtop, "FermionAction");
+    read(xml_tmp, "FermAct", param.fermact);
+    std::ostringstream os;
+    xml_tmp.print(os);
+    param.fermactgrp = os.str();
+
     read(paramtop, "InvertParam", param.invParam);
     read(paramtop, "boundary", param.boundary);
     read(paramtop, "nrow", param.nrow);
     param.nonRelProp = false;
-    break;
+  }
+  break;
 
     /**************************************************************************/
   case 6:  // Backward compatibility with non Multi ChromaProp_t
     /**************************************************************************/
+  {
     read(paramtop, "MultiMasses", param.MultiMasses);
     read(paramtop, "FermTypeP", param.FermTypeP);
-    param.FermActHandle = read(paramtop, "FermionAction");
+    XMLReader xml_tmp(paramtop, "FermionAction");
+    read(xml_tmp, "FermAct", param.fermact);
+    std::ostringstream os;
+    xml_tmp.print(os);
+    param.fermactgrp = os.str();
+
     read(paramtop, "InvertParam", param.invParam);
     read(paramtop, "boundary", param.boundary);
     read(paramtop, "nrow", param.nrow);
     read(paramtop, "nonRelProp", param.nonRelProp); // new - is this prop non-relativistic
-    break;
+  }
+  break;
 
   default:
     /**************************************************************************/
@@ -566,15 +606,7 @@ void write(XMLWriter& xml, const string& path, const ChromaProp_t& header)
   write(xml, "version", version);
   write(xml, "FermTypeP", header.FermTypeP);
   write(xml, "nonRelProp", header.nonRelProp); // new - is this prop non-relativistic
-
-  if( header.FermActHandle != 0x0 ) { 
-    write(xml, "FermionAction", *(header.FermActHandle));
-  }
-  else {
-    QDPIO::cerr << "Attempting to print Uninitialised FermActHandle" << endl;
-    QDP_abort(1);
-  }
-        
+  xml << header.fermactgrp;
   write(xml, "InvertParam", header.invParam);
   write(xml, "boundary", header.boundary);
   write(xml, "nrow", header.nrow);
@@ -592,14 +624,7 @@ void write(XMLWriter& xml, const string& path, const ChromaMultiProp_t& header)
   write(xml, "FermTypeP", header.FermTypeP);
   write(xml, "nonRelProp", header.nonRelProp); // new - is this prop non-relativistic
   write(xml, "MultiMasses", header.MultiMasses);
-  if( header.FermActHandle != 0x0 ) { 
-    write(xml, "FermionAction", *(header.FermActHandle));
-  }
-  else {
-    QDPIO::cerr << "Attempting to print Uninitialised FermActHandle" << endl;
-    QDP_abort(1);
-  }
-  
+  xml << header.fermactgrp;
   write(xml, "InvertParam", header.invParam);
   write(xml, "boundary", header.boundary);
   write(xml, "nrow", header.nrow);

@@ -1,6 +1,37 @@
-// $Id: prec_fermact_qprop_array.cc,v 1.6 2004-07-28 02:38:02 edwards Exp $
+// $Id: prec_fermact_qprop_array.cc,v 1.7 2004-09-08 02:48:26 edwards Exp $
 // $Log: prec_fermact_qprop_array.cc,v $
-// Revision 1.6  2004-07-28 02:38:02  edwards
+// Revision 1.7  2004-09-08 02:48:26  edwards
+// Big switch-over of fermact IO. New fermact startup mechanism -
+// now using Singleton Factory object. Moved  quarkprop4 to be
+// a virtual func with top level FermionAction. Disconnected
+// zolo4d and 5d fermacts temporarily. Removing usage of old
+// fermact and subsequently md,gaugeact  IO mechanisms.
+//
+// Revision 1.6.2.1  2004/09/02 16:00:07  bjoo
+// Trolled beneath the fermact mountains and changed the invocations
+// of the inverters to conform to the new inverter interface (invParam -- vs RsdCG, MaxCG and friends) - also in the qprop_files too.
+//
+// I HAVE REMOVED ZOLOTAREV4D and ZOLOTAREV5D from the build as these
+// will need extensive reworking to keep those params inside them
+// (simply too many).  I will get them to conform later. Use the
+// production branch if you need access to those
+//
+// I have added the various LOKI based files (Alexandrescu) to the
+// Makefile.am so that things install correctly.
+//
+// I made the propagator code go through the factory invokation to
+// do a propagator calculation with prec wilson fermions.
+//
+// Interestingly the linkage_hack appeared to be optimised away in its
+// old form. I turned it into a function that returns the "foo" within,
+// so it cannot be compiled away. Interestingly, it still doesn't actually
+// need to be CALLED.
+//
+// Main achievements:
+// 	Library compiles
+// 	Propagator runs with suitable fermacts (I should check DWF etc)
+//
+// Revision 1.6  2004/07/28 02:38:02  edwards
 // Changed {START,END}_CODE("foo") to {START,END}_CODE().
 //
 // Revision 1.5  2004/02/05 20:01:47  kostas
@@ -14,6 +45,7 @@
 
 #include "chromabase.h"
 #include "fermact.h"
+#include "invtype.h"
 #include "actions/ferm/invert/invcg2_array.h"
 
 using namespace QDP;
@@ -38,9 +70,8 @@ void qprop_t(const EvenOddPrecWilsonTypeFermAct< multi1d<T> >& me,
 	     multi1d<T>& psi, 
 	     Handle<const ConnectState> state, 
 	     const multi1d<T>& chi, 
-	     enum InvType invType,
-	     const Real& RsdCG, 
-	     int MaxCG, int& ncg_had)
+	     const InvertParam_t& invParam,
+	     int& ncg_had)
 {
   START_CODE();
 
@@ -63,7 +94,7 @@ void qprop_t(const EvenOddPrecWilsonTypeFermAct< multi1d<T> >& me,
       chi_tmp[n][rb[1]] = chi[n] - tmp2[n];
   }
 
-  switch(invType)
+  switch(invParam.invType)
   {
   case CG_INVERTER: 
   {
@@ -72,27 +103,27 @@ void qprop_t(const EvenOddPrecWilsonTypeFermAct< multi1d<T> >& me,
     (*A)(tmp, chi_tmp, MINUS);
 
     /* psi = (M^dag * M)^(-1) chi */
-    InvCG2 (*A, tmp, psi, RsdCG, MaxCG, n_count);
+    InvCG2 (*A, tmp, psi, invParam.RsdCG, invParam.MaxCG, n_count);
   }
   break;
   
 #if 0
   case MR_INVERTER:
     /* psi = M^(-1) chi */
-    InvMR (*A, chi_tmp, psi, MRover, RsdCG, MaxCG, n_count);
+    InvMR (*A, chi_tmp, psi, invParam.MRover, invParam.RsdCG, invParam.MaxCG, n_count);
     break;
 
   case BICG_INVERTER:
     /* psi = M^(-1) chi */
-    InvBiCG (*A, chi_tmp, psi, RsdCG, MaxCG, n_count);
+    InvBiCG (*A, chi_tmp, psi, invParam.RsdCG, invParam.MaxCG, n_count);
     break;
 #endif
   
   default:
-    QDP_error_exit("Unknown inverter type", invType);
+    QDP_error_exit("Unknown inverter type", invParam.invType);
   }
   
-  if ( n_count == MaxCG )
+  if ( n_count == invParam.MaxCG )
     QDP_error_exit("no convergence in the inverter", n_count);
   
   ncg_had = n_count;
@@ -118,11 +149,10 @@ void
 EvenOddPrecWilsonTypeFermAct< multi1d<LatticeFermion> >::qpropT(multi1d<LatticeFermion>& psi, 
 								Handle<const ConnectState> state, 
 								const multi1d<LatticeFermion>& chi, 
-								enum InvType invType,
-								const Real& RsdCG, 
-								int MaxCG, int& ncg_had) const
+								const InvertParam_t& invParam,
+								int& ncg_had) const
 {
-  qprop_t<LatticeFermion>(*this, psi, state, chi, invType, RsdCG, MaxCG, ncg_had);
+  qprop_t<LatticeFermion>(*this, psi, state, chi, invParam, ncg_had);
 }
 
 

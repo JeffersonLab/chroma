@@ -1,4 +1,4 @@
-// $Id: fermact_qprop.cc,v 1.9 2004-08-02 14:57:06 bjoo Exp $
+// $Id: fermact_qprop.cc,v 1.10 2004-09-08 02:48:26 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *
@@ -7,6 +7,7 @@
 
 #include "chromabase.h"
 #include "fermact.h"
+#include "invtype.h"
 #include "actions/ferm/invert/invcg2.h"
 
 using namespace QDP;
@@ -35,9 +36,8 @@ void qprop_t(const FermionAction<T>& me,
 	     T& psi, 
 	     Handle<const ConnectState> state, 
 	     const T& chi, 
-	     enum InvType invType,
-	     const Real& RsdCG, 
-	     int MaxCG, int& ncg_had)
+	     const InvertParam_t& invParam,
+	     int& ncg_had)
 {
   START_CODE();
 
@@ -47,7 +47,7 @@ void qprop_t(const FermionAction<T>& me,
   /* This allocates field for the appropriate action */
   Handle<const LinearOperator<T> > A(me.linOp(state));
 
-  switch(invType)
+  switch(invParam.invType)
   {
   case CG_INVERTER: 
   {
@@ -56,27 +56,27 @@ void qprop_t(const FermionAction<T>& me,
     (*A)(tmp, chi, MINUS);
     
     /* psi = (M^dag * M)^(-1) chi */
-    InvCG2 (*A, tmp, psi, RsdCG, MaxCG, n_count);
+    InvCG2 (*A, tmp, psi, invParam.RsdCG, invParam.MaxCG, n_count);
   }
   break;
   
 #if 0
   case MR_INVERTER:
     /* psi = M^(-1) chi */
-    InvMR (*A, chi, psi, MRover, RsdCG, MaxCG, n_count);
+    InvMR (*A, chi, psi, invParam.MRover, invParam.RsdCG, invParam.MaxCG, n_count);
     break;
 
   case BICG_INVERTER:
     /* psi = M^(-1) chi */
-    InvBiCG (*A, chi, psi, RsdCG, MaxCG, n_count);
+    InvBiCG (*A, chi, psi, invParam.RsdCG, invParam.MaxCG, n_count);
     break;
 #endif
   
   default:
-    QDP_error_exit("Unknown inverter type", invType);
+    QDP_error_exit("Unknown inverter type", invParam.invType);
   }
   
-  if ( n_count == MaxCG )
+  if ( n_count == invParam.MaxCG )
     QDP_error_exit("no convergence in the inverter", n_count);
   
   ncg_had = n_count;
@@ -89,22 +89,20 @@ template<>
 void FermionAction<LatticeFermion>::qpropT(LatticeFermion& psi, 
 					   Handle<const ConnectState> state, 
 					   const LatticeFermion& chi, 
-					   enum InvType invType,
-					   const Real& RsdCG, 
-					   int MaxCG, int& ncg_had) const
+					   const InvertParam_t& invParam,
+					   int& ncg_had) const
 {
-  qprop_t(*this, psi, state, chi, invType, RsdCG, MaxCG, ncg_had);
+  qprop_t(*this, psi, state, chi, invParam, ncg_had);
 }
 
 template<>
 void FermionAction<LatticeFermion>::qprop(LatticeFermion& psi, 
 					  Handle<const ConnectState> state, 
 					  const LatticeFermion& chi, 
-					  enum InvType invType,
-					  const Real& RsdCG, 
-					  int MaxCG, int& ncg_had) const
+					  const InvertParam_t& invParam,
+					  int& ncg_had) const
 {
-  qprop_t(*this, psi, state, chi, invType, RsdCG, MaxCG, ncg_had);
+  qprop_t(*this, psi, state, chi, invParam, ncg_had);
 }
 
 

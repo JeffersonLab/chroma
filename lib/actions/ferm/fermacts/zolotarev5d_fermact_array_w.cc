@@ -1,4 +1,4 @@
-// $Id: zolotarev5d_fermact_array_w.cc,v 1.13 2004-07-28 02:38:01 edwards Exp $
+// $Id: zolotarev5d_fermact_array_w.cc,v 1.14 2004-09-08 02:48:26 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -13,6 +13,84 @@
 #include "actions/ferm/linop/lmdagm.h"
 #include "actions/ferm/invert/invcg2_array.h"
 #include "zolotarev.h"
+
+#include "actions/ferm/fermacts/fermfactory_w.h"
+
+namespace Chroma
+{
+
+  //! Hooks to register the class with the fermact factory
+  namespace Zolotarev4DFermActEnv
+  {
+    //! Callback function
+    WilsonTypeFermAct<LatticeFermion>* createFermAct(Handle< FermBC<LatticeFermion> > fbc,
+						     XMLReader& xml_in,
+						     const std::string& path)
+    {
+      return new Zolotarev4DFermAct(fbc, Zolotarev4DFermActParams(xml_in, path));
+    }
+
+    //! Name to be used
+    const std::string name = "ZOLOTAREV_5D";
+
+    //! Register the Wilson fermact
+    const bool registered = TheWilsonTypeFermActFactory::Instance().registerObject(name, createFermAct);
+  }
+
+
+  Zolotarev5DFermActParams::Zolotarev5DFermActParams(XMLReader& xml, const std::string& path)
+  {
+    XMLReader in(xml, path);
+
+  // This will bomb if it fails so no need to check for NULL after
+  AuxFermActHandle = read(in, "AuxFermAct");
+  if( AuxFermActHandle == 0x0 ) { 
+    QDPIO::cerr << "Read of AuxFermAct returned NULL Pointer" << endl;
+    QDP_abort(1);
+  }
+
+  try { 
+
+      if(in.count("AuxFermAct") == 1 )
+    read(in, "Mass", Mass);
+    read(in, "RatPolyDeg", RatPolyDeg);
+    read(in, "StateInfo", StateInfo);
+  }
+  catch( const string &e ) {
+    QDPIO::cerr << "Caught Exception reading Zolo5D Fermact params: " << e << endl;
+    QDP_abort(1);
+  }
+}
+
+void write(XMLWriter& xml_out, const string& path, const Zolotarev5DFermActParams& p)
+{
+  if ( path != "." ) { 
+    push( xml_out, path);
+  }
+  
+  write(xml_out, "FermAct", p.getFermActType());
+
+  switch(p.AuxFermActHandle->getFermActType()) {
+  case FERM_ACT_WILSON:
+  {
+    const WilsonFermActParams& wilson = dynamic_cast<WilsonFermActParams&>(*(p.AuxFermActHandle));
+    write(xml_out, "AuxFermAct", wilson);
+  }
+  break;
+  default:
+    QDPIO::cerr << "Unsupported AuxFermAct in write " << endl;
+    QDP_abort(1);
+    break;
+  }
+
+  write(xml_out, "Mass", p.Mass);
+  write(xml_out, "RatPolyDeg", p.RatPolyDeg);
+  write(xml_out, "StateInfo", p.StateInfo);
+
+  if( path != "." ) { 
+    pop(xml_out);
+  }
+}
 
 // Construct the action out of a parameter structure
 Zolotarev5DFermActArray::Zolotarev5DFermActArray(Handle< FermBC< multi1d< LatticeFermion> > > fbc_a_, 
@@ -593,4 +671,6 @@ Zolotarev5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
   }
 
   return 0;  // Should never get here. Make compilers happy.
+}
+
 }

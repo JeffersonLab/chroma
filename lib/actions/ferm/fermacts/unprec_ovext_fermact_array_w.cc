@@ -1,4 +1,4 @@
-// $Id: unprec_ovext_fermact_array_w.cc,v 1.8 2004-07-28 02:38:01 edwards Exp $
+// $Id: unprec_ovext_fermact_array_w.cc,v 1.9 2004-09-08 02:48:25 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -10,99 +10,147 @@
 
 #include "actions/ferm/invert/invcg2_array.h"
 
-//! Produce a linear operator for this action
-/*!
- * The operator acts on the entire lattice
- *
- * \param state	    gauge field     	       (Read)
- */
-const LinearOperator<multi1d<LatticeFermion> >* 
-UnprecOvExtFermActArray::linOp(Handle<const ConnectState> state) const
+#include "actions/ferm/fermacts/fermfactory_w.h"
+
+namespace Chroma
 {
-  return new UnprecOvExtLinOpArray(state->getLinks(),WilsonMass,m_q,N5);
-}
-
-
-//! Produce a M^dag.M linear operator for this action
-/*!
- * The operator acts on the entire lattice
- *
- * \param state	    gauge field     	       (Read)
- */
-const LinearOperator<multi1d<LatticeFermion> >* 
-UnprecOvExtFermActArray::lMdagM(Handle<const ConnectState> state) const
-{
-  return new lmdagm<multi1d<LatticeFermion> >(linOp(state));
-}
-
-//! Propagator of an un-preconditioned Extended-Overlap linear operator
-/*!
- * \param psi      quark propagator ( Modify )
- * \param state    gauge field ( Read )
- * \param chi      source ( Read )
- * \param invType  inverter type ( Read (
- * \param RsdCG    CG (or MR) residual used here ( Read )
- * \param MaxCG    maximum number of CG iterations ( Read )
- * \param ncg_had  number of CG iterations ( Write )
- */
-
-void 
-UnprecOvExtFermActArray::qprop(LatticeFermion& psi, 
-			       Handle<const ConnectState> state, 
-			       const LatticeFermion& chi, 
-			       enum InvType invType,
-			       const Real& RsdCG, 
-			       int MaxCG, int& ncg_had) const
-{
-  START_CODE();
-
-  const int  N5 = size();   // array size better match
-  const Real m_q = quark_mass();
-  int n_count;
-  
-  int G5 = Ns*Ns - 1;
-
-  // Initialize the 5D fields
-  multi1d<LatticeFermion> chi5(N5);
-  multi1d<LatticeFermion> psi5(N5);
-  psi5 = zero;
-  chi5 = zero;
-
-  psi5[0] = psi;
-  chi5[0] = Gamma(G5) * chi;
-
-  // Construct the linear operator
-  Handle<const LinearOperator< multi1d<LatticeFermion> > > A(linOp(state));
-
-  switch(invType)
+  //! Hooks to register the class with the fermact factory
+  namespace UnprecOvExtFermActArrayEnv
   {
-  case CG_INVERTER: 
-    // psi5 = (H_o)^(-2) chi5
-    InvCG2(*A, chi5, psi5, RsdCG, MaxCG, n_count);
+    //! Callback function
+    WilsonTypeFermAct< multi1d<LatticeFermion> >* createFermAct(Handle< FermBC< multi1d<LatticeFermion> > > fbc,
+								XMLReader& xml_in,
+								const std::string& path)
+    {
+      return new UnprecOvExtFermActArray(fbc, UnprecOvExtFermActArrayParams(xml_in, path));
+    }
 
-    // chi5 = H_o * (H_o)^(-2) * gamma_5 * chi
-    (*A)(chi5, psi5, MINUS);
-    break;
-  
-  case MR_INVERTER:
-  case BICG_INVERTER:
-    QDP_error_exit("Unsupported inverter type", invType);
-    break;
-  
-  default:
-    QDP_error_exit("Unknown inverter type", invType);
+    //! Name to be used
+    const std::string name = "UNPRECONDITIONED_OVEXT";
+
+    //! Register the Wilson fermact
+    const bool registered = Chroma::TheWilsonTypeFermActArrayFactory::Instance().registerObject(name, createFermAct); 
   }
-  
-  if ( n_count == MaxCG )
-    QDP_error_exit("no convergence in the inverter", n_count);
-  
-  ncg_had = n_count;
-  
-  // Overall normalization
-  Real ftmp1 = Real(1) / Real(1 - m_q);
 
-  // Normalize and remove contact term
-  psi = ftmp1*(chi5[0] - chi);
 
-  END_CODE();
+  //! Read parameters
+  UnprecOvExtFermActArrayParams::UnprecOvExtFermActArrayParams(XMLReader& xml, 
+							       const std::string& path)
+  {
+    XMLReader paramtop(xml, path);
+
+    // Read the stuff for the action
+    read(paramtop, "WilsonMass", WilsonMass);
+    read(paramtop, "m_q", m_q);
+    read(paramtop, "N5", N5);
+
+    if (paramtop.count("a5") != 0) 
+      read(paramtop, "a5", a5);
+    else
+      a5 = 1.0;
+  }
+
+
+  //! Read parameters
+  void read(XMLReader& xml, const string& path, UnprecOvExtFermActArrayParams& param)
+  {
+    UnprecOvExtFermActArrayParams tmp(xml, path);
+    param = tmp;
+  }
+
+
+
+  //! Produce a linear operator for this action
+  /*!
+   * The operator acts on the entire lattice
+   *
+   * \param state	    gauge field     	       (Read)
+   */
+  const LinearOperator<multi1d<LatticeFermion> >* 
+  UnprecOvExtFermActArray::linOp(Handle<const ConnectState> state) const
+  {
+    return new UnprecOvExtLinOpArray(state->getLinks(),WilsonMass,m_q,N5);
+  }
+
+
+  //! Produce a M^dag.M linear operator for this action
+  /*!
+   * The operator acts on the entire lattice
+   *
+   * \param state	    gauge field     	       (Read)
+   */
+  const LinearOperator<multi1d<LatticeFermion> >* 
+  UnprecOvExtFermActArray::lMdagM(Handle<const ConnectState> state) const
+  {
+    return new lmdagm<multi1d<LatticeFermion> >(linOp(state));
+  }
+
+  //! Propagator of an un-preconditioned Extended-Overlap linear operator
+  /*!
+   * \param psi      quark propagator ( Modify )
+   * \param state    gauge field ( Read )
+   * \param chi      source ( Read )
+   * \param invParam inverter parameters ( Read (
+   * \param ncg_had  number of CG iterations ( Write )
+   */
+  void 
+  UnprecOvExtFermActArray::qprop(LatticeFermion& psi, 
+				 Handle<const ConnectState> state, 
+				 const LatticeFermion& chi, 
+				 const InvertParam_t& invParam,
+				 int& ncg_had) const
+  {
+    START_CODE();
+
+    const int  N5 = size();   // array size better match
+    const Real m_q = quark_mass();
+    int n_count;
+  
+    int G5 = Ns*Ns - 1;
+
+    // Initialize the 5D fields
+    multi1d<LatticeFermion> chi5(N5);
+    multi1d<LatticeFermion> psi5(N5);
+    psi5 = zero;
+    chi5 = zero;
+
+    psi5[0] = psi;
+    chi5[0] = Gamma(G5) * chi;
+
+    // Construct the linear operator
+    Handle<const LinearOperator< multi1d<LatticeFermion> > > A(linOp(state));
+
+    switch(invParam.invType)
+    {
+    case CG_INVERTER: 
+      // psi5 = (H_o)^(-2) chi5
+      InvCG2(*A, chi5, psi5, invParam.RsdCG, invParam.MaxCG, n_count);
+
+      // chi5 = H_o * (H_o)^(-2) * gamma_5 * chi
+      (*A)(chi5, psi5, MINUS);
+      break;
+  
+    case MR_INVERTER:
+    case BICG_INVERTER:
+      QDP_error_exit("Unsupported inverter type", invParam.invType);
+      break;
+  
+    default:
+      QDP_error_exit("Unknown inverter type", invParam.invType);
+    }
+  
+    if ( n_count == invParam.MaxCG )
+      QDP_error_exit("no convergence in the inverter", n_count);
+  
+    ncg_had = n_count;
+  
+    // Overall normalization
+    Real ftmp1 = Real(1) / Real(1 - m_q);
+
+    // Normalize and remove contact term
+    psi = ftmp1*(chi5[0] - chi);
+
+    END_CODE();
+  }
+
 }

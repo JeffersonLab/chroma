@@ -1,4 +1,4 @@
-// $Id: prec_dwf_fermact_qprop_array_w.cc,v 1.3 2004-07-28 02:38:02 edwards Exp $
+// $Id: prec_dwf_fermact_qprop_array_w.cc,v 1.4 2004-09-08 02:48:26 edwards Exp $
 /*! \file
  *  \brief Base class for even-odd preconditioned domain-wall-like fermion actions
  */
@@ -29,9 +29,8 @@ void qprop_t(const EvenOddPrecDWFermActBaseArray<T>& me,
 	     T& psi, 
 	     Handle<const ConnectState> state, 
 	     const T& chi, 
-	     enum InvType invType,
-	     const Real& RsdCG, 
-	     int MaxCG, int& ncg_had)
+	     const InvertParam_t& invParam,
+	     int& ncg_had)
 {
   START_CODE();
 
@@ -80,33 +79,33 @@ void qprop_t(const EvenOddPrecDWFermActBaseArray<T>& me,
     }
   }
 
-  switch(invType)
+  switch(invParam.invType)
   {
   case CG_INVERTER: 
     // tmp5 = D5^\dagger(m) . chi5 =  D5^dagger(m) . L^-1 . D5(1) . P . (chi,0,0,..,0)^T
     (*A)(tmp5, chi5, MINUS);
     
     // psi5 = (D^dag * D)^(-1) tmp5
-    InvCG2(*A, tmp5, psi5, RsdCG, MaxCG, n_count);
+    InvCG2(*A, tmp5, psi5, invParam.RsdCG, invParam.MaxCG, n_count);
     break;
   
 #if 0
   case MR_INVERTER:
     // psi5 = D^(-1) * chi5
-    InvMR(*A, chi5, psi5, MRover, RsdCG, MaxCG, n_count);
+    InvMR(*A, chi5, psi5, invParam.MRover, invParam.RsdCG, invParam.MaxCG, n_count);
     break;
 
   case BICG_INVERTER:
     // psi5 = D^(-1) chi5
-    InvBiCG(*A, chi5, psi5, RsdCG, MaxCG, n_count);
+    InvBiCG(*A, chi5, psi5, invParam.RsdCG, invParam.MaxCG, n_count);
     break;
 #endif
   
   default:
-    QDP_error_exit("Unknown inverter type", invType);
+    QDP_error_exit("Unknown inverter type", invParam.invType);
   }
   
-  if ( n_count == MaxCG )
+  if ( n_count == invParam.MaxCG )
     QDP_error_exit("no convergence in the inverter", n_count);
   
   ncg_had = n_count;
@@ -141,9 +140,8 @@ void
 EvenOddPrecDWFermActBaseArray<LatticeFermion>::qprop(LatticeFermion& psi, 
 						     Handle<const ConnectState> state, 
 						     const LatticeFermion& chi, 
-						     enum InvType invType,
-						     const Real& RsdCG, 
-						     int MaxCG, int& ncg_had) const
+						     const InvertParam_t& invParam,
+						     int& ncg_had) const
 {
-  qprop_t<LatticeFermion>(*this, psi, state, chi, invType, RsdCG, MaxCG, ncg_had);
+  qprop_t<LatticeFermion>(*this, psi, state, chi, invParam,ncg_had);
 }

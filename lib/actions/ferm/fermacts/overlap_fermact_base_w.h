@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: overlap_fermact_base_w.h,v 1.9 2004-05-25 21:47:39 bjoo Exp $
+// $Id: overlap_fermact_base_w.h,v 1.10 2004-09-08 02:48:25 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -72,42 +72,46 @@ public:
   void qprop(LatticeFermion& psi, 
 	     Handle<const ConnectState> state, 
 	     const LatticeFermion& chi, 
-	     enum InvType invType,
-	     const Real& RsdCG, 
-	     int MaxCG, 
+	     const InvertParam_t& invParam,
 	     int& ncg_had) const;
 
-  //! Redefine quark propagator routine for 4D fermions
-  /*! 
-   * NOTE: the arg ConectState MUST be in the original base because C++ 
-   * requires it for a virtual func!
-   * The function will have to downcast to get the correct state
-   */
-  void qprop(LatticeFermion& psi, 
-	     Handle<const ConnectState> state, 
-	     const LatticeFermion& chi, 
-	     enum InvType invType,
-	     const Real& RsdCG, 
-	     const Real& RsdCGPrec,
-	     int MaxCG, 
-	     int MaxCGPrec,
-	     int& ncg_had) const;
-
+  
   //! Define a multi mass qprop
   /*! this should be possible for most 4D operators of the 
    *  form   (1/2)[ (1 + m_q ) + (1 - m_q) gamma_5 psi 
    *
    */
   void multiQprop(multi1d<LatticeFermion>& psi, 
-	     const multi1d<Real>& masses,
-	     Handle<const ConnectState> state,
-	     const LatticeFermion& chi,
-	     enum InvType invType,
-	     const multi1d<Real>& RsdCG, 
-	     int nsoln,
-	     int MaxCG, 
-	     int & ncg_had) const;
+		  const multi1d<Real>& masses,
+		  Handle<const ConnectState> state,
+		  const LatticeFermion& chi,
+		  const MultiInvertParam_t& invParam,
+		  const int n_soln,
+		  int & ncg_had) const;
 
+
+  void quarkProp4(LatticePropagator& q_sol, 
+		  XMLWriter& xml_out,
+		  const LatticePropagator& q_src,
+		  Handle<const ConnectState> state,
+		  const InvertParam_t& invParam,
+		  bool nonRelProp,
+		  int& ncg_had);
+  /*! \ingroup qprop
+   *
+   * \param q_sol    quark propagator ( Write )
+   * \param q_src    source ( Read )
+   * \param invParam inverter parameters ( Read )
+   * \param ncg_had  number of CG iterations ( Write )
+   */
+  void multiQuarkProp4(multi1d<LatticePropagator>& q_sol, 
+		       XMLWriter& xml_out,
+		       const LatticePropagator& q_src,
+		       Handle<const ConnectState> state,
+		       const multi1d<Real>& masses,
+		       const MultiInvertParam_t& invParam,
+		       const int n_soln,
+		       int& ncg_had);
 };
 
 #endif

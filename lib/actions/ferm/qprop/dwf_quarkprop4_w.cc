@@ -1,6 +1,40 @@
-// $Id: dwf_quarkprop4_w.cc,v 1.18 2004-07-28 02:38:02 edwards Exp $
+// $Id: dwf_quarkprop4_w.cc,v 1.19 2004-09-08 02:48:26 edwards Exp $
 // $Log: dwf_quarkprop4_w.cc,v $
-// Revision 1.18  2004-07-28 02:38:02  edwards
+// Revision 1.19  2004-09-08 02:48:26  edwards
+// Big switch-over of fermact IO. New fermact startup mechanism -
+// now using Singleton Factory object. Moved  quarkprop4 to be
+// a virtual func with top level FermionAction. Disconnected
+// zolo4d and 5d fermacts temporarily. Removing usage of old
+// fermact and subsequently md,gaugeact  IO mechanisms.
+//
+// Revision 1.18.2.2  2004/09/02 16:00:07  bjoo
+// Trolled beneath the fermact mountains and changed the invocations
+// of the inverters to conform to the new inverter interface (invParam -- vs RsdCG, MaxCG and friends) - also in the qprop_files too.
+//
+// I HAVE REMOVED ZOLOTAREV4D and ZOLOTAREV5D from the build as these
+// will need extensive reworking to keep those params inside them
+// (simply too many).  I will get them to conform later. Use the
+// production branch if you need access to those
+//
+// I have added the various LOKI based files (Alexandrescu) to the
+// Makefile.am so that things install correctly.
+//
+// I made the propagator code go through the factory invokation to
+// do a propagator calculation with prec wilson fermions.
+//
+// Interestingly the linkage_hack appeared to be optimised away in its
+// old form. I turned it into a function that returns the "foo" within,
+// so it cannot be compiled away. Interestingly, it still doesn't actually
+// need to be CALLED.
+//
+// Main achievements:
+// 	Library compiles
+// 	Propagator runs with suitable fermacts (I should check DWF etc)
+//
+// Revision 1.18.2.1  2004/09/01 15:13:10  edwards
+// Start of major changes to support maps.
+//
+// Revision 1.18  2004/07/28 02:38:02  edwards
 // Changed {START,END}_CODE("foo") to {START,END}_CODE().
 //
 // Revision 1.17  2004/02/23 03:05:11  edwards
@@ -55,12 +89,14 @@
 
 #include "chromabase.h"
 #include "fermact.h"
-#include "actions/ferm/qprop/dwf_quarkprop4_w.h"
+#include "actions/ferm/fermacts/prec_dwf_fermact_array_w.h"
+#include "actions/ferm/fermacts/unprec_dwf_fermact_array_w.h"
 #include "actions/ferm/linop/dwffld_w.h"
 #include "util/ferm/transf.h"
 #include "util/ft/sftmom.h"
 
 using namespace QDP;
+using namespace Chroma;
 
 void dwf_conserved_axial_ps_corr(LatticeComplex& corr,
 				 const multi1d<LatticeColorMatrix>& u,
@@ -128,22 +164,19 @@ void check_dwf_ward_identity(const multi1d<LatticeColorMatrix>& u,
  * \param q_src    source ( Read )
  * \param t_src    time slice of source ( Read )
  * \param j_decay  direction of decay ( Read )
- * \param invType  inverter type ( Read )
- * \param RsdCG    CG (or MR) residual used here ( Read )
- * \param MaxCG    maximum number of CG iterations ( Read )
+ * \param invParam inverter parameters ( Read )
  * \param ncg_had  number of CG iterations ( Write )
  */
+  // const UnprecWilsonTypeFermAct< multi1d<LatticeFermion> >& S_f,
 template<typename T, template<class> class C>
-static 
 void dwf_quarkProp4_a(LatticePropagator& q_sol, 
 		      XMLWriter& xml_out,
 		      const LatticePropagator& q_src,
 		      int t_src, int j_decay,
 		      const C<T>& S_f,
 		      Handle<const ConnectState> state,
-		      enum InvType invType,
-		      const Real& RsdCG, 
-		      int MaxCG, int& ncg_had)
+		      const InvertParam_t& invParam,
+		      int& ncg_had)
 {
   START_CODE();
 
@@ -193,11 +226,11 @@ void dwf_quarkProp4_a(LatticePropagator& q_sol,
 
       int n_count;
       // Compute the propagator for given source color/spin.	   
-      S_f.qpropT(psi, state, chi, invType, RsdCG, MaxCG, n_count);
+      S_f.qpropT(psi, state, chi, invParam, n_count);
       ncg_had += n_count;
 
       push(xml_out,"Qprop");
-      write(xml_out, "RsdCG", RsdCG);
+      write(xml_out, "RsdCG", invParam.RsdCG);
       write(xml_out, "n_count", n_count);
       pop(xml_out);
 
@@ -360,24 +393,28 @@ void dwf_conserved_axial_ps_corr(LatticeComplex& corr,
  * \param q_src    source ( Read )
  * \param t_src    time slice of source ( Read )
  * \param j_decay  direction of decay ( Read )
- * \param invType  inverter type ( Read )
- * \param RsdCG    CG (or MR) residual used here ( Read )
- * \param MaxCG    maximum number of CG iterations ( Read )
+ * \param invParam inverter parameters ( Read )
  * \param ncg_had  number of CG iterations ( Write )
  */
 
-void dwf_quarkProp4(LatticePropagator& q_sol, 
-		    XMLWriter& xml_out,
-		    const LatticePropagator& q_src,
-		    int t_src, int j_decay,
-		    const EvenOddPrecDWFermActBaseArray<LatticeFermion>& S_f,
-		    Handle<const ConnectState> state,
-		    enum InvType invType,
-		    const Real& RsdCG, 
-		    int MaxCG, int& ncg_had)
+void
+EvenOddPrecDWFermActArray::dwf_quarkProp4(LatticePropagator& q_sol, 
+					  XMLWriter& xml_out,
+					  const LatticePropagator& q_src,
+					  int t_src, int j_decay,
+					  Handle<const ConnectState> state,
+					  const InvertParam_t& invParam,
+					  int& ncg_had)
 {
-  dwf_quarkProp4_a(q_sol, xml_out, q_src, t_src, j_decay, S_f, state, 
-		   invType, RsdCG, MaxCG, ncg_had);
+  dwf_quarkProp4_a<LatticeFermion,EvenOddPrecDWFermActBaseArray>(q_sol, 
+								 xml_out, 
+								 q_src, 
+								 t_src, 
+								 j_decay, 
+								 *this, 
+								 state, 
+								 invParam, 
+								 ncg_had);
 }
 
 //! Given a complete propagator as a source, this does all the inversions needed
@@ -389,23 +426,27 @@ void dwf_quarkProp4(LatticePropagator& q_sol,
  * \param q_src    source ( Read )
  * \param t_src    time slice of source ( Read )
  * \param j_decay  direction of decay ( Read )
- * \param invType  inverter type ( Read )
- * \param RsdCG    CG (or MR) residual used here ( Read )
- * \param MaxCG    maximum number of CG iterations ( Read )
+ * \param invParam inverter parameters ( Read )
  * \param ncg_had  number of CG iterations ( Write )
  */
 
-void dwf_quarkProp4(LatticePropagator& q_sol, 
-		    XMLWriter& xml_out,
-		    const LatticePropagator& q_src,
-		    int t_src, int j_decay,
-		    const UnprecDWFermActBaseArray<LatticeFermion>& S_f,
-		    Handle<const ConnectState> state,
-		    enum InvType invType,
-		    const Real& RsdCG, 
-		    int MaxCG, int& ncg_had)
+void
+UnprecDWFermActArray::dwf_quarkProp4(LatticePropagator& q_sol, 
+				     XMLWriter& xml_out,
+				     const LatticePropagator& q_src,
+				     int t_src, int j_decay,
+				     Handle<const ConnectState> state,
+				     const InvertParam_t& invParam,
+				     int& ncg_had)
 {
-  dwf_quarkProp4_a(q_sol, xml_out, q_src, t_src, j_decay, S_f, state, 
-		   invType, RsdCG, MaxCG, ncg_had);
+  dwf_quarkProp4_a<LatticeFermion,UnprecDWFermActBaseArray>(q_sol, 
+							    xml_out, 
+							    q_src, 
+							    t_src, 
+							    j_decay, 
+							    *this, 
+							    state, 
+							    invParam, 
+							    ncg_had);
 }
 

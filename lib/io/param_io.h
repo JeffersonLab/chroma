@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: param_io.h,v 1.23 2004-08-07 03:28:08 edwards Exp $
+// $Id: param_io.h,v 1.24 2004-09-08 02:48:26 edwards Exp $
 /*! \file
  *  \brief Reunitarize (to a SU(N)) inplace the matrix A under some option
  */
@@ -157,26 +157,6 @@ struct SmearingParam_t
   int           wvfIntPar;
 };
 
-
-//! Parameters for inverter
-struct InvertParam_t
-{
-  InvType       invType;   // Inverter type
-  Real          MROver;
-  Real          RsdCG;
-  Real          RsdCGPrec; // Precision for preconditioned iterations
-  int           MaxCG;	   // Iteration parameters
-  int           MaxCGPrec;
-};
-
-//! Parameters for MultiMass Inverter
-struct MultiInvertParam_t
-{
-  InvType      invType;
-  Real         MROver;
-  int          MaxCG;
-  multi1d<Real> RsdCG;
-};
 
 //---------------------------- Initializers -----------------------------
 //! Initialize a smearing param struct

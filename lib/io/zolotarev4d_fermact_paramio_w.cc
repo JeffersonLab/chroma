@@ -1,6 +1,5 @@
 #include "chromabase.h"
 #include "io/param_io.h"
-#include "io/zolotarev4d_fermact_paramio_w.h"
 
 using namespace QDP;
 using namespace std;

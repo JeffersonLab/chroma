@@ -1,4 +1,4 @@
-// $Id: prec_ovdwf_fermact_array_w.cc,v 1.2 2004-02-14 18:47:40 edwards Exp $
+// $Id: prec_ovdwf_fermact_array_w.cc,v 1.3 2004-09-08 02:48:25 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned Overlap-DWF (Borici) action
  */
@@ -9,43 +9,95 @@
 #include "actions/ferm/linop/prec_ovdwf_linop_array_w.h"
 #include "actions/ferm/linop/lmdagm.h"
 
-//! Produce a linear operator for this action
-/*!
- * \ingroup fermact
- *
- * The operator acts on the odd sublattice
- *
- * \param state 	    gauge field     	       (Read)
- */
-const EvenOddPrecLinearOperator<multi1d<LatticeFermion> >*
-EvenOddPrecOvDWFermActArray::linOp(Handle<const ConnectState> state) const
-{
-  return new EvenOddPrecOvDWLinOpArray(state->getLinks(),WilsonMass,m_q,N5);
-}
+#include "actions/ferm/fermacts/fermfactory_w.h"
 
-//! Produce a M^dag.M linear operator for this action
-/*!
- * The operator acts on the odd sublattice
- *
- * \param state 	    gauge field     	       (Read)
- */
-const LinearOperator<multi1d<LatticeFermion> >*
-EvenOddPrecOvDWFermActArray::lMdagM(Handle<const ConnectState> state) const
+namespace Chroma
 {
-  return new lmdagm<multi1d<LatticeFermion> >(linOp(state));
-}
+  //! Hooks to register the class with the fermact factory
+  namespace EvenOddPrecOvDWFermActArrayEnv
+  {
+    //! Callback function
+    WilsonTypeFermAct< multi1d<LatticeFermion> >* createFermAct(Handle< FermBC< multi1d<LatticeFermion> > > fbc,
+								XMLReader& xml_in,
+								const std::string& path)
+    {
+      return new EvenOddPrecOvDWFermActArray(fbc, EvenOddPrecOvDWFermActArrayParams(xml_in, path));
+    }
 
-//! Produce a linear operator for this action but with quark mass 1
-/*!
- * The operator acts on the entire lattice
- *
- * \param state	    gauge field     	       (Read)
- */
-const LinearOperator<multi1d<LatticeFermion> >*
-EvenOddPrecOvDWFermActArray::linOpPV(Handle<const ConnectState> state) const
-{
-  // For the PV operator, use the **unpreconditioned** one
-  // fixed to quark mass 1
-  return new UnprecOvDWLinOpArray(state->getLinks(),WilsonMass,1.0,N5);
+    //! Name to be used
+    const std::string name = "UNPRECONDITIONED_OVDWF";
+
+    //! Register the Wilson fermact
+    const bool registered = Chroma::TheWilsonTypeFermActArrayFactory::Instance().registerObject(name, createFermAct); 
+  }
+
+
+  //! Read parameters
+  EvenOddPrecOvDWFermActArrayParams::EvenOddPrecOvDWFermActArrayParams(XMLReader& xml, 
+								       const std::string& path)
+  {
+    XMLReader paramtop(xml, path);
+
+    // Read the stuff for the action
+    read(paramtop, "WilsonMass", WilsonMass);
+    read(paramtop, "m_q", m_q);
+    read(paramtop, "N5", N5);
+
+    if (paramtop.count("a5") != 0) 
+      read(paramtop, "a5", a5);
+    else
+      a5 = 1.0;
+  }
+
+
+  //! Read parameters
+  void read(XMLReader& xml, const string& path, EvenOddPrecOvDWFermActArrayParams& param)
+  {
+    EvenOddPrecOvDWFermActArrayParams tmp(xml, path);
+    param = tmp;
+  }
+
+
+
+  //! Produce a linear operator for this action
+  /*!
+   * \ingroup fermact
+   *
+   * The operator acts on the odd sublattice
+   *
+   * \param state 	    gauge field     	       (Read)
+   */
+  const EvenOddPrecLinearOperator<multi1d<LatticeFermion> >*
+  EvenOddPrecOvDWFermActArray::linOp(Handle<const ConnectState> state) const
+  {
+    return new EvenOddPrecOvDWLinOpArray(state->getLinks(),WilsonMass,m_q,N5);
+  }
+
+  //! Produce a M^dag.M linear operator for this action
+  /*!
+   * The operator acts on the odd sublattice
+   *
+   * \param state 	    gauge field     	       (Read)
+   */
+  const LinearOperator<multi1d<LatticeFermion> >*
+  EvenOddPrecOvDWFermActArray::lMdagM(Handle<const ConnectState> state) const
+  {
+    return new lmdagm<multi1d<LatticeFermion> >(linOp(state));
+  }
+
+  //! Produce a linear operator for this action but with quark mass 1
+  /*!
+   * The operator acts on the entire lattice
+   *
+   * \param state	    gauge field     	       (Read)
+   */
+  const LinearOperator<multi1d<LatticeFermion> >*
+  EvenOddPrecOvDWFermActArray::linOpPV(Handle<const ConnectState> state) const
+  {
+    // For the PV operator, use the **unpreconditioned** one
+    // fixed to quark mass 1
+    return new EvenOddPrecOvDWLinOpArray(state->getLinks(),WilsonMass,1.0,N5);
+  }
+
 }
 

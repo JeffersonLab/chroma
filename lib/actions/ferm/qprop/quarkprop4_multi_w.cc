@@ -1,4 +1,4 @@
-// $Id: quarkprop4_multi_w.cc,v 1.5 2004-07-28 02:38:02 edwards Exp $
+// $Id: quarkprop4_multi_w.cc,v 1.6 2004-09-08 02:48:26 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -11,17 +11,17 @@
 #include "util/ferm/transf.h"
 
 
-template<typename C>
+template<class T, class C>
 static 
 void multiQuarkProp4_m(multi1d<LatticePropagator>& q_sol, 
 		       XMLWriter& xml_out,
 		       const LatticePropagator& q_src,
 		       const C& S_f,
 		       Handle<const ConnectState> state,
-		       enum InvType invType,
 		       const multi1d<Real>& masses,
-		       const multi1d<Real>& RsdCG, 
-		       int MaxCG, int& ncg_had)
+		       const MultiInvertParam_t& invParam,
+		       const int n_soln,
+		       int& ncg_had)
 {
   START_CODE();
   
@@ -36,14 +36,14 @@ void multiQuarkProp4_m(multi1d<LatticePropagator>& q_sol,
   // Set all elements to RsdCG
   ncg_had = 0;
 
-  multi1d<LatticeFermion> psi(masses.size());
+  multi1d<T> psi(masses.size());
 
   // This version loops over all color and spin indices
   for(int color_source = 0; color_source < Nc; ++color_source)
   {
     for(int spin_source = 0; spin_source < Ns; ++spin_source)
     {
-      LatticeFermion chi;
+      T chi;
 
       // Extract a fermion source
       PropToFerm(q_src, chi, color_source, spin_source);
@@ -61,14 +61,13 @@ void multiQuarkProp4_m(multi1d<LatticePropagator>& q_sol,
       int n_count;
 
       // The psi-s are zeroed in multiQprop
-      S_f.multiQprop(psi, masses, state, chi, invType, RsdCG, 
-		     1, MaxCG, n_count);
+      S_f.multiQprop(psi, masses, state, chi, invParam, n_soln, n_count);
 
 
       ncg_had += n_count;
 
       push(xml_out,"Qprop");
-      write(xml_out, "RsdCG", RsdCG);
+      write(xml_out, "RsdCG", invParam.RsdCG);
       write(xml_out, "n_count", n_count);
       pop(xml_out);
 
@@ -105,16 +104,22 @@ void multiQuarkProp4_m(multi1d<LatticePropagator>& q_sol,
  * \param ncg_had  number of CG iterations ( Write )
  */
 
-void multiQuarkProp4(multi1d<LatticePropagator>& q_sol, 
-		XMLWriter& xml_out,
-		const LatticePropagator& q_src,
-		const OverlapFermActBase& S_f,
-		Handle<const ConnectState> state,
-		enum InvType invType,
-		const multi1d<Real>& masses,
-		const multi1d<Real>& RsdCG, 
-		int MaxCG, int& ncg_had)
+void OverlapFermActBase::multiQuarkProp4(multi1d<LatticePropagator>& q_sol, 
+					 XMLWriter& xml_out,
+					 const LatticePropagator& q_src,
+					 Handle<const ConnectState> state,
+					 const multi1d<Real>& masses,
+					 const MultiInvertParam_t& invParam,
+					 const int n_soln,
+					 int& ncg_had)
 {
-  multiQuarkProp4_m(q_sol, xml_out, q_src, S_f, state, invType, masses, 
-	       RsdCG, MaxCG, ncg_had);
+  multiQuarkProp4_m<LatticeFermion, OverlapFermActBase>(q_sol, 
+							xml_out, 
+							q_src, 
+							*this, 
+							state, 
+							masses, 
+							invParam, 
+							n_soln,
+							ncg_had);
 }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_fermact_array_w.h,v 1.6 2004-01-29 17:16:08 edwards Exp $
+// $Id: prec_dwf_fermact_array_w.h,v 1.7 2004-09-08 02:48:25 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -12,67 +12,125 @@
 
 using namespace QDP;
 
-//! 4D style even-odd preconditioned domain-wall fermion action
-/*! \ingroup fermact
- *
- * 4D style even-odd preconditioned domain-wall fermion action. 
- * Follows notes of Orginos (10/2003)
- *
- * Hopefully, the conventions used here
- * are specified in Phys.Rev.D63:094505,2001 (hep-lat/0005002).
- */
-
-class EvenOddPrecDWFermActArray : public EvenOddPrecDWFermActBaseArray<LatticeFermion>
+namespace Chroma
 {
-public:
-  //! General FermBC
-  EvenOddPrecDWFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
-			    const Real& WilsonMass_, const Real& m_q_, int N5_) : 
-    fbc(fbc_), WilsonMass(WilsonMass_), m_q(m_q_), N5(N5_) 
-    {
-      a5=1;
-      QDPIO::cout << "Construct EvenOddPrecDWFermActArray: WilsonMass = " << WilsonMass 
-		  << "  m_q = " << m_q 
-		  << "  N5 = " << N5 
-		  << "  a5 = " << a5 
-		  << endl;
-    }
+  //! Name and registration
+  namespace EvenOddPrecDWFermActArrayEnv
+  {
+    extern const std::string name;
+    extern const bool registered;
+  }
+  
 
-  //! Copy constructor
-  EvenOddPrecDWFermActArray(const EvenOddPrecDWFermActArray& a) : 
-    fbc(a.fbc), WilsonMass(a.WilsonMass), m_q(a.m_q), a5(a.a5), N5(a.N5) {}
+  //! Params for DWF
+  struct EvenOddPrecDWFermActArrayParams
+  {
+    EvenOddPrecDWFermActArrayParams(XMLReader& in, const std::string& path);
+    
+    Real WilsonMass;
+    Real m_q;
+    Real a5;
+    int  N5;
+  };
 
-  //! Assignment
-  EvenOddPrecDWFermActArray& operator=(const EvenOddPrecDWFermActArray& a)
-    {fbc=a.fbc; WilsonMass=a.WilsonMass; m_q=a.m_q; a5=a.a5; N5=a.N5; return *this;}
 
-  //! Return the fermion BC object for this action
-  const FermBC< multi1d<LatticeFermion> >& getFermBC() const {return *fbc;}
+  // Reader/writers
+  void read(XMLReader& xml, const string& path, EvenOddPrecDWFermActArrayParams& param);
+  void write(XMLReader& xml, const string& path, const EvenOddPrecDWFermActArrayParams& param);
 
-  //! Length of DW flavor index/space
-  int size() const {return N5;}
 
-  //! Return the quark mass
-  Real quark_mass() const {return m_q;}
+  //! 4D style even-odd preconditioned domain-wall fermion action
+  /*! \ingroup fermact
+   *
+   * 4D style even-odd preconditioned domain-wall fermion action. 
+   * Follows notes of Orginos (10/2003)
+   *
+   * Hopefully, the conventions used here
+   * are specified in Phys.Rev.D63:094505,2001 (hep-lat/0005002).
+   */
+  
+  class EvenOddPrecDWFermActArray : public EvenOddPrecDWFermActBaseArray<LatticeFermion>
+  {
+  public:
+    //! General FermBC
+    EvenOddPrecDWFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
+			      const Real& WilsonMass_, const Real& m_q_, int N5_) : 
+      fbc(fbc_), WilsonMass(WilsonMass_), m_q(m_q_), N5(N5_) 
+      {
+	a5=1;
+	QDPIO::cout << "Construct EvenOddPrecDWFermActArray: WilsonMass = " << WilsonMass 
+		    << "  m_q = " << m_q 
+		    << "  N5 = " << N5 
+		    << "  a5 = " << a5 
+		    << endl;
+      }
 
-  //! Produce a linear operator for this action
-  const EvenOddPrecLinearOperator< multi1d<LatticeFermion> >* linOp(Handle<const ConnectState> state) const;
+    //! General FermBC
+    EvenOddPrecDWFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
+			      const EvenOddPrecDWFermActArrayParams& param) :
+      fbc(fbc_), WilsonMass(param.WilsonMass), m_q(param.m_q), a5(param.a5), N5(param.N5) {}
 
-  //! Produce a linear operator M^dag.M for this action
-  const LinearOperator< multi1d<LatticeFermion> >* lMdagM(Handle<const ConnectState> state) const;
+    //! Copy constructor
+    EvenOddPrecDWFermActArray(const EvenOddPrecDWFermActArray& a) : 
+      fbc(a.fbc), WilsonMass(a.WilsonMass), m_q(a.m_q), a5(a.a5), N5(a.N5) {}
 
-  //! Produce a linear operator for this action but with quark mass 1
-  const LinearOperator< multi1d<LatticeFermion> >* linOpPV(Handle<const ConnectState> state) const;
+    //! Assignment
+    EvenOddPrecDWFermActArray& operator=(const EvenOddPrecDWFermActArray& a)
+      {fbc=a.fbc; WilsonMass=a.WilsonMass; m_q=a.m_q; a5=a.a5; N5=a.N5; return *this;}
 
-  //! Destructor is automatic
-  ~EvenOddPrecDWFermActArray() {}
+    //! Return the fermion BC object for this action
+    const FermBC< multi1d<LatticeFermion> >& getFermBC() const {return *fbc;}
 
-private:
-  Handle< FermBC< multi1d<LatticeFermion> > >  fbc;
-  Real WilsonMass;
-  Real m_q;
-  Real a5;
-  int  N5;
-};
+    //! Length of DW flavor index/space
+    int size() const {return N5;}
+
+    //! Return the quark mass
+    Real quark_mass() const {return m_q;}
+
+    //! Produce a linear operator for this action
+    const EvenOddPrecLinearOperator< multi1d<LatticeFermion> >* linOp(Handle<const ConnectState> state) const;
+
+    //! Produce a linear operator M^dag.M for this action
+    const LinearOperator< multi1d<LatticeFermion> >* lMdagM(Handle<const ConnectState> state) const;
+
+    //! Produce a linear operator for this action but with quark mass 1
+    const LinearOperator< multi1d<LatticeFermion> >* linOpPV(Handle<const ConnectState> state) const;
+
+    //! Destructor is automatic
+    ~EvenOddPrecDWFermActArray() {}
+
+    //! Given a complete propagator as a source, this does all the inversions needed
+    /*! \ingroup qprop
+     *
+     * This routine is actually generic to Domain Wall fermions (Array) fermions
+     *
+     * \param q_sol    quark propagator ( Write )
+     * \param q_src    source ( Read )
+     * \param xml_out  diagnostic output ( Modify )
+     * \param state    gauge connection state ( Read )
+     * \param t_src    time slice of source ( Read )
+     * \param j_decay  direction of decay ( Read )
+     * \param invParam inverter parameters ( Read )
+     * \param ncg_had  number of CG iterations ( Write )
+     */
+    void dwf_quarkProp4(LatticePropagator& q_sol, 
+			XMLWriter& xml_out,
+			const LatticePropagator& q_src,
+			int t_src, int j_decay,
+			Handle<const ConnectState> state,
+			const InvertParam_t& invParam,
+			int& ncg_had);
+
+
+  private:
+    Handle< FermBC< multi1d<LatticeFermion> > >  fbc;
+    
+    Real WilsonMass;
+    Real m_q;
+    Real a5;
+    int  N5;
+  };
+
+}
 
 #endif

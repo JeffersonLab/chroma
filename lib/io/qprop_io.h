@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qprop_io.h,v 1.16 2004-05-14 00:21:17 edwards Exp $
+// $Id: qprop_io.h,v 1.17 2004-09-08 02:48:26 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -7,9 +7,7 @@
 #ifndef __qprop_io_h__
 #define __qprop_io_h__
 
-#include "handle.h"
 #include "io/param_io.h"
-#include "io/fermact_paramio.h"
 #include "meas/sources/srcsnktype.h"
 #include "meas/sources/wavetype.h"
 #include "meas/smear/wvfkind.h"
@@ -69,16 +67,16 @@ public:
   FermType        FermTypeP;
   bool            nonRelProp;   // compute only the nonrelativistic portion of this prop?
 
-  // Uninitialised to start with (should hold null pointer)
-  FermActParams* FermActHandle;
-  
+  // String holding name of the Fermion Action
+  std::string     fermact;
+  // String holding XML of the FermionAction section
+  std::string     fermactgrp;
+
   MultiInvertParam_t   invParam;   // Inverter parameters
   multi1d<int>    boundary;
   multi1d<int>    nrow;          // lattice size
  
   multi1d<Real>   MultiMasses;
-  ChromaMultiProp_t(void) { FermActHandle = 0x0 ; }
-  ~ChromaMultiProp_t(void) { if ( FermActHandle != 0x0 ) delete FermActHandle ; }
 };
 
 
@@ -89,33 +87,14 @@ public:
   FermType        FermTypeP;
   bool            nonRelProp;   // compute only the nonrelativistic portion of this prop?
 
-  // Uninitialised to start with (should hold null pointer)
-  FermActParams* FermActHandle;
-  
+  // String holding name of the Fermion Action
+  std::string     fermact;
+  // String holding XML of the FermionAction section
+  std::string     fermactgrp;
+
   InvertParam_t   invParam;   // Inverter parameters
   multi1d<int>    boundary;
   multi1d<int>    nrow;          // lattice size
-  
-
-  ChromaProp_t(void) { FermActHandle = 0x0 ; }
-  ~ChromaProp_t(void) { if ( FermActHandle != 0x0 ) delete FermActHandle ; }
-
-  ChromaProp_t(const ChromaMultiProp_t &p, int m) : 
-    FermTypeP(p.FermTypeP), nonRelProp(p.nonRelProp),
-    boundary(p.boundary), nrow(p.nrow) 
-    {
-      // Clone through virtualt fucntions
-      FermActHandle = p.FermActHandle->clone();
-
-      // Set up the mass
-      FermActHandle->setMass( p.MultiMasses[m] );
-
-      // Get the right inv param
-      invParam.invType = p.invParam.invType;
-      invParam.MROver  = p.invParam.MROver;
-      invParam.MaxCG   = p.invParam.MaxCG;
-      invParam.RsdCG   = p.invParam.RsdCG[m];
-    }
 };
 
 
