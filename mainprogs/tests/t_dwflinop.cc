@@ -1,4 +1,4 @@
-// $Id: t_dwflinop.cc,v 1.4 2003-11-21 22:38:51 edwards Exp $
+// $Id: t_dwflinop.cc,v 1.5 2003-12-15 21:54:17 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -6,29 +6,6 @@
 #include "chroma.h"
 
 #include "qdp_util.h"
-
-
-//---------------- HACK ----------------------------
-// WARNING - Inefficient; improve later - move into QDP
-#if 1
-namespace QDP {
-
-template<class T>
-inline typename UnaryReturn<OLattice<T>, FnNorm2>::Type_t
-norm2(const multi1d< OLattice<T> >& s1)
-{
-  typename UnaryReturn<OLattice<T>, FnNorm2>::Type_t  d;
-
-  d = norm2(s1[0]);
-  for(int n=1; n < s1.size(); ++n)
-    d += norm2(s1[n]);
-
-  return d;
-}
-}
-#endif
-//---------------------------------------------------
-
 
 using namespace QDP;
 
@@ -113,7 +90,8 @@ int main(int argc, char **argv)
   UnprecOvExtFermActArray S_f(WilsonMass, m_q, N5);
 #endif
 
-  const  LinearOperator< multi1d<LatticeFermion> >* A = S_f.linOp(u);
+  const ConnectStateProxy state(S_f.createState(u));
+  const LinearOperatorProxy< multi1d<LatticeFermion> > A(S_f.linOp(state));
 
   multi1d<LatticeFermion> psi(N5), chi(N5);
 
@@ -129,13 +107,13 @@ int main(int argc, char **argv)
 #endif
 
   multi1d<LatticeFermion> tmp1(N5);
-  (*A)(tmp1, psi, PLUS);
+  A(tmp1, psi, PLUS);
   DComplex nn1 = innerProduct(chi[0], tmp1[0]);
   for(int m=1; m < N5; ++m)
     nn1 += innerProduct(chi[m], tmp1[m]);
 
   multi1d<LatticeFermion> tmp2(N5);
-  (*A)(tmp2, chi, MINUS);
+  A(tmp2, chi, MINUS);
   DComplex nn2 = innerProduct(tmp2[0], psi[0]);
   for(int m=1; m < N5; ++m)
     nn2 += innerProduct(tmp2[m], psi[m]);
@@ -188,14 +166,14 @@ int main(int argc, char **argv)
   QDPIO::cout << "|psi|^2 = " << norm2(psi) << endl;
   QDPIO::cout << "|chi|^2 = " << norm2(chi) << endl;
 
-  chi = (*A)(psi, PLUS);
+  chi = A(psi, PLUS);
 
   QDPIO::cout << "|chi|^2 = " << norm2(chi) << endl;
 
   Real RsdCG = 1.0e-5;
   int  MaxCG = 1000;
   int  n_count;
-  InvCG2(*A, chi, psi, RsdCG, MaxCG, n_count);
+  InvCG2(*A, chi, psi, RsdCG, MaxCG, n_count);   // subtelty here: deref A to get object pointed by handle
  
 
   multi1d<LatticeFermion> psi2(N5), chi2(N5);
