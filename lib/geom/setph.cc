@@ -1,4 +1,4 @@
-// $Id: setph.cc,v 1.1 2003-12-16 21:54:38 edwards Exp $
+// $Id: setph.cc,v 1.2 2003-12-16 21:56:07 edwards Exp $
 /*! \file
  *  \brief  This routine is specific to Wilson fermions!
  */
@@ -80,7 +80,7 @@ void phfctr(multi1d<LatticeColorMatrix>& u)
 
 
 #if 1
-  for(int mu = 0; mu < u.size(); ++mu)
+  for(int mu = 0; mu < Nd; ++mu)
     u[mu] *= phases[mu];
 
 #else
@@ -90,7 +90,7 @@ void phfctr(multi1d<LatticeColorMatrix>& u)
   /* Only the Schroedinger functional has complex phases */
   if (SchrFun == 0)
   {
-    for(int mu = 0; mu < u.size(); ++mu)
+    for(int mu = 0; mu < Nd; ++mu)
       u[mu] *= real(phases[mu]);
   }
   else
