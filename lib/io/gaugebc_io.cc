@@ -386,4 +386,6 @@ GaugeBCParamsBase* readGaugeBCParams(XMLReader& xml, const string& path)
   }
 
   END_CODE();
+
+  return 0;
 }

@@ -71,6 +71,8 @@ GaugeActParamsBase* readGaugeActParams(XMLReader& xml, const string& path)
     QDPIO::cerr << "Unknown GaugeActType_t " << my_type << endl;
     QDP_abort(1);
   }
+
+  return 0;
 }
 
 void write(XMLWriter& xml, const string& path, const GaugeActParamsBase& p) 

@@ -117,6 +117,8 @@ MDIntegratorParamsBase* readMDIntegratorParams(XMLReader& xml, const string& pat
     QDPIO::cerr << "Caught exception while reading XML " << e << endl;
     QDP_abort(1);
   }
+
+  return 0;
 }
 
 void write(XMLWriter& xml, const string& path, const MDIntegratorParamsBase& p) 

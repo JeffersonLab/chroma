@@ -36,4 +36,6 @@ GaugeBC* getGaugeBCFromParams(const GaugeBCParamsBase& b)
   default:
     QDPIO::cerr << "Unknown GaugeBCType_t " << b.getType() << endl;
   }
+
+  return 0;
 }
