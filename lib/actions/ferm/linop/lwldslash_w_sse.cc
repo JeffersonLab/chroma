@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_sse.cc,v 1.24 2005-02-20 02:55:48 edwards Exp $
+// $Id: lwldslash_w_sse.cc,v 1.25 2005-02-21 04:57:00 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -38,8 +38,6 @@ namespace Chroma
   {
     // Save a copy of the original fields
     u = u_;
-
-    QDPIO::cout << "u.size=" << u.size() << " u_.size=" << u_.size() << endl;
 
     // Pack the gauge fields
     packed_gauge.resize( Nd * Layout::sitesOnNode() );
