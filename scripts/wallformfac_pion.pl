@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: wallformfac_pion.pl,v 1.13 2004-09-13 03:25:59 edwards Exp $
+# $Id: wallformfac_pion.pl,v 1.14 2004-09-16 01:58:25 edwards Exp $
 #
 # Usage
 #   formfact.pl
@@ -165,13 +165,23 @@ foreach $qx ( -$mommax_int .. $mommax_int ) {
 	print "found for ", $pion_xp{$qx,$qy,$qz};
 
 	$pion_energy{$qx, $qy, $qz} = "energy." . $pion_xp{$qx, $qy, $qz};
-	&meff("$pion_energy{$qx, $qy, $qz}","$pion_xp{$qx,$qy,$qz}",$t_ins);
+	if ($mom2 > 0)
+	{
+	  # Use dispersion relation
+	  &meff("foo","$pion_xp{0,0,0}",$t_ins);
+	  &compute_2pt_ener_disp("$pion_energy{$qx,$qy,$qz}", "foo", *q);
+	}
+	else
+	{
+	  &meff("$pion_energy{$qx, $qy, $qz}","$pion_xp{$qx,$qy,$qz}",$t_ins);
+	}
+
 	($mass, $mass_err) = &calc("$pion_energy{$qx, $qy, $qz}");
 
 	$pion_mass{$qx, $qy, $qz} = $mass;
 	$pion_mass_err{$qx, $qy, $qz} = $mass_err;
-	print "mass = ",$pion_mass{$qx, $qy, $qz};
-	print "mass_name = ",$pion_energy{$qx, $qy, $qz};
+	print "pion mass = ",$pion_mass{$qx, $qy, $qz};
+	print "pion mass_name = ",$pion_energy{$qx, $qy, $qz};
 
 	$mom_tag{$qz, $qy, $qz} = 1;
       }
@@ -416,6 +426,16 @@ sub compute_psq
 }
 
 
+# Compute 2-pt energy via dispersion relation
+sub compute_2pt_ener_disp
+{
+  local($f,$m,*p) = @_;
+
+  local($p_sq) = &compute_psq(*p);
+  &ensbc("$f = sqrt($m*$m + $p_sq*(2*$pi/$L_s)*(2*$pi/$L_s))");
+}
+  
+  
 # This should be correct - uses vectors for  q = p_i - p_f
 sub compute_disp_pipf_sq
 {
