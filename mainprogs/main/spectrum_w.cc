@@ -1,10 +1,13 @@
-// $Id: spectrum_w.cc,v 1.29 2004-02-23 03:13:58 edwards Exp $
+// $Id: spectrum_w.cc,v 1.30 2004-02-26 16:38:22 edwards Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.29  2004-02-23 03:13:58  edwards
+//  Revision 1.30  2004-02-26 16:38:22  edwards
+//  Added test/write-out of forward_prop  prop_corr.
+//
+//  Revision 1.29  2004/02/23 03:13:58  edwards
 //  Major overhaul of input/output model! Now using EXCLUSIVELY
 //  SciDAC propagator format for propagators. Now, Param part of input
 //  files directly matches source/sink/propagator/seqprop headers
@@ -396,6 +399,17 @@ int main(int argc, char **argv)
     // Save prop input
     write(xml_array, "ForwardProp", prop_header);
     write(xml_array, "PropSource", source_header);
+
+    // Sanity check - write out the norm2 of the forward prop in the j_decay direction
+    // Use this for any possible verification
+    {
+      multi1d<Double> forward_prop_corr = sumMulti(localNorm2(quark_propagator), 
+						   phases.getSet());
+
+      push(xml_array, "Forward_prop_correlator");
+      write(xml_array, "forward_prop_corr", forward_prop_corr);
+      pop(xml_array);
+    }
 
     // Determine what kind of source to use
     bool Pt_src = (source_header.source_type == SRC_TYPE_POINT_SOURCE) ? true : false;
