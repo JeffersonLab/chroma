@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: wallformfac_pion.pl,v 1.6 2004-06-16 21:23:02 edwards Exp $
+# $Id: wallformfac_pion.pl,v 1.7 2004-06-18 01:35:22 edwards Exp $
 #
 # Usage
 #   formfact.pl
@@ -250,6 +250,13 @@ foreach $qsq_int (keys %pion_cnt)
 }
 
 #
+# Extract Z_V for chuckles
+#
+print "Extract Z_V";
+&ensbc("Z_V = 1 / extract(${mes}_r_mu3_q0,$t_ins)");
+
+
+#
 # Print Meson Electric form factors
 #
 print "Printing pion electric form-factors";
@@ -279,7 +286,13 @@ foreach $mes ("PION")
 #    system("calc ${mes}_r_mu3_q${qsq_int} | head -$t_ext >> ${mes}_r_mu3_q${qsq_int}.ax");
 #    system("calcbc \"${mes}_r_mu3_q${qsq_int} / pion_r_mu3_q0\" | head -$t_ext_m1 > ${mes}_r_mu3_q${qsq_int}_norm.ax");
     system("calc ${mes}_r_mu3_q${qsq_int} >> ${mes}_r_mu3_q${qsq_int}.ax");
-    system("calcbc \"${mes}_r_mu3_q${qsq_int} / pion_r_mu3_q0\" > ${mes}_r_mu3_q${qsq_int}_norm.ax");
+    system("calcbc \"${mes}_r_mu3_q${qsq_int} / ${mes}_r_mu3_q0\" > ${mes}_r_mu3_q${qsq_int}_norm.ax");
+
+    # Define the FF at the midpoint insertion
+    ($ff, $ff_err) = &calc("extract(${mes}_r_mu3_q${qsq_int} / ${mes}_r_mu3_q0,$t_ins)");
+    open(FOO,"> ${mes}_r_mu3_q${qsq_int}_ff.ax");
+    printf FOO "%g  %g %g\n", $qsq, $ff, $ff_err;
+    close(FOO);
   }
 }
 

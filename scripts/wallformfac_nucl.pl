@@ -206,6 +206,7 @@ foreach $qx ( -$mommax_int .. $mommax_int ) {
 $proj = 0;
 
 print "Electric";
+#foreach $h ('fred')f
 foreach $h ('NUCL')
 {
   foreach $s ('u', 'd')
@@ -331,12 +332,20 @@ foreach $h ('NUCL')
 
 		@cp_i = &canonical_momenta(*p_i);
 
-		if ($cp_i[$l] == 0) {next;}
+
+		$proton_disp = -(($fmtoGeV/$a)**2)*&compute_disp_pipf_sq($proton_mass{0,0,0},*p_i,*p_f);
+		$qsq_int = int(10000*$proton_disp);
+		printf "\nTEST: s=$s j=$j k=$k l=$l, proj=$proj g=$g, q=[$qx,$qy,$qz] qsq_int=$qsq_int\n";
+
+
+		if ($p_i[$l] == 0) {next;}
+
+		printf "\nNEW: s=$s j=$j k=$k l=$l, proj=$proj g=$g\n";
 
 		print "q=[$q[0],$q[1],$q[2]], qsq = $qsq,  p_i=[$p_i[0],$p_i[1],$p_i[2]], p_i_sq = $p_i_sq, p_f=[$p_f[0],$p_f[1],$p_f[2]]";
 
-		printf "Looking for file %s\n","${nam}_cur3ptfn_${h}_f0_${s}_p${$proj}_snk15_g8_src_15_qx$q[0]_qy$q[1]_qz$q[2]";
-		if (! -f "${nam}_cur3ptfn_${h}_f0_${s}_p${proj}_snk15_g8_src15_qx$q[0]_qy$q[1]_qz$q[2]") {next;}
+		printf "Looking for file %s\n","${nam}_cur3ptfn_${h}_f0_${s}_p${proj}_snk15_g${g}_src_15_qx$q[0]_qy$q[1]_qz$q[2]";
+		if (! -f "${nam}_cur3ptfn_${h}_f0_${s}_p${proj}_snk15_g${g}_src15_qx$q[0]_qy$q[1]_qz$q[2]") {next;}
 
 		printf "Looking for file %s\n", "$proton_sp{$cp_f[0],$cp_f[1],$cp_f[2]}";
 		if (! -f "$proton_sp{$cp_f[0],$cp_f[1],$cp_f[2]}") {next;}
@@ -345,33 +354,34 @@ foreach $h ('NUCL')
 		if (! -f "$proton_sp{$cp_i[0],$cp_i[1],$cp_i[2]}") {next;}
 
 
-		&realpart("${nam}_cur3ptfn_${h}_f0_${s}_p${proj}_snk15_g8_src15_qx$q[0]_qy$q[1]_qz$q[2]",
+		&realpart("${nam}_cur3ptfn_${h}_f0_${s}_p${proj}_snk15_g${g}_src15_qx$q[0]_qy$q[1]_qz$q[2]",
 			  "${cur}_${h}_f0_${s}_p${proj}_mu${j}_$q[0]$q[1]$q[2]");
 
 		$proton_disp = -(($fmtoGeV/$a)**2)*&compute_disp_pipf_sq($proton_mass{0,0,0},*p_i,*p_f);
 		printf "proton mass = %g +- %g,  qsq (via vector disp) = %g\n", 
 		$proton_mass{$cp_i[0],$cp_i[1],$cp_i[2]}, $proton_mass_err{$cp_i[0],$cp_i[1],$cp_i[2]}, $proton_disp;
 
-		$e = $proj_sign[$proj] * $DR_sign[$j] * (-$eps{$j,$k,$l} / $cp_i[$l]);
+		$e = (-$eps{$j,$k,$l} / $p_i[$l]);
+#		$e = $proj_sign[$proj] * $DR_sign[$j] * (-$eps{$j,$k,$l} / $p_i[$l]);
 
 		# Use some number of significant digits to uniquely identity the floating point qsq
 		$qsq_int = int(10000*$proton_disp);
 
 		print "qsq_int = $qsq_int,  qx=$qx, qy=$qy, qz=$qz, e=$e";
 
-		&ensbc("foo${s}p${proj}m${j}q${qx}${qy}${qz} = ($e) * ($norm)*(${cur}_${h}_f0_${s}_p${proj}_mu${j}_$q[0]$q[1]$q[2] * $proton_sp{$cp_f[0],$cp_f[1],$cp_f[2]}) * ($proton_energy{$cp_i[0],$cp_i[1],$cp_i[2]} + $proton_energy{0,0,0}) / ($proton_sp{$cp_i[0],$cp_i[1],$cp_i[2]} * proton_norm)");
+		&ensbc("foo_${s}p${proj}m${j}q${qx}${qy}${qz} = ($e) * ($norm)*(${cur}_${h}_f0_${s}_p${proj}_mu${j}_$q[0]$q[1]$q[2] * $proton_sp{$cp_f[0],$cp_f[1],$cp_f[2]}) * ($proton_energy{$cp_i[0],$cp_i[1],$cp_i[2]} + $proton_energy{0,0,0}) / ($proton_sp{$cp_i[0],$cp_i[1],$cp_i[2]} * proton_norm)");
 		
 		if (! defined($proton_cnt{$h}{$proj}{$j}{$qsq_int}))
 		{
-		  &ensbc("P_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int} = $P_charge{$s}* foo${s}p${proj}m${j}q${qx}${qy}${qz}");
-		  &ensbc("N_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int} = $N_charge{$s}* foo${s}p${proj}m${j}q${qx}${qy}${qz}");
+		  &ensbc("P_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int} = $P_charge{$s}* foo_${s}p${proj}m${j}q${qx}${qy}${qz}");
+		  &ensbc("N_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int} = $N_charge{$s}* foo_${s}p${proj}m${j}q${qx}${qy}${qz}");
 
 		  $proton_cnt{$h}{$proj}{$j}{$qsq_int} = 1;
 		}
 		else
 		{
-		  &ensbc("P_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int} = P_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int} + $P_charge{$s}* foo${s}p${proj}m${j}q${qx}${qy}${qz}");
-		  &ensbc("N_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int} = N_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int} + $N_charge{$s}* foo${s}p${proj}m${j}q${qx}${qy}${qz}");
+		  &ensbc("P_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int} = P_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int} + $P_charge{$s}* foo_${s}p${proj}m${j}q${qx}${qy}${qz}");
+		  &ensbc("N_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int} = N_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int} + $N_charge{$s}* foo_${s}p${proj}m${j}q${qx}${qy}${qz}");
 
 		  ++$proton_cnt{$h}{$proj}{$j}{$qsq_int};
 		}
@@ -408,6 +418,13 @@ foreach $h (keys %proton_cnt)
     }
   }
 }
+
+
+#
+# Extract Z_V for later analysis
+#
+print "Extract Z_V";
+&ensbc("Z_V = 1 / extract(P_${cur}_r_NUCL_p0_mu3_q0 ,$t_ins)");
 
 
 #------------------------------------------------------------------------------
@@ -452,6 +469,14 @@ foreach $h (keys %proton_cnt)
 	    system("calcbc \"${nuc}_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int} * Z_V\" >> ${nuc}_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int}_norm.ax");
 
 #	    system("calcbc \"${nuc}_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int} / ${nuc}_${cur}_r_${h}_p${proj}_mu${j}_q0\" >> ${nuc}_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int}_norm.ax");
+
+	    # Define the FF at the midpoint insertion
+	    &ensbc("${nuc}_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int}_ff = extract(${nuc}_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int} * Z_V,$t_ins - 1, $t_ins + 1)");
+
+	    ($ff, $ff_err) = &calc("extract(${nuc}_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int} * Z_V,$t_ins)");
+	    open(FOO,"> ${nuc}_${cur}_r_${h}_p${proj}_mu${j}_q${qsq_int}_ff.ax");
+	    printf FOO "%g  %g %g\n", $qsq, $ff, $ff_err;
+	    close(FOO);
 	  }
 	}
       }
