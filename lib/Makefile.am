@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.39 2003-09-11 16:57:17 bjoo Exp $
+# $Id: Makefile.am,v 1.40 2003-09-25 22:21:19 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -74,9 +74,11 @@ HDRS =  chroma.h chromabase.h chromainc.h primitives.h common_declarations.h \
 #
 # Fermion independent sources
 #
-libchroma_a_SOURCES = gaus_smear.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
-               klein_gord.cc mesplq.cc reunit.cc sftmom.cc srcfil.cc \
-               readszin.cc su3proj.cc sun_proj.cc hyp_smear.cc laplacian.cc\
+libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
+               mesplq.cc reunit.cc sftmom.cc srcfil.cc \
+               readszin.cc writeszin.cc su3proj.cc sun_proj.cc \
+               gaus_smear.cc hyp_smear.cc ape_smear.cc \
+               klein_gord.cc laplacian.cc  \
                su2extract.cc sunfill.cc invcg2.cc qprop_io.cc follana_io.cc
 
 #
@@ -88,7 +90,7 @@ libchroma_a_SOURCES += baryon_w.cc mesons_w.cc lwldslash_w.cc formfac_w.cc \
               sink_smear2_w.cc barcomp_w.cc transf_w.cc \
               unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
               unprec_wilson_dsdu_w.cc  unprec_qprop_w.cc readszinqprop_w.cc \
-              readszinferm_w.cc \
+              readszinferm_w.cc writeszinqprop_w.cc \
               overlapbu_linop_w.cc \
 	      p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc 
 #              zolotarev4d_fermact_w.cc zolotarev4d_linop_w.cc lovlapms_w.cc
