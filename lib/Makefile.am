@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.182 2004-10-29 00:31:28 edwards Exp $
+# $Id: Makefile.am,v 1.183 2004-10-29 13:36:13 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -209,6 +209,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/prec_dwf_linop_array_w.h \
 	actions/ferm/linop/prec_ovdwf_linop_array_w.h \
 	actions/ferm/linop/prec_nef_linop_array_w.h \
+	actions/ferm/linop/prec_nef_general_linop_array_w.h \
 	actions/ferm/linop/prec_wilson_linop_w.h \
 	actions/ferm/linop/prec_parwilson_linop_w.h \
 	actions/ferm/linop/unprec_dwf_linop_base_array_w.h \
@@ -383,7 +384,8 @@ libchroma_a_SOURCES += baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
 	      prec_ovlap_contfrac5d_fermact_array_w.cc \
 	      prec_ovlap_contfrac5d_linop_array_w.cc lDeltaLs_w.cc \
 	      unprec_zolo_nef_fermact_array_w.cc \
-              prec_zolo_nef_fermact_array_w.cc
+              prec_nef_general_linop_array_w.cc \
+	      prec_zolo_nef_fermact_array_w.cc
 
 # These need to be reworked for new instantiation 
 #	zolotarev5d_fermact_array_w.cc 

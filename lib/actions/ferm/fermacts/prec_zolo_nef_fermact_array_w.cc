@@ -1,13 +1,13 @@
-// $Id: prec_zolo_nef_fermact_array_w.cc,v 1.1 2004-10-22 03:32:41 edwards Exp $
+// $Id: prec_zolo_nef_fermact_array_w.cc,v 1.2 2004-10-29 13:36:13 bjoo Exp $
 /*! \file
- *  \brief Even-odd preconditioned NEF fermion action
+ *  \brief Unpreconditioned NEF fermion action
  */
 
 #include "chromabase.h"
 #include "actions/ferm/fermacts/prec_zolo_nef_fermact_array_w.h"
 #include "actions/ferm/fermacts/unprec_wilson_fermact_w.h"
 #include "actions/ferm/linop/unprec_nef_linop_array_w.h"
-#include "actions/ferm/linop/prec_nef_linop_array_w.h"
+#include "actions/ferm/linop/prec_nef_general_linop_array_w.h"
 #include "actions/ferm/linop/lmdagm.h"
 
 #include "actions/ferm/fermacts/fermfactory_w.h"
@@ -31,24 +31,24 @@ namespace Chroma
     //! Callback function
     /*! Differs in return type */
     EvenOddPrecDWFermActBaseArray<LatticeFermion>* createDWFermAct(Handle< FermBC< multi1d<LatticeFermion> > > fbc,
-								   XMLReader& xml_in,
-								   const std::string& path)
+							      XMLReader& xml_in,
+							      const std::string& path)
     {
       return new EvenOddPrecZoloNEFFermActArray(fbc, EvenOddPrecZoloNEFFermActArrayParams(xml_in, path));
     }
 
     //! Name to be used
-    const std::string name = "UNPRECONDITIONED_ZOLO_NEF";
+    const std::string name = "ZOLO_NEF";
 
     //! Register the Wilson fermact
     const bool registered = Chroma::TheWilsonTypeFermActArrayFactory::Instance().registerObject(name, createFermAct)
-      & Chroma::TheEvenOddPrecDWFermActBaseArrayFactory::Instance().registerObject(name, createDWFermAct); 
+                          & Chroma::TheEvenOddPrecDWFermActBaseArrayFactory::Instance().registerObject(name, createDWFermAct); 
   }
 
 
   //! Read parameters
   EvenOddPrecZoloNEFFermActArrayParams::EvenOddPrecZoloNEFFermActArrayParams(XMLReader& xml, 
-									     const std::string& path)
+							   const std::string& path)
   {
     XMLReader paramtop(xml, path);
     try {
@@ -73,9 +73,13 @@ namespace Chroma
 
 
   //! Check stuff
+  void EvenOddPrecZoloNEFFermActArray::init()
+  {
+  }
+
   void EvenOddPrecZoloNEFFermActArray::initCoeffs(multi1d<Real>& b5,
-						  multi1d<Real>& c5,
-						  Handle<const ConnectState>& state) const
+					     multi1d<Real>& c5,
+					     Handle<const ConnectState>& state) const
   {
     b5.resize(N5);
     c5.resize(N5);
@@ -112,9 +116,9 @@ namespace Chroma
 
     zolotarev_free(rdata);
 
-    for(int i=0; i < N5; i++) { 
-      QDPIO::cout << "gamma[" << i << "] = " << gamma[i] << endl;
-    }
+    //    for(int i=0; i < N5; i++) { 
+    //  QDPIO::cout << "gamma[" << i << "] = " << gamma[i] << endl;
+    //}
     
     for(int i = 0; i < N5; i++) { 
       Real tmp = gamma[i]*approxMax;
@@ -141,7 +145,7 @@ namespace Chroma
     // Cast the state up to an overlap state
     initCoeffs(b5,c5,state);
     
-    return new EvenOddPrecNEFDWLinOpArray(state->getLinks(),OverMass,b5,c5,Mass,N5);
+    return new EvenOddPrecGenNEFDWLinOpArray(state->getLinks(),OverMass,b5,c5,Mass,N5);
   }
 
   //! Produce a M^dag.M linear operator for this action
@@ -201,7 +205,7 @@ namespace Chroma
   //  approximation bound
   const OverlapConnectState*
   EvenOddPrecZoloNEFFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
-					      const Real& approxMin_) const 
+				      const Real& approxMin_) const 
   {
     const OverlapConnectState *ret_val;
     try { 
@@ -222,8 +226,8 @@ namespace Chroma
   //! Create a connect State with just approximation range bounds
   const OverlapConnectState*
   EvenOddPrecZoloNEFFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
-					      const Real& approxMin_,
-					      const Real& approxMax_) const
+				      const Real& approxMin_,
+				      const Real& approxMax_) const
   {
     const OverlapConnectState *ret_val;
     try { 
@@ -245,9 +249,9 @@ namespace Chroma
   //! Create OverlapConnectState with eigenvalues/vectors
   const OverlapConnectState*
   EvenOddPrecZoloNEFFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
-					      const multi1d<Real>& lambda_lo_, 
-					      const multi1d<LatticeFermion>& evecs_lo_,
-					      const Real& lambda_hi_) const
+				      const multi1d<Real>& lambda_lo_, 
+				      const multi1d<LatticeFermion>& evecs_lo_,
+				      const Real& lambda_hi_) const
   {
     const OverlapConnectState *ret_val;
     try { 
@@ -270,8 +274,8 @@ namespace Chroma
   //! Create OverlapConnectState from XML
   const OverlapConnectState*
   EvenOddPrecZoloNEFFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
-					      XMLReader& state_info_xml,
-					      const string& state_info_path) const
+				      XMLReader& state_info_xml,
+				      const string& state_info_path) const
   {
     multi1d<LatticeColorMatrix> u_tmp = u_;
     
@@ -307,7 +311,7 @@ namespace Chroma
   //! Create OverlapConnectState from XML
   const OverlapConnectState*
   EvenOddPrecZoloNEFFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
-					      const OverlapStateInfo& state_info) const
+				      const OverlapStateInfo& state_info) const
   {
 
     multi1d<LatticeColorMatrix> u_tmp = u_;

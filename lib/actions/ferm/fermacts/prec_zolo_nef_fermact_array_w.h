@@ -1,7 +1,7 @@
 // -*- C++ -*-
-// $Id: prec_zolo_nef_fermact_array_w.h,v 1.1 2004-10-22 03:32:41 edwards Exp $
+// $Id: prec_zolo_nef_fermact_array_w.h,v 1.2 2004-10-29 13:36:13 bjoo Exp $
 /*! \file
- *  \brief Even-odd preconditioned NEF domain-wall fermion action
+ *  \brief Unpreconditioned NEF domain-wall fermion action
  */
 
 #ifndef __prec_zolo_nef_fermact_array_w_h__
@@ -56,12 +56,12 @@ namespace Chroma
 			      const Real& OverMass_, 
 			      const Real& Mass_, 
 			      int N5_) : 
-      fbc(fbc_), OverMass(OverMass_), Mass(Mass_), N5(N5_) {}
+      fbc(fbc_), OverMass(OverMass_), Mass(Mass_), N5(N5_) {init();}
 
     //! General FermBC
     EvenOddPrecZoloNEFFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
 			      const EvenOddPrecZoloNEFFermActArrayParams& param) :
-      fbc(fbc_), OverMass(param.OverMass), Mass(param.Mass), N5(param.N5) {}
+      fbc(fbc_), OverMass(param.OverMass), Mass(param.Mass), N5(param.N5) {init();}
 
     //! Copy constructor
     EvenOddPrecZoloNEFFermActArray(const EvenOddPrecZoloNEFFermActArray& a) : 
@@ -91,6 +91,16 @@ namespace Chroma
 
     //! Produce a linear operator M^dag.M for this action
     const LinearOperator< multi1d<LatticeFermion> >* lMdagM(Handle<const ConnectState> state) const;
+
+    //! Produce a hermitian version of the linear operator
+    /*! This code is generic */
+    const LinearOperator< multi1d<LatticeFermion> >* gamma5HermLinOp(Handle<const ConnectState> state) const
+      {
+	// Have not implemented this yet, but it is generic
+	QDPIO::cerr << "EvenOddPrecZoloNEFFermActBase::gamma5HermLinOp not implemented" << endl;
+	QDP_abort(1);
+	return 0;
+      }
 
     //! Produce a linear operator for this action but with quark mass 1
     const UnprecDWLinOpBaseArray<LatticeFermion>* linOpPV(Handle<const ConnectState> state) const;
@@ -163,6 +173,8 @@ namespace Chroma
 
 
   private:
+    void init();
+
     void initCoeffs(multi1d<Real>& b5,
 		    multi1d<Real>& c5,
 		    Handle<const ConnectState>& state) const ;

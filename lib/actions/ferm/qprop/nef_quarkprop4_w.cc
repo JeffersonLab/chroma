@@ -1,6 +1,9 @@
-// $Id: nef_quarkprop4_w.cc,v 1.7 2004-10-21 16:43:20 bjoo Exp $
+// $Id: nef_quarkprop4_w.cc,v 1.8 2004-10-29 13:36:13 bjoo Exp $
 // $Log: nef_quarkprop4_w.cc,v $
-// Revision 1.7  2004-10-21 16:43:20  bjoo
+// Revision 1.8  2004-10-29 13:36:13  bjoo
+// Added generalised preconditioned nef operator, and a zolotarev facade to it. Can now do Chiu! Which is just as well because I am just about to go down with the flu
+//
+// Revision 1.7  2004/10/21 16:43:20  bjoo
 // UNPRECONDITIONED_ZOLO_NEF
 //
 // Revision 1.6  2004/10/03 01:21:19  edwards
@@ -95,9 +98,11 @@ void nef_quarkProp4_a(LatticePropagator& q_sol,
       Real fact = Real(1) / sqrt(norm2(tmp));
       tmp *= fact ;
 
-      //QDPIO::cout<<"Normalization Factor: "<< fact<<endl ;
+      QDPIO::cout<<"Normalization Factor: "<< fact<<endl ;
 
       int N5(S_f.size());
+      QDPIO::cout << "N5=" << N5 << endl;
+
       multi1d<LatticeFermion> chi(N5) ;
       chi = zero ;
       // Split the source to oposite walls according to chirality
@@ -328,5 +333,39 @@ EvenOddPrecNEFFermActArray::dwf_quarkProp4(LatticePropagator& q_sol,
 					       state, 
 					       invParam, 
 					       ncg_had);
+}
+
+//! Given a complete propagator as a source, this does all the inversions needed
+/*! \ingroup qprop
+ *
+ * This routine is actually generic to Domain Wall fermions (Array) fermions
+ *
+ * \param q_sol    quark propagator ( Write )
+ * \param q_src    source ( Read )
+ * \param t_src    time slice of source ( Read )
+ * \param j_decay  direction of decay ( Read )
+ * \param invType  inverter type ( Read )
+ * \param RsdCG    CG (or MR) residual used here ( Read )
+ * \param MaxCG    maximum number of CG iterations ( Read )
+ * \param ncg_had  number of CG iterations ( Write )
+ */
+void 
+EvenOddPrecZoloNEFFermActArray::dwf_quarkProp4(LatticePropagator& q_sol, 
+					   XMLWriter& xml_out,
+					   const LatticePropagator& q_src,
+					   int t_src, int j_decay,
+					   Handle<const ConnectState> state,
+					   const InvertParam_t& invParam,
+					   int& ncg_had)
+{
+  nef_quarkProp4_a<EvenOddPrecZoloNEFFermActArray>(q_sol, 
+						   xml_out, 
+						   q_src, 
+						   t_src, 
+						   j_decay, 
+						   *this, 
+						   state, 
+						   invParam, 
+						   ncg_had);
 }
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_nef_general_linop_array_w.h,v 1.1 2004-10-24 21:39:56 bjoo Exp $
+// $Id: prec_nef_general_linop_array_w.h,v 1.2 2004-10-29 13:36:13 bjoo Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned NEF domain-wall fermion linear operator
  *            generalised to take array of b_5 and c_5
@@ -175,6 +175,12 @@ using namespace QDP;
 		       const multi1d<LatticeFermion>& psi, 
 		       enum PlusMinus isign,
 		       const int cb) const ;
+
+   //! Apply the Dminus operator on a lattice fermion. See my notes ;-)
+    void Dminus(LatticeFermion& chi,
+		const LatticeFermion& psi,
+		enum PlusMinus isign,
+		int s5) const;
 
   private:
     Real WilsonMass;
