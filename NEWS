@@ -1,3 +1,8 @@
+02/21/2005 -- Robert Edwards
+
+	Version 1.19.6. Moved stock mainprogs to bin_PROGRAMS. They
+        are now installed.
+
 02/16/2005 -- Robert Edwards
 
 	Version 1.19.5. Added hybrid meson stuff to spectrum_w. 
