@@ -1,3 +1,7 @@
+04/02/2005 -- Balint Joo
+
+	Version 1.20.5. Optimizations to the diag bits of the DWF,NEF variants
+
 03/22/2005 -- Robert Edwards
 
 	Version 1.20.4. Added  mainprogs/main/qpropqio.cc
