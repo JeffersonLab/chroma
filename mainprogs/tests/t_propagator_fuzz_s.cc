@@ -1,4 +1,4 @@
-// $Id: t_propagator_fuzz_s.cc,v 1.4 2004-02-11 12:51:35 bjoo Exp $
+// $Id: t_propagator_fuzz_s.cc,v 1.5 2004-03-23 20:48:54 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  *
@@ -234,7 +234,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
   // Read in the gauge configuration file name
   try
   {
-    read(inputtop, "Cfg", input.cfg);
+    //    read(inputtop, "Cfg", input.cfg);
     read(inputtop, "Prop", input.prop);
   }
   catch (const string& e) 
@@ -274,10 +274,12 @@ int main(int argc, char **argv)
   
   XMLReader gauge_xml;
 
+  string nersc = "t_nersc.cfg" ; 
   switch (input.param.cfg_type) 
   {
   case CFG_TYPE_NERSC :
-    readArchiv(gauge_xml, u, input.cfg.cfg_file);
+    /*    readArchiv(gauge_xml, u, input.cfg.cfg_file);  */
+    readArchiv(gauge_xml, u, nersc );
     break;
   default :
     QDP_error_exit("Configuration type is unsupported.");
@@ -289,9 +291,9 @@ int main(int argc, char **argv)
   //  
 
   // this parameter will be read from the input file
-  bool do_gauge_transform ;
-        do_gauge_transform = false ;
-  //    do_gauge_transform = true ;
+  // bool do_gauge_transform ;
+  do_gauge_transform = false ;
+  // do_gauge_transform = true ;
 
 
   if( do_gauge_transform )
@@ -414,7 +416,7 @@ int main(int argc, char **argv)
   Handle<const ConnectState > state(S_f.createState(u));
   Handle<const EvenOddLinearOperator<LatticeFermion> > D_asqtad(S_f.linOp(state));
 
-   Handle<const LinearOperator<LatticeFermion> > MdagM_asqtad(S_f.lMdagM(state));
+  Handle<const LinearOperator<LatticeFermion> > MdagM_asqtad(S_f.lMdagM(state));
 
   //
   // Loop over the source color, creating the source
@@ -451,8 +453,8 @@ int main(int argc, char **argv)
 
 	//  Start to develop fuzzed source code
 	enum stag_src_type { LOCAL_SRC , FUZZED_SRC } ;
-		enum stag_src_type type_of_src = FUZZED_SRC  ;
-	//	enum stag_src_type type_of_src = LOCAL_SRC  ;
+	//		enum stag_src_type type_of_src = FUZZED_SRC  ;
+	enum stag_src_type type_of_src = LOCAL_SRC  ;
 
 	if( type_of_src == LOCAL_SRC )
 	  {
@@ -512,6 +514,8 @@ int main(int argc, char **argv)
   
 
       multi2d<DComplex> pion(16, input.param.nrow[3]);
+      multi1d<DComplex> pion_out(input.param.nrow[3]);
+
       staggeredPionsFollana(stag_prop, pion, j_decay);
 
     push(xml_out, "Here_are_all_16_pions");
@@ -519,12 +523,34 @@ int main(int argc, char **argv)
       ostringstream tag;
       tag << "pion" << i;
       push(xml_out, tag.str());
-      write(xml_out, "pion[i]", pion[i]);
+      for(int tt=0 ; tt < input.param.nrow[3] ; ++tt)
+	pion_out[tt] = pion[i][tt] ;
+      write(xml_out, "pion_oper", pion_out);
       pop(xml_out);
       }
       pop(xml_out);
 
+
+
+      //
+      // compute some simple baryon operators
+      //
+      int bc_spec = 0 ;
+      multi1d<int> coord(Nd);
+      coord[0]=0; coord[1] = 0; coord[2] = 0; coord[3] = 0;
+
+      multi1d<Complex>  barprop(input.param.nrow[3]) ;
+
+      baryon_s(quark_propagator,barprop,
+	       coord,j_decay, bc_spec) ;
+	       
+      push(xml_out, "baryon");
+      write(xml_out, "nucleon", barprop);
       pop(xml_out);
+
+
+      pop(xml_out); // end of document
+
   xml_out.close();
   xml_in.close();
 
