@@ -1,4 +1,4 @@
-// $Id: wallformfac.cc,v 1.9 2004-04-04 03:57:14 edwards Exp $
+// $Id: wallformfac.cc,v 1.10 2004-04-04 03:58:55 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions with a wall sink
  *
@@ -257,6 +257,9 @@ main(int argc, char *argv[])
   }
   QDPIO::cout << "Backward propagator successfully read" << endl;
    
+  // Derived from input prop
+  int t_sink = backward_source_header.t_source[j_decay];
+
   // Sanity check - write out the norm2 of the backward prop in the j_decay direction
   // Use this for any possible verification
   {
@@ -282,7 +285,7 @@ main(int argc, char *argv[])
 		  u, forward_quark_prop, backward_quark_prop, 
 		  phases, 
 		  t_source[j_decay],
-		  input.param.t_sink);
+		  t_sink);
 #else
   wallNucleonFormFac(xml_out,
 		     u, forward_quark_prop, backward_quark_prop, phases, 
