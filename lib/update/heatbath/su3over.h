@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: su3over.h,v 1.3 2004-03-29 21:33:42 edwards Exp $
+// $Id: su3over.h,v 1.4 2004-08-07 03:26:24 edwards Exp $
 /*! \file
  *  \brief Do one SU(2) subgroup microcanonical overrelaxation update of SU(Nc)
  */
@@ -23,6 +23,6 @@
 void su3over(LatticeColorMatrix& u,
 	     const LatticeColorMatrix& w,
 	     int su2_index,
-	     const OrderedSet& sub);
+	     const OrderedSubset& sub);
 
 #endif

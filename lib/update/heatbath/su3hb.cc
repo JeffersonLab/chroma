@@ -1,11 +1,7 @@
-// $Id: su3hb.cc,v 1.3 2004-07-28 02:38:05 edwards Exp $
+// $Id: su3hb.cc,v 1.4 2004-08-07 03:26:23 edwards Exp $
 /*! \file
  *  \brief Do one SU(2) subgroup heatbath update of SU(Nc) matrix U with action
  */
-
-#error "Not tested (or even compiled). However, reasonably well converted."
-
-#error "NEED TO ADD NARROWING TO SUBSETS IN ALL OPERANDS"
 
 #include "chromabase.h"
 #include "update/heatbath/su3hb.h"
@@ -37,21 +33,13 @@ void su3hb(LatticeColorMatrix& u,
 	   int nheat,
 	   int& ntrials,
 	   int& nfails,
+	   HeatbathType algorithm,
 	   const OrderedSubset& sub)
 {
   START_CODE();
   
-  LatticeColorMatrix v;
-  LatticeReal lftmp1;
-  LatticeReal lftmp2;
-  LatticeBoolean lbtmp2;
-  LatticeBoolean lupdate;
-  int nhb;
-  int n_done;
-  int itrials;
-  int itmp;
-  
   /* V = U*W */
+  LatticeColorMatrix v;
   v[sub] = u * w;
   
   /* Extract components r_k proportional to SU(2) submatrix su2_index */
@@ -82,29 +70,39 @@ void su3hb(LatticeColorMatrix& u,
 
   /* Do up to nheat heatbath trials to create new r_0 */
   /* This is the only place BetaMC is used, so on AnisoP:  */
-  Real dummy = TO_REAL(BetaMC) / TO_REAL(Nc);
-
 #if 0
+  Real dummy = TO_REAL(BetaMC) / TO_REAL(Nc);
   if( AnisoP == YES ) dummy /= TO_REAL(xi_0);
+#else
+  QDPIO::cerr << "FIX Beta" << endl;
+  Real dummy = 1;   // **WARNING** FIX THIS
 #endif
-
   r_l[sub] *= dummy;
-  itrials = vol_cb;
+
+  int num_sites = sub.numSiteTable();
+  int itrials = num_sites;
   ntrials = 0;
   nfails = 0;
   
-  if ( Algorithm == KPHB )
+  LatticeBoolean lupdate;
+  LatticeReal lftmp1;
+  LatticeReal lftmp2;
+  LatticeBoolean lbtmp2;
+  
+  switch (algorithm)
+  {
+  case HEATBATH_TYPE_KPHB:
   {
     /*
      * Kennedy-Pendleton heatbath
      */
-    n_done = 0;
-    nhb = 0;
+    int n_done = 0;
+    int nhb = 0;
 
-    r[0][sub] = a_0;
+    r[0][sub] = a[0];
     lupdate[sub] = true;
 
-    while ( nhb < nheat && n_done < vol_cb )
+    while ( nhb < nheat && n_done < num_sites )
     {
       ntrials += itrials;
 
@@ -114,124 +112,104 @@ void su3hb(LatticeColorMatrix& u,
       random(r[2], sub);
       r[2][sub] = log(r[2]);
 
-      random(r[3]);
-      dummy = 8*atan(1);
-      r[3] = r[3] * dummy;
-      r[3] = cos(r[3]);
-      r[3] = r[3] * r[3];
+      random(lftmp, sub);
+      r[3][sub] = pow(cos(Real(twopi)*lftmp),2);
 
-      r[1] += r[2] * r[3];
-      r[2] = r[1] / r_l;
+      r[1][sub] += r[2] * r[3];
+      r[2][sub] = r[1] / r_l;
 
       /* r[2] is now a trial for 1+r[0] */
       /* see if this is accepted */
-      random(r[1]);
-      r[1] = r[1] * r[1];
-      lftmp1 = 1;
-      dummy = 0.5;
-      lftmp1 += r[2] * dummy;
+      random(lftmp, sub);
+      r[1][sub] = lftmp*lftmp;
 
-      lbtmp = r[1] <= lftmp1;
-      lbtmp2 = lbtmp & lupdate;
+      lbtmp[sub]  = r[1] <= (1 + 0.5*r[2]);
+      lbtmp2[sub] = lbtmp & lupdate;
+      r[0][sub] = where(lbtmp2, 1+r[2], r[0]);
 
-      lftmp1 = 1;
-      lftmp1 += r[2];
-      copymask(r[0], lbtmp2, lftmp1, REPLACE);
-
-      itmp = sum(lbtmp2);
+      int itmp = toInt(sum(where(lbtmp2, LatticeInteger(1), LatticeInteger(0)),sub));
       n_done += itmp;
       itrials -= itmp;
       nfails += itrials;
 
-      lbtmp = !lbtmp;
-      lupdate = lupdate & lbtmp;
+      lupdate &= ! lbtmp;
 
-      nhb = nhb + 1;
+      ++nhb;
     }
   }
-  else
+  break;
+
+  case HEATBATH_TYPE_CrHB:
   {
     /*+ */
     /* Creutz heatbath */
     /*- */
-    n_done = 0;
-    nhb = 0;
+    int n_done = 0;
+    int nhb = 0;
 
-    lftmp1 = 1;
-    dummy = 2;
-    lftmp2 = r_l * dummy;
-    lftmp2 = exp(lftmp2);
-    lftmp2 -= lftmp1;
+    lftmp2 = exp(2 * r_l) - 1;
 
-    r[0] = a_0;
-    FILL(lupdate, TRUE);
+    r[0] = a[0];
+    lupdate = true;
 
-    while ( nhb < nheat && n_done < vol_cb )
+    while ( nhb < nheat && n_done < num_sites )
     {
       ntrials += itrials;
 
-      lftmp1 = 1;
-      random(r[1]);
-      lftmp1 += r[1] * lftmp2;
-      lftmp1 = log(lftmp1);
-      r[2] = lftmp1 / r_l;
-
-      lftmp1 = 1;
-      r[2] -= lftmp1;
+      random(r[1], sub);
+      r[2][sub] = log(1 + r[1] * lftmp2) / r_l  - 1;
 
       /* r[2] is now a trial for r[0] */
       /* see if this is accepted */
-      random(r[1]);
-      r[1] = r[1] * r[1];
-      lftmp1 -= r[2] * r[2];
+      random(lftmp1, sub);
+      r[1][sub] = lftmp1 * lftmp1;
 
-      lbtmp = r[1] <= lftmp1;
+      lbtmp = r[1] <= (1 - r[2] * r[2]);
       lbtmp2 = lbtmp & lupdate;
 
-      copymask(r[0], lbtmp2, r[2], REPLACE);
+      r[0][sub] = where(lbtmp2, r[2], r[0]);
 
-      itmp = sum(lbtmp2);
+      int itmp = toInt(sum(where(lbtmp2, LatticeInteger(1), LatticeInteger(0)),sub));
       n_done += itmp;
       itrials -= itmp;
       nfails += itrials;
 
-      lbtmp = !lbtmp;
-      lupdate = lupdate & lbtmp;
+      lupdate &= ! lbtmp;
 
-      nhb = nhb + 1;
+      ++nhb;
     }
+  }
+  break;
+
+  default:
+    QDPIO::cerr << __func__ << ": unknown algorithm type" << endl;
+    QDP_abort(1);
   }
   
       
   /* Now create r[1], r[2] and r[3] according to the spherical measure */
   /* Take absolute value to guard against round-off */
-  r_l = fabs(1 - r[0]*r[0]);
-  lftmp1[sub] = sqrt(r_l);
-  random(lftmp2, sub);
-  r[2] = 1;
-  dummy = 2;
-  r[2] -= lftmp2 * dummy;
-  r[3] = -(lftmp1 * r[2]);
+  random(lftmp1, sub);
+  r[2][sub] = 1 - 2*lftmp1;
+
+  lftmp1[sub] = fabs(1 - r[0]*r[0]);
+  r[3][sub] = -(sqrt(lftmp1) * r[2]);
   
-  r_l -= r[3] * r[3];
   /* Take absolute value to guard against round-off */
-  r_l = fabs(r_l);
-  r_l = sqrt(r_l);
-  random(lftmp1);
-  dummy = 8*atan(1);
-  lftmp2 = lftmp1 * dummy;
-  lftmp1 = cos(lftmp2);
-  r[1] = r_l * lftmp1;
-  lftmp1 = sin(lftmp2);
-  r[2] = r_l * lftmp1;
+  r_l[sub] = sqrt(fabs(lftmp1 - r[3]*r[3]));
+
+  random(lftmp1, sub);
+  lftmp1[sub] *= twopi;
+  r[1][sub] = r_l * cos(lftmp1);
+  r[2][sub] = r_l * sin(lftmp1);
   
-        
+
   /* Update matrix is B = R * A, with B, R and A given by b_i, r_i and a_i */
   multi1d<LatticeReal> b(4);
-  b[0] = r[0]*a[0] - r[1]*a[1] - r[2]*a[2] - r[3]*a[3];
-  b[1] = r[0]*a[1] + r[1]*a[0] - r[2]*a[3] + r[3]*a[2];
-  b[2] = r[0]*a[2] + r[2]*a[0] - r[3]*a[1] + r[1]*a[3];
-  b[3] = r[0]*a[3] + r[3]*a[0] - r[1]*a[2] + r[2]*a[1];
+  b[0][sub] = r[0]*a[0] - r[1]*a[1] - r[2]*a[2] - r[3]*a[3];
+  b[1][sub] = r[0]*a[1] + r[1]*a[0] - r[2]*a[3] + r[3]*a[2];
+  b[2][sub] = r[0]*a[2] + r[2]*a[0] - r[3]*a[1] + r[1]*a[3];
+  b[3][sub] = r[0]*a[3] + r[3]*a[0] - r[1]*a[2] + r[2]*a[1];
   
   /*
    * Now fill an SU(3) matrix V with the SU(2) submatrix su2_index
@@ -240,7 +218,8 @@ void su3hb(LatticeColorMatrix& u,
   sunFill(v, b, su2_index, sub);
 
   // U = V*U
-  LatticeColorMatrix tmp[sub] = v * u;
+  LatticeColorMatrix tmp;
+  tmp[sub] = v * u;
   u[sub] = tmp;
 
   END_CODE();

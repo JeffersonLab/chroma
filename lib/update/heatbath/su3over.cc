@@ -1,11 +1,7 @@
-// $Id: su3over.cc,v 1.3 2004-07-28 02:38:05 edwards Exp $
+// $Id: su3over.cc,v 1.4 2004-08-07 03:26:24 edwards Exp $
 /*! \file
  *  \brief Do one SU(2) subgroup microcanonical overrelaxation update of SU(Nc)
  */
-
-#error "Not tested (or even compiled). However, reasonably well converted."
-
-#error "NEED TO ADD NARROWING TO SUBSETS IN ALL OPERANDS"
 
 #include "chromabase.h"
 #include "update/heatbath/su3over.h"
@@ -30,7 +26,7 @@ using namespace QDP;
 void su3over(LatticeColorMatrix& u,
 	     const LatticeColorMatrix& w,
 	     int su2_index,
-	     const OrderedSet& sub)
+	     const OrderedSubset& sub)
 {
   START_CODE();
                       
@@ -67,7 +63,7 @@ void su3over(LatticeColorMatrix& u,
   /* Microcanonical updating matrix is the square of this */
   r[0][sub] = a[0]*a[0] - a[1]*a[1] - a[2]*a[2] - a[3]*a[3];
   
-  a[0][sub] *= 2
+  a[0][sub] *= 2;
   r[1][sub] = a[0]*a[1];
   r[2][sub] = a[0]*a[2];
   r[3][sub] = a[0]*a[3];
@@ -79,7 +75,8 @@ void su3over(LatticeColorMatrix& u,
   sunFill(v, r, su2_index, sub);
 
   // U = V*U
-  LatticeColorMatrix tmp[sub] = v * u;
+  LatticeColorMatrix tmp;
+  tmp[sub] = v * u;
   u[sub] = tmp;
   
   END_CODE();
