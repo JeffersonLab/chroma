@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_fermact_array_w.h,v 1.3 2004-01-02 03:19:40 edwards Exp $
+// $Id: prec_dwf_fermact_array_w.h,v 1.4 2004-01-05 04:21:18 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -22,7 +22,7 @@ using namespace QDP;
  * are specified in Phys.Rev.D63:094505,2001 (hep-lat/0005002).
  */
 
-class EvenOddPrecDWFermActArray : public EvenOddPrecDWFermActBaseArray
+class EvenOddPrecDWFermActArray : public EvenOddPrecDWFermActBaseArray<LatticeFermion>
 {
 public:
   //! General FermBC

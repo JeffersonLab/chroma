@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_fermact_base_array_w.h,v 1.4 2004-01-02 03:19:40 edwards Exp $
+// $Id: prec_dwf_fermact_base_array_w.h,v 1.5 2004-01-05 04:21:18 edwards Exp $
 /*! \file
  *  \brief Base class for even-odd preconditioned domain-wall-like fermion actions
  */
@@ -18,19 +18,20 @@ using namespace QDP;
  * are specified in Phys.Rev.D63:094505,2001 (hep-lat/0005002).
  */
 
-class EvenOddPrecDWFermActBaseArray : public EvenOddPrecWilsonTypeFermAct< multi1d<LatticeFermion> >
+template<typename T>
+class EvenOddPrecDWFermActBaseArray : public EvenOddPrecWilsonTypeFermAct< multi1d<T> >
 {
 public:
   //! Return the quark mass
   virtual Real quark_mass() const = 0;
 
   //! Produce a linear operator for this action but with quark mass 1
-  virtual const LinearOperator< multi1d<LatticeFermion> >* linOpPV(Handle<const ConnectState> state) const = 0;
+  virtual const LinearOperator< multi1d<T> >* linOpPV(Handle<const ConnectState> state) const = 0;
 
   //! Define quark propagator routine for 4D fermions
-  void qprop(LatticeFermion& psi, 
+  void qprop(T& psi, 
 	     Handle<const ConnectState> state, 
-	     const LatticeFermion& chi, 
+	     const T& chi, 
 	     enum InvType invType,
 	     const Real& RsdCG, 
 	     int MaxCG, int& ncg_had) const;

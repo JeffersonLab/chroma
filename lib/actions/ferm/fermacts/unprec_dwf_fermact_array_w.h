@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_fermact_array_w.h,v 1.6 2004-01-02 03:19:40 edwards Exp $
+// $Id: unprec_dwf_fermact_array_w.h,v 1.7 2004-01-05 04:21:18 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion action
  */
@@ -19,7 +19,7 @@ using namespace QDP;
  * are specified in Phys.Rev.D63:094505,2001 (hep-lat/0005002).
  */
 
-class UnprecDWFermActArray : public UnprecDWFermActBaseArray
+class UnprecDWFermActArray : public UnprecDWFermActBaseArray<LatticeFermion>
 {
 public:
   //! General FermBC

@@ -1,4 +1,4 @@
-// $Id: quarkprop4_w.h,v 1.6 2004-01-02 03:19:41 edwards Exp $
+// $Id: quarkprop4_w.h,v 1.7 2004-01-05 04:21:18 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -95,7 +95,7 @@ void quarkProp4(LatticePropagator& q_sol,
 void quarkProp4(LatticePropagator& q_sol, 
 		XMLWriter& xml_out,
 		const LatticePropagator& q_src,
-		const EvenOddPrecDWFermActBaseArray& S_f,
+		const EvenOddPrecDWFermActBaseArray<LatticeFermion>& S_f,
 		Handle<const ConnectState> state,
 		enum InvType invType,
 		const Real& RsdCG, 

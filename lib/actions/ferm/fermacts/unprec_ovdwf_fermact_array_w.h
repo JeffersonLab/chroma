@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovdwf_fermact_array_w.h,v 1.5 2004-01-02 03:19:40 edwards Exp $
+// $Id: unprec_ovdwf_fermact_array_w.h,v 1.6 2004-01-05 04:21:18 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Overlap-DWF (Borici) action
  */
@@ -19,7 +19,7 @@ using namespace QDP;
  * are specified in Phys.Rev.D63:094505,2001 (hep-lat/0005002).
  */
 
-class UnprecOvDWFermActArray : public UnprecDWFermActBaseArray
+class UnprecOvDWFermActArray : public UnprecDWFermActBaseArray<LatticeFermion>
 {
 public:
   //! General FermBC
