@@ -1,4 +1,4 @@
-// $Id: sink_smearing.cc,v 1.13 2005-01-14 20:13:09 edwards Exp $
+// $Id: sink_smearing.cc,v 1.14 2005-02-16 20:12:07 sbasak Exp $
 /*! \file
  * \brief Main program for sink-smearing quark propagators
  *
@@ -192,7 +192,7 @@ int main(int argc, char **argv)
       input.param.link_smear_num > 0)
   {
     int BlkMax = 100;	// Maximum number of blocking/smearing iterations
-    Real BlkAccu = 1.0-5;	// Blocking/smearing accuracy
+    Real BlkAccu = 1.0e-5;	// Blocking/smearing accuracy
 
     for(int i=0; i < input.param.link_smear_num; ++i)
     {
