@@ -3,7 +3,7 @@
 
 <make_source><make_source>
 <annotation>
-; $Id: make_source_v4.linux-scalar-intel.xml,v 1.1 2004-02-04 17:44:51 sbasak Exp $
+; $Id: make_source_v4.linux-scalar-intel.xml,v 1.2 2004-02-22 21:30:09 edwards Exp $
 ;
 ; MAKE_SOURCE input file.
 ;
@@ -19,15 +19,13 @@
  <cfg_type>SZIN</cfg_type>
  <prop_type>SZIN</prop_type>
  <wave_state>S_WAVE</wave_state>
- <source_direction>2</source_direction>
+ <source_direction>3</source_direction>
  <LaplacePower>0</LaplacePower>
  <source_type>SHELL_SOURCE</source_type>
- <wvf_param>4.5</wvf_param>
- <WvfIntPar>50</WvfIntPar>
+ <wvf_param>2.0</wvf_param>
+ <WvfIntPar>5</WvfIntPar>
  <sm_fact>2.5</sm_fact>
- <sm_numb>20</sm_numb>
- <BlkMax>100</BlkMax>
- <BlkAccu>1.0e-5</BlkAccu>
+ <sm_numb>0</sm_numb>
  <disp_length>0</disp_length>
  <disp_dir>0</disp_dir>
  <nrow>4 4 4 8</nrow>
@@ -83,6 +81,6 @@
 
   </config_info>
   <Source_correlator>
-    <source_corr>0.162483 0 0 0 0 0 0 0</source_corr>
+    <source_corr>5.44616 0 0 0 0 0 0 0</source_corr>
   </Source_correlator>
 </make_source>
