@@ -1,4 +1,4 @@
-// $Id: unprec_wilson_fermact_w.cc,v 1.6 2003-11-15 04:26:01 edwards Exp $
+// $Id: unprec_wilson_fermact_w.cc,v 1.7 2003-11-16 06:20:22 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -11,11 +11,11 @@
 //! Creation routine
 /*! \ingroup fermact
  *
- * \param _Kappa   fermion kappa    (Read)
+ * \param Mass_   fermion kappa    (Read)
  */
-void UnprecWilsonFermAct::create(const Real& _Kappa)
+void UnprecWilsonFermAct::create(const Real& Mass_)
 {
-  Kappa = _Kappa;
+  Mass = Mass_;
 //    CoeffWilsr_s = (AnisoP) ? Wilsr_s / xiF_0 : 1;
 }
 
@@ -30,7 +30,7 @@ void UnprecWilsonFermAct::create(const Real& _Kappa)
 const LinearOperator<LatticeFermion>* 
 UnprecWilsonFermAct::linOp(const multi1d<LatticeColorMatrix>& u) const
 {
-  return new UnprecWilsonLinOp(u,Kappa);
+  return new UnprecWilsonLinOp(u,Mass);
 }
 
 //! Produce a M^dag.M linear operator for this action
@@ -44,7 +44,7 @@ UnprecWilsonFermAct::linOp(const multi1d<LatticeColorMatrix>& u) const
 const LinearOperator<LatticeFermion>* 
 UnprecWilsonFermAct::lMdagM(const multi1d<LatticeColorMatrix>& u) const
 {
-  LinearOperator<LatticeFermion>* mdagm = new lmdagm<LatticeFermion>(UnprecWilsonLinOp(u,Kappa));
+  LinearOperator<LatticeFermion>* mdagm = new lmdagm<LatticeFermion>(UnprecWilsonLinOp(u,Mass));
   return mdagm;
 }
 
@@ -81,33 +81,32 @@ UnprecWilsonFermAct::dsdu(const multi1d<LatticeColorMatrix>& u,
   LatticeFermion ftmp_2;
   Double ddummy;
   Real dummy;
-  int mu;
-  int nu;
   int cb;
 
   // Do the usual Wilson fermion dS_f/dU
   const LinearOperator* A = linOp(u);
 
+  WilsonDslash  D(u);
+
   //  phi = M(u)*psi
   LatticeFermion phi = A(psi, PLUS);
     
     /* rho = Dslash(0<-1) * psi */
-  dslash(u, psi, rho, PLUS, 1);
+  rho = D.apply(psi, PLUS, 1);
     
   /* phi = (KappaMD^2)*phi = -(KappaMD^2)*M*psi */
   dummy = -(KappaMD*KappaMD);
-  phi = phi * dummy;
+  phi *= dummy;
     
     /* sigma = Dslash_dag(0 <- 1) * phi */
-  dslash (u, phi, sigma, MINUS, 1);
+  sigma = D.apply(phi, MINUS, 1);
     
-          
-  for(mu = 0; mu < Nd; ++mu)
+  for(int mu = 0; mu < Nd; ++mu)
   {
     cb = 0;
 
     /* ftmp_2 = (gamma(mu))*psi */
-    SPIN_PRODUCT(psi,(INTEGER_LSHIFT_FUNCTION(1,mu)),ftmp_2);
+    ftmp_2 = Gamma(1<<mu) * psi;
     /* ftmp_2(x) = -(psi(x) - ftmp_2(x)) = -(1 - gamma(mu))*psi( x )  */
     ftmp_2 -= psi;
     utmp_1 = -(shift(ftmp_2, cb, FORWARD, mu) * adj(sigma));

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_wilson_fermact_w.h,v 1.9 2003-10-20 20:31:50 edwards Exp $
+// $Id: unprec_wilson_fermact_w.h,v 1.10 2003-11-16 06:20:21 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -25,11 +25,11 @@ public:
   UnprecWilsonFermAct() {}
 
   //! Full constructor
-  UnprecWilsonFermAct(const Real& _Kappa)
-    {create(_Kappa);}
+  UnprecWilsonFermAct(const Real& _Mass)
+    {create(_Mass);}
 
   //! Creation routine
-  void create(const Real& _Kappa);
+  void create(const Real& _Mass);
 
   //! Produce a linear operator for this action
   const LinearOperator<LatticeFermion>* linOp(const multi1d<LatticeColorMatrix>& u) const;
@@ -56,7 +56,7 @@ public:
   ~UnprecWilsonFermAct() {}
 
 private:
-  Real Kappa;
+  Real Mass;
 };
 
 #endif
