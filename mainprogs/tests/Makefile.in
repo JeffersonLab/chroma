@@ -110,9 +110,8 @@ HDRS =
 #
 # add the programs to build in here
 # 
-check_PROGRAMS = t_mesplq t_dslashm t_io t_lwldslash t_formfac
+check_PROGRAMS = t_mesplq t_dslashm t_io t_lwldslash t_formfac t_mesons_w
 
-# DEPENDENCIES = build_chroma_libs
 
 #
 # The programs and their dependencies
@@ -131,11 +130,14 @@ t_lwldslash_DEPENDENCIES = build_chroma_libs
 
 t_formfac_SOURCES = t_formfac.cc
 t_formfac_DEPENDENCIES = build_chroma_libs
+
+t_mesons_w_SOURCES = t_mesons_w.cc
+t_mesons_w_DEPENDENCIES = build_chroma_libs
 subdir = mainprogs/tests
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
 CONFIG_CLEAN_FILES =
 check_PROGRAMS = t_mesplq$(EXEEXT) t_dslashm$(EXEEXT) t_io$(EXEEXT) \
-	t_lwldslash$(EXEEXT) t_formfac$(EXEEXT)
+	t_lwldslash$(EXEEXT) t_formfac$(EXEEXT) t_mesons_w$(EXEEXT)
 am_t_dslashm_OBJECTS = t_dslashm.$(OBJEXT)
 t_dslashm_OBJECTS = $(am_t_dslashm_OBJECTS)
 t_dslashm_LDADD = $(LDADD)
@@ -152,6 +154,10 @@ am_t_lwldslash_OBJECTS = t_lwldslash.$(OBJEXT)
 t_lwldslash_OBJECTS = $(am_t_lwldslash_OBJECTS)
 t_lwldslash_LDADD = $(LDADD)
 t_lwldslash_LDFLAGS =
+am_t_mesons_w_OBJECTS = t_mesons_w.$(OBJEXT)
+t_mesons_w_OBJECTS = $(am_t_mesons_w_OBJECTS)
+t_mesons_w_LDADD = $(LDADD)
+t_mesons_w_LDFLAGS =
 am_t_mesplq_OBJECTS = t_mesplq.$(OBJEXT)
 t_mesplq_OBJECTS = $(am_t_mesplq_OBJECTS)
 t_mesplq_LDADD = $(LDADD)
@@ -166,7 +172,8 @@ depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/t_dslashm.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_formfac.Po ./$(DEPDIR)/t_io.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_lwldslash.Po ./$(DEPDIR)/t_mesplq.Po
+@AMDEP_TRUE@	./$(DEPDIR)/t_lwldslash.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_mesons_w.Po ./$(DEPDIR)/t_mesplq.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -174,9 +181,10 @@ CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
 CXXFLAGS = @CXXFLAGS@
 DIST_SOURCES = $(t_dslashm_SOURCES) $(t_formfac_SOURCES) $(t_io_SOURCES) \
-	$(t_lwldslash_SOURCES) $(t_mesplq_SOURCES)
+	$(t_lwldslash_SOURCES) $(t_mesons_w_SOURCES) \
+	$(t_mesplq_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(t_dslashm_SOURCES) $(t_formfac_SOURCES) $(t_io_SOURCES) $(t_lwldslash_SOURCES) $(t_mesplq_SOURCES)
+SOURCES = $(t_dslashm_SOURCES) $(t_formfac_SOURCES) $(t_io_SOURCES) $(t_lwldslash_SOURCES) $(t_mesons_w_SOURCES) $(t_mesplq_SOURCES)
 
 all: all-am
 
@@ -202,6 +210,9 @@ t_io$(EXEEXT): $(t_io_OBJECTS) $(t_io_DEPENDENCIES)
 t_lwldslash$(EXEEXT): $(t_lwldslash_OBJECTS) $(t_lwldslash_DEPENDENCIES) 
 	@rm -f t_lwldslash$(EXEEXT)
 	$(CXXLINK) $(t_lwldslash_LDFLAGS) $(t_lwldslash_OBJECTS) $(t_lwldslash_LDADD) $(LIBS)
+t_mesons_w$(EXEEXT): $(t_mesons_w_OBJECTS) $(t_mesons_w_DEPENDENCIES) 
+	@rm -f t_mesons_w$(EXEEXT)
+	$(CXXLINK) $(t_mesons_w_LDFLAGS) $(t_mesons_w_OBJECTS) $(t_mesons_w_LDADD) $(LIBS)
 t_mesplq$(EXEEXT): $(t_mesplq_OBJECTS) $(t_mesplq_DEPENDENCIES) 
 	@rm -f t_mesplq$(EXEEXT)
 	$(CXXLINK) $(t_mesplq_LDFLAGS) $(t_mesplq_OBJECTS) $(t_mesplq_LDADD) $(LIBS)
@@ -216,6 +227,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_formfac.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_lwldslash.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_mesons_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_mesplq.Po@am__quote@
 
 distclean-depend:
