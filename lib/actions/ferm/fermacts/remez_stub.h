@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: remez_stub.h,v 1.1 2005-02-01 21:23:10 edwards Exp $
+// $Id: remez_stub.h,v 1.2 2005-02-02 16:27:55 edwards Exp $
 /*! \file
  *  \brief Remez algorithm for finding nth roots
  */
@@ -30,6 +30,10 @@ namespace Chroma
 			      unsigned long power_num, unsigned long power_den) {return 0;}
     int getPFE(multi1d<Real>& res, multi1d<Real>& pole, Real& norm) {return 0;}
     int getIPFE(multi1d<Real>& res, multi1d<Real>& pole, Real& norm) {return 0;}
+
+    //! Given a partial fraction expansion, evaluate it at x
+    Real evalPFE(const Real& x, const multi1d<Real>& res, const multi1d<Real>& pole)
+      {QDP_error_exit("%s: not implemented",__func__);}
 
   };
 }  // end namespace Chroma

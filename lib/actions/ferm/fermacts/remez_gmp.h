@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: remez_gmp.h,v 1.1 2005-02-01 21:23:10 edwards Exp $
+// $Id: remez_gmp.h,v 1.2 2005-02-02 16:27:55 edwards Exp $
 /*! \file
  *  \brief Remez algorithm for finding nth roots
  */
@@ -46,6 +46,9 @@ namespace Chroma
 
     //! Return the partial fraction expansion of the approximation x^(-pnum/pden)
     int getIPFE(multi1d<Real>& res, multi1d<Real>& pole, Real& norm);
+
+    //! Given a partial fraction expansion, evaluate it at x
+    Real evalPFE(const Real& x, const multi1d<Real>& res, const multi1d<Real>& pole);
 
   private:
     // The approximation parameters

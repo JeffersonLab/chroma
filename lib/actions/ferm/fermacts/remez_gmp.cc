@@ -1,4 +1,4 @@
-// $Id: remez_gmp.cc,v 1.1 2005-02-01 21:23:10 edwards Exp $
+// $Id: remez_gmp.cc,v 1.2 2005-02-02 16:27:55 edwards Exp $
 /*! \file
  *  \brief Remez algorithm for finding nth roots
  */
@@ -87,7 +87,8 @@ namespace Chroma
   }
 
   // Generate the rational approximation x^(pnum/pden)
-  Real RemezGMP::generateApprox(int num_degree, int den_degree, unsigned long pnum, unsigned long pden)
+  Real RemezGMP::generateApprox(int num_degree, int den_degree, 
+				unsigned long pnum, unsigned long pden)
   {
     START_CODE();
 
@@ -162,6 +163,9 @@ namespace Chroma
       QDP_abort(1);
     }
 
+    Res.resize(n);
+    Pole.resize(d);
+
     multi1d<bigfloat> r(n);
     multi1d<bigfloat> p(d);
   
@@ -192,6 +196,9 @@ namespace Chroma
       QDPIO::cerr << __func__ << ": Approximation not yet generated" << endl;
       QDP_abort(1);
     }
+
+    Res.resize(n);
+    Pole.resize(d);
 
     multi1d<bigfloat> r(d);
     multi1d<bigfloat> p(n);
@@ -255,6 +262,9 @@ namespace Chroma
   {
     START_CODE();
 
+    if (step.size() == 0)
+      QDP_error_exit("%s: step not allocated", __func__);
+
     xx[neq+1] = apend;
     delta = 0.25;
     step[0] = xx[0] - apstrt;
@@ -268,6 +278,9 @@ namespace Chroma
   void RemezGMP::search(multi1d<bigfloat>& step) 
   {
     START_CODE();
+
+    if (step.size() == 0)
+      QDP_error_exit("%s: step not allocated", __func__);
 
     bigfloat a, q, xm, ym, xn, yn, xx0, xx1;
     int i, j, meq, emsign, ensign, steps;
@@ -360,7 +373,7 @@ namespace Chroma
     int i, j, ip;
     bigfloat *aa;
 
-    multi1d<bigfloat> AA((neq)*(neq));
+    multi1d<bigfloat> AA(neq*neq);
     multi1d<bigfloat> BB(neq);
   
     for (i = 0; i < neq; i++) {	// set up the equations for solution by simq()
@@ -457,6 +470,9 @@ namespace Chroma
   {
     START_CODE();
 
+    if (A.size() == 0 || B.size() == 0)
+      QDP_error_exit("%s: A or B not allocated", __func__);
+
     int i, j, ij, ip, ipj, ipk, ipn;
     int idxpiv, iback;
     int k, kp, kp1, kpk, kpn;
@@ -464,7 +480,7 @@ namespace Chroma
     bigfloat em, q, rownrm, big, size, pivot, sum;
     bigfloat *aa;
 
-    multi1d<int> IPS;		// simq() work vector
+    multi1d<int> IPS(neq);		// simq() work vector
 
     nm1 = n - 1;
     // Initialize IPS and X
@@ -669,6 +685,11 @@ namespace Chroma
   {
     START_CODE();
 
+//  QDPIO::cout << __func__ << " : enter" << endl;
+
+    if (res.size() == 0 || poles.size() == 0)
+      QDP_error_exit("%s: res or poles not allocated", __func__);
+
     int i,j,small;
     bigfloat temp;
     multi1d<bigfloat> numerator(n);
@@ -732,7 +753,27 @@ namespace Chroma
       QDPIO::cout << __func__ << ": Residue = " << (double)res[j] << " Pole = " << (double)poles[j] << endl;
     }
 
+//  QDPIO::cout << __func__ << " : exit" << endl;
+
     END_CODE();
+  }
+
+
+  // Given a partial fraction expansion, evaluate it at x
+  Real RemezGMP::evalPFE(const Real& x, const multi1d<Real>& res, const multi1d<Real>& pole)
+  {
+    if ((res.size() != pole.size()) || res.size() == 0)
+    {
+      QDPIO::cerr << __func__ << ": invalid res and pole" << endl;
+      QDP_abort(1);
+    }
+
+    Real f = zero;
+    Real xsq = x*x;
+    for (int i=0; i < res.size(); ++i)
+      f += res[i] / (xsq - pole[i]);
+
+    return f;
   }
 
 }  // end namespace Chroma

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: remez.h,v 1.1 2005-02-01 21:23:10 edwards Exp $
+// $Id: remez.h,v 1.2 2005-02-02 16:27:55 edwards Exp $
 /*! \file
  *  \brief Redirector for Remez algorithm for finding nth roots
  */
@@ -7,7 +7,7 @@
 #ifndef __remez_h__
 #define __remez_h__
 
-#ifdef HAVE_GMP        // If GMP is defined 
+#ifdef BUILD_GMP_REMEZ        // If GMP is defined 
 
 #include "remez_gmp.h"
 
