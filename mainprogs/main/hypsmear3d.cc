@@ -1,5 +1,5 @@
 /*
- *  $Id: hypsmear3d.cc,v 1.1 2005-02-03 22:09:56 sbasak Exp $
+ *  $Id: hypsmear3d.cc,v 1.2 2005-02-04 19:24:00 sbasak Exp $
  *
  *  This is the top-level routine for HYP smearing.
  *  Reading in gauge fields and writing out hyp-smear gauge fields
@@ -200,9 +200,9 @@ int main(int argc, char *argv[])
 
     for(int i=0; i < input.param.link_smear_num; i++)
     {
-    Hyp_Smear(u, u_hyp, 
-	      input.param.alpha1, input.param.alpha2, input.param.alpha3, 
-	      BlkAccu, BlkMax,input.param.j_decay);
+    Hyp_Smear3d(u, u_hyp, 
+	        input.param.alpha1, input.param.alpha2, input.param.alpha3, 
+	        BlkAccu, BlkMax,input.param.j_decay);
     u = u_hyp;
     }
     QDPIO::cout << "Gauge field HYP-smeared!" << endl;
