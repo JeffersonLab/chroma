@@ -1,4 +1,4 @@
-// $Id: szin.h,v 1.1 2002-12-16 06:56:49 edwards Exp $
+// $Id: szin.h,v 1.2 2003-01-04 05:13:45 edwards Exp $
 //
 // Include file for test suite
 
@@ -16,8 +16,8 @@ enum Sinks {POINT_SINK, WALL_SINK, POINT_AND_WALL_SINK, SHELL_SINK, POINT_AND_SH
 
 
 
-void junk(LatticeGauge& b3, const LatticeGauge& b1, const LatticeGauge& b2, const Subset& s);
-void MesPlq(const multi1d<LatticeGauge>& u, Double& w_plaq, Double& s_plaq, 
+void junk(LatticeColorMatrix& b3, const LatticeColorMatrix& b1, const LatticeColorMatrix& b2, const Subset& s);
+void MesPlq(const multi1d<LatticeColorMatrix>& u, Double& w_plaq, Double& s_plaq, 
 	    Double& t_plaq, Double& link);
 void mesons(const LatticePropagator& quark_prop_1, const LatticePropagator& quark_prop_2, 
 	    multi2d<Real>& meson_propagator, 
@@ -28,10 +28,11 @@ void baryon(LatticePropagator& quark_propagator,
 	    const multi1d<int>& t_source, int j_decay, int bc_spec);
 void dslash(LatticeFermion& chi, const multi1d<LatticeColorMatrix>& u, const LatticeFermion& psi, int isign, int cb);
 
-void mciter(multi1d<LatticeGauge>& u, int n_over, int nheat, int &ntrials, int &nfails);
+void mciter(multi1d<LatticeColorMatrix>& u, int n_over, int nheat, int &ntrials, int &nfails);
 
-void reunit(LatticeColorMatrix& a);
-void reunit(LatticeColorMatrix& xa, LatticeBoolean& bad, enum Reunitarize ruflag, int& numbad);
+void reunit(LatticeColorMatrix& xa);
+void reunit(LatticeColorMatrix& xa, LatticeBoolean& bad, int& numbad, enum Reunitarize ruflag);
+
 void su3over(LatticeColorMatrix& u, const LatticeColorMatrix& w, int su2_index);
 void su3hb(LatticeColorMatrix& u, const LatticeColorMatrix& w, 
 	   int su2_index, int nheat, int& ntrials, int& nfails);
@@ -60,7 +61,7 @@ const float fuzz = 1.0e-5;
 const float twopi = 6.283185307179586476925286;
 
 #define START_CODE(a)
-#define END_CODE()
+#define END_CODE(a)
 
 #define TO_REAL(a) float(a)
 
