@@ -1,4 +1,4 @@
-// $Id: readszin.cc,v 1.6 2003-04-30 21:19:33 edwards Exp $
+// $Id: readszin.cc,v 1.7 2003-05-08 22:53:41 flemingg Exp $
 
 /*! \file
  *  \brief Read in a configuration written by SZIN up to configuration version 7.
@@ -111,8 +111,8 @@ void readSzin(multi1d<LatticeColorMatrix>& u, const string& cfg_file, Seed& seed
   for(i=0; i < banner_size; ++i)
   {
     read(cfg_in,j);
-    //    banner[i] = j;
-    cerr << "HACK - not assigning banner" << endl;
+    banner[i] = j;
+    // cerr << "HACK - not assigning banner" << endl;
   }
   old_banner[banner_size] = '\0';
   banner = old_banner;   // not being used at the moment
