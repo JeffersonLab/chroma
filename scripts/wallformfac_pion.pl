@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: wallformfac_pion.pl,v 1.4 2004-05-07 03:49:40 edwards Exp $
+# $Id: wallformfac_pion.pl,v 1.5 2004-05-07 16:30:15 edwards Exp $
 #
 # Usage
 #   formfact.pl
@@ -273,8 +273,9 @@ foreach $mes ("pion")
     close(FOO);
     
 #    system("calc ${mes}_r_mu3_q${qsq_int} | head -$t_ext >> ${mes}_r_mu3_q${qsq}.ax");
-    system("calcbc \"- ${mes}_r_mu3_q${qsq_int}\" >> ${mes}_r_mu3_q${qsq}.ax");
-    system("calcbc \"${mes}_r_mu3_q${qsq_int} / pion_r_mu3_q0\" | head -$t_ext_m1 > ${mes}_r_mu3_q${qsq}_norm.ax");
+#    system("calcbc \"${mes}_r_mu3_q${qsq_int} / pion_r_mu3_q0\" | head -$t_ext_m1 > ${mes}_r_mu3_q${qsq}_norm.ax");
+    system("calc ${mes}_r_mu3_q${qsq_int} >> ${mes}_r_mu3_q${qsq}.ax");
+    system("calcbc \"${mes}_r_mu3_q${qsq_int} / pion_r_mu3_q0\" > ${mes}_r_mu3_q${qsq}_norm.ax");
   }
 }
 
