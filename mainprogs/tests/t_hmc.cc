@@ -409,6 +409,9 @@ int main(int argc, char *argv[])
 
   ChromaInitialize(&argc, &argv);
   
+  XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+  push(xml_out, "t_hmc");
+
   HMCTrjParams trj_params;
   MCControl    mc_control;
 
@@ -419,6 +422,9 @@ int main(int argc, char *argv[])
     XMLReader paramtop(xml_in, "/Params");
     read( paramtop, "./HMCTrj", trj_params);
     read( paramtop, "./MCControl", mc_control);
+
+    // Write out the input
+    write(xml_out, "Input", xml_in);
   }
   catch(const std::string& e) {
     QDPIO::cerr << "Caught Exception: " << e << endl;
@@ -428,6 +434,8 @@ int main(int argc, char *argv[])
   Layout::setLattSize(trj_params.nrow);
   Layout::create();
 
+  proginfo(xml_out);    // Print out basic program info
+
   // Start up the config
   multi1d<LatticeColorMatrix> u(Nd);
   {
@@ -435,6 +443,12 @@ int main(int argc, char *argv[])
     XMLReader config_xml;
     
     gaugeStartup(file_xml, config_xml, u, mc_control.cfg);
+
+    // Write out the config header
+    push(xml_out, "Config_info");
+    write(xml_out, "file_xml", file_xml);
+    write(xml_out, "config_xml", config_xml);
+    pop(xml_out);
   }
   
   // Get the MC_Hamiltonian
@@ -475,6 +489,7 @@ int main(int argc, char *argv[])
   // Run
   doHMC<HMCTrjParams>(u, theHMCTrj, mc_control, trj_params, the_measurements);
 
+  pop(xml_out);
 
   ChromaFinalize();
   exit(0);
