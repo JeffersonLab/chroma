@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.233 2005-01-15 12:36:38 bjoo Exp $
+# $Id: Makefile.am,v 1.234 2005-01-17 03:56:36 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -193,6 +193,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/lgherm_w.h \
 	actions/ferm/linop/unprec_ovlap_contfrac5d_linop_array_w.h \
 	actions/ferm/linop/unprec_ovlap_contfrac5d_nonhermop_array_w.h \
+	actions/ferm/linop/unprec_ovlap_contfrac5d_pv_linop_array_w.h \
 	actions/ferm/linop/unprec_ht_contfrac5d_linop_array_w.h \
 	actions/ferm/linop/dslash_w.h actions/ferm/linop/dwffld_w.h \
 	actions/ferm/linop/linop_w.h \
@@ -221,6 +222,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/unprec_wilson_linop_w.h \
 	actions/ferm/linop/unprec_parwilson_linop_w.h \
 	actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_w.h \
+	actions/ferm/linop/prec_ovlap_contfrac5d_pv_linop_array_w.h \
 	actions/ferm/linop/unprec_dwftransf_linop_w.h \
 	actions/ferm/linop/unprec_dwf4d_linop_w.h \
 	actions/ferm/linop/unprec_pdwf4d_linop_w.h \
@@ -458,6 +460,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/linop/prec_nef_linop_array_w.cc \
 	actions/ferm/linop/prec_ovdwf_linop_array_w.cc \
 	actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_w.cc \
+	actions/ferm/linop/prec_ovlap_contfrac5d_pv_linop_array_w.cc \
 	actions/ferm/linop/prec_parwilson_linop_w.cc \
 	actions/ferm/linop/prec_wilson_linop_w.cc \
 	actions/ferm/linop/unprec_dwf4d_linop_w.cc \
@@ -469,6 +472,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/linop/unprec_ovext_linop_array_w.cc \
 	actions/ferm/linop/unprec_ovlap_contfrac5d_linop_array_w.cc \
 	actions/ferm/linop/unprec_ovlap_contfrac5d_nonhermop_array_w.cc \
+	actions/ferm/linop/unprec_ovlap_contfrac5d_pv_linop_array_w.cc \
 	actions/ferm/linop/unprec_parwilson_linop_w.cc \
 	actions/ferm/linop/unprec_pdwf4d_linop_w.cc \
 	actions/ferm/linop/unprec_ppdwf4d_linop_w.cc \
