@@ -1,4 +1,4 @@
-// $Id: formfac_w.cc,v 1.1 2003-02-25 20:25:28 edwards Exp $
+// $Id: formfac_w.cc,v 1.2 2003-03-02 02:30:31 flemingg Exp $
 /*! \file
  *  \brief Form-factors 
  *
@@ -7,6 +7,7 @@
 
 #include "chromabase.h"
 #include "meas/hadron/formfac_w.h"
+#include "proto.h"                  // part of QDP++, for crtesn()
 
 using namespace QDP;
 
@@ -35,7 +36,9 @@ private:
  * \param quark_propagator -- quark propagator ( Read )
  * \param seq_quark_prop -- sequential quark propagator ( Read )
  * \param t_source -- cartesian coordinates of the source ( Read )
+ * \param source_mom2_max -- max source hadron mom squared ( Read )
  * \param t_sink -- time coordinate of the sink ( Read )
+ * \param sink_mom -- sink hadron momentum ( Read )
  * \param j_decay -- direction of the exponential decay ( Read ) 
  * \param nml   -- namelist file object ( Read )
  */
@@ -44,7 +47,10 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
 	     const LatticePropagator& quark_propagator,
 	     const LatticePropagator& seq_quark_prop, 
 	     const multi1d<int>& t_source, 
-	     int t_sink, int j_decay,
+	     int source_mom2_max,
+	     int t_sink,
+	     const multi1d<int>& sink_mom, 
+	     int j_decay,
 	     NmlWriter& nml)
 {
   // Create the time-slice set
@@ -62,7 +68,7 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
   int G5 = Ns*Ns-1;
   
   /*
-   * Coordinates for insertion momenta
+   * Coordinates for source momenta
    */
   multi1d<LatticeInteger> my_coord(Nd);
   for(int mu = 0; mu < Nd; ++mu)
@@ -103,37 +109,43 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
 
 
     /*
-     * Loop over non-zero insertion momenta
-     * Do this by constructing a 5^(Nd-1) grid in momenta centered about the
+     * Loop over allowed source momenta: (source_mom)^2 <= source_mom2_max.
+     * Do this by constructing a L^(Nd-1) grid in momenta centered about the
      * origin. Loop lexicographically over all the "sites" (momenta value)
      * and toss out ones considered too large to give any reasonable statistics
      *
      * NOTE: spatial anisotropy is no allowed here
      */
-    multi1d<int> mom_size(Nd-1);
     int Ndm1 = Nd-1;
-    int L = 5;
+    multi1d<int> mom_size(Ndm1);
+    int L ;
     int mom_vol = 1;
+
+    for (L=0; (L+1)*(L+1) <= source_mom2_max; ++L) ;
 
     for(int nu=0; nu < Ndm1; ++nu)
     {
-      mom_vol *= L;
-      mom_size[nu] = L;
+      mom_vol *= (2*L)+1;
+      mom_size[nu] = (2*L)+1;
     }
 
     for(int n = 0; n < mom_vol; ++n)
     {
-      multi1d<int> inser_mom = crtesn(n, mom_size);
+      multi1d<int> source_mom = crtesn(n, mom_size);
+      multi1d<int> inser_mom(Ndm1) ;
 
-      int q_sq = 0;
+      int source_mom2 = 0;
       for(int nu = 0; nu < Ndm1; ++nu)
       {
-	inser_mom[nu] -= (L-1)/2;
-	q_sq += inser_mom[nu]*inser_mom[nu];
+	source_mom[nu] -= L;
+	source_mom2 += source_mom[nu]*source_mom[nu];
       }
 
       // Arbitrarily set the cutoff on max allowed momentum to be [2,1,0]
-      if (q_sq > 4) continue;
+      if (source_mom2 > source_mom2_max) continue;
+
+      for(int nu = 0; nu < Ndm1; ++nu)
+        inser_mom[nu] = sink_mom[nu] - source_mom[nu] ;
 
       LatticeReal p_dot_x(float(0.0));
 
