@@ -1,4 +1,4 @@
-// $Id: gammasgn_w.cc,v 1.2 2004-06-11 20:40:03 edwards Exp $
+// $Id: gammasgn_w.cc,v 1.3 2004-06-11 20:42:36 edwards Exp $
 /*! \file
  *  \brief Compute gamma matrix multiplication table factors
  */
@@ -22,6 +22,12 @@ static bool initP = false;
 static void gammaSgn_init()
 {
   START_CODE("gammasgn_init");
+
+  if (Ns != 4)
+  {
+    QDPIO::cerr << "gammasgn_init: only supports Ns=4 currently" << endl;
+    QDP_abort(1);
+  }
 
   meson_eta2.resize(Ns*Ns,Ns*Ns);
 
