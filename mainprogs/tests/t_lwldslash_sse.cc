@@ -1,4 +1,4 @@
-// $Id: t_lwldslash_sse.cc,v 1.8 2003-09-16 13:38:37 bjoo Exp $
+// $Id: t_lwldslash_sse.cc,v 1.9 2003-09-17 14:39:57 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -41,7 +41,7 @@ int main(int argc, char **argv)
     gaussian(u[m]);
 
   // Make up a gaussian source and a zero result vector
-  LatticeFermion psi, chi, chi2;
+  LatticeFermion psi, chi, chi2  __attribute__ ((aligned (16)));
   gaussian(psi);
   chi = zero;
 
