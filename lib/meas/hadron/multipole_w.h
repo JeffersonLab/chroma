@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: multipole_w.h,v 1.3 2005-03-27 18:10:17 edwards Exp $
+// $Id: multipole_w.h,v 1.4 2005-04-04 03:22:40 edwards Exp $
 /*! \file
  *  \brief Multipole moments
  *
@@ -23,6 +23,8 @@ namespace Chroma
   {
     struct ElecMag_t
     {
+      int  L;
+      int  M;
       multi1d<Complex>  electric;
       multi1d<Complex>  magnetic;
     };
@@ -32,33 +34,41 @@ namespace Chroma
   };
 
 
+  //! Read a Multipole_t
+  /*!
+   * \ingroup hadron
+   */
+  void read(XMLReader& xml, const string& path, Multipole_t& pole);
+
   //! Write a Multipole_t
   /*!
    * \ingroup hadron
    */
-  void write(BinaryWriter& bin, const Multipole_t& pole);
+  void write(XMLWriter& xml, const string& path, const Multipole_t& pole);
 
   
   //! Compute contractions for multipole moments
   /*!
    * \ingroup hadron
    *
-   * \param pole               structures holding formfactors ( Write )
    * \param quark_propagator   quark propagator ( Read )
    * \param seq_quark_prop     sequential quark propagator ( Read )
    * \param GammaInsertion     extra gamma matrix insertion ( Read )
    * \param max_power          max value of L ( Read )
    * \param j_decay            direction of decay ( Read )
    * \param t0                 cartesian coordinates of the source ( Read )
+   * \param xml                xml file object ( Write )
+   * \param xml_group          string used for writing xml data ( Read )
    */
 
-  void multipole(Multipole_t& pole,
-		 const LatticePropagator& quark_propagator,
+  void multipole(const LatticePropagator& quark_propagator,
 		 const LatticePropagator& seq_quark_prop, 
 		 int   GammaInsertion,
 		 int   max_power,
 		 int   j_decay,
-		 int   t0);
+		 int   t0,
+		 XMLWriter& xml,
+		 const string& xml_group);
 
 }  // end namespace Chroma
 
