@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: wallformfac_rhopi.pl,v 1.6 2004-06-24 07:50:58 edwards Exp $
+# $Id: wallformfac_rhopi.pl,v 1.7 2004-06-24 08:00:19 edwards Exp $
 #
 # Usage
 #   wallformfac_rhopi.pl
@@ -145,23 +145,14 @@ foreach $x (-$mommax_int .. $mommax_int)
 
 #------------------------------------------------------------------------------
 #
-# Normalizations
+# Extract the energy of each mom. state. Use a crude exp eff. mass
+#
 print "Rho Electric form-factor";
-
-# Assume zero momenta pion exist
-if (-f pion.$ssext) {exit(1);}
-if (-f pion.$swext) {exit(1);}
-
-&ensbc("pion_norm=extract($pion_sw{$p_f[0],$p_f[1],$p_f[2]}, $t_snk - $t_src)");
-&ensbc("rho_norm=extract($rho_sw{$p_f[0],$p_f[1],$p_f[2]}, $t_snk - $t_src)");
 
 # Use this as the insertion point - it is midway
 $t_ins = int(($t_snk - $t_src) / 2);
 print "t_ins = $t_ins";
 
-#
-# Extract the energy of each mom. state. Use a crude exp eff. mass
-#
 foreach $qx ( -$mommax_int .. $mommax_int ) {
   next if ($avg_equiv_mom && ($qx < 0)) ;
   foreach $qy ( -$mommax_int .. $mommax_int ) {
@@ -227,6 +218,12 @@ foreach $qx ( -$mommax_int .. $mommax_int ) {
   }
 }
 
+#
+# Normalizations
+#
+&ensbc("pion_norm=extract($pion_sw{$p_f[0],$p_f[1],$p_f[2]}, $t_snk - $t_src)");
+&ensbc("rho_norm=extract($rho_sw{$p_f[0],$p_f[1],$p_f[2]}, $t_snk - $t_src)");
+
 
 # Terms needed for electric form factors
 #
@@ -283,12 +280,12 @@ foreach $h ('RHO_PI')
 
 		@cp_i = &canonical_momenta(*p_i);
 
-                printf "\nTEST: s=$s j=$j k=$k l=$l, proj=$proj g=$g, q=[$qx,$qy,$qz] qsq_int=$qsq_int\n";
+                printf "\nTEST: s=$s j=$j k=$k l=$l, g=$g, q=[$qx,$qy,$qz] qsq_int=$qsq_int\n";
 
 
                 if ($p_i[$l] == 0) {next;}
 
-                printf "\nNEW: s=$s j=$j k=$k l=$l, proj=$proj g=$g\n";
+                printf "\nNEW: s=$s j=$j k=$k l=$l, g=$g\n";
 
                 print "q=[$q[0],$q[1],$q[2]], qsq = $qsq,  p_i=[$p_i[0],$p_i[1],$p_i[2]], p_i_sq = $p_i_sq, p_f=[$p_f[0],$p_f[1],$p_f[2]]";
 
@@ -361,7 +358,7 @@ foreach $h (keys %rhopi_cnt)
     {
       foreach $qsq_int (keys %{$rhopi_cnt{$h}{$k}{$j}})
       {
-	printf "norm(h=%s,proj=%s,j=%s,qsq=%s)=%s\n",$h,$k,$j,$qsq_int,$rhopi_cnt{$h}{$k}{$j}{$qsq_int};
+	printf "norm(h=%s,k=%s,j=%s,qsq=%s)=%s\n",$h,$k,$j,$qsq_int,$rhopi_cnt{$h}{$k}{$j}{$qsq_int};
 	if ($rhopi_cnt{$h}{$k}{$j}{$qsq_int} > 0)
 	{
 	  # Correct for double counting by multiplying by 2
