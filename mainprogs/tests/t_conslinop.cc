@@ -1,4 +1,4 @@
-// $Id: t_conslinop.cc,v 1.11 2003-09-11 00:46:04 edwards Exp $
+// $Id: t_conslinop.cc,v 1.12 2003-10-09 20:36:49 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
   /*! NOTE: the STL is *not* used to hold gauge fields */
   multi1d<LatticeColorMatrix> u(Nd);
 
-  cerr << "Start gaussian\n";
+  QDPIO::cout << "Start gaussian\n";
   for(int m=0; m < u.size(); ++m)
     gaussian(u[m]);
 
@@ -45,16 +45,16 @@ int main(int argc, char *argv[])
 
   LatticeFermion psi, chi;
   gaussian(psi);
-  cerr << "before dslash call" << endl;
+  QDPIO::cout << "before dslash call" << endl;
   chi[rb[0]] = D.apply(psi, PLUS, 0); 
   chi[rb[1]] = D.apply(psi, PLUS, 0); 
-  cerr << "after dslash call" << endl;
+  QDPIO::cout << "after dslash call" << endl;
 
-  cerr << "before wilson construct" << endl;
+  QDPIO::cout << "before wilson construct" << endl;
   UnprecWilsonLinOp M(u,Kappa);
-  cerr << "after wilson construct" << endl;
+  QDPIO::cout << "after wilson construct" << endl;
   chi = M(psi, PLUS); 
-  cerr << "after wilson call" << endl;
+  QDPIO::cout << "after wilson call" << endl;
   
   UnprecWilsonFermAct S(Kappa);
   const LinearOperator* A = S.linOp(u);

@@ -1,4 +1,4 @@
-// $Id: t_lwldslash_sse.cc,v 1.14 2003-09-23 19:10:20 edwards Exp $
+// $Id: t_lwldslash_sse.cc,v 1.15 2003-10-09 20:36:49 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -39,16 +39,12 @@ int main(int argc, char **argv)
   chi = zero;
 
   //! Create a linear operator
-  if( Layout::primaryNode() ) { 
-    cout << "Constructing naive QDPWilsonDslash" << endl;
-  }
+  QDPIO::cout << "Constructing naive QDPWilsonDslash" << endl;
 
   // Naive Dslash
   QDPWilsonDslash D(u);
 
-  if( Layout::primaryNode() ) { 
-    cout << "Done" << endl;
-  }
+  QDPIO::cout << "Done" << endl;
 
   int isign, cb, loop;
   bool first = true;
@@ -64,9 +60,7 @@ int main(int argc, char **argv)
       {
 	for(iter=1; ; iter <<= 1)
 	{
-	  if( Layout::primaryNode() ) { 
-	    cout << "Applying D " << iter << " times" << endl;
-	  }
+	  QDPIO::cout << "Applying D " << iter << " times" << endl;
 
 	  myt1=clock();
 	  for(int i=iter; i-- > 0; ) {
@@ -82,9 +76,7 @@ int main(int argc, char **argv)
 	}
       }
 	
-      if( Layout::primaryNode() ) { 
-	cout << "Applying D for timings" << endl;
-      }
+      QDPIO::cout << "Applying D for timings" << endl;
       
       myt1=clock();
       for(int i=iter; i-- > 0; ) {
@@ -95,26 +87,18 @@ int main(int argc, char **argv)
       mydt=double(myt2-myt1)/double(CLOCKS_PER_SEC);
       mydt=1.0e6*mydt/double(iter*(Layout::sitesOnNode()/2));
       
-      if( Layout::primaryNode() ) { 
-	cout << "cb = " << cb << " isign = " << isign << endl;
-	cout << "The time per lattice point is "<< mydt 
-	     << " micro sec (" <<  double(1320.0f/mydt) << ") Mflops " << endl;
-	
-	
-      }
+      QDPIO::cout << "cb = " << cb << " isign = " << isign << endl;
+      QDPIO::cout << "The time per lattice point is "<< mydt 
+		  << " micro sec (" <<  double(1320.0f/mydt) << ") Mflops " << endl;
     }
   }
   
   //! Create a linear operator
-  if( Layout::primaryNode() ) { 
-    cout << "Constructing (possibly optimized) WilsonDslash" << endl;
-  }
+  QDPIO::cout << "Constructing (possibly optimized) WilsonDslash" << endl;
 
   WilsonDslash D_opt(u);
 
-  if( Layout::primaryNode() ) { 
-    cout << "Done" << endl;
-  }
+  QDPIO::cout << "Done" << endl;
 
   first = true;
   for(isign = 1; isign >= -1; isign -= 2) {
@@ -129,9 +113,7 @@ int main(int argc, char **argv)
       {
 	for(iter=1; ; iter <<= 1)
 	{
-	  if( Layout::primaryNode() ) { 
-	    cout << "Applying D " << iter << " times" << endl;
-	  }
+	  QDPIO::cout << "Applying D " << iter << " times" << endl;
 
 	  myt1=clock();
 	  for(int i=iter; i-- > 0; ) {
@@ -147,9 +129,7 @@ int main(int argc, char **argv)
 	}
       }
 
-      if( Layout::primaryNode() ) { 
-	cout << "Applying D for timings" << endl;
-      }
+      QDPIO::cout << "Applying D for timings" << endl;
       
       myt1=clock();
       for(int i=iter; i-- > 0; ) {
@@ -160,13 +140,9 @@ int main(int argc, char **argv)
       mydt=double(myt2-myt1)/double(CLOCKS_PER_SEC);
       mydt=1.0e6*mydt/double(iter*(Layout::sitesOnNode()/2));
       
-      if( Layout::primaryNode() ) { 
-	cout << "cb = " << cb << " isign = " << isign << endl;
-	cout << "The time per lattice point is "<< mydt 
-	     << " micro sec (" <<  double(1320.0f/mydt) << ") Mflops " << endl;
-	
-	
-      }
+      QDPIO::cout << "cb = " << cb << " isign = " << isign << endl;
+      QDPIO::cout << "The time per lattice point is "<< mydt 
+		  << " micro sec (" <<  double(1320.0f/mydt) << ") Mflops " << endl;
     }
   }
 
@@ -186,13 +162,11 @@ int main(int argc, char **argv)
       
       n2 = norm2( chi2 - chi );
 
-      if( Layout::primaryNode() ) { 
-	cout << "Paranoia test: || D(psi, "
-	     << (isign > 0 ? "+, " : "-, ") <<  cb 
-	     << ") - D(psi, " 
-	     << (isign > 0 ? "+, " : "-, ") <<  cb << " ) ||  = " << n2 
-	     << endl;
-      }
+      QDPIO::cout << "Paranoia test: || D(psi, "
+		  << (isign > 0 ? "+, " : "-, ") <<  cb 
+		  << ") - D(psi, " 
+		  << (isign > 0 ? "+, " : "-, ") <<  cb << " ) ||  = " << n2 
+		  << endl;
     }
   }
 
@@ -208,13 +182,11 @@ int main(int argc, char **argv)
       
       n2 = norm2( chi2 - chi );
 
-      if( Layout::primaryNode() ) { 
-	cout << "OPT test: || D(psi, "
-	     << (isign > 0 ? "+, " : "-, ") <<  cb 
-	     << ") - D_opt(psi, " 
-	     << (isign > 0 ? "+, " : "-, ") <<  cb << " ) ||  = " << n2 
-	     << endl;
-      }
+      QDPIO::cout << "OPT test: || D(psi, "
+		  << (isign > 0 ? "+, " : "-, ") <<  cb 
+		  << ") - D_opt(psi, " 
+		  << (isign > 0 ? "+, " : "-, ") <<  cb << " ) ||  = " << n2 
+		  << endl;
     }
   }
 	  

@@ -1,4 +1,4 @@
-// $Id: t_follana_io_s.cc,v 1.5 2003-09-11 16:57:17 bjoo Exp $
+// $Id: t_follana_io_s.cc,v 1.6 2003-10-09 20:36:49 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -54,12 +54,10 @@ int main(int argc, char *argv[])
   Layout::setLattSize(nrow);
   Layout::create();
 
-  if ( Layout::primaryNode() ) { 
-    cout << "Lattice: Lx = " << nrow[0] << " Ly = " << nrow[1] << " Lz = " << nrow[2]
-	 << " Lt =" << nrow[3] << endl;
+  QDPIO::cout << "Lattice: Lx = " << nrow[0] << " Ly = " << nrow[1] << " Lz = " << nrow[2]
+	      << " Lt =" << nrow[3] << endl;
 
-    cout << "Reading Propagator from file " << filename << endl;
-  }
+  QDPIO::cout << "Reading Propagator from file " << filename << endl;
 
   // Try and read the propagator;
 

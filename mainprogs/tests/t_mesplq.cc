@@ -1,4 +1,4 @@
-// $Id: t_mesplq.cc,v 1.9 2003-10-08 18:54:00 edwards Exp $
+// $Id: t_mesplq.cc,v 1.10 2003-10-09 20:36:49 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
   multi1d<LatticeColorMatrix> u(Nd);
   Double w_plaq, s_plaq, t_plaq, link;
 
-  cerr << "Start gaussian\n";
+  QDPIO::cout << "Start gaussian\n";
   for(int m=0; m < u.size(); ++m)
     gaussian(u[m]);
 
@@ -43,8 +43,8 @@ int main(int argc, char *argv[])
 
   // Try out the plaquette routine
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-  cout << "w_plaq = " << w_plaq << endl;
-  cout << "link = " << link << endl;
+  QDPIO::cout << "w_plaq = " << w_plaq << endl;
+  QDPIO::cout << "link = " << link << endl;
 
   // Test polyakov routine
   multi1d<DComplex> pollp(Nd);
@@ -66,8 +66,8 @@ int main(int argc, char *argv[])
   for(int mu = 0; mu < Nd; ++mu)
     polylp(u, pollp[mu], mu);
 
-  cout << "w_plaq = " << w_plaq << endl;
-  cout << "link = " << link << endl;
+  QDPIO::cout << "w_plaq = " << w_plaq << endl;
+  QDPIO::cout << "link = " << link << endl;
 
   push(xml,"Observables_after_gt");
   Write(xml,w_plaq);

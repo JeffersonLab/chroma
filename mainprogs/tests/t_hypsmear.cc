@@ -1,4 +1,4 @@
-// $Id: t_hypsmear.cc,v 1.3 2003-09-11 00:46:04 edwards Exp $
+// $Id: t_hypsmear.cc,v 1.4 2003-10-09 20:36:49 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -32,10 +32,10 @@ int main(int argc, char *argv[])
   multi1d<LatticeColorMatrix> u(Nd);
   Double w_plaq, s_plaq, t_plaq, link;
 
-//  cerr << "Reading test_purgaug.cfg1\n";
+//  QDPIO::cout << "Reading test_purgaug.cfg1\n";
 //  Seed seed_old;
 //  readSzin(u, 0, "../test_purgaug.cfg1", seed_old);
-  cerr << "Start gaussian\n";
+  QDPIO::cout << "Start gaussian\n";
   for(int m=0; m < u.size(); ++m)
     gaussian(u[m]);
 
@@ -45,8 +45,8 @@ int main(int argc, char *argv[])
 
   // Try out the plaquette routine
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-  cerr << "w_plaq = " << w_plaq << endl;
-  cerr << "link = " << link << endl;
+  QDPIO::cout << "w_plaq = " << w_plaq << endl;
+  QDPIO::cout << "link = " << link << endl;
 
   // Write out the results
   push(nml,"observables");
@@ -65,8 +65,8 @@ int main(int argc, char *argv[])
 
   // Measure again
   MesPlq(u_hyp, w_plaq, s_plaq, t_plaq, link);
-  cerr << "w_plaq = " << w_plaq << endl;
-  cerr << "link = " << link << endl;
+  QDPIO::cout << "w_plaq = " << w_plaq << endl;
+  QDPIO::cout << "link = " << link << endl;
 
   // Write out the results
   push(nml,"HYP_observables");

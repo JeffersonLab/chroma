@@ -1,10 +1,14 @@
-// $Id: t_formfac.cc,v 1.5 2003-09-11 00:46:04 edwards Exp $
+// $Id: t_formfac.cc,v 1.6 2003-10-09 20:36:49 edwards Exp $
 //
 //! \file
 //  \brief Test the form-factor routine
 //
 // $Log: t_formfac.cc,v $
-// Revision 1.5  2003-09-11 00:46:04  edwards
+// Revision 1.6  2003-10-09 20:36:49  edwards
+// Changed all cout/cerr to QDPIO::cout/cerr. Changed QDP_info calls
+// to QDPIO::cout.
+//
+// Revision 1.5  2003/09/11 00:46:04  edwards
 // Changed all programs to exit(0) instead of return 0
 //
 // Revision 1.4  2003/08/27 22:08:41  edwards
@@ -17,7 +21,11 @@
 //
 // Revision 1.2  2003/03/06 00:27:29  flemingg
 // Added $Log: t_formfac.cc,v $
-// Added Revision 1.5  2003-09-11 00:46:04  edwards
+// Added Revision 1.6  2003-10-09 20:36:49  edwards
+// Added Changed all cout/cerr to QDPIO::cout/cerr. Changed QDP_info calls
+// Added to QDPIO::cout.
+// Added
+// Added Revision 1.5  2003/09/11 00:46:04  edwards
 // Added Changed all programs to exit(0) instead of return 0
 // Added
 // Added Revision 1.4  2003/08/27 22:08:41  edwards
@@ -92,7 +100,7 @@ int main(int argc, char *argv[])
 
   clock_t end_clock = clock() ;
 
-  cerr << "Test took " << end_clock - start_clock << " clocks.\n" ;
+  QDPIO::cout << "Test took " << end_clock - start_clock << " clocks.\n" ;
 
   // Time to bolt
   QDP_finalize();

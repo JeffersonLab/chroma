@@ -1,4 +1,4 @@
-// $Id: t_overbu.cc,v 1.4 2003-09-11 00:46:04 edwards Exp $
+// $Id: t_overbu.cc,v 1.5 2003-10-09 20:36:49 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -60,7 +60,7 @@ int main(int argc, char **argv)
   // Check solution
   Double solnorm = sqrt(norm2(over(psi,PLUS)-chi));
   Double ratio = solnorm / sqrt(norm2(chi));
-  cout << "|solution| / |source| = " << ratio << endl;
+  QDPIO::cout << "|solution| / |source| = " << ratio << endl;
 
   // Time to bolt
   QDP_finalize();

@@ -1,10 +1,14 @@
-// $Id: t_mesons_w.cc,v 1.4 2003-09-11 00:46:04 edwards Exp $
+// $Id: t_mesons_w.cc,v 1.5 2003-10-09 20:36:49 edwards Exp $
 //
 //! \file
 //  \brief Test the Wilson mesons() routine
 //
 // $Log: t_mesons_w.cc,v $
-// Revision 1.4  2003-09-11 00:46:04  edwards
+// Revision 1.5  2003-10-09 20:36:49  edwards
+// Changed all cout/cerr to QDPIO::cout/cerr. Changed QDP_info calls
+// to QDPIO::cout.
+//
+// Revision 1.4  2003/09/11 00:46:04  edwards
 // Changed all programs to exit(0) instead of return 0
 //
 // Revision 1.3  2003/06/24 03:24:44  edwards
@@ -65,7 +69,7 @@ int main(int argc, char *argv[])
 
   clock_t end_clock = clock() ;
 
-  cerr << "Test took " << end_clock - start_clock << " clocks.\n" ;
+  QDPIO::cout << "Test took " << end_clock - start_clock << " clocks.\n" ;
 
   pop(xml);
 

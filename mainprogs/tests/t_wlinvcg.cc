@@ -1,4 +1,4 @@
-// $Id: t_wlinvcg.cc,v 1.2 2003-09-11 00:46:04 edwards Exp $
+// $Id: t_wlinvcg.cc,v 1.3 2003-10-09 20:36:49 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -99,8 +99,7 @@ void WlInvCG2(const LinearOperator& M,
   //  Cp = |r[0]|^2
   Double cp = norm2(r, s);   	       	   /* 2 Nc Ns  flops */
 
-  if (Layout::primaryNode())
-    cout << "WlInvCG: k = 0  cp = " << cp << "  rsd_sq = " << rsd_sq << endl;
+  QDPIO::cout << "WlInvCG: k = 0  cp = " << cp << "  rsd_sq = " << rsd_sq << endl;
 
   //  IF |r[0]| <= RsdCG |Chi| THEN RETURN;
   if ( toBool(cp  <=  rsd_sq) )
@@ -141,8 +140,7 @@ void WlInvCG2(const LinearOperator& M,
     //  cp  =  | r[k] |**2
     cp = norm2(r, s);	                /* 2 Nc Ns  flops */
 
-    if (Layout::primaryNode())
-      cout << "WlInvCG: k = " << k << "  cp = " << cp << endl;
+    QDPIO::cout << "WlInvCG: k = " << k << "  cp = " << cp << endl;
 
     if ( toBool(cp  <=  rsd_sq) )
     {

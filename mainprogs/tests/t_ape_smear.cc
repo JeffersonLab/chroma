@@ -1,4 +1,4 @@
-// $Id: t_ape_smear.cc,v 1.1 2003-10-08 01:59:00 edwards Exp $
+// $Id: t_ape_smear.cc,v 1.2 2003-10-09 20:36:49 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
   multi1d<LatticeColorMatrix> u(Nd);
   Double w_plaq, s_plaq, t_plaq, link;
 
-  cerr << "Start gaussian\n";
+  QDPIO::cerr << "Start gaussian\n";
   for(int m=0; m < u.size(); ++m)
     gaussian(u[m]);
 
@@ -43,8 +43,8 @@ int main(int argc, char *argv[])
 
   // Try out the plaquette routine
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-  cout << "w_plaq = " << w_plaq << endl;
-  cout << "link = " << link << endl;
+  QDPIO::cout << "w_plaq = " << w_plaq << endl;
+  QDPIO::cout << "link = " << link << endl;
 
   // Write out the results
   push(xml,"observables");
@@ -79,8 +79,8 @@ int main(int argc, char *argv[])
 
   // Compute plaquette on smeared links
   MesPlq(u_smr, w_plaq, s_plaq, t_plaq, link);
-  cout << "w_plaq = " << w_plaq << endl;
-  cout << "link = " << link << endl;
+  QDPIO::cout << "w_plaq = " << w_plaq << endl;
+  QDPIO::cout << "link = " << link << endl;
 
   // Write out the results
   push(xml,"Smeared_observables");

@@ -1,4 +1,4 @@
-// $Id: t_io.cc,v 1.6 2003-09-11 00:46:04 edwards Exp $
+// $Id: t_io.cc,v 1.7 2003-10-09 20:36:49 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -34,12 +34,12 @@ int main(int argc, char **argv)
   tobinary.close();
 
   float x;
-  cerr << "Read some data from file input\n";
+  QDPIO::cout << "Read some data from file input\n";
   TextReader from("input");
   from >> x;
   from.close();
 
-  cerr << "you entered :" << x << ":\n";
+  QDPIO::cout << "you entered :" << x << ":\n";
   
   // Time to bolt
   QDP_finalize();
