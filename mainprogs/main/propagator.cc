@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.72 2004-09-30 18:14:31 bjoo Exp $
+// $Id: propagator.cc,v 1.73 2004-10-18 18:51:40 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -162,7 +162,7 @@ int main(int argc, char **argv)
     readQprop(source_file_xml, 
 	      source_record_xml, quark_prop_source,
 	      input.prop.source_file, QDPIO_SERIAL);
-    QDPIO::cout << "Forward propagator successfully read" << endl;
+    QDPIO::cout << "Source successfully read" << endl;
 
     // Try to invert this record XML into a source struct
     try
