@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_fermact_array_w.cc,v 1.9 2004-09-18 17:14:45 edwards Exp $
+// $Id: unprec_dwf_fermact_array_w.cc,v 1.10 2004-09-19 02:39:45 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion action
  */
@@ -9,6 +9,8 @@
 #include "actions/ferm/linop/lmdagm.h"
 
 #include "actions/ferm/fermacts/fermfactory_w.h"
+
+using namespace Chroma;
 
 namespace Chroma
 {
@@ -77,7 +79,7 @@ namespace Chroma
    *
    * \param state	    gauge field     	       (Read)
    */
-  const LinearOperator<multi1d<LatticeFermion> >* 
+  const UnprecDWLinOpBaseArray<LatticeFermion>* 
   UnprecDWFermActArray::linOp(Handle<const ConnectState> state) const
   {
     return new UnprecDWLinOpArray(state->getLinks(),OverMass,Mass,N5);
@@ -105,7 +107,7 @@ namespace Chroma
    *
    * \param state	    gauge field     	       (Read)
    */
-  const LinearOperator<multi1d<LatticeFermion> >* 
+  const UnprecDWLinOpBaseArray<LatticeFermion>* 
   UnprecDWFermActArray::linOpPV(Handle<const ConnectState> state) const
   {
     return new UnprecDWLinOpArray(state->getLinks(),OverMass,1.0,N5);  // fixed to quark mass 1

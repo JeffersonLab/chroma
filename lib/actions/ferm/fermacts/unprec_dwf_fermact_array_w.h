@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_fermact_array_w.h,v 1.11 2004-09-09 15:51:31 edwards Exp $
+// $Id: unprec_dwf_fermact_array_w.h,v 1.12 2004-09-19 02:39:45 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion action
  */
@@ -78,7 +78,7 @@ namespace Chroma
     Real quark_mass() const {return Mass;}
 
     //! Produce a linear operator for this action
-    const LinearOperator< multi1d<LatticeFermion> >* linOp(Handle<const ConnectState> state) const;
+    const UnprecDWLinOpBaseArray<LatticeFermion>* linOp(Handle<const ConnectState> state) const;
 
     //! Produce a linear operator M^dag.M for this action
     const LinearOperator< multi1d<LatticeFermion> >* lMdagM(Handle<const ConnectState> state) const;
@@ -94,7 +94,7 @@ namespace Chroma
       }
 
     //! Produce a linear operator for this action but with quark mass 1
-    const LinearOperator< multi1d<LatticeFermion> >* linOpPV(Handle<const ConnectState> state) const;
+    const UnprecDWLinOpBaseArray<LatticeFermion>* linOpPV(Handle<const ConnectState> state) const;
 
     //! Destructor is automatic
     ~UnprecDWFermActArray() {}

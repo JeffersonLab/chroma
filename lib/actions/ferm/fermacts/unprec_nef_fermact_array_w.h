@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_nef_fermact_array_w.h,v 1.5 2004-09-16 16:40:53 kostas Exp $
+// $Id: unprec_nef_fermact_array_w.h,v 1.6 2004-09-19 02:39:45 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF domain-wall fermion action
  */
@@ -90,7 +90,7 @@ namespace Chroma
     Real quark_mass() const {return Mass;}
 
     //! Produce a linear operator for this action
-    const LinearOperator< multi1d<LatticeFermion> >* linOp(Handle<const ConnectState> state) const;
+    const UnprecDWLinOpBaseArray<LatticeFermion>* linOp(Handle<const ConnectState> state) const;
 
     //! Produce a linear operator M^dag.M for this action
     const LinearOperator< multi1d<LatticeFermion> >* lMdagM(Handle<const ConnectState> state) const;
@@ -106,7 +106,7 @@ namespace Chroma
       }
 
     //! Produce a linear operator for this action but with quark mass 1
-    const LinearOperator< multi1d<LatticeFermion> >* linOpPV(Handle<const ConnectState> state) const;
+    const UnprecDWLinOpBaseArray<LatticeFermion>* linOpPV(Handle<const ConnectState> state) const;
 
     //! Destructor is automatic
     ~UnprecNEFFermActArray() {}
@@ -132,17 +132,6 @@ namespace Chroma
 			Handle<const ConnectState> state,
 			const InvertParam_t& invParam,
 			int& ncg_had);
-
-//! Apply the Dminus operator on a vector in Ls. See my notes ;-)
-    void Dminus(multi1d<LatticeFermion>& chi,
-		const multi1d<LatticeFermion>& psi,
-		Handle<const ConnectState> state,
-		enum PlusMinus isign) const ;
-    
-    void  Dminus(LatticeFermion& chi,
-		 const LatticeFermion& psi,
-		 Handle<const ConnectState> state,
-		 enum PlusMinus isign) const ;
       
   private:
     Handle< FermBC< multi1d<LatticeFermion> > >  fbc;

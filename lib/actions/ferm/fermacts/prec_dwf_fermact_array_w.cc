@@ -1,4 +1,4 @@
-// $Id: prec_dwf_fermact_array_w.cc,v 1.8 2004-09-18 17:14:45 edwards Exp $
+// $Id: prec_dwf_fermact_array_w.cc,v 1.9 2004-09-19 02:39:45 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -78,7 +78,7 @@ namespace Chroma
    *
    * \param state 	    gauge field     	       (Read)
    */
-  const EvenOddPrecLinearOperator<multi1d<LatticeFermion> >*
+  const EvenOddPrecDWLinOpBaseArray<LatticeFermion>*
   EvenOddPrecDWFermActArray::linOp(Handle<const ConnectState> state) const
   {
     return new EvenOddPrecDWLinOpArray(state->getLinks(),OverMass,Mass,N5);
@@ -102,7 +102,7 @@ namespace Chroma
    *
    * \param state	    gauge field     	       (Read)
    */
-  const LinearOperator<multi1d<LatticeFermion> >*
+  const UnprecDWLinOpBaseArray<LatticeFermion>*
   EvenOddPrecDWFermActArray::linOpPV(Handle<const ConnectState> state) const
   {
     // For the PV operator, use the **unpreconditioned** one

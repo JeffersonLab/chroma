@@ -1,4 +1,4 @@
-// $Id: prec_ovdwf_fermact_array_w.cc,v 1.6 2004-09-18 17:14:45 edwards Exp $
+// $Id: prec_ovdwf_fermact_array_w.cc,v 1.7 2004-09-19 02:39:45 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned Overlap-DWF (Borici) action
  */
@@ -77,7 +77,7 @@ namespace Chroma
    *
    * \param state 	    gauge field     	       (Read)
    */
-  const EvenOddPrecLinearOperator<multi1d<LatticeFermion> >*
+  const EvenOddPrecDWLinOpBaseArray<LatticeFermion>*
   EvenOddPrecOvDWFermActArray::linOp(Handle<const ConnectState> state) const
   {
     return new EvenOddPrecOvDWLinOpArray(state->getLinks(),OverMass,Mass,N5);
@@ -101,12 +101,12 @@ namespace Chroma
    *
    * \param state	    gauge field     	       (Read)
    */
-  const LinearOperator<multi1d<LatticeFermion> >*
+  const UnprecDWLinOpBaseArray<LatticeFermion>*
   EvenOddPrecOvDWFermActArray::linOpPV(Handle<const ConnectState> state) const
   {
     // For the PV operator, use the **unpreconditioned** one
     // fixed to quark mass 1
-    return new EvenOddPrecOvDWLinOpArray(state->getLinks(),OverMass,1.0,N5);
+    return new UnprecOvDWLinOpArray(state->getLinks(),OverMass,1.0,N5);
   }
 
 }

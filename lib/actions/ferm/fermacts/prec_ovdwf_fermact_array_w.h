@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovdwf_fermact_array_w.h,v 1.3 2004-09-09 15:51:31 edwards Exp $
+// $Id: prec_ovdwf_fermact_array_w.h,v 1.4 2004-09-19 02:39:45 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned Overlap-DWF (Borici) action
  */
@@ -87,13 +87,13 @@ namespace Chroma
     Real quark_mass() const {return Mass;}
 
     //! Produce a linear operator for this action
-    const EvenOddPrecLinearOperator< multi1d<LatticeFermion> >* linOp(Handle<const ConnectState> state) const;
+    const EvenOddPrecDWLinOpBaseArray<LatticeFermion>* linOp(Handle<const ConnectState> state) const;
 
     //! Produce a linear operator M^dag.M for this action
     const LinearOperator< multi1d<LatticeFermion> >* lMdagM(Handle<const ConnectState> state) const;
 
     //! Produce a linear operator for this action but with quark mass 1
-    const LinearOperator< multi1d<LatticeFermion> >* linOpPV(Handle<const ConnectState> state) const;
+    const UnprecDWLinOpBaseArray<LatticeFermion>* linOpPV(Handle<const ConnectState> state) const;
 
     //! Destructor is automatic
     ~EvenOddPrecOvDWFermActArray() {}

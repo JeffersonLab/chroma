@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_nef_fermact_array_w.h,v 1.5 2004-09-16 16:40:53 kostas Exp $
+// $Id: prec_nef_fermact_array_w.h,v 1.6 2004-09-19 02:39:45 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned NEF fermion action
  */
@@ -101,18 +101,18 @@ namespace Chroma
     Real quark_mass() const {return Mass;}
 
     //! Produce a linear operator for this action
-    const EvenOddPrecLinearOperator< multi1d<LatticeFermion> >* linOp(Handle<const ConnectState> state) const;
+    const EvenOddPrecDWLinOpBaseArray<LatticeFermion>* linOp(Handle<const ConnectState> state) const;
 
     //! Produce a linear operator M^dag.M for this action
     const LinearOperator< multi1d<LatticeFermion> >* lMdagM(Handle<const ConnectState> state) const;
 
     //! Produce a linear operator for this action but with quark mass 1
-    const LinearOperator< multi1d<LatticeFermion> >* linOpPV(Handle<const ConnectState> state) const;
+    const UnprecDWLinOpBaseArray<LatticeFermion>* linOpPV(Handle<const ConnectState> state) const;
 
     //! Destructor is automatic
     ~EvenOddPrecNEFFermActArray() {}
 
- //! Given a complete propagator as a source, this does all the inversions needed
+    //! Given a complete propagator as a source, this does all the inversions needed
     /*! \ingroup qprop
      *
      * This routine is actually generic to Domain Wall fermions (Array) fermions
@@ -134,17 +134,6 @@ namespace Chroma
 			const InvertParam_t& invParam,
 			int& ncg_had);
 
-    //! Apply the Dminus operator on a vector in Ls. See my notes ;-)
-    void Dminus(multi1d<LatticeFermion>& chi,
-		const multi1d<LatticeFermion>& psi,
-		Handle<const ConnectState> state,
-		enum PlusMinus isign) const ;
-
-    //! Apply the Dminus operator on a lattice fermion. See my notes ;-)
-    void Dminus(LatticeFermion& chi,
-		const LatticeFermion& psi,
-		Handle<const ConnectState> state,
-		enum PlusMinus isign) const ;
   private:
     Handle< FermBC< multi1d<LatticeFermion> > >  fbc;
     Real OverMass;

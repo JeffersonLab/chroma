@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_fermact_base_array_w.h,v 1.10 2004-09-18 20:15:54 edwards Exp $
+// $Id: prec_dwf_fermact_base_array_w.h,v 1.11 2004-09-19 02:39:45 edwards Exp $
 /*! \file
  *  \brief Base class for even-odd preconditioned domain-wall-like fermion actions
  */
@@ -8,6 +8,8 @@
 #define __prec_dwf_fermact_base_array_w_h__
 
 #include "fermact.h"
+#include "actions/ferm/linop/prec_dwf_linop_base_array_w.h"
+#include "actions/ferm/linop/unprec_dwf_linop_base_array_w.h"
 
 using namespace QDP;
 
@@ -26,6 +28,10 @@ namespace Chroma
     //! Return the quark mass
     virtual Real quark_mass() const = 0;
 
+    //! Override to produce a DWF-link even-odd prec. linear operator for this action
+    /*! Covariant return rule - override base class function */
+    virtual const EvenOddPrecDWLinOpBaseArray<T>* linOp(Handle<const ConnectState> state) const = 0;
+
     //! Produce a hermitian version of the linear operator
     /*! This code is generic */
     virtual const LinearOperator< multi1d<T> >* gamma5HermLinOp(Handle<const ConnectState> state) const
@@ -37,7 +43,7 @@ namespace Chroma
       }
 
     //! Produce a linear operator for this action but with quark mass 1
-    virtual const LinearOperator< multi1d<T> >* linOpPV(Handle<const ConnectState> state) const = 0;
+    virtual const UnprecDWLinOpBaseArray<T>* linOpPV(Handle<const ConnectState> state) const = 0;
 
     //! Define quark propagator routine for 4D fermions
     void qprop(T& psi, 
@@ -74,6 +80,36 @@ namespace Chroma
 	quarkProp4(q_sol, xml_out, q_src, state, invParam, false, ncg_had);
       }
     
+    //! Apply the Dminus operator on a vector in Ls.
+    /*! 
+     * Slightly more than a convenience function, 
+     * it avoids specifying the type of the linOp. 
+     * Used in the dwf_quarkProp4 routine.
+     */
+    void Dminus(multi1d<T>& chi,
+		const multi1d<T>& psi,
+		Handle<const ConnectState> state,
+		enum PlusMinus isign) const
+      {
+	Handle< const EvenOddPrecDWLinOpBaseArray<T> > A(linOp(state));
+	A->Dminus(chi,psi,isign);
+      }
+
+    //! Apply the Dminus operator on a fermion.
+    /*! 
+     * Slightly more than a convenience function, 
+     * it avoids specifying the type of the linOp. 
+     * Used in the dwf_quarkProp4 routine.
+     */
+    void Dminus(T& chi,
+		const T& psi,
+		Handle<const ConnectState> state,
+		enum PlusMinus isign) const
+      {
+	Handle< const EvenOddPrecDWLinOpBaseArray<T> > A(linOp(state));
+	A->Dminus(chi,psi,isign);
+      }
+
   };
 
 }
