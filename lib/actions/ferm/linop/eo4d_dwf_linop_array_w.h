@@ -1,8 +1,11 @@
 // -*- C++ -*-
-// $Id: eo4d_dwf_linop_array_w.h,v 1.1 2003-11-22 19:37:23 kostas Exp $
+// $Id: eo4d_dwf_linop_array_w.h,v 1.2 2003-11-23 06:01:12 edwards Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned domain-wall fermion linear operator
  */
+
+#error "OBSOLETE: EO4D linop"
+
 
 #ifndef __eo4d_dwf_linop_array_w_h__
 #define __eo4d_dwf_linop_array_w_h__
