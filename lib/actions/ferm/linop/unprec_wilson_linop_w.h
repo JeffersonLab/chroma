@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_wilson_linop_w.h,v 1.6 2003-11-09 22:35:19 edwards Exp $
+// $Id: unprec_wilson_linop_w.h,v 1.7 2003-11-16 06:21:49 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -32,7 +32,7 @@ using namespace QDP;
 
  * The kernel for Wilson fermions is
 
- *      M  =  1 - k D'
+ *      M  =  (d+M) - (1/2) D'
  *
  */
 
@@ -43,8 +43,8 @@ public:
   UnprecWilsonLinOp() {}
 
   //! Full constructor
-  UnprecWilsonLinOp(const multi1d<LatticeColorMatrix>& _u, const Real& _Kappa)
-    {create(_u,_Kappa);}
+  UnprecWilsonLinOp(const multi1d<LatticeColorMatrix>& u_, const Real& Mass_)
+    {create(u_,Mass_);}
 
   //! Destructor is automatic
   ~UnprecWilsonLinOp() {}
@@ -53,13 +53,13 @@ public:
   const OrderedSubset& subset() const {return all;}
 
   //! Creation routine
-  void create(const multi1d<LatticeColorMatrix>& _u, const Real& _Kappa);
+  void create(const multi1d<LatticeColorMatrix>& u_, const Real& Mass_);
 
   //! Apply the operator onto a source vector
   LatticeFermion operator() (const LatticeFermion& psi, enum PlusMinus isign) const;
 
 private:
-  Real Kappa;
+  Real Mass;
   multi1d<LatticeColorMatrix> u;
   WilsonDslash D;
 };
