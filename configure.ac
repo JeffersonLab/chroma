@@ -1,11 +1,11 @@
-AC_INIT(chroma,0.1,edwards@jlab.org)
-AC_PREREQ([2.56])
+AC_INIT(chroma,0.2,edwards@jlab.org)
+AC_PREREQ([2.57])
 AC_CONFIG_AUX_DIR(./config)
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
 
 AM_INIT_AUTOMAKE
-AC_PROG_MAKE_SET
+# AC_PRO_MAKE_SET        # (RGE) Causes error: do not find in autoconf docs
 AC_PROG_RANLIB
 AC_PROG_CXX(g++ CC)
 
@@ -128,6 +128,24 @@ else
   AC_MSG_ERROR([Cannot compile/link a program with QDP++.
     Use --with-qdp++=<dir> to select a working version.])
 fi 
+
+##################################
+# Check for programs to build docs
+##################################
+AC_CHECK_PROG(LATEX, latex, latex, true)
+AC_CHECK_PROG(DVIPS, dvips, dvips, true)
+AC_CHECK_PROG(DVIPDF, dvipdf, dvipdf, true)
+AC_CHECK_PROG(DOXYGEN, doxygen, doxygen, true)
+
+#######################
+# Produce output
+#######################
+
+#
+# Set up the doxygen file
+# Substitute the right directories
+#
+AC_CONFIG_FILES(docs/chromadoc)
 
 dnl Make the Makefiles
 AC_CONFIG_FILES(Makefile)
