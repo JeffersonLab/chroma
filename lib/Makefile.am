@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.147 2004-06-04 04:04:51 edwards Exp $
+# $Id: Makefile.am,v 1.148 2004-06-04 21:14:10 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -292,10 +292,10 @@ libchroma_a_SOURCES += baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
 	      lovlap_double_pass_w.cc lovddag_double_pass_w.cc \
 	      lg5eps_w.cc lg5eps_double_pass_w.cc \
 	      zolotarev5d_fermact_array_w.cc zolotarev5d_linop_array_w.cc \
-	      zolotarev5d_nonhermop_array_w.cc wall_qprop_w.cc
-
-#              wallff_w.cc walldeltaff_w.cc walldeltapff_w.cc \
-#              wallpionff_w.cc wallrhoff_w.cc wallnuclff_w.cc 
+	      zolotarev5d_nonhermop_array_w.cc wall_qprop_w.cc \
+              wallff_w.cc wallrhoff_w.cc wallrhopiff_w.cc \
+              wallpionff_w.cc wallnuclff_w.cc \
+              walldeltaff_w.cc walldeltapff_w.cc 
 
 # zolotarev4d_linop_w.cc 
 
