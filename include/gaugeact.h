@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gaugeact.h,v 1.3 2004-01-02 03:07:06 edwards Exp $
+// $Id: gaugeact.h,v 1.4 2004-01-06 01:32:02 edwards Exp $
 
 /*! @file
  * @brief Class structure for gauge actions
@@ -55,7 +55,7 @@ public:
  * This class can be used as a trivial action, in cases where we do not know or
  * care what is the original gauge action.
  */
-class EmptyGaugeAct
+class EmptyGaugeAct : public GaugeAction
 {
 public:
   //! Produce a gauge boundary condition object
