@@ -1,159 +1,8 @@
-// $Id: spectrum_w.cc,v 1.45 2005-01-24 21:29:40 edwards Exp $
-//
-//! \file
-//  \brief Main code for propagator generation
-//
-//  $Log: spectrum_w.cc,v $
-//  Revision 1.45  2005-01-24 21:29:40  edwards
-//  Put chromainit back in.
-//
-//  Revision 1.43  2005/01/14 20:13:09  edwards
-//  Removed all using namespace QDP/Chroma from lib files. The library
-//  should now be 100% in the Chroma namespace. All mainprogs need a
-//  using namespace Chroma.
-//
-//  Revision 1.42  2005/01/12 15:23:26  bjoo
-//  Moved the mainprogs to use ChromaInitialize and ChromaFinalize. Howver this doesnt buy us much since the linkage hack cannot be properly hidden at the moment (causes segfaults in propagator) and I need closure about how to deal with default input streams. You do get a TheXMLOutputWriter tho
-//
-//  Revision 1.41  2004/12/24 04:19:23  edwards
-//  Removed explict FermBC args to FermAct factory functions.
-//
-//  Revision 1.40  2004/11/17 15:23:00  bjoo
-//  t_su3 removed from make check. Throws stringified
-//
-//  Revision 1.39  2004/09/09 04:01:44  edwards
-//  Changed old FermActHandle to now get mass via XML.
-//
-//  Revision 1.38  2004/07/28 03:08:05  edwards
-//  Added START/END_CODE to all routines. Changed some to not pass an
-//  argument.
-//
-//  Revision 1.37  2004/06/08 14:19:44  edwards
-//  Changed out_version to 11.
-//
-//  Revision 1.36  2004/04/29 00:55:06  edwards
-//  Split tests for source type into a switch statement - allows
-//  error detection.
-//
-//  Revision 1.35  2004/04/28 14:34:43  edwards
-//  Moved gauge initialization to calling gaugeStartup().
-//
-//  Revision 1.34  2004/04/16 19:27:39  bjoo
-//  Fixed spectrum_w and seqprop
-//
-//  Revision 1.33  2004/04/06 04:20:33  edwards
-//  Added SZINQIO support.
-//
-//  Revision 1.32  2004/04/05 16:26:27  edwards
-//  Moved init of sftmom down after prop is read. Eliminated read
-//  of j_decay from input.
-//
-//  Revision 1.31  2004/04/05 04:19:13  edwards
-//  Added initial support for Wall sources/sinks.
-//
-//  Revision 1.30  2004/02/26 16:38:22  edwards
-//  Added test/write-out of forward_prop  prop_corr.
-//
-//  Revision 1.29  2004/02/23 03:13:58  edwards
-//  Major overhaul of input/output model! Now using EXCLUSIVELY
-//  SciDAC propagator format for propagators. Now, Param part of input
-//  files directly matches source/sink/propagator/seqprop headers
-//  of propagators. All ``known'' input of a propagator is derived
-//  from its header(s) and used for subsequent calculations.
-//
-//  Revision 1.28  2004/02/13 15:27:14  sbasak
-//  The p-wave and d-wave part has been stripped off the qqq_w file.
-//
-//  Revision 1.27  2004/02/11 12:51:35  bjoo
-//  Stripped out Read() and Write()
-//
-//  Revision 1.26  2004/02/03 20:05:12  edwards
-//  Removed passing j_decay into curcor2
-//
-//  Revision 1.25  2004/01/31 23:22:01  edwards
-//  Added proginfo call.
-//
-//  Revision 1.24  2004/01/31 22:43:00  edwards
-//  Put in tests of array sizes.
-//
-//  Revision 1.23  2004/01/29 16:44:36  edwards
-//  Removed reading of Nd, Nc, and numKappa. Changed from Kappa to Mass!
-//  Can also read Kappa for back compatibility.
-//
-//  Revision 1.22  2004/01/16 15:05:09  kostas
-//  fixed the second occurrence of the shell sink bug
-//
-//  Revision 1.21  2004/01/16 15:01:06  kostas
-//  Corrected the shell sink bug
-//
-//  Revision 1.20  2004/01/14 22:24:38  kostas
-//  added reading capability for NERSC confs
-//
-//  Revision 1.19  2004/01/06 04:59:14  edwards
-//  Standardized the IO.
-//
-//  Revision 1.18  2004/01/05 21:48:36  edwards
-//  Changed WVF_KIND to WVF_TYPE.
-//
-//  Revision 1.17  2003/12/17 17:34:36  edwards
-//  Removed tests of boundary.
-//
-//  Revision 1.16  2003/10/30 02:32:16  edwards
-//  Changed output format and number of vector currents measured.
-//
-//  Revision 1.15  2003/10/10 17:50:32  edwards
-//  Removed some extraneous debugging.
-//
-//  Revision 1.14  2003/10/10 17:48:02  edwards
-//  Added missing time_rev for this version of input_io. Other
-//  small tweaks.
-//
-//  Revision 1.13  2003/10/09 20:32:37  edwards
-//  Changed all cout/cerr to QDPIO::cout/cerr. Change QDP_info calls
-//  to use QDPIO::cout.
-//
-//  Revision 1.12  2003/10/02 01:21:15  edwards
-//  Small tweaks. Changed input group to be program dependent.
-//
-//  Revision 1.11  2003/10/01 20:23:46  edwards
-//  Now supports baryons and currents. Changed reading to use a
-//  structure. Pushed all control vars to this structure.
-//
-//  Revision 1.10  2003/09/10 18:04:22  edwards
-//  Changed to new form of XMLReader - a clone.
-//
-//  Revision 1.9  2003/09/02 15:52:02  edwards
-//  Added return 0 at end of main. Some kind of return is required in C++.
-//
-//  Revision 1.8  2003/08/27 22:08:41  edwards
-//  Start major push to using xml.
-//
-//  Revision 1.7  2003/08/27 20:05:20  edwards
-//  Removed use of seed. Do not need random numbers here.
-//
-//  Revision 1.6  2003/06/24 03:25:06  edwards
-//  Changed from nml to xml.
-//
-//  Revision 1.5  2003/06/08 05:00:25  edwards
-//  Added some flush to nml_out.
-//
-//  Revision 1.4  2003/05/22 17:35:36  flemingg
-//  Added stripper for spectrum_w.  Also, minor change to spectrum_w.cc
-//  to make it compatible with the stripper.
-//
-//  Revision 1.3  2003/05/13 22:00:50  flemingg
-//  I'm done with spectrum_w and the test files for now. I'm happy
-//  enough with the output format. Somebody please write a stripper.
-//
-//  Revision 1.2  2003/05/08 23:02:12  flemingg
-//  Initial version of spectrum_w.  It compiles and reproduces szin meson
-//  correlation functions up to a sign.  Namelist input and output starting
-//  to evolve away from szin model: a work in progress.  Code runs but
-//  more testing needed including resolving the cause of the different signs.
-//
+// $Id: spectrum_w.cc,v 1.46 2005-02-17 02:48:41 edwards Exp $
+/*! \file
+ * \brief Main code for spectrum measurements
+ */
 
-#include <iostream>
-#include <cstdio>
 #include "chroma.h"
 
 using namespace Chroma;
@@ -173,6 +22,10 @@ struct Param_t
   bool MesonP;             // Meson spectroscopy
   bool CurrentP;           // Meson currents
   bool BaryonP;            // Baryons spectroscopy
+
+  bool HybMesP;            // Hybrid meson spectroscopy
+  int  numb_sm;            // number of smearing levels for E- and B-fields
+  Real fact_sm;            // Smearing factor for "smeared" E- and B-fields 
 
   bool time_rev;           // Use time reversal in baryon spectroscopy
 
@@ -222,22 +75,38 @@ void read(XMLReader& xml, const string& path, Param_t& param)
   int version;
   read(paramtop, "version", version);
 
+  param.HybMesP = false;
+
   switch (version) 
   {
   case 9:
-    /**************************************************************************/
     param.Wl_snk = false;
     break;
 
   case 10:
-    /**************************************************************************/
     read(paramtop, "Wl_snk", param.Wl_snk);
     break;
 
+  case 11:
+    read(paramtop, "Wl_snk", param.Wl_snk);
+    read(paramtop, "HybMesP", param.HybMesP);
+    break;
+
   default:
-    /**************************************************************************/
     QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
     QDP_abort(1);
+  }
+
+  if (paramtop.count("HybMesP") != 0)
+  {
+    // Must read f_mu-nu smearing params
+    read(paramtop, "fact_sm", param.fact_sm);
+    read(paramtop, "numb_sm", param.numb_sm);
+  }
+  else
+  {
+    param.fact_sm = zero;
+    param.numb_sm = 0;
   }
 
   read(paramtop, "Pt_snk", param.Pt_snk);
@@ -584,6 +453,88 @@ int main(int argc, char **argv)
       } // end if (Wl_snk)
 
     } // end if (MesonP)
+
+
+    // Next do the hybrid mesons
+    if (input.param.HybMesP) 
+    {
+      /* Smear the gauge fields to construct smeared E- and B-fields */
+      int BlkMax = 100;
+      Real BlkAccu = fuzz;
+      BlkAccu *= 0.01;
+      multi1d<LatticeColorMatrix> f;
+      multi1d<LatticeColorMatrix> u_smr = u;
+      multi1d<LatticeColorMatrix> u_tmp(Nd);
+
+      for(int i=0; i < input.param.numb_sm; ++i)
+      {
+	for(int mu = 0; mu < Nd; ++mu)
+	{
+	  // Smear all directions, including time
+	  APE_Smear(u_smr, u_tmp[mu], mu, 0, 
+		    input.param.fact_sm, BlkAccu, BlkMax, 
+		    j_decay);
+	}
+
+	u_smr = u_tmp;
+      }
+
+      mesField(f, u_smr);  // compute F_munu fields
+
+      // Make traceless (is already anti-hermitian)
+      for(int i = 0; i < f.size(); ++i) {
+	taproj(f[i]);
+      }
+
+      // Construct {Point|Shell}-Point hybrid mesons, if desired
+      if (input.param.Pt_snk) 
+      {
+	if (Pt_src)
+	  hybmeson(f, u_smr, quark_propagator, quark_propagator, phases, t_source,
+		   xml_array, "Point_Point_Wilson_Hybrid_Mesons");
+        
+	if (Sl_src)
+	  hybmeson(f, u_smr, quark_propagator, quark_propagator, phases, t_source,
+		   xml_array, "Shell_Point_Wilson_Hybrid_Mesons");
+        
+	if (Wl_src)
+	  QDP_error_exit("Wall-source hybrid mesons not supported");
+
+      } // end if (Pt_snk)
+
+      // Convolute the quark propagator with the sink smearing function.
+      // Make a copy of the quark propagator and then overwrite it with
+      // the convolution. 
+      if (input.param.Sl_snk) 
+      {
+	LatticePropagator quark_prop_smr;
+	quark_prop_smr = quark_propagator;
+	sink_smear2(u, quark_prop_smr, 
+		    input.param.wvf_kind, 
+		    input.param.wvf_param[loop],
+		    input.param.wvfIntPar[loop], 
+		    j_decay);
+
+	if (Pt_src)
+	  hybmeson(f, u_smr, quark_prop_smr, quark_prop_smr, phases, t_source,
+		   xml_array, "Point_Shell_Wilson_Hybrid_Mesons");
+
+	if (Sl_src)
+	  hybmeson(f, u_smr, quark_prop_smr, quark_prop_smr, phases, t_source,
+		   xml_array, "Shell_Shell_Wilson_Hybrid_Mesons");
+
+	if (Wl_src)
+	  QDP_error_exit("Wall-source hybrid mesons not supported");
+      } // end if (Sl_snk)
+
+      // Wall sink
+      if (input.param.Wl_snk) 
+      {
+	QDP_error_exit("Wall-sink not supported in hybrid mesons");
+      } // end if (Wl_snk)
+
+    } // end if (HybMesP)
+
 
 
     // Do the currents next
