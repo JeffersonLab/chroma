@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.93 2004-01-14 21:39:51 edwards Exp $
+# $Id: Makefile.am,v 1.94 2004-01-16 12:26:39 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -76,7 +76,8 @@ nobase_include_HEADERS = \
 	actions/gauge/gauge.h \
 	io/io.h io/milc_io.h io/param_io.h io/qprop_io.h io/readmilc.h \
 	io/readszin.h io/szin_io.h io/writemilc.h io/writeszin.h \
-	meas/eig/eig.h meas/gfix/axgauge.h meas/gfix/coulgauge.h \
+	meas/eig/eig.h meas/eig/gramschm.h meas/eig/ritz.h \
+	meas/gfix/axgauge.h meas/gfix/coulgauge.h \
 	meas/gfix/gfix.h meas/gfix/grelax.h meas/gfix/polar_dec.h \
 	meas/gfix/rot_colvec.h meas/glue/glue.h meas/glue/mesplq.h \
 	meas/glue/polylp.h meas/hadron/hadron.h meas/hadron/srcfil.h \
@@ -201,7 +202,7 @@ libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	       minvcg.cc qprop_io.cc \
                milc_io.cc readmilc.cc writemilc.cc \
                axgauge.cc coulgauge.cc grelax.cc polar_dec.cc rot_colvec.cc \
-	       transf.cc param_io.cc
+	       transf.cc param_io.cc gramschm.cc ritz.cc
 
 #
 # Object files to add if building the Wilson Builds...
@@ -231,8 +232,8 @@ libchroma_a_SOURCES += baryon_w.cc mesons_w.cc curcor2_w.cc lwldslash_w.cc formf
               p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc \
 	      zolotarev_coeffs.cc overlap_fermact_base_w.cc lovlapms_w.cc  \
 	      zolotarev4d_fermact_w.cc ischiral_w.cc lovddag_w.cc \
-	      zolotarev5d_fermact_array_w.cc zolotarev5d_linop_array_w.cc \
-	      wallpionff_w.cc
+	      zolotarev5d_fermact_array_w.cc zolotarev5d_linop_array_w.cc
+# wallpionff_w.cc
 #	      wall_qprop_w.cc
 # zolotarev4d_linop_w.cc 
 # dslashm_w.cc 

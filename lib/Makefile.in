@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.132 2004-01-14 21:40:28 edwards Exp $
+# $Id: Makefile.in,v 1.133 2004-01-16 12:26:39 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -133,8 +133,7 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@              p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc \
 @BUILD_WILSON_LIBS_TRUE@	      zolotarev_coeffs.cc overlap_fermact_base_w.cc lovlapms_w.cc  \
 @BUILD_WILSON_LIBS_TRUE@	      zolotarev4d_fermact_w.cc ischiral_w.cc lovddag_w.cc \
-@BUILD_WILSON_LIBS_TRUE@	      zolotarev5d_fermact_array_w.cc zolotarev5d_linop_array_w.cc \
-@BUILD_WILSON_LIBS_TRUE@	      wallpionff_w.cc
+@BUILD_WILSON_LIBS_TRUE@	      zolotarev5d_fermact_array_w.cc zolotarev5d_linop_array_w.cc
 
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_5 = lwldslash_w_sse.cc
 @BUILD_STAGGERED_LIBS_TRUE@am__append_6 = mesphas_s.cc mesphas_follana_s.cc pions_follana_s.cc \
@@ -270,7 +269,8 @@ nobase_include_HEADERS = \
 	actions/gauge/gauge.h \
 	io/io.h io/milc_io.h io/param_io.h io/qprop_io.h io/readmilc.h \
 	io/readszin.h io/szin_io.h io/writemilc.h io/writeszin.h \
-	meas/eig/eig.h meas/gfix/axgauge.h meas/gfix/coulgauge.h \
+	meas/eig/eig.h meas/eig/gramschm.h meas/eig/ritz.h \
+	meas/gfix/axgauge.h meas/gfix/coulgauge.h \
 	meas/gfix/gfix.h meas/gfix/grelax.h meas/gfix/polar_dec.h \
 	meas/gfix/rot_colvec.h meas/glue/glue.h meas/glue/mesplq.h \
 	meas/glue/polylp.h meas/hadron/hadron.h meas/hadron/srcfil.h \
@@ -319,7 +319,7 @@ libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	       minvcg.cc qprop_io.cc \
                milc_io.cc readmilc.cc writemilc.cc \
                axgauge.cc coulgauge.cc grelax.cc polar_dec.cc rot_colvec.cc \
-	       transf.cc param_io.cc\
+	       transf.cc param_io.cc gramschm.cc ritz.cc\
 $(am__append_4) $(am__append_5) $(am__append_6)
 subdir = lib
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
@@ -335,9 +335,9 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	laplacian.cc displacement.cc su2extract.cc sunfill.cc invcg1.cc \
 	invcg2.cc invcg2_array.cc minvcg.cc qprop_io.cc milc_io.cc \
 	readmilc.cc writemilc.cc axgauge.cc coulgauge.cc grelax.cc \
-	polar_dec.cc rot_colvec.cc transf.cc param_io.cc baryon_w.cc \
-	mesons_w.cc curcor2_w.cc lwldslash_w.cc formfac_w.cc \
-	mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
+	polar_dec.cc rot_colvec.cc transf.cc param_io.cc gramschm.cc \
+	ritz.cc baryon_w.cc mesons_w.cc curcor2_w.cc lwldslash_w.cc \
+	formfac_w.cc mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
 	sink_smear2_w.cc barcomp_w.cc ldwfdslash_w.cc walfil_w.cc \
 	fermact_qprop.cc prec_fermact_qprop.cc \
 	unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
@@ -360,11 +360,11 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	overlap_fermact_base_w.cc lovlapms_w.cc \
 	zolotarev4d_fermact_w.cc ischiral_w.cc lovddag_w.cc \
 	zolotarev5d_fermact_array_w.cc zolotarev5d_linop_array_w.cc \
-	wallpionff_w.cc lwldslash_w_sse.cc mesphas_s.cc \
-	mesphas_follana_s.cc pions_follana_s.cc follana_io_s.cc \
-	walfil_s.cc asqtad_linop_s.cc asq_dsl_s.cc fat7_links_s.cc \
-	naik_term_s.cc asqtad_fermact_s.cc asqtad_mdagm_s.cc \
-	staggered_qprop.cc stag_phases_s.cc
+	lwldslash_w_sse.cc mesphas_s.cc mesphas_follana_s.cc \
+	pions_follana_s.cc follana_io_s.cc walfil_s.cc \
+	asqtad_linop_s.cc asq_dsl_s.cc fat7_links_s.cc naik_term_s.cc \
+	asqtad_fermact_s.cc asqtad_mdagm_s.cc staggered_qprop.cc \
+	stag_phases_s.cc
 @BUILD_WILSON_LIBS_TRUE@am__objects_1 = baryon_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	mesons_w.$(OBJEXT) curcor2_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	lwldslash_w.$(OBJEXT) \
@@ -420,8 +420,7 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 @BUILD_WILSON_LIBS_TRUE@	ischiral_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	lovddag_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	zolotarev5d_fermact_array_w.$(OBJEXT) \
-@BUILD_WILSON_LIBS_TRUE@	zolotarev5d_linop_array_w.$(OBJEXT) \
-@BUILD_WILSON_LIBS_TRUE@	wallpionff_w.$(OBJEXT)
+@BUILD_WILSON_LIBS_TRUE@	zolotarev5d_linop_array_w.$(OBJEXT)
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__objects_2 = lwldslash_w_sse.$(OBJEXT)
 @BUILD_STAGGERED_LIBS_TRUE@am__objects_3 = mesphas_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	mesphas_follana_s.$(OBJEXT) \
@@ -450,7 +449,8 @@ am_libchroma_a_OBJECTS = rgauge.$(OBJEXT) taproj.$(OBJEXT) \
 	readmilc.$(OBJEXT) writemilc.$(OBJEXT) axgauge.$(OBJEXT) \
 	coulgauge.$(OBJEXT) grelax.$(OBJEXT) polar_dec.$(OBJEXT) \
 	rot_colvec.$(OBJEXT) transf.$(OBJEXT) param_io.$(OBJEXT) \
-	$(am__objects_1) $(am__objects_2) $(am__objects_3)
+	gramschm.$(OBJEXT) ritz.$(OBJEXT) $(am__objects_1) \
+	$(am__objects_2) $(am__objects_3)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
@@ -473,9 +473,10 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/fermact_qprop_array.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/follana_io_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/formfac_w.Po ./$(DEPDIR)/gaus_smear.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/grelax.Po ./$(DEPDIR)/hotst.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/hyp_smear.Po ./$(DEPDIR)/invcg1.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/invcg2.Po ./$(DEPDIR)/invcg2_array.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/gramschm.Po ./$(DEPDIR)/grelax.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/hotst.Po ./$(DEPDIR)/hyp_smear.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/invcg1.Po ./$(DEPDIR)/invcg2.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/invcg2_array.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ischiral_w.Po ./$(DEPDIR)/klein_gord.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/laplacian.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ldwfdslash_w.Po \
@@ -510,7 +511,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/readszinferm_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/readszinqprop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/reunit.Po ./$(DEPDIR)/rgauge.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/rot_colvec.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ritz.Po ./$(DEPDIR)/rot_colvec.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/seqpiontest_w.Po ./$(DEPDIR)/sftmom.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/sink_smear2_w.Po ./$(DEPDIR)/srcfil.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/stag_phases_s.Po \
@@ -534,7 +535,6 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_wilson_fermact_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/unprec_wilson_linop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/walfil_s.Po ./$(DEPDIR)/walfil_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/wallpionff_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/writemilc.Po ./$(DEPDIR)/writeszin.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/writeszinqprop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/zolotarev4d_fermact_w.Po \
@@ -629,6 +629,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/follana_io_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/formfac_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gaus_smear.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gramschm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/grelax.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hotst.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyp_smear.Po@am__quote@
@@ -677,6 +678,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readszinqprop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/reunit.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rgauge.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ritz.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rot_colvec.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seqpiontest_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sftmom.Po@am__quote@
@@ -708,7 +710,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_wilson_linop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/walfil_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/walfil_w.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wallpionff_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writemilc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writeszin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writeszinqprop_w.Po@am__quote@
