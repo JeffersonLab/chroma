@@ -1,10 +1,13 @@
-// $Id: spectrum_w.cc,v 1.36 2004-04-29 00:55:06 edwards Exp $
+// $Id: spectrum_w.cc,v 1.37 2004-06-08 14:19:44 edwards Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.36  2004-04-29 00:55:06  edwards
+//  Revision 1.37  2004-06-08 14:19:44  edwards
+//  Changed out_version to 11.
+//
+//  Revision 1.36  2004/04/29 00:55:06  edwards
 //  Split tests for source type into a switch statement - allows
 //  error detection.
 //
@@ -329,7 +332,7 @@ int main(int argc, char **argv)
   write(xml_out, "Config_info", gauge_xml);
 
   push(xml_out, "Output_version");
-  write(xml_out, "out_version", 10);
+  write(xml_out, "out_version", 11);
   pop(xml_out);
 
   xml_out.flush();
