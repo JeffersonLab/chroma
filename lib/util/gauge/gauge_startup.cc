@@ -1,10 +1,18 @@
-// $Id: gauge_startup.cc,v 1.3 2004-04-28 14:28:58 edwards Exp $
+// $Id: gauge_startup.cc,v 1.4 2004-04-28 14:31:18 edwards Exp $
 /*! \file
  *  \brief Initialize the gauge fields
  */
 
 #include "chromabase.h"
 #include "util/gauge/gauge_startup.h"
+
+#include "qdp_iogauge.h"
+#include "io/param_io.h"
+#include "io/gauge_io.h"
+#include "io/readszin.h"
+#include "io/readmilc.h"
+#include "util/gauge/reunit.h"
+
 
 using namespace QDP;
 
