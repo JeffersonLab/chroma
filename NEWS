@@ -1,11 +1,8 @@
-02/23/2005 -- Balint Joo
+02/23/2005 -- Robert Edwards
 
-	Version 1.19.9. Start of aniso support in GaugeActs. Split
-        off some structs to separate files to thin-out file dependencies.
-
-02/23/2005 -- Balint Joo
-
-	Version 1.19.8. Updated interface for Chrono predictors.
+	Version 1.19.8. Updated interface for Chrono predictors.  Start of
+	aniso support in GaugeActs. Split off some structs to separate
+	files to thin-out file dependencies.
 
 02/21/2005 -- Robert Edwards
 
