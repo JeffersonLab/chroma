@@ -1,4 +1,4 @@
-// $Id: readszinqprop_w.h,v 1.3 2003-04-30 21:19:33 edwards Exp $
+// $Id: readszinqprop_w.h,v 1.4 2003-06-20 20:48:12 dgr Exp $
 
 #ifndef __readszinqprop_h__
 #define __readszinqprop_h__
@@ -14,5 +14,17 @@
  */    
 
 void readSzinQprop(LatticePropagator& q, const string& file);
+
+//! Write a SZIN propagator file. This is a simple memory dump writer.
+/*!
+ * \ingroup io
+ *
+ * \param q          propagator ( Read )
+ * \param file       path ( Read )
+ * \param kappa      kappa value (Read)
+ */    
+
+void writeSzinQprop(const LatticePropagator& q, const string& file,
+		    const Real kappa);
 
 #endif
