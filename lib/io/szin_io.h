@@ -1,4 +1,4 @@
-// $Id: szin_io.h,v 1.2 2003-10-08 03:45:11 edwards Exp $
+// $Id: szin_io.h,v 1.3 2004-02-13 14:59:04 bjoo Exp $
 
 /*! \file
  *  \brief  Routines associated with SZIN gauge field IO
@@ -41,7 +41,7 @@ struct SzinGauge_t
   Real32 LamMi;         /* Stochastic acc/rej parameter */
   Real32 AlpLog;        /* For estimate of Log(1+x)     */
   Real32 AlpExp;        /* For estimate of Exp(x)       */
-  Seed   seed;		/* Random number seed */
+  QDP::Seed   seed;		/* Random number seed */
 
   int cfg_version;      /* Configuration file version number */
 
