@@ -1,4 +1,4 @@
-// $Id: chromabase.h,v 1.8 2003-10-22 03:22:09 edwards Exp $
+// $Id: chromabase.h,v 1.9 2003-11-09 22:36:13 edwards Exp $
 //
 // Absolute basic stuff to use chroma
 
@@ -6,7 +6,6 @@
 #define CHROMABASE_INCLUDE
 
 #include "qdp.h"
-#include "qdp_util.h"
 
 #if defined(ARCH_SCALAR) || defined(ARCH_PARSCALAR)
 #include "chroma_scalarsite_dwdefs.h"
@@ -18,16 +17,22 @@
 #error "Unknown architecture ARCH"
 #endif
 
-
-
 using namespace QDP;
 
+// Extremely basic types
+enum PlusMinus {PLUS = 1, MINUS = -1};
+
+
+// Useful constants
 const float fuzz = 1.0e-5;
 const float twopi = 6.283185307179586476925286;
 
+#define TO_REAL(a) float(a)
+
+
+// Hooks for various things
 #define START_CODE(a)
 #define END_CODE(a)
 
-#define TO_REAL(a) float(a)
 
 #endif
