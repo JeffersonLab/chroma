@@ -1,4 +1,4 @@
-// $Id: cfgtransf.cc,v 1.12 2004-04-06 04:20:22 edwards Exp $
+// $Id: cfgtransf.cc,v 1.13 2004-04-13 03:07:01 edwards Exp $
 /*! \file
  *  \brief Many-to-many gauge transformation routine
  */
@@ -145,7 +145,8 @@ int main(int argc, char **argv)
 	      << "  (5) MIT gauge config on FE\n"
 	      << "  (6) Kentucky config on FE\n"
 	      << "  (7) SZIN config in QIO SINGLEFILE format\n"
-	      << "  (8) SZIN config in QIO MULTIFILE format\n";
+	      << "  (8) SZIN config in QIO MULTIFILE format\n"
+	      << "  (9) replicated in time dir SZIN config in szin format\n";
   QDPIO::cin >> output_type;
   
   string cfg_input_file;
@@ -649,6 +650,7 @@ int main(int argc, char **argv)
   case 2:
   case 7:
   case 8:
+  case 9:
   {
     bool new_headerP;
     QDPIO::cout << "Enter new szin header?" << endl;
@@ -754,6 +756,21 @@ int main(int argc, char **argv)
     write(gauge_record_xml_out, "szin", szin_gauge_header);
     writeGauge(gauge_file_xml_out, gauge_record_xml_out, u, cfg_output_file,
 	       volfmt, QDPIO_SERIAL);
+  }
+  break;
+
+  case 9:
+  {
+    int n_replica;
+    QDPIO::cout << "Enter the boundary condition direction\n";
+    QDPIO::cin >> j_decay;
+
+    QDPIO::cout << "Number of times to replicat\n";
+    QDPIO::cin >> n_replica;
+
+    writeSzinReplica(szin_gauge_header, u, j_decay,
+		     n_replica,
+		     cfg_output_file);
   }
   break;
 
