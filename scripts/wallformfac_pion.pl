@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: wallformfac_pion.pl,v 1.11 2004-09-12 00:37:47 edwards Exp $
+# $Id: wallformfac_pion.pl,v 1.12 2004-09-12 20:18:39 edwards Exp $
 #
 # Usage
 #   formfact.pl
@@ -54,15 +54,31 @@ die "Put the lattice spacing \'a\' in the config.pl file\n" unless defined(a);
 $pi = 3.14159265359;
 $fmtoGeV = 0.200;
 
-$p_f_sq = 0.0;
-foreach $i (0 .. 2)
+# Check if source or sink momenta set
+die "Cannot fix source and sink momenta" if defined(source_mom) && defined(sink_mom); 
+die "Neither source nor sink momenta set" if (! defined(source_mom)) && (! defined(sink_mom)); 
+
+$which_mom = 1 if (defined(source_mom));
+$which_mom = 2 if (defined(sink_mom));
+
+if ($which_mom == 1)
 {
-  $p_f[$i] = $sink_mom[$i];
+  foreach $i (0 .. 2)
+  {
+    $p_i[$i] = $source_mom[$i];
+  }
 
-  $p_f_sq += $p_f[$i]**2;
+  @cp_i = &canonical_momenta(*p_i);
 }
+else
+{
+  foreach $i (0 .. 2)
+  {
+    $p_f[$i] = $sink_mom[$i];
+  }
 
-@cp_f = &canonical_momenta(*p_f);
+  @cp_f = &canonical_momenta(*p_f);
+}
 
 # Extensions
 # $abext = "${Aext}_${L}.${Bext}_${L}.${A}${B}";   # not used
@@ -200,16 +216,26 @@ foreach $qz (-$mommax_int .. $mommax_int)
 
       if ($qsq > $mom2_max) {next;}
 
-      # Construct p_i using mom. conservation
-      foreach $i (0 .. 2)
+      if ($source_mom == 1)
       {
-	$p_i[$i] = -$q[$i] + $p_f[$i];     # note sign convention on q
+	# Construct p_f using mom. conservation
+	foreach $i (0 .. 2)
+	{
+	  $p_f[$i] =  $q[$i] + $p_i[$i];     # note sign convention on q
+	}
+	@cp_f = &canonical_momenta(*p_f);
       }
-      $p_i_sq = &compute_psq(*p_i);
+      else
+      {
+	# Construct p_i using mom. conservation
+	foreach $i (0 .. 2)
+	{
+	  $p_i[$i] = -$q[$i] + $p_f[$i];     # note sign convention on q
+	}
+	@cp_i = &canonical_momenta(*p_i);
+      }
 
-      @cp_i = &canonical_momenta(*p_i);
-
-      print "q=[$q[0],$q[1],$q[2]], qsq = $qsq,  p_i=[$p_i[0],$p_i[1],$p_i[2]], p_i_sq = $p_i_sq, p_f=[$p_f[0],$p_f[1],$p_f[2]]";
+      print "q=[$q[0],$q[1],$q[2]], qsq = $qsq,  p_i=[$p_i[0],$p_i[1],$p_i[2]], p_f=[$p_f[0],$p_f[1],$p_f[2]]";
 
       printf "Looking for file %s\n","${nam}_cur3ptfn_${s}_snk15_g8_src_15_qx$q[0]_qy$q[1]_qz$q[2]";
       if (! -f "${nam}_cur3ptfn_${s}_snk15_g8_src15_qx$q[0]_qy$q[1]_qz$q[2]") {next;}
@@ -223,8 +249,10 @@ foreach $qz (-$mommax_int .. $mommax_int)
       printf "Found file %s\n","${nam}_cur3ptfn_${s}_snk15_g8_src15_qx$q[0]_qy$q[1]_qz$q[2]";
 
       $pion_disp = -(($fmtoGeV/$a)**2)*&compute_disp_pipf_sq($pion_mass{0,0,0},*p_i,*p_f);
-      printf "pion mass = %g +- %g,  qsq (via vector disp) = %g\n", 
-      $pion_mass{$cp_i[0],$cp_i[1],$cp_i[2]}, $pion_mass_err{$cp_i[0],$cp_i[1],$cp_i[2]}, $pion_disp;
+      printf "pion_mass_i = %g +- %g,  pion_mass_f = %g +- %g,  qsq (via vector disp) = %g\n", 
+      $pion_mass{$cp_i[0],$cp_i[1],$cp_i[2]}, $pion_mass_err{$cp_i[0],$cp_i[1],$cp_i[2]}, 
+      $pion_mass{$cp_f[0],$cp_f[1],$cp_f[2]}, $pion_mass_err{$cp_f[0],$cp_f[1],$cp_f[2]}, 
+      $pion_disp;
 
       &realpart("${nam}_cur3ptfn_${s}_snk15_g8_src15_qx$q[0]_qy$q[1]_qz$q[2]","${cur}_${s}_mu3_$q[0]$q[1]$q[2]");
 

@@ -1,10 +1,11 @@
-# $Id: config.pl,v 1.4 2004-09-12 00:37:47 edwards Exp $
+# $Id: config.pl,v 1.5 2004-09-12 20:18:39 edwards Exp $
 #
 # This is a sample config.pl to use in the various formfac
 # analysis scripts.
 #
 $mom2_max = 1;
-@sink_mom = (0,0,0);
+#@sink_mom = (0,0,0);
+@source_mom = (0,0,0);
 $a = 0.1;
 $L_s = 4;
 
