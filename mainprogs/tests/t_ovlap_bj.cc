@@ -1,4 +1,4 @@
-// $Id: t_ovlap_bj.cc,v 1.5 2003-12-17 13:22:59 bjoo Exp $
+// $Id: t_ovlap_bj.cc,v 1.6 2003-12-17 14:54:34 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -19,7 +19,7 @@ int main(int argc, char **argv)
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {4,4,4,4};
+  const int foo[] = {4,4,4,8};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -30,42 +30,20 @@ int main(int argc, char **argv)
   //! Test out dslash
   multi1d<LatticeColorMatrix> u(Nd);
   
-  //! Cold start
-  for(int j = 0; j < Nd; j++) { 
-     u(j) = Real(1);
-  }
-
-  //for(int j=0; j < Nd; j++) { 
-  //  random(u(j));
-  //  reunit(u(j));
+  //! Cold (order) start
+  // for(int j = 0; j < Nd; j++) { 
+  //   u(j) = Real(1);
   // }
 
-  //! Create a linear operator
-  cout << "Testing Wilson Dslash: " << endl;
-
+  // Hot (disordered) start
+  for(int j=0; j < Nd; j++) { 
+    random(u(j));
+    reunit(u(j));
+  }
 
   //! Wilsoniums
   Real WilsonMass = -1.5;
   const UnprecWilsonFermAct S_w(WilsonMass);
-
-  const ConnectStateProxy  wilson_state(S_w.createState(u));
-  const LinearOperatorProxy<LatticeFermion> D_wils(S_w.linOp(wilson_state));
-  const LinearOperatorProxy<LatticeFermion> DD_wils(S_w.lMdagM(wilson_state));
-
-  LatticeFermion psi, mm, mandm, tmp;
-
-  random(psi);
-  mm = zero;
-  mandm = zero;
-  tmp = zero;
-
-  D_wils(tmp, psi, PLUS);
-  D_wils(mandm, tmp, MINUS);
-  DD_wils(mm, psi, PLUS);
-
-  mm -= mandm;
-
-  cout << "|| MdagM - M^{+} M || = " << norm2(mm) << endl;
 
   Real m_q = 0.0;
   XMLBufferWriter my_writer;
@@ -80,11 +58,13 @@ int main(int argc, char **argv)
 
 
   // Specify the approximation
-  ZolotarevConnectState<LatticeFermion> connect_state(u, 0.031, 2.5);
+  ZolotarevConnectState<LatticeFermion> connect_state(u, 0.001, 2.5);
 
   // Make me a linop (this callls the initialise function)
   const LinearOperatorProxy<LatticeFermion> D_op(D.linOp((ConnectState &)connect_state));
 
+  LatticeFermion psi;
+  gaussian(psi);
   Double n2 = norm2(psi);
   psi /= n2;
 
@@ -100,7 +80,7 @@ int main(int argc, char **argv)
   s3 -= s1;
   s3 -= s2;
 
-  cout << "Circle Norm: " << norm2(s3) << endl;
+  cout << "Circle Norm: " << sqrt(norm2(s3)) << endl;
 
   // Time to bolt
   QDP_finalize();

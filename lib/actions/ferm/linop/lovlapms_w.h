@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lovlapms_w.h,v 1.12 2003-12-17 13:22:59 bjoo Exp $
+// $Id: lovlapms_w.h,v 1.13 2003-12-17 14:54:34 bjoo Exp $
 /*! \file
  *  \brief Internal Overlap-pole operator
  */
@@ -64,13 +64,7 @@ public:
 	   const Real& _RsdCG) :
     m_q(_m_q), numroot(_numroot), constP(_constP),
     resP(_resP), rootQ(_rootQ), EigVec(_EigVec), EigValFunc(_EigValFunc),
-    NEig(_NEig), MaxCG(_MaxCG), RsdCG(_RsdCG), M(S_aux.linOp(state)), MdagM(S_aux.lMdagM(state)) {
-
-    QDPIO::cout << "lovlapms init : rootQ.size() " << rootQ.size() << endl;
-    for(int qcount=0; qcount < rootQ.size(); qcount++) {
-      QDPIO::cout << "rootQ["<<qcount<<"] " << rootQ[qcount] << endl;
-    }
-  }
+    NEig(_NEig), MaxCG(_MaxCG), RsdCG(_RsdCG), M(S_aux.linOp(state)), MdagM(S_aux.lMdagM(state)) {}
 
   //! Destructor is automatic
   ~lovlapms() {

@@ -1,4 +1,4 @@
-// $Id: lovlapms_w.cc,v 1.9 2003-12-17 13:22:59 bjoo Exp $
+// $Id: lovlapms_w.cc,v 1.10 2003-12-17 14:54:34 bjoo Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -9,44 +9,29 @@
 
 using namespace QDP;
 
-//! Apply the operator onto a source vector
+//! Apply the GW operator onto a source vector
 /*! \ingroup linop
  *
- * The operator acts on the entire lattice
+ * This routine applies the 4D GW operator onto a source
+ * vector. The coeffiecients for the approximation get 
+ * wired into the class by the constructor and should
+ * come fromt fermion action.
  *
- * \param psi 	  Pseudofermion field     	       (Read)
- * \param isign   Flag ( PLUS | MINUS )   	       (Read)
+ * The operator applied is:
+ *       D       =    (1/2)[  (1+m) + (1-m)gamma_5 sgn(H_w) ] psi
+ * or    D^{dag} =    (1/2)[  (1+m) + (1-m) sgn(H_w) gamma_5 psi
+ * 
+ * 
+ * \param chi     result vector                              (Write)  
+ * \param psi 	  source vector         	             (Read)
+ * \param isign   Hermitian Conjugation Flag 
+ *                ( PLUS = no dagger| MINUS = dagger )       (Read)
  */
 void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi, 
 			   enum PlusMinus isign) const
 {
 
-  // Debugging section:
-  QDPIO::cout << "m_q " << m_q << endl;
-  QDPIO::cout << "numroot " << numroot << endl;
-  QDPIO::cout << "constP " << constP <<endl;
-
-  QDPIO::cout << "rootQ.size() " << rootQ.size() << endl;
-  for(int qcount=0; qcount < rootQ.size(); qcount++) {
-    QDPIO::cout << "rootQ["<<qcount<<"] " << rootQ[qcount] << endl;
-  }
-  
-  QDPIO::cout << "resP.size() " << resP.size() << endl;
-  for(int qcount=0; qcount < resP.size(); qcount++) {
-    QDPIO::cout << "resP[" << qcount <<"] " << resP[qcount] << endl;
-  }
-
-  QDPIO::cout << "NEig " << NEig << endl;  
-  QDPIO::cout << "EigValFunc.size() " << EigValFunc.size() << endl;
-  for(int qcount=0; qcount < EigValFunc.size(); qcount++) {
-    QDPIO::cout << "EigValFunc[" << qcount <<"] " << EigValFunc[qcount] << endl;
-  }
-
-  QDPIO::cout << "MaxCG " << MaxCG << endl;
-  QDPIO::cout << "RsdCG " << RsdCG << endl;
-
   LatticeFermion tmp1, tmp2;
-  int k, n_count;
 
   // Gamma_5 
   int G5 = Ns*Ns - 1;
@@ -58,14 +43,14 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
   switch (isign)
   {
   case PLUS:
-    /*  Non-Dagger: psi is source and tmp1 */
-    /*  chi  :=  gamma_5 * (gamma_5 * mass + eps(H)) * Psi  */
+    //  Non-Dagger: psi is source and tmp1 
+    //  chi  :=  gamma_5 * (gamma_5 * mass + sgn(H)) * Psi  
     tmp1 = psi;
     break;
 
   case MINUS:
-    /*  Dagger: apply gamma_5 to source psi to make tmp1 */
-    /*  chi  :=  (mass + eps(H) * gamma_5) * Psi  */
+    // Dagger: apply gamma_5 to source psi to make tmp1 
+    //  chi  :=  (mass + sgn(H) * gamma_5) * Psi  
     tmp1 = Gamma(G5) * psi;
     break;
 
@@ -76,12 +61,10 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
 
   chi = zero;
 
-  /* Project out eigenvectors of source if desired */
-  /* chi  +=  func(lambda) * EigVec * <EigVec, psi>  */
-  /* Usually "func(.)" is eps(.); it is precomputed in EigValFunc. */
-
-  QDPIO::cout << "NEig = " << NEig << endl;
-
+  // Project out eigenvectors of source if desired 
+  // chi  +=  func(lambda) * EigVec * <EigVec, psi>  
+  // Usually "func(.)" is sgn(.); it is precomputed in EigValFunc. 
+  // for all the eigenvalues
   if (NEig > 0)
   {
     Complex cconsts;
@@ -96,9 +79,8 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
     }
   }
 
-  /* tmp1 <- H * Projected psi */
-  /*      <- gamma_5 * M * psi */
-
+  // tmp1 <- H * Projected psi 
+  //      <- gamma_5 * M * psi 
   (*M)(tmp2, tmp1, PLUS);
   tmp1 = Gamma(G5) * tmp2;
   
@@ -107,15 +89,13 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
   Double c = norm2(tmp1);
 
   /* If exactly 0 norm, then solution must be 0 (for pos. def. operator) */
-  if (toBool(c == 0.0))
+  if (toBool(c == 0))
   {
     chi = zero;
-
     return;
   }
 
 
-  QDP_info("Doing multi-mass solve\n");
   // *******************************************************************
   // Solve  (MdagM + rootQ_n) chi_n = H * tmp1
   LatticeFermion Ap;
@@ -127,32 +107,33 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
   Real b;              // Beta for unshifted system
   Real bp;             // Beta previous for unshifted system
 
-  Real ztmp;
+  Double ztmp;           // Assorted reals (shifted residues)
   Double cp;
   Double d;
-  Real z0;
-  Real z1;   
+  Real z0;                    // temporary value for zeta previous
+  Real z1;                    // temporary value for zeta current
+
   multi1d<Real> bs(numroot);  // beta for shifted system
   multi2d<Real> z(2,numroot); // zeta for shifted system
-  Double chi_sq_new;
+
+  Double chi_sq_new;              // sgn() convergence criterion
   Double chi_sq_diff;
   multi1d<bool> convsP(numroot);  // convergence mask for shifted system
   bool convP;                     // overall convergence mask
   
-  int iz;
-  int s;
+  int iz;                     //  Temporary index for getting at 
+                              //  zeta values in z array 
 
-  
-  multi1d<LatticeFermion> x(numroot);
+  int s;                      // Counter for loops over shifts
 
-  
-  Real rsdcg_sq = RsdCG * RsdCG;
-  Real rsd_sq = c * rsdcg_sq;
+    
+  Real rsdcg_sq = RsdCG * RsdCG;   // Target residuum squared
+  Real rsd_sq = c * rsdcg_sq;      // Used for relative residue comparisons
+                                   // r_t^2 * || r ||^2
 
-  x = zero;
 
-  // By default (could change), rootQ(isz) is considered the smallest shift 
-  int isz = numroot-1;
+  // By default, rootQ(isz) is considered the smallest shift 
+  int isz = numroot-1;             // isz identifies system with smalles shift
   
 
   // chi[0] := mass*psi + c0*H*tmp1 + Eigvecs; 
@@ -168,19 +149,23 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
     chi += psi * mass;
   }
 
+  // Multiply in P(0) -- this may well be 0 for type 0 rational approximations
   chi += tmp1 * constP;
 
 
   // r[0] := p[0] := tmp1 
   r = tmp1;
 
+  // Initialise search vectors for shifted systems
   for(s = 0; s < numroot; ++s){
     p[s] = tmp1;
   }
 
+  // Set convergence masks to false
   convsP = false;
   convP = false;
 
+  
   iz = 1;  // z_index  z[ iz , s ] holds zeta(s)
            //          z[ 1-iz, s ] holds zeta_minus(s)
 
@@ -189,13 +174,14 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
   a = 0;   // Alpha for unshifted
   b = 1;   // beta for unshifted 
 
-
+  int k;
+  // Do the iterations proper 
   for(k = 0; k <= MaxCG && ! convP ; ++k) {
 
+    //  Unshifted beta value: b[k] -- k is iteration index
     //  b[k] := | r[k] |**2 / < p[k], Ap[k] > ; 
     //  First compute  d  =  < p, A.p >  
     //  Ap = A . p 
-
 
     // This bit computes 
     // Ap = [  M^dag M + rootQ(isz)  ] p_isz
@@ -222,7 +208,9 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
     // iz now points to previous z's
     iz = 1 - iz;
     
-  
+    // Compute new shifted beta and zeta values
+    // as per Beat Jegerlehner's paper: hep-lat/9612014
+    // eqns 2.42, 2.44 on page 7
     for(s = 0; s < numroot; s++)
     {
 
@@ -243,12 +231,10 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
 	bs[s] = b * z[iz][s] / z0;
 
       }
-
-     
     }
     
 
-
+    // New residual of system with smallest shift
     // r[k+1] += b[k] A . p[k] ; 
     r += b * Ap;	        // 2 Nc Ns  flops 
 
@@ -259,57 +245,86 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
       GramSchm (r, 1, EigVec, NEig);
 #endif
     
-    //  chi[k+1] -= b[k] p[k] ; 
-
-    // This is implemented as a sum. I don't know if this is kosher or not:
+    // Work out new iterate for sgn(H).
     //
-    // Basically sgn(H) tmp1 
-    // = sum_shifts resP(shift) x_shift 
-    // = sum_shifts resP(shift) x_shift(iter)
-    // = sum_shifts resP(shift) ( x_i(shift) - beta_
-    ztmp = resP[isz] * b;
-    tmp1 = p[isz] * ztmp;	// 2 Nc Ns  flops 
+    // This in effect updates all x vectors and performs
+    // immediately the linear sum.
+    // However, the x's are never explicitly computed. Rather
+    // the changes they would get get rolled onto the chi immediately
+    //
+    //  chi[k+1] -= sum_{shifts} resP_{shift} b_{shift}[k] p_{shift}[k] ; 
+    //
+    // since we are doing the linear combinations we multiply in the 
+    // constant in the numerator too.
 
-    
+    // smallest shift first
+    Real(rtmp);
+    rtmp = resP[isz] * b;      
+    tmp1 = p[isz] * rtmp;	// 2 Nc Ns  flops 
+
+    // Now the other shifts. 
+    // Converged systems haven' changed, so we only add results
+    // from the unconverged systems
     for(s = 0; s < numroot; ++s) {
       if(s != isz  &&  !convsP[s]) {
 
-	ztmp = bs[s] * resP[s];
-	tmp1 += p[s] * ztmp;	// 2 Nc Ns  flops
+	rtmp = bs[s] * resP[s];
+	tmp1 += p[s] * rtmp;	// 2 Nc Ns  flops
       }
     }
 
+    // Now update the sgn(H) with the above accumulated linear sum
     chi -= tmp1;                   // 2 Nc Ns  flops
 
-    //  cp  =  | r[k] |**2 
+    // Store in cp the previous value of c
+    // cp  =  | r[k] |**2 
     cp = c;
 
+    // And compute the current norm of r into the (now saved) c
     //  c  =  | r[k] |**2 
     c = norm2(r);	                // 2 Nc Ns  flops
 
+    // Work out the alpha factor for the system with smallest shift.
     //  a[k+1] := |r[k]|**2 / |r[k-1]|**2 ; 
     a = Real(c/cp);
 
+    // Now update search vectors p_{shift}[k]
+    // the system with smallest shift gets updated as
+    //
     //  p[k+1] := r[k+1] + a[k+1] p[k];
-    //  Compute the shifted as 
-    //  ps[k+1] := zs[k+1] r[k+1] + a[k+1] ps[k]; 
- 
+
+    // The updated systems get updated as
+    //  
+    //  ps[k+1] := zs[k+1] r[k+1] + as[k+1] ps[k]; 
+    //
+    // where the as[]-s are the shifted versions of alpha. 
+    // we must first computed these as per Beat's paper hep-lat/9612014
+    // eq 2.43 on page 7.
+    // 
+    // As usual we only update the unconverged systems
     for(s = 0; s < numroot; ++s)
     {
       if (! convsP[s]) {
 
+
 	if (s == isz) {
-	  // Compute the actual solutions just for debugging
-	  x[s] -= b * p[s];
-    
+	  // Smallest shift 	  
+	  // p[k+1] = r[k+1] + a[k+1] p[k]
+	  // 
+	  // k is iteration index
 	  p[s] *= a;	        // Nc Ns  flops 
 	  p[s] += r;		// Nc Ns  flops 
 	}
 	else {
-	  x[s] -= bs[s]*p[s];
-	  
+
+	  // Unshifted systems
+	  // First compute shifted alpha
 	  as = a * z[iz][s]*bs[s] / (z[1-iz][s]*b);
 	  
+	  // Then update
+	  //    ps[k+1] := zs[k+1] r[k+1] + as[k+1] ps[k]; 
+	  //
+	  // k is iteration index
 	  p[s] *= as;	        // Nc Ns  flops 
 	  p[s] += r * z[iz][s];	// Nc Ns  flops 
 	  
@@ -323,17 +338,39 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
       GramSchm (p, numroot, EigVec, NEig);
 #endif
     
-    // IF |r[k]| <= RsdCG |chi| THEN RETURN;
+    // Convergence tests start here.
+    //
+    // These are two steps:
+    //
+    // i) Check that the shifted vectors have converged 
+    //    by checking their accumulated residues
+    //
+    // ii) Check that the sign function itself has converged
+    //
+    // 
+    // We set the global convergence flag to true, and then if 
+    // any vectors are unconverged this will flip the global flag back
+    // to false
     convP = true;                          // Assume convergence and prove
                                            // otherwise
 
-    cout << endl;
-    cout << "Iter " << k << endl;
     for(s = 0; s < numroot; ++s) {
+
+      // Only deal with unconverged systems
       if (! convsP[s]) {
 	
+	// Compute the shifted residuum squared
+	//
+	//  r_{shift} = || r || * zeta(shift)
+	//
+	//  hence || r_shift ||^2 = || r ||^2 * zeta_shift^2
+	//
+	// || r^2 || is already computed in c
+	//
+	// Store  || r_shift ||^2 in ztmp
         ztmp = Real(c) * z[iz][s]*z[iz][s];	
-	cout << "Rsd(" << s << ") = " << ztmp << endl;
+
+	// Check ztmp is smaller than the target residuum
 	bool btmp = toBool(ztmp < rsd_sq);
 	convP = convP & btmp;
 	convsP[s] = btmp;
@@ -341,34 +378,48 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
     }
     
 
-  
-    // eps(H) psi = ( c_0 + \sum_i { res_i / (z^2 + rootQ_i) } ) * H * psi 
-    // Norm of diff of new and old soln unchanged by a potential gamma_5 
-    // Check for convergence of chi 
+    // Now check convergence of the sgn() itself.
+    // It was updated with 
+    //               sum resP(shift) beta(shift) p_shift
+    // and this quantity is still in tmp1.
+    //
+    // So norm tmp1 is like an abolute error in sgn() aka: Delta sgn()
+    //
+    // Here we ensure Delta sgn() < target r^2 || sgn H[k-1] ||
+    //
+    // ie that  the relative error in sgn() is smaller than the target.
+    // sgn H is kept in chi
+    //
     // Only converge if chi is converged. If vectors converge first, then error
     
-    
+   
     if (k > 0 &&  !convP) {
+
+      // Get target r^2 * || sgn (H) ||^2
       chi_sq_new = rsdcg_sq * norm2(chi);
+
+      // Get || Delta sgn()
       chi_sq_diff = norm2(tmp1);      // the diff of old and new soln
 
+      // Check convergence
       bool btmp = toBool(chi_sq_diff < chi_sq_new);
 
-#if 0
-      QDPIO::cout << "Lovlapms: k =" << k <<" chisq_new=" << chi_sq_new << " chisq_diff=" << Real(chi_sq_diff) << endl;
-#endif
-
-      if (! btmp && convP)
+      // If we havent converged globally but the vectors have then error
+      if (! btmp && convP) {
 	QDP_error_exit("vectors converged but not final chi");
-
-      /* convP = convP & btmp;  */
+      }
+      
+      // cnvP = convP & btmp; 
       convP = btmp;
     }
     
   }
 
+  QDPIO::cout << "Overlap Inner Solve (lovlapms): " << k << " iterations " << endl;
+  // End of MULTI SHIFTERY 
 
-  n_count = k;
+  // Now fix up the thing. Multiply in gamma5 if needed 
+  // and then rescale to correct normalisation.
 
   if (isign == PLUS)
   {
@@ -379,7 +430,5 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
 
   // Rescale to the correct normalization 
   chi *= 0.5 * (1 - m_q);
-
-
 }
 
