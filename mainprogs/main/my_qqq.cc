@@ -1,5 +1,5 @@
 /*
- *  $Id: my_qqq.cc,v 1.2 2004-02-11 12:51:35 bjoo Exp $
+ *  $Id: my_qqq.cc,v 1.3 2004-03-29 21:34:13 edwards Exp $
  *
  *  This is the test program for the routine that reads in a quark propagator,
  *  stored in SZIN format, and computes the generalised quark propagators

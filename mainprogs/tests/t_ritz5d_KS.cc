@@ -1,4 +1,4 @@
-// $Id: t_ritz5d_KS.cc,v 1.2 2004-02-11 12:51:36 bjoo Exp $
+// $Id: t_ritz5d_KS.cc,v 1.3 2004-03-29 21:34:13 edwards Exp $
 
 #include <iostream>
 #include <sstream>
