@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eig.h,v 1.7 2004-01-28 16:04:42 bjoo Exp $
+// $Id: eig.h,v 1.8 2004-05-06 16:48:21 bjoo Exp $
 
 /*! \file
  * \brief Eigenvalue measurements
@@ -29,7 +29,7 @@
 
 #ifdef CHROMA_BUILD_WILSON
 #include "eig_w.h"
-#elif CHROMA_BUILD_STAGGERED
+#elif defined CHROMA_BUILD_STAGGERED
 #include "eig_s.h"
 #endif
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linop.h,v 1.16 2004-01-12 14:54:08 bjoo Exp $
+// $Id: linop.h,v 1.17 2004-05-06 16:48:21 bjoo Exp $
 
 /*! \file
  * \brief Linear operators
@@ -21,7 +21,7 @@
 
 #ifdef CHROMA_BUILD_WILSON
 #include "linop_w.h"
-#elif CHROMA_BUILD_STAGGERED
+#elif defined CHROMA_BUILD_STAGGERED
 #include "linop_s.h"
 #endif
 

@@ -1,4 +1,4 @@
-// $Id: io.h,v 1.15 2004-04-16 14:58:29 bjoo Exp $
+// $Id: io.h,v 1.16 2004-05-06 16:48:21 bjoo Exp $
 
 #ifndef __io_h__
 #define __io_h__
@@ -29,9 +29,9 @@
 
 #include "param_io.h"
 #include "fermact_paramio.h"
-#ifdef CHROMA_BUILD_WILSON
+#if defined CHROMA_BUILD_WILSON
 #include "io_w.h"
-#elif CHROMA_BUILD_STAGGERED
+#elif defined CHROMA_BUILD_STAGGERED
 #include "io_s.h"
 #endif
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gauge.h,v 1.11 2004-04-22 16:25:25 bjoo Exp $
+// $Id: gauge.h,v 1.12 2004-05-06 16:48:22 bjoo Exp $
 
 /*! \file
  * \brief Include all gauge utility routines
@@ -28,7 +28,7 @@
 #include "su2extract.h"
 #include "sunfill.h"
 
-#if CHROMA_BUILD_STAGGERED
+#if defined CHROMA_BUILD_STAGGERED
 #include "gauge_s.h"
 #endif
 

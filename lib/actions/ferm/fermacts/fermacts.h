@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermacts.h,v 1.10 2004-01-07 13:50:07 bjoo Exp $
+// $Id: fermacts.h,v 1.11 2004-05-06 16:48:21 bjoo Exp $
 
 /*! \file
  * \brief Fermion actions
@@ -18,7 +18,7 @@
 
 #ifdef CHROMA_BUILD_WILSON
 #include "fermacts_w.h"
-#elif  CHROMA_BUILD_STAGGERED
+#elif defined CHROMA_BUILD_STAGGERED
 #include "fermacts_s.h"
 #endif
 
