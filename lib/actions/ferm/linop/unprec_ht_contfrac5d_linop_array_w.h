@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ht_contfrac5d_linop_array_w.h,v 1.1 2005-01-05 05:39:55 edwards Exp $
+// $Id: unprec_ht_contfrac5d_linop_array_w.h,v 1.2 2005-01-05 21:44:07 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned H_T kernel continued fraction (5D) operator
  */
@@ -38,17 +38,17 @@ namespace Chroma
 				 const Real& OverMass_, 
 				 const Real& _m_q,
 				 int _N5,
-				 const Real& b5,
-				 const Real& c5,
+				 const Real& b5_,
+				 const Real& c5_,
 				 const multi1d<Real>& _alpha,
 				 const multi1d<Real>& _beta,
 				 const bool _isLastZeroP ) :
-      OverMass(OverMass_), m_q(_m_q), N5(_N5), scale_fac(Real(b5+c5)), a5(Real(b5-c5)), 
+      OverMass(OverMass_), m_q(_m_q), N5(_N5), 
       alpha(_alpha), beta(_beta), 
       isLastZeroP(_isLastZeroP) 
     {
       QDPIO::cout << "LinOp isLastZeroP = " << isLastZeroP << endl;
-      init(u_);
+      init(u_,b5_,c5_);
     }
 
     //! Length of DW flavor index/space
@@ -66,7 +66,8 @@ namespace Chroma
 		     enum PlusMinus isign) const;
 
   protected:
-    void init(const multi1d<LatticeColorMatrix>& u);
+    void init(const multi1d<LatticeColorMatrix>& u,
+	      const Real& b5, const Real& c5);
 
   private:
     Handle< LinearOperator<LatticeFermion> > D_w;
@@ -74,8 +75,8 @@ namespace Chroma
     const Real OverMass;
     const Real m_q;
     const int  N5;    // Size of the 5th dimension
-    const Real scale_fac;
-    const Real a5;
+    Real scale_fac;
+    Real a5;
     const multi1d<Real> alpha;
     const multi1d<Real> beta;
     const bool isLastZeroP;

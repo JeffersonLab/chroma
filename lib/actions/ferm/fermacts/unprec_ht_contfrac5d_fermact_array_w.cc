@@ -1,4 +1,4 @@
-// $Id: unprec_ht_contfrac5d_fermact_array_w.cc,v 1.1 2005-01-05 05:39:16 edwards Exp $
+// $Id: unprec_ht_contfrac5d_fermact_array_w.cc,v 1.2 2005-01-05 21:44:07 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned H_T kernel continued fraction (5D) action
  */
@@ -7,7 +7,10 @@
 
 #include "actions/ferm/fermacts/unprec_wilson_fermact_w.h"
 #include "actions/ferm/fermacts/unprec_ht_contfrac5d_fermact_array_w.h"
+
 #include "actions/ferm/linop/unprec_ht_contfrac5d_linop_array_w.h"
+#include "actions/ferm/linop/unprec_wilson_linop_w.h"
+#include "actions/ferm/linop/unprec_dwftransf_linop_w.h"
 
 #include "actions/ferm/linop/lmdagm.h"
 #include "actions/ferm/invert/invcg2_array.h"
@@ -101,13 +104,14 @@ namespace Chroma
       push( xml_out, path);
     }
     
-    xml_out << p.AuxFermAct;
     write(xml_out, "OverMass", p.OverMass);
     write(xml_out, "Mass", p.Mass);
     write(xml_out, "RatPolyDeg", p.RatPolyDeg);
     write(xml_out, "ApproximationType", p.approximation_type);
     write(xml_out, "b5", p.b5);
     write(xml_out, "c5", p.c5);
+    write(xml_out, "ApproxMin", p.ApproxMin);
+    write(xml_out, "ApproxMax", p.ApproxMax);
     
     pop(xml_out);
     
@@ -146,49 +150,37 @@ namespace Chroma
 
 
   void
-  UnprecHTContFrac5DFermActArray::init(Real& scale_fac,
-				       Real& a5,
-				       multi1d<Real>& alpha,
+  UnprecHTContFrac5DFermActArray::init(multi1d<Real>& alpha,
 				       multi1d<Real>& beta) const
   {
     int type = 0;
+
     zolotarev_data *rdata;
-    Real eps;
-
-    switch(params.approximation_type) { 
+    Real epsilon;
+    Real scale_fac;
+				       
+    switch(params.approximation_type) 
+    { 
     case COEFF_TYPE_ZOLOTAREV:
-      scale_fac = Real(1) / params.ApproxMax;
-      eps = params.ApproxMin * scale_fac;
-
-      QDPIO::cout << "Initing Linop with Zolotarev Coefficients" << endl;
-      rdata = zolotarev(toFloat(eps), params.RatPolyDeg, type);    
+      epsilon = params.ApproxMin / params.ApproxMax;
+      QDPIO::cout << "Initing Linop with Zolotarev Coefficients: epsilon = " << epsilon << endl;
+      rdata = zolotarev(toFloat(epsilon), params.RatPolyDeg, type);    
+      scale_fac = params.ApproxMax;
       break;
 
-    case COEFF_TYPE_TANH:
-      scale_fac = Real(1) / params.ApproxMax;
-      eps = params.ApproxMin * scale_fac;
-
-      QDPIO::cout << "Initing Linop with Higham Rep tanh Coefficients" << endl;
-      rdata = higham(toFloat(eps), params.RatPolyDeg);
-
-      break;
     case COEFF_TYPE_TANH_UNSCALED:
+      epsilon = params.ApproxMin;
+      QDPIO::cout << "Initing Linop with Higham Rep tanh Coefficients" << endl;
+      rdata = higham(toFloat(epsilon), params.RatPolyDeg);
       scale_fac = Real(1);
-      eps = params.ApproxMin;
-
-      QDPIO::cout << "Initing Linop with Unscaled Higham Rep tanh Coefficients" << endl;
-      rdata = higham(toFloat(eps), params.RatPolyDeg);
-
       break;
 
     default:
-      // The map system should ensure that we never get here but 
-      // just for style
-      QDPIO::cerr << "Unknown coefficient type: " << params.approximation_type
-		  << endl;
+      QDPIO::cout << "Unsupported Coefficient Type : " << params.approximation_type << endl;
       QDP_abort(1);
-    }
-    
+      break;
+    };
+      
     Real maxerr = (Real)(rdata->Delta);
 
     // Check N5 is good:
@@ -239,11 +231,16 @@ namespace Chroma
     alpha[N5-2] *= gamma[N5-2];
 
     
-    QDPIO::cout << "UnprecHTContfrac5d: " << endl
-                << "Degree=" << params.RatPolyDeg 
-		<< "N5=" << N5 << " scale=" << scale_fac
+    // Rescale the diagonal terms
+    for(int i=0; i < beta.size(); i++) {
+      beta[i] *= scale_fac;
+    }
+    
+    QDPIO::cout << "UnprecHTContfrac5d:" << endl
+                << " Degree=" << params.RatPolyDeg <<
+		<< " N5=" << N5 << " scale=" << scale_fac
 		<< " Mass=" << params.Mass << endl ;
-    QDPIO::cout << "Approximation on [-1,eps] U [eps,1] with eps = " << eps <<endl;
+    QDPIO::cout << "Approximation on [-1,eps] U [eps,1] with eps = " << epsilon <<endl;
     
     QDPIO::cout << "Maximum error | R(x) - sgn(x) | <= Delta = " << maxerr << endl;
     /*
@@ -300,24 +297,20 @@ namespace Chroma
 
     multi1d<Real> alpha;
     multi1d<Real> beta;
-    Real scale_factor;
-    Real a5;
       
-    init(scale_factor, a5, alpha, beta);
+    init(alpha, beta);
       
     return new UnprecHTContFrac5DLinOpArray( state->getLinks(),
 					     params.OverMass,
 					     params.Mass,
 					     N5,
-					     b5,
-					     c5,
-					     scale_factor,
+					     params.b5,
+					     params.c5,
 					     alpha,
 					     beta,
 					     isLastZeroP);
   }
   
-
 
 
   //! Produce a M^dag.M linear operator for this action
@@ -458,8 +451,11 @@ namespace Chroma
 					const InvertParam_t& invParam) const
   {
     const multi1d<LatticeColorMatrix>& u = state->getLinks();
-    Handle< const LinearOperator<LatticeFermion> > D_w(new UnprecWilsonLinOp(u, Real(-OverMass)));
-    Handle< const LinearOperator<LatticeFermion> > D_denum(new UnprecDWFTransfDenLinOp(u, a5, D_w));
+    Real a5 = params.b5 - params.c5;
+    Real WilsonMass = -params.OverMass;
+
+    Handle< LinearOperator<LatticeFermion> > D_w(new UnprecWilsonLinOp(u, WilsonMass));
+    Handle< LinearOperator<LatticeFermion> > D_denum(new UnprecDWFTransfDenLinOp(u, a5, D_w));
 
     return new OvHTCFZ5DQprop<LatticeFermion>(Handle< const LinearOperator< multi1d<LatticeFermion> > >(linOp(state)),
 					      D_denum,

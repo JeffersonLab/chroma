@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linop_w.h,v 1.16 2004-12-10 02:54:24 edwards Exp $
+// $Id: linop_w.h,v 1.17 2005-01-05 21:44:07 edwards Exp $
 
 /*! \file
  * \brief Linear operators
@@ -56,6 +56,8 @@
 #include "unprec_ovlap_contfrac5d_linop_array_w.h"
 #include "unprec_ovlap_contfrac5d_nonhermop_array_w.h"
 #include "prec_ovlap_contfrac5d_linop_array_w.h"
+#include "unprec_ht_contfrac5d_linop_array_w.h"
+
 #include "lgherm_w.h"
 
 #include "unprec_dwftransf_linop_w.h"

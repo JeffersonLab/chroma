@@ -1,4 +1,4 @@
-// $Id: unprec_ht_contfrac5d_linop_array_w.cc,v 1.1 2005-01-05 05:39:55 edwards Exp $
+// $Id: unprec_ht_contfrac5d_linop_array_w.cc,v 1.2 2005-01-05 21:44:07 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned H_T kernel continued fraction (5D) operator
  */
@@ -13,8 +13,12 @@ namespace Chroma
 { 
   // Initialize
   void
-  UnprecHTContFrac5DLinOpArray::init(const multi1d<LatticeColorMatrix>& u)
+  UnprecHTContFrac5DLinOpArray::init(const multi1d<LatticeColorMatrix>& u,
+				     const Real& b5, const Real& c5)
   {
+    scale_fac = b5 + c5;
+    a5 = b5 - c5;
+
     D_w = new UnprecWilsonLinOp(u, Real(-OverMass));
     D_denum = new UnprecDWFTransfDenLinOp(u, a5, D_w);
   }

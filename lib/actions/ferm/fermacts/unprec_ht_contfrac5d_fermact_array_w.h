@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ht_contfrac5d_fermact_array_w.h,v 1.1 2005-01-05 05:39:16 edwards Exp $
+// $Id: unprec_ht_contfrac5d_fermact_array_w.h,v 1.2 2005-01-05 21:44:07 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned H_T kernel continued fraction (5D) action
  */
@@ -30,7 +30,6 @@ namespace Chroma
     //! Read params from XML
     UnprecHTContFrac5DFermActParams(XMLReader& in, const std::string& path);
   
-    
     Real OverMass;  //!<  Wilson-operator mass
     Real Mass;      //!<  Fermion Mass
     Real b5;        //!<  Mobius b5
@@ -39,8 +38,6 @@ namespace Chroma
     Real ApproxMax; //!<  Approximate max eigenvalue of H_T
     int RatPolyDeg; //!<  Degree of the Rational Poly
     CoeffType approximation_type;  //!< ZOLOTAREV | TANH | Other approximation coeffs
-    std::string AuxFermAct;        //!<  The auxiliary ferm act
-    std::string AuxFermActGrp;     //!<  The group name for the auxiliary fermion action
   };
 
 
@@ -129,9 +126,7 @@ namespace Chroma
 
   protected:
     //! Helper in construction
-    void init(Real& scale_fac,
-	      Real& a5,
-	      multi1d<Real>& alpha,
+    void init(multi1d<Real>& alpha,
 	      multi1d<Real>& beta) const;
 
   private:
