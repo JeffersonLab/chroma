@@ -1,6 +1,6 @@
-// $Id: multi_propagator.cc,v 1.4 2004-04-20 13:08:12 bjoo Exp $
-// $Log: multi_propagator.cc,v $
-// Revision 1.4  2004-04-20 13:08:12  bjoo
+// $Id: multi_propagator_comp.cc,v 1.1 2004-04-20 13:08:12 bjoo Exp $
+// $Log: multi_propagator_comp.cc,v $
+// Revision 1.1  2004-04-20 13:08:12  bjoo
 // Added multi mass component based solves and propagator collection program
 //
 // Revision 1.3  2004/04/16 22:03:59  bjoo
@@ -79,12 +79,53 @@ struct Prop_t
   QDP_volfmt_t    prop_volfmt;
 };
 
-struct Propagator_input_t
+
+struct Component_t { 
+  int color;
+  int spin;
+};
+
+struct PropagatorComponent_input_t
 {
   ChromaMultiProp_t     param;
   Cfg_t            cfg;
   Prop_t           prop;
+  multi1d<Component_t> components;
 };
+
+
+void read(XMLReader& xml, const string& path, Component_t &comp)
+{
+  XMLReader top(xml,path);
+  try {
+    read(top, "color", comp.color);
+    read(top, "spin",  comp.spin);
+  }
+  catch( const string& e ) {
+    QDPIO::cerr << "Caught Exception : " << e << endl;
+    QDP_abort(1);
+  }  
+  if( comp.color < 0 || comp.color >= Nc ) { 
+    QDPIO::cerr << "Component color >= Nc. color = " << comp.color << endl;
+    QDP_abort(1);
+  }
+
+  if( comp.spin < 0 || comp.spin >= Ns ) { 
+    QDPIO::cerr << "Component spin >= Ns.  spin = " << comp.spin << endl;
+    QDP_abort(1);
+  }
+}
+
+void write(XMLWriter& xml, const string& path, const Component_t &comp)
+{
+  
+  push( xml, path );
+
+  write(xml, "color", comp.color);
+  write(xml, "spin",  comp.spin);
+  
+  pop( xml );
+}
 
 
 // Propagator parameters
@@ -99,7 +140,7 @@ void read(XMLReader& xml, const string& path, Prop_t& input)
 
 
 // Reader for input parameters
-void read(XMLReader& xml, const string& path, Propagator_input_t& input)
+void read(XMLReader& xml, const string& path, PropagatorComponent_input_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -114,6 +155,8 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
 
     // Read in the source/propagator info
     read(inputtop, "Prop", input.prop);
+
+    read(inputtop, "Components", input.components);
   }
   catch (const string& e) 
   {
@@ -123,15 +166,13 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
 }
 
 // Forward declaration
-void multiPropagatorZolotarev4D(multi1d<LatticeColorMatrix>& u,
-				const Handle< FermBC<LatticeFermion> >&  fbc,
-				const LatticePropagator& quark_prop_source,
-				multi1d<LatticePropagator>& quark_propagator,
-				const Zolotarev4DFermActParams& zolo4d,
-				const MultiInvertParam_t& invParam,
-				const multi1d<Real>& masses,
-				int& ncg_had,
-				XMLWriter& xml_out);
+void saveComponents(const ChromaMultiProp_t& param, 
+		    const Prop_t& prop,
+		    const PropSource_t& source_header,
+		    const Component_t& component,
+		    XMLReader& gauge_xml,
+		    XMLWriter& xml_out,
+		    const multi1d<LatticeFermion>& psi);
 //! Propagator generation
 /*! \defgroup propagator Propagator generation
  *  \ingroup main
@@ -145,20 +186,19 @@ int main(int argc, char **argv)
   QDP_initialize(&argc, &argv);
 
   // Input parameter structure
-  Propagator_input_t  input;
+  PropagatorComponent_input_t  input;
 
   // Instantiate xml reader for DATA
   XMLReader xml_in("DATA");
 
   // Read data
-  read(xml_in, "/propagator", input);
+  read(xml_in, "/multiPropagatorComp", input);
 
-  
   // Specify lattice size, shape, etc.
   Layout::setLattSize(input.param.nrow);
   Layout::create();
 
-  QDPIO::cout << "Propagator" << endl;
+  QDPIO::cout << "multiPropagatorComp" << endl;
 
   // Read in the configuration along with relevant information.
   multi1d<LatticeColorMatrix> u(Nd);
@@ -208,7 +248,7 @@ int main(int argc, char **argv)
 
   // Instantiate XML writer for XMLDAT
   XMLFileWriter xml_out("XMLDAT");
-  push(xml_out, "propagator");
+  push(xml_out, "multiPropagatorComp");
 
   proginfo(xml_out);    // Print out basic program info
 
@@ -274,21 +314,185 @@ int main(int argc, char **argv)
   //
   int num_mass = input.param.MultiMasses.size();
 
-  multi1d<LatticePropagator> quark_propagator(num_mass);
+  multi1d<LatticeFermion> psi(num_mass);
   int ncg_had = 0;
 
   //
   // Initialize fermion action
   //
   switch (input.param.FermActHandle->getFermActType()) {
+
+
+    /***********************************************************************/
+    /* 4D ZOlotarev                                                        */
+    /***********************************************************************/
+
   case FERM_ACT_ZOLOTAREV_4D:
     {
       QDPIO::cout << "FERM_ACT_ZOLOTAREV_4D" << endl;
       const Zolotarev4DFermActParams& zolo4d = dynamic_cast<const Zolotarev4DFermActParams& > (*(input.param.FermActHandle));
+      
+      multi1d<Real> lambda_lo;
+      Real lambda_hi;
+      multi1d<LatticeFermion> eigv_lo;
+      
+      UnprecWilsonTypeFermAct<LatticeFermion>* S_aux;
+      XMLBufferWriter zolo_xml;
 
-      // Short hand...
-      multiPropagatorZolotarev4D(u,fbc,quark_prop_source, quark_propagator, zolo4d, input.param.invParam, input.param.MultiMasses, ncg_had, xml_out);
-		      
+	
+      // Get the auxiliary fermAct
+      switch( zolo4d.AuxFermActHandle->getFermActType() ) {
+      case FERM_ACT_WILSON:
+	{
+	  // Upcast
+	  const WilsonFermActParams& wils = dynamic_cast<const WilsonFermActParams &>( *(zolo4d.AuxFermActHandle));
+	  
+	  //Get the FermAct
+	  S_aux = new UnprecWilsonFermAct(fbc, wils.Mass);
+	  if( S_aux == 0x0 ) { 
+	    QDPIO::cerr << "Unable to instantiate S_aux " << endl;
+	    QDP_abort(1);
+	  }
+	
+	      // Read Eigenvectors
+	  if( zolo4d.StateInfo.NWilsVec != 0 ) { 
+	    ChromaWilsonRitz_t ritz_header;
+	    readEigen(ritz_header, lambda_lo, eigv_lo, lambda_hi, 
+		      zolo4d.StateInfo.eigen_io.eigen_file,
+		      zolo4d.StateInfo.NWilsVec,
+		      QDPIO_SERIAL);
+	    
+	    push(xml_out, "EigenSystem");
+	    
+	    write(xml_out, "OriginalRitzHeader", ritz_header);
+	    write(xml_out, "lambda_lo", lambda_lo);
+	    write(xml_out, "lambda_high", lambda_hi);
+	    
+	    // Test the low eigenvectors
+	    Handle< const ConnectState > wils_connect_state = S_aux->createState(u);
+	    Handle< const LinearOperator<LatticeFermion> > H = S_aux->gamma5HermLinOp(wils_connect_state);
+	    
+	    multi1d<Double> check_norm(zolo4d.StateInfo.NWilsVec);
+	    multi1d<Double> check_norm_rel(zolo4d.StateInfo.NWilsVec);
+	    for(int i=0; i < zolo4d.StateInfo.NWilsVec ; i++) { 
+	      LatticeFermion Me;
+	      (*H)(Me, eigv_lo[i], PLUS);
+	      
+	      LatticeFermion lambda_e;
+	      
+	      lambda_e = lambda_lo[i]*eigv_lo[i];
+	      LatticeFermion r_norm = Me - lambda_e;
+	      check_norm[i] = sqrt(norm2(r_norm));
+	      check_norm_rel[i] = check_norm[i]/fabs(Double(lambda_lo[i]));
+	      
+	      QDPIO::cout << "Eigenpair " << i << " Resid Norm = " 
+			  << check_norm[i] << " Resid Rel Norm = " << check_norm_rel[i] << endl;
+	    }
+	    write(xml_out, "eigen_norm", check_norm);
+	    write(xml_out, "eigen_rel_norm", check_norm_rel);
+	    pop(xml_out); // Eigensystem
+	    
+	  }
+	}
+	break;
+      default:
+	QDPIO::cerr << "Auxiliary Fermion Action Unsupported" << endl;
+	QDP_abort(1);
+      }
+      
+  
+      // Drop AuxFermAct into a Handle immediately.
+      // This should free things up at the end
+      Handle<UnprecWilsonTypeFermAct<LatticeFermion> >  S_w(S_aux);
+      
+      
+      if( zolo4d.StateInfo.NWilsVec == 0 ) { 
+	QDPIO::cout << "Zolo4D Approx Min = " << zolo4d.StateInfo.ApproxMin << endl;
+	QDPIO::cout << "Zolo4D Approx Max = " << zolo4d.StateInfo.ApproxMax << endl;
+      }
+      else { 
+	QDPIO::cout << "Zolo4D Approx range from Eigenvalues" << endl;
+      }
+      
+      
+      // Construct Fermact
+      Zolotarev4DFermAct S(fbc, S_w, 
+			   zolo4d.Mass,
+			   zolo4d.RatPolyDeg, 
+			   zolo4d.RsdCGInner,
+			   zolo4d.MaxCGInner,
+			   zolo_xml,
+			   zolo4d.ReorthFreqInner);
+
+      // Get the connect state
+      const ConnectState* connect_state_ptr;
+      
+      if( zolo4d.StateInfo.NWilsVec == 0 ) { 
+	
+	// NO EV-s so use ApproxMin and ApproxMax from StateInfo
+	connect_state_ptr = S.createState(u, 
+					  zolo4d.StateInfo.ApproxMin,
+					  zolo4d.StateInfo.ApproxMax);
+      }
+      else {
+	
+	connect_state_ptr = S.createState(u,
+					  lambda_lo,
+					  eigv_lo,
+					  lambda_hi);
+      }
+      
+      
+      // Stuff the pointer into a handle. Now, the handle owns the data.
+      Handle<const ConnectState> state(connect_state_ptr);
+      
+
+      for(int comp = 0; comp < input.components.size(); comp++) { 
+	
+	LatticeFermion chi;
+	PropToFerm(quark_prop_source, chi, input.components[comp].color,
+		   input.components[comp].spin);
+
+
+	// Zero out initial guess
+	for(int i=0; i < num_mass; i++) {
+	  psi[i] = zero;
+	}
+
+	// Normalise source
+	Real fact = Real(1) / sqrt(norm2(chi));
+	chi *= fact;
+
+	int n_count = 0;
+	S.multiQprop(psi, 
+		     input.param.MultiMasses, state, chi, 
+		     input.param.invParam.invType, 
+		     input.param.invParam.RsdCG, 
+		     1, 
+		     input.param.invParam.MaxCG, 
+		     n_count);
+	
+
+	// Remove source normalisation
+	fact = Real(1) / fact;
+	for(int i=0; i < num_mass; i++) { 
+	  psi[i] *= fact;
+	  
+	}
+
+	push(xml_out,"Relaxation_Iterations");
+	write(xml_out, "ncg_had", n_count);
+	pop(xml_out);
+
+	saveComponents( input.param,
+			input.prop,
+			source_header,
+			input.components[comp],
+			gauge_xml,
+			xml_out,
+			psi );
+
+      }
     }
     break;
   default:
@@ -296,65 +500,6 @@ int main(int argc, char **argv)
     QDP_abort(1);
   }
 
-  push(xml_out,"Relaxation_Iterations");
-  write(xml_out, "ncg_had", ncg_had);
-  pop(xml_out);
-
-  // Sanity check - write out the propagator (pion) correlator in the Nd-1 direction
-  {
-    // Initialize the slow Fourier transform phases
-    SftMom phases(0, true, Nd-1);
-    for(int m=0; m < num_mass; m++) { 
-      multi1d<Double> prop_corr = sumMulti(localNorm2(quark_propagator[m]), 
-					   phases.getSet());
-
-      push(xml_out, "Prop_correlator");
-      write(xml_out, "Number", m);
-      write(xml_out, "Mass", input.param.MultiMasses[m]);
-      write(xml_out, "prop_corr", prop_corr);
-      pop(xml_out);
-    }
-  }
-
-  xml_out.flush();
-
-  // Save the propagators
-  // ONLY SciDAC output format is supported!
-  for(int m=0; m < num_mass; m++) {
-    XMLBufferWriter file_xml;
-    push(file_xml, "propagator");
-    int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
-    write(file_xml, "id", id);
-    pop(file_xml);
-
-    
-
-    XMLBufferWriter record_xml;
-    push(record_xml, "Propagator");
-
-    // Jiggery pokery. Substitute the ChromaMultiProp_t with a 
-    // ChromaProp. This is a pisser because of the FermActParams
-    // THIS IS NOT TOTALLY KOSHER AS IT CHANGES THE MASS IN INPUT
-    // PARAM as well. However, at this stage we have no further need
-    // for input param.
-    // I Will eventually write Copy Constructors.
-
-    ChromaProp_t out_param(input.param, m);
- 
-    write(record_xml, "ForwardProp", out_param);
-    write(record_xml, "PropSource", source_header);
-    write(record_xml, "Config_info", gauge_xml);
-    pop(record_xml);
-
-    ostringstream outfile;
-    outfile << input.prop.prop_file << "_" << setw(3) << setfill('0') << m;
-
-    QDPIO::cout << "Attempting to write " << outfile.str() << endl;
-   
-    // Write the source
-    writeQprop(file_xml, record_xml, quark_propagator[m],
-	       outfile.str(), input.prop.prop_volfmt, QDPIO_SERIAL);
-  }
 
   pop(xml_out);  // propagator
   
@@ -367,141 +512,66 @@ int main(int argc, char **argv)
   exit(0);
 }
 
-
-// This is too much and too ugly to be inlined
-void multiPropagatorZolotarev4D(multi1d<LatticeColorMatrix>& u,
-			   const Handle< FermBC<LatticeFermion> >&  fbc,
-			   const LatticePropagator& quark_prop_source,
-			   multi1d<LatticePropagator>& quark_propagator,
-			   const Zolotarev4DFermActParams& zolo4d,
-			   const MultiInvertParam_t& invParam,
-			   const multi1d<Real>& masses,
-			   int& ncg_had,
-			   XMLWriter& xml_out)
+void saveComponents(const ChromaMultiProp_t& param, 
+		    const Prop_t& prop,
+		    const PropSource_t& source_header,
+		    const Component_t& component,
+		    XMLReader& gauge_xml,
+		    XMLWriter& xml_out,
+		    const multi1d<LatticeFermion>& psi)
 {
 
-  UnprecWilsonTypeFermAct<LatticeFermion>* S_aux;
-  XMLBufferWriter zolo_xml;
+  // Initialize the slow Fourier transform phases
+  int num_mass = param.MultiMasses.size();
 
-  // Get the auxiliary fermAct
-  switch( zolo4d.AuxFermActHandle->getFermActType() ) {
-  case FERM_ACT_WILSON:
-    {
-      // Upcast
-      const WilsonFermActParams& wils = dynamic_cast<const WilsonFermActParams &>( *(zolo4d.AuxFermActHandle));
+  SftMom phases(0, true, Nd-1);
+  for(int m=0; m < num_mass; m++) { 
 
-      //Get the FermAct
-      S_aux = new UnprecWilsonFermAct(fbc, wils.Mass);
-      if( S_aux == 0x0 ) { 
-	QDPIO::cerr << "Unable to instantiate S_aux " << endl;
-	QDP_abort(1);
-      }
+    multi1d<Double> prop_corr = sumMulti(localNorm2(psi[m]), 
+					 phases.getSet());
+	    
+    push(xml_out, "PropComp_correlator");
+    write(xml_out, "Number", m);
+    write(xml_out, "Mass", param.MultiMasses[m]);
+    write(xml_out, "prop_corr", prop_corr);
+    pop(xml_out);
 
-    }
-    break;
-  default:
-    QDPIO::cerr << "Auxiliary Fermion Action Unsupported" << endl;
-    QDP_abort(1);
-  }
-  
-  // Drop AuxFermAct into a Handle immediately.
-  // This should free things up at the end
-  Handle<UnprecWilsonTypeFermAct<LatticeFermion> >  S_w(S_aux);
+    XMLBufferWriter file_xml;
+    push(file_xml, "propagatorComponent");
+    int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
+    write(file_xml, "id", id);
+    pop(file_xml);
 
-  
-  if( zolo4d.StateInfo.NWilsVec == 0 ) { 
-    QDPIO::cout << "Zolo4D Approx Min = " << zolo4d.StateInfo.ApproxMin << endl;
-    QDPIO::cout << "Zolo4D Approx Max = " << zolo4d.StateInfo.ApproxMax << endl;
-  }
-  else { 
-    QDPIO::cout << "Zolo4D Approx range from Eigenvalues" << endl;
-  }
-  
+    
+
+    XMLBufferWriter record_xml;
+    push(record_xml, "PropagatorComponent");
+    
+    // Jiggery pokery. Substitute the ChromaMultiProp_t with a 
+    // ChromaProp. This is a pisser because of the FermActParams
+    // THIS IS NOT TOTALLY KOSHER AS IT CHANGES THE MASS IN INPUT
+    // PARAM as well. However, at this stage we have no further need
+    // for input param.
+    // I Will eventually write Copy Constructors.
+    
+    ChromaProp_t out_param(param, m);
+ 
+    write(record_xml, "ForwardProp", out_param);
+    write(record_xml, "PropSource", source_header);
+    write(record_xml, "Config_info", gauge_xml);
+    write(record_xml, "Component", component);
+    
+    pop(record_xml);
+    
+    ostringstream outfile;
+    outfile << prop.prop_file << "_component_s" << component.spin
+	    << "_c" << component.color << "_" 
+	    << setw(3) << setfill('0') << m;
 	  
-  // Construct Fermact
-  Zolotarev4DFermAct S(fbc, S_w, 
-		       zolo4d.Mass,
-		       zolo4d.RatPolyDeg, 
-		       zolo4d.RsdCGInner,
-		       zolo4d.MaxCGInner,
-		       zolo_xml,
-		       zolo4d.ReorthFreqInner);
-
-
-  // If NWilsVec == 0 these dont take up much room
-  multi1d<Real> lambda_lo(zolo4d.StateInfo.NWilsVec);
-  multi1d<LatticeFermion> eigv_lo(zolo4d.StateInfo.NWilsVec);
-  Real lambda_hi;
-  
-  // Get the connect state
-  const ConnectState* connect_state_ptr;
-  
-  if( zolo4d.StateInfo.NWilsVec == 0 ) { 
-
-    // NO EV-s so use ApproxMin and ApproxMax from StateInfo
-    connect_state_ptr = S.createState(u, 
-				      zolo4d.StateInfo.ApproxMin,
-				      zolo4d.StateInfo.ApproxMax);
+    QDPIO::cout << "Attempting to write " << outfile.str() << endl;
+	  
+    // Write the source
+    writeFermion(file_xml, record_xml, psi[m],
+		 outfile.str(), prop.prop_volfmt, QDPIO_SERIAL);
   }
-  else {
-    
-    // Read Eigenvectors
-    ChromaWilsonRitz_t ritz_header;
-    readEigen(ritz_header, lambda_lo, eigv_lo, lambda_hi, 
-	      zolo4d.StateInfo.eigen_io.eigen_file,
-	      zolo4d.StateInfo.NWilsVec,
-	      QDPIO_SERIAL);
-    
-    push(xml_out, "EigenSystem");
-
-    write(xml_out, "OriginalRitzHeader", ritz_header);
-    write(xml_out, "lambda_lo", lambda_lo);
-    write(xml_out, "lambda_high", lambda_hi);
-    
-    // Test the low eigenvectors
-    Handle< const ConnectState > wils_connect_state = S_w->createState(u);
-    Handle< const LinearOperator<LatticeFermion> > H = S_w->gamma5HermLinOp(wils_connect_state);
-	      
-    multi1d<Double> check_norm(zolo4d.StateInfo.NWilsVec);
-    multi1d<Double> check_norm_rel(zolo4d.StateInfo.NWilsVec);
-    for(int i=0; i < zolo4d.StateInfo.NWilsVec ; i++) { 
-      LatticeFermion Me;
-      (*H)(Me, eigv_lo[i], PLUS);
-      
-      LatticeFermion lambda_e;
-      
-      lambda_e = lambda_lo[i]*eigv_lo[i];
-      LatticeFermion r_norm = Me - lambda_e;
-      check_norm[i] = sqrt(norm2(r_norm));
-      check_norm_rel[i] = check_norm[i]/fabs(Double(lambda_lo[i]));
-
-      QDPIO::cout << "Eigenpair " << i << " Resid Norm = " 
-		  << check_norm[i] << " Resid Rel Norm = " << check_norm_rel[i] << endl;
-    }
-    write(xml_out, "eigen_norm", check_norm);
-    write(xml_out, "eigen_rel_norm", check_norm_rel);
-
-      
-    connect_state_ptr = S.createState(u,
-				      lambda_lo,
-				      eigv_lo,
-				      lambda_hi);
-  }
-
-  pop(xml_out); // Eigensystem 
-
-  // Stuff the pointer into a handle. Now, the handle owns the data.
-  Handle<const ConnectState> state(connect_state_ptr);
-  
-  // That's the end of it
-  multiQuarkProp4(quark_propagator, 
-		  xml_out, 
-		  quark_prop_source,
-		  S, 
-		  state, 
-		  invParam.invType, 
-		  masses,
-		  invParam.RsdCG, 
-		  invParam.MaxCG, 
-		  ncg_had);	  
 }

@@ -1,4 +1,4 @@
-// $Id: quarkprop4_multi_w.cc,v 1.2 2004-02-11 12:51:33 bjoo Exp $
+// $Id: quarkprop4_multi_w.cc,v 1.3 2004-04-20 13:08:11 bjoo Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -20,7 +20,7 @@ void multiQuarkProp4_m(multi1d<LatticePropagator>& q_sol,
 		       Handle<const ConnectState> state,
 		       enum InvType invType,
 		       const multi1d<Real>& masses,
-		       const Real& RsdCG, 
+		       const multi1d<Real>& RsdCG, 
 		       int MaxCG, int& ncg_had)
 {
   START_CODE("multiQuarkProp4");
@@ -34,12 +34,6 @@ void multiQuarkProp4_m(multi1d<LatticePropagator>& q_sol,
 
   // Grab a RsdCG like array to pass down.
   // Set all elements to RsdCG
-  multi1d<Real> RsdCGMulti(masses.size());
-  for(int i=0; i < masses.size(); i++) { 
-    RsdCGMulti[i] = RsdCG;
-  }
-
-
   ncg_had = 0;
 
   multi1d<LatticeFermion> psi(masses.size());
@@ -69,7 +63,7 @@ void multiQuarkProp4_m(multi1d<LatticePropagator>& q_sol,
 	psi[i] = zero;
       }
 
-      S_f.multiQprop(psi, masses, state, chi, invType, RsdCGMulti, 
+      S_f.multiQprop(psi, masses, state, chi, invType, RsdCG, 
 		     1, MaxCG, n_count);
 
 
@@ -120,7 +114,7 @@ void multiQuarkProp4(multi1d<LatticePropagator>& q_sol,
 		Handle<const ConnectState> state,
 		enum InvType invType,
 		const multi1d<Real>& masses,
-		const Real& RsdCG, 
+		const multi1d<Real>& RsdCG, 
 		int MaxCG, int& ncg_had)
 {
   multiQuarkProp4_m(q_sol, xml_out, q_src, S_f, state, invType, masses, 

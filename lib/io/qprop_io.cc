@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 1.15 2004-04-16 17:04:49 bjoo Exp $
+// $Id: qprop_io.cc,v 1.16 2004-04-20 13:08:11 bjoo Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -326,6 +326,17 @@ void read(XMLReader& xml, const string& path, ChromaMultiProp_t& param)
 		<< " unsupported." << endl;
     QDP_abort(1);
   }
+
+  // Sanity check. No of residuals must be same as no of masses
+  if ( param.MultiMasses.size() != param.invParam.RsdCG.size() ) { 
+    QDPIO::cerr << "Number of Masses in param.MultiMasses (" 
+		<< param.MultiMasses.size() 
+		<< ") differs from no of RsdCGs in param.invParam.RsdCG (" 
+		<< param.invParam.RsdCG.size() << ")" << endl;
+
+    QDP_abort(1);
+  }
+
 }
 
 
@@ -505,6 +516,7 @@ void writeQprop(XMLBufferWriter& file_xml,
   close(to);
 }
 
+
 // Write a Chroma propagator
 /*
  * \param file_xml     file header ( Read )
@@ -564,5 +576,44 @@ void readQprop(XMLReader& file_xml,
 }
 
 
+
+
+// Write a Chroma Fermion Field (eg prop_component)
+/*
+ * \param file_xml     file header ( Read )
+ * \param record_xml   xml holding propagator info ( Read )
+ * \param fermion      fermion field( Read )
+ * \param file         path ( Read )
+ * \param volfmt       either QDPIO_SINGLEFILE, QDPIO_MULTIFILE ( Read )
+ * \param serpar       either QDPIO_SERIAL, QDPIO_PARALLEL ( Read )
+ */    
+void writeFermion(XMLBufferWriter& file_xml,
+		XMLBufferWriter& record_xml, const LatticeFermion& fermion,
+		const string& file, 
+		QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
+{
+  QDPFileWriter to(file_xml,file,volfmt,serpar,QDPIO_OPEN);
+  write(to,record_xml,fermion);
+  close(to);
+}
+
+// Read a Chroma Fermion Field
+/*
+ * \param file_xml     file header ( Write )
+ * \param record_xml   xml holding propagator info ( Write )
+ * \param fermion      The Fermion ( Write )
+ * \param file         path ( Read )
+ * \param serpar       either QDPIO_SERIAL, QDPIO_PARALLEL ( Read )
+ */    
+void readFermion(XMLReader& file_xml,
+		 XMLReader& record_xml, 
+		 LatticeFermion& fermion,
+		 const string& file, 
+		 QDP_serialparallel_t serpar)
+{
+  QDPFileReader to(file_xml,file,serpar);
+  read(to,record_xml,fermion);
+  close(to);
+}
 
 

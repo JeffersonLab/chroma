@@ -1,4 +1,4 @@
-// $Id: param_io.cc,v 1.21 2004-04-15 14:43:24 bjoo Exp $
+// $Id: param_io.cc,v 1.22 2004-04-20 13:08:11 bjoo Exp $
 /*! \file
  *  \brief Various parameter readers/writers for main programs
  */
@@ -379,6 +379,18 @@ void read(XMLReader& xml, const string& path, InvertParam_t& param)
   param.MROver = 1;
 }
 
+//! Read inverter parameters
+void read(XMLReader& xml, const string& path, MultiInvertParam_t& param)
+{
+  XMLReader paramtop(xml, path);
+
+  read(paramtop, "invType", param.invType);
+  read(paramtop, "RsdCG", param.RsdCG);
+  read(paramtop, "MaxCG", param.MaxCG);
+
+  param.MROver = 1;
+}
+
 
 //---------------------------- Writers -----------------------------
 //! Write a QDP volume format type
@@ -662,6 +674,19 @@ void write(XMLWriter& xml, const string& path, const ChiralParam_t& param)
 
 //! Write inverter parameters
 void write(XMLWriter& xml, const string& path, const InvertParam_t& param)
+{
+  push(xml, path);
+
+  write(xml, "invType", param.invType);
+  write(xml, "RsdCG", param.RsdCG);
+  write(xml, "MaxCG", param.MaxCG);
+  write(xml, "MROver", param.MROver);
+
+  pop(xml);
+}
+
+//! Write inverter parameters
+void write(XMLWriter& xml, const string& path, const MultiInvertParam_t& param)
 {
   push(xml, path);
 

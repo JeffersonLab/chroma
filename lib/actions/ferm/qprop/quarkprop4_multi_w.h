@@ -25,6 +25,6 @@ void multiQuarkProp4(multi1d<LatticePropagator>& q_sol,
 		     Handle<const ConnectState> state,
 		     enum InvType invType,
 		     const multi1d<Real>& masses,
-		     const Real& RsdCG, 
+		     const multi1d<Real>& RsdCG, 
 		     int MaxCG, int& ncg_had);
 #endif

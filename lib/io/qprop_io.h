@@ -1,4 +1,4 @@
-// $Id: qprop_io.h,v 1.10 2004-04-16 17:04:49 bjoo Exp $
+// $Id: qprop_io.h,v 1.11 2004-04-20 13:08:11 bjoo Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -72,7 +72,7 @@ class ChromaMultiProp_t {
   // Uninitialised to start with (should hold null pointer)
   FermActParams* FermActHandle;
   
-  InvertParam_t   invParam;   // Inverter parameters
+  MultiInvertParam_t   invParam;   // Inverter parameters
   multi1d<int>    boundary;
   multi1d<int>    nrow;          // lattice size
  
@@ -98,13 +98,19 @@ class ChromaProp_t {
   ChromaProp_t(void) { FermActHandle = 0x0 ; }
   ~ChromaProp_t(void) { if ( FermActHandle != 0x0 ) delete FermActHandle ; }
 
-  ChromaProp_t(const ChromaMultiProp_t &p, int m) : version(p.version), FermTypeP(p.FermTypeP), invParam(p.invParam), boundary(p.boundary), nrow(p.nrow) {
+  ChromaProp_t(const ChromaMultiProp_t &p, int m) : version(p.version), FermTypeP(p.FermTypeP), boundary(p.boundary), nrow(p.nrow) {
     
     // Clone through virtualt fucntions
     FermActHandle = p.FermActHandle->clone();
 
     // Set up the mass
     FermActHandle->setMass( p.MultiMasses[m] );
+
+    // Get the right inv param
+    invParam.invType = p.invParam.invType;
+    invParam.MROver  = p.invParam.MROver;
+    invParam.MaxCG   = p.invParam.MaxCG;
+    invParam.RsdCG   = p.invParam.RsdCG[m];
   }
 
     
@@ -204,6 +210,35 @@ void readQprop(XMLReader& file_xml,
 	       XMLReader& record_xml, LatticePropagator& quark_prop,
 	       const string& file, 
 	       QDP_serialparallel_t serpar);
+
+// Write a Chroma Fermion Field (eg prop_component)
+/*
+ * \param file_xml     file header ( Read )
+ * \param record_xml   xml holding propagator info ( Read )
+ * \param fermion      fermion field( Read )
+ * \param file         path ( Read )
+ * \param volfmt       either QDPIO_SINGLEFILE, QDPIO_MULTIFILE ( Read )
+ * \param serpar       either QDPIO_SERIAL, QDPIO_PARALLEL ( Read )
+ */    
+void writeFermion(XMLBufferWriter& file_xml,
+		  XMLBufferWriter& record_xml, const LatticeFermion& fermion,
+		  const string& file, 
+		  QDP_volfmt_t volfmt, QDP_serialparallel_t serpar);
+
+
+// Read a Chroma Fermion Field
+/*
+ * \param file_xml     file header ( Write )
+ * \param record_xml   xml holding propagator info ( Write )
+ * \param fermion      The Fermion ( Write )
+ * \param file         path ( Read )
+ * \param serpar       either QDPIO_SERIAL, QDPIO_PARALLEL ( Read )
+ */    
+void readFermion(XMLReader& file_xml,
+		 XMLReader& record_xml, 
+		 LatticeFermion& fermion,
+		 const string& file, 
+		 QDP_serialparallel_t serpar);
 
 /*! @} */  // end of group io
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: param_io.h,v 1.15 2004-04-15 14:43:24 bjoo Exp $
+// $Id: param_io.h,v 1.16 2004-04-20 13:08:11 bjoo Exp $
 /*! \file
  *  \brief Reunitarize (to a SU(N)) inplace the matrix A under some option
  */
@@ -136,6 +136,14 @@ struct InvertParam_t
   int           MaxCG;	   // Iteration parameters
 };
 
+//! Parameters for MultiMass Inverter
+struct MultiInvertParam_t
+{
+  InvType      invType;
+  Real         MROver;
+  int          MaxCG;
+  multi1d<Real> RsdCG;
+};
 
 //---------------------------- Initializers -----------------------------
 //! Initialize a smearing param struct
@@ -170,6 +178,7 @@ void read(XMLReader& xml, const string& path, WvfKind& param);
 //! Read a inverter type enum
 void read(XMLReader& xml, const string& path, InvType& param);
 
+//! Read a multi inverter type enum
 //! Read a source type enum
 void read(XMLReader& xml, const string& path, SourceType& param);
 
@@ -193,6 +202,9 @@ void read(XMLReader& xml, const string& path, ChiralParam_t& param);
 
 //! Read inverter parameters
 void read(XMLReader& xml, const string& path, InvertParam_t& param);
+
+//! Read inverter parameters
+void read(XMLReader& xml, const string& path, MultiInvertParam_t& param);
 
 
 //---------------------------- Writers -----------------------------
@@ -240,6 +252,9 @@ void write(XMLWriter& xml, const string& path, const ChiralParam_t& param);
 
 //! Read inverter parameters
 void write(XMLWriter& xml, const string& path, const InvertParam_t& param);
+
+//! Read inverter parameters
+void write(XMLWriter& xml, const string& path, const MultiInvertParam_t& param);
 
 /*! @} */  // end of group io
 
