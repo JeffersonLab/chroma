@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_sse.cc,v 1.15 2004-01-27 22:25:16 edwards Exp $
+// $Id: lwldslash_w_sse.cc,v 1.16 2004-02-06 21:22:09 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -54,13 +54,10 @@ void SSEWilsonDslash::create(const multi1d<LatticeColorMatrix>& _u)
   QDPIO::cout << "Calling init_sse_su3dslash()... " << endl;
 #endif
 
-  // Make a copy of the lattice size
-  int lat_size[Nd];
-  for(int i=0; i < Nd; i++) 
-    lat_size[i] = Layout::lattSize()[i];
+  // Initialize using the total problem size
+  init_sse_su3dslash(Layout::lattSize().slice());
 
-  init_sse_su3dslash(lat_size);
-
+  // Pack the gauge fields
   packed_gauge.resize( Nd * Layout::sitesOnNode() );
 
 #if 0
