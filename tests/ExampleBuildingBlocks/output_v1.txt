@@ -1,0 +1,54 @@
+
+(1)  NX                                  = 4
+(2)  NY                                  = 4
+(3)  NZ                                  = 4
+(4)  NT                                  = 8
+(5)  Gauge Field                         = ../test_purgaug.cfg1
+(6)  Gauge Field Format                  = szin
+(7)  Forward Propagator                  = ../propagator/propagator_0
+(8)  Forward Propagator Format           = chroma
+(9)  Proton Backward U Propagator        = ../seqsource/seqprop_0_PION
+(10) Backward U Propagator Format        = chroma
+(11) Backward U Propagator Gamma5 Format = G5_B_G5
+(12) Proton Backward D Propagator        = ../seqsource/seqprop_0_PION
+(13) Backward D Propagator Format        = chroma
+(14) Backward D Propagator Gamma5 Format = G5_B_G5
+(15) Maximum Number of Links             = 1
+(16) Maximum Spatial Momentum Squared    = 3
+(17) Proton U Building Blocks            = pion_u_%c%1d_%c%1d_%c%1d.bb
+(18) Proton D Building Blocks            = pion_d_%c%1d_%c%1d_%c%1d.bb
+(19) Text Output File Name               = output_v1.txt
+(20) XML Output File Name                = output_v1.xml
+
+CVSBuildingBlocks_hh = $Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/tests/ExampleBuildingBlocks/Attic/output_v1.txt,v 1.1 2004-11-06 20:22:12 edwards Exp $
+CVSBuildingBlocks_cc = $Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/tests/ExampleBuildingBlocks/Attic/output_v1.txt,v 1.1 2004-11-06 20:22:12 edwards Exp $
+CVSExampleBuildingBlocks_hh = $Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/tests/ExampleBuildingBlocks/Attic/output_v1.txt,v 1.1 2004-11-06 20:22:12 edwards Exp $
+
+reading gauge field ../test_purgaug.cfg1 ... 
+assuming szin format for gauge field
+finished reading gauge field ../test_purgaug.cfg1
+basic gauge field observables
+average plaquette            = 0.902263
+average space-like plaquette = 0.862579
+average time-like plaquette  = 0.941947
+average link trace           = 0.734641
+reading forward propagator ../propagator/propagator_0 ... 
+assuming chroma format for forward propagator
+finished reading forward propagator ../propagator/propagator_0
+forward propagator check = 0.147564
+reading backward u propagator ../seqsource/seqprop_0_PION ... 
+assuming chroma format for backward u propagator
+finished reading backward u propagator ../seqsource/seqprop_0_PION ... 
+backward u propagator check = 7.72964e-06
+reading backward d propagator ../seqsource/seqprop_0_PION ... 
+assuming chroma format for backward d propagator
+finished reading backward d propagator ../seqsource/seqprop_0_PION ... 
+backward d propagator check = 7.72964e-06
+NF = 2
+u flavor available
+d flavor available
+calculating building blocks ...
+finished calculating building blocks
+
+FINISHED
+
