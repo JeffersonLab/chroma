@@ -1,82 +1,113 @@
-// $Id: mesplq.cc,v 1.11 2005-01-14 18:42:35 edwards Exp $
+// $Id: mesplq.cc,v 1.12 2005-02-28 03:35:50 edwards Exp $
 /*! \file
  *  \brief Plaquette measurement
  */
 
 #include "chromabase.h"
 #include "meas/glue/mesplq.h"
+#include "meas/glue/polylp.h"
 
 
-namespace Chroma {
-
-// Primitive way for now to indicate the time direction
-static int tDir() {return Nd-1;}
-
-//! Return the value of the average plaquette normalized to 1
-/*!
- * \ingroup glue
- *
- * \param u -- gauge field (Read)
- * \param w_plaq -- plaquette average (Write)
- * \param s_plaq -- space-like plaquette average (Write)
- * \param t_plaq -- time-like plaquette average (Write)
- * \param link   -- space-time average link (Write)
- */
-
-void MesPlq(const multi1d<LatticeColorMatrix>& u, Double& w_plaq, Double& s_plaq, 
-	    Double& t_plaq, Double& link)
+namespace Chroma 
 {
-  START_CODE();
 
-  s_plaq = t_plaq = w_plaq = link = 0.0;
+  // Primitive way for now to indicate the time direction
+  static int tDir() {return Nd-1;}
 
-  // Compute the average plaquettes
-  for(int mu=1; mu < Nd; ++mu)
+  //! Return the value of the average plaquette normalized to 1
+  /*!
+   * \ingroup glue
+   *
+   * \param u -- gauge field (Read)
+   * \param w_plaq -- plaquette average (Write)
+   * \param s_plaq -- space-like plaquette average (Write)
+   * \param t_plaq -- time-like plaquette average (Write)
+   * \param link   -- space-time average link (Write)
+   */
+
+  void MesPlq(const multi1d<LatticeColorMatrix>& u, Double& w_plaq, Double& s_plaq, 
+	      Double& t_plaq, Double& link)
   {
-    for(int nu=0; nu < mu; ++nu)
+    START_CODE();
+
+    s_plaq = t_plaq = w_plaq = link = 0.0;
+
+    // Compute the average plaquettes
+    for(int mu=1; mu < Nd; ++mu)
     {
+      for(int nu=0; nu < mu; ++nu)
+      {
 #if 0
-      /* tmp_0 = u(x+mu,nu)*u_dag(x+nu,mu) */
-      LatticeColorMatrix tmp_0 = shift(u[nu],FORWARD,mu) * adj(shift(u[mu],FORWARD,nu));
+	/* tmp_0 = u(x+mu,nu)*u_dag(x+nu,mu) */
+	LatticeColorMatrix tmp_0 = shift(u[nu],FORWARD,mu) * adj(shift(u[mu],FORWARD,nu));
 
-      /* tmp_1 = tmp_0*u_dag(x,nu)=u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu) */
-      LatticeColorMatrix tmp_1 = tmp_0 * adj(u[nu]);
+	/* tmp_1 = tmp_0*u_dag(x,nu)=u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu) */
+	LatticeColorMatrix tmp_1 = tmp_0 * adj(u[nu]);
 
-      /* tmp = sum(tr(u(x,mu)*tmp_1=u(x,mu)*u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu))) */
-      Double tmp = sum(real(trace(u[mu]*tmp_1)));
+	/* tmp = sum(tr(u(x,mu)*tmp_1=u(x,mu)*u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu))) */
+	Double tmp = sum(real(trace(u[mu]*tmp_1)));
 
 #else
-      /* tmp_0 = u(x+mu,nu)*u_dag(x+nu,mu) */
-      /* tmp_1 = tmp_0*u_dag(x,nu)=u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu) */
-      /* wplaq_tmp = tr(u(x,mu)*tmp_1=u(x,mu)*u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu)) */
-      Double tmp = 
-	sum(real(trace(u[mu]*shift(u[nu],FORWARD,mu)*adj(shift(u[mu],FORWARD,nu))*adj(u[nu]))));
+	/* tmp_0 = u(x+mu,nu)*u_dag(x+nu,mu) */
+	/* tmp_1 = tmp_0*u_dag(x,nu)=u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu) */
+	/* wplaq_tmp = tr(u(x,mu)*tmp_1=u(x,mu)*u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu)) */
+	Double tmp = 
+	  sum(real(trace(u[mu]*shift(u[nu],FORWARD,mu)*adj(shift(u[mu],FORWARD,nu))*adj(u[nu]))));
 #endif
-      w_plaq += tmp;
+	w_plaq += tmp;
 
-      if (mu == tDir() || nu == tDir())
-	t_plaq += tmp;
-      else 
-	s_plaq += tmp;
+	if (mu == tDir() || nu == tDir())
+	  t_plaq += tmp;
+	else 
+	  s_plaq += tmp;
+      }
     }
+
+    // Normalize
+    w_plaq *= 2.0 / Double(Layout::vol()*Nd*(Nd-1)*Nc);
+  
+    if (Nd > 2) 
+      s_plaq *= 2.0 / Double(Layout::vol()*(Nd-1)*(Nd-2)*Nc);
+  
+    t_plaq /= Double(Layout::vol()*(Nd-1)*Nc);
+  
+
+    // Compute the average link
+    for(int mu=0; mu < Nd; ++mu)
+      link += sum(real(trace(u[mu])));
+
+    link /= double(Layout::vol()*Nd*Nc);
+
+    END_CODE();
   }
 
-  // Normalize
-  w_plaq *= 2.0 / Double(Layout::vol()*Nd*(Nd-1)*Nc);
-  
-  if (Nd > 2) 
-    s_plaq *= 2.0 / Double(Layout::vol()*(Nd-1)*(Nd-2)*Nc);
-  
-  t_plaq /= Double(Layout::vol()*(Nd-1)*Nc);
-  
 
-  // Compute the average link
-  for(int mu=0; mu < Nd; ++mu)
-    link += sum(real(trace(u[mu])));
+  //! Print the value of the average plaquette normalized to 1
+  /*!
+   * \ingroup glue
+   *
+   * \param xml        plaquette average (Write)
+   * \param xml_group  xml file object ( Read )
+   * \param u          gauge field (Read)
+   */
+  void MesPlq(XMLWriter& xml, 
+	      const string& xml_group,
+	      const multi1d<LatticeColorMatrix>& u)
+  {
+    Double w_plaq, s_plaq, t_plaq, link;
+    multi1d<DComplex> pollp(Nd);
 
-  link /= double(Layout::vol()*Nd*Nc);
+    MesPlq(u, w_plaq, s_plaq, t_plaq, link);
+    for(int mu = 0; mu < Nd; ++mu)
+      polylp(u, pollp[mu], mu);
 
-  END_CODE();
-}
+    push(xml, xml_group);
+    write(xml, "w_plaq", w_plaq);
+    write(xml, "s_plaq", s_plaq);
+    write(xml, "t_plaq", t_plaq);
+    write(xml, "link", link);
+    write(xml, "pollp", pollp);
+    pop(xml);
+  }
 
 }  // end namespace Chroma
