@@ -1,4 +1,4 @@
-// $Id: t_propagator_w.cc,v 1.3 2004-09-09 15:52:52 edwards Exp $
+// $Id: t_propagator_w.cc,v 1.4 2004-10-22 14:42:25 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  *   
@@ -80,6 +80,9 @@ void read(XMLReader& xml, const string& path, Prop_t& input)
 
 
 // Reader for input parameters
+//  first called
+//
+
 void read(XMLReader& xml, const string& path, Propagator_input_t& input)
 {
   XMLReader inputtop(xml, path);
@@ -171,6 +174,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
       QDP_error_exit("Fermion type not supported\n.");
     }
 
+#ifdef FFFFFFFFFFFFF
     {
       string cfg_type_str;
       read(paramtop, "cfg_type", cfg_type_str);
@@ -196,6 +200,8 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
 	QDP_error_exit("Dont know non SZIN files yet");
       }
     }
+#endif
+
 
 //    read(paramtop, "invType", input.param.invType);
     input.param.invParam.invType = CG_INVERTER;   //need to fix this
@@ -208,12 +214,17 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     read(paramtop, "nrow", input.param.nrow);
     read(paramtop, "boundary", input.param.boundary);
     read(paramtop, "t_srce", input.param.t_srce);
+
   }
   catch (const string& e) 
   {
     QDPIO::cerr << "Error reading data: " << e << endl;
     throw;
   }
+
+  //
+  //   outside <param>  </param>
+  //
 
 
   // Read in the gauge configuration file name
@@ -257,9 +268,11 @@ int main(int argc, char **argv)
   // Read in the configuration along with relevant information.
   multi1d<LatticeColorMatrix> u(Nd);
   
-  XMLReader gauge_xml;
+  //  XMLReader gauge_xml;
 
   QDPIO::cout << "Calculation for SU(" << Nc << ")" << endl;
+
+#ifdef NNNNNNNNNNNN
   switch (input.param.cfg_type) 
   {
   case FILE_START_NERSC :
@@ -278,6 +291,14 @@ int main(int argc, char **argv)
   default :
     QDP_error_exit("Configuration type is unsupported.");
   }
+#endif
+
+  XMLReader gauge_file_xml, gauge_xml;
+ 
+ 
+  // Start up the gauge field
+  gaugeStartup(gauge_file_xml, gauge_xml, u, input.cfg);
+
 
   // Check if the gauge field configuration is unitarized
   unitarityCheck(u);
