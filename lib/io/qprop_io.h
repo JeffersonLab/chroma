@@ -1,70 +1,165 @@
-// $Id*
+// $Id: qprop_io.h,v 1.6 2004-02-23 03:10:40 edwards Exp $
 /*! \file
- * \brief Routines associated with simple propagator IO
- */
-
-/*
- *  First the simple propagator header
+ * \brief Routines associated with Chroma propagator IO
  */
 
 #ifndef __qprop_io_h__
 #define __qprop_io_h__
 
-//  Finally, some (temporary) routines associated with the headers
+#include "io/param_io.h"
+#include "meas/sources/srcsnktype.h"
+#include "meas/sources/wavetype.h"
+#include "meas/smear/wvfkind.h"
 
-struct PropHead{
-  Real kappa;
-  int source_smearingparam;
-  int source_type;		// S-wave (0) or P-wave  (1)
-  int source_direction;         // S-wave (0);   P-wave x(0) y(1) z(2)
-  int source_laplace_power;
-  int source_disp_length;
-  int source_disp_dir;		// x(0), y(1), z(2)
-  int sink_smearingparam;
-  int sink_type;
-  int sink_direction;
-  int sink_laplace_power;
-  int sink_disp_length;
-  int sink_disp_dir;
+/*
+ * Chroma propagator support
+ *
+ * \ingroup io
+ *
+ * @{
+ */
+
+
+//! Propagator source header
+struct PropSource_t
+{
+  int              version;
+  SourceType       source_type;   // Point, Shell, Wall, etc.
+  WaveStateType    wave_state;    // S-wave or P-wave
+  SmearingParam_t  sourceSmearParam;
+                             // wvf-function smearing type (Gaussian, Exponential, etc.)
+                             // smearing width
+                             // number of iteration for smearing
+  int              j_decay;         // Decay direction
+  int              direction;       // S-wave;   P-wave x(0) y(1) z(2)
+  int              laplace_power;   // power=1 implies 1 laplacian
+  int              disp_length;     // displacement length
+  int              disp_dir;        // x(0), y(1), z(2)
+  Real             link_smear_fact; // smearing factor
+  int              link_smear_num;  // number of smearing hits
+  multi1d<int>     t_source;        // source location
+  multi1d<int>     nrow;            // lattice size
 };
 
 
-//! Source header read
-void read(XMLReader& xml, const string& path, PropHead& header);
+//! Propagator sink header
+struct PropSink_t
+{
+  int              version;
+  SinkType         sink_type;       // Point, Shell, Wall, etc.
+  WaveStateType    wave_state;      // S-wave or P-wave
+  SmearingParam_t  sinkSmearParam;
+                             // wvf-function smearing type (Gaussian, Exponential, etc.)
+                             // smearing width
+                             // number of iteration for smearing
+  int              direction;       // S-wave;   P-wave x(0) y(1) z(2)
+  int              laplace_power;   // power=1 implies 1 laplacian
+  int              disp_length;     // displacement length
+  int              disp_dir;        // x(0), y(1), z(2)
+  Real             link_smear_fact; // smearing factor
+  int              link_smear_num;  // number of smearing hits
+  multi1d<int>     nrow;            // lattice size
+};
 
-//! Source header writer
-void write(XMLWriter& xml, const string& path, const PropHead& header);
 
+//! Propagator inversion parameters
+struct ChromaProp_t
+{
+  int             version;
+  FermType        FermTypeP;
+  FermActType     FermAct;
+  Real            Mass;       // quark mass (bare units)
+ 
+  AnisoParam_t    anisoParam;
+  ChiralParam_t   chiralParam;
+  InvertParam_t   invParam;   // Inverter parameters
+
+  multi1d<int>    boundary;
+  multi1d<int>    nrow;          // lattice size
+};
+
+
+//! Structure for writing to seqprop files
+struct ChromaSeqProp_t
+{
+  InvertParam_t    invParam;
+  int              Seq_src;
+  multi1d<int>     sink_mom;
+  int              t_sink;
+  multi1d<int>     nrow;
+};
+
+
+
+
+//! Initialize header with default values
+void initHeader(PropSource_t& header);
+
+//! Initialize header with default values
+void initHeader(PropSink_t& header);
+
+//! Initialize header with a source header
+void initHeader(PropSink_t& header, const PropSource_t& source);
+
+//! Initialize header with default values
+void initHeader(ChromaProp_t& header);
+
+//! Propagator source read
+void read(XMLReader& xml, const std::string& path, PropSource_t& header);
+
+//! Propagator source writer
+void write(XMLWriter& xml, const std::string& path, const PropSource_t& header);
+
+
+//! Propagator sink reader
+void read(XMLReader& xml, const std::string& path, PropSink_t& header);
+
+//! Propagator sink writer
+void write(XMLWriter& xml, const std::string& path, const PropSink_t& header);
+
+
+//! Propagator header read
+void read(XMLReader& xml, const std::string& path, ChromaProp_t& header);
+
+//! Propagator header writer
+void write(XMLWriter& xml, const std::string& path, const ChromaProp_t& header);
+
+
+//! SeqPropagator header read
+void read(XMLReader& xml, const std::string& path, ChromaSeqProp_t& header);
+
+//! SeqPropagator header writer
+void write(XMLWriter& xml, const std::string& path, const ChromaSeqProp_t& header);
+
+
+//! Write a Chroma propagator
 /*
- *  Routines for reading and writing propagator
- */
+ * \param file_xml     file header ( Read )
+ * \param record_xml   xml holding propagator info ( Read )
+ * \param quark_prop   propagator ( Read )
+ * \param file         path ( Read )
+ * \param volfmt       either QDP_SINGLEFILE, QDP_MULTIFILE ( Read )
+ * \param serpar       either QDP_SERIAL, QDP_PARALLEL ( Read )
+ */    
+void writeQprop(XMLBufferWriter& file_xml,
+		XMLBufferWriter& record_xml, const LatticePropagator& quark_prop,
+		const string& file, 
+		QDP_volfmt_t volfmt, QDP_serialparallel_t serpar);
 
 
-void readQprop(const string& file, LatticePropagator& quark_prop, PropHead& header);
-
-void writeQprop(const string& file, const LatticePropagator& quark_prop, 
-		const PropHead& header);
-
+//! Read a Chroma propagator
 /*
- *  Routines for reading and writing the QQQ correlators
- */
+ * \param file_xml     file header ( Write )
+ * \param record_xml   xml holding propagator info ( Write )
+ * \param quark_prop   propagator ( Write )
+ * \param file         path ( Read )
+ * \param serpar       either QDP_SERIAL, QDP_PARALLEL ( Read )
+ */    
+void readQprop(XMLReader& file_xml,
+	       XMLReader& record_xml, LatticePropagator& quark_prop,
+	       const string& file, 
+	       QDP_serialparallel_t serpar);
 
-void writeBarcomp(const string& file, const multiNd<Complex>& barprop, 
-		  const PropHead& head_1, const PropHead& head_2,
-		  const PropHead& head_3,
-		  const int j_decay);
-
-void readBarcomp(multiNd<Complex>& barprop, 
-		 PropHead& head_1, PropHead& head_2, 
-		 PropHead& head_3,
-		 const string& file,  
-		 const int j_decay);
-
-// Routines for reading/writing headers
-
-void writePropHead(const PropHead header, BinaryWriter& prop_out);
-void writePropHeadinNml(const PropHead header, NmlWriter& nml);
-void readPropHead(PropHead& header, BinaryReader& prop_in);
-
+/*! @} */  // end of group io
 
 #endif
