@@ -1,4 +1,4 @@
-// $Id: qproptransf.cc,v 1.6 2004-04-28 14:34:43 edwards Exp $
+// $Id: qproptransf.cc,v 1.7 2004-05-03 20:00:17 edwards Exp $
 /*! \file
  *  \brief Converts quark propagators in one format into another format.
  */
@@ -25,6 +25,8 @@ void read(XMLReader& xml, const string& path, SciDACPropType& param)
   read(xml, path, prop_type_str);
   if (prop_type_str == "PROPAGATOR")
     param = SCIDAC_PROP;
+  else if (prop_type_str == "SOURCE")
+    param = SCIDAC_SOURCE;
   else if (prop_type_str == "SEQPROP")
     param = SCIDAC_SEQPROP;
   else 
@@ -92,6 +94,7 @@ void read(XMLReader& xml, const string& path, Param_t& param)
   switch (version) 
   {
   case 1:
+  case 2:
     /**************************************************************************/
     break;
 
@@ -349,21 +352,15 @@ int main(int argc, char *argv[])
     {
       // Try to invert this record XML into a source struct
       // Also pull out the id of this source
-      ChromaSeqProp_t seqprop_header;
-      PropSink_t sink_header;
-      ChromaProp_t prop_header;
-      PropSource_t source_header;
+      SequentialProp_t sequential_prop_header;
 
       try
       {
-	read(inputtop, "SeqProp/SequentialProp", seqprop_header);
-	read(inputtop, "SeqProp/PropSink", sink_header);
-	read(inputtop, "SeqProp/ForwardProp", prop_header);
-	read(inputtop, "SeqProp/PropSource", source_header);
+	read(inputtop, "SequentialProp", sequential_prop_header);
       }
       catch (const string& e) 
       {
-	QDPIO::cerr << "Error extracting source_header: " << e << endl;
+	QDPIO::cerr << "Error extracting sequential prop header: " << e << endl;
 	throw;
       }
 
@@ -375,11 +372,11 @@ int main(int argc, char *argv[])
 	pop(prop_out_file_xml);
 
 	XMLBufferWriter prop_out_record_xml;
-	push(prop_out_record_xml, "SeqProp");
-	write(prop_out_record_xml, "SequentialProp", seqprop_header);
-	write(prop_out_record_xml, "PropSink", sink_header);
-	write(prop_out_record_xml, "ForwardProp", prop_header);
-	write(prop_out_record_xml, "PropSource", source_header);
+	push(prop_out_record_xml, "SequentialProp");
+	write(prop_out_record_xml, "SeqProp", sequential_prop_header.seqprop_header);
+	write(prop_out_record_xml, "SeqSourceSinkSmear", sequential_prop_header.sink_header);
+	write(prop_out_record_xml, "SeqSource", sequential_prop_header.seqsource_header);
+	write(prop_out_record_xml, "ForwardProps", sequential_prop_header.forward_props);
 	write(prop_out_record_xml, "Config_info", gauge_xml);
 	pop(prop_out_record_xml);
     
