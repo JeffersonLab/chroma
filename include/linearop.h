@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linearop.h,v 1.4 2003-03-29 05:22:18 edwards Exp $
+// $Id: linearop.h,v 1.5 2003-03-29 06:34:29 edwards Exp $
 
 /*! @file
  * @brief Linear Operators
@@ -26,7 +26,7 @@ public:
   virtual const Subset& subset() const;
 
   //! Virtual destructor to help with cleanup;
-  virtual ~LinearOperator();
+//  virtual ~LinearOperator() {}
 };
 
 
@@ -44,10 +44,10 @@ public:
       d[rb[1]] = this->operator()(psi, isign, 1);
     }
 
-  virtual LatticeFermion operator() (const LatticeFermion& psi, int isign, int cb) const = 0;
+  virtual LatticeFermion operator() (const LatticeFermion& psi, int isign, int cb) const;
 
   //! Virtual destructor to help in cleanup
-  virtual ~DslashLinearOperator();
+//  virtual ~DslashLinearOperator() {}
 };
 
 
