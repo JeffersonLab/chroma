@@ -1,4 +1,4 @@
-// $Id: zolotarev5d_fermact_array_w.cc,v 1.10 2004-05-21 12:03:13 bjoo Exp $
+// $Id: zolotarev5d_fermact_array_w.cc,v 1.11 2004-07-08 01:22:25 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -14,9 +14,9 @@
 #include "actions/ferm/invert/invcg2_array.h"
 #include "zolotarev.h"
 
-  // Construct the action out of a parameter structure
+// Construct the action out of a parameter structure
 Zolotarev5DFermActArray::Zolotarev5DFermActArray(Handle< FermBC< multi1d< LatticeFermion> > > fbc_a_, 
-						  Handle< FermBC< LatticeFermion > > fbc_,
+						 Handle< FermBC< LatticeFermion > > fbc_,
 						 const Zolotarev5DFermActParams& params,
 						 XMLWriter& writer_) :
   fbc(fbc_a_), m_q(params.Mass), RatPolyDeg(params.RatPolyDeg), writer(writer_)  {
@@ -31,19 +31,19 @@ Zolotarev5DFermActArray::Zolotarev5DFermActArray(Handle< FermBC< multi1d< Lattic
   UnprecWilsonTypeFermAct<LatticeFermion>* S_w;
   switch( params.AuxFermActHandle->getFermActType() ) {
   case FERM_ACT_WILSON:
-    {
-      // Upcast
-      const WilsonFermActParams& wils = dynamic_cast<const WilsonFermActParams &>( *(params.AuxFermActHandle));
+  {
+    // Upcast
+    const WilsonFermActParams& wils = dynamic_cast<const WilsonFermActParams &>( *(params.AuxFermActHandle));
       
-      //Get the FermAct
-      S_w = new UnprecWilsonFermAct(fbc_, wils.Mass);
-      if( S_w == 0x0 ) { 
-	QDPIO::cerr << "Unable to instantiate S_aux " << endl;
-	QDP_abort(1);
-      }
-      
+    //Get the FermAct
+    S_w = new UnprecWilsonFermAct(fbc_, wils.Mass);
+    if( S_w == 0x0 ) { 
+      QDPIO::cerr << "Unable to instantiate S_aux " << endl;
+      QDP_abort(1);
     }
-    break;
+      
+  }
+  break;
   default:
     QDPIO::cerr << "Auxiliary Fermion Action Unsupported" << endl;
     QDP_abort(1);
@@ -115,7 +115,7 @@ Zolotarev5DFermActArray::init(Real& scale_fac,
   // except for gamma(N5-1) which always has to be set to 1 */
   multi1d<Real> gamma(N5);
   for(int i=0; i < N5-1; i++) { 
-     gamma[i] = Real(1)/ sqrt( rdata->beta[i] );
+    gamma[i] = Real(1)/ sqrt( rdata->beta[i] );
   }
 
   
@@ -193,7 +193,7 @@ const LinearOperator<multi1d<LatticeFermion> >*
 Zolotarev5DFermActArray::linOp(Handle<const ConnectState> state_) const
 {
   START_CODE("Zolotarev5DFermActArray::linOp");
-   const OverlapConnectState<LatticeFermion>& state = dynamic_cast<const OverlapConnectState<LatticeFermion>&>(*state_);
+  const OverlapConnectState<LatticeFermion>& state = dynamic_cast<const OverlapConnectState<LatticeFermion>&>(*state_);
 
   if (state.getEigVec().size() != state.getEigVal().size())
     QDP_error_exit("Zolotarev5DFermActArray: inconsistent sizes of eigenvectors and values");
@@ -233,7 +233,7 @@ const LinearOperator<multi1d<LatticeFermion> >*
 Zolotarev5DFermActArray::lnonHermLinOp(Handle<const ConnectState> state_) const
 {
   START_CODE("Zolotarev5DFermActArray::linOp");
-   const OverlapConnectState<LatticeFermion>& state = dynamic_cast<const OverlapConnectState<LatticeFermion>&>(*state_);
+  const OverlapConnectState<LatticeFermion>& state = dynamic_cast<const OverlapConnectState<LatticeFermion>&>(*state_);
 
   if (state.getEigVec().size() != state.getEigVal().size())
     QDP_error_exit("Zolotarev5DFermActArray: inconsistent sizes of eigenvectors and values");
@@ -289,7 +289,7 @@ Zolotarev5DFermActArray::lnonHermMdagM(Handle<const ConnectState> state) const
 
 const OverlapConnectState<LatticeFermion>*
 Zolotarev5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
-				  const Real& approxMin_) const 
+				     const Real& approxMin_) const 
 {
   if ( toBool( approxMin_ < Real(0) )) { 
     ostringstream error_str;
@@ -309,8 +309,8 @@ Zolotarev5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
 
 const OverlapConnectState<LatticeFermion>*
 Zolotarev5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
-				  const Real& approxMin_,
-				  const Real& approxMax_) const
+				     const Real& approxMin_,
+				     const Real& approxMax_) const
 {
   ostringstream error_str;
   
@@ -337,9 +337,9 @@ Zolotarev5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
 
 const OverlapConnectState<LatticeFermion>*
 Zolotarev5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
-				  const multi1d<Real>& lambda_lo_, 
-				  const multi1d<LatticeFermion>& evecs_lo_,
-				  const Real& lambda_hi_) const
+				     const multi1d<Real>& lambda_lo_, 
+				     const multi1d<LatticeFermion>& evecs_lo_,
+				     const Real& lambda_hi_) const
 {
   ostringstream error_str;
 
@@ -417,7 +417,7 @@ Zolotarev5DFermActArray::qprop(LatticeFermion& psi,
     for(int i=0; i < N5; i++) {
       psi5[i] = zero;
       chi5[i] = zero;
-   }
+    }
 
 
    
@@ -476,15 +476,16 @@ Zolotarev5DFermActArray::qprop(LatticeFermion& psi,
 
 const OverlapConnectState<LatticeFermion>*
 Zolotarev5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
-				const OverlapStateInfo& state_info,
-				XMLWriter& xml_out,
-				Real wilsonMass) const
+				     const OverlapStateInfo& state_info,
+				     XMLWriter& xml_out,
+				     Real wilsonMass) const
 {
   push(xml_out, "Zolo4DCreateState");
 
 
   // If No eigen values specified use min and max
- if ( state_info.getNWilsVec() == 0 ) { 
+  if ( state_info.getNWilsVec() == 0 ) 
+  { 
     write(xml_out, "ApproxMin", state_info.getApproxMin());
     write(xml_out, "ApproxMax", state_info.getApproxMax());
     pop(xml_out);
@@ -493,13 +494,14 @@ Zolotarev5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
 		       state_info.getApproxMin(),
 		       state_info.getApproxMax());
   }
-  else {
-
+  else
+  {
     QDPIO::cout << "Warning!!!! Using 5D op with projected e-values is dubious "
 		<< " at this time " << endl;
 
     // If there are eigen values, either load them, 
-    if( state_info.loadEigVec() ) {
+    if( state_info.loadEigVec() ) 
+    {
       ChromaWilsonRitz_t ritz_header;
       multi1d<Real> lambda_lo;
       multi1d<LatticeFermion> eigv_lo;
@@ -511,7 +513,7 @@ Zolotarev5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
 	readEigen(ritz_header, lambda_lo, eigv_lo, lambda_hi, 
 		  eigen_io.eigen_file,
 		  state_info.getNWilsVec(),
-		QDPIO_SERIAL);
+		  QDPIO_SERIAL);
 	write(xml_out, "OriginalRitzHeader", ritz_header);
       }
       else if ( eigen_io.eigen_filefmt == EVEC_TYPE_SZIN ) { 
@@ -577,4 +579,6 @@ Zolotarev5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
       QDP_abort(1);
     }
   }
+
+  return 0;  // Should never get here. Make compilers happy.
 }
