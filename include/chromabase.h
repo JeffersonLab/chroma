@@ -1,6 +1,25 @@
-// $Id: chromabase.h,v 1.11 2003-12-17 17:45:15 edwards Exp $
+// $Id: chromabase.h,v 1.12 2004-01-05 04:57:54 edwards Exp $
 //
 // Absolute basic stuff to use chroma
+//
+/*! \file
+ * \brief Primary include file for CHROMA
+ *
+ * No other file should be included by the user
+ */
+
+/*! \mainpage  QDP
+ *
+ * \section Description
+ *
+ * The Chroma package supports data-parallel programming constructs for
+ * lattice field theory and in particular lattice QCD. It uses the
+ * SciDAC QDP++ data-parallel programming (in C++) that presents a
+ * single high-level code image to the user, but can generate highly
+ * optimized code for many architectural systems including single node
+ * workstations, multi-threaded SMP workstations (soon to come),
+ * clusters of workstations via QMP, and classic vector computers.
+ */
 
 #ifndef CHROMABASE_INCLUDE
 #define CHROMABASE_INCLUDE

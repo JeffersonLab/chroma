@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 1.17 2004-01-02 03:19:40 edwards Exp $
+// $Id: fermact.h,v 1.18 2004-01-05 04:57:54 edwards Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -71,7 +71,7 @@ public:
    * Solves  M.psi = chi
    *
    * \param psi      quark propagator ( Modify )
-   * \param u        gauge field ( Read )
+   * \param state    gauge connection state ( Read )
    * \param chi      source ( Modify )
    * \param invType  inverter type ( Read (
    * \param RsdCG    CG (or MR) residual used here ( Read )
@@ -91,7 +91,7 @@ public:
    * Solves  M.psi = chi
    *
    * \param psi      quark propagator ( Modify )
-   * \param u        gauge field ( Read )
+   * \param state    gauge connection state ( Read )
    * \param chi      source ( Modify )
    * \param invType  inverter type ( Read (
    * \param RsdCG    CG (or MR) residual used here ( Read )
@@ -158,7 +158,7 @@ public:
    * Solves  M.psi = chi
    *
    * \param psi      quark propagator ( Modify )
-   * \param u        gauge field ( Read )
+   * \param state    gauge connection state ( Read )
    * \param chi      source ( Modify )
    * \param invType  inverter type ( Read (
    * \param RsdCG    CG (or MR) residual used here ( Read )
@@ -178,7 +178,7 @@ public:
    * Solves  M.psi = chi
    *
    * \param psi      quark propagator ( Modify )
-   * \param u        gauge field ( Read )
+   * \param state    gauge connection state ( Read )
    * \param chi      source ( Modify )
    * \param invType  inverter type ( Read (
    * \param RsdCG    CG (or MR) residual used here ( Read )
@@ -261,7 +261,7 @@ public:
    * Provides a default version
    *
    * \param psi      quark propagator ( Modify )
-   * \param u        gauge field ( Read )
+   * \param state    gauge connection state ( Read )
    * \param chi      source ( Modify )
    * \param invType  inverter type ( Read (
    * \param RsdCG    CG (or MR) residual used here ( Read )
@@ -282,7 +282,7 @@ public:
    * Provides a default version
    *
    * \param psi      quark propagator ( Modify )
-   * \param u        gauge field ( Read )
+   * \param state    gauge connection state ( Read )
    * \param chi      source ( Modify )
    * \param invType  inverter type ( Read (
    * \param RsdCG    CG (or MR) residual used here ( Read )
@@ -320,7 +320,7 @@ public:
    * Provides a default version
    *
    * \param psi      quark propagator ( Modify )
-   * \param u        gauge field ( Read )
+   * \param state    gauge connection state ( Read )
    * \param chi      source ( Modify )
    * \param invType  inverter type ( Read (
    * \param RsdCG    CG (or MR) residual used here ( Read )
@@ -341,7 +341,7 @@ public:
    * Provides a default version
    *
    * \param psi      quark propagator ( Modify )
-   * \param u        gauge field ( Read )
+   * \param state    gauge connection state ( Read )
    * \param chi      source ( Modify )
    * \param invType  inverter type ( Read (
    * \param RsdCG    CG (or MR) residual used here ( Read )
