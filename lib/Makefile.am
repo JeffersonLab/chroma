@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.222 2005-01-12 04:41:24 edwards Exp $
+# $Id: Makefile.am,v 1.223 2005-01-12 12:44:41 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -57,6 +57,7 @@ nobase_include_HEADERS = \
 	actions/gauge/rect_gaugeact.h \
 	actions/gauge/pg_gaugeact.h \
 	io/io.h \
+	io/xmllog_io.h \
 	io/enum_io/enum_io.h \
 	io/enum_io/enum_type_map.h \
 	io/enum_io/enum_cfgtype_io.h \

@@ -27,8 +27,8 @@ bool linkage_hack()
 
   // Chrono predictor
   foo &= ZeroGuess4DChronoPredictorEnv::registered;
-  foo &= ZeroGuess4DChronoPredictorEnv::registered;
-  foo &= LastSolution5DChronoPredictorEnv::registered;  
+  foo &= ZeroGuess5DChronoPredictorEnv::registered;
+  foo &= LastSolution4DChronoPredictorEnv::registered;  
   foo &= LastSolution5DChronoPredictorEnv::registered;
 
   return foo;
@@ -175,7 +175,7 @@ namespace Chroma {
     }
   }
 
-  void doHMC(HMCParams& params, XMLWriter& xml_out);
+  void doHMC(HMCParams& params);
   void saveState(const HMCParams& params, unsigned long update_no,
 		 const multi1d<LatticeColorMatrix>& u);
 }; // End namespace 
@@ -191,11 +191,13 @@ int main(int argc, char *argv[])
   // Initialise QDP
   QDP_initialize(&argc, &argv);
   
-  // Snarf it all
-  XMLReader param_in("DATA");
+  // Chroma Init stuff -- Open DATA and XMLDAT
+  TheXMLInputReader::Instance().open("./DATA");
+  TheXMLOutputWriter::Instance().open("./XMLDAT");
   
   HMCParams params;
-  read( param_in, "/HMC", params);
+  
+  read( TheXMLInputReader::Instance(), "/HMC", params);
   
   Layout::setLattSize(params.nrow);
   Layout::create();
@@ -203,13 +205,13 @@ int main(int argc, char *argv[])
   // Initialise the RNG
   QDP::RNG::setrn(params.rng_seed);
   
-  // Dump output
-  XMLFileWriter xml_out("./XMLDAT");
-  
   // Run
-  doHMC(params, xml_out);
+  doHMC(params);
 
   // Finish
+  // Chroma Finalize Stuff
+  TheXMLInputReader::Instance().close();
+  TheXMLOutputWriter::Instance().close();
   QDP_finalize();
 
   exit(0);
@@ -218,8 +220,10 @@ int main(int argc, char *argv[])
 using namespace Chroma; 
 namespace Chroma { 
 
-  void doHMC(HMCParams& params, XMLWriter& xml_out) 
+  void doHMC(HMCParams& params) 
   {
+
+    XMLWriter& xml_out = TheXMLOutputWriter::Instance();
     try {
       push(xml_out, "t_hmc");
       

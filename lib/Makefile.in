@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.298 2005-01-12 04:41:44 edwards Exp $
+# $Id: Makefile.in,v 1.299 2005-01-12 12:44:41 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -448,9 +448,9 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/gauge/gaugeact_factory.h \
 	actions/gauge/wilson_gaugeact.h actions/gauge/plaq_gaugeact.h \
 	actions/gauge/rect_gaugeact.h actions/gauge/pg_gaugeact.h \
-	io/io.h io/enum_io/enum_io.h io/enum_io/enum_type_map.h \
-	io/enum_io/enum_cfgtype_io.h io/enum_io/enum_coeffs_io.h \
-	io/enum_io/enum_proptype_io.h \
+	io/io.h io/xmllog_io.h io/enum_io/enum_io.h \
+	io/enum_io/enum_type_map.h io/enum_io/enum_cfgtype_io.h \
+	io/enum_io/enum_coeffs_io.h io/enum_io/enum_proptype_io.h \
 	io/enum_io/enum_eigenvectype_io.h \
 	io/enum_io/enum_fermtype_io.h io/enum_io/enum_seqsrctype_io.h \
 	io/enum_io/enum_simplebctype_io.h \
@@ -786,9 +786,9 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/gauge/gaugeact_factory.h \
 	actions/gauge/wilson_gaugeact.h actions/gauge/plaq_gaugeact.h \
 	actions/gauge/rect_gaugeact.h actions/gauge/pg_gaugeact.h \
-	io/io.h io/enum_io/enum_io.h io/enum_io/enum_type_map.h \
-	io/enum_io/enum_cfgtype_io.h io/enum_io/enum_coeffs_io.h \
-	io/enum_io/enum_proptype_io.h \
+	io/io.h io/xmllog_io.h io/enum_io/enum_io.h \
+	io/enum_io/enum_type_map.h io/enum_io/enum_cfgtype_io.h \
+	io/enum_io/enum_coeffs_io.h io/enum_io/enum_proptype_io.h \
 	io/enum_io/enum_eigenvectype_io.h \
 	io/enum_io/enum_fermtype_io.h io/enum_io/enum_seqsrctype_io.h \
 	io/enum_io/enum_simplebctype_io.h \

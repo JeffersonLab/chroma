@@ -1,5 +1,5 @@
 
-// $Id: io.h,v 1.20 2004-12-30 11:14:38 bjoo Exp $
+// $Id: io.h,v 1.21 2005-01-12 12:44:42 bjoo Exp $
 
 #ifndef __io_h__
 #define __io_h__
@@ -37,4 +37,5 @@
 #include "monomial_io.h"
 #include "hamiltonian_io.h"
 
+#include "xmllog_io.h"
 #endif
