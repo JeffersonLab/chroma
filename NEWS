@@ -1,3 +1,8 @@
+12/02/2003 -- Robert Edwards
+
+	Version 1.3.0. Another overhaul of FermionAction support. Now
+        create and pass around gauge connection state.
+
 12/01/2003 -- Robert Edwards
 
 	Version 1.2.1. Minor tweaks. Pre-release for 1.3.0 .
