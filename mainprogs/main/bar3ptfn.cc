@@ -1,16 +1,16 @@
-// $Id: bar3ptfn.cc,v 1.1 2003-04-26 03:49:59 flemingg Exp $
+// $Id: bar3ptfn.cc,v 1.2 2003-04-26 06:09:04 flemingg Exp $
 //
 // $Log: bar3ptfn.cc,v $
-// Revision 1.1  2003-04-26 03:49:59  flemingg
-// Initital check in of mainprogs/main/bar3ptfn.cc.  Program will reproduce
-// data in szin/tests/bar3ptfn.  However, it is not quite ready for general
-// use.  In particular, the configuration name is not read correctly from
-// the nml input file because the NmlReader doesn't support C++ strings yet.
-// Also, only periodic boundary conditions are implemented (i.e. no real work
-// has been done on boundary conditions yet, so only periodic works
-// by default. At least, it checks that the nml input says periodic.).
-// Finally, "Wilson_hadron_2Pt_fn" was skipped.  Code was too ugly in szin
-// to think about but it is probably a one liner in QDP++ but I was too lazy.
+// Revision 1.2  2003-04-26 06:09:04  flemingg
+// Now uses NmlReader support for bool's and string's.  Main limitations are
+// that it still only allows periodic boundary conditions for fermions and
+// that mom2_max is hard-coded to be 7, sort of matching szin.  Probably
+// should add something to be read from namelist input to allow a different
+// value of mom2_max.  Also, it might be nice to decide if we really need
+// to read in and write out a whole bunch of namelist key-value pairs
+// that are not used for anything else.  Now might be a good time to clean
+// up some accidents of history.
+//
 //
 
 #include "chroma.h"
@@ -149,20 +149,11 @@ main(int argc, char *argv[])
 
     Read(nml_in, Z3_src) ;
 
-    // GTF HACK: following deals with no nml reading of bool
-    int input_Pt_src ;
-    read(nml_in, "Pt_src", input_Pt_src) ;
-    Pt_src = input_Pt_src ? true : false ;
-    int input_Sl_src ;
-    read(nml_in, "Sl_src", input_Sl_src) ;
-    Sl_src = input_Sl_src ? true : false ;
+    Read(nml_in, Pt_src) ;
+    Read(nml_in, Sl_src) ;
 
-    int input_Pt_snk ;
-    read(nml_in, "Pt_snk", input_Pt_snk) ;
-    Pt_snk = input_Pt_snk ? true : false ;
-    int input_Sl_snk ;
-    read(nml_in, "Sl_snk", input_Sl_snk) ;
-    Sl_snk = input_Sl_snk ? true : false ;
+    Read(nml_in, Pt_snk) ;
+    Read(nml_in, Sl_snk) ;
     // Time coordinate of the sequential quark propagator source (ie. the sink)
     Read(nml_in, t_sink) ;
     Read(nml_in, sink_mom) ; // Sink hadron momentum
@@ -226,9 +217,8 @@ main(int argc, char *argv[])
 
   // Read in the gauge configuration file name
   push(nml_in, "Cfg") ;
-//string cfg_file ;                         // GTF HACK
-//Read(nml_in, cfg_file) ;
-  string cfg_file("../test_purgaug.cfg1") ;
+  string cfg_file ;
+  Read(nml_in, cfg_file) ;
   pop(nml_in) ;
 
   // Check for valid parameter values
@@ -531,6 +521,9 @@ main(int argc, char *argv[])
       // GTF HACK: skipping the "Wilson_hadron_2Pt_fn" part for now.
 
       // Now the 3pt contractions
+      // GTF ???: Note that mom2_max = 7 here to match what was done
+      // in szin.  Would like to have more momenta. Add something
+      // to namelist input file DATA to accomplish this?
       SftMom phases(7, sink_mom, false, j_decay) ;
       FormFac(u, quark_propagator, seq_quark_prop, phases, t_srce[j_decay],
               nml_out) ;
