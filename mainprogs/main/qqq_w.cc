@@ -1,4 +1,4 @@
-// $Id: qqq_w.cc,v 1.14 2004-05-14 00:24:21 edwards Exp $
+// $Id: qqq_w.cc,v 1.15 2004-05-14 00:31:30 edwards Exp $
 /*! \file
  *  \brief Main code for generalized quark propagator
  *
@@ -247,9 +247,9 @@ int main(int argc, char **argv)
   write(xml_out, "Propagator_input", qqq);
 
   // Derived from input prop
-  int j_decay = qqq[0].source_header.j_decay;
-  multi1d<int> boundary = qqq[0].prop_header.boundary;
-  multi1d<int> t_source = qqq[0].source_header.t_source;
+  int j_decay = qqq.forward_props[0].source_header.j_decay;
+  multi1d<int> boundary = qqq.forward_props[0].prop_header.boundary;
+  multi1d<int> t_source = qqq.forward_props[0].source_header.t_source;
   int t0      = t_source[j_decay];
   int bc_spec = boundary[j_decay];
 
@@ -273,15 +273,13 @@ int main(int argc, char **argv)
    */
   multiNd<Complex> barprop;
 
-  // Switch to Dirac-basis unless specifically requested not to 
-  // by input file
+  // Switch to Dirac-basis if desired.
   if (input.param.Dirac_basis)
   {
     qqq.Dirac_basis = true;
 
     // The spin basis matrix
-    SpinMatrix U;
-    initDiracToDRMat(U);
+    SpinMatrix U = DiracToDRMat();
 
     LatticePropagator q_tmp;
     for(int i=0; i < Nprops; ++i)
