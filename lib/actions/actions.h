@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: actions.h,v 1.5 2003-04-09 17:16:25 edwards Exp $
+// $Id: actions.h,v 1.6 2003-04-09 21:00:28 edwards Exp $
 
 /*! \file
  * \brief Include all files related to actions
@@ -18,6 +18,7 @@
 #ifndef __actions_h__
 #define __actions_h__
 
+#include "boson/boson.h"
 #include "ferm/ferm.h"
 #include "gauge/gauge.h"
 
