@@ -150,7 +150,22 @@ namespace Chroma
 	}
 	else {
 	  // i + 1 is too big
-	  QDPIO::cerr << "Error: dangling -o specified. " << endl;
+	  QDPIO::cerr << "Error: dangling -l specified. " << endl;
+	  QDP_abort(1);
+	}
+      }
+      
+      // Search for -cwd or --chroma-cwd
+      if( argv_i == string("-cwd") || argv_i == string("--chroma-cwd") ) 
+      {
+	if( i + 1 < *argc ) {
+	  setCWD(string( (*argv)[i+1] ));
+	  // Skip over next
+	  i++;
+	}
+	else {
+	  // i + 1 is too big
+	  QDPIO::cerr << "Error: dangling -cwd specified. " << endl;
 	  QDP_abort(1);
 	}
       }
