@@ -1,4 +1,4 @@
-// $Id: t_precact.cc,v 1.10 2005-01-21 03:17:59 edwards Exp $
+// $Id: t_precact.cc,v 1.11 2005-01-21 05:26:35 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -39,7 +39,7 @@ bool linkage_hack()
 
 
 //! Check linops
-void check_linops(XMLWriter& xml_out,
+void check_linops(XMLWriter& xml_out, const string& prefix,
   const EvenOddPrecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >& AP,
   const UnprecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >& AU)
 {
@@ -93,7 +93,7 @@ void check_linops(XMLWriter& xml_out,
   for(int m=0; m < N5; ++m)
     nnU_minus += innerProduct(tmp4[m], psi[m]);
   
-  push(xml_out,"LinOpInnerprods");
+  push(xml_out,prefix+"LinOpInnerprods");
   write(xml_out, "trivial_diff_plus", trivial_diff_plus);
   write(xml_out, "nnP_plus", nnP_plus);
   write(xml_out, "nnU_plus", nnU_plus);
@@ -114,11 +114,11 @@ void check_linops(XMLWriter& xml_out,
 
 
 //! Check linops
-void check_deriv(XMLWriter& xml_out,
+void check_derivs(XMLWriter& xml_out, const string& prefix,
   const EvenOddPrecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >& AP,
   const UnprecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >& AU)
 {
-  QDPIO::cout << "Check linops" << endl;
+  QDPIO::cout << "Check derivs" << endl;
 
   const int N5 = AP.size();
   multi1d<LatticeFermion>  psi(N5), chi(N5);
@@ -132,28 +132,35 @@ void check_deriv(XMLWriter& xml_out,
   multi1d<LatticeColorMatrix>  ds_1, ds_2;
   QDPIO::cout << "AP plus" << endl;
   AP.derivUnprecLinOp(ds_1, chi, psi, PLUS);
-  DComplex nnP_plus = norm2(ds_1);
+  Double nnP_plus = norm2(ds_1);
 
   QDPIO::cout << "AP minus" << endl;
   AP.derivUnprecLinOp(ds_2, chi, psi, MINUS);
-  DComplex nnP_minus = norm2(ds_2);
+  Double nnP_minus = norm2(ds_2);
+  Double norm_diff_prec = zero;
+  for(int m=0; m < Nd; ++m)
+    norm_diff_prec += norm2(ds_1[m]-ds_2[m]);
 
   multi1d<LatticeColorMatrix>  ds_3, ds_4;
   QDPIO::cout << "AU plus" << endl;
   AU.deriv(ds_3, chi, psi, PLUS);
-  DComplex nnU_plus = norm2(ds_3);
+  Double nnU_plus = norm2(ds_3);
 
   QDPIO::cout << "AP minus" << endl;
   AU.deriv(ds_4, chi, psi, MINUS);
-  DComplex nnU_minus = norm2(ds_4);
+  Double nnU_minus = norm2(ds_4);
+  Double norm_diff_unprec = zero;
+  for(int m=0; m < Nd; ++m)
+    norm_diff_unprec += norm2(ds_3[m]-ds_4[m]);
 
-  push(xml_out,"DerivInnerprods");
+  push(xml_out,prefix+"DerivInnerprods");
   write(xml_out, "nnP_plus", nnP_plus);
   write(xml_out, "nnU_plus", nnU_plus);
   Double norm_diff_plus = zero;
   for(int m=0; m < Nd; ++m)
     norm_diff_plus += norm2(ds_1[m]-ds_3[m]);
   write(xml_out, "norm_diff_plus", norm_diff_plus);
+  write(xml_out, "norm_diff_prec", norm_diff_plus);
 
   write(xml_out, "nnP_minus", nnP_minus);
   write(xml_out, "nnU_minus", nnU_minus);
@@ -161,6 +168,7 @@ void check_deriv(XMLWriter& xml_out,
   for(int m=0; m < Nd; ++m)
     norm_diff_minus += norm2(ds_2[m]-ds_4[m]);
   write(xml_out, "norm_diff_minus", norm_diff_minus);
+  write(xml_out, "norm_diff_unprec", norm_diff_plus);
   pop(xml_out);
 }
 
@@ -245,16 +253,12 @@ int main(int argc, char **argv)
   Test_input_t  input;
 
   // Instantiate xml reader for DATA
-  QDPIO::cout << "Open DATA" << endl;
   XMLReader xml_in("DATA");
 
   // Read data
-  QDPIO::cout << "Reading xml" << endl;
   read(xml_in, "/t_precact", input);
-  QDPIO::cout << "Finished reading DATA" << endl;
 
   // Specify lattice size, shape, etc.
-  QDPIO::cout << "nrow=" << input.param.nrow[0] << " " << input.param.nrow[1] << endl;
   Layout::setLattSize(input.param.nrow);
   Layout::create();
 
@@ -373,10 +377,10 @@ int main(int argc, char **argv)
       Handle<const UnprecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> > > AU(S_f_un->linOp(state_un));
       
       QDPIO::cout << "Check bulk linops" << endl;
-      check_linops(xml_out, *AP, *AU);
+      check_linops(xml_out, "Bulk", *AP, *AU);
 
       QDPIO::cout << "Check bulk derivatives" << endl;
-      check_linops(xml_out, *AP, *AU);
+      check_derivs(xml_out, "Bulk", *AP, *AU);
     }
 
 
@@ -386,10 +390,10 @@ int main(int argc, char **argv)
       Handle<const UnprecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> > > AU(S_f_un->linOpPV(state_un));
       
       QDPIO::cout << "Check PV linops" << endl;
-      check_linops(xml_out, *AP, *AU);
+      check_linops(xml_out, "PV", *AP, *AU);
 
       QDPIO::cout << "Check PV derivatives" << endl;
-      check_linops(xml_out, *AP, *AU);
+      check_derivs(xml_out, "PV", *AP, *AU);
     }
 
   }
