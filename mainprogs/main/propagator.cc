@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.30 2004-01-07 04:15:46 edwards Exp $
+// $Id: propagator.cc,v 1.31 2004-01-07 04:44:26 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -14,23 +14,6 @@ using namespace QDP;
 /*
  * Input 
  */
-
-Real kappaToMass(const Real& Kappa)
-{
-  return 1.0/(2*Kappa) - Nd;
-}
-
-
-multi1d<Real> kappaToMass(const multi1d<Real>& Kappa)
-{
-  multi1d<Real> Mass(Kappa.size());
-
-  for(int i=0; i < Kappa.size(); ++i)
-    Mass[i] = 1.0/(2*Kappa[i]) - Nd;
-
-  return Mass;
-}
-
 
 
 // Parameters which must be determined from the XML input

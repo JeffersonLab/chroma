@@ -1,4 +1,4 @@
-// $Id: seqprop.cc,v 1.7 2004-01-06 04:59:14 edwards Exp $
+// $Id: seqprop.cc,v 1.8 2004-01-07 04:44:26 edwards Exp $
 /*! \file
  *  \brief Main code for sequential propagator generation
  */
@@ -38,8 +38,8 @@ struct SrceSinkParam_t
 struct Param_t
 {
   FermType         FermTypeP;
-  FermActType      fermAct;
-  multi1d<Real>    mass;       // Quark mass and **NOT** kappa
+  FermActType      FermAct;
+  multi1d<Real>    Mass;       // Quark Mass and **NOT** kappa
  
   ChiralParam_t    chiralParam;
   SrceSinkParam_t  srceSinkParam;
@@ -56,29 +56,12 @@ struct Param_t
   multi1d<int>     boundary;
 };
 
-struct Prop_t
-{
-  string       source_file;
-  string       prop_file;
-};
-
 struct Seqprop_input_t
 {
   IO_version_t     io_version;
   Param_t          param;
   Cfg_t            cfg;
-  Prop_t           prop;
 };
-
-
-//
-void read(XMLReader& xml, const string& path, Prop_t& input)
-{
-  XMLReader inputtop(xml, path);
-
-  read(inputtop, "source_file", input.source_file);
-  read(inputtop, "prop_file", input.prop_file);
-}
 
 
 //
@@ -158,40 +141,49 @@ void read(XMLReader& xml, const string& path, Seqprop_input_t& input)
     XMLReader paramtop(inputtop, "param"); // push into 'param' group
 
     read(paramtop, "FermTypeP", input.param.FermTypeP);
+    read(paramtop, "FermAct", input.param.FermAct);
 
-    // GTF NOTE: I'm going to switch on FermTypeP here because I want
-    // to leave open the option of treating masses differently.
-    switch (input.param.FermTypeP) {
-    case FERM_TYPE_WILSON :
+    if (paramtop.count("Mass") != 0)
+    {
+      read(paramtop, "Mass", input.param.Mass);
 
-      QDPIO::cout << " SEQPROP: Sequential Propagator for Wilson-like fermions" << endl;
-
-      read(paramtop, "mass", input.param.mass);
+      if (paramtop.count("Kappa") != 0)
+      {
+	QDPIO::cerr << "Error: found both a Kappa and a Mass tag" << endl;
+	QDP_abort(1);
+      }
+    }
+    else if (paramtop.count("Kappa") != 0)
+    {
+      Real Kappa;
+      read(paramtop, "Kappa", Kappa);
+      
+      cout << "conver kappa to mass" << endl;
+      input.param.Mass = kappaToMass(Kappa);    // Convert Kappa to Mass
+    }
+    else
+    {
+      QDPIO::cerr << "Error: neither Mass or Kappa found" << endl;
+      QDP_abort(1);
+    }    
 
 #if 0
-      for (int i=0; i < input.param.mass.size(); ++i) {
-	if (toBool(input.param.mass[i] < 0.0)) {
-	  QDPIO::cerr << "Unreasonable value for mass." << endl;
-	  QDPIO::cerr << "  mass[" << i << "] = " << input.param.mass[i] << endl;
-	  QDP_abort(1);
-	} else {
-	  QDPIO::cout << " Spectroscopy mass: " << input.param.mass[i] << endl;
-	}
+    for (int i=0; i < input.param.Mass.size(); ++i) {
+      if (toBool(input.param.Mass[i] < 0.0)) {
+	QDPIO::cerr << "Unreasonable value for Mass." << endl;
+	QDPIO::cerr << "  Mass[" << i << "] = " << input.param.Mass[i] << endl;
+	QDP_abort(1);
+      } else {
+	QDPIO::cout << " Spectroscopy Mass: " << input.param.Mass[i] << endl;
       }
-#endif
-
-      break;
-
-    default :
-      QDPIO::cerr << "Fermion type not supported." << endl;
-      QDP_abort(1);
     }
-
-    read(paramtop, "cfg_type", input.param.cfg_type);
-    read(paramtop, "prop_type", input.param.prop_type);
+#endif
 
     if (paramtop.count("ChiralParam") != 0)
       read(paramtop, "ChiralParam", input.param.chiralParam);
+
+    read(paramtop, "cfg_type", input.param.cfg_type);
+    read(paramtop, "prop_type", input.param.prop_type);
 
     read(paramtop, "SrceSinkParam", input.param.srceSinkParam);
     read(paramtop, "InvertParam", input.param.invParam);
@@ -210,7 +202,6 @@ void read(XMLReader& xml, const string& path, Seqprop_input_t& input)
   try
   {
     read(inputtop, "Cfg", input.cfg);
-    read(inputtop, "Prop", input.prop);
   }
   catch (const string& e) 
   {
@@ -272,28 +263,28 @@ int main(int argc, char **argv)
   QDPIO::cout << endl << "     Gauge group: SU(" << Nc << ")" << endl;
 
   // Check for unnecessary multiple occurances of masss and/or wvf_params
-  if (input.param.mass.size() > 1) {
+  if (input.param.Mass.size() > 1) {
     if (input.param.srceSinkParam.Sl_src == true) {
-      for (int i=1; i < input.param.mass.size(); ++i) {
+      for (int i=1; i < input.param.Mass.size(); ++i) {
         for (int j=0; j<i; ++j) {
-          if (toBool(input.param.mass[j] == input.param.mass[i])
+          if (toBool(input.param.Mass[j] == input.param.Mass[i])
               && toBool(input.param.srceSinkParam.smearParam.wvf_param[j] == input.param.srceSinkParam.smearParam.wvf_param[i])) {
-            QDPIO::cerr << "Same mass and wvf_param:" << endl;
-            QDPIO::cerr << "  mass["     << i << "] = " << input.param.mass[i]     << endl;
+            QDPIO::cerr << "Same Mass and wvf_param:" << endl;
+            QDPIO::cerr << "  Mass["     << i << "] = " << input.param.Mass[i]     << endl;
             QDPIO::cerr << "  wvf_param[" << i << "] = " << input.param.srceSinkParam.smearParam.wvf_param[i] << endl;
-            QDPIO::cerr << "  mass["     << j << "] = " << input.param.mass[j]     << endl;
+            QDPIO::cerr << "  Mass["     << j << "] = " << input.param.Mass[j]     << endl;
             QDPIO::cerr << "  wvf_param[" << j << "] = " << input.param.srceSinkParam.smearParam.wvf_param[j] << endl;
             QDP_abort(1);
           }
         }
       }
     } else {
-      for (int i=1; i < input.param.mass.size(); ++i) {
+      for (int i=1; i < input.param.Mass.size(); ++i) {
         for (int j=0; j<i; ++j) {
-          if (toBool(input.param.mass[j] == input.param.mass[i])) {
-            QDPIO::cerr  << "Same mass without shell source or sink:" << endl;
-            QDPIO::cerr << "  mass["     << i << "] = " << input.param.mass[i]     << endl;
-            QDPIO::cerr << "  mass["     << j << "] = " << input.param.mass[j]     << endl;
+          if (toBool(input.param.Mass[j] == input.param.Mass[i])) {
+            QDPIO::cerr  << "Same Mass without shell source or sink:" << endl;
+            QDPIO::cerr << "  Mass["     << i << "] = " << input.param.Mass[i]     << endl;
+            QDPIO::cerr << "  Mass["     << j << "] = " << input.param.Mass[j]     << endl;
             QDP_abort(1);
           }
         }
@@ -375,12 +366,12 @@ int main(int argc, char **argv)
   /*
    *  Now loop over the various masses
    */
-  XMLArrayWriter xml_array(xml_out, input.param.mass.size());
+  XMLArrayWriter xml_array(xml_out, input.param.Mass.size());
   push(xml_array, "Seqprop_calc");
     
-  for(int loop = 0; loop < input.param.mass.size(); loop++)
+  for(int loop = 0; loop < input.param.Mass.size(); loop++)
   {
-    QDPIO::cout << "mass loop = " << loop << endl;
+    QDPIO::cout << "Mass loop = " << loop << endl;
   
     push(xml_array);
     Write(xml_array, loop);
@@ -388,16 +379,16 @@ int main(int argc, char **argv)
     //
     // Initialize fermion action
     //
-    Real mass_meas = input.param.mass[loop];
+    Real Mass_meas = input.param.Mass[loop];
 
 #if 1
-    UnprecWilsonFermAct S_f(fbc,mass_meas);
+    UnprecWilsonFermAct S_f(fbc,Mass_meas);
 #else
     UnprecDWFermActArray S_f(fbc_a,
-			     input.param.chiralParam.Overmass, 
-			     mass_meas, 
+			     input.param.chiralParam.OverMass, 
+			     Mass_meas, 
 			     input.param.chiralParam.N5);
-//  UnprecDWFermAct S_f(fbc_a, Wilsonmass, m_q);
+//  UnprecDWFermAct S_f(fbc_a, WilsonMass, m_q);
 #endif
 
     // Read the quark propagator
@@ -503,7 +494,7 @@ int main(int argc, char **argv)
        *  Write the sequential propagator out to disk
        *
        *  We need to dump some sort of header.  At the very least, we
-       *  should dump the mass values
+       *  should dump the Mass values
        */
 
       
@@ -513,7 +504,7 @@ int main(int argc, char **argv)
       {
 	stringstream seqprop_file;
 	seqprop_file << "seqprop_" << loop << "_seq_src_value";
-	writeSzinQprop(seq_quark_prop, seqprop_file.str(), mass_meas);
+	writeSzinQprop(seq_quark_prop, seqprop_file.str(), Mass_meas);
       }
 
       /*
