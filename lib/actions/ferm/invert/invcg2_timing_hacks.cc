@@ -1,4 +1,4 @@
-// $Id: invcg2_timing_hacks.cc,v 1.1 2004-03-22 12:48:31 bjoo Exp $
+// $Id: invcg2_timing_hacks.cc,v 1.2 2004-03-22 15:29:29 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -77,7 +77,7 @@ void InvCG2_timing_hacks_a(const LinearOperator<T>& M,
 //  Real rsd_sq = (RsdCG * RsdCG) * Real(norm2(chi,s));
   Real chi_sq =  Real(norm2(chi,s));
 
-  QDPIO::cout << "chi_norm = " << sqrt(chi_sq) << endl;
+  // QDPIO::cout << "chi_norm = " << sqrt(chi_sq) << endl;
   Real rsd_sq = (RsdCG * RsdCG) * chi_sq;
 
   //                                            +
@@ -173,7 +173,7 @@ void InvCG2_timing_hacks_a(const LinearOperator<T>& M,
     p[s] = r + b*p;	/* Nc Ns  flops */
   }
   // n_count = MaxCG;
-  QDP_error_exit("too many CG iterations: count = %d", n_count);
+  // QDP_error_exit("too many CG iterations: count = %d", n_count);
 }
 
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_wilson_linop_w.h,v 1.3 2004-01-30 04:22:20 edwards Exp $
+// $Id: prec_wilson_linop_w.h,v 1.4 2004-03-22 15:29:29 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion linear operator
  */
@@ -83,6 +83,9 @@ public:
       chi[rb[1]] = fact*psi;
     }
 
+  // Override inherited one with a few more funkies
+  void operator() (LatticeFermion& chi, const LatticeFermion& psi, 
+		   enum PlusMinus isign) const;
 private:
   Real fact;  // tmp holding  Nd+Mass
   Real invfact;  // tmp holding  1/(Nd+Mass)

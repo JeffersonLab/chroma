@@ -1,4 +1,4 @@
-// $Id: prec_wilson_linop_w.cc,v 1.3 2004-01-30 04:22:20 edwards Exp $
+// $Id: prec_wilson_linop_w.cc,v 1.4 2004-03-22 15:29:29 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson linear operator
  */
@@ -99,3 +99,26 @@ EvenOddPrecWilsonLinOp::oddEvenLinOp(LatticeFermion& chi,
   END_CODE("EvenOddPrecWilsonLinOp::oddEvenLinOp");
 }
 
+void EvenOddPrecWilsonLinOp::operator() (LatticeFermion & chi, 
+					 const LatticeFermion& psi, 
+					 enum PlusMinus isign) const
+{
+  LatticeFermion tmp1, tmp2, tmp3;  // if an array is used here, 
+                                    // the space is not reserved
+  
+
+  Real mhalf = -0.5;
+  Real myfact = Real(-2)*fact;
+
+  D.apply(tmp2, psi, isign, 0);
+  tmp3[rb[0]] = myfact*psi + tmp2;
+  
+  D.apply(tmp1, psi, isign, 1);
+  tmp3[rb[1]] = myfact*psi + tmp1;
+
+  chi = mhalf*tmp3;
+ 
+  
+}
+
+ 
