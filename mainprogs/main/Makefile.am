@@ -63,7 +63,7 @@ EXTRA_PROGRAMS = qpropadd
 # Wilson specific programs
 # Temporarily moved here while fixing codes.
 EXTRA_PROGRAMS += propagator_comp multi_propagator multi_propagator_comp \
-       collect_multi_propcomp 
+       collect_multi_propcomp mres
 
 # Staggered specific programs
 #EXTRA_PROGRAMS += 
@@ -95,6 +95,9 @@ collect_multi_propcomp_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 spectrum_w_SOURCES= spectrum_w.cc
 spectrum_w_DEPENDENCIES= build_chroma_libs rebuild_other_libs
+
+mres_SOURCES= mres.cc
+mres_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 
 qqq_w_SOURCES= qqq_w.cc
 qqq_w_DEPENDENCIES= build_chroma_libs rebuild_other_libs
