@@ -1,4 +1,4 @@
-// $Id: wallnuclff_w.cc,v 1.4 2004-04-14 04:00:09 edwards Exp $
+// $Id: wallnuclff_w.cc,v 1.5 2004-04-14 04:42:06 edwards Exp $
 /*! \file
  *  \brief Wall-sink nucleon form-factors 
  *
@@ -29,15 +29,16 @@ using namespace QDP;
  *
  * This routine is specific to Wilson fermions!
  *
- * \param form               structures holding formfactors ( Write )
+ * \param xml                buffer for writing the data ( Write )
  * \param u                  gauge fields (used for non-local currents) ( Read )
- * \param quark_propagator   quark propagator ( Read )
- * \param seq_quark_prop     sequential quark propagator ( Read )
+ * \param forw_u_prop        forward U quark propagator ( Read )
+ * \param back_u_prop        backward D quark propagator ( Read )
+ * \param forw_d_prop        forward U quark propagator ( Read )
+ * \param back_d_prop        backward D quark propagator ( Read )
  * \param phases             fourier transform phase factors ( Read )
- * \param t0                 cartesian coordinates of the source ( Read )
+ * \param t0                 time coordinates of the source ( Read )
+ * \param t_sink             time coordinates of the sink ( Read )
  */
-
-//FormFac_insertions_t& form,
 
 void wallNuclFormFac(XMLWriter& xml,
 		     const multi1d<LatticeColorMatrix>& u, 
@@ -49,6 +50,10 @@ void wallNuclFormFac(XMLWriter& xml,
 		     int t0, int t_sink)
 {
   START_CODE("wallNuclFormFac");
+
+  // Start new array group
+  XMLArrayWriter xml_array(xml, Nd);
+  push(xml_array, "WallNuclFormFac");
 
   // Length of lattice in j_decay direction and 3pt correlations fcns
   int length = phases.numSubsets();
@@ -69,6 +74,9 @@ void wallNuclFormFac(XMLWriter& xml,
   // Loop over gamma matrices of the insertion current of insertion current
   for(int gamma_value = 0; gamma_value < Nd*Nd; ++gamma_value)
   {
+    push(xml_array);
+    write(xml_array, "gamma_value", gamma_value);
+
     //  For the case where the gamma value indicates we are evaluating either
     //  the vector or axial vector currents, we will also evaluate
     //  the non-local currents.  The non-local vector current is the conserved
@@ -113,6 +121,9 @@ void wallNuclFormFac(XMLWriter& xml,
 
     // The local non-conserved vector-current matrix element 
     LatticeComplex corr_local_fn;
+    LatticePropagator anti_u_prop = Gamma(15)*back_u_prop*Gamma(15);
+    LatticePropagator anti_d_prop = Gamma(15)*back_d_prop*Gamma(15);
+
     // Term 1
     corr_local_fn = -e_u*trace(anti_u_prop*Gamma(gamma_value)*forw_u_prop*Gamma(5)*
 			       quarkContract13(Gamma(5)*d_x2, u_x2*(q1_tmp+Gamma(8)*q1_tmp)));
@@ -123,11 +134,11 @@ void wallNuclFormFac(XMLWriter& xml,
 						Gamma(5)*d_x2));
 
     // Term 3
-    corr_local_fn += e_u*trace(traceSpin(anti_u_prop*Gamma(gamma_value)*(forw_u_prop+forw_u_qprop*Gamma(8)))*
+    corr_local_fn += e_u*trace(traceSpin(anti_u_prop*Gamma(gamma_value)*(forw_u_prop+forw_u_prop*Gamma(8)))*
 			       quarkContract13(Gamma(5)*d_x2, u_x2*Gamma(5)));
 
     // Term 4
-    corr_local_fn += e_u*trace(anti_u_prop*Gamma(gamma_value)*(forw_u_prop+forw_u_qprop*Gamma(8))*
+    corr_local_fn += e_u*trace(anti_u_prop*Gamma(gamma_value)*(forw_u_prop+forw_u_prop*Gamma(8))*
 			       quarkContract13(u_x2*Gamma(5), Gamma(5)*d_x2));
 
     // Term 5
@@ -164,13 +175,20 @@ void wallNuclFormFac(XMLWriter& xml,
     }
 #endif
   
-    form.formFac[gamma_value].gamma_value = gamma_value;
-    form.formFac[gamma_value].momenta.resize(phases.numMom());  // hold momenta output
+//    form.formFac[gamma_value].gamma_value = gamma_value;
+//    form.formFac[gamma_value].momenta.resize(phases.numMom());  // hold momenta output
+    
+    XMLArrayWriter xml_inser_mom(xml_array, phases.numMom());
+    push(xml_inser_mom, "Momenta");
 
     // Loop over insertion momenta and print out results
     for(int inser_mom_num=0; inser_mom_num<phases.numMom(); ++inser_mom_num) 
     {
-      form.formFac[gamma_value].momenta[inser_mom_num].inser_mom = phases.numToMom(inser_mom_num);
+      push(xml_inser_mom);
+      write(xml_inser_mom, "inser_mom_num", inser_mom_num);
+      write(xml_inser_mom, "inser_mom", phases.numToMom(inser_mom_num)) ;
+
+//      form.formFac[gamma_value].momenta[inser_mom_num].inser_mom = phases.numToMom(inser_mom_num);
 
       multi1d<Complex> local_cur3ptfn(length); // always compute
 //      multi1d<Complex> nonlocal_cur3ptfn;
@@ -187,11 +205,21 @@ void wallNuclFormFac(XMLWriter& xml,
 
       } // end for(t)
 
-      form.formFac[gamma_value].momenta[inser_mom_num].local_current    = local_cur3ptfn;
+      // Print out the results
+      write(xml_inser_mom, "local_cur3ptfn", local_cur3ptfn);
+//o      write(xml_inser_mom, "nonlocal_cur3ptfn", nonlocal_cur3ptfn);
+
+//      form.formFac[gamma_value].momenta[inser_mom_num].local_current    = local_cur3ptfn;
 //      form.formFac[gamma_value].momenta[inser_mom_num].nonlocal_current = nonlocal_cur3ptfn;
 
+      pop(xml_inser_mom);  // elem
     } // end for(inser_mom_num)
+
+    pop(xml_inser_mom);    // Momenta
+    pop(xml_array);        // elem
   } // end for(gamma_value)
                             
+  pop(xml_array);          // WallNuclFormFac
+
   END_CODE("wallNuclFormFac");
 }
