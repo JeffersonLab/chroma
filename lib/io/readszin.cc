@@ -1,4 +1,4 @@
-// $Id: readszin.cc,v 1.1 2003-03-28 03:06:57 edwards Exp $
+// $Id: readszin.cc,v 1.2 2003-03-28 03:54:40 edwards Exp $
 
 /*! \file
  *  \brief Read in a configuration written by SZIN up to configuration version 7.
@@ -23,7 +23,7 @@ using namespace QDP;
  * \param seed_old   seed in configuration ( Modify )            
  */    
 
-void readSzin(multi1d<LatticeColorMatrix>& u, char cfg_file[], Seed& seed_old)
+void readSzin2(multi1d<LatticeColorMatrix>& u, char cfg_file[], Seed& seed_old)
 {
   ColorMatrixF u_old;
   multi1d<int> nrow_old(Nd); /* Lattice size (from CFGIN) */

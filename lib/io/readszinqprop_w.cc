@@ -1,4 +1,4 @@
-// $Id: readszinqprop_w.cc,v 1.1 2003-03-28 03:06:57 edwards Exp $
+// $Id: readszinqprop_w.cc,v 1.2 2003-03-28 03:54:40 edwards Exp $
 /*!
  * @file
  * @brief  Read an old SZIN-style (checkerboarded) quark propagator
@@ -17,7 +17,7 @@ using namespace QDP;
  * \param cfg_file   path ( Read )
  */    
 
-void readSzinQprop(LatticePropagator& q, char file[])
+void readSzinQprop2(LatticePropagator& q, char file[])
 {
   BinaryReader cfg_in(file);
 

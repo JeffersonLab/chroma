@@ -1,4 +1,4 @@
-// $Id: readszinqprop_w.h,v 1.1 2003-03-28 03:06:57 edwards Exp $
+// $Id: readszinqprop_w.h,v 1.2 2003-03-28 03:54:40 edwards Exp $
 
 #ifndef __readszinqprop_h__
 #define __readszinqprop_h__
@@ -13,6 +13,6 @@
  * \param cfg_file   path ( Read )
  */    
 
-void readSzinQprop(LatticePropagator& q, char file[]);
+void readSzinQprop2(LatticePropagator& q, char file[]);
 
 #endif
