@@ -12,7 +12,8 @@ namespace Chroma
 //  namespace ChromaUtil
 //  {
 
-  namespace Private
+  //! Private (anonymous) namespace
+  namespace
   {
     //! The "DATA" filename
     string input_filename = "DATA";
@@ -35,29 +36,29 @@ namespace Chroma
 
 
   //! Get input file name
-  string getXMLInputFileName() {return Private::input_filename;}
+  string getXMLInputFileName() {return input_filename;}
 
   //! Get output file name
-  string getXMLOutputFileName() {return Private::output_filename;}
+  string getXMLOutputFileName() {return output_filename;}
 
   //! Get log file name
-  string getXMLLogFileName() {return Private::log_filename;}
+  string getXMLLogFileName() {return log_filename;}
 
   //! Get current working directory
-  string getCWD() {return Private::cwd;}
+  string getCWD() {return cwd;}
 
 
   //! Set input file name
-  void setXMLInputFileName(const string& name) {Private::input_filename = name;}
+  void setXMLInputFileName(const string& name) {input_filename = name;}
 
   //! Set output file name
-  void setXMLOutputFileName(const string& name) {Private::output_filename = name;}
+  void setXMLOutputFileName(const string& name) {output_filename = name;}
 
   //! Set output logfile name
-  void setXMLLogFileName(const string& name) {Private::log_filename = name;}
+  void setXMLLogFileName(const string& name) {log_filename = name;}
 
   //! Set current working directory
-  void setCWD(const string& name) {Private::cwd = name;}
+  void setCWD(const string& name) {cwd = name;}
 
 
 
@@ -159,10 +160,10 @@ namespace Chroma
   //! Get xml output instance
   XMLFileWriter& getXMLOutputInstance()
   {
-    if (! Private::xmlOutputP)
+    if (! xmlOutputP)
     {
       TheXMLOutputWriter::Instance().open(Chroma::getXMLOutputFileName());
-      Private::xmlOutputP = true;
+      xmlOutputP = true;
     }
 
     return TheXMLOutputWriter::Instance();
@@ -171,10 +172,10 @@ namespace Chroma
   //! Get xml log instance
   XMLFileWriter& getXMLLogInstance()
   {
-    if (! Private::xmlLogP)
+    if (! xmlLogP)
     {
       TheXMLLogWriter::Instance().open(Chroma::getXMLLogFileName());
-      Private::xmlLogP = true;
+      xmlLogP = true;
     }
 
     return TheXMLLogWriter::Instance();
