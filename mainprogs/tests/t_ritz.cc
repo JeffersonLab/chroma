@@ -1,4 +1,4 @@
-// $Id: t_ritz.cc,v 1.2 2004-01-16 14:16:14 bjoo Exp $
+// $Id: t_ritz.cc,v 1.3 2004-01-16 17:24:50 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -12,7 +12,7 @@
 #include <math.h>
 
 #include "chroma.h"
-#include "meas/eig/ritz.h"
+#include "meas/eig/eig_spec_bj_w.h"
 
 
 using namespace QDP;
@@ -222,40 +222,33 @@ int main(int argc, char **argv)
   
   int n_renorm = 10;
   int n_min = 5;
-  int n_max = params.max_cg + 1;
   bool ProjApsiP = true;
-  int n_count;
+  int n_CG_count;
+
+
   Real delta_cycle = Real(1);
   Real gamma_factor = Real(1);
 
-  for(int i = 1 ; i <= params.n_eig; i++) { 
-    gaussian(psi[i-1]);
-    
-    Ritz(*MM, lambda[i-1], psi, i, params.rsd_r, n_renorm,
-	 n_min, n_max, params.max_cg, ProjApsiP, n_count, 
-	 false, delta_cycle, gamma_factor);
 
-    // Check back.
-    LatticeFermion lambda_psi = lambda[i-1]*psi[i-1];
-    LatticeFermion D_psi;
-    (*MM)(D_psi, psi[i-1], PLUS);
-    LatticeFermion r = D_psi - lambda_psi;
-    check_norm[i-1] = Real(sqrt(norm2(r)));
- 
-    QDPIO::cout << "Check:  || M^M psi[" << i <<"] - lambda[ " << i <<"] psi[" << i <<"] || = " << check_norm[i-1] << endl;
+  XMLBufferWriter eig_spec_xml;
+
+  for(int i =0; i < params.n_eig; i++) { 
+    gaussian(psi[i]);
   }
 
-  push(xml_out, "LowEig");
-  
-  write(xml_out, "lambda", lambda);
-  write(xml_out, "checkNorm", check_norm);
+  EigSpecRitzCG(*MM, 
+	      lambda, 
+	      psi, 
+	      params.n_eig,
+	      n_renorm, 
+	      n_min, 
+	      params.max_cg,
+	      params.rsd_r,
+	      ProjApsiP,
+	      n_CG_count,
+	      eig_spec_xml);
 
-  for(int i=0; i < params.n_eig; i++) { 
-    lambda[i] = sqrt(lambda[i]);               // Eval of Sqrt(MM)
-    lambda[i] /= (Nd + params.quark_mass);     // SZIN normalisation
-  }
-  write(xml_out, "SZINLambdaAbs", lambda);
-  pop(xml_out);
+  xml_out << eig_spec_xml;
 
   pop(xml_out);
   QDP_finalize();
