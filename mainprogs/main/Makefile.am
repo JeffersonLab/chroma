@@ -40,7 +40,12 @@ HDRS =
 ##   Another option is to add it to check_PROGRAMS, which means it will only
 ##   be built by 'make check' and is not installed.
 #noinst_PROGRAMS = propagator
-check_PROGRAMS = propagator \
+##
+## BJ (21/02/05)
+## Moved these to be bin_PROGRAMS so that they are installed. Easier
+## than for users to have to always make them by hand
+##
+bin_PROGRAMS = propagator \
         collect_propcomp \
         seqsource \
 	make_source \
@@ -48,7 +53,7 @@ check_PROGRAMS = propagator \
         qproptrev apesmear stoutsmear hmc hypsmear3d hypsmear4d
 
 # Wilson specific programs
-check_PROGRAMS += spectrum_w qqq_w bar3ptfn qproptransf wallformfac mres
+bin_PROGRAMS += spectrum_w qqq_w bar3ptfn qproptransf wallformfac mres
 
 # Staggered specific programs
 #check_PROGRAMS += 
