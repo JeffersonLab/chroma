@@ -32,6 +32,8 @@ heatbath.
 \item Need some kind of reader/writer (??) for ILDG meta-data conventions???
 BJ points out management stuff not workable. Could do physics portion.
 
+\item Make xcheck that uses XMLDiff for complete regression tests.
+
 \item A. Hart says the subset-ted reunit is slow - should use
 QDP's profile and isolate.
 
