@@ -1,4 +1,4 @@
-// $Id: t_propagator_s.cc,v 1.22 2004-11-13 13:08:04 mcneile Exp $
+// $Id: t_propagator_s.cc,v 1.23 2004-11-13 14:04:39 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -286,7 +286,7 @@ int main(int argc, char **argv)
   }
 
 
-  // Instantiate XML writer for XMLDAT
+  // Instantiate XML writer for the output file
   XMLFileWriter xml_out("XMLDAT");
   push(xml_out, "hadron_corr");
 
@@ -355,10 +355,10 @@ int main(int argc, char **argv)
 
   //
   // Loop over the source color, creating the source
-  // and calling the relevant propagator routines. The QDP
-  // terminology is that a staggered propagator is a matrix in color space
+  // and calling the relevant propagator routines. 
   // 
   //
+
   LatticeStaggeredPropagator quark_propagator;
   XMLBufferWriter xml_buf;
   int ncg_had = 0;
@@ -367,28 +367,27 @@ int main(int argc, char **argv)
 
   LatticeStaggeredFermion q_source, psi;
   multi1d<LatticeStaggeredPropagator> stag_prop(8);
-  multi2d<Real> pi_corr(16, input.param.nrow[3]);
-  multi2d<Real> sc_corr(16, input.param.nrow[3]);
 
-  pi_corr = zero;
-  sc_corr = zero;
+  push(xml_out, "Wall_source");
+  push(xml_out,"Inverter_properties");
+  write(xml_out, "Mass" , input.param.Mass);
+  write(xml_out, "RsdCG", input.param.invParam.RsdCG);
+  pop(xml_out);
 
   for(int t_source = 0; t_source < 3; t_source += 2) {
+    QDPIO::cout << "Source time slice = " << t_source << endl;
 
     for(int src_ind = 0; src_ind < 8; ++src_ind){
       psi = zero;   // note this is ``zero'' and not 0
-//      int t_source = 0;
 
       QDPIO::cout << "Inversion for source " << src_ind << endl;
 
       for(int color_source = 0; color_source < Nc; ++color_source) {
         QDPIO::cout << "Inversion for Color =  " << color_source << endl;
-        QDPIO::cout << "Source time slice = " << t_source << endl;
-        int spin_source = 0;
 
         q_source = zero ;
         
-//  Use a wall source
+	//  Use a wall source
 	walfil(q_source, t_source, j_decay, color_source, src_ind);
 
         // Use the last initial guess as the current guess
@@ -400,10 +399,10 @@ int main(int argc, char **argv)
     
         ncg_had += n_count;
       
-        push(xml_out,"Qprop");
-        write(xml_out, "Mass" , input.param.Mass);
-        write(xml_out, "RsdCG", input.param.invParam.RsdCG);
-        write(xml_out, "n_count", n_count);
+	push(xml_out,"Inverter_performance");
+        write(xml_out, "color", color_source);
+        write(xml_out, "staggered_src", src_ind);
+        write(xml_out, "iterations", n_count);
         pop(xml_out);
 
         /*
@@ -418,6 +417,9 @@ int main(int argc, char **argv)
   
     int t_eff;
 
+    push(xml_out, "Hadrons_from_time_source");
+    write(xml_out, "source_time", t_source);
+
     staggered_pions pseudoscalar(t_length) ; 
     staggered_scalars  scalar_meson(t_length) ; 
     vector_meson rho(t_length) ; 
@@ -431,46 +433,9 @@ int main(int argc, char **argv)
     scalar_meson.dump(t_source,xml_out);
     rho.dump(t_source,xml_out);
 
-    // Instantiate XML buffer to make the propagator header
-    XMLBufferWriter prop_xml;
-    push(prop_xml, "propagator");
-
-    // Write out the input
-    write(prop_xml, "Input", xml_in);
-
-    // Write out the config header
-    write(prop_xml, "Config_info", gauge_xml);
-
-    // Write out the source header
-    write(prop_xml, "Source_info", source_xml);
-
-    pop(prop_xml);
-
+    pop(xml_out);
 
   } //t_source;
-
-  multi1d<Real> Pi(t_length), Sc(t_length);
- 
-  push(xml_out, "Here_are_all_16_pions_averaged_over_the_2_sources");
-  for(int i=0; i < NUM_STAG_PIONS; i++) {
-    Pi = pi_corr[i];
-    ostringstream tag;
-    tag << "pi_corr" << i;
-    push(xml_out, tag.str());
-    write(xml_out, "Pi", Pi);
-    pop(xml_out);
-  }
-  pop(xml_out);
-
-  push(xml_out, "And_the_same_for_the_scalars");
-  for(int i=0; i < NUM_STAG_PIONS; i++) {
-    Sc = sc_corr[i];
-    ostringstream tag;
-    tag << "sc_corr" << i;
-    push(xml_out, tag.str());
-    write(xml_out, "Sc", Sc);
-    pop(xml_out);
-  }
   pop(xml_out);
 
   pop(xml_out);
@@ -480,8 +445,6 @@ int main(int argc, char **argv)
 
   // Time to bolt
   QDP_finalize();
-
-  
 
 
   exit(0);
