@@ -1979,10 +1979,18 @@ echo "$as_me: error: STAGGERED-like fermions should have Ns=1. Check QDP++" >&2;
       { echo "$as_me:$LINENO: Configuring QDP++ Apps with STAGGERED-like fermions" >&5
 echo "$as_me: Configuring QDP++ Apps with STAGGERED-like fermions" >&6;}
     fi
+    cat >>confdefs.h <<\_ACEOF
+#define CHROMA_BUILD_STAGGERED 1
+_ACEOF
+
     ;;
   wilson)
     { echo "$as_me:$LINENO: Configuring QDP++ Apps with WILSON-like fermions" >&5
 echo "$as_me: Configuring QDP++ Apps with WILSON-like fermions" >&6;}
+    cat >>confdefs.h <<\_ACEOF
+#define CHROMA_BUILD_WILSON 1
+_ACEOF
+
     ;;
   *)
     { { echo "$as_me:$LINENO: error: ${ac_fermion_type}-like fermions not supported yet." >&5

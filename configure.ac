@@ -103,9 +103,11 @@ case $ac_fermion_type in
     else 
       AC_MSG_NOTICE([Configuring QDP++ Apps with STAGGERED-like fermions])
     fi
+    AC_DEFINE(CHROMA_BUILD_STAGGERED)
     ;;
   wilson)
     AC_MSG_NOTICE([Configuring QDP++ Apps with WILSON-like fermions])
+    AC_DEFINE(CHROMA_BUILD_WILSON)
     ;;
   *)
     AC_MSG_ERROR([${ac_fermion_type}-like fermions not supported yet.])
