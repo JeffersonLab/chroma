@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: wallformfac_pion.pl,v 1.1 2004-04-07 21:57:56 edwards Exp $
+# $Id: wallformfac_pion.pl,v 1.2 2004-04-08 02:01:26 edwards Exp $
 #
 # Usage
 #   formfact.pl
@@ -96,8 +96,12 @@ foreach $x (-$mommax_int .. $mommax_int)
       else
       {
 	$mom_name = "pion" . "_px" . $p[0] . "_py" . $p[1] . "_pz" . $p[2];
-	$pion_sp{$x, $y, $z} = $mom_name . ".$spext";
-	$pion_ss{$x, $y, $z} = $mom_name . ".$ssext";
+	$pion_sp{$x, $y, $z} = $mom_name . ".$spext" ;
+	$pion_ss{$x, $y, $z} = $mom_name . ".$ssext" ;
+	$pion_sw{$x, $y, $z} = $mom_name . ".$swext" ;
+	$pion_wp{$x, $y, $z} = $mom_name . ".$ssext" ;
+	$pion_ws{$x, $y, $z} = $mom_name . ".$ssext" ;
+	$pion_ws{$x, $y, $z} = $mom_name . ".$ssext" ;
       }
     }
   }
@@ -111,7 +115,7 @@ print "Pion Electric form-factor";
 # Assume zero momenta pion exist
 if (-f pion.$ssext) {exit(1);}
 
-&ensbc("pion_norm=extract($pion_ss{$p_f[0],$p_f[1],$p_f[2]}, $t_snk - $t_src)");
+&ensbc("pion_norm=extract($pion_sw{$p_f[0],$p_f[1],$p_f[2]}, $t_snk - $t_src)");
 
 # Use this as the insertion point - it is midway
 $t_ins = int(($t_snk - $t_src) / 2);
@@ -136,7 +140,7 @@ foreach $qx ( -$mommax_int .. $mommax_int ) {
 	print "found for ", $pion_sp{$qx,$qy,$qz};
 
 	$pion_energy{$qx, $qy, $qz} = "energy." . $pion_sp{$qx, $qy, $qz};
-	&meff("$pion_energy{$qx, $qy, $qz}","$pion_ss{$qx,$qy,$qz}",$t_ins);
+	&meff("$pion_energy{$qx, $qy, $qz}","$pion_sp{$qx,$qy,$qz}",$t_ins);
 	($mass, $mass_err) = &calc("$pion_energy{$qx, $qy, $qz}");
 
 	$pion_mass{$qx, $qy, $qz} = $mass;
