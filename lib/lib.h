@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lib.h,v 1.2 2004-01-13 03:56:15 edwards Exp $
+// $Id: lib.h,v 1.3 2004-03-29 21:31:15 edwards Exp $
 
 /*! \file
  * \brief Chroma Lattice Field Theory library

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gaugebc.h,v 1.3 2004-03-17 03:33:40 edwards Exp $
+// $Id: gaugebc.h,v 1.4 2004-03-29 21:31:15 edwards Exp $
 /*! @file
  * @brief Gauge boundary conditions
  */

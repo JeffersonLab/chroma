@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermbc.h,v 1.4 2004-03-17 03:37:03 edwards Exp $
+// $Id: fermbc.h,v 1.5 2004-03-29 21:31:15 edwards Exp $
 /*! @file
  * @brief Fermion action boundary conditions
  */

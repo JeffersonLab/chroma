@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: chroma_scalarsite_defs.h,v 1.1 2004-01-08 03:11:47 edwards Exp $
+// $Id: chroma_scalarsite_defs.h,v 1.2 2004-03-29 21:31:15 edwards Exp $
 
 /*! \file
  * \brief Additional QDP type definitions
