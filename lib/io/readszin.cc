@@ -1,4 +1,4 @@
-// $Id: readszin.cc,v 1.3 2003-04-02 06:59:20 edwards Exp $
+// $Id: readszin.cc,v 1.4 2003-04-02 22:28:21 edwards Exp $
 
 /*! \file
  *  \brief Read in a configuration written by SZIN up to configuration version 7.
@@ -7,7 +7,7 @@
 #include "chromabase.h"
 #include "io/readszin.h"
 #include "primitives.h"
-#include "proto.h"    // from QDP
+#include "qdp_util.h"    // from QDP
 
 using namespace QDP;
 

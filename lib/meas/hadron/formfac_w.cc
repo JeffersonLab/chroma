@@ -1,11 +1,14 @@
-// $Id: formfac_w.cc,v 1.9 2003-04-01 03:01:28 edwards Exp $
+// $Id: formfac_w.cc,v 1.10 2003-04-02 22:28:22 edwards Exp $
 /*! \file
  *  \brief Form-factors 
  *
  *  Form factors constructed from a quark and a sequential quark propagator
  */
 // $Log: formfac_w.cc,v $
-// Revision 1.9  2003-04-01 03:01:28  edwards
+// Revision 1.10  2003-04-02 22:28:22  edwards
+// Changed proto.h to qdp_util.h
+//
+// Revision 1.9  2003/04/01 03:01:28  edwards
 // Fixed doxygen comments.
 //
 // Revision 1.8  2003/04/01 02:38:26  edwards
@@ -23,7 +26,7 @@
 #include "chromabase.h"
 #include "util/ft/sftmom.h"
 #include "meas/hadron/formfac_w.h"
-#include "proto.h"                  // part of QDP++, for crtesn()
+#include "qdp_util.h"                  // part of QDP++, for crtesn()
 
 using namespace QDP;
 

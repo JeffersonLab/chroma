@@ -1,4 +1,4 @@
-// $Id: readszinqprop_w.cc,v 1.4 2003-04-02 06:59:20 edwards Exp $
+// $Id: readszinqprop_w.cc,v 1.5 2003-04-02 22:28:21 edwards Exp $
 /*!
  * @file
  * @brief  Read an old SZIN-style (checkerboarded) quark propagator
@@ -7,7 +7,7 @@
 #include "chromabase.h"
 #include "io/readszinqprop_w.h"
 
-#include "proto.h"   // from QDP++
+#include "qdp_util.h"   // from QDP++
 
 using namespace QDP;
 

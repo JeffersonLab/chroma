@@ -1,6 +1,9 @@
-//  $Id: mesons_w.cc,v 1.12 2003-04-01 03:27:26 edwards Exp $
+//  $Id: mesons_w.cc,v 1.13 2003-04-02 22:28:22 edwards Exp $
 //  $Log: mesons_w.cc,v $
-//  Revision 1.12  2003-04-01 03:27:26  edwards
+//  Revision 1.13  2003-04-02 22:28:22  edwards
+//  Changed proto.h to qdp_util.h
+//
+//  Revision 1.12  2003/04/01 03:27:26  edwards
 //  Added const to sftmom.
 //
 //  Revision 1.11  2003/04/01 02:38:26  edwards
@@ -34,7 +37,7 @@
 #include "chromabase.h"
 #include "util/ft/sftmom.h"
 #include "meas/hadron/mesons_w.h"
-#include "proto.h"                 // part of QDP++, for crtesn()
+#include "qdp_util.h"                 // part of QDP++, for crtesn()
 
 using namespace QDP;
 

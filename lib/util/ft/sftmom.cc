@@ -1,6 +1,9 @@
-//  $Id: sftmom.cc,v 1.4 2003-04-01 02:46:43 edwards Exp $
+//  $Id: sftmom.cc,v 1.5 2003-04-02 22:28:22 edwards Exp $
 //  $Log: sftmom.cc,v $
-//  Revision 1.4  2003-04-01 02:46:43  edwards
+//  Revision 1.5  2003-04-02 22:28:22  edwards
+//  Changed proto.h to qdp_util.h
+//
+//  Revision 1.4  2003/04/01 02:46:43  edwards
 //  Added const qual.
 //
 //  Revision 1.3  2003/03/20 19:34:25  flemingg
@@ -17,7 +20,7 @@
 
 #include "chromabase.h"
 #include "util/ft/sftmom.h"
-#include "proto.h"                 // part of QDP++, for crtesn()
+#include "qdp_util.h"                 // part of QDP++, for crtesn()
 
 using namespace QDP;
 
