@@ -1,4 +1,4 @@
-// $Id: eesu3.cc,v 1.2 2004-02-06 17:23:01 edwards Exp $
+// $Id: eesu3.cc,v 1.3 2004-03-03 01:50:40 edwards Exp $
 /*! \file
  *  \brief Exactly exponentiate a SU(3) lie algebra element
  */
@@ -29,10 +29,10 @@ void eesun(LatticeColorMatrix3& m)
   // NOTE, pass m = i*Q  ->  Q = -i*m
 
   // Q = -i*m
-  LatticeColorMatrix Q  = timesMinusI(m);
+  LatticeColorMatrix3 Q  = timesMinusI(m);
   
   // Q2 = Q*Q
-  LatticeColorMatrix Q2 = Q*Q;
+  LatticeColorMatrix3 Q2 = Q*Q;
   
   // c0 = tr(Q^3)/3 = real(tr(Q^3))/3
   Real third = 1.0/3.0;
@@ -47,14 +47,14 @@ void eesun(LatticeColorMatrix3& m)
 
   // Basic terms
   // NOTE: take ABSOLUTE value of c0 and later use relation
-  // that  f_i(-c0,c1) = (-1)^{j}*conj(f_j(c0,c1))
+  // that  f_j(-c0,c1) = (-1)^{j}*conj(f_j(c0,c1))
   LatticeReal theta = acos(abs(c0)/c0max);
   LatticeReal u = sqrt(third*c1)*cos(third*theta);
   LatticeReal w = sqrt(c1)*sin(third*theta);
 
   // Carefully control  xi0
   LatticeReal w2  = w*w;
-  LatticeReal xi0 = where(abs(w) < 0.5, 
+  LatticeReal xi0 = where(abs(w) < 0.05, 
 			  1 - Real(1/6)*w2*(1-Real(1/20)*w2*(1-Real(1/42)*w2)),
 			  sin(w)/w);
 
@@ -69,9 +69,9 @@ void eesun(LatticeColorMatrix3& m)
   LatticeComplex h2 = e2u - emu*(cosw + timesI(3*u*xi0));
 
   //
-  // The f_i . Note, by using abs(c0) above, we do not have
+  // The f_j . Note, by using abs(c0) above, we do not have
   // a singularity problem. So, correct for abs(c0) by using
-  // f_i(-c0,c1) = (-1)^{j}*conj(f_j(c0,c1))
+  // f_j(-c0,c1) = (-1)^{j}*conj(f_j(c0,c1))
   //
   LatticeReal    fact = Real(1.0) / (9*u2 - w2);
   LatticeComplex f0   = where(c0 > 0, h0*fact,  conj(h0*fact));
