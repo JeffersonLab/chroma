@@ -1,4 +1,4 @@
-// $Id: baryon_w.cc,v 1.15 2004-04-22 17:01:15 edwards Exp $ 
+// $Id: baryon_w.cc,v 1.16 2004-05-01 20:16:04 edwards Exp $ 
 /*! \file
  *  \brief Baryon 2-pt functions
  */
@@ -51,7 +51,7 @@ void baryon(LatticePropagator& quark_propagator,
   multi3d<DComplex> bardisp2;
 
   // Forward
-  baryon(quark_propagator, phases, t0, bardisp1);
+  baryon(quark_propagator, phases, bardisp1);
 
   // Possibly add in a time-reversed contribution
   bool time_revP = (bc_spec*bc_spec == 1) ? time_rev : false;
@@ -62,7 +62,7 @@ void baryon(LatticePropagator& quark_propagator,
     /* S_{CT} = gamma_5 gamma_4 = gamma_1 gamma_2 gamma_3 = Gamma(7) */
     LatticePropagator q1_tmp = - (Gamma(7) * quark_propagator * Gamma(7));
 
-    baryon(q1_tmp, phases, t0, bardisp2);
+    baryon(q1_tmp, phases, bardisp2);
   }
 
 
@@ -150,7 +150,6 @@ void baryon(LatticePropagator& quark_propagator,
  *
  * \param quark_propagator  quark propagator ( Read )
  * \param barprop    baryon propagator ( Modify )
- * \param t0         cartesian coordinates of the source ( Read )
  * \param phases     object holds list of momenta and Fourier phases ( Read )
  *
  *        ____
@@ -189,7 +188,6 @@ void baryon(LatticePropagator& quark_propagator,
 
 void baryon(LatticePropagator& quark_propagator, 
             const SftMom& phases,
-            int t0,
 	    multi3d<DComplex>& barprop)
 {
   START_CODE("baryon");

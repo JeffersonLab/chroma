@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: baryon_w.h,v 1.6 2004-05-01 19:58:15 edwards Exp $
+// $Id: baryon_w.h,v 1.7 2004-05-01 20:16:04 edwards Exp $
 /*! \file
  *  \brief Baryon 2-pt functions
  */
@@ -54,7 +54,6 @@ void baryon(LatticePropagator& quark_propagator,
  *
  * \param quark_propagator  quark propagator ( Read )
  * \param barprop    baryon propagator ( Modify )
- * \param t0         cartesian coordinates of the source ( Read )
  * \param phases     object holds list of momenta and Fourier phases ( Read )
  *
  *        ____
@@ -93,7 +92,6 @@ void baryon(LatticePropagator& quark_propagator,
 
 void baryon(LatticePropagator& quark_propagator, 
             const SftMom& phases,
-            int t0,
 	    multi3d<DComplex>& barprop);
 
 #endif
