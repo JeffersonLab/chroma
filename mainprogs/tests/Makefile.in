@@ -13,7 +13,7 @@
 # PARTICULAR PURPOSE.
 
 @SET_MAKE@
-SOURCES = $(t_ape_smear_SOURCES) $(t_bicgstab_SOURCES) $(t_conslinop_SOURCES) $(t_disc_loop_s_SOURCES) $(t_dslashm_SOURCES) $(t_dwf4d_SOURCES) $(t_dwflinop_SOURCES) $(t_dwflocality_SOURCES) $(t_fermion_loop_w_SOURCES) $(t_follana_io_s_SOURCES) $(t_follana_pion_s_SOURCES) $(t_formfac_SOURCES) $(t_fuzwilp_SOURCES) $(t_g5eps_bj_SOURCES) $(t_gfix_SOURCES) $(t_hamiltonian_SOURCES) $(t_hamsys_SOURCES) $(t_hamsys_ferm_SOURCES) $(t_hmc_SOURCES) $(t_hmc_pg_SOURCES) $(t_hypsmear_SOURCES) $(t_invborici_SOURCES) $(t_invert3_precwilson_SOURCES) $(t_invert4_precwilson_SOURCES) $(t_invrelcg_SOURCES) $(t_io_SOURCES) $(t_leapfrog_SOURCES) $(t_lower_tests_SOURCES) $(t_lwldslash_SOURCES) $(t_lwldslash_pab_SOURCES) $(t_lwldslash_sse_SOURCES) $(t_mesons_w_SOURCES) $(t_mesplq_SOURCES) $(t_mres_4d_SOURCES) $(t_msumr_SOURCES) $(t_neflinop_SOURCES) $(t_ov_pbp_SOURCES) $(t_overbu_SOURCES) $(t_ovlap5d_bj_SOURCES) $(t_ovlap_bj_SOURCES) $(t_ovlap_double_pass_SOURCES) $(t_prec_contfrac_SOURCES) $(t_prec_nef_SOURCES) $(t_prec_twoflav_wilson_monomial_SOURCES) $(t_prec_wilson_force_SOURCES) $(t_precact_SOURCES) $(t_precact_sse_SOURCES) $(t_precdwf_SOURCES) $(t_propagator_fuzz_s_SOURCES) $(t_propagator_nrqcd_SOURCES) $(t_propagator_s_SOURCES) $(t_propagator_twisted_SOURCES) $(t_propagator_w_SOURCES) $(t_read_eigen_SOURCES) $(t_rel_gmresr_SOURCES) $(t_ritz_SOURCES) $(t_ritz5d_KS_SOURCES) $(t_ritz_KS_SOURCES) $(t_spprod_SOURCES) $(t_su3_SOURCES) $(t_sumr_SOURCES) $(t_unprec_twoflav_wilson_monomial_SOURCES) $(t_unprec_wilson_force_SOURCES) $(t_wilslp_SOURCES)
+SOURCES = $(t_ape_smear_SOURCES) $(t_bicgstab_SOURCES) $(t_conslinop_SOURCES) $(t_disc_loop_s_SOURCES) $(t_dslashm_SOURCES) $(t_dwf4d_SOURCES) $(t_dwflinop_SOURCES) $(t_dwflocality_SOURCES) $(t_fermion_loop_w_SOURCES) $(t_follana_io_s_SOURCES) $(t_follana_pion_s_SOURCES) $(t_formfac_SOURCES) $(t_fuzwilp_SOURCES) $(t_g5eps_bj_SOURCES) $(t_gauge_force_SOURCES) $(t_gfix_SOURCES) $(t_hamiltonian_SOURCES) $(t_hamsys_SOURCES) $(t_hamsys_ferm_SOURCES) $(t_hmc_SOURCES) $(t_hmc_pg_SOURCES) $(t_hypsmear_SOURCES) $(t_invborici_SOURCES) $(t_invert3_precwilson_SOURCES) $(t_invert4_precwilson_SOURCES) $(t_invrelcg_SOURCES) $(t_io_SOURCES) $(t_leapfrog_SOURCES) $(t_lower_tests_SOURCES) $(t_lwldslash_SOURCES) $(t_lwldslash_pab_SOURCES) $(t_lwldslash_sse_SOURCES) $(t_mesons_w_SOURCES) $(t_mesplq_SOURCES) $(t_mres_4d_SOURCES) $(t_msumr_SOURCES) $(t_neflinop_SOURCES) $(t_ov_pbp_SOURCES) $(t_overbu_SOURCES) $(t_ovlap5d_bj_SOURCES) $(t_ovlap_bj_SOURCES) $(t_ovlap_double_pass_SOURCES) $(t_prec_contfrac_SOURCES) $(t_prec_nef_SOURCES) $(t_prec_twoflav_wilson_monomial_SOURCES) $(t_prec_wilson_force_SOURCES) $(t_precact_SOURCES) $(t_precact_sse_SOURCES) $(t_precdwf_SOURCES) $(t_propagator_fuzz_s_SOURCES) $(t_propagator_nrqcd_SOURCES) $(t_propagator_s_SOURCES) $(t_propagator_twisted_SOURCES) $(t_propagator_w_SOURCES) $(t_read_eigen_SOURCES) $(t_rel_gmresr_SOURCES) $(t_ritz_SOURCES) $(t_ritz5d_KS_SOURCES) $(t_ritz_KS_SOURCES) $(t_spprod_SOURCES) $(t_su3_SOURCES) $(t_sumr_SOURCES) $(t_unprec_twoflav_wilson_monomial_SOURCES) $(t_unprec_wilson_force_SOURCES) $(t_wilslp_SOURCES)
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -70,7 +70,7 @@ EXTRA_PROGRAMS = t_dslashm$(EXEEXT) t_lwldslash$(EXEEXT) \
 	t_unprec_twoflav_wilson_monomial$(EXEEXT) \
 	t_prec_twoflav_wilson_monomial$(EXEEXT) t_hamiltonian$(EXEEXT) \
 	t_leapfrog$(EXEEXT) t_hmc$(EXEEXT) \
-	t_propagator_twisted$(EXEEXT)
+	t_propagator_twisted$(EXEEXT) t_gauge_force$(EXEEXT)
 subdir = mainprogs/tests
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -124,6 +124,9 @@ t_fuzwilp_LDADD = $(LDADD)
 am_t_g5eps_bj_OBJECTS = t_g5eps_bj.$(OBJEXT)
 t_g5eps_bj_OBJECTS = $(am_t_g5eps_bj_OBJECTS)
 t_g5eps_bj_LDADD = $(LDADD)
+am_t_gauge_force_OBJECTS = t_gauge_force.$(OBJEXT)
+t_gauge_force_OBJECTS = $(am_t_gauge_force_OBJECTS)
+t_gauge_force_LDADD = $(LDADD)
 am_t_gfix_OBJECTS = t_gfix.$(OBJEXT)
 t_gfix_OBJECTS = $(am_t_gfix_OBJECTS)
 t_gfix_LDADD = $(LDADD)
@@ -297,8 +300,8 @@ SOURCES = $(t_ape_smear_SOURCES) $(t_bicgstab_SOURCES) \
 	$(t_dwflocality_SOURCES) $(t_fermion_loop_w_SOURCES) \
 	$(t_follana_io_s_SOURCES) $(t_follana_pion_s_SOURCES) \
 	$(t_formfac_SOURCES) $(t_fuzwilp_SOURCES) \
-	$(t_g5eps_bj_SOURCES) $(t_gfix_SOURCES) \
-	$(t_hamiltonian_SOURCES) $(t_hamsys_SOURCES) \
+	$(t_g5eps_bj_SOURCES) $(t_gauge_force_SOURCES) \
+	$(t_gfix_SOURCES) $(t_hamiltonian_SOURCES) $(t_hamsys_SOURCES) \
 	$(t_hamsys_ferm_SOURCES) $(t_hmc_SOURCES) $(t_hmc_pg_SOURCES) \
 	$(t_hypsmear_SOURCES) $(t_invborici_SOURCES) \
 	$(t_invert3_precwilson_SOURCES) \
@@ -328,8 +331,8 @@ DIST_SOURCES = $(t_ape_smear_SOURCES) $(t_bicgstab_SOURCES) \
 	$(t_dwflocality_SOURCES) $(t_fermion_loop_w_SOURCES) \
 	$(t_follana_io_s_SOURCES) $(t_follana_pion_s_SOURCES) \
 	$(t_formfac_SOURCES) $(t_fuzwilp_SOURCES) \
-	$(t_g5eps_bj_SOURCES) $(t_gfix_SOURCES) \
-	$(t_hamiltonian_SOURCES) $(t_hamsys_SOURCES) \
+	$(t_g5eps_bj_SOURCES) $(t_gauge_force_SOURCES) \
+	$(t_gfix_SOURCES) $(t_hamiltonian_SOURCES) $(t_hamsys_SOURCES) \
 	$(t_hamsys_ferm_SOURCES) $(t_hmc_SOURCES) $(t_hmc_pg_SOURCES) \
 	$(t_hypsmear_SOURCES) $(t_invborici_SOURCES) \
 	$(t_invert3_precwilson_SOURCES) \
@@ -617,6 +620,8 @@ t_leapfrog_SOURCES = t_leapfrog.cc
 t_leapfrog_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 t_hmc_SOURCES = t_hmc.cc
 t_hmc_DEPENDENCIES = build_chroma_libs rebuild_other_libs
+t_gauge_force_SOURCES = t_gauge_force.cc
+t_gauge_force_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 all: all-am
 
 .SUFFIXES:
@@ -695,6 +700,9 @@ t_fuzwilp$(EXEEXT): $(t_fuzwilp_OBJECTS) $(t_fuzwilp_DEPENDENCIES)
 t_g5eps_bj$(EXEEXT): $(t_g5eps_bj_OBJECTS) $(t_g5eps_bj_DEPENDENCIES) 
 	@rm -f t_g5eps_bj$(EXEEXT)
 	$(CXXLINK) $(t_g5eps_bj_LDFLAGS) $(t_g5eps_bj_OBJECTS) $(t_g5eps_bj_LDADD) $(LIBS)
+t_gauge_force$(EXEEXT): $(t_gauge_force_OBJECTS) $(t_gauge_force_DEPENDENCIES) 
+	@rm -f t_gauge_force$(EXEEXT)
+	$(CXXLINK) $(t_gauge_force_LDFLAGS) $(t_gauge_force_OBJECTS) $(t_gauge_force_LDADD) $(LIBS)
 t_gfix$(EXEEXT): $(t_gfix_OBJECTS) $(t_gfix_DEPENDENCIES) 
 	@rm -f t_gfix$(EXEEXT)
 	$(CXXLINK) $(t_gfix_LDFLAGS) $(t_gfix_OBJECTS) $(t_gfix_LDADD) $(LIBS)
@@ -868,6 +876,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_formfac.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_fuzwilp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_g5eps_bj.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_gauge_force.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_gfix.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_hamiltonian.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_hamsys.Po@am__quote@
