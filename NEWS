@@ -1,5 +1,10 @@
 03/02/2005 -- Robert Edwards
 
+	Version 1.19.13. Bug fix in ZoloNef FermAct codes. Only showed 
+        up in Zolo case. This bug was introduced 2/14/05 - now squashed.
+
+03/02/2005 -- Robert Edwards
+
 	Version 1.19.12. Argh - bug fix. Resize's in linop array routines
         caused problems. Updated command-line args to all main programs.
 
