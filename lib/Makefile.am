@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.120 2004-04-14 12:53:21 bjoo Exp $
+# $Id: Makefile.am,v 1.121 2004-04-14 20:58:05 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -70,8 +70,8 @@ nobase_include_HEADERS = \
 	actions/ferm/linop/lmdagm.h actions/ferm/linop/lopscl.h \
 	actions/ferm/linop/partrat.h actions/ferm/qprop/qprop.h \
 	actions/gauge/gauge.h \
-	io/io.h io/gauge_io.h io/milc_io.h io/param_io.h io/qprop_io.h \
-	io/eigen_io.h io/readmilc.h \
+	io/io.h io/eigen_io.h io/gauge_io.h io/kyuqprop_io.h \
+        io/milc_io.h io/param_io.h io/qprop_io.h io/readmilc.h \
 	io/readszin.h io/szin_io.h io/writemilc.h io/writeszin.h \
 	meas/eig/eig.h meas/eig/gramschm.h meas/eig/gramschm_array.h \
 	meas/eig/ritz.h meas/eig/ritz_array.h meas/eig/sn_jacob.h \
@@ -242,6 +242,7 @@ libchroma_a_SOURCES += baryon_w.cc mesons_w.cc hybmeson_w.cc \
               prec_dwf_fermact_base_w.cc prec_dwf_fermact_qprop_array_w.cc \
               prec_dwf_fermact_array_w.cc prec_dwf_linop_array_w.cc \
               prec_ovdwf_fermact_array_w.cc prec_ovdwf_linop_array_w.cc \
+              kyuqprop_io.cc \
               readszinqprop_w.cc readszinferm_w.cc writeszinqprop_w.cc \
 	      dwf_quarkprop4_w.cc quarkprop4_w.cc quarkprop4_multi_w.cc \
               overlapbu_linop_w.cc \
