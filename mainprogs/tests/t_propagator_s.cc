@@ -1,4 +1,4 @@
-// $Id: t_propagator_s.cc,v 1.15 2004-09-09 15:52:52 edwards Exp $
+// $Id: t_propagator_s.cc,v 1.16 2004-10-29 14:32:34 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -366,7 +366,7 @@ int main(int argc, char **argv)
   int t_length = input.param.nrow[3];
 
   LatticeFermion q_source, psi;
-  multi1d<LatticePropagator> stag_prop(8);
+  multi1d<LatticeStaggeredPropagator> stag_prop(8);
   multi2d<Real> pi_corr(16, input.param.nrow[3]);
   multi2d<Real> sc_corr(16, input.param.nrow[3]);
 
@@ -424,7 +424,7 @@ int main(int argc, char **argv)
     multi2d<Real> re_pion(16, t_length);
     multi2d<Real> re_sc(16, t_length);
      
-    staggeredPionsFollana(stag_prop, pion, j_decay);
+    pions(stag_prop, pion, j_decay);
     staggeredScalars(stag_prop, scalar, j_decay);
 
     // Take the real part of the correlator and average over the sources
