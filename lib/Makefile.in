@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.313 2005-01-14 20:14:19 edwards Exp $
+# $Id: Makefile.in,v 1.314 2005-01-15 12:36:38 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -422,10 +422,10 @@ SOURCES = $(libchroma_a_SOURCES)
 DIST_SOURCES = $(am__libchroma_a_SOURCES_DIST)
 am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	chromabase.h chromainc.h common_declarations.h fermact.h \
-	fermbc.h gaugeact.h gaugebc.h handle.h invtype.h lib.h \
-	linearop.h objfactory.h objfunctor.h primitives.h singleton.h \
-	state.h typeinfo.h typelist.h typemanip.h typetraits.h \
-	actions/actions.h actions/boson/boson.h \
+	fermbc.h syssolver.h gaugeact.h gaugebc.h handle.h invtype.h \
+	lib.h linearop.h objfactory.h objfunctor.h primitives.h \
+	singleton.h state.h typeinfo.h typelist.h typemanip.h \
+	typetraits.h actions/actions.h actions/boson/boson.h \
 	actions/boson/operator/klein_gord.h actions/ferm/ferm.h \
 	actions/ferm/fermacts/asqtad_state.h \
 	actions/ferm/fermacts/fermacts.h \
@@ -516,6 +516,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	update/heatbath/su3_hb_sweep.h update/molecdyn/molecdyn.h \
 	update/molecdyn/field_state.h \
 	update/molecdyn/monomial/monomial.h \
+	update/molecdyn/monomial/monomial_w.h \
 	update/molecdyn/monomial/abs_monomial.h \
 	update/molecdyn/monomial/monomial_factory.h \
 	update/molecdyn/monomial/gauge_monomial.h \
@@ -648,6 +649,10 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/hadron/pion_sing_s.h meas/hadron/stag_propShift_s.h \
 	meas/hadron/vector_meson_s.h util/ferm/ferm_s.h \
 	util/gauge/gauge_s.h util/gauge/stag_phases_s.h io/inline_io.h \
+	meas/inline/inline.h meas/inline/abs_inline_measurement.h \
+	meas/inline/abs_inline_measurement_factory.h \
+	meas/inline/glue/glue.h meas/inline/glue/inline_plaquette.h \
+	meas/inline/glue/inline_polylp.h \
 	actions/ferm/linop/lwldslash_w_sse.h \
 	actions/ferm/qprop/prec_dwf_qprop_array_sse_w.h \
 	actions/ferm/linop/lwldslash_w_pab.h
@@ -778,9 +783,9 @@ BUILDDIR = @top_builddir@
 #
 nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	chromainc.h common_declarations.h fermact.h fermbc.h \
-	gaugeact.h gaugebc.h handle.h invtype.h lib.h linearop.h \
-	objfactory.h objfunctor.h primitives.h singleton.h state.h \
-	typeinfo.h typelist.h typemanip.h typetraits.h \
+	syssolver.h gaugeact.h gaugebc.h handle.h invtype.h lib.h \
+	linearop.h objfactory.h objfunctor.h primitives.h singleton.h \
+	state.h typeinfo.h typelist.h typemanip.h typetraits.h \
 	actions/actions.h actions/boson/boson.h \
 	actions/boson/operator/klein_gord.h actions/ferm/ferm.h \
 	actions/ferm/fermacts/asqtad_state.h \
@@ -872,6 +877,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	update/heatbath/su3_hb_sweep.h update/molecdyn/molecdyn.h \
 	update/molecdyn/field_state.h \
 	update/molecdyn/monomial/monomial.h \
+	update/molecdyn/monomial/monomial_w.h \
 	update/molecdyn/monomial/abs_monomial.h \
 	update/molecdyn/monomial/monomial_factory.h \
 	update/molecdyn/monomial/gauge_monomial.h \
@@ -1005,7 +1011,11 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/hadron/pion_sing_s.h meas/hadron/stag_propShift_s.h \
 	meas/hadron/vector_meson_s.h util/ferm/ferm_s.h \
 	util/gauge/gauge_s.h util/gauge/stag_phases_s.h io/inline_io.h \
-	$(am__append_3) $(am__append_5) $(am__append_7)
+	meas/inline/inline.h meas/inline/abs_inline_measurement.h \
+	meas/inline/abs_inline_measurement_factory.h \
+	meas/inline/glue/glue.h meas/inline/glue/inline_plaquette.h \
+	meas/inline/glue/inline_polylp.h $(am__append_3) \
+	$(am__append_5) $(am__append_7)
 nodist_include_HEADERS = chroma_config_internal.h
 
 #
@@ -5183,7 +5193,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/actions $(distdir)/actions/boson $(distdir)/actions/boson/operator $(distdir)/actions/ferm $(distdir)/actions/ferm/fermacts $(distdir)/actions/ferm/fermbcs $(distdir)/actions/ferm/invert $(distdir)/actions/ferm/linop $(distdir)/actions/ferm/qprop $(distdir)/actions/gauge $(distdir)/actions/gauge/gaugeacts $(distdir)/actions/gauge/gaugebcs $(distdir)/init $(distdir)/io $(distdir)/io/enum_io $(distdir)/meas $(distdir)/meas/eig $(distdir)/meas/gfix $(distdir)/meas/glue $(distdir)/meas/hadron $(distdir)/meas/pbp $(distdir)/meas/schrfun $(distdir)/meas/smear $(distdir)/meas/sources $(distdir)/update $(distdir)/update/heatbath $(distdir)/update/molecdyn $(distdir)/update/molecdyn/hamiltonian $(distdir)/update/molecdyn/hmc $(distdir)/update/molecdyn/integrator $(distdir)/update/molecdyn/monomial $(distdir)/update/molecdyn/predictor $(distdir)/util $(distdir)/util/ferm $(distdir)/util/ft $(distdir)/util/gauge $(distdir)/util/info
+	$(mkdir_p) $(distdir)/actions $(distdir)/actions/boson $(distdir)/actions/boson/operator $(distdir)/actions/ferm $(distdir)/actions/ferm/fermacts $(distdir)/actions/ferm/fermbcs $(distdir)/actions/ferm/invert $(distdir)/actions/ferm/linop $(distdir)/actions/ferm/qprop $(distdir)/actions/gauge $(distdir)/actions/gauge/gaugeacts $(distdir)/actions/gauge/gaugebcs $(distdir)/init $(distdir)/io $(distdir)/io/enum_io $(distdir)/meas $(distdir)/meas/eig $(distdir)/meas/gfix $(distdir)/meas/glue $(distdir)/meas/hadron $(distdir)/meas/inline $(distdir)/meas/inline/glue $(distdir)/meas/pbp $(distdir)/meas/schrfun $(distdir)/meas/smear $(distdir)/meas/sources $(distdir)/update $(distdir)/update/heatbath $(distdir)/update/molecdyn $(distdir)/update/molecdyn/hamiltonian $(distdir)/update/molecdyn/hmc $(distdir)/update/molecdyn/integrator $(distdir)/update/molecdyn/monomial $(distdir)/update/molecdyn/predictor $(distdir)/util $(distdir)/util/ferm $(distdir)/util/ft $(distdir)/util/gauge $(distdir)/util/info
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -5307,12 +5317,6 @@ uninstall-am: uninstall-info-am uninstall-libLIBRARIES \
 	uninstall-libLIBRARIES uninstall-nobase_includeHEADERS \
 	uninstall-nodist_includeHEADERS
 
-	meas/inline/inline.h \
-	meas/inline/abs_inline_measurement.h \
-	meas/inline/abs_inline_measurement_factory.h \
-	meas/inline/glue/glue.h \
-	meas/inline/glue/inline_plaquette.h \
-	meas/inline/glue/inline_polylp.h
 #	actions/ferm/fermacts/stag_fermact_s.cc
 #	
 #	meas/pbp/mespbp_s.cc meas/pbp/stagpbp_s.cc

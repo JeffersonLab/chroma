@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.232 2005-01-13 16:50:57 mcneile Exp $
+# $Id: Makefile.am,v 1.233 2005-01-15 12:36:38 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -14,7 +14,7 @@ BUILDDIR=@top_builddir@
 nobase_include_HEADERS = \
 	chroma_config.h chroma.h \
 	chromabase.h chromainc.h common_declarations.h fermact.h \
-	fermbc.h gaugeact.h gaugebc.h handle.h invtype.h lib.h \
+	fermbc.h syssolver.h gaugeact.h gaugebc.h handle.h invtype.h lib.h \
 	linearop.h objfactory.h objfunctor.h primitives.h \
 	singleton.h state.h typeinfo.h typelist.h typemanip.h typetraits.h \
 	actions/actions.h actions/boson/boson.h \
@@ -130,6 +130,7 @@ nobase_include_HEADERS = \
 	update/molecdyn/molecdyn.h \
 	update/molecdyn/field_state.h \
 	update/molecdyn/monomial/monomial.h \
+	update/molecdyn/monomial/monomial_w.h \
 	update/molecdyn/monomial/abs_monomial.h \
 	update/molecdyn/monomial/monomial_factory.h \
 	update/molecdyn/monomial/gauge_monomial.h \
@@ -283,6 +284,18 @@ nobase_include_HEADERS += \
 	meas/hadron/vector_meson_s.h \
 	util/ferm/ferm_s.h \
 	util/gauge/gauge_s.h util/gauge/stag_phases_s.h
+
+#
+# Inline measurement headers
+#
+nobase_include_HEADERS += \
+	io/inline_io.h \
+	meas/inline/inline.h \
+	meas/inline/abs_inline_measurement.h \
+	meas/inline/abs_inline_measurement_factory.h \
+	meas/inline/glue/glue.h \
+	meas/inline/glue/inline_plaquette.h \
+	meas/inline/glue/inline_polylp.h
 
 #
 # Include Path
@@ -491,17 +504,6 @@ libchroma_a_SOURCES += \
 
 
 
-#
-# Inline measurement headers
-#
-nobase_include_HEADERS += \
-	io/inline_io.h
-	meas/inline/inline.h \
-	meas/inline/abs_inline_measurement.h \
-	meas/inline/abs_inline_measurement_factory.h \
-	meas/inline/glue/glue.h \
-	meas/inline/glue/inline_plaquette.h \
-	meas/inline/glue/inline_polylp.h
 
 # Inline measurement sources 
 
