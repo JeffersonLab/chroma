@@ -1,6 +1,11 @@
+01/15/2005 -- Robert Edwards
+
+	Version 1.18.2. Fixed norms on new gaugeacts. Seem okay.
+
 01/15/2005 -- Balint Joo
 
 	Version 1.18.1. Added missing include files to lib/Makefile.am
+        Fixed norms on new gaugeacts. Seem okay.
 
 01/14/2005 -- Robert Edwards
 
