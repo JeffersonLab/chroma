@@ -1,8 +1,12 @@
+02/16/2005 -- Robert Edwards
+
+	Version 1.19.5. Added hybrid meson stuff to spectrum_w. 
+
 02/13/2005 -- Robert Edwards
 
-	Version 1.19.4. Changed/fixed all ContFrac codes to have a +OverMass sign
-        convention. Changed Zolo fermacts to take ApproxMin/Max from FermionAction
-        group. 
+	Version 1.19.4. Changed/fixed all ContFrac codes to have a +OverMass 
+        sign convention. Changed Zolo fermacts to take ApproxMin/Max from 
+        FermionAction group. 
 
 02/10/2005 -- Robert Edwards
 
