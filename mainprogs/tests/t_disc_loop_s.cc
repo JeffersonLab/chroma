@@ -1,4 +1,3 @@
-
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -10,31 +9,17 @@
 
 // Include everything...
 #include "chroma.h"
-//#include "meas/hadron/hadron_s.h"
+
 /*
  *  Here we have various temporary definitions
  */
-/*
-enum CfgType {
-  CFG_TYPE_MILC = 0,
-  CFG_TYPE_NERSC,
-  CFG_TYPE_SCIDAC,
-  CFG_TYPE_SZIN,
-  CFG_TYPE_UNKNOWN
-} ;
 
-enum PropType {
-  PROP_TYPE_SCIDAC = 2,
-  PROP_TYPE_SZIN,
-  PROP_TYPE_UNKNOWN
-} ;
-
-enum FermType {
-  FERM_TYPE_STAGGERED,
-  FERM_TYPE_UNKNOWN
+enum VolSrc {
+  Z2NOISE ,
+  GAUSSIAN
 };
-*/
 
+typedef   VolSrc  VolSrc_type ; 
 
 using namespace QDP;
 
@@ -51,11 +36,14 @@ struct Param_t
   FermType     FermTypeP;
   Real         Mass;      // Staggered mass
   Real         u0;        // Tadpole Factor
+
  
   CfgType  cfg_type;       // storage order for stored gauge configuration
   PropType prop_type;      // storage order for stored propagator
 
   InvertParam_t  invParam;
+
+  bool use_gauge_invar_oper ;
 
   int Nsamples; 		  // Number of stochastic sources
   int CFGNO;		  // Configuration Number used for seeding rng
@@ -66,6 +54,9 @@ struct Param_t
   multi1d<int> nrow;
   multi1d<int> boundary;
   multi1d<int> t_srce; 
+
+  VolSrc_type volume_source ; 
+
 };
 
 
@@ -184,6 +175,27 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
       }
     }
 
+    {
+      string vol_type_str;
+      read(paramtop, "volume_source", vol_type_str);
+      if (vol_type_str == "Z2NOISE") 
+	{
+	  input.param.volume_source = Z2NOISE ;
+	} 
+      else if  (vol_type_str == "GAUSSIAN") 
+	{
+	  input.param.volume_source = GAUSSIAN ;
+	}
+      else
+	{
+	QDP_error_exit("Wrong type of volume source");
+	}
+
+
+    }
+
+
+
 //    read(paramtop, "invType", input.param.invType);
     input.param.invParam.invType = CG_INVERTER;   //need to fix this
     read(paramtop, "RsdCG", input.param.invParam.RsdCG);
@@ -197,6 +209,9 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     read(paramtop, "nrow", input.param.nrow);
     read(paramtop, "boundary", input.param.boundary);
     read(paramtop, "t_srce", input.param.t_srce);
+
+    read(paramtop, "use_gauge_invar_oper", input.param.use_gauge_invar_oper);
+
   }
   catch (const string& e) 
   {
@@ -218,21 +233,6 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
   }
 }
 
-// I cant forward declare this for some reason
-// Standard Time Slicery
-class TimeSliceFunc : public SetFunc
-{
-public:
-  TimeSliceFunc(int dir): dir_decay(dir) {}
-
-  int operator() (const multi1d<int>& coordinate) const {return coordinate[dir_decay];}
-  int numSubsets() const {return Layout::lattSize()[dir_decay];}
-
-  int dir_decay;
-
-private:
-  TimeSliceFunc() {}  // hide default constructor
-};
 
 //! Propagator generation
 /*! \defgroup propagator Propagator generation
@@ -261,18 +261,9 @@ int main(int argc, char **argv)
 
   // Read in the configuration along with relevant information.
   multi1d<LatticeColorMatrix> u(Nd);
-  
-  XMLReader gauge_xml;
 
-  switch (input.cfg.cfg_type) 
-  {
-  case CFG_TYPE_NERSC :
-    readArchiv(gauge_xml, u, input.cfg.cfg_file);
-    break;
-  default :
-    QDP_error_exit("Configuration type is unsupported.");
-  }
-
+  XMLReader  gauge_file_xml,  gauge_xml;
+  gaugeStartup(gauge_file_xml, gauge_xml, u, input.cfg);
 
   // Instantiate XML writer for output
   XMLFileWriter xml_out("t_disc_loop_s.xml");
@@ -332,15 +323,6 @@ int main(int argc, char **argv)
   Handle<const ConnectState > state(S_f.createState(u));
   Handle<const SystemSolver<LatticeStaggeredFermion> > qprop(S_f.qprop(state,input.param.invParam));
 
-  // Machinery to do timeslice sums with
-  UnorderedSet timeslice;
-  timeslice.make(TimeSliceFunc(Nd-1));
-
-  //
-  // Loop over the source color, creating the source
-  // and calling the relevant propagator routines. The QDP
-  // terminology is that a staggered propagator is a matrix in color space
-  //
 
   LatticeStaggeredPropagator quark_propagator;
   XMLBufferWriter xml_buf;
@@ -349,23 +331,10 @@ int main(int argc, char **argv)
 
   int Nsamp = input.param.Nsamples;
   int t_length = input.param.nrow[3];
+  bool use_gauge_invar_oper = input.param.use_gauge_invar_oper ;
 
   LatticeStaggeredFermion q_source, psi ;
 
-
-  // Timeslice sums of fermion loops.
-  // G_s is local scalar 
-  LatticeComplex TrG_s0 ;
-  LatticeComplex corr_fn_s, corr_fn_p ;
-
-
-  multi2d<DComplex> loop_s0(Nsamp, t_length) ;
-
-  multi1d<DComplex> sca0_loop(t_length), sca1_loop(t_length), 
-                    conn_corr_s(t_length), conn_corr_p(t_length);
-
-
-  using namespace StagPhases;
 
   // the wrapped disconnected loops
   local_scalar_loop scalar_one_loop(t_length,Nsamp,u) ; 
@@ -373,9 +342,16 @@ int main(int argc, char **argv)
   threelink_pseudoscalar_loop eta3_loop(t_length,Nsamp,u) ; 
   fourlink_pseudoscalar_loop eta4_loop(t_length,Nsamp,u) ; 
 
+
+  // This is inefficient for memory 
+  multi1d<LatticeStaggeredPropagator> stag_prop(8);
+  for(int src_ind = 0; src_ind < 8; ++src_ind)
+    stag_prop[src_ind] = zero ;
+
+
+  int t_source =  input.param.t_srce[Nd-1] ; 
+
   // Connected Correlator, use a point source
-
-
   psi = zero;
   for(int color_source = 0; color_source < Nc; ++color_source) {
     int spin_source = 0;
@@ -395,18 +371,40 @@ int main(int argc, char **argv)
     FermToProp(psi, quark_propagator, color_source);
   }
 
-  corr_fn_s = - alpha(1)*beta(0)*trace(adj(quark_propagator)*quark_propagator);
-  conn_corr_s = sumMulti(corr_fn_s, timeslice);
+  // compute the connected correlators 
 
-  corr_fn_p   =  trace(adj(quark_propagator)*quark_propagator);
-  conn_corr_p =  sumMulti(corr_fn_p, timeslice);
-
+  staggered_pions pseudoscalar(t_length,u) ; 
+  staggered_scalars  scalar_meson(t_length,u) ; 
   staggered_pion_singlet pion_singlet(t_length,u); 
 
+  write(xml_out, "use_gauge_invar_oper", use_gauge_invar_oper);
+  if( use_gauge_invar_oper )
+    {
+      cout << "Using gauge invariant operators "  << endl ; 
+      pseudoscalar.use_gauge_invar() ;
+      scalar_meson.use_gauge_invar() ;
+      pion_singlet.use_gauge_invar() ;
+    }
+  else
+    {
+      cout << "Using NON-gauge invariant operators "  << endl ; 
+      pseudoscalar.use_NON_gauge_invar()  ;
+      scalar_meson.use_NON_gauge_invar()  ;
+      pion_singlet.use_NON_gauge_invar()  ;
+    }
+  
+
+  pseudoscalar.compute(stag_prop, j_decay);
+  scalar_meson.compute(stag_prop, j_decay);
+
+
+
   // 
-  //  connected part of the taste singlet pseudoscalar
+  //  Calculate the connected part of the taste singlet pseudoscalar
+  //  meson.
   // 
   //  The code should be gauge fixed at this point
+  //  or gauge invariant operators should be used.
   //
 
 
@@ -436,11 +434,14 @@ int main(int argc, char **argv)
 
   pion_singlet.compute(quark_propagator,quark_propagator_4link,j_decay); 
 
-  const int t_source = 0 ; 
+  //
+  //  write the connected correlators to disk
+  // 
+
 
   push(xml_out, "CONNECTED");
-  write(xml_out, "local_scalar", conn_corr_s);
-  write(xml_out, "goldstone_pion", conn_corr_p);
+  pseudoscalar.dump(t_source,xml_out);
+  scalar_meson.dump(t_source,xml_out);
   pion_singlet.dump(t_source,xml_out ) ; 
   pop(xml_out);
 
@@ -458,12 +459,14 @@ int main(int argc, char **argv)
   for(int i = 0; i < Nsamp; ++i){
     psi = zero;   // note this is ``zero'' and not 0
 
-    // Fill the volume with random noise, gaussian for now.
-    // Add Z2 later.
+    // Fill the volume with random noise 
+
     RNG::savern(seed);
     QDPIO::cout << "SEED = " << seed << endl;
-    //    gaussian(q_source);
-    z2_src(q_source);
+    if( input.param.volume_source == Z2NOISE  )
+      gaussian(q_source);
+    else if( input.param.volume_source == GAUSSIAN )
+      { z2_src(q_source); }
 
     // Compute the solution vector for the particular source
     int n_count = (*qprop)(psi, q_source);
