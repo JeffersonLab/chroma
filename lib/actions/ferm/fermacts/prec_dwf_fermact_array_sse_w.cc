@@ -1,4 +1,4 @@
-// $Id: prec_dwf_fermact_array_sse_w.cc,v 1.1 2004-08-01 20:23:10 edwards Exp $
+// $Id: prec_dwf_fermact_array_sse_w.cc,v 1.2 2004-09-06 16:16:24 edwards Exp $
 /*! \file
  *  \brief SSE 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -28,10 +28,9 @@ SSEEvenOddPrecDWFermActArray::init()
   for(int i=0; i < Nd; ++i)
     lattice_size[i] = Layout::lattSize()[i];
 
-  int err = SSE_DWF_init(lattice_size.slice(), SSE_DWF_FLOAT, NULL, NULL);
-  if (err != 0)
+  if (SSE_DWF_init(lattice_size.slice(), SSE_DWF_FLOAT, NULL, NULL) != 0)
   {
-    QDPIO::cerr << "__func__ : error in SSE_DWF_init" << endl;
+    QDPIO::cerr << __func__ << ": error in SSE_DWF_init" << endl;
     QDP_abort(1);
   }
 
@@ -105,7 +104,7 @@ DWF_gauge_reader(const void *ptr, void *env,
 
   if (node != Layout::nodeNumber())
   {
-    QDPIO::cerr << "__func__ : wrong coordinates for this node" << endl;
+    QDPIO::cerr << __func__ << ": wrong coordinates for this node" << endl;
     QDP_abort(1);
   }
  
@@ -138,7 +137,7 @@ DWF_fermion_reader(const void *ptr, void *env,
 
   if (node != Layout::nodeNumber())
   {
-    QDPIO::cerr << "__func__ : wrong coordinates for this node" << endl;
+    QDPIO::cerr << __func__ << ": wrong coordinates for this node" << endl;
     QDP_abort(1);
   }
  
@@ -151,6 +150,15 @@ DWF_fermion_reader(const void *ptr, void *env,
     double(psi[s].elem(linear).elem(spin).elem(color).imag());
 
   return val;
+}
+
+
+//! Fermion field reader
+double
+DWF_fermion_reader_zero(const void *ptr, void *env, 
+			const int latt_coord[5], int color, int spin, int reim)
+{
+  return 0.0;
 }
 
 
@@ -172,11 +180,11 @@ DWF_fermion_writer(void *ptr, void *env,
 
   if (node != Layout::nodeNumber())
   {
-    QDPIO::cerr << "__func__ : wrong coordinates for this node" << endl;
+    QDPIO::cerr << __func__ << ": wrong coordinates for this node" << endl;
     QDP_abort(1);
   }
  
-  // Get the value
+  // Set the value
   // NOTE: it would be nice to use the "peek" functions, but they will
   // broadcast to all nodes the value since they are platform independent.
   // We don't want that, so we poke into the on-node data
@@ -185,6 +193,7 @@ DWF_fermion_writer(void *ptr, void *env,
   else
     psi[s].elem(linear).elem(spin).elem(color).imag() = val;
 
+  return;
 }
 
 
@@ -207,35 +216,61 @@ SSEEvenOddPrecDWFermActArray::opt_qpropT(multi1d<LatticeFermion>& psi,
   // Get a shift copy of the gauge fields
   multi1d<LatticeColorMatrix> v(u.size());
   for(int mu=0; mu < Nd; ++mu)
-    v[mu] = shift(u[mu], FORWARD, mu);
+    v[mu] = shift(u[mu], BACKWARD, mu);
 
   // Initialize the SSE specific fields
   SSE_DWF_Gauge*   g   = SSE_DWF_load_gauge(&u, &v, NULL, DWF_gauge_reader);
-  SSE_DWF_Fermion* rhs = SSE_DWF_load_fermion(&chi, NULL, DWF_fermion_reader);
+  if (g == NULL)
+    QMP_error_exit("%s: error allocating g", __func__);
+
+  multi1d<LatticeFermion> chi_tmp(N5);
+  for(int s=0; s < N5; ++s)
+  {
+//    chi_tmp[s] = -Real(2)*chi[s];   // compensate for AVP's def
+    chi_tmp[s] = chi[s];
+  }
+ 
+  SSE_DWF_Fermion* rhs = SSE_DWF_load_fermion(&chi_tmp, NULL, DWF_fermion_reader);
+  if (rhs == NULL)
+    QMP_error_exit("%s: error allocating rhs", __func__);
+
   SSE_DWF_Fermion* x0  = SSE_DWF_load_fermion(&psi, NULL, DWF_fermion_reader);
+  if (x0 == NULL)
+    QMP_error_exit("%s: error allocating x0", __func__);
+
   SSE_DWF_Fermion* x   = SSE_DWF_allocate_fermion();
+  if (x == NULL)
+    QMP_error_exit("%s: error allocating x", __func__);
+
 
   // Call the solver
   double out_epsilon = 0.0;
-  double M_0 = toDouble(WilsonMass);    // WARNING: check sign convention!
+  double M_0 = -2*toDouble(Double(a5*(Nd-WilsonMass) + 1));  // compensate for AVP's def
   double mq  = toDouble(m_q);
-  double rsd = toDouble(RsdCG);
+  double rsdsq = toDouble(RsdCG)*toDouble(RsdCG);
   int err;
 
-  cerr << "M_0=" << M_0 << " mq=" << mq << " rsd=" << rsd
-       << "out_epsilon=" << out_epsilon << endl;
+  cerr << "M_0=" << M_0 << " mq=" << mq << " rsdsq=" << rsdsq << endl;
 
+ 
   err = SSE_DWF_cg_solver(x, &out_epsilon, &ncg_had,
 			  g, M_0, mq,
 			  x0, rhs, 
-			  rsd, MaxCG);
+			  rsdsq, MaxCG);
+
+  QDPIO::cerr << __func__ 
+	      << ": iterations = " << ncg_had 
+	      << "  eps = " << sqrt(out_epsilon)
+	      << endl;
+
   if (err != 0)
   {
-    QDPIO::cerr << "__func__ : convergence not found" << endl;
+    QDPIO::cerr << __func__ << ": convergence not found" << endl;
     QDP_abort(1);
   }
 
   // Save the result
+  psi = zero;
   SSE_DWF_save_fermion(&psi, NULL, DWF_fermion_writer, x);
 
   // Cleanup
