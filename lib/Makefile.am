@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.245 2005-02-02 18:07:43 edwards Exp $
+# $Id: Makefile.am,v 1.246 2005-02-02 22:46:35 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -23,6 +23,7 @@ nobase_include_HEADERS = \
 	actions/ferm/fermacts/fermacts.h \
 	actions/ferm/fermacts/bigfloat.h \
 	actions/ferm/fermacts/remez.h \
+	actions/ferm/fermacts/remez_coeff.h \
 	actions/ferm/fermacts/remez_stub.h \
 	actions/ferm/fermacts/zolotarev.h \
 	actions/ferm/fermacts/overlap_state.h \
