@@ -50,10 +50,11 @@ bin_PROGRAMS = propagator$(EXEEXT) collect_propcomp$(EXEEXT) \
 	qproptrev$(EXEEXT) apesmear$(EXEEXT) stoutsmear$(EXEEXT) \
 	hmc$(EXEEXT) hypsmear3d$(EXEEXT) hypsmear4d$(EXEEXT) \
 	spectrum_w$(EXEEXT) qqq_w$(EXEEXT) bar3ptfn$(EXEEXT) \
-	qproptransf$(EXEEXT) wallformfac$(EXEEXT) mres$(EXEEXT)
+	qproptransf$(EXEEXT) wallformfac$(EXEEXT) mres$(EXEEXT) \
+	propagator_hack$(EXEEXT)
 EXTRA_PROGRAMS = qpropadd$(EXEEXT) propagator_comp$(EXEEXT) \
 	multi_propagator$(EXEEXT) multi_propagator_comp$(EXEEXT) \
-	collect_multi_propcomp$(EXEEXT) propagator_hack$(EXEEXT)
+	collect_multi_propcomp$(EXEEXT)
 subdir = mainprogs/main
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
