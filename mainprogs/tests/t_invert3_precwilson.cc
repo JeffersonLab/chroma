@@ -1,4 +1,4 @@
-// $Id: t_invert3_precwilson.cc,v 1.1 2004-03-22 15:29:30 bjoo Exp $
+// $Id: t_invert3_precwilson.cc,v 1.2 2004-03-22 17:19:29 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -138,19 +138,36 @@ int main(int argc, char **argv)
   LatticeFermion psi;
   StopWatch swatch;
   Double mydt;
+  int iter;
 
-#if 0
   LatticeFermion bchi,bpsi;
   gaussian(bchi);
   gaussian(bpsi);
 
-  (*D_op)(bchi,bpsi,PLUS);
-  
-  exit(0);
-#endif
+  mydt=Double(0);
+  int j;
+  for(iter =1; ; iter <<= 1) { 
+    gaussian(bpsi);
+    QDPIO::cout << "Applying PrecWilsonLinOp " <<iter << " times" << endl;
+    swatch.reset();
+    swatch.start();
+    for(j=0 ; j < iter; j++) { 
+      (*D_op)(bchi,bpsi,PLUS);
+    }
+    swatch.stop();
+    mydt = swatch.getTimeInSeconds();
 
-  int iter;
-  for(iter=1; ; iter <<= 1)
+    if ( toBool(mydt > Double(1)) ) break;
+  }
+  mydt /= Double(iter);
+  mydt /= Double(Layout::numNodes());
+  mydt *= Double(1.0e6);
+  mydt /= (Double(Layout::sitesOnNode())/Double(2));
+
+ 
+  QDPIO::cout << "PrecWilsonOp perf: " << Double(1320+24+12) / mydt << endl;
+  
+    for(iter=1; ; iter <<= 1)
   {
     psi = zero;
     QDPIO::cout << "Let 0 action inverter iterate "<< iter << " times" << endl;
@@ -183,7 +200,7 @@ int main(int argc, char **argv)
 
   // Snarfed from SZIN
   int  N_dslash = 1320;
-  int  N_mpsi   = 2*24 + 2*N_dslash;
+  int  N_mpsi   = 12 + 2*24 + 2*N_dslash;
   int  Nflops_c = (24 + 2*N_mpsi) + (48);     
   int Nflops_s = (2*N_mpsi + (2*48+2*24));   
   Double Nflops;
@@ -198,7 +215,7 @@ int main(int argc, char **argv)
     swatch.reset();
     swatch.start();
 
-                                                                                    InvCG2_timing_hacks(*D_op, 
+    InvCG2_timing_hacks(*D_op, 
 			chi, 
 			psi,
 			Real(1.0e-7),
