@@ -1,4 +1,4 @@
-// $Id: seqsource.cc,v 1.11 2005-03-07 02:57:14 edwards Exp $
+// $Id: seqsource.cc,v 1.12 2005-03-15 04:08:24 edwards Exp $
 /*! \file
  *  \brief Main code for sequential source construction
  */
@@ -182,7 +182,7 @@ int main(int argc, char **argv)
     catch (const string& e) 
     {
       QDPIO::cerr << "Error extracting forward_prop header: " << e << endl;
-      throw;
+      QDP_abort(1);
     }
 
     // Save prop input
