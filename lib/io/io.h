@@ -1,4 +1,4 @@
-// $Id: io.h,v 1.4 2003-04-10 17:17:15 dgr Exp $
+// $Id: io.h,v 1.5 2003-05-09 20:26:55 edwards Exp $
 
 #ifndef __io_h__
 #define __io_h__
@@ -17,6 +17,7 @@
 
 #include "readszin.h"
 #include "readszinqprop_w.h"
+#include "readszinferm_w.h"
 #include "qprop_io.h"
 
 #endif
