@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 1.5 2003-10-10 03:46:46 edwards Exp $
+// $Id: fermact.h,v 1.6 2003-10-20 20:24:27 edwards Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -10,14 +10,21 @@
 
 using namespace QDP;
 
+enum InvType {
+  CG_INVERTER = 21, 
+  MR_INVERTER = 22,
+  BICG_INVERTER = 23,
+  CR_INVERTER = 24};
+
 #include "linearop.h"
 
-//! Base class for fermion actions
+//! Base class for quadratic matter actions (e.g., fermions)
 /*! @ingroup actions
  *
- * Supports creation and application for fermion actions
+ * Supports creation and application for quadratic actions
  */
 
+template<typename T>
 class FermionAction
 {
 public:
@@ -29,11 +36,11 @@ public:
 
   //! Produce a linear operator for this action
   /*! NOTE: maybe this should be abstracted to a foundry class object */
-  virtual const LinearOperator* linOp(const multi1d<LatticeColorMatrix>& _u) const = 0;
+  virtual const LinearOperator<T>* linOp(const multi1d<LatticeColorMatrix>& u) const = 0;
 
   //! Produce a linear operator M^dag.M for this action
   /*! NOTE: maybe this should be abstracted to a foundry class object */
-  virtual const LinearOperator* lMdagM(const multi1d<LatticeColorMatrix>& _u) const = 0;
+  virtual const LinearOperator<T>* lMdagM(const multi1d<LatticeColorMatrix>& u) const = 0;
 
   //! Compute quark propagator
   /*! 
@@ -42,22 +49,24 @@ public:
    * \param psi      quark propagator ( Modify )
    * \param u        gauge field ( Read )
    * \param chi      source ( Modify )
+   * \param invType  inverter type ( Read (
    * \param RsdCG    CG (or MR) residual used here ( Read )
    * \param MaxCG    maximum number of CG iterations ( Read )
    * \param ncg_had  number of CG iterations ( Write )
    *
    * NOTE: maybe this should produce a quark prop foundry class object 
    */
-  virtual void qprop(LatticeFermion& psi, 
+  virtual void qprop(T& psi, 
 		     const multi1d<LatticeColorMatrix>& u, 
-		     const LatticeFermion& chi, 
+		     const T& chi, 
+		     enum InvType invType,
 		     const Real& RsdCG, 
 		     int MaxCG, int& ncg_had) const = 0;
 
   //! Compute dS_f/dU
   /*! NOTE: maybe this should produce a derivative foundry class object */
   virtual multi1d<LatticeColorMatrix> dsdu(const multi1d<LatticeColorMatrix>& u,
-					   const LatticeFermion& psi) const = 0;
+					   const T& psi) const = 0;
 
   //! Virtual destructor to help with cleanup;
   virtual ~FermionAction() {}
@@ -69,7 +78,8 @@ public:
  *
  * Wilson-like fermion actions
  */
-class WilsonTypeFermAct : public FermionAction
+template<typename T>
+class WilsonTypeFermAct : public FermionAction<T>
 {
 public:
 };
@@ -80,14 +90,16 @@ public:
  *
  * Unpreconditioned like Wilson-like fermion actions
  */
-class UnprecWilsonTypeFermAct : public WilsonTypeFermAct
+template<typename T>
+class UnprecWilsonTypeFermAct : public WilsonTypeFermAct<T>
 {
 public:
   //! Compute quark propagator
   /*! NOTE: maybe this should produce a quark prop foundry */
-  void qprop(LatticeFermion& psi, 
+  void qprop(T& psi, 
 	     const multi1d<LatticeColorMatrix>& u, 
-	     const LatticeFermion& chi, 
+	     const T& chi, 
+	     enum InvType invType,
 	     const Real& RsdCG, 
 	     int MaxCG, int& ncg_had) const;
 };
@@ -98,7 +110,8 @@ public:
  *
  * Even-odd preconditioned like Wilson-like fermion actions
  */
-class EvenOddPrecWilsonTypeFermAct : public WilsonTypeFermAct
+template<typename T>
+class EvenOddPrecWilsonTypeFermAct : public WilsonTypeFermAct<T>
 {
 public:
 };
@@ -109,14 +122,16 @@ public:
  *
  * Even-odd with a unit diagonal preconditioned like Wilson-like fermion actions
  */
-class DiagEvenOddPrecWilsonTypeFermAct : public EvenOddPrecWilsonTypeFermAct
+template<typename T>
+class DiagEvenOddPrecWilsonTypeFermAct : public EvenOddPrecWilsonTypeFermAct<T>
 {
 public:
   //! Compute quark propagator
   /*! NOTE: maybe this should produce a quark prop foundry */
-  void qprop(LatticeFermion& psi, 
+  void qprop(T& psi, 
 	     const multi1d<LatticeColorMatrix>& u, 
-	     const LatticeFermion& chi, 
+	     const T& chi, 
+	     enum InvType invType,
 	     const Real& RsdCG, 
 	     int MaxCG, int& ncg_had) const;
 };
@@ -127,7 +142,8 @@ public:
  *
  * Staggered-like fermion actions
  */
-class StaggeredTypeFermAct : public FermionAction
+template<typename T>
+class StaggeredTypeFermAct : public FermionAction<T>
 {
 public:
 };
@@ -138,14 +154,16 @@ public:
  *
  * Unpreconditioned like Staggered-like fermion actions
  */
-class UnprecStaggeredTypeFermAct : public StaggeredTypeFermAct
+template<typename T>
+class UnprecStaggeredTypeFermAct : public StaggeredTypeFermAct<T>
 {
 public:
   //! Compute quark propagator
   /*! NOTE: maybe this should produce a quark prop foundry */
-  void qprop(LatticeFermion& psi, 
+  void qprop(T& psi, 
 	     const multi1d<LatticeColorMatrix>& u, 
-	     const LatticeFermion& chi, 
+	     const T& chi, 
+	     enum InvType invType,
 	     const Real& RsdCG, 
 	     int MaxCG, int& ncg_had) const;
 };
@@ -156,7 +174,8 @@ public:
  *
  * Even-odd preconditioned like Staggered-like fermion actions
  */
-class EvenOddPrecStaggeredTypeFermAct : public StaggeredTypeFermAct
+template<typename T>
+class EvenOddPrecStaggeredTypeFermAct : public StaggeredTypeFermAct<T>
 {
 public:
 };
@@ -167,14 +186,16 @@ public:
  *
  * Even-odd with a unit diagonal preconditioned like Staggered-like fermion actions
  */
-class DiagEvenOddPrecStaggeredTypeFermAct : public EvenOddPrecStaggeredTypeFermAct
+template<typename T>
+class DiagEvenOddPrecStaggeredTypeFermAct : public EvenOddPrecStaggeredTypeFermAct<T>
 {
 public:
   //! Compute quark propagator
   /*! NOTE: maybe this should produce a quark prop foundry */
-  void qprop(LatticeFermion& psi, 
+  void qprop(T& psi, 
 	     const multi1d<LatticeColorMatrix>& u, 
-	     const LatticeFermion& chi, 
+	     const T& chi, 
+	     enum InvType invType,
 	     const Real& RsdCG, 
 	     int MaxCG, int& ncg_had) const;
 };

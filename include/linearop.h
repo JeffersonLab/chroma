@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linearop.h,v 1.12 2003-08-09 04:18:21 edwards Exp $
+// $Id: linearop.h,v 1.13 2003-10-20 20:24:46 edwards Exp $
 
 /*! @file
  * @brief Linear Operators
@@ -20,11 +20,12 @@ enum LinOpSign {PLUS = 1, MINUS = -1};
  * hold things like Dirac operators, etc.
  */
 
+template<typename T>
 class LinearOperator
 {
 public:
   //! Apply the operator onto a source vector
-  virtual LatticeFermion operator() (const LatticeFermion& psi, enum LinOpSign isign) const = 0;
+  virtual T operator() (const T& psi, enum LinOpSign isign) const = 0;
 
   //! Return the subset on which the operator acts
   virtual const OrderedSubset& subset() const = 0;
@@ -39,13 +40,14 @@ public:
  *
  * These are concessions/optimizations for red-black checkboarding 
  */
-class DslashLinearOperator : public LinearOperator
+template<typename T>
+class DslashLinearOperator : public LinearOperator<T>
 {
 public:
   //! Apply operator on both checkerboards (entire lattice)
-  virtual LatticeFermion operator() (const LatticeFermion& psi, enum LinOpSign isign) const
+  virtual T operator() (const T& psi, enum LinOpSign isign) const
     {
-      LatticeFermion d;
+      T d;
 
       d[rb[0]] = apply(psi, isign, 0);
       d[rb[1]] = apply(psi, isign, 1);
@@ -58,7 +60,7 @@ public:
    * To avoid confusion (especially of the compilers!), call the checkerboarded
    * apply instead of operator()
    */
-  virtual LatticeFermion apply (const LatticeFermion& psi, enum LinOpSign isign, int cb) const = 0;
+  virtual T apply (const T& psi, enum LinOpSign isign, int cb) const = 0;
 
   //! Virtual destructor to help in cleanup
   virtual ~DslashLinearOperator() {}
