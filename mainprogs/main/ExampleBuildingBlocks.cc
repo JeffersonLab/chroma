@@ -24,7 +24,7 @@
 //#####################################################################################
 
 static const char* const CVSExampleBuildingBlocks_hh =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/mainprogs/main/ExampleBuildingBlocks.cc,v 1.5 2003-10-01 02:59:08 edwards Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/mainprogs/main/ExampleBuildingBlocks.cc,v 1.6 2003-10-09 20:32:37 edwards Exp $";
 
 //#####################################################################################
 //#####################################################################################
@@ -63,27 +63,26 @@ int main( int argc, char** argv )
 
   if( argc != 17 )
   {
-    // cout will create multiple outputs for multi-node code
-    cout << ""                                                                                               << endl;
-    cout << "Arguments:"                                                                                     << endl;
-    cout << ""                                                                                               << endl;
-    cout << "(1)  NX                               - \"1\", \"2\", ..."                                      << endl;
-    cout << "(2)  NY                               - \"1\", \"2\", ..."                                      << endl;
-    cout << "(3)  NZ                               - \"1\", \"2\", ..."                                      << endl;
-    cout << "(4)  NT                               - \"1\", \"2\", ..."                                      << endl;
-    cout << "(5)  Gauge Field                      - Input File Name"                                        << endl;
-    cout << "(6)  Gauge Field Format               - \"archive\" or \"szin\""                                << endl;
-    cout << "(7)  Forward Propagator               - Input File Name"                                        << endl;
-    cout << "(8)  Proton Sequential U Propagator   - Input File Name (\"NULL\" if u not available)"          << endl;
-    cout << "(9)  Sequential U Propagator Format   - \"B\", \"G5_B\", \"B_G5\", or \"G5_B_G5\" "             << endl;
-    cout << "(10) Proton Sequential D Propagator   - Input File Name (\"NULL\" if d not available)"          << endl;
-    cout << "(11) Sequential D Propagator Format   - \"B\", \"G5_B\", \"B_G5\", or \"G5_B_G5\" "             << endl;
-    cout << "(12) Maximum Number of Links          - \"0\", \"1\", ..."                                      << endl;
-    cout << "(13) Maximum Spatial Momentum Squared - \"0\", \"1\", ..."                                      << endl;
-    cout << "(14) Proton U Building Blocks         - Output File Name Pattern (\"NULL\" if u not available)" << endl;
-    cout << "(15) Proton D Building Blocks         - Output File Name Pattern (\"NULL\" if d not available)" << endl;
-    cout << "(16) Text Output File Name            - Output File Name"                                       << endl;
-    cout << ""                                                                                               << endl;
+    QDPIO::cout << ""                                                                                               << endl;
+    QDPIO::cout << "Arguments:"                                                                                     << endl;
+    QDPIO::cout << ""                                                                                               << endl;
+    QDPIO::cout << "(1)  NX                               - \"1\", \"2\", ..."                                      << endl;
+    QDPIO::cout << "(2)  NY                               - \"1\", \"2\", ..."                                      << endl;
+    QDPIO::cout << "(3)  NZ                               - \"1\", \"2\", ..."                                      << endl;
+    QDPIO::cout << "(4)  NT                               - \"1\", \"2\", ..."                                      << endl;
+    QDPIO::cout << "(5)  Gauge Field                      - Input File Name"                                        << endl;
+    QDPIO::cout << "(6)  Gauge Field Format               - \"archive\" or \"szin\""                                << endl;
+    QDPIO::cout << "(7)  Forward Propagator               - Input File Name"                                        << endl;
+    QDPIO::cout << "(8)  Proton Sequential U Propagator   - Input File Name (\"NULL\" if u not available)"          << endl;
+    QDPIO::cout << "(9)  Sequential U Propagator Format   - \"B\", \"G5_B\", \"B_G5\", or \"G5_B_G5\" "             << endl;
+    QDPIO::cout << "(10) Proton Sequential D Propagator   - Input File Name (\"NULL\" if d not available)"          << endl;
+    QDPIO::cout << "(11) Sequential D Propagator Format   - \"B\", \"G5_B\", \"B_G5\", or \"G5_B_G5\" "             << endl;
+    QDPIO::cout << "(12) Maximum Number of Links          - \"0\", \"1\", ..."                                      << endl;
+    QDPIO::cout << "(13) Maximum Spatial Momentum Squared - \"0\", \"1\", ..."                                      << endl;
+    QDPIO::cout << "(14) Proton U Building Blocks         - Output File Name Pattern (\"NULL\" if u not available)" << endl;
+    QDPIO::cout << "(15) Proton D Building Blocks         - Output File Name Pattern (\"NULL\" if d not available)" << endl;
+    QDPIO::cout << "(16) Text Output File Name            - Output File Name"                                       << endl;
+    QDPIO::cout << ""                                                                                               << endl;
 
     exit( 1 );
   }

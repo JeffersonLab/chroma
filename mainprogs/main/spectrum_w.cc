@@ -1,10 +1,14 @@
-// $Id: spectrum_w.cc,v 1.12 2003-10-02 01:21:15 edwards Exp $
+// $Id: spectrum_w.cc,v 1.13 2003-10-09 20:32:37 edwards Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.12  2003-10-02 01:21:15  edwards
+//  Revision 1.13  2003-10-09 20:32:37  edwards
+//  Changed all cout/cerr to QDPIO::cout/cerr. Change QDP_info calls
+//  to use QDPIO::cout.
+//
+//  Revision 1.12  2003/10/02 01:21:15  edwards
 //  Small tweaks. Changed input group to be program dependent.
 //
 //  Revision 1.11  2003/10/01 20:23:46  edwards
@@ -145,7 +149,7 @@ void read(XMLReader& xml, const string& path, Spectrum_input_t& input)
   }
   catch (const string& e) 
   {
-    cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << endl;
     throw;
   }
 
@@ -174,13 +178,13 @@ void read(XMLReader& xml, const string& path, Spectrum_input_t& input)
     default :
       /**************************************************************************/
 
-      cerr << "Input parameter version " << input.io_version.version << " unsupported." << endl;
+      QDPIO::cerr << "Input parameter version " << input.io_version.version << " unsupported." << endl;
       QDP_abort(1);
     }
   }
   catch (const string& e) 
   {
-    cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << endl;
     throw;
   }
 
@@ -195,8 +199,8 @@ void read(XMLReader& xml, const string& path, Spectrum_input_t& input)
       read(paramtop, "Nc", input_Nc);
 	
       if (input_Nc != Nc) {
-	cerr << "Input parameter Nc=" << input_Nc \
-	     <<  " different from qdp++ value." << endl;
+	QDPIO::cerr << "Input parameter Nc=" << input_Nc \
+		    <<  " different from qdp++ value." << endl;
 	QDP_abort(1);
       }
 
@@ -204,8 +208,8 @@ void read(XMLReader& xml, const string& path, Spectrum_input_t& input)
       read(paramtop, "Nd", input_Nd);
 
       if (input_Nd != Nd) {
-	cerr << "Input parameter Nd=" << input_Nd \
-	     << " different from qdp++ value." << endl;
+	QDPIO::cerr << "Input parameter Nd=" << input_Nd \
+		    << " different from qdp++ value." << endl;
 	QDP_abort(1);
       }
 
@@ -223,28 +227,27 @@ void read(XMLReader& xml, const string& path, Spectrum_input_t& input)
     switch (input.param.FermTypeP) {
     case FERM_TYPE_WILSON :
 
-//	cout << " SPECTRUM_W: Spectroscopy for Wilson fermions" << endl;
-      QDP_info(" SPECTRUM_W: Spectroscopy for Wilson fermions");
+      QDPIO::cout << " SPECTRUM_W: Spectroscopy for Wilson fermions" << endl;
 
       read(paramtop, "numKappa", input.param.numKappa);
       read(paramtop, "Kappa", input.param.Kappa);
 
       for (int i=0; i < input.param.numKappa; ++i) {
 	if (toBool(input.param.Kappa[i] < 0.0)) {
-	  cerr << "Unreasonable value for Kappa." << endl;
-	  cerr << "  Kappa[" << i << "] = " << input.param.Kappa[i] << endl;
+	  QDPIO::cerr << "Unreasonable value for Kappa." << endl;
+	  QDPIO::cerr << "  Kappa[" << i << "] = " << input.param.Kappa[i] << endl;
 	  QDP_abort(1);
 	} else {
-	  cout << " Spectroscopy Kappa: " << input.param.Kappa[i] << endl;
+	  QDPIO::cout << " Spectroscopy Kappa: " << input.param.Kappa[i] << endl;
 	}
       }
 
       break;
 
     default :
-      cerr << "Fermion type not supported." << endl;
+      QDPIO::cerr << "Fermion type not supported." << endl;
       if (input.param.FermTypeP == FERM_TYPE_UNKNOWN) {
-	cerr << "  FermTypeP = UNKNOWN" << endl;
+	QDPIO::cerr << "  FermTypeP = UNKNOWN" << endl;
       }
       QDP_abort(1);
     }
@@ -261,7 +264,7 @@ void read(XMLReader& xml, const string& path, Spectrum_input_t& input)
 
     read(paramtop, "j_decay", input.param.j_decay);
     if (input.param.j_decay < 0 || input.param.j_decay >= Nd) {
-      cerr << "Bad value: j_decay = " << input.param.j_decay << endl;
+      QDPIO::cerr << "Bad value: j_decay = " << input.param.j_decay << endl;
       QDP_abort(1);
     }
 
@@ -281,8 +284,8 @@ void read(XMLReader& xml, const string& path, Spectrum_input_t& input)
       if (wvf_kind_str == "GAUGE_INV_GAUSSIAN") {
 	input.param.Wvf_kind = WVF_KIND_GAUGE_INV_GAUSSIAN;
       } else {
-	cerr << "Unsupported gauge-invariant Wvf_kind." << endl;
-	cerr << "  Wvf_kind = " << wvf_kind_str << endl;
+	QDPIO::cerr << "Unsupported gauge-invariant Wvf_kind." << endl;
+	QDPIO::cerr << "  Wvf_kind = " << wvf_kind_str << endl;
 	QDP_abort(1);
       }
     }
@@ -296,7 +299,7 @@ void read(XMLReader& xml, const string& path, Spectrum_input_t& input)
   }
   catch (const string& e) 
   {
-    cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << endl;
     throw;
   }
 
@@ -309,7 +312,7 @@ void read(XMLReader& xml, const string& path, Spectrum_input_t& input)
   }
   catch (const string& e) 
   {
-    cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << endl;
     throw;
   }
 }
@@ -342,8 +345,8 @@ int main(int argc, char **argv)
   // Check that only one type of source smearing is specified
   // Must match how the stored propagator was smeared
   if (input.param.Pt_src && input.param.Sl_src) {
-    cerr << "Error if Pt_src and Sl_src are both set." << endl;
-    cerr << "Choose the one which matches the stored propagators." << endl;
+    QDPIO::cerr << "Error if Pt_src and Sl_src are both set." << endl;
+    QDPIO::cerr << "Choose the one which matches the stored propagators." << endl;
     QDP_abort(1);
   }
 
@@ -351,30 +354,30 @@ int main(int argc, char **argv)
   // GTF HACK: only allow periodic boundary conditions
   for (int i=0; i<Nd; ++i) {
     if (input.param.boundary[i] != 1) {
-      cerr << "Only periodic boundary conditions supported." << endl;
-      cerr << "  boundary[" << i << "] = " << input.param.boundary[i] << endl;
+      QDPIO::cerr << "Only periodic boundary conditions supported." << endl;
+      QDPIO::cerr << "  boundary[" << i << "] = " << input.param.boundary[i] << endl;
       QDP_abort(1);
     }
   }
 
   for (int i=0; i<Nd; ++i) {
     if (input.param.t_srce[i] < 0 || input.param.t_srce[i] >= input.param.nrow[i]) {
-      cerr << "Quark propagator source coordinate incorrect." << endl;
-      cerr << "t_srce[" << i << "] = " << input.param.t_srce[i] << endl;
+      QDPIO::cerr << "Quark propagator source coordinate incorrect." << endl;
+      QDPIO::cerr << "t_srce[" << i << "] = " << input.param.t_srce[i] << endl;
       QDP_abort(1);
     }
   }
 
 
-  cout << endl << "     Gauge group: SU(" << Nc << ")" << endl;
+  QDPIO::cout << endl << "     Gauge group: SU(" << Nc << ")" << endl;
 
   multi1d<LatticeColorMatrix> u(Nd);
 
-  cout << "     volume: " << input.param.nrow[0];
+  QDPIO::cout << "     volume: " << input.param.nrow[0];
   for (int i=1; i<Nd; ++i) {
-    cout << " x " << input.param.nrow[i];
+    QDPIO::cout << " x " << input.param.nrow[i];
   }
-  cout << endl;
+  QDPIO::cout << endl;
 
   // Read in the configuration along with relevant information.
   XMLReader gauge_xml;

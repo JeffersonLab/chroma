@@ -1,7 +1,11 @@
-// $Id: bar3ptfn.cc,v 1.19 2003-10-06 21:15:46 edwards Exp $
+// $Id: bar3ptfn.cc,v 1.20 2003-10-09 20:32:37 edwards Exp $
 //
 // $Log: bar3ptfn.cc,v $
-// Revision 1.19  2003-10-06 21:15:46  edwards
+// Revision 1.20  2003-10-09 20:32:37  edwards
+// Changed all cout/cerr to QDPIO::cout/cerr. Change QDP_info calls
+// to use QDPIO::cout.
+//
+// Revision 1.19  2003/10/06 21:15:46  edwards
 // Use new input format.
 //
 // Revision 1.18  2003/09/11 15:27:18  edwards
@@ -135,7 +139,7 @@ void read(XMLReader& xml, const string& path, Bar3ptfn_input_t& input)
   }
   catch (const string& e) 
   {
-    cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << endl;
     throw;
   }
 
@@ -157,13 +161,13 @@ void read(XMLReader& xml, const string& path, Bar3ptfn_input_t& input)
 
     default :
       /**************************************************************************/
-      cerr << "Input parameter version " << input.io_version.version << " unsupported." << endl;
+      QDPIO::cerr << "Input parameter version " << input.io_version.version << " unsupported." << endl;
       QDP_abort(1);
     }
   }
   catch (const string& e) 
   {
-    cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << endl;
     throw;
   }
 
@@ -178,8 +182,8 @@ void read(XMLReader& xml, const string& path, Bar3ptfn_input_t& input)
       read(paramtop, "Nc", input_Nc);
 	
       if (input_Nc != Nc) {
-	cerr << "Input parameter Nc=" << input_Nc \
-	     <<  " different from qdp++ value." << endl;
+	QDPIO::cerr << "Input parameter Nc=" << input_Nc \
+		    <<  " different from qdp++ value." << endl;
 	QDP_abort(1);
       }
 
@@ -187,8 +191,8 @@ void read(XMLReader& xml, const string& path, Bar3ptfn_input_t& input)
       read(paramtop, "Nd", input_Nd);
 
       if (input_Nd != Nd) {
-	cerr << "Input parameter Nd=" << input_Nd \
-	     << " different from qdp++ value." << endl;
+	QDPIO::cerr << "Input parameter Nd=" << input_Nd \
+		    << " different from qdp++ value." << endl;
 	QDP_abort(1);
       }
 
@@ -207,27 +211,27 @@ void read(XMLReader& xml, const string& path, Bar3ptfn_input_t& input)
     {
     case FERM_TYPE_WILSON :
 
-      cout << " FORMFAC: Baryon form factors for Wilson fermions" << endl;
+      QDPIO::cout << " FORMFAC: Baryon form factors for Wilson fermions" << endl;
 
       read(paramtop, "numKappa", input.param.numKappa);
       read(paramtop, "Kappa", input.param.Kappa);
 
       for (int i=0; i < input.param.numKappa; ++i) {
 	if (toBool(input.param.Kappa[i] < 0.0)) {
-	  cerr << "Unreasonable value for Kappa." << endl;
-	  cerr << "  Kappa[" << i << "] = " << input.param.Kappa[i] << endl;
+	  QDPIO::cerr << "Unreasonable value for Kappa." << endl;
+	  QDPIO::cerr << "  Kappa[" << i << "] = " << input.param.Kappa[i] << endl;
 	  QDP_abort(1);
 	} else {
-	  cout << " Spectroscopy Kappa: " << input.param.Kappa[i] << endl;
+	  QDPIO::cout << " Spectroscopy Kappa: " << input.param.Kappa[i] << endl;
 	}
       }
 
       break;
 
     default :
-      cerr << "Fermion type not supported." << endl;
+      QDPIO::cerr << "Fermion type not supported." << endl;
       if (input.param.FermTypeP == FERM_TYPE_UNKNOWN) {
-	cerr << "  FermTypeP = UNKNOWN" << endl;
+	QDPIO::cerr << "  FermTypeP = UNKNOWN" << endl;
       }
       QDP_abort(1);
     }
@@ -244,7 +248,7 @@ void read(XMLReader& xml, const string& path, Bar3ptfn_input_t& input)
 
     read(paramtop, "j_decay", input.param.j_decay);
     if (input.param.j_decay < 0 || input.param.j_decay >= Nd) {
-      cerr << "Bad value: j_decay = " << input.param.j_decay << endl;
+      QDPIO::cerr << "Bad value: j_decay = " << input.param.j_decay << endl;
       QDP_abort(1);
     }
 
@@ -261,8 +265,8 @@ void read(XMLReader& xml, const string& path, Bar3ptfn_input_t& input)
       if (wvf_kind_str == "GAUGE_INV_GAUSSIAN") {
 	input.param.Wvf_kind = WVF_KIND_GAUGE_INV_GAUSSIAN;
       } else {
-	cerr << "Unsupported gauge-invariant Wvf_kind." << endl;
-	cerr << "  Wvf_kind = " << wvf_kind_str << endl;
+	QDPIO::cerr << "Unsupported gauge-invariant Wvf_kind." << endl;
+	QDPIO::cerr << "  Wvf_kind = " << wvf_kind_str << endl;
 	QDP_abort(1);
       }
     }
@@ -286,13 +290,13 @@ void read(XMLReader& xml, const string& path, Bar3ptfn_input_t& input)
 
     for (int seq_src_ctr=0; seq_src_ctr<input.param.numSeq_src; ++seq_src_ctr) 
     {
-      cout << "Computing sequential source of type "
-	   << input.param.Seq_src[seq_src_ctr] << endl;
+      QDPIO::cout << "Computing sequential source of type "
+		  << input.param.Seq_src[seq_src_ctr] << endl;
     }
   }
   catch (const string& e) 
   {
-    cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << endl;
     throw;
   }
 
@@ -304,7 +308,7 @@ void read(XMLReader& xml, const string& path, Bar3ptfn_input_t& input)
   }
   catch (const string& e) 
   {
-    cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << endl;
     throw;
   }
 }
@@ -336,27 +340,27 @@ main(int argc, char *argv[])
   // GTF HACK: only allow periodic boundary conditions
   for (int i=0; i<Nd; ++i) {
     if (input.param.boundary[i] != 1) {
-      cerr << "Only periodic input.param.boundary conditions supported." << endl;
-      cerr << "  input.param.boundary[" << i << "] = " << input.param.boundary[i] << endl;
+      QDPIO::cerr << "Only periodic input.param.boundary conditions supported." << endl;
+      QDPIO::cerr << "  input.param.boundary[" << i << "] = " << input.param.boundary[i] << endl;
       QDP_abort(1);
     }
   }
 
   for (int i=0; i<Nd; ++i) {
     if (input.param.t_srce[i] < 0 || input.param.t_srce[i] >= input.param.nrow[i]) {
-      cerr << "Quark propagator source coordinate incorrect." << endl;
-      cerr << "t_srce[" << i << "] = " << input.param.t_srce[i] << endl;
+      QDPIO::cerr << "Quark propagator source coordinate incorrect." << endl;
+      QDPIO::cerr << "t_srce[" << i << "] = " << input.param.t_srce[i] << endl;
       QDP_abort(1);
     }
   }
 
   if (input.param.t_sink < 0 || input.param.t_sink >= input.param.nrow[input.param.j_decay]) {
-    cerr << "Sink time coordinate incorrect." << endl;
-    cerr << "t_sink = " << input.param.t_sink << endl;
+    QDPIO::cerr << "Sink time coordinate incorrect." << endl;
+    QDPIO::cerr << "t_sink = " << input.param.t_sink << endl;
     QDP_abort(1);
   }
 
-  cout << endl << "     Gauge group: SU(" << Nc << ")" << endl;
+  QDPIO::cout << endl << "     Gauge group: SU(" << Nc << ")" << endl;
 
   // Check for unnecessary multiple occurances of kappas and/or wvf_params
   if (input.param.numKappa > 1) {
@@ -365,11 +369,11 @@ main(int argc, char *argv[])
         for (int j=0; j<i; ++j) {
           if (toBool(input.param.Kappa[j] == input.param.Kappa[i])
               && toBool(input.param.wvf_param[j] == input.param.wvf_param[i])) {
-            cerr << "Same kappa and wvf_param:" << endl;
-            cerr << "  Kappa["     << i << "] = " << input.param.Kappa[i]     << endl;
-            cerr << "  wvf_param[" << i << "] = " << input.param.wvf_param[i] << endl;
-            cerr << "  Kappa["     << j << "] = " << input.param.Kappa[j]     << endl;
-            cerr << "  wvf_param[" << j << "] = " << input.param.wvf_param[j] << endl;
+            QDPIO::cerr << "Same kappa and wvf_param:" << endl;
+            QDPIO::cerr << "  Kappa["     << i << "] = " << input.param.Kappa[i]     << endl;
+            QDPIO::cerr << "  wvf_param[" << i << "] = " << input.param.wvf_param[i] << endl;
+            QDPIO::cerr << "  Kappa["     << j << "] = " << input.param.Kappa[j]     << endl;
+            QDPIO::cerr << "  wvf_param[" << j << "] = " << input.param.wvf_param[j] << endl;
             QDP_abort(1);
           }
         }
@@ -378,9 +382,9 @@ main(int argc, char *argv[])
       for (int i=1; i < input.param.numKappa; ++i) {
         for (int j=0; j<i; ++j) {
           if (toBool(input.param.Kappa[j] == input.param.Kappa[i])) {
-            cerr  << "Same kappa without shell source or sink:" << endl;
-            cerr << "  Kappa["     << i << "] = " << input.param.Kappa[i]     << endl;
-            cerr << "  Kappa["     << j << "] = " << input.param.Kappa[j]     << endl;
+            QDPIO::cerr  << "Same kappa without shell source or sink:" << endl;
+            QDPIO::cerr << "  Kappa["     << i << "] = " << input.param.Kappa[i]     << endl;
+            QDPIO::cerr << "  Kappa["     << j << "] = " << input.param.Kappa[j]     << endl;
             QDP_abort(1);
           }
         }
@@ -388,14 +392,14 @@ main(int argc, char *argv[])
     }
   }
 
-  cout << "     volume: " << input.param.nrow[0];
+  QDPIO::cout << "     volume: " << input.param.nrow[0];
   for (int i=1; i<Nd; ++i) {
-    cout << " x " << input.param.nrow[i];
+    QDPIO::cout << " x " << input.param.nrow[i];
   }
-  cout << endl;
+  QDPIO::cout << endl;
 
   // Read in the configuration along with relevant information.
-  QDP_info("Attempt to initialize the gauge field");
+  QDPIO::cout << "Attempt to initialize the gauge field" << endl;
 
   multi1d<LatticeColorMatrix> u(Nd);
   XMLReader gauge_xml;
@@ -406,14 +410,14 @@ main(int argc, char *argv[])
     readSzin(gauge_xml, u, input.cfg.cfg_file);
     break;
   default :
-    cerr << "Configuration type is unsupported." << endl;
+    QDPIO::cerr << "Configuration type is unsupported." << endl;
     QDP_abort(1);
   }
 
   // Next check the gauge field configuration by reunitarizing.
   unitarityCheck(u);
 
-  QDP_info("Gauge field successfully initialized");
+  QDPIO::cout << "Gauge field successfully initialized" << endl;
 
 
   // Instantiate XML writer for XMLDAT
@@ -454,13 +458,13 @@ main(int argc, char *argv[])
   // Now loop over the various kappas
   for (int loop=0; loop < input.param.numKappa; ++loop) 
   {
-    QDP_info("Mass loop = %d",loop);
+    QDPIO::cout << "Mass loop = " << loop << endl;
   
     push(xml_array);
     Write(xml_array, loop);
 
     // Read the quark propagator
-    QDP_info("Attempt to read forward propagator");
+    QDPIO::cout << "Attempt to read forward propagator" << endl;
   
     LatticePropagator quark_propagator;
     {
@@ -472,7 +476,7 @@ main(int argc, char *argv[])
       write(xml_array, "Forward_prop_info", prop_xml);
     }
 
-    QDP_info("Forward propagator successfully read");
+    QDPIO::cout << "Forward propagator successfully read" << endl;
    
 
     XMLArrayWriter  xml_seq_src(xml_array, input.param.numSeq_src);
@@ -487,7 +491,7 @@ main(int argc, char *argv[])
       int seq_src_value = input.param.Seq_src[seq_src_ctr];
 
       // Read the sequential propagator
-      QDP_info("Attempt to read backward propagator");
+      QDPIO::cout << "Attempt to read backward propagator" << endl;
    
       {
 	XMLReader seqprop_xml;
@@ -498,7 +502,7 @@ main(int argc, char *argv[])
 	write(xml_array, "Backward_prop_info", seqprop_xml);
       }
 
-      QDP_info("Backward propagator successfully read");
+      QDPIO::cout << "Backward propagator successfully read" << endl;
    
       if ((0 <= seq_src_value) && (seq_src_value <= 9)) {
         write(xml_seq_src, "hadron_type", "BARYON");

@@ -1,4 +1,4 @@
-// $Id: make_source.cc,v 1.8 2003-10-01 02:51:25 edwards Exp $
+// $Id: make_source.cc,v 1.9 2003-10-09 20:32:37 edwards Exp $
 /*! \file
  *  \brief Main code for source generation
  */
@@ -138,12 +138,12 @@ int main(int argc, char **argv)
 
   switch(wf_type){
   case POINT_SOURCE:
-    cout << "Point source" << endl;
+    QDPIO::cout << "Point source" << endl;
     break;
   case SHELL_SOURCE:
-    cout << "Smeared source wvf_param= " << wvf_param <<": WvfIntPar= " 
-	 << WvfIntPar << endl
-         << "Power of Laplacian operator" << LaplacePower << endl;
+    QDPIO::cout << "Smeared source wvf_param= " << wvf_param <<": WvfIntPar= " 
+		<< WvfIntPar << endl
+		<< "Power of Laplacian operator" << LaplacePower << endl;
     break;
   default:
     QDP_error_exit("Unknown source_type", wf_type);
@@ -199,7 +199,7 @@ int main(int argc, char **argv)
     }
     break;
   default: 
-    cerr<<"invaid source_type\n";
+    QDPIO::cerr<<"invaid source_type\n";
     break;
   }
 
@@ -252,8 +252,7 @@ int main(int argc, char **argv)
 
   for(int color_source = 0; color_source < Nc; ++color_source)
   {
-    if (Layout::primaryNode())
-      cerr << "color = " << color_source << endl;
+    QDPIO::cout << "color = " << color_source << endl;
 
     LatticeColorVector src_color_vec = zero;
 
@@ -271,8 +270,7 @@ int main(int argc, char **argv)
 
     for(int spin_source = 0; spin_source < Ns; ++spin_source)
     {
-      if (Layout::primaryNode())
-        cerr << "spin = " << spin_source << endl;
+      QDPIO::cout << "spin = " << spin_source << endl;
 
       // Insert a ColorVector into spin index spin_source
       // This only overwrites sections, so need to initialize first

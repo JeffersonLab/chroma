@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.19 2003-10-02 16:52:36 edwards Exp $
+// $Id: propagator.cc,v 1.20 2003-10-09 20:32:37 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -102,7 +102,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
   }
   catch (const string& e) 
   {
-    cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << endl;
     throw;
   }
 
@@ -125,13 +125,13 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     default :
       /**************************************************************************/
 
-      cerr << "Input parameter version " << input.io_version.version << " unsupported." << endl;
+      QDPIO::cerr << "Input parameter version " << input.io_version.version << " unsupported." << endl;
       QDP_abort(1);
     }
   }
   catch (const string& e) 
   {
-    cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << endl;
     throw;
   }
 
@@ -156,8 +156,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     switch (input.param.FermTypeP) {
     case FERM_TYPE_WILSON :
 
-//	cout << " PROPAGATOR: Propagator for Wilson fermions" << endl;
-      QDP_info(" PROPAGATOR: Propagator for Wilson fermions");
+      QDPIO::cout << " PROPAGATOR: Propagator for Wilson fermions" << endl;
 
 //      read(paramtop, "numKappa", input.param.numKappa);
       read(paramtop, "Kappa", input.param.Kappa);
@@ -165,11 +164,11 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
 #if 0
       for (int i=0; i < input.param.numKappa; ++i) {
 	if (toBool(input.param.Kappa[i] < 0.0)) {
-	  cerr << "Unreasonable value for Kappa." << endl;
-	  cerr << "  Kappa[" << i << "] = " << input.param.Kappa[i] << endl;
+	  QDPIO::cerr << "Unreasonable value for Kappa." << endl;
+	  QDPIO::cerr << "  Kappa[" << i << "] = " << input.param.Kappa[i] << endl;
 	  QDP_abort(1);
 	} else {
-	  cout << " Spectroscopy Kappa: " << input.param.Kappa[i] << endl;
+	  QDPIO::cout << " Spectroscopy Kappa: " << input.param.Kappa[i] << endl;
 	}
       }
 #endif
@@ -177,9 +176,9 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
       break;
 
     default :
-      cerr << "Fermion type not supported." << endl;
+      QDPIO::cerr << "Fermion type not supported." << endl;
       if (input.param.FermTypeP == FERM_TYPE_UNKNOWN) {
-	cerr << "  FermTypeP = UNKNOWN" << endl;
+	QDPIO::cerr << "  FermTypeP = UNKNOWN" << endl;
       }
       QDP_abort(1);
     }
@@ -213,7 +212,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
   }
   catch (const string& e) 
   {
-    cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << endl;
     throw;
   }
 
@@ -226,7 +225,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
   }
   catch (const string& e) 
   {
-    cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << endl;
     throw;
   }
 }

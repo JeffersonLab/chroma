@@ -1,5 +1,5 @@
 /*
- *  $Id: hypsmear.cc,v 1.1 2003-10-09 18:37:03 dgr Exp $
+ *  $Id: hypsmear.cc,v 1.2 2003-10-09 20:32:37 edwards Exp $
  *
  *  This is the top-level routine for HYP smearing.
  *  It is a wrapper for Urs' and Robert's implmenetation of the HYP
@@ -97,7 +97,7 @@ void read(XMLReader& xml, const string& path, Hypsmear_input_t& input)
   }
   catch (const string& e) 
   {
-    cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << endl;
     throw;
   }
 
@@ -120,13 +120,13 @@ void read(XMLReader& xml, const string& path, Hypsmear_input_t& input)
     default :
       /**************************************************************************/
 
-      cerr << "Input parameter version " << input.io_version.version << " unsupported." << endl;
+      QDPIO::cerr << "Input parameter version " << input.io_version.version << " unsupported." << endl;
       QDP_abort(1);
     }
   }
   catch (const string& e) 
   {
-    cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << endl;
     throw;
   }
 
@@ -136,7 +136,7 @@ void read(XMLReader& xml, const string& path, Hypsmear_input_t& input)
   {
     XMLReader paramtop(inputtop, "param"); // push into 'param' group
 
-    QDP_info(" HYPSMEAR: HYP smearing of gauge config");
+    QDPIO::cout << " HYPSMEAR: HYP smearing of gauge config" << endl;
 
     {
       string cfg_type_str;
@@ -191,7 +191,7 @@ void read(XMLReader& xml, const string& path, Hypsmear_input_t& input)
   }
   catch (const string& e) 
   {
-    cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << endl;
     throw;
   }
 
@@ -204,7 +204,7 @@ void read(XMLReader& xml, const string& path, Hypsmear_input_t& input)
   }
   catch (const string& e) 
   {
-    cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << endl;
     throw;
   }
 
@@ -215,7 +215,7 @@ void read(XMLReader& xml, const string& path, Hypsmear_input_t& input)
   }
   catch (const string& e) 
   {
-    cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << endl;
     throw;
   }
 }
