@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_linop_array_w.cc,v 1.2 2003-11-13 04:13:06 edwards Exp $
+// $Id: unprec_dwf_linop_array_w.cc,v 1.3 2003-11-13 18:16:57 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall linear operator
  */
@@ -65,8 +65,6 @@ multi1d<LatticeFermion> UnprecDWLinOpArray::operator() (const multi1d<LatticeFer
   //
   //  Chi   =  D' Psi
   //
-  LatticeFermion tmp1, tmp2;
-
   Real fact1 = a5*(2*Nd - WilsonMass) + 1;
   Real fact2 = -0.5*a5;
 
