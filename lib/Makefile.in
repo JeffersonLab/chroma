@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.142 2004-01-28 16:04:42 bjoo Exp $
+# $Id: Makefile.in,v 1.143 2004-01-29 20:40:24 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -88,7 +88,7 @@ host_triplet = @host@
 @BUILD_STAGGERED_LIBS_TRUE@	asqtad_linop_s.cc asq_dsl_s.cc fat7_links_s.cc naik_term_s.cc  \
 @BUILD_STAGGERED_LIBS_TRUE@	asqtad_fermact_s.cc asqtad_mdagm_s.cc staggered_qprop.cc stag_phases_s.cc
 
-VPATH = $(TOPDIR) $(TOPDIR)/lib $(TOPDIR)/lib/actions $(TOPDIR)/lib/actions/boson $(TOPDIR)/lib/actions/boson/operator $(TOPDIR)/lib/actions/ferm $(TOPDIR)/lib/actions/ferm/dsdu $(TOPDIR)/lib/actions/ferm/fermacts $(TOPDIR)/lib/actions/ferm/invert $(TOPDIR)/lib/actions/ferm/linop $(TOPDIR)/lib/actions/ferm/qprop $(TOPDIR)/lib/actions/gauge $(TOPDIR)/lib/geom $(TOPDIR)/lib/info $(TOPDIR)/lib/io $(TOPDIR)/lib/meas $(TOPDIR)/lib/meas/eig $(TOPDIR)/lib/meas/gfix $(TOPDIR)/lib/meas/glue $(TOPDIR)/lib/meas/hadron $(TOPDIR)/lib/meas/pbp $(TOPDIR)/lib/meas/schrfun $(TOPDIR)/lib/meas/smear $(TOPDIR)/lib/meas/sources $(TOPDIR)/lib/update $(TOPDIR)/lib/update/heatbath $(TOPDIR)/lib/update/molecdyn $(TOPDIR)/lib/update/molecdyn/est $(TOPDIR)/lib/update/molecdyn/mese $(TOPDIR)/lib/update/molecdyn/noise $(TOPDIR)/lib/update/molecdyn/step $(TOPDIR)/lib/util $(TOPDIR)/lib/util/comm $(TOPDIR)/lib/util/ferm $(TOPDIR)/lib/util/ft $(TOPDIR)/lib/util/gauge $(TOPDIR)/lib/util/misc $(TOPDIR)/lib/util/random $(TOPDIR)/include $(TOPDIR)/mainprogs $(TOPDIR)/mainprogs/main $(TOPDIR)/mainprogs/tests $(TOPDIR)/root
+VPATH = $(TOPDIR) $(TOPDIR)/lib $(TOPDIR)/lib/actions $(TOPDIR)/lib/actions/boson $(TOPDIR)/lib/actions/boson/operator $(TOPDIR)/lib/actions/ferm $(TOPDIR)/lib/actions/ferm/dsdu $(TOPDIR)/lib/actions/ferm/fermacts $(TOPDIR)/lib/actions/ferm/invert $(TOPDIR)/lib/actions/ferm/linop $(TOPDIR)/lib/actions/ferm/qprop $(TOPDIR)/lib/actions/gauge $(TOPDIR)/lib/geom $(TOPDIR)/lib/info $(TOPDIR)/lib/io $(TOPDIR)/lib/meas $(TOPDIR)/lib/meas/eig $(TOPDIR)/lib/meas/gfix $(TOPDIR)/lib/meas/glue $(TOPDIR)/lib/meas/hadron $(TOPDIR)/lib/meas/pbp $(TOPDIR)/lib/meas/schrfun $(TOPDIR)/lib/meas/smear $(TOPDIR)/lib/meas/sources $(TOPDIR)/lib/update $(TOPDIR)/lib/update/heatbath $(TOPDIR)/lib/update/molecdyn $(TOPDIR)/lib/update/molecdyn/est $(TOPDIR)/lib/update/molecdyn/mese $(TOPDIR)/lib/update/molecdyn/noise $(TOPDIR)/lib/update/molecdyn/step $(TOPDIR)/lib/util $(TOPDIR)/lib/util/ferm $(TOPDIR)/lib/util/ft $(TOPDIR)/lib/util/gauge $(TOPDIR)/lib/util/info $(TOPDIR)/mainprogs $(TOPDIR)/mainprogs/main $(TOPDIR)/mainprogs/tests $(TOPDIR)/root
 ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
@@ -235,7 +235,9 @@ nobase_include_HEADERS = \
 	util/gauge/hotst.h util/gauge/phfctr.h util/gauge/reunit.h \
 	util/gauge/rgauge.h util/gauge/su2extract.h util/gauge/su3proj.h \
 	util/gauge/sunfill.h util/gauge/sun_proj.h util/gauge/taproj.h \
-	util/gauge/unit_check.h util/util.h\
+	util/gauge/unit_check.h \
+        util/info.h util/info/proginfo.h util/info/printgeom.h \
+        util/util.h\
 $(am__append_1)
 
 #
@@ -270,7 +272,8 @@ libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
                axgauge.cc coulgauge.cc grelax.cc polar_dec.cc rot_colvec.cc \
 	       transf.cc param_io.cc gramschm.cc gramschm_array.cc \
 	       ritz.cc ritz_array.cc sn_jacob.cc sn_jacob_array.cc \
-	       eig_spec.cc eig_spec_array.cc\
+	       eig_spec.cc eig_spec_array.cc \
+               proginfo.cc printgeom.cc\
 $(am__append_3) $(am__append_4) $(am__append_5)
 subdir = lib
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
@@ -288,11 +291,11 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	readmilc.cc writemilc.cc axgauge.cc coulgauge.cc grelax.cc \
 	polar_dec.cc rot_colvec.cc transf.cc param_io.cc gramschm.cc \
 	gramschm_array.cc ritz.cc ritz_array.cc sn_jacob.cc \
-	sn_jacob_array.cc eig_spec.cc eig_spec_array.cc baryon_w.cc \
-	mesons_w.cc curcor2_w.cc lwldslash_w.cc formfac_w.cc \
-	mesonseqsrc_w.cc barseqsrc_w.cc seqpiontest_w.cc \
-	sink_smear2_w.cc barcomp_w.cc ldwfdslash_w.cc walfil_w.cc \
-	fermact_qprop.cc prec_fermact_qprop.cc \
+	sn_jacob_array.cc eig_spec.cc eig_spec_array.cc proginfo.cc \
+	printgeom.cc baryon_w.cc mesons_w.cc curcor2_w.cc \
+	lwldslash_w.cc formfac_w.cc mesonseqsrc_w.cc barseqsrc_w.cc \
+	seqpiontest_w.cc sink_smear2_w.cc barcomp_w.cc ldwfdslash_w.cc \
+	walfil_w.cc fermact_qprop.cc prec_fermact_qprop.cc \
 	unprec_wilson_fermact_w.cc unprec_wilson_linop_w.cc \
 	prec_wilson_fermact_w.cc prec_wilson_linop_w.cc \
 	unprec_parwilson_fermact_w.cc unprec_parwilson_linop_w.cc \
@@ -405,8 +408,8 @@ am_libchroma_a_OBJECTS = rgauge.$(OBJEXT) taproj.$(OBJEXT) \
 	gramschm.$(OBJEXT) gramschm_array.$(OBJEXT) ritz.$(OBJEXT) \
 	ritz_array.$(OBJEXT) sn_jacob.$(OBJEXT) \
 	sn_jacob_array.$(OBJEXT) eig_spec.$(OBJEXT) \
-	eig_spec_array.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
-	$(am__objects_3)
+	eig_spec_array.$(OBJEXT) proginfo.$(OBJEXT) printgeom.$(OBJEXT) \
+	$(am__objects_1) $(am__objects_2) $(am__objects_3)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
@@ -462,6 +465,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/prec_parwilson_linop_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/prec_wilson_fermact_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/prec_wilson_linop_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/printgeom.Po ./$(DEPDIR)/proginfo.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/qprop_io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/quarkprop4_multi_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/quarkprop4_w.Po ./$(DEPDIR)/readmilc.Po \
@@ -633,6 +637,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_parwilson_linop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_wilson_fermact_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_wilson_linop_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/printgeom.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/proginfo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qprop_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quarkprop4_multi_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quarkprop4_w.Po@am__quote@
@@ -788,7 +794,7 @@ top_distdir = ..
 distdir = $(top_distdir)/$(PACKAGE)-$(VERSION)
 
 distdir: $(DISTFILES)
-	$(mkinstalldirs) $(distdir)/actions $(distdir)/actions/boson $(distdir)/actions/boson/operator $(distdir)/actions/ferm $(distdir)/actions/ferm/dslash $(distdir)/actions/ferm/fermacts $(distdir)/actions/ferm/invert $(distdir)/actions/ferm/linop $(distdir)/actions/ferm/qprop $(distdir)/actions/gauge $(distdir)/io $(distdir)/meas $(distdir)/meas/eig $(distdir)/meas/gfix $(distdir)/meas/glue $(distdir)/meas/hadron $(distdir)/meas/pbp $(distdir)/meas/schrfun $(distdir)/meas/smear $(distdir)/meas/sources $(distdir)/util $(distdir)/util/ferm $(distdir)/util/ft $(distdir)/util/gauge
+	$(mkinstalldirs) $(distdir)/actions $(distdir)/actions/boson $(distdir)/actions/boson/operator $(distdir)/actions/ferm $(distdir)/actions/ferm/dslash $(distdir)/actions/ferm/fermacts $(distdir)/actions/ferm/invert $(distdir)/actions/ferm/linop $(distdir)/actions/ferm/qprop $(distdir)/actions/gauge $(distdir)/io $(distdir)/meas $(distdir)/meas/eig $(distdir)/meas/gfix $(distdir)/meas/glue $(distdir)/meas/hadron $(distdir)/meas/pbp $(distdir)/meas/schrfun $(distdir)/meas/smear $(distdir)/meas/sources $(distdir)/util $(distdir)/util/ferm $(distdir)/util/ft $(distdir)/util/gauge $(distdir)/util/info
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
