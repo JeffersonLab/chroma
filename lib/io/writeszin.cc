@@ -1,4 +1,4 @@
-// $Id: writeszin.cc,v 1.11 2005-02-10 03:17:03 edwards Exp $
+// $Id: writeszin.cc,v 1.12 2005-03-06 23:20:21 edwards Exp $
 
 /*! \file
  *  \brief Write out a configuration written by SZIN up to configuration version 7.
@@ -7,7 +7,6 @@
 #include "chromabase.h"
 #include "io/szin_io.h"
 #include "io/writeszin.h"
-// #include "io/param_io.h"
 #include "qdp_util.h"    // from QDP
 
 #include <string>
@@ -57,7 +56,6 @@ static void writeSzinHeader(BinaryWriter& cfg_out, const SzinGauge_t& header)
   }
 
   write(cfg_out, header.cfg_version);
-
   write(cfg_out, header.FermTypeP);
   write(cfg_out, header.Nd);
   write(cfg_out, header.Nc);
@@ -198,7 +196,7 @@ void writeSzin(XMLBufferWriter& xml, multi1d<LatticeColorMatrix>& u, const strin
  * \param cfg_file   path ( Read )
  */    
 
-void writeSzinTrunc(SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u, 
+void writeSzinTrunc(const SzinGauge_t& header0, const multi1d<LatticeColorMatrix>& u, 
 		    int j_decay, int t_start, int t_end, 
 		    const string& cfg_file)
 {
@@ -206,6 +204,8 @@ void writeSzinTrunc(SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u,
 
   // The object where data is written
   BinaryWriter cfg_out(cfg_file); // for now, cfg_io_location not used
+
+  SzinGauge_t header(header0);   // a local copy
 
   // Force nrow in header to be correct truncated size
   header.nrow = Layout::lattSize();
@@ -265,8 +265,6 @@ void writeSzinTrunc(SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u,
   }
 
   cfg_out.close();
-
-  header.nrow[j_decay] = Layout::lattSize()[j_decay];  // restore the header
 
   END_CODE();
 }
