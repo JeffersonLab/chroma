@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wilson_gaugeact.h,v 1.1 2005-01-13 02:02:38 edwards Exp $
+// $Id: wilson_gaugeact.h,v 1.2 2005-01-13 04:29:45 edwards Exp $
 /*! \file
  *  \brief Wilson gauge action
  */
@@ -9,6 +9,7 @@
 
 #include "gaugeact.h"
 #include "gaugebc.h"
+#include "actions/gauge/gaugeacts/plaq_gaugeact.h"
 
 namespace Chroma
 {
@@ -44,20 +45,20 @@ namespace Chroma
     //! General GaugeBC
     WilsonGaugeAct(Handle< GaugeBC > gbc_, 
 		   const Real& beta_) : 
-      gbc(gbc_), beta(beta_) {}
+      beta(beta_) {init(gbc_);}
 
     //! Read beta from a param struct
     WilsonGaugeAct(Handle< GaugeBC > gbc_, 
 		   const WilsonGaugeActParams& p) :
-      gbc(gbc_), beta(p.beta) {}
+      beta(p.beta) {init(gbc_);}
 
     //! Copy constructor
     WilsonGaugeAct(const WilsonGaugeAct& a) : 
-      gbc(a.gbc), beta(a.beta) {}
+      beta(a.beta), plaq(a.plaq) {}
 
     //! Assignment
     WilsonGaugeAct& operator=(const WilsonGaugeAct& a)
-    {gbc=a.gbc; beta=a.beta; return *this;}
+    {beta=a.beta; plaq=a.plaq; return *this;}
 
     //! Is anisotropy used?
     bool anisoP() const {return false;}
@@ -73,20 +74,29 @@ namespace Chroma
     const OrderedSet& getSet() const {return rb;}
 
     //! Produce a gauge boundary condition object
-    const GaugeBC& getGaugeBC() const {return *gbc;}
+    const GaugeBC& getGaugeBC() const {return plaq->getGaugeBC();}
 
     //! Compute staple
     /*! Default version. Derived class should override this if needed. */
     void staple(LatticeColorMatrix& result,
 		Handle<const ConnectState> state,
-		int mu, int cb) const;
+		int mu, int cb) const
+    {
+      plaq->staple(result,state,mu,cb);
+    }
 
     //! Compute dS/dU
     void dsdu(multi1d<LatticeColorMatrix>& result,
-	      const Handle<const ConnectState> state) const;
+	      const Handle<const ConnectState> state) const
+    {
+      plaq->dsdu(result,state);
+    }
 
     //! Compute the actions
-    Double S(const Handle<const ConnectState> state) const;
+    Double S(const Handle<const ConnectState> state) const
+    {
+      return plaq->S(state);
+    }
 
     //! Destructor is automatic
     ~WilsonGaugeAct() {}
@@ -94,9 +104,13 @@ namespace Chroma
     // Accessors -- non mutable members.
     const Real getBeta(void) const { return beta; }
 
+  protected:
+    //! Private initializer
+    void init(Handle< GaugeBC > gbc);
+
   private:
-    Handle< GaugeBC >  gbc;  // Gauge Boundary Condition
-    Real beta;               // The coupling Beta
+    Real   beta;               // The coupling Beta
+    Handle<PlaqGaugeAct> plaq; // Hold a plaquette gaugeact
 
   };
 
