@@ -1,12 +1,34 @@
-// $Id: invcg2_array.cc,v 1.1 2003-11-13 04:13:53 edwards Exp $
+// $Id: invcg2_array.cc,v 1.2 2003-11-13 16:43:21 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
 
-//   ****WARNING**** NOT WORKING YET
-
 #include "chromabase.h"
 #include "actions/ferm/invert/invcg2_array.h"
+
+
+//---------------- HACK ----------------------------
+// WARNING - Inefficient; improve later - move into QDP
+#if 1
+namespace QDP {
+
+template<class T>
+inline typename UnaryReturn<OLattice<T>, FnNorm2>::Type_t
+norm2(const multi1d< OLattice<T> >& s1, const Subset& s)
+{
+  typename UnaryReturn<OLattice<T>, FnNorm2>::Type_t  d;
+
+  d = norm2(s1[0],s);
+  for(int n=1; n < s1.size(); ++n)
+    d += norm2(s1[n],s);
+
+  return d;
+}
+}
+#endif
+//---------------------------------------------------
+
+
 
 //! Conjugate-Gradient (CGNE) algorithm for a generic Linear Operator
 /*! \ingroup invert
@@ -69,8 +91,6 @@ void InvCG2_a(const LinearOperator< multi1d<T> >& M,
 	      int MaxCG, 
 	      int& n_count)
 {
-  QDP_error_exit("not working yet");
-
   const int N = psi.size();
   const OrderedSubset& s = M.subset();
 
@@ -82,7 +102,7 @@ void InvCG2_a(const LinearOperator< multi1d<T> >& M,
   //                      +
   //  r  :=  [ Chi  -  M(u)  . M(u) . psi ]
   multi1d<T> r(N);
-  multi1d<T> tmp(N) = M(M(psi, PLUS), MINUS);
+  multi1d<T> tmp = M(M(psi, PLUS), MINUS);   // extra memory traversal
   for(int n=0; n < N; ++n)
     r[n][s] = chi[n] - tmp[n];
 
@@ -106,7 +126,7 @@ void InvCG2_a(const LinearOperator< multi1d<T> >& M,
   //
   //  FOR k FROM 1 TO MaxCG DO
   //
-  T    mp;
+  multi1d<T>  mp(N);
   Real a, b;
   Double c, d;
   
@@ -119,7 +139,9 @@ void InvCG2_a(const LinearOperator< multi1d<T> >& M,
     //      	       	       	       	       	  +
     //  First compute  d  =  < p, A.p >  =  < p, M . M . p >  =  < M.p, M.p >
     //  Mp = M(u) * p
-    mp[s] = M(p, PLUS);
+
+//    mp[s] = M(p, PLUS);
+    mp = M(p, PLUS);       // WARNING - removed subset here 
 
     //  d = | mp | ** 2
     d = norm2(mp, s);	/* 2 Nc Ns  flops */
@@ -127,12 +149,16 @@ void InvCG2_a(const LinearOperator< multi1d<T> >& M,
     a = Real(c)/Real(d);
 
     //  Psi[k] += a[k] p[k]
-    psi[s] += a * p;	/* 2 Nc Ns  flops */
+    for(int n=0; n < N; ++n)
+      psi[n][s] += a * p[n];	/* 2 Nc Ns  flops */
 
     //  r[k] -= a[k] A . p[k] ;
     //      	       +            +
     //  r  =  r  -  M(u)  . Mp  =  M  . M . p  =  A . p
-    r[s] -= a * M(mp, MINUS);
+
+    tmp = M(mp, MINUS);            // WARNING - removed subset here
+    for(int n=0; n < N; ++n)
+      r[n][s] -= a * tmp[n];       // WARNING - extra memory traversal
 
     //  IF |r[k]| <= RsdCG |Chi| THEN RETURN;
 
@@ -151,7 +177,8 @@ void InvCG2_a(const LinearOperator< multi1d<T> >& M,
     b = Real(cp) / Real(c);
 
     //  p[k+1] := r[k] + b[k+1] p[k]
-    p[s] = r + b*p;	/* Nc Ns  flops */
+    for(int n=0; n < N; ++n)
+      p[n][s] = r[n] + b*p[n];	/* Nc Ns  flops */
   }
   n_count = MaxCG;
   QDP_error_exit("too many CG iterations: count = %d", n_count);
@@ -160,9 +187,9 @@ void InvCG2_a(const LinearOperator< multi1d<T> >& M,
 
 // Fix here for now
 template<>
-void InvCG2(const LinearOperator<LatticeFermion>& M,
-	    const LatticeFermion& chi,
-	    LatticeFermion& psi,
+void InvCG2(const LinearOperator< multi1d<LatticeFermion> >& M,
+	    const multi1d<LatticeFermion>& chi,
+	    multi1d<LatticeFermion>& psi,
 	    const Real& RsdCG, 
 	    int MaxCG, 
 	    int& n_count)
@@ -170,14 +197,3 @@ void InvCG2(const LinearOperator<LatticeFermion>& M,
   InvCG2_a(M, chi, psi, RsdCG, MaxCG, n_count);
 }
 
-// Fix here for now
-template<>
-void InvCG2(const LinearOperator<LatticeDWFermion>& M,
-	    const LatticeDWFermion& chi,
-	    LatticeDWFermion& psi,
-	    const Real& RsdCG, 
-	    int MaxCG, 
-	    int& n_count)
-{
-  InvCG2_a(M, chi, psi, RsdCG, MaxCG, n_count);
-}
