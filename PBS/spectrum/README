@@ -1,0 +1,5 @@
+This directory contains a set of PBS scripts for running complete
+spectroscopy  jobs on a system running PBS.
+In addition, there are various perl scripts for parsing the spectroscopy
+data
+.
