@@ -1,4 +1,4 @@
-// $Id: unprec_ovlap_contfrac5d_pv_linop_array_w.cc,v 1.3 2005-02-12 06:21:25 edwards Exp $
+// $Id: unprec_ovlap_contfrac5d_pv_linop_array_w.cc,v 1.4 2005-03-02 16:27:15 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Pauli-Villars Continued Fraction 5D
  */
@@ -24,7 +24,7 @@ namespace Chroma
   {
     START_CODE();
 
-    chi.resize(N5);
+    // chi.resize(N5);
     int G5 = Ns*Ns - 1;
 
     // This is the upper limit for the index of the 5th dimension, i.e.

@@ -1,6 +1,9 @@
-// $Id: prec_fermact_qprop_array.cc,v 1.14 2005-02-21 19:28:59 edwards Exp $
+// $Id: prec_fermact_qprop_array.cc,v 1.15 2005-03-02 16:27:15 bjoo Exp $
 // $Log: prec_fermact_qprop_array.cc,v $
-// Revision 1.14  2005-02-21 19:28:59  edwards
+// Revision 1.15  2005-03-02 16:27:15  bjoo
+// Removed chi.resize() stuff from LinopArrays
+//
+// Revision 1.14  2005/02/21 19:28:59  edwards
 // Changed initHeader's to be instead the appropriate default constructor
 // for the ChiralParam, AnisoParam and QQQ structs. Removed all
 // calls to initHeader. Changed quarkProp routines to instead take
@@ -124,8 +127,10 @@ namespace Chroma
     {
       /* tmp = M_dag(u) * chi_tmp */
       multi1d<LatticeFermion> tmp(N5);
+
       (*A)(tmp, chi_tmp, MINUS);
 
+      
       /* psi = (M^dag * M)^(-1) chi_tmp */
       InvCG2 (*A, tmp, psi, invParam.RsdCG, invParam.MaxCG, n_count);
     }
@@ -149,19 +154,25 @@ namespace Chroma
   
     if ( n_count == invParam.MaxCG )
       QDP_error_exit("no convergence in the inverter", n_count);
-      
+   
+    
     /* Step (ii) */
     /* psi_e = A_ee^-1 * [chi_e  -  D_eo * psi_o] */
+ 
     {
       multi1d<LatticeFermion> tmp1(N5);
       multi1d<LatticeFermion> tmp2(N5);
-
+      
       A->evenOddLinOp(tmp1, psi, PLUS);
+      
       for(int n=0; n < N5; ++n)
 	tmp2[n][rb[0]] = chi[n] - tmp1[n];
+      
+
       A->evenEvenInvLinOp(psi, tmp2, PLUS);
+      
     }
-  
+    
     END_CODE();
 
     return n_count;

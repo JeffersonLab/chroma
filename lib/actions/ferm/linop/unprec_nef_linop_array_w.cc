@@ -1,4 +1,4 @@
-// $Id: unprec_nef_linop_array_w.cc,v 1.8 2005-01-21 17:44:32 edwards Exp $
+// $Id: unprec_nef_linop_array_w.cc,v 1.9 2005-03-02 16:27:15 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned NEF domain-wall linear operator
  */
@@ -57,7 +57,7 @@ namespace Chroma
   {
     START_CODE();
 
-    chi.resize(N5);
+    // chi.resize(N5);
 
     //
     //  Chi   =  D' Psi

@@ -1,4 +1,4 @@
-// $Id: t_prec_nef.cc,v 1.7 2005-03-02 00:44:19 edwards Exp $
+// $Id: t_prec_nef.cc,v 1.8 2005-03-02 16:27:15 bjoo Exp $
 
 #include "chroma.h"
 
@@ -161,9 +161,10 @@ int main(int argc, char **argv)
       gaussian(psi5b[n]);
       gaussian(chi5[n]);
     }
-
+   
     int n_counta = (*ZQ)(psi5a, chi5);
     int n_countb = (*NQ)(psi5b, chi5);
+
     for(int n=0; n<N5; n++)
       tmp5[n] = psi5b[n] - psi5a[n];
 

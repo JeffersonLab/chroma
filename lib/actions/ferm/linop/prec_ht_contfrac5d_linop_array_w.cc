@@ -1,4 +1,4 @@
-// $Id: prec_ht_contfrac5d_linop_array_w.cc,v 1.2 2005-02-13 18:16:28 edwards Exp $
+// $Id: prec_ht_contfrac5d_linop_array_w.cc,v 1.3 2005-03-02 16:27:15 bjoo Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned domain-wall linear operator
  */
@@ -132,7 +132,7 @@ namespace Chroma
   {
     START_CODE();
 
-    chi.resize(N5);
+    // chi.resize(N5);
 
     // We don't care about the isign because our operator is Hermitian
     // Apply matrix
@@ -194,7 +194,7 @@ namespace Chroma
   {
     START_CODE();
 
-    chi.resize(N5);
+    // chi.resize(N5);
 
     multi1d<LatticeFermion> y(N5);
 
@@ -246,7 +246,7 @@ namespace Chroma
   {
     START_CODE();
 
-    chi.resize(N5);
+    // chi.resize(N5);
 
     Real mass = ( Real(1) + m_q ) / (Real(1) - m_q);
     LatticeFermion tmp;

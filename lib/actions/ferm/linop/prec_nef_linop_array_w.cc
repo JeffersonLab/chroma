@@ -1,4 +1,4 @@
-// $Id: prec_nef_linop_array_w.cc,v 1.8 2005-01-04 06:52:03 edwards Exp $
+// $Id: prec_nef_linop_array_w.cc,v 1.9 2005-03-02 16:27:15 bjoo Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned NEF domain-wall linear operator
  */
@@ -71,8 +71,9 @@ namespace Chroma
   {
     START_CODE();
 
-    chi.resize(N5);
-
+    /*
+     * This causes breakage. Why?
+     */
     Real c5Fact(0.5*c5InvTwoKappa) ; // The 0.5 is for the P+ and P-
 
     switch ( isign ) {
@@ -136,8 +137,7 @@ namespace Chroma
   {
     START_CODE();
 
-    chi.resize(N5);
-
+    
     // Copy and scale by TwoKappa (1/M0)
     for(int s(0);s<N5;s++)
       chi[s][rb[cb]] = b5TwoKappa * psi[s] ;
@@ -238,8 +238,6 @@ namespace Chroma
 					   const int cb) const 
   {
     START_CODE();
-
-    chi.resize(N5);
 
     Real fb5 = -0.5*b5 ;
     Real fc5 = -0.25*c5 ;

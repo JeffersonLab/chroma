@@ -1,4 +1,4 @@
-// $Id: unprec_ht_contfrac5d_linop_array_w.cc,v 1.2 2005-01-05 21:44:07 edwards Exp $
+// $Id: unprec_ht_contfrac5d_linop_array_w.cc,v 1.3 2005-03-02 16:27:15 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned H_T kernel continued fraction (5D) operator
  */
@@ -38,7 +38,7 @@ namespace Chroma
   {
     START_CODE();
 
-    chi.resize(N5);
+    // chi.resize(N5);
     int G5 = Ns*Ns - 1;
     enum PlusMinus msign = (isign == PLUS) ? MINUS : PLUS;
 

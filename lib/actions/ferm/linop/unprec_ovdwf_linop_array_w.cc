@@ -1,4 +1,4 @@
-// $Id: unprec_ovdwf_linop_array_w.cc,v 1.11 2005-01-04 06:52:04 edwards Exp $
+// $Id: unprec_ovdwf_linop_array_w.cc,v 1.12 2005-03-02 16:27:15 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Overlap-DWF (Borici) linear operator
  */
@@ -43,7 +43,7 @@ namespace Chroma
   {
     START_CODE();
 
-    chi.resize(N5);
+    // chi.resize(N5);
 
     //
     //  Chi   =  D' Psi

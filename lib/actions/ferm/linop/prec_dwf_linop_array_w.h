@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_linop_array_w.h,v 1.12 2005-02-23 19:29:20 edwards Exp $
+// $Id: prec_dwf_linop_array_w.h,v 1.13 2005-03-02 16:27:15 bjoo Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned domain-wall fermion linear operator
  */
@@ -57,7 +57,7 @@ namespace Chroma
 		      const multi1d<LatticeFermion>& psi, 
 		      enum PlusMinus isign) const
     {
-      chi.resize(N5);
+      // chi.resize(N5);
       for(int s(0);s<N5;s++)
 	{
 	  D.apply(chi[s],psi[s],isign,0);
@@ -70,7 +70,7 @@ namespace Chroma
 		      const multi1d<LatticeFermion>& psi, 
 		      enum PlusMinus isign) const
     {
-      chi.resize(N5);
+      // chi.resize(N5);
       for(int s(0);s<N5;s++)
 	{
 	  D.apply(chi[s],psi[s],isign,1);

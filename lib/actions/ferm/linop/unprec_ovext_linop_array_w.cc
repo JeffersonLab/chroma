@@ -1,4 +1,4 @@
-/* $Id: unprec_ovext_linop_array_w.cc,v 1.7 2005-01-17 18:26:13 edwards Exp $
+/* $Id: unprec_ovext_linop_array_w.cc,v 1.8 2005-03-02 16:27:15 bjoo Exp $
 /*! \file
 *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
 */
@@ -63,7 +63,7 @@ namespace Chroma
   {
     START_CODE();
 
-    chi.resize(N5);
+    // chi.resize(N5);
     int G5 = Ns*Ns - 1;
 
     // Run through all the pseudofermion fields

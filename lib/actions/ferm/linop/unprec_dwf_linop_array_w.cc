@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_linop_array_w.cc,v 1.13 2005-02-21 19:28:59 edwards Exp $
+// $Id: unprec_dwf_linop_array_w.cc,v 1.14 2005-03-02 16:27:15 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall linear operator
  */
@@ -60,7 +60,7 @@ namespace Chroma
   {
     START_CODE();
 
-    chi.resize(N5);
+    // chi.resize(N5);
 
     //
     //  Chi   =  D' Psi
