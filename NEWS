@@ -1,5 +1,10 @@
 06/08/2004 -- Robert Edwards
 
+	Version 1.5.20. Final version before minor release of QDP breaks old
+        usage of LatticeDWFermion.
+
+06/08/2004 -- Robert Edwards
+
 	Version 1.5.19. Modifed Wallformfac mainprog to write binary.
 
 06/08/2004 -- Robert Edwards
