@@ -1,15 +1,4 @@
-// $Id: mres.cc,v 1.10 2005-02-07 04:15:19 edwards Exp $
-
-#include <iostream>
-#include <sstream>
-#include <iomanip>
-#include <string>
-
-#include <cstdio>
-
-#include <stdlib.h>
-#include <sys/time.h>
-#include <math.h>
+// $Id: mres.cc,v 1.11 2005-02-16 22:21:02 edwards Exp $
 
 #include "chroma.h"
 
