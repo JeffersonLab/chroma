@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.195 2004-11-21 22:33:27 edwards Exp $
+# $Id: Makefile.am,v 1.196 2004-11-21 22:40:04 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -230,6 +230,7 @@ nobase_include_HEADERS += \
 	meas/hadron/hadron_corr_s.h \
 	meas/hadron/mesphas_follana_s.h meas/hadron/mesphas_s.h \
 	meas/hadron/pions_s.h  meas/hadron/walfil_s.h \
+	meas/hadron/scalar_loops_s.h \
 	meas/hadron/stag_scalars_s.h meas/sources/sources_s.h \
 	meas/hadron/stag_propShift_s.h \
 	meas/hadron/vector_meson_s.h \
