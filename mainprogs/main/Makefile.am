@@ -33,7 +33,9 @@ HDRS =
 ##   Another option is to add it to check_PROGRAMS, which means it will only
 ##   be built by 'make check' and is not installed.
 #noinst_PROGRAMS = propagator
-check_PROGRAMS = propagator propagator_comp multi_propagator multi_propagator_comp collect_propcomp collect_multi_propcomp spectrum_w qqq_w seqprop seqprop_comp seqprop_collect\
+check_PROGRAMS = propagator propagator_comp multi_propagator \
+        multi_propagator_comp collect_propcomp collect_multi_propcomp \
+        spectrum_w qqq_w seqprop seqprop_comp seqprop_collect\
         dwf_seqprop bar3ptfn make_source \
         ExampleBuildingBlocks hypsmear cfgtransf sink_smearing qproptransf \
         wallformfac
@@ -41,7 +43,7 @@ check_PROGRAMS = propagator propagator_comp multi_propagator multi_propagator_co
 ## These are programs still under development. They won't compile in
 ## the check_PROGRAMS line, so we put them here to keep from breaking
 ## make check
-EXTRA_PROGRAMS = qpropadd
+EXTRA_PROGRAMS = qpropadd seqsource
 
 
 #
@@ -73,6 +75,9 @@ qqq_w_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 
 seqprop_SOURCES= seqprop.cc
 seqprop_DEPENDENCIES= build_chroma_libs rebuild_other_libs
+
+seqsource_SOURCES= seqsource.cc
+seqsource_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 
 seqprop_comp_SOURCES = seqprop_comp.cc
 seqprop_comp_DEPENDENCIES = build_chroma_libs rebuild_other_libs
