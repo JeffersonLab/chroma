@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 1.16 2005-01-02 05:21:08 edwards Exp $
+// $Id: fermact.h,v 1.17 2005-01-04 06:53:41 edwards Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -268,6 +268,9 @@ namespace Chroma
     //! Produce a linear operator M^dag.M for this action
     virtual const LinearOperator< multi1d<T> >* lMdagM(Handle<const ConnectState> state) const = 0;
 
+    //! Produce a Pauli-Villars linear operator for this action
+    virtual const LinearOperator< multi1d<T> >* linOpPV(Handle<const ConnectState> state) const = 0;
+
     //! Return quark prop solver, solution of unpreconditioned system
     /*! Default implementation provided */
     virtual const SystemSolver< multi1d<T> >* qpropT(Handle<const ConnectState> state,
@@ -291,6 +294,9 @@ namespace Chroma
 
     //! Produce a linear operator for this action
     virtual const DiffLinearOperator<multi1d<T>, P>* linOp(Handle<const ConnectState> state) const = 0;
+
+    //! Produce a Pauli-Villars linear operator for this action
+    virtual const DiffLinearOperator<multi1d<T>, P>* linOpPV(Handle<const ConnectState> state) const = 0;
   };
 
 
@@ -438,6 +444,9 @@ namespace Chroma
 
     //! Produce a linear operator for this action
     virtual const UnprecLinearOperator<multi1d<T>, P>* linOp(Handle<const ConnectState> state) const = 0;
+
+    //! Produce a Pauli-Villars linear operator for this action
+    virtual const UnprecLinearOperator<multi1d<T>, P>* linOpPV(Handle<const ConnectState> state) const = 0;
   };
 
 
@@ -458,6 +467,10 @@ namespace Chroma
     //! Override to produce an even-odd prec. linear operator for this action
     /*! Covariant return rule - override base class function */
     virtual const EvenOddPrecLinearOperator<multi1d<T>, P>* linOp(Handle<const ConnectState> state) const = 0;
+
+    //! Override to produce an even-odd prec. Pauli-Villars linear operator for this action
+    /*! Covariant return rule - override base class function */
+    virtual const EvenOddPrecLinearOperator<multi1d<T>, P>* linOpPV(Handle<const ConnectState> state) const = 0;
 
     //! Return quark prop solver, solution of unpreconditioned system
     /*! Default implementation provided */
