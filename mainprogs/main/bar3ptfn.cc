@@ -1,7 +1,14 @@
-// $Id: bar3ptfn.cc,v 1.3 2003-04-29 20:14:51 flemingg Exp $
+// $Id: bar3ptfn.cc,v 1.4 2003-04-30 06:11:35 flemingg Exp $
 //
 // $Log: bar3ptfn.cc,v $
-// Revision 1.3  2003-04-29 20:14:51  flemingg
+// Revision 1.4  2003-04-30 06:11:35  flemingg
+// Finally figured out what Wilson_hadron_2Pt_fn measurement was supposed
+// to do and made it do it.  I realized that it didn't involve a timeslice
+// sum at the source but just the trace at the source point.  So, I removed
+// all the subset stuff and replaced it with a peekSite().  Now, everything
+// agrees with szin.  The code is ready for testing in production.
+//
+// Revision 1.3  2003/04/29 20:14:51  flemingg
 // nml input/output streamlined to eliminate some legacy key-value pairs
 // which aren't currently needed but could be readded later.  Output
 // format was incremented to version=4 and all the params were put into
@@ -25,46 +32,6 @@
 #include "qdp_util.h" // for readSzin()
 
 using namespace QDP ;
-
-//! Function object used for constructing the source time-slice set
-class SrcTimeSliceFunc : public SetFunc
-{
-public:
-  SrcTimeSliceFunc(multi1d<int> t_srce, int j_decay)
-    : src_coord(t_srce), dir_decay(j_decay) {}
-
-  int operator() (const multi1d<int>& coordinate) const ;
-
-  int numSubsets() const ;
-
-private:
-  SrcTimeSliceFunc() {}  // hide default constructor
-
-  multi1d<int> src_coord ;
-  int dir_decay ;
-};
-
-int
-SrcTimeSliceFunc::operator() (const multi1d<int>& coordinate) const
-{
-  if ((dir_decay<0)||(dir_decay>=Nd)) {
-    return 0 ;
-  } else if (toBool(src_coord[dir_decay] == coordinate[dir_decay])) {
-    return 0 ;
-  } else {
-    return 1 ;
-  }
-}
-
-int
-SrcTimeSliceFunc::numSubsets() const
-{
-  if ((dir_decay<0)||(dir_decay>=Nd)) {
-    return 1 ;
-  } else {
-    return 2 ;
-  }
-}
 
 int
 main(int argc, char *argv[])
@@ -582,12 +549,9 @@ main(int argc, char *argv[])
       }
 
       LatticeComplex seq_hadron \
-        = trace(adj(Gamma(G5)*seq_quark_prop_tmp*Gamma(G5))*seq_quark_prop) ;
+        = trace(adj(Gamma(G5)*seq_quark_prop_tmp*Gamma(G5))) ;
 
-      Set timeslices ;
-      timeslices.make(SrcTimeSliceFunc(t_srce, j_decay)) ;
-
-      Complex seq_hadron_0 = sum(seq_hadron, timeslices[0]) ;
+      Complex seq_hadron_0 = peekSite(seq_hadron, t_srce) ;
 
       push(nml_out,"Wilson_hadron_2Pt_fn") ;
       Write(nml_out, t_srce) ;
