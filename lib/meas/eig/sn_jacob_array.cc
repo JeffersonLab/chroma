@@ -1,4 +1,4 @@
-// $Id: sn_jacob_array.cc,v 1.4 2005-01-14 18:42:35 edwards Exp $
+// $Id: sn_jacob_array.cc,v 1.5 2005-02-10 22:22:42 edwards Exp $
 /*! \file
  *  \brief Single-node Jacobi routine
  */
@@ -23,21 +23,24 @@ namespace Chroma {
  *  Toler	Tolerance for off-diag elems	(Read)
  *  N_max	Maximal number of Jacobi iters	(Read)
  *  Ncb		Number of sublattices		(Read)
- *  N_Count	Number of Jacobi iters		(Write) 
+ *  \param sub         Subset to use                   (Read) 
+ *
+ * \return 	Number of Jacobi iters		(Write) 
  */
 template <typename T>
-void SN_Jacob_Array_t(multi2d<T>& psi, 
-		      const int N_eig, 
-		      multi1d<Real>& lambda, 
-		      multi1d<Complex>& off_diag, 
-		      Real tolerance, 
-		      int N_max,
-		      int& n_count)
+int SN_Jacob_Array_t(multi2d<T>& psi, 
+		     const int N_eig, 
+		     multi1d<Real>& lambda, 
+		     multi1d<Complex>& off_diag, 
+		     Real tolerance, 
+		     int N_max,
+		     const OrderedSubset& sub)
 {
   START_CODE();
   
   int N5 = psi.size1();
 
+  int n_count;
   multi1d<T> psi_t1(N5);
   multi1d<T> psi_t2(N5);
   Complex ctmp1;
@@ -67,19 +70,20 @@ void SN_Jacob_Array_t(multi2d<T>& psi,
 
   Real tol_sq = tolerance * tolerance;
             
-  for(k = 1; k <= N_max; k++) {
-    
+  for(k = 1; k <= N_max; k++) 
+  {
     i_rot = 0;
     ij = 0;
     
-    for(j = 1; j < N_eig; j++) {
-      for(i = 0; i < j; i++) {
-	
+    for(j = 1; j < N_eig; j++) 
+    {
+      for(i = 0; i < j; i++) 
+      {
 	dd = real(conj(off_diag[ij]) * off_diag[ij]);
 	ftmp = fabs(tol_sq * lambda[i] * lambda[j]);
 
-	if( toBool( dd > ftmp) ) {
-
+	if( toBool( dd > ftmp) ) 
+	{
 	  // Make a rotation to set off-diagonal part to zero 
 	  i_rot++;
 	  dd = sqrt(dd);
@@ -89,12 +93,12 @@ void SN_Jacob_Array_t(multi2d<T>& psi,
 	  diff_l = lambda[j] -  lambda[i];
 	  ftmp = fabs(diff_l);
 
-
-	  if( toBool( (ftmp+acc) == ftmp ) ) {
-	    
+	  if( toBool( (ftmp+acc) == ftmp ) ) 
+	  {
 	    t = dd / diff_l;
 	  }
-	  else {
+	  else 
+	  {
 	    theta = Real(0.5) * diff_l / dd;
 	    t = sqrt(Real(1) + theta*theta);
 	    ftmp = fabs(theta);
@@ -132,14 +136,14 @@ void SN_Jacob_Array_t(multi2d<T>& psi,
 
 	  // Now rotate the eigenvectors */
 	  for(int n=0; n < N5; n++) {
-	    psi_t1[n] = psi[i][n] * v11;
+	    psi_t1[n][sub] = psi[i][n] * v11;
 
 	    /* psi_t1 += psi[j][cb] * adj(v12); Wrong?? */
-	    psi_t1[n] -= psi[j][n] * v21;
-	    psi_t2[n] = psi[j][n] * v11;
-	    psi_t2[n] -= psi[i][n] * v12;
-	    psi[i][n] = psi_t1[n];
-	    psi[j][n] = psi_t2[n];
+	    psi_t1[n][sub] -= psi[j][n] * v21;
+	    psi_t2[n][sub] = psi[j][n] * v11;
+	    psi_t2[n][sub] -= psi[i][n] * v12;
+	    psi[i][n][sub] = psi_t1[n];
+	    psi[j][n][sub] = psi_t2[n];
 	  }
 
 	  // Rotate the other matrix elements 
@@ -188,54 +192,58 @@ void SN_Jacob_Array_t(multi2d<T>& psi,
       }
     }
 
-    if( i_rot == 0 ) {
-    
+    if( i_rot == 0 ) 
+    {
       n_count = k;
       QDPIO::cout << "Jacobi converged after " << k << " iters" << endl;
       
       // Sort the eigenvalues
       // In order of increasing modulus
-      for(j = 1; j < N_eig; j++) {
-	for(i = 0; i < j; i++) {
-	  
+      for(j = 1; j < N_eig; j++) 
+      {
+	for(i = 0; i < j; i++) 
+	{
 	  ftmp = fabs(lambda[j]);
 	  dd = fabs(lambda[i]);
 
 	  // if( | lambda[j] | < | lambda[i] | )
-	  if( toBool( ftmp < dd ) ) {
-	  
+	  if( toBool( ftmp < dd ) ) 
+	  {
 	    ftmp = lambda[i];
 	    lambda[i] = lambda[j];
 	    lambda[j] = ftmp;
 	    
-	    for(int n=0; n < N5; n++) { 
-	      psi_t1[n] = psi[i][n];
-	      psi[i][n] = psi[j][n];
-	      psi[j][n] = psi_t1[n];
+	    for(int n=0; n < N5; n++) 
+	    {
+	      psi_t1[n][sub] = psi[i][n];
+	      psi[i][n][sub] = psi[j][n];
+	      psi[j][n][sub] = psi_t1[n];
 	    }
 	  }
 	}
       }
       END_CODE();
-      return;
+      return n_count;
     }
   }
 
   n_count = k;
-  QDP_error_exit("too many Jacobi iterations: %d\n" ,k );
+  QDP_error_exit("too many Jacobi iterations: %d\n" ,k);
   END_CODE();
+
+  return n_count;
 }
 
 
-void SN_Jacob_Array(multi2d<LatticeFermion>& psi, 
-		    const int N_eig, 
-		    multi1d<Real>& lambda, 
-		    multi1d<Complex>& off_diag, 
-		    Real tolerance, 
-		    int N_max,
-		    int& n_count)
+int SN_Jacob_Array(multi2d<LatticeFermion>& psi, 
+		   const int N_eig, 
+		   multi1d<Real>& lambda, 
+		   multi1d<Complex>& off_diag, 
+		   Real tolerance, 
+		   int N_max,
+		   const OrderedSubset& sub)
 {
-  SN_Jacob_Array_t(psi, N_eig, lambda, off_diag, tolerance, N_max, n_count);
+  return SN_Jacob_Array_t(psi, N_eig, lambda, off_diag, tolerance, N_max, sub);
 }
 
 }  // end namespace Chroma

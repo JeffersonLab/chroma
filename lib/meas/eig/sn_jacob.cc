@@ -1,4 +1,4 @@
-// $Id: sn_jacob.cc,v 1.6 2005-01-14 18:42:35 edwards Exp $
+// $Id: sn_jacob.cc,v 1.7 2005-02-10 22:22:42 edwards Exp $
 /*! \file
  *  \brief Single-node Jacobi routine
  */
@@ -15,27 +15,28 @@ namespace Chroma {
  * This subroutine contains a "single node" Jacobi routine
  * to be used with the Ritz functional eigenvialue/vector finder.
  *
+ *  \param psi		Eigenvectors			(Modify)
+ *  \param N_eig	Eigenvalue number 		(Read)
+ *  \param lambda	Diagonals / Eigenvalues		(Modify)
+ *  \param off_diag	Upper triang off-diag matrix elems	(Modify)
+ *  \param tolererance	Tolerance for off-diag elems	(Read)
+ *  \param N_max	Maximal number of Jacobi iters	(Read)
+ *  \param sub          Subset to use                   (Read) 
  *
- *  Psi		Eigenvectors			(Modify)
- *  N_eig	Eigenvalue number 		(Read)
- *  lambda	Diagonals / Eigenvalues		(Modify)
- *  off_diag	Upper triang off-diag matrix elems	(Modify)
- *  Toler	Tolerance for off-diag elems	(Read)
- *  N_max	Maximal number of Jacobi iters	(Read)
- *  Ncb		Number of sublattices		(Read)
- *  N_Count	Number of Jacobi iters		(Write) 
+ *  \return 	        Number of Jacobi iters		(Write) 
  */
 template <typename T>
-void SN_Jacob_t(multi1d<T>& psi, 
-		const int N_eig, 
-		multi1d<Real>& lambda, 
-		multi1d<Complex>& off_diag, 
-		Real tolerance, 
-		int N_max,
-		int& n_count)
+int SN_Jacob_t(multi1d<T>& psi, 
+	       const int N_eig, 
+	       multi1d<Real>& lambda, 
+	       multi1d<Complex>& off_diag, 
+	       Real tolerance, 
+	       int N_max,
+	       const OrderedSubset& sub) 
 {
   START_CODE();
   
+  int n_count;
   T psi_t1;
   T psi_t2;
   Complex ctmp1;
@@ -65,19 +66,20 @@ void SN_Jacob_t(multi1d<T>& psi,
 
   Real tol_sq = tolerance * tolerance;
             
-  for(k = 1; k <= N_max; k++) {
-    
+  for(k = 1; k <= N_max; k++) 
+  {
     i_rot = 0;
     ij = 0;
     
-    for(j = 1; j < N_eig; j++) {
-      for(i = 0; i < j; i++) {
-	
+    for(j = 1; j < N_eig; j++) 
+    {
+      for(i = 0; i < j; i++) 
+      {
 	dd = real(conj(off_diag[ij]) * off_diag[ij]);
 	ftmp = fabs(tol_sq * lambda[i] * lambda[j]);
 
-	if( toBool( dd > ftmp) ) {
-
+	if( toBool( dd > ftmp) ) 
+	{
 	  // Make a rotation to set off-diagonal part to zero 
 	  i_rot++;
 	  dd = sqrt(dd);
@@ -129,13 +131,13 @@ void SN_Jacob_t(multi1d<T>& psi,
 	  off_diag[ij] = Real(0);
 
 	  // Now rotate the eigenvectors */
-	  psi_t1 = psi[i] * v11;
+	  psi_t1[sub] = psi[i] * v11;
 	  /* psi_t1 += psi[j][cb] * adj(v12); Wrong?? */
-	  psi_t1 -= psi[j] * v21;
-	  psi_t2 = psi[j] * v11;
-	  psi_t2 -= psi[i] * v12;
-	  psi[i] = psi_t1;
-	  psi[j] = psi_t2;
+	  psi_t1[sub] -= psi[j] * v21;
+	  psi_t2[sub] = psi[j] * v11;
+	  psi_t2[sub] -= psi[i] * v12;
+	  psi[i][sub] = psi_t1;
+	  psi[j][sub] = psi_t2;
 	  
 
 	  // Rotate the other matrix elements 
@@ -205,32 +207,33 @@ void SN_Jacob_t(multi1d<T>& psi,
 	    lambda[j] = ftmp;
 	    
 	    
-	    psi_t1 = psi[i];
-	    psi[i] = psi[j];
-	    psi[j] = psi_t1;
+	    psi_t1[sub] = psi[i];
+	    psi[i][sub] = psi[j];
+	    psi[j][sub] = psi_t1;
 	  }
 	}
       }
       END_CODE();
-      return;
+      return n_count;
     }
   }
 
   n_count = k;
-  QDP_error_exit("too many Jacobi iterations: %d\n" ,k );
+  QDP_error_exit("too many Jacobi iterations: %d\n" , k);
   END_CODE();
+  return n_count;
 }
 
 
-void SN_Jacob(multi1d<LatticeFermion>& psi, 
-	      const int N_eig, 
-	      multi1d<Real>& lambda, 
-	      multi1d<Complex>& off_diag, 
-	      Real tolerance, 
-	      int N_max,
-	      int& n_count)
+int SN_Jacob(multi1d<LatticeFermion>& psi, 
+	     const int N_eig, 
+	     multi1d<Real>& lambda, 
+	     multi1d<Complex>& off_diag, 
+	     Real tolerance, 
+	     int N_max,
+	     const OrderedSubset& sub)
 {
-  SN_Jacob_t(psi, N_eig, lambda, off_diag, tolerance, N_max, n_count);
+  return SN_Jacob_t(psi, N_eig, lambda, off_diag, tolerance, N_max, sub);
 }
 
 }  // end namespace Chroma

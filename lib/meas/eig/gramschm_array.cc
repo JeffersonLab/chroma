@@ -1,4 +1,4 @@
-// $Id: gramschm_array.cc,v 1.3 2005-01-14 18:42:35 edwards Exp $
+// $Id: gramschm_array.cc,v 1.4 2005-02-10 22:22:42 edwards Exp $
 /*! \file
  *  \brief Gramm-Schmidt orthogonolization
  */
@@ -18,6 +18,7 @@ namespace Chroma {
  *  \param vec         5D subspace wrt orthog     	       (Read)
  *  \param Nvec        Number of vectors               (Read)
  *  \param Npsi        Number of source vectors        (Read) 
+ *  \param sub         Subset to use                   (Read) 
  */
 
 // The multi2d is an annoyance.
@@ -26,7 +27,9 @@ namespace Chroma {
 // T[i] is a vector of size N5
 template< typename T>
 void GramSchmArray_T(multi2d<T>& psi, const int Npsi,
-		     const multi2d<T>& vec, const int Nvec) {
+		     const multi2d<T>& vec, const int Nvec,
+		     const OrderedSubset& sub) 
+{
 
   START_CODE();
 
@@ -44,18 +47,19 @@ void GramSchmArray_T(multi2d<T>& psi, const int Npsi,
 #endif
   int N5 = vec.size1();
 
-  for(int s = 0; s < Npsi; ++s)  {
-    for(int i = 0; i < Nvec; ++i)   {
-
+  for(int s = 0; s < Npsi; ++s)  
+  {
+    for(int i = 0; i < Nvec; ++i)   
+    {
       // Accumulate the 5D inner product into xp
-      Complex xp = innerProduct(vec[i][0], psi[s][0]);
-      for(int n = 1; n < N5; n++) { 
-	xp += innerProduct(vec[i][n], psi[s][n]);
+      Complex xp = innerProduct(vec[i][0], psi[s][0], sub);
+      for(int n = 1; n < N5; n++) {
+	xp += innerProduct(vec[i][n], psi[s][n], sub);
       }
       
       // Now orthogonalise all N5 components
       for(int n=0; n < N5; n++) { 
-	psi[s][n] -= vec[i][n] * xp;
+	psi[s][n][sub] -= vec[i][n] * xp;
       }
     }
   }
@@ -75,6 +79,7 @@ void GramSchmArray_T(multi2d<T>& psi, const int Npsi,
  *  \param psi         5D Pseudofermion field     	       (Modify)
  *  \param vec         5D subspace wrt orthog     	       (Read)
  *  \param Nvec        no of vectors to orthog against (Read)
+ *  \param sub         Subset to use                   (Read) 
  */
 
 // The multi2d is an annoyance.
@@ -83,8 +88,9 @@ void GramSchmArray_T(multi2d<T>& psi, const int Npsi,
 // T[i] is a vector of size N5
 template <typename T>
 void GramSchmArray_T(multi1d<T>& psi, 
-		const multi2d<T>& vec, 
-		const int Nvec)
+		     const multi2d<T>& vec, 
+		     const int Nvec,
+		     const OrderedSubset& sub) 
 {
 
   START_CODE();
@@ -100,15 +106,15 @@ void GramSchmArray_T(multi1d<T>& psi,
 #endif
   int N5 = psi.size();
 
-  for(int i = 0; i < Nvec; ++i)   {
-    Complex xp = innerProduct(vec[i][0], psi[0]);
+  for(int i = 0; i < Nvec; ++i)   
+  {
+    Complex xp = innerProduct(vec[i][0], psi[0], sub);
     for(int n = 0; n < N5; n++) { 
-      xp += innerProduct(vec[i][n], psi[n]);
+      xp += innerProduct(vec[i][n], psi[n], sub);
     }
 
-    for(int n=0; n < N5; n++) { 
-      psi[n] -= vec[i][n] * xp;
-    }
+    for(int n=0; n < N5; n++)
+      psi[n][sub] -= vec[i][n] * xp;
   }
 
   END_CODE();
@@ -125,10 +131,12 @@ void GramSchmArray_T(multi1d<T>& psi,
  * Arguments:
  *  \param psi         5D Pseudofermion field     	       (Modify)
  *  \param vec         5D vector to orthog. against     	       (Read)
+ *  \param sub         Subset to use                   (Read) 
  */
 template <typename T>
 void GramSchmArray_T(multi1d<T>& psi, 
-		     const multi1d<T>& vec)
+		     const multi1d<T>& vec,
+		     const OrderedSubset& sub) 
 {
 
   START_CODE();
@@ -141,13 +149,13 @@ void GramSchmArray_T(multi1d<T>& psi,
    
   int N5 = psi.size();
 
-  Complex xp = innerProduct(vec[0], psi[0]);
+  Complex xp = innerProduct(vec[0], psi[0], sub);
   for(int i = 1; i < N5; i++) { 
-    xp += innerProduct(vec[i], psi[i]);
+    xp += innerProduct(vec[i], psi[i], sub);
   }
 
   for(int i=0; i < N5; i++) { 
-    psi[i] -= vec[i] * xp;
+    psi[i][sub] -= vec[i] * xp;
   }
 
   END_CODE();
@@ -167,9 +175,10 @@ void GramSchmArray_T(multi1d<T>& psi,
  */
 
 void GramSchmArray(multi2d<LatticeFermion>& psi, const int Npsi, 
-		   const multi2d<LatticeFermion>& vec, const int Nvec)
+		   const multi2d<LatticeFermion>& vec, const int Nvec,
+		   const OrderedSubset& sub) 
 {
-  GramSchmArray_T(psi, Npsi, vec, Nvec);
+  GramSchmArray_T(psi, Npsi, vec, Nvec, sub);
 }
 
 //! Gram Schmidt rothogonalisation
@@ -183,13 +192,16 @@ void GramSchmArray(multi2d<LatticeFermion>& psi, const int Npsi,
  *  \param psi         5D Pseudofermion field     	       (Modify)
  *  \param vec         5D subspace wrt orthog     	       (Read)
  *  \param Nvec        no of vectors to orthog against (Read)
+ *  \param sub         Subset to use                   (Read) 
  */
 void GramSchmArray(multi1d<LatticeFermion>& psi, 
 		   const multi2d<LatticeFermion>& vec, 
-		   const int Nvec)
+		   const int Nvec,
+		   const OrderedSubset& sub) 
 {
+  START_CODE();
 
-  GramSchmArray_T(psi, vec, Nvec);
+  GramSchmArray_T(psi, vec, Nvec, sub);
 
   END_CODE();
 }
@@ -205,11 +217,13 @@ void GramSchmArray(multi1d<LatticeFermion>& psi,
  *  \param psi         5D Pseudofermion field     	       (Modify)
  *  \param vec         5D subspace wrt orthog     	       (Read)
  *  \param Nvec        Number of vectors               (Read)
+ *  \param sub         Subset to use                   (Read) 
  */
 void GramSchmArray(multi2d<LatticeFermion>& psi, 
-		   const multi2d<LatticeFermion>& vec, const int Nvec)
+		   const multi2d<LatticeFermion>& vec, const int Nvec,
+		   const OrderedSubset& sub) 
 {
-  GramSchmArray_T(psi, psi.size2(), vec, Nvec);
+  GramSchmArray_T(psi, psi.size2(), vec, Nvec, sub);
 }
 
 
@@ -224,11 +238,13 @@ void GramSchmArray(multi2d<LatticeFermion>& psi,
  * Arguments:
  *  \param psi         5D Pseudofermion fields    	       (Modify)
  *  \param vec         5D subspace wrt orthog     	       (Read)
+ *  \param sub         Subset to use                   (Read) 
  */
 void GramSchmArray(multi2d<LatticeFermion>& psi, 
-		   const multi2d<LatticeFermion>& vec)
+		   const multi2d<LatticeFermion>& vec,
+		   const OrderedSubset& sub) 
 {
-  GramSchmArray_T(psi, psi.size2(), vec, vec.size2());
+  GramSchmArray_T(psi, psi.size2(), vec, vec.size2(), sub);
 }
 
 //! Gram Schmidt rothogonalisation
@@ -242,11 +258,13 @@ void GramSchmArray(multi2d<LatticeFermion>& psi,
  *  \param psi         5D Pseudofermion field     	       (Modify)
  *  \param vec         5D subspace wrt orthog     	       (Read)
  *  \param Nvec        no of vectors to orthog against (Read)
+ *  \param sub         Subset to use                   (Read) 
  */
 void GramSchmArray(multi1d<LatticeFermion>& psi, 
-		   const multi2d<LatticeFermion>& vec)
+		   const multi2d<LatticeFermion>& vec,
+		   const OrderedSubset& sub) 
 {
-  GramSchmArray_T(psi, vec, vec.size2());
+  GramSchmArray_T(psi, vec, vec.size2(), sub);
 }
 
 
@@ -262,12 +280,13 @@ void GramSchmArray(multi1d<LatticeFermion>& psi,
  *  \param psi         5D Pseudofermion field     	       (Modify)
  *  \param vec         5D subspace wrt orthog     	       (Read)
  *  \param Nvec        no of vectors to orthog against (Read)
+ *  \param sub         Subset to use                   (Read) 
  */
 void GramSchmArray(multi1d<LatticeFermion>& psi, 
-		   const multi1d<LatticeFermion>& vec)
+		   const multi1d<LatticeFermion>& vec,
+		   const OrderedSubset& sub) 
 {
-
-  GramSchmArray_T(psi,vec);
+  GramSchmArray_T(psi,vec,sub);
 }
 
 }  // end namespace Chroma

@@ -1,4 +1,4 @@
-// $Id: gramschm.cc,v 1.6 2005-01-14 18:42:35 edwards Exp $
+// $Id: gramschm.cc,v 1.7 2005-02-10 22:22:42 edwards Exp $
 /*! \file
  *  \brief Gramm-Schmidt orthogonolization
  */
@@ -20,12 +20,14 @@ namespace Chroma {
  *  \param vec         subspace wrt orthog     	       (Read)
  *  \param Nvec        Number of vectors               (Read)
  *  \param Npsi        Number of source vectors        (Read) 
+ *  \param sub         Subset to use                   (Read) 
  */
 
 template< typename T>
 void GramSchm_T(multi1d<T>& psi, const int Npsi,
-	      const multi1d<T>& vec, const int Nvec) {
-
+		const multi1d<T>& vec, const int Nvec,
+		const OrderedSubset& sub)
+{
   START_CODE();
 
   // if I was paranoid I'd assert that Npsi and Nvec are 
@@ -38,8 +40,8 @@ void GramSchm_T(multi1d<T>& psi, const int Npsi,
 
   for(int s = 0; s < Npsi; ++s)  {
     for(int i = 0; i < Nvec; ++i)   {
-      Complex xp = innerProduct(vec[i], psi[s]);
-      psi[s] -= vec[i] * xp;
+      Complex xp = innerProduct(vec[i], psi[s], sub);
+      psi[s][sub] -= vec[i] * xp;
     }
   }
         
@@ -58,11 +60,13 @@ void GramSchm_T(multi1d<T>& psi, const int Npsi,
  *  \param psi         Pseudofermion field     	       (Modify)
  *  \param vec         subspace wrt orthog     	       (Read)
  *  \param Nvec        no of vectors to orthog against (Read)
+ *  \param sub         Subset to use                   (Read) 
  */
 template <typename T>
 void GramSchm_T(T& psi, 
 		const multi1d<T>& vec, 
-		const int Nvec)
+		const int Nvec,
+		const OrderedSubset& sub) 
 {
 
   START_CODE();
@@ -72,8 +76,8 @@ void GramSchm_T(T& psi,
   }
 #endif
   for(int i = 0; i < Nvec; ++i)   {
-    Complex xp = innerProduct(vec[i], psi);
-    psi -= vec[i] * xp;
+    Complex xp = innerProduct(vec[i], psi, sub);
+    psi[sub] -= vec[i] * xp;
   }
 
   END_CODE();
@@ -91,16 +95,18 @@ void GramSchm_T(T& psi,
  *  \param psi         Pseudofermion field     	       (Modify)
  *  \param vec         subspace wrt orthog     	       (Read)
  *  \param Nvec        no of vectors to orthog against (Read)
+ *  \param sub         Subset to use                   (Read) 
  */
 template <typename T>
 void GramSchm_T(T& psi, 
-		const T& vec)
+		const T& vec,
+		const OrderedSubset& sub) 
 {
 
   START_CODE();
 
-  Complex xp = innerProduct(vec, psi);
-  psi -= vec * xp;
+  Complex xp = innerProduct(vec, psi, sub);
+  psi[sub] -= vec * xp;
   
   END_CODE();
 }
@@ -116,12 +122,14 @@ void GramSchm_T(T& psi,
  *  \param vec         subspace wrt orthog     	       (Read)
  *  \param Nvec        Number of vectors               (Read)
  *  \param Npsi        Number of source vectors        (Read) 
+ *  \param sub         Subset to use                   (Read) 
  */
 
 void GramSchm(multi1d<LatticeFermion>& psi, const int Npsi, 
-	      const multi1d<LatticeFermion>& vec, const int Nvec)
+	      const multi1d<LatticeFermion>& vec, const int Nvec,
+	      const OrderedSubset& sub) 
 {
-  GramSchm_T(psi, Npsi, vec, Nvec);
+  GramSchm_T(psi, Npsi, vec, Nvec, sub);
 }
 
 //! Gram Schmidt rothogonalisation
@@ -135,13 +143,16 @@ void GramSchm(multi1d<LatticeFermion>& psi, const int Npsi,
  *  \param psi         Pseudofermion field     	       (Modify)
  *  \param vec         subspace wrt orthog     	       (Read)
  *  \param Nvec        no of vectors to orthog against (Read)
+ *  \param sub         Subset to use                   (Read) 
  */
 void GramSchm(LatticeFermion& psi, 
 	      const multi1d<LatticeFermion>& vec, 
-	      const int Nvec)
+	      const int Nvec,
+	      const OrderedSubset& sub) 
 {
+  START_CODE();
 
-  GramSchm_T(psi, vec, Nvec);
+  GramSchm_T(psi, vec, Nvec, sub);
 
   END_CODE();
 }
@@ -157,11 +168,13 @@ void GramSchm(LatticeFermion& psi,
  *  \param psi         Pseudofermion field     	       (Modify)
  *  \param vec         subspace wrt orthog     	       (Read)
  *  \param Nvec        Number of vectors               (Read)
+ *  \param sub         Subset to use                   (Read) 
  */
 void GramSchm(multi1d<LatticeFermion>& psi, 
-	      const multi1d<LatticeFermion>& vec, const int Nvec)
+	      const multi1d<LatticeFermion>& vec, const int Nvec,
+	      const OrderedSubset& sub) 
 {
-  GramSchm_T(psi, psi.size(), vec, Nvec);
+  GramSchm_T(psi, psi.size(), vec, Nvec, sub);
 }
 
 
@@ -176,11 +189,13 @@ void GramSchm(multi1d<LatticeFermion>& psi,
  * Arguments:
  *  \param psi         Pseudofermion field     	       (Modify)
  *  \param vec         subspace wrt orthog     	       (Read)
+ *  \param sub         Subset to use                   (Read) 
  */
 void GramSchm(multi1d<LatticeFermion>& psi, 
-	      const multi1d<LatticeFermion>& vec)
+	      const multi1d<LatticeFermion>& vec,
+	      const OrderedSubset& sub) 
 {
-  GramSchm_T(psi, psi.size(), vec, vec.size());
+  GramSchm_T(psi, psi.size(), vec, vec.size(), sub);
 }
 
 //! Gram Schmidt rothogonalisation
@@ -194,11 +209,13 @@ void GramSchm(multi1d<LatticeFermion>& psi,
  *  \param psi         Pseudofermion field     	       (Modify)
  *  \param vec         subspace wrt orthog     	       (Read)
  *  \param Nvec        no of vectors to orthog against (Read)
+ *  \param sub         Subset to use                   (Read) 
  */
 void GramSchm(LatticeFermion& psi, 
-	      const multi1d<LatticeFermion>& vec)
+	      const multi1d<LatticeFermion>& vec,
+	      const OrderedSubset& sub)
 {
-  GramSchm_T(psi, vec, vec.size());
+  GramSchm_T(psi, vec, vec.size(), sub);
 }
 
 
@@ -214,15 +231,17 @@ void GramSchm(LatticeFermion& psi,
  *  \param psi         Pseudofermion field     	       (Modify)
  *  \param vec         subspace wrt orthog     	       (Read)
  *  \param Nvec        no of vectors to orthog against (Read)
+ *  \param sub         Subset to use                   (Read) 
  */
 void GramSchm(LatticeFermion& psi, 
-		const LatticeFermion& vec)
+	      const LatticeFermion& vec,
+	      const OrderedSubset& sub) 
 {
 
   START_CODE();
 
-  Complex xp = innerProduct(vec, psi);
-  psi -= vec * xp;
+  Complex xp = innerProduct(vec, psi, sub);
+  psi[sub] -= vec * xp;
   
   END_CODE();
 }

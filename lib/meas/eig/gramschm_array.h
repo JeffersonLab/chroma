@@ -1,4 +1,4 @@
-// $Id: gramschm_array.h,v 1.2 2005-01-14 18:42:35 edwards Exp $
+// $Id: gramschm_array.h,v 1.3 2005-02-10 22:22:42 edwards Exp $
 /*! \file
  *  \brief Gramm-Schmidt orthogonolization
  */
@@ -16,15 +16,17 @@ namespace Chroma {
  * Nvec vectors from vec
  *
  * Arguments:
- *  \param psi         5D Pseudofermion field     	       (Modify)
- *  \param vec         5D subspace wrt orthog     	       (Read)
+ *  \param psi         5D Pseudofermion field  	       (Modify)
+ *  \param vec         5D subspace wrt orthog  	       (Read)
  *  \param Nvec        Number of vectors               (Read)
  *  \param Npsi        Number of source vectors        (Read) 
+ *  \param s           Subset to use                   (Read) 
  */
 void GramSchmArray(multi2d<LatticeFermion>& psi, 
 		   const int Npsi,
 		   const multi2d<LatticeFermion>& vec, 
-		   const int Nvec);
+		   const int Nvec,
+		   const OrderedSubset& s);
 
 
 //! Gram Schmidt rothogonalisation
@@ -38,10 +40,12 @@ void GramSchmArray(multi2d<LatticeFermion>& psi,
  *  \param psi         Pseudofermion field     	       (Modify)
  *  \param vec         subspace wrt orthog     	       (Read)
  *  \param Nvec        Number of vectors               (Read)
+ *  \param s           Subset to use                   (Read) 
  */
 void GramSchmArray(multi2d<LatticeFermion>& psi, 
 		   const multi2d<LatticeFermion>& vec, 
-		   const int Nvec);
+		   const int Nvec,
+		   const OrderedSubset& s);
 
 
 //! Gram Schmidt rothogonalisation
@@ -54,9 +58,12 @@ void GramSchmArray(multi2d<LatticeFermion>& psi,
  * Arguments:
  *  \param psi         5D Pseudofermion field     	       (Modify)
  *  \param vec         5D subspace wrt orthog     	       (Read)
+ *  \param s           Subset to use                   (Read) 
  */
 void GramSchmArray(multi2d<LatticeFermion>& psi, 
-		   const multi2d<LatticeFermion>& vec);
+		   const multi2d<LatticeFermion>& vec,
+		   const OrderedSubset& s);
+
 
 //! Gram Schmidt rothogonalisation
 /*!
@@ -69,10 +76,12 @@ void GramSchmArray(multi2d<LatticeFermion>& psi,
  *  \param psi         5D Pseudofermion field     	       (Modify)
  *  \param vec         5D subspace wrt orthog     	       (Read)
  *  \param Nvec        no of vectors to orthog against (Read)
+ *  \param s           Subset to use                   (Read) 
  */
 void GramSchmArray(multi1d<LatticeFermion>& psi, 
 		   const multi2d<LatticeFermion>& vec, 
-		   const int Nvec);
+		   const int Nvec,
+		   const OrderedSubset& s);
 
 
 //! Gram Schmidt rothogonalisation
@@ -85,9 +94,11 @@ void GramSchmArray(multi1d<LatticeFermion>& psi,
  * Arguments:
  *  \param psi         5D Pseudofermion field     	       (Modify)
  *  \param vec         5D subspace wrt orthog     	       (Read)
+ *  \param s           Subset to use                   (Read) 
  */
 void GramSchmArray(multi1d<LatticeFermion>& psi, 
-		   const multi2d<LatticeFermion>& vec);
+		   const multi2d<LatticeFermion>& vec,
+		   const OrderedSubset& s);
 
 //! Gram Schmidt rothogonalisation
 /*!
@@ -97,11 +108,13 @@ void GramSchmArray(multi1d<LatticeFermion>& psi,
  * a single vector vec
  *
  * Arguments:
- *  \param psi         5D Pseudofermion field     	       (Modify)
- *  \param vec         5D vector  wrt orthog     	       (Read)
+ *  \param psi         5D Pseudofermion field          (Modify)
+ *  \param vec         5D vector  wrt orthog           (Read)
+ *  \param s           Subset to use                   (Read) 
  */
 void GramSchmArray(multi1d<LatticeFermion>& psi,
-		   const multi1d<LatticeFermion>& vec);
+		   const multi1d<LatticeFermion>& vec,
+		   const OrderedSubset& s);
 
 }  // end namespace Chroma
 

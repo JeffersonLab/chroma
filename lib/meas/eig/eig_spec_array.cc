@@ -1,4 +1,4 @@
-// $Id: eig_spec_array.cc,v 1.5 2005-02-07 04:10:39 edwards Exp $
+// $Id: eig_spec_array.cc,v 1.6 2005-02-10 22:22:42 edwards Exp $
 /*! \file
  *  \brief Compute low lying eigenvalues of the hermitian H
  */
@@ -57,11 +57,13 @@ void EigSpecRitzCG(const LinearOperator<multi1d<LatticeFermion> >& M, // Herm po
 		   XMLWriter& xml_out          // Diagnostics
 	     )
 {
+  QDPIO::cout << "EigSpecArray" << endl;
+
   START_CODE();
   
+  const OrderedSubset& sub = M.subset(); // Subset over which M acts
   
   push(xml_out, "EigSpecRitzCG");
-
 
   n_cg_tot = 0;
   int n_count = 0;
@@ -71,11 +73,13 @@ void EigSpecRitzCG(const LinearOperator<multi1d<LatticeFermion> >& M, // Herm po
   Real final_grad;
 
   multi1d<Real> resid_rel(n_eig);
-  for(n = 1, i = 0; n <= n_eig;  n++, i++) {
-
+  for(n = 1, i = 0; n <= n_eig;  n++, i++) 
+  {
     // Initialise lambda[i] = 1
     lambda_H[i] = Real(1);
     
+    QDPIO::cout << "Call ritz n=" << n << endl;
+
     // Do the Ritz
     Ritz(M, lambda_H[i], psi, n, Rsd_r, Rsd_a, zero_cutoff, n_renorm, n_min, 
 	 n_max, MaxCG, ProjApsiP, n_count, final_grad, false, Real(1), 
@@ -93,6 +97,22 @@ void EigSpecRitzCG(const LinearOperator<multi1d<LatticeFermion> >& M, // Herm po
 
     if( toBool( fabs(lambda_H[i]) < zero_cutoff ) ) { 
       QDPIO::cout << "Evalue["<< n << "] = " << lambda_H[i] << " is considered zero" << endl;
+    }
+    else 
+    {
+      multi1d<LatticeFermion> D_e(M.size());
+      multi1d<LatticeFermion> lambda_e(M.size());
+
+      M(D_e, psi[i], PLUS);
+
+      for(int j=0; j < M.size(); ++j)
+      {
+	lambda_e[j][sub] = lambda_H[i]*psi[i][j];
+	D_e[j][sub] -= lambda_e[j];
+      }
+      Double r_norm = sqrt(norm2(D_e,sub));
+      resid_rel[i] = Real(r_norm)/lambda_H[i];
+      QDPIO::cout << "Evalue["<<n<<"]: eigen_norm = " << r_norm << " resid_rel = " << resid_rel[i] << endl << endl;
     }
   }
 
@@ -137,6 +157,8 @@ void EigSpecRitzKS(const LinearOperator<multi1d<LatticeFermion> >& M, // Herm po
 {
   START_CODE();
 
+  const OrderedSubset& s = M.subset(); // Subset over which M acts
+  
   // Sanity Checks: 
   // Make sure lambda_H is large enough
   if( lambda_H.size() < (n_eig+n_dummy) ) { 
@@ -193,7 +215,8 @@ void EigSpecRitzKS(const LinearOperator<multi1d<LatticeFermion> >& M, // Herm po
   
   bool convP = false;
 
-  for( int KS_iter = 0; KS_iter < n_max_KS; KS_iter++) {
+  for( int KS_iter = 0; KS_iter < n_max_KS; KS_iter++) 
+  {
     n_KS++;
 
     push(xml_out, "KS_iter");
@@ -227,9 +250,9 @@ void EigSpecRitzKS(const LinearOperator<multi1d<LatticeFermion> >& M, // Herm po
     for(i=0, ij=0; i < n_working_eig; i++) { 
       M(tmp, psi[i], PLUS);
       for(j=0; j < i; j++) { 
-	off_diag[ij] = innerProduct(psi[j][0], tmp[0]);
+	off_diag[ij] = innerProduct(psi[j][0], tmp[0], s);
 	for(int n = 1; n < N5; n++) { 
-	  off_diag[ij] += innerProduct(psi[j][n], tmp[n]);
+	  off_diag[ij] += innerProduct(psi[j][n], tmp[n], s);
 	}
 	ij++;
       }
@@ -240,7 +263,7 @@ void EigSpecRitzKS(const LinearOperator<multi1d<LatticeFermion> >& M, // Herm po
     // Now diagonalise it, rotate evecs, and sort
     // 
     // Jacobi at the moment works with the absolute error
-    SN_Jacob_Array(psi, n_working_eig, lambda_intern, off_diag, Rsd_a, 50, n_jacob);
+    n_jacob = SN_Jacob_Array(psi, n_working_eig, lambda_intern, off_diag, Rsd_a, 50, s);
     n_jacob_tot += n_jacob;
 
     write(xml_out, "n_jacob", n_jacob);
@@ -274,16 +297,16 @@ void EigSpecRitzKS(const LinearOperator<multi1d<LatticeFermion> >& M, // Herm po
       for(i=0, ij=0; i < n_eig; i++) { 
 	M(tmp, psi[i], PLUS);
 	for(j=0; j < i; j++) { 
-	  off_diag[ij] = innerProduct(psi[j][0], tmp[0]);
+	  off_diag[ij] = innerProduct(psi[j][0], tmp[0], s);
 	  for(int n=1; n < N5; n++) { 
-	    off_diag[ij] += innerProduct(psi[j][n], tmp[n]);
+	    off_diag[ij] += innerProduct(psi[j][n], tmp[n], s);
 	  }
 	  ij++;
 	}
       }
 
       // Diagonalise, rotate, sort
-      SN_Jacob_Array(psi, n_eig, lambda_intern, off_diag, Rsd_a, 50, n_jacob);
+      n_jacob = SN_Jacob_Array(psi, n_eig, lambda_intern, off_diag, Rsd_a, 50, s);
       write(xml_out, "final_n_jacob", n_jacob);
       write(xml_out, "n_cg_tot", n_cg_tot);
       write(xml_out, "n_KS", n_KS);
@@ -325,6 +348,10 @@ void fixMMev2Mev(const LinearOperator< multi1d<LatticeFermion> >& M,  // The Op 
 		 int& n_jacob                 // How many Jacobis were done
 		 )
 {
+  START_CODE();
+
+  const OrderedSubset& s = M.subset(); // Subset over which M acts
+  
 
   // Sanity checking
   if( n_eig > lambda.size() ) { 
@@ -350,9 +377,9 @@ void fixMMev2Mev(const LinearOperator< multi1d<LatticeFermion> >& M,  // The Op 
 
   if( n_eig == 1 ) {                  // only one eigenvalue
     M(tmp, ev_psi[0], PLUS);
-    Double lambda_fix_single = innerProductReal(ev_psi[0][0], tmp[0]);
+    Double lambda_fix_single = innerProductReal(ev_psi[0][0], tmp[0], s);
     for(int n=1; n < N5; n++) { 
-      lambda_fix_single += innerProductReal(ev_psi[0][n], tmp[n]);
+      lambda_fix_single += innerProductReal(ev_psi[0][n], tmp[n], s);
     }
     // No diagonalisation needed -- only 1 eval
 
@@ -362,9 +389,8 @@ void fixMMev2Mev(const LinearOperator< multi1d<LatticeFermion> >& M,  // The Op 
 
     // Different validity criteria, depending on whether lambda_fix_single^2 
     // is less than our zero cutoff
-    if( toBool( lambda_H_sq < zero_cutoff ) ) {
-
-            
+    if( toBool( lambda_H_sq < zero_cutoff ) ) 
+    {
       // Yes, the square of our estimate for lambda is less than the cutoff
       // Check whether the original lambda was also less than the cutoff
       // if so, our ev is considered a valid zero e-value
@@ -414,36 +440,35 @@ void fixMMev2Mev(const LinearOperator< multi1d<LatticeFermion> >& M,  // The Op 
 
   for(int i=0, ij=0; i < n_eig; i++) { 
     M(tmp, ev_psi[i], PLUS); 
-    lambda_fix[i] = innerProductReal(ev_psi[i][0], tmp[0]);
+    lambda_fix[i] = innerProductReal(ev_psi[i][0], tmp[0], s);
     for(int n=1; n < N5; n++) { 
-      lambda_fix[i] += innerProductReal(ev_psi[i][n], tmp[n]);
+      lambda_fix[i] += innerProductReal(ev_psi[i][n], tmp[n], s);
     }
 
     for(int j=0; j < i; j++) { 
-      off_diag[ij] = innerProduct(ev_psi[j][0], tmp[0]);
+      off_diag[ij] = innerProduct(ev_psi[j][0], tmp[0], s);
       for(int n=1; n < N5; n++) { 
-	off_diag[ij] += innerProduct(ev_psi[j][n], tmp[n]);
+	off_diag[ij] += innerProduct(ev_psi[j][n], tmp[n], s);
       }
       ij++;
     }
   }
     
   // Diagonalise and sort according to size
-  SN_Jacob_Array(ev_psi, n_eig, lambda_fix, off_diag, Rsd_a, 50, n_jacob);
+  n_jacob = SN_Jacob_Array(ev_psi, n_eig, lambda_fix, off_diag, Rsd_a, 50, s);
 
   // Now the tricky business of matching up with ev-s of H^2
   n_valid = 0;
     
-  for(int i=0; i < n_eig; i++) { 
-    
+  for(int i=0; i < n_eig; i++) 
+  { 
     lambda_H_sq = Double(lambda_fix[i])*Double(lambda_fix[i]);
 
-
-    if( toBool(lambda_H_sq < zero_cutoff ) ) {
-
+    if( toBool(lambda_H_sq < zero_cutoff ) ) 
+    {
       // Now compare with all the invalid ev-s
-      for(int j = n_valid; ( j < n_eig ) && ( valid_eig[i] == false ); j++ ) {
-
+      for(int j = n_valid; ( j < n_eig ) && ( valid_eig[i] == false ); j++ ) 
+      {
 	// If we find an original zero lambda, we match it with this 
 	// and consider this matched
 	if( toBool( lambda[j] < zero_cutoff ) ) { 
@@ -468,15 +493,17 @@ void fixMMev2Mev(const LinearOperator< multi1d<LatticeFermion> >& M,  // The Op 
       // in any case time for next_eig
 
     }
-    else {
+    else 
+    {
       // Now compare with all the invalid ev-s
-      for(int j = n_valid; ( j < n_eig ) && ( valid_eig[i] == false ); j++ ) {
+      for(int j = n_valid; ( j < n_eig ) && ( valid_eig[i] == false ); j++ ) 
+      {
 	delta_lambda = fabs( lambda_H_sq - Double(lambda[j]) );
 	
 	convP = toBool( delta_lambda < Double(Rsd_a) ) 
 	  || toBool( delta_lambda < Double(Rsd_r) * fabs( Double(lambda[j]) ) );
-	if( convP ) {
-	  
+	if( convP ) 
+	{
 	  // lambda_fix[i] matches lambda[j] 
 	  valid_eig[i] = true;
 	  
@@ -505,7 +532,8 @@ void fixMMev2Mev(const LinearOperator< multi1d<LatticeFermion> >& M,  // The Op 
     lambda[i] = lambda_fix[i];
   }
   
-  
+  END_CODE();
+
   // we are done 
   return;
 }
