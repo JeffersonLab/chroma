@@ -1,34 +1,11 @@
-// $Id: asqtad_linop_s.cc,v 1.1 2003-12-10 12:38:14 bjoo Exp $
+// $Id: prec_asqtad_linop_s.cc,v 1.1 2003-12-10 14:27:08 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
 // NEW $Id: asqtad_linop.cc 2003/11/13 steve
 
 #include "chromabase.h"
-//#include "actions/ferm/linop/asqtad_linop_s.h"
-#include "asqtad_linop_s.h"
-
-//! Creation routine
-/*! \ingroup fermact
- *
- * \param _u_fat         fat7 links                        (Read)
- * \param _u_triple    triple links                        (Read)
- * \param _Mass        fermion mass   	                   (Read)
- */
-void AsqtadLinOp::create(const multi1d<LatticeColorMatrix>& _u_fat, const multi1d<LatticeColorMatrix>& _u_triple, const Real& _Mass)
-{
-  Mass = _Mass;
-  u_fat = _u_fat;
-  u_triple = _u_triple;
-  D.create(u_fat,u_triple);
-  XMLFileWriter xml_out("output4.xml");
-  push(xml_out, "more_tests");
-  Write(xml_out, u_fat);
-  Write(xml_out, u_triple);
-  pop(xml_out);
-
-//    CoeffWilsr_s = (AnisoP) ? Wilsr_s / xiF_0 : 1;
-}
+#include "actions/ferm/linop/asqtad_linop_s.h"
 
 
 //! Apply Asqtad staggered fermion linear operator
@@ -39,7 +16,7 @@ void AsqtadLinOp::create(const multi1d<LatticeColorMatrix>& _u_fat, const multi1
  *
  * \param psi 	  Pseudofermion field     	       (Read)
  * \param isign   Flag ( PLUS | MINUS )   	       (Read)
- * \param cb      Checkerboard of OUTPUT VECTOR        (Read)
+
  */
 void AsqtadLinOp::operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const
 {
@@ -54,10 +31,9 @@ void AsqtadLinOp::operator() (LatticeFermion& chi, const LatticeFermion& psi, en
 
 
   // THIS IS VERY NASTY, NEED TO THINK MORE ABOUT IT!!!
-  
-  if(isign == MINUS) cb=0;
-    else cb=1;
+  AsqtadDslash D;
 
+  for(cb = 0; cb < 2: cb++) { 
   D.apply(tmp, psi, isign, cb);
 
   XMLFileWriter xml_out("output1.xml");

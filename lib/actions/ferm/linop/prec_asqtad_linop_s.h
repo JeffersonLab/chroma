@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: asqtad_linop_s.h,v 1.1 2003-12-10 12:38:14 bjoo Exp $
+// $Id: prec_asqtad_linop_s.h,v 1.1 2003-12-10 14:27:08 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -11,7 +11,7 @@
 
 #include "linearop.h"
 // #include "actions/ferm/linop/dslash_s.h"
-#include "dslash_s.h"
+#include "actions/ferm/dslash/dslash_s.h"
 
 using namespace QDP;
 
@@ -37,6 +37,10 @@ using namespace QDP;
 
  *      M  =  2m + D'
  *
+ *  The KS phases are already included in the fat and triple links.
+ *  This is done when creating the "connectState" where the fat
+ *  and triple links are themselves computed.
+ *
  */
 
 class AsqtadLinOp : public LinearOperator<LatticeFermion>
@@ -46,12 +50,8 @@ public:
   AsqtadLinOp() {}
 
   //! Full constructor
-  AsqtadLinOp(const multi1d<LatticeColorMatrix>& _u_fat, const multi1d<LatticeColorMatrix>& _u_triple, const Real& _Mass)
-    {create(_u_fat,_u_triple,_Mass);}
+  AsqtadLinOp(const multi1d<LatticeColorMatrix>& u_fat_, const multi1d<LatticeColorMatrix>& u_triple_, const Real& Mass_) : u_fat(u_fat_), u_triple(u_triple_), Mass(Mass_) {};
 
-  //! Creation routine
-  void create(const multi1d<LatticeColorMatrix>& _u_fat,const multi1d<LatticeColorMatrix>& _u_triple, const Real& _Mass);
-    
   //! Destructor is automatic
   ~AsqtadLinOp() {}
 
@@ -63,9 +63,9 @@ public:
 
 private:
   Real Mass;
-  multi1d<LatticeColorMatrix> u_fat;
-  multi1d<LatticeColorMatrix> u_triple;
-  AsqtadDslash D;
+  multi1d<LatticeColorMatrix>& u_fat;
+  multi1d<LatticeColorMatrix>& u_triple;
+  //AsqtadDslash D;
 };
 
 #endif
