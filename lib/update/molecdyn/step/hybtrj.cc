@@ -1,4 +1,4 @@
-// $Id: hybtrj.cc,v 1.1 2003-12-30 19:52:28 edwards Exp $
+// $Id: hybtrj.cc,v 1.2 2004-01-01 22:06:58 edwards Exp $
 
 #error "NOT FULLY CONVERTED - NEED TO MOVE AlgETrj into params of Integ. functor"
 
@@ -70,7 +70,7 @@ void HybTrj(multi1d<LatticeColorMatrix>& u,
     t += dt;
 
     LeapU (p_mom, u, dt);
-    if (PolyEvolP && RatEvolP)      // uses global bool PolyEvolP,RatEvolP
+    if (! PolyEvolP && ! RatEvolP)      // uses global bool PolyEvolP,RatEvolP
     {
       Interpol(psi, old_psi, Real(-1), Npf);
     }
