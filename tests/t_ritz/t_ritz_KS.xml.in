@@ -2,7 +2,10 @@
 <WilsonRitzEigen>
   <Param>
 	<version>1</version>
-	<Mass>-1.4</Mass>
+ <FermionAction>
+  <FermAct>UNPRECONDITIONED_WILSON</FermAct>
+  <Mass>-1.4</Mass>
+ </FermionAction>
 	<boundary>1 1 1 -1</boundary>
 	<nrow>4 4 4 8</nrow>
 	<rng>
@@ -18,7 +21,7 @@
 	<Ndummy>4</Ndummy>
 	<RsdR>1.0e-5</RsdR>
 	<RsdA>1.0e-6</RsdA>
-	<RsdZero>1.0e-8</RsdZero>
+	<RsdZero>5.0e-6</RsdZero>
 	<ProjApsiP>false</ProjApsiP>
 	<GammaFactor>0.1</GammaFactor>
 	<MaxKS>200</MaxKS>

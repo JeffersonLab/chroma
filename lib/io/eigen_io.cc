@@ -94,13 +94,33 @@ void read(XMLReader &xml, const string& path, ChromaWilsonRitz_t& param)
   try { 
     XMLReader paramtop(xml, path);
     read(paramtop, "Param/version", param.version);
-    read(paramtop, "Param/Mass",    param.Mass);
+
+    // Read the fermion action
+    XMLReader xml_tmp(paramtop, "Param/FermionAction");
+    std::ostringstream os;
+    xml_tmp.print(os);
+    param.fermact = os.str();
+
     read(paramtop, "Param/boundary", param.boundary);
     read(paramtop, "Param/nrow",     param.nrow);
     read(paramtop, "Param/rng",     param.seed);
     read(paramtop, "RitzParams", param.ritz_params);
     read(paramtop, "Cfg",       param.cfg);
     read(paramtop, "Eigen",      param.eigen_io_params);
+
+    if( paramtop.count("StateInfo") == 1 ) { 
+      XMLReader xml_state_info(paramtop, "StateInfo");
+      std::ostringstream state_info_os;
+      xml_state_info.print(state_info_os);
+      param.state_info = state_info_os.str();
+    }
+    else {
+      XMLBufferWriter s_i_xml;
+      push(s_i_xml, "StateInfo");
+      pop(s_i_xml);
+      param.state_info = s_i_xml.str();
+    }
+
   }
   catch( const string& error) { 
     QDPIO::cerr << "Caught exception " << error << endl;
@@ -114,7 +134,7 @@ void write(XMLWriter &xml, const string& path, const ChromaWilsonRitz_t& param)
 
   push( xml, "Param");
   write(xml, "version", param.version);
-  write(xml, "Mass",    param.Mass);
+  write(xml, "FermionAction",    param.fermact);
   write(xml, "boundary", param.boundary);
   write(xml, "nrow",     param.nrow);
   write(xml, "rng",     param.seed);
@@ -122,6 +142,7 @@ void write(XMLWriter &xml, const string& path, const ChromaWilsonRitz_t& param)
 
   write(xml, "RitzParams", param.ritz_params);
   write(xml, "Cfg",       param.cfg);
+  write(xml, "StateInfo", param.state_info);
   write(xml, "Eigen",      param.eigen_io_params);
   
   pop(xml);

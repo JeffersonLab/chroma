@@ -37,11 +37,12 @@ struct EigenIO_t
 
 // Struct for the 
 // Overall application. 
-// Specialised to Wilson For now.
+
 struct ChromaWilsonRitz_t
 {
   int            version;
-  Real           Mass;
+  std::string    fermact;
+  std::string    state_info;
   multi1d<int>   boundary;
   multi1d<int>   nrow;
   QDP::Seed      seed;
