@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: wallformfac_pion.pl,v 1.15 2004-09-16 02:06:53 edwards Exp $
+# $Id: wallformfac_pion.pl,v 1.16 2004-09-16 06:23:19 edwards Exp $
 #
 # Usage
 #   formfact.pl
@@ -265,6 +265,12 @@ foreach $qz (-$mommax_int .. $mommax_int)
 
       $var = "$norm*(${cur}_${s}_mu3_$q[0]$q[1]$q[2] * $pion_cp{$cp_f[0],$cp_f[1],$cp_f[2]}) * (2 * $pion_energy{$cp_f[0],$cp_f[1],$cp_f[2]} / ($pion_energy{$cp_i[0],$cp_i[1],$cp_i[2]} + $pion_energy{$cp_f[0],$cp_f[1],$cp_f[2]}))/ ($pion_ap{$cp_i[0],$cp_i[1],$cp_i[2]} * pion_norm)";
 
+      # hack - for p_f=0 this will average over all q momenta of the current
+      $var_sum1 = "${cur}_${s}_mu3_$q[0]$q[1]$q[2]";
+      $var_sum2 = "$norm*(${cur}_${s}_mu3_$q[0]$q[1]$q[2] * $pion_cp{$cp_f[0],$cp_f[1],$cp_f[2]})";
+      $var_sum3 = "$norm*(${cur}_${s}_mu3_$q[0]$q[1]$q[2] * $pion_cp{$cp_f[0],$cp_f[1],$cp_f[2]}) * (2 * $pion_energy{$cp_f[0],$cp_f[1],$cp_f[2]} / ($pion_energy{$cp_i[0],$cp_i[1],$cp_i[2]} + $pion_energy{$cp_f[0],$cp_f[1],$cp_f[2]}))";
+
+
       # Use some number of significant digits to uniquely identity the floating point qsq
       $qsq_int = int(10000*$pion_disp);
 
@@ -275,12 +281,18 @@ foreach $qz (-$mommax_int .. $mommax_int)
 	$pion_cnt{$qsq_int} = 1;
 
 	&ensbc("${mes}_r_mu3_q${qsq_int} = $var");
+	&ensbc("sum1_q${qsq_int} = $var_sum1");
+	&ensbc("sum2_q${qsq_int} = $var_sum2");
+	&ensbc("sum3_q${qsq_int} = $var_sum3");
       }
       else
       {
 	++$pion_cnt{$qsq_int};
 
 	&ensbc("${mes}_r_mu3_q${qsq_int} = ${mes}_r_mu3_q${qsq_int} + $var");
+	&ensbc("sum1_q${qsq_int} = sum1_q${qsq_int} + $var_sum1");
+	&ensbc("sum2_q${qsq_int} = sum2_q${qsq_int} + $var_sum2");
+	&ensbc("sum3_q${qsq_int} = sum3_q${qsq_int} + $var_sum3");
       }
     }
   }
@@ -293,6 +305,9 @@ foreach $qsq_int (keys %pion_cnt)
   if ($pion_cnt{$qsq_int} > 0)
   {
     &ensbc("${mes}_r_mu3_q${qsq_int} = ${mes}_r_mu3_q${qsq_int} / $pion_cnt{$qsq_int}");
+    &ensbc("sum1_q${qsq_int} = sum1_q${qsq_int} / $pion_cnt{$qsq_int}");
+    &ensbc("sum2_q${qsq_int} = sum2_q${qsq_int} / $pion_cnt{$qsq_int}");
+    &ensbc("sum3_q${qsq_int} = sum3_q${qsq_int} / $pion_cnt{$qsq_int}");
   }
 }
 
