@@ -1,12 +1,13 @@
-// $Id: unprec_dwf_qprop_w.cc,v 1.1 2003-11-09 22:31:49 edwards Exp $
+// $Id: unprec_dwf_qprop_w.cc,v 1.2 2003-11-09 22:52:39 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion propagator solver
  *
  * Propagator of an un-preconditioned DWF linear operator
+ * The conventions used here are specified in 
+ * Phys.Rev.D63:094505,2001 (hep-lat/0005002). 
  */
 
 #include "chromabase.h"
-#include "fermact.h"
 #include "actions/ferm/fermacts/unprec_dwf_fermact_w.h"
 #include "actions/ferm/invert/invcg2.h"
 #include "actions/ferm/linop/dwffld_w.h"

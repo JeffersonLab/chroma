@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_fermact_w.h,v 1.3 2003-11-09 22:33:23 edwards Exp $
+// $Id: unprec_dwf_fermact_w.h,v 1.4 2003-11-09 22:52:39 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion action
  */
@@ -15,7 +15,8 @@ using namespace QDP;
 //! Unpreconditioned domain-wall fermion action
 /*! \ingroup fermact
  *
- * Supports creation and application for fermion actions
+ * Unprecondition domain-wall fermion action. The conventions used here
+ * are specified in Phys.Rev.D63:094505,2001 (hep-lat/0005002).
  */
 
 class UnprecDWFermAct : public UnprecWilsonTypeFermAct<LatticeDWFermion>
