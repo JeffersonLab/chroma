@@ -1,6 +1,9 @@
-// $Id: dwf_quarkprop4_w.cc,v 1.4 2004-01-29 14:59:46 kostas Exp $
+// $Id: dwf_quarkprop4_w.cc,v 1.5 2004-01-29 16:17:50 kostas Exp $
 // $Log: dwf_quarkprop4_w.cc,v $
-// Revision 1.4  2004-01-29 14:59:46  kostas
+// Revision 1.5  2004-01-29 16:17:50  kostas
+// Fixed an ax-ps correlation function bug
+//
+// Revision 1.4  2004/01/29 14:59:46  kostas
 // Fixed the bugs. Code compiles now
 //
 /*! \file
@@ -164,7 +167,16 @@ void dwf_quarkProp4_a(LatticePropagator& q_sol,
 }
 
 
-
+/*!
+  Corelation function:
+\f[
+  C(t) = \sum_x \sum_s \left[\bar{\Psi}(x+\hat{\mu},t,s)\frac{1+\gamma_{\mu}}{2} 
+                                  \Psi (x,t,s) - 
+                             \bar{\Psi}(x,t,s)\frac{1-\gamma_{\mu}}{2} 
+                                  \Psi (x+\hat{\mu},t,s)\right] 
+                       \bar{q}(0,0)\gamma_5 q(0,0) sign(s - \frac{L_s - 1}{2})
+\f]
+**/
 void dwf_conserved_axial_ps_corr(LatticeComplex& corr,
 				 const multi1d<LatticeColorMatrix>& u,
 				 const multi1d<LatticePropagator>& p5d, 
@@ -179,16 +191,19 @@ void dwf_conserved_axial_ps_corr(LatticeComplex& corr,
   for(int c(0);c<mu;c++)
     d *= 2 ;
 
+  int g5(Ns*Ns - 1) ;
+
   LatticeComplex  C(0.0) ;
-  for(int s(0); s<N5;s++)
-  {
+ 
+  for(int s(0); s<N5;s++){
     // first the 1-gamma_mu term 
-    C=0.5*(trace(shift(p5d[s],FORWARD,mu) * Gamma(d)*u[mu]* adj(p5d[2]))-
-	   trace(shift(p5d[s],FORWARD,mu) *          u[mu]* adj(p5d[2]))+
-	   //now th 1+gamma_mu term
-	   trace(p5d[s] *Gamma(d)*adj(u[mu])*shift(adj(p5d[s]),FORWARD,mu))+
-	   trace(p5d[s] *         adj(u[mu])*shift(adj(p5d[s]),FORWARD,mu))
-      ) ;
+    C=.5*(trace(shift(p5d[s],FORWARD,mu)*adj(p5d[s])*Gamma(g5)*Gamma(d)*u[mu])-
+	  trace(shift(p5d[s],FORWARD,mu)*adj(p5d[s])*Gamma(g5)         *u[mu])+
+	  //now th 1+gamma_mu term
+	  trace(p5d[s]*shift(adj(p5d[s]),FORWARD,mu)*Gamma(g5)*Gamma(d)*adj(u[mu]))+
+	  trace(p5d[s]*shift(adj(p5d[s]),FORWARD,mu)*Gamma(g5)         *adj(u[mu]))
+	  );
+	  
       
     if(s<N5/2) 
       corr -= C ;
