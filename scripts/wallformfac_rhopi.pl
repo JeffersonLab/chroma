@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: wallformfac_rhopi.pl,v 1.14 2004-09-17 20:36:24 edwards Exp $
+# $Id: wallformfac_rhopi.pl,v 1.15 2004-09-19 02:42:45 edwards Exp $
 #
 # Usage
 #   wallformfac_rhopi.pl
@@ -30,7 +30,7 @@ do './config.pl';
 # $X = 'W';  $Xext = $Aext  # used for energy only
 #### End of example
 
-die "Put the lattice spacing \'a\' in the config.pl file\n" unless defined(a);
+die "Put the lattice spacing \'a\' in the config.pl file\n" unless defined($a);
 
 $pi = 3.14159265359;
 $fmtoGeV = 0.200;
