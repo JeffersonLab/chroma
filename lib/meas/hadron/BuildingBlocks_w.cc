@@ -46,7 +46,7 @@ using namespace QDP;
 //###################################################################################//
 
 static const char* const CVSBuildingBlocks_cc =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 1.10 2004-05-27 21:21:35 dru Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 1.11 2004-05-28 00:13:17 dru Exp $";
 
 //###################################################################################//
 // record the CVS info                                                               //
@@ -70,8 +70,8 @@ void BkwdFrwdTr( const LatticePropagator &             B,
                  const multi2d< BinaryWriter* > &      BinaryWriters,
                  const int                             f,
                  const multi1d< unsigned short int > & LinkDirs,
-                 const int T1, 
-                 const int T2 )
+                 const signed short int T1, 
+                 const signed short int T2 )
 {
   const unsigned short int NLinks = LinkDirs.size();
   unsigned short int Link;
@@ -161,8 +161,8 @@ void AddLinks( const multi1d< LatticePropagator > &  B,
                const short int                       PreviousDir,
                const short int                       PreviousMu,
                const multi2d< BinaryWriter* > &      BinaryWriters,
-               const int T1, 
-               const int T2 )
+               const signed short int T1, 
+               const signed short int T2 )
 {
   const unsigned short int NLinks = LinkDirs.size();
 
@@ -267,8 +267,8 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
                      const BBLinkPattern                   LinkPattern,
                      const SftMom &                        Phases,
 	             const multi2d< const char* > &        BinaryDataFileNames,
-                     const int T1,
-                     const int T2 )
+                     const signed short int T1,
+                     const signed short int T2 )
 {
   //#################################################################################//
   // open building blocks data files                                                 //
