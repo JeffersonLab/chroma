@@ -1,6 +1,5 @@
 
-#include "chroma.h"
-#include"scalar_loops_s.h"
+#include "meas/hadron/scalar_loops_s.h"
 #include "util/gauge/stag_phases_s.h"
 
 // Standard Time Slicery
