@@ -1,4 +1,4 @@
-// $Id: t_lwldslash.cc,v 1.3 2003-03-14 05:08:25 flemingg Exp $
+// $Id: t_lwldslash.cc,v 1.4 2003-09-02 15:50:40 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -53,4 +53,6 @@ int main(int argc, char **argv)
 
   // Time to bolt
   QDP_finalize();
+
+  return 0;
 }

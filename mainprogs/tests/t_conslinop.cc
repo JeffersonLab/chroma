@@ -1,4 +1,4 @@
-// $Id: t_conslinop.cc,v 1.9 2003-04-09 20:49:26 edwards Exp $
+// $Id: t_conslinop.cc,v 1.10 2003-09-02 15:50:40 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -71,4 +71,6 @@ int main(int argc, char *argv[])
 
   // Time to bolt
   QDP_finalize();
+
+  return 0;
 }

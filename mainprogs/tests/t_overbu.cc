@@ -1,4 +1,4 @@
-// $Id: t_overbu.cc,v 1.2 2003-04-24 20:56:52 edwards Exp $
+// $Id: t_overbu.cc,v 1.3 2003-09-02 15:50:40 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -64,4 +64,6 @@ int main(int argc, char **argv)
 
   // Time to bolt
   QDP_finalize();
+
+  return 0;
 }

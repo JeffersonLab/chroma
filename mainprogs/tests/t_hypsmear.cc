@@ -1,4 +1,4 @@
-// $Id: t_hypsmear.cc,v 1.1 2003-04-02 19:30:15 heller Exp $
+// $Id: t_hypsmear.cc,v 1.2 2003-09-02 15:50:40 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -76,4 +76,6 @@ int main(int argc, char *argv[])
 
   // Time to bolt
   QDP_finalize();
+
+  return 0;
 }

@@ -1,4 +1,4 @@
-// $Id: t_mesplq.cc,v 1.6 2003-02-16 18:30:50 edwards Exp $
+// $Id: t_mesplq.cc,v 1.7 2003-09-02 15:50:40 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -53,4 +53,6 @@ int main(int argc, char *argv[])
 
   // Time to bolt
   QDP_finalize();
+
+  return 0;
 }
