@@ -1,4 +1,4 @@
-// $Id: t_propagator_s.cc,v 1.17 2004-10-30 10:43:02 mcneile Exp $
+// $Id: t_propagator_s.cc,v 1.18 2004-10-30 11:14:32 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -419,40 +419,16 @@ int main(int argc, char **argv)
     int t_eff;
 
     staggered_pions pseudoscalar(t_length) ; 
-
-
-
-    multi2d<DComplex> scalar(16, t_length);
-    multi2d<Real> re_sc(16, t_length);
+    staggered_scalars  scalar_meson(t_length) ; 
      
     pseudoscalar.compute(stag_prop, j_decay);
-    staggeredScalars(stag_prop, scalar, j_decay);
+    scalar_meson.compute(stag_prop,  j_decay);
 
-    // Take the real part of the correlator and average over the sources
-    for(int i=0; i < 16; i++){
-      for(int t=0; t < t_length; t++){
-        t_eff = (t - t_source + t_length)% t_length;
-        re_sc[i][t_eff] = real(scalar[i][t]);
-        sc_corr[i][t_eff] += re_sc[i][t_eff]/2.0;
-      }
-    }
-  
-  multi1d<Real> Sc(t_length);
-
-  // write the correlators to disk
-  pseudoscalar.dump(t_source,xml_out);
-
-
-  push(xml_out, "Here_are_all_16_scalars");
-  for(int i=0; i < NUM_STAG_PIONS; i++) {
-    Sc = re_sc[i];
-    ostringstream tag;
-    tag << "re_sc" << i;
-    push(xml_out, tag.str());
-    write(xml_out, "Sc", Sc);
-    pop(xml_out);
-  }
-  pop(xml_out);
+    
+    // write the correlators to disk
+    pseudoscalar.dump(t_source,xml_out);
+    scalar_meson.dump(t_source,xml_out);
+    
 
     // Instantiate XML buffer to make the propagator header
     XMLBufferWriter prop_xml;
