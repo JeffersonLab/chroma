@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lovlapms_w.h,v 1.9 2003-12-15 17:52:51 bjoo Exp $
+// $Id: lovlapms_w.h,v 1.10 2003-12-16 16:19:53 bjoo Exp $
 /*! \file
  *  \brief Internal Overlap-pole operator
  */
@@ -49,8 +49,7 @@ public:
    * \param _MaxCG          MaxCG inner CG                     (Read)
    * \param _RsdCG          residual for inner CG              (Read)
    */
-  lovlapms(const LinearOperator<LatticeFermion>& _MdagM,
-	   const LinearOperator<LatticeFermion>& _M, 
+  lovlapms(const LinearOperator<LatticeFermion>& _M,
 	   const Real& _m_q, int _numroot, 
 	   const Real& _constP, 
 	   const multi1d<Real>& _resP,
@@ -60,11 +59,17 @@ public:
 	   const multi1d<LatticeFermion>& _EigVec,
 	   int _MaxCG,
 	   const Real& _RsdCG) :
-    MdagM(_MdagM), M(_M), m_q(_m_q), numroot(_numroot), constP(_constP),
+    M(_M), m_q(_m_q), numroot(_numroot), constP(_constP),
     resP(_resP), rootQ(_rootQ), EigVec(_EigVec), EigValFunc(_EigValFunc),
-    NEig(_NEig), MaxCG(_MaxCG), RsdCG(_RsdCG) {}
+    NEig(_NEig), MaxCG(_MaxCG), RsdCG(_RsdCG) {
+
+    MdagM = new lmdagm<LatticeFermion>(_M);
+  }
   //! Destructor is automatic
-  ~lovlapms() {};
+  ~lovlapms() {
+
+    delete MdagM;
+  };
  
   //! Only defined on the entire lattice
   const OrderedSubset& subset() const {return all;}
@@ -73,7 +78,7 @@ public:
   void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const;
 
 private:
-  const LinearOperator<LatticeFermion>& MdagM;
+  LinearOperator<LatticeFermion>* MdagM;
   const LinearOperator<LatticeFermion>& M;
   const Real& m_q;
   int numroot;
