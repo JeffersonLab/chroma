@@ -1,4 +1,4 @@
-// $Id: coulgauge.cc,v 1.1 2003-12-06 20:56:56 edwards Exp $
+// $Id: coulgauge.cc,v 1.2 2004-01-02 21:55:37 edwards Exp $
 /*! \file
  *  \brief Coulomb (and Landau) gauge fixing 
  */
@@ -109,7 +109,7 @@ void coulGauge(multi1d<LatticeColorMatrix>& ug, int& n_gf,
   }
   
   n_gf = 0;
-  bool wrswitch = false;    /* switch for writing of gauge fixing term */
+  bool wrswitch = true;    /* switch for writing of gauge fixing term */
   Double conver = 1;        /* convergence criterion */
   multi1d<LatticeColorMatrix> u_tmp(Nd);
 
@@ -178,8 +178,11 @@ void coulGauge(multi1d<LatticeColorMatrix>& ug, int& n_gf,
     }
 
     if( wrswitch ) 
-      QDPIO::cout << "COULGAUGE: " << n_gf << "  " << tgfold << " " << tgfnew
-		  << " " << tgf_s << " " << tgf_t;
+      QDPIO::cout << "COULGAUGE: iter= " << n_gf 
+		  << "  tgfold= " << tgfold 
+		  << "  tgfnew= " << tgfnew
+		  << "  tgf_s= " << tgf_s 
+		  << "  tgf_t= " << tgf_t << endl;
 
     /* Normalized convergence criterion: */
     conver = fabs((tgfnew - tgfold) / tgfnew);
@@ -188,8 +191,10 @@ void coulGauge(multi1d<LatticeColorMatrix>& ug, int& n_gf,
 
       
   if( wrswitch )
-      QDPIO::cout << "COULGAUGE end: " << n_gf << "  " << tgfold << " " 
-		  << tgf_s << " " << tgf_t;
+    QDPIO::cout << "COULGAUGE: end: iter= " << n_gf 
+		<< "  tgfold= " << tgfold 
+		<< "  tgf_s= " << tgf_s 
+		<< "  tgf_t= " << tgf_t << endl;
 
 #if 0
   /*+ debugging */
