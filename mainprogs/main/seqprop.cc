@@ -1,4 +1,4 @@
-// $Id: seqprop.cc,v 1.1 2003-12-17 04:52:03 edwards Exp $
+// $Id: seqprop.cc,v 1.2 2003-12-17 05:04:28 edwards Exp $
 /*! \file
  *  \brief Main code for sequential propagator generation
  */
@@ -877,7 +877,7 @@ int main(int argc, char **argv)
 
       if(seq_src_value == 10)
       {
-	SeqPionTest (seq_quark_prop, t_srce, pion_src);
+	seqPionTest(pion_src, seq_quark_prop, t_srce);
 	
 	push(xml_out,"Seq_propagator_test");
 	Write(xml_out, pion_src);
