@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: invert.h,v 1.4 2004-01-08 17:11:01 bjoo Exp $
+// $Id: invert.h,v 1.5 2004-05-13 13:34:48 bjoo Exp $
 
 /*! \file
  * \brief Inverters
@@ -20,6 +20,8 @@
 #include "invcg2.h"
 #include "minvcg.h"
 #include "invcg2_array.h"
+#include "invsumr.h"
+#include "minvsumr.h"
 
 #endif
 

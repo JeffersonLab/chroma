@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.189 2004-05-11 13:29:28 bjoo Exp $
+# $Id: Makefile.in,v 1.190 2004-05-13 13:34:48 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -288,7 +288,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/invcg2_array.h actions/ferm/invert/invert.h \
 	actions/ferm/invert/invmr.h actions/ferm/invert/minvcg.h \
 	actions/ferm/invert/invcg2_timing_hacks.h \
-	actions/ferm/invert/invsumr.h \
+	actions/ferm/invert/invsumr.h actions/ferm/invert/minvsumr.h \
 	actions/ferm/linop/asqtad_dslash.h actions/ferm/linop/linop.h \
 	actions/ferm/linop/lmdagm.h actions/ferm/linop/lopscl.h \
 	actions/ferm/linop/partrat.h actions/ferm/qprop/qprop.h \
@@ -357,7 +357,7 @@ libchroma_a_SOURCES = gauge_startup.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
 	       gramschm_array.cc ritz.cc ritz_array.cc sn_jacob.cc \
 	       sn_jacob_array.cc eig_spec.cc eig_spec_array.cc \
                proginfo.cc printgeom.cc fuzwilp.cc \
-	       invsumr.cc\
+	       invsumr.cc minvsumr.cc\
 $(am__append_4) $(am__append_5) $(am__append_6) $(am__append_7)
 subdir = lib
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
@@ -379,8 +379,8 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc rgauge.cc taproj.cc \
 	rot_colvec.cc transf.cc param_io.cc fermact_paramio.cc \
 	gramschm.cc gramschm_array.cc ritz.cc ritz_array.cc sn_jacob.cc \
 	sn_jacob_array.cc eig_spec.cc eig_spec_array.cc proginfo.cc \
-	printgeom.cc fuzwilp.cc invsumr.cc baryon_w.cc barhqlq_w.cc \
-	mesons_w.cc hybmeson_w.cc loops_w.cc curcor2_w.cc \
+	printgeom.cc fuzwilp.cc invsumr.cc minvsumr.cc baryon_w.cc \
+	barhqlq_w.cc mesons_w.cc hybmeson_w.cc loops_w.cc curcor2_w.cc \
 	lwldslash_w.cc formfac_w.cc mesonseqsrc_w.cc barseqsrc_w.cc \
 	seqpiontest_w.cc sink_smear2_w.cc barcomp_io.cc barcomp_w.cc \
 	walfil_w.cc overlap_state_info.cc \
@@ -521,8 +521,9 @@ am_libchroma_a_OBJECTS = gauge_startup.$(OBJEXT) rgauge.$(OBJEXT) \
 	gramschm_array.$(OBJEXT) ritz.$(OBJEXT) ritz_array.$(OBJEXT) \
 	sn_jacob.$(OBJEXT) sn_jacob_array.$(OBJEXT) eig_spec.$(OBJEXT) \
 	eig_spec_array.$(OBJEXT) proginfo.$(OBJEXT) printgeom.$(OBJEXT) \
-	fuzwilp.$(OBJEXT) invsumr.$(OBJEXT) $(am__objects_1) \
-	$(am__objects_2) $(am__objects_3) $(am__objects_4)
+	fuzwilp.$(OBJEXT) invsumr.$(OBJEXT) minvsumr.$(OBJEXT) \
+	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
+	$(am__objects_4)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I.
@@ -575,7 +576,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/mesphas_follana_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/mesphas_s.Po ./$(DEPDIR)/mesplq.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/milc_io.Po ./$(DEPDIR)/minvcg.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/naik_term_s.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/minvsumr.Po ./$(DEPDIR)/naik_term_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/overlap_fermact_base_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/overlap_state_info.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/overlapbu_linop_w.Po \
@@ -792,6 +793,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesplq.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/milc_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minvcg.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minvsumr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/naik_term_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/overlap_fermact_base_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/overlap_state_info.Po@am__quote@

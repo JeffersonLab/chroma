@@ -1,4 +1,4 @@
-// $Id: overlap_fermact_base_w.cc,v 1.8 2004-05-12 15:45:10 bjoo Exp $
+// $Id: overlap_fermact_base_w.cc,v 1.9 2004-05-13 13:34:48 bjoo Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -67,6 +67,15 @@ OverlapFermActBase::qprop(LatticeFermion& psi,
 	InvCG1(*MM, chi, tmp, RsdCG, MaxCG, n_count);
 	(*M)(psi, tmp, MINUS);	
       }
+
+      Handle<const LinearOperator<LatticeFermion> > D(linOp(state));
+      LatticeFermion Dpsi;
+      (*D)(Dpsi, psi, PLUS);
+      Dpsi = chi - Dpsi;
+      Dpsi /= sqrt(norm2(chi));
+      QDPIO::cout << "OvQprop || chi - D psi || = " << sqrt(norm2(Dpsi))
+		  << "  n_count = " << n_count << " iters" << endl;
+
     }
     break;
 

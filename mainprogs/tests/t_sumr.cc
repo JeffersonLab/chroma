@@ -1,4 +1,4 @@
-// $Id: t_sumr.cc,v 1.1 2004-05-12 15:46:24 bjoo Exp $
+// $Id: t_sumr.cc,v 1.2 2004-05-13 13:34:49 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -98,48 +98,109 @@ int main(int argc, char **argv)
 
   Handle<const ConnectState> connect_state(S.createState(u, zolo4d.StateInfo, xml_out,zolo4d.AuxFermActHandle->getMass()));
 
-  // Make me a linop (this callls the initialise function)
-  Handle<const LinearOperator<LatticeFermion> > D_op(S.linOp(connect_state));
-
-  // Make me an epsilon
-  Handle<const LinearOperator<LatticeFermion> > g5eps(S.lgamma5epsH(connect_state));
 
   int G5 = Ns*Ns - 1;
-
-  LatticeFermion psi;
-  gaussian(psi);
-  psi /= sqrt(norm2(psi));
-
-  LatticeFermion chi=zero;
- 
-  Real mu = input.param.FermActHandle->getMass();
-  Real fact = (1 + mu) / (1 - mu);
-
-  Complex zeta = fact;
-
+  LatticeFermion psi,chi;
   int n_count;
 
-  InvSUMR<LatticeFermion>(*g5eps, psi, chi, zeta, Real(1), Real(1.0e-6), 10000, n_count);
 
-  // Recorrect normalisation
-  Real ftmp = Real(2)/(1 - mu);
-  chi *= ftmp;
+  // Solve on chiral point source
+  multi1d<int> coord(4);
+  coord[0] = 0;
+  coord[1] = 0;
+  coord[2] = 0;
+  coord[3] = 0;
+  QDP::StopWatch swatch;
 
-
-  LatticeFermion D_chi;
-
-  (*D_op)(D_chi, chi, PLUS);
-  LatticeFermion r;
+  chi=zero;
+  srcfil(chi, coord, 0, 0);
   
-  r = psi - D_chi;
+  psi = zero;
+  swatch.reset();
+  swatch.start();
+  S.qprop(psi,
+	  connect_state,
+	  chi,
+	  CG_INVERTER,
+	  Real(1.0e-6),
+	  1000,
+	  n_count);
+  swatch.stop();
 
-  Double norm_r;
+  double t = swatch.getTimeInSeconds();
 
-  norm_r = sqrt(norm2(r));
+  QDPIO::cout << "CG on point source took: " << n_count << " iterations" << endl;
+  QDPIO::cout << "Wall clock time : " << t << " seconds" << endl;
+  push(xml_out, "CGPointSource");
+  write(xml_out, "n_count", n_count);
+  write(xml_out, "t",       t);
+  pop(xml_out);
 
-  QDPIO::cout << " || psi - D_chi || = " << norm_r << endl;
+  psi = zero;
+  swatch.reset();
+  swatch.start();
+  S.qprop(psi,
+	  connect_state,
+	  chi,
+	  SUMR_INVERTER,
+	  Real(1.0e-6),
+	  1000,
+	  n_count);
+  swatch.stop();
+  t = swatch.getTimeInSeconds();
+  QDPIO::cout << "SUMR on point source took: " << n_count << " iterations" << endl;
+  QDPIO::cout << "Wall clock time : " << t << " seconds" << endl;
+  push(xml_out, "SUMRPointSource");
+  write(xml_out, "n_count", n_count);
+  write(xml_out, "t",       t);
+  pop(xml_out);
 
-  QDPIO::cout << " || psi - D_chi || / || psi || " << norm_r / sqrt(norm2(psi)) << endl;
+
+  // Solve on non chiral sources
+  gaussian(chi);
+  chi /= sqrt(norm2(chi));
+
+  psi = zero;
+  swatch.reset();
+  swatch.start();
+  S.qprop(psi,
+	  connect_state,
+	  chi,
+	  CG_INVERTER,
+	  Real(1.0e-6),
+	  1000,
+	  n_count);
+  swatch.stop();
+  t = swatch.getTimeInSeconds();
+
+  QDPIO::cout << "CG on gaussian source took: " << n_count << " iterations" << endl;
+  QDPIO::cout << "Wall clock time : " << t << " seconds" << endl;
+  push(xml_out, "CGGaussianSource");
+  write(xml_out, "n_count", n_count);
+  write(xml_out, "t",       t);
+  pop(xml_out);
+
+  psi = zero;
+  swatch.reset();
+  swatch.start();
+  S.qprop(psi,
+	  connect_state,
+	  chi,
+	  SUMR_INVERTER,
+	  Real(1.0e-6),
+	  1000,
+	  n_count);
+  swatch.stop();
+  t = swatch.getTimeInSeconds();
+
+  QDPIO::cout << "SUMR on gaussian source took: " << n_count << " iterations" << endl;
+  QDPIO::cout << "Wall clock time : " << t << " seconds" << endl;
+  push(xml_out, "SUMRGaussianSource");
+  write(xml_out, "n_count", n_count);
+  write(xml_out, "t",       t);
+  pop(xml_out);
+
+
   pop(xml_out);
   QDP_finalize();
     
