@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.84 2004-01-08 03:09:43 edwards Exp $
+# $Id: Makefile.am,v 1.85 2004-01-08 11:53:08 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -63,10 +63,9 @@ nobase_include_HEADERS = \
 	actions/actions.h actions/boson/boson.h \
 	actions/boson/operator/klein_gord.h actions/ferm/dslash/dslash.h \
 	actions/ferm/ferm.h actions/ferm/fermacts/asqtad_state.h \
-	actions/ferm/fermacts/ev_state.h \
 	actions/ferm/fermacts/fermacts.h \
 	actions/ferm/fermacts/zolotarev.h \
-	actions/ferm/fermacts/zolotarev_state.h \
+	actions/ferm/fermacts/overlap_state.h \
 	actions/ferm/invert/invcg1.h actions/ferm/invert/invcg2.h \
 	actions/ferm/invert/invcg2_array.h actions/ferm/invert/invert.h \
 	actions/ferm/invert/invmr.h actions/ferm/invert/minvcg.h \
@@ -110,7 +109,7 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/unprec_ovdwf_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_ovext_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_wilson_fermact_w.h \
-	actions/ferm/fermacts/zolotarev4d_fermact_bj_w.h \
+	actions/ferm/fermacts/zolotarev4d_fermact_w.h \
 	actions/ferm/linop/dslash_w.h actions/ferm/linop/dwffld_w.h \
 	actions/ferm/linop/ldwfdslash_w.h actions/ferm/linop/linop_w.h \
 	actions/ferm/linop/lmpsim_w.h actions/ferm/linop/lovddag_w.h \
@@ -216,7 +215,8 @@ libchroma_a_SOURCES += baryon_w.cc mesons_w.cc curcor2_w.cc lwldslash_w.cc formf
 	      dwf_quarkprop4_w.cc quarkprop4_w.cc \
               overlapbu_linop_w.cc \
               p_src_w.cc d_src_w.cc D_j_w.cc DjDk_w.cc BuildingBlocks_w.cc \
-	      zolotarev_coeffs.cc overlap_fermact_base_w.cc lovlapms_w.cc  zolotarev4d_fermact_bj_w.cc ischiral_w.cc lovddag_w.cc zolotarev4d_qprop.cc
+	      zolotarev_coeffs.cc overlap_fermact_base_w.cc lovlapms_w.cc  \
+	      zolotarev4d_fermact_w.cc ischiral_w.cc lovddag_w.cc
 #	      wall_qprop_w.cc
 # zolotarev4d_linop_w.cc 
 # dslashm_w.cc 

@@ -1,4 +1,4 @@
-// $Id: zolotarev4d_fermact_w.cc,v 1.10 2004-01-08 10:42:43 bjoo Exp $
+// $Id: zolotarev4d_fermact_w.cc,v 1.11 2004-01-08 11:53:08 bjoo Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -7,23 +7,25 @@
 #include <chromabase.h>
 #include <linearop.h>
 
-#include "fermacts.h"
+#include "actions/ferm/fermacts/zolotarev4d_fermact_w.h"
 #include "actions/ferm/fermacts/zolotarev.h"
-#include "actions/ferm/linop/linop.h"
-#include "meas/eig/eig.h"
+#include "actions/ferm/linop/lovlapms_w.h"
+#include "actions/ferm/linop/lovddag_w.h"
+#include "actions/ferm/linop/lmdagm.h"
+#include "meas/eig/ischiral_w.h"
 
 using namespace std;
 
 //! Creation routine
 /*! */
 void 
-Zolotarev4DFermActBj::init(int& numroot, 
+Zolotarev4DFermAct::init(int& numroot, 
 			   Real& coeffP, 
 			   multi1d<Real>& resP,
 			   multi1d<Real>& rootQ, 
 			   int& NEig, 
 			   multi1d<Real>& EigValFunc,
-			   const ZolotarevConnectState<LatticeFermion>& state ) const
+			   const OverlapConnectState<LatticeFermion>& state ) const
 {
   /* A scale factor which should bring the spectrum of the hermitian
      Wilson Dirac operator H into |H| < 1. */
@@ -208,11 +210,11 @@ Zolotarev4DFermActBj::init(int& numroot,
  * \param state_	 gauge field state  	 (Read)
  */
 const LinearOperator<LatticeFermion>* 
-Zolotarev4DFermActBj::linOp(Handle<const ConnectState> state_) const
+Zolotarev4DFermAct::linOp(Handle<const ConnectState> state_) const
 {
   START_CODE("Zolotarev4DLinOp::create");
 
-  const ZolotarevConnectState<LatticeFermion>& state = dynamic_cast<const ZolotarevConnectState<LatticeFermion>&>(*state_);
+  const OverlapConnectState<LatticeFermion>& state = dynamic_cast<const OverlapConnectState<LatticeFermion>&>(*state_);
 
   if (state.getEigVec().size() != state.getEigVal().size())
     QDP_error_exit("Zolotarev4DLinOp: inconsistent sizes of eigenvectors and values");
@@ -262,7 +264,7 @@ Zolotarev4DFermActBj::linOp(Handle<const ConnectState> state_) const
  * \param state_	 gauge field state  	 (Read)
  */
 const LinearOperator<LatticeFermion>* 
-Zolotarev4DFermActBj::lMdagM(Handle<const ConnectState> state_, const Chirality& ichiral) const
+Zolotarev4DFermAct::lMdagM(Handle<const ConnectState> state_, const Chirality& ichiral) const
 {
 
   // If chirality is none, return traditional MdagM
@@ -271,7 +273,7 @@ Zolotarev4DFermActBj::lMdagM(Handle<const ConnectState> state_, const Chirality&
     return lMdagM(state_);
   }
   else { 
-    const ZolotarevConnectState<LatticeFermion>& state = dynamic_cast<const ZolotarevConnectState<LatticeFermion>&>(*state_);
+    const OverlapConnectState<LatticeFermion>& state = dynamic_cast<const OverlapConnectState<LatticeFermion>&>(*state_);
     
     if (state.getEigVec().size() != state.getEigVal().size())
       QDP_error_exit("Zolotarev4DLinOp: inconsistent sizes of eigenvectors and values");
@@ -323,7 +325,7 @@ Zolotarev4DFermActBj::lMdagM(Handle<const ConnectState> state_, const Chirality&
  * \param state_	 gauge field state  	 (Read)
  */
 const LinearOperator<LatticeFermion>* 
-Zolotarev4DFermActBj::lMdagM(Handle<const ConnectState> state_) const
+Zolotarev4DFermAct::lMdagM(Handle<const ConnectState> state_) const
 {
   // linOp news the linear operator and gives back pointer, 
   // We call lmdagm with this pointer.
@@ -333,13 +335,13 @@ Zolotarev4DFermActBj::lMdagM(Handle<const ConnectState> state_) const
 }
 
 
-const ZolotarevConnectState<LatticeFermion>*
-Zolotarev4DFermActBj::createState(const multi1d<LatticeColorMatrix>& u_,
+const OverlapConnectState<LatticeFermion>*
+Zolotarev4DFermAct::createState(const multi1d<LatticeColorMatrix>& u_,
 				  const Real& approxMin_) const 
 {
   /* if ( ! ( approxMin_ > Real(0) )) { 
     ostringstream error_str;
-    error_str << "Zolotarev4DFermActBj: approxMin_ has to be positive" << endl;
+    error_str << "Zolotarev4DFermAct: approxMin_ has to be positive" << endl;
     throw error_str.str();
   }
   */
@@ -349,12 +351,12 @@ Zolotarev4DFermActBj::createState(const multi1d<LatticeColorMatrix>& u_,
   getFermBC().modifyU(u_tmp);
 
   Real approxMax = Real(2)*Real(Nd);
-  return new ZolotarevConnectState<LatticeFermion>(u_tmp, approxMin_, approxMax);
+  return new OverlapConnectState<LatticeFermion>(u_tmp, approxMin_, approxMax);
 }
 
 
-const ZolotarevConnectState<LatticeFermion>*
-Zolotarev4DFermActBj::createState(const multi1d<LatticeColorMatrix>& u_,
+const OverlapConnectState<LatticeFermion>*
+Zolotarev4DFermAct::createState(const multi1d<LatticeColorMatrix>& u_,
 				  const Real& approxMin_,
 				  const Real& approxMax_) const
 {
@@ -362,12 +364,12 @@ Zolotarev4DFermActBj::createState(const multi1d<LatticeColorMatrix>& u_,
   
   /*
   if ( !(approxMin_ > 0 )) { 
-    error_str << "Zolotarev4DFermActBj: approxMin_ has to be positive" << endl;
+    error_str << "Zolotarev4DFermAct: approxMin_ has to be positive" << endl;
     throw error_str.str();
   }
 
   if ( ! (approxMax_ > approxMin_) ) { 
-    error_str << "Zolotarev4DFermActBj: approxMax_ has to be larger than approxMin_" << endl;
+    error_str << "Zolotarev4DFermAct: approxMax_ has to be larger than approxMin_" << endl;
     throw error_str.str();
   }
   */
@@ -376,13 +378,13 @@ Zolotarev4DFermActBj::createState(const multi1d<LatticeColorMatrix>& u_,
   multi1d<LatticeColorMatrix> u_tmp = u_;
   getFermBC().modifyU(u_tmp);
 
-  return new ZolotarevConnectState<LatticeFermion>(u_tmp, approxMin_, approxMax_);
+  return new OverlapConnectState<LatticeFermion>(u_tmp, approxMin_, approxMax_);
 }
 
 
 
-const ZolotarevConnectState<LatticeFermion>*
-Zolotarev4DFermActBj::createState(const multi1d<LatticeColorMatrix>& u_,
+const OverlapConnectState<LatticeFermion>*
+Zolotarev4DFermAct::createState(const multi1d<LatticeColorMatrix>& u_,
 				  const multi1d<Real>& lambda_lo_, 
 				  const multi1d<LatticeFermion>& evecs_lo_,
 				  const Real& lambda_hi_) const
@@ -406,6 +408,6 @@ Zolotarev4DFermActBj::createState(const multi1d<LatticeColorMatrix>& u_,
   multi1d<LatticeColorMatrix> u_tmp = u_;
   getFermBC().modifyU(u_tmp);
 
-  return new ZolotarevConnectState<LatticeFermion>(u_tmp, lambda_lo_, evecs_lo_, lambda_hi_, approxMin, approxMax);
+  return new OverlapConnectState<LatticeFermion>(u_tmp, lambda_lo_, evecs_lo_, lambda_hi_, approxMin, approxMax);
 }
 

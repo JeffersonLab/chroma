@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermacts_w.h,v 1.1 2004-01-07 13:50:07 bjoo Exp $
+// $Id: fermacts_w.h,v 1.2 2004-01-08 11:53:08 bjoo Exp $
 
 /*! \file
  * \brief Fermion actions
@@ -31,9 +31,8 @@
 #include "prec_dwf_fermact_array_w.h"
 
 #include "overlap_fermact_base_w.h"
-#include "zolotarev4d_fermact_bj_w.h"
-#include "ev_state.h"
-#include "zolotarev_state.h"
+#include "overlap_state.h"
+#include "zolotarev4d_fermact_w.h"
 
 #endif
 

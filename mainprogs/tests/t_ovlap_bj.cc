@@ -1,4 +1,4 @@
-// $Id: t_ovlap_bj.cc,v 1.13 2004-01-07 13:50:09 bjoo Exp $
+// $Id: t_ovlap_bj.cc,v 1.14 2004-01-08 11:53:09 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -434,7 +434,7 @@ int main(int argc, char **argv)
   XMLBufferWriter my_writer;
 
   //! N order Zolo approx, with wilson action.
-  Zolotarev4DFermActBj   S(fbc, S_w, 
+  Zolotarev4DFermAct   S(fbc, S_w, 
 			   params.quark_mass,
 			   params.approx_order, 
 			   params.rsd_cg_inner,

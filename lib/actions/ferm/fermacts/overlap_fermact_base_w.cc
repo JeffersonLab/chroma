@@ -1,12 +1,14 @@
-// $Id: overlap_fermact_base_w.cc,v 1.2 2004-01-02 03:19:40 edwards Exp $
+// $Id: overlap_fermact_base_w.cc,v 1.3 2004-01-08 11:53:08 bjoo Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
 
 #include "chromabase.h"
+#include "actions/ferm/fermacts/overlap_state.h"
 #include "actions/ferm/fermacts/overlap_fermact_base_w.h"
+#include "actions/ferm/invert/invcg1.h"
 #include "actions/ferm/invert/invcg2.h"
-#include "actions/ferm/fermacts/ev_state.h"
+
 
 using namespace QDP;
 
@@ -23,91 +25,78 @@ using namespace QDP;
 
 void 
 OverlapFermActBase::qprop(LatticeFermion& psi, 
-			  Handle<const ConnectState> state_, 
+			  Handle<const ConnectState> state, 
 			  const LatticeFermion& chi, 
 			  enum InvType invType,
 			  const Real& RsdCG, 
 			  int MaxCG, int& ncg_had) const
 {
   START_CODE("OverlapFermActBase::qprop");
-
-  const EVConnectState<LatticeFermion>& state = dynamic_cast<const EVConnectState<LatticeFermion>&>(*state_);
-
-  const Real m_q = quark_mass();
-
+  Handle< const LinearOperator<LatticeFermion> > M(linOp(state));
   int n_count;
-  
-  // Construct the linear operator
-  Handle<const LinearOperator<LatticeFermion> > A(linOp(state_));
 
-  switch(invType)
-  {
-  case CG_INVERTER: 
-  {
-    LatticeFermion tmp1;
+  Real mass = quark_mass();
 
-#if 1
-    // For the moment, use simple minded inversion
-    (*A)(tmp1, chi, MINUS);
-
-    InvCG2(*A, tmp1, psi, RsdCG, MaxCG, n_count);
-
-#else
-    /* psi = (D^dag * D)^(-1) * D^dag * chi */
-    /*     = D^dag * (D * D^dag)^(-1) * chi */
-    /*     = D^(-1) * chi */
-
-    /* Check if source is chiral */
-    int ichiral = ischiral(chi);
-
-    if (ichiral == 0 || this->isChiral())  // also check if action is not chiral
+  switch( invType ) {
+  case CG_INVERTER:
     {
-      // Source or action is not chiral: call the CG2 wrapper
-      (*A)(tmp1, chi, MINUS);
 
-      InvCG2(*A, tmp1, psi, RsdCG, MaxCG, n_count);
+      LatticeFermion tmp;
+      
+      // Check whether the source is chiral.
+      Chirality ichiral = isChiralVector(chi);
+      if( ichiral == CH_NONE || ( isChiral() == false )) { 
+	
+	
+	(*M)(tmp, chi, MINUS);
+      
+	// Source is not chiral. In this case we should use,
+	// InvCG2 with M
+	InvCG2(*M, tmp, psi, RsdCG, MaxCG, n_count);
+      }
+      else {
+	
+	// Source is chiral. In this case we should use InvCG1
+	// with the special MdagM
+	Handle< const LinearOperator<LatticeFermion> > MM(lMdagM(state, ichiral));
+	InvCG1(*MM, chi, tmp, RsdCG, MaxCG, n_count);
+	(*M)(psi, tmp, MINUS);
+      }
     }
-    else
-    {
-      // Source is chiral: use the CG1
-      // Construct the linear operator
-      Handle<const LinearOperator<LatticeFermion> > B(lMdagM(state_));  // OOPS, NEED TO PASS ICHIRAL!!!!
+    break;
 
-      InvCG1(*B, chi, tmp1, RsdCG, MaxCG, n_count);
-      (*A)(psi, tmp1, MINUS);
-    }
-#endif
-  }
-  break;
-  
 #if 0
   case MR_INVERTER:
     // psi = D^(-1)* chi
-    InvMR (*A, chi, psi, MRover, RsdCG, MaxCG, n_count);
+    InvMR (*M, chi, psi, MRover, RsdCG, MaxCG, n_count);
     break;
 
   case BICG_INVERTER:
     // psi = D^(-1) chi
-    InvBiCG (*A, chi, psi, RsdCG, MaxCG, n_count);
+    InvBiCG (*M, chi, psi, RsdCG, MaxCG, n_count);
     break;
 #endif
   
   default:
-    QDP_error_exit("Unknown inverter type", invType);
+    QDP_error_exit("Zolotarev4DFermActBj::qprop Solver Type not implemented\n");
+    break;
+  };
+
+  if ( n_count == MaxCG ) { 
+    QDP_error_exit("Zolotarev4DFermAct::qprop: No convergence in solver: n_count = %d\n", n_count);
   }
-  
-  if ( n_count == MaxCG )
-    QDP_error_exit("no convergence in the inverter", n_count);
-  
+
+  // Update the ncg_had counter
   ncg_had = n_count;
   
-  // Overall normalization
-  Real ftmp1 = Real(1) / Real(1 - m_q);
-
-  // Normalize and remove contact term
+  // Normalize and remove contact term 
+  Real ftmp = Real(1) / ( Real(1) - mass );
+  
   psi -= chi;
-  psi *= ftmp1;
+  psi *= ftmp;
 
   END_CODE("OverlapFermActBase::qprop");
 }
+  
+
 

@@ -1,4 +1,4 @@
-// $Id: staggered_qprop.cc,v 1.3 2004-01-02 03:19:41 edwards Exp $
+// $Id: staggered_qprop.cc,v 1.4 2004-01-08 11:53:09 bjoo Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *
@@ -7,8 +7,6 @@
 
 #include "chromabase.h"
 #include "fermact.h"
-#include "primitives.h"
-#include "common_declarations.h"
 #include "linearop.h"
 #include "actions/ferm/invert/invcg1.h"
 

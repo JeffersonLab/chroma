@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: overlap_state.h,v 1.1 2004-01-08 10:42:42 bjoo Exp $
+// $Id: overlap_state.h,v 1.2 2004-01-08 11:53:08 bjoo Exp $
 /*! @file
  * @brief Connection state holding eigenvectors
  *
@@ -14,7 +14,7 @@
 using namespace QDP;
 
 template<typename T>
-class ZolotarevConnectStateBase : public ConnectState 
+class OverlapConnectStateBase : public ConnectState 
 {
 public: 
   //! Return the eigenvalues
@@ -34,14 +34,14 @@ public:
 
 
 template<typename T>
-class ZolotarevConnectState : public ZolotarevConnectStateBase<T>
+class OverlapConnectState : public OverlapConnectStateBase<T>
 {
 public:
 
   typedef Real WordBase_t;
   
   //! Constructor with no eigenvalues
-  ZolotarevConnectState(const multi1d<LatticeColorMatrix>& u_,  // gauge field
+  OverlapConnectState(const multi1d<LatticeColorMatrix>& u_,  // gauge field
 			const WordBase_t& approxMin_,          // epsilon
 			const WordBase_t& approxMax_           // approx max
     )  {
@@ -52,7 +52,7 @@ public:
   }
 
   //! Constructor with e-values and e-vectors
-  ZolotarevConnectState(const multi1d<LatticeColorMatrix>& u_,
+  OverlapConnectState(const multi1d<LatticeColorMatrix>& u_,
 			const multi1d<WordBase_t>& val_, 
 			const multi1d<T>& vec_,
 			const WordBase_t& val_max_,
@@ -68,9 +68,9 @@ public:
     approxMax = approxMax_;
   }
 
-  ZolotarevConnectState(const ZolotarevConnectState& a) : u(a.u), eigVal(a.eigVal), eigVec(a.eigVec), eigValMax(a.eigValMax), approxMin(a.approxMin), approxMax(a.approxMax) {}
+  OverlapConnectState(const OverlapConnectState& a) : u(a.u), eigVal(a.eigVal), eigVec(a.eigVec), eigValMax(a.eigValMax), approxMin(a.approxMin), approxMax(a.approxMax) {}
 
-  ~ZolotarevConnectState() {};
+  ~OverlapConnectState() {};
 
   //! Return the link fields needed in constructing linear operators
   const multi1d<LatticeColorMatrix>& getLinks() const {return u;}
@@ -89,8 +89,8 @@ public:
   const WordBase_t& getApproxMax() const { return approxMax; }
 
 private:
-  ZolotarevConnectState() {}  // hide default constructur
-  void operator=(const ZolotarevConnectState&) {} // hide =
+  OverlapConnectState() {}  // hide default constructur
+  void operator=(const OverlapConnectState&) {} // hide =
 
 private:
   multi1d<LatticeColorMatrix> u;
