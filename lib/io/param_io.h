@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: param_io.h,v 1.6 2004-01-07 04:15:11 edwards Exp $
+// $Id: param_io.h,v 1.7 2004-01-07 21:00:47 edwards Exp $
 /*! \file
  *  \brief Reunitarize (to a SU(N)) inplace the matrix A under some option
  */
@@ -9,6 +9,12 @@
 
 #include "meas/smear/sink_smear2_w.h"
 #include "invtype.h"
+
+//! Convert a Kappa to a mass
+Real kappaToMass(const Real& Kappa);
+
+//! Convert a Kappa to a mass
+multi1d<Real> kappaToMass(const multi1d<Real>& Kappa);
 
 /*
  * Types and structures
