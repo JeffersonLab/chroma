@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: printgeom.h,v 1.1 2004-01-29 20:38:09 edwards Exp $
+// $Id: printgeom.h,v 1.2 2004-01-29 20:46:29 edwards Exp $
 /*! \file
  *  \brief Print out machine geometry and problem size info
  */
@@ -16,6 +16,6 @@
  *  \param xml          The xml stream to write the info
  */
 
-void print_geom(XMLWriter& xml);
+void printgeom(XMLWriter& xml);
 
 #endif

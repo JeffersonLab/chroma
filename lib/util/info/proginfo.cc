@@ -1,11 +1,11 @@
-//  $Id: proginfo.cc,v 1.1 2004-01-29 20:38:09 edwards Exp $
+//  $Id: proginfo.cc,v 1.2 2004-01-29 20:46:29 edwards Exp $
 /*! \file
  *  \brief Print out basic info about this program
  */
 
 #include "chromabase.h"
-#include "util/geom/printgeom.h"
-#include "util/geom/proginfo.h"
+#include "util/info/printgeom.h"
+#include "util/info/proginfo.h"
 
 using namespace QDP;
 
@@ -24,7 +24,7 @@ void proginfo(XMLWriter& xml)
 
   push(xml,"ProgramInfo");
 
-  write(xml,"run_date",date);
+//  write(xml,"run_date",date);
   printgeom(xml);
 
   pop(xml);

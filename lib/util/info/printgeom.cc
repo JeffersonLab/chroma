@@ -1,10 +1,10 @@
-//  $Id: printgeom.cc,v 1.1 2004-01-29 20:38:09 edwards Exp $
+//  $Id: printgeom.cc,v 1.2 2004-01-29 20:46:29 edwards Exp $
 /*! \file
  *  \brief Print out machine geometry and problem size info
  */
 
 #include "chromabase.h"
-#include "util/geom/printgeom.h"
+#include "util/info/printgeom.h"
 
 using namespace QDP;
 
@@ -17,9 +17,9 @@ using namespace QDP;
  *  \param xml          The xml stream to write the info
  */
 
-void print_geom(XMLWriter& xml)
+void printgeom(XMLWriter& xml)
 {
-  START_CODE("print_geom");
+  START_CODE("printgeom");
 
   push(xml,"Setgeom");
   write(xml,"latt_size",Layout::lattSize());
@@ -27,5 +27,5 @@ void print_geom(XMLWriter& xml)
   write(xml,"subgrid_size",Layout::subgridLattSize());
   pop(xml);
 
-  END_CODE("print_geom");
+  END_CODE("printgeom");
 }
