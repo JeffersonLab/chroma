@@ -1,6 +1,6 @@
 #!/bin/tcsh
 
-set builddir = ../../build/double/mainprogs/main
+set builddir = ../../scalar/mainprogs/main
 #set gauge_type = UNIT
 set gauge_type = SZINQIO
 set gauge_cfg = ../gfix.cfg1
