@@ -1,5 +1,12 @@
 01/04/2005 -- Robert Edwards
 
+	Version 1.14.2. Added linOpPV back into FermAct5D hierachy.
+        Rearranged and extended Monomial support which now has a 4D
+        and 5D branch. Abstracted derivative/refresh codes. Added 
+        new monomials.
+
+01/04/2005 -- Robert Edwards
+
 	Version 1.14.1. Small changes in derivative support.
 
 01/01/2005 -- Robert Edwards
