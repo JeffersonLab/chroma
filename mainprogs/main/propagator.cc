@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.89 2005-01-31 04:15:22 edwards Exp $
+// $Id: propagator.cc,v 1.90 2005-02-07 04:15:19 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -18,29 +18,8 @@ bool linkage_hack()
 {
   bool foo = true;
 
-  // 4D actions
-  foo &= EvenOddPrecWilsonFermActEnv::registered;
-  foo &= UnprecWilsonFermActEnv::registered;
-  foo &= OvlapPartFrac4DFermActEnv::registered;
-  foo &= EvenOddPrecParWilsonFermActEnv::registered;
-  foo &= UnprecParWilsonFermActEnv::registered;
-
-  // 5D actions
-  foo &= EvenOddPrecDWFermActArrayEnv::registered;
-  foo &= UnprecDWFermActArrayEnv::registered;
-  foo &= EvenOddPrecNEFFermActArrayEnv::registered;
-  foo &= UnprecNEFFermActArrayEnv::registered;
-  foo &= UnprecOvlapContFrac5DFermActArrayEnv::registered;
-  foo &= UnprecHTContFrac5DFermActArrayEnv::registered;
-  foo &= EvenOddPrecHtContFrac5DFermActArrayEnv::registered;
-  foo &= EvenOddPrecOvlapContFrac5DFermActArrayEnv::registered;
-  foo &= UnprecOvDWFermActArrayEnv::registered;
-  foo &= EvenOddPrecOvDWFermActArrayEnv::registered;
-  foo &= UnprecOvExtFermActArrayEnv::registered;
-  foo &= UnprecZoloNEFFermActArrayEnv::registered;
-  foo &= EvenOddPrecZoloNEFFermActArrayEnv::registered;
-  foo &= EvenOddPrecKNOFermActArrayEnv::registered;
-  foo &= UnprecDWFTransfFermActEnv::registered;
+  // All actions
+  foo &= WilsonTypeFermActsEnv::registered;
 
   return foo;
 }
