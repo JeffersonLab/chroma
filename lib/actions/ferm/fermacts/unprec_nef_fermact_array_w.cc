@@ -1,4 +1,4 @@
-// $Id: unprec_nef_fermact_array_w.cc,v 1.9 2004-10-03 01:21:19 edwards Exp $
+// $Id: unprec_nef_fermact_array_w.cc,v 1.10 2004-10-22 03:36:14 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF fermion action
  */
@@ -51,42 +51,8 @@ namespace Chroma
     read(paramtop, "OverMass", OverMass);
     read(paramtop, "Mass", Mass);
     read(paramtop, "N5", N5);
-
-    b5.resize(N5);
-    c5.resize(N5);
-    multi1d<Real> bb5;
-    multi1d<Real> cc5;
-
-    read(paramtop, "b5", bb5);
-    read(paramtop, "c5", cc5);
-
-    if (bb5.size() != cc5.size())
-    {
-      QDPIO::cerr << "UnprecNEF: array sizes incorrect" << endl;
-      QDP_abort(1);
-    }
-
-    if (bb5.size() != N5)
-    {
-      if (bb5.size() == 1)
-      {
-	for(int n=0; n < N5; ++n)
-	{
-	  b5[n] = bb5[0];
-	  c5[n] = cc5[0];
-	}
-      }
-      else
-      {
-	QDPIO::cerr << "UnprecNEF: array sizes incorrect" << endl;
-	QDP_abort(1);
-      }
-    }
-    else
-    {
-      b5 = bb5;
-      c5 = cc5;
-    }
+    read(paramtop, "b5", b5);
+    read(paramtop, "c5", c5);
   }
 
 
@@ -99,16 +65,6 @@ namespace Chroma
 
 
 
-  //! Check stuff
-  void UnprecNEFFermActArray::init()
-  {
-    if ((b5.size() != c5.size()) || (b5.size() != N5))
-    {
-      QDPIO::cerr << "UnprecNEF: array sizes incompatible" << endl;
-      QDP_abort(1);
-    }
-  }
-
   //! Produce a linear operator for this action
   /*!
    * \ingroup fermact
@@ -120,7 +76,12 @@ namespace Chroma
   const UnprecDWLinOpBaseArray<LatticeFermion>* 
   UnprecNEFFermActArray::linOp(Handle<const ConnectState> state) const
   {
-    return new UnprecNEFDWLinOpArray(state->getLinks(),OverMass,b5,c5,Mass,N5);
+    multi1d<Real> bb5(N5);
+    multi1d<Real> cc5(N5);
+
+    bb5 = b5;
+    cc5 = c5;
+    return new UnprecNEFDWLinOpArray(state->getLinks(),OverMass,bb5,cc5,Mass,N5);
   }
 
   //! Produce a M^dag.M linear operator for this action
@@ -148,7 +109,12 @@ namespace Chroma
   const UnprecDWLinOpBaseArray<LatticeFermion>* 
   UnprecNEFFermActArray::linOpPV(Handle<const ConnectState> state) const
   {
-    return new UnprecNEFDWLinOpArray(state->getLinks(),OverMass,b5,c5,1.0,N5);  // fixed to quark mass 1
+    multi1d<Real> bb5(N5);
+    multi1d<Real> cc5(N5);
+
+    bb5 = b5;
+    cc5 = c5;
+    return new UnprecNEFDWLinOpArray(state->getLinks(),OverMass,bb5,cc5,1.0,N5);  // fixed to quark mass 1
   }
 
 }

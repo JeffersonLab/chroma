@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_nef_fermact_array_w.h,v 1.7 2004-10-03 01:21:19 edwards Exp $
+// $Id: unprec_nef_fermact_array_w.h,v 1.8 2004-10-22 03:36:14 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF domain-wall fermion action
  */
@@ -29,8 +29,8 @@ namespace Chroma
     UnprecNEFFermActArrayParams(XMLReader& in, const std::string& path);
     
     Real OverMass;
-    multi1d<Real> b5;
-    multi1d<Real> c5;
+    Real b5;
+    Real c5;
     Real Mass;
     int  N5;
   };
@@ -54,14 +54,14 @@ namespace Chroma
     //! General FermBC
     UnprecNEFFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
 			  const Real& OverMass_, 
-			  const multi1d<Real>& b5_, const multi1d<Real>& c5_, 
+			  const Real& b5_, const Real& c5_, 
 			  const Real& Mass_, int N5_) : 
-      fbc(fbc_), OverMass(OverMass_), b5(b5_),c5(c5_), Mass(Mass_), N5(N5_) {init();}
+      fbc(fbc_), OverMass(OverMass_), b5(b5_),c5(c5_), Mass(Mass_), N5(N5_) {}
 
     //! General FermBC
     UnprecNEFFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
 			  const UnprecNEFFermActArrayParams& param) :
-      fbc(fbc_), OverMass(param.OverMass), b5(param.b5), c5(param.c5), Mass(param.Mass), N5(param.N5) {init();}
+      fbc(fbc_), OverMass(param.OverMass), b5(param.b5), c5(param.c5), Mass(param.Mass), N5(param.N5) {}
 
     //! Copy constructor
     UnprecNEFFermActArray(const UnprecNEFFermActArray& a) : 
@@ -134,13 +134,10 @@ namespace Chroma
 			int& ncg_had);
       
   private:
-    void init();
-
-  private:
     Handle< FermBC< multi1d<LatticeFermion> > >  fbc;
     Real OverMass;
-    multi1d<Real> b5;
-    multi1d<Real> c5;
+    Real b5;
+    Real c5;
     Real Mass;
     int  N5;
   };
