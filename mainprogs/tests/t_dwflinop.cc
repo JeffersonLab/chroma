@@ -1,4 +1,4 @@
-// $Id: t_dwflinop.cc,v 1.5 2003-12-15 21:54:17 edwards Exp $
+// $Id: t_dwflinop.cc,v 1.6 2003-12-16 01:57:20 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -140,14 +140,14 @@ int main(int argc, char **argv)
     pokeDW(tmp1a, tmp1[m], m);
   }
 
-  const  LinearOperator<LatticeDWFermion>* B = S_f_dwf.linOp(u);
+  const LinearOperatorProxy<LatticeDWFermion> B(S_f_dwf.linOp(u));
 
   LatticeDWFermion tmp5a;
-  (*B)(tmp5a, psi5, PLUS);
+  B(tmp5a, psi5, PLUS);
   DComplex nd1 = innerProduct(chi5, tmp5a);
 
   LatticeDWFermion tmp5b;
-  (*B)(tmp5b, chi5, MINUS);
+  B(tmp5b, chi5, MINUS);
   DComplex nd2 = innerProduct(tmp5b, psi5);
 
   push(xml,"innerprods_dwf");
