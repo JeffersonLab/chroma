@@ -1,4 +1,4 @@
-// $Id: prec_dwf_fermact_base_array_w.cc,v 1.1 2003-11-22 21:34:01 edwards Exp $
+// $Id: prec_dwf_fermact_base_array_w.cc,v 1.2 2003-11-23 05:59:35 edwards Exp $
 /*! \file
  *  \brief Base class for even-odd preconditioned domain-wall-like fermion actions
  */
@@ -62,27 +62,39 @@ EvenOddPrecDWFermActBaseArray::qprop(LatticeFermion& psi,
   psi5[0] = psi;
 
   // Construct the linear operator
-  const LinearOperator< multi1d<LatticeFermion> >* A = linOp(u);
+  const EvenOddPrecLinearOperator< multi1d<LatticeFermion> >* A = linOp(u);
+
+  /* Step (i) */
+  /* chi5 = L^(-1) * tmp5 = [ tmp5_o - D_oe*A_ee^-1*tmp5_o ] */
+  {
+    multi1d<LatticeFermion> tmp1(N5);
+    multi1d<LatticeFermion> tmp2(N5);
+
+    A->evenEvenInvLinOp(tmp1, tmp5, PLUS);
+    A->oddEvenLinOp(tmp2, tmp1, PLUS);
+    for(int n=0; n < N5; ++n)
+      chi5[n][rb[1]] = tmp5[n] - tmp2[n];
+  }
 
   switch(invType)
   {
   case CG_INVERTER: 
-    // chi5 = D5^\dagger(m) . tmp5 =  D5^dagger(m) . D5(1) . P . (chi,0,0,..,0)^T
-    (*A)(chi5, tmp5, MINUS);
+    // tmp5 = D5^\dagger(m) . chi5 =  D5^dagger(m) . L^-1 . D5(1) . P . (chi,0,0,..,0)^T
+    (*A)(tmp5, chi5, MINUS);
     
-    // psi5 = (D^dag * D)^(-1) chi5
-    InvCG2 (*A, chi5, psi5, RsdCG, MaxCG, n_count);
+    // psi5 = (D^dag * D)^(-1) tmp5
+    InvCG2 (*A, tmp5, psi5, RsdCG, MaxCG, n_count);
     break;
   
 #if 0
   case MR_INVERTER:
-    // psi5 = D^(-1) * tmp5
-    InvMR (*A, tmp5, psi5, MRover, RsdCG, MaxCG, n_count);
+    // psi5 = D^(-1) * chi5
+    InvMR (*A, chi5, psi5, MRover, RsdCG, MaxCG, n_count);
     break;
 
   case BICG_INVERTER:
-    // psi5 = D^(-1) tmp5
-    InvBiCG (*A, tmp5, psi5, RsdCG, MaxCG, n_count);
+    // psi5 = D^(-1) chi5
+    InvBiCG (*A, chi5, psi5, RsdCG, MaxCG, n_count);
     break;
 #endif
   
@@ -95,6 +107,18 @@ EvenOddPrecDWFermActBaseArray::qprop(LatticeFermion& psi,
   
   ncg_had = n_count;
   
+  /* Step (ii) */
+  /* psi5_e = A_ee^-1 * [chi5_e  -  D_eo * psi5_o] */
+  {
+    multi1d<LatticeFermion> tmp1(N5);
+    multi1d<LatticeFermion> tmp2(N5);
+
+    A->evenOddLinOp(tmp1, psi5, PLUS);
+    for(int n=0; n < N5; ++n)
+      tmp2[n][rb[0]] = chi5[n] - tmp1[n];
+    A->evenEvenInvLinOp(psi5, tmp2, PLUS);
+  }
+
   // Overall normalization
   Real ftmp1 = Real(1) / Real(1 - m_q);
 
@@ -110,34 +134,4 @@ EvenOddPrecDWFermActBaseArray::qprop(LatticeFermion& psi,
   END_CODE("EvenOddPrecDWTypeFermActBaseArray::qprop");
 }
 
-
-//! Computes the derivative of the fermionic action respect to the link field
-/*!
- *         |  dS      dS_f
- * ds_u -- | ----   + -----   ( Write )
- *         |  dU       dU
- *
- * psi -- [1./(M_dag*M)]*chi_  ( read ) 
- *
- * \param u        gauge field ( Read )
- * \param psi      solution to linear system ( Read )
- */
-
-void
-UnprecDWFermActBaseArray::dsdu(multi1d<LatticeColorMatrix>& ds_u,
-			       const multi1d<LatticeColorMatrix>& u, 
-			       const multi1d<LatticeFermion>& psi) const
-{
-//  multi1d<LatticeColorMatrix> ds_u(Nd);
-
-  START_CODE("EvenOddPrecDWFermActBaseArray::dsdu");
-
-  // hack
-  ds_u = 0;
-
-  QDPIO::cerr << "UnprecDWFermActBaseArray::dsdu not implemented" << endl;
-  QDP_abort(1);
-
-  END_CODE("EvenOddPrecDWFermActBaseArray::dsdu");
-}
 
