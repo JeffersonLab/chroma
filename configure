@@ -3016,6 +3016,8 @@ fi
 
           ac_config_files="$ac_config_files Makefile"
 
+          ac_config_files="$ac_config_files chroma-config"
+
           ac_config_files="$ac_config_files lib/Makefile"
 
           ac_config_files="$ac_config_files mainprogs/Makefile"
@@ -3625,6 +3627,7 @@ do
   # Handling of arguments.
   "docs/chromadoc" ) CONFIG_FILES="$CONFIG_FILES docs/chromadoc" ;;
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
+  "chroma-config" ) CONFIG_FILES="$CONFIG_FILES chroma-config" ;;
   "lib/Makefile" ) CONFIG_FILES="$CONFIG_FILES lib/Makefile" ;;
   "mainprogs/Makefile" ) CONFIG_FILES="$CONFIG_FILES mainprogs/Makefile" ;;
   "mainprogs/tests/Makefile" ) CONFIG_FILES="$CONFIG_FILES mainprogs/tests/Makefile" ;;
