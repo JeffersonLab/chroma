@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.177 2004-09-30 18:14:30 bjoo Exp $
+# $Id: Makefile.am,v 1.178 2004-10-13 22:17:20 ikuro Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -132,6 +132,7 @@ nobase_include_HEADERS = \
 	util/ferm/ferm.h util/ferm/transf.h util/ft/ft.h \
 	util/ft/sftmom.h util/gauge/eesu2.h util/gauge/eeu1.h \
 	util/gauge/expm12.h util/gauge/expmat.h util/gauge/expsu3.h \
+	util/gauge/eesu3.h \
 	util/gauge/gauge.h \
 	util/gauge/gauge_startup.h \
 	util/gauge/gaugebc_utils.h \
@@ -296,6 +297,7 @@ lib_LIBRARIES = libchroma.a
 libchroma_a_SOURCES = gauge_startup.cc gaugebc_utils.cc gaugeact_utils.cc \
 	       rgauge.cc taproj.cc \
 	       hotst.cc expm12.cc \
+	       eesu3.cc \
                expmat.cc expsu3.cc mesplq.cc polylp.cc reunit.cc unit_check.cc \
                sftmom.cc srcfil.cc \
 	       enum_cfgtype_io.cc \

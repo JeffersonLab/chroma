@@ -1,4 +1,4 @@
-// $Id: expmat.cc,v 1.4 2004-07-28 02:38:06 edwards Exp $
+// $Id: expmat.cc,v 1.5 2004-10-13 22:17:21 ikuro Exp $
 /*! \file
  *  \brief Exponentiate a SU(n) lie algebra element by some method,
  */
@@ -9,6 +9,7 @@
 #include "util/gauge/expsu3.h"
 #include "util/gauge/eeu1.h"
 #include "util/gauge/eesu2.h"
+#include "util/gauge/eesu3.h"
 #include "util/gauge/reunit.h"
 //#include "util/gauge/eesu3.h"
 
@@ -64,12 +65,9 @@ void expmat(LatticeColorMatrix& a,
     case EXP_EXACT:
       switch (Nc)
       {
-#if 0
       case 3:
-	/* Should be rechecked */
-	eesu3 (a);
+	eesu3(a);
 	break;
-#endif
 
       default:
 	QDP_error_exit("exact exponentation not implemented for this Nc", Nc);

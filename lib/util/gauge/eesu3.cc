@@ -1,85 +1,94 @@
-// $Id: eesu3.cc,v 1.6 2004-10-12 15:29:06 edwards Exp $
-/*! \file
- *  \brief Exactly exponentiate a SU(3) lie algebra element
- */
-
 #include "chromabase.h"
 #include "util/gauge/eesu3.h"
 
 using namespace QDP;
 
-//! Exactly exponentiate a SU(3) lie algebra element
-/*!
- * \ingroup gauge
- *
- * Follows hep-lat/0311018 . Convention change, there C&M expect a Q
- * which is traceless HERMITIAN. Here, we expect traceless ANTI-HERMITIAN.
- *
- *  \param m       Initially a traceless/anti-herm. matrix      (Modify)
- *
- */
+/*******************************************************\
+ *                                                     *
+ *  Exact exponentiation of SU(3) matrix.              *
+ *  Input: 3x3 Hermitian, traceless matrix Q           *
+ *  Output: exp(iQ)                                    *
+ *                                                     *
+ *  Formula for exp(iQ) = f0 + f1*Q + f2*Q*Q is found  *
+ *  in section III of hep-lat/0311018.                 *
+ *                                                     *
+\*******************************************************/ 
 
-void eesu3(LatticeColorMatrix3& m)
+void eesu3(LatticeColorMatrix & Q)
 {
-  START_CODE("eesu3");
+  START_CODE( );
 
-  // Goal, evaluate
-  // exp(i*Q) = f0*I + f1*Q + f2*Q^2
-
-  // NOTE, pass m = i*Q  ->  Q = -i*m
-
-  // Q = -i*m
-  LatticeColorMatrix3 Q  = timesMinusI(m);
+  LatticeComplex f0, f1, f2;
   
-  // Q2 = Q*Q
-  LatticeColorMatrix3 Q2 = Q*Q;
+  LatticeColorMatrix QQ = Q*Q;
+
+  LatticeReal c0    = real((1.0/3.0) * trace(Q*QQ));
+  LatticeReal c1    = real((1.0/2.0) * trace(QQ));
+  LatticeReal c0abs = fabs(c0);
+  LatticeReal c0max = 2 * pow((c1 / 3.0), 1.5);
+  LatticeReal theta = acos(c0abs/c0max);
+  LatticeReal u     = sqrt(c1 / 3.0) * cos(theta / 3.0);
+  LatticeReal w     = sqrt(c1) * sin(theta / 3.0);
+  LatticeReal uu    = u*u;
+  LatticeReal ww    = w*w;
+  LatticeReal cosu  = cos(u);
+  LatticeReal cosw  = cos(w);
+  LatticeReal sinu  = sin(u);
+  LatticeReal sinw  = sin(w);
+
+  // exp(2iu) and exp(-iu)
+  LatticeComplex exp2iu = cmplx((2*cosu*cosu - 1), 2*cosu*sinu);
+  LatticeComplex expmiu = cmplx(cosu, -sinu);
+
+  LatticeBoolean latboo_c0 = (c0      <      0);
+  LatticeBoolean latboo_c1 = (c1      > 1.0e-4);
+  LatticeBoolean latboo_w  = (fabs(w) >   0.05);
+
+  LatticeReal denom = where(latboo_c1,
+			    9 * uu - ww,
+			    Real(1.0));
+
+  // xi0 = xi0(w).  Expand xi0 if w is small.
+  LatticeReal xi0 = where(latboo_w, 
+			  sinw/w, 
+			  1 - (1.0/6.0)*ww*(1-(1.0/20.0)*ww*(1-(1.0/42.0)*ww)));
+
+  // f_i = f_i(c0, c1). Expand f_i by c1, if c1 is small.
+  f0 = where(latboo_c1,
+	     ((uu - ww) * exp2iu + expmiu 
+	     * cmplx(8*uu*cosw, 2*u*(3*uu+ww)*xi0))/denom,
+	     cmplx(1-c0*c0/720, -c0/6*(1-c1/20*(1-c1/42))));
+
+  f1 = where(latboo_c1,
+	     (2*u*exp2iu - expmiu * cmplx(2*u*cosw, (ww-3*uu)*xi0))/denom,
+	     cmplx(c0/24*(1.0-c1/15*(1-3*c1/112)),
+		   1-c1/6*(1-c1/2*(1-c1/42))-c0*c0/5040));
   
-  // c0 = tr(Q^3)/3 = real(tr(Q^3))/3
-  Real third = 1.0/3.0;
-  LatticeReal c0 = third*real(trace(Q*Q2));
+  f2 = where(latboo_c1,
+	     (exp2iu - expmiu * cmplx(cosw, 3*u*xi0))/denom,
+	     0.5*cmplx(-1+c1/12*(1-c1/30*(1-c1/56))
+		       +c0*c0/20160, c0/60*(1-c1/21*(1-c1/48))));
+  	     
+  // f_j(-c0, c1) = (-1)^j f*_j(c0, c1)
+  f0 = where(latboo_c0 && latboo_c1,
+	     adj(f0),
+	     f0);
+
+  f1 = where(latboo_c0 && latboo_c1,
+	     -1.0*adj(f1),
+	     f1);
+
+  f2 = where(latboo_c0 && latboo_c1,
+	     adj(f2),
+	     f2);
   
-  // c1 = tr(Q*Q)/2
-  LatticeReal c1 = Real(0.5)*real(trace(Q2));
-  
-  // c0max = 2 * (c1/3)^{3/2}
-//exp(Real(1.5)*log(third*c1));
-  LatticeReal c0max = 2*pow(third*c1, Real(1.5));
+  // evaluate f0 + f1 Q + f2 QQ (= exp(iQ))
+  LatticeColorMatrix expiQ = f0 + f1 * Q + f2 * QQ;
 
-  // Basic terms
-  // NOTE: take ABSOLUTE value of c0 and later use relation
-  // that  f_j(-c0,c1) = (-1)^{j}*conj(f_j(c0,c1))
-  LatticeReal theta = acos(abs(c0)/c0max);
-  LatticeReal u = sqrt(third*c1)*cos(third*theta);
-  LatticeReal w = sqrt(c1)*sin(third*theta);
+  // Relpace Q by exp(iQ)
+  Q = expiQ;
 
-  // Carefully control  xi0
-  LatticeReal w2  = w*w;
-  LatticeReal xi0 = where(abs(w) < 0.05, 
-			  1 - Real(1/6)*w2*(1-Real(1/20)*w2*(1-Real(1/42)*w2)),
-			  sin(w)/w);
 
-  // The h_i
-  LatticeComplex e2u = cmplx(cos(2*u),sin(2*u));
-  LatticeComplex emu = cmplx(cos(u),-sin(u));
-  LatticeReal u2     = u*u;
-  LatticeReal cosw   = cos(w);
-
-  LatticeComplex h0 = (u2-w2)*e2u + emu*(8*u2*cosw + timesI(2*u*(3*u2+w2)*xi0));
-  LatticeComplex h1 = 2*u*e2u - emu*(2*u*cosw - timesI((3*u2-w2)*xi0));
-  LatticeComplex h2 = e2u - emu*(cosw + timesI(3*u*xi0));
-
-  //
-  // The f_j . Note, by using abs(c0) above, we do not have
-  // a singularity problem. So, correct for abs(c0) by using
-  // f_j(-c0,c1) = (-1)^{j}*conj(f_j(c0,c1))
-  //
-  LatticeReal    fact = Real(1.0) / (9*u2 - w2);
-  LatticeComplex f0   = where(c0 > 0, h0*fact,  conj(h0*fact));
-  LatticeComplex f1   = where(c0 > 0, h1*fact, -conj(h1*fact));
-  LatticeComplex f2   = where(c0 > 0, h2*fact,  conj(h2*fact));
-
-  // Finally
-  m = f0 + f1*Q + f2*Q2;
-
-  END_CODE("eesu3");
+  END_CODE( );
 }
+

@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.244 2004-10-01 17:48:30 bjoo Exp $
+# $Id: Makefile.in,v 1.245 2004-10-13 22:17:21 ikuro Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -387,6 +387,7 @@ nobase_include_HEADERS = \
 	util/ferm/ferm.h util/ferm/transf.h util/ft/ft.h \
 	util/ft/sftmom.h util/gauge/eesu2.h util/gauge/eeu1.h \
 	util/gauge/expm12.h util/gauge/expmat.h util/gauge/expsu3.h \
+	util/gauge/eesu3.h \
 	util/gauge/gauge.h \
 	util/gauge/gauge_startup.h \
 	util/gauge/gaugebc_utils.h \
@@ -438,6 +439,7 @@ lib_LIBRARIES = libchroma.a
 libchroma_a_SOURCES = gauge_startup.cc gaugebc_utils.cc gaugeact_utils.cc \
 	       rgauge.cc taproj.cc \
 	       hotst.cc expm12.cc \
+	       eesu3.cc \
                expmat.cc expsu3.cc mesplq.cc polylp.cc reunit.cc unit_check.cc \
                sftmom.cc srcfil.cc \
 	       enum_cfgtype_io.cc \
@@ -480,7 +482,7 @@ libchroma_a_AR = $(AR) cru
 libchroma_a_LIBADD =
 am__libchroma_a_SOURCES_DIST = gauge_startup.cc gaugebc_utils.cc \
 	gaugeact_utils.cc rgauge.cc taproj.cc hotst.cc expm12.cc \
-	expmat.cc expsu3.cc mesplq.cc polylp.cc reunit.cc unit_check.cc \
+	expmat.cc eesu3.cc expsu3.cc mesplq.cc polylp.cc reunit.cc unit_check.cc \
 	sftmom.cc srcfil.cc enum_cfgtype_io.cc enum_coeffs_io.cc \
 	enum_proptype_io.cc enum_eigenvectype_io.cc enum_fermtype_io.cc \
 	enum_seqsrctype_io.cc enum_simplebctype_io.cc \
@@ -655,6 +657,7 @@ am__libchroma_a_SOURCES_DIST = gauge_startup.cc gaugebc_utils.cc \
 am_libchroma_a_OBJECTS = gauge_startup.$(OBJEXT) gaugebc_utils.$(OBJEXT) \
 	gaugeact_utils.$(OBJEXT) rgauge.$(OBJEXT) taproj.$(OBJEXT) \
 	hotst.$(OBJEXT) expm12.$(OBJEXT) expmat.$(OBJEXT) \
+	eesu3.$(OBJEXT) \
 	expsu3.$(OBJEXT) mesplq.$(OBJEXT) polylp.$(OBJEXT) \
 	reunit.$(OBJEXT) unit_check.$(OBJEXT) sftmom.$(OBJEXT) \
 	srcfil.$(OBJEXT) enum_cfgtype_io.$(OBJEXT) \
@@ -736,6 +739,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/enum_wavetype_io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/enum_wvfkind_io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/expm12.Po ./$(DEPDIR)/expmat.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/eesu3.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/expsu3.Po ./$(DEPDIR)/fat7_links_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ferm_refresh.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/fermact_qprop.Po \
@@ -994,6 +998,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_wvfkind_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/expm12.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/expmat.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eesu3.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/expsu3.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fat7_links_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ferm_refresh.Po@am__quote@

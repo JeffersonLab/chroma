@@ -1,9 +1,7 @@
-//  $Id: stout_smear.cc,v 1.2 2004-07-28 02:38:05 edwards Exp $
+//  $Id: stout_smear.cc,v 1.3 2004-10-13 22:17:21 ikuro Exp $
 /*! \file
  *  \brief Stout-link smearing of the gauge configuration
  */
-
-#error "Not finished"
 
 #include "chromabase.h"
 #include "meas/smear/stout_smear.h"
@@ -58,7 +56,12 @@ void stout_smear(LatticeColorMatrix& u_smear,
   // Take the trace-less anti-hermitian projection of the staple
   taproj(u_tmp);
 
+  // Make it Hermitian, traceless
+  // u_tmp = Q in Morningstar/Peardon's paper (hep-lat/0311018)
+  u_tmp = timesMinusI(u_tmp);
+
   // Exactly exponentiate the Lie Algebra matrix
+  // Now u_tmp = exp(iQ)
   expmat(u_tmp,EXP_EXACT);
 
   // Undo the back link
