@@ -1,10 +1,10 @@
-// $Id: t_follana_io_s.cc,v 1.6 2003-10-09 20:36:49 edwards Exp $
+// $Id: t_follana_io_s.cc,v 1.7 2003-10-23 09:46:48 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
 
 #include "chroma.h"
-#include "io/follana_io.h"
+#include "io/follana_io_s.h"
 #include "meas/hadron/mesphas_s.h"
 
 using namespace QDP;

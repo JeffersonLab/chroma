@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.47 2003-10-20 20:18:43 edwards Exp $
+# $Id: Makefile.am,v 1.48 2003-10-23 09:46:48 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -79,7 +79,7 @@ libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
                szin_io.cc readszin.cc writeszin.cc su3proj.cc sun_proj.cc \
                gaus_smear.cc hyp_smear.cc ape_smear.cc \
                klein_gord.cc laplacian.cc  \
-               su2extract.cc sunfill.cc invcg2.cc qprop_io.cc follana_io.cc \
+               su2extract.cc sunfill.cc invcg2.cc qprop_io.cc \
                milc_io.cc readmilc.cc writemilc.cc
 
 #
@@ -111,7 +111,7 @@ endif
 # This is OK since Ns is determined at configure time 
 #
 if BUILD_STAGGERED_LIBS
-libchroma_a_SOURCES += mesphas_s.cc
+libchroma_a_SOURCES += mesphas_s.cc follana_io_s.cc
 endif
 
 
