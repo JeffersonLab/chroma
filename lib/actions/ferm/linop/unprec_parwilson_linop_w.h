@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_parwilson_linop_w.h,v 1.2 2004-12-12 21:22:16 edwards Exp $
+// $Id: unprec_parwilson_linop_w.h,v 1.3 2005-01-11 19:45:49 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator with parity breaking term
  */
@@ -61,6 +61,11 @@ namespace Chroma
 
     //! Apply the operator onto a source vector
     void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const;
+
+    //! Derivative of unpreconditioned ParWilson dM/dU
+    void deriv(multi1d<LatticeColorMatrix>& ds_u, 
+	       const LatticeFermion& chi, const LatticeFermion& psi, 
+	       enum PlusMinus isign) const;
 
   private:
     Real Mass;

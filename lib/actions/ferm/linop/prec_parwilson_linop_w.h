@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_parwilson_linop_w.h,v 1.3 2005-01-11 19:02:55 edwards Exp $
+// $Id: prec_parwilson_linop_w.h,v 1.4 2005-01-11 19:45:49 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion linear operator with parity breaking term
  */
@@ -44,22 +44,12 @@ namespace Chroma
 		const Real& Mass_, const Real& H_);
 
     //! Apply the the even-even block onto a source vector
-    inline
     void evenEvenLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
-		       enum PlusMinus isign) const
-    {
-      chi[rb[0]] = fact*psi + Gamma(Ns*Ns-1)*(H*timesI(psi));
-    }
+		       enum PlusMinus isign) const;
 
     //! Apply the inverse of the even-even block onto a source vector
-    inline 
     void evenEvenInvLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
-			  enum PlusMinus isign) const
-    {
-      //  tmp   =  D'   (1-i isign H gamma_5)   D'    Psi
-      //     O      O,E                          E,O     O
-      chi[rb[0]] = invfact1*psi - Gamma(Ns*Ns-1)*(invfact2*timesI(psi));
-    }
+			  enum PlusMinus isign) const;
   
     //! Apply the the even-odd block onto a source vector
     void evenOddLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
@@ -70,14 +60,11 @@ namespace Chroma
 		      enum PlusMinus isign) const;
 
     //! Apply the the odd-odd block onto a source vector
-    inline 
     void oddOddLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
-		     enum PlusMinus isign) const
-    {
-      chi[rb[0]] = fact*psi + Gamma(Ns*Ns-1)*(H*timesI(psi));
-    }
+		     enum PlusMinus isign) const;
 
     //! Apply the even-even block onto a source vector
+    inline
     void derivEvenEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
 			    const LatticeFermion& chi, const LatticeFermion& psi, 
 			    enum PlusMinus isign) const
@@ -97,6 +84,7 @@ namespace Chroma
 			   enum PlusMinus isign) const;
 
     //! Apply the the odd-odd block onto a source vector
+    inline 
     void derivOddOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
 			  const LatticeFermion& chi, const LatticeFermion& psi, 
 			  enum PlusMinus isign) const
