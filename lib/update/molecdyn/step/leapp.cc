@@ -1,4 +1,4 @@
-// $Id: leapp.cc,v 1.1 2003-12-30 19:52:28 edwards Exp $
+// $Id: leapp.cc,v 1.2 2003-12-31 23:47:55 edwards Exp $
 
 #error "NOT FULLY CONVERTED - NEED TO MOVE GLOBAL PARAMS INTO FUNCTOR"
 
@@ -46,7 +46,7 @@ void LeapP(const multi1d<LatticeColorMatrix>& u,
     else if (FermTypeP == STAGGERED_FERMIONS)
       FerFactor = Nf/Real(4*Npf);
 
-    dummy = dummy/FerFactor;
+    dummy /= FerFactor;
   }
   /* Note that the 1/FerFactor will be removed from this gauge    */
   /* part contribution once the fermionic part is included.       */

@@ -1,4 +1,4 @@
-// $Id: leappmx.cc,v 1.1 2003-12-30 19:52:28 edwards Exp $
+// $Id: leappmx.cc,v 1.2 2003-12-31 23:47:55 edwards Exp $
 
 #error "NOT FULLY CONVERTED - NEED TO MOVE GLOBAL PARAMS INTO FUNCTOR"
 
@@ -38,7 +38,7 @@ void LeapPMX(multi1d<LatticeColorMatrix>& u,
 	     const Real& eps1,
 	     const Real& eps2,
 	     bool EndP,
-	     int n_count,
+	     int& n_count,
 	     Double& ke,		        /* kinetic energy */
 	     Double& pe,		        /* potential energy */
 	     Double& fe,		        /* fermionic energy */
@@ -46,7 +46,6 @@ void LeapPMX(multi1d<LatticeColorMatrix>& u,
 {
   START_CODE("LeapPMX");
 
-  multi1d<LatticeColorMatrix> p_mom_t(Nd);  /* temp. mom. for inc. steps */
   Real RsdCG;                  /* Temporary for residual */
   Double ke_t;		      /* kinetic energy for least accurate inv. */
   Double pe_t;		      /* potential energy for least accurate inversion */
@@ -105,6 +104,8 @@ void LeapPMX(multi1d<LatticeColorMatrix>& u,
   {
     if ( RsdCGMD < RsdCGMDMax && PolyEvolP == NO && RatEvolP == NO)
     {
+      multi1d<LatticeColorMatrix> p_mom_t(Nd);  /* temp. mom. for inc. steps */
+
       /* Calculate the energies at the least accurate residual */
       MesE (u, p_mom, chi, psi, BetaMD, KappaMD, ke_t, pe_t, fe_t, Npf, nn_count);
       n_count = n_count + nn_count;
