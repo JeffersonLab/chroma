@@ -1,10 +1,14 @@
-// $Id: spectrum_w.cc,v 1.10 2003-09-10 18:04:22 edwards Exp $
+// $Id: spectrum_w.cc,v 1.11 2003-10-01 20:23:46 edwards Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.10  2003-09-10 18:04:22  edwards
+//  Revision 1.11  2003-10-01 20:23:46  edwards
+//  Now supports baryons and currents. Changed reading to use a
+//  structure. Pushed all control vars to this structure.
+//
+//  Revision 1.10  2003/09/10 18:04:22  edwards
 //  Changed to new form of XMLReader - a clone.
 //
 //  Revision 1.9  2003/09/02 15:52:02  edwards
@@ -58,23 +62,22 @@ enum FermType {
   FERM_TYPE_UNKNOWN
 };
 
-int main(int argc, char **argv)
+
+/*
+ * Input 
+ */
+struct IO_version_t
 {
-  // Put the machine into a known state
-  QDP_initialize(&argc, &argv);
+  int version;
+};
 
-  int i, j;
-
-  // Parameters which must be determined from the namelist input
-  // and written to the namelist output
-
-  int version;              // input parameter version
-
-  FermType FermTypeP;
-  // GTF GRIPE: I would prefer masses rather than kappa values here,
-  //   but I'll save that for another day.
-  int numKappa;            // number of Wilson masses
-  multi1d<Real> Kappa;     // array of Wilson mass values
+// Parameters which must be determined from the XML input
+// and written to the XML output
+struct Param_t
+{
+  FermType     FermTypeP;
+  int          numKappa;   // number of Wilson masses
+  multi1d<Real>  Kappa;    // array of Wilson mass values - someday use a mass instead
 
   CfgType cfg_type;        // storage order for stored gauge configuration
   int j_decay;             // direction to measure propagation
@@ -85,6 +88,11 @@ int main(int argc, char **argv)
   bool Sl_snk;             // shell sink
 
   bool MesonP;             // Meson spectroscopy
+  bool CurrentP;           // Meson currents
+  bool BaryonP;            // Baryons spectroscopy
+
+  bool time_rev;           // Use time reversal in baryon spectroscopy
+
 
   int mom2_max;            // (mom)^2 <= mom2_max. mom2_max=7 in szin.
   bool avg_equiv_mom;      // average over equivalent momenta
@@ -95,460 +103,305 @@ int main(int argc, char **argv)
   //   terminate CG inversion for Wuppertal smearing
 
   multi1d<int> disk_prop;
-  multi1d<int> nrow(Nd);
-  multi1d<int> boundary(Nd);
-  multi1d<int> t_srce(Nd);
+  multi1d<int> nrow;
+  multi1d<int> boundary;
+  multi1d<int> t_srce;
+};
 
-  string cfg_file;
+struct Cfg_t
+{
+  string       cfg_file;
+};
 
-  // Instantiate namelist reader for DATA
-  XMLReader xml_in("DATA");
-  string xml_in_root = "/spectrum_w";
+struct Input_t
+{
+  IO_version_t     io_version;
+  Param_t          param;
+  Cfg_t            cfg;
+};
+
+
+// Reader for input parameters
+void read(XMLReader& xml, const string& path, Input_t& input)
+{
+  XMLReader inputtop(xml, path);
+
+  // Defaults
+  input.param.time_rev = false;
+  input.param.CurrentP = false;
+  input.param.BaryonP  = false;
+
 
   // First, read the input parameter version.  Then, if this version
   // includes 'Nc' and 'Nd', verify they agree with values compiled
   // into QDP++
 
   // Read in the IO_version
-  read(xml_in, xml_in_root + "/IO_version/version", version);
-
-
-  QDP_info("version = %d",version);
-
-  switch (version) 
+  try
   {
-
-    /**************************************************************************/
-  case 5 :
-    /**************************************************************************/
-    try
-    {
-      XMLReader xml(xml_in, xml_in_root + "/param"); // push into 'param' group
-
-      {
-	int input_Nc;
-	read(xml, "Nc", input_Nc);
-
-	if (input_Nc != Nc) {
-	  cerr << "Input parameter Nc=" << input_Nc \
-	       <<  " different from qdp++ value." << endl;
-	  QDP_abort(1);
-	}
-
-	int input_Nd;
-	read(xml, "Nd", input_Nd);
-
-	if (input_Nd != Nd) {
-	  cerr << "Input parameter Nd=" << input_Nd \
-	       << " different from qdp++ value." << endl;
-	  QDP_abort(1);
-	}
-
-	int ferm_type_int;
-	read(xml, "FermTypeP", ferm_type_int);
-	switch (ferm_type_int) {
-	case 1 :
-	  FermTypeP = FERM_TYPE_WILSON;
-	  break;
-	default :
-	  FermTypeP = FERM_TYPE_UNKNOWN;
-	}
-      }
-
-      // GTF NOTE: I'm going to switch on FermTypeP here because I want
-      // to leave open the option of treating masses differently.
-      switch (FermTypeP) {
-      case FERM_TYPE_WILSON :
-
-	cout << " SPECTRUM_W: Spectroscopy for Wilson fermions" << endl;
-
-	Read(xml, numKappa);
-
-	Kappa.resize(numKappa);
-	Read(xml, Kappa);
-
-	for (i=0; i < numKappa; ++i) {
-	  if (toBool(Kappa[i] < 0.0)) {
-	    cerr << "Unreasonable value for Kappa." << endl;
-	    cerr << "  Kappa[" << i << "] = " << Kappa[i] << endl;
-	    QDP_abort(1);
-	  } else {
-	    cout << " Spectroscopy Kappa: " << Kappa[i] << endl;
-	  }
-	}
-
-	break;
-
-      default :
-	cerr << "Fermion type not supported." << endl;
-	if (FermTypeP == FERM_TYPE_UNKNOWN) {
-	  cerr << "  FermTypeP = UNKNOWN" << endl;
-	}
-	QDP_abort(1);
-      }
-
-      {
-	int input_cfg_type;
-	read(xml, "cfg_type", input_cfg_type);
-	switch (input_cfg_type) {
-	case 1 :
-	  cfg_type = CFG_TYPE_SZIN;
-	  break;
-	default :
-	  cfg_type = CFG_TYPE_UNKNOWN;
-	}
-      }
-
-      Read(xml, j_decay);
-      if (j_decay < 0 || j_decay >= Nd) {
-	cerr << "Bad value: j_decay = " << j_decay << endl;
-	QDP_abort(1);
-      }
-
-      Read(xml, Pt_src);
-      Read(xml, Sl_src);
-      Read(xml, Pt_snk);
-      Read(xml, Sl_snk);
-
-      Read(xml, MesonP);
-
-      read(xml, "num_mom", mom2_max);
-
-      // GTF: avg_equiv_mom not part of version 5, true by default
-      avg_equiv_mom = true;
-
-      {
-	int input_wvf_kind;
-	read(xml, "Wvf_kind", input_wvf_kind);
-	switch (input_wvf_kind) {
-	case 3 :
-	  Wvf_kind = WVF_KIND_GAUGE_INV_GAUSSIAN;
-	  break;
-	default :
-	  cerr << "Unsupported gauge-invariant Wvf_kind." << endl;
-	  cerr << "  Wvf_kind = " << input_wvf_kind << endl;
-	  QDP_abort(1);
-	}
-      }
-
-      wvf_param.resize(numKappa);
-      Read(xml, wvf_param);
-
-      WvfIntPar.resize(numKappa);
-      Read(xml, WvfIntPar);
-
-      disk_prop.resize(numKappa);
-      Read(xml, disk_prop);
-      for (i=0; i<numKappa; ++i) {
-	if (toBool(disk_prop[i] != 1)) {
-	  cerr << "Only propagators on disk are supported." << endl;
-	  cerr << "  disk_prop[" << i << "] = " << disk_prop[i] << endl;
-	  QDP_abort(1);
-	}
-      }
-
-      Read(xml, nrow);
-      Read(xml, boundary);
-      Read(xml, t_srce);
-
-      // Read in the gauge configuration file name
-      read(xml_in, xml_in_root + "/Cfg/cfg_file", cfg_file);
-    
-    }
-    catch (const string& e) 
-    {
-      cerr << "Error reading data: " << e << endl;
-      throw;
-    }
-    break;
-
-    /**************************************************************************/
-  case 6 :
-    /**************************************************************************/
-    QDP_info("try version 6");
-
-    try 
-    {
-      XMLReader xml(xml_in, xml_in_root + "/param"); // push into 'param' group
-
-      QDP_info("just constructed xml");
-
-      {
-	int input_Nc;
-	read(xml, "Nc", input_Nc);
-	
-	if (input_Nc != Nc) {
-	  cerr << "Input parameter Nc=" << input_Nc \
-	       <<  " different from qdp++ value." << endl;
-	  QDP_abort(1);
-	}
-
-	QDP_info("input_Nc = %d",input_Nc);
-
-	int input_Nd;
-	read(xml, "Nd", input_Nd);
-
-	if (input_Nd != Nd) {
-	  cerr << "Input parameter Nd=" << input_Nd \
-	       << " different from qdp++ value." << endl;
-	  QDP_abort(1);
-	}
-
-	string ferm_type_str;
-	read(xml, "FermTypeP", ferm_type_str);
-	if (ferm_type_str == "WILSON") {
-	  FermTypeP = FERM_TYPE_WILSON;
-	} else {
-	  FermTypeP = FERM_TYPE_UNKNOWN;
-	}
-      }
-
-      // GTF NOTE: I'm going to switch on FermTypeP here because I want
-      // to leave open the option of treating masses differently.
-      switch (FermTypeP) {
-      case FERM_TYPE_WILSON :
-
-//	cout << " SPECTRUM_W: Spectroscopy for Wilson fermions" << endl;
-	QDP_info(" SPECTRUM_W: Spectroscopy for Wilson fermions");
-
-	Read(xml, numKappa);
-
-	Kappa.resize(numKappa);
-	Read(xml, Kappa);
-
-	for (i=0; i < numKappa; ++i) {
-	  if (toBool(Kappa[i] < 0.0)) {
-	    cerr << "Unreasonable value for Kappa." << endl;
-	    cerr << "  Kappa[" << i << "] = " << Kappa[i] << endl;
-	    QDP_abort(1);
-	  } else {
-	    cout << " Spectroscopy Kappa: " << Kappa[i] << endl;
-	  }
-	}
-
-	break;
-
-      default :
-	cerr << "Fermion type not supported." << endl;
-	if (FermTypeP == FERM_TYPE_UNKNOWN) {
-	  cerr << "  FermTypeP = UNKNOWN" << endl;
-	}
-	QDP_abort(1);
-      }
-
-      {
-	string cfg_type_str;
-	read(xml, "cfg_type", cfg_type_str);
-	if (cfg_type_str == "SZIN") {
-	  cfg_type = CFG_TYPE_SZIN;
-	} else {
-	  cfg_type = CFG_TYPE_UNKNOWN;
-	}
-      }
-
-      Read(xml, j_decay);
-      if (j_decay < 0 || j_decay >= Nd) {
-	cerr << "Bad value: j_decay = " << j_decay << endl;
-	QDP_abort(1);
-      }
-
-      Read(xml, Pt_src);
-      Read(xml, Sl_src);
-      Read(xml, Pt_snk);
-      Read(xml, Sl_snk);
-
-      Read(xml, MesonP);
-
-      Read(xml, mom2_max);
-      Read(xml, avg_equiv_mom);
-
-      {
-	string wvf_kind_str;
-	read(xml, "Wvf_kind", wvf_kind_str);
-	if (wvf_kind_str == "GAUGE_INV_GAUSSIAN") {
-	  Wvf_kind = WVF_KIND_GAUGE_INV_GAUSSIAN;
-	} else {
-	  cerr << "Unsupported gauge-invariant Wvf_kind." << endl;
-	  cerr << "  Wvf_kind = " << wvf_kind_str << endl;
-	  QDP_abort(1);
-	}
-      }
-
-      wvf_param.resize(numKappa);
-      Read(xml, wvf_param);
-
-      WvfIntPar.resize(numKappa);
-      Read(xml, WvfIntPar);
-
-      Read(xml, nrow);
-      Read(xml, boundary);
-      Read(xml, t_srce);
-
-      // Read in the gauge configuration file name
-      read(xml_in, xml_in_root + "/Cfg/cfg_file", cfg_file);
-    }
-    catch (const string& e) 
-    {
-      cerr << "Error reading data: " << e << endl;
-      throw;
-    }
-    break;
-
-    /**************************************************************************/
-  default :
-    /**************************************************************************/
-
-    cerr << "Input parameter version " << version << " unsupported." << endl;
-    QDP_abort(1);
+    read(inputtop, "IO_version/version", input.io_version.version);
+  }
+  catch (const string& e) 
+  {
+    cerr << "Error reading data: " << e << endl;
+    throw;
   }
 
-  xml_in.close();
 
-  QDP_info("xml_in closed");
+  // Currently, in the supported IO versions, there is only a small difference
+  // in the inputs. So, to make code simpler, extract the common bits 
+
+  // Read the uncommon bits first
+  try
+  {
+    XMLReader paramtop(inputtop, "param"); // push into 'param' group
+
+    switch (input.io_version.version) 
+    {
+      /**************************************************************************/
+    case 6 :
+      /**************************************************************************/
+      break;
+
+    case 7:
+      /**************************************************************************/
+      read(paramtop, "CurrentP", input.param.CurrentP);
+      read(paramtop, "BaryonP", input.param.BaryonP);
+      break;
+
+    default :
+      /**************************************************************************/
+
+      cerr << "Input parameter version " << input.io_version.version << " unsupported." << endl;
+      QDP_abort(1);
+    }
+  }
+  catch (const string& e) 
+  {
+    cerr << "Error reading data: " << e << endl;
+    throw;
+  }
 
 
+  // Read the common bits
+  try 
+  {
+    XMLReader paramtop(inputtop, "param"); // push into 'param' group
+
+    {
+      int input_Nc;
+      read(paramtop, "Nc", input_Nc);
+	
+      if (input_Nc != Nc) {
+	cerr << "Input parameter Nc=" << input_Nc \
+	     <<  " different from qdp++ value." << endl;
+	QDP_abort(1);
+      }
+
+      int input_Nd;
+      read(paramtop, "Nd", input_Nd);
+
+      if (input_Nd != Nd) {
+	cerr << "Input parameter Nd=" << input_Nd \
+	     << " different from qdp++ value." << endl;
+	QDP_abort(1);
+      }
+
+      string ferm_type_str;
+      read(paramtop, "FermTypeP", ferm_type_str);
+      if (ferm_type_str == "WILSON") {
+	input.param.FermTypeP = FERM_TYPE_WILSON;
+      } else {
+	input.param.FermTypeP = FERM_TYPE_UNKNOWN;
+      }
+    }
+
+    // GTF NOTE: I'm going to switch on FermTypeP here because I want
+    // to leave open the option of treating masses differently.
+    switch (input.param.FermTypeP) {
+    case FERM_TYPE_WILSON :
+
+//	cout << " SPECTRUM_W: Spectroscopy for Wilson fermions" << endl;
+      QDP_info(" SPECTRUM_W: Spectroscopy for Wilson fermions");
+
+      read(paramtop, "numKappa", input.param.numKappa);
+      read(paramtop, "Kappa", input.param.Kappa);
+
+      for (int i=0; i < input.param.numKappa; ++i) {
+	if (toBool(input.param.Kappa[i] < 0.0)) {
+	  cerr << "Unreasonable value for Kappa." << endl;
+	  cerr << "  Kappa[" << i << "] = " << input.param.Kappa[i] << endl;
+	  QDP_abort(1);
+	} else {
+	  cout << " Spectroscopy Kappa: " << input.param.Kappa[i] << endl;
+	}
+      }
+
+      break;
+
+    default :
+      cerr << "Fermion type not supported." << endl;
+      if (input.param.FermTypeP == FERM_TYPE_UNKNOWN) {
+	cerr << "  FermTypeP = UNKNOWN" << endl;
+      }
+      QDP_abort(1);
+    }
+
+    {
+      string cfg_type_str;
+      read(paramtop, "cfg_type", cfg_type_str);
+      if (cfg_type_str == "SZIN") {
+	input.param.cfg_type = CFG_TYPE_SZIN;
+      } else {
+	input.param.cfg_type = CFG_TYPE_UNKNOWN;
+      }
+    }
+
+    read(paramtop, "j_decay", input.param.j_decay);
+    if (input.param.j_decay < 0 || input.param.j_decay >= Nd) {
+      cerr << "Bad value: j_decay = " << input.param.j_decay << endl;
+      QDP_abort(1);
+    }
+
+    read(paramtop, "Pt_src", input.param.Pt_src);
+    read(paramtop, "Sl_src", input.param.Sl_src);
+    read(paramtop, "Pt_snk", input.param.Pt_snk);
+    read(paramtop, "Sl_snk", input.param.Sl_snk);
+
+    read(paramtop, "MesonP", input.param.MesonP);
+
+    read(paramtop, "mom2_max", input.param.mom2_max);
+    read(paramtop, "avg_equiv_mom", input.param.avg_equiv_mom);
+
+    {
+      string wvf_kind_str;
+      read(paramtop, "Wvf_kind", wvf_kind_str);
+      if (wvf_kind_str == "GAUGE_INV_GAUSSIAN") {
+	input.param.Wvf_kind = WVF_KIND_GAUGE_INV_GAUSSIAN;
+      } else {
+	cerr << "Unsupported gauge-invariant Wvf_kind." << endl;
+	cerr << "  Wvf_kind = " << wvf_kind_str << endl;
+	QDP_abort(1);
+      }
+    }
+
+    read(paramtop, "wvf_param", input.param.wvf_param);
+    read(paramtop, "WvfIntPar", input.param.WvfIntPar);
+
+    read(paramtop, "nrow", input.param.nrow);
+    read(paramtop, "boundary", input.param.boundary);
+    read(paramtop, "t_srce", input.param.t_srce);
+  }
+  catch (const string& e) 
+  {
+    cerr << "Error reading data: " << e << endl;
+    throw;
+  }
+
+
+
+  // Read in the gauge configuration file name
+  try
+  {
+    read(inputtop, "Cfg/cfg_file",input.cfg.cfg_file);
+  }
+  catch (const string& e) 
+  {
+    cerr << "Error reading data: " << e << endl;
+    throw;
+  }
+}
+
+
+//
+// Main program
+//
+int main(int argc, char **argv)
+{
+  // Put the machine into a known state
+  QDP_initialize(&argc, &argv);
+
+  // Input parameter structure
+  Input_t  input;
+
+  // Instantiate xml reader for DATA
+  XMLReader xml_in("DATA");
+
+  // Read data
+  read(xml_in, "/Input", input);
+
+  // Specify lattice size, shape, etc.
+  Layout::setLattSize(input.param.nrow);
+  Layout::create();
+
+  /*
+   * Sanity checks
+   */
   // Check that only one type of source smearing is specified
   // Must match how the stored propagator was smeared
-  if ((Pt_src == true) && (Sl_src == true)) {
+  if (input.param.Pt_src && input.param.Sl_src) {
     cerr << "Error if Pt_src and Sl_src are both set." << endl;
     cerr << "Choose the one which matches the stored propagators." << endl;
     QDP_abort(1);
   }
 
-  // Specify lattice size, shape, etc.
-  Layout::setLattSize(nrow);
-  Layout::create();
-
   // Figure out what to do about boundary conditions
   // GTF HACK: only allow periodic boundary conditions
-  for (i=0; i<Nd; ++i) {
-    if (boundary[i] != 1) {
+  for (int i=0; i<Nd; ++i) {
+    if (input.param.boundary[i] != 1) {
       cerr << "Only periodic boundary conditions supported." << endl;
-      cerr << "  boundary[" << i << "] = " << boundary[i] << endl;
+      cerr << "  boundary[" << i << "] = " << input.param.boundary[i] << endl;
       QDP_abort(1);
     }
   }
 
-  for (i=0; i<Nd; ++i) {
-    if (t_srce[i] < 0 || t_srce[i] >= nrow[i]) {
+  for (int i=0; i<Nd; ++i) {
+    if (input.param.t_srce[i] < 0 || input.param.t_srce[i] >= input.param.nrow[i]) {
       cerr << "Quark propagator source coordinate incorrect." << endl;
-      cerr << "t_srce[" << i << "] = " << t_srce[i] << endl;
+      cerr << "t_srce[" << i << "] = " << input.param.t_srce[i] << endl;
       QDP_abort(1);
     }
   }
+
 
   cout << endl << "     Gauge group: SU(" << Nc << ")" << endl;
 
   multi1d<LatticeColorMatrix> u(Nd);
 
-  cout << "     volume: " << nrow[0];
-  for (i=1; i<Nd; ++i) {
-    cout << " x " << nrow[i];
+  cout << "     volume: " << input.param.nrow[0];
+  for (int i=1; i<Nd; ++i) {
+    cout << " x " << input.param.nrow[i];
   }
   cout << endl;
 
   // Read in the configuration along with relevant information.
   XMLReader gauge_xml;
 
-  switch (cfg_type) 
+  switch (input.param.cfg_type) 
   {
   case CFG_TYPE_SZIN :
-    readSzin(gauge_xml, u, cfg_file);
+    readSzin(gauge_xml, u, input.cfg.cfg_file);
     break;
   default :
     QDP_error_exit("Configuration type is unsupported.");
   }
 
-  // Instantiate namelist writer for XMLDAT
-  XMLFileWriter xml_out("XMLDAT");
 
+  // Instantiate XML writer for XMLDAT
+  XMLFileWriter xml_out("XMLDAT");
   push(xml_out, "spectrum_w");
 
-  // Write out configuration data to namelist output
-  push(xml_out, "IO_version");
-  Write(xml_out, version);
-  pop(xml_out);
-
-  xml_out.flush();
-
-  push(xml_out, "Output_version");
-  write(xml_out, "out_version", 5);
-  pop(xml_out);
-
-  push(xml_out, "param");
-
-  // was "param1"
-  switch (FermTypeP) {
-  case FERM_TYPE_WILSON :
-    write(xml_out, "FermTypeP", "WILSON");
-    break;
-  default :
-    write(xml_out, "FermTypeP", "UNKNOWN");
-  }
-  Write(xml_out, Nd);
-  Write(xml_out, Nc);
-  Write(xml_out, Ns);
-  Write(xml_out, numKappa);
-  Write(xml_out, Kappa);
-
-  // was "param2"
-
-  // was "param3"
-  switch (cfg_type) {
-  case CFG_TYPE_SZIN :
-    write(xml_out, "cfg_type", "SZIN");
-    break;
-  default :
-    write(xml_out, "cfg_type", "UNKNOWN");
-  }
-  Write(xml_out, j_decay);
-
-  // was "param4"
-
-  // was "param5"
-  Write(xml_out, Pt_src);
-  Write(xml_out, Sl_src);
-  Write(xml_out, Pt_snk);
-  Write(xml_out, Sl_snk);
-
-  // was "param6"
-  switch (Wvf_kind) {
-  case WVF_KIND_GAUGE_INV_GAUSSIAN :
-    write(xml_out, "Wvf_kind", "GAUGE_INV_GAUSSIAN");
-    break;
-  default :
-    write(xml_out, "Wvf_kind", "UNKNOWN");
-  }
-  Write(xml_out, wvf_param);
-  Write(xml_out, WvfIntPar);
-
-  // was "param7"
-  // GTF: don't bother since disk_prop is always true
-  //Write(xml_out, disk_prop);
-
-  // was "param8"
-
-  // was "param9"
-  Write(xml_out, MesonP);
-
-  // was "param10"
-
-  // before seed, write out mom2_max and avg_equiv_mom
-  Write(xml_out, mom2_max);
-  Write(xml_out, avg_equiv_mom);
-
-  pop(xml_out);
-
-  push(xml_out, "lattis");
-  Write(xml_out, nrow);
-  Write(xml_out, boundary);
-  Write(xml_out, t_srce);
-  pop(xml_out);
+  xml_out << xml_in;     // save a copy of the input
 
   // Write out the config info
-  write(xml_out, "config_info", gauge_xml);
+  write(xml_out, "Config_info", gauge_xml);
+
+  push(xml_out, "Output_version");
+  write(xml_out, "out_version", 6);
+  pop(xml_out);
 
   xml_out.flush();
+
 
   // First calculate some gauge invariant observables just for info.
   // This is really cheap.
@@ -577,14 +430,19 @@ int main(int argc, char **argv)
   }
 
   // Initialize the slow Fourier transform phases
-  SftMom phases(mom2_max, avg_equiv_mom, j_decay);
+  SftMom phases(input.param.mom2_max, input.param.avg_equiv_mom, input.param.j_decay);
 
   // Keep an array of all the xml output buffers
-  XMLArrayWriter xml_array(xml_out,numKappa);
+  XMLArrayWriter xml_array(xml_out,input.param.numKappa);
   push(xml_array, "Wilson_hadron_measurements");
 
+
+  // Flags
+  int t0      = input.param.t_srce[input.param.j_decay];
+  int bc_spec = input.param.boundary[input.param.j_decay];
+
   // Now loop over the various fermion masses
-  for (int loop=0; loop < numKappa; ++loop)
+  for (int loop=0; loop < input.param.numKappa; ++loop)
   {
     // Read the quark propagator
     LatticePropagator quark_propagator;
@@ -597,40 +455,100 @@ int main(int argc, char **argv)
 
     push(xml_array);         // next array element - name auto-written
     Write(xml_array, loop);
-    write(xml_array, "Kappa_mes", Kappa[loop]);
-    Write(xml_array, t_srce);
+    write(xml_array, "Kappa_mes", input.param.Kappa[loop]);
+    write(xml_array, "t_srce", input.param.t_srce);
 
-    // Do Point sink hadrons and the currents first
-    if (MesonP == true) {
+    // Do the mesons first
+    if (input.param.MesonP) 
+    {
       // Construct {Point|Shell}-Point mesons, if desired
-      if (Pt_snk == true) {
-        if (Pt_src == true) {
-          mesons(quark_propagator, quark_propagator, phases, t_srce[j_decay],
-                 xml_array, "Point_Point_Wilson_Mesons");
-        } else if (Sl_src == true) {
-          mesons(quark_propagator, quark_propagator, phases, t_srce[j_decay],
-                 xml_array, "Shell_Point_Wilson_Mesons");
-        }
+      if (input.param.Pt_snk) 
+      {
+	if (input.param.Pt_src)
+	  mesons(quark_propagator, quark_propagator, phases, t0,
+		 xml_array, "Point_Point_Wilson_Mesons");
+        
+	if (input.param.Sl_src)
+	  mesons(quark_propagator, quark_propagator, phases, t0,
+		 xml_array, "Shell_Point_Wilson_Mesons");
       } // end if (Pt_snk)
 
       // Convolute the quark propagator with the sink smearing function.
       // Make a copy of the quark propagator and then overwrite it with
       // the convolution. 
-      if (Sl_snk == true) {
-        LatticePropagator quark_prop_smr;
-        quark_prop_smr = quark_propagator;
-        sink_smear2(u, quark_prop_smr, Wvf_kind, wvf_param[loop],
-                    WvfIntPar[loop], j_decay);
-        if (Pt_src == true) {
-          mesons(quark_prop_smr, quark_prop_smr, phases, t_srce[j_decay],
-                 xml_array, "Point_Shell_Wilson_Mesons");
-        } else if (Sl_src == true) {
-          mesons(quark_prop_smr, quark_prop_smr, phases, t_srce[j_decay],
-                 xml_array, "Shell_Shell_Wilson_Mesons");
-        }
+      if (input.param.Sl_snk) 
+      {
+	LatticePropagator quark_prop_smr;
+	quark_prop_smr = quark_propagator;
+	sink_smear2(u, quark_prop_smr, input.param.Wvf_kind, input.param.wvf_param[loop],
+		    input.param.WvfIntPar[loop], input.param.j_decay);
+
+	if (input.param.Pt_src)
+	  mesons(quark_prop_smr, quark_prop_smr, phases, t0,
+		 xml_array, "Point_Shell_Wilson_Mesons");
+
+	if (input.param.Sl_src)
+	  mesons(quark_prop_smr, quark_prop_smr, phases, t0,
+		 xml_array, "Shell_Shell_Wilson_Mesons");
       } // end if (Sl_snk)
 
     } // end if (MesonP)
+
+
+    // Do the currents next
+    if (input.param.CurrentP) 
+    {
+      // Construct the rho vector-current and the pion axial current divergence
+      if (input.param.Pt_src)
+	curcor2(u, quark_propagator, quark_propagator, phases, 
+		t0, input.param.j_decay, 4,
+		xml_array, "Point_Point_Meson_Currents");
+        
+      if (input.param.Sl_src)
+	curcor2(u, quark_propagator, quark_propagator, phases, 
+		t0, input.param.j_decay, 4,
+		xml_array, "Shell_Point_Meson_Currents");
+    } // end if (CurrentP)
+
+
+    // Do the baryons
+    if (input.param.BaryonP) 
+    {
+      // Construct {Point|Shell}-Point mesons, if desired
+      if (input.param.Pt_snk) 
+      {
+	if (input.param.Pt_src)
+	  baryon(quark_propagator, phases, 
+		 t0, bc_spec, input.param.time_rev, 
+		 xml_array, "Point_Point_Wilson_Baryons");
+        
+	if (input.param.Sl_src)
+	  baryon(quark_propagator, phases, 
+		 t0, bc_spec, input.param.time_rev, 
+		 xml_array, "Shell_Point_Wilson_Baryons");
+      } // end if (Pt_snk)
+
+      // Convolute the quark propagator with the sink smearing function.
+      // Make a copy of the quark propagator and then overwrite it with
+      // the convolution. 
+      if (input.param.Sl_snk) 
+      {
+	LatticePropagator quark_prop_smr;
+	quark_prop_smr = quark_propagator;
+	sink_smear2(u, quark_prop_smr, input.param.Wvf_kind, input.param.wvf_param[loop],
+		    input.param.WvfIntPar[loop], input.param.j_decay);
+	if (input.param.Pt_src)
+	  baryon(quark_propagator, phases, 
+		 t0, bc_spec, input.param.time_rev, 
+		 xml_array, "Point_Shell_Wilson_Baryons");
+        
+	if (input.param.Sl_src)
+	  baryon(quark_propagator, phases, 
+		 t0, bc_spec, input.param.time_rev, 	
+		 xml_array, "Shell_Shell_Wilson_Baryons");
+      } // end if (Sl_snk)
+
+    } // end if (BaryonP)
 
     pop(xml_array);  // array element
 
@@ -640,6 +558,7 @@ int main(int argc, char **argv)
   pop(xml_out);  // spectrum_w
 
   xml_out.close();
+  xml_in.close();
 
   // Time to bolt
   QDP_finalize();
