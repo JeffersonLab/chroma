@@ -1,4 +1,4 @@
-// $Id: prec_dwf_linop_array_w.cc,v 1.2 2003-11-23 06:04:56 edwards Exp $
+// $Id: prec_dwf_linop_array_w.cc,v 1.3 2003-11-23 06:14:38 edwards Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned domain-wall linear operator
  */
