@@ -1,8 +1,11 @@
 // -*- C++ -*-
-// $Id: su3proj.h,v 1.1 2003-03-28 03:53:39 edwards Exp $
+// $Id: su3proj.h,v 1.2 2003-12-29 19:49:17 edwards Exp $
+/*! \file
+ *  \brief Project a complex Nc x Nc matrix W onto SU(Nc) by maximizing Tr(VW)
+ */
 
-#ifndef __su3proj__
-#define __su3proj__
+#ifndef __su3proj_h__
+#define __su3proj_h__
 
 //! Project a GL(3,C) color matrix onto SU(3)
 /*!
