@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stag_fermact_s.h,v 1.2 2004-03-29 21:32:28 edwards Exp $
+// $Id: stag_fermact_s.h,v 1.3 2004-11-06 13:00:24 mcneile Exp $
 /*! \file
  *  \brief Staggered fermion action
  */
@@ -16,11 +16,11 @@ using namespace QDP;
  *
  */
 
-class StagFermAct : public EvenOddStaggeredTypeFermAct<LatticeFermion>
+class StagFermAct : public EvenOddStaggeredTypeFermAct<LatticeStaggeredFermion>
 {
 public:
   //! General FermBC
-  StagFermAct(Handle< FermBC<LatticeFermion> > fbc_, 
+  StagFermAct(Handle< FermBC<LatticeStaggeredFermion> > fbc_, 
 	      const Real& Mass_) : 
     fbc(fbc_), Mass(Mass_) {}
 
@@ -36,18 +36,18 @@ public:
   const Real getQuarkMass() const {return Mass;}
 
   //! Return the fermion BC object for this action
-  const FermBC<LatticeFermion>& getFermBC() const {return *fbc;}
+  const FermBC<LatticeStaggeredFermion>& getFermBC() const {return *fbc;}
 
   //! Produce a linear operator for this action
-  const LinearOperator<LatticeFermion>* linOp(Handle<const ConnectState> state) const;
+  const LinearOperator<LatticeStaggeredFermion>* linOp(Handle<const ConnectState> state) const;
 
   //! Produce a linear operator M^dag.M for this action
-  const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state) const;
+  const LinearOperator<LatticeStaggeredFermion>* lMdagM(Handle<const ConnectState> state) const;
 
   //! Compute dS_f/dU
   void dsdu(multi1d<LatticeColorMatrix>& result,
 	    Handle<const ConnectState> state,
-	    const LatticeFermion& psi) const;
+	    const LatticeStaggeredFermion& psi) const;
 
   //! Destructor is automatic
   ~StagFermAct() {}
@@ -56,7 +56,7 @@ private:
   StagFermAct() {} //hide default constructor
   
 private:
-  Handle< FermBC<LatticeFermion> >  fbc;
+  Handle< FermBC<LatticeStaggeredFermion> >  fbc;
   Real Mass;
 };
 

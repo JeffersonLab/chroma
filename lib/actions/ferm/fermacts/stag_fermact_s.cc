@@ -1,4 +1,4 @@
-// $Id: stag_fermact_s.cc,v 1.3 2004-07-28 02:38:01 edwards Exp $
+// $Id: stag_fermact_s.cc,v 1.4 2004-11-06 13:00:24 mcneile Exp $
 /*! \file
  *  \brief Staggered fermion action
  */
@@ -14,7 +14,7 @@
  *
  * \param state	    gauge field     	       (Read)
  */
-const LinearOperator<LatticeFermion>*
+const LinearOperator<LatticeStaggeredFermion>*
 StagFermAct::linOp(Handle<const ConnectState> state) const
 {
   return new StagLinOp(state->getLinks(), Mass); 
@@ -26,7 +26,7 @@ StagFermAct::linOp(Handle<const ConnectState> state) const
  *
  * \param state    gauge field     	       (Read)
  */
-const LinearOperator<LatticeFermion>*
+const LinearOperator<LatticeStaggeredFermion>*
 StagFermAct::lMdagM(Handle<const ConnectState> state) const
 {
   return new StagMdagMLinOp(state->getLinks(), Mass);
@@ -53,13 +53,13 @@ StagFermAct::lMdagM(Handle<const ConnectState> state) const
 void
 StagFermAct::dsdu(multi1d<LatticeColorMatrix> & ds_u,
 		  Handle<const ConnectState> state,
-		  const LatticeFermion& psi) const
+		  const LatticeStaggeredFermion& psi) const
 {
-  LatticeFermion u_psi;
-  LatticeFermion rho;
-  LatticeFermion u_rho;
+  LatticeStaggeredFermion u_psi;
+  LatticeStaggeredFermion rho;
+  LatticeStaggeredFermion u_rho;
 
-  LatticeFermion tmp_1;
+  LatticeStaggeredFermion tmp_1;
   Real dummy;
   int mu;
   int cb;

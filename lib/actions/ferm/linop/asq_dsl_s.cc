@@ -1,4 +1,4 @@
-/*  $Id: asq_dsl_s.cc,v 1.7 2004-07-28 03:47:26 edwards Exp $  */
+/*  $Id: asq_dsl_s.cc,v 1.8 2004-11-06 12:55:51 mcneile Exp $  */
 
 #include "chromabase.h"
 #include "linop.h"
@@ -71,7 +71,7 @@ void QDPStaggeredDslash::create(const multi1d<LatticeColorMatrix>& _u_fat, const
   END_CODE();
 }
 
-void QDPStaggeredDslash::apply (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign, int cb) const
+void QDPStaggeredDslash::apply (LatticeStaggeredFermion& chi, const LatticeStaggeredFermion& psi, enum PlusMinus isign, int cb) const
 {
   START_CODE();
 
@@ -83,9 +83,9 @@ void QDPStaggeredDslash::apply (LatticeFermion& chi, const LatticeFermion& psi, 
 // isign == PLUS is normal isign == MINUS is daggered
 //
 
-  LatticeFermion tmp_0 = zero;
-  LatticeFermion tmp_1 = zero;
-  LatticeFermion tmp_2 = zero;
+  LatticeStaggeredFermion tmp_0 = zero;
+  LatticeStaggeredFermion tmp_1 = zero;
+  LatticeStaggeredFermion tmp_2 = zero;
 
   int mu;
 

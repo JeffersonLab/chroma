@@ -1,4 +1,4 @@
-//  $Id: asq_dsl_s.h,v 1.2 2004-01-02 03:08:13 edwards Exp $
+//  $Id: asq_dsl_s.h,v 1.3 2004-11-06 12:55:51 mcneile Exp $
 /*! \file
  *  \brief The "asq" or "asqtad" dslash operator D'
  */
@@ -46,7 +46,7 @@ using namespace QDP;
  * Note the KS phase factors are already included in the U's!
  */
 
-class QDPStaggeredDslash : public DslashLinearOperator<LatticeFermion>
+class QDPStaggeredDslash : public DslashLinearOperator<LatticeStaggeredFermion>
 {  
 public:
   //! Empty constructor. Must use create later
@@ -70,7 +70,7 @@ public:
    *  \param isign     D' or D'^+  ( +1 | -1 ) respectively		(Read)
    *  \param cb	       Checkerboard of OUTPUT vector			(Read) 
    */
-  void apply (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign, int cb) const;
+  void apply (LatticeStaggeredFermion& chi, const LatticeStaggeredFermion& psi, enum PlusMinus isign, int cb) const;
   
   //! Subset is all here
   const OrderedSubset& subset() const {return all;}
