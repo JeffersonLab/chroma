@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_fermact_base_array_w.h,v 1.1 2003-11-15 03:22:41 edwards Exp $
+// $Id: unprec_dwf_fermact_base_array_w.h,v 1.2 2003-11-15 03:54:04 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned domain-wall-like fermion actions
  */
@@ -21,6 +21,9 @@ using namespace QDP;
 class UnprecDWFermActBaseArray : public UnprecWilsonTypeFermActArray<LatticeFermion>
 {
 public:
+  //! Return the quark mass
+  virtual Real quark_mass() const = 0;
+
   //! Produce a linear operator for this action but with quark mass 1
   virtual const LinearOperator< multi1d<LatticeFermion> >* linOpPV(const multi1d<LatticeColorMatrix>& u) const = 0;
 
