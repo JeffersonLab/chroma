@@ -1,4 +1,4 @@
-// $Id: readszinferm_w.cc,v 1.3 2003-10-10 03:46:46 edwards Exp $: readszinqprop_w.cc,v 1.6 2003/04/30 21:19:33 edwards Exp $
+// $Id: readszinferm_w.cc,v 1.4 2003-10-16 01:41:01 edwards Exp $: readszinqprop_w.cc,v 1.6 2003/04/30 21:19:33 edwards Exp $
 /*!
  * @file
  * @brief  Read an old SZIN-style (checkerboarded) lattice Dirac fermion
@@ -27,8 +27,6 @@ void readSzinFerm(LatticeFermion& q, const string& file)
   // Read propagator field
   //
   multi1d<int> lattsize_cb = Layout::lattSize();
-  Fermion   q_old;
-
   lattsize_cb[0] /= 2;  // checkerboard in the x-direction in szin
 
   // Read prop
@@ -46,9 +44,7 @@ void readSzinFerm(LatticeFermion& q, const string& file)
       // The true lattice x-coord
       coord[0] = 2*coord[0] + ((sum + cb) & 1);
 
-      read(cfg_in,q_old); 	// Read in a site propagator
-
-      pokeSite(q, q_old, coord); // Put it into the correct place
+      read(cfg_in, q, coord); 	// Read in a site propagator
     }
   }
 

@@ -1,4 +1,4 @@
-// $Id: readmilc.cc,v 1.3 2003-10-14 17:41:23 edwards Exp $
+// $Id: readmilc.cc,v 1.4 2003-10-16 01:41:01 edwards Exp $
 
 /*! \file
  *  \brief Read a MILC gauge configuration written in the 1997 format
@@ -48,7 +48,7 @@ void readMILC(MILCGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
 
   // Time stamp
   char date_tmp[65];
-  cfg_in.readArray(date_tmp, 64, 1);
+  cfg_in.readArray(date_tmp, 1, 64);
   date_tmp[64] = '\0';
   header.date = date_tmp;
 
@@ -63,18 +63,14 @@ void readMILC(MILCGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
    */
   
   // MILC format has the directions inside the sites
-  multi1d<ColorMatrix> u_old(Nd);
-
   for(int site=0; site < Layout::vol(); ++site)
   {
     multi1d<int> coord = crtesn(site, Layout::lattSize()); // The coordinate
       
     // Read in Nd SU(3) matrices. 
     // NOTE: the su3_matrix layout should be the same as in QDP
-    read(cfg_in, u_old, Nd); 
-
     for(int mu=0; mu < Nd; ++mu)
-      pokeSite(u[mu], u_old[mu], coord); // Put it into the correct place
+      read(cfg_in, u[mu], coord);    // read in a single site
   }
 
   // Go ahead an read checksums, but will not use for now

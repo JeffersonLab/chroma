@@ -1,4 +1,4 @@
-// $Id: writeszinqprop_w.cc,v 1.2 2003-10-10 03:46:46 edwards Exp $
+// $Id: writeszinqprop_w.cc,v 1.3 2003-10-16 01:41:01 edwards Exp $
 /*!
  * @file
  * @brief  Write an old SZIN-style (checkerboarded) quark propagator
@@ -29,7 +29,6 @@ void writeSzinQprop(const LatticePropagator& q, const string& file,
   // Write propagator field
   //
   multi1d<int> lattsize_cb = Layout::lattSize();
-  Propagator   q_tmp, q_old;
 
   lattsize_cb[0] /= 2;  // checkerboard in the x-direction in szin
 
@@ -37,6 +36,8 @@ void writeSzinQprop(const LatticePropagator& q, const string& file,
   write(cfg_out, kappa);
 
   // Write prop
+  LatticePropagator   q_old = transpose(q);  	// Take the transpose
+
   for(int cb=0; cb < 2; ++cb)
   {
     for(int sitecb=0; sitecb < Layout::vol()/2; ++sitecb)
@@ -51,11 +52,7 @@ void writeSzinQprop(const LatticePropagator& q, const string& file,
       // The true lattice x-coord
       coord[0] = 2*coord[0] + ((sum + cb) & 1);
 
-      q_old = peekSite(q, coord); // Get the correct site
-      
-      q_tmp = transpose(q_old);	// Take the transpose
-      write(cfg_out, q_tmp);
-
+      write(cfg_out, q_old, coord);   // write out a single site
     }
   }
 

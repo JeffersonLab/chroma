@@ -1,4 +1,4 @@
-// $Id: writeszin.cc,v 1.4 2003-10-14 17:41:23 edwards Exp $
+// $Id: writeszin.cc,v 1.5 2003-10-16 01:41:01 edwards Exp $
 
 /*! \file
  *  \brief Write out a configuration written by SZIN up to configuration version 7.
@@ -127,14 +127,14 @@ void writeSzin(const SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u,
    *  SZIN stores data "checkerboarded".  We must therefore "fake" a checkerboarding
    */
 
-  ColorMatrix u_tmp, u_old;
-  
   multi1d<int> lattsize_cb = Layout::lattSize();
   lattsize_cb[0] /= 2;		// Evaluate the coords on the checkerboard lattice
 
   // The slowest moving index is the direction
   for(int j = 0; j < Nd; j++)
   {
+    LatticeColorMatrix u_old = transpose(u[j]); // Take the transpose
+
     for(int cb=0; cb < 2; ++cb)
       for(int sitecb=0; sitecb < Layout::vol()/2; ++sitecb)
       {
@@ -148,10 +148,7 @@ void writeSzin(const SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u,
 	// The true lattice x-coord
 	coord[0] = 2*coord[0] + ((sum + cb) & 1);
 
-	u_old = peekSite(u[j], coord); // Put it into the correct place
-	u_tmp = transpose(u_old); // Take the transpose
-
-	write(cfg_out, u_tmp); 	// Write in an SU(3) matrix
+	write(cfg_out, u_old, coord);  // Write out a single SU(3) matrix
       }
   }
 
@@ -233,8 +230,6 @@ void writeSzinTrunc(SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u,
    *  Force a truncation along the j_decay direction
    */
 
-  ColorMatrix u_tmp, u_old;
-  
   multi1d<int> lattsize_cb = header.nrow;
   lattsize_cb[0] /= 2;		// Evaluate the coords on the checkerboard lattice
 
@@ -246,6 +241,8 @@ void writeSzinTrunc(SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u,
   // The slowest moving index is the direction
   for(int j = 0; j < Nd; j++)
   {
+    LatticeColorMatrix  u_old = transpose(u[j]); // Take the transpose
+  
     for(int cb=0; cb < 2; ++cb)
       for(int sitecb=0; sitecb < vol_cb; ++sitecb)
       {
@@ -262,10 +259,7 @@ void writeSzinTrunc(SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u,
 	// Adjust to find the lattice coordinate within the original problem
 	coord[j_decay] += t_start;
 
-	u_old = peekSite(u[j], coord); // Put it into the correct place
-	u_tmp = transpose(u_old); // Take the transpose
-
-	write(cfg_out, u_tmp); 	// Write out a SU(3) matrix
+	write(cfg_out, u_old, coord); 	// Write out a SU(3) matrix
       }
   }
 

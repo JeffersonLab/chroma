@@ -1,4 +1,4 @@
-// $Id: readszin.cc,v 1.17 2003-10-14 17:41:23 edwards Exp $
+// $Id: readszin.cc,v 1.18 2003-10-16 01:41:01 edwards Exp $
 
 /*! \file
  *  \brief Read in a configuration written by SZIN up to configuration version 7.
@@ -241,14 +241,14 @@ void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
    *  We use as a model the propagator routines
    */
 
-  ColorMatrix u_tmp, u_old;
-  
   multi1d<int> lattsize_cb = Layout::lattSize();
   lattsize_cb[0] /= 2;		// Evaluate the coords on the checkerboard lattice
 
   // The slowest moving index is the direction
   for(int j = 0; j < Nd; j++)
   {
+    LatticeColorMatrix u_old;
+  
     for(int cb=0; cb < 2; ++cb)
       for(int sitecb=0; sitecb < Layout::vol()/2; ++sitecb)
       {
@@ -262,11 +262,10 @@ void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
 	// The true lattice x-coord
 	coord[0] = 2*coord[0] + ((sum + cb) & 1);
 
-	read(cfg_in,u_old); 	// Read in an SU(3) matrix
-
-	u_tmp = transpose(u_old); // Take the transpost
-	pokeSite(u[j], u_tmp, coord); // Put it into the correct place
+	read(cfg_in, u_old, coord); 	// Read in an SU(3) matrix into coord
       }
+
+    u[j] = transpose(u_old);            // Take the transpose
   }
 
   cfg_in.close();

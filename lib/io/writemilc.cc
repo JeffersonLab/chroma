@@ -1,4 +1,4 @@
-// $Id: writemilc.cc,v 1.2 2003-10-14 17:41:23 edwards Exp $
+// $Id: writemilc.cc,v 1.3 2003-10-16 01:41:01 edwards Exp $
 
 /*! \file
  *  \brief Writer a MILC gauge configuration in the 1997 format
@@ -41,7 +41,7 @@ void writeMILC(const MILCGauge_t& header, const multi1d<LatticeColorMatrix>& u,
   int len = (header.date.size() < 64) ? header.date.size() : 64;
   memset(date_tmp, '\0', 65);
   memcpy(date_tmp, header.date.data(), len);
-  cfg_out.writeArray(date_tmp, 64, 1);
+  cfg_out.writeArray(date_tmp, 1, 64);
 
   // Site order - only support non-sitelist format
   int order = 0;
@@ -52,18 +52,16 @@ void writeMILC(const MILCGauge_t& header, const multi1d<LatticeColorMatrix>& u,
    */
   
   // MILC format has the directions inside the sites
-  multi1d<ColorMatrix> u_old(Nd);
-
   for(int site=0; site < Layout::vol(); ++site)
   {
     multi1d<int> coord = crtesn(site, Layout::lattSize()); // The coordinate
       
-    for(int mu=0; mu < Nd; ++mu)
-      u_old[mu] = peekSite(u[mu], coord); // Put it into the correct place
-
     // Write Nd SU(3) matrices. 
-    // NOTE: the su3_matrix layout should be the same as in QDP
-    write(cfg_out, u_old, Nd); 
+    for(int j = 0; j < Nd; j++)
+    {
+      // NOTE: the su3_matrix layout should be the same as in QDP
+      write(cfg_out, u[j], coord); 
+    }
   }
 
   // Go ahead and write checksums, but will not use for now

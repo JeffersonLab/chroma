@@ -1,4 +1,4 @@
-// $Id: readszinqprop_w.cc,v 1.10 2003-10-10 03:46:46 edwards Exp $
+// $Id: readszinqprop_w.cc,v 1.11 2003-10-16 01:41:01 edwards Exp $
 /*!
  * @file
  * @brief  Read an old SZIN-style (checkerboarded) quark propagator
@@ -28,7 +28,6 @@ void readSzinQprop(XMLReader& xml, LatticePropagator& q, const string& file)
   // Read propagator field
   //
   multi1d<int> lattsize_cb = Layout::lattSize();
-  Propagator   q_tmp, q_old;
   Real Kappa;
 
   lattsize_cb[0] /= 2;  // checkerboard in the x-direction in szin
@@ -37,6 +36,8 @@ void readSzinQprop(XMLReader& xml, LatticePropagator& q, const string& file)
   read(cfg_in, Kappa);
 
   // Read prop
+  LatticePropagator  q_old;
+
   for(int cb=0; cb < 2; ++cb)
   {
     for(int sitecb=0; sitecb < Layout::vol()/2; ++sitecb)
@@ -51,12 +52,11 @@ void readSzinQprop(XMLReader& xml, LatticePropagator& q, const string& file)
       // The true lattice x-coord
       coord[0] = 2*coord[0] + ((sum + cb) & 1);
 
-      read(cfg_in,q_old); 	// Read in a site propagator
-
-      q_tmp = transpose(q_old); // Take the transpose in both color and spin space
-      pokeSite(q, q_tmp, coord); // Put it into the correct place
+      read(cfg_in, q_old, coord); 	// Read in a site propagator
     }
   }
+
+  q = transpose(q_old);  // take the transpose
 
   cfg_in.close();
 
@@ -98,7 +98,6 @@ void writeSzinQprop(const LatticePropagator& q, const string& file,
   // Read propagator field
   //
   multi1d<int> lattsize_cb = Layout::lattSize();
-  Propagator   q_tmp, q_old;
 
   lattsize_cb[0] /= 2;  // checkerboard in the x-direction in szin
 
@@ -106,6 +105,8 @@ void writeSzinQprop(const LatticePropagator& q, const string& file,
   write(cfg_out, kappa);
 
   // Write prop
+  LatticePropagator  q_old = transpose(q);   // take the transpose
+
   for(int cb=0; cb < 2; ++cb)
   {
     for(int sitecb=0; sitecb < Layout::vol()/2; ++sitecb)
@@ -120,11 +121,7 @@ void writeSzinQprop(const LatticePropagator& q, const string& file,
       // The true lattice x-coord
       coord[0] = 2*coord[0] + ((sum + cb) & 1);
 
-      q_old = peekSite(q, coord); // Get the correct site
-      
-      q_tmp = transpose(q_old);	// Take the transpose
-      write(cfg_out, q_tmp);
-
+      write(cfg_out, q_old, coord);   // write out a single site
     }
   }
 
