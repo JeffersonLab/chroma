@@ -1,4 +1,4 @@
-// $Id: lovlap_double_pass_w.cc,v 1.2 2004-05-03 18:03:43 bjoo Exp $
+// $Id: lovlap_double_pass_w.cc,v 1.3 2004-05-04 11:43:26 bjoo Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */
@@ -151,15 +151,15 @@ void lovlap_double_pass::operator() (LatticeFermion& chi, const LatticeFermion& 
 
 
   int k;
-  Double c_iter[MaxCG+1];
+  multi1d<Double> c_iter(MaxCG+1);
 
+  c_iter[0] = c;
   // Do the iterations proper 
   // first pass
   for(k = 0; k < MaxCG && ! convP ; ++k) {
 
     // Keep hold of the residuum
-    c_iter[k] = c;
-
+ 
     (*MdagM)(Ap, p, PLUS);
     Ap += p * rootQ[isz];
 
@@ -184,6 +184,7 @@ void lovlap_double_pass::operator() (LatticeFermion& chi, const LatticeFermion& 
     cp = c;
     c = norm2(r);
 
+    c_iter[k+1] = c;
     b[k+1] = c/cp;
 
     p = r + Real(b[k+1])*p;
@@ -191,25 +192,30 @@ void lovlap_double_pass::operator() (LatticeFermion& chi, const LatticeFermion& 
     convP = toBool( c < rsd_sq );
   }
 
-
   int niters = k;
 
   // OK First pass done. I now need to compute gamma_j and c_j
-  multi2d<Double> gamma(niters+1,numroot);
+  multi2d<Double> gamma(niters+1, numroot);
   for(int s = 0; s < numroot; s++) { 
     gamma[0][s] = 1;                     // Really gamma_0
   }
   
+
+  multi1d<bool> convPs(numroot);
+  multi1d<int>  convIter(numroot);
+  convPs = false;
+
   for(int j=0; j < niters; j++) {
     for(int s =0; s < numroot; s++) {
 
-      if( s != isz ) { 
+
+      if( s != isz  && ! convPs[s]  ) { 
 	Double a_minus;
 
 	if( j == 0 ) { 
 	  // alpha_minus_one -- no need to store. Only need alpha_0,...
 	  // in second pass
-	  a_minus = alpha_minus_one;
+	  a_minus = Double(1);
 	}
 	else {
 	  a_minus = a[j-1];
@@ -220,7 +226,7 @@ void lovlap_double_pass::operator() (LatticeFermion& chi, const LatticeFermion& 
 	if( j == 0 ) { 
 	  // gamma[-1][s] -- no need to store. Only need gamma[0][s]...
 	  // in second pass
-	  ga_minus =1;
+	  ga_minus =Double(1);
 	}
 	else{ 
 	  ga_minus = gamma[j-1][s];
@@ -231,31 +237,49 @@ void lovlap_double_pass::operator() (LatticeFermion& chi, const LatticeFermion& 
         tmp_den += a[j]*b[j]*(ga_minus - ga);
 
 	gamma[j+1][s] = tmp_num/tmp_den;
- 
+
+	// If this system has converged at iter j+1, then dont update
+	// gamma-s anymore and note the convergence point. Updating
+	// ad infinitum causes underflow.
+	if( toBool( gamma[j+1][s]*gamma[j+1][s]*c_iter[j+1] < rsd_sq ) ) {
+	  convPs[s] = true;
+	  convIter[s] = j+1;
+	}
+
       }
+      
+	
     }
 
+    
   } 
 
+ 
   multi1d<Double> sumC(niters+1);
 
   for(int j=0; j<=niters; j++) { 
 
     sumC[j] = 0;
 
-    for(int m=0; m <= niters-j; m++) { 
+    for(int m=0; m < niters-j; m++) { 
       
       Double qsum=resP[isz];
-
+     
       for(int s =0; s < numroot; s++) { 
 
 	if( s != isz ) { 
 	  
-	  qsum += resP[s]*gamma[m+j+1][s]*gamma[m+j][s]/gamma[j][s];
+	  // Only add gammas which are unconverged.
+	  // Converged gamma-s are not updated beyond convergence
+	  // which would cause problems (with underflows)
+	  // gamma[convIters[s]] is last valid gamma
+	  if( toBool( (j+m+1) <= convIter[s] ) ) {
+	    qsum += resP[s]*gamma[m+j+1][s]*gamma[m+j][s]/gamma[j][s];
+	  }
 	  
 	}
       }
-
+      
           
       Double delta_m = Double(1);
       
@@ -264,6 +288,7 @@ void lovlap_double_pass::operator() (LatticeFermion& chi, const LatticeFermion& 
 	  delta_m *= b[j+k];
 	}
       }
+      
       
       sumC[j] += a[j+m]*delta_m*qsum;
     }
@@ -276,7 +301,9 @@ void lovlap_double_pass::operator() (LatticeFermion& chi, const LatticeFermion& 
   r=tmp1;
   p=tmp1;
 
-  for(k=0; k < niters;k++) { 
+  convP = false;
+
+  for(k=0; k < niters && !convP ; k++) { 
     (*MdagM)(Ap, p, PLUS);
     Ap += p * rootQ[isz];
 
@@ -285,6 +312,7 @@ void lovlap_double_pass::operator() (LatticeFermion& chi, const LatticeFermion& 
       GramSchm(Ap, EigVec, NEig);
     }
 
+ 
     // Update chi
     chi += Real(sumC[k])*r;
 
@@ -296,6 +324,11 @@ void lovlap_double_pass::operator() (LatticeFermion& chi, const LatticeFermion& 
       GramSchm (r, EigVec, NEig);
     }
 
+    Double chi_norm_new = RsdCG*RsdCG*norm2(chi);
+
+    // Convergence criterion for total signum. Might be good enough
+    // without running to full niters
+    convP = toBool( c_iter[k+1]*sumC[k+1]*sumC[k+1] < chi_norm_new );
     p = r + Real(b[k+1])*p;
   }
 

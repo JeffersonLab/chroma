@@ -1,4 +1,4 @@
-// $Id: t_ovlap_double_pass.cc,v 1.1 2004-05-03 18:03:43 bjoo Exp $
+// $Id: t_ovlap_double_pass.cc,v 1.2 2004-05-04 11:43:26 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -588,22 +588,115 @@ int main(int argc, char **argv)
   
   LatticeFermion psi_dp;
 
+  QDP::StopWatch swatch;
+
+  swatch.reset();
+  swatch.start();
   // Apply single pass
   (*D_op)(s1, psi, PLUS);
-
+  swatch.stop();
+  Double t1 = swatch.getTimeInSeconds();
+  QDPIO::cout << "Single Pass algorithm took " << t1 << " seconds" << endl;
   // Apply double pass
+
+  swatch.reset();
+  swatch.start();
   (*D_dp)(s2, psi, PLUS);
-   
+  swatch.stop();
+  t1 = swatch.getTimeInSeconds();
+  QDPIO::cout << "Double Pass algorithm took " << t1 << " seconds" << endl;
   // Get the difference
   s3 = s2 - s1;
 
   Double diff = norm2(s3);
 
   QDPIO::cout << "Diff between single and double passes = " << sqrt(diff) << endl;
+
+
+  // Now do a chiral D^{dag} D
+  int G5=Ns*Ns-1;
+  gaussian(psi);
+
+  // Project onto positive chirality
+  // psi <- (1/2) ( 1 + gamma_5 ) psi
+  psi_dp = Gamma(G5)*psi;
+  psi += psi_dp;
+  psi *= 0.5;
+
+  // Normalise
+  Double norm_psi=sqrt(norm2(psi));
+  psi /= Real(norm_psi);
+
+  
+  Handle< const LinearOperator<LatticeFermion> >
+      MdagM_ch( S.lMdagM(connect_state, isChiralVector(psi)) );
+
+  Handle< const LinearOperator<LatticeFermion> >
+      MdagM_ch_dp( S_dp.lMdagM(connect_state, isChiralVector(psi)) );
+
+  swatch.reset();
+  swatch.start();
+  (*MdagM_ch)(s1, psi, PLUS);
+  swatch.stop();
+  t1 = swatch.getTimeInSeconds();
+  QDPIO::cout << "Single Pass algorithm took " << t1 << " seconds" << endl;
+
+
+  swatch.reset();
+  swatch.start();
+  (*MdagM_ch_dp)(s2, psi, PLUS);
+  swatch.stop();
+  t1 = swatch.getTimeInSeconds();
+  QDPIO::cout << "Double Pass algorithm took " << t1 << " seconds" << endl;
+
+  s3 = s1 - s2;
+
+  diff = norm2(s3);
+
+  QDPIO::cout << "Diff between single and double passes = " << sqrt(diff) << endl;
+
+
+  gaussian(psi);
+
+  // Project onto positive chirality
+  // psi <- (1/2) ( 1 + gamma_5 ) psi
+  psi_dp = Gamma(G5)*psi;
+  psi -= psi_dp;
+  psi *= 0.5;
+
+  // Normalise
+  norm_psi=sqrt(norm2(psi));
+  psi /= Real(norm_psi);
+
+  Handle< const LinearOperator<LatticeFermion> >
+      MdagM_ch2( S.lMdagM(connect_state, isChiralVector(psi)) );
+
+  Handle< const LinearOperator<LatticeFermion> >
+      MdagM_ch2_dp( S_dp.lMdagM(connect_state, isChiralVector(psi)) );
+
+  swatch.reset();
+  swatch.start();
+  (*MdagM_ch2)(s1, psi, PLUS);
+  swatch.stop();
+  t1 = swatch.getTimeInSeconds();
+  QDPIO::cout << "Single Pass algorithm took " << t1 << " seconds" << endl;
+
+
+  swatch.reset();
+  swatch.start();
+  (*MdagM_ch2_dp)(s2, psi, PLUS);
+  swatch.stop();
+  t1 = swatch.getTimeInSeconds();
+  QDPIO::cout << "Double Pass algorithm took " << t1 << " seconds" << endl;
+
+  s3 = s1 - s2;
+
+  diff = norm2(s3);
+
+  QDPIO::cout << "Diff between single and double passes = " << sqrt(diff) << endl;
+
+  
   pop(xml_out);
-
-
-
   QDP_finalize();
     
   exit(0);
