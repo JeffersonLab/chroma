@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 1.1 2003-04-09 01:21:01 edwards Exp $
+// $Id: fermact.h,v 1.2 2003-04-09 05:58:41 edwards Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -24,24 +24,39 @@ public:
 #if 0
   //! Produce a foundry class for linear operators
   /*! NOTE: maybe this should be abstracted to a foundry class */
-//  virtual LinOpFoundry* linop() const = 0;
+//  virtual LinOpFoundry* linop(const multi1d<LatticeColorMatrix>& _u) const = 0;
 #endif
 
   //! Produce a linear operator for this action
   /*! NOTE: maybe this should be abstracted to a foundry class object */
-  virtual LinearOperator* linop() const = 0;
+  virtual const LinearOperator* linOp(const multi1d<LatticeColorMatrix>& _u) const = 0;
 
   //! Produce a linear operator M^dag.M for this action
   /*! NOTE: maybe this should be abstracted to a foundry class object */
-  virtual LinearOperator* lmdagm() const = 0;
+  virtual const LinearOperator* lMdagM(const multi1d<LatticeColorMatrix>& _u) const = 0;
 
   //! Compute quark propagator
-  /*! NOTE: maybe this should produce a quark prop foundry class object */
-  virtual LatticeFermion Qprop(const multi1d<LatticeComplex>& u) const = 0;
+  /*! 
+   * Solves  M.psi = chi
+   *
+   * \param psi      quark propagator ( Modify )
+   * \param u        gauge field ( Read )
+   * \param chi      source ( Modify )
+   * \param RsdCG    CG (or MR) residual used here ( Read )
+   * \param MaxCG    maximum number of CG iterations ( Read )
+   * \param ncg_had  number of CG iterations ( Write )
+   *
+   * NOTE: maybe this should produce a quark prop foundry class object 
+   */
+  virtual void Qprop(LatticeFermion& psi, 
+		     const multi1d<LatticeColorMatrix>& u, 
+		     const LatticeFermion& chi, 
+		     const Real& RsdCG, 
+		     int MaxCG, int& ncg_had) const = 0;
 
   //! Compute dS_f/dU
   /*! NOTE: maybe this should produce a derivative foundry class object */
-  virtual multi1d<LatticeColorMatrix> dsdu(const multi1d<LatticeComplex>& u) const = 0;
+  virtual multi1d<LatticeColorMatrix> dsdu(const multi1d<LatticeColorMatrix>& u) const = 0;
 
   //! Virtual destructor to help with cleanup;
   virtual ~FermionAction() {}
@@ -69,7 +84,11 @@ class UnprecWilsonTypeFermAct : public WilsonTypeFermAct
 public:
   //! Compute quark propagator
   /*! NOTE: maybe this should produce a quark prop foundry */
-  virtual LatticeFermion Qprop(const multi1d<LatticeComplex>& u) const;
+  void Qprop(LatticeFermion& psi, 
+	     const multi1d<LatticeColorMatrix>& u, 
+	     const LatticeFermion& chi, 
+	     const Real& RsdCG, 
+	     int MaxCG, int& ncg_had) const;
 };
 
 
@@ -94,7 +113,11 @@ class DiagEvenOddPrecWilsonTypeFermAct : public EvenOddPrecWilsonTypeFermAct
 public:
   //! Compute quark propagator
   /*! NOTE: maybe this should produce a quark prop foundry */
-  virtual LatticeFermion Qprop(const multi1d<LatticeComplex>& u) const;
+  void Qprop(LatticeFermion& psi, 
+	     const multi1d<LatticeColorMatrix>& u, 
+	     const LatticeFermion& chi, 
+	     const Real& RsdCG, 
+	     int MaxCG, int& ncg_had) const;
 };
 
 
@@ -119,7 +142,11 @@ class UnprecStaggeredTypeFermAct : public StaggeredTypeFermAct
 public:
   //! Compute quark propagator
   /*! NOTE: maybe this should produce a quark prop foundry */
-  virtual LatticeFermion Qprop(const multi1d<LatticeComplex>& u) const;
+  void Qprop(LatticeFermion& psi, 
+	     const multi1d<LatticeColorMatrix>& u, 
+	     const LatticeFermion& chi, 
+	     const Real& RsdCG, 
+	     int MaxCG, int& ncg_had) const;
 };
 
 
@@ -144,7 +171,11 @@ class DiagEvenOddPrecStaggeredTypeFermAct : public EvenOddPrecStaggeredTypeFermA
 public:
   //! Compute quark propagator
   /*! NOTE: maybe this should produce a quark prop foundry */
-  virtual LatticeFermion Qprop(const multi1d<LatticeComplex>& u) const;
+  void Qprop(LatticeFermion& psi, 
+	     const multi1d<LatticeColorMatrix>& u, 
+	     const LatticeFermion& chi, 
+	     const Real& RsdCG, 
+	     int MaxCG, int& ncg_had) const;
 };
 
 
