@@ -1,4 +1,4 @@
-// $Id: cfgtransf.cc,v 1.11 2004-02-23 04:19:07 edwards Exp $
+// $Id: cfgtransf.cc,v 1.12 2004-04-06 04:20:22 edwards Exp $
 /*! \file
  *  \brief Many-to-many gauge transformation routine
  */
@@ -33,6 +33,10 @@ int main(int argc, char **argv)
   push(xml_out, "cfgtransf");
 
   proginfo(xml_out);    // Print out basic program info
+
+  SzinGauge_t  szin_gauge_header;  // In case we want to write out a szin
+  initHeader(szin_gauge_header);
+  bool szin_gauge_header_initP = false;
 
 #if 0
   bool AnisoP;
@@ -76,7 +80,8 @@ int main(int argc, char **argv)
 	      << " (17) double prec. MIT gauge configuration on FE\n"
 	      << " (18) Kentucky gauge configuration FE\n"
 	      << " (19) UKQCD gauge configuration FE\n"
-	      << " (20) Single-precision UKQCD gauge configuration FE\n";
+	      << " (20) Single-precision UKQCD gauge configuration FE\n"
+	      << " (21) SZIN config in QIO format\n";
   QDPIO::cin >> input_type;
   
 
@@ -138,7 +143,9 @@ int main(int argc, char **argv)
 	      << "  (3) MILC config on FE\n"
 	      << "  (4) QCD Archive config on FE\n"
 	      << "  (5) MIT gauge config on FE\n"
-	      << "  (6) Kentucky config on FE\n";
+	      << "  (6) Kentucky config on FE\n"
+	      << "  (7) SZIN config in QIO SINGLEFILE format\n"
+	      << "  (8) SZIN config in QIO MULTIFILE format\n";
   QDPIO::cin >> output_type;
   
   string cfg_input_file;
@@ -265,7 +272,7 @@ int main(int argc, char **argv)
   //  Have params, now find out the source for the gauge field 
   //
   multi1d<LatticeColorMatrix> u(Nd);
-  XMLReader gauge_xml_in;
+  XMLReader gauge_xml_in, gauge_file_xml_in, gauge_record_xml_in;
     
 
   switch (input_type)
@@ -304,6 +311,8 @@ int main(int argc, char **argv)
     
     QDPIO::cout << "Read SZIN u from FE file " << cfg_input_file << endl;
     readSzin(gauge_xml_in, u, cfg_input_file);
+    read(gauge_xml_in, "/szin", szin_gauge_header);
+    szin_gauge_header_initP = true;
     break;
 
 // case 6: ancient Illinois staggered
@@ -475,6 +484,19 @@ int main(int argc, char **argv)
     break;
 #endif
 
+  case 21:
+    push(xml_out,"SZIN_QIO_configuration");
+    write(xml_out, "input_type", input_type);
+    write(xml_out, "cfg_input_file", cfg_input_file);
+    pop(xml_out);
+    
+    QDPIO::cout << "Read SZIN u from QIO file " << cfg_input_file << endl;
+    readGauge(gauge_file_xml_in, gauge_xml_in, u, cfg_input_file,
+	      QDPIO_SERIAL);
+    read(gauge_xml_in, "/szin", szin_gauge_header);
+    szin_gauge_header_initP = true;
+    break;
+
   default:
     QDP_error_exit("unknown input type", input_type);
   }
@@ -620,55 +642,67 @@ int main(int argc, char **argv)
   
   xml_out.flush();
   
+  // Make a new szin header if desired
+  switch (output_type)
+  {
+  case 1:
+  case 2:
+  case 7:
+  case 8:
+  {
+    bool new_headerP;
+    QDPIO::cout << "Enter new szin header?" << endl;
+    QDPIO::cin >> new_headerP;
+
+    if ( new_headerP )
+    {
+      QDPIO::cout << "Enter TotalTrj\n";
+      QDPIO::cin >> szin_gauge_header.TotalTrj;
+      QDPIO::cout << "Enter NOver\n";
+      QDPIO::cin >> szin_gauge_header.NOver;
+      QDPIO::cout << "Enter BetaMC\n";
+      QDPIO::cin >> szin_gauge_header.BetaMC;
+      QDPIO::cout << "Enter BetaMD\n";
+      QDPIO::cin >> szin_gauge_header.BetaMD;
+      QDPIO::cout << "Enter KappaMC\n";
+      QDPIO::cin >> szin_gauge_header.KappaMC;
+      QDPIO::cout << "Enter KappaMD\n";
+      QDPIO::cin >> szin_gauge_header.KappaMD;
+      QDPIO::cout << "Enter dt\n";
+      QDPIO::cin >> szin_gauge_header.dt;
+      QDPIO::cout << "Enter MesTrj\n";
+      QDPIO::cin >> szin_gauge_header.MesTrj;
+      QDPIO::cout << "Enter Nf\n";
+      QDPIO::cin >> szin_gauge_header.Nf;
+      QDPIO::cout << "Enter Npf\n";
+      QDPIO::cin >> szin_gauge_header.Npf;
+      QDPIO::cout << "Enter RefMomTrj\n";
+      QDPIO::cin >> szin_gauge_header.RefMomTrj;
+      QDPIO::cout << "Enter RefFnoiseTrj\n";
+      QDPIO::cin >> szin_gauge_header.RefFnoiseTrj;
+      QDPIO::cout << "Enter LamPl\n";
+      QDPIO::cin >> szin_gauge_header.LamPl;
+      QDPIO::cout << "Enter LamMi\n";
+      QDPIO::cin >> szin_gauge_header.LamMi;
+      QDPIO::cout << "Enter AlpLog\n";
+      QDPIO::cin >> szin_gauge_header.AlpLog;
+      QDPIO::cout << "Enter AlpExp\n";
+      QDPIO::cin >> szin_gauge_header.AlpExp;
+      QDPIO::cout << "Enter seed\n";
+      QDPIO::cin >> szin_gauge_header.seed;
+    }
+  }
+  break;
+  }
+
+
   /* Now write parameters to file cfg_output_file */
   switch (output_type)
   {
   case 1:
   case 2:
   {
-    int TotalTrj;
-    SzinGauge_t szin_out;
-    initHeader(szin_out);
-
-    QDPIO::cout << "Enter TotalTrj\n";
-    QDPIO::cin >> TotalTrj;
-    if (TotalTrj > 0)
-    {
-      QDPIO::cout << "Enter NOver\n";
-      QDPIO::cin >> szin_out.NOver;
-      QDPIO::cout << "Enter BetaMC\n";
-      QDPIO::cin >> szin_out.BetaMC;
-      QDPIO::cout << "Enter BetaMD\n";
-      QDPIO::cin >> szin_out.BetaMD;
-      QDPIO::cout << "Enter KappaMC\n";
-      QDPIO::cin >> szin_out.KappaMC;
-      QDPIO::cout << "Enter KappaMD\n";
-      QDPIO::cin >> szin_out.KappaMD;
-      QDPIO::cout << "Enter dt\n";
-      QDPIO::cin >> szin_out.dt;
-      QDPIO::cout << "Enter MesTrj\n";
-      QDPIO::cin >> szin_out.MesTrj;
-      QDPIO::cout << "Enter Nf\n";
-      QDPIO::cin >> szin_out.Nf;
-      QDPIO::cout << "Enter Npf\n";
-      QDPIO::cin >> szin_out.Npf;
-      QDPIO::cout << "Enter RefMomTrj\n";
-      QDPIO::cin >> szin_out.RefMomTrj;
-      QDPIO::cout << "Enter RefFnoiseTrj\n";
-      QDPIO::cin >> szin_out.RefFnoiseTrj;
-      QDPIO::cout << "Enter LamPl\n";
-      QDPIO::cin >> szin_out.LamPl;
-      QDPIO::cout << "Enter LamMi\n";
-      QDPIO::cin >> szin_out.LamMi;
-      QDPIO::cout << "Enter AlpLog\n";
-      QDPIO::cin >> szin_out.AlpLog;
-      QDPIO::cout << "Enter AlpExp\n";
-      QDPIO::cin >> szin_out.AlpExp;
-      QDPIO::cout << "Enter seed\n";
-      QDPIO::cin >> szin_out.seed;
-    }
-
-    writeSzin(szin_out, u, cfg_output_file);
+    writeSzin(szin_gauge_header, u, cfg_output_file);
   }
   break;
 
@@ -707,6 +741,21 @@ int main(int argc, char **argv)
     wrtkyu (cfg_output_file, u);
     break;
 #endif
+
+  case 7:
+  case 8:
+  {
+    QDP_volfmt_t volfmt = (output_type == 7) ? QDPIO_SINGLEFILE : QDPIO_MULTIFILE;
+    XMLBufferWriter gauge_file_xml_out, gauge_record_xml_out;
+
+    push(gauge_file_xml_out, "gauge");
+    write(gauge_file_xml_out, "id", int(0));   // need something better here
+    pop(gauge_file_xml_out);
+    write(gauge_record_xml_out, "szin", szin_gauge_header);
+    writeGauge(gauge_file_xml_out, gauge_record_xml_out, u, cfg_output_file,
+	       volfmt, QDPIO_SERIAL);
+  }
+  break;
 
   default:
     QDP_error_exit("unknown output type", output_type);
