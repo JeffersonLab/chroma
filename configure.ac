@@ -54,6 +54,12 @@ AC_ARG_ENABLE(sse_wilson_dslash,
     [Build and Use the SSE2 Wilson Dslash Library ])
 )
 
+AC_ARG_ENABLE(pab_wilson_dslash,
+  AC_HELP_STRING(
+    [--enable-pab-wilson-dslash],
+    [Use PABs Wilson Dslash Library])
+)
+
 if test "X${QDPXX_HOME}X" = "XX" ; then
   AC_PATH_PROG(QDPXX_CONFIG, [qdp++-config], [])
 else
@@ -134,6 +140,28 @@ esac
 
 AM_CONDITIONAL(BUILD_SSE_WILSON_DSLASH,
   [test "x${enable_sse_wilson_dslash}x" = "xyesx" ])
+
+case "$enable_pab_wilson_dslash" in
+  noarch)
+	ac_build_pab_wilson_dslash="yes" 
+        if test "x$ac_fermion_type" != "xwilson";
+	then	
+	    AC_MSG_ERROR([ Attempting to build Assembler Wilson Dslash with NON Wilson fermion type ])
+	fi
+        AC_MSG_NOTICE( [Configuring PAB Wilson Dslash ] )
+	AC_DEFINE(BUILD_PAB_WILSON_DSLASH)
+	;;
+  *)
+	ac_build_pab_wilson_dslash="no"
+	AC_SUBST(SSE_DSLASH_DIR)
+	AC_MSG_NOTICE( [Not building PAB Dslash ] )
+        ;;
+esac 
+
+
+AM_CONDITIONAL(BUILD_PAB_WILSON_DSLASH,
+  [test "x${ac_build_pab_wilson_dslash}x" = "xyesx" ])
+
 
 AM_CONDITIONAL(BUILD_STAGGERED_LIBS,
   [test "X${ac_fermion_type}X" = "XstaggeredX"])

@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.156 2004-03-04 02:14:48 edwards Exp $
+# $Id: Makefile.in,v 1.157 2004-03-09 20:43:13 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -59,6 +59,7 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/zolotarev4d_fermact_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/fermacts/zolotarev5d_fermact_array_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/lwldslash_w_sse.h \
+@BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/lwldslash_w_pab.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/lgherm_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/zolotarev5d_linop_array_w.h \
 @BUILD_WILSON_LIBS_TRUE@	actions/ferm/linop/dslash_w.h actions/ferm/linop/dwffld_w.h \
@@ -142,7 +143,8 @@ host_triplet = @host@
 @BUILD_WILSON_LIBS_TRUE@              wallpionff_w.cc 
 
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_5 = lwldslash_w_sse.cc
-@BUILD_STAGGERED_LIBS_TRUE@am__append_6 = mesphas_s.cc mesphas_follana_s.cc pions_follana_s.cc \
+@BUILD_PAB_WILSON_DSLASH_TRUE@am__append_6 = lwldslash_w_pab.cc
+@BUILD_STAGGERED_LIBS_TRUE@am__append_7 = mesphas_s.cc mesphas_follana_s.cc pions_follana_s.cc \
 @BUILD_STAGGERED_LIBS_TRUE@	follana_io_s.cc fermact_qprop.cc walfil_s.cc \
 @BUILD_STAGGERED_LIBS_TRUE@	stag_scalars_s.cc stag_propShift_s.cc \
 @BUILD_STAGGERED_LIBS_TRUE@	asqtad_linop_s.cc asq_dsl_s.cc fat7_links_s.cc naik_term_s.cc  \
@@ -158,6 +160,8 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
+BUILD_PAB_WILSON_DSLASH_FALSE = @BUILD_PAB_WILSON_DSLASH_FALSE@
+BUILD_PAB_WILSON_DSLASH_TRUE = @BUILD_PAB_WILSON_DSLASH_TRUE@
 BUILD_SSE_WILSON_DSLASH_FALSE = @BUILD_SSE_WILSON_DSLASH_FALSE@
 BUILD_SSE_WILSON_DSLASH_TRUE = @BUILD_SSE_WILSON_DSLASH_TRUE@
 BUILD_STAGGERED_LIBS_FALSE = @BUILD_STAGGERED_LIBS_FALSE@
@@ -331,7 +335,7 @@ libchroma_a_SOURCES = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	       ritz.cc ritz_array.cc sn_jacob.cc sn_jacob_array.cc \
 	       eig_spec.cc eig_spec_array.cc \
                proginfo.cc printgeom.cc\
-$(am__append_4) $(am__append_5) $(am__append_6)
+$(am__append_4) $(am__append_5) $(am__append_6) $(am__append_7)
 subdir = lib
 mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
 CONFIG_CLEAN_FILES =
@@ -374,12 +378,12 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 	overlap_fermact_base_w.cc lovlapms_w.cc \
 	zolotarev4d_fermact_w.cc ischiral_w.cc lovddag_w.cc \
 	zolotarev5d_fermact_array_w.cc zolotarev5d_linop_array_w.cc \
-	wallpionff_w.cc lwldslash_w_sse.cc mesphas_s.cc \
-	mesphas_follana_s.cc pions_follana_s.cc follana_io_s.cc \
-	walfil_s.cc stag_scalars_s.cc stag_propShift_s.cc \
-	asqtad_linop_s.cc asq_dsl_s.cc fat7_links_s.cc naik_term_s.cc \
-	asqtad_fermact_s.cc asqtad_mdagm_s.cc staggered_qprop.cc \
-	stag_phases_s.cc
+	wallpionff_w.cc lwldslash_w_sse.cc lwldslash_w_pab.cc \
+	mesphas_s.cc mesphas_follana_s.cc pions_follana_s.cc \
+	follana_io_s.cc walfil_s.cc stag_scalars_s.cc \
+	stag_propShift_s.cc asqtad_linop_s.cc asq_dsl_s.cc \
+	fat7_links_s.cc naik_term_s.cc asqtad_fermact_s.cc \
+	asqtad_mdagm_s.cc staggered_qprop.cc stag_phases_s.cc
 @BUILD_WILSON_LIBS_TRUE@am__objects_1 = baryon_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	mesons_w.$(OBJEXT) hybmeson_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	loops_w.$(OBJEXT) curcor2_w.$(OBJEXT) \
@@ -438,7 +442,8 @@ am__libchroma_a_SOURCES_DIST = rgauge.cc taproj.cc hotst.cc expm12.cc \
 @BUILD_WILSON_LIBS_TRUE@	zolotarev5d_linop_array_w.$(OBJEXT) \
 @BUILD_WILSON_LIBS_TRUE@	wallpionff_w.$(OBJEXT)
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__objects_2 = lwldslash_w_sse.$(OBJEXT)
-@BUILD_STAGGERED_LIBS_TRUE@am__objects_3 = mesphas_s.$(OBJEXT) \
+@BUILD_PAB_WILSON_DSLASH_TRUE@am__objects_3 = lwldslash_w_pab.$(OBJEXT)
+@BUILD_STAGGERED_LIBS_TRUE@am__objects_4 = mesphas_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	mesphas_follana_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	pions_follana_s.$(OBJEXT) \
 @BUILD_STAGGERED_LIBS_TRUE@	follana_io_s.$(OBJEXT) \
@@ -472,7 +477,8 @@ am_libchroma_a_OBJECTS = rgauge.$(OBJEXT) taproj.$(OBJEXT) \
 	ritz_array.$(OBJEXT) sn_jacob.$(OBJEXT) \
 	sn_jacob_array.$(OBJEXT) eig_spec.$(OBJEXT) \
 	eig_spec_array.$(OBJEXT) proginfo.$(OBJEXT) printgeom.$(OBJEXT) \
-	$(am__objects_1) $(am__objects_2) $(am__objects_3)
+	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
+	$(am__objects_4)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
@@ -506,6 +512,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/laplacian.Po ./$(DEPDIR)/loops_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/lovddag_w.Po ./$(DEPDIR)/lovlapms_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/lwldslash_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/lwldslash_w_pab.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/lwldslash_w_sse.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/mesons_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/mesonseqsrc_w.Po \
@@ -682,6 +689,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lovddag_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lovlapms_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_w_pab.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_w_sse.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesons_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesonseqsrc_w.Po@am__quote@

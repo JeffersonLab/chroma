@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.113 2004-03-03 11:09:50 mcneile Exp $
+# $Id: Makefile.am,v 1.114 2004-03-09 20:43:12 bjoo Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -118,6 +118,7 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/zolotarev4d_fermact_w.h \
 	actions/ferm/fermacts/zolotarev5d_fermact_array_w.h \
 	actions/ferm/linop/lwldslash_w_sse.h \
+	actions/ferm/linop/lwldslash_w_pab.h \
 	actions/ferm/linop/lgherm_w.h \
 	actions/ferm/linop/zolotarev5d_linop_array_w.h \
 	actions/ferm/linop/dslash_w.h actions/ferm/linop/dwffld_w.h \
@@ -264,6 +265,9 @@ if BUILD_SSE_WILSON_DSLASH
 libchroma_a_SOURCES += lwldslash_w_sse.cc
 endif
 
+if BUILD_PAB_WILSON_DSLASH
+libchroma_a_SOURCES += lwldslash_w_pab.cc
+endif
 
 #
 # This is the list of files to be used in Staggered Builds
