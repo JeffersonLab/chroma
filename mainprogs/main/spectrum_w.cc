@@ -1,10 +1,17 @@
-// $Id: spectrum_w.cc,v 1.28 2004-02-13 15:27:14 sbasak Exp $
+// $Id: spectrum_w.cc,v 1.29 2004-02-23 03:13:58 edwards Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.28  2004-02-13 15:27:14  sbasak
+//  Revision 1.29  2004-02-23 03:13:58  edwards
+//  Major overhaul of input/output model! Now using EXCLUSIVELY
+//  SciDAC propagator format for propagators. Now, Param part of input
+//  files directly matches source/sink/propagator/seqprop headers
+//  of propagators. All ``known'' input of a propagator is derived
+//  from its header(s) and used for subsequent calculations.
+//
+//  Revision 1.28  2004/02/13 15:27:14  sbasak
 //  The p-wave and d-wave part has been stripped off the qqq_w file.
 //
 //  Revision 1.27  2004/02/11 12:51:35  bjoo
@@ -111,14 +118,8 @@ using namespace QDP;
 // and written to the XML output
 struct Param_t
 {
-  FermType     FermTypeP;
-  multi1d<Real> Mass;      // Quark Mass and **NOT** kappa
-
-  CfgType cfg_type;        // storage order for stored gauge configuration
   int j_decay;             // direction to measure propagation
 
-  bool Pt_src;             // point source
-  bool Sl_src;             // shell source
   bool Pt_snk;             // point sink
   bool Sl_snk;             // shell sink
 
@@ -131,23 +132,93 @@ struct Param_t
 
   int mom2_max;            // (mom)^2 <= mom2_max. mom2_max=7 in szin.
   bool avg_equiv_mom;      // average over equivalent momenta
-  WvfKind       Wvf_kind;  // Wave function kind: gauge invariant
+  WvfKind       wvf_kind;  // Wave function kind: gauge invariant
   multi1d<Real> wvf_param; // Array of width's or other parameters
   //   for "shell" source/sink wave function
-  multi1d<int> WvfIntPar;  // Array of iter numbers to approx. Gaussian or
+  multi1d<int> wvfIntPar;  // Array of iter numbers to approx. Gaussian or
   //   terminate CG inversion for Wuppertal smearing
 
   multi1d<int> nrow;
-  multi1d<int> boundary;
-  multi1d<int> t_srce;
 };
 
+
+//! Propagators
+struct Prop_t
+{
+  multi1d<string> prop_files;  // The files are expected to be in SciDAC format!
+};
+
+
+//! Mega-structure of parameters
 struct Spectrum_input_t
 {
-  IO_version_t     io_version;
   Param_t          param;
   Cfg_t            cfg;
+  Prop_t           prop;
 };
+
+
+//! Propagator parameters
+void read(XMLReader& xml, const string& path, Prop_t& input)
+{
+  XMLReader inputtop(xml, path);
+
+  read(inputtop, "prop_files", input.prop_files);
+}
+
+
+//! Reader for parameters
+void read(XMLReader& xml, const string& path, Param_t& param)
+{
+  XMLReader paramtop(xml, path);
+
+  int version;
+  read(paramtop, "version", version);
+
+  switch (version) 
+  {
+  case 9:
+    /**************************************************************************/
+    break;
+
+  default :
+    /**************************************************************************/
+
+    QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+    QDP_abort(1);
+  }
+
+  read(paramtop, "j_decay", param.j_decay);
+  if (param.j_decay < 0 || param.j_decay >= Nd) 
+  {
+    QDPIO::cerr << "Bad value: j_decay = " << param.j_decay << endl;
+    QDP_abort(1);
+  }
+
+  read(paramtop, "Pt_snk", param.Pt_snk);
+  read(paramtop, "Sl_snk", param.Sl_snk);
+
+  read(paramtop, "MesonP", param.MesonP);
+  read(paramtop, "CurrentP", param.CurrentP);
+  read(paramtop, "BaryonP", param.BaryonP);
+  read(paramtop, "time_rev", param.time_rev);
+
+  read(paramtop, "mom2_max", param.mom2_max);
+  read(paramtop, "avg_equiv_mom", param.avg_equiv_mom);
+
+  read(paramtop, "wvf_kind", param.wvf_kind);
+  read(paramtop, "wvf_param", param.wvf_param);
+  read(paramtop, "wvfIntPar", param.wvfIntPar);
+
+  if (param.wvf_param.size() != param.wvfIntPar.size())
+  {
+    QDPIO::cerr << "wvf_param size inconsistent with wvfintpar size" << endl;
+    QDP_abort(1);
+  }
+
+  read(paramtop, "nrow", param.nrow);
+}
+
 
 
 // Reader for input parameters
@@ -155,161 +226,21 @@ void read(XMLReader& xml, const string& path, Spectrum_input_t& input)
 {
   XMLReader inputtop(xml, path);
 
-  // Defaults
-  input.param.time_rev = false;
-  input.param.CurrentP = false;
-  input.param.BaryonP  = false;
-
-
-  // First, read the input parameter version.  Then, if this version
-  // includes 'Nc' and 'Nd', verify they agree with values compiled
-  // into QDP++
-
-  // Read in the IO_version
+  // Read all the input groups
   try
   {
-    read(inputtop, "IO_version/version", input.io_version.version);
+    // Read program parameters
+    read(inputtop, "Param", input.param);
+
+    // Read in the gauge configuration info
+    read(inputtop, "Cfg", input.cfg);
+
+    // Read in the propagator(s) info
+    read(inputtop, "Prop", input.prop);
   }
   catch (const string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
-    throw;
-  }
-
-
-  // Currently, in the supported IO versions, there is only a small difference
-  // in the inputs. So, to make code simpler, extract the common bits 
-
-  // Read the uncommon bits first
-  try
-  {
-    XMLReader paramtop(inputtop, "param"); // push into 'param' group
-
-    switch (input.io_version.version) 
-    {
-      /**************************************************************************/
-    case 6 :
-      /**************************************************************************/
-      break;
-
-    case 7:
-    case 8:
-      /**************************************************************************/
-      read(paramtop, "CurrentP", input.param.CurrentP);
-      read(paramtop, "BaryonP", input.param.BaryonP);
-      read(paramtop, "time_rev", input.param.time_rev);
-      break;
-
-    default :
-      /**************************************************************************/
-
-      QDPIO::cerr << "Input parameter version " << input.io_version.version << " unsupported." << endl;
-      QDP_abort(1);
-    }
-  }
-  catch (const string& e) 
-  {
-    QDPIO::cerr << "Error reading data: " << e << endl;
-    throw;
-  }
-
-
-  // Read the common bits
-  try 
-  {
-    XMLReader paramtop(inputtop, "param"); // push into 'param' group
-
-    read(paramtop, "FermTypeP", input.param.FermTypeP);
-
-    if (paramtop.count("Mass") != 0)
-    {
-      read(paramtop, "Mass", input.param.Mass);
-
-      if (paramtop.count("Kappa") != 0)
-      {
-	QDPIO::cerr << "Error: found both a Kappa and a Mass tag" << endl;
-	QDP_abort(1);
-      }
-    }
-    else if (paramtop.count("Kappa") != 0)
-    {
-      multi1d<Real> Kappa;
-      read(paramtop, "Kappa", Kappa);
-      
-      input.param.Mass = kappaToMass(Kappa);    // Convert Kappa to Mass
-    }
-    else
-    {
-      QDPIO::cerr << "Error: neither Mass or Kappa found" << endl;
-      QDP_abort(1);
-    }    
-
-#if 0
-    for (int i=0; i < input.param.Mass.size(); ++i) {
-      if (toBool(input.param.Mass[i] < 0.0)) {
-	QDPIO::cerr << "Unreasonable value for Mass." << endl;
-	QDPIO::cerr << "  Mass[" << i << "] = " << input.param.Mass[i] << endl;
-	QDP_abort(1);
-      } else {
-	QDPIO::cout << " Spectroscopy Mass: " << input.param.Mass[i] << endl;
-      }
-    }
-#endif
-
-    read(paramtop, "cfg_type", input.param.cfg_type);
-    read(paramtop, "j_decay", input.param.j_decay);
-    if (input.param.j_decay < 0 || input.param.j_decay >= Nd) 
-    {
-      QDPIO::cerr << "Bad value: j_decay = " << input.param.j_decay << endl;
-      QDP_abort(1);
-    }
-
-    read(paramtop, "Pt_src", input.param.Pt_src);
-    read(paramtop, "Sl_src", input.param.Sl_src);
-    read(paramtop, "Pt_snk", input.param.Pt_snk);
-    read(paramtop, "Sl_snk", input.param.Sl_snk);
-
-    read(paramtop, "MesonP", input.param.MesonP);
-
-    read(paramtop, "mom2_max", input.param.mom2_max);
-    read(paramtop, "avg_equiv_mom", input.param.avg_equiv_mom);
-
-    read(paramtop, "Wvf_kind", input.param.Wvf_kind);
-    read(paramtop, "wvf_param", input.param.wvf_param);
-    read(paramtop, "WvfIntPar", input.param.WvfIntPar);
-
-    if (input.param.Mass.size() != input.param.wvf_param.size())
-    {
-      QDPIO::cerr << "Mass size inconsistent with wvf_param size" << endl;
-      QDP_abort(1);
-    }
-
-    if (input.param.wvf_param.size() != input.param.WvfIntPar.size())
-    {
-      QDPIO::cerr << "wvf_param size inconsistent with wvfintpar size" << endl;
-      QDP_abort(1);
-    }
-
-    read(paramtop, "nrow", input.param.nrow);
-    read(paramtop, "boundary", input.param.boundary);
-    read(paramtop, "t_srce", input.param.t_srce);
-  }
-  catch (const string& e) 
-  {
-    QDPIO::cerr << "Error reading data: " << e << endl;
-    throw;
-  }
-
-
-
-  // Read in the gauge configuration file name
-  try
-  {
-    read(inputtop, "Cfg/cfg_file",input.cfg.cfg_file);
-  }
-  catch (const string& e) 
-  {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading prop data: " << e << endl;
     throw;
   }
 }
@@ -341,22 +272,11 @@ int main(int argc, char **argv)
   /*
    * Sanity checks
    */
-  // Check that only one type of source smearing is specified
-  // Must match how the stored propagator was smeared
-  if (input.param.Pt_src && input.param.Sl_src) {
-    QDPIO::cerr << "Error if Pt_src and Sl_src are both set." << endl;
-    QDPIO::cerr << "Choose the one which matches the stored propagators." << endl;
+  if (input.param.wvf_param.size() != input.prop.prop_files.size())
+  {
+    QDPIO::cerr << "wvf_param size inconsistent with prop_files size" << endl;
     QDP_abort(1);
   }
-
-  for (int i=0; i<Nd; ++i) {
-    if (input.param.t_srce[i] < 0 || input.param.t_srce[i] >= input.param.nrow[i]) {
-      QDPIO::cerr << "Quark propagator source coordinate incorrect." << endl;
-      QDPIO::cerr << "t_srce[" << i << "] = " << input.param.t_srce[i] << endl;
-      QDP_abort(1);
-    }
-  }
-
 
   QDPIO::cout << endl << "     Gauge group: SU(" << Nc << ")" << endl;
 
@@ -370,7 +290,7 @@ int main(int argc, char **argv)
   multi1d<LatticeColorMatrix> u(Nd);
   XMLReader gauge_xml;
 
-  switch (input.param.cfg_type) 
+  switch (input.cfg.cfg_type) 
   {
   case CFG_TYPE_SZIN :
     readSzin(gauge_xml, u, input.cfg.cfg_file);
@@ -398,7 +318,7 @@ int main(int argc, char **argv)
   write(xml_out, "Config_info", gauge_xml);
 
   push(xml_out, "Output_version");
-  write(xml_out, "out_version", 8);
+  write(xml_out, "out_version", 9);
   pop(xml_out);
 
   xml_out.flush();
@@ -426,30 +346,60 @@ int main(int argc, char **argv)
   SftMom phases(input.param.mom2_max, input.param.avg_equiv_mom, input.param.j_decay);
 
   // Keep an array of all the xml output buffers
-  XMLArrayWriter xml_array(xml_out,input.param.Mass.size());
+  XMLArrayWriter xml_array(xml_out,input.prop.prop_files.size());
   push(xml_array, "Wilson_hadron_measurements");
 
 
-  // Flags
-  int t0      = input.param.t_srce[input.param.j_decay];
-  int bc_spec = input.param.boundary[input.param.j_decay];
-
   // Now loop over the various fermion masses
-  for (int loop=0; loop < input.param.Mass.size(); ++loop)
+  for (int loop=0; loop < input.prop.prop_files.size(); ++loop)
   {
-    // Read the quark propagator
+    // Read the quark propagator and extract headers
     LatticePropagator quark_propagator;
+    ChromaProp_t prop_header;
+    PropSource_t source_header;
     {
-      XMLReader prop_xml;
-      stringstream prop_file;
-      prop_file << "propagator_" << loop;
-      readSzinQprop(prop_xml, quark_propagator, prop_file.str());
+      XMLReader prop_file_xml, prop_record_xml;
+      readQprop(prop_file_xml, 
+		prop_record_xml, quark_propagator,
+		input.prop.prop_files[loop], QDPIO_SERIAL);
+
+      // Try to invert this record XML into a ChromaProp struct
+      // Also pull out the id of this source
+      try
+      {
+	read(prop_record_xml, "/Propagator/ForwardProp", prop_header);
+	read(prop_record_xml, "/Propagator/PropSource", source_header);
+      }
+      catch (const string& e) 
+      {
+	QDPIO::cerr << "Error extracting forward_prop header: " << e << endl;
+	throw;
+      }
     }
 
-    push(xml_array);         // next array element - name auto-written
+    // Derived from input prop
+    Real Mass = prop_header.Mass;
+    multi1d<int> boundary = prop_header.boundary;
+    multi1d<int> t_source = source_header.t_source;
+
+    // Flags
+    int t0      = t_source[input.param.j_decay];
+    int bc_spec = boundary[input.param.j_decay];
+
+
+    // Next array element - name auto-written
+    push(xml_array);
     write(xml_array, "loop", loop);
-    write(xml_array, "Mass_mes", input.param.Mass[loop]);
-    write(xml_array, "t_srce", input.param.t_srce);
+    write(xml_array, "Mass_mes", Mass);
+    write(xml_array, "t_source", t_source);
+
+    // Save prop input
+    write(xml_array, "ForwardProp", prop_header);
+    write(xml_array, "PropSource", source_header);
+
+    // Determine what kind of source to use
+    bool Pt_src = (source_header.source_type == SRC_TYPE_POINT_SOURCE) ? true : false;
+    bool Sl_src = (source_header.source_type == SRC_TYPE_SHELL_SOURCE) ? true : false;
 
     // Do the mesons first
     if (input.param.MesonP) 
@@ -457,11 +407,11 @@ int main(int argc, char **argv)
       // Construct {Point|Shell}-Point mesons, if desired
       if (input.param.Pt_snk) 
       {
-	if (input.param.Pt_src)
+	if (Pt_src)
 	  mesons(quark_propagator, quark_propagator, phases, t0,
 		 xml_array, "Point_Point_Wilson_Mesons");
         
-	if (input.param.Sl_src)
+	if (Sl_src)
 	  mesons(quark_propagator, quark_propagator, phases, t0,
 		 xml_array, "Shell_Point_Wilson_Mesons");
       } // end if (Pt_snk)
@@ -474,16 +424,16 @@ int main(int argc, char **argv)
 	LatticePropagator quark_prop_smr;
 	quark_prop_smr = quark_propagator;
 	sink_smear2(u, quark_prop_smr, 
-		    input.param.Wvf_kind, 
+		    input.param.wvf_kind, 
 		    input.param.wvf_param[loop],
-		    input.param.WvfIntPar[loop], 
+		    input.param.wvfIntPar[loop], 
 		    input.param.j_decay);
 
-	if (input.param.Pt_src)
+	if (Pt_src)
 	  mesons(quark_prop_smr, quark_prop_smr, phases, t0,
 		 xml_array, "Point_Shell_Wilson_Mesons");
 
-	if (input.param.Sl_src)
+	if (Sl_src)
 	  mesons(quark_prop_smr, quark_prop_smr, phases, t0,
 		 xml_array, "Shell_Shell_Wilson_Mesons");
       } // end if (Sl_snk)
@@ -495,12 +445,12 @@ int main(int argc, char **argv)
     if (input.param.CurrentP) 
     {
       // Construct the rho vector-current and the pion axial current divergence
-      if (input.param.Pt_src)
+      if (Pt_src)
 	curcor2(u, quark_propagator, quark_propagator, phases, 
 		t0, 3,
 		xml_array, "Point_Point_Meson_Currents");
         
-      if (input.param.Sl_src)
+      if (Sl_src)
 	curcor2(u, quark_propagator, quark_propagator, phases, 
 		t0, 3,
 		xml_array, "Shell_Point_Meson_Currents");
@@ -513,12 +463,12 @@ int main(int argc, char **argv)
       // Construct {Point|Shell}-Point mesons, if desired
       if (input.param.Pt_snk) 
       {
-	if (input.param.Pt_src)
+	if (Pt_src)
 	  baryon(quark_propagator, phases, 
 		 t0, bc_spec, input.param.time_rev, 
 		 xml_array, "Point_Point_Wilson_Baryons");
         
-	if (input.param.Sl_src)
+	if (Sl_src)
 	  baryon(quark_propagator, phases, 
 		 t0, bc_spec, input.param.time_rev, 
 		 xml_array, "Shell_Point_Wilson_Baryons");
@@ -532,16 +482,16 @@ int main(int argc, char **argv)
 	LatticePropagator quark_prop_smr;
 	quark_prop_smr = quark_propagator;
 	sink_smear2(u, quark_prop_smr, 
-		    input.param.Wvf_kind, 
+		    input.param.wvf_kind, 
 		    input.param.wvf_param[loop],
-		    input.param.WvfIntPar[loop], 
+		    input.param.wvfIntPar[loop], 
 		    input.param.j_decay);
-	if (input.param.Pt_src)
+	if (Pt_src)
 	  baryon(quark_prop_smr, phases, 
 		 t0, bc_spec, input.param.time_rev, 
 		 xml_array, "Point_Shell_Wilson_Baryons");
         
-	if (input.param.Sl_src)
+	if (Sl_src)
 	  baryon(quark_prop_smr, phases, 
 		 t0, bc_spec, input.param.time_rev, 	
 		 xml_array, "Shell_Shell_Wilson_Baryons");

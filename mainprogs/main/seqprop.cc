@@ -1,10 +1,7 @@
-// $Id: seqprop.cc,v 1.13 2004-02-11 12:51:35 bjoo Exp $
+// $Id: seqprop.cc,v 1.14 2004-02-23 03:13:58 edwards Exp $
 /*! \file
  *  \brief Main code for sequential propagator generation
  */
-
-// #error "CODE NOT READY YET"
-
 
 #include <iostream>
 #include <cstdio>
@@ -17,71 +14,78 @@ using namespace QDP;
 /*
  * Input 
  */
-
-//! Parameters for sources and sinks
-struct SrceSinkParam_t
-{
-  bool             Pt_src;   // point source
-  bool             Sl_src;   // shell source
-  bool             Pt_snk;   // point sink
-  bool             Sl_snk;   // shell sink
-
-  SmearingParam_t  smearParam;
-
-  multi1d<int>     t_srce;
-  multi1d<int>     sink_mom;
-  int              t_sink;
-};
-
-// Parameters which must be determined from the XML input
-// and written to the XML output
+//! Parameters for running program
 struct Param_t
 {
-  FermType         FermTypeP;
-  FermActType      FermAct;
-  multi1d<Real>    Mass;       // Quark Mass and **NOT** kappa
- 
-  ChiralParam_t    chiralParam;
-  SrceSinkParam_t  srceSinkParam;
   InvertParam_t    invParam;
 
-  CfgType          cfg_type;   // storage order for stored gauge configuration
-  PropType         prop_type;  // storage order for stored propagator
-
-  int              j_decay;    // decay direction
-
   multi1d<int>     Seq_src;    // integer array holding sequential source numbers
+  multi1d<int>     sink_mom;
+  int              t_sink;
 
   multi1d<int>     nrow;
-  multi1d<int>     boundary;
 };
 
+
+//! Propagators
+struct Prop_t
+{
+  string           prop_file;  // The files is expected to be in SciDAC format!
+  multi1d<string>  seqprop_files;  // The files is expected to be in SciDAC format!
+  QDP_volfmt_t     seqprop_volfmt;
+};
+
+
+//! Mega-structure of all input
 struct Seqprop_input_t
 {
-  IO_version_t     io_version;
   Param_t          param;
   Cfg_t            cfg;
+  Prop_t           prop;
 };
 
 
-//
-void read(XMLReader& xml, const string& path, SrceSinkParam_t& param)
+//! Propagator parameters
+void read(XMLReader& xml, const string& path, Prop_t& input)
+{
+  XMLReader inputtop(xml, path);
+
+  read(inputtop, "prop_file", input.prop_file);
+  read(inputtop, "seqprop_files", input.seqprop_files);
+  read(inputtop, "seqprop_volfmt", input.seqprop_volfmt);
+}
+
+
+//! Reader for input parameters
+void read(XMLReader& xml, const string& path, Param_t& param)
 {
   XMLReader paramtop(xml, path);
 
-  read(paramtop, "Pt_src", param.Pt_src);
-  read(paramtop, "Sl_src", param.Sl_src);
-  read(paramtop, "Pt_snk", param.Pt_snk);
-  read(paramtop, "Sl_snk", param.Sl_snk);
+  int version;
+  read(paramtop, "version", version);
 
-  if (param.Sl_src || param.Sl_snk)
-    read(paramtop, "SmearingParam", param.smearParam);
+  switch (version) 
+  {
+    /**************************************************************************/
+  case 2:
+    /**************************************************************************/
+    break;
 
-  read(paramtop, "t_srce", param.t_srce);
+  default:
+    /**************************************************************************/
+    QDPIO::cerr << "Input parameter version " << version 
+		<< " unsupported." << endl;
+    QDP_abort(1);
+  }
+
+  read(paramtop, "Seq_src", param.Seq_src);
+  read(paramtop, "InvertParam", param.invParam);
+
   read(paramtop, "t_sink", param.t_sink);
   read(paramtop, "sink_mom", param.sink_mom);
-}
 
+  read(paramtop, "nrow", param.nrow);
+}
 
 
 // Reader for input parameters
@@ -89,121 +93,17 @@ void read(XMLReader& xml, const string& path, Seqprop_input_t& input)
 {
   XMLReader inputtop(xml, path);
 
-  // First, read the input parameter version.  Then, if this version
-  // includes 'Nc' and 'Nd', verify they agree with values compiled
-  // into QDP++
-
-  // Read in the IO_version
+  // Read the input
   try
   {
-    read(inputtop, "IO_version", input.io_version);
-  }
-  catch (const string& e) 
-  {
-    QDPIO::cerr << "Error reading data: " << e << endl;
-    throw;
-  }
+    // The parameters holds the version number
+    read(inputtop, "Param", input.param);
 
-
-  // Currently, in the supported IO versions, there is only a small difference
-  // in the inputs. So, to make code simpler, extract the common bits 
-
-  // Read the uncommon bits first
-  try
-  {
-    XMLReader paramtop(inputtop, "param"); // push into 'param' group
-
-    switch (input.io_version.version) 
-    {
-      /**************************************************************************/
-    case 1 :
-      /**************************************************************************/
-      break;
-
-    default :
-      /**************************************************************************/
-
-      QDPIO::cerr << "Input parameter version " << input.io_version.version 
-		  << " unsupported." << endl;
-      QDP_abort(1);
-    }
-  }
-  catch (const string& e) 
-  {
-    QDPIO::cerr << "Error reading data: " << e << endl;
-    throw;
-  }
-
-
-  // Read the common bits
-  try 
-  {
-    XMLReader paramtop(inputtop, "param"); // push into 'param' group
-
-    read(paramtop, "FermTypeP", input.param.FermTypeP);
-    read(paramtop, "FermAct", input.param.FermAct);
-
-    if (paramtop.count("Mass") != 0)
-    {
-      read(paramtop, "Mass", input.param.Mass);
-
-      if (paramtop.count("Kappa") != 0)
-      {
-	QDPIO::cerr << "Error: found both a Kappa and a Mass tag" << endl;
-	QDP_abort(1);
-      }
-    }
-    else if (paramtop.count("Kappa") != 0)
-    {
-      multi1d<Real> Kappa;
-      read(paramtop, "Kappa", Kappa);
-      
-      input.param.Mass = kappaToMass(Kappa);    // Convert Kappa to Mass
-    }
-    else
-    {
-      QDPIO::cerr << "Error: neither Mass or Kappa found" << endl;
-      QDP_abort(1);
-    }    
-
-#if 0
-    for (int i=0; i < input.param.Mass.size(); ++i) {
-      if (toBool(input.param.Mass[i] < 0.0)) {
-	QDPIO::cerr << "Unreasonable value for Mass." << endl;
-	QDPIO::cerr << "  Mass[" << i << "] = " << input.param.Mass[i] << endl;
-	QDP_abort(1);
-      } else {
-	QDPIO::cout << " Spectroscopy Mass: " << input.param.Mass[i] << endl;
-      }
-    }
-#endif
-
-    if (paramtop.count("ChiralParam") != 0)
-      read(paramtop, "ChiralParam", input.param.chiralParam);
-
-    read(paramtop, "Seq_src", input.param.Seq_src);
-    read(paramtop, "j_decay", input.param.j_decay);
-
-    read(paramtop, "cfg_type", input.param.cfg_type);
-    read(paramtop, "prop_type", input.param.prop_type);
-
-    read(paramtop, "SrceSinkParam", input.param.srceSinkParam);
-    read(paramtop, "InvertParam", input.param.invParam);
-
-    read(paramtop, "nrow", input.param.nrow);
-    read(paramtop, "boundary", input.param.boundary);
-  }
-  catch (const string& e) 
-  {
-    QDPIO::cerr << "Error reading data: " << e << endl;
-    throw;
-  }
-
-
-  // Read in the gauge configuration file name
-  try
-  {
+    // Read in the gauge configuration info
     read(inputtop, "Cfg", input.cfg);
+
+    // Read in the forward_prop/seqprop info
+    read(inputtop, "Prop", input.prop);
   }
   catch (const string& e) 
   {
@@ -211,7 +111,6 @@ void read(XMLReader& xml, const string& path, Seqprop_input_t& input)
     throw;
   }
 }
-
 
 
 //! Sequential propagator generation
@@ -248,53 +147,7 @@ int main(int argc, char **argv)
   Layout::create();
 
   // Sanity checks
-  for (int i=0; i<Nd; ++i) {
-    if (input.param.srceSinkParam.t_srce[i] < 0 || input.param.srceSinkParam.t_srce[i] >= input.param.nrow[i]) {
-      QDPIO::cerr << "Quark propagator source coordinate incorrect." << endl;
-      QDPIO::cerr << "t_srce[" << i << "] = " << input.param.srceSinkParam.t_srce[i] << endl;
-      QDP_abort(1);
-    }
-  }
-
-  if (input.param.srceSinkParam.t_sink < 0 || input.param.srceSinkParam.t_sink >= input.param.nrow[input.param.j_decay]) {
-    QDPIO::cerr << "Sink time coordinate incorrect." << endl;
-    QDPIO::cerr << "t_sink = " << input.param.srceSinkParam.t_sink << endl;
-    QDP_abort(1);
-  }
-
   QDPIO::cout << endl << "     Gauge group: SU(" << Nc << ")" << endl;
-
-  // Check for unnecessary multiple occurances of masss and/or wvf_params
-  if (input.param.Mass.size() > 1) {
-    if (input.param.srceSinkParam.Sl_src == true) {
-      for (int i=1; i < input.param.Mass.size(); ++i) {
-        for (int j=0; j<i; ++j) {
-          if (toBool(input.param.Mass[j] == input.param.Mass[i])
-              && toBool(input.param.srceSinkParam.smearParam.wvf_param[j] == input.param.srceSinkParam.smearParam.wvf_param[i])) {
-            QDPIO::cerr << "Same Mass and wvf_param:" << endl;
-            QDPIO::cerr << "  Mass["     << i << "] = " << input.param.Mass[i]     << endl;
-            QDPIO::cerr << "  wvf_param[" << i << "] = " << input.param.srceSinkParam.smearParam.wvf_param[i] << endl;
-            QDPIO::cerr << "  Mass["     << j << "] = " << input.param.Mass[j]     << endl;
-            QDPIO::cerr << "  wvf_param[" << j << "] = " << input.param.srceSinkParam.smearParam.wvf_param[j] << endl;
-            QDP_abort(1);
-          }
-        }
-      }
-    } else {
-      for (int i=1; i < input.param.Mass.size(); ++i) {
-        for (int j=0; j<i; ++j) {
-          if (toBool(input.param.Mass[j] == input.param.Mass[i])) {
-            QDPIO::cerr  << "Same Mass without shell source or sink:" << endl;
-            QDPIO::cerr << "  Mass["     << i << "] = " << input.param.Mass[i]     << endl;
-            QDPIO::cerr << "  Mass["     << j << "] = " << input.param.Mass[j]     << endl;
-            QDP_abort(1);
-          }
-        }
-      }
-    }
-  }
-
-  QDPIO::cout << "\n     Gauge group: SU(" << Nc << ")" << endl;
 
   for(int seq_src_ctr = 0; seq_src_ctr < input.param.Seq_src.size(); seq_src_ctr++)
     QDPIO::cout << "     Computing sequential source of type "
@@ -311,7 +164,7 @@ int main(int argc, char **argv)
   multi1d<LatticeColorMatrix> u(Nd);
   XMLReader gauge_xml;
 
-  switch (input.param.cfg_type) 
+  switch (input.cfg.cfg_type) 
   {
   case CFG_TYPE_SZIN :
     readSzin(gauge_xml, u, input.cfg.cfg_file);
@@ -334,7 +187,7 @@ int main(int argc, char **argv)
   write(xml_out, "Config_info", gauge_xml);
 
   push(xml_out, "Output_version");
-  write(xml_out, "out_version", 1);
+  write(xml_out, "out_version", 2);
   pop(xml_out);
 
   xml_out.flush();
@@ -357,219 +210,301 @@ int main(int argc, char **argv)
   xml_out.flush();
 
 
-  //------------------ Start main body of calculations -----------------------------
-  int ncg_had = 0;			/* Initialise iteration counter */
+  //
+  // Read the quark propagator and extract headers
+  //
+  XMLReader prop_file_xml, prop_record_xml;
+  LatticePropagator quark_propagator;
+  ChromaProp_t prop_header;
+  PropSource_t source_header;
+  {
+    QDPIO::cout << "Attempt to read forward propagator" << endl;
+    readQprop(prop_file_xml, 
+	      prop_record_xml, quark_propagator,
+	      input.prop.prop_file, QDPIO_SERIAL);
+    QDPIO::cout << "Forward propagator successfully read" << endl;
+   
+    // Try to invert this record XML into a ChromaProp struct
+    // Also pull out the id of this source
+    try
+    {
+      read(prop_record_xml, "/Propagator/ForwardProp", prop_header);
+      read(prop_record_xml, "/Propagator/PropSource", source_header);
+    }
+    catch (const string& e) 
+    {
+      QDPIO::cerr << "Error extracting forward_prop header: " << e << endl;
+      throw;
+    }
+  }
 
+  // Derived from input prop
+  int  j_decay = source_header.j_decay;
+  multi1d<int> boundary = prop_header.boundary;
+  multi1d<int> t_source = source_header.t_source;
+
+  // Sanity check - write out the norm2 of the forward prop in the j_decay direction
+  // Use this for any possible verification
+  {
+    // Initialize the slow Fourier transform phases
+    SftMom phases(0, true, j_decay);
+
+    multi1d<Double> forward_prop_corr = sumMulti(localNorm2(quark_propagator), 
+						 phases.getSet());
+
+    push(xml_out, "Forward_prop_correlator");
+    write(xml_out, "forward_prop_corr", forward_prop_corr);
+    pop(xml_out);
+  }
+
+  // A sanity check
+  if (input.param.t_sink < 0 || input.param.t_sink >= input.param.nrow[j_decay]) 
+  {
+    QDPIO::cerr << "Sink time coordinate incorrect." << endl;
+    QDPIO::cerr << "t_sink = " << input.param.t_sink << endl;
+    QDP_abort(1);
+  }
+
+
+  // Make a sink propagator header from the source header
+  // This clones params in the correct way - we use the same sink
+  // smearing as we did at the source
+  PropSink_t  sink_header;
+  initHeader(sink_header, source_header);
+  
+  // Determine what kind of sink to use
+  bool Sl_snk = (sink_header.sink_type == SNK_TYPE_SHELL_SINK) ? true : false;
+
+  // Save prop input
+  write(xml_out, "PropSource", source_header);
+  write(xml_out, "ForwardProp", prop_header);
+  write(xml_out, "PropSink", sink_header);
+
+
+  //------------------ Start main body of calculations -----------------------------
   /*
    * Construct fermionic BC. Need one for LatticeFermion and multi1d<LatticeFermion>
    * Note, the handle is on an ABSTRACT type
    */
-  Handle< FermBC<LatticeFermion> >  fbc(new SimpleFermBC<LatticeFermion>(input.param.boundary));
-  Handle< FermBC<multi1d<LatticeFermion> > >  fbc_a(new SimpleFermBC<multi1d<LatticeFermion> >(input.param.boundary));
+  Handle< FermBC<LatticeFermion> >  fbc(new SimpleFermBC<LatticeFermion>(boundary));
+  Handle< FermBC<multi1d<LatticeFermion> > >  fbc_a(new SimpleFermBC<multi1d<LatticeFermion> >(boundary));
 
-  /*
-   *  Now loop over the various masses
-   */
-  XMLArrayWriter xml_array(xml_out, input.param.Mass.size());
-  push(xml_array, "Seqprop_calc");
-    
-  for(int loop = 0; loop < input.param.Mass.size(); loop++)
+  //
+  // Initialize fermion action
+  //
+  WilsonTypeFermAct<LatticeFermion>* S_f_ptr = 0;
+  WilsonTypeFermAct< multi1d<LatticeFermion> >* S_f_a_ptr = 0;
+
+  switch (prop_header.FermAct)
   {
-    QDPIO::cout << "Mass loop = " << loop << endl;
-  
-    push(xml_array);
-    write(xml_array, "loop", loop);
+  case FERM_ACT_WILSON:
+  {
+    QDPIO::cout << "FERM_ACT_WILSON" << endl;
+    S_f_ptr = new EvenOddPrecWilsonFermAct(fbc, prop_header.Mass,
+					   prop_header.anisoParam);
+  }
+  break;
 
-    //
-    // Initialize fermion action
-    //
-#if 1
-    UnprecWilsonFermAct S_f(fbc, input.param.Mass[loop]);
-#else
-    UnprecDWFermActArray S_f(fbc_a,
-			     input.param.chiralParam.OverMass, 
-			     input.param.Mass[loop], 
-			     input.param.chiralParam.N5);
-//  UnprecDWFermAct S_f(fbc_a, WilsonMass, m_q);
+  case FERM_ACT_UNPRECONDITIONED_WILSON:
+  {
+    QDPIO::cout << "FERM_ACT_UNPRECONDITIONED_WILSON" << endl;
+    S_f_ptr = new UnprecWilsonFermAct(fbc, prop_header.Mass);
+  }
+  break;
+
+#if 0
+  case FERM_ACT_DWF:
+  {
+    QDPIO::cout << "FERM_ACT_DWF" << endl;
+    S_f_a_ptr = new EvenOddPrecDWFermActArray(fbc_a,
+					      prop_header.chiralParam.OverMass, 
+					      prop_header.Mass, 
+					      prop_header.chiralParam.N5);
+  }
+  break;
+
+  case FERM_ACT_UNPRECONDITIONED_DWF:
+  {
+    QDPIO::cout << "FERM_ACT_UNPRECONDITONED_DWF" << endl;
+    S_f_a_ptr = new UnprecDWFermActArray(fbc_a,
+					 prop_header.chiralParam.OverMass, 
+					 prop_header.Mass, 
+					 prop_header.chiralParam.N5);
+  }
+  break;
 #endif
 
-    // Read the quark propagator
-    QDPIO::cout << "Attempt to read forward propagator" << endl;
-  
-    LatticePropagator quark_propagator;
-    XMLReader prop_xml;
-    {
-      stringstream prop_file;
-      prop_file << "propagator_" << loop;
-      readSzinQprop(prop_xml, quark_propagator, prop_file.str());
+  default:
+    QDPIO::cerr << "Unsupported fermion action" << endl;
+    QDP_abort(1);
+  }
 
-      write(xml_array, "Forward_prop_info", prop_xml);
+  // Create a useable handle on the action
+  // The handle now owns the pointer
+  Handle< WilsonTypeFermAct<LatticeFermion> > S_f(S_f_ptr);
+//  Handle< WilsonTypeFermAct< multi1d<LatticeFermion> > > S_f_a(S_f_a_ptr);
+
+
+  if (Sl_snk);
+  {
+    // Do the sink smearing BEFORE the interpolating operator
+    sink_smear2(u, quark_propagator, 
+		source_header.sourceSmearParam.wvf_kind, 
+		source_header.sourceSmearParam.wvf_param, 
+		source_header.sourceSmearParam.wvfIntPar, 
+		j_decay);
+  }
+  
+  //
+  // Loop over the sequential propagators
+  //
+  XMLArrayWriter  xml_seq_src(xml_out, input.param.Seq_src.size());
+  push(xml_seq_src, "Sequential_source");
+
+  int ncg_had = 0;			// Initialise iteration counter
+  for(int seq_src_ctr = 0; seq_src_ctr < input.param.Seq_src.size(); seq_src_ctr++)
+  {
+    push(xml_seq_src);
+    write(xml_seq_src, "seq_src_ctr", seq_src_ctr);
+
+    QDPIO::cout << "Start seqprop calculation for seq_src number = " 
+		<< seq_src_ctr << endl;
+
+    // Allocate space for the sequential source
+    LatticePropagator quark_prop_src;
+
+    /*
+     *  Sources 0 -> 9 corresponding to Baryon sequential sources
+     *  Sources 10 -> 19 corresponds to a Meson sequential source
+     *  Souces  21 -> 29 are additional Baryon ones we thought of
+     *
+     *  Note that not all the source values are necessarily implemented
+     *
+     */
+
+    int seq_src_value = input.param.Seq_src[seq_src_ctr]; /* Assign the particular 
+							     source type */
+
+
+    if(((0 <= seq_src_value) && (seq_src_value <= 9)) ||
+       ((21 <= seq_src_value) && (seq_src_value <= 29))) 
+    {
+      // Computation of the Baryon sequential source
+      barSeqSource(quark_propagator, quark_propagator, quark_prop_src, 
+		   input.param.t_sink, 
+		   input.param.sink_mom, 
+		   j_decay, 
+		   seq_src_value);
+    }
+    else if ((10 <= seq_src_value) && (seq_src_value <= 20))
+    {
+      // Computation of the Meson sequential source
+      mesonSeqSource(quark_propagator, quark_prop_src, 
+		     input.param.t_sink, 
+		     input.param.sink_mom, 
+		     j_decay, 
+		     seq_src_value);
+    }
+    else{
+      QDP_error_exit("Unknown sequential source type", seq_src_value);
     }
 
-    QDPIO::cout << "Forward propagator successfully read" << endl;
-   
-    // Sanity check - write out the norm2 of the forward prop in the Nd-1 direction
+    if (Sl_snk)
+    {
+      // Do the sink smearing AFTER the interpolating operator
+      sink_smear2(u, quark_prop_src, 
+		  source_header.sourceSmearParam.wvf_kind, 
+		  source_header.sourceSmearParam.wvf_param, 
+		  source_header.sourceSmearParam.wvfIntPar, 
+		  j_decay);
+    }
+
+    /*
+     *  Compute the full propagator.
+     */
+    LatticePropagator seq_quark_prop = zero;
+    {
+      Handle<const ConnectState> state(S_f->createState(u));  // inserts any BC
+      int n_count;
+
+      quarkProp4(seq_quark_prop, xml_out, quark_prop_src,
+		 *S_f, state, 
+		 input.param.invParam.invType, 
+		 input.param.invParam.RsdCG, 
+		 input.param.invParam.MaxCG, 
+		 n_count);
+
+      ncg_had += n_count;
+    }
+
+    // Sanity check - write out the norm2 of the forward prop in the j_decay direction
     // Use this for any possible verification
     {
       // Initialize the slow Fourier transform phases
       SftMom phases(0, true, Nd-1);
 
-      multi1d<Double> forward_prop_corr = sumMulti(localNorm2(quark_propagator), 
-						   phases.getSet());
-
-      push(xml_array, "Forward_prop_correlator");
-      write(xml_array, "forward_prop_corr", forward_prop_corr);
-      pop(xml_array);
+      multi1d<Double> backward_prop_corr = sumMulti(localNorm2(seq_quark_prop), 
+						    phases.getSet());
+	
+      push(xml_seq_src, "Backward_prop_correlator");
+      write(xml_seq_src, "backward_prop_corr", backward_prop_corr);
+      pop(xml_seq_src);
     }
 
 
-    if (input.param.srceSinkParam.Sl_snk)
+    /*
+     *  Write the sequential propagator out to disk
+     */
     {
-      // Do the sink smearing BEFORE the interpolating operator
-      sink_smear2(u, quark_propagator, 
-		  input.param.srceSinkParam.smearParam.Wvf_kind, 
-		  input.param.srceSinkParam.smearParam.wvf_param[loop], 
-		  input.param.srceSinkParam.smearParam.WvfIntPar[loop], 
-		  input.param.j_decay);
+      XMLBufferWriter file_xml;
+      push(file_xml, "seqprop");
+      int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
+      write(file_xml, "id", id);
+      pop(file_xml);
+
+      // Make a seqprop structure
+      ChromaSeqProp_t seqprop_header;
+      seqprop_header.invParam = input.param.invParam;
+      seqprop_header.Seq_src  = seq_src_value;
+      seqprop_header.sink_mom = input.param.sink_mom;
+      seqprop_header.t_sink   = input.param.t_sink;
+      seqprop_header.nrow     = input.param.nrow;
+
+      XMLBufferWriter record_xml;
+      push(record_xml, "SeqProp");
+      write(record_xml, "SequentialProp", seqprop_header);
+      write(record_xml, "PropSink", sink_header);
+      write(record_xml, "ForwardProp", prop_header);
+      write(record_xml, "PropSource", source_header);
+      write(record_xml, "Config_info", gauge_xml);
+      pop(record_xml);
+
+      // Write the seqprop
+      writeQprop(file_xml, record_xml, seq_quark_prop,
+		 input.prop.seqprop_files[seq_src_ctr], 
+		 input.prop.seqprop_volfmt, QDPIO_SERIAL);
     }
 
-    XMLArrayWriter  xml_seq_src(xml_array, input.param.Seq_src.size());
-    push(xml_seq_src, "Sequential_source");
+    /*
+     *  In the case of the pion, we know that the exponentiated propagator
+     *  back to the source should be the pion correlator at time-slice
+     *  zero, and so will write this out
+     */
 
-    for(int seq_src_ctr = 0; seq_src_ctr < input.param.Seq_src.size(); seq_src_ctr++)
+    if(seq_src_value == 10)
     {
-      push(xml_seq_src);
-      write(xml_seq_src, "seq_src_ctr", seq_src_ctr);
-
-      QDPIO::cout << "Start seqprop calculation for seq_src number = " 
-		  << seq_src_ctr << endl;
-
-      // Allocate space for the sequential source
-      LatticePropagator quark_prop_src;
-
-      /*
-       *  Sources 0 -> 9 corresponding to Baryon sequential sources
-       *  Sources 10 -> 19 corresponds to a Meson sequential source
-       *  Souces  21 -> 29 are additional Baryon ones we thought of
-       *
-       *  Note that not all the source values are necessarily implemented
-       *
-       */
-
-      int seq_src_value = input.param.Seq_src[seq_src_ctr]; /* Assign the particular 
-							       source type */
-
-
-      if(((0 <= seq_src_value) && (seq_src_value <= 9)) ||
-	 ((21 <= seq_src_value) && (seq_src_value <= 29))) 
-      {
-	// Computation of the Baryon sequential source
-	barSeqSource(quark_propagator, quark_propagator, quark_prop_src, 
-		     input.param.srceSinkParam.t_sink, 
-		     input.param.srceSinkParam.sink_mom, 
-		     input.param.j_decay, 
-		     seq_src_value);
-      }
-      else if ((10 <= seq_src_value) && (seq_src_value <= 20))
-      {
-	// Computation of the Meson sequential source
-	mesonSeqSource(quark_propagator, quark_prop_src, 
-		       input.param.srceSinkParam.t_sink, 
-		       input.param.srceSinkParam.sink_mom, 
-		       input.param.j_decay, 
-		       seq_src_value);
-      }
-      else{
-	QDP_error_exit("Unknown sequential source type", seq_src_value);
-      }
-
-      if (input.param.srceSinkParam.Sl_snk)
-      {
-	// Do the sink smearing AFTER the interpolating operator
-	sink_smear2(u, quark_prop_src, 
-		    input.param.srceSinkParam.smearParam.Wvf_kind, 
-		    input.param.srceSinkParam.smearParam.wvf_param[loop], 
-		    input.param.srceSinkParam.smearParam.WvfIntPar[loop], 
-		    input.param.j_decay);
-      }
-
-      /*
-       *  Compute the full propagator.
-       */
-      LatticePropagator seq_quark_prop = zero;
-      XMLBufferWriter xml_buf;
-      {
-	Handle<const ConnectState> state(S_f.createState(u));  // inserts any BC
-	int n_count;
-
-	quarkProp4(seq_quark_prop, xml_buf, quark_prop_src,
-		   S_f, state, 
-		   input.param.invParam.invType, 
-		   input.param.invParam.RsdCG, 
-		   input.param.invParam.MaxCG, 
-		   n_count);
-
-	ncg_had += n_count;
-      }
-
-      xml_seq_src << xml_buf;
-
-      // Sanity check - write out the norm2 of the forward prop in the Nd-1 direction
-      // Use this for any possible verification
-      {
-	// Initialize the slow Fourier transform phases
-	SftMom phases(0, true, Nd-1);
-
-	multi1d<Double> backward_prop_corr = sumMulti(localNorm2(seq_quark_prop), 
-						      phases.getSet());
+      Complex pion_src;
+      seqPionTest(pion_src, seq_quark_prop, t_source);
 	
-	push(xml_seq_src, "Backward_prop_correlator");
-	write(xml_seq_src, "backward_prop_corr", backward_prop_corr);
-	pop(xml_seq_src);
-      }
+      push(xml_out,"Seq_propagator_test");
+      write(xml_out, "pion_src", pion_src);
+      pop(xml_out);
+    }
 
-      /*
-       *  Write the sequential propagator out to disk
-       *
-       *  We need to dump some sort of header.  At the very least, we
-       *  should dump the Mass values
-       */
-
+    pop(xml_seq_src);   // elem
+  } /* end loop over sequential sources */
       
-      /*
-       *  Now create the name of the propagator value
-       */
-      {
-	stringstream seqprop_file;
-	seqprop_file << "seqprop_" << loop << "_" << seq_src_value;
-	writeSzinQprop(seq_quark_prop, seqprop_file.str(), massToKappa(input.param.Mass[loop]));
-      }
-
-      /*
-       *  In the case of the pion, we know that the exponentiated propagator
-       *  back to the source should be the pion correlator at time-slice
-       *  zero, and so will write this out
-       */
-
-      if(seq_src_value == 10)
-      {
-	Complex pion_src;
-	seqPionTest(pion_src, seq_quark_prop, input.param.srceSinkParam.t_srce);
-	
-	push(xml_out,"Seq_propagator_test");
-	write(xml_out, "pion_src", pion_src);
-	pop(xml_out);
-      }
-
-      pop(xml_seq_src);   // elem
-    } /* end loop over sequential sources */
-      
-    pop(xml_seq_src);  // Sequential_source
-
-    pop(xml_array);     // elem
-  } /* end loop over the mass value */
-
-  pop(xml_array);  // Seqprop_calc
+  pop(xml_seq_src);  // Sequential_source
 
   push(xml_out,"Relaxation_Iterations");
   write(xml_out, "ncg_had", ncg_had);

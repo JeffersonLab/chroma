@@ -1,4 +1,6 @@
-/*
+// $Id: sink_smearing.cc,v 1.3 2004-02-23 03:13:58 edwards Exp $
+/*! \file
+ * \brief Main program for sink-smearing quark propagators
  *
  * This test program reads in: quark propagator(s);
  *                   does    : sink smearing on quark propagator(s);
@@ -17,64 +19,62 @@
 #include <iostream>
 #include <cstdio>
 
-#define MAIN
-
 #include "chroma.h"
 
 using namespace QDP;
 
-
-
-
-// Parameters which must be determined from the XML input
-// and written to the XML output
-struct Param_t
-{
-  CfgType         cfg_type;   // storage order for stored gauge configuration
-  PropType        prop_type;  // storage order for stored propagator
-
-  Real DummyKappa;
-
-  Real wvf_param;
-  int  WvfIntPar;
-  int  LaplacePower;
-  int  disp_length;
-  int  disp_dir;
-  WaveStateType wave_state;
-  int  sink_dir;
-
-  Real sm_fact;
-  int  sm_numb;
-  int  BlkMax;
-  Real BlkAccu;
-
-  multi1d<int> nrow;
-  multi1d<int> boundary;
-  multi1d<int> t_srce;
-
-  int  j_decay;
-};
-
+//! Propagators
 struct Prop_t
 {
-  string       prop_in_file;
-  string       prop_out_file;
+  string        prop_file;
+
+  QDP_volfmt_t  smeared_prop_volfmt; // Volume format is  SINGLEFILE or MULTIFILE
+  string        smeared_prop_file;
 };
 
-struct Propagator_input_t
+//! Mega-structure of parameters
+struct SinkSmear_input_t
 {
-  IO_version_t     io_version;
-  Param_t          param;
+  PropSink_t       param;
   Cfg_t            cfg;
   Prop_t           prop;
 };
 
 
+//! Propagator parameters
+void read(XMLReader& xml, const string& path, Prop_t& input)
+{
+  XMLReader inputtop(xml, path);
 
-void read(XMLReader& xml, const string& path, Prop_t& input);
-void read(XMLReader& xml, const string& path, Propagator_input_t& input);
+  read(inputtop, "prop_file", input.prop_file);
+  read(inputtop, "smeared_prop_file", input.smeared_prop_file);
+}
 
 
+
+// Reader for input parameters
+void read(XMLReader& xml, const string& path, SinkSmear_input_t& input)
+{
+  XMLReader inputtop(xml, path);
+
+  // Read all the input groups
+  try
+  {
+    // Read program parameters
+    read(inputtop, "Param", input.param);
+
+    // Read in the gauge configuration info
+    read(inputtop, "Cfg", input.cfg);
+
+    // Read in the propagator(s) info
+    read(inputtop, "Prop", input.prop);
+  }
+  catch (const string& e) 
+  {
+    QDPIO::cerr << "Error reading prop data: " << e << endl;
+    throw;
+  }
+}
 
 
 
@@ -83,10 +83,8 @@ int main(int argc, char **argv)
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
 
-
-
   // Input parameter structure
-  Propagator_input_t  input;
+  SinkSmear_input_t  input;
 
   // Instantiate xml reader for DATA
   XMLReader xml_in("DATA");
@@ -98,18 +96,13 @@ int main(int argc, char **argv)
   Layout::setLattSize(input.param.nrow);
   Layout::create();
 
+  QDPIO::cout << " SINK_SMEAR: Sink smearing for propagators" << endl;
 
-  // Useful parameters that should be read from an input file
-  int length = Layout::lattSize()[input.param.j_decay]; // define the temporal direction
-
-
-
-
-
+  // Read in the configuration along with relevant information.
   multi1d<LatticeColorMatrix> u(Nd);
   XMLReader gauge_xml;
 
-  switch (input.param.cfg_type) 
+  switch (input.cfg.cfg_type) 
   {
   case CFG_TYPE_SZIN :
     readSzin(gauge_xml, u, input.cfg.cfg_file);
@@ -121,102 +114,20 @@ int main(int argc, char **argv)
     QDP_error_exit("Configuration type is unsupported.");
   }
 
-
-
-  multi1d<LatticeColorMatrix> u_smr(Nd);
-  u_smr = u;
-  for(int i=0; i < input.param.sm_numb; ++i)
-  {
-    multi1d<LatticeColorMatrix> u_tmp(Nd);
-
-    for(int mu = 0; mu < Nd; ++mu)
-      if ( mu != input.param.j_decay )
-        APE_Smear(u_smr, u_tmp[mu], mu, 0, input.param.sm_fact, 
-		  input.param.BlkAccu, input.param.BlkMax, input.param.j_decay);
-      else
-        u_tmp[mu] = u_smr[mu];
-
-    u_smr = u_tmp;
-  }
-
-
-  // Now the lattice quark propagator, just a single one for this example, together
-  // with the corresponding header
-
-  LatticePropagator quark_propagator;
-  XMLReader prop_xml;
-  PropHead          header;
-
-  switch (input.param.prop_type) 
-  {
-  case PROP_TYPE_SZIN :
-    readSzinQprop(prop_xml, quark_propagator, input.prop.prop_in_file);
-    break;
-    
-    //  case PROP_TYPE_NERSC:
-    //    readQprop("propagator_0", quark_propagator, header);
-    //    break;
-  default :
-    QDP_error_exit("Lattice propagator type is unsupported.");
-  }
-  
-  
-  //NmlWriter nml("propagator_1");   // output in ASCII format
-  //erite(nml, "quark_propagator", quark_propagator);
-  //nml.close();
-
-	
-
-
-  gausSmear(u_smr, quark_propagator, input.param.wvf_param, 
-	    input.param.WvfIntPar, input.param.j_decay);
-	
-  laplacian(u_smr, quark_propagator, input.param.j_decay, input.param.LaplacePower);
-	
-  displacement(u_smr,quark_propagator, input.param.disp_length, input.param.disp_dir);
-	
-
-  switch(input.param.wave_state)
-  {
-  case WAVE_TYPE_S_WAVE:
-    break;
-  case WAVE_TYPE_P_WAVE:
-    {
-      LatticePropagator temp;
-      temp = quark_propagator;
-      D_j(u_smr, temp, quark_propagator, input.param.sink_dir);
-    }
-    break;
-  case WAVE_TYPE_D_WAVE:   
-    {
-      LatticePropagator temp;
-      temp = quark_propagator;
-      DjDk(u_smr, temp, quark_propagator, input.param.sink_dir);
-    }
-    break;
-  default: 
-    cerr<<"invaid wave_state\n";
-    break;
-  } 
-  
-
-
-
-
-
-
-  XMLFileWriter xml_out("XMLDAT_ss");  // output data file for sink_smearing
-  push(xml_out, "sink_smearing");
-  proginfo(xml_out);
-  write(xml_out, "Input", xml_in);
-  write(xml_out, "Config_info", gauge_xml);
-
-
-
-  
+  QDPIO::cout << "Gauge field read!" << endl;
 
   // Check if the gauge field configuration is unitarized
   unitarityCheck(u);
+
+
+  // Output
+  XMLFileWriter xml_out("XMLDAT");
+  push(xml_out,"sink_smear");
+
+  xml_out << xml_in;  // save a copy of the input
+  write(xml_out, "config_info", gauge_xml);
+  xml_out.flush();
+
 
   // Calculate some gauge invariant observables just for info.
   Double w_plaq, s_plaq, t_plaq, link;
@@ -228,41 +139,172 @@ int main(int argc, char **argv)
   write(xml_out, "t_plaq", t_plaq);
   write(xml_out, "link", link);
 
-
-  
-
-
-  // Save the propagator
-  switch (input.param.prop_type) 
+  //
+  // Read the quark propagator and extract headers
+  //
+  XMLReader prop_file_xml, prop_record_xml;
+  LatticePropagator quark_propagator;
+  ChromaProp_t prop_header;
+  PropSource_t source_header;
   {
-  case PROP_TYPE_SZIN:
-    writeSzinQprop(quark_propagator, input.prop.prop_out_file, input.param.DummyKappa);
-    break;
-    
-    //  case PROP_TYPE_SCIDAC:
-    //    writeQprop(prop_xml, quark_propagator, input.prop.prop_file);
-    //    break;
-  default :
-    QDP_error_exit("Propagator type is unsupported.");
+    QDPIO::cout << "Attempt to read forward propagator" << endl;
+    readQprop(prop_file_xml, 
+	      prop_record_xml, quark_propagator,
+	      input.prop.prop_file, QDPIO_SERIAL);
+    QDPIO::cout << "Forward propagator successfully read" << endl;
+   
+    // Try to invert this record XML into a ChromaProp struct
+    // Also pull out the id of this source
+    try
+    {
+      read(prop_record_xml, "/Propagator/ForwardProp", prop_header);
+      read(prop_record_xml, "/Propagator/PropSource", source_header);
+    }
+    catch (const string& e) 
+    {
+      QDPIO::cerr << "Error extracting forward_prop header: " << e << endl;
+      throw;
+    }
   }
 
+  // Derived from input prop
+  int  j_decay = source_header.j_decay;
+  multi1d<int> boundary = prop_header.boundary;
+  multi1d<int> t_source = source_header.t_source;
 
-
-  
-  write(xml_out, "Input_prop_info", prop_xml);
-
-  // Sanity check - write out the propagator (pion) correlator
-  // in the Nd-1 direction
+  // Sanity check - write out the norm2 of the forward prop in the j_decay direction
+  // Use this for any possible verification
   {
     // Initialize the slow Fourier transform phases
-    SftMom phases(0, true, Nd-1);
-  
-    multi1d<Double> prop_corr = sumMulti(localNorm2(quark_propagator),
-                                                    phases.getSet());
-  
-    push(xml_out, "Prop_correlator");
-    write(xml_out, "prop_corr", prop_corr);
+    SftMom phases(0, true, j_decay);
+
+    multi1d<Double> forward_prop_corr = sumMulti(localNorm2(quark_propagator), 
+						 phases.getSet());
+
+    push(xml_out, "Forward_prop_correlator");
+    write(xml_out, "forward_prop_corr", forward_prop_corr);
+    pop(xml_out);
   }
+
+
+
+  /*
+   * Smear the gauge field if needed
+   */
+  multi1d<LatticeColorMatrix> u_smr(Nd);
+  u_smr = u;
+
+  if (input.param.link_smear_num > 0)
+  {
+    int BlkMax = 100;	// Maximum number of blocking/smearing iterations
+    Real BlkAccu = 1.0-5;	// Blocking/smearing accuracy
+
+    for(int i=0; i < input.param.link_smear_num; ++i)
+    {
+      multi1d<LatticeColorMatrix> u_tmp(Nd);
+
+      for(int mu = 0; mu < Nd; ++mu)
+	if ( mu != j_decay )
+	  APE_Smear(u_smr, u_tmp[mu], mu, 0,
+		    input.param.link_smear_fact, BlkAccu, BlkMax, 
+		    j_decay);
+	else
+	  u_tmp[mu] = u_smr[mu];
+      
+      u_smr = u_tmp;
+    }
+    QDPIO::cout << "Gauge field APE-smeared!" << endl;
+  }
+
+
+  /*
+   * Now apply appropriate sink smearing
+   */
+  if(input.param.sink_type == SNK_TYPE_SHELL_SINK)
+  {
+    // There should be a call to maksrc2 or some-such for general source smearing
+    gausSmear(u_smr, quark_propagator, 
+	      input.param.sinkSmearParam.wvf_param, 
+	      input.param.sinkSmearParam.wvfIntPar, 
+	      j_decay);
+    laplacian(u_smr, quark_propagator, 
+	      j_decay, input.param.laplace_power);
+    displacement(u_smr, quark_propagator,
+		 input.param.disp_length, input.param.disp_dir);
+  }
+	
+  // Apply any sink constructions
+  switch(input.param.wave_state)
+  {
+  case WAVE_TYPE_S_WAVE:
+    break;
+  case WAVE_TYPE_P_WAVE:
+  {
+    LatticePropagator temp;
+    temp = quark_propagator;
+    D_j(u_smr, temp, quark_propagator, input.param.direction);
+  }
+  break;
+  case WAVE_TYPE_D_WAVE:   
+  {
+    LatticePropagator temp;
+    temp = quark_propagator;
+    DjDk(u_smr, temp, quark_propagator, input.param.direction);
+  }
+  break;
+  default: 
+    QDPIO::cerr << "Invalid wave_state" << endl;
+    QDP_abort(1);
+    break;
+  } 
+  
+
+  /*
+   * Save sink smeared propagator
+   */
+  // Save some info
+  write(xml_out, "PropSource", source_header);
+  write(xml_out, "ForwardProp", prop_header);
+  write(xml_out, "PropSink", input.param);
+
+  // Sanity check - write out the propagator (pion) correlator in the Nd-1 direction
+  {
+    // Initialize the slow Fourier transform phases
+    SftMom phases(0, true, j_decay);
+
+    multi1d<Double> prop_corr = sumMulti(localNorm2(quark_propagator), 
+					 phases.getSet());
+
+    push(xml_out, "SinkSmearedProp_correlator");
+    write(xml_out, "sink_smeared_prop_corr", prop_corr);
+    pop(xml_out);
+  }
+
+  xml_out.flush();
+
+  // Save the propagator
+  // ONLY SciDAC output format is supported!
+  {
+    XMLBufferWriter file_xml;
+    push(file_xml, "sink_smear");
+    int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
+    write(file_xml, "id", id);
+    pop(file_xml);
+
+    XMLBufferWriter record_xml;
+    push(record_xml, "SinkSmear");
+    write(record_xml, "PropSink", input.param);
+    write(record_xml, "ForwardProp", prop_header);
+    write(record_xml, "PropSource", source_header);
+    write(record_xml, "Config_info", gauge_xml);
+    pop(record_xml);
+
+    // Write the source
+    writeQprop(file_xml, record_xml, quark_propagator,
+	       input.prop.smeared_prop_file, input.prop.smeared_prop_volfmt, QDPIO_SERIAL);
+  }
+
+  pop(xml_out);  // sink_smear
 
 
   xml_out.flush( );
@@ -271,140 +313,3 @@ int main(int argc, char **argv)
   exit(0);
 }
 
-
-
-
-
-void read(XMLReader& xml, const string& path, Prop_t& input)
-{
-  XMLReader inputtop(xml, path);
-
-  read(inputtop, "prop_in_file",  input.prop_in_file );
-  read(inputtop, "prop_out_file", input.prop_out_file);
-}
-
-
-
-
-
-
-// Reader for input parameters
-
-void read(XMLReader& xml, const string& path, Propagator_input_t& input)
-{
-  XMLReader inputtop(xml, path);
-
-
-  // First, read the input parameter version.  Then, if this version
-  // includes 'Nc' and 'Nd', verify they agree with values compiled
-  // into QDP++
-
-  // Read in the IO_version
-  try
-  {
-    read(inputtop, "IO_version", input.io_version);
-  }
-  catch (const string& e) 
-  {
-    QDPIO::cerr << "Error reading data: " << e << endl;
-    throw;
-  }
-
-
-  // Currently, in the supported IO versions, there is only a small difference
-  // in the inputs. So, to make code simpler, extract the common bits 
-
-  try
-  {
-    XMLReader paramtop(inputtop, "param"); // push into 'param' group
-
-    switch (input.io_version.version) 
-    {
-    case 2:
-    case 3: break;
-
-    default:
-      QDPIO::cerr << "Input parameter version " << input.io_version.version 
-		  << " unsupported." << endl;
-      QDP_abort(1);
-    }
-  }
-  catch (const string& e) 
-  {
-    QDPIO::cerr << "Error reading data: " << e << endl;
-    throw;
-  }
-
-  // Read the common bits
-  try 
-  {
-    XMLReader paramtop(inputtop, "param"); // push into 'param' group
-
-    read(paramtop, "DummyKappa",   input.param.DummyKappa  );
-    read(paramtop, "wvf_param",    input.param.wvf_param   );
-    read(paramtop, "WvfIntPar",    input.param.WvfIntPar   );
-    read(paramtop, "LaplacePower", input.param.LaplacePower);
-    read(paramtop, "disp_length",  input.param.disp_length );
-    read(paramtop, "disp_dir",     input.param.disp_dir    );
-    read(paramtop, "wave_state",   input.param.wave_state  );
-    read(paramtop, "sink_dir",     input.param.sink_dir    );
-    read(paramtop, "sm_fact",      input.param.sm_fact     );
-    read(paramtop, "sm_numb",      input.param.sm_numb     );
-    read(paramtop, "BlkMax",       input.param.BlkMax      );
-    read(paramtop, "BlkAccu",      input.param.BlkAccu     );
-
-    // description (same order):
-    // kappa value (dummy)
-    // smearing width
-    // number of iteration for smearing
-    // number of iteration for smearing
-    // power of laplacian operator
-    // displacement length
-    // displacement direction: x(0),y(1),z(2)
-    // wave_state: "S_WAVE", "P_WAVE", or "D_WAVE"
-    // sink_dir: direction of derivative at sink
-    // smearing factor
-    // number of smearing hits
-    // Maximum number of blocking/smearing iterations
-    // Blocking/smearing accuracy
-
-    
-    read(paramtop, "cfg_type",  input.param.cfg_type );
-    read(paramtop, "prop_type", input.param.prop_type);
-
-
-
-    read(paramtop, "nrow",     input.param.nrow    );
-    read(paramtop, "boundary", input.param.boundary);
-    read(paramtop, "t_srce",   input.param.t_srce  );
-    read(paramtop, "j_decay",  input.param.j_decay );
-
-
-    cout << "wvf_param = " << input.param.wvf_param << endl;
-    cout << "WvfIntPar = " << input.param.WvfIntPar << endl;
-    cout << "LaplacePower = " << input.param.LaplacePower << endl;
-    cout << "disp_length = " << input.param.disp_length << endl;
-    cout << "disp_dir = " << input.param.disp_dir << endl;
-    cout << "wave_state = " << input.param.wave_state << endl;
-
-
-  }
-  catch (const string& e) 
-  {
-    QDPIO::cerr << "Error reading data: " << e << endl;
-    throw;
-  }
-
-
-  // Read in the gauge configuration file name
-  try
-  {
-    read(inputtop, "Cfg",  input.cfg );
-    read(inputtop, "Prop", input.prop);
-  }
-  catch (const string& e) 
-  {
-    QDPIO::cerr << "Error reading data: " << e << endl;
-    throw;
-  }
-}

@@ -1,6 +1,13 @@
-// $Id: propagator.cc,v 1.45 2004-02-11 12:51:35 bjoo Exp $
+// $Id: propagator.cc,v 1.46 2004-02-23 03:13:58 edwards Exp $
 // $Log: propagator.cc,v $
-// Revision 1.45  2004-02-11 12:51:35  bjoo
+// Revision 1.46  2004-02-23 03:13:58  edwards
+// Major overhaul of input/output model! Now using EXCLUSIVELY
+// SciDAC propagator format for propagators. Now, Param part of input
+// files directly matches source/sink/propagator/seqprop headers
+// of propagators. All ``known'' input of a propagator is derived
+// from its header(s) and used for subsequent calculations.
+//
+// Revision 1.45  2004/02/11 12:51:35  bjoo
 // Stripped out Read() and Write()
 //
 // Revision 1.44  2004/02/07 04:51:58  edwards
@@ -37,59 +44,36 @@ using namespace QDP;
 
 
 // define MRES_CALCULATION in order to run the code computing the residual mass
-// and the pseudoscalar to concerved axial current correlator
+// and the pseudoscalar to conserved axial current correlator
 #define MRES_CALCULATION
 
 /*
  * Input 
  */
-
-
-// Parameters which must be determined from the XML input
-// and written to the XML output
-struct Param_t
-{
-  FermType        FermTypeP;
-  FermActType     FermAct;
-  Real            Mass;       // quark mass (bare units)
- 
-  AnisoParam_t    anisoParam;
-  ChiralParam_t   chiralParam;
-
-  CfgType         cfg_type;   // storage order for stored gauge configuration
-  PropType        prop_type;  // storage order for stored propagator
-
-  InvertParam_t   invParam;   // Inverter parameters
-
-  multi1d<int> nrow;
-  multi1d<int> boundary;
-  multi1d<int> t_srce;
-};
-
 struct Prop_t
 {
-  string       source_file;
-  string       prop_file;
+  string          source_file;
+  string          prop_file;
+  QDP_volfmt_t    prop_volfmt;
 };
 
 struct Propagator_input_t
 {
-  IO_version_t     io_version;
-  Param_t          param;
+  ChromaProp_t     param;
   Cfg_t            cfg;
   Prop_t           prop;
 };
 
 
-//
+// Propagator parameters
 void read(XMLReader& xml, const string& path, Prop_t& input)
 {
   XMLReader inputtop(xml, path);
 
   read(inputtop, "source_file", input.source_file);
   read(inputtop, "prop_file", input.prop_file);
+  read(inputtop, "prop_volfmt", input.prop_volfmt);  // singlefile or multifile
 }
-
 
 
 // Reader for input parameters
@@ -97,122 +81,16 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
 {
   XMLReader inputtop(xml, path);
 
-
-  // First, read the input parameter version.  Then, if this version
-  // includes 'Nc' and 'Nd', verify they agree with values compiled
-  // into QDP++
-
-  // Read in the IO_version
+  // Read the input
   try
   {
-    read(inputtop, "IO_version", input.io_version);
-  }
-  catch (const string& e) 
-  {
-    QDPIO::cerr << "Error reading data: " << e << endl;
-    throw;
-  }
+    // The parameters holds the version number
+    read(inputtop, "Param", input.param);
 
-
-  // Currently, in the supported IO versions, there is only a small difference
-  // in the inputs. So, to make code simpler, extract the common bits 
-
-  // Read the uncommon bits first
-  try
-  {
-    XMLReader paramtop(inputtop, "param"); // push into 'param' group
-
-    switch (input.io_version.version) 
-    {
-      /**************************************************************************/
-    case 2:
-    case 3:
-      /**************************************************************************/
-      anisoParamInit(input.param.anisoParam);
-      break;
-
-    default:
-      /**************************************************************************/
-      QDPIO::cerr << "Input parameter version " << input.io_version.version 
-		  << " unsupported." << endl;
-      QDP_abort(1);
-    }
-  }
-  catch (const string& e) 
-  {
-    QDPIO::cerr << "Error reading data: " << e << endl;
-    throw;
-  }
-
-  // Read the common bits
-  try 
-  {
-    XMLReader paramtop(inputtop, "param"); // push into 'param' group
-
-    read(paramtop, "FermTypeP", input.param.FermTypeP);
-    read(paramtop, "FermAct", input.param.FermAct);
-
-    if (paramtop.count("Mass") != 0)
-    {
-      read(paramtop, "Mass", input.param.Mass);
-
-      if (paramtop.count("Kappa") != 0)
-      {
-	QDPIO::cerr << "Error: found both a Kappa and a Mass tag" << endl;
-	QDP_abort(1);
-      }
-    }
-    else if (paramtop.count("Kappa") != 0)
-    {
-      Real Kappa;
-      read(paramtop, "Kappa", Kappa);
-
-      input.param.Mass = kappaToMass(Kappa);    // Convert Kappa to Mass
-    }
-    else
-    {
-      QDPIO::cerr << "Error: neither Mass or Kappa found" << endl;
-      QDP_abort(1);
-    }    
-
-#if 0
-    for (int i=0; i < input.param.Mass.size(); ++i) {
-      if (toBool(input.param.Mass[i] < 0.0)) {
-	QDPIO::cerr << "Unreasonable value for Mass." << endl;
-	QDPIO::cerr << "  Mass[" << i << "] = " << input.param.Mass[i] << endl;
-	QDP_abort(1);
-      } else {
-	QDPIO::cout << " Spectroscopy Mass: " << input.param.Mass[i] << endl;
-      }
-    }
-#endif
-
-    if (paramtop.count("AnisoParam") != 0)
-      read(paramtop, "AnisoParam", input.param.anisoParam);
-
-    if (paramtop.count("ChiralParam") != 0)
-      read(paramtop, "ChiralParam", input.param.chiralParam);
-
-    read(paramtop, "cfg_type", input.param.cfg_type);
-    read(paramtop, "prop_type", input.param.prop_type);
-
-    read(paramtop, "InvertParam", input.param.invParam);
-
-    read(paramtop, "nrow", input.param.nrow);
-    read(paramtop, "boundary", input.param.boundary);
-    read(paramtop, "t_srce", input.param.t_srce);
-  }
-  catch (const string& e) 
-  {
-    QDPIO::cerr << "Error reading data: " << e << endl;
-    throw;
-  }
-
-
-  // Read in the gauge configuration file name
-  try
-  {
+    // Read in the gauge configuration info
     read(inputtop, "Cfg", input.cfg);
+
+    // Read in the source/propagator info
     read(inputtop, "Prop", input.prop);
   }
   catch (const string& e) 
@@ -221,7 +99,6 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     throw;
   }
 }
-
 
 
 //! Propagator generation
@@ -255,7 +132,7 @@ int main(int argc, char **argv)
   multi1d<LatticeColorMatrix> u(Nd);
   XMLReader gauge_xml;
 
-  switch (input.param.cfg_type) 
+  switch (input.cfg.cfg_type) 
   {
   case CFG_TYPE_SZIN :
     readSzin(gauge_xml, u, input.cfg.cfg_file);
@@ -270,16 +147,25 @@ int main(int argc, char **argv)
 
   // Read in the source along with relevant information.
   LatticePropagator quark_prop_source;
-  XMLReader source_xml;
+  XMLReader source_file_xml, source_record_xml;
 
-  switch (input.param.prop_type) 
+  // ONLY SciDAC mode is supported for propagators!!
+  readQprop(source_file_xml, 
+	    source_record_xml, quark_prop_source,
+	    input.prop.source_file, QDPIO_SERIAL);
+
+  // Try to invert this record XML into a source struct
+  // Also pull out the id of this source
+  PropSource_t source_header;
+
+  try
   {
-  case PROP_TYPE_SZIN :
-    readSzinQprop(source_xml, quark_prop_source, input.prop.source_file);
-//    quark_prop_source = 1;
-    break;
-  default :
-    QDP_error_exit("Propagator type is unsupported.");
+    read(source_record_xml, "/MakeSource/PropSource", source_header);
+  }
+  catch (const string& e) 
+  {
+    QDPIO::cerr << "Error extracting source_header: " << e << endl;
+    throw;
   }
 
 
@@ -296,7 +182,8 @@ int main(int argc, char **argv)
   write(xml_out, "Config_info", gauge_xml);
 
   // Write out the source header
-  write(xml_out, "Source_info", source_xml);
+  write(xml_out, "Source_file_info", source_file_xml);
+  write(xml_out, "Source_record_info", source_record_xml);
 
   push(xml_out, "Output_version");
   write(xml_out, "out_version", 1);
@@ -407,9 +294,9 @@ int main(int argc, char **argv)
 	       input.param.invParam.MaxCG, 
 	       ncg_had);
 #else
-    //dwf_quarkProp4 has hard coded jdecay = 3
     dwf_quarkProp4(quark_propagator, xml_out, quark_prop_source,
-		   input.param.t_srce[3],
+		   source_header.t_source[source_header.j_decay],
+		   source_header.j_decay,
 		   S_f, state, 
 		   input.param.invParam.invType, 
 		   input.param.invParam.RsdCG, 
@@ -436,9 +323,9 @@ int main(int argc, char **argv)
 	       input.param.invParam.MaxCG, 
 	       ncg_had);
 #else
-    //dwf_quarkProp4 has hard coded jdecay = 3
     dwf_quarkProp4(quark_propagator, xml_out, quark_prop_source,
-		   input.param.t_srce[3],
+		   source_header.t_source[source_header.j_decay],
+		   source_header.j_decay,
 		   S_f, state, 
 		   input.param.invParam.invType, 
 		   input.param.invParam.RsdCG, 
@@ -495,35 +382,27 @@ int main(int argc, char **argv)
 
   xml_out.flush();
 
-  // Instantiate XML buffer to make the propagator header
-  XMLBufferWriter prop_xml;
-  push(prop_xml, "propagator");
-
-  // Write out the input
-  write(prop_xml, "Input", xml_in);
-
-  // Write out the config header
-  write(prop_xml, "Config_info", gauge_xml);
-
-  // Write out the source header
-  write(prop_xml, "Source_info", source_xml);
-
-  pop(prop_xml);
-
-
   // Save the propagator
-  switch (input.param.prop_type) 
+  // ONLY SciDAC output format is supported!
   {
-  case PROP_TYPE_SZIN:
-    writeSzinQprop(quark_propagator, input.prop.prop_file, massToKappa(input.param.Mass));
-    break;
+    XMLBufferWriter file_xml;
+    push(file_xml, "propagator");
+    int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
+    write(file_xml, "id", id);
+    pop(file_xml);
 
-//  case PROP_TYPE_SCIDAC:
-//    writeQprop(prop_xml, quark_propagator, input.prop.prop_file);
-//    break;
+    XMLBufferWriter record_xml;
+    push(record_xml, "Propagator");
+    write(record_xml, "ForwardProp", input.param);
+    write(record_xml, "PropSource", source_header);
+//    record_xml << source_file_xml;
+//    record_xml << source_record_xml;
+    write(record_xml, "Config_info", gauge_xml);
+    pop(record_xml);
 
-  default :
-    QDP_error_exit("Propagator type is unsupported.");
+    // Write the source
+    writeQprop(file_xml, record_xml, quark_propagator,
+	       input.prop.prop_file, input.prop.prop_volfmt, QDPIO_SERIAL);
   }
 
   pop(xml_out);  // propagator
