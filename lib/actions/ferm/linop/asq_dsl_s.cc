@@ -1,8 +1,7 @@
-/*  $Id: asq_dsl_s.cc,v 1.2 2003-12-12 14:28:27 bjoo Exp $  */
+/*  $Id: asq_dsl_s.cc,v 1.3 2004-01-07 13:50:07 bjoo Exp $  */
 
 #include "chromabase.h"
-//#include "actions/ferm/fermacts/linop/asq_dsl_s.h
-#include "asq_dsl_s.h"
+#include "linop.h"
 
 using namespace QDP;
 

@@ -1,4 +1,4 @@
-// $Id: t_ovlap_bj.cc,v 1.12 2004-01-07 12:09:50 bjoo Exp $
+// $Id: t_ovlap_bj.cc,v 1.13 2004-01-07 13:50:09 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -12,15 +12,15 @@
 #include <math.h>
 
 #include "chroma.h"
-#include "state.h"
-#include "actions/ferm/linop/lovlapms_w.h"
-#include "actions/ferm/fermacts/zolotarev_state.h"
-#include "actions/ferm/fermacts/zolotarev4d_fermact_bj_w.h"
-#include "actions/ferm/linop/lovlapms_w.h"
-#include "meas/eig/eig_w.h"
-#include "meas/hadron/srcfil.h"
-#include "actions/ferm/invert/invcg1.h"
-#include "util/ft/sftmom.h"
+//#include "state.h"
+//#include "actions/ferm/linop/lovlapms_w.h"
+//#include "actions/ferm/fermacts/zolotarev_state.h"
+//#include "actions/ferm/fermacts/zolotarev4d_fermact_bj_w.h"
+//#include "actions/ferm/linop/lovlapms_w.h"
+//#include "meas/eig/eig_w.h"
+//#include "meas/hadron/srcfil.h"
+//#include "actions/ferm/invert/invcg1.h"
+//#include "util/ft/sftmom.h"
 
 using namespace QDP;
 using namespace std;

@@ -1,12 +1,12 @@
-// $Id: unprec_wilson_fermact_w.cc,v 1.14 2004-01-02 03:19:41 edwards Exp $
+// $Id: unprec_wilson_fermact_w.cc,v 1.15 2004-01-07 13:50:07 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
 
 #include "chromabase.h"
-#include "actions/ferm/fermacts/unprec_wilson_fermact_w.h"
-#include "actions/ferm/linop/unprec_wilson_linop_w.h"
-#include "actions/ferm/linop/lmdagm_w.h"
+#include "fermacts.h"
+#include "actions/ferm/linop/linop.h"
+
 
 //! Produce a linear operator for this action
 /*!

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: asqtad_linop_s.h,v 1.4 2003-12-12 14:28:27 bjoo Exp $
+// $Id: asqtad_linop_s.h,v 1.5 2004-01-07 13:50:07 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -10,7 +10,7 @@
 #define __asqtad_linop_s_h__
 
 #include "linearop.h"
-#include "actions/ferm/linop/asqtad_dslash.h"
+#include "linop.h"
 using namespace QDP;
 
 //! Asqtad Staggered-Dirac operator

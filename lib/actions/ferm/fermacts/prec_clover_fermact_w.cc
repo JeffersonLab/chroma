@@ -1,4 +1,4 @@
-// $Id: prec_clover_fermact_w.cc,v 1.4 2004-01-03 18:34:07 edwards Exp $
+// $Id: prec_clover_fermact_w.cc,v 1.5 2004-01-07 13:50:07 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion action
  */
@@ -6,7 +6,7 @@
 #include "chromabase.h"
 #include "actions/ferm/linop/prec_clover_linop_w.h"
 #include "actions/ferm/fermacts/prec_clover_fermact_w.h"
-#include "actions/ferm/linop/lmdagm_w.h"
+#include "actions/ferm/linop/lmdagm.h"
 
 //! Produce a linear operator for this action
 /*!

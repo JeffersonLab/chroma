@@ -1,4 +1,4 @@
-// $Id: unprec_ovext_fermact_array_w.cc,v 1.5 2004-01-02 03:19:40 edwards Exp $
+// $Id: unprec_ovext_fermact_array_w.cc,v 1.6 2004-01-07 13:50:07 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -6,7 +6,7 @@
 #include "chromabase.h"
 #include "actions/ferm/fermacts/unprec_ovext_fermact_array_w.h"
 #include "actions/ferm/linop/unprec_ovext_linop_array_w.h"
-#include "actions/ferm/linop/lmdagm_w.h"
+#include "actions/ferm/linop/lmdagm.h"
 
 #include "actions/ferm/invert/invcg2_array.h"
 

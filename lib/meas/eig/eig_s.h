@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eig.h,v 1.4 2004-01-07 13:50:08 bjoo Exp $
+// $Id: eig_s.h,v 1.1 2004-01-07 13:50:08 bjoo Exp $
 
 /*! \file
  * \brief Eigenvalue measurements
@@ -14,13 +14,7 @@
  * of eigenvalues of various linear operators.
  */
 
-#ifndef __eig_h__
-#define __eig_h__
-
-#ifdef CHROMA_BUILD_WILSON
-#include "eig_w.h"
-#elif CHROMA_BUILD_STAGGERED
-#include "eig_s.h"
-#endif
+#ifndef __eig_s_h__
+#define __eig_s_h__
 
 #endif

@@ -1,12 +1,12 @@
-// $Id: prec_wilson_fermact_w.cc,v 1.4 2004-01-02 03:19:40 edwards Exp $
+// $Id: prec_wilson_fermact_w.cc,v 1.5 2004-01-07 13:50:07 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action
  */
 
 #include "chromabase.h"
-#include "actions/ferm/fermacts/prec_wilson_fermact_w.h"
-#include "actions/ferm/linop/prec_wilson_linop_w.h"
-#include "actions/ferm/linop/lmdagm_w.h"
+#include "fermacts.h"
+#include "actions/ferm/linop/linop.h"
+
 
 //! Produce a linear operator for this action
 /*!

@@ -1,23 +1,18 @@
-// $Id: zolotarev4d_fermact_bj_w.cc,v 1.9 2004-01-06 10:42:36 bjoo Exp $
+// $Id: zolotarev4d_fermact_bj_w.cc,v 1.10 2004-01-07 13:50:07 bjoo Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
 #include <iostream>
 #include <sstream>
-#include "chromabase.h"
+#include <chromabase.h>
 #include <zolotarev.h>
 #include <linearop.h>
 
-#include "actions/ferm/fermacts/zolotarev_state.h"
-#include "actions/ferm/fermacts/zolotarev4d_fermact_bj_w.h"
-#include "actions/ferm/linop/lovlapms_w.h"
-#include "actions/ferm/linop/lmdagm_w.h"
-#include "meas/eig/eig_w.h"
-#include "actions/ferm/linop/lovddag_w.h"
+#include "fermacts.h"
+#include "actions/ferm/linop/linop.h"
+#include "meas/eig/eig.h"
 
 using namespace std;
-// Replace this with special overlap M^dag*M version
-// #include "actions/ferm/linop/lmdagm_w.h"
 
 //! Creation routine
 /*! */

@@ -1,4 +1,4 @@
-// $Id: t_propagator_s.cc,v 1.8 2004-01-06 13:59:50 bjoo Exp $
+// $Id: t_propagator_s.cc,v 1.9 2004-01-07 13:50:09 bjoo Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -8,19 +8,8 @@
 
 #define MAIN
 
+// Include everything...
 #include "chroma.h"
-#include "util/ferm/transf.h"
-#include "state.h"
-#include "handle.h"
-
-#include "fermact.h"
-#include "actions/ferm/fermacts/asqtad_fermact_s.h"
-#include "actions/ferm/linop/asqtad_linop_s.h"
-#include "meas/hadron/mesphas_follana_s.h"
-#include "meas/hadron/srcfil.h"
-
-#include "util/gauge/stag_phases_s.h"
-#include "meas/hadron/mesphas_s.h"
 
 /*
  *  Here we have various temporary definitions
