@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.187 2004-11-02 10:33:49 bjoo Exp $
+# $Id: Makefile.am,v 1.188 2004-11-08 05:41:50 edwards Exp $
 #
 # Path for all files used in building the library
 # This file was automatically generated
@@ -222,6 +222,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/unprec_parwilson_linop_w.h \
 	actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_w.h \
 	actions/ferm/linop/unprec_dwftransf_linop_w.h \
+	actions/ferm/linop/unprec_dwf4d_linop_w.h \
 	actions/ferm/qprop/qprop_w.h \
 	actions/ferm/qprop/unprec_qprop_w.h \
 	io/io_w.h io/barcomp_io.h io/kyuqprop_io.h \
@@ -391,6 +392,7 @@ libchroma_a_SOURCES += baryon_w.cc barhqlq_w.cc mesons_w.cc hybmeson_w.cc \
               prec_nef_general_linop_array_w.cc \
 	      prec_zolo_nef_fermact_array_w.cc \
 	      unprec_dwftransf_linop_w.cc \
+	      unprec_dwf4d_linop_w.cc \
 	      unprec_dwftransf_fermact_w.cc
 
 # These need to be reworked for new instantiation 
