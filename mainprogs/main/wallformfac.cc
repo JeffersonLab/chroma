@@ -1,4 +1,4 @@
-// $Id: wallformfac.cc,v 1.20 2004-05-13 00:17:13 edwards Exp $
+// $Id: wallformfac.cc,v 1.21 2004-06-01 03:57:40 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions with a wall sink
  *
@@ -343,6 +343,15 @@ main(int argc, char *argv[])
 		      t_source[j_decay], t_sink);
     }
     break;
+
+    case 3:
+      wallDeltaPFormFac(xml_out,
+			u, 
+			forward_quark_prop, backward_quark_prop, 
+			forward_quark_prop, backward_quark_prop, 
+			phases, 
+			t_source[j_decay], t_sink);
+      break;
 
     default:
       QDPIO::cerr << "Unknown value of formfac_ctr " << formfac_ctr << endl;
