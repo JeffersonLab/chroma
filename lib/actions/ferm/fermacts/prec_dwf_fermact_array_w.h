@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_fermact_array_w.h,v 1.4 2004-01-05 04:21:18 edwards Exp $
+// $Id: prec_dwf_fermact_array_w.h,v 1.5 2004-01-29 17:09:14 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -28,7 +28,14 @@ public:
   //! General FermBC
   EvenOddPrecDWFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
 			    const Real& WilsonMass_, const Real& m_q_, int N5_) : 
-    fbc(fbc_), WilsonMass(WilsonMass_), m_q(m_q_), N5(N5_) {a5=1;}
+    fbc(fbc_), WilsonMass(WilsonMass_), m_q(m_q_), N5(N5_) 
+    {
+      a5=1;
+      QDPIO::cout << "EvenOddPrecDWFermActArray: WilsonMass = " << WilsonMass 
+		  << "m_q = " << m_q 
+		  << "N5 = " << N5 
+		  << endl;
+    }
 
   //! Copy constructor
   EvenOddPrecDWFermActArray(const EvenOddPrecDWFermActArray& a) : 
