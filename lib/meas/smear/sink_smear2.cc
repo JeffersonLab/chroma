@@ -1,10 +1,10 @@
-// $Id: sink_smear2_w.cc,v 1.8 2004-01-06 04:56:47 edwards Exp $
+// $Id: sink_smear2.cc,v 1.1 2004-07-28 00:46:13 edwards Exp $
 /*! \file
  *  \brief Control routine for types of propagator smearing
  */
 
 #include "chromabase.h"
-#include "meas/smear/sink_smear2_w.h"
+#include "meas/smear/sink_smear2.h"
 #include "meas/smear/gaus_smear.h"
 
 using namespace QDP;
