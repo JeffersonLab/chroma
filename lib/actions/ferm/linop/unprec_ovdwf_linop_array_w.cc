@@ -1,4 +1,4 @@
-// $Id: unprec_ovdwf_linop_array_w.cc,v 1.3 2003-11-15 23:29:55 edwards Exp $
+// $Id: unprec_ovdwf_linop_array_w.cc,v 1.4 2003-11-16 01:36:12 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Overlap-DWF (Borici) linear operator
  */
@@ -106,12 +106,12 @@ UnprecOvDWLinOpArray::operator() (const multi1d<LatticeFermion>& psi,
       if (n == 0)
       {
 	chi[0] = tmp[0] + psi[0] + chiralProjectPlus(tmp[1]) - chiralProjectPlus(psi[1])
-  	       - m_q*(chiralProjectMinus(tmp[N5-1]) - m_q*chiralProjectMinus(psi[N5-1]));
+  	       - m_q*(chiralProjectMinus(tmp[N5-1]) - chiralProjectMinus(psi[N5-1]));
       }
       else if (n == N5-1)
       {
 	chi[n] = tmp[n] + psi[n] + chiralProjectMinus(tmp[N5-2]) - chiralProjectMinus(psi[N5-2])
-  	       - m_q*(chiralProjectPlus(tmp[0]) - m_q*chiralProjectPlus(psi[0]));
+  	       - m_q*(chiralProjectPlus(tmp[0]) - chiralProjectPlus(psi[0]));
       }
       else
       {
