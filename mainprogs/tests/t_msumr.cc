@@ -1,4 +1,4 @@
-// $Id: t_msumr.cc,v 1.3 2004-05-21 15:31:50 bjoo Exp $
+// $Id: t_msumr.cc,v 1.4 2004-05-25 21:47:40 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -124,6 +124,34 @@ int main(int argc, char **argv)
 	       input.param.MultiMasses,
 	       connect_state,
 	       chi,
+	       REL_SUMR_INVERTER,
+	       input.param.invParam.RsdCG,
+	       1,
+	       input.param.invParam.MaxCG,
+	       n_count);
+
+  swatch.stop();
+  t = swatch.getTimeInSeconds();
+
+  QDPIO::cout << "Multi Qprop with Relaxed SUMR on Point source: " << n_count
+	      << " iters " << endl;
+
+  QDPIO::cout << "Wall Clock Time (Rel SUMR, Point) = " << t << " seconds" << endl;
+
+  push(xml_out, "RelSUMRPoint");
+  write(xml_out, "n_count", n_count);
+  write(xml_out, "t" , t);
+  pop(xml_out);
+
+
+  psi = zero;
+  swatch.reset();
+  swatch.start();
+
+  S.multiQprop(psi,
+	       input.param.MultiMasses,
+	       connect_state,
+	       chi,
 	       REL_CG_INVERTER,
 	       input.param.invParam.RsdCG,
 	       1,
@@ -133,12 +161,39 @@ int main(int argc, char **argv)
   swatch.stop();
   t = swatch.getTimeInSeconds();
 
-  QDPIO::cout << "Multi Qprop with SUMR on Point source: " << n_count
+  QDPIO::cout << "Multi Qprop with Relaxed CG on Point source: " << n_count
+	      << " iters " << endl;
+
+  QDPIO::cout << "Wall Clock Time (RelCG, Point) = " << t << " seconds" << endl;
+
+  push(xml_out, "RelCGPoint");
+  write(xml_out, "n_count", n_count);
+  write(xml_out, "t" , t);
+  pop(xml_out);
+
+  psi = zero;
+  swatch.reset();
+  swatch.start();
+
+  S.multiQprop(psi,
+	       input.param.MultiMasses,
+	       connect_state,
+	       chi,
+	       SUMR_INVERTER,
+	       input.param.invParam.RsdCG,
+	       1,
+	       input.param.invParam.MaxCG,
+	       n_count);
+
+  swatch.stop();
+  t = swatch.getTimeInSeconds();
+
+  QDPIO::cout << "Multi Qprop with Relaxed SUMR on Point source: " << n_count
 	      << " iters " << endl;
 
   QDPIO::cout << "Wall Clock Time (SUMR, Point) = " << t << " seconds" << endl;
 
-  push(xml_out, "MSUMRPoint");
+  push(xml_out, "SUMRPoint");
   write(xml_out, "n_count", n_count);
   write(xml_out, "t" , t);
   pop(xml_out);

@@ -1,4 +1,4 @@
-// $Id: inv_rel_cg1.cc,v 1.4 2004-05-18 12:54:48 bjoo Exp $
+// $Id: inv_rel_cg1.cc,v 1.5 2004-05-25 21:47:39 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -34,18 +34,16 @@ void InvRelCG1_a(const ApproxLinearOperator<T>& A,
   //  r  :=  [ Chi  -  A . psi ]
 
 
+  psi[s] = zero;
 
   T tmp1, tmp2;
-  tmp1 = tmp2 = zero; 
-  T r = zero;
+  T r;
+
+  r[s] = chi;
   Real inner_tol ;
 
-  // A is Hermitian
-  A(tmp1, psi, PLUS);
-  r[s] = chi - tmp1;
-
   //  p[1]  :=  r[0]
-  T p = zero;
+  T p;
   p[s] = r;
 
   
@@ -120,7 +118,7 @@ void InvRelCG1_a(const ApproxLinearOperator<T>& A,
     }
   }
   n_count = MaxCG;
-  QDP_error_exit("too many CG iterations: count = %d", n_count);
+  QDPIO::cerr << "Nonconvergence Warning: n_count =" << n_count << endl;
 }
 
 

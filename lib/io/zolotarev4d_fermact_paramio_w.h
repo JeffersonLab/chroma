@@ -28,6 +28,7 @@ class Zolotarev4DFermActParams : public FermActParams {
 
   Real Mass;
   int RatPolyDeg;
+  int RatPolyDegPrecond;
   Real RsdCGInner;
   int   MaxCGInner;
   int   ReorthFreqInner;
@@ -46,7 +47,7 @@ class Zolotarev4DFermActParams : public FermActParams {
   }
 
   // Copy
-  Zolotarev4DFermActParams(const Zolotarev4DFermActParams& p) : AuxFermActHandle(p.AuxFermActHandle->clone()), Mass(p.Mass), RatPolyDeg(p.RatPolyDeg), RsdCGInner(p.RsdCGInner), MaxCGInner(p.MaxCGInner), ReorthFreqInner(p.ReorthFreqInner), StateInfo(p.StateInfo), InnerSolverType(p.InnerSolverType) {}
+  Zolotarev4DFermActParams(const Zolotarev4DFermActParams& p) : AuxFermActHandle(p.AuxFermActHandle->clone()), Mass(p.Mass), RatPolyDeg(p.RatPolyDeg), RatPolyDegPrecond(p.RatPolyDegPrecond), RsdCGInner(p.RsdCGInner), MaxCGInner(p.MaxCGInner), ReorthFreqInner(p.ReorthFreqInner), StateInfo(p.StateInfo), InnerSolverType(p.InnerSolverType) {}
 
   // Virtual constructor 
   Zolotarev4DFermActParams* clone(void) const { 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: param_io.h,v 1.21 2004-05-03 20:26:16 edwards Exp $
+// $Id: param_io.h,v 1.22 2004-05-25 21:47:39 bjoo Exp $
 /*! \file
  *  \brief Reunitarize (to a SU(N)) inplace the matrix A under some option
  */
@@ -163,7 +163,9 @@ struct InvertParam_t
   InvType       invType;   // Inverter type
   Real          MROver;
   Real          RsdCG;
+  Real          RsdCGPrec; // Precision for preconditioned iterations
   int           MaxCG;	   // Iteration parameters
+  int           MaxCGPrec;
 };
 
 //! Parameters for MultiMass Inverter

@@ -63,6 +63,15 @@ Zolotarev4DFermActParams::Zolotarev4DFermActParams(XMLReader& in)
 
     read(in, "Mass", Mass);
     read(in, "RatPolyDeg", RatPolyDeg);
+
+
+    if(in.count("RatPolyDegPrecond") == 1 ) { 
+      read(in, "RatPolyDegPrecond", RatPolyDegPrecond);
+    }
+    else {
+      RatPolyDegPrecond = RatPolyDeg;
+    }
+
     read(in, "InnerSolve/MaxCG", MaxCGInner);
     read(in, "InnerSolve/RsdCG", RsdCGInner);
     if( in.count("InnerSolve/ReorthFreq") == 1 ) {
@@ -110,6 +119,7 @@ void write(XMLWriter& xml_out, const string& path, const Zolotarev4DFermActParam
 
   write(xml_out, "Mass", p.Mass);
   write(xml_out, "RatPolyDeg", p.RatPolyDeg);
+  write(xml_out, "RatPolyDegPrecond", p.RatPolyDegPrecond);
   push(xml_out, "InnerSolve");
   write(xml_out, "MaxCG", p.MaxCGInner);
   write(xml_out, "RsdCG", p.RsdCGInner);

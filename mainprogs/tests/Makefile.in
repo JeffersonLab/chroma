@@ -169,7 +169,7 @@ check_PROGRAMS = t_mesplq t_io t_mesons_w t_conslinop t_hypsmear \
                   t_overbu t_ape_smear t_precact
 
 
-EXTRA_PROGRAMS = t_dslashm t_lwldslash t_spprod t_lwldslash_sse t_follana_io_s t_formfac  t_follana_pion_s t_dwflinop t_precdwf t_ovlap_bj t_propagator_s t_propagator_w t_gfix t_ovlap5d_bj t_ritz t_ritz_KS t_ritz5d_KS  t_fermion_loop_w t_propagator_fuzz_s t_disc_loop_s t_ov_pbp t_lwldslash_pab t_propagator_nrqcd t_dwflocality t_invert3_precwilson t_invert4_precwilson t_read_eigen t_fuzwilp t_ovlap_double_pass t_g5eps_bj t_sumr t_msumr t_invrelcg t_bicgstab
+EXTRA_PROGRAMS = t_dslashm t_lwldslash t_spprod t_lwldslash_sse t_follana_io_s t_formfac  t_follana_pion_s t_dwflinop t_precdwf t_ovlap_bj t_propagator_s t_propagator_w t_gfix t_ovlap5d_bj t_ritz t_ritz_KS t_ritz5d_KS  t_fermion_loop_w t_propagator_fuzz_s t_disc_loop_s t_ov_pbp t_lwldslash_pab t_propagator_nrqcd t_dwflocality t_invert3_precwilson t_invert4_precwilson t_read_eigen t_fuzwilp t_ovlap_double_pass t_g5eps_bj t_sumr t_msumr t_invrelcg t_bicgstab t_wilslp t_rel_gmresr
 
 
 #
@@ -183,6 +183,9 @@ t_ape_smear_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_fuzwilp_SOURCES = t_fuzwilp.cc
 t_fuzwilp_DEPENDENCIES = build_chroma_libs rebuild_other_libs
+
+t_wilslp_SOURCES = t_wilslp.cc
+t_wilslp_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_hypsmear_SOURCES = t_hypsmear.cc
 t_hypsmear_DEPENDENCIES = build_chroma_libs rebuild_other_libs
@@ -243,6 +246,9 @@ t_g5eps_bj_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_sumr_SOURCES = t_sumr.cc
 t_sumr_DEPENDENCIES = build_chroma_libs rebuild_other_libs
+
+t_rel_gmresr_SOURCES = t_rel_gmresr.cc
+t_rel_gmresr_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_msumr_SOURCES = t_msumr.cc
 t_msumr_DEPENDENCIES = build_chroma_libs rebuild_other_libs
@@ -318,7 +324,8 @@ EXTRA_PROGRAMS = t_dslashm$(EXEEXT) t_lwldslash$(EXEEXT) \
 	t_invert4_precwilson$(EXEEXT) t_read_eigen$(EXEEXT) \
 	t_fuzwilp$(EXEEXT) t_ovlap_double_pass$(EXEEXT) \
 	t_g5eps_bj$(EXEEXT) t_sumr$(EXEEXT) t_msumr$(EXEEXT) \
-	t_invrelcg$(EXEEXT) t_bicgstab$(EXEEXT)
+	t_invrelcg$(EXEEXT) t_bicgstab$(EXEEXT) t_wilslp$(EXEEXT) \
+	t_rel_gmresr$(EXEEXT)
 check_PROGRAMS = t_mesplq$(EXEEXT) t_io$(EXEEXT) t_mesons_w$(EXEEXT) \
 	t_conslinop$(EXEEXT) t_hypsmear$(EXEEXT) t_overbu$(EXEEXT) \
 	t_ape_smear$(EXEEXT) t_precact$(EXEEXT)
@@ -471,6 +478,10 @@ am_t_read_eigen_OBJECTS = t_read_eigen.$(OBJEXT)
 t_read_eigen_OBJECTS = $(am_t_read_eigen_OBJECTS)
 t_read_eigen_LDADD = $(LDADD)
 t_read_eigen_LDFLAGS =
+am_t_rel_gmresr_OBJECTS = t_rel_gmresr.$(OBJEXT)
+t_rel_gmresr_OBJECTS = $(am_t_rel_gmresr_OBJECTS)
+t_rel_gmresr_LDADD = $(LDADD)
+t_rel_gmresr_LDFLAGS =
 am_t_ritz_OBJECTS = t_ritz.$(OBJEXT)
 t_ritz_OBJECTS = $(am_t_ritz_OBJECTS)
 t_ritz_LDADD = $(LDADD)
@@ -491,6 +502,10 @@ am_t_sumr_OBJECTS = t_sumr.$(OBJEXT)
 t_sumr_OBJECTS = $(am_t_sumr_OBJECTS)
 t_sumr_LDADD = $(LDADD)
 t_sumr_LDFLAGS =
+am_t_wilslp_OBJECTS = t_wilslp.$(OBJEXT)
+t_wilslp_OBJECTS = $(am_t_wilslp_OBJECTS)
+t_wilslp_LDADD = $(LDADD)
+t_wilslp_LDFLAGS =
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)/lib
 depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
@@ -525,9 +540,11 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/t_propagator_nrqcd.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_propagator_s.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_propagator_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_read_eigen.Po ./$(DEPDIR)/t_ritz.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_read_eigen.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_rel_gmresr.Po ./$(DEPDIR)/t_ritz.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_ritz5d_KS.Po ./$(DEPDIR)/t_ritz_KS.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_spprod.Po ./$(DEPDIR)/t_sumr.Po
+@AMDEP_TRUE@	./$(DEPDIR)/t_spprod.Po ./$(DEPDIR)/t_sumr.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_wilslp.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -553,11 +570,11 @@ DIST_SOURCES = $(t_ape_smear_SOURCES) $(t_bicgstab_SOURCES) \
 	$(t_precact_SOURCES) $(t_precdwf_SOURCES) \
 	$(t_propagator_fuzz_s_SOURCES) $(t_propagator_nrqcd_SOURCES) \
 	$(t_propagator_s_SOURCES) $(t_propagator_w_SOURCES) \
-	$(t_read_eigen_SOURCES) $(t_ritz_SOURCES) \
-	$(t_ritz5d_KS_SOURCES) $(t_ritz_KS_SOURCES) $(t_spprod_SOURCES) \
-	$(t_sumr_SOURCES)
+	$(t_read_eigen_SOURCES) $(t_rel_gmresr_SOURCES) \
+	$(t_ritz_SOURCES) $(t_ritz5d_KS_SOURCES) $(t_ritz_KS_SOURCES) \
+	$(t_spprod_SOURCES) $(t_sumr_SOURCES) $(t_wilslp_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(t_ape_smear_SOURCES) $(t_bicgstab_SOURCES) $(t_conslinop_SOURCES) $(t_disc_loop_s_SOURCES) $(t_dslashm_SOURCES) $(t_dwflinop_SOURCES) $(t_dwflocality_SOURCES) $(t_fermion_loop_w_SOURCES) $(t_follana_io_s_SOURCES) $(t_follana_pion_s_SOURCES) $(t_formfac_SOURCES) $(t_fuzwilp_SOURCES) $(t_g5eps_bj_SOURCES) $(t_gfix_SOURCES) $(t_hypsmear_SOURCES) $(t_invert3_precwilson_SOURCES) $(t_invert4_precwilson_SOURCES) $(t_invrelcg_SOURCES) $(t_io_SOURCES) $(t_lwldslash_SOURCES) $(t_lwldslash_pab_SOURCES) $(t_lwldslash_sse_SOURCES) $(t_mesons_w_SOURCES) $(t_mesplq_SOURCES) $(t_msumr_SOURCES) $(t_ov_pbp_SOURCES) $(t_overbu_SOURCES) $(t_ovlap5d_bj_SOURCES) $(t_ovlap_bj_SOURCES) $(t_ovlap_double_pass_SOURCES) $(t_precact_SOURCES) $(t_precdwf_SOURCES) $(t_propagator_fuzz_s_SOURCES) $(t_propagator_nrqcd_SOURCES) $(t_propagator_s_SOURCES) $(t_propagator_w_SOURCES) $(t_read_eigen_SOURCES) $(t_ritz_SOURCES) $(t_ritz5d_KS_SOURCES) $(t_ritz_KS_SOURCES) $(t_spprod_SOURCES) $(t_sumr_SOURCES)
+SOURCES = $(t_ape_smear_SOURCES) $(t_bicgstab_SOURCES) $(t_conslinop_SOURCES) $(t_disc_loop_s_SOURCES) $(t_dslashm_SOURCES) $(t_dwflinop_SOURCES) $(t_dwflocality_SOURCES) $(t_fermion_loop_w_SOURCES) $(t_follana_io_s_SOURCES) $(t_follana_pion_s_SOURCES) $(t_formfac_SOURCES) $(t_fuzwilp_SOURCES) $(t_g5eps_bj_SOURCES) $(t_gfix_SOURCES) $(t_hypsmear_SOURCES) $(t_invert3_precwilson_SOURCES) $(t_invert4_precwilson_SOURCES) $(t_invrelcg_SOURCES) $(t_io_SOURCES) $(t_lwldslash_SOURCES) $(t_lwldslash_pab_SOURCES) $(t_lwldslash_sse_SOURCES) $(t_mesons_w_SOURCES) $(t_mesplq_SOURCES) $(t_msumr_SOURCES) $(t_ov_pbp_SOURCES) $(t_overbu_SOURCES) $(t_ovlap5d_bj_SOURCES) $(t_ovlap_bj_SOURCES) $(t_ovlap_double_pass_SOURCES) $(t_precact_SOURCES) $(t_precdwf_SOURCES) $(t_propagator_fuzz_s_SOURCES) $(t_propagator_nrqcd_SOURCES) $(t_propagator_s_SOURCES) $(t_propagator_w_SOURCES) $(t_read_eigen_SOURCES) $(t_rel_gmresr_SOURCES) $(t_ritz_SOURCES) $(t_ritz5d_KS_SOURCES) $(t_ritz_KS_SOURCES) $(t_spprod_SOURCES) $(t_sumr_SOURCES) $(t_wilslp_SOURCES)
 
 all: all-am
 
@@ -682,6 +699,9 @@ t_propagator_w$(EXEEXT): $(t_propagator_w_OBJECTS) $(t_propagator_w_DEPENDENCIES
 t_read_eigen$(EXEEXT): $(t_read_eigen_OBJECTS) $(t_read_eigen_DEPENDENCIES) 
 	@rm -f t_read_eigen$(EXEEXT)
 	$(CXXLINK) $(t_read_eigen_LDFLAGS) $(t_read_eigen_OBJECTS) $(t_read_eigen_LDADD) $(LIBS)
+t_rel_gmresr$(EXEEXT): $(t_rel_gmresr_OBJECTS) $(t_rel_gmresr_DEPENDENCIES) 
+	@rm -f t_rel_gmresr$(EXEEXT)
+	$(CXXLINK) $(t_rel_gmresr_LDFLAGS) $(t_rel_gmresr_OBJECTS) $(t_rel_gmresr_LDADD) $(LIBS)
 t_ritz$(EXEEXT): $(t_ritz_OBJECTS) $(t_ritz_DEPENDENCIES) 
 	@rm -f t_ritz$(EXEEXT)
 	$(CXXLINK) $(t_ritz_LDFLAGS) $(t_ritz_OBJECTS) $(t_ritz_LDADD) $(LIBS)
@@ -697,6 +717,9 @@ t_spprod$(EXEEXT): $(t_spprod_OBJECTS) $(t_spprod_DEPENDENCIES)
 t_sumr$(EXEEXT): $(t_sumr_OBJECTS) $(t_sumr_DEPENDENCIES) 
 	@rm -f t_sumr$(EXEEXT)
 	$(CXXLINK) $(t_sumr_LDFLAGS) $(t_sumr_OBJECTS) $(t_sumr_LDADD) $(LIBS)
+t_wilslp$(EXEEXT): $(t_wilslp_OBJECTS) $(t_wilslp_DEPENDENCIES) 
+	@rm -f t_wilslp$(EXEEXT)
+	$(CXXLINK) $(t_wilslp_LDFLAGS) $(t_wilslp_OBJECTS) $(t_wilslp_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
@@ -743,11 +766,13 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_propagator_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_propagator_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_read_eigen.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_rel_gmresr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_ritz.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_ritz5d_KS.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_ritz_KS.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_spprod.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_sumr.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_wilslp.Po@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)

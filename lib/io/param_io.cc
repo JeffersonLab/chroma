@@ -1,4 +1,4 @@
-// $Id: param_io.cc,v 1.29 2004-05-21 12:03:13 bjoo Exp $
+// $Id: param_io.cc,v 1.30 2004-05-25 21:47:39 bjoo Exp $
 /*! \file
  *  \brief Various parameter readers/writers for main programs
  */
@@ -230,6 +230,12 @@ void read(XMLReader& xml, const string& path, InvType& param)
     param = REL_CG_INVERTER;
   else if (inv_type_str == "REL_SUMR_INVERTER")
     param = REL_SUMR_INVERTER;
+  else if (inv_type_str == "REL_GMRESR_SUMR_INVERTER")
+    param = REL_GMRESR_SUMR_INVERTER;
+  else if (inv_type_str == "REL_GMRESR_CG_INVERTER")
+    param = REL_GMRESR_CG_INVERTER;
+  else if (inv_type_str == "BICGSTAB_INVERTER")
+    param = BICGSTAB_INVERTER;
   else 
   {
     QDPIO::cerr << "Unsupported inverter type" << endl;
@@ -434,11 +440,32 @@ void read(XMLReader& xml, const string& path, InvertParam_t& param)
 {
   XMLReader paramtop(xml, path);
 
-  read(paramtop, "invType", param.invType);
-  read(paramtop, "RsdCG", param.RsdCG);
-  read(paramtop, "MaxCG", param.MaxCG);
+  try {
+    read(paramtop, "invType", param.invType);
+    read(paramtop, "RsdCG", param.RsdCG);
+    read(paramtop, "MaxCG", param.MaxCG);
+    param.MROver = 1;
+    
+    if( paramtop.count("RsdCGPrec") == 1 ) {
+      read(paramtop, "RsdCGPrec", param.RsdCGPrec);
+    }
+    else {
+      param.RsdCGPrec = param.RsdCG;
+    }
 
-  param.MROver = 1;
+    if( paramtop.count("MaxCGPrec") == 1 ) {
+      read(paramtop, "MaxCGPrec", param.MaxCGPrec);
+    }
+    else {
+      param.RsdCGPrec = param.RsdCG;
+    }
+
+  }
+  catch( const string& e ) { 
+    QDPIO::cerr << "Caught exception : " << e << endl;
+    QDP_abort(1);
+  }
+
 }
 
 //! Read inverter parameters
@@ -647,6 +674,12 @@ void write(XMLWriter& xml, const string& path, InvType param)
     inv_type_str = "REL_CG_INVERTER";
   else if (param == REL_SUMR_INVERTER)
     inv_type_str = "REL_SUMR_INVERTER";
+  else if (param == REL_GMRESR_SUMR_INVERTER)
+    inv_type_str = "REL_GMRESR_SUMR_INVERTER";
+  else if (param == REL_GMRESR_CG_INVERTER)
+    inv_type_str = "REL_GMRESR_CG_INVERTER";
+  else if (param == BICGSTAB_INVERTER)
+    inv_type_str = "BICGSTAB_INVERTER";
   else 
   {
     QDPIO::cerr << "Unsupported inverter type" << endl;
@@ -806,7 +839,8 @@ void write(XMLWriter& xml, const string& path, const InvertParam_t& param)
   write(xml, "RsdCG", param.RsdCG);
   write(xml, "MaxCG", param.MaxCG);
   write(xml, "MROver", param.MROver);
-
+  write(xml, "RsdCGPrec", param.RsdCGPrec);
+  write(xml, "MaxCGPrec", param.MaxCGPrec);
   pop(xml);
 }
 

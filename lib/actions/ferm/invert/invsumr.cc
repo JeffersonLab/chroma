@@ -52,6 +52,11 @@ void InvSUMR_a(const LinearOperator<T>& U,
   // delta_0 = || r || 
   Real delta = sqrt(norm2(r));
 
+  // If already converged then exit now.
+  if( toBool( delta < epsilon*sqrt(norm2(b)) ) ) {
+    return;
+  }
+
   // phi_hat_1 = 1 / delta_0 
   Complex phihat = Real(1)/delta;
 

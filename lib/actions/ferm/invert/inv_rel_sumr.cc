@@ -50,7 +50,7 @@ void InvRelSUMR_a(const ApproxLinearOperator<T>& U,
   //
   LatticeFermion r = b - zeta*x;
   LatticeFermion u;
-  U(u, x, PLUS);
+  U(u, x, PLUS, epsilon);
   r -= rho*u;
 
   // delta_0 = || r || 
@@ -233,7 +233,7 @@ void InvRelSUMR_a(const ApproxLinearOperator<T>& U,
   }
 
   // And we are done, either converged or not...
-  if( n_count == MaxSUMR && ! convP ) { 
+  if( n_count >= MaxSUMR && ! convP ) { 
     QDPIO::cout << "Solver Nonconvergence Warning " << endl;
   }
 

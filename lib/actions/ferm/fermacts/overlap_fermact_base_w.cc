@@ -1,4 +1,4 @@
-// $Id: overlap_fermact_base_w.cc,v 1.14 2004-05-21 15:31:49 bjoo Exp $
+// $Id: overlap_fermact_base_w.cc,v 1.15 2004-05-25 21:47:39 bjoo Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -17,7 +17,8 @@
 #include "actions/ferm/invert/minv_rel_sumr.h"
 #include "actions/ferm/invert/minvcg.h"
 #include "actions/ferm/invert/minv_rel_cg.h"
-
+#include "actions/ferm/invert/inv_rel_gmresr_sumr.h"
+#include "actions/ferm/invert/inv_rel_gmresr_cg.h"
 #include "actions/ferm/linop/lmdagm.h"
 #include "actions/ferm/linop/lopscl.h"
 #include "meas/eig/ischiral_w.h"
@@ -227,7 +228,119 @@ OverlapFermActBase::qprop(LatticeFermion& psi,
 
   END_CODE("OverlapFermActBase::qprop");
 }
+
+void 
+OverlapFermActBase::qprop(LatticeFermion& psi, 
+			  Handle<const ConnectState> state, 
+			  const LatticeFermion& chi, 
+			  enum InvType invType,
+			  const Real& RsdCG, 
+			  const Real& RsdCGPrec,
+			  int MaxCG, int MaxCGPrec, int& n_count) const
+{
+  START_CODE("OverlapFermActBase::qprop");
+
+  Real mass = quark_mass();
+  switch( invType ) {  
+  case REL_GMRESR_SUMR_INVERTER:
+    {
+      // Solve by Relaxed SUMR solver -- for shifted unitary matrices
+      //
+      // Solve zeta I + rho gamma_5 eps(H)
+      // where gamma_5 eps(H) is unitary
+      //
+      // zeta = (1 + mu)/(1-mu)
+      // rho  = 1
+      Real rho = Real(1);
+      Real mu = quark_mass();
+      Complex zeta = cmplx(( Real(1) + mu ) / (Real(1) - mu),0);
+      {
+	Handle<const ApproxLinearOperator<LatticeFermion> > UnprecU( dynamic_cast<const ApproxLinearOperator<LatticeFermion>* >(lgamma5epsH(state)) );
+
+	Handle<const ApproxLinearOperator<LatticeFermion> > PrecU( dynamic_cast<const ApproxLinearOperator<LatticeFermion>* >(lgamma5epsHPrecondition(state)) );
+
+	
+	Real fact = Real(2)/(Real(1) - mu);
+	
+	// Now solve:
+	InvRelGMRESR_SUMR(*PrecU, zeta, rho, *UnprecU, chi, psi, RsdCG, RsdCGPrec, MaxCG, MaxCGPrec, n_count);
+	
+	// Restore to normal scaling
+	psi *= fact;
+	
+	
+      }
+
+      // Check back:
+      // Get a proper operator and compute chi- Dpsi
+      Handle<const LinearOperator<LatticeFermion> > D(linOp(state));
+      LatticeFermion Dpsi;
+      (*D)(Dpsi, psi, PLUS);
+      Dpsi = chi - Dpsi;
+      Dpsi /= sqrt(norm2(chi));
+      QDPIO::cout << "OvQprop || chi - D psi || = " << sqrt(norm2(Dpsi))
+		  << "  n_count = " << n_count << " iters" << endl;
+    }
+    break;
+
+  case REL_GMRESR_CG_INVERTER:
+    {
+      
+      LatticeFermion tmp;
+      Chirality ichiral = isChiralVector(chi);
+      const ApproxLinearOperator<LatticeFermion> *MM_ptr;
+      const ApproxLinearOperator<LatticeFermion> *MM_prec_ptr;
+
+      if( ichiral == CH_NONE || ( isChiral() == false )) { 
+	
+	MM_ptr =  dynamic_cast<const ApproxLinearOperator<LatticeFermion>* >( lMdagM(state));
+	MM_prec_ptr =  dynamic_cast<const ApproxLinearOperator<LatticeFermion>* >( lMdagMPrecondition(state));
+	  
+      }
+      else {
+	
+	// Source is chiral. In this case we should use InvCG1
+	// with the special MdagM
+	MM_ptr = dynamic_cast<const ApproxLinearOperator<LatticeFermion>* >( lMdagM(state, ichiral) );
+	MM_prec_ptr = dynamic_cast<const ApproxLinearOperator<LatticeFermion>* >( lMdagMPrecondition(state, ichiral) );
+
+      }
+
+      Handle<const ApproxLinearOperator<LatticeFermion> > MM(MM_ptr);
+      Handle<const ApproxLinearOperator<LatticeFermion> > MM_prec(MM_prec_ptr);
+      
+      InvRelGMRESR_CG(*MM_prec,*MM, chi, tmp, RsdCG, RsdCGPrec, MaxCG, MaxCGPrec, n_count);
+	
+      Handle<const LinearOperator<LatticeFermion> > M(linOp(state));
+      (*M)(psi,tmp,MINUS);
+
+      LatticeFermion Mpsi;
+      (*M)(Mpsi, psi, PLUS);
+      Mpsi = chi - Mpsi;
+      Mpsi /= sqrt(norm2(chi));
+      QDPIO::cout << "OvQprop || chi - D psi ||/||chi|| = " << sqrt(norm2(Mpsi))
+		  << "  n_count = " << n_count << " iters" << endl;
+
+
+    }
+    break;
+  default:
+    QDP_error_exit("Zolotarev4DFermActBj::qprop Solver Type not implemented\n");
+    break;
+  };
+
+  if ( n_count >= MaxCG ) { 
+    QDP_error_exit("Zolotarev4DFermAct::qprop: No convergence in solver: n_count = %d\n", n_count);
+  }
+
+  // Normalize and remove contact term 
+  Real ftmp = Real(1) / ( Real(1) - mass );
   
+  psi -= chi;
+  psi *= ftmp;
+
+  END_CODE("OverlapFermActBase::qprop");
+}
 
 /* This routine is Wilson type Overlap fermions */
 

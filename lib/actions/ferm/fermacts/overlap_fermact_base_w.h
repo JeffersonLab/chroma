@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: overlap_fermact_base_w.h,v 1.8 2004-05-12 15:45:10 bjoo Exp $
+// $Id: overlap_fermact_base_w.h,v 1.9 2004-05-25 21:47:39 bjoo Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -51,6 +51,18 @@ public:
   //! Produce a linear operator that gives back gamma_5 eps(H)
   virtual const LinearOperator<LatticeFermion>* lgamma5epsH(Handle<const ConnectState> state) const = 0;
 
+  //! Produce a linear operator that gives back gamma_5 eps(H)
+  virtual const LinearOperator<LatticeFermion>* lgamma5epsHPrecondition(Handle<const ConnectState> state) const = 0;
+
+  virtual const LinearOperator<LatticeFermion>* linOpPrecondition(Handle<const ConnectState> state) const = 0;
+
+  //! Robert's way: 
+  //! Produce a linear operator M^dag.M for this action to be applied
+  //  to a vector of known chirality. Chirality is passed in
+  virtual const LinearOperator<LatticeFermion>* lMdagMPrecondition(Handle<const ConnectState> state) const = 0;
+
+  virtual const LinearOperator<LatticeFermion>* lMdagMPrecondition(Handle<const ConnectState> state, const Chirality& chirality) const = 0;
+
   //! Redefine quark propagator routine for 4D fermions
   /*! 
    * NOTE: the arg ConectState MUST be in the original base because C++ 
@@ -63,6 +75,22 @@ public:
 	     enum InvType invType,
 	     const Real& RsdCG, 
 	     int MaxCG, 
+	     int& ncg_had) const;
+
+  //! Redefine quark propagator routine for 4D fermions
+  /*! 
+   * NOTE: the arg ConectState MUST be in the original base because C++ 
+   * requires it for a virtual func!
+   * The function will have to downcast to get the correct state
+   */
+  void qprop(LatticeFermion& psi, 
+	     Handle<const ConnectState> state, 
+	     const LatticeFermion& chi, 
+	     enum InvType invType,
+	     const Real& RsdCG, 
+	     const Real& RsdCGPrec,
+	     int MaxCG, 
+	     int MaxCGPrec,
 	     int& ncg_had) const;
 
   //! Define a multi mass qprop

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zolotarev4d_fermact_w.h,v 1.23 2004-05-11 13:29:28 bjoo Exp $
+// $Id: zolotarev4d_fermact_w.h,v 1.24 2004-05-25 21:47:39 bjoo Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -46,6 +46,25 @@ public:
     fbc(fbc_), Mact(Mact_), m_q(m_q_), RatPolyDeg(RatPolyDeg_), 
     RsdCGinner(RsdCGinner_), MaxCGinner(MaxCGinner_), writer(writer_),
     ReorthFreqInner(ReorthFreqInner_), inner_solver_type(inner_solver_type_)
+    {
+      // Default Preconditioner degree is RatPolyDeg
+      RatPolyDegPrecond = RatPolyDeg_;
+    }
+
+  Zolotarev4DFermAct(Handle<FermBC<LatticeFermion> > fbc_,
+		     Handle<UnprecWilsonTypeFermAct<LatticeFermion> > Mact_, 
+		     const Real& m_q_,
+		     const int RatPolyDeg_,
+		     const int RatPolyDegPrecond_,
+		     const Real& RsdCGinner_,
+		     int MaxCGinner_,
+		     XMLWriter& writer_,
+		     const int ReorthFreqInner_=10,
+		     const OverlapInnerSolverType inner_solver_type_=OVERLAP_INNER_CG_SINGLE_PASS
+		     ) :
+    fbc(fbc_), Mact(Mact_), m_q(m_q_), RatPolyDeg(RatPolyDeg_), RatPolyDegPrecond(RatPolyDegPrecond_),
+    RsdCGinner(RsdCGinner_), MaxCGinner(MaxCGinner_), writer(writer_),
+    ReorthFreqInner(ReorthFreqInner_), inner_solver_type(inner_solver_type_)
     {}
 
   //! Construct from param struct
@@ -55,7 +74,8 @@ public:
 
   //! Copy Constructor
   Zolotarev4DFermAct(const Zolotarev4DFermAct& a) :
-    fbc(a.fbc), Mact(a.Mact), m_q(a.m_q), RatPolyDeg(a.RatPolyDeg),
+    fbc(a.fbc), Mact(a.Mact), m_q(a.m_q), RatPolyDeg(a.RatPolyDeg), 
+    RatPolyDegPrecond(a.RatPolyDegPrecond),
     RsdCGinner(a.RsdCGinner), MaxCGinner(a.MaxCGinner), writer(a.writer),
     ReorthFreqInner(a.ReorthFreqInner), inner_solver_type(a.inner_solver_type)
   {};
@@ -132,6 +152,8 @@ public:
    */
   const LinearOperator<LatticeFermion>* linOp(Handle<const ConnectState> state) const;
 
+  const LinearOperator<LatticeFermion>* linOpPrecondition(Handle<const ConnectState> state) const;
+
   //! Produce a linear operator M^dag.M for this action
   /*! 
    * NOTE: the arg MUST be the original base because C++ requires it for a virtual func!
@@ -143,10 +165,23 @@ public:
   //  to a vector of known chirality. Chirality is passed in
   const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state, const Chirality& chirality) const;
 
+  //! Produce a linear operator M^dag.M for this action
+  /*! 
+   * NOTE: the arg MUST be the original base because C++ requires it for a virtual func!
+   * The function will have to downcast to get the correct state
+   */
+  const LinearOperator<LatticeFermion>* lMdagMPrecondition(Handle<const ConnectState> state) const;
+
+  //! Produce a linear operator M^dag.M for this action to be applied
+  //  to a vector of known chirality. Chirality is passed in
+  const LinearOperator<LatticeFermion>* lMdagMPrecondition(Handle<const ConnectState> state, const Chirality& chirality) const;
+
 
   //! Produce a linear operator that gives back gamma_5 eps(H)
   const LinearOperator<LatticeFermion>* lgamma5epsH(Handle<const ConnectState> state) const;
 
+  //! Produce a linear operator that gives back gamma_5 eps(H)
+  const LinearOperator<LatticeFermion>* lgamma5epsHPrecondition(Handle<const ConnectState> state) const;
   // Special qprop for now
   /*
   void qprop(LatticeFermion& psi, 
@@ -169,6 +204,16 @@ protected:
 	    multi1d<Real>& EigValFunc,
 	    const OverlapConnectState<LatticeFermion>& state) const;
 
+  //! Construct stuff but use RatPolyDegPrec in the polynomial
+  void initPrec(int& numroot, 
+	    Real& coeffP, 
+ 	    multi1d<Real>& resP, 
+	    multi1d<Real>& rootQ, 
+	    int& NEig, 
+	    multi1d<Real>& EigValFunc,
+	    const OverlapConnectState<LatticeFermion>& state) const;
+
+
 private:
   //!  Partial constructor not allowed
   Zolotarev4DFermAct();
@@ -179,6 +224,7 @@ private:
   Handle<UnprecWilsonTypeFermAct<LatticeFermion> > Mact;
   Real m_q;
   int RatPolyDeg;   // degree of polynomial-ratio
+  int RatPolyDegPrecond; // degree of poly ratio for preconditioner
   Real RsdCGinner;  // Residuum for inner iterations -- property of action
                     // not state. (eg 5D op has none of this)
   int MaxCGinner;
