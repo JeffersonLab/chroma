@@ -4,7 +4,7 @@ set builddir = ../../build/double/mainprogs/main
 #set gauge_type = UNIT
 set gauge_type = SZINQIO
 set gauge_cfg = ../gfix.cfg1
-set inv_type = REL_CG_INVERTER
+set inv_type = REL_GMRESR_CG_INVERTER
 #
 # Forward source
 #
@@ -77,6 +77,7 @@ cat << **EOF** >! DATA
   <FermAct>ZOLOTAREV_4D</FermAct>
   <Mass>0.04</Mass>
   <RatPolyDeg>17</RatPolyDeg>
+  <RatPolyDegPrecond>5</RatPolyDegPrecond>
   <InnerSolve>
     <MaxCG>1000</MaxCG>
     <RsdCG>1.0e-7</RsdCG>

@@ -1,6 +1,9 @@
-// $Id: propagator_comp.cc,v 1.5 2004-05-19 11:43:19 bjoo Exp $
+// $Id: propagator_comp.cc,v 1.6 2004-05-28 16:47:33 bjoo Exp $
 // $Log: propagator_comp.cc,v $
-// Revision 1.5  2004-05-19 11:43:19  bjoo
+// Revision 1.6  2004-05-28 16:47:33  bjoo
+// Wired in REL_GMRESR_SUMR and REL_GMRESR_CG inverters to propagator and propagator_comp
+//
+// Revision 1.5  2004/05/19 11:43:19  bjoo
 // BiCGStab now works for 4D and 5D but seems not to converge for DWF or ZOLOTAREV5D
 //
 // Revision 1.4  2004/05/11 13:29:29  bjoo
@@ -525,15 +528,46 @@ int main(int argc, char **argv)
     int n_count = 0;
       
     if( S_f_ptr != 0x0 ) { 
-      
-      S_f->qprop(psi,
-		 state,
-		 chi,
-		 input.param.invParam.invType, 
-		 input.param.invParam.RsdCG, 
-		 input.param.invParam.MaxCG,
-		 n_count);
-	
+
+      if( input.param.FermActHandle->getFermActType()==FERM_ACT_ZOLOTAREV_4D ) {
+
+	  switch( input.param.invParam.invType ) {
+	  case REL_GMRESR_SUMR_INVERTER:
+	  case REL_GMRESR_CG_INVERTER: 
+	    {
+	      const OverlapFermActBase& S_ov = dynamic_cast<const OverlapFermActBase&>(*S_f);
+
+	      S_ov.qprop(psi,
+			 state,
+			 chi,
+			 input.param.invParam.invType, 
+			 input.param.invParam.RsdCG, 
+			 input.param.invParam.RsdCGPrec,
+			 input.param.invParam.MaxCG,
+			 input.param.invParam.MaxCGPrec,
+			 n_count);
+	    }
+	    break;
+	  default:
+	    S_f->qprop(psi,
+		       state,
+		       chi,
+		       input.param.invParam.invType, 
+		       input.param.invParam.RsdCG, 
+		       input.param.invParam.MaxCG,
+		       n_count);
+	    break;
+	  } // End switch
+      } // End Zolotarev4D
+      else {
+	S_f->qprop(psi,
+		       state,
+		       chi,
+		       input.param.invParam.invType, 
+		       input.param.invParam.RsdCG, 
+		       input.param.invParam.MaxCG,
+		       n_count);
+      }
     }
     else if ( S_f_a_ptr != 0x0 ) { 
 	

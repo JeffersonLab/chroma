@@ -1,6 +1,9 @@
-// $Id: propagator.cc,v 1.57 2004-04-28 14:56:11 bjoo Exp $
+// $Id: propagator.cc,v 1.58 2004-05-28 16:47:33 bjoo Exp $
 // $Log: propagator.cc,v $
-// Revision 1.57  2004-04-28 14:56:11  bjoo
+// Revision 1.58  2004-05-28 16:47:33  bjoo
+// Wired in REL_GMRESR_SUMR and REL_GMRESR_CG inverters to propagator and propagator_comp
+//
+// Revision 1.57  2004/04/28 14:56:11  bjoo
 // Tested propagator_comp and collect_propcomp
 //
 // Revision 1.56  2004/04/28 02:54:12  edwards
@@ -457,15 +460,33 @@ int main(int argc, char **argv)
     // params struct. Loads Evalues etc if needed, will in the 
     // future recompute them as needed
     Handle<const ConnectState> state(S.createState(u, zolo4d.StateInfo, xml_out, zolo4d.AuxFermActHandle->getMass() )  );
-  
-    // Call the propagator... Hooray.
-    quarkProp4(quark_propagator, xml_out, quark_prop_source,
-	       S, state, 
-	       input.param.invParam.invType, 
-	       input.param.invParam.RsdCG, 
-	       input.param.invParam.MaxCG, 
-	       input.param.nonRelProp,
-	       ncg_had);	  
+
+
+    switch( input.param.invParam.invType ) {
+    case REL_GMRESR_SUMR_INVERTER:
+    case REL_GMRESR_CG_INVERTER:
+      // Call the propagator... Hooray.
+      quarkProp4(quark_propagator, xml_out, quark_prop_source,
+		 S, state, 
+		 input.param.invParam.invType, 
+		 input.param.invParam.RsdCG, 
+		 input.param.invParam.RsdCGPrec,
+		 input.param.invParam.MaxCG, 
+		 input.param.invParam.MaxCGPrec,
+		 input.param.nonRelProp,
+		 ncg_had);
+      break;
+    default:
+      // Call the propagator... Hooray.
+      quarkProp4(quark_propagator, xml_out, quark_prop_source,
+		 S, state, 
+		 input.param.invParam.invType, 
+		 input.param.invParam.RsdCG, 
+		 input.param.invParam.MaxCG, 
+		 input.param.nonRelProp,
+		 ncg_had);	
+      break;
+    }
 		      
   }
   break;
