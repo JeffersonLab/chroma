@@ -1,4 +1,4 @@
-// $Id: prec_fermact_qprop.cc,v 1.12 2005-01-14 20:13:06 edwards Exp $
+// $Id: prec_fermact_qprop.cc,v 1.13 2005-02-21 19:28:59 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic even-odd preconditioned fermion operator
  *
@@ -124,8 +124,8 @@ namespace Chroma
 
   template<>
   const SystemSolver<LF>* 
-  EvenOddPrecWilsonTypeFermAct<LF,LCM>:: qprop(Handle<const ConnectState> state,
-					       const InvertParam_t& invParam) const
+  EvenOddPrecWilsonTypeFermAct<LF,LCM>::qprop(Handle<const ConnectState> state,
+					      const InvertParam_t& invParam) const
   {
     return new PrecFermActQprop<LF,LCM>(Handle< const EvenOddPrecLinearOperator<LF,LCM> >(linOp(state)), invParam);
   }

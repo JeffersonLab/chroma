@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_linop_array_w.h,v 1.10 2005-01-21 17:44:53 edwards Exp $
+// $Id: prec_dwf_linop_array_w.h,v 1.11 2005-02-21 19:28:59 edwards Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned domain-wall fermion linear operator
  */
@@ -10,7 +10,7 @@
 #include "linearop.h"
 #include "actions/ferm/linop/dslash_w.h"
 #include "actions/ferm/linop/prec_dwf_linop_base_array_w.h"
-
+#include "io/param_io.h"       // to get AnisoParam_t
 
 namespace Chroma 
 { 
@@ -23,17 +23,10 @@ namespace Chroma
   class EvenOddPrecDWLinOpArray : public EvenOddPrecDWLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >
   {
   public:
-    //! Partial constructor
-    EvenOddPrecDWLinOpArray() {}
-
     //! Full constructor
     EvenOddPrecDWLinOpArray(const multi1d<LatticeColorMatrix>& u_, 
-			    const Real& WilsonMass_, const Real& m_q, int N5_)
-    {create(u_,WilsonMass_,m_q,N5_);}
-
-    //! Creation routine
-    void create(const multi1d<LatticeColorMatrix>& u_, 
-		const Real& WilsonMass_, const Real& m_q_, int N5_);
+			    const Real& WilsonMass_, const Real& m_q, int N5_,
+			    const AnisoParam_t& aniso_);
 
     //! Destructor is automatic
     ~EvenOddPrecDWLinOpArray() {}
@@ -145,6 +138,9 @@ namespace Chroma
 
 
   protected:
+    //! Partial constructor
+    EvenOddPrecDWLinOpArray() {}
+
 
     //! Apply the even-even (odd-odd) coupling piece of the domain-wall fermion operator
     /*!

@@ -1,4 +1,4 @@
-// $Id: prec_dwf_linop_array_w.cc,v 1.11 2005-01-21 17:44:53 edwards Exp $
+// $Id: prec_dwf_linop_array_w.cc,v 1.12 2005-02-21 19:28:59 edwards Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned domain-wall linear operator
  */
@@ -18,26 +18,40 @@ namespace Chroma
    * \param WilsonMass_   DWF height    (Read)
    * \param m_q_          quark mass    (Read)
    * \param N5_           extent of 5D  (Read)
+   * \param aniso         aniso params  (Read)
    */
-  void 
-  EvenOddPrecDWLinOpArray::create(const multi1d<LatticeColorMatrix>& u_, 
-				  const Real& WilsonMass_, const Real& m_q_, int N5_)
+  EvenOddPrecDWLinOpArray::EvenOddPrecDWLinOpArray(
+    const multi1d<LatticeColorMatrix>& u_, 
+    const Real& WilsonMass_, const Real& m_q_, int N5_,
+    const AnisoParam_t& aniso)
   {
     START_CODE();
 
     WilsonMass = WilsonMass_;
     m_q = m_q_;
-    a5  = 1.0;
+    a5  = 1;
     N5  = N5_;
 
-    D.create(u_);
-
-    InvTwoKappa = 5.0 - WilsonMass ; 
-    //InvTwoKappa =  WilsonMass - 5.0;
-    TwoKappa = 1.0 / InvTwoKappa ;
-    Kappa = TwoKappa/2.0 ;
+    multi1d<LatticeColorMatrix> u = u_;
+    Real ff = where(aniso.anisoP, aniso.nu / aniso.xi_0, Real(1));
   
-    invDfactor =1.0/(1.0  + m_q/pow(InvTwoKappa,N5)) ;
+    if (aniso.anisoP)
+    {
+      // Rescale the u fields by the anisotropy
+      for(int mu=0; mu < u.size(); ++mu)
+      {
+	if (mu != aniso.t_dir)
+	  u[mu] *= ff;
+      }
+    }
+    D.create(u);   // construct using possibly aniso glue
+
+    InvTwoKappa = 1 + a5*(1 + (Nd-1)*ff - WilsonMass); 
+    //InvTwoKappa =  WilsonMass - 5.0;
+    TwoKappa = 1.0 / InvTwoKappa;
+    Kappa = TwoKappa/2.0;
+  
+    invDfactor =1.0/(1.0  + m_q/pow(InvTwoKappa,N5));
 
     END_CODE();
   }

@@ -1,4 +1,4 @@
-// $Id: prec_nef_fermact_array_w.cc,v 1.14 2005-01-02 05:21:09 edwards Exp $
+// $Id: prec_nef_fermact_array_w.cc,v 1.15 2005-02-21 19:28:58 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned NEF fermion action
  */
@@ -113,7 +113,10 @@ namespace Chroma
     if (obsvP)
       nef_quarkProp4(q_sol, xml_out, q_src, t_src, j_decay, *this, state, invParam, ncg_had);
     else
-      quarkProp4(q_sol, xml_out, q_src, *this, state, invParam, nonRelProp, ncg_had);
+    {
+      Handle< const SystemSolver<LatticeFermion> > qprop(this->qprop(state,invParam));
+      quarkProp4(q_sol, xml_out, q_src, qprop, nonRelProp, ncg_had);
+    }
   }
 
 }

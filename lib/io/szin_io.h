@@ -1,4 +1,4 @@
-// $Id: szin_io.h,v 1.5 2005-01-14 20:13:07 edwards Exp $
+// $Id: szin_io.h,v 1.6 2005-02-21 19:28:59 edwards Exp $
 
 /*! \file
  *  \brief  Routines associated with SZIN gauge field IO
@@ -15,6 +15,8 @@ namespace Chroma {
 //! Szin gauge field header
 struct SzinGauge_t
 {
+  SzinGauge_t();        // default constructor
+
   multi1d<int> nrow;    // Lattice size
   int Nd;               // Number of spacetime dimensions
   int Nc;               // Number of colors
@@ -52,9 +54,6 @@ struct SzinGauge_t
   std::string date;
 };
 
-
-//! Initialize header with default values
-void initHeader(SzinGauge_t& header);
 
 //! Source header read
 void read(XMLReader& xml, const std::string& path, SzinGauge_t& header);

@@ -1,4 +1,4 @@
-// $Id: prec_zolo_nef_fermact_array_w.cc,v 1.13 2005-02-14 02:05:34 edwards Exp $
+// $Id: prec_zolo_nef_fermact_array_w.cc,v 1.14 2005-02-21 19:28:58 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF fermion action
  */
@@ -105,7 +105,7 @@ namespace Chroma
 
   void EvenOddPrecZoloNEFFermActArray::initCoeffs(multi1d<Real>& b5_arr,
 						  multi1d<Real>& c5_arr,
-						  Handle<const ConnectState>& state) const
+						  Handle<const ConnectState> state) const
   {
     b5_arr.resize(params.N5);
     c5_arr.resize(params.N5);
@@ -398,7 +398,10 @@ namespace Chroma
     if (obsvP)
       nef_quarkProp4(q_sol, xml_out, q_src, t_src, j_decay, *this, state, invParam, ncg_had);
     else
-      quarkProp4(q_sol, xml_out, q_src, *this, state, invParam, nonRelProp, ncg_had);
+    {
+      Handle< const SystemSolver<LatticeFermion> > qprop(this->qprop(state,invParam));
+      quarkProp4(q_sol, xml_out, q_src, qprop, nonRelProp, ncg_had);
+    }
   }
 
 }

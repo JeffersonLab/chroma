@@ -1,4 +1,4 @@
-// $Id: prec_wilson_fermact_w.cc,v 1.19 2005-01-14 20:13:04 edwards Exp $
+// $Id: prec_wilson_fermact_w.cc,v 1.20 2005-02-21 19:28:58 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action
  */
@@ -74,9 +74,6 @@ namespace Chroma
       QDPIO::cerr << "Error: neither Mass or Kappa found" << endl;
       QDP_abort(1);
     }
-
-    // There is always an aniso Param for wilson, so set it to default
-    initHeader(anisoParam);
 
     //  Read optional anisoParam.
     if (paramtop.count("AnisoParam") != 0) 

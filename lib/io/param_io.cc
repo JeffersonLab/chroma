@@ -1,4 +1,4 @@
-// $Id: param_io.cc,v 1.35 2005-01-14 20:13:06 edwards Exp $
+// $Id: param_io.cc,v 1.36 2005-02-21 19:28:59 edwards Exp $
 /*! \file
  *  \brief Various parameter readers/writers for main programs
  */
@@ -66,31 +66,35 @@ void read(XMLReader& xml, const string& path, Cfg_t& input)
 }
 
 
+#if 1
 //! Initialize a smearing param struct
-void initHeader(SmearingParam_t& param)
+SmearingParam_t::SmearingParam_t()
 {
-  param.wvf_kind    = WVF_KIND_GAUSSIAN;
-  param.wvf_param   = 0;
-  param.wvfIntPar   = 0;
+  wvf_kind    = WVF_KIND_GAUSSIAN;
+  wvf_param   = 0;
+  wvfIntPar   = 0;
 }
 
 //! Initialize a anisotropy param struct
-void initHeader(AnisoParam_t& param)
+AnisoParam_t::AnisoParam_t()
 {
-  param.anisoP = false;
-  param.t_dir  = Nd-1;   // doesn't matter - should not be used
-  param.xi_0   = 1;
-  param.nu     = 1;
+  QDPIO::cout << "Create AnisoParam_t" << endl;
+
+  anisoP = false;
+  t_dir  = Nd-1;   // doesn't matter - should not be used
+  xi_0   = 1;
+  nu     = 1;
 }
 
 //! Initialize a chiral param struct
-void initHeader(ChiralParam_t& param)
+ChiralParam_t::ChiralParam_t()
 {
-  param.OverMass = 0;
-  param.N5       = 0;
-  param.a5       = 1;
-  param.NWilsVec = 0;
+  OverMass = 0;
+  N5       = 0;
+  a5       = 1;
+  NWilsVec = 0;
 }
+#endif
 
 
 //! Read a anisotropy param struct

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: param_io.h,v 1.27 2005-01-14 20:13:07 edwards Exp $
+// $Id: param_io.h,v 1.28 2005-02-21 19:28:59 edwards Exp $
 /*! \file
  *  \brief Reunitarize (to a SU(N)) inplace the matrix A under some option
  */
@@ -56,6 +56,9 @@ struct Cfg_t
 //! Parameters for chiral fermion actions
 struct ChiralParam_t
 {
+  ChiralParam_t();  // default constructor
+  ~ChiralParam_t() {}
+
   Real       OverMass;
   int        N5;
   Real       a5;
@@ -66,6 +69,9 @@ struct ChiralParam_t
 //! Parameters for anisotropy
 struct AnisoParam_t
 {
+  AnisoParam_t();  // default constructor
+  ~AnisoParam_t() {}
+
   bool       anisoP;
   int        t_dir;
   Real       xi_0;
@@ -76,21 +82,13 @@ struct AnisoParam_t
 //! Parameters for sources and sinks
 struct SmearingParam_t
 {
+  SmearingParam_t();  // default constructor
+  ~SmearingParam_t() {}
+  
   WvfKind       wvf_kind;
   Real          wvf_param;
   int           wvfIntPar;
 };
-
-
-//---------------------------- Initializers -----------------------------
-//! Initialize a smearing param struct
-void initHeader(SmearingParam_t& param);
-
-//! Initialize a anisotropy param struct
-void initHeader(AnisoParam_t& param);
-
-//! Initialize a chiral param struct
-void initHeader(ChiralParam_t& param);
 
 
 //---------------------------- Readers -----------------------------

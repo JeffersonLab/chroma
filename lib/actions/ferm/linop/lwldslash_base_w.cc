@@ -1,4 +1,4 @@
-// $Id: lwldslash_base_w.cc,v 1.2 2005-01-14 20:13:05 edwards Exp $
+// $Id: lwldslash_base_w.cc,v 1.3 2005-02-21 19:28:58 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -27,9 +27,7 @@ namespace Chroma
     multi1d<LatticeColorMatrix> ds_tmp(Nd);
     deriv(ds_u, chi, psi, isign, 0);
     deriv(ds_tmp, chi, psi, isign, 1);
-    for(int mu = 0; mu < Nd; mu++) { 
-      ds_u[mu] += ds_tmp[mu];
-    }
+    ds_u += ds_tmp;
   }
 
 
@@ -45,11 +43,11 @@ namespace Chroma
     ds_u.resize(Nd);
     const multi1d<LatticeColorMatrix>& u = getU();
 
-    for(int mu = 0; mu < Nd; ++mu)
+    switch (isign)
     {
-      switch (isign)
+    case PLUS:
+      for(int mu = 0; mu < Nd; ++mu)
       {
-      case PLUS:
 	// Undaggered:
         ds_u[mu][rb[cb]]    = u[mu]*traceSpin(outerProduct(shift(psi - Gamma(1 << mu)*psi, FORWARD, mu),chi));
 	ds_u[mu][rb[1-cb]]  = zero;
@@ -69,10 +67,12 @@ namespace Chroma
 	// This maybe should be absorbed into the taproj normalisation
 	//
 	// ds_u[mu] *= Real(0.5);
+      }
+      break;
 
-	break;
-
-      case MINUS:
+    case MINUS:
+      for(int mu = 0; mu < Nd; ++mu)
+      {
 	// Daggered:
 	ds_u[mu][rb[cb]]    = u[mu]*traceSpin(outerProduct(shift(psi + Gamma(1 << mu)*psi, FORWARD, mu),chi));
 	
@@ -93,12 +93,11 @@ namespace Chroma
 	// This maybe should be absorbed into the taproj normalisation
 	//
 	// ds_u[mu] *= Real(0.5);
-
-	break;
-
-      default:
-	QDP_error_exit("unknown case");
       }
+      break;
+
+    default:
+      QDP_error_exit("unknown case");
     }
     
     END_CODE();

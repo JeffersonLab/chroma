@@ -1,4 +1,4 @@
-// $Id: prec_dwf_qprop_array_sse_w.cc,v 1.4 2005-01-28 17:32:55 edwards Exp $
+// $Id: prec_dwf_qprop_array_sse_w.cc,v 1.5 2005-02-21 19:28:59 edwards Exp $
 /*! \file
  *  \brief SSE 5D DWF specific quark propagator solver
  */
@@ -237,7 +237,7 @@ namespace Chroma
 		  << ", max_iterations = " << max_iter
 		  << endl;
 
-      double M_0 = -2*(5.0-M5);
+      double M_0 = -2*M5;
       double out_eps;
       out_eps = 0.0;
       out_iter = 0;
@@ -324,10 +324,22 @@ namespace Chroma
 
 //    init();   // only needed because 2 qpropT might be active - SSE CG does not allow this
 
-    const multi1d<LatticeColorMatrix>& u = state->getLinks();
+    multi1d<LatticeColorMatrix> u = state->getLinks();
+    Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
+  
+    if (anisoParam.anisoP)
+    {
+      // Rescale the u fields by the anisotropy
+      for(int mu=0; mu < u.size(); ++mu)
+      {
+	if (mu != anisoParam.t_dir)
+	  u[mu] *= ff;
+      }
+    }
 
     // Apply SSE inverter
-    double M5  = toDouble(OverMass);
+    Real   a5  = 1;
+    double M5  = toDouble(1 + a5*(1 + (Nd-1)*ff - OverMass));
     double m_f = toDouble(Mass);
     double rsd = toDouble(invParam.RsdCG);
     double rsd_sq = rsd * rsd;

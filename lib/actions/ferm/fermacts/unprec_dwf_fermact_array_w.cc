@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_fermact_array_w.cc,v 1.14 2005-01-02 05:21:09 edwards Exp $
+// $Id: unprec_dwf_fermact_array_w.cc,v 1.15 2005-02-21 19:28:58 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion action
  */
@@ -65,6 +65,10 @@ namespace Chroma
       read(paramtop, "a5", a5);
     else
       a5 = 1.0;
+
+    //  Read optional anisoParam.
+    if (paramtop.count("AnisoParam") != 0) 
+      read(paramtop, "AnisoParam", anisoParam);
   }
 
 
@@ -82,7 +86,7 @@ namespace Chroma
   UnprecDWFermActArray::unprecLinOp(Handle<const ConnectState> state, 
 				    const Real& m_q) const
   {
-    return new UnprecDWLinOpArray(state->getLinks(),OverMass,m_q,N5);
+    return new UnprecDWLinOpArray(state->getLinks(),param.OverMass,m_q,param.N5,param.anisoParam);
   }
 
   
@@ -99,9 +103,15 @@ namespace Chroma
 				  int& ncg_had)
   {
     if (obsvP)
-      dwf_quarkProp4(q_sol, xml_out, q_src, t_src, j_decay, *this, state, invParam, ncg_had);
+    {
+      Handle< const SystemSolver< multi1d<LatticeFermion> > > qpropT(this->qpropT(state,invParam));
+      dwf_quarkProp4(q_sol, xml_out, q_src, t_src, j_decay, qpropT, state, getQuarkMass(), ncg_had);
+    }
     else
-      quarkProp4(q_sol, xml_out, q_src, *this, state, invParam, nonRelProp, ncg_had);
+    {
+      Handle< const SystemSolver<LatticeFermion> > qprop(this->qprop(state,invParam));
+      quarkProp4(q_sol, xml_out, q_src, qprop, nonRelProp, ncg_had);
+    }
   }
 
 }

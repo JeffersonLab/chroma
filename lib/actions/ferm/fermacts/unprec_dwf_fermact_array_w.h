@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_fermact_array_w.h,v 1.17 2005-01-14 20:13:04 edwards Exp $
+// $Id: unprec_dwf_fermact_array_w.h,v 1.18 2005-02-21 19:28:58 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion action
  */
@@ -9,7 +9,7 @@
 
 #include "fermact.h"
 #include "actions/ferm/fermacts/unprec_dwf_fermact_base_array_w.h"
-
+#include "io/param_io.h"       // to get AnisoParam_t
 
 namespace Chroma
 {
@@ -24,12 +24,14 @@ namespace Chroma
   //! Params for DWF
   struct UnprecDWFermActArrayParams
   {
+    UnprecDWFermActArrayParams() {}
     UnprecDWFermActArrayParams(XMLReader& in, const std::string& path);
     
     Real OverMass;
     Real Mass;
     Real a5;
     int  N5;
+    AnisoParam_t anisoParam;
   };
 
 
@@ -52,29 +54,36 @@ namespace Chroma
     //! General FermBC
     UnprecDWFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
 			 const Real& OverMass_, const Real& Mass_, int N5_) : 
-      fbc(fbc_), OverMass(OverMass_), Mass(Mass_), N5(N5_) {a5=1;}
+      fbc(fbc_)
+      {
+	param.a5=1;
+	param.OverMass = OverMass_;
+	param.Mass = Mass_;
+	param.N5 = N5_;
+      }
+
 
     //! General FermBC
     UnprecDWFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
-			 const UnprecDWFermActArrayParams& param) :
-      fbc(fbc_), OverMass(param.OverMass), Mass(param.Mass), a5(param.a5), N5(param.N5) {}
+			 const UnprecDWFermActArrayParams& p) :
+      fbc(fbc_), param(p) {}
 
     //! Copy constructor
     UnprecDWFermActArray(const UnprecDWFermActArray& a) : 
-      fbc(a.fbc), OverMass(a.OverMass), Mass(a.Mass), a5(a.a5), N5(a.N5) {}
+      fbc(a.fbc), param(a.param) {}
 
     //! Assignment
     UnprecDWFermActArray& operator=(const UnprecDWFermActArray& a)
-      {fbc=a.fbc; OverMass=a.OverMass; Mass=a.Mass; a5=a.a5; N5=a.N5; return *this;}
+      {fbc=a.fbc; param=a.param; return *this;}
 
     //! Return the fermion BC object for this action
     const FermBC< multi1d<LatticeFermion> >& getFermBC() const {return *fbc;}
 
     //! Length of DW flavor index/space
-    int size() const {return N5;}
+    int size() const {return param.N5;}
 
     //! Return the quark mass
-    Real getQuarkMass() const {return Mass;}
+    Real getQuarkMass() const {return param.Mass;}
 
     //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
     const UnprecDWLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >* unprecLinOp(Handle<const ConnectState> state, 
@@ -110,10 +119,7 @@ namespace Chroma
 
   private:
     Handle< FermBC< multi1d<LatticeFermion> > >  fbc;
-    Real OverMass;
-    Real Mass;
-    Real a5;
-    int  N5;
+    UnprecDWFermActArrayParams param;
   };
 
 }

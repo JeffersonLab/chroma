@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_wilson_fermact_w.h,v 1.13 2005-01-14 20:13:04 edwards Exp $
+// $Id: prec_wilson_fermact_w.h,v 1.14 2005-02-21 19:28:58 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action
  */
@@ -51,7 +51,7 @@ namespace Chroma
     //! General FermBC
     EvenOddPrecWilsonFermAct(Handle< FermBC<LatticeFermion> > fbc_, 
 			     const Real& Mass_) : 
-      fbc(fbc_) {param.Mass=Mass_; initHeader(param.anisoParam);}
+      fbc(fbc_) {param.Mass=Mass_;}
 
     //! General FermBC with Anisotropy
     EvenOddPrecWilsonFermAct(Handle< FermBC<LatticeFermion> > fbc_, 

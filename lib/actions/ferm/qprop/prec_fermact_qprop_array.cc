@@ -1,6 +1,13 @@
-// $Id: prec_fermact_qprop_array.cc,v 1.13 2005-01-07 05:00:10 edwards Exp $
+// $Id: prec_fermact_qprop_array.cc,v 1.14 2005-02-21 19:28:59 edwards Exp $
 // $Log: prec_fermact_qprop_array.cc,v $
-// Revision 1.13  2005-01-07 05:00:10  edwards
+// Revision 1.14  2005-02-21 19:28:59  edwards
+// Changed initHeader's to be instead the appropriate default constructor
+// for the ChiralParam, AnisoParam and QQQ structs. Removed all
+// calls to initHeader. Changed quarkProp routines to instead take
+// the appropriate SystemSolver instead of fermact. Added AnisoParam
+// support for DWF and SSE DWF.
+//
+// Revision 1.13  2005/01/07 05:00:10  edwards
 // Fixed up dwf_fermact to use specialized qpropT. Now, have exposed
 // a typedef version of DWFQpropT and the optimized version is defined
 // to this if --enable-dwf-cg is on.
@@ -93,17 +100,21 @@ namespace Chroma
     START_CODE();
 
     int n_count;
+    const int N5 = size();
   
+    if (psi.size() != size() && chi.size() != size())
+      QDP_error_exit("PrecFA5DQprop: sizes wrong");
+
     /* Step (i) */
     /* chi_tmp_o =  chi_o - D_oe * A_ee^-1 * chi_e */
-    multi1d<LatticeFermion> chi_tmp(A->size());
+    multi1d<LatticeFermion> chi_tmp(N5);
     {
-      multi1d<LatticeFermion> tmp1(A->size());
-      multi1d<LatticeFermion> tmp2(A->size());
+      multi1d<LatticeFermion> tmp1(N5);
+      multi1d<LatticeFermion> tmp2(N5);
 
       A->evenEvenInvLinOp(tmp1, chi, PLUS);
       A->oddEvenLinOp(tmp2, tmp1, PLUS);
-      for(int n=0; n < A->size(); ++n)
+      for(int n=0; n < N5; ++n)
 	chi_tmp[n][rb[1]] = chi[n] - tmp2[n];
     }
 
@@ -112,7 +123,7 @@ namespace Chroma
     case CG_INVERTER: 
     {
       /* tmp = M_dag(u) * chi_tmp */
-      multi1d<LatticeFermion> tmp(A->size());
+      multi1d<LatticeFermion> tmp(N5);
       (*A)(tmp, chi_tmp, MINUS);
 
       /* psi = (M^dag * M)^(-1) chi_tmp */
@@ -142,11 +153,11 @@ namespace Chroma
     /* Step (ii) */
     /* psi_e = A_ee^-1 * [chi_e  -  D_eo * psi_o] */
     {
-      multi1d<LatticeFermion> tmp1(A->size());
-      multi1d<LatticeFermion> tmp2(A->size());
+      multi1d<LatticeFermion> tmp1(N5);
+      multi1d<LatticeFermion> tmp2(N5);
 
       A->evenOddLinOp(tmp1, psi, PLUS);
-      for(int n=0; n < A->size(); ++n)
+      for(int n=0; n < N5; ++n)
 	tmp2[n][rb[0]] = chi[n] - tmp1[n];
       A->evenEvenInvLinOp(psi, tmp2, PLUS);
     }
@@ -160,7 +171,7 @@ namespace Chroma
   //! Propagator of a generic even-odd preconditioned fermion linear operator
   template<>
   const SystemSolver< multi1d<LatticeFermion> >* 
-  EvenOddPrecWilsonTypeFermAct5D<LatticeFermion, multi1d<LatticeColorMatrix> >:: qpropT(
+  EvenOddPrecWilsonTypeFermAct5D<LatticeFermion, multi1d<LatticeColorMatrix> >::qpropT(
     Handle<const ConnectState> state,
     const InvertParam_t& invParam) const
   {

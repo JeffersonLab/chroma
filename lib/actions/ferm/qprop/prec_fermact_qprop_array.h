@@ -1,16 +1,16 @@
-// $Id: prec_fermact_qprop_array.h,v 1.1 2005-01-07 05:04:33 edwards Exp $
+// $Id: prec_fermact_qprop_array.h,v 1.2 2005-02-21 19:28:59 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic even-odd preconditioned fermion operator
  *
  *  Solve for the propagator of a even-odd non-preconditioned fermion operator
  */
 
-// $Id: prec_fermact_qprop_array.h,v 1.1 2005-01-07 05:04:33 edwards Exp $
 #ifndef __prec_fermact_qprop_array_h__
 #define __prec_fermact_qprop_array_h__
 
 #include "chromabase.h"
 #include "fermact.h"
+#include "io/param_io.h"       // to get AnisoParam_t
 
 namespace Chroma 
 {
@@ -44,11 +44,15 @@ namespace Chroma
 		       Handle<const ConnectState> state_,  // throw away
 		       const Real& OverMass_,    // throw away
 		       const Real& Mass_,        // throw away
-		       const InvertParam_t& invParam_) : A(A_), invParam(invParam_) 
+		       const AnisoParam_t& anisoParam_, // throw away
+ 		       const InvertParam_t& invParam_) : A(A_), invParam(invParam_) 
       {}
 
     //! Destructor is automatic
     ~PrecFermAct5DQprop() {}
+
+    //! Expected length of array index
+    int size() const {return A->size();}
 
     //! Return the subset on which the operator acts
     const OrderedSubset& subset() const {return all;}

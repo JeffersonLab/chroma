@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_wilson_fermact_w.h,v 1.22 2005-01-14 20:13:04 edwards Exp $
+// $Id: unprec_wilson_fermact_w.h,v 1.23 2005-02-21 19:28:58 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -49,7 +49,7 @@ namespace Chroma
     //! General FermBC
     UnprecWilsonFermAct(Handle< FermBC<LatticeFermion> > fbc_, 
 			const Real& Mass_) : 
-      fbc(fbc_) {param.Mass=Mass_; initHeader(param.anisoParam);}
+      fbc(fbc_) {param.Mass=Mass_;}
 
     //! General FermBC
     UnprecWilsonFermAct(Handle< FermBC<LatticeFermion> > fbc_, 

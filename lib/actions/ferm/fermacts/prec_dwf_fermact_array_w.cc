@@ -1,4 +1,4 @@
-// $Id: prec_dwf_fermact_array_w.cc,v 1.16 2005-01-07 05:00:10 edwards Exp $
+// $Id: prec_dwf_fermact_array_w.cc,v 1.17 2005-02-21 19:28:58 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -73,6 +73,7 @@ namespace Chroma
     {
       // Read the stuff for the action
       read(paramtop, "OverMass", OverMass);
+      read(paramtop, "Mass", Mass);
       read(paramtop, "N5", N5);
 
       if (paramtop.count("a5") != 0) 
@@ -81,7 +82,9 @@ namespace Chroma
 	a5 = 1.0;
     }
 
-    read(paramtop, "Mass", Mass);
+    //  Read optional anisoParam.
+    if (paramtop.count("AnisoParam") != 0) 
+      read(paramtop, "AnisoParam", anisoParam);
   }
 
 
@@ -99,7 +102,7 @@ namespace Chroma
   EvenOddPrecDWFermActArray::precLinOp(Handle<const ConnectState> state,
 				       const Real& m_q) const
   {
-    return new EvenOddPrecDWLinOpArray(state->getLinks(),OverMass,m_q,N5);
+    return new EvenOddPrecDWLinOpArray(state->getLinks(),param.OverMass,m_q,param.N5,param.anisoParam);
   }
 
   //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
@@ -107,7 +110,7 @@ namespace Chroma
   EvenOddPrecDWFermActArray::unprecLinOp(Handle<const ConnectState> state,
 					 const Real& m_q) const
   {
-    return new UnprecDWLinOpArray(state->getLinks(),OverMass,m_q,N5);
+    return new UnprecDWLinOpArray(state->getLinks(),param.OverMass,m_q,param.N5,param.anisoParam);
   }
   
 
@@ -116,7 +119,8 @@ namespace Chroma
     Handle<const ConnectState> state,
     const InvertParam_t& invParam) const
   {
-    return new DWFQpropT(linOp(state), state, OverMass, Mass, invParam);
+    return new DWFQpropT(linOp(state), state, 
+			 param.OverMass, param.Mass, param.anisoParam, invParam);
   }
 
 
@@ -133,9 +137,16 @@ namespace Chroma
 				       int& ncg_had)
   {
     if (obsvP)
-      dwf_quarkProp4(q_sol, xml_out, q_src, t_src, j_decay, *this, state, invParam, ncg_had);
+    {
+      Handle< const SystemSolver< multi1d<LatticeFermion> > > qpropT(this->qpropT(state,invParam));
+      dwf_quarkProp4(q_sol, xml_out, q_src, t_src, j_decay, 
+		     qpropT, state, getQuarkMass(), ncg_had);
+    }
     else
-      quarkProp4(q_sol, xml_out, q_src, *this, state, invParam, nonRelProp, ncg_had);
+    {
+      Handle< const SystemSolver<LatticeFermion> > qprop(this->qprop(state,invParam));
+      quarkProp4(q_sol, xml_out, q_src, qprop, nonRelProp, ncg_had);
+    }
   }
 
 }

@@ -1,4 +1,4 @@
-// $Id: quarkprop4_w.cc,v 1.20 2005-01-14 20:13:06 edwards Exp $
+// $Id: quarkprop4_w.cc,v 1.21 2005-02-21 19:28:59 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -20,7 +20,6 @@ namespace Chroma
    *
    * \param q_sol    quark propagator ( Write )
    * \param q_src    source ( Read )
-   * \param invParam inverter parameters ( Read )
    * \param RsdCG    CG (or MR) residual used here ( Read )
    * \param MaxCG    maximum number of CG iterations ( Read )
    * \param ncg_had  number of CG iterations ( Write )
@@ -30,9 +29,7 @@ namespace Chroma
   void quarkProp4_a(LatticePropagator& q_sol, 
 		    XMLWriter& xml_out,
 		    const LatticePropagator& q_src,
-		    const FermionAction<T>& S_f,
-		    Handle<const ConnectState> state,
-		    const InvertParam_t& invParam,
+		    Handle<const SystemSolver<T> > qprop,
 		    bool nonRelProp,
 		    int& ncg_had)
   {
@@ -41,8 +38,6 @@ namespace Chroma
     push(xml_out, "QuarkProp4");
 
     ncg_had = 0;
-
-    Handle<const SystemSolver<T> > qprop(S_f.qprop(state,invParam));
 
     int max_spin = (nonRelProp) ? (Ns/2) : Ns;
 
@@ -69,12 +64,10 @@ namespace Chroma
 	chi *= fact;
 
 	// Compute the propagator for given source color/spin.
-//	S_f.qprop(psi, state, chi, invParam, n_count);
 	int n_count = (*qprop)(psi,chi);
 	ncg_had += n_count;
 
 	push(xml_out,"Qprop");
-	write(xml_out, "RsdCG", invParam.RsdCG);
 	write(xml_out, "n_count", n_count);
 	pop(xml_out);
 
@@ -137,15 +130,12 @@ namespace Chroma
   void quarkProp4(LatticePropagator& q_sol, 
 		  XMLWriter& xml_out,
 		  const LatticePropagator& q_src,
-		  const WilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >& S_f,
-		  Handle<const ConnectState> state,
-		  const InvertParam_t& invParam,
+		  Handle<const SystemSolver<LatticeFermion> > qprop,
 		  bool nonRelProp,
 		  int& ncg_had)
   {
-    quarkProp4_a<LatticeFermion>(q_sol, xml_out, q_src, S_f, state, invParam, nonRelProp, ncg_had);
+    quarkProp4_a<LatticeFermion>(q_sol, xml_out, q_src, qprop, nonRelProp, ncg_had);
   }
-
 
   //! Given a complete propagator as a source, this does all the inversions needed
   /*! \ingroup qprop
@@ -157,16 +147,19 @@ namespace Chroma
    * \param invParam inverter parameters ( Read )
    * \param ncg_had  number of CG iterations ( Write )
    */
-  void quarkProp4(LatticePropagator& q_sol, 
-		  XMLWriter& xml_out,
-		  const LatticePropagator& q_src,
-		  const WilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >& S_f,
-		  Handle<const ConnectState> state,
-		  const InvertParam_t& invParam,
-		  bool nonRelProp,
-		  int& ncg_had)
+  template<>
+  void 
+  WilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >::quarkProp(
+    LatticePropagator& q_sol, 
+    XMLWriter& xml_out,
+    const LatticePropagator& q_src,
+    Handle<const ConnectState> state,
+    const InvertParam_t& invParam,
+    bool nonRelProp,
+    int& ncg_had)
   {
-    quarkProp4_a<LatticeFermion>(q_sol, xml_out, q_src, S_f, state, invParam, nonRelProp, ncg_had);
+    Handle<const SystemSolver<LatticeFermion> > qprop(this->qprop(state,invParam));
+    quarkProp4_a<LatticeFermion>(q_sol, xml_out, q_src, qprop, nonRelProp, ncg_had);
   }
 
 
@@ -182,39 +175,17 @@ namespace Chroma
    */
   template<>
   void 
-  WilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >::quarkProp(LatticePropagator& q_sol, 
-									      XMLWriter& xml_out,
-									      const LatticePropagator& q_src,
-									      Handle<const ConnectState> state,
-									      const InvertParam_t& invParam,
-									      bool nonRelProp,
-									      int& ncg_had)
+  WilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >::quarkProp(
+    LatticePropagator& q_sol, 
+    XMLWriter& xml_out,
+    const LatticePropagator& q_src,
+    Handle<const ConnectState> state,
+    const InvertParam_t& invParam,
+    bool nonRelProp,
+    int& ncg_had)
   {
-    quarkProp4(q_sol, xml_out, q_src, *this, state, invParam, nonRelProp, ncg_had);
-  }
-
-
-  //! Given a complete propagator as a source, this does all the inversions needed
-  /*! \ingroup qprop
-   *
-   * This routine is actually generic to all Wilson-like fermions
-   *
-   * \param q_sol    quark propagator ( Write )
-   * \param q_src    source ( Read )
-   * \param invParam inverter parameters ( Read )
-   * \param ncg_had  number of CG iterations ( Write )
-   */
-  template<>
-  void 
-  WilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >::quarkProp(LatticePropagator& q_sol, 
-										XMLWriter& xml_out,
-										const LatticePropagator& q_src,
-										Handle<const ConnectState> state,
-										const InvertParam_t& invParam,
-										bool nonRelProp,
-										int& ncg_had)
-  {
-    quarkProp4(q_sol, xml_out, q_src, *this, state, invParam, nonRelProp, ncg_had);
+    Handle<const SystemSolver<LatticeFermion> > qprop(this->qprop(state,invParam));
+    quarkProp4_a<LatticeFermion>(q_sol, xml_out, q_src, qprop, nonRelProp, ncg_had);
   }
 
 }; // namespace Chroma

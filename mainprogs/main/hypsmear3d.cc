@@ -1,5 +1,5 @@
 /*
- *  $Id: hypsmear3d.cc,v 1.2 2005-02-04 19:24:00 sbasak Exp $
+ *  $Id: hypsmear3d.cc,v 1.3 2005-02-21 19:28:59 edwards Exp $
  *
  *  This is the top-level routine for HYP smearing.
  *  Reading in gauge fields and writing out hyp-smear gauge fields
@@ -145,7 +145,6 @@ int main(int argc, char *argv[])
   XMLReader gauge_file_xml, gauge_xml;
 
   SzinGauge_t  szin_gauge_header;
-  initHeader(szin_gauge_header);
 
   // Startup gauge
   gaugeStartup(gauge_file_xml, gauge_xml, u, input.cfg);

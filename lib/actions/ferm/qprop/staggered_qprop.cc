@@ -1,4 +1,4 @@
-// $Id: staggered_qprop.cc,v 1.14 2005-01-20 19:35:46 edwards Exp $
+// $Id: staggered_qprop.cc,v 1.15 2005-02-21 19:28:59 edwards Exp $
 /*! \file
  *  \brief Propagator solver for an even-odd non-preconditioned fermion operator
  *
@@ -17,8 +17,8 @@ namespace Chroma
   /*
   template<>
   const SystemSolver<LF>* 
-  EvenOddStaggeredTypeFermAct<LF,LCM>:: qprop(Handle<const ConnectState> state,
-					      const InvertParam_t& invParam) const
+  EvenOddStaggeredTypeFermAct<LF,LCM>::qprop(Handle<const ConnectState> state,
+					     const InvertParam_t& invParam) const
   {
     return new EvenOddFermActQprop<LF,LCM>(Handle< const EvenOddLinearOperator<LF,LCM> >(linOp(state)),
 					   Handle< const LinearOperator<LF> >(lMdagM(state)),
@@ -29,8 +29,8 @@ namespace Chroma
 
   template<>
   const SystemSolver<LF>* 
-  EvenOddStaggeredTypeFermAct<LF,LCM>:: qprop(Handle<const ConnectState> state,
-					      const InvertParam_t& invParam) const
+  EvenOddStaggeredTypeFermAct<LF,LCM>::qprop(Handle<const ConnectState> state,
+					     const InvertParam_t& invParam) const
   {
     return new EvenOddFermActQprop<LF,LCM>(*this,
 					   state,

@@ -1,5 +1,5 @@
 /*
- *  $Id: hypsmear.cc,v 1.19 2005-02-10 03:17:56 edwards Exp $
+ *  $Id: hypsmear.cc,v 1.20 2005-02-21 19:28:59 edwards Exp $
  *
  *  This is the top-level routine for HYP smearing.
  *  It is a wrapper for Urs' and Robert's implmenetation of the HYP
@@ -277,7 +277,6 @@ int main(int argc, char *argv[])
   case CFG_TYPE_SZIN :
   {
     SzinGauge_t szin_out;
-    initHeader(szin_out);
 
     switch(input.param.trunc)
     {

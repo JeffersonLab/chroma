@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_qprop_array_sse_w.h,v 1.4 2005-01-14 20:13:06 edwards Exp $
+// $Id: prec_dwf_qprop_array_sse_w.h,v 1.5 2005-02-21 19:28:59 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -8,7 +8,7 @@
 #define __prec_dwf_qprop_array_sse_w_h__
 
 #include "fermact.h"
-
+#include "io/param_io.h"       // to get AnisoParam_t
 
 namespace Chroma
 {
@@ -31,9 +31,10 @@ namespace Chroma
 		 const Real& OverMass_,
 		 const Real& Mass_,
 		 int N5_,
+		 const AnisoParam_t& anisoParam_,
 		 const InvertParam_t& invParam_) : 
       state(state_), OverMass(OverMass_), Mass(Mass_), 
-      N5(N5_), invParam(invParam_) 
+      N5(N5_), anisoParam(anisoParam_), invParam(invParam_) 
       {init();}
 
     //! Alternative constructor for compatibility
@@ -44,13 +45,17 @@ namespace Chroma
 		 Handle<const ConnectState> state_, 
 		 const Real& OverMass_,
 		 const Real& Mass_,
+		 const AnisoParam_t& anisoParam_,
 		 const InvertParam_t& invParam_) : 
       state(state_), OverMass(OverMass_), Mass(Mass_), 
-      N5(A->size()), invParam(invParam_) 
+      N5(A->size()), anisoParam(anisoParam_), invParam(invParam_) 
       {init();}
 
     //! Need a real destructor
     ~SSEDWFQpropT() {fini();}
+
+    //! Expected length of array index
+    int size() const {return N5;}
 
     //! Return the subset on which the operator acts
     const OrderedSubset& subset() const {return all;}
@@ -75,6 +80,7 @@ namespace Chroma
     const Real OverMass;
     const Real Mass;
     const int  N5;
+    const AnisoParam_t anisoParam;
     const InvertParam_t invParam;
   };
 

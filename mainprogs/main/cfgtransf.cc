@@ -1,4 +1,4 @@
-// $Id: cfgtransf.cc,v 1.18 2005-01-14 20:13:08 edwards Exp $
+// $Id: cfgtransf.cc,v 1.19 2005-02-21 19:28:59 edwards Exp $
 /*! \file
  *  \brief Many-to-many gauge transformation routine
  */
@@ -35,7 +35,6 @@ int main(int argc, char **argv)
   proginfo(xml_out);    // Print out basic program info
 
   SzinGauge_t  szin_gauge_header;  // In case we want to write out a szin
-  initHeader(szin_gauge_header);
   bool szin_gauge_header_initP = false;
 
 #if 0

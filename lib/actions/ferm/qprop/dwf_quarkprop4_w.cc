@@ -1,6 +1,13 @@
-// $Id: dwf_quarkprop4_w.cc,v 1.24 2005-01-14 20:13:06 edwards Exp $
+// $Id: dwf_quarkprop4_w.cc,v 1.25 2005-02-21 19:28:59 edwards Exp $
 // $Log: dwf_quarkprop4_w.cc,v $
-// Revision 1.24  2005-01-14 20:13:06  edwards
+// Revision 1.25  2005-02-21 19:28:59  edwards
+// Changed initHeader's to be instead the appropriate default constructor
+// for the ChiralParam, AnisoParam and QQQ structs. Removed all
+// calls to initHeader. Changed quarkProp routines to instead take
+// the appropriate SystemSolver instead of fermact. Added AnisoParam
+// support for DWF and SSE DWF.
+//
+// Revision 1.24  2005/01/14 20:13:06  edwards
 // Removed all using namespace QDP/Chroma from lib files. The library
 // should now be 100% in the Chroma namespace. All mainprogs need a
 // using namespace Chroma.
@@ -113,13 +120,10 @@
 
 
 #include "chromabase.h"
-#include "fermact.h"
+#include "actions/ferm/qprop/dwf_quarkprop4_w.h"
 #include "actions/ferm/linop/dwffld_w.h"
 #include "util/ferm/transf.h"
 #include "util/ft/sftmom.h"
-
-#include "actions/ferm/qprop/dwf_quarkprop4_w.h"
-
 
 namespace Chroma
 {
@@ -140,27 +144,20 @@ namespace Chroma
     QDPIO::cout<<"check_dwf_ward_identity: Checking the chiral Ward Identity...";
     QDPIO::cout<<endl ;
 
-    LatticeComplex divA ;
-    divA = 0.0 ;
+    LatticeComplex divA = zero;
     for(int mu(0);mu<Nd;mu++){
       LatticeComplex tt ;
       dwf_conserved_axial_ps_corr(tt,u,p5d,mu);
       divA += tt - shift(tt,BACKWARD,mu) ; 
     }
 
-    LatticeComplex mpps_ps, ps_ps, q_bar_q ;
-    mpps_ps = localNorm2(q_mp_q) ;
-    ps_ps = localNorm2(q_q) ;
+    LatticeComplex mpps_ps = localNorm2(q_mp_q) ;
+    LatticeComplex ps_ps = localNorm2(q_q);
+    LatticeComplex q_bar_q = localInnerProduct(src,q_q);
+    LatticeComplex diff = divA - 2.0 * m_q * ps_ps - 2.0*mpps_ps + 2.0*q_bar_q;
 
-    q_bar_q = trace(adj(src)*q_q) ;
-
-    LatticeComplex diff ;
-
-    diff = divA - 2.0 * m_q * ps_ps - 2.0*mpps_ps + 2.0*q_bar_q;
-
-    multi1d<Double> corr ;     
     SftMom trick(0,false,j_decay) ;
-    corr = sumMulti(localNorm2(diff), trick.getSet());
+    multi1d<Double> corr = sumMulti(localNorm2(diff), trick.getSet());
     QDPIO::cout<<"check_dwf_ward_identity: ";
     QDPIO::cout<<"Ward Identity violation per timeslice: "<<endl;
     for(int t(0);t<corr.size(); t++){
@@ -174,8 +171,7 @@ namespace Chroma
     QDPIO::cout<<"check_dwf_ward_identity: |ps_ps|^2   : "<<norm2(ps_ps)<<endl;
     QDPIO::cout<<"check_dwf_ward_identity: |mpps_ps|^2 : "<<norm2(mpps_ps)<<endl;
     QDPIO::cout<<"check_dwf_ward_identity: |q_bar_q|^2 : "<<norm2(q_bar_q)<<endl;
-    diff = m_q*ps_ps + mpps_ps - q_bar_q ;
-    Double gmor( sqrt(norm2(sum(diff))) ) ;
+    Double gmor( sqrt(norm2(sum(m_q*ps_ps + mpps_ps - q_bar_q))) );
     QDPIO::cout<<"check_dwf_ward_identity: GMOR        : "<<gmor<<endl;
   
   }
@@ -190,17 +186,17 @@ namespace Chroma
    * \param q_src    source ( Read )
    * \param t_src    time slice of source ( Read )
    * \param j_decay  direction of decay ( Read )
-   * \param invParam inverter parameters ( Read )
+   * \param qpropT   5D inverter ( Read )
    * \param ncg_had  number of CG iterations ( Write )
    */
-  void dwf_quarkProp_a(LatticePropagator& q_sol, 
-		       XMLWriter& xml_out,
-		       const LatticePropagator& q_src,
-		       int t_src, int j_decay,
-		       const FermAct5D<LatticeFermion>& S_f,
-		       Handle<const ConnectState> state,
-		       const InvertParam_t& invParam,
-		       int& ncg_had)
+  void dwf_quarkProp4(LatticePropagator& q_sol, 
+		      XMLWriter& xml_out,
+		      const LatticePropagator& q_src,
+		      int t_src, int j_decay,
+		      Handle< const SystemSolver< multi1d<LatticeFermion> > > qpropT,
+		      Handle<const ConnectState> state,
+		      const Real& m_q,
+		      int& ncg_had)
   {
     START_CODE();
 
@@ -210,13 +206,11 @@ namespace Chroma
 
     ncg_had = 0;
 
-    // Setup solver
-    Handle< const SystemSolver< multi1d<LatticeFermion> > > qpropT(S_f.qpropT(state,invParam));
+    int N5 = qpropT->size();
+    multi1d<LatticePropagator> prop5d(N5);
+    LatticePropagator q_mp;
 
-    multi1d<LatticePropagator> prop5d(S_f.size()) ;
-    LatticePropagator q_mp  ;
-
-    multi1d<LatticeFermion> psi(S_f.size()) ;
+    multi1d<LatticeFermion> psi(N5);
     
     // This version loops over all color and spin indices
     for(int color_source = 0; color_source < Nc; ++color_source)
@@ -227,8 +221,7 @@ namespace Chroma
 	QDPIO::cout<<" and spin : "<< spin_source<<endl  ;
 
 	psi = zero ;  // note this is ``zero'' and not 0
-	LatticeFermion tmp ;
-	tmp = zero ;
+	LatticeFermion tmp = zero;
 	PropToFerm(q_src, tmp, color_source, spin_source);
 	   
 	/* 
@@ -242,13 +235,11 @@ namespace Chroma
 
 	//QDPIO::cout<<"Normalization Factor: "<< fact<<endl ;
 
-	int N5(S_f.size());
 	multi1d<LatticeFermion> chi(N5) ;
 	chi = zero ;
 	// Split the source to oposite walls according to chirality
 	chi[0   ] = chiralProjectPlus(tmp) ;
 	chi[N5-1] = chiralProjectMinus(tmp) ; 
-
 
 	// now we are ready invert
 	// Compute the propagator for given source color/spin.	   
@@ -256,7 +247,6 @@ namespace Chroma
 	ncg_had += n_count;
 
 	push(xml_out,"Qprop");
-	write(xml_out, "RsdCG", invParam.RsdCG);
 	write(xml_out, "n_count", n_count);
 	pop(xml_out);
 
@@ -272,11 +262,12 @@ namespace Chroma
 	 */
 	   
 	//First the 5D quark propagator
-	for(int s(0);s<S_f.size();s++)
+	for(int s(0);s<N5;s++)
 	  FermToProp(psi[s], prop5d[s], color_source, spin_source);
 	// Now get the 4D propagator too
 
-	tmp = chiralProjectMinus(psi[0]) + chiralProjectPlus(psi[N5-1]) ;
+	tmp = chiralProjectMinus(psi[0]) + chiralProjectPlus(psi[N5-1]);
+
 	// move solution to the appropriate components of the 4d
 	// quark propagator
 	FermToProp(tmp, q_sol, color_source, spin_source);
@@ -285,8 +276,7 @@ namespace Chroma
 	// midpoint quark propagator 
 	tmp = chiralProjectPlus(psi[N5/2 - 1]) + chiralProjectMinus(psi[N5/2]) ;
 	FermToProp(tmp, q_mp, color_source, spin_source);
-
-	   
+	
       }	/* end loop over spin_source */
     } /* end loop over color_source */
 
@@ -294,17 +284,17 @@ namespace Chroma
     LatticeComplex cfield ;
     dwf_conserved_axial_ps_corr(cfield,state->getLinks(),prop5d,j_decay);
 			       
-    multi1d<DComplex> corr ;  
-   
+	
     SftMom trick(0,false,j_decay) ;
+    int length = trick.numSubsets();   // Length of lattice in time direction
    
-    corr = sumMulti(cfield, trick.getSet());
-    // Length of lattice in time direction
-    int length = trick.numSubsets();
     multi1d<Real> mesprop(length);
-    for(int t(0);t<length; t++){
-      int t_eff( (t - t_src + length) % length ) ;
-      mesprop[t_eff] = real(corr[t]) ; 
+    {
+      multi1d<DComplex> corr = sumMulti(cfield, trick.getSet());
+      for(int t(0);t<length; t++){
+	int t_eff( (t - t_src + length) % length ) ;
+	mesprop[t_eff] = real(corr[t]) ; 
+      }
     }
 
     push(xml_out, "time_direction");
@@ -316,19 +306,20 @@ namespace Chroma
 
     // The local axial corruent pseudoscalar correlator
     int d(1<<j_decay);
-    cfield = trace( adj(q_sol)*Gamma(d)*q_sol ) ;
-    corr = sumMulti(cfield, trick.getSet()) ;
-    for(int t(0);t<length; t++){
-      int t_eff( (t - t_src + length) % length ) ;
-      mesprop[t_eff] = -real(corr[t]) ; // sign fix
+    cfield = localInnerProduct(q_sol,Gamma(d)*q_sol);
+    {
+      multi1d<DComplex> corr = sumMulti(cfield, trick.getSet()) ;
+      for(int t(0);t<length; t++){
+	int t_eff( (t - t_src + length) % length ) ;
+	mesprop[t_eff] = -real(corr[t]) ; // sign fix
+      }
     }
     push(xml_out, "DWF_LocalAxial");
     write(xml_out, "mesprop", mesprop); 
     pop(xml_out);
 
     //Now the midpoint Pseudoscalar correlator
-    multi1d<Double> tmp(length);
-    tmp = sumMulti(localNorm2(q_mp), trick.getSet());
+    multi1d<Double> tmp = sumMulti(localNorm2(q_mp), trick.getSet());
     for(int t(0);t<length; t++){
       int t_eff( (t - t_src + length) % length ) ;
       mesprop[t_eff] = tmp[t] ; 
@@ -337,7 +328,6 @@ namespace Chroma
     push(xml_out, "DWF_MidPoint_Pseudo");
     write(xml_out, "mesprop", mesprop);
     pop(xml_out);
-
 
     tmp = sumMulti(localNorm2(q_sol), trick.getSet());
     for(int t(0);t<length; t++){
@@ -351,7 +341,7 @@ namespace Chroma
     pop(xml_out);   // DWF_QuarkProp
 
     check_dwf_ward_identity(state->getLinks(),prop5d,q_src,
-			    q_sol,q_mp,S_f.getQuarkMass(),
+			    q_sol,q_mp,m_q,
 			    j_decay);
 
 
@@ -383,13 +373,10 @@ namespace Chroma
     //               G_2 --> Gamma(4)
     //               G_3 --> Gamma(8)
     int d(1<<mu);
-
     int g5(Ns*Ns - 1) ;
-
-    LatticeComplex  C ;
-    corr = 0.0 ;
-
     int N5(p5d.size());
+
+    corr = zero;
 
     multi1d<LatticePropagator> us_p5d(N5) ;
     for(int s(0); s<N5;s++)
@@ -397,6 +384,7 @@ namespace Chroma
   
     for(int s(0); s<N5;s++){
       // first the 1-gamma_mu term 
+      LatticeComplex  C;
       C=0.5*(  trace(adj(   p5d[N5-1-s])*Gamma(g5)*Gamma(d)*us_p5d[s]) -
 	       trace(adj(   p5d[N5-1-s])*Gamma(g5)         *us_p5d[s]) +
 	       //now the 1+gamma_mu term
@@ -410,41 +398,5 @@ namespace Chroma
     }  
   
   }
-
-
-  //! Given a complete propagator as a source, this does all the inversions needed
-  /*! \ingroup qprop
-   *
-   * This routine is actually generic to Domain Wall fermions (Array) fermions
-   *
-   * \param q_sol    quark propagator ( Write )
-   * \param q_src    source ( Read )
-   * \param t_src    time slice of source ( Read )
-   * \param j_decay  direction of decay ( Read )
-   * \param invParam inverter parameters ( Read )
-   * \param ncg_had  number of CG iterations ( Write )
-   */
-
-  void
-  dwf_quarkProp4(LatticePropagator& q_sol, 
-		 XMLWriter& xml_out,
-		 const LatticePropagator& q_src,
-		 int t_src, int j_decay,
-		 const FermAct5D<LatticeFermion>& S_f,
-		 Handle<const ConnectState> state,
-		 const InvertParam_t& invParam,
-		 int& ncg_had)
-  {
-    dwf_quarkProp_a(q_sol, 
-		    xml_out, 
-		    q_src, 
-		    t_src, 
-		    j_decay, 
-		    S_f,
-		    state, 
-		    invParam, 
-		    ncg_had);
-  }
-
 
 }

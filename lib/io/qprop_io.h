@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qprop_io.h,v 1.24 2005-01-14 20:13:07 edwards Exp $
+// $Id: qprop_io.h,v 1.25 2005-02-21 19:28:59 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -27,6 +27,7 @@ namespace Chroma {
 //! Propagator source header
 struct PropSource_t
 {
+  PropSource_t();                 // default constructor
   SourceType       source_type;   // Point, Shell, Wall, etc.
   WaveStateType    wave_state;    // S-wave or P-wave
   SmearingParam_t  sourceSmearParam;
@@ -48,6 +49,9 @@ struct PropSource_t
 //! Propagator sink header
 struct PropSink_t
 {
+  PropSink_t();                     // default constructor
+  PropSink_t(const PropSource_t& source); // from a prop source
+
   SinkType         sink_type;       // Point, Shell, Wall, etc.
   WaveStateType    wave_state;      // S-wave or P-wave
   SmearingParam_t  sinkSmearParam;
@@ -66,6 +70,7 @@ struct PropSink_t
 
 struct ChromaMultiProp_t 
 { 
+  ChromaMultiProp_t();          // default constructor
   bool            nonRelProp;   // compute only the nonrelativistic portion of this prop?
 
   // String holding XML of the FermionAction section
@@ -81,6 +86,7 @@ struct ChromaMultiProp_t
 //! Propagator inversion parameters
 struct ChromaProp_t 
 { 
+  ChromaProp_t();               // default constructor
   bool            nonRelProp;   // compute only the nonrelativistic portion of this prop?
 
   // String holding XML of the FermionAction section
@@ -145,6 +151,7 @@ struct SequentialProp_t
 //! Mega structure holding QQQ props (except gauge)
 struct QQQBarcomp_t
 {
+  QQQBarcomp_t();                // default constructor
   bool             Dirac_basis;  // spin component basis
   multi1d<ForwardProp_t> forward_props;
 };
@@ -153,23 +160,6 @@ struct QQQBarcomp_t
 //! Given a fermion action in string form, return the boundary
 multi1d<int> getFermActBoundary(const std::string& fermact);
 
-//! Initialize header with default values
-void initHeader(PropSource_t& header);
-
-//! Initialize header with default values
-void initHeader(PropSink_t& header);
-
-//! Initialize header with a source header
-void initHeader(PropSink_t& header, const PropSource_t& source);
-
-//! Initialize header with default values
-void initHeader(ChromaProp_t& header);
-
-//! Initialize header with default values
-void initHeader(ChromaMultiProp_t& header);
-
-//! Initialize header with default values
-void initHeader(QQQBarcomp_t& header);
 
 //! Propagator source read
 void read(XMLReader& xml, const std::string& path, PropSource_t& header);

@@ -128,7 +128,6 @@ int main(int argc, char *argv[])
   XMLReader gauge_file_xml, gauge_xml;
 
   SzinGauge_t  szin_gauge_header;
-  initHeader(szin_gauge_header);
 
 
   // Startup gauge

@@ -1,4 +1,4 @@
-// $Id: readszin.cc,v 1.23 2005-01-14 20:13:07 edwards Exp $
+// $Id: readszin.cc,v 1.24 2005-02-21 19:28:59 edwards Exp $
 
 /*! \file
  *  \brief Read in a configuration written by SZIN up to configuration version 7.
@@ -32,8 +32,6 @@ namespace Chroma {
 void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string& cfg_file)
 {
   START_CODE();
-
-  initHeader(header);  // initialize the header with defaults
 
   int cfg_record_size; // must read but will ignore - not used
   int date_size;

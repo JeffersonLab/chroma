@@ -1,4 +1,4 @@
-// $Id: fermact_qprop_array.cc,v 1.12 2005-01-14 20:13:06 edwards Exp $
+// $Id: fermact_qprop_array.cc,v 1.13 2005-02-21 19:28:59 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *
@@ -35,6 +35,9 @@ namespace Chroma
     //! Destructor is automatic
     ~FermAct5DQprop() {}
 
+    //! Expected length of array index
+    int size() const {return A->size();}
+
     //! Return the subset on which the operator acts
     const OrderedSubset& subset() const {return all;}
 
@@ -50,12 +53,15 @@ namespace Chroma
 
       int n_count;
   
+      if (psi.size() != size() && chi.size() != size())
+	QDP_error_exit("FA5DQprop: sizes wrong");
+
       switch(invParam.invType)
       {
       case CG_INVERTER: 
       {
 	/* chi_1 = M_dag(u) * chi_1 */
-	multi1d<T> tmp(A->size());
+	multi1d<T> tmp(size());
 	(*A)(tmp, chi, MINUS);
     
 	/* psi = (M^dag * M)^(-1) chi */

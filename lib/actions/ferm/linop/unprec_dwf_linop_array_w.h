@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_linop_array_w.h,v 1.12 2005-01-14 20:13:06 edwards Exp $
+// $Id: unprec_dwf_linop_array_w.h,v 1.13 2005-02-21 19:28:59 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion linear operator
  */
@@ -10,7 +10,7 @@
 #include "linearop.h"
 #include "actions/ferm/linop/dslash_w.h"
 #include "actions/ferm/linop/unprec_dwf_linop_base_array_w.h"
-
+#include "io/param_io.h"       // to get AnisoParam_t
 
 namespace Chroma
 {
@@ -23,23 +23,16 @@ namespace Chroma
   class UnprecDWLinOpArray : public UnprecDWLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >
   {
   public:
-    //! Partial constructor
-    UnprecDWLinOpArray() {}
-
     //! Full constructor
     UnprecDWLinOpArray(const multi1d<LatticeColorMatrix>& u_, 
-		       const Real& WilsonMass_, const Real& m_q, int N5_)
-    {create(u_,WilsonMass_,m_q,N5_);}
-
-    //! Creation routine
-    void create(const multi1d<LatticeColorMatrix>& u_, 
-		const Real& WilsonMass_, const Real& m_q_, int N5_);
-
-    //! Length of DW flavor index/space
-    inline int size() const {return N5;}
+		       const Real& WilsonMass_, const Real& m_q, int N5_,
+		       const AnisoParam_t& aniso_);
 
     //! Destructor is automatic
     ~UnprecDWLinOpArray() {}
+
+    //! Length of DW flavor index/space
+    inline int size() const {return N5;}
 
     //! Only defined on the entire lattice
     const OrderedSubset& subset() const {return all;}
@@ -66,11 +59,20 @@ namespace Chroma
 	       enum PlusMinus isign) const;
 
 
+  protected:
+    //! Partial constructor
+    UnprecDWLinOpArray() {}
+
+
   private:
     Real WilsonMass;
     Real m_q;
     Real a5;
     int  N5;
+
+    Real fact1;
+    Real fact2;
+
     WilsonDslash  D;
   };
 

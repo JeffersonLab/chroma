@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_linop_array_w.cc,v 1.12 2005-01-17 18:25:50 edwards Exp $
+// $Id: unprec_dwf_linop_array_w.cc,v 1.13 2005-02-21 19:28:59 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall linear operator
  */
@@ -15,16 +15,32 @@ namespace Chroma
    * \param WilsonMass_   DWF height    (Read)
    * \param m_q_          quark mass    (Read)
    */
-  void UnprecDWLinOpArray::create(const multi1d<LatticeColorMatrix>& u_, 
-				  const Real& WilsonMass_, const Real& m_q_, int N5_)
+  UnprecDWLinOpArray::UnprecDWLinOpArray(
+    const multi1d<LatticeColorMatrix>& u_, 
+    const Real& WilsonMass_, const Real& m_q_, int N5_,
+    const AnisoParam_t& aniso)
   {
     WilsonMass = WilsonMass_;
     m_q = m_q_;
     a5  = 1.0;
     N5  = N5_;
 
-    D.create(u_);
-//    CoeffWilsr_s = (AnisoP) ? Wilsr_s / xiF_0 : 1;
+    multi1d<LatticeColorMatrix> u = u_;
+    Real ff = where(aniso.anisoP, aniso.nu / aniso.xi_0, Real(1));
+  
+    if (aniso.anisoP)
+    {
+      // Rescale the u fields by the anisotropy
+      for(int mu=0; mu < u.size(); ++mu)
+      {
+	if (mu != aniso.t_dir)
+	  u[mu] *= ff;
+      }
+    }
+    D.create(u);   // construct using possibly aniso glue
+
+    fact1 =  1 + a5*(1 + (Nd-1)*ff - WilsonMass);
+    fact2 = -0.5*a5;
   }
 
 
@@ -50,8 +66,6 @@ namespace Chroma
     //  Chi   =  D' Psi
     //
     LatticeFermion  tmp;
-    Real fact1 = a5*(Nd - WilsonMass) + 1;
-    Real fact2 = -0.5*a5;
 
     switch (isign)
     {

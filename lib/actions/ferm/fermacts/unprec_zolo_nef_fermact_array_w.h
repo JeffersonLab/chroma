@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_zolo_nef_fermact_array_w.h,v 1.10 2005-02-14 02:05:34 edwards Exp $
+// $Id: unprec_zolo_nef_fermact_array_w.h,v 1.11 2005-02-21 19:28:58 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF domain-wall fermion action
  */
@@ -156,7 +156,7 @@ namespace Chroma
   private:
     void initCoeffs(multi1d<Real>& b5_arr,
 		    multi1d<Real>& c5_arr,
-		    Handle<const ConnectState>& state) const ;
+		    Handle<const ConnectState> state) const ;
 
   private:
     Handle< FermBC< multi1d<LatticeFermion> > >  fbc;
