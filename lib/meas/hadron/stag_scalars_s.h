@@ -8,7 +8,7 @@
 #include "chroma.h"
 
 void
-staggeredScalars(multi1d<LatticePropagator>& quark_props,
+staggeredScalars(multi1d<LatticeStaggeredPropagator>& quark_props,
 		      multi2d<DComplex>& scalar_corr_fn,
 		      int j_decay);
 
