@@ -53,7 +53,8 @@ bin_PROGRAMS = propagator \
         qproptrev apesmear stoutsmear hmc hypsmear3d hypsmear4d
 
 # Wilson specific programs
-bin_PROGRAMS += spectrum_w qqq_w bar3ptfn qproptransf wallformfac mres
+bin_PROGRAMS += spectrum_w qqq_w bar3ptfn qproptransf wallformfac mres \
+        propagator_hack
 
 # Staggered specific programs
 #check_PROGRAMS += 
@@ -68,7 +69,7 @@ EXTRA_PROGRAMS = qpropadd
 # Wilson specific programs
 # Temporarily moved here while fixing codes.
 EXTRA_PROGRAMS += propagator_comp multi_propagator multi_propagator_comp \
-       collect_multi_propcomp propagator_hack
+       collect_multi_propcomp
 
 # Staggered specific programs
 #EXTRA_PROGRAMS += 
