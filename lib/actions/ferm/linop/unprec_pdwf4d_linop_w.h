@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_pdwf4d_linop_w.h,v 1.4 2005-01-14 20:13:06 edwards Exp $
+// $Id: unprec_pdwf4d_linop_w.h,v 1.5 2005-01-20 03:07:34 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned projected DWF operator to 4D using prec 5D bits
  */
@@ -33,7 +33,7 @@ namespace Chroma
     //! Copy pointer (one more owner)
     UnprecPDWF4DLinOp(Handle<const EvenOddPrecLinearOperator< multi1d<T>, P > > D_, 
 		      Handle<const UnprecLinearOperator< multi1d<T>, P > > PV_,
-		      const InvertParam_t& invParam) : 
+		      const InvertParam_t& invParam_) : 
       D(D_), PV(PV_), invParam(invParam_) {}
 
     //! Destructor
