@@ -1,4 +1,4 @@
-// $Id: prec_kno_fermact_array_w.cc,v 1.3 2004-11-23 20:02:50 kostas Exp $
+// $Id: prec_kno_fermact_array_w.cc,v 1.4 2004-11-24 04:16:56 kostas Exp $
 /*! \file
  *  \brief preconditioned KNO fermion action
  */
@@ -55,8 +55,10 @@ namespace Chroma
       // Read the stuff for the action
       read(paramtop, "OverMass", OverMass);
       read(paramtop, "Mass", Mass);
+      read(paramtop, "a5", a5);
       read(paramtop, "coefs", coefs);
-      read(paramtop, "N5", N5);
+      //read(paramtop, "N5", N5);
+      N5 = coefs.size();
     }
     catch(const string& e) { 
       QDPIO::cerr << "Caught Exception : " << e << endl;

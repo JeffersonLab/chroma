@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.197 2004-11-21 22:48:03 edwards Exp $
+# $Id: Makefile.am,v 1.198 2004-11-24 04:16:56 kostas Exp $
 #
 # Path for all files used in building the library
 
@@ -136,6 +136,7 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/prec_clover_fermact_w.h \
 	actions/ferm/fermacts/prec_dwf_fermact_array_w.h \
 	actions/ferm/fermacts/prec_nef_fermact_array_w.h \
+        actions/ferm/fermacts/prec_kno_fermact_array_w.h \
 	actions/ferm/fermacts/prec_zolo_nef_fermact_array_w.h \
 	actions/ferm/fermacts/prec_ovdwf_fermact_array_w.h \
 	actions/ferm/fermacts/prec_dwf_fermact_base_array_w.h \
@@ -350,6 +351,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.cc \
 	actions/ferm/fermacts/prec_dwf_fermact_array_w.cc \
 	actions/ferm/fermacts/prec_nef_fermact_array_w.cc \
+	actions/ferm/fermacts/prec_kno_fermact_array_w.cc \
 	actions/ferm/fermacts/prec_ovdwf_fermact_array_w.cc \
 	actions/ferm/fermacts/prec_ovlap_contfrac5d_fermact_array_w.cc \
 	actions/ferm/fermacts/prec_parwilson_fermact_w.cc \

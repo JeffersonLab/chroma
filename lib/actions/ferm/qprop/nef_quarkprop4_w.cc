@@ -1,6 +1,9 @@
-// $Id: nef_quarkprop4_w.cc,v 1.10 2004-11-20 22:28:45 edwards Exp $
+// $Id: nef_quarkprop4_w.cc,v 1.11 2004-11-24 04:16:56 kostas Exp $
 // $Log: nef_quarkprop4_w.cc,v $
-// Revision 1.10  2004-11-20 22:28:45  edwards
+// Revision 1.11  2004-11-24 04:16:56  kostas
+// code works now
+//
+// Revision 1.10  2004/11/20 22:28:45  edwards
 // Narrowed include dependencies.
 //
 // Revision 1.9  2004/11/20 21:16:41  edwards
@@ -40,6 +43,7 @@
 #include "chromabase.h"
 #include "actions/ferm/fermacts/unprec_nef_fermact_array_w.h"
 #include "actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.h"
+#include "actions/ferm/fermacts/prec_kno_fermact_array_w.h"
 #include "actions/ferm/fermacts/prec_nef_fermact_array_w.h"
 #include "actions/ferm/fermacts/prec_zolo_nef_fermact_array_w.h"
 #include "util/ferm/transf.h"
@@ -366,6 +370,40 @@ EvenOddPrecZoloNEFFermActArray::dwf_quarkProp4(LatticePropagator& q_sol,
 					   int& ncg_had)
 {
   nef_quarkProp4_a<EvenOddPrecZoloNEFFermActArray>(q_sol, 
+						   xml_out, 
+						   q_src, 
+						   t_src, 
+						   j_decay, 
+						   *this, 
+						   state, 
+						   invParam, 
+						   ncg_had);
+}
+
+//! Given a complete propagator as a source, this does all the inversions needed
+/*! \ingroup qprop
+ *
+ * This routine is actually generic to Domain Wall fermions (Array) fermions
+ *
+ * \param q_sol    quark propagator ( Write )
+ * \param q_src    source ( Read )
+ * \param t_src    time slice of source ( Read )
+ * \param j_decay  direction of decay ( Read )
+ * \param invType  inverter type ( Read )
+ * \param RsdCG    CG (or MR) residual used here ( Read )
+ * \param MaxCG    maximum number of CG iterations ( Read )
+ * \param ncg_had  number of CG iterations ( Write )
+ */
+void 
+EvenOddPrecKNOFermActArray::dwf_quarkProp4(LatticePropagator& q_sol, 
+					   XMLWriter& xml_out,
+					   const LatticePropagator& q_src,
+					   int t_src, int j_decay,
+					   Handle<const ConnectState> state,
+					   const InvertParam_t& invParam,
+					   int& ncg_had)
+{
+  nef_quarkProp4_a<EvenOddPrecKNOFermActArray>(q_sol, 
 						   xml_out, 
 						   q_src, 
 						   t_src, 
