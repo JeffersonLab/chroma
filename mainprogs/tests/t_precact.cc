@@ -1,4 +1,4 @@
-// $Id: t_precact.cc,v 1.5 2004-01-02 03:19:41 edwards Exp $
+// $Id: t_precact.cc,v 1.6 2004-09-09 15:52:52 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -29,9 +29,10 @@ int main(int argc, char **argv)
   multi1d<LatticeColorMatrix> u(Nd);
   HotSt(u);
 
-  InvType invType = CG_INVERTER;
-  Real RsdCG = 1.0e-7;
-  int MaxCG = 1000;
+  InvertParam_t  invParam;
+  invParam.invType = CG_INVERTER;
+  invParam.RsdCG = 1.0e-7;
+  invParam.MaxCG = 1000;
   int n_count;
 
   // Create the BC objects
@@ -74,9 +75,9 @@ int main(int argc, char **argv)
     random(tmp1);
     tmp2 = tmp1;
     QDPIO::cout << "Unprec Wilson inverter" << endl;
-    S_uwil.qprop(tmp1, state, chi, invType, RsdCG, MaxCG, n_count);
+    S_uwil.qprop(tmp1, state, chi, invParam, n_count);
     QDPIO::cout << "Prec Wilson inverter" << endl;
-    S_pwil.qprop(tmp2, state, chi, invType, RsdCG, MaxCG, n_count);
+    S_pwil.qprop(tmp2, state, chi, invParam, n_count);
     
     QDPIO::cout << "Test unprec and eo-prec Wilson inverter" << endl
 		<< "|Wil|^2 = " << norm2(tmp1) << endl
@@ -130,9 +131,9 @@ int main(int argc, char **argv)
     psi5b = psi5a;
 
     QDPIO::cout << "Unprec inverter" << endl;
-    S_udwf.qprop(psi5a, state, chi5, invType, RsdCG, MaxCG, n_count);
+    S_udwf.qprop(psi5a, state, chi5, invParam, n_count);
     QDPIO::cout << "Prec inverter" << endl;
-    S_pdwf.qprop(psi5b, state, chi5, invType, RsdCG, MaxCG, n_count);
+    S_pdwf.qprop(psi5b, state, chi5, invParam, n_count);
     
     QDPIO::cout << "Test unprec and eo-prec DWF inverter" << endl
 		<< "|DWF|^2 = " << norm2(psi5a) << endl

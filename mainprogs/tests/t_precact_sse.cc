@@ -1,4 +1,4 @@
-// $Id: t_precact_sse.cc,v 1.2 2004-09-06 16:17:03 edwards Exp $
+// $Id: t_precact_sse.cc,v 1.3 2004-09-09 15:52:52 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -49,9 +49,10 @@ int main(int argc, char **argv)
 //    reunit(u[m]);
   }
 
-  InvType invType = CG_INVERTER;
-  Real RsdCG = 1.0e-12;
-  int MaxCG = 3000;
+  InvertParam_t  invParam;
+  invParam.invType = CG_INVERTER;
+  invParam.RsdCG = 1.0e-12;
+  invParam.MaxCG = 3000;
   int n_count = 0;
 
   // Create the BC objects
@@ -87,9 +88,9 @@ int main(int argc, char **argv)
     psi5b = psi5a;
 
     QDPIO::cout << "UnPrec inverter" << endl;
-    S_pdwf.qpropT(psi5a, state, chi5, invType, RsdCG, MaxCG, n_count);
+    S_pdwf.qpropT(psi5a, state, chi5, invParam, n_count);
     QDPIO::cout << "SSE prec inverter" << endl;
-    S_sdwf.opt_qpropT(psi5b, state, chi5, invType, RsdCG, MaxCG, n_count);
+    S_sdwf.opt_qpropT(psi5b, state, chi5, invParam, n_count);
     
     for(int m=0; m < N5; ++m)
       tmp1[m] = psi5a[m] - psi5b[m];
@@ -117,9 +118,9 @@ int main(int argc, char **argv)
     psib = psia;
 
     QDPIO::cout << "UnPrec inverter" << endl;
-    S_pdwf.qprop(psia, state, chi, invType, RsdCG, MaxCG, n_count);
+    S_pdwf.qprop(psia, state, chi, invParam, n_count);
     QDPIO::cout << "SSE prec inverter" << endl;
-    S_sdwf.qprop(psib, state, chi, invType, RsdCG, MaxCG, n_count);
+    S_sdwf.qprop(psib, state, chi, invParam, n_count);
     
     QDPIO::cout << "Test eo-prec and SSE opt eo-prec DWF qprop" << endl
 		<< "|pDWF|^2 = " << norm2(psia) << endl

@@ -1,4 +1,4 @@
-// $Id: t_propagator_nrqcd.cc,v 1.1 2004-03-09 16:29:01 mcneile Exp $
+// $Id: t_propagator_nrqcd.cc,v 1.2 2004-09-09 15:52:52 edwards Exp $
 /*! \file
  *  \brief Main code for NRQCD propagator generation
  *   
@@ -78,9 +78,7 @@ struct Param_t
   GaugeStartType  cfg_type;       // storage order for stored gauge configuration
   PropType prop_type;      // storage order for stored propagator
 
-//  enum InvType  invType;            // Inverter type
-  Real RsdCG;
-  int MaxCG;		   // Iteration parameters
+  InvertParam_t  invParam;
 
   Real GFAccu, OrPara;    // Gauge fixing tolerance and over-relaxation param
   int GFMax;              // Maximum gauge fixing iterations
@@ -224,9 +222,9 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     }
 
 //    read(paramtop, "invType", input.param.invType);
-//    input.param.invType = CG_INVERTER;   //need to fix this
-    read(paramtop, "RsdCG", input.param.RsdCG);
-    read(paramtop, "MaxCG", input.param.MaxCG);
+    input.param.invParam.invType = CG_INVERTER;   //need to fix this
+    read(paramtop, "RsdCG", input.param.invParam.RsdCG);
+    read(paramtop, "MaxCG", input.param.invParam.MaxCG);
     //    read(paramtop, "GFAccu", input.param.GFAccu);
     //    read(paramtop, "OrPara", input.param.OrPara);
     //    read(paramtop, "GFMax", input.param.GFMax);

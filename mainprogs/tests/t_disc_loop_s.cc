@@ -1,4 +1,4 @@
-// $Id: t_disc_loop_s.cc,v 1.3 2004-03-03 09:41:46 mcneile Exp $
+// $Id: t_disc_loop_s.cc,v 1.4 2004-09-09 15:52:51 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -55,9 +55,8 @@ struct Param_t
   CfgType  cfg_type;       // storage order for stored gauge configuration
   PropType prop_type;      // storage order for stored propagator
 
-//  enum InvType  invType;            // Inverter type
-  Real RsdCG;
-  int MaxCG;		   // Iteration parameters
+  InvertParam_t  invParam;
+
   int Nsamples; 		  // Number of stochastic sources
   int CFGNO;		  // Configuration Number used for seeding rng
                           // This WILL be changed soon 
@@ -199,9 +198,9 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     }
 
 //    read(paramtop, "invType", input.param.invType);
-//    input.param.invType = CG_INVERTER;   //need to fix this
-    read(paramtop, "RsdCG", input.param.RsdCG);
-    read(paramtop, "MaxCG", input.param.MaxCG);
+    input.param.invParam.invType = CG_INVERTER;   //need to fix this
+    read(paramtop, "RsdCG", input.param.invParam.RsdCG);
+    read(paramtop, "MaxCG", input.param.invParam.MaxCG);
     read(paramtop, "Nsamples", input.param.Nsamples);
     read(paramtop, "CFGNO", input.param.CFGNO);
     read(paramtop, "GFAccu", input.param.GFAccu);
@@ -412,14 +411,13 @@ int main(int argc, char **argv)
     q_source = zero;
     srcfil(q_source, input.param.t_srce, color_source, spin_source);
 
-    S_f.qprop(psi, state, q_source, CG_INVERTER,
-              input.param.RsdCG, input.param.MaxCG, n_count);
+    S_f.qprop(psi, state, q_source, input.param.invParam, n_count);
 
     ncg_had += n_count;
 
     push(xml_out,"Qprop");
     write(xml_out, "Mass" , input.param.Mass);
-    write(xml_out, "RsdCG", input.param.RsdCG);
+    write(xml_out, "RsdCG", input.param.invParam.RsdCG);
     write(xml_out, "n_count", n_count);
     pop(xml_out);
 
@@ -455,14 +453,14 @@ int main(int argc, char **argv)
     // Compute the solution vector for the particular source
     // int n_count;
 
-    S_f.qprop(psi, state, q_source, CG_INVERTER, 
-              input.param.RsdCG, input.param.MaxCG, n_count);
+    S_f.qprop(psi, state, q_source, input.param.invParam,
+              n_count);
     
     ncg_had += n_count;
       
     push(xml_out,"Qprop");
     write(xml_out, "Mass" , input.param.Mass);
-    write(xml_out, "RsdCG" , input.param.RsdCG);
+    write(xml_out, "RsdCG" , input.param.invParam.RsdCG);
     write(xml_out, "n_count", n_count);
     pop(xml_out);
 

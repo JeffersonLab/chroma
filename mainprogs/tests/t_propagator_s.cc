@@ -1,4 +1,4 @@
-// $Id: t_propagator_s.cc,v 1.14 2004-03-03 09:38:30 mcneile Exp $
+// $Id: t_propagator_s.cc,v 1.15 2004-09-09 15:52:52 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -55,9 +55,7 @@ struct Param_t
   CfgType  cfg_type;       // storage order for stored gauge configuration
   PropType prop_type;      // storage order for stored propagator
 
-//  enum InvType  invType;            // Inverter type
-  Real RsdCG;
-  int MaxCG;		   // Iteration parameters
+  InvertParam_t  invParam;
 
   Real GFAccu, OrPara;    // Gauge fixing tolerance and over-relaxation param
   int GFMax;              // Maximum gauge fixing iterations
@@ -199,9 +197,9 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     }
 
 //    read(paramtop, "invType", input.param.invType);
-//    input.param.invType = CG_INVERTER;   //need to fix this
-    read(paramtop, "RsdCG", input.param.RsdCG);
-    read(paramtop, "MaxCG", input.param.MaxCG);
+    input.param.invParam.invType = CG_INVERTER;   //need to fix this
+    read(paramtop, "RsdCG", input.param.invParam.RsdCG);
+    read(paramtop, "MaxCG", input.param.invParam.MaxCG);
     read(paramtop, "GFAccu", input.param.GFAccu);
     read(paramtop, "OrPara", input.param.OrPara);
     read(paramtop, "GFMax", input.param.GFMax);
@@ -398,14 +396,13 @@ int main(int argc, char **argv)
         // Compute the propagator for given source color/spin 
         // int n_count;
 
-        S_f.qprop(psi, state, q_source, CG_INVERTER, 
-                  input.param.RsdCG, input.param.MaxCG, n_count);
+        S_f.qprop(psi, state, q_source, input.param.invParam, n_count);
     
         ncg_had += n_count;
       
         push(xml_out,"Qprop");
         write(xml_out, "Mass" , input.param.Mass);
-        write(xml_out, "RsdCG", input.param.RsdCG);
+        write(xml_out, "RsdCG", input.param.invParam.RsdCG);
         write(xml_out, "n_count", n_count);
         pop(xml_out);
 
