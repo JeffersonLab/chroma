@@ -1,4 +1,4 @@
-// $Id: prec_zolo_nef_fermact_array_w.cc,v 1.14 2005-02-21 19:28:58 edwards Exp $
+// $Id: prec_zolo_nef_fermact_array_w.cc,v 1.15 2005-03-03 04:38:36 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF fermion action
  */
@@ -126,7 +126,6 @@ namespace Chroma
     }
 
 
-    int type = 0;
     Real epsilon;
     Real scale_fac;
     zolotarev_data *rdata;
@@ -136,8 +135,8 @@ namespace Chroma
     case COEFF_TYPE_ZOLOTAREV:
       epsilon = approxMin / approxMax;
       QDPIO::cout << "Initing Linop with Zolotarev Coefficients: epsilon = " << epsilon << endl;
-      rdata = zolotarev(toFloat(epsilon), params.N5, type);    
-      scale_fac = Real(1) / approxMax;
+      rdata = zolotarev(toFloat(epsilon), params.N5, 0);
+      scale_fac = approxMax;
       break;
 
     case COEFF_TYPE_TANH_UNSCALED:
