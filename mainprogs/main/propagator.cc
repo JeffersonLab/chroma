@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.23 2003-11-16 19:52:48 edwards Exp $
+// $Id: propagator.cc,v 1.24 2003-12-11 16:31:18 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -371,9 +371,12 @@ int main(int argc, char **argv)
   XMLBufferWriter xml_buf;
   int ncg_had;
 
-  quarkProp4(quark_propagator, xml_buf, quark_prop_source,
-	     S_f, u, input.param.invType, input.param.RsdCG, input.param.MaxCG, ncg_had);
+  {
+    const ConnectStateProxy state(S_f.createState(u));
 
+    quarkProp4(quark_propagator, xml_buf, quark_prop_source,
+  	       S_f, state, input.param.invType, input.param.RsdCG, input.param.MaxCG, ncg_had);
+  }
 
   xml_out << xml_buf;
 
