@@ -1,6 +1,9 @@
-// $Id: collect_multi_propcomp.cc,v 1.1 2004-04-23 11:23:38 bjoo Exp $
+// $Id: collect_multi_propcomp.cc,v 1.2 2004-04-28 14:34:43 edwards Exp $
 // $Log: collect_multi_propcomp.cc,v $
-// Revision 1.1  2004-04-23 11:23:38  bjoo
+// Revision 1.2  2004-04-28 14:34:43  edwards
+// Moved gauge initialization to calling gaugeStartup().
+//
+// Revision 1.1  2004/04/23 11:23:38  bjoo
 // Added component based propagator (non multishift) and added Zolotarev5D operator to propagator and propagator_comp. Reworked propagator collection scripts
 //
 // Revision 1.2  2004/04/22 16:25:25  bjoo
@@ -196,23 +199,8 @@ int main(int argc, char **argv)
   multi1d<LatticeColorMatrix> u(Nd);
   XMLReader gauge_file_xml, gauge_xml;
 
-  switch (input.cfg.cfg_type) 
-  {
-  case CFG_TYPE_SZIN :
-    readSzin(gauge_xml, u, input.cfg.cfg_file);
-    break;
-
-  case CFG_TYPE_SZINQIO:
-    readGauge(gauge_file_xml, gauge_xml, u, input.cfg.cfg_file, QDPIO_SERIAL);
-    break;
-
-  case CFG_TYPE_NERSC:
-    readArchiv(gauge_xml, u, input.cfg.cfg_file);
-    break;
-  default :
-    QDP_error_exit("Configuration type is unsupported.");
-  }
-
+  // Startup gauge
+  gaugeStartup(gauge_file_xml, gauge_xml, u, input.cfg);
 
   // Read in the source along with relevant information.
   LatticePropagator quark_prop_source;

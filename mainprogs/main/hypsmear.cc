@@ -1,5 +1,5 @@
 /*
- *  $Id: hypsmear.cc,v 1.10 2004-04-06 04:20:33 edwards Exp $
+ *  $Id: hypsmear.cc,v 1.11 2004-04-28 14:34:43 edwards Exp $
  *
  *  This is the top-level routine for HYP smearing.
  *  It is a wrapper for Urs' and Robert's implmenetation of the HYP
@@ -162,27 +162,8 @@ int main(int argc, char *argv[])
 
   clock_t t1 = clock();
 
-  switch (input.cfg.cfg_type) 
-  {
-  case CFG_TYPE_SZIN :
-    QDPIO::cout<<"About to read szin gauge\n" ;
-    readSzin(gauge_xml, u, input.cfg.cfg_file);
-    break;
-  case CFG_TYPE_SZINQIO:
-    QDPIO::cout<<"About to read qio gauge\n" ;
-    readGauge(gauge_file_xml, gauge_xml, u, input.cfg.cfg_file, QDPIO_SERIAL);
-    break;
-  case CFG_TYPE_NERSC:
-    QDPIO::cout<<"About to read nersc gauge\n" ;
-    readArchiv(gauge_xml, u, input.cfg.cfg_file);
-    break;
-  case CFG_TYPE_MILC:
-    QDPIO::cout<<"About to read milc gauge\n" ;
-    readMILC(gauge_xml, u, input.cfg.cfg_file);
-    break;
-  default :
-    QDP_error_exit("Configuration type is unsupported.");
-  }
+  // Startup gauge
+  gaugeStartup(gauge_file_xml, gauge_xml, u, input.cfg);
 
   clock_t t2 = clock();
   QDPIO::cout << "Gauge read took " << (double)((int)(t2)-(int)(t1))/(double)(CLOCKS_PER_SEC) << " secs" << endl;

@@ -1,10 +1,13 @@
-// $Id: spectrum_w.cc,v 1.34 2004-04-16 19:27:39 bjoo Exp $
+// $Id: spectrum_w.cc,v 1.35 2004-04-28 14:34:43 edwards Exp $
 //
 //! \file
 //  \brief Main code for propagator generation
 //
 //  $Log: spectrum_w.cc,v $
-//  Revision 1.34  2004-04-16 19:27:39  bjoo
+//  Revision 1.35  2004-04-28 14:34:43  edwards
+//  Moved gauge initialization to calling gaugeStartup().
+//
+//  Revision 1.34  2004/04/16 19:27:39  bjoo
 //  Fixed spectrum_w and seqprop
 //
 //  Revision 1.33  2004/04/06 04:20:33  edwards
@@ -303,20 +306,8 @@ int main(int argc, char **argv)
   multi1d<LatticeColorMatrix> u(Nd);
   XMLReader gauge_file_xml, gauge_xml;
 
-  switch (input.cfg.cfg_type) 
-  {
-  case CFG_TYPE_SZIN :
-    readSzin(gauge_xml, u, input.cfg.cfg_file);
-    break;
-  case CFG_TYPE_SZINQIO:
-    readGauge(gauge_file_xml, gauge_xml, u, input.cfg.cfg_file, QDPIO_SERIAL);
-    break;
-  case CFG_TYPE_NERSC:
-    readArchiv(gauge_xml, u, input.cfg.cfg_file);
-    break;
-  default :
-    QDP_error_exit("Configuration type is unsupported.");
-  }
+  // Startup gauge
+  gaugeStartup(gauge_file_xml, gauge_xml, u, input.cfg);
 
   // Check if the gauge field configuration is unitarized
   unitarityCheck(u);

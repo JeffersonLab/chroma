@@ -1,4 +1,4 @@
-// $Id: bar3ptfn.cc,v 1.32 2004-04-27 21:28:28 edwards Exp $
+// $Id: bar3ptfn.cc,v 1.33 2004-04-28 14:34:43 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions
  *
@@ -209,21 +209,8 @@ main(int argc, char *argv[])
   multi1d<LatticeColorMatrix> u(Nd);
   XMLReader gauge_file_xml, gauge_xml;
 
-  switch (input.cfg.cfg_type) 
-  {
-  case CFG_TYPE_SZIN :
-    readSzin(gauge_xml, u, input.cfg.cfg_file);
-    break;
-  case CFG_TYPE_SZINQIO:
-    readGauge(gauge_file_xml, gauge_xml, u, input.cfg.cfg_file, QDPIO_SERIAL);
-    break;
-  case CFG_TYPE_NERSC:
-    readArchiv(gauge_xml, u, input.cfg.cfg_file);
-    break;
-  default :
-    QDPIO::cerr << "Configuration type is unsupported." << endl;
-    QDP_abort(1);
-  }
+  // Start up the gauge field
+  gaugeStartup(gauge_file_xml, gauge_xml, u, input.cfg);
 
   // Next check the gauge field configuration by reunitarizing.
   unitarityCheck(u);

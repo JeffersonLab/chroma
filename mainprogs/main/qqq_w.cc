@@ -1,4 +1,4 @@
-// $Id: qqq_w.cc,v 1.12 2004-04-11 05:05:34 edwards Exp $
+// $Id: qqq_w.cc,v 1.13 2004-04-28 14:34:43 edwards Exp $
 /*! \file
  *  \brief Main code for generalized quark propagator
  *
@@ -164,20 +164,8 @@ int main(int argc, char **argv)
   multi1d<LatticeColorMatrix> u(Nd);
   XMLReader gauge_file_xml, gauge_xml;
 
-  switch (input.cfg.cfg_type) 
-  {
-  case CFG_TYPE_SZIN:
-    readSzin(gauge_xml, u, input.cfg.cfg_file);
-    break;
-  case CFG_TYPE_SZINQIO:
-    readGauge(gauge_file_xml, gauge_xml, u, input.cfg.cfg_file, QDPIO_SERIAL);
-    break;
-  case CFG_TYPE_NERSC:
-    readArchiv(gauge_xml, u, input.cfg.cfg_file);
-    break;
-  default :
-    QDP_error_exit("Configuration type is unsupported.");
-  }
+  // Start up the gauge field
+  gaugeStartup(gauge_file_xml, gauge_xml, u, input.cfg);
 
   QDPIO::cout << "Gauge field read!" << endl;
 
