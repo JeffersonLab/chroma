@@ -1,4 +1,4 @@
-// $Id: hmc.cc,v 1.3 2005-03-02 00:44:18 edwards Exp $
+// $Id: hmc.cc,v 1.4 2005-04-07 03:24:55 edwards Exp $
 /*! \file
  *  \brief Main code for HMC with dynamical fermion generation
  */
@@ -312,34 +312,51 @@ namespace Chroma {
 	// Do the trajectory without accepting 
 	theHMCTrj( gauge_state, warm_up_p );
 
-	// Measure inline observables 
-	push(xml_out, "InlineObservables");
-	// Always measure defaults
-	for(int m=0; m < default_measurements.size(); m++) {
-	  
-	  // Caller writes elem rule 
-	  AbsInlineMeasurement& the_meas = *(default_measurements[m]);
-	  push(xml_out, "elem");
-	  the_meas( gauge_state.getQ(), cur_update, xml_out);
-	  pop(xml_out);
-	}
-	
-	// Only measure user measurements after warm up
-	if( ! warm_up_p ) {
-	  QDPIO::cout << "Doing " << user_measurements.size() 
-		      <<" user measurements" << endl;
-	  for(int m=0; m < user_measurements.size(); m++) {
-	    AbsInlineMeasurement& the_meas = *(user_measurements[m]);
-	    if( cur_update % the_meas.getFrequency() == 0 ) { 
+	// Create a gauge header for inline measurements.
+	// Since there are defaults always measured, we must always
+	// create a header.
+	//
+	// NOTE: THIS HEADER STUFF NEEDS A LOT MORE THOUGHT
+	//
+	{
+	  XMLBufferWriter gauge_xml;
+	  push(gauge_xml, "ChromaHMC");
+	  write(gauge_xml, "update_no", cur_update);
+	  write(gauge_xml, "HMCTrj", update_params);
+	  pop(gauge_xml);
 
-	      // Caller writes elem rule
-	      push(xml_out, "elem");
-	      the_meas( gauge_state.getQ(), cur_update, xml_out );
-	      pop(xml_out); 
+	  // Measure inline observables 
+	  push(xml_out, "InlineObservables");
+
+	  // Always measure defaults
+	  for(int m=0; m < default_measurements.size(); m++) 
+	  {
+	    // Caller writes elem rule 
+	    AbsInlineMeasurement& the_meas = *(default_measurements[m]);
+	    push(xml_out, "elem");
+	    the_meas( gauge_state.getQ(), gauge_xml, cur_update, xml_out);
+	    pop(xml_out);
+	  }
+	
+	  // Only measure user measurements after warm up
+	  if( ! warm_up_p ) 
+	  {
+	    QDPIO::cout << "Doing " << user_measurements.size() 
+			<<" user measurements" << endl;
+	    for(int m=0; m < user_measurements.size(); m++) 
+	    {
+	      AbsInlineMeasurement& the_meas = *(user_measurements[m]);
+	      if( cur_update % the_meas.getFrequency() == 0 ) 
+	      { 
+		// Caller writes elem rule
+		push(xml_out, "elem");
+		the_meas( gauge_state.getQ(), gauge_xml, cur_update, xml_out );
+		pop(xml_out); 
+	      }
 	    }
 	  }
+	  pop(xml_out); // pop("InlineObservables");
 	}
-	pop(xml_out); // pop("InlineObservables");
 
 	if( cur_update % mc_control.save_interval == 0 ) {
 	  // Save state
