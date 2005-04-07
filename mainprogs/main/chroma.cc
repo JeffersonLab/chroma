@@ -1,4 +1,4 @@
-// $Id: chroma.cc,v 1.1 2005-04-06 04:36:34 edwards Exp $
+// $Id: chroma.cc,v 1.2 2005-04-07 03:24:17 edwards Exp $
 // Main program to run all measurement codes.
 
 #include "chroma.h"
@@ -107,7 +107,14 @@ int main(int argc, char *argv[])
   std::istringstream Measurements_is(input.param.inline_measurement_xml);
   XMLReader MeasXML(Measurements_is);
   multi1d < Handle< AbsInlineMeasurement > > the_measurements;
-  read(MeasXML, "/InlineMeasurements", the_measurements);
+
+  try {
+    read(MeasXML, "/InlineMeasurements", the_measurements);
+  }
+  catch(const std::string& e) {
+    QDPIO::cerr << "Caught Exception: " << e << endl;
+    QDP_abort(1);
+  }
 
   QDPIO::cout << "There are " << the_measurements.size() << " measurements " << endl;
 
