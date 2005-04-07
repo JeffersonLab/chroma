@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline.h,v 1.3 2005-04-06 04:34:53 edwards Exp $
+// $Id: inline.h,v 1.4 2005-04-07 03:23:19 edwards Exp $
 /*! \file
  * \brief Inline measurements
  *
@@ -22,5 +22,6 @@
 #include "meas/inline/glue/glue.h"
 #include "meas/inline/eig/eig.h"
 #include "meas/inline/hadron/hadron.h"
+#include "meas/inline/smear/smear.h"
 
 #endif
