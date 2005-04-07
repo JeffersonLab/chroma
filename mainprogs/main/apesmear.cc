@@ -214,6 +214,8 @@ int main(int argc, char *argv[])
              input.ape.volfmt, QDPIO_SERIAL);
   // writeSzin(szin_gauge_header, u_ape, input.ape.ape_file);
 
+  pop(xml_out);
+
   END_CODE();
 
   // Time to bolt
