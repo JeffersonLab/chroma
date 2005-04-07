@@ -1,4 +1,4 @@
-// $Id: multipole_w.cc,v 1.5 2005-04-05 03:45:05 edwards Exp $
+// $Id: multipole_w.cc,v 1.6 2005-04-07 03:28:57 edwards Exp $
 /*! \file
  *  \brief Multipole moments
  *
@@ -145,6 +145,14 @@ namespace Chroma
 
       multi1d<LatticeComplex> ylm(Nd-1);
 
+      // Special case of l=0 always gives zero
+      if (l == 0)
+      {
+	ylm = zero;
+	return ylm;
+      }
+
+      // Use -m relations
       if (m < 0)
       {
 	// Y_{l,-m} = (-1)^m * conj(Y_{l,m})
