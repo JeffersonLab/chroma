@@ -1,4 +1,4 @@
-// $Id: writeszin.h,v 1.7 2005-03-06 23:20:21 edwards Exp $
+// $Id: writeszin.h,v 1.8 2005-04-07 03:28:12 edwards Exp $
 
 /*! \file
  *  \brief Write a SZIN configuration written at configuration version 7.
@@ -6,6 +6,8 @@
 
 #ifndef __writeszin_h__
 #define __writeszin_h__
+
+#include "io/szin_io.h"
 
 namespace Chroma 
 {
