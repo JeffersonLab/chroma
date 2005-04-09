@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_multipole_w.h,v 1.1 2005-04-07 03:23:20 edwards Exp $
+// $Id: inline_multipole_w.h,v 1.2 2005-04-09 23:15:42 edwards Exp $
 /*! \file
  *  \brief Inline multipole measurements
  */
@@ -30,7 +30,6 @@ namespace Chroma
     struct Param_t
     {
       int max_L;
-      int GammaInsertion;
     } param;
 
     //! Propagators

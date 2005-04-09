@@ -1,4 +1,4 @@
-// $Id: inline_multipole_w.cc,v 1.1 2005-04-07 03:23:20 edwards Exp $
+// $Id: inline_multipole_w.cc,v 1.2 2005-04-09 23:15:42 edwards Exp $
 /*! \file
  *  \brief Inline multipole measurement
  */
@@ -48,7 +48,6 @@ namespace Chroma
     }
 
     read(inputtop, "max_L", param.max_L);
-    read(inputtop, "GammaInsertion", param.GammaInsertion);
   }
 
 
@@ -60,7 +59,6 @@ namespace Chroma
     int version = 1;
     write(xml, "version", version);
     write(xml, "max_L", param.max_L);
-    write(xml, "GammaInsertion", param.GammaInsertion);
 
     pop(xml);
   }
