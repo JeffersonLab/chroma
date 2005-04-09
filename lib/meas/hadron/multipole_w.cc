@@ -1,4 +1,4 @@
-// $Id: multipole_w.cc,v 1.6 2005-04-07 03:28:57 edwards Exp $
+// $Id: multipole_w.cc,v 1.7 2005-04-09 23:15:24 edwards Exp $
 /*! \file
  *  \brief Multipole moments
  *
@@ -50,12 +50,30 @@ namespace Chroma
       return (m <= 0) ? 1 : m*factorial(m-1);
     }
 
+    //! Normalization for Y_{LM}
+    Real normConst(int l, int m)
+    {
+      Real cnst = sqrt((2*l+1)*factorial(l-m)/(2*twopi*factorial(l+m)));
+      return cnst;
+    }
+
+    // I'm lazy and want a function here. I don't remember if QDP does this
+    int sign_m(int m)
+    {
+      return ((-m) & 1 == 1) ? -1 : 1;
+    }
+
     //! Compute the P_{lm} Legendre polynomial
     LatticeReal plgndr(int l, int m, const LatticeReal& x)
     {
 //      if (m < 0 || m > l || fabs(x) > 1.0)
-      if (m < 0 || m > l)
+      if (m < 0 || l < 0)
 	QDP_error_exit("Bad arguments in plgndr");
+
+      if (m > l)
+      {
+	return LatticeReal(zero);
+      }
 
       LatticeReal pmm=1.0;
       if (m > 0) 
@@ -90,20 +108,27 @@ namespace Chroma
     }
 
 
-
     //! Compute  r^L*Y_{LM}
     LatticeComplex rYLM(const multi1d<LatticeReal>& x, int l, int m)
     {
+      if (l < 0)
+	QDP_error_exit("Bad arguments in rYLM");
+
+      if (x.size() != Nd-1)
+	QDP_error_exit("Bad arguments in rYLM");
+
       LatticeComplex ylm;
 
       if (m < -l || m > l)
-	QDP_error_exit("Bad arguments in rYLM");
+      {
+	ylm = zero;
+	return ylm;
+      }
 
       if (m < 0)
       {
 	// Y_{l,-m} = (-1)^m * conj(Y_{l,m})
-	int ss = ((-m) & 1 == 1) ? -1 : 1;
-	ylm = ss * conj(rYLM(x,l,-m));
+	ylm = sign_m(m) * conj(rYLM(x,l,-m));
       }
       else
       {
@@ -112,19 +137,16 @@ namespace Chroma
 	for(int j=0; j < x.size(); ++j)
 	  r_sq += x[j]*x[j];
 
-	LatticeReal r = where(r_sq > 0.0, sqrt(r_sq), LatticeReal(1));
+	LatticeReal r = where(r_sq > fuzz, sqrt(r_sq), LatticeReal(1));
 
 	// z = r*cos(theta)
 	LatticeReal cos_theta = x[2] / r;
 	
 	// y = r*sin(phi),  x = r*cos(phi),  y/x = tan(phi)
-	LatticeReal phi = atan2(LatticeReal(x[1]),LatticeReal(x[0]));
-
-	// Normalization
-	Real cnst = sqrt((2*l+1)*factorial(l-m)/(2*twopi*factorial(l+m)));
+	LatticeReal phi = atan2(x[1], x[0]);
 
 	// Ylm = const*P_{LM}(cos(theta))*exp(i*m*phi)
-	ylm = cnst * plgndr(l,m,cos_theta) * cmplx(cos(m*phi),sin(m*phi));
+	ylm = normConst(l,m) * plgndr(l,m,cos_theta) * cmplx(cos(m*phi),sin(m*phi));
       }
 
       return ylm;
@@ -134,7 +156,7 @@ namespace Chroma
     //! Compute the grad(r^L*Y_{LM},x_k)
     multi1d<LatticeComplex> deriv_rYLM(const multi1d<LatticeReal>& x, int l, int m)
     {
-      if (m < -l || m > l)
+      if (l < 0)
 	QDP_error_exit("Bad arguments in deriv_rYLM");
 
       if (x.size() != Nd-1)
@@ -145,8 +167,8 @@ namespace Chroma
 
       multi1d<LatticeComplex> ylm(Nd-1);
 
-      // Special case of l=0 always gives zero
-      if (l == 0)
+      // Special cases. NOTE: l=0 always gives zero
+      if (m < -l || m > l || l == 0)
       {
 	ylm = zero;
 	return ylm;
@@ -156,23 +178,23 @@ namespace Chroma
       if (m < 0)
       {
 	// Y_{l,-m} = (-1)^m * conj(Y_{l,m})
-	int ss = ((-m) & 1 == 1) ? -1 : 1;
+	int ss = sign_m(m);
 	multi1d<LatticeComplex> foo = deriv_rYLM(x,l,-m);
 	for(int k=0; k < Nd-1; ++k)
 	  ylm[k] = ss*conj(foo[k]);
 	return ylm;
       }
 
-      // NOTE: I would like to automate this and use the recurrence relation
-      // involving a derivative, but I don't immediately see a nice one around
-      // The obvious one is in terms of standard Legendre poly like
-      //  P^{lm}(z) = (-1)^m * (1-z^2)^{m/2} * d^m P_l(z)/dm , note the P_l(z)
-      // and not  P_{lm}(z).
-
-      // YUK - the deriv is kind of nasty - need to jump into polar space and
-      // then cast back to euclidean coord space. So, just telephone book
-      // the thing for the moment
-
+      // NOTE: automate this by using a recurrence relation for the deriv.
+      // (1-x^2)d_x(P_l^m(x)) = -m*x*P_l^m(x) - (1-x^2)^{1/2}*P_l^{m+1)(x)
+      // where
+      //  P_l^m(x) = (-1)^m * (1-x^2)^{m/2} * d^m P_l(x)/d x^m , note the P_l(x)
+      // are standard Legendre polynomials
+      //
+      // So here with x=cos(theta)
+      //
+      //  d_theta P_l^m(cos(theta)) = + m P_l^m(cos(theta))/sin(theta) + P_l^{m+1}(cos(theta))
+      //
       // Use gradient in coord space, but with deriv. in spherical polar space
       // grad = \hat{x}*d_x + \hat{y}*d_y + \hat{z}*d_z
       // d_x  = sin(theta)*cos(phi)*d_r + (cos(theta)*cos(phi)/r)*d_theta 
@@ -186,64 +208,52 @@ namespace Chroma
       for(int j=0; j < x.size(); ++j)
 	r_sq += x[j]*x[j];
 
-      LatticeReal r = where(r_sq > 0.0, sqrt(r_sq), LatticeReal(1));
+      LatticeReal r = where(r_sq > fuzz, sqrt(r_sq), LatticeReal(1));
 
       // z = r*cos(theta)
       LatticeReal cos_theta = x[2] / r;
+      LatticeReal sin_theta = sin(acos(cos_theta));
 	
       // y = r*sin(phi),  x = r*cos(phi),  y/x = tan(phi)
-      LatticeReal phi = atan2(LatticeReal(x[1]),LatticeReal(x[0]));
+      LatticeReal phi = atan2(x[1], x[0]);
 
-      Real cnst = 0;
-      ylm = zero;
+      // This pops up a bunch
+      LatticeReal P_lm = plgndr(l,m,cos_theta);
 
-      switch(l)
-      {
-      case 0:
-	ylm = zero;
-	break;
+      // We seem to always need the phase here even though it should
+      // cancel
+      LatticeComplex phase = cmplx(cos(m*phi),sin(m*phi));
 
-      case 1:
-	// L=1
-	switch(m)
-	{
-	case 0:
-	  cnst = sqrt(3/(2*twopi));
-	  ylm[2] = 1;
-	  break;
+      // r^{l-1}
+      LatticeReal rlm1;
+      if (l > 1)
+	rlm1 = pow(r,l-1);
+      else
+	rlm1 = 1;
 
-	case 1:
-	  cnst = -sqrt(3/(4*twopi));
-	  ylm[0] = 1;
-	  ylm[1] = timesI(Real(1));  // i
-	  break;
-	}
-	break;
+      // ylm = normConst(l,m) * plgndr(l,m,cos_theta) * cmplx(cos(m*phi),sin(m*phi));
 
-#if 0
-	// Need to do this case...
-      case 2:
-	// L=2
-	switch(m)
-	{
-	case 0:
-	  ylm[0] = 0;
-	  break;
+      // Handle limiting case of P_l^m(cos(theta))/sin(theta)
+      LatticeReal P_div_sintheta = where(sin_theta > fuzz, 
+					 P_lm/sin_theta, 
+					 Real(0));
 
-	case 1:
-	  break;
+      // Deriv of P_l^m(cos(theta))
+      LatticeReal deriv_P = m*cos_theta*P_div_sintheta + plgndr(l,m+1,cos_theta);
 
-	case 2:
-	  break;
-	}
-	break;
-#endif
-
-      default:
-	break;
-      }
+      // The pieces need for the derivatives with respect to x,y,z in terms of
+      // polar angles
+      LatticeComplex d_r = l*rlm1* P_lm * phase;
+      LatticeComplex d_theta = rlm1 * deriv_P * phase;
+      LatticeComplex d_phi = rlm1 * P_div_sintheta * timesI(Real(m)) * phase;
+      
+      // Finally, add the pieces together to make the derivatives
+      ylm[0] = sin_theta*cos(phi)*d_r + cos_theta*cos(phi)*d_theta - sin(phi)*d_phi;
+      ylm[1] = sin_theta*sin(phi)*d_r + cos_theta*sin(phi)*d_theta + cos(phi)*d_phi;
+      ylm[2] = cos_theta*d_r - sin_theta*d_theta;
 
       // Multiply in normalization
+      Real cnst = normConst(l,m) * sign_m(m);
       for(int k=0; k < ylm.size(); ++k)
 	ylm[k] *= cnst;
 
