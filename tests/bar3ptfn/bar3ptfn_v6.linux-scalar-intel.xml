@@ -2,12 +2,13 @@
 
 
 <bar3ptfn>
+  <update_no>0</update_no>
   <ProgramInfo>
     <code_version>
       <chroma>1.20</chroma>
-      <qdp>1.11.8</qdp>
+      <qdp>1.12.0</qdp>
     </code_version>
-    <run_date>12 Mar 05 13:35:00 EST</run_date>
+    <run_date>10 Apr 05 12:45:21 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -16,41 +17,25 @@
       <subgrid_volume>512</subgrid_volume>
     </Setgeom>
   </ProgramInfo>
-  <Input><bar3ptfn>
-<annotation>
-; $Id: bar3ptfn_v6.linux-scalar-intel.xml,v 1.5 2005-03-12 18:43:57 edwards Exp $
-;
-; BAR3PTFN input file.
-;
-; This program is the input file for a baryon 3pt func. calculation
-; test run on Wilson-type propagators
-;
-; Run the   test_prop_seqsource_vXXX.csh  script in  tests/seqsource
-</annotation>
-
-<Param>
- <version>6</version>
- <nrow>4 4 4 8</nrow>
- <mom2_max>3</mom2_max>
-</Param>
-<Cfg>
- <cfg_type>SZIN</cfg_type>
- <cfg_file>../test_purgaug.cfg1</cfg_file>
-</Cfg>
-<Prop>
- <prop_file>../propagator/propagator_0</prop_file>
- <seqprop_files>
-   <elem>../seqsource/seqprop_0_NUCL_U_UNPOL</elem>
-   <elem>../seqsource/seqprop_0_NUCL_D_UNPOL</elem>
-   <elem>../seqsource/seqprop_0_NUCL_U_POL</elem>
-   <elem>../seqsource/seqprop_0_NUCL_D_POL</elem>
-   <elem>../seqsource/seqprop_0_PION</elem>
-   <elem>../seqsource/seqprop_0_NUCL_U_MIXED_NONREL</elem>
-   <elem>../seqsource/seqprop_0_NUCL_D_MIXED_NONREL</elem>
- </seqprop_files>
-</Prop>
-</bar3ptfn>
-
+  <Input>
+    <Param>
+      <version>6</version>
+      <mom2_max>3</mom2_max>
+      <nrow>4 4 4 8</nrow>
+    </Param>
+    <Prop>
+      <prop_file>../propagator/propagator_0</prop_file>
+      <seqprop_files>
+        <elem>../seqsource/seqprop_0_NUCL_U_UNPOL</elem>
+        <elem>../seqsource/seqprop_0_NUCL_D_UNPOL</elem>
+        <elem>../seqsource/seqprop_0_NUCL_U_POL</elem>
+        <elem>../seqsource/seqprop_0_NUCL_D_POL</elem>
+        <elem>../seqsource/seqprop_0_PION</elem>
+        <elem>../seqsource/seqprop_0_NUCL_U_MIXED_NONREL</elem>
+        <elem>../seqsource/seqprop_0_NUCL_D_MIXED_NONREL</elem>
+      </seqprop_files>
+      <bar3ptfn_file>bar3ptfn.dat</bar3ptfn_file>
+    </Prop>
   </Input>
   <Config_info><szin>
       <cfg_version>7</cfg_version>
@@ -91,6 +76,7 @@
         </Seed>
       </seed>
     </szin>
+
 
   </Config_info>
   <Output_version>
@@ -136,6 +122,12 @@
             <FermBC>SIMPLE_FERMBC</FermBC>
             <boundary>1 1 1 -1</boundary>
           </FermionBC>
+          <AnisoParam>
+            <anisoP>false</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>1.0</xi_0>
+            <nu>1.0</nu>
+          </AnisoParam>
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
@@ -307,6 +299,12 @@
                 <FermBC>SIMPLE_FERMBC</FermBC>
                 <boundary>1 1 1 -1</boundary>
               </FermionBC>
+              <AnisoParam>
+                <anisoP>false</anisoP>
+                <t_dir>3</t_dir>
+                <xi_0>1.0</xi_0>
+                <nu>1.0</nu>
+              </AnisoParam>
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
@@ -482,6 +480,12 @@
                 <FermBC>SIMPLE_FERMBC</FermBC>
                 <boundary>1 1 1 -1</boundary>
               </FermionBC>
+              <AnisoParam>
+                <anisoP>false</anisoP>
+                <t_dir>3</t_dir>
+                <xi_0>1.0</xi_0>
+                <nu>1.0</nu>
+              </AnisoParam>
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
@@ -657,6 +661,12 @@
                 <FermBC>SIMPLE_FERMBC</FermBC>
                 <boundary>1 1 1 -1</boundary>
               </FermionBC>
+              <AnisoParam>
+                <anisoP>false</anisoP>
+                <t_dir>3</t_dir>
+                <xi_0>1.0</xi_0>
+                <nu>1.0</nu>
+              </AnisoParam>
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
@@ -832,6 +842,12 @@
                 <FermBC>SIMPLE_FERMBC</FermBC>
                 <boundary>1 1 1 -1</boundary>
               </FermionBC>
+              <AnisoParam>
+                <anisoP>false</anisoP>
+                <t_dir>3</t_dir>
+                <xi_0>1.0</xi_0>
+                <nu>1.0</nu>
+              </AnisoParam>
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
@@ -1007,6 +1023,12 @@
                 <FermBC>SIMPLE_FERMBC</FermBC>
                 <boundary>1 1 1 -1</boundary>
               </FermionBC>
+              <AnisoParam>
+                <anisoP>false</anisoP>
+                <t_dir>3</t_dir>
+                <xi_0>1.0</xi_0>
+                <nu>1.0</nu>
+              </AnisoParam>
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
@@ -1182,6 +1204,12 @@
                 <FermBC>SIMPLE_FERMBC</FermBC>
                 <boundary>1 1 1 -1</boundary>
               </FermionBC>
+              <AnisoParam>
+                <anisoP>false</anisoP>
+                <t_dir>3</t_dir>
+                <xi_0>1.0</xi_0>
+                <nu>1.0</nu>
+              </AnisoParam>
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
@@ -1357,6 +1385,12 @@
                 <FermBC>SIMPLE_FERMBC</FermBC>
                 <boundary>1 1 1 -1</boundary>
               </FermionBC>
+              <AnisoParam>
+                <anisoP>false</anisoP>
+                <t_dir>3</t_dir>
+                <xi_0>1.0</xi_0>
+                <nu>1.0</nu>
+              </AnisoParam>
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
