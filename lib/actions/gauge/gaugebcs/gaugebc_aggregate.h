@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gaugebc_aggregate.h,v 1.2 2005-01-13 02:51:51 edwards Exp $
+// $Id: gaugebc_aggregate.h,v 1.3 2005-04-10 22:25:08 edwards Exp $
 /*! \file
  *  \brief Gauge boundary condition aggregator
  */
@@ -14,6 +14,7 @@
 namespace Chroma
 {
   //! Registration aggregator
+  /*! @ingroup gaugebcs */
   namespace GaugeTypeGaugeBCEnv
   {
     extern const bool registered;

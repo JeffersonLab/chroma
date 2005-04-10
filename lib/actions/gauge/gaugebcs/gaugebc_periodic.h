@@ -7,11 +7,14 @@
 
 namespace Chroma {
 
+  /*! @ingroup gaugebcs */
   namespace PeriodicGaugeBCEnv { 
     extern const std::string name;
     extern const bool registered;
   };
 
+  //! Periodic gauge
+  /*! @ingroup gaugebcs */
   class PeriodicGaugeBC : public GaugeBC
   {
   public:

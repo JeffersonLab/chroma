@@ -7,23 +7,27 @@
 namespace Chroma 
 { 
   
+  /*! @ingroup gaugebcs */
   namespace SimpleGaugeBCEnv { 
     extern const std::string name;
     extern const bool registered;
   }
 
+  /*! @ingroup gaugebcs */
   struct SimpleGaugeBCParams { 
     SimpleGaugeBCParams();
     SimpleGaugeBCParams(XMLReader& xml, const std::string& path);
     multi1d<Complex> boundary;
   };
 
+  /*! @ingroup gaugebcs */
   void read(XMLReader& xml, const std::string& path, SimpleGaugeBCParams& p); 
   
+  /*! @ingroup gaugebcs */
   void write(XMLWriter& xml, const std::string& path, const SimpleGaugeBCParams& p);
 
- //! Concrete class for gauge actions with simple boundary conditions
-  /*! @ingroup actions
+  //! Concrete class for gauge actions with simple boundary conditions
+  /*! @ingroup gaugebcs
    *
    *  Simple BC, where boundary array is multiplied on the links on the
    *  edge of the lattice

@@ -10,21 +10,23 @@
 namespace Chroma { 
   
 
-
- struct GaugeBCSchrParams {
+  /*! @ingroup gaugebcs */
+  struct GaugeBCSchrParams {
     GaugeBCSchrParams();
     GaugeBCSchrParams(XMLReader& xml, const std::string& path);
     SchrFunType SchrFun;
     Real SchrPhiMult;
   };
   
+  /*! @ingroup gaugebcs */
   void read(XMLReader& xml, const std::string& path, GaugeBCSchrParams& p);
 
+  /*! @ingroup gaugebcs */
   void write(XMLWriter& xml, const std::string& path, const GaugeBCSchrParams& p) ;
 
 
   //! Concrete class for 1-link gauge action boundary conditions with Schroedinger BC
-  /*! @ingroup actions
+  /*! @ingroup gaugebcs
    *
    *  Schroedinger BC for gauge actions that have only 1 link for padding
    *  in the decay direction - e.g., Wilson-like gauge action
