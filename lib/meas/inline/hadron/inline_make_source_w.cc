@@ -1,4 +1,4 @@
-// $Id: inline_make_source_w.cc,v 1.1 2005-04-06 04:34:53 edwards Exp $
+// $Id: inline_make_source_w.cc,v 1.2 2005-04-10 17:06:22 edwards Exp $
 /*! \file
  * \brief Inline construction of make_source
  *
@@ -324,7 +324,8 @@ namespace Chroma
 
       QDPIO::cout << "Source successfully written" << endl;
     }
-
+    
+    QDPIO::cout << "Make_source ran successfully" << endl;
 
     pop(xml_out);  // make_source
 

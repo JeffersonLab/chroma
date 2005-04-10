@@ -1,4 +1,4 @@
-// $Id: inline_propagator_w.cc,v 1.1 2005-04-06 04:34:53 edwards Exp $
+// $Id: inline_propagator_w.cc,v 1.2 2005-04-10 17:06:22 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -362,6 +362,8 @@ namespace Chroma
     }
 
     pop(xml_out);  // propagator
+
+    QDPIO::cout << "Propagator ran successfully" << endl;
 
     END_CODE();
   } 

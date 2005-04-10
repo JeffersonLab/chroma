@@ -1,4 +1,4 @@
-// $Id: inline_seqsource_w.cc,v 1.1 2005-04-06 04:34:53 edwards Exp $
+// $Id: inline_seqsource_w.cc,v 1.2 2005-04-10 17:06:22 edwards Exp $
 /*! \file
  * \brief Inline construction of sequential sources
  *
@@ -117,7 +117,6 @@ namespace Chroma
     write(xml_out, "update_no", update_no);
 
     QDPIO::cout << "SEQSOURCE: propagator sequential source constructor" << endl;
-
 
     proginfo(xml_out);    // Print out basic program info
 
@@ -329,6 +328,8 @@ namespace Chroma
     }
 
     pop(xml_out);    // seqsource
+
+    QDPIO::cout << "Seqsource ran successfully" << endl;
 
     END_CODE();
   } 

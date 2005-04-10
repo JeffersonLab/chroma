@@ -1,4 +1,4 @@
-// $Id: inline_bar3ptfn_w.cc,v 1.1 2005-04-07 03:23:20 edwards Exp $
+// $Id: inline_bar3ptfn_w.cc,v 1.2 2005-04-10 17:06:22 edwards Exp $
 /*! \file
  * \brief Inline measurement of bar3ptfn
  *
@@ -36,10 +36,10 @@ namespace Chroma
     read(inputtop, "prop_file", input.prop_file);
     read(inputtop, "seqprop_files", input.seqprop_files);
 
-    if (inputtop.count("bar3pt_file") == 1)
-      read(inputtop, "bar3pt_file", input.bar3pt_file);
+    if (inputtop.count("bar3ptfn_file") == 1)
+      read(inputtop, "bar3ptfn_file", input.bar3ptfn_file);
     else
-      input.bar3pt_file = "bar3ptfn.dat";
+      input.bar3ptfn_file = "bar3ptfn.dat";
   }
 
   //! Propagator parameters
@@ -49,7 +49,7 @@ namespace Chroma
 
     write(xml, "prop_file", input.prop_file);
     write(xml, "seqprop_files", input.seqprop_files);
-    write(xml, "bar3pt_file", input.bar3pt_file);
+    write(xml, "bar3ptfn_file", input.bar3ptfn_file);
 
     pop(xml);
   }
@@ -389,7 +389,7 @@ namespace Chroma
 
     pop(xml_seq_src);  // Sequential_source
 
-//    BinaryWriter  bin_out(params.prop.bar3pt_file);
+//    BinaryWriter  bin_out(params.prop.bar3ptfn_file);
 //    write(bin_out, bar3ptfn);
 //    bin_out.close();
 
@@ -398,7 +398,7 @@ namespace Chroma
     // Close the namelist output file XMLDAT
     pop(xml_out);     // bar3ptfn
 
-    BinaryWriter  bin_out(params.prop.bar3pt_file);
+    BinaryWriter  bin_out(params.prop.bar3ptfn_file);
     write(bin_out, bar3pt);
     bin_out.close();
 

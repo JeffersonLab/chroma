@@ -1,4 +1,4 @@
-// $Id: inline_qqq_w.cc,v 1.1 2005-04-06 04:34:53 edwards Exp $
+// $Id: inline_qqq_w.cc,v 1.2 2005-04-10 17:06:22 edwards Exp $
 /*! \file
  * \brief Inline construction of qqq_w
  *
@@ -296,6 +296,8 @@ namespace Chroma
     }
 
     pop(xml_out);    // qqq
+
+    QDPIO::cout << "QQQ finished" << endl;
 
     END_CODE();
   } 

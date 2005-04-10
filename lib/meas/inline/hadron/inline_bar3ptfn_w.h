@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_bar3ptfn_w.h,v 1.1 2005-04-07 03:23:20 edwards Exp $
+// $Id: inline_bar3ptfn_w.h,v 1.2 2005-04-10 17:06:22 edwards Exp $
 /*! \file
  * \brief Inline measurement of bar3ptfn
  *
@@ -39,7 +39,7 @@ namespace Chroma
     {
       string           prop_file;  // The files is expected to be in SciDAC format!
       multi1d<string>  seqprop_files;  // The files is expected to be in SciDAC format!
-      string           bar3pt_file;
+      string           bar3ptfn_file;
     } prop;
 
   };
