@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: rect_gaugeact.h,v 1.2 2005-01-14 20:13:06 edwards Exp $
+// $Id: rect_gaugeact.h,v 1.3 2005-04-10 22:32:38 edwards Exp $
 /*! \file
  *  \brief Rectangle gauge action
  */
@@ -13,12 +13,14 @@
 namespace Chroma
 {
 
+  /*! @ingroup gaugeacts */
   namespace RectGaugeActEnv { 
     extern const string name;
     extern const bool registered;
   }
 
-  // Parameter structure
+  //! Parameter structure
+  /*! @ingroup gaugeacts */
   struct RectGaugeActParams {
     // Base Constructor
     RectGaugeActParams();
@@ -29,11 +31,12 @@ namespace Chroma
     Real coeff;  
   };
   
+  /*! @ingroup gaugeacts */
   void read(XMLReader& xml, const string& path, RectGaugeActParams& param);
   
 
   //! Rect gauge action
-  /*! \ingroup gaugeact
+  /*! \ingroup gaugeacts
    *
    * The standard Rect gauge action
    */

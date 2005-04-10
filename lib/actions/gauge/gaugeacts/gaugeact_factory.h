@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gaugeact_factory.h,v 1.1 2005-01-13 02:02:38 edwards Exp $
+// $Id: gaugeact_factory.h,v 1.2 2005-04-10 22:32:38 edwards Exp $
 /*! \file
  *  \brief Fermion action factories
  */
@@ -17,6 +17,7 @@ namespace Chroma
 {
 
   //! GaugeAct Factory 
+  /*! @ingroup gaugeacts */
   typedef SingletonHolder< 
   ObjectFactory<GaugeAction, 
     std::string,

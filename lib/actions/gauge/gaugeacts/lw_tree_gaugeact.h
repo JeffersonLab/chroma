@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lw_tree_gaugeact.h,v 1.2 2005-01-14 20:13:06 edwards Exp $
+// $Id: lw_tree_gaugeact.h,v 1.3 2005-04-10 22:32:38 edwards Exp $
 /*! \file
  *  \brief Tree-level tadpole-improved Luscher-Weisz gauge action
  */
@@ -15,12 +15,14 @@
 namespace Chroma
 {
 
+  /*! @ingroup gaugeacts */
   namespace LWTreeGaugeActEnv { 
     extern const string name;
     extern const bool registered;
   }
 
-  // Parameter structure
+  //! Parameter structure
+  /*! @ingroup gaugeacts */
   struct LWTreeGaugeActParams {
     // Base Constructor
     LWTreeGaugeActParams();
@@ -32,11 +34,12 @@ namespace Chroma
     Real u0;  
   };
   
+  /*! @ingroup gaugeacts */
   void read(XMLReader& xml, const string& path, LWTreeGaugeActParams& param);
   
 
   //! LWTree gauge action
-  /*! \ingroup gaugeact
+  /*! \ingroup gaugeacts
    *
    * The standard LWTree gauge action
    */

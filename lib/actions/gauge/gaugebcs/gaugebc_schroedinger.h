@@ -113,7 +113,7 @@ namespace Chroma {
 
 
   //! Concrete class for 2-link gauge action boundary conditions with Schroedinger BC
-  /*! @ingroup actions
+  /*! @ingroup gaugebcs
    *
    *  Schroedinger BC for gauge actions that have only 2 links for padding
    *  in the decay direction - e.g., Symanzik-like gauge action

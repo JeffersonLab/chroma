@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: rg_gaugeact.h,v 1.2 2005-01-14 20:13:06 edwards Exp $
+// $Id: rg_gaugeact.h,v 1.3 2005-04-10 22:32:38 edwards Exp $
 /*! \file
  *  \brief Generic RG style plaquette + rectangle gauge action
  */
@@ -15,12 +15,14 @@
 namespace Chroma
 {
 
+  /*! @ingroup gaugeacts */
   namespace RGGaugeActEnv { 
     extern const string name;
     extern const bool registered;
   }
 
-  // Parameter structure
+  //! Parameter structure
+  /*! @ingroup gaugeacts */
   struct RGGaugeActParams {
     // Base Constructor
     RGGaugeActParams();
@@ -32,11 +34,12 @@ namespace Chroma
     Real c1;  
   };
   
+  /*! @ingroup gaugeacts */
   void read(XMLReader& xml, const string& path, RGGaugeActParams& param);
   
 
   //! RG gauge action
-  /*! \ingroup gaugeact
+  /*! \ingroup gaugeacts
    *
    * A RG (plaquette + rectangle) gauge action
    */

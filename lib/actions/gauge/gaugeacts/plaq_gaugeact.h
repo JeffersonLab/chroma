@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: plaq_gaugeact.h,v 1.3 2005-02-23 19:26:12 edwards Exp $
+// $Id: plaq_gaugeact.h,v 1.4 2005-04-10 22:32:38 edwards Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */
@@ -14,13 +14,15 @@
 namespace Chroma
 {
 
+  /*! @ingroup gaugeacts */
   namespace PlaqGaugeActEnv 
   { 
     extern const string name;
     extern const bool registered;
   }
 
-  // Parameter structure
+  //! Parameter structure
+  /*! @ingroup gaugeacts */
   struct PlaqGaugeActParams 
   {
     // Base Constructor
@@ -33,11 +35,12 @@ namespace Chroma
     AnisoParam_t aniso;
   };
   
+  /*! @ingroup gaugeacts */
   void read(XMLReader& xml, const string& path, PlaqGaugeActParams& param);
   
 
   //! Plaquette gauge action
-  /*! \ingroup gaugeact
+  /*! \ingroup gaugeacts
    *
    * The standard Plaquette gauge action
    */

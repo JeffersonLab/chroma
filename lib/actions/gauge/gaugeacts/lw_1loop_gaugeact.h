@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lw_1loop_gaugeact.h,v 1.2 2005-01-14 20:13:06 edwards Exp $
+// $Id: lw_1loop_gaugeact.h,v 1.3 2005-04-10 22:32:38 edwards Exp $
 /*! \file
  *  \brief 1-loop tadpole-improved Luscher-Weisz gauge action
  */
@@ -16,12 +16,14 @@
 namespace Chroma
 {
 
+  /*! @ingroup gaugeacts */
   namespace LW1LoopGaugeActEnv { 
     extern const string name;
     extern const bool registered;
   }
 
-  // Parameter structure
+  //! Parameter structure
+  /*! @ingroup gaugeacts */
   struct LW1LoopGaugeActParams {
     // Base Constructor
     LW1LoopGaugeActParams();
@@ -33,11 +35,12 @@ namespace Chroma
     Real u0;  
   };
   
+  /*! @ingroup gaugeacts */
   void read(XMLReader& xml, const string& path, LW1LoopGaugeActParams& param);
   
 
   //! LW1Loop gauge action
-  /*! \ingroup gaugeact
+  /*! \ingroup gaugeacts
    *
    * The standard LW1Loop gauge action
    */

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: pg_gaugeact.h,v 1.2 2005-01-14 20:13:06 edwards Exp $
+// $Id: pg_gaugeact.h,v 1.3 2005-04-10 22:32:38 edwards Exp $
 /*! \file
  *  \brief Parallelgram gauge action
  */
@@ -13,12 +13,14 @@
 namespace Chroma
 {
 
+  /*! @ingroup gaugeacts */
   namespace PgGaugeActEnv { 
     extern const string name;
     extern const bool registered;
   }
 
   // Parameter structure
+  /*! @ingroup gaugeacts */
   struct PgGaugeActParams {
     // Base Constructor
     PgGaugeActParams();
@@ -29,11 +31,12 @@ namespace Chroma
     Real coeff;  
   };
   
+  /*! @ingroup gaugeacts */
   void read(XMLReader& xml, const string& path, PgGaugeActParams& param);
   
 
   //! Parallelogram gauge action
-  /*! \ingroup gaugeact
+  /*! \ingroup gaugeacts
    *
    * The standard parallelogram gauge action
    */
