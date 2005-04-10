@@ -1,4 +1,4 @@
-// $Id: inline_mres_w.cc,v 1.1 2005-04-10 20:31:35 edwards Exp $
+// $Id: inline_mres_w.cc,v 1.2 2005-04-10 20:41:11 edwards Exp $
 /*! \file
  * \brief Inline construction of mres
  *
@@ -41,6 +41,23 @@ namespace Chroma
 
 
   // Reader
+  void read(XMLReader& xml, const string& path, InlineMresParams::Param_t& input)
+  {
+    XMLReader inputtop(xml, path);
+    read(inputtop, "nrow", input.nrow);
+  }
+
+
+  // Writer
+  void write(XMLWriter& xml, const string& path, const InlineMresParams::Param_t& input)
+  {
+    push(xml, path);
+    write(xml, "nrow", input.nrow);
+    pop(xml);
+  }
+
+
+  // Reader
   void read(XMLReader& xml, const string& path, InlineMresParams::Prop_t& input)
   {
     XMLReader inputtop(xml, path);
@@ -68,7 +85,7 @@ namespace Chroma
     try
     {
       // The parameters holds the version number
-      read(inputtop, "nrow", nrow);
+      read(inputtop, "Param", param);
 
       // Read any auxiliary state information
       if( inputtop.count("StateInfo") == 1 ) {
@@ -99,7 +116,7 @@ namespace Chroma
   {
     push(xml, path);
     
-    QDP::write(xml, "nrow", nrow);
+    Chroma::write(xml, "Param", param);
     QDP::write(xml, "StateInfo", stateInfo);
     Chroma::write(xml, "Prop", prop);
 

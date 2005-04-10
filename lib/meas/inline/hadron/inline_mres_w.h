@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_mres_w.h,v 1.1 2005-04-10 20:31:35 edwards Exp $
+// $Id: inline_mres_w.h,v 1.2 2005-04-10 20:41:11 edwards Exp $
 /*! \file
  * \brief Inline mres calculations
  *
@@ -29,7 +29,11 @@ namespace Chroma
 
     unsigned long     frequency;
 
-    multi1d<int>      nrow;
+    struct Param_t
+    {
+      multi1d<int>    nrow;
+    } param;
+
     std::string       stateInfo;
 
     struct Prop_t

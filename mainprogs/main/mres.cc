@@ -1,4 +1,4 @@
-// $Id: mres.cc,v 1.14 2005-04-10 20:32:04 edwards Exp $
+// $Id: mres.cc,v 1.15 2005-04-10 20:40:52 edwards Exp $
 
 #include "chroma.h"
 
@@ -22,7 +22,7 @@ int main(int argc, char **argv)
   InlineMres  meas(input);
 
   // Specify lattice size, shape, etc.
-  Layout::setLattSize(input.nrow);
+  Layout::setLattSize(input.param.nrow);
   Layout::create();
 
   // Read gauge field info
