@@ -2,12 +2,13 @@
 
 
 <propagator>
+  <update_no>0</update_no>
   <ProgramInfo>
     <code_version>
-      <chroma>1.19</chroma>
-      <qdp>1.11.8</qdp>
+      <chroma>1.20</chroma>
+      <qdp>1.12.0</qdp>
     </code_version>
-    <run_date>17 Feb 05 21:42:51 EST</run_date>
+    <run_date>10 Apr 05 11:03:35 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -16,44 +17,42 @@
       <subgrid_volume>512</subgrid_volume>
     </Setgeom>
   </ProgramInfo>
-  <Input><propagator>
-<annotation>
-; $Id: propagator_v7.linux-scalar-intel.xml,v 1.2 2005-02-18 02:42:07 edwards Exp $
-;
-; PROPAGATOR input file.
-</annotation>
-
-<Param>
- <version>7</version>
- <FermTypeP>WILSON</FermTypeP>
- <nonRelProp>false</nonRelProp>
- <FermionAction>
+  <Input>
+    <Param>
+      <version>7</version>
+      <nonRelProp>false</nonRelProp><FermionAction>
   <FermAct>WILSON</FermAct>
   <Kappa>0.11</Kappa>
   <FermionBC>
     <FermBC>SIMPLE_FERMBC</FermBC>
     <boundary>1 1 1 -1</boundary>
   </FermionBC>
+  <AnisoParam>
+    <anisoP>false</anisoP>
+    <t_dir>3</t_dir>
+    <xi_0>1.0</xi_0>
+    <nu>1.0</nu>
+  </AnisoParam>
  </FermionAction>
- <InvertParam>
-   <invType>CG_INVERTER</invType>
-   <RsdCG>1.0e-5</RsdCG>
-   <MaxCG>1000</MaxCG>
- </InvertParam>
- <nrow>4 4 4 8</nrow>
- <t_source>0 0 0 0</t_source>
-</Param>
-<Cfg>
- <cfg_type>SZIN</cfg_type>
- <cfg_file>../test_purgaug.cfg1</cfg_file>
-</Cfg>
-<Prop>
- <source_file>../make_source/source_0</source_file>
- <prop_file>propagator_0</prop_file>
- <prop_volfmt>SINGLEFILE</prop_volfmt>
-</Prop>
-</propagator>
 
+      <InvertParam>
+        <invType>CG_INVERTER</invType>
+        <RsdCG>1e-05</RsdCG>
+        <MaxCG>1000</MaxCG>
+        <MROver>1</MROver>
+        <RsdCGPrec>1e-05</RsdCGPrec>
+        <MaxCGPrec>1000</MaxCGPrec>
+      </InvertParam>
+      <nrow>4 4 4 8</nrow>
+    </Param>
+    <StateInfo>
+<StateInfo>
+</StateInfo></StateInfo>
+    <Prop>
+      <source_file>../make_source/source_0</source_file>
+      <prop_file>propagator_0</prop_file>
+      <prop_volfmt>SINGLEFILE</prop_volfmt>
+    </Prop>
   </Input>
   <Config_info><szin>
       <cfg_version>7</cfg_version>
@@ -94,6 +93,7 @@
         </Seed>
       </seed>
     </szin>
+
 
   </Config_info>
   <Source_file_info><make_source>
@@ -174,57 +174,63 @@
     <s_plaq>0.862579</s_plaq>
     <t_plaq>0.941947</t_plaq>
     <link>0.734641</link>
+    <pollp>
+      <elem>
+        <re>0.790237</re>
+        <im>0.00288483</im>
+      </elem>
+      <elem>
+        <re>0.785869</re>
+        <im>-0.00015866</im>
+      </elem>
+      <elem>
+        <re>0.80393</re>
+        <im>0.00160447</im>
+      </elem>
+      <elem>
+        <re>0.864752</re>
+        <im>0.00215502</im>
+      </elem>
+    </pollp>
   </Observables>
   <Source_correlator>
     <source_corr>5.44616 0 0 0 0 0 0 0</source_corr>
   </Source_correlator>
   <QuarkProp4>
     <Qprop>
-      <RsdCG>1e-05</RsdCG>
       <n_count>18</n_count>
     </Qprop>
     <Qprop>
-      <RsdCG>1e-05</RsdCG>
       <n_count>18</n_count>
     </Qprop>
     <Qprop>
-      <RsdCG>1e-05</RsdCG>
       <n_count>18</n_count>
     </Qprop>
     <Qprop>
-      <RsdCG>1e-05</RsdCG>
       <n_count>18</n_count>
     </Qprop>
     <Qprop>
-      <RsdCG>1e-05</RsdCG>
       <n_count>18</n_count>
     </Qprop>
     <Qprop>
-      <RsdCG>1e-05</RsdCG>
       <n_count>18</n_count>
     </Qprop>
     <Qprop>
-      <RsdCG>1e-05</RsdCG>
       <n_count>18</n_count>
     </Qprop>
     <Qprop>
-      <RsdCG>1e-05</RsdCG>
       <n_count>18</n_count>
     </Qprop>
     <Qprop>
-      <RsdCG>1e-05</RsdCG>
       <n_count>18</n_count>
     </Qprop>
     <Qprop>
-      <RsdCG>1e-05</RsdCG>
       <n_count>18</n_count>
     </Qprop>
     <Qprop>
-      <RsdCG>1e-05</RsdCG>
       <n_count>18</n_count>
     </Qprop>
     <Qprop>
-      <RsdCG>1e-05</RsdCG>
       <n_count>18</n_count>
     </Qprop>
   </QuarkProp4>
