@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_hamiltonian.h,v 1.4 2005-04-10 21:46:42 edwards Exp $
+// $Id: abs_hamiltonian.h,v 1.5 2005-04-10 22:05:03 edwards Exp $
 /*! \file
  * \brief Abstract Hamiltonian
  *
@@ -19,7 +19,7 @@ namespace Chroma
 
   //! Abstract Hamiltonian
   /*! 
-   * @ingroup hmc
+   * @ingroup hamilton
    *
    * A hamiltonian is essentially an aggregator for Monomials 
    * As such we get two kinds -- Exact Hamiltonians and inexact 
@@ -111,7 +111,7 @@ namespace Chroma
   
   
   //! Exact Abstract Hamiltonian
-  /*! @ingroup hmc
+  /*! @ingroup hamilton
    *
    * Now define similar classes for exact algorithms.
    * These are basically the same as before but they can compute

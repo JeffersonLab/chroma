@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: exact_hamiltonian.h,v 1.5 2005-04-10 21:46:42 edwards Exp $
+// $Id: exact_hamiltonian.h,v 1.6 2005-04-10 22:05:03 edwards Exp $
 /*! \file
  * \brief Exact Hamiltonians
  */
@@ -16,7 +16,7 @@ namespace Chroma
 {
 
   //! Exact Hamiltonian
-  /*! @ingroup hmc */
+  /*! @ingroup hamilton */
   class ExactLatColMatHamiltonian : public ExactAbsHamiltonian<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > 
   {
   public:
