@@ -1,4 +1,4 @@
-// $Id: seqsource.cc,v 1.12 2005-03-15 04:08:24 edwards Exp $
+// $Id: seqsource.cc,v 1.13 2005-04-10 16:42:11 edwards Exp $
 /*! \file
  *  \brief Main code for sequential source construction
  */
@@ -9,69 +9,6 @@
 #include "chroma.h"
 
 using namespace Chroma;
-
-
-/*
- * Input 
- */
-
-//! Propagators
-struct Prop_t
-{
-  string           prop_file;  // The file is expected to be in SciDAC format!
-  string           seqsource_file;  // The file is expected to be in SciDAC format!
-  QDP_volfmt_t     seqsource_volfmt;
-};
-
-
-//! Mega-structure of all input
-struct SeqSource_input_t
-{
-  SeqSource_t       param;
-  PropSink_t        sink_header;
-  Cfg_t             cfg;
-  Prop_t            prop;
-};
-
-
-//! Propagator parameters
-void read(XMLReader& xml, const string& path, Prop_t& input)
-{
-  XMLReader inputtop(xml, path);
-
-  read(inputtop, "prop_file", input.prop_file);
-  read(inputtop, "seqsource_file", input.seqsource_file);
-  read(inputtop, "seqsource_volfmt", input.seqsource_volfmt);
-}
-
-
-// Reader for input parameters
-void read(XMLReader& xml, const string& path, SeqSource_input_t& input)
-{
-  XMLReader inputtop(xml, path);
-
-  // Read the input
-  try
-  {
-    // The parameters holds the version number
-    read(inputtop, "Param", input.param);
-
-    // The parameters for smearing the sink
-    read(inputtop, "PropSink", input.sink_header);
-
-    // Read in the gauge configuration info
-    read(inputtop, "Cfg", input.cfg);
-
-    // Read in the forward_prop/seqsource info
-    read(inputtop, "Prop", input.prop);
-  }
-  catch (const string& e) 
-  {
-    QDPIO::cerr << "Error reading data: " << e << endl;
-    throw;
-  }
-}
-
 
 //! Sequential source generation
 /*
@@ -91,267 +28,58 @@ int main(int argc, char **argv)
   // Put the machine into a known state
   Chroma::initialize(&argc, &argv);
 
-  START_CODE();
-
   // Insure linkage
-  bool foo = SeqSourceCallMapEnv::registered;
-  QDPIO::cout << "linkage=" << foo << endl;
+  QDPIO::cout << "linkage=" << SeqSourceCallMapEnv::registered << endl;
 
-  // Input parameter structure
-  SeqSource_input_t  input;
+  START_CODE();
 
   // Instantiate xml reader for DATA
   XMLReader xml_in(Chroma::getXMLInputFileName());
 
   // Read data
-  read(xml_in, "/seqsource", input);
+  InlineSeqSourceParams input(xml_in, "/seqsource");
+  InlineSeqSource  meas(input);
 
   // Specify lattice size, shape, etc.
   Layout::setLattSize(input.param.nrow);
   Layout::create();
 
-  // Sanity checks
-  QDPIO::cout << endl << "     Gauge group: SU(" << Nc << ")" << endl;
+  QDPIO::cout << "SEQSOURCE: sequential source generation" << endl;
 
-  QDPIO::cout << "     Computing sequential source of type "
-	      << input.param.seq_src << endl;
-  
-  QDPIO::cout << "     Volume: " << input.param.nrow[0];
-  for (int i=1; i<Nd; ++i) {
-    QDPIO::cout << " x " << input.param.nrow[i];
+  // Read gauge field info
+  Cfg_t  cfg;
+  try
+  {
+    read(xml_in, "/seqsource/Cfg", cfg);
   }
-  QDPIO::cout << endl;
+  catch(const string& e)
+  {
+    QDP_error_exit("Error reading in seqsource: %s", e.c_str());
+  }
 
-
-  // Read in the configuration along with relevant information.
+  // Start up the gauge field
   multi1d<LatticeColorMatrix> u(Nd);
-  XMLReader gauge_file_xml, gauge_xml;
+  XMLBufferWriter config_xml;
+  {
+    XMLReader gauge_file_xml, gauge_xml;
 
-  // Startup gauge
-  gaugeStartup(gauge_file_xml, gauge_xml, u, input.cfg);
+    QDPIO::cout << "Initialize Gauge field" << endl;
+    gaugeStartup(gauge_file_xml, gauge_xml, u, cfg);
+    QDPIO::cout << "Gauge field initialized!" << endl;
 
-
-  // Instantiate XML writer for XMLDAT
-  XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
-  push(xml_out, "seqsource");
-
-  proginfo(xml_out);    // Print out basic program info
-
-  // Write out the input
-  write(xml_out, "Input", xml_in);
-
-  // Write out the config header
-  write(xml_out, "Config_info", gauge_xml);
-
-  push(xml_out, "Output_version");
-  write(xml_out, "out_version", 1);
-  pop(xml_out);
-
-  xml_out.flush();
-
+    config_xml << gauge_xml;
+  }
 
   // Check if the gauge field configuration is unitarized
   unitarityCheck(u);
 
-  // Calculate some gauge invariant observables just for info.
-  MesPlq(xml_out, "Observables", u);
+  // Output
+  XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
+
+  unsigned long cur_update = 0;
+  meas(u, config_xml, cur_update, xml_out);
+
   xml_out.flush();
-
-  //
-  // Read the quark propagator and extract headers
-  //
-  LatticePropagator quark_propagator;
-  ChromaProp_t prop_header;
-  PropSource_t source_header;
-  {
-    XMLReader prop_file_xml, prop_record_xml;
-
-    QDPIO::cout << "Attempt to read forward propagator" << endl;
-    readQprop(prop_file_xml, 
-	      prop_record_xml, quark_propagator,
-	      input.prop.prop_file, QDPIO_SERIAL);
-    QDPIO::cout << "Forward propagator successfully read" << endl;
-   
-    // Try to invert this record XML into a ChromaProp struct
-    // Also pull out the id of this source
-    try
-    {
-      read(prop_record_xml, "/Propagator/ForwardProp", prop_header);
-      read(prop_record_xml, "/Propagator/PropSource", source_header);
-    }
-    catch (const string& e) 
-    {
-      QDPIO::cerr << "Error extracting forward_prop header: " << e << endl;
-      QDP_abort(1);
-    }
-
-    // Save prop input
-    write(xml_out, "Propagator_info", prop_record_xml);
-  }
-
-  // Derived from input prop
-  int  j_decay = source_header.j_decay;
-  multi1d<int> t_source = source_header.t_source;
-
-  // Initialize the slow Fourier transform phases
-  SftMom phases(0, true, j_decay);
-
-  // Sanity check - write out the norm2 of the forward prop in the j_decay direction
-  // Use this for any possible verification
-  {
-    multi1d<Double> forward_prop_corr = sumMulti(localNorm2(quark_propagator), 
-						 phases.getSet());
-
-    push(xml_out, "Forward_prop_correlator");
-    write(xml_out, "forward_prop_corr", forward_prop_corr);
-    pop(xml_out);
-  }
-
-  // A sanity check
-  if (input.param.t_sink < 0 || input.param.t_sink >= input.param.nrow[j_decay]) 
-  {
-    QDPIO::cerr << "Sink time coordinate incorrect." << endl;
-    QDPIO::cerr << "t_sink = " << input.param.t_sink << endl;
-    QDP_abort(1);
-  }
-
-  // Only support simple s-wave states
-  if (input.sink_header.wave_state != WAVE_TYPE_S_WAVE)
-  {
-    QDPIO::cerr << "Only support simple s-wave states" << endl;
-    QDP_abort(1);
-  }
-
-
-
-  //------------------ Start main body of calculations -----------------------------
-
-  // Do the sink smearing BEFORE the interpolating operator
-  switch (input.sink_header.sink_type)
-  {
-  case SNK_TYPE_SHELL_SINK:
-  {
-    QDPIO::cout << "SeqSource: do shell sink smearing" << endl;
-
-    sink_smear2(u, quark_propagator, 
-		source_header.sourceSmearParam.wvf_kind, 
-		source_header.sourceSmearParam.wvf_param, 
-		source_header.sourceSmearParam.wvfIntPar, 
-		j_decay);
-  }
-  break;
-
-  case SNK_TYPE_WALL_SINK:
-  {
-    QDPIO::cout << "SeqSource: do wall sink smearing" << endl;
-
-    for(int i=0; i < input.param.sink_mom.size(); ++i)
-      if (input.param.sink_mom[i] != 0)
-      {
-	QDPIO::cerr << "Do not currently support non-zero momenta wall-sink smearing" << endl;
-	QDP_abort(1);
-      }
-
-    LatticePropagator tmp_prop = quark_propagator;
-    wall_qprop(quark_propagator, tmp_prop, phases);
-  }
-  break;
-
-  default:
-    break;
-  }
-    
-  
-  //
-  // Construct the sequential source
-  //
-  LatticePropagator quark_prop_src = 
-    hadSeqSource(quark_propagator, 
-		 quark_propagator, 
-		 quark_propagator, 
-		 input.param.t_sink, 
-		 input.param.sink_mom, 
-		 j_decay, 
-		 input.param.seq_src);
-
-
-  // Do the sink smearing AFTER the interpolating operator
-  switch (input.sink_header.sink_type)
-  {
-  case SNK_TYPE_SHELL_SINK:
-  {
-    sink_smear2(u, quark_prop_src, 
-		source_header.sourceSmearParam.wvf_kind, 
-		source_header.sourceSmearParam.wvf_param, 
-		source_header.sourceSmearParam.wvfIntPar, 
-		j_decay);
-  }
-  break;
-
-  case SNK_TYPE_WALL_SINK:
-  {
-//    LatticePropagator tmp_prop = quark_prop_src;
-//    wall_qprop(quark_prop_src, tmp_prop, phases);
-
-    int t_sink = input.param.t_sink;
-
-    // Project propagator onto zero momentum: Do a slice-wise sum.
-    DPropagator dprop_slice = sum(quark_prop_src, phases.getSet()[t_sink]);
-    quark_prop_src[phases.getSet()[t_sink]] = dprop_slice;
-  }
-  break;
-
-  default:
-    break;
-  }
-    
-  // Sanity check - write out the norm2 of the propagator source in the j_decay direction
-  // Use this for any possible verification
-  {
-    multi1d<Double> seqsource_corr = sumMulti(localNorm2(quark_prop_src), 
-					      phases.getSet());
-	
-    push(xml_out, "SeqSource_correlator");
-    write(xml_out, "seqsource_corr", seqsource_corr);
-    pop(xml_out);
-  }
-
-
-  /*
-   *  Write the sequential source out to disk
-   */
-  {
-    XMLBufferWriter file_xml;
-    push(file_xml, "seqsource");
-    int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
-    write(file_xml, "id", id);
-    pop(file_xml);
-
-    // Sequential source header
-    // For now, only have 1 set of forward props to tie
-    SequentialSource_t src;
-    src.sink_header = input.sink_header;
-    src.seqsource_header = input.param;
-    src.forward_props.resize(1);
-    src.forward_props[0].sink_header = input.sink_header;
-    src.forward_props[0].prop_header = prop_header;
-    src.forward_props[0].source_header = source_header;
-
-    XMLBufferWriter record_xml;
-    push(record_xml, "SequentialSource");
-    write(record_xml, ".", src);
-    write(record_xml, "Config_info", gauge_xml);
-    pop(record_xml);  // SequentialSource
-
-    // Write the seqsource
-    writeQprop(file_xml, record_xml, quark_prop_src,
-	       input.prop.seqsource_file, 
-	       input.prop.seqsource_volfmt, QDPIO_SERIAL);
-
-    QDPIO::cout << "Sequential source successfully written" << endl;
-  }
-
-  pop(xml_out);    // seqsource
 
   // Time to bolt
   Chroma::finalize();

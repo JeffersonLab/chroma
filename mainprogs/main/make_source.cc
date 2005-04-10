@@ -1,4 +1,4 @@
-// $Id: make_source.cc,v 1.40 2005-04-09 23:14:55 edwards Exp $
+// $Id: make_source.cc,v 1.41 2005-04-10 16:42:10 edwards Exp $
 /*! \file
  *  \brief Main code for source generation
  */
@@ -32,8 +32,6 @@ int main(int argc, char **argv)
 
   Layout::setLattSize(input.param.nrow);
   Layout::create();
-
-  QDPIO::cout << "MAKE_SOURCE: propagator source constructor" << endl;
 
   // Read gauge field info
   Cfg_t  cfg;

@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.96 2005-04-10 15:04:36 edwards Exp $
+// $Id: propagator.cc,v 1.97 2005-04-10 16:42:10 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -51,8 +51,6 @@ int main(int argc, char **argv)
   // Specify lattice size, shape, etc.
   Layout::setLattSize(input.param.nrow);
   Layout::create();
-
-  QDPIO::cout << "PROPAGATOR" << endl;
 
   // Read gauge field info
   Cfg_t  cfg;
