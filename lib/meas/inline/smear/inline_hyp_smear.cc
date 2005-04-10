@@ -1,4 +1,4 @@
-// $Id: inline_hyp_smear.cc,v 1.1 2005-04-07 03:23:20 edwards Exp $
+// $Id: inline_hyp_smear.cc,v 1.2 2005-04-10 17:05:33 edwards Exp $
 /*! \file
  *  \brief Inline Hyp smearing
  */
@@ -170,6 +170,18 @@ namespace Chroma
       QDPIO::cerr << "Caught Exception reading XML: " << e << endl;
       QDP_abort(1);
     }
+  }
+
+
+  void
+  InlineHypSmearParams::write(XMLWriter& xml, const std::string& path) 
+  {
+    push(xml, path);
+
+    Chroma::write(xml, "Param", param);
+    Chroma::write(xml, "Hyp", hyp);
+
+    pop(xml);
   }
 
 
