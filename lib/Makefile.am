@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.258 2005-04-07 03:27:17 edwards Exp $
+# $Id: Makefile.am,v 1.259 2005-04-10 21:47:55 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -345,6 +345,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_qqq_w.h \
 	meas/inline/hadron/inline_bar3ptfn_w.h \
 	meas/inline/hadron/inline_building_blocks_w.h \
+	meas/inline/hadron/inline_mres_w.h \
 	meas/inline/hadron/inline_multipole_w.h \
 	meas/inline/smear/smear.h \
 	meas/inline/smear/inline_smear_aggregate.h \
@@ -611,6 +612,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_qqq_w.cc \
 	meas/inline/hadron/inline_bar3ptfn_w.cc \
 	meas/inline/hadron/inline_building_blocks_w.cc \
+	meas/inline/hadron/inline_mres_w.cc \
 	meas/inline/hadron/inline_multipole_w.cc \
 	meas/inline/smear/inline_smear_aggregate.cc \
 	meas/inline/smear/inline_ape_smear.cc \
