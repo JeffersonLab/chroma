@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial5d_w.h,v 1.5 2005-03-07 02:55:59 edwards Exp $
+// $Id: two_flavor_monomial5d_w.h,v 1.6 2005-04-10 21:57:03 edwards Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -15,7 +15,7 @@ namespace Chroma
 {
   //-------------------------------------------------------------------------------------------
   //! Exact 2 degen flavor fermact monomial in extra dimensions
-  /*! @ingroup actions
+  /*! @ingroup monomial
    *
    * Exact 2 degen flavor fermact monomial. Preconditioning is not
    * specified yet.
@@ -202,7 +202,7 @@ namespace Chroma
 
   //-------------------------------------------------------------------------------------------
   //! Exact 2 degen flavor unpreconditioned fermact monomial living in extra dimensions
-  /*! @ingroup actions
+  /*! @ingroup monomial
    *
    * Exact 2 degen flavor unpreconditioned fermact monomial.
    * 
@@ -284,7 +284,7 @@ namespace Chroma
 
   //-------------------------------------------------------------------------------------------
   //! Exact 2 degen flavor even-odd preconditioned fermact monomial living in extra dimensions
-  /*! @ingroup actions
+  /*! @ingroup monomial
    *
    * Exact 2 degen flavor even-odd preconditioned fermact monomial.
    * Can supply a default dsdq algorithm

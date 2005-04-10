@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hmc.h,v 1.2 2005-04-10 21:46:42 edwards Exp $
+// $Id: hmc.h,v 1.3 2005-04-10 21:57:03 edwards Exp $
 
 /*! \file
  * \brief HMC trajectories
@@ -8,7 +8,7 @@
  */
 
 /*! \defgroup hmc HMC trajectories
- * \ingroup hmc
+ * \ingroup molecdyn
  *
  * HMC trajectories
  */

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial5d_w.h,v 1.5 2005-03-07 02:55:59 edwards Exp $
+// $Id: one_flavor_rat_monomial5d_w.h,v 1.6 2005-04-10 21:57:03 edwards Exp $
 
 /*! @file
  * @brief One flavor monomials using RHMC
@@ -15,7 +15,7 @@ namespace Chroma
 {
   //-------------------------------------------------------------------------------------------
   //! Exact 1 flavor fermact monomial in extra dimensions
-  /*! @ingroup actions
+  /*! @ingroup monomial
    *
    * Exact 1 flavor fermact monomial. Preconditioning is not
    * specified yet.
@@ -32,7 +32,7 @@ namespace Chroma
     virtual Double S(const AbsFieldState<P,Q>& s)  = 0;
 
     //! Compute dsdq for the system... 
-    /*! Actions of the form  chi^dag*(M^dag*M)*chi */
+    /*! Monomial of the form  chi^dag*(M^dag*M)*chi */
     virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) 
     {
       // SelfIdentification/Encapsultaion Rule
@@ -474,7 +474,7 @@ namespace Chroma
 
   //-------------------------------------------------------------------------------------------
   //! Exact 1 flavor unpreconditioned fermact monomial living in extra dimensions
-  /*! @ingroup actions
+  /*! @ingroup monomial
    *
    * Exact 1 flavor unpreconditioned fermact monomial.
    */
@@ -549,7 +549,7 @@ namespace Chroma
 
   //-------------------------------------------------------------------------------------------
   //! Exact 1 flavor even-odd preconditioned fermact monomial living in extra dimensions
-  /*! @ingroup actions
+  /*! @ingroup monomial
    *
    * Exact 1 flavor even-odd preconditioned fermact monomial.
    * Can supply a default dsdq algorithm
