@@ -2,12 +2,13 @@
 
 
 <ExampleBuildingBlocks>
+  <update_no>0</update_no>
   <ProgramInfo>
     <code_version>
       <chroma>1.20</chroma>
-      <qdp>1.11.8</qdp>
+      <qdp>1.12.0</qdp>
     </code_version>
-    <run_date>14 Mar 05 22:56:35 EST</run_date>
+    <run_date>10 Apr 05 12:09:58 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -19,78 +20,61 @@
   <Output_version>
     <out_version>2</out_version>
   </Output_version>
-  <Input><ExampleBuildingBlocks>
-<annotation>
-; $Id: examplebb_v1.linux-scalar.xml,v 1.3 2005-03-15 04:09:07 edwards Exp $
-;
-; ExampleBuildingBlock input file.
-;
-</annotation>
-
-<Param>
- <version>1</version>
- <nrow>4 4 4 8</nrow>
- <mom2_max>3</mom2_max>
- <links_max>1</links_max>
-</Param>
-<Cfg>
- <cfg_type>SZIN</cfg_type>
- <cfg_file>../test_purgaug.cfg1</cfg_file>
-</Cfg>
-<BuildingBlocks>
- <OutFileName>./examplebb_v1.linux-scalar.out</OutFileName>
- <FrwdPropFileName>../propagator/propagator_0</FrwdPropFileName>
- <BkwdProps>
-   <elem>
-     <BkwdPropFileName>../seqsource/seqprop_0_NUCL_U_UNPOL</BkwdPropFileName>
-     <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
-     <GammaInsertion>0</GammaInsertion>
-     <BBFileNamePattern>nucl_u_unpol_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
-   </elem>
-   <elem>
-     <BkwdPropFileName>../seqsource/seqprop_0_NUCL_D_UNPOL</BkwdPropFileName>
-     <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
-     <GammaInsertion>0</GammaInsertion>
-     <BBFileNamePattern>nucl_d_unpol_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
-   </elem>
-
-   <elem>
-     <BkwdPropFileName>../seqsource/seqprop_0_NUCL_U_POL</BkwdPropFileName>
-     <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
-     <GammaInsertion>0</GammaInsertion>
-     <BBFileNamePattern>nucl_u_pol_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
-   </elem>
-   <elem>
-     <BkwdPropFileName>../seqsource/seqprop_0_NUCL_D_POL</BkwdPropFileName>
-     <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
-     <GammaInsertion>0</GammaInsertion>
-     <BBFileNamePattern>nucl_d_pol_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
-   </elem>
-
-   <elem>
-     <BkwdPropFileName>../seqsource/seqprop_0_NUCL_U_MIXED_NONREL</BkwdPropFileName>
-     <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
-     <GammaInsertion>0</GammaInsertion>
-     <BBFileNamePattern>nucl_u_mixed_nonrel_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
-   </elem>
-   <elem>
-     <BkwdPropFileName>../seqsource/seqprop_0_NUCL_D_MIXED_NONREL</BkwdPropFileName>
-     <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
-     <GammaInsertion>0</GammaInsertion>
-     <BBFileNamePattern>nucl_d_mixed_nonrel_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
-   </elem>
-
-   <elem>
-     <BkwdPropFileName>../seqsource/seqprop_0_PION</BkwdPropFileName>
-     <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
-     <GammaInsertion>0</GammaInsertion>
-     <BBFileNamePattern>pion_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
-   </elem>
- </BkwdProps>
-</BuildingBlocks>
-
-</ExampleBuildingBlocks>
-
+  <Input>
+    <Param>
+      <version>1</version>
+      <links_max>1</links_max>
+      <mom2_max>3</mom2_max>
+      <nrow>4 4 4 8</nrow>
+    </Param>
+    <BuildingBlocks>
+      <OutFileName>./examplebb_v1.linux-scalar.out</OutFileName>
+      <FrwdPropFileName>../propagator/propagator_0</FrwdPropFileName>
+      <BkwdProps>
+        <elem>
+          <BkwdPropFileName>../seqsource/seqprop_0_NUCL_U_UNPOL</BkwdPropFileName>
+          <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
+          <GammaInsertion>0</GammaInsertion>
+          <BBFileNamePattern>nucl_u_unpol_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
+        </elem>
+        <elem>
+          <BkwdPropFileName>../seqsource/seqprop_0_NUCL_D_UNPOL</BkwdPropFileName>
+          <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
+          <GammaInsertion>0</GammaInsertion>
+          <BBFileNamePattern>nucl_d_unpol_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
+        </elem>
+        <elem>
+          <BkwdPropFileName>../seqsource/seqprop_0_NUCL_U_POL</BkwdPropFileName>
+          <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
+          <GammaInsertion>0</GammaInsertion>
+          <BBFileNamePattern>nucl_u_pol_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
+        </elem>
+        <elem>
+          <BkwdPropFileName>../seqsource/seqprop_0_NUCL_D_POL</BkwdPropFileName>
+          <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
+          <GammaInsertion>0</GammaInsertion>
+          <BBFileNamePattern>nucl_d_pol_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
+        </elem>
+        <elem>
+          <BkwdPropFileName>../seqsource/seqprop_0_NUCL_U_MIXED_NONREL</BkwdPropFileName>
+          <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
+          <GammaInsertion>0</GammaInsertion>
+          <BBFileNamePattern>nucl_u_mixed_nonrel_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
+        </elem>
+        <elem>
+          <BkwdPropFileName>../seqsource/seqprop_0_NUCL_D_MIXED_NONREL</BkwdPropFileName>
+          <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
+          <GammaInsertion>0</GammaInsertion>
+          <BBFileNamePattern>nucl_d_mixed_nonrel_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
+        </elem>
+        <elem>
+          <BkwdPropFileName>../seqsource/seqprop_0_PION</BkwdPropFileName>
+          <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
+          <GammaInsertion>0</GammaInsertion>
+          <BBFileNamePattern>pion_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
+        </elem>
+      </BkwdProps>
+    </BuildingBlocks>
   </Input>
   <Config_info><szin>
       <cfg_version>7</cfg_version>
@@ -132,6 +116,7 @@
       </seed>
     </szin>
 
+
   </Config_info>
   <Observables>
     <ave_plaq>0.902263</ave_plaq>
@@ -157,6 +142,12 @@
             <FermBC>SIMPLE_FERMBC</FermBC>
             <boundary>1 1 1 -1</boundary>
           </FermionBC>
+          <AnisoParam>
+            <anisoP>false</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>1.0</xi_0>
+            <nu>1.0</nu>
+          </AnisoParam>
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
@@ -330,6 +321,12 @@
                 <FermBC>SIMPLE_FERMBC</FermBC>
                 <boundary>1 1 1 -1</boundary>
               </FermionBC>
+              <AnisoParam>
+                <anisoP>false</anisoP>
+                <t_dir>3</t_dir>
+                <xi_0>1.0</xi_0>
+                <nu>1.0</nu>
+              </AnisoParam>
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
@@ -508,6 +505,12 @@
                 <FermBC>SIMPLE_FERMBC</FermBC>
                 <boundary>1 1 1 -1</boundary>
               </FermionBC>
+              <AnisoParam>
+                <anisoP>false</anisoP>
+                <t_dir>3</t_dir>
+                <xi_0>1.0</xi_0>
+                <nu>1.0</nu>
+              </AnisoParam>
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
@@ -686,6 +689,12 @@
                 <FermBC>SIMPLE_FERMBC</FermBC>
                 <boundary>1 1 1 -1</boundary>
               </FermionBC>
+              <AnisoParam>
+                <anisoP>false</anisoP>
+                <t_dir>3</t_dir>
+                <xi_0>1.0</xi_0>
+                <nu>1.0</nu>
+              </AnisoParam>
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
@@ -864,6 +873,12 @@
                 <FermBC>SIMPLE_FERMBC</FermBC>
                 <boundary>1 1 1 -1</boundary>
               </FermionBC>
+              <AnisoParam>
+                <anisoP>false</anisoP>
+                <t_dir>3</t_dir>
+                <xi_0>1.0</xi_0>
+                <nu>1.0</nu>
+              </AnisoParam>
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
@@ -1042,6 +1057,12 @@
                 <FermBC>SIMPLE_FERMBC</FermBC>
                 <boundary>1 1 1 -1</boundary>
               </FermionBC>
+              <AnisoParam>
+                <anisoP>false</anisoP>
+                <t_dir>3</t_dir>
+                <xi_0>1.0</xi_0>
+                <nu>1.0</nu>
+              </AnisoParam>
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
@@ -1220,6 +1241,12 @@
                 <FermBC>SIMPLE_FERMBC</FermBC>
                 <boundary>1 1 1 -1</boundary>
               </FermionBC>
+              <AnisoParam>
+                <anisoP>false</anisoP>
+                <t_dir>3</t_dir>
+                <xi_0>1.0</xi_0>
+                <nu>1.0</nu>
+              </AnisoParam>
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
@@ -1398,6 +1425,12 @@
                 <FermBC>SIMPLE_FERMBC</FermBC>
                 <boundary>1 1 1 -1</boundary>
               </FermionBC>
+              <AnisoParam>
+                <anisoP>false</anisoP>
+                <t_dir>3</t_dir>
+                <xi_0>1.0</xi_0>
+                <nu>1.0</nu>
+              </AnisoParam>
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
