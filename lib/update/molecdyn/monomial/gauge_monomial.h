@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gauge_monomial.h,v 1.5 2005-03-07 02:55:59 edwards Exp $
+// $Id: gauge_monomial.h,v 1.6 2005-04-10 21:46:42 edwards Exp $
 /*! \file
  *  \brief Generic gauge action monomial wrapper
  */
@@ -16,12 +16,14 @@
 
 namespace Chroma 
 {
+  /*! @ingroup monomial */
   namespace GaugeMonomialEnv {
     extern const string name;
     extern const bool registered;
   };
 
   // Parameter structure
+  /*! @ingroup monomial */
   struct GaugeMonomialParams 
   {
     // Base Constructor
@@ -34,7 +36,8 @@ namespace Chroma
 
 
   //! Wrapper class for  gauge monomials
-  /*!
+  /*! @ingroup monomial
+   *
    * Monomial is expected to be the same for these fermacts
    */
   class GaugeMonomial :
@@ -110,17 +113,5 @@ namespace Chroma
 
 
 }; //end namespace chroma
-
-
-
-
-
-
-
-
-
-
-
-
 
 #endif

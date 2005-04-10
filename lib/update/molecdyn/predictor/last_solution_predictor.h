@@ -1,3 +1,11 @@
+// -*- C++ -*-
+// $Id: last_solution_predictor.h,v 1.5 2005-04-10 21:46:43 edwards Exp $
+/*! \file
+ * \brief Last solution predictor
+ *
+ * Predictors for HMC
+ */
+
 #ifndef __last_solution_predictor_h__
 #define __last_solution_predictor_h__
 
@@ -6,17 +14,21 @@
 #include "update/molecdyn/predictor/chrono_predictor_factory.h"
 
 
-namespace Chroma { 
+namespace Chroma 
+{ 
   
+  /*! @ingroup predictor */
   namespace LastSolution4DChronoPredictorEnv {
     extern const std::string name;
     extern const bool registered;
   };
 
+  //! Last solution predictor
+  /*! @ingroup predictor */
   class LastSolution4DChronoPredictor : 
     public AbsChronologicalPredictor4D<LatticeFermion> {
     
-    public:
+  public:
 
     // Destructor is automagic
     ~LastSolution4DChronoPredictor(void) {}
@@ -57,7 +69,7 @@ namespace Chroma {
       last_solution_available = true;
     }
 
-    private:
+  private:
 
     LatticeFermion last_solution;
     bool last_solution_available;
@@ -65,15 +77,18 @@ namespace Chroma {
 
   
 
+  /*! @ingroup predictor */
   namespace LastSolution5DChronoPredictorEnv {
     extern const std::string name;
     extern const bool registered;
   };
   
+  //! Last solution predictor
+  /*! @ingroup predictor */
   class LastSolution5DChronoPredictor :
     public AbsChronologicalPredictor5D<LatticeFermion> {
 
-    public:
+  public:
     ~LastSolution5DChronoPredictor(void) {}
 
     // Creation
@@ -122,7 +137,7 @@ namespace Chroma {
 
     }
     
-    private:
+  private:
     const int N5;
     multi1d<LatticeFermion> last_solution;
     bool last_solution_available;

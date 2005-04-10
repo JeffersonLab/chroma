@@ -1,3 +1,18 @@
+// -*- C++ -*-
+// $Id: monomial_w.h,v 1.5 2005-04-10 21:46:42 edwards Exp $
+
+/*! \file
+ * \brief Monomials of actions
+ *
+ * Monomials for actions within Molecular dynamics
+ */
+
+/*! \defgroup monomial Monomials for actions in Molecular dynamics
+ * \ingroup molecdyn
+ *
+ * Monomials for actions within Molecular dynamics
+ */
+
 #ifndef __monomial_w_h__
 #define __monomial_w_h__
 

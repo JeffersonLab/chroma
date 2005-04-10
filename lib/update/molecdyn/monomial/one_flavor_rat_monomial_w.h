@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial_w.h,v 1.6 2005-03-07 02:55:59 edwards Exp $
+// $Id: one_flavor_rat_monomial_w.h,v 1.7 2005-04-10 21:46:42 edwards Exp $
 
 /*! @file
  * @brief One flavor monomials using RHMC
@@ -15,7 +15,7 @@ namespace Chroma
 {
   //-------------------------------------------------------------------------------------------
   //! Exact 1 flavor fermact monomial using rational polynomials
-  /*! @ingroup actions
+  /*! @ingroup monomial
    *
    * Exact 1 flavor fermact monomial using Rational Polynomial. 
    * Preconditioning is not specified yet.
@@ -262,7 +262,7 @@ namespace Chroma
 
   //-------------------------------------------------------------------------------------------
   //! Exact 1 flavor unpreconditioned fermact monomial
-  /*! @ingroup actions
+  /*! @ingroup monomial
    *
    * Exact 1 flavor unpreconditioned fermact monomial.
    */
@@ -317,7 +317,7 @@ namespace Chroma
 
   //-------------------------------------------------------------------------------------------
   //! Exact 1 flavor even-odd preconditioned fermact monomial
-  /*! @ingroup actions
+  /*! @ingroup monomial
    *
    * Exact 1 flavor even-odd preconditioned fermact monomial.
    * Can supply a default dsdq algorithm

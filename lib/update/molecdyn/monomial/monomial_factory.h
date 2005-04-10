@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: monomial_factory.h,v 1.2 2005-01-13 16:18:45 bjoo Exp $
+// $Id: monomial_factory.h,v 1.3 2005-04-10 21:46:42 edwards Exp $
 /*! \file
  *  \brief Monomial factories
  */
@@ -18,6 +18,7 @@
 namespace Chroma
 {
   //! A factory for exact non-fermionic monomials
+  /*! @ingroup monomial */
   typedef SingletonHolder< 
   ObjectFactory<
     Monomial< multi1d<LatticeColorMatrix>, 

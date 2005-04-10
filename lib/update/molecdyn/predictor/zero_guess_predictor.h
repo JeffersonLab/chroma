@@ -1,3 +1,11 @@
+// -*- C++ -*-
+// $Id: zero_guess_predictor.h,v 1.5 2005-04-10 21:46:43 edwards Exp $
+/*! \file
+ * \brief Zero initial guess predictor
+ *
+ * Predictors for HMC
+ */
+
 #ifndef __zero_guess_predictor_h__
 #define __zero_guess_predictor_h__
 
@@ -6,17 +14,21 @@
 #include "update/molecdyn/predictor/chrono_predictor_factory.h"
 
 
-namespace Chroma { 
+namespace Chroma 
+{ 
   
+  /*! @ingroup predictor */
   namespace ZeroGuess4DChronoPredictorEnv {
     extern const std::string name;
     extern const bool registered;
   };
 
+  //! Zero initial guess predictor
+  /*! @ingroup predictor */
   class ZeroGuess4DChronoPredictor : 
     public AbsChronologicalPredictor4D<LatticeFermion> {
     
-    public:
+  public:
 
     // Destructor is automagic
     ~ZeroGuess4DChronoPredictor(void) {}
@@ -43,15 +55,18 @@ namespace Chroma {
 
   
 
+  /*! @ingroup predictor */
   namespace ZeroGuess5DChronoPredictorEnv {
     extern const std::string name;
     extern const bool registered;
   };
   
+  //! Zero initial guess predictor
+  /*! @ingroup predictor */
   class ZeroGuess5DChronoPredictor :
     public AbsChronologicalPredictor5D<LatticeFermion> {
 
-    public:
+  public:
     ~ZeroGuess5DChronoPredictor(void) {}
 
     // Creation
@@ -84,7 +99,7 @@ namespace Chroma {
       QDPIO::cout << "ZeroGuessPredictor: registering new solution (not)" << endl;
     }
     
-    private:
+  private:
     const int N5;
   };
   

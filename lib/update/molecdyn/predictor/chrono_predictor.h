@@ -1,3 +1,11 @@
+// -*- C++ -*-
+// $Id: chrono_predictor.h,v 1.4 2005-04-10 21:46:43 edwards Exp $
+/*! \file
+ * \brief Chronological predictor for HMC
+ *
+ * Chronological predictor for HMC
+ */
+
 #ifndef chrono_predictor_h
 #define chrono_predictor_h
 
@@ -7,9 +15,11 @@
 using namespace QDP;
 using namespace Chroma;
 
-namespace Chroma {
+namespace Chroma 
+{
   
-  // Abstract interface for a Chronological Solution predictor
+  //! Abstract interface for a Chronological Solution predictor
+  /*! @ingroup predictor */
   template<typename T>
   class AbsChronologicalPredictor4D {
   public:
@@ -43,9 +53,11 @@ namespace Chroma {
   };
   
 
+  //! Abstract interface for a Chronological Solution predictor in 5D
+  /*! @ingroup predictor */
   template<typename T>
-    class AbsChronologicalPredictor5D {
-    public:
+  class AbsChronologicalPredictor5D {
+  public:
 
     virtual ~AbsChronologicalPredictor5D(void) {}
 

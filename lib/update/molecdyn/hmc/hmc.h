@@ -1,3 +1,18 @@
+// -*- C++ -*-
+// $Id: hmc.h,v 1.2 2005-04-10 21:46:42 edwards Exp $
+
+/*! \file
+ * \brief HMC trajectories
+ *
+ * HMC trajectories
+ */
+
+/*! \defgroup hmc HMC trajectories
+ * \ingroup hmc
+ *
+ * HMC trajectories
+ */
+
 #ifndef HMC_H
 #define HMC_H
 

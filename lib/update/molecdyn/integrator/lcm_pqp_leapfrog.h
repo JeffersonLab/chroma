@@ -1,3 +1,12 @@
+// -*- C++ -*-
+// $Id: lcm_pqp_leapfrog.h,v 1.4 2005-04-10 21:46:42 edwards Exp $
+
+/*! @file
+ * @brief Leapfrog integrator
+ *
+ * Leapfrog intregator for HMC
+ */
+
 #ifndef LCM_PQP_LEAPFROG_H
 #define LCM_PQP_LEAPFROG_H
 
@@ -9,13 +18,16 @@
 #include <string>
 
 
-namespace Chroma {
+namespace Chroma 
+{
 
+  /*! @ingroup integrator */
   namespace LatColMatPQPLeapfrogIntegratorEnv {
     extern const std::string name;
     extern const bool registered;
   };
 
+  /*! @ingroup integrator */
   struct  LatColMatPQPLeapfrogIntegratorParams {
     LatColMatPQPLeapfrogIntegratorParams();
     LatColMatPQPLeapfrogIntegratorParams(XMLReader& xml, const std::string& path);
@@ -24,16 +36,20 @@ namespace Chroma {
     Real tau0;
   };
 
+  /*! @ingroup integrator */
   void read(XMLReader& xml_in, 
 	    const std::string& path,
 	    LatColMatPQPLeapfrogIntegratorParams& p);
 
+  /*! @ingroup integrator */
   void write(XMLWriter& xml_out,
 	     const std::string& path, 
 	     const LatColMatPQPLeapfrogIntegratorParams& p);
 
   //! MD integrator interface for PQP leapfrog
-  //  specialised to multi1d<LatticeColorMatrix>
+  /*! @ingroup integrator
+   *  Specialised to multi1d<LatticeColorMatrix>
+   */
   class LatColMatPQPLeapfrogIntegrator 
     : public PQPLeapfrogIntegrator<multi1d<LatticeColorMatrix>,
 				   multi1d<LatticeColorMatrix> > {
@@ -93,12 +109,6 @@ namespace Chroma {
     
     
   };
-
-  
-
-
-
-
 
 };
 

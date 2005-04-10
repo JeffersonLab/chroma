@@ -1,3 +1,11 @@
+// -*- C++ -*-
+// $Id: circular_buffer.h,v 1.3 2005-04-10 21:46:43 edwards Exp $
+/*! \file
+ * \brief Circular buffers
+ *
+ * Circular buffers for predictors
+ */
+
 #ifndef CIRCULAR_BUFFER_H
 #define CIRCULAR_BUFFER_H
 
@@ -5,28 +13,31 @@
 
 using namespace QDP;
 
-namespace Chroma { 
+namespace Chroma 
+{ 
 
-  // Definitions for a templated circular buffer class to be used in 
-  // Chronological Predictor.
+  //! Circular Buffer
+  /*! 
+   * @ingroup predictor
+   * Definitions for a templated circular buffer class to be used in Chronological Predictor.
+   *
+   * Usage: construct with CircularBuffer(int n_max)  
+   *        with n_max the maximum number of elements -- this allocates storage
   
-  // Usage: construct with CircularBuffer(int n_max)  
-  //        with n_max the maximum number of elements -- this allocates storage
+   * add elements with push(elem);
   
-  // add elements with push(elem);
+   * reset with reset()
   
-  // reset with reset()
-  
-  // Access elements using operator[unsigned int i]
-  //
-  // i=0 most recent
-  // i=1 next most rcent 
-  // ...
-  // i=size()-1 // least recent
-  
+   * Access elements using operator[unsigned int i]
+   *
+   * i=0 most recent
+   * i=1 next most rcent 
+   * ...
+   * i=size()-1 // least recent
+   */
   template<typename T>
-    class CircularBuffer {
-    public:
+  class CircularBuffer {
+  public:
     
     // Exception struct 
     struct OutOfBoundsException { 
@@ -48,7 +59,7 @@ namespace Chroma {
     
     //! Copy constructor
     CircularBuffer(const CircularBuffer<T>& c) : size_max(c.size_max),
-      size_internal(c.size), q(c.q), start(c.start), end(c.end) {}
+						 size_internal(c.size), q(c.q), start(c.start), end(c.end) {}
     
     
     // Operations:
@@ -121,7 +132,7 @@ namespace Chroma {
 	  // We would exceed max size
 	  
 	  // decrease end pointer
-	// with wraparound -- this drops last element
+	  // with wraparound -- this drops last element
 	  if (end > 0) { 
 	    end--;
 	  }
@@ -135,7 +146,7 @@ namespace Chroma {
 	  // to the slot just vacated by decreasing the end pointer
 	  if( start > 0 ) { 
 	    start--;
-	}
+	  }
 	  else {
 	    start = size_max -1;
 	  } 
@@ -168,7 +179,7 @@ namespace Chroma {
     
     
     
-    private:
+  private:
     unsigned int size_max;
     unsigned int size_internal;
     multi1d<T> q;
@@ -177,9 +188,11 @@ namespace Chroma {
   };
 
 
+  //! Circular buffer of arrays
+  /*! @ingroup predictor */
   template<typename T>
-    class CircularBufferArray {
-    public:
+  class CircularBufferArray {
+  public:
     
     // Exception struct 
     struct OutOfBoundsException { 
@@ -208,7 +221,7 @@ namespace Chroma {
     
     //! Copy constructor
     CircularBufferArray(const CircularBufferArray<T>& c) : size_max(c.size_max),
-      size_internal(c.size), q(c.q), start(c.start), end(c.end), N5(c.N5) {}
+							   size_internal(c.size), q(c.q), start(c.start), end(c.end), N5(c.N5) {}
     
     
     // Operations:
@@ -291,7 +304,7 @@ namespace Chroma {
 	  // We would exceed max size
 	  
 	  // decrease end pointer
-	// with wraparound -- this drops last element
+	  // with wraparound -- this drops last element
 	  if (end > 0) { 
 	    end--;
 	  }
@@ -305,7 +318,7 @@ namespace Chroma {
 	  // to the slot just vacated by decreasing the end pointer
 	  if( start > 0 ) { 
 	    start--;
-	}
+	  }
 	  else {
 	    start = size_max -1;
 	  } 
@@ -340,7 +353,7 @@ namespace Chroma {
     
     
     
-    private:
+  private:
     unsigned int size_max;
     unsigned int size_internal;
     multi2d<T> q;

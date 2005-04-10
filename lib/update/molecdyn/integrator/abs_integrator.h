@@ -1,3 +1,12 @@
+// -*- C++ -*-
+// $Id: abs_integrator.h,v 1.5 2005-04-10 21:46:42 edwards Exp $
+
+/*! @file
+ * @brief Integrators
+ *
+ * Intregators for HMC
+ */
+
 #ifndef ABS_INTEGRATOR_H
 #define ABS_INTEGRATOR_H
 
@@ -7,9 +16,11 @@
 #include "io/xmllog_io.h"
 
 
-namespace Chroma {
+namespace Chroma 
+{
 
   //! MD integrator interface
+  /*! @ingroup integrator */
   template<typename P, typename Q>
   class  AbsMDIntegrator {
   public:
@@ -28,6 +39,7 @@ namespace Chroma {
 
 
   //! MD integrator interface for PQP leapfrog
+  /*! @ingroup integrator */
   template<typename P, typename Q>
   class PQPLeapfrogIntegrator : public AbsMDIntegrator<P,Q> {
   public:

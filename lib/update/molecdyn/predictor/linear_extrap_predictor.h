@@ -1,3 +1,11 @@
+// -*- C++ -*-
+// $Id: linear_extrap_predictor.h,v 1.3 2005-04-10 21:46:43 edwards Exp $
+/*! \file
+ * \brief Linear extrapolation predictor
+ *
+ * Predictors for HMC
+ */
+
 #ifndef __linear_extrap_predictor_h__
 #define __linear_extrap_predictor_h__
 
@@ -7,20 +15,24 @@
 #include "update/molecdyn/predictor/chrono_predictor_factory.h"
 #include "update/molecdyn/predictor/circular_buffer.h"
 
-namespace Chroma { 
+namespace Chroma 
+{ 
   
+  /*! @ingroup predictor */
   namespace LinearExtrapolation4DChronoPredictorEnv {
     extern const std::string name;
     extern const bool registered;
   };
 
+  //! Last solution predictor
+  /*! @ingroup predictor */
   class LinearExtrapolation4DChronoPredictor : 
     public AbsChronologicalPredictor4D<LatticeFermion> {
 
-    private:
+  private:
     Handle< CircularBuffer<LatticeFermion> > chrono_buf;
 
-    public:
+  public:
 
     LinearExtrapolation4DChronoPredictor(void) : chrono_buf(new CircularBuffer<LatticeFermion>((unsigned int)2)) {}
 
@@ -33,33 +45,33 @@ namespace Chroma {
 		    const LatticeFermion& chi) {
       switch( chrono_buf->size() ) { 
       case 0:
-	{
-	  QDPIO::cout << "LinearExtrapolationPredictor: giving you zero" << endl;
-	  psi = zero;
-	}
-	break;
+      {
+	QDPIO::cout << "LinearExtrapolationPredictor: giving you zero" << endl;
+	psi = zero;
+      }
+      break;
 
       case 1:
-	{ 
-	  QDPIO::cout << "LinearExtrapolationPredictor: giving you last soln" << endl;
-	  chrono_buf->get(0,psi);
-	}
-	break;
+      { 
+	QDPIO::cout << "LinearExtrapolationPredictor: giving you last soln" << endl;
+	chrono_buf->get(0,psi);
+      }
+      break;
 
       case 2:
-	{
-	  QDPIO::cout << "LinearExtrapolationPredictor: giving you linear extrapolation" << endl;
+      {
+	QDPIO::cout << "LinearExtrapolationPredictor: giving you linear extrapolation" << endl;
 
-	  LatticeFermion y0; 
-	  chrono_buf->get(0,y0); // Most recent
+	LatticeFermion y0; 
+	chrono_buf->get(0,y0); // Most recent
 
-	  LatticeFermion y1; 
-	  chrono_buf->get(1,y1); // Least recent
+	LatticeFermion y1; 
+	chrono_buf->get(1,y1); // Least recent
 
-	  psi = Real(2)*y0 - y1;         // Linear Extrapolation
+	psi = Real(2)*y0 - y1;         // Linear Extrapolation
 
-	}
-	break;
+      }
+      break;
       default:
 	QDPIO::cerr << "Unknown case reached in LinearExtrapPredictor " << endl;
 	QDP_abort(1);
@@ -85,19 +97,22 @@ namespace Chroma {
 
   
 
+  /*! @ingroup predictor */
   namespace LinearExtrapolation5DChronoPredictorEnv {
     extern const std::string name;
     extern const bool registered;
   };
   
+  //! Last solution predictor
+  /*! @ingroup predictor */
   class LinearExtrapolation5DChronoPredictor :
     public AbsChronologicalPredictor5D<LatticeFermion> {
     
-    private: 
+  private: 
     Handle< CircularBufferArray<LatticeFermion>  > chrono_buf;
     const int N5;
 
-    public:
+  public:
     LinearExtrapolation5DChronoPredictor(const int N5_) : chrono_buf( new CircularBufferArray<LatticeFermion>(2, N5_) ), N5(N5_) {}
 
       
@@ -113,36 +128,36 @@ namespace Chroma {
 
       switch( chrono_buf->size() ) { 
       case 0:
-	{
-	  QDPIO::cout << "LinearExtrapolationPredictor: giving you zero" << endl;
-	  psi = zero;
-	}
-	break;
+      {
+	QDPIO::cout << "LinearExtrapolationPredictor: giving you zero" << endl;
+	psi = zero;
+      }
+      break;
 
       case 1:
-	{ 
-	  QDPIO::cout << "LinearExtrapolationPredictor: giving you last soln" << endl;
-	  chrono_buf->get(0, psi);
-	}
-	break;
+      { 
+	QDPIO::cout << "LinearExtrapolationPredictor: giving you last soln" << endl;
+	chrono_buf->get(0, psi);
+      }
+      break;
 
       case 2:
-	{
+      {
 	  
-	  QDPIO::cout << "LinearExtrapolationPredictor: giving you linear extrapolation" << endl;
+	QDPIO::cout << "LinearExtrapolationPredictor: giving you linear extrapolation" << endl;
 
-	  multi1d<LatticeFermion> y0(N5);
-	  chrono_buf->get(0, y0);
+	multi1d<LatticeFermion> y0(N5);
+	chrono_buf->get(0, y0);
 
-	  multi1d<LatticeFermion> y1(N5);
-	  chrono_buf->get(1, y1);
+	multi1d<LatticeFermion> y1(N5);
+	chrono_buf->get(1, y1);
 
-	  psi.resize(N5);
-	  for(int s = 0; s < N5; s++) { 
-	    psi[s] = Real(2)*y0[s] - y1[s];         // Linear Extrapolation
-	  }
+	psi.resize(N5);
+	for(int s = 0; s < N5; s++) { 
+	  psi[s] = Real(2)*y0[s] - y1[s];         // Linear Extrapolation
 	}
-	break;
+      }
+      break;
       default:
 	QDPIO::cerr << "Unknown case reached in LinearExtrapPredictor " << endl;
 	QDP_abort(1);

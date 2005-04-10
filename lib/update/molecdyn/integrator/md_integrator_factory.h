@@ -1,7 +1,7 @@
 // -*- C++ -*-
-// $Id: md_integrator_factory.h,v 1.3 2005-01-14 20:13:08 edwards Exp $
+// $Id: md_integrator_factory.h,v 1.4 2005-04-10 21:46:42 edwards Exp $
 /*! \file
- *  \brief Monomial factories
+ *  \brief Integrator factories
  */
 
 #ifndef __md_integrator_factory_h__
@@ -26,9 +26,11 @@ namespace Chroma
   // (to be confirmed) to think that the 2 template parameters mean
   // that we should be using typelist 4. This hacks around that using
   // a convenience typedef
+  /*! @ingroup integrator */
   typedef AbsHamiltonian<multi1d<LatticeColorMatrix>,multi1d<LatticeColorMatrix> > LCMHam;
   
   //! A factory for exact non-fermionic monomials
+  /*! @ingroup integrator */
   typedef SingletonHolder< 
   ObjectFactory<
     AbsMDIntegrator< multi1d<LatticeColorMatrix>, 

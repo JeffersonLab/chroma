@@ -1,3 +1,10 @@
+// -*- C++ -*-
+// $Id: abs_hmc.h,v 1.5 2005-04-10 21:46:42 edwards Exp $
+/*! \file
+ * \brief Abstract HMC trajectory
+ *
+ * HMC trajectories
+ */
 #ifndef abs_hmc_h
 #define abs_hmc_h
 
@@ -10,8 +17,11 @@
 
 
 
-namespace Chroma { 
+namespace Chroma 
+{ 
 
+  //! Abstract HMC trajectory
+  /*! @ingroup hmc */
   template<typename P, typename Q>
   class AbsHMCTrj {
   public: 
@@ -24,93 +34,93 @@ namespace Chroma {
     virtual void operator()(AbsFieldState<P,Q>& s,
 			    const bool WarmUpP)
       
-    {
-      AbsMDIntegrator<P,Q>& MD = getMDIntegrator();
-      ExactAbsHamiltonian<P,Q>& H_MC = getMCHamiltonian();
-      AbsHamiltonian<P,Q>& H_MD = MD.getHamiltonian();
+      {
+	AbsMDIntegrator<P,Q>& MD = getMDIntegrator();
+	ExactAbsHamiltonian<P,Q>& H_MC = getMCHamiltonian();
+	AbsHamiltonian<P,Q>& H_MD = MD.getHamiltonian();
 
-      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+	XMLWriter& xml_out = TheXMLOutputWriter::Instance();
 
-      // Self encapsulation rule 
-      push(xml_out, "HMCTrajectory");
-      write(xml_out, "WarmUpP", WarmUpP);
+	// Self encapsulation rule 
+	push(xml_out, "HMCTrajectory");
+	write(xml_out, "WarmUpP", WarmUpP);
 
 
-      // HMC Algorithm.
-      // 1) Refresh momenta
-      //
-      refreshP(s);
+	// HMC Algorithm.
+	// 1) Refresh momenta
+	//
+	refreshP(s);
       
-      // Refresh Pseudofermions
-      H_MC.refreshInternalFields(s);
+	// Refresh Pseudofermions
+	H_MC.refreshInternalFields(s);
       
-      // SaveState -- Perhaps this could be done better?
-      Handle< AbsFieldState<P,Q> >  s_old(s.clone());
+	// SaveState -- Perhaps this could be done better?
+	Handle< AbsFieldState<P,Q> >  s_old(s.clone());
       
-      // Measure energy of the old state
-      Double KE_old, PE_old;
+	// Measure energy of the old state
+	Double KE_old, PE_old;
 
-      push(xml_out, "H_old");
+	push(xml_out, "H_old");
 
-      H_MC.mesE(*s_old, KE_old, PE_old);
-      write(xml_out, "KE_old", KE_old);
-      write(xml_out, "PE_old", PE_old);
+	H_MC.mesE(*s_old, KE_old, PE_old);
+	write(xml_out, "KE_old", KE_old);
+	write(xml_out, "PE_old", PE_old);
 
-      pop(xml_out); // pop H_old
+	pop(xml_out); // pop H_old
       
       
-      // Set fields in the MD Hamiltonian
-      MD.getHamiltonian().setInternalFields(H_MC);
+	// Set fields in the MD Hamiltonian
+	MD.getHamiltonian().setInternalFields(H_MC);
 
-      // Integrate MD trajectory
-      MD(s);
+	// Integrate MD trajectory
+	MD(s);
            
-      //  Measure the energy of the new state
-      Double KE, PE;
+	//  Measure the energy of the new state
+	Double KE, PE;
 
 
-      push(xml_out, "H_new");
-      H_MC.mesE(s, KE, PE);
-      write(xml_out, "KE_new", KE);
-      write(xml_out, "PE_new", PE);
-      pop(xml_out);
+	push(xml_out, "H_new");
+	H_MC.mesE(s, KE, PE);
+	write(xml_out, "KE_new", KE);
+	write(xml_out, "PE_new", PE);
+	pop(xml_out);
 
-      // Work out energy differences
-      Double DeltaKE = KE - KE_old;
-      Double DeltaPE = PE - PE_old;
-      Double DeltaH  = DeltaKE + DeltaPE;
-      write(xml_out, "deltaKE", DeltaKE);
-      write(xml_out, "deltaPE", DeltaPE);
-      write(xml_out, "deltaH", DeltaH);
+	// Work out energy differences
+	Double DeltaKE = KE - KE_old;
+	Double DeltaPE = PE - PE_old;
+	Double DeltaH  = DeltaKE + DeltaPE;
+	write(xml_out, "deltaKE", DeltaKE);
+	write(xml_out, "deltaPE", DeltaPE);
+	write(xml_out, "deltaH", DeltaH);
 
-      QDPIO::cout << "Delta H = " << DeltaH << endl;
+	QDPIO::cout << "Delta H = " << DeltaH << endl;
 
-      // If we intend to do an accept reject step
-      // (ie we are not warming up)
-      if( ! WarmUpP ) { 
+	// If we intend to do an accept reject step
+	// (ie we are not warming up)
+	if( ! WarmUpP ) { 
 	
-	// Measure Acceptance
-	bool acceptTestResult = acceptReject(DeltaH);
-	write(xml_out, "AcceptP", acceptTestResult);
+	  // Measure Acceptance
+	  bool acceptTestResult = acceptReject(DeltaH);
+	  write(xml_out, "AcceptP", acceptTestResult);
 
-	QDPIO::cout << "AcceptP = " << acceptTestResult << endl;
+	  QDPIO::cout << "AcceptP = " << acceptTestResult << endl;
 
-	// If rejected restore fields
-	// If accepted no need to do anything
-	if ( ! acceptTestResult ) { 
-	  s.getQ() = s_old->getQ();
+	  // If rejected restore fields
+	  // If accepted no need to do anything
+	  if ( ! acceptTestResult ) { 
+	    s.getQ() = s_old->getQ();
 	  
-	  // I am going to refresh these so maybe these copies 
-	  //  for the momenta and the pseudofermions
-	  // are not really needed...
-	  //
-	  // restore momenta
-	  s.getP() = s_old->getP();
+	    // I am going to refresh these so maybe these copies 
+	    //  for the momenta and the pseudofermions
+	    // are not really needed...
+	    //
+	    // restore momenta
+	    s.getP() = s_old->getP();
+	  }
 	}
-      }
 
-      pop(xml_out); // HMCTrajectory
-    }
+	pop(xml_out); // HMCTrajectory
+      }
     
   protected:
     // Get at the Exact Hamiltonian -- It would be great if I could

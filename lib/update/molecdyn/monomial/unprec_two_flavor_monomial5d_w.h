@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_two_flavor_monomial5d_w.h,v 1.2 2005-02-23 14:51:56 bjoo Exp $
+// $Id: unprec_two_flavor_monomial5d_w.h,v 1.3 2005-04-10 21:46:42 edwards Exp $
 
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 5D ferm monomials
@@ -14,12 +14,14 @@
 namespace Chroma 
 {
 
+  /*! @ingroup monomial */
   namespace UnprecTwoFlavorWilsonTypeFermMonomial5DEnv 
   {
     extern const bool registered;
   };
 
   // Parameter structure
+  /*! @ingroup monomial */
   struct UnprecTwoFlavorWilsonTypeFermMonomial5DParams 
   {
     // Base Constructor
@@ -32,12 +34,15 @@ namespace Chroma
     string predictor_xml;
   };
 
+  /*! @ingroup monomial */
   void read(XMLReader& xml, const string& path, UnprecTwoFlavorWilsonTypeFermMonomial5DParams& param);
 
+  /*! @ingroup monomial */
   void write(XMLWriter& xml, const string& path, const UnprecTwoFlavorWilsonTypeFermMonomial5DParams& params);
 
   //! Wrapper class for 5D 2-flavor unprec ferm monomials
-  /*!
+  /*! @ingroup monomial
+   *
    * Monomial is expected to be the same for these fermacts
    */
   class UnprecTwoFlavorWilsonTypeFermMonomial5D :

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: monomial_aggregate_w.h,v 1.1 2005-02-07 04:11:55 edwards Exp $
+// $Id: monomial_aggregate_w.h,v 1.2 2005-04-10 21:46:42 edwards Exp $
 /*! \file
  *  \brief Fermion monomial aggregator
  */
@@ -12,6 +12,7 @@
 namespace Chroma
 {
   //! Registration aggregator
+  /*! @ingroup monomial */
   namespace WilsonTypeFermMonomialAggregrateEnv
   {
     extern const bool registered;

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_monomial.h,v 1.6 2005-02-23 14:51:56 bjoo Exp $
+// $Id: abs_monomial.h,v 1.7 2005-04-10 21:46:42 edwards Exp $
 
 /*! @file
  * @brief Monomials - gauge action or fermion binlinear contributions for HMC
@@ -17,7 +17,7 @@
 namespace Chroma
 {
   //! An abstract monomial class, for inexact algorithms
-  /*! @ingroup actions
+  /*! @ingroup monomial
    *
    * Inexact in this case means energy computation is not supported,
    * (in an inexact algorithm sense -- obviously it is weird to have
@@ -60,7 +60,7 @@ namespace Chroma
 
   //-------------------------------------------------------------------------------------------
   //! Abstract monomial class, for exact algorithms
-  /*! @ingroup actions
+  /*! @ingroup monomial
    *
    * Now define similar classes for exact algorithms.
    * These are basically the same as before but they can compute
@@ -93,7 +93,7 @@ namespace Chroma
 
   //-------------------------------------------------------------------------------------------
   //! Fermionic monomials (binlinears in fermion fields)
-  /*! @ingroup actions
+  /*! @ingroup monomial
    *
    * The fermion hierachy would splits at the very top into
    * inexact and exact monomials. An exact monomial can be used
@@ -123,7 +123,7 @@ namespace Chroma
 
   //-------------------------------------------------------------------------------------------
   //! Fermionic monomials (binlinears in fermion fields)
-  /*! @ingroup actions
+  /*! @ingroup monomial
    *
    * The fermion hierachy would splits at the very top into
    * inexact and exact monomials. An exact monomial can be used
@@ -156,7 +156,7 @@ namespace Chroma
 
   //-------------------------------------------------------------------------------------------
   //! Fermionic monomials (binlinears in fermion fields)
-  /*! @ingroup actions
+  /*! @ingroup monomial
    *
    * Exact fermionic monomials with pseudofermions living in 4D
    *
@@ -186,7 +186,7 @@ namespace Chroma
 
   //-------------------------------------------------------------------------------------------
   //! Fermionic monomials (binlinears in fermion fields)
-  /*! @ingroup actions
+  /*! @ingroup monomial
    *
    * Exact fermionic monomials with pseudofermions living in 4D
    *
@@ -216,7 +216,7 @@ namespace Chroma
 
   //-------------------------------------------------------------------------------------------
   //! Fermionic monomials (binlinears in fermion fields)
-  /*! @ingroup actions
+  /*! @ingroup monomial
    *
    * Wilson-like fermion monomials. Not sure what these really do that
    * is new. There can be a staggered version.
@@ -250,7 +250,7 @@ namespace Chroma
 
   //-------------------------------------------------------------------------------------------
   //! Fermionic monomials (binlinears in fermion fields)
-  /*! @ingroup actions
+  /*! @ingroup monomial
    *
    * Wilson-like fermion monomials. Not sure what these really do that
    * is new. There can be a staggered version.

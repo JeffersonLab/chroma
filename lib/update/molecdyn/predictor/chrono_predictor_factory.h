@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: chrono_predictor_factory.h,v 1.2 2005-01-13 16:10:30 bjoo Exp $
+// $Id: chrono_predictor_factory.h,v 1.3 2005-04-10 21:46:43 edwards Exp $
 /*! \file
  *  \brief Monomial factories
  */
@@ -18,6 +18,7 @@
 namespace Chroma
 {
   //! A factory for exact non-fermionic monomials
+  /*! @ingroup predictor */
   typedef SingletonHolder< 
   ObjectFactory< AbsChronologicalPredictor4D< LatticeFermion >,
     std::string,
@@ -29,6 +30,7 @@ namespace Chroma
   The4DChronologicalPredictorFactory;
 
   //! A factory for exact non-fermionic monomials
+  /*! @ingroup predictor */
   typedef SingletonHolder< 
   ObjectFactory< AbsChronologicalPredictor5D< LatticeFermion >,
     std::string,

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_one_flavor_rat_monomial_w.h,v 1.3 2005-02-23 14:51:56 bjoo Exp $
+// $Id: prec_one_flavor_rat_monomial_w.h,v 1.4 2005-04-10 21:46:42 edwards Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -13,12 +13,14 @@
 namespace Chroma 
 {
 
+  /*! @ingroup monomial */
   namespace EvenOddPrecOneFlavorWilsonTypeFermRatMonomialEnv 
   {
     extern const bool registered;
   };
 
   // Parameter structure
+  /*! @ingroup monomial */
   struct EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams {
     // Base Constructor
     EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams();
@@ -44,7 +46,8 @@ namespace Chroma
 
 
   //! Wrapper class for  2-flavor even-odd prec ferm monomials
-  /*!
+  /*! @ingroup monomial
+   *
    * Monomial is expected to be the same for these fermacts
    */
   class EvenOddPrecOneFlavorWilsonTypeFermRatMonomial :

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_one_flavor_rat_monomial_w.h,v 1.2 2005-02-03 03:16:41 edwards Exp $
+// $Id: unprec_one_flavor_rat_monomial_w.h,v 1.3 2005-04-10 21:46:42 edwards Exp $
 /*! @file
  * @brief One-flavor collection of unpreconditioned 4D ferm monomials
  */
@@ -13,12 +13,14 @@
 namespace Chroma 
 {
 
+  /*! @ingroup monomial */
   namespace UnprecOneFlavorWilsonTypeFermRatMonomialEnv 
   {
     extern const bool registered;
   };
 
   // Parameter structure
+  /*! @ingroup monomial */
   struct UnprecOneFlavorWilsonTypeFermRatMonomialParams 
   {
     // Base Constructor
@@ -39,12 +41,15 @@ namespace Chroma
     } remez;
   };
 
+  /*! @ingroup monomial */
   void read(XMLReader& xml, const string& path, UnprecOneFlavorWilsonTypeFermRatMonomialParams& param);
 
+  /*! @ingroup monomial */
   void write(XMLWriter& xml, const string& path, const UnprecOneFlavorWilsonTypeFermRatMonomialParams& params);
 
   //! Wrapper class for  2-flavor unprec ferm monomials
-  /*!
+  /*! @ingroup monomial
+   *
    * Monomial is expected to be the same for these fermacts
    */
   class UnprecOneFlavorWilsonTypeFermRatMonomial :

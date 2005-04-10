@@ -1,3 +1,11 @@
+// -*- C++ -*-
+// $Id: mre_extrap_predictor.h,v 1.4 2005-04-10 21:46:43 edwards Exp $
+/*! \file
+ * \brief Minimal residual predictor
+ *
+ * Predictors for HMC
+ */
+
 #ifndef __mre_extrap_predictor_h__
 #define __mre_extrap_predictor_h__
 
@@ -7,13 +15,17 @@
 #include "update/molecdyn/predictor/chrono_predictor_factory.h"
 #include "update/molecdyn/predictor/circular_buffer.h"
 
-namespace Chroma { 
+namespace Chroma 
+{ 
   
+  /*! @ingroup predictor */
   namespace MinimalResidualExtrapolation4DChronoPredictorEnv {
     extern const std::string name;
     extern const bool registered;
   };
 
+  //! Minimal residual predictor
+  /*! @ingroup predictor */
   class MinimalResidualExtrapolation4DChronoPredictor  
     : public AbsChronologicalPredictor4D<LatticeFermion> {
 
@@ -52,15 +64,18 @@ namespace Chroma {
 
   
 
+  /*! @ingroup predictor */
   namespace MinimalResidualExtrapolation5DChronoPredictorEnv {
     extern const std::string name;
     extern const bool registered;
   };
   
+  //! Minimal residual predictor
+  /*! @ingroup predictor */
   class MinimalResidualExtrapolation5DChronoPredictor :
     public AbsChronologicalPredictor5D<LatticeFermion> {
     
-    private: 
+  private: 
     Handle< CircularBufferArray<LatticeFermion>  > chrono_buf;
     const int N5;
 
@@ -68,7 +83,7 @@ namespace Chroma {
 			      const LinearOperator<multi1d<LatticeFermion> >& A,
 			      const multi1d<LatticeFermion>& chi);
 
-    public:
+  public:
     MinimalResidualExtrapolation5DChronoPredictor(const int N5_, const unsigned int max_chrono) : chrono_buf( new CircularBufferArray<LatticeFermion>(max_chrono, N5_) ), N5(N5_) {}
 
       

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_two_flavor_monomial_w.h,v 1.2 2005-02-23 14:51:56 bjoo Exp $
+// $Id: unprec_two_flavor_monomial_w.h,v 1.3 2005-04-10 21:46:42 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 4D ferm monomials
  */
@@ -13,12 +13,14 @@
 namespace Chroma 
 {
 
+  /*! @ingroup monomial */
   namespace UnprecTwoFlavorWilsonTypeFermMonomialEnv 
   {
     extern const bool registered;
   };
 
   // Parameter structure
+  /*! @ingroup monomial */
   struct UnprecTwoFlavorWilsonTypeFermMonomialParams 
   {
     // Base Constructor
@@ -31,12 +33,15 @@ namespace Chroma
     std::string predictor_xml;  // ChronologicalPredictor XML
   };
 
+  /*! @ingroup monomial */
   void read(XMLReader& xml, const string& path, UnprecTwoFlavorWilsonTypeFermMonomialParams& param);
 
+  /*! @ingroup monomial */
   void write(XMLWriter& xml, const string& path, const UnprecTwoFlavorWilsonTypeFermMonomialParams& params);
 
   //! Wrapper class for  2-flavor unprec ferm monomials
-  /*!
+  /*! @ingroup monomial 
+   *
    * Monomial is expected to be the same for these fermacts
    */
   class UnprecTwoFlavorWilsonTypeFermMonomial :

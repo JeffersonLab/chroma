@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial_w.h,v 1.4 2005-03-07 02:55:59 edwards Exp $
+// $Id: two_flavor_monomial_w.h,v 1.5 2005-04-10 21:46:42 edwards Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -15,14 +15,14 @@ namespace Chroma
 {
   //-------------------------------------------------------------------------------------------
   //! Exact 2 degen flavor fermact monomial
-  /*! @ingroup actions
+  /*! @ingroup monomial
    *
    * Exact 2 degen flavor fermact monomial. Preconditioning is not
    * specified yet.
    * Can supply a default dsdq and pseudoferm refresh algorithm
    * 
    * CAVEAT: I assume there is only 1 pseudofermion field in the following
-   * so called TwoFlavorExact actions.
+   * so called TwoFlavorExact monomial.
    */
   template<typename P, typename Q, typename Phi>
   class TwoFlavorExactWilsonTypeFermMonomial : public ExactWilsonTypeFermMonomial<P,Q,Phi>
@@ -35,7 +35,7 @@ namespace Chroma
     virtual Double S(const AbsFieldState<P,Q>& s) = 0;
 
     //! Compute dsdq for the system... 
-    /*! Actions of the form  chi^dag*(M^dag*M)*chi */
+    /*! Monomial of the form  chi^dag*(M^dag*M)*chi */
     virtual void dsdq(P& F, const AbsFieldState<P,Q>& s)
     {
       // Self Description/Encapsulation Rule
@@ -152,12 +152,12 @@ namespace Chroma
 
   //-------------------------------------------------------------------------------------------
   //! Exact 2 degen flavor unpreconditioned fermact monomial
-  /*! @ingroup actions
+  /*! @ingroup monomial
    *
    * Exact 2 degen flavor unpreconditioned fermact monomial.
    * 
    * CAVEAT: I assume there is only 1 pseudofermion field in the following
-   * so called TwoFlavorExact actions.
+   * so called TwoFlavorExact monomial.
    */
   template<typename P, typename Q, typename Phi>
   class TwoFlavorExactUnprecWilsonTypeFermMonomial : public TwoFlavorExactWilsonTypeFermMonomial<P,Q,Phi>
@@ -212,7 +212,7 @@ namespace Chroma
 
   //-------------------------------------------------------------------------------------------
   //! Exact 2 degen flavor even-odd preconditioned fermact monomial
-  /*! @ingroup actions
+  /*! @ingroup monomial
    *
    * Exact 2 degen flavor even-odd preconditioned fermact monomial.
    * Can supply a default dsdq algorithm

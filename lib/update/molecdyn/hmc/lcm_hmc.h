@@ -1,3 +1,11 @@
+// -*- C++ -*-
+// $Id: lcm_hmc.h,v 1.4 2005-04-10 21:46:42 edwards Exp $
+/*! \file
+ * \brief HMC trajectory
+ *
+ * HMC trajectory
+ */
+
 #ifndef LAT_COL_MAT_HMC_H
 #define LAT_COL_MAT_HMC_H
 
@@ -13,13 +21,14 @@
 #include "util/gauge/taproj.h" 
 
 
-namespace Chroma {
+namespace Chroma 
+{
 
-
-
+  //! HMC trajectory
+  /*! @ingroup hmc */
   class LatColMatHMCTrj : public AbsHMCTrj<multi1d<LatticeColorMatrix>, 
-    multi1d<LatticeColorMatrix> > {
-    public:
+			  multi1d<LatticeColorMatrix> > {
+  public:
 
     // Destructor
     ~LatColMatHMCTrj(void) {} 
@@ -30,22 +39,22 @@ namespace Chroma {
 		     Handle< AbsMDIntegrator< multi1d<LatticeColorMatrix>, 
 		     multi1d<LatticeColorMatrix> > >& _MD_integrator ) : the_MD(_MD_integrator), the_H_MC(_H_MC) {}
 
-    private:
+  private:
     Handle< AbsMDIntegrator<multi1d<LatticeColorMatrix>, 
-      multi1d<LatticeColorMatrix> > > the_MD;
+			    multi1d<LatticeColorMatrix> > > the_MD;
 
     Handle< ExactAbsHamiltonian< multi1d<LatticeColorMatrix>, 
-      multi1d<LatticeColorMatrix> > > the_H_MC;
+				 multi1d<LatticeColorMatrix> > > the_H_MC;
 
-    protected:
+  protected:
 
     ExactAbsHamiltonian< multi1d<LatticeColorMatrix>, 
-      multi1d<LatticeColorMatrix> >& getMCHamiltonian(void) { 
+			 multi1d<LatticeColorMatrix> >& getMCHamiltonian(void) { 
       return *the_H_MC;
     }
 
     AbsMDIntegrator< multi1d<LatticeColorMatrix>, 
-      multi1d<LatticeColorMatrix> >& getMDIntegrator(void) {
+		     multi1d<LatticeColorMatrix> >& getMDIntegrator(void) {
       return *the_MD;
     }
 

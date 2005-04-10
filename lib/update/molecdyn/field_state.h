@@ -1,20 +1,32 @@
+// -*- C++ -*-
+// $Id: field_state.h,v 1.4 2005-04-10 21:46:42 edwards Exp $
+
+/*! \file
+ * \brief Field state
+ *
+ * Abstract classes to define the states of fields
+ * This is basically a collection class...
+ *
+ * Templated to allow generic situations
+ */
+
 #ifndef field_state_h
 #define field_state_h
 
-/*! Abstract classes to define the states of fields
-  This is basically a collection class...
-
-  Templated to allow generic situations
-*/
 #include "chromabase.h"
 
-
-namespace Chroma {
-/*! An abstract field state. The templates P and Q are the 
-  types of the  coordinates and momenta */
+namespace Chroma 
+{
+  //! Abstract field state
+  /*! @ingroup molecdyn
+   *
+   * An abstract field state. The templates P and Q are the 
+   * types of the  coordinates and momenta 
+   */
   template <typename P, typename Q>
-    class AbsFieldState {
-    public:
+  class AbsFieldState 
+  {
+  public:
 
     //! Virtual destructor
     virtual ~AbsFieldState<P,Q>() {}
@@ -35,7 +47,7 @@ namespace Chroma {
   };
   
   /*
-  template <typename P, typename Q, typename Phi>
+    template <typename P, typename Q, typename Phi>
     class AbsPFFieldState : public AbsFieldState<P,Q> {
     public:
 
@@ -59,57 +71,61 @@ namespace Chroma {
     virtual Phi& getPhi(int i) = 0;
 
     // And that is all we can do here
-  };
+    };
   */
 
-  /*! A pure Gauge field state
-    type field state. */
-  class GaugeFieldState : public AbsFieldState<multi1d<LatticeColorMatrix>,                                                    multi1d<LatticeColorMatrix> >
-    {
-    public: 
+  //! Pure gauge field state
+  /*! @ingroup molecdyn
+   *
+   * A pure Gauge field state type field state. 
+   */
+  class GaugeFieldState : public AbsFieldState<multi1d<LatticeColorMatrix>,
+			                       multi1d<LatticeColorMatrix> >
+  {
+  public: 
       
-      // Constructor
-      GaugeFieldState(const multi1d<LatticeColorMatrix>& p_,
-		      const multi1d<LatticeColorMatrix>& q_) {
-	p.resize(Nd);
-	q.resize(Nd);
-	for(int mu=0; mu < Nd; mu++) { 
-	  p[mu] = p_[mu];
-	  q[mu] = q_[mu];
-	}
+    // Constructor
+    GaugeFieldState(const multi1d<LatticeColorMatrix>& p_,
+		    const multi1d<LatticeColorMatrix>& q_) {
+      p.resize(Nd);
+      q.resize(Nd);
+      for(int mu=0; mu < Nd; mu++) { 
+	p[mu] = p_[mu];
+	q[mu] = q_[mu];
       }
+    }
       
-      // Copy Constructor
-      GaugeFieldState(const GaugeFieldState& s)  {
-	p.resize(Nd);
-	q.resize(Nd);
-	for(int mu=0; mu < Nd; mu++) { 
-	  p[mu] = s.p[mu];
-	  q[mu] = s.q[mu];
-	}
+    // Copy Constructor
+    GaugeFieldState(const GaugeFieldState& s)  {
+      p.resize(Nd);
+      q.resize(Nd);
+      for(int mu=0; mu < Nd; mu++) { 
+	p[mu] = s.p[mu];
+	q[mu] = s.q[mu];
+      }
 	
-      }
+    }
       
-      // Destructor
-      ~GaugeFieldState() {};
+    // Destructor
+    ~GaugeFieldState() {};
 
-      // Clone function -- covariant return type
-      GaugeFieldState* clone(void) const { 
-	return new GaugeFieldState(*this);
-      }
+    // Clone function -- covariant return type
+    GaugeFieldState* clone(void) const { 
+      return new GaugeFieldState(*this);
+    }
       
-      // Accessors
-      const multi1d<LatticeColorMatrix>& getP(void) const { return p; }
-      const multi1d<LatticeColorMatrix>& getQ(void) const { return q; }
+    // Accessors
+    const multi1d<LatticeColorMatrix>& getP(void) const { return p; }
+    const multi1d<LatticeColorMatrix>& getQ(void) const { return q; }
       
-      // Mutators
-      multi1d<LatticeColorMatrix>& getP(void)  { return p; }
-      multi1d<LatticeColorMatrix>& getQ(void)  { return q; }
+    // Mutators
+    multi1d<LatticeColorMatrix>& getP(void)  { return p; }
+    multi1d<LatticeColorMatrix>& getQ(void)  { return q; }
       
-    private:
-      multi1d<LatticeColorMatrix> p;
-      multi1d<LatticeColorMatrix> q;
-    };
+  private:
+    multi1d<LatticeColorMatrix> p;
+    multi1d<LatticeColorMatrix> q;
+  };
   
 };  // End namespace Chroma
 
