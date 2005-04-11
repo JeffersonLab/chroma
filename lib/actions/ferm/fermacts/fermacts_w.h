@@ -1,14 +1,8 @@
 // -*- C++ -*-
-// $Id: fermacts_w.h,v 1.23 2005-02-07 04:12:59 edwards Exp $
+// $Id: fermacts_w.h,v 1.24 2005-04-11 01:15:07 edwards Exp $
 
 /*! \file
  * \brief Fermion actions
- *
- * Various fermion actions
- */
-
-/*! \defgroup fermact Fermion actions
- * \ingroup actions
  *
  * Various fermion actions
  */

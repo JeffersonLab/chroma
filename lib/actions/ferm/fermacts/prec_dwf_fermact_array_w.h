@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_fermact_array_w.h,v 1.17 2005-02-23 19:29:20 edwards Exp $
+// $Id: prec_dwf_fermact_array_w.h,v 1.18 2005-04-11 01:15:07 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -107,8 +107,7 @@ namespace Chroma
     ~EvenOddPrecDWFermActArray() {}
 
     //! Given a complete propagator as a source, this does all the inversions needed
-    /*! \ingroup qprop
-     *
+    /*!
      * This routine is actually generic to Domain Wall fermions (Array) fermions
      *
      * \param q_sol    quark propagator ( Write )

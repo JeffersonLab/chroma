@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_nef_fermact_array_w.h,v 1.13 2005-02-28 19:37:48 edwards Exp $
+// $Id: prec_nef_fermact_array_w.h,v 1.14 2005-04-11 01:15:07 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned NEF fermion action
  */
@@ -99,8 +99,7 @@ namespace Chroma
     ~EvenOddPrecNEFFermActArray() {}
 
     //! Given a complete propagator as a source, this does all the inversions needed
-    /*! \ingroup qprop
-     *
+    /*!
      * This routine is actually generic to Domain Wall fermions (Array) fermions
      *
      * \param q_sol    quark propagator ( Write )

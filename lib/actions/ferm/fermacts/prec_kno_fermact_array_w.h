@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_kno_fermact_array_w.h,v 1.7 2005-01-14 20:13:04 edwards Exp $
+// $Id: prec_kno_fermact_array_w.h,v 1.8 2005-04-11 01:15:07 edwards Exp $
 /*! \file
  *  \brief preconditioned KNO domain-wall fermion action
  */
@@ -104,8 +104,7 @@ namespace Chroma
     ~EvenOddPrecKNOFermActArray() {}
 
     //! Given a complete propagator as a source, this does all the inversions needed
-    /*! \ingroup qprop
-     *
+    /*!
      * This routine is actually generic to Domain Wall fermions (Array) fermions
      *
      * \param q_sol    quark propagator ( Write )

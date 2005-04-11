@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_fermact_array_w.h,v 1.19 2005-02-23 19:29:20 edwards Exp $
+// $Id: unprec_dwf_fermact_array_w.h,v 1.20 2005-04-11 01:15:07 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion action
  */
@@ -93,8 +93,7 @@ namespace Chroma
     ~UnprecDWFermActArray() {}
 
     //! Given a complete propagator as a source, this does all the inversions needed
-    /*! \ingroup qprop
-     *
+    /*!
      * This routine is actually generic to Domain Wall fermions (Array) fermions
      *
      * \param q_sol    quark propagator ( Write )

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_zolo_nef_fermact_array_w.h,v 1.11 2005-02-21 19:28:58 edwards Exp $
+// $Id: unprec_zolo_nef_fermact_array_w.h,v 1.12 2005-04-11 01:15:07 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF domain-wall fermion action
  */
@@ -88,8 +88,7 @@ namespace Chroma
     ~UnprecZoloNEFFermActArray() {}
 
     //! Given a complete propagator as a source, this does all the inversions needed
-    /*! \ingroup qprop
-     *
+    /*!
      * This routine is actually generic to Domain Wall fermions (Array) fermions
      *
      * \param q_sol    quark propagator ( Write )
