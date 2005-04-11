@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: tests.h,v 1.1 2003-04-04 18:09:22 edwards Exp $
+// $Id: tests.h,v 1.2 2005-04-11 03:01:52 edwards Exp $
 
 /*! \file
  * \brief Test codes
@@ -7,7 +7,7 @@
  * Main programs forming a test code suite of Chroma
  */
 
-/*! \defgroup tests Test codes
+/*! \defgroup testsmain Test codes
  *  \ingroup mainprogs
  *
  * Main programs forming a test code suite of Chroma
