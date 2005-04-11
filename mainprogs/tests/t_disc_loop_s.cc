@@ -236,7 +236,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
 
 //! Disconnected loops
 /*! \defgroup t_disc_loop_s Compute disconnected loops
- *  \ingroup main
+ *  \ingroup testsmain
  *
  * Test computing disconnected loops
  */

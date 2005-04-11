@@ -1,4 +1,4 @@
-// $Id: t_propagator_nrqcd.cc,v 1.5 2005-03-02 00:44:19 edwards Exp $
+// $Id: t_propagator_nrqcd.cc,v 1.6 2005-04-11 02:44:11 edwards Exp $
 /*! \file
  *  \brief Main code for NRQCD propagator generation
  *   
@@ -255,7 +255,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
 
 //! Propagator generation
 /*! \defgroup propagator Propagator generation
- *  \ingroup main
+ *  \ingroup testsmain
  *
  * Main program for propagator generation. 
  */

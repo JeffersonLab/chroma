@@ -1,4 +1,4 @@
-// $Id: t_fermion_loop_w.cc,v 1.8 2005-04-11 02:02:37 edwards Exp $
+// $Id: t_fermion_loop_w.cc,v 1.9 2005-04-11 02:44:11 edwards Exp $
 /*! \file
  *  \brief Main code for  generation of disconnected 
  *         loops
@@ -245,7 +245,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
 
 //! Test fermion loops
 /*! \defgroup t_fermion_loop Test fermion loops
- *  \ingroup main
+ *  \ingroup testsmain
  */
 
 int main(int argc, char **argv)
