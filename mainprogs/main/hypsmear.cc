@@ -1,11 +1,7 @@
-/*
- *  $Id: hypsmear.cc,v 1.23 2005-04-10 16:42:10 edwards Exp $
- *
- *  This is the top-level routine for HYP smearing.
- *  It is a wrapper for Urs' and Robert's implmenetation of the HYP
- *  smearing algorithm
+// $Id: hypsmear.cc,v 1.24 2005-04-11 02:01:30 edwards Exp $
+/*! \file
+ *  \brief Main code for HYP smearing
  */
-
 
 #include <iostream>
 #include <cstdio>
@@ -14,6 +10,13 @@
 
 using namespace Chroma;
 
+
+//! HYP smearing gauge fields
+/*! \defgroup hypsmear HYP smearing gauge fields
+ *  \ingroup main
+ *
+ *  This is the top-level routine for HYP smearing.
+ */
 
 int main(int argc, char *argv[])
 {

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_nef_fermact_array_w.h,v 1.14 2005-04-11 01:15:07 edwards Exp $
+// $Id: prec_nef_fermact_array_w.h,v 1.15 2005-04-11 01:59:58 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned NEF fermion action
  */
@@ -42,7 +42,7 @@ namespace Chroma
 
 
   //! 4D style even-odd preconditioned domain-wall fermion action
-  /*! \ingroup fermact
+  /*! \ingroup fermacts
    *
    * 4D style even-odd preconditioned domain-wall fermion action. 
    * Follows notes of Orginos (10/2003)

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_clover_fermact_w.h,v 1.10 2005-01-14 20:13:04 edwards Exp $
+// $Id: unprec_clover_fermact_w.h,v 1.11 2005-04-11 01:59:59 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Clover fermion action
  */
@@ -38,7 +38,7 @@ namespace Chroma
 
 
   //! Unpreconditioned Clover fermion action
-  /*! \ingroup fermact
+  /*! \ingroup fermacts
    *
    * Unpreconditioned clover fermion action
    */

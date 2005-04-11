@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ht_contfrac5d_fermact_array_w.h,v 1.2 2005-02-14 02:05:34 edwards Exp $
+// $Id: prec_ht_contfrac5d_fermact_array_w.h,v 1.3 2005-04-11 01:59:58 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Continued Fraction 5D
  */
@@ -57,7 +57,7 @@ namespace Chroma
   //! 5D continued fraction overlap action (Borici,Wenger, Edwards)
 
   /*!
-   * \ingroup fermact
+   * \ingroup fermacts
    *
    * This operator applies the extended version of the hermitian overlap operator
    *   Chi  =   ((1+Mass)/(1-Mass)*gamma_5 + B) . Psi

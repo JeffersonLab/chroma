@@ -1,6 +1,9 @@
-// $Id: multi_propagator_comp.cc,v 1.9 2005-03-02 00:44:18 edwards Exp $
+// $Id: multi_propagator_comp.cc,v 1.10 2005-04-11 02:01:30 edwards Exp $
 // $Log: multi_propagator_comp.cc,v $
-// Revision 1.9  2005-03-02 00:44:18  edwards
+// Revision 1.10  2005-04-11 02:01:30  edwards
+// Fixed up doxygen comments.
+//
+// Revision 1.9  2005/03/02 00:44:18  edwards
 // Changed to new Chroma initialize/finalize format. Changed
 // all XMLReader("DATA") to use a command-line param arg.
 // Changed all XMLFileWriter(XMLDAT) to use the singleton instance.
@@ -201,8 +204,9 @@ void saveComponents(const ChromaMultiProp_t& param,
 		    XMLReader& gauge_xml,
 		    XMLWriter& xml_out,
 		    const multi1d<LatticeFermion>& psi);
+
 //! Propagator generation
-/*! \defgroup propagator Propagator generation
+/*! \defgroup multi_propagator_comp Propagator generation
  *  \ingroup main
  *
  * Main program for propagator generation. 

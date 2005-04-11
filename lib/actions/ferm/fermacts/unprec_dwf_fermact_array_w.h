@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_fermact_array_w.h,v 1.20 2005-04-11 01:15:07 edwards Exp $
+// $Id: unprec_dwf_fermact_array_w.h,v 1.21 2005-04-11 01:59:59 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion action
  */
@@ -42,7 +42,7 @@ namespace Chroma
 
 
   //! Unpreconditioned domain-wall fermion action
-  /*! \ingroup fermact
+  /*! \ingroup fermacts
    *
    * Unprecondition domain-wall fermion action. The conventions used here
    * are specified in Phys.Rev.D63:094505,2001 (hep-lat/0005002).

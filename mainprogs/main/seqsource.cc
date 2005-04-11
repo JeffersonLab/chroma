@@ -1,4 +1,4 @@
-// $Id: seqsource.cc,v 1.13 2005-04-10 16:42:11 edwards Exp $
+// $Id: seqsource.cc,v 1.14 2005-04-11 02:01:30 edwards Exp $
 /*! \file
  *  \brief Main code for sequential source construction
  */
@@ -12,7 +12,7 @@ using namespace Chroma;
 
 //! Sequential source generation
 /*
- *  \defgroup seqsource Sequential source generation
+ *  \defgroup seqsourcemain Sequential source generation
  *  \ingroup main
  *
  *  Read quark propagators, compute the sequential sources needed

@@ -1,14 +1,8 @@
 // -*- C++ -*-
-// $Id: linop_w.h,v 1.18 2005-01-27 17:57:48 bjoo Exp $
+// $Id: linop_w.h,v 1.19 2005-04-11 01:59:59 edwards Exp $
 
 /*! \file
  * \brief Linear operators
- *
- * Various fermion linear operators
- */
-
-/*! \defgroup linop Linear operators
- * \ingroup actions
  *
  * Various fermion linear operators
  */

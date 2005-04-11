@@ -1,4 +1,4 @@
-// $Id: qpropadd.cc,v 1.6 2005-03-02 00:44:18 edwards Exp $
+// $Id: qpropadd.cc,v 1.7 2005-04-11 02:01:30 edwards Exp $
 /*! \file
  * \brief Add two quark propagators
  *
@@ -101,10 +101,14 @@ void read(XMLReader& xml, const string& path, Qpropadd_input_t& input)
 
 
 
-//! Main program for adding propagators
-/*! Main program */
-int
-main(int argc, char *argv[])
+//! Add two propagators
+/*! \defgroup qpropadd Add two propagators
+ *  \ingroup main
+ *
+ * Main program for adding propagators
+ */
+
+int main(int argc, char *argv[])
 {
   // Put the machine into a known state
   Chroma::initialize(&argc, &argv);

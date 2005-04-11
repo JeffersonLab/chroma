@@ -1,4 +1,4 @@
-// $Id: wallformfac.cc,v 1.33 2005-03-02 00:44:18 edwards Exp $
+// $Id: wallformfac.cc,v 1.34 2005-04-11 02:01:30 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions with a wall sink
  *
@@ -217,9 +217,13 @@ void write(BinaryWriter& bin, const WallFormFac_output_t& header)
 
 
 //! Main program for computing 3pt functions
-/*! Main program */
-int
-main(int argc, char *argv[])
+/*! \defgroup bar3ptfnmain Computing 3pt functions
+ *  \ingroup main
+ *
+ * Main program for computing 3pt functions
+ */
+
+int main(int argc, char *argv[])
 {
   // Put the machine into a known state
   Chroma::initialize(&argc, &argv);

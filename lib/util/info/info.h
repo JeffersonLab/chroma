@@ -1,14 +1,14 @@
 // -*- C++ -*-
-// $Id: info.h,v 1.1 2004-01-29 20:38:09 edwards Exp $
+// $Id: info.h,v 1.2 2005-04-11 01:59:59 edwards Exp $
 
 /*! \file
- * \brief Include all includes for various info utilities
+ * \brief Info utilities
  *
  * Utility routines for generating info
  */
 
-/*! \defgroup gauge Include all includes for various info utilities
- * \ingroup info
+/*! \defgroup info Info utilities
+ * \ingroup util
  *
  * Utility routines for generating info
  */

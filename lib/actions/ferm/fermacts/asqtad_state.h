@@ -11,7 +11,7 @@ namespace Chroma
 { 
 //! Basic "Connect State" for ASQTAD
 /*! 
- * \ingroup fermact
+ * \ingroup fermacts
  */
 template<typename T>
 class AsqtadConnectStateBase : public ConnectState {
@@ -25,7 +25,7 @@ class AsqtadConnectStateBase : public ConnectState {
 
 //! The actual Asqtad thing
 /*! 
- * \ingroup fermact
+ * \ingroup fermacts
  */
 template<typename T>
 class AsqtadConnectState : public AsqtadConnectStateBase<T>

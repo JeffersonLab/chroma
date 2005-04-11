@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ovlap_partfrac4d_fermact_w.h,v 1.9 2005-02-07 04:12:40 edwards Exp $
+// $Id: ovlap_partfrac4d_fermact_w.h,v 1.10 2005-04-11 01:59:58 edwards Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -57,7 +57,7 @@ namespace Chroma
 
   //! 4D Zolotarev variant of Overlap-Dirac operator
   /*!
-   * \ingroup fermact
+   * \ingroup fermacts
    *
    * This routine is specific to Wilson-like fermions!
    *

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: asqtad_fermact_s.h,v 1.10 2005-01-20 11:50:25 bjoo Exp $
+// $Id: asqtad_fermact_s.h,v 1.11 2005-04-11 01:59:58 edwards Exp $
 /*! \file
  *  \brief Asqtad staggered fermion action
  */
@@ -14,7 +14,7 @@
 namespace Chroma 
 { 
   //! Asqtad staggered fermion action
-  /*! \ingroup fermact
+  /*! \ingroup fermacts
    *
    */
   class AsqtadFermAct : public EvenOddStaggeredTypeFermAct< LatticeStaggeredFermion, multi1d<LatticeColorMatrix> >

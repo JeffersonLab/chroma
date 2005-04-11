@@ -1,4 +1,4 @@
-// $Id: spectrum_w.cc,v 1.50 2005-04-10 16:42:11 edwards Exp $
+// $Id: spectrum_w.cc,v 1.51 2005-04-11 02:01:30 edwards Exp $
 /*! \file
  * \brief Main code for spectrum measurements
  */
@@ -7,9 +7,13 @@
 
 using namespace Chroma;
 
-//
-// Main program
-//
+//! Spectrum measurements
+/*! \defgroup spectrumain Spectrum measurements
+ *  \ingroup main
+ *
+ * Main program for spectrum measurements
+ */
+
 int main(int argc, char **argv)
 {
   // Put the machine into a known state

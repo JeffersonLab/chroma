@@ -1,4 +1,4 @@
-// $Id: propagator.cc,v 1.97 2005-04-10 16:42:10 edwards Exp $
+// $Id: propagator.cc,v 1.98 2005-04-11 02:01:30 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -9,20 +9,6 @@
 #include "chroma.h"
 
 using namespace Chroma;
-
-
-//! To insure linking of code, place the registered code flags here
-/*! This is the bit of code that dictates what fermacts are in use */
-
-bool linkage_hack()
-{
-  bool foo = true;
-
-  // All actions
-  foo &= WilsonTypeFermActsEnv::registered;
-
-  return foo;
-}
 
 
 //! Propagator generation
@@ -37,7 +23,7 @@ int main(int argc, char **argv)
   // Put the machine into a known state
   Chroma::initialize(&argc, &argv);
 
-  QDPIO::cout << "linkage=" << linkage_hack() << endl;
+  QDPIO::cout << "linkage=" << WilsonTypeFermActsEnv::registered << endl;
 
   START_CODE();
 

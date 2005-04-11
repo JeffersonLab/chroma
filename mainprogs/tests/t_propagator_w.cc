@@ -1,4 +1,4 @@
-// $Id: t_propagator_w.cc,v 1.7 2005-03-02 00:44:19 edwards Exp $
+// $Id: t_propagator_w.cc,v 1.8 2005-04-11 02:02:37 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  *   
@@ -241,7 +241,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
 }
 
 //! Propagator generation
-/*! \defgroup propagator Propagator generation
+/*! \defgroup t_propagator_w Propagator generation
  *  \ingroup main
  *
  * Main program for propagator generation. 

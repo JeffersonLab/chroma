@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_parwilson_fermact_w.h,v 1.6 2005-01-14 20:13:04 edwards Exp $
+// $Id: unprec_parwilson_fermact_w.h,v 1.7 2005-04-11 01:59:59 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action with parity breaking term
  */
@@ -37,7 +37,7 @@ namespace Chroma
 
 
   //! Unpreconditioned Wilson fermion action with parity breaking term
-  /*! \ingroup fermact
+  /*! \ingroup fermacts
    *
    * Supports creation and application for fermion actions
    *

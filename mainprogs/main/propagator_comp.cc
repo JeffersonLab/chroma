@@ -1,6 +1,9 @@
-// $Id: propagator_comp.cc,v 1.12 2005-03-02 00:44:18 edwards Exp $
+// $Id: propagator_comp.cc,v 1.13 2005-04-11 02:01:30 edwards Exp $
 // $Log: propagator_comp.cc,v $
-// Revision 1.12  2005-03-02 00:44:18  edwards
+// Revision 1.13  2005-04-11 02:01:30  edwards
+// Fixed up doxygen comments.
+//
+// Revision 1.12  2005/03/02 00:44:18  edwards
 // Changed to new Chroma initialize/finalize format. Changed
 // all XMLReader("DATA") to use a command-line param arg.
 // Changed all XMLFileWriter(XMLDAT) to use the singleton instance.
@@ -218,8 +221,9 @@ void saveComponent(const ChromaProp_t& param,
 		   const LatticeFermion& psi,
 		   bool make_sourceP,
 		   bool seqsourceP);
+
 //! Propagator generation
-/*! \defgroup propagator Propagator generation
+/*! \defgroup propagator_comp Propagator generation
  *  \ingroup main
  *
  * Main program for propagator generation. 

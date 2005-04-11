@@ -1,3 +1,8 @@
+// $Id: ExampleBuildingBlocks.cc,v 1.23 2005-04-11 02:01:30 edwards Exp $
+/*! \file
+ *  \brief Main code for generating building blocks
+ */
+
 //###################################################################################//
 //###################################################################################//
 //                                                                                   //
@@ -40,6 +45,13 @@ using namespace Chroma;
 //###################################################################################//
 // Main Function                                                                     //
 //###################################################################################//
+
+//! Building blocks
+/*! \defgroup buildingblocks Generate building blocks
+ *  \ingroup main
+ *
+ * Main program for generating building blocks
+ */
 
 int main( int argc, char** argv )
 {

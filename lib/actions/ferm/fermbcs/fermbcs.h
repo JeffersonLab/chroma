@@ -1,13 +1,13 @@
 // -*- C++ -*-
-// $Id: fermbcs.h,v 1.2 2005-01-13 02:51:51 edwards Exp $
+// $Id: fermbcs.h,v 1.3 2005-04-11 01:59:59 edwards Exp $
 
 /*! \file
- * \brief Fermion Boundary conditions
+ * \brief Fermion boundary conditions
  *
  * Support for fermion boundary conditions
  */
 
-/*! \defgroup fermbc Fermion Boundary Conditions
+/*! \defgroup fermbc Fermion boundary conditions
  * \ingroup fermact
  *
  * Support for fermion boundary conditions

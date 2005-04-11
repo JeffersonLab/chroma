@@ -1,4 +1,4 @@
-// $Id: qpropgfix.cc,v 1.6 2005-03-02 00:44:18 edwards Exp $
+// $Id: qpropgfix.cc,v 1.7 2005-04-11 02:01:30 edwards Exp $
 /*! \file
  *  \brief Applies gauge transformation matrices on a propagator
  */
@@ -102,7 +102,7 @@ void read(XMLReader& xml, const string& path, QpropGFix_input_t& input)
 
 
 //! Applies gauge transformation matrices on a propagator
-/*! \defgroup qpropgfix Tranformation routine
+/*! \defgroup qpropgfix Gauge fix a propagator
  *  \ingroup main
  *
  * Main program for gauge fixing a propagator

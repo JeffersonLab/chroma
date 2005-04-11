@@ -1,12 +1,19 @@
-/*
- *  This is the top-level routine for APE smearing.
- *  Reading in gauge fields and writing out ape-smeared gauge fields
+// $Id: apesmear.cc,v 1.7 2005-04-11 02:01:30 edwards Exp $
+/*! \file
+ *  \brief Main code for APE smearing
  */
 
 #include "chroma.h"
 
 using namespace Chroma;
 
+//! APE smearing
+/*! \defgroup apesmearmain Propagator generation
+ *  \ingroup main
+ *
+ *  This is the top-level routine for APE smearing.
+ *  Reading in gauge fields and writing out ape-smeared gauge fields
+ */
 
 int main(int argc, char *argv[])
 {

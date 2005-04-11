@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_kno_fermact_array_w.h,v 1.8 2005-04-11 01:15:07 edwards Exp $
+// $Id: prec_kno_fermact_array_w.h,v 1.9 2005-04-11 01:59:58 edwards Exp $
 /*! \file
  *  \brief preconditioned KNO domain-wall fermion action
  */
@@ -43,7 +43,7 @@ namespace Chroma
 
 
   //! EvenOddPreconditioned NEF fermion action
-  /*! \ingroup fermact
+  /*! \ingroup fermacts
    *
    * EvenOddPrecondition NEF fermion action. The conventions used here
    * are specified in Phys.Rev.D63:094505,2001 (hep-lat/0005002).

@@ -1,4 +1,4 @@
-// $Id: hmc.cc,v 1.4 2005-04-07 03:24:55 edwards Exp $
+// $Id: hmc.cc,v 1.5 2005-04-11 02:01:30 edwards Exp $
 /*! \file
  *  \brief Main code for HMC with dynamical fermion generation
  */
@@ -405,6 +405,13 @@ namespace Chroma {
 };
 
 using namespace Chroma;
+
+//! Hybrid Monte Carlo
+/*! \defgroup hmcmain Hybrid Monte Carlo
+ *  \ingroup main
+ *
+ * Main program for dynamical fermion generation
+ */
 
 int main(int argc, char *argv[]) 
 {

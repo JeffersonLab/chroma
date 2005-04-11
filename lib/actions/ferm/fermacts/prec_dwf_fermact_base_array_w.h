@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_fermact_base_array_w.h,v 1.22 2005-01-14 20:13:04 edwards Exp $
+// $Id: prec_dwf_fermact_base_array_w.h,v 1.23 2005-04-11 01:59:58 edwards Exp $
 /*! \file
  *  \brief Base class for even-odd preconditioned domain-wall-like fermion actions
  */
@@ -18,7 +18,7 @@
 namespace Chroma
 {
   //! Base class for unpreconditioned domain-wall-like fermion actions
-  /*! \ingroup fermact
+  /*! \ingroup fermacts
    *
    * Unprecondition domain-wall fermion action. The conventions used here
    * are specified in Phys.Rev.D63:094505,2001 (hep-lat/0005002).

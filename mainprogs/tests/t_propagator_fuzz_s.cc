@@ -1,4 +1,4 @@
-// $Id: t_propagator_fuzz_s.cc,v 1.17 2005-03-02 00:44:19 edwards Exp $
+// $Id: t_propagator_fuzz_s.cc,v 1.18 2005-04-11 02:02:37 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  *
@@ -247,7 +247,7 @@ stag_src_type get_stag_src(XMLReader& xml, const string& path)
 
 
 //! Propagator generation
-/*! \defgroup propagator Propagator generation
+/*! \defgroup t_propagator_fuzz Propagator generation
  *  \ingroup main
  *
  * Main program for propagator generation. 

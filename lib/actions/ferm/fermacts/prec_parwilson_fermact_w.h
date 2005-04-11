@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_parwilson_fermact_w.h,v 1.6 2005-01-14 20:13:04 edwards Exp $
+// $Id: prec_parwilson_fermact_w.h,v 1.7 2005-04-11 01:59:58 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action with parity breaking term
  */
@@ -37,7 +37,7 @@ namespace Chroma
 
 
   //! Even-odd preconditioned Wilson fermion action with parity breaking term
-  /*! \ingroup fermact
+  /*! \ingroup fermacts
    *
    * Even-odd preconditioned wilson fermion action with parity breaking term
    * Only defined on odd subset.

@@ -1,4 +1,4 @@
-// $Id: t_fermion_loop_w.cc,v 1.7 2005-03-02 00:44:19 edwards Exp $
+// $Id: t_fermion_loop_w.cc,v 1.8 2005-04-11 02:02:37 edwards Exp $
 /*! \file
  *  \brief Main code for  generation of disconnected 
  *         loops
@@ -243,11 +243,9 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
   }
 }
 
-//! Propagator generation
-/*! \defgroup propagator Propagator generation
+//! Test fermion loops
+/*! \defgroup t_fermion_loop Test fermion loops
  *  \ingroup main
- *
- * Main program for propagator generation. 
  */
 
 int main(int argc, char **argv)

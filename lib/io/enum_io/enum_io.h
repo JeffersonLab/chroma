@@ -1,3 +1,19 @@
+// -*- C++ -*-
+// $Id: enum_io.h,v 1.5 2005-04-11 01:59:59 edwards Exp $
+
+/*! \file
+ * \brief Enums
+ *
+ * Enums used throughout the code.
+ */
+
+/*! \defgroup enums Enums
+ * \ingroup io
+ *
+ * Enums used throughout the code and their initialization
+ * via maps. This is used for IO.
+ */
+
 #ifndef enum_io_h
 #define enum_io_h
 

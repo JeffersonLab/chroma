@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_clover_fermact_w.h,v 1.7 2005-01-14 20:13:04 edwards Exp $
+// $Id: prec_clover_fermact_w.h,v 1.8 2005-04-11 01:59:58 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion action
  */
@@ -14,7 +14,7 @@
 namespace Chroma 
 { 
   //! Even-odd preconditioned Clover fermion action
-  /*! \ingroup fermact
+  /*! \ingroup fermacts
    *
    * Even-odd preconditioned clover fermion action. 
    * Only defined on odd subset.

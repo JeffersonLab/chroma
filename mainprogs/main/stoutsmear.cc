@@ -1,6 +1,6 @@
-/*
- *  This is the top-level routine for Stout-link smearing.
- *  Reading in gauge fields and writing out stout-smeared gauge fields
+// $Id: stoutsmear.cc,v 1.5 2005-04-11 02:01:30 edwards Exp $
+/*! \file
+ *  \brief Main code for stout-link smearing
  */
 
 #include <iostream>
@@ -102,6 +102,14 @@ void read(XMLReader& xml, const string& path, Stoutsmear_input_t& input)
   }
 }
 
+
+//! Stout-link smearing
+/*! \defgroup stoutmain Stout-link smearing
+ *  \ingroup main
+ *
+ *  This is the top-level routine for Stout-link smearing.
+ *  Reading in gauge fields and writing out stout-smeared gauge fields
+ */
 
 int main(int argc, char *argv[])
 {

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: overlap_fermact_base_w.h,v 1.20 2005-04-11 01:15:07 edwards Exp $
+// $Id: overlap_fermact_base_w.h,v 1.21 2005-04-11 01:59:58 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -18,7 +18,7 @@ namespace Chroma
 {
 
   //! Base class for unpreconditioned overlap-like fermion actions
-  /*! \ingroup fermact
+  /*! \ingroup fermacts
    *
    * Unpreconditioned overlap-like fermion action. 
    * The conventions used here are specified in some Nucl.Phys.B. article

@@ -1,5 +1,7 @@
-// $Id: chroma.cc,v 1.2 2005-04-07 03:24:17 edwards Exp $
-// Main program to run all measurement codes.
+// $Id: chroma.cc,v 1.3 2005-04-11 02:01:30 edwards Exp $
+/*! \file
+ *  \brief Main program to run all measurement codes.
+ */
 
 #include "chroma.h"
 
@@ -62,6 +64,12 @@ bool linkageHack(void)
   return foo;
 }
 
+//! Main program to run all measurement codes
+/*! \defgroup chromamain Main program to run all measurement codes.
+ *  \ingroup main
+ *
+ * Main program to run all measurement codes.
+ */
 
 int main(int argc, char *argv[]) 
 {

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovdwf_fermact_array_w.h,v 1.9 2005-01-14 20:13:04 edwards Exp $
+// $Id: prec_ovdwf_fermact_array_w.h,v 1.10 2005-04-11 01:59:58 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned Overlap-DWF (Borici) action
  */
@@ -39,7 +39,7 @@ namespace Chroma
 
 
   //! 4D style even-odd preconditioned Overlap-DWF (Borici) action
-  /*! \ingroup fermact
+  /*! \ingroup fermacts
    *
    * 4D style even-odd preconditioned Overlap-DWF (Borici) action
    * Follows notes of Brower (10/2003)

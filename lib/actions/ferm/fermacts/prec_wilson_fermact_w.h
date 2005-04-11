@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_wilson_fermact_w.h,v 1.15 2005-02-23 19:29:20 edwards Exp $
+// $Id: prec_wilson_fermact_w.h,v 1.16 2005-04-11 01:59:58 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action
  */
@@ -40,7 +40,7 @@ namespace Chroma
 
 
   //! Even-odd preconditioned Wilson fermion action
-  /*! \ingroup fermact
+  /*! \ingroup fermacts
    *
    * Even-odd preconditioned wilson fermion action. 
    * Only defined on odd subset.

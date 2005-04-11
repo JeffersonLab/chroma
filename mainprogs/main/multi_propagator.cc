@@ -1,6 +1,9 @@
-// $Id: multi_propagator.cc,v 1.15 2005-03-02 00:44:18 edwards Exp $
+// $Id: multi_propagator.cc,v 1.16 2005-04-11 02:01:30 edwards Exp $
 // $Log: multi_propagator.cc,v $
-// Revision 1.15  2005-03-02 00:44:18  edwards
+// Revision 1.16  2005-04-11 02:01:30  edwards
+// Fixed up doxygen comments.
+//
+// Revision 1.15  2005/03/02 00:44:18  edwards
 // Changed to new Chroma initialize/finalize format. Changed
 // all XMLReader("DATA") to use a command-line param arg.
 // Changed all XMLFileWriter(XMLDAT) to use the singleton instance.
@@ -175,7 +178,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
 }
 
 //! Propagator generation
-/*! \defgroup propagator Propagator generation
+/*! \defgroup multi_propagator Propagator generation
  *  \ingroup main
  *
  * Main program for propagator generation. 

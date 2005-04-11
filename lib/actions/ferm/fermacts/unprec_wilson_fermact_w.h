@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_wilson_fermact_w.h,v 1.24 2005-02-23 19:29:20 edwards Exp $
+// $Id: unprec_wilson_fermact_w.h,v 1.25 2005-04-11 01:59:59 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -39,7 +39,7 @@ namespace Chroma
 
 
   //! Unpreconditioned Wilson fermion action
-  /*! \ingroup fermact
+  /*! \ingroup fermacts
    *
    * Supports creation and application for fermion actions
    */

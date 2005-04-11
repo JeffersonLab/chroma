@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovext_fermact_array_w.h,v 1.16 2005-01-14 20:13:04 edwards Exp $
+// $Id: unprec_ovext_fermact_array_w.h,v 1.17 2005-04-11 01:59:59 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -41,7 +41,7 @@ namespace Chroma
 
   //! Unpreconditioned Extended-Overlap (N&N) linear operator
   /*!
-   * \ingroup fermact
+   * \ingroup fermacts
    *
    * This operator applies the extended version of the hermitian overlap operator
    *   Chi  =   ((1+Mass)/(1-Mass)*gamma_5 + B) . Psi

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stag_fermact_s.h,v 1.5 2005-01-14 20:13:04 edwards Exp $
+// $Id: stag_fermact_s.h,v 1.6 2005-04-11 01:59:58 edwards Exp $
 /*! \file
  *  \brief Staggered fermion action
  */
@@ -13,7 +13,7 @@
 namespace Chroma 
 { 
   //! Staggered fermion action
-  /*! \ingroup fermact
+  /*! \ingroup fermacts
    *
    */
   class StagFermAct : public EvenOddStaggeredTypeFermAct< LatticeStaggeredFermion, multi1d<LatticeColorMatrix> >

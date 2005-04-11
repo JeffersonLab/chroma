@@ -1,15 +1,17 @@
 // -*- C++ -*-
-// $Id: gaugebcs.h,v 1.3 2005-01-13 02:51:51 edwards Exp $
+// $Id: gaugebcs.h,v 1.4 2005-04-11 01:59:59 edwards Exp $
+
 /*! \file
- *  \brief All gauge boundary conditions
- */
-/*! \defgroup gaugebcs Gauge action support
- * \ingroup gauge
+ * \brief Gauge boundary conditions
  *
- * Support for construction of gauge actions, including 
- * improved gauge actions
+ * Support for gauge boundary conditions
  */
 
+/*! \defgroup gaugebc Gauge boundary conditions
+ * \ingroup gaugeact
+ *
+ * Support for gauge boundary conditions
+ */
 
 #ifndef __gaugebcsss_h__
 #define __gaugebcsss_h__

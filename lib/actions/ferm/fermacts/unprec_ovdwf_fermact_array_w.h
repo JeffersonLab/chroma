@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovdwf_fermact_array_w.h,v 1.13 2005-01-14 20:13:04 edwards Exp $
+// $Id: unprec_ovdwf_fermact_array_w.h,v 1.14 2005-04-11 01:59:59 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Overlap-DWF (Borici) action
  */
@@ -42,7 +42,7 @@ namespace Chroma
 
 
   //! Unpreconditioned Overlap-style (Borici) OvDWF fermion action
-  /*! \ingroup fermact
+  /*! \ingroup fermacts
    *
    * Unprecondition domain-wall fermion action. The conventions used here
    * are specified in Phys.Rev.D63:094505,2001 (hep-lat/0005002).

@@ -1,4 +1,4 @@
-// $Id: propagator_hack.cc,v 1.2 2005-03-06 17:50:20 edwards Exp $
+// $Id: propagator_hack.cc,v 1.3 2005-04-11 02:01:30 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -94,7 +94,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
 }
 
 //! Propagator generation
-/*! \defgroup propagator Propagator generation
+/*! \defgroup propagator_hack Propagator generation
  *  \ingroup main
  *
  * Main program for propagator generation. 

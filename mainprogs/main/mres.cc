@@ -1,9 +1,18 @@
-// $Id: mres.cc,v 1.15 2005-04-10 20:40:52 edwards Exp $
+// $Id: mres.cc,v 1.16 2005-04-11 02:01:30 edwards Exp $
+/*! \file
+ *  \brief Main code for mres measurements
+ */
 
 #include "chroma.h"
 
 using namespace Chroma;
 
+//! Mres measurements
+/*! \defgroup mresmain Mres measurements
+ *  \ingroup main
+ *
+ * Main program for mres measurements 
+ */
 
 int main(int argc, char **argv)
 {
