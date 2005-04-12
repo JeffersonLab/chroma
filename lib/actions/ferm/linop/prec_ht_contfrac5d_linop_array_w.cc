@@ -1,4 +1,4 @@
-// $Id: prec_ht_contfrac5d_linop_array_w.cc,v 1.4 2005-03-02 18:32:04 bjoo Exp $
+// $Id: prec_ht_contfrac5d_linop_array_w.cc,v 1.5 2005-04-12 20:34:54 bjoo Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned domain-wall linear operator
  */
@@ -276,6 +276,7 @@ namespace Chroma
 
 	//
 	// Evaluate (-1/2) Dslash and (-1/2) Dslash^dagger up front
+#if 0
 	multi1d<LatticeFermion> D_psi(N5);
 	multi1d<LatticeFermion> Ddag_psi(N5);
 	Real ftmp_mhalf = Real(-0.5);
@@ -342,6 +343,90 @@ namespace Chroma
 	  tmp[rb[cb]] = Gamma(G5)*D_psi[N5-1];
 	  chi[N5-1][rb[cb]] += beta_tilde[N5-1]*tmp;
 	}
+#endif 
+	// [ A_0    B_0   0    .......        ]
+        // [ B_0    A_1   B_1  .......        ]
+	// [  0     B_1   A_2  B_2 .......    ]
+	// [  ......................... B_N5-2]
+        // [              0    B_N5-2   A_N5-1]
+	//
+	//
+	//  WIth 
+	// A[i]    = beta_tilde[i] gamma_5 (-1/2) Dslash        i < N5-1
+	//         = Dslash^dagger [ (-1/2) gamma_5 beta_tilde[i] ]
+
+	// A[N5-1] = mass*f_minus (-1/2) Dslash^dagger gamma_5 
+        //        +    beta_tilde[N5-1] gamma_5 (-1/2) Dslash
+	//        = Dslash^dagger [ (-1/2)gamma_g5{
+        //                         mass*f_minus + beta_tilde[N5-1] }
+ 
+	// (beta_tilde has f_plus folded into it already)
+	// 
+	// B_i = alpha_i * f_minus (-1/2) D^{\dagger} 
+	//     = D^{dagger} [ (-1/2)alpha_i*f_minus ]
+
+	// Work everyhting out first. Apply D^dagger at the end.
+	
+
+	multi1d<LatticeFermion> tmp5(N5);
+	Real coeff_1, coeff_2, coeff_3;
+	int otherCB = (cb + 1)%2;
+	
+	// First comomnent A_0 psi_0 + B_0 psi_1
+	// 
+	// without D^dagger we get:
+	//
+	// [ (-1/2)gamma_g5 beta_tilde[0] psi_0 + (-1/2)alpha_0 f_minus psi_1 ]
+	// = (-1/2) [ gamma_g5 beta_tilde[0] psi_0 + alpha_0 f_minus_psi_1 ]
+	
+
+
+	tmp[rb[otherCB]] = Gamma(G5)*psi[0];
+	coeff_1 = Real(-0.5)*beta_tilde[0];
+	coeff_2 = Real(-0.5)*alpha[0]*f_minus;
+
+	tmp5[0][rb[otherCB]] = coeff_1*tmp + coeff_2*psi[1];
+
+	for(int i=1; i < N5-1; i++) { 
+
+	  // i=1 .. N5-2
+	  //
+	  // B_{i-1} psi_{i-1} + A_i psi_i + B_{i} psi_{i+1}
+	  //   (-1/2)alpha_{i-1} f_minus psi_{i-1}
+	  // + (-1/2)alpha_{i} f_minus psi_{i+1}
+	  // + (-1/2)gamma_g5 beta_tilde[i] psi_i
+	  coeff_1 = Real(-0.5)*alpha[i-1]*f_minus;
+	  coeff_2 = Real(-0.5)*alpha[i]*f_minus;
+	  coeff_3 = Real(-0.5)*beta_tilde[i];
+	  tmp[rb[otherCB]] = Gamma(G5)*psi[i];
+
+	  tmp5[i][rb[otherCB]] = coeff_1*psi[i-1] + coeff_2*psi[i+1];
+	  tmp5[i][rb[otherCB]] += coeff_3*tmp;
+	}
+
+	// i=N5-1
+	//
+	// B_{i-1} psi_{i-1} + A_[N5-1] psi_[N5-1]
+	// B_{i-1} psi_{i-1} = (-1/2) alpha[N5-1]*f_minus
+	
+	// A_[N5-1] psi[N5-1] = (-1/2)gamma_g5{
+        //                         mass*f_minus + beta_tilde[N5-1] }
+	coeff_1 = Real(-0.5)*alpha[N5-2]*f_minus;
+	coeff_2 = Real(-0.5)*(mass*f_minus + beta_tilde[N5-1]);
+	tmp[rb[otherCB]] = Gamma(G5)*psi[N5-1];
+
+	tmp5[N5-1][rb[otherCB]] = coeff_1 * psi[N5-2] + coeff_2*tmp;
+
+	// Now apply Dslash^{DAGGER} !!!!! 
+	//
+	// (the dagger comes from the denominator. Along the diagonal
+	//  we have gamma_5 D = D^{dagger} gamma_g5
+	// This could be done with a vec op. 
+	// Alternatively, I could infuse it with other loops
+	// don't know what's best.
+	for(int i=0; i < N5; i++) {
+	  Dslash->apply(chi[i], tmp5[i], MINUS, cb);
+	}
 
       }
       break;
@@ -352,7 +437,8 @@ namespace Chroma
 	Real ftmp_mhalf = Real(-0.5);
 	
 	for(int i=0; i < N5; i++) {
-	  D_psi[i] = zero;
+	  // Do I need this? D_psi[i] = zero; Seemingly not!
+
 	  Dslash->apply(D_psi[i], psi[i], PLUS, cb);
 	  D_psi[i][rb[cb]] *= ftmp_mhalf;
 	}
