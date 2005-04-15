@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_eigbnds.cc,v 1.3 2005-04-06 04:34:53 edwards Exp $
+// $Id: inline_eigbnds.cc,v 1.4 2005-04-15 11:23:25 edwards Exp $
 /*! \file
  * \brief Inline measurements for eigenvalue bounds
  *
@@ -11,6 +11,7 @@
 #include "meas/eig/eig_spec.h"
 #include "meas/eig/eig_spec_array.h"
 
+#include "actions/ferm/linop/lmdagm.h"
 #include "actions/ferm/linop/lopscl.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 
@@ -56,6 +57,11 @@ namespace Chroma {
 
       read(paramtop, "Frequency", frequency);
       read(paramtop, "Ritz", ritz);
+
+      if (paramtop.count("usePV") == 1)
+	read(paramtop, "usePV", usePV);
+      else
+	usePV = false;
 
       // Generic Wilson-Type stuff
       string fa;
@@ -233,8 +239,20 @@ namespace Chroma {
     }
     else if (S_5d != 0)
     {
-      Handle< const LinearOperator< multi1d<LatticeFermion> > > MM(S_5d->lMdagM(connect_state));
-      this->do5d(MM, update_no, xml_out);
+      if (! params.usePV)
+      {
+	//! Find evs of base operator
+	Handle< const LinearOperator< multi1d<LatticeFermion> > > MM(S_5d->lMdagM(connect_state));
+	this->do5d(MM, update_no, xml_out);
+      }
+      else
+      {
+	//! Find evs of PV operator
+	Handle< const LinearOperator< multi1d<LatticeFermion> > > 
+	  MM(new lmdagm< multi1d<LatticeFermion> >(S_5d->linOpPV(connect_state)));
+
+	this->do5d(MM, update_no, xml_out);
+      }
     }
     else
     {

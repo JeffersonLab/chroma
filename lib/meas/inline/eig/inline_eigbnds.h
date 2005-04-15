@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_eigbnds.h,v 1.3 2005-04-06 04:34:53 edwards Exp $
+// $Id: inline_eigbnds.h,v 1.4 2005-04-15 11:23:25 edwards Exp $
 
 /*! \file
  * \brief Inline measurements for eigenvalue bounds
@@ -31,6 +31,8 @@ namespace Chroma
 
     unsigned long frequency;
     Handle< const FermionAction<LatticeFermion> > fermact;
+
+    bool usePV;   // measure eigs of PV matrix if applicable
 
     //! Struct for parameters needed for a Ritz type solve
     struct RitzParams_t
