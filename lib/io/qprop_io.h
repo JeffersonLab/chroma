@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qprop_io.h,v 1.27 2005-03-07 02:54:15 edwards Exp $
+// $Id: qprop_io.h,v 1.28 2005-04-15 11:26:08 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -91,10 +91,12 @@ struct ChromaProp_t
 
   // String holding XML of the FermionAction section
   std::string     fermact;
+
+  bool            obsvP;        // measure any observables (like Z_V, or mresP) on 5D prop
   
   // String holding XML for auxiliary state information
-  InvertParam_t   invParam;   // Inverter parameters
-  multi1d<int>    nrow;          // lattice size
+  InvertParam_t   invParam;     // Inverter parameters
+  multi1d<int>    nrow;         // lattice size
 };
 
 

@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 1.30 2005-03-07 02:54:15 edwards Exp $
+// $Id: qprop_io.cc,v 1.31 2005-04-15 11:26:08 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -144,6 +144,7 @@ namespace Chroma
   ChromaProp_t::ChromaProp_t()
   {
     nrow        = Layout::lattSize();
+    obsvP       = true;
     // Create an document with an empty state info tag
   }
 
@@ -323,6 +324,8 @@ namespace Chroma
 
     multi1d<int> boundary;
 
+    param.obsvP = true;
+
     switch (version) 
     {
       /**************************************************************************/
@@ -379,6 +382,31 @@ namespace Chroma
       read(paramtop, "InvertParam", param.invParam);
       read(paramtop, "nrow", param.nrow);
       read(paramtop, "nonRelProp", param.nonRelProp);
+
+      if (paramtop.count("obsvP") != 0)
+      {
+	read(paramtop, "obsvP", param.obsvP);
+      }
+
+      if (paramtop.count("boundary") != 0)
+      {
+	QDPIO::cerr << "ChromaProp: paranoia check - found a misplaced boundary" << endl; 
+	QDP_abort(1);
+      }
+    }
+    break;
+
+    case 8:
+    {
+      XMLReader xml_tmp(paramtop, "FermionAction");
+      std::ostringstream os;
+      xml_tmp.print(os);
+      param.fermact = os.str();
+
+      read(paramtop, "InvertParam", param.invParam);
+      read(paramtop, "nrow", param.nrow);
+      read(paramtop, "nonRelProp", param.nonRelProp);
+      read(paramtop, "obsvP", param.obsvP);
 
       if (paramtop.count("boundary") != 0)
       {
@@ -649,9 +677,10 @@ namespace Chroma
   {
     push(xml, path);
 
-    int version = 7;
+    int version = 8;
     write(xml, "version", version);
     write(xml, "nonRelProp", header.nonRelProp); // new - is this prop non-relativistic
+    write(xml, "obsvP", header.obsvP);           // new - measured 5D stuff
     xml << header.fermact;
     write(xml, "InvertParam", header.invParam);
     write(xml, "nrow", header.nrow);
