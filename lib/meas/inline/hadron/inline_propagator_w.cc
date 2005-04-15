@@ -1,4 +1,4 @@
-// $Id: inline_propagator_w.cc,v 1.2 2005-04-10 17:06:22 edwards Exp $
+// $Id: inline_propagator_w.cc,v 1.3 2005-04-15 11:23:10 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -261,7 +261,6 @@ namespace Chroma
     // Try the factories
     //
     bool success = false;
-    bool mresP = true;
 
     if (! success)
     {
@@ -287,7 +286,7 @@ namespace Chroma
 		       state, 
 		       params.param.invParam, 
 		       params.param.nonRelProp,
-		       mresP,
+		       params.param.obsvP,
 		       ncg_had);
       
 	success = true;
