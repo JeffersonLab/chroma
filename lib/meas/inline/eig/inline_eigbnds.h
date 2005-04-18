@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_eigbnds.h,v 1.4 2005-04-15 11:23:25 edwards Exp $
+// $Id: inline_eigbnds.h,v 1.5 2005-04-18 16:09:35 edwards Exp $
 
 /*! \file
  * \brief Inline measurements for eigenvalue bounds
@@ -28,11 +28,11 @@ namespace Chroma
   {
     InlineEigBndsMdagMParams();
     InlineEigBndsMdagMParams(XMLReader& xml_in, const std::string& path);
+    void write(XMLWriter& xml_in, const std::string& path);
 
-    unsigned long frequency;
-    Handle< const FermionAction<LatticeFermion> > fermact;
-
-    bool usePV;   // measure eigs of PV matrix if applicable
+    unsigned long   frequency;
+    std::string     ferm_act;
+    bool            usePV;   // measure eigs of PV matrix if applicable
 
     //! Struct for parameters needed for a Ritz type solve
     struct RitzParams_t
@@ -53,7 +53,7 @@ namespace Chroma
   {
   public:
     ~InlineEigBndsMdagM() {}
-    InlineEigBndsMdagM(const InlineEigBndsMdagMParams& p) : params(p) {}
+    InlineEigBndsMdagM(const InlineEigBndsMdagMParams& p);
     InlineEigBndsMdagM(const InlineEigBndsMdagM& p) : params(p.params) {}
 
     unsigned long getFrequency(void) const {return params.frequency;}
@@ -76,6 +76,7 @@ namespace Chroma
 
   private:
     InlineEigBndsMdagMParams params;
+    Handle< const FermionAction<LatticeFermion> > fermact;
   };
 
 };

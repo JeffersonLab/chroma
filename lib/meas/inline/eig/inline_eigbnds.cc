@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_eigbnds.cc,v 1.4 2005-04-15 11:23:25 edwards Exp $
+// $Id: inline_eigbnds.cc,v 1.5 2005-04-18 16:09:35 edwards Exp $
 /*! \file
  * \brief Inline measurements for eigenvalue bounds
  *
@@ -45,6 +45,23 @@ namespace Chroma {
     read(paramtop, "Nrenorm", param.Nrenorm);
   }
 
+  //! Ritz output
+  void write(XMLWriter& xml, const string& path, 
+	     InlineEigBndsMdagMParams::RitzParams_t& param)
+  {
+    push(xml, path);
+    
+    write(xml, "RsdR", param.RsdR);
+    write(xml, "RsdA", param.RsdA);
+    write(xml, "RsdZero", param.RsdZero);
+    write(xml, "ProjApsiP", param.ProjApsiP);
+    write(xml, "Nmin", param.Nmin);
+    write(xml, "MaxCG", param.MaxCG);
+    write(xml, "Nrenorm", param.Nrenorm);
+
+    pop(xml);
+  }
+
 
   // Param stuff
   InlineEigBndsMdagMParams::InlineEigBndsMdagMParams() { frequency = 0; }
@@ -63,12 +80,10 @@ namespace Chroma {
       else
 	usePV = false;
 
-      // Generic Wilson-Type stuff
-      string fa;
-      read(paramtop, "./FermionAction/FermAct", fa);
-      fermact = TheFermionActionFactory::Instance().createObject(fa,
-								 paramtop,
-								 string("./FermionAction"));
+      XMLReader xml_tmp(paramtop, "./FermionAction");
+      std::ostringstream os;
+      xml_tmp.print(os);
+      ferm_act = os.str();
     }
     catch(const std::string& e) 
     {
@@ -77,6 +92,44 @@ namespace Chroma {
     }
   }
 
+
+  // Writer
+  void
+  InlineEigBndsMdagMParams::write(XMLWriter& xml, const std::string& path) 
+  {
+    push(xml, path);
+
+    QDP::write(xml, "Frequency", frequency);
+    QDP::write(xml, "usePV", usePV);
+    xml << ferm_act;
+    Chroma::write(xml, "Ritz", ritz);
+
+    pop(xml);
+  }
+
+
+  // Constructor
+  InlineEigBndsMdagM::InlineEigBndsMdagM(const InlineEigBndsMdagMParams& p) : params(p) 
+  {
+    std::istringstream is(params.ferm_act);
+    XMLReader fermact_reader(is);
+
+    // Get the name of the ferm act
+    string fa;
+    try 
+    { 
+      read(fermact_reader, "/FermionAction/FermAct", fa);
+    }
+    catch(const string& s) {
+      QDPIO::cerr << "Caught Exception while reading parameters: " << s <<endl;
+      QDP_abort(1);
+    }
+
+    // Generic Wilson-Type stuff
+    fermact = TheFermionActionFactory::Instance().createObject(fa,
+							       fermact_reader,
+							       string("./FermionAction"));
+  }
 
   // "Do" helper on a 4D action
   void 
@@ -88,6 +141,7 @@ namespace Chroma {
 
     push(xml_out, "EigBndsMdagM");
     write(xml_out, "update_no", update_no);
+    params.write(xml_out, "Input");
 
     int n_eig = 1;
     multi1d<Real> lambda(n_eig);
@@ -154,6 +208,7 @@ namespace Chroma {
 
     push(xml_out, "EigBndsMdagM");
     write(xml_out, "update_no", update_no);
+    params.write(xml_out, "Input");
 
     int n_eig = 1;
     const int N5 = MM->size();
@@ -224,13 +279,13 @@ namespace Chroma {
     // Check success of the downcast 
     // Possible actions
     const FermAct4D<LatticeFermion>* S_4d = 
-      dynamic_cast<const FermAct4D<LatticeFermion>*>(params.fermact.operator->()); // get pointer
+      dynamic_cast<const FermAct4D<LatticeFermion>*>(fermact.operator->()); // get pointer
 
     // Possible actions
     const FermAct5D<LatticeFermion>* S_5d = 
-      dynamic_cast<const FermAct5D<LatticeFermion>*>(params.fermact.operator->()); // get pointer
+      dynamic_cast<const FermAct5D<LatticeFermion>*>(fermact.operator->()); // get pointer
 
-    Handle< const ConnectState > connect_state(params.fermact->createState(u));
+    Handle< const ConnectState > connect_state(fermact->createState(u));
 
     if (S_4d != 0)
     {
