@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial_w.h,v 1.7 2005-04-10 21:46:42 edwards Exp $
+// $Id: one_flavor_rat_monomial_w.h,v 1.8 2005-04-18 16:23:23 edwards Exp $
 
 /*! @file
  * @brief One flavor monomials using RHMC
@@ -77,36 +77,51 @@ namespace Chroma
       multi1d<Phi> X;
       Phi Y;
 
-      // Get X out here via multisolver
-      int n_count = getX(X,fpfe.pole,getPhi(),s);
-
-      // Loop over solns and accumulate force contributions
-      P  F_1, F_2;
+      P  F_1, F_2, F_tmp(Nd);
       F.resize(Nd);
       F = zero;
 
-      for(int i=0; i < X.size(); ++i)
+      // Loop over nth-roots, so the pseudoferms
+      multi1d<int> n_count(getNthRoot());
+      multi1d<Real> F_sq(getNthRoot());
+
+      QDPIO::cout << "nthRoot = " << getNthRoot() << endl;
+
+      for(int n=0; n < getNthRoot(); ++n)
       {
-	(*lin)(Y, X[i], PLUS);
+	// Get X out here via multisolver
+	n_count[n] = getX(X,fpfe.pole,getPhi()[n],s);
 
-	// The  d(M^dag)*M  term
-	lin->deriv(F_1, X[i], Y, MINUS);
+	// Loop over solns and accumulate force contributions
+	F_tmp = zero;
+	for(int i=0; i < X.size(); ++i)
+	{
+	  (*lin)(Y, X[i], PLUS);
+
+	  // The  d(M^dag)*M  term
+	  lin->deriv(F_1, X[i], Y, MINUS);
       
-	// The  M^dag*d(M)  term
-	lin->deriv(F_2, Y, X[i], PLUS);
-	F_1 += F_2;
+	  // The  M^dag*d(M)  term
+	  lin->deriv(F_2, Y, X[i], PLUS);
+	  F_1 += F_2;
 
-	// Reweight each contribution in partial fraction
-	for(int mu=0; mu < F.size(); mu++)
-	  F[mu] -= fpfe.res[i] * F_1[mu];
+	  // Reweight each contribution in partial fraction
+	  for(int mu=0; mu < F.size(); mu++)
+	    F_tmp[mu] -= fpfe.res[i] * F_1[mu];
+	}
+
+	F += F_tmp;
+	F_sq[n] = norm2(F_tmp);   // monitor force from each nth-root
       }
 
-      Double F_sq = norm2(F);   // monitor force
+      Real F_sq_tot = norm2(F);   // monitor total force
 
       write(xml_out, "n_count", n_count);
       write(xml_out, "F_sq", F_sq);
+      write(xml_out, "F_sq_tot", F_sq);
       pop(xml_out);
     }
+
   
     //! Refresh pseudofermions
     /*!
@@ -147,22 +162,29 @@ namespace Chroma
       // Partial Fraction Expansion coeffs for heat-bath
       const RemezCoeff_t& sipfe = getSIPFE();
 
-      Phi eta = zero;
-      
-      // Fill the eta field with gaussian noise
-      gaussian(eta, M->subset());
-      
-      // Temporary: Move to correct normalisation
-      eta *= sqrt(0.5);
-      
-      // Get X out here via multisolver
-      multi1d<Phi> X;
-      int n_count = getX(X,sipfe.pole,eta,s);
+      // Loop over nth-roots, so the pseudoferms
+      getPhi().resize(getNthRoot());
+      multi1d<int> n_count(getNthRoot());
+      Phi eta;
 
-      // Weight solns to make final PF field
-      getPhi()[M->subset()] = sipfe.norm * eta;
-      for(int i=0; i < X.size(); ++i)
-	getPhi()[M->subset()] += sipfe.res[i] * X[i];
+      for(int n=0; n < getNthRoot(); ++n)
+      {
+	// Fill the eta field with gaussian noise
+	eta = zero;
+	gaussian(eta, M->subset());
+      
+	// Temporary: Move to correct normalisation
+	eta *= sqrt(0.5);
+      
+	// Get X out here via multisolver
+	multi1d<Phi> X;
+	n_count[n] = getX(X,sipfe.pole,eta,s);
+
+	// Weight solns to make final PF field
+	getPhi()[n][M->subset()] = sipfe.norm * eta;
+	for(int i=0; i < X.size(); ++i)
+	  getPhi()[n][M->subset()] += sipfe.res[i] * X[i];
+      }
 
       write(xml_out, "n_count", n_count);
       pop(xml_out);
@@ -215,15 +237,23 @@ namespace Chroma
       // Compute energy
       // Get X out here via multisolver
       multi1d<Phi> X;
-      int n_count = getX(X,spfe.pole,getPhi(),s);
 
-      // Weight solns to make final PF field
+      // Loop over nth-roots, so the pseudoferms
+      multi1d<int> n_count(getNthRoot());
+      Double action = zero;
       Phi psi;
-      psi[lin->subset()] = spfe.norm * getPhi();
-      for(int i=0; i < X.size(); ++i)
-	psi[lin->subset()] += spfe.res[i] * X[i];
 
-      Double action = norm2(psi, lin->subset());
+      for(int n=0; n < getNthRoot(); ++n)
+      {
+	n_count[n] = getX(X,spfe.pole,getPhi()[n],s);
+
+	// Weight solns to make final PF field
+	psi[lin->subset()] = spfe.norm * getPhi()[n];
+	for(int i=0; i < X.size(); ++i)
+	  psi[lin->subset()] += spfe.res[i] * X[i];
+
+	action += norm2(psi, lin->subset());
+      }
 
       write(xml_out, "n_count", n_count);
       write(xml_out, "S", action);
@@ -237,6 +267,9 @@ namespace Chroma
     //! Get at fermion action
     virtual const WilsonTypeFermAct<Phi,P>& getFermAct(void) const = 0;
 
+    //! Return number of roots in used
+    virtual int getNthRoot() const = 0;
+
     //! Return the partial fraction expansion for the force calc
     virtual const RemezCoeff_t& getFPFE() const = 0;
 
@@ -247,10 +280,10 @@ namespace Chroma
     virtual const RemezCoeff_t& getSIPFE() const = 0;
 
     //! Accessor for pseudofermion (read only)
-    virtual const Phi& getPhi(void) const = 0;
+    virtual const multi1d<Phi>& getPhi(void) const = 0;
 
     //! mutator for pseudofermion
-    virtual Phi& getPhi(void) = 0;    
+    virtual multi1d<Phi>& getPhi(void) = 0;    
 
     //! Multi-mass solver  (M^dagM + q_i)^{-1} chi  using partfrac
     virtual int getX(multi1d<Phi>& X, 
@@ -292,6 +325,9 @@ namespace Chroma
     //! Get at fermion action
     virtual const UnprecWilsonTypeFermAct<Phi,P>& getFermAct(void) const = 0;
 
+    //! Return number of roots in used
+    virtual int getNthRoot() const = 0;
+
     //! Return the partial fraction expansion for the force calc
     virtual const RemezCoeff_t& getFPFE() const = 0;
 
@@ -302,10 +338,10 @@ namespace Chroma
     virtual const RemezCoeff_t& getSIPFE() const = 0;
 
     //! Accessor for pseudofermion (read only)
-    virtual const Phi& getPhi(void) const = 0;
+    virtual const multi1d<Phi>& getPhi(void) const = 0;
 
     //! mutator for pseudofermion
-    virtual Phi& getPhi(void) = 0;    
+    virtual multi1d<Phi>& getPhi(void) = 0;    
 
     //! Multi-mass solver  (M^dagM + q_i)^{-1} chi  using partfrac
     virtual int getX(multi1d<Phi>& X, 
@@ -360,6 +396,9 @@ namespace Chroma
     //! Get at fermion action
     virtual const EvenOddPrecWilsonTypeFermAct<Phi,P>& getFermAct() const = 0;
 
+    //! Return number of roots in used
+    virtual int getNthRoot() const = 0;
+
     //! Return the partial fraction expansion for the force calc
     virtual const RemezCoeff_t& getFPFE() const = 0;
 
@@ -370,10 +409,10 @@ namespace Chroma
     virtual const RemezCoeff_t& getSIPFE() const = 0;
 
     //! Accessor for pseudofermion (read only)
-    virtual const Phi& getPhi(void) const = 0;
+    virtual const multi1d<Phi>& getPhi(void) const = 0;
 
     //! mutator for pseudofermion
-    virtual Phi& getPhi(void) = 0;    
+    virtual multi1d<Phi>& getPhi(void) = 0;    
 
     //! Multi-mass solver  (M^dagM + q_i)^{-1} chi  using partfrac
     virtual int getX(multi1d<Phi>& X, 

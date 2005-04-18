@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial5d_w.h,v 1.6 2005-04-10 21:57:03 edwards Exp $
+// $Id: one_flavor_rat_monomial5d_w.h,v 1.7 2005-04-18 16:23:23 edwards Exp $
 
 /*! @file
  * @brief One flavor monomials using RHMC
@@ -69,7 +69,8 @@ namespace Chroma
       F = zero;
 
       // Force term for the linop
-      int n_count = 0;
+      multi1d<int> n_m_count(getNthRoot());
+      multi1d<Real> F_m_sq(getNthRoot());
       {
 	// Get linear operator
 	Handle< const DiffLinearOperator<multi1d<Phi>, P> > M(FA.linOp(state));
@@ -79,35 +80,40 @@ namespace Chroma
 
 	multi1d< multi1d<Phi> > X;
 	multi1d<Phi> Y;
+	P  F_1, F_2, F_tmp(Nd);
 
-	// Get X out here via multisolver
-	n_count = getX(X,fpfe.pole,getPhi(),s);
-
-	// Loop over solns and accumulate force contributions
-	P  F_1, F_2;
-
-	for(int i=0; i < X.size(); ++i)
+	// Loop over nth-roots, so the pseudoferms
+	for(int n=0; n < getNthRoot(); ++n)
 	{
-	  (*M)(Y, X[i], PLUS);
+	  // Get X out here via multisolver
+	  n_m_count[n] = getX(X,fpfe.pole,getPhi()[n],s);
 
-	  // The  d(M^dag)*M  term
-	  M->deriv(F_1, X[i], Y, MINUS);
+	  // Loop over solns and accumulate force contributions
+	  F_tmp = zero;
+	  for(int i=0; i < X.size(); ++i)
+	  {
+	    (*M)(Y, X[i], PLUS);
+
+	    // The  d(M^dag)*M  term
+	    M->deriv(F_1, X[i], Y, MINUS);
       
-	  // The  M^dag*d(M)  term
-	  M->deriv(F_2, Y, X[i], PLUS);
-	  F_1 += F_2;
+	    // The  M^dag*d(M)  term
+	    M->deriv(F_2, Y, X[i], PLUS);
+	    F_1 += F_2;
 
-	  // Reweight each contribution in partial fraction
-	  for(int mu=0; mu < F.size(); mu++)
-	    F[mu] -= fpfe.res[i] * F_1[mu];
+	    // Reweight each contribution in partial fraction
+	    for(int mu=0; mu < F.size(); mu++)
+	      F_tmp[mu] -= fpfe.res[i] * F_1[mu];
+	  }
+
+	  F_m_sq[n] = norm2(F_tmp);    // monitor force form each nth-root
+	  F += F_tmp;                  // add on base force terms
 	}
       }
 
-      Double F_m_sq = norm2(F);   // monitor force
-
       // Force term for the PV
-      int n_pv_count = 0;
-      Double F_pv_sq;
+      multi1d<int> n_pv_count(getNthRoot());
+      multi1d<Real> F_pv_sq(getNthRoot());
       {
 	// Get Pauli-Villars linear operator
 	Handle< const DiffLinearOperator<multi1d<Phi>, P> > PV(FA.linOpPV(state));
@@ -117,41 +123,40 @@ namespace Chroma
 
 	multi1d< multi1d<Phi> > X;
 	multi1d<Phi> Y;
+	P  F_1, F_2, F_tmp(Nd);
 
-	// Get X out here via multisolver
-	n_pv_count = getXPV(X,fpvpfe.pole,getPhiPV(),s);
-
-	// Loop over solns and accumulate force contributions
-	P  F_1, F_2;
-	
-	P  F_pv;
-	F_pv.resize(Nd);
-	F_pv = zero;
-	
-	for(int i=0; i < X.size(); ++i)
+	// Loop over nth-roots, so the pseudoferms
+	for(int n=0; n < getNthRoot(); ++n)
 	{
-	  (*PV)(Y, X[i], PLUS);
+	  // Get X out here via multisolver
+	  n_pv_count[n] = getXPV(X,fpvpfe.pole,getPhiPV()[n],s);
 
-	  // The  d(M^dag)*M  term
-	  PV->deriv(F_1, X[i], Y, MINUS);
+	  // Loop over solns and accumulate force contributions
+	  F_tmp = zero;
+	  for(int i=0; i < X.size(); ++i)
+	  {
+	    (*PV)(Y, X[i], PLUS);
+
+	    // The  d(M^dag)*M  term
+	    PV->deriv(F_1, X[i], Y, MINUS);
       
-	  // The  M^dag*d(M)  term
-	  PV->deriv(F_2, Y, X[i], PLUS);
-	  F_1 += F_2;
+	    // The  M^dag*d(M)  term
+	    PV->deriv(F_2, Y, X[i], PLUS);
+	    F_1 += F_2;
 
-	  // Reweight each contribution in partial fraction
-	  for(int mu=0; mu < F.size(); mu++)
-	    F_pv[mu] -= fpvpfe.res[i] * F_1[mu];
+	    // Reweight each contribution in partial fraction
+	    for(int mu=0; mu < F.size(); mu++)
+	      F_tmp[mu] -= fpvpfe.res[i] * F_1[mu];
+	  }
+
+	  F_pv_sq[n] = norm2(F_tmp);    // monitor force form each nth-root
+	  F += F_tmp;   // add on PV force term
 	}
-
-	F_pv_sq = norm2(F_pv);   // monitor force
-
-	F += F_pv;   // add on PV force term
       }
 
-      Double F_sq = norm2(F);
+      Real F_sq = norm2(F);
 
-      write(xml_out, "n_count", n_count);
+      write(xml_out, "n_m_count", n_m_count);
       write(xml_out, "n_pv_count", n_pv_count);
       write(xml_out, "F_m_sq", F_m_sq);
       write(xml_out, "F_pv_sq", F_pv_sq);
@@ -197,7 +202,8 @@ namespace Chroma
       const int N5 = FA.size();
 
       // Pseudofermions for M term
-      int n_count = 0;
+      multi1d<int> n_m_count(getNthRoot());
+      getPhi().resize(getNthRoot()); // Will hold nth-root pseudoferms
       { 
 	Handle< const LinearOperator< multi1d<Phi> > > M(FA.linOp(f_state));
       
@@ -205,42 +211,47 @@ namespace Chroma
 	const RemezCoeff_t& sipfe = getSIPFE();
 
 	multi1d<Phi> eta(N5);
-	eta = zero;
-      
-	// Fill the eta field with gaussian noise
-	for(int i=0; i < N5; ++i)
-	  gaussian(eta[i], M->subset());
-      
-	// Temporary: Move to correct normalisation
-	for(int i=0; i < N5; ++i)
-	  eta[i][M->subset()] *= sqrt(0.5);
-      
-	// Get X out here via multisolver
-	multi1d< multi1d<Phi> > X;
-	n_count = getX(X,sipfe.pole,eta,s);
-
-	// Sanity checks
-	if (X.size() != sipfe.pole.size())
-	  QDP_error_exit("%s : sanity failure, internal size not getSIPartFracRoot size", __func__);
-
-	if (X[0].size() != N5)
-	  QDP_error_exit("%s : sanity failure, internal size not N5", __func__);
-
-	// Weight solns to make final PF field
-	getPhi().resize(N5);
-
-	// Loop over each 5d slice
-	for(int j=0; j < N5; ++j)
+	
+	// Loop over nth-roots, so the pseudoferms
+	for(int n=0; n < getNthRoot(); ++n)
 	{
-	  getPhi()[j][M->subset()] = sipfe.norm * eta[j];
-	  for(int i=0; i < X.size(); ++i)
-	    getPhi()[j][M->subset()] += sipfe.res[i] * X[i][j];
+	  // Fill the eta field with gaussian noise
+	  eta = zero;
+	  for(int i=0; i < N5; ++i)
+	    gaussian(eta[i], M->subset());
+      
+	  // Temporary: Move to correct normalisation
+	  for(int i=0; i < N5; ++i)
+	    eta[i][M->subset()] *= sqrt(0.5);
+      
+	  // Get X out here via multisolver
+	  multi1d< multi1d<Phi> > X;
+	  n_m_count[n] = getX(X,sipfe.pole,eta,s);
+
+	  // Sanity checks
+	  if (X.size() != sipfe.pole.size())
+	    QDP_error_exit("%s : sanity failure, internal size not getSIPartFracRoot size", __func__);
+	  
+	  if (X[0].size() != N5)
+	    QDP_error_exit("%s : sanity failure, internal size not N5", __func__);
+
+	  // Weight solns to make final PF field
+	  getPhi()[n].resize(N5);
+
+	  // Loop over each 5d slice
+	  for(int j=0; j < N5; ++j)
+	  {
+	    getPhi()[n][j][M->subset()] = sipfe.norm * eta[j];
+	    for(int i=0; i < X.size(); ++i)
+	      getPhi()[n][j][M->subset()] += sipfe.res[i] * X[i][j];
+	  }
 	}
       }
 
 
       // Pseudofermions for PV term
-      int n_pv_count = 0;
+      multi1d<int> n_pv_count(getNthRoot());
+      getPhiPV().resize(getNthRoot()); // Will hold nth-root pseudoferms
       { 
 	Handle< const LinearOperator< multi1d<Phi> > > PV(FA.linOpPV(f_state));
 	
@@ -248,40 +259,44 @@ namespace Chroma
 	const RemezCoeff_t& sipvpfe = getSIPVPFE();
 
 	multi1d<Phi> eta(N5);
-	eta = zero;
-      
-	// Fill the eta field with gaussian noise
-	for(int i=0; i < N5; ++i)
-	  gaussian(eta[i], PV->subset());
-      
-	// Temporary: Move to correct normalisation
-	for(int i=0; i < N5; ++i)
-	  eta[i][PV->subset()] *= sqrt(0.5);
-      
-	// Get X out here via multisolver
-	multi1d< multi1d<Phi> > X;
-	n_pv_count = getXPV(X,sipvpfe.pole,eta,s);
 
-	// Sanity checks
-	if (X.size() != sipvpfe.pole.size())
-	  QDP_error_exit("%s : sanity failure, internal size not getSIPartFracRoot size", __func__);
-
-	if (X[0].size() != N5)
-	  QDP_error_exit("%s : sanity failure, internal size not N5", __func__);
-
-	// Weight solns to make final PF field
-	getPhiPV().resize(N5);
-
-	// Loop over each 5d slice
-	for(int j=0; j < N5; ++j)
+	// Loop over nth-roots, so the pseudoferms
+	for(int n=0; n < getNthRoot(); ++n)
 	{
-	  getPhiPV()[j][PV->subset()] = sipvpfe.norm * eta[j];
-	  for(int i=0; i < X.size(); ++i)
-	    getPhiPV()[j][PV->subset()] += sipvpfe.res[i] * X[i][j];
+	  // Fill the eta field with gaussian noise
+	  eta = zero;
+	  for(int i=0; i < N5; ++i)
+	    gaussian(eta[i], PV->subset());
+      
+	  // Temporary: Move to correct normalisation
+	  for(int i=0; i < N5; ++i)
+	    eta[i][PV->subset()] *= sqrt(0.5);
+      
+	  // Get X out here via multisolver
+	  multi1d< multi1d<Phi> > X;
+	  n_pv_count[n] = getXPV(X,sipvpfe.pole,eta,s);
+
+	  // Sanity checks
+	  if (X.size() != sipvpfe.pole.size())
+	    QDP_error_exit("%s : sanity failure, internal size not getSIPartFracRoot size", __func__);
+
+	  if (X[0].size() != N5)
+	    QDP_error_exit("%s : sanity failure, internal size not N5", __func__);
+	  
+	  // Weight solns to make final PF field
+	  getPhiPV()[n].resize(N5);
+
+	  // Loop over each 5d slice
+	  for(int j=0; j < N5; ++j)
+	  {
+	    getPhiPV()[n][j][PV->subset()] = sipvpfe.norm * eta[j];
+	    for(int i=0; i < X.size(); ++i)
+	      getPhiPV()[n][j][PV->subset()] += sipvpfe.res[i] * X[i][j];
+	  }
 	}
       }
 
-      write(xml_out, "n_count", n_count);
+      write(xml_out, "n_m_count", n_m_count);
       write(xml_out, "n_pv_count", n_pv_count);
       pop(xml_out);
     }
@@ -344,7 +359,7 @@ namespace Chroma
 
       // Action for M term
       Double action_m = zero;
-      int n_count = 0;
+      multi1d<int> n_m_count(getNthRoot());
       {
 	Handle< const LinearOperator< multi1d<Phi> > > M(FA.linOp(bc_g_state));
 
@@ -353,33 +368,37 @@ namespace Chroma
 
 	// Get X out here via multisolver
 	multi1d< multi1d<Phi> > X;
-	n_count = getX(X,spfe.pole,getPhi(),s);
-
-	// Sanity checks
-	if (X.size() != spfe.pole.size())
-	  QDP_error_exit("%s : sanity failure, internal size not getSPartFracRoot size", __func__);
-	
-	if (X[0].size() != N5)
-	  QDP_error_exit("%s : sanity failure, internal size not N5", __func__);
-
-	// Weight solns
 	multi1d<Phi> tmp(N5);
 
-	// Loop over each 5d slice
-	for(int j=0; j < N5; ++j)
+	// Loop over nth-roots, so the pseudoferms
+	for(int n=0; n < getNthRoot(); ++n)
 	{
-	  tmp[j][M->subset()] = spfe.norm * getPhi()[j];
-	  for(int i=0; i < X.size(); ++i)
-	    tmp[j][M->subset()] += spfe.res[i] * X[i][j];
-	}
+	  n_m_count[n] = getX(X,spfe.pole,getPhi()[n],s);
 
-	// Action on the subset
-	action_m = norm2(tmp, M->subset());
+	  // Sanity checks
+	  if (X.size() != spfe.pole.size())
+	    QDP_error_exit("%s : sanity failure, internal size not getSPartFracRoot size", __func__);
+	
+	  if (X[0].size() != N5)
+	    QDP_error_exit("%s : sanity failure, internal size not N5", __func__);
+
+	  // Weight solns
+	  // Loop over each 5d slice
+	  for(int j=0; j < N5; ++j)
+	  {
+	    tmp[j][M->subset()] = spfe.norm * getPhi()[n][j];
+	    for(int i=0; i < X.size(); ++i)
+	      tmp[j][M->subset()] += spfe.res[i] * X[i][j];
+	  }
+
+	  // Action on the subset
+	  action_m += norm2(tmp, M->subset());
+	}
       }
 
       // Action for PV term
       Double action_pv = zero;
-      int n_pv_count = 0;
+      multi1d<int> n_pv_count(getNthRoot());
       {
 	Handle< const LinearOperator< multi1d<Phi> > > PV(FA.linOpPV(bc_g_state));
 
@@ -388,31 +407,35 @@ namespace Chroma
 
 	// Get X out here via multisolver
 	multi1d< multi1d<Phi> > X;
-	n_pv_count = getXPV(X,spvpfe.pole,getPhiPV(),s);
-
-	// Sanity checks
-	if (X.size() != spvpfe.pole.size())
-	  QDP_error_exit("%s : sanity failure, internal size not getSPVPartFracRoot size", __func__);
-
-	if (X[0].size() != N5)
-	  QDP_error_exit("%s : sanity failure, internal size not N5", __func__);
-
-	// Weight solns
 	multi1d<Phi> tmp(N5);
-	
-	// Loop over each 5d slice
-	for(int j=0; j < N5; ++j)
-	{
-	  tmp[j][PV->subset()] = spvpfe.norm * getPhiPV()[j];
-	  for(int i=0; i < X.size(); ++i)
-	    tmp[j][PV->subset()] += spvpfe.res[i] * X[i][j];
-	}
 
-	// Action on the subset
-	action_pv = norm2(tmp, PV->subset());
+	// Loop over nth-roots, so the pseudoferms
+	for(int n=0; n < getNthRoot(); ++n)
+	{
+	  n_pv_count[n] = getXPV(X,spvpfe.pole,getPhiPV()[n],s);
+
+	  // Sanity checks
+	  if (X.size() != spvpfe.pole.size())
+	    QDP_error_exit("%s : sanity failure, internal size not getSPVPartFracRoot size", __func__);
+
+	  if (X[0].size() != N5)
+	    QDP_error_exit("%s : sanity failure, internal size not N5", __func__);
+
+	  // Weight solns
+	  // Loop over each 5d slice
+	  for(int j=0; j < N5; ++j)
+	  {
+	    tmp[j][PV->subset()] = spvpfe.norm * getPhiPV()[n][j];
+	    for(int i=0; i < X.size(); ++i)
+	      tmp[j][PV->subset()] += spvpfe.res[i] * X[i][j];
+	  }
+
+	  // Action on the subset
+	  action_pv += norm2(tmp, PV->subset());
+	}
       }
 
-      write(xml_out, "n_count", n_count);
+      write(xml_out, "n_m_count", n_m_count);
       write(xml_out, "n_pv_count", n_pv_count);
       write(xml_out, "S_m", action_m);
       write(xml_out, "S_PV", action_pv);
@@ -429,16 +452,19 @@ namespace Chroma
     virtual const WilsonTypeFermAct5D<Phi,P>& getFermAct(void) const = 0;
 
     //! Accessor for pseudofermion (read only)
-    virtual const multi1d<Phi>& getPhi(void) const = 0;
+    virtual const multi1d< multi1d<Phi> >& getPhi(void) const = 0;
 
     //! mutator for pseudofermion
-    virtual multi1d<Phi>& getPhi(void) = 0;    
+    virtual multi1d< multi1d<Phi> >& getPhi(void) = 0;    
 
     //! Accessor for PV pseudofermion (read only)
-    virtual const multi1d<Phi>& getPhiPV(void) const = 0;
+    virtual const multi1d< multi1d<Phi> >& getPhiPV(void) const = 0;
 
     //! mutator for PV pseudofermion 
-    virtual multi1d<Phi>& getPhiPV(void) = 0;    
+    virtual multi1d< multi1d<Phi> >& getPhiPV(void) = 0;    
+
+    //! Return number of roots in used
+    virtual int getNthRoot() const = 0;
 
     //! Return the partial fraction expansion for the force calc
     virtual const RemezCoeff_t& getFPFE() const = 0;
@@ -504,16 +530,19 @@ namespace Chroma
     virtual const UnprecWilsonTypeFermAct5D<Phi,P>& getFermAct(void) const = 0;
 
     //! Accessor for pseudofermion (read only)
-    virtual const multi1d<Phi>& getPhi(void) const = 0;
+    virtual const multi1d< multi1d<Phi> >& getPhi(void) const = 0;
 
     //! mutator for pseudofermion
-    virtual multi1d<Phi>& getPhi(void) = 0;    
+    virtual multi1d< multi1d<Phi> >& getPhi(void) = 0;    
 
     //! Accessor for PV pseudofermion (read only)
-    virtual const multi1d<Phi>& getPhiPV(void) const = 0;
+    virtual const multi1d< multi1d<Phi> >& getPhiPV(void) const = 0;
 
     //! mutator for PV pseudofermion 
-    virtual multi1d<Phi>& getPhiPV(void) = 0;    
+    virtual multi1d< multi1d<Phi> >& getPhiPV(void) = 0;    
+
+    //! Return number of roots in used
+    virtual int getNthRoot() const = 0;
 
     //! Return the partial fraction expansion for the force calc
     virtual const RemezCoeff_t& getFPFE() const = 0;
@@ -593,16 +622,19 @@ namespace Chroma
     virtual const EvenOddPrecWilsonTypeFermAct5D<Phi,P>& getFermAct() const = 0;
 
     //! Accessor for pseudofermion (read only)
-    virtual const multi1d<Phi>& getPhi(void) const = 0;
+    virtual const multi1d< multi1d<Phi> >& getPhi(void) const = 0;
 
     //! mutator for pseudofermion
-    virtual multi1d<Phi>& getPhi(void) = 0;    
+    virtual multi1d< multi1d<Phi> >& getPhi(void) = 0;    
 
     //! Accessor for PV pseudofermion (read only)
-    virtual const multi1d<Phi>& getPhiPV(void) const = 0;
+    virtual const multi1d< multi1d<Phi> >& getPhiPV(void) const = 0;
 
     //! mutator for PV pseudofermion 
-    virtual multi1d<Phi>& getPhiPV(void) = 0;    
+    virtual multi1d< multi1d<Phi> >& getPhiPV(void) = 0;    
+
+    //! Return number of roots in used
+    virtual int getNthRoot() const = 0;
 
     //! Return the partial fraction expansion for the force calc
     virtual const RemezCoeff_t& getFPFE() const = 0;

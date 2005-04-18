@@ -16,7 +16,7 @@ namespace Chroma
    */
   void generateApprox(RemezCoeff_t& fpfe, RemezCoeff_t& spfe, RemezCoeff_t& sipfe,
 		      const Real& lower, const Real& upper,
-		      int nth_root, int force_degree, int action_degree,
+		      int num_frac, int den_frac, int force_degree, int action_degree,
 		      int digit_precision);
 
 }

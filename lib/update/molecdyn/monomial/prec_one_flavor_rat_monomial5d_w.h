@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_one_flavor_rat_monomial5d_w.h,v 1.4 2005-04-10 21:46:42 edwards Exp $
+// $Id: prec_one_flavor_rat_monomial5d_w.h,v 1.5 2005-04-18 16:23:23 edwards Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 5D ferm monomials
  */
@@ -28,8 +28,9 @@ namespace Chroma
 
     // Read monomial from some root path
     EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5DParams(XMLReader& in, const std::string&  path);
-    InvertParam_t inv_param; // Inverter Parameters
-    string ferm_act;
+    InvertParam_t   inv_param; // Inverter Parameters
+    std::string     ferm_act;
+    int             nthRoot;  // Use "n" copies of nth-root 1-flavor
 
     struct Remez_t   // eigenvalue bounds of M^dag*M
     {
@@ -65,7 +66,7 @@ namespace Chroma
 						   const EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5DParams& param_);
 
       // Copy Constructor
-      EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5D(const EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5D& m) : phi(m.phi), fermact(m.fermact), inv_param(m.inv_param) {}
+      EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5D(const EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5D& m) : phi(m.phi), fermact(m.fermact), inv_param(m.inv_param), nthRoot(m.nthRoot) {}
 
       //! Even even contribution (eg ln det Clover)
       Double S_even_even(const AbsFieldState<multi1d<LatticeColorMatrix>,
@@ -81,19 +82,19 @@ namespace Chroma
       }
 
       //! Accessor for pseudofermion (read only)
-      const multi1d<LatticeFermion>& getPhi(void) const {return phi;}
+      const multi1d< multi1d<LatticeFermion> >& getPhi(void) const {return phi;}
 
       //! mutator for pseudofermion
-      multi1d<LatticeFermion>& getPhi(void) {return phi;}
+      multi1d< multi1d<LatticeFermion> >& getPhi(void) {return phi;}
 
       //! Accessor for PV pseudofermion (read only)
-      const multi1d<LatticeFermion>& getPhiPV(void) const {return phiPV;}
+      const multi1d< multi1d<LatticeFermion> >& getPhiPV(void) const {return phiPV;}
 
       //! mutator for PV pseudofermion 
-      multi1d<LatticeFermion>& getPhiPV(void) {return phiPV;}
+      multi1d< multi1d<LatticeFermion> >& getPhiPV(void) {return phiPV;}
 
-      //! Return the partial fraction expansion for the force calc
-      const RemezCoeff_t& getFPFE() const {return fpfe;}
+      //! Return number of roots in used
+      int getNthRoot() const {return nthRoot;}
 
       //! Return the partial fraction expansion for the action calc
       const RemezCoeff_t& getSPFE() const {return spfe;}
@@ -135,10 +136,10 @@ namespace Chroma
       void operator=(const EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5D&);
 
       // Pseudofermion field phi
-      multi1d<LatticeFermion> phi;
-
+      multi1d< multi1d<LatticeFermion> > phi;
+      
       // Pseudofermion field phi
-      multi1d<LatticeFermion> phiPV;
+      multi1d< multi1d<LatticeFermion> > phiPV;
 
       // A handle for the EvenOddPrecWilsonFermAct
       Handle<const EvenOddPrecWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> > > fermact;
@@ -146,6 +147,11 @@ namespace Chroma
       // The parameters for the inversion
       InvertParam_t inv_param;
 
+      // Number of nth-roots
+      int nthRoot;
+
+      //! Return the partial fraction expansion for the force calc
+      const RemezCoeff_t& getFPFE() const {return fpfe;}
       // Coefficients and roots of partial fractions
       RemezCoeff_t  fpfe;
       RemezCoeff_t  spfe;

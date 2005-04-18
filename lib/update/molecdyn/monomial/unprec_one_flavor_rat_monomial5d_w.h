@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_one_flavor_rat_monomial5d_w.h,v 1.3 2005-04-10 21:46:42 edwards Exp $
+// $Id: unprec_one_flavor_rat_monomial5d_w.h,v 1.4 2005-04-18 16:23:24 edwards Exp $
 /*! @file
  * @brief One-flavor collection of unpreconditioned 5D ferm monomials
  */
@@ -28,8 +28,9 @@ namespace Chroma
 
     // Read monomial from some root path
     UnprecOneFlavorWilsonTypeFermRatMonomial5DParams(XMLReader& in, const std::string&  path);
-    InvertParam_t inv_param; // Inverter Parameters
-    string ferm_act;
+    InvertParam_t   inv_param; // Inverter Parameters
+    std::string     ferm_act;
+    int             nthRoot;  // Use "n" copies of nth-root 1-flavor
 
     struct Remez_t   // eigenvalue bounds of M^dag*M
     {
@@ -66,7 +67,7 @@ namespace Chroma
 						 const UnprecOneFlavorWilsonTypeFermRatMonomial5DParams& param_);
 
       // Copy Constructor
-      UnprecOneFlavorWilsonTypeFermRatMonomial5D(const UnprecOneFlavorWilsonTypeFermRatMonomial5D& m) : phi(m.phi), fermact(m.fermact), inv_param(m.inv_param) {}
+      UnprecOneFlavorWilsonTypeFermRatMonomial5D(const UnprecOneFlavorWilsonTypeFermRatMonomial5D& m) : phi(m.phi), fermact(m.fermact), inv_param(m.inv_param), nthRoot(m.nthRoot) {}
 
 
     protected:
@@ -76,16 +77,19 @@ namespace Chroma
       }
 
       //! Accessor for pseudofermion (read only)
-      const multi1d<LatticeFermion>& getPhi(void) const {return phi;}
+      const multi1d< multi1d<LatticeFermion> >& getPhi(void) const {return phi;}
 
       //! mutator for pseudofermion
-      multi1d<LatticeFermion>& getPhi(void) {return phi;}
+      multi1d< multi1d<LatticeFermion> >& getPhi(void) {return phi;}
 
       //! Accessor for PV pseudofermion (read only)
-      const multi1d<LatticeFermion>& getPhiPV(void) const {return phiPV;}
+      const multi1d< multi1d<LatticeFermion> >& getPhiPV(void) const {return phiPV;}
 
       //! mutator for PV pseudofermion 
-      multi1d<LatticeFermion>& getPhiPV(void) {return phiPV;}
+      multi1d< multi1d<LatticeFermion> >& getPhiPV(void) {return phiPV;}
+
+      //! Return number of roots in used
+      int getNthRoot() const {return nthRoot;}
 
       //! Return the partial fraction expansion for the force calc
       const RemezCoeff_t& getFPFE() const {return fpfe;}
@@ -129,16 +133,19 @@ namespace Chroma
       void operator=(const UnprecOneFlavorWilsonTypeFermRatMonomial5D&);
 
       // Pseudofermion field phi
-      multi1d<LatticeFermion> phi;
+      multi1d< multi1d<LatticeFermion> > phi;
 
       // Pseudofermion field phi
-      multi1d<LatticeFermion> phiPV;
+      multi1d< multi1d<LatticeFermion> > phiPV;
 
       // A handle for the UnprecWilsonFermAct
       Handle<const UnprecWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> > > fermact;
 
       // The parameters for the inversion
       InvertParam_t inv_param;
+
+      // Number of nth-roots
+      int nthRoot;
 
       // Coefficients and roots of partial fractions
       RemezCoeff_t  fpfe;

@@ -1,4 +1,4 @@
-// $Id: genapprox.cc,v 1.2 2005-03-21 16:18:43 edwards Exp $
+// $Id: genapprox.cc,v 1.3 2005-04-18 16:23:23 edwards Exp $
 /*! @file
  * @brief Wrapper for Remez code
  */
@@ -14,16 +14,19 @@ namespace Chroma
   /*! Compute partial fraction expansions for force, action and heat-bath */
   void generateApprox(RemezCoeff_t& fpfe, RemezCoeff_t& spfe, RemezCoeff_t& sipfe,
 		      const Real& lower, const Real& upper,
-		      int nth_root, int force_degree, int action_degree,
+		      int num_frac, int den_frac, int force_degree, int action_degree,
 		      int digit_precision)
   {
     unsigned long prec = abs(digit_precision);
-    unsigned long power_num = 1l;
-    unsigned long power_den = abs(nth_root);
+    unsigned long power_num = abs(num_frac);
+    unsigned long power_den = abs(den_frac);
 
-    if (nth_root > 0)
+    if (den_frac <=0)
+      QDP_error_exit("%s: invalid params", __func__);
+
+    if (num_frac > 0)
     {
-      // Find approx to  x^(1/n)
+      // Find approx to  x^(num_frac/den_frac)
       // Force PFE
       QDPIO::cout << "Compute partial fraction expansion for force calc." << endl;
       Remez  remez(lower, upper, prec);
@@ -38,7 +41,7 @@ namespace Chroma
     }
     else
     {
-      // Find approx to  x^(-1/n)
+      // Find approx to  x^(-num_frac/den_frac)
       // Force PFE
       QDPIO::cout << "Compute partial fraction expansion for force calc." << endl;
       Remez  remez(lower, upper, prec);

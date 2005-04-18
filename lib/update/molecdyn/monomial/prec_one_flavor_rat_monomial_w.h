@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_one_flavor_rat_monomial_w.h,v 1.4 2005-04-10 21:46:42 edwards Exp $
+// $Id: prec_one_flavor_rat_monomial_w.h,v 1.5 2005-04-18 16:23:24 edwards Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -27,8 +27,9 @@ namespace Chroma
 
     // Read monomial from some root path
     EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams(XMLReader& in, const std::string&  path);
-    InvertParam_t inv_param; // Inverter Parameters
-    string ferm_act;
+    InvertParam_t   inv_param; // Inverter Parameters
+    std::string     ferm_act;
+    int             nthRoot;  // Use "n" copies of nth-root 1-flavor
 
     struct Remez_t   // eigenvalue bounds of M^dag*M
     {
@@ -59,14 +60,14 @@ namespace Chroma
     public: 
       // Construct out of a parameter struct. Check against the desired FermAct name
       EvenOddPrecOneFlavorWilsonTypeFermRatMonomial(const string& fermact_name, 
-						   const EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams& param_);
+						    const EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams& param_);
 
       // Construct from a fermact handle and inv params
       // FermAct already holds BC-s
 //      EvenOddPrecOneFlavorWilsonTypeFermRatMonomial(Handle< const EvenOddPrecWilsonFermAct >& fermact_, const InvertParam_t& inv_param_ ) : fermact(fermact_), inv_param(inv_param_) {}
 
       // Copy Constructor
-      EvenOddPrecOneFlavorWilsonTypeFermRatMonomial(const EvenOddPrecOneFlavorWilsonTypeFermRatMonomial& m) : phi(m.phi), fermact(m.fermact), inv_param(m.inv_param) {}
+      EvenOddPrecOneFlavorWilsonTypeFermRatMonomial(const EvenOddPrecOneFlavorWilsonTypeFermRatMonomial& m) : phi(m.phi), fermact(m.fermact), inv_param(m.inv_param), nthRoot(m.nthRoot) {}
 
       //! Even even contribution (eg ln det Clover)
       Double S_even_even(const AbsFieldState<multi1d<LatticeColorMatrix>,
@@ -77,13 +78,8 @@ namespace Chroma
 
     protected:
 
-      LatticeFermion& getPhi(void) {
-	return phi;
-      }
-
-      const LatticeFermion& getPhi(void) const {
-	return phi;
-      }
+      multi1d<LatticeFermion>& getPhi(void) {return phi;}
+      const multi1d<LatticeFermion>& getPhi(void) const {return phi;}
 
       const EvenOddPrecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >& getFermAct(void) const { 
 	return *fermact;
@@ -94,6 +90,9 @@ namespace Chroma
 	       const multi1d<Real>& shifts, 
 	       const LatticeFermion& chi, 
 	       const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const;
+
+      //! Return number of roots in used
+      int getNthRoot() const {return nthRoot;}
 
       //! Return the partial fraction expansion for the force calc
       const RemezCoeff_t& getFPFE() const {return fpfe;}
@@ -111,13 +110,16 @@ namespace Chroma
       void operator=(const EvenOddPrecOneFlavorWilsonTypeFermRatMonomial&);
 
       // Pseudofermion field phi
-      LatticeFermion phi;
+      multi1d<LatticeFermion> phi;
 
       // A handle for the EvenOddPrecWilsonFermAct
       Handle<const EvenOddPrecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> > > fermact;
 
       // The parameters for the inversion
       InvertParam_t inv_param;
+
+      // Number of nth-roots
+      int nthRoot;
 
       // Coefficients and roots of partial fractions
       RemezCoeff_t  fpfe;
