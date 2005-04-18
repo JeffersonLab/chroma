@@ -1,5 +1,10 @@
 04/17/2005 -- Robert Edwards
 
+	Version 1.21.1. Changed one-flavor HMC monomial codes to support
+        nth-rootery.
+
+04/17/2005 -- Robert Edwards
+
 	Version 1.21.0. Moved most mainprogs/main/*.cc codes to be wrappers
         over inline measurements. Inline codes significantly extended.
 
