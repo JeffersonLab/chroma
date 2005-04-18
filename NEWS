@@ -1,3 +1,8 @@
+04/17/2005 -- Robert Edwards
+
+	Version 1.21.0. Moved most mainprogs/main/*.cc codes to be wrappers
+        over inline measurements. Inline codes significantly extended.
+
 04/06/2005 -- Balint Joo
 
 	Version 1.20.6. Small changes before major update of mainprogs.
