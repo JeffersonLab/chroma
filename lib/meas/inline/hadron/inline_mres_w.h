@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_mres_w.h,v 1.3 2005-04-19 17:11:07 edwards Exp $
+// $Id: inline_mres_w.h,v 1.4 2005-04-19 20:05:22 edwards Exp $
 /*! \file
  * \brief Inline mres calculations
  *
@@ -14,6 +14,7 @@
 
 namespace Chroma 
 { 
+  /*! \ingroup inlinehadron */
   namespace InlineMresEnv 
   {
     extern const std::string name;
@@ -21,6 +22,7 @@ namespace Chroma
   }
 
   //! Parameter structure
+  /*! \ingroup inlinehadron */
   struct InlineMresParams 
   {
     InlineMresParams();
@@ -46,6 +48,7 @@ namespace Chroma
 
 
   //! Inline measurement of Wilson loops
+  /*! \ingroup inlinehadron */
   class InlineMres : public AbsInlineMeasurement 
   {
   public:

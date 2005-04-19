@@ -1,4 +1,5 @@
-// $Id: inline_plaquette.h,v 1.5 2005-04-06 04:34:53 edwards Exp $
+// -*- C++ -*-
+// $Id: inline_plaquette.h,v 1.6 2005-04-19 20:05:22 edwards Exp $
 /*! \file
  *  \brief Inline plaquette
  */
@@ -9,13 +10,18 @@
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
 
-namespace Chroma { 
-  namespace InlinePlaquetteEnv {
+namespace Chroma 
+{ 
+  /*! \ingroup inlineglue */
+  namespace InlinePlaquetteEnv 
+  {
     extern const std::string name;
     extern const bool registered;
   }
 
-  struct InlinePlaquetteParams {
+  /*! \ingroup inlineglue */
+  struct InlinePlaquetteParams 
+  {
     InlinePlaquetteParams() { frequency = 0; }
 
     InlinePlaquetteParams(XMLReader& xml_in, const std::string& path) 
@@ -33,7 +39,10 @@ namespace Chroma {
     unsigned long frequency;
   };
 
-  class InlinePlaquette : public AbsInlineMeasurement {
+
+  /*! \ingroup inlineglue */
+  class InlinePlaquette : public AbsInlineMeasurement 
+  {
   public:
     ~InlinePlaquette() {}
     InlinePlaquette(const InlinePlaquetteParams& p) : frequency(p.frequency) {}

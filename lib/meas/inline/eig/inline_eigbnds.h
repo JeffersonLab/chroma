@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_eigbnds.h,v 1.5 2005-04-18 16:09:35 edwards Exp $
+// $Id: inline_eigbnds.h,v 1.6 2005-04-19 20:05:22 edwards Exp $
 
 /*! \file
  * \brief Inline measurements for eigenvalue bounds
@@ -16,6 +16,7 @@
 
 namespace Chroma 
 { 
+  /*! \ingroup inlineeig */
   namespace InlineEigBndsMdagMEnv 
   {
     extern const std::string name;
@@ -24,6 +25,7 @@ namespace Chroma
 
 
   //! Parameter structure
+  /*! \ingroup inlineeig */
   struct InlineEigBndsMdagMParams 
   {
     InlineEigBndsMdagMParams();
@@ -49,6 +51,7 @@ namespace Chroma
 
 
   //! Inline measurement of eigenvalue bounds of M^dag*M
+  /*! \ingroup inlineeig */
   class InlineEigBndsMdagM : public AbsInlineMeasurement 
   {
   public:

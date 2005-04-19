@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_propagator_w.h,v 1.1 2005-04-06 04:34:53 edwards Exp $
+// $Id: inline_propagator_w.h,v 1.2 2005-04-19 20:05:22 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -15,6 +15,7 @@
 
 namespace Chroma 
 { 
+  /*! \ingroup inlinehadron */
   namespace InlinePropagatorEnv 
   {
     extern const std::string name;
@@ -22,6 +23,7 @@ namespace Chroma
   }
 
   //! Parameter structure
+  /*! \ingroup inlinehadron */ 
   struct InlinePropagatorParams 
   {
     InlinePropagatorParams();
@@ -39,9 +41,12 @@ namespace Chroma
       std::string     prop_file;
       QDP_volfmt_t    prop_volfmt;
     } prop;
+
+    std::string xml_file;  // Alternate XML file pattern
   };
 
   //! Inline measurement of Wilson loops
+  /*! \ingroup inlinehadron */
   class InlinePropagator : public AbsInlineMeasurement 
   {
   public:
@@ -56,6 +61,13 @@ namespace Chroma
 		    XMLBufferWriter& gauge_xml,
 		    const unsigned long update_no,
 		    XMLWriter& xml_out); 
+
+  protected:
+    //! Do the measurement
+    void func(const multi1d<LatticeColorMatrix>& u,
+	      XMLBufferWriter& gauge_xml,
+	      const unsigned long update_no,
+	      XMLWriter& xml_out); 
 
   private:
     InlinePropagatorParams params;

@@ -1,4 +1,4 @@
-// $Id: inline_mres_w.cc,v 1.3 2005-04-19 17:11:07 edwards Exp $
+// $Id: inline_mres_w.cc,v 1.4 2005-04-19 20:05:22 edwards Exp $
 /*! \file
  * \brief Inline construction of mres
  *
@@ -136,8 +136,15 @@ namespace Chroma
     // If xml file not empty, then use alternate
     if (params.xml_file != "")
     {
-      Handle<XMLFileWriter> xml(makeXMLFileWriter(params.xml_file, update_no));
-      func(u, gauge_xml, update_no, *xml);
+      string xml_file = makeXMLFileName(params.xml_file, update_no);
+
+      push(xml_out, "mres");
+      write(xml_out, "update_no", update_no);
+      write(xml_out, "xml_file", xml_file);
+      pop(xml_out);
+
+      XMLFileWriter xml(xml_file);
+      func(u, gauge_xml, update_no, xml);
     }
     else
     {

@@ -1,12 +1,20 @@
+// -*- C++ -*-
+// $Id: abs_inline_measurement.h,v 1.5 2005-04-19 20:05:22 edwards Exp $
+/*! \file
+ * \brief Abstract inline measurements
+ */
+
 #ifndef ABS_INLINE_MEASUREMENT_H
 #define ABS_INLINE_MEASUREMENT_H
 
 #include "chromabase.h"
 
+namespace Chroma 
+{ 
 
-namespace Chroma { 
-
-  class AbsInlineMeasurement {
+  /*! \ingroup inline */
+  class AbsInlineMeasurement 
+  {
   public:
 
     // Virtual Destructor

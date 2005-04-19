@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_sink_smear_w.h,v 1.1 2005-04-06 04:34:54 edwards Exp $
+// $Id: inline_sink_smear_w.h,v 1.2 2005-04-19 20:05:22 edwards Exp $
 /*! \file
  * \brief Inline sink_smear propagators
  *
@@ -15,6 +15,7 @@
 
 namespace Chroma 
 { 
+  /*! \ingroup inlinehadron */
   namespace InlineSinkSmearEnv 
   {
     extern const std::string name;
@@ -22,6 +23,7 @@ namespace Chroma
   }
 
   //! Parameter structure
+  /*! \ingroup inlinehadron */
   struct InlineSinkSmearParams 
   {
     InlineSinkSmearParams();
@@ -43,6 +45,7 @@ namespace Chroma
 
 
   //! Inline measurement of Wilson loops
+  /*! \ingroup inlinehadron */
   class InlineSinkSmear : public AbsInlineMeasurement 
   {
   public:

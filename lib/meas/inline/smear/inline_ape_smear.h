@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_ape_smear.h,v 1.1 2005-04-07 03:23:20 edwards Exp $
+// $Id: inline_ape_smear.h,v 1.2 2005-04-19 20:05:22 edwards Exp $
 /*! \file
  *  \brief Inline APE smearing
  */
@@ -13,6 +13,7 @@
 
 namespace Chroma 
 { 
+  /*! \ingroup inlinesmear */
   namespace InlineAPESmearEnv 
   {
     extern const std::string name;
@@ -20,6 +21,7 @@ namespace Chroma
   }
 
   //! Parameter structure
+  /*! \ingroup inlinesmear */
   struct InlineAPESmearParams 
   {
     InlineAPESmearParams();
@@ -47,6 +49,7 @@ namespace Chroma
   };
 
   //! Inline measurement of Wilson loops
+  /*! \ingroup inlinesmear */
   class InlineAPESmear : public AbsInlineMeasurement 
   {
   public:

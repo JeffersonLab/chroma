@@ -1,3 +1,9 @@
+// -*- C++ -*-
+// $Id: abs_inline_measurement_factory.h,v 1.2 2005-04-19 20:05:22 edwards Exp $
+/*! \file
+ * \brief Inline measurement factory
+ */
+
 #ifndef LCM_INLINE_MEASUREMENT_FACTORY_H
 #define LCM_INLINE_MEASUREMENT_FACTORY_H
 
@@ -8,8 +14,10 @@
 #include "meas/inline/abs_inline_measurement.h"
 
 
-namespace Chroma { 
+namespace Chroma 
+{ 
 
+  /*! \ingroup inline */
   typedef SingletonHolder <
     ObjectFactory<
     AbsInlineMeasurement ,

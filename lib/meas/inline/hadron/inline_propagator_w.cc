@@ -1,4 +1,4 @@
-// $Id: inline_propagator_w.cc,v 1.3 2005-04-15 11:23:10 edwards Exp $
+// $Id: inline_propagator_w.cc,v 1.4 2005-04-19 20:05:22 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -13,6 +13,7 @@
 #include "util/info/proginfo.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/fermacts/fermacts_aggregate_w.h"
+#include "meas/inline/make_xml_file.h"
 
 namespace Chroma 
 { 
@@ -93,6 +94,12 @@ namespace Chroma
 
       // Read in the output propagator/source configuration info
       read(paramtop, "Prop", prop);
+
+      // Possible alternate XML file pattern
+      if (paramtop.count("xml_file") != 0) 
+      {
+	read(paramtop, "xml_file", xml_file);
+      }
     }
     catch(const std::string& e) 
     {
@@ -115,11 +122,39 @@ namespace Chroma
   }
 
 
+  // Function call
   void 
   InlinePropagator::operator()(const multi1d<LatticeColorMatrix>& u,
 			       XMLBufferWriter& gauge_xml,
 			       unsigned long update_no,
 			       XMLWriter& xml_out) 
+  {
+    // If xml file not empty, then use alternate
+    if (params.xml_file != "")
+    {
+      string xml_file = makeXMLFileName(params.xml_file, update_no);
+
+      push(xml_out, "propagator");
+      write(xml_out, "update_no", update_no);
+      write(xml_out, "xml_file", xml_file);
+      pop(xml_out);
+
+      XMLFileWriter xml(xml_file);
+      func(u, gauge_xml, update_no, xml);
+    }
+    else
+    {
+      func(u, gauge_xml, update_no, xml_out);
+    }
+  }
+
+
+  // Real work done here
+  void 
+  InlinePropagator::func(const multi1d<LatticeColorMatrix>& u,
+			 XMLBufferWriter& gauge_xml,
+			 unsigned long update_no,
+			 XMLWriter& xml_out) 
   {
     START_CODE();
 

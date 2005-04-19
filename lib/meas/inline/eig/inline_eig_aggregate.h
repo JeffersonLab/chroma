@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_eig_aggregate.h,v 1.1 2005-02-07 04:11:27 edwards Exp $
+// $Id: inline_eig_aggregate.h,v 1.2 2005-04-19 20:05:22 edwards Exp $
 /*! \file
  *  \brief Inline eigenvalute measurement aggregator
  */
@@ -12,6 +12,7 @@
 namespace Chroma
 {
   //! Registration aggregator
+  /*! \ingroup inlineeig */
   namespace InlineEigAggregateEnv
   {
     extern const bool registered;

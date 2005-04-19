@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_seqsource_w.h,v 1.1 2005-04-06 04:34:53 edwards Exp $
+// $Id: inline_seqsource_w.h,v 1.2 2005-04-19 20:05:22 edwards Exp $
 /*! \file
  * \brief Inline construction of sequential sources
  *
@@ -15,6 +15,7 @@
 
 namespace Chroma 
 { 
+  /*! \ingroup inlinehadron */
   namespace InlineSeqSourceEnv 
   {
     extern const std::string name;
@@ -22,6 +23,7 @@ namespace Chroma
   }
 
   //! Parameter structure
+  /*! \ingroup inlinehadron */
   struct InlineSeqSourceParams 
   {
     InlineSeqSourceParams();
@@ -42,6 +44,7 @@ namespace Chroma
   };
 
   //! Inline measurement of Wilson loops
+  /*! \ingroup inlinehadron */
   class InlineSeqSource : public AbsInlineMeasurement 
   {
   public:

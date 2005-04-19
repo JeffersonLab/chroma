@@ -1,3 +1,5 @@
+// -*- C++ -*-
+
 #ifndef INLINE_POLYLOOP_LOOP_H
 #define INLINE_POLYAKOV_LOOP_H
 
@@ -6,13 +8,18 @@
 
 
 
-namespace Chroma { 
-  namespace InlinePolyakovLoopEnv {
+namespace Chroma 
+{ 
+  /*! \ingroup inlineglue */
+  namespace InlinePolyakovLoopEnv 
+  {
     extern const std::string name;
     extern const bool registered;
   }
 
-  struct InlinePolyakovLoopParams {
+  /*! \ingroup inlineglue */
+  struct InlinePolyakovLoopParams 
+  {
     InlinePolyakovLoopParams() { frequency = 0; }
 
     InlinePolyakovLoopParams(XMLReader& xml_in, const std::string& path) 
@@ -30,7 +37,10 @@ namespace Chroma {
     unsigned long frequency;
   };
 
-  class InlinePolyakovLoop : public AbsInlineMeasurement {
+
+  /*! \ingroup inlineglue */
+  class InlinePolyakovLoop : public AbsInlineMeasurement 
+  {
   public:
     ~InlinePolyakovLoop() {}
     InlinePolyakovLoop(const InlinePolyakovLoopParams& p_) : p(p_) {}

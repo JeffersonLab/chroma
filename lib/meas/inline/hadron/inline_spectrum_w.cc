@@ -1,4 +1,4 @@
-// $Id: inline_spectrum_w.cc,v 1.2 2005-04-19 17:11:07 edwards Exp $
+// $Id: inline_spectrum_w.cc,v 1.3 2005-04-19 20:05:22 edwards Exp $
 /*! \file
  * \brief Inline construction of spectrum
  *
@@ -221,13 +221,15 @@ namespace Chroma
     // If xml file not empty, then use alternate
     if (params.xml_file != "")
     {
+      string xml_file = makeXMLFileName(params.xml_file, update_no);
+
       push(xml_out, "spectrum_w");
       write(xml_out, "update_no", update_no);
-      write(xml_out, "xml_file", params.xml_file);
+      write(xml_out, "xml_file", xml_file);
       pop(xml_out);
 
-      Handle<XMLFileWriter> xml(makeXMLFileWriter(params.xml_file, update_no));
-      func(u, gauge_xml, update_no, *xml);
+      XMLFileWriter xml(xml_file);
+      func(u, gauge_xml, update_no, xml);
     }
     else
     {

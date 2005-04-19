@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_bar3ptfn_w.h,v 1.2 2005-04-10 17:06:22 edwards Exp $
+// $Id: inline_bar3ptfn_w.h,v 1.3 2005-04-19 20:05:22 edwards Exp $
 /*! \file
  * \brief Inline measurement of bar3ptfn
  *
@@ -14,6 +14,7 @@
 
 namespace Chroma 
 { 
+  /*! \ingroup inlinehadron */
   namespace InlineBar3ptfnEnv 
   {
     extern const std::string name;
@@ -21,6 +22,7 @@ namespace Chroma
   }
 
   //! Parameter structure
+  /*! \ingroup inlinehadron */
   struct InlineBar3ptfnParams 
   {
     InlineBar3ptfnParams();
@@ -46,6 +48,7 @@ namespace Chroma
 
 
   //! Inline measurement of Wilson loops
+  /*! \ingroup inlinehadron */
   class InlineBar3ptfn : public AbsInlineMeasurement 
   {
   public:

@@ -1,4 +1,4 @@
-// $Id: make_xml_file.cc,v 1.1 2005-04-19 17:11:07 edwards Exp $
+// $Id: make_xml_file.cc,v 1.2 2005-04-19 20:05:22 edwards Exp $
 /*! \file
  *  \brief Make xml file writer
  */
@@ -7,8 +7,8 @@
 
 namespace Chroma
 {
-  //! Return a xml file writer for inline measurements
-  XMLFileWriter* makeXMLFileWriter(std::string xml_file, unsigned long update_no)
+  // Return a xml file name for inline measurements
+  string makeXMLFileName(std::string xml_file, unsigned long update_no)
   {
     if (xml_file == "")
     {
@@ -16,10 +16,10 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    // Could allow file pattern
+    // Could/should allow file pattern
     string xml = xml_file;
 
-    // Make the writer and bolt
-    return new XMLFileWriter(xml);
+    // Return xml
+    return xml;
   }
 }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_wilslp.h,v 1.2 2005-04-06 04:34:53 edwards Exp $
+// $Id: inline_wilslp.h,v 1.3 2005-04-19 20:05:22 edwards Exp $
 /*! \file
  *  \brief Inline Wilson loops
  */
@@ -12,6 +12,7 @@
 
 namespace Chroma 
 { 
+  /*! \ingroup inlineglue */
   namespace InlineWilsonLoopEnv 
   {
     extern const std::string name;
@@ -19,6 +20,7 @@ namespace Chroma
   }
 
   //! Parameter structure
+  /*! \ingroup inlineglue */
   struct InlineWilsonLoopParams 
   {
     InlineWilsonLoopParams();
@@ -29,7 +31,9 @@ namespace Chroma
     int j_decay;
   };
 
+
   //! Inline measurement of Wilson loops
+  /*! \ingroup inlineglue */
   class InlineWilsonLoop : public AbsInlineMeasurement 
   {
   public:

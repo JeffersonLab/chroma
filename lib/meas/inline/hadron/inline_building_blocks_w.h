@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_building_blocks_w.h,v 1.1 2005-04-06 04:34:53 edwards Exp $
+// $Id: inline_building_blocks_w.h,v 1.2 2005-04-19 20:05:22 edwards Exp $
 /*! \file
  * \brief Inline construction of BuildingBlocks
  *
@@ -15,6 +15,7 @@
 
 namespace Chroma 
 { 
+  /*! \ingroup inlinehadron */
   namespace InlineBuildingBlocksEnv 
   {
     extern const std::string name;
@@ -22,6 +23,7 @@ namespace Chroma
   }
 
   //! Parameter structure
+  /*! \ingroup inlinehadron */
   struct InlineBuildingBlocksParams 
   {
     InlineBuildingBlocksParams();
@@ -59,6 +61,7 @@ namespace Chroma
 
 
   //! Inline measurement of Wilson loops
+  /*! \ingroup inlinehadron */
   class InlineBuildingBlocks : public AbsInlineMeasurement 
   {
   public:

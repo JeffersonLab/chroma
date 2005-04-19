@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_qpropqio_w.h,v 1.1 2005-04-15 11:22:03 edwards Exp $
+// $Id: inline_qpropqio_w.h,v 1.2 2005-04-19 20:05:22 edwards Exp $
 /*! \file
  * \brief Inline measurement of qpropqio
  *
@@ -14,6 +14,7 @@
 
 namespace Chroma 
 { 
+  /*! \ingroup inlinehadron */
   namespace InlineQpropQIOEnv 
   {
     extern const std::string name;
@@ -21,6 +22,7 @@ namespace Chroma
   }
 
   //! Parameter structure
+  /*! \ingroup inlinehadron */
   struct InlineQpropQIOParams 
   {
     InlineQpropQIOParams();
@@ -45,6 +47,7 @@ namespace Chroma
 
 
   //! Inline measurement of Wilson loops
+  /*! \ingroup inlinehadron */
   class InlineQpropQIO : public AbsInlineMeasurement 
   {
   public:
