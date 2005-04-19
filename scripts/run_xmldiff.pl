@@ -1,5 +1,5 @@
 #
-#  $Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/scripts/run_xmldiff.pl,v 1.4 2004-12-19 15:25:35 mcneile Exp $
+#  $Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/scripts/run_xmldiff.pl,v 1.5 2005-04-19 14:04:42 mcneile Exp $
 #
 #  This is wrapper script to run the xmldiff application from
 #  a makefile
@@ -39,12 +39,14 @@ else
 # at some stage this should be factored into another perl script
  %HoH = (
 	  t_propagator_fuzz_s => {
+                       input       => "../../tests/t_asqtad_prop/INPUT_t_propagator_fuzz" , 
                        output      => "t_propagator_fuzz_s.xml",
                        metric       => "../../tests/t_asqtad_prop/t_propagator_fuzz_s_METRIC.xml" ,
                        controlfile  => "../../tests/t_asqtad_prop/t_propagator_fuzz_s.xml" ,
 		   },
 
 	  t_propagator_s => {
+                       input  => "../../tests/t_asqtad_prop/DATA_v2" , 
                        output      => "t_propagator_s.xml",
                        metric       => "../../tests/t_asqtad_prop/t_propagator_s_METRIC.xml" ,
                        controlfile  => "../../tests/t_asqtad_prop/t_propagator_s.xml" ,
@@ -52,6 +54,7 @@ else
 
 
 	  t_disc_loop_s => {
+                       input       => "../../tests/t_asqtad_prop/DISC_DATA_v2" , 
                        output      =>  "t_disc_loop_s.xml",
                        metric       => "../../tests/t_asqtad_prop/t_disc_loop_s_METRIC.xml" ,
                        controlfile  => "../../tests/t_asqtad_prop/t_disc_loop_s.xml" ,
@@ -59,6 +62,7 @@ else
 
 
 	  t_lower_tests  => {
+                       input      => "NOTHING",
                        output      => "t_lower_tests.xml",
                        metric       => "../../tests/t_unit_tests/t_lower_tests_METRIC.xml" ,
                        controlfile  => "../../tests/t_unit_tests/t_lower_tests.xml" ,
@@ -91,6 +95,7 @@ foreach $execute ( keys %HoH )
     $candidate =  $HoH{$execute}{"output"} ; 
     $metric    =  $HoH{$execute}{"metric"} ; 
     $control   =  $HoH{$execute}{"controlfile"} ; 
+    $input   =  $HoH{$execute}{"input"} ; 
 
     if( ! -f  $execute )
     {
@@ -101,8 +106,18 @@ foreach $execute ( keys %HoH )
 
     if(  -f  $execute )
     {
+	if( $input ne "NOTHING" )
+        {
+	    $in_arg = "-i ".$input ; 
+	}
+	else
+        {
+	    $in_arg = "" ; 
+        }
+	
+
 	$log = "log_".$execute  ; 
-	$status_tmp = system("$execute  >& $log") / 256 ; 
+	$status_tmp = system("$execute ".$in_arg." -o $candidate >& $log") / 256 ; 
 	if( $status_tmp != 0  ) 
         {
 		print "   RUN_FAIL\n"  ; 
