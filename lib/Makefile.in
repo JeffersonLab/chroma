@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.348 2005-04-18 16:23:49 edwards Exp $
+# $Id: Makefile.in,v 1.349 2005-04-19 17:11:38 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -275,7 +275,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/monomial/unprec_two_flavor_monomial5d_w.cc \
 	update/molecdyn/monomial/prec_two_flavor_monomial5d_w.cc \
 	util/ferm/gammasgn_w.cc io/inline_io.cc \
-	meas/inline/inline_aggregate.cc \
+	meas/inline/inline_aggregate.cc meas/inline/make_xml_file.cc \
 	meas/inline/eig/inline_eig_aggregate.cc \
 	meas/inline/eig/inline_eigbnds.cc \
 	meas/inline/glue/inline_glue_aggregate.cc \
@@ -465,10 +465,10 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	unprec_two_flavor_monomial5d_w.$(OBJEXT) \
 	prec_two_flavor_monomial5d_w.$(OBJEXT) gammasgn_w.$(OBJEXT) \
 	inline_io.$(OBJEXT) inline_aggregate.$(OBJEXT) \
-	inline_eig_aggregate.$(OBJEXT) inline_eigbnds.$(OBJEXT) \
-	inline_glue_aggregate.$(OBJEXT) inline_plaquette.$(OBJEXT) \
-	inline_polylp.$(OBJEXT) inline_wilslp.$(OBJEXT) \
-	inline_hadron_aggregate.$(OBJEXT) \
+	make_xml_file.$(OBJEXT) inline_eig_aggregate.$(OBJEXT) \
+	inline_eigbnds.$(OBJEXT) inline_glue_aggregate.$(OBJEXT) \
+	inline_plaquette.$(OBJEXT) inline_polylp.$(OBJEXT) \
+	inline_wilslp.$(OBJEXT) inline_hadron_aggregate.$(OBJEXT) \
 	inline_make_source_w.$(OBJEXT) inline_propagator_w.$(OBJEXT) \
 	inline_seqsource_w.$(OBJEXT) inline_spectrum_w.$(OBJEXT) \
 	inline_sink_smear_w.$(OBJEXT) inline_qqq_w.$(OBJEXT) \
@@ -763,8 +763,8 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	util/gauge/gauge_s.h util/gauge/stag_phases_s.h io/inline_io.h \
 	meas/inline/inline.h meas/inline/abs_inline_measurement.h \
 	meas/inline/abs_inline_measurement_factory.h \
-	meas/inline/inline_aggregate.h meas/inline/eig/eig.h \
-	meas/inline/eig/inline_eig_aggregate.h \
+	meas/inline/inline_aggregate.h meas/inline/make_xml_file.h \
+	meas/inline/eig/eig.h meas/inline/eig/inline_eig_aggregate.h \
 	meas/inline/eig/inline_eigbnds.h meas/inline/glue/glue.h \
 	meas/inline/glue/inline_glue_aggregate.h \
 	meas/inline/glue/inline_plaquette.h \
@@ -1184,8 +1184,8 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	util/gauge/gauge_s.h util/gauge/stag_phases_s.h io/inline_io.h \
 	meas/inline/inline.h meas/inline/abs_inline_measurement.h \
 	meas/inline/abs_inline_measurement_factory.h \
-	meas/inline/inline_aggregate.h meas/inline/eig/eig.h \
-	meas/inline/eig/inline_eig_aggregate.h \
+	meas/inline/inline_aggregate.h meas/inline/make_xml_file.h \
+	meas/inline/eig/eig.h meas/inline/eig/inline_eig_aggregate.h \
 	meas/inline/eig/inline_eigbnds.h meas/inline/glue/glue.h \
 	meas/inline/glue/inline_glue_aggregate.h \
 	meas/inline/glue/inline_plaquette.h \
@@ -1435,7 +1435,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/monomial/unprec_two_flavor_monomial5d_w.cc \
 	update/molecdyn/monomial/prec_two_flavor_monomial5d_w.cc \
 	util/ferm/gammasgn_w.cc io/inline_io.cc \
-	meas/inline/inline_aggregate.cc \
+	meas/inline/inline_aggregate.cc meas/inline/make_xml_file.cc \
 	meas/inline/eig/inline_eig_aggregate.cc \
 	meas/inline/eig/inline_eigbnds.cc \
 	meas/inline/glue/inline_glue_aggregate.cc \
@@ -1709,6 +1709,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_w_pab.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_w_sse.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/make_xml_file.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesfield.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesons_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesonseqsrc_w.Po@am__quote@
@@ -5349,6 +5350,20 @@ inline_aggregate.obj: meas/inline/inline_aggregate.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/inline_aggregate.cc' object='inline_aggregate.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_aggregate.obj `if test -f 'meas/inline/inline_aggregate.cc'; then $(CYGPATH_W) 'meas/inline/inline_aggregate.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/inline_aggregate.cc'; fi`
+
+make_xml_file.o: meas/inline/make_xml_file.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT make_xml_file.o -MD -MP -MF "$(DEPDIR)/make_xml_file.Tpo" -c -o make_xml_file.o `test -f 'meas/inline/make_xml_file.cc' || echo '$(srcdir)/'`meas/inline/make_xml_file.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/make_xml_file.Tpo" "$(DEPDIR)/make_xml_file.Po"; else rm -f "$(DEPDIR)/make_xml_file.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/make_xml_file.cc' object='make_xml_file.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o make_xml_file.o `test -f 'meas/inline/make_xml_file.cc' || echo '$(srcdir)/'`meas/inline/make_xml_file.cc
+
+make_xml_file.obj: meas/inline/make_xml_file.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT make_xml_file.obj -MD -MP -MF "$(DEPDIR)/make_xml_file.Tpo" -c -o make_xml_file.obj `if test -f 'meas/inline/make_xml_file.cc'; then $(CYGPATH_W) 'meas/inline/make_xml_file.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/make_xml_file.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/make_xml_file.Tpo" "$(DEPDIR)/make_xml_file.Po"; else rm -f "$(DEPDIR)/make_xml_file.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/make_xml_file.cc' object='make_xml_file.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o make_xml_file.obj `if test -f 'meas/inline/make_xml_file.cc'; then $(CYGPATH_W) 'meas/inline/make_xml_file.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/make_xml_file.cc'; fi`
 
 inline_eig_aggregate.o: meas/inline/eig/inline_eig_aggregate.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_eig_aggregate.o -MD -MP -MF "$(DEPDIR)/inline_eig_aggregate.Tpo" -c -o inline_eig_aggregate.o `test -f 'meas/inline/eig/inline_eig_aggregate.cc' || echo '$(srcdir)/'`meas/inline/eig/inline_eig_aggregate.cc; \
