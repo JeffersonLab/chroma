@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_mres_w.h,v 1.2 2005-04-10 20:41:11 edwards Exp $
+// $Id: inline_mres_w.h,v 1.3 2005-04-19 17:11:07 edwards Exp $
 /*! \file
  * \brief Inline mres calculations
  *
@@ -40,6 +40,8 @@ namespace Chroma
     {
       string          prop_file;
     } prop;
+
+    std::string xml_file;  // Alternate XML file pattern
   };
 
 
@@ -58,6 +60,13 @@ namespace Chroma
 		    XMLBufferWriter& gauge_xml,
 		    const unsigned long update_no,
 		    XMLWriter& xml_out); 
+
+  protected:
+    //! Do the measurement
+    void func(const multi1d<LatticeColorMatrix>& u,
+	      XMLBufferWriter& gauge_xml,
+	      const unsigned long update_no,
+	      XMLWriter& xml_out); 
 
   private:
     InlineMresParams params;

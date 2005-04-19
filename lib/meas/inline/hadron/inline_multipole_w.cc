@@ -1,4 +1,4 @@
-// $Id: inline_multipole_w.cc,v 1.2 2005-04-09 23:15:42 edwards Exp $
+// $Id: inline_multipole_w.cc,v 1.3 2005-04-19 17:11:07 edwards Exp $
 /*! \file
  *  \brief Inline multipole measurement
  */
@@ -10,6 +10,7 @@
 #include "util/info/proginfo.h"
 #include "meas/hadron/multipole_w.h"
 #include "io/qprop_io.h"
+#include "meas/inline/make_xml_file.h"
 
 namespace Chroma 
 { 
@@ -123,11 +124,11 @@ namespace Chroma
       // Read in the multipole setup
       read(inputtop, "Multipole", pole);
 
-      // Possible alternative XML output file
-      if (inputtop.count("multipole_file") == 1)
-	read(inputtop, "multfipole_file", multipole_file);
-      else
-	multipole_file = "";
+      // Possible alternate XML file pattern
+      if (inputtop.count("xml_file") != 0) 
+      {
+	read(inputtop, "xml_file", xml_file);
+      }
     }
     catch(const std::string& e) 
     {
@@ -144,18 +145,38 @@ namespace Chroma
     
     Chroma::write(xml, "Param", param);
     Chroma::write(xml, "Multipole", pole);
-    QDP::write(xml, "multipole_file", multipole_file);
+    QDP::write(xml, "xml_file", xml_file);
 
     pop(xml);
   }
 
 
-  //! Function call
+  // Function call
   void 
   InlineMultipole::operator()(const multi1d<LatticeColorMatrix>& u,
 			      XMLBufferWriter& gauge_xml,
 			      unsigned long update_no,
 			      XMLWriter& xml_out) 
+  {
+    // If xml file not empty, then use alternate
+    if (params.xml_file != "")
+    {
+      Handle<XMLFileWriter> xml(makeXMLFileWriter(params.xml_file, update_no));
+      func(u, gauge_xml, update_no, *xml);
+    }
+    else
+    {
+      func(u, gauge_xml, update_no, xml_out);
+    }
+  }
+
+
+  // Real work done here
+  void 
+  InlineMultipole::func(const multi1d<LatticeColorMatrix>& u,
+			XMLBufferWriter& gauge_xml,
+			unsigned long update_no,
+			XMLWriter& xml_out) 
   {
     push(xml_out, "multipole");
     write(xml_out, "update_no", update_no);

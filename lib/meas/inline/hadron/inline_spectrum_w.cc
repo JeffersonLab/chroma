@@ -1,4 +1,4 @@
-// $Id: inline_spectrum_w.cc,v 1.1 2005-04-06 04:34:54 edwards Exp $
+// $Id: inline_spectrum_w.cc,v 1.2 2005-04-19 17:11:07 edwards Exp $
 /*! \file
  * \brief Inline construction of spectrum
  *
@@ -21,6 +21,7 @@
 #include "meas/hadron/wall_qprop_w.h"
 #include "meas/glue/mesfield.h"
 #include "util/gauge/taproj.h"
+#include "meas/inline/make_xml_file.h"
 
 namespace Chroma 
 { 
@@ -182,6 +183,12 @@ namespace Chroma
 
       // Read in the output propagator/source configuration info
       read(paramtop, "Prop", prop);
+
+      // Possible alternate XML file pattern
+      if (paramtop.count("xml_file") != 0) 
+      {
+	read(paramtop, "xml_file", xml_file);
+      }
     }
     catch(const std::string& e) 
     {
@@ -196,21 +203,45 @@ namespace Chroma
   {
     push(xml_out, path);
     
-    // Parameters for source construction
     Chroma::write(xml_out, "Param", param);
-
-    // Write out the output propagator/source configuration info
     Chroma::write(xml_out, "Prop", prop);
+    QDP::write(xml_out, "xml_file", xml_file);
 
     pop(xml_out);
   }
 
 
+  // Function call
   void 
   InlineSpectrum::operator()(const multi1d<LatticeColorMatrix>& u,
 			     XMLBufferWriter& gauge_xml,
 			     unsigned long update_no,
 			     XMLWriter& xml_out) 
+  {
+    // If xml file not empty, then use alternate
+    if (params.xml_file != "")
+    {
+      push(xml_out, "spectrum_w");
+      write(xml_out, "update_no", update_no);
+      write(xml_out, "xml_file", params.xml_file);
+      pop(xml_out);
+
+      Handle<XMLFileWriter> xml(makeXMLFileWriter(params.xml_file, update_no));
+      func(u, gauge_xml, update_no, *xml);
+    }
+    else
+    {
+      func(u, gauge_xml, update_no, xml_out);
+    }
+  }
+
+
+  // Real work done here
+  void 
+  InlineSpectrum::func(const multi1d<LatticeColorMatrix>& u,
+		       XMLBufferWriter& gauge_xml,
+		       unsigned long update_no,
+		       XMLWriter& xml_out) 
   {
     push(xml_out, "spectrum_w");
     write(xml_out, "update_no", update_no);

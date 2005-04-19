@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_spectrum_w.h,v 1.1 2005-04-06 04:34:54 edwards Exp $
+// $Id: inline_spectrum_w.h,v 1.2 2005-04-19 17:11:07 edwards Exp $
 /*! \file
  * \brief Inline spectrum calculations
  *
@@ -15,6 +15,7 @@
 
 namespace Chroma 
 { 
+  /*! \ingroup inlinehadron */
   namespace InlineSpectrumEnv 
   {
     extern const std::string name;
@@ -22,6 +23,7 @@ namespace Chroma
   }
 
   //! Parameter structure
+  /*! \ingroup inlinehadron */
   struct InlineSpectrumParams 
   {
     InlineSpectrumParams();
@@ -61,10 +63,13 @@ namespace Chroma
     {
       multi1d<std::string> prop_files;  // The files are expected to be in SciDAC format!
     } prop;
+
+    std::string xml_file;  // Alternate XML file pattern
   };
 
 
   //! Inline measurement of Wilson loops
+  /*! \ingroup inlinehadron */
   class InlineSpectrum : public AbsInlineMeasurement 
   {
   public:
@@ -79,6 +84,13 @@ namespace Chroma
 		    XMLBufferWriter& gauge_xml,
 		    const unsigned long update_no,
 		    XMLWriter& xml_out); 
+
+  protected:
+    //! Do the measurement
+    void func(const multi1d<LatticeColorMatrix>& u,
+	      XMLBufferWriter& gauge_xml,
+	      const unsigned long update_no,
+	      XMLWriter& xml_out); 
 
   private:
     InlineSpectrumParams params;

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_multipole_w.h,v 1.2 2005-04-09 23:15:42 edwards Exp $
+// $Id: inline_multipole_w.h,v 1.3 2005-04-19 17:11:07 edwards Exp $
 /*! \file
  *  \brief Inline multipole measurements
  */
@@ -12,6 +12,7 @@
 
 namespace Chroma 
 { 
+  /*! \ingroup inlinehadron */
   namespace InlineMultipoleEnv 
   {
     extern const std::string name;
@@ -19,6 +20,7 @@ namespace Chroma
   }
 
   //! Parameter structure
+  /*! \ingroup inlinehadron */
   struct InlineMultipoleParams 
   {
     InlineMultipoleParams();
@@ -46,11 +48,11 @@ namespace Chroma
       multi1d<Prop_t>   seqprops;
     } pole;
 
-
-    std::string         multipole_file;     // where to write XML - maybe empty
+    std::string xml_file;  // Alternate XML file pattern
   };
 
   //! Inline measurement of Wilson loops
+  /*! \ingroup inlinehadron */
   class InlineMultipole : public AbsInlineMeasurement 
   {
   public:
@@ -65,6 +67,13 @@ namespace Chroma
 		    XMLBufferWriter& gauge_xml,
 		    const unsigned long update_no,
 		    XMLWriter& xml_out); 
+
+  protected:
+    //! Do the measurement
+    void func(const multi1d<LatticeColorMatrix>& u,
+	      XMLBufferWriter& gauge_xml,
+	      const unsigned long update_no,
+	      XMLWriter& xml_out); 
 
   private:
     InlineMultipoleParams params;

@@ -1,4 +1,4 @@
-// $Id: inline_mres_w.cc,v 1.2 2005-04-10 20:41:11 edwards Exp $
+// $Id: inline_mres_w.cc,v 1.3 2005-04-19 17:11:07 edwards Exp $
 /*! \file
  * \brief Inline construction of mres
  *
@@ -16,6 +16,7 @@
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/fermacts/fermacts_aggregate_w.h"
 #include "actions/ferm/fermacts/overlap_fermact_base_w.h"
+#include "meas/inline/make_xml_file.h"
 
 namespace Chroma 
 { 
@@ -119,6 +120,7 @@ namespace Chroma
     Chroma::write(xml, "Param", param);
     QDP::write(xml, "StateInfo", stateInfo);
     Chroma::write(xml, "Prop", prop);
+    QDP::write(xml, "xml_file", xml_file);
 
     pop(xml);
   }
@@ -130,6 +132,26 @@ namespace Chroma
 			 XMLBufferWriter& gauge_xml,
 			 unsigned long update_no,
 			 XMLWriter& xml_out) 
+  {
+    // If xml file not empty, then use alternate
+    if (params.xml_file != "")
+    {
+      Handle<XMLFileWriter> xml(makeXMLFileWriter(params.xml_file, update_no));
+      func(u, gauge_xml, update_no, *xml);
+    }
+    else
+    {
+      func(u, gauge_xml, update_no, xml_out);
+    }
+  }
+
+
+  // Function call
+  void 
+  InlineMres::func(const multi1d<LatticeColorMatrix>& u,
+		   XMLBufferWriter& gauge_xml,
+		   unsigned long update_no,
+		   XMLWriter& xml_out) 
   {
     push(xml_out, "mres");
     write(xml_out, "update_no", update_no);
