@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovext_fermact_array_w.h,v 1.17 2005-04-11 01:59:59 edwards Exp $
+// $Id: unprec_ovext_fermact_array_w.h,v 1.18 2005-04-21 14:04:09 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -7,9 +7,15 @@
 #ifndef __unprec_ovext_fermact_array_w_h__
 #define __unprec_ovext_fermact_array_w_h__
 
+#include "chromabase.h"
 #include "fermact.h"
-#include "actions/ferm/linop/lDeltaLs_w.h"
-
+#include "fermbc.h"
+#include "handle.h"
+#include "linearop.h"
+#include "state.h"
+#include "actions/ferm/fermacts/overlap_state.h"
+#include "actions/ferm/linop/unprec_wilson_linop_w.h"
+#include "io/enum_io/enum_io.h"
 
 namespace Chroma
 {
@@ -28,9 +34,13 @@ namespace Chroma
     UnprecOvExtFermActArrayParams(XMLReader& in, const std::string& path);
     
     Real OverMass;
-    Real a5;
+    Real b5;
+    Real c5;
     Real Mass;
-    int  N5;
+    int  RatPolyDeg;
+    Real ApproxMin;
+    Real ApproxMax;
+    CoeffType approximation_type;
   };
 
 
@@ -50,32 +60,41 @@ namespace Chroma
   class UnprecOvExtFermActArray : public UnprecWilsonTypeFermAct5D<LatticeFermion, multi1d<LatticeColorMatrix> >
   {
   public:
+    /*
     //! General FermBC
     UnprecOvExtFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
-			    const Real& OverMass_, const Real& Mass_, int N5_) : 
-      fbc(fbc_), OverMass(OverMass_), Mass(Mass_), N5(N5_) {a5=1;}
+			    const Real& OverMass_,
+			    const Real& b5_,
+			    const Real& c5_,
+			    const Real& Mass_, 
+			    const int RatPolyDeg_,
+			    const CoeffType approximation_type_) :  fbc(fbc_), param.OverMass(OverMass_),  param.b5(b5_), param.c5(c5_), param.Mass(Mass_),  param.RatPolyDeg(RatPolyDeg_), param.approximation_type(approximation_type_) {}
+    */
+    //! General FermBC
+    UnprecOvExtFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
+			    const UnprecOvExtFermActArrayParams& param_) :
+      fbc(fbc_), param(param_) {}
 
-    //! General FermBC
-    UnprecOvExtFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
-			    const UnprecOvExtFermActArrayParams& param) :
-      fbc(fbc_), OverMass(param.OverMass), Mass(param.Mass), a5(param.a5), N5(param.N5) {}
 
     //! Copy constructor
     UnprecOvExtFermActArray(const UnprecOvExtFermActArray& a) : 
-      fbc(a.fbc), OverMass(a.OverMass), Mass(a.Mass), a5(a.a5), N5(a.N5) {}
+      fbc(a.fbc), param(a.param) {}
 
     //! Assignment
-    UnprecOvExtFermActArray& operator=(const UnprecOvExtFermActArray& a)
-      {fbc=a.fbc; OverMass=a.OverMass; Mass=a.Mass; a5=a.a5; N5=a.N5; return *this;}
+    UnprecOvExtFermActArray& operator=(const UnprecOvExtFermActArray& a) {
+      fbc=a.fbc; 
+      param =a.param;
+      return *this;
+    }
 
     //! Return the fermion BC object for this action
     const FermBC< multi1d<LatticeFermion> >& getFermBC() const {return *fbc;}
 
     //! Length of DW flavor index/space
-    int size() const {return N5;}
+    int size() const {return getN5FromRatPolyDeg(param.RatPolyDeg);}
 
     //! Return the quark mass
-    Real getQuarkMass() const {return Mass;}
+    Real getQuarkMass() const {return param.Mass;}
 
     //! Produce a linear operator for this action
     const UnprecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* linOp(Handle<const ConnectState> state) const;
@@ -108,14 +127,18 @@ namespace Chroma
       QDP_abort(1);
       return 0;
     }
-    
+
+   
     //! Produce a  DeltaLs = 1-epsilon^2(H) operator
     const LinearOperator<LatticeFermion>* DeltaLs(Handle< const ConnectState> state,
 						  const InvertParam_t& invParam) const 
     {
       Handle< const LinearOperator<LatticeFermion> >  lin(linOp4D(state,Real(0),invParam));
-      return new lDeltaLs(lin);
+      QDPIO::cout << "NOt yet implemented" << endl;
+      QDP_abort(1);
+      return 0x0;
     }
+
 
     //! Compute quark propagator over base type
     const SystemSolver<LatticeFermion>* qprop(Handle<const ConnectState> state,
@@ -127,13 +150,28 @@ namespace Chroma
   private:
     // Hide partial constructor
     UnprecOvExtFermActArray() {}
+    int getN5FromRatPolyDeg(const int& RatPolyDeg) const {
+
+      // Type 0 and Tanh approximations: 
+
+      // If RatPolyDeg is even: => 2*(RatPolyDeg/2) + 1 = RatPolyDeg+1
+      // If RatPolyDeg is odd: =>  2*((RatPolyDeg-1)/2 + 1 = RatPolyDeg
+      if( RatPolyDeg % 2 == 0 ) { 
+	return RatPolyDeg+1; 
+      }
+      else { 
+	return RatPolyDeg;
+      }
+    }
+
+    void init(int& Npoles, 
+	      Real& coeffP, 
+	      multi1d<Real>& resP,
+	      multi1d<Real>& rootQ) const;
 
   private:
     Handle< FermBC< multi1d<LatticeFermion> > >  fbc;
-    Real OverMass;
-    Real Mass;
-    Real a5;
-    int  N5;
+    UnprecOvExtFermActArrayParams param;
   };
 
 }
