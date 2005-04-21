@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovext_linop_array_w.h,v 1.6 2005-01-17 18:26:13 edwards Exp $
+// $Id: unprec_ovext_linop_array_w.h,v 1.7 2005-04-21 14:04:38 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
  */
@@ -7,9 +7,12 @@
 #ifndef __unprec_ovext_linop_array_w_h__
 #define __unprec_ovext_linop_array_w_h__
 
+#include "chromabase.h"
+#include "handle.h"
 #include "linearop.h"
 #include "actions/ferm/linop/unprec_wilson_linop_w.h"
 
+using namespace QDP;
 
 namespace Chroma 
 { 
@@ -31,13 +34,31 @@ namespace Chroma
     UnprecOvExtLinOpArray() {}
 
     //! Full constructor
-    UnprecOvExtLinOpArray(const multi1d<LatticeColorMatrix>& u_, 
-			  const Real& WilsonMass_, const Real& m_q, int N5_)
-    {create(u_,WilsonMass_,m_q,N5_);}
+    UnprecOvExtLinOpArray(const multi1d<LatticeColorMatrix>& u_,
+			  const int Npoles_,
+			  const Real& coeffP_,
+			  const multi1d<Real>& resP_,
+			  const multi1d<Real>& rootQ_,
+			  const multi1d<Real>& beta_,
+			  const Real& OverMass_,
+			  const Real& Mass_,
+			  const Real& b5_,
+			  const Real& c5_)
+
+    {create(u_,Npoles_, coeffP_, resP_, rootQ_, beta_, 
+	    OverMass_,Mass_,b5_,c5_);}
 
     //! Creation routine
     void create(const multi1d<LatticeColorMatrix>& u_, 
-		const Real& WilsonMass_, const Real& m_q_, int N5_);
+		const int Npoles_,
+		const Real& coeffP_,
+		const multi1d<Real>& resP_,
+		const multi1d<Real>& rootQ_,
+		const multi1d<Real>& beta_,
+		const Real& OverMass_,
+		const Real& m_q_,
+		const Real& b5_,
+		const Real& c5_);
 
     //! Length of DW flavor index/space
     int size() const {return N5;}
@@ -58,18 +79,16 @@ namespace Chroma
 	       enum PlusMinus isign) const;
 
   private:
-    Real WilsonMass;
-    Real m_q;
+    Handle< const UnprecWilsonLinOp > Dw;
+    int Npoles;
+    int N5;
+    Real R;
+    Real alpha;
     Real a5;
-    int  N5;    // total number of 4D fields
-    int  NN5;   // number of poles
-
-    multi1d<Real> cc;
-    multi1d<Real> ss;
-    Real          fact1;
-    Real          fact2;
-
-    UnprecWilsonLinOp  D;
+    Real coeffP;
+    multi1d<Real> p_by_beta_sqrt;
+    multi1d<Real> q_sqrt;
+    multi1d<Real> beta;
   };
 
 }; // End Namespace Chroma
