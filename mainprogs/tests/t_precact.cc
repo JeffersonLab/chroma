@@ -1,4 +1,4 @@
-// $Id: t_precact.cc,v 1.17 2005-03-02 00:44:19 edwards Exp $
+// $Id: t_precact.cc,v 1.18 2005-04-22 13:28:27 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -73,58 +73,105 @@ void check_linops(XMLWriter& xml_out, const string& prefix,
 
   multi1d<LatticeFermion>  tmp1(N5), tmp2(N5);
   QDPIO::cout << "AP plus" << endl;
+  QDPIO::cout << "Cheking evenEvenInv(PLUS): " << endl;
   AP.evenEvenLinOp(tmpx, psi, PLUS);
   AP.evenEvenInvLinOp(tmpy, tmpx, PLUS);
   Double trivial_diff_plus = zero;
-  for(int m=0; m < N5; ++m)
-    trivial_diff_plus += norm2(tmpy[m]-psi[m],even);
+  for(int m=0; m < N5; ++m) {
+    Double foo = norm2(tmpy[m]-psi[m],even);
+    QDPIO::cout << "  psi - EvenEvenInv*EvenEven psi: m = " << m << " diff = " << foo << endl;
+
+    trivial_diff_plus += foo;
+  }
 
   AP.unprecLinOp(tmp1, psi, PLUS);
   DComplex nnP_plus = zero;
-  for(int m=0; m < N5; ++m)
-    nnP_plus += innerProduct(chi[m], tmp1[m]);
+  multi1d<DComplex> nnP_plus_array(N5);
+
+  for(int m=0; m < N5; ++m) {
+    nnP_plus_array[m] = innerProduct(chi[m], tmp1[m]);
+    nnP_plus += nnP_plus_array[m];
+  }
 
   QDPIO::cout << "AP minus" << endl;
+  QDPIO::cout << "Cheking evenEvenInv(MINUS): " << endl;
   AP.evenEvenLinOp(tmpx, psi, MINUS);
   AP.evenEvenInvLinOp(tmpy, tmpx, MINUS);
   Double trivial_diff_minus = zero;
-  for(int m=0; m < N5; ++m)
-    trivial_diff_minus += norm2(tmpy[m]-psi[m],even);
+  for(int m=0; m < N5; ++m) {
+    Double foo = norm2(tmpy[m]-psi[m],even);
+    QDPIO::cout << "  psi - EvenEvenInv*EvenEven psi: m = " << m << " diff = " << foo << endl;
+
+    trivial_diff_minus += foo;
+  }
 
   AP.unprecLinOp(tmp2, chi, MINUS);
   DComplex nnP_minus = zero;
-  for(int m=0; m < N5; ++m)
-    nnP_minus += innerProduct(tmp2[m], psi[m]);
-  
+  multi1d<DComplex> nnP_minus_array(N5);
+
+  for(int m=0; m < N5; ++m) {
+    nnP_minus_array[m] =  innerProduct(tmp2[m], psi[m]);
+    nnP_minus += nnP_minus_array[m];
+  }  
+
   multi1d<LatticeFermion> tmp3(N5), tmp4(N5);
   QDPIO::cout << "AU plus" << endl;
   AU(tmp3, psi, PLUS);
   DComplex nnU_plus = zero;
-  for(int m=0; m < N5; ++m)
-    nnU_plus += innerProduct(chi[m], tmp3[m]);
+  multi1d<DComplex> nnU_plus_array(N5);
+
+  for(int m=0; m < N5; ++m) {
+    nnU_plus_array[m] = innerProduct(chi[m], tmp3[m]);
+    nnU_plus += nnU_plus_array[m];
+  }
 
   QDPIO::cout << "AU minus" << endl;
   AU(tmp4, chi, MINUS);
   DComplex nnU_minus = zero;
-  for(int m=0; m < N5; ++m)
-    nnU_minus += innerProduct(tmp4[m], psi[m]);
+  multi1d<DComplex> nnU_minus_array(N5);
+  for(int m=0; m < N5; ++m) {
+    nnU_minus_array[m] = innerProduct(tmp4[m], psi[m]);
+    nnU_minus += nnU_minus_array[m];
+  }
   
   push(xml_out,prefix+"LinOpInnerprods");
   write(xml_out, "trivial_diff_plus", trivial_diff_plus);
   write(xml_out, "nnP_plus", nnP_plus);
   write(xml_out, "nnU_plus", nnU_plus);
   Double norm_diff_plus = zero;
-  for(int m=0; m < N5; ++m)
-    norm_diff_plus += norm2(tmp1[m]-tmp3[m]);
+  multi1d<Double> norm_diff_plus_array_e(N5);
+  multi1d<Double> norm_diff_plus_array_o(N5);
+  for(int m=0; m < N5; ++m) {
+    norm_diff_plus_array_e[m] = norm2(tmp1[m]-tmp3[m],even);
+    norm_diff_plus_array_o[m] = norm2(tmp1[m]-tmp3[m],odd);
+    norm_diff_plus += norm_diff_plus_array_e[m] + norm_diff_plus_array_o[m];
+    QDPIO::cout << "PLUS, EVEN: Prec(Full) - Unprec: m = " << m << " diff = " << norm_diff_plus_array_e[m] << endl;
+    QDPIO::cout << "PLUS, ODD:  Prec(Full) - Unprec: m = " << m << " diff = " << norm_diff_plus_array_o[m] << endl;
+    
+  }
+
   write(xml_out, "norm_diff_plus", norm_diff_plus);
+  write(xml_out, "norm_diff_plus_array_even", norm_diff_plus_array_e);
+  write(xml_out, "norm_diff_plus_array_odd", norm_diff_plus_array_o);
+
 
   write(xml_out, "trivial_diff_minus", trivial_diff_minus);
   write(xml_out, "nnP_minus", nnP_minus);
   write(xml_out, "nnU_minus", nnU_minus);
   Double norm_diff_minus = zero;
-  for(int m=0; m < N5; ++m)
-    norm_diff_minus += norm2(tmp2[m]-tmp4[m]);
+  multi1d<Double> norm_diff_minus_array_e(N5);
+  multi1d<Double> norm_diff_minus_array_o(N5);
+  for(int m=0; m < N5; ++m) {
+    norm_diff_minus_array_e[m] = norm2(tmp2[m]-tmp4[m],even);
+    norm_diff_minus_array_o[m] = norm2(tmp2[m]-tmp4[m], odd);
+    norm_diff_minus += norm_diff_minus_array_e[m] + norm_diff_minus_array_o[m];
+    QDPIO::cout << "MINUS,EVEN: Prec(Full) - Unprec: m = " << m << " diff = " << norm_diff_minus_array_e[m] << endl;
+    QDPIO::cout << "MINUS,ODD:  Prec(Full) - Unprec: m = " << m << " diff = " << norm_diff_minus_array_o[m] << endl;
+  }
+
   write(xml_out, "norm_diff_minus", norm_diff_minus);
+  write(xml_out, "norm_diff_minus_array_even", norm_diff_minus_array_e);
+  write(xml_out, "norm_diff_minus_array_odd", norm_diff_minus_array_o);
   pop(xml_out);
 }
 

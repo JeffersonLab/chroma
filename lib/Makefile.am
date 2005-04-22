@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.261 2005-04-19 17:11:29 edwards Exp $
+# $Id: Makefile.am,v 1.262 2005-04-22 13:28:27 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -188,6 +188,7 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/unprec_dwf_fermact_base_array_w.h \
 	actions/ferm/fermacts/unprec_ovdwf_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_ovext_fermact_array_w.h \
+	actions/ferm/fermacts/prec_ovext_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_wilson_fermact_w.h \
 	actions/ferm/fermacts/unprec_parwilson_fermact_w.h \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.h \
@@ -225,6 +226,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/prec_nef_general_linop_array_w.h \
 	actions/ferm/linop/prec_wilson_linop_w.h \
 	actions/ferm/linop/prec_parwilson_linop_w.h \
+	actions/ferm/linop/prec_ovext_linop_array_w.h \
 	actions/ferm/linop/unprec_dwf_linop_base_array_w.h \
 	actions/ferm/linop/unprec_dwf_linop_array_w.h \
 	actions/ferm/linop/unprec_ovdwf_linop_array_w.h \
@@ -505,6 +507,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermacts/prec_parwilson_fermact_w.cc \
 	actions/ferm/fermacts/prec_wilson_fermact_w.cc \
 	actions/ferm/fermacts/prec_zolo_nef_fermact_array_w.cc \
+	actions/ferm/fermacts/prec_ovext_fermact_array_w.cc \
 	actions/ferm/fermacts/unprec_dwftransf_fermact_w.cc \
 	actions/ferm/fermacts/unprec_dwf_fermact_array_w.cc \
 	actions/ferm/fermacts/unprec_ht_contfrac5d_fermact_array_w.cc \
@@ -536,6 +539,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/linop/prec_ovlap_contfrac5d_pv_linop_array_w.cc \
 	actions/ferm/linop/prec_parwilson_linop_w.cc \
 	actions/ferm/linop/prec_wilson_linop_w.cc \
+	actions/ferm/linop/prec_ovext_linop_array_w.cc \
 	actions/ferm/linop/unprec_dwf4d_linop_w.cc \
 	actions/ferm/linop/unprec_dwftransf_linop_w.cc \
 	actions/ferm/linop/unprec_dwf_linop_array_w.cc \
