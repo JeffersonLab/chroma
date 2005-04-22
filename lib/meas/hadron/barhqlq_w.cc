@@ -1,4 +1,4 @@
-// $Id: barhqlq_w.cc,v 1.4 2005-01-14 18:42:35 edwards Exp $
+// $Id: barhqlq_w.cc,v 1.5 2005-04-22 19:06:39 kostas Exp $
 /*! \file
  *  \brief Heavy-light baryon 2-pt functions
  */
@@ -222,7 +222,7 @@ void barhqlq(LatticePropagator& quark_propagator_1,
     return;
 
   // Setup the return stuff
-  const int num_baryons = 12;
+  const int num_baryons = 16;
   int num_mom = phases.numMom();
   barprop.resize(num_baryons,num_mom,length);
 
@@ -462,6 +462,59 @@ void barhqlq(LatticePropagator& quark_propagator_1,
 				 Cg5NR * quark_propagator_2);
       b_prop = trace(S_proj_unpol * traceColor(quark_propagator_2 * traceSpin(di_quark)))
 	     + trace(S_proj_unpol * traceColor(quark_propagator_2 * di_quark));
+      break;
+
+    case 12:
+      // Lambda_4 : naive Lambda interpolating field
+      // |L_4 > = (d C gamma_5 u) s
+      // C gamma_5 = Gamma(5)
+      // UnPolarized:
+      // S_proj_unpol = T = (1/2)(1 + gamma_4)
+      di_quark = quarkContract13(quark_propagator_2 * Gamma(5),
+				 Gamma(5) * quark_propagator_2);
+      b_prop = trace(S_proj_unpol * traceColor(quark_propagator_1 * traceSpin(di_quark))) ;
+
+      break;
+      
+    case 13:
+      // Xi_1
+      // |X_1 > = (s C gamma_5 u) s
+      // C gamma_5 = Gamma(5)
+      // UnPolarized:
+      // S_proj_unpol = T = (1/2)(1 + gamma_4)
+     
+      di_quark = quarkContract13(quark_propagator_1 * Gamma(5),
+				 Gamma(5) * quark_propagator_2);
+      b_prop = trace(S_proj_unpol * traceColor(quark_propagator_1 * traceSpin(di_quark)))
+	     + trace(S_proj_unpol * traceColor(quark_propagator_1 * di_quark));
+      break;
+
+    case 14:
+      // Lambda_5 : naive Lambda interpolating field
+      // |L_5 > = (d C gamma_5 u) "s_up"
+      // C gamma_5 = Gamma(5)
+      // UnPolarized: 
+      // S_proj = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
+      //            = (1 + Gamma(8) - i G(3) - i G(11)) / 2
+      
+      di_quark = quarkContract13(quark_propagator_2 * Gamma(5),
+				 Gamma(5) * quark_propagator_2);
+      b_prop = trace(S_proj_unpol * traceColor(quark_propagator_1 * traceSpin(di_quark))) ;
+
+      break;
+      
+    case 15:
+      // Xi_2
+      // |X_2 > = (s C gamma_5 u) "s_up"
+      // C gamma_5 = Gamma(5)
+      // UnPolarized:
+      // S_proj = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
+      //            = (1 + Gamma(8) - i G(3) - i G(11)) / 2
+     
+      di_quark = quarkContract13(quark_propagator_1 * Gamma(5),
+				 Gamma(5) * quark_propagator_2);
+      b_prop = trace(S_proj * traceColor(quark_propagator_1 * traceSpin(di_quark)))
+	     + trace(S_proj * traceColor(quark_propagator_1 * di_quark));
       break;
 
     default:
