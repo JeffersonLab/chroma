@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovext_fermact_array_w.h,v 1.18 2005-04-21 14:04:09 bjoo Exp $
+// $Id: unprec_ovext_fermact_array_w.h,v 1.19 2005-04-22 16:58:33 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -16,6 +16,8 @@
 #include "actions/ferm/fermacts/overlap_state.h"
 #include "actions/ferm/linop/unprec_wilson_linop_w.h"
 #include "io/enum_io/enum_io.h"
+
+#include "actions/ferm/fermacts/ovext_tuning_strategy.h"
 
 namespace Chroma
 {
@@ -41,6 +43,7 @@ namespace Chroma
     Real ApproxMin;
     Real ApproxMax;
     CoeffType approximation_type;
+    std::string tuning_strategy_xml;
   };
 
 
@@ -73,17 +76,34 @@ namespace Chroma
     //! General FermBC
     UnprecOvExtFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
 			    const UnprecOvExtFermActArrayParams& param_) :
-      fbc(fbc_), param(param_) {}
+      fbc(fbc_), param(param_) {
+
+      // Get the betas according to the tuning strategy
+      std::istringstream ts_is(param.tuning_strategy_xml);
+      XMLReader tuning_xml(ts_is);
+      std::string strategy_name;
+      try { 
+	read(tuning_xml, "/TuningStrategy/Name", strategy_name);
+      }
+      catch(const std::string& e) { 
+	QDPIO::cerr << "Caught exception processing TuningStrategy: " << e << endl;
+      }
+      
+
+      theTuningStrategy = TheAbsOvExtTuningStrategyFactory::Instance().createObject(strategy_name, tuning_xml, "/TuningStrategy");
+       
+    }
 
 
     //! Copy constructor
     UnprecOvExtFermActArray(const UnprecOvExtFermActArray& a) : 
-      fbc(a.fbc), param(a.param) {}
+      fbc(a.fbc), param(a.param), theTuningStrategy(a.theTuningStrategy) {}
 
     //! Assignment
     UnprecOvExtFermActArray& operator=(const UnprecOvExtFermActArray& a) {
       fbc=a.fbc; 
       param =a.param;
+      theTuningStrategy = a.theTuningStrategy;
       return *this;
     }
 
@@ -171,6 +191,8 @@ namespace Chroma
 
   private:
     Handle< FermBC< multi1d<LatticeFermion> > >  fbc;
+    Handle< AbsOvExtTuningStrategy > theTuningStrategy;
+
     UnprecOvExtFermActArrayParams param;
   };
 

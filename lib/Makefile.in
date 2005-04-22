@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.350 2005-04-22 13:28:27 bjoo Exp $
+# $Id: Makefile.in,v 1.351 2005-04-22 16:58:32 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -93,6 +93,9 @@ libchroma_a_LIBADD =
 am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/overlap_state.cc \
 	actions/ferm/fermacts/zolotarev_coeffs.cc \
+	actions/ferm/fermacts/ovext_tuning_strategy_aggregate.cc \
+	actions/ferm/fermacts/ovext_constant_strategy.cc \
+	actions/ferm/fermacts/ovext_const_div_by_resp_strategy.cc \
 	actions/ferm/fermbcs/simple_fermbc.cc \
 	actions/ferm/invert/invbicgstab.cc \
 	actions/ferm/invert/invbicgstab_array.cc \
@@ -329,18 +332,21 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 @BUILD_PAB_WILSON_DSLASH_TRUE@	lwldslash_w_pab.$(OBJEXT)
 @BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@am__objects_5 = asqtad_cps_wrapper_qprop.$(OBJEXT)
 am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
-	zolotarev_coeffs.$(OBJEXT) simple_fermbc.$(OBJEXT) \
-	invbicgstab.$(OBJEXT) invbicgstab_array.$(OBJEXT) \
-	invcg1.$(OBJEXT) invcg1_array.$(OBJEXT) invcg2.$(OBJEXT) \
-	invcg2_array.$(OBJEXT) invcg2_timing_hacks.$(OBJEXT) \
-	invsumr.$(OBJEXT) inv_gmresr_cg_array.$(OBJEXT) \
-	inv_minres_array.$(OBJEXT) inv_rel_cg1.$(OBJEXT) \
-	inv_rel_cg2.$(OBJEXT) inv_rel_gmresr_cg.$(OBJEXT) \
-	inv_rel_gmresr_sumr.$(OBJEXT) inv_rel_sumr.$(OBJEXT) \
-	minvcg.$(OBJEXT) minvcg_array.$(OBJEXT) minvsumr.$(OBJEXT) \
-	minv_rel_cg.$(OBJEXT) minv_rel_sumr.$(OBJEXT) \
-	fermact_qprop.$(OBJEXT) fermact_qprop_array.$(OBJEXT) \
-	prec_fermact_qprop.$(OBJEXT) \
+	zolotarev_coeffs.$(OBJEXT) \
+	ovext_tuning_strategy_aggregate.$(OBJEXT) \
+	ovext_constant_strategy.$(OBJEXT) \
+	ovext_const_div_by_resp_strategy.$(OBJEXT) \
+	simple_fermbc.$(OBJEXT) invbicgstab.$(OBJEXT) \
+	invbicgstab_array.$(OBJEXT) invcg1.$(OBJEXT) \
+	invcg1_array.$(OBJEXT) invcg2.$(OBJEXT) invcg2_array.$(OBJEXT) \
+	invcg2_timing_hacks.$(OBJEXT) invsumr.$(OBJEXT) \
+	inv_gmresr_cg_array.$(OBJEXT) inv_minres_array.$(OBJEXT) \
+	inv_rel_cg1.$(OBJEXT) inv_rel_cg2.$(OBJEXT) \
+	inv_rel_gmresr_cg.$(OBJEXT) inv_rel_gmresr_sumr.$(OBJEXT) \
+	inv_rel_sumr.$(OBJEXT) minvcg.$(OBJEXT) minvcg_array.$(OBJEXT) \
+	minvsumr.$(OBJEXT) minv_rel_cg.$(OBJEXT) \
+	minv_rel_sumr.$(OBJEXT) fermact_qprop.$(OBJEXT) \
+	fermact_qprop_array.$(OBJEXT) prec_fermact_qprop.$(OBJEXT) \
 	prec_fermact_qprop_array.$(OBJEXT) staggered_qprop.$(OBJEXT) \
 	asqtad_qprop.$(OBJEXT) gaugebc_aggregate.$(OBJEXT) \
 	gaugebc_periodic.$(OBJEXT) gaugebc_simple.$(OBJEXT) \
@@ -662,6 +668,10 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/fermacts/unprec_ht_contfrac5d_fermact_array_w.h \
 	actions/ferm/fermacts/prec_ht_contfrac5d_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_dwftransf_fermact_w.h \
+	actions/ferm/fermacts/ovext_tuning_strategy.h \
+	actions/ferm/fermacts/ovext_tuning_strategy_aggregate.h \
+	actions/ferm/fermacts/ovext_constant_strategy.h \
+	actions/ferm/fermacts/ovext_const_div_by_resp_strategy.h \
 	actions/ferm/fermbcs/fermbcs_w.h \
 	actions/ferm/fermbcs/fermbc_factory_w.h \
 	actions/ferm/fermbcs/simple_fermbc_w.h \
@@ -1085,6 +1095,10 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/fermacts/unprec_ht_contfrac5d_fermact_array_w.h \
 	actions/ferm/fermacts/prec_ht_contfrac5d_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_dwftransf_fermact_w.h \
+	actions/ferm/fermacts/ovext_tuning_strategy.h \
+	actions/ferm/fermacts/ovext_tuning_strategy_aggregate.h \
+	actions/ferm/fermacts/ovext_constant_strategy.h \
+	actions/ferm/fermacts/ovext_const_div_by_resp_strategy.h \
 	actions/ferm/fermbcs/fermbcs_w.h \
 	actions/ferm/fermbcs/fermbc_factory_w.h \
 	actions/ferm/fermbcs/simple_fermbc_w.h \
@@ -1262,6 +1276,9 @@ lib_LIBRARIES = libchroma.a
 libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/overlap_state.cc \
 	actions/ferm/fermacts/zolotarev_coeffs.cc \
+	actions/ferm/fermacts/ovext_tuning_strategy_aggregate.cc \
+	actions/ferm/fermacts/ovext_constant_strategy.cc \
+	actions/ferm/fermacts/ovext_const_div_by_resp_strategy.cc \
 	actions/ferm/fermbcs/simple_fermbc.cc \
 	actions/ferm/invert/invbicgstab.cc \
 	actions/ferm/invert/invbicgstab_array.cc \
@@ -1742,6 +1759,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/overlap_state.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/overlap_state_info.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/overlapbu_linop_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ovext_const_div_by_resp_strategy.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ovext_constant_strategy.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ovext_tuning_strategy_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ovlap_partfrac4d_fermact_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/p_src_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/param_io.Po@am__quote@
@@ -1932,6 +1952,48 @@ zolotarev_coeffs.obj: actions/ferm/fermacts/zolotarev_coeffs.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/zolotarev_coeffs.cc' object='zolotarev_coeffs.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o zolotarev_coeffs.obj `if test -f 'actions/ferm/fermacts/zolotarev_coeffs.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/zolotarev_coeffs.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/zolotarev_coeffs.cc'; fi`
+
+ovext_tuning_strategy_aggregate.o: actions/ferm/fermacts/ovext_tuning_strategy_aggregate.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ovext_tuning_strategy_aggregate.o -MD -MP -MF "$(DEPDIR)/ovext_tuning_strategy_aggregate.Tpo" -c -o ovext_tuning_strategy_aggregate.o `test -f 'actions/ferm/fermacts/ovext_tuning_strategy_aggregate.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/ovext_tuning_strategy_aggregate.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ovext_tuning_strategy_aggregate.Tpo" "$(DEPDIR)/ovext_tuning_strategy_aggregate.Po"; else rm -f "$(DEPDIR)/ovext_tuning_strategy_aggregate.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/ovext_tuning_strategy_aggregate.cc' object='ovext_tuning_strategy_aggregate.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ovext_tuning_strategy_aggregate.o `test -f 'actions/ferm/fermacts/ovext_tuning_strategy_aggregate.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/ovext_tuning_strategy_aggregate.cc
+
+ovext_tuning_strategy_aggregate.obj: actions/ferm/fermacts/ovext_tuning_strategy_aggregate.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ovext_tuning_strategy_aggregate.obj -MD -MP -MF "$(DEPDIR)/ovext_tuning_strategy_aggregate.Tpo" -c -o ovext_tuning_strategy_aggregate.obj `if test -f 'actions/ferm/fermacts/ovext_tuning_strategy_aggregate.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/ovext_tuning_strategy_aggregate.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/ovext_tuning_strategy_aggregate.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ovext_tuning_strategy_aggregate.Tpo" "$(DEPDIR)/ovext_tuning_strategy_aggregate.Po"; else rm -f "$(DEPDIR)/ovext_tuning_strategy_aggregate.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/ovext_tuning_strategy_aggregate.cc' object='ovext_tuning_strategy_aggregate.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ovext_tuning_strategy_aggregate.obj `if test -f 'actions/ferm/fermacts/ovext_tuning_strategy_aggregate.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/ovext_tuning_strategy_aggregate.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/ovext_tuning_strategy_aggregate.cc'; fi`
+
+ovext_constant_strategy.o: actions/ferm/fermacts/ovext_constant_strategy.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ovext_constant_strategy.o -MD -MP -MF "$(DEPDIR)/ovext_constant_strategy.Tpo" -c -o ovext_constant_strategy.o `test -f 'actions/ferm/fermacts/ovext_constant_strategy.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/ovext_constant_strategy.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ovext_constant_strategy.Tpo" "$(DEPDIR)/ovext_constant_strategy.Po"; else rm -f "$(DEPDIR)/ovext_constant_strategy.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/ovext_constant_strategy.cc' object='ovext_constant_strategy.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ovext_constant_strategy.o `test -f 'actions/ferm/fermacts/ovext_constant_strategy.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/ovext_constant_strategy.cc
+
+ovext_constant_strategy.obj: actions/ferm/fermacts/ovext_constant_strategy.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ovext_constant_strategy.obj -MD -MP -MF "$(DEPDIR)/ovext_constant_strategy.Tpo" -c -o ovext_constant_strategy.obj `if test -f 'actions/ferm/fermacts/ovext_constant_strategy.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/ovext_constant_strategy.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/ovext_constant_strategy.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ovext_constant_strategy.Tpo" "$(DEPDIR)/ovext_constant_strategy.Po"; else rm -f "$(DEPDIR)/ovext_constant_strategy.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/ovext_constant_strategy.cc' object='ovext_constant_strategy.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ovext_constant_strategy.obj `if test -f 'actions/ferm/fermacts/ovext_constant_strategy.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/ovext_constant_strategy.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/ovext_constant_strategy.cc'; fi`
+
+ovext_const_div_by_resp_strategy.o: actions/ferm/fermacts/ovext_const_div_by_resp_strategy.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ovext_const_div_by_resp_strategy.o -MD -MP -MF "$(DEPDIR)/ovext_const_div_by_resp_strategy.Tpo" -c -o ovext_const_div_by_resp_strategy.o `test -f 'actions/ferm/fermacts/ovext_const_div_by_resp_strategy.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/ovext_const_div_by_resp_strategy.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ovext_const_div_by_resp_strategy.Tpo" "$(DEPDIR)/ovext_const_div_by_resp_strategy.Po"; else rm -f "$(DEPDIR)/ovext_const_div_by_resp_strategy.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/ovext_const_div_by_resp_strategy.cc' object='ovext_const_div_by_resp_strategy.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ovext_const_div_by_resp_strategy.o `test -f 'actions/ferm/fermacts/ovext_const_div_by_resp_strategy.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/ovext_const_div_by_resp_strategy.cc
+
+ovext_const_div_by_resp_strategy.obj: actions/ferm/fermacts/ovext_const_div_by_resp_strategy.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ovext_const_div_by_resp_strategy.obj -MD -MP -MF "$(DEPDIR)/ovext_const_div_by_resp_strategy.Tpo" -c -o ovext_const_div_by_resp_strategy.obj `if test -f 'actions/ferm/fermacts/ovext_const_div_by_resp_strategy.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/ovext_const_div_by_resp_strategy.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/ovext_const_div_by_resp_strategy.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ovext_const_div_by_resp_strategy.Tpo" "$(DEPDIR)/ovext_const_div_by_resp_strategy.Po"; else rm -f "$(DEPDIR)/ovext_const_div_by_resp_strategy.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/ovext_const_div_by_resp_strategy.cc' object='ovext_const_div_by_resp_strategy.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ovext_const_div_by_resp_strategy.obj `if test -f 'actions/ferm/fermacts/ovext_const_div_by_resp_strategy.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/ovext_const_div_by_resp_strategy.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/ovext_const_div_by_resp_strategy.cc'; fi`
 
 simple_fermbc.o: actions/ferm/fermbcs/simple_fermbc.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT simple_fermbc.o -MD -MP -MF "$(DEPDIR)/simple_fermbc.Tpo" -c -o simple_fermbc.o `test -f 'actions/ferm/fermbcs/simple_fermbc.cc' || echo '$(srcdir)/'`actions/ferm/fermbcs/simple_fermbc.cc; \

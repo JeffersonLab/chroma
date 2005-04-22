@@ -1,4 +1,4 @@
-// $Id: unprec_ovext_fermact_array_w.cc,v 1.15 2005-04-21 14:04:09 bjoo Exp $
+// $Id: unprec_ovext_fermact_array_w.cc,v 1.16 2005-04-22 16:58:33 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -77,6 +77,11 @@ namespace Chroma
       else {
 	ApproxMin = ApproxMax = 0.0;
       }
+
+      XMLReader tuning_strategy_reader(paramtop, "TuningStrategy");
+      std::ostringstream os;
+      tuning_strategy_reader.print(os);
+      tuning_strategy_xml = os.str();      
     }
     catch( const std::string& e) { 
       QDPIO::cout << "Caught Exception while reading XML: " << e << endl;
@@ -104,6 +109,9 @@ namespace Chroma
 	write(xml, "ApproxMin", p.ApproxMin);
 	write(xml, "ApproxMax", p.ApproxMax);
     }
+
+    // This may be broken here...
+    QDP::write(xml, "TuningStrategy", p.tuning_strategy_xml);
     pop(xml);
   }
 
@@ -309,20 +317,27 @@ namespace Chroma
     multi1d<Real> resP;
     multi1d<Real> rootQ;
     
-    // Get the coefficients
-    
+    // Get the coefficients 
     init(Npoles, coeffP, resP, rootQ);
 
+   
+    // Get the betas according to the tuning strategy
+    std::istringstream ts_is(param.tuning_strategy_xml);
+    XMLReader tuning_xml(ts_is);
+    std::string strategy_name;
+    try { 
+      read(tuning_xml, "/TuningStrategy/Name", strategy_name);
+    }
+    catch(const std::string& e) { 
+      QDPIO::cerr << "Caught exception processing TuningStrategy: " << e << endl;
+    }
+
+
+    Handle< AbsOvExtTuningStrategy > theStrategy(TheAbsOvExtTuningStrategyFactory::Instance().createObject(strategy_name, tuning_xml, "/TuningStrategy"));
+       
     multi1d<Real> beta(Npoles);
 
-    // Strategy: Choose Betas
-    for(int i=0; i < Npoles; i++) { 
-      // Seems spiffy for Zolo Hw and Tanh H_t
-      beta[i] = Real(1)/(Real(0.75)*(param.b5+param.c5)*resP[i]);
-
-      // Seems  best for Zolo H_t
-      // beta[i] = Real(0.8);
-    }
+    (*theTuningStrategy)(beta, coeffP, resP, rootQ);
 
     return new UnprecOvExtLinOpArray(state->getLinks(),
 				     Npoles,

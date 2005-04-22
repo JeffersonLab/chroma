@@ -1,4 +1,4 @@
-// $Id: fermacts_aggregate_w.cc,v 1.2 2005-04-22 13:27:42 bjoo Exp $
+// $Id: fermacts_aggregate_w.cc,v 1.3 2005-04-22 16:58:33 bjoo Exp $
 /*! \file
  *  \brief All Wilson-type fermion actions
  */
@@ -30,6 +30,7 @@
 #include "actions/ferm/fermacts/prec_ht_contfrac5d_fermact_array_w.h"
 #include "actions/ferm/fermacts/prec_ovext_fermact_array_w.h"
 
+#include "actions/ferm/fermacts/ovext_tuning_strategy_aggregate.h"
 namespace Chroma
 {
 
@@ -79,6 +80,8 @@ namespace Chroma
       success &= EvenOddPrecKNOFermActArrayEnv::registered;
       success &= UnprecDWFTransfFermActEnv::registered;
 
+      // Tuning Strategies
+      success &= OvExtTuningStrategyAggregateEnv::registered;
       return success;
     }
 

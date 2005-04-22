@@ -1,4 +1,4 @@
-// $Id: prec_ovext_fermact_array_w.cc,v 1.2 2005-04-22 14:36:14 bjoo Exp $
+// $Id: prec_ovext_fermact_array_w.cc,v 1.3 2005-04-22 16:58:33 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -77,6 +77,12 @@ namespace Chroma
       else {
 	ApproxMin = ApproxMax = 0.0;
       }
+
+      XMLReader tuning_strategy_reader(paramtop, "TuningStrategy");
+      std::ostringstream os;
+      tuning_strategy_reader.print(os);
+      tuning_strategy_xml = os.str();    
+
     }
     catch( const std::string& e) { 
       QDPIO::cout << "Caught Exception while reading XML: " << e << endl;
@@ -104,6 +110,10 @@ namespace Chroma
 	write(xml, "ApproxMin", p.ApproxMin);
 	write(xml, "ApproxMax", p.ApproxMax);
     }
+
+    //    This may be broken here...
+    QDP::write(xml, "TuningStrategy", p.tuning_strategy_xml);
+
     pop(xml);
   }
 
@@ -314,16 +324,7 @@ namespace Chroma
     init(Npoles, coeffP, resP, rootQ);
 
     multi1d<Real> beta(Npoles);
-
-    // Strategy: Choose Betas
-    for(int i=0; i < Npoles; i++) { 
-      // Seems spiffy for Zolo Hw and Tanh H_t
-      // beta[i] = Real(1)/(Real(0.75)*(param.b5+param.c5)*resP[i]);
-      //beta[i] = Real(1)/(resP[i]);
-
-      // Seems  best for Zolo H_t
-      beta[i] = Real(0.8);
-    }
+    (*theTuningStrategy)(beta, coeffP, resP, rootQ);
 
     return new EvenOddPrecOvExtLinOpArray(state->getLinks(),
 				     Npoles,

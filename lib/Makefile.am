@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.262 2005-04-22 13:28:27 bjoo Exp $
+# $Id: Makefile.am,v 1.263 2005-04-22 16:58:32 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -197,6 +197,10 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/unprec_ht_contfrac5d_fermact_array_w.h \
 	actions/ferm/fermacts/prec_ht_contfrac5d_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_dwftransf_fermact_w.h \
+	actions/ferm/fermacts/ovext_tuning_strategy.h \
+	actions/ferm/fermacts/ovext_tuning_strategy_aggregate.h \
+	actions/ferm/fermacts/ovext_constant_strategy.h \
+	actions/ferm/fermacts/ovext_const_div_by_resp_strategy.h \
 	actions/ferm/fermbcs/fermbcs_w.h \
 	actions/ferm/fermbcs/fermbc_factory_w.h \
 	actions/ferm/fermbcs/simple_fermbc_w.h \
@@ -386,6 +390,9 @@ libchroma_a_SOURCES = \
 	actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/overlap_state.cc \
 	actions/ferm/fermacts/zolotarev_coeffs.cc \
+	actions/ferm/fermacts/ovext_tuning_strategy_aggregate.cc \
+	actions/ferm/fermacts/ovext_constant_strategy.cc \
+	actions/ferm/fermacts/ovext_const_div_by_resp_strategy.cc \
 	actions/ferm/fermbcs/simple_fermbc.cc \
 	actions/ferm/invert/invbicgstab.cc \
 	actions/ferm/invert/invbicgstab_array.cc \
