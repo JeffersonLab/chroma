@@ -22,7 +22,7 @@ namespace Chroma {
       return new OvExtConstDivByResPStrategy(tuning_constant);
     }
     
-    const std::string name = "OVEXT_DIVIDE_BY_CONSTANT_TIMES_RESP";
+    const std::string name = "OVEXT_DIVIDE_BY_CONSTANT_TIMES_RESP_STRATEGY";
     const bool registered = TheAbsOvExtTuningStrategyFactory::Instance().registerObject(name, createStrategy);
   }; // end namespace OvExtTuningStrategy
 }; // end namespace Chroma
