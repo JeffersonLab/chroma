@@ -1,4 +1,4 @@
-/* $Id: unprec_ovext_linop_array_w.cc,v 1.10 2005-04-21 14:04:38 bjoo Exp $
+/* $Id: unprec_ovext_linop_array_w.cc,v 1.11 2005-04-22 13:27:42 bjoo Exp $
 /*! \file
 *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
 */
@@ -95,7 +95,7 @@ namespace Chroma
 	tmp4 = Gamma(G5)*tmp5[N5-1];
 
 	// (R a5 + p0) gamma_5 Dw psi[N5-1]
-	ftmp=R*a5 + coeffP*alpha;
+	ftmp=(R*a5 + coeffP*alpha);
 	chi[N5-1] += ftmp*tmp4;
 	
 
@@ -184,7 +184,7 @@ namespace Chroma
 	tmp5_2[N5-1] = tmp5_1[N5-1];
 	ftmp = Two*R;
 	tmp5_1[N5-1] *= ftmp;
-	ftmp = R*a5 + coeffP*alpha;
+	ftmp = (R*a5 + coeffP*alpha);
 	tmp5_2[N5-1] *= ftmp;
 
 	int p = 0;

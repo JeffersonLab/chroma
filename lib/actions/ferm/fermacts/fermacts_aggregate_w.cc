@@ -1,4 +1,4 @@
-// $Id: fermacts_aggregate_w.cc,v 1.1 2005-02-07 04:12:59 edwards Exp $
+// $Id: fermacts_aggregate_w.cc,v 1.2 2005-04-22 13:27:42 bjoo Exp $
 /*! \file
  *  \brief All Wilson-type fermion actions
  */
@@ -28,6 +28,7 @@
 #include "actions/ferm/fermacts/prec_zolo_nef_fermact_array_w.h"
 #include "actions/ferm/fermacts/prec_ovlap_contfrac5d_fermact_array_w.h"
 #include "actions/ferm/fermacts/prec_ht_contfrac5d_fermact_array_w.h"
+#include "actions/ferm/fermacts/prec_ovext_fermact_array_w.h"
 
 namespace Chroma
 {
@@ -72,6 +73,7 @@ namespace Chroma
       success &= UnprecOvDWFermActArrayEnv::registered;
       success &= EvenOddPrecOvDWFermActArrayEnv::registered;
       success &= UnprecOvExtFermActArrayEnv::registered;
+      success &= EvenOddPrecOvExtFermActArrayEnv::registered;
       success &= UnprecZoloNEFFermActArrayEnv::registered;
       success &= EvenOddPrecZoloNEFFermActArrayEnv::registered;
       success &= EvenOddPrecKNOFermActArrayEnv::registered;
