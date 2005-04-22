@@ -1,4 +1,4 @@
-/* $Id: prec_ovext_linop_array_w.cc,v 1.1 2005-04-22 13:27:42 bjoo Exp $
+/* $Id: prec_ovext_linop_array_w.cc,v 1.2 2005-04-22 14:36:14 bjoo Exp $
 /*! \file
 *  \brief EvenOddPreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
 */
@@ -225,7 +225,7 @@ namespace Chroma
 	  tmp[i+1][rb[otherCB]] = Bprime[p]*psi[i] + Cprime[p]*tmp4;
 	  tmp[i+1][rb[otherCB]] -= Dprime[p]*psi[N5-1];
 
-	  tmp[N5-1][rb[cb]] += Dprime[p]*psi[i+1];
+	  tmp[N5-1][rb[otherCB]] += Dprime[p]*psi[i+1];
 	}
 
 	for(int i=0; i < N5; i++) { 

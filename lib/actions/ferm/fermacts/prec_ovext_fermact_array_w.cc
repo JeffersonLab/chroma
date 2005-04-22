@@ -1,4 +1,4 @@
-// $Id: prec_ovext_fermact_array_w.cc,v 1.1 2005-04-22 13:27:42 bjoo Exp $
+// $Id: prec_ovext_fermact_array_w.cc,v 1.2 2005-04-22 14:36:14 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -318,10 +318,11 @@ namespace Chroma
     // Strategy: Choose Betas
     for(int i=0; i < Npoles; i++) { 
       // Seems spiffy for Zolo Hw and Tanh H_t
-      beta[i] = Real(1)/(Real(0.75)*(param.b5+param.c5)*resP[i]);
+      // beta[i] = Real(1)/(Real(0.75)*(param.b5+param.c5)*resP[i]);
+      //beta[i] = Real(1)/(resP[i]);
 
       // Seems  best for Zolo H_t
-      // beta[i] = Real(0.8);
+      beta[i] = Real(0.8);
     }
 
     return new EvenOddPrecOvExtLinOpArray(state->getLinks(),
