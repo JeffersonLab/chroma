@@ -1,4 +1,4 @@
-// $Id: t_propagator_w.cc,v 1.9 2005-04-11 02:44:11 edwards Exp $
+// $Id: t_propagator_w.cc,v 1.10 2005-04-24 12:20:40 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  *   
@@ -256,8 +256,21 @@ int main(int argc, char **argv)
   Propagator_input_t  input;
 
   // Instantiate xml reader for DATA
-  // XMLReader xml_in("INPUT_W.xml");
-  XMLReader xml_in(Chroma::getXMLInputFileName());
+  XMLReader xml_in ; 
+  string in_name = Chroma::getXMLInputFileName() ; 
+  try
+  {
+    xml_in.open(in_name);
+  }
+    catch (...) 
+  {
+    QDPIO::cerr << "Error reading input file " << in_name << endl;
+    QDPIO::cerr << "The input file name can be passed via the -i flag " << endl;
+    QDPIO::cerr << "The default name is ./DATA" << endl;
+    throw;
+  }
+
+
 
   // Read data
   read(xml_in, "/propagator", input);
@@ -376,6 +389,8 @@ int main(int argc, char **argv)
   // Set up a state for the current u,
   Handle<const ConnectState > state(S_f.createState(u));
 
+  Handle<const SystemSolver<LatticeFermion> > qprop(S_f.qprop(state,input.param.invParam));
+
 
   //
   // Loop over the source color and spin , creating the source
@@ -411,9 +426,7 @@ int main(int argc, char **argv)
 
         // Compute the propagator for given source color/spin 
         // int n_count;
-
-        S_f.qprop(psi, state, q_source, input.param.invParam, n_count);
-    
+	n_count = (*qprop)(psi, q_source);
         ncg_had += n_count;
       
         push(xml_out,"Qprop");
