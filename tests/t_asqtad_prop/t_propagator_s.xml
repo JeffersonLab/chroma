@@ -34,9 +34,10 @@
   </Input>
   <Config_info><NERSC>
       <mat_size>12</mat_size>
+      <float_size>4</float_size>
       <nrow>4 4 4 4</nrow>
       <boundary>1 1 1 1</boundary>
-      <ensemble_id>X1102261317</ensemble_id>
+      <ensemble_id>X1114341623</ensemble_id>
       <ensemble_label>SZIN</ensemble_label>
       <creator>SZIN</creator>
       <creator_hardware>(Tue</creator_hardware>
@@ -56,12 +57,48 @@
     <s_plaq>0.0441657</s_plaq>
     <t_plaq>0.0323189</t_plaq>
     <link>0.463032</link>
+    <pollp>
+      <elem>
+        <re>0.0247176</re>
+        <im>-0.0208892</im>
+      </elem>
+      <elem>
+        <re>0.0327367</re>
+        <im>0.038797</im>
+      </elem>
+      <elem>
+        <re>0.078216</re>
+        <im>-0.0532593</im>
+      </elem>
+      <elem>
+        <re>0.0422812</re>
+        <im>-0.026516</im>
+      </elem>
+    </pollp>
   </Observables>
   <Is_this_gauge_invariant>
     <w_plaq>0.0382423</w_plaq>
     <s_plaq>0.0441657</s_plaq>
     <t_plaq>0.0323189</t_plaq>
     <link>0.554133</link>
+    <pollp>
+      <elem>
+        <re>0.0247176</re>
+        <im>-0.0208893</im>
+      </elem>
+      <elem>
+        <re>0.0327367</re>
+        <im>0.0387971</im>
+      </elem>
+      <elem>
+        <re>0.078216</re>
+        <im>-0.0532594</im>
+      </elem>
+      <elem>
+        <re>0.0422812</re>
+        <im>-0.0265161</im>
+      </elem>
+    </pollp>
   </Is_this_gauge_invariant>
   <Wall_source>
     <Inverter_properties>
