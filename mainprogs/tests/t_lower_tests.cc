@@ -1,4 +1,4 @@
-// $Id: t_lower_tests.cc,v 1.3 2005-03-02 00:44:19 edwards Exp $
+// $Id: t_lower_tests.cc,v 1.4 2005-04-24 09:38:37 mcneile Exp $
 //
 //  This is a collection of simple 
 //  tests to make sure that none of 
@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
   Layout::setLattSize(nrow);
   Layout::create();
 
-  XMLFileWriter xml("t_lower_tests.xml");
+  XMLFileWriter& xml = Chroma::getXMLOutputInstance();
   push(xml, "collection_of_unit_tests");
 
   push(xml,"lattis");
@@ -87,6 +87,8 @@ int main(int argc, char *argv[])
 
   // final pop
   pop(xml);
+
+  xml.close(); 
 
   // Time to bolt
   Chroma::finalize();
