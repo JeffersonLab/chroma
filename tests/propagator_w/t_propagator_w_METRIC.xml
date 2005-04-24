@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<assertions>
+
+<assertion xpath="/propagator/Point_Point_Wilson_Mesons/elem/momenta/elem/mesprop" type="real_array" comparison="relative_comparison" tolerance="0.001"/>
+
+</assertions>
