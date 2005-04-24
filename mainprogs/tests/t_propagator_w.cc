@@ -1,4 +1,4 @@
-// $Id: t_propagator_w.cc,v 1.10 2005-04-24 12:20:40 mcneile Exp $
+// $Id: t_propagator_w.cc,v 1.11 2005-04-24 12:30:16 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  *   
@@ -281,35 +281,10 @@ int main(int argc, char **argv)
 
   // Read in the configuration along with relevant information.
   multi1d<LatticeColorMatrix> u(Nd);
-  
-  //  XMLReader gauge_xml;
-
   QDPIO::cout << "Calculation for SU(" << Nc << ")" << endl;
 
-#ifdef NNNNNNNNNNNN
-  switch (input.param.cfg_type) 
-  {
-  case FILE_START_NERSC :
-    // su3 specific (at the moment)
-    readArchiv(gauge_xml, u, input.cfg.cfg_file);
-    break;
-  case HOT_START :
-    // create a hot configuration
-    for(int dir = 0 ; dir < Nd ; ++dir)
-      {
-	gaussian(u[dir]);
-	reunit(u[dir]) ; 
-      }
-    QDPIO::cout << "Hot/Random configuration created" <<  endl;
-    break;
-  default :
-    QDP_error_exit("Configuration type is unsupported.");
-  }
-#endif
 
   XMLReader gauge_file_xml, gauge_xml;
- 
- 
   // Start up the gauge field
   gaugeStartup(gauge_file_xml, gauge_xml, u, input.cfg);
 
@@ -323,9 +298,6 @@ int main(int argc, char **argv)
 
   // Write out the input
   write(xml_out, "Input", xml_in);
-
-  // Write out the config header
-  write(xml_out, "Config_info", gauge_xml);
 
   // Write out the source header
   //  write(xml_out, "Source_info", source_xml);
@@ -441,36 +413,18 @@ int main(int argc, char **argv)
         */
         FermToProp(psi, quark_propagator, color_source, spin_source);
       }  //spin / color_source
-    
-  
-
-#ifdef NNNNNN
-    push(xml_out, "Here are all 16 pions");
-      for(int i=0; i < NUM_STAG_PIONS; i++) {
-      ostringstream tag;
-      tag << "pion" << i;
-      push(xml_out, tag.str());
-      write(xml_out, "pion_i", pion[i]);
-      pop(xml_out);
-      }
-#endif
-
-
-
-
-
 
       // compute the meson spectrum
 
       // source timeslice
       int t0 = 0 ;
 
-  // create averaged Fourier phases with (mom)^2 <= 10
-  SftMom phases(10, true, j_decay) ;
+      // create averaged Fourier phases with (mom)^2 <= 10
+      SftMom phases(10, true, j_decay) ;
 
-  mesons(quark_propagator,quark_propagator,
-	 phases, t0, xml_out,
-         "Point_Point_Wilson_Mesons") ;
+      mesons(quark_propagator,quark_propagator,
+	     phases, t0, xml_out,
+	     "Point_Point_Wilson_Mesons") ;
 
 
 
