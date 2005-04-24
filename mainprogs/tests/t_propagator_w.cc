@@ -1,4 +1,4 @@
-// $Id: t_propagator_w.cc,v 1.12 2005-04-24 12:56:51 mcneile Exp $
+// $Id: t_propagator_w.cc,v 1.13 2005-04-24 13:46:17 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  *   
@@ -406,8 +406,9 @@ int main(int argc, char **argv)
 	     "Point_Point_Wilson_Mesons") ;
 
 
+      pop(xml_out);
 
-  xml_out.close();
+      xml_out.close();
   xml_in.close();
 
   // Time to bolt
