@@ -1,4 +1,4 @@
-// $Id: t_propagator_s.cc,v 1.33 2005-04-11 02:44:11 edwards Exp $
+// $Id: t_propagator_s.cc,v 1.34 2005-04-24 11:18:12 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -248,8 +248,20 @@ int main(int argc, char **argv)
   Propagator_input_t  input;
 
   // Instantiate xml reader for DATA
-  // XMLReader xml_in("./DATA_v2");
-  XMLReader xml_in(Chroma::getXMLInputFileName());
+  XMLReader xml_in ; 
+  string in_name = Chroma::getXMLInputFileName() ; 
+  try
+  {
+    xml_in.open(in_name);
+  }
+    catch (...) 
+  {
+  QDPIO::cerr << "Error reading input file " << in_name << endl;
+  QDPIO::cerr << "The input file name can be passed via the -i flag " << endl;
+  QDPIO::cerr << "The default name is ./DATA" << endl;
+    throw;
+  }
+
 
   // Read data
   read(xml_in, "/propagator", input);
@@ -410,7 +422,12 @@ int main(int argc, char **argv)
     staggered_pions pseudoscalar(t_length,u) ; 
     staggered_scalars  scalar_meson(t_length,u) ; 
     vector_meson rho(t_length,u) ; 
-     
+
+    // this is a hack 
+    pseudoscalar.use_NON_gauge_invar()  ;
+    scalar_meson.use_NON_gauge_invar()  ;     
+    rho.use_NON_gauge_invar()  ;
+
     pseudoscalar.compute(stag_prop, j_decay);
     scalar_meson.compute(stag_prop,  j_decay);
     rho.compute(stag_prop,  j_decay);
