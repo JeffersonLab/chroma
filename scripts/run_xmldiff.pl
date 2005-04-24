@@ -1,5 +1,5 @@
 #
-#  $Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/scripts/run_xmldiff.pl,v 1.5 2005-04-19 14:04:42 mcneile Exp $
+#  $Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/scripts/run_xmldiff.pl,v 1.6 2005-04-24 09:22:03 mcneile Exp $
 #
 #  This is wrapper script to run the xmldiff application from
 #  a makefile
@@ -37,9 +37,15 @@ else
 
 
 # at some stage this should be factored into another perl script
+
+#
+# Each test has a name, input file name, output file name,
+# and the good output that is tested against.
+#
+
  %HoH = (
 	  t_propagator_fuzz_s => {
-                       input       => "../../tests/t_asqtad_prop/INPUT_t_propagator_fuzz" , 
+                       input       => "../../tests/t_asqtad_prop/INPUT_t_propagator_fuzz_s" , 
                        output      => "t_propagator_fuzz_s.xml",
                        metric       => "../../tests/t_asqtad_prop/t_propagator_fuzz_s_METRIC.xml" ,
                        controlfile  => "../../tests/t_asqtad_prop/t_propagator_fuzz_s.xml" ,
@@ -97,11 +103,11 @@ foreach $execute ( keys %HoH )
     $control   =  $HoH{$execute}{"controlfile"} ; 
     $input   =  $HoH{$execute}{"input"} ; 
 
-    if( ! -f  $execute )
-    {
+##    if( ! -f  $execute )
+##    {
 	$log_make  = "log_make_".$execute  ; 
 	system("make $execute >& $log_make ") ; 
-    }
+##    }
 
 
     if(  -f  $execute )
@@ -126,10 +132,9 @@ foreach $execute ( keys %HoH )
 	{
 	    $log_xml = "log_xml_".$execute  ; 
 
-#    $status_tmp = system("$xmldiff $control $candidate $metric $log_xml -v") ; 
 	    $status_tmp = system("$xmldiff $control $candidate $metric $log_xml ") ; 
 
-	    $status = $status_tmp / 256  ;   ## some perl feature
+	    $status = $status_tmp   ;   ## some perl feature
 
 	    if( $status == 0 ) 
 	    {
