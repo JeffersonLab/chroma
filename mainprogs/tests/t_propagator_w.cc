@@ -1,13 +1,12 @@
-// $Id: t_propagator_w.cc,v 1.11 2005-04-24 12:30:16 mcneile Exp $
+// $Id: t_propagator_w.cc,v 1.12 2005-04-24 12:56:51 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  *   
  *   This version is for Wilson fermions.
  *   This code should work for su3 or su4.
  *
- *   I don't fully understand the conventions for kappa values
- *   and masses. I will figure this out when I compare against 
- *   the UKQCD code.
+ *
+ *
  */
 
 #include <iostream>
@@ -20,10 +19,6 @@
 
 
 using namespace Chroma;
-
-
-// copied from t_ritz.cc
-enum GaugeStartType { HOT_START = 0, COLD_START = 1, FILE_START_NERSC = 2 };
 
 
 /*
@@ -39,7 +34,7 @@ struct Param_t
   Real         Mass;      // Staggered mass
   Real         u0;        // Tadpole Factor
  
-  GaugeStartType  cfg_type;       // storage order for stored gauge configuration
+  //  GaugeStartType  cfg_type;       // storage order for stored gauge configuration
   PropType prop_type;      // storage order for stored propagator
 
   InvertParam_t  invParam;
@@ -153,20 +148,32 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
 
       QDPIO::cout << " PROPAGATOR: Propagator for Wilson fermions" << endl;
 
-      read(paramtop, "Mass", input.param.Mass);
+      //      read(paramtop, "Mass", input.param.Mass);
       read(paramtop, "u0" , input.param.u0);
-
-#if 0
-      for (int i=0; i < input.param.numKappa; ++i) {
-	if (toBool(input.param.Kappa[i] < 0.0)) {
-	  QDPIO::cerr << "Unreasonable value for Kappa." << endl;
-	  QDPIO::cerr << "  Kappa[" << i << "] = " << input.param.Kappa[i] << endl;
-	  QDP_abort(1);
-	} else {
-	  QDPIO::cout << " Spectroscopy Kappa: " << input.param.Kappa[i] << endl;
+      // Read the stuff for the action
+      if (paramtop.count("Mass") != 0)
+	{
+	  read(paramtop, "Mass", input.param.Mass);
+	  if (paramtop.count("Kappa") != 0)
+	    {
+	      QDPIO::cerr << "Error: found both a Kappa and a Mass tag" << endl;
+	      QDP_abort(1);
+	    }
 	}
-      }
-#endif
+      else if (paramtop.count("Kappa") != 0)
+	{
+	  Real Kappa;
+	  read(paramtop, "Kappa", Kappa);
+	  input.param.Mass = kappaToMass(Kappa);    // Convert Kappa to Mass
+	}
+      else
+	{
+	  QDPIO::cerr << "Error: neither Mass or Kappa found" << endl;
+	  QDP_abort(1);
+	}
+
+
+
 
       break;
 
@@ -174,33 +181,6 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
       QDP_error_exit("Fermion type not supported\n.");
     }
 
-#ifdef FFFFFFFFFFFFF
-    {
-      string cfg_type_str;
-      read(paramtop, "cfg_type", cfg_type_str);
-      if (cfg_type_str == "NERSC") {
-	input.param.cfg_type = FILE_START_NERSC  ;
-      }
-      else if (cfg_type_str == "HOT") {
-	input.param.cfg_type = HOT_START;
-      }       else if (cfg_type_str == "COLD") {
-	input.param.cfg_type = COLD_START;
-      } else {
-	QDP_error_exit("Only know NERSC/HOT/COLD files yet");
-      }
-
-    }
-
-    {
-      string prop_type_str;
-      read(paramtop, "prop_type", prop_type_str);
-      if (prop_type_str == "SZIN") {
-	input.param.prop_type = PROP_TYPE_SZIN;
-      } else {
-	QDP_error_exit("Dont know non SZIN files yet");
-      }
-    }
-#endif
 
 
 //    read(paramtop, "invType", input.param.invType);
@@ -360,7 +340,6 @@ int main(int argc, char **argv)
 
   // Set up a state for the current u,
   Handle<const ConnectState > state(S_f.createState(u));
-
   Handle<const SystemSolver<LatticeFermion> > qprop(S_f.qprop(state,input.param.invParam));
 
 
