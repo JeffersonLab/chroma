@@ -251,7 +251,19 @@ int main(int argc, char **argv)
 
   // Instantiate xml reader for DATA
 //  XMLReader xml_in("../../tests/t_asqtad_prop/DISC_DATA_v2");
-  XMLReader xml_in(Chroma::getXMLInputFileName());
+  XMLReader xml_in ; 
+  string in_name = Chroma::getXMLInputFileName() ; 
+  try
+  {
+    xml_in.open(in_name);
+  }
+    catch (...) 
+  {
+  QDPIO::cerr << "Error reading input file " << in_name << endl;
+    throw;
+  }
+
+
 
   // Read data
   read(xml_in, "/propagator", input);
