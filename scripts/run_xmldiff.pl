@@ -1,5 +1,5 @@
 #
-#  $Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/scripts/run_xmldiff.pl,v 1.6 2005-04-24 09:22:03 mcneile Exp $
+#  $Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/scripts/run_xmldiff.pl,v 1.7 2005-04-24 13:44:23 mcneile Exp $
 #
 #  This is wrapper script to run the xmldiff application from
 #  a makefile
@@ -72,6 +72,18 @@ else
                        output      => "t_lower_tests.xml",
                        metric       => "../../tests/t_unit_tests/t_lower_tests_METRIC.xml" ,
                        controlfile  => "../../tests/t_unit_tests/t_lower_tests.xml" ,
+		   },
+
+
+#
+#    free field test of the wilson inverter
+#
+
+	  t_propagator_w  => {
+                       input      => "../../tests/propagator_w/INPUT_W.xml",
+                       output      => "t_propagator_w.xml",
+                       metric       => "../../tests/propagator_w/t_propagator_w_METRIC.xml" ,
+                       controlfile  => "../../tests/propagator_w/t_propagator_w.xml" ,
 		   },
 
 
