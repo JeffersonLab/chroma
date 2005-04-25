@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gauge_monomial.cc,v 1.3 2005-01-25 02:19:02 edwards Exp $
+// $Id: gauge_monomial.cc,v 1.4 2005-04-25 13:39:24 bjoo Exp $
 /*! \file
  *  \brief Generic gauge action monomial wrapper
  */
@@ -213,7 +213,7 @@ namespace Chroma
     }
 
     // Throw an exception if not found
-    gaugeact = TheGaugeActFactory::Instance().createObject(gaugeact_string, gaugeact_reader, "./GaugeAction");
+    gaugeact = TheGaugeActFactory::Instance().createObject(gaugeact_string, gaugeact_reader, "/GaugeAction");
   }
 
 }; //end namespace Chroma

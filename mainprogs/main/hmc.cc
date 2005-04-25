@@ -1,4 +1,4 @@
-// $Id: hmc.cc,v 1.5 2005-04-11 02:01:30 edwards Exp $
+// $Id: hmc.cc,v 1.6 2005-04-25 13:39:24 bjoo Exp $
 /*! \file
  *  \brief Main code for HMC with dynamical fermion generation
  */
@@ -467,18 +467,19 @@ int main(int argc, char *argv[])
   XMLReader H_MC_xml(H_MC_is);
   Handle< ExactAbsHamiltonian< multi1d<LatticeColorMatrix>,     
     multi1d<LatticeColorMatrix> > > H_MC(new ExactLatColMatHamiltonian(H_MC_xml, "/MC_Hamiltonian"));
-  
+ 
+
   // Get the MD_Hamiltonian
   std::istringstream H_MD_is(trj_params.H_MD_xml);
   XMLReader H_MD_xml(H_MD_is);
   
   Handle< AbsHamiltonian< multi1d<LatticeColorMatrix>, 
     multi1d<LatticeColorMatrix> > > H_MD(new ExactLatColMatHamiltonian(H_MD_xml, "/MD_Hamiltonian"));
-  
-  
+   
   std::istringstream Integrator_is(trj_params.Integrator_xml);
   XMLReader MD_xml(Integrator_is);
-  
+ 
+    
   // Get the Integrator
   std::string integrator_name;
   read(MD_xml, "/MDIntegrator/Name", integrator_name);
@@ -486,19 +487,52 @@ int main(int argc, char *argv[])
   // Get the Leapfrog 
   Handle< AbsMDIntegrator<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > MD( TheMDIntegratorFactory::Instance().createObject(integrator_name, MD_xml, "/MDIntegrator", H_MD) );
   
+    
   // Get the HMC
   LatColMatHMCTrj theHMCTrj( H_MC, MD );
   
+  multi1d < Handle< AbsInlineMeasurement > > the_measurements;
 
   // Get the measurements
-  std::istringstream Measurements_is(mc_control.inline_measurement_xml);
-  XMLReader MeasXML(Measurements_is);
-  multi1d < Handle< AbsInlineMeasurement > > the_measurements;
-  read(MeasXML, "/InlineMeasurements", the_measurements);
+  try { 
+    std::istringstream Measurements_is(mc_control.inline_measurement_xml);
+
+    XMLReader MeasXML(Measurements_is);
+
+    std::ostringstream os;
+    MeasXML.print(os);
+    QDPIO::cout << os.str() << endl << flush;
+
+
+    read(MeasXML, "/InlineMeasurements", the_measurements);
+
+  }
+  catch(const std::string& e) { 
+    QDPIO::cerr << "Caugth exception while reading measurements: " << e << endl
+		<< flush;
+
+    QDP_abort(1);
+  }
 
   QDPIO::cout << "There are " << the_measurements.size() << " user measurements " << endl;
+
+  
   // Run
-  doHMC<HMCTrjParams>(u, theHMCTrj, mc_control, trj_params, the_measurements);
+  try { 
+    doHMC<HMCTrjParams>(u, theHMCTrj, mc_control, trj_params, the_measurements);
+  } 
+  catch( const std::string& e ) { 
+    QDPIO::cerr << "Caught string exception: " << e << endl;
+    QDP_abort(1);
+  }
+  catch( std::exception& e ) {
+    QDPIO::cerr << "Caught standard library exception: " << e.what() << endl;
+    QDP_abort(1);
+  }
+  catch(...) {
+    QDPIO::cerr << "Caught unknown exception " << endl;
+    QDP_abort(1);
+  }
 
   pop(xml_out);
 

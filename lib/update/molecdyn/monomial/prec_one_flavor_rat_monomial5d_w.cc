@@ -1,4 +1,4 @@
-// $Id: prec_one_flavor_rat_monomial5d_w.cc,v 1.4 2005-04-18 16:23:23 edwards Exp $
+// $Id: prec_one_flavor_rat_monomial5d_w.cc,v 1.5 2005-04-25 13:39:24 bjoo Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 5D ferm monomials
  */
@@ -189,7 +189,7 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    const FermionAction<LatticeFermion>* tmp_act = TheFermionActionFactory::Instance().createObject(fermact_string, fermact_reader, "./FermionAction");
+    const FermionAction<LatticeFermion>* tmp_act = TheFermionActionFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
   
 
     const EvenOddPrecWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >* downcast=dynamic_cast<const EvenOddPrecWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >*>(tmp_act);
