@@ -1,4 +1,4 @@
-// $Id: loops_s.h,v 1.7 2005-01-14 18:42:36 edwards Exp $
+// $Id: loops_s.h,v 1.8 2005-04-25 12:44:15 mcneile Exp $
 
 #ifndef LOOP_S_H
 #define LOOP_S_H
@@ -36,7 +36,12 @@ namespace Chroma {
 		t_length, no_sample);
 
       push(xml_out, outer_tag);
-      write(xml_out, inner_tag, corr);
+        push(xml_out, "Mean");
+          write(xml_out, inner_tag, corr);
+        pop(xml_out);
+        push(xml_out, "MeanError");
+          write(xml_out, inner_tag, sig_sc0);
+        pop(xml_out);
       pop(xml_out);
 
 
