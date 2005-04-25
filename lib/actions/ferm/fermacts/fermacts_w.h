@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermacts_w.h,v 1.25 2005-04-22 13:27:42 bjoo Exp $
+// $Id: fermacts_w.h,v 1.26 2005-04-25 13:29:41 bjoo Exp $
 
 /*! \file
  * \brief Fermion actions
@@ -43,6 +43,12 @@
 
 #include "prec_ht_contfrac5d_fermact_array_w.h"
 #include "unprec_dwftransf_fermact_w.h"
+
+#include "ovext_tuning_strategy.h"
+#include "ovext_tuning_strategy_aggregate.h"
+#include "ovext_constant_strategy.h"
+#include "ovext_const_div_by_resp_strategy.h"
+#include "ovext_neuberger_strategy.h"
 
 
 #endif

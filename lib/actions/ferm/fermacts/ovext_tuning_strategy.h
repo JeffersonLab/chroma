@@ -20,7 +20,8 @@ namespace Chroma {
       virtual void operator()(multi1d<Real>& beta,
 		      const Real& coeffP,
 		      const multi1d<Real>& resP,
-		      const multi1d<Real>& resQ) const = 0;
+		      const multi1d<Real>& resQ,
+		      const Real& Mass) const = 0;
     };
 
 

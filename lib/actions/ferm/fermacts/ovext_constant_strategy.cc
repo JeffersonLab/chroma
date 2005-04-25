@@ -1,5 +1,5 @@
 #include "chromabase.h"
-#include "ovext_constant_strategy.h"
+#include "actions/ferm/fermacts/ovext_constant_strategy.h"
 
 using namespace QDP;
 

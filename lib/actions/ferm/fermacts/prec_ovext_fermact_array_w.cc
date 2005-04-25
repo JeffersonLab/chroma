@@ -1,4 +1,4 @@
-// $Id: prec_ovext_fermact_array_w.cc,v 1.3 2005-04-22 16:58:33 bjoo Exp $
+// $Id: prec_ovext_fermact_array_w.cc,v 1.4 2005-04-25 13:29:41 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -324,7 +324,7 @@ namespace Chroma
     init(Npoles, coeffP, resP, rootQ);
 
     multi1d<Real> beta(Npoles);
-    (*theTuningStrategy)(beta, coeffP, resP, rootQ);
+    (*theTuningStrategy)(beta, coeffP, resP, rootQ, param.Mass);
 
     return new EvenOddPrecOvExtLinOpArray(state->getLinks(),
 				     Npoles,

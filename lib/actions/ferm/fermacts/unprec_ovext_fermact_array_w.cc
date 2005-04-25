@@ -1,4 +1,4 @@
-// $Id: unprec_ovext_fermact_array_w.cc,v 1.16 2005-04-22 16:58:33 bjoo Exp $
+// $Id: unprec_ovext_fermact_array_w.cc,v 1.17 2005-04-25 13:29:41 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -337,7 +337,7 @@ namespace Chroma
        
     multi1d<Real> beta(Npoles);
 
-    (*theTuningStrategy)(beta, coeffP, resP, rootQ);
+    (*theTuningStrategy)(beta, coeffP, resP, rootQ, param.Mass);
 
     return new UnprecOvExtLinOpArray(state->getLinks(),
 				     Npoles,

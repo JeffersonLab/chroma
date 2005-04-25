@@ -2,7 +2,7 @@
 #define ovext_const_div_by_resp_h
 
 #include "chromabase.h"
-#include "ovext_tuning_strategy.h"
+#include "actions/ferm/fermacts/ovext_tuning_strategy.h"
 
 namespace Chroma {
     
@@ -24,7 +24,8 @@ namespace Chroma {
     void operator()( multi1d<Real>& beta,
 		     const Real& coeffP,
 		     const multi1d<Real>& resP,
-		     const multi1d<Real>& resQ) const {
+		     const multi1d<Real>& resQ,
+		     const Real& Mass) const {
       int size=resP.size();
       beta.resize(size);
       for(int i=0; i < size; i++) { 
