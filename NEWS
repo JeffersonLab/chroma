@@ -1,3 +1,8 @@
+04/25/2005 -- Robert Edwards
+
+	Version 1.21.2. BJ added OvExt code and factories. Small cleanups and
+        adding xml_file support to inline measurements.
+
 04/17/2005 -- Robert Edwards
 
 	Version 1.21.1. Changed one-flavor HMC monomial codes to support
