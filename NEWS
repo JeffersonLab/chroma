@@ -1,5 +1,9 @@
 04/25/2005 -- Robert Edwards
 
+	Version 1.21.3. Added qpropqio for chroma.
+
+04/25/2005 -- Robert Edwards
+
 	Version 1.21.2. BJ added OvExt code and factories. Small cleanups and
         adding xml_file support to inline measurements.
 
