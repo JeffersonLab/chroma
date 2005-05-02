@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial5d_w.h,v 1.7 2005-04-18 16:23:23 edwards Exp $
+// $Id: one_flavor_rat_monomial5d_w.h,v 1.8 2005-05-02 09:35:58 bjoo Exp $
 
 /*! @file
  * @brief One flavor monomials using RHMC
@@ -103,6 +103,8 @@ namespace Chroma
 
 	    // Reweight each contribution in partial fraction
 	    for(int mu=0; mu < F.size(); mu++)
+
+
 	      F_tmp[mu] -= fpfe.res[i] * F_1[mu];
 	  }
 
@@ -112,8 +114,8 @@ namespace Chroma
       }
 
       // Force term for the PV
-      multi1d<int> n_pv_count(getNthRoot());
-      multi1d<Real> F_pv_sq(getNthRoot());
+      multi1d<int> n_pv_count(getNthRootPV());
+      multi1d<Real> F_pv_sq(getNthRootPV());
       {
 	// Get Pauli-Villars linear operator
 	Handle< const DiffLinearOperator<multi1d<Phi>, P> > PV(FA.linOpPV(state));
@@ -126,7 +128,7 @@ namespace Chroma
 	P  F_1, F_2, F_tmp(Nd);
 
 	// Loop over nth-roots, so the pseudoferms
-	for(int n=0; n < getNthRoot(); ++n)
+	for(int n=0; n < getNthRootPV(); ++n)
 	{
 	  // Get X out here via multisolver
 	  n_pv_count[n] = getXPV(X,fpvpfe.pole,getPhiPV()[n],s);
@@ -146,6 +148,7 @@ namespace Chroma
 
 	    // Reweight each contribution in partial fraction
 	    for(int mu=0; mu < F.size(); mu++)
+
 	      F_tmp[mu] -= fpvpfe.res[i] * F_1[mu];
 	  }
 
@@ -215,6 +218,7 @@ namespace Chroma
 	// Loop over nth-roots, so the pseudoferms
 	for(int n=0; n < getNthRoot(); ++n)
 	{
+
 	  // Fill the eta field with gaussian noise
 	  eta = zero;
 	  for(int i=0; i < N5; ++i)
@@ -237,7 +241,7 @@ namespace Chroma
 
 	  // Weight solns to make final PF field
 	  getPhi()[n].resize(N5);
-
+	  getPhi()[n] = zero;
 	  // Loop over each 5d slice
 	  for(int j=0; j < N5; ++j)
 	  {
@@ -250,8 +254,8 @@ namespace Chroma
 
 
       // Pseudofermions for PV term
-      multi1d<int> n_pv_count(getNthRoot());
-      getPhiPV().resize(getNthRoot()); // Will hold nth-root pseudoferms
+      multi1d<int> n_pv_count(getNthRootPV());
+      getPhiPV().resize(getNthRootPV()); // Will hold nth-root pseudoferms
       { 
 	Handle< const LinearOperator< multi1d<Phi> > > PV(FA.linOpPV(f_state));
 	
@@ -261,7 +265,7 @@ namespace Chroma
 	multi1d<Phi> eta(N5);
 
 	// Loop over nth-roots, so the pseudoferms
-	for(int n=0; n < getNthRoot(); ++n)
+	for(int n=0; n < getNthRootPV(); ++n)
 	{
 	  // Fill the eta field with gaussian noise
 	  eta = zero;
@@ -398,7 +402,7 @@ namespace Chroma
 
       // Action for PV term
       Double action_pv = zero;
-      multi1d<int> n_pv_count(getNthRoot());
+      multi1d<int> n_pv_count(getNthRootPV());
       {
 	Handle< const LinearOperator< multi1d<Phi> > > PV(FA.linOpPV(bc_g_state));
 
@@ -410,7 +414,7 @@ namespace Chroma
 	multi1d<Phi> tmp(N5);
 
 	// Loop over nth-roots, so the pseudoferms
-	for(int n=0; n < getNthRoot(); ++n)
+	for(int n=0; n < getNthRootPV(); ++n)
 	{
 	  n_pv_count[n] = getXPV(X,spvpfe.pole,getPhiPV()[n],s);
 
@@ -465,6 +469,9 @@ namespace Chroma
 
     //! Return number of roots in used
     virtual int getNthRoot() const = 0;
+
+    //! Return number of roots used in PV
+    virtual int getNthRootPV() const = 0;
 
     //! Return the partial fraction expansion for the force calc
     virtual const RemezCoeff_t& getFPFE() const = 0;
@@ -543,6 +550,9 @@ namespace Chroma
 
     //! Return number of roots in used
     virtual int getNthRoot() const = 0;
+
+    //! Return number of roots used in PV
+    virtual int getNthRootPV() const = 0;
 
     //! Return the partial fraction expansion for the force calc
     virtual const RemezCoeff_t& getFPFE() const = 0;
@@ -635,6 +645,9 @@ namespace Chroma
 
     //! Return number of roots in used
     virtual int getNthRoot() const = 0;
+
+    //! Return number of roots used in PV
+    virtual int getNthRootPV() const = 0;
 
     //! Return the partial fraction expansion for the force calc
     virtual const RemezCoeff_t& getFPFE() const = 0;

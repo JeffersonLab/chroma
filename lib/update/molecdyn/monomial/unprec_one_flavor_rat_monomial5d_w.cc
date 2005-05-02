@@ -1,4 +1,4 @@
-// $Id: unprec_one_flavor_rat_monomial5d_w.cc,v 1.4 2005-04-18 16:23:24 edwards Exp $
+// $Id: unprec_one_flavor_rat_monomial5d_w.cc,v 1.5 2005-05-02 09:35:58 bjoo Exp $
 /*! @file
  * @brief One-flavor collection of unpreconditioned 5D ferm monomials
  */
@@ -128,8 +128,8 @@ namespace Chroma
     read(inputtop, "upperMax", input.upperMax);
     read(inputtop, "lowerMinPV", input.lowerMinPV);
     read(inputtop, "upperMaxPV", input.upperMaxPV);
-    read(inputtop, "forceDegree", input.forceDegree);
-    read(inputtop, "actionDegree", input.actionDegree);
+    read(inputtop, "degree", input.degree);
+    read(inputtop, "degreePV", input.degreePV);
 
     if (inputtop.count("digitPrecision") != 0)
       read(inputtop, "digitPrecision", input.digitPrecision);
@@ -149,6 +149,8 @@ namespace Chroma
       read(paramtop, "./InvertParam", inv_param);
       read(paramtop, "./Remez", remez);
       read(paramtop, "./nthRoot", nthRoot);
+      read(paramtop, "./nthRootPV", nthRootPV);
+
       XMLReader xml_tmp(paramtop, "./FermionAction");
       std::ostringstream os;
       xml_tmp.print(os);
@@ -182,6 +184,7 @@ namespace Chroma
   {
     inv_param = param.inv_param;
     nthRoot   = param.nthRoot;
+    nthRootPV = param.nthRoot;
 
     std::istringstream is(param.ferm_act);
     XMLReader fermact_reader(is);
@@ -224,15 +227,15 @@ namespace Chroma
     generateApprox(fpfe, spfe, sipfe,
 		   param.remez.lowerMin, param.remez.upperMax, 
 		   -1, 2*nthRoot, 
-		   param.remez.forceDegree, param.remez.actionDegree,
+		   param.remez.degree, param.remez.degree,
 		   param.remez.digitPrecision);
 
     // PV term
     QDPIO::cout << "PV operator PFE" << endl;
     generateApprox(fpvpfe, spvpfe, sipvpfe,
 		   param.remez.lowerMinPV, param.remez.upperMaxPV, 
-		   1, 2*nthRoot,
-		   param.remez.forceDegree, param.remez.actionDegree,
+		   1, 2*nthRootPV,
+		   param.remez.degreePV, param.remez.degreePV,
 		   param.remez.digitPrecision);
     //*********************************************************************
 

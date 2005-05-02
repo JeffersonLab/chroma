@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_one_flavor_rat_monomial5d_w.h,v 1.5 2005-04-18 16:23:23 edwards Exp $
+// $Id: prec_one_flavor_rat_monomial5d_w.h,v 1.6 2005-05-02 09:35:58 bjoo Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 5D ferm monomials
  */
@@ -31,6 +31,7 @@ namespace Chroma
     InvertParam_t   inv_param; // Inverter Parameters
     std::string     ferm_act;
     int             nthRoot;  // Use "n" copies of nth-root 1-flavor
+    int             nthRootPV; // Use "n" copies of nth-root 1 flavor PV
 
     struct Remez_t   // eigenvalue bounds of M^dag*M
     {
@@ -38,9 +39,11 @@ namespace Chroma
       Real upperMax;
       Real lowerMinPV;
       Real upperMaxPV;
-      int  forceDegree;
-      int  actionDegree;
-      int  digitPrecision;
+
+      int  degree;
+      int  degreePV;
+      
+      int digitPrecision;
     } remez;
   };
 
@@ -66,7 +69,7 @@ namespace Chroma
 						   const EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5DParams& param_);
 
       // Copy Constructor
-      EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5D(const EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5D& m) : phi(m.phi), fermact(m.fermact), inv_param(m.inv_param), nthRoot(m.nthRoot) {}
+      EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5D(const EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5D& m) : phi(m.phi), fermact(m.fermact), inv_param(m.inv_param), nthRoot(m.nthRoot), nthRootPV(m.nthRootPV) {}
 
       //! Even even contribution (eg ln det Clover)
       Double S_even_even(const AbsFieldState<multi1d<LatticeColorMatrix>,
@@ -95,6 +98,8 @@ namespace Chroma
 
       //! Return number of roots in used
       int getNthRoot() const {return nthRoot;}
+
+      int getNthRootPV() const { return nthRootPV; }
 
       //! Return the partial fraction expansion for the action calc
       const RemezCoeff_t& getSPFE() const {return spfe;}
@@ -149,6 +154,9 @@ namespace Chroma
 
       // Number of nth-roots
       int nthRoot;
+
+      // Number of PV nth-roots
+      int nthRootPV;
 
       //! Return the partial fraction expansion for the force calc
       const RemezCoeff_t& getFPFE() const {return fpfe;}

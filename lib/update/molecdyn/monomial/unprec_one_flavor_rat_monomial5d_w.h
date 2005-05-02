@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_one_flavor_rat_monomial5d_w.h,v 1.4 2005-04-18 16:23:24 edwards Exp $
+// $Id: unprec_one_flavor_rat_monomial5d_w.h,v 1.5 2005-05-02 09:35:58 bjoo Exp $
 /*! @file
  * @brief One-flavor collection of unpreconditioned 5D ferm monomials
  */
@@ -31,6 +31,7 @@ namespace Chroma
     InvertParam_t   inv_param; // Inverter Parameters
     std::string     ferm_act;
     int             nthRoot;  // Use "n" copies of nth-root 1-flavor
+    int             nthRootPV; // Use "n" copies of nth-root 1-flavour
 
     struct Remez_t   // eigenvalue bounds of M^dag*M
     {
@@ -38,8 +39,8 @@ namespace Chroma
       Real upperMax;
       Real lowerMinPV;
       Real upperMaxPV;
-      int  forceDegree;
-      int  actionDegree;
+      int  degree;
+      int  degreePV;
       int  digitPrecision;
     } remez;
   };
@@ -67,7 +68,7 @@ namespace Chroma
 						 const UnprecOneFlavorWilsonTypeFermRatMonomial5DParams& param_);
 
       // Copy Constructor
-      UnprecOneFlavorWilsonTypeFermRatMonomial5D(const UnprecOneFlavorWilsonTypeFermRatMonomial5D& m) : phi(m.phi), fermact(m.fermact), inv_param(m.inv_param), nthRoot(m.nthRoot) {}
+      UnprecOneFlavorWilsonTypeFermRatMonomial5D(const UnprecOneFlavorWilsonTypeFermRatMonomial5D& m) : phi(m.phi), fermact(m.fermact), inv_param(m.inv_param), nthRoot(m.nthRoot), nthRootPV(m.nthRootPV) {}
 
 
     protected:
@@ -90,6 +91,9 @@ namespace Chroma
 
       //! Return number of roots in used
       int getNthRoot() const {return nthRoot;}
+      
+      //! Return number of roots used in PV
+      int getNthRootPV() const { return nthRootPV; }
 
       //! Return the partial fraction expansion for the force calc
       const RemezCoeff_t& getFPFE() const {return fpfe;}
@@ -146,6 +150,9 @@ namespace Chroma
 
       // Number of nth-roots
       int nthRoot;
+
+      // Number of nth-roots in PV
+      int nthRootPV;
 
       // Coefficients and roots of partial fractions
       RemezCoeff_t  fpfe;
