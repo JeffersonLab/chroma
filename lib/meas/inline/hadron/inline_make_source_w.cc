@@ -1,4 +1,4 @@
-// $Id: inline_make_source_w.cc,v 1.2 2005-04-10 17:06:22 edwards Exp $
+// $Id: inline_make_source_w.cc,v 1.3 2005-05-04 17:10:54 osborn Exp $
 /*! \file
  * \brief Inline construction of make_source
  *
@@ -134,6 +134,12 @@ namespace Chroma
 		  << "Displacement length= " << params.param.disp_length
 		  <<": Displacement direction= " << params.param.disp_dir << endl;
       break;
+    case SRC_TYPE_RAND_Z2_WALL_SOURCE:
+      QDPIO::cout << "Random complex Z(2) wall source" << endl;
+      break;
+    case SRC_TYPE_RAND_U1_WALL_SOURCE:
+      QDPIO::cout << "Random U(1) wall source" << endl;
+      break;
     default:
       QDPIO::cout << "Unknown source_type" << endl;
       QDP_abort(1);
@@ -200,15 +206,70 @@ namespace Chroma
       //
     case SRC_TYPE_POINT_SOURCE:
     case SRC_TYPE_SHELL_SOURCE:
+    case SRC_TYPE_RAND_Z2_WALL_SOURCE:
+    case SRC_TYPE_RAND_U1_WALL_SOURCE:
     {
+      multi1d<LatticeColorVector> tmp_color_vec(Nc);
+
+      if(params.param.source_type == SRC_TYPE_RAND_Z2_WALL_SOURCE) {
+	//multi1d<int> crd(Nd); crd = 0;
+	LatticeComplex z;
+	LatticeReal r1, r2;
+	gaussian(r1);
+	//cout << peekSite(r1,crd) << endl;
+	r1 /= sqrt(2.)*fabs(r1);
+	//cout << peekSite(r1,crd) << endl;
+	gaussian(r2);
+	//cout << peekSite(r2,crd) << endl;
+	r2 /= sqrt(2.)*fabs(r2);
+	//cout << peekSite(r2,crd) << endl;
+	//z = r1;
+	//cout << peekSite(z,crd) << endl;
+	//z += timesI(r2); 
+	//cout << peekSite(z,crd) << endl;
+	z = cmplx(r1,0) + timesI(r2); // cmplx used to avoid bug in older qdp++
+	//cout << peekSite(z,crd) << endl;
+	//r1 = sqrt(localNorm2(z));
+	//cout << peekSite(r1,crd) << endl;
+	for(int i=0; i<Nc; i++) {
+	  tmp_color_vec[i] = zero;
+	  pokeColor(tmp_color_vec[i], z, i);
+	}
+      } else if(params.param.source_type == SRC_TYPE_RAND_U1_WALL_SOURCE) {
+	//multi1d<int> crd(Nd); crd = 0;
+	LatticeComplex z;
+	LatticeReal r;
+	gaussian(z);
+	//cout << peekSite(z,crd) << endl;
+	r = sqrt(localNorm2(z));
+	//cout << peekSite(r,crd) << endl;
+	z /= r;
+	//cout << peekSite(z,crd) << endl;
+	//r = sqrt(localNorm2(z));
+	//cout << peekSite(r,crd) << endl;
+	for(int i=0; i<Nc; i++) {
+	  tmp_color_vec[i] = zero;
+	  pokeColor(tmp_color_vec[i], z, i);
+	}
+      }
+
       for(int color_source = 0; color_source < Nc; ++color_source)
       {
 	QDPIO::cout << "color = " << color_source << endl; 
 
 	LatticeColorVector src_color_vec = zero;
 
-	// Make a point source at coordinates t_source
-	srcfil(src_color_vec, params.param.t_source, color_source);
+	if( (params.param.source_type == SRC_TYPE_RAND_Z2_WALL_SOURCE) ||
+	    (params.param.source_type == SRC_TYPE_RAND_U1_WALL_SOURCE) ) {
+	  int mu = params.param.j_decay;
+	  int slice = params.param.t_source[params.param.j_decay];
+	  src_color_vec = where( Layout::latticeCoordinate(mu) == slice,
+				 tmp_color_vec[color_source],
+				 LatticeColorVector(zero));
+	} else {
+	  // Make a point source at coordinates t_source
+	  srcfil(src_color_vec, params.param.t_source, color_source);
+	}
 
 	// Smear the colour source if specified
 	if(params.param.source_type == SRC_TYPE_SHELL_SOURCE)
@@ -275,7 +336,7 @@ namespace Chroma
       }
     }
     break;
-  
+
     default:
       QDPIO::cout << "Unsupported source type" << endl;
       QDP_abort(1);

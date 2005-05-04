@@ -22,6 +22,10 @@ namespace Chroma {
 
       success &=theSourceTypeMap::Instance().registerPair(string("BNDST_SOURCE" ), 
 							  SRC_TYPE_BNDST_SOURCE);
+      success &=theSourceTypeMap::Instance().registerPair(string("RAND_Z2_WALL_SOURCE" ), 
+							  SRC_TYPE_RAND_Z2_WALL_SOURCE);
+      success &=theSourceTypeMap::Instance().registerPair(string("RAND_U1_WALL_SOURCE" ), 
+							  SRC_TYPE_RAND_U1_WALL_SOURCE);
 
       return success;
     }
