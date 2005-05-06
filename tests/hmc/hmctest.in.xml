@@ -18,7 +18,7 @@
     <NProductionUpdates>20</NProductionUpdates>
     <NUpdatesThisRun>1</NUpdatesThisRun>
     <SaveInterval>2</SaveInterval>
-    <SavePrefix>/host/bj/RHMCTest/iw_b2p2_dwf_Nf3_m0p04_ls8</SavePrefix>
+    <SavePrefix>/host/edwards/RHMCTest/iw_b2p2_dwf_Nf3_m0p04_ls8</SavePrefix>
     <SaveVolfmt>SINGLEFILE</SaveVolfmt>
 
     <InlineMeasurements>
