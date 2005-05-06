@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hadron.h,v 1.4 2005-04-15 11:22:25 edwards Exp $
+// $Id: hadron.h,v 1.5 2005-05-06 22:28:58 kostas Exp $
 
 /*! \file
  * \brief Inline measurements for hadron observables
@@ -22,6 +22,7 @@
 #include "inline_propagator_w.h"
 #include "inline_seqsource_w.h"
 #include "inline_spectrum_w.h"
+#include "inline_spectrumOct_w.h"
 #include "inline_sink_smear_w.h"
 #include "inline_qqq_w.h"
 #include "inline_bar3ptfn_w.h"
