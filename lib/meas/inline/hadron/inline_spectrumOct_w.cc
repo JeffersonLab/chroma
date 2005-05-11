@@ -1,4 +1,4 @@
-// $Id: inline_spectrumOct_w.cc,v 1.2 2005-05-11 17:27:58 kostas Exp $
+// $Id: inline_spectrumOct_w.cc,v 1.3 2005-05-11 22:18:38 kostas Exp $
 /*! \file
  * \brief Inline construction of Octet spectrum
  *
@@ -340,6 +340,7 @@ namespace Chroma
 	  QDPIO::cerr << "Neither Mass nor Kappa found" << endl;
 	  throw std::string("Neither Mass nor Kappa found");
 	}
+	bc[loop] = getFermActBoundary(prop_header[loop].fermact);
       }
       catch (const string& e) 
       {
