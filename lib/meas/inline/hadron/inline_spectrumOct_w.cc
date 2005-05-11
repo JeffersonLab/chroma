@@ -1,4 +1,4 @@
-// $Id: inline_spectrumOct_w.cc,v 1.1 2005-05-06 21:42:56 kostas Exp $
+// $Id: inline_spectrumOct_w.cc,v 1.2 2005-05-11 17:27:58 kostas Exp $
 /*! \file
  * \brief Inline construction of Octet spectrum
  *
@@ -260,7 +260,9 @@ namespace Chroma
     MesPlq(xml_out, "Observables", u);
 
     // Keep an array of all the xml output buffers
-    XMLArrayWriter xml_array(xml_out,params.prop.prop_files.size());
+    // XMLArrayWriter xml_array(xml_out,params.prop.prop_files.size());
+    // This spectrum code does only one measurement using two propagators
+    XMLArrayWriter xml_array(xml_out,1); 
     push(xml_array, "Wilson_hadron_measurements");
 
 
@@ -346,7 +348,7 @@ namespace Chroma
       }
     
       QDPIO::cout << "FermAct = " << fermact << endl;
-      QDPIO::cout << "Mass = " << Mass[loop];
+      QDPIO::cout << "Mass = " << Mass[loop] << endl;
     }
     // Derived from input prop
     int j_decay = source_header[0].j_decay;
