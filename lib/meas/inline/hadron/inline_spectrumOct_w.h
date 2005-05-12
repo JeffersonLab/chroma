@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_spectrumOct_w.h,v 1.1 2005-05-06 21:42:56 kostas Exp $
+// $Id: inline_spectrumOct_w.h,v 1.2 2005-05-12 03:11:11 kostas Exp $
 /*! \file
  * \brief Inline heavy light spectrum calculations
  *
@@ -56,7 +56,6 @@ namespace Chroma
       multi1d<int> wvfIntPar;  // Array of iter numbers to approx. Gaussian or
       //   terminate CG inversion for Wuppertal smearing
 
-      multi1d<int> nrow;
     } param;
 
     struct Prop_t

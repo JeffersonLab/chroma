@@ -1,4 +1,4 @@
-// $Id: inline_spectrumOct_w.cc,v 1.3 2005-05-11 22:18:38 kostas Exp $
+// $Id: inline_spectrumOct_w.cc,v 1.4 2005-05-12 03:11:11 kostas Exp $
 /*! \file
  * \brief Inline construction of Octet spectrum
  *
@@ -85,7 +85,6 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    read(paramtop, "nrow", param.nrow);
   }
 
 
@@ -113,8 +112,6 @@ namespace Chroma
     write(xml, "wvf_kind", param.wvf_kind);
     write(xml, "wvf_param", param.wvf_param);
     write(xml, "wvfIntPar", param.wvfIntPar);
-
-    write(xml, "nrow", param.nrow);
 
     pop(xml);
   }
@@ -237,12 +234,12 @@ namespace Chroma
 
     QDPIO::cout << endl << "     Gauge group: SU(" << Nc << ")" << endl;
 
-    QDPIO::cout << "     volume: " << params.param.nrow[0];
+    QDPIO::cout << "     volume: " << Layout::lattSize()[0];
     for (int i=1; i<Nd; ++i) {
-      QDPIO::cout << " x " << params.param.nrow[i];
+      QDPIO::cout << " x " << Layout::lattSize()[i];
     }
     QDPIO::cout << endl;
-
+    
     proginfo(xml_out);    // Print out basic program info
 
     // Write out the input
