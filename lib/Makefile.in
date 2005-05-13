@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.354 2005-05-12 00:07:28 kostas Exp $
+# $Id: Makefile.in,v 1.355 2005-05-13 12:49:49 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -288,6 +288,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/glue/inline_plaquette.cc \
 	meas/inline/glue/inline_polylp.cc \
 	meas/inline/glue/inline_wilslp.cc \
+	meas/inline/glue/inline_fuzwilp.cc \
 	meas/inline/hadron/inline_hadron_aggregate.cc \
 	meas/inline/hadron/inline_make_source_w.cc \
 	meas/inline/hadron/inline_propagator_w.cc \
@@ -481,7 +482,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	make_xml_file.$(OBJEXT) inline_eig_aggregate.$(OBJEXT) \
 	inline_eigbnds.$(OBJEXT) inline_glue_aggregate.$(OBJEXT) \
 	inline_plaquette.$(OBJEXT) inline_polylp.$(OBJEXT) \
-	inline_wilslp.$(OBJEXT) inline_hadron_aggregate.$(OBJEXT) \
+	inline_wilslp.$(OBJEXT) inline_fuzwilp.$(OBJEXT) \
+	inline_hadron_aggregate.$(OBJEXT) \
 	inline_make_source_w.$(OBJEXT) inline_propagator_w.$(OBJEXT) \
 	inline_seqsource_w.$(OBJEXT) inline_spectrum_w.$(OBJEXT) \
 	inline_spectrumOct_w.$(OBJEXT) inline_sink_smear_w.$(OBJEXT) \
@@ -790,7 +792,8 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/inline/glue/inline_glue_aggregate.h \
 	meas/inline/glue/inline_plaquette.h \
 	meas/inline/glue/inline_polylp.h \
-	meas/inline/glue/inline_wilslp.h meas/inline/hadron/hadron.h \
+	meas/inline/glue/inline_wilslp.h \
+	meas/inline/glue/inline_fuzwilp.h meas/inline/hadron/hadron.h \
 	meas/inline/hadron/inline_hadron_aggregate.h \
 	meas/inline/hadron/inline_make_source_w.h \
 	meas/inline/hadron/inline_propagator_w.h \
@@ -1219,7 +1222,8 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/glue/inline_glue_aggregate.h \
 	meas/inline/glue/inline_plaquette.h \
 	meas/inline/glue/inline_polylp.h \
-	meas/inline/glue/inline_wilslp.h meas/inline/hadron/hadron.h \
+	meas/inline/glue/inline_wilslp.h \
+	meas/inline/glue/inline_fuzwilp.h meas/inline/hadron/hadron.h \
 	meas/inline/hadron/inline_hadron_aggregate.h \
 	meas/inline/hadron/inline_make_source_w.h \
 	meas/inline/hadron/inline_propagator_w.h \
@@ -1478,6 +1482,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/glue/inline_plaquette.cc \
 	meas/inline/glue/inline_polylp.cc \
 	meas/inline/glue/inline_wilslp.cc \
+	meas/inline/glue/inline_fuzwilp.cc \
 	meas/inline/hadron/inline_hadron_aggregate.cc \
 	meas/inline/hadron/inline_make_source_w.cc \
 	meas/inline/hadron/inline_propagator_w.cc \
@@ -1690,6 +1695,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_building_blocks_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_eig_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_eigbnds.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_fuzwilp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_glue_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_hadron_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_hyp_smear.Po@am__quote@
@@ -5576,6 +5582,20 @@ inline_wilslp.obj: meas/inline/glue/inline_wilslp.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/glue/inline_wilslp.cc' object='inline_wilslp.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_wilslp.obj `if test -f 'meas/inline/glue/inline_wilslp.cc'; then $(CYGPATH_W) 'meas/inline/glue/inline_wilslp.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/glue/inline_wilslp.cc'; fi`
+
+inline_fuzwilp.o: meas/inline/glue/inline_fuzwilp.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_fuzwilp.o -MD -MP -MF "$(DEPDIR)/inline_fuzwilp.Tpo" -c -o inline_fuzwilp.o `test -f 'meas/inline/glue/inline_fuzwilp.cc' || echo '$(srcdir)/'`meas/inline/glue/inline_fuzwilp.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_fuzwilp.Tpo" "$(DEPDIR)/inline_fuzwilp.Po"; else rm -f "$(DEPDIR)/inline_fuzwilp.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/glue/inline_fuzwilp.cc' object='inline_fuzwilp.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_fuzwilp.o `test -f 'meas/inline/glue/inline_fuzwilp.cc' || echo '$(srcdir)/'`meas/inline/glue/inline_fuzwilp.cc
+
+inline_fuzwilp.obj: meas/inline/glue/inline_fuzwilp.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_fuzwilp.obj -MD -MP -MF "$(DEPDIR)/inline_fuzwilp.Tpo" -c -o inline_fuzwilp.obj `if test -f 'meas/inline/glue/inline_fuzwilp.cc'; then $(CYGPATH_W) 'meas/inline/glue/inline_fuzwilp.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/glue/inline_fuzwilp.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_fuzwilp.Tpo" "$(DEPDIR)/inline_fuzwilp.Po"; else rm -f "$(DEPDIR)/inline_fuzwilp.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/glue/inline_fuzwilp.cc' object='inline_fuzwilp.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_fuzwilp.obj `if test -f 'meas/inline/glue/inline_fuzwilp.cc'; then $(CYGPATH_W) 'meas/inline/glue/inline_fuzwilp.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/glue/inline_fuzwilp.cc'; fi`
 
 inline_hadron_aggregate.o: meas/inline/hadron/inline_hadron_aggregate.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_hadron_aggregate.o -MD -MP -MF "$(DEPDIR)/inline_hadron_aggregate.Tpo" -c -o inline_hadron_aggregate.o `test -f 'meas/inline/hadron/inline_hadron_aggregate.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_hadron_aggregate.cc; \

@@ -1,4 +1,4 @@
-// $Id: inline_glue_aggregate.cc,v 1.2 2005-02-10 15:50:47 edwards Exp $
+// $Id: inline_glue_aggregate.cc,v 1.3 2005-05-13 12:49:50 bjoo Exp $
 /*! \file
  *  \brief Inline glue measurement aggregator
  */
@@ -7,6 +7,7 @@
 #include "meas/inline/glue/inline_plaquette.h"
 #include "meas/inline/glue/inline_polylp.h"
 #include "meas/inline/glue/inline_wilslp.h"
+#include "meas/inline/glue/inline_fuzwilp.h"
 
 namespace Chroma
 {
@@ -20,6 +21,8 @@ namespace Chroma
       success &= InlinePlaquetteEnv::registered;
       success &= InlinePolyakovLoopEnv::registered;
       success &= InlineWilsonLoopEnv::registered;
+      success &= InlineFuzzedWilsonLoopEnv::registered;
+
       return success;
     }
 
