@@ -104,13 +104,13 @@ namespace Chroma
 
 	// If index is not bogus, check it has not been used already
 	// ie only insert it if exclusivity_check[i] is false
-	if( exclusivity_check[i] == true ) { 
+	if( exclusivity_check[S_short_monomials[i]] == true ) { 
 	  QDPIO::cerr << "Exclusivity check failed. Monomial " << i << " is listed more than once in list of short monomials" << endl;
 	  QDP_abort(1);
 	}
 	else { 
 	  // Its not there yet, so insert it
-	  exclusivity_check[i] = true;
+	  exclusivity_check[S_short_monomials[i]] = true;
 	}
       }
 
@@ -125,12 +125,12 @@ namespace Chroma
 	// Check it hasn't been used already -- if it has it is either
 	// a duplicate in long monomials, or has been used in the short
 	// monomials 
-	if( exclusivity_check[i] == true ) { 
+	if( exclusivity_check[S_long_monomials[i]] == true ) { 
 	  QDPIO::cerr << "Exclusivity check failed. Monomial " << i << " is listed more than once in list of long monomials or is duplicated between short and long monomials" << endl;
 	  QDP_abort(1);
 	}
 	else { 
-	  exclusivity_check[i] = true;
+	  exclusivity_check[S_long_monomials[i]] = true;
 	}
       }
 
