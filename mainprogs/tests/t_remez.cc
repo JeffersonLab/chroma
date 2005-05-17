@@ -1,4 +1,4 @@
-// $Id: t_remez.cc,v 1.3 2005-05-17 11:14:14 bjoo Exp $
+// $Id: t_remez.cc,v 1.4 2005-05-17 13:15:16 bjoo Exp $
 /*! \file
  *  \brief Test the Remez code
  */
@@ -24,12 +24,12 @@ int main(int argc, char *argv[])
 
   proginfo(xml_out);  // basic program info
 
-  Real lower = 8.0e-5;
-  Real upper = 2.4;
-  long prec = 50;
-  int degree = 10;
+  Real lower = Real(1.0e-4);
+  Real upper = 1.6;
+  long prec = 80;
+  int degree = 14;
   unsigned long power_num = 1;
-  unsigned long power_den = 2;
+  unsigned long power_den = 4;
 
   Remez  remez(lower, upper, prec);
 
