@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.266 2005-05-13 12:49:49 bjoo Exp $
+# $Id: Makefile.am,v 1.267 2005-05-17 11:14:13 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -144,6 +144,7 @@ nobase_include_HEADERS = \
 	update/molecdyn/integrator/abs_integrator.h \
 	update/molecdyn/integrator/md_integrator_factory.h \
 	update/molecdyn/integrator/lcm_pqp_leapfrog.h \
+	update/molecdyn/integrator/lcm_sexton_weingarten.h \
 	update/molecdyn/hmc/hmc.h\
 	update/molecdyn/hmc/abs_hmc.h \
 	update/molecdyn/hmc/lcm_hmc.h \
@@ -483,6 +484,7 @@ libchroma_a_SOURCES = \
 	update/molecdyn/monomial/gauge_monomial.cc \
 	update/molecdyn/monomial/genapprox.cc \
 	update/molecdyn/integrator/lcm_pqp_leapfrog.cc \
+	update/molecdyn/integrator/lcm_sexton_weingarten.cc \
 	update/molecdyn/hmc/global_metropolis_accrej.cc \
 	update/molecdyn/predictor/predictor_aggregate.cc \
 	update/molecdyn/predictor/zero_guess_predictor.cc \

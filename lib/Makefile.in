@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.355 2005-05-13 12:49:49 bjoo Exp $
+# $Id: Makefile.in,v 1.356 2005-05-17 11:14:13 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -181,6 +181,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/monomial/gauge_monomial.cc \
 	update/molecdyn/monomial/genapprox.cc \
 	update/molecdyn/integrator/lcm_pqp_leapfrog.cc \
+	update/molecdyn/integrator/lcm_sexton_weingarten.cc \
 	update/molecdyn/hmc/global_metropolis_accrej.cc \
 	update/molecdyn/predictor/predictor_aggregate.cc \
 	update/molecdyn/predictor/zero_guess_predictor.cc \
@@ -395,6 +396,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	taproj.$(OBJEXT) unit_check.$(OBJEXT) printgeom.$(OBJEXT) \
 	proginfo.$(OBJEXT) gauge_monomial.$(OBJEXT) \
 	genapprox.$(OBJEXT) lcm_pqp_leapfrog.$(OBJEXT) \
+	lcm_sexton_weingarten.$(OBJEXT) \
 	global_metropolis_accrej.$(OBJEXT) \
 	predictor_aggregate.$(OBJEXT) zero_guess_predictor.$(OBJEXT) \
 	last_solution_predictor.$(OBJEXT) \
@@ -627,6 +629,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	update/molecdyn/integrator/abs_integrator.h \
 	update/molecdyn/integrator/md_integrator_factory.h \
 	update/molecdyn/integrator/lcm_pqp_leapfrog.h \
+	update/molecdyn/integrator/lcm_sexton_weingarten.h \
 	update/molecdyn/hmc/hmc.h update/molecdyn/hmc/abs_hmc.h \
 	update/molecdyn/hmc/lcm_hmc.h \
 	update/molecdyn/hmc/global_metropolis_accrej.h \
@@ -1057,6 +1060,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	update/molecdyn/integrator/abs_integrator.h \
 	update/molecdyn/integrator/md_integrator_factory.h \
 	update/molecdyn/integrator/lcm_pqp_leapfrog.h \
+	update/molecdyn/integrator/lcm_sexton_weingarten.h \
 	update/molecdyn/hmc/hmc.h update/molecdyn/hmc/abs_hmc.h \
 	update/molecdyn/hmc/lcm_hmc.h \
 	update/molecdyn/hmc/global_metropolis_accrej.h \
@@ -1376,6 +1380,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/monomial/gauge_monomial.cc \
 	update/molecdyn/monomial/genapprox.cc \
 	update/molecdyn/integrator/lcm_pqp_leapfrog.cc \
+	update/molecdyn/integrator/lcm_sexton_weingarten.cc \
 	update/molecdyn/hmc/global_metropolis_accrej.cc \
 	update/molecdyn/predictor/predictor_aggregate.cc \
 	update/molecdyn/predictor/zero_guess_predictor.cc \
@@ -1738,6 +1743,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/laplacian.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/last_solution_predictor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_pqp_leapfrog.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_sexton_weingarten.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lg5eps_double_pass_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lg5eps_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/linear_extrap_predictor.Po@am__quote@
@@ -3832,6 +3838,20 @@ lcm_pqp_leapfrog.obj: update/molecdyn/integrator/lcm_pqp_leapfrog.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/integrator/lcm_pqp_leapfrog.cc' object='lcm_pqp_leapfrog.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lcm_pqp_leapfrog.obj `if test -f 'update/molecdyn/integrator/lcm_pqp_leapfrog.cc'; then $(CYGPATH_W) 'update/molecdyn/integrator/lcm_pqp_leapfrog.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/integrator/lcm_pqp_leapfrog.cc'; fi`
+
+lcm_sexton_weingarten.o: update/molecdyn/integrator/lcm_sexton_weingarten.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lcm_sexton_weingarten.o -MD -MP -MF "$(DEPDIR)/lcm_sexton_weingarten.Tpo" -c -o lcm_sexton_weingarten.o `test -f 'update/molecdyn/integrator/lcm_sexton_weingarten.cc' || echo '$(srcdir)/'`update/molecdyn/integrator/lcm_sexton_weingarten.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/lcm_sexton_weingarten.Tpo" "$(DEPDIR)/lcm_sexton_weingarten.Po"; else rm -f "$(DEPDIR)/lcm_sexton_weingarten.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/integrator/lcm_sexton_weingarten.cc' object='lcm_sexton_weingarten.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lcm_sexton_weingarten.o `test -f 'update/molecdyn/integrator/lcm_sexton_weingarten.cc' || echo '$(srcdir)/'`update/molecdyn/integrator/lcm_sexton_weingarten.cc
+
+lcm_sexton_weingarten.obj: update/molecdyn/integrator/lcm_sexton_weingarten.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lcm_sexton_weingarten.obj -MD -MP -MF "$(DEPDIR)/lcm_sexton_weingarten.Tpo" -c -o lcm_sexton_weingarten.obj `if test -f 'update/molecdyn/integrator/lcm_sexton_weingarten.cc'; then $(CYGPATH_W) 'update/molecdyn/integrator/lcm_sexton_weingarten.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/integrator/lcm_sexton_weingarten.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/lcm_sexton_weingarten.Tpo" "$(DEPDIR)/lcm_sexton_weingarten.Po"; else rm -f "$(DEPDIR)/lcm_sexton_weingarten.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/integrator/lcm_sexton_weingarten.cc' object='lcm_sexton_weingarten.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lcm_sexton_weingarten.obj `if test -f 'update/molecdyn/integrator/lcm_sexton_weingarten.cc'; then $(CYGPATH_W) 'update/molecdyn/integrator/lcm_sexton_weingarten.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/integrator/lcm_sexton_weingarten.cc'; fi`
 
 global_metropolis_accrej.o: update/molecdyn/hmc/global_metropolis_accrej.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT global_metropolis_accrej.o -MD -MP -MF "$(DEPDIR)/global_metropolis_accrej.Tpo" -c -o global_metropolis_accrej.o `test -f 'update/molecdyn/hmc/global_metropolis_accrej.cc' || echo '$(srcdir)/'`update/molecdyn/hmc/global_metropolis_accrej.cc; \

@@ -1,4 +1,4 @@
-// $Id: t_remez.cc,v 1.2 2005-03-02 00:44:19 edwards Exp $
+// $Id: t_remez.cc,v 1.3 2005-05-17 11:14:14 bjoo Exp $
 /*! \file
  *  \brief Test the Remez code
  */
@@ -24,9 +24,9 @@ int main(int argc, char *argv[])
 
   proginfo(xml_out);  // basic program info
 
-  Real lower = 1.0e-3;
-  Real upper = 1.0;
-  long prec = 40;
+  Real lower = 8.0e-5;
+  Real upper = 2.4;
+  long prec = 50;
   int degree = 10;
   unsigned long power_num = 1;
   unsigned long power_den = 2;
