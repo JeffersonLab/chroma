@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_hamiltonian.h,v 1.5 2005-04-10 22:05:03 edwards Exp $
+// $Id: abs_hamiltonian.h,v 1.6 2005-05-17 11:13:12 bjoo Exp $
 /*! \file
  * \brief Abstract Hamiltonian
  *
@@ -65,6 +65,40 @@ namespace Chroma
       pop(xml_out); // pop("ForcesByMonomial"
       pop(xml_out); // pop("AbsHamiltonianForce");
     }
+
+    virtual void dsdq(P& F, 
+		      const AbsFieldState<P,Q>& s, 
+		      const multi1d<int>& monomial_list) const {
+      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      // Self description rule
+      push(xml_out, "AbsHamiltonianForce");
+
+
+      int num_terms = monomial_list.size();
+      write(xml_out, "num_terms", num_terms);
+
+      // Caller writes elem rule
+      push(xml_out, "ForcesByMonomial");
+
+      if( num_terms > 0 ) {
+	push(xml_out, "elem");
+	write(xml_out, "monomial", monomial_list[0]);
+
+	getMonomial(monomial_list[0]).dsdq(F, s);
+	pop(xml_out);
+
+	for(int i=1; i < num_terms; i++) { 
+	  push(xml_out, "elem");
+	  write(xml_out, "monomial", monomial_list[i]);
+	  P cur_F;
+	  getMonomial(monomial_list[i]).dsdq(cur_F, s);
+	  F += cur_F;
+	  pop(xml_out);
+	}
+      }
+      pop(xml_out); // pop("ForcesByMonomial"
+      pop(xml_out); // pop("AbsHamiltonianForce");
+    }
     
     //! Refresh pseudofermsions (if any)
     virtual void refreshInternalFields(const AbsFieldState<P,Q>& s) {
@@ -98,13 +132,14 @@ namespace Chroma
       }
     }
 
+    //! Get the number of monomials.
+    virtual int numMonomials(void) const =0;
+
   protected:
     
     //! Get hold of monomial with index i
     virtual Monomial<P,Q>& getMonomial(int i) const = 0;
     
-    //! Get the number of monomials.
-    virtual int numMonomials(void) const =0;
     
     
   };
@@ -158,6 +193,40 @@ namespace Chroma
       }
       pop(xml_out); // Forces by Monomial
       pop(xml_out);  // ExactAbsHamiltonian
+    }
+
+    virtual void dsdq(P& F, 
+		      const AbsFieldState<P,Q>& s, 
+		      const multi1d<int>& monomial_list) const {
+      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      // Self description rule
+      push(xml_out, "ExactAbsHamiltonianForce");
+
+
+      int num_terms = monomial_list.size();
+      write(xml_out, "num_terms", num_terms);
+
+      // Caller writes elem rule
+      push(xml_out, "ForcesByMonomial");
+
+      if( num_terms > 0 ) {
+	push(xml_out, "elem");
+	write(xml_out, "monomial", monomial_list[0]);
+
+	getMonomial(monomial_list[0]).dsdq(F, s);
+	pop(xml_out);
+
+	for(int i=1; i < num_terms; i++) { 
+	  push(xml_out, "elem");
+	  write(xml_out, "monomial", monomial_list[i]);
+	  P cur_F;
+	  getMonomial(monomial_list[i]).dsdq(cur_F, s);
+	  F += cur_F;
+	  pop(xml_out);
+	}
+      }
+      pop(xml_out); // pop("ForcesByMonomial"
+      pop(xml_out); // pop("AbsHamiltonianForce");
     }
 
 
@@ -227,14 +296,14 @@ namespace Chroma
 	return PE;
       }
     
+    //! Get the number of monomials.
+    virtual int numMonomials(void) const = 0;
     
   protected:
     
     //! Get hold of monomial with index i
     virtual ExactMonomial<P,Q>& getMonomial(int i) const = 0;
     
-    //! Get the number of monomials.
-    virtual int numMonomials(void) const = 0;
     
   };
 
