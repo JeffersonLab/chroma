@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_linop_array_w.cc,v 1.14 2005-03-02 18:32:05 bjoo Exp $
+// $Id: prec_ovlap_contfrac5d_linop_array_w.cc,v 1.15 2005-05-18 15:41:56 bjoo Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned domain-wall linear operator
  */
@@ -73,12 +73,18 @@ namespace Chroma
       }
     */
     // Now the d-s
-    d.resize(N5);
+    multi1d<Real> d(N5);
+    invd.resize(N5);
+
     d[0] = a[0];
+    invd[0] = Real(1)/d[0];
+
     for(int i=1; i < N5; i++) { 
       d[i] = a[i] - (alpha[i-1]*alpha[i-1])/d[i-1];
+      invd[i] = Real(1)/d[i];
     }
-    
+
+
     /*
       for(int i=0; i < N5; i++) { 
       QDPIO::cout << "d["<<i<<"]=" << d[i] << endl;
@@ -91,6 +97,10 @@ namespace Chroma
       u[i] = alpha[i]/d[i];
     }
 
+    off_diag_coeff.resize(N5);
+    for(int i=0; i < N5; i++) { 
+      off_diag_coeff[i] = -Real(0.5)*beta_tilde[i];
+    }
     /*
       for(int i=0; i < N5-1; i++) { 
       QDPIO::cout << "u["<<i<<"] = " << u[i] << endl;
@@ -111,6 +121,9 @@ namespace Chroma
    * \param psi 	  Pseudofermion field     	       (Read)
    * \param isign   Flag ( PLUS | MINUS )   	       (Read)
    * \param cb      checkerboard ( 0 | 1 )               (Read)
+   *
+   *
+   *  Flopcount: N5*6NcNs + (N5-2)*4NcNs = NcNs( 6N5 +4(N5-2) ) = (10N5-8) Nc Ns / cb_site
    */
   void 
   EvenOddPrecOvlapContFrac5DLinOpArray::applyDiag(multi1d<LatticeFermion>& chi, 
@@ -137,21 +150,38 @@ namespace Chroma
     int G5=Ns*Ns-1;
 
     // First 0ne 
-    tmp[rb[cb]] = Gamma(G5)*psi[0];
-    chi[0][rb[cb]] = a[0]*tmp;
+    // Operation: chi[0][rb[cb]] = a[0] G5 psi[0] + alpha[0]*psi[1]
+    //
+    //  Useful flops: 6Nc Ns / site 
+    // tmp[rb[cb]] = Gamma(G5)*psi[0];
+    // chi[0][rb[cb]] = a[0]*tmp;
+    
     if( N5 > 1 ) { 
-      chi[0][rb[cb]] += alpha[0]*psi[1];
+      chi[0][rb[cb]] = alpha[0]*psi[1] + a[0]*(GammaConst<Ns,Ns*Ns-1>()*psi[0]);
+    }
+    else {
+      chi[0][rb[cb]] = a[0]*(GammaConst<Ns,Ns*Ns-1>()*psi[0]);
     }
 
     // All the rest
     for(int i=1; i < N5; i++) { 
 
+      // Operation: 
+      //   N5 - 1 times:
+      //    chi[i]  = alpha[i-1]*psi[i-1] + a[i] Gamma_5 *psi[i]
+      //   N5 - 2 times:
+      //    chi[i] += alpha[i]*psi[i+1];
+      //  Useful flops = (N5-1) * 6NcNs + (N5-2)*4Nc*Ns
+
+      /*
       // B_{i-1} psi_[i-1]
       chi[i][rb[cb]] = alpha[i-1]*psi[i-1];
 
       // A_{i} psi[i] = a_{i} g_5 psi[i]
       tmp[rb[cb]] = Gamma(G5)*psi[i];
       chi[i][rb[cb]] += a[i]*tmp;
+      */
+      chi[i][rb[cb]] = alpha[i-1]*psi[i-1] + a[i]*(GammaConst<Ns,Ns*Ns-1>()*psi[i]);
 
       // When i hits N5-1, we don't have the B_N5-1 term
       if(i < N5-1) {
@@ -172,6 +202,12 @@ namespace Chroma
    * \param psi 	  Pseudofermion field     	       (Read)
    * \param isign   Flag ( PLUS | MINUS )   	       (Read)
    * \param cb      checkerboard ( 0 | 1 )               (Read)
+
+   *
+   * Total flopcount: 2*(N5-1)*4Nc*Ns + N5*2*Nc*Ns
+   *              =   2NcNs( 4*(N5-1) + N5 ) 
+   *              =   2NcNs( 5 N5 - 4 ) per cb_site
+   *              =   (10N5 - 8)NcNs per cb site
    */
   void 
   EvenOddPrecOvlapContFrac5DLinOpArray::applyDiagInv(
@@ -194,24 +230,32 @@ namespace Chroma
     // Solve L y = psi
     y[0][rb[cb]] = psi[0];
 
+    // N5-1 times: y[i][rb[cb]] = psi[i] - u[i-1]*Gamma(G5)*y[i-1]
+    //     Useful flops: (N5 - 1) * 4NcNs/site
+
     for(int i = 1; i < N5; i++) { 
-      tmp[rb[cb]] = Gamma(G5)*y[i-1];
-      y[i][rb[cb]] = psi[i] - u[i-1]*tmp;
+      // tmp[rb[cb]] = Gamma(G5)*y[i-1];
+      // y[i][rb[cb]] = psi[i] - u[i-1]*tmp;
+      y[i][rb[cb]] = psi[i] - u[i-1]*(GammaConst<Ns,Ns*Ns-1>()*y[i-1]);
     } 
 
     // Invert diagonal piece  y <- D^{-1} y
+    // N5 times: y = (1/d_i) gamma_5 y[i] 
+    // Useful flops: N5 * 2NcNs flops / site
     for(int i = 0; i < N5; i++) { 
-      tmp[rb[cb]] = Gamma(G5)*y[i];
-      coeff = Real(1)/d[i];
-      y[i][rb[cb]] = coeff*tmp;
+      // tmp[rb[cb]] = Gamma(G5)*y[i];
+      y[i][rb[cb]] = invd[i]*(GammaConst<Ns,Ns*Ns-1>()*y[i]);
     }
 
     // Backsubstitute U chi = y
     chi[N5-1][rb[cb]] = y[N5-1];
 
+    // N5-1 times: chi[i][rb[cb]] = y[i] - u[i]*Gamma(G5)*chi[i+1]
+    //     Useful flops: (N5 - 1) * 4NcNs/site
     for(int i = N5-2; i >= 0; i--) {
-      tmp = Gamma(G5)*chi[i+1];
-      chi[i][rb[cb]] = y[i] - u[i]*tmp;
+      // tmp[rb[cb]] = Gamma(G5)*chi[i+1]
+      // chi[i][rb[cb]] = y[i] - u[i]*tmp;
+      chi[i][rb[cb]] = y[i] - u[i]*(GammaConst<Ns,Ns*Ns-1>()*chi[i+1]);
     }
 
     //Done! That was not that bad after all....
@@ -225,6 +269,11 @@ namespace Chroma
    * \param psi     source     	                   (Read)
    * \param isign   Flag ( PLUS | MINUS )   	   (Read)
    * \param cb      checkerboard ( 0 | 1 )         (Read)
+   *
+   * Total flopcount: (N5-1)*(Dslash_cb_flops + 2NcNs) per cb_site (isLastZeroP==true)
+   *                   N5*(Dslash_cb_flops+2NcNs) per cb_site      (isLastZeroP==false)
+   *
+   * 
    */
   void EvenOddPrecOvlapContFrac5DLinOpArray::applyOffDiag(
     multi1d<LatticeFermion>& chi, 
@@ -237,36 +286,35 @@ namespace Chroma
     if( chi.size() != N5 ) chi.resize(N5);
 
     LatticeFermion tmp;
-    Real coeff;
+    
     int G5 = Ns*Ns-1;
 
     // Optimisation... do up to the penultimate block...
+
+    // (N5-1)( Dslash + 2NcNs) flops/site
+
     for(int i=0; i < N5-1; i++) { 
       // CB is CB of TARGET
       // gamma_5 Dslash is hermitian so I can ignore isign
 
       // Apply g5 Dslash
       Dslash->apply(tmp, psi[i], PLUS, cb);
-      chi[i][rb[cb]] = Gamma(G5)*tmp;
-
-      // Multiply coefficient
-      coeff = -Real(0.5)*beta_tilde[i];
+  
+      // chi[i][rb[cb]] = Gamma(G5)*tmp;
 
       // Chi_i is now -(1/2) beta_tilde_i Dslash 
-      chi[i][rb[cb]] *= coeff;
+      chi[i][rb[cb]] = off_diag_coeff[i]*(GammaConst<Ns,Ns*Ns-1>()*tmp);
     }
 
  
     // Only do last block if beta_tilde[i] is not zero
+    // ( Dslash + 2NcNs) flops per site if done.
     if( !isLastZeroP ) {
       Dslash->apply(tmp, psi[N5-1], PLUS, cb);
-      chi[N5-1][rb[cb]] = Gamma(G5)*tmp;
-
-      // Multiply coefficient
-      coeff = -Real(0.5)*beta_tilde[N5-1];
+      // chi[N5-1][rb[cb]] = Gamma(G5)*tmp;
 
       // Chi_i is now -(1/2) beta_tilde_i Dslash 
-      chi[N5-1][rb[cb]] *= coeff;
+      chi[N5-1][rb[cb]] = off_diag_coeff[N5-1]*(GammaConst<Ns,Ns*Ns-1>()*tmp);
     }
     else { 
       chi[N5-1][rb[cb]] = zero;

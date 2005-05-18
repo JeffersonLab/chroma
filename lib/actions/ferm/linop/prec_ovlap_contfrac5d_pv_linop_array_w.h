@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovlap_contfrac5d_pv_linop_array_w.h,v 1.2 2005-02-12 06:21:25 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_pv_linop_array_w.h,v 1.3 2005-05-18 15:41:56 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Pauli-Villars Continued Fraction 5D
  */
@@ -203,8 +203,9 @@ namespace Chroma
     const bool isLastZeroP;
     multi1d<Real> beta_tilde; // The beta_tilde_i
     multi1d<Real> a;  // The a_i
-    multi1d<Real> d;  // The d_i
+    multi1d<Real> dinv;  // The d_i
     multi1d<Real> u;  // The u_i = l_i
+    multi1d<Real> off_diag_coeff;
   };
 
 }; // End Namespace Chroma

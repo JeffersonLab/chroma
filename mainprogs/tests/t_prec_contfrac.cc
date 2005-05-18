@@ -1,4 +1,4 @@
-// $Id: t_prec_contfrac.cc,v 1.6 2005-03-02 00:44:19 edwards Exp $
+// $Id: t_prec_contfrac.cc,v 1.7 2005-05-18 15:41:56 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -11,9 +11,8 @@ struct App_input_t {
   std::string  stateInfo;
   multi1d<int> nrow;
   multi1d<int> boundary;
- //  UnprecOvlapContFrac5DFermActParams p_unprec;
-  UnprecZoloNEFFermActArrayParams p_unprec;
-  EvenOddPrecZoloNEFFermActArrayParams p_prec;
+  UnprecOvlapContFrac5DFermActParams p_unprec;
+  EvenOddPrecOvlapContFrac5DFermActParams p_prec;
 };
 
 // Reader for input parameters
@@ -26,13 +25,6 @@ void read(XMLReader& xml, const string& path, App_input_t& input)
   {
     // Read in the gauge configuration info
     read(inputtop, "Cfg", input.cfg);
-
-    XMLReader xml_state_info(inputtop, "StateInfo");
-    std::ostringstream os;
-    xml_state_info.print(os);
-    input.stateInfo = os.str();
-    
-    read(inputtop, "boundary", input.boundary);
     read(inputtop, "nrow", input.nrow);
     read(inputtop, "UnprecFermAct", input.p_unprec);
     read(inputtop, "PrecFermAct", input.p_prec);
@@ -78,12 +70,9 @@ int main(int argc, char **argv)
   MesPlq(xml_out, "Observables", u);
   xml_out.flush();
 
-  // Create a FermBC
-  Handle< FermBC< multi1d< LatticeFermion> > >  fbc(new SimpleFermBC< multi1d< LatticeFermion> >(input.boundary));
- 
   // Initialize fermion actions
-  UnprecZoloNEFFermActArray S_unprec(fbc, input.p_unprec);
-  EvenOddPrecZoloNEFFermActArray S_prec(fbc, input.p_prec);
+  UnprecOvlapContFrac5DFermActArray S_unprec(fbc, input.p_unprec);
+  EvenOddPrecOvlapContFrac5DFermActArray S_prec(fbc, input.p_prec);
 
 
   // Create an overlap state

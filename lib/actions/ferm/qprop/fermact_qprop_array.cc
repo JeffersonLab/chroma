@@ -1,4 +1,4 @@
-// $Id: fermact_qprop_array.cc,v 1.13 2005-02-21 19:28:59 edwards Exp $
+// $Id: fermact_qprop_array.cc,v 1.14 2005-05-18 15:41:56 bjoo Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *
@@ -52,7 +52,8 @@ namespace Chroma
       START_CODE();
 
       int n_count;
-  
+      QDPIO::cout << "Inv param type " << invParam.invType << endl;
+
       if (psi.size() != size() && chi.size() != size())
 	QDP_error_exit("FA5DQprop: sizes wrong");
 

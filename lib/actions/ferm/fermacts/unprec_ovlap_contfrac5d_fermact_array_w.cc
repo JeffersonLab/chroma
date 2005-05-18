@@ -1,4 +1,4 @@
-// $Id: unprec_ovlap_contfrac5d_fermact_array_w.cc,v 1.14 2005-02-14 02:05:34 edwards Exp $
+// $Id: unprec_ovlap_contfrac5d_fermact_array_w.cc,v 1.15 2005-05-18 15:41:56 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -591,7 +591,7 @@ namespace Chroma
    * Propagator solver for Extended overlap fermions
    */
   template<typename T>
-  class OvExt5DQprop : public SystemSolver<T>
+  class OvUnprecCF5DQprop : public SystemSolver<T>
   {
   public:
     //! Constructor
@@ -599,13 +599,13 @@ namespace Chroma
      * \param A_        Linear operator ( Read )
      * \param Mass_      quark mass ( Read )
      */
-    OvExt5DQprop(Handle< const LinearOperator< multi1d<T> > > A_,
+    OvUnprecCF5DQprop(Handle< const LinearOperator< multi1d<T> > > A_,
 		 const Real& Mass_,
 		 const InvertParam_t& invParam_) : 
       A(A_), Mass(Mass_), invParam(invParam_) {}
 
     //! Destructor is automatic
-    ~OvExt5DQprop() {}
+    ~OvUnprecCF5DQprop() {}
 
     //! Return the subset on which the operator acts
     const OrderedSubset& subset() const {return all;}
@@ -637,32 +637,31 @@ namespace Chroma
       //  and then applying M^{dag}
 
       // So first get  M^{dag} gamma_5 chi into the source.
-    
       switch(invParam.invType) 
       {
-      case CG_INVERTER: 
-      {
-	multi1d<LatticeFermion> tmp5(N5);
-	
-	// Zero out 5D vectors
-	for(int i=0; i < N5; i++) {
-	  psi5[i] = zero;
-	  chi5[i] = zero;
-	  tmp5[i] = zero;
-	}
-	
-	// Set initial guess
-	psi5[N5-1] = psi;
-	
-	// set up gamma_5 chi into chi-1
-	chi5[N5-1] = Gamma(G5)*chi;
-	(*A)(tmp5, chi5, MINUS);
-	
-	// psi5 = (M^{dag} M)^(-1) M^{dag} * gamma_5 * chi5
-	// psi5[N5]  = (1 - m)/2 D^{-1}(m) chi [N5]
-	InvCG2(*A, tmp5, psi5, invParam.RsdCG, invParam.MaxCG, n_count);
-      }
-      break;
+        case CG_INVERTER: 
+	  {
+	    multi1d<LatticeFermion> tmp5(N5);
+	    
+	    // Zero out 5D vectors
+	    for(int i=0; i < N5; i++) {
+	      psi5[i] = zero;
+	      chi5[i] = zero;
+	      tmp5[i] = zero;
+	    }
+	    
+	    // Set initial guess
+	    psi5[N5-1] = psi;
+	    
+	    // set up gamma_5 chi into chi-1
+	    chi5[N5-1] = Gamma(G5)*chi;
+	    (*A)(tmp5, chi5, MINUS);
+	    
+	    // psi5 = (M^{dag} M)^(-1) M^{dag} * gamma_5 * chi5
+	    // psi5[N5]  = (1 - m)/2 D^{-1}(m) chi [N5]
+	    InvCG2(*A, tmp5, psi5, invParam.RsdCG, invParam.MaxCG, n_count);
+	  }
+	  break;
       
       case MR_INVERTER:
 	QDP_error_exit("Unsupported inverter type", invParam.invType);
@@ -673,7 +672,9 @@ namespace Chroma
 	break;
       
       default:
-	QDP_error_exit("Unknown inverter type", invParam.invType);
+	QDPIO::cerr << "Unknown inverter type : " << invParam.invType << endl << flush;
+	QDP_abort(1);
+	// QDP_error_exit("Unknown inverter type", invParam.invType);
       }
   
       if ( n_count == invParam.MaxCG )
@@ -700,7 +701,7 @@ namespace Chroma
 
   private:
     // Hide default constructor
-    OvExt5DQprop() {}
+    OvUnprecCF5DQprop() {}
 
     Handle< const LinearOperator< multi1d<T> > > A;
     const Real Mass;
@@ -713,7 +714,7 @@ namespace Chroma
   UnprecOvlapContFrac5DFermActArray::qprop(Handle<const ConnectState> state,
 					   const InvertParam_t& invParam) const
   {
-    return new OvExt5DQprop<LatticeFermion>(Handle< const LinearOperator< multi1d<LatticeFermion> > >(linOp(state)),
+    return new OvUnprecCF5DQprop<LatticeFermion>(Handle< const LinearOperator< multi1d<LatticeFermion> > >(linOp(state)),
 					    getQuarkMass(),
 					    invParam);
   }

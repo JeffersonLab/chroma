@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovlap_contfrac5d_linop_array_w.h,v 1.7 2005-01-21 17:44:53 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_linop_array_w.h,v 1.8 2005-05-18 15:41:56 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
  */
@@ -208,10 +208,10 @@ namespace Chroma
     const multi1d<Real> beta;
     const bool isLastZeroP;
     multi1d<Real> beta_tilde; // The beta_tilde_i
-    multi1d<Real> a;  // The a_i
-    multi1d<Real> d;  // The d_i
-    multi1d<Real> u;  // The u_i = l_i
-
+    multi1d<Real> a;      // The a_i
+    multi1d<Real> invd;   // The 1/d_i
+    multi1d<Real> u;      // The u_i = l_i
+    multi1d<Real> off_diag_coeff; // -0.5*beta_tilde[i]
   };
 
 }; // End Namespace Chroma

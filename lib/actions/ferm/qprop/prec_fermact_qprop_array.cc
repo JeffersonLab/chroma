@@ -1,6 +1,9 @@
-// $Id: prec_fermact_qprop_array.cc,v 1.15 2005-03-02 16:27:15 bjoo Exp $
+// $Id: prec_fermact_qprop_array.cc,v 1.16 2005-05-18 15:41:56 bjoo Exp $
 // $Log: prec_fermact_qprop_array.cc,v $
-// Revision 1.15  2005-03-02 16:27:15  bjoo
+// Revision 1.16  2005-05-18 15:41:56  bjoo
+// Speeded up CFZ Op
+//
+// Revision 1.15  2005/03/02 16:27:15  bjoo
 // Removed chi.resize() stuff from LinopArrays
 //
 // Revision 1.14  2005/02/21 19:28:59  edwards
@@ -121,6 +124,7 @@ namespace Chroma
 	chi_tmp[n][rb[1]] = chi[n] - tmp2[n];
     }
 
+    QDPIO::cout << "InvType is " << invParam.invType << endl << flush;
     switch(invParam.invType)
     {
     case CG_INVERTER: 

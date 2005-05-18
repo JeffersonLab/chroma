@@ -1,4 +1,4 @@
-// $Id: t_precact.cc,v 1.18 2005-04-22 13:28:27 bjoo Exp $
+// $Id: t_precact.cc,v 1.19 2005-05-18 15:41:56 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -40,6 +40,8 @@ void check_qprop(XMLWriter& xml_out, const string& prefix,
 
   // Do solution one;
   int n_count1 = PP(sol_prec, source);
+  cout << "QPROP Prec done" << endl << flush ; 
+
   int n_count2 = UP(sol_unprec, source);
 
   LatticeFermion diff = sol_prec - sol_unprec;
@@ -504,8 +506,12 @@ int main(int argc, char **argv)
 
       Handle< const SystemSolver<LatticeFermion> > PP = S_f_eo->qprop(state_eo,
 								      input.param.invParam);
+
+      QDPIO::cout << "Got Preconditioned System Solver" << endl;
+     
       Handle< const SystemSolver<LatticeFermion> > UP = S_f_un->qprop(state_un,
 								      input.param.invParam);
+      QDPIO::cout << "Got Unprec System Solver " << endl;
 
       QDPIO::cout << "Check qprop" << endl;
       check_qprop(xml_out, "Qprop", *PP, *UP);

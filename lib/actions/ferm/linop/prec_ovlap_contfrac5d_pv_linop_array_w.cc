@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_pv_linop_array_w.cc,v 1.7 2005-03-02 18:32:05 bjoo Exp $
+// $Id: prec_ovlap_contfrac5d_pv_linop_array_w.cc,v 1.8 2005-05-18 15:41:56 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Pauli-Villars Continued Fraction 5D
  */
@@ -70,13 +70,24 @@ namespace Chroma
     */
 
     // Now the d-s
-    d.resize(N5);
+    multi1d<Real> d(N5);
+    dinv.resize(N5);
     d[0] = a[0];
+    dinv[0] = Real(1)/d[0];
+
     d[N5-1] = a[N5-1];
+    dinv[N5-1] = Real(1)/d[N5-1];
+
     for(int i=1; i < N5-1; i++) { 
       d[i] = a[i] - (alpha[i-1]*alpha[i-1])/d[i-1];
+      dinv[i] = Real(1)/d[i];
     }
-    
+
+    off_diag_coeff.resize(N5-1);
+    for(int i=0; i < N5-1; i++) { 
+      off_diag_coeff[i] = -Real(0.5)*beta_tilde[i];
+    }
+
     /*
       for(int i=0; i < N5; i++) { 
       QDPIO::cout << "d["<<i<<"]=" << d[i] << endl;
@@ -137,21 +148,28 @@ namespace Chroma
     int G5=Ns*Ns-1;
 
     // First 0ne 
+    /*
     tmp[rb[cb]] = Gamma(G5)*psi[0];
     chi[0][rb[cb]] = a[0]*tmp;
+    */
     if( N5 > 1 ) { 
-      chi[0][rb[cb]] += alpha[0]*psi[1];
+      chi[0][rb[cb]] = alpha[0]*psi[1] + a[0]*(GammaConst<Ns,Ns*Ns-1>()*psi[0]);
     }
-
+    else {
+      chi[0][rb[cb]] = a[0]*(GammaConst<Ns,Ns*Ns-1>()*psi[0]);
+    }
     // All the rest
     for(int i=1; i < N5-1; i++) 
     { 
       // B_{i-1} psi_[i-1]
+      /*
       chi[i][rb[cb]] = alpha[i-1]*psi[i-1];
 
       // A_{i} psi[i] = a_{i} g_5 psi[i]
       tmp[rb[cb]] = Gamma(G5)*psi[i];
       chi[i][rb[cb]] += a[i]*tmp;
+      */
+      chi[i][rb[cb]] = alpha[i-1]*psi[i-1] + a[i]*(GammaConst<Ns,Ns*Ns-1>()*psi[i]);
 
       // When i hits N5-1, we don't have the B_N5-1 term
       if(i < N5-2) 
@@ -197,24 +215,24 @@ namespace Chroma
 
     for(int i = 1; i < N5-1; i++) 
     {
-      tmp[rb[cb]] = Gamma(G5)*y[i-1];
-      y[i][rb[cb]] = psi[i] - u[i-1]*tmp;
+      /* tmp[rb[cb]] = Gamma(G5)*y[i-1]; */
+      y[i][rb[cb]] = psi[i] - u[i-1]*(GammaConst<Ns,Ns*Ns-1>()*y[i-1]);
     } 
 
     // Invert diagonal piece  y <- D^{-1} y
     for(int i = 0; i < N5-1; i++) 
     {
-      tmp[rb[cb]] = Gamma(G5)*y[i];
-      coeff = Real(1)/d[i];
-      y[i][rb[cb]] = coeff*tmp;
+      // tmp[rb[cb]] = Gamma(G5)*y[i];
+      //coeff = Real(1)/d[i];
+      y[i][rb[cb]] = dinv[i]*(GammaConst<Ns,Ns*Ns-1>()*y[i]);
     }
 
     // Backsubstitute U chi = y
     chi[N5-1][rb[cb]] = psi[N5-1];
 
     for(int i = N5-2; i >= 0; i--) {
-      tmp = Gamma(G5)*chi[i+1];
-      chi[i][rb[cb]] = y[i] - u[i]*tmp;
+      //tmp = Gamma(G5)*chi[i+1];
+      chi[i][rb[cb]] = y[i] - u[i]*(GammaConst<Ns,Ns*Ns-1>()*chi[i+1]);
     }
 
     END_CODE();
@@ -250,13 +268,10 @@ namespace Chroma
 
       // Apply g5 Dslash
       Dslash->apply(tmp, psi[i], PLUS, cb);
-      chi[i][rb[cb]] = Gamma(G5)*tmp;
-
-      // Multiply coefficient
-      coeff = -Real(0.5)*beta_tilde[i];
+      // chi[i][rb[cb]] = Gamma(G5)*tmp;
 
       // Chi_i is now -(1/2) beta_tilde_i Dslash 
-      chi[i][rb[cb]] *= coeff;
+      chi[i][rb[cb]] = off_diag_coeff[i]*(GammaConst<Ns,Ns*Ns-1>()*tmp);
     }
 
  
@@ -301,13 +316,13 @@ namespace Chroma
       {
 	// CB is CB of TARGET
 	// consider gamma_5 Dslash
-	tmp[rb[cb]] = Gamma(G5)*chi[i];
+	// tmp[rb[cb]] = Gamma(G5)*chi[i];
 
 	// Multiply coefficient
-	coeff = -Real(0.5)*beta_tilde[i];
+	// coeff = -Real(0.5)*beta_tilde[i];
 
 	// Chi_i is now -(1/2) beta_tilde_i Dslash 
-	tmp[rb[cb]] *= coeff;
+	tmp[rb[cb]] = off_diag_coeff[i]*(GammaConst<Ns,Ns*Ns-1>()*chi[i]);
 
 	// Apply g5 Dslash
 	Dslash->deriv(ds_tmp, tmp, psi[i], PLUS, cb);
@@ -321,13 +336,13 @@ namespace Chroma
       {
 	// CB is CB of TARGET
 	// consider Dslash^dag gamma_5
-	tmp[rb[1-cb]] = Gamma(G5)*psi[i];
+	// tmp[rb[1-cb]] = Gamma(G5)*psi[i];
 
 	// Multiply coefficient
-	coeff = -Real(0.5)*beta_tilde[i];
+	// coeff = -Real(0.5)*beta_tilde[i];
 
 	// Chi_i is now -(1/2) beta_tilde_i Dslash 
-	tmp[rb[1-cb]] *= coeff;
+	tmp[rb[1-cb]] = off_diag_coeff[i]*(GammaConst<Ns,Ns*Ns-1>()*psi[i]);
 
 	// Apply g5 Dslash
 	Dslash->deriv(ds_tmp, chi[i], tmp, MINUS, cb);
