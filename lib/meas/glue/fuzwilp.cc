@@ -1,4 +1,4 @@
-// $Id: fuzwilp.cc,v 1.5 2005-01-14 18:42:35 edwards Exp $ fuzwilp.h,v 1.1 2004/04/26 16:12:49 mcneile Exp $
+// $Id: fuzwilp.cc,v 1.6 2005-05-18 09:35:13 bjoo Exp $ fuzwilp.h,v 1.1 2004/04/26 16:12:49 mcneile Exp $
 /*! \file
  *  \brief Calculate ape-fuzzed Wilson loops
  */
@@ -53,8 +53,8 @@ void fuzwilp( const multi1d<LatticeColorMatrix>& u,
 
 
   lengtht  = nrow[j_decay] / 2;
-  lengthr  = nrow[0];
-  lengthrs = (lengthr/2) * (lengthr+1) / 2;
+  lengthr  = nrow[0]/2;
+  lengthrs = (lengthr) * (lengthr+1) / 2;
 
   multi1d<LatticeColorMatrix> u_smear(Nd);
   multi1d<LatticeColorMatrix> u_tmp(Nd);
@@ -84,20 +84,12 @@ void fuzwilp( const multi1d<LatticeColorMatrix>& u,
 
 /* Check that all direction perpendicular to j_decay are equal. */
   for(mu = 1;mu  < ( Nd); ++mu )
-    if( mu != j_decay && nrow[mu] != lengthr )
+    if( mu != j_decay && nrow[mu] != nrow[0] )
     {
-      QDPIO::cout << " j_decay = " << j_decay << "and lengthr =" << lengthr << endl;
+      QDPIO::cout << " j_decay = " << j_decay << "and lengthr =" << nrow[0] << endl;
       
       QDP_error_exit("Wrong lattice size for Wilson loops: ", mu, nrow[mu]);
     }
-
-  lengthr = lengthr / 2;
-
-// temporary cap on loop values while developing.
-    lengthr = 2; lengtht = 2;	
-//
-
-  lengthrs = lengthr * (lengthr+1) / 2;
 
   /* First construct the smeared links for mu != j_decay */
   
