@@ -1,4 +1,4 @@
-// $Id: qproptransf.cc,v 1.15 2005-03-02 00:44:18 edwards Exp $
+// $Id: qproptransf.cc,v 1.16 2005-05-18 21:15:19 edwards Exp $
 /*! \file
  *  \brief Converts quark propagators in one format into another format.
  */
@@ -15,6 +15,7 @@ using namespace Chroma;
 enum SciDACPropType {
   SCIDAC_SOURCE,
   SCIDAC_PROP,
+  SCIDAC_SEQSOURCE,
   SCIDAC_SEQPROP,
 };
 
@@ -27,6 +28,8 @@ void read(XMLReader& xml, const string& path, SciDACPropType& param)
     param = SCIDAC_PROP;
   else if (prop_type_str == "SOURCE")
     param = SCIDAC_SOURCE;
+  else if (prop_type_str == "SEQSOURCE")
+    param = SCIDAC_SEQSOURCE;
   else if (prop_type_str == "SEQPROP")
     param = SCIDAC_SEQPROP;
   else 
@@ -339,6 +342,43 @@ int main(int argc, char *argv[])
 	push(prop_out_record_xml, "Propagator");
 	write(prop_out_record_xml, "ForwardProp", prop_header);
 	write(prop_out_record_xml, "PropSource", source_header);
+	write(prop_out_record_xml, "Config_info", gauge_xml);
+	pop(prop_out_record_xml);
+    
+	// Write the source
+	writeQprop(prop_out_file_xml, prop_out_record_xml, prop,
+		   input.prop.prop_out_file, input.prop.prop_out_volfmt, 
+		   QDPIO_SERIAL);
+      }
+    }
+    break;
+
+    case SCIDAC_SEQSOURCE:
+    {
+      // Try to invert this record XML into a source struct
+      // Also pull out the id of this source
+      SequentialSource_t sequential_source_header;
+
+      try
+      {
+	read(inputtop, "SequentialSource", sequential_source_header);
+      }
+      catch (const string& e) 
+      {
+	QDPIO::cerr << "Error extracting sequential source header: " << e << endl;
+	throw;
+      }
+
+      {
+	XMLBufferWriter prop_out_file_xml;
+	push(prop_out_file_xml, "seqsource");
+	int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
+	write(prop_out_file_xml, "id", id);
+	pop(prop_out_file_xml);
+
+	XMLBufferWriter prop_out_record_xml;
+	push(prop_out_record_xml, "SequentialSource");
+	write(prop_out_record_xml, ".", sequential_source_header);
 	write(prop_out_record_xml, "Config_info", gauge_xml);
 	pop(prop_out_record_xml);
     
