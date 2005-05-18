@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_integrator.h,v 1.5 2005-04-10 21:46:42 edwards Exp $
+// $Id: abs_integrator.h,v 1.6 2005-05-18 18:30:12 edwards Exp $
 
 /*! @file
  * @brief Integrators
@@ -71,9 +71,8 @@ namespace Chroma
 
       // First half step by leapP
       push(xml_out, "elem");
-
+      write(xml_out, "t", t);
       leapP(dtby2, s);
-
       pop(xml_out); // pop("elem");
       
       while(! endP ) { 
@@ -93,6 +92,7 @@ namespace Chroma
 	  // Time left is less than dtby2
 	  // Finish with a half P leap and signal end
 	  push(xml_out, "elem");
+	  write(xml_out, "t", t);
 	  leapP(dtby2, s);
 	  pop(xml_out);
 
@@ -101,6 +101,7 @@ namespace Chroma
 	}
 	else {
 	  push(xml_out, "elem");
+	  write(xml_out, "t", t);
 	  leapP(dt, s);
 	  pop(xml_out);
 	}
