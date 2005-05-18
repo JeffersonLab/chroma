@@ -1,4 +1,4 @@
-// $Id: minvcg.cc,v 1.13 2005-01-28 05:09:01 edwards Exp $
+// $Id: minvcg.cc,v 1.14 2005-05-18 16:52:49 bjoo Exp $
 
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator
@@ -154,7 +154,7 @@ void MInvCG_a(const LinearOperator<T>& A,
   //  Ap = A . p  */
   T Ap;
   A(Ap, p[isz], PLUS);
-  Ap[sub] += p[isz] * shifts[isz];
+  Ap[sub] += shifts[isz]*p[isz];
 
   /*  d =  < p, A.p >  */
   Double d = real(innerProduct(p[isz], Ap, sub)); // 2Nc Ns flops 
@@ -183,7 +183,7 @@ void MInvCG_a(const LinearOperator<T>& A,
   }
 
   //  r[1] += b[0] A . p[0]; 
-  r[sub] += Ap * Real(b);	                        // 2 Nc Ns  flops
+  r[sub] += Real(b)*Ap;	                        // 2 Nc Ns  flops
 
   //  Psi[1] -= b[0] p[0] = - b[0] chi;
   for(s = 0; s < n_shift; ++s) {
@@ -228,16 +228,19 @@ void MInvCG_a(const LinearOperator<T>& A,
       // Always update p[isz] even if isz is converged
       // since the other p-s depend on it.
       if (s == isz) {
-	p[s][sub] *= Real(a);	                              // Nc Ns  flops 
-	p[s][sub] += r;	                              // Nc Ns  flops 
+	/* p[s][sub] *= Real(a);	                              // Nc Ns  flops 
+	   p[s][sub] += r;	                              // Nc Ns  flops */ 
+	p[s][sub] = r + Real(a)*p[s];
       }
       else {
 	// Don't update other p-s if converged.
 	if( ! convsP[s] ) { 
 	  as = a * z[iz][s]*bs[s] / (z[1-iz][s]*b);
-	  
+	  /*
 	  p[s][sub] *= Real(as);	                             // Nc Ns  flops 
-	  p[s][sub] += r * Real(z[iz][s]);	                     // Nc Ns  flops 
+	  p[s][sub] += Real(z[iz][s])*r;	                     // Nc Ns  flops 
+	  */
+	  p[s][sub] = Real(z[iz][s])*r + Real(as)*p[s];
 	}
       }
 
@@ -250,7 +253,7 @@ void MInvCG_a(const LinearOperator<T>& A,
     //  First compute  d  =  < p, A.p >  
     //  Ap = A . p 
     A(Ap, p[isz], PLUS);
-    Ap[sub] += p[isz] * shifts[isz];
+    Ap[sub] += shifts[isz]*p[isz];
 
     /*  d =  < p, A.p >  */
     d = real(innerProduct(p[isz], Ap, sub));                   //  2 Nc Ns  flops
@@ -274,13 +277,13 @@ void MInvCG_a(const LinearOperator<T>& A,
     }
 
     //  r[k+1] += b[k] A . p[k] ; 
-    r[sub] += Ap * Real(b);	        // 2 Nc Ns  flops
+    r[sub] += Real(b)*Ap;	        // 2 Nc Ns  flops
 
 
     //  Psi[k+1] -= b[k] p[k] ; 
     for(s = 0; s < n_shift; ++s) {
       if (! convsP[s] ) {
-	psi[s][sub] -= p[s] * Real(bs[s]);	// 2 Nc Ns  flops 
+	psi[s][sub] -= Real(bs[s])*p[s];	// 2 Nc Ns  flops 
       }
     }
 
@@ -342,7 +345,7 @@ void MInvCG_a(const LinearOperator<T>& A,
   for(s = 0; s < n_shift; ++s)
   {
     A(Ap, psi[s], PLUS);
-    Ap[sub] += psi[s] * shifts[s];
+    Ap[sub] += shifts[s]*psi[s];
 
     Ap[sub] -= chi;
 
