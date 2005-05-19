@@ -18,6 +18,7 @@ SOURCES = $(ExampleBuildingBlocks_SOURCES) $(apesmear_SOURCES) $(bar3ptfn_SOURCE
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
+VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -72,90 +73,127 @@ am_ExampleBuildingBlocks_OBJECTS = ExampleBuildingBlocks.$(OBJEXT)
 ExampleBuildingBlocks_OBJECTS = $(am_ExampleBuildingBlocks_OBJECTS)
 ExampleBuildingBlocks_LDADD = $(LDADD)
 am__DEPENDENCIES_1 =
+ExampleBuildingBlocks_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_apesmear_OBJECTS = apesmear.$(OBJEXT)
 apesmear_OBJECTS = $(am_apesmear_OBJECTS)
 apesmear_LDADD = $(LDADD)
+apesmear_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_bar3ptfn_OBJECTS = bar3ptfn.$(OBJEXT)
 bar3ptfn_OBJECTS = $(am_bar3ptfn_OBJECTS)
 bar3ptfn_LDADD = $(LDADD)
+bar3ptfn_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_cfgtransf_OBJECTS = cfgtransf.$(OBJEXT)
 cfgtransf_OBJECTS = $(am_cfgtransf_OBJECTS)
 cfgtransf_LDADD = $(LDADD)
+cfgtransf_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_chroma_OBJECTS = chroma.$(OBJEXT)
 chroma_OBJECTS = $(am_chroma_OBJECTS)
 chroma_LDADD = $(LDADD)
+chroma_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_collect_multi_propcomp_OBJECTS = collect_multi_propcomp.$(OBJEXT)
 collect_multi_propcomp_OBJECTS = $(am_collect_multi_propcomp_OBJECTS)
 collect_multi_propcomp_LDADD = $(LDADD)
+collect_multi_propcomp_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_collect_propcomp_OBJECTS = collect_propcomp.$(OBJEXT)
 collect_propcomp_OBJECTS = $(am_collect_propcomp_OBJECTS)
 collect_propcomp_LDADD = $(LDADD)
+collect_propcomp_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_hmc_OBJECTS = hmc.$(OBJEXT)
 hmc_OBJECTS = $(am_hmc_OBJECTS)
 hmc_LDADD = $(LDADD)
+hmc_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_hypsmear_OBJECTS = hypsmear.$(OBJEXT)
 hypsmear_OBJECTS = $(am_hypsmear_OBJECTS)
 hypsmear_LDADD = $(LDADD)
+hypsmear_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_hypsmear3d_OBJECTS = hypsmear3d.$(OBJEXT)
 hypsmear3d_OBJECTS = $(am_hypsmear3d_OBJECTS)
 hypsmear3d_LDADD = $(LDADD)
+hypsmear3d_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_hypsmear4d_OBJECTS = hypsmear4d.$(OBJEXT)
 hypsmear4d_OBJECTS = $(am_hypsmear4d_OBJECTS)
 hypsmear4d_LDADD = $(LDADD)
+hypsmear4d_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_make_source_OBJECTS = make_source.$(OBJEXT)
 make_source_OBJECTS = $(am_make_source_OBJECTS)
 make_source_LDADD = $(LDADD)
+make_source_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_mres_OBJECTS = mres.$(OBJEXT)
 mres_OBJECTS = $(am_mres_OBJECTS)
 mres_LDADD = $(LDADD)
+mres_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_multi_propagator_OBJECTS = multi_propagator.$(OBJEXT)
 multi_propagator_OBJECTS = $(am_multi_propagator_OBJECTS)
 multi_propagator_LDADD = $(LDADD)
+multi_propagator_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_multi_propagator_comp_OBJECTS = multi_propagator_comp.$(OBJEXT)
 multi_propagator_comp_OBJECTS = $(am_multi_propagator_comp_OBJECTS)
 multi_propagator_comp_LDADD = $(LDADD)
+multi_propagator_comp_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_propagator_OBJECTS = propagator.$(OBJEXT)
 propagator_OBJECTS = $(am_propagator_OBJECTS)
 propagator_LDADD = $(LDADD)
+propagator_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_propagator_comp_OBJECTS = propagator_comp.$(OBJEXT)
 propagator_comp_OBJECTS = $(am_propagator_comp_OBJECTS)
 propagator_comp_LDADD = $(LDADD)
+propagator_comp_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_propagator_hack_OBJECTS = propagator_hack.$(OBJEXT)
 propagator_hack_OBJECTS = $(am_propagator_hack_OBJECTS)
 propagator_hack_LDADD = $(LDADD)
+propagator_hack_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_qpropadd_OBJECTS = qpropadd.$(OBJEXT)
 qpropadd_OBJECTS = $(am_qpropadd_OBJECTS)
 qpropadd_LDADD = $(LDADD)
+qpropadd_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_qpropgfix_OBJECTS = qpropgfix.$(OBJEXT)
 qpropgfix_OBJECTS = $(am_qpropgfix_OBJECTS)
 qpropgfix_LDADD = $(LDADD)
+qpropgfix_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_qpropqio_OBJECTS = qpropqio.$(OBJEXT)
 qpropqio_OBJECTS = $(am_qpropqio_OBJECTS)
 qpropqio_LDADD = $(LDADD)
+qpropqio_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_qproptransf_OBJECTS = qproptransf.$(OBJEXT)
 qproptransf_OBJECTS = $(am_qproptransf_OBJECTS)
 qproptransf_LDADD = $(LDADD)
+qproptransf_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_qproptrev_OBJECTS = qproptrev.$(OBJEXT)
 qproptrev_OBJECTS = $(am_qproptrev_OBJECTS)
 qproptrev_LDADD = $(LDADD)
+qproptrev_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_qqq_w_OBJECTS = qqq_w.$(OBJEXT)
 qqq_w_OBJECTS = $(am_qqq_w_OBJECTS)
 qqq_w_LDADD = $(LDADD)
+qqq_w_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_seqsource_OBJECTS = seqsource.$(OBJEXT)
 seqsource_OBJECTS = $(am_seqsource_OBJECTS)
 seqsource_LDADD = $(LDADD)
+seqsource_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_sink_smearing_OBJECTS = sink_smearing.$(OBJEXT)
 sink_smearing_OBJECTS = $(am_sink_smearing_OBJECTS)
 sink_smearing_LDADD = $(LDADD)
+sink_smearing_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_spectrum_w_OBJECTS = spectrum_w.$(OBJEXT)
 spectrum_w_OBJECTS = $(am_spectrum_w_OBJECTS)
 spectrum_w_LDADD = $(LDADD)
+spectrum_w_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_stoutsmear_OBJECTS = stoutsmear.$(OBJEXT)
 stoutsmear_OBJECTS = $(am_stoutsmear_OBJECTS)
 stoutsmear_LDADD = $(LDADD)
+stoutsmear_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_wallformfac_OBJECTS = wallformfac.$(OBJEXT)
 wallformfac_OBJECTS = $(am_wallformfac_OBJECTS)
 wallformfac_LDADD = $(LDADD)
+wallformfac_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)/lib
 depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
 am__depfiles_maybe = depfiles
@@ -193,7 +231,6 @@ DIST_SOURCES = $(ExampleBuildingBlocks_SOURCES) $(apesmear_SOURCES) \
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-VPATH = @top_srcdir@/mainprogs/main
 ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
@@ -303,8 +340,6 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 
 #
-# VPATH
-#
 TOPDIR = @top_srcdir@
 BUILDDIR = @top_builddir@
 
@@ -334,63 +369,45 @@ HDRS =
 # The program and its dependencies
 #
 chroma_SOURCES = chroma.cc
-chroma_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 propagator_SOURCES = propagator.cc
-propagator_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 propagator_comp_SOURCES = propagator_comp.cc
-propagator_comp_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 propagator_hack_SOURCES = propagator_hack.cc
-propagator_hack_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 seqsource_SOURCES = seqsource.cc
-seqsource_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 multi_propagator_SOURCES = multi_propagator.cc
-multi_propagator_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 multi_propagator_comp_SOURCES = multi_propagator_comp.cc
-multi_propagator_comp_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 collect_propcomp_SOURCES = collect_propcomp.cc
-collect_propcomp_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 collect_multi_propcomp_SOURCES = collect_multi_propcomp.cc
-collect_multi_propcomp_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 spectrum_w_SOURCES = spectrum_w.cc
-spectrum_w_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 hmc_SOURCES = hmc.cc
-hmc_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 mres_SOURCES = mres.cc
-mres_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 qqq_w_SOURCES = qqq_w.cc
-qqq_w_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 bar3ptfn_SOURCES = bar3ptfn.cc
-bar3ptfn_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 wallformfac_SOURCES = wallformfac.cc
-wallformfac_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 make_source_SOURCES = make_source.cc
-make_source_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 apesmear_SOURCES = apesmear.cc
-apesmear_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 hypsmear_SOURCES = hypsmear.cc
-hypsmear_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 hypsmear3d_SOURCES = hypsmear3d.cc
-hypsmear3d_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 hypsmear4d_SOURCES = hypsmear4d.cc
-hypsmear4d_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 stoutsmear_SOURCES = stoutsmear.cc
-stoutsmear_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 qproptransf_SOURCES = qproptransf.cc
-qproptransf_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 qpropqio_SOURCES = qpropqio.cc
-qpropqio_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 qpropadd_SOURCES = qpropadd.cc
-qpropadd_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 qpropgfix_SOURCES = qpropgfix.cc
-qpropgfix_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 qproptrev_SOURCES = qproptrev.cc
-qproptrev_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 ExampleBuildingBlocks_SOURCES = ExampleBuildingBlocks.cc
-ExampleBuildingBlocks_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 cfgtransf_SOURCES = cfgtransf.cc
-cfgtransf_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 sink_smearing_SOURCES = sink_smearing.cc
-sink_smearing_DEPENDENCIES = build_chroma_libs rebuild_other_libs
+
+#mainparam_io_SOURCES= mainparam_io.cc
+
+#
+# The latter rule will always try to rebuild libchroma.a when you 
+# try to compile example
+
+# build lib is a target that goes to the build dir of the library and 
+# does a make to make sure all those dependencies are OK. In order
+# for it to be done every time, we have to make it a 'phony' target
+DEPENDENCIES = build_chroma_libs rebuild_other_libs
 all: all-am
 
 .SUFFIXES:
@@ -752,17 +769,10 @@ uninstall-am: uninstall-binPROGRAMS uninstall-info-am
 	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
 	uninstall-am uninstall-binPROGRAMS uninstall-info-am
 
+${bin_PROGRAMS}: ${DEPENDENCIES}
+###${check_PROGRAMS}: ${DEPENDENCIES}  # uncomment this when there are checkprograms
+${EXTRA_PROGRAMS}: ${DEPENDENCIES}
 
-#mainparam_io_SOURCES= mainparam_io.cc
-#sink_smearing_DEPENDENCIES= build_chroma_libs rebuild_other_libs
-
-#
-# The latter rule will always try to rebuild libchroma.a when you 
-# try to compile example
-
-# build lib is a target that goes to the build dir of the library and 
-# does a make to make sure all those dependencies are OK. In order
-# for it to be done every time, we have to make it a 'phony' target
 .PHONY: build_chroma_libs
 build_chroma_libs:
 	cd $(BUILDDIR)/lib ; $(MAKE)
