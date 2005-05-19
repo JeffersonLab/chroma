@@ -15,7 +15,7 @@ namespace Chroma {
       return new LatColMatMinimumNorm2Integrator(p, H);
     }
 
-    const std::string name = "LCM_MINIMUM_NORM_ORDER2_INTEGRATOR";
+    const std::string name = "LCM_MINIMUM_NORM_2ND_ORDER_INTEGRATOR";
     const bool registered = TheMDIntegratorFactory::Instance().registerObject(name, createMDIntegrator); 
   };
 
