@@ -55,6 +55,7 @@ namespace Chroma {
     pop(xml);
   }
 
+#if 0
   void LatColMatPQPLeapfrogIntegrator::leapP(const Real& dt, 
 					     AbsFieldState<multi1d<LatticeColorMatrix>,
 					     multi1d<LatticeColorMatrix> >& s) {
@@ -130,5 +131,6 @@ namespace Chroma {
 
     pop(xml_out);
   }
+#endif
 
 };

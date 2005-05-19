@@ -62,6 +62,7 @@ namespace Chroma {
     pop(xml);
   }
 
+#if 0
   void LatColMatSextonWeingartenIntegrator::leapP(const multi1d<int>& monomial_list,
 						  const Real& dt, 
 					     AbsFieldState<multi1d<LatticeColorMatrix>,
@@ -138,5 +139,6 @@ namespace Chroma {
 
     pop(xml_out);
   }
+#endif
 
 };

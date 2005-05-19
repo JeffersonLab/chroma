@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lcm_pqp_leapfrog.h,v 1.4 2005-04-10 21:46:42 edwards Exp $
+// $Id: lcm_pqp_leapfrog.h,v 1.5 2005-05-19 13:19:15 bjoo Exp $
 
 /*! @file
  * @brief Leapfrog integrator
@@ -14,7 +14,7 @@
 #include "chromabase.h"
 #include "update/molecdyn/hamiltonian/abs_hamiltonian.h"
 #include "update/molecdyn/integrator/abs_integrator.h"
-
+#include "update/molecdyn/integrator/lcm_integrator_leaps.h"
 #include <string>
 
 
@@ -83,11 +83,18 @@ namespace Chroma
 
     void leapP(const Real& dt, 
 	       AbsFieldState<multi1d<LatticeColorMatrix>,
-	                     multi1d<LatticeColorMatrix> >& s);
+	       multi1d<LatticeColorMatrix> >& s) {
+
+      LCMMDIntegratorSteps::leapP(dt, getHamiltonian(), s);
+    }
     //! Leap with Q
     void leapQ(const Real& dt, 
 	       AbsFieldState<multi1d<LatticeColorMatrix>,
-	                     multi1d<LatticeColorMatrix> >& s);
+			     multi1d<LatticeColorMatrix> >& s) {
+
+      LCMMDIntegratorSteps::leapQ(dt, s);
+
+    }
 
  
 

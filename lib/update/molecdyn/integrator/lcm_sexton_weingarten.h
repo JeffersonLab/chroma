@@ -12,7 +12,7 @@
 #include "chromabase.h"
 #include "update/molecdyn/hamiltonian/abs_hamiltonian.h"
 #include "update/molecdyn/integrator/abs_integrator.h"
-
+#include "update/molecdyn/integrator/lcm_integrator_leaps.h"
 #include <string>
 
 
@@ -204,12 +204,21 @@ namespace Chroma
     void leapP(const multi1d<int>& monomial_list,
 	       const Real& dt, 
 	       AbsFieldState<multi1d<LatticeColorMatrix>,
-	                     multi1d<LatticeColorMatrix> >& s);
+	       multi1d<LatticeColorMatrix> >& s) {
+
+      LCMMDIntegratorSteps::leapP(monomial_list, 
+				  dt, 
+				  getHamiltonian(),
+				  s);
+    }
 
     //! Leap with Q (with all monomials)
     void leapQ(const Real& dt, 
 	       AbsFieldState<multi1d<LatticeColorMatrix>,
-	                     multi1d<LatticeColorMatrix> >& s);
+	       multi1d<LatticeColorMatrix> >& s) {
+      LCMMDIntegratorSteps::leapQ(dt,s);
+    }
+
 
 
     //! Does [ U_short(dt/n) ]^n
