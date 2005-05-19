@@ -1,4 +1,4 @@
-// $Id: qproptransf.cc,v 1.16 2005-05-18 21:15:19 edwards Exp $
+// $Id: qproptransf.cc,v 1.17 2005-05-19 03:31:33 edwards Exp $
 /*! \file
  *  \brief Converts quark propagators in one format into another format.
  */
@@ -63,7 +63,6 @@ struct Prop_t
 struct QpropTransf_input_t
 {
   Param_t  param;
-  Cfg_t    cfg;
   Prop_t   prop;
 };
 
@@ -98,6 +97,7 @@ void read(XMLReader& xml, const string& path, Param_t& param)
   {
   case 1:
   case 2:
+  case 3:
     /**************************************************************************/
     break;
 
@@ -122,9 +122,6 @@ void read(XMLReader& xml, const string& path, QpropTransf_input_t& input)
   {
     // Read program parameters
     read(inputtop, "Param", input.param);
-
-    // Read in the gauge configuration info
-    read(inputtop, "Cfg", input.cfg);
 
     // Read in the propagator file info
     read(inputtop, "Prop", input.prop);
@@ -261,175 +258,89 @@ int main(int argc, char *argv[])
   case PROP_TYPE_SCIDAC:
   {
     // SciDAC
-    // SciDAC output expects to find the relevant structures in the
-    // xml input.
-    // Read in the configuration along with relevant information.
-    multi1d<LatticeColorMatrix> u(Nd);
-    XMLReader gauge_file_xml, gauge_xml;
-
-    // Startup gauge
-    gaugeStartup(gauge_file_xml, gauge_xml, u, input.cfg);
-
+    // SciDAC output expects to find the relevant structures in the xml input.
     // xml input file
-    XMLReader inputtop(xml_in, "/qproptransf");
-
     // There are various forms of SciDAC prop types
+    string propHeaderTag;
+    string fileHeaderTag;
+    
     switch (input.prop.scidac_prop_type)
     {
     case SCIDAC_SOURCE:
     {
-      // Try to invert this record XML into a source struct
-      // Also pull out the id of this source
-      PropSource_t source_header;
-
-      try
-      {
-	read(inputtop, "MakeSource/PropSource", source_header);
-      }
-      catch (const string& e) 
-      {
-	QDPIO::cerr << "Error extracting source_header: " << e << endl;
-	throw;
-      }
-
-      {
-	XMLBufferWriter prop_out_file_xml;
-	push(prop_out_file_xml, "make_source");
-	int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
-	write(prop_out_file_xml, "id", id);
-	pop(prop_out_file_xml);
-
-	XMLBufferWriter prop_out_record_xml;
-	push(prop_out_record_xml, "MakeSource");
-	write(prop_out_record_xml, "PropSource", source_header);
-	write(prop_out_record_xml, "Config_info", gauge_xml);
-	pop(prop_out_record_xml);
-    
-	// Write the source
-	writeQprop(prop_out_file_xml, prop_out_record_xml, prop,
-		   input.prop.prop_out_file, input.prop.prop_out_volfmt, 
-		   QDPIO_SERIAL);
-      }
+      propHeaderTag = "MakeSource";
+      fileHeaderTag = "make_source";
     }
     break;
 
     case SCIDAC_PROP:
     {
-      // Try to invert this record XML into a source struct
-      // Also pull out the id of this source
-      ChromaProp_t prop_header;
-      PropSource_t source_header;
-
-      try
-      {
-	read(inputtop, "Propagator/ForwardProp", prop_header);
-	read(inputtop, "Propagator/PropSource", source_header);
-      }
-      catch (const string& e) 
-      {
-	QDPIO::cerr << "Error extracting source_header: " << e << endl;
-	throw;
-      }
-
-      {
-	XMLBufferWriter prop_out_file_xml;
-	push(prop_out_file_xml, "propagator");
-	int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
-	write(prop_out_file_xml, "id", id);
-	pop(prop_out_file_xml);
-
-	XMLBufferWriter prop_out_record_xml;
-	push(prop_out_record_xml, "Propagator");
-	write(prop_out_record_xml, "ForwardProp", prop_header);
-	write(prop_out_record_xml, "PropSource", source_header);
-	write(prop_out_record_xml, "Config_info", gauge_xml);
-	pop(prop_out_record_xml);
-    
-	// Write the source
-	writeQprop(prop_out_file_xml, prop_out_record_xml, prop,
-		   input.prop.prop_out_file, input.prop.prop_out_volfmt, 
-		   QDPIO_SERIAL);
-      }
+      propHeaderTag = "Propagator";
+      fileHeaderTag = "propagator";
     }
     break;
 
     case SCIDAC_SEQSOURCE:
     {
-      // Try to invert this record XML into a source struct
-      // Also pull out the id of this source
-      SequentialSource_t sequential_source_header;
-
-      try
-      {
-	read(inputtop, "SequentialSource", sequential_source_header);
-      }
-      catch (const string& e) 
-      {
-	QDPIO::cerr << "Error extracting sequential source header: " << e << endl;
-	throw;
-      }
-
-      {
-	XMLBufferWriter prop_out_file_xml;
-	push(prop_out_file_xml, "seqsource");
-	int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
-	write(prop_out_file_xml, "id", id);
-	pop(prop_out_file_xml);
-
-	XMLBufferWriter prop_out_record_xml;
-	push(prop_out_record_xml, "SequentialSource");
-	write(prop_out_record_xml, ".", sequential_source_header);
-	write(prop_out_record_xml, "Config_info", gauge_xml);
-	pop(prop_out_record_xml);
-    
-	// Write the source
-	writeQprop(prop_out_file_xml, prop_out_record_xml, prop,
-		   input.prop.prop_out_file, input.prop.prop_out_volfmt, 
-		   QDPIO_SERIAL);
-      }
+      propHeaderTag = "SequentialSource";
+      fileHeaderTag = "seqsource";
     }
     break;
 
     case SCIDAC_SEQPROP:
     {
-      // Try to invert this record XML into a source struct
-      // Also pull out the id of this source
-      SequentialProp_t sequential_prop_header;
-
-      try
-      {
-	read(inputtop, "SequentialProp", sequential_prop_header);
-      }
-      catch (const string& e) 
-      {
-	QDPIO::cerr << "Error extracting sequential prop header: " << e << endl;
-	throw;
-      }
-
-      {
-	XMLBufferWriter prop_out_file_xml;
-	push(prop_out_file_xml, "seqprop");
-	int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
-	write(prop_out_file_xml, "id", id);
-	pop(prop_out_file_xml);
-
-	XMLBufferWriter prop_out_record_xml;
-	push(prop_out_record_xml, "SequentialProp");
-	write(prop_out_record_xml, ".", sequential_prop_header);
-	write(prop_out_record_xml, "Config_info", gauge_xml);
-	pop(prop_out_record_xml);
-    
-	// Write the source
-	writeQprop(prop_out_file_xml, prop_out_record_xml, prop,
-		   input.prop.prop_out_file, input.prop.prop_out_volfmt, 
-		   QDPIO_SERIAL);
-      }
+      propHeaderTag = "SequentialProp";
+      fileHeaderTag = "seqprop";
     }
     break;
 
     default:
       QDPIO::cerr << "Unknown SciDAC prop type" << endl;
       QDP_abort(1);
+    }
+
+    //
+    // Suck the header into a string
+    //
+    string header;
+
+    QDPIO::cout << "Read " << propHeaderTag << endl;
+
+    try
+    {
+      XMLReader header_xml(xml_in, "/qproptransf/" + propHeaderTag);
+      std::ostringstream header_os;
+      header_xml.print(header_os);
+      header = header_os.str();
+    }
+    catch (const string& e) 
+    {
+      QDPIO::cerr << "Error extracting " << propHeaderTag << ": " << e << endl;
+      throw;
+    }
+
+    QDPIO::cout << "Header = " << header << endl;
+
+    {
+      XMLBufferWriter prop_out_file_xml;
+      push(prop_out_file_xml, fileHeaderTag);
+      int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
+      write(prop_out_file_xml, "id", id);
+      pop(prop_out_file_xml);
+
+      istringstream header_is(header);
+      XMLReader xml_header(header_is);
+      XMLBufferWriter prop_out_record_xml;
+//      write(prop_out_record_xml, ".", header);
+      
+      QDPIO::cout << "string out header" << endl;
+      prop_out_record_xml << xml_header;
+      QDPIO::cout << "string out header done" << endl;
+    
+      // Write it
+      writeQprop(prop_out_file_xml, prop_out_record_xml, prop,
+		 input.prop.prop_out_file, input.prop.prop_out_volfmt, 
+		 QDPIO_SERIAL);
     }
   }
   break;
