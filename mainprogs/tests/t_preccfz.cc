@@ -1,4 +1,4 @@
-// $Id: t_preccfz.cc,v 1.1 2005-05-18 16:54:01 bjoo Exp $
+// $Id: t_preccfz.cc,v 1.2 2005-05-19 12:18:22 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -93,6 +93,7 @@ int main(int argc, char **argv)
 
   Handle<const ConnectState> state(S_pdwf.createState(u));
   const EvenOddPrecLinearOperator< MLF, LCM >* D_pdwf = S_pdwf.linOp(state); 
+  const EvenOddPrecLinearOperator< MLF, LCM >* D_pv = S_pdwf.linOpPV(state); 
 
   QDPIO::cout << "Done" << endl;
 
@@ -144,10 +145,61 @@ int main(int argc, char **argv)
     mydt = time_func(D_pdwf, &EvenOddPrecLinearOperator<MLF,LCM>::operator(), chi, psi, is);
     QDPIO::cout << "Total: The time per lattice point is "<< mydt << " micro sec" 
 		<< " (" <<  ((double)(Nflops)/mydt) << ") Mflops " << endl;
-  }
-  
-  delete D_pdwf;
 
+  }
+
+
+  for(int n=0; n < S_pdwf.size(); ++n)
+    random(psi[n]);
+  chi = zero;
+  N5 = S_pdwf.size();
+  
+  for(int isign = 1; isign >= -1; isign -= 2) 
+  {
+    QDPIO::cout << "Applying D" << endl;
+    QDPIO::cout << " isign = " << isign << endl;
+      
+    PlusMinus is = (isign == 1 ? PLUS : MINUS);
+    clock_t myt1;
+    clock_t myt2;
+    double mydt;
+
+    int Ndiag  = (10*N5-18)*Nc*Ns;
+    int NdiagInv = (10*N5-18)*Nc*Ns;
+    int Neo    = (N5-2)*(1320 + 2*Nc*Ns);
+    int Nflops = 2*Ndiag + 2*Neo + NdiagInv;
+
+    // even-even-inv piece
+    mydt = time_func(D_pv, &EvenOddPrecLinearOperator<MLF,LCM>::evenEvenInvLinOp, chi, psi, is);
+    QDPIO::cout << "EvenEvenInvPV: The time per lattice point is "<< mydt << " micro sec" 
+		<< " (" <<  ((double)(NdiagInv)/mydt) << ") Mflops " << endl;
+
+    mydt = time_func(D_pv, &EvenOddPrecLinearOperator<MLF,LCM>::evenEvenLinOp, chi, psi, is);
+    QDPIO::cout << "EvenEvenPV: The time per lattice point is "<< mydt << " micro sec" 
+		<< " (" <<  ((double)(Ndiag)/mydt) << ") Mflops " << endl;
+      
+    // odd-odd piece
+    mydt = time_func(D_pv, &EvenOddPrecLinearOperator<MLF,LCM>::oddOddLinOp, chi, psi, is);
+    QDPIO::cout << "OddOddPV: The time per lattice point is "<< mydt << " micro sec" 
+		<< " (" <<  ((double)(Ndiag)/mydt) << ") Mflops " << endl;
+      
+    // even-odd
+    mydt = time_func(D_pv, &EvenOddPrecLinearOperator<MLF,LCM>::evenOddLinOp, chi, psi, is);
+    QDPIO::cout << "EvenOddPV: The time per lattice point is "<< mydt << " micro sec" 
+		<< " (" <<  ((double)(Neo)/mydt) << ") Mflops " << endl;
+    // odd-even
+    mydt = time_func(D_pv, &EvenOddPrecLinearOperator<MLF,LCM>::oddEvenLinOp, chi, psi, (isign == 1 ? PLUS : MINUS));
+    QDPIO::cout << "Odd-EvenPV: The time per lattice point is "<< mydt << " micro sec" 
+		<< " (" <<  ((double)(Neo)/mydt) << ") Mflops " << endl;
+
+    // Total thing
+    mydt = time_func(D_pv, &EvenOddPrecLinearOperator<MLF,LCM>::operator(), chi, psi, is);
+    QDPIO::cout << "TotalPV: The time per lattice point is "<< mydt << " micro sec" 
+		<< " (" <<  ((double)(Nflops)/mydt) << ") Mflops " << endl;
+  }
+
+  delete D_pdwf;
+  delete D_pv;
   // Time to bolt
   Chroma::finalize();
 

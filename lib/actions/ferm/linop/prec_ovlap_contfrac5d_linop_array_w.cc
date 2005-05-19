@@ -1,8 +1,7 @@
-// $Id: prec_ovlap_contfrac5d_linop_array_w.cc,v 1.15 2005-05-18 15:41:56 bjoo Exp $
+// $Id: prec_ovlap_contfrac5d_linop_array_w.cc,v 1.16 2005-05-19 12:18:22 bjoo Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned domain-wall linear operator
  */
-
 #include "chromabase.h"
 #include "actions/ferm/linop/dslash_w.h"
 #include "actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_w.h"
@@ -204,10 +203,9 @@ namespace Chroma
    * \param cb      checkerboard ( 0 | 1 )               (Read)
 
    *
-   * Total flopcount: 2*(N5-1)*4Nc*Ns + N5*2*Nc*Ns
-   *              =   2NcNs( 4*(N5-1) + N5 ) 
-   *              =   2NcNs( 5 N5 - 4 ) per cb_site
-   *              =   (10N5 - 8)NcNs per cb site
+   * Total flopcount: (N5-1)*4NcNs + 2NcNs + (N5-1)*6NcNs
+   *                 = (N5-1)*10NcNs + 2NcNs
+   *                 = (10N5-8) Nc Ns per_cb_site
    */
   void 
   EvenOddPrecOvlapContFrac5DLinOpArray::applyDiagInv(
@@ -230,9 +228,7 @@ namespace Chroma
     // Solve L y = psi
     y[0][rb[cb]] = psi[0];
 
-    // N5-1 times: y[i][rb[cb]] = psi[i] - u[i-1]*Gamma(G5)*y[i-1]
-    //     Useful flops: (N5 - 1) * 4NcNs/site
-
+    // (N5-1)*4NcNs
     for(int i = 1; i < N5; i++) { 
       // tmp[rb[cb]] = Gamma(G5)*y[i-1];
       // y[i][rb[cb]] = psi[i] - u[i-1]*tmp;
@@ -242,20 +238,21 @@ namespace Chroma
     // Invert diagonal piece  y <- D^{-1} y
     // N5 times: y = (1/d_i) gamma_5 y[i] 
     // Useful flops: N5 * 2NcNs flops / site
-    for(int i = 0; i < N5; i++) { 
-      // tmp[rb[cb]] = Gamma(G5)*y[i];
-      y[i][rb[cb]] = invd[i]*(GammaConst<Ns,Ns*Ns-1>()*y[i]);
-    }
+    // Rolled this into the bottom loop
 
     // Backsubstitute U chi = y
-    chi[N5-1][rb[cb]] = y[N5-1];
 
-    // N5-1 times: chi[i][rb[cb]] = y[i] - u[i]*Gamma(G5)*chi[i+1]
-    //     Useful flops: (N5 - 1) * 4NcNs/site
+    // 2NcNs
+
+    chi[N5-1][rb[cb]] = invd[N5-1]*(GammaConst<Ns,Ns*Ns-1>()*y[N5-1]);
+
+    // N5-1 * 6NcNs
     for(int i = N5-2; i >= 0; i--) {
       // tmp[rb[cb]] = Gamma(G5)*chi[i+1]
       // chi[i][rb[cb]] = y[i] - u[i]*tmp;
-      chi[i][rb[cb]] = y[i] - u[i]*(GammaConst<Ns,Ns*Ns-1>()*chi[i+1]);
+      // y[i][rb[cb]] = invd[i]*(GammaConst<Ns,Ns*Ns-1>()*y[i]);
+      // chi[i][rb[cb]] = y[i] - u[i]*(GammaConst<Ns,Ns*Ns-1>()*chi[i+1]);
+      chi[i][rb[cb]] = GammaConst<Ns,Ns*Ns-1>()*(invd[i]*y[i]-u[i]*chi[i+1]); 
     }
 
     //Done! That was not that bad after all....

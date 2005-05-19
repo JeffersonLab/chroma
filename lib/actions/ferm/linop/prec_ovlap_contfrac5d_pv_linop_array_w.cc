@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_pv_linop_array_w.cc,v 1.8 2005-05-18 15:41:56 bjoo Exp $
+// $Id: prec_ovlap_contfrac5d_pv_linop_array_w.cc,v 1.9 2005-05-19 12:18:22 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Pauli-Villars Continued Fraction 5D
  */
@@ -118,7 +118,12 @@ namespace Chroma
    * \ingroup linop
    *
    * The operator acts on the entire lattice
-   *
+   * 
+   *   6NcNs +  N5-2*[ 6NcNs ] + (N5-3)*4Nc Ns
+   * = N5-1*(6NcNs) + (N5-3)*4NcNs
+   * = 6*N5*NcNs - 6NcNs + 4N5NcNs - 12 NcNs
+   *  =10*N5 NcNs - 18NcNs = (10*N5-18) NcNs
+   *   
    * \param psi 	  Pseudofermion field     	       (Read)
    * \param isign   Flag ( PLUS | MINUS )   	       (Read)
    * \param cb      checkerboard ( 0 | 1 )               (Read)
@@ -153,12 +158,15 @@ namespace Chroma
     chi[0][rb[cb]] = a[0]*tmp;
     */
     if( N5 > 1 ) { 
+      // 6NcNs flops
       chi[0][rb[cb]] = alpha[0]*psi[1] + a[0]*(GammaConst<Ns,Ns*Ns-1>()*psi[0]);
     }
     else {
       chi[0][rb[cb]] = a[0]*(GammaConst<Ns,Ns*Ns-1>()*psi[0]);
     }
     // All the rest
+
+    // N5-2*[ 6NcNs ] + (N5-3)*4Nc Ns
     for(int i=1; i < N5-1; i++) 
     { 
       // B_{i-1} psi_[i-1]
@@ -188,6 +196,10 @@ namespace Chroma
    *
    * Here we apply the LDU decomposition
    *
+   *
+   *  10NcNs(N5-2)+2NcNs
+   * = (10N5 - 18)NcNs flops per cb_site
+   *
    * \param psi 	  Pseudofermion field     	       (Read)
    * \param isign   Flag ( PLUS | MINUS )   	       (Read)
    * \param cb      checkerboard ( 0 | 1 )               (Read)
@@ -213,26 +225,29 @@ namespace Chroma
     // Solve L y = psi
     y[0][rb[cb]] = psi[0];
 
+    // (N5-2) * 4NcNs flops
     for(int i = 1; i < N5-1; i++) 
     {
       /* tmp[rb[cb]] = Gamma(G5)*y[i-1]; */
       y[i][rb[cb]] = psi[i] - u[i-1]*(GammaConst<Ns,Ns*Ns-1>()*y[i-1]);
     } 
 
-    // Invert diagonal piece  y <- D^{-1} y
-    for(int i = 0; i < N5-1; i++) 
-    {
-      // tmp[rb[cb]] = Gamma(G5)*y[i];
-      //coeff = Real(1)/d[i];
-      y[i][rb[cb]] = dinv[i]*(GammaConst<Ns,Ns*Ns-1>()*y[i]);
-    }
-
     // Backsubstitute U chi = y
+ 
+    // Special note. chi[N5-1] = y[N5-1] = psi[N5-1] -- lowest
+    // corner is a unit matrix
     chi[N5-1][rb[cb]] = psi[N5-1];
 
-    for(int i = N5-2; i >= 0; i--) {
+    
+    // Real backsubstitutions starts from chi[N5-2]
+    // 2NcNs flops
+    chi[N5-2][rb[cb]] =  dinv[N5-2]*(GammaConst<Ns,Ns*Ns-1>()*y[N5-2]);
+
+    // N5-2 * 6NcNs flops
+    for(int i = N5-3; i >= 0; i--) {
       //tmp = Gamma(G5)*chi[i+1];
-      chi[i][rb[cb]] = y[i] - u[i]*(GammaConst<Ns,Ns*Ns-1>()*chi[i+1]);
+      // y[i][rb[cb]] = dinv[i]*(GammaConst<Ns,Ns*Ns-1>()*y[i]);
+      chi[i][rb[cb]] = GammaConst<Ns,Ns*Ns-1>()*( dinv[i]*y[i] - u[i]*chi[i+1]);
     }
 
     END_CODE();
@@ -241,6 +256,8 @@ namespace Chroma
 
   //! Apply the off diagonal block
   /*!
+   *  (N5-2)*(Dslash + 2NcNs) 
+   *
    * \param chi     result     	                   (Modify)
    * \param psi     source     	                   (Read)
    * \param isign   Flag ( PLUS | MINUS )   	   (Read)
@@ -261,6 +278,7 @@ namespace Chroma
     int G5 = Ns*Ns-1;
 
     // Optimisation... do up to the penultimate block...
+    // (N5-2)*(Dslash + 2NcNs)
     for(int i=0; i < N5-1; i++) 
     {
       // CB is CB of TARGET
