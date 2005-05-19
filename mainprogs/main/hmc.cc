@@ -1,4 +1,4 @@
-// $Id: hmc.cc,v 1.8 2005-05-19 13:19:15 bjoo Exp $
+// $Id: hmc.cc,v 1.9 2005-05-19 13:36:49 bjoo Exp $
 /*! \file
  *  \brief Main code for HMC with dynamical fermion generation
  */
@@ -392,7 +392,7 @@ namespace Chroma {
     foo &= WilsonTypeFermMonomialAggregrateEnv::registered;
     
     // MD Integrators
-    LCMMDIntegratorAggregateEnv::registered;
+    foo &= LCMMDIntegratorAggregateEnv::registered;
 
     // Chrono predictor
     foo &= ChronoPredictorAggregrateEnv::registered;
