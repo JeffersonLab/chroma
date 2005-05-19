@@ -1,9 +1,6 @@
 #
-# VPATH
-#
 TOPDIR=@top_srcdir@
 BUILDDIR=@top_builddir@
-VPATH = @top_srcdir@/mainprogs/main
 
 #
 # Include Path
@@ -79,94 +76,36 @@ EXTRA_PROGRAMS += propagator_comp multi_propagator multi_propagator_comp \
 # The program and its dependencies
 #
 chroma_SOURCES= chroma.cc
-chroma_DEPENDENCIES= build_chroma_libs rebuild_other_libs
-
 propagator_SOURCES= propagator.cc
-propagator_DEPENDENCIES= build_chroma_libs rebuild_other_libs
-
 propagator_comp_SOURCES= propagator_comp.cc
-propagator_comp_DEPENDENCIES= build_chroma_libs rebuild_other_libs
-
 propagator_hack_SOURCES= propagator_hack.cc
-propagator_hack_DEPENDENCIES= build_chroma_libs rebuild_other_libs
-
 seqsource_SOURCES= seqsource.cc
-seqsource_DEPENDENCIES= build_chroma_libs rebuild_other_libs
-
 multi_propagator_SOURCES= multi_propagator.cc
-multi_propagator_DEPENDENCIES= build_chroma_libs rebuild_other_libs
-
 multi_propagator_comp_SOURCES = multi_propagator_comp.cc
-multi_propagator_comp_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 collect_propcomp_SOURCES = collect_propcomp.cc
-collect_propcomp_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 collect_multi_propcomp_SOURCES = collect_multi_propcomp.cc
-collect_multi_propcomp_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 spectrum_w_SOURCES= spectrum_w.cc
-spectrum_w_DEPENDENCIES= build_chroma_libs rebuild_other_libs
-
 hmc_SOURCES= hmc.cc
-hmc_DEPENDENCIES= build_chroma_libs rebuild_other_libs
-
 mres_SOURCES= mres.cc
-mres_DEPENDENCIES= build_chroma_libs rebuild_other_libs
-
 qqq_w_SOURCES= qqq_w.cc
-qqq_w_DEPENDENCIES= build_chroma_libs rebuild_other_libs
-
 bar3ptfn_SOURCES= bar3ptfn.cc
-bar3ptfn_DEPENDENCIES= build_chroma_libs rebuild_other_libs
-
 wallformfac_SOURCES= wallformfac.cc
-wallformfac_DEPENDENCIES= build_chroma_libs rebuild_other_libs
-
 make_source_SOURCES= make_source.cc
-make_source_DEPENDENCIES= build_chroma_libs rebuild_other_libs
-
 apesmear_SOURCES= apesmear.cc
-apesmear_DEPENDENCIES= build_chroma_libs rebuild_other_libs
-
 hypsmear_SOURCES= hypsmear.cc
-hypsmear_DEPENDENCIES= build_chroma_libs rebuild_other_libs
-
 hypsmear3d_SOURCES= hypsmear3d.cc
-hypsmear3d_DEPENDENCIES= build_chroma_libs rebuild_other_libs
-
 hypsmear4d_SOURCES= hypsmear4d.cc
-hypsmear4d_DEPENDENCIES= build_chroma_libs rebuild_other_libs
-
 stoutsmear_SOURCES= stoutsmear.cc
-stoutsmear_DEPENDENCIES= build_chroma_libs rebuild_other_libs
-
 qproptransf_SOURCES= qproptransf.cc
-qproptransf_DEPENDENCIES= build_chroma_libs rebuild_other_libs
-
 qpropqio_SOURCES= qpropqio.cc
-qpropqio_DEPENDENCIES= build_chroma_libs rebuild_other_libs
-
 qpropadd_SOURCES= qpropadd.cc
-qpropadd_DEPENDENCIES= build_chroma_libs rebuild_other_libs
-
 qpropgfix_SOURCES= qpropgfix.cc
-qpropgfix_DEPENDENCIES= build_chroma_libs rebuild_other_libs
-
 qproptrev_SOURCES= qproptrev.cc
-qproptrev_DEPENDENCIES= build_chroma_libs rebuild_other_libs
-
 ExampleBuildingBlocks_SOURCES= ExampleBuildingBlocks.cc
-ExampleBuildingBlocks_DEPENDENCIES= build_chroma_libs rebuild_other_libs
-
 cfgtransf_SOURCES= cfgtransf.cc
-cfgtransf_DEPENDENCIES= build_chroma_libs rebuild_other_libs
-
 sink_smearing_SOURCES= sink_smearing.cc
-sink_smearing_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 
 #mainparam_io_SOURCES= mainparam_io.cc
-#sink_smearing_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 
 #
 # The latter rule will always try to rebuild libchroma.a when you 
@@ -175,6 +114,12 @@ sink_smearing_DEPENDENCIES= build_chroma_libs rebuild_other_libs
 # build lib is a target that goes to the build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order
 # for it to be done every time, we have to make it a 'phony' target
+
+DEPENDENCIES = build_chroma_libs rebuild_other_libs
+${bin_PROGRAMS}: ${DEPENDENCIES}
+###${check_PROGRAMS}: ${DEPENDENCIES}  # uncomment this when there are checkprograms
+${EXTRA_PROGRAMS}: ${DEPENDENCIES}
+
 .PHONY: build_chroma_libs
 build_chroma_libs:
 	cd $(BUILDDIR)/lib ; $(MAKE)

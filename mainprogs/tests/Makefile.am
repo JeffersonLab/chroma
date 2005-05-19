@@ -1,9 +1,6 @@
 #
-# VPATH
-#
 TOPDIR=@top_srcdir@
 BUILDDIR=@top_builddir@
-VPATH = $(TOPDIR)/mainprogs/tests
 
 #
 # Include Path
@@ -35,7 +32,7 @@ endif
 HDRS =
 
 ## Production tests:
-bin_PROGRAMS = t_lwldslash_sse t_lwldslash_pab t_ritz_KS
+bin_PROGRAMS = t_mesplq t_lwldslash_sse t_lwldslash_pab t_ritz_KS
 
 #
 # add the programs to build in here
@@ -45,7 +42,7 @@ bin_PROGRAMS = t_lwldslash_sse t_lwldslash_pab t_ritz_KS
 ##   in @prefix@/bin by 'make install' then add them to nodist_PROGRAMS.
 ##   Another option is to add it to check_PROGRAMS, which means it will only
 ##   be built by 'make check' and is not installed.
-check_PROGRAMS  = t_mesplq t_io t_mesons_w  t_conslinop t_hypsmear \
+check_PROGRAMS  = t_io t_mesons_w  t_conslinop t_hypsmear \
     t_ape_smear t_precact t_dwf4d t_propagator_s t_disc_loop_s \
     t_remez t_ritz 
 
@@ -72,8 +69,6 @@ EXTRA_PROGRAMS  = t_dslashm t_lwldslash t_spprod \
     t_precnef \
     t_preccfz
 
-## DEPENDENCIES = build_chroma_libs
-
 #
 # The programs and their dependencies
 #
@@ -87,221 +82,89 @@ EXTRA_PROGRAMS  = t_dslashm t_lwldslash t_spprod \
 ## check_DEPENDENCIES = build_chroma_libs
 
 t_su3_SOURCES = t_su3.cc
-t_su3_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_mesplq_SOURCES = t_mesplq.cc
-t_mesplq_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_seqsource_SOURCES = t_seqsource.cc
-t_seqsource_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_remez_SOURCES = t_remez.cc
-t_remez_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_ape_smear_SOURCES = t_ape_smear.cc
-t_ape_smear_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_lower_tests_SOURCES = t_lower_tests.cc
-t_lower_tests_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_fuzwilp_SOURCES = t_fuzwilp.cc
-t_fuzwilp_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_wilslp_SOURCES = t_wilslp.cc
-t_wilslp_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_hypsmear_SOURCES = t_hypsmear.cc
-t_hypsmear_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_dslashm_SOURCES = t_dslashm.cc
-t_dslashm_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_io_SOURCES = t_io.cc
-t_io_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_lwldslash_SOURCES = t_lwldslash.cc
-t_lwldslash_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_dwflinop_SOURCES = t_dwflinop.cc
-t_dwflinop_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_dwf4d_SOURCES = t_dwf4d.cc
-t_dwf4d_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_precact_SOURCES = t_precact.cc
-t_precact_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_precdwf_SOURCES = t_precdwf.cc
-t_precdwf_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_formfac_SOURCES = t_formfac.cc
-t_formfac_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_mesons_w_SOURCES = t_mesons_w.cc
-t_mesons_w_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_conslinop_SOURCES = t_conslinop.cc
-t_conslinop_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_overbu_SOURCES = t_overbu.cc
-t_overbu_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_spprod_SOURCES = t_spprod.cc
-t_spprod_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_follana_io_s_SOURCES = t_follana_io_s.cc
-t_follana_io_s_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_follana_pion_s_SOURCES = t_follana_pion_s.cc
-t_follana_pion_s_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_lwldslash_sse_SOURCES = t_lwldslash_sse.cc
-t_lwldslash_sse_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_lwldslash_pab_SOURCES = t_lwldslash_pab.cc
-t_lwldslash_pab_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_ovlap_bj_SOURCES = t_ovlap_bj.cc
-t_ovlap_bj_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_ovlap_double_pass_SOURCES = t_ovlap_double_pass.cc
-t_ovlap_double_pass_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_g5eps_bj_SOURCES = t_g5eps_bj.cc
-t_g5eps_bj_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_sumr_SOURCES = t_sumr.cc
-t_sumr_DEPENDENCIES= build_chroma_libs rebuild_other_libs
-
 t_rel_gmresr_SOURCES = t_rel_gmresr.cc
-t_rel_gmresr_DEPENDENCIES= build_chroma_libs rebuild_other_libs
-
 t_msumr_SOURCES = t_msumr.cc
-t_msumr_DEPENDENCIES= build_chroma_libs rebuild_other_libs
-
 t_invrelcg_SOURCES = t_invrelcg.cc
-t_invrelcg_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_neflinop_SOURCES = t_neflinop.cc
-t_neflinop_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_ovlap5d_bj_SOURCES = t_ovlap5d_bj.cc
-t_ovlap5d_bj_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_propagator_s_SOURCES = t_propagator_s.cc
-t_propagator_s_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_disc_loop_s_SOURCES = t_disc_loop_s.cc
-t_disc_loop_s_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_propagator_fuzz_s_SOURCES = t_propagator_fuzz_s.cc
-t_propagator_fuzz_s_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
-
 t_propagator_w_SOURCES = t_propagator_w.cc
-t_propagator_w_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 t_propagator_twisted_SOURCES = t_propagator_twisted.cc
-t_propagator_twisted_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_propagator_nrqcd_SOURCES = t_propagator_nrqcd.cc
-t_propagator_nrqcd_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
-
 t_fermion_loop_w_SOURCES = t_fermion_loop_w.cc
-t_fermion_loop_w_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 
 t_gfix_SOURCES = t_gfix.cc
-t_gfix_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_ritz_SOURCES = t_ritz.cc
-t_ritz_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_ritz_KS_SOURCES = t_ritz_KS.cc
-t_ritz_KS_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_ritz5d_KS_SOURCES = t_ritz5d_KS.cc
-t_ritz5d_KS_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_ov_pbp_SOURCES = t_ov_pbp.cc
-t_ov_pbp_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_dwflocality_SOURCES = t_dwflocality.cc
-t_dwflocality_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_invert3_precwilson_SOURCES = t_invert3_precwilson.cc
-t_invert3_precwilson_DEPENDENCIES =  build_chroma_libs rebuild_other_libs
-
 t_invert4_precwilson_SOURCES = t_invert4_precwilson.cc invcg2_timing_hacks_2.h invcg2_timing_hacks_2.cc invcg2_prec_wilson.h invcg2_prec_wilson.cc
-t_invert4_precwilson_DEPENDENCIES =  build_chroma_libs rebuild_other_libs
 
 t_read_eigen_SOURCES = t_read_eigen.cc
-t_read_eigen_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_bicgstab_SOURCES = t_bicgstab.cc
-t_bicgstab_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_invborici_SOURCES = t_invborici.cc
-t_invborici_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_hamsys_SOURCES = t_hamsys.cc
-t_hamsys_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_hamsys_ferm_SOURCES = t_hamsys_ferm.cc
-t_hamsys_ferm_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_hmc_pg_SOURCES = t_hmc_pg.cc
-t_hmc_pg_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_precact_sse_SOURCES = t_precact_sse.cc
-t_precact_sse_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_prec_contfrac_SOURCES = t_prec_contfrac.cc
-t_prec_contfrac_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_mres_4d_SOURCES = t_mres_4d.cc
-t_mres_4d_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_prec_nef_SOURCES = t_prec_nef.cc
-t_prec_nef_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_unprec_wilson_force_SOURCES = t_unprec_wilson_force.cc
-t_unprec_wilson_force_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_prec_wilson_force_SOURCES = t_prec_wilson_force.cc
-t_prec_wilson_force_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_unprec_twoflav_wilson_monomial_SOURCES = t_unprec_twoflav_wilson_monomial.cc
-t_unprec_twoflav_wilson_monomial_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_prec_twoflav_wilson_monomial_SOURCES = t_prec_twoflav_wilson_monomial.cc
-t_prec_twoflav_wilson_monomial_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_hamiltonian_SOURCES = t_hamiltonian.cc
-t_hamiltonian_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_leapfrog_SOURCES = t_leapfrog.cc
-t_leapfrog_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_hmc_SOURCES = t_hmc.cc
-t_hmc_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_gauge_force_SOURCES = t_gauge_force.cc
-t_gauge_force_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_circular_buffer_SOURCES = t_circular_buffer.cc
-t_circular_buffer_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_precnef_SOURCES = t_precnef.cc
-t_precnef_DEPENDENCIES = build_chroma_libs rebuild_other_libs
-
 t_preccfz_SOURCES = t_preccfz.cc
-t_preccfz_DEPENDENCIES = build_chroma_libs rebuild_other_libs
 
 # build lib is a target that goes to the build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order
 # for it to be done every time, we have to make it a 'phony' target
+
+DEPENDENCIES = build_chroma_libs rebuild_other_libs
+${bin_PROGRAMS}: ${DEPENDENCIES}
+${check_PROGRAMS}: ${DEPENDENCIES}
+${EXTRA_PROGRAMS}: ${DEPENDENCIES}
+
 .PHONY: build_chroma_libs
 build_chroma_libs:
 	cd $(BUILDDIR)/lib ; $(MAKE)
