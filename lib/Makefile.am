@@ -1,9 +1,10 @@
-# $Id: Makefile.am,v 1.269 2005-05-19 16:41:55 bjoo Exp $
+# $Id: Makefile.am,v 1.270 2005-05-20 16:39:50 edwards Exp $
 #
 # Path for all files used in building the library
 
 TOPDIR=@top_srcdir@
 BUILDDIR=@top_builddir@
+VPATH = $(TOPDIR)/lib
 
 #
 # All the include files - avoid flattening of dirs by using nobase
