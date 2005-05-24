@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_hmc.h,v 1.5 2005-04-10 21:46:42 edwards Exp $
+// $Id: abs_hmc.h,v 1.6 2005-05-24 21:44:12 edwards Exp $
 /*! \file
  * \brief Abstract HMC trajectory
  *
@@ -89,11 +89,14 @@ namespace Chroma
 	Double DeltaKE = KE - KE_old;
 	Double DeltaPE = PE - PE_old;
 	Double DeltaH  = DeltaKE + DeltaPE;
+	Double AccProb = where(DeltaH < 0.0, Double(1), exp(-DeltaH));
 	write(xml_out, "deltaKE", DeltaKE);
 	write(xml_out, "deltaPE", DeltaPE);
 	write(xml_out, "deltaH", DeltaH);
+	write(xml_out, "AccProb", AccProb);
 
 	QDPIO::cout << "Delta H = " << DeltaH << endl;
+	QDPIO::cout << "AccProb = " << AccProb << endl;
 
 	// If we intend to do an accept reject step
 	// (ie we are not warming up)
