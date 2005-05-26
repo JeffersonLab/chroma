@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lcm_pqp_leapfrog.h,v 1.5 2005-05-19 13:19:15 bjoo Exp $
+// $Id: lcm_pqp_leapfrog.h,v 1.6 2005-05-26 09:38:06 bjoo Exp $
 
 /*! @file
  * @brief Leapfrog integrator
@@ -32,7 +32,7 @@ namespace Chroma
     LatColMatPQPLeapfrogIntegratorParams();
     LatColMatPQPLeapfrogIntegratorParams(XMLReader& xml, const std::string& path);
 
-    Real dt;
+    int  n_steps;
     Real tau0;
   };
 
@@ -57,17 +57,17 @@ namespace Chroma
   public:
 
     // Simplest Constructor
-    LatColMatPQPLeapfrogIntegrator(const Real& dt_, 
+    LatColMatPQPLeapfrogIntegrator(const int  n_steps_, 
 				   const Real& tau_,
-				   Handle< AbsHamiltonian< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& H_ ) : dt(dt_), tau0(tau_), H_MD(H_) {};
+				   Handle< AbsHamiltonian< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& H_ ) : n_steps(n_steps_), tau0(tau_), H_MD(H_) {};
 
     // Construct from params struct and Hamiltonian
     LatColMatPQPLeapfrogIntegrator(const LatColMatPQPLeapfrogIntegratorParams& p,
-				   Handle< AbsHamiltonian< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& H_) : dt(p.dt), tau0(p.tau0), H_MD(H_) {}
+				   Handle< AbsHamiltonian< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& H_) : n_steps(p.n_steps), tau0(p.tau0), H_MD(H_) {}
 
     // Copy constructor
     LatColMatPQPLeapfrogIntegrator(const LatColMatPQPLeapfrogIntegrator& l) :
-      dt(l.dt), tau0(l.tau0), H_MD(l.H_MD) {}
+      n_steps(l.n_steps), tau0(l.tau0), H_MD(l.H_MD) {}
 
     // ! Destruction is automagic
     ~LatColMatPQPLeapfrogIntegrator(void) {};
@@ -105,11 +105,16 @@ namespace Chroma
 
     //! Get the step size 
     const Real getStepSize(void) const {
-      return dt;
+      return tau0/Real(n_steps);
+    }
+
+    //! Get the number of steps
+    const int getNumSteps(void) const { 
+      return n_steps;
     }
 
   private:
-    Real dt;
+    int  n_steps;
     Real tau0;
     Handle< AbsHamiltonian<multi1d<LatticeColorMatrix>, 
 			    multi1d<LatticeColorMatrix> > > H_MD;

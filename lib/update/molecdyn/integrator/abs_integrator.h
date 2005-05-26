@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_integrator.h,v 1.6 2005-05-18 18:30:12 edwards Exp $
+// $Id: abs_integrator.h,v 1.7 2005-05-26 09:38:06 bjoo Exp $
 
 /*! @file
  * @brief Integrators
@@ -56,56 +56,65 @@ namespace Chroma
 
       Real dt = getStepSize(); 
       Real dtby2 = dt / Real(2);
+      int  num_steps = getNumSteps();
+
       Real tau0 = getTrajLength();
-      
+
+      write(xml_out, "n_steps", num_steps);
       write(xml_out, "dt", dt);
       write(xml_out, "dtby2", dtby2);
       write(xml_out, "tau0", tau0);
 
       // Start time = 0
       Real t = Real(0);
-
-      bool endP = false;
+      Real p_t = Real(0);
 
       push(xml_out, "MDSteps");
 
       // First half step by leapP
       push(xml_out, "elem");
-      write(xml_out, "t", t);
+      write(xml_out, "t", p_t);
       leapP(dtby2, s);
+      p_t += dtby2;
       pop(xml_out); // pop("elem");
-      
-      while(! endP ) { 
+  
+      // First full step by leapQ
+      push(xml_out, "elem");
+      write(xml_out, "t", t);
+      leapQ(dt, s);
+      t += dt;
+      pop(xml_out);
+	
+      for(int step=0; step < num_steps-1; step++) { 
+	// Combined 2 half steps for leapP
 	push(xml_out, "elem");
-	leapQ(dt, s);
+	write(xml_out, "t", p_t);
+	leapP(dt,s);
+	p_t += dt;
 	pop(xml_out);
 
+	// Full step for leapQ
+	push(xml_out, "elem");
+	write(xml_out, "t", t);
+	leapQ(dt,s);
 	t += dt;
-	
-	// Check if this was the last gauge update
-	// Tricky because you cannot really check for t = tau
-	// with any certainty due to potential FP equality testing issues
-	// However if the time remaining is substantially less than dt
-	// ie dtby2 is less than dt and is less than dt by any reasonable
-	// epsilon then we finish
-	if( toBool( fabs(tau0 - t) <  dtby2  ) ) {
-	  // Time left is less than dtby2
-	  // Finish with a half P leap and signal end
-	  push(xml_out, "elem");
-	  write(xml_out, "t", t);
-	  leapP(dtby2, s);
-	  pop(xml_out);
+	pop(xml_out);
 
-	  endP = true;
-	  
-	}
-	else {
-	  push(xml_out, "elem");
-	  write(xml_out, "t", t);
-	  leapP(dt, s);
-	  pop(xml_out);
-	}
-      } // end while
+      }
+       
+      // Last half step for P
+      push(xml_out, "elem");
+      write(xml_out, "t",p_t);
+      leapP(dtby2, s);
+      p_t += dtby2;
+      pop(xml_out);
+
+      // Write out both times at the end of traj (should be the same)
+      push(xml_out, "EndOfTraj");
+      write(xml_out, "t", t);
+      write(xml_out, "t_mom", p_t);
+      pop(xml_out); // EndOfTraj;
+
       pop(xml_out); // pop("MDSteps");
       pop(xml_out); // pop("PQPLeapfrogIntegrator")
     } // end function
@@ -128,6 +137,9 @@ namespace Chroma
 
     //! Get the step size 
     virtual const Real getStepSize(void) const = 0;
+
+    //! Get the number of timesteps
+    virtual const int getNumSteps(void) const = 0;
   };
 
 
