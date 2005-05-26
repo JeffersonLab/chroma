@@ -1,4 +1,4 @@
-// $Id: invcg1_array.cc,v 1.6 2005-05-26 04:27:19 edwards Exp $
+// $Id: invcg1_array.cc,v 1.7 2005-05-26 05:13:16 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -138,7 +138,7 @@ void InvCG1_a(const LinearOperator< multi1d<T> >& A,
     A(Ap, p, PLUS);
 
     //  d = | mp | ** 2
-    d = innerProductReal(p[n], Ap[n], s);	/* 2 Nc Ns  flops */
+    d = innerProductReal(p, Ap, s);	/* 2 Nc Ns  flops */
 
     a = Real(c)/Real(d);
 
