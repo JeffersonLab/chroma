@@ -1,4 +1,4 @@
-// $Id: minvcg_array.cc,v 1.2 2005-01-28 05:09:12 edwards Exp $
+// $Id: minvcg_array.cc,v 1.3 2005-05-26 04:28:40 edwards Exp $
 
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator
@@ -8,20 +8,6 @@
 #include "actions/ferm/invert/minvcg_array.h"
 
 namespace Chroma {
-
-
-  // ********************* HACK ********************
-  // Provide this till QDP has an equiv version
-  Double innerProductReal(const multi1d<LatticeFermion>& s1, const multi1d<LatticeFermion>& s2,
-			  const OrderedSubset& sub)
-  {
-    Double s = zero;
-    for(int n=0; n < s1.size(); ++n)
-      s += innerProductReal(s1[n], s2[n], sub);
-
-    return s;
-  }
-
 
 
 //! Multishift Conjugate-Gradient (CG1) algorithm for a  Linear Operator
