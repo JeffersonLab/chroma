@@ -1,4 +1,4 @@
-// $Id: invcg1_array.cc,v 1.5 2005-01-14 20:13:05 edwards Exp $
+// $Id: invcg1_array.cc,v 1.6 2005-05-26 04:27:19 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -138,15 +138,7 @@ void InvCG1_a(const LinearOperator< multi1d<T> >& A,
     A(Ap, p, PLUS);
 
     //  d = | mp | ** 2
-    d=Double(0);
-
-    // This is probably inefficient. It would be nice
-    // to have an inner product real with multi1d<>
-    // the best way is to have a local inner product 
-    // and then do one big global sum at the end.
-    for(int n=0; n < N; ++n) {
-      d += innerProductReal(p[n], Ap[n], s);	/* 2 Nc Ns  flops */
-    }
+    d = innerProductReal(p[n], Ap[n], s);	/* 2 Nc Ns  flops */
 
     a = Real(c)/Real(d);
 
