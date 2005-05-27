@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovlap_contfrac5d_fermact_array_w.h,v 1.11 2005-04-11 01:59:58 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_fermact_array_w.h,v 1.12 2005-05-27 18:38:51 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Continued Fraction 5D
  */
@@ -164,12 +164,13 @@ namespace Chroma
 		const OverlapStateInfo& state_info) const;
 
 
-  protected:
+//  protected:
     //! Helper in construction
     void init(Real& scale_fac,
 	      multi1d<Real>& alpha,
 	      multi1d<Real>& beta,
 	      const OverlapConnectState& state) const;
+
   private:
     // Hide partial constructor
     EvenOddPrecOvlapContFrac5DFermActArray();
