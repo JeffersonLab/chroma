@@ -1,11 +1,11 @@
 // -*- C++ -*-
-// $Id: prec_ovlap_contfrac5d_linop_array_w.h,v 1.9 2005-05-27 18:39:38 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_linop_array_opt_w.h,v 1.1 2005-05-27 18:39:38 edwards Exp $
 /*! \file
- *  \brief Even-odd prec. 5D continued fraction linop
+ *  \brief Optimized Even-odd prec. 5D continued fraction linop
  */
 
-#ifndef __prec_ovlap_contfrac5d_linop_array_w_h__
-#define __prec_ovlap_contfrac5d_linop_array_w_h__
+#ifndef __prec_ovlap_contfrac5d_linop_array_opt_w_h__
+#define __prec_ovlap_contfrac5d_linop_array_opt_w_h__
 
 #include "linearop.h"
 #include "fermact.h"
@@ -14,7 +14,7 @@
 
 namespace Chroma 
 { 
-  //! Even-odd prec. 5D continued fraction linop
+  //! Optimized Even-odd prec. 5D continued fraction linop
   /*!
    * \ingroup linop
    *
@@ -26,7 +26,7 @@ namespace Chroma
    * by Joo,Kennedy,Wenger
    */
 
-  class QDPEvenOddPrecOvlapContFrac5DLinOpArray : public EvenOddPrecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >
+  class OptEvenOddPrecOvlapContFrac5DLinOpArray : public EvenOddPrecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >
   {
   public:
 
@@ -35,7 +35,7 @@ namespace Chroma
       except that the auxiliary linop M is no longer supplied, 
       but is created here 
     */
-    QDPEvenOddPrecOvlapContFrac5DLinOpArray(Handle<const ConnectState> state,
+    OptEvenOddPrecOvlapContFrac5DLinOpArray(Handle<const ConnectState> state,
 					    const Real& _m_q,
 					    const Real& _OverMass,
 					    int _N5,
@@ -49,7 +49,7 @@ namespace Chroma
     int size() const {return N5;}
 
     //! Destructor is automatic
-    ~QDPEvenOddPrecOvlapContFrac5DLinOpArray() {}
+    ~OptEvenOddPrecOvlapContFrac5DLinOpArray() {}
 
     //! Only defined on the entire lattice
     // INHERIT THIS?

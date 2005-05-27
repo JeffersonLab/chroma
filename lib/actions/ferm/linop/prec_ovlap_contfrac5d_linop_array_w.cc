@@ -1,6 +1,6 @@
-// $Id: prec_ovlap_contfrac5d_linop_array_w.cc,v 1.16 2005-05-19 12:18:22 bjoo Exp $
+// $Id: prec_ovlap_contfrac5d_linop_array_w.cc,v 1.17 2005-05-27 18:39:38 edwards Exp $
 /*! \file
- *  \brief  4D-style even-odd preconditioned domain-wall linear operator
+ *  \brief Even-odd prec. 5D continued fraction linop
  */
 #include "chromabase.h"
 #include "actions/ferm/linop/dslash_w.h"
@@ -9,7 +9,7 @@
 
 namespace Chroma 
 { 
-  EvenOddPrecOvlapContFrac5DLinOpArray::EvenOddPrecOvlapContFrac5DLinOpArray(
+  QDPEvenOddPrecOvlapContFrac5DLinOpArray::QDPEvenOddPrecOvlapContFrac5DLinOpArray(
     Handle<const ConnectState> state,
     const Real& _m_q,
     const Real& _OverMass,
@@ -125,10 +125,10 @@ namespace Chroma
    *  Flopcount: N5*6NcNs + (N5-2)*4NcNs = NcNs( 6N5 +4(N5-2) ) = (10N5-8) Nc Ns / cb_site
    */
   void 
-  EvenOddPrecOvlapContFrac5DLinOpArray::applyDiag(multi1d<LatticeFermion>& chi, 
-						  const multi1d<LatticeFermion>& psi, 
-						  enum PlusMinus isign,
-						  const int cb) const
+  QDPEvenOddPrecOvlapContFrac5DLinOpArray::applyDiag(multi1d<LatticeFermion>& chi, 
+						     const multi1d<LatticeFermion>& psi, 
+						     enum PlusMinus isign,
+						     const int cb) const
   {
     START_CODE();
 
@@ -208,7 +208,7 @@ namespace Chroma
    *                 = (10N5-8) Nc Ns per_cb_site
    */
   void 
-  EvenOddPrecOvlapContFrac5DLinOpArray::applyDiagInv(
+  QDPEvenOddPrecOvlapContFrac5DLinOpArray::applyDiagInv(
     multi1d<LatticeFermion>& chi, 
     const multi1d<LatticeFermion>& psi, 
     enum PlusMinus isign,
@@ -272,7 +272,7 @@ namespace Chroma
    *
    * 
    */
-  void EvenOddPrecOvlapContFrac5DLinOpArray::applyOffDiag(
+  void QDPEvenOddPrecOvlapContFrac5DLinOpArray::applyOffDiag(
     multi1d<LatticeFermion>& chi, 
     const multi1d<LatticeFermion>& psi,
     enum PlusMinus isign,
@@ -327,11 +327,11 @@ namespace Chroma
    * by  D.deriv(ds_tmp,...) like calls.
    */
   void 
-  EvenOddPrecOvlapContFrac5DLinOpArray::applyDerivOffDiag(multi1d<LatticeColorMatrix>& ds_u,
-							  const multi1d<LatticeFermion>& chi, 
-							  const multi1d<LatticeFermion>& psi, 
-							  enum PlusMinus isign,
-							  int cb) const 
+  QDPEvenOddPrecOvlapContFrac5DLinOpArray::applyDerivOffDiag(multi1d<LatticeColorMatrix>& ds_u,
+							     const multi1d<LatticeFermion>& chi, 
+							     const multi1d<LatticeFermion>& psi, 
+							     enum PlusMinus isign,
+							     int cb) const 
   {
     START_CODE();
 
@@ -402,10 +402,10 @@ namespace Chroma
 
   // THIS IS AN OPTIMIZED VERSION OF THE DERIVATIVE
   void 
-  EvenOddPrecOvlapContFrac5DLinOpArray::deriv(multi1d<LatticeColorMatrix>& ds_u,
-					      const multi1d<LatticeFermion>& chi, 
-					      const multi1d<LatticeFermion>& psi, 
-					      enum PlusMinus isign) const
+  QDPEvenOddPrecOvlapContFrac5DLinOpArray::deriv(multi1d<LatticeColorMatrix>& ds_u,
+						 const multi1d<LatticeFermion>& chi, 
+						 const multi1d<LatticeFermion>& psi, 
+						 enum PlusMinus isign) const
   {
     START_CODE();
 
