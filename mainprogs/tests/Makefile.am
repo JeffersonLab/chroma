@@ -58,7 +58,8 @@ EXTRA_PROGRAMS  = t_dslashm t_lwldslash t_spprod \
     t_disc_loop_s t_ov_pbp t_propagator_nrqcd \
     t_dwflocality t_invert3_precwilson t_invert4_precwilson t_read_eigen \
     t_fuzwilp t_ovlap_double_pass t_g5eps_bj t_sumr t_msumr t_invrelcg t_bicgstab \
-    t_wilslp t_rel_gmresr t_invborici t_hamsys t_hamsys_ferm t_precact_sse \
+    t_wilslp t_rel_gmresr t_invborici t_hamsys t_hamsys_ferm \
+    t_precact_sse t_preccfz_opt \
     t_hmc_pg t_neflinop t_prec_contfrac t_mres_4d t_prec_nef t_su3 \
     t_overbu t_lower_tests t_seqsource \
     t_unprec_wilson_force t_prec_wilson_force t_unprec_twoflav_wilson_monomial \
@@ -141,6 +142,7 @@ t_hamsys_SOURCES = t_hamsys.cc
 t_hamsys_ferm_SOURCES = t_hamsys_ferm.cc
 t_hmc_pg_SOURCES = t_hmc_pg.cc
 t_precact_sse_SOURCES = t_precact_sse.cc
+t_preccfz_opt_SOURCES = t_preccfz_opt.cc
 t_prec_contfrac_SOURCES = t_prec_contfrac.cc
 t_mres_4d_SOURCES = t_mres_4d.cc
 t_prec_nef_SOURCES = t_prec_nef.cc
