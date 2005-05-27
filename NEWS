@@ -1,3 +1,8 @@
+05/27/2005 -- Balint Joo
+
+	Version 1.21.6. Changed integrators to use num-steps instead of
+        step-size.
+
 05/19/2005 -- Robert Edwards
 
 	Version 1.21.5. Mods in CFZ codes. New HMC integrators.
