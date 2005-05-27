@@ -1,5 +1,10 @@
 05/27/2005 -- Balint Joo
 
+	Version 1.22.0. Added new --enable-opt-cfz-linop option. Now
+        have some optimized version of prec_ovlap_contfrac5d_linop.
+
+05/27/2005 -- Balint Joo
+
 	Version 1.21.6. Changed integrators to use num-steps instead of
         step-size.
 
