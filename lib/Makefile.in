@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.359 2005-05-19 16:41:55 bjoo Exp $
+# $Id: Makefile.in,v 1.360 2005-05-27 18:42:03 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -23,7 +23,6 @@ SOURCES = $(libchroma_a_SOURCES)
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
-VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -60,11 +59,13 @@ host_triplet = @host@
 @BUILD_SSE_DWF_CG_TRUE@am__append_8 = actions/ferm/qprop/prec_dwf_qprop_array_sse_w.cc
 @BUILD_PAB_WILSON_DSLASH_TRUE@am__append_9 = actions/ferm/linop/lwldslash_w_pab.h
 @BUILD_PAB_WILSON_DSLASH_TRUE@am__append_10 = actions/ferm/linop/lwldslash_w_pab.cc
+@BUILD_OPT_CFZ_LINOP_TRUE@am__append_11 = actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_opt_w.h
+@BUILD_OPT_CFZ_LINOP_TRUE@am__append_12 = actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_opt_w.cc
 
 #	actions/ferm/fermacts/stag_fermact_s.cc
 #	meas/pbp/mespbp_s.cc meas/pbp/stagpbp_s.cc
-@BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@am__append_11 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.h
-@BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@am__append_12 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc		
+@BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@am__append_13 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.h
+@BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@am__append_14 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc		
 subdir = lib
 DIST_COMMON = $(am__nobase_include_HEADERS_DIST) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/chroma_config_internal.h.in
@@ -313,6 +314,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/linop/lwldslash_w_sse.cc \
 	actions/ferm/qprop/prec_dwf_qprop_array_sse_w.cc \
 	actions/ferm/linop/lwldslash_w_pab.cc \
+	actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_opt_w.cc \
 	actions/ferm/fermacts/asqtad_fermact_s.cc \
 	actions/ferm/fermbcs/fermbcs_s.cc \
 	actions/ferm/fermbcs/simple_fermbc_s.cc \
@@ -338,7 +340,8 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 @BUILD_SSE_DWF_CG_TRUE@	prec_dwf_qprop_array_sse_w.$(OBJEXT)
 @BUILD_PAB_WILSON_DSLASH_TRUE@am__objects_4 =  \
 @BUILD_PAB_WILSON_DSLASH_TRUE@	lwldslash_w_pab.$(OBJEXT)
-@BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@am__objects_5 = asqtad_cps_wrapper_qprop.$(OBJEXT)
+@BUILD_OPT_CFZ_LINOP_TRUE@am__objects_5 = prec_ovlap_contfrac5d_linop_array_opt_w.$(OBJEXT)
+@BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@am__objects_6 = asqtad_cps_wrapper_qprop.$(OBJEXT)
 am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	zolotarev_coeffs.$(OBJEXT) \
 	ovext_tuning_strategy_aggregate.$(OBJEXT) \
@@ -500,7 +503,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	inline_multipole_w.$(OBJEXT) inline_qpropqio_w.$(OBJEXT) \
 	inline_smear_aggregate.$(OBJEXT) inline_ape_smear.$(OBJEXT) \
 	inline_hyp_smear.$(OBJEXT) $(am__objects_2) $(am__objects_3) \
-	$(am__objects_4) asqtad_fermact_s.$(OBJEXT) \
+	$(am__objects_4) $(am__objects_5) asqtad_fermact_s.$(OBJEXT) \
 	fermbcs_s.$(OBJEXT) simple_fermbc_s.$(OBJEXT) \
 	asqtad_linop_s.$(OBJEXT) asqtad_mdagm_s.$(OBJEXT) \
 	asq_dsl_s.$(OBJEXT) fat7_links_s.$(OBJEXT) \
@@ -512,7 +515,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	vector_meson_s.$(OBJEXT) walfil_s.$(OBJEXT) \
 	stag_phases_s.$(OBJEXT) pion_sing_s.$(OBJEXT) \
 	scalar_loops_s.$(OBJEXT) pseudoscalar_loops_s.$(OBJEXT) \
-	$(am__objects_5) chroma_init.$(OBJEXT)
+	$(am__objects_6) chroma_init.$(OBJEXT)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I.
 depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
@@ -828,6 +831,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/linop/lwldslash_w_sse.h \
 	actions/ferm/qprop/prec_dwf_qprop_array_sse_w.h \
 	actions/ferm/linop/lwldslash_w_pab.h \
+	actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_opt_w.h \
 	actions/ferm/qprop/asqtad_cps_wrapper_qprop.h
 nobase_includeHEADERS_INSTALL = $(install_sh_DATA)
 nodist_includeHEADERS_INSTALL = $(INSTALL_HEADER)
@@ -835,6 +839,7 @@ HEADERS = $(nobase_include_HEADERS) $(nodist_include_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
+VPATH = $(TOPDIR)/lib
 ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
@@ -847,6 +852,8 @@ BUILD_ASQTAD_CPS_INVERTER_WRAPPER_FALSE = @BUILD_ASQTAD_CPS_INVERTER_WRAPPER_FAL
 BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE = @BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@
 BUILD_GMP_REMEZ_FALSE = @BUILD_GMP_REMEZ_FALSE@
 BUILD_GMP_REMEZ_TRUE = @BUILD_GMP_REMEZ_TRUE@
+BUILD_OPT_CFZ_LINOP_FALSE = @BUILD_OPT_CFZ_LINOP_FALSE@
+BUILD_OPT_CFZ_LINOP_TRUE = @BUILD_OPT_CFZ_LINOP_TRUE@
 BUILD_PAB_WILSON_DSLASH_FALSE = @BUILD_PAB_WILSON_DSLASH_FALSE@
 BUILD_PAB_WILSON_DSLASH_TRUE = @BUILD_PAB_WILSON_DSLASH_TRUE@
 BUILD_SSE_DWF_CG_FALSE = @BUILD_SSE_DWF_CG_FALSE@
@@ -1260,7 +1267,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/smear/inline_ape_smear.h \
 	meas/inline/smear/inline_hyp_smear.h $(am__append_3) \
 	$(am__append_5) $(am__append_7) $(am__append_9) \
-	$(am__append_11)
+	$(am__append_11) $(am__append_13)
 nodist_include_HEADERS = chroma_config_internal.h
 
 #
@@ -1522,7 +1529,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/smear/inline_smear_aggregate.cc \
 	meas/inline/smear/inline_ape_smear.cc \
 	meas/inline/smear/inline_hyp_smear.cc $(am__append_6) \
-	$(am__append_8) $(am__append_10) \
+	$(am__append_8) $(am__append_10) $(am__append_12) \
 	actions/ferm/fermacts/asqtad_fermact_s.cc \
 	actions/ferm/fermbcs/fermbcs_s.cc \
 	actions/ferm/fermbcs/simple_fermbc_s.cc \
@@ -1538,7 +1545,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/hadron/stag_scalars_s.cc meas/hadron/vector_meson_s.cc \
 	meas/hadron/walfil_s.cc util/gauge/stag_phases_s.cc \
 	meas/hadron/pion_sing_s.cc meas/hadron/scalar_loops_s.cc \
-	meas/hadron/pseudoscalar_loops_s.cc $(am__append_12) \
+	meas/hadron/pseudoscalar_loops_s.cc $(am__append_14) \
 	init/chroma_init.cc
 all: chroma_config_internal.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -1836,6 +1843,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_ovext_fermact_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_ovext_linop_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_ovlap_contfrac5d_fermact_array_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_ovlap_contfrac5d_linop_array_opt_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_ovlap_contfrac5d_linop_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_ovlap_contfrac5d_pv_linop_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_parwilson_fermact_w.Po@am__quote@
@@ -5960,6 +5968,20 @@ lwldslash_w_pab.obj: actions/ferm/linop/lwldslash_w_pab.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/lwldslash_w_pab.cc' object='lwldslash_w_pab.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lwldslash_w_pab.obj `if test -f 'actions/ferm/linop/lwldslash_w_pab.cc'; then $(CYGPATH_W) 'actions/ferm/linop/lwldslash_w_pab.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/lwldslash_w_pab.cc'; fi`
+
+prec_ovlap_contfrac5d_linop_array_opt_w.o: actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_opt_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT prec_ovlap_contfrac5d_linop_array_opt_w.o -MD -MP -MF "$(DEPDIR)/prec_ovlap_contfrac5d_linop_array_opt_w.Tpo" -c -o prec_ovlap_contfrac5d_linop_array_opt_w.o `test -f 'actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_opt_w.cc' || echo '$(srcdir)/'`actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_opt_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/prec_ovlap_contfrac5d_linop_array_opt_w.Tpo" "$(DEPDIR)/prec_ovlap_contfrac5d_linop_array_opt_w.Po"; else rm -f "$(DEPDIR)/prec_ovlap_contfrac5d_linop_array_opt_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_opt_w.cc' object='prec_ovlap_contfrac5d_linop_array_opt_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o prec_ovlap_contfrac5d_linop_array_opt_w.o `test -f 'actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_opt_w.cc' || echo '$(srcdir)/'`actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_opt_w.cc
+
+prec_ovlap_contfrac5d_linop_array_opt_w.obj: actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_opt_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT prec_ovlap_contfrac5d_linop_array_opt_w.obj -MD -MP -MF "$(DEPDIR)/prec_ovlap_contfrac5d_linop_array_opt_w.Tpo" -c -o prec_ovlap_contfrac5d_linop_array_opt_w.obj `if test -f 'actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_opt_w.cc'; then $(CYGPATH_W) 'actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_opt_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_opt_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/prec_ovlap_contfrac5d_linop_array_opt_w.Tpo" "$(DEPDIR)/prec_ovlap_contfrac5d_linop_array_opt_w.Po"; else rm -f "$(DEPDIR)/prec_ovlap_contfrac5d_linop_array_opt_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_opt_w.cc' object='prec_ovlap_contfrac5d_linop_array_opt_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o prec_ovlap_contfrac5d_linop_array_opt_w.obj `if test -f 'actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_opt_w.cc'; then $(CYGPATH_W) 'actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_opt_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_opt_w.cc'; fi`
 
 asqtad_fermact_s.o: actions/ferm/fermacts/asqtad_fermact_s.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT asqtad_fermact_s.o -MD -MP -MF "$(DEPDIR)/asqtad_fermact_s.Tpo" -c -o asqtad_fermact_s.o `test -f 'actions/ferm/fermacts/asqtad_fermact_s.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/asqtad_fermact_s.cc; \
