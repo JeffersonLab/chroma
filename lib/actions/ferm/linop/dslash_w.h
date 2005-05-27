@@ -1,3 +1,9 @@
+// -*- C++ -*-
+// $Id: dslash_w.h,v 1.6 2005-05-27 18:36:37 edwards Exp $
+/*! \file
+ *  \brief Include possibly optimized Wilson dslash
+ */
+
 #ifndef DSLASH_W_H
 #define DSLASH_W_H
 
