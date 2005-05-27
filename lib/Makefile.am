@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.271 2005-05-27 18:41:52 edwards Exp $
+# $Id: Makefile.am,v 1.272 2005-05-27 22:09:53 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -245,6 +245,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/unprec_ovext_linop_array_w.h \
 	actions/ferm/linop/unprec_wilson_linop_w.h \
 	actions/ferm/linop/unprec_parwilson_linop_w.h \
+	actions/ferm/linop/prec_ovlap_contfrac5d_linop_base_array_w.h \
 	actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_w.h \
 	actions/ferm/linop/prec_ovlap_contfrac5d_pv_linop_array_w.h \
 	actions/ferm/linop/unprec_dwftransf_linop_w.h \
@@ -557,7 +558,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/linop/prec_nef_general_linop_array_w.cc \
 	actions/ferm/linop/prec_nef_linop_array_w.cc \
 	actions/ferm/linop/prec_ovdwf_linop_array_w.cc \
-	actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_w.cc \
+	actions/ferm/linop/prec_ovlap_contfrac5d_linop_base_array_w.cc \
 	actions/ferm/linop/prec_ovlap_contfrac5d_pv_linop_array_w.cc \
 	actions/ferm/linop/prec_parwilson_linop_w.cc \
 	actions/ferm/linop/prec_wilson_linop_w.cc \
