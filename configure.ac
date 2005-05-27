@@ -1,4 +1,4 @@
-AC_INIT(chroma,1.21,edwards@jlab.org)
+AC_INIT(chroma,1.22,edwards@jlab.org)
 AC_PREREQ([2.57])
 AC_CONFIG_AUX_DIR(./config)
 AC_CANONICAL_HOST
@@ -35,13 +35,13 @@ AC_ARG_WITH(qdp,
 AC_ARG_ENABLE(sse_wilson_dslash,
   AC_HELP_STRING( 
     [--enable-sse-wilson-dslash],
-    [Build and Use the SSE2 Wilson Dslash Library ])
+    [Build and Use the SSE2 Wilson Dslash Library])
 )
 
 AC_ARG_ENABLE(sse_dwf_cg,
   AC_HELP_STRING( 
     [--enable-sse-dwf-cg],
-    [Build and Use the SSE DWF CG Library ])
+    [Build and Use the SSE DWF CG Library])
 )
 
 AC_ARG_ENABLE(pab_wilson_dslash,
@@ -54,6 +54,12 @@ AC_ARG_ENABLE(asqtad_cps_inverter,
    AC_HELP_STRING(
     [--enable-asqtad-cps-inverter],
     [Wrap the CPS asqtad inverter])
+)
+
+AC_ARG_ENABLE(opt_cfz_linop,
+  AC_HELP_STRING( 
+    [--enable-opt-cfz-linop],
+    [Build and use the generic optimized Continued Frac. Zolo. (CFZ) Linear Oper.])
 )
 
 AC_ARG_ENABLE(gmp,
@@ -169,6 +175,23 @@ esac
 
 AM_CONDITIONAL(BUILD_ASQTAD_CPS_INVERTER_WRAPPER,
   [test "x${enable_asqtad_cps_inverter}x" = "xyesx" ])
+
+
+dnl Generically optimized CFZ Linop
+case "$enable_opt_cfz_linop" in
+  yes)
+	ac_build_opt_cfz_linop="yes" 
+        AC_MSG_NOTICE( [Configuring optimized Continued Frac. (CFZ) LinOp] )
+	AC_DEFINE([BUILD_CFZ_CFZ_LINOP],[],[ Build optimized Continued Frac. (CFZ) LinOp])
+	;;
+  *)
+	ac_build_opt_cfz_linop="no"
+	AC_MSG_NOTICE( [Not building optimized CFZ LinOp] )
+        ;;
+esac 
+
+AM_CONDITIONAL(BUILD_OPT_CFZ_LINOP,
+  [test "x${enable_opt_cfz_linop}x" = "xyesx" ])
 
 
 dnl Enable GMP
