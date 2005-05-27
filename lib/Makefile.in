@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.361 2005-05-27 18:44:50 edwards Exp $
+# $Id: Makefile.in,v 1.362 2005-05-27 22:10:20 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -236,7 +236,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/linop/prec_nef_general_linop_array_w.cc \
 	actions/ferm/linop/prec_nef_linop_array_w.cc \
 	actions/ferm/linop/prec_ovdwf_linop_array_w.cc \
-	actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_w.cc \
+	actions/ferm/linop/prec_ovlap_contfrac5d_linop_base_array_w.cc \
 	actions/ferm/linop/prec_ovlap_contfrac5d_pv_linop_array_w.cc \
 	actions/ferm/linop/prec_parwilson_linop_w.cc \
 	actions/ferm/linop/prec_wilson_linop_w.cc \
@@ -444,7 +444,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	prec_nef_general_linop_array_w.$(OBJEXT) \
 	prec_nef_linop_array_w.$(OBJEXT) \
 	prec_ovdwf_linop_array_w.$(OBJEXT) \
-	prec_ovlap_contfrac5d_linop_array_w.$(OBJEXT) \
+	prec_ovlap_contfrac5d_linop_base_array_w.$(OBJEXT) \
 	prec_ovlap_contfrac5d_pv_linop_array_w.$(OBJEXT) \
 	prec_parwilson_linop_w.$(OBJEXT) prec_wilson_linop_w.$(OBJEXT) \
 	prec_ovext_linop_array_w.$(OBJEXT) \
@@ -731,6 +731,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/linop/unprec_ovext_linop_array_w.h \
 	actions/ferm/linop/unprec_wilson_linop_w.h \
 	actions/ferm/linop/unprec_parwilson_linop_w.h \
+	actions/ferm/linop/prec_ovlap_contfrac5d_linop_base_array_w.h \
 	actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_w.h \
 	actions/ferm/linop/prec_ovlap_contfrac5d_pv_linop_array_w.h \
 	actions/ferm/linop/unprec_dwftransf_linop_w.h \
@@ -1170,6 +1171,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/linop/unprec_ovext_linop_array_w.h \
 	actions/ferm/linop/unprec_wilson_linop_w.h \
 	actions/ferm/linop/unprec_parwilson_linop_w.h \
+	actions/ferm/linop/prec_ovlap_contfrac5d_linop_base_array_w.h \
 	actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_w.h \
 	actions/ferm/linop/prec_ovlap_contfrac5d_pv_linop_array_w.h \
 	actions/ferm/linop/unprec_dwftransf_linop_w.h \
@@ -1454,7 +1456,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/ferm/linop/prec_nef_general_linop_array_w.cc \
 	actions/ferm/linop/prec_nef_linop_array_w.cc \
 	actions/ferm/linop/prec_ovdwf_linop_array_w.cc \
-	actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_w.cc \
+	actions/ferm/linop/prec_ovlap_contfrac5d_linop_base_array_w.cc \
 	actions/ferm/linop/prec_ovlap_contfrac5d_pv_linop_array_w.cc \
 	actions/ferm/linop/prec_parwilson_linop_w.cc \
 	actions/ferm/linop/prec_wilson_linop_w.cc \
@@ -1844,7 +1846,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_ovext_linop_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_ovlap_contfrac5d_fermact_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_ovlap_contfrac5d_linop_array_opt_w.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_ovlap_contfrac5d_linop_array_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_ovlap_contfrac5d_linop_base_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_ovlap_contfrac5d_pv_linop_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_parwilson_fermact_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_parwilson_linop_w.Po@am__quote@
@@ -4625,19 +4627,19 @@ prec_ovdwf_linop_array_w.obj: actions/ferm/linop/prec_ovdwf_linop_array_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o prec_ovdwf_linop_array_w.obj `if test -f 'actions/ferm/linop/prec_ovdwf_linop_array_w.cc'; then $(CYGPATH_W) 'actions/ferm/linop/prec_ovdwf_linop_array_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/prec_ovdwf_linop_array_w.cc'; fi`
 
-prec_ovlap_contfrac5d_linop_array_w.o: actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_w.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT prec_ovlap_contfrac5d_linop_array_w.o -MD -MP -MF "$(DEPDIR)/prec_ovlap_contfrac5d_linop_array_w.Tpo" -c -o prec_ovlap_contfrac5d_linop_array_w.o `test -f 'actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_w.cc' || echo '$(srcdir)/'`actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_w.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/prec_ovlap_contfrac5d_linop_array_w.Tpo" "$(DEPDIR)/prec_ovlap_contfrac5d_linop_array_w.Po"; else rm -f "$(DEPDIR)/prec_ovlap_contfrac5d_linop_array_w.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_w.cc' object='prec_ovlap_contfrac5d_linop_array_w.o' libtool=no @AMDEPBACKSLASH@
+prec_ovlap_contfrac5d_linop_base_array_w.o: actions/ferm/linop/prec_ovlap_contfrac5d_linop_base_array_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT prec_ovlap_contfrac5d_linop_base_array_w.o -MD -MP -MF "$(DEPDIR)/prec_ovlap_contfrac5d_linop_base_array_w.Tpo" -c -o prec_ovlap_contfrac5d_linop_base_array_w.o `test -f 'actions/ferm/linop/prec_ovlap_contfrac5d_linop_base_array_w.cc' || echo '$(srcdir)/'`actions/ferm/linop/prec_ovlap_contfrac5d_linop_base_array_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/prec_ovlap_contfrac5d_linop_base_array_w.Tpo" "$(DEPDIR)/prec_ovlap_contfrac5d_linop_base_array_w.Po"; else rm -f "$(DEPDIR)/prec_ovlap_contfrac5d_linop_base_array_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/prec_ovlap_contfrac5d_linop_base_array_w.cc' object='prec_ovlap_contfrac5d_linop_base_array_w.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o prec_ovlap_contfrac5d_linop_array_w.o `test -f 'actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_w.cc' || echo '$(srcdir)/'`actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_w.cc
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o prec_ovlap_contfrac5d_linop_base_array_w.o `test -f 'actions/ferm/linop/prec_ovlap_contfrac5d_linop_base_array_w.cc' || echo '$(srcdir)/'`actions/ferm/linop/prec_ovlap_contfrac5d_linop_base_array_w.cc
 
-prec_ovlap_contfrac5d_linop_array_w.obj: actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_w.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT prec_ovlap_contfrac5d_linop_array_w.obj -MD -MP -MF "$(DEPDIR)/prec_ovlap_contfrac5d_linop_array_w.Tpo" -c -o prec_ovlap_contfrac5d_linop_array_w.obj `if test -f 'actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_w.cc'; then $(CYGPATH_W) 'actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_w.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/prec_ovlap_contfrac5d_linop_array_w.Tpo" "$(DEPDIR)/prec_ovlap_contfrac5d_linop_array_w.Po"; else rm -f "$(DEPDIR)/prec_ovlap_contfrac5d_linop_array_w.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_w.cc' object='prec_ovlap_contfrac5d_linop_array_w.obj' libtool=no @AMDEPBACKSLASH@
+prec_ovlap_contfrac5d_linop_base_array_w.obj: actions/ferm/linop/prec_ovlap_contfrac5d_linop_base_array_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT prec_ovlap_contfrac5d_linop_base_array_w.obj -MD -MP -MF "$(DEPDIR)/prec_ovlap_contfrac5d_linop_base_array_w.Tpo" -c -o prec_ovlap_contfrac5d_linop_base_array_w.obj `if test -f 'actions/ferm/linop/prec_ovlap_contfrac5d_linop_base_array_w.cc'; then $(CYGPATH_W) 'actions/ferm/linop/prec_ovlap_contfrac5d_linop_base_array_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/prec_ovlap_contfrac5d_linop_base_array_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/prec_ovlap_contfrac5d_linop_base_array_w.Tpo" "$(DEPDIR)/prec_ovlap_contfrac5d_linop_base_array_w.Po"; else rm -f "$(DEPDIR)/prec_ovlap_contfrac5d_linop_base_array_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/prec_ovlap_contfrac5d_linop_base_array_w.cc' object='prec_ovlap_contfrac5d_linop_base_array_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o prec_ovlap_contfrac5d_linop_array_w.obj `if test -f 'actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_w.cc'; then $(CYGPATH_W) 'actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_w.cc'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o prec_ovlap_contfrac5d_linop_base_array_w.obj `if test -f 'actions/ferm/linop/prec_ovlap_contfrac5d_linop_base_array_w.cc'; then $(CYGPATH_W) 'actions/ferm/linop/prec_ovlap_contfrac5d_linop_base_array_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/prec_ovlap_contfrac5d_linop_base_array_w.cc'; fi`
 
 prec_ovlap_contfrac5d_pv_linop_array_w.o: actions/ferm/linop/prec_ovlap_contfrac5d_pv_linop_array_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT prec_ovlap_contfrac5d_pv_linop_array_w.o -MD -MP -MF "$(DEPDIR)/prec_ovlap_contfrac5d_pv_linop_array_w.Tpo" -c -o prec_ovlap_contfrac5d_pv_linop_array_w.o `test -f 'actions/ferm/linop/prec_ovlap_contfrac5d_pv_linop_array_w.cc' || echo '$(srcdir)/'`actions/ferm/linop/prec_ovlap_contfrac5d_pv_linop_array_w.cc; \
