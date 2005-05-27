@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_fermact_array_w.cc,v 1.15 2005-05-27 16:30:11 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_fermact_array_w.cc,v 1.16 2005-05-27 18:39:15 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -7,7 +7,8 @@
 
 #include "actions/ferm/fermacts/unprec_wilson_fermact_w.h"
 #include "actions/ferm/fermacts/prec_ovlap_contfrac5d_fermact_array_w.h"
-#include "actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_w.h"
+//#include "actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_w.h"
+#include "actions/ferm/linop/ovlap_contfrac5d_w.h"
 #include "actions/ferm/linop/prec_ovlap_contfrac5d_pv_linop_array_w.h"
 #include "actions/ferm/linop/lmdagm.h"
 #include "actions/ferm/invert/invcg2_array.h"
