@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.270 2005-05-20 16:39:50 edwards Exp $
+# $Id: Makefile.am,v 1.271 2005-05-27 18:41:52 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -668,6 +668,11 @@ endif
 if BUILD_PAB_WILSON_DSLASH
 nobase_include_HEADERS += actions/ferm/linop/lwldslash_w_pab.h
 libchroma_a_SOURCES += actions/ferm/linop/lwldslash_w_pab.cc
+endif
+
+if BUILD_OPT_CFZ_LINOP
+nobase_include_HEADERS += actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_opt_w.h
+libchroma_a_SOURCES += actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_opt_w.cc
 endif
 
 #
