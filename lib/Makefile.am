@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.272 2005-05-27 22:09:53 edwards Exp $
+# $Id: Makefile.am,v 1.273 2005-05-28 22:38:09 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -230,7 +230,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/lwldslash_base_w.h \
 	actions/ferm/linop/lwldslash_w.h \
 	actions/ferm/linop/overlapbu_linop_w.h \
-	actions/ferm/linop/prec_dwf_linop_base_array_w.h \
+	actions/ferm/linop/prec_dwflike_linop_base_array_w.h \
 	actions/ferm/linop/prec_dwf_linop_array_w.h \
 	actions/ferm/linop/prec_ovdwf_linop_array_w.h \
 	actions/ferm/linop/prec_nef_linop_array_w.h \
@@ -238,7 +238,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/prec_wilson_linop_w.h \
 	actions/ferm/linop/prec_parwilson_linop_w.h \
 	actions/ferm/linop/prec_ovext_linop_array_w.h \
-	actions/ferm/linop/unprec_dwf_linop_base_array_w.h \
+	actions/ferm/linop/unprec_dwflike_linop_base_array_w.h \
 	actions/ferm/linop/unprec_dwf_linop_array_w.h \
 	actions/ferm/linop/unprec_ovdwf_linop_array_w.h \
 	actions/ferm/linop/unprec_nef_linop_array_w.h \
