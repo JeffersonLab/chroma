@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.362 2005-05-27 22:10:20 edwards Exp $
+# $Id: Makefile.in,v 1.363 2005-05-28 22:38:32 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -716,7 +716,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/linop/lwldslash_base_w.h \
 	actions/ferm/linop/lwldslash_w.h \
 	actions/ferm/linop/overlapbu_linop_w.h \
-	actions/ferm/linop/prec_dwf_linop_base_array_w.h \
+	actions/ferm/linop/prec_dwflike_linop_base_array_w.h \
 	actions/ferm/linop/prec_dwf_linop_array_w.h \
 	actions/ferm/linop/prec_ovdwf_linop_array_w.h \
 	actions/ferm/linop/prec_nef_linop_array_w.h \
@@ -724,7 +724,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/linop/prec_wilson_linop_w.h \
 	actions/ferm/linop/prec_parwilson_linop_w.h \
 	actions/ferm/linop/prec_ovext_linop_array_w.h \
-	actions/ferm/linop/unprec_dwf_linop_base_array_w.h \
+	actions/ferm/linop/unprec_dwflike_linop_base_array_w.h \
 	actions/ferm/linop/unprec_dwf_linop_array_w.h \
 	actions/ferm/linop/unprec_ovdwf_linop_array_w.h \
 	actions/ferm/linop/unprec_nef_linop_array_w.h \
@@ -1156,7 +1156,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/linop/lwldslash_base_w.h \
 	actions/ferm/linop/lwldslash_w.h \
 	actions/ferm/linop/overlapbu_linop_w.h \
-	actions/ferm/linop/prec_dwf_linop_base_array_w.h \
+	actions/ferm/linop/prec_dwflike_linop_base_array_w.h \
 	actions/ferm/linop/prec_dwf_linop_array_w.h \
 	actions/ferm/linop/prec_ovdwf_linop_array_w.h \
 	actions/ferm/linop/prec_nef_linop_array_w.h \
@@ -1164,7 +1164,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/linop/prec_wilson_linop_w.h \
 	actions/ferm/linop/prec_parwilson_linop_w.h \
 	actions/ferm/linop/prec_ovext_linop_array_w.h \
-	actions/ferm/linop/unprec_dwf_linop_base_array_w.h \
+	actions/ferm/linop/unprec_dwflike_linop_base_array_w.h \
 	actions/ferm/linop/unprec_dwf_linop_array_w.h \
 	actions/ferm/linop/unprec_ovdwf_linop_array_w.h \
 	actions/ferm/linop/unprec_nef_linop_array_w.h \
