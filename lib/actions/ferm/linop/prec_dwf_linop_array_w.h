@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_linop_array_w.h,v 1.14 2005-03-02 18:32:04 bjoo Exp $
+// $Id: prec_dwf_linop_array_w.h,v 1.15 2005-05-28 22:37:42 edwards Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned domain-wall fermion linear operator
  */
@@ -9,7 +9,7 @@
 
 #include "linearop.h"
 #include "actions/ferm/linop/dslash_w.h"
-#include "actions/ferm/linop/prec_dwf_linop_base_array_w.h"
+#include "actions/ferm/linop/prec_dwflike_linop_base_array_w.h"
 #include "io/aniso_io.h"
 
 namespace Chroma 
@@ -20,7 +20,7 @@ namespace Chroma
    *
    * This routine is specific to Wilson fermions!
    */
-  class EvenOddPrecDWLinOpArray : public EvenOddPrecDWLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >
+  class EvenOddPrecDWLinOpArray : public EvenOddPrecDWLikeLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >
   {
   public:
     //! Full constructor

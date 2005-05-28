@@ -1,4 +1,4 @@
-// $Id: prec_nef_fermact_array_w.cc,v 1.16 2005-02-28 19:37:48 edwards Exp $
+// $Id: prec_nef_fermact_array_w.cc,v 1.17 2005-05-28 22:37:42 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned NEF fermion action
  */
@@ -76,7 +76,7 @@ namespace Chroma
 
 
   //! Produce an even-odd preconditioned linear operator for this action with arbitrary quark mass
-  const EvenOddPrecDWLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >*
+  const EvenOddPrecDWLikeLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >*
   EvenOddPrecNEFFermActArray::precLinOp(Handle<const ConnectState> state,
 					const Real& m_q) const
   {
@@ -85,7 +85,7 @@ namespace Chroma
   }
 
   //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
-  const UnprecDWLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >*
+  const UnprecDWLikeLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >*
   EvenOddPrecNEFFermActArray::unprecLinOp(Handle<const ConnectState> state,
 					  const Real& m_q) const
   {

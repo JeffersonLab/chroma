@@ -1,25 +1,25 @@
 // -*- C++ -*-
-// $Id: prec_dwf_linop_base_array_w.h,v 1.6 2005-01-14 20:13:06 edwards Exp $
+// $Id: unprec_dwflike_linop_base_array_w.h,v 1.1 2005-05-28 22:37:42 edwards Exp $
 /*! \file
- *  \brief Base class for even-odd preconditioned domain-wall-like linops
+ *  \brief Base class for unpreconditioned domain-wall-like fermion linear operator
  */
 
-#ifndef __prec_dwf_linop_base_array_w_h__
-#define __prec_dwf_linop_base_array_w_h__
+#ifndef __unprec_dwflike_linop_base_array_w_h__
+#define __unprec_dwflike_linop_base_array_w_h__
 
 #include "linearop.h"
 
 
 namespace Chroma
 {
-  //! 4D Even Odd preconditioned domain-wall Dirac operator
+  //! Unpreconditioned domain-wall Dirac operator
   /*!
    * \ingroup linop
    *
    * This routine is specific to Wilson fermions!
    */
   template<typename T, typename P>
-  class EvenOddPrecDWLinOpBaseArray : public EvenOddPrecLinearOperator< multi1d<T>, P >
+  class UnprecDWLikeLinOpBaseArray : public UnprecLinearOperator< multi1d<T>, P >
   {
   public:
     //! Length of DW flavor index/space
@@ -41,8 +41,8 @@ namespace Chroma
 		enum PlusMinus isign,
 		int s5) const = 0;
   };
-
-}; // End Namespace Chroma
+ 
+}
 
 
 #endif

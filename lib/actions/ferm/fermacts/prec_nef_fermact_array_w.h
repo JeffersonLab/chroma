@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_nef_fermact_array_w.h,v 1.15 2005-04-11 01:59:58 edwards Exp $
+// $Id: prec_nef_fermact_array_w.h,v 1.16 2005-05-28 22:37:42 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned NEF fermion action
  */
@@ -88,11 +88,11 @@ namespace Chroma
     Real getQuarkMass() const {return params.Mass;}
 
     //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
-    const UnprecDWLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >* unprecLinOp(Handle<const ConnectState> state, 
+    const UnprecDWLikeLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >* unprecLinOp(Handle<const ConnectState> state, 
 											     const Real& m_q) const;
 
     //! Produce an even-odd preconditioned linear operator for this action with arbitrary quark mass
-    const EvenOddPrecDWLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >* precLinOp(Handle<const ConnectState> state, 
+    const EvenOddPrecDWLikeLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >* precLinOp(Handle<const ConnectState> state, 
 												const Real& m_q) const;
 
     //! Destructor is automatic

@@ -1,4 +1,4 @@
-// $Id: prec_zolo_nef_fermact_array_w.cc,v 1.15 2005-03-03 04:38:36 edwards Exp $
+// $Id: prec_zolo_nef_fermact_array_w.cc,v 1.16 2005-05-28 22:37:42 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF fermion action
  */
@@ -193,7 +193,7 @@ namespace Chroma
   }
 
   //! Produce an even-odd preconditioned linear operator for this action with arbitrary quark mass
-  const EvenOddPrecDWLinOpBaseArray<LatticeFermion, multi1d<LatticeColorMatrix> >* 
+  const EvenOddPrecDWLikeLinOpBaseArray<LatticeFermion, multi1d<LatticeColorMatrix> >* 
   EvenOddPrecZoloNEFFermActArray::precLinOp(Handle<const ConnectState> state,
 					    const Real& m_q) const
   {
@@ -207,7 +207,7 @@ namespace Chroma
   }
 
   //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
-  const UnprecDWLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >* 
+  const UnprecDWLikeLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >* 
   EvenOddPrecZoloNEFFermActArray::unprecLinOp(Handle<const ConnectState> state,
 					      const Real& m_q) const
   {

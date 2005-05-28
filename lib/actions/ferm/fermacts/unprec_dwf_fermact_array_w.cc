@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_fermact_array_w.cc,v 1.15 2005-02-21 19:28:58 edwards Exp $
+// $Id: unprec_dwf_fermact_array_w.cc,v 1.16 2005-05-28 22:37:42 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion action
  */
@@ -82,7 +82,7 @@ namespace Chroma
 
   
   //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
-  const UnprecDWLinOpBaseArray<LatticeFermion, multi1d<LatticeColorMatrix> >* 
+  const UnprecDWLikeLinOpBaseArray<LatticeFermion, multi1d<LatticeColorMatrix> >* 
   UnprecDWFermActArray::unprecLinOp(Handle<const ConnectState> state, 
 				    const Real& m_q) const
   {

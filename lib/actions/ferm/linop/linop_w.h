@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linop_w.h,v 1.22 2005-05-27 22:09:07 edwards Exp $
+// $Id: linop_w.h,v 1.23 2005-05-28 22:37:42 edwards Exp $
 
 /*! \file
  * \brief Linear operators
@@ -25,14 +25,14 @@
 #include "unprec_pdwf4d_linop_w.h"
 #include "unprec_ppdwf4d_linop_w.h"
 
-#include "unprec_dwf_linop_base_array_w.h"
+#include "unprec_dwflike_linop_base_array_w.h"
 #include "unprec_dwf_linop_array_w.h"
 #include "unprec_nef_linop_array_w.h"
 #include "unprec_ovdwf_linop_array_w.h"
 #include "unprec_ovext_linop_array_w.h"
 #include "prec_ovext_linop_array_w.h"
 
-#include "prec_dwf_linop_base_array_w.h"
+#include "prec_dwflike_linop_base_array_w.h"
 #include "prec_dwf_linop_array_w.h"
 #include "prec_nef_linop_array_w.h"
 #include "prec_nef_general_linop_array_w.h"

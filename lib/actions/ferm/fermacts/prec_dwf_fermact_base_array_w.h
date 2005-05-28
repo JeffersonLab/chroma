@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_fermact_base_array_w.h,v 1.23 2005-04-11 01:59:58 edwards Exp $
+// $Id: prec_dwf_fermact_base_array_w.h,v 1.24 2005-05-28 22:37:42 edwards Exp $
 /*! \file
  *  \brief Base class for even-odd preconditioned domain-wall-like fermion actions
  */
@@ -8,8 +8,8 @@
 #define __prec_dwf_fermact_base_array_w_h__
 
 #include "fermact.h"
-#include "actions/ferm/linop/prec_dwf_linop_base_array_w.h"
-#include "actions/ferm/linop/unprec_dwf_linop_base_array_w.h"
+#include "actions/ferm/linop/prec_dwflike_linop_base_array_w.h"
+#include "actions/ferm/linop/unprec_dwflike_linop_base_array_w.h"
 #include "actions/ferm/linop/unprec_ppdwf4d_linop_w.h"
 #include "actions/ferm/linop/lDeltaLs_w.h"
 #include "actions/ferm/linop/lmdagm.h"
@@ -31,16 +31,16 @@ namespace Chroma
     virtual Real getQuarkMass() const = 0;
 
     //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
-    virtual const UnprecDWLinOpBaseArray<T,P>* unprecLinOp(Handle<const ConnectState> state, 
-							   const Real& m_q) const = 0;
+    virtual const UnprecDWLikeLinOpBaseArray<T,P>* unprecLinOp(Handle<const ConnectState> state, 
+							       const Real& m_q) const = 0;
 
     //! Produce an even-odd preconditioned linear operator for this action with arbitrary quark mass
-    virtual const EvenOddPrecDWLinOpBaseArray<T,P>* precLinOp(Handle<const ConnectState> state, 
-							      const Real& m_q) const = 0;
+    virtual const EvenOddPrecDWLikeLinOpBaseArray<T,P>* precLinOp(Handle<const ConnectState> state, 
+								  const Real& m_q) const = 0;
 
     //! Override to produce a DWF-link even-odd prec. linear operator for this action
     /*! Covariant return rule - override base class function */
-    virtual const EvenOddPrecDWLinOpBaseArray<T,P>* linOp(Handle<const ConnectState> state) const
+    virtual const EvenOddPrecDWLikeLinOpBaseArray<T,P>* linOp(Handle<const ConnectState> state) const
     {
       return precLinOp(state,getQuarkMass());
     }
@@ -53,7 +53,7 @@ namespace Chroma
 
     //! Override to produce a DWF-link even-odd prec. Pauli-Villars linear operator for this action
     /*! Covariant return rule - override base class function */
-    virtual const EvenOddPrecDWLinOpBaseArray<T,P>* linOpPV(Handle<const ConnectState> state) const
+    virtual const EvenOddPrecDWLikeLinOpBaseArray<T,P>* linOpPV(Handle<const ConnectState> state) const
     {
       return precLinOp(state,Real(1));
     }
@@ -104,7 +104,7 @@ namespace Chroma
 		enum PlusMinus isign,
 		int s5) const
       {
-	Handle< const EvenOddPrecDWLinOpBaseArray<T,P> > A(linOp(state));
+	Handle< const EvenOddPrecDWLikeLinOpBaseArray<T,P> > A(linOp(state));
 	A->Dminus(chi,psi,isign,s5);
       }
 

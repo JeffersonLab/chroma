@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_linop_array_w.h,v 1.14 2005-02-23 19:29:20 edwards Exp $
+// $Id: unprec_dwf_linop_array_w.h,v 1.15 2005-05-28 22:37:42 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion linear operator
  */
@@ -9,7 +9,7 @@
 
 #include "linearop.h"
 #include "actions/ferm/linop/dslash_w.h"
-#include "actions/ferm/linop/unprec_dwf_linop_base_array_w.h"
+#include "actions/ferm/linop/unprec_dwflike_linop_base_array_w.h"
 #include "io/aniso_io.h"
 
 namespace Chroma
@@ -20,7 +20,7 @@ namespace Chroma
    *
    * This routine is specific to Wilson fermions!
    */
-  class UnprecDWLinOpArray : public UnprecDWLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >
+  class UnprecDWLinOpArray : public UnprecDWLikeLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >
   {
   public:
     //! Full constructor

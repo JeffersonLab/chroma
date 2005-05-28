@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_fermact_array_w.h,v 1.19 2005-04-11 01:59:58 edwards Exp $
+// $Id: prec_dwf_fermact_array_w.h,v 1.20 2005-05-28 22:37:42 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -92,12 +92,12 @@ namespace Chroma
     Real getQuarkMass() const {return param.Mass;}
 
     //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
-    const UnprecDWLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >* unprecLinOp(Handle<const ConnectState> state, 
-											     const Real& m_q) const;
+    const UnprecDWLikeLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >* unprecLinOp(Handle<const ConnectState> state, 
+												 const Real& m_q) const;
 
     //! Produce an even-odd preconditioned linear operator for this action with arbitrary quark mass
-    const EvenOddPrecDWLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >* precLinOp(Handle<const ConnectState> state, 
-												const Real& m_q) const;
+    const EvenOddPrecDWLikeLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >* precLinOp(Handle<const ConnectState> state, 
+												    const Real& m_q) const;
 
     //! Return possibly optimized quark prop solver, solution of preconditioned system
     const SystemSolver< multi1d<LatticeFermion> >* qpropT(Handle<const ConnectState> state,

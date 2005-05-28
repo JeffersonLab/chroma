@@ -1,4 +1,4 @@
-// $Id: prec_ovdwf_fermact_array_w.cc,v 1.12 2005-01-02 05:21:09 edwards Exp $
+// $Id: prec_ovdwf_fermact_array_w.cc,v 1.13 2005-05-28 22:37:42 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned Overlap-DWF (Borici) action
  */
@@ -74,7 +74,7 @@ namespace Chroma
 
 
   //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
-  const EvenOddPrecDWLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >*
+  const EvenOddPrecDWLikeLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >*
   EvenOddPrecOvDWFermActArray::precLinOp(Handle<const ConnectState> state,
 					 const Real& m_q) const
   {
@@ -82,7 +82,7 @@ namespace Chroma
   }
 
   //! Produce an even-odd preconditioned linear operator for this action with arbitrary quark mass
-  const UnprecDWLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >*
+  const UnprecDWLikeLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >*
   EvenOddPrecOvDWFermActArray::unprecLinOp(Handle<const ConnectState> state,
 					   const Real& m_q) const
   {

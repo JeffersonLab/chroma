@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovdwf_linop_array_w.h,v 1.11 2005-01-14 20:13:06 edwards Exp $
+// $Id: prec_ovdwf_linop_array_w.h,v 1.12 2005-05-28 22:37:42 edwards Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned Overlap-DWF (Borici) linear operator
  */
@@ -9,7 +9,7 @@
 
 #include "linearop.h"
 #include "actions/ferm/linop/dslash_w.h"
-#include "actions/ferm/linop/prec_dwf_linop_base_array_w.h"
+#include "actions/ferm/linop/prec_dwflike_linop_base_array_w.h"
 
 
 namespace Chroma 
@@ -21,7 +21,7 @@ namespace Chroma
    * This routine is specific to Wilson fermions!
    */
 
-  class EvenOddPrecOvDWLinOpArray : public EvenOddPrecDWLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >
+  class EvenOddPrecOvDWLinOpArray : public EvenOddPrecDWLikeLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >
   {
   public:
     //! Partial constructor
