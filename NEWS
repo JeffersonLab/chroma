@@ -1,3 +1,9 @@
+05/28/2005 -- Robert Edwards
+
+	Version 1.22.2. Moved dwf_linop_base to dwflike_linop_base. Made
+        the 1-flav Monomials also support 1 & 3 as a special case of more
+        generic fractional flavor.
+
 05/27/2005 -- Balint Joo
 
 	Version 1.22.1. Cleaned up prec_ovlap_contfrac5d_linop codes.
