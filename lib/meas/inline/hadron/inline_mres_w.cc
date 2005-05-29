@@ -1,4 +1,4 @@
-// $Id: inline_mres_w.cc,v 1.4 2005-04-19 20:05:22 edwards Exp $
+// $Id: inline_mres_w.cc,v 1.5 2005-05-29 18:34:31 edwards Exp $
 /*! \file
  * \brief Inline construction of mres
  *
@@ -46,6 +46,14 @@ namespace Chroma
   {
     XMLReader inputtop(xml, path);
     read(inputtop, "nrow", input.nrow);
+
+    if (inputtop.count("FermionAction") != 0)
+    {
+      XMLReader xml_tmp(inputtop, "FermionAction");
+      std::ostringstream os;
+      xml_tmp.print(os);
+      input.fermact = os.str();
+    }
   }
 
 
@@ -54,6 +62,14 @@ namespace Chroma
   {
     push(xml, path);
     write(xml, "nrow", input.nrow);
+
+    if (input.fermact != "")
+    {
+      istringstream header_is(input.fermact);
+      XMLReader xml_header(header_is);
+      xml << xml_header;
+    }
+      
     pop(xml);
   }
 
@@ -247,7 +263,13 @@ namespace Chroma
     //
     // Initialize fermion action
     //
-    std::istringstream  xml_s(prop_header.fermact);
+    string ferm_act_str;
+    if (params.param.fermact == "")
+      ferm_act_str = prop_header.fermact;
+    else
+      ferm_act_str = params.param.fermact;
+      
+    std::istringstream  xml_s(ferm_act_str);
     XMLReader  fermacttop(xml_s);
     const string fermact_path = "/FermionAction";
     string fermact;

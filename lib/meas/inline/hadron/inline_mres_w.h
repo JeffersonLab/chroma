@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_mres_w.h,v 1.4 2005-04-19 20:05:22 edwards Exp $
+// $Id: inline_mres_w.h,v 1.5 2005-05-29 18:34:31 edwards Exp $
 /*! \file
  * \brief Inline mres calculations
  *
@@ -34,6 +34,7 @@ namespace Chroma
     struct Param_t
     {
       multi1d<int>    nrow;
+      std::string     fermact;
     } param;
 
     std::string       stateInfo;
