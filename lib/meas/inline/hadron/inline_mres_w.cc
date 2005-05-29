@@ -1,4 +1,4 @@
-// $Id: inline_mres_w.cc,v 1.5 2005-05-29 18:34:31 edwards Exp $
+// $Id: inline_mres_w.cc,v 1.6 2005-05-29 21:49:07 edwards Exp $
 /*! \file
  * \brief Inline construction of mres
  *
@@ -63,6 +63,8 @@ namespace Chroma
     push(xml, path);
     write(xml, "nrow", input.nrow);
 
+    QDPIO::cout << "write mresparams: fermact=XX" << input.fermact << "XX\n";
+
     if (input.fermact != "")
     {
       istringstream header_is(input.fermact);
@@ -120,6 +122,12 @@ namespace Chroma
 
       // Read in the source/propagator info
       read(inputtop, "Prop", prop);
+
+      // Possible alternate XML file pattern
+      if (paramtop.count("xml_file") != 0) 
+      {
+	read(paramtop, "xml_file", xml_file);
+      }
     }
     catch (const string& e) 
     {
