@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_one_flavor_rat_monomial5d_w.h,v 1.5 2005-05-02 09:35:58 bjoo Exp $
+// $Id: unprec_one_flavor_rat_monomial5d_w.h,v 1.6 2005-05-29 02:10:45 edwards Exp $
 /*! @file
  * @brief One-flavor collection of unpreconditioned 5D ferm monomials
  */
@@ -27,11 +27,16 @@ namespace Chroma
     UnprecOneFlavorWilsonTypeFermRatMonomial5DParams();
 
     // Read monomial from some root path
-    UnprecOneFlavorWilsonTypeFermRatMonomial5DParams(XMLReader& in, const std::string&  path);
-    InvertParam_t   inv_param; // Inverter Parameters
+    UnprecOneFlavorWilsonTypeFermRatMonomial5DParams(XMLReader& in, const std::string& path);
+    UnprecOneFlavorWilsonTypeFermRatMonomial5DParams(XMLReader& in, const std::string& path,
+						     int expNumPower_, int expDenPower_);
+
+    InvertParam_t   inv_param;     // Inverter Parameters
     std::string     ferm_act;
-    int             nthRoot;  // Use "n" copies of nth-root 1-flavor
-    int             nthRootPV; // Use "n" copies of nth-root 1-flavour
+    int             expNumPower;   // (M^dag*M)^{expNumPower / (2*expDenPower)}
+    int             expDenPower;   // (M^dag*M)^{expNumPower / (2*expDenPower)}
+    int             nthRoot;       // Use "n" copies of nth-root 1-flavor
+    int             nthRootPV;     // Use "n" copies of nth-root 1 flavor PV
 
     struct Remez_t   // eigenvalue bounds of M^dag*M
     {

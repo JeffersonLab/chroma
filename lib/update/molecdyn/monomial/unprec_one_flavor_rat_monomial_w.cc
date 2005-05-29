@@ -1,4 +1,4 @@
-// $Id: unprec_one_flavor_rat_monomial_w.cc,v 1.4 2005-04-18 16:23:24 edwards Exp $
+// $Id: unprec_one_flavor_rat_monomial_w.cc,v 1.5 2005-05-29 02:10:45 edwards Exp $
 /*! @file
  * @brief One-flavor collection of unpreconditioned 4D ferm monomials
  */
@@ -19,30 +19,114 @@ namespace Chroma
  
   namespace UnprecOneFlavorWilsonTypeFermRatMonomialEnv 
   {
+    //! Does the work
+    Monomial< multi1d<LatticeColorMatrix>,
+	      multi1d<LatticeColorMatrix> >* createMonomial(const string& name, 
+							    XMLReader& xml, const string& path)
+    {
+      QDPIO::cout << "Create Fractional Monomial: " << name << endl;
+      return new UnprecOneFlavorWilsonTypeFermRatMonomial(
+	name, UnprecOneFlavorWilsonTypeFermRatMonomialParams(xml, path));
+    }
+    
+    //! Does the work
+    Monomial< multi1d<LatticeColorMatrix>,
+	      multi1d<LatticeColorMatrix> >* createMonomial(const string& name, 
+							    XMLReader& xml, const string& path,
+							    int expNumPower, int expDenPower) 
+    {
+      QDPIO::cout << "Create Monomial: " << name << endl;
+      return new UnprecOneFlavorWilsonTypeFermRatMonomial(
+	name, UnprecOneFlavorWilsonTypeFermRatMonomialParams(xml, path, 
+							     expNumPower, expDenPower));
+    }
+    
+
+    //----------------------------------------------------------------------
+    // One flavor
+    //! Callback function for the factory
+    Monomial< multi1d<LatticeColorMatrix>,
+	      multi1d<LatticeColorMatrix> >* createMonomialWilson1(XMLReader& xml, const string& path) 
+    {
+      return createMonomial(UnprecWilsonFermActEnv::name, xml, path, 1, 1);
+    }
+    
+    //! Callback function for the factory
+    Monomial< multi1d<LatticeColorMatrix>,
+	      multi1d<LatticeColorMatrix> >* createMonomialParWilson1(XMLReader& xml, const string& path) 
+    {
+      return createMonomial(UnprecParWilsonFermActEnv::name, xml, path, 1, 1);
+    }
+    
+    //----------------------------------------------------------------------
+    // Three flavor
+    //! Callback function for the factory
+    Monomial< multi1d<LatticeColorMatrix>,
+	      multi1d<LatticeColorMatrix> >* createMonomialWilson3(XMLReader& xml, const string& path) 
+    {
+      return createMonomial(UnprecWilsonFermActEnv::name, xml, path, 3, 1);
+    }
+    
+    //! Callback function for the factory
+    Monomial< multi1d<LatticeColorMatrix>,
+	      multi1d<LatticeColorMatrix> >* createMonomialParWilson3(XMLReader& xml, const string& path) 
+    {
+      return createMonomial(UnprecParWilsonFermActEnv::name, xml, path, 3, 1);
+    }
+
+    
+    //----------------------------------------------------------------------
+    // Generic fractional flavor
     //! Callback function for the factory
     Monomial< multi1d<LatticeColorMatrix>,
 	      multi1d<LatticeColorMatrix> >* createMonomialWilson(XMLReader& xml, const string& path) 
     {
-      return new UnprecOneFlavorWilsonTypeFermRatMonomial(
-	UnprecWilsonFermActEnv::name,
-	UnprecOneFlavorWilsonTypeFermRatMonomialParams(xml, path));
+      return createMonomial(UnprecWilsonFermActEnv::name, xml, path);
     }
     
     //! Callback function for the factory
     Monomial< multi1d<LatticeColorMatrix>,
 	      multi1d<LatticeColorMatrix> >* createMonomialParWilson(XMLReader& xml, const string& path) 
     {
-      return new UnprecOneFlavorWilsonTypeFermRatMonomial(
-	UnprecParWilsonFermActEnv::name,
-	UnprecOneFlavorWilsonTypeFermRatMonomialParams(xml, path));
+      return createMonomial(UnprecParWilsonFermActEnv::name, xml, path);
     }
     
-    //! Register all the objects
-    bool registerAll()
+
+    //------------------------------------------------------
+    //! Register one flavor
+    bool registerOne(const string& prefix, const string& suffix)
     {
       bool foo = true;
-      const std::string prefix = "ONE_FLAVOR_";
-      const std::string suffix = "_FERM_RAT_MONOMIAL";
+
+      // Use a pattern to register all the qualifying fermacts
+      foo &= TheMonomialFactory::Instance().registerObject(prefix+UnprecWilsonFermActEnv::name+suffix, 
+							   createMonomialWilson1);
+
+      foo &= TheMonomialFactory::Instance().registerObject(prefix+UnprecParWilsonFermActEnv::name+suffix, 
+							   createMonomialParWilson1);
+      return foo;
+    }
+
+    //------------------------------------------------------
+    //! Register three flavor objects
+    bool registerThree(const string& prefix, const string& suffix)
+    {
+      bool foo = true;
+
+      // Use a pattern to register all the qualifying fermacts
+      foo &= TheMonomialFactory::Instance().registerObject(prefix+UnprecWilsonFermActEnv::name+suffix, 
+							   createMonomialWilson3);
+
+      foo &= TheMonomialFactory::Instance().registerObject(prefix+UnprecParWilsonFermActEnv::name+suffix, 
+							   createMonomialParWilson3);
+      return foo;
+    }
+
+    //------------------------------------------------------
+    //! Register generic fractional flavor
+    bool registerGeneric(const string& prefix, const string& suffix)
+    {
+      bool foo = true;
 
       // Use a pattern to register all the qualifying fermacts
       foo &= UnprecWilsonFermActEnv::registered;
@@ -53,6 +137,18 @@ namespace Chroma
       foo &= TheMonomialFactory::Instance().registerObject(prefix+UnprecParWilsonFermActEnv::name+suffix, 
 							   createMonomialParWilson);
       return foo;
+    }
+
+    //------------------------------------------------------
+    //! Register all the objects
+    bool registerAll()
+    {
+      bool foo = true;
+      const std::string suffix = "_FERM_RAT_MONOMIAL";
+
+      foo &= registerOne(string("ONE_FLAVOR_"), suffix);
+      foo &= registerThree(string("THREE_FLAVOR_"), suffix);
+      foo &= registerGeneric(string("FRACTIONAL_FLAVOR_"), suffix);
     }
 
     //! Register the fermact
@@ -86,9 +182,11 @@ namespace Chroma
     
     try {
       // Read the inverter Parameters
-      read(paramtop, "./InvertParam", inv_param);
-      read(paramtop, "./Remez", remez);
-      read(paramtop, "./nthRoot", nthRoot);
+      read(paramtop, "InvertParam", inv_param);
+      read(paramtop, "Remez", remez);
+      read(paramtop, "expNumPower", expNumPower);
+      read(paramtop, "expDenPower", expDenPower);
+      read(paramtop, "nthRoot", nthRoot);
       XMLReader xml_tmp(paramtop, "./FermionAction");
       std::ostringstream os;
       xml_tmp.print(os);
@@ -100,6 +198,34 @@ namespace Chroma
     }
 
     QDPIO::cout << "UnprecOneFlavorWilsonTypeFermRatMonomialParams: read " << ferm_act << endl;
+  }
+
+  // Read the parameters
+  UnprecOneFlavorWilsonTypeFermRatMonomialParams::UnprecOneFlavorWilsonTypeFermRatMonomialParams(
+    XMLReader& xml_in, const string& path, int expNumPower_, int expDenPower_)
+  {
+    // Get the top of the parameter XML tree
+    XMLReader paramtop(xml_in, path);
+    
+    expNumPower = expNumPower_;
+    expDenPower = expDenPower_;
+
+    try {
+      // Read the inverter Parameters
+      read(paramtop, "InvertParam", inv_param);
+      read(paramtop, "Remez", remez);
+      read(paramtop, "nthRoot", nthRoot);
+      XMLReader xml_tmp(paramtop, "./FermionAction");
+      std::ostringstream os;
+      xml_tmp.print(os);
+      ferm_act = os.str();
+    }
+    catch(const string& s) {
+      QDPIO::cerr << "Caught Exception while reading parameters: " << s <<endl;
+      QDP_abort(1);
+    }
+
+    QDPIO::cout << "UnprecOneFlavorWilsonTypeFermRatMonomialParams: read \n" << ferm_act << endl;
   }
 
   //! Read Parameters
@@ -163,7 +289,7 @@ namespace Chroma
     QDPIO::cout << "Normal operator PFE" << endl;
     generateApprox(fpfe, spfe, sipfe,
 		   param.remez.lowerMin, param.remez.upperMax, 
-		   -1, 2*nthRoot,
+		   -param.expNumPower, 2*param.expDenPower*nthRoot, 
 		   param.remez.forceDegree, param.remez.actionDegree,
 		   param.remez.digitPrecision);
     //*********************************************************************

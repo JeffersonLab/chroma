@@ -1,4 +1,4 @@
-// $Id: unprec_one_flavor_rat_monomial5d_w.cc,v 1.5 2005-05-02 09:35:58 bjoo Exp $
+// $Id: unprec_one_flavor_rat_monomial5d_w.cc,v 1.6 2005-05-29 02:10:45 edwards Exp $
 /*! @file
  * @brief One-flavor collection of unpreconditioned 5D ferm monomials
  */
@@ -24,66 +24,225 @@ namespace Chroma
  
   namespace UnprecOneFlavorWilsonTypeFermRatMonomial5DEnv 
   {
+    //! Does the work
+    Monomial< multi1d<LatticeColorMatrix>,
+	      multi1d<LatticeColorMatrix> >* createMonomial(const string& name, 
+							    XMLReader& xml, const string& path)
+    {
+      QDPIO::cout << "Create Monomial: " << name << endl;
+      return new UnprecOneFlavorWilsonTypeFermRatMonomial5D(
+	name, UnprecOneFlavorWilsonTypeFermRatMonomial5DParams(xml, path));
+    }
+    
+    //! Does the work
+    Monomial< multi1d<LatticeColorMatrix>,
+	      multi1d<LatticeColorMatrix> >* createMonomial(const string& name, 
+							    XMLReader& xml, const string& path,
+							    int expNumPower, int expDenPower) 
+    {
+      QDPIO::cout << "Create Monomial: " << name << endl;
+      return new UnprecOneFlavorWilsonTypeFermRatMonomial5D(
+	name, UnprecOneFlavorWilsonTypeFermRatMonomial5DParams(xml, path, 
+								    expNumPower, expDenPower));
+    }
+    
+
+    //----------------------------------------------------------------------
+    // One flavor
+    //! Callback function for the factory
+    Monomial< multi1d<LatticeColorMatrix>,
+	      multi1d<LatticeColorMatrix> >* createMonomialDWF1(XMLReader& xml, const string& path) 
+    {
+      return createMonomial(UnprecDWFermActArrayEnv::name, xml, path, 1, 1);
+    }
+    
+    //! Callback function for the factory
+    Monomial< multi1d<LatticeColorMatrix>,
+	      multi1d<LatticeColorMatrix> >* createMonomialOvDWF1(XMLReader& xml, const string& path) 
+    {
+      return createMonomial(UnprecOvDWFermActArrayEnv::name, xml, path, 1, 1);
+    }
+    
+    //! Callback function for the factory
+    Monomial< multi1d<LatticeColorMatrix>,
+	      multi1d<LatticeColorMatrix> >* createMonomialNEF1(XMLReader& xml, const string& path) 
+    {
+      return createMonomial(UnprecNEFFermActArrayEnv::name, xml, path, 1, 1);
+    }
+    
+    //! Callback function for the factory
+    Monomial< multi1d<LatticeColorMatrix>,
+	      multi1d<LatticeColorMatrix> >* createMonomialZoloNEF1(XMLReader& xml, const string& path) 
+    {
+      return createMonomial(UnprecZoloNEFFermActArrayEnv::name, xml, path, 1, 1);
+    }
+    
+    //! Callback function for the factory
+    Monomial< multi1d<LatticeColorMatrix>,
+	      multi1d<LatticeColorMatrix> >* createMonomialContFrac1(XMLReader& xml, const string& path) 
+    {
+      return createMonomial(UnprecOvlapContFrac5DFermActArrayEnv::name, xml, path, 1, 1);
+    }
+
+    //! Callback function for the factory
+    Monomial< multi1d<LatticeColorMatrix>,
+	      multi1d<LatticeColorMatrix> >* createMonomialOvExt1(XMLReader& xml, const string& path) 
+    {
+      return createMonomial(UnprecOvExtFermActArrayEnv::name, xml, path, 1, 1);
+    }
+
+
+    //----------------------------------------------------------------------
+    // Three flavor
+    //! Callback function for the factory
+    Monomial< multi1d<LatticeColorMatrix>,
+	      multi1d<LatticeColorMatrix> >* createMonomialDWF3(XMLReader& xml, const string& path) 
+    {
+      return createMonomial(UnprecDWFermActArrayEnv::name, xml, path, 3, 1);
+    }
+    
+    //! Callback function for the factory
+    Monomial< multi1d<LatticeColorMatrix>,
+	      multi1d<LatticeColorMatrix> >* createMonomialOvDWF3(XMLReader& xml, const string& path) 
+    {
+      return createMonomial(UnprecOvDWFermActArrayEnv::name, xml, path, 3, 1);
+    }
+    
+    //! Callback function for the factory
+    Monomial< multi1d<LatticeColorMatrix>,
+	      multi1d<LatticeColorMatrix> >* createMonomialNEF3(XMLReader& xml, const string& path) 
+    {
+      return createMonomial(UnprecNEFFermActArrayEnv::name, xml, path, 3, 1);
+    }
+    
+    //! Callback function for the factory
+    Monomial< multi1d<LatticeColorMatrix>,
+	      multi1d<LatticeColorMatrix> >* createMonomialZoloNEF3(XMLReader& xml, const string& path) 
+    {
+      return createMonomial(UnprecZoloNEFFermActArrayEnv::name, xml, path, 3, 1);
+    }
+    
+    //! Callback function for the factory
+    Monomial< multi1d<LatticeColorMatrix>,
+	      multi1d<LatticeColorMatrix> >* createMonomialContFrac3(XMLReader& xml, const string& path) 
+    {
+      return createMonomial(UnprecOvlapContFrac5DFermActArrayEnv::name, xml, path, 3, 1);
+    }
+
+    //! Callback function for the factory
+    Monomial< multi1d<LatticeColorMatrix>,
+	      multi1d<LatticeColorMatrix> >* createMonomialOvExt3(XMLReader& xml, const string& path) 
+    {
+      return createMonomial(UnprecOvExtFermActArrayEnv::name, xml, path, 3, 1);
+    }
+
+
+    //----------------------------------------------------------------------
+    // Generic fractional flavor
     //! Callback function for the factory
     Monomial< multi1d<LatticeColorMatrix>,
 	      multi1d<LatticeColorMatrix> >* createMonomialDWF(XMLReader& xml, const string& path) 
     {
-      return new UnprecOneFlavorWilsonTypeFermRatMonomial5D(
-	UnprecDWFermActArrayEnv::name,
-	UnprecOneFlavorWilsonTypeFermRatMonomial5DParams(xml, path));
+      return createMonomial(UnprecDWFermActArrayEnv::name, xml, path);
     }
     
     //! Callback function for the factory
     Monomial< multi1d<LatticeColorMatrix>,
 	      multi1d<LatticeColorMatrix> >* createMonomialOvDWF(XMLReader& xml, const string& path) 
     {
-      return new UnprecOneFlavorWilsonTypeFermRatMonomial5D(
-	UnprecOvDWFermActArrayEnv::name,
-	UnprecOneFlavorWilsonTypeFermRatMonomial5DParams(xml, path));
+      return createMonomial(UnprecOvDWFermActArrayEnv::name, xml, path);
     }
     
     //! Callback function for the factory
     Monomial< multi1d<LatticeColorMatrix>,
 	      multi1d<LatticeColorMatrix> >* createMonomialNEF(XMLReader& xml, const string& path) 
     {
-      return new UnprecOneFlavorWilsonTypeFermRatMonomial5D(
-	UnprecNEFFermActArrayEnv::name,
-	UnprecOneFlavorWilsonTypeFermRatMonomial5DParams(xml, path));
+      return createMonomial(UnprecNEFFermActArrayEnv::name, xml, path);
     }
     
     //! Callback function for the factory
     Monomial< multi1d<LatticeColorMatrix>,
 	      multi1d<LatticeColorMatrix> >* createMonomialZoloNEF(XMLReader& xml, const string& path) 
     {
-      return new UnprecOneFlavorWilsonTypeFermRatMonomial5D(
-	UnprecZoloNEFFermActArrayEnv::name,
-	UnprecOneFlavorWilsonTypeFermRatMonomial5DParams(xml, path));
+      return createMonomial(UnprecZoloNEFFermActArrayEnv::name, xml, path);
     }
     
     //! Callback function for the factory
     Monomial< multi1d<LatticeColorMatrix>,
 	      multi1d<LatticeColorMatrix> >* createMonomialContFrac(XMLReader& xml, const string& path) 
     {
-      return new UnprecOneFlavorWilsonTypeFermRatMonomial5D(
-	UnprecOvlapContFrac5DFermActArrayEnv::name,
-	UnprecOneFlavorWilsonTypeFermRatMonomial5DParams(xml, path));
+      return createMonomial(UnprecOvlapContFrac5DFermActArrayEnv::name, xml, path);
     }
-    
+
     //! Callback function for the factory
     Monomial< multi1d<LatticeColorMatrix>,
 	      multi1d<LatticeColorMatrix> >* createMonomialOvExt(XMLReader& xml, const string& path) 
     {
-      return new UnprecOneFlavorWilsonTypeFermRatMonomial5D(
-	UnprecOvExtFermActArrayEnv::name,
-	UnprecOneFlavorWilsonTypeFermRatMonomial5DParams(xml, path));
+      return createMonomial(UnprecOvExtFermActArrayEnv::name, xml, path);
     }
-    
-    //! Register all the objects
-    bool registerAll()
+
+
+    //------------------------------------------------------
+    //! Register one flavor
+    bool registerOne(const string& prefix, const string& suffix)
     {
       bool foo = true;
-      const std::string prefix = "ONE_FLAVOR_";
-      const std::string suffix = "_FERM_RAT_MONOMIAL";
+
+      // Use a pattern to register all the qualifying fermacts
+      foo &= TheMonomialFactory::Instance().registerObject(prefix+UnprecDWFermActArrayEnv::name+suffix, 
+							   createMonomialDWF1);
+
+      foo &= TheMonomialFactory::Instance().registerObject(prefix+UnprecOvDWFermActArrayEnv::name+suffix, 
+							   createMonomialOvDWF1);
+
+      foo &= TheMonomialFactory::Instance().registerObject(prefix+UnprecNEFFermActArrayEnv::name+suffix, 
+							   createMonomialNEF1);
+
+      foo &= TheMonomialFactory::Instance().registerObject(prefix+UnprecZoloNEFFermActArrayEnv::name+suffix, 
+							   createMonomialZoloNEF1);
+
+      foo &= TheMonomialFactory::Instance().registerObject(prefix+UnprecOvlapContFrac5DFermActArrayEnv::name+suffix, 
+							   createMonomialContFrac1);
+
+      foo &= TheMonomialFactory::Instance().registerObject(prefix+UnprecOvExtFermActArrayEnv::name+suffix, 
+							   createMonomialOvExt1);
+
+      return foo;
+    }
+
+    //------------------------------------------------------
+    //! Register three flavor objects
+    bool registerThree(const string& prefix, const string& suffix)
+    {
+      bool foo = true;
+
+      // Use a pattern to register all the qualifying fermacts
+      foo &= TheMonomialFactory::Instance().registerObject(prefix+UnprecDWFermActArrayEnv::name+suffix, 
+							   createMonomialDWF3);
+
+      foo &= TheMonomialFactory::Instance().registerObject(prefix+UnprecOvDWFermActArrayEnv::name+suffix, 
+							   createMonomialOvDWF3);
+
+      foo &= TheMonomialFactory::Instance().registerObject(prefix+UnprecNEFFermActArrayEnv::name+suffix, 
+							   createMonomialNEF3);
+
+      foo &= TheMonomialFactory::Instance().registerObject(prefix+UnprecZoloNEFFermActArrayEnv::name+suffix, 
+							   createMonomialZoloNEF3);
+
+      foo &= TheMonomialFactory::Instance().registerObject(prefix+UnprecOvlapContFrac5DFermActArrayEnv::name+suffix, 
+							   createMonomialContFrac3);
+
+      foo &= TheMonomialFactory::Instance().registerObject(prefix+UnprecOvExtFermActArrayEnv::name+suffix, 
+							   createMonomialOvExt3);
+
+      return foo;
+    }
+
+    //------------------------------------------------------
+    //! Register generic fractional flavor
+    bool registerGeneric(const string& prefix, const string& suffix)
+    {
+      bool foo = true;
 
       // Use a pattern to register all the qualifying fermacts
       foo &= UnprecDWFermActArrayEnv::registered;
@@ -109,8 +268,19 @@ namespace Chroma
       foo &= UnprecOvExtFermActArrayEnv::registered;
       foo &= TheMonomialFactory::Instance().registerObject(prefix+UnprecOvExtFermActArrayEnv::name+suffix, 
 							   createMonomialOvExt);
-
       return foo;
+    }
+
+    //------------------------------------------------------
+    //! Register all the objects
+    bool registerAll()
+    {
+      bool foo = true;
+      const std::string suffix = "_FERM_RAT_MONOMIAL";
+
+      foo &= registerOne(string("ONE_FLAVOR_"), suffix);
+      foo &= registerThree(string("THREE_FLAVOR_"), suffix);
+      foo &= registerGeneric(string("FRACTIONAL_FLAVOR_"), suffix);
     }
 
     //! Register the fermact
@@ -146,11 +316,41 @@ namespace Chroma
     
     try {
       // Read the inverter Parameters
-      read(paramtop, "./InvertParam", inv_param);
-      read(paramtop, "./Remez", remez);
-      read(paramtop, "./nthRoot", nthRoot);
-      read(paramtop, "./nthRootPV", nthRootPV);
+      read(paramtop, "InvertParam", inv_param);
+      read(paramtop, "Remez", remez);
+      read(paramtop, "expNumPower", expNumPower);
+      read(paramtop, "expDenPower", expDenPower);
+      read(paramtop, "nthRoot", nthRoot);
+      read(paramtop, "nthRootPV", nthRootPV);
+      XMLReader xml_tmp(paramtop, "./FermionAction");
+      std::ostringstream os;
+      xml_tmp.print(os);
+      ferm_act = os.str();
+    }
+    catch(const string& s) {
+      QDPIO::cerr << "Caught Exception while reading parameters: " << s <<endl;
+      QDP_abort(1);
+    }
 
+    QDPIO::cout << "UnprecOneFlavorWilsonTypeFermRatMonomial5DParams: read " << ferm_act << endl;
+  }
+
+  // Read the parameters
+  UnprecOneFlavorWilsonTypeFermRatMonomial5DParams::UnprecOneFlavorWilsonTypeFermRatMonomial5DParams(
+    XMLReader& xml_in, const string& path, int expNumPower_, int expDenPower_)
+  {
+    // Get the top of the parameter XML tree
+    XMLReader paramtop(xml_in, path);
+    
+    expNumPower = expNumPower_;
+    expDenPower = expDenPower_;
+
+    try {
+      // Read the inverter Parameters
+      read(paramtop, "InvertParam", inv_param);
+      read(paramtop, "Remez", remez);
+      read(paramtop, "nthRoot", nthRoot);
+      read(paramtop, "nthRootPV", nthRootPV);
       XMLReader xml_tmp(paramtop, "./FermionAction");
       std::ostringstream os;
       xml_tmp.print(os);
@@ -226,7 +426,7 @@ namespace Chroma
     QDPIO::cout << "Normal operator PFE" << endl;
     generateApprox(fpfe, spfe, sipfe,
 		   param.remez.lowerMin, param.remez.upperMax, 
-		   -1, 2*nthRoot, 
+		   -param.expNumPower, 2*param.expDenPower*nthRoot, 
 		   param.remez.degree, param.remez.degree,
 		   param.remez.digitPrecision);
 
@@ -234,7 +434,7 @@ namespace Chroma
     QDPIO::cout << "PV operator PFE" << endl;
     generateApprox(fpvpfe, spvpfe, sipvpfe,
 		   param.remez.lowerMinPV, param.remez.upperMaxPV, 
-		   1, 2*nthRootPV,
+		   param.expNumPower, 2*param.expDenPower*nthRootPV, 
 		   param.remez.degreePV, param.remez.degreePV,
 		   param.remez.digitPrecision);
     //*********************************************************************

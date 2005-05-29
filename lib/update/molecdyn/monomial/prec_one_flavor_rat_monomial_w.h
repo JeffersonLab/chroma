@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_one_flavor_rat_monomial_w.h,v 1.5 2005-04-18 16:23:24 edwards Exp $
+// $Id: prec_one_flavor_rat_monomial_w.h,v 1.6 2005-05-29 02:10:45 edwards Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -26,10 +26,15 @@ namespace Chroma
     EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams();
 
     // Read monomial from some root path
-    EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams(XMLReader& in, const std::string&  path);
-    InvertParam_t   inv_param; // Inverter Parameters
+    EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams(XMLReader& in, const std::string& path);
+    EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams(XMLReader& in, const std::string& path,
+							int expNumPower_, int expDenPower_);
+
+    InvertParam_t   inv_param;     // Inverter Parameters
     std::string     ferm_act;
-    int             nthRoot;  // Use "n" copies of nth-root 1-flavor
+    int             expNumPower;   // (M^dag*M)^{expNumPower / (2*expDenPower)}
+    int             expDenPower;   // (M^dag*M)^{expNumPower / (2*expDenPower)}
+    int             nthRoot;       // Use "n" copies of nth-root 1-flavor
 
     struct Remez_t   // eigenvalue bounds of M^dag*M
     {
