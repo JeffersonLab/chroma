@@ -1,4 +1,4 @@
-// $Id: inline_mres_w.cc,v 1.6 2005-05-29 21:49:07 edwards Exp $
+// $Id: inline_mres_w.cc,v 1.7 2005-05-29 21:52:02 edwards Exp $
 /*! \file
  * \brief Inline construction of mres
  *
@@ -124,9 +124,9 @@ namespace Chroma
       read(inputtop, "Prop", prop);
 
       // Possible alternate XML file pattern
-      if (paramtop.count("xml_file") != 0) 
+      if (inputtop.count("xml_file") != 0) 
       {
-	read(paramtop, "xml_file", xml_file);
+	read(inputtop, "xml_file", xml_file);
       }
     }
     catch (const string& e) 
