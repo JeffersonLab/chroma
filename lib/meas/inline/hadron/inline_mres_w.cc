@@ -1,4 +1,4 @@
-// $Id: inline_mres_w.cc,v 1.7 2005-05-29 21:52:02 edwards Exp $
+// $Id: inline_mres_w.cc,v 1.8 2005-05-30 16:52:16 edwards Exp $
 /*! \file
  * \brief Inline construction of mres
  *
@@ -142,7 +142,13 @@ namespace Chroma
     push(xml, path);
     
     Chroma::write(xml, "Param", param);
-    QDP::write(xml, "StateInfo", stateInfo);
+    if (stateInfo != "")
+    {
+      //QDP::write(xml, "StateInfo", stateInfo);
+      istringstream header_is(stateInfo);
+      XMLReader xml_header(header_is);
+      xml << xml_header;
+    }
     Chroma::write(xml, "Prop", prop);
     QDP::write(xml, "xml_file", xml_file);
 

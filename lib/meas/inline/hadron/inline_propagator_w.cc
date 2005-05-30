@@ -1,4 +1,4 @@
-// $Id: inline_propagator_w.cc,v 1.4 2005-04-19 20:05:22 edwards Exp $
+// $Id: inline_propagator_w.cc,v 1.5 2005-05-30 16:52:16 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -115,7 +115,13 @@ namespace Chroma
     push(xml_out, path);
     
     Chroma::write(xml_out, "Param", param);
-    QDP::write(xml_out, "StateInfo", stateInfo);
+    if (stateInfo != "")
+    {
+      //QDP::write(xml_out, "StateInfo", stateInfo);
+      istringstream header_is(stateInfo);
+      XMLReader xml_header(header_is);
+      xml_out << xml_header;
+    }
     Chroma::write(xml_out, "Prop", prop);
 
     pop(xml_out);
