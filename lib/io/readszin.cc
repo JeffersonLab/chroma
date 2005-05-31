@@ -1,4 +1,4 @@
-// $Id: readszin.cc,v 1.24 2005-02-21 19:28:59 edwards Exp $
+// $Id: readszin.cc,v 1.25 2005-05-31 01:01:03 edwards Exp $
 
 /*! \file
  *  \brief Read in a configuration written by SZIN up to configuration version 7.
@@ -46,7 +46,12 @@ void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
   read(cfg_in,cfg_record_size);
 
   if( date_size < 1 || date_size > 99)
-    QDP_error_exit("Apparently wrong configuration file, date_size=%d",date_size);
+  {
+    QDPIO::cerr << __func__ 
+		<< ": apparently wrong SZIN configuration file, date_size=" 
+		<< date_size << endl;
+    QDP_abort(1);
+  }
 
   /*
    * Read in the date & banner. They are written as int's. Use a new
@@ -207,26 +212,39 @@ void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
     break;
 
   default:
-    QDP_error_exit("configuration file version is invalid: version=%d",header.cfg_version);
+    QDPIO::cerr << __func__ << ": SZIN configuration file version is invalid: version"
+		<< header.cfg_version << endl;
+    QDP_abort(1);
   }
 
   // Check that old and new parameters are compatible
   if ( Nd != header.Nd )
-    QDP_error_exit("number of dimensions specified different from configuration file: header.Nd=%d",
-                   header.Nd);
+  {
+    QDPIO::cerr << __func__ 
+		<< ": num dimensions different from SZIN config file: header.Nd=" 
+		<< header.Nd << endl;
+    QDP_abort(1);
+  }
 
   if ( Nc != header.Nc )
-    QDP_error_exit("number of colors specified different from configuration file: header.Nc=%d",
-                   header.Nc);
+  {
+    QDPIO::cerr << __func__ 
+		<< ": number of colors specified different from SZIN config file: header.Nc="
+		<< header.Nc << endl;
+    QDP_abort(1);
+  }
 
   header.nrow.resize(Nd);
   read(cfg_in, header.nrow, Nd);
 
   for(int j = 0; j < Nd; ++j)
     if ( header.nrow[j] != Layout::lattSize()[j] )
-      QDP_error_exit("lattice size specified different from configuration file: nrow[%d]=%d",
-                     j,header.nrow[j]);
-
+    {
+      QDPIO::cerr << __func__ 
+		  << ": lattice size specified different from configuration file: nrow[" 
+		  << j << "]=" << header.nrow[j] << endl;
+      QDP_abort(1);
+    }
 
   read(cfg_in, header.seed);
 
@@ -309,7 +327,8 @@ void readSzin(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_
   }
   catch(const string& e)
   { 
-    QDP_error_exit("Error in readszin: %s",e.c_str());
+    QDPIO::cerr << __func__ << ": Error in readszin: " << e.c_str() << endl;
+    QDP_abort(1);
   }
 
   END_CODE();
