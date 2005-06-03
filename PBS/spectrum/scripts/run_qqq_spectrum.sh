@@ -1,6 +1,6 @@
 #!/bin/sh -xev
 #
-# $Id: run_complete_job.sh,v 1.3 2005-06-03 22:11:31 dgr Exp $
+# $Id: run_qqq_spectrum.sh,v 1.1 2005-06-03 22:11:31 dgr Exp $
 #
 
 
@@ -92,7 +92,7 @@
 #  #PBS -m abe
 #  #PBS -m ae
 
-#PBS -M user_email_address
+#PBS -M dgr@jlab.org
 
 #          Declare the time after which the job is eligible for execution.
 #          If you wish the job to be immediately eligible for execution,
@@ -139,23 +139,25 @@ GAUGEROOT=__GAUGEROOT__
 # Fermion parameters
 NU=__NU__
 XI_0=__XI_0__
-MASS=__MASS__
+S_MASS=__S_MASS__
+UD_MASS=__UD_MASS__
 
 _RSDCG=1.0e-7
 _MAXCG=1000
 
 _APE_FACT=2.5
 _APE_NUM=5
-_GAUS_RAD_SRC=3.6
-_GAUS_ITR_SRC=32
+_GAUS_RAD_SRC=__GAUSS_RAD__
+_GAUS_ITR_SRC=__GAUSS_ITR__
 #
 #  Where we store the data
-_ARCHROOT=/raid3/dgr/
+#_ARCHROOT=/raid3/dgr/
+_ARCHROOT=/home/dgr/qcd/data/
 
 #
 # Filenames
-_UD_PROP_ROOT=ud_prop280_test
-_S_PROP_ROOT=s_prop280_test
+PROP_ROOT=prop
+
 
 
 NCPU=`wc -l < $PBS_NODEFILE`
@@ -190,7 +192,10 @@ echo ------------------------------------------------------
 #                                                            #
 ##############################################################
 
-SERVER=$PBS_O_HOST
+#SERVER=$PBS_O_HOST
+#SERVER=qcdsvr
+#SERVER=ernest
+SERVER=enrico
 WORKDIR=/scratch/PBS_$PBS_JOBID
 SCP=/usr/bin/scp
 SSH=/usr/bin/ssh
@@ -235,8 +240,9 @@ PERMDIR=${HOME}/work
 #PROGDIR=$HOME/bin/qdp++-1.9.3
 #PROGDIR=$HOME/qcd/src/chroma/scalar/mainprogs/main
 PROGDIR=$HOME/bin/scalar
+#PROGDIR=$HOME/bin/scalar
 
-PROGLIST="make_source propagator sink_smearing qqq_w"
+PROGLIST="make_source propagator sink_smearing qqq_w spectrum_w"
 
 
 SERVPERMDIR=${PBS_O_HOST}:${PERMDIR}
@@ -274,10 +280,14 @@ stagein()
 
     for names in $PROGLIST
     do
-      ${SCP} ${SERVER}:${PROGDIR}/${names} ${machine}:${WORKDIR}
+#      ${SCP} ${SERVER}:${PROGDIR}/${names} ${machine}:${WORKDIR}
+${SCP} ${PROGDIR}/${names} ${machine}:${WORKDIR}
     done
 
-    ${SCP} ${SERVER}:/raid3/baryons/simulation_input/First_Run/Nucleons/qqq_props ${WORKDIR}
+#    ${SCP} ${SERVER}:/raid3/dgr/baryons/qqq_props ${WORKDIR}
+#    ${SCP} ${SERVER}:/home/dgr/baryons/Nucleons/qqq_props ${WORKDIR}
+    ${SCP} ${SERVER}:/raid3/baryons/simulation_input/SS_SD/Nucleons/qqq_props ${WORKDIR}
+
 
     echo Files in node work directory are as follows:
     ${SSH} ${machine} ls -l ${WORKDIR}
@@ -375,7 +385,7 @@ cat > src_template <<EOF
 
 <make_source>
 <annotation>
-; $Id: run_complete_job.sh,v 1.3 2005-06-03 22:11:31 dgr Exp $
+; $Id: run_qqq_spectrum.sh,v 1.1 2005-06-03 22:11:31 dgr Exp $
 ;
 ; MAKE_SOURCE input file.
 ;
@@ -431,7 +441,7 @@ cat > prop_template <<EOF
 
 <propagator>
 <annotation>
-; $Id: run_complete_job.sh,v 1.3 2005-06-03 22:11:31 dgr Exp $
+; $Id: run_qqq_spectrum.sh,v 1.1 2005-06-03 22:11:31 dgr Exp $
 ;
 ; PROPAGATOR input file.
 ;
@@ -443,12 +453,16 @@ cat > prop_template <<EOF
 </annotation>
 
 <Param>
- <version>6</version>
+ <version>7</version>
  <FermTypeP>WILSON</FermTypeP>
  <nonRelProp>false</nonRelProp>
  <FermionAction>
   <FermAct>WILSON</FermAct>
-  <Mass>${MASS}</Mass>
+  <Mass>_MASS</Mass>
+  <FermionBC>
+    <FermBC>SIMPLE_FERMBC</FermBC>
+    <boundary>1 1 1 -1</boundary>
+  </FermionBC>
   <AnisoParam>
    <anisoP>true</anisoP>
    <t_dir>3</t_dir>
@@ -462,8 +476,6 @@ cat > prop_template <<EOF
    <MaxCG>${_MAXCG}</MaxCG>
  </InvertParam>
  <nrow>${LSIZE} ${LSIZE} ${LSIZE} ${TSIZE}</nrow>
- <boundary>1 1 1 -1</boundary>
- <t_source>0 0 0 0</t_source>
 </Param>
 <Cfg>
  <cfg_type>SZIN</cfg_type>
@@ -487,49 +499,33 @@ echo "***************************************************"
 #
 
 cat > snk_template <<EOF
-<?xml version="1.0"?>
+<elem>
+  <SinkParam>
+    <version>4</version>
+    <wave_state>S_WAVE</wave_state>
+    <sink_type>SHELL_SINK</sink_type>
+    <direction>2</direction>
 
-<sink_smearing>
-<annotation>
-; 
-;
-; SINK_SMEARING input file
-;
-; This program is the input file for a sink_smearing
-;
-</annotation>
-
-<Param>
- <version>4</version>
- <wave_state>S_WAVE</wave_state>
- <sink_type>SHELL_SINK</sink_type>
- <direction>2</direction>
-
- <ShellSink>
-   <SinkSmearingParam>
-     <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-     <wvf_param>${_GAUS_RAD_SRC}</wvf_param>
-     <wvfIntPar>${_GAUS_ITR_SRC}</wvfIntPar>
-   </SinkSmearingParam>
-   <laplace_power>0</laplace_power>
-   <link_smear_fact>${_APE_FACT}</link_smear_fact>
-   <link_smear_num>${_APE_NUM}</link_smear_num>
-   <disp_length>_DISP_LENGTH</disp_length>
-   <disp_dir>_DISP_DIR</disp_dir>
- </ShellSink>
-
- <nrow>${LSIZE} ${LSIZE} ${LSIZE} ${TSIZE}</nrow>
-</Param>
-<Cfg>
- <cfg_type>SZIN</cfg_type>
- <cfg_file>${szingauge}</cfg_file>
-</Cfg>
-<Prop>
- <prop_file>_PROP_NAME_IN</prop_file>
- <smeared_prop_file>_PROP_NAME_OUT</smeared_prop_file>
- <smeared_prop_volfmt>MULTIFILE</smeared_prop_volfmt>
-</Prop>
-</sink_smearing>
+    <ShellSink>
+      <SinkSmearingParam>
+        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+        <wvf_param>${_GAUS_RAD_SRC}</wvf_param>
+        <wvfIntPar>${_GAUS_ITR_SRC}</wvfIntPar>
+      </SinkSmearingParam>
+      <laplace_power>0</laplace_power>
+      <link_smear_fact>${_APE_FACT}</link_smear_fact>
+      <link_smear_num>${_APE_NUM}</link_smear_num>
+      <disp_length>_DISP_LENGTH</disp_length>
+      <disp_dir>_DISP_DIR</disp_dir>
+    </ShellSink>
+    <nrow>${LSIZE} ${LSIZE} ${LSIZE} ${TSIZE}</nrow>
+  </SinkParam>
+  <Prop>
+    <prop_file>_PROP_NAME_IN</prop_file>
+    <smeared_prop_file>_PROP_NAME_OUT</smeared_prop_file>
+    <smeared_prop_volfmt>MULTIFILE</smeared_prop_volfmt>
+  </Prop>
+</elem>
 EOF
 
 echo "Sink template file is"
@@ -542,45 +538,38 @@ echo "***************************************************"
 #
 
 cat > qqq_template <<EOF
-<?xml version="1.0"?>
-
-<qqq_w>
-<annotation>
-; : qqq_w_v4.xml.ini,v 1.1 2004/06/16 14:51:35 dgr Exp $
-;
-; QQQ_W input file.
-;
-; This program is the input file for binding up bunch of propagators
-; into a generalized propagator
-;
-</annotation>
-
-<Param>
- <version>3</version>
- <Dirac_basis>true</Dirac_basis>
- <nrow>${LSIZE} ${LSIZE} ${LSIZE} ${TSIZE}</nrow>
-</Param>
-<Cfg>
- <cfg_type>SZIN</cfg_type>
- <cfg_file>${szingauge}</cfg_file>
-</Cfg>
+<elem>
+   <QQQParam>
+       <version>4</version>
+       <Dirac_basis>true</Dirac_basis>
+       <nrow>${LSIZE} ${LSIZE} ${LSIZE} ${TSIZE}</nrow>
+   </QQQParam>
 <Prop>
  <prop_file>
-<elem>_PROPAGATOR1</elem>
-<elem>_PROPAGATOR2</elem>
-<elem>_PROPAGATOR3</elem>
-</prop_file>
-</Prop>
-<Barcomp>
+  <elem>_PROPAGATOR1</elem>
+  <elem>_PROPAGATOR2</elem>
+  <elem>_PROPAGATOR3</elem>
+ </prop_file>
  <qqq_file>_QQQNAME</qqq_file>
-</Barcomp>
-</qqq_w>
+</Prop>
+</elem>
 EOF
 
 echo "QQQ template file is"
 echo "***************************************************"
 cat qqq_template
 echo "***************************************************"
+
+#
+#  Create the cfg_template file
+#
+
+cat > cfg_template <<EOF
+<Cfg>
+  <cfg_type>SZIN</cfg_type>
+  <cfg_file>${szingauge}</cfg_file>
+</Cfg>
+EOF
 
 cat > disp_table <<EOF
 1
@@ -592,17 +581,15 @@ echo "***************************************************"
 cat disp_table
 echo "***************************************************"
 
-
-
 #
 #  We now create all the DATA files we need for the propagators
 
-$HOME/bin/parse_qs.pl qqq_props disp_table src_template prop_template prop_template snk_template ${_UD_PROP_ROOT} $cfg
+$HOME/bin/parse_qs.pl qqq_props disp_table src_template prop_template ${UD_MASS} ${S_MASS} snk_template ${PROP_ROOT} $cfg cfg_template
 
 #
 #  We now create all the DATA files we need for the qqq files
 
-$HOME/bin/parse_qqq.pl qqq_props disp_table qqq_template ${_UD_PROP_ROOT} $cfg
+$HOME/bin/parse_qqq.pl qqq_props disp_table qqq_template ${PROP_ROOT} $cfg cfg_template
 
 #
 #  We now generate the sources and run the propagators
@@ -630,7 +617,7 @@ echo
 ${LAUNCH} ./make_source
 echo "..Done at "`date`
 
-${SCP} XMLDAT ${SERVER}:${_ARCHROOT}/${CFGLABEL}/${LSIZE}^3x${TSIZE}/xml/prop_${_UD_PROP_ROOT}_src_xmldat.${prop_ctr}.cfg${cfg}
+${SCP} XMLDAT ${SERVER}:${_ARCHROOT}/${CFGLABEL}/${LSIZE}^3x${TSIZE}/xml/prop_${PROP_ROOT}_src_xmldat.${prop_ctr}.cfg${cfg}
 rm XMLDAT
 
 mv prop_ini.${prop_ctr} DATA
@@ -644,7 +631,7 @@ echo
 ${LAUNCH} ./propagator
 echo "..Done at "`date`
 
-${SCP} XMLDAT ${SERVER}:${_ARCHROOT}/${CFGLABEL}/${LSIZE}^3x${TSIZE}/xml/prop_${_UD_PROP_ROOT}_xmldat.${prop_ctr}.cfg${cfg}
+${SCP} XMLDAT ${SERVER}:${_ARCHROOT}/${CFGLABEL}/${LSIZE}^3x${TSIZE}/xml/prop_${PROP_ROOT}_xmldat.${prop_ctr}.cfg${cfg}
 rm XMLDAT
 
 echo "Files in working directory are "
@@ -685,7 +672,7 @@ echo
 
 ${LAUNCH} ./sink_smearing
 
-${SCP} XMLDAT ${SERVER}:${_ARCHROOT}/${CFGLABEL}/${LSIZE}^3x${TSIZE}/xml/sink_${_UD_PROP_ROOT}_xmldat.${prop_ctr}.cfg${cfg}
+${SCP} XMLDAT ${SERVER}:${_ARCHROOT}/${CFGLABEL}/${LSIZE}^3x${TSIZE}/xml/sink_${PROP_ROOT}_xmldat.${prop_ctr}.cfg${cfg}
 rm XMLDAT
 
 echo "Finished sink smearing $prop_ctr for config ${cfg}"
@@ -697,6 +684,76 @@ done
 
 echo Files on disk are
 ls -l
+
+#
+#  Here we need to compute the spectrum
+
+echo "Computing regular spectrum at " `date`
+echo
+echo
+cat > DATA <<EOF
+<?xml version="1.0"?>
+
+<spectrum_w>
+<annotation>
+; $Id: run_qqq_spectrum.sh,v 1.1 2005-06-03 22:11:31 dgr Exp $
+;
+; SPECTRUM_W input file.
+;
+; This program is the input file for a spectrum_w test run on Wilson-type
+; propagators
+;
+; NOTE: steps needed to run
+;   1) first run the Chroma propagator test in chroma/tests/propagator
+;   2) copy this file to a file named 'DATA' in the directory where the test
+;      will run
+;   3) run the 'spectrum_w' program in that directory and capture
+;      the standard output into a file called 'RESULT'
+;   4) Compare the generated file 'XMLDAT' to the appropriate .xml file
+;      in chroma/tests/spectrum_w
+</annotation>
+
+<Param>
+ <version>11</version>
+ <Pt_snk>true</Pt_snk>
+ <Sl_snk>true</Sl_snk>
+ <Wl_snk>false</Wl_snk>
+ <MesonP>true</MesonP>
+ <CurrentP>true</CurrentP>
+ <BaryonP>true</BaryonP>
+ <HybMesP>true</HybMesP>
+ <fact_sm>${_APE_FACT}</fact_sm>
+ <numb_sm>${_APE_NUM}</numb_sm>
+ <time_rev>false</time_rev>
+ <mom2_max>3</mom2_max>
+ <avg_equiv_mom>true</avg_equiv_mom>
+ <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+ <wvf_param>${_GAUS_RAD_SRC}</wvf_param>
+ <wvfIntPar>${_GAUS_ITR_SRC}</wvfIntPar>
+ <nrow>${LSIZE} ${LSIZE} ${LSIZE} ${TSIZE}</nrow>
+</Param>
+<Cfg>
+ <cfg_type>SZIN</cfg_type>
+ <cfg_file>${szingauge}</cfg_file>
+</Cfg>
+<Prop>
+ <prop_files>
+   <elem>${PROP_ROOT}_PS__ud_nnn_nnn.cfg${cfg}</elem>
+ </prop_files>
+</Prop>
+</spectrum_w>
+EOF
+echo "***DATA FILE IS"
+echo
+cat DATA
+echo
+echo
+${LAUNCH} ./spectrum_w
+echo "Done at "`date`
+
+${SCP} XMLDAT ${SERVER}:${_ARCHROOT}/${CFGLABEL}/${LSIZE}^3x${TSIZE}/xml/spectrum_${PROP_ROOT}_xmldat.cfg${cfg}
+rm XMLDAT
+
 
 #
 #  Now we need to compute the generalised propagators
@@ -717,7 +774,7 @@ echo "*********************************************************"
 echo
 ${LAUNCH} ./qqq_w
 
-${SCP} XMLDAT ${SERVER}:${_ARCHROOT}/${CFGLABEL}/${LSIZE}^3x${TSIZE}/xml/qqq_${_UD_PROP_ROOT}_${_S_PROP_ROOT}.${qqq_ctr}.cfg${cfg}
+${SCP} XMLDAT ${SERVER}:${_ARCHROOT}/${CFGLABEL}/${LSIZE}^3x${TSIZE}/xml/qqq_${PROP_ROOT}.${qqq_ctr}.cfg${cfg}
 rm XMLDAT
 
 echo "Finished qqq number ${qqq_ctr} for config ${cfg}"
