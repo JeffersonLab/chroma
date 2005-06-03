@@ -11,8 +11,8 @@ use Parse_groups;
 
 
 
-die "Usage parse_qs.pl <qqq prop file> <displacement table> <src_template> <ud_template> <s_template> 
-<sink_template> <prop_root> <config_number>" unless $#ARGV eq 7;
+die "Usage parse_qs.pl <qqq prop file> <displacement table> <src_template> <prop_template> <ud_mass> <s_mass>
+<sink_template> <prop_root> <config_number> <cfg_template>" unless $#ARGV eq 9;
 
 #
 #  Now check the file exists
@@ -22,11 +22,13 @@ die "File $ARGV[0] does not exist\n" unless -f $ARGV[0];
 $qqq_prop = $ARGV[0];
 $disp_file = $ARGV[1];
 $src_template = $ARGV[2];
-$ud_template = $ARGV[3];
-$s_template = $ARGV[4];
-$snk_template = $ARGV[5];
-$prop_root = $ARGV[6];
-$cfg = $ARGV[7];
+$prop_template = $ARGV[3];
+$ud_mass = $ARGV[4];
+$s_mass = $ARGV[5];
+$snk_template = $ARGV[6];
+$prop_root = $ARGV[7];
+$cfg = $ARGV[8];
+$cfg_template = $ARGV[9];
 
 #
 #  The first step is to open the smearing length file, and
@@ -171,13 +173,30 @@ while(<PROP_LIST>){
 						 . ".cfg$cfg";
 
     # We now see if the sink-smeared propagator exists, and if so
-    # we generate a sink-smearing data file for it
+    # we generate a sink-smearing elem for it
     #
 
     if(! -e $propname_out){
 
 	open(IN, "< $snk_template");
-	open(OUT, "> sink_ini.$sink_ctr");
+
+#
+#  If this is the first call to the file, we open the file, and write
+#  header information
+#
+	if($sink_ctr == 0){
+	    open(OUT, "> sink_ini.$sink_ctr"); # Open the file
+#
+#  Write the header of the input file
+	    print OUT '<?xml version="1.0"?>';
+	    print OUT "\n";
+	    print OUT "<sink_smearing>\n";
+	    print OUT "<annotation>\n";
+	    print OUT "</annotation>\n";
+	    print OUT "<Param>\n";
+	}
+
+
 
 	while(<IN>){
 	    s/_PROP_NAME_IN/$propname_in/;
@@ -187,16 +206,37 @@ while(<PROP_LIST>){
 	    print OUT $_;
 	}
 	close(IN);
-	close(OUT);
 	$sink_ctr++;		# Update the sink counter
     }
+    
 
-#
 #  Now write out the sources
 
     print SRC_LIST "$flav $src $src_len\n";
     $ctr++;
 }
+
+#
+#  We conclude by writing out the tail information, assuming we've written
+#  an ini file
+#
+
+if( $sink_ctr != 0){
+
+    open(IN, " < $cfg_template");
+
+    print OUT "</Param>\n";
+
+    while (<IN>){
+	print OUT $_;
+    }
+
+    close(IN);
+
+    print OUT "</sink_smearing>\n";
+    close(OUT);
+}
+
 
 #
 #  Close the files, and remove duplicate entries
@@ -224,11 +264,11 @@ while(<SRC_LIST>){
 #  There are different templates for ud and for s quarks, since the
 #  masses are different
 
-    if($flav == "ud"){
-	$prop_template = $ud_template;
+    if($flav eq "ud"){
+	$mass = $ud_mass;
     }
     else{
-	$prop_template = $s_template;
+	$mass = $s_mass;
     }
 
     ($src_out, $src_len_out) = Parse_groups::cmu_to_chroma($src, $src_len);
@@ -246,6 +286,7 @@ while(<SRC_LIST>){
 	open(OUT,"> prop_ini.$src_ctr");
 
 	while(<IN>){
+	    s/_MASS/$mass/;
 	    s/_SOURCE_NAME/source.$src_ctr/;
 	    s/_PROP_NAME/$propname/;
 	    print OUT $_;
