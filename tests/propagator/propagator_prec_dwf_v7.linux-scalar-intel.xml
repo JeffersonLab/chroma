@@ -2,12 +2,13 @@
 
 
 <propagator>
+  <update_no>0</update_no>
   <ProgramInfo>
     <code_version>
-      <chroma>1.19</chroma>
-      <qdp>1.11.8</qdp>
+      <chroma>1.21</chroma>
+      <qdp>1.13.0</qdp>
     </code_version>
-    <run_date>17 Feb 05 21:33:33 EST</run_date>
+    <run_date>04 Jun 05 17:00:51 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -16,41 +17,35 @@
       <subgrid_volume>512</subgrid_volume>
     </Setgeom>
   </ProgramInfo>
-  <Input><propagator>
-<annotation>
-; $Id: propagator_prec_dwf_v7.linux-scalar-intel.xml,v 1.2 2005-02-18 02:35:18 edwards Exp $
-;
-; PROPAGATOR input file
-</annotation>
-
-<Param>
- <version>7</version>
- <nonRelProp>false</nonRelProp>
- <FermionAction>
+  <Input>
+    <Param>
+      <version>8</version>
+      <nonRelProp>false</nonRelProp>
+      <obsvP>true</obsvP><FermionAction>
   <FermAct>DWF</FermAct>
   <OverMass>1.4</OverMass>
   <Mass>0.06</Mass>
   <N5>6</N5>
   <boundary>1 1 1 -1</boundary>
  </FermionAction>
- <InvertParam>
-   <invType>CG_INVERTER</invType>
-   <RsdCG>1.0e-6</RsdCG>
-   <MaxCG>1000</MaxCG>
- </InvertParam>
- <nrow>4 4 4 8</nrow>
-</Param>
-<Cfg>
- <cfg_type>SZIN</cfg_type>
- <cfg_file>../test_purgaug.cfg1</cfg_file>
-</Cfg>
-<Prop>
- <source_file>../make_source/point_source_0</source_file>
- <prop_file>propagator_0</prop_file>
- <prop_volfmt>SINGLEFILE</prop_volfmt>
-</Prop>
-</propagator>
 
+      <InvertParam>
+        <invType>CG_INVERTER</invType>
+        <RsdCG>1e-06</RsdCG>
+        <MaxCG>1000</MaxCG>
+        <MROver>1</MROver>
+        <RsdCGPrec>1e-06</RsdCGPrec>
+        <MaxCGPrec>1000</MaxCGPrec>
+      </InvertParam>
+      <nrow>4 4 4 8</nrow>
+    </Param><StateInfo>
+</StateInfo>
+
+    <Prop>
+      <source_file>../make_source/point_source_0</source_file>
+      <prop_file>propagator_0</prop_file>
+      <prop_volfmt>SINGLEFILE</prop_volfmt>
+    </Prop>
   </Input>
   <Config_info><szin>
       <cfg_version>7</cfg_version>
@@ -92,6 +87,7 @@
       </seed>
     </szin>
 
+
   </Config_info>
   <Source_file_info><make_source>
       <id>0</id>
@@ -108,46 +104,9 @@
         <nrow>4 4 4 8</nrow>
       </PropSource>
       <Config_info>
-        <szin>
-          <cfg_version>7</cfg_version>
-          <date>Sat Jun 16 00:35:57 2001</date>
-          <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-          <FermTypeP>0</FermTypeP>
-          <Nd>4</Nd>
-          <Nc>3</Nc>
-          <BetaMC>20.1</BetaMC>
-          <BetaMD>0</BetaMD>
-          <KappaMC>0</KappaMC>
-          <KappaMD>0</KappaMD>
-          <MassMC>0</MassMC>
-          <MassMD>0</MassMD>
-          <dt>0</dt>
-          <MesTrj>1</MesTrj>
-          <TotalCG>0</TotalCG>
-          <TotalTrj>2</TotalTrj>
-          <spec_acc>0</spec_acc>
-          <NOver>2</NOver>
-          <TotalTry>12288</TotalTry>
-          <TotalFail>56</TotalFail>
-          <Nf>9.48851e+33</Nf>
-          <Npf>2</Npf>
-          <RefMomTrj>302059064</RefMomTrj>
-          <RefFnoiseTrj>36</RefFnoiseTrj>
-          <LamPl>9.45468e+33</LamPl>
-          <LamMi>0</LamMi>
-          <AlpLog>4.2039e-45</AlpLog>
-          <AlpExp>4.2039e-45</AlpExp>
-          <nrow>4 4 4 8</nrow>
-          <seed>
-            <Seed>
-              <elem>811</elem>
-              <elem>1073</elem>
-              <elem>1535</elem>
-              <elem>1310</elem>
-            </Seed>
-          </seed>
-        </szin>
-      </Config_info>
+
+
+  </Config_info>
     </MakeSource>
 
   </Source_record_info>
@@ -159,64 +118,70 @@
     <s_plaq>0.862579</s_plaq>
     <t_plaq>0.941947</t_plaq>
     <link>0.734641</link>
+    <pollp>
+      <elem>
+        <re>0.790237</re>
+        <im>0.00288483</im>
+      </elem>
+      <elem>
+        <re>0.785869</re>
+        <im>-0.00015866</im>
+      </elem>
+      <elem>
+        <re>0.80393</re>
+        <im>0.00160447</im>
+      </elem>
+      <elem>
+        <re>0.864752</re>
+        <im>0.00215502</im>
+      </elem>
+    </pollp>
   </Observables>
   <Source_correlator>
     <source_corr>12 0 0 0 0 0 0 0</source_corr>
   </Source_correlator>
   <DWF_QuarkProp4>
     <Qprop>
-      <RsdCG>1e-06</RsdCG>
       <n_count>48</n_count>
     </Qprop>
     <Qprop>
-      <RsdCG>1e-06</RsdCG>
       <n_count>48</n_count>
     </Qprop>
     <Qprop>
-      <RsdCG>1e-06</RsdCG>
       <n_count>48</n_count>
     </Qprop>
     <Qprop>
-      <RsdCG>1e-06</RsdCG>
       <n_count>48</n_count>
     </Qprop>
     <Qprop>
-      <RsdCG>1e-06</RsdCG>
       <n_count>48</n_count>
     </Qprop>
     <Qprop>
-      <RsdCG>1e-06</RsdCG>
       <n_count>48</n_count>
     </Qprop>
     <Qprop>
-      <RsdCG>1e-06</RsdCG>
       <n_count>48</n_count>
     </Qprop>
     <Qprop>
-      <RsdCG>1e-06</RsdCG>
       <n_count>48</n_count>
     </Qprop>
     <Qprop>
-      <RsdCG>1e-06</RsdCG>
       <n_count>48</n_count>
     </Qprop>
     <Qprop>
-      <RsdCG>1e-06</RsdCG>
       <n_count>48</n_count>
     </Qprop>
     <Qprop>
-      <RsdCG>1e-06</RsdCG>
       <n_count>48</n_count>
     </Qprop>
     <Qprop>
-      <RsdCG>1e-06</RsdCG>
       <n_count>48</n_count>
     </Qprop>
     <time_direction>
       <t_dir>3</t_dir>
     </time_direction>
     <DWF_ConservedAxial>
-      <mesprop>-0.0364543 -0.0146558 -0.00729887 -0.00227992 0.00235699 0.00748355 0.0148226 0.0364334</mesprop>
+      <mesprop>-0.0364543 -0.0146558 -0.00729888 -0.00227992 0.00235699 0.00748355 0.0148226 0.0364334</mesprop>
     </DWF_ConservedAxial>
     <DWF_LocalAxial>
       <mesprop>0.00010002 -0.0234604 -0.0106427 -0.00418088 1.18915e-05 0.0043886 0.0107881 0.0233482</mesprop>
