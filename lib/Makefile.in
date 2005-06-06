@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.363 2005-05-28 22:38:32 edwards Exp $
+# $Id: Makefile.in,v 1.364 2005-06-06 03:45:39 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -53,8 +53,14 @@ host_triplet = @host@
 #
 # Hooks for optimized code
 #
-@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_5 = actions/ferm/linop/lwldslash_w_sse.h
-@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_6 = actions/ferm/linop/lwldslash_w_sse.cc
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_5 = \
+@BUILD_SSE_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_w_sse.h \
+@BUILD_SSE_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_array_sse_w.h
+
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_6 = \
+@BUILD_SSE_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_w_sse.cc \
+@BUILD_SSE_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_array_sse_w.cc
+
 @BUILD_SSE_DWF_CG_TRUE@am__append_7 = actions/ferm/qprop/prec_dwf_qprop_array_sse_w.h
 @BUILD_SSE_DWF_CG_TRUE@am__append_8 = actions/ferm/qprop/prec_dwf_qprop_array_sse_w.cc
 @BUILD_PAB_WILSON_DSLASH_TRUE@am__append_9 = actions/ferm/linop/lwldslash_w_pab.h
@@ -231,6 +237,8 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/linop/lovlap_double_pass_w.cc \
 	actions/ferm/linop/lwldslash_base_w.cc \
 	actions/ferm/linop/lwldslash_w.cc \
+	actions/ferm/linop/lwldslash_base_array_w.cc \
+	actions/ferm/linop/lwldslash_array_w.cc \
 	actions/ferm/linop/overlapbu_linop_w.cc \
 	actions/ferm/linop/prec_dwf_linop_array_w.cc \
 	actions/ferm/linop/prec_nef_general_linop_array_w.cc \
@@ -312,6 +320,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/smear/inline_ape_smear.cc \
 	meas/inline/smear/inline_hyp_smear.cc \
 	actions/ferm/linop/lwldslash_w_sse.cc \
+	actions/ferm/linop/lwldslash_array_sse_w.cc \
 	actions/ferm/qprop/prec_dwf_qprop_array_sse_w.cc \
 	actions/ferm/linop/lwldslash_w_pab.cc \
 	actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_opt_w.cc \
@@ -335,7 +344,8 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	init/chroma_init.cc
 @BUILD_GMP_REMEZ_TRUE@am__objects_1 = remez_gmp.$(OBJEXT)
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__objects_2 =  \
-@BUILD_SSE_WILSON_DSLASH_TRUE@	lwldslash_w_sse.$(OBJEXT)
+@BUILD_SSE_WILSON_DSLASH_TRUE@	lwldslash_w_sse.$(OBJEXT) \
+@BUILD_SSE_WILSON_DSLASH_TRUE@	lwldslash_array_sse_w.$(OBJEXT)
 @BUILD_SSE_DWF_CG_TRUE@am__objects_3 =  \
 @BUILD_SSE_DWF_CG_TRUE@	prec_dwf_qprop_array_sse_w.$(OBJEXT)
 @BUILD_PAB_WILSON_DSLASH_TRUE@am__objects_4 =  \
@@ -440,6 +450,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	lovddag_double_pass_w.$(OBJEXT) lovddag_w.$(OBJEXT) \
 	lovlapms_w.$(OBJEXT) lovlap_double_pass_w.$(OBJEXT) \
 	lwldslash_base_w.$(OBJEXT) lwldslash_w.$(OBJEXT) \
+	lwldslash_base_array_w.$(OBJEXT) lwldslash_array_w.$(OBJEXT) \
 	overlapbu_linop_w.$(OBJEXT) prec_dwf_linop_array_w.$(OBJEXT) \
 	prec_nef_general_linop_array_w.$(OBJEXT) \
 	prec_nef_linop_array_w.$(OBJEXT) \
@@ -715,6 +726,8 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/linop/lDeltaLs_w.h \
 	actions/ferm/linop/lwldslash_base_w.h \
 	actions/ferm/linop/lwldslash_w.h \
+	actions/ferm/linop/lwldslash_base_array_w.h \
+	actions/ferm/linop/lwldslash_array_w.h \
 	actions/ferm/linop/overlapbu_linop_w.h \
 	actions/ferm/linop/prec_dwflike_linop_base_array_w.h \
 	actions/ferm/linop/prec_dwf_linop_array_w.h \
@@ -830,6 +843,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/inline/smear/inline_hyp_smear.h \
 	actions/ferm/fermacts/remez_gmp.h \
 	actions/ferm/linop/lwldslash_w_sse.h \
+	actions/ferm/linop/lwldslash_array_sse_w.h \
 	actions/ferm/qprop/prec_dwf_qprop_array_sse_w.h \
 	actions/ferm/linop/lwldslash_w_pab.h \
 	actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_opt_w.h \
@@ -1155,6 +1169,8 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/linop/lDeltaLs_w.h \
 	actions/ferm/linop/lwldslash_base_w.h \
 	actions/ferm/linop/lwldslash_w.h \
+	actions/ferm/linop/lwldslash_base_array_w.h \
+	actions/ferm/linop/lwldslash_array_w.h \
 	actions/ferm/linop/overlapbu_linop_w.h \
 	actions/ferm/linop/prec_dwflike_linop_base_array_w.h \
 	actions/ferm/linop/prec_dwf_linop_array_w.h \
@@ -1451,6 +1467,8 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/ferm/linop/lovlap_double_pass_w.cc \
 	actions/ferm/linop/lwldslash_base_w.cc \
 	actions/ferm/linop/lwldslash_w.cc \
+	actions/ferm/linop/lwldslash_base_array_w.cc \
+	actions/ferm/linop/lwldslash_array_w.cc \
 	actions/ferm/linop/overlapbu_linop_w.cc \
 	actions/ferm/linop/prec_dwf_linop_array_w.cc \
 	actions/ferm/linop/prec_nef_general_linop_array_w.cc \
@@ -1786,6 +1804,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lu_solve.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lw_1loop_gaugeact.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lw_tree_gaugeact.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_array_sse_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_array_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_base_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_base_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_w_pab.Po@am__quote@
@@ -4557,6 +4578,34 @@ lwldslash_w.obj: actions/ferm/linop/lwldslash_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lwldslash_w.obj `if test -f 'actions/ferm/linop/lwldslash_w.cc'; then $(CYGPATH_W) 'actions/ferm/linop/lwldslash_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/lwldslash_w.cc'; fi`
 
+lwldslash_base_array_w.o: actions/ferm/linop/lwldslash_base_array_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lwldslash_base_array_w.o -MD -MP -MF "$(DEPDIR)/lwldslash_base_array_w.Tpo" -c -o lwldslash_base_array_w.o `test -f 'actions/ferm/linop/lwldslash_base_array_w.cc' || echo '$(srcdir)/'`actions/ferm/linop/lwldslash_base_array_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/lwldslash_base_array_w.Tpo" "$(DEPDIR)/lwldslash_base_array_w.Po"; else rm -f "$(DEPDIR)/lwldslash_base_array_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/lwldslash_base_array_w.cc' object='lwldslash_base_array_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lwldslash_base_array_w.o `test -f 'actions/ferm/linop/lwldslash_base_array_w.cc' || echo '$(srcdir)/'`actions/ferm/linop/lwldslash_base_array_w.cc
+
+lwldslash_base_array_w.obj: actions/ferm/linop/lwldslash_base_array_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lwldslash_base_array_w.obj -MD -MP -MF "$(DEPDIR)/lwldslash_base_array_w.Tpo" -c -o lwldslash_base_array_w.obj `if test -f 'actions/ferm/linop/lwldslash_base_array_w.cc'; then $(CYGPATH_W) 'actions/ferm/linop/lwldslash_base_array_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/lwldslash_base_array_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/lwldslash_base_array_w.Tpo" "$(DEPDIR)/lwldslash_base_array_w.Po"; else rm -f "$(DEPDIR)/lwldslash_base_array_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/lwldslash_base_array_w.cc' object='lwldslash_base_array_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lwldslash_base_array_w.obj `if test -f 'actions/ferm/linop/lwldslash_base_array_w.cc'; then $(CYGPATH_W) 'actions/ferm/linop/lwldslash_base_array_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/lwldslash_base_array_w.cc'; fi`
+
+lwldslash_array_w.o: actions/ferm/linop/lwldslash_array_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lwldslash_array_w.o -MD -MP -MF "$(DEPDIR)/lwldslash_array_w.Tpo" -c -o lwldslash_array_w.o `test -f 'actions/ferm/linop/lwldslash_array_w.cc' || echo '$(srcdir)/'`actions/ferm/linop/lwldslash_array_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/lwldslash_array_w.Tpo" "$(DEPDIR)/lwldslash_array_w.Po"; else rm -f "$(DEPDIR)/lwldslash_array_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/lwldslash_array_w.cc' object='lwldslash_array_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lwldslash_array_w.o `test -f 'actions/ferm/linop/lwldslash_array_w.cc' || echo '$(srcdir)/'`actions/ferm/linop/lwldslash_array_w.cc
+
+lwldslash_array_w.obj: actions/ferm/linop/lwldslash_array_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lwldslash_array_w.obj -MD -MP -MF "$(DEPDIR)/lwldslash_array_w.Tpo" -c -o lwldslash_array_w.obj `if test -f 'actions/ferm/linop/lwldslash_array_w.cc'; then $(CYGPATH_W) 'actions/ferm/linop/lwldslash_array_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/lwldslash_array_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/lwldslash_array_w.Tpo" "$(DEPDIR)/lwldslash_array_w.Po"; else rm -f "$(DEPDIR)/lwldslash_array_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/lwldslash_array_w.cc' object='lwldslash_array_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lwldslash_array_w.obj `if test -f 'actions/ferm/linop/lwldslash_array_w.cc'; then $(CYGPATH_W) 'actions/ferm/linop/lwldslash_array_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/lwldslash_array_w.cc'; fi`
+
 overlapbu_linop_w.o: actions/ferm/linop/overlapbu_linop_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT overlapbu_linop_w.o -MD -MP -MF "$(DEPDIR)/overlapbu_linop_w.Tpo" -c -o overlapbu_linop_w.o `test -f 'actions/ferm/linop/overlapbu_linop_w.cc' || echo '$(srcdir)/'`actions/ferm/linop/overlapbu_linop_w.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/overlapbu_linop_w.Tpo" "$(DEPDIR)/overlapbu_linop_w.Po"; else rm -f "$(DEPDIR)/overlapbu_linop_w.Tpo"; exit 1; fi
@@ -5942,6 +5991,20 @@ lwldslash_w_sse.obj: actions/ferm/linop/lwldslash_w_sse.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/lwldslash_w_sse.cc' object='lwldslash_w_sse.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lwldslash_w_sse.obj `if test -f 'actions/ferm/linop/lwldslash_w_sse.cc'; then $(CYGPATH_W) 'actions/ferm/linop/lwldslash_w_sse.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/lwldslash_w_sse.cc'; fi`
+
+lwldslash_array_sse_w.o: actions/ferm/linop/lwldslash_array_sse_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lwldslash_array_sse_w.o -MD -MP -MF "$(DEPDIR)/lwldslash_array_sse_w.Tpo" -c -o lwldslash_array_sse_w.o `test -f 'actions/ferm/linop/lwldslash_array_sse_w.cc' || echo '$(srcdir)/'`actions/ferm/linop/lwldslash_array_sse_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/lwldslash_array_sse_w.Tpo" "$(DEPDIR)/lwldslash_array_sse_w.Po"; else rm -f "$(DEPDIR)/lwldslash_array_sse_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/lwldslash_array_sse_w.cc' object='lwldslash_array_sse_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lwldslash_array_sse_w.o `test -f 'actions/ferm/linop/lwldslash_array_sse_w.cc' || echo '$(srcdir)/'`actions/ferm/linop/lwldslash_array_sse_w.cc
+
+lwldslash_array_sse_w.obj: actions/ferm/linop/lwldslash_array_sse_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lwldslash_array_sse_w.obj -MD -MP -MF "$(DEPDIR)/lwldslash_array_sse_w.Tpo" -c -o lwldslash_array_sse_w.obj `if test -f 'actions/ferm/linop/lwldslash_array_sse_w.cc'; then $(CYGPATH_W) 'actions/ferm/linop/lwldslash_array_sse_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/lwldslash_array_sse_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/lwldslash_array_sse_w.Tpo" "$(DEPDIR)/lwldslash_array_sse_w.Po"; else rm -f "$(DEPDIR)/lwldslash_array_sse_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/lwldslash_array_sse_w.cc' object='lwldslash_array_sse_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lwldslash_array_sse_w.obj `if test -f 'actions/ferm/linop/lwldslash_array_sse_w.cc'; then $(CYGPATH_W) 'actions/ferm/linop/lwldslash_array_sse_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/lwldslash_array_sse_w.cc'; fi`
 
 prec_dwf_qprop_array_sse_w.o: actions/ferm/qprop/prec_dwf_qprop_array_sse_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT prec_dwf_qprop_array_sse_w.o -MD -MP -MF "$(DEPDIR)/prec_dwf_qprop_array_sse_w.Tpo" -c -o prec_dwf_qprop_array_sse_w.o `test -f 'actions/ferm/qprop/prec_dwf_qprop_array_sse_w.cc' || echo '$(srcdir)/'`actions/ferm/qprop/prec_dwf_qprop_array_sse_w.cc; \
