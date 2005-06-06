@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linop_w.h,v 1.23 2005-05-28 22:37:42 edwards Exp $
+// $Id: linop_w.h,v 1.24 2005-06-06 03:46:32 edwards Exp $
 
 /*! \file
  * \brief Linear operators
@@ -13,6 +13,7 @@
 // the file dslash_w.h switches in the right dslash op for
 // WilsonDslash
 #include "dslash_w.h"
+#include "dslash_array_w.h"
 
 #include "unprec_wilson_linop_w.h"
 #include "prec_wilson_linop_w.h"
