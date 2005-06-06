@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.273 2005-05-28 22:38:09 edwards Exp $
+# $Id: Makefile.am,v 1.274 2005-06-06 03:45:17 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -229,6 +229,8 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/lDeltaLs_w.h \
 	actions/ferm/linop/lwldslash_base_w.h \
 	actions/ferm/linop/lwldslash_w.h \
+	actions/ferm/linop/lwldslash_base_array_w.h \
+	actions/ferm/linop/lwldslash_array_w.h \
 	actions/ferm/linop/overlapbu_linop_w.h \
 	actions/ferm/linop/prec_dwflike_linop_base_array_w.h \
 	actions/ferm/linop/prec_dwf_linop_array_w.h \
@@ -553,6 +555,8 @@ libchroma_a_SOURCES += \
 	actions/ferm/linop/lovlap_double_pass_w.cc \
 	actions/ferm/linop/lwldslash_base_w.cc \
 	actions/ferm/linop/lwldslash_w.cc \
+	actions/ferm/linop/lwldslash_base_array_w.cc \
+	actions/ferm/linop/lwldslash_array_w.cc \
 	actions/ferm/linop/overlapbu_linop_w.cc \
 	actions/ferm/linop/prec_dwf_linop_array_w.cc \
 	actions/ferm/linop/prec_nef_general_linop_array_w.cc \
@@ -657,8 +661,12 @@ libchroma_a_SOURCES += \
 # Hooks for optimized code
 #
 if BUILD_SSE_WILSON_DSLASH
-nobase_include_HEADERS += actions/ferm/linop/lwldslash_w_sse.h
-libchroma_a_SOURCES += actions/ferm/linop/lwldslash_w_sse.cc
+nobase_include_HEADERS += \
+        actions/ferm/linop/lwldslash_w_sse.h \
+        actions/ferm/linop/lwldslash_array_sse_w.h
+libchroma_a_SOURCES += \
+        actions/ferm/linop/lwldslash_w_sse.cc \
+        actions/ferm/linop/lwldslash_array_sse_w.cc
 endif
 
 if BUILD_SSE_DWF_CG
