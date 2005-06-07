@@ -1,4 +1,4 @@
-// $Id: prec_dwf_linop_array_w.cc,v 1.18 2005-04-02 21:58:13 bjoo Exp $
+// $Id: prec_dwf_linop_array_w.cc,v 1.19 2005-06-07 19:36:25 edwards Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned domain-wall linear operator
  */
@@ -44,7 +44,7 @@ namespace Chroma
 	  u[mu] *= ff;
       }
     }
-    D.create(u);   // construct using possibly aniso glue
+    D.create(u,N5);   // construct using possibly aniso glue
 
     InvTwoKappa = 1 + a5*(1 + (Nd-1)*ff - WilsonMass); 
     //InvTwoKappa =  WilsonMass - 5.0;
@@ -309,6 +309,36 @@ namespace Chroma
   }
 
 
+  //! Apply the off diagonal block
+  /*!
+   * \param chi     result     	                   (Modify)
+   * \param psi     source     	                   (Read)
+   * \param isign   Flag ( PLUS | MINUS )   	   (Read)
+   * \param cb      checkerboard ( 0 | 1 )         (Read)
+   */
+  void 
+  EvenOddPrecDWLinOpArray::applyOffDiag(multi1d<LatticeFermion>& chi, 
+					const multi1d<LatticeFermion>& psi,
+					enum PlusMinus isign,
+					const int cb) const
+  {
+    if( chi.size() != N5 ) chi.resize(N5); 
+
+#if 1
+    D.apply(chi,psi,isign,cb);
+    for(int s(0);s<N5;s++)
+      chi[s][rb[cb]] *= (-0.5);
+
+#else
+    for(int s(0);s<N5;s++)
+    {
+      D.apply(chi[s],psi[s],isign,cb);
+      chi[s][rb[cb]] *= (-0.5);
+    }
+#endif
+  }
+
+
   //! Apply the Dminus operator on a lattice fermion. See my notes ;-)
   void 
   EvenOddPrecDWLinOpArray::Dminus(LatticeFermion& chi,
@@ -322,41 +352,16 @@ namespace Chroma
 
   //! Apply the the even-odd block onto a source vector
   void 
-  EvenOddPrecDWLinOpArray::derivEvenOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
-					     const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
-					     enum PlusMinus isign) const
+  EvenOddPrecDWLinOpArray::applyDerivOffDiag(multi1d<LatticeColorMatrix>& ds_u, 
+					     const multi1d<LatticeFermion>& chi, 
+					     const multi1d<LatticeFermion>& psi, 
+					     enum PlusMinus isign, int cb) const
   {
-    ds_u.resize(Nd);
-    ds_u = zero;
-
-    multi1d<LatticeColorMatrix> ds_tmp(Nd);
-    for(int s(0);s<N5;s++)
-    {
-      D.deriv(ds_tmp,chi[s],psi[s],isign,0);
-      for(int mu(0);mu<Nd;mu++)
-	ds_u[mu] += Real(-0.5)*ds_tmp[mu];
-    }
+    D.deriv(ds_u, chi, psi, isign, cb);
+    for(int mu(0);mu<Nd;mu++)
+      ds_u[mu] *= Real(-0.5);
   }
   
-
-  //! Apply the the odd-even block onto a source vector
-  void 
-  EvenOddPrecDWLinOpArray::derivOddEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
-					     const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
-					     enum PlusMinus isign) const
-  {
-    ds_u.resize(Nd);
-    ds_u = zero;
-
-    multi1d<LatticeColorMatrix> ds_tmp(Nd);
-    for(int s(0);s<N5;s++)
-      {
-	D.deriv(ds_tmp,chi[s],psi[s],isign,1);
-	for(int mu(0);mu<Nd;mu++)
-	  ds_u[mu] += Real(-0.5)*ds_tmp[mu];
-      }
-  }
-
 
 
   // THIS IS AN OPTIMIZED VERSION OF THE DERIVATIVE

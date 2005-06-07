@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_linop_array_w.h,v 1.15 2005-05-28 22:37:42 edwards Exp $
+// $Id: prec_dwf_linop_array_w.h,v 1.16 2005-06-07 19:36:24 edwards Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned domain-wall fermion linear operator
  */
@@ -8,7 +8,7 @@
 #define __prec_dwf_linop_array_w_h__
 
 #include "linearop.h"
-#include "actions/ferm/linop/dslash_w.h"
+#include "actions/ferm/linop/dslash_array_w.h"
 #include "actions/ferm/linop/prec_dwflike_linop_base_array_w.h"
 #include "io/aniso_io.h"
 
@@ -57,13 +57,7 @@ namespace Chroma
 		      const multi1d<LatticeFermion>& psi, 
 		      enum PlusMinus isign) const
     {
-      if( chi.size() != N5 ) chi.resize(N5); 
-
-      for(int s(0);s<N5;s++)
-	{
-	  D.apply(chi[s],psi[s],isign,0);
-	  chi[s][rb[0]] *= (-0.5);
-	}
+      applyOffDiag(chi, psi, isign, 0);
     }
 
     //! Apply the the odd-even block onto a source vector
@@ -71,13 +65,7 @@ namespace Chroma
 		      const multi1d<LatticeFermion>& psi, 
 		      enum PlusMinus isign) const
     {
-      if( chi.size() != N5 ) chi.resize(N5); 
-
-      for(int s(0);s<N5;s++)
-	{
-	  D.apply(chi[s],psi[s],isign,1);
-	  chi[s][rb[1]] *= (-0.5);
-	}
+      applyOffDiag(chi, psi, isign, 1);
     }
 
     //! Apply the the odd-odd block onto a source vector
@@ -126,12 +114,18 @@ namespace Chroma
     //! Apply the the even-odd block onto a source vector
     void derivEvenOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
 			   const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
-			   enum PlusMinus isign) const;
+			   enum PlusMinus isign) const
+    {
+      applyDerivOffDiag(ds_u, chi, psi, isign, 0);
+    }
  
     //! Apply the the odd-even block onto a source vector
     void derivOddEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
 			   const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
-			   enum PlusMinus isign) const;
+			   enum PlusMinus isign) const
+    {
+      applyDerivOffDiag(ds_u, chi, psi, isign, 1);
+    }
 
     //! Override virtual function for efficiency.
     void deriv(multi1d<LatticeColorMatrix>& ds_u, 
@@ -168,6 +162,32 @@ namespace Chroma
 		      enum PlusMinus isign,
 		      const int cb) const;
 
+    //! Apply the off diagonal block
+    /*!
+     * \param chi     result     	                   (Modify)
+     * \param psi     source     	                   (Read)
+     * \param isign   Flag ( PLUS | MINUS )   	   (Read)
+     * \param cb      checkerboard ( 0 | 1 )         (Read)
+     */
+    void applyOffDiag(multi1d<LatticeFermion>& chi, 
+		      const multi1d<LatticeFermion>& psi,
+		      enum PlusMinus isign,
+		      const int cb) const;
+
+    //! Apply the even-odd (odd-even) coupling piece of the NEF operator
+    /*!
+     * \param ds_u    conjugate momenta	               (Read)
+     * \param psi     left pseudofermion field	       (Read)
+     * \param psi     right pseudofermion field        (Read)
+     * \param isign   Flag ( PLUS | MINUS )   	       (Read)
+     * \param cb      checkerboard ( 0 | 1 )           (Read)
+     */
+    void applyDerivOffDiag(multi1d<LatticeColorMatrix>& ds_u, 
+			   const multi1d<LatticeFermion>& chi, 
+			   const multi1d<LatticeFermion>& psi, 
+			   enum PlusMinus isign,
+			   int cb) const;
+
     
   private:
     Real WilsonMass;
@@ -180,7 +200,7 @@ namespace Chroma
     Real Kappa;
     Real invDfactor ;
 
-    WilsonDslash  D;
+    WilsonDslashArray  D;
   };
 
 
