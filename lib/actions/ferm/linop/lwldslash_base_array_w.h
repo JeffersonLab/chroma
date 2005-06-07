@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_base_array_w.h,v 1.1 2005-06-06 03:47:13 edwards Exp $
+// $Id: lwldslash_base_array_w.h,v 1.2 2005-06-07 19:36:48 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator over arrays
  */
@@ -50,6 +50,20 @@ namespace Chroma
 
     //! Subset is all here
     const OrderedSubset& subset() const {return all;}
+
+    /**
+     * Apply a dslash
+     *
+     * \param chi     result                                      (Write)
+     * \param psi     source                                      (Read)
+     * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
+     * \param cb      Checkerboard of OUTPUT vector               (Read) 
+     *
+     * \return The output of applying dslash on psi
+     */
+    virtual void apply (LatticeFermion& chi, 
+			const LatticeFermion& psi, 
+			enum PlusMinus isign, int cb) const = 0;
 
     //! Take deriv of D
     /*!

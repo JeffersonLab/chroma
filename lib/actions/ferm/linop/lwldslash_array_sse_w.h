@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_array_sse_w.h,v 1.1 2005-06-06 03:47:13 edwards Exp $
+// $Id: lwldslash_array_sse_w.h,v 1.2 2005-06-07 19:36:48 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator array
  */
@@ -76,6 +76,20 @@ namespace Chroma
 		const multi1d<LatticeFermion>& psi, 
 		enum PlusMinus isign, int cb) const;
 
+    /**
+     * Apply a dslash
+     *
+     * \param chi     result                                      (Write)
+     * \param psi     source                                      (Read)
+     * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
+     * \param cb      Checkerboard of OUTPUT vector               (Read) 
+     *
+     * \return The output of applying dslash on psi
+     */
+    void apply (LatticeFermion& chi, 
+		const LatticeFermion& psi, 
+		enum PlusMinus isign, int cb) const;
+    
   protected:
     //! Get the u field
     const multi1d<LatticeColorMatrix>& getU() const {return u;}

@@ -1,4 +1,4 @@
-// $Id: lwldslash_array_sse_w.cc,v 1.1 2005-06-06 03:47:13 edwards Exp $
+// $Id: lwldslash_array_sse_w.cc,v 1.2 2005-06-07 19:36:48 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator array
  */
@@ -66,6 +66,34 @@ namespace Chroma
     free_sse_su3dslash();
   }
 
+
+  //! General Wilson-Dirac dslash
+  /*! \ingroup linop
+   * Wilson dslash
+   *
+   * Arguments:
+   *
+   *  \param chi      Result				                (Write)
+   *  \param psi      Pseudofermion field				(Read)
+   *  \param isign    D'^dag or D' ( MINUS | PLUS ) resp.		(Read)
+   *  \param cb	      Checkerboard of OUTPUT vector			(Read) 
+   */
+  void 
+  SSEWilsonDslashArray::apply (multi1d<LatticeFermion>& chi, 
+			       const multi1d<LatticeFermion>& psi, 
+			       enum PlusMinus isign, int cb) const
+  {
+    START_CODE();
+
+    if( chi.size() != N5 ) chi.resize(N5);
+
+    for(int n=0; n < N5; ++n)
+      apply(chi[n], psi[n], isign, cb);
+
+    END_CODE();
+  }
+
+
   //! General Wilson-Dirac dslash
   /*! \ingroup linop
    * Wilson dslash
@@ -78,13 +106,10 @@ namespace Chroma
    *  \param cb	      Checkerboard of OUTPUT vector			(Read) 
    */
   void
-  SSEWilsonDslashArray::apply (multi1d<LatticeFermion>& chi, 
-			       const multi1d<LatticeFermion>& psi, 
+  SSEWilsonDslashArray::apply (LatticeFermion& chi, const LatticeFermion& psi, 
 			       enum PlusMinus isign, int cb) const
   {
     START_CODE();
-
-    if( chi.size() != N5 ) chi.resize(N5);
 
     /* Pass the right parities. 
      *
@@ -102,13 +127,11 @@ namespace Chroma
      * cbs to support such flexibility.
      *
      */
-    for(int n=0; n < N5; ++n)
-    {
-      sse_su3dslash_wilson((SSEREAL *)&(packed_gauge[0]),
-			   (SSEREAL *)&(psi[n].elem(0).elem(0).elem(0).real()),
-			   (SSEREAL *)&(chi[n].elem(0).elem(0).elem(0).real()),
-			   (int)isign, (1-cb));
-    }
+    sse_su3dslash_wilson((SSEREAL *)&(packed_gauge[0]),
+			 (SSEREAL *)&(psi.elem(0).elem(0).elem(0).real()),
+			 (SSEREAL *)&(chi.elem(0).elem(0).elem(0).real()),
+			 (int)isign, (1-cb));
+  
 
     END_CODE();
   }
