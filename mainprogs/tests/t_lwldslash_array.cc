@@ -1,4 +1,4 @@
-// $Id: t_lwldslash_array.cc,v 1.1 2005-06-08 12:09:44 bjoo Exp $
+// $Id: t_lwldslash_array.cc,v 1.2 2005-06-08 12:28:09 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -315,6 +315,76 @@ int main(int argc, char **argv)
     }
   }
   
+  pop(xml);
+
+  //! Naive loop
+  QDPIO::cout << "Constructing (possibly optimized) WilsonDslash to do vector operation with a loop" << endl;
+  WilsonDslash D_opt_loop(u);
+  QDPIO::cout << "Done" << endl;
+
+  push(xml,"Optimized_loop_test");
+
+  first = true;
+  for(isign = 1; isign >= -1; isign -= 2) {
+    for(cb = 0; cb < 2; ++cb) { 
+
+      clock_t myt1;
+      clock_t myt2;
+      double mydt= 2.0;
+      
+      if (first) 
+      {
+	for(iter=1; ; iter <<= 1)
+	{
+	  QDPIO::cout << "Applying D_opt_loop " << iter << " times" << endl;
+
+	  myt1=clock();
+	  for(int i=iter; i-- > 0; ) {
+	    for(int loop=0; loop < N5; loop++) { 
+	      D_opt_loop.apply(chis1[loop], psis[loop], (isign == 1 ? PLUS : MINUS ) , cb); // NOTE: for timings throw away return value
+	    }
+	  }
+	  myt2=clock();
+
+	  mydt=double(myt2-myt1)/double(CLOCKS_PER_SEC);
+	  Internal::globalSum(mydt);
+	  mydt /= Layout::numNodes();
+
+	  if (mydt > 1) {
+	    first = false;
+	    break;
+	  }
+	}
+      }
+
+      QDPIO::cout << "Applying D_opt_loop for timings" << endl;
+      
+      myt1=clock();
+      for(int i=iter; i-- > 0; ) {
+	for(int loop=0; loop<N5; loop++) { 
+	  D_opt_loop.apply(chis1[loop], psis[loop], (isign == 1 ? PLUS : MINUS ) , cb); // NOTE: for timings throw away return value
+	}
+      }
+      myt2=clock();
+      
+      mydt=double(myt2-myt1)/double(CLOCKS_PER_SEC);
+      mydt=1.0e6*mydt/double(iter*(Layout::sitesOnNode()/2));
+      Internal::globalSum(mydt);
+      mydt /= Layout::numNodes();
+ 
+      float mflops = float(1320.0f*N5/mydt);
+      QDPIO::cout << "cb = " << cb << " isign = " << isign << endl;
+      QDPIO::cout << "After " << iter << " calls, the time per lattice point is "<< mydt 
+		  << " micro sec (" <<  mflops << ") Mflops " << endl;
+
+      push(xml,"OPT_loop_test");
+      write(xml,"cb",cb);
+      write(xml,"isign",isign);
+      write(xml,"mflops",mflops);
+      pop(xml);
+    }
+  }
+
   pop(xml);
 
   //! Create a linear operator
