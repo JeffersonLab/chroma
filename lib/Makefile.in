@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.364 2005-06-06 03:45:39 edwards Exp $
+# $Id: Makefile.in,v 1.365 2005-06-08 09:35:47 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -93,7 +93,6 @@ am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includedir)" \
 	"$(DESTDIR)$(includedir)"
 libLIBRARIES_INSTALL = $(INSTALL_DATA)
 LIBRARIES = $(lib_LIBRARIES)
-AR = ar
 ARFLAGS = cru
 libchroma_a_AR = $(AR) $(ARFLAGS)
 libchroma_a_LIBADD =
@@ -859,6 +858,7 @@ ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
 AMTAR = @AMTAR@
+AR = @AR@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
@@ -925,6 +925,7 @@ SSE_DWF_CG_DIR = @SSE_DWF_CG_DIR@
 SSE_DWF_CG_ENABLED = @SSE_DWF_CG_ENABLED@
 STRIP = @STRIP@
 VERSION = @VERSION@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_RANLIB = @ac_ct_RANLIB@
 ac_ct_STRIP = @ac_ct_STRIP@

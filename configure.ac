@@ -15,6 +15,11 @@ AC_CONFIG_HEADERS([lib/chroma_config_internal.h])
 
 # AC_PRO_MAKE_SET        # (RGE) Causes error: do not find in autoconf docs
 AC_PROG_RANLIB
+##################################
+# Check for the correct AR
+##################################
+
+AC_CHECK_TOOL(AR, ar, [ar])
 
 dnl
 dnl --with-xxxx and --enable-xxxx switches 
@@ -230,6 +235,7 @@ else
   AC_MSG_ERROR([Cannot compile/link a program with QDP++.
     Use --with-qdp++=<dir> to select a working version.])
 fi 
+
 
 ##################################
 # Check for programs to build docs
