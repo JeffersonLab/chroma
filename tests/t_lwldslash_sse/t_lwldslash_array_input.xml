@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<!-- Parameter file for the t_lwldslash_sse test -->
+<!-- place file in directory where you want to run -->
+<!-- the test and run t_lwldslash_sse -->
+<param>
+  <!-- Lattice Size -->
+  <nrow>4 4 4 8</nrow>
+  <N5>8</N5>
+</param>
