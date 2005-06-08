@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dslash_array_w.h,v 1.1 2005-06-06 03:46:50 edwards Exp $
+// $Id: dslash_array_w.h,v 1.2 2005-06-08 12:09:43 bjoo Exp $
 /*! \file
  *  \brief Include possibly optimized Wilson dslash
  */
@@ -26,10 +26,9 @@ typedef SSEWilsonDslashArray WilsonDslashArray;
 
 // Many #elif clauses could come in here for other opotimised Dslash-es
 #elif defined BUILD_PAB_WILSON_DSLASH
-//# include "lwldslash_array_pab_w.h"
+# include "lwldslash_array_pab_w.h"
 namespace Chroma {
-//typedef PABWilsonDslashArray WilsonDslashArray;
-typedef QDPWilsonDslashArray WilsonDslashArray;
+typedef PABWilsonDslashArray WilsonDslashArray;
 }  // end namespace Chroma
 
 #else

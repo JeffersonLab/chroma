@@ -32,7 +32,7 @@ endif
 HDRS =
 
 ## Production tests:
-bin_PROGRAMS = t_mesplq t_lwldslash_sse t_lwldslash_pab t_ritz_KS
+bin_PROGRAMS = t_mesplq t_lwldslash_sse t_lwldslash_pab t_ritz_KS t_lwldslash_array
 
 #
 # add the programs to build in here
@@ -157,6 +157,7 @@ t_gauge_force_SOURCES = t_gauge_force.cc
 t_circular_buffer_SOURCES = t_circular_buffer.cc
 t_precnef_SOURCES = t_precnef.cc
 t_preccfz_SOURCES = t_preccfz.cc
+t_lwldslash_array_SOURCES = t_lwldslash_array.cc
 
 # build lib is a target that goes to the build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order

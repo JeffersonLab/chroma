@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.274 2005-06-06 03:45:17 edwards Exp $
+# $Id: Makefile.am,v 1.275 2005-06-08 12:09:43 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -675,8 +675,11 @@ libchroma_a_SOURCES += actions/ferm/qprop/prec_dwf_qprop_array_sse_w.cc
 endif
 
 if BUILD_PAB_WILSON_DSLASH
-nobase_include_HEADERS += actions/ferm/linop/lwldslash_w_pab.h
-libchroma_a_SOURCES += actions/ferm/linop/lwldslash_w_pab.cc
+nobase_include_HEADERS += actions/ferm/linop/lwldslash_w_pab.h \
+	                  actions/ferm/linop/lwldslash_array_pab_w.h
+
+libchroma_a_SOURCES += actions/ferm/linop/lwldslash_w_pab.cc \
+		       actions/ferm/linop/lwldslash_array_pab_w.cc
 endif
 
 if BUILD_OPT_CFZ_LINOP

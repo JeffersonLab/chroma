@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_w_pab.h,v 1.7 2005-02-16 16:18:37 bjoo Exp $
+// $Id: lwldslash_w_pab.h,v 1.8 2005-06-08 12:09:43 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -15,6 +15,10 @@
 namespace Chroma 
 { 
   typedef PColorMatrix < RComplex <REAL>, Nc > PrimitiveSU3Matrix;
+
+  namespace PABDslashEnv { 
+    extern int refcount;
+  }
 
   //! General Wilson-Dirac dslash
   /*!

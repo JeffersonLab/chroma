@@ -1,22 +1,20 @@
-// $Id: lwldslash_w_pab.cc,v 1.12 2005-06-08 12:09:43 bjoo Exp $
+// $Id: lwldslash_array_pab_w.cc,v 1.1 2005-06-08 12:09:43 bjoo Exp $
 /*! \file
- *  \brief Wilson Dslash linear operator
+ *  \brief Wilson Dslash linear operator array
  */
 
 #include "chromabase.h"
+// Need this for the refcount namespace
 #include "actions/ferm/linop/lwldslash_w_pab.h"
+#include "actions/ferm/linop/lwldslash_array_pab_w.h"
 
 #include <wfm.h>
 
-
 namespace Chroma 
-{
-  namespace PABDslashEnv { 
-    int refcount = 0;
-  };
- 
+{ 
+
   //! Creation routine
-  void PABWilsonDslash::create(const multi1d<LatticeColorMatrix>& u_)
+  void PABWilsonDslashArray::create(const multi1d<LatticeColorMatrix>& u_, int N5_)
   {
 
     // For now, keep an extra copy
@@ -27,6 +25,8 @@ namespace Chroma
     const multi1d<int>& machsize = Layout::logicalSize();
 
     // Set up the wilson thingie
+    wil.instruction_reg_num=1;
+
     for(int i = 0; i < Nd; i++) { 
       wil.local_latt[i] = lsize[i];
     
@@ -38,7 +38,7 @@ namespace Chroma
 	wil.local_comm[i] = 0;
       }
     }
-
+    wil.instruction_reg_num=1;
     // Rearrange the gauge
     packed_gauge.resize(Nd * Layout::sitesOnNode());
 
@@ -59,10 +59,10 @@ namespace Chroma
          wfm_vec_init(&wil);
     }
     PABDslashEnv::refcount++;
+    N5 = N5_;
   }
 
-
-  PABWilsonDslash::~PABWilsonDslash(void) 
+  PABWilsonDslashArray::~PABWilsonDslashArray(void) 
   {
     if( PABDslashEnv::refcount > 0 ) {
 	PABDslashEnv::refcount--;
@@ -72,6 +72,47 @@ namespace Chroma
 	  wfm_vec_end(&wil);
         }
     }
+  }
+
+  //! General Wilson-Dirac dslash
+  /*! \ingroup linop
+   * Wilson dslash
+   *
+   * Arguments:
+   *
+   *  \param chi      Result				                (Write)
+   *  \param psi      Pseudofermion field				(Read)
+   *  \param isign    D'^dag or D' ( MINUS | PLUS ) resp.		(Read)
+   *  \param cb	      Checkerboard of OUTPUT vector			(Read) 
+   */
+  void 
+  PABWilsonDslashArray::apply (multi1d<LatticeFermion>& chi, 
+			       const multi1d<LatticeFermion>& psi, 
+			       enum PlusMinus isign, int cb) const
+  {
+    START_CODE();
+
+    if( chi.size() != N5 ) chi.resize(N5);
+
+    multi1d<Float*> chis(N5);
+    multi1d<Float*> psis(N5);
+    multi1d<int>    cbs(N5);
+
+    for(int i=0; i < N5; i++) { 
+      chis[i]=(Float*)&(chi[i].elem(wil_cbsize*cb).elem(0).elem(0).real());
+      psis[i]=(Float*)&(psi[i].elem(wil_cbsize*(1-cb)).elem(0).elem(0).real());
+      cbs[i]=1-cb;
+    }
+
+    wfm_dslash_vec(N5, 
+		   (Float**)&(chis[0]), 
+		   (Float *)&(packed_gauge[0]),
+		   (Float**)&(psis[0]),
+		   (int *)&(cbs[0]),
+		   (isign == (enum PlusMinus)PLUS ? 0 : 1));
+		     
+
+    END_CODE();
   }
 
   //! Apply Wilson-Dirac dslash
@@ -86,8 +127,8 @@ namespace Chroma
    *  \param cb	      Checkerboard of OUTPUT vector            (Read) 
    */
   void
-  PABWilsonDslash::apply (LatticeFermion& chi, const LatticeFermion& psi, 
-			  enum PlusMinus isign, int cb) const
+  PABWilsonDslashArray::apply (LatticeFermion& chi, const LatticeFermion& psi, 
+			       enum PlusMinus isign, int cb) const
   {
     START_CODE();
 
@@ -121,6 +162,8 @@ namespace Chroma
 	     
   
   }
+
+
 
 }; // End Namespace Chroma
 
