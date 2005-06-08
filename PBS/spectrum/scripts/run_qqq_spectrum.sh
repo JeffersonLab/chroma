@@ -1,6 +1,6 @@
 #!/bin/sh -xev
 #
-# $Id: run_qqq_spectrum.sh,v 1.1 2005-06-03 22:11:31 dgr Exp $
+# $Id: run_qqq_spectrum.sh,v 1.2 2005-06-08 13:42:14 dgr Exp $
 #
 
 
@@ -151,8 +151,8 @@ _GAUS_RAD_SRC=__GAUSS_RAD__
 _GAUS_ITR_SRC=__GAUSS_ITR__
 #
 #  Where we store the data
-#_ARCHROOT=/raid3/dgr/
-_ARCHROOT=/home/dgr/qcd/data/
+_ARCHROOT=/raid3/dgr/
+#_ARCHROOT=/home/dgr/qcd/data/
 
 #
 # Filenames
@@ -193,9 +193,9 @@ echo ------------------------------------------------------
 ##############################################################
 
 #SERVER=$PBS_O_HOST
-#SERVER=qcdsvr
+SERVER=qcdsvr
 #SERVER=ernest
-SERVER=enrico
+#SERVER=enrico
 WORKDIR=/scratch/PBS_$PBS_JOBID
 SCP=/usr/bin/scp
 SSH=/usr/bin/ssh
@@ -385,7 +385,7 @@ cat > src_template <<EOF
 
 <make_source>
 <annotation>
-; $Id: run_qqq_spectrum.sh,v 1.1 2005-06-03 22:11:31 dgr Exp $
+; $Id: run_qqq_spectrum.sh,v 1.2 2005-06-08 13:42:14 dgr Exp $
 ;
 ; MAKE_SOURCE input file.
 ;
@@ -441,7 +441,7 @@ cat > prop_template <<EOF
 
 <propagator>
 <annotation>
-; $Id: run_qqq_spectrum.sh,v 1.1 2005-06-03 22:11:31 dgr Exp $
+; $Id: run_qqq_spectrum.sh,v 1.2 2005-06-08 13:42:14 dgr Exp $
 ;
 ; PROPAGATOR input file.
 ;
@@ -696,7 +696,7 @@ cat > DATA <<EOF
 
 <spectrum_w>
 <annotation>
-; $Id: run_qqq_spectrum.sh,v 1.1 2005-06-03 22:11:31 dgr Exp $
+; $Id: run_qqq_spectrum.sh,v 1.2 2005-06-08 13:42:14 dgr Exp $
 ;
 ; SPECTRUM_W input file.
 ;
