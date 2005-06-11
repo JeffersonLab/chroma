@@ -1,4 +1,4 @@
-// $Id: barhqlq_w.cc,v 1.5 2005-04-22 19:06:39 kostas Exp $
+// $Id: barhqlq_w.cc,v 1.6 2005-06-11 01:43:52 edwards Exp $
 /*! \file
  *  \brief Heavy-light baryon 2-pt functions
  */
@@ -150,9 +150,6 @@ void barhqlq(LatticePropagator& propagator_1,
  *          resulting octet baryons may have admixters of excited           #
  *          decouplet baryons with mixed symmetric spatial wave functions,  #
  *          and vice-versa!!!                                               #
- *                                                                          #
- * WARNING 2: The time reversal will be wrong if both quark propagators     #
- *            are identical!                                                #
  *###########################################################################
 
  * Construct heavy-light baryon propagators with two "u" quarks and
