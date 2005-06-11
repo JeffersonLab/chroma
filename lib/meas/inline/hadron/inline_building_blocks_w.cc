@@ -1,4 +1,4 @@
-// $Id: inline_building_blocks_w.cc,v 1.1 2005-04-06 04:34:53 edwards Exp $
+// $Id: inline_building_blocks_w.cc,v 1.2 2005-06-11 04:24:18 edwards Exp $
 /*! \file
  * \brief Inline construction of BuildingBlocks
  *
@@ -11,6 +11,7 @@
 #include "util/ft/sftmom.h"
 #include "meas/hadron/BuildingBlocks_w.h"
 #include "util/info/proginfo.h"
+#include "meas/inline/make_xml_file.h"
 
 namespace Chroma 
 { 
@@ -133,6 +134,12 @@ namespace Chroma
 
       // Read in the building block setup
       read(paramtop, "BuildingBlocks", bb);
+
+      // Possible alternate XML file pattern
+      if (paramtop.count("xml_file") != 0) 
+      {
+	read(paramtop, "xml_file", xml_file);
+      }
     }
     catch(const std::string& e) 
     {
@@ -147,11 +154,9 @@ namespace Chroma
   {
     push(xml_out, path);
     
-    // Parameters for source construction
     Chroma::write(xml_out, "Param", param);
-
-    // Write out the output propagator/source configuration info
     Chroma::write(xml_out, "BuildingBlocks", bb);
+    QDP::write(xml_out, "xml_file", xml_file);
 
     pop(xml_out);
   }
@@ -174,10 +179,37 @@ namespace Chroma
 
   // Function call
   void 
-  InlineBuildingBlocks::operator()(const multi1d<LatticeColorMatrix>& U,
+  InlineBuildingBlocks::operator()(const multi1d<LatticeColorMatrix>& u,
 				   XMLBufferWriter& gauge_xml,
 				   unsigned long update_no,
-				   XMLWriter& XmlOut) 
+				   XMLWriter& xml_out) 
+  {
+    // If xml file not empty, then use alternate
+    if (params.xml_file != "")
+    {
+      string xml_file = makeXMLFileName(params.xml_file, update_no);
+
+      push(xml_out, "ExampleBuildingBlocks");
+      write(xml_out, "update_no", update_no);
+      write(xml_out, "xml_file", xml_file);
+      pop(xml_out);
+
+      XMLFileWriter xml(xml_file);
+      func(u, gauge_xml, update_no, xml);
+    }
+    else
+    {
+      func(u, gauge_xml, update_no, xml_out);
+    }
+  }
+
+
+  // Function call
+  void 
+  InlineBuildingBlocks::func(const multi1d<LatticeColorMatrix>& U,
+			     XMLBufferWriter& gauge_xml,
+			     unsigned long update_no,
+			     XMLWriter& XmlOut) 
   {
     START_CODE();
 

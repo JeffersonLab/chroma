@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_building_blocks_w.h,v 1.2 2005-04-19 20:05:22 edwards Exp $
+// $Id: inline_building_blocks_w.h,v 1.3 2005-06-11 04:24:18 edwards Exp $
 /*! \file
  * \brief Inline construction of BuildingBlocks
  *
@@ -57,6 +57,7 @@ namespace Chroma
       multi1d<Prop_t>   BkwdProps;
     } bb;
 
+    std::string xml_file;  // Alternate XML file pattern
   };
 
 
@@ -76,6 +77,13 @@ namespace Chroma
 		    XMLBufferWriter& gauge_xml,
 		    const unsigned long update_no,
 		    XMLWriter& xml_out); 
+
+  protected:
+    //! Do the measurement
+    void func(const multi1d<LatticeColorMatrix>& u,
+	      XMLBufferWriter& gauge_xml,
+	      const unsigned long update_no,
+	      XMLWriter& xml_out); 
 
   private:
     InlineBuildingBlocksParams params;
