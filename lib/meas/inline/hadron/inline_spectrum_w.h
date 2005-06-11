@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_spectrum_w.h,v 1.2 2005-04-19 17:11:07 edwards Exp $
+// $Id: inline_spectrum_w.h,v 1.3 2005-06-11 02:13:11 edwards Exp $
 /*! \file
  * \brief Inline spectrum calculations
  *
@@ -55,6 +55,8 @@ namespace Chroma
       //   for "shell" source/sink wave function
       multi1d<int> wvfIntPar;  // Array of iter numbers to approx. Gaussian or
       //   terminate CG inversion for Wuppertal smearing
+      Real          link_smear_fact; // smearing factor
+      int           link_smear_num;  // number of smearing hits
 
       multi1d<int> nrow;
     } param;

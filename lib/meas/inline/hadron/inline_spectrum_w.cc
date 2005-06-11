@@ -1,4 +1,4 @@
-// $Id: inline_spectrum_w.cc,v 1.3 2005-04-19 20:05:22 edwards Exp $
+// $Id: inline_spectrum_w.cc,v 1.4 2005-06-11 02:13:11 edwards Exp $
 /*! \file
  * \brief Inline construction of spectrum
  *
@@ -48,6 +48,8 @@ namespace Chroma
     read(paramtop, "version", version);
 
     param.HybMesP = false;
+    param.link_smear_fact = 0;
+    param.link_smear_num  = 0;
 
     switch (version) 
     {
@@ -62,6 +64,13 @@ namespace Chroma
     case 11:
       read(paramtop, "Wl_snk", param.Wl_snk);
       read(paramtop, "HybMesP", param.HybMesP);
+      break;
+
+    case 12:
+      read(paramtop, "Wl_snk", param.Wl_snk);
+      read(paramtop, "HybMesP", param.HybMesP);
+      read(paramtop, "link_smear_fact", param.link_smear_fact);
+      read(paramtop, "link_smear_num", param.link_smear_num);
       break;
 
     default:
@@ -111,7 +120,7 @@ namespace Chroma
   {
     push(xml, path);
 
-    int version = 11;
+    int version = 12;
     write(xml, "version", version);
 
     write(xml, "Pt_snk", param.Pt_snk);
@@ -138,6 +147,9 @@ namespace Chroma
     write(xml, "wvf_kind", param.wvf_kind);
     write(xml, "wvf_param", param.wvf_param);
     write(xml, "wvfIntPar", param.wvfIntPar);
+
+    write(xml, "link_smear_fact", param.link_smear_fact);
+    write(xml, "link_smear_num", param.link_smear_num);
 
     write(xml, "nrow", param.nrow);
 
@@ -277,7 +289,7 @@ namespace Chroma
     write(xml_out, "Config_info", gauge_xml);
 
     push(xml_out, "Output_version");
-    write(xml_out, "out_version", 11);
+    write(xml_out, "out_version", 12);
     pop(xml_out);
 
 
@@ -423,7 +435,38 @@ namespace Chroma
       }
 
 
+      /*
+       * Smear the gauge field if needed
+       */
+      multi1d<LatticeColorMatrix> u_link_smr(Nd);
+      u_link_smr = u;
+
+      if (params.param.Sl_snk && params.param.link_smear_num > 0)
+      {
+	int BlkMax = 100;	// Maximum number of blocking/smearing iterations
+	Real BlkAccu = 1.0e-5;	// Blocking/smearing accuracy
+
+	for(int i=0; i < params.param.link_smear_num; ++i)
+	{
+	  multi1d<LatticeColorMatrix> u_tmp(Nd);
+
+	  for(int mu = 0; mu < Nd; ++mu)
+	  if ( mu != j_decay )
+	    APE_Smear(u_link_smr, u_tmp[mu], mu, 0,
+		      params.param.link_smear_fact, BlkAccu, BlkMax, 
+		      j_decay);
+	  else
+	    u_tmp[mu] = u_link_smr[mu];
+	  
+	  u_link_smr = u_tmp;
+	}
+	QDPIO::cout << "Gauge field APE-smeared!" << endl;
+      }
+
+
+      //
       // Do the mesons first
+      //
       if (params.param.MesonP) 
       {
 	// Construct {Point|Shell}-Point mesons, if desired
@@ -449,7 +492,7 @@ namespace Chroma
 	{
 	  LatticePropagator quark_prop_smr;
 	  quark_prop_smr = quark_propagator;
-	  sink_smear2(u, quark_prop_smr, 
+	  sink_smear2(u_link_smr, quark_prop_smr, 
 		      params.param.wvf_kind, 
 		      params.param.wvf_param[loop],
 		      params.param.wvfIntPar[loop], 
@@ -544,7 +587,7 @@ namespace Chroma
 	{
 	  LatticePropagator quark_prop_smr;
 	  quark_prop_smr = quark_propagator;
-	  sink_smear2(u, quark_prop_smr, 
+	  sink_smear2(u_link_smr, quark_prop_smr, 
 		      params.param.wvf_kind, 
 		      params.param.wvf_param[loop],
 		      params.param.wvfIntPar[loop], 
@@ -622,7 +665,7 @@ namespace Chroma
 	{
 	  LatticePropagator quark_prop_smr;
 	  quark_prop_smr = quark_propagator;
-	  sink_smear2(u, quark_prop_smr, 
+	  sink_smear2(u_link_smr, quark_prop_smr, 
 		      params.param.wvf_kind, 
 		      params.param.wvf_param[loop],
 		      params.param.wvfIntPar[loop], 
