@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.366 2005-06-08 12:09:43 bjoo Exp $
+# $Id: Makefile.in,v 1.367 2005-06-11 01:42:25 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -97,6 +97,7 @@ am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includedir)" \
 	"$(DESTDIR)$(includedir)"
 libLIBRARIES_INSTALL = $(INSTALL_DATA)
 LIBRARIES = $(lib_LIBRARIES)
+AR = ar
 ARFLAGS = cru
 libchroma_a_AR = $(AR) $(ARFLAGS)
 libchroma_a_LIBADD =
@@ -310,6 +311,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron/inline_make_source_w.cc \
 	meas/inline/hadron/inline_propagator_w.cc \
 	meas/inline/hadron/inline_seqsource_w.cc \
+	meas/inline/hadron/inline_hadspec_w.cc \
 	meas/inline/hadron/inline_spectrum_w.cc \
 	meas/inline/hadron/inline_spectrumOct_w.cc \
 	meas/inline/hadron/inline_sink_smear_w.cc \
@@ -512,14 +514,15 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	inline_wilslp.$(OBJEXT) inline_fuzwilp.$(OBJEXT) \
 	inline_hadron_aggregate.$(OBJEXT) \
 	inline_make_source_w.$(OBJEXT) inline_propagator_w.$(OBJEXT) \
-	inline_seqsource_w.$(OBJEXT) inline_spectrum_w.$(OBJEXT) \
-	inline_spectrumOct_w.$(OBJEXT) inline_sink_smear_w.$(OBJEXT) \
-	inline_qqq_w.$(OBJEXT) inline_bar3ptfn_w.$(OBJEXT) \
-	inline_building_blocks_w.$(OBJEXT) inline_mres_w.$(OBJEXT) \
-	inline_multipole_w.$(OBJEXT) inline_qpropqio_w.$(OBJEXT) \
-	inline_smear_aggregate.$(OBJEXT) inline_ape_smear.$(OBJEXT) \
-	inline_hyp_smear.$(OBJEXT) $(am__objects_2) $(am__objects_3) \
-	$(am__objects_4) $(am__objects_5) asqtad_fermact_s.$(OBJEXT) \
+	inline_seqsource_w.$(OBJEXT) inline_hadspec_w.$(OBJEXT) \
+	inline_spectrum_w.$(OBJEXT) inline_spectrumOct_w.$(OBJEXT) \
+	inline_sink_smear_w.$(OBJEXT) inline_qqq_w.$(OBJEXT) \
+	inline_bar3ptfn_w.$(OBJEXT) inline_building_blocks_w.$(OBJEXT) \
+	inline_mres_w.$(OBJEXT) inline_multipole_w.$(OBJEXT) \
+	inline_qpropqio_w.$(OBJEXT) inline_smear_aggregate.$(OBJEXT) \
+	inline_ape_smear.$(OBJEXT) inline_hyp_smear.$(OBJEXT) \
+	$(am__objects_2) $(am__objects_3) $(am__objects_4) \
+	$(am__objects_5) asqtad_fermact_s.$(OBJEXT) \
 	fermbcs_s.$(OBJEXT) simple_fermbc_s.$(OBJEXT) \
 	asqtad_linop_s.$(OBJEXT) asqtad_mdagm_s.$(OBJEXT) \
 	asq_dsl_s.$(OBJEXT) fat7_links_s.$(OBJEXT) \
@@ -833,6 +836,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/inline/hadron/inline_make_source_w.h \
 	meas/inline/hadron/inline_propagator_w.h \
 	meas/inline/hadron/inline_seqsource_w.h \
+	meas/inline/hadron/inline_hadspec_w.h \
 	meas/inline/hadron/inline_spectrum_w.h \
 	meas/inline/hadron/inline_spectrumOct_w.h \
 	meas/inline/hadron/inline_sink_smear_w.h \
@@ -865,7 +869,6 @@ ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
 AMTAR = @AMTAR@
-AR = @AR@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
@@ -932,7 +935,6 @@ SSE_DWF_CG_DIR = @SSE_DWF_CG_DIR@
 SSE_DWF_CG_ENABLED = @SSE_DWF_CG_ENABLED@
 STRIP = @STRIP@
 VERSION = @VERSION@
-ac_ct_AR = @ac_ct_AR@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_RANLIB = @ac_ct_RANLIB@
 ac_ct_STRIP = @ac_ct_STRIP@
@@ -1279,6 +1281,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/hadron/inline_make_source_w.h \
 	meas/inline/hadron/inline_propagator_w.h \
 	meas/inline/hadron/inline_seqsource_w.h \
+	meas/inline/hadron/inline_hadspec_w.h \
 	meas/inline/hadron/inline_spectrum_w.h \
 	meas/inline/hadron/inline_spectrumOct_w.h \
 	meas/inline/hadron/inline_sink_smear_w.h \
@@ -1545,6 +1548,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron/inline_make_source_w.cc \
 	meas/inline/hadron/inline_propagator_w.cc \
 	meas/inline/hadron/inline_seqsource_w.cc \
+	meas/inline/hadron/inline_hadspec_w.cc \
 	meas/inline/hadron/inline_spectrum_w.cc \
 	meas/inline/hadron/inline_spectrumOct_w.cc \
 	meas/inline/hadron/inline_sink_smear_w.cc \
@@ -1756,6 +1760,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_fuzwilp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_glue_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_hadron_aggregate.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_hadspec_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_hyp_smear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_make_source_w.Po@am__quote@
@@ -5818,6 +5823,20 @@ inline_seqsource_w.obj: meas/inline/hadron/inline_seqsource_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_seqsource_w.cc' object='inline_seqsource_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_seqsource_w.obj `if test -f 'meas/inline/hadron/inline_seqsource_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_seqsource_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_seqsource_w.cc'; fi`
+
+inline_hadspec_w.o: meas/inline/hadron/inline_hadspec_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_hadspec_w.o -MD -MP -MF "$(DEPDIR)/inline_hadspec_w.Tpo" -c -o inline_hadspec_w.o `test -f 'meas/inline/hadron/inline_hadspec_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_hadspec_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_hadspec_w.Tpo" "$(DEPDIR)/inline_hadspec_w.Po"; else rm -f "$(DEPDIR)/inline_hadspec_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_hadspec_w.cc' object='inline_hadspec_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_hadspec_w.o `test -f 'meas/inline/hadron/inline_hadspec_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_hadspec_w.cc
+
+inline_hadspec_w.obj: meas/inline/hadron/inline_hadspec_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_hadspec_w.obj -MD -MP -MF "$(DEPDIR)/inline_hadspec_w.Tpo" -c -o inline_hadspec_w.obj `if test -f 'meas/inline/hadron/inline_hadspec_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_hadspec_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_hadspec_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_hadspec_w.Tpo" "$(DEPDIR)/inline_hadspec_w.Po"; else rm -f "$(DEPDIR)/inline_hadspec_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_hadspec_w.cc' object='inline_hadspec_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_hadspec_w.obj `if test -f 'meas/inline/hadron/inline_hadspec_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_hadspec_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_hadspec_w.cc'; fi`
 
 inline_spectrum_w.o: meas/inline/hadron/inline_spectrum_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_spectrum_w.o -MD -MP -MF "$(DEPDIR)/inline_spectrum_w.Tpo" -c -o inline_spectrum_w.o `test -f 'meas/inline/hadron/inline_spectrum_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_spectrum_w.cc; \
