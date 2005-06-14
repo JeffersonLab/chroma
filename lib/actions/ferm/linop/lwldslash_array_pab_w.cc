@@ -1,4 +1,4 @@
-// $Id: lwldslash_array_pab_w.cc,v 1.1 2005-06-08 12:09:43 bjoo Exp $
+// $Id: lwldslash_array_pab_w.cc,v 1.2 2005-06-14 15:34:26 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator array
  */
@@ -7,6 +7,12 @@
 // Need this for the refcount namespace
 #include "actions/ferm/linop/lwldslash_w_pab.h"
 #include "actions/ferm/linop/lwldslash_array_pab_w.h"
+
+#ifdef QDP_USE_QCDOC
+#warning "Using QALLOC to allocate the packed gauge"
+#include <qalloc.h>
+#include <qcdoc_align.h>
+#endif
 
 #include <wfm.h>
 
@@ -39,9 +45,31 @@ namespace Chroma
       }
     }
     wil.instruction_reg_num=1;
-    // Rearrange the gauge
-    packed_gauge.resize(Nd * Layout::sitesOnNode());
 
+    // Rearrange the gauge
+
+    // Allocate the packed gauge
+    // This is a dirty hack until we come up with a better way
+#ifdef QDP_USE_QCDOC
+    packed_gauge=(PrimitiveSU3Matrix *)qalloc(QFAST|QCOMM, Nd*Layout::sitesOnNode()*sizeof(PrimitiveSU3Matrix));
+    if( packed_gauge == 0x0 ) { 
+      packed_gauge=(PrimitiveSU3Matrix *)qalloc(QCOMM, Nd*Layout::sitesOnNode()*sizeof(PrimitiveSU3Matrix));
+    }
+#else 
+    try { 
+      packed_gauge=new PrimitiveSU3Matrix[Nd*Layout::sitesOnNode()];
+    }
+    catch(bad_alloc) { 
+      packed_gauge = 0x0;
+    }
+#endif
+    
+    // Check we got the requested memory
+    if( packed_gauge == 0x0 ) { 
+      QDPIO::cout << "Unable to allocate packed gauge in PABWilsonDslash::create()" << endl;
+      QDP_abort(1);
+    }
+    
     wil_cbsize=Layout::sitesOnNode()/2;
 
     // Rearrange gauge from  Dir,Site, Matrix 
@@ -72,6 +100,11 @@ namespace Chroma
 	  wfm_vec_end(&wil);
         }
     }
+#ifdef QDP_USE_QCDOC
+    qfree(packed_gauge);
+#else
+    delete [] packed_gauge;
+#endif
   }
 
   //! General Wilson-Dirac dslash

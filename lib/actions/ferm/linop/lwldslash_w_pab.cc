@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_pab.cc,v 1.12 2005-06-08 12:09:43 bjoo Exp $
+// $Id: lwldslash_w_pab.cc,v 1.13 2005-06-14 15:34:26 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -6,6 +6,11 @@
 #include "chromabase.h"
 #include "actions/ferm/linop/lwldslash_w_pab.h"
 
+#ifdef QDP_USE_QCDOC
+#warning "Using QALLOC to allocate the packed gauge"
+#include <qalloc.h>
+#include <qcdoc_align.h>
+#endif
 #include <wfm.h>
 
 
@@ -40,7 +45,26 @@ namespace Chroma
     }
 
     // Rearrange the gauge
-    packed_gauge.resize(Nd * Layout::sitesOnNode());
+    // Allocate the packed gauge
+    // This is a dirty hack until we come up with a better way
+#ifdef QDP_USE_QCDOC
+    packed_gauge=(PrimitiveSU3Matrix *)qalloc(QFAST|QCOMM, Nd*Layout::sitesOnNode()*sizeof(PrimitiveSU3Matrix));
+    if( packed_gauge == 0x0 ) { 
+      packed_gauge=(PrimitiveSU3Matrix *)qalloc(QCOMM, Nd*Layout::sitesOnNode()*sizeof(PrimitiveSU3Matrix));
+    }
+#else 
+    try {
+      packed_gauge=new PrimitiveSU3Matrix[Nd*Layout::sitesOnNode()];
+    }
+    catch( bad_alloc ) { 
+      packed_gauge = 0x0;
+    }
+#endif
+
+    if( packed_gauge == 0x0 ) { 
+      QDPIO::cout << "Unable to allocate packed gauge in PABWilsonDslash::create()" << endl;
+      QDP_abort(1);
+    }
 
     wil_cbsize=Layout::sitesOnNode()/2;
 
@@ -72,6 +96,11 @@ namespace Chroma
 	  wfm_vec_end(&wil);
         }
     }
+#ifdef QDP_USE_QCDOC
+    qfree(packed_gauge);
+#else
+    delete [] packed_gauge;
+#endif
   }
 
   //! Apply Wilson-Dirac dslash

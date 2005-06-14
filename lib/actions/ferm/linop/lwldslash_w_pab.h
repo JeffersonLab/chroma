@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_w_pab.h,v 1.8 2005-06-08 12:09:43 bjoo Exp $
+// $Id: lwldslash_w_pab.h,v 1.9 2005-06-14 15:34:26 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -83,7 +83,7 @@ namespace Chroma
     const multi1d<LatticeColorMatrix>& getU() const {return u;}
 
   private:
-    multi1d<PrimitiveSU3Matrix> packed_gauge;
+    PrimitiveSU3Matrix* packed_gauge;
 
     multi1d<LatticeColorMatrix> u;   // Needed only for derivative. Should find some alternative
 
