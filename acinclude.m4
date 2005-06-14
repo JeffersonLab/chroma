@@ -65,10 +65,98 @@ dnl - set the parallel compiler environment
     LDFLAGS="$pac_saved_LDFLAGS"
     LIBS="$pac_saved_LIBS"
     AC_LANG_RESTORE
-    if test "X${pac_qdpxx_working}X" = "XyesX" ; then
+    if test "X${pac_qdpxx_working}X"="XyesX";
+    then
        ifelse([$6],,:,[$6])
     else
        ifelse([$7],,:,[$7])
     fi
   ]
 )
+
+AC_DEFUN(
+  PAC_BAGEL_WFM_LINK_CXX_FUNC,
+  [
+dnl - set local parallel compiler environments
+dnl   so input variables can be CFLAGS, LDFLAGS or LIBS
+    pac_BAGEL_WFM_CFLAGS="$1"
+    pac_BAGEL_WFM_LDFLAGS="$2"
+    pac_BAGEL_WFM_LIBS="$3"
+    AC_LANG_SAVE
+    AC_LANG_CPLUSPLUS
+dnl - save the original environment
+    pac_saved_CXXFLAGS="$CXXFLAGS"
+    pac_saved_LDFLAGS="$LDFLAGS"
+    pac_saved_LIBS="$LIBS"
+dnl - set the parallel compiler environment
+    CXXFLAGS="$CXXFLAGS $pac_BAGEL_WFM_CFLAGS"
+    LDFLAGS="$LDFLAGS $pac_BAGEL_WFM_LDFLAGS"
+    LIBS="$LIBS $pac_BAGEL_WFM_LIBS"
+    AC_TRY_LINK(
+      [
+        #include "wfm.h"
+      ],
+      [
+        int argc ; char **argv ;
+	$4
+	$5
+      ],
+      [pac_bagel_wfm_working=yes],
+      [pac_bagel_wfm_working=no]
+    )
+    CXXFLAGS="$pac_saved_CXXFLAGS"
+    LDFLAGS="$pac_saved_LDFLAGS"
+    LIBS="$pac_saved_LIBS"
+    AC_LANG_RESTORE
+    if test "X${pac_bagel_wfm_working}X" = "XyesX" ; then
+       ifelse([$6],,:,[$6])
+    else
+       ifelse([$7],,:,[$7])
+    fi
+  ]
+)
+
+AC_DEFUN(
+  PAC_GMP_LINK_CXX_FUNC,
+  [
+dnl - set local parallel compiler environments
+dnl   so input variables can be CFLAGS, LDFLAGS or LIBS
+    pac_GMP_CFLAGS="$1"
+    pac_GMP_LDFLAGS="$2"
+    pac_GMP_LIBS="$3"
+    AC_LANG_SAVE
+    AC_LANG_CPLUSPLUS
+dnl - save the original environment
+    pac_saved_CXXFLAGS="$CXXFLAGS"
+    pac_saved_LDFLAGS="$LDFLAGS"
+    pac_saved_LIBS="$LIBS"
+dnl - set the parallel compiler environment
+    CXXFLAGS="$CXXFLAGS $pac_GMP_CFLAGS"
+    LDFLAGS="$LDFLAGS $pac_GMP_LDFLAGS"
+    LIBS="$LIBS $pac_GMP_LIBS"
+    AC_TRY_LINK(
+      [
+        #include <gmp.h>
+      ],
+      [
+        int argc ; char **argv ;
+	$4
+	$5
+      ],
+      [pac_gmp_working=yes],
+      [pac_gmp_working=no]
+    )
+    CXXFLAGS="$pac_saved_CXXFLAGS"
+    LDFLAGS="$pac_saved_LDFLAGS"
+    LIBS="$pac_saved_LIBS"
+    AC_LANG_RESTORE
+    if test "X${pac_gmp_working}X" = "XyesX" ; 
+    then
+       ifelse([$6],,:,[$6])
+    else
+       ifelse([$7],,:,[$7])
+    fi
+  ]
+)
+
+

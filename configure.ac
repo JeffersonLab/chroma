@@ -2,7 +2,6 @@ AC_INIT(chroma,1.22,edwards@jlab.org)
 AC_PREREQ([2.57])
 AC_CONFIG_AUX_DIR(./config)
 AC_CANONICAL_HOST
-
 AM_INIT_AUTOMAKE
 
 dnl stupid templates to shut up stupid autoheader
@@ -14,6 +13,8 @@ dnl AC_DEFINE([CHROMA_BUILD_WILSON],[],[Build Wilson version of Chroma])
 AC_CONFIG_HEADERS([lib/chroma_config_internal.h])
 
 # AC_PRO_MAKE_SET        # (RGE) Causes error: do not find in autoconf docs
+AC_PROG_CXX(g++)
+AC_PROG_CC(gcc)
 AC_PROG_RANLIB
 ##################################
 # Check for the correct AR
@@ -49,10 +50,13 @@ AC_ARG_ENABLE(sse_dwf_cg,
     [Build and Use the SSE DWF CG Library])
 )
 
-AC_ARG_ENABLE(pab_wilson_dslash,
+AC_ARG_WITH(bagel_wilson_dslash,
   AC_HELP_STRING(
-    [--enable-pab-wilson-dslash],
-    [Use PABs Wilson Dslash Library])
+    [--with-bagel-wilson-dslash=DIR],
+    [Use Peter Boyles BAGEL Wilson Dslash Library installed in DIR]
+  ),
+  [ bagel_wilson_dslash_enabled="yes"
+    BAGEL_WILSON_DSLASH_HOME="${with_bagel_wilson_dslash}" ]
 )
 
 AC_ARG_ENABLE(asqtad_cps_inverter,
@@ -67,10 +71,14 @@ AC_ARG_ENABLE(opt_cfz_linop,
     [Build and use the generic optimized Continued Frac. Zolo. (CFZ) Linear Oper.])
 )
 
-AC_ARG_ENABLE(gmp,
+AC_ARG_WITH(gmp,
    AC_HELP_STRING(
-    [--enable-gmp],
-    [Enable use of GMP - GNU Multi-Precision library])
+    [--with-gmp=<DIR>],
+    [Enable use of GMP - GNU Multi-Precision library, installed in DIR]
+   ),
+   [ gmp_enabled="yes"
+     GMP_HOME=${with_gmp} ],
+   [ gmp_enabled="no" ]
 )
 
 if test "X${QDPXX_HOME}X" = "XX" ; then
@@ -113,6 +121,25 @@ AC_MSG_NOTICE([QDP++ parallel arch: ${QDPXX_PARALLEL_ARCH}])
 AC_SUBST(QDPXX_PRECISION, "`${QDPXX_CONFIG} --precision`")
 AC_MSG_NOTICE([QDP++ precision: ${QDPXX_PRECISION}])
 
+dnl Try to compile a QDP++ program to check the --with options
+AC_MSG_CHECKING([if we can compile/link a simple QDP++ program])
+PAC_QDPXX_LINK_CXX_FUNC(
+  ${QDPXX_CXXFLAGS},
+  ${QDPXX_LDFLAGS},
+  ${QDPXX_LIBS},
+  ,
+  ,
+  [qdpxx_link_ok=yes],
+  [qdpxx_link_ok=no]
+)
+if test "X${qdpxx_link_ok}X" = "XyesX"; 
+then 
+  AC_MSG_RESULT(yes)
+else 
+  AC_MSG_RESULT(no)
+  AC_MSG_ERROR([Cannot compile/link a program with QDP++. Use --with-qdp++=<dir> to select a working version.])
+fi 
+
 dnl SSE Wilson Dslash stuff
 case "$enable_sse_wilson_dslash" in
   yes) 
@@ -138,7 +165,7 @@ case "$enable_sse_dwf_cg" in
         AC_MSG_NOTICE([Configuring SSE DWF CG])
 	AC_CONFIG_SUBDIRS(other_libs/intel_sse_dwf_cg)
 	AC_SUBST(SSE_DWF_CG_DIR, [intel_sse_dwf_cg])
-	AC_DEFINE([BUILD_SSE_DWF_CG],[],[Build SSE DWF CG])
+	AC_DEFINE([BUILD_SSE_DWF_CG],[1],[Build SSE DWF CG])
 	;;
   *)
 	AC_SUBST(SSE_DWF_CG_DIR)
@@ -152,20 +179,63 @@ AM_CONDITIONAL(BUILD_SSE_DWF_CG,
 
 
 dnl QCDOC Wilson Dslash stuff
-case "$enable_pab_wilson_dslash" in
-  noarch)
-	ac_build_pab_wilson_dslash="yes" 
-        AC_MSG_NOTICE( [Configuring PAB Wilson Dslash ] )
-	AC_DEFINE([BUILD_PAB_WILSON_DSLASH],[],[ Build Peters Dslash Op])
-	;;
-  *)
-	ac_build_pab_wilson_dslash="no"
-	AC_MSG_NOTICE( [Not building PAB Dslash ] )
-        ;;
-esac 
 
-AM_CONDITIONAL(BUILD_PAB_WILSON_DSLASH,
-  [test "x${ac_build_pab_wilson_dslash}x" = "xyesx" ])
+if test "X${bagel_wilson_dslash_enabled}X" = "XyesX";
+then
+   AC_MSG_NOTICE( [Configuring with BAGEL Wilson Dslash] )   
+   AC_DEFINE([BUILD_PAB_WILSON_DSLASH],[], [ Use Peter Boyles BAGEL Wilson Dslash library])
+   if test "X${BAGEL_WILSON_DSLASH_HOME}X" = "XyesX";
+   then 
+     AC_PATH_PROG([BAGEL_WILSON_DSLASH_CONFIG], [wfm-config], [])
+   else
+     AC_PATH_PROG([BAGEL_WILSON_DSLASH_CONFIG], [wfm-config], [], [${BAGEL_WILSON_DSLASH_HOME}/bin:${PATH}])
+   fi     
+
+dnl check that the program has been found
+   if test "X${BAGEL_WILSON_DSLASH_CONFIG}X" = "XX"; 
+   then
+     AC_MSG_WARN([wfm-config script for bagel_wilson_dslash not found])
+     AC_SUBST(BAGEL_WILSON_DSLASH_CXXFLAGS, ${BAGEL_WILSON_DSLASH_CXXFLAGS})
+     AC_SUBST(BAGEL_WILSON_DSLASH_LDFLAGS, ${BAGEL_WILSON_DSLASH_LDFLAGS})
+     AC_SUBST(BAGEL_WILSON_DSLASH_LIBS, ${BAGEL_WILSON_DSLASH_LIBS})
+   else 
+     AC_MSG_NOTICE([Found bagel_wilson_dslash configuration program ${BAGEL_WILSON_DSLASH_CONFIG}])
+     AC_SUBST(BAGEL_WILSON_DSLASH_CXXFLAGS, "`${BAGEL_WILSON_DSLASH_CONFIG} --cxxflags`")
+     AC_MSG_NOTICE([bagel_wilson_dslash compile flags: ${BAGEL_WILSON_DSLASH_CXXFLAGS}])
+     AC_SUBST(BAGEL_WILSON_DSLASH_LDFLAGS, "`${BAGEL_WILSON_DSLASH_CONFIG} --ldflags`")
+     AC_MSG_NOTICE([bagel_wilson_dslash link flags : ${BAGEL_WILSON_DSLASH_LDFLAGS}])
+     AC_SUBST(BAGEL_WILSON_DSLASH_LIBS,     "`${BAGEL_WILSON_DSLASH_CONFIG} --libs`")
+     AC_MSG_NOTICE([bagel_wilson_dslash libraries flags: ${BAGEL_WILSON_DSLASH_LIBS}])
+   fi
+else
+   AC_SUBST(BAGEL_WILSON_DSLASH_CXXFLAGS, "")
+   AC_SUBST(BAGEL_WILSON_DSLASH_LDFLAGS, "")
+   AC_SUBST(BAGEL_WILSON_DSLASH_LIBS, "")
+   AC_MSG_NOTICE( [Not using BAGEL Wilson Dslash] )  
+fi
+
+if test "X${bagel_wilson_dslash_enabled}X" = "XyesX";
+then
+  AC_MSG_CHECKING([if we can compile/link a simple BAGEL Wilson Dslash program])
+  PAC_BAGEL_WFM_LINK_CXX_FUNC(
+    ${BAGEL_WILSON_DSLASH_CXXFLAGS},
+    ${BAGEL_WILSON_DSLASH_LDFLAGS},
+    ${BAGEL_WILSON_DSLASH_LIBS},
+    [ WilsonArg wil;],
+    [ wfm_vec_init(&wil); wfm_vec_end(&wil);],
+    [bagel_wilson_dslash_link_ok=yes],
+    [bagel_wilson_dslash_link_ok=no]
+  )
+  if test "X${bagel_wilson_dslash_link_ok}X" = "XyesX"; 
+  then 
+    AC_MSG_RESULT(yes)
+  else 
+    AC_MSG_RESULT(no)
+    AC_MSG_ERROR([Cannot compile/link a program with Bagel Wilson Dslash. Use --with-bagel-wilson-dslash=<dir> to select a working version.])
+  fi 
+fi
+
+AM_CONDITIONAL(BUILD_PAB_WILSON_DSLASH, [test "x${bagel_wilson_dslash_enabled}x" = "xyesx" ])
 
 dnl QCDOC Asqtad Inverter stuff
 case "$enable_asqtad_cps_inverter" in
@@ -200,41 +270,68 @@ AM_CONDITIONAL(BUILD_OPT_CFZ_LINOP,
 
 
 dnl Enable GMP
-case "$enable_gmp" in
-  yes) 
+if test "X${gmp_enabled}X" = "XyesX";
+then 
         AC_MSG_NOTICE( [Enabling GNU Multi-Precision Library] )
 	AC_DEFINE([BUILD_GMP_REMEZ],[],[ Build GMP Remez code ])
-	;;
-  *)
+	if test "X${GMP_HOME}X" != "XyesX";
+	then
+           dnl if we were given an install path set up the flags
+	   AC_SUBST(GMP_CXXFLAGS, "-I${GMP_HOME}/include")
+	   AC_SUBST(GMP_LDFLAGS, "-L${GMP_HOPE}/lib")
+	   AC_SUBST(GMP_LIBS, "-lgmp")
+	else
+	   dnl if we were not given an install path use existing env variables/standard include
+           dnl link paths
+           AC_SUBST(GMP_CXXFLAGS, ${GMP_CXXFLAGS})
+	   AC_SUBST(GMP_LDFLAGS, ${GMP_LDFLAGS})
+
+	   dnl if stuff is on the standard include and lib paths we still need the library
+	   dnl invocation
+	   if test "X${GMP_LIBS}X" = "XX";
+	   then 
+	     AC_SUBST(GMP_LIBS, "-lgmp")
+	   else 
+	     AC_SUBST(GMP_LIBS, ${GMP_LIBS})
+           fi
+	fi
+	AC_MSG_NOTICE([GMP CXXFLAGS: ${GMP_CXXFLAGS}])
+	AC_MSG_NOTICE([GMP LDFLAGS: ${GMP_LDFLAGS}])
+	AC_MSG_NOTICE([GMP LIBS: ${GMP_LIBS}])
+        AC_MSG_CHECKING([if we can compile/link a simple GMP program])	
+	dnl check we can link against gmp
+	PAC_GMP_LINK_CXX_FUNC(
+	 [ ${GMP_CXXFLAGS} ],
+	 [ ${GMP_LDFLAGS} ],
+	 [ ${GMP_LIBS} ],
+	 [ mpf_t x; ],
+	 [ mpf_init(x); ],
+         [gmp_working="yes"],
+	 [gmp_working="no"]
+        )
+	
+	if test "X${gmp_working}X" = "XyesX";
+	then 
+	  AC_MSG_RESULT(yes)
+	else
+	  AC_MSG_RESULT(no)
+	  AC_MSG_ERROR([Couldn't link a simple GMP program. Use --with-gmp=<dir> to set a working one])
+	fi
+else
 	AC_MSG_NOTICE( [Not building GMP Remez code ] )
-        ;;
-esac 
+	AC_SUBST(GMP_CXXFLAGS, "")
+	AC_SUBST(GMP_LDFLAGS,"")
+	AC_SUBST(GMP_LIBS, "")
+fi
+
 
 AM_CONDITIONAL(BUILD_GMP_REMEZ,
-  [test "x${enable_gmp}x" = "xyesx" ])
+  [test "x${gmp_enabled}x" = "xyesx" ])
 
 
-dnl Try to compile a QDP++ program to check the --with options
-AC_MSG_CHECKING([if we can compile/link a simple QDP++ program])
 
 dnl This function is defined in acinclude.m4
 dnl it tries to try to compile the program 
-PAC_QDPXX_LINK_CXX_FUNC(
-  ${QDPXX_CXXFLAGS},
-  ${QDPXX_LDFLAGS},
-  ${QDPXX_LIBS},
-  ,
-  ,
-  [qdpxx_link_ok=yes],
-  [qdpxx_link_ok=no]
-)
-if test "X${qdpxx_link_ok}X" = "XyesX" ; then 
-  AC_MSG_RESULT(yes)
-else 
-  AC_MSG_RESULT(no)
-  AC_MSG_ERROR([Cannot compile/link a program with QDP++.
-    Use --with-qdp++=<dir> to select a working version.])
-fi 
 
 
 ##################################
@@ -248,6 +345,8 @@ AC_CHECK_PROG(DOXYGEN, doxygen, doxygen, true)
 #######################
 # Produce output
 #######################
+
+
 
 #
 # Set up the doxygen file
@@ -263,6 +362,6 @@ AC_CONFIG_FILES(lib/Makefile)
 AC_CONFIG_FILES(mainprogs/Makefile)
 AC_CONFIG_FILES(mainprogs/tests/Makefile)
 AC_CONFIG_FILES(mainprogs/main/Makefile)
-# AC_CONFIG_FILES(docs/Makefile)
+AC_CONFIG_FILES(docs/Makefile)
 AC_CONFIG_FILES(other_libs/Makefile)
 AC_OUTPUT

@@ -1,3 +1,16 @@
+06/14/2005 -- Balint Joo
+	Version 1.22.3 Fixed various things in the build system.
+        GMP is now enabled with --with-gmp=<DIR>. DIR is optional.
+	If not given one can use env variables GMP_CXXFLAGS, GMP_LDFLAGS
+	and GMP_LIBS. If these environment variables are empty, GMP_LIBS
+	will be defined as -lgmp assuming that the GMP is in a standard
+	location. Not specifying --with-gmp disables building the GMP
+	remez code
+
+	The BAGEL WILSON DSLASH is now enabled with --with-bagel-wilson-dslash=DIR. DIR is optional. If not given it falls back to environment variables
+        BAGEL_WILSON_DSLASH_CXXFLAGS, BAGEL_WILSON_DSLASH_LDFLAGS, BAGEL_WILSON_DSLASH_LIBS. Not giving the --with-bagel-wilson-dslash option disables the
+use of the bagel wilson dslash
+
 05/28/2005 -- Robert Edwards
 
 	Version 1.22.2. Moved dwf_linop_base to dwflike_linop_base. Made

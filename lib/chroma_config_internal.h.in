@@ -9,7 +9,7 @@
 /* Build GMP Remez code */
 #undef BUILD_GMP_REMEZ
 
-/* Build Peters Dslash Op */
+/* Use Peter Boyles BAGEL Wilson Dslash library */
 #undef BUILD_PAB_WILSON_DSLASH
 
 /* Build SSE DWF CG */

@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.276 2005-06-11 01:43:05 edwards Exp $
+# $Id: Makefile.am,v 1.277 2005-06-14 14:11:56 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -381,7 +381,7 @@ INCFLAGS = -I$(TOPDIR)/lib -I$(BUILDDIR)/lib
 #
 # Any other compiler flags
 # 
-AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDPXX_CXXFLAGS@
+AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDPXX_CXXFLAGS@ @BAGEL_WILSON_DSLASH_CXXFLAGS@
 
 if BUILD_SSE_WILSON_DSLASH
 AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
