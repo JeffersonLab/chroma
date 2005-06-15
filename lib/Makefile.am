@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.278 2005-06-15 11:15:08 bjoo Exp $
+# $Id: Makefile.am,v 1.279 2005-06-15 14:13:09 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -219,6 +219,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/unprec_ht_contfrac5d_linop_array_w.h \
 	actions/ferm/linop/prec_ht_contfrac5d_linop_array_w.h \
 	actions/ferm/linop/dslash_w.h actions/ferm/linop/dwffld_w.h \
+	actions/ferm/linop/dslash_array_w.h \
 	actions/ferm/linop/linop_w.h \
 	actions/ferm/linop/lovddag_w.h \
 	actions/ferm/linop/lovlapms_w.h \
@@ -254,6 +255,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/unprec_dwf4d_linop_w.h \
 	actions/ferm/linop/unprec_pdwf4d_linop_w.h \
 	actions/ferm/linop/unprec_ppdwf4d_linop_w.h \
+	actions/ferm/linop/ovlap_contfrac5d_w.h \
 	actions/ferm/qprop/qprop_w.h \
 	actions/ferm/qprop/quarkprop4_w.h \
 	actions/ferm/qprop/dwf_qpropt_w.h \
