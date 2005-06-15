@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_pab.cc,v 1.13 2005-06-14 15:34:26 bjoo Exp $
+// $Id: lwldslash_w_pab.cc,v 1.14 2005-06-15 11:52:21 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -48,9 +48,9 @@ namespace Chroma
     // Allocate the packed gauge
     // This is a dirty hack until we come up with a better way
 #ifdef QDP_USE_QCDOC
-    packed_gauge=(PrimitiveSU3Matrix *)qalloc(QFAST|QCOMM, Nd*Layout::sitesOnNode()*sizeof(PrimitiveSU3Matrix));
+    packed_gauge=(PrimitiveSU3Matrix *)qalloc(QFAST|QCOMMS, Nd*Layout::sitesOnNode()*sizeof(PrimitiveSU3Matrix));
     if( packed_gauge == 0x0 ) { 
-      packed_gauge=(PrimitiveSU3Matrix *)qalloc(QCOMM, Nd*Layout::sitesOnNode()*sizeof(PrimitiveSU3Matrix));
+      packed_gauge=(PrimitiveSU3Matrix *)qalloc(QCOMMS, Nd*Layout::sitesOnNode()*sizeof(PrimitiveSU3Matrix));
     }
 #else 
     try {
