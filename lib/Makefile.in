@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.370 2005-06-15 08:54:40 bjoo Exp $
+# $Id: Makefile.in,v 1.371 2005-06-15 11:15:08 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -42,40 +42,41 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_1 = -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
-@BUILD_SSE_DWF_CG_TRUE@am__append_2 = -I$(TOPDIR)/other_libs/@SSE_DWF_CG_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DWF_CG_DIR@/include
+@BUILD_GMP_REMEZ_TRUE@am__append_1 = @GMP_CXXFLAGS@
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_2 = -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
+@BUILD_SSE_DWF_CG_TRUE@am__append_3 = -I$(TOPDIR)/other_libs/@SSE_DWF_CG_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DWF_CG_DIR@/include
 #	actions/ferm/invert/invbicg.cc
 #       actions/ferm/invert/invmr.cc 
 #       util/gauge/eesu2.cc 
-@BUILD_GMP_REMEZ_TRUE@am__append_3 = actions/ferm/fermacts/remez_gmp.h
-@BUILD_GMP_REMEZ_TRUE@am__append_4 = actions/ferm/fermacts/remez_gmp.cc
+@BUILD_GMP_REMEZ_TRUE@am__append_4 = actions/ferm/fermacts/remez_gmp.h
+@BUILD_GMP_REMEZ_TRUE@am__append_5 = actions/ferm/fermacts/remez_gmp.cc
 
 #
 # Hooks for optimized code
 #
-@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_5 = \
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_6 = \
 @BUILD_SSE_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_w_sse.h \
 @BUILD_SSE_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_array_sse_w.h
 
-@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_6 = \
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_7 = \
 @BUILD_SSE_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_w_sse.cc \
 @BUILD_SSE_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_array_sse_w.cc
 
-@BUILD_SSE_DWF_CG_TRUE@am__append_7 = actions/ferm/qprop/prec_dwf_qprop_array_sse_w.h
-@BUILD_SSE_DWF_CG_TRUE@am__append_8 = actions/ferm/qprop/prec_dwf_qprop_array_sse_w.cc
-@BUILD_PAB_WILSON_DSLASH_TRUE@am__append_9 = actions/ferm/linop/lwldslash_w_pab.h \
+@BUILD_SSE_DWF_CG_TRUE@am__append_8 = actions/ferm/qprop/prec_dwf_qprop_array_sse_w.h
+@BUILD_SSE_DWF_CG_TRUE@am__append_9 = actions/ferm/qprop/prec_dwf_qprop_array_sse_w.cc
+@BUILD_PAB_WILSON_DSLASH_TRUE@am__append_10 = actions/ferm/linop/lwldslash_w_pab.h \
 @BUILD_PAB_WILSON_DSLASH_TRUE@	                  actions/ferm/linop/lwldslash_array_pab_w.h
 
-@BUILD_PAB_WILSON_DSLASH_TRUE@am__append_10 = actions/ferm/linop/lwldslash_w_pab.cc \
+@BUILD_PAB_WILSON_DSLASH_TRUE@am__append_11 = actions/ferm/linop/lwldslash_w_pab.cc \
 @BUILD_PAB_WILSON_DSLASH_TRUE@		       actions/ferm/linop/lwldslash_array_pab_w.cc
 
-@BUILD_OPT_CFZ_LINOP_TRUE@am__append_11 = actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_opt_w.h
-@BUILD_OPT_CFZ_LINOP_TRUE@am__append_12 = actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_opt_w.cc
+@BUILD_OPT_CFZ_LINOP_TRUE@am__append_12 = actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_opt_w.h
+@BUILD_OPT_CFZ_LINOP_TRUE@am__append_13 = actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_opt_w.cc
 
 #	actions/ferm/fermacts/stag_fermact_s.cc
 #	meas/pbp/mespbp_s.cc meas/pbp/stagpbp_s.cc
-@BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@am__append_13 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.h
-@BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@am__append_14 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc		
+@BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@am__append_14 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.h
+@BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@am__append_15 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc		
 subdir = lib
 DIST_COMMON = $(am__nobase_include_HEADERS_DIST) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/chroma_config_internal.h.in
@@ -1308,9 +1309,9 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/smear/smear.h \
 	meas/inline/smear/inline_smear_aggregate.h \
 	meas/inline/smear/inline_ape_smear.h \
-	meas/inline/smear/inline_hyp_smear.h $(am__append_3) \
-	$(am__append_5) $(am__append_7) $(am__append_9) \
-	$(am__append_11) $(am__append_13)
+	meas/inline/smear/inline_hyp_smear.h $(am__append_4) \
+	$(am__append_6) $(am__append_8) $(am__append_10) \
+	$(am__append_12) $(am__append_14)
 nodist_include_HEADERS = chroma_config_internal.h
 
 #
@@ -1322,7 +1323,8 @@ INCFLAGS = -I$(TOPDIR)/lib -I$(BUILDDIR)/lib
 # Any other compiler flags
 # 
 AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDPXX_CXXFLAGS@ \
-	@BAGEL_WILSON_DSLASH_CXXFLAGS@ $(am__append_1) $(am__append_2)
+	@BAGEL_WILSON_DSLASH_CXXFLAGS@ $(am__append_1) $(am__append_2) \
+	$(am__append_3)
 lib_LIBRARIES = libchroma.a
 
 #
@@ -1456,7 +1458,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/predictor/linear_extrap_predictor.cc \
 	update/molecdyn/predictor/lu_solve.cc \
 	update/molecdyn/predictor/mre_extrap_predictor.cc \
-	$(am__append_4) actions/ferm/fermacts/fermacts_aggregate_w.cc \
+	$(am__append_5) actions/ferm/fermacts/fermacts_aggregate_w.cc \
 	actions/ferm/fermacts/overlap_fermact_base_w.cc \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.cc \
 	actions/ferm/fermacts/prec_dwf_fermact_array_w.cc \
@@ -1574,8 +1576,8 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron/inline_qpropqio_w.cc \
 	meas/inline/smear/inline_smear_aggregate.cc \
 	meas/inline/smear/inline_ape_smear.cc \
-	meas/inline/smear/inline_hyp_smear.cc $(am__append_6) \
-	$(am__append_8) $(am__append_10) $(am__append_12) \
+	meas/inline/smear/inline_hyp_smear.cc $(am__append_7) \
+	$(am__append_9) $(am__append_11) $(am__append_13) \
 	actions/ferm/fermacts/asqtad_fermact_s.cc \
 	actions/ferm/fermbcs/fermbcs_s.cc \
 	actions/ferm/fermbcs/simple_fermbc_s.cc \
@@ -1591,7 +1593,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/hadron/stag_scalars_s.cc meas/hadron/vector_meson_s.cc \
 	meas/hadron/walfil_s.cc util/gauge/stag_phases_s.cc \
 	meas/hadron/pion_sing_s.cc meas/hadron/scalar_loops_s.cc \
-	meas/hadron/pseudoscalar_loops_s.cc $(am__append_14) \
+	meas/hadron/pseudoscalar_loops_s.cc $(am__append_15) \
 	init/chroma_init.cc
 all: chroma_config_internal.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
