@@ -4021,7 +4021,7 @@ _ACEOF
 	then
            	   GMP_CXXFLAGS="-I${GMP_HOME}/include"
 
-	   GMP_LDFLAGS="-L${GMP_HOPE}/lib"
+	   GMP_LDFLAGS="-L${GMP_HOME}/lib"
 
 	   GMP_LIBS="-lgmp"
 

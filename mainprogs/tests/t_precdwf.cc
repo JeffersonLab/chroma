@@ -1,4 +1,4 @@
-// $Id: t_precdwf.cc,v 1.17 2005-03-30 15:55:06 bjoo Exp $
+// $Id: t_precdwf.cc,v 1.18 2005-06-15 08:54:41 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -60,7 +60,7 @@ int main(int argc, char **argv)
   Chroma::initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {4,4,4,8};
+  const int foo[] = {8,8,16,16};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -80,7 +80,7 @@ int main(int argc, char **argv)
   Handle<FermBC<MLF> >  fbc_a(new PeriodicFermBC<MLF>);
 
   // DWDslash class can be optimised
-  int N5 = 8;
+  int N5 = 4;
   Real WilsonMass = 1.5;
   Real m_q = 0.01;
 

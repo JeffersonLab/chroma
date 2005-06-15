@@ -278,7 +278,7 @@ then
 	then
            dnl if we were given an install path set up the flags
 	   AC_SUBST(GMP_CXXFLAGS, "-I${GMP_HOME}/include")
-	   AC_SUBST(GMP_LDFLAGS, "-L${GMP_HOPE}/lib")
+	   AC_SUBST(GMP_LDFLAGS, "-L${GMP_HOME}/lib")
 	   AC_SUBST(GMP_LIBS, "-lgmp")
 	else
 	   dnl if we were not given an install path use existing env variables/standard include
