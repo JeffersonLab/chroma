@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_linop_array_w.h,v 1.16 2005-06-07 19:36:24 edwards Exp $
+// $Id: prec_dwf_linop_array_w.h,v 1.17 2005-06-16 12:03:39 bjoo Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned domain-wall fermion linear operator
  */
@@ -132,7 +132,40 @@ namespace Chroma
 	       const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
 	       enum PlusMinus isign) const;
 
+    //! Return flops performed by the evenEvenLinOp
+    const unsigned long evenEvenNFlops(void) const { 
+      return diagNFlops();
+    }
 
+    //! Return flops performed by the oddOddLinOp
+    const unsigned long oddOddNFlops(void) const { 
+      return diagNFlops();
+    }
+
+    //! Return flops performed by the evenOddLinOp
+    const unsigned long evenOddNFlops(void) const { 
+      return offDiagNFlops();
+    }
+
+    //! Return flops performed by the oddEvenLinOp
+    const unsigned long oddEvenNFlops(void) const { 
+      return offDiagNFlops();
+    }
+
+    //! Return flops performed by the evenEvenInvLinOp
+    const unsigned long evenEvenInvNFlops(void) const { 
+      return diagInvNFlops();
+    }
+
+    //! Return flops performed by the operator()
+    const unsigned long nFlops() const { 
+      // Flopcount is the oddEven EvenEvenInv evenOdd
+      // the oddOdd
+      // and the subtraction OddOdd - (  )
+      const unsigned long flops=oddEvenNFlops() + evenEvenInvNFlops() + evenOddNFlops() + oddOddNFlops() + (2*Nc*Ns*N5*(Layout::sitesOnNode()/2));
+
+      return flops;
+    }
   protected:
     //! Partial constructor
     EvenOddPrecDWLinOpArray() {}
@@ -188,7 +221,25 @@ namespace Chroma
 			   enum PlusMinus isign,
 			   int cb) const;
 
-    
+
+    //! Return flops performed by the diagonal part
+    unsigned long diagNFlops(void) const { 
+      unsigned long cbsite_flops = (4*N5+2)*Nc*Ns;
+      return cbsite_flops*(Layout::sitesOnNode()/2);
+    }
+
+    //! Return flops performed by the diagonal part
+    unsigned long offDiagNFlops(void) const { 
+      unsigned long cbsite_flops = N5*(1320+2*Nc*Ns);
+      return cbsite_flops*(Layout::sitesOnNode()/2);
+    }
+
+    //! Return flops performed by the diagonal part
+    unsigned long diagInvNFlops(void) const { 
+      unsigned long cbsite_flops = (10*N5-8)*Nc*Ns;
+      return cbsite_flops*(Layout::sitesOnNode()/2);
+    }
+
   private:
     Real WilsonMass;
     Real m_q;

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linearop.h,v 1.12 2005-01-20 19:21:39 edwards Exp $
+// $Id: linearop.h,v 1.13 2005-06-16 12:03:39 bjoo Exp $
 
 /*! @file
  * @brief Linear Operators
@@ -39,6 +39,10 @@ namespace Chroma
 
     //! Return the subset on which the operator acts
     virtual const OrderedSubset& subset() const = 0;
+    
+    //! Return the number of flops performed by operator()
+    //! Base linop returns 0 and this can be overridden
+    virtual const unsigned long nFlops() { return 0; }
   };
 
 
@@ -71,6 +75,10 @@ namespace Chroma
 
     //! Return the subset on which the operator acts
     virtual const OrderedSubset& subset() const = 0;
+
+    //! Return the number of flops performed by operator()
+    //! Base linop returns 0 and this can be overridden
+    virtual const unsigned long nFlops() const { return 0; };
   };
 
 
@@ -358,6 +366,29 @@ namespace Chroma
       ds_u += ds_tmp;
     }
 
+    //! Return flops performed by the evenEvenLinOp
+    virtual const unsigned long evenEvenNFlops() const { return 0; }
+    
+    //! Return flops performed by the evenOddLinOp
+    virtual const unsigned long evenOddNFlops() const { return 0; }
+
+    //! Return flops performed by the oddEvenLinOp
+    virtual const unsigned long oddEvenNFlops() const { return 0; }
+
+    //! Return flops performed by the oddOddLinOp
+    virtual const unsigned long oddOddNFlops() const { return 0; }
+
+    //! Return flops performed by the evenEvenInvLinOp
+    virtual const unsigned long evenEvenInvNFlops() const { return 0; }
+
+    //! Return flops performed by the operator()
+    virtual const unsigned long nFlops() const { 
+      return (this->oddOddNFlops()
+	+this->oddEvenNFlops()
+	+this->evenEvenInvNFlops()
+	+this->evenOddNFlops());
+    }
+
   };
 
 
@@ -605,6 +636,31 @@ namespace Chroma
       derivOddOddLinOp(ds_tmp, chi, psi, isign);
       ds_u += ds_tmp;
     }
+
+    //! Return flops performed by the evenEvenLinOp
+    virtual const unsigned long evenEvenNFlops() const { return 0; }
+    
+    //! Return flops performed by the evenOddLinOp
+    virtual const unsigned long evenOddNFlops() const { return 0; }
+
+    //! Return flops performed by the oddEvenLinOp
+    virtual const unsigned long oddEvenNFlops() const { return 0; }
+
+    //! Return flops performed by the oddOddLinOp
+    virtual const unsigned long oddOddNFlops() const { return 0; }
+
+    //! Return flops performed by the evenEvenInvLinOp
+    virtual const unsigned long evenEvenInvNFlops() const { return 0; }
+
+    //! Return flops performed by the operator()
+    virtual const unsigned long nFlops() const { 
+      return (this->oddOddNFlops()
+	      +this->oddEvenNFlops()
+	      +this->evenEvenInvNFlops()
+	      +this->evenOddNFlops());
+    }
+
+
   };
 
 
@@ -731,6 +787,29 @@ namespace Chroma
       derivOddOddLinOp(ds_1, chi, psi, isign);
       ds_u += ds_1;
     }
+
+    //! Return flops performed by the evenEvenLinOp
+    virtual const unsigned long evenEvenNFlops() const { return 0; }
+    
+    //! Return flops performed by the evenOddLinOp
+    virtual const unsigned long evenOddNFlops() const { return 0; }
+
+    //! Return flops performed by the oddEvenLinOp
+    virtual const unsigned long oddEvenNFlops() const { return 0; }
+
+    //! Return flops performed by the oddOddLinOp
+    virtual const unsigned long oddOddNFlops() const { return 0; }
+
+
+    //! Return flops performed by the operator()
+    virtual const unsigned long nFlops() const { 
+      return this->oddOddNFlops()
+	+this->oddEvenNFlops()
+	+this->evenEvenNFlops()
+	+this->evenOddNFlops();
+    }
+
+
   };
 
 

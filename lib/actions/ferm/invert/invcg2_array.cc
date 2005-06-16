@@ -1,4 +1,4 @@
-// $Id: invcg2_array.cc,v 1.12 2005-01-14 20:13:05 edwards Exp $
+// $Id: invcg2_array.cc,v 1.13 2005-06-16 12:03:39 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -75,8 +75,15 @@ void InvCG2_a(const LinearOperator< multi1d<T> >& M,
 
   const int N = psi.size();
   const OrderedSubset& s = M.subset();
+  FlopCounter flopcount;
+  flopcount.reset();
+  StopWatch swatch;
+  swatch.reset();
+  swatch.start();
 
-  Real chi_sq =  Real(norm2(chi,s));
+  Real chi_sq =  Real(norm2(chi,s));  // 4*Nc*Ns flops per site
+  flopcount.addSiteFlops(4*Nc*Ns*N,s);
+
 
   QDPIO::cout << "chi_norm = " << sqrt(chi_sq) << endl;
   Real rsd_sq = (RsdCG * RsdCG) * chi_sq;
@@ -89,8 +96,12 @@ void InvCG2_a(const LinearOperator< multi1d<T> >& M,
   multi1d<T> r(N), mp(N), mmp(N);
   M(mp, psi, PLUS);
   M(mmp, mp, MINUS);
-  for(int n=0; n < N; ++n)
+  flopcount.addFlops(2*M.nFlops());
+
+  for(int n=0; n < N; ++n){
     r[n][s] = chi[n] - mmp[n];
+  }
+  flopcount.addSiteFlops(2*Nc*Ns*N,s);
 
 #ifdef PRINT_5D_RESID 
   for(int n=0; n < N; n++) {
@@ -108,7 +119,8 @@ void InvCG2_a(const LinearOperator< multi1d<T> >& M,
     p[n][s] = r[n];
   
   //  Cp = |r[0]|^2
-  Double cp = norm2(r, s);   	       	   /* 2 Nc Ns  flops */
+  Double cp = norm2(r, s);   	       	   /* 4 Nc Ns  flops/cbsite */
+  flopcount.addSiteFlops(4*Nc*Ns*N, s);
 
   QDPIO::cout << "InvCG: k = 0  cp = " << cp << "  rsd_sq = " << rsd_sq << endl;
 
@@ -116,6 +128,8 @@ void InvCG2_a(const LinearOperator< multi1d<T> >& M,
   if ( toBool(cp  <=  rsd_sq) )
   {
     n_count = 0;
+    swatch.stop();
+    flopcount.report("invcg2_array", Real(swatch.getTimeInSeconds()));
     END_CODE();
     return;
   }
@@ -136,24 +150,32 @@ void InvCG2_a(const LinearOperator< multi1d<T> >& M,
     //  First compute  d  =  < p, A.p >  =  < p, M . M . p >  =  < M.p, M.p >
     //  Mp = M(u) * p
 
-    M(mp, p, PLUS);
-
+    M(mp, p, PLUS);  flopcount.addFlops(M.nFlops());
+   
     //  d = | mp | ** 2
-    d = norm2(mp, s);	/* 2 Nc Ns  flops */
+    d = norm2(mp, s); flopcount.addSiteFlops(4*Nc*Ns*N,s);
+
+    
 
     a = Real(c)/Real(d);
 
     //  Psi[k] += a[k] p[k]
-    for(int n=0; n < N; ++n)
-      psi[n][s] += a * p[n];	/* 2 Nc Ns  flops */
+    for(int n=0; n < N; ++n) {
+      psi[n][s] += a * p[n];	/* 4 Nc Ns  cbsite flops */
+    }
+    flopcount.addSiteFlops(4*Nc*Ns*N,s);
 
     //  r[k] -= a[k] A . p[k] ;
     //      	       +            +
     //  r  =  r  -  M(u)  . Mp  =  M  . M . p  =  A . p
 
     M(mmp, mp, MINUS);
-    for(int n=0; n < N; ++n)
+    flopcount.addFlops(M.nFlops());
+
+    for(int n=0; n < N; ++n) {
       r[n][s] -= a * mmp[n];
+    }
+    flopcount.addSiteFlops(4*Nc*Ns*N, s);
 
 #ifdef PRINT_5D_RESID
     for(int n=0; n < N; n++) {
@@ -167,12 +189,15 @@ void InvCG2_a(const LinearOperator< multi1d<T> >& M,
 
     //  cp  =  | r[k] |**2
     cp = norm2(r, s);	                /* 2 Nc Ns  flops */
+    flopcount.addSiteFlops(4*Nc*Ns*N,s);
 
     QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << endl;
 
     if ( toBool(cp  <=  rsd_sq) )
     {
       n_count = k;
+      swatch.stop();
+      flopcount.report("invcg2_array", Real(swatch.getTimeInSeconds()));
       END_CODE();
       return;
     }
@@ -183,10 +208,15 @@ void InvCG2_a(const LinearOperator< multi1d<T> >& M,
     QDPIO::cout << "InvCGev: k = " << k << "  alpha = " << a << "  beta = " << b << endl;
 #endif 
     //  p[k+1] := r[k] + b[k+1] p[k]
-    for(int n=0; n < N; ++n)
+    for(int n=0; n < N; ++n) {
       p[n][s] = r[n] + b*p[n];	/* Nc Ns  flops */
+    }
+    flopcount.addSiteFlops(4*Nc*Ns*N,s);
   }
   n_count = MaxCG;
+  swatch.stop();
+  flopcount.report("invcg2_array", Real(swatch.getTimeInSeconds()));
+
   QDPIO::cerr << "Nonconvergence Warning" << endl;
 }
 
