@@ -1,4 +1,4 @@
-// $Id: lwldslash_array_pab_w.cc,v 1.3 2005-06-15 11:52:21 bjoo Exp $
+// $Id: lwldslash_array_pab_w.cc,v 1.4 2005-06-17 15:17:53 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator array
  */
@@ -11,7 +11,6 @@
 #ifdef QDP_USE_QCDOC
 #warning "Using QALLOC to allocate the packed gauge"
 #include <qalloc.h>
-#include <qcdoc_align.h>
 #endif
 
 #include <wfm.h>
@@ -63,13 +62,11 @@ namespace Chroma
       packed_gauge = 0x0;
     }
 #endif
-    
     // Check we got the requested memory
     if( packed_gauge == 0x0 ) { 
       QDPIO::cout << "Unable to allocate packed gauge in PABWilsonDslash::create()" << endl;
       QDP_abort(1);
     }
-    
     wil_cbsize=Layout::sitesOnNode()/2;
 
     // Rearrange gauge from  Dir,Site, Matrix 

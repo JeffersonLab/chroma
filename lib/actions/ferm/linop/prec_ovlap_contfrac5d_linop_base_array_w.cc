@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_linop_base_array_w.cc,v 1.1 2005-05-27 22:09:08 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_linop_base_array_w.cc,v 1.2 2005-06-17 15:17:53 bjoo Exp $
 /*! \file
  *  \brief Base class for even-odd prec. 5D continued fraction linop
  */
@@ -24,7 +24,15 @@ namespace Chroma
   {
     START_CODE();
 
-    Handle< const DslashLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> > > Ds(new WilsonDslash(state->getLinks()));
+    int dslash_length;
+    if( isLastZeroP ) {
+      dslash_length = N5-1;
+    }
+    else {
+      dslash_length = N5;
+    }
+
+    Handle< const WilsonDslashArray > Ds(new WilsonDslashArray(state->getLinks(),dslash_length));
     Dslash  = Ds;  // Copy Handle -- M now owns dslash
 
     // The mass ratio
@@ -284,15 +292,17 @@ namespace Chroma
 
     if( chi.size() != N5 ) chi.resize(N5);
 
-    LatticeFermion tmp;
+    multi1d<LatticeFermion> tmp(N5);
     
     int G5 = Ns*Ns-1;
 
     // Optimisation... do up to the penultimate block...
 
     // (N5-1)( Dslash + 2NcNs) flops/site
+    Dslash->apply(tmp, psi, PLUS, cb);
 
     for(int i=0; i < N5-1; i++) { 
+      /*
       // CB is CB of TARGET
       // gamma_5 Dslash is hermitian so I can ignore isign
 
@@ -300,20 +310,22 @@ namespace Chroma
       Dslash->apply(tmp, psi[i], PLUS, cb);
   
       // chi[i][rb[cb]] = Gamma(G5)*tmp;
-
+      */
       // Chi_i is now -(1/2) beta_tilde_i Dslash 
-      chi[i][rb[cb]] = off_diag_coeff[i]*(GammaConst<Ns,Ns*Ns-1>()*tmp);
+      chi[i][rb[cb]] = off_diag_coeff[i]*(GammaConst<Ns,Ns*Ns-1>()*tmp[i]);
     }
 
  
     // Only do last block if beta_tilde[i] is not zero
     // ( Dslash + 2NcNs) flops per site if done.
     if( !isLastZeroP ) {
-      Dslash->apply(tmp, psi[N5-1], PLUS, cb);
+
+      // Vector Dslash gets this appropriately
+      //Dslash->apply(tmp, psi[N5-1], PLUS, cb);
       // chi[N5-1][rb[cb]] = Gamma(G5)*tmp;
 
       // Chi_i is now -(1/2) beta_tilde_i Dslash 
-      chi[N5-1][rb[cb]] = off_diag_coeff[N5-1]*(GammaConst<Ns,Ns*Ns-1>()*tmp);
+      chi[N5-1][rb[cb]] = off_diag_coeff[N5-1]*(GammaConst<Ns,Ns*Ns-1>()*tmp[N5-1]);
     }
     else { 
       chi[N5-1][rb[cb]] = zero;

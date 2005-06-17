@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_pab.cc,v 1.14 2005-06-15 11:52:21 bjoo Exp $
+// $Id: lwldslash_w_pab.cc,v 1.15 2005-06-17 15:17:53 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -9,7 +9,6 @@
 #ifdef QDP_USE_QCDOC
 #warning "Using QALLOC to allocate the packed gauge"
 #include <qalloc.h>
-#include <qcdoc_align.h>
 #endif
 #include <wfm.h>
 
@@ -60,7 +59,6 @@ namespace Chroma
       packed_gauge = 0x0;
     }
 #endif
-
     if( packed_gauge == 0x0 ) { 
       QDPIO::cout << "Unable to allocate packed gauge in PABWilsonDslash::create()" << endl;
       QDP_abort(1);
@@ -106,7 +104,7 @@ namespace Chroma
   //! Apply Wilson-Dirac dslash
   /*! \ingroup linop
    * Wilson dslash
-   *
+  
    * Arguments:
    *
    *  \param chi	      Result                           (Write)

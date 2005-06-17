@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linearop.h,v 1.13 2005-06-16 12:03:39 bjoo Exp $
+// $Id: linearop.h,v 1.14 2005-06-17 15:17:53 bjoo Exp $
 
 /*! @file
  * @brief Linear Operators
@@ -383,10 +383,7 @@ namespace Chroma
 
     //! Return flops performed by the operator()
     virtual const unsigned long nFlops() const { 
-      return (this->oddOddNFlops()
-	+this->oddEvenNFlops()
-	+this->evenEvenInvNFlops()
-	+this->evenOddNFlops());
+      return 0;
     }
 
   };

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_array_pab_w.h,v 1.2 2005-06-14 15:34:26 bjoo Exp $
+// $Id: lwldslash_array_pab_w.h,v 1.3 2005-06-17 15:17:53 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator over arrays
  */
@@ -97,7 +97,7 @@ namespace Chroma
 
   private:
     PrimitiveSU3Matrix* packed_gauge;
-    multi1d<LatticeColorMatrix> u;
+    multi1d<LatticeColorMatrix> u; // For derivative
     WilsonArg wil;
     unsigned long wil_cbsize;
     int N5;

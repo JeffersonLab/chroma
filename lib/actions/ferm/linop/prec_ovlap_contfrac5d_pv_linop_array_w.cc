@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_pv_linop_array_w.cc,v 1.9 2005-05-19 12:18:22 bjoo Exp $
+// $Id: prec_ovlap_contfrac5d_pv_linop_array_w.cc,v 1.10 2005-06-17 15:17:53 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Pauli-Villars Continued Fraction 5D
  */
@@ -24,7 +24,8 @@ namespace Chroma
   {
     START_CODE();
 
-    Handle< const DslashLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> > > Ds(new WilsonDslash(state->getLinks()));
+    // It is always N5-1...
+    Handle< const WilsonDslashArray > Ds(new WilsonDslashArray(state->getLinks(),N5-1));
     Dslash  = Ds;  // Copy Handle -- M now owns dslash
 
     // Now compute some coefficients.
@@ -212,7 +213,7 @@ namespace Chroma
     const int cb) const
   {
     START_CODE();
-
+ 
     if( chi.size() != N5 )  chi.resize(N5);
 
     multi1d<LatticeFermion> y(N5);
@@ -256,7 +257,7 @@ namespace Chroma
 
   //! Apply the off diagonal block
   /*!
-   *  (N5-2)*(Dslash + 2NcNs) 
+   *  (N5-1)*(Dslash + 2NcNs) 
    *
    * \param chi     result     	                   (Modify)
    * \param psi     source     	                   (Read)
@@ -273,29 +274,19 @@ namespace Chroma
 
     if( chi.size() != N5 )  chi.resize(N5);
 
-    LatticeFermion tmp;
+    multi1d<LatticeFermion> tmp(N5);
     Real coeff;
     int G5 = Ns*Ns-1;
 
-    // Optimisation... do up to the penultimate block...
-    // (N5-2)*(Dslash + 2NcNs)
+    // (N5-1)*(Dslash + 2NcNs)
+    // Now donw with Dslash vector... 
+    Dslash->apply(tmp, psi, PLUS, cb);
+
     for(int i=0; i < N5-1; i++) 
     {
-      // CB is CB of TARGET
-      // gamma_5 Dslash is hermitian so I can ignore isign
-
-      // Apply g5 Dslash
-      Dslash->apply(tmp, psi[i], PLUS, cb);
-      // chi[i][rb[cb]] = Gamma(G5)*tmp;
-
       // Chi_i is now -(1/2) beta_tilde_i Dslash 
-      chi[i][rb[cb]] = off_diag_coeff[i]*(GammaConst<Ns,Ns*Ns-1>()*tmp);
+      chi[i][rb[cb]] = off_diag_coeff[i]*(GammaConst<Ns,Ns*Ns-1>()*tmp[i]);
     }
-
- 
-    // Only do last block if beta_tilde[i] is not zero
-//    if( !isLastZeroP ) {
-//    }
   
     chi[N5-1][rb[cb]] = zero;
 

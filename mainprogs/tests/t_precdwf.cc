@@ -1,4 +1,4 @@
-// $Id: t_precdwf.cc,v 1.18 2005-06-15 08:54:41 bjoo Exp $
+// $Id: t_precdwf.cc,v 1.19 2005-06-17 15:17:53 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -15,8 +15,9 @@ typedef multi1d<LatticeColorMatrix>  LCM;
 
 typedef  void (EvenOddPrecLinearOperator< MLF, LCM >::* EO_mem)(MLF&, const MLF&, enum PlusMinus) const;
 
+enum func { EE, EO, OE, OO, EEI, TOT };
 
-double time_func(const EvenOddPrecLinearOperator< MLF, LCM > *p, EO_mem A,
+double time_func(const EvenOddPrecLinearOperator< MLF, LCM >& p, func which,
 		 MLF& chi, const MLF& psi,
 		 enum PlusMinus isign)
 {
@@ -28,10 +29,69 @@ double time_func(const EvenOddPrecLinearOperator< MLF, LCM > *p, EO_mem A,
   {
     QDPIO::cout << "Applying D " << iter << " times" << endl;
 
-    myt1=clock();
-    for(int i=iter; i-- > 0; )
-      (p->*A)(chi, psi, isign);
-    myt2=clock();
+    switch ( which )  {
+    case EE:
+      {
+	myt1=clock();
+	for(int i=iter; i-- > 0; ) {
+	  p.evenEvenLinOp(chi, psi, isign);
+	}
+	myt2=clock();
+      }
+      break;
+    case EO:
+      {
+	myt1=clock();
+	for(int i=iter; i-- > 0; ) {
+	  p.evenOddLinOp(chi, psi, isign);
+	}
+	myt2=clock();
+      }
+      break;
+	
+    case OE: 
+      {
+	myt1=clock();
+	for(int i=iter; i-- > 0; ) {
+	  p.oddEvenLinOp(chi, psi, isign);
+	}
+	myt2=clock();
+      }
+      break;
+
+     case OO:
+      {
+	myt1=clock();
+	for(int i=iter; i-- > 0; ) {
+	  p.oddOddLinOp(chi, psi, isign);
+	}
+	myt2=clock();
+      }
+      break;
+
+     case EEI:
+      {
+	myt1=clock();
+	for(int i=iter; i-- > 0; ) {
+	  p.evenEvenInvLinOp(chi, psi, isign);
+	}
+	myt2=clock();
+      }
+      break;
+
+     case TOT:
+      {
+	myt1=clock();
+	for(int i=iter; i-- > 0; ) {
+	  p(chi, psi, isign);
+	}
+	myt2=clock();
+      }
+      break;
+
+    default: 
+      break;
+    }
 
     mydt=double(myt2-myt1)/double(CLOCKS_PER_SEC);
     Internal::globalSum(mydt);
@@ -41,10 +101,69 @@ double time_func(const EvenOddPrecLinearOperator< MLF, LCM > *p, EO_mem A,
       break;
   }
 
-  myt1=clock();
-  for(int i=iter; i-- > 0; )
-    (p->*A)(chi, psi, isign);
-  myt2=clock();
+  switch ( which )  {
+  case EE:
+    {
+      myt1=clock();
+      for(int i=iter; i-- > 0; ) {
+	p.evenEvenLinOp(chi, psi, isign);
+      }
+      myt2=clock();
+    }
+    break;
+  case EO:
+    {
+      myt1=clock();
+      for(int i=iter; i-- > 0; ) {
+	p.evenOddLinOp(chi, psi, isign);
+      }
+      myt2=clock();
+    }
+    break;
+	
+  case OE: 
+    {
+      myt1=clock();
+      for(int i=iter; i-- > 0; ) {
+	p.oddEvenLinOp(chi, psi, isign);
+      }
+      myt2=clock();
+    }
+    break;
+
+  case OO:
+    {
+      myt1=clock();
+      for(int i=iter; i-- > 0; ) {
+	  p.oddOddLinOp(chi, psi, isign);
+      }
+      myt2=clock();
+    }
+    break;
+    
+  case EEI:
+    {
+      myt1=clock();
+      for(int i=iter; i-- > 0; ) {
+	p.evenEvenInvLinOp(chi, psi, isign);
+      }
+      myt2=clock();
+    }
+    break;
+  case TOT:
+    {
+      myt1=clock();
+      for(int i=iter; i-- > 0; ) {
+	p(chi, psi, isign);
+      }
+      myt2=clock();
+    }
+    break;
+    
+  default: 
+    break;
+  }
+  
 
   mydt = (double)(myt2-myt1)/((double)(CLOCKS_PER_SEC));
   mydt *= 1.0e6/((double)(iter*(Layout::sitesOnNode()/2)));
@@ -64,14 +183,19 @@ int main(int argc, char **argv)
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
+
   Layout::create();
 
   XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
 
+
   //! Test out dslash
   multi1d<LatticeColorMatrix> u(Nd);
+  QDPIO::cout << "1" << endl << flush;
   for(int m=0; m < u.size(); ++m)
     gaussian(u[m]);
+
+  QDPIO::cout << "2" << endl << flush;
 
   //! Create a linear operator
   QDPIO::cout << "Constructing DWDslash" << endl;
@@ -80,7 +204,7 @@ int main(int argc, char **argv)
   Handle<FermBC<MLF> >  fbc_a(new PeriodicFermBC<MLF>);
 
   // DWDslash class can be optimised
-  int N5 = 4;
+  int N5 = 8;
   Real WilsonMass = 1.5;
   Real m_q = 0.01;
 
@@ -126,35 +250,72 @@ int main(int argc, char **argv)
     int Neo    = N5*(1320+24);
     int Nflops = 2*Ndiag + 2*Neo + N5*24;
 
+    /*
     // even-even-inv piece
-    mydt = time_func(D_pdwf, &EvenOddPrecLinearOperator<MLF,LCM>::evenEvenInvLinOp, chi, psi, is);
+    mydt = time_func(*D_pdwf, EEI, chi, psi, is);
     QDPIO::cout << "EvenEvenInv: The time per lattice point is "<< mydt << " micro sec" 
 		<< " (" <<  ((double)(NdiagInv)/mydt) << ") Mflops " << endl;
 
-    mydt = time_func(D_pdwf, &EvenOddPrecLinearOperator<MLF,LCM>::evenEvenLinOp, chi, psi, is);
+    mydt = time_func(*D_pdwf, EE, chi, psi, is);
     QDPIO::cout << "EvenEven: The time per lattice point is "<< mydt << " micro sec" 
 		<< " (" <<  ((double)(Ndiag)/mydt) << ") Mflops " << endl;
       
     // odd-odd piece
-    mydt = time_func(D_pdwf, &EvenOddPrecLinearOperator<MLF,LCM>::oddOddLinOp, chi, psi, is);
+    mydt = time_func(*D_pdwf, OO, chi, psi, is);
     QDPIO::cout << "OddOdd: The time per lattice point is "<< mydt << " micro sec" 
 		<< " (" <<  ((double)(Ndiag)/mydt) << ") Mflops " << endl;
-      
+    
+    */ 
     // even-odd
-    mydt = time_func(D_pdwf, &EvenOddPrecLinearOperator<MLF,LCM>::evenOddLinOp, chi, psi, is);
+    mydt = time_func(*D_pdwf, EO, chi, psi, is);
     QDPIO::cout << "EvenOdd: The time per lattice point is "<< mydt << " micro sec" 
 		<< " (" <<  ((double)(Neo)/mydt) << ") Mflops " << endl;
     // odd-even
-    mydt = time_func(D_pdwf, &EvenOddPrecLinearOperator<MLF,LCM>::oddEvenLinOp, chi, psi, (isign == 1 ? PLUS : MINUS));
+    mydt = time_func(*D_pdwf, OE, chi, psi, is);
     QDPIO::cout << "Odd-Even: The time per lattice point is "<< mydt << " micro sec" 
 		<< " (" <<  ((double)(Neo)/mydt) << ") Mflops " << endl;
 
     // Total thing
-    mydt = time_func(D_pdwf, &EvenOddPrecLinearOperator<MLF,LCM>::operator(), chi, psi, is);
+    mydt = time_func(*D_pdwf, TOT, chi, psi, is);
     QDPIO::cout << "Total: The time per lattice point is "<< mydt << " micro sec" 
 		<< " (" <<  ((double)(Nflops)/mydt) << ") Mflops " << endl;
   }
-  
+
+  {
+    clock_t myt1, myt2;
+    double  mydt;
+    int iter = 1;
+    int isign=1;
+
+    for(iter=1; ; iter <<= 1) {
+      QDPIO::cout << "Applying D " << iter << " times" << endl;
+      
+      myt1=clock();
+      for(int i=iter; i-- > 0; )
+	(*D_pdwf)(chi, psi, PLUS);
+      myt2=clock();
+      
+      mydt=double(myt2-myt1)/double(CLOCKS_PER_SEC);
+      Internal::globalSum(mydt);
+      mydt /= Layout::numNodes();
+      
+      if (mydt > 1)
+	break;
+    }
+    
+    StopWatch swatch;
+    FlopCounter flopcount;
+    swatch.reset(); flopcount.reset();
+    swatch.start();
+    for(int i=iter; i-- > 0; ) {
+      (*D_pdwf)(chi, psi, PLUS);
+    }
+    swatch.stop();
+    flopcount.addFlops(D_pdwf->nFlops()*iter);
+
+    flopcount.report("PrecDWF total", swatch.getTimeInSeconds());
+  }
+
   delete D_pdwf;
 
   // Time to bolt
