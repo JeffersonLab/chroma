@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ht_contfrac5d_linop_array_w.h,v 1.1 2005-01-27 17:57:48 bjoo Exp $
+// $Id: prec_ht_contfrac5d_linop_array_w.h,v 1.2 2005-06-20 11:18:22 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
  */
@@ -10,7 +10,7 @@
 #include "linearop.h"
 #include "fermact.h"
 #include "state.h"
-
+#include "dslash_array_w.h"
 
 namespace Chroma 
 { 
@@ -151,6 +151,41 @@ namespace Chroma
 	       const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
 	       enum PlusMinus isign) const;
 
+
+    //! Return flops performed by the evenEvenLinOp
+    const unsigned long evenEvenNFlops(void) const { 
+      return diagNFlops();
+    }
+
+    //! Return flops performed by the oddOddLinOp
+    const unsigned long oddOddNFlops(void) const { 
+      return diagNFlops();
+    }
+
+    //! Return flops performed by the evenOddLinOp
+    const unsigned long evenOddNFlops(void) const { 
+      return offDiagNFlops();
+    }
+
+    //! Return flops performed by the oddEvenLinOp
+    const unsigned long oddEvenNFlops(void) const { 
+      return offDiagNFlops();
+    }
+
+    //! Return flops performed by the evenEvenInvLinOp
+    const unsigned long evenEvenInvNFlops(void) const { 
+      return diagInvNFlops();
+    }
+
+    //! Return flops performed by the operator()
+    const unsigned long nFlops() const { 
+      // Flopcount is the oddEven EvenEvenInv evenOdd
+      // the oddOdd
+      // and the subtraction OddOdd - (  )
+      const unsigned long flops=oddEvenNFlops() + evenEvenInvNFlops() + evenOddNFlops() + oddOddNFlops() + (2*Nc*Ns*N5*(Layout::sitesOnNode()/2));
+
+      return flops;
+    }
   protected:
 
     //! Apply the even-even (odd-odd) coupling piece of the domain-wall fermion operator
@@ -203,8 +238,27 @@ namespace Chroma
 			   enum PlusMinus isign,
 			   int cb) const;
 
+    //! Return flops performed by the diagonal part
+    unsigned long diagNFlops(void) const { 
+      unsigned long cbsite_flops = (10*N5-8)*Nc*Ns;
+      return cbsite_flops*(Layout::sitesOnNode()/2);
+    }
+
+    //! Return flops performed by the diagonal part
+    unsigned long offDiagNFlops(void) const { 
+      unsigned long cbsite_flops = (10*N5-8)*Nc*Ns + N5*1320;
+      return cbsite_flops*(Layout::sitesOnNode()/2);
+    }
+
+    //! Return flops performed by the diagonal part
+    unsigned long diagInvNFlops(void) const { 
+      unsigned long cbsite_flops = (10*N5-14)*Nc*Ns;
+      return cbsite_flops*(Layout::sitesOnNode()/2);
+    }
+
   private:
-    Handle< const DslashLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> > > Dslash; //Dslash Op
+    // Handle< const DslashLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> > > Dslash; //Dslash Op
+    Handle< const WilsonDslashArray > Dslash;
     const Real m_q;
     const Real OverMass;
     const int  N5;    // Size of the 5th dimension
@@ -218,6 +272,7 @@ namespace Chroma
     multi1d<Real> a;  // The a_i
     multi1d<Real> d;  // The d_i
     multi1d<Real> u;  // The u_i = l_i
+    multi1d<Real> invd;
     const Real b5;
     const Real c5;
     Real f_plus;
