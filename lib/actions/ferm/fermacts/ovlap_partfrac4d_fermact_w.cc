@@ -1,4 +1,4 @@
-// $Id: ovlap_partfrac4d_fermact_w.cc,v 1.18 2005-02-14 02:05:34 edwards Exp $
+// $Id: ovlap_partfrac4d_fermact_w.cc,v 1.19 2005-06-21 15:27:26 bjoo Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -107,6 +107,9 @@ namespace Chroma
 	approximation_type = COEFF_TYPE_ZOLOTAREV;
       }
 
+      read(in, "ApproxMin", approxMin);
+      read(in, "ApproxMax", approxMax);
+
       read(in, "InnerSolve/MaxCG", invParamInner.MaxCG);
       read(in, "InnerSolve/RsdCG", invParamInner.RsdCG);
       if( in.count("InnerSolve/ReorthFreq") == 1 ) {
@@ -149,6 +152,8 @@ namespace Chroma
     write(xml_out, "ReorthFreq", p.ReorthFreqInner);
     write(xml_out, "SolverType", p.inner_solver_type);
     write(xml_out, "ApproximationType", p.approximation_type);
+    write(xml_out, "ApproxMin", p.approxMin);
+    write(xml_out, "ApproxMax", p.approxMax);
     write(xml_out, "IsChiral", p.isChiralP); 
     pop(xml_out);
 
@@ -291,8 +296,8 @@ namespace Chroma
 
     switch(params.approximation_type) { 
     case COEFF_TYPE_ZOLOTAREV:
-      scale_fac = Real(1) / state.getApproxMax();
-      eps = state.getApproxMin() * scale_fac;
+      scale_fac = Real(1) / params.approxMax;
+      eps = params.approxMin * scale_fac;
 
       QDPIO::cout << "Initing Linop with Zolotarev Coefficients" << endl;
       QDPIO::cout << "  MaxCGInner =  " << params.invParamInner.MaxCG << endl;

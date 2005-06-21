@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ovlap_partfrac4d_fermact_w.h,v 1.10 2005-04-11 01:59:58 edwards Exp $
+// $Id: ovlap_partfrac4d_fermact_w.h,v 1.11 2005-06-21 15:27:27 bjoo Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -40,6 +40,8 @@ namespace Chroma
 
     //! Type of approximation ZOLOTAREV or TANH
     CoeffType approximation_type;
+    Real approxMin;
+    Real approxMax;
 
     InvertParam_t invParamInner;
     OverlapInnerSolverType inner_solver_type;
