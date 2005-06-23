@@ -1,4 +1,4 @@
-// $Id: invcg2_array.cc,v 1.14 2005-06-20 11:14:21 bjoo Exp $
+// $Id: invcg2_array.cc,v 1.15 2005-06-23 10:27:10 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -132,7 +132,7 @@ void InvCG2_a(const LinearOperator< multi1d<T> >& M,
     swatch.stop();
     QDPIO::cout << "InvCG: k = 0  cp = " << cp << "  rsd_sq = " << rsd_sq << endl;
     // Try it all at the end.
-    flopcount.report("invcg2_array", Real(swatch.getTimeInSeconds()));
+    flopcount.report("invcg2_array", swatch.getTimeInSeconds());
     END_CODE();
     return;
   }
@@ -201,7 +201,7 @@ void InvCG2_a(const LinearOperator< multi1d<T> >& M,
       n_count = k;
       swatch.stop();
       QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << endl;
-      flopcount.report("invcg2_array", Real(swatch.getTimeInSeconds()));
+      flopcount.report("invcg2_array", swatch.getTimeInSeconds());
       END_CODE();
       return;
     }
@@ -221,7 +221,7 @@ void InvCG2_a(const LinearOperator< multi1d<T> >& M,
   n_count = MaxCG;
   swatch.stop();
   QDPIO::cerr << "Nonconvergence Warning" << endl;
-  flopcount.report("invcg2_array", Real(swatch.getTimeInSeconds()));
+  flopcount.report("invcg2_array", swatch.getTimeInSeconds());
 
 
  
