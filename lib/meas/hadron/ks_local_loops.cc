@@ -1,0 +1,104 @@
+/* + */
+/* $Id: ks_local_loops.cc,v 1.1 2005-06-27 15:54:21 mcneile Exp $ ($Date: 2005-06-27 15:54:21 $) */
+
+
+#include "singleton.h"
+#include "objfactory.h"
+#include "handle.h"
+#include "chromabase.h"
+
+#include "fermact.h"
+#include "meas/hadron/ks_local_loops.h"
+#include "meas/hadron/hadron_s.h"
+#include "meas/hadron/z2_src.h"
+
+
+namespace Chroma {
+
+
+void ks_local_loops(
+		 Handle<const SystemSolver<LatticeStaggeredFermion> > & qprop,
+		 LatticeStaggeredFermion & q_source, 
+		 LatticeStaggeredFermion & psi ,
+		 multi1d<LatticeColorMatrix> & u,
+		 XMLFileWriter & xml_out, 
+		 XMLReader & xml_in ,
+		 int t_length,
+		 Real Mass,
+		 int Nsamp,
+		 Real RsdCG,
+		 int CFGNO,
+		 int volume_source
+		 )
+{
+
+    push(xml_out,"ks_local_loops");
+
+    // write common parameters
+    write(xml_out, "Mass" , Mass);
+    if( volume_source == Z2NOISE  )
+      write(xml_out, "Random_volume_source" , "Z2NOISE");
+    else if( volume_source == GAUSSIAN )
+      write(xml_out, "Random_volume_source" , "GAUSSIAN");
+
+    write(xml_out, "Number_of_samples" , Nsamp);
+
+  //
+  //  parse input files
+  //
+
+  // the wrapped disconnected loops
+  local_scalar_loop scalar_one_loop(t_length,Nsamp,u) ; 
+  non_local_scalar_loop scalar_two_loop(t_length,Nsamp,u) ; 
+  threelink_pseudoscalar_loop eta3_loop(t_length,Nsamp,u) ; 
+  fourlink_pseudoscalar_loop eta4_loop(t_length,Nsamp,u) ; 
+
+
+  // Seed the RNG with the cfg number for now
+  Seed seed;
+  seed = CFGNO;
+  RNG::setrn(seed);
+
+
+  for(int i = 0; i < Nsamp; ++i){
+    psi = zero;   // note this is ``zero'' and not 0
+    RNG::savern(seed);
+
+    // Fill the volume with random noise 
+    if( volume_source == GAUSSIAN  )
+      gaussian(q_source);
+    else if( volume_source == Z2NOISE )
+      { z2_src(q_source); }
+
+    // Compute the solution vector for the particular source
+    int n_count = (*qprop)(psi, q_source);
+      
+    push(xml_out,"Qprop_noise");
+    write(xml_out, "Noise_number" , i);
+    write(xml_out, "RsdCG" , RsdCG);
+    write(xml_out, "n_count", n_count);
+    write(xml_out, "Seed" , seed);
+    pop(xml_out);
+
+
+    scalar_one_loop.compute(q_source,psi,i) ;
+    scalar_two_loop.compute(q_source,psi,i) ;
+    eta3_loop.compute(q_source,psi,i) ;
+    eta4_loop.compute(q_source,psi,i) ;
+
+  } // Nsamples
+
+
+  // write output from the 
+  scalar_one_loop.dump(xml_out) ;
+  scalar_two_loop.dump(xml_out) ;
+  eta3_loop.dump(xml_out) ;
+  eta4_loop.dump(xml_out) ;
+
+  // end of this section
+  pop(xml_out);
+
+}
+
+
+}  // end namespace Chroma
