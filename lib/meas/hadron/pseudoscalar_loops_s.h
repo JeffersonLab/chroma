@@ -1,4 +1,4 @@
-// $Id: pseudoscalar_loops_s.h,v 1.6 2005-06-27 20:12:43 mcneile Exp $
+// $Id: pseudoscalar_loops_s.h,v 1.7 2005-06-27 20:22:56 mcneile Exp $
 #ifndef PSEUDOSCALAR_LOOPS_S_H
 #define PSEUDOSCALAR_LOOPS_S_H
 
@@ -22,7 +22,7 @@ namespace Chroma {
 				Stag_shift_option type_of_shift_in)  
       : staggered_loops(t_len,nsample,uin,type_of_shift_in)
       {
-	outer_tag = "loop_gamma5_cross_one"  ; 
+	outer_tag = "loop_gamma3gamma5_cross_one"  ; 
 	inner_tag = "loop" ; 
       }
 
@@ -51,7 +51,8 @@ namespace Chroma {
 			       Stag_shift_option type_of_shift_in)  
       : staggered_loops(t_len,nsample,uin,type_of_shift_in)
       {
-	outer_tag = "loop_gamma3gamma5_cross_one"  ; 
+
+	outer_tag = "loop_gamma5_cross_one"  ; 
 	inner_tag = "loop" ; 
       }
 
