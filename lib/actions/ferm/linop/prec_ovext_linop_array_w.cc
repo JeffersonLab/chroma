@@ -1,4 +1,4 @@
-/* $Id: prec_ovext_linop_array_w.cc,v 1.2 2005-04-22 14:36:14 bjoo Exp $
+/* $Id: prec_ovext_linop_array_w.cc,v 1.3 2005-06-27 18:06:32 bjoo Exp $
 /*! \file
 *  \brief EvenOddPreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
 */
@@ -30,12 +30,12 @@ namespace Chroma
 
     START_CODE();
 
-    Handle< const DslashLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> > > Ds(new WilsonDslash(u_));
-
-    Dslash  = Ds;  // Copy Handle -- M now owns dslash
 
     Npoles = Npoles_;
     N5 = 2*Npoles_ + 1;
+    Handle< const WilsonDslashArray > Ds(new WilsonDslashArray(u_,N5));
+
+    Dslash  = Ds;  // Copy Handle -- M now owns dslash
 
     Real R = (Real(1) + Mass_)/(Real(1)-Mass_);
     Real alpha = b5_ + c5_;
@@ -102,6 +102,9 @@ namespace Chroma
    * \param psi     source     	                   (Read)
    * \param isign   Flag ( PLUS | MINUS )          (Read)
    * \param cb      checkerboard ( 0 | 1 )         (Read)
+   *
+   * Flopcount = 10*Nc*Ns*(N5-1) + 2*Nc*Ns
+   *           = 10*Nc*Ns*N5 - 8*Nc*Ns  = (10N5 - 8)*Nc*Ns
    */
   void 
   EvenOddPrecOvExtLinOpArray::applyDiag(multi1d<LatticeFermion>& chi, 
@@ -117,42 +120,45 @@ namespace Chroma
     switch( isign ) { 
     case PLUS: 
       {
-	LatticeFermion tmp4;
-	tmp4[rb[cb]] = Gamma(G5)*psi[N5-1];
-
 	// Lowest corner
-	chi[N5-1][rb[cb]] = E*tmp4;
+	// 2*Nc*Ns flops/cbsite	
+	chi[N5-1][rb[cb]] = E* ( GammaConst<Ns,Ns*Ns-1>()*psi[N5-1] );
+
 	
 	int p=0; 
+	// ((N5-1)/2)*20*Nc*Ns flops/cbsite = 10*Nc*Ns*(N5-1) flops/cbsite
 	for(int i=0; i < N5-1; i+=2, p++) { 
-	  tmp4[rb[cb]] = Gamma(G5)*psi[i];
-	  chi[i][rb[cb]] = A*tmp4 + B[p]*psi[i+1];
+	  // 6*Nc*Ns flops/cbsite
+	  chi[i][rb[cb]] = B[p]*psi[i+1] + A*(GammaConst<Ns,Ns*Ns-1>()*psi[i]);
 
-	  tmp4[rb[cb]] = Gamma(G5)*psi[i+1];
-	  chi[i+1][rb[cb]] = B[p]*psi[i] + C[p]*tmp4;
+	  // 6*Nc*Ns flops/cbsite
+	  chi[i+1][rb[cb]] = B[p]*psi[i] + C[p]*(GammaConst<Ns,Ns*Ns-1>()*psi[i+1]);
+	  // 4*Nc*Ns flops/cbsite
 	  chi[i+1][rb[cb]] += D[p]*psi[N5-1];
 
+	  // 4*Nc*Ns flops/cbsite
 	  chi[N5-1][rb[cb]] -= D[p]*psi[i+1];
 	}
       }
       break;
     case MINUS:
       {
-	LatticeFermion tmp4;
-	tmp4[rb[cb]] = Gamma(G5)*psi[N5-1];
-
 	// Lowest corner
-	chi[N5-1][rb[cb]] = E*tmp4;
+	// 2*Nc*Ns cbsite flops
+	chi[N5-1][rb[cb]] = E*(GammaConst<Ns,Ns*Ns-1>()*psi[N5-1]);
 	
 	int p=0; 
+	// 10 Nc*Ns*(N5-1) cbsite flops for loop
 	for(int i=0; i < N5-1; i+=2, p++) { 
-	  tmp4[rb[cb]] = Gamma(G5)*psi[i];
-	  chi[i][rb[cb]] = A*tmp4 + B[p]*psi[i+1];
+	  // 6*Nc*Ns cbsite flops
+	  chi[i][rb[cb]] = B[p]*psi[i+1] + A*(GammaConst<Ns,Ns*Ns-1>()*psi[i]);
 
-	  tmp4[rb[cb]] = Gamma(G5)*psi[i+1];
-	  chi[i+1][rb[cb]] = B[p]*psi[i] + C[p]*tmp4;
+	  // 6*Nc*Ns cbsite flops
+	  chi[i+1][rb[cb]] = B[p]*psi[i] + C[p]*(GammaConst<Ns,Ns*Ns-1>()*psi[i+1]);
+	  // 4*Nc*Ns cbsite flops
 	  chi[i+1][rb[cb]] -= D[p]*psi[N5-1];
-
+	  
+	  // 4*Nc*Ns cbsite flops
 	  chi[N5-1][rb[cb]] += D[p]*psi[i+1];
 	}
       }
@@ -165,6 +171,8 @@ namespace Chroma
     END_CODE();
   }
 
+
+  /* Flopcount = N5*1320 + (10*N5-8)*Nc*Ns cbsite flops */
   void 
   EvenOddPrecOvExtLinOpArray::applyOffDiag(multi1d<LatticeFermion>& chi, 
 					const multi1d<LatticeFermion>& psi, 
@@ -180,26 +188,30 @@ namespace Chroma
     case PLUS: 
       {
 	multi1d<LatticeFermion> Dpsi(N5);
-	for(int i=0; i < N5; i++) { 
-	  Dslash->apply(Dpsi[i], psi[i], PLUS, cb);
-	}
+	Dpsi.moveToFastMemoryHint();
 
-	LatticeFermion tmp4;
-	tmp4[rb[cb]] = Gamma(G5)*Dpsi[N5-1];
+	// N5 * Dslash flops = N5 * 1320 cbsite flops
+	Dslash->apply(Dpsi,psi,PLUS,cb);
 
+     
 	// Lowest corner
-	chi[N5-1][rb[cb]] = Eprime*tmp4;
+	// 2*Nc*Ns*cbsite flops
+	chi[N5-1][rb[cb]] = Eprime*(GammaConst<Ns,Ns*Ns-1>()*Dpsi[N5-1]);
 	
 	int p=0; 
+	// Total flops for loop: 10*(N5-1)*Nc*Ns cbsite flops
 	for(int i=0; i < N5-1; i+=2, p++) { 
 
-	  tmp4[rb[cb]] = Gamma(G5)*Dpsi[i];
-	  chi[i][rb[cb]] = Aprime*tmp4 + Bprime[p]*Dpsi[i+1];
+	  // 6*Nc*Ns*cbsite flops
+	  chi[i][rb[cb]] = Bprime[p]*Dpsi[i+1] + Aprime*(GammaConst<Ns,Ns*Ns-1>()*Dpsi[i]);
 
-	  tmp4[rb[cb]] = Gamma(G5)*Dpsi[i+1];
-	  chi[i+1][rb[cb]] = Bprime[p]*Dpsi[i] + Cprime[p]*tmp4;
+	  // 6*Nc*Ns*cbsite flops
+	  chi[i+1][rb[cb]] = Bprime[p]*Dpsi[i] + Cprime[p]*(GammaConst<Ns,Ns*Ns-1>()*Dpsi[i+1]);
+
+	  // 4*Nc*Ns*cbsite flops
 	  chi[i+1][rb[cb]] += Dprime[p]*Dpsi[N5-1];
 
+	  // 4*Nc*Ns*cbsite flops
 	  chi[N5-1][rb[cb]] -= Dprime[p]*Dpsi[i+1];
 	}
       }
@@ -207,30 +219,32 @@ namespace Chroma
     case MINUS:
       {
 	multi1d<LatticeFermion> tmp(N5);
+	tmp.moveToFastMemoryHint();
+
 	int otherCB = (cb + 1)%2;
 
 
-	LatticeFermion tmp4;
-	tmp4[rb[otherCB]] = Gamma(G5)*psi[N5-1];
-
 	// Lowest corner
-	tmp[N5-1][rb[otherCB]] = Eprime*tmp4;
+	// 2*Nc*Ns cbsite flops
+	tmp[N5-1][rb[otherCB]] = Eprime*(GammaConst<Ns,Ns*Ns-1>()*psi[N5-1]);
 	
 	int p=0; 
 	for(int i=0; i < N5-1; i+=2, p++) { 
-	  tmp4[rb[otherCB]] = Gamma(G5)*psi[i];
-	  tmp[i][rb[otherCB]] = Aprime*tmp4 + Bprime[p]*psi[i+1];
+	  // 6*Nc*Ns cbsite flops
+	  tmp[i][rb[otherCB]] = Bprime[p]*psi[i+1] + Aprime*(GammaConst<Ns,Ns*Ns-1>()*psi[i]);
+	  
+	  // 6*Nc*Ns cbsite flops
+	  tmp[i+1][rb[otherCB]] = Bprime[p]*psi[i] + Cprime[p]*(GammaConst<Ns,Ns*Ns-1>()*psi[i+1]);
 
-	  tmp4[rb[otherCB]] = Gamma(G5)*psi[i+1];
-	  tmp[i+1][rb[otherCB]] = Bprime[p]*psi[i] + Cprime[p]*tmp4;
+	  // 4*Nc*Ns cbsite flops
 	  tmp[i+1][rb[otherCB]] -= Dprime[p]*psi[N5-1];
-
+	  
+	  // 4*Nc*Ns cbsite flops
 	  tmp[N5-1][rb[otherCB]] += Dprime[p]*psi[i+1];
 	}
 
-	for(int i=0; i < N5; i++) { 
-	  Dslash->apply(chi[i], tmp[i], MINUS, cb);
-	}
+	// N5 *1320 cbsite flops
+	Dslash->apply(chi,tmp,MINUS,cb);
       }
       break;
           default: 
@@ -241,6 +255,15 @@ namespace Chroma
     END_CODE();
   }
 
+  /* Flopcount:  Npoles*10*Nc*Ns cbsite flops
+               + Npoles*12*Nc*Ns cbsite flops
+	       + 2*Nc*Ns cbsite flops
+	       + Npoles*8*Nc*Ns cbsite flops
+	       = Npoles*30*Nc*Ns + 2Nc*Ns cbsite flops
+	       = (30Npoles + 2)*Nc*Ns cbsite flops
+	       = (30(N5-1)/2 + 2)*Nc*Ns cbsite flops
+	       = (15N5-13)Nc*Nc cbsite flops
+  */
 
   void
   EvenOddPrecOvExtLinOpArray::applyDiagInv(multi1d<LatticeFermion>& psi,
@@ -251,8 +274,11 @@ namespace Chroma
     START_CODE();
 
     multi1d<LatticeFermion> tmp5(N5);
-    LatticeFermion tmp4;
+    tmp5.moveToFastMemoryHint();
+  
+    LatticeFermion tmp4;  tmp4.moveToFastMemoryHint();
     Real ftmp;
+    Real ftmp2;
 
     if( psi.size() != N5 ) { psi.resize(N5); }
 
@@ -287,17 +313,21 @@ namespace Chroma
        break;
     }
 
+
+    // Npoles * 10*Nc*Ns flops
     for(int i=0; i < 2*Npoles; i+=2) { 
       // Copy
       tmp5[i][rb[cb]] = chi[i];
       tmp5[i+1][rb[cb]] = chi[i+1];
 
+
       // Fixup last component
-      ftmp = sign*D_bd_inv[i];
-      tmp5[N5-1][rb[cb]] -= ftmp*chi[i];
-      tmp4[rb[cb]] = Gamma(G5)*chi[i+1];
-      ftmp = sign*D_bd_inv[i+1];
-      tmp5[N5-1][rb[cb]] += ftmp*tmp4;
+      // 6Nc*Ns cbsite flops
+      tmp4[rb[cb]] = D_bd_inv[i]*chi[i] - D_bd_inv[i+1]*(GammaConst<Ns,Ns*Ns-1>()*chi[i+1]);
+      
+      // 4Nc*Ns cbsite flops
+      tmp5[N5-1][rb[cb]] -= sign*tmp4;
+      
     }
 
     // Apply Inverse of Block Diagonal Matrix to tmp5 
@@ -333,17 +363,21 @@ namespace Chroma
 
 
     int p=0;
+    // Npoles*12*Nc*Ns flops
     for(int i=0; i < 2*Npoles; i+=2, p++) {
       // Do all the blocks
-      tmp4[rb[cb]] = Gamma(G5)*tmp5[i];
-      psi[i][rb[cb]] = Ctilde[p]*tmp4 - Btilde[p]*tmp5[i+1];
-      tmp4[rb[cb]] = Gamma(G5)*tmp5[i+1];
-      psi[i+1][rb[cb]] = Atilde[p]*tmp4 - Btilde[p]*tmp5[i];
+      // 6Nc*Ns flops
+      psi[i][rb[cb]] =  (-Btilde[p])*tmp5[i+1] + Ctilde[p]*(GammaConst<Ns,Ns*Ns-1>()*tmp5[i]);
+
+      // 6Nc*Ns flops
+      psi[i+1][rb[cb]] = (-Btilde[p])*tmp5[i] + Atilde[p]*(GammaConst<Ns,Ns*Ns-1>()*tmp5[i+1]);
     }
+
     // Do the last bit
-    tmp4[rb[cb]] = Gamma(G5)*tmp5[N5-1];
     ftmp = Real(1)/S;
-    psi[N5-1][rb[cb]] = ftmp*tmp4;
+
+    // 2*Nc*Ns flops
+    psi[N5-1][rb[cb]] = ftmp*(GammaConst<Ns,Ns*Ns-1>()*tmp5[N5-1]);
 
 
       
@@ -370,17 +404,21 @@ namespace Chroma
 
     // Backsubstitution:
     // First piece already done
-
     // Only need this so precompute it out here.
-    tmp4 = Gamma(G5)*psi[N5-1];
-
+    
+    tmp4[rb[cb]] = Real(1)*(GammaConst<Ns,Ns*Ns-1>()*psi[N5-1]);
+    
+    // Npoles * 8Nc*Ns flops
     for(int i=0; i < 2*Npoles; i+=2) {
       ftmp = sign*D_bd_inv[i];
+      // 4*Nc*Ns flops
       psi[i][rb[cb]]  += ftmp*psi[N5-1];
 
       ftmp = sign*D_bd_inv[i+1];
+      // 4*Nc*Ns flops
       psi[i+1][rb[cb]] -= ftmp*tmp4;
     }
+
 
 
     // And we are done. That was not so bad now was it?

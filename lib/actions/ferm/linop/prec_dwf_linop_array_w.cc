@@ -1,4 +1,4 @@
-// $Id: prec_dwf_linop_array_w.cc,v 1.19 2005-06-07 19:36:25 edwards Exp $
+// $Id: prec_dwf_linop_array_w.cc,v 1.20 2005-06-27 18:06:32 bjoo Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned domain-wall linear operator
  */
@@ -378,6 +378,10 @@ namespace Chroma
     ds_u.resize(Nd);
 
     multi1d<LatticeFermion>  tmp1, tmp2, tmp3;
+    tmp1.moveToFastMemoryHint();
+    tmp2.moveToFastMemoryHint();
+    tmp3.moveToFastMemoryHint();
+
     multi1d<LatticeColorMatrix> ds_tmp;
 
     //  ds_u   =  chi^dag * D'_oe * Ainv_ee * D_eo * psi_o

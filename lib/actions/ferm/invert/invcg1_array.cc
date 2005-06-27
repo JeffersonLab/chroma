@@ -1,4 +1,4 @@
-// $Id: invcg1_array.cc,v 1.7 2005-05-26 05:13:16 edwards Exp $
+// $Id: invcg1_array.cc,v 1.8 2005-06-27 18:06:32 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -187,6 +187,125 @@ void InvCG1_a(const LinearOperator< multi1d<T> >& A,
   }
   n_count = MaxCG;
   QDPIO::cerr << "Nonconvergence Warning" << endl;
+}
+
+
+void InvCG1_a(const LinearOperator< multi1d<LatticeFermion> >& A,
+	      const multi1d<LatticeFermion> & chi,
+	      multi1d<LatticeFermion>& psi,
+	      const Real& RsdCG, 
+	      int MaxCG, 
+	      int& n_count)
+{
+  START_CODE();
+
+  const int N = psi.size();
+  const OrderedSubset& s = A.subset();
+
+  multi1d<LatticeFermion> r(N);              r.moveToFastMemoryHint();
+  multi1d<LatticeFermion> Ap(N);             Ap.moveToFastMemoryHint();
+  multi1d<LatticeFermion> p(N);              p.moveToFastMemoryHint();
+  multi1d<LatticeFermion> chi_internal(N);   chi_internal.moveToFastMemoryHint();
+
+  psi.moveToFastMemoryHint(true);
+  for(int i=0; i < N; i++) {
+    chi_internal[i][s] = chi[i];
+  }
+
+
+  Real chi_sq =  Real(norm2(chi_internal,s));
+
+  QDPIO::cout << "chi_norm = " << sqrt(chi_sq) << endl;
+  Real rsd_sq = (RsdCG * RsdCG) * chi_sq;
+
+  //                                            
+  //  r[0]  :=  Chi - A . Psi[0]    where  A is hermitian
+    
+  //                     
+  //  r  :=  [ Chi  -  A. psi ]
+
+  A(Ap, psi, PLUS);
+  for(int n=0; n < N; ++n)
+    r[n][s] = chi_internal[n] - Ap[n];
+
+  //  p[1]  :=  r[0]
+  for(int n=0; n < N; ++n) {
+    p[n][s] = r[n];
+  }
+
+  //  Cp = |r[0]|^2
+  Double cp = norm2(r, s);   	       	   /* 2 Nc Ns  flops */
+
+  QDPIO::cout << "InvCG: k = 0  cp = " << cp << "  rsd_sq = " << rsd_sq << endl;
+
+  //  IF |r[0]| <= RsdCG |Chi| THEN RETURN;
+  if ( toBool(cp  <=  rsd_sq) )
+  {
+    n_count = 0;
+    psi.revertFromFastMemoryHint(true);
+    END_CODE();
+    return;
+  }
+
+  //
+  //  FOR k FROM 1 TO MaxCG DO
+  //
+  Real a, b;
+  Double c, d;
+  
+  for(int k = 1; k <= MaxCG; ++k)
+  {
+    //  c  =  | r[k-1] |**2
+    c = cp;
+
+    //  a[k] := | r[k-1] |**2 / < p[k], Ap[k] > ;
+    //      	       	       	       	       	  
+    //  First compute  d  =  < p, A.p > 
+    //  Mp = M(u) * p
+
+    A(Ap, p, PLUS);
+
+    //  d = | mp | ** 2
+    d = innerProductReal(p, Ap, s);	/* 2 Nc Ns  flops */
+
+    a = Real(c)/Real(d);
+
+    //  Psi[k] += a[k] p[k]
+    for(int n=0; n < N; ++n) {
+      psi[n][s] += a * p[n];	/* 2 Nc Ns  flops */
+    }
+
+    //  r[k] -= a[k] A . p[k] ;
+    //      	      
+    for(int n=0; n < N; ++n) {
+      r[n][s] -= a * Ap[n];
+    }
+
+    //  IF |r[k]| <= RsdCG |Chi| THEN RETURN;
+
+    //  cp  =  | r[k] |**2
+    cp = norm2(r, s);	                /* 2 Nc Ns  flops */
+
+    if ( toBool(cp  <=  rsd_sq) )
+    {
+      n_count = k;
+      psi.revertFromFastMemoryHint(true);
+      END_CODE();
+      return;
+    }
+
+    //  b[k+1] := |r[k]|**2 / |r[k-1]|**2
+    b = Real(cp) / Real(c);
+
+    //  p[k+1] := r[k] + b[k+1] p[k]
+    for(int n=0; n < N; ++n)
+      p[n][s] = r[n] + b*p[n];	/* Nc Ns  flops */
+  }
+  n_count = MaxCG;
+  psi.revertFromFastMemoryHint(true);
+  QDPIO::cerr << "Nonconvergence Warning" << endl;
+  END_CODE();
+
 }
 
 

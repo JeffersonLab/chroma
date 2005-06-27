@@ -1,4 +1,4 @@
-// $Id: lwldslash_array_pab_w.cc,v 1.4 2005-06-17 15:17:53 bjoo Exp $
+// $Id: lwldslash_array_pab_w.cc,v 1.5 2005-06-27 18:06:32 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator array
  */
@@ -52,6 +52,7 @@ namespace Chroma
 #ifdef QDP_USE_QCDOC
     packed_gauge=(PrimitiveSU3Matrix *)qalloc(QFAST|QCOMMS, Nd*Layout::sitesOnNode()*sizeof(PrimitiveSU3Matrix));
     if( packed_gauge == 0x0 ) { 
+      QDPIO::cout << "lwldslash_array_pab: EDRAM exhausted, using DDR " << endl << flush;
       packed_gauge=(PrimitiveSU3Matrix *)qalloc(QCOMMS, Nd*Layout::sitesOnNode()*sizeof(PrimitiveSU3Matrix));
     }
 #else 

@@ -1,4 +1,4 @@
-// $Id: prec_wilson_linop_w.cc,v 1.11 2005-01-11 19:02:47 edwards Exp $
+// $Id: prec_wilson_linop_w.cc,v 1.12 2005-06-27 18:06:32 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson linear operator
  */
@@ -109,7 +109,10 @@ namespace Chroma
 					  enum PlusMinus isign) const
   {
     LatticeFermion tmp1, tmp2, tmp3;  // if an array is used here, 
-    // the space is not reserved
+
+    tmp1.moveToFastMemoryHint();
+    tmp2.moveToFastMemoryHint();
+    tmp3.moveToFastMemoryHint();
   
 
     Real mquarterinvfact = -0.25*invfact;

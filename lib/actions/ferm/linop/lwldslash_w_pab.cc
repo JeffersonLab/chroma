@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_pab.cc,v 1.15 2005-06-17 15:17:53 bjoo Exp $
+// $Id: lwldslash_w_pab.cc,v 1.16 2005-06-27 18:06:32 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -49,6 +49,7 @@ namespace Chroma
 #ifdef QDP_USE_QCDOC
     packed_gauge=(PrimitiveSU3Matrix *)qalloc(QFAST|QCOMMS, Nd*Layout::sitesOnNode()*sizeof(PrimitiveSU3Matrix));
     if( packed_gauge == 0x0 ) { 
+      QDPIO::cerr << "lwldslash_w_pab: Not enough room in EDRAM allocating in DDR" << endl << flush;
       packed_gauge=(PrimitiveSU3Matrix *)qalloc(QCOMMS, Nd*Layout::sitesOnNode()*sizeof(PrimitiveSU3Matrix));
     }
 #else 

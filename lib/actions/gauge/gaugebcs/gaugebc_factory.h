@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gaugebc_factory.h,v 1.2 2005-04-10 22:25:08 edwards Exp $
+// $Id: gaugebc_factory.h,v 1.3 2005-06-27 18:06:32 bjoo Exp $
 /*! \file
  *  \brief Fermion action factories
  */
@@ -18,7 +18,7 @@ namespace Chroma
 
   //! GaugeAct Factory 
   /*! @ingroup gaugebcs */
-  typedef SingletonHolder< 
+  typedef Chroma::SingletonHolder< 
   ObjectFactory<GaugeBC, 
     std::string,
     TYPELIST_2(XMLReader&, const std::string&),

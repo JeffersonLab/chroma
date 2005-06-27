@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_linop_base_array_w.cc,v 1.2 2005-06-17 15:17:53 bjoo Exp $
+// $Id: prec_ovlap_contfrac5d_linop_base_array_w.cc,v 1.3 2005-06-27 18:06:32 bjoo Exp $
 /*! \file
  *  \brief Base class for even-odd prec. 5D continued fraction linop
  */
@@ -229,8 +229,8 @@ namespace Chroma
     if( chi.size() != N5 )  chi.resize(N5);
 
     multi1d<LatticeFermion> y(N5);
+    y.moveToFastMemoryHint();
 
-    LatticeFermion tmp;
     Real coeff;
 
     const int G5 = Ns*Ns-1;
@@ -293,7 +293,8 @@ namespace Chroma
     if( chi.size() != N5 ) chi.resize(N5);
 
     multi1d<LatticeFermion> tmp(N5);
-    
+    tmp.moveToFastMemoryHint();
+
     int G5 = Ns*Ns-1;
 
     // Optimisation... do up to the penultimate block...
@@ -356,6 +357,8 @@ namespace Chroma
     multi1d<LatticeColorMatrix> ds_tmp(Nd);
 						   
     LatticeFermion tmp;
+    tmp.moveToFastMemoryHint();
+
     Real coeff;
     int G5 = Ns*Ns-1;
 
@@ -429,6 +432,10 @@ namespace Chroma
     ds_u.resize(Nd);
 
     multi1d<LatticeFermion>  tmp1, tmp2, tmp3;
+    tmp1.moveToFastMemoryHint();
+    tmp2.moveToFastMemoryHint();
+    tmp3.moveToFastMemoryHint();
+
     multi1d<LatticeColorMatrix> ds_tmp;
 
     //  ds_u   =  chi^dag * D'_oe * Ainv_ee * D_eo * psi_o

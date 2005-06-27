@@ -1,4 +1,4 @@
-// $Id: chroma.cc,v 1.3 2005-04-11 02:01:30 edwards Exp $
+// $Id: chroma.cc,v 1.4 2005-06-27 18:06:32 bjoo Exp $
 /*! \file
  *  \brief Main program to run all measurement codes.
  */
@@ -6,6 +6,9 @@
 #include "chroma.h"
 
 using namespace Chroma;
+extern "C" { 
+ void _mcleanup();
+};
 
 /*
  * Input 
@@ -148,6 +151,7 @@ int main(int argc, char *argv[])
 
   Chroma::finalize();
 
+  
   exit(0);
 }
 

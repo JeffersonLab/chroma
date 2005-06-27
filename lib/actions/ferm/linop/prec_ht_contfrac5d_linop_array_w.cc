@@ -1,4 +1,4 @@
-// $Id: prec_ht_contfrac5d_linop_array_w.cc,v 1.6 2005-06-20 11:18:22 bjoo Exp $
+// $Id: prec_ht_contfrac5d_linop_array_w.cc,v 1.7 2005-06-27 18:06:32 bjoo Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned domain-wall linear operator
  */
@@ -6,7 +6,6 @@
 #include "chromabase.h"
 #include "actions/ferm/linop/dslash_w.h"
 #include "actions/ferm/linop/prec_ht_contfrac5d_linop_array_w.h"
-
 
 namespace Chroma 
 { 
@@ -217,7 +216,7 @@ namespace Chroma
     if( chi.size() != N5 ) chi.resize(N5);
 
     multi1d<LatticeFermion> y(N5);
-
+    y.moveToFastMemoryHint();
 
     //    LatticeFermion tmp;
     //    Real coeff;
@@ -272,7 +271,6 @@ namespace Chroma
     if( chi.size() != N5 ) chi.resize(N5);
 
     Real mass = ( Real(1) + m_q ) / (Real(1) - m_q);
-    LatticeFermion tmp;
 
 
     int G5 = Ns*Ns-1;
@@ -307,6 +305,7 @@ namespace Chroma
 	
 
 	multi1d<LatticeFermion> tmp5(N5);
+	tmp5.moveToFastMemoryHint();
 	Real coeff_1, coeff_2, coeff_3;
 	int otherCB = (cb + 1)%2;
 	
@@ -382,6 +381,7 @@ namespace Chroma
     case MINUS:
       {
 	multi1d<LatticeFermion> D_psi(N5);
+	D_psi.moveToFastMemoryHint();
 	Real ftmp_mhalf = Real(-0.5);
 
 	Dslash->apply(D_psi, psi, PLUS, cb);
@@ -424,7 +424,7 @@ namespace Chroma
 
 
 	if( !isLastZeroP ) { 
-	  LatticeFermion tmp;
+	  LatticeFermion tmp; tmp.moveToFastMemoryHint();
 	  tmp[rb[cb]] = beta_tilde[N5-1]*(GammaConst<Ns,Ns*Ns-1>()*D_psi[N5-1]);
 	  chi[N5-1][rb[cb]] += tmp;
 	}
@@ -544,6 +544,7 @@ namespace Chroma
     ds_u.resize(Nd);
 
     multi1d<LatticeFermion>  tmp1, tmp2, tmp3;
+    
     multi1d<LatticeColorMatrix> ds_tmp;
 
     //  ds_u   =  chi^dag * D'_oe * Ainv_ee * D_eo * psi_o
