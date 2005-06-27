@@ -14,28 +14,6 @@
  *  Here we have various temporary definitions
  */
 
-enum VolSrc {
-  Z2NOISE ,
-  GAUSSIAN
-};
-
-typedef   VolSrc  VolSrc_type ; 
-
-
-void ks_local_loops(
-		 Handle<const SystemSolver<LatticeStaggeredFermion> > & qprop,
-  LatticeStaggeredFermion & q_source, 
-  LatticeStaggeredFermion & psi ,
-  multi1d<LatticeColorMatrix> & u,
-  XMLFileWriter & xml_out, 
-  int t_length,
-  Real Mass,
-  int Nsamp,
-  Real RsdCG,
-  int CFGNO,
-  int volume_source
-		 ) ;
-
 
 using namespace Chroma;
 
@@ -266,7 +244,6 @@ int main(int argc, char **argv)
   Propagator_input_t  input;
 
   // Instantiate xml reader for DATA
-//  XMLReader xml_in("../../tests/t_asqtad_prop/DISC_DATA_v2");
   XMLReader xml_in ; 
   string in_name = Chroma::getXMLInputFileName() ; 
   try
@@ -295,9 +272,8 @@ int main(int argc, char **argv)
   gaugeStartup(gauge_file_xml, gauge_xml, u, input.cfg);
 
   // Instantiate XML writer for output
-  // XMLFileWriter xml_out("t_disc_loop_s.xml");
   XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
-  push(xml_out, "DISCONNECTED");
+  push(xml_out, "STAGGERED_SPECTOSCOPY");
 
   // Write out the input
   write(xml_out, "Input", xml_in);
@@ -350,9 +326,6 @@ int main(int argc, char **argv)
   bool use_gauge_invar_oper = input.param.use_gauge_invar_oper ;
 
   LatticeStaggeredFermion q_source, psi ;
-
-
-
 
   // This is inefficient for memory 
   multi1d<LatticeStaggeredPropagator> stag_prop(8);
@@ -462,12 +435,13 @@ int main(int argc, char **argv)
   // ----- compute disconnected diagrams -----
   //
 
-  ks_local_loops(qprop,q_source,psi,u,xml_out, 
+  ks_local_loops(qprop,q_source,psi,u,xml_out, xml_in, 
 	      t_length,input.param.Mass,Nsamp,
 	      input.param.invParam.RsdCG,input.param.CFGNO,
 	      input.param.volume_source) ;
 
 
+  // comple the final tag
   pop(xml_out);
 
   xml_out.close();
@@ -478,78 +452,4 @@ int main(int argc, char **argv)
 
   QDPIO::cout << "CHROMA_RUN_COMPLETE " << endl;
   exit(0);
-}
-
-
-void ks_local_loops(
-		 Handle<const SystemSolver<LatticeStaggeredFermion> > & qprop,
-  LatticeStaggeredFermion & q_source, 
-  LatticeStaggeredFermion & psi ,
-  multi1d<LatticeColorMatrix> & u,
-  XMLFileWriter & xml_out, 
-  int t_length,
-  Real Mass,
-  int Nsamp,
-  Real RsdCG,
-  int CFGNO,
-  int volume_source
-  )
-{
-
-  //
-  //  parse input files
-  //
-
-
-
-
-  // the wrapped disconnected loops
-  local_scalar_loop scalar_one_loop(t_length,Nsamp,u) ; 
-  non_local_scalar_loop scalar_two_loop(t_length,Nsamp,u) ; 
-  threelink_pseudoscalar_loop eta3_loop(t_length,Nsamp,u) ; 
-  fourlink_pseudoscalar_loop eta4_loop(t_length,Nsamp,u) ; 
-
-
-  // Seed the RNG with the cfg number for now
-  Seed seed;
-  seed = CFGNO;
-  RNG::setrn(seed);
-
-
-  for(int i = 0; i < Nsamp; ++i){
-    psi = zero;   // note this is ``zero'' and not 0
-    RNG::savern(seed);
-
-    // Fill the volume with random noise 
-    if( volume_source == Z2NOISE  )
-      gaussian(q_source);
-    else if( volume_source == GAUSSIAN )
-      { z2_src(q_source); }
-
-    // Compute the solution vector for the particular source
-    int n_count = (*qprop)(psi, q_source);
-      
-    push(xml_out,"Qprop_noise");
-    write(xml_out, "Mass" , Mass);
-    write(xml_out, "RsdCG" , RsdCG);
-    write(xml_out, "n_count", n_count);
-    write(xml_out, "Seed" , seed);
-    pop(xml_out);
-
-
-    scalar_one_loop.compute(q_source,psi,i) ;
-    scalar_two_loop.compute(q_source,psi,i) ;
-    eta3_loop.compute(q_source,psi,i) ;
-    eta4_loop.compute(q_source,psi,i) ;
-
-  } // Nsamples
-
-
-  // write output from the 
-  scalar_one_loop.dump(xml_out) ;
-  scalar_two_loop.dump(xml_out) ;
-  eta3_loop.dump(xml_out) ;
-  eta4_loop.dump(xml_out) ;
-
-
 }
