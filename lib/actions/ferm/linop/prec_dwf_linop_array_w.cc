@@ -1,4 +1,4 @@
-// $Id: prec_dwf_linop_array_w.cc,v 1.20 2005-06-27 18:06:32 bjoo Exp $
+// $Id: prec_dwf_linop_array_w.cc,v 1.21 2005-06-27 22:21:04 bjoo Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned domain-wall linear operator
  */
@@ -113,10 +113,11 @@ namespace Chroma
       // Flopcount for this part: 5 Nc Ns * cbsite flops, 4NcNs *cbsite in PV mode
 
       // 3Nc Ns * cbsite flops
-      chi[0][rb[cb]] = InvTwoKappa*psi[0] - chiralProjectMinus(psi[1]);
+      chi[0][rb[cb]] = InvTwoKappa*psi[0] + m_q*chiralProjectPlus(psi[N5m1]);
+      chi[0][rb[cb]]-= chiralProjectMinus(psi[1]);
 
       // 2Nc Ns * cbsite flops, Nc Ns cbsite in PV mode (m_q = 1)
-      chi[0][rb[cb]] += m_q* chiralProjectPlus(psi[N5m1]);
+      // chi[0][rb[cb]] += m_q* chiralProjectPlus(psi[N5m1]);
       
       int N5m2(N5-2);
       //s=N5-1 -- 1/2k psi[N5-1] +mf* P_- * psi[0]  -  P_+ * psi[N5-2]
@@ -128,10 +129,11 @@ namespace Chroma
       // Flopcount for this part: 5Nc Ns cbsite flops
       //                          4Nc Ns cbsite flops in PV Mode (m_q = 1)
       // 3NcNs cbsite flops
-      chi[N5m1][rb[cb]] = InvTwoKappa*psi[N5m1] - chiralProjectPlus(psi[N5m2]);
+      chi[N5m1][rb[cb]] = InvTwoKappa*psi[N5m1]+ m_q*chiralProjectMinus(psi[0]);
+      chi[N5m1][rb[cb]] -=chiralProjectPlus(psi[N5m2]);
 
       // 2NcNs cbsite flops, Nc Ns in PV mode
-      chi[N5m1][rb[cb]] += m_q*chiralProjectMinus(psi[0]);
+      //      chi[N5m1][rb[cb]] +=  m_q*chiralProjectMinus(psi[0]);
     }
     break ;
 
@@ -165,10 +167,10 @@ namespace Chroma
       // Flopcount for this part 5NcNs flops:
 
       // 3NcNs cbsite flops
-      chi[0][rb[cb]] = InvTwoKappa*psi[0] -  chiralProjectPlus(psi[1]);
+      chi[0][rb[cb]] = InvTwoKappa*psi[0] +  m_q*chiralProjectMinus(psi[N5m1]);
 
       // 2NcNs cbsite flops, Nc Ns in PV mode (m_q = 1)
-      chi[0][rb[cb]] += m_q*chiralProjectMinus(psi[N5m1]);
+      chi[0][rb[cb]] -= chiralProjectPlus(psi[1]); 
 
 
       int N5m2(N5-2);
@@ -180,10 +182,10 @@ namespace Chroma
       // Flopcount for this part: 5NcNs cbsite flops
 
       // 3NcNs cbsite flops
-      chi[N5m1][rb[cb]] = InvTwoKappa*psi[N5m1]-chiralProjectMinus(psi[N5m2]);
-
+      chi[N5m1][rb[cb]] = InvTwoKappa*psi[N5m1]+ m_q * chiralProjectPlus(psi[0]);
+      chi[N5m1][rb[cb]] -= chiralProjectMinus(psi[N5m2]);
       // 2NcNs cbsite flops, Nc Ns in PV mode (m_q = 1)
-      chi[N5m1][rb[cb]] += m_q * chiralProjectPlus(psi[0]);
+      // chi[N5m1][rb[cb]] +=  m_q * chiralProjectPlus(psi[0]);
     }
     break ;
     }
@@ -231,11 +233,11 @@ namespace Chroma
       chi[N5-1][rb[cb]] = invDTwoKappa*psi[N5-1]-fact*chiralProjectMinus(psi[0]);
       fact *= TwoKappa;
       for(int s = 1; s < N5-1; s++) {
-	// 2Nc Ns flops/site
-	chi[s][rb[cb]] = TwoKappa * psi[s];
+	// Nc Ns flops/site
+	chi[s][rb[cb]] = TwoKappa * psi[s] + TwoKappa*chiralProjectPlus(chi[s-1]);
 
 	// 2Nc Ns flops/site
-	chi[s][rb[cb]] += TwoKappa*chiralProjectPlus(chi[s-1]);
+	// chi[s][rb[cb]] += TwoKappa*chiralProjectPlus(chi[s-1]);
 
 	// 2Nc Ns flops/site
 	chi[N5-1][rb[cb]] -= fact*chiralProjectMinus(psi[s]);
@@ -276,8 +278,8 @@ namespace Chroma
       fact *= TwoKappa;
       for(int s = 1; s < N5-1; s++) {
 	// 2Nc Ns flops
-	chi[s][rb[cb]] = TwoKappa * psi[s];
-	chi[s][rb[cb]] += TwoKappa*chiralProjectMinus(chi[s-1]);
+	chi[s][rb[cb]] = TwoKappa * psi[s] + TwoKappa*chiralProjectMinus(chi[s-1]);
+	//	chi[s][rb[cb]] += TwoKappa*chiralProjectMinus(chi[s-1]);
 	chi[N5-1][rb[cb]] -= fact*chiralProjectPlus(psi[s]);
 	fact *= TwoKappa;
 
@@ -325,9 +327,10 @@ namespace Chroma
     if( chi.size() != N5 ) chi.resize(N5); 
 
 #if 1
+    Real mhalf=-0.5;
     D.apply(chi,psi,isign,cb);
     for(int s(0);s<N5;s++)
-      chi[s][rb[cb]] *= (-0.5);
+      chi[s][rb[cb]] *= mhalf;
 
 #else
     for(int s(0);s<N5;s++)

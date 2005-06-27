@@ -1,4 +1,4 @@
-/* $Id: prec_ovext_linop_array_w.cc,v 1.3 2005-06-27 18:06:32 bjoo Exp $
+/* $Id: prec_ovext_linop_array_w.cc,v 1.4 2005-06-27 22:21:04 bjoo Exp $
 /*! \file
 *  \brief EvenOddPreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
 */
@@ -277,12 +277,11 @@ namespace Chroma
     tmp5.moveToFastMemoryHint();
   
     LatticeFermion tmp4;  tmp4.moveToFastMemoryHint();
+  
     Real ftmp;
     Real ftmp2;
 
     if( psi.size() != N5 ) { psi.resize(N5); }
-
-    int G5 = Ns*Ns-1;
 
     // Apply tmp5 = L^{-1} chi
     // L only has components along the last row, so this is a wholesale
@@ -309,8 +308,8 @@ namespace Chroma
       sign = Real(1);
       break;
     case MINUS:
-       sign = Real(-1);
-       break;
+      sign = Real(-1);
+      break;
     }
 
 
@@ -323,10 +322,13 @@ namespace Chroma
 
       // Fixup last component
       // 6Nc*Ns cbsite flops
-      tmp4[rb[cb]] = D_bd_inv[i]*chi[i] - D_bd_inv[i+1]*(GammaConst<Ns,Ns*Ns-1>()*chi[i+1]);
+      ftmp = sign*D_bd_inv[i];
+      ftmp2 = sign*D_bd_inv[i+1];
+
+      tmp4[rb[cb]] =ftmp *chi[i] - ftmp2*(GammaConst<Ns,Ns*Ns-1>()*chi[i+1]);
       
       // 4Nc*Ns cbsite flops
-      tmp5[N5-1][rb[cb]] -= sign*tmp4;
+      tmp5[N5-1][rb[cb]] -= tmp4;
       
     }
 
@@ -367,10 +369,11 @@ namespace Chroma
     for(int i=0; i < 2*Npoles; i+=2, p++) {
       // Do all the blocks
       // 6Nc*Ns flops
-      psi[i][rb[cb]] =  (-Btilde[p])*tmp5[i+1] + Ctilde[p]*(GammaConst<Ns,Ns*Ns-1>()*tmp5[i]);
+      ftmp=-Btilde[p];
+      psi[i][rb[cb]] =  ftmp*tmp5[i+1] + Ctilde[p]*(GammaConst<Ns,Ns*Ns-1>()*tmp5[i]);
 
       // 6Nc*Ns flops
-      psi[i+1][rb[cb]] = (-Btilde[p])*tmp5[i] + Atilde[p]*(GammaConst<Ns,Ns*Ns-1>()*tmp5[i+1]);
+      psi[i+1][rb[cb]] = ftmp*tmp5[i] + Atilde[p]*(GammaConst<Ns,Ns*Ns-1>()*tmp5[i+1]);
     }
 
     // Do the last bit
@@ -411,12 +414,14 @@ namespace Chroma
     // Npoles * 8Nc*Ns flops
     for(int i=0; i < 2*Npoles; i+=2) {
       ftmp = sign*D_bd_inv[i];
+      ftmp2 = sign*D_bd_inv[i+1];
+
       // 4*Nc*Ns flops
       psi[i][rb[cb]]  += ftmp*psi[N5-1];
 
-      ftmp = sign*D_bd_inv[i+1];
       // 4*Nc*Ns flops
-      psi[i+1][rb[cb]] -= ftmp*tmp4;
+      psi[i+1][rb[cb]] -= ftmp2*tmp4;
+	
     }
 
 

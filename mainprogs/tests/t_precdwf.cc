@@ -1,4 +1,4 @@
-// $Id: t_precdwf.cc,v 1.19 2005-06-17 15:17:53 bjoo Exp $
+// $Id: t_precdwf.cc,v 1.20 2005-06-27 22:21:04 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -179,7 +179,7 @@ int main(int argc, char **argv)
   Chroma::initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {8,8,16,16};
+  const int foo[] = {8,8,16,8};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -204,7 +204,7 @@ int main(int argc, char **argv)
   Handle<FermBC<MLF> >  fbc_a(new PeriodicFermBC<MLF>);
 
   // DWDslash class can be optimised
-  int N5 = 8;
+  int N5 = 26;
   Real WilsonMass = 1.5;
   Real m_q = 0.01;
 
@@ -229,6 +229,9 @@ int main(int argc, char **argv)
   QDPIO::cout << "Done" << endl;
 
   MLF psi(S_pdwf.size()), chi(S_pdwf.size());
+  psi.moveToFastMemoryHint();
+  chi.moveToFastMemoryHint();
+
   for(int n=0; n < S_pdwf.size(); ++n)
     random(psi[n]);
   chi = zero;
@@ -250,7 +253,7 @@ int main(int argc, char **argv)
     int Neo    = N5*(1320+24);
     int Nflops = 2*Ndiag + 2*Neo + N5*24;
 
-    /*
+    
     // even-even-inv piece
     mydt = time_func(*D_pdwf, EEI, chi, psi, is);
     QDPIO::cout << "EvenEvenInv: The time per lattice point is "<< mydt << " micro sec" 
@@ -265,7 +268,7 @@ int main(int argc, char **argv)
     QDPIO::cout << "OddOdd: The time per lattice point is "<< mydt << " micro sec" 
 		<< " (" <<  ((double)(Ndiag)/mydt) << ") Mflops " << endl;
     
-    */ 
+   
     // even-odd
     mydt = time_func(*D_pdwf, EO, chi, psi, is);
     QDPIO::cout << "EvenOdd: The time per lattice point is "<< mydt << " micro sec" 

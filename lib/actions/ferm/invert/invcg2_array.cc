@@ -1,4 +1,4 @@
-// $Id: invcg2_array.cc,v 1.16 2005-06-27 18:06:32 bjoo Exp $
+// $Id: invcg2_array.cc,v 1.17 2005-06-27 22:21:04 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -246,14 +246,18 @@ void InvCG2_a(const LinearOperator< multi1d<LatticeFermion> >& M,
   const int N = psi.size();
   const OrderedSubset& s = M.subset();
   QDPIO::cout << "InvCG2: starting" << endl;
-  multi1d<LatticeFermion> r(N);             r.moveToFastMemoryHint();
+
+  multi1d<LatticeFermion> p(N);             p.moveToFastMemoryHint();
   multi1d<LatticeFermion> mp(N);            mp.moveToFastMemoryHint();
   multi1d<LatticeFermion> mmp(N);           mmp.moveToFastMemoryHint();
-  multi1d<LatticeFermion> p(N);             p.moveToFastMemoryHint();
+  psi.moveToFastMemoryHint(true);
+
+
+  multi1d<LatticeFermion> r(N);             r.moveToFastMemoryHint();
   multi1d<LatticeFermion> chi_internal(N);  chi_internal.moveToFastMemoryHint();
   
   // Move psi to fast memory if possible and copy the data
-  psi.moveToFastMemoryHint(true);
+
 
   // Copy chi into chi_internal
   for(int i=0; i < N; i++) { 
@@ -331,7 +335,6 @@ void InvCG2_a(const LinearOperator< multi1d<LatticeFermion> >& M,
     //  d = | mp | ** 2
     d = norm2(mp, s); flopcount.addSiteFlops(4*Nc*Ns*N,s);
 
-    
 
     a = Real(c)/Real(d);
 
@@ -339,6 +342,7 @@ void InvCG2_a(const LinearOperator< multi1d<LatticeFermion> >& M,
     for(int n=0; n < N; ++n) {
       psi[n][s] += a * p[n];	/* 4 Nc Ns  cbsite flops */
     }
+
     flopcount.addSiteFlops(4*Nc*Ns*N,s);
 
     //  r[k] -= a[k] A . p[k] ;
