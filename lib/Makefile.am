@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.279 2005-06-15 14:13:09 bjoo Exp $
+# $Id: Makefile.am,v 1.280 2005-06-27 15:55:53 mcneile Exp $
 #
 # Path for all files used in building the library
 
@@ -322,6 +322,7 @@ nobase_include_HEADERS += \
 	actions/ferm/qprop/quarkprop4_s.h \
 	io/follana_io_s.h io/io_s.h \
 	meas/eig/eig_s.h meas/hadron/baryon_s.h \
+        meas/hadron/ks_local_loops.h  \
 	meas/hadron/hadron_s.h \
 	meas/hadron/hadron_corr_s.h \
 	meas/hadron/mesphas_follana_s.h meas/hadron/mesphas_s.h \
@@ -712,6 +713,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/qprop/quarkprop4_s.cc \
 	io/follana_io_s.cc \
 	meas/hadron/baryon_s.cc meas/hadron/mesphas_follana_s.cc \
+        meas/hadron/ks_local_loops.cc \
 	meas/hadron/mesphas_s.cc meas/hadron/pions_s.cc \
 	meas/hadron/srcfil_s.cc \
 	meas/hadron/stag_propShift_s.cc meas/hadron/stag_scalars_s.cc \
