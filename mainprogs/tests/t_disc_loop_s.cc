@@ -21,6 +21,22 @@ enum VolSrc {
 
 typedef   VolSrc  VolSrc_type ; 
 
+
+void ks_local_loops(
+		 Handle<const SystemSolver<LatticeStaggeredFermion> > & qprop,
+  LatticeStaggeredFermion & q_source, 
+  LatticeStaggeredFermion & psi ,
+  multi1d<LatticeColorMatrix> & u,
+  XMLFileWriter & xml_out, 
+  int t_length,
+  Real Mass,
+  int Nsamp,
+  Real RsdCG,
+  int CFGNO,
+  int volume_source
+		 ) ;
+
+
 using namespace Chroma;
 
 
@@ -336,11 +352,6 @@ int main(int argc, char **argv)
   LatticeStaggeredFermion q_source, psi ;
 
 
-  // the wrapped disconnected loops
-  local_scalar_loop scalar_one_loop(t_length,Nsamp,u) ; 
-  non_local_scalar_loop scalar_two_loop(t_length,Nsamp,u) ; 
-  threelink_pseudoscalar_loop eta3_loop(t_length,Nsamp,u) ; 
-  fourlink_pseudoscalar_loop eta4_loop(t_length,Nsamp,u) ; 
 
 
   // This is inefficient for memory 
@@ -451,32 +462,78 @@ int main(int argc, char **argv)
   // ----- compute disconnected diagrams -----
   //
 
+  ks_local_loops(qprop,q_source,psi,u,xml_out, 
+	      t_length,input.param.Mass,Nsamp,
+	      input.param.invParam.RsdCG,input.param.CFGNO,
+	      input.param.volume_source) ;
+
+
+  pop(xml_out);
+
+  xml_out.close();
+  xml_in.close();
+
+  // Time to bolt
+  Chroma::finalize();
+
+  QDPIO::cout << "CHROMA_RUN_COMPLETE " << endl;
+  exit(0);
+}
+
+
+void ks_local_loops(
+		 Handle<const SystemSolver<LatticeStaggeredFermion> > & qprop,
+  LatticeStaggeredFermion & q_source, 
+  LatticeStaggeredFermion & psi ,
+  multi1d<LatticeColorMatrix> & u,
+  XMLFileWriter & xml_out, 
+  int t_length,
+  Real Mass,
+  int Nsamp,
+  Real RsdCG,
+  int CFGNO,
+  int volume_source
+  )
+{
+
+  //
+  //  parse input files
+  //
+
+
+
+
+  // the wrapped disconnected loops
+  local_scalar_loop scalar_one_loop(t_length,Nsamp,u) ; 
+  non_local_scalar_loop scalar_two_loop(t_length,Nsamp,u) ; 
+  threelink_pseudoscalar_loop eta3_loop(t_length,Nsamp,u) ; 
+  fourlink_pseudoscalar_loop eta4_loop(t_length,Nsamp,u) ; 
+
+
   // Seed the RNG with the cfg number for now
   Seed seed;
-  seed = input.param.CFGNO;
+  seed = CFGNO;
   RNG::setrn(seed);
 
 
   for(int i = 0; i < Nsamp; ++i){
     psi = zero;   // note this is ``zero'' and not 0
+    RNG::savern(seed);
 
     // Fill the volume with random noise 
-
-    RNG::savern(seed);
-    QDPIO::cout << "SEED = " << seed << endl;
-    if( input.param.volume_source == Z2NOISE  )
+    if( volume_source == Z2NOISE  )
       gaussian(q_source);
-    else if( input.param.volume_source == GAUSSIAN )
+    else if( volume_source == GAUSSIAN )
       { z2_src(q_source); }
 
     // Compute the solution vector for the particular source
     int n_count = (*qprop)(psi, q_source);
-    ncg_had += n_count;
       
-    push(xml_out,"Qprop");
-    write(xml_out, "Mass" , input.param.Mass);
-    write(xml_out, "RsdCG" , input.param.invParam.RsdCG);
+    push(xml_out,"Qprop_noise");
+    write(xml_out, "Mass" , Mass);
+    write(xml_out, "RsdCG" , RsdCG);
     write(xml_out, "n_count", n_count);
+    write(xml_out, "Seed" , seed);
     pop(xml_out);
 
 
@@ -495,13 +552,4 @@ int main(int argc, char **argv)
   eta4_loop.dump(xml_out) ;
 
 
-  pop(xml_out);
-
-  xml_out.close();
-  xml_in.close();
-
-  // Time to bolt
-  Chroma::finalize();
-
-  exit(0);
 }
