@@ -1,4 +1,4 @@
-// $Id: loops_s.h,v 1.8 2005-04-25 12:44:15 mcneile Exp $
+// $Id: loops_s.h,v 1.9 2005-06-27 20:12:43 mcneile Exp $
 
 #ifndef LOOP_S_H
 #define LOOP_S_H
@@ -36,12 +36,27 @@ namespace Chroma {
 		t_length, no_sample);
 
       push(xml_out, outer_tag);
-        push(xml_out, "Mean");
-          write(xml_out, inner_tag, corr);
-        pop(xml_out);
-        push(xml_out, "MeanError");
-          write(xml_out, inner_tag, sig_sc0);
-        pop(xml_out);
+      switch (type_of_shift)
+	{
+	case NON_GAUGE_INVAR :
+          write(xml_out, "SHIFT", "NON_GAUGE_INVAR");
+	  break ;
+	case GAUGE_INVAR :
+          write(xml_out, "SHIFT", "GAUGE_INVAR");
+	  break ;
+	case SYM_GAUGE_INVAR :
+          write(xml_out, "SHIFT", "SYM_GAUGE_INVAR");
+	  break ;
+	case SYM_NON_GAUGE_INVAR:
+          write(xml_out, "SHIFT", "SYM_NON_GAUGE_INVAR");
+	  break ;
+	}
+      push(xml_out, "Mean");
+      write(xml_out, inner_tag, corr);
+      pop(xml_out);
+      push(xml_out, "MeanError");
+      write(xml_out, inner_tag, sig_sc0);
+      pop(xml_out);
       pop(xml_out);
 
 
@@ -50,8 +65,11 @@ namespace Chroma {
     }
 
     staggered_loops(int t_len, int t_sample, 
-		    multi1d<LatticeColorMatrix> & uin) : t_length(t_len) ,
-							 no_sample(t_sample)
+		    multi1d<LatticeColorMatrix> & uin, 
+		    Stag_shift_option type_of_shift_in) : 
+      t_length(t_len) ,
+      no_sample(t_sample) ,
+      type_of_shift(type_of_shift_in) 
     {
       corr_fn.resize(no_sample, t_length);
       corr_fn = zero ; 
@@ -65,7 +83,6 @@ namespace Chroma {
       };
 
       u = uin ; 
-      type_of_shift = GAUGE_INVAR ; 
 
     }
 
@@ -105,9 +122,6 @@ namespace Chroma {
 
     }
 
-
-    void use_gauge_invar() { type_of_shift = GAUGE_INVAR ; } 
-    void use_NON_gauge_invar() { type_of_shift = NON_GAUGE_INVAR ; } 
 
 
   protected:

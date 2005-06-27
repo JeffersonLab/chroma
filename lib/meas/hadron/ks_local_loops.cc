@@ -1,5 +1,5 @@
 /* + */
-/* $Id: ks_local_loops.cc,v 1.1 2005-06-27 15:54:21 mcneile Exp $ ($Date: 2005-06-27 15:54:21 $) */
+/* $Id: ks_local_loops.cc,v 1.2 2005-06-27 20:12:43 mcneile Exp $ ($Date: 2005-06-27 20:12:43 $) */
 
 
 #include "singleton.h"
@@ -48,16 +48,39 @@ void ks_local_loops(
   //
 
   // the wrapped disconnected loops
-  local_scalar_loop scalar_one_loop(t_length,Nsamp,u) ; 
-  non_local_scalar_loop scalar_two_loop(t_length,Nsamp,u) ; 
-  threelink_pseudoscalar_loop eta3_loop(t_length,Nsamp,u) ; 
-  fourlink_pseudoscalar_loop eta4_loop(t_length,Nsamp,u) ; 
+    bool gauge_shift ;
+    try
+      {
+	read(xml_in, "/propagator/param/use_gauge_invar_oper", gauge_shift ) ;
+      }
+    catch (const string& e)
+      {
+	QDPIO::cerr << "Error reading data: " << e << endl;
+	throw;
+      }
 
 
-  // Seed the RNG with the cfg number for now
-  Seed seed;
-  seed = CFGNO;
-  RNG::setrn(seed);
+    Stag_shift_option type_of_shift ; 
+    if( gauge_shift )
+      type_of_shift = SYM_GAUGE_INVAR ; 
+    else 
+      type_of_shift = NON_GAUGE_INVAR ; 
+
+    // set up the loop code
+    local_scalar_loop scalar_one_loop(t_length,Nsamp,
+				      u,type_of_shift) ; 
+    non_local_scalar_loop scalar_two_loop(t_length,Nsamp,
+					  u,type_of_shift) ; 
+    threelink_pseudoscalar_loop eta3_loop(t_length,Nsamp,
+					  u,type_of_shift) ; 
+    fourlink_pseudoscalar_loop eta4_loop(t_length,Nsamp,
+					 u,type_of_shift) ; 
+
+
+    // Seed the RNG with the cfg number for now
+    Seed seed;
+    seed = CFGNO;
+    RNG::setrn(seed);
 
 
   for(int i = 0; i < Nsamp; ++i){

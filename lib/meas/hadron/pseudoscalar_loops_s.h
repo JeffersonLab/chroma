@@ -1,4 +1,4 @@
-// $Id: pseudoscalar_loops_s.h,v 1.5 2005-01-14 18:42:36 edwards Exp $
+// $Id: pseudoscalar_loops_s.h,v 1.6 2005-06-27 20:12:43 mcneile Exp $
 #ifndef PSEUDOSCALAR_LOOPS_S_H
 #define PSEUDOSCALAR_LOOPS_S_H
 
@@ -18,8 +18,9 @@ namespace Chroma {
 
     threelink_pseudoscalar_loop(int t_len, 
 				int nsample, 
-				multi1d<LatticeColorMatrix> & uin)  
-      : staggered_loops(t_len,nsample,uin)
+				multi1d<LatticeColorMatrix> & uin,
+				Stag_shift_option type_of_shift_in)  
+      : staggered_loops(t_len,nsample,uin,type_of_shift_in)
       {
 	outer_tag = "loop_gamma5_cross_one"  ; 
 	inner_tag = "loop" ; 
@@ -46,8 +47,9 @@ namespace Chroma {
 		 LatticeStaggeredFermion & psi, int isample) ; 
 
     fourlink_pseudoscalar_loop(int t_len, int nsample,
-			       multi1d<LatticeColorMatrix> & uin)  
-      : staggered_loops(t_len,nsample,uin)
+			       multi1d<LatticeColorMatrix> & uin,
+			       Stag_shift_option type_of_shift_in)  
+      : staggered_loops(t_len,nsample,uin,type_of_shift_in)
       {
 	outer_tag = "loop_gamma3gamma5_cross_one"  ; 
 	inner_tag = "loop" ; 
