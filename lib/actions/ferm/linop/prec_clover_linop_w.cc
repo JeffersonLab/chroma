@@ -1,4 +1,4 @@
-// $Id: prec_clover_linop_w.cc,v 1.1 2005-01-04 06:55:14 edwards Exp $
+// $Id: prec_clover_linop_w.cc,v 1.2 2005-06-28 15:28:15 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned clover linear operator
  */
@@ -7,6 +7,8 @@
 
 #include "chromabase.h"
 #include "actions/ferm/linop/prec_clover_linop_w.h"
+
+using namespace QDP::Hints;
 
 namespace Chroma 
 { 
@@ -107,8 +109,9 @@ namespace Chroma
 					  const LatticeFermion& psi, 
 					  enum PlusMinus isign) const
   {
-    LatticeFermion tmp1, tmp2, tmp3;  // if an array is used here, 
-    // the space is not reserved
+    LatticeFermion tmp1; moveToFastMemoryHint(tmp1);
+    LatticeFermion tmp2; moveToFastMemoryHint(tmp2);
+    LatticeFermion tmp3; moveToFastMemoryHint(tmp3);
   
 
     Real mquarterinvfact = -0.25*invfact;

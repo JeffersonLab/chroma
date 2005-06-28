@@ -1,4 +1,4 @@
-// $Id: unprec_parwilson_linop_w.cc,v 1.5 2005-01-11 19:45:49 edwards Exp $
+// $Id: unprec_parwilson_linop_w.cc,v 1.6 2005-06-28 15:28:16 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator with parity breaking term
  */
@@ -6,6 +6,7 @@
 #include "chromabase.h"
 #include "actions/ferm/linop/unprec_parwilson_linop_w.h"
 
+using namespace QDP::Hints;
 namespace Chroma 
 { 
   //! Creation routine
@@ -45,7 +46,7 @@ namespace Chroma
     //
     //  Chi   =  (Nd+Mass)*Psi  -  (1/2) * D' Psi
     //
-    LatticeFermion tmp;
+    LatticeFermion tmp; moveToFastMemoryHint(tmp);
     Real fact1 = Nd + Mass;
     Real fact2 = -0.5;
 

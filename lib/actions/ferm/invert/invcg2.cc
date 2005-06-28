@@ -1,10 +1,12 @@
-// $Id: invcg2.cc,v 1.14 2005-06-27 18:06:32 bjoo Exp $
+// $Id: invcg2.cc,v 1.15 2005-06-28 15:28:15 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
 
 #include "chromabase.h"
 #include "actions/ferm/invert/invcg2.h"
+
+using namespace QDP::Hints;
 
 namespace Chroma {
 
@@ -73,8 +75,18 @@ void InvCG2_a(const LinearOperator<T>& M,
 
   const OrderedSubset& s = M.subset();
 
+
+  T mp;                moveToFastMemoryHint(mp);
+  T mmp;               moveToFastMemoryHint(mmp);
+  T p;                 moveToFastMemoryHint(p);
+  moveToFastMemoryHint(psi,true);
+  T r;                 moveToFastMemoryHint(r);
+  T chi_internal;      moveToFastMemoryHint(chi_internal);
+
+  chi_internal[s] = chi;
+
 //  Real rsd_sq = (RsdCG * RsdCG) * Real(norm2(chi,s));
-  Real chi_sq =  Real(norm2(chi,s));
+  Real chi_sq =  Real(norm2(chi_internal,s));
 
 #if 0
   QDPIO::cout << "chi_norm = " << sqrt(chi_sq) << endl;
@@ -87,13 +99,11 @@ void InvCG2_a(const LinearOperator<T>& M,
     
   //                      +
   //  r  :=  [ Chi  -  M(u)  . M(u) . psi ]
-  T  r, mp, mmp;
   M(mp, psi, PLUS);
   M(mmp, mp, MINUS);
-  r[s] = chi - mmp;
+  r[s] = chi_internal - mmp;
 
   //  p[1]  :=  r[0]
-  T p;
   p[s] = r;
   
   //  Cp = |r[0]|^2
@@ -107,6 +117,7 @@ void InvCG2_a(const LinearOperator<T>& M,
   if ( toBool(cp  <=  rsd_sq) )
   {
     n_count = 0;
+    revertFromFastMemoryHint(psi,true);
     END_CODE();
     return;
   }
@@ -154,6 +165,7 @@ void InvCG2_a(const LinearOperator<T>& M,
     if ( toBool(cp  <=  rsd_sq) )
     {
       n_count = k;
+      revertFromFastMemoryHint(psi,true);
       END_CODE();
       return;
     }
@@ -165,123 +177,10 @@ void InvCG2_a(const LinearOperator<T>& M,
     p[s] = r + b*p;	/* Nc Ns  flops */
   }
   n_count = MaxCG;
-  QDP_error_exit("too many CG iterations: count = %d", n_count);
-}
-
-  // Specialise for LatticeFermion
-void InvCG2_a(const LinearOperator<LatticeFermion>& M,
-	      const LatticeFermion& chi,
-	      LatticeFermion& psi,
-	      const Real& RsdCG, 
-	      int MaxCG, 
-	      int& n_count)
-{
-  START_CODE();
-
-  const OrderedSubset& s = M.subset();
-
-  LatticeFermion r;                 r.moveToFastMemoryHint();
-  LatticeFermion mp;                mp.moveToFastMemoryHint();
-  LatticeFermion mmp;               mmp.moveToFastMemoryHint();
-  LatticeFermion p;                 p.moveToFastMemoryHint();
-  LatticeFermion chi_internal;      chi_internal.moveToFastMemoryHint();
-  chi_internal[s] = chi;
-
-  // Move psi to fast memory with copy
-  psi.moveToFastMemoryHint(true);
-
-//  Real rsd_sq = (RsdCG * RsdCG) * Real(norm2(chi,s));
-  Real chi_sq =  Real(norm2(chi_internal,s));
-
-#if 0
-  QDPIO::cout << "chi_norm = " << sqrt(chi_sq) << endl;
-#endif
-
-  Real rsd_sq = (RsdCG * RsdCG) * chi_sq;
-
-  //                                            +
-  //  r[0]  :=  Chi - A . Psi[0]    where  A = M  . M
-    
-  //                      +
-  //  r  :=  [ Chi  -  M(u)  . M(u) . psi ]
-  M(mp, psi, PLUS);
-  M(mmp, mp, MINUS);
-  r[s] = chi_internal - mmp;
-
-  //  p[1]  :=  r[0]
-  p[s] = r;
-  
-  //  Cp = |r[0]|^2
-  Double cp = norm2(r, s);   	       	   /* 2 Nc Ns  flops */
-
-  //  IF |r[0]| <= RsdCG |Chi| THEN RETURN;
-  if ( toBool(cp  <=  rsd_sq) )
-  {
-    n_count = 0;
-    // Recover psi from fast memory
-    psi.revertFromFastMemoryHint(true);
-    END_CODE();
-    return;
-  }
-
-  //
-  //  FOR k FROM 1 TO MaxCG DO
-  //
-  Real a, b;
-  Double c, d;
-  
-  for(int k = 1; k <= MaxCG; ++k)
-  {
-    //  c  =  | r[k-1] |**2
-    c = cp;
-
-    //  a[k] := | r[k-1] |**2 / < p[k], Ap[k] > ;
-    //      	       	       	       	       	  +
-    //  First compute  d  =  < p, A.p >  =  < p, M . M . p >  =  < M.p, M.p >
-    //  Mp = M(u) * p
-    M(mp, p, PLUS);
-
-    //  d = | mp | ** 2
-    d = norm2(mp, s);	/* 2 Nc Ns  flops */
-
-    a = Real(c)/Real(d);
-
-    //  Psi[k] += a[k] p[k]
-    psi[s] += a * p;	/* 2 Nc Ns  flops */
-
-    //  r[k] -= a[k] A . p[k] ;
-    //      	       +            +
-    //  r  =  r  -  M(u)  . Mp  =  M  . M . p  =  A . p
-    M(mmp, mp, MINUS);
-    r[s] -= a * mmp;
-
-    //  IF |r[k]| <= RsdCG |Chi| THEN RETURN;
-
-    //  cp  =  | r[k] |**2
-    cp = norm2(r, s);	                /* 2 Nc Ns  flops */
-
-    if ( toBool(cp  <=  rsd_sq) )
-    {
-      n_count = k;
-      psi.revertFromFastMemoryHint(true);
-      END_CODE();
-      return;
-    }
-
-    //  b[k+1] := |r[k]|**2 / |r[k-1]|**2
-    b = Real(cp) / Real(c);
-
-    //  p[k+1] := r[k] + b[k+1] p[k]
-    p[s] = r + b*p;	/* Nc Ns  flops */
-  }
-  n_count = MaxCG;
-  psi.revertFromFastMemoryHint(true);
-  QDPIO::cerr << "Nonconvergence warning. n_count = " << n_count << endl;
-
-  
+  revertFromFastMemoryHint(psi,true);
+  QDPIO::cerr << "too many CG iterations: count =" << n_count <<" rsd^2= " << cp << endl <<flush;
   END_CODE();
 }
-
 
 // Fix here for now
 template<>

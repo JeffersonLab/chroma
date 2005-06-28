@@ -1,4 +1,4 @@
-// $Id: asqtad_mdagm_s.cc,v 1.9 2004-12-12 21:22:15 edwards Exp $
+// $Id: asqtad_mdagm_s.cc,v 1.10 2005-06-28 15:28:15 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -7,6 +7,7 @@
 #include "chromabase.h"
 #include "actions/ferm/linop/asqtad_mdagm_s.h"
 
+using namespace QDP::Hints;
 namespace Chroma 
 { 
 //! Creation routine
@@ -43,6 +44,9 @@ void AsqtadMdagM::operator() (LatticeStaggeredFermion& chi, const LatticeStagger
 
   Real mass_sq = Mass*Mass;
   LatticeStaggeredFermion tmp1, tmp2;
+  moveToFastMemoryHint(tmp1);
+  moveToFastMemoryHint(tmp2);
+
   tmp1 = tmp2 = zero;
 
   //

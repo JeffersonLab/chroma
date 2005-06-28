@@ -1,4 +1,4 @@
-// $Id: prec_wilson_linop_w.cc,v 1.12 2005-06-27 18:06:32 bjoo Exp $
+// $Id: prec_wilson_linop_w.cc,v 1.13 2005-06-28 15:28:16 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson linear operator
  */
@@ -6,6 +6,7 @@
 #include "chromabase.h"
 #include "actions/ferm/linop/prec_wilson_linop_w.h"
 
+using namespace QDP::Hints;
 namespace Chroma 
 { 
   //! Creation routine
@@ -110,9 +111,9 @@ namespace Chroma
   {
     LatticeFermion tmp1, tmp2, tmp3;  // if an array is used here, 
 
-    tmp1.moveToFastMemoryHint();
-    tmp2.moveToFastMemoryHint();
-    tmp3.moveToFastMemoryHint();
+    moveToFastMemoryHint(tmp1);
+    moveToFastMemoryHint(tmp2);
+    moveToFastMemoryHint(tmp3);
   
 
     Real mquarterinvfact = -0.25*invfact;
@@ -199,7 +200,7 @@ namespace Chroma
 
     // First term
     //   ds_u = chi_o^dag * \dot(D)_oe * (D_eo*psi_o)
-    LatticeFermion tmp;
+    LatticeFermion tmp;             moveToFastMemoryHint(tmp);
     D.apply(tmp, psi, isign, 0);
     D.deriv(ds_u, chi, tmp, isign, 1);
 

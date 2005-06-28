@@ -1,10 +1,12 @@
-// $Id: prec_nef_linop_array_w.cc,v 1.13 2005-03-30 15:55:05 bjoo Exp $
+// $Id: prec_nef_linop_array_w.cc,v 1.14 2005-06-28 15:28:16 bjoo Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned NEF domain-wall linear operator
  */
 
 #include "chromabase.h"
 #include "actions/ferm/linop/prec_nef_linop_array_w.h"
+
+using namespace QDP::Hints;
 
 
 namespace Chroma 
@@ -33,7 +35,7 @@ namespace Chroma
     c5  = c5_;
     N5  = N5_;
   
-    D.create(u_);
+    D.create(u_, N5);
   
   
     c5InvTwoKappa = 1.0 - c5*(Nd-WilsonMass) ;
@@ -322,7 +324,7 @@ namespace Chroma
     {
     case PLUS:
     {
-      multi1d<LatticeFermion> tmp(N5);
+      multi1d<LatticeFermion> tmp(N5); moveToFastMemoryHint(tmp);
       int otherCB = (cb + 1)%2 ;
 
 
@@ -365,22 +367,19 @@ namespace Chroma
 
       
 
-      // Replace this with a vector Dslash in time
-      for(int s=0; s < N5; s++) { 
-	D.apply(chi[s],tmp[s], isign, cb);
-      }
+      // Replace this with a vector Dslash in time -- done
+      D.apply(chi,tmp, isign, cb);
       
     }
     break ;
     
     case MINUS:
     { 
-      multi1d<LatticeFermion> tmp(N5) ;
+      multi1d<LatticeFermion> tmp(N5) ; moveToFastMemoryHint(tmp);
 
-      // Replace this with a vector Dslash in time
-      for(int s(0);s<N5;s++){
-	D.apply(tmp[s],psi[s],isign,cb);
-      }
+      // Replace this with a vector Dslash in time -- done
+      D.apply(tmp,psi,isign,cb);
+      
 
       for(int s(1);s<N5-1;s++){
 	//	chi[s][rb[cb]] = fb5*tmp[s] + 
@@ -425,7 +424,7 @@ namespace Chroma
 				     enum PlusMinus isign,
 				     int s5) const
   {
-    LatticeFermion tt ;
+    LatticeFermion tt ;      moveToFastMemoryHint(tt);
     D.apply(tt,psi,isign,0);
     D.apply(tt,psi,isign,1);
     chi = c5InvTwoKappa*psi + (0.5*c5)*tt ;//It really is -(-0.5*c5)D 

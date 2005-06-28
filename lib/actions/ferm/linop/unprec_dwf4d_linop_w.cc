@@ -1,4 +1,4 @@
-// $Id: unprec_dwf4d_linop_w.cc,v 1.6 2005-01-14 20:13:06 edwards Exp $
+// $Id: unprec_dwf4d_linop_w.cc,v 1.7 2005-06-28 15:28:16 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned projected DWF operator to 4D
  */
@@ -8,6 +8,7 @@
 #include "actions/ferm/linop/unprec_dwf4d_linop_w.h"
 #include "actions/ferm/linop/dwffld_w.h"
 
+using namespace QDP::Hints;
 
 namespace Chroma
 {
@@ -25,16 +26,16 @@ namespace Chroma
     int n_count;
   
     // Initialize the 5D fields
-    multi1d<LatticeFermion> psi5(N5);
+    multi1d<LatticeFermion> psi5(N5); moveToFastMemoryHint(psi5);
     //  psi5 = (psi,0,0,0,..,0)^T
     psi5 = zero;
     psi5[0] = psi;
 
     // tmp5 = P . psi5
-    multi1d<LatticeFermion> tmp5(N5);
+    multi1d<LatticeFermion> tmp5(N5); moveToFastMemoryHint(tmp5);
     DwfFld(tmp5, psi5, PLUS);
 
-    multi1d<LatticeFermion> chi5(N5);
+    multi1d<LatticeFermion> chi5(N5); moveToFastMemoryHint(chi5);
 
     switch(isign)
     {

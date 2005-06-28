@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linearop.h,v 1.14 2005-06-17 15:17:53 bjoo Exp $
+// $Id: linearop.h,v 1.15 2005-06-28 15:28:15 bjoo Exp $
 
 /*! @file
  * @brief Linear Operators
@@ -9,6 +9,8 @@
 #define __linearop_h__
 
 #include "chromabase.h"
+
+using namespace QDP::Hints;
 
 namespace Chroma
 {
@@ -115,7 +117,7 @@ namespace Chroma
   };
 
 
-  //-----------------------------------------------------------------------------------
+  //----------------------------------------------------------------
   //! Unpreconditioned linear operator including derivatives
   /*! @ingroup linop
    *
@@ -234,7 +236,7 @@ namespace Chroma
     virtual void operator() (T& chi, const T& psi, 
 			     enum PlusMinus isign) const
     {
-      T   tmp1, tmp2;  // if an array is used here, the space is not reserved
+      T   tmp1, tmp2; moveToFastMemoryHint(tmp1); moveToFastMemoryHint(tmp2);
 
       /*  Tmp1   =  D     A^(-1)     D    Psi  */
       /*      O      O,E        E,E   E,O    O */
@@ -248,12 +250,13 @@ namespace Chroma
       chi[rb[1]] -= tmp1;
     }
 
+
     //! Apply the UNPRECONDITIONED operator onto a source vector
     /*! Mainly intended for debugging */
     virtual void unprecLinOp(T& chi, const T& psi, 
 			     enum PlusMinus isign) const
     {
-      T   tmp1, tmp2;  // if an array is used here, the space is not reserved
+      T   tmp1, tmp2;  moveToFastMemoryHint(tmp1); moveToFastMemoryHint(tmp2);
 
       /*  Chi   =   A    Psi   +    D    Psi   */
       /*     E       E,E    O        E,O    O  */
@@ -267,6 +270,7 @@ namespace Chroma
       oddOddLinOp(tmp2, psi, isign);
       chi[rb[1]] = tmp1 + tmp2;
     }
+
 
     //! Apply the even-even block onto a source vector
     virtual void derivEvenEvenLinOp(P& ds_u, const T& chi, const T& psi, 
@@ -312,6 +316,10 @@ namespace Chroma
       // Make sure the deriv routines do a resize !!!
       //
       T   tmp1, tmp2, tmp3;  // if an array is used here, the space is not reserved
+      moveToFastMemoryHint(tmp1);
+      moveToFastMemoryHint(tmp2);
+      moveToFastMemoryHint(tmp3);
+
       P   ds_1;  // deriv routines should resize
 
       //
@@ -347,7 +355,7 @@ namespace Chroma
     virtual void derivUnprecLinOp(P& ds_u, const T& chi, const T& psi, 
 				  enum PlusMinus isign) const
     {
-      T   tmp1, tmp2;  // if an array is used here, the space is not reserved
+      T   tmp1, tmp2;  moveToFastMemoryHint(tmp1); moveToFastMemoryHint(tmp2);
       P   ds_tmp;  // deriv routines should resize
 
       //  ds_u  =  chi^dag * A'_ee * psi
@@ -494,8 +502,8 @@ namespace Chroma
     virtual void operator() (multi1d<T>& chi, const multi1d<T>& psi, 
 			     enum PlusMinus isign) const
     {
-      multi1d<T>  tmp1(size());
-      multi1d<T>  tmp2(size());
+      multi1d<T>  tmp1(size());  moveToFastMemoryHint(tmp1);
+      multi1d<T>  tmp2(size());  moveToFastMemoryHint(tmp2);
 
       /*  Tmp1   =  D     A^(-1)     D    Psi  */
       /*      O      O,E        E,E   E,O    O */
@@ -516,8 +524,8 @@ namespace Chroma
     virtual void unprecLinOp(multi1d<T>& chi, const multi1d<T>& psi, 
 			     enum PlusMinus isign) const
     {
-      multi1d<T>  tmp1(size());
-      multi1d<T>  tmp2(size());
+      multi1d<T>  tmp1(size()); moveToFastMemoryHint(tmp1);
+      multi1d<T>  tmp2(size()); moveToFastMemoryHint(tmp2);
 
       /*  Chi   =   A    Psi   +    D    Psi   */
       /*     E       E,E    O        E,O    O  */
@@ -579,6 +587,10 @@ namespace Chroma
       // Make sure the deriv routines do a resize !!!
       //
       multi1d<T>   tmp1(size()), tmp2(size()), tmp3(size());  // if an array is used here, the space is not reserved
+      moveToFastMemoryHint(tmp1);
+      moveToFastMemoryHint(tmp2);
+      moveToFastMemoryHint(tmp3);
+
       P            ds_1;  // deriv routines should resize
 
       //
@@ -616,6 +628,9 @@ namespace Chroma
 				  enum PlusMinus isign) const
     {
       T   tmp1, tmp2;  // if an array is used here, the space is not reserved
+      moveToFastMemoryHint(tmp1);
+      moveToFastMemoryHint(tmp2);
+
       P   ds_tmp;  // deriv routines should resize
 
       //  ds_u  =  chi^dag * A'_ee * psi
@@ -661,7 +676,7 @@ namespace Chroma
   };
 
 
-  //-----------------------------------------------------------------------------------
+  //---------------------------------------------------------------------
   //! Even odd Linear Operator (for staggered like things )
   /*! @ingroup linop
    *
@@ -704,7 +719,9 @@ namespace Chroma
 			     enum PlusMinus isign) const
     {
       T   tmp1, tmp2;  // if an array is used here, the space is not reserved
-
+      moveToFastMemoryHint(tmp1);
+      moveToFastMemoryHint(tmp2);
+ 
       /*  Chi   =   D    Psi   +    D    Psi   */
       /*     E       E,E    E        E,O    O  */
       evenEvenLinOp(tmp1, psi, isign);
@@ -767,6 +784,9 @@ namespace Chroma
       // on all cb. So, no adding of ds_1 onto ds_u under a subset
       //
       T   tmp1, tmp2;  // if an array is used here, the space is not reserved
+      moveToFastMemoryHint(tmp1);
+      moveToFastMemoryHint(tmp2);
+
       P   ds_1;  // routines should resize
 
       // ds_u = chi_e ^dag * D'_ee * psi_e
@@ -808,7 +828,6 @@ namespace Chroma
 
 
   };
-
 
   //-----------------------------------------------------------------------------------
   //! Dslash-like Linear Operator

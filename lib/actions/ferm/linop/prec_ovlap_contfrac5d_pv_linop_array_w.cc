@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_pv_linop_array_w.cc,v 1.10 2005-06-17 15:17:53 bjoo Exp $
+// $Id: prec_ovlap_contfrac5d_pv_linop_array_w.cc,v 1.11 2005-06-28 15:28:16 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Pauli-Villars Continued Fraction 5D
  */
@@ -7,6 +7,7 @@
 #include "actions/ferm/linop/dslash_w.h"
 #include "actions/ferm/linop/prec_ovlap_contfrac5d_pv_linop_array_w.h"
 
+using namespace QDP::Hints;
 
 namespace Chroma 
 { 
@@ -150,7 +151,7 @@ namespace Chroma
     // With A_i = gamma_5 a_i = a_i gamma_5
     // and  B_i = b_i I = alpha_i I
 
-    LatticeFermion tmp;
+    LatticeFermion tmp;                moveToFastMemoryHint(tmp);
     int G5=Ns*Ns-1;
 
     // First 0ne 
@@ -216,9 +217,9 @@ namespace Chroma
  
     if( chi.size() != N5 )  chi.resize(N5);
 
-    multi1d<LatticeFermion> y(N5);
+    multi1d<LatticeFermion> y(N5);      moveToFastMemoryHint(y);
 
-    LatticeFermion tmp;
+    LatticeFermion tmp;                 moveToFastMemoryHint(tmp);
     Real coeff;
 
     const int G5 = Ns*Ns-1;
@@ -274,7 +275,7 @@ namespace Chroma
 
     if( chi.size() != N5 )  chi.resize(N5);
 
-    multi1d<LatticeFermion> tmp(N5);
+    multi1d<LatticeFermion> tmp(N5);      moveToFastMemoryHint(tmp);
     Real coeff;
     int G5 = Ns*Ns-1;
 
@@ -313,7 +314,7 @@ namespace Chroma
 
     multi1d<LatticeColorMatrix> ds_tmp(Nd);
 						   
-    LatticeFermion tmp;
+    LatticeFermion tmp;                   moveToFastMemoryHint(tmp);
     Real coeff;
     int G5 = Ns*Ns-1;
 

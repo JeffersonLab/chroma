@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_linop_array_w.h,v 1.18 2005-06-27 22:21:04 bjoo Exp $
+// $Id: prec_dwf_linop_array_w.h,v 1.19 2005-06-28 15:28:15 bjoo Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned domain-wall fermion linear operator
  */
@@ -85,30 +85,6 @@ namespace Chroma
     {
       applyDiagInv(chi, psi, isign, 1);
     }
-
-    void operator() (multi1d<LatticeFermion>& chi, 
-		     const multi1d<LatticeFermion>& psi,
-		     enum PlusMinus isign) const
-    {
-      multi1d<LatticeFermion>   tmp1(size());
-      multi1d<LatticeFermion>   tmp2(size());  // if an array is used here, the space is not reserved
-      tmp1.moveToFastMemoryHint();
-      tmp2.moveToFastMemoryHint();
-
-      /*  Tmp1   =  D     A^(-1)     D    Psi  */
-      /*      O      O,E        E,E   E,O    O */
-      evenOddLinOp(tmp1, psi, isign);
-      evenEvenInvLinOp(tmp2, tmp1, isign);
-      oddEvenLinOp(tmp1, tmp2, isign);
-
-      /*  Chi   =  A    Psi  -  Tmp1  */
-      /*     O      O,O    O        O */
-      oddOddLinOp(chi, psi, isign);
-      for(int n=0; n < size(); ++n) { 
-	chi[n][rb[1]] -= tmp1[n];
-      }
-    }
-
 
 
     //! Apply the Dminus operator on a lattice fermion.

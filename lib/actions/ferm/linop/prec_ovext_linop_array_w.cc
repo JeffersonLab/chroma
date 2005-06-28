@@ -1,4 +1,4 @@
-/* $Id: prec_ovext_linop_array_w.cc,v 1.4 2005-06-27 22:21:04 bjoo Exp $
+/* $Id: prec_ovext_linop_array_w.cc,v 1.5 2005-06-28 15:28:16 bjoo Exp $
 /*! \file
 *  \brief EvenOddPreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
 */
@@ -187,8 +187,7 @@ namespace Chroma
     switch( isign ) { 
     case PLUS: 
       {
-	multi1d<LatticeFermion> Dpsi(N5);
-	Dpsi.moveToFastMemoryHint();
+	multi1d<LatticeFermion> Dpsi(N5); moveToFastMemoryHint(Dpsi);
 
 	// N5 * Dslash flops = N5 * 1320 cbsite flops
 	Dslash->apply(Dpsi,psi,PLUS,cb);
@@ -218,8 +217,7 @@ namespace Chroma
       break;
     case MINUS:
       {
-	multi1d<LatticeFermion> tmp(N5);
-	tmp.moveToFastMemoryHint();
+	multi1d<LatticeFermion> tmp(N5); moveToFastMemoryHint(tmp);
 
 	int otherCB = (cb + 1)%2;
 
@@ -273,10 +271,10 @@ namespace Chroma
   {
     START_CODE();
 
-    multi1d<LatticeFermion> tmp5(N5);
-    tmp5.moveToFastMemoryHint();
+    multi1d<LatticeFermion> tmp5(N5);   moveToFastMemoryHint(tmp5);
+
   
-    LatticeFermion tmp4;  tmp4.moveToFastMemoryHint();
+    LatticeFermion tmp4;                moveToFastMemoryHint(tmp4);
   
     Real ftmp;
     Real ftmp2;

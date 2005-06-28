@@ -1,4 +1,4 @@
-/* $Id: unprec_ovext_linop_array_w.cc,v 1.11 2005-04-22 13:27:42 bjoo Exp $
+/* $Id: unprec_ovext_linop_array_w.cc,v 1.12 2005-06-28 15:28:16 bjoo Exp $
 /*! \file
 *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
 */
@@ -68,7 +68,8 @@ namespace Chroma
     if( chi.size() != N5 ) chi.resize(N5);
     int G5 = Ns*Ns - 1;
 
-    LatticeFermion tmp4;
+    LatticeFermion tmp4; moveToFastMemoryHint(tmp4);
+
     Real q_sqrt_afive, two_q_sqrt, ftmp, Two;
     Two = Real(2);
 	
@@ -76,6 +77,7 @@ namespace Chroma
     case PLUS: 
       {
 	multi1d<LatticeFermion> tmp5(N5);
+	moveToFastMemoryHint(tmp5);
 
 	
 	// Get a vector of wilson dirac op applications
@@ -168,6 +170,9 @@ namespace Chroma
       {
 	multi1d<LatticeFermion> tmp5_1(N5);
 	multi1d<LatticeFermion> tmp5_2(N5);
+
+	moveToFastMemoryHint(tmp5_1);
+	moveToFastMemoryHint(tmp5_2);
 
 	// Will need to multiply by D^{dagger]. Pull it outside.
 	// We collect 2 5D vectors. One to be multiplied by Dw^{dag}

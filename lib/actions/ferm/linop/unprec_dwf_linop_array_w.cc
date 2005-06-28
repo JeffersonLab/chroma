@@ -1,10 +1,12 @@
-// $Id: unprec_dwf_linop_array_w.cc,v 1.15 2005-03-02 18:32:05 bjoo Exp $
+// $Id: unprec_dwf_linop_array_w.cc,v 1.16 2005-06-28 15:28:16 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall linear operator
  */
 
 #include "chromabase.h"
 #include "actions/ferm/linop/unprec_dwf_linop_array_w.h"
+
+using namespace QDP::Hints;
 
 namespace Chroma 
 { 
@@ -65,7 +67,7 @@ namespace Chroma
     //
     //  Chi   =  D' Psi
     //
-    LatticeFermion  tmp;
+    LatticeFermion  tmp;   moveToFastMemoryHint(tmp);
 
     switch (isign)
     {

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lmdagm.h,v 1.5 2005-01-14 20:13:05 edwards Exp $
+// $Id: lmdagm.h,v 1.6 2005-06-28 15:28:15 bjoo Exp $
 
 #ifndef __lmdagm_w_h__
 #define __lmdagm_w_h__
@@ -7,6 +7,7 @@
 #include "handle.h"
 #include "linearop.h"
 
+using namespace QDP::Hints;
 
 namespace Chroma 
 { 
@@ -39,7 +40,8 @@ public:
   /*! For this operator, the sign is ignored */
   inline void operator() (T& chi, const T& psi, enum PlusMinus isign) const
     {
-      T  tmp;
+      T  tmp;  moveToFastMemoryHint(tmp);
+
       (*A)(tmp, psi, PLUS);
       (*A)(chi, tmp, MINUS);
     }
@@ -83,7 +85,7 @@ public:
   /*! For this operator, the sign is ignored */
   inline void operator() (multi1d<T>& chi, const multi1d<T>& psi, enum PlusMinus isign) const
     {
-      multi1d<T>  tmp(size());
+      multi1d<T>  tmp(size()); moveToFastMemoryHint(tmp);
       (*A)(tmp, psi, PLUS);
       (*A)(chi, tmp, MINUS);
     }
@@ -121,7 +123,8 @@ public:
   /*! For this operator, the sign is ignored */
   inline void operator() (T& chi, const T& psi, enum PlusMinus isign) const
     {
-      T  tmp;
+      T  tmp;  moveToFastMemoryHint(tmp);
+
       (*A)(tmp, psi, PLUS);
       (*A)(chi, tmp, MINUS);
     }
@@ -130,7 +133,8 @@ public:
   /*! For this operator, the sign is ignored */
   inline void operator() (T& chi, const T& psi, enum PlusMinus isign, Real epsilon) const
     {
-      T  tmp;
+      T  tmp; moveToFastMemoryHint(tmp);
+
       (*A)(tmp, psi, PLUS, epsilon/Real(2));
       (*A)(chi, tmp, MINUS, epsilon/Real(2));
     }

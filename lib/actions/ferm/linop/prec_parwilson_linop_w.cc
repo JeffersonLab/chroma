@@ -1,4 +1,4 @@
-// $Id: prec_parwilson_linop_w.cc,v 1.5 2005-01-11 19:45:49 edwards Exp $
+// $Id: prec_parwilson_linop_w.cc,v 1.6 2005-06-28 15:28:16 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion linear operator with parity breaking term
  */
@@ -209,12 +209,12 @@ namespace Chroma
 
     const multi1d<LatticeColorMatrix>& u = state->getLinks();
 				 
-    LatticeColorMatrix utmp_1;
-    LatticeFermion phi;
-    LatticeFermion rho;
-    LatticeFermion sigma;
-    LatticeFermion ftmp_1;
-    LatticeFermion ftmp_2;
+    LatticeColorMatrix utmp_1;      moveToFastMemoryHint(utmp_1);
+    LatticeFermion phi;             moveToFastMemoryHint(phi);
+    LatticeFermion rho;             moveToFastMemoryHint(rho);
+    LatticeFermion sigma;           moveToFastMemoryHint(sigma);
+    LatticeFermion ftmp_1;          moveToFastMemoryHint(ftmp_1);
+    LatticeFermion ftmp_2;          moveToFastMemoryHint(ftmp_2);
     Double ddummy;
     Real dummy;
     int nu;

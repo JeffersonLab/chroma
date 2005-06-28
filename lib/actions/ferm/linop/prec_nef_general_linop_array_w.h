@@ -1,5 +1,6 @@
+
 // -*- C++ -*-
-// $Id: prec_nef_general_linop_array_w.h,v 1.8 2005-05-28 22:37:42 edwards Exp $
+// $Id: prec_nef_general_linop_array_w.h,v 1.9 2005-06-28 15:28:16 bjoo Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned NEF domain-wall fermion linear operator
  *            generalised to take array of b_5 and c_5
@@ -9,7 +10,7 @@
 #define __prec_nef_general_linop_array_w_h__
 
 #include "linearop.h"
-#include "actions/ferm/linop/dslash_w.h"
+#include "actions/ferm/linop/dslash_array_w.h"
 #include "actions/ferm/linop/prec_dwflike_linop_base_array_w.h"
 
 
@@ -264,7 +265,7 @@ namespace Chroma
                             // in the LDU decomp of Tridiag T
 
 
-    WilsonDslash  D;
+    WilsonDslashArray  D;
   };
 
 }; // End Namespace Chroma

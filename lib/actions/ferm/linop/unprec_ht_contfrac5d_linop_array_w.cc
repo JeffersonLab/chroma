@@ -1,4 +1,4 @@
-// $Id: unprec_ht_contfrac5d_linop_array_w.cc,v 1.4 2005-03-02 18:32:05 bjoo Exp $
+// $Id: unprec_ht_contfrac5d_linop_array_w.cc,v 1.5 2005-06-28 15:28:16 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned H_T kernel continued fraction (5D) operator
  */
@@ -75,7 +75,9 @@ namespace Chroma
     //   chi(TwoN) = alpha(TwoN-1)*psi(TwoN-1)
     //                      + (-)^TwoN*beta(TwoN)*H*psi(TwoN)         
     
-    LatticeFermion tmp1, tmp2;
+    LatticeFermion tmp1, tmp2;     moveToFastMemoryHint(tmp1);
+    moveToFastMemoryHint(tmp2);
+
     Real pmscale;
 
     for(int n = 0; n < TwoN; ++n) {

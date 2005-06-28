@@ -1,4 +1,4 @@
-// $Id: unprec_dwftransf_linop_w.cc,v 1.10 2005-02-25 03:01:55 edwards Exp $
+// $Id: unprec_dwftransf_linop_w.cc,v 1.11 2005-06-28 15:28:16 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -8,6 +8,7 @@
 #include "actions/ferm/linop/unprec_dwftransf_linop_w.h"
 #include "actions/ferm/invert/invcg2.h"
 
+using namespace QDP::Hints;
 
 namespace Chroma 
 { 
@@ -49,7 +50,10 @@ namespace Chroma
     {
       // Apply chi = (b5+c5)* gamma_5 * D_w * [ D_denum ]^{-1} * psi
       (*D_denum)(chi, psi, MINUS);
-      LatticeFermion tmp=psi; 
+      LatticeFermion tmp;  moveToFastMemoryHint(tmp);
+
+      tmp = psi; 
+      
       InvCG2<LatticeFermion>(*D_denum, 
 			     chi, 
 			     tmp,
@@ -63,7 +67,7 @@ namespace Chroma
     case MINUS:
     {
       // Apply  chi = (b5+c5) * gamma_5 * D_w * [D_denum]^(-1) * gamma_5 * psi
-      LatticeFermion tmp;
+      LatticeFermion tmp;      moveToFastMemoryHint(tmp);
       chi = GammaConst<Ns,Ns*Ns-1>()*psi;      
       (*D_denum)(tmp, chi, MINUS);
 
@@ -126,7 +130,7 @@ namespace Chroma
     int n_count;
 
     // Apply chi = (b5+c5)^2 * gamma_5 * D_w * [ D_denum^dag * D_denum ]^{-1} * gamma_5 * D_w * psi
-    LatticeFermion tmp;
+    LatticeFermion tmp;       moveToFastMemoryHint(tmp);
     (*D_w)(chi, psi, PLUS);
     tmp = GammaConst<Ns,Ns*Ns-1>()*chi;
 

@@ -1,4 +1,4 @@
-// $Id: invcg2_array.cc,v 1.17 2005-06-27 22:21:04 bjoo Exp $
+// $Id: invcg2_array.cc,v 1.18 2005-06-28 15:28:15 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -75,19 +75,29 @@ void InvCG2_a(const LinearOperator< multi1d<T> >& M,
 
   const int N = psi.size();
   const OrderedSubset& s = M.subset();
-  QDPIO::cout << "InvCG2: starting" << endl;
-  multi1d<T> r(N);
-  multi1d<T> mp(N);
-  multi1d<T> mmp(N);
-  multi1d<T> p(N);
 
+  // Move what we can to fast memory
+  multi1d<T> mp(N);            moveToFastMemoryHint(mp);
+  multi1d<T> mmp(N);           moveToFastMemoryHint(mmp);
+  multi1d<T> p(N);             moveToFastMemoryHint(p);
+
+  moveToFastMemoryHint(psi,true);
+
+  multi1d<T> r(N);             moveToFastMemoryHint(r);
+  multi1d<T> chi_internal(N);  moveToFastMemoryHint(chi_internal);
+
+  for(int i=0; i < N; i++) {
+    chi_internal[i][s] = chi[i];
+  }
+
+  QDPIO::cout << "InvCG2: starting" << endl;
   FlopCounter flopcount;
   flopcount.reset();
   StopWatch swatch;
   swatch.reset();
   swatch.start();
 
-  Real chi_sq =  Real(norm2(chi,s));  // 4*Nc*Ns flops per site
+  Real chi_sq =  Real(norm2(chi_internal,s));  // 4*Nc*Ns flops per site
   flopcount.addSiteFlops(4*Nc*Ns*N,s);
 
 
@@ -105,8 +115,9 @@ void InvCG2_a(const LinearOperator< multi1d<T> >& M,
   flopcount.addFlops(2*M.nFlops());
 
   for(int n=0; n < N; ++n){
-    r[n][s] = chi[n] - mmp[n];
+    r[n][s] = chi_internal[n] - mmp[n];
   }
+
   flopcount.addSiteFlops(2*Nc*Ns*N,s);
 
 #ifdef PRINT_5D_RESID 
@@ -138,6 +149,7 @@ void InvCG2_a(const LinearOperator< multi1d<T> >& M,
     QDPIO::cout << "InvCG: k = 0  cp = " << cp << "  rsd_sq = " << rsd_sq << endl;
     // Try it all at the end.
     flopcount.report("invcg2_array", swatch.getTimeInSeconds());
+    revertFromFastMemoryHint(psi,true);
     END_CODE();
     return;
   }
@@ -207,6 +219,7 @@ void InvCG2_a(const LinearOperator< multi1d<T> >& M,
       swatch.stop();
       QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << endl;
       flopcount.report("invcg2_array", swatch.getTimeInSeconds());
+      revertFromFastMemoryHint(psi,true);
       END_CODE();
       return;
     }
@@ -227,174 +240,8 @@ void InvCG2_a(const LinearOperator< multi1d<T> >& M,
   swatch.stop();
   QDPIO::cerr << "Nonconvergence Warning" << endl;
   flopcount.report("invcg2_array", swatch.getTimeInSeconds());
-
+  revertFromFastMemoryHint(psi,true);
   END_CODE();
- 
-}
-
-
-// Multi1d Lattice Fermion Specialisation
-void InvCG2_a(const LinearOperator< multi1d<LatticeFermion> >& M,
-	      const multi1d<LatticeFermion> & chi,
-	      multi1d<LatticeFermion>& psi,
-	      const Real& RsdCG, 
-	      int MaxCG, 
-	      int& n_count)
-{
-  START_CODE();
-
-  const int N = psi.size();
-  const OrderedSubset& s = M.subset();
-  QDPIO::cout << "InvCG2: starting" << endl;
-
-  multi1d<LatticeFermion> p(N);             p.moveToFastMemoryHint();
-  multi1d<LatticeFermion> mp(N);            mp.moveToFastMemoryHint();
-  multi1d<LatticeFermion> mmp(N);           mmp.moveToFastMemoryHint();
-  psi.moveToFastMemoryHint(true);
-
-
-  multi1d<LatticeFermion> r(N);             r.moveToFastMemoryHint();
-  multi1d<LatticeFermion> chi_internal(N);  chi_internal.moveToFastMemoryHint();
-  
-  // Move psi to fast memory if possible and copy the data
-
-
-  // Copy chi into chi_internal
-  for(int i=0; i < N; i++) { 
-    chi_internal[i][s] = chi[i];
-  }
-
-  FlopCounter flopcount;
-  flopcount.reset();
-  StopWatch swatch;
-  swatch.reset();
-  swatch.start();
-
-  Real chi_sq =  Real(norm2(chi_internal,s));  // 4*Nc*Ns flops per site
-  flopcount.addSiteFlops(4*Nc*Ns*N,s);
-
-
-  //  QDPIO::cout << "chi_norm = " << sqrt(chi_sq) << endl;
-  Real rsd_sq = (RsdCG * RsdCG) * chi_sq;
-
-  //                                            +
-  //  r[0]  :=  Chi - A . Psi[0]    where  A = M  . M
-    
-  //                      +
-  //  r  :=  [ Chi  -  M(u)  . M(u) . psi ]
-
-  M(mp, psi, PLUS);
-  M(mmp, mp, MINUS);
-  flopcount.addFlops(2*M.nFlops());
-
-  for(int n=0; n < N; ++n){
-    r[n][s] = chi_internal[n] - mmp[n];
-  }
-  flopcount.addSiteFlops(2*Nc*Ns*N,s);
-
-  //  p[1]  :=  r[0]
-
-  for(int n=0; n < N; ++n)
-    p[n][s] = r[n];
-  
-  //  Cp = |r[0]|^2
-  Double cp = norm2(r, s);   	       	   /* 4 Nc Ns  flops/cbsite */
-  flopcount.addSiteFlops(4*Nc*Ns*N, s);
-
-  //  IF |r[0]| <= RsdCG |Chi| THEN RETURN;
-  if ( toBool(cp  <=  rsd_sq) )
-  {
-    n_count = 0;
-    swatch.stop();
-    QDPIO::cout << "InvCG: k = 0  cp = " << cp << "  rsd_sq = " << rsd_sq << endl;
-    // Try it all at the end.
-    flopcount.report("invcg2_array", swatch.getTimeInSeconds());
-    psi.revertFromFastMemoryHint(true);
-    END_CODE();
-    return;
-  }
-
-  //
-  //  FOR k FROM 1 TO MaxCG DO
-  //
-  Real a, b;
-  Double c, d;
-  
-  for(int k = 1; k <= MaxCG; ++k)
-  {
-    //  c  =  | r[k-1] |**2
-    c = cp;
-
-    //  a[k] := | r[k-1] |**2 / < p[k], Ap[k] > ;
-    //      	       	       	       	       	  +
-    //  First compute  d  =  < p, A.p >  =  < p, M . M . p >  =  < M.p, M.p >
-    //  Mp = M(u) * p
-
-    M(mp, p, PLUS);  flopcount.addFlops(M.nFlops());
-   
-    //  d = | mp | ** 2
-    d = norm2(mp, s); flopcount.addSiteFlops(4*Nc*Ns*N,s);
-
-
-    a = Real(c)/Real(d);
-
-    //  Psi[k] += a[k] p[k]
-    for(int n=0; n < N; ++n) {
-      psi[n][s] += a * p[n];	/* 4 Nc Ns  cbsite flops */
-    }
-
-    flopcount.addSiteFlops(4*Nc*Ns*N,s);
-
-    //  r[k] -= a[k] A . p[k] ;
-    //      	       +            +
-    //  r  =  r  -  M(u)  . Mp  =  M  . M . p  =  A . p
-
-    M(mmp, mp, MINUS);
-    flopcount.addFlops(M.nFlops());
-
-    for(int n=0; n < N; ++n) {
-      r[n][s] -= a * mmp[n];
-    }
-    flopcount.addSiteFlops(4*Nc*Ns*N, s);
-
-    //  IF |r[k]| <= RsdCG |Chi| THEN RETURN;
-
-    //  cp  =  | r[k] |**2
-    cp = norm2(r, s);	                /* 2 Nc Ns  flops */
-    flopcount.addSiteFlops(4*Nc*Ns*N,s);
-
-    //    QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << endl;
-
-    if ( toBool(cp  <=  rsd_sq) )
-    {
-      n_count = k;
-      swatch.stop();
-      QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << endl;
-      flopcount.report("invcg2_array", swatch.getTimeInSeconds());
-      // Recover psi from fast memory and copy contents
-      psi.revertFromFastMemoryHint(true);
-      END_CODE();
-      return;
-    }
-
-    //  b[k+1] := |r[k]|**2 / |r[k-1]|**2
-    b = Real(cp) / Real(c);
-
-    //  p[k+1] := r[k] + b[k+1] p[k]
-    for(int n=0; n < N; ++n) {
-      p[n][s] = r[n] + b*p[n];	/* Nc Ns  flops */
-    }
-    flopcount.addSiteFlops(4*Nc*Ns*N,s);
-  }
-
-  n_count = MaxCG;
-  swatch.stop();
-  QDPIO::cerr << "Nonconvergence Warning n_count=" << n_count <<endl;
-  flopcount.report("invcg2_array", swatch.getTimeInSeconds());
-  psi.revertFromFastMemoryHint(true);
-  
-  END_CODE();
-
  
 }
 

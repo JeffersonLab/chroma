@@ -1,10 +1,12 @@
-// $Id: unprec_ovdwf_linop_array_w.cc,v 1.13 2005-03-02 18:32:05 bjoo Exp $
+// $Id: unprec_ovdwf_linop_array_w.cc,v 1.14 2005-06-28 15:28:16 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Overlap-DWF (Borici) linear operator
  */
 
 #include "chromabase.h"
 #include "actions/ferm/linop/unprec_ovdwf_linop_array_w.h"
+
+using namespace QDP::Hints;
 
 namespace Chroma 
 { 
@@ -54,6 +56,8 @@ namespace Chroma
     if (isign == PLUS)
     {
       LatticeFermion  tmp1, tmp2;
+      moveToFastMemoryHint(tmp1);
+      moveToFastMemoryHint(tmp2);
 
       for(int n=0; n < N5; ++n)
       {
@@ -84,6 +88,8 @@ namespace Chroma
     {
       multi1d<LatticeFermion>  tmp(N5);   // should be more clever and reduce temporaries
       LatticeFermion  tmp1;
+      moveToFastMemoryHint(tmp);
+      moveToFastMemoryHint(tmp1);
 
       for(int n=0; n < N5; ++n)
       {
@@ -121,7 +127,7 @@ namespace Chroma
 			       enum PlusMinus isign,
 			       int s5) const
   {
-    LatticeFermion tt ;
+    LatticeFermion tt ; moveToFastMemoryHint(tt);
     D.apply(tt,psi,isign,0);
     D.apply(tt,psi,isign,1);
     chi = (1.0 - (Nd-WilsonMass))*psi +0.5*tt ; //really -(-.5)D

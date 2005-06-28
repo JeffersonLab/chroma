@@ -1,4 +1,4 @@
-// $Id: prec_nef_general_linop_array_w.cc,v 1.9 2005-03-15 17:23:41 bjoo Exp $
+// $Id: prec_nef_general_linop_array_w.cc,v 1.10 2005-06-28 15:28:16 bjoo Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned NEF domain-wall linear operator
  */
@@ -6,6 +6,7 @@
 #include "chromabase.h"
 #include "actions/ferm/linop/prec_nef_general_linop_array_w.h"
 
+using namespace QDP::Hints;
 
 namespace Chroma 
 { 
@@ -41,7 +42,7 @@ namespace Chroma
       QDP_abort(1);
     }
     N5  = N5_;
-    D.create(u_);
+    D.create(u_, N5);
 
     b5.resize(N5);
     c5.resize(N5);
@@ -313,8 +314,8 @@ namespace Chroma
     if( chi.size() != N5 ) chi.resize(N5);
 
     // I use two temporaries
-    multi1d<LatticeFermion> z(N5);
-    multi1d<LatticeFermion> z_prime(N5);
+    multi1d<LatticeFermion> z(N5);        moveToFastMemoryHint(z);
+    multi1d<LatticeFermion> z_prime(N5);  moveToFastMemoryHint(z_prime);
     Real fact;
 
     switch ( isign ) {
@@ -495,7 +496,7 @@ namespace Chroma
     {
     case PLUS:
     {
-      multi1d<LatticeFermion> tmp(N5);
+      multi1d<LatticeFermion> tmp(N5);  moveToFastMemoryHint(tmp);
       Real fact1;
       Real fact2;
       Real fact2mf;
@@ -570,22 +571,20 @@ namespace Chroma
 	tmp[s][rb[otherCB]] += fact2*chiralProjectMinus(psi[s+1]);
       }
 
-      // Replace with vector dslash later
-      for(int s=0; s < N5; s++) { 
-	D.apply(chi[s], tmp[s], isign, cb);
-      }
+      // Replace with vector dslash later -- done
+      D.apply(chi, tmp, isign, cb);
+      
 
     }
     break ;
     
     case MINUS:
     { 
-      multi1d<LatticeFermion> tmp_d(N5) ;
+      multi1d<LatticeFermion> tmp_d(N5) ; moveToFastMemoryHint(tmp_d);
 
-      // Replace with a vector dslash later
-      for(int s=0; s<N5; s++){
-	D.apply(tmp_d[s], psi[s], isign, cb);
-      }
+      // Replace with a vector dslash later -- done
+      D.apply(tmp_d, psi, isign, cb);
+      
 
       // OLD CODE
       /*
@@ -670,7 +669,7 @@ namespace Chroma
 					enum PlusMinus isign,
 					int s5) const
   {
-    LatticeFermion tt ;
+    LatticeFermion tt ;         moveToFastMemoryHint(tt);
     D.apply(tt,psi,isign,0);
     D.apply(tt,psi,isign,1);
     Real fact = Real(0.5)*c5[s5];
@@ -701,7 +700,7 @@ namespace Chroma
     switch ( isign ) {
     case PLUS:
       {
-	LatticeFermion tmp;
+	LatticeFermion tmp;            moveToFastMemoryHint(tmp);
 	Real fact1;
 	Real fact2;
 	Real fact2mf;
@@ -816,8 +815,8 @@ namespace Chroma
 	// as needed
 
 	// Storage for P_{+} X
-	multi1d<LatticeFermion> chi_plus(N5);
-	multi1d<LatticeFermion> chi_minus(N5);
+	multi1d<LatticeFermion> chi_plus(N5);  moveToFastMemoryHint(chi_plus);
+	multi1d<LatticeFermion> chi_minus(N5); moveToFastMemoryHint(chi_minus);
 	
 	for(int s=0; s < N5; s++) {
 	  // OLD CODE
@@ -840,7 +839,7 @@ namespace Chroma
 	
 	
 	ds_u = zero;
-	LatticeFermion chi_tmp = zero;
+	LatticeFermion chi_tmp = zero;       moveToFastMemoryHint(chi_tmp);
 
 
 	Real ftmp;
@@ -934,6 +933,9 @@ namespace Chroma
 
     multi1d<LatticeFermion>  tmp1, tmp2, tmp3;
     multi1d<LatticeColorMatrix> ds_tmp;
+    moveToFastMemoryHint(tmp1);
+    moveToFastMemoryHint(tmp2);
+    moveToFastMemoryHint(tmp3);
 
     //  ds_u   =  chi^dag * D'_oe * Ainv_ee * D_eo * psi_o
     evenOddLinOp(tmp1, psi, isign);

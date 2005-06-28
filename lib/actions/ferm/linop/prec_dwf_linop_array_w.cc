@@ -1,10 +1,11 @@
-// $Id: prec_dwf_linop_array_w.cc,v 1.21 2005-06-27 22:21:04 bjoo Exp $
+// $Id: prec_dwf_linop_array_w.cc,v 1.22 2005-06-28 15:28:15 bjoo Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned domain-wall linear operator
  */
 
 #include "chromabase.h"
 #include "actions/ferm/linop/prec_dwf_linop_array_w.h"
+using namespace QDP::Hints;
 
 namespace Chroma 
 { 
@@ -381,9 +382,9 @@ namespace Chroma
     ds_u.resize(Nd);
 
     multi1d<LatticeFermion>  tmp1, tmp2, tmp3;
-    tmp1.moveToFastMemoryHint();
-    tmp2.moveToFastMemoryHint();
-    tmp3.moveToFastMemoryHint();
+    moveToFastMemoryHint(tmp1);
+    moveToFastMemoryHint(tmp2);
+    moveToFastMemoryHint(tmp3);
 
     multi1d<LatticeColorMatrix> ds_tmp;
 

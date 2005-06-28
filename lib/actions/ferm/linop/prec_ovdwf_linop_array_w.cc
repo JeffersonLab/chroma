@@ -1,10 +1,12 @@
-// $Id: prec_ovdwf_linop_array_w.cc,v 1.11 2005-03-02 18:32:04 bjoo Exp $
+// $Id: prec_ovdwf_linop_array_w.cc,v 1.12 2005-06-28 15:28:16 bjoo Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned Overlap-DWF (Borici) linear operator
  */
 
 #include "chromabase.h"
 #include "actions/ferm/linop/prec_ovdwf_linop_array_w.h"
+
+using namespace QDP::Hints;
 
 namespace Chroma 
 { 
@@ -155,7 +157,7 @@ namespace Chroma
 	chi[s][rb[cb]] += Kappa*(chi[s+1] - GammaConst<Ns,Ns*Ns-1>()*chi[s+1]) ;
       
       //Finally the inverse of Rm 
-      LatticeFermion tt;
+      LatticeFermion tt;            moveToFastMemoryHint(tt);
       fact = 0.5*m_q*TwoKappa;
       tt[rb[cb]] = fact*(chi[N5-1] + GammaConst<Ns,Ns*Ns-1>()*chi[N5-1]);
       for(int s(0);s<N5-1;s++){
@@ -188,7 +190,7 @@ namespace Chroma
 	chi[s][rb[cb]] += Kappa*(chi[s+1] + GammaConst<Ns,Ns*Ns-1>()*chi[s+1]) ;
       
       //Finally the inverse of Rm 
-      LatticeFermion tt;
+      LatticeFermion tt;                 moveToFastMemoryHint(tt);
       tt[rb[cb]] = (0.5*m_q*TwoKappa)*(chi[N5-1] - GammaConst<Ns,Ns*Ns-1>()*chi[N5-1]);
       for(int s(0);s<N5-1;s++){
 	chi[s][rb[cb]] -= tt  ;
@@ -227,7 +229,7 @@ namespace Chroma
     {
     case PLUS:
     {
-      LatticeFermion tmp;
+      LatticeFermion tmp;                        moveToFastMemoryHint(tmp);
       int otherCB = (cb + 1)%2 ;
       for(int s(1);s<N5-1;s++)
       {
@@ -258,7 +260,7 @@ namespace Chroma
 
     case MINUS:
     {    
-      multi1d<LatticeFermion> tmp(N5) ;
+      multi1d<LatticeFermion> tmp(N5) ;     moveToFastMemoryHint(tmp);
       for(int s(0);s<N5;s++){
 	D.apply(tmp[s],psi[s],isign,cb);
 	tmp[s][rb[cb]] *= (-0.5) ;
@@ -295,7 +297,7 @@ namespace Chroma
 				    enum PlusMinus isign,
 				    int s5) const
   {
-    LatticeFermion tt ;
+    LatticeFermion tt ;          moveToFastMemoryHint(tt);
     D.apply(tt,psi,isign,0);
     D.apply(tt,psi,isign,1);
     chi = c5InvTwoKappa*psi +0.5*tt ;  //really -(-.5)D

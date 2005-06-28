@@ -1,10 +1,12 @@
-// $Id: unprec_nef_linop_array_w.cc,v 1.10 2005-03-02 18:32:05 bjoo Exp $
+// $Id: unprec_nef_linop_array_w.cc,v 1.11 2005-06-28 15:28:16 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned NEF domain-wall linear operator
  */
 
 #include "chromabase.h"
 #include "actions/ferm/linop/unprec_nef_linop_array_w.h"
+
+using namespace QDP::Hints;
 
 namespace Chroma 
 { 
@@ -63,6 +65,9 @@ namespace Chroma
     //  Chi   =  D' Psi
     //
     LatticeFermion  tmp,c_tmp,cmb ;
+    moveToFastMemoryHint(tmp);
+    moveToFastMemoryHint(c_tmp);
+    moveToFastMemoryHint(cmb);
 
     switch (isign)
     {

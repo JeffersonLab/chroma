@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_linop_array_w.cc,v 1.18 2005-05-27 22:09:07 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_linop_array_w.cc,v 1.19 2005-06-28 15:28:16 bjoo Exp $
 /*! \file
  *  \brief Even-odd prec. 5D continued fraction linop
  */
@@ -146,7 +146,7 @@ namespace Chroma
     // With A_i = gamma_5 a_i = a_i gamma_5
     // and  B_i = b_i I = alpha_i I
 
-    LatticeFermion tmp;
+    LatticeFermion tmp;   moveToFastMemoryHint(tmp);
     int G5=Ns*Ns-1;
 
     // First 0ne 
@@ -219,9 +219,9 @@ namespace Chroma
 
     if( chi.size() != N5 )  chi.resize(N5);
 
-    multi1d<LatticeFermion> y(N5);
+    multi1d<LatticeFermion> y(N5);        moveToFastMemoryHint(y);
 
-    LatticeFermion tmp;
+    LatticeFermion tmp;                   moveToFastMemoryHint(tmp);
     Real coeff;
 
     const int G5 = Ns*Ns-1;
@@ -283,7 +283,7 @@ namespace Chroma
 
     if( chi.size() != N5 ) chi.resize(N5);
 
-    LatticeFermion tmp;
+    LatticeFermion tmp;              moveToFastMemoryHint(tmp);
     
     int G5 = Ns*Ns-1;
 
@@ -341,7 +341,7 @@ namespace Chroma
 
     multi1d<LatticeColorMatrix> ds_tmp(Nd);
 						   
-    LatticeFermion tmp;
+    LatticeFermion tmp;                      moveToFastMemoryHint(tmp);
     Real coeff;
     int G5 = Ns*Ns-1;
 
@@ -415,6 +415,10 @@ namespace Chroma
     ds_u.resize(Nd);
 
     multi1d<LatticeFermion>  tmp1, tmp2, tmp3;
+    moveToFastMemoryHint(tmp1);
+    moveToFastMemoryHint(tmp2);
+    moveToFastMemoryHint(tmp3);
+
     multi1d<LatticeColorMatrix> ds_tmp;
 
     //  ds_u   =  chi^dag * D'_oe * Ainv_ee * D_eo * psi_o
