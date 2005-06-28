@@ -1,4 +1,4 @@
-// $Id: t_propagator_fuzz_s.cc,v 1.19 2005-04-11 02:44:11 edwards Exp $
+// $Id: t_propagator_fuzz_s.cc,v 1.20 2005-06-28 20:14:28 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  *
@@ -261,8 +261,23 @@ int main(int argc, char **argv)
   // Input parameter structure
   Propagator_input_t  input;
 
-  // Instantiate xml reader for DATA
-  XMLReader xml_in(Chroma::getXMLInputFileName());
+  // Get the name of the input file and read its contents
+  //  XMLReader xml_in(Chroma::getXMLInputFileName());
+
+  XMLReader xml_in ; 
+  string in_name = Chroma::getXMLInputFileName() ; 
+  try
+  {
+    xml_in.open(in_name);
+  }
+    catch (...) 
+  {
+  QDPIO::cerr << "Error reading input file " << in_name << endl;
+  QDPIO::cerr << "The input file name can be passed via the -i flag " << endl;
+  QDPIO::cerr << "The default name is ./DATA" << endl;
+    throw;
+  }
+
 
   // Read data
   read(xml_in, "/propagator", input);
@@ -276,6 +291,33 @@ int main(int argc, char **argv)
   
   XMLReader  gauge_file_xml,  gauge_xml;
   gaugeStartup(gauge_file_xml, gauge_xml, u, input.cfg);
+
+
+  stag_src_type type_of_src = 
+    get_stag_src(xml_in,"/propagator/param/src_type")   ;
+
+     int fuzz_width = 2 ; 
+     if( type_of_src == FUZZED_SRC )
+       {
+	 try
+	   {
+	     read(xml_in, "/propagator/param/fuzz_width",fuzz_width );
+	   }
+	 catch (const string& e) 
+	   {
+	     QDPIO::cerr << "Error reading fuzzing width " << e << endl;
+	     throw;
+	   }
+
+
+	 QDPIO::cout << "fuzz width = " << fuzz_width  << endl;
+       }
+
+
+     bool use_gauge_invar_oper ;
+     use_gauge_invar_oper = false ;
+     read(xml_in, "/propagator/param/use_gauge_invar_oper",use_gauge_invar_oper );
+
 
   // 
   //  gauge invariance test
@@ -310,7 +352,6 @@ int main(int argc, char **argv)
 
 
   // Instantiate XML writer for the output
-  // XMLFileWriter xml_out("t_propagator_fuzz_s.xml");
   XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
   push(xml_out, "fuzzed_hadron_corr");
 
@@ -338,41 +379,48 @@ int main(int argc, char **argv)
   int n_gf;
   int j_decay = Nd-1;
 
-#ifdef NNNNNNNNNNNNNN
-  coulGauge(u, n_gf, j_decay, input.param.GFAccu, input.param.GFMax, true, input.param.OrPara);
-  QDPIO::cout << "No. of gauge fixing iterations =" << n_gf << endl;
-#endif
+  if( ! use_gauge_invar_oper )
+    {
+      QDPIO::cout << "Starting Coulomb gauge fixing" << endl;
+      coulGauge(u, n_gf, j_decay, input.param.GFAccu, input.param.GFMax, true, input.param.OrPara);
+      QDPIO::cout << "No. of gauge fixing iterations =" << n_gf << endl;
+    }
 
   // 
   // Ape fuzz the gauge fields
   //
 
-  Real sm_fact = 2.5;   // typical parameter
-  int sm_numb = 10;     // number of smearing hits
-
-  int BlkMax = 100;    // max iterations in max-ing trace
-  Real BlkAccu = 1.0e-5;  // accuracy of max-ing
-
   multi1d<LatticeColorMatrix> u_smr(Nd);
-  u_smr = u;
-  for(int i=0; i < sm_numb; ++i)
-  {
-    multi1d<LatticeColorMatrix> u_tmp(Nd);
 
-    for(int mu = 0; mu < Nd; ++mu)
-      if ( mu != j_decay )
-	APE_Smear(u_smr, u_tmp[mu], mu, 0, sm_fact, BlkAccu, BlkMax, j_decay);
-      else
-	u_tmp[mu] = u_smr[mu];
+  if( type_of_src == FUZZED_SRC )
+    {
+      QDPIO::cout << "Starting to APE smear the gauge configuration" << endl;
+
+      Real sm_fact = 2.5;   // typical parameter
+      int sm_numb = 10;     // number of smearing hits
+      
+      int BlkMax = 100;    // max iterations in max-ing trace
+      Real BlkAccu = 1.0e-5;  // accuracy of max-ing
+      
+      u_smr = u;
+      for(int i=0; i < sm_numb; ++i)
+	{
+	  multi1d<LatticeColorMatrix> u_tmp(Nd);
+	  
+	  for(int mu = 0; mu < Nd; ++mu)
+	    if ( mu != j_decay )
+	      APE_Smear(u_smr, u_tmp[mu], mu, 0, sm_fact, BlkAccu, BlkMax, j_decay);
+	    else
+	      u_tmp[mu] = u_smr[mu];
     
-    u_smr = u_tmp;
-  }
+	  u_smr = u_tmp;
+	}
+      
+    }
 
   //
   //  --- end of APE smearing -----
   //
-
-
 
   // Calcluate plaq on the gauge fixed field
   MesPlq(xml_out, "Observables", u);
@@ -391,10 +439,6 @@ int main(int argc, char **argv)
   // Use S_f.createState so that S_f can pass in u0
 
   Handle<const ConnectState > state(S_f.createState(u));
-  // Handle<const EvenOddLinearOperator<LatticeStaggeredFermion> > D_asqtad(S_f.linOp(state));
-
-  //Handle<const LinearOperator<LatticeStaggeredFermion> > MdagM_asqtad(S_f.lMdagM(state));
-
   Handle<const SystemSolver<LatticeStaggeredFermion> > qprop(S_f.qprop(state,input.param.invParam));
 
 
@@ -414,7 +458,7 @@ int main(int argc, char **argv)
 
   // the staggered spectroscopy code is hardwired
   // for many pions (why range of 0)
-  for(int src_ind = 0; src_ind < 0; ++src_ind)
+  for(int src_ind = 0; src_ind < 8; ++src_ind)
     stag_prop[src_ind] = zero ;
 
 
@@ -422,13 +466,11 @@ int main(int argc, char **argv)
   int t_source = 0;
   QDPIO::cout << "Source time slice = " << t_source << endl;
 
-  stag_src_type type_of_src = 
-    get_stag_src(xml_in,"/propagator/param/src_type")   ;
+
 
   // just look at the local pion (8 should be system constant)
   for(int src_ind = 0; src_ind < 8 ; ++src_ind){
     psi = zero;   // note this is ``zero'' and not 0
-    
 
       for(int color_source = 0; color_source < Nc; ++color_source) 
 	{
@@ -462,10 +504,6 @@ int main(int argc, char **argv)
 	    }
 	  else if( type_of_src == FUZZED_SRC )
 	    {
-	      int fuzz_width = 2 ; 
-
-	      //	      QDPIO::cout << "fuzz width = " << fuzz_width  << endl;
-	    
 	      q_source = zero ;
 	      multi1d<int> coord(Nd);
 
@@ -486,7 +524,6 @@ int main(int argc, char **argv)
 	  // Compute the propagator for given source color/spin 
 	  // int n_count;
 
-	  // S_f.qprop(psi, state, q_source, input.param.invParam, n_count);
 	  n_count = (*qprop)(psi, q_source);
     
 	  ncg_had += n_count;
@@ -495,6 +532,7 @@ int main(int argc, char **argv)
 	if( src_ind == 0 )
 	  {
 	    push(xml_out,"Qprop");
+	    write(xml_out, "Staggered_src_tag" , src_ind);
 	    write(xml_out, "Mass" , input.param.Mass);
 	    write(xml_out, "RsdCG", input.param.invParam.RsdCG);
 	    write(xml_out, "n_count", n_count);
@@ -519,11 +557,11 @@ int main(int argc, char **argv)
       else if( type_of_src == GAUGE_INVAR_LOCAL_SOURCE  )
 	{ write(xml_out, "source_type", "GAUGE_INVAR_LOCAL_SOURCE"); }
       else if( type_of_src == FUZZED_SRC )
-	{ write(xml_out, "source_type", "FUZZED_SRC"); }
+	{ 
+	  write(xml_out, "source_type", "FUZZED_SRC"); 
+	  write(xml_out, "fuzzed_width", fuzz_width); 
+	}
 
-      bool use_gauge_invar_oper ;
-      use_gauge_invar_oper = false ;
-      read(xml_in, "/propagator/param/use_gauge_invar_oper",use_gauge_invar_oper );
 
       int t_length = input.param.nrow[3];
       staggered_pions pseudoscalar(t_length,u) ; 
