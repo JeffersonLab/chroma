@@ -1,4 +1,4 @@
-// $Id: loops_s.h,v 1.9 2005-06-27 20:12:43 mcneile Exp $
+// $Id: loops_s.h,v 1.10 2005-06-28 16:27:21 mcneile Exp $
 
 #ifndef LOOP_S_H
 #define LOOP_S_H
@@ -93,25 +93,28 @@ namespace Chroma {
 
 
 
-    LatticeStaggeredPropagator shift_deltaProp(multi1d<int>& delta, 
+    LatticeStaggeredFermion shift_deltaProp(multi1d<int>& delta, 
 					       const 
-					       LatticeStaggeredPropagator& src)
+					       LatticeStaggeredFermion& src)
 
     {
 
       switch (type_of_shift)
 	{
 	case NON_GAUGE_INVAR :
-	  return shiftDeltaProp(delta,src) ;
+          cout << "ERROR SHIFT: GI\n"  ; exit(0) ;
+	  //	  return shiftDeltaProp(delta,src) ;
 	  break ;
 	case GAUGE_INVAR :
-	  return shiftDeltaPropCov(delta,src,u,false) ;
+          cout << "ERROR SHIFT: GI\n"  ; exit(0) ;
+	  //	  return shiftDeltaPropCov(delta,src,u,false) ;
 	  break ;
 	case SYM_GAUGE_INVAR :
 	  return shiftDeltaPropCov(delta,src,u,true) ; // symm shifting
 	  break ;
 	case SYM_NON_GAUGE_INVAR:
-	  return shiftDeltaProp(delta,src,true) ; // symm shifting
+          cout << "ERROR SHIFT: SNGI\n"  ; exit(0) ;
+	  //	  return shiftDeltaProp(delta,src,true) ; // symm shifting
 	  break ;
 	default :
 	  /**************************************************************************/

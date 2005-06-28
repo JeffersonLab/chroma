@@ -1,4 +1,4 @@
-// $Id: scalar_loops_s.cc,v 1.5 2005-01-14 18:42:36 edwards Exp $
+// $Id: scalar_loops_s.cc,v 1.6 2005-06-28 16:27:21 mcneile Exp $
 
 #include "chromabase.h"
 #include"scalar_loops_s.h"
@@ -45,7 +45,12 @@ void non_local_scalar_loop::compute(LatticeStaggeredFermion & q_source,
   timeslice.make(TimeSliceFunc(Nd-1));
 
   LatticeStaggeredFermion psi_sca1 ;
-  psi_sca1 = shift(psi, FORWARD, 3);
+
+  // Array to describe shifts in cube
+  multi1d<int> delta(Nd);
+  delta = 0;
+  delta[3] = 1;
+  psi_sca1 = shift_deltaProp(delta, psi); 
   LatticeComplex TrG_s1 ; 
 
   using namespace StagPhases;

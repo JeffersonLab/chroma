@@ -1,4 +1,4 @@
-// $Id: pseudoscalar_loops_s.cc,v 1.3 2005-01-14 18:42:36 edwards Exp $
+// $Id: pseudoscalar_loops_s.cc,v 1.4 2005-06-28 16:27:21 mcneile Exp $
 #include "chromabase.h"
 #include "pseudoscalar_loops_s.h"
 #include "util/gauge/stag_phases_s.h"
@@ -24,16 +24,23 @@ private:
 void fourlink_pseudoscalar_loop::compute(LatticeStaggeredFermion & q_source, 
 				LatticeStaggeredFermion & psi, int isample)
 {
+  // Array to describe shifts in cube
+  multi1d<int> delta(Nd);
+
   UnorderedSet timeslice;
   timeslice.make(TimeSliceFunc(Nd-1));
 
   LatticeStaggeredFermion psi_eta4 ;
-  psi_eta4 = shift(shift(shift(shift(psi, FORWARD, 0), FORWARD, 1),
-			 FORWARD, 2), FORWARD, 3);
+
+  delta = 0;
+  delta[0] = delta[1] = delta[2] = delta[3] = 1;
+ 
+  psi_eta4 = shift_deltaProp(delta, psi);
+
   LatticeComplex TrG_eta4 ; 
   using namespace StagPhases;
 
-  TrG_eta4 = -alpha(1)*alpha(2)*alpha(3)*localInnerProduct(q_source, psi_eta4);
+  TrG_eta4 = -alpha(0)*alpha(1)*alpha(2)*alpha(3)*localInnerProduct(q_source, psi_eta4);
 
   corr_fn[isample] = sumMulti(TrG_eta4, timeslice);
   corr += corr_fn[isample] ;
@@ -46,16 +53,23 @@ void threelink_pseudoscalar_loop::compute(
 					  LatticeStaggeredFermion & psi, 
 					  int isample)
 {
+  // Array to describe shifts in cube
+  multi1d<int> delta(Nd);
+
   UnorderedSet timeslice;
   timeslice.make(TimeSliceFunc(Nd-1));
 
   LatticeStaggeredFermion  psi_eta3 ;
-  psi_eta3 = shift(shift(shift(psi, FORWARD, 0), FORWARD, 1), FORWARD, 2);
+
+  delta = 0;
+  delta[0] = delta[1] = delta[2]  = 1;
+ 
+  psi_eta3 = shift_deltaProp(delta, psi);
 
   LatticeComplex TrG_eta3 ; 
 
   using namespace StagPhases;
-  TrG_eta3 = alpha(3)*localInnerProduct(q_source, psi_eta3);
+  TrG_eta3 = alpha(0)*alpha(1)*alpha(2)*localInnerProduct(q_source, psi_eta3);
 
   corr_fn[isample] = sumMulti(TrG_eta3, timeslice);
   corr += corr_fn[isample] ;
