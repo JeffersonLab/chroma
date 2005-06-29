@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.375 2005-06-29 16:58:00 bjoo Exp $
+# $Id: Makefile.in,v 1.376 2005-06-29 19:25:29 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -187,6 +187,9 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	util/gauge/sunfill.cc util/gauge/sun_proj.cc \
 	util/gauge/taproj.cc util/gauge/unit_check.cc \
 	util/info/printgeom.cc util/info/proginfo.cc \
+	update/heatbath/su3over.cc update/heatbath/u_staple.cc \
+	update/heatbath/su2_hb_update.cc \
+	update/heatbath/su3_hb_sweep.cc \
 	update/molecdyn/monomial/gauge_monomial.cc \
 	update/molecdyn/monomial/genapprox.cc \
 	update/molecdyn/integrator/integrator_aggregate.cc \
@@ -417,10 +420,11 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	reunit.$(OBJEXT) rgauge.$(OBJEXT) su2extract.$(OBJEXT) \
 	su3proj.$(OBJEXT) sunfill.$(OBJEXT) sun_proj.$(OBJEXT) \
 	taproj.$(OBJEXT) unit_check.$(OBJEXT) printgeom.$(OBJEXT) \
-	proginfo.$(OBJEXT) gauge_monomial.$(OBJEXT) \
-	genapprox.$(OBJEXT) integrator_aggregate.$(OBJEXT) \
-	lcm_integrator_leaps.$(OBJEXT) lcm_pqp_leapfrog.$(OBJEXT) \
-	lcm_sexton_weingarten.$(OBJEXT) \
+	proginfo.$(OBJEXT) su3over.$(OBJEXT) u_staple.$(OBJEXT) \
+	su2_hb_update.$(OBJEXT) su3_hb_sweep.$(OBJEXT) \
+	gauge_monomial.$(OBJEXT) genapprox.$(OBJEXT) \
+	integrator_aggregate.$(OBJEXT) lcm_integrator_leaps.$(OBJEXT) \
+	lcm_pqp_leapfrog.$(OBJEXT) lcm_sexton_weingarten.$(OBJEXT) \
 	lcm_minimum_norm2_integrator.$(OBJEXT) \
 	lcm_sw_min_mixed.$(OBJEXT) global_metropolis_accrej.$(OBJEXT) \
 	predictor_aggregate.$(OBJEXT) zero_guess_predictor.$(OBJEXT) \
@@ -1440,6 +1444,9 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	util/gauge/sunfill.cc util/gauge/sun_proj.cc \
 	util/gauge/taproj.cc util/gauge/unit_check.cc \
 	util/info/printgeom.cc util/info/proginfo.cc \
+	update/heatbath/su3over.cc update/heatbath/u_staple.cc \
+	update/heatbath/su2_hb_update.cc \
+	update/heatbath/su3_hb_sweep.cc \
 	update/molecdyn/monomial/gauge_monomial.cc \
 	update/molecdyn/monomial/genapprox.cc \
 	update/molecdyn/integrator/integrator_aggregate.cc \
@@ -1946,7 +1953,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/staggered_qprop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stoch_var.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stout_smear.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/su2_hb_update.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/su2extract.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/su3_hb_sweep.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/su3over.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/su3proj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sun_proj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sunfill.Po@am__quote@
@@ -1954,6 +1964,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/taproj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tdiractodr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/transf.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/u_staple.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unit_check.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_dwf4d_linop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_dwf_fermact_array_w.Po@am__quote@
@@ -3878,6 +3889,62 @@ proginfo.obj: util/info/proginfo.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/info/proginfo.cc' object='proginfo.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o proginfo.obj `if test -f 'util/info/proginfo.cc'; then $(CYGPATH_W) 'util/info/proginfo.cc'; else $(CYGPATH_W) '$(srcdir)/util/info/proginfo.cc'; fi`
+
+su3over.o: update/heatbath/su3over.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT su3over.o -MD -MP -MF "$(DEPDIR)/su3over.Tpo" -c -o su3over.o `test -f 'update/heatbath/su3over.cc' || echo '$(srcdir)/'`update/heatbath/su3over.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/su3over.Tpo" "$(DEPDIR)/su3over.Po"; else rm -f "$(DEPDIR)/su3over.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/heatbath/su3over.cc' object='su3over.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o su3over.o `test -f 'update/heatbath/su3over.cc' || echo '$(srcdir)/'`update/heatbath/su3over.cc
+
+su3over.obj: update/heatbath/su3over.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT su3over.obj -MD -MP -MF "$(DEPDIR)/su3over.Tpo" -c -o su3over.obj `if test -f 'update/heatbath/su3over.cc'; then $(CYGPATH_W) 'update/heatbath/su3over.cc'; else $(CYGPATH_W) '$(srcdir)/update/heatbath/su3over.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/su3over.Tpo" "$(DEPDIR)/su3over.Po"; else rm -f "$(DEPDIR)/su3over.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/heatbath/su3over.cc' object='su3over.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o su3over.obj `if test -f 'update/heatbath/su3over.cc'; then $(CYGPATH_W) 'update/heatbath/su3over.cc'; else $(CYGPATH_W) '$(srcdir)/update/heatbath/su3over.cc'; fi`
+
+u_staple.o: update/heatbath/u_staple.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT u_staple.o -MD -MP -MF "$(DEPDIR)/u_staple.Tpo" -c -o u_staple.o `test -f 'update/heatbath/u_staple.cc' || echo '$(srcdir)/'`update/heatbath/u_staple.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/u_staple.Tpo" "$(DEPDIR)/u_staple.Po"; else rm -f "$(DEPDIR)/u_staple.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/heatbath/u_staple.cc' object='u_staple.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o u_staple.o `test -f 'update/heatbath/u_staple.cc' || echo '$(srcdir)/'`update/heatbath/u_staple.cc
+
+u_staple.obj: update/heatbath/u_staple.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT u_staple.obj -MD -MP -MF "$(DEPDIR)/u_staple.Tpo" -c -o u_staple.obj `if test -f 'update/heatbath/u_staple.cc'; then $(CYGPATH_W) 'update/heatbath/u_staple.cc'; else $(CYGPATH_W) '$(srcdir)/update/heatbath/u_staple.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/u_staple.Tpo" "$(DEPDIR)/u_staple.Po"; else rm -f "$(DEPDIR)/u_staple.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/heatbath/u_staple.cc' object='u_staple.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o u_staple.obj `if test -f 'update/heatbath/u_staple.cc'; then $(CYGPATH_W) 'update/heatbath/u_staple.cc'; else $(CYGPATH_W) '$(srcdir)/update/heatbath/u_staple.cc'; fi`
+
+su2_hb_update.o: update/heatbath/su2_hb_update.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT su2_hb_update.o -MD -MP -MF "$(DEPDIR)/su2_hb_update.Tpo" -c -o su2_hb_update.o `test -f 'update/heatbath/su2_hb_update.cc' || echo '$(srcdir)/'`update/heatbath/su2_hb_update.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/su2_hb_update.Tpo" "$(DEPDIR)/su2_hb_update.Po"; else rm -f "$(DEPDIR)/su2_hb_update.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/heatbath/su2_hb_update.cc' object='su2_hb_update.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o su2_hb_update.o `test -f 'update/heatbath/su2_hb_update.cc' || echo '$(srcdir)/'`update/heatbath/su2_hb_update.cc
+
+su2_hb_update.obj: update/heatbath/su2_hb_update.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT su2_hb_update.obj -MD -MP -MF "$(DEPDIR)/su2_hb_update.Tpo" -c -o su2_hb_update.obj `if test -f 'update/heatbath/su2_hb_update.cc'; then $(CYGPATH_W) 'update/heatbath/su2_hb_update.cc'; else $(CYGPATH_W) '$(srcdir)/update/heatbath/su2_hb_update.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/su2_hb_update.Tpo" "$(DEPDIR)/su2_hb_update.Po"; else rm -f "$(DEPDIR)/su2_hb_update.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/heatbath/su2_hb_update.cc' object='su2_hb_update.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o su2_hb_update.obj `if test -f 'update/heatbath/su2_hb_update.cc'; then $(CYGPATH_W) 'update/heatbath/su2_hb_update.cc'; else $(CYGPATH_W) '$(srcdir)/update/heatbath/su2_hb_update.cc'; fi`
+
+su3_hb_sweep.o: update/heatbath/su3_hb_sweep.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT su3_hb_sweep.o -MD -MP -MF "$(DEPDIR)/su3_hb_sweep.Tpo" -c -o su3_hb_sweep.o `test -f 'update/heatbath/su3_hb_sweep.cc' || echo '$(srcdir)/'`update/heatbath/su3_hb_sweep.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/su3_hb_sweep.Tpo" "$(DEPDIR)/su3_hb_sweep.Po"; else rm -f "$(DEPDIR)/su3_hb_sweep.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/heatbath/su3_hb_sweep.cc' object='su3_hb_sweep.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o su3_hb_sweep.o `test -f 'update/heatbath/su3_hb_sweep.cc' || echo '$(srcdir)/'`update/heatbath/su3_hb_sweep.cc
+
+su3_hb_sweep.obj: update/heatbath/su3_hb_sweep.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT su3_hb_sweep.obj -MD -MP -MF "$(DEPDIR)/su3_hb_sweep.Tpo" -c -o su3_hb_sweep.obj `if test -f 'update/heatbath/su3_hb_sweep.cc'; then $(CYGPATH_W) 'update/heatbath/su3_hb_sweep.cc'; else $(CYGPATH_W) '$(srcdir)/update/heatbath/su3_hb_sweep.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/su3_hb_sweep.Tpo" "$(DEPDIR)/su3_hb_sweep.Po"; else rm -f "$(DEPDIR)/su3_hb_sweep.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/heatbath/su3_hb_sweep.cc' object='su3_hb_sweep.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o su3_hb_sweep.obj `if test -f 'update/heatbath/su3_hb_sweep.cc'; then $(CYGPATH_W) 'update/heatbath/su3_hb_sweep.cc'; else $(CYGPATH_W) '$(srcdir)/update/heatbath/su3_hb_sweep.cc'; fi`
 
 gauge_monomial.o: update/molecdyn/monomial/gauge_monomial.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gauge_monomial.o -MD -MP -MF "$(DEPDIR)/gauge_monomial.Tpo" -c -o gauge_monomial.o `test -f 'update/molecdyn/monomial/gauge_monomial.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/gauge_monomial.cc; \
