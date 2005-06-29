@@ -44,7 +44,7 @@ HDRS =
 ##
 bin_PROGRAMS = propagator \
         collect_propcomp \
-        seqsource \
+        seqsource purgaug \
 	make_source \
         ExampleBuildingBlocks hypsmear cfgtransf sink_smearing qpropgfix \
         qproptrev apesmear stoutsmear hmc hypsmear3d hypsmear4d chroma
@@ -86,6 +86,7 @@ collect_propcomp_SOURCES = collect_propcomp.cc
 collect_multi_propcomp_SOURCES = collect_multi_propcomp.cc
 spectrum_w_SOURCES= spectrum_w.cc
 hmc_SOURCES= hmc.cc
+purgaug_SOURCES= purgaug.cc
 mres_SOURCES= mres.cc
 qqq_w_SOURCES= qqq_w.cc
 bar3ptfn_SOURCES= bar3ptfn.cc
