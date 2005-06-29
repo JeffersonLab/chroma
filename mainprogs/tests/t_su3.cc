@@ -5,27 +5,20 @@
 #include <cstdio>
 
 #include "chroma.h"
-#include "update/heatbath/hb_params.h"
-#include "update/heatbath/su3_hb_sweep.h"
 
 using namespace Chroma;
 
-
-HBParams::HBParams(int x1, double x2, double x3, bool x4)
-{
-	NmaxHB=x1;
-	BetaMC=x2;
-	XiBare=x3;
-	xi02=XiBare*XiBare;
-	AnisoP=x4;
-}
 
 int main(int argc, char *argv[]) {
 	// Put the machine into a known state
 	Chroma::initialize(&argc, &argv);
 
 	//set parameters: (NmaxHB, BetaMC,XiBare,AnisoP)
-	HBParams hbp(-5,5.6,1.0,false);
+	HBParams hbp;
+	hbp.NmaxHB=-5;
+	hbp.BetaMC=5.6;
+	hbp.xi_0=1.0;
+	hbp.anisoP=false;
 
 	// Setup the layout
 	const int foo[]={4,4,4,4};
