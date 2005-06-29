@@ -1,4 +1,4 @@
-// $Id: t_propagator_fuzz_s.cc,v 1.20 2005-06-28 20:14:28 mcneile Exp $
+// $Id: t_propagator_fuzz_s.cc,v 1.21 2005-06-29 12:45:45 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  *
@@ -244,7 +244,36 @@ stag_src_type get_stag_src(XMLReader& xml, const string& path)
   return ans ; 
 }
 
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
 
+void ks_compute_baryon(string name,
+		       LatticeStaggeredPropagator & quark_propagator, 
+		       XMLFileWriter & xml_out, 
+		       int j_decay, int tlength) ;
+
+
+void ks_compute_baryon(string name,
+		       LatticeStaggeredPropagator & quark_propagator_a, 
+		       LatticeStaggeredPropagator & quark_propagator_b, 
+		       LatticeStaggeredPropagator & quark_propagator_c, 
+		       XMLFileWriter & xml_out, 
+		       int j_decay, int tlength) ;
+
+
+int ks_compute_quark_propagator(LatticeStaggeredFermion & psi,
+				stag_src_type type_of_src, 
+				int fuzz_width,
+				multi1d<LatticeColorMatrix> & u , 
+				multi1d<LatticeColorMatrix> & u_smr,
+				Handle<const SystemSolver<LatticeStaggeredFermion> > & qprop,
+				XMLFileWriter & xml_out,
+				Real RsdCG, Real Mass, 
+				int j_decay, 
+				int src_ind, int color_source) ;
+
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
 
 //! Propagator generation
 /*! \defgroup t_propagator_fuzz Propagator generation
@@ -262,21 +291,20 @@ int main(int argc, char **argv)
   Propagator_input_t  input;
 
   // Get the name of the input file and read its contents
-  //  XMLReader xml_in(Chroma::getXMLInputFileName());
 
   XMLReader xml_in ; 
   string in_name = Chroma::getXMLInputFileName() ; 
   try
-  {
-    xml_in.open(in_name);
-  }
-    catch (...) 
-  {
-  QDPIO::cerr << "Error reading input file " << in_name << endl;
-  QDPIO::cerr << "The input file name can be passed via the -i flag " << endl;
-  QDPIO::cerr << "The default name is ./DATA" << endl;
-    throw;
-  }
+    {
+      xml_in.open(in_name);
+    }
+  catch (...) 
+    {
+      QDPIO::cerr << "Error reading input file " << in_name << endl;
+      QDPIO::cerr << "The input file name can be passed via the -i flag " << endl;
+      QDPIO::cerr << "The default name is ./DATA" << endl;
+      throw;
+    }
 
 
   // Read data
@@ -452,8 +480,7 @@ int main(int argc, char **argv)
   int ncg_had = 0;
   int n_count;
 
-  LatticeStaggeredFermion q_source, psi;
-  LatticeStaggeredFermion q_source_fuzz ; 
+  LatticeStaggeredFermion psi;
   multi1d<LatticeStaggeredPropagator> stag_prop(8);
 
   // the staggered spectroscopy code is hardwired
@@ -467,24 +494,173 @@ int main(int argc, char **argv)
   QDPIO::cout << "Source time slice = " << t_source << endl;
 
 
-
   // just look at the local pion (8 should be system constant)
-  for(int src_ind = 0; src_ind < 8 ; ++src_ind){
+  for(int src_ind = 0; src_ind < 1 ; ++src_ind){
     psi = zero;   // note this is ``zero'' and not 0
 
       for(int color_source = 0; color_source < Nc; ++color_source) 
 	{
-	  QDPIO::cout << "Inversion for Color =  " << color_source << endl;
 
-	  q_source = zero ;
 
-	  if( type_of_src == LOCAL_SRC )
-	    {
-	      q_source = zero ;
-	      multi1d<int> coord(Nd);
+	  ncg_had += ks_compute_quark_propagator(psi,type_of_src, fuzz_width,
+						 u, u_smr, qprop, xml_out,
+						 input.param.invParam.RsdCG,
+						 input.param.Mass,
+						 j_decay, 
+						 src_ind, color_source) ;
 
-	      PropIndexTodelta(src_ind, coord) ; 
-	      srcfil(q_source, coord,color_source ) ;
+        /*
+         * Move the solution to the appropriate components
+         * of quark propagator.
+        */
+        FermToProp(psi, quark_propagator, color_source);
+      }  //color_source
+    
+      stag_prop[src_ind] = quark_propagator;
+      } // end src_ind
+  
+
+      push(xml_out, "Hadrons_from_time_source");
+      write(xml_out, "source_time", t_source);
+      if( type_of_src == LOCAL_SRC )
+	{ write(xml_out, "source_type", "LOCAL_SRC"); }
+      else if( type_of_src == GAUGE_INVAR_LOCAL_SOURCE  )
+	{ write(xml_out, "source_type", "GAUGE_INVAR_LOCAL_SOURCE"); }
+      else if( type_of_src == FUZZED_SRC )
+	{ 
+	  write(xml_out, "source_type", "FUZZED_SRC"); 
+	  write(xml_out, "fuzzed_width", fuzz_width); 
+	}
+
+
+      int t_length = input.param.nrow[3];
+      staggered_pions pseudoscalar(t_length,u) ; 
+
+      write(xml_out, "use_gauge_invar_oper", use_gauge_invar_oper);
+      if( use_gauge_invar_oper )
+	{
+	  cout << "Using gauge invariant operators "  << endl ; 
+	  pseudoscalar.use_gauge_invar() ;
+	}
+      else
+	{
+	  cout << "Using NON-gauge invariant operators "  << endl ; 
+	  pseudoscalar.use_NON_gauge_invar()  ;
+	}
+
+
+      pseudoscalar.compute(stag_prop, j_decay);
+      pseudoscalar.dump(t_source,xml_out);
+      pop(xml_out);
+  
+      //
+      // compute some simple baryon operators
+      //
+
+      push(xml_out, "baryon_correlators");
+      string b_tag("nucleon") ;  
+      ks_compute_baryon(b_tag,quark_propagator, xml_out, j_decay, 
+			input.param.nrow[3]) ;
+
+      string lll_tag("LLL_nucleon") ;  
+      ks_compute_baryon(lll_tag,quark_propagator, quark_propagator, 
+			quark_propagator, 
+			xml_out, j_decay, 
+			input.param.nrow[3]) ;
+
+      pop(xml_out);  // baryon correlators
+
+      
+      pop(xml_out);
+      xml_out.close();
+      xml_in.close();
+
+      // Time to bolt
+      Chroma::finalize();
+
+      exit(0);
+}
+
+
+//
+// wrapper routine for baryon operators
+//
+
+void ks_compute_baryon(string name,
+		       LatticeStaggeredPropagator & quark_propagator, 
+		       XMLFileWriter & xml_out, 
+		       int j_decay, int tlength)
+{
+  int bc_spec = 0 ;
+  multi1d<int> coord(Nd);
+  coord[0]=0; coord[1] = 0; coord[2] = 0; coord[3] = 0;
+  
+  multi1d<Complex>  barprop(tlength) ;
+  
+  baryon_s(quark_propagator,barprop,
+	   coord,j_decay, bc_spec) ;
+  
+
+  write(xml_out, name, barprop);
+
+ 
+
+}
+
+
+
+//
+// wrapper routine for baryon operators
+//
+
+void ks_compute_baryon(string name,
+		       LatticeStaggeredPropagator & quark_propagator_a, 
+		       LatticeStaggeredPropagator & quark_propagator_b, 
+		       LatticeStaggeredPropagator & quark_propagator_c, 
+		       XMLFileWriter & xml_out, 
+		       int j_decay, int tlength)
+{
+  int bc_spec = 0 ;
+  multi1d<int> coord(Nd);
+  coord[0]=0; coord[1] = 0; coord[2] = 0; coord[3] = 0;
+  
+  multi1d<Complex>  barprop(tlength) ;
+  
+  baryon_s(quark_propagator_a,quark_propagator_b,quark_propagator_c,
+	   barprop,coord,j_decay, bc_spec) ;
+  
+  write(xml_out, name, barprop);
+
+}
+
+
+
+
+int ks_compute_quark_propagator(LatticeStaggeredFermion & psi,
+				stag_src_type type_of_src, 
+				int fuzz_width,
+				multi1d<LatticeColorMatrix> & u , 
+				multi1d<LatticeColorMatrix> & u_smr,
+				Handle<const SystemSolver<LatticeStaggeredFermion> > & qprop,
+				XMLFileWriter & xml_out,
+				Real RsdCG, Real Mass, 
+				int j_decay, 
+				int src_ind, int color_source)
+{
+  LatticeStaggeredFermion q_source ;
+  LatticeStaggeredFermion q_source_fuzz ; 
+  int ncg_had = 0 ;
+
+  QDPIO::cout << "Inversion for Color =  " << color_source << endl;
+  q_source = zero ;
+
+  if( type_of_src == LOCAL_SRC )
+    {
+      q_source = zero ;
+      multi1d<int> coord(Nd);
+
+      PropIndexTodelta(src_ind, coord) ; 
+      srcfil(q_source, coord,color_source ) ;
 	    }
 	  else if( type_of_src == GAUGE_INVAR_LOCAL_SOURCE  )
 	    {
@@ -524,89 +700,21 @@ int main(int argc, char **argv)
 	  // Compute the propagator for given source color/spin 
 	  // int n_count;
 
-	  n_count = (*qprop)(psi, q_source);
+	  int n_count = (*qprop)(psi, q_source);
     
 	  ncg_had += n_count;
 
 	// this is done for xmldif reasons
-	if( src_ind == 0 )
+	  if( src_ind == 0 )
 	  {
 	    push(xml_out,"Qprop");
 	    write(xml_out, "Staggered_src_tag" , src_ind);
-	    write(xml_out, "Mass" , input.param.Mass);
-	    write(xml_out, "RsdCG", input.param.invParam.RsdCG);
+	    write(xml_out, "Mass" , Mass);
+	    write(xml_out, "RsdCG", RsdCG);
 	    write(xml_out, "n_count", n_count);
 	    pop(xml_out);
 	  }
 
-        /*
-         * Move the solution to the appropriate components
-         * of quark propagator.
-        */
-        FermToProp(psi, quark_propagator, color_source);
-      }  //color_source
-    
-      stag_prop[src_ind] = quark_propagator;
-      } // end src_ind
-  
 
-      push(xml_out, "Hadrons_from_time_source");
-      write(xml_out, "source_time", t_source);
-      if( type_of_src == LOCAL_SRC )
-	{ write(xml_out, "source_type", "LOCAL_SRC"); }
-      else if( type_of_src == GAUGE_INVAR_LOCAL_SOURCE  )
-	{ write(xml_out, "source_type", "GAUGE_INVAR_LOCAL_SOURCE"); }
-      else if( type_of_src == FUZZED_SRC )
-	{ 
-	  write(xml_out, "source_type", "FUZZED_SRC"); 
-	  write(xml_out, "fuzzed_width", fuzz_width); 
-	}
-
-
-      int t_length = input.param.nrow[3];
-      staggered_pions pseudoscalar(t_length,u) ; 
-
-      write(xml_out, "use_gauge_invar_oper", use_gauge_invar_oper);
-      if( use_gauge_invar_oper )
-	{
-	  cout << "Using gauge invariant operators "  << endl ; 
-	  pseudoscalar.use_gauge_invar() ;
-
-	}
-      else
-	{
-	  cout << "Using NON-gauge invariant operators "  << endl ; 
-	  pseudoscalar.use_NON_gauge_invar()  ;
-	}
-
-
-      pseudoscalar.compute(stag_prop, j_decay);
-      pseudoscalar.dump(t_source,xml_out);
-      pop(xml_out);
-  
-      //
-      // compute some simple baryon operators
-      //
-      int bc_spec = 0 ;
-      multi1d<int> coord(Nd);
-      coord[0]=0; coord[1] = 0; coord[2] = 0; coord[3] = 0;
-      
-      multi1d<Complex>  barprop(input.param.nrow[3]) ;
-      
-      baryon_s(quark_propagator,barprop,
-	       coord,j_decay, bc_spec) ;
-      
-      push(xml_out, "baryon");
-      write(xml_out, "nucleon", barprop);
-      pop(xml_out);
-      
-      
-      pop(xml_out);
-      xml_out.close();
-      xml_in.close();
-
-      // Time to bolt
-      Chroma::finalize();
-
-      exit(0);
+	return ncg_had ;
 }
