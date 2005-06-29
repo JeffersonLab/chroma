@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-SOURCES = $(ExampleBuildingBlocks_SOURCES) $(apesmear_SOURCES) $(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) $(chroma_SOURCES) $(collect_multi_propcomp_SOURCES) $(collect_propcomp_SOURCES) $(hmc_SOURCES) $(hypsmear_SOURCES) $(hypsmear3d_SOURCES) $(hypsmear4d_SOURCES) $(make_source_SOURCES) $(mres_SOURCES) $(multi_propagator_SOURCES) $(multi_propagator_comp_SOURCES) $(propagator_SOURCES) $(propagator_comp_SOURCES) $(propagator_hack_SOURCES) $(qpropadd_SOURCES) $(qpropgfix_SOURCES) $(qpropqio_SOURCES) $(qproptransf_SOURCES) $(qproptrev_SOURCES) $(qqq_w_SOURCES) $(seqsource_SOURCES) $(sink_smearing_SOURCES) $(spectrum_w_SOURCES) $(stoutsmear_SOURCES) $(wallformfac_SOURCES)
+SOURCES = $(ExampleBuildingBlocks_SOURCES) $(apesmear_SOURCES) $(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) $(chroma_SOURCES) $(collect_multi_propcomp_SOURCES) $(collect_propcomp_SOURCES) $(hmc_SOURCES) $(hypsmear_SOURCES) $(hypsmear3d_SOURCES) $(hypsmear4d_SOURCES) $(make_source_SOURCES) $(mres_SOURCES) $(multi_propagator_SOURCES) $(multi_propagator_comp_SOURCES) $(propagator_SOURCES) $(propagator_comp_SOURCES) $(propagator_hack_SOURCES) $(purgaug_SOURCES) $(qpropadd_SOURCES) $(qpropgfix_SOURCES) $(qpropqio_SOURCES) $(qproptransf_SOURCES) $(qproptrev_SOURCES) $(qqq_w_SOURCES) $(seqsource_SOURCES) $(sink_smearing_SOURCES) $(spectrum_w_SOURCES) $(stoutsmear_SOURCES) $(wallformfac_SOURCES)
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -36,6 +36,8 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
+build_triplet = @build@
+host_triplet = @host@
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_1 = -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_2 = -L$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/lib
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_3 = -llevel3 @QDPXX_LIBS@
@@ -43,7 +45,7 @@ POST_UNINSTALL = :
 @BUILD_SSE_DWF_CG_TRUE@am__append_5 = -L$(BUILDDIR)/other_libs/@SSE_DWF_CG_DIR@/lib
 @BUILD_SSE_DWF_CG_TRUE@am__append_6 = -lsse_dwf_cg 
 bin_PROGRAMS = propagator$(EXEEXT) collect_propcomp$(EXEEXT) \
-	seqsource$(EXEEXT) make_source$(EXEEXT) \
+	seqsource$(EXEEXT) purgaug$(EXEEXT) make_source$(EXEEXT) \
 	ExampleBuildingBlocks$(EXEEXT) hypsmear$(EXEEXT) \
 	cfgtransf$(EXEEXT) sink_smearing$(EXEEXT) qpropgfix$(EXEEXT) \
 	qproptrev$(EXEEXT) apesmear$(EXEEXT) stoutsmear$(EXEEXT) \
@@ -147,6 +149,10 @@ propagator_hack_OBJECTS = $(am_propagator_hack_OBJECTS)
 propagator_hack_LDADD = $(LDADD)
 propagator_hack_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
+am_purgaug_OBJECTS = purgaug.$(OBJEXT)
+purgaug_OBJECTS = $(am_purgaug_OBJECTS)
+purgaug_LDADD = $(LDADD)
+purgaug_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_qpropadd_OBJECTS = qpropadd.$(OBJEXT)
 qpropadd_OBJECTS = $(am_qpropadd_OBJECTS)
 qpropadd_LDADD = $(LDADD)
@@ -207,8 +213,8 @@ SOURCES = $(ExampleBuildingBlocks_SOURCES) $(apesmear_SOURCES) \
 	$(hypsmear4d_SOURCES) $(make_source_SOURCES) $(mres_SOURCES) \
 	$(multi_propagator_SOURCES) $(multi_propagator_comp_SOURCES) \
 	$(propagator_SOURCES) $(propagator_comp_SOURCES) \
-	$(propagator_hack_SOURCES) $(qpropadd_SOURCES) \
-	$(qpropgfix_SOURCES) $(qpropqio_SOURCES) \
+	$(propagator_hack_SOURCES) $(purgaug_SOURCES) \
+	$(qpropadd_SOURCES) $(qpropgfix_SOURCES) $(qpropqio_SOURCES) \
 	$(qproptransf_SOURCES) $(qproptrev_SOURCES) $(qqq_w_SOURCES) \
 	$(seqsource_SOURCES) $(sink_smearing_SOURCES) \
 	$(spectrum_w_SOURCES) $(stoutsmear_SOURCES) \
@@ -220,8 +226,8 @@ DIST_SOURCES = $(ExampleBuildingBlocks_SOURCES) $(apesmear_SOURCES) \
 	$(hypsmear4d_SOURCES) $(make_source_SOURCES) $(mres_SOURCES) \
 	$(multi_propagator_SOURCES) $(multi_propagator_comp_SOURCES) \
 	$(propagator_SOURCES) $(propagator_comp_SOURCES) \
-	$(propagator_hack_SOURCES) $(qpropadd_SOURCES) \
-	$(qpropgfix_SOURCES) $(qpropqio_SOURCES) \
+	$(propagator_hack_SOURCES) $(purgaug_SOURCES) \
+	$(qpropadd_SOURCES) $(qpropgfix_SOURCES) $(qpropqio_SOURCES) \
 	$(qproptransf_SOURCES) $(qproptrev_SOURCES) $(qqq_w_SOURCES) \
 	$(seqsource_SOURCES) $(sink_smearing_SOURCES) \
 	$(spectrum_w_SOURCES) $(stoutsmear_SOURCES) \
@@ -325,10 +331,18 @@ am__quote = @am__quote@
 am__tar = @am__tar@
 am__untar = @am__untar@
 bindir = @bindir@
+build = @build@
 build_alias = @build_alias@
+build_cpu = @build_cpu@
+build_os = @build_os@
+build_vendor = @build_vendor@
 datadir = @datadir@
 exec_prefix = @exec_prefix@
+host = @host@
 host_alias = @host_alias@
+host_cpu = @host_cpu@
+host_os = @host_os@
+host_vendor = @host_vendor@
 includedir = @includedir@
 infodir = @infodir@
 install_sh = @install_sh@
@@ -389,6 +403,7 @@ collect_propcomp_SOURCES = collect_propcomp.cc
 collect_multi_propcomp_SOURCES = collect_multi_propcomp.cc
 spectrum_w_SOURCES = spectrum_w.cc
 hmc_SOURCES = hmc.cc
+purgaug_SOURCES = purgaug.cc
 mres_SOURCES = mres.cc
 qqq_w_SOURCES = qqq_w.cc
 bar3ptfn_SOURCES = bar3ptfn.cc
@@ -528,6 +543,9 @@ propagator_comp$(EXEEXT): $(propagator_comp_OBJECTS) $(propagator_comp_DEPENDENC
 propagator_hack$(EXEEXT): $(propagator_hack_OBJECTS) $(propagator_hack_DEPENDENCIES) 
 	@rm -f propagator_hack$(EXEEXT)
 	$(CXXLINK) $(propagator_hack_LDFLAGS) $(propagator_hack_OBJECTS) $(propagator_hack_LDADD) $(LIBS)
+purgaug$(EXEEXT): $(purgaug_OBJECTS) $(purgaug_DEPENDENCIES) 
+	@rm -f purgaug$(EXEEXT)
+	$(CXXLINK) $(purgaug_LDFLAGS) $(purgaug_OBJECTS) $(purgaug_LDADD) $(LIBS)
 qpropadd$(EXEEXT): $(qpropadd_OBJECTS) $(qpropadd_DEPENDENCIES) 
 	@rm -f qpropadd$(EXEEXT)
 	$(CXXLINK) $(qpropadd_LDFLAGS) $(qpropadd_OBJECTS) $(qpropadd_LDADD) $(LIBS)
@@ -586,6 +604,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/propagator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/propagator_comp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/propagator_hack.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/purgaug.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qpropadd.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qpropgfix.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qpropqio.Po@am__quote@
