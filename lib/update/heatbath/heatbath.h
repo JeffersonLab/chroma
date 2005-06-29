@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: heatbath.h,v 1.2 2004-03-29 21:33:42 edwards Exp $
+// $Id: heatbath.h,v 1.3 2005-06-29 19:26:58 edwards Exp $
 
 /*! \file
  * \brief Heatbath
@@ -15,6 +15,12 @@
 
 #ifndef __heatbath_h__
 #define __heatbath_h__
+
+#include "hb_params.h"
+#include "su3_hb_sweep.h"
+#include "su2_hb_update.h"
+#include "su3over.h"
+#include "u_staple.h"
 
 #endif
 
