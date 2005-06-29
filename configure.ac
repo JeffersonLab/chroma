@@ -1,7 +1,6 @@
 AC_INIT(chroma,1.22,edwards@jlab.org)
 AC_PREREQ([2.57])
 AC_CONFIG_AUX_DIR(./config)
-AC_CANONICAL_HOST
 AM_INIT_AUTOMAKE
 
 dnl stupid templates to shut up stupid autoheader

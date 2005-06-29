@@ -1,4 +1,4 @@
-// $Id: t_lwldslash_pab.cc,v 1.8 2005-03-02 00:44:19 edwards Exp $
+// $Id: t_lwldslash_pab.cc,v 1.9 2005-06-29 16:58:01 bjoo Exp $
 
 
 #include "chroma.h"
@@ -12,7 +12,7 @@ int main(int argc, char **argv)
   Chroma::initialize(&argc, &argv);
 
   // Read parameters
-  XMLReader xml_in("input.xml");
+  XMLReader xml_in(Chroma::getXMLInputFileName());
 
   // Lattice Size
   multi1d<int> nrow(Nd);
@@ -24,7 +24,7 @@ int main(int argc, char **argv)
   Layout::setLattSize(nrow);
   Layout::create();
 
-  XMLFileWriter xml("t_lwldslash_pab.xml");
+  XMLFileWriter xml(Chroma::getXMLOutputFileName());
 
   push(xml,"t_lwldslash_pab");
 

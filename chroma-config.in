@@ -193,7 +193,7 @@ fi
 
 # Straight out any possible duplicates, but be careful to
 # get `-lfoo -lbar -lbaz' for `-lfoo -lbaz -lbar -lbaz'
-
+# NONONO!!! DON'T DO THIS. SOMETIMES you need a -l twice
 if test "X${echo_libs}X" = "XyesX" ; then
   rev_libs=
   for i in $chroma_libs ; do
@@ -202,7 +202,6 @@ if test "X${echo_libs}X" = "XyesX" ; then
   output_libs=
   for i in $rev_libs ; do
     case " $output_libs " in
-      *\ $i\ *) ;;                         # already there, skip it
       *) output_libs="$i $output_libs" ;;  # add it to output in reverse order
     esac
   done
