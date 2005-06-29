@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.280 2005-06-27 15:55:53 mcneile Exp $
+# $Id: Makefile.am,v 1.281 2005-06-29 19:24:58 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -497,6 +497,10 @@ libchroma_a_SOURCES = \
 	util/gauge/sunfill.cc util/gauge/sun_proj.cc \
 	util/gauge/taproj.cc util/gauge/unit_check.cc \
 	util/info/printgeom.cc util/info/proginfo.cc \
+        update/heatbath/su3over.cc \
+	update/heatbath/u_staple.cc \
+	update/heatbath/su2_hb_update.cc \
+	update/heatbath/su3_hb_sweep.cc \
 	update/molecdyn/monomial/gauge_monomial.cc \
 	update/molecdyn/monomial/genapprox.cc \
 	update/molecdyn/integrator/integrator_aggregate.cc \
