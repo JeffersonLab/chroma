@@ -1,4 +1,4 @@
-// $Id: t_propagator_fuzz_baryon_s.cc,v 1.2 2005-06-30 18:44:10 mcneile Exp $
+// $Id: t_propagator_fuzz_baryon_s.cc,v 1.3 2005-06-30 19:40:22 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  *
@@ -491,7 +491,7 @@ int main(int argc, char **argv)
   //
 
   stag_src_type type_of_src = LOCAL_SRC ;
-  QDPIO::cout << "LOCAL INVERSIONS = "  << endl;
+  QDPIO::cout << "LOCAL INVERSIONS"  << endl;
 
   for(int color_source = 0; color_source < Nc; ++color_source) 
     {
@@ -529,7 +529,7 @@ int main(int argc, char **argv)
   //
 
   type_of_src = FUZZED_SRC ;
-  QDPIO::cout << "FUZZED SOURCE INVERSIONS = "  << endl;
+  QDPIO::cout << "FUZZED SOURCE INVERSIONS"  << endl;
 
   for(int color_source = 0; color_source < Nc; ++color_source) 
     {
@@ -585,13 +585,87 @@ int main(int argc, char **argv)
       ks_compute_baryon(b_tag,quark_propagator_Lsink_Lsrc, xml_out, j_decay, 
 			input.param.nrow[3]) ;
 
-      string c_tag("srcLLL_sinkFLL_nucleon") ;  
-      ks_compute_baryon(c_tag,
+      // single quark fuzzed
+
+      b_tag = "srcLLL_sinkFLL_nucleon" ;
+      ks_compute_baryon(b_tag,
 			quark_propagator_Fsink_Lsrc, 
 			quark_propagator_Lsink_Lsrc, 
 			quark_propagator_Lsink_Lsrc, 
 			xml_out, j_decay, 
 			input.param.nrow[3]) ;
+
+      b_tag = "srcFLL_sinkLLL_nucleon" ;
+      ks_compute_baryon(b_tag,
+			quark_propagator_Lsink_Fsrc, 
+			quark_propagator_Lsink_Lsrc, 
+			quark_propagator_Lsink_Lsrc, 
+			xml_out, j_decay, 
+			input.param.nrow[3]) ;
+
+      b_tag = "srcFLL_sinkFLL_nucleon" ;
+      ks_compute_baryon(b_tag,
+			quark_propagator_Fsink_Fsrc, 
+			quark_propagator_Lsink_Lsrc, 
+			quark_propagator_Lsink_Lsrc, 
+			xml_out, j_decay, 
+			input.param.nrow[3]) ;
+
+
+
+      // double quark fuzzed
+
+      b_tag = "srcLLL_sinkFFL_nucleon" ;
+      ks_compute_baryon(b_tag,
+			quark_propagator_Fsink_Lsrc, 
+			quark_propagator_Fsink_Lsrc, 
+			quark_propagator_Lsink_Lsrc, 
+			xml_out, j_decay, 
+			input.param.nrow[3]) ;
+
+      b_tag = "srcFFL_sinkLLL_nucleon" ;
+      ks_compute_baryon(b_tag,
+			quark_propagator_Lsink_Fsrc, 
+			quark_propagator_Lsink_Fsrc, 
+			quark_propagator_Lsink_Lsrc, 
+			xml_out, j_decay, 
+			input.param.nrow[3]) ;
+
+      b_tag = "srcFFL_sinkFFL_nucleon" ;
+      ks_compute_baryon(b_tag,
+			quark_propagator_Fsink_Fsrc, 
+			quark_propagator_Fsink_Fsrc, 
+			quark_propagator_Lsink_Lsrc, 
+			xml_out, j_decay, 
+			input.param.nrow[3]) ;
+
+
+      // treble quark fuzzed
+
+      b_tag = "srcLLL_sinkFFF_nucleon" ;
+      ks_compute_baryon(b_tag,
+			quark_propagator_Fsink_Lsrc, 
+			quark_propagator_Fsink_Lsrc, 
+			quark_propagator_Fsink_Lsrc, 
+			xml_out, j_decay, 
+			input.param.nrow[3]) ;
+
+      b_tag = "srcFFF_sinkLLL_nucleon" ;
+      ks_compute_baryon(b_tag,
+			quark_propagator_Lsink_Fsrc, 
+			quark_propagator_Lsink_Fsrc, 
+			quark_propagator_Lsink_Fsrc, 
+			xml_out, j_decay, 
+			input.param.nrow[3]) ;
+
+      b_tag = "srcFFF_sinkFFF_nucleon" ;
+      ks_compute_baryon(b_tag,
+			quark_propagator_Fsink_Fsrc, 
+			quark_propagator_Fsink_Fsrc, 
+			quark_propagator_Fsink_Fsrc, 
+			xml_out, j_decay, 
+			input.param.nrow[3]) ;
+
 
 
       pop(xml_out);  // baryon correlators
@@ -603,7 +677,7 @@ int main(int argc, char **argv)
 
       // Time to bolt
       Chroma::finalize();
-
+      QDPIO::cout << "CHROMA_RUN_COMPLETE " << endl;
       exit(0);
 }
 
@@ -752,7 +826,7 @@ void write_smearing_info(string name, stag_src_type type_of_src,
 {
 
 
-  push(xml_out, "One_smearing_basis");
+  push(xml_out, "smearing_basis");
   write(xml_out, "element_tag", name);
 
   if( type_of_src == LOCAL_SRC )
