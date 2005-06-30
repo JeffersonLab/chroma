@@ -1,5 +1,9 @@
+06/29/2005 -- Robert Edwards
+	Version 1.23.0. Major changes by Balint Joo in bagel lib, new flop counts,
+        new memory hints from QDP++. Most of these aimed at QCDOC.
+
 06/14/2005 -- Balint Joo
-	Version 1.22.3 Fixed various things in the build system.
+	Version 1.22.3. Fixed various things in the build system.
         GMP is now enabled with --with-gmp=<DIR>. DIR is optional.
 	If not given one can use env variables GMP_CXXFLAGS, GMP_LDFLAGS
 	and GMP_LIBS. If these environment variables are empty, GMP_LIBS
