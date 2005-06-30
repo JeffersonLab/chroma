@@ -54,7 +54,7 @@ check_PROGRAMS  = t_io t_mesons_w  t_conslinop t_hypsmear \
 EXTRA_PROGRAMS  = t_dslashm t_lwldslash t_spprod \
     t_follana_io_s t_formfac  t_follana_pion_s t_dwflinop t_precdwf \
     t_ovlap_bj t_propagator_s t_propagator_w t_gfix t_ovlap5d_bj \
-    t_ritz5d_KS  t_fermion_loop_w t_propagator_fuzz_s \
+    t_ritz5d_KS  t_fermion_loop_w t_propagator_fuzz_s t_propagator_fuzz_baryon_s\
     t_disc_loop_s t_ov_pbp t_propagator_nrqcd \
     t_dwflocality t_invert3_precwilson t_invert4_precwilson t_read_eigen \
     t_fuzwilp t_ovlap_double_pass t_g5eps_bj t_sumr t_msumr t_invrelcg t_bicgstab \
@@ -120,6 +120,7 @@ t_ovlap5d_bj_SOURCES = t_ovlap5d_bj.cc
 t_propagator_s_SOURCES = t_propagator_s.cc
 t_disc_loop_s_SOURCES = t_disc_loop_s.cc
 t_propagator_fuzz_s_SOURCES = t_propagator_fuzz_s.cc
+t_propagator_fuzz_baryon_s_SOURCES = t_propagator_fuzz_baryon_s.cc
 t_propagator_w_SOURCES = t_propagator_w.cc
 
 t_propagator_twisted_SOURCES = t_propagator_twisted.cc
