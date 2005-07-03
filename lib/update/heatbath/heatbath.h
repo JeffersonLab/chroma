@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: heatbath.h,v 1.3 2005-06-29 19:26:58 edwards Exp $
+// $Id: heatbath.h,v 1.4 2005-07-03 16:10:11 edwards Exp $
 
 /*! \file
  * \brief Heatbath
@@ -21,6 +21,7 @@
 #include "su2_hb_update.h"
 #include "su3over.h"
 #include "u_staple.h"
+#include "mciter.h"
 
 #endif
 

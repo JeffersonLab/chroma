@@ -1,22 +1,32 @@
-// u_staple.h, 2004/11/10 velytsky
-// calculate the sum of all staples for a particular u_mu link
+// -*- C++ -*-
+// $Id: u_staple.h,v 1.3 2005-07-03 16:10:11 edwards Exp $
+/*! \file
+ *  \brief calculate the sum of all staples for a particular u_mu link
+ */
+
 #ifndef __u_staple__
 #define __u_staple__
 
-namespace Chroma {
+#include "update/heatbath/hb_params.h"
 
-/* ****************************************
- * u                    link field
- * mu                   direction of the link
- * u_mu_staple          staple attached to the link u
- * sub                  subset for updating
- * HBParams             container of HB parameters
- * ***************************************/
-void u_staple(const multi1d<LatticeColorMatrix>& u,
-                const int mu,
-                LatticeColorMatrix& u_mu_staple,
+namespace Chroma 
+{
+
+  //! Compute staple from Wilson gauge action
+  /*!
+   * \ingroup heatbath
+   *
+   * \param u                    link field
+   * \param mu                   direction of the link
+   * \param u_mu_staple          staple attached to the link u
+   * \param sub                  subset for updating
+   * \param hpb                  container of HB parameters
+   */
+  void u_staple(LatticeColorMatrix& u_mu_staple,
+                const multi1d<LatticeColorMatrix>& u,
+                int mu,
                 const OrderedSubset& sub,
-                HBParams& );
+                const HBParams& hbp);
 
 }  // end namespace Chroma
 
