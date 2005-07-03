@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.378 2005-06-30 16:55:26 edwards Exp $
+# $Id: Makefile.in,v 1.379 2005-07-03 16:11:19 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -189,7 +189,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	util/info/printgeom.cc util/info/proginfo.cc \
 	update/heatbath/su3over.cc update/heatbath/u_staple.cc \
 	update/heatbath/su2_hb_update.cc \
-	update/heatbath/su3_hb_sweep.cc \
+	update/heatbath/su3_hb_sweep.cc update/heatbath/mciter.cc \
 	update/molecdyn/monomial/gauge_monomial.cc \
 	update/molecdyn/monomial/genapprox.cc \
 	update/molecdyn/integrator/integrator_aggregate.cc \
@@ -422,7 +422,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	taproj.$(OBJEXT) unit_check.$(OBJEXT) printgeom.$(OBJEXT) \
 	proginfo.$(OBJEXT) su3over.$(OBJEXT) u_staple.$(OBJEXT) \
 	su2_hb_update.$(OBJEXT) su3_hb_sweep.$(OBJEXT) \
-	gauge_monomial.$(OBJEXT) genapprox.$(OBJEXT) \
+	mciter.$(OBJEXT) gauge_monomial.$(OBJEXT) genapprox.$(OBJEXT) \
 	integrator_aggregate.$(OBJEXT) lcm_integrator_leaps.$(OBJEXT) \
 	lcm_pqp_leapfrog.$(OBJEXT) lcm_sexton_weingarten.$(OBJEXT) \
 	lcm_minimum_norm2_integrator.$(OBJEXT) \
@@ -651,8 +651,8 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	update/heatbath/heatbath.h update/heatbath/su3over.h \
 	update/heatbath/su3hb.h update/heatbath/u_staple.h \
 	update/heatbath/hb_params.h update/heatbath/su2_hb_update.h \
-	update/heatbath/su3_hb_sweep.h update/molecdyn/molecdyn.h \
-	update/molecdyn/field_state.h \
+	update/heatbath/su3_hb_sweep.h update/heatbath/mciter.h \
+	update/molecdyn/molecdyn.h update/molecdyn/field_state.h \
 	update/molecdyn/hamiltonian/hamiltonian.h \
 	update/molecdyn/hamiltonian/abs_hamiltonian.h \
 	update/molecdyn/hamiltonian/exact_hamiltonian.h \
@@ -1106,8 +1106,8 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	update/heatbath/heatbath.h update/heatbath/su3over.h \
 	update/heatbath/su3hb.h update/heatbath/u_staple.h \
 	update/heatbath/hb_params.h update/heatbath/su2_hb_update.h \
-	update/heatbath/su3_hb_sweep.h update/molecdyn/molecdyn.h \
-	update/molecdyn/field_state.h \
+	update/heatbath/su3_hb_sweep.h update/heatbath/mciter.h \
+	update/molecdyn/molecdyn.h update/molecdyn/field_state.h \
 	update/molecdyn/hamiltonian/hamiltonian.h \
 	update/molecdyn/hamiltonian/abs_hamiltonian.h \
 	update/molecdyn/hamiltonian/exact_hamiltonian.h \
@@ -1446,7 +1446,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	util/info/printgeom.cc util/info/proginfo.cc \
 	update/heatbath/su3over.cc update/heatbath/u_staple.cc \
 	update/heatbath/su2_hb_update.cc \
-	update/heatbath/su3_hb_sweep.cc \
+	update/heatbath/su3_hb_sweep.cc update/heatbath/mciter.cc \
 	update/molecdyn/monomial/gauge_monomial.cc \
 	update/molecdyn/monomial/genapprox.cc \
 	update/molecdyn/integrator/integrator_aggregate.cc \
@@ -1848,6 +1848,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_w_pab.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_w_sse.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/make_xml_file.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mciter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesfield.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesons_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesonseqsrc_w.Po@am__quote@
@@ -3945,6 +3946,20 @@ su3_hb_sweep.obj: update/heatbath/su3_hb_sweep.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/heatbath/su3_hb_sweep.cc' object='su3_hb_sweep.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o su3_hb_sweep.obj `if test -f 'update/heatbath/su3_hb_sweep.cc'; then $(CYGPATH_W) 'update/heatbath/su3_hb_sweep.cc'; else $(CYGPATH_W) '$(srcdir)/update/heatbath/su3_hb_sweep.cc'; fi`
+
+mciter.o: update/heatbath/mciter.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT mciter.o -MD -MP -MF "$(DEPDIR)/mciter.Tpo" -c -o mciter.o `test -f 'update/heatbath/mciter.cc' || echo '$(srcdir)/'`update/heatbath/mciter.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/mciter.Tpo" "$(DEPDIR)/mciter.Po"; else rm -f "$(DEPDIR)/mciter.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/heatbath/mciter.cc' object='mciter.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o mciter.o `test -f 'update/heatbath/mciter.cc' || echo '$(srcdir)/'`update/heatbath/mciter.cc
+
+mciter.obj: update/heatbath/mciter.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT mciter.obj -MD -MP -MF "$(DEPDIR)/mciter.Tpo" -c -o mciter.obj `if test -f 'update/heatbath/mciter.cc'; then $(CYGPATH_W) 'update/heatbath/mciter.cc'; else $(CYGPATH_W) '$(srcdir)/update/heatbath/mciter.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/mciter.Tpo" "$(DEPDIR)/mciter.Po"; else rm -f "$(DEPDIR)/mciter.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/heatbath/mciter.cc' object='mciter.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o mciter.obj `if test -f 'update/heatbath/mciter.cc'; then $(CYGPATH_W) 'update/heatbath/mciter.cc'; else $(CYGPATH_W) '$(srcdir)/update/heatbath/mciter.cc'; fi`
 
 gauge_monomial.o: update/molecdyn/monomial/gauge_monomial.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gauge_monomial.o -MD -MP -MF "$(DEPDIR)/gauge_monomial.Tpo" -c -o gauge_monomial.o `test -f 'update/molecdyn/monomial/gauge_monomial.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/gauge_monomial.cc; \
