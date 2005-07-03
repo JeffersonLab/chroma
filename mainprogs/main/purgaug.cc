@@ -1,4 +1,4 @@
-// $Id: purgaug.cc,v 1.1 2005-06-29 19:22:51 edwards Exp $
+// $Id: purgaug.cc,v 1.2 2005-07-03 16:14:46 edwards Exp $
 /*! \file
  *  \brief Main code for pure gauge field generation
  */
@@ -333,7 +333,7 @@ namespace Chroma
 
 	// Do the trajectory without accepting 
 //	theHBItr( u, warm_up_p );
-	su3_hb_sweep(u, hb_control.hbitr_params.hb_params); //one hb sweep
+	mciter(u, hb_control.hbitr_params.hb_params); //one hb sweep
 
 
 	// Create a gauge header for inline measurements.
