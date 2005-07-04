@@ -1,11 +1,6 @@
 /* + */
-/* $Id: ks_local_loops.cc,v 1.2 2005-06-27 20:12:43 mcneile Exp $ ($Date: 2005-06-27 20:12:43 $) */
+/* $Id: ks_local_loops.cc,v 1.3 2005-07-04 21:06:41 edwards Exp $ ($Date: 2005-07-04 21:06:41 $) */
 
-
-#include "singleton.h"
-#include "objfactory.h"
-#include "handle.h"
-#include "chromabase.h"
 
 #include "fermact.h"
 #include "meas/hadron/ks_local_loops.h"
@@ -78,7 +73,7 @@ void ks_local_loops(
 
 
     // Seed the RNG with the cfg number for now
-    Seed seed;
+    QDP::Seed seed;
     seed = CFGNO;
     RNG::setrn(seed);
 
