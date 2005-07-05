@@ -1,4 +1,4 @@
-// $Id: purgaug.cc,v 1.2 2005-07-03 16:14:46 edwards Exp $
+// $Id: purgaug.cc,v 1.3 2005-07-05 22:03:15 edwards Exp $
 /*! \file
  *  \brief Main code for pure gauge field generation
  */
@@ -225,10 +225,10 @@ namespace Chroma
 
     // Files
     std::ostringstream restart_data_filename;
-    restart_data_filename << mc_control.save_prefix << "_restart_" << update_no << ".xml" ;
+    restart_data_filename << mc_control.save_prefix << ".xml" << update_no;
     
     std::ostringstream restart_config_filename;
-    restart_config_filename << mc_control.save_prefix << "_cfg_" << update_no << ".lime";
+    restart_config_filename << mc_control.save_prefix << ".lime" << update_no;
        
     {
       HBControl hb;
