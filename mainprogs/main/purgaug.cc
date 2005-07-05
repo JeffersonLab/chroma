@@ -1,4 +1,4 @@
-// $Id: purgaug.cc,v 1.3 2005-07-05 22:03:15 edwards Exp $
+// $Id: purgaug.cc,v 1.4 2005-07-05 22:08:00 edwards Exp $
 /*! \file
  *  \brief Main code for pure gauge field generation
  */
@@ -387,7 +387,8 @@ namespace Chroma
 	if( cur_update % hb_control.mc_control.save_interval == 0 ) 
 	{
 	  // Save state
-	  saveState(hb_control.hbitr_params, hb_control.mc_control, cur_update, hb_control.inline_measurement_xml, u);
+	  unsigned long save_num = cur_update / hb_control.mc_control.start_update_num;
+	  saveState(hb_control.hbitr_params, hb_control.mc_control, save_num, hb_control.inline_measurement_xml, u);
 	}
 
 	pop(xml_out); // pop("Update");
