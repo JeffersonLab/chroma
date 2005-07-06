@@ -1,4 +1,4 @@
-// $Id: minvcg_array.cc,v 1.3 2005-05-26 04:28:40 edwards Exp $
+// $Id: minvcg_array.cc,v 1.4 2005-07-06 09:12:42 bjoo Exp $
 
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator
@@ -6,6 +6,8 @@
 
 #include "linearop.h"
 #include "actions/ferm/invert/minvcg_array.h"
+
+using namespace QDP::Hints;
 
 namespace Chroma {
 
@@ -79,14 +81,17 @@ void MInvCG_a(const LinearOperator< multi1d<T> >& A,
 {
   START_CODE();
 
+  // Setup
   const OrderedSubset& sub = A.subset();
-
   int n_shift = shifts.size();
   int N = A.size();
+  FlopCounter flopcount;
+  StopWatch swatch;
+
 
   if (n_shift == 0) {
-    QDP_error_exit("MinvCG: You must supply at least 1 mass: mass.size() = %d",
-		   n_shift);
+    QDPIO::cerr << "MinvCG: You must supply at least 1 shift. shift.size() = " << n_shift << endl;
+    QDP_abort(1);
   }
 
   /* Now find the smallest mass */
@@ -97,10 +102,7 @@ void MInvCG_a(const LinearOperator< multi1d<T> >& A,
     }
   }
 
-#if 0 
-  QDPIO::cout << "n_shift = " << n_shift << " isz = " << isz << " shift = " << shifts[0] << endl;
-#endif
-
+  // Now arrange the memory
   // The outer size of the multi1d is n_shift
   psi.resize(n_shift);
 
@@ -108,20 +110,76 @@ void MInvCG_a(const LinearOperator< multi1d<T> >& A,
   // Only is that way the initial residuum r = chi
   for(int i= 0; i < n_shift; ++i) { 
     psi[i].resize(N);
-    for(int n=0; n < N; ++n)
-      psi[i][n][sub] = zero;
   }
-  
-  // If chi has zero norm then the result is zero
-  Double chi_norm_sq = norm2(chi,sub);
-  Double chi_norm = sqrt(chi_norm_sq);
 
+  multi1d<T> r(N);
+  multi1d< multi1d<T> > p(n_shift);
+
+  for(int s = 0; s < n_shift; ++s) {
+    p[s].resize(N); 
+  }
+
+  multi1d<T> Ap(N);
+  multi1d<T> chi_internal(N);
+
+  // Now arrange the memory:
+  // These guys get most hits so locate them first
+  moveToFastMemoryHint(Ap);
+  moveToFastMemoryHint(p[isz]); 
+  moveToFastMemoryHint(r);
+  moveToFastMemoryHint(psi[isz]);
+  moveToFastMemoryHint(chi_internal);
+
+  { 
+    multi1d<T> blocker1(N); moveToFastMemoryHint(blocker1);
+    multi1d<T> blocker2(N); moveToFastMemoryHint(blocker2);
+  
+    // Now the rest of the p-s
+    for(int i=0; i < n_shift; i++) { 
+      if( i!=isz ) { 
+	moveToFastMemoryHint(p[i]);
+	moveToFastMemoryHint(psi[i]);
+      }
+    }
+    
+    // Blockers get freed here
+  }
+
+  // initialise psi-s
+  for(int i=0; i < n_shift; i++) { 
+    for(int n=0; n < N; ++n) {
+      psi[i][n][sub] = zero;
+    }
+  }
+
+  // initialise chi internal
+  for(int i=0; i < N; i++) { 
+    chi_internal[i][sub] = chi[i];
+  }
+
+  // -------- All memory setup and copies done. Timer starts here
+  QDPIO::cout << "MinvCG starting" << endl;
+  flopcount.reset();
+  swatch.reset();
+  swatch.start();
+
+  // If chi has zero norm then the result is zero
+  Double chi_norm_sq = norm2(chi_internal,sub);
+  flopcount.addSiteFlops(4*Nc*Ns*N,sub);
+
+  Double chi_norm = sqrt(chi_norm_sq);
 
   if( toBool( chi_norm < fuzz )) { 
     n_count = 0;
+    swatch.stop();
+    QDPIO::cout << "MinvCG: Finished. Iters taken = " << n_count << endl;
+    flopcount.report("MinvCGArray", swatch.getTimeInSeconds());
 
-    // The psi are all zero anyway at this point
-    // for(int i=0; i < n_shift; i++) { psi[i] = zero; }
+    // Revert psi-s
+    for(int i=0; i < n_shift; i++) { 
+      revertFromFastMemoryHint(psi[i], true);
+    }
+
     END_CODE();
     return;
   }
@@ -137,32 +195,31 @@ void MInvCG_a(const LinearOperator< multi1d<T> >& A,
 
   
   // r[0] := p[0] := Chi 
-  multi1d<T> r(N);
-  for(int n=0; n < N; ++n)
-    r[n][sub] = chi[n];
+  for(int n=0; n < N; ++n) {
+    r[n][sub] = chi_internal[n];
 
-  // Psi[0] := 0;
-  multi1d< multi1d<T> > p(n_shift);
-  for(int s = 0; s < n_shift; ++s) {
-    p[s].resize(N); 
-    for(int n=0; n < N; ++n)
-      p[s][n][sub] = chi[n];
+    for(int s=0; s < n_shift; s++) {
+      p[s][n][sub] = chi_internal[n];
+    }
   }
+
 
 
   //  b[0] := - | r[0] |**2 / < p[0], Ap[0] > ;/
   //  First compute  d  =  < p, A.p > 
   //  Ap = A . p  */
-  multi1d<T> Ap(N);
   A(Ap, p[isz], PLUS);
-  for(int n=0; n < N; ++n)
-    Ap[n][sub] += p[isz][n] * shifts[isz];
+  flopcount.addFlops(A.nFlops());
+
+  for(int n=0; n < N; ++n) {
+    Ap[n][sub] += shifts[isz] * p[isz][n];
+  }
+  flopcount.addSiteFlops(4*Nc*Ns*N, sub);
 
   /*  d =  < p, A.p >  */
-  Double d = innerProductReal(p[isz], Ap, sub); // 2Nc Ns flops 
+  Double d = innerProductReal(p[isz], Ap, sub);
+  flopcount.addSiteFlops(4*Nc*Ns*N ,sub);
 
- 
-  
   Double b = -cp/d;
 
   /* Compute the shifted bs and z */
@@ -185,17 +242,24 @@ void MInvCG_a(const LinearOperator< multi1d<T> >& A,
   }
 
   //  r[1] += b[0] A . p[0]; 
-  for(int n=0; n < N; ++n)
-    r[n][sub] += Ap[n] * Real(b);	                        // 2 Nc Ns  flops
+  for(int n=0; n < N; ++n) {
+    r[n][sub] += Real(b)* Ap[n];
+  }
+  flopcount.addSiteFlops(4*Nc*Ns*N, sub);
 
   //  Psi[1] -= b[0] p[0] = - b[0] chi;
+  // Psi[0] are all 0 so I can write this as a -= bs*chi
   for(int s = 0; s < n_shift; ++s) {
-    for(int n=0; n < N; ++n)
-      psi[s][n][sub] = - Real(bs[s])*chi[n];                    //  2 Nc Ns  flops 
+    for(int n=0; n < N; ++n) {
+      psi[s][n][sub] -= Real(bs[s])*chi_internal[n];
+    }
   }
-  
+  flopcount.addSiteFlops(4*Nc*Ns*N*n_shift, sub);
+
   //  c = |r[1]|^2   
-  Double c = norm2(r,sub);   	       	         //  2 Nc Ns  flops 
+  Double c = norm2(r,sub);   	       	        
+  flopcount.addSiteFlops(4*Nc*Ns*N,sub);
+
 
   // Check convergence of first solution
   multi1d<bool> convsP(n_shift);
@@ -205,9 +269,6 @@ void MInvCG_a(const LinearOperator< multi1d<T> >& A,
 
   bool convP = toBool( c < rsd_sq[isz] );
 
-#if 0 
-  QDPIO::cout << "MInvCG: k = 0  r = " << sqrt(c) << endl;
-#endif
 
   //  FOR k FROM 1 TO MaxCG DO
   //  IF |psi[k+1] - psi[k]| <= RsdCG |psi[k+1]| THEN RETURN; 
@@ -232,10 +293,14 @@ void MInvCG_a(const LinearOperator< multi1d<T> >& A,
       // Always update p[isz] even if isz is converged
       // since the other p-s depend on it.
       if (s == isz) {
+
 	for(int n=0; n < N; ++n) {
-	  p[s][n][sub] *= Real(a);	                              // Nc Ns  flops 
-	  p[s][n][sub] += r[n];	                              // Nc Ns  flops 
+	  p[s][n][sub] = r[n] + Real(a)*p[s][n];
+	  //      p[s][n][sub] *= Real(a);	        
+	  //	  p[s][n][sub] += r[n];	                
 	}
+	flopcount.addSiteFlops(4*Nc*Ns*N,sub);
+
       }
       else {
 	// Don't update other p-s if converged.
@@ -243,9 +308,11 @@ void MInvCG_a(const LinearOperator< multi1d<T> >& A,
 	  as = a * z[iz][s]*bs[s] / (z[1-iz][s]*b);
 	  
 	  for(int n=0; n < N; ++n) {
-	    p[s][n][sub] *= Real(as);	                             // Nc Ns  flops 
-	    p[s][n][sub] += r[n] * Real(z[iz][s]);	                     // Nc Ns  flops 
+	    p[s][n][sub] = Real(as)*p[s][n] + Real(z[iz][s])*r[n];
+	    //p[s][n][sub] *= Real(as);	         
+	    //p[s][n][sub] += Real(z[iz][s])*r[n];	 
 	  }
+	  flopcount.addSiteFlops(6*Nc*Ns*N, sub);
 	}
       }
 
@@ -258,11 +325,16 @@ void MInvCG_a(const LinearOperator< multi1d<T> >& A,
     //  First compute  d  =  < p, A.p >  
     //  Ap = A . p 
     A(Ap, p[isz], PLUS);
-    for(int n=0; n < N; ++n)
-      Ap[n][sub] += p[isz][n] * shifts[isz];
+    flopcount.addFlops(A.nFlops());
+
+    for(int n=0; n < N; ++n) {
+      Ap[n][sub] += shifts[isz] *p[isz][n];
+    }
+    flopcount.addSiteFlops(4*Nc*Ns*N, sub);
 
     /*  d =  < p, A.p >  */
-    d = innerProductReal(p[isz], Ap, sub);                   //  2 Nc Ns  flops
+    d = innerProductReal(p[isz], Ap, sub);
+    flopcount.addSiteFlops(4*Nc*Ns*N, sub);
     
     bp = b;
     b = -cp/d;
@@ -282,20 +354,24 @@ void MInvCG_a(const LinearOperator< multi1d<T> >& A,
     }
 
     //  r[k+1] += b[k] A . p[k] ; 
-    for(int n=0; n < N; ++n)
-      r[n][sub] += Ap[n] * Real(b);	        // 2 Nc Ns  flops
-
+    for(int n=0; n < N; ++n) {
+      r[n][sub] += Real(b)*Ap[n];
+    }
+    flopcount.addSiteFlops(4*Nc*Ns*N, sub);
 
     //  Psi[k+1] -= b[k] p[k] ; 
     for(int s = 0; s < n_shift; ++s) {
       if (! convsP[s] ) {
-	for(int n=0; n < N; ++n)
-	  psi[s][n][sub] -= p[s][n] * Real(bs[s]);	// 2 Nc Ns  flops 
+	for(int n=0; n < N; ++n) {
+	  psi[s][n][sub] -= Real(bs[s])*p[s][n];
+	}
+	flopcount.addSiteFlops(4*Nc*Ns*N, sub);
       }
     }
 
     //  c  =  | r[k] |**2 
-    c = norm2(r,sub);	                // 2 Nc Ns  flops 
+    c = norm2(r,sub);	                
+    flopcount.addSiteFlops(4*Nc*Ns*N, sub);
 
     //    IF |psi[k+1] - psi[k]| <= RsdCG |psi[k+1]| THEN RETURN;
     // or IF |r[k+1]| <= RsdCG |chi| THEN RETURN;
@@ -307,38 +383,7 @@ void MInvCG_a(const LinearOperator< multi1d<T> >& A,
 	// Convergence methods 
 	// Check norm of shifted residuals 
 	Double css = c * z[iz][s]* z[iz][s];
-
-#if 0	
-	QDPIO::cout << "MInvCG (shift=" << s << ") k = " << k <<"  r =  " 
-		    << css << " rsd_sq["<<s<<"] = " << rsd_sq[s] << endl;
-#endif 
-
 	convsP[s] = toBool(  css < rsd_sq[s] );
-
-	
-
-#if 0
-     
-	// 
-	// Check relative error of solution 
-
-	// cs holds | beta_s p_s |^2 = | psi_next |^2
-	cs = norm2(p[s],sub);         	        // 2 Nc Ns  flops 
-	cs *= bs[s]*bs[s];
-
-	// d holds | psi |^2 * epsilon^2
-	d = norm2(psi[s],sub);         	        // 2 Nc Ns  flops 
-	d *= rsdcg_sq[s];
-
-
-	// Terminate if | psi |^2/|psi_next|^2 < epsilon^2
-	convsP[s] = toBool( cs < d );
-
-#if 0
-	QDPIO::cout  << "MInvCG (shift=" << s << ") k = " << k << " cs = " 
-		     << cs << " d = " << d << endl;
-#endif
-#endif
 
       }
       convP &= convsP[s];
@@ -347,34 +392,38 @@ void MInvCG_a(const LinearOperator< multi1d<T> >& A,
     n_count = k;
   }
 
-#if 1
+  swatch.stop();
+  QDPIO::cout << "MinvCGArray finished: " << n_count << " iterations " << endl;
+  flopcount.report("MinvCGArray", swatch.getTimeInSeconds());
+  QDPIO::cout << "MinvCG Explicit solution check: " << endl;
+
   // Expicitly check the ALL solutions
   for(int s = 0; s < n_shift; ++s)
   {
     A(Ap, psi[s], PLUS);
     for(int n=0; n < N; ++n) {
-      Ap[n][sub] += psi[s][n] * shifts[s];
+      Ap[n][sub] += shifts[s] * psi[s][n];
 
-      Ap[n][sub] -= chi[n];
+      Ap[n][sub] -= chi_internal[n];
     }
 
-    c = norm2(Ap,sub);	                /* 2 Nc Ns  flops */
+    c = norm2(Ap,sub);	              
 
     QDPIO::cout << "MInvCG (conv): s = " << s 
                 << " shift = " << shifts[s]
 		<< " r = " <<  Real(sqrt(c)/chi_norm) << endl;
 		
   }
-  /* end */
-#endif
+
+  for(int i=0; i < n_shift; i++) { 
+    revertFromFastMemoryHint(psi[i],true);
+  }
 
   if (n_count == MaxCG) {
-    QDP_error_exit("too many CG iterationns: %d\n", n_count);
-  }
-  else {
-    QDPIO::cout << "MinvCG: " << n_count << " iterations" << endl;
-  }
+    QDPIO::cout << "too many CG iterationns: " << n_count << endl;
+    QDP_abort(1);
 
+  }
   END_CODE();
   return;
 }

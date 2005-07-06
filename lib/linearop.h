@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linearop.h,v 1.15 2005-06-28 15:28:15 bjoo Exp $
+// $Id: linearop.h,v 1.16 2005-07-06 09:12:41 bjoo Exp $
 
 /*! @file
  * @brief Linear Operators
@@ -44,7 +44,7 @@ namespace Chroma
     
     //! Return the number of flops performed by operator()
     //! Base linop returns 0 and this can be overridden
-    virtual const unsigned long nFlops() { return 0; }
+    virtual const unsigned long nFlops() const { return 0; }
   };
 
 

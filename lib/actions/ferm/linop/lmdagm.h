@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lmdagm.h,v 1.6 2005-06-28 15:28:15 bjoo Exp $
+// $Id: lmdagm.h,v 1.7 2005-07-06 09:12:41 bjoo Exp $
 
 #ifndef __lmdagm_w_h__
 #define __lmdagm_w_h__
@@ -46,6 +46,11 @@ public:
       (*A)(chi, tmp, MINUS);
     }
 
+  const unsigned long nFlops(void) const {
+    unsigned long nflops=2*A->nFlops();
+    return nflops;
+  }
+
 private:
   const Handle< const LinearOperator<T> > A;
 };
@@ -89,6 +94,11 @@ public:
       (*A)(tmp, psi, PLUS);
       (*A)(chi, tmp, MINUS);
     }
+
+  const unsigned long nFlops(void) const {
+    unsigned long nflops=2*A->nFlops();
+    return nflops;
+  }
 
 private:
   const Handle< const LinearOperator< multi1d<T> > > A;
