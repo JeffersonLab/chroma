@@ -1,4 +1,4 @@
-// $Id: hmc.cc,v 1.9 2005-05-19 13:36:49 bjoo Exp $
+// $Id: hmc.cc,v 1.10 2005-07-07 18:20:37 edwards Exp $
 /*! \file
  *  \brief Main code for HMC with dynamical fermion generation
  */
@@ -438,7 +438,7 @@ int main(int argc, char *argv[])
     write(xml_out, "Input", xml_in);
   }
   catch(const std::string& e) {
-    QDPIO::cerr << "Caught Exception: " << e << endl;
+    QDPIO::cerr << "Caught Exception while reading file: " << e << endl;
     QDP_abort(1);
   }
 
@@ -522,15 +522,15 @@ int main(int argc, char *argv[])
     doHMC<HMCTrjParams>(u, theHMCTrj, mc_control, trj_params, the_measurements);
   } 
   catch( const std::string& e ) { 
-    QDPIO::cerr << "Caught string exception: " << e << endl;
+    QDPIO::cerr << "Caught string exception in hmc: " << e << endl;
     QDP_abort(1);
   }
   catch( std::exception& e ) {
-    QDPIO::cerr << "Caught standard library exception: " << e.what() << endl;
+    QDPIO::cerr << "Caught standard library exception in hmc: " << e.what() << endl;
     QDP_abort(1);
   }
   catch(...) {
-    QDPIO::cerr << "Caught unknown exception " << endl;
+    QDPIO::cerr << "Caught generic/unknown exception in hmc" << endl;
     QDP_abort(1);
   }
 
