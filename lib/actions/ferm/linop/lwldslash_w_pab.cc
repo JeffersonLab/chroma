@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_pab.cc,v 1.16 2005-06-27 18:06:32 bjoo Exp $
+// $Id: lwldslash_w_pab.cc,v 1.17 2005-07-07 13:12:24 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -6,10 +6,6 @@
 #include "chromabase.h"
 #include "actions/ferm/linop/lwldslash_w_pab.h"
 
-#ifdef QDP_USE_QCDOC
-#warning "Using QALLOC to allocate the packed gauge"
-#include <qalloc.h>
-#endif
 #include <wfm.h>
 
 
@@ -45,21 +41,12 @@ namespace Chroma
 
     // Rearrange the gauge
     // Allocate the packed gauge
-    // This is a dirty hack until we come up with a better way
-#ifdef QDP_USE_QCDOC
-    packed_gauge=(PrimitiveSU3Matrix *)qalloc(QFAST|QCOMMS, Nd*Layout::sitesOnNode()*sizeof(PrimitiveSU3Matrix));
-    if( packed_gauge == 0x0 ) { 
-      QDPIO::cerr << "lwldslash_w_pab: Not enough room in EDRAM allocating in DDR" << endl << flush;
-      packed_gauge=(PrimitiveSU3Matrix *)qalloc(QCOMMS, Nd*Layout::sitesOnNode()*sizeof(PrimitiveSU3Matrix));
-    }
-#else 
-    try {
-      packed_gauge=new PrimitiveSU3Matrix[Nd*Layout::sitesOnNode()];
-    }
-    catch( bad_alloc ) { 
-      packed_gauge = 0x0;
-    }
-#endif
+    // Now use the QDP allocator system which calls qalloc on QCDOC
+    packed_gauge=(PrimitiveSU3Matrix *)
+      QDP::Allocator::theQDPAllocator::Instance().allocate(
+			Nd*sizeof(PrimitiveSU3Matrix)*Layout::sitesOnNode(), 
+			QDP::Allocator::FAST);
+
     if( packed_gauge == 0x0 ) { 
       QDPIO::cout << "Unable to allocate packed gauge in PABWilsonDslash::create()" << endl;
       QDP_abort(1);
@@ -95,11 +82,8 @@ namespace Chroma
 	  wfm_vec_end(&wil);
         }
     }
-#ifdef QDP_USE_QCDOC
-    qfree(packed_gauge);
-#else
-    delete [] packed_gauge;
-#endif
+
+    QDP::Allocator::theQDPAllocator::Instance().free(packed_gauge);
   }
 
   //! Apply Wilson-Dirac dslash
