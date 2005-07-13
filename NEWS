@@ -1,3 +1,6 @@
+07/13/2005 -- Robert Edwards
+	Version 1.23.1. New flopcounts in minvcg codes.
+
 06/29/2005 -- Robert Edwards
 	Version 1.23.0. Major changes by Balint Joo in bagel lib, new flop counts,
         new memory hints from QDP++. Most of these aimed at QCDOC.
