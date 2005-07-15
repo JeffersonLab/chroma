@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_fermact_base_array_w.h,v 1.24 2005-05-28 22:37:42 edwards Exp $
+// $Id: prec_dwf_fermact_base_array_w.h,v 1.25 2005-07-15 11:06:10 bjoo Exp $
 /*! \file
  *  \brief Base class for even-odd preconditioned domain-wall-like fermion actions
  */
@@ -60,10 +60,16 @@ namespace Chroma
 
     //! Produce a hermitian version of the linear operator
     /*! This code is generic */
-    virtual const LinearOperator< multi1d<T> >* gamma5HermLinOp(Handle<const ConnectState> state) const
+    virtual const LinearOperator< multi1d<T> >* hermitianLinOp(Handle<const ConnectState> state) const
     {
       // Have not implemented this yet, but it is generic
-      QDPIO::cerr << "EvenOddPrecDWFermActBaseArray::gamma5HermLinOp not implemented" << endl;
+      //
+      // BALINT:
+      // Oh no it isn't or is it(?)... what is the reflection matrix
+      // for Moebius with Zolo coeffs where D(1) != D(2) etc.
+      // However the function is at least virtual so it can be 
+      // overridden on an as needed basis
+      QDPIO::cerr << "EvenOddPrecDWFermActBaseArray::hermitianLinOp not implemented" << endl;
       QDP_abort(1);
       return 0;
     }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwftransf_fermact_w.h,v 1.9 2005-04-11 01:59:59 edwards Exp $
+// $Id: unprec_dwftransf_fermact_w.h,v 1.10 2005-07-15 11:06:10 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -89,7 +89,7 @@ namespace Chroma
     //  Actually, this operator is already Hermitian, so just return
     //  linop here... It is just a beastly hack... Maybe gamma5Herm
     //  should just be renamed Herm...
-    const LinearOperator<LatticeFermion>* gamma5HermLinOp(Handle< const ConnectState> state) const { 
+    const LinearOperator<LatticeFermion>* hermitianLinOp(Handle< const ConnectState> state) const { 
       return linOp(state);
     }
 

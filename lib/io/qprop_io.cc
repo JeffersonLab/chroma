@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 1.31 2005-04-15 11:26:08 edwards Exp $
+// $Id: qprop_io.cc,v 1.32 2005-07-15 11:06:11 bjoo Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -504,6 +504,22 @@ namespace Chroma
 	QDP_abort(1);
       }
     }
+    break;
+
+    /* Compatibility with non MultiQprop */
+    case 8:
+    {
+      read(paramtop, "MultiMasses", param.MultiMasses);
+
+      XMLReader xml_tmp(paramtop, "FermionAction");
+      std::ostringstream os;
+      xml_tmp.print(os);
+      param.fermact = os.str();
+
+      read(paramtop, "InvertParam", param.invParam);
+      read(paramtop, "nrow", param.nrow);
+      read(paramtop, "nonRelProp", param.nonRelProp);
+     }
     break;
 
     default:

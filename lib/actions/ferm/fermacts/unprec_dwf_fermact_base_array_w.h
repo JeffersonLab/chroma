@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_fermact_base_array_w.h,v 1.24 2005-05-28 22:37:42 edwards Exp $
+// $Id: unprec_dwf_fermact_base_array_w.h,v 1.25 2005-07-15 11:06:10 bjoo Exp $
 /*! \file
  *  \brief Base class for unpreconditioned domain-wall-like fermion actions
  */
@@ -56,7 +56,7 @@ namespace Chroma
 
     //! Produce a hermitian version of the linear operator
     /*! This code is generic */
-    virtual const LinearOperator< multi1d<T> >* gamma5HermLinOp(Handle<const ConnectState> state) const
+    virtual const LinearOperator< multi1d<T> >* hermitianLinOp(Handle<const ConnectState> state) const
     {
       // Have not implemented this yet, but it is generic
       QDPIO::cerr << "UnprecDWFermActBaseArray::gamma5HermLinOp not implemented" << endl;

@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.282 2005-07-03 16:09:49 edwards Exp $
+# $Id: Makefile.am,v 1.283 2005-07-15 11:06:09 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -214,6 +214,7 @@ nobase_include_HEADERS += \
 	actions/ferm/fermbcs/simple_fermbc_w.h \
 	actions/ferm/invert/inv_borici_w.h \
 	actions/ferm/linop/lgherm_w.h \
+	actions/ferm/linop/lg5Rherm_w.h \
 	actions/ferm/linop/unprec_ovlap_contfrac5d_linop_array_w.h \
 	actions/ferm/linop/unprec_ovlap_contfrac5d_nonhermop_array_w.h \
 	actions/ferm/linop/unprec_ovlap_contfrac5d_pv_linop_array_w.h \
@@ -361,6 +362,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_hadron_aggregate.h \
 	meas/inline/hadron/inline_make_source_w.h \
 	meas/inline/hadron/inline_propagator_w.h \
+	meas/inline/hadron/inline_multi_propagator_w.h \
 	meas/inline/hadron/inline_seqsource_w.h \
 	meas/inline/hadron/inline_hadspec_w.h \
 	meas/inline/hadron/inline_spectrum_w.h \
@@ -655,6 +657,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_hadron_aggregate.cc \
 	meas/inline/hadron/inline_make_source_w.cc \
 	meas/inline/hadron/inline_propagator_w.cc \
+	meas/inline/hadron/inline_multi_propagator_w.cc \
 	meas/inline/hadron/inline_seqsource_w.cc \
 	meas/inline/hadron/inline_hadspec_w.cc \
 	meas/inline/hadron/inline_spectrum_w.cc \

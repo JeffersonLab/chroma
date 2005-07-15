@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ht_contfrac5d_fermact_array_w.h,v 1.3 2005-04-11 01:59:58 edwards Exp $
+// $Id: prec_ht_contfrac5d_fermact_array_w.h,v 1.4 2005-07-15 11:06:10 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Continued Fraction 5D
  */
@@ -94,9 +94,12 @@ namespace Chroma
     //! Produce a linear operator M^dag.M for this action
     const LinearOperator< multi1d<LatticeFermion> >* lMdagM(Handle<const ConnectState> state) const;
 
-    //! produce gamma_5 times M 
-    const LinearOperator< multi1d<LatticeFermion> >* gamma5HermLinOp(Handle<const ConnectState> state) const {
-      return new lgherm<multi1d<LatticeFermion> >(linOp(state));
+    //! produce hermitian version of linOp 
+    const LinearOperator< multi1d<LatticeFermion> >* hermitianLinOp(Handle<const ConnectState> state) const {
+      QDPIO::cerr << "Hermitian version of this operator is not yet implemented" << endl << flush;
+      QDP_abort(1);
+
+      return 0;
     }
 
     //! Produce an unpreconditioned linear operator projecting 5D to 4D (the inverse of qprop below)

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_clover_fermact_w.h,v 1.11 2005-04-11 01:59:59 edwards Exp $
+// $Id: unprec_clover_fermact_w.h,v 1.12 2005-07-15 11:06:10 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Clover fermion action
  */
@@ -68,7 +68,7 @@ namespace Chroma
     //! Produce a linear operator M^dag.M for this action
     const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state) const;
 
-    const LinearOperator<LatticeFermion>* gamma5HermLinOp(Handle< const ConnectState> state) const { 
+    const LinearOperator<LatticeFermion>* hermitianLinOp(Handle< const ConnectState> state) const { 
       return new lgherm<LatticeFermion>(linOp(state));
     }
 

@@ -1,4 +1,4 @@
-// $Id: unprec_zolo_nef_fermact_array_w.cc,v 1.15 2005-05-28 22:37:42 edwards Exp $
+// $Id: unprec_zolo_nef_fermact_array_w.cc,v 1.16 2005-07-15 11:06:11 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned NEF fermion action
  */
@@ -311,7 +311,7 @@ namespace Chroma
     UnprecWilsonFermAct S_aux( fbc_aux, aux_over_mass );
     
     Handle< const LinearOperator<LatticeFermion> > Maux = 
-      S_aux.gamma5HermLinOp(state_aux);
+      S_aux.hermitianLinOp(state_aux);
     
     const OverlapConnectState *ret_val;
     
@@ -347,7 +347,7 @@ namespace Chroma
     UnprecWilsonFermAct S_aux( fbc_aux, aux_over_mass );
     
     Handle< const LinearOperator<LatticeFermion> > Maux = 
-      S_aux.gamma5HermLinOp(state_aux);
+      S_aux.hermitianLinOp(state_aux);
     
     const OverlapConnectState* ret_val;    
     try {

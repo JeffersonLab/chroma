@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovext_fermact_array_w.h,v 1.2 2005-04-22 16:58:33 bjoo Exp $
+// $Id: prec_ovext_fermact_array_w.h,v 1.3 2005-07-15 11:06:10 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -130,7 +130,7 @@ namespace Chroma
     }
 
     //! Produce a hermitian version of the linear operator
-    const LinearOperator< multi1d<LatticeFermion> >* gamma5HermLinOp(Handle<const ConnectState> state) const
+    const LinearOperator< multi1d<LatticeFermion> >* hermitianLinOp(Handle<const ConnectState> state) const
       {
 	QDPIO::cerr << "EvenOddPrecOvExtFermActArray::gamma5HermLinOp not implemented" << endl;
 	QDP_abort(1);

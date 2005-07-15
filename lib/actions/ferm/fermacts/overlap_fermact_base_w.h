@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: overlap_fermact_base_w.h,v 1.21 2005-04-11 01:59:58 edwards Exp $
+// $Id: overlap_fermact_base_w.h,v 1.22 2005-07-15 11:06:10 bjoo Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -58,7 +58,7 @@ namespace Chroma
 
     virtual const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state, const Chirality& chirality) const = 0;
 
-    virtual const LinearOperator<LatticeFermion>* gamma5HermLinOp(Handle< const ConnectState> state) const { 
+    virtual const LinearOperator<LatticeFermion>* hermitianLinOp(Handle< const ConnectState> state) const { 
       return new lgherm<LatticeFermion>(linOp(state));
     }
 

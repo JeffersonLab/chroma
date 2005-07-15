@@ -1,4 +1,4 @@
-// $Id: ovlap_partfrac4d_fermact_w.cc,v 1.19 2005-06-21 15:27:26 bjoo Exp $
+// $Id: ovlap_partfrac4d_fermact_w.cc,v 1.20 2005-07-15 11:06:10 bjoo Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -1404,7 +1404,7 @@ namespace Chroma
     getFermBC().modifyU(u_tmp);
     Handle< const ConnectState > state_aux = new SimpleConnectState(u_tmp);
     Handle< const LinearOperator<LatticeFermion> > Maux = 
-      Mact->gamma5HermLinOp(state_aux);
+      Mact->hermitianLinOp(state_aux);
 
 
     const OverlapConnectState *ret_val;
@@ -1436,7 +1436,7 @@ namespace Chroma
     getFermBC().modifyU(u_tmp);
     Handle< const ConnectState > state_aux = new SimpleConnectState(u_tmp);
     Handle< const LinearOperator<LatticeFermion> > Maux = 
-      Mact->gamma5HermLinOp(state_aux);
+      Mact->hermitianLinOp(state_aux);
 
 
     const OverlapConnectState* ret_val;    

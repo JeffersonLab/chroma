@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 1.18 2005-01-14 20:13:04 edwards Exp $
+// $Id: fermact.h,v 1.19 2005-07-15 11:06:10 bjoo Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -313,7 +313,7 @@ namespace Chroma
     virtual ~WilsonTypeFermAct() {}
 
     //! Produce a hermitian version of the linear operator
-    virtual const LinearOperator<T>* gamma5HermLinOp(Handle<const ConnectState> state) const = 0;
+    virtual const LinearOperator<T>* hermitianLinOp(Handle<const ConnectState> state) const = 0;
 
     //! Given a complete propagator as a source, this does all the inversions needed
     /*!
@@ -351,7 +351,7 @@ namespace Chroma
     virtual ~WilsonTypeFermAct5D() {}
 
     //! Produce a hermitian version of the linear operator
-    virtual const LinearOperator< multi1d<T> >* gamma5HermLinOp(Handle<const ConnectState> state) const = 0;
+    virtual const LinearOperator< multi1d<T> >* hermitianLinOp(Handle<const ConnectState> state) const = 0;
 
     //! Produce an unpreconditioned linear operator projecting 5D to 4D (the inverse of qprop below)
     virtual const LinearOperator<T>* linOp4D(Handle<const ConnectState> state,

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovlap_contfrac5d_fermact_array_w.h,v 1.12 2005-04-11 01:59:59 edwards Exp $
+// $Id: unprec_ovlap_contfrac5d_fermact_array_w.h,v 1.13 2005-07-15 11:06:11 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -109,9 +109,9 @@ namespace Chroma
     //! Produce a linear operator M^dag.M for this action
     const LinearOperator< multi1d<LatticeFermion> >* lnonHermMdagM(Handle<const ConnectState> state) const;
 
-    //! produce gamma_5 times M 
-    const LinearOperator< multi1d<LatticeFermion> >* gamma5HermLinOp(Handle<const ConnectState> state) const {
-      return new lgherm<multi1d<LatticeFermion> >(linOp(state));
+    //! Matrix is itself hermitian so just return linOp here.
+    const LinearOperator< multi1d<LatticeFermion> >* hermitianLinOp(Handle<const ConnectState> state) const {
+      return linOp(state);
     }
 
     //! Produce an unpreconditioned linear operator projecting 5D to 4D (the inverse of qprop below)

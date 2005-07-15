@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ht_contfrac5d_fermact_array_w.h,v 1.6 2005-04-11 01:59:59 edwards Exp $
+// $Id: unprec_ht_contfrac5d_fermact_array_w.h,v 1.7 2005-07-15 11:06:10 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned H_T kernel continued fraction (5D) action
  */
@@ -95,11 +95,10 @@ namespace Chroma
     const LinearOperator< multi1d<LatticeFermion> >* lMdagM(Handle<const ConnectState> state) const;
 
     //! produce gamma_5 times M 
-    const LinearOperator< multi1d<LatticeFermion> >* gamma5HermLinOp(Handle<const ConnectState> state) const
+    const LinearOperator< multi1d<LatticeFermion> >* hermitianLinOp(Handle<const ConnectState> state) const
     {
-      QDPIO::cerr << "UnprecHTCFZ::linOpPV not implemented" << endl;
-      QDP_abort(1);
-      return 0;
+      // The matrix itself is apparently hermitian
+      return linOp(state);
     }
 
     //! Produce an unpreconditioned linear operator projecting 5D to 4D (the inverse of qprop below)

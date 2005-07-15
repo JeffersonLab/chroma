@@ -1,4 +1,4 @@
-// $Id: t_read_eigen.cc,v 1.5 2005-03-02 00:44:19 edwards Exp $
+// $Id: t_read_eigen.cc,v 1.6 2005-07-15 11:06:11 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -122,7 +122,7 @@ int main(int argc, char **argv)
   write(xml_out, "lambda", lambda_lo);
   write(xml_out, "lambda_hi", lambda_hi);
   
-  Handle< const LinearOperator<LatticeFermion> > H = S_w.gamma5HermLinOp(connect_state);  
+  Handle< const LinearOperator<LatticeFermion> > H = S_w.hermitianLinOp(connect_state);  
 
   multi1d<Double> check_norm(header.ritz_params.Neig);
 

@@ -1,4 +1,4 @@
-// $Id: t_ritz_KS.cc,v 1.23 2005-03-02 00:44:19 edwards Exp $
+// $Id: t_ritz_KS.cc,v 1.24 2005-07-15 11:06:11 bjoo Exp $
 
 #include "chroma.h"
 
@@ -147,7 +147,7 @@ int main(int argc, char **argv)
 
 	Handle< const LinearOperator<LatticeFermion> > MM(S_f->lMdagM(state));
 
-	Handle< const LinearOperator<LatticeFermion> > H(S_f->gamma5HermLinOp(state));
+	Handle< const LinearOperator<LatticeFermion> > H(S_f->hermitianLinOp(state));
 
 	RitzCode4DHw(MM, H, input, xml_out);
 

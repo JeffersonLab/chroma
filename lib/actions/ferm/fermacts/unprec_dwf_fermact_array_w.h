@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_fermact_array_w.h,v 1.22 2005-05-28 22:37:42 edwards Exp $
+// $Id: unprec_dwf_fermact_array_w.h,v 1.23 2005-07-15 11:06:10 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion action
  */
@@ -10,6 +10,7 @@
 #include "fermact.h"
 #include "actions/ferm/fermacts/unprec_dwf_fermact_base_array_w.h"
 #include "io/aniso_io.h"
+#include "actions/ferm/linop/lg5Rherm_w.h"
 
 namespace Chroma
 {
@@ -115,6 +116,14 @@ namespace Chroma
 		   bool obsvP,
 		   int& ncg_had);
 
+
+    //! Produce a hermitian version of the linear operator
+    /*! This code is generic */
+    const LinearOperator< multi1d<LatticeFermion> >* hermitianLinOp(Handle<const ConnectState> state) const
+    {
+
+      return new lg5RHerm< multi1d<LatticeFermion> >(linOp(state));
+    }
 
   private:
     Handle< FermBC< multi1d<LatticeFermion> > >  fbc;

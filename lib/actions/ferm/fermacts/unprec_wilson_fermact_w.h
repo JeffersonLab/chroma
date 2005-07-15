@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_wilson_fermact_w.h,v 1.25 2005-04-11 01:59:59 edwards Exp $
+// $Id: unprec_wilson_fermact_w.h,v 1.26 2005-07-15 11:06:11 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -75,7 +75,7 @@ namespace Chroma
 
     //! Produce the gamma_5 hermitian operator H_w
 
-    const LinearOperator<LatticeFermion>* gamma5HermLinOp(Handle< const ConnectState> state) const { 
+    const LinearOperator<LatticeFermion>* hermitianLinOp(Handle< const ConnectState> state) const { 
       return new lgherm<LatticeFermion>(linOp(state));
     }
 
