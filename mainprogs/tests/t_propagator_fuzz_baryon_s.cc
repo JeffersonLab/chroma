@@ -1,4 +1,4 @@
-// $Id: t_propagator_fuzz_baryon_s.cc,v 1.3 2005-06-30 19:40:22 mcneile Exp $
+// $Id: t_propagator_fuzz_baryon_s.cc,v 1.4 2005-07-15 16:37:09 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  *
@@ -582,7 +582,10 @@ int main(int argc, char **argv)
 
       // write out the baryon correlators 
       string b_tag("srcLLL_sinkLLL_nucleon") ;  
-      ks_compute_baryon(b_tag,quark_propagator_Lsink_Lsrc, xml_out, j_decay, 
+      ks_compute_baryon(b_tag,quark_propagator_Lsink_Lsrc, 
+			quark_propagator_Lsink_Lsrc, 
+			quark_propagator_Lsink_Lsrc, 
+			xml_out, j_decay, 
 			input.param.nrow[3]) ;
 
       // single quark fuzzed
@@ -800,7 +803,13 @@ int ks_compute_quark_propagator(LatticeStaggeredFermion & psi,
 	  // Compute the propagator for given source color/spin 
 	  // int n_count;
 
-	  int n_count = (*qprop)(psi, q_source);
+        StopWatch swatch;
+	swatch.start();
+
+	int n_count = (*qprop)(psi, q_source);
+	  swatch.stop();
+	  double time_in_sec  = swatch.getTimeInSeconds();
+
     
 	  ncg_had += n_count;
 
@@ -812,6 +821,7 @@ int ks_compute_quark_propagator(LatticeStaggeredFermion & psi,
 	    write(xml_out, "Mass" , Mass);
 	    write(xml_out, "RsdCG", RsdCG);
 	    write(xml_out, "n_count", n_count);
+	    write(xml_out, "time_in_sec",time_in_sec );
 	    pop(xml_out);
 	  }
 
