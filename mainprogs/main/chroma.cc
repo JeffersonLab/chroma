@@ -1,4 +1,4 @@
-// $Id: chroma.cc,v 1.4 2005-06-27 18:06:32 bjoo Exp $
+// $Id: chroma.cc,v 1.5 2005-07-19 22:27:09 edwards Exp $
 /*! \file
  *  \brief Main program to run all measurement codes.
  */
@@ -23,6 +23,7 @@ struct Inline_input_t
 {
   Params_t        param;
   Cfg_t           cfg;
+  QDP::Seed       rng_seed;
 };
 
 
@@ -47,6 +48,11 @@ void read(XMLReader& xml, const std::string& path, Inline_input_t& p)
       
     read(paramtop, "Param", p.param);
     read(paramtop, "Cfg", p.cfg);
+
+    if (paramtop.count("RNG") > 0)
+      read(paramtop, "RNG", p.rng_seed);
+    else
+      p.rng_seed = 11;     // default seed
   }
   catch( const std::string& e ) 
   {
@@ -97,6 +103,10 @@ int main(int argc, char *argv[])
   Layout::create();
 
   proginfo(xml_out);    // Print out basic program info
+
+  // Initialise the RNG
+  QDP::RNG::setrn(input.rng_seed);
+  write(xml_out,"RNG", input.rng_seed);
 
   // Start up the config
   multi1d<LatticeColorMatrix> u(Nd);
