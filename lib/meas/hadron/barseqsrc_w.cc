@@ -1,4 +1,4 @@
-// $Id: barseqsrc_w.cc,v 1.10 2005-03-12 18:38:31 edwards Exp $
+// $Id: barseqsrc_w.cc,v 1.11 2005-07-20 12:04:04 bjoo Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */
@@ -43,7 +43,7 @@ namespace Chroma
 
     q1_tmp = Gamma(5) * quark_propagator_2 * Gamma(5);
     q2_tmp = quark_propagator_1 + quark_propagator_1*Gamma(8);
-    src_prop_tmp -= quarkContract13(q1_tmp, q2_tmp) + quarkContract12(q2_tmp, q1_tmp);
+    src_prop_tmp -= quarkContract13(q1_tmp, q2_tmp) + transposeSpin(quarkContract12(q2_tmp, q1_tmp));
     src_prop_tmp *= 0.5;
     return src_prop_tmp;
 
@@ -71,7 +71,7 @@ namespace Chroma
 
     q1_tmp = q2_tmp * Gamma(5);
     q2_tmp = quark_propagator_1 + quark_propagator_1 * Gamma(8);
-    src_prop_tmp -= quarkContract12(q2_tmp, q1_tmp);
+    src_prop_tmp -= transposeSpin(quarkContract12(q2_tmp, q1_tmp));
 
     src_prop_tmp *= 0.5;
     return src_prop_tmp;
@@ -106,7 +106,7 @@ namespace Chroma
     q1_tmp = q2_tmp * Gamma(5);
     q2_tmp = quark_propagator_1 * Gamma(3);
     q2_tmp += quark_propagator_1 * Gamma(11);
-    src_prop_tmp -= quarkContract13(q1_tmp, q2_tmp) + quarkContract12(q2_tmp, q1_tmp);
+    src_prop_tmp -= quarkContract13(q1_tmp, q2_tmp) + transposeSpin(quarkContract12(q2_tmp, q1_tmp));
 
     q1_tmp = 0.5 * timesMinusI(src_prop_tmp);
     src_prop_tmp = q1_tmp;
@@ -137,7 +137,7 @@ namespace Chroma
 
     q1_tmp = q2_tmp * Gamma(5);
     q2_tmp = quark_propagator_1 * Gamma(3) + quark_propagator_1 * Gamma(11);
-    src_prop_tmp -= quarkContract12(q2_tmp, q1_tmp);
+    src_prop_tmp -= transposeSpin(quarkContract12(q2_tmp, q1_tmp));
 
     q1_tmp = 0.5 * timesMinusI(src_prop_tmp);
     src_prop_tmp = q1_tmp;
@@ -179,12 +179,12 @@ namespace Chroma
 
     q1_tmp = q2_tmp * Cgm;
     q2_tmp = quark_propagator_1 + quark_propagator_1 * Gamma(8);
-    src_prop_tmp += quarkContract13(q1_tmp, q2_tmp) + quarkContract12(q2_tmp, q1_tmp);
+    src_prop_tmp += quarkContract13(q1_tmp, q2_tmp) + transposeSpin(quarkContract12(q2_tmp, q1_tmp));
 
     q1_tmp = Cgm * quark_propagator_1;
     q2_tmp = q1_tmp * Cgm;
     q1_tmp = quark_propagator_2 + Gamma(8) * quark_propagator_2;
-    src_prop_tmp += quarkContract12(q1_tmp, q2_tmp) + quarkContract24(q1_tmp, q2_tmp);
+    src_prop_tmp += transposeSpin(quarkContract12(q1_tmp, q2_tmp)) + quarkContract24(q1_tmp, q2_tmp);
 
     q2_tmp = q1_tmp * Cgm;
     q1_tmp = Cgm * quark_propagator_1;
@@ -229,7 +229,7 @@ namespace Chroma
 
     q1_tmp = q2_tmp * Cgm;
     q2_tmp = quark_propagator_1 + quark_propagator_1 * Gamma(8);
-    src_prop_tmp += quarkContract12(q2_tmp, q1_tmp);
+    src_prop_tmp += transposeSpin(quarkContract12(q2_tmp, q1_tmp));
 
     q1_tmp = quark_propagator_1 * Cgm;
     q2_tmp = Cgm * quark_propagator_1;
@@ -284,7 +284,7 @@ namespace Chroma
 
     q1_tmp = q2_tmp * Cg5NR;
     q2_tmp = quark_propagator_1 + quark_propagator_1 * Gamma(8);
-    src_prop_tmp -= quarkContract13(q1_tmp, q2_tmp) + quarkContract12(q2_tmp, q1_tmp);
+    src_prop_tmp -= quarkContract13(q1_tmp, q2_tmp) + transposeSpin(quarkContract12(q2_tmp, q1_tmp));
     src_prop_tmp *= 0.5;
 
     return src_prop_tmp;
@@ -319,7 +319,7 @@ namespace Chroma
 
     q1_tmp = q2_tmp * Cg5NR;
     q2_tmp = quark_propagator_1 + quark_propagator_1 * Gamma(8);
-    src_prop_tmp -= quarkContract12(q2_tmp, q1_tmp);
+    src_prop_tmp -= transposeSpin(quarkContract12(q2_tmp, q1_tmp));
     src_prop_tmp *= 0.5;
 
     return src_prop_tmp;
@@ -360,7 +360,7 @@ namespace Chroma
 
     q1_tmp = q2_tmp * Cg5NR;
     q2_tmp = quark_propagator_1 * Gamma(3)  +  quark_propagator_1 * Gamma(11);
-    src_prop_tmp -= quarkContract13(q1_tmp, q2_tmp) + quarkContract12(q2_tmp, q1_tmp);
+    src_prop_tmp -= quarkContract13(q1_tmp, q2_tmp) + transposeSpin(quarkContract12(q2_tmp, q1_tmp));
 
     q1_tmp = 0.5 * timesMinusI(src_prop_tmp);
     src_prop_tmp = q1_tmp;
@@ -396,7 +396,7 @@ namespace Chroma
 
     q1_tmp = q2_tmp * Cg5NR;
     q2_tmp = quark_propagator_1 * Gamma(3)  +  quark_propagator_1 * Gamma(11);
-    src_prop_tmp -= quarkContract12(q2_tmp, q1_tmp);
+    src_prop_tmp -= transposeSpin(quarkContract12(q2_tmp, q1_tmp));
 
     q1_tmp = 0.5 * timesMinusI(src_prop_tmp);
     src_prop_tmp = q1_tmp;
@@ -494,7 +494,7 @@ namespace Chroma
 
     q2_tmp += quark_propagator_1  +  quark_propagator_1 * Gamma(8);
 
-    src_prop_tmp -= quarkContract13(q1_tmp, q2_tmp) + quarkContract12(q2_tmp, q1_tmp);
+    src_prop_tmp -= quarkContract13(q1_tmp, q2_tmp) + transposeSpin(quarkContract12(q2_tmp, q1_tmp));
 
     /*  Finally, multiply everything by 1/2 */
 
@@ -561,7 +561,7 @@ namespace Chroma
 
     q2_tmp += quark_propagator_1 + quark_propagator_1 * Gamma(8);
 
-    src_prop_tmp -= quarkContract12(q2_tmp, q1_tmp);
+    src_prop_tmp -= transposeSpin(quarkContract12(q2_tmp, q1_tmp));
     src_prop_tmp *= 0.5;
 
     return src_prop_tmp;
