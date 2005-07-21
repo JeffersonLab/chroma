@@ -1,4 +1,4 @@
-// $Id: barseqsrc_w.cc,v 1.11 2005-07-20 12:04:04 bjoo Exp $
+// $Id: barseqsrc_w.cc,v 1.12 2005-07-21 16:58:49 edwards Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */
@@ -566,5 +566,45 @@ namespace Chroma
 
     return src_prop_tmp;
   }
+
+
+
+  // Patch for the quarkContract12 piece in NuclUMixedNR and NuclDMixedNR
+  LatticePropagator barNuclPatchMixedNR(const LatticePropagator& quark_propagator_1, 
+					const LatticePropagator& quark_propagator_2,
+					const LatticePropagator& quark_propagator_3)
+  {
+    START_CODE();
+
+    LatticePropagator src_prop_tmp;
+    LatticePropagator q1_tmp;
+    LatticePropagator q2_tmp;
+    LatticePropagator di_quark;
+  
+    SpinMatrix g_one = 1.0;
+
+    /* C g_5 NR = (1/2)*C gamma_5 * ( 1 + g_4 ) */ 
+    SpinMatrix Cg5NR = 0.5 * (Gamma(5) * (g_one + (g_one * Gamma(8))));
+
+    /* "\bar d O d" insertion in proton, ie. "(u C gamma_5 (1/2)(1+gamma_4)d) u" */
+    /* T = \Sigma_3 (1 + gamma_4) / 2 = -i (Gamma(3) + Gamma(11)) / 2 */
+
+    /* C gamma_5 (1/2)(1+gamma_4)= Cg5NR */
+
+    q2_tmp = Cg5NR * quark_propagator_1;
+    q1_tmp = q2_tmp * Cg5NR;
+
+    di_quark = quark_propagator_1 * Gamma(3) + quark_propagator_1 * Gamma(11);
+    q2_tmp = timesMinusI(di_quark);
+
+    q2_tmp += quark_propagator_1 + quark_propagator_1 * Gamma(8);
+
+    di_quark = quarkContract12(q2_tmp, q1_tmp);
+    src_prop_tmp = di_quark - transposeSpin(di_quark);   // bad guy - good guy
+    src_prop_tmp *= Real(0.5);
+
+    return src_prop_tmp;
+  }
+
 
 }  // end namespace Chroma

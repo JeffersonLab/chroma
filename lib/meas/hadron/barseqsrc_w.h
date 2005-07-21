@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: barseqsrc_w.h,v 1.4 2005-03-07 02:55:20 edwards Exp $
+// $Id: barseqsrc_w.h,v 1.5 2005-07-21 16:58:49 edwards Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */
@@ -57,6 +57,11 @@ namespace Chroma
   LatticePropagator barNuclDMixedNR(const LatticePropagator& quark_propagator_1, 
 				    const LatticePropagator& quark_propagator_2,
 				    const LatticePropagator& quark_propagator_3);
+
+  //! Patch for the quarkContract12 piece in NuclUMixedNR and NuclDMixedNR
+  LatticePropagator barNuclPatchMixedNR(const LatticePropagator& quark_propagator_1, 
+					const LatticePropagator& quark_propagator_2,
+					const LatticePropagator& quark_propagator_3);
 
 }  // end namespace Chroma
 
