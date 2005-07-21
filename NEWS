@@ -1,3 +1,7 @@
+07/20/2005 -- Robert Edwards
+	Version 1.23.3. Fixes to barseqsrc routines to fix malfeature/conventions of 
+        quarkContract12. 
+
 07/19/2005 -- Robert Edwards
 	Version 1.23.2. New inline multi-mass propagator routine. Chroma.cc
         now takes RNG seed.
