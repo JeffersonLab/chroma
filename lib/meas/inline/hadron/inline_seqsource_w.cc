@@ -1,4 +1,4 @@
-// $Id: inline_seqsource_w.cc,v 1.2 2005-04-10 17:06:22 edwards Exp $
+// $Id: inline_seqsource_w.cc,v 1.3 2005-07-25 18:08:45 edwards Exp $
 /*! \file
  * \brief Inline construction of sequential sources
  *
@@ -241,6 +241,8 @@ namespace Chroma
     //
     // Construct the sequential source
     //
+    QDPIO::cout << "Sequential source = " << params.param.seq_src << endl;
+
     LatticePropagator quark_prop_src = 
       hadSeqSource(quark_propagator, 
 		   quark_propagator, 
