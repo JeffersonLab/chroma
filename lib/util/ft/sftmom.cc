@@ -1,6 +1,9 @@
-//  $Id: sftmom.cc,v 1.9 2005-01-14 18:42:38 edwards Exp $
+//  $Id: sftmom.cc,v 1.10 2005-07-27 16:23:28 edwards Exp $
 //  $Log: sftmom.cc,v $
-//  Revision 1.9  2005-01-14 18:42:38  edwards
+//  Revision 1.10  2005-07-27 16:23:28  edwards
+//  Added getter for momentum offset
+//
+//  Revision 1.9  2005/01/14 18:42:38  edwards
 //  Converted all lib files to be in chroma namespace.
 //
 //  Revision 1.8  2004/04/28 18:55:38  edwards
@@ -76,16 +79,16 @@ TimeSliceFunc::numSubsets() const
 
 SftMom::SftMom(int mom2_max, bool avg_equiv_mom, int j_decay)
 {
-  multi1d<int> mom_offset ;
+  multi1d<int> mom_off;
 
   if ((j_decay<0)||(j_decay>=Nd)) {
-    mom_offset.resize(Nd) ;
+    mom_off.resize(Nd) ;
   } else {
-    mom_offset.resize(Nd-1) ;
+    mom_off.resize(Nd-1) ;
   }
-  mom_offset = 0 ;
+  mom_off = 0 ;
 
-  init(mom2_max, mom_offset, avg_equiv_mom, j_decay) ;
+  init(mom2_max, mom_off, avg_equiv_mom, j_decay) ;
 }
 
 int
@@ -106,10 +109,11 @@ SftMom::numSites() const
 
 
 void
-SftMom::init(int mom2_max, multi1d<int> mom_offset,
+SftMom::init(int mom2_max, multi1d<int> mom_off,
              bool avg_equiv_mom, int j_decay)
 {
-  decay_dir = j_decay;  // private copy
+  decay_dir = j_decay;   // private copy
+  mom_offset = mom_off;  // private copy
 
   // Averaging over equivalent momenta is only allowed if 
   // mom_offset is zero.

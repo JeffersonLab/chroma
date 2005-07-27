@@ -1,4 +1,4 @@
-//  $Id: sftmom.h,v 1.10 2005-01-14 18:42:38 edwards Exp $
+//  $Id: sftmom.h,v 1.11 2005-07-27 16:23:28 edwards Exp $
 /*! \file
  *  \brief Fourier transform phase factor support
  */
@@ -19,9 +19,9 @@ public:
   SftMom(int mom2_max, bool avg_equiv_mom=false, int j_decay=-1);
 
   //! Construct around some fixed mom_offset
-  SftMom(int mom2_max, multi1d<int> mom_offset,
+  SftMom(int mom2_max, multi1d<int> mom_offset_,
          bool avg_equiv_mom=false, int j_decay=-1) 
-  { init(mom2_max, mom_offset, avg_equiv_mom, j_decay); }
+  { init(mom2_max, mom_offset_, avg_equiv_mom, j_decay); }
 
   //! The set to be used in sumMulti
   const UnorderedSet& getSet() const { return sft_set; }
@@ -37,6 +37,9 @@ public:
 
   //! Decay direction
   int getDir() const { return decay_dir; }
+
+  //! Momentum offset
+  multi1d<int> getMomOffset() const { return mom_offset; }
 
   //! Convert momenta id to actual array of momenta
   multi1d<int> numToMom(int mom_num) const { return mom_list[mom_num]; }
@@ -60,6 +63,7 @@ private:
   multi2d<int> mom_list;
   int decay_dir;
   int num_mom;
+  multi1d<int> mom_offset;
   multi1d<LatticeComplex> phases;
   UnorderedSet sft_set;
 };
