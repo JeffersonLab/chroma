@@ -1,4 +1,4 @@
-// $Id: inline_building_blocks_w.cc,v 1.2 2005-06-11 04:24:18 edwards Exp $
+// $Id: inline_building_blocks_w.cc,v 1.3 2005-07-27 16:23:52 edwards Exp $
 /*! \file
  * \brief Inline construction of BuildingBlocks
  *
@@ -40,6 +40,12 @@ namespace Chroma
     {
     case 1:
       /**************************************************************************/
+      input.use_sink_offset = false;
+      break;
+
+    case 2:
+      /**************************************************************************/
+      read(paramtop, "use_sink_offset", input.use_sink_offset);
       break;
 
     default :
@@ -330,7 +336,6 @@ namespace Chroma
 
     // Derived from input prop
     int  j_decay = source_header.j_decay;
-    multi1d<int> t_source = source_header.t_source;
 
     // Sanity check - write out the norm2 of the forward prop in the j_decay direction
     // Use this for any possible verification
@@ -429,14 +434,12 @@ namespace Chroma
     
       QDPIO::cout << "Seqsource name  = " << seqsource_header.seq_src << endl;
       QDPIO::cout << "Gamma insertion = " << params.bb.BkwdProps[loop].GammaInsertion << endl;
-      int           t_sink   = seqsource_header.t_sink;
-      multi1d<int>  sink_mom = seqsource_header.sink_mom;
 
       write(XmlSeqSrc, "seq_src", seqsource_header.seq_src);
       write(XmlSeqSrc, "gamma_insertion", GammaInsertions[0]);
-      write(XmlSeqSrc, "t_source", t_source);
-      write(XmlSeqSrc, "t_sink", t_sink);
-      write(XmlSeqSrc, "sink_mom", sink_mom);
+      write(XmlSeqSrc, "t_source", source_header.t_source);
+      write(XmlSeqSrc, "t_sink", seqsource_header.t_sink);
+      write(XmlSeqSrc, "sink_mom", seqsource_header.sink_mom);
 	
       //#################################################################################//
       // Convert Backward Propagator Format                                              //
@@ -462,12 +465,12 @@ namespace Chroma
       // Set Momenta                                                                     //
       //#################################################################################//
 
-      // WARNING: DRU HAD SnkMom HARDWIRED TO ZERO. I THINK IT SHOULD FLOAT
-      // THIS CHANGES THE INSERTION MOMENTA!
       multi1d< int > SnkMom( Nd - 1 );
-      SnkMom = 0;
+      if (params.param.use_sink_offset)
+	SnkMom = seqsource_header.sink_mom;
+      else
+	SnkMom = 0;
 
-  //  SftMom Phases( params.param.mom2_max, params.param.sink_mom, false, j_decay );
       SftMom Phases( params.param.mom2_max, SnkMom, false, j_decay );
 
       //#################################################################################//
@@ -521,9 +524,11 @@ namespace Chroma
 
       const signed short int T1 = 0;
       const signed short int T2 = params.param.nrow[j_decay] - 1;
+      const signed short int DecayDir = j_decay;
 
       BuildingBlocks( B, F, U, GammaInsertions, Flavors,
-		      params.param.links_max, AllLinkPatterns, Phases, Files, T1, T2 );
+		      params.param.links_max, AllLinkPatterns, Phases, Files, T1, T2,
+		      seqsource_header.seq_src, seqsource_header.sink_mom, DecayDir);
 
       Out << "finished calculating building blocks for loop = " << loop << "\n";  Out.flush();
       QDPIO::cout << "finished calculating building blocks for loop = " << loop << endl;

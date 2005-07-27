@@ -39,7 +39,7 @@ namespace Chroma {
 //###################################################################################//
 
 static const char* const CVSBuildingBlocks_hh =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.h,v 1.7 2005-03-15 04:13:22 edwards Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.h,v 1.8 2005-07-27 16:23:52 edwards Exp $";
 
 //###################################################################################//
 // Record CVS Info for BuildingBlocks.hh and BuildingBlocks.cc                       //
@@ -68,8 +68,11 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
                      const BBLinkPattern                   LinkPattern,
                      const SftMom &                        Phases,
 	             const multi2d< string > &             BinaryDataFileNames,
-                     const signed short int T1,
-                     const signed short int T2 );
+                     const signed short int                T1,
+                     const signed short int                T2,
+		     const std::string&                    SeqSourceType, 
+		     const multi1d< int >&                 SnkMom, 
+		     const signed short int                DecayDir);
 
 //###################################################################################//
 // Arguments                                                                         //

@@ -47,7 +47,7 @@ namespace Chroma {
 //###################################################################################//
 
 static const char* const CVSBuildingBlocks_cc =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 1.14 2005-03-15 04:13:22 edwards Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 1.15 2005-07-27 16:23:52 edwards Exp $";
 
 //###################################################################################//
 // record the CVS info                                                               //
@@ -275,8 +275,11 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
                      const BBLinkPattern                   LinkPattern,
                      const SftMom &                        Phases,
 	             const multi2d< string > &             BinaryDataFileNames,
-                     const signed short int T1,
-                     const signed short int T2 )
+                     const signed short int                T1,
+                     const signed short int                T2,
+		     const std::string&                    SeqSourceType, 
+		     const multi1d< int >&                 SnkMom, 
+		     const signed short int                DecayDir)
 {
   GBB_NLinkPatterns = 0;
 
@@ -290,10 +293,10 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
 
   for( int f = 0; f < NF; f ++ )
   {
-  for( int q = 0; q < NQ; q ++ )
-  {
-    BinaryWriters(f,q).open( BinaryDataFileNames(f,q) );
-  }
+    for( int q = 0; q < NQ; q ++ )
+    {
+      BinaryWriters(f,q).open( BinaryDataFileNames(f,q) );
+    }
   }
 
   //#################################################################################//
@@ -308,6 +311,7 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
     BkwdFrwdTr( B[ f ], F, GammaInsertions[ f ], Phases, BinaryWriters, f, LinkDirs, T1, T2 );
   }
 
+
   AddLinks( B, F, U, GammaInsertions, 
 	    Phases, LinkDirs, MaxNLinks, LinkPattern, 0, -1, BinaryWriters, T1, T2 );
 
@@ -316,7 +320,7 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
   //#################################################################################//
 
   const unsigned short int Id = 0;  // indicates building blocks
-  const unsigned short int Version = 1;  // building blocks version
+  const unsigned short int Version = 2;  // building blocks version
   const unsigned short int Contraction = 0;  // 0 indicates connected diagram
   const unsigned short int NX = Layout::lattSize()[0];
   const unsigned short int NY = Layout::lattSize()[1];
@@ -325,61 +329,77 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
   //const signed short int T1 = 0;
   //const signed short int T2 = NT - 1;
   const unsigned short int NLinkPatterns = GBB_NLinkPatterns / NQ;
+  const signed short int   PX = SnkMom[0];
+  const signed short int   PY = SnkMom[1];
+  const signed short int   PZ = SnkMom[2];
+  const signed short int   SeqSourceLen = 64;
+  string SeqSource;
+  SeqSource.resize(SeqSourceLen, 0);
+  SeqSource = SeqSourceType;
 
   for( int f = 0; f < NF; f ++ )
   {
     const signed short int Flavor = Flavors[f];  // currently assumes u and d are given as f=0 and f=1
 
-  for( int q = 0; q < NQ; q ++ )
-  {
-    multi1d< int > Q = Phases.numToMom( q );
-
-    const signed short int QX = Q[0];
-    const signed short int QY = Q[1];
-    const signed short int QZ = Q[2];
-
-    #if _DEBUG_BB_C_ == 1
+    for( int q = 0; q < NQ; q ++ )
     {
-      QDPIO::cout << "DEBUG: " << __FILE__ << " " << __LINE__ << "\n";
+      multi1d< int > Q = Phases.numToMom( q );
 
-      QDPIO::cout << "Id            = " << Id            << "\n";
-      QDPIO::cout << "Version       = " << Version       << "\n";
-      QDPIO::cout << "Flavor        = " << Flavor        << "\n";
-      QDPIO::cout << "Contraction   = " << Contraction   << "\n";
-      QDPIO::cout << "NX            = " << NX            << "\n";
-      QDPIO::cout << "NY            = " << NY            << "\n";
-      QDPIO::cout << "NZ            = " << NZ            << "\n";
-      QDPIO::cout << "NT            = " << NT            << "\n";
-      QDPIO::cout << "T1            = " << T1            << "\n";
-      QDPIO::cout << "T2            = " << T2            << "\n";
-      QDPIO::cout << "MaxNLinks     = " << MaxNLinks     << "\n";
-      QDPIO::cout << "NLinkPatterns = " << NLinkPatterns << "\n";
-      QDPIO::cout << "QX            = " << QX            << "\n";
-      QDPIO::cout << "QY            = " << QY            << "\n";
-      QDPIO::cout << "QZ            = " << QZ            << "\n";
+      const signed short int QX = Q[0];
+      const signed short int QY = Q[1];
+      const signed short int QZ = Q[2];
+
+#if _DEBUG_BB_C_ == 1
+      {
+	QDPIO::cout << "DEBUG: " << __FILE__ << " " << __LINE__ << "\n";
+
+	QDPIO::cout << "Id            = " << Id            << "\n";
+	QDPIO::cout << "Version       = " << Version       << "\n";
+	QDPIO::cout << "Flavor        = " << Flavor        << "\n";
+	QDPIO::cout << "Contraction   = " << Contraction   << "\n";
+	QDPIO::cout << "SeqSource     = " << SeqSource     << "\n";
+	QDPIO::cout << "NX            = " << NX            << "\n";
+	QDPIO::cout << "NY            = " << NY            << "\n";
+	QDPIO::cout << "NZ            = " << NZ            << "\n";
+	QDPIO::cout << "NT            = " << NT            << "\n";
+	QDPIO::cout << "T1            = " << T1            << "\n";
+	QDPIO::cout << "T2            = " << T2            << "\n";
+	QDPIO::cout << "MaxNLinks     = " << MaxNLinks     << "\n";
+	QDPIO::cout << "NLinkPatterns = " << NLinkPatterns << "\n";
+	QDPIO::cout << "QX            = " << QX            << "\n";
+	QDPIO::cout << "QY            = " << QY            << "\n";
+	QDPIO::cout << "QZ            = " << QZ            << "\n";
+	QDPIO::cout << "PX            = " << PX            << "\n";
+	QDPIO::cout << "PY            = " << PY            << "\n";
+	QDPIO::cout << "PZ            = " << PZ            << "\n";
+      }
+#endif
+
+      // possibly specific to this version
+      BinaryWriters(f,q).write( Flavor );
+      BinaryWriters(f,q).write( Contraction );
+      BinaryWriters(f,q).writeArray( SeqSource.data(), 1, SeqSourceLen );
+      BinaryWriters(f,q).write( NX );
+      BinaryWriters(f,q).write( NY );
+      BinaryWriters(f,q).write( NZ );
+      BinaryWriters(f,q).write( NT );
+      BinaryWriters(f,q).write( DecayDir );
+      BinaryWriters(f,q).write( T1 );
+      BinaryWriters(f,q).write( T2 );
+      BinaryWriters(f,q).write( MaxNLinks );
+      BinaryWriters(f,q).write( NLinkPatterns );
+      BinaryWriters(f,q).write( QX );
+      BinaryWriters(f,q).write( QY );
+      BinaryWriters(f,q).write( QZ );
+      BinaryWriters(f,q).write( PX );
+      BinaryWriters(f,q).write( PY );
+      BinaryWriters(f,q).write( PZ );
+      // generic to any building blocks file
+      BinaryWriters(f,q).write( Id );
+      BinaryWriters(f,q).write( Version );
+      // close file
+      BinaryWriters(f,q).close();
     }
-    #endif
-
-    // possibly specific to this version
-    BinaryWriters(f,q).write( Flavor );
-    BinaryWriters(f,q).write( Contraction );
-    BinaryWriters(f,q).write( NX );
-    BinaryWriters(f,q).write( NY );
-    BinaryWriters(f,q).write( NZ );
-    BinaryWriters(f,q).write( NT );
-    BinaryWriters(f,q).write( T1 );
-    BinaryWriters(f,q).write( T2 );
-    BinaryWriters(f,q).write( MaxNLinks );
-    BinaryWriters(f,q).write( NLinkPatterns );
-    BinaryWriters(f,q).write( QX );
-    BinaryWriters(f,q).write( QY );
-    BinaryWriters(f,q).write( QZ );
-    // generic to any building blocks file
-    BinaryWriters(f,q).write( Id );
-    BinaryWriters(f,q).write( Version );
-    // close file
-    BinaryWriters(f,q).close();
-  }
   }
 
   return;
