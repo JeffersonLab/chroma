@@ -47,7 +47,7 @@ namespace Chroma {
 //###################################################################################//
 
 static const char* const CVSBuildingBlocks_cc =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 1.15 2005-07-27 16:23:52 edwards Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 1.16 2005-07-27 16:35:12 edwards Exp $";
 
 //###################################################################################//
 // record the CVS info                                                               //
@@ -333,9 +333,8 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
   const signed short int   PY = SnkMom[1];
   const signed short int   PZ = SnkMom[2];
   const signed short int   SeqSourceLen = 64;
-  string SeqSource;
+  string SeqSource = SeqSourceType;
   SeqSource.resize(SeqSourceLen, 0);
-  SeqSource = SeqSourceType;
 
   for( int f = 0; f < NF; f ++ )
   {
@@ -394,6 +393,7 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
       BinaryWriters(f,q).write( PX );
       BinaryWriters(f,q).write( PY );
       BinaryWriters(f,q).write( PZ );
+      BinaryWriters(f,q).write( BinaryWriters(f,q).getChecksum() );
       // generic to any building blocks file
       BinaryWriters(f,q).write( Id );
       BinaryWriters(f,q).write( Version );
