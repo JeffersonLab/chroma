@@ -47,7 +47,7 @@ namespace Chroma {
 //###################################################################################//
 
 static const char* const CVSBuildingBlocks_cc =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 1.16 2005-07-27 16:35:12 edwards Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 1.17 2005-07-29 14:28:00 edwards Exp $";
 
 //###################################################################################//
 // record the CVS info                                                               //
@@ -339,6 +339,7 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
   for( int f = 0; f < NF; f ++ )
   {
     const signed short int Flavor = Flavors[f];  // currently assumes u and d are given as f=0 and f=1
+    const signed short int GammaInsertion = GammaInsertions[f];
 
     for( int q = 0; q < NQ; q ++ )
     {
@@ -352,25 +353,26 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
       {
 	QDPIO::cout << "DEBUG: " << __FILE__ << " " << __LINE__ << "\n";
 
-	QDPIO::cout << "Id            = " << Id            << "\n";
-	QDPIO::cout << "Version       = " << Version       << "\n";
-	QDPIO::cout << "Flavor        = " << Flavor        << "\n";
-	QDPIO::cout << "Contraction   = " << Contraction   << "\n";
-	QDPIO::cout << "SeqSource     = " << SeqSource     << "\n";
-	QDPIO::cout << "NX            = " << NX            << "\n";
-	QDPIO::cout << "NY            = " << NY            << "\n";
-	QDPIO::cout << "NZ            = " << NZ            << "\n";
-	QDPIO::cout << "NT            = " << NT            << "\n";
-	QDPIO::cout << "T1            = " << T1            << "\n";
-	QDPIO::cout << "T2            = " << T2            << "\n";
-	QDPIO::cout << "MaxNLinks     = " << MaxNLinks     << "\n";
-	QDPIO::cout << "NLinkPatterns = " << NLinkPatterns << "\n";
-	QDPIO::cout << "QX            = " << QX            << "\n";
-	QDPIO::cout << "QY            = " << QY            << "\n";
-	QDPIO::cout << "QZ            = " << QZ            << "\n";
-	QDPIO::cout << "PX            = " << PX            << "\n";
-	QDPIO::cout << "PY            = " << PY            << "\n";
-	QDPIO::cout << "PZ            = " << PZ            << "\n";
+	QDPIO::cout << "Id             = " << Id            << "\n";
+	QDPIO::cout << "Version        = " << Version       << "\n";
+	QDPIO::cout << "Flavor         = " << Flavor        << "\n";
+	QDPIO::cout << "Contraction    = " << Contraction   << "\n";
+	QDPIO::cout << "SeqSource      = " << SeqSource     << "\n";
+	QDPIO::cout << "GammaInsertion = " << GammaInsertion<< "\n";
+	QDPIO::cout << "NX             = " << NX            << "\n";
+	QDPIO::cout << "NY             = " << NY            << "\n";
+	QDPIO::cout << "NZ             = " << NZ            << "\n";
+	QDPIO::cout << "NT             = " << NT            << "\n";
+	QDPIO::cout << "T1             = " << T1            << "\n";
+	QDPIO::cout << "T2             = " << T2            << "\n";
+	QDPIO::cout << "MaxNLinks      = " << MaxNLinks     << "\n";
+	QDPIO::cout << "NLinkPatterns  = " << NLinkPatterns << "\n";
+	QDPIO::cout << "QX             = " << QX            << "\n";
+	QDPIO::cout << "QY             = " << QY            << "\n";
+	QDPIO::cout << "QZ             = " << QZ            << "\n";
+	QDPIO::cout << "PX             = " << PX            << "\n";
+	QDPIO::cout << "PY             = " << PY            << "\n";
+	QDPIO::cout << "PZ             = " << PZ            << "\n";
       }
 #endif
 
@@ -378,6 +380,7 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
       BinaryWriters(f,q).write( Flavor );
       BinaryWriters(f,q).write( Contraction );
       BinaryWriters(f,q).writeArray( SeqSource.data(), 1, SeqSourceLen );
+      BinaryWriters(f,q).write( GammaInsertion );
       BinaryWriters(f,q).write( NX );
       BinaryWriters(f,q).write( NY );
       BinaryWriters(f,q).write( NZ );
