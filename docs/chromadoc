@@ -148,7 +148,7 @@ SKIP_FUNCTION_MACROS   = YES
 #---------------------------------------------------------------------------
 # Configuration::addtions related to external references   
 #---------------------------------------------------------------------------
-TAGFILES               = 
+TAGFILES               = /home/zs/scidac/qdp++/qdp++/doc/usr/ref/tags=/home/zs/scidac/qdp++/qdp++/doc/usr/ref/html
 GENERATE_TAGFILE       = 
 ALLEXTERNALS           = NO
 EXTERNAL_GROUPS        = YES
