@@ -1,0 +1,351 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+
+% Somewhat wider and taller page than in art12.sty
+\topmargin -0.4in  \headsep 0.0in  \textheight 9.0in
+\oddsidemargin 0.25in  \evensidemargin 0.25in  \textwidth 6.5in
+
+\footnotesep 14pt
+\floatsep 28pt plus 2pt minus 4pt      % Nominal is double what is in art12.sty
+\textfloatsep 40pt plus 2pt minus 4pt
+\intextsep 28pt plus 4pt minus 4pt
+
+\begin{document}
+
+\def\dirac{{\bf \rm D}\!\!\!\!/\,}
+\newcommand{\half}{\frac{1}{2}}
+%\newcommand{\be}{\begin{equation}}
+%\newcommand{\ee}{\end{equation}}
+\newcommand{\be}{\begin{displaymath}}
+\newcommand{\ee}{\end{displaymath}}
+\newcommand{\bea}{\begin{eqnarray}}
+\newcommand{\eea}{\end{eqnarray}}
+\newcommand{\bdm}{\begin{displaymath}}
+\newcommand{\edm}{\end{displaymath}}
+\newcommand{\<}{\langle}
+\renewcommand{\>}{\rangle}
+\newcommand{\Tr}{\mbox{Tr}}
+
+\centerline{\bf \Large Variations on Narayanan-Neuberger 5-d overlap}
+\vskip 5mm
+
+Narayanan and Neuberger's 5-d overlap version (hep-lat/0005004) is based
+on the 5-d action
+\bea
+S^{(5)} = \bar \Psi H^{(5)}_{NN} \Psi
+\eea
+with the combined ``5-d'' fermion field $\bar \Psi = (\bar \psi, \bar \chi_1,
+\bar \phi_1, \dots, \bar \chi_N, \bar \phi_N)$ and similarly for $\Psi$.
+Here
+\bea
+H^{(5)}_{NN} = \begin{pmatrix}
+H_{00} & \alpha_1 & 0 & \alpha_2 & 0 & \cdots & \alpha_N & 0 \cr
+\alpha_1 & -\beta_1 H_w & \delta_1 & 0 & 0 & \cdots & 0 & 0 \cr
+0 & \delta_1 & H_w & 0 & 0 & \cdots & 0 & 0 \cr
+\alpha_2 & 0 & 0 & -\beta_2 H_w & \delta_2 & \cdots & 0 & 0 \cr
+0 & 0 & 0 & \delta_2 & H_w & \cdots & 0 & 0 \cr
+\vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \cr
+\alpha_N & 0 & 0 & 0 & 0 & \cdots & -\beta_N H_w & \delta_N \cr
+0 & 0 & 0 & 0 & 0 & \cdots & \delta_N & H_w \cr
+\end{pmatrix}
+\label{eq:H_5d_matrix}
+\eea
+with as yet unspecified $H_{00}$ and coefficients $\alpha_k$, $\beta_k$
+and $\delta_k$ for $k=1, \dots, N$.
+The aim is to choose these such that, integrating over the auxiliary
+fermion fields $\bar \chi_k$, $\chi_k$, $\bar \phi_k$ and $\phi_k$
+one obtains
+\bea
+\int d \bar \Psi d \Psi {\rm e}^{- \bar \Psi H^{(5)}_{NN} \Psi} =
+{\cal N} \int d \bar \psi d \psi {\rm e}^{- \bar \psi H_{eff} \psi}
+\eea
+where $H_{eff}$ is equal to the hermitian overlap Dirac operator
+\bea
+H_{ov} = \frac{1}{2} \Bigl[ (1+m) \gamma_5 + (1-m) \epsilon(H_w) \Bigr] ~.
+\label{eq:H_ov}
+\eea
+
+We collect the terms in $\bar \Psi H^{(5)}_{NN} \Psi$ that depend on the
+fermion fields $\bar \chi_k$, $\chi_k$, $\bar \phi_k$ and $\phi_k$
+\bea
+&& \alpha_k (\bar\psi \chi_k + \bar\chi_k \psi) -
+ \bar\chi_k \beta_k H_w \chi_k + \bar\phi_k H_w \phi_k +
+ \delta_k (\bar\chi_k \phi_k + \bar\phi_k \chi_k) = \nonumber \\
+&& - \Bigl[ \bar\chi_k - \alpha_k \bar\psi (\beta_k H_w +
+ \delta_k^2 H_w^{-1} )^{-1} \Bigr] (\beta_k H_w + \delta_k^2 H_w^{-1} )
+ \Bigl[ \chi_k - \alpha_k (\beta_k H_w +
+ \delta_k^2 H_w^{-1} )^{-1} \psi \Bigr] \nonumber \\
+&& + (\bar\phi_k + \delta_k \bar\chi_k H_w^{-1}) H_w
+ (\phi_k + \delta_k H_w^{-1} \chi_k)
+ + \alpha_k^2 \bar\psi (\beta_k H_w + \delta_k^2 H_w^{-1} )^{-1} \psi ~.
+\eea
+Doing now the intergration over $\bar \chi_k$, $\chi_k$, $\bar \phi_k$ and
+$\phi_k$, after appropriate changes of variables we find a factor
+$ \det H_w \det (\beta_k H_w + \delta_k^2 H_w^{-1} ) = \det
+(\beta_k H_w^2 + \delta_k^2 )$ in ${\cal N}$ and the contribution
+\bea
+\alpha_k^2 \bar\psi (\beta_k H_w + \delta_k^2 H_w^{-1} )^{-1} \psi
+= \alpha_k^2 \bar\psi H_w (\beta_k H_w^2 + \delta_k^2 )^{-1} \psi
+\eea
+in the exponent, {\it i.e.,} we find
+\bea
+H_{eff} = H_{00} + H_w \sum_{k=1}^N \frac{\alpha_k^2}{\beta_k H_w^2 +
+ \delta_k^2} ~.
+\label{eq:H_eff}
+\eea
+The second term in (\ref{eq:H_eff}) looks reminiscent of a ``sum over poles''
+approximation to $\epsilon(H_w)$
+\begin{equation}
+g_N(H_w) = H_w \left(c_0 + {\sum_{k=1}^N {c_k \over {H_w^2 + b_k}}}\right),
+\label{eq:ratio_pole}
+\end{equation}
+and suggests the choices
+\bea
+\beta_k = s^2 ~, \qquad \alpha_k^2 = \frac{1-m}{2} s c_k ~~{\rm and} ~~~
+\delta_k^2 = b_k ~.
+\label{eq:rat_coeff}
+\eea
+To make $H_{eff} = H_{ov}$ we further choose
+\bea
+H_{00} &=& \frac{1+m}{2} \gamma_5 + \frac{1-m}{2} s c_0 H_w + \frac{1-m}{2}
+ \sum_i \biggl[ \epsilon(\lambda_i) - s c_0 \lambda_i -
+ \sum_{k=1}^N \frac{s c_k \lambda_i}{s^2 \lambda_i^2 + b_k} \biggr] \hat P_i
+ \nonumber\\
+ &=& \frac{1+m}{2} \gamma_5 + \frac{1-m}{2} s c_0 H_w + \hat{A}(m)
+\label{eq:H_00}
+\eea
+Here, with
+\bea
+\hat{A}(m) = \frac{1-m}{2}
+ \sum_i \biggl[ \epsilon(\lambda_i) - s c_0 \lambda_i -
+ \sum_{k=1}^N \frac{s c_k \lambda_i}{s^2 \lambda_i^2 + b_k} \biggr]\hat{P}_i
+\eea
+and
+\bea
+H_w v_i = \lambda_i v_i ~, \qquad \hat{P}_i = v_i v_i^\dagger
+\eea
+the last term implements projection of Wilson eigenvalues for which the
+sum-over-poles approximation to $\epsilon(H_w)$ is not sufficiently accurate.
+The scale factor $s > 0$ can be used to optimize the approximation over
+the rest of the spectrum of $H_w$.
+
+To precondition a 5-d like matrix, we write it as a two by two block matrix
+\begin{eqnarray}
+A^{(5)} = \begin{pmatrix} {\cal A}_{EE} & {\cal B}_{EO} \\
+  {\cal B}_{OE} & {\cal A}_{OO} \end{pmatrix}
+\end{eqnarray}
+where the upper case characters $E$ and $O$ label even and odd
+(checkerboard) sites, respectively, in five dimensions. The matrix
+$A^{(5)}$ can be brought into an even-odd block diagonal form using
+the lower and upper block triangular matrices
+\begin{eqnarray}
+L = \begin{pmatrix} I_{EE} & 0 \\ 
+{\cal B}_{OE}{\cal A}_{EE}^{-1} & I_{OO} \end{pmatrix},
+\qquad
+U = \begin{pmatrix} {\cal A}_{EE} & {\cal B}_{EO}\\
+0 & I_{OO} \end{pmatrix}
+\end{eqnarray}
+with
+\begin{eqnarray}
+L^{-1} = \begin{pmatrix} I_{EE} & 0 \\ 
+-{\cal B}_{OE}{\cal A}_{EE}^{-1} & I_{OO} \end{pmatrix},
+\qquad
+U^{-1} = \begin{pmatrix} {\cal A}_{EE}^{-1} & -{\cal A}_{EE}^{-1}{\cal B}_{EO}\\
+0 & I_{OO} \end{pmatrix}
+\end{eqnarray}
+in the transformation
+\begin{eqnarray}
+{\tilde A}^{(5)} = L^{-1} A^{(5)} U^{-1} = 
+\begin{pmatrix} I_{EE} & 0 \\ 0 &
+{\cal A}_{OO} - {\cal B}_{OE}{\cal A}_{EE}^{-1}{\cal B}_{EO}
+\end{pmatrix}.
+\end{eqnarray}
+
+For this to be a good preconditioning, we want
+\begin{eqnarray}
+L U = \begin{pmatrix} A_{EE} & {\cal B}_{EO} \\ 
+{\cal B}_{OE} & I_{OO} + {\cal B}_{OE}{\cal A}_{EE}^{-1}{\cal B}_{EO}
+\end{pmatrix}
+\end{eqnarray}
+to be a good approximation to $A^{(5)}$. To this end we want 
+\begin{eqnarray}
+{\cal A}_{OO} \sim I_{OO} + {\cal B}_{OE}{\cal A}_{EE}^{-1}{\cal B}_{EO} .
+\label{eq:check}
+\end{eqnarray}
+This requirement looks most practical when ${\cal A}_{OO}$ and also
+${\cal A}_{EE}$ are initially set (close) to the identity. Hence, when
+solving 
+\begin{eqnarray}
+H_{eff}\psi = \gamma_5 b\quad\rightarrow H^{(5)}_{NN}\Psi = 
+(\gamma_5 b,0,0,\ldots,0)^{T}
+\end{eqnarray}
+rescale the system into
+\begin{eqnarray}
+{\cal S} H^{(5)}_{NN}\Psi = {\cal S} (\gamma_5 b,0,0,\ldots,0)^{T}.
+\end{eqnarray}
+
+We consider the case of $H_w$ the hermitian Wilson operator, then
+\bea
+D_{ee},~ D_{oo} \rightarrow (4-M)~ ,\quad D_{eo} \rightarrow -\half\dirac_{eo}
+\eea
+where $\dirac$ is the Wilson dslash operator. Here $e$ and $o$ refer
+to the even and odd sub-lattice in the 4-d checker-boarding.
+We then choose ${\cal A}={\cal S} H^{(5)}_{NN}$ with
+\bea
+{\cal S} = \begin{pmatrix}
+f_0^{-1}\gamma_5 & 0 & 0 & 0 & 0 & \cdots & 0 & 0 \cr
+0 & \frac{-\gamma_5}{\beta_1(4-M)} & 0 & 0 & 0 & \cdots & 0 & 0 \cr
+0 & 0 & \frac{\gamma_5}{4-M} & 0 & 0 & \cdots & 0 & 0 \cr
+0 & 0 & 0 & \frac{-\gamma_5}{\beta_2(4-M)} & 0 & \cdots & 0 & 0 \cr
+0 & 0 & 0 & 0 & \frac{\gamma_5}{4-M} & \cdots & 0 & 0 \cr
+\vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \cr
+0 & 0 & 0 & 0 & 0 & \cdots & \frac{-\gamma_5}{\beta_N(4-M)} & 0 \cr
+0 & 0 & 0 & 0 & 0 & \cdots & 0 & \frac{\gamma_5}{4-M}\cr
+\end{pmatrix}
+\eea
+where
+\bea
+f_0 = \frac{1+m}{2} + \frac{1-m}{2} s (4-M) c_0~.
+\eea
+
+The fermion fields are brought into ``kappa''-form, {\it i.e.}, having
+1 in the diagonal with $\kappa= 1/{2(4-M)}$, with
+\bea
+{\cal A}_{EE} = \begin{pmatrix}
+h_{ee} & 0 & 0 & 0 & 0 & \cdots & 0 & 0 \cr
+0 & 1 & 0 & 0 & 0 & \cdots & 0 & 0 \cr
+0 & 0 & 1 & 0 & 0 & \cdots & 0 & 0 \cr
+0 & 0 & 0 & 1 & 0 & \cdots & 0 & 0 \cr
+0 & 0 & 0 & 0 & 1 & \cdots & 0 & 0 \cr
+\vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \cr
+0 & 0 & 0 & 0 & 0 & \cdots & 1 & 0 \cr
+0 & 0 & 0 & 0 & 0 & \cdots & 0 & 1\cr
+\end{pmatrix}
+\eea
+and
+\bea
+{\cal B}_{EO} = \begin{pmatrix}
+h_{eo} & f_0^{-1}\alpha_1\gamma_5 & 0 & f_0^{-1}\alpha_2\gamma_5 & 0 & \cdots & 
+   f_0^{-1}\alpha_N\gamma_5 & 0 \cr
+\frac{-\alpha_1\gamma_5}{\beta_1(4-M)}& -\kappa\dirac_{oe} & 
+   \frac{-\delta_1\gamma_5}{\beta_1(4-M)} & 0 & 0 & \cdots & 0 & 0 \cr
+0 & \frac{\delta_1\gamma_5}{(4-M)} & -\kappa\dirac_{eo} & 0 & 0 & \cdots & 0 & 0 \cr
+\frac{-\alpha_2\gamma_5}{\beta_2(4-M)} & 0 & 0 & -\kappa\dirac_{oe} & 
+   \frac{-\delta_2\gamma_5}{\beta_2(4-M)} & \cdots & 0 & 0 \cr
+0 & 0 & 0 & \frac{\delta_2\gamma_5}{(4-M)} & -\kappa\dirac_{eo} & \cdots & 0 & 0 \cr
+\vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \cr
+\frac{-\alpha_N\gamma_5}{\beta_N(4-M)} & 0 & 0 & 0 & 0 & \cdots & -\kappa\dirac_{oe} & 
+   \frac{-\delta_N\gamma_5}{\beta_N(4-M)} \cr
+0 & 0 & 0 & 0 & 0 & \cdots & \frac{\delta_N\gamma_5}{(4-M)} & -\kappa\dirac_{eo} \cr
+\end{pmatrix}
+\eea
+where
+\bea
+h_{ee} &=& 1 + f_0^{-1}\gamma_5 {\hat A}_{ee}(m)\nonumber\\
+h_{eo} &=& -\half f_0^{-1}\frac{1-m}{2} s c_0 \dirac_{eo} + 
+   f_0^{-1}\gamma_5\hat{A}_{eo}(m)~.
+\eea
+The expressions for ${\cal A}_{OO}$ and ${\cal B}_{OE}$ are similar to
+the above expressions with $o$ and $e$ interchanged.
+
+For even-odd preconditioning, we need 
+\bea
+{\cal A}_{EE}^{-1} = \begin{pmatrix}
+[h_{ee}]^{-1} & 0 & 0 & 0 & 0 & \cdots & 0 & 0 \cr
+0 & 1 & 0 & 0 & 0 & \cdots & 0 & 0 \cr
+0 & 0 & 1 & 0 & 0 & \cdots & 0 & 0 \cr
+0 & 0 & 0 & 1 & 0 & \cdots & 0 & 0 \cr
+0 & 0 & 0 & 0 & 1 & \cdots & 0 & 0 \cr
+\vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \cr
+0 & 0 & 0 & 0 & 0 & \cdots & 1 & 0 \cr
+0 & 0 & 0 & 0 & 0 & \cdots & 0 & 1\cr
+\end{pmatrix}.
+\eea
+It is also convenient to define a 5-d like $\dirac$
+\bea
+{\cal B}_{EO} = -\kappa \dirac^{(5)}_{EO}
+\eea
+where
+\bea
+\dirac^{(5)}_{EO} = \begin{pmatrix}
+-\kappa^{-1}h_{eo} & \frac{-\alpha_1}{\kappa f_0}\gamma_5 & 0 & 
+   \frac{-\alpha_2}{\kappa f_0}\gamma_5 & 0 & \cdots & 
+   \frac{-\alpha_N}{\kappa f_0}\gamma_5 & 0 \cr
+\frac{2\alpha_1}{\beta_1}\gamma_5 & \dirac_{oe} & 
+   \frac{2\delta_1}{\beta_1}\gamma_5 & 0 & 0 & \cdots & 0 & 0 \cr
+0 & -2\delta_1\gamma_5 & \dirac_{eo} & 0 & 0 & \cdots & 0 & 0 \cr
+\frac{2\alpha_2}{\beta_2}\gamma_5 & 0 & 0 & \dirac_{oe} & 
+   \frac{2\delta_2}{\beta_2}\gamma_5 & \cdots & 0 & 0 \cr
+0 & 0 & 0 & -2\delta_2\gamma_5 & \dirac_{eo} & \cdots & 0 & 0 \cr
+\vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \cr
+\frac{2\alpha_N}{\beta_N}\gamma_5 & 0 & 0 & 0 & 0 & \cdots & \dirac_{oe} & 
+   \frac{2\delta_N}{\beta_N}\gamma_5 \cr
+0 & 0 & 0 & 0 & 0 & \cdots & -2\delta_N\gamma_5 & \dirac_{eo} \cr
+\end{pmatrix}
+\eea
+
+For preconditioning to work well, we want the second term in
+Eq.~\ref{eq:check} to be small. The major difficulty in the 5-d
+approach is the large range of the coefficients $\alpha_i$ and
+$\delta_i$. There are not necessarily systematic cancellations so as
+to satisfy Eq.~\ref{eq:check}. We can implement an additional
+rescaling for this by choosing
+\bea
+{\tilde A}' = {\cal \Lambda} {\tilde A} {\cal \Lambda}^{-1}.
+\eea
+with
+\bea
+{\cal \Lambda} = \begin{pmatrix}
+s & 0 & 0 & 0 & 0 & \cdots & 0 & 0 \cr
+0 & u_1 & 0 & 0 & 0 & \cdots & 0 & 0 \cr
+0 & 0 & v_1 & 0 & 0 & \cdots & 0 & 0 \cr
+0 & 0 & 0 & u_2 & 0 & \cdots & 0 & 0 \cr
+0 & 0 & 0 & 0 & v_2 & \cdots & 0 & 0 \cr
+\vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \cr
+0 & 0 & 0 & 0 & 0 & \cdots & u_N & 0 \cr
+0 & 0 & 0 & 0 & 0 & \cdots & 0 & v_N\cr
+\end{pmatrix}
+\eea
+This scaling leaves invariant the identity parts of ${\cal A}_{OO}$
+and ${\cal A}_{EE}$. We want to use this rescaling to minimize errors
+in Eq.~\ref{eq:check}. Consider the case of no projection so ${\cal
+A}_{EE}$ is the identity. We can impose a matrix norm for quality of
+fit with $|\dirac^{(5)}_{OE}\dirac^{(5)}_{EO}|\equiv\sum_{ijk}
+\dirac^{(5)}_{ik}\dirac^{(5)}_{kj}$. This defines a $\chi$-square for
+us and we take a variation over $\{s,u_1,v_1,\ldots,u_N,v_N\}$. This
+appears complicated to solve, so instead consider the norm
+$|\dirac^{(5)}|^p=\sum_{ij}(\dirac^{(5)}_{ik})^p$ for some integer
+$p$. Taking the variation and solving the linear system for the
+$\{s,u_1,v_1,\ldots,u_N,v_N\}$ we find
+\bea
+\{s,u_k,v_k\} = \{s,\half\frac{\sqrt{-2\kappa f_0 \beta_k} s}{\kappa f_0},
+\half\frac{\sqrt{-\beta_k}\sqrt{-2\kappa f_0 \beta_k} s}{\kappa f_0\beta_k}\}
+\eea
+independent of $k$ and $p$. Choosing $\beta_k$ to be negative forces
+$\alpha_k$ and $\delta_k$ to be pure imaginary which then reduces the
+$\dirac$ operator (including projection) to 
+\bea
+\dirac^{(5)'}_{EO} = \begin{pmatrix}
+-\kappa^{-1}h_{eo} & \frac{-\sqrt{2}\alpha_1 i}{\kappa f_0\beta_1}\gamma_5 & 0 & 
+   \frac{-\sqrt{2}\alpha_2 i}{\kappa f_0\beta_2}\gamma_5 & 0 & \cdots & 
+   \frac{-\sqrt{2}\alpha_N i}{\kappa f_0\beta_N}\gamma_5 & 0 \cr
+\frac{-\sqrt{2}\alpha_1 i}{\kappa f_0\beta_1}\gamma_5 & \dirac_{oe} & 
+   \frac{2\delta_1 i}{\sqrt{\beta_1}}\gamma_5 & 0 & 0 & \cdots & 0 & 0 \cr
+0 & \frac{2\delta_1 i}{\sqrt{\beta_1}}\gamma_5 & \dirac_{eo} & 0 &0 &\cdots & 0 & 0 \cr
+\frac{-\sqrt{2}\alpha_2 i}{\sqrt{\beta_2}}\gamma_5 & 0 & 0 & \dirac_{oe} & 
+   \frac{2\delta_2 i}{\sqrt{\beta_2}}\gamma_5 & \cdots & 0 & 0 \cr
+0 & 0 & 0 & \frac{2\delta_2 i}{\sqrt{\beta_2}}\gamma_5 & \dirac_{eo} &
+   \cdots & 0 & 0 \cr
+\vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \cr
+\frac{-\sqrt{2}\alpha_N i}{\kappa f_0\beta_N}\gamma_5 & 0 & 0 & 0 & 0 &
+   \cdots & \dirac_{oe} & \frac{2\delta_N i}{\sqrt{\beta_N}}\gamma_5 \cr
+0 & 0 & 0 & 0 & 0 & \cdots & \frac{2\delta_N i}{\sqrt{\beta_N}}\gamma_5 & 
+   \dirac_{eo} \cr
+\end{pmatrix}
+\eea
+where $s=1$, $-\beta_k$, $-\alpha_k^2$, and $-\delta_k^2$ have been used.  We
+see that in this new form for $D^{(5)'}$ that when comparing
+Eq.~\ref{eq:H_eff} to Eq.\ref{eq:ratio_pole} the extra scaling with
+$\beta_k$ drops out.
+
+\end{document}

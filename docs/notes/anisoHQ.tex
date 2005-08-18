@@ -1,0 +1,449 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+
+% Somewhat wider and taller page than in art12.sty
+\topmargin -0.4in  \headsep 0.0in  \textheight 9.0in
+\oddsidemargin 0.25in  \evensidemargin 0.25in  \textwidth 6.5in
+
+\footnotesep 14pt
+\floatsep 28pt plus 2pt minus 4pt      % Nominal is double what is in art12.sty
+\textfloatsep 40pt plus 2pt minus 4pt
+\intextsep 28pt plus 4pt minus 4pt
+
+\begin{document}
+
+\newcommand{\half}{\frac{1}{2}}
+%\newcommand{\be}{\begin{equation}}
+%\newcommand{\ee}{\end{equation}}
+\newcommand{\be}{\begin{displaymath}}
+\newcommand{\ee}{\end{displaymath}}
+\newcommand{\bea}{\begin{eqnarray}}
+\newcommand{\eea}{\end{eqnarray}}
+\newcommand{\bdm}{\begin{displaymath}}
+\newcommand{\edm}{\end{displaymath}}
+\newcommand{\<}{\langle}
+\renewcommand{\>}{\rangle}
+\newcommand{\Tr}{\mbox{Tr}}
+
+\centerline{\bf \Large Heavy Quarks on Anisotropic Lattices}
+\vskip 5mm
+
+These notes are based, and sometimes refer to Tim Klassen's draft paper
+of the same title.
+
+\section{Conventions}
+
+Tim considers actions of the form $\sum \bar \psi Q \psi$, on anisotropic
+lattices with $a_k=a$ for $k=1,2,3$ and (renormalized) anisotropy
+$\xi = a / a_0$, with
+\bea
+Q &=& m_0 + \nu_0 \nabla_0 \gamma_0 - \half r_0 a_0 \Delta_0
+ + \sum_k \left( \nu \nabla_k \gamma_k- \half r a \Delta_k \right) \nonumber \\
+&& - \frac{a}{2} \Big[ \omega_0 \sum_k \sigma_{0k} F_{0k}
+ + \omega \sum_{k<l} \sigma_{kl} F_{kl} \Big ] ~,
+\label{eq:Q_generic}
+\eea
+where
+\bea
+\nabla_\mu f(x) &=& \frac{1}{2a_\mu} \bigg[ U_\mu(x) f(x+\mu) -
+ U^\dagger_\mu(x-\mu) f(x-\mu) \bigg ] \\
+\Delta_\mu f(x) &=& \frac{1}{a_\mu^2} \bigg[ U_\mu(x) f(x+\mu) +
+ U^\dagger_\mu(x-\mu) f(x-\mu) - 2f(x) \bigg ] .
+\eea
+Tim also introduces the ``Wilson operator''
+\bea
+W_\mu \equiv \nabla_\mu - \frac{a_\mu}{2} \gamma_\mu \Delta_\mu ~.
+\eea
+
+Actually, Tim restricts the analysis always either to the choices
+$\nu_0 = 1 = r_0$ ($\nu$-tuning) or $\nu = 1 = r$ ($\nu_0$-tuning).
+To make use of the projection property of $(1 \pm \gamma_\mu)/2$
+one needs $\nu_0 = r_0$ and $\nu = r$. Then $Q$ becomes
+\bea
+Q = m_0 + \nu_0 W_0 \gamma_0 + \nu \sum_k W_k \gamma_k
+ - \frac{a}{2} \bigg[ \omega_0 \sum_k \sigma_{0k} F_{0k}
+ + \omega \sum_{k<l} \sigma_{kl} F_{kl} \bigg ] ~.
+\label{eq:Q_W}
+\eea
+In terms of dimensionless variables $\hat \psi = a^{3/2} \psi$,
+$\hat W_\mu = a_\mu W_\mu$ and $\hat F_{\mu\nu} = a_\mu a_\nu F_{\mu\nu}$
+\bea
+a_0 Q = a_0 m_0 + \nu_0 \hat W_0 \gamma_0 +
+ \frac{\nu}{\xi_0} \sum_k \hat W_k \gamma_k -
+ \half \bigg[ \omega_0 \sum_k \sigma_{0k} \hat F_{0k} +
+ \frac{\omega}{\xi_0} \sum_{k<l} \sigma_{kl} \hat F_{kl} \bigg ] ~.
+\label{eq:Q_Tim}
+\eea
+The choice of the factors $1/\xi_0$, with $\xi_0$ the bare anisotropy,
+rather than $1/\xi$ is a convention.
+
+In {\tt SZIN} conventions we use, instead of $a_0 Q$, the operator
+\bea
+{\cal M} = 1 - \kappa \bigg[ {\overline W}_0 + \frac{\rho_s}{\xi_0}
+ \sum_k {\overline W}_k + c_T \sum_k \sigma_{0k} \hat F_{0k} +
+ \frac{c_R}{\xi_0} \sum_{k<l} \sigma_{kl} \hat F_{kl} \bigg ] ~,
+\label{eq:Q_SZIN}
+\eea
+where
+\bea
+{\overline W}_\mu = (1-\gamma_\mu) U_\mu(x) \delta_{x+\mu,y}
+ + (1+\gamma_\mu) U^\dagger_\mu(x-\mu) \delta_{x-\mu,y} ~.
+\eea
+The fermions have been rescaled as $\hat \psi = \sqrt{2 \lambda} \tilde \psi$,
+so that $a_0 Q = {\cal M} / (2 \lambda)$.
+We note that
+\bea
+{\overline W}_\mu = 2 - 2 \hat W_\mu \gamma_\mu
+\eea
+and find
+\bea
+\lambda &=& \frac{1}{2 [a_0 m_0 + \nu_0 + 3 \nu / \xi_0 ]} ~, \nonumber \\
+\kappa &=& \lambda \nu_0 = \frac{\nu_0}{2 [a_0 m_0 + \nu_0 + 3 \nu / \xi_0 ]}
+ = \frac{1}{2 [a_0 m_0 / \nu_0 + 1 + 3 \nu / (\nu_0 \xi_0) ]}~,  \\
+\rho_s &=& \frac{\nu}{\nu_0} ~, \qquad
+ c_T = \frac{\omega_0}{\nu_0} ~, \qquad c_R = \frac{\omega}{\nu_0} ~. \nonumber
+\label{eq:convert}
+\eea
+
+In the {\tt SZIN} code, the parameter $\rho_s$ is denoted as {\tt Wilsr\_s},
+and $c_T$ and $c_R$ as {\tt ClCoeffT} and {\tt ClCoeffR}, respectively.
+
+
+\section{Tuning of the classical action}
+
+At the classical level there is no distinction between bare and
+renormalized anisotropy and the renormalized anisotropy $\xi$ will be
+used. The tuning will be done for the dispersion relation in a weak
+background field.
+
+The results of the tuning will be given only for $\nu_0 = r_0$, {\it i.e.},
+with the projection property in the time direction. They will not be given
+as function of the bare mass $m_0$ but rather the exact mass (or {\em pole}
+mass) $m = E(0) = \log(1+a_0 m_0/\nu_0) / a_0$.
+
+At the classical level --- or when done fully non-perturbative --- the two
+tuning methods, ``$\nu$-tuning'' and ``$\nu_0$-tuning'', are of course
+equivalent, being simply related by a rescaling of the fermion fields.
+
+\subsection{$\nu$-tuning}
+
+Here one keeps $\nu_0 = 1 = r_0$ fixed. Without background field, the lattice
+dispersion relation becomes the continuum dispersion relation, up to terms
+of order ${\cal O}(a^2 p^4)$ for (see the appendix and Klassen (3.9))
+\bea
+\label{eq:nu_tune1}
+\nu^2(a_0 m, \xi, r) &=& {\rm e}^{a_0 m} \frac{\sinh(a_0 m)}{a_0 m}
+ - r \xi \sinh(a_0 m) \nonumber \\
+r(a_0 m, \xi, \nu) &=& \frac{1}{\xi} \Biggl( \frac{{\rm e}^{a_0 m}}{a_0 m}
+ - \frac{\nu^2}{\sinh(a_0 m)} \Biggr) \\
+\nu(a_0 m, \xi, \rho \equiv \frac{r}{\nu}) &=&
+ \sqrt{ {\rm e}^{a_0 m} \frac{\sinh(a_0 m)}{a_0 m} +
+ \biggl( \frac{\rho}{2} \xi \sinh(a_0 m) \biggr)^2 }
+ - \frac{\rho}{2} \xi \sinh(a_0 m) ~. \nonumber
+\eea
+The last form, with $\rho=1$, is the relevant one for actions with the
+full projection property such as (\ref{eq:Q_W}), (\ref{eq:Q_Tim}) or
+(\ref{eq:Q_SZIN}).
+
+To get the continuum dispersion relation in a constant background field
+at zero momentum, up to terms of order ${\cal O}(a^2 F^2)$, requires
+the choices (see Klassen (3.12))
+\bea
+\omega_0(a_0 m, \xi, \nu) &=& \frac{1}{\xi} \Biggl(
+ \frac{{\rm e}^{a_0 m}}{a_0 m} - \frac{\nu}{\sinh(a_0 m)} \Biggr) \nonumber \\
+\omega(a_0 m, \xi, \nu) &=& \frac{1}{\xi} \Biggl(
+ \frac{{\rm e}^{a_0 m}}{a_0 m} - \frac{\nu^2}{\sinh(a_0 m)} \Biggr) ~.
+\label{eq:nu_tune2}
+\eea
+Note that $\omega(a_0 m, \xi, \nu) = r(a_0 m, \xi, \nu)$!
+
+The mass dependence of some of the coefficients for the anisotropic clover
+action, {\it i.e.,} with the full projection property, are shown in Klassen's
+Figs. 3 and 4.
+
+\subsection{$\nu_0$-tuning}
+
+Here we keep $\nu = 1 = r$ fixed, and, to simplify the analysis, we also
+take $\nu_0 = r_0$, {\it i.e.,} we enforce the full projection property.
+Then, from the dispersion relation without background field we obtain
+\bea
+\frac{1}{\nu_0(a_0 m, \xi)} =
+ \sqrt{ {\rm e}^{a_0 m} \frac{\sinh(a_0 m)}{a_0 m} +
+ \biggl( \frac{\xi}{2} \sinh(a_0 m) \biggr)^2 } - \frac{\xi}{2} \sinh(a_0 m) ~.
+\label{eq:nu0_tune1}
+\eea
+$\nu_0$ is simply the inverse of $\nu$ from $\nu$-tuning for the case of
+full projection property, $\nu=r$.
+
+{}From the dispersion relation in a background field, but at vanishing
+momentum, we get
+\bea
+\frac{\omega_0(a_0 m, \xi)}{\nu_0} &=& \frac{1}{\xi} \Biggl(
+ \frac{{\rm e}^{a_0 m}}{a_0 m} - \frac{1}{\nu_0\sinh(a_0 m)} \Biggr)
+ \nonumber \\
+\frac{\omega(a_0 m, \xi)}{\nu_0} &=& \frac{1}{\xi} \Biggl(
+ \frac{{\rm e}^{a_0 m}}{a_0 m} - \frac{1}{\nu^2_0\sinh(a_0 m)} \Biggr)
+ \equiv \frac{1}{\nu_0} ~.
+\label{eq:nu0_tune2}
+\eea
+In particular, we find $\omega(a_0 m, \xi) = 1$, independent of $a_0 m$
+and $\xi$! A plot of $\omega_0(a_0 m, \xi)$ is shown as Fig. 5 in Klassen's
+draft, though he labeled it as $\omega_0(a_0 m, \xi) / \nu$. But $\nu$ has
+been set to 1 here.
+
+
+\section{Tuning beyond the classical level}
+
+Here we are interested in anisotropic lattices with a fixed renormalized
+anisotropy $\xi$. We assume that the bare anisotropy $\xi_0$ has already
+been determined from the Euclidean invariance of the static potential.
+We note that to quite good accuracy $\xi = \frac{u_0}{u} \xi_0$, with
+$u_0$ and $u$ the average temporal and spatial link in Landau gauge
+(with $\xi_0$ used in the gauge condition), respectively.
+
+We start by tadpole improving, considering the action with full projection
+property, eq.~(\ref{eq:Q_Tim}), only. We note that $\tilde W_\mu =
+\hat W_\mu \gamma_\mu - 1$ is linear in the gauge field $U_\mu$, while
+$F_{\mu\nu}$ contains $U^2_\mu U^2_\nu$. Hence, tadpoling we write
+eq.~(\ref{eq:Q_Tim}) as
+\bea
+a_0 Q &=& \left( a_0 m_0 + \nu_0 + \frac{3\nu}{\xi_0} \right) +
+ \nu_0 u_0 \left( \frac{\tilde W_0}{u_0} \right) +
+ \frac{\nu u}{\xi_0} \sum_k \left( \frac{\tilde W_k}{u} \right) \nonumber \\
+&& - \half \left[ \omega_0 u^2_0 u^2 \sum_k \sigma_{0k} \left(
+ \frac{\hat F_{0k}}{u^2_0 u^2} \right) + \frac{\omega u^4}{\xi_0}
+ \sum_{k<l} \sigma_{kl} \left( \frac{\hat F_{kl}}{u^4} \right) \right] ~.
+\eea
+Factoring out a $u_0$ and substituting $\xi$ for $\xi_0 u_0/u$ we get
+\bea
+\frac{1}{u_0} a_0 Q &=& \left( \frac{a_0 m_0}{u_0} + \frac{\nu_0}{u_0} +
+ \frac{3\nu}{\xi u} \right) + \nu_0 \left( \frac{\tilde W_0}{u_0} \right) +
+ \frac{\nu}{\xi} \sum_k \left( \frac{\tilde W_k}{u} \right) \nonumber \\
+&& - \half \left[ \omega_0 u_0 u^2 \sum_k \sigma_{0k} \left(
+ \frac{\hat F_{0k}}{u^2_0 u^2} \right) + \frac{\omega u^3}{\xi}
+ \sum_{k<l} \sigma_{kl} \left( \frac{\hat F_{kl}}{u^4} \right) \right] ~.
+\label{eq:Q_Tim_tp}
+\eea
+Now, tadpole improving consists in interpreting the combined coefficients
+in front of the respective terms as the classical coefficients, {\it i.e.},
+$\omega^{tp}_0 u_0 u^2 = \omega^{cl}_0$ and $\omega^{tp} u^3 = \omega^{cl}$,
+while the $u$-factors in the operators are ignored, or set to 1.
+Thus we set
+\bea
+\omega^{tp}_0 = \frac{\omega^{cl}_0}{u_0 u^2} ~, \qquad
+\omega^{tp} = \frac{\omega^{cl}}{u^3} ~.
+\label{eq:w_tp}
+\eea
+We note that $\nu$ and $\nu_0$ do not get any tadpole factors. But the
+bare mass changes
+\bea
+a_0 m^{tp}_0 = u_0 a_0 m^{cl}_0 + \nu_0 (u_0-1) + \frac{3\nu}{\xi}
+ \frac{u_0}{u} (u-1) ~.
+\eea
+
+At the classical level, $\nu$ or $\nu_0$ were functions of the anisotropy
+and the quark pole mass. In QCD, we determine them non-perturbatively from
+the dispersion relation of the pion. We define an ``effective velocity
+of light'' $c({\bf p})$ by
+\bea
+c({\bf p})^2 = \frac{E({\bf p})^2 - E(0)^2}{{\bf p}^2}
+ = \xi^2 \frac{a_0^2 E({\bf p})^2 -a_0^2 E(0)^2}{a^2 {\bf p}^2} ~,
+\eea
+where in the last expression all quantities are dimensionless. For the
+tuning we want $c(0)=1$. To obtain $c(0)$, we extrapolate $c({\bf p})$,
+assuming $c({\bf p}) - c(0) = {\cal O}(a^2 {\bf p}^2)$. With the other
+parameters kept fixed, we determine $\nu$ or $\nu_0$ from the condition
+that $c(0)=1$, within errors.
+
+What do we take for the classical values of $\omega$ and $\omega_0$ which
+we then tadpole improve? I would impose the classical relations between
+$\omega$, $\omega_0$ and $\nu$ or $\nu_0$.
+
+For $\nu$-tuning ($\nu_0 = 1 = r_0$, $r = \nu$) this gives $\omega^{cl} = \nu$,
+while $\omega^{cl}_0$ needs to be obtained from eq.~(\ref{eq:nu_tune1}) and
+(\ref{eq:nu_tune2}). From (\ref{eq:nu_tune1}), using $\rho=1$ we can get
+the pole mass $a_0 m$ for which the measured $\nu$ would be the classical
+value and then use this in (\ref{eq:nu_tune2}) to get $\omega^{cl}_0$.
+
+Klassen used, instead, $\omega^{TK} = 1$ and $\omega^{TK}_0 = \half
+\left( 1 + \frac{1}{\xi} \right)$, the value at $a_0 m = 0$, before
+tadpoling. We note that depending on the value of $\xi$ and the determined
+value of $\nu$, Klassen's choices can be smaller are bigger than our
+``classical'' ones. This might explain the large $\xi$-dependence that
+Klassen obtained in his Fig. 10. A comparsion of Klassen's choices and our
+``classical'' ones is given in Table~\ref{tab:nu_tune}. We have used the
+$\nu$-values found by Klassen and given in his Table 3.
+
+\begin{table} \centering
+\begin{tabular}{| l | l | l || l | l || l | l |}
+\hline
+$\xi$  & $\beta$ & ~$\nu$ & $\omega^{TK}$ & $\omega^{TK}_0$ & $\omega^{cl}$ &
+ $\omega^{cl}_0$ \\ \hline
+ 3  &   5.5  & 0.830 & 1.0 & 0.666 & 0.830 & 0.6296 \\
+    &   5.6  & 0.810 & 1.0 & 0.666 & 0.810 & 0.6260 \\
+    &   5.7  & 0.800 & 1.0 & 0.666 & 0.800 & 0.6245 \\
+    &   5.8  & 0.790 & 1.0 & 0.666 & 0.790 & 0.6231 \\
+\hline
+ 2  &   5.5  & 1.163 & 1.0 & 0.75  & 1.163 & 1.2083 \\
+    &   5.6  & 1.060 & 1.0 & 0.75  & 1.060 & 1.0794 \\
+    &   5.7  & 0.990 & 1.0 & 0.75  & 0.990 & 0.9864 \\
+    &   5.8  & 0.925 & 1.0 & 0.75  & 0.925 & 0.8882 \\
+\hline
+% 1  &   5.54 & 2.439 & 1.0 & 1.0   & 2.439 & 3.3043 \\
+ 1  &   5.7  & 1.600 & 1.0 & 1.0   & 1.600 & 2.0927 \\
+\hline
+\end{tabular}
+\caption{Comparison of clover coefficients, before tadpole improving,
+from $\nu$-tuning. Note that $\omega^{TK} = 1$ for all cases. The $\nu$-values
+are form Klassen's Table 3.}
+\label{tab:nu_tune}
+\end{table}
+
+For $\nu_0$-tuning ($\nu = 1 = r$, $r_0 = \nu_0$) this gives $\omega^{cl} = 1$,
+as used by Klassen, while $\omega^{cl}_0$ needs to be obtained from
+eq.~(\ref{eq:nu0_tune1}) and (\ref{eq:nu0_tune2}), similarly to the previous
+case. Here, Klassen again used $\omega^{TK}_0 = \half \left( 1 + \frac{1}{\xi}
+\right)$. A comparsion of Klassen's choices and our ``classical'' ones
+is given in Table~\ref{tab:nu0_tune}. We have used the $\nu_0$-values found
+by Klassen and given in his Table 4. We see that Klassens choice is always
+smaller than our ``classical'' choice, which can be seen also from Klassen's
+Fig. 5.
+
+\begin{table} \centering
+\begin{tabular}{| l | l | l || l || l || l |}
+\hline
+$\xi$  & $\beta$ & ~$\nu_0$ & ``$1/\nu$'' & $\omega^{TK}_0$ & 
+ $\omega^{cl}_0$ \\ \hline
+ 3  &   5.5  & 1.200 & 1.205 & 0.666 & 0.7563 \\ % 0.7585 \\
+    &   5.6  & 1.230 & 1.235 & 0.666 & 0.7706 \\ % 0.7729 \\
+    &   5.7  & 1.250 & 1.250 & 0.666 & 0.7806 \\ % 0.7806 \\
+    &   5.8  & 1.265 & 1.266 & 0.666 & 0.7883 \\ % 0.7888 \\
+\hline
+ 2  &   5.5  & 0.860 & 0.860 & 0.75  & 1.0389 \\ % 1.0389 \\
+    &   5.6  & 0.945 & 0.943 & 0.75  & 1.0178 \\ % 1.0183 \\
+    &   5.7  & 1.010 & 1.010 & 0.75  & 0.9962 \\ % 0.9962 \\
+    &   5.8  & 1.080 & 1.081 & 0.75  & 0.9610 \\ % 0.9602 \\
+\hline
+ 1  &   5.54 & 0.410 &  ---  & 1.0   & 1.3548 \\
+ 0  &   5.7  & 0.630 & 0.625 & 1.0   & 1.3063 \\ % 1.3079 \\
+\hline
+\end{tabular}
+\caption{Comparison of the temporal clover coefficient, before tadpole
+improving, from $\nu_0$-tuning. The $\nu_0$ are from Klassen's Table 4.
+In the 4-th column we list $1/\nu$ from Klassen's Table 3. This should
+be the same as $\nu_0$, at least for equivalent other parameters.}
+\label{tab:nu0_tune}
+\end{table}
+
+It would, of course, be preferable to do the entire tuning non-perturbatively,
+with the clover coefficients computed with Schr\"odinger functional
+boundary conditions and appropriate chromoelectric (for $\omega_0$)
+or chromomagnetic (for $\omega$) background fields. The above could then
+be input values for the tuning.
+
+
+\section*{Appendix}
+
+Here we derive, following appendix B of Klassen, the classical dispersion
+relation including a small background field.
+For convenience, we consider here an action slightly more general than
+(\ref{eq:Q_generic})
+\bea
+Q = m_0 + \nu_\mu \nabla_\mu \gamma_\mu -\half r_\mu a_\mu \Delta_\mu -
+ \frac{1}{4} a \omega \cdot \sigma \cdot F ~.
+\eea
+with $\omega \cdot \sigma \cdot F \equiv 2 \sum{\mu < \nu} \omega_\mu
+\sigma_{\mu\nu} F_{\mu\nu}$, $a_k=a$, $\nu_k=\nu$ and $\omega_k=\omega$ for
+$k=1,2,3$, and summation over repeated indices implied.
+The dispersion relation $Q Q^\dagger = 0$ then reads
+\bea
+0 = \nu_\mu \nu_\nu \gamma_\mu \gamma_\nu \nabla_\mu \nabla_\nu -
+ (m_0 - \half r_\mu a_\mu \Delta_\mu -
+ \frac{1}{4} a \omega \cdot \sigma \cdot F)^2 ~.
+\eea
+Using ${\bf p}$ for the spatial part of the 4-momentum $p$, and
+\bea
+\bar p_\mu = \frac{1}{a_\mu} \sin(a_\mu p_\mu) ~, \qquad
+\hat p_\mu = \frac{2}{a_\mu} \sin \left( \frac{a_\mu p_\mu}{2} \right) ~,
+\eea
+we find, going to momentum space,
+\bea
+- \nu_0^2 \bar p_0^2 &=& \nu^2 \bar{\bf p}^2 - \half \nu_\mu \nu_\nu
+ \sigma_{\mu\nu} F_{\mu\nu} + M({\bf p})^2 \nonumber \\
+&& - M({\bf p})(-r_0 a_0 \hat p_0^2 + \half a \omega \cdot \sigma \cdot F)
+ + \frac{1}{4} (-r_0 a_0 \hat p_0^2 + \half a \omega \cdot \sigma \cdot F)^2
+\eea
+with
+\bea
+M({\bf p}) = m_0 + \half a \hat{\bf p}^2 ~.
+\eea
+Next we use $\bar p^2_\mu = \hat p^2_\mu - \frac{1}{4} a^2_\mu \hat p^4_\mu$,
+perform the Wick rotation to Minkowski space by introducing the energy $E$ via
+\bea
+\hat E^2 \equiv - \bar p^2_0 \equiv \left( \frac{2}{a_0}
+ \sinh(a_0 E/2) \right)^2 ~,
+\eea
+and restrict to $\nu_0 = r_0$. Then
+\bea
+\hat E^2 \Big( 1 + \frac{a_0}{\nu_0} M({\bf p}) - \frac{a_0}{4\nu_0} a
+ \omega \cdot \sigma \cdot F \Big) &=& \frac{\nu^2}{\nu_0^2} \bar{\bf p}^2
+ + \frac{1}{\nu_0^2} M({\bf p})^2 - \\
+&& \frac{1}{\nu_0^2} \sum{\mu < \nu} ( \nu_\mu \nu_\nu +a M({\bf p})
+ \omega_\mu ) \sigma_{\mu\nu} F_{\mu\nu} + {\cal O}(F^2) ~. \nonumber
+\eea
+This looks like Klassen's eq. (B.6) but with all parameters $m_0$, $\nu$,
+$r$ and $\omega_\mu$ replaced by $m_0/\nu_0$, $\nu/\nu_0$, $r/\nu_0$ and
+$\omega_\mu/\nu_0$, implying also $M({\bf p}) \longrightarrow
+M({\bf p})/\nu_0$.
+
+In the absense of a background field we find
+\bea
+\hat E^2({\bf p}) = \frac{\bar{\bf p}^2 (\nu/\nu_0)^2 + (M({\bf p})/\nu_0)^2}{
+ 1 + a_0 M({\bf p})/\nu_0} ~.
+\eea
+In particular
+\bea
+\hat m^2 \equiv \hat E^2(0) = \frac{(m_0/\nu_0)^2}{1 + a_0 m_0/\nu_0} ~,
+\eea
+and the exact quark mass, or {\em pole} mass, is
+\bea
+m \equiv E(0) = \frac{1}{a_0} \log \Big( 1 + a_0 m_0/\nu_0 \Big) ~.
+\eea
+
+To do the tuning of the lattice dispersion relation, we note that from the
+continuum dispersion relation $E^2 = m^2 + {\bf p}^2$ follows
+\bea
+\hat E^2 = \left( \frac{2}{a_0} \sinh(a_0 \sqrt{m^2 + {\bf p}^2} /2) \right)^2
+ = \hat m^2 + \frac{\sinh(a_0 m)}{a_0 m} {\bf p}^2 + {\cal O}(a^2
+ {\bf p}^4) ~. \nonumber
+\eea
+We compare this to the lattice dispersion relation expanded to the same order.
+Setting $\nu_0 =1$ we can derive the tuning relations in (\ref{eq:nu_tune1}),
+while setting $\nu = 1 = r$ we can derive (\ref{eq:nu0_tune1}).
+
+On the other hand, for vanishing momentum we find
+\bea
+\hat E^2(F) ( 1 + a_0 m_0/\nu_0 ) &=& \left( \frac{m_0}{\nu_0} \right)^2 -
+ \sum_{\mu < \nu} \left( \frac{\nu_\mu \nu_\nu}{\nu_0^2} +
+ a \frac{m_0 \omega_\mu}{\nu_0^2} - \half a_0 a \hat m^2 \omega_\mu/\nu_0
+ \right) \sigma_{\mu\nu} F_{\mu\nu} + {\cal O}(F^2) \nonumber \\
+&=& \left( \frac{m_0}{\nu_0} \right)^2 - \sum_{\mu < \nu}
+ \left( \frac{\nu_\mu \nu_\nu}{\nu_0^2} + \frac{a \omega_\mu}{a_0 \nu_0} 
+ \sinh(a_0 m) \right) \sigma_{\mu\nu} F_{\mu\nu} + {\cal O}(F^2) ~.
+\eea
+In the continuum $E^2 = m^2 - \sum_{\mu < \nu} \sigma_{\mu\nu} F_{\mu\nu}$,
+which leads to
+\bea
+\hat E^2 = \hat m^2 - \frac{\sinh(a_0 m)}{a_0 m} \sum_{\mu < \nu}
+ \sigma_{\mu\nu} F_{\mu\nu} + {\cal O}(a^2 F^2) ~.
+\eea
+Therefore, for $\mu < \nu$ we need
+\bea
+\frac{\nu_\mu \nu_\nu}{\nu_0^2} + \frac{a \omega_\mu}{a_0 \nu_0}
+ \sinh(a_0 m) = {\rm e}^{a_0 m} \frac{\sinh(a_0 m)}{a_0 m} ~.
+\eea
+Setting $\nu_0 =1$ we obtain the tuning relations in (\ref{eq:nu_tune2}),
+while setting $\nu = 1 = r$ we can derive (\ref{eq:nu0_tune2}).
+
+
+\end{document}

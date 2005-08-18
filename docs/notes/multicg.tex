@@ -1,0 +1,114 @@
+\magnification=1200
+\baselineskip=12pt
+\centerline { \bf A derivation of the CG algorithm for a shifted matrix }
+\line { Rajamani Narayanan \hfill July 22, 1998}
+\bigskip
+\noindent {\it Problem:}
+
+Solve 
+$$A x = b \eqno{(1)}$$
+and
+$$(A+\sigma) x^\sigma = b \eqno{(2)}$$
+using the method of Conjugate Gradients.
+
+\medskip
+\noindent {\it Solution to (1):}
+
+The $(i+1)^{\rm th}$ iterate, $x_{i+1}$ to the solution is obtained recursively
+by
+$$x_{i+1} = x_i + \alpha_i p_i \eqno{(3)}$$
+with $x_1=0$ as the starting point.
+$p_i$ are called the search directions and also obey a recursion relation
+given as follows:
+$$p_1=g_1;\ \ \ \ \ p_{i+1}=g_{i+1} + \beta_i p_i \ \ \ \forall i \ge 1 \eqno{(4)}$$
+$g_i$ is the residue equal to $Ax_i - b$ and also obeys a recursion relation
+given by
+$$g_1=-b;\ \ \ \ \ g_{i+1}=g_i + \alpha_i Ap_i \ \ \ \forall i \ge 1 \eqno{(5)}$$
+The coefficients $\alpha_i$ and $\beta_i$ occuring in (4) and (5) are given by
+$$\alpha_i = -{ (g_i,g_i)\over (p_i,Ap_i) } \eqno{(6)}$$
+$$\beta_i = { (g_{i+1},g_{i+1})\over (g_i,g_i) } \eqno{(7)}$$
+
+\medskip
+\noindent {\it The Lanczos connection:}
+
+There is a connection between the Conjugate gradient algorithm and the
+Lanzos technique to write any Hermitian matrix in a tridiagonal form.
+Normalized $g_i$ are the Lanczos vectors. As such, it is useful to
+write down the three term recursion relation obyed by $g_i$ that does
+not involve any reference to $p_i$:
+$$g_{i+1} = \Bigl [ 1 + {\alpha_i \beta_{i-1}\over \alpha_{i-1}} \Bigr ]
+g_i + \alpha_i A g_i - {\alpha_i \beta_{i-1}\over \alpha_{i-1}} g_{i-1}
+\eqno{(8)}$$
+
+\medskip
+\noindent{ \it Solution to (2):}
+
+With the Lanczos connection in place it is simple to write down the
+the recursion relation for $x_i^\sigma$ and $p_i^\sigma$. We start by
+noting that the normalized Lanczos vectors for $A$ and $A+\sigma$ are
+the same. Therefore,
+$$g_i^\sigma = c_i^\sigma g_i \eqno{(9)}$$
+We assume that $x^\sigma_1=0$ and therefore $c_1^\sigma=1$.
+Note that $g^\sigma_i$ obeys the following recursion relation:
+$$g^\sigma_{i+1} = \Bigl [ 1 + {\alpha^\sigma_i \beta^\sigma_{i-1}\over 
+\alpha^\sigma_{i-1}} \Bigr ]
+g^\sigma_i + \alpha^\sigma_i (A+\sigma) g^\sigma_i 
+- {\alpha^\sigma_i \beta^\sigma_{i-1}\over \alpha^\sigma_{i-1}} g^\sigma_{i-1}
+\eqno{(10)}$$
+Substitution of (9) into (10) and a comparison with (8) yields,
+$$\alpha_i^\sigma { c_i^\sigma \over c_{i+1}^\sigma } = \alpha_i \eqno{(11)}$$
+$$ {\alpha_i^\sigma \beta_{i-1}^\sigma\over \alpha_{i-1}^\sigma} 
+{ c_{i-1}^\sigma \over c_{i+1}^\sigma } = 
+{\alpha_i \beta_{i-1}\over \alpha_{i-1}} \eqno{(12)}$$
+$$ \Bigl [ 1 + \alpha_i^\sigma \bigl(\sigma + {\beta^\sigma_{i-1} \over
+\alpha^\sigma_{i-1} }\bigr ) \Bigr ] 
+{ c_i^\sigma \over c_{i+1}^\sigma } = 1 + \alpha_i { \beta_{i-1} \over \alpha_{i-1}}
+\eqno{(13)}$$
+The above three equations can be simplified to
+$$ \alpha_i^\sigma = \alpha_i {c^\sigma_{i+1} \over c^\sigma_i } \eqno{(14)}$$
+$$ \beta_i^\sigma = \beta_i [{c^\sigma_{i+1} \over c^\sigma_i }]^2 \eqno{(15)}$$
+$$ {c_i^\sigma \over c_{i+1}^\sigma} =
+1 - \alpha_i \sigma + \alpha_i {\beta_{i-1}\over \alpha_{i-1}} 
+\bigl[1- {c_i^\sigma \over c_{i-1}^\sigma}\bigr] \eqno{(16)}$$
+Note that $c_1^\sigma=1$ and that
+$$c_2^\sigma= {1\over 1 - \alpha_1 \sigma} \eqno{(17)}$$
+The recursion relations for $p_i^\sigma$ and $x_i^\sigma$ are
+$$p^\sigma_1=g_1;\ \ \ \ \ 
+p^\sigma_{i+1}=c^\sigma_{i+1}g_{i+1} + \beta^\sigma_i p^\sigma_i 
+\ \ \ \forall i \ge 1 \eqno{(18)}$$
+$$x^\sigma_{i+1} = x^\sigma_i + \alpha^\sigma_i p^\sigma_i \eqno{(19)}$$
+The obvious advantange is that $g_i^\sigma$ is trivially modified and
+therefore equation (5) that involves the multiplication of matrix with
+a vector remains the same independent of $\sigma$.
+
+\medskip
+\noindent{ \it Algorithm:}
+
+One starts with $g_1=-b$, $p_1=-b$, $c_1^\sigma=1$,
+$p_1^\sigma=-b$ and $x_1^\sigma=0$.
+Each iteration proceeds as follows:
+\item{i.} Compute $Ap_i$ and $(p_i,Ap_i)$.
+\item{ii.} Compute $(g_i,g_i)$ and save this number. Also compute $\alpha_i$.
+\item{iii.} Use (5) to compute $g_{i+1}$ and overwrite $g_i$.
+\item{iv.} Compute $(g_{i+1},g_{i+1})$ and hence $\beta_i$ using the stored
+number in step iii.
+\item{v.} Compute $p_{i+1}$ using (4) and overwrite $p_i$.
+\item{vi.} Compute $c^\sigma_{i+1}$ using (17) in the first iteration
+and using (6) from the second iteration onwards.
+\item{vii.} Compute $\alpha_i^\sigma$ and $\beta_i^\sigma$ using (14) and
+(15) respectively.
+\item{viii.} Compute $x_{i+1}^\sigma$ using (19) and overwrite $x_i^\sigma$.
+\item{ix.} Compute $p_{i+1}^\sigma$ using (18) and overwrite $p_i^\sigma$.
+
+In the case where one is interested in $y=\sum_\sigma u^\sigma x^\sigma$
+it is not necessary to store all the $x_i^\sigma$. It is sufficient to
+store $y_i$ at each iteration.
+
+\end
+
+
+
+
+
+
+

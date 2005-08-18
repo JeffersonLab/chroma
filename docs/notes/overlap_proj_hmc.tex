@@ -1,0 +1,105 @@
+\documentstyle{report}
+
+% Somewhat wider and taller page than in art12.sty
+\topmargin -0.4in  \headsep 0.4in  \textheight 9.0in
+\oddsidemargin 0.25in  \evensidemargin 0.25in  \textwidth 6in
+
+\footnotesep 14pt
+\floatsep 28pt plus 2pt minus 4pt      % Nominal is double what is in art12.sty
+\textfloatsep 40pt plus 2pt minus 4pt
+\intextsep 28pt plus 4pt minus 4pt
+
+\newcommand{\be}{\begin{equation}}
+\newcommand{\ee}{\end{equation}}
+
+\begin{document}
+
+\centerline{ Inclusion of projection operators in the fermionic force}
+\rightline{Rajamani Narayanan}
+\rightline{8/6/99}
+
+In this note, I will show how to include projection operators
+in the fermionic force. Our starting point is the eigenvalue
+equation for the hermitian Wilson-Dirac operator:
+\be
+H_w\psi_n = \lambda_h \psi_n\label{eq:eigen}
+\ee
+We define the following projection operators:
+\be
+P_n = \psi_n\psi^\dagger_n; \ \ \ \ Q_n=1-P_n;\ \ \ \  Q=1-\sum_nP_n
+\ee
+We will not assume any specific form for $\epsilon(H_w)$ in this note.
+What follows applies for any realization of this matrix including
+a five-dimensional realization that includes extra fields.
+I assume that the variation is taken with respect to a single
+scalar variable.
+We start by writing
+\be
+\epsilon = Q\epsilon Q + \sum_n \epsilon(\lambda_n) P_n
+\ee
+Then we have,
+\be
+{\delta \epsilon\over \delta U} =
+Q {\delta \epsilon\over \delta U} Q - \sum_n\Bigl[
+{\delta P_n\over \delta U} \epsilon Q + Q\epsilon {\delta P_n\over \delta U}
+-\epsilon(\lambda_n) {\delta P_n\over \delta U} \Bigr]
+\ee
+We will not concern ourselves with the first term in the last equation.
+This has been dealt with in a previous note. We have assumed that all
+$\lambda_n\ne 0$ in the differentiation above.
+The variation of $P_n$ is given by
+\be
+{\delta P_n\over \delta U} = {\delta \psi_n\over \delta U}\psi^\dagger_n
++ \psi_n {\delta \psi^\dagger_n\over \delta U}\label{eq:deriv_p}
+\ee
+Differentiation of (\ref{eq:eigen}) with respect to $U$ gives,
+\be{\delta \lambda_n\over \delta U} =
+\psi_n^\dagger { \delta H_w\over \delta U} \psi_n
+\ee
+and
+\be
+(H_w-\lambda_n) {\delta \psi_n\over \delta U} =
+\Bigl[ \psi_n^\dagger { \delta H_w\over \delta U} \psi_n
+- { \delta H_w\over \delta U} \Bigr] \psi_n\label{deriv_vec}
+\ee
+Note that the right hand side of equation (\ref{deriv_vec}) is orthogonal to $\psi_n$.
+We can assume that $P_n {\delta \psi_n\over \delta U} =0$ and write
+\be
+{\delta \psi_n\over \delta U} =
+Q_n {1\over H_w -\lambda_n} Q_n \Bigl[ \psi_n^\dagger 
+{ \delta H_w\over \delta U} \psi_n
+- { \delta H_w\over \delta U} \Bigr] \psi_n
+\label{eq:deriv_psi}
+\ee
+Note that the presence of the $Q_n$ factors on the right hand side
+simply ensures the orthogonality assumed above.
+Using (\ref{eq:deriv_psi}) in (\ref{eq:deriv_p}), we get
+\be
+{\delta P_n\over \delta U} =
+Q_n {1\over H_w -\lambda_n} Q_n \Bigl[ \psi_n^\dagger 
+{ \delta H_w\over \delta U} \psi_n
+- { \delta H_w\over \delta U} \Bigr] P_n 
++ P_n \Bigl[ \psi_n^\dagger 
+{ \delta H_w\over \delta U} \psi_n
+- { \delta H_w\over \delta U} \Bigr] Q_n {1\over H_w -\lambda_n} Q_n
+\ee
+Since
+\be
+P_n\epsilon = \epsilon(\lambda_n) P_n;\ \ \ \ \ P_n Q =0
+\ee
+we have
+\be
+{\delta P_n\over \delta U} \epsilon Q =
+P_n \Bigl[ \psi_n^\dagger 
+{ \delta H_w\over \delta U} \psi_n
+- { \delta H_w\over \delta U} \Bigr] Q_n {1\over H_w -\lambda_n} \epsilon Q
+\ee
+and
+\be
+Q\epsilon {\delta P_n\over \delta U} =
+\epsilon Q_n {1\over H_w -\lambda_n} Q_n \Bigl[ \psi_n^\dagger 
+{ \delta H_w\over \delta U} \psi_n
+- { \delta H_w\over \delta U} \Bigr] P_n 
+\ee
+
+\end{document}

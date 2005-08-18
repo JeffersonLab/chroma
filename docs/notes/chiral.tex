@@ -1,0 +1,239 @@
+\magnification=1200
+\baselineskip=18pt
+The matrix $H+\gamma_5 m$ ( $m={\mu \over 1-\mu}$ ) 
+can be written down in a block diagonal form
+as follows:
+\item{1.} Zero modes: $\pm m$
+\item{2.} Edge modes: $\pm (1 + m)$ 
+\item{3.} Non-zero pairs:
+$$\pmatrix{ \lambda^2 + m & \lambda\sqrt{1-\lambda^2} \cr
+\lambda\sqrt{1-\lambda^2} & -(\lambda^2 + m) \cr } $$
+
+In the above form, the matrix can be inverted to give the following block
+diagonal form for ${\tilde H}^{-1} = (1+2m)(H+\gamma_5 m)^{-1} - \gamma_5$ 
+\item{1.} Zero modes: $\pm{1\over \mu}$
+\item{2.} Edge modes: $\pm \mu$ 
+\item{3.} Non-zero pairs:
+$${1\over \lambda^2(1-\mu^2) + \mu^2}
+\pmatrix{ \mu & (1-\mu^2)\lambda\sqrt{1-\lambda^2} \cr
+(1-\mu^2)\lambda\sqrt{1-\lambda^2} & - \mu \cr } $$
+
+It also gives the following block diagonal form for
+${\tilde D}^{-1} = (1+2m)( D + m)^{-1} - 1$
+\item{1.} Zero modes: ${1\over \mu}$
+\item{2.} Edge modes: $\mu$ 
+\item{3.} Non-zero pairs:
+$${1\over \lambda^2(1-\mu^2) + \mu^2}
+\pmatrix{ \mu & - (1-\mu^2)\lambda\sqrt{1-\lambda^2} \cr
+(1-\mu^2)\lambda\sqrt{1-\lambda^2} &  \mu\cr } $$
+
+
+Now we focus on SU(N) gauge theory with
+two degenerate flavors in a physical volume $V$.
+From the above expressions, we get
+$$<\bar\psi_i\gamma_5\psi_i>_A = {1\over V} Tr[{\tilde H}^{-1}]= {2Q\over V}
+\Bigl[{1\over \mu} -\mu\Bigr]$$ 
+in a gauge field background with
+a global topology of $Q$. 
+This quantity goes to zero when averaged over
+all gauge field configurations.
+We also get
+$$<\bar\psi_i \psi_i>_A = {1\over V} Tr[{\tilde D}^{-1}] = 
+{2|Q|\over V}\Bigl[{1\over \mu}+ \mu \Bigr]+
+{2\over V} \sum_i {2\mu\over \lambda_i^2(1-\mu^2) + \mu^2} $$
+in a fixed gauge field background $A$. The sum is over all non-zero
+eigenvalues $\lambda_i > 0 $ including the ones at $ 1$ that are
+paired with $-1$. 
+To compute the chiral condensate, we have to first take the infinite volume
+limit and then take the massless limit. Since $<|Q|>$ is proportional to
+$\sqrt{V}$ the first term goes to zero in the infinite volume limit.
+We assume that the spectrum of non-zero eigenvalues is continuous in the
+infinite volume limit with the spectral density per unit volume given by
+$\rho(\lambda)$, a symmetric function in $\lambda$. We use the formula,
+$$\int_0^\infty {1\over \lambda^2 + \mu^2} \rho(\lambda) d\lambda = {\pi \rho(0)\over
+2\mu} + O(\mu) $$
+With this formula, we have 
+$$\lim_{\mu\rightarrow 0^+} \lim_{V\rightarrow\infty} <\bar\psi_i \psi_i> = 
+2\pi \rho(0)$$
+
+Consider the real O(4) vector made up of 
+$\vec\phi = (\pi^a=
+i\sum_{ij} \bar\psi_i(x)\gamma_5\tau^a_{ij}\psi_j(x) ,
+\sigma=\sum_i\bar\psi_i(x)\psi_i(x))$. 
+
+For the pseudo-scalar flavor triplet one gets,
+$$\eqalign{\chi^a_P = & 
+- \sum_{x,y,i,j} 
+{1\over V} < \bar\psi_i(x)\gamma_5\tau^a_{ij}\psi_j(x) 
+\bar\psi_k(y)\gamma_5\tau^a_{kl}\psi_l(y) >_A \cr
+= &  {1\over V} Tr({\tilde H}^{-2}) \cr
+= & - 8N + {2|Q|\over V} [\mu + {1\over \mu}]^2 + {2\over V} \sum_i 
+{2(1+\mu^2) \over \lambda_i^2(1-\mu^2) + \mu^2} \cr 
+= & - 8N +  [\mu+{1\over \mu}] <\bar\psi_i \psi_i>_A \cr } $$
+
+For the scalar flavor singlet, one gets,
+$$
+\chi_{S}= \sum_{x,y,i,j}  
+{1\over V} < \bar\psi_i(x)\psi_i(x) 
+\bar\psi_j(y)\psi_j(y) >_A 
+=  {1\over V} \Bigl[Tr({\tilde D}^{-1})\Bigr]^2 
+- {1\over V} Tr({\tilde D}^{-2}) $$
+$$\eqalign{
+{1\over V} \Bigl[Tr({\tilde D}^{-1})\Bigr]^2 = &
+{4Q^2\over V}\Bigl[{1\over\mu}+\mu\Bigr]^2 + {16|Q|\over V}\sum_i 
+{(1+\mu^2) \over \lambda_i^2(1-\mu^2) + \mu^2} \cr 
+& +{16\over V} \sum_{i,j} 
+{\mu^2 \over [\lambda_i^2(1-\mu^2) + \mu^2][\lambda_j^2(1-\mu^2) + \mu^2]} 
+\cr}
+$$
+$${1\over V} Tr({\tilde D}^{-2})
+=  8N + {2|Q|\over V} [\mu - {1\over \mu}]^2 - {2\over V} \sum_i 
+{2(1+\mu^2) \over \lambda_i^2(1-\mu^2) + \mu^2} 
++ {2\over V} \sum_i
+{4\mu^2 \over [\lambda_i^2(1-\mu^2) + \mu^2]^2}
+$$
+
+With these equations in place, we compute
+the O(4) invariant correlator,
+$$\eqalign{ \sum_{x,y}
+{1\over V} <\vec\phi(x)\cdot \vec\phi(y)>_A = &
+-32N + {4Q^2\over V}\Bigl[{1\over\mu}+\mu\Bigr]^2 
++ {4|Q|\over V}\Bigl[{1\over\mu^2}+\mu^2+4\Bigr] 
+ + {16|Q|\over V}\sum_i 
+{(1+\mu^2) \over \lambda_i^2(1-\mu^2) + \mu^2} \cr 
+& + {16\over V} \sum_i {(1+\mu^2) \over \lambda_i^2(1-\mu^2) + \mu^2} 
+ - {8\over V} \sum_i
+{\mu^2 \over [\lambda_i^2(1-\mu^2) + \mu^2]^2} \cr
+& +{16\over V} \sum_{i,j} 
+{\mu^2 \over [\lambda_i^2(1-\mu^2) + \mu^2][\lambda_j^2(1-\mu^2) + \mu^2]}
+\cr }
+$$
+In the massless limit at fixed lattice volume, the above equation
+reduces to
+$$\lim_{\mu\rightarrow 0}\sum_{x,y}
+{1\over V} <\vec\phi(x)\cdot \vec\phi(y)> = 
+\lim_{\mu\rightarrow 0} {4<Q^2+|Q|>\over \mu^2 V}
++{16\over V} < \sum_i {1\over\lambda_i^2} > -32N
+$$
+where the average is now over an ensemble of gauge fields.
+
+Consider the other real O(4) vector made up of 
+$\vec\rho = (\tilde\pi^a=
+-\sum_{ij} \bar\psi_i(x)\tau^a_{ij}\psi_j(x) ,
+\tilde\sigma=i\sum_i\bar\psi_i(x)\gamma_5\psi_i(x))$. 
+
+For the scalar flavor triplet one gets,
+$$\eqalign{\chi^a_S = & 
+\sum_{x,y,i,j}   
+{1\over V} < \bar\psi_i(x)\tau^a_{ij}\psi_j(x) 
+\bar\psi_k(y)\tau^a_{kl}\psi_l(y) >_A 
+=  - {1\over V} Tr({\tilde D}^{-2}) \cr
+& = - 8N - {2|Q|\over V} [\mu - {1\over \mu}]^2 + {2\over V} \sum_i 
+{2(1+\mu^2) \over \lambda_i^2(1-\mu^2) + \mu^2} 
+- {2\over V} \sum_i
+{4\mu^2 \over [\lambda_i^2(1-\mu^2) + \mu^2]^2}\cr 
+& = -8N +(1-\mu^2) {d\over d\mu} <\bar\psi_i \psi_i>_A \cr
+}
+$$
+
+For the 
+pseudo-scalar flavor singlet, we get,
+$$\eqalign{ \chi_P = &
+-\sum_{x,y} 
+{1\over V} < \bar\psi_i(x)\gamma_5\psi_i(x) \bar\psi_j(y)\gamma_5\psi_j(y) >_A \cr
+= & 
+-{1\over V} \Bigl[Tr({\tilde H}^{-1})\Bigr]^2 
++ {1\over V} Tr({\tilde H}^{-2}) \cr
+= & -{4Q^2\over V} \Bigl[{1\over \mu}
+- \mu\Bigr]^2 -8N + {2|Q|\over V} [\mu + {1\over \mu}]^2 + {2\over V} \sum_i 
+{2(1+\mu^2) \over \lambda_i^2(1-\mu^2) + \mu^2} \cr 
+= & - {4Q^2\over V} \Bigl[{1\over \mu}
+-\mu\Bigr]^2 - 8N + [\mu+{1\over \mu}] <\bar\psi_i \psi_i>_A \cr } $$
+
+With these equations in place, we compute
+the other O(4) invariant correlator,
+$$\eqalign{ \sum_{x,y}
+{1\over V} <\vec\rho(x)\cdot \vec\rho(y)>_A = &
+- 32N - {4Q^2\over V}\Bigl[{1\over\mu}-\mu\Bigr]^2 
+-{4|Q|\over V}\Bigl[{1\over\mu^2}+\mu^2-4\Bigr] 
+\cr
+& +{16\over V} \sum_i
+{1+ \mu^2 \over \lambda_i^2(1-\mu^2) + \mu^2}
+- {24\over V} \sum_i
+{\mu^2 \over [\lambda_i^2(1-\mu^2) + \mu^2]^2}
+\cr }
+$$
+In the massless limit at fixed lattice volume, the above equation
+reduces to
+$$\lim_{\mu\rightarrow 0}\sum_{x,y}
+{1\over V} <\vec\rho(x)\cdot \rho(y)> = 
+{16\over V} < \sum_i {1\over\lambda_i^2} >  
+- \lim_{\mu\rightarrow 0}{4<Q^2+|Q|>\over \mu^2 V} - 32N
+$$
+where the average is now over an ensemble of gauge fields.
+
+Combining the two different O(4) correlators one gets,
+$$\eqalign{& \sum_{x,y}
+ {1\over V}   \Bigl[ <\vec\phi(x)\cdot\vec\phi(y)>_A- 
+<\vec\rho(x)\cdot\vec\rho(y)>_A \Bigr] \cr
+& = {8Q^2\over V}\Bigl[{1\over\mu^2}+\mu^2\Bigr] 
++{8|Q|\over V}\Bigl[{1\over\mu^2}+\mu^2\Bigr] 
++ {16|Q|\over V}\sum_i 
+{(1+\mu^2) \over \lambda_i^2(1-\mu^2) + \mu^2} \cr
+& + {16\over V} \sum_i
+{\mu^2 \over [\lambda_i^2(1-\mu^2) + \mu^2]^2}
++{16\over V} \sum_{i,j} 
+{\mu^2 \over [\lambda_i^2(1-\mu^2) + \mu^2][\lambda_j^2(1-\mu^2) + \mu^2]}
+\cr }
+$$
+In the massless limit, the above combination reduces to
+$$ \lim_{\mu\rightarrow 0} \sum_{x,y}
+ {1\over V}   \Bigl[ <\vec\phi(x)\cdot\vec\phi(y)>- 
+<\vec\rho(x)\cdot\vec\rho(y)> \Bigr] = 
+\lim_{\mu\rightarrow 0}{8<Q^2+|Q|>\over \mu^2 V} $$
+
+We also note that
+$$\eqalign{ 
+\omega^a & = \chi^a_P - \chi^a_S \cr
+& = {4|Q|\over V} \Bigl[\mu^2 + {1\over \mu^2}\Bigr] +
+ {2\over V} \sum_i
+{4\mu^2 \over [\lambda_i^2(1-\mu^2) + \mu^2]^2} \cr
+& = \Bigl[\mu + {1\over \mu}\Bigr] <\bar\psi_i\psi_i>_A 
+-\Bigl[1 -\mu^2 \Bigr] {d\over d\mu} <\bar\psi_i\psi_i>_A \cr}
+$$
+
+In finite volume, chiral symmetry in not broken in the massless limit
+and therefore:
+$$
+\lim_{\mu\rightarrow 0} \sum_{x,y}
+{1\over V} <\phi^a(x)\phi^a(y)> =
+ \lim_{\mu\rightarrow 0} \sum_{x,y}
+{1\over V} <\phi^b(x)\phi^b(y)>$$
+for all $a$ and $b$. Setting $a=1$ and $b=4$
+yields
+$$\lim_{\mu\rightarrow 0} {1\over V} Tr{\tilde H}^{-2} =
+\lim_{\mu\rightarrow 0} {1\over V} [Tr{\tilde D}^{-1}]^2 - Tr{\tilde D}^{-2}
+$$
+Similarly,
+$$
+\lim_{\mu\rightarrow 0} \sum_{x,y}
+{1\over V} <\rho^a(x)\rho^a(y)> =
+ \lim_{\mu\rightarrow 0} \sum_{x,y}
+{1\over V} <\rho^b(x)\rho^b(y)>$$
+for all $a$ and $b$. Setting $a=1$ and $b=4$
+yields
+$$\lim_{\mu\rightarrow 0} {1\over V} Tr{\tilde D}^{-2} =
+\lim_{\mu\rightarrow 0} {1\over V} [Tr{\tilde H}^{-1}]^2 - Tr{\tilde H}^{-2}$$
+Combining the two equations one has
+$$\lim_{\mu\rightarrow 0} {1\over V} [Tr{\tilde H}^{-1}]^2 =
+\lim_{\mu\rightarrow 0} {1\over V} [Tr{\tilde D}^{-1}]^2$$
+which is satisfied if
+$$ \lim_{\mu\rightarrow 0} {1\over V} < |Q| \sum_i {1\over \lambda_i^2} > =0
+$$
+as we have assumed before.
+Each one of the relations indvidually yields,
+$$\lim_{\mu\rightarrow 0} {<|Q|>\over \mu^2 V} = 
+\lim_{\mu\rightarrow 0} {<Q^2>\over \mu^2 V}$$
+
+
+\end

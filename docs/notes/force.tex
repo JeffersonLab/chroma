@@ -1,0 +1,426 @@
+\documentclass[12pt]{article}
+\usepackage{latexsym}
+\usepackage{times}
+\usepackage{fullpage}
+\title{HMC Force term for two flavours of Wilson Fermions}
+\author{B\'alint Jo\'o}
+
+
+
+\begin{document}
+\newcommand{\Tr}{\mbox{Tr}\ } 
+\newcommand{\Trs}{\mbox{Tr}_{s} \ }
+\newcommand{\Trc}{\mbox{Tr}_{c} \ }
+\newcommand{\Mdag}{M^{\dagger}}
+\newcommand{\Udag}{U^{\dagger}}
+\newcommand{\Ddag}{D^{\dagger}}
+\newcommand{\Udot}{\dot{U}}
+\newcommand{\UdagDot}{\dot{U}^{\dagger}}
+\newcommand{\Mdot}{\dot{M}}
+\newcommand{\MdagDot}{\dot{M}^{\dagger}}
+\newcommand{\Ddot}{\dot{D}}
+\newcommand{\DdagDot}{\dot{D}^{\dagger}}
+\newcommand{\pidot}{\dot{\pi}}
+\newcommand{\Hdot}{\dot{H}}
+\newcommand{\Sdot}{\dot{S}}
+\newcommand{\phidag}{\phi^{\dagger}}
+\newcommand{\Xdag}{X^{\dagger}}
+\newcommand{\Ydag}{Y^{\dagger}}
+\newcommand{\psidag}{\psi^{\dagger}}
+\newcommand{\sigmadag}{\sigma^{\dagger}}
+\newcommand{\rhodag}{\rho^{\dagger}}
+\newcommand{\onepgm}{ (1 + \gamma_{\mu}) }
+\newcommand{\onemgm}{ (1 - \gamma_{\mu}) }
+\maketitle
+\abstract{We derive the HMC force term for two flavours of Wilson fermions
+for the unpreconditioned and the preconditioned case, following the thesis
+appendix of \cite{Zbysh}}
+
+\section{Preliminaries, and Notation}
+In this derivation We follow Zbyshek's thesis. The plan is to write down 
+the two flavour fermionic Hamiltonian, find its derivative with respect
+to molecular dynamics time and set it to zero. This will give us the force
+term. We ignore the gauge piece here, but it could be included too. 
+
+We will use the usual notation $U_{\mu,x}$ for a gauge field on site
+$x$ pointing in the direction $\mu$. Likewise, the momenta will be denoted
+by $\pi_{\mu,x}$. The Wilson Fermion matrix will be denoted $M$, and the
+hopping term will be denoted $D$ to stop me having to figure out the 
+LaTeX-ery to put the slash through it. Time derivatives with respect to 
+Molecular Dynamics time $\tau$ will be denoted
+(following Zbysh's thesis) in ``dot'' notation, ie:
+\begin{equation}
+\frac{d U_{\mu,x}}{d \tau} = \Udot_{\mu,x}
+\end{equation}
+
+Checkerboarding notation, where needed, will be denoted by subscripts
+$0$ and $1$ referring to the checkerboard index in question.
+
+\subsection{Hamiltonian}
+
+We consider the Hamiltonian
+\begin{equation}
+H = \frac{1}{2}\sum_{\mu,x} \Tr \pi_{\mu,x}^2 + S(U)
+\end{equation}
+with  $S(U)$ being the action.
+
+The equations of motion of $U_{\mu x}$ with respect to a fictitious 
+molecular dynamics time take the form:
+\begin{eqnarray}
+  \Udot_{\mu,x} &=& \pi_{\mu,x} U_{\mu,x}  \label{e:Udot} \\
+  \UdagDot_{\mu,x} &=& - \Udag_{\mu,x} \pi_{\mu,x} \label{e:UDagDot} \\
+\end{eqnarray}
+where eq (\ref{e:UDagDot}) comes from the fact that the $\pi$ are 
+antihermitian. (Note: Zbysh's thesis used momenta $P_{\mu,x}$ defined
+to be hermitian and he had a factor of $i$ floating about. The 
+correspondance between his $P$ and our $\pi$ is $\pi=iP$.)
+
+We can write the time derivative of the Hamiltonian as
+\begin{equation}
+\dot{H} = \sum_{x,\mu} \Tr \pi_{\mu,x} \pidot_{\mu,x} + \Sdot(U)
+\end{equation}
+and what we will show is that $\Sdot$ can be written
+in the form
+\begin{equation}
+\Sdot = \sum_{\mu, x} \Tr \pi_{\mu,x} F_{\mu,x}
+\end{equation}
+for some $F_{\mu x}$. Then 
+\begin{equation}
+\Hdot = \sum_{x,\mu} \Tr \pi_{\mu,x} \left( \pidot_{\mu,x} + F_{\mu,x} \right) \ .
+\end{equation}
+Now since 
+\begin{equation}
+\Tr \pi_{\mu,x} = 0
+\end{equation}
+we can ensure that $\Hdot$ is zero if 
+\begin{equation}
+\pidot_{\mu,x} + F_{\mu,x} \propto 1 \ .
+\end{equation}
+We can ensure that the $\pidot$ are traceless if we choose the
+constant of proportionality to be $\Tr F_{\mu x}$ so that
+\begin{equation}
+\pidot = -F_{\mu,x} + \Tr F_{\mu,x} = - \mathcal{F}_{\mu,x} \label{e:pidot}
+\end{equation}
+where
+\begin{equation}
+\mathcal{F}_{\mu,x} = F_{\mu,x} - \Tr F_{\mu,x} \label{e:mathF}
+\end{equation}
+is the force term.
+
+The rest of this document is concerned with finding $\Sdot$ and $F$
+for Wilson fermions.
+
+\subsection{Two Flavour Fermion Actions}
+For both the preconditioned and the unpreconditioned case we can write
+the two flavour fermion action as:
+\begin{equation}
+S = \chi^{\dagger} (\Mdag M )^{-1} \chi
+\end{equation}
+with the difference between the two actions being the form of the 
+matrix $M$ and on what part of the lattice the pseudofermion fields
+are defined.
+
+We can therefore write $\Sdot$ as
+\begin{eqnarray}
+\Sdot & = & \frac{d}{d \tau} \left( \chi^{\dagger} (\Mdag M)^{-1} \chi \right) \\
+      & = & - \chi^{\dagger} \left( (\Mdag M)^{-1} \frac{d}{d \tau} \left[ \Mdag M \right] (\Mdag M)^{-1} \chi \right) \\
+      & = & - \Xdag \left( \MdagDot M + \Mdag \Mdot \right) X \\
+      & = & - \Xdag \MdagDot Y - \Ydag \Mdot X \label{e:SdotXY}
+\end{eqnarray}
+where we have defined vectors:
+\begin{eqnarray}
+  X &=& (\Mdag M)^{-1} \chi \\
+  Y &=& M X = (\Mdag)^{-1} \chi
+\end{eqnarray}
+
+\section{The Unpreconditioned Case}
+We define the unpreconditioned Wilson fermion matrix as:
+\begin{equation}
+M = (N_d + m) - \frac{1}{2} \mathcal{D}, \qquad \Mdag = (N_d + m) - \frac{1}{2} \mathcal{D}^{\dagger} \ ,
+\end{equation}
+with 
+\begin{equation}
+\mathcal{D} = \left[ \begin{array}{cc} 0 & D \\ D & 0 \end{array} \right], \qquad \mathcal{D}^{\dagger} = \left[ \begin{array}{cc} 0 & D^{\dagger} \\ D^{\dagger} & 0 \end{array} \right]
+\end{equation}
+and so
+\begin{equation}
+\Mdot = -\frac{1}{2} \dot{\mathcal{D}}, \qquad \MdagDot = -\frac{1}{2} \dot{\mathcal{D}}^{\dagger}
+\end{equation}
+From (\ref{e:SdotXY}) we have:
+\begin{eqnarray} 
+\Sdot &=&  - \Xdag \MdagDot Y - \Ydag \Mdot X \\
+      &=& \frac{1}{2} \left( \Xdag \dot{\mathcal{D}}^{\dagger} Y + \Ydag \dot{\mathcal{D}} X \right) 
+\end{eqnarray}
+
+I can now write 
+\begin{equation}
+X = \left[ \begin{array}{c} X_0 \\ X_1 \end{array} \right],\ Y = \left[ \begin{array}{c} Y_0 \\ Y_1 \end{array} \right],\ \Xdag = [ \Xdag_0, \Xdag_1 ], \ \Ydag = [ \Ydag_0, \Ydag_1 ]
+\end{equation}
+and write 
+\begin{equation}
+\Sdot = \frac{1}{2} \left( \Xdag_0 \DdagDot Y_1 + \Xdag_1 \DdagDot Y_0 + \Ydag_0 \Ddot X_1 + \Ydag_1 \Ddot X_0 \right)
+\end{equation}
+
+Now
+\begin{eqnarray}
+\Ddot_{x,y}&=&\sum_{\mu} \onemgm \Udot_{\mu,x} \delta_{y,x+\mu} + \onepgm \UdagDot_{\mu,x-\mu} \delta_{y,x-\mu} \label{e:Ddot}\\
+\DdagDot_{x,y} &=& \sum_{\mu} \onepgm \Udot_{\mu,x} \delta_{y,x+\mu} +  \onemgm \UdagDot_{\mu,x-\mu} \delta_{y,x-\mu} \label{e:DdagDot}
+\end{eqnarray}
+
+Let us define 
+\begin{eqnarray} 
+\psi &=& X_0 \\
+\phi &=& Y_0 \\
+\rho &=& X_1 \\
+\sigma   &=& Y_1 \\
+\end{eqnarray}
+so that we do not need to worry about checkerboard subscripts.
+Then 
+\begin{equation}
+\Sdot = \frac{1}{2} \left( \psidag \DdagDot \sigma + \rhodag \DdagDot \phi + \phidag \Ddot \rho + \sigmadag \Ddot \psi \right) \label{e:Ssigmasig}
+\end{equation}
+
+Let us now consider each of these terms in turn:
+\begin{eqnarray}
+\psidag \DdagDot \sigma &=& \sum_{x,\mu}  \psidag_{x} \onemgm \UdagDot_{\mu, x-\mu} \sigma_{x-\mu} +\psidag_{x} \onepgm \Udot_{\mu,x} \sigma_{x+\mu} \\
+%
+\rhodag \DdagDot \phi &=& \sum_{x,\mu}  \rhodag_{x} \onemgm \UdagDot_{\mu, x-\mu} \phi_{x-\mu} +\rhodag_{x} \onepgm \Udot_{\mu,x} \phi_{x+\mu}  \\
+%
+\phidag \Ddot \rho &=& \sum_{x,\mu} \phidag_x \onemgm \Udot_{\mu,x} \rho_{x+\mu} + \phidag_{x} \onepgm \UdagDot_{\mu, x-\mu} \rho_{x-\mu} \\
+%
+\sigmadag \Ddot \psi &=&  \sum_{x,\mu} \sigmadag_x \onemgm \Udot_{\mu,x} \psi_{x+\mu} + \sigmadag_{x} \onepgm \UdagDot_{\mu, x-\mu} \psi_{x-\mu} \\
+\end{eqnarray}
+
+We now use $\Udot_{\mu,x} = \pi_{\mu,x} U_{\mu, x}$ and $\UdagDot_{\mu,x}= -\Udag_{\mu,x} \pi_{\mu,x}$.
+\begin{eqnarray}
+\psidag \DdagDot \sigma &=& \sum_{x,\mu} \psidag_{x} \onepgm \pi_{\mu,x} U_{\mu,x}  \sigma_{x+\mu} - \psidag_{x} \onemgm \Udag_{\mu, x-\mu} \pi_{\mu, x-\mu} \sigma_{x-\mu}  \\
+%
+\rhodag \DdagDot \phi &=& \sum_{x,\mu} \rhodag_{x} \onepgm \pi_{\mu,x} U_{\mu,x}  \phi_{x+\mu} - \rhodag_{x} \onemgm \Udag_{\mu, x-\mu} \pi_{\mu, x-\mu} \phi_{x-\mu}  \\
+%
+\phidag \Ddot \rho &=& \sum_{x,\mu} - \phidag_{x} \onepgm \Udag_{\mu, x-\mu} \pi_{\mu, x-\mu} \rho_{x-\mu} + \phidag_x \onemgm \pi_{\mu,x} U_{\mu,x} \rho_{x+\mu}  \\
+%
+\sigmadag \Ddot \psi &=& \sum_{x,\mu} - \sigmadag_{x} \onepgm \Udag_{\mu, x-\mu} \pi_{\mu, x-\mu} \psi_{x-\mu} + \sigmadag_x \onemgm \pi_{\mu,x} U_{\mu,x} \psi_{x+\mu}  
+\end{eqnarray}
+
+We now use the fact that the sum over $x$ makes the expressions translation invariant, and use the $x \rightarrow x+\mu$ in the terms involving $x-\mu$, to get
+
+\begin{eqnarray}
+\psidag \DdagDot \sigma &=& \sum_{x,\mu} \psidag_{x} \onepgm \pi_{\mu,x} U_{\mu,x}  \sigma_{x+\mu} - \psidag_{x+\mu} \onemgm \Udag_{\mu, x} \pi_{\mu, x} \sigma_{x} \\
+%
+\rhodag \DdagDot \phi &=& \sum_{x,\mu} \rhodag_{x} \onepgm \pi_{\mu,x} U_{\mu,x}  \phi_{x+\mu} - \rhodag_{x+\mu} \onemgm \Udag_{\mu, x} \pi_{\mu, x} \phi_{x}  \\
+%
+\phidag \Ddot \rho &=& \sum_{x,\mu} - \phidag_{x+\mu} \onepgm \Udag_{\mu, x} \pi_{\mu, x} \rho_{x} + \phidag_x \onemgm \pi_{\mu,x} U_{\mu,x} \rho_{x+\mu}  \\
+%
+\sigmadag \Ddot \psi &=& \sum_{x,\mu} - \sigmadag_{x+\mu} \onepgm \Udag_{\mu, x} \pi_{\mu, x} \psi_{x} + \sigmadag_x \onemgm \pi_{\mu,x} U_{\mu,x} \psi_{x+\mu}  
+\end{eqnarray}
+Using the identity $Q^{\dagger}R = \Tr R Q^{\dagger}$ and using the cyclic 
+properties of traces, the above terms can be reordered as:
+\begin{eqnarray}
+\psidag \DdagDot \sigma &=& \sum_{x,\mu} \Tr \pi_{\mu,x} U_{\mu,x}  \sigma_{x+\mu} \psidag_{x}  \onepgm  - \Tr  \Udag_{\mu, x} \pi_{\mu, x} \sigma_{x} \psidag_{x+\mu} \onemgm \\
+%
+\rhodag \DdagDot \phi &=& \sum_{x,\mu} \Tr  \pi_{\mu,x} U_{\mu,x}  \phi_{x+\mu} \rhodag_{x}  \onepgm - \Tr \Udag_{\mu, x} \pi_{\mu, x} \phi_{x} \rhodag_{x+\mu} \onemgm  \\
+%
+\phidag \Ddot \rho &=& \sum_{x,\mu} - \Tr \Udag_{\mu, x}  \pi_{\mu, x} \rho_{x} \phidag_{x+\mu} \onepgm  + \Tr \pi_{\mu,x} U_{\mu,x} \rho_{x+\mu} \phidag_x \onemgm  \\
+%
+\sigmadag \Ddot \psi &=& \sum_{x,\mu} - \Tr \Udag_{\mu, x} \pi_{\mu, x} \psi_{x} \sigmadag_{x+\mu} \onepgm  + \Tr  \pi_{\mu,x} U_{\mu,x} \psi_{x+\mu} \sigmadag_x \onemgm 
+\end{eqnarray}
+and so
+
+\begin{eqnarray} 
+\Sdot &=& \frac{1}{2} \left\{ \sum_{x,\mu} \Tr \pi_{\mu,x} U_{\mu,x}  \sigma_{x+\mu} \psidag_{x}  \onepgm  - \Tr  \Udag_{\mu, x} \pi_{\mu, x} \sigma_{x} \psidag_{x+\mu} \onemgm \right. \nonumber \\
+&+&  \sum_{x,\mu} \Tr  \pi_{\mu,x} U_{\mu,x}  \phi_{x+\mu} \rhodag_{x}  \onepgm - \Tr \Udag_{\mu, x} \pi_{\mu, x} \phi_{x} \rhodag_{x+\mu} \onemgm  \nonumber \\
+&+&  \sum_{x,\mu} - \Tr \Udag_{\mu, x}  \pi_{\mu, x} \rho_{x} \phidag_{x+\mu} \onepgm  + \Tr \pi_{\mu,x} U_{\mu,x} \rho_{x+\mu} \phidag_x \onemgm  \nonumber \\
+&+& \left. \sum_{x,\mu} - \Tr \Udag_{\mu, x} \pi_{\mu, x} \psi_{x} \sigmadag_{x+\mu} \onepgm  + \Tr  \pi_{\mu,x} U_{\mu,x} \psi_{x+\mu} \sigmadag_x \onemgm \right\} \\
+%
+  &=& \frac{1}{2} \left\{ \sum_{x,\mu} \Tr \pi_{\mu,x} U_{\mu,x}  \sigma_{x+\mu} \psidag_{x}  \onepgm   + \Tr \pi_{\mu,x} U_{\mu,x} \rho_{x+\mu} \phidag_x \onemgm   \nonumber \right. \\
+&+&  \sum_{x,\mu} \Tr  \pi_{\mu,x} U_{\mu,x}  \phi_{x+\mu} \rhodag_{x}  \onepgm   + \Tr  \pi_{\mu,x} U_{\mu,x} \psi_{x+\mu} \sigmadag_x \onemgm \nonumber \\
+&-& \left(\sum_{x,\mu} \Tr \Udag_{\mu, x} \pi_{\mu, x} \psi_{x} \sigmadag_{x+\mu} \onepgm  + \Tr \Udag_{\mu, x} \pi_{\mu, x} \phi_{x} \rhodag_{x+\mu} \onemgm \right) \nonumber \\
+&-& \left. \left( \sum_{x,\mu} \Tr \Udag_{\mu, x}  \pi_{\mu, x} \rho_{x} \phidag_{x+\mu} \onepgm + \Tr  \Udag_{\mu, x} \pi_{\mu, x} \sigma_{x} \psidag_{x+\mu} \onemgm \right) \right\} \\
+%
+&=&  \frac{1}{2} \left\{ \sum_{x,\mu} \Tr \pi_{\mu,x} U_{\mu,x} \left( \phi_{x+\mu} \rhodag_{x} + \sigma_{x+\mu} \psidag_{x} \right)  \onepgm   \nonumber \right. \\
+& + & \left. \Tr \pi_{\mu,x} U_{\mu,x} \left( \psi_{x+\mu} \sigmadag_x + \rho_{x+\mu} \phidag_x \right) \onemgm  +  \mbox{ Hermitian conjugate } \right\} 
+\end{eqnarray}
+Which is of the desired form
+\begin{equation}
+\Sdot = \sum_{x,\mu} \Tr \pi_{\mu,x} F_{\mu,x}
+\end{equation} 
+with
+\begin{equation}
+F_{x,\mu} =\frac{1}{2} \left\{ U_{\mu,x} \left[ \left( \phi_{x+\mu} \rhodag_{x} + \sigma_{x+\mu} \psidag_{x} \right)  \onepgm +  \left( \psi_{x+\mu} \sigmadag_x + \rho_{x+\mu} \phidag_x \right) \onemgm \right] + \mbox{h.c} \right\}
+\end{equation}
+
+We can judiciously ignore the hermitian conjugate terms as the end result
+of the momentum update will project them out anyway using $\tt taproj$.
+
+\subsection{Checkerboarding}
+One thing we have neglected so far is the issue of checkerboarding. Let us 
+consider this now. 
+
+Where $U_{\mu,x}$ is multiplied into $F_{\mu,x}$ it must have the same checkerboard index as the unshifted field, whereas the shifted field will come from the
+other checkerboard. 
+So 
+\begin{itemize}
+\item
+for the $\phi_{x+\mu} \rhodag_{x}$ term the $U_{\mu,x}$ must have the same checkerboard index as the $\rhodag$.
+\item 
+for the $\sigma_{x+\mu} \psidag_{x}$ term the $U_{\mu,x}$ must have the same checkerboard index as the $\psidag$.
+\item
+for the $\psi_{x+\mu} \sigmadag_{x}$ term the $U_{\mu,x}$ must have the same checkerboard index as the $\sigmadag_{x}$
+\item
+for the $\rho_{x+\mu} \psidag_{x}$ term the $U_{\mu,x}$ must have the same checkerboard index as the $\psidag_{x}$
+\end{itemize}
+
+Now since the $\psi$ and $\phi$ terms are defined on one checkerboard and 
+the $\rho$ and $\sigma$ terms are defined on the opposite one, we can split
+the force term into two terms: 
+\begin{equation}
+F_{\mu,x} = F^{0}_{\mu,x} + F^{1}_{\mu,x}
+\end{equation}
+
+In our particular case $\psi$ and $\phi$ are defined on checkerboard index
+0, and $\rho$ and $\sigma$ are defined on checkerboard index 1. So
+\begin{eqnarray}
+F^{0}_{\mu,x} &=& \frac{1}{2} U^{0}_{\mu,x} \left[ \sigma_{x+\mu} \psidag_{x} \left( 1 + \gamma_{\mu} \right) + \rho_{x+\mu} \phidag_{x} \left( 1 - \gamma_{\mu} \right) \right] \\
+F^{1}_{\mu,x} &=& \frac{1}{2} U^{1}_{\mu,x} \left[ \phi_{x+\mu} \rhodag_{x} \left( 1 + \gamma_{\mu} \right) + \psi_{x + \mu} \sigmadag_{x} \left( 1 - \gamma_{\mu} \right) \right]
+\end{eqnarray}
+
+If we now put back our definitions of $\psi, \phi, \sigma$ and $\rho$, 
+we can see that:
+\begin{eqnarray}
+ F^{0}_{\mu,x} &=& \frac{1}{2} U^{0}_{\mu,x} \left[ Y^{1}_{x+\mu} X^{0 \dagger}_{x} \left( 1 + \gamma_{\mu} \right) + X^1_{x+\mu} Y^{ 0\dagger}_{x} \left( 1 - \gamma_{\mu} \right) \right] \\
+F^{1}_{\mu,x} &=& \frac{1}{2} U^{1}_{\mu,x} \left[ Y^0_{x+\mu} X^{1 \dagger}_{x} \left( 1 + \gamma_{\mu} \right) + X^{0}_{x + \mu} Y^{1 \dagger }_{x} \left( 1 - \gamma_{\mu} \right) \right]
+\end{eqnarray}
+
+and we realise (before committing suicide) that we can do the whole shebang
+by not checkerboarding at all and just computing:
+\begin{eqnarray}
+F_{\mu,x} &=& \frac{1}{2} U_{\mu, x} \left( Y_{x+\mu}\Xdag_{x} \onepgm + X_{x+\mu} \Ydag_{x} \onemgm \right) 
+\end{eqnarray} 
+
+\section{The Preconditioned Case}
+The $M$ for the preconditioned case is
+\begin{equation} 
+M = (N_d + m) - \frac{1}{4(N_d + m)} D D 
+\end{equation}
+and
+\begin{equation}
+\Mdag = (N_d + m) - \frac{1}{4(N_d + m)} \Ddag \Ddag
+\end{equation}
+ acting only on one subset of the lattice with checkerboard index $p$. So
+\begin{equation}
+\Mdot = -\frac{1}{4(N_d + m) }\left( \Ddot D + D \Ddot \right), \MdagDot = -\frac{1}{4(N_d + m)} \left( \DdagDot \Ddag + \Ddag \DdagDot \right)
+\end{equation}
+and
+\begin{eqnarray}
+\Sdot &=& \frac{1}{4(N_d + m)} \Xdag \left( \DdagDot \Ddag + \Ddag \DdagDot \right) Y + \frac{1}{4(N_d + m)} \Ydag \left(  \Ddot D + D \Ddot \right) X \\
+      &=& \frac{1}{4(N_d + m)} \left( \Xdag \DdagDot \Ddag Y + \Xdag \Ddag \DdagDot Y + \Ydag \Ddot D X + \Ydag D \Ddot X \right)
+\end{eqnarray}
+where $X$ and $Y$ are now only defined on the relevant checkerboarded sites of the lattice (with index $p$)
+
+As before we define
+\begin{eqnarray} 
+  \psi^{p} &=& X^p \\
+  \phi^{p} &=& Y^p \\
+  \rho^{1-p} &=& D X^p \\
+  \sigma^{1-p}   &=& \Ddag Y^p
+\end{eqnarray}
+so that (neglecting the checkerboard indices for the moment)
+\begin{equation}
+\Sdot = \frac{1}{4(N_d + m)} \left( \psidag \DdagDot \sigma + \rhodag \DdagDot \phi + \phidag \Ddot \rho + \sigmadag \Ddot \psi \right) 
+\end{equation}
+
+The terms are of the same form as the unpreconditioned case, and apart 
+from the factor of $\frac{1}{4(N_d + m)}$ and the different definitions of the $\psi, \phi, \rho$ and $\sigma$, the manipilations of the terms are the same as the 
+unpreconditioned case. So we can write down immediately that:
+
+\begin{eqnarray}
+F_{x,\mu} &=& \frac{1}{4(N_d + m)} \nonumber \\
+&\times& \left\{ U_{\mu,x} \left[ \left( \phi_{x+\mu} \rhodag_{x} + \sigma_{x+\mu} \psidag_{x} \right)  \onepgm +  \left( \psi_{x+\mu} \sigmadag_x + \rho_{x+\mu} \phidag_x \right) \onemgm \right] + \mbox{h.c} \right\} \nonumber \\
+& &
+\end{eqnarray}
+
+\subsection{Checkerboarding}
+The $D$ term in the definitions of $\sigma$ and $\rho$ imply that these
+fields are defined on the opposite checkerboard from the $X$ and $Y$ fields.
+Once again (ignoring the hermitian conjugate terms) we can split the force 
+into two terms which we can index with the checkerboard index of the 
+unshifted fields.
+\begin{eqnarray}
+F^{p}_{\mu,x} &=& \frac{1}{4(N_d + m)} U^{p}_{\mu,x} \left[ \sigma_{x+\mu} \psidag_{x} \left( 1 + \gamma_{\mu} \right) + \rho_{x+\mu} \phidag_{x} \left( 1 - \gamma_{\mu} \right) \right] \\
+F^{1-p}_{\mu,x} &=& \frac{1}{4(N_d + m} U^{1-p}_{\mu,x} \left[ \phi_{x+\mu} \rhodag_{x} \left( 1 + \gamma_{\mu} \right) + \psi_{x + \mu} \sigmadag_{x} \left( 1 - \gamma_{\mu} \right) \right]
+\end{eqnarray}
+We note that in both Chroma and SZIN for the preconditioned fermion matrix
+the $X$ and $Y$ fields are defined on $p=1$.
+
+\section{SZIN}
+In SZIN convention where the preconditioned matrix is
+\begin{equation}
+M = 1 - \kappa^2 D D
+\end{equation}
+defined on checkerboard index 1. ($p=1$).
+Only the prefactors change and so we should find that:
+\begin{eqnarray}
+F_{x,\mu} &=& \kappa^2 \left\{ U_{\mu,x} \left[ \left( \phi_{x+\mu} \rhodag_{x} + \sigma_{x+\mu} \psidag_{x} \right)  \onepgm +  \left( \psi_{x+\mu} \sigmadag_x + \rho_{x+\mu} \phidag_x \right) \onemgm \right] + \mbox{h.c} \right\} \nonumber \\
+& & \label{e:SZINForceTerm}
+\end{eqnarray}
+and since we have fixed the checkerboard index of $X$ and $Y$ to be $1$ we can
+write down the two checkerboarded force components with $F^{0}$ corresponding 
+to the unshifted $\sigma$ and $\rho$ fields, and $F^{1}$ corresponding to the 
+unshifted $\psi$ and $\phi$ fields:
+\begin{eqnarray}
+F^{0}_{\mu,x} &=& \kappa^2 U^{0}_{\mu,x} \left[ \psi_{x + \mu} \sigmadag_{x} \left( 1 - \gamma_{\mu} \right) + \phi_{x+\mu} \rhodag_{x} \left( 1 + \gamma_{\mu} \right) \right] \label{e:SZINcb0} \\
+F^{1}_{\mu,x} &=& \kappa^2 U^{1}_{\mu,x} \left[  \rho_{x+\mu} \phidag_{x} \left( 1 - \gamma_{\mu} \right) + \sigma_{x+\mu} \psidag_{x} \left( 1 + \gamma_{\mu} \right) \right] \label{e:SZINcb1} 
+\end{eqnarray}
+
+The pseudocode for the SZIN force computation is described in figure
+\ref{f:SZINPseudo}. We can see that the terms constructed are the ones
+in (\ref{e:SZINcb0}) and (\ref{e:SZINcb1}) except the $(1 \pm
+\gamma_{\mu})$ terms are in the front rather than the rear -- this is
+OK in the final traces. The $\kappa^2$ factor is included by
+incorporating them into the $\phi$ and $\sigma$ terms. SZIN does not
+calculate the hermitian conjugate term, and the SZIN force picks up an
+overall minus sign relative to $F$, which is OK since in {\tt leapp.m}
+the Force term is subtracted. The lack of the hermitian conjugate term
+is probably OK since the momenta will be projected using taproj (which
+will also remove the traceful parts)
+
+\begin{figure}[ht]
+\label{f:SZINPseudo}
+\begin{center}
+\leavevmode
+\hbox{ 
+\begin{tabular}{ll} 
+$ \psi = X_1        $       &  // Input                   \\
+$ \phi = M \psi   $       &  // $\phi_1 = Y_1 $    \\
+$ \rho = D_{01} \psi_1   $       &  // $\rho_0 = DX_1 $  \\ 
+$ \phi *= -\kappa^2 $     &  // $\phi_1 = -\kappa^2 Y_1$   \\
+$ \sigma = D_{01}^{\dagger} \phi_{1}$ & // $\sigma_0 = -\kappa^2 D^{\dagger}Y_1$ \\
+for($\mu = 0$, $\mu < N_d$; $\mu++$) \{ &                  \\
+\quad Checkerboard 0                   &                  \\
+\quad  $ftmp\_2 \ = -(1-\gamma_{\mu}) \psi$    &                    \\
+\quad  $utmp\_1 \ = - ftmp\_2_{x+\mu} \sigma^{\dagger}$ &  // $-\kappa^2(1-\gamma_{\mu})\psi_{x+\mu} \sigmadag_x$       \\
+\quad  $ftmp\_2 \ = (1 + \gamma_{\mu}) \phi$  &                    \\
+\quad  $utmp\_1 \ += ftmp\_2_{x+\mu} \rho^{\dagger}$ & // $-\kappa^2 (1+\gamma_{\mu})\phi_{x+\mu} \rhodag_x$             \\
+\quad  $ds\_u_0 \ += U_{0,\mu,x} utmp\_1 $&                              \\
+ & \\
+ \quad  Checkerboard 1 & \\
+ \quad  $ftmp\_2 \ = -(1-\gamma_{\mu}) \rho $    &                    \\
+\quad  $utmp\_1 \ = - ftmp\_2_{x+\mu} \phi^{\dagger}$ &  // $-\kappa^2(1-\gamma_{\mu})\rho_{x+\mu} \phidag_x$       \\
+\quad  $ftmp\_2 \ = (1 + \gamma_{\mu}) \sigma$  &                    \\
+\quad  $utmp\_1 \ += ftmp\_2_{x+\mu} \psi^{\dagger}$ & // $-\kappa^2 (1+\gamma_{\mu})\sigma_{x+\mu} \psidag_x$             \\
+\quad  $ds\_u_1 \ += U_{1,\mu,x} utmp\_1 $&                             \\
+\}                         &                                      \\ 
+\end{tabular}
+}
+\caption{Pseudocode for SZIN preconditioned force term (\tt wldsduf\_w.m)  }
+\end{center}
+\end{figure}
+
+
+
+\begin{thebibliography}{99}
+\bibitem{Zbysh} 
+Z. Sroczynski, Ph.D Thesis, Appendix B.
+\end{thebibliography}
+
+\end{document}

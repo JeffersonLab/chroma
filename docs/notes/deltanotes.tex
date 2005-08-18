@@ -1,0 +1,914 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+
+% Somewhat wider and taller page than in art12.sty
+%\topmargin -0.4in  \headsep 0.0in  \textheight 9.0in
+%\oddsidemargin 0.25in  \evensidemargin 0.25in  \textwidth 6.5in
+
+\footnotesep 14pt
+\floatsep 28pt plus 2pt minus 4pt      % Nominal is double what is in art12.sty
+\textfloatsep 40pt plus 2pt minus 4pt
+\intextsep 28pt plus 4pt minus 4pt
+
+\topmargin -1cm
+\headsep 0mm
+\oddsidemargin 1mm
+\evensidemargin 1mm
+\textwidth 162mm
+\textheight 21cm
+\begin{document}
+\begin{center}
+\fbox{Rough notes for the $N\rightarrow N$, $\Delta\rightarrow N$ and the $\Delta\rightarrow\Delta$ form factors}
+\vspace{2mm}
+
+3 March 2005
+\end{center}
+
+\section{The two-point correlator}
+
+The normalization of the baryon states will follow the appendix of
+Montvay and M\"unster [which differs, for example, from the choice used by
+Wilcox, Draper and Liu, PRD46, 1109 eqs (39) and (40)],
+\[
+1 = \int\frac{d^3\vec{p}}{(2\pi)^3}\frac{m_n}{E_{n(\vec p)}}
+    \sum_s\left|n(\vec{p},s)\right>\left<n(\vec{p},s)\right|
+\to \frac{1}{V}\sum_{\vec p}\frac{m_n}{E_{n(\vec p)}}
+    \sum_s\left|n(\vec{p},s)\right>\left<n(\vec{p},s)\right|
+\]
+where $V$ is the spatial volume of the lattice and $s$ sums over the
+possible spin states.
+We will consider the nucleon and $\Delta^+$ interpolating fields
+(including Dirac index $\alpha$ and Lorentz index $\sigma$), such as
+\begin{eqnarray*}
+\chi^N_{\alpha L}(x) &=&
+    \epsilon^{abc}\left(d^{Ta}(x)C\gamma_5u^b(x)\right)u_\alpha^c(x) \\
+\chi^{\Delta^+}_{\sigma,\alpha L}(x) &=&
+    \epsilon^{abc}\left[2\left(d^{Ta}(x)C\gamma_\sigma u^b(x)\right)u_\alpha^c(x)
+                        +\left(u^{Ta}(x)C\gamma_\sigma u^b(x)\right)d_\alpha^c(x)\right]
+\end{eqnarray*}
+or some smeared version of these, denoted $\chi^N_{\alpha S}(x)$ or $\chi^{\Delta^+}_{\sigma,\alpha S}(x)$.
+In the following, the octet and decuplet baryons will be labelled by $N$ and $\Delta$, respectively.
+However, the results may be applied to any of the octet to decuplet transitions.
+
+The dimensionless correlator from Euclidean time $t_i$ to Euclidean time $t_f$
+with momentum $\vec p$ is
+\[
+\begin{split}
+\Gamma^{NN}_{AB}&(t_i,t_f,\vec{p}\,;\;T) \\
+ &= a^9\sum_{{\vec x}_f}e^{-i(\vec{x}_f-\vec{x}_i)\cdot\vec{p}}\  T_{\alpha\beta}
+    \left<0\left|\chi^N_{\beta B}(x_f)\bar\chi^N_{\alpha A}(x_i)\right|0\right> \\
+ &= a^9\sum_{n,\vec{k},s}\sum_{{\vec x}_f}
+     e^{-i(\vec{x}_f-\vec{x}_i)\cdot\vec{p}}\  T_{\alpha\beta}
+     \left<0\left|\chi^N_{\beta B}(x_f)\right|n(\vec{k},s)\right>
+     \frac{m_n}{VE_{n(\vec{k})}}
+     \left<n(\vec{k},s)\left|\bar\chi^N_{\alpha A}(x_i)\right|0\right> \\
+ &= a^9\sum_{n,\vec{k},s}\sum_{{\vec x}_f}
+     e^{-i(\vec{x}_f-\vec{x}_i)\cdot\vec{p}}\  T_{\alpha\beta}
+     \left<0\left|\chi^N_{\beta B}(x_i)e^{i(x_f-x_i)\cdot k}\right|n(\vec{k},s)
+     \right>\frac{m_n}{VE_{n(\vec{k})}}
+     \left<n(\vec{k},s)\left|\bar\chi^N_{\alpha A}(x_i)\right|0\right> \\
+ &= a^9\sum_{n,\vec{k},s}\sum_{{\vec x}_f}\  T_{\alpha\beta}
+     \left<0\left|\chi^N_{\beta B}(x_i)\right|n(\vec{k},s)\right>
+     \frac{m_ne^{-(t_f-t_i)E_{n(\vec{k})}}}{VE_{n(\vec{k})}}
+     \left<n(\vec{k},s)\left|\bar\chi^N_{\alpha A}(x_i)\right|0\right>
+     e^{i(\vec{x}_f-\vec{x}_i)\cdot(\vec{k}-\vec{p})} \\
+ &= a^6\sum_{n,\vec{k},s}T_{\alpha\beta} 
+     \left<0\left|\chi^N_{\beta B}(x_i)\right|n(\vec{k},s)
+     \right>\frac{m_ne^{-(t_f-t_i)E_{n(\vec{k})}}}{E_{n(\vec{k})}}
+     \left<n(\vec{k},s)\left|\bar\chi^N_{\alpha A}(x_i)\right|0\right>
+     \delta^{(3)}_{\vec{k},\vec{p}}\,e^{-i\vec{x}_i\cdot(\vec{k}-\vec{p})} \\
+ &= a^6\sum_{n,s}\  T_{\alpha\beta}
+     \left<0\left|\chi^N_{\beta B}(x_i)\right|n(\vec{p},s)\right>
+     \left<n(\vec{p},s)\left|\bar\chi^N_{\alpha A}(x_i)\right|0\right>
+     \frac{m_n}{E_{n(\vec{p})}}e^{-(t_f-t_i)E_{n(\vec{p})}}
+\end{split}
+\]
+where $T_{\alpha\beta}$ is some generic $4\times 4$ matrix in
+Dirac spin space, and $\alpha,\beta$ are Dirac indices.
+For $t_f\gg t_i$, the nucleon dominates and the result becomes
+\[
+\Gamma^{NN}_{AB}(t_i,t_f,\vec{p}\,;\;T) \to
+     a^6\sum_s T_{\alpha\beta}
+     \left<0\left|\chi^N_{\beta B}(x_i)\right|N(\vec{p},s)\right>
+     \left<N(\vec{p},s)\left|\bar\chi^N_{\alpha A}(x_i)\right|0\right>
+     \frac{m_N}{E_{N(\vec{p})}}e^{-(t_f-t_i)E_{N(\vec{p})}}
+\]
+Similarly, for $t_f\gg t_i$ the ${\Delta}$ correlator becomes
+\[
+\Gamma^{\Delta\Delta}_{\sigma\tau,AB}(t_i,t_f,\vec{p}\,;\;T) \to
+     a^6\sum_s T_{\alpha\beta}
+     \left<0\left|\chi^{\Delta}_{\sigma,\beta B}(x_i)\right|\Delta(\vec{p},s)\right>
+     \left<\Delta(\vec{p},s)\left|\bar\chi^{\Delta}_{\tau,\alpha A}(x_i)\right|0\right>
+     \frac{m_{\Delta}}{E_{\Delta(\vec{p})}}e^{-(t_f-t_i)E_{\Delta(\vec{p})}}
+\]
+where the subscripts $\sigma,\tau$ are the Lorentz indices of the spin-3/2
+interpolating fields.
+
+The dimensionless matrix elements are given by
+[see, eg, UKQCD Collaboration, PRD57, 6948 (1998), equation (A4)],
+\begin{eqnarray*}
+a^3\left<0\left|\chi^N_{\beta B}(x)\right|N(\vec{p},s)\right>
+ &=& \left[\left(Z_B^{(1)}(|\vec{p}|)+\gamma_4Z_B^{(2)}(|\vec{p}|)\right)
+   u(\vec{p},s)\right]_\beta e^{ix\cdot p} \\
+a^3\left<0\left|\chi^{\Delta}_{\sigma,\beta B}(x)\right|\Delta(\vec{p},s)\right>
+ &=& \left[\left(Z_B^{(1)}(|\vec{p}|)+\gamma_4Z_B^{(2)}(|\vec{p}|)\right)
+   u_\sigma(\vec{p},s)\right]_\beta e^{ix\cdot p}
+\end{eqnarray*}
+and its adjoint.  $x$ and $p$ are Euclidean.
+(These equations implicitly define $u(\vec{p},s)$ and
+$u_\sigma(\vec{p},s)$.  Note in particular that they are implicitly chosen
+to be dimensionless.)  Notice that we are assuming
+that any smearing is spatially-democratic.  If there is no smearing at
+all, then we will use $Z_L^{(1)}(|\vec{p}|)=1$ and
+$Z_L^{(2)}(|\vec{p}|)=0$.  In either case, for the nucleon and
+$\Delta$ we have
+\begin{gather*}
+\begin{split}
+\Gamma^{NN}_{AB}&(t_i,t_f,\vec{p}\,;\;T) \to \\
+&\sum_s T_{\alpha\beta}
+\left[\left(Z_B^{(1)}(|\vec{p}|)+\gamma_4Z_B^{(2)}(|\vec{p}|)\right)
+u(\vec{p},s)\bar{u}(\vec{p},s)
+\left(Z_A^{(1)*}(|\vec{p}|)+\gamma_4Z_A^{(2)*}(|\vec{p}|)\right)
+\right]_{\beta\alpha} \\
+&\qquad\frac{m_N}{E_{N(\vec{p})}}e^{-(t_f-t_i)E_{N(\vec{p})}}
+\end{split} \\
+\begin{split}
+\Gamma^{\Delta\Delta}_{\sigma\tau,AB}&(t_i,t_f,\vec{p}\,;\;T) \to \\
+&\sum_s T_{\alpha\beta}
+\left[\left(Z_B^{(1)}(|\vec{p}|)+\gamma_4Z_B^{(2)}(|\vec{p}|)\right)
+u_\sigma(\vec{p},s)\bar{u}_\tau(\vec{p},s)
+\left(Z_A^{(1)*}(|\vec{p}|)+\gamma_4Z_A^{(2)*}(|\vec{p}|)\right)
+\right]_{\beta\alpha} \\
+&\qquad\frac{m_\Delta}{E_{\Delta(\vec{p})}}e^{-(t_f-t_i)E_{\Delta(\vec{p})}}
+\end{split}
+\end{gather*}
+
+In the following, we will consider the spin projection matrices defined as
+\[
+T_i = \begin{pmatrix}\sigma_i & 0 \\ 0 & 0 \end{pmatrix}, \quad
+T_4 = \begin{pmatrix} 1 & 0 \\ 0 & 0 \end{pmatrix}
+\]
+The gamma matrix basis used is
+\[
+\gamma_i = \begin{pmatrix} 0 & \sigma_i \\ \sigma_i & 0 \end{pmatrix}, \qquad
+\gamma_4 = \begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}
+\]
+Note that the Pauli spin matrices are
+\begin{displaymath}
+\sigma_1 = \begin{pmatrix} 0 & 1\\ 1 & 0 \end{pmatrix}, \quad
+\sigma_2 = \begin{pmatrix} 0 & -i\\ i & 0 \end{pmatrix}, \quad
+\sigma_3 = \begin{pmatrix} 1 & 0\\ 0 & -1 \end{pmatrix}.
+\end{displaymath}
+
+For the nucleon, the Dirac spin sum is
+\[
+\sum_su(\vec{p},s)\bar{u}(\vec{p},s) = \frac{ip\!\!/+m_N}{2m_N}
+\]
+so we arrive at
+\begin{eqnarray}
+\Gamma^{NN}_{AB}(t_i,t_f,\vec{p}\,;\;T) &\to&
+T_{\alpha\beta}
+\left[\left(Z_B^{(1)}(|\vec{p}|)+\gamma_4Z_B^{(2)}(|\vec{p}|)\right)
+\left(\frac{ip\!\!/+m_N}{2E_{N(\vec{p})}}\right)
+\left(Z_A^{(1)*}(|\vec{p}|)+\gamma_4Z_A^{(2)*}(|\vec{p}|)\right)
+\right]_{\beta\alpha}
+\nonumber \\
+&& e^{-(t_f-t_i)E_{N(\vec{p})}} \nonumber
+\end{eqnarray}
+For $\beta=\alpha$ our result becomes
+\begin{eqnarray}
+\Gamma^{NN}_{\alpha\alpha,AB}(t_i,t_f,\vec{p}) &\to&
+\left(Z_B^{(1)}(|\vec{p}|)+c_\alpha Z_B^{(2)}(|\vec{p}|)\right)
+\left(Z_A^{(1)*}(|\vec{p}|)+c_\alpha Z_A^{(2)*}(|\vec{p}|)\right)
+\left(\frac{E_{N(\vec{p})}+c_\alpha m_N}{2E_{N(\vec{p})}}\right)
+\nonumber \\
+&& e^{-(t_f-t_i)E_{N(\vec{p})}}
+\end{eqnarray}
+where the repeated Dirac index $\alpha$ is {\em not} summed.
+Also, we have defined $c_1=c_2=1$ and $c_3=c_4=-1$. Thus, for the
+standard projector $T_4$, we have
+\begin{eqnarray}
+\Gamma^{NN}_{AB}(t_i,t_f,\vec{p}\,;\;T_4) &\to&
+2\left(Z_B^{(1)}(|\vec{p}|)+ Z_B^{(2)}(|\vec{p}|)\right)
+\left(Z_A^{(1)*}(|\vec{p}|)+ Z_A^{(2)*}(|\vec{p}|)\right)
+\left(\frac{E_{N(\vec{p})}+ m_N}{2E_{N(\vec{p})}}\right)
+\nonumber \\
+&& e^{-(t_f-t_i)E_{N(\vec{p})}}
+\end{eqnarray}
+
+The Rarita-Schwinger spin sum for the $\Delta$ in Euclidean space is 
+\[
+\sum_su_\sigma(\vec{p},s)\bar{u}_\tau(\vec{p},s) = \frac{ip\!\!/+m_\Delta}
+  {2m_\Delta}
+\left[\delta_{\sigma\tau}+\frac{2p_\sigma p_\tau}{3m_\Delta^2} +
+  i\frac{p_\sigma \gamma_\tau - p_\tau \gamma_\sigma}{3m_\Delta} - 
+  \frac{1}{3}\gamma_\sigma \gamma_\tau \right]
+\]
+which results in
+\[
+\begin{split}
+\Gamma^{\Delta\Delta}_{\sigma\tau,AB}&(t_i,t_f,\vec{p}\,;\;T) \to \\
+&{\rm Tr}
+\Big[T\;\left(Z_B^{(1)}(|\vec{p}|)+\gamma_4Z_B^{(2)}(|\vec{p}|)\right)
+\left(\frac{ip\!\!/+m_\Delta}{2E_{\Delta(\vec p)}}\right)
+\left(\delta_{\sigma\tau}+\frac{2p_\sigma p_\tau}{3m_\Delta^2} +
+  i\frac{p_\sigma \gamma_\tau - p_\tau \gamma_\sigma}{3m_\Delta} - 
+  \frac{1}{3}\gamma_\sigma \gamma_\tau \right) \\
+& \qquad\left(Z_A^{(1)*}(|\vec{p}|)+\gamma_4Z_A^{(2)*}(|\vec{p}|)\right)
+\Big] e^{-(t_f-t_i)E_{\Delta(\vec{p})}}
+\end{split}
+\]
+where $\sigma$ and $\tau$ are Lorentz indices.
+In the case $\sigma=\tau$ and the projector $T_4$, we find
+(with no implied sum over $\sigma$)
+\begin{eqnarray}
+\Gamma^{\Delta\Delta}_{\sigma\sigma,AB}(t_i,t_f,\vec{p}\,;\;T_4) &\to&
+\left(Z_B^{(1)}(|\vec{p}|)+Z_B^{(2)}(|\vec{p}|)\right)
+\left(Z_A^{(1)*}(|\vec{p}|)+Z_A^{(2)*}(|\vec{p}|)\right)
+\frac{2}{3}\left(1+\frac{p_\sigma^2}{m_\Delta^2}\right) \nonumber \\
+&& \left(\frac{E_{\Delta(\vec{p})}+m_\Delta}{2E_{\Delta(\vec p)}}\right)
+e^{-(t_f-t_i)E_{\Delta(\vec{p})}}
+\end{eqnarray}
+
+
+\section{The three-point correlator}
+
+The dimensionless correlator from Euclidean time $t_i$ (incoming momentum
+${\vec p}_i$) to Euclidean time $t_f$ (outgoing momentum $\vec{p}_f$) with a
+vector insertion at Euclidean time $t$ is
+\[
+\begin{split}
+\Gamma^{NN}_{\mu,AB}&(t_i,t,t_f,\vec{p}_i,\vec{p}_f\,;\;T) \\
+  =\ & a^{12}\sum_{\vec{x}_i,\vec{x}_f} T_{\alpha\beta} 
+     e^{-i(\vec{x}_f-\vec{x})\cdot\vec{p}_f}
+     e^{-i(\vec{x}-\vec{x}_i)\cdot\vec{p}_i}
+     \left<0\left|\chi^N_{\beta B}(x_f)V_\mu(x)\bar\chi^N_{\alpha A}(x_i)
+     \right|0\right> \\
+  =\ & a^{12}\sum_{n,\vec{k},s}\sum_{m,\vec{l},s^\prime}\sum_{\vec{x}_i,\vec{x}_f}
+     T_{\alpha\beta} 
+     e^{-i(\vec{x}_f-\vec{x})\cdot\vec{p}_f}
+     e^{-i(\vec{x}-\vec{x}_i)\cdot\vec{p}_i}
+     \left<0\left|\chi^N_{\beta B}(x_f)\right|m(\vec{l},s^\prime)\right>
+     \frac{m_m}{VE_{m(\vec{l})}} \\
+   & \left<m(\vec{l},s^\prime)\left|V_\mu(x)\right|n(\vec{k},s)\right>
+     \frac{m_n}{VE_{n(\vec{k})}}
+     \left<n(\vec{k},s)\left|\bar\chi^N_{\alpha A}(x_i)\right|0\right>
+     \\
+  =\ & a^{12}\sum_{n,\vec{k},s}\sum_{m,\vec{l},s^\prime}\sum_{\vec{x}_i,\vec{x}_f}
+     T_{\alpha\beta} 
+     e^{-i(\vec{x}_f-\vec{x})\cdot\vec{p}_f}
+     e^{-i(\vec{x}-\vec{x}_i)\cdot\vec{p}_i}
+     \left<0\left|\chi^N_{\beta B}(x)e^{i(x_f-x)\cdot l}\right|m(\vec{l},
+     s^\prime)\right> \\
+   & \frac{m_m}{VE_{m(\vec{l})}}
+     \left<m(\vec{l},s^\prime)\left|V_\mu(x)\right|n(\vec{k},s)\right>
+     \frac{m_n}{VE_{n(\vec{k})}}
+     \left<n(\vec{k},s)\left|e^{-i(x_i-x)\cdot k}
+     \bar\chi^N_{\alpha A}(x)\right|0\right> \\
+  =\ & a^{12}\sum_{n,\vec{k},s}\sum_{m,\vec{l},s^\prime}\sum_{\vec{x}_i,\vec{x}_f}
+     T_{\alpha\beta} 
+     \left<0\left|\chi^N_{\beta B}(x)\right|m(\vec{l},s^\prime)\right>
+     \frac{m_m}{VE_{m(\vec{l})}}e^{-(t_f-t)E_{m(\vec{l})}}
+     e^{i(\vec{x}_f-\vec{x})\cdot(\vec{l}-\vec{p}_f)} \\
+   & \left<m(\vec{l},s^\prime)\left|V_\mu(x)\right|n(\vec{k},s)\right>
+     \frac{m_n}{VE_{n(\vec{k})}}e^{-(t-t_i)E_{n(\vec{k})}}
+     e^{i(\vec{x}-\vec{x}_i)\cdot(\vec{k}-\vec{p}_i)}
+     \left<n(\vec{k},s)\left|\bar\chi^N_{\alpha A}(x)\right|0\right>
+     \\
+  =\ & a^6\sum_{n,\vec{k},s}\sum_{m,\vec{l},s^\prime} T_{\alpha\beta} 
+     \left<0\left|\chi^N_{\beta B}(x)\right|m(\vec{l},s^\prime)\right>
+     \delta^{(3)}_{\vec{l},\vec{p}_f}
+     \frac{m_m}{E_{m(\vec{l})}}e^{-(t_f-t)E_{m(\vec{l})}}
+     e^{-i\vec{x}\cdot(\vec{l}-\vec{p}_f)} \\
+   & \left<m(\vec{l},s^\prime)\left|V_\mu(x)\right|n(\vec{k},s)\right>
+     \delta^{(3)}_{\vec{k},\vec{p}_i}
+     \frac{m_n}{E_{n(\vec{k})}}e^{-(t-t_i)E_{n(\vec{k})}}
+     e^{i\vec{x}\cdot(\vec{k}-\vec{p}_i)}
+     \left<n(\vec{k},s)\left|\bar\chi^N_{\alpha A}(x)\right|0\right>
+     \\
+  =\ & a^6\sum_{n,s}\sum_{m,s^\prime} T_{\alpha\beta} 
+     \left<0\left|\chi^N_{\beta B}(x)\right|m(\vec{p}_f,s^\prime)\right>
+     \frac{m_m}{E_{m(\vec{p}_f)}}e^{-(t_f-t)E_{m(\vec{p}_f)}}
+     \left<m(\vec{p}_f,s^\prime)\left|V_\mu(x)\right|n(\vec{p}_i,s)\right>
+     \\
+   & \frac{m_n}{E_{n(\vec{p}_i)}}e^{-(t-t_i)E_{n(\vec{p}_i)}}
+     \left<n(\vec{p}_i,s)\left|\bar\chi^N_{\alpha A}(x)\right|0\right>
+\end{split}
+\]
+For $t_f\gg t\gg t_i$, the nucleon dominates and the result becomes
+\begin{equation}
+\begin{split}
+\Gamma^{NN}_{\mu,AB}(t_i,t,t_f,\vec{p}_i,\vec{p}_f;\;T) &\to \\
+  &  a^6\sum_s\sum_{s^\prime} T_{\alpha\beta}
+     \left<0\left|\chi^N_{\beta B}(x)\right|N(\vec{p}_f,s^\prime)\right>
+     \left<N(\vec{p}_f,s^\prime)\left|V_\mu(x)\right|N(\vec{p}_i,s)\right> \\
+  &  \left<N(\vec{p}_i,s)\left|\bar\chi^N_{\alpha A}(x)\right|0\right>
+     \frac{m_N^2}{E_{N(\vec{p}_f)}E_{N(\vec{p}_i)}}
+     e^{-(t_f-t)E_{N(\vec{p}_f)}}e^{-(t-t_i)E_{N(\vec{p}_i)}} \\
+  &= e^{ix\cdot(p_f-p_i)}
+     \frac{m_N^2}{E_{N(\vec{p}_f)}E_{N(\vec{p}_i)}}
+     e^{-(t_f-t)E_{N(\vec{p}_f)}}e^{-(t-t_i)E_{N(\vec{p}_i)}} \\
+  &  \sum_{s,s^\prime}  T_{\alpha\beta} 
+     \left[\left(Z_B^{(1)}(|\vec{p}_f|)+\gamma_4Z_B^{(2)}(|\vec{p}_f|)\right)
+     u(\vec{p}_f,s^\prime)\right]_\beta \\
+  &  \left<N(\vec{p}_f,s^\prime)\left|V_\mu(x)\right|N(\vec{p}_i,s)\right>
+     \left[\bar{u}(\vec{p}_i,s)
+     \left(Z_A^{(1)*}(|\vec{p}_i|)+\gamma_4Z_A^{(2)*}(|\vec{p}_i|)\right)
+     \right]_\alpha \\
+  &= \frac{m_N^2}{E_{N(\vec{p}_f)}E_{N(\vec{p}_i)}}
+     e^{-(t_f-t)E_{N(\vec{p}_f)}}e^{-(t-t_i)E_{N(\vec{p}_i)}} \\
+  &  \sum_{s,s^\prime}  T_{\alpha\beta} 
+     \left[\left(Z_B^{(1)}(|\vec{p}_f|)+\gamma_4Z_B^{(2)}(|\vec{p}_f|)\right)
+     u(\vec{p}_f,s^\prime)\right]_\beta \\
+  &  \left<N(\vec{p}_f,s^\prime)\left|V_\mu(0)\right|N(\vec{p}_i,s)\right>
+     \left[\bar{u}(\vec{p}_i,s)
+     \left(Z_A^{(1)*}(|\vec{p}_i|)+\gamma_4Z_A^{(2)*}(|\vec{p}_i|)\right)
+     \right]_\alpha \\
+\end{split}
+\label{nucl3point}
+\end{equation}
+%
+Similarly, for $t_f\gg t\gg t_i$, the result for the $\Delta$ becomes
+\begin{equation}
+\begin{split}
+\Gamma^{\Delta\Delta}_{\sigma\tau,\mu,AB}(t_i,t,t_f,\vec{p}_i,\vec{p}_f;\;T) &\\
+  =\ & a^{12}\sum_{\vec{x}_i,\vec{x}_f} T_{\alpha\beta} 
+     e^{-i(\vec{x}_f-\vec{x})\cdot\vec{p}_f}
+     e^{-i(\vec{x}-\vec{x}_i)\cdot\vec{p}_i}
+     \left<0\left|\chi^\Delta_{\sigma,\beta B}(x_f)V_\mu(x)\bar\chi^\Delta_{\tau,\alpha A}(x_i)
+     \right|0\right> \\
+\to& \frac{m_\Delta^2}{E_{\Delta(\vec{p}_f)}E_{\Delta(\vec{p}_i)}}
+     e^{-(t_f-t)E_{\Delta(\vec{p}_f)}}e^{-(t-t_i)E_{\Delta(\vec{p}_i)}} \\
+  &  \sum_{s,s^\prime}  T_{\alpha\beta} 
+     \left[\left(Z_B^{(1)}(|\vec{p}_f|)+\gamma_4Z_B^{(2)}(|\vec{p}_f|)\right)
+     u_\sigma(\vec{p}_f,s^\prime)\right]_\beta \\
+  &  \left<\Delta(\vec{p}_f,s^\prime)\left|V_\mu(0)\right|\Delta(\vec{p}_i,s)\right>
+     \left[\bar{u}_\tau(\vec{p}_i,s)
+     \left(Z_A^{(1)*}(|\vec{p}_i|)+\gamma_4Z_A^{(2)*}(|\vec{p}_i|)\right)
+     \right]_\alpha \\
+\end{split}
+\label{delta3point}
+\end{equation}
+
+Nothing is conceptually different for the transition form-factors, thus for 
+$t_f\gg t\gg t_i$ the result for the $\Delta\rightarrow N$ (the $\Delta$
+has incoming momentum $\vec{p}_i$ and the nucleon has outgoing momentum $\vec{p}_f$)
+becomes
+\begin{equation}
+\begin{split}
+\Gamma^{\Delta N}_{\sigma,\mu,AB}(t_i,t,t_f,\vec{p}_i,\vec{p}_f;\;T) &\\
+  =\ & a^{12}\sum_{\vec{x}_i,\vec{x}_f} T_{\alpha\beta} 
+     e^{-i(\vec{x}_f-\vec{x})\cdot\vec{p}_f}
+     e^{-i(\vec{x}-\vec{x}_i)\cdot\vec{p}_i}
+     \left<0\left|\chi^N_{\beta B}(x_f)V_\mu(x)\bar\chi^\Delta_{\sigma,\alpha A}(x_i)
+     \right|0\right> \\
+\to& \frac{m_\Delta m_N}{E_{N(\vec{p}_f)}E_{\Delta(\vec{p}_i)}}
+     e^{-(t_f-t)E_{N(\vec{p}_f)}}e^{-(t-t_i)E_{\Delta(\vec{p}_i)}} \\
+  &  \sum_{s,s^\prime}  T_{\alpha\beta} 
+     \left[\left(Z_B^{(1)}(|\vec{p}_f|)+\gamma_4Z_B^{(2)}(|\vec{p}_f|)\right)
+     u(\vec{p}_f,s^\prime)\right]_\beta \\
+  &  \left<N(\vec{p}_f,s^\prime)\left|V_\mu(0)\right|\Delta(\vec{p}_i,s)\right>
+     \left[\bar{u}_\sigma(\vec{p}_i,s)
+     \left(Z_A^{(1)*}(|\vec{p}_i|)+\gamma_4Z_A^{(2)*}(|\vec{p}_i|)\right)
+     \right]_\alpha \\
+\end{split}
+\label{deltap3point}
+\end{equation}
+and the result for the $N\rightarrow\Delta$ (the nucleon
+has incoming momentum $\vec{p}_i$ and the $\Delta$ has outgoing momentum $\vec{p}_f$)
+\begin{equation}
+\begin{split}
+\Gamma^{N \Delta}_{\sigma,\mu,AB}(t_i,t,t_f,\vec{p}_i,\vec{p}_f;\;T) &\\
+  =\ & a^{12}\sum_{\vec{x}_i,\vec{x}_f} T_{\alpha\beta} 
+     e^{-i(\vec{x}_f-\vec{x})\cdot\vec{p}_f}
+     e^{-i(\vec{x}-\vec{x}_i)\cdot\vec{p}_i}
+     \left<0\left|\chi^\Delta_{\sigma,\beta B}(x_f)V_\mu(x)\bar\chi^N_{\alpha A}(x_i)
+     \right|0\right> \\
+\to& \frac{m_\Delta m_N}{E_{\Delta(\vec{p}_f)}E_{N(\vec{p}_i)}}
+     e^{-(t_f-t)E_{\Delta(\vec{p}_f)}}e^{-(t-t_i)E_{N(\vec{p}_i)}} \\
+  &  \sum_{s,s^\prime}  T_{\alpha\beta} 
+     \left[\left(Z_B^{(1)}(|\vec{p}_f|)+\gamma_4Z_B^{(2)}(|\vec{p}_f|)\right)
+     u_\sigma(\vec{p}_f,s^\prime)\right]_\beta \\
+  &  \left<\Delta(\vec{p}_f,s^\prime)\left|V_\mu(0)\right|N(\vec{p}_i,s)\right>
+     \left[\bar{u}(\vec{p}_i,s)
+     \left(Z_A^{(1)*}(|\vec{p}_i|)+\gamma_4Z_A^{(2)*}(|\vec{p}_i|)\right)
+     \right]_\alpha \\
+\end{split}
+\label{pdelta3point}
+\end{equation}
+
+
+\section{The nucleon electromagnetic form factors}
+
+In conventional (but Euclidean) notation, the matrix element of interest is
+\begin{eqnarray}
+\left<N(\vec{p}_f,s^\prime)\left|V_\mu(0)\right|N(\vec{p}_i,s)
+     \right>_{\rm continuum}
+&=& Z_V\left<N(\vec{p}_f,s^\prime)\left|V_\mu(0)\right|N(\vec{p}_i,s)\right>
+    \nonumber \\
+&=& \bar{u}(\vec{p}_f,s^\prime)\left[\gamma_\mu F_1(q^2)
+   - \frac{\sigma_{\mu\nu}q_\nu}{2m_N}F_2(q^2)\right]u(\vec{p}_i,s)
+\end{eqnarray}
+where $Z_V$ is the renormalization factor ($Z_V=1$ for a conserved current),
+$q=p_f-p_i$ and the electric and magnetic form factors are
+\begin{eqnarray}
+G_E(q^2) &=& F_1(q^2) - \frac{q^2}{4m_N^2}F_2(q^2) \\
+G_M(q^2) &=& F_1(q^2) + F_2(q^2)
+\end{eqnarray}
+This allows the three-point correlator with $t_f\gg t\gg t_i$ to be written as
+\[
+\Gamma^{NN}_{\mu,AB}(t_i,t,t_f,\vec{p}_i,\vec{p}_f\,;\;T)
+= \frac{e^{-(t_f-t)E_{N(\vec{p}_f)}}e^{-(t-t_i)E_{N(\vec{p}_i)}}}
+   {4Z_VE_{N(\vec{p}_f)}E_{N(\vec{p}_i)}}
+   \left[{\rm Tr}\left(T\,M^{(1)}_\mu\right)F_1(q^2)
+   +{\rm Tr}\left(T\,M^{(2)}_\mu\right)F_2(q^2)\right]
+\]
+where
+\begin{eqnarray}
+M^{(1)}_\mu &=& 
+     \left(Z_B^{(1)}(|\vec{p}_f|)+\gamma_4Z_B^{(2)}(|\vec{p}_f|)\right)
+     \left(ip\!\!/\!_f+m_N\right)\gamma_\mu
+     \left(ip\!\!/\!_i+m_N\right)
+     \nonumber \\ &&
+     \left(Z_A^{(1)*}(|\vec{p}_i|)+\gamma_4Z_A^{(2)*}(|\vec{p}_i|)\right)
+     \nonumber \\
+M^{(2)}_\mu &=& 
+     \left(Z_B^{(1)}(|\vec{p}_f|)+\gamma_4Z_B^{(2)}(|\vec{p}_f|)\right)
+     \left(ip\!\!/\!_f+m_N\right)
+     \left(\frac{-\sigma_{\mu\nu}q_\nu}{2m_N}\right)
+     \left(ip\!\!/\!_i+m_N\right)
+     \nonumber \\ &&
+     \left(Z_A^{(1)*}(|\vec{p}_i|)+\gamma_4Z_A^{(2)*}(|\vec{p}_i|)\right)
+     \nonumber
+\end{eqnarray}
+and
+\[
+\sigma_{\mu\nu} = \frac{i}{2}\left[\gamma_\mu,\gamma_\nu\right]
+\]
+
+\subsection{The result for $\mu=4$}
+
+The $\mu=4$ matrices are
+\begin{eqnarray}
+M^{(1)}_4 &=& 
+     \left(Z_B^{(1)}(|\vec{p}_f|)+\gamma_4Z_B^{(2)}(|\vec{p}_f|)\right)
+     \left[
+     \gamma_4\left(E_{N(\vec{p}_f)}+\gamma_4m\right)
+     \left(E_{N(\vec{p}_i)}+\gamma_4m\right)
+     - 2\gamma_4i\sigma_{jk}p_{fj}p_{ik} \right.\nonumber \\
+  && \left. + \gamma_4\vec{p}_i\cdot\vec{p}_f
+     - i\left(E_{N(\vec{p}_i)}-\gamma_4m\right)\vec{p}_f\cdot\vec\gamma
+     - i\left(E_{N(\vec{p}_f)}+\gamma_4m\right)\vec{p}_i\cdot\vec\gamma
+     \right] \nonumber \\
+  && \left(Z_A^{(1)*}(|\vec{p}_i|)+\gamma_4Z_A^{(2)*}(|\vec{p}_i|)\right)
+     \nonumber \\
+M^{(2)}_4 &=& 
+     \left(Z_B^{(1)}(|\vec{p}_f|)+\gamma_4Z_B^{(2)}(|\vec{p}_f|)\right)
+     \frac{\gamma_4}{2m}\left[
+     -\left(E_{N(\vec{p}_f)}+\gamma_4m\right)
+     i\vec\gamma\cdot\vec q\left(E_{N(\vec{p}_i)}+\gamma_4m\right)
+     \right.\nonumber \\
+  && -\vec q^2\gamma_4\left(E_{N(\vec{p}_i)}+\gamma_4m\right)
+     -\vec p_i\cdot\vec q\gamma_4\left(E_{N(\vec{p}_i)}-
+     E_{N(\vec{p}_f)}\right)
+     +\left(\vec p_i+\vec p_f\right)\cdot\vec qi\vec\gamma\cdot\vec p_i
+     \nonumber \\
+  && \left. +\vec p_i^2i\vec\gamma\cdot\vec q
+     +2i\sigma_{jk}p_{ij}q_k\gamma_4\left(E_{N(\vec{p}_i)}
+     +E_{N(\vec{p}_f)}+2\gamma_4m\right)
+     \right]
+     \left(Z_A^{(1)*}(|\vec{p}_i|)+\gamma_4Z_A^{(2)*}(|\vec{p}_i|)\right)
+     \nonumber
+\end{eqnarray}
+Thus, for $T_4$ the result is
+\begin{eqnarray}
+{\rm Tr}\left(T_4 M^{(1)}_4\right)
+ &=& 2\left(Z_B^{(1)}(|\vec{p}_f|)+Z_B^{(2)}(|\vec{p}_f|)\right)
+     \nonumber \\
+  && \left[2E_{N(\vec{p}_i)}E_{N(\vec{p}_f)}
+     +m_N\left(E_{N(\vec{p}_i)}+E_{N(\vec{p}_f)}\right)-\frac{q^2}{2}\right]
+     \nonumber \\
+  && \left(Z_A^{(1)*}(|\vec{p}_i|)+Z_A^{(2)*}(|\vec{p}_i|)\right) \nonumber \\
+{\rm Tr}\left(T_4 M^{(2)}_4\right)
+ &=& 2\left(Z_B^{(1)}(|\vec{p}_f|)+Z_B^{(2)}(|\vec{p}_f|)\right)
+     \nonumber \\
+  && \left[\frac{-q^2}{4m_N^2}\left(m_NE_{N(\vec{p}_i)}+m_NE_{N(\vec{p}_f)}
+     +2m_N^2\right)-\frac{1}{2}\left(E_{N(\vec{p}_f)}-E_{N(\vec{p}_i)}
+     \right)^2\right] \nonumber \\
+  && \left(Z_A^{(1)*}(|\vec{p}_i|)+Z_A^{(2)*}(|\vec{p}_i|)\right) \nonumber \\
+\end{eqnarray}
+Consider the ratio
+\begin{eqnarray}
+R_4 &=& \frac{Z_V
+      \Gamma^{NN}_{4,AB}(t_i,t,t_f,\vec p_i,\vec p_f\,;\;T_4)\;
+      \Gamma^{NN}_{CL}(t_i,t,\vec p_f\,;\;T_4)}
+      {\Gamma^{NN}_{AL}(t_i,t,\vec p_i\,;\;T_4)\;
+      \Gamma^{NN}_{CB}(t_i,t_f,\vec p_f\,;\;T_4)} 
+      \label{R4def} \\
+    &=& \frac{1}{2E_{N(\vec{p}_f)}\left(E_{N(\vec{p}_i)}+m_N\right)}
+        \left[
+        \left(2E_{N(\vec{p}_i)}E_{N(\vec{p}_f)}+m_N\left(E_{N(\vec{p}_i)}
+        +E_{N(\vec{p}_f)}\right)-\frac{q^2}{2}\right)F_1(q^2)
+        \right. \nonumber \\
+    && \left. +\left(\frac{-q^2}{4m_N}\left(E_{N(\vec{p}_i)}+E_{N(\vec{p}_f)}
+        +2m_N\right)-\frac{1}{2}\left(E_{N(\vec{p}_f)}-E_{N(\vec{p}_i)}
+        \right)^2\right)F_2(q^2)
+        \right] \label{R4}
+\end{eqnarray}
+For the special case of $\vec p_f=\vec 0$,
+we have $q^2=2m_N\left(E_{N(\vec{p}_i)}-m_N\right)$
+and we arrive at
+\[
+R_4 = G_E(q^2)
+\]
+
+\subsection{The result for $\mu\neq4$}
+
+We now consider other projection matrices $T_k$
+\begin{eqnarray}
+{\rm Tr}\left[M_j^{(1)} T_k\right]
+ &=& 2\left(Z_B^{(1)}(|\vec{p}_f|)+Z_B^{(2)}(|\vec{p}_f|)\right)
+     \epsilon_{jkl}\left[p_{fl}\left(E_{N(\vec{p}_i)}+m_N\right)
+     \right. \nonumber \\
+  && \left. -p_{il}\left(E_{N(\vec{p}_f)}+m_N\right)\right]
+     \left(Z_A^{(1)*}(|\vec{p}_i|)+Z_A^{(2)*}(|\vec{p}_i|)\right) \nonumber \\
+{\rm Tr}\left[M_j^{(2)} T_k\right]
+ &=& \frac{1}{m_N}\left(Z_B^{(1)}(|\vec{p}_f|)+Z_B^{(2)}(|\vec{p}_f|)\right)
+     \left[\epsilon_{jkl}p_{fl}\left(E_{N(\vec{p}_i)}+m_N\right)^2
+     \right. \nonumber \\
+  && \left. -\epsilon_{jkl}p_{il}\left(2m_N\left(E_{N(\vec{p}_f)}+m_N\right)
+     +\vec p_i\cdot\vec p_f\right)
+     -p_{ik}\epsilon_{jlm}p_{il}p_{fm} \right.\nonumber \\
+  && \left. -p_{fj}\epsilon_{klm}p_{il}p_{fm}
+     \right]
+     \left(Z_A^{(1)*}(|\vec{p}_i|)+Z_A^{(2)*}(|\vec{p}_i|)\right) \nonumber \\
+\nonumber
+\end{eqnarray}
+Consider the ratio
+\begin{eqnarray}
+R_{jk} &=& \frac{Z_V\left(E_{N(\vec{p}_i)}+m_N\right)}
+      {\left(-\epsilon_{jkl}p_{il}\right)}
+      \frac{\Gamma^{NN}_{j,AB}(t_i,t,t_f,\vec p_i,\vec p_f\,;\;T_k)
+      \Gamma^{NN}_{CL}(t_i,t,\vec p_f\,;\;T_4)}
+      {\Gamma^{NN}_{AL}(t_i,t,\vec p_i\,;\;T_4)
+      \Gamma^{NN}_{CB}(t_i,t_f,\vec p_f\,;\;T_4)} 
+      \label{Rjkdef} \\
+    &=& \left.\frac{-1}{4E_{N(\vec{p}_f)}\epsilon_{jkl}p_{il}}
+        \right[
+        2\epsilon_{jkl}\left\{p_{fl}\left(E_{N(\vec{p}_i)}+m_N\right)
+        -p_{il}\left(E_{N(\vec{p}_f)}+m_N\right)\right\}F_1(q^2)
+        \nonumber \\
+     && +\left\{\epsilon_{jkl}p_{fl}\left(E_{N(\vec{p}_i)}+m_N\right)^2
+        -\epsilon_{jkl}p_{il}\left(2m_N\left(E_{N(\vec{p}_f)}+m_N\right)
+        +\vec p_i\cdot\vec p_f\right)
+        \right.\nonumber \\
+     && \left. -p_{ik}\epsilon_{jlm}p_{il}p_{fm}
+        -p_{fj}\epsilon_{klm}p_{il}p_{fm}
+        \left\}\frac{F_2(q^2)}{m_N}
+        \right.\right]
+        \label{Rjk}
+\end{eqnarray}
+For the special case of $\vec p_f=\vec 0$, the expression simplifies to
+\[
+R_{jk} = G_M(q^2)
+\]
+In the general case, Eqs.~(\ref{R4}) and (\ref{Rjk}) can be used to determine
+$G_E(q^2)$ and $G_M(q^2)$.
+
+
+\newpage
+
+\section{The $\gamma N\rightarrow \Delta$ electromagnetic form factors}
+
+In conventional (but Euclidean) notation, the matrix element of interest is
+\begin{eqnarray}
+\left<\Delta(\vec{p}_f,s^\prime)\left|V_\mu(0)\right|N(\vec{p}_i,s)
+     \right>_{\rm continuum}
+&=& Z_V\left<\Delta(\vec{p}_f,s^\prime)\left|V_\mu(0)\right|N(\vec{p}_i,s)
+    \right> \nonumber \\
+&=& i\sqrt{\frac{2}{3}}
+     \bar{u}_\tau(\vec{p}_f,s^\prime){\cal O}^{\tau\mu}u(\vec{p}_i,s)
+\end{eqnarray}
+where $Z_V$ is the renormalization factor ($Z_V=1$ for a conserved current),
+$q=p_f-p_i$, $u_\tau(\vec{p},s)$ is a spin-vector in the Rarita-Schwinger formalism, 
+and $u(\vec{p},s)$ is a Dirac spin vector. The operator ${\cal O}^{\tau\mu}$ can be 
+decomposed into
+\[
+{\cal O}^{\tau \mu} =
+  G_{M1}(q^2) K^{\tau \mu}_{M1} 
+ +G_{E2}(q^2) K^{\tau \mu}_{E2} 
+ +G_{C2}(q^2) K^{\tau \mu}_{C2} \;,
+\]
+where the form-factors $G_{M1}(q^2)$, $G_{E2}(q^2)$, and $G_{C2}(q^2)$ are 
+referred to as the magnetic dipole $M1$, the electric quadrupole $E2$ and 
+the electric charge or scalar quadrupole $C2$ transition form factors. 
+Definitions come from Leinweber PRD48, and Alexandrou. The
+kinematical factors are, in Euclidean notation,
+\begin{eqnarray}
+ K^{\tau \mu}_{M1} & = & -\frac{3}{(m_\Delta+m_N)^2+q^2 } \; 
+\frac{(m_\Delta+m_N)}{2 m_N}\;
+i\epsilon^{\tau \mu \alpha \beta} P_\alpha q_\beta \\
+  K^{\tau \mu}_{E2} & = & -  K^{\tau \mu}_{M1} + 6\Omega^{-1}(q^2)\; 
+\frac{(m_\Delta+m_N)}{2 m_N} \;
+i\gamma_5 \;\epsilon^{\tau \lambda \alpha \beta} P_\alpha q_\beta 
+\epsilon^{\mu \lambda \gamma \delta} (2P_{\gamma}+q_\gamma)q_\delta \\
+K^{\tau \mu}_{C2} & = &-6\Omega^{-1}(q^2)\; \frac{(m_\Delta+m_N)}{2 m_N} \;
+i\gamma_5 \; q_{\tau} \left(q^2 P_{\mu} - q\cdot P q_{\mu}\right)
+\end{eqnarray}
+with $\Omega(q^2) = \left[(m_\Delta+m_N)^2+q^2\right]\left
+[(m_\Delta-m_N)^2+q^2\right]$. Recall the momenta are Euclidean, so 
+$q_4$ is imaginary.
+% and ${\bf Q}={\bf q}$, $Q^4=iq^0$ is
+% the lattice momentum transfer giving $Q^2=-q^2$. 
+The $P^\mu = (p_f^\mu + p_i^\mu)/2$.
+This allows the three-point correlator with $t_f\gg t\gg t_i$ to be written as
+\begin{eqnarray}
+\Gamma^{N\Delta}_{\sigma,\mu,AB}(t_i,t,t_f,\vec{p}_i,\vec{p}_f\,;\;T)
+&=& i\sqrt{\frac{2}{3}}\;
+   \frac{e^{-(t_f-t)E_{\Delta(\vec{p}_f)}}e^{-(t-t_i)E_{N(\vec{p}_i)}}}
+   {4Z_VE_{\Delta(\vec{p}_f)}E_{N(\vec{p}_i)}} \nonumber \\
+&& \left[M^{(1)}_{\sigma\mu}G_{M1}(q^2)
+        +M^{(2)}_{\sigma\mu}G_{E2}(q^2)
+        +M^{(3)}_{\sigma\mu}G_{C2}(q^2)
+   \right]
+\end{eqnarray}
+where
+\begin{eqnarray}
+M^{(1)}_{\sigma\mu} &=& {\rm Tr}\Bigl(T\;
+     \left(Z_B^{(1)}(|\vec{p}_f|)+\gamma_4Z_B^{(2)}(|\vec{p}_f|)\right)
+     \left(ip\!\!/\!_f+m_\Delta\right)
+     \left[\delta_{\sigma\tau}+\frac{2p_{f\sigma}p_{f\tau}}{3m_\Delta^2} +
+     i\frac{p_{f\sigma}\gamma_\tau - p_{f\tau}\gamma_\sigma}{3m_\Delta} - 
+     \frac{1}{3}\gamma_\sigma \gamma_\tau \right]
+     \nonumber \\ &&
+     K_{M1}^{\tau\mu}
+     \left(ip\!\!/\!_i+m_N\right)
+     \left(Z_A^{(1)*}(|\vec{p}_i|)+\gamma_4Z_A^{(2)*}(|\vec{p}_i|)\right) \Bigr)
+     \nonumber \\
+M^{(2)}_{\sigma\mu} &=& {\rm Tr}\Bigl(T\;
+     \left(Z_B^{(1)}(|\vec{p}_f|)+\gamma_4Z_B^{(2)}(|\vec{p}_f|)\right)
+     \left(ip\!\!/\!_f+m_\Delta\right)
+     \left[\delta_{\sigma\tau}+\frac{2p_{f\sigma}p_{f\tau}}{3m_\Delta^2} +
+     i\frac{p_{f\sigma}\gamma_\tau - p_{f\tau}\gamma_\sigma}{3m_\Delta} - 
+     \frac{1}{3}\gamma_\sigma \gamma_\tau \right]
+     \nonumber \\ &&
+     K_{E2}^{\tau\mu}
+     \left(ip\!\!/\!_i+m_N\right)
+     \left(Z_A^{(1)*}(|\vec{p}_i|)+\gamma_4Z_A^{(2)*}(|\vec{p}_i|)\right)\Bigr)
+     \nonumber \\
+M^{(3)}_{\sigma\mu} &=& {\rm Tr}\Bigl(T\;
+     \left(Z_B^{(1)}(|\vec{p}_f|)+\gamma_4Z_B^{(2)}(|\vec{p}_f|)\right)
+     \left(ip\!\!/\!_f+m_\Delta\right)
+     \left[\delta_{\sigma\tau}+\frac{2p_{f\sigma}p_{f\tau}}{3m_\Delta^2} +
+     i\frac{p_{f\sigma}\gamma_\tau - p_{f\tau}\gamma_\sigma}{3m_\Delta} - 
+     \frac{1}{3}\gamma_\sigma \gamma_\tau \right]
+     \nonumber \\ &&
+     K_{C2}^{\tau\mu}
+     \left(ip\!\!/\!_i+m_N\right)
+     \left(Z_A^{(1)*}(|\vec{p}_i|)+\gamma_4Z_A^{(2)*}(|\vec{p}_i|)\right)\Bigr)
+     \nonumber
+\end{eqnarray}
+Consider the ratio
+\begin{equation}\label{Alex1}
+R_{\sigma\mu j} = \frac{Z_V^2
+      \Gamma^{N\Delta}_{\sigma,\mu,AB}(t_i,t,t_f,\vec p_i,\vec p_f\,;\;T)\;
+      \Gamma^{\Delta N}_{\sigma,\mu,DC}(t_i,t,t_f,-\vec p_f,-\vec p_i\,;\;T)}
+      {\Gamma^{NN}_{AC}(t_i,t_f,-\vec p_i\,;\;T_4)\;
+      \sum_{j=1}^3\Gamma^{\Delta\Delta}_{BD}(t_i,t_f,\vec p_f\,;\;T_4)}
+\end{equation}
+It can be used to obtain the three form factors, $G_{M1}(q^2)$, $G_{E2}(q^2)$
+and $G_{C2}(q^2)$.  All $Z$ factors and exponentials cancel.
+Three different choices for the indices $\sigma$, $\mu$ and $j$ will suffice
+to determine the three form factors for any given momenta.
+Technically, Eq.~(\ref{Alex1}) only gives their magnitudes since
+$R_{\sigma\mu j}$ is quadratic in the form factors.  This same type of
+ratio is used by Alexandrou et al, PRD69,114506 (2004), eq 12.
+
+\subsection{The $M_{\sigma\mu}^{(n)}$ for $T=T_4$}
+
+In these expressions, Greek indices run from 1 to 4
+and Roman indices run from 1 to 3.
+\begin{eqnarray}
+M_{\sigma\mu}^{(1)}
+ &=& \frac{-(m_N+m_\Delta)p_{i\alpha}p_{f\beta}}{m_N((m_N+m_\Delta)^2+q^2)}
+     \left(Z_B^{(1)}(|\vec{p}_f|)+Z_B^{(2)}(|\vec{p}_f|)\right)
+     \left(Z_A^{(1)*}(|\vec{p}_i|)+Z_A^{(2)*}(|\vec{p}_i|)\right) \nonumber \\
+ & & \bigg[(E_\Delta+m_\Delta)(E_N+m_N)\left(2i\epsilon_{\sigma\mu\alpha\beta}
+     -\frac{p_{f\sigma}}{m_\Delta}\epsilon_{4\mu\alpha\beta}\right) \nonumber \\
+ & & +(E_\Delta+m_\Delta)\left(\frac{-ip_{f\sigma}}{m_\Delta}
+     \epsilon_{j\mu\alpha\beta}p_{ij}
+     +\epsilon_{j\mu\alpha\beta}p_{ij}\delta_{4\sigma}
+     -\epsilon_{4\mu\alpha\beta}p_{i\sigma}(1-\delta_{4\sigma})\right)
+     \nonumber \\
+ & & +(E_N+m_N)\left(\frac{-ip_{f\sigma}}{m_\Delta}
+     \epsilon_{j\mu\alpha\beta}p_{fj}
+     -\epsilon_{j\mu\alpha\beta}p_{fj}\delta_{4\sigma}
+     +\epsilon_{4\mu\alpha\beta}p_{f\sigma}(1-\delta_{4\sigma})\right)
+     \nonumber \\
+ & & - 2i\epsilon_{\sigma\mu\alpha\beta}\vec p_i\cdot\vec p_f
+     + \frac{p_{f\sigma}}{m_\Delta}\epsilon_{4\mu\alpha\beta}\vec p_i\cdot\vec
+       p_f + i\epsilon_{j\mu\alpha\beta}(p_{ij}p_{f\sigma}-p_{i\sigma}p_{fj})
+       (1-\delta_{4\sigma})\bigg] \\
+M_{\sigma\mu}^{(2)}
+ &=& -M_{\sigma\mu}^{(1)} 
+     + \left(Z_B^{(1)}(|\vec{p}_f|)+Z_B^{(2)}(|\vec{p}_f|)\right)
+       \left(Z_A^{(1)*}(|\vec{p}_i|)+Z_A^{(2)*}(|\vec{p}_i|)\right)
+       {\cal K}_{\tau\mu}\bigg[
+       \nonumber \\
+&& \bigg((m_\Delta+E_\Delta)p_{ik}-(m_N+E_N)p_{fk}\bigg)(1-\delta_{4\sigma})
+   (1-\delta_{4\tau})\epsilon_{\sigma\tau k} \nonumber \\
+&& +ip_{fk}p_{il}\delta_{4\tau}(1-\delta_{4\sigma})\epsilon_{k\sigma l}
+   -ip_{fk}p_{il}\left(\delta_{4\sigma}+\frac{ip_{f\sigma}}{m_\Delta}\right)
+   (1-\delta_{4\tau})\epsilon_{k\tau l}\bigg] \\
+M_{\sigma\mu}^{(3)} &=& 0
+\end{eqnarray}
+where
+\[
+{\cal K}_{\alpha\mu} = \frac{4(m_N+m_\Delta)}{m_N\Omega(q^2)}\bigg(
+m_N^2m_\Delta^2\delta_{\alpha\mu}+m_N^2p_{f\alpha}p_{f\mu}
++m_\Delta^2p_{i\alpha}p_{i\mu}
++p_i\cdot p_f(p_{i\alpha}p_{f\mu}+p_{f\alpha}p_{i\mu}-p_i\cdot
+p_f\delta_{\alpha\mu})\bigg)
+\]
+
+\subsection{The $M_{\sigma\mu}^{(n)}$ for $T=T_j$}
+
+In these expressions, Greek indices run from 1 to 4
+and Roman indices run from 1 to 3.
+\begin{eqnarray}
+M_{\sigma\mu}^{(1)}
+ &=& \frac{-(m_N+m_\Delta)p_{i\alpha}p_{f\beta}}{m_N((m_N+m_\Delta)^2+q^2)}
+     \left(Z_B^{(1)}(|\vec{p}_f|)+Z_B^{(2)}(|\vec{p}_f|)\right)
+     \left(Z_A^{(1)*}(|\vec{p}_i|)+Z_A^{(2)*}(|\vec{p}_i|)\right) \nonumber \\
+ & & \bigg[(E_\Delta+m_\Delta)(E_N+m_N)\epsilon_{\tau\mu\alpha\beta}
+     \epsilon_{j\sigma\tau}(1-\delta_{4\tau}) \nonumber \\
+ & & + \bigg((E_N+m_N)p_{fk}-(E_\Delta+m_\Delta)p_{ik}\bigg)
+       \frac{p_{f\sigma}}{m_\Delta}(1-\delta_{4\tau})
+       \epsilon_{\tau\mu\alpha\beta}\epsilon_{jk\tau} \nonumber \\
+ & & + i\bigg((E_N+m_N)p_{fk}-(E_\Delta+m_\Delta)p_{ik}\bigg)
+       \epsilon_{\tau\mu\alpha\beta}\left(\delta_{4\tau}
+       (1-\delta_{4\sigma})\epsilon_{jk\sigma}-\delta_{4\sigma}
+       (1-\delta_{4\tau})\epsilon_{jk\tau}\right) \nonumber \\
+ & & + p_{fk}p_{il}\epsilon_{jkl}\left(3\epsilon_{\sigma\mu\alpha\beta}
+       +i\frac{p_{f\sigma}}{m_\Delta}\epsilon_{4\mu\alpha\beta}
+       -\epsilon_{4\mu\alpha\beta}\delta_{4\sigma}\right) \nonumber \\
+ & & - p_{fk}p_{il}\epsilon_{\tau\mu\alpha\beta}(1-\delta_{4\sigma})
+       (1-\delta_{4\tau})(\delta_{jk}\epsilon_{\sigma\tau l}
+       +\delta_{\sigma\tau}\epsilon_{jkl}+\delta_{\tau l}\epsilon_{jk\sigma}
+       -\delta_{\sigma l}\epsilon_{jk\tau})\bigg] \\
+M_{\sigma\mu}^{(2)}
+ &=& -M_{\sigma\mu}^{(1)} 
+     + \left(Z_B^{(1)}(|\vec{p}_f|)+Z_B^{(2)}(|\vec{p}_f|)\right)
+       \left(Z_A^{(1)*}(|\vec{p}_i|)+Z_A^{(2)*}(|\vec{p}_i|)\right)\bigg[
+       \nonumber \\
+&& -2i{\cal K}_{\sigma\mu}\bigg((E_N+m_N)p_{fj}-(E_\Delta+m_\Delta)p_{ij}\bigg)
+   \nonumber \\
+&& +{\cal K}_{4\mu}\bigg(-\delta_{\sigma j}(E_N+m_N)(E_\Delta+m_\Delta)
+   -\frac{p_{fj}p_{f\sigma}}{m_\Delta}(E_N+m_N) \nonumber \\
+&& -\frac{p_{ij}p_{f\sigma}}{m_\Delta}(E_\Delta+m_\Delta)
+   +p_{fj}p_{i\sigma}-\delta_{j\sigma}\vec p_i\cdot\vec p_f+p_{ij}p_{f\sigma}
+   \bigg) \nonumber \\
+&& +{\cal K}_{j\mu}\bigg(\left(\delta_{4\sigma}-\frac{ip_{f\sigma}}{m_\Delta}
+   \right)(E_N+m_N)(E_\Delta+m_\Delta)+ip_{f\sigma}(E_N+m_N)
+   (1-\delta_{4\sigma}) \nonumber \\
+&& +ip_{i\sigma}(E_\Delta+m_\Delta)(1-\delta_{4\sigma})
+   +\frac{ip_{f\sigma}}{m_\Delta}\vec p_i\cdot\vec p_f+\delta_{4\sigma}\vec
+   p_i\cdot\vec p_f \bigg)\bigg] \\
+M_{\sigma\mu}^{(3)}
+ &=& \frac{i(m_N+m_\Delta)}{m_N\Omega(q^2)}\bigg(q^2(p_i+p_f)_\mu
+     -q\cdot(p_i+p_f)q_\mu\bigg) \nonumber \\
+  && \left(Z_B^{(1)}(|\vec{p}_f|)+Z_B^{(2)}(|\vec{p}_f|)\right)
+     \left(Z_A^{(1)*}(|\vec{p}_i|)+Z_A^{(2)*}(|\vec{p}_i|)\right)\bigg[
+     \nonumber \\
+  && (m_N+E_N)p_{fj}\left(-3p_{i\sigma}+\frac{p_{f\sigma}}{m_\Delta}\left(m_N
+     -\frac{2p_i\cdot p_f}{m_\Delta}\right)-i\delta_{4\sigma}\left(m_N
+     +\frac{p_i\cdot p_f}{m_\Delta}\right)\right) \nonumber \\
+  && -(m_\Delta+E_\Delta)p_{ij}\left(-3p_{i\sigma}+\frac{p_{f\sigma}}
+     {m_\Delta}\left(m_N
+     -\frac{2p_i\cdot p_f}{m_\Delta}\right)+i\delta_{4\sigma}\left(m_N
+     +\frac{p_i\cdot p_f}{m_\Delta}\right)\right) \nonumber \\
+  && +\delta_{j\sigma}(m_N+E_N)(m_\Delta+E_\Delta)\left(m_N+\frac{p_i\cdot p_f}
+     {m_\Delta}\right) \nonumber \\
+  && +(1-\delta_{4\sigma})\left(m_N+\frac{p_i\cdot p_f}{m_\Delta}\right)
+     \bigg(p_{i\sigma}p_{fj}
+     -\vec p_i\cdot\vec p_f\delta_{j\sigma}+p_{ij}p_{f\sigma}\bigg)\bigg]
+\end{eqnarray}
+where ${\cal K}_{\alpha\mu}$ was defined in the previous subsection.
+
+\subsection{Special case: $T=T_j$, $\mu=4$, $\sigma\neq4$, $\vec p_i=\vec 0$}
+
+\begin{eqnarray}
+M_{\sigma\mu}^{(1)} &=& 0 \nonumber \\
+M_{\sigma\mu}^{(2)} &=& 0 \nonumber \\
+M_{\sigma\mu}^{(3)}
+ &=& \left(Z_B^{(1)}(|\vec q|)+Z_B^{(2)}(|\vec q|)\right)
+     \left(Z_A^{(1)*}(0)+Z_A^{(2)*}(0)\right)
+     \frac{m_N+m_\Delta}{m_\Delta}
+     \left[q_jq_\sigma\left(1+\frac{2E_\Delta}{m_\Delta}\right)
+     -\vec q^2\delta_{\sigma j}\right] \nonumber
+\end{eqnarray}
+Eq.~(\ref{Alex1}) simplifies to
+\[
+G_{C2}(q^2) = \pm\frac{4\sqrt{6}m_\Delta E_\Delta m_N}{(m_N+m_\Delta)}
+              \sqrt{1+\frac{m_\Delta}{E_\Delta}}
+              \sqrt{1+\frac{\vec q^2}{3m_\Delta^2}}
+              \left(\frac{\sqrt{R_{\sigma\mu j}}}
+              {q_jq_\sigma(1+2E_\Delta/m_\Delta)
+              -\vec q^2\delta_{\sigma j}}\right)
+\]
+in agreement with Alexandrou et al, PRD69,114506 (2004), eq 19.
+
+\subsection{Special case: $T=T_4$, $\mu\neq4$, $\sigma\neq4$, $\vec p_i=\vec 0$}
+
+\begin{eqnarray}
+M_{\sigma\mu}^{(1)}
+ &=& 2\left(Z_B^{(1)}(|\vec q|)+Z_B^{(2)}(|\vec q|)\right)
+     \left(Z_A^{(1)*}(0)+Z_A^{(2)*}(0)\right)
+     (m_N+m_\Delta)\epsilon_{\sigma\mu k}q_k \nonumber \\
+M_{\sigma\mu}^{(2)} &=& 0 \nonumber \\
+M_{\sigma\mu}^{(3)} &=& 0 \nonumber
+\end{eqnarray}
+Eq.~(\ref{Alex1}) simplifies to
+\[
+G_{M1}(q^2) = \pm\frac{2\sqrt{6}E_\Delta m_N}{(m_N+m_\Delta)q_k}
+              \sqrt{1+\frac{m_\Delta}{E_\Delta}}
+              \sqrt{1+\frac{\vec q^2}{3m_\Delta^2}}
+              \sqrt{R_{\sigma\mu j}}
+\]
+where $\mu$, $\sigma$ and $k$ are three distinct spatial directions.
+This equation is in agreement with Alexandrou et al, PRD69,114506 (2004), eq 20(a).
+
+\subsection{Special case: $T=T_j$, $\mu\neq4$, $\sigma\neq4$, $\vec p_i=\vec 0$}
+
+\begin{eqnarray}
+M_{\sigma\mu}^{(1)}
+ &=& -i\left(Z_B^{(1)}(|\vec q|)+Z_B^{(2)}(|\vec q|)\right)
+     \left(Z_A^{(1)*}(0)+Z_A^{(2)*}(0)\right)
+     \left(\frac{m_N+m_\Delta}{m_\Delta+E_\Delta}\right)q_k
+     \epsilon_{l\mu k} \nonumber \\
+  && \left(
+     (E_\Delta+m_\Delta)\epsilon_{j\sigma l}+\frac{q_\sigma q_m}
+     {m_\Delta}\epsilon_{jml}\right) \nonumber \\
+M_{\sigma\mu}^{(2)} &=& -M_{\sigma\mu}^{(1)}
+    + i\left(Z_B^{(1)}(|\vec q|)+Z_B^{(2)}(|\vec q|)\right)
+      \left(Z_A^{(1)*}(0)+Z_A^{(2)*}(0)\right)
+      (m_N+m_\Delta)\bigg[4q_j\left(\delta_{\sigma\mu}-\frac{q_\sigma q_\mu}
+      {\vec q^2}\right) \nonumber \\
+   && +3\frac{E_\Delta}{m_\Delta}q_\sigma\left(\delta_{j\mu}
+      -\frac{q_jq_\mu}{\vec q^2}\right)\bigg] \nonumber \\
+M_{\sigma\mu}^{(3)} &=& -i\left(Z_B^{(1)}(|\vec q|)+Z_B^{(2)}(|\vec q|)\right)
+      \left(Z_A^{(1)*}(0)+Z_A^{(2)*}(0)\right)(m_N+m_\Delta)\frac{q_\mu}{m_\Delta}(E_\Delta-m_N) \nonumber \\
+   && \bigg[\delta_{\sigma j}-\frac{q_jq_\sigma}{\vec q^2}\left(1+\frac{2E_\Delta}
+      {m_\Delta}\right)\bigg] \nonumber
+\end{eqnarray}
+Eq.~(\ref{Alex1}) simplifies to
+\begin{eqnarray}
+G_{M1}(q^2) &=& \pm\frac{2\sqrt{6}E_\Delta m_N}{(m_N+m_\Delta)(q_j^2-q_k^2)}
+              \sqrt{1+\frac{m_\Delta}{E_\Delta}}
+              \sqrt{1+\frac{\vec q^2}{3m_\Delta^2}} \nonumber \\
+           && \left[\left(q_j\sqrt{R_{kkj}}-q_k\sqrt{R_{jjk}}\right)
+              -\frac{m_\Delta}{E_\Delta}
+              \left(q_j\sqrt{R_{jkk}}-q_k\sqrt{R_{kjj}}\right)\right]
+ \nonumber \\
+G_{E2}(q^2) &=& \pm\frac{2\sqrt{6}E_\Delta m_N}{3(m_N+m_\Delta)(q_j^2-q_k^2)}
+              \sqrt{1+\frac{m_\Delta}{E_\Delta}}
+              \sqrt{1+\frac{\vec q^2}{3m_\Delta^2}} \nonumber \\
+           && \left[\left(q_j\sqrt{R_{kkj}}-q_k\sqrt{R_{jjk}}\right)
+              +\frac{m_\Delta}{E_\Delta}
+              \left(q_j\sqrt{R_{jkk}}-q_k\sqrt{R_{kjj}}\right)\right]
+ \nonumber
+\end{eqnarray}
+where $\mu$, $\sigma$ and $k$ are three distinct spatial directions.
+These equations are in agreement with Alexandrou et al, PRD69,114506 (2004),
+eqs 20(b) and 21.
+
+\newpage
+
+\section{The $\Delta\rightarrow \Delta$ electromagnetic form factors}
+
+In conventional (but Euclidean) notation, the matrix element of interest is
+\[
+\begin{split}
+\left<\Delta(\vec{p}_f,s^\prime)\left|V_\mu(0)\right|\Delta(\vec{p}_i,s)
+     \right>_{\rm continuum} &\\
+&= Z_V\left<\Delta(\vec{p}_f,s^\prime)\left|V_\mu(0)\right|\Delta(\vec{p}_i,s)\right> \\
+&= -\bar{u}_\alpha(\vec{p}_f,s^\prime){\cal O}^{\alpha\mu\beta}u_\beta(\vec{p}_i,s)
+\end{split}
+\]
+where $Z_V$ is the renormalization factor ($Z_V=1$ for a conserved current),
+$q=p_f-p_i$, $u_\alpha(\vec{p},s)$ is a spin-vector in the Rarita-Schwinger formalism,
+The operator ${\cal O}^{\alpha\mu\beta}$ can be 
+decomposed into
+\[
+{\cal O}^{\alpha\mu\beta} = -\delta^{\alpha\beta}
+  \left(a_1\gamma_\mu + \frac{a_2}{2 m_\Delta} P^\mu\right)
+ +\frac{q^\alpha q^\beta}{(2 m_\Delta)^2} \left(c_1 \gamma_\mu 
+      + \frac{c_2}{2 m_\Delta} P^\mu\right)
+\]
+where $P^\mu = (p_f + p_i)/2$.
+The parameters $a_1$, $a_2$, $c_1$, $c_2$ are independent covariant
+vertex function coefficients related to the multipole form factors
+(Leinweber PRD46).
+
+
+\end{document}

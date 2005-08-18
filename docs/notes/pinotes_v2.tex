@@ -1,0 +1,449 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+
+% Somewhat wider and taller page than in art12.sty
+%\topmargin -0.4in  \headsep 0.0in  \textheight 9.0in
+%\oddsidemargin 0.25in  \evensidemargin 0.25in  \textwidth 6.5in
+
+\footnotesep 14pt
+\floatsep 28pt plus 2pt minus 4pt      % Nominal is double what is in art12.sty
+\textfloatsep 40pt plus 2pt minus 4pt
+\intextsep 28pt plus 4pt minus 4pt
+
+\topmargin -1cm
+\headsep 0mm
+\oddsidemargin 1mm
+\evensidemargin 1mm
+\textwidth 162mm
+%\textheight 21cm
+\textheight 9.5in
+\begin{document}
+\begin{center}
+\fbox{Rough notes for the $\gamma\pi\rightarrow\pi$, $\gamma\pi\rightarrow\rho$,
+and the $\gamma\rho\rightarrow\rho$ form factors}
+\vspace{2mm}
+
+12 July, 2004
+\end{center}
+
+\section{The two-point correlator}
+
+The normalization of the meson states will follow the appendix of
+Montvay and M\"unster and is also used, for example, in Peskin and
+Schroeder [see equation (2.39)],
+\[
+1 = \int\frac{d^3\vec{p}}{(2\pi)^3}\frac{\left|n(\vec{p})\right>
+    \left<n(\vec{p})\right|}{2E_{n(\vec p)}}
+\to \frac{1}{V}\sum_{\vec p}\frac{\left|n(\vec{p})\right>
+    \left<n(\vec{p})\right|}{2E_{n(\vec p)}}
+\]
+where $V$ is the spatial volume of the lattice.
+
+\subsection{The pion}
+Given an operator with pion quantum numbers, such as
+\[
+\phi_L(x) = \bar{d}(x)\gamma_5u(x)
+\]
+or some smeared version of this, denoted $\phi_S(x)$,
+the dimensionless correlator from Euclidean time $t_i$ to Euclidean time $t_f$
+with momentum $\vec p$ is
+\begin{eqnarray}
+\Gamma^{\pi\pi}_{AB}(t_i,t_f,\vec{p})
+ &=& a^6\sum_{{\vec x}_f}e^{-i(\vec{x}_f-\vec{x}_i)\cdot\vec{p}}
+     \left<0\left|\phi_B(x_f)\phi_A^\dagger(x_i)\right|0\right> \nonumber \\
+ &=& a^6\sum_{n,\vec{k}}\sum_{{\vec x}_f}e^{-i(\vec{x}_f-\vec{x}_i)\cdot\vec{p}}
+     \left<0\left|\phi_B(x_f)\right|n(\vec{k})\right>
+     \frac{1}{2VE_{n(\vec{k})}}
+     \left<n(\vec{k})\left|\phi_A^\dagger(x_i)\right|0\right> \nonumber \\
+ &=& a^6\sum_{n,\vec{k}}\sum_{{\vec x}_f}e^{-i(\vec{x}_f-\vec{x}_i)\cdot\vec{p}}
+     \left<0\left|\phi_B(x_i)e^{i(x_f-x_i)\cdot k}\right|n(\vec{k})\right>
+     \frac{1}{2VE_{n(\vec{k})}}
+     \left<n(\vec{k})\left|\phi_A^\dagger(x_i)\right|0\right> \nonumber \\
+ &=& a^6\sum_{n,\vec{k}}\sum_{{\vec x}_f}
+     \left<0\left|\phi_B(x_i)\right|n(\vec{k})\right>
+     \frac{e^{-(t_f-t_i)E_{n(\vec{k})}}}{2VE_{n(\vec{k})}}
+     \left<n(\vec{k})\left|\phi_A^\dagger(x_i)\right|0\right>
+     e^{i(\vec{x}_f-\vec{x}_i)\cdot(\vec{k}-\vec{p})} \nonumber \\
+ &=& a^3\sum_{n,\vec{k}}\left<0\left|\phi_B(x_i)\right|n(\vec{k})\right>
+     \frac{e^{-(t_f-t_i)E_{n(\vec{k})}}}{2E_{n(\vec{k})}}
+     \left<n(\vec{k})\left|\phi_A^\dagger(x_i)\right|0\right>
+     \delta^{(3)}_{\vec{k},\vec{p}}\,e^{-i\vec{x}_i\cdot(\vec{k}-\vec{p})}
+     \nonumber \\
+ &=& a^3\sum_n\left<0\left|\phi_B(x_i)\right|n(\vec{p})\right>
+     \left<n(\vec{p})\left|\phi_A^\dagger(x_i)\right|0\right>
+     \frac{e^{-(t_f-t_i)E_{n(\vec{p})}}}{2E_{n(\vec{p})}} \nonumber
+\end{eqnarray}
+For $t_f\gg t_i$, the pion dominates and the result becomes
+\begin{equation}
+\Gamma^{\pi\pi}_{AB}(t_i,t_f,\vec{p}) \to
+     a^3\left<0\left|\phi_B(x_i)\right|\pi(\vec{p})\right>
+     \left<\pi(\vec{p})\left|\phi_A^\dagger(x_i)\right|0\right>
+     \frac{e^{-(t_f-t_i)E_{\pi(\vec{p})}}}{2E_{\pi(\vec{p})}}
+\end{equation}
+The dimensionless matrix elements are given by
+[see, eg, Montvay and M\"unster equation (8.50)],
+\[
+a^2\left<0\left|\phi_B(x)\right|\pi(\vec{p})\right> 
+  = Z_B(\vec{p})e^{ix\cdot p}
+\]
+and its complex conjugate.  ($x$ and $p$ are Euclidean.)
+If $B=L$ (a local operator), then $Z_B(\vec{p})$ must be a Lorentz scalar
+and is therefore independent of $\vec{p}$.  If $B=S$ (an operator with
+democratically-spatial smearing), then $Z_B(\vec{p})$ depends only on
+$|\vec{p}|$.
+
+\subsection{Polarization vectors}
+
+The three space-like orthonormalized 
+$\epsilon_\rho(\vec p,r)$ are simultaneously orthogonal to the time-like
+vector $p_\rho$ so that they satisfy, in Minkowski spacetime,
+\begin{eqnarray*}
+\sum_\mu \epsilon^\ast_\mu(\vec p,r) 
+  \epsilon^\mu(\vec p,r')&=& -\delta_{rr'} \\
+\sum_r\epsilon^\ast_\mu(\vec p,r)
+  \epsilon_\nu(\vec p,r)&=&-g_{\mu\nu}+\frac{p_\mu p_\nu}{m_\rho^2}
+\end{eqnarray*}
+where $r$ runs over the 3 polarizations.
+To convert to Euclidean spacetime, it is convenient to follow the
+conventions of Huang (see pages 132 and 278 of the 2nd edition) which are
+
+\begin{tabular}{lll}
+\hline
+Coordinate & $x^0$ & $-x_E^4$ \\
+           & $x^k$ & $x_E^k~~~(k=1,2,3)$ \\
+\hline
+Momentum & $p^0$ & $ip_E^4$ \\
+         & $p^k$ & $p_E^k~~~(k=1,2,3)$ \\
+\hline
+Massive vector field with real components & $A^0$ & $iA_4$ \\
+                                          & $A^k$ & $A_E^k~~~(k=1,2,3)$ \\
+\hline
+Dirac matrices & $\gamma^0$ & $\gamma_E$ \\
+               & $\gamma^k$ & $-i\gamma_E^k~~~(k=1,2,3)$ \\
+\hline
+\end{tabular}
+
+\noindent
+Recalling the canonical expression for a massive vector field,
+\[
+A_\mu(x) = \sum_{r=1}^3\int\frac{d^3p}{(2\pi)^3}\frac{1}{\sqrt{2E_{\vec p}}}
+\left(a_{\vec p}^r\epsilon_\mu(\vec p,r)e^{-ix\cdot p}+a_{\vec p}^{r\dagger}
+\epsilon_\mu^*(\vec p,r)e^{ix\cdot p}\right)
+{\rm ~~~where~}E_{\vec p} \equiv \sqrt{m^2+\vec p^2}
+\] 
+we see that choosing a purely real basis for our three polarization vectors
+allows them to have exactly the same transformation properties (from
+Minkowski to Euclidean) as does the field $A_\mu$.
+Thus, the real Euclidean polarization vectors satisfy
+the orthogonality relations
+\begin{eqnarray*}
+\sum_{r=1}^3\sum_\mu \epsilon_\mu(\vec{p},r)
+  \epsilon_\mu(\vec{p},r)&=& 3 \\
+\sum_{r=1}^3\epsilon_i(\vec{p},r)
+  \epsilon_j(\vec{p},r)&=&\delta_{ij}+\frac{p_i p_j}{m_\rho^2}\\
+\sum_{r=1}^3\epsilon_4(\vec{p},r)
+  \epsilon_k(\vec{p},r)&=&\frac{p_4 p_k}{m_\rho^2}\\
+\sum_{r=1}^3\epsilon_j(\vec{p},r)
+  \epsilon_4(\vec{p},r)&=&\frac{p_j p_4}{m_\rho^2}\\
+\sum_{r=1}^3\epsilon_\mu(\vec p,r)
+  \epsilon_\nu(\vec p,r)&=&\delta_{\mu\nu}+\frac{p_\mu p_\nu}{m_\rho^2}\\
+\end{eqnarray*}
+
+\subsection{The rho}
+Similarly, given an operator with rho quantum numbers, such as
+\[
+\phi_{\mu,L}(x) = \bar{d}(x)\gamma_\mu u(x)
+\]
+or some smeared version of this, denoted $\phi_{\mu,S}(x)$, we
+will need its dimensionless matrix element overlap given by
+\[
+a^2\left<0\left|\phi_{\mu,B}(x)\right|\rho(\vec{p},r)\right> 
+  = Z_B(\vec{p})\epsilon_\mu(\vec{p},r) e^{i x\cdot p}
+\]
+and its complex conjugate.
+Making the polarization sum explicit within the sum over a complete set of
+states in the two-point correlator
+\begin{eqnarray*}
+\Gamma^{\rho\rho}_{AB}(t_i,t_f,\vec{p})
+ &=& a^3\sum_{n,r}\left<0\left|\phi_{\nu,B}(x_i)\right|n(\vec{p},r)\right>
+     \left<n(\vec{p},r)\left|\phi_{\mu,A}^\dagger(x_i)\right|0\right>
+     \frac{e^{-(t_f-t_i)E_{n(\vec{p})}}}{2E_{n(\vec{p})}}
+\end{eqnarray*}
+and for $t_f\gg t_i$, the rho dominates and the result becomes
+\begin{eqnarray*}
+\Gamma^{\rho\rho}_{\mu\nu,AB}(t_i,t_f,\vec{p}) &\to&
+     a^3\sum_r\left<0\left|\phi_{\nu,B}(x_i)\right|\rho(\vec{p},r)\right>
+     \left<\rho(\vec{p},r)\left|\phi_{\mu,A}^\dagger(x_i)\right|0\right>
+     \frac{e^{-(t_f-t_i)E_{\rho(\vec{p})}}}{2E_{\rho(\vec{p})}} \\
+ &=& a^{-1} Z_A^{\ast}(\vec{p}) Z_B(\vec{p})
+     \sum_{r=1}^3\epsilon_\mu(\vec{p},r)
+     \epsilon_\nu(\vec{p},r)
+     \frac{e^{-(t_f-t_i)E_{\rho(\vec{p})}}}{2E_{\rho(\vec{p})}}
+\end{eqnarray*}
+Summing over the polarizations and the spatial components of the interpolating fields
+we have
+\[
+\sum_{k=1,2,3}\Gamma^{\rho\rho}_{kk,AB}(t_i,t_f,\vec{p}) \to
+ a^{-1} Z_A^{\ast}(\vec{p}) Z_B(\vec{p})
+     \left(3+\frac{|\vec{p}|^2}{m_\rho^2}\right)
+     \frac{e^{-(t_f-t_i)E_{\rho(\vec{p})}}}{2E_{\rho(\vec{p})}}
+\]
+
+
+\section{The three-point correlator}
+
+The dimensionless correlator from Euclidean time $t_i$ (incoming momentum
+${\vec p}_i$) to Euclidean time $t_f$ (outgoing momentum $\vec{p}_f$) with a
+vector insertion at Euclidean time $t$ is
+\begin{eqnarray}
+\Gamma^{\pi\pi}_{\mu,AB}(t_i,t,t_f,\vec{p}_i,\vec{p}_f)
+ &=& a^9\sum_{\vec{x}_i,\vec{x}_f}e^{-i(\vec{x}_f-\vec{x})\cdot\vec{p}_f}
+     e^{-i(\vec{x}-\vec{x}_i)\cdot\vec{p}_i}
+     \left<0\left|\phi_B(x_f)V_\mu(x)\phi_A^\dagger(x_i)\right|0\right>
+     \nonumber \\
+ &=& a^9\sum_{n,\vec{k}}\sum_{m,\vec{l}}\sum_{\vec{x}_i,\vec{x}_f}
+     e^{-i(\vec{x}_f-\vec{x})\cdot\vec{p}_f}
+     e^{-i(\vec{x}-\vec{x}_i)\cdot\vec{p}_i}
+     \left<0\left|\phi_B(x_f)\right|m(\vec{l})\right>
+     \frac{1}{2VE_{m(\vec{l})}} \nonumber \\
+  && \left<m(\vec{l})\left|V_\mu(x)\right|n(\vec{k})\right>
+     \frac{1}{2VE_{n(\vec{k})}}
+     \left<n(\vec{k})\left|\phi_A^\dagger(x_i)\right|0\right> \nonumber \\
+ &=& a^9\sum_{n,\vec{k}}\sum_{m,\vec{l}}\sum_{\vec{x}_i,\vec{x}_f}
+     e^{-i(\vec{x}_f-\vec{x})\cdot\vec{p}_f}
+     e^{-i(\vec{x}-\vec{x}_i)\cdot\vec{p}_i}
+     \left<0\left|\phi_B(x)e^{i(x_f-x)\cdot l}\right|m(\vec{l})\right>
+     \nonumber \\
+  && \frac{1}{2VE_{m(\vec{l})}}
+     \left<m(\vec{l})\left|V_\mu(x)\right|n(\vec{k})\right>
+     \frac{1}{2VE_{n(\vec{k})}}
+     \left<n(\vec{k})\left|e^{-i(x_i-x)\cdot k}\phi_A^\dagger(x)\right|0\right>
+     \nonumber \\
+ &=& a^9\sum_{n,\vec{k}}\sum_{m,\vec{l}}\sum_{\vec{x}_i,\vec{x}_f}
+     \left<0\left|\phi_B(x)\right|m(\vec{l})\right>
+     \frac{e^{-(t_f-t)E_{m(\vec{l})}}}{2VE_{m(\vec{l})}}
+     e^{i(\vec{x}_f-\vec{x})\cdot(\vec{l}-\vec{p}_f)} \nonumber \\
+  && \left<m(\vec{l})\left|V_\mu(x)\right|n(\vec{k})\right>
+     \frac{e^{-(t-t_i)E_{n(\vec{k})}}}{2VE_{n(\vec{k})}}
+     e^{i(\vec{x}-\vec{x}_i)\cdot(\vec{k}-\vec{p}_i)}
+     \left<n(\vec{k})\left|\phi_A^\dagger(x)\right|0\right> \nonumber \\
+ &=& a^3\sum_{n,\vec{k}}\sum_{m,\vec{l}}
+     \left<0\left|\phi_B(x)\right|m(\vec{l})\right>
+     \delta^{(3)}_{\vec{l},\vec{p}_f}
+     \frac{e^{-(t_f-t)E_{m(\vec{l})}}}{2E_{m(\vec{l})}}
+     e^{-i\vec{x}\cdot(\vec{l}-\vec{p}_f)} \nonumber \\
+  && \left<m(\vec{l})\left|V_\mu(x)\right|n(\vec{k})\right>
+     \delta^{(3)}_{\vec{k},\vec{p}_i}
+     \frac{e^{-(t-t_i)E_{n(\vec{k})}}}{2E_{n(\vec{k})}}
+     e^{i\vec{x}\cdot(\vec{k}-\vec{p}_i)}
+     \left<n(\vec{k})\left|\phi_A^\dagger(x)\right|0\right> \nonumber \\
+ &=& a^3\sum_n\sum_m\left<0\left|\phi_B(x)\right|m(\vec{p}_f)\right>
+     \frac{e^{-(t_f-t)E_{m(\vec{p}_f)}}}{2E_{m(\vec{p}_f)}}
+     \left<m(\vec{p}_f)\left|V_\mu(x)\right|n(\vec{p}_i)\right> \nonumber \\
+  && \frac{e^{-(t-t_i)E_{n(\vec{p}_i)}}}{2E_{n(\vec{p}_i)}}
+     \left<n(\vec{p}_i)\left|\phi_A^\dagger(x)\right|0\right> \nonumber
+\end{eqnarray}
+For $t_f\gg t\gg t_i$, the pion dominates and the result becomes
+\begin{eqnarray}
+\Gamma^{\pi\pi}_{\mu,AB}(t_i,t,t_f,\vec{p}_i,\vec{p}_f) &\to&
+     a^3\left<0\left|\phi_B(x)\right|\pi(\vec{p}_f)\right>
+     \left<\pi(\vec{p}_f)\left|V_\mu(x)\right|\pi(\vec{p}_i)\right>
+     \left<\pi(\vec{p}_i)\left|\phi_A^\dagger(x)\right|0\right> \nonumber \\
+  && \frac{e^{-(t_f-t)E_{\pi(\vec{p}_f)}}e^{-(t-t_i)E_{\pi(\vec{p}_i)}}}
+     {4E_{\pi(\vec{p}_f)}E_{\pi(\vec{p}_i)}} \label{3point}
+\end{eqnarray}
+The pion-vacuum matrix elements were discussed on the previous page for
+$A\in(L,S)$ and $B\in(L,S)$.
+
+Similarly, for the $\pi\rightarrow\rho$ three-pt function when $t_f\gg t\gg t_i$ the 
+ground states dominate and the result becomes
+\begin{eqnarray}
+\Gamma^{\pi\rho}_{\sigma,\mu,AB}(t_i,t,t_f,\vec{p}_i,\vec{p}_f) &\to&
+     a^3\sum_r\left<0\left|\phi_{\sigma,B}(x)\right|\rho(\vec{p}_f,r)\right>
+     \left<\rho(\vec{p}_f,r)\left|V_\mu(x)\right|\pi(\vec{p}_i)\right>
+     \left<\pi(\vec{p}_i)\left|\phi_A^\dagger(x)\right|0\right> \nonumber \\
+  && \frac{e^{-(t_f-t)E_{\rho(\vec{p}_f)}}e^{-(t-t_i)E_{\pi(\vec{p}_i)}}}
+     {4E_{\rho(\vec{p}_f)}E_{\pi(\vec{p}_i)}} \label{pirho3point}
+\end{eqnarray}
+and for the $\rho\rightarrow\pi$ three-pt function when $t_f\gg t\gg t_i$ 
+\begin{eqnarray}
+\Gamma^{\rho\pi}_{\sigma,\mu,AB}(t_i,t,t_f,\vec{p}_i,\vec{p}_f) &\to&
+     a^3\sum_r\left<0\left|\phi_{B}(x)\right|\pi(\vec{p}_f)\right>
+     \left<\pi(\vec{p}_f)\left|V_\mu(x)\right|\rho(\vec{p}_i,r)\right>
+     \left<\rho(\vec{p}_i,r)\left|\phi_{\sigma,A}^\dagger(x)\right|0\right> \nonumber \\
+  && \frac{e^{-(t_f-t)E_{\pi(\vec{p}_f)}}e^{-(t-t_i)E_{\rho(\vec{p}_i)}}}
+     {4E_{\pi(\vec{p}_f)}E_{\rho(\vec{p}_i)}} \label{rhopi3point}
+\end{eqnarray}
+The pion and rho vacuum matrix elements were discussed on the previous page for
+$A\in(L,S)$ and $B\in(L,S)$.
+
+For the $\rho\rightarrow\rho$ three-pt function when $t_f\gg t\gg t_i$ the 
+result becomes
+\begin{eqnarray}
+\Gamma^{\rho\rho}_{\sigma\tau,\mu,AB}(t_i,t,t_f,\vec{p}_i,\vec{p}_f) &\to&
+     a^3\sum_{r_i,r_f}\left<0\left|\phi_{\tau,B}(x)\right|\rho(\vec{p}_f,r_f)\right>
+     \left<\rho(\vec{p}_f,r_f)\left|V_\mu(x)\right|\rho(\vec{p}_i,r_i)\right> \nonumber \\
+  && \left<\rho(\vec{p}_i,r_i)\left|\phi_{\sigma,A}^\dagger(x)\right|0\right>
+     \frac{e^{-(t_f-t)E_{\rho(\vec{p}_f)}}e^{-(t-t_i)E_{\rho(\vec{p}_i)}}}
+     {4E_{\rho(\vec{p}_f)}E_{\rho(\vec{p}_i)}} \label{rhorho3point}
+\end{eqnarray}
+The rho vacuum matrix elements were discussed on the previous page for
+$A\in(L,S)$ and $B\in(L,S)$.
+
+
+\section{The pion form factor}
+
+The matrix element of interest is purely real for an appropriately
+normalized vector current, $V_\mu(x)$.  In conventional notation,
+\begin{equation}
+\left<\pi(\vec{p}_f)\left|V_\mu(0)\right|\pi(\vec{p}_i)\right>_{\rm continuum}
+= Z_V\left<\pi(\vec{p}_f)\left|V_\mu(0)\right|\pi(\vec{p}_i)\right>
+= F(Q^2)(p_i+p_f)_\mu
+\end{equation}
+where $Z_V$ is the renormalization factor ($Z_V=1$ for a conserved current),
+$F(Q^2)$ is the pion form factor and $Q=p_f-p_i$.
+The form factor can be expressed as follows:
+\begin{equation}
+F(Q^2) = \frac{\Gamma^{\pi\pi}_{4,AB}(t_i,t,t_f,\vec{p}_i,\vec{p}_f)
+   \Gamma^{\pi\pi}_{CL}(t_i,t,\vec{p}_f)}
+  {\Gamma^{\pi\pi}_{AL}(t_i,t,\vec{p}_i)
+   \Gamma^{\pi\pi}_{CB}(t_i,t_f,\vec{p}_f)}
+   \left(
+   \frac{2Z_VE_{\pi(\vec{p_f})}}{E_{\pi(\vec{p}_i)}+E_{\pi(\vec{p}_f)}}
+   \right)
+\end{equation}
+where the indices $A$, $B$ and $C$ can be either $L$ (local)
+or $S$ (smeared).
+
+
+%\newpage
+
+\section{The $\rho\rightarrow\gamma\pi$ transition form factor}
+
+In conventional notation,
+\begin{eqnarray*}
+\left<\pi(\vec{p}_f)\left|V_\mu(0)\right|\rho(\vec{p}_i,r)\right>_{\rm continuum}
+&=& Z_V\left<\pi(\vec{p}_f)\left|V_\mu(0)\right|\rho(\vec{p}_i,r)\right> \\
+&=& \frac{2 V(Q^2)}{m_\pi+m_\rho}\epsilon^{\mu\alpha\delta\beta}{p_f}_\alpha 
+    {p_i}_\delta\epsilon_\beta(\vec{p}_i,r)
+\end{eqnarray*}
+where $Z_V$ is the renormalization factor ($Z_V=1$ for a conserved current),
+$V(Q^2)$ is the transition form factor and $Q=p_f-p_i$.
+This allows the three-point correlator with $t_f\gg t\gg t_i$ to be written as
+\begin{eqnarray}
+\Gamma^{\rho\pi}_{\nu A,\mu,B}(t_i,t,t_f,\vec p_i,\vec p_f)
+&=& \frac{e^{-(t_f-t)E_{\pi(\vec{p}_f)}}e^{-(t-t_i)E_{\rho(\vec{p}_i)}}}
+   {4Z_V E_{\pi(\vec{p}_f)}E_{\rho(\vec{p}_i)}}
+   Z_B^\pi(\vec p_f)Z_A^{\rho*}(\vec p_i)\frac{2V(Q^2)}{m_\pi
+     +m_\rho}\epsilon^{\mu\alpha\delta\beta}{p_f}_\alpha{p_i}_\delta
+     \nonumber \\ && \left(
+     \delta_{\beta\nu}+\frac{{p_i}_\beta{p_i}_\nu}{m_\rho^2}\right) \nonumber\\
+&=& \frac{e^{-(t_f-t)E_{\pi(\vec{p}_f)}}e^{-(t-t_i)E_{\rho(\vec{p}_i)}}}
+   {4Z_V E_{\pi(\vec{p}_f)}E_{\rho(\vec{p}_i)}}
+   Z_B^\pi(\vec p_f)Z_A^{\rho*}(\vec p_i)\frac{2V(Q^2)}{m_\pi
+     +m_\rho}\epsilon^{\mu\alpha\delta\nu}{p_f}_\alpha{p_i}_\delta \nonumber
+\end{eqnarray}
+where the last term vanished because it was symmetric under the $\epsilon$.
+\vspace{5mm}
+
+It is useful to note the expression for $\pi\to\rho\gamma$, which is
+derivable in the same manner and is essentially the complex conjugate of
+$\rho\to\pi\gamma$.
+\[
+\Gamma^{\pi\rho}_{A,\mu,\nu B}(t_i,t,t_f,\vec p_i,\vec p_f)
+= \frac{e^{-(t_f-t)E_{\rho(\vec{p}_f)}}e^{-(t-t_i)E_{\pi(\vec{p}_i)}}}
+   {4Z_V E_{\rho(\vec{p}_f)}E_{\pi(\vec{p}_i)}}
+   Z_B^\rho(\vec p_f)Z_A^{\pi*}(\vec p_i)\frac{2V(Q^2)}{m_\pi
+     +m_\rho}\epsilon^{\mu\alpha\delta\nu}{p_i}_\alpha{p_f}_\delta \nonumber
+\]
+
+The form factor can be expressed through various ratios.  For example,
+\[
+V(Q^2) = \frac{Z_V\sqrt{E_\pi E_\rho(1+{p_\nu^2}_\rho/m_\rho^2)}(m_\pi+m_\rho)}
+         {\epsilon^{\mu\alpha\delta\nu}{p_\pi}_\alpha{p_\rho}_\delta}
+         \sqrt{\frac{\Gamma^{\rho\pi}_{\nu A,\mu,B}(t_i,t,t_f,\vec p_\rho,
+         \vec p_\pi)\Gamma^{\pi\rho}_{C,\mu,\nu D}(t_i,t,t_f,\vec p_\pi,
+         \vec p_\rho)}{\Gamma^{\rho\rho}_{\nu A,\nu D}(t_i,t_f,\vec p_\rho)
+         \Gamma^{\pi\pi}_{CB}(t_i,t_f,\vec p_\pi)}}
+\]
+where $\mu$ and $\nu$ are not summed over, but $\alpha$ and $\delta$ are.
+
+Another example is
+\[
+V(Q^2) = \sqrt{Z_V^2E_\pi E_\rho(1+{p_i^2}_\nu/m_\rho^2)R^{\rho\pi}_{\mu\nu}
+         R^{\pi\rho}_{\mu\nu}\left(\frac{m_\pi+m_\rho}{\epsilon^{\mu\alpha
+         \delta\nu}{p_f}_\alpha{p_i}_\delta}\right)^2}
+\]
+where
+\begin{eqnarray*}
+R^{\rho\pi}_{\mu\nu} &=& \frac{\Gamma^{\rho\pi}_{\nu A,\mu,B}(t_i,t,t_f,
+     \vec p_i,\vec p_f)\Gamma^{\pi\pi}_{CL}(t_i,t,\vec p_f)}
+     {\Gamma^{\rho\rho}_{\nu A,\nu L}(t_i,t,\vec p_i)
+     \Gamma^{\pi\pi}_{CB}(t_i,t_f,\vec p_f)}
+  = \frac{\epsilon^{\mu\alpha\delta\nu}{p_f}_\alpha{p_i}_\delta V(Q^2)}
+    {(m_\pi + m_\rho)E_\pi Z_V(1+{p_i^2}_\nu/m_\rho^2)}\frac{Z_L^\pi}{Z_L^\rho}
+    \\
+R^{\pi\rho}_{\mu\nu} &=& \frac{\Gamma^{\pi\rho}_{A,\mu,\nu B}(t_i,t,t_f,
+     \vec p_i,\vec p_f)\Gamma^{\rho\rho}_{CL}(t_i,t,\vec p_f)}
+     {\Gamma^{\pi\pi}_{\nu A,\nu L}(t_i,t,\vec p_i)
+     \Gamma^{\rho\rho}_{CB}(t_i,t_f,\vec p_f)}
+  = \frac{\epsilon^{\mu\alpha\delta\nu}{p_f}_\alpha{p_i}_\delta V(Q^2)}
+    {(m_\pi + m_\rho)E_\rho Z_V}\frac{Z_L^\rho}{Z_L^\pi}
+\end{eqnarray*}
+Again, $\mu$ and $\nu$ are not summed over, but $\alpha$ and $\delta$ are.
+
+
+\newpage
+
+\section{The $\rho\rightarrow\gamma\rho$ form factor}
+
+Using the definitions of the charged rho form-factor in Wilcox, PRD43,
+the definition of the rho-rho matrix element is in conventional notation,
+\begin{gather}
+\begin{split}
+\langle\rho(\vec{p}_f,r_f)&\left|V_\mu(0)\right|\rho(\vec{p}_i,r_i)\rangle_{\rm continuum}
+ = Z_V\left<\rho(\vec{p}_f,r_f)\left|V_\mu(0)\right|\rho(\vec{p}_i,r_i)\right> \\
+&= -({p_i}_\mu + {p_f}_\mu) \Big[
+   G_1(q^2)\left(\epsilon(\vec{p}_f,r_f)\cdot\epsilon(\vec{p}_i,r_i)\right)
+ - G_3(q^2)\frac{\left(\epsilon(\vec{p}_i,r_i)\cdot q\right)
+                 \left(\epsilon(\vec{p}_f,r_f)\cdot q\right)}{2 m_\rho^2}
+ \Big] \\
+&\qquad - G_2(q^2)\left[\epsilon(\vec{p}_i,r_i)\left(\epsilon(\vec{p}_f,r_f)\cdot q\right)
+               - \epsilon(\vec{p}_f,r_f)\left(\epsilon(\vec{p}_i,r_i)\cdot q\right)\right]
+\end{split}
+\end{gather}
+%
+where $Z_V$ is the renormalization factor ($Z_V=1$ for a conserved current),
+$q=p_f-p_i$ and the real functions $G_{1,2,3}(q^2)$ are related to the charge 
+($G_c$), quadrapole ($G_q)$, and magnetic ($G_m$) form factors by
+%
+\begin{eqnarray}
+G_c &=& G_1 + \frac{2}{3}\eta G_q \nonumber\\
+G_q &=& G_1 + G_2 + (1+\eta)G_3 \nonumber\\
+G_m &=& G_2 \nonumber\\
+\end{eqnarray}
+and $\eta\equiv -q^2/4m_\rho^2 \,\ge\, 0$.
+
+
+{\bf UNDER CONSTRUCTION}
+ 
+
+The three-point correlator with $t_f\gg t\gg t_i$ can be written as
+\begin{eqnarray}
+\Gamma^{\rho\rho}_{\sigma A,\mu,B}(t_i,t,t_f,\vec p_i,\vec p_f)
+&=& \frac{e^{-(t_f-t)E_{\pi(\vec{p}_f)}}e^{-(t-t_i)E_{\rho(\vec{p}_i)}}}
+   {4Z_V E_{\pi(\vec{p}_f)}E_{\rho(\vec{p}_i)}}
+   Z_B^\pi(\vec p_f)Z_A^{\rho*}(\vec p_i)\frac{2V(Q^2)}{m_\pi
+     +m_\rho}\epsilon^{\mu\alpha\delta\beta}{p_f}_\alpha{p_i}_\delta
+     \nonumber \\ && \left(
+     \delta_{\beta\sigma}+\frac{{p_i}_\beta{p_i}_\sigma}{m_\rho^2}\right) \nonumber\\
+&=& \frac{e^{-(t_f-t)E_{\pi(\vec{p}_f)}}e^{-(t-t_i)E_{\rho(\vec{p}_i)}}}
+   {4Z_V E_{\pi(\vec{p}_f)}E_{\rho(\vec{p}_i)}}
+   Z_B^\pi(\vec p_f)Z_A^{\rho*}(\vec p_i)\frac{2V(Q^2)}{m_\pi
+     +m_\rho}\epsilon^{\mu\alpha\delta\sigma}{p_f}_\alpha{p_i}_\delta \nonumber
+\end{eqnarray}
+where the last term vanished because it was symmetric under the $\epsilon$.
+\vspace{5mm}
+
+
+\end{document}

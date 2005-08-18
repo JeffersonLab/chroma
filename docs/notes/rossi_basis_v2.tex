@@ -1,0 +1,341 @@
+\input jnl
+\oneandahalfspace
+\def\Tr{\rm Tr}
+\def\trd{\rm tr_d}
+\def\trc{\rm tr_c}
+\def\Re{\rm Re}
+
+\centerline{\bf Mesons and Currents the Rossi Way}
+\bigskip
+
+\noindent {\bf A. Definitions and the Mesons}
+\medskip
+
+Let $\vec n$ be a four dimensional vector
+$$ \vec n = (n_x, n_y, n_z, n_t) $$
+where $n_i $ takes values $0, 1.$ We often equivalently label these 16
+vectors by 
+$$ n = \sum_{\mu = 1}^4 n_{\mu} 2^{\mu-1}. $$
+
+Let us define 
+$$\Gamma(\vec n) = \gamma_1^{n_1}\gamma_2^{n_2}\gamma_3^{n_3}\gamma_4^{n_4}.$$
+There are obviously 16 of these $\Gamma$'s and they form a basis for
+$ 4 \times 4 $ matrices.
+
+The multiplication table for the $\Gamma$'s is pretty simple to obtain,
+$$ \Gamma(\vec n)\Gamma(\vec m) = 
+   \eta(\vec n,\vec m)\Gamma(\vec n \oplus \vec m)$$
+where $\vec n \oplus \vec m$ is component-wise addition modulo 2 ($ = \vec n 
+~.{\bf XOR}.~ \vec m$), and 
+$$ \eta(\vec n, \vec m) = \prod_{\mu < \nu}(-)^{n_\nu m_\mu}. $$
+Furthermore, with $\eta(\vec n) = \eta(\vec n,\vec n)$,
+$$ \Gamma^\dagger(\vec n) = \eta(\vec n) \Gamma(\vec n). $$
+
+Obviously the 16 operators $\overline \psi \Gamma(\vec n)\psi $
+exhaust all of the possible mesons.
+\smallskip
+{\bf Ex.}
+$$\vec n = (0, 0, 0, 0) \to 
+ \overline \psi \Gamma(\vec n) \psi = \overline \psi \psi$$
+$$\vec n = (1, 1, 1, 1) \to 
+ \overline \psi \Gamma(\vec n) \psi = \overline \psi \gamma_5 \psi$$
+$$\vec n = (0, 0, 1, 0) \to 
+ \overline \psi \Gamma(\vec n) \psi = \overline \psi \gamma_3 \psi$$
+etc.
+
+A generic $4 \times 4$ matrix $A$ can be decomposed as
+$$ A = \sum_{\vec n} a_{\vec n}\Gamma^\dagger(\vec n) $$
+where 
+$$ a_{\vec n} = {1 \over 4} \Tr \Gamma(\vec n)A. $$
+
+Now consider the correlation function of a meson of type $\vec n$
+$$ C_{\vec n} (x) = < \overline \psi(x) \Gamma(\vec n) \psi(x)
+ \overline \psi(0) \Gamma^\dagger(\vec n) \psi(0)> $$
+$$ ~~~~~~~ =\eta(\vec n) \Tr \left[ \Gamma(\vec n) G(x,0) 
+ \Gamma(\vec n) G(0,x) \right]. $$
+Here $G(x,0)$ is the quark propagator with $G(0,x) = \gamma_5 
+G^\dagger (x,0) \gamma_5$.
+
+Using the decomposition
+$$ G(x,0) = \sum_{\vec p} g_{\vec p}(x) \Gamma^\dagger(\vec p)$$
+we then find
+$$ C_{\vec n} (x) = \eta(\vec n) \sum_{\vec p,\vec q} \trc \left[ 
+ g_{\vec p}(x)  g_{\vec q}^\dagger(x) \right] \trd \left[ \Gamma(\vec n) 
+ \Gamma^\dagger(\vec p)  \Gamma(\vec n)  \Gamma(\vec {\bf 1}) 
+ \Gamma(\vec q) \Gamma(\vec {\bf 1}) \right], $$
+where $\vec {\bf 1} = (1,1,1,1)$, {\it i.e.,} $\Gamma(\vec {\bf 1}) =
+\gamma_5$. Using the multiplication table for the $\Gamma$'s we find
+$$ C_{\vec n} (x) = \eta(\vec n) \sum_{\vec p,\vec q} \eta(\vec p) 
+ c_m(\vec n, \vec p, \vec q) \trc \left[ g_{\vec p}(x) g_{\vec q}^\dagger(x) 
+ \right] \trd \left[ \Gamma(\vec q\oplus\vec p) \right], $$
+where 
+$$ c_m(\vec n, \vec p, \vec q) = \eta(\vec n,\vec p) \eta(\vec n,
+ \vec {\bf 1}) \eta(\vec q, \vec {\bf 1}) \eta(\vec n \oplus \vec {\bf 1},
+ \vec q \oplus \vec {\bf 1}) \eta(\vec n \oplus \vec p, 
+ \vec n \oplus \vec q). $$
+Since all Dirac matrices, except the identity matrix, are traceless we find
+$$ \trd \Gamma(\vec q\oplus \vec p) = 4 \delta_{ \vec p, \vec q}. $$ 
+
+Simple algebra, using the definition for the $\eta$'s reduces the
+result to
+$$ C_{\vec n} (x) = 4 \eta(\vec n) \sum_{\vec q} \eta(\vec q) 
+ \eta(\vec n \oplus \vec q) {\bf SGN}(\vec q) |g_{\vec q}(x)|^2, $$
+where
+$$ {\bf SGN}(\vec q) = (-)^{q_x + q_y + q_z + q_t}. $$
+
+So in order to do the meson spectroscopy we just have to compute once and 
+for all the 16 diagonal $\eta$'s and the ${\bf SGN}$'s. A table is attached
+at the end. Note that both $\eta$ and ${\bf SGN}$ are 
+$\gamma$-representation independent.
+
+\bigskip
+
+\noindent {\bf B. Vector Currents}
+\medskip
+
+We can consider three different vector currents on the lattice, all of
+which have the same (naive) continuum limit. On the lattice only one 
+current is conserved. Note that we only consider Wilson fermions with the 
+Wilson parameter $r$ set to 1. The vector currents are
+$$ V^{loc}_{\mu} (x) = \overline \psi(x) \gamma_{\mu} \psi(x), $$
+$$ V^{cvc}_{\mu} (x) = {1 \over 2} \left\{ \overline \psi(x) 
+ (\gamma_{\mu} - 1) U_{\mu}(x) \psi(x+\mu) + \overline \psi(x+\mu) 
+ (\gamma_{\mu} + 1) U^\dagger_{\mu}(x) \psi(x) \right\}, $$
+which is the conserved current, and
+$$ V^{ncvc}_{\mu} (x) = {1 \over 2} \left\{ \overline \psi(x) 
+ \gamma_{\mu} U_{\mu}(x) \psi(x+\mu) + \overline \psi(x+\mu) 
+ \gamma_{\mu} U^\dagger_{\mu}(x) \psi(x) \right\}. $$
+
+We want to compute the correlators of these currents with a $\rho$ of
+`polarization' $\mu$, where we take $\mu$ to be a space like direction, 
+{\it i.e.,} 1, 2 or 3,
+$$ C^A_{\mu} (x) = < V^A_{\mu} (x) \overline \psi(0) \gamma_{\mu} 
+ \psi(0)>, $$ 
+where $A$ is one of $loc$, $cvc$ or $ncvc$. The correlator of the local
+current is just the $\gamma_{\mu}$-meson already computed.
+
+We consider the non-conserved current correlator next. We find
+$$\eqalign{
+ C^{ncvc}_{\mu} (x) = {1 \over 2} \Bigl\{ & ~ \Tr \left[ \gamma_{\mu} 
+ U_{\mu}(x) G(x+\mu,0) \gamma_{\mu} \gamma_5 G^\dagger (x,0) \gamma_5
+ \right] + \cr
+ & ~ \Tr \left[ \gamma_{\mu} U_{\mu}^\dagger(x) G(x,0) \gamma_{\mu} 
+ \gamma_5 G^\dagger (x+\mu,0) \gamma_5 \right] \Bigr\}. \cr } $$
+Introducing the vector $\vec \mu$ as the unit vector in direction $\mu$ and
+going through the same steps as in the computation of the meson propagators
+we find
+$$\eqalign{
+ C^{ncvc}_{\mu} (x) = 2 \sum_{\vec q} & ~ \eta(\vec q) \eta(\vec \mu \oplus 
+ \vec q) {\bf SGN}(\vec q) \cr
+ & ~ \left\{ \trc \left[ U_{\mu}(x) g_{\vec q}(x+\mu) 
+ g_{\vec q}^\dagger (x) \right] + \trc \left[ U_{\mu}^\dagger (x) g_{\vec q}(x) 
+ g_{\vec q}^\dagger (x+\mu) \right] \right\}. \cr } $$
+The second term is the hermitian conjugate of the first and hence
+$$ C^{ncvc}_{\mu} (x) = 4 \sum_{\vec q} \eta(\vec q) \eta(\vec \mu \oplus 
+ \vec q) {\bf SGN}(\vec q) \Re \left( \trc \left[ U_{\mu}(x) 
+g_{\vec q}(x+\mu)  g_{\vec q}^\dagger (x) \right] \right). $$
+
+We can write the conserved vector current as
+$$ V^{cvc}_{\mu} (x) = V^{ncvc}_{\mu} (x) + V^{wils}_{\mu} (x), $$
+where
+$$ V^{wils}_{\mu} (x) = {1 \over 2} \left\{ - \overline \psi(x) 
+ U_{\mu}(x) \psi(x+\mu) + \overline \psi(x+\mu) 
+ U^\dagger_{\mu}(x) \psi(x) \right\}. $$
+Obviously the correlator has the same decomposition. Thus we need to
+consider now only
+$$\eqalign{
+ C^{wils}_{\mu} (x) = {1 \over 2} \Bigl\{ & ~ \Tr \left[ - U_{\mu}(x) 
+ G(x+\mu,0) \gamma_{\mu} \gamma_5 G^\dagger (x,0) \gamma_5
+ \right] + \cr
+ & ~ \Tr \left[ U_{\mu}^\dagger(x) G(x,0) \gamma_{\mu} 
+ \gamma_5 G^\dagger(x+\mu,0) \gamma_5 \right] \Bigr\}. \cr } $$
+
+Again we insert the decomposition of $G(x,0)$ into Dirac matrices. The
+spinor part of the correlator is
+$$ \trd \left[ \Gamma^\dagger(\vec p) \gamma_{\mu} \Gamma(\vec {\bf 1}) 
+ \Gamma(\vec q) \Gamma(\vec {\bf 1}) \right] = 
+ 4 c_{vw}(\vec \mu, \vec q) \delta_{\vec p, \vec \mu \oplus \vec q}. $$
+Here we have defined
+$$ c_{vw}(\vec \mu, \vec q) = \eta(\vec \mu \oplus \vec q)
+ \eta(\vec \mu, \vec {\bf 1}) \eta(\vec q, \vec {\bf 1}) 
+ \eta(\vec \mu \oplus \vec {\bf 1}, \vec q \oplus \vec {\bf 1})
+ \eta(\vec \mu \oplus \vec q) 
+ = {\bf SGN}(\vec q) \eta(\vec \mu, \vec q) $$
+The second equation follows after some algebra.
+%% $$ \eta(\vec p) \eta(\vec q) \eta(\vec p \oplus \vec q) =
+%% \eta(\vec p, \vec q) \eta(\vec q, \vec p) $$
+%% and $\eta(\vec \mu) = 1$.
+Then we obtain 
+$$\eqalign{
+ C^{wils}_{\mu} (x) = 2 \sum_{\vec q} c_{vw}(\vec \mu, \vec q) 
+ \Bigl\{ - & ~ \trc \left[ U_{\mu}(x) g_{\vec \mu \oplus \vec q}(x+\mu) 
+ g_{\vec q}^\dagger (x) \right] \cr
+ + & ~ \trc \left[ U_{\mu}^\dagger (x) g_{\vec \mu \oplus \vec q}(x)
+ g_{\vec q}^\dagger (x+\mu) \right] \Bigr\}. \cr } $$
+
+Some algebra shows that
+$$ c_{vw}(\vec \mu, \vec \mu \oplus \vec q) = - 
+ c_{vw}(\vec \mu, \vec q). $$
+Thus, changing the summation variable in the second term of 
+$C^{wils}_{\mu} (x)$ from $\vec q$ to $\vec \mu \oplus \vec q$ shows that
+it is just the hermitian conjugate of the first term. So we find 
+$$ C^{wils}_{\mu} (x) = -  4 \sum_{\vec q} c_{vw}(\vec \mu, \vec q) 
+ \Re \left( \trc \left[ U_{\mu}(x) g_{\vec \mu \oplus \vec q}(x+\mu) 
+ g_{\vec q}^\dagger (x) \right] \right). $$
+
+The $\eta(\vec n, \vec m)$'s necessary for the computation of the `Wilson
+part' of the conserved current correlators have been generated by a 
+small Fortran program.
+
+\bigskip
+
+\noindent {\bf C. Axial Currents}
+\medskip
+
+There is no (partially) conserved axial current on the lattice. So we just
+have to do with lattice axial currents that have the correct naive
+continuum limit. We consider two such currents
+$$ A^{loc}_{\mu} (x) = \overline \psi(x) \gamma_{\mu} \gamma_5 \psi(x), $$
+and
+$$ A^{nloc}_{\mu} (x) = {1 \over 2} \left\{ \overline \psi(x) 
+ \gamma_{\mu} \gamma_5 U_{\mu}(x) \psi(x+\mu) + \overline \psi(x+\mu) 
+ \gamma_{\mu} \gamma_5 U^\dagger_{\mu}(x) \psi(x) \right\}. $$
+
+We want to compute the correlators of the $4^{\rm th}$ component of these 
+currents with a pion 
+$$ C^B_4 (x) = < A^B_4 (x) \overline \psi(0) \gamma_5 \psi(0)>, $$ 
+where $B$ stands for $loc$ or $nloc$. 
+
+We consider the non-local current correlator first. We find
+$$\eqalign{
+ C^{nloc}_4(x) = {1 \over 2} \Bigl\{ & ~ \Tr \left[ \gamma_4 \gamma_5 
+ U_4(x) G(x+\hat 4,0) \gamma_5 \gamma_5 G^\dagger (x,0) 
+ \gamma_5 \right] + \cr
+ & ~ \Tr \left[ \gamma_4 \gamma_5 U_4^\dagger(x) G(x,0) \gamma_5
+ \gamma_5 G^\dagger (x+\hat 4,0) \gamma_5 \right] \Bigr\}. \cr } $$
+Once more we insert the decomposition of $G(x,0)$ into Dirac matrices. 
+This time the spinor part becomes
+$$ \trd \left[ \Gamma(\vec 4) \Gamma(\vec {\bf 1}) \Gamma^\dagger(\vec p) 
+ \Gamma(\vec q) \Gamma(\vec {\bf 1}) \right] = 
+ 4 c_a(\vec 4, \vec q) \delta_{\vec p, \vec 4 \oplus \vec q}. $$
+Here we have introduced
+$$ c_a(\vec 4, \vec q) = \eta(\vec 4 \oplus \vec q)
+ \eta(\vec 4, \vec {\bf 1})  \eta(\vec q, \vec {\bf 1}) 
+ \eta(\vec q \oplus \vec {\bf 1}, \vec 4 \oplus \vec {\bf 1})
+ \eta(\vec 4 \oplus \vec q) 
+ = {\bf SGN}(\vec 4) \eta(\vec q, \vec 4) $$
+Then the correlator becomes
+$$ C^{nloc}_4(x) = 2 \sum_{\vec q} c_a(\vec 4, \vec q) 
+ \left\{ \trc \left[ U_4(x) g_{\vec 4 \oplus \vec q}(x+\hat 4) 
+ g_{\vec q}^\dagger (x) \right] + \trc \left[ U_4^\dagger (x) 
+ g_{\vec 4 \oplus \vec q}(x) g_{\vec q}^\dagger (x+\hat 4) \right] 
+ \right\}. $$
+
+$c_a$ satisfies
+$$ c_a(\vec 4, \vec 4 \oplus \vec q) = c_a(\vec 4, \vec q) $$
+and the second term above becomes, after changing the summation variable 
+from $\vec q$ to $\vec 4 \oplus \vec q$, the hermitian conjugate of the 
+first term. Thus we get 
+$$ C^{nloc}_4(x) = 4 \sum_{\vec q} c_a(\vec 4, \vec q) 
+ \Re \left( \trc \left[ U_4(x) g_{\vec 4 \oplus \vec q}(x+\hat 4) 
+ g_{\vec q}^\dagger (x) \right] \right). $$
+
+Analogously we find for the local axial current correlator
+$$ C^{loc}_4(x) = 4 \sum_{\vec q} c_a(\vec 4, \vec q) 
+ \Re \left( \trc \left[ g_{\vec 4 \oplus \vec q}(x) 
+ g_{\vec q}^\dagger (x) \right] \right). $$
+
+
+\bigskip
+
+\noindent {\bf D. Improved Currents}
+\medskip
+
+The local currents considered previously can be ${\cal O}(a)$-improved by
+adding
+$$ \delta A_\mu(x) = \tilde \partial_\mu 
+ \overline \psi(x) \gamma_5 \psi(x), $$
+and
+$$ \delta V_\mu(x) = \tilde \partial_\nu 
+ \overline \psi(x) \gamma_\nu \gamma_\mu \psi(x) $$
+respectively with appropriately chosen coefficients. Note that in the
+last equation we used $i \sigma_{\mu \nu} = \gamma_\nu \gamma_\mu$. Further
+we have defined
+$$ \tilde \partial_\mu f(x) = {1 \over 2} \left[ f(x+\mu) - f(x-\mu)
+ \right] .$$
+
+We note that the correlator of $\delta A_4(x)$ with $\overline \psi(0)
+\gamma_5 \psi(0)$ is, apart from the $\tilde \delta_4$, just the pion
+correlator, pion$_1$.
+
+For the vector current we need the correlator of $\delta V_k(x)$ with the
+rho, $\overline \psi(0) \gamma_k \psi(0)$. Since we will project on
+zero momentum by summing over all $\vec x$, only the $\nu = 4$ part in
+$\delta V_k(x)$ will give a non-vanishing contribution
+$$ C^{\delta V}_k(x) = < \delta V_k (x) \overline \psi(0) \gamma_k \psi(0)>
+ = \tilde \partial_4 \Tr \left[ \gamma_4 \gamma_k G(x,0) \gamma_k
+ \gamma_5 G^\dagger (x,0) \gamma_5 \right] .$$ 
+The spinor part of the correlator is
+$$ \trd \left[ \gamma_4 \gamma_k \Gamma^\dagger(\vec p) \gamma_k
+ \Gamma(\vec {\bf 1}) \Gamma(\vec q) \Gamma(\vec {\bf 1}) \right] = 
+ 4 c_{\delta v}(\vec k, \vec q) \delta_{\vec p, \vec 4 \oplus \vec q}. $$
+Here we have defined
+$$ c_{\delta v}(\vec k, \vec q) = \eta(\vec 4 \oplus \vec q)
+ \eta(\vec 4, \vec k) \eta(\vec k, \vec {\bf 1}) \eta(\vec q, \vec {\bf 1}) 
+ \eta(\vec 4 \oplus \vec k, \vec 4 \oplus \vec q)
+ \eta(\vec k \oplus \vec {\bf 1}, \vec q \oplus \vec {\bf 1})
+ \eta(\vec k \oplus \vec q) 
+ = - {\bf SGN}(\vec q) \eta(\vec k \oplus \vec q) $$
+One checks easily that
+$$ c_{\delta v}(\vec k, \vec 4 \oplus \vec q) =
+ c_{\delta v}(\vec k, \vec q) $$
+and hence we obtain
+$$ C^{\delta V}_k(x) = 4 \sum_{\vec q} c_{\delta v}(\vec k, \vec q)
+ \tilde \partial_4 \Re \left( \trc \left[ g_{\vec 4 \oplus \vec q}(x) 
+ g_{\vec q}^\dagger (x) \right] \right). $$
+
+
+%%$$ c_{vw}(\vec \mu, \vec q) = \eta(\vec \mu \oplus \vec q)
+%% \eta(\vec \mu, \vec {\bf 1})  \eta(\vec q, \vec {\bf 1}) 
+%% \eta(\vec \mu \oplus \vec {\bf 1}, \vec q \oplus \vec {\bf 1})
+%% \eta(\vec \mu \oplus \vec q) =
+%% {\bf SGN}(\vec q) \eta(\vec \mu, \vec q) $$
+%%and
+%%$$ c_a(\vec 4, \vec q) = \eta(\vec 4 \oplus \vec q)
+%% \eta(\vec 4, \vec {\bf 1}) \eta(\vec q, \vec {\bf 1})
+%% \eta(\vec q \oplus \vec {\bf 1}, \vec 4 \oplus \vec {\bf 1})
+%% \eta(\vec 4 \oplus \vec q) = 
+%% {\bf SGN}(\vec 4) \eta(\vec q, \vec 4) . $$
+
+
+\eject
+\centerline{Table}
+\bigskip
+
+\centerline{
+\vbox{\offinterlineskip
+\hrule\def\tablerule{\noalign{\hrule}}
+\def\mystrut{\vrule height 14pt width 0pt depth 5pt}
+\def\plus{\hphantom{-}1}\def\minus{-1}
+\halign{&\vrule#&\mystrut\quad\hfil#\hfil\quad\cr
+& $~n$ && $(n_x,n_y,n_z,n_t)$ && $\eta(n)$ && ${\bf SGN}(n)$ &\cr\tablerule
+& ~0 && (0,0,0,0) && \plus  && \plus &\cr\tablerule
+& ~1 && (1,0,0,0) && \plus  && \minus&\cr\tablerule
+& ~2 && (0,1,0,0) && \plus  && \minus&\cr\tablerule
+& ~3 && (1,1,0,0) && \minus && \plus &\cr\tablerule
+& ~4 && (0,0,1,0) && \plus  && \minus&\cr\tablerule
+& ~5 && (1,0,1,0) && \minus && \plus &\cr\tablerule
+& ~6 && (0,1,1,0) && \minus && \plus &\cr\tablerule
+& ~7 && (1,1,1,0) && \minus && \minus&\cr\tablerule
+& ~8 && (0,0,0,1) && \plus  && \minus&\cr\tablerule
+& ~9 && (1,0,0,1) && \minus && \plus &\cr\tablerule
+& 10 && (0,1,0,1) && \minus && \plus &\cr\tablerule
+& 11 && (1,1,0,1) && \minus && \minus&\cr\tablerule
+& 12 && (0,0,1,1) && \minus && \plus &\cr\tablerule
+& 13 && (1,0,1,1) && \minus && \minus&\cr\tablerule
+& 14 && (0,1,1,1) && \minus && \minus&\cr\tablerule
+& 15 && (1,1,1,1) && \plus  && \plus &\cr\tablerule}}
+}
+\bye
+
+

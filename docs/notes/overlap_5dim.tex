@@ -1,0 +1,167 @@
+%\magnification=1200
+%\baselineskip=18pt
+
+\centerline{ \bf A domain-wall like algorithm for the overlap Dirac operator}
+\medskip
+
+\hbox{\bf NOTE: In the SZIN code this method corresponds to OVERLAP\_5D}
+
+\medskip
+
+We are interested in solving the massive hermitian overlap equation
+$$
+H_o\psi = {1\over 2}\left((1+\mu)\gamma_5 + (1-\mu)\epsilon(H)\right)\psi = b
+$$
+where $\mu$ is the quark mass and $H$ is the hermitian Wilson-Dirac operator.
+In the derivations below, we will choose to normalize $\psi$ so that
+the $\epsilon(H)$ has no prefactors. We cast the problem into the form
+$$
+M \psi = [ A + \hat P^\dagger \epsilon \hat P ] \psi = b
+$$
+where $\hat P$ is some projection operator and $A$ is a matrix.
+If $M$ is the hermitian overlap Dirac opertor, then
+$$M=H_o;\ \ \ \  A= {1+\mu\over 1-\mu} \gamma_5 + 
+\sum_{i=1}^m {\rm sgn}{\lambda^w_i} \chi_i \chi_i^\dagger$$
+$$
+\hat P = P_w;\ \ \ \  P_w= 1-\sum_{i=1}^m \chi_i \chi_i^\dagger
+$$
+where
+$$H_w \chi_i = \lambda^w_i \chi_i$$
+where $\lambda^w_i$ are the low lying eigenvalues of the hermitian
+Wilson-Dirac operator.
+We note that $\psi$ has been rescaled $\psi\rightarrow {{2}\over{1-\mu}}\psi$.
+If $M$ is the square of the hermitain overlap Dirac operator, then
+$$M=H_o^2; \ \ \ \ \  A = \pm {1+ \mu^2\over 1-\mu^2} 
++ P_\pm \sum_{i=1}^m {\rm sgn}{\lambda^w_i} \chi_i \chi_i^\dagger P_\pm;$$
+$$
+\hat P = P_w P_\pm; \ \ \ \
+P_\pm = {1\over 2} (1 \pm \gamma_5); \ \ \ \ \gamma_5 b = \pm b $$
+In writing the above equations, we have removed some overall factors
+that only depend on $\mu$. 
+ 
+We start with the assumption that we have a rational function 
+approximation for $\epsilon(H)$ which we will write as
+$P(H)/Q(H)$. We note that $P(H)$ is an odd function of $H$
+and $Q(H)$ is an even function of $H$. In this note we will
+convert the problem of solving
+$$
+(A + \hat P^\dagger {P(H)\over Q(H)} \hat P ) \psi = b,
+$$
+into an equivalent problem of 
+$$D_w \phi = c$$
+where $D_w$ has the structure of a five dimensional operator with
+a finite extent in the fifth direction,
+$\phi$ is a five dimensional vector with one four dimensional
+component being $\psi$ and $c$ is a five dimensional source with
+$b$ being the only non-zero four dimensional component. 
+The essence of the idea is contained in Neuberger's {\bf hep-lat/9901003}.
+
+Let us write
+$$
+{P(H)\over Q(H)} = \alpha_{2N} H + { \alpha^2_{2N-1} \over 
+                        H + {\alpha^2_{2N-2} \over
+                        H + {\alpha^2_{2N-3} \over
+                        H + {\cdots \over
+                   \cdots + {\alpha^2_1 \over
+                        H + {\alpha^2_0 \over
+                        H   }}}}}}
+$$
+If we simplify this expression into rational form we get 
+$$
+{P(H)\over Q(H)}  = { H \sum_{n=0}^N c_n H^{2n} \over \sum_{n=0}^N d_n H^{2n}}
+$$
+which we can relate to rational polynomial approximations of $\epsilon(H)$.
+
+We will now write down the five dimensional operator. The extent
+in the fifth direction is $2N+1$.
+$$
+\pmatrix{
+H & \alpha_0 & 0 & 0 & \cdots & 0 & 0 & 0 & 0 \cr
+\alpha_0 & -H & \alpha_1 & 0 & \cdots & 0 & 0 & 0 & 0 \cr
+0 & \alpha_1 & H & \alpha_2 & \cdots & 0 & 0 & 0 & 0 \cr
+0 & 0 & \alpha_2 & 0 & \cdots & 0 & 0 & 0 & 0 \cr
+0 & 0 & 0 & 0 & \cdots & \alpha_{2N-3} & H & \alpha_{2N-2} & 0 \cr
+0 & 0 & 0 & 0 & \cdots & 0 & \alpha_{2N-2} & -H & \alpha_{2N-1}\hat P \cr
+0 & 0 & 0 & 0 & \cdots & 0 & 0 & \alpha_{2N-1}\hat P^\dagger & 
+A +\alpha_{2N}\hat P^\dagger H \hat P \cr}
+\pmatrix{\phi_0\cr \phi_1\cr\phi_2\cr\cdots\cr \phi_{2N-2} \cr \phi_{2N-1}
+\cr \psi \cr }
+=
+\pmatrix{0\cr 0\cr 0\cr\cdots\cr 0 \cr 0
+\cr b \cr }
+$$
+
+To see the connection, one simply has to solve the above equation for
+$\psi$ given $b$ by elminating all the $\phi$ variables. From the
+first row, we have
+$$\phi_0 = -{\alpha_0\over H} \phi_1.$$
+and from the second row we then get
+$$\phi_1 = {\alpha_1 \over H + {\alpha_0^2\over H}} \phi_2.$$
+Then it is easy to show by recursion that
+$$\phi_i = { (-1)^{i-1} \alpha_i \over 
+                        H + {\alpha^2_{i-1} \over
+                        H + {\alpha^2_{i-2} \over
+                        H + {\cdots \over
+                   \cdots + {\alpha^2_1 \over
+                        H + {\alpha^2_0 \over
+                        H   }}}}}} \phi_{i+1}
+$$
+The last but one row gives us the relation
+$$\phi_{2N-1} = { \alpha_{2N-1} \over 
+                        H + {\alpha^2_{2N-2} \over
+                        H + {\alpha^2_{2N-3} \over
+                        H + {\cdots \over
+                   \cdots + {\alpha^2_1 \over
+                        H + {\alpha^2_0 \over
+                        H   }}}}}} \psi
+$$
+and the last equation gives us the desired equation we wanted to
+solve in the first place. This ends our connection.
+
+Because of where the mass term $A$ appears in $D_w$, we can not
+use a multi-shift Krylov space solver for handling multiple quark masses.
+
+%\end
+
+Consider a non-hermitian form to $H_o$ which still has a hermitian
+solution for $H_o\psi = \chi$.
+$$
+{P(H)\over Q(H)} = \alpha_{N} H + {\alpha^2_{N-1}H \over 
+                        H^2+\beta_{N-1} + {\alpha^2_{N-2} \over
+                        H^2+\beta_{N-2} + {\alpha^2_{N-3} \over
+                        H^2+\beta_{N-3} + {\cdots \over
+                   \cdots + {\alpha^2_1 \over
+                        H^2+\beta_1+ {\alpha^2_1 \over
+                        H^2+\beta_0}}}}}}
+$$
+where now ${\rm deg}(P(H))=2N+1$, ${\rm deg}(Q(H)) = 2N$, and $P(H)$
+is odd and $Q(H)$ is even. We restrict $N$ to be even.
+The resulting five dimensional operator has the form
+$$
+\pmatrix{
+H^2+\beta_0 & \alpha_0 & 0 & \cdots & 0 & 0 & 0 & 0 \cr
+\alpha_0 & -H^2-\beta_1 & \alpha_1 & \cdots & 0 & 0 & 0 & 0 \cr
+0 & \alpha_1 & H & \cdots & 0 & 0 & 0 & 0 \cr
+0 & 0 & 0 & \cdots & 0 & 0 & 0 & 0 \cr
+0 & 0 & 0 & \cdots & \alpha_{N-3} & H^2+\beta_{N-2} & \alpha_{N-2} & 0 \cr
+0 & 0 & 0 & \cdots & 0 & \alpha_{N-2} & -H^2-\beta_{N-1} & \alpha_{N-1}H\hat P \cr\
+0 & 0 & 0 & \cdots & 0 & 0 & \alpha_{N}\hat P^\dagger & 
+A + \alpha_{2N}\hat P^\dagger H \hat P\cr}
+\pmatrix{\phi_0\cr \phi_1\cr\phi_2\cr\cdots\cr \phi_{N-1} \cr \phi_{N}
+\cr \psi \cr }
+=
+\pmatrix{0\cr 0\cr 0\cr\cdots\cr 0 \cr 0
+\cr b \cr }
+$$
+This operator is not hermitian, but the resulting 4 dimensional
+operator for $\psi$ is hermitian. It is also not positive (semi)definite.
+This operator requires $2N+2$ applications of $H$, so one more
+than the optimal rational polynomial form above; however, it only requires $N$
+extra fields instead of $2N$.
+
+
+\end
+
+
+
+

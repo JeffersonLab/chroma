@@ -1,0 +1,718 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+
+% Somewhat wider and taller page than in art12.sty
+\topmargin -0.4in  \headsep 0.0in  \textheight 9.0in
+\oddsidemargin 0.25in  \evensidemargin 0.25in  \textwidth 6.5in
+
+\footnotesep 14pt
+\floatsep 28pt plus 2pt minus 4pt      % Nominal is double what is in art12.sty
+\textfloatsep 40pt plus 2pt minus 4pt
+\intextsep 28pt plus 4pt minus 4pt
+
+\begin{document}
+
+\newcommand{\half}{\frac{1}{2}}
+%\newcommand{\be}{\begin{equation}}
+%\newcommand{\ee}{\end{equation}}
+\newcommand{\be}{\begin{displaymath}}
+\newcommand{\ee}{\end{displaymath}}
+\newcommand{\bea}{\begin{eqnarray}}
+\newcommand{\eea}{\end{eqnarray}}
+\newcommand{\bdm}{\begin{displaymath}}
+\newcommand{\edm}{\end{displaymath}}
+\newcommand{\<}{\langle}
+\renewcommand{\>}{\rangle}
+\newcommand{\Tr}{\mbox{Tr}}
+
+\centerline{\bf \Large Borici's truncated overlap}
+\vskip 5mm
+
+This document describes Borici's construction of a 5-d domain wall fermion
+like approach to Neuberger's polar decomposition approximation of the
+overlap Dirac operator. It uses my conventions throughout.
+
+The usual, 4-d, Wilson-Dirac operator is given by
+\bea
+D_w(M) \!\! &=& \!\! (4+M) \delta_{x,y} - \frac{1}{2} \sum_{\mu=1}^4 \Bigl[
+ (1 - \gamma_\mu) U_\mu(x) \delta_{x+\mu,y} +
+ (1 + \gamma_\mu) U_\mu^\dagger(y) \delta_{x,y+\mu} \Bigr] \nonumber \\
+\!\! &=& \!\! \begin{pmatrix} B + M & C \\ -C^\dagger & B + M \end{pmatrix} .
+\label{eq:D_w}
+\eea
+Here, with $\sigma_\mu = (\sigma_k, i {\bf 1})$,
+\bea
+C \!\! &=& \!\! \frac{1}{2} \sum_{\mu=1}^4 \sigma_\mu \Bigl[ U_\mu(x)
+ \delta_{x+\mu,y} - U_\mu^\dagger(y) \delta_{x,y+\mu} \Bigr] , \nonumber \\
+B \!\! &=& \!\! \frac{1}{2} \sum_{\mu=1}^4 \Bigl[ 2 \delta_{x,y} -  U_\mu(x)
+ \delta_{x+\mu,y} - U_\mu^\dagger(y) \delta_{x,y+\mu} \Bigr] .
+\label{eq:C_B}
+\eea
+We are using a chiral basis: $\gamma_\mu = \begin{pmatrix} 0 & \sigma_\mu \\
+\sigma_\mu^\dagger & 0 \end{pmatrix}$, $\gamma_5 = \begin{pmatrix} 1 & 0 \\
+0 & -1 \end{pmatrix}$. We will also use the hermitian Wilson-Dirac operator
+\bea
+H_w(M) = \gamma_5 D_w(M) = \begin{pmatrix} B + M & C \\
+	C^\dagger & -B - M \end{pmatrix} .
+\label{eq:H_w}
+\eea
+Usually, we will use a large negative mass here, but often omit the
+argument from $D_w$ and $H_w$.
+
+In this notation, the usual domain wall fermion action of Shamir reads
+with an explicit fifth dimensional lattice spacing
+(e.g. hep-lat/9807012) for the hopping term but keeping a dimensional mass
+term
+\bea
+S_{DW} = - \bar \Psi D^{(5)}_{DW} \Psi = - \sum_{i=1}^N \bar \Psi_i
+ \Bigl\{ \bigl[a_5 D_w(-M) + 1 \bigr] \Psi_i - P_- \Psi_{i+1} -
+ P_+ \Psi_{i-1} \Bigr\}
+\label{eq:S_DW}
+\eea
+with boundary conditions in the extra (fifth) direction:
+\bea
+P_- \Psi_{N+1} = -m P_- \Psi_1 ,  \qquad P_+ \Psi_0 = -m P_+ \Psi_N .
+\label{eq:bc}
+\eea
+%
+$P_\pm$ are the chiral projectors, $P_\pm = \frac{1}{2} ( 1 \pm \gamma_5)$.
+$m \le 1$ is proportional to the quark mass.
+The 4-d (light) fermion degrees of freedom are identified with
+\bea
+q^R = P_+ \Psi_N = \Psi_N^R ,&& \quad  q^L = P_- \psi_1 = \Psi_1^L ,
+ \nonumber \\
+\bar q^R = \bar \Psi_N P_- = \bar \Psi_N^R ,&& \quad \bar q^L =
+\bar \psi_1 P_+ = \bar \Psi_1^L .
+\label{eq:light}
+\eea
+
+Borici's 5-d truncated overlap action is then
+\bea
+S_B = - \bar \Psi D^{(5)}_B \Psi = - \sum_{i=1}^N \bar \Psi_i
+ \!\!\!\! && \!\!\!\! \Bigl\{ \bigr[a_5 D_w(-M) + 1 \bigl] \Psi_i +
+ \bigr[a_5 D_w(-M) - 1 \bigl] P_- \Psi_{i+1} + \nonumber \\
+ \!\!\!\! && \!\!\! \bigr[a_5 D_w(-M) - 1 \bigl] P_+ \Psi_{i-1} \Bigr\}
+ + \bar \Psi_1 \hat A(m) \bigr[ P_- \Psi_1 + P_+ \Psi_N \bigl]
+\label{eq:S_B}
+\eea
+with unchanged boundary conditions in the extra direction.
+Here we have included an as yet unspecified quark mass dependent
+4-d operator $\hat A(m)$, which will prove useful later on.
+The kernel of the 5-d operator is, including the boundary conditions,
+\bea
+D^{(5)}_{B} = \begin{pmatrix}
+D_+ - \hat{A}P_- & D_-P_- & 0 & 0&\cdots & 0 & 0 &
+-m D_-P_+ - \hat{A} P_+ \cr
+D_-P_+ & D_+ & D_-P_- & 0&\cdots & 0 & 0 & 0 \cr
+0 & D_-P_+ & D_+ & D_-P_- &\cdots & 0 & 0 & 0 \cr
+\vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \cr
+0 & 0 & 0 & 0 & \cdots & D_-P_+ & D_+ & D_-P_- \cr
+-m D_-P_- & 0 & 0 & 0 & \cdots & 0 & D_-P_+ & D_+ \cr
+\end{pmatrix}
+\label{eq:D_5d_matrix}
+\eea
+where
+\bea
+D_\pm = a_5 D_w(-M) \pm 1 ~.
+\eea
+
+What follows are manipulations that show the relation between Borici's
+domain wall version, and its associated pseudo-fermions, to the truncated
+overlap (the polar decomposition approximation to the overlap) of
+Neuberger.
+
+Define ${\cal P}$ by
+\bea
+{\cal P}_{jk} = \begin{cases}
+ P_- \delta_{j,k} + P_+ \delta_{j+1,k} & \text{for $j = 1, \dots, N-1$} \\
+ P_- \delta_{N,k} + P_+ \delta_{1,k} & \text{for $j = N$} \end{cases} .
+\eea
+This has an inverse ${\cal P}^{-1} = {\cal P}^\dagger$, given by
+\bea
+{\cal P}^{-1}_{jk} = \begin{cases}
+ P_- \delta_{j,k} + P_+ \delta_{j-1,k} & \text{for $j = 2, \dots, N$} \\
+ P_- \delta_{1,k} + P_+ \delta_{N,k} & \text{for $j = 1$} \end{cases} .
+\eea
+
+Now, introduce $\chi_i$'s through $\Psi_i = ({\cal P} \chi)_i$. Then, we can
+rewrite Borici's domain wall action as
+\bea
+S_B = \!\! &-& \!\! \Bigl\{ \bar \Psi_1 \gamma_5 \bigl[ (a_5 H_w -1)
+ (P_- -m P_+) \chi_1 - \gamma_5 \hat A \chi_1 + (a_5 H_w +1) \chi_2 \bigr]
+ \nonumber \\
+\label{eq:S_B2}
+ \!\! &+& \!\! \quad \sum_{i=2}^{N-1} \bar \Psi_i \gamma_5
+ \bigl[ (a_5 H_w -1) \chi_i + (a_5 H_w +1) \chi_{i+1} \bigr] \\
+ \!\! &+& \!\! \quad \bar \Psi_N \gamma_5 \bigl[ (a_5 H_w -1) \chi_N
+  + (a_5 H_w +1) (P_+ -m P_-) \chi_1 \bigr] \Bigr\} . \nonumber
+\eea
+To arrive at this we have used $\gamma_5 P_+ = P_+$ and $\gamma_5 P_- = - P_-$,
+as well as the boundary conditions on the fermion fields.
+
+Next we introduce $\bar \Psi_i = \bar \chi_i (a_5 H_w -1)^{-1} \gamma_5$ and
+\bea
+T^{-1} = \frac{1 + a_5 H_w}{1 - a_5 H_w} ~.
+\label{eq:T}
+\eea
+This change of variables would give rise to a Jacobian in a dynamical
+simulation. However, it would be exactly canceled by the Jacobian of
+this transformation for the pseudo-fermion fields, whose action is
+obtained by the replacement $m \to 1$, since integration of
+fermions (Grassman fields) acts like differentiation.
+
+Anyway, Borici's domain wall action reads now
+\bea
+S_B = \!\! &-& \!\! \biggl\{ \bar \chi_1 \bigl[ (P_- -m P_+) \chi_1 -
+ (a_5 H_w -1)^{-1} \gamma_5 \hat A \chi_1 - T^{-1} \chi_2 \bigr] \nonumber \\
+ \!\! &+& \!\! \quad \sum_{i=2}^{N-1} \bar \chi_i \bigl[ \chi_i-
+ T^{-1} \chi_{i+1} \bigr]
+ + \bar \chi_N \bigl[ \chi_N - T^{-1} (P_+ -m P_-) \chi_1 \bigr] \biggr\} .
+\label{eq:S_B3}
+\eea
+
+Now, we integrate out, in succession, $\chi_N, \bar \chi_N$, $\chi_{N-1},
+\bar \chi_{N-1}$, $\dots$, $\chi_2, \bar \chi_2$. For this we use, at
+the first step,
+\bea
+ \!\! && \!\! \bar \chi_N \chi_N - \bar \chi_{N-1} T^{-1} \chi_N -
+ \bar \chi_N T^{-1} (P_+ -m P_-) \chi_1 = \nonumber \\
+ \!\! && \!\! \bigl[ \bar \chi_N - \bar \chi_{N-1} T^{-1} \bigr] \bigl[ \chi_N -
+ T^{-1} (P_+ -m P_-) \chi_1 \bigr] - \bar \chi_{N-1} T^{-2} (P_+ -m P_-) \chi_1
+\nonumber
+\eea
+and at the $(N-i)$-th step
+\bea
+\label{eq:int_i}
+ \!\!\!\! && \!\!\!\! \bar \chi_{i+1} \chi_{i+1} - \bar \chi_i T^{-1}
+ \chi_{i+1} - \bar \chi_{i+1} T^{-N+i} (P_+ -m P_-) \chi_1 = \\
+ \!\!\!\! && \!\!\!\! \bigl[ \bar \chi_{i+1} - \bar \chi_i T^{-1} \bigr]
+ \bigl[ \chi_{i+1} - T^{-N+i} (P_+ -m P_-) \chi_1 \bigr] -
+ \bar \chi_i T^{-N+i-1} (P_+ -m P_-) \chi_1 . \nonumber
+\eea
+With a change of variables $\chi_{i+1}^\prime = \chi_{i+1} - T^{-N+i}
+(P_+ -m P_-) \chi_1$ and $\bar \chi_{i+1}^\prime = \bar \chi_{i+1} -
+\bar \chi_i T^{-1}$ the integration over $\chi_{i+1}^\prime,
+\bar \chi_{i+1}^\prime$ is trivial, giving a factor 1.
+At the end, we arrive at the 4-d action for $\chi_1, \bar \chi_1$
+\bea
+S^{(4)}_B = - \bar \chi_1 \bigl[ (P_- -m P_+) - T^{-N} (P_+ -m P_-)
+ - (a_5 H_w -1)^{-1} \gamma_5 \hat A \bigr] \chi_1
+ = - \bar \chi_1 D^{(4)}_B(m) \chi_1 .
+\label{eq:S_B4}
+\eea
+The kernel is
+\bea
+D^{(4)}_B(m) &=& (P_- -m P_+) - T^{-N} (P_+ -m P_-) - (a_5 H_w -1)^{-1}
+ \gamma_5 \hat A \nonumber \\
+\label{eq:D_B4}
+ &=& -\left[ \frac{1+m}{2} \left(T^{-N} + 1 \right) \gamma_5 +
+ \frac{1-m}{2} \left(T^{-N} -1 \right) +
+ (a_5 H_w -1)^{-1} \gamma_5 \hat A \right] \\
+ &=& \Bigl[ \left(T^{-N} + 1 \right) \gamma_5 \Bigr] \times
+ \left[ \frac{1+m}{2} + \frac{1-m}{2} \gamma_5 \frac{T^{-N} -1}{T^{-N} + 1} +
+ \gamma_5 \frac{1}{(T^{-N} + 1)(a_5 H_w -1)} \gamma_5 \hat A \right] ~.
+ \nonumber
+\eea
+
+Finally, integrating out $\chi_1, \bar \chi_1$ and dividing by the
+pseudo-fermion determinant, obtained by the substitution $m \to 1$
+and requiring $\hat A(m=1) = 0$, we find
+\bea
+\frac{\det D^{(5)}_B(m)}{\det D^{(5)}_B(1)}
+ = \frac{\det D^{(4)}_B(m)}{\det D^{(4)}_B(1)}
+ = \det \left\{ \left[ D^{(4)}_B(1) \right]^{-1} D^{(4)}_B(m) \right\} .
+\label{eq:5d_4d_det}
+\eea
+Now, from eq.~(\ref{eq:D_B4}), $D^{(4)}_B(1) = \left(T^{-N} + 1 \right)
+\gamma_5$ and thus we get
+\bea
+\left[ D^{(4)}_B(1) \right]^{-1} D^{(4)}_B(m) =
+ \frac{1}{2} \Biggl[1+m + (1-m) \gamma_5 \frac{T^{-N} -1}{T^{-N} + 1}
+ + \gamma_5 \frac{2}{(T^{-N} + 1)(a_5 H_w -1)} \gamma_5 \hat A \Biggr] ~.
+\label{eq:D_T}
+\eea
+Noting that
+\bea
+\frac{T^{-N} -1}{T^{-N} + 1} = \frac{(1+a_5 H_w)^N - (1-a_5 H_w)^N}
+ {(1+a_5 H_w)^N + (1-a_5 H_w)^N} = \varepsilon_{N/2}(a_5 H_w)
+\eea
+where $\varepsilon_n(x)$ is Neuberger's polar decomposition approximation
+to $\epsilon(x)$, we see that, ignoring the $\hat A$ term for the moment,
+\bea
+\left[ D^{(4)}_B(1) \right]^{-1} D^{(4)}_B(m) = D_{TOV}(m) =
+\frac{1}{2} \Bigl[1+m + (1-m) \gamma_5 \varepsilon_{N/2}(a_5 H_w) \Bigr] .
+\label{eq:D_TOV}
+\eea
+This is just Neuberger's "truncated overlap"! For $N \to \infty$ it goes into
+the usual overlap.
+
+We now can use $\hat A$ to project out low-lying Wilson eigenvectors, $v_i$,
+for which $\varepsilon_{N/2}$ with finite $N$ is not a sufficiently accurate
+approximation to $\epsilon(x)$. Let
+\bea
+H_w v_i = \lambda_i v_i, \qquad T v_i = T_i v_i, \qquad
+\hat{P}_i = v_i v_i^\dagger ~,
+\eea
+where, from eq.~(\ref{eq:T}), 
+\bea
+T_i = \frac{1 - a_5 \lambda_i}{1 + a_5 \lambda_i} ~.
+\label{eq:T_i}
+\eea
+The projection can then be achieved by setting
+\bea
+\hat A(m) = (1-m) \gamma_5 \sum_i f_i \hat{P}_i ,
+\eea
+with
+\bea
+f_i &=& \frac{1}{2}(a_5\lambda_i -1) \left[-\left(T_i^{-N} -1 \right) +
+ \left(T_i^{-N} + 1\right)\epsilon(a_5 \lambda_i)\right]\nonumber\\
+  &=& \left\{\begin{array}{cc}
+       (a_5\lambda_i -1)&\forall\lambda_i > 0\\
+       \frac{(1 + a_5\lambda_i)^N}{(1- a_5\lambda_i)^{N-1}}&
+       \forall\lambda_i < 0\\
+\end{array}\right\}
+\label{eq:f_i}
+\eea
+Note that $\hat A(m)$ vanishes for $m=1$, {\it i.e.} for the pseudo-fermions.
+With this $\hat A(m)$ we find, instead of (\ref{eq:D_TOV}),
+\bea
+&& \left[ D^{(4)}_B(1) \right]^{-1} D^{(4)}_B(m) = D_{ov}(m) = \nonumber \\
+&& \qquad \frac{1}{2} \biggl\{1+m + (1-m) \gamma_5 \Bigl[
+ \varepsilon_{N/2}(a_5 H_w) \Bigl(1 - \sum_i \hat{P}_i \Bigr) +
+ \sum_i \epsilon(a_5 \lambda_i) \hat{P}_i \Bigr] \biggr\} ~.
+\label{eq:D_ov_proj}
+\eea
+
+Our next step is to relate the 4-d overlap propagator to the
+5-d propagator of Borici's version of the domain wall fermion action. In all
+steps below $\hat A(m)$ for the eigenvalue projections is included. From
+(\ref{eq:D_ov_proj}) we find, obviously,
+\bea
+D_{ov}^{-1}(m) = \left[ D^{(4)}_B(m) \right]^{-1} D^{(4)}_B(1) .
+\label{eq:D_ov_inv}
+\eea
+To connect this to the 5-d theory, we consider, motivated by the fact
+that the light 4-d fermion $q = ({\cal P}^{-1} \Psi)_1 = \chi_1$,
+\bea
+X \!\! &=& \!\! \left\{ {\cal P}^{-1} \left[ D^{(5)}_B(m) \right]^{-1}
+ D^{(5)}_B(1) {\cal P} \right\}_{11} \nonumber \\
+\label{eq:X}
+ \!\! &=& \!\! \frac{1}{Z} \int \prod_i d\Psi_i d\bar \Psi_i \sum_k
+ ({\cal P}^{-1} \Psi)_1 \bar \Psi_k \left[D^{(5)}_B(1) {\cal P} \right]_{k1}
+ {\rm e}^{-S_B} \\
+ \!\! &=& \!\! \frac{1}{Z^\prime} \int \prod_i d\chi_i d\bar \chi_i \sum_k
+ \chi_1 \bar \chi_k (a_5 H_w -1)^{-1} \gamma_5 \left[D^{(5)}_B(1)
+ {\cal P} \right]_{k1} {\rm e}^{-S_B} \nonumber \\
+ \!\! &=& \!\! \frac{1}{Z^\prime} \int \prod_i d\chi_i d\bar \chi_i \sum_k
+ \chi_1 \bar \chi_k \left[\tilde D^{(5)}_B(1) \right]_{k1} {\rm e}^{-S_B} .
+ \nonumber
+\eea
+Here we have introduced $\tilde D^{(5)}_B = (a_5 H_w -1)^{-1} \gamma_5 D^{(5)}_B
+{\cal P}$ such that the 5-d action is $S_B = - \bar \chi \tilde D^{(5)}_B
+\chi$. Now, we integrate out, in succession, $\chi_N, \bar \chi_N$,
+$\chi_{N-1}, \bar \chi_{N-1}$, $\dots$, $\chi_2, \bar \chi_2$. From the
+transformations (\ref{eq:int_i}) we see that $\bar \chi_k \rightarrow
+\bar \chi_1 T^{-k+1}$ in the process. Therefore, we obtain
+\bea
+X = \frac{1}{Z^\prime} \int d\chi_1 d\bar \chi_1 \chi_1 \bar \chi_1
+ \sum_k T^{-k+1} \left[\tilde D^{(5)}_B(1) \right]_{k1}
+ {\rm e}^{\bar \chi_1 D^{(4)}_B(m) \chi_1} .
+\eea
+But from (\ref{eq:S_B3}) we see that
+\bea
+\sum_k T^{-k+1} \left[\tilde D^{(5)}_B(1) \right]_{k1} = (P_- - P_+) -
+ T^{-N} (P_+ - P_-) = D^{(4)}_B(1) ~,
+\label{eq:pseudo_term}
+\eea
+where we used the fact that $\hat A(1) = 0$.
+Thus we finally obtain
+\bea
+X \!\! &=& \!\! \left\{ {\cal P}^{-1} \left[ D^{(5)}_B(m) \right]^{-1}
+ D^{(5)}_B(1) {\cal P} \right\}_{11} \nonumber \\
+ \!\! &=& \!\! \left[ D^{(4)}_B(m) \right]^{-1} D^{(4)}_B(1)
+ = D_{ov}^{-1}(m) ~.
+\label{eq:D_ov5d_inv}
+\eea
+
+To solve
+\bea
+D_{ov}(m) \psi = b
+\label{eq:d_prop}
+\eea
+we introduce $\tilde b = (b,0,\dots,0)^T$ and solve
+\bea
+D^{(5)}_B(m) \phi = D^{(5)}_B(1) {\cal P} \tilde b .
+\label{eq:5d_prop}
+\eea
+$\psi$ is then obtained as
+\bea
+\psi = \left( {\cal P}^{-1} \phi \right)_1 .
+\label{eq:prop_soln}
+\eea
+
+So far, we have related $D_{ov}^{-1}(m)$ and $\det D_{ov}(m)$, or their
+truncated versions, to 5-d operators, see (\ref{eq:5d_4d_det}),
+(\ref{eq:D_TOV}) and (\ref{eq:D_ov_proj}) and finally (\ref{eq:D_ov5d_inv}).
+{\it E.g.} for eigenvalue calculations it would be useful to establish
+a similar connection for $D_{ov}(m)$ or $D_{TOV}(m)$. Consider
+$\tilde D^{(5)}_B(m)$ introduced in (\ref{eq:X}). We find
+\bea
+&& \left[ \tilde D^{(5)}_B(m) - \tilde D^{(5)}_B(1) \right]_{ij} = \\
+ && \left[ (1-m) P_+ - (a_5 H_w -1)^{-1} \gamma_5 \hat A(m) \right]
+ \delta_{i1} \delta_{j1} - T^{-1} (1-m) P_- \delta_{iN} \delta_{j1} ~.
+ \nonumber
+\eea
+Thus
+\bea
+&& \left[ \tilde D^{(5)}_B(1) \right]^{-1} \tilde D^{(5)}_B(m) = \\
+ && 1 + \left[ \tilde D^{(5)}_B(1) \right]^{-1}_{i1}
+ \left[ (1-m) P_+ - (a_5 H_w -1)^{-1} \gamma_5 \hat A(m) \right] \delta_{j1}
+ - (1-m) \left[ \tilde D^{(5)}_B(1) \right]^{-1}_{iN} T^{-1} P_- \delta_{j1} ~.
+ \nonumber
+\eea
+So only the first column is different from the 5-d unit matrix. Let's
+call the entries in the first column $X_1, X_2, \dots , X_N$.
+Similarly, its inverse is
+\bea
+&& \left[ \tilde D^{(5)}_B(m) \right]^{-1} \tilde D^{(5)}_B(1) = \\
+ && 1 - \left[ \tilde D^{(5)}_B(m) \right]^{-1}_{i1}
+ \left[ (1-m) P_+ - (a_5 H_w -1)^{-1} \gamma_5 \hat A(m) \right] \delta_{j1}
+ + (1-m) \left[ \tilde D^{(5)}_B(m) \right]^{-1}_{iN} T^{-1} P_- \delta_{j1} ~.
+ \nonumber
+\eea
+Again, only the first column is different from the 5-d unit matrix. Let's
+call the entries in the first column $Y_1, Y_2, \dots , Y_N$.
+Since these 5-d matrices are the inverse of each other, their product
+is the 5-d unit matrix, {\it i.e.}
+\bea
+Y_1 X_1 = 1  &\Rightarrow&  Y_1 = (X_1)^{-1} \nonumber \\
+Y_2 X_1 + X_2 = 0  &\Rightarrow&  Y_2 = - X_2 (X_1)^{-1} \nonumber \\
+\vdots   & & \vdots \\
+Y_j X_1 + X_j = 0  &\Rightarrow&  Y_j = - X_j (X_1)^{-1} \quad {\text for
+j=1, \dots, N}
+\eea
+The first equation, $Y_1 = (X_1)^{-1}$ establishes the relation we are looking
+for
+\bea
+D_{ov}(m) = \left\{ {\cal P}^{-1} \left[ D^{(5)}_B(1) \right]^{-1}
+ D^{(5)}_B(m) {\cal P} \right\}_{11} ~.
+\eea
+
+The hermitian conjugate of the 5-d operator (\ref{eq:D_5d_matrix}) is
+different than for the usual DWF operator.
+In particular there is no (generalized) $\gamma_5$ hermiticity:
+\bea
+D^{(5)\dagger}_{B} = \begin{pmatrix}
+D_+^\dagger - P_-\hat{A}^\dagger & P_+D_-^\dagger & 0 & 0&\cdots & 0 & 0 &
+-m P_- D_-^\dagger \cr
+P_- D_-^\dagger & D_+^\dagger & P_+ D_-^\dagger & 0&\cdots & 0 & 0 & 0 \cr
+0 & P_- D_-^\dagger & D_+^\dagger & P_+ D_-^\dagger &\cdots & 0 & 0 & 0 \cr
+\vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \cr
+0 & 0 & 0 & 0 & \cdots &  P_- D_-^\dagger & D_+^\dagger & P_+ D_-^\dagger \cr
+-m P_+ D_-^\dagger - P_+\hat{A}^\dagger & 0 & 0 & 0 & \cdots & 0 & 
+P_- D_-^\dagger & D_+^\dagger \cr
+\end{pmatrix}
+\label{eq:Ddag_5d_matrix}
+\eea
+where
+\be
+D^\dagger_\pm = a_5 D_w^\dagger(-M) \pm 1,\qquad
+\hat{A}^\dagger(m) = (1-m)\sum_i f_i\hat{P}_i \gamma_5\ .
+\ee
+
+We can go through manipulations similar to those that let from the 5-d
+operator (\ref{eq:D_5d_matrix}) to the 4-d (truncated) overlap operator
+(\ref{eq:D_TOV}) for the usual domain wall fermions of (\ref{eq:S_DW}).
+The kernel of the 5-d operator is, including the boundary conditions
+and, as in (\ref{eq:D_5d_matrix}), an as yet unspecified quark mass
+dependent operator $\hat A(m)$,
+\bea
+D^{(5)}_{DW} = \begin{pmatrix}
+D_+ - \hat{A}P_- & -P_- & 0 & 0&\cdots & 0 & 0 & m P_+ - \hat{A} P_+ \cr
+-P_+ & D_+ & -P_- & 0&\cdots & 0 & 0 & 0 \cr
+0 & -P_+ & D_+ & -P_- &\cdots & 0 & 0 & 0 \cr
+\vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \cr
+0 & 0 & 0 & 0 & \cdots & -P_+ & D_+ & -P_- \cr
+m P_- & 0 & 0 & 0 & \cdots & 0 & -P_+ & D_+ \cr
+\end{pmatrix}
+\label{eq:D_5d_DW}
+\eea
+Setting $\Psi_i = ({\cal P} \chi)_i$ as before, we can rewrite the domain
+wall action (\ref{eq:S_DW}) as
+\bea
+S_{DW} = \!\! &-& \!\! \Bigl\{ \bar \Psi_1 \gamma_5 \bigl[ (a_5 H_w P_- -1)
+ (P_- -m P_+) \chi_1 - \gamma_5 \hat A \chi_1 + (a_5 H_w P_+ +1) \chi_2 \bigr]
+ \nonumber \\
+\label{eq:S_DW2}
+ \!\! &+& \!\! \quad \sum_{i=2}^{N-1} \bar \Psi_i \gamma_5
+ \bigl[ (a_5 H_w P_- -1) \chi_i + (a_5 H_w P_+ +1) \chi_{i+1} \bigr] \\
+ \!\! &+& \!\! \quad \bar \Psi_N \gamma_5 \bigl[ (a_5 H_w P_- -1) \chi_N
+  + (a_5 H_w P_+ +1) (P_+ -m P_-) \chi_1 \bigr] \Bigr\} . \nonumber
+\eea
+In this case we introduce $\bar \chi_i$'s through $\bar \Psi_i =
+\bar \chi_i (a_5 H_w P_- -1)^{-1} \gamma_5$ to arrive at
+\bea
+S_{DW} = \!\! &-& \!\! \biggl\{ \bar \chi_1 \bigl[ (P_- -m P_+) \chi_1 -
+ (a_5 H_w P_- -1)^{-1} \gamma_5 \hat A \chi_1 - T^{-1} \chi_2 \bigr] \nonumber \\
+ \!\! &+& \!\! \quad \sum_{i=2}^{N-1} \bar \chi_i \bigl[ \chi_i-
+ T^{-1} \chi_{i+1} \bigr]
+ + \bar \chi_N \bigl[ \chi_N - T^{-1} (P_+ -m P_-) \chi_1 \bigr] \biggr\} .
+\label{eq:S_DW3}
+\eea
+Here, with the ordering being important,
+\bea
+T^{-1} = (1 - a_5 H_w P_-)^{-1} (1 + a_5 H_w P_+) = \begin{pmatrix}
+ \tilde B + a_5^2 C \frac{1}{\tilde B} C^\dagger & a_5 C \frac{1}{\tilde B} \cr
+ a_5 \frac{1}{\tilde B} C^\dagger & \frac{1}{\tilde B} \cr \end{pmatrix} ~,
+\label{eq:Tinv_DW}
+\eea
+and thus
+\bea
+T = (1 + a_5 H_w P_+)^{-1} (1 - a_5 H_w P_-) = \begin{pmatrix}
+ \frac{1}{\tilde B} & - a_5 \frac{1}{\tilde B} C \cr
+ - a_5 C^\dagger \frac{1}{\tilde B} & a_5^2 C^\dagger \frac{1}{\tilde B} C
+ + \tilde B \cr \end{pmatrix} ~.
+\label{eq:T_DW}
+\eea
+where $\tilde B = 1 + a_5(B - M)$. $T$ is the usual domain wall fermion
+transfer matrix in our conventions. The integration over the $\chi$ and
+$\bar \chi$ fields proceeds as before, and we obtain
+\bea
+\frac{\det D^{(5)}_{DW}(m)}{\det D^{(5)}_{DW}(1)}
+ = \det \left\{ \left[ D^{(4)}_{DW}(1) \right]^{-1} D^{(4)}_{DW}(m) \right\} .
+\eea
+with
+\bea
+&& \left[ D^{(4)}_{DW}(1) \right]^{-1} D^{(4)}_{DW}(m) = D_N(m) = \nonumber \\
+\label{eq:D_N}
+&& \frac{1}{2} \Biggl[1+m + (1-m) \gamma_5 \frac{T^{-N} -1}{T^{-N} + 1}
+ + \gamma_5 \frac{2}{(T^{-N} + 1)(a_5 H_w P_- -1)} \gamma_5 \hat A \Biggr] = \\
+&& \frac{1}{2} \Biggl[1+m + (1-m) \gamma_5 \tanh\left(-\frac{N}{2}
+ \log T \right) + \gamma_5 \frac{2}{(T^{-N} + 1)(a_5 H_w P_- -1)}
+ \gamma_5 \hat A \Biggr] = \nonumber \\
+&& \frac{1}{2} \Biggl[1+m + (1-m) \gamma_5 \varepsilon_{N/2}(a_5 {\cal H})
+ + \gamma_5 \frac{2}{(T^{-N} + 1)(a_5 H_w P_- -1)} \gamma_5 \hat A
+ \Biggr] ~. \nonumber
+\eea
+In the last line, in analogy with (\ref{eq:T}), we have introduced an
+${\cal H}$ by
+\bea
+T^{-1} = \frac{1 + a_5 {\cal H}}{1 - a_5 {\cal H}} ~.
+\label{eq:T_calH}
+\eea
+Neglecting the term involving $\hat A(m)$ we recognize Neuberger's
+4-d operator for domain wall fermions, written in two different ways.
+{}From (\ref{eq:T_DW}) we find that ${\cal H}$ is given by
+\bea
+{\cal H} = \frac{1}{2 + a_5 H_w \gamma_5} H_w =
+ H_w \frac{1}{2 + a_5 \gamma_5 H_w} ~.
+\label{eq:calH}
+\eea
+The inversion, necessary for the computation of ${\cal H}$ should have
+rather good condition number -- it corresponds to inverting a very
+heavy Wilson fermion -- and thus should be rather quick.
+
+We can again use $\hat A$ to project low-lying eigenvectors, this time
+of ${\cal H}$. Let
+\bea
+{\cal H} v_i = \lambda_i v_i, \qquad T v_i = T_i v_i,
+ \qquad \hat{P}_i = v_i v_i^\dagger ~.
+\eea
+with $T_i$ as in (\ref{eq:T_i}).
+The projection can then be achieved by setting
+\bea
+\hat A(m) = (1-m) \gamma_5 \sum_i (a_5 H_w P_- -1) g_i \hat{P}_i ,
+\eea
+with
+\bea
+g_i &=& \frac{1}{2} \left[-\left(T_i^{-N} -1 \right) +
+ \left(T_i^{-N} + 1\right)\epsilon(a_5 \lambda_i)\right] ~.
+\label{eq:g_i}
+\eea
+$\hat A(m)$ vanishes again for $m=1$.
+
+In complete analogy with the derivation from (\ref{eq:D_ov_inv}) to
+(\ref{eq:D_ov5d_inv}), with the replacement $H_w \rightarrow H_w P_-$ we find
+the relation between the inverse of $D_N$ and the 5-d domain wall Dirac
+operator
+\bea
+D_N^{-1}(m) \!\! &=& \!\! \left[ D^{(4)}_{DW}(m) \right]^{-1}
+ D^{(4)}_{DW}(1) \nonumber \\
+ \!\! &=& \!\! \left\{ {\cal P}^{-1} \left[ D^{(5)}_{DW}(m) \right]^{-1}
+ D^{(5)}_{DW}(1) {\cal P} \right\}_{11} ~.
+\label{eq:D_N5d_inv}
+\eea
+
+Note that this is not the physical quark propagator $\< q \bar q \>$ as
+obtained from domain wall fermions. Just like the overlap propagator, it
+still needs a subtraction and multiplicative normalization. To make the
+connection to $\< q \bar q \>$ explicite, we write the 1 for the
+subtraction as
+\bea
+1 = \left\{ {\cal P}^{-1} \left[ D^{(5)}_{DW}(m) \right]^{-1}
+ D^{(5)}_{DW}(m) {\cal P} \right\}_{11}
+\eea
+and thus
+\bea
+D_N^{-1}(m) - 1 = \left\{ {\cal P}^{-1} \left[ D^{(5)}_{DW}(m) \right]^{-1}
+ \left[ D^{(5)}_{DW}(1) - D^{(5)}_{DW}(m) \right] {\cal P} \right\}_{11} .
+\eea
+{}From (\ref{eq:D_5d_DW}) we see that, neglecting the projection terms
+$\hat A(m)$, that are not usually inlcuded for domain wall fermions,
+\bea
+\left[ D^{(5)}_{DW}(1) - D^{(5)}_{DW}(m) \right]_{ij} = (1-m) \left[
+ P_- \delta_{iN} \delta_{j1} + P_+ \delta_{i1}\delta_{jN} \right] ~.
+\eea
+Therefore we obtain
+\bea
+D_N^{-1}(m) - 1 = (1-m) \left\{ {\cal P}^{-1} [ D^{(5)}_{DW}(m) ]^{-1}
+ {\cal J} {\cal P} \right\}_{11} ~,
+\eea
+where ${\cal J}_{ij} = \delta_{i,N+1-j}$ is the inversion operator of the
+fifth direction. Now from (\ref{eq:light}) we see that the physical
+fermion degrees are given in terms of the domain wall boundary fermions
+as
+\bea
+q = ({\cal P}^{-1} \Psi)_1 ~, \qquad\qquad
+\bar q = (\bar \Psi {\cal J} {\cal P})_1 ~.
+\eea
+Hence we find
+\bea
+\< q \bar q \> = \left\{ {\cal P}^{-1} [ D^{(5)}_{DW}(m) ]^{-1} {\cal J}
+ {\cal P} \right\}_{11} = \frac{1}{1-m} \left[ D_N^{-1}(m) - 1 \right] ~.
+\eea
+
+Finally, again in complete analogy to the steps used to relate $D_{ov}(m)$
+to 5-d operators, we can do this for $D_{ov}(m)$, with the result
+\bea
+D_N(m) = \left\{ {\cal P}^{-1} \left[ D^{(5)}_{DW}(1) \right]^{-1}
+ D^{(5)}_{DW}(m) {\cal P} \right\}_{11} ~.
+\eea
+With this, we can now compute, for example, the physically relevant
+eigenvalues of domain wall fermions.
+
+%\vskip 5mm
+\newpage
+
+\centerline{\bf \Large Eigenvalues of the pseudofermions}
+\vskip 5mm
+
+Here, we want to investigate a little more the properties of the
+pseudofermions, needed to cancel the bulk contributions in the 5-d
+domain wall fermion approches.
+
+For both the standard domain wall fermion action (\ref{eq:S_DW}) and
+for Borici's variant (\ref{eq:S_B}) we find for the pseudofermion
+matrix, including the boundary conditions and recalling that the
+projection $\hat A(1)$ vanishes,
+\bea
+D^{(5)}(1) D^{(5)\dagger}(1) = \begin{pmatrix}
+X & Y & 0 & 0 &\cdots & 0 & 0 & -Y \cr
+Y & X & Y & 0 &\cdots & 0 & 0 & 0 \cr
+0 & Y & X & Y &\cdots & 0 & 0 & 0 \cr
+\vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \cr
+0 & 0 & 0 & 0 & \cdots & Y & X & Y \cr
+-Y & 0 & 0 & 0 & \cdots & 0 & Y & X \cr
+\end{pmatrix}
+\label{eq:D_Ddag_5d}
+\eea
+with $X$ and $Y$ 4-d hermitian matrices,
+\bea
+Y &=& - P_+ D_+ - D_+^\dagger P_- = -\frac{1}{2} \left(a_5 D_w +
+ a_5 D_w^\dagger + 2 \right) \nonumber \\
+X &=& D_+ D_+^\dagger + 1 = a_5^2 D_w D_w^\dagger - 2 Y
+\label{eq:X_Y_DW}
+\eea
+for the standard domain wall action, and
+\bea
+Y &=& D_+ P_+ D_-^\dagger + D_- P_- D_+^\dagger = a_5^2 D_w D_w^\dagger - 1
+ \nonumber \\
+X &=& D_+ D_+^\dagger + D_- D_-^\dagger = 2 a_5^2 D_w D_w^\dagger + 2 =
+ 4 a_5^2 D_w D_w^\dagger - 2 Y
+\label{eq:X_Y_B}
+\eea
+for Borici's variant.
+
+Now, let S be the shift (or translation) operator in the 5-th direction
+with anti-periodic boundary condition:
+\bea
+S = \begin{pmatrix}
+0 & 1 & 0 & \dots & 0 & 0 \cr
+0 & 0 & 1 & \dots & 0 & 0 \cr
+\vdots & \vdots & \vdots & \vdots & \vdots & \vdots \cr
+0 & 0 & 0 & \dots & 0 & 1 \cr
+-1 & 0 & 0 & \dots & 0 & 0 \cr \end{pmatrix}
+\label{eq:shift}
+\eea
+It is easy to see that $[S, D^{(5)}(1) D^{(5)\dagger}(1) ] = 0$, and so
+$S$ and $D^{(5)}(1) D^{(5)\dagger}(1)$ can be diagonalized simultaneously.
+The eigenvalues of $S$ are $\exp\{i\pi(2k+1)/N\}$ for $k=0,\dots,N-1$,
+because of the anti-periodic boundary conditions. The corresponding
+eigenvectors are
+\bea
+\label{eq:ev_dwpf}
+&& w(k)^T = \\
+&& (v_4, v_4 \exp\{i\pi(2k+1)/N\}, v_4 \exp\{i\pi 2(2k+1)/N\}, \dots,
+v_4 \exp\{i\pi(N-1)(2k+1)/N\} )^T \nonumber
+\eea
+with $v_4$ some 4-d vector. This also has to be an eigenvector of
+$D^{(5)}(1) D^{(5)\dagger}(1)$. From (\ref{eq:D_Ddag_5d}), and using
+(\ref{eq:X_Y_DW}) and (\ref{eq:X_Y_B}) we obtain the eigenvalue
+equation for $v_4$
+\bea
+\left\{ J a_5^2 D_w D_w^\dagger - 2 Y \left[ 1 - \cos \left( \frac{\pi}{N}
+(2k+1) \right) \right] \right\} v_4 = \lambda(k) v_4
+\label{eq:4d_pf_ev}
+\eea
+Here $J=1$ for domain wall fermions, and $J=4$ for Borici's variant,
+and we have indicated the dependence of $\lambda$ on $k$, the momentum
+in the 5-th direction. Since the left-hand-side of (\ref{eq:4d_pf_ev})
+remains unchanged under $k \rightarrow N-k-1$ we conclude that
+$\lambda(N-k-1) = \lambda(k)$. Therefore, the eigenvalues of
+$D^{(5)}(1) D^{(5)\dagger}(1)$ are all (at least) doubly degenerate.
+
+Furthermore, for large $N$ and small $k$ the pseudofermion domain wall
+eigenvalues closely track the Wilson eigenvalues, the eigenvalues of
+$D_w D_w^\dagger$, since then $2 Y \left[ 1 - \cos \left( \frac{\pi}{N}
+(2k+1) \right) \right] \approx Y \pi^2 (2k+1)^2/N^2$ in (\ref{eq:4d_pf_ev})
+is only a small perturbation. In particular, at zero crossings of
+the Wilson Dirac operator, a pair of pseudofermion domain wall eigenvalues
+will go to zero for $N \to \infty$.
+
+{}From the domain wall Dirac operator $D^{(5)}_{DW}(m)$ without the
+projection matrix $\hat A(m)$, we can make a hermitian version,
+$H^{(5)}_{DW}(m) = D^{(5)}_{DW}(m) {\cal J} \gamma_5$, with
+${\cal J}_{ij} = \delta_{i,N+1-j}$ the inversion operator of the fifth
+direction. From eq.~(\ref{eq:D_5d_DW}) it becomes
+\bea
+H^{(5)}_{DW}(m) = \begin{pmatrix}
+m P_+ & 0 & 0 & 0 & \cdots & 0 & P_- & D_+ \gamma_5 \cr
+0 & 0 & 0 & 0 & \cdots & P_- & D_+ \gamma_5 & -P_+ \cr
+0 & 0 & 0 & 0 & \cdots & D_+ \gamma_5 & -P_+ & 0 \cr
+\vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \cr
+P_- & D_+ \gamma_5 & -P_+ & 0 & \cdots & 0 & 0 & 0 \cr
+D_+ \gamma_5 & -P_+ & 0 & 0 & \cdots & 0 & 0 & -mP_- \cr
+\end{pmatrix}
+\label{eq:H_5d_DW}
+\eea
+Since $D^{(5)}_{DW}(m) D^{(5)\dagger}_{DW}(m) = [H^{(5)}_{DW}(m)]^2$, the
+vectors $w(k)$ and $w(N-k-1)$ of eq.~(\ref{eq:ev_dwpf}) are degenerate
+eigenvectors of $[H^{(5)}_{DW}(1)]^2$. To get the eigenvalues of
+$H^{(5)}_{DW}(1)$ we need to compute the $2 \times 2$ matrix $\< w(k_1) |
+H^{(5)}_{DW}(1) | w(k_2) \>$ with $k_1, k_2 = k, N-k-1$. We find
+\bea
+&& \< w(k_1) | H^{(5)}_{DW}(1) | w(k_2) \> = \nonumber \\
+&& \sum_{j=1}^N
+ {\rm e}^{ -\frac{i\pi}{N}(2k_1+1)(j-1)} {\rm e}^{ \frac{i\pi}{N}(2k_2+1)(N-j)}
+ \< v_4 | P_- {\rm e}^{ -\frac{i\pi}{N}(2k_2+1)} + D_+ \gamma_5
+ - P_+ {\rm e}^{ \frac{i\pi}{N}(2k_2+1)} | v_4 \> 
+\eea
+The sum over $j$ gives the constraint $k_2 = N-k_1-1$, and we thus find
+the $2 \times 2$ matrix to be of the form
+\bea
+\begin{pmatrix} 0 & b \cr b^* & 0 \cr \end{pmatrix} \nonumber
+\eea
+and therefore the eigenvalues of the pseudofermion domain wall operator
+come in $\pm$ pairs.
+
+\end{document}

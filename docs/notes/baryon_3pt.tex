@@ -1,0 +1,577 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+
+% Somewhat wider and taller page than in art12.sty
+%\topmargin -0.4in  \headsep 0.0in  \textheight 9.0in
+%\oddsidemargin 0.25in  \evensidemargin 0.25in  \textwidth 6.5in
+
+\footnotesep 14pt
+\floatsep 28pt plus 2pt minus 4pt      % Nominal is double what is in art12.sty
+\textfloatsep 40pt plus 2pt minus 4pt
+\intextsep 28pt plus 4pt minus 4pt
+
+\topmargin -1cm
+\headsep 0mm
+\oddsidemargin 1mm
+\evensidemargin 1mm
+\textwidth 170mm
+\textheight 24cm
+
+\begin{document}
+\begin{center}
+\Large Correlation functions and Sequential sources for 
+$N\rightarrow N$, $\Delta\rightarrow N$ \\
+and the $\Delta\rightarrow\Delta$ 
+form factors
+\vspace{2mm}
+
+21 July 2005
+\end{center}
+
+\section{Useful definitions}
+
+We will consider the nucleon and $\Delta^+$ interpolating fields
+(including Dirac index $\alpha$ and Lorentz index $\sigma$), such as
+\begin{eqnarray*}
+\chi^N_{\alpha L}(x) &=&
+    \epsilon^{abc}\left(d^{Ta}(x)C\gamma_5u^b(x)\right)u_\alpha^c(x) \\
+\chi^{\Delta^+}_{\sigma,\alpha L}(x) &=&
+    \epsilon^{abc}\left[2\left(d^{Ta}(x)C\gamma_\sigma u^b(x)\right)u_\alpha^c(x)
+                        +\left(u^{Ta}(x)C\gamma_\sigma u^b(x)\right)d_\alpha^c(x)\right]
+\end{eqnarray*}
+or some smeared version of these, denoted $\chi^N_{\alpha S}(x)$ or
+$\chi^{\Delta^+}_{\sigma,\alpha S}(x)$.  In the following, the octet
+and decuplet baryons will be labelled by $N$ and $\Delta$,
+respectively.  However, the results may be applied to any of the octet
+to decuplet transitions.
+
+We will define some functions that are convenient for writing the correlation
+functions.
+%
+\begin{itemize}
+\item
+\verb|quarkContract13(a,b)|\\
+Epsilon contract 2 quark propagators and return a quark propagator.
+This is used for diquark constructions. Eventually, it could handle larger
+Nc. 
+The numbers represent which spin index to sum over.
+   
+The sources and targets must all be propagators but not
+necessarily of the same lattice type. Effectively, one can use
+this to construct an anti-quark from a di-quark contraction. In
+explicit index form, the operation  \verb|quarkContract13| does
+
+\[
+target^{k' k}_{\alpha\beta} =
+ \epsilon^{i j k}\epsilon^{i' j' k'}* source1^{i i'}_{\rho\alpha}* source2^{j j'}_{\rho\beta}
+\]
+
+\item
+\verb|quarkContract14(a,b)|\\
+Epsilon contract 2 quark propagators and return a quark propagator.
+   
+\[
+target^{k' k}_{\alpha\beta} =
+    \epsilon^{i j k}\epsilon^{i' j' k'}*source1^{i i'}_{\rho\alpha}*source2^{j j'}_{\beta\rho}
+\]
+
+\item
+\verb|quarkContract23(a,b)|\\
+Epsilon contract 2 quark propagators and return a quark propagator.
+   
+\[
+target^{k' k}_{\alpha\beta} =
+    \epsilon^{i j k}\epsilon^{i' j' k'}*source1^{i i'}_{\alpha\rho}*source2^{j j'}_{\rho\beta}\]
+
+\item
+\verb|quarkContract24(a,b)|\\
+Epsilon contract 2 quark propagators and return a quark propagator.
+   
+\[
+target^{k' k}_{\alpha\beta} =
+    \epsilon^{i j k}\epsilon^{i' j' k'}*source1^{i i'}_{\rho\alpha}*source2^{j j'}_{\beta\rho}
+\]
+
+\item
+\verb|quarkContract12(a,b)|\\
+Epsilon contract 2 quark propagators and return a quark propagator.
+
+\[target^{k' k}_{\alpha\beta} =
+    \epsilon^{i j k}\epsilon^{i' j' k'}*source1^{i i'}_{\rho\rho}*source2^{j j'}_{\alpha\beta}
+\]
+
+\item
+\verb|quarkContract34(a,b)|\\
+Epsilon contract 2 quark propagators and return a quark propagator.
+\[target^{k' k}_{\alpha\beta} =
+    \epsilon^{i j k}\epsilon^{i' j' k'}*source1^{i i'}_{\alpha\beta}*source2^{j j'}_{\rho\rho}\]
+
+\item
+\verb|colorContract(a,b,c)|\\
+Epsilon contract 3 color primitives and return a primitive scalar.
+The sources and targets must all be of the same primitive type (a matrix or vector)
+but not necessarily of the same lattice type. In
+explicit index form, the operation  colorContract does
+\[
+target =
+  \epsilon^{i j k}\epsilon^{i' j' k'}* source1^{i i'}* source2^{j j'}*source3^{k k'}
+\]
+or
+\[
+target =
+ \epsilon^{i j k}* source1^{i}* source2^{j}*source3^{k}
+\]
+
+\end{itemize}
+
+We will define correlation functions for interpolating fields generically
+labelled as $B$. For example, for $N\rightarrow N$ we want
+\begin{gather*}
+\begin{split}
+\langle B^{123}_\gamma(x) \bar{B}^{123}_{\bar\gamma}(0)\rangle
+ &= -\varepsilon^{abc}\varepsilon^{\bar{a}\bar{b}\bar{c}} \langle
+  \left(\psi^{T a}_{1,\alpha}(C\gamma_5)_{\alpha\beta}\psi^b_{2,\beta}\right)
+        \psi^c_{3,\gamma}(x)
+  \left(\bar\psi^{T\bar{a}}_{1,\bar\alpha}(C\gamma_5)_{\bar{\alpha}\bar{\beta}}\bar{\psi}^b_{2,\bar\beta}\right)
+        \bar{\psi}^{\bar{c}}_{3,\gamma}(0)
+  \rangle \\
+ &= \varepsilon^{abc}\varepsilon^{\bar{a}\bar{b}\bar{c}} 
+    (C\gamma_5)_{\alpha\beta} (C\gamma_5)_{\bar{\alpha}\bar{\beta}}
+    G^{(1)}(x,0)^{a\bar{a}}_{\alpha\bar{\alpha}}
+    G^{(2)}(x,0)^{b\bar{b}}_{\beta\bar{\beta}}
+    G^{(3)}(x,0)^{c\bar{c}}_{\gamma\bar{\gamma}}
+\end{split}
+\end{gather*}
+
+\begin{gather*}
+\begin{split}
+\langle B^{123}_\gamma(x) \bar{B}^{132}_{\bar\gamma}(0)\rangle
+ &= -\varepsilon^{abc}\varepsilon^{\bar{a}\bar{b}\bar{c}} \langle
+  \left(\psi^{T a}_{1,\alpha}(C\gamma_5)_{\alpha\beta}\psi^b_{2,\beta}\right)
+        \psi^c_{3,\gamma}(t)
+  \left(\bar\psi^{T\bar{a}}_{1,\bar\alpha}(C\gamma_5)_{\bar{\alpha}\bar{\beta}}\bar{\psi}^b_{3,\bar\beta}\right)
+        \bar{\psi}^{\bar{c}}_{2,\gamma}(0)
+  \rangle \\
+ &=-\varepsilon^{abc}\varepsilon^{\bar{a}\bar{b}\bar{c}} 
+    (C\gamma_5)_{\alpha\beta} (C\gamma_5)_{\bar{\alpha}\bar{\beta}}
+    G^{(1)}(x,0)^{a\bar{a}}_{\alpha\bar{\alpha}}
+    G^{(2)}(x,0)^{b\bar{c}}_{\beta\bar{\gamma}}
+    G^{(3)}(x,0)^{c\bar{b}}_{\gamma\bar{\beta}} \\
+ &= \varepsilon^{abc}\varepsilon^{\bar{a}\bar{b}\bar{c}} 
+    (C\gamma_5)_{\alpha\beta} (C\gamma_5)_{\bar{\alpha}\bar{\beta}}
+    G^{(1)}(x,0)^{a\bar{a}}_{\alpha\bar{\alpha}}
+    G^{(2)}(x,0)^{b\bar{b}}_{\beta\bar{\gamma}}
+    G^{(3)}(x,0)^{c\bar{c}}_{\gamma\bar{\beta}}
+\end{split}
+\end{gather*}
+and similarly we will consider $C\gamma_5\rightarrow iC\gamma_k$ with labelling
+$B_{k,\gamma}$ for the decuplet baryons.
+
+With a suitable $T_{\alpha\beta}$ as some generic $4\times 4$ matrix in
+Dirac spin space, and $\alpha,\beta$ are Dirac indices. We see that 
+if we contract all the spin and color indices we arrive at the expressions
+%
+\begin{gather*}
+\begin{split}
+T_{\bar{\gamma}\gamma}& \langle B^{123}_\gamma(x) \bar{B}^{123}_{\bar\gamma}(0)\rangle\\
+ &= {\rm tr}(T * {\rm tr}_C(G^{(3)}(x,0)
+  * {\rm tr}_S({\rm quarkContract13}(G^{(1)}(x,0)(C\gamma_5),(C\gamma_5)G^{(2)}(x,0)))))
+\end{split}
+\end{gather*}
+%
+\begin{gather*}
+\begin{split}
+T_{\bar{\gamma}\gamma}& \langle B^{123}_\gamma(x) \bar{B}^{132}_{\bar\gamma}(0)\rangle\\
+ &= {\rm tr}(T * {\rm tr}_C(G^{(3)}(x,0)
+  * {\rm quarkContract13}(G^{(1)}(x,0)(C\gamma_5),(C\gamma_5)G^{(2)}(x,0))))
+\end{split}
+\end{gather*}
+%
+where ${\rm tr}_C$, ${\rm tr}_S$ and ${\rm tr}$ are traces in 
+color, spin and all color-spin indices, resp.
+
+\newpage
+
+\section{Baryon 2-point correlation functions}
+
+\subsection{$\Sigma^+\Sigma^+$, or $PP$:}
+For the case of the $\Sigma^+$/proton: $\Sigma^+_\gamma = B^{suu}_\gamma$ 
+(for proton: $s\rightarrow d$). Note that $B^{123}_\gamma = -B^{213}_\gamma$.
+%
+\begin{gather*}
+\begin{split}
+\langle \Sigma^+_\gamma(x) \bar{\Sigma}^+_{\bar\gamma}(0)\rangle
+ &= \langle B^{123}_\gamma(x) \bar{B}^{123}_{\bar\gamma}(0)\rangle_{\stackrel{1=s}{2,3=u}}
+  + \langle B^{123}_\gamma(x) \bar{B}^{132}_{\bar\gamma}(0)\rangle_{\stackrel{1=s}{2,3=u}}
+\end{split}
+\end{gather*}
+The contractions needed here consist of the following:
+%
+\begin{gather*}
+\begin{split}
+T_{\bar{\gamma}\gamma} \langle B^{123}_\gamma(x) \bar{B}^{123}_{\bar{k},\bar{\gamma}}(0)\rangle\\
+ &= \varepsilon^{abc}\varepsilon^{\bar{a}\bar{b}\bar{c}} 
+    (C\gamma_5)_{\alpha\beta} (C\gamma_5)_{\bar{\alpha}\bar{\beta}}
+    G^{(1)}(x,0)^{a\bar{a}}_{\alpha\bar{\alpha}}
+    G^{(2)}(x,0)^{b\bar{b}}_{\beta\bar{\beta}}
+    G^{(3)}(x,0)^{c\bar{c}}_{\gamma\bar{\gamma}}\\
+ &= {\rm tr}(T * {\rm tr}_C(G^{(3)}(x,0)
+  * {\rm tr}_S({\rm qC13}(G^{(1)}(x,0)(C\gamma_5),(C\gamma_5)G^{(2)}(x,0)))))
+\end{split}
+\end{gather*}
+
+\begin{gather*}
+\begin{split}
+T_{\bar{\gamma}\gamma} \langle B^{123}_\gamma(x) \bar{B}^{132}_{\bar{k},\bar{\gamma}}(0)\rangle\\
+ &= \varepsilon^{abc}\varepsilon^{\bar{a}\bar{b}\bar{c}} 
+    (C\gamma_5)_{\alpha\beta} (C\gamma_5)_{\bar{\alpha}\bar{\beta}}
+    G^{(1)}(x,0)^{a\bar{a}}_{\alpha\bar{\alpha}}
+    G^{(2)}(x,0)^{b\bar{b}}_{\beta\bar{\gamma}}
+    G^{(3)}(x,0)^{c\bar{c}}_{\gamma\bar{\beta}}\\
+ &= {\rm tr}(T * {\rm tr}_C(G^{(3)}(x,0)
+ * {\rm qC13}(G^{(1)}(x,0)(C\gamma_5),(C\gamma_5)G^{(2)}(x,0))))
+\end{split}
+\end{gather*}
+%
+Thus, the explicit final form for quarks $1,2,3$ being $d$, $u$ and $u$,
+the correlation function is
+%
+\begin{gather*}
+\begin{split}
+T  \langle N(x) \bar{N}(0)\rangle
+ &= {\rm tr}(T * {\rm tr}_C(U(x,0)
+  * {\rm tr}_S({\rm qC13}(D(x,0)(C\gamma_5),(C\gamma_5)U(x,0)))))\\
+ &+ {\rm tr}(T * {\rm tr}_C(U(x,0)
+ * {\rm qC13}(D(x,0)(C\gamma_5),(C\gamma_5)U(x,0))))
+\end{split}
+\end{gather*}
+
+
+\subsection{$\Sigma^{\ast +}\Sigma^{\ast +}$, or $\Delta^+\Delta^+$:}
+Here $\Sigma^{\ast+}/\Delta^+$: 
+$\Sigma^{\ast+}_{k,\gamma} = 2 B^{suu}_{k,\gamma} + B^{uus}_{k,\gamma}$ 
+(for $\Delta^+$: $s\rightarrow d$). Note that $B^{213}_{k,\gamma}=B^{123}_{k,\gamma}$.
+%
+\begin{gather*}
+\begin{split}
+\langle \Sigma^{\ast+}_{k,\gamma}(x) \bar{\Sigma}^{\ast+}_{\bar{k},\bar{\gamma}}(0)\rangle
+ &= 4\langle B^{123}_{k,\gamma}(x) \bar{B}^{123}_{\bar{k},\bar{\gamma}}(0)\rangle_{\stackrel{1=s}{2,3=u}}
+  + 2\langle B^{123}_{k,\gamma}(x) \bar{B}^{123}_{\bar{k},\bar{\gamma}}(0)\rangle_{\stackrel{1,2=u}{3=s}}\\
+ &+ 4\langle B^{123}_{k,\gamma}(x) \bar{B}^{132}_{\bar{k},\bar{\gamma}}(0)\rangle_{\stackrel{1=s}{2,3=u}}
+  + 4\langle B^{123}_{k,\gamma}(x) \bar{B}^{132}_{\bar{k},\bar{\gamma}}(0)\rangle_{\stackrel{1,3=u}{2=s}}\\
+ &+ 4\langle B^{123}_{k,\gamma}(x) \bar{B}^{132}_{\bar{k},\bar{\gamma}}(0)\rangle_{\stackrel{1,2=u}{3=s}}
+\end{split}
+\end{gather*}
+
+
+\subsection{$\Delta^+\Delta^+$:}
+This correlator is the same as the $\Sigma^{\ast+}\Sigma^{\ast+}$. In the
+case the $s\rightarrow d$, we have $\Delta^+$: 
+$\Delta^{+}_{k,\gamma} = 2 B^{duu}_{k,\gamma} + B^{uud}_{k,\gamma}$. 
+Note that $B^{213}_{k,\gamma}=B^{123}_{k,\gamma}$. For degenerate $u$ and $d$ quarks,
+we have (up to a factor of 6)
+%
+\begin{gather*}
+\begin{split}
+\langle \Delta^{+}_{k,\gamma}(x) \bar{\Delta}^{+}_{\bar{k},\bar{\gamma}}(0)\rangle
+ &=  \langle B^{123}_{k,\gamma}(x) \bar{B}^{123}_{\bar{k},\bar{\gamma}}(0)\rangle
+  + 2\langle B^{123}_{k,\gamma}(x) \bar{B}^{132}_{\bar{k},\bar{\gamma}}(0)\rangle
+\end{split}
+\end{gather*}
+
+
+\subsection{$\Lambda\Lambda$:}
+Here
+$\Lambda_{\gamma} = 2 B^{uds}_{\gamma} + B^{sdu}_{\gamma} + B^{usd}_\gamma$ 
+where $B^{213}_{\gamma}=-B^{123}_{\gamma}$.
+%
+\begin{gather*}
+\begin{split}
+\langle \Lambda_{\gamma}(x) \bar{\Lambda}_{\bar{\gamma}}(0)\rangle
+ &= 4\langle B^{123}_{\gamma}(x) \bar{B}^{123}_{\bar{\gamma}}(0)\rangle_{1=u,2=d,3=s}\\
+ &+  \langle B^{123}_{\gamma}(x) \bar{B}^{123}_{\bar{\gamma}}(0)\rangle_{1=s,2=d,3=u}
+  +  \langle B^{123}_{\gamma}(x) \bar{B}^{123}_{\bar{\gamma}}(0)\rangle_{1=s,2=u,3=d}\\
+ &+ 2\langle B^{123}_{\gamma}(x) \bar{B}^{132}_{\bar{\gamma}}(0)\rangle_{1=d,2=u,3=s}
+  + 2\langle B^{123}_{\gamma}(x) \bar{B}^{132}_{\bar{\gamma}}(0)\rangle_{1=u,2=d,3=s}\\
+ &+ 2\langle B^{123}_{\gamma}(x) \bar{B}^{132}_{\bar{\gamma}}(0)\rangle_{1=d,2=s,3=u}
+  + 2\langle B^{123}_{\gamma}(x) \bar{B}^{132}_{\bar{\gamma}}(0)\rangle_{1=u,2=s,3=d}\\
+ &-  \langle B^{123}_{\gamma}(x) \bar{B}^{132}_{\bar{\gamma}}(0)\rangle_{1=s,2=d,3=u}
+  -  \langle B^{123}_{\gamma}(x) \bar{B}^{132}_{\bar{\gamma}}(0)\rangle_{1=s,2=u,3=d}
+\end{split}
+\end{gather*}
+
+\subsection{$\Delta^+ P$:}
+Here $P_\gamma = B^{duu}_\gamma$ where $B^{123}_\gamma = -B^{213}_\gamma$.
+$\Delta^+_{k,\gamma} = 2 B^{duu}_{k,\gamma} + B^{uud}_{k,\gamma}$ 
+where $B^{213}_{k,\gamma}=B^{123}_{k,\gamma}$.
+%
+\begin{gather*}
+\begin{split}
+\langle P_{\gamma}(x) \bar{\Delta}^+_{\bar{k},\bar{\gamma}}(0)\rangle
+ &= 2\langle B^{d u_1 u_2}_{\gamma}(x) \bar{B}^{d u_1 u_2}_{\bar{k},\bar{\gamma}}(0)\rangle
+  + 2\langle B^{d u_1 u_2}_{\gamma}(x) \bar{B}^{d u_2 u_1}_{\bar{k},\bar{\gamma}}(0)\rangle\\
+ &+  \langle B^{d u_1 u_2}_{\gamma}(x) \bar{B}^{u_1 u_2 d}_{\bar{k},\bar{\gamma}}(0)\rangle
+  +  \langle B^{d u_1 u_2}_{\gamma}(x) \bar{B}^{u_2 u_1 d}_{\bar{k},\bar{\gamma}}(0)\rangle\\
+ &= 2\langle B^{123}_{\gamma}(x) \bar{B}^{123}_{\bar{k},\bar{\gamma}}(0)\rangle_{1=d,2=u_1,3=u_2}
+  + 2\langle B^{123}_{\gamma}(x) \bar{B}^{132}_{\bar{k},\bar{\gamma}}(0)\rangle_{1=d,2=u_1,3=u_2}\\
+ &-  \langle B^{123}_{\gamma}(x) \bar{B}^{132}_{\bar{k},\bar{\gamma}}(0)\rangle_{1=u_1,2=u_2,3=d}
+  -  \langle B^{123}_{\gamma}(x) \bar{B}^{132}_{\bar{k},\bar{\gamma}}(0)\rangle_{1=u_1,2=d,3=u_2}
+\end{split}
+\end{gather*}
+The contractions needed here consist of the following:
+%
+\begin{gather*}
+\begin{split}
+T_{\bar{\gamma}\gamma} \langle B^{123}_\gamma(x) \bar{B}^{123}_{\bar{k},\bar{\gamma}}(0)\rangle\\
+ &= \varepsilon^{abc}\varepsilon^{\bar{a}\bar{b}\bar{c}} 
+    (C\gamma_5)_{\alpha\beta} (C\gamma_k)_{\bar{\alpha}\bar{\beta}}
+    G^{(1)}(x,0)^{a\bar{a}}_{\alpha\bar{\alpha}}
+    G^{(2)}(x,0)^{b\bar{b}}_{\beta\bar{\beta}}
+    G^{(3)}(x,0)^{c\bar{c}}_{\gamma\bar{\gamma}}\\
+ &= {\rm tr}(T * {\rm tr}_C(G^{(3)}(x,0)
+  * {\rm tr}_S({\rm qC13}(G^{(1)}(x,0)(C\gamma_k),(C\gamma_5)G^{(2)}(x,0)))))
+\end{split}
+\end{gather*}
+
+\begin{gather*}
+\begin{split}
+T_{\bar{\gamma}\gamma} \langle B^{123}_\gamma(x) \bar{B}^{132}_{\bar{k},\bar{\gamma}}(0)\rangle\\
+ &= \varepsilon^{abc}\varepsilon^{\bar{a}\bar{b}\bar{c}} 
+    (C\gamma_5)_{\alpha\beta} (C\gamma_k)_{\bar{\alpha}\bar{\beta}}
+    G^{(1)}(x,0)^{a\bar{a}}_{\alpha\bar{\alpha}}
+    G^{(2)}(x,0)^{b\bar{b}}_{\beta\bar{\gamma}}
+    G^{(3)}(x,0)^{c\bar{c}}_{\gamma\bar{\beta}}\\
+ &= {\rm tr}(T * {\rm tr}_C(G^{(3)}(x,0)
+ * {\rm qC13}(G^{(1)}(x,0)(C\gamma_k),(C\gamma_5)G^{(2)}(x,0))))
+\end{split}
+\end{gather*}
+
+
+\subsection{$P \Delta^+$:}
+Here $P_\gamma = B^{duu}_\gamma$ where $B^{123}_\gamma = -B^{213}_\gamma$.
+$\Delta^+_{k,\gamma} = 2 B^{duu}_{k,\gamma} + B^{uud}_{k,\gamma}$ 
+where $B^{213}_{k,\gamma}=B^{123}_{k,\gamma}$.
+%
+\begin{gather*}
+\begin{split}
+\langle \Delta^+_{k,\gamma}(x) \bar{P}_{\bar{\gamma}}(0)\rangle
+ &= 2\langle B^{d u_1 u_2}_{k,\gamma}(x) \bar{B}^{d u_1 u_2}_{\bar{\gamma}}(0)\rangle
+  + 2\langle B^{d u_1 u_2}_{k,\gamma}(x) \bar{B}^{d u_2 u_1}_{\bar{\gamma}}(0)\rangle\\
+ &+  \langle B^{u_1 u_2 d}_{k,\gamma}(x) \bar{B}^{d u_1 u_2}_{\bar{\gamma}}(0)\rangle
+  +  \langle B^{u_1 u_2 d}_{k,\gamma}(x) \bar{B}^{d u_2 u_1}_{\bar{\gamma}}(0)\rangle\\
+ &= 2\langle B^{123}_{k,\gamma}(x) \bar{B}^{123}_{\bar{\gamma}}(0)\rangle_{1=d,2=u_1,3=u_2}
+  + 2\langle B^{123}_{k,\gamma}(x) \bar{B}^{132}_{\bar{\gamma}}(0)\rangle_{1=d,2=u_1,3=u_2}\\
+ &-  \langle B^{123}_{k,\gamma}(x) \bar{B}^{132}_{\bar{\gamma}}(0)\rangle_{1=u_1,2=u_2,3=d}
+  -  \langle B^{123}_{k,\gamma}(x) \bar{B}^{132}_{\bar{\gamma}}(0)\rangle_{1=u_2,2=u_1,3=d}
+\end{split}
+\end{gather*}
+The contractions needed here consist of the following:
+%
+\begin{gather*}
+\begin{split}
+T_{\bar{\gamma}\gamma} \langle B^{123}_{k,\gamma}(x) \bar{B}^{123}_{\bar{\gamma}}(0)\rangle\\
+ &= \varepsilon^{abc}\varepsilon^{\bar{a}\bar{b}\bar{c}} 
+    (C\gamma_k)_{\alpha\beta} (C\gamma_5)_{\bar{\alpha}\bar{\beta}}
+    G^{(1)}(x,0)^{a\bar{a}}_{\alpha\bar{\alpha}}
+    G^{(2)}(x,0)^{b\bar{b}}_{\beta\bar{\beta}}
+    G^{(3)}(x,0)^{c\bar{c}}_{\gamma\bar{\gamma}}\\
+ &= {\rm tr}(T * {\rm tr}_C(G^{(3)}(x,0)
+  * {\rm tr}_S({\rm qC13}(G^{(1)}(x,0)(C\gamma_5),(C\gamma_k)G^{(2)}(x,0)))))
+\end{split}
+\end{gather*}
+
+\begin{gather*}
+\begin{split}
+T_{\bar{\gamma}\gamma}\langle B^{123}_{k,\gamma}(x) \bar{B}^{132}_{\bar\gamma}(0)\rangle&\\
+ &= \varepsilon^{abc}\varepsilon^{\bar{a}\bar{b}\bar{c}} 
+    (C\gamma_k)_{\alpha\beta} (C\gamma_5)_{\bar{\alpha}\bar{\beta}}
+    G^{(1)}(x,0)^{a\bar{a}}_{\alpha\bar{\alpha}}
+    G^{(2)}(x,0)^{b\bar{b}}_{\beta\bar{\gamma}}
+    G^{(3)}(x,0)^{c\bar{c}}_{\gamma\bar{\beta}}\\
+ &= {\rm tr}(T * {\rm tr}_C(G^{(3)}(x,0)
+  * {\rm qC13}(G^{(1)}(x,0)(C\gamma_5),(C\gamma_k)G^{(2)}(x,0))))
+\end{split}
+\end{gather*}
+
+
+\newpage
+
+\section{Baryon 3-point functions}
+
+We now want to construct baryon 3-point functions with an electromagnetic
+current
+\[
+J(x) = \sum_f e_f \bar{q}_f(x){\cal O}(x,y) q_f(y)
+\]
+where we sum over all flavors $f$, and $\cal O$ is composed of
+some gamma matrices and some covariant displacement function -- 
+possibly only a delta function. The 3-point functions take the form
+%
+\[
+\Gamma^{(3)} = \langle B(x_2) J(x_1) \bar{B}(0) \rangle
+\]
+for some interpolating field $B(x)$. We see that the current is inserted on
+each line in the 2-point function. 
+
+We want expressions for the individual $u$, $d$, etc. quark contributions 
+within the 3-point function. These can be formed directly from the 2-point
+function using a generalized propagator of the form
+\[
+\widetilde{U}(x_2,x_1,0) = U(x_2,x_1) \Gamma U(x_1,0) 
+   = \gamma_5 U^\dag(x_1,x_2)\gamma_5 \Gamma U(x_1,0)\ .
+\]
+for the illustrative case of the simple $u$-quark $\Gamma$-matrix
+inserted current. The 3-point function is constructed from the 2-point
+function after inserting into each line, resp. 
+
+\subsection{Illustrative case $N J N$: $\bar{u}\Gamma u$ insertion}
+Consider the case of the proton: $P_\gamma = B^{duu}_\gamma$ and neutron
+$N_\gamma = B^{udd}_\gamma$. Note that $B^{123}_\gamma = -B^{213}_\gamma$.
+The $u$ quark contribution to the proton 3-point function amounts to
+summing $\widetilde{U}$ quark contributions in the 2-point function.
+If one writes the 2-point correlator as a function of the quarks
+%
+\begin{gather*}
+\begin{split}
+\Gamma^{(2)}(D(x,0),&U_1(x,0),U_2(x,0)) = T  \langle P(x) \bar{P}(0)\rangle \\
+ &= T \langle B^{123}(x) \bar{B}^{123}(0)\rangle_{\stackrel{1=d}{2,3=u}}
+  + T \langle B^{123}(x) \bar{B}^{132}(0)\rangle_{\stackrel{1=d}{2,3=u}}\\
+ &= {\rm tr}(T * {\rm tr}_C(U_2(x,0)
+  * {\rm tr}_S({\rm qC13}(D(x,0)(C\gamma_5),(C\gamma_5)U_1(x,0)))))\\
+ &+ {\rm tr}(T * {\rm tr}_C(U_2(x,0)
+ * {\rm qC13}(D(x,0)(C\gamma_5),(C\gamma_5)U_1(x,0))))\quad,
+\end{split}
+\end{gather*}
+then the $\bar{u}{\cal O}u$-insertion in the 3-point function is
+\[
+\Gamma^{(3)}_u(D,U_1,U_2) = \Gamma^{(2)}(D(x_2,0),\widetilde{U}(x_2,x_1,0),U_2(x_2,0))
+ +  \Gamma^{(2)}(D(x_2,0),U_1(x_2,0),\widetilde{U}(x_2,x_1,0))
+\]
+where $\widetilde{U}(x_2,x_1,0) = U(x_2,x_1) {\cal O}(x_1,y) U(y,0)$.
+Thus, in explicit form the $u$-quark contribution to the proton 3-point
+function is
+%
+\begin{gather*}
+\begin{split}
+T  \langle P(x_2) &\ \bar{u}(x_1){\cal O}(x_1,y) u(y)\ \bar{P}(0)\rangle\\
+ &= {\rm tr}(T * {\rm tr}_C(\widetilde{U}(x_2,x_1,0)
+  * {\rm tr}_S({\rm qC13}(D(x_2,0)(C\gamma_5),(C\gamma_5)U(x_2,0)))))\\
+ &+ {\rm tr}(T * {\rm tr}_C(\widetilde{U}(x_2,x_1,0)
+ * {\rm qC13}(D(x_2,0)(C\gamma_5),(C\gamma_5)U(x_2,0)))) \\
+ &+ {\rm tr}(T * {\rm tr}_C(U(x_2,0)
+  * {\rm tr}_S({\rm qC13}(D(x_2,0)(C\gamma_5),(C\gamma_5)\widetilde{U}(x_2,x_1,0)))))\\
+ &+ {\rm tr}(T * {\rm tr}_C(U(x_2,0)
+ * {\rm qC13}(D(x_2,0)(C\gamma_5),(C\gamma_5)\widetilde{U}(x_2,x_1,0))))
+\end{split}
+\end{gather*}
+
+The rest of the form factors follow in such a simple fashion. We tabulate them
+for convenience.
+
+\subsection{$p J p$}
+Proton 2-point function is
+\[
+\Gamma^{(2)}(D,U,U) 
+  = T \langle B^{123}(x) \bar{B}^{123}(0)\rangle_{\stackrel{1=d}{2,3=u}}
+  + T \langle B^{123}(x) \bar{B}^{132}(0)\rangle_{\stackrel{1=d}{2,3=u}}
+\]
+
+\paragraph{$\bar{u}{\cal O}u$-insertion:}
+\[
+\Gamma^{(3)}_u(D,U,U) = \Gamma^{(2)}(D(x_2,0),\widetilde{U}(x_2,x_1,0),U(x_2,0))
+ +  \Gamma^{(2)}(D(x_2,0),U(x_2,0),\widetilde{U}(x_2,x_1,0))
+\]
+
+\paragraph{$\bar{d}{\cal O}d$-insertion:}
+\[
+\Gamma^{(3)}_d(D,U,U) = \Gamma^{(2)}(\widetilde{D}(x_2,x_1,0),U(x_2,0),U(x_2,0))
+\]
+
+\subsection{$n J n$}
+Neutron 2-point function is
+\[
+\Gamma^{(2)}(U,D,D) 
+  = T \langle B^{123}(x) \bar{B}^{123}(0)\rangle_{\stackrel{1=u}{2,3=d}}
+  + T \langle B^{123}(x) \bar{B}^{132}(0)\rangle_{\stackrel{1=u}{2,3=d}}
+\]
+
+\paragraph{$\bar{u}{\cal O}u$-insertion:}
+\[
+\Gamma^{(3)}_u(U,D,D) = \Gamma^{(2)}(\widetilde{U}(x_2,x_1,0),D(x_2,0),D(x_2,0))
+\]
+
+\paragraph{$\bar{d}{\cal O}d$-insertion:}
+\[
+\Gamma^{(3)}_d(U,D,D) = \Gamma^{(2)}(U(x_2,0),\widetilde{D}(x_2,x_1,0),D(x_2,0))
+ +  \Gamma^{(2)}(U(x_2,0),D(x_2,0),\widetilde{D}(x_2,x_1,0))
+\]
+
+
+\subsection{$\Delta^+ P$:}
+Here $P_\gamma = B^{duu}_\gamma$ where $B^{123}_\gamma = -B^{213}_\gamma$.
+$\Delta^+_{k,\gamma} = 2 B^{duu}_{k,\gamma} + B^{uud}_{k,\gamma}$ 
+where $B^{213}_{k,\gamma}=B^{123}_{k,\gamma}$. 
+After contracting over the project $T$, the 2-point correlation function is
+%
+\begin{gather*}
+\begin{split}
+\Gamma^{(2)}(D,U,U) & = T \langle P(x) \bar{\Delta}^+_{\bar{k}}(0)\rangle\\
+ &= 2\langle T B^{123}(x) \bar{B}^{123}_{\bar{k}}(0)\rangle_{\stackrel{1=d}{2,3=u}}
+  + 2\langle T B^{123}(x) \bar{B}^{132}_{\bar{k}}(0)\rangle_{\stackrel{1=d}{2,3=u}}\\
+ &-  \langle T B^{123}(x) \bar{B}^{132}_{\bar{k}}(0)\rangle_{\stackrel{1,2=u}{3=d}}
+  -  \langle T B^{123}(x) \bar{B}^{132}_{\bar{k}}(0)\rangle_{\stackrel{1,3=u}{2=d}}
+\end{split}
+\end{gather*}
+
+\paragraph{$\bar{u}{\cal O}u$-insertion:}
+\[
+\Gamma^{(3)}_u(D,U,U) = \Gamma^{(2)}(D(x_2,0),\widetilde{U}(x_2,x_1,0),U(x_2,0))
+ +  \Gamma^{(2)}(D(x_2,0),U(x_2,0),\widetilde{U}(x_2,x_1,0))
+\]
+
+\paragraph{$\bar{d}{\cal O}d$-insertion:}
+\[
+\Gamma^{(3)}_d(D,U,U) = \Gamma^{(2)}(\widetilde{D}(x_2,x_1,0),U(x_2,0),U(x_2,0))
+\]
+
+
+\newpage
+
+\section{Sequential Sources}
+
+{\bf NEED SOME INTRO HERE ON THE SOURCE TRICK - FIDDLING WITH APPLYING
+DIRAC OP AT $x_1$}
+
+As a final step, \verb|Chroma| takes the sequential source from below and
+does  $\gamma_5 S^\dagger \gamma_5$.
+
+\subsection{$N J N$}
+Proton 2-point function is
+\[
+\Gamma^{(2)}(D,U,U) 
+  = T \langle B^{123}(x) \bar{B}^{123}(0)\rangle_{\stackrel{1=d}{2,3=u}}
+  + T \langle B^{123}(x) \bar{B}^{132}(0)\rangle_{\stackrel{1=d}{2,3=u}}
+\]
+
+\paragraph{Sequential source for $u$-quark:}
+\begin{gather*}
+\begin{split}
+X &= {\rm qC24}(U(C\gamma_5),(C\gamma_5)D) \\
+S_u(x_2) &= T*X + {\rm tr}_S(X)*T
+  - {\rm qC13}((C\gamma_5) U (C\gamma_5),U T)
+  - {\rm transposeSpin}({\rm qC12}(U T, (C\gamma_5) U (C\gamma_5)))
+\end{split}
+\end{gather*}
+
+\paragraph{Sequential source for $d$-quark:}
+\[
+S_d(x_2) = 
+  - {\rm qC14}(T U(C\gamma_5),(C\gamma_5)U)
+  - {\rm transposeSpin}({\rm qC12}(U T,(C\gamma_5)U (C\gamma_5)))
+\]
+
+
+\subsection{$\Delta^+ P$:}
+
+
+\end{document}

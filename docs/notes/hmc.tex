@@ -1,0 +1,54 @@
+\magnification=1200
+%\baselineskip 18pt
+\baselineskip 9pt
+\centerline{Details of the fermionic force for overlap fermions}
+\rightline{Rajamani Narayanan}
+\rightline{2/19/99}
+\medskip
+Our starting point is the pseudo-fermion action
+$$S_p = \phi^\dagger_+ \bigl[H^2\bigr]^{-1} \phi_+$$
+where
+$$H^2= (1-\mu^2) \bigl[ {1\over 2} + {1\over 4}(1+\gamma_5)\epsilon(H_w)
++{\mu^2\over 1-\mu^2} \bigr]$$
+In the pseudo-fermion action, the pesudo-fermions, $\phi_+$ have 
+a positive chirality and should be thought of as having only
+two spin components in 4D ( one spin component in 2D).
+
+Let is compute the change in this action with respect to the gauge
+field $U$:
+$$\eqalign{ {\delta S_p\over \delta U} & = 
+-\phi^\dagger_+ \bigl[H^2\bigr]^{-1} {\delta H^2\over \delta U}
+\bigl[H^2\bigr]^{-1} \phi_+\cr
+& = -\psi^\dagger_+ {\delta H^2\over \delta U} \psi_+ \cr
+& = -{1\over 2} (1-\mu^2) \psi^\dagger_+ {\delta \epsilon(H_w)\over \delta U} 
+\psi_+ \cr}$$
+We have used the notation:
+$$\bigl[H^2\bigr]^{-1} \phi_+ = \psi_+$$
+and we note that $\psi_+$ is also chiral.
+Since $\psi_+$ is chiral, we have used the fact 
+${1\over 2}(1+\gamma_5)\psi_+=\psi_+$ in deriving the last equality above.
+
+Now we use the rational approximation for $\epsilon(H_w)$ which we
+write as
+$$\epsilon(H_w) =c_oH_w+ \sum_{n=1}^N {c_n H_w\over H_w^2 + b_n }$$
+Then
+$$\eqalign{{\delta \epsilon(H_w)\over \delta U} & =
+c_0 {\delta H_w\over \delta U} + \sum_{n=1}^N {c_n\over H_w^2+b_n} 
+{\delta H_w\over \delta U} - \sum_{n=1}^N c_n 
+{1\over H_w^2 + b_n} \bigl[ H_w {\delta H_w\over \delta U} +
+{\delta H_w\over \delta U}H_w \bigr] {H_w\over H_w^2 + b_n} \cr
+& = c_0 {\delta H_w\over \delta U} + \sum_{n=1}^N c_n {1\over H_w^2 + b_n}
+\bigl[ b_n{\delta H_w\over \delta U} - H_w {\delta H_w\over \delta U} H_w 
+\bigr] {1\over H_w^2 + b_n} \cr }$$
+
+Using the expression for ${\delta \epsilon(H_w)\over \delta U}$, we write
+the following expression for the derivative of the pseudo-fermion action.
+$${\delta S_p\over \delta U} = -{1\over 2} (1-\mu^2)
+\Biggl[ c_0 \psi^\dagger_+ {\delta H_w\over \delta U} \psi_+
++ \sum_{n=1}^N c_n {\psi_+^n}^\dagger \bigl[
+b_n{\delta H_w\over \delta U} - H_w {\delta H_w\over \delta U} H_w \bigr]
+\psi_+^n\Biggr]$$
+where
+$${1\over H_w^2 + b_n} \psi_+ = \psi^n_+$$
+
+\end

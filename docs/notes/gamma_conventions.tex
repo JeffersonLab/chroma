@@ -1,0 +1,201 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+\newcommand{\ch}{{\rm DR}}
+\newcommand{\dirac}{{\rm Di}}
+\newcommand{\ps}{{\rm PS}}
+%\pagestyle{empty}
+\begin{document}
+\begin{center}
+{\bfseries\Large Summary of Gamma Matrix conventions}\\[1.0ex]
+\end{center}
+\setcounter{section}{1} In this document we list the gamma matrix
+conventions employed by the various groups within LHPC, and the
+similarity transformations between them; the document is essentially a
+summary of Urs Heller's notes, which additional discussion of the
+propagator calculation.  In each case the basic \textit{Euclidean}
+gamma matrices satisfy
+\begin{gather*}
+\{ \gamma_{\mu}, \gamma_{\nu} \} = 2 \delta_{\mu\nu}, \qquad 
+\gamma_\mu^{\dagger} = \gamma_\mu \\
+\sigma_{\mu\nu} = \frac{i}{2}[\gamma_\mu,\gamma_\nu] \\
+\Sigma_i = -\frac{1}{2}\epsilon_{ijk}\sigma_{jk} = -i\gamma_5\gamma_4\gamma_i\quad , \quad
+[\Sigma_i,\Sigma_j] = 2 i \epsilon_{ijk}\Sigma_k \ .
+\end{gather*}
+Charge conjugation satisfies
+\begin{gather*}
+-{\rm C} = {\rm C}^{\rm T} = {\rm C}^{-1} = {\rm C}^\dagger \\
+{\rm C} \gamma_\mu {\rm C}^{-1} = -\gamma_\mu^{T}, \quad
+{\rm C} \sigma_{\mu\nu} {\rm C}^{-1} = -\sigma_{\mu\nu}^{T}, \quad
+{\rm C} \gamma_5 {\rm C}^{-1} = \gamma_5^{T}, \quad
+{\rm C} \gamma_5\gamma_\mu {\rm C}^{-1} = (\gamma_5\gamma_\mu)^{T}\ .
+\end{gather*}
+In order to construct the similarity transformation between different
+representations, only the representation.
+However there are differences between the different groups in the
+definitions of the ``derived'' gamma matrices.
+% in particular as to whether they are all Hermititian. 
+
+Note that the Pauli spin matrices are
+\begin{displaymath}
+\sigma_1 = \begin{pmatrix} 0 & 1\\ 1 & 0 \end{pmatrix}, \quad
+\sigma_2 = \begin{pmatrix} 0 & -i\\ i & 0 \end{pmatrix}, \quad
+\sigma_3 = \begin{pmatrix} 1 & 0\\ 0 & -1 \end{pmatrix}.
+\end{displaymath}
+
+%\end{eqnarray}
+%\end{equation}
+
+\subsection{Gamma matrix basis}
+\subsubsection{UKQCD (twisted Dirac)}
+This is basically the Dirac convention, defined by
+\begin{gather*}
+\vec{\gamma} = i \begin{pmatrix}0 & \vec{\sigma}\\ -\vec{\sigma} & 0 \end{pmatrix},\quad
+\gamma_4 = \begin{pmatrix} {\rm I} & 0\\ 0 & -{\rm I} \end{pmatrix} \\
+{\rm C} = \gamma_2\gamma_4 = \begin{pmatrix} 0 & -i\sigma_2\\ -i\sigma_2 & 0 \end{pmatrix}
+\end{gather*}
+In the following, this basis will be denoted $\Gamma_\dirac$.
+
+\subsubsection{MIT (Dirac)}
+The same as UKQCD, but with the sign of the spatial components reversed
+\begin{gather*}
+\vec{\gamma} = -i\begin{pmatrix} 0 & \vec{\sigma}\\ -\vec{\sigma} & 0 \end{pmatrix},\quad
+\gamma_4 = \begin{pmatrix} {\rm I} & 0\\ 0 & -{\rm I} \end{pmatrix} \\
+{\rm C} = \gamma_2\gamma_4 = \begin{pmatrix} 0 & i\sigma_2\\ i\sigma_2 & 0\end{pmatrix}
+\end{gather*}
+The conventions here are the same as Minkowski Dirac with the substitution
+$\gamma_k^{(E)} = -i\gamma^{(M) k}$, $k=1,2,3$.
+
+\subsubsection{SZIN}
+
+This is the Degrand-Rossi (DR) basis, a variation of a chiral basis, i.e.\
+in which $\gamma_5$ is diagonal, but with a different sign for
+$\gamma_2$.  It is used by
+MILC and pretty will the remainder of the US community:
+\begin{gather*}
+\gamma_1 = \begin{pmatrix} 0 & i \sigma_1 \nonumber \\ -i \sigma_1 & 0 \end{pmatrix},\quad
+\gamma_2 = \begin{pmatrix} 0 & -i \sigma_2 \\ i \sigma_2 & 0 \end{pmatrix},\quad
+\gamma_3 = \begin{pmatrix} 0 & i \sigma_3 \\ -i \sigma_3 & 0 \end{pmatrix},\quad
+\gamma_4 = \begin{pmatrix} 0 & I\\ I & 0 \end{pmatrix} \\
+{\rm C} = \gamma_2\gamma_4 = \begin{pmatrix} -i\sigma_2 & 0\\ 0 & i\sigma_2 \end{pmatrix}
+\end{gather*}
+Note the sign in $\gamma_2$.  Matrices in this basis will be denoted
+by $\Gamma_\ch$.
+
+\subsubsection{Kentucky-Adelaide}
+This is a Euclidean version of the Pauli-Schwinger basis used by 
+Sakurai:
+\begin{gather*}
+\vec{\gamma} = \begin{pmatrix} 0 & \vec{\sigma}\\ \vec{\sigma} & 0 \end{pmatrix}, \quad
+\gamma_4 = \begin{pmatrix} {\rm I} & 0\\ 0 & -{\rm I} \end{pmatrix}, \quad
+\gamma_5 = i \begin{pmatrix} 0 & -{\rm I}\\ {\rm I} & 0 \end{pmatrix} \\
+{\rm C} = \gamma_2\gamma_4 = \begin{pmatrix} \sigma_2 & 0\\ 0 & -\sigma_2 \end{pmatrix}
+\end{gather*}
+In the following, this basis will be denoted $\Gamma_\ps$. NOTE: in papers,
+these groups claim to use an opposite sign for $\sigma_{\mu\nu}$ than written
+at the beginning.
+
+\subsection{Similarity Transformation}
+Here we give the unitary matrix that relates the SZIN basis to the
+UKQCD Dirac basis, from Urs Heller's notes.
+\[
+\Gamma_\ch = U^{\dagger} \Gamma_\dirac U
+\]
+where the similarity transformation is realised through
+\begin{eqnarray}
+U & = &\frac{1}{\sqrt{2}} \left(
+\begin{array}{rr}
+i \sigma_2 & i \sigma_2\\
+i \sigma_2 & -i \sigma_2
+\end{array}
+\right)\nonumber \\
+& \equiv & \frac{1}{\sqrt{2}}
+\left(
+\begin{array}{rrrr}
+ 0 & 1 & 0 & 1\\
+ -1 & 0 & -1 & 0\\
+ 0 & 1 & 0 & -1\\
+-1 & 0 & 1 & 0
+\end{array}
+\right).\label{eq:sim_def}
+\end{eqnarray}
+Note that $U^{\dagger} = U^T = -U$.
+
+\subsection{Propagator projection operators}
+We now discuss how to use use the projection property to compute the
+non-relativistic quark propagators in the DR basis.
+
+The non-relativistic projection consists of solving the propagator
+equation
+\begin{equation}
+M G = S \frac{1}{2} (1 + \gamma_4)
+\end{equation}
+where $S$ is some source matrix.  In a Dirac basis, the projection
+operator
+\begin{equation}
+\frac{1}{2} (1 + \gamma_4) = \left( 
+\begin{array}{rr}
+I_2 & 0 \\
+0 & 0
+\end{array}
+\right)
+\end{equation}
+and we have
+\begin{equation}
+M_\dirac G_\dirac = S_\dirac \frac{1}{2} (1 + \gamma_{4,\dirac}).
+\label{eq:prop_dirac}
+\end{equation}
+In the chiral basis we have
+\begin{equation}
+M_\ch G_\ch = S_\ch \frac{1}{2} (1 + \gamma_{4,\ch}).
+\label{eq:prop_chiral}
+\end{equation}
+We now perform the similarity transformation on the projection
+operator to yield
+\begin{equation}
+M_\ch G_\ch = S \frac{1}{2} U^{\dagger} (1 + \gamma_{4,\dirac}) U.
+\end{equation}
+Multiplying this equation on the right by $U^{\dagger}$ yields
+\begin{equation}
+M_\ch G_\ch U^{\dagger} = S U^{\dagger} \frac{1}{2} ( 1 +
+\gamma_{4,\dirac}).\label{eq:chiral_proj}
+\end{equation}
+Using the definition of $U$ in eqn.~\ref{eq:sim_def}, we obtain the
+solution to the non-relativistic quark propagator in the DR basis by solving
+\begin{eqnarray}
+M_\ch G' & = & S \frac{1}{\sqrt{2}}
+\left(
+\begin{array}{rr}
+- i \sigma_2 & 0\\
+-i \sigma_2 & 0
+\end{array}
+\right) \nonumber \\
+& = & S \times \frac{1}{\sqrt{2}} \left( \begin{array}{rrrr}
+0 & -1 & 0 & 0 \\
+1 & 0 & 0 & 0 \\
+0 & -1 & 0 & 0 \\
+1 & 0 & 0 & 0
+\end{array}
+\right),
+\end{eqnarray}
+and then setting
+\begin{equation}
+G_\ch = G' U
+\end{equation}
+Clearly, the solution of eqn.~(\ref{eq:chiral_proj}) only involves the
+upper two components of the source and the projection is explicit.
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
