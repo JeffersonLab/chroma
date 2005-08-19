@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_hyp_smear4d.h,v 1.1 2005-08-19 05:32:12 edwards Exp $
+// $Id: inline_hyp_smear4d.h,v 1.2 2005-08-19 05:46:48 edwards Exp $
 /*! \file
  *  \brief Inline Hyp smearing
  */
@@ -44,8 +44,7 @@ namespace Chroma
 
     struct Hyp_t
     {
-      QDP_volfmt_t  volfmt;	   // single or multi file volume format
-      CfgType  hyp_type;           // storage type for hyp config
+      QDP_volfmt_t  hyp_volfmt;	   // single or multi file volume format
       string   hyp_file;	   // storage for hyp config
     } hyp;
 

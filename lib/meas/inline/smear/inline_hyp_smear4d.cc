@@ -1,4 +1,4 @@
-// $Id: inline_hyp_smear4d.cc,v 1.1 2005-08-19 05:32:12 edwards Exp $
+// $Id: inline_hyp_smear4d.cc,v 1.2 2005-08-19 05:46:48 edwards Exp $
 /*! \file
  *  \brief Inline Hyp smearing writing only SciDAC files
  */
@@ -33,8 +33,7 @@ namespace Chroma
   void read(XMLReader& xml, const string& path, InlineHypSmear4dParams::Hyp_t& input)
   {
     XMLReader inputtop(xml, path);
-    read(inputtop, "volfmt", input.volfmt);
-    read(inputtop, "hyp_type", input.hyp_type);
+    read(inputtop, "hyp_volfmt", input.hyp_volfmt);
     read(inputtop, "hyp_file", input.hyp_file);
   }
 
@@ -43,8 +42,7 @@ namespace Chroma
   void write(XMLWriter& xml, const string& path, const InlineHypSmear4dParams::Hyp_t& input)
   {
     push(xml, path);
-    write(xml, "volfmt", input.volfmt);
-    write(xml, "hyp_type", input.hyp_type);
+    write(xml, "hyp_volfmt", input.hyp_volfmt);
     write(xml, "hyp_file", input.hyp_file);
     pop(xml);
   }
@@ -236,7 +234,7 @@ namespace Chroma
       pop(gauge_file_xml_out);
       write(gauge_xml_out, "szin", szin_gauge_header);
       writeGauge(gauge_file_xml_out, gauge_xml_out, u_hyp,
-		 params.hyp.hyp_file,params.hyp.volfmt, QDPIO_SERIAL);
+		 params.hyp.hyp_file,params.hyp.hyp_volfmt, QDPIO_SERIAL);
     }
     t2 = clock();
     QDPIO::cout << "Gauge write took " << (double)((int)(t2)-(int)(t1))/(double)(CLOCKS_PER_SEC) << " secs" << endl;
