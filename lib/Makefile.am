@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.283 2005-07-15 11:06:09 bjoo Exp $
+# $Id: Makefile.am,v 1.284 2005-08-19 05:31:13 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -377,7 +377,8 @@ nobase_include_HEADERS += \
 	meas/inline/smear/smear.h \
 	meas/inline/smear/inline_smear_aggregate.h \
 	meas/inline/smear/inline_ape_smear.h \
-	meas/inline/smear/inline_hyp_smear.h
+	meas/inline/smear/inline_hyp_smear.h \
+	meas/inline/smear/inline_hyp_smear4d.h
 
 #
 # Include Path
@@ -671,7 +672,8 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_qpropqio_w.cc \
 	meas/inline/smear/inline_smear_aggregate.cc \
 	meas/inline/smear/inline_ape_smear.cc \
-	meas/inline/smear/inline_hyp_smear.cc
+	meas/inline/smear/inline_hyp_smear.cc \
+	meas/inline/smear/inline_hyp_smear4d.cc
 
 
 
