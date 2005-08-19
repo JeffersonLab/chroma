@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.380 2005-07-15 11:06:09 bjoo Exp $
+# $Id: Makefile.in,v 1.381 2005-08-19 05:31:40 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -326,6 +326,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/smear/inline_smear_aggregate.cc \
 	meas/inline/smear/inline_ape_smear.cc \
 	meas/inline/smear/inline_hyp_smear.cc \
+	meas/inline/smear/inline_hyp_smear4d.cc \
 	actions/ferm/linop/lwldslash_w_sse.cc \
 	actions/ferm/linop/lwldslash_array_sse_w.cc \
 	actions/ferm/qprop/prec_dwf_qprop_array_sse_w.cc \
@@ -526,8 +527,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	inline_mres_w.$(OBJEXT) inline_multipole_w.$(OBJEXT) \
 	inline_qpropqio_w.$(OBJEXT) inline_smear_aggregate.$(OBJEXT) \
 	inline_ape_smear.$(OBJEXT) inline_hyp_smear.$(OBJEXT) \
-	$(am__objects_2) $(am__objects_3) $(am__objects_4) \
-	$(am__objects_5) asqtad_fermact_s.$(OBJEXT) \
+	inline_hyp_smear4d.$(OBJEXT) $(am__objects_2) $(am__objects_3) \
+	$(am__objects_4) $(am__objects_5) asqtad_fermact_s.$(OBJEXT) \
 	fermbcs_s.$(OBJEXT) simple_fermbc_s.$(OBJEXT) \
 	asqtad_linop_s.$(OBJEXT) asqtad_mdagm_s.$(OBJEXT) \
 	asq_dsl_s.$(OBJEXT) fat7_links_s.$(OBJEXT) \
@@ -859,6 +860,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/inline/smear/inline_smear_aggregate.h \
 	meas/inline/smear/inline_ape_smear.h \
 	meas/inline/smear/inline_hyp_smear.h \
+	meas/inline/smear/inline_hyp_smear4d.h \
 	actions/ferm/fermacts/remez_gmp.h \
 	actions/ferm/linop/lwldslash_w_sse.h \
 	actions/ferm/linop/lwldslash_array_sse_w.h \
@@ -1314,7 +1316,8 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/smear/smear.h \
 	meas/inline/smear/inline_smear_aggregate.h \
 	meas/inline/smear/inline_ape_smear.h \
-	meas/inline/smear/inline_hyp_smear.h $(am__append_4) \
+	meas/inline/smear/inline_hyp_smear.h \
+	meas/inline/smear/inline_hyp_smear4d.h $(am__append_4) \
 	$(am__append_6) $(am__append_8) $(am__append_10) \
 	$(am__append_12) $(am__append_14)
 nodist_include_HEADERS = chroma_config_internal.h
@@ -1585,7 +1588,8 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron/inline_qpropqio_w.cc \
 	meas/inline/smear/inline_smear_aggregate.cc \
 	meas/inline/smear/inline_ape_smear.cc \
-	meas/inline/smear/inline_hyp_smear.cc $(am__append_7) \
+	meas/inline/smear/inline_hyp_smear.cc \
+	meas/inline/smear/inline_hyp_smear4d.cc $(am__append_7) \
 	$(am__append_9) $(am__append_11) $(am__append_13) \
 	actions/ferm/fermacts/asqtad_fermact_s.cc \
 	actions/ferm/fermbcs/fermbcs_s.cc \
@@ -1788,6 +1792,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_hadron_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_hadspec_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_hyp_smear.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_hyp_smear4d.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_make_source_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_mres_w.Po@am__quote@
@@ -6122,6 +6127,20 @@ inline_hyp_smear.obj: meas/inline/smear/inline_hyp_smear.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/smear/inline_hyp_smear.cc' object='inline_hyp_smear.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_hyp_smear.obj `if test -f 'meas/inline/smear/inline_hyp_smear.cc'; then $(CYGPATH_W) 'meas/inline/smear/inline_hyp_smear.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/smear/inline_hyp_smear.cc'; fi`
+
+inline_hyp_smear4d.o: meas/inline/smear/inline_hyp_smear4d.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_hyp_smear4d.o -MD -MP -MF "$(DEPDIR)/inline_hyp_smear4d.Tpo" -c -o inline_hyp_smear4d.o `test -f 'meas/inline/smear/inline_hyp_smear4d.cc' || echo '$(srcdir)/'`meas/inline/smear/inline_hyp_smear4d.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_hyp_smear4d.Tpo" "$(DEPDIR)/inline_hyp_smear4d.Po"; else rm -f "$(DEPDIR)/inline_hyp_smear4d.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/smear/inline_hyp_smear4d.cc' object='inline_hyp_smear4d.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_hyp_smear4d.o `test -f 'meas/inline/smear/inline_hyp_smear4d.cc' || echo '$(srcdir)/'`meas/inline/smear/inline_hyp_smear4d.cc
+
+inline_hyp_smear4d.obj: meas/inline/smear/inline_hyp_smear4d.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_hyp_smear4d.obj -MD -MP -MF "$(DEPDIR)/inline_hyp_smear4d.Tpo" -c -o inline_hyp_smear4d.obj `if test -f 'meas/inline/smear/inline_hyp_smear4d.cc'; then $(CYGPATH_W) 'meas/inline/smear/inline_hyp_smear4d.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/smear/inline_hyp_smear4d.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_hyp_smear4d.Tpo" "$(DEPDIR)/inline_hyp_smear4d.Po"; else rm -f "$(DEPDIR)/inline_hyp_smear4d.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/smear/inline_hyp_smear4d.cc' object='inline_hyp_smear4d.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_hyp_smear4d.obj `if test -f 'meas/inline/smear/inline_hyp_smear4d.cc'; then $(CYGPATH_W) 'meas/inline/smear/inline_hyp_smear4d.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/smear/inline_hyp_smear4d.cc'; fi`
 
 lwldslash_w_sse.o: actions/ferm/linop/lwldslash_w_sse.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lwldslash_w_sse.o -MD -MP -MF "$(DEPDIR)/lwldslash_w_sse.Tpo" -c -o lwldslash_w_sse.o `test -f 'actions/ferm/linop/lwldslash_w_sse.cc' || echo '$(srcdir)/'`actions/ferm/linop/lwldslash_w_sse.cc; \
