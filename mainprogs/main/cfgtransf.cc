@@ -1,4 +1,4 @@
-// $Id: cfgtransf.cc,v 1.23 2005-08-23 19:26:51 edwards Exp $
+// $Id: cfgtransf.cc,v 1.24 2005-08-23 19:36:14 edwards Exp $
 /*! \file
  *  \brief Many-to-many gauge transformation routine
  */
@@ -659,7 +659,6 @@ int main(int argc, char **argv)
   {
     /* Write a MILC format file on FE */
     MILCGauge_t milc_out;
-    MILCGaugeInit(milc_out);
     writeMILC (milc_out, u, cfg_output_file);
   }
   break;
