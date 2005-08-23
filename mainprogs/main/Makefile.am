@@ -69,7 +69,7 @@ EXTRA_PROGRAMS += propagator_comp multi_propagator multi_propagator_comp \
        collect_multi_propcomp
 
 # Staggered specific programs
-#EXTRA_PROGRAMS += 
+EXTRA_PROGRAMS += spectrum_s
 
 
 #
@@ -85,6 +85,7 @@ multi_propagator_comp_SOURCES = multi_propagator_comp.cc
 collect_propcomp_SOURCES = collect_propcomp.cc
 collect_multi_propcomp_SOURCES = collect_multi_propcomp.cc
 spectrum_w_SOURCES= spectrum_w.cc
+spectrum_s_SOURCES= spectrum_s.cc
 hmc_SOURCES= hmc.cc
 purgaug_SOURCES= purgaug.cc
 mres_SOURCES= mres.cc
