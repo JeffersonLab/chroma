@@ -1,4 +1,4 @@
-// $Id: readmilc.cc,v 1.8 2005-01-14 20:13:07 edwards Exp $
+// $Id: readmilc.cc,v 1.9 2005-08-23 19:35:53 edwards Exp $
 
 /*! \file
  *  \brief Read a MILC gauge configuration written in the 1997 format
@@ -23,8 +23,6 @@ namespace Chroma {
 void readMILC(MILCGauge_t& header, multi1d<LatticeColorMatrix>& u, const string& cfg_file)
 {
   START_CODE();
-
-  MILCGaugeInit(header);  // initialize the header with defaults
 
   BinaryReader cfg_in(cfg_file); // for now, cfg_io_location not used
 

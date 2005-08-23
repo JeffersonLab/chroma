@@ -1,4 +1,5 @@
-// $Id: milc_io.h,v 1.2 2005-01-14 20:13:06 edwards Exp $
+// -*- C++ -*-
+// $Id: milc_io.h,v 1.3 2005-08-23 19:35:53 edwards Exp $
 
 /*! \file
  *  \brief MILC gauge format routines
@@ -15,13 +16,11 @@ namespace Chroma {
 //! MILC gauge field header
 struct MILCGauge_t
 {
-  multi1d<int> nrow;      // Lattice size
-  std::string  date;      // ASCII date and time of file creation (64 bytes long)
+  MILCGauge_t();          /*!< Default constructor */
+  multi1d<int> nrow;      /*!< Lattice size */
+  std::string  date;      /*!< ASCII date and time of file creation (64 bytes long) */
 };
 
-
-//! Initialize header with default values
-void MILCGaugeInit(MILCGauge_t& header);
 
 //! Source header read
 void read(XMLReader& xml, const std::string& path, MILCGauge_t& header);
