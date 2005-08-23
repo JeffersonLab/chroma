@@ -1,4 +1,4 @@
-// $Id: cfgtransf.cc,v 1.22 2005-08-23 12:43:00 bjoo Exp $
+// $Id: cfgtransf.cc,v 1.23 2005-08-23 19:26:51 edwards Exp $
 /*! \file
  *  \brief Many-to-many gauge transformation routine
  */
@@ -668,9 +668,6 @@ int main(int argc, char **argv)
   {
     /* Write a QCD Archive format file on FE */
     ArchivGauge_t arc_out;
-    // This function is undefined...
-    // Stick with default values
-    // archivGaugeInit(arc_out); 
     arc_out.w_plaq = w_plaq;
     arc_out.link   = link;
     writeArchiv(arc_out, u, cfg_output_file);
