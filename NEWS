@@ -1,4 +1,7 @@
 08/23/2005 -- Robert Edwards
+	Version 1.23.7. Added timings to inline measurements around IO routines.
+
+08/23/2005 -- Robert Edwards
 	Version 1.23.6. Cosmetic changes before some production work. Corresponds
         to using QDP++ 1.15.2 .
 
