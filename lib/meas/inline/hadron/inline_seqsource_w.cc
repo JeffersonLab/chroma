@@ -1,4 +1,4 @@
-// $Id: inline_seqsource_w.cc,v 1.4 2005-08-24 03:12:53 edwards Exp $
+// $Id: inline_seqsource_w.cc,v 1.5 2005-08-24 03:53:14 edwards Exp $
 /*! \file
  * \brief Inline construction of sequential sources
  *
@@ -251,6 +251,8 @@ namespace Chroma
     //
     QDPIO::cout << "Sequential source = " << params.param.seq_src << endl;
 
+    swatch.reset();
+    swatch.start();
     LatticePropagator quark_prop_src = 
       hadSeqSource(quark_propagator, 
 		   quark_propagator, 
@@ -259,7 +261,11 @@ namespace Chroma
 		   params.param.sink_mom, 
 		   j_decay, 
 		   params.param.seq_src);
-
+    swatch.stop();
+    
+    QDPIO::cout << "Hadron sequential source computed: time= " 
+		<< swatch.getTimeInSeconds() 
+		<< " secs" << endl;
 
     // Do the sink smearing AFTER the interpolating operator
     switch (params.sink_header.sink_type)
