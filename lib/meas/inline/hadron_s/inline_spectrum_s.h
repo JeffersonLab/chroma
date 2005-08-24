@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_spectrum_s.h,v 1.1 2005-08-23 17:29:55 mcneile Exp $
+// $Id: inline_spectrum_s.h,v 1.2 2005-08-24 16:39:23 mcneile Exp $
 /*! \file
  * \brief Inline staggered spectrum calculations
  *
@@ -11,7 +11,7 @@
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
-#include "io/smearing_io.h"
+#include "invtype.h"
 
 namespace Chroma 
 { 
@@ -34,37 +34,24 @@ namespace Chroma
 
     struct Param_t
     {
-      bool Pt_snk;             // point sink
-      bool Sl_snk;             // shell sink
-      bool Wl_snk;             // wall sink
+      bool Meson_local;             // Meson spectroscopy
+      bool Baryon_local;            // Baryons spectroscopy
+      bool disconnected_local;            // disconnected loops
 
-      bool MesonP;             // Meson spectroscopy
-      bool CurrentP;           // Meson currents
-      bool BaryonP;            // Baryons spectroscopy
-
-      bool HybMesP;            // Hybrid meson spectroscopy
-      int  numb_sm;            // number of smearing levels for E- and B-fields
-      Real fact_sm;            // Smearing factor for "smeared" E- and B-fields 
-
-      bool time_rev;           // Use time reversal in baryon spectroscopy
-
-      int mom2_max;            // (mom)^2 <= mom2_max. mom2_max=7 in szin.
-      bool avg_equiv_mom;      // average over equivalent momenta
-      WvfKind       wvf_kind;  // Wave function kind: gauge invariant
-      multi1d<Real> wvf_param; // Array of width's or other parameters
-      //   for "shell" source/sink wave function
-      multi1d<int> wvfIntPar;  // Array of iter numbers to approx. Gaussian or
-      //   terminate CG inversion for Wuppertal smearing
-      Real          link_smear_fact; // smearing factor
-      int           link_smear_num;  // number of smearing hits
-
+      multi1d<int> boundary;
       multi1d<int> nrow;
+      multi1d<int> t_srce;
+
     } param;
 
-    struct Prop_t
+    struct Quark_Prop_t
     {
-      multi1d<std::string> prop_files;  // The files are expected to be in SciDAC format!
-    } prop;
+      Real         Mass;      // Staggered mass
+      Real         u0;        // Tadpole Factor
+
+      InvertParam_t  invParam; // inversion parameters
+
+    } prop_param ;
 
     std::string xml_file;  // Alternate XML file pattern
   };
