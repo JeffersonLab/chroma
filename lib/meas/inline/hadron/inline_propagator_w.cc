@@ -1,4 +1,4 @@
-// $Id: inline_propagator_w.cc,v 1.7 2005-08-24 03:12:53 edwards Exp $
+// $Id: inline_propagator_w.cc,v 1.8 2005-08-24 17:14:09 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -314,6 +314,7 @@ namespace Chroma
     {
       try
       {
+	swatch.reset();
 	QDPIO::cout << "Try the various factories" << endl;
 
 	// Generic Wilson-Type stuff
@@ -328,7 +329,7 @@ namespace Chroma
 							  state_info_path));  // uses phase-multiplied u-fields
 
 	QDPIO::cout << "Suitable factory found: compute the quark prop" << endl;
-
+	swatch.start();
 	S_f->quarkProp(quark_propagator, xml_out, quark_prop_source,
 		       t0, j_decay,
 		       state, 
@@ -336,6 +337,10 @@ namespace Chroma
 		       params.param.nonRelProp,
 		       params.param.obsvP,
 		       ncg_had);
+	swatch.stop();
+	QDPIO::cout << "Propagator computed: time= " 
+		    << swatch.getTimeInSeconds() 
+		    << " secs" << endl;
       
 	success = true;
       }
