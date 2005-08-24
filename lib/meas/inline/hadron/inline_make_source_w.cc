@@ -1,4 +1,4 @@
-// $Id: inline_make_source_w.cc,v 1.3 2005-05-04 17:10:54 osborn Exp $
+// $Id: inline_make_source_w.cc,v 1.4 2005-08-24 03:12:53 edwards Exp $
 /*! \file
  * \brief Inline construction of make_source
  *
@@ -111,6 +111,7 @@ namespace Chroma
     write(xml_out, "update_no", update_no);
 
     QDPIO::cout << "MAKE_SOURCE: propagator source constructor" << endl;
+    StopWatch swatch;
 
     switch(params.param.source_type)
     {
@@ -361,6 +362,9 @@ namespace Chroma
     // Now write the source
     // ONLY SciDAC output format is supported!!!
     {
+      swatch.reset();
+      QDPIO::cout << "Attempt to write source" << endl;
+
       XMLBufferWriter file_xml;
       push(file_xml, "make_source");
       int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
@@ -380,10 +384,14 @@ namespace Chroma
 //    pop(xml_out);
 
       // Write the source
+      swatch.start();
       writeQprop(file_xml, record_xml, quark_source,
 		 params.prop.source_file, params.prop.source_volfmt, QDPIO_SERIAL);
+      swatch.stop();
 
-      QDPIO::cout << "Source successfully written" << endl;
+      QDPIO::cout << "Source successfully written: time= " 
+		  << swatch.getTimeInSeconds() 
+		  << " secs" << endl;
     }
     
     QDPIO::cout << "Make_source ran successfully" << endl;

@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.381 2005-08-19 05:31:40 edwards Exp $
+# $Id: Makefile.in,v 1.382 2005-08-24 03:12:52 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -323,6 +323,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron/inline_mres_w.cc \
 	meas/inline/hadron/inline_multipole_w.cc \
 	meas/inline/hadron/inline_qpropqio_w.cc \
+	meas/inline/hadron_s/inline_spectrum_s.cc \
 	meas/inline/smear/inline_smear_aggregate.cc \
 	meas/inline/smear/inline_ape_smear.cc \
 	meas/inline/smear/inline_hyp_smear.cc \
@@ -525,10 +526,11 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	inline_sink_smear_w.$(OBJEXT) inline_qqq_w.$(OBJEXT) \
 	inline_bar3ptfn_w.$(OBJEXT) inline_building_blocks_w.$(OBJEXT) \
 	inline_mres_w.$(OBJEXT) inline_multipole_w.$(OBJEXT) \
-	inline_qpropqio_w.$(OBJEXT) inline_smear_aggregate.$(OBJEXT) \
-	inline_ape_smear.$(OBJEXT) inline_hyp_smear.$(OBJEXT) \
-	inline_hyp_smear4d.$(OBJEXT) $(am__objects_2) $(am__objects_3) \
-	$(am__objects_4) $(am__objects_5) asqtad_fermact_s.$(OBJEXT) \
+	inline_qpropqio_w.$(OBJEXT) inline_spectrum_s.$(OBJEXT) \
+	inline_smear_aggregate.$(OBJEXT) inline_ape_smear.$(OBJEXT) \
+	inline_hyp_smear.$(OBJEXT) inline_hyp_smear4d.$(OBJEXT) \
+	$(am__objects_2) $(am__objects_3) $(am__objects_4) \
+	$(am__objects_5) asqtad_fermact_s.$(OBJEXT) \
 	fermbcs_s.$(OBJEXT) simple_fermbc_s.$(OBJEXT) \
 	asqtad_linop_s.$(OBJEXT) asqtad_mdagm_s.$(OBJEXT) \
 	asq_dsl_s.$(OBJEXT) fat7_links_s.$(OBJEXT) \
@@ -856,7 +858,8 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/inline/hadron/inline_mres_w.h \
 	meas/inline/hadron/inline_multipole_w.h \
 	meas/inline/hadron/inline_qpropqio_w.h \
-	meas/inline/smear/smear.h \
+	meas/inline/hadron_s/inline_spectrum_s.h \
+	meas/inline/hadron_s/hadron_s.h meas/inline/smear/smear.h \
 	meas/inline/smear/inline_smear_aggregate.h \
 	meas/inline/smear/inline_ape_smear.h \
 	meas/inline/smear/inline_hyp_smear.h \
@@ -1313,7 +1316,8 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/hadron/inline_mres_w.h \
 	meas/inline/hadron/inline_multipole_w.h \
 	meas/inline/hadron/inline_qpropqio_w.h \
-	meas/inline/smear/smear.h \
+	meas/inline/hadron_s/inline_spectrum_s.h \
+	meas/inline/hadron_s/hadron_s.h meas/inline/smear/smear.h \
 	meas/inline/smear/inline_smear_aggregate.h \
 	meas/inline/smear/inline_ape_smear.h \
 	meas/inline/smear/inline_hyp_smear.h \
@@ -1586,6 +1590,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron/inline_mres_w.cc \
 	meas/inline/hadron/inline_multipole_w.cc \
 	meas/inline/hadron/inline_qpropqio_w.cc \
+	meas/inline/hadron_s/inline_spectrum_s.cc \
 	meas/inline/smear/inline_smear_aggregate.cc \
 	meas/inline/smear/inline_ape_smear.cc \
 	meas/inline/smear/inline_hyp_smear.cc \
@@ -1807,6 +1812,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_sink_smear_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_smear_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_spectrumOct_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_spectrum_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_spectrum_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_wilslp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/integrator_aggregate.Po@am__quote@
@@ -6086,6 +6092,20 @@ inline_qpropqio_w.obj: meas/inline/hadron/inline_qpropqio_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_qpropqio_w.obj `if test -f 'meas/inline/hadron/inline_qpropqio_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_qpropqio_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_qpropqio_w.cc'; fi`
 
+inline_spectrum_s.o: meas/inline/hadron_s/inline_spectrum_s.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_spectrum_s.o -MD -MP -MF "$(DEPDIR)/inline_spectrum_s.Tpo" -c -o inline_spectrum_s.o `test -f 'meas/inline/hadron_s/inline_spectrum_s.cc' || echo '$(srcdir)/'`meas/inline/hadron_s/inline_spectrum_s.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_spectrum_s.Tpo" "$(DEPDIR)/inline_spectrum_s.Po"; else rm -f "$(DEPDIR)/inline_spectrum_s.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron_s/inline_spectrum_s.cc' object='inline_spectrum_s.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_spectrum_s.o `test -f 'meas/inline/hadron_s/inline_spectrum_s.cc' || echo '$(srcdir)/'`meas/inline/hadron_s/inline_spectrum_s.cc
+
+inline_spectrum_s.obj: meas/inline/hadron_s/inline_spectrum_s.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_spectrum_s.obj -MD -MP -MF "$(DEPDIR)/inline_spectrum_s.Tpo" -c -o inline_spectrum_s.obj `if test -f 'meas/inline/hadron_s/inline_spectrum_s.cc'; then $(CYGPATH_W) 'meas/inline/hadron_s/inline_spectrum_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron_s/inline_spectrum_s.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_spectrum_s.Tpo" "$(DEPDIR)/inline_spectrum_s.Po"; else rm -f "$(DEPDIR)/inline_spectrum_s.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron_s/inline_spectrum_s.cc' object='inline_spectrum_s.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_spectrum_s.obj `if test -f 'meas/inline/hadron_s/inline_spectrum_s.cc'; then $(CYGPATH_W) 'meas/inline/hadron_s/inline_spectrum_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron_s/inline_spectrum_s.cc'; fi`
+
 inline_smear_aggregate.o: meas/inline/smear/inline_smear_aggregate.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_smear_aggregate.o -MD -MP -MF "$(DEPDIR)/inline_smear_aggregate.Tpo" -c -o inline_smear_aggregate.o `test -f 'meas/inline/smear/inline_smear_aggregate.cc' || echo '$(srcdir)/'`meas/inline/smear/inline_smear_aggregate.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_smear_aggregate.Tpo" "$(DEPDIR)/inline_smear_aggregate.Po"; else rm -f "$(DEPDIR)/inline_smear_aggregate.Tpo"; exit 1; fi
@@ -6676,7 +6696,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/actions $(distdir)/actions/boson $(distdir)/actions/boson/operator $(distdir)/actions/ferm $(distdir)/actions/ferm/fermacts $(distdir)/actions/ferm/fermbcs $(distdir)/actions/ferm/invert $(distdir)/actions/ferm/linop $(distdir)/actions/ferm/qprop $(distdir)/actions/gauge $(distdir)/actions/gauge/gaugeacts $(distdir)/actions/gauge/gaugebcs $(distdir)/init $(distdir)/io $(distdir)/io/enum_io $(distdir)/meas $(distdir)/meas/eig $(distdir)/meas/gfix $(distdir)/meas/glue $(distdir)/meas/hadron $(distdir)/meas/inline $(distdir)/meas/inline/eig $(distdir)/meas/inline/glue $(distdir)/meas/inline/hadron $(distdir)/meas/inline/smear $(distdir)/meas/pbp $(distdir)/meas/schrfun $(distdir)/meas/smear $(distdir)/meas/sources $(distdir)/update $(distdir)/update/heatbath $(distdir)/update/molecdyn $(distdir)/update/molecdyn/hamiltonian $(distdir)/update/molecdyn/hmc $(distdir)/update/molecdyn/integrator $(distdir)/update/molecdyn/monomial $(distdir)/update/molecdyn/predictor $(distdir)/util $(distdir)/util/ferm $(distdir)/util/ft $(distdir)/util/gauge $(distdir)/util/info
+	$(mkdir_p) $(distdir)/actions $(distdir)/actions/boson $(distdir)/actions/boson/operator $(distdir)/actions/ferm $(distdir)/actions/ferm/fermacts $(distdir)/actions/ferm/fermbcs $(distdir)/actions/ferm/invert $(distdir)/actions/ferm/linop $(distdir)/actions/ferm/qprop $(distdir)/actions/gauge $(distdir)/actions/gauge/gaugeacts $(distdir)/actions/gauge/gaugebcs $(distdir)/init $(distdir)/io $(distdir)/io/enum_io $(distdir)/meas $(distdir)/meas/eig $(distdir)/meas/gfix $(distdir)/meas/glue $(distdir)/meas/hadron $(distdir)/meas/inline $(distdir)/meas/inline/eig $(distdir)/meas/inline/glue $(distdir)/meas/inline/hadron $(distdir)/meas/inline/hadron_s $(distdir)/meas/inline/smear $(distdir)/meas/pbp $(distdir)/meas/schrfun $(distdir)/meas/smear $(distdir)/meas/sources $(distdir)/update $(distdir)/update/heatbath $(distdir)/update/molecdyn $(distdir)/update/molecdyn/hamiltonian $(distdir)/update/molecdyn/hmc $(distdir)/update/molecdyn/integrator $(distdir)/update/molecdyn/monomial $(distdir)/update/molecdyn/predictor $(distdir)/util $(distdir)/util/ferm $(distdir)/util/ft $(distdir)/util/gauge $(distdir)/util/info
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \

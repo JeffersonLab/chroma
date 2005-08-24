@@ -1,4 +1,4 @@
-// $Id: inline_building_blocks_w.cc,v 1.3 2005-07-27 16:23:52 edwards Exp $
+// $Id: inline_building_blocks_w.cc,v 1.4 2005-08-24 03:12:53 edwards Exp $
 /*! \file
  * \brief Inline construction of BuildingBlocks
  *
@@ -222,6 +222,8 @@ namespace Chroma
     push(XmlOut, "ExampleBuildingBlocks");
     write(XmlOut, "update_no", update_no);
 
+    StopWatch swatch;
+
     QDPIO::cout << " ExampleBuildingBlocks" << endl;
     QDPIO::cout << "     volume: " << params.param.nrow[0];
     for (int i=1; i<Nd; ++i) {
@@ -316,8 +318,16 @@ namespace Chroma
     PropSource_t source_header;
     Out << "reading forward propagator " << params.bb.FrwdPropFileName << " ... " << "\n";  Out.flush();
     {
+      swatch.reset();
+      QDPIO::cout << "Attempt to read forward propagator" << endl;
       Out << "assuming chroma format for forward propagator" << "\n";  Out.flush();
+      swatch.start();
       readQprop( FrwdPropXML, FrwdPropRecordXML, F, params.bb.FrwdPropFileName, QDPIO_SERIAL );
+      swatch.stop();
+
+      QDPIO::cout << "Forward propagator successfully read: time= " 
+		  << swatch.getTimeInSeconds() 
+		  << " secs" << endl;
    
       // Try to invert this record XML into a ChromaProp struct
       try
@@ -377,8 +387,16 @@ namespace Chroma
       SeqSource_t seqsource_header;
       Out << "reading backward u propagator " << params.bb.BkwdProps[loop].BkwdPropFileName << " ... " << "\n";  Out.flush();
       {
+	swatch.reset();
+	QDPIO::cout << "Attempt to read backward propagator" << endl;
 	Out << "assuming chroma format for backward u propagator" << "\n";  Out.flush();
+	swatch.start();
 	readQprop( BkwdPropXML, BkwdPropRecordXML, B[0], params.bb.BkwdProps[loop].BkwdPropFileName, QDPIO_SERIAL );
+	swatch.stop();
+
+	QDPIO::cout << "Backward propagator successfully read: time= " 
+		    << swatch.getTimeInSeconds() 
+		    << " secs" << endl;
 
 	// Try to invert this record XML into a ChromaProp struct
 	// Also pull out the id of this source
@@ -516,6 +534,7 @@ namespace Chroma
       // Construct Building Blocks                                                       //
       //#################################################################################//
     
+      swatch.reset();
       Out << "calculating building blocks" << "\n";  Out.flush();
       QDPIO::cout << "calculating building blocks" << endl;
 
@@ -526,12 +545,17 @@ namespace Chroma
       const signed short int T2 = params.param.nrow[j_decay] - 1;
       const signed short int DecayDir = j_decay;
 
+      swatch.start();
       BuildingBlocks( B, F, U, GammaInsertions, Flavors,
 		      params.param.links_max, AllLinkPatterns, Phases, Files, T1, T2,
 		      seqsource_header.seq_src, seqsource_header.sink_mom, DecayDir);
+      swatch.stop();
 
       Out << "finished calculating building blocks for loop = " << loop << "\n";  Out.flush();
-      QDPIO::cout << "finished calculating building blocks for loop = " << loop << endl;
+      QDPIO::cout << "finished calculating building blocks for loop = " << loop 
+		  << "  time= "
+		  << swatch.getTimeInSeconds() 
+		  << " secs" << endl;
 
       pop(XmlSeqSrc);   // elem
     } // end loop over sequential sources

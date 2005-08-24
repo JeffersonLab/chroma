@@ -1,4 +1,4 @@
-// $Id: inline_bar3ptfn_w.cc,v 1.2 2005-04-10 17:06:22 edwards Exp $
+// $Id: inline_bar3ptfn_w.cc,v 1.3 2005-08-24 03:12:53 edwards Exp $
 /*! \file
  * \brief Inline measurement of bar3ptfn
  *
@@ -246,15 +246,24 @@ namespace Chroma
     //
     // Read the quark propagator and extract headers
     //
+    StopWatch swatch;
     XMLReader prop_file_xml, prop_record_xml;
     LatticePropagator quark_propagator;
     ChromaProp_t prop_header;
     PropSource_t source_header;
     {
+      swatch.reset();
+
       QDPIO::cout << "Attempt to read forward propagator" << endl;
+      swatch.start();
       readQprop(prop_file_xml, 
 		prop_record_xml, quark_propagator,
 		params.prop.prop_file, QDPIO_SERIAL);
+      swatch.stop();
+
+      QDPIO::cout << "Forward propagator successfully read: time= " 
+		  << swatch.getTimeInSeconds() 
+		  << " secs" << endl;
    
       // Try to invert this record XML into a ChromaProp struct
       // Also pull out the id of this source
@@ -273,7 +282,7 @@ namespace Chroma
       write(xml_out, "Propagator_file_info", prop_file_xml);
       write(xml_out, "Propagator_record_info", prop_record_xml);
     }
-    QDPIO::cout << "Forward propagator successfully read" << endl;
+    QDPIO::cout << "Forward propagator successfully read and parsed" << endl;
 
     // Derived from input prop
     int  j_decay = source_header.j_decay;
@@ -321,10 +330,19 @@ namespace Chroma
       LatticePropagator seq_quark_prop;
       SeqSource_t seqsource_header;
       {
+	swatch.reset();
+	QDPIO::cout << "Attempt to read sequential propagator" << endl;
+
 	XMLReader seqprop_file_xml, seqprop_record_xml;
+	swatch.start();
 	readQprop(seqprop_file_xml, 
 		  seqprop_record_xml, seq_quark_prop,
 		  params.prop.seqprop_files[seq_src_ctr], QDPIO_SERIAL);
+	swatch.stop();
+
+	QDPIO::cout << "Sequential source successfully read: time= " 
+		    << swatch.getTimeInSeconds() 
+		    << " secs" << endl;
 
 	// Try to invert this record XML into a ChromaProp struct
 	// Also pull out the id of this source

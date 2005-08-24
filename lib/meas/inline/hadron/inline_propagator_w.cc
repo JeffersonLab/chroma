@@ -1,4 +1,4 @@
-// $Id: inline_propagator_w.cc,v 1.6 2005-05-31 01:44:17 edwards Exp $
+// $Id: inline_propagator_w.cc,v 1.7 2005-08-24 03:12:53 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -171,6 +171,8 @@ namespace Chroma
     //
     // Read in the source along with relevant information.
     // 
+    StopWatch swatch;
+
     LatticePropagator quark_prop_source;
     XMLReader source_file_xml, source_record_xml;
     int t0;
@@ -178,12 +180,18 @@ namespace Chroma
     bool make_sourceP = false;
     bool seqsourceP = false;
     {
+      swatch.reset();
+
       // ONLY SciDAC mode is supported for propagators!!
       QDPIO::cout << "Attempt to read source" << endl;
+      swatch.start();
       readQprop(source_file_xml, 
 		source_record_xml, quark_prop_source,
 		params.prop.source_file, QDPIO_SERIAL);
-      QDPIO::cout << "Source successfully read" << flush << endl;
+      swatch.stop();
+      QDPIO::cout << "Source successfully read: time= " 
+		  << swatch.getTimeInSeconds() 
+		  << " secs" << endl;
 
       // Try to invert this record XML into a source struct
       try
@@ -223,8 +231,8 @@ namespace Chroma
 	QDP_abort(1);
       }
     }    
-
-  
+    QDPIO::cout << "Source successfully read and parsed" << endl;
+ 
     proginfo(xml_out);    // Print out basic program info
 
     // Write out the input
@@ -366,6 +374,9 @@ namespace Chroma
     // Save the propagator
     // ONLY SciDAC output format is supported!
     {
+      swatch.reset();
+      QDPIO::cout << "Start writing propagator" << endl;
+
       XMLBufferWriter file_xml;
       push(file_xml, "propagator");
       int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
@@ -394,10 +405,14 @@ namespace Chroma
       }
 
       // Write the source
+      swatch.start();
       writeQprop(file_xml, record_xml, quark_propagator,
 		 params.prop.prop_file, params.prop.prop_volfmt, QDPIO_SERIAL);
+      swatch.stop();
 
-      QDPIO::cout << "Propagator successfully written" << endl;
+      QDPIO::cout << "Propagator successfully written: time= " 
+		  << swatch.getTimeInSeconds() 
+		  << " secs" << endl;
     }
 
     pop(xml_out);  // propagator

@@ -1,4 +1,4 @@
-// $Id: inline_spectrum_w.cc,v 1.4 2005-06-11 02:13:11 edwards Exp $
+// $Id: inline_spectrum_w.cc,v 1.5 2005-08-24 03:12:53 edwards Exp $
 /*! \file
  * \brief Inline construction of spectrum
  *
@@ -261,7 +261,7 @@ namespace Chroma
     write(xml_out, "update_no", update_no);
 
     QDPIO::cout << " SPECTRUM: Spectroscopy for Wilson-like fermions" << endl;
-
+    StopWatch swatch;
 
     /*
      * Sanity checks
@@ -309,11 +309,20 @@ namespace Chroma
       ChromaProp_t prop_header;
       PropSource_t source_header;
       {
+	swatch.reset();
+	QDPIO::cout << "Attempt to read propagator" << endl;
+
 	XMLReader prop_file_xml, prop_record_xml;
+	swatch.start();
 	readQprop(prop_file_xml, 
 		  prop_record_xml, quark_propagator,
 		  params.prop.prop_files[loop], QDPIO_SERIAL);
+	swatch.stop();
 
+	QDPIO::cout << "Propagator successfully read: time= " 
+		    << swatch.getTimeInSeconds() 
+		    << " secs" << endl;
+   
 	// Try to invert this record XML into a ChromaProp struct
 	// Also pull out the id of this source
 	try
@@ -327,6 +336,7 @@ namespace Chroma
 	  throw;
 	}
       }
+      QDPIO::cout << "Propagator successfully read and parsed" << endl;
 
       // Derived from input prop
       int j_decay = source_header.j_decay;

@@ -1,4 +1,4 @@
-// $Id: inline_seqsource_w.cc,v 1.3 2005-07-25 18:08:45 edwards Exp $
+// $Id: inline_seqsource_w.cc,v 1.4 2005-08-24 03:12:53 edwards Exp $
 /*! \file
  * \brief Inline construction of sequential sources
  *
@@ -136,17 +136,24 @@ namespace Chroma
     //
     // Read the quark propagator and extract headers
     //
+    StopWatch swatch;
     LatticePropagator quark_propagator;
     ChromaProp_t prop_header;
     PropSource_t source_header;
     {
       XMLReader prop_file_xml, prop_record_xml;
+      swatch.reset();
 
       QDPIO::cout << "Attempt to read forward propagator" << endl;
+      swatch.start();
       readQprop(prop_file_xml, 
 		prop_record_xml, quark_propagator,
 		params.prop.prop_file, QDPIO_SERIAL);
-      QDPIO::cout << "Forward propagator successfully read" << endl;
+      swatch.stop();
+
+      QDPIO::cout << "Forward propagator successfully read: time= " 
+		  << swatch.getTimeInSeconds() 
+		  << " secs" << endl;
    
       // Try to invert this record XML into a ChromaProp struct
       // Also pull out the id of this source
@@ -164,6 +171,7 @@ namespace Chroma
       // Save prop input
       write(xml_out, "Propagator_info", prop_record_xml);
     }
+    QDPIO::cout << "Forward propagator successfully read and parsed" << endl;
 
     // Derived from input prop
     int  j_decay = source_header.j_decay;
@@ -299,6 +307,9 @@ namespace Chroma
      *  Write the sequential source out to disk
      */
     {
+      swatch.reset();
+      QDPIO::cout << "Attempt to write sequential source" << endl;
+
       XMLBufferWriter file_xml;
       push(file_xml, "seqsource");
       int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
@@ -322,11 +333,15 @@ namespace Chroma
       pop(record_xml);  // SequentialSource
 
       // Write the seqsource
+      swatch.start();
       writeQprop(file_xml, record_xml, quark_prop_src,
 		 params.prop.seqsource_file, 
 		 params.prop.seqsource_volfmt, QDPIO_SERIAL);
+      swatch.stop();
 
-      QDPIO::cout << "Sequential source successfully written" << endl;
+      QDPIO::cout << "Sequential source successfully written: time= " 
+		  << swatch.getTimeInSeconds() 
+		  << " secs" << endl;
     }
 
     pop(xml_out);    // seqsource
