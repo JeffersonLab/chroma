@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-SOURCES = $(ExampleBuildingBlocks_SOURCES) $(apesmear_SOURCES) $(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) $(chroma_SOURCES) $(collect_multi_propcomp_SOURCES) $(collect_propcomp_SOURCES) $(hmc_SOURCES) $(hypsmear_SOURCES) $(hypsmear3d_SOURCES) $(hypsmear4d_SOURCES) $(make_source_SOURCES) $(mres_SOURCES) $(multi_propagator_SOURCES) $(multi_propagator_comp_SOURCES) $(propagator_SOURCES) $(propagator_comp_SOURCES) $(propagator_hack_SOURCES) $(purgaug_SOURCES) $(qpropadd_SOURCES) $(qpropgfix_SOURCES) $(qpropqio_SOURCES) $(qproptransf_SOURCES) $(qproptrev_SOURCES) $(qqq_w_SOURCES) $(seqsource_SOURCES) $(sink_smearing_SOURCES) $(spectrum_w_SOURCES) $(stoutsmear_SOURCES) $(wallformfac_SOURCES)
+SOURCES = $(ExampleBuildingBlocks_SOURCES) $(apesmear_SOURCES) $(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) $(chroma_SOURCES) $(collect_multi_propcomp_SOURCES) $(collect_propcomp_SOURCES) $(hmc_SOURCES) $(hypsmear_SOURCES) $(hypsmear3d_SOURCES) $(hypsmear4d_SOURCES) $(make_source_SOURCES) $(mres_SOURCES) $(multi_propagator_SOURCES) $(multi_propagator_comp_SOURCES) $(propagator_SOURCES) $(propagator_comp_SOURCES) $(propagator_hack_SOURCES) $(purgaug_SOURCES) $(qpropadd_SOURCES) $(qpropgfix_SOURCES) $(qpropqio_SOURCES) $(qproptransf_SOURCES) $(qproptrev_SOURCES) $(qqq_w_SOURCES) $(seqsource_SOURCES) $(sink_smearing_SOURCES) $(spectrum_s_SOURCES) $(spectrum_w_SOURCES) $(stoutsmear_SOURCES) $(wallformfac_SOURCES)
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -53,7 +53,7 @@ bin_PROGRAMS = propagator$(EXEEXT) collect_propcomp$(EXEEXT) \
 	mres$(EXEEXT) propagator_hack$(EXEEXT) qpropqio$(EXEEXT)
 EXTRA_PROGRAMS = qpropadd$(EXEEXT) propagator_comp$(EXEEXT) \
 	multi_propagator$(EXEEXT) multi_propagator_comp$(EXEEXT) \
-	collect_multi_propcomp$(EXEEXT)
+	collect_multi_propcomp$(EXEEXT) spectrum_s$(EXEEXT)
 subdir = mainprogs/main
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -184,6 +184,10 @@ sink_smearing_OBJECTS = $(am_sink_smearing_OBJECTS)
 sink_smearing_LDADD = $(LDADD)
 sink_smearing_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
+am_spectrum_s_OBJECTS = spectrum_s.$(OBJEXT)
+spectrum_s_OBJECTS = $(am_spectrum_s_OBJECTS)
+spectrum_s_LDADD = $(LDADD)
+spectrum_s_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_spectrum_w_OBJECTS = spectrum_w.$(OBJEXT)
 spectrum_w_OBJECTS = $(am_spectrum_w_OBJECTS)
 spectrum_w_LDADD = $(LDADD)
@@ -215,8 +219,8 @@ SOURCES = $(ExampleBuildingBlocks_SOURCES) $(apesmear_SOURCES) \
 	$(qpropadd_SOURCES) $(qpropgfix_SOURCES) $(qpropqio_SOURCES) \
 	$(qproptransf_SOURCES) $(qproptrev_SOURCES) $(qqq_w_SOURCES) \
 	$(seqsource_SOURCES) $(sink_smearing_SOURCES) \
-	$(spectrum_w_SOURCES) $(stoutsmear_SOURCES) \
-	$(wallformfac_SOURCES)
+	$(spectrum_s_SOURCES) $(spectrum_w_SOURCES) \
+	$(stoutsmear_SOURCES) $(wallformfac_SOURCES)
 DIST_SOURCES = $(ExampleBuildingBlocks_SOURCES) $(apesmear_SOURCES) \
 	$(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) $(chroma_SOURCES) \
 	$(collect_multi_propcomp_SOURCES) $(collect_propcomp_SOURCES) \
@@ -228,8 +232,8 @@ DIST_SOURCES = $(ExampleBuildingBlocks_SOURCES) $(apesmear_SOURCES) \
 	$(qpropadd_SOURCES) $(qpropgfix_SOURCES) $(qpropqio_SOURCES) \
 	$(qproptransf_SOURCES) $(qproptrev_SOURCES) $(qqq_w_SOURCES) \
 	$(seqsource_SOURCES) $(sink_smearing_SOURCES) \
-	$(spectrum_w_SOURCES) $(stoutsmear_SOURCES) \
-	$(wallformfac_SOURCES)
+	$(spectrum_s_SOURCES) $(spectrum_w_SOURCES) \
+	$(stoutsmear_SOURCES) $(wallformfac_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -376,9 +380,6 @@ LDADD = -lchroma @QDPXX_LIBS@ @BAGEL_WILSON_DSLASH_LIBS@ @GMP_LIBS@ \
 #
 HDRS = 
 
-# Staggered specific programs
-#EXTRA_PROGRAMS += 
-
 #
 # The program and its dependencies
 #
@@ -392,6 +393,7 @@ multi_propagator_comp_SOURCES = multi_propagator_comp.cc
 collect_propcomp_SOURCES = collect_propcomp.cc
 collect_multi_propcomp_SOURCES = collect_multi_propcomp.cc
 spectrum_w_SOURCES = spectrum_w.cc
+spectrum_s_SOURCES = spectrum_s.cc
 hmc_SOURCES = hmc.cc
 purgaug_SOURCES = purgaug.cc
 mres_SOURCES = mres.cc
@@ -560,6 +562,9 @@ seqsource$(EXEEXT): $(seqsource_OBJECTS) $(seqsource_DEPENDENCIES)
 sink_smearing$(EXEEXT): $(sink_smearing_OBJECTS) $(sink_smearing_DEPENDENCIES) 
 	@rm -f sink_smearing$(EXEEXT)
 	$(CXXLINK) $(sink_smearing_LDFLAGS) $(sink_smearing_OBJECTS) $(sink_smearing_LDADD) $(LIBS)
+spectrum_s$(EXEEXT): $(spectrum_s_OBJECTS) $(spectrum_s_DEPENDENCIES) 
+	@rm -f spectrum_s$(EXEEXT)
+	$(CXXLINK) $(spectrum_s_LDFLAGS) $(spectrum_s_OBJECTS) $(spectrum_s_LDADD) $(LIBS)
 spectrum_w$(EXEEXT): $(spectrum_w_OBJECTS) $(spectrum_w_DEPENDENCIES) 
 	@rm -f spectrum_w$(EXEEXT)
 	$(CXXLINK) $(spectrum_w_LDFLAGS) $(spectrum_w_OBJECTS) $(spectrum_w_LDADD) $(LIBS)
@@ -603,6 +608,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qqq_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seqsource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sink_smearing.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/spectrum_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/spectrum_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stoutsmear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wallformfac.Po@am__quote@
