@@ -1,4 +1,4 @@
-// $Id: chroma.cc,v 1.5 2005-07-19 22:27:09 edwards Exp $
+// $Id: chroma.cc,v 1.6 2005-08-24 03:13:29 edwards Exp $
 /*! \file
  *  \brief Main program to run all measurement codes.
  */
@@ -109,11 +109,20 @@ int main(int argc, char *argv[])
   write(xml_out,"RNG", input.rng_seed);
 
   // Start up the config
+  StopWatch swatch;
+  swatch.reset();
   multi1d<LatticeColorMatrix> u(Nd);
   XMLReader gauge_file_xml, gauge_xml;
 
   // Start up the gauge field
+  QDPIO::cout << "Attempt to read gauge field" << endl;
+  swatch.start();
   gaugeStartup(gauge_file_xml, gauge_xml, u, input.cfg);
+  swatch.stop();
+
+  QDPIO::cout << "Gauge field successfully read: time= " 
+	      << swatch.getTimeInSeconds() 
+	      << " secs" << endl;
 
   XMLBufferWriter config_xml;
   config_xml << gauge_xml;
