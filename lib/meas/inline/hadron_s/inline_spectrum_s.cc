@@ -1,4 +1,4 @@
-// $Id: inline_spectrum_s.cc,v 1.2 2005-08-24 16:39:23 mcneile Exp $
+// $Id: inline_spectrum_s.cc,v 1.3 2005-08-25 16:37:11 mcneile Exp $
 /*! \file
  * \brief Inline construction of staggered spectrum
  *
@@ -21,6 +21,45 @@
 #include "actions/ferm/fermacts/fermacts_s.h"
 
 #include "meas/inline/make_xml_file.h"
+
+#include "util_compute_quark_prop_s.h"
+
+
+// ------------------------
+
+
+namespace Chroma 
+{ 
+
+int compute_quark_propagator_s(LatticeStaggeredFermion & psi,
+			       stag_src_type type_of_src, 
+			       int fuzz_width,
+			       const multi1d<LatticeColorMatrix> & u , 
+			       multi1d<LatticeColorMatrix> & u_smr,
+			       Handle<const SystemSolver<LatticeStaggeredFermion> > & qprop,
+			       XMLWriter & xml_out,
+			       Real RsdCG, Real Mass, 
+			       int j_decay, 
+			       int src_ind, int color_source) ;
+
+  void ks_compute_baryon(string name,
+			 LatticeStaggeredPropagator & quark_propagator,
+			 XMLWriter & xml_out,
+			 int j_decay, int tlength) ; 
+
+void ks_compute_baryon(string name,
+		       LatticeStaggeredPropagator & quark_propagator_a, 
+		       LatticeStaggeredPropagator & quark_propagator_b, 
+		       LatticeStaggeredPropagator & quark_propagator_c, 
+		       XMLWriter & xml_out, 
+		       int j_decay, int tlength); 
+
+void write_smearing_info(string name, stag_src_type type_of_src,
+			 XMLWriter &xml_out, int fuzz_width ) ;
+
+}
+
+// ----------
 
 namespace Chroma 
 { 
@@ -214,15 +253,19 @@ namespace Chroma
     write(xml_out, "Config_info", gauge_xml);
 
     push(xml_out, "Output_version");
-    write(xml_out, "out_version", 12);
+    write(xml_out, "out_version", 1);
     pop(xml_out);
 
 
     // First calculate some gauge invariant observables just for info.
     MesPlq(xml_out, "Observables", u);
 
+    const int j_decay = Nd-1;
 
-    // generate the local quark propagator
+
+    // fuzz the gauge configuration.
+    multi1d<LatticeColorMatrix> u_smr(Nd);
+    u_smr = u ;
 
     // Create a fermion BC
     Handle< FermBC<LatticeStaggeredFermion> >  fbc(new SimpleFermBC<LatticeStaggeredFermion>(params.param.boundary));
@@ -236,6 +279,56 @@ namespace Chroma
     Handle<const SystemSolver<LatticeStaggeredFermion> > qprop(S_f.qprop(state,
 									 params.prop_param.invParam));
 
+
+    //
+    //  local inversions
+    // 
+    LatticeStaggeredFermion psi ;
+    LatticeStaggeredPropagator quark_propagator_Lsink_Lsrc;
+
+    stag_src_type type_of_src = LOCAL_SRC ;
+    QDPIO::cout << "LOCAL INVERSIONS"  << endl;
+    int fuzz_width = 0 ; 
+    int ncg_had = 0 ;
+
+    for(int color_source = 0; color_source < Nc; ++color_source)
+      {
+	psi = zero;   // note this is ``zero'' and not 0
+
+	const int src_ind = 0 ;
+	ncg_had += compute_quark_propagator_s(psi,type_of_src, fuzz_width,
+					       u, u_smr, qprop, xml_out,
+					       params.prop_param.invParam.RsdCG,
+					       params.prop_param.Mass,
+					       j_decay,
+					       src_ind, color_source) ;
+      }
+
+
+    int t_source = 0 ; 
+
+    if( params.param.Baryon_local )
+      {
+
+	push(xml_out, "baryon_correlators");
+
+	// describe the source
+	string NN ;
+	write(xml_out, "source_time", t_source);
+	push(xml_out, "smearing_info");
+	NN = "L" ;
+	write_smearing_info(NN, LOCAL_SRC,xml_out,fuzz_width) ;
+	pop(xml_out);
+	string b_tag("srcLLL_sinkLLL_nucleon") ;
+	ks_compute_baryon(b_tag,quark_propagator_Lsink_Lsrc,
+			  quark_propagator_Lsink_Lsrc,
+			  quark_propagator_Lsink_Lsrc,
+			  xml_out, j_decay,
+			  params.param.nrow[3]) ;
+
+	pop(xml_out);
+
+      }
 
 
     pop(xml_out);  // spectrum_s
