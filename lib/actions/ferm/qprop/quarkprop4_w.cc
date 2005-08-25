@@ -1,4 +1,4 @@
-// $Id: quarkprop4_w.cc,v 1.21 2005-02-21 19:28:59 edwards Exp $
+// $Id: quarkprop4_w.cc,v 1.22 2005-08-25 14:55:39 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -35,6 +35,7 @@ namespace Chroma
   {
     START_CODE();
 
+    QDPIO::cout << "Entering quarkProp4" << endl;
     push(xml_out, "QuarkProp4");
 
     ncg_had = 0;
@@ -112,6 +113,7 @@ namespace Chroma
     }
 
     pop(xml_out);
+    QDPIO::cout << "Exiting quarkProp4" << endl;
 
     END_CODE();
   }
