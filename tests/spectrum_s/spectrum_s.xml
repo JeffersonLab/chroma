@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+
+<spectrum_s>
+<annotation>
+; $Id: spectrum_s.xml,v 1.1 2005-08-26 13:29:02 mcneile Exp $
+;
+; SPECTRUM_S input file.
+;
+; This program is the input file for a spectrum_w test run on Wilson-type
+; propagators
+;
+; NOTE: steps needed to run
+;
+;
+</annotation>
+
+<Param>
+ <version>9</version>
+ <j_decay>3</j_decay>
+ <Meson_local>true</Meson_local>
+ <Baryon_local>true</Baryon_local>
+ <disconnected_local>true</disconnected_local>
+ <nrow>4 4 4 8</nrow>
+ <boundary>4 4 4 8</boundary>
+<t_srce> 0 </t_srce>
+</Param>
+<Cfg>
+ <cfg_type>SZIN</cfg_type>
+ <cfg_file>../test_purgaug.cfg1</cfg_file>
+</Cfg>
+<Inversion>
+<Mass>0.1</Mass>
+<u0>1.0</u0>
+<RsdCG>0.00001</RsdCG>
+<MaxCG>3000</MaxCG>
+</Inversion>
+</spectrum_s>
