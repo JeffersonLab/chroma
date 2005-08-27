@@ -1,4 +1,4 @@
-// $Id: inline_spectrum_s.cc,v 1.3 2005-08-25 16:37:11 mcneile Exp $
+// $Id: inline_spectrum_s.cc,v 1.4 2005-08-27 11:38:07 mcneile Exp $
 /*! \file
  * \brief Inline construction of staggered spectrum
  *
@@ -20,9 +20,14 @@
 #include "actions/ferm/fermbcs/fermbcs.h"
 #include "actions/ferm/fermacts/fermacts_s.h"
 
+#include "util/ferm/transf.h"
+#include "meas/hadron/ks_local_loops.h"
+#include "meas/smear/fuzz_smear.h"
+
 #include "meas/inline/make_xml_file.h"
 
 #include "util_compute_quark_prop_s.h"
+
 
 
 // ------------------------
@@ -57,6 +62,15 @@ void ks_compute_baryon(string name,
 void write_smearing_info(string name, stag_src_type type_of_src,
 			 XMLWriter &xml_out, int fuzz_width ) ;
 
+
+void compute_vary_baryon_s(XMLWriter &xml_out, int t_source, int fuzz_width,
+			   int j_decay, int t_len, 
+			   LatticeStaggeredPropagator & quark_propagator_Lsink_Lsrc,
+			   LatticeStaggeredPropagator & quark_propagator_Fsink_Lsrc,
+			   LatticeStaggeredPropagator & quark_propagator_Lsink_Fsrc,
+			   LatticeStaggeredPropagator & quark_propagator_Fsink_Fsrc) ;
+
+
 }
 
 // ----------
@@ -90,11 +104,39 @@ namespace Chroma
 
     read(paramtop, "Meson_local", param.Meson_local);
     read(paramtop, "Baryon_local", param.Baryon_local);
+    read(paramtop, "Baryon_vary", param.Baryon_vary);
     read(paramtop, "disconnected_local", param.disconnected_local);
 
     read(paramtop, "boundary", param.boundary);
     read(paramtop, "t_srce", param.t_srce);
     read(paramtop, "nrow", param.nrow);
+    read(paramtop, "gauge_invar_oper", param.gauge_invar_oper);
+
+    if( param.disconnected_local )
+      {
+	read(paramtop, "Number_sample", param.Nsamp);
+	read(paramtop, "CFGNO", param.CFGNO);
+	// more work
+	param.volume_source = GAUSSIAN ;
+
+      }
+    else
+      {
+	param.Nsamp = 10 ;
+	param.CFGNO = 10 ;
+	param.volume_source = GAUSSIAN ;
+      }
+
+    if(param.Baryon_vary)
+      {
+	read(paramtop, "fuzz_width", param.fuzz_width);
+      }
+    else
+      {
+	param.fuzz_width = 0 ; 
+      }
+
+
   }
 
 
@@ -108,6 +150,7 @@ namespace Chroma
 
     write(xml, "Meson_local", param.Meson_local);
     write(xml, "Baryon_local", param.Baryon_local);
+    write(xml, "Baryon_vary", param.Baryon_vary);
     write(xml, "disconnected_local", param.disconnected_local);
     write(xml, "boundary", param.boundary);
     write(xml, "nrow", param.nrow);
@@ -232,6 +275,9 @@ namespace Chroma
     push(xml_out, "spectrum_s");
     write(xml_out, "update_no", update_no);
 
+    /*  set some flags **/
+    bool do_fuzzing = false ;
+    if( params.param.Baryon_vary  )  do_fuzzing = true ;
 
     /*
      * Sanity checks
@@ -262,10 +308,39 @@ namespace Chroma
 
     const int j_decay = Nd-1;
 
+    // GUAGE FIX (but what about const)
+    // perhaps that should be done outside ?????
 
     // fuzz the gauge configuration.
     multi1d<LatticeColorMatrix> u_smr(Nd);
     u_smr = u ;
+
+    if( do_fuzzing  )
+      {
+	QDPIO::cout << "Starting to APE smear the gauge configuration" << endl;
+  
+	Real sm_fact = 2.5;   // typical parameter
+	int sm_numb = 10;     // number of smearing hits
+	
+	int BlkMax = 100;    // max iterations in max-ing trace
+	Real BlkAccu = 1.0e-5;  // accuracy of max-ing
+	
+	u_smr = u;
+	for(int i=0; i < sm_numb; ++i)
+	  {
+	    multi1d<LatticeColorMatrix> u_tmp(Nd);
+	    
+	    for(int mu = 0; mu < Nd; ++mu)
+	      if ( mu != j_decay )
+		APE_Smear(u_smr, u_tmp[mu], mu, 0, sm_fact, BlkAccu, BlkMax, j_decay);
+	      else
+		u_tmp[mu] = u_smr[mu];
+    
+	    u_smr = u_tmp;
+	  }
+
+      }
+
 
     // Create a fermion BC
     Handle< FermBC<LatticeStaggeredFermion> >  fbc(new SimpleFermBC<LatticeStaggeredFermion>(params.param.boundary));
@@ -284,11 +359,16 @@ namespace Chroma
     //  local inversions
     // 
     LatticeStaggeredFermion psi ;
+    LatticeStaggeredFermion psi_fuzz ;
+    LatticeStaggeredFermion q_source ; 
+
     LatticeStaggeredPropagator quark_propagator_Lsink_Lsrc;
+    LatticeStaggeredPropagator quark_propagator_Fsink_Lsrc;
+    LatticeStaggeredPropagator quark_propagator_Lsink_Fsrc ;
+    LatticeStaggeredPropagator quark_propagator_Fsink_Fsrc;
 
     stag_src_type type_of_src = LOCAL_SRC ;
     QDPIO::cout << "LOCAL INVERSIONS"  << endl;
-    int fuzz_width = 0 ; 
     int ncg_had = 0 ;
 
     for(int color_source = 0; color_source < Nc; ++color_source)
@@ -296,16 +376,78 @@ namespace Chroma
 	psi = zero;   // note this is ``zero'' and not 0
 
 	const int src_ind = 0 ;
-	ncg_had += compute_quark_propagator_s(psi,type_of_src, fuzz_width,
-					       u, u_smr, qprop, xml_out,
-					       params.prop_param.invParam.RsdCG,
-					       params.prop_param.Mass,
-					       j_decay,
+	ncg_had += compute_quark_propagator_s(psi,type_of_src, 
+					      params.param.fuzz_width,
+					      u, u_smr, qprop, xml_out,
+					      params.prop_param.invParam.RsdCG,
+					      params.prop_param.Mass,
+					      j_decay,
 					       src_ind, color_source) ;
+
+	/*
+	 * Move the solution to the appropriate components
+	 * of quark propagator.
+	 */
+	FermToProp(psi, quark_propagator_Lsink_Lsrc, color_source);
+
+
+      //
+      //  fuzz at the sink 
+      //
+
+	if( do_fuzzing )
+	  {
+	    fuzz_smear(u_smr, psi,psi_fuzz, 
+		       params.param.fuzz_width, j_decay) ;
+	    FermToProp(psi_fuzz, quark_propagator_Fsink_Lsrc, color_source);
+	  }
+
+
       }
 
 
-    int t_source = 0 ; 
+    if( do_fuzzing )
+      {
+
+	type_of_src = FUZZED_SRC ;
+	QDPIO::cout << "FUZZED SOURCE INVERSIONS"  << endl;
+
+	for(int color_source = 0; color_source < Nc; ++color_source) 
+	  {
+	    psi = zero;   // note this is ``zero'' and not 0
+
+	    const int src_ind = 0 ; 
+	    ncg_had += compute_quark_propagator_s(psi,type_of_src, 
+						   params.param.fuzz_width,
+						   u, u_smr, qprop, xml_out,
+						   params.prop_param.invParam.RsdCG,
+						   params.prop_param.Mass,
+						   j_decay, 
+						   src_ind, color_source) ;
+
+	    /*
+	     * Move the solution to the appropriate components
+	     * of quark propagator.
+	     */
+	    FermToProp(psi, quark_propagator_Lsink_Fsrc, color_source);
+
+      //
+      //  fuzz at the sink 
+      //
+
+      fuzz_smear(u_smr, psi,psi_fuzz, params.param.fuzz_width, 
+		 j_decay) ;
+      FermToProp(psi_fuzz, quark_propagator_Fsink_Fsrc, color_source);
+
+
+    }  //color_source
+    
+
+
+      }  // end of compute fuzzed correlator
+
+
+    int t_source = 0 ;  // DEBUG, this should be INPUT parameter
 
     if( params.param.Baryon_local )
       {
@@ -317,7 +459,8 @@ namespace Chroma
 	write(xml_out, "source_time", t_source);
 	push(xml_out, "smearing_info");
 	NN = "L" ;
-	write_smearing_info(NN, LOCAL_SRC,xml_out,fuzz_width) ;
+	write_smearing_info(NN, LOCAL_SRC,xml_out,
+			    params.param.fuzz_width) ;
 	pop(xml_out);
 	string b_tag("srcLLL_sinkLLL_nucleon") ;
 	ks_compute_baryon(b_tag,quark_propagator_Lsink_Lsrc,
@@ -329,6 +472,34 @@ namespace Chroma
 	pop(xml_out);
 
       }
+
+
+
+    if( params.param.disconnected_local  )
+      {
+	push(xml_out, "disconnected_loops");
+	ks_local_loops(qprop,q_source,psi,u,xml_out,
+		       params.param.gauge_invar_oper,
+		       params.param.nrow[3],params.prop_param.Mass,
+                       params.param.Nsamp,
+		       params.prop_param.invParam.RsdCG,
+                       params.param.CFGNO,
+		       params.param.volume_source) ;
+
+	pop(xml_out);
+      }
+
+    if( params.param.Baryon_vary  )
+      {
+	compute_vary_baryon_s(xml_out,t_source, 
+			      params.param.fuzz_width,
+			      j_decay,params.param.nrow[3],
+			      quark_propagator_Lsink_Lsrc,
+			      quark_propagator_Fsink_Lsrc,
+			      quark_propagator_Lsink_Fsrc,
+			      quark_propagator_Fsink_Fsrc) ; 
+      }
+
 
 
     pop(xml_out);  // spectrum_s

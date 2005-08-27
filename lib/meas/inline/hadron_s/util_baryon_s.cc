@@ -1,4 +1,4 @@
-// $Id: util_baryon_s.cc,v 1.1 2005-08-25 16:38:40 mcneile Exp $
+// $Id: util_baryon_s.cc,v 1.2 2005-08-27 11:39:31 mcneile Exp $
 /*! \file
  *  \brief Wrappers to compute staggered baryon correlators
  *
@@ -83,6 +83,133 @@ void write_smearing_info(string name, stag_src_type type_of_src,
     }
 
   pop(xml_out);
+
+}
+
+
+void compute_vary_baryon_s(XMLWriter &xml_out, int t_source, int fuzz_width,
+			   int j_decay, int t_len, 
+			   LatticeStaggeredPropagator & quark_propagator_Lsink_Lsrc,
+			   LatticeStaggeredPropagator & quark_propagator_Fsink_Lsrc,
+			   LatticeStaggeredPropagator & quark_propagator_Lsink_Fsrc,
+			   LatticeStaggeredPropagator & quark_propagator_Fsink_Fsrc)
+
+{
+
+
+
+      //
+      // compute some simple baryon correlators
+      //
+
+      push(xml_out, "baryon_correlators");
+
+      // describe the source
+      string NN ;
+      write(xml_out, "source_time", t_source);
+      push(xml_out, "smearing_info");
+      NN = "L" ; 
+      write_smearing_info(NN, LOCAL_SRC,xml_out,fuzz_width) ;
+
+      NN = "F" ; 
+      write_smearing_info(NN,FUZZED_SRC,xml_out,fuzz_width) ;
+    
+      pop(xml_out);
+
+      // write out the baryon correlators 
+      string b_tag("srcLLL_sinkLLL_nucleon") ;  
+      ks_compute_baryon(b_tag,quark_propagator_Lsink_Lsrc, 
+			quark_propagator_Lsink_Lsrc, 
+			quark_propagator_Lsink_Lsrc, 
+			xml_out, j_decay, 
+			t_len) ;
+
+      // single quark fuzzed
+
+      b_tag = "srcLLL_sinkFLL_nucleon" ;
+      ks_compute_baryon(b_tag,
+			quark_propagator_Fsink_Lsrc, 
+			quark_propagator_Lsink_Lsrc, 
+			quark_propagator_Lsink_Lsrc, 
+			xml_out, j_decay, 
+			t_len) ;
+
+      b_tag = "srcFLL_sinkLLL_nucleon" ;
+      ks_compute_baryon(b_tag,
+			quark_propagator_Lsink_Fsrc, 
+			quark_propagator_Lsink_Lsrc, 
+			quark_propagator_Lsink_Lsrc, 
+			xml_out, j_decay, 
+			t_len) ;
+
+      b_tag = "srcFLL_sinkFLL_nucleon" ;
+      ks_compute_baryon(b_tag,
+			quark_propagator_Fsink_Fsrc, 
+			quark_propagator_Lsink_Lsrc, 
+			quark_propagator_Lsink_Lsrc, 
+			xml_out, j_decay, 
+			t_len) ;
+
+
+
+      // double quark fuzzed
+
+      b_tag = "srcLLL_sinkFFL_nucleon" ;
+      ks_compute_baryon(b_tag,
+			quark_propagator_Fsink_Lsrc, 
+			quark_propagator_Fsink_Lsrc, 
+			quark_propagator_Lsink_Lsrc, 
+			xml_out, j_decay, 
+			t_len) ;
+
+      b_tag = "srcFFL_sinkLLL_nucleon" ;
+      ks_compute_baryon(b_tag,
+			quark_propagator_Lsink_Fsrc, 
+			quark_propagator_Lsink_Fsrc, 
+			quark_propagator_Lsink_Lsrc, 
+			xml_out, j_decay, 
+			t_len) ;
+
+      b_tag = "srcFFL_sinkFFL_nucleon" ;
+      ks_compute_baryon(b_tag,
+			quark_propagator_Fsink_Fsrc, 
+			quark_propagator_Fsink_Fsrc, 
+			quark_propagator_Lsink_Lsrc, 
+			xml_out, j_decay, 
+			t_len) ;
+
+
+      // treble quark fuzzed
+
+      b_tag = "srcLLL_sinkFFF_nucleon" ;
+      ks_compute_baryon(b_tag,
+			quark_propagator_Fsink_Lsrc, 
+			quark_propagator_Fsink_Lsrc, 
+			quark_propagator_Fsink_Lsrc, 
+			xml_out, j_decay, 
+			t_len) ;
+
+      b_tag = "srcFFF_sinkLLL_nucleon" ;
+      ks_compute_baryon(b_tag,
+			quark_propagator_Lsink_Fsrc, 
+			quark_propagator_Lsink_Fsrc, 
+			quark_propagator_Lsink_Fsrc, 
+			xml_out, j_decay, 
+			t_len) ;
+
+      b_tag = "srcFFF_sinkFFF_nucleon" ;
+      ks_compute_baryon(b_tag,
+			quark_propagator_Fsink_Fsrc, 
+			quark_propagator_Fsink_Fsrc, 
+			quark_propagator_Fsink_Fsrc, 
+			xml_out, j_decay, 
+			t_len) ;
+
+
+
+      pop(xml_out);  // baryon correlators
+
+
 
 }
 

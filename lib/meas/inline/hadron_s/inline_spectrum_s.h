@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_spectrum_s.h,v 1.2 2005-08-24 16:39:23 mcneile Exp $
+// $Id: inline_spectrum_s.h,v 1.3 2005-08-27 11:38:07 mcneile Exp $
 /*! \file
  * \brief Inline staggered spectrum calculations
  *
@@ -12,6 +12,7 @@
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
 #include "invtype.h"
+#include "meas/hadron/enum_loops_s.h"
 
 namespace Chroma 
 { 
@@ -36,7 +37,16 @@ namespace Chroma
     {
       bool Meson_local;             // Meson spectroscopy
       bool Baryon_local;            // Baryons spectroscopy
+      bool Baryon_vary;            // Baryons spectroscopy
       bool disconnected_local;            // disconnected loops
+
+      // parameters for disconnected loops
+      int Nsamp;
+      int CFGNO ;
+      VolSrc_type volume_source ;
+      bool gauge_invar_oper ; 
+
+      int fuzz_width ; 
 
       multi1d<int> boundary;
       multi1d<int> nrow;
