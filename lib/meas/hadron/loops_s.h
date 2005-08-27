@@ -1,4 +1,4 @@
-// $Id: loops_s.h,v 1.10 2005-06-28 16:27:21 mcneile Exp $
+// $Id: loops_s.h,v 1.11 2005-08-27 11:30:24 mcneile Exp $
 
 #ifndef LOOP_S_H
 #define LOOP_S_H
@@ -27,7 +27,7 @@ namespace Chroma {
     /*
       Write the correlators out
     */
-    void dump(XMLFileWriter &xml_out)
+    void dump(XMLWriter &xml_out)
     {
 
       multi1d<Real64> sig_sc0(t_length), imsig_sc0(t_length);
@@ -65,7 +65,7 @@ namespace Chroma {
     }
 
     staggered_loops(int t_len, int t_sample, 
-		    multi1d<LatticeColorMatrix> & uin, 
+		    const multi1d<LatticeColorMatrix> & uin, 
 		    Stag_shift_option type_of_shift_in) : 
       t_length(t_len) ,
       no_sample(t_sample) ,
