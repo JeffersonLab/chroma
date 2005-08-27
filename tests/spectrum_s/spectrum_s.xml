@@ -2,7 +2,7 @@
 
 <spectrum_s>
 <annotation>
-; $Id: spectrum_s.xml,v 1.1 2005-08-26 13:29:02 mcneile Exp $
+; $Id: spectrum_s.xml,v 1.2 2005-08-27 11:23:50 mcneile Exp $
 ;
 ; SPECTRUM_S input file.
 ;
@@ -19,14 +19,21 @@
  <j_decay>3</j_decay>
  <Meson_local>true</Meson_local>
  <Baryon_local>true</Baryon_local>
+ <Baryon_vary>true</Baryon_vary>
+<gauge_invar_oper>true</gauge_invar_oper>
+<fuzz_width>2</fuzz_width>
  <disconnected_local>true</disconnected_local>
- <nrow>4 4 4 8</nrow>
- <boundary>4 4 4 8</boundary>
+<Number_sample>10</Number_sample>
+<CFGNO>234</CFGNO>
+<do_gauge_transform>false</do_gauge_transform>
+
+ <nrow>4 4 4 4</nrow>
+ <boundary>1 1 1 1</boundary>
 <t_srce> 0 </t_srce>
 </Param>
 <Cfg>
- <cfg_type>SZIN</cfg_type>
- <cfg_file>../test_purgaug.cfg1</cfg_file>
+ <cfg_type>NERSC</cfg_type>
+ <cfg_file>t_nersc.cfg</cfg_file>
 </Cfg>
 <Inversion>
 <Mass>0.1</Mass>
