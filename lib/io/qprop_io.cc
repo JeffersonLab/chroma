@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 1.32 2005-07-15 11:06:11 bjoo Exp $
+// $Id: qprop_io.cc,v 1.33 2005-08-27 17:59:44 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -328,6 +328,26 @@ namespace Chroma
 
     switch (version) 
     {
+      /**************************************************************************/
+    case 4:
+    {
+      // In V4 the fermion action specific stuff is within the <Param> tag and not
+      // in a <FermionAction> tag beneath <Param>
+      param.nonRelProp = false;
+
+      read(paramtop, "InvertParam", param.invParam);
+      read(paramtop, "boundary", boundary);
+      read(paramtop, "nrow", param.nrow);
+
+      XMLBufferWriter xml_out;
+      push(xml_out,"FermionAction");
+      xml_out << paramtop;
+      pop(xml_out);
+
+      param.fermact = xml_out.printCurrentContext();
+    }
+    break;
+
       /**************************************************************************/
     case 5:
     {
