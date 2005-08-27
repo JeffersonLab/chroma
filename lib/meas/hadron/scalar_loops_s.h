@@ -1,4 +1,4 @@
-// $Id: scalar_loops_s.h,v 1.7 2005-06-27 20:12:43 mcneile Exp $
+// $Id: scalar_loops_s.h,v 1.8 2005-08-27 11:31:54 mcneile Exp $
 #ifndef SCALAR_LOOPS_S_H
 #define SCALAR_LOOPS_S_H
 
@@ -17,7 +17,7 @@ namespace Chroma {
 		 LatticeStaggeredFermion & psi, int isample) ; 
 
     local_scalar_loop(int t_len, int nsample,
-		      multi1d<LatticeColorMatrix> & uin, 
+		      const multi1d<LatticeColorMatrix> & uin, 
 		      Stag_shift_option type_of_shift_in)  
       : staggered_loops(t_len,nsample,uin,type_of_shift_in)
       {
@@ -46,7 +46,7 @@ namespace Chroma {
 		 LatticeStaggeredFermion & psi, int isample) ; 
 
     non_local_scalar_loop(int t_len, int nsample,
-			  multi1d<LatticeColorMatrix> & uin,
+			  const multi1d<LatticeColorMatrix> & uin,
 			  Stag_shift_option type_of_shift_in)  
       : staggered_loops(t_len,nsample,uin,type_of_shift_in)
       {
