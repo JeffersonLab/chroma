@@ -1,4 +1,4 @@
-// $Id: inline_spectrum_s.cc,v 1.4 2005-08-27 11:38:07 mcneile Exp $
+// $Id: inline_spectrum_s.cc,v 1.5 2005-08-27 19:16:33 mcneile Exp $
 /*! \file
  * \brief Inline construction of staggered spectrum
  *
@@ -13,12 +13,15 @@
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
 #include "io/param_io.h"
+#include "io/enum_io/enum_stochsrc_io.h"
 
 // staggered stuff
 #include "handle.h"
 #include "state.h"
 #include "actions/ferm/fermbcs/fermbcs.h"
 #include "actions/ferm/fermacts/fermacts_s.h"
+
+
 
 #include "util/ferm/transf.h"
 #include "meas/hadron/ks_local_loops.h"
@@ -27,6 +30,7 @@
 #include "meas/inline/make_xml_file.h"
 
 #include "util_compute_quark_prop_s.h"
+#include "util_compute_meson_s.h"
 
 
 
@@ -71,6 +75,16 @@ void compute_vary_baryon_s(XMLWriter &xml_out, int t_source, int fuzz_width,
 			   LatticeStaggeredPropagator & quark_propagator_Fsink_Fsrc) ;
 
 
+int compute_singlet_ps(LatticeStaggeredFermion & psi,
+		       LatticeStaggeredPropagator quark_propagator,
+		       stag_src_type type_of_src, 
+		       const multi1d<LatticeColorMatrix> & u , 
+		       Handle<const SystemSolver<LatticeStaggeredFermion> > & qprop,
+		       XMLWriter & xml_out,
+		       Real RsdCG, Real Mass, 
+		       int j_decay, int t_source, int t_length) ;
+
+
 }
 
 // ----------
@@ -105,7 +119,9 @@ namespace Chroma
     read(paramtop, "Meson_local", param.Meson_local);
     read(paramtop, "Baryon_local", param.Baryon_local);
     read(paramtop, "Baryon_vary", param.Baryon_vary);
+    read(paramtop, "LocalPion_vary", param.LocalPion_vary);
     read(paramtop, "disconnected_local", param.disconnected_local);
+    read(paramtop, "singletPs_Conn_local", param.ps4link_singlet_conn);
 
     read(paramtop, "boundary", param.boundary);
     read(paramtop, "t_srce", param.t_srce);
@@ -118,6 +134,7 @@ namespace Chroma
 	read(paramtop, "CFGNO", param.CFGNO);
 	// more work
 	param.volume_source = GAUSSIAN ;
+	read(paramtop, "volume_src", param.volume_source);
 
       }
     else
@@ -500,6 +517,28 @@ namespace Chroma
 			      quark_propagator_Fsink_Fsrc) ; 
       }
 
+
+    if( params.param.ps4link_singlet_conn )
+      {
+	type_of_src = GAUGE_INVAR_LOCAL_SOURCE ;
+
+	int niter = 
+	  compute_singlet_ps(psi,quark_propagator_Lsink_Lsrc,
+			     type_of_src, u,qprop,xml_out,
+			     params.prop_param.invParam.RsdCG,
+			     params.prop_param.Mass,
+			     j_decay, t_source, params.param.nrow[3]) ;
+
+      }
+
+    if( params.param.LocalPion_vary )
+      {
+	compute_vary_ps(quark_propagator_Lsink_Lsrc,
+			quark_propagator_Fsink_Lsrc,
+			quark_propagator_Lsink_Fsrc,
+			quark_propagator_Fsink_Fsrc,
+			u,xml_out,j_decay,params.param.nrow[3],t_source) ; 
+      }
 
 
     pop(xml_out);  // spectrum_s
