@@ -1,4 +1,4 @@
-// $Id: pion_sing_s.h,v 1.5 2005-01-14 18:42:36 edwards Exp $
+// $Id: pion_sing_s.h,v 1.6 2005-08-27 19:21:55 mcneile Exp $
 #ifndef PION_SING_S_H
 #define PION_SING_S_H
 
@@ -27,7 +27,7 @@ namespace Chroma {
 	    int j_decay) { } 
 
 
-    staggered_pion_singlet(int t_len, multi1d<LatticeColorMatrix> & uin)  
+    staggered_pion_singlet(int t_len, const multi1d<LatticeColorMatrix> & uin)  
       : staggered_hadron_corr(t_len,no_pion_sings,uin)
       {
 	outer_tag = "SingletPseudoscalar"  ; 
