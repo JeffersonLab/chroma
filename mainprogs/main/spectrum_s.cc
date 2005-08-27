@@ -1,4 +1,4 @@
-// $Id: spectrum_s.cc,v 1.1 2005-08-23 17:23:40 mcneile Exp $
+// $Id: spectrum_s.cc,v 1.2 2005-08-27 11:20:49 mcneile Exp $
 /*! \file
  * \brief Main code for spectrum measurements
  */
@@ -71,6 +71,15 @@ int main(int argc, char **argv)
 
   // Check if the gauge field configuration is unitarized
   unitarityCheck(u);
+
+  bool do_gauge_transform = false;
+  read(xml_in, "/spectrum_s/Param/do_gauge_transform",do_gauge_transform );
+  if( do_gauge_transform )
+    {
+      rgauge(u); 
+      QDPIO::cout << "Random gauge transform on gauge fields done." << endl;
+    }
+
 
   // Output
   XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
