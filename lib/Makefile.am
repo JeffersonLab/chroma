@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.286 2005-08-25 16:41:41 mcneile Exp $
+# $Id: Makefile.am,v 1.287 2005-08-27 19:31:03 mcneile Exp $
 #
 # Path for all files used in building the library
 
@@ -90,6 +90,7 @@ nobase_include_HEADERS = \
 	io/enum_io/enum_gaugebc_io.h \
 	io/enum_io/enum_md_integrator_type_io.h \
 	io/enum_io/enum_inner_solver_type_io.h \
+        io/enum_io/enum_stochsrc_io.h\
         io/aniso_io.h io/eigen_io.h \
 	io/gauge_io.h io/kyugauge_io.h  \
         io/milc_io.h io/param_io.h io/qprop_io.h io/readmilc.h \
@@ -329,6 +330,7 @@ nobase_include_HEADERS += \
 	meas/hadron/hadron_corr_s.h \
 	meas/hadron/mesphas_follana_s.h meas/hadron/mesphas_s.h \
 	meas/hadron/pions_s.h  meas/hadron/walfil_s.h \
+        meas/hadron/pion_local_s.h\
 	meas/hadron/loops_s.h \
 	meas/hadron/scalar_loops_s.h \
 	meas/hadron/pseudoscalar_loops_s.h \
@@ -471,6 +473,7 @@ libchroma_a_SOURCES = \
 	io/enum_io/enum_simplebctype_io.cc \
 	io/enum_io/enum_srcsnktype_io.cc io/enum_io/enum_wavetype_io.cc \
 	io/enum_io/enum_wvfkind_io.cc \
+        io/enum_io/enum_stochsrc_io.cc \
         io/aniso_io.cc \
 	io/gauge_io.cc io/kyugauge_io.cc io/kyuqprop_io.cc \
 	io/milc_io.cc io/overlap_state_info.cc \
@@ -675,6 +678,8 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_qpropqio_w.cc \
 	meas/inline/hadron_s/inline_spectrum_s.cc \
         meas/inline/hadron_s/util_compute_quark_prop_s.cc \
+        meas/inline/hadron_s/util_compute_singlet_ps.cc \
+        meas/inline/hadron_s/util_compute_meson_s.cc \
         meas/inline/hadron_s/util_baryon_s.cc \
 	meas/inline/smear/inline_smear_aggregate.cc \
 	meas/inline/smear/inline_ape_smear.cc \
@@ -732,6 +737,7 @@ libchroma_a_SOURCES += \
 	meas/hadron/baryon_s.cc meas/hadron/mesphas_follana_s.cc \
         meas/hadron/ks_local_loops.cc \
 	meas/hadron/mesphas_s.cc meas/hadron/pions_s.cc \
+        meas/hadron/pion_local_s.cc \
 	meas/hadron/srcfil_s.cc \
 	meas/hadron/stag_propShift_s.cc meas/hadron/stag_scalars_s.cc \
 	meas/hadron/vector_meson_s.cc meas/hadron/walfil_s.cc \
