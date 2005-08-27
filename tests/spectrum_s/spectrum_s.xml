@@ -2,7 +2,7 @@
 
 <spectrum_s>
 <annotation>
-; $Id: spectrum_s.xml,v 1.2 2005-08-27 11:23:50 mcneile Exp $
+; $Id: spectrum_s.xml,v 1.3 2005-08-27 19:06:55 mcneile Exp $
 ;
 ; SPECTRUM_S input file.
 ;
@@ -16,29 +16,38 @@
 
 <Param>
  <version>9</version>
- <j_decay>3</j_decay>
+ 
  <Meson_local>true</Meson_local>
  <Baryon_local>true</Baryon_local>
  <Baryon_vary>true</Baryon_vary>
+ <singletPs_Conn_local>true</singletPs_Conn_local>
+<LocalPion_vary>true</LocalPion_vary>
+
 <gauge_invar_oper>true</gauge_invar_oper>
 <fuzz_width>2</fuzz_width>
  <disconnected_local>true</disconnected_local>
 <Number_sample>10</Number_sample>
 <CFGNO>234</CFGNO>
+<volume_src>GAUSSIAN</volume_src>
+
 <do_gauge_transform>false</do_gauge_transform>
 
+<j_decay>3</j_decay>
  <nrow>4 4 4 4</nrow>
  <boundary>1 1 1 1</boundary>
 <t_srce> 0 </t_srce>
 </Param>
+
 <Cfg>
  <cfg_type>NERSC</cfg_type>
  <cfg_file>t_nersc.cfg</cfg_file>
 </Cfg>
+
 <Inversion>
 <Mass>0.1</Mass>
 <u0>1.0</u0>
 <RsdCG>0.00001</RsdCG>
 <MaxCG>3000</MaxCG>
 </Inversion>
+
 </spectrum_s>
