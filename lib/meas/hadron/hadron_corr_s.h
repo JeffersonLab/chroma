@@ -1,4 +1,4 @@
-// $Id: hadron_corr_s.h,v 1.6 2005-01-14 18:42:36 edwards Exp $
+// $Id: hadron_corr_s.h,v 1.7 2005-08-27 19:19:41 mcneile Exp $
 
 #ifndef HADRON_CORR_S_H
 #define HADRON_CORR_S_H
@@ -31,7 +31,7 @@ namespace Chroma
     /*
       Write the correlators out
     */
-    void dump(int t_source, XMLFileWriter &xml_out)
+    void dump(int t_source, XMLWriter &xml_out)
     {
       multi2d<Real> pi_corr(no_channel, t_length);
       multi2d<Real> re_corr_fn(no_channel, t_length);
@@ -62,7 +62,7 @@ namespace Chroma
 
     }
 
-    staggered_hadron_corr(int t_len, int t_chan, multi1d<LatticeColorMatrix> & uin) 
+    staggered_hadron_corr(int t_len, int t_chan, const multi1d<LatticeColorMatrix> & uin) 
       : t_length(t_len) ,
 	no_channel(t_chan)
     {
