@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.287 2005-08-27 19:31:03 mcneile Exp $
+# $Id: Makefile.am,v 1.288 2005-08-31 04:25:30 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -271,6 +271,7 @@ nobase_include_HEADERS += \
         io/overlap_state_info.h  \
 	meas/eig/eig_w.h meas/eig/ischiral_w.h \
 	meas/hadron/barcomp_w.h \
+	meas/hadron/mescomp_w.h \
 	meas/hadron/barseqsrc_w.h \
 	meas/hadron/barhqlq_w.h meas/hadron/baryon_w.h \
 	meas/hadron/BuildingBlocks_w.h meas/hadron/curcor2_w.h \
@@ -613,6 +614,7 @@ libchroma_a_SOURCES += \
 	io/readszinferm_w.cc io/readszinqprop_w.cc \
 	io/writeszinqprop_w.cc \
 	meas/eig/ischiral_w.cc meas/hadron/barcomp_w.cc \
+        meas/hadron/mescomp_w.cc \
 	meas/hadron/barhqlq_w.cc meas/hadron/barseqsrc_w.cc \
 	meas/hadron/baryon_w.cc meas/hadron/BuildingBlocks_w.cc \
 	meas/hadron/curcor2_w.cc meas/hadron/DjDk_w.cc \
