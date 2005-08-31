@@ -1,4 +1,4 @@
-// $Id: inline_hadron_aggregate.cc,v 1.7 2005-07-15 11:06:11 bjoo Exp $
+// $Id: inline_hadron_aggregate.cc,v 1.8 2005-08-31 05:50:00 edwards Exp $
 /*! \file
  *  \brief Inline hadron measurement aggregator
  */
@@ -13,6 +13,7 @@
 #include "meas/inline/hadron/inline_spectrumOct_w.h"
 #include "meas/inline/hadron/inline_sink_smear_w.h"
 #include "meas/inline/hadron/inline_qqq_w.h"
+#include "meas/inline/hadron/inline_qqbar_w.h"
 #include "meas/inline/hadron/inline_building_blocks_w.h"
 #include "meas/inline/hadron/inline_bar3ptfn_w.h"
 #include "meas/inline/hadron/inline_multipole_w.h"
@@ -45,6 +46,7 @@ namespace Chroma
       success &= InlineSpectrumOctEnv::registered;
       success &= InlineSinkSmearEnv::registered;
       success &= InlineQQQEnv::registered;
+      success &= InlineQQbarEnv::registered;
       success &= InlineBuildingBlocksEnv::registered;
       success &= InlineBar3ptfnEnv::registered;
       success &= InlineMultipoleEnv::registered;

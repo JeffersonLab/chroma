@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qprop_io.h,v 1.28 2005-04-15 11:26:08 edwards Exp $
+// $Id: qprop_io.h,v 1.29 2005-08-31 05:50:00 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -159,6 +159,15 @@ struct QQQBarcomp_t
 };
 
 
+//! Mega structure holding QQbar props (except gauge)
+struct QQbarMescomp_t
+{
+  QQbarMescomp_t();                // default constructor
+  bool             Dirac_basis;    // spin component basis
+  multi1d<ForwardProp_t> forward_props;
+};
+
+
 //! Given a fermion action in string form, return the boundary
 multi1d<int> getFermActBoundary(const std::string& fermact);
 
@@ -231,6 +240,13 @@ void read(XMLReader& xml, const std::string& path, QQQBarcomp_t& header);
 
 //! QQQBarcomp writer
 void write(XMLWriter& xml, const std::string& path, const QQQBarcomp_t& header);
+
+
+//! QQbarMescomp reader
+void read(XMLReader& xml, const std::string& path, QQbarMescomp_t& header);
+
+//! QQbarMescomp writer
+void write(XMLWriter& xml, const std::string& path, const QQbarMescomp_t& header);
 
 
 //! Write a Chroma propagator

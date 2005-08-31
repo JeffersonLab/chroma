@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.383 2005-08-31 04:26:53 edwards Exp $
+# $Id: Makefile.in,v 1.384 2005-08-31 05:49:58 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -143,9 +143,8 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/gauge/gaugeacts/lw_tree_gaugeact.cc \
 	actions/gauge/gaugeacts/lw_1loop_gaugeact.cc \
 	actions/gauge/gaugeacts/rbc_gaugeact.cc \
-	actions/gauge/gaugeacts/rg_gaugeact.cc io/barcomp_io.cc \
-	io/eigen_io.cc io/enum_io/enum_cfgtype_io.cc \
-	io/enum_io/enum_coeffs_io.cc \
+	actions/gauge/gaugeacts/rg_gaugeact.cc io/eigen_io.cc \
+	io/enum_io/enum_cfgtype_io.cc io/enum_io/enum_coeffs_io.cc \
 	io/enum_io/enum_eigenvectype_io.cc \
 	io/enum_io/enum_fermtype_io.cc \
 	io/enum_io/enum_gaugeacttype_io.cc \
@@ -318,6 +317,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron/inline_spectrumOct_w.cc \
 	meas/inline/hadron/inline_sink_smear_w.cc \
 	meas/inline/hadron/inline_qqq_w.cc \
+	meas/inline/hadron/inline_qqbar_w.cc \
 	meas/inline/hadron/inline_bar3ptfn_w.cc \
 	meas/inline/hadron/inline_building_blocks_w.cc \
 	meas/inline/hadron/inline_mres_w.cc \
@@ -392,11 +392,10 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	pg_gaugeact.$(OBJEXT) wilson_gaugeact.$(OBJEXT) \
 	lw_tree_gaugeact.$(OBJEXT) lw_1loop_gaugeact.$(OBJEXT) \
 	rbc_gaugeact.$(OBJEXT) rg_gaugeact.$(OBJEXT) \
-	barcomp_io.$(OBJEXT) eigen_io.$(OBJEXT) \
-	enum_cfgtype_io.$(OBJEXT) enum_coeffs_io.$(OBJEXT) \
-	enum_eigenvectype_io.$(OBJEXT) enum_fermtype_io.$(OBJEXT) \
-	enum_gaugeacttype_io.$(OBJEXT) enum_gaugebc_io.$(OBJEXT) \
-	enum_heatbathtype_io.$(OBJEXT) \
+	eigen_io.$(OBJEXT) enum_cfgtype_io.$(OBJEXT) \
+	enum_coeffs_io.$(OBJEXT) enum_eigenvectype_io.$(OBJEXT) \
+	enum_fermtype_io.$(OBJEXT) enum_gaugeacttype_io.$(OBJEXT) \
+	enum_gaugebc_io.$(OBJEXT) enum_heatbathtype_io.$(OBJEXT) \
 	enum_inner_solver_type_io.$(OBJEXT) enum_invtype_io.$(OBJEXT) \
 	enum_md_integrator_type_io.$(OBJEXT) \
 	enum_proptype_io.$(OBJEXT) enum_qdpvolfmt_io.$(OBJEXT) \
@@ -529,9 +528,10 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	inline_seqsource_w.$(OBJEXT) inline_hadspec_w.$(OBJEXT) \
 	inline_spectrum_w.$(OBJEXT) inline_spectrumOct_w.$(OBJEXT) \
 	inline_sink_smear_w.$(OBJEXT) inline_qqq_w.$(OBJEXT) \
-	inline_bar3ptfn_w.$(OBJEXT) inline_building_blocks_w.$(OBJEXT) \
-	inline_mres_w.$(OBJEXT) inline_multipole_w.$(OBJEXT) \
-	inline_qpropqio_w.$(OBJEXT) inline_spectrum_s.$(OBJEXT) \
+	inline_qqbar_w.$(OBJEXT) inline_bar3ptfn_w.$(OBJEXT) \
+	inline_building_blocks_w.$(OBJEXT) inline_mres_w.$(OBJEXT) \
+	inline_multipole_w.$(OBJEXT) inline_qpropqio_w.$(OBJEXT) \
+	inline_spectrum_s.$(OBJEXT) \
 	util_compute_quark_prop_s.$(OBJEXT) \
 	util_compute_singlet_ps.$(OBJEXT) \
 	util_compute_meson_s.$(OBJEXT) util_baryon_s.$(OBJEXT) \
@@ -783,25 +783,25 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/qprop/dwf_quarkprop4_w.h \
 	actions/ferm/qprop/nef_quarkprop4_w.h \
 	actions/ferm/qprop/prec_fermact_qprop_array.h io/io_w.h \
-	io/barcomp_io.h io/kyuqprop_io.h io/readszinferm_w.h \
-	io/readszinqprop_w.h io/writeszinqprop_w.h \
-	io/overlap_state_info.h meas/eig/eig_w.h meas/eig/ischiral_w.h \
-	meas/hadron/barcomp_w.h meas/hadron/mescomp_w.h \
-	meas/hadron/barseqsrc_w.h meas/hadron/barhqlq_w.h \
-	meas/hadron/baryon_w.h meas/hadron/BuildingBlocks_w.h \
-	meas/hadron/curcor2_w.h meas/hadron/DjDk_w.h \
-	meas/hadron/D_j_w.h meas/hadron/formfac_w.h \
-	meas/hadron/hadron_w.h meas/hadron/hybmeson_w.h \
-	meas/hadron/hadseqsrc_w.h meas/hadron/mesonseqsrc_w.h \
-	meas/hadron/mesons_w.h meas/hadron/seqpiontest_w.h \
-	meas/hadron/seqsrc_funcmap_w.h meas/hadron/loops_w.h \
-	meas/hadron/multipole_w.h meas/hadron/walfil_w.h \
-	meas/hadron/wall_qprop_w.h meas/hadron/wallff_w.h \
-	meas/hadron/walldeltaff_w.h meas/hadron/walldeltapff_w.h \
-	meas/hadron/wallpionff_w.h meas/hadron/wallnuclff_w.h \
-	meas/hadron/wallrhoff_w.h meas/hadron/wallrhopiff_w.h \
-	meas/sources/d_src_w.h meas/sources/p_src_w.h \
-	meas/sources/sources_w.h update/molecdyn/monomial/monomial_w.h \
+	io/kyuqprop_io.h io/readszinferm_w.h io/readszinqprop_w.h \
+	io/writeszinqprop_w.h io/overlap_state_info.h meas/eig/eig_w.h \
+	meas/eig/ischiral_w.h meas/hadron/barcomp_w.h \
+	meas/hadron/mescomp_w.h meas/hadron/barseqsrc_w.h \
+	meas/hadron/barhqlq_w.h meas/hadron/baryon_w.h \
+	meas/hadron/BuildingBlocks_w.h meas/hadron/curcor2_w.h \
+	meas/hadron/DjDk_w.h meas/hadron/D_j_w.h \
+	meas/hadron/formfac_w.h meas/hadron/hadron_w.h \
+	meas/hadron/hybmeson_w.h meas/hadron/hadseqsrc_w.h \
+	meas/hadron/mesonseqsrc_w.h meas/hadron/mesons_w.h \
+	meas/hadron/seqpiontest_w.h meas/hadron/seqsrc_funcmap_w.h \
+	meas/hadron/loops_w.h meas/hadron/multipole_w.h \
+	meas/hadron/walfil_w.h meas/hadron/wall_qprop_w.h \
+	meas/hadron/wallff_w.h meas/hadron/walldeltaff_w.h \
+	meas/hadron/walldeltapff_w.h meas/hadron/wallpionff_w.h \
+	meas/hadron/wallnuclff_w.h meas/hadron/wallrhoff_w.h \
+	meas/hadron/wallrhopiff_w.h meas/sources/d_src_w.h \
+	meas/sources/p_src_w.h meas/sources/sources_w.h \
+	update/molecdyn/monomial/monomial_w.h \
 	update/molecdyn/monomial/monomial_aggregate_w.h \
 	update/molecdyn/monomial/one_flavor_rat_monomial_w.h \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.h \
@@ -862,6 +862,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/inline/hadron/inline_spectrumOct_w.h \
 	meas/inline/hadron/inline_sink_smear_w.h \
 	meas/inline/hadron/inline_qqq_w.h \
+	meas/inline/hadron/inline_qqbar_w.h \
 	meas/inline/hadron/inline_bar3ptfn_w.h \
 	meas/inline/hadron/inline_building_blocks_w.h \
 	meas/inline/hadron/inline_mres_w.h \
@@ -1243,25 +1244,25 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/qprop/dwf_quarkprop4_w.h \
 	actions/ferm/qprop/nef_quarkprop4_w.h \
 	actions/ferm/qprop/prec_fermact_qprop_array.h io/io_w.h \
-	io/barcomp_io.h io/kyuqprop_io.h io/readszinferm_w.h \
-	io/readszinqprop_w.h io/writeszinqprop_w.h \
-	io/overlap_state_info.h meas/eig/eig_w.h meas/eig/ischiral_w.h \
-	meas/hadron/barcomp_w.h meas/hadron/mescomp_w.h \
-	meas/hadron/barseqsrc_w.h meas/hadron/barhqlq_w.h \
-	meas/hadron/baryon_w.h meas/hadron/BuildingBlocks_w.h \
-	meas/hadron/curcor2_w.h meas/hadron/DjDk_w.h \
-	meas/hadron/D_j_w.h meas/hadron/formfac_w.h \
-	meas/hadron/hadron_w.h meas/hadron/hybmeson_w.h \
-	meas/hadron/hadseqsrc_w.h meas/hadron/mesonseqsrc_w.h \
-	meas/hadron/mesons_w.h meas/hadron/seqpiontest_w.h \
-	meas/hadron/seqsrc_funcmap_w.h meas/hadron/loops_w.h \
-	meas/hadron/multipole_w.h meas/hadron/walfil_w.h \
-	meas/hadron/wall_qprop_w.h meas/hadron/wallff_w.h \
-	meas/hadron/walldeltaff_w.h meas/hadron/walldeltapff_w.h \
-	meas/hadron/wallpionff_w.h meas/hadron/wallnuclff_w.h \
-	meas/hadron/wallrhoff_w.h meas/hadron/wallrhopiff_w.h \
-	meas/sources/d_src_w.h meas/sources/p_src_w.h \
-	meas/sources/sources_w.h update/molecdyn/monomial/monomial_w.h \
+	io/kyuqprop_io.h io/readszinferm_w.h io/readszinqprop_w.h \
+	io/writeszinqprop_w.h io/overlap_state_info.h meas/eig/eig_w.h \
+	meas/eig/ischiral_w.h meas/hadron/barcomp_w.h \
+	meas/hadron/mescomp_w.h meas/hadron/barseqsrc_w.h \
+	meas/hadron/barhqlq_w.h meas/hadron/baryon_w.h \
+	meas/hadron/BuildingBlocks_w.h meas/hadron/curcor2_w.h \
+	meas/hadron/DjDk_w.h meas/hadron/D_j_w.h \
+	meas/hadron/formfac_w.h meas/hadron/hadron_w.h \
+	meas/hadron/hybmeson_w.h meas/hadron/hadseqsrc_w.h \
+	meas/hadron/mesonseqsrc_w.h meas/hadron/mesons_w.h \
+	meas/hadron/seqpiontest_w.h meas/hadron/seqsrc_funcmap_w.h \
+	meas/hadron/loops_w.h meas/hadron/multipole_w.h \
+	meas/hadron/walfil_w.h meas/hadron/wall_qprop_w.h \
+	meas/hadron/wallff_w.h meas/hadron/walldeltaff_w.h \
+	meas/hadron/walldeltapff_w.h meas/hadron/wallpionff_w.h \
+	meas/hadron/wallnuclff_w.h meas/hadron/wallrhoff_w.h \
+	meas/hadron/wallrhopiff_w.h meas/sources/d_src_w.h \
+	meas/sources/p_src_w.h meas/sources/sources_w.h \
+	update/molecdyn/monomial/monomial_w.h \
 	update/molecdyn/monomial/monomial_aggregate_w.h \
 	update/molecdyn/monomial/one_flavor_rat_monomial_w.h \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.h \
@@ -1322,6 +1323,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/hadron/inline_spectrumOct_w.h \
 	meas/inline/hadron/inline_sink_smear_w.h \
 	meas/inline/hadron/inline_qqq_w.h \
+	meas/inline/hadron/inline_qqbar_w.h \
 	meas/inline/hadron/inline_bar3ptfn_w.h \
 	meas/inline/hadron/inline_building_blocks_w.h \
 	meas/inline/hadron/inline_mres_w.h \
@@ -1424,9 +1426,8 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/gauge/gaugeacts/lw_tree_gaugeact.cc \
 	actions/gauge/gaugeacts/lw_1loop_gaugeact.cc \
 	actions/gauge/gaugeacts/rbc_gaugeact.cc \
-	actions/gauge/gaugeacts/rg_gaugeact.cc io/barcomp_io.cc \
-	io/eigen_io.cc io/enum_io/enum_cfgtype_io.cc \
-	io/enum_io/enum_coeffs_io.cc \
+	actions/gauge/gaugeacts/rg_gaugeact.cc io/eigen_io.cc \
+	io/enum_io/enum_cfgtype_io.cc io/enum_io/enum_coeffs_io.cc \
 	io/enum_io/enum_eigenvectype_io.cc \
 	io/enum_io/enum_fermtype_io.cc \
 	io/enum_io/enum_gaugeacttype_io.cc \
@@ -1598,6 +1599,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron/inline_spectrumOct_w.cc \
 	meas/inline/hadron/inline_sink_smear_w.cc \
 	meas/inline/hadron/inline_qqq_w.cc \
+	meas/inline/hadron/inline_qqbar_w.cc \
 	meas/inline/hadron/inline_bar3ptfn_w.cc \
 	meas/inline/hadron/inline_building_blocks_w.cc \
 	meas/inline/hadron/inline_mres_w.cc \
@@ -1734,7 +1736,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/asqtad_mdagm_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/asqtad_qprop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/axgauge.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/barcomp_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/barcomp_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/barhqlq_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/barseqsrc_w.Po@am__quote@
@@ -1825,6 +1826,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_polylp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_propagator_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_qpropqio_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_qqbar_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_qqq_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_seqsource_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_sink_smear_w.Po@am__quote@
@@ -2699,20 +2701,6 @@ rg_gaugeact.obj: actions/gauge/gaugeacts/rg_gaugeact.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugeacts/rg_gaugeact.cc' object='rg_gaugeact.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o rg_gaugeact.obj `if test -f 'actions/gauge/gaugeacts/rg_gaugeact.cc'; then $(CYGPATH_W) 'actions/gauge/gaugeacts/rg_gaugeact.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugeacts/rg_gaugeact.cc'; fi`
-
-barcomp_io.o: io/barcomp_io.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT barcomp_io.o -MD -MP -MF "$(DEPDIR)/barcomp_io.Tpo" -c -o barcomp_io.o `test -f 'io/barcomp_io.cc' || echo '$(srcdir)/'`io/barcomp_io.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/barcomp_io.Tpo" "$(DEPDIR)/barcomp_io.Po"; else rm -f "$(DEPDIR)/barcomp_io.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='io/barcomp_io.cc' object='barcomp_io.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o barcomp_io.o `test -f 'io/barcomp_io.cc' || echo '$(srcdir)/'`io/barcomp_io.cc
-
-barcomp_io.obj: io/barcomp_io.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT barcomp_io.obj -MD -MP -MF "$(DEPDIR)/barcomp_io.Tpo" -c -o barcomp_io.obj `if test -f 'io/barcomp_io.cc'; then $(CYGPATH_W) 'io/barcomp_io.cc'; else $(CYGPATH_W) '$(srcdir)/io/barcomp_io.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/barcomp_io.Tpo" "$(DEPDIR)/barcomp_io.Po"; else rm -f "$(DEPDIR)/barcomp_io.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='io/barcomp_io.cc' object='barcomp_io.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o barcomp_io.obj `if test -f 'io/barcomp_io.cc'; then $(CYGPATH_W) 'io/barcomp_io.cc'; else $(CYGPATH_W) '$(srcdir)/io/barcomp_io.cc'; fi`
 
 eigen_io.o: io/eigen_io.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eigen_io.o -MD -MP -MF "$(DEPDIR)/eigen_io.Tpo" -c -o eigen_io.o `test -f 'io/eigen_io.cc' || echo '$(srcdir)/'`io/eigen_io.cc; \
@@ -6073,6 +6061,20 @@ inline_qqq_w.obj: meas/inline/hadron/inline_qqq_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_qqq_w.cc' object='inline_qqq_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_qqq_w.obj `if test -f 'meas/inline/hadron/inline_qqq_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_qqq_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_qqq_w.cc'; fi`
+
+inline_qqbar_w.o: meas/inline/hadron/inline_qqbar_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_qqbar_w.o -MD -MP -MF "$(DEPDIR)/inline_qqbar_w.Tpo" -c -o inline_qqbar_w.o `test -f 'meas/inline/hadron/inline_qqbar_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_qqbar_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_qqbar_w.Tpo" "$(DEPDIR)/inline_qqbar_w.Po"; else rm -f "$(DEPDIR)/inline_qqbar_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_qqbar_w.cc' object='inline_qqbar_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_qqbar_w.o `test -f 'meas/inline/hadron/inline_qqbar_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_qqbar_w.cc
+
+inline_qqbar_w.obj: meas/inline/hadron/inline_qqbar_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_qqbar_w.obj -MD -MP -MF "$(DEPDIR)/inline_qqbar_w.Tpo" -c -o inline_qqbar_w.obj `if test -f 'meas/inline/hadron/inline_qqbar_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_qqbar_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_qqbar_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_qqbar_w.Tpo" "$(DEPDIR)/inline_qqbar_w.Po"; else rm -f "$(DEPDIR)/inline_qqbar_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_qqbar_w.cc' object='inline_qqbar_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_qqbar_w.obj `if test -f 'meas/inline/hadron/inline_qqbar_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_qqbar_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_qqbar_w.cc'; fi`
 
 inline_bar3ptfn_w.o: meas/inline/hadron/inline_bar3ptfn_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_bar3ptfn_w.o -MD -MP -MF "$(DEPDIR)/inline_bar3ptfn_w.Tpo" -c -o inline_bar3ptfn_w.o `test -f 'meas/inline/hadron/inline_bar3ptfn_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_bar3ptfn_w.cc; \

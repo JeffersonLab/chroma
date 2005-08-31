@@ -13,6 +13,10 @@
 namespace Chroma 
 {
 
+  //! Convert generalized correlator object
+  void convertMescomp(multi1d<Complex>& mesprop1d, const multiNd<Complex>& mesprop, 
+		      const int j_decay);
+
   //! Construct all components of a meson propagator
   /*!
    * \ingroup hadron
@@ -32,7 +36,6 @@ namespace Chroma
   void mescomp(multiNd<Complex>& mesprop,
 	       const LatticePropagator& quark_propagator_1, 
 	       const LatticePropagator& quark_propagator_2,
-	       const LatticePropagator& quark_propagator_3,
 	       const SftMom& phases,
 	       int t0);
 

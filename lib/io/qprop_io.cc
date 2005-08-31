@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 1.33 2005-08-27 17:59:44 edwards Exp $
+// $Id: qprop_io.cc,v 1.34 2005-08-31 05:50:00 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -157,6 +157,14 @@ namespace Chroma
 
   // Initialize header with default values
   QQQBarcomp_t::QQQBarcomp_t()
+  {
+    Dirac_basis = true;
+    forward_props.resize(3);
+  }
+
+
+  // Initialize header with default values
+  QQbarMescomp_t::QQbarMescomp_t()
   {
     Dirac_basis = true;
     forward_props.resize(3);
@@ -638,6 +646,37 @@ namespace Chroma
   }
 
 
+  //! QQbarMescomp header reader
+  void read(XMLReader& xml, const string& path, QQbarMescomp_t& param)
+  {
+    XMLReader paramtop(xml, path);
+
+    int version = 2;
+
+    switch (version) 
+    {
+      /**************************************************************************/
+    case 2:
+      read(paramtop, "Dirac_basis", param.Dirac_basis);
+      read(paramtop, "ForwardProps", param.forward_props);
+      break;
+
+    default:
+      /**************************************************************************/
+      QDPIO::cerr << "QQbarMescomp parameter version " << version 
+		  << " unsupported." << endl;
+      QDP_abort(1);
+    }
+
+    if (param.forward_props.size() != 2)
+    {
+      QDPIO::cerr << "QQbarMescomp: unexpected number of forward_props = " 
+		  << param.forward_props.size() << endl; 
+      QDP_abort(1);
+    }
+  }
+
+
 
 
   //---------------------------------------------------------------------------
@@ -829,6 +868,22 @@ namespace Chroma
 
   //! QQQBarcomp header writer
   void write(XMLWriter& xml, const string& path, const QQQBarcomp_t& param)
+  {
+    if( path != "." )
+      push(xml, path);
+
+    int version = 2;
+    write(xml, "version", version);
+    write(xml, "Dirac_basis", param.Dirac_basis);
+    write(xml, "ForwardProps", param.forward_props);
+
+    if( path != "." )
+      pop(xml);
+  }
+
+
+  //! QQbarMescomp header writer
+  void write(XMLWriter& xml, const string& path, const QQbarMescomp_t& param)
   {
     if( path != "." )
       push(xml, path);

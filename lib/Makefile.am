@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.288 2005-08-31 04:25:30 edwards Exp $
+# $Id: Makefile.am,v 1.289 2005-08-31 05:49:58 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -265,7 +265,7 @@ nobase_include_HEADERS += \
 	actions/ferm/qprop/dwf_quarkprop4_w.h \
 	actions/ferm/qprop/nef_quarkprop4_w.h \
 	actions/ferm/qprop/prec_fermact_qprop_array.h \
-	io/io_w.h io/barcomp_io.h io/kyuqprop_io.h \
+	io/io_w.h io/kyuqprop_io.h \
         io/readszinferm_w.h io/readszinqprop_w.h \
 	io/writeszinqprop_w.h \
         io/overlap_state_info.h  \
@@ -372,6 +372,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_spectrumOct_w.h \
 	meas/inline/hadron/inline_sink_smear_w.h \
 	meas/inline/hadron/inline_qqq_w.h \
+	meas/inline/hadron/inline_qqbar_w.h \
 	meas/inline/hadron/inline_bar3ptfn_w.h \
 	meas/inline/hadron/inline_building_blocks_w.h \
 	meas/inline/hadron/inline_mres_w.h \
@@ -462,7 +463,8 @@ libchroma_a_SOURCES = \
 	actions/gauge/gaugeacts/lw_1loop_gaugeact.cc \
 	actions/gauge/gaugeacts/rbc_gaugeact.cc \
 	actions/gauge/gaugeacts/rg_gaugeact.cc \
-	io/barcomp_io.cc io/eigen_io.cc io/enum_io/enum_cfgtype_io.cc \
+	io/eigen_io.cc \
+        io/enum_io/enum_cfgtype_io.cc \
 	io/enum_io/enum_coeffs_io.cc io/enum_io/enum_eigenvectype_io.cc \
 	io/enum_io/enum_fermtype_io.cc \
 	io/enum_io/enum_gaugeacttype_io.cc io/enum_io/enum_gaugebc_io.cc \
@@ -673,6 +675,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_spectrumOct_w.cc \
 	meas/inline/hadron/inline_sink_smear_w.cc \
 	meas/inline/hadron/inline_qqq_w.cc \
+	meas/inline/hadron/inline_qqbar_w.cc \
 	meas/inline/hadron/inline_bar3ptfn_w.cc \
 	meas/inline/hadron/inline_building_blocks_w.cc \
 	meas/inline/hadron/inline_mres_w.cc \

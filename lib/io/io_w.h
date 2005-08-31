@@ -1,9 +1,7 @@
-// $Id: io_w.h,v 1.6 2004-09-08 02:48:26 edwards Exp $
+// $Id: io_w.h,v 1.7 2005-08-31 05:50:00 edwards Exp $
 
 #ifndef __io_w_h__
 #define __io_w_h__
-
-#include "barcomp_io.h"
 
 #include "readszinqprop_w.h"
 #include "readszinferm_w.h"

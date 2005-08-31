@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hadron_w.h,v 1.19 2005-04-04 03:22:40 edwards Exp $
+// $Id: hadron_w.h,v 1.20 2005-08-31 05:50:00 edwards Exp $
 
 /*! \file
  * \brief Hadronic observables
@@ -19,6 +19,7 @@
 
 #include "baryon_w.h"
 #include "barcomp_w.h"
+#include "mescomp_w.h"
 #include "formfac_w.h"
 #include "multipole_w.h"
 #include "mesons_w.h"

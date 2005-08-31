@@ -1,4 +1,4 @@
-//  $Id: mescomp_w.cc,v 1.1 2005-08-31 04:32:06 edwards Exp $
+//  $Id: mescomp_w.cc,v 1.2 2005-08-31 05:50:00 edwards Exp $
 /*! \file
  *  \brief Construct all components of a meson propagator
  */
@@ -9,6 +9,28 @@
 namespace Chroma 
 {
  
+  //! Convert generalized correlator object
+  void convertMescomp(multi1d<Complex>& mesprop_1d, const multiNd<Complex>& mesprop, 
+		      const int j_decay)
+  {
+    int length = Layout::lattSize()[j_decay]; // Temporal extent of lattice
+
+    multi1d<int> ranks(5);
+
+    mesprop_1d.resize(length*Ns*Ns*Ns*Ns);
+
+    int cnt = 0;
+    for(ranks[0]=0; ranks[0] < Ns; ++ranks[0])           // sf_2
+      for(ranks[1]=0; ranks[1] < Ns; ++ranks[1])         // sf_1
+	for(ranks[2]=0; ranks[2] < Ns; ++ranks[2])       // si_2
+	  for(ranks[3]=0; ranks[3] < Ns; ++ranks[3])     // si_1
+	    for(ranks[4] = 0; ranks[4] < length; ++ranks[4])
+	    {
+	      mesprop_1d[cnt++] = mesprop[ranks];
+	    }
+  }
+
+
   //! Construct all components of a meson propagator
   /*!
    * \ingroup hadron
