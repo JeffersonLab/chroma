@@ -1,3 +1,6 @@
+08/31/2005 -- Robert Edwards
+	Version 1.23.9. Added qqbar and mescomp support.
+
 08/27/2005 -- Robert Edwards
 	Version 1.23.8. Added v4 back to prop reads. New staggered spectrum
         measurements.
