@@ -1,4 +1,4 @@
-// $Id: t_propagator_s.cc,v 1.34 2005-04-24 11:18:12 mcneile Exp $
+// $Id: t_propagator_s.cc,v 1.35 2005-09-03 13:47:03 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -10,6 +10,9 @@
 
 // Include everything...
 #include "chroma.h"
+
+#include "meas/hadron/stag_propShift_s.h"
+
 
 /*
  *  Here we have various temporary definitions
@@ -419,14 +422,18 @@ int main(int argc, char **argv)
     push(xml_out, "Hadrons_from_time_source");
     write(xml_out, "source_time", t_source);
 
-    staggered_pions pseudoscalar(t_length,u) ; 
-    staggered_scalars  scalar_meson(t_length,u) ; 
-    vector_meson rho(t_length,u) ; 
+
+    // should be loaded in
+    Stag_shift_option type_of_shift = NON_GAUGE_INVAR ; 
+
+    staggered_pions pseudoscalar(t_length,u,type_of_shift) ; 
+    staggered_scalars  scalar_meson(t_length,u,type_of_shift) ; 
+    vector_meson rho(t_length,u,type_of_shift) ; 
 
     // this is a hack 
-    pseudoscalar.use_NON_gauge_invar()  ;
-    scalar_meson.use_NON_gauge_invar()  ;     
-    rho.use_NON_gauge_invar()  ;
+    //    pseudoscalar.use_NON_gauge_invar()  ;
+    //    scalar_meson.use_NON_gauge_invar()  ;     
+    //    rho.use_NON_gauge_invar()  ;
 
     pseudoscalar.compute(stag_prop, j_decay);
     scalar_meson.compute(stag_prop,  j_decay);
