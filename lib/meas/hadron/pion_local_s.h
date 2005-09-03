@@ -30,8 +30,10 @@ using staggered fermions.
    void compute(multi1d<LatticeStaggeredPropagator>& quark_props,
 			 int j_decay) { QDP_abort(1);   }  
   
-  staggered_local_pion(int t_len, const multi1d<LatticeColorMatrix> & uin)  
-    : staggered_hadron_corr(t_len,no_pions,uin)
+  staggered_local_pion(int t_len, 
+		       const multi1d<LatticeColorMatrix> & uin,
+		       Stag_shift_option type_of_shift_in = SYM_GAUGE_INVAR)
+    : staggered_hadron_corr(t_len,no_pions,uin,type_of_shift_in)
     {
       outer_tag = "Pseudoscalar"  ; 
       inner_tag = "Pi" ; 

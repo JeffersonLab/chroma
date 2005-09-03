@@ -1,4 +1,4 @@
-// $Id: hadron_corr_s.h,v 1.7 2005-08-27 19:19:41 mcneile Exp $
+// $Id: hadron_corr_s.h,v 1.8 2005-09-03 13:38:49 mcneile Exp $
 
 #ifndef HADRON_CORR_S_H
 #define HADRON_CORR_S_H
@@ -62,7 +62,9 @@ namespace Chroma
 
     }
 
-    staggered_hadron_corr(int t_len, int t_chan, const multi1d<LatticeColorMatrix> & uin) 
+    staggered_hadron_corr(int t_len, int t_chan, 
+			  const multi1d<LatticeColorMatrix> & uin, 
+			  Stag_shift_option type_of_shift_in  ) 
       : t_length(t_len) ,
 	no_channel(t_chan)
     {
@@ -75,13 +77,9 @@ namespace Chroma
       };
 
       u = uin ; 
-      type_of_shift = GAUGE_INVAR ; 
-      // type_of_shift = NON_GAUGE_INVAR  ; 
+      type_of_shift = type_of_shift_in ; 
     }
 
-
-    void use_gauge_invar() { type_of_shift = GAUGE_INVAR ; } 
-    void use_NON_gauge_invar() { type_of_shift = NON_GAUGE_INVAR ; } 
 
     virtual ~staggered_hadron_corr()
     {

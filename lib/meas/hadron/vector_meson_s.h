@@ -7,6 +7,7 @@
 
 #include "meas/hadron/hadron_corr_s.h"
 
+
 namespace Chroma {
 
   class staggered_hadron_corr ; 
@@ -22,8 +23,10 @@ namespace Chroma {
 	    int j_decay);
 
 
-    vector_meson(int t_len, multi1d<LatticeColorMatrix> & uin)  
-      : staggered_hadron_corr(t_len,no_vector,uin)
+    vector_meson(int t_len, 
+		 multi1d<LatticeColorMatrix> & uin,
+		 Stag_shift_option type_of_shift_in = SYM_GAUGE_INVAR)  
+      : staggered_hadron_corr(t_len,no_vector,uin,type_of_shift_in)
       {
 	outer_tag = "Vector_meson"  ; 
 	inner_tag = "Vec" ; 
