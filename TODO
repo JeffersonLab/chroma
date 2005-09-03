@@ -39,6 +39,23 @@ BJ points out management stuff not workable. Could do physics portion.
 \item A. Hart says the subset-ted reunit is slow - should use
 QDP's profile and isolate.
 
+STAGGERED TODO list (Sept 2005)
+-----------------------------------
+
+\item Reduce the number of copies of the gauge configuration
+      used from classes that inherit from the staggered_hadron_corr
+      Probably best to use a singleton or something.
+
+\item Test and add the vector mesons to the inline code.
+
+\item add singlet vector operators.
+
+\item Add the code that computes all 8 spatially
+      local pseudoscalar and scalar operators to code.
+
+\item incorporate the lower level optimizsed asqtad
+      inverter that MILC use so we can run 20**3.64
+      lattices on a rack of QCDOC
 
 DONE:
 
