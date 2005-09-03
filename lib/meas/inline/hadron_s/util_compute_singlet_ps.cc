@@ -97,7 +97,6 @@ int compute_singlet_ps(LatticeStaggeredFermion & psi,
 
 
     staggered_pion_singlet pion_singlet(t_length,u);
-    pion_singlet.use_gauge_invar() ;
     pion_singlet.compute(quark_propagator,quark_propagator_4link,j_decay);
     pion_singlet.dump(t_source,xml_out ) ;
 

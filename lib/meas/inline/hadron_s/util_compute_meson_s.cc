@@ -1,4 +1,4 @@
-// $Id: util_compute_meson_s.cc,v 1.1 2005-08-27 19:13:33 mcneile Exp $
+// $Id: util_compute_meson_s.cc,v 1.2 2005-09-03 13:42:08 mcneile Exp $
 /*! \file
  * \brief Wrapper code to compute staggered meson correlators.
  *
@@ -31,7 +31,6 @@ namespace Chroma
 		       int j_decay,int t_length, int t_source)
 {
   staggered_local_pion pion(t_length,u) ;
-  pion.use_gauge_invar() ; // this should be removed as it sucks
 
   push(xml_out,"Meson_correlators");
 
