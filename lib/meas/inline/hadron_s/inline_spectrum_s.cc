@@ -1,4 +1,4 @@
-// $Id: inline_spectrum_s.cc,v 1.5 2005-08-27 19:16:33 mcneile Exp $
+// $Id: inline_spectrum_s.cc,v 1.6 2005-09-03 12:22:39 mcneile Exp $
 /*! \file
  * \brief Inline construction of staggered spectrum
  *
@@ -121,6 +121,7 @@ namespace Chroma
     read(paramtop, "Baryon_vary", param.Baryon_vary);
     read(paramtop, "LocalPion_vary", param.LocalPion_vary);
     read(paramtop, "disconnected_local", param.disconnected_local);
+    read(paramtop, "disconnected_fuzz", param.disconnected_fuzz);
     read(paramtop, "singletPs_Conn_local", param.ps4link_singlet_conn);
 
     read(paramtop, "boundary", param.boundary);
@@ -169,6 +170,7 @@ namespace Chroma
     write(xml, "Baryon_local", param.Baryon_local);
     write(xml, "Baryon_vary", param.Baryon_vary);
     write(xml, "disconnected_local", param.disconnected_local);
+    write(xml, "disconnected_fuzz", param.disconnected_fuzz);
     write(xml, "boundary", param.boundary);
     write(xml, "nrow", param.nrow);
     write(xml, "t_srce", param.t_srce);
@@ -505,6 +507,24 @@ namespace Chroma
 
 	pop(xml_out);
       }
+
+
+    if( params.param.disconnected_fuzz  )
+      {
+	push(xml_out, "disconnected_loops");
+	ks_fuzz_loops(qprop,q_source,psi,psi_fuzz,
+		      u,u_smr,xml_out,
+		       params.param.gauge_invar_oper,
+		       params.param.nrow[3],params.prop_param.Mass,
+                       params.param.Nsamp,
+		       params.prop_param.invParam.RsdCG,
+                       params.param.CFGNO,
+		       params.param.volume_source,
+		      params.param.fuzz_width,j_decay) ;
+
+	pop(xml_out);
+      }
+
 
     if( params.param.Baryon_vary  )
       {
