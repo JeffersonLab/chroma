@@ -10,6 +10,8 @@
 // Include everything...
 #include "chroma.h"
 
+#include "meas/hadron/stag_propShift_s.h"
+
 /*
  *  Here we have various temporary definitions
  */
@@ -356,25 +358,37 @@ int main(int argc, char **argv)
   }
 
   // compute the connected correlators 
+    // should be loaded in
+    Stag_shift_option type_of_shift = NON_GAUGE_INVAR ; 
 
-  staggered_pions pseudoscalar(t_length,u) ; 
-  staggered_scalars  scalar_meson(t_length,u) ; 
-  staggered_pion_singlet pion_singlet(t_length,u); 
+  if( use_gauge_invar_oper )
+    {
+      type_of_shift = SYM_GAUGE_INVAR ; 
+    }
+  else
+    {
+      type_of_shift = NON_GAUGE_INVAR ; 
+    }
+
+
+  staggered_pions pseudoscalar(t_length,u,type_of_shift) ; 
+  staggered_scalars  scalar_meson(t_length,u,type_of_shift) ; 
+  staggered_pion_singlet pion_singlet(t_length,u,type_of_shift); 
 
   write(xml_out, "use_gauge_invar_oper", use_gauge_invar_oper);
   if( use_gauge_invar_oper )
     {
       cout << "Using gauge invariant operators "  << endl ; 
-      pseudoscalar.use_gauge_invar() ;
-      scalar_meson.use_gauge_invar() ;
-      pion_singlet.use_gauge_invar() ;
+      // pseudoscalar.use_gauge_invar() ;
+      // scalar_meson.use_gauge_invar() ;
+      // pion_singlet.use_gauge_invar() ;
     }
   else
     {
       cout << "Using NON-gauge invariant operators "  << endl ; 
-      pseudoscalar.use_NON_gauge_invar()  ;
-      scalar_meson.use_NON_gauge_invar()  ;
-      pion_singlet.use_NON_gauge_invar()  ;
+      //      pseudoscalar.use_NON_gauge_invar()  ;
+      // scalar_meson.use_NON_gauge_invar()  ;
+      // pion_singlet.use_NON_gauge_invar()  ;
     }
   
 
