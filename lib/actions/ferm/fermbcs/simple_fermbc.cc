@@ -1,4 +1,4 @@
-// $Id: simple_fermbc.cc,v 1.1 2004-12-24 04:23:20 edwards Exp $
+ // $Id: simple_fermbc.cc,v 1.2 2005-09-06 10:59:36 bjoo Exp $
 /*! \file
  *  \brief Simple fermionic BC
  */

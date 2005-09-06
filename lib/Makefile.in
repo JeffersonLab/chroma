@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.385 2005-08-31 05:55:39 edwards Exp $
+# $Id: Makefile.in,v 1.386 2005-09-06 10:59:35 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -230,6 +230,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.cc \
 	actions/ferm/fermbcs/fermbcs_w.cc \
 	actions/ferm/fermbcs/simple_fermbc_w.cc \
+	actions/ferm/fermbcs/twisted_fermbc_w.cc \
 	actions/ferm/invert/inv_borici_w.cc \
 	actions/ferm/linop/dwffld_w.cc \
 	actions/ferm/linop/lDeltaLs_w.cc \
@@ -461,8 +462,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	unprec_parwilson_fermact_w.$(OBJEXT) \
 	unprec_wilson_fermact_w.$(OBJEXT) \
 	unprec_zolo_nef_fermact_array_w.$(OBJEXT) fermbcs_w.$(OBJEXT) \
-	simple_fermbc_w.$(OBJEXT) inv_borici_w.$(OBJEXT) \
-	dwffld_w.$(OBJEXT) lDeltaLs_w.$(OBJEXT) \
+	simple_fermbc_w.$(OBJEXT) twisted_fermbc_w.$(OBJEXT) \
+	inv_borici_w.$(OBJEXT) dwffld_w.$(OBJEXT) lDeltaLs_w.$(OBJEXT) \
 	lg5eps_double_pass_w.$(OBJEXT) lg5eps_w.$(OBJEXT) \
 	lovddag_double_pass_w.$(OBJEXT) lovddag_w.$(OBJEXT) \
 	lovlapms_w.$(OBJEXT) lovlap_double_pass_w.$(OBJEXT) \
@@ -734,6 +735,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/fermbcs/fermbcs_w.h \
 	actions/ferm/fermbcs/fermbc_factory_w.h \
 	actions/ferm/fermbcs/simple_fermbc_w.h \
+	actions/ferm/fermbcs/twisted_fermbc_w.h \
 	actions/ferm/invert/inv_borici_w.h \
 	actions/ferm/linop/lgherm_w.h actions/ferm/linop/lg5Rherm_w.h \
 	actions/ferm/linop/unprec_ovlap_contfrac5d_linop_array_w.h \
@@ -1195,6 +1197,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/fermbcs/fermbcs_w.h \
 	actions/ferm/fermbcs/fermbc_factory_w.h \
 	actions/ferm/fermbcs/simple_fermbc_w.h \
+	actions/ferm/fermbcs/twisted_fermbc_w.h \
 	actions/ferm/invert/inv_borici_w.h \
 	actions/ferm/linop/lgherm_w.h actions/ferm/linop/lg5Rherm_w.h \
 	actions/ferm/linop/unprec_ovlap_contfrac5d_linop_array_w.h \
@@ -1512,6 +1515,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.cc \
 	actions/ferm/fermbcs/fermbcs_w.cc \
 	actions/ferm/fermbcs/simple_fermbc_w.cc \
+	actions/ferm/fermbcs/twisted_fermbc_w.cc \
 	actions/ferm/invert/inv_borici_w.cc \
 	actions/ferm/linop/dwffld_w.cc \
 	actions/ferm/linop/lDeltaLs_w.cc \
@@ -2004,6 +2008,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/taproj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tdiractodr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/transf.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/twisted_fermbc_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/u_staple.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unit_check.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_dwf4d_linop_w.Po@am__quote@
@@ -4577,6 +4582,20 @@ simple_fermbc_w.obj: actions/ferm/fermbcs/simple_fermbc_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermbcs/simple_fermbc_w.cc' object='simple_fermbc_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o simple_fermbc_w.obj `if test -f 'actions/ferm/fermbcs/simple_fermbc_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermbcs/simple_fermbc_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermbcs/simple_fermbc_w.cc'; fi`
+
+twisted_fermbc_w.o: actions/ferm/fermbcs/twisted_fermbc_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT twisted_fermbc_w.o -MD -MP -MF "$(DEPDIR)/twisted_fermbc_w.Tpo" -c -o twisted_fermbc_w.o `test -f 'actions/ferm/fermbcs/twisted_fermbc_w.cc' || echo '$(srcdir)/'`actions/ferm/fermbcs/twisted_fermbc_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/twisted_fermbc_w.Tpo" "$(DEPDIR)/twisted_fermbc_w.Po"; else rm -f "$(DEPDIR)/twisted_fermbc_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermbcs/twisted_fermbc_w.cc' object='twisted_fermbc_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o twisted_fermbc_w.o `test -f 'actions/ferm/fermbcs/twisted_fermbc_w.cc' || echo '$(srcdir)/'`actions/ferm/fermbcs/twisted_fermbc_w.cc
+
+twisted_fermbc_w.obj: actions/ferm/fermbcs/twisted_fermbc_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT twisted_fermbc_w.obj -MD -MP -MF "$(DEPDIR)/twisted_fermbc_w.Tpo" -c -o twisted_fermbc_w.obj `if test -f 'actions/ferm/fermbcs/twisted_fermbc_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermbcs/twisted_fermbc_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermbcs/twisted_fermbc_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/twisted_fermbc_w.Tpo" "$(DEPDIR)/twisted_fermbc_w.Po"; else rm -f "$(DEPDIR)/twisted_fermbc_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermbcs/twisted_fermbc_w.cc' object='twisted_fermbc_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o twisted_fermbc_w.obj `if test -f 'actions/ferm/fermbcs/twisted_fermbc_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermbcs/twisted_fermbc_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermbcs/twisted_fermbc_w.cc'; fi`
 
 inv_borici_w.o: actions/ferm/invert/inv_borici_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inv_borici_w.o -MD -MP -MF "$(DEPDIR)/inv_borici_w.Tpo" -c -o inv_borici_w.o `test -f 'actions/ferm/invert/inv_borici_w.cc' || echo '$(srcdir)/'`actions/ferm/invert/inv_borici_w.cc; \

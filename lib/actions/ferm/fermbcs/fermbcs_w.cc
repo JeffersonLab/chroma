@@ -1,10 +1,11 @@
-// $Id: fermbcs_w.cc,v 1.2 2005-01-12 04:44:19 edwards Exp $
+// $Id: fermbcs_w.cc,v 1.3 2005-09-06 10:59:36 bjoo Exp $
 /*! \file
  *  \brief All fermionic BC
  */
 
 #include "actions/ferm/fermbcs/fermbc_factory_w.h"
 #include "actions/ferm/fermbcs/simple_fermbc_w.h"
+#include "actions/ferm/fermbcs/twisted_fermbc_w.h"
 #include "actions/ferm/fermbcs/fermbcs_w.h"
 
 namespace Chroma
@@ -17,6 +18,8 @@ namespace Chroma
     {
       bool success; 
       success = WilsonTypeSimpleFermBCEnv::registered;
+      success &= WilsonTypeTwistedFermBCEnv::registered;
+
       return success;
     }
 
@@ -69,6 +72,8 @@ namespace Chroma
     {
       bool success; 
       success = WilsonTypeSimpleFermBCArrayEnv::registered;
+      success = WilsonTypeTwistedFermBCArrayEnv::registered;
+
       return success;
     }
 

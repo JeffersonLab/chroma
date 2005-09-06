@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermbcs.h,v 1.3 2005-04-11 01:59:59 edwards Exp $
+// $Id: fermbcs.h,v 1.4 2005-09-06 10:59:36 bjoo Exp $
 
 /*! \file
  * \brief Fermion boundary conditions
@@ -21,6 +21,7 @@
 #include "fermbcs_w.h"
 #include "fermbc_factory_w.h"
 #include "simple_fermbc_w.h"
+#include "twisted_fermbc_w.h"
 
 #include "fermbcs_s.h"
 #include "fermbc_factory_s.h"
