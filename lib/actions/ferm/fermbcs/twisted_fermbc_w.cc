@@ -1,4 +1,4 @@
-// $Id: twisted_fermbc_w.cc,v 1.1 2005-09-06 10:59:36 bjoo Exp $
+// $Id: twisted_fermbc_w.cc,v 1.2 2005-09-06 14:26:15 bjoo Exp $
 /*! \file
  *  \brief Simple fermionic BC
  */
@@ -20,7 +20,32 @@ namespace Chroma
   {
     XMLReader paramtop(xml, path);
 
-    read(paramtop, "phases", boundary_phases);
+    // The BASE Simple BC boundary
+    read(paramtop, "boundary", boundary);
+    read(paramtop, "phases_by_pi", phases_by_pi);
+    read(paramtop, "phases_dir", phases_dir);
+
+    if( boundary.size() != Nd ) { 
+      QDPIO::cerr << "TwistedFermBCParams: Invalid size for boundary. Should be " << Nd << "  but is " << boundary.size() << endl;
+      QDP_abort(1);
+    }
+
+    if( phases_by_pi.size() != (Nd-1) ) { 
+      QDPIO::cerr << "TwistedFermBCParams: Invalid size for phases_by_pi. Should be " << Nd-1 << "  but is " << phases_by_pi.size() << endl;
+      QDP_abort(1);
+    }
+
+    if( phases_dir.size() != (Nd-1) ) { 
+      QDPIO::cerr << "TwistedFermBCParams: Invalid size for phases_dir. Should be " << Nd-1 << "  but is " << phases_dir.size() << endl;
+      QDP_abort(1);
+    }
+
+    for(int i=0; i < Nd-1; i++) { 
+      if( toBool( phases_dir[i] < 0 || phases_dir[i] > Nd-1 ) ) { 
+	QDPIO::cerr << "Invalid value in phases_dir, direction " << i << " should be between 0 and " << Nd-1 << " but is " << phases_dir[i] << endl;
+      }
+    }
+
   }
 
   //! Read parameters
@@ -37,7 +62,9 @@ namespace Chroma
       push(xml_out, path);
   
     write(xml_out, "FermBC", TwistedFermBCEnv::name);
-    write(xml_out, "phases", param.boundary_phases);
+    write(xml_out, "boundary", param.boundary);
+    write(xml_out, "phases_by_pi", param.phases_by_pi);
+    write(xml_out, "phases_dir", param.phases_dir);
 
     if( path != "." )
       pop(xml_out);
@@ -50,7 +77,9 @@ namespace Chroma
     FermBC<LatticeFermion>* createFermBC(XMLReader& xml_in, const std::string& path)
     {
       TwistedFermBCParams bc(xml_in, path);
-      return new TwistedFermBC<LatticeFermion>(bc.boundary_phases);
+      return new TwistedFermBC<LatticeFermion>(bc.boundary,
+					       bc.phases_by_pi,
+					       bc.phases_dir);
     }
 
     //! Name to be used
@@ -68,7 +97,9 @@ namespace Chroma
     FermBC< multi1d<LatticeFermion> >* createFermBC(XMLReader& xml_in, const std::string& path)
     {
       TwistedFermBCParams bc(xml_in, path);
-      return new TwistedFermBC< multi1d<LatticeFermion> >(bc.boundary_phases);
+      return new TwistedFermBC< multi1d<LatticeFermion> >(bc.boundary,
+					       bc.phases_by_pi,
+					       bc.phases_dir);
     }
 
     //! Name to be used
