@@ -1,4 +1,4 @@
-//  $Id: stout_smear.cc,v 1.6 2005-01-14 18:42:37 edwards Exp $
+//  $Id: stout_smear.cc,v 1.7 2005-09-08 16:09:35 adamant Exp $
 /*! \file
  *  \brief Stout-link smearing of the gauge configuration
  */
@@ -34,11 +34,7 @@ void stout_smear(LatticeColorMatrix& u_smear,
 
   for(int nu = 0; nu < Nd; ++nu)
   {
-    if( nu != mu 
-
-
-
-	/* && nu != j_decay */ )
+    if( nu != mu && nu != j_decay )
 
 
 
