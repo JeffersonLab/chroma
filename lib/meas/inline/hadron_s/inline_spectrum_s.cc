@@ -1,4 +1,4 @@
-// $Id: inline_spectrum_s.cc,v 1.6 2005-09-03 12:22:39 mcneile Exp $
+// $Id: inline_spectrum_s.cc,v 1.7 2005-09-08 16:57:53 mcneile Exp $
 /*! \file
  * \brief Inline construction of staggered spectrum
  *
@@ -91,7 +91,7 @@ int compute_singlet_ps(LatticeStaggeredFermion & psi,
 
 namespace Chroma 
 { 
-  namespace InlineSpectrumEnv 
+  namespace InlineStaggeredSpectrumEnv
   { 
     AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
 					    const std::string& path) 
