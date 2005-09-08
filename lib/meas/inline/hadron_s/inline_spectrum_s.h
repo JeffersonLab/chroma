@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_spectrum_s.h,v 1.5 2005-09-03 12:23:53 mcneile Exp $
+// $Id: inline_spectrum_s.h,v 1.6 2005-09-08 16:51:17 mcneile Exp $
 /*! \file
  * \brief Inline staggered spectrum calculations
  *
@@ -17,7 +17,7 @@
 namespace Chroma 
 { 
   /*! \ingroup inlinehadron */
-  namespace InlineSpectrumEnv 
+  namespace InlineStaggeredSpectrumEnv 
   {
     extern const std::string name;
     extern const bool registered;
