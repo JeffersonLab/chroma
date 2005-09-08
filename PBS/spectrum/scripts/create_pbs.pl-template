@@ -1,0 +1,111 @@
+#!/usr/bin/perl
+#
+# $id:$
+#
+#  This creates a job script given a template job script
+#
+#  There are various parameters that are set below.  The template must be
+#  written so that these parameters are passed to the template script using
+#  the appropriate substitions as written below.
+#
+
+
+die "Usage: create_pbs <pbs template> <first config> <config_skip> <nconfig> <pbs job>" unless $#ARGV eq 4;
+
+#
+#  Check template file exists
+
+die "File $ARGV[0] does not exist\n" unless -f $ARGV[0];
+
+$pbs_template = $ARGV[0];
+$first_cfg = $ARGV[1];
+$skip = $ARGV[2];
+$ncfg = $ARGV[3];
+$pbs_name = $ARGV[4];
+
+$full_name = $pbs_name."_".${first_cfg}."_".$skip."_".$ncfg;
+
+###################################################################
+#
+#  Here we have various parameters that change between runs
+#
+###################################################################
+
+#
+# Directory variables
+$archroot="/raid3/username";  # CHANGE THIS
+$permdir="/home/username/work_tmp";  # CHANGE THIS
+$progdir="/home/username/research/chroma_scalar_build/bin";  # CHANGE THIS
+# DON'T FORGET TO REBUILD CHROMA WITH THE CORRECTED stout_smear.cc FILE
+
+#
+#  Lattice sizes and ensembles
+$lsize=12;			# Spatial lattice size
+$tsize=48;			# Temporal lattice size
+$cfglabel="NF0/aniso/6p1_12_48_xi3p0_wl/"; # Ensemble directory
+$gaugeroot="wlq_6p1_12_48_xi3p0.cfg"; # Root name of configs
+
+# QQQ-Props file
+$qqq_props_file="/raid3/username/simulation_input/SmearTune/Nucleons/qqq_props";  # CHANGE THIS
+
+#
+#  Kappa values etc
+$mass=-0.305;			# mass
+$ud_mass=-0.305;
+$s_mass=-0.28;
+$nu=0.902;			# Fermion anistropy renormaliation
+$xi_0=2.464;			# Bare anisotropy
+
+#  Queue name
+$queue_name="__QUEUE_NAME__";
+
+#  Smearing values
+$gauss_rad="__GAUSS_RAD_PARAM__";
+$gauss_itr="__GAUSS_ITR_PARAM__";
+$ape_fac="0";
+$ape_num="0";
+$stout_rho="__STOUT_RHO_PARAM__";
+$stout_itr="__STOUT_ITR_PARAM__";
+$proproot="__PROPROOT_PARAM__";
+
+#
+#  Open the template file
+open(TEMPLATE, "< $pbs_template");
+open(PBS_OUT, "> $full_name.sh");
+
+#
+#  Now set the parameters in the output file
+while (<TEMPLATE>){
+    s/__QUEUENAME__/$queue_name/;
+    s/__CONFIG_START__/$first_cfg/;
+    s/__NCONFIG__/$ncfg/;
+    s/__CONFIG_SKIP__/$skip/;
+    s/__JOBNAME__/$full_name/;
+    s/__LSIZE__/$lsize/;
+    s/__TSIZE__/$tsize/;
+    s/__GAUGEROOT__/$gaugeroot/;
+    s/__CFGLABEL__/$cfglabel/;
+    s/__MASS__/$mass/;
+    s/__UD_MASS__/$ud_mass/;
+    s/__S_MASS__/$s_mass/;
+    s/__XI_0__/$xi_0/;
+    s/__NU__/$nu/;
+    s/__APE_FAC__/$ape_fac/;
+    s/__APE_NUM__/$ape_num/;
+    s/__GAUSS_RAD__/$gauss_rad/;
+    s/__GAUSS_ITR__/$gauss_itr/;
+    s/__STOUT_RHO__/$stout_rho/;
+    s/__STOUT_ITR__/$stout_itr/;
+    s/__ARCHROOT__/$archroot/;
+    s/__PERMDIR__/$permdir/;
+    s/__PROGDIR__/$progdir/;
+    s/__QQQ_PROPS_FILE__/$qqq_props_file/;
+    s/__PROPROOT__/$proproot/;
+   print PBS_OUT $_;
+}
+close(TEMPLATE);
+close(PBS_OUT);
+
+#
+# Submit the job
+system("qsub $full_name.sh");
