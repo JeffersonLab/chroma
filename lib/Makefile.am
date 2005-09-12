@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.291 2005-09-12 18:51:05 mcneile Exp $
+# $Id: Makefile.am,v 1.292 2005-09-12 19:52:18 mcneile Exp $
 #
 # Path for all files used in building the library
 
@@ -341,9 +341,9 @@ nobase_include_HEADERS += \
 	meas/hadron/stag_propShift_s.h \
 	meas/hadron/vector_meson_s.h \
 	util/ferm/ferm_s.h \
-	util/gauge/gauge_s.h util/gauge/stag_phases_s.h
-         meas/hadron/enum_loops_s.h\
-         meas/inline/hadron_s/inline_hadron_aggregate.h
+	util/gauge/gauge_s.h util/gauge/stag_phases_s.h\
+	meas/hadron/enum_loops_s.h\
+	meas/inline/hadron_s/inline_hadron_aggregate.h
 
 
 #
