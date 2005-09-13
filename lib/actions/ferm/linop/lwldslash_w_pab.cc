@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_pab.cc,v 1.17 2005-07-07 13:12:24 bjoo Exp $
+// $Id: lwldslash_w_pab.cc,v 1.18 2005-09-13 17:29:30 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -18,6 +18,7 @@ namespace Chroma
   //! Creation routine
   void PABWilsonDslash::create(const multi1d<LatticeColorMatrix>& u_)
   {
+    START_CODE();
 
     // For now, keep an extra copy
     u = u_;
@@ -69,6 +70,8 @@ namespace Chroma
          wfm_vec_init(&wil);
     }
     PABDslashEnv::refcount++;
+
+    END_CODE();
   }
 
 
@@ -132,6 +135,7 @@ namespace Chroma
 	       		  (isign == (enum PlusMinus)PLUS ? 0 : 1));
 	     
   
+    END_CODE();
   }
 
 }; // End Namespace Chroma
