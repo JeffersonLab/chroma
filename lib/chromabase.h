@@ -1,4 +1,4 @@
-// $Id: chromabase.h,v 1.7 2005-01-14 20:13:03 edwards Exp $
+// $Id: chromabase.h,v 1.8 2005-09-16 20:47:17 edwards Exp $
 //
 // Absolute basic stuff to use chroma
 //
@@ -52,9 +52,15 @@ const Real twopi = 6.283185307179586476925286;
 
 
 // Hooks for various things
+#if defined(QDP_DEBUG_MEMORY)
+#define START_CODE() QDP::Allocator::theQDPAllocator::Instance().pushFunc(__func__, __LINE__)
+#define END_CODE()   QDP::Allocator::theQDPAllocator::Instance().popFunc()
+
+#else
 #define START_CODE() QDP_PUSH_PROFILE(QDP::getProfileLevel())
 #define END_CODE()   QDP_POP_PROFILE()
 
+#endif
 }
 
 #endif
