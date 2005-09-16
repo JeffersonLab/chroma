@@ -1,4 +1,4 @@
-// $Id: lwldslash_array_w.cc,v 1.2 2005-06-07 19:36:48 edwards Exp $
+// $Id: lwldslash_array_w.cc,v 1.3 2005-09-16 21:23:34 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator array
  */
@@ -41,10 +41,13 @@ namespace Chroma
   //! Creation routine
   void QDPWilsonDslashArray::create(const multi1d<LatticeColorMatrix>& u_, int N5_)
   {
+    START_CODE();
+
     u = u_;
     N5 = N5_;
 
     //    CoeffWilsr_s = (AnisoP) ? Wilsr_s / xiF_0 : 1;
+    END_CODE();
   }
 
 
