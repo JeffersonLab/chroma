@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_sse.cc,v 1.25 2005-02-21 04:57:00 edwards Exp $
+// $Id: lwldslash_w_sse.cc,v 1.26 2005-09-18 03:58:11 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -36,6 +36,8 @@ namespace Chroma
   //! Creation routine
   void SSEWilsonDslash::create(const multi1d<LatticeColorMatrix>& u_)
   {
+    START_CODE();
+
     // Save a copy of the original fields
     u = u_;
 
@@ -53,16 +55,22 @@ namespace Chroma
 #if 0
     QDPIO::cout << "Done" << endl << flush;
 #endif
+
+    END_CODE();
   }
 
 
   SSEWilsonDslash::~SSEWilsonDslash(void) 
   {
+    START_CODE();
+
 #if 0
     QDPIO::cout << "Calling free_sse_su3dslash()... " << endl;
 #endif
 
     free_sse_su3dslash();
+
+    END_CODE();
   }
 
   //! General Wilson-Dirac dslash

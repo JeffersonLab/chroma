@@ -1,4 +1,4 @@
-// $Id: lwldslash_base_w.cc,v 1.3 2005-02-21 19:28:58 edwards Exp $
+// $Id: lwldslash_base_w.cc,v 1.4 2005-09-18 03:58:11 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -22,12 +22,16 @@ namespace Chroma
 			  const LatticeFermion& chi, const LatticeFermion& psi, 
 			  enum PlusMinus isign) const
   {
+    START_CODE();
+
     ds_u.resize(Nd);
 
     multi1d<LatticeColorMatrix> ds_tmp(Nd);
     deriv(ds_u, chi, psi, isign, 0);
     deriv(ds_tmp, chi, psi, isign, 1);
     ds_u += ds_tmp;
+
+    END_CODE();
   }
 
 
