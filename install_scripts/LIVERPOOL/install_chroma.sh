@@ -15,10 +15,20 @@
 # is stored in: ~/.cvspass
 #
 #
+#  This should be automated
 #
-export wot_tag="LIVTAG_1.00"
+#  CVS tagging
+#            cvs_jlab rtag "LIVTAG_1"  chroma
+#            cvs_jlab rtag "LIVTAG_1"  qdp++
+#
+#  alias cvs_jlab='cvs -d:ext:mcneile@cvs.jlab.org:/group/lattice/cvsroot'
+#
+#
 
+# change this when you update the machine
+export wot_tag="LIVTAG_1"
 
+###
 export CVSROOT=:pserver:anonymous@cvs.jlab.org:/group/lattice/cvsroot
 export ARCH="scalar"
 
@@ -27,7 +37,6 @@ export ARCH="scalar"
 echo "Creating CHROMA distribution: "${wot_tag}
 
 export up=`cd .. ; pwd`
-echo $up
 qdp_install=$up"/chroma_install/"${ARCH}_${wot_tag}
 
 
@@ -49,7 +58,7 @@ cd ${src_dir}
 
 here=`pwd`
 export log=${here}"/log_compilation"
-
+echo "Compilation output to ${log}"
 
 if test -d $qdp_install 
 then
@@ -63,7 +72,7 @@ fi
 #
 # get & compile qdp++
 #
-cvs co qdp++  >> ${log} 2>&1
+cvs co -r ${wot_tag} qdp++  >> ${log} 2>&1
 cd qdp++
 ./configure --enable-parallel-arch=${ARCH}  --enable-Ns=4 --enable-Nc=3 --prefix=${qdp_install} CXXFLAGS=" -O2 -finline-limit=50000" >> ${log} 2>&1
 make >> ${log} 2>&1
@@ -75,18 +84,20 @@ cd ..
 # get chroma
 #
 
-cvs co chroma
+cvs co -r ${wot_tag} chroma  >> ${log} 2>&1
 
 cd chroma
-aclocal
+aclocal   >> ${log} 2>&1
 
 aclocal
-automake
-./configure  --prefix=${qdp_install}  --with-qdp=${qdp_install} CXXFLAGS=" -O2 -finline-limit=50000" 
+automake >> ${log} 2>&1
+./configure  --prefix=${qdp_install}  --with-qdp=${qdp_install} CXXFLAGS=" -O2 -finline-limit=50000" >> ${log} 2>&1
 
-make
+make >> ${log} 2>&1
 
-make install
+make check >> ${log} 2>&1
+
+make install >> ${log} 2>&1
 
 cd ..
 
@@ -105,7 +116,15 @@ machine=`uname -a`
 echo "Machine: $machine"  >> ${info}
 compiler=`whoami`
 echo "Compiler: $compiler"  >> ${info}
+echo "CVS tag ${wot_tag}"
+echo "Compilation ${log}"
+
+## add notes by hand if required
 echo "Notes"  >> ${info}
+
+
+
+echo "---end of installation"
 
 exit 0 
 
