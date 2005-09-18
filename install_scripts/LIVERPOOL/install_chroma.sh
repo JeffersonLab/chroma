@@ -43,7 +43,7 @@ qdp_install=$up"/chroma_install/"${ARCH}_${wot_tag}
 #
 #  compile in a separate directory
 #
-export src_dir="src_"${wot_tag}
+export src_dir="chroma_src_"${wot_tag}
 
 if test -d $src_dir
 then
@@ -116,8 +116,9 @@ machine=`uname -a`
 echo "Machine: $machine"  >> ${info}
 compiler=`whoami`
 echo "Compiler: $compiler"  >> ${info}
-echo "CVS tag ${wot_tag}"
-echo "Compilation ${log}"
+echo "CVS tag ${wot_tag}"   >> ${info}
+echo "Compilation ${log}"   >> ${info}
+echo "Source code directory ${here}"   >> ${info}
 
 ## add notes by hand if required
 echo "Notes"  >> ${info}
