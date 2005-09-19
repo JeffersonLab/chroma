@@ -1,4 +1,4 @@
-// $Id: prec_dwf_qprop_array_sse_w.cc,v 1.6 2005-02-22 02:13:33 edwards Exp $
+// $Id: prec_dwf_qprop_array_sse_w.cc,v 1.7 2005-09-19 02:07:46 edwards Exp $
 /*! \file
  *  \brief SSE 5D DWF specific quark propagator solver
  */
@@ -235,14 +235,24 @@ namespace Chroma
       double out_eps;
       out_eps = 0.0;
       out_iter = 0;
+
+      StopWatch swatch;
+      swatch.reset();
+      swatch.start();
+
       int status = SSE_DWF_cg_solver(res, &out_eps, &out_iter,
 				     g, M_0, m_f, X0, eta, 
 				     rsd, max_iter);
 
+      swatch.stop();
       QDPIO::cout << "SSE DWF solver: status = " << status
 		  << ", iterations = " << out_iter
 		  << ", resulting epsilon = " << out_eps
-		  << endl;
+                  << endl;
+
+      QDPIO::cout << "Time= " 
+                  << swatch.getTimeInSeconds() 
+                  << " secs" << endl;
 
       SSE_DWF_save_fermion(&solution, NULL, &SSEDWF::fermion_writer_solver, res);
 
