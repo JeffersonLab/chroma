@@ -1,4 +1,4 @@
-// $Id: lwldslash_array_pab_w.cc,v 1.7 2005-09-16 21:23:34 edwards Exp $
+// $Id: lwldslash_array_pab_w.cc,v 1.8 2005-09-20 04:42:22 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator array
  */
@@ -45,16 +45,32 @@ namespace Chroma
     // Rearrange the gauge
 
     // Allocate the packed gauge
-    packed_gauge=(PrimitiveSU3Matrix *)
-      QDP::Allocator::theQDPAllocator::Instance().allocate(
+    bool got_fast = true;
+    try { 
+      packed_gauge=(PrimitiveSU3Matrix *)
+         QDP::Allocator::theQDPAllocator::Instance().allocate(
 			Nd*sizeof(PrimitiveSU3Matrix)*Layout::sitesOnNode(), 
 			QDP::Allocator::FAST);
-
-    // Check we got the requested memory
-    if( packed_gauge == 0x0 ) { 
-      QDPIO::cout << "Unable to allocate packed gauge in PABWilsonDslash::create()" << endl;
-      QDP_abort(1);
     }
+    catch( std::bad_alloc ) { 
+	got_fast = false;
+    }
+
+    if( got_fast == false ) { 
+      try { 
+      packed_gauge=(PrimitiveSU3Matrix *)
+         QDP::Allocator::theQDPAllocator::Instance().allocate(
+			Nd*sizeof(PrimitiveSU3Matrix)*Layout::sitesOnNode(), 
+			QDP::Allocator::DEFAULT);
+      }
+      catch( std::bad_alloc ) { 
+	QDPIO::cerr << "Could not allocate packed gauge in lwldslash_array_pab_w.cc line 67" << endl << flush;
+        QDP_abort(1);
+      }
+
+    }
+
+
     wil_cbsize=Layout::sitesOnNode()/2;
 
     // Rearrange gauge from  Dir,Site, Matrix 
