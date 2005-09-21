@@ -1,4 +1,4 @@
-// $Id: baryon_w.cc,v 1.21 2005-01-14 18:42:36 edwards Exp $ 
+// $Id: baryon_w.cc,v 1.22 2005-09-21 05:13:21 edwards Exp $ 
 /*! \file
  *  \brief Baryon 2-pt functions
  */
@@ -34,7 +34,7 @@ namespace Chroma {
  *
  */
 
-void baryon(LatticePropagator& quark_propagator, 
+void baryon(const LatticePropagator& quark_propagator, 
             const SftMom& phases,
             int t0, int bc_spec, bool time_rev,
             XMLWriter& xml,
@@ -184,7 +184,7 @@ void baryon(LatticePropagator& quark_propagator,
  * and the Delta^+_k is baryon 3*(k-1)+2. 
  */
 
-void baryon(LatticePropagator& quark_propagator, 
+void baryon(const LatticePropagator& quark_propagator, 
             const SftMom& phases,
 	    multi3d<DComplex>& barprop)
 {
