@@ -1,4 +1,4 @@
-// $Id: t_dwflocality.cc,v 1.7 2005-03-02 00:44:19 edwards Exp $
+// $Id: t_dwflocality.cc,v 1.8 2005-09-23 16:07:37 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -107,9 +107,6 @@ int main(int argc, char **argv)
   Handle<FermBC<MLF> >  fbc(new SimpleFermBC<MLF>(boundary));
 
   // DWDslash class can be optimised
-  int n_count;
-
-
 
   EvenOddPrecDWFermActArray S_pdwf(fbc, WilsonMass, m_q,N5);
   Handle<const ConnectState> state(S_pdwf.createState(u));
@@ -135,9 +132,12 @@ int main(int argc, char **argv)
   chi[0   ] = chiralProjectPlus(chi4) ;
   chi[N5-1] = chiralProjectMinus(chi4) ; 
   
-QDPIO::cout << "5D source norm :" << norm2(chi)<< endl;
+  QDPIO::cout << "5D source norm :" << norm2(chi)<< endl;
 
-  S_pdwf.qpropT(psi, state, chi, invParam, n_count);
+  {
+    Handle< const SystemSolver< multi1d<LatticeFermion> > > PQ(S_pdwf.qpropT(state, invParam));
+    int n_count = (*PQ)(psi, chi);
+  }
   
   res4 = chiralProjectMinus(psi[0]) + chiralProjectPlus(psi[N5-1]) ;
 
