@@ -9,9 +9,6 @@
 namespace Chroma 
 {
 
-//  namespace ChromaUtil
-//  {
-
   //! Private (anonymous) namespace
   namespace
   {

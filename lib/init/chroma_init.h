@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: chroma_init.h,v 1.6 2005-03-02 18:32:05 bjoo Exp $
+// $Id: chroma_init.h,v 1.7 2005-09-23 03:44:56 edwards Exp $
 /*! \file
  *  \brief Initialization of Chroma
  */
@@ -11,9 +11,6 @@
 
 namespace Chroma 
 {
-  //! Namespace holding basic control functions over Chroma
-//  namespace ChromaUtil
-//  {
   //! Chroma initialisation routine
   void initialize(int* argc, char ***argv);
 
