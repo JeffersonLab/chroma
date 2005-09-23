@@ -1,4 +1,4 @@
-// $Id: barhqlq_w.cc,v 1.8 2005-09-23 04:53:13 edwards Exp $
+// $Id: barhqlq_w.cc,v 1.9 2005-09-23 17:37:25 edwards Exp $
 /*! \file
  *  \brief Heavy-light baryon 2-pt functions
  */
@@ -35,8 +35,8 @@ namespace Chroma {
  *
  */
 
-void barhqlq(LatticePropagator& propagator_1, 
-	     LatticePropagator& propagator_2, 
+void barhqlq(const LatticePropagator& propagator_1, 
+	     const LatticePropagator& propagator_2, 
 	     const SftMom& phases,
 	     int t0, int bc_spec, bool time_rev,
 	     XMLWriter& xml,
@@ -205,8 +205,8 @@ void barhqlq(LatticePropagator& propagator_1,
  * The projection on "spin_up" is done with S_proj. 
  */
 
-void barhqlq(LatticePropagator& quark_propagator_1,
-	     LatticePropagator& quark_propagator_2,
+void barhqlq(const LatticePropagator& quark_propagator_1,
+	     const LatticePropagator& quark_propagator_2,
 	     const SftMom& phases,
 	     multi3d<DComplex>& barprop)
 {
