@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.292 2005-09-12 19:52:18 mcneile Exp $
+# $Id: Makefile.am,v 1.293 2005-09-23 03:45:46 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -18,6 +18,7 @@ nobase_include_HEADERS = \
 	fermbc.h funcmap.h syssolver.h gaugeact.h gaugebc.h handle.h invtype.h lib.h \
 	linearop.h objfactory.h objfunctor.h primitives.h \
 	singleton.h state.h typeinfo.h typelist.h typemanip.h typetraits.h \
+        named_obj.h \
 	actions/actions.h actions/boson/boson.h \
 	actions/boson/operator/klein_gord.h \
 	actions/ferm/ferm.h actions/ferm/fermacts/asqtad_state.h \
@@ -385,6 +386,15 @@ nobase_include_HEADERS += \
 	meas/inline/hadron_s/inline_spectrum_s.h \
 	meas/inline/hadron_s/hadron_s.h \
         meas/inline/hadron_s/util_compute_quark_prop_s.h \
+	meas/inline/io/io.h \
+	meas/inline/io/named_objmap.h \
+	meas/inline/io/inline_io_aggregate.h \
+	meas/inline/io/inline_read_obj.h \
+	meas/inline/io/inline_write_obj.h \
+	meas/inline/io/inline_write_erase_obj.h \
+	meas/inline/io/inline_erase_obj.h \
+        meas/inline/io/readobj_funcmap.h \
+        meas/inline/io/writeobj_funcmap.h \
 	meas/inline/smear/smear.h \
 	meas/inline/smear/inline_smear_aggregate.h \
 	meas/inline/smear/inline_ape_smear.h \
@@ -691,6 +701,13 @@ libchroma_a_SOURCES += \
         meas/inline/hadron_s/util_compute_singlet_ps.cc \
         meas/inline/hadron_s/util_compute_meson_s.cc \
         meas/inline/hadron_s/util_baryon_s.cc \
+	meas/inline/io/inline_io_aggregate.cc \
+	meas/inline/io/inline_read_obj.cc \
+	meas/inline/io/inline_write_obj.cc \
+	meas/inline/io/inline_write_erase_obj.cc \
+	meas/inline/io/inline_erase_obj.cc \
+        meas/inline/io/readobj_funcmap.cc \
+        meas/inline/io/writeobj_funcmap.cc \
 	meas/inline/smear/inline_smear_aggregate.cc \
 	meas/inline/smear/inline_ape_smear.cc \
 	meas/inline/smear/inline_hyp_smear.cc \
