@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: funcmap.h,v 1.1 2005-03-07 02:52:20 edwards Exp $
+// $Id: funcmap.h,v 1.2 2005-09-23 03:47:01 edwards Exp $
 /*! @file
  * @brief Map of function calls
  */
@@ -89,6 +89,7 @@ namespace Chroma
     typedef typename TL::TypeAtNonStrict<ParmList,2,NullType>::Result  Parm3;
     typedef typename TL::TypeAtNonStrict<ParmList,3,NullType>::Result  Parm4;
     typedef typename TL::TypeAtNonStrict<ParmList,4,NullType>::Result  Parm5;
+    typedef typename TL::TypeAtNonStrict<ParmList,5,NullType>::Result  Parm6;
 
     // Member functions
     //! Register the function
@@ -277,6 +278,38 @@ namespace Chroma
       }
       else {
 	return (i->second)(p1, p2, p3, p4, p5);
+      }
+    }
+
+    //! Call the function
+    /*! 
+     * \param id       function id
+     * \param p1       1st parameter arg to function
+     * \param p2       2nd parameter arg to function
+     * \param p3       3rd parameter arg to function
+     * \param p4       4th parameter arg to function
+     * \param p5       5th parameter arg to function
+     * \param p6       6th parameter arg to function
+     * \return returns result of the function call
+     */
+    AbstractProduct callFunction(const IdentifierType& id, Parm1 p1, Parm2 p2, Parm3 p3,
+				 Parm4 p4, Parm5 p5, Parm6 p6)
+    {
+      typename IdToProductMap::const_iterator i = associations_.find(id);
+      if (i == associations_.end()) 
+      {
+	typedef typename IdToProductMap::const_iterator CI;
+	QDPIO::cerr << "Couldnt find key " << id << " in the map: " << endl;
+	QDPIO::cerr << "Available Keys are : " << endl;
+	for( CI j = associations_.begin();
+	     j != associations_.end(); j++) {
+	  QDPIO::cerr << j->first << endl << flush;
+	}
+	
+	return OnUnknownType(id);
+      }
+      else {
+	return (i->second)(p1, p2, p3, p4, p5, p6);
       }
     }
 
