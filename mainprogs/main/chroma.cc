@@ -1,4 +1,4 @@
-// $Id: chroma.cc,v 1.7 2005-09-19 02:27:53 edwards Exp $
+// $Id: chroma.cc,v 1.8 2005-09-24 20:55:24 edwards Exp $
 /*! \file
  *  \brief Main program to run all measurement codes.
  */
@@ -89,11 +89,25 @@ int main(int argc, char *argv[])
   
   linkageHack();
 
-  XMLReader xml_in(Chroma::getXMLInputFileName());
+  XMLReader xml_in;
 
   // Input parameter structure
   Inline_input_t  input;
-  read(xml_in, "/chroma", input);
+  try
+  {
+    xml_in.open(Chroma::getXMLInputFileName());
+    read(xml_in, "/chroma", input);
+  }
+  catch(const std::string& e) 
+  {
+    QDPIO::cerr << "CHROMA: Caught Exception reading XML: " << e << endl;
+    QDP_abort(1);
+  }
+  catch(...)
+  {
+    QDPIO::cerr << "CHROMA: caught generic exception reading XML" << endl;
+    QDP_abort(1);
+  }
 
   XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
   push(xml_out, "chroma");
@@ -135,6 +149,9 @@ int main(int argc, char *argv[])
   write(xml_out, "gauge_xml", gauge_xml);
   pop(xml_out);
   
+  // Calculate some gauge invariant observables
+  MesPlq(xml_out, "Observables", u);
+
   // Get the measurements
   std::istringstream Measurements_is(input.param.inline_measurement_xml);
   XMLReader MeasXML(Measurements_is);
@@ -144,7 +161,12 @@ int main(int argc, char *argv[])
     read(MeasXML, "/InlineMeasurements", the_measurements);
   }
   catch(const std::string& e) {
-    QDPIO::cerr << "Caught Exception: " << e << endl;
+    QDPIO::cerr << "CHROMA: Caught Exception: " << e << endl;
+    QDP_abort(1);
+  }
+  catch(...)
+  {
+    QDPIO::cerr << "CHROMA: caught generic exception reading measurement XML" << endl;
     QDP_abort(1);
   }
 
