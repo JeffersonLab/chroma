@@ -1,10 +1,10 @@
-// $Id: readobj_funcmap.cc,v 1.1 2005-09-23 03:43:09 edwards Exp $
+// $Id: qio_read_obj_funcmap.cc,v 1.1 2005-09-24 21:14:28 edwards Exp $
 /*! \file
  *  \brief Read object function map
  */
 
 #include "named_obj.h"
-#include "meas/inline/io/readobj_funcmap.h"
+#include "meas/inline/io/qio_read_obj_funcmap.h"
 #include "meas/inline/io/named_objmap.h"
 
 namespace Chroma
@@ -12,10 +12,10 @@ namespace Chroma
  
   //! IO function map
   /*! \ingroup inlineio */
-  namespace ReadObjCallMap
+  namespace QIOReadObjCallMap
   {
     //! Read a propagator
-    void readQIOLatProp(const string& buffer_id,
+    void QIOReadLatProp(const string& buffer_id,
 			const string& file, 
 			QDP_serialparallel_t serpar)
     {
@@ -34,7 +34,7 @@ namespace Chroma
 
 
     //! Read a single prec propagator
-    void readQIOLatPropF(const string& buffer_id,
+    void QIOReadLatPropF(const string& buffer_id,
 			 const string& file, 
 			 QDP_serialparallel_t serpar)
     {
@@ -53,7 +53,7 @@ namespace Chroma
 
 
     //! Read a double prec propagator
-    void readQIOLatPropD(const string& buffer_id,
+    void QIOReadLatPropD(const string& buffer_id,
 			 const string& file, 
 			 QDP_serialparallel_t serpar)
     {
@@ -73,7 +73,7 @@ namespace Chroma
 
 
     //! Read a fermion
-    void readQIOLatFerm(const string& buffer_id,
+    void QIOReadLatFerm(const string& buffer_id,
 			const string& file, 
 			QDP_serialparallel_t serpar)
     {
@@ -92,7 +92,7 @@ namespace Chroma
 
 
     //! Read a single prec fermion
-    void readQIOLatFermF(const string& buffer_id,
+    void QIOReadLatFermF(const string& buffer_id,
 			 const string& file, 
 			 QDP_serialparallel_t serpar)
     {
@@ -114,7 +114,7 @@ namespace Chroma
     // RGE: FOR SOME REASON, QDP CANNOT CAST A DOUBLE TO FLOATING HERE. NEED TO FIX.
 
     //! Read a double prec fermion
-    void readQIOLatFermD(const string& buffer_id,
+    void QIOReadLatFermD(const string& buffer_id,
 			 const string& file, 
 			 QDP_serialparallel_t serpar)
     {
@@ -132,29 +132,29 @@ namespace Chroma
     }
 #endif
 
-  }  // end namespace ReadObjCallMap
+  }  // end namespace QIOReadObjCallMap
 
 
   //! IO function map environment
   /*! \ingroup inlineio */
-  namespace ReadObjCallMapEnv
+  namespace QIOReadObjCallMapEnv
   { 
     bool registerAll(void) 
     {
       bool success = true;
-      success &= TheReadObjFuncMap::Instance().registerFunction(string("LatticePropagator"), 
-								ReadObjCallMap::readQIOLatProp);
-      success &= TheReadObjFuncMap::Instance().registerFunction(string("LatticePropagatorF"), 
-								ReadObjCallMap::readQIOLatPropF);
-      success &= TheReadObjFuncMap::Instance().registerFunction(string("LatticePropagatorD"), 
-								ReadObjCallMap::readQIOLatPropD);
+      success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("LatticePropagator"), 
+								   QIOReadObjCallMap::QIOReadLatProp);
+      success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("LatticePropagatorF"), 
+								   QIOReadObjCallMap::QIOReadLatPropF);
+      success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("LatticePropagatorD"), 
+								   QIOReadObjCallMap::QIOReadLatPropD);
 
-      success &= TheReadObjFuncMap::Instance().registerFunction(string("LatticeFermion"), 
-								ReadObjCallMap::readQIOLatFerm);
-      success &= TheReadObjFuncMap::Instance().registerFunction(string("LatticeFermionF"), 
-								ReadObjCallMap::readQIOLatFermF);
-//      success &= TheReadObjFuncMap::Instance().registerFunction(string("LatticeFermionD"), 
-//								ReadObjCallMap::readQIOLatFermD);
+      success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("LatticeFermion"), 
+								   QIOReadObjCallMap::QIOReadLatFerm);
+      success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("LatticeFermionF"), 
+								   QIOReadObjCallMap::QIOReadLatFermF);
+//      success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("LatticeFermionD"), 
+//								   QIOReadObjCallMap::QIOReadLatFermD);
 
       return success;
     }

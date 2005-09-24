@@ -1,37 +1,32 @@
-// $Id: inline_write_obj.cc,v 1.1 2005-09-23 03:43:09 edwards Exp $
+// $Id: inline_nersc_write_obj.cc,v 1.1 2005-09-24 21:14:28 edwards Exp $
 /*! \file
  * \brief Inline task to write an object from a named buffer
  *
  * Named object writing
  */
 
+#include "chromabase.h"
+#include "qdp_iogauge.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
-#include "meas/inline/io/inline_write_obj.h"
+#include "meas/inline/io/inline_nersc_write_obj.h"
 #include "meas/inline/io/named_objmap.h"
-#include "meas/inline/io/writeobj_funcmap.h"
 
 namespace Chroma 
 { 
-  namespace InlineWriteNamedObjEnv 
+  namespace InlineNERSCWriteNamedObjEnv 
   { 
     AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
 					    const std::string& path) 
     {
-      return new InlineWriteNamedObj(InlineWriteNamedObjParams(xml_in, path));
+      return new InlineNERSCWriteNamedObj(InlineNERSCWriteNamedObjParams(xml_in, path));
     }
 
-    const std::string name = "WRITE_NAMED_OBJECT";
+    const std::string name = "NERSC_WRITE_NAMED_OBJECT";
 
     bool registerAll() 
     {
       bool success = true; 
-
-      // Datatype writer
-      success &= WriteObjCallMapEnv::registered;
-
-      // Inline measurement
       success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
-
       return success;
     }
 
@@ -40,51 +35,47 @@ namespace Chroma
 
 
   //! Object buffer
-  void write(XMLWriter& xml, const string& path, const InlineWriteNamedObjParams::NamedObject_t& input)
+  void write(XMLWriter& xml, const string& path, const InlineNERSCWriteNamedObjParams::NamedObject_t& input)
   {
     push(xml, path);
 
     write(xml, "object_id", input.object_id);
-    write(xml, "object_type", input.object_type);
 
     pop(xml);
   }
 
   //! File output
-  void write(XMLWriter& xml, const string& path, const InlineWriteNamedObjParams::File_t& input)
+  void write(XMLWriter& xml, const string& path, const InlineNERSCWriteNamedObjParams::File_t& input)
   {
     push(xml, path);
 
     write(xml, "file_name", input.file_name);
-    write(xml, "file_volfmt", input.file_volfmt);
 
     pop(xml);
   }
 
 
   //! Object buffer
-  void read(XMLReader& xml, const string& path, InlineWriteNamedObjParams::NamedObject_t& input)
+  void read(XMLReader& xml, const string& path, InlineNERSCWriteNamedObjParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
     read(inputtop, "object_id", input.object_id);
-    read(inputtop, "object_type", input.object_type);
   }
 
   //! File output
-  void read(XMLReader& xml, const string& path, InlineWriteNamedObjParams::File_t& input)
+  void read(XMLReader& xml, const string& path, InlineNERSCWriteNamedObjParams::File_t& input)
   {
     XMLReader inputtop(xml, path);
 
     read(inputtop, "file_name", input.file_name);
-    read(inputtop, "file_volfmt", input.file_volfmt);
   }
 
 
   // Param stuff
-  InlineWriteNamedObjParams::InlineWriteNamedObjParams() { frequency = 0; }
+  InlineNERSCWriteNamedObjParams::InlineNERSCWriteNamedObjParams() { frequency = 0; }
 
-  InlineWriteNamedObjParams::InlineWriteNamedObjParams(XMLReader& xml_in, const std::string& path) 
+  InlineNERSCWriteNamedObjParams::InlineNERSCWriteNamedObjParams(XMLReader& xml_in, const std::string& path) 
   {
     try 
     {
@@ -110,7 +101,7 @@ namespace Chroma
 
 
   void
-  InlineWriteNamedObjParams::write(XMLWriter& xml_out, const std::string& path) 
+  InlineNERSCWriteNamedObjParams::write(XMLWriter& xml_out, const std::string& path) 
   {
     push(xml_out, path);
     
@@ -125,17 +116,17 @@ namespace Chroma
 
 
   void 
-  InlineWriteNamedObj::operator()(const multi1d<LatticeColorMatrix>& u,
+  InlineNERSCWriteNamedObj::operator()(const multi1d<LatticeColorMatrix>& u,
 				  XMLBufferWriter& gauge_xml,
 				  unsigned long update_no,
 				  XMLWriter& xml_out) 
   {
     START_CODE();
 
-    push(xml_out, "write_named_obj");
+    push(xml_out, "nersc_write_named_obj");
     write(xml_out, "update_no", update_no);
 
-    QDPIO::cout << InlineWriteNamedObjEnv::name << ": object writer" << endl;
+    QDPIO::cout << InlineNERSCWriteNamedObjEnv::name << ": object writer" << endl;
     StopWatch swatch;
 
     // Write the object
@@ -147,12 +138,12 @@ namespace Chroma
     {
       swatch.reset();
 
+      multi1d<LatticeColorMatrix> u = 
+	TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.object_id);
+
       // Write the object
       swatch.start();
-      TheWriteObjFuncMap::Instance().callFunction(params.named_obj.object_type,
-						  params.named_obj.object_id,
-						  params.file.file_name, 
-						  params.file.file_volfmt, QDPIO_SERIAL);
+      QDP::writeArchiv(u, params.file.file_name);
       swatch.stop();
 
       QDPIO::cout << "Object successfully written: time= " 
@@ -161,18 +152,18 @@ namespace Chroma
     }
     catch( std::bad_cast ) 
     {
-      QDPIO::cerr << InlineWriteNamedObjEnv::name << ": cast error" 
+      QDPIO::cerr << InlineNERSCWriteNamedObjEnv::name << ": cast error" 
 		  << endl;
       QDP_abort(1);
     }
     catch (const string& e) 
     {
-      QDPIO::cerr << InlineWriteNamedObjEnv::name << ": error message: " << e 
+      QDPIO::cerr << InlineNERSCWriteNamedObjEnv::name << ": error message: " << e 
 		  << endl;
       QDP_abort(1);
     }
     
-    QDPIO::cout << InlineWriteNamedObjEnv::name << ": ran successfully" << endl;
+    QDPIO::cout << InlineNERSCWriteNamedObjEnv::name << ": ran successfully" << endl;
 
     pop(xml_out);  // write_named_obj
 

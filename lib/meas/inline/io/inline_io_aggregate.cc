@@ -1,13 +1,17 @@
-// $Id: inline_io_aggregate.cc,v 1.1 2005-09-23 03:43:09 edwards Exp $
+// $Id: inline_io_aggregate.cc,v 1.2 2005-09-24 21:14:28 edwards Exp $
 /*! \file
  *  \brief Inline IO aggregator
  */
 
 #include "meas/inline/io/inline_io_aggregate.h"
-#include "meas/inline/io/inline_write_obj.h"
-#include "meas/inline/io/inline_write_erase_obj.h"
-#include "meas/inline/io/inline_read_obj.h"
+#include "meas/inline/io/inline_qio_write_obj.h"
+#include "meas/inline/io/inline_qio_write_erase_obj.h"
+#include "meas/inline/io/inline_qio_read_obj.h"
 #include "meas/inline/io/inline_erase_obj.h"
+#include "meas/inline/io/inline_list_obj.h"
+#include "meas/inline/io/inline_snarf_obj.h"
+#include "meas/inline/io/inline_szin_write_obj.h"
+#include "meas/inline/io/inline_nersc_write_obj.h"
 
 namespace Chroma
 {
@@ -20,10 +24,16 @@ namespace Chroma
       bool success = true; 
 
       // Tasks
-      success &= InlineReadNamedObjEnv::registered;
-      success &= InlineWriteNamedObjEnv::registered;
-      success &= InlineWriteEraseNamedObjEnv::registered;
+      success &= InlineQIOReadNamedObjEnv::registered;
+      success &= InlineQIOWriteNamedObjEnv::registered;
+      success &= InlineQIOWriteEraseNamedObjEnv::registered;
       success &= InlineEraseNamedObjEnv::registered;
+      success &= InlineListNamedObjEnv::registered;
+      success &= InlineSnarfNamedObjEnv::registered;
+
+      success &= InlineSZINWriteNamedObjEnv::registered;
+      success &= InlineNERSCWriteNamedObjEnv::registered;
+
       return success;
     }
 

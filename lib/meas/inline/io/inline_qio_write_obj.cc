@@ -1,33 +1,33 @@
-// $Id: inline_write_erase_obj.cc,v 1.1 2005-09-23 03:43:09 edwards Exp $
+// $Id: inline_qio_write_obj.cc,v 1.1 2005-09-24 21:14:28 edwards Exp $
 /*! \file
- * \brief Inline task to write and delete an object from a named buffer
+ * \brief Inline task to write an object from a named buffer
  *
  * Named object writing
  */
 
 #include "meas/inline/abs_inline_measurement_factory.h"
-#include "meas/inline/io/inline_write_erase_obj.h"
+#include "meas/inline/io/inline_qio_write_obj.h"
 #include "meas/inline/io/named_objmap.h"
-#include "meas/inline/io/writeobj_funcmap.h"
+#include "meas/inline/io/qio_write_obj_funcmap.h"
 
 namespace Chroma 
 { 
-  namespace InlineWriteEraseNamedObjEnv 
+  namespace InlineQIOWriteNamedObjEnv 
   { 
     AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
 					    const std::string& path) 
     {
-      return new InlineWriteEraseNamedObj(InlineWriteEraseNamedObjParams(xml_in, path));
+      return new InlineQIOWriteNamedObj(InlineQIOWriteNamedObjParams(xml_in, path));
     }
 
-    const std::string name = "WRITE_ERASE_NAMED_OBJECT";
+    const std::string name = "QIO_WRITE_NAMED_OBJECT";
 
     bool registerAll() 
     {
       bool success = true; 
 
       // Datatype writer
-      success &= WriteObjCallMapEnv::registered;
+      success &= QIOWriteObjCallMapEnv::registered;
 
       // Inline measurement
       success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
@@ -40,7 +40,7 @@ namespace Chroma
 
 
   //! Object buffer
-  void write(XMLWriter& xml, const string& path, const InlineWriteEraseNamedObjParams::NamedObject_t& input)
+  void write(XMLWriter& xml, const string& path, const InlineQIOWriteNamedObjParams::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -51,7 +51,7 @@ namespace Chroma
   }
 
   //! File output
-  void write(XMLWriter& xml, const string& path, const InlineWriteEraseNamedObjParams::File_t& input)
+  void write(XMLWriter& xml, const string& path, const InlineQIOWriteNamedObjParams::File_t& input)
   {
     push(xml, path);
 
@@ -63,7 +63,7 @@ namespace Chroma
 
 
   //! Object buffer
-  void read(XMLReader& xml, const string& path, InlineWriteEraseNamedObjParams::NamedObject_t& input)
+  void read(XMLReader& xml, const string& path, InlineQIOWriteNamedObjParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -72,7 +72,7 @@ namespace Chroma
   }
 
   //! File output
-  void read(XMLReader& xml, const string& path, InlineWriteEraseNamedObjParams::File_t& input)
+  void read(XMLReader& xml, const string& path, InlineQIOWriteNamedObjParams::File_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -82,9 +82,9 @@ namespace Chroma
 
 
   // Param stuff
-  InlineWriteEraseNamedObjParams::InlineWriteEraseNamedObjParams() { frequency = 0; }
+  InlineQIOWriteNamedObjParams::InlineQIOWriteNamedObjParams() { frequency = 0; }
 
-  InlineWriteEraseNamedObjParams::InlineWriteEraseNamedObjParams(XMLReader& xml_in, const std::string& path) 
+  InlineQIOWriteNamedObjParams::InlineQIOWriteNamedObjParams(XMLReader& xml_in, const std::string& path) 
   {
     try 
     {
@@ -110,7 +110,7 @@ namespace Chroma
 
 
   void
-  InlineWriteEraseNamedObjParams::write(XMLWriter& xml_out, const std::string& path) 
+  InlineQIOWriteNamedObjParams::write(XMLWriter& xml_out, const std::string& path) 
   {
     push(xml_out, path);
     
@@ -124,25 +124,24 @@ namespace Chroma
   }
 
 
-  // Func
   void 
-  InlineWriteEraseNamedObj::operator()(const multi1d<LatticeColorMatrix>& u,
-				       XMLBufferWriter& gauge_xml,
-				       unsigned long update_no,
-				       XMLWriter& xml_out) 
+  InlineQIOWriteNamedObj::operator()(const multi1d<LatticeColorMatrix>& u,
+				  XMLBufferWriter& gauge_xml,
+				  unsigned long update_no,
+				  XMLWriter& xml_out) 
   {
     START_CODE();
 
-    push(xml_out, "write_erase_named_obj");
+    push(xml_out, "qio_write_named_obj");
     write(xml_out, "update_no", update_no);
 
-    QDPIO::cout << InlineWriteEraseNamedObjEnv::name << ": object writer" << endl;
+    QDPIO::cout << InlineQIOWriteNamedObjEnv::name << ": object writer" << endl;
     StopWatch swatch;
 
-    // Write and erase the object
+    // Write the object
     // ONLY SciDAC output format is supported in this task
     // Other tasks could support other disk formats
-    QDPIO::cout << "Attempt to write then delete an object name = " << params.named_obj.object_id << endl;
+    QDPIO::cout << "Attempt to write object name = " << params.named_obj.object_id << endl;
     write(xml_out, "object_id", params.named_obj.object_id);
     try
     {
@@ -150,37 +149,32 @@ namespace Chroma
 
       // Write the object
       swatch.start();
-      TheWriteObjFuncMap::Instance().callFunction(params.named_obj.object_type,
-						  params.named_obj.object_id,
-						  params.file.file_name, 
-						  params.file.file_volfmt, QDPIO_SERIAL);
+      TheQIOWriteObjFuncMap::Instance().callFunction(params.named_obj.object_type,
+						     params.named_obj.object_id,
+						     params.file.file_name, 
+						     params.file.file_volfmt, QDPIO_SERIAL);
       swatch.stop();
 
       QDPIO::cout << "Object successfully written: time= " 
 		  << swatch.getTimeInSeconds() 
 		  << " secs" << endl;
-
-      // Now erase the object
-      TheNamedObjMap::Instance().erase(params.named_obj.object_id);
-
-      QDPIO::cout << "Object erased" << endl;
     }
     catch( std::bad_cast ) 
     {
-      QDPIO::cerr << InlineWriteEraseNamedObjEnv::name << ": cast error" 
+      QDPIO::cerr << InlineQIOWriteNamedObjEnv::name << ": cast error" 
 		  << endl;
       QDP_abort(1);
     }
     catch (const string& e) 
     {
-      QDPIO::cerr << InlineWriteEraseNamedObjEnv::name << ": error message: " << e 
+      QDPIO::cerr << InlineQIOWriteNamedObjEnv::name << ": error message: " << e 
 		  << endl;
       QDP_abort(1);
     }
     
-    QDPIO::cout << InlineWriteEraseNamedObjEnv::name << ": ran successfully" << endl;
+    QDPIO::cout << InlineQIOWriteNamedObjEnv::name << ": ran successfully" << endl;
 
-    pop(xml_out);  // write_erase_named_obj
+    pop(xml_out);  // write_named_obj
 
     END_CODE();
   } 

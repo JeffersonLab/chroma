@@ -1,11 +1,11 @@
 // -*- C++ -*-
-// $Id: readobj_funcmap.h,v 1.1 2005-09-23 03:43:10 edwards Exp $
+// $Id: qio_read_obj_funcmap.h,v 1.1 2005-09-24 21:14:28 edwards Exp $
 /*! \file
  *  \brief Read object function map
  */
 
-#ifndef __readobj_funcmap_h__
-#define __readobj_funcmap_h__
+#ifndef __qio_read_obj_funcmap_h__
+#define __qio_read_obj_funcmap_h__
 
 #include "singleton.h"
 #include "funcmap.h"
@@ -25,12 +25,12 @@ namespace Chroma
 			 const string& filename, 
 			 QDP_serialparallel_t serpar),
 		StringFunctionMapError> >
-  TheReadObjFuncMap;
+  TheQIOReadObjFuncMap;
 
 
   //! Read object function map
   /*! \ingroup inlineio */
-  namespace ReadObjCallMapEnv
+  namespace QIOReadObjCallMapEnv
   { 
     extern bool registered;   // forward decl
   };

@@ -1,13 +1,13 @@
 // -*- C++ -*-
-// $Id: inline_erase_obj.h,v 1.2 2005-09-24 21:14:28 edwards Exp $
+// $Id: inline_nersc_write_obj.h,v 1.1 2005-09-24 21:14:28 edwards Exp $
 /*! \file
  * \brief Inline task to write an object from a named buffer
  *
  * Named object writing
  */
 
-#ifndef __inline_erase_obj_h__
-#define __inline_erase_obj_h__
+#ifndef __inline_nersc_write_obj_h__
+#define __inline_nersc_write_obj_h__
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
@@ -16,7 +16,7 @@
 namespace Chroma 
 { 
   /*! \ingroup inlineio */
-  namespace InlineEraseNamedObjEnv 
+  namespace InlineNERSCWriteNamedObjEnv 
   {
     extern const std::string name;
     extern const bool registered;
@@ -24,10 +24,10 @@ namespace Chroma
 
   //! Parameter structure
   /*! \ingroup inlineio */
-  struct InlineEraseNamedObjParams 
+  struct InlineNERSCWriteNamedObjParams 
   {
-    InlineEraseNamedObjParams();
-    InlineEraseNamedObjParams(XMLReader& xml_in, const std::string& path);
+    InlineNERSCWriteNamedObjParams();
+    InlineNERSCWriteNamedObjParams(XMLReader& xml_in, const std::string& path);
     void write(XMLWriter& xml_out, const std::string& path);
 
     unsigned long frequency;
@@ -35,18 +35,22 @@ namespace Chroma
     struct NamedObject_t
     {
       std::string   object_id;
-      std::string   object_type;
     } named_obj;
+
+    struct File_t
+    {
+      std::string   file_name;
+    } file;
   };
 
   //! Inline writing of memory objects
   /*! \ingroup inlineio */
-  class InlineEraseNamedObj : public AbsInlineMeasurement 
+  class InlineNERSCWriteNamedObj : public AbsInlineMeasurement 
   {
   public:
-    ~InlineEraseNamedObj() {}
-    InlineEraseNamedObj(const InlineEraseNamedObjParams& p) : params(p) {}
-    InlineEraseNamedObj(const InlineEraseNamedObj& p) : params(p.params) {}
+    ~InlineNERSCWriteNamedObj() {}
+    InlineNERSCWriteNamedObj(const InlineNERSCWriteNamedObjParams& p) : params(p) {}
+    InlineNERSCWriteNamedObj(const InlineNERSCWriteNamedObj& p) : params(p.params) {}
 
     unsigned long getFrequency(void) const {return params.frequency;}
 
@@ -57,7 +61,7 @@ namespace Chroma
 		    XMLWriter& xml_out); 
 
   private:
-    InlineEraseNamedObjParams params;
+    InlineNERSCWriteNamedObjParams params;
   };
 
 };

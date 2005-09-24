@@ -1,13 +1,13 @@
 // -*- C++ -*-
-// $Id: inline_read_obj.h,v 1.1 2005-09-23 03:43:09 edwards Exp $
+// $Id: inline_qio_read_obj.h,v 1.1 2005-09-24 21:14:28 edwards Exp $
 /*! \file
  * \brief Inline task to read an object from a named buffer
  *
  * Named object writing
  */
 
-#ifndef __inline_read_obj_h__
-#define __inline_read_obj_h__
+#ifndef __inline_qio_read_obj_h__
+#define __inline_qio_read_obj_h__
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
@@ -16,7 +16,7 @@
 namespace Chroma 
 { 
   /*! \ingroup inlineio */
-  namespace InlineReadNamedObjEnv 
+  namespace InlineQIOReadNamedObjEnv 
   {
     extern const std::string name;
     extern const bool registered;
@@ -24,10 +24,10 @@ namespace Chroma
 
   //! Parameter structure
   /*! \ingroup inlineio */
-  struct InlineReadNamedObjParams 
+  struct InlineQIOReadNamedObjParams 
   {
-    InlineReadNamedObjParams();
-    InlineReadNamedObjParams(XMLReader& xml_in, const std::string& path);
+    InlineQIOReadNamedObjParams();
+    InlineQIOReadNamedObjParams(XMLReader& xml_in, const std::string& path);
     void write(XMLWriter& xml_out, const std::string& path);
 
     unsigned long frequency;
@@ -46,12 +46,12 @@ namespace Chroma
 
   //! Inline writing of memory objects
   /*! \ingroup inlineio */
-  class InlineReadNamedObj : public AbsInlineMeasurement 
+  class InlineQIOReadNamedObj : public AbsInlineMeasurement 
   {
   public:
-    ~InlineReadNamedObj() {}
-    InlineReadNamedObj(const InlineReadNamedObjParams& p) : params(p) {}
-    InlineReadNamedObj(const InlineReadNamedObj& p) : params(p.params) {}
+    ~InlineQIOReadNamedObj() {}
+    InlineQIOReadNamedObj(const InlineQIOReadNamedObjParams& p) : params(p) {}
+    InlineQIOReadNamedObj(const InlineQIOReadNamedObj& p) : params(p.params) {}
 
     unsigned long getFrequency(void) const {return params.frequency;}
 
@@ -62,7 +62,7 @@ namespace Chroma
 		    XMLWriter& xml_out); 
 
   private:
-    InlineReadNamedObjParams params;
+    InlineQIOReadNamedObjParams params;
   };
 
 };

@@ -1,13 +1,13 @@
 // -*- C++ -*-
-// $Id: inline_write_obj.h,v 1.1 2005-09-23 03:43:09 edwards Exp $
+// $Id: inline_szin_write_obj.h,v 1.1 2005-09-24 21:14:28 edwards Exp $
 /*! \file
  * \brief Inline task to write an object from a named buffer
  *
  * Named object writing
  */
 
-#ifndef __inline_writeobj_h__
-#define __inline_writeobj_h__
+#ifndef __inline_szin_write_obj_h__
+#define __inline_szin_write_obj_h__
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
@@ -16,7 +16,7 @@
 namespace Chroma 
 { 
   /*! \ingroup inlineio */
-  namespace InlineWriteNamedObjEnv 
+  namespace InlineSZINWriteNamedObjEnv 
   {
     extern const std::string name;
     extern const bool registered;
@@ -24,10 +24,10 @@ namespace Chroma
 
   //! Parameter structure
   /*! \ingroup inlineio */
-  struct InlineWriteNamedObjParams 
+  struct InlineSZINWriteNamedObjParams 
   {
-    InlineWriteNamedObjParams();
-    InlineWriteNamedObjParams(XMLReader& xml_in, const std::string& path);
+    InlineSZINWriteNamedObjParams();
+    InlineSZINWriteNamedObjParams(XMLReader& xml_in, const std::string& path);
     void write(XMLWriter& xml_out, const std::string& path);
 
     unsigned long frequency;
@@ -41,18 +41,25 @@ namespace Chroma
     struct File_t
     {
       std::string   file_name;
-      QDP_volfmt_t  file_volfmt;
+
+      /*
+       *  Now some various rules for truncating the configuration
+       */
+      bool          trunc;	// Whether to truncate the output
+      int           j_decay;    // Direction of time
+      int           t_start;	// Starting time slice
+      int           t_end;	// Ending time slice
     } file;
   };
 
   //! Inline writing of memory objects
   /*! \ingroup inlineio */
-  class InlineWriteNamedObj : public AbsInlineMeasurement 
+  class InlineSZINWriteNamedObj : public AbsInlineMeasurement 
   {
   public:
-    ~InlineWriteNamedObj() {}
-    InlineWriteNamedObj(const InlineWriteNamedObjParams& p) : params(p) {}
-    InlineWriteNamedObj(const InlineWriteNamedObj& p) : params(p.params) {}
+    ~InlineSZINWriteNamedObj() {}
+    InlineSZINWriteNamedObj(const InlineSZINWriteNamedObjParams& p) : params(p) {}
+    InlineSZINWriteNamedObj(const InlineSZINWriteNamedObj& p) : params(p.params) {}
 
     unsigned long getFrequency(void) const {return params.frequency;}
 
@@ -63,7 +70,7 @@ namespace Chroma
 		    XMLWriter& xml_out); 
 
   private:
-    InlineWriteNamedObjParams params;
+    InlineSZINWriteNamedObjParams params;
   };
 
 };

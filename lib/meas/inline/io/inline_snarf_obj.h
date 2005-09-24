@@ -1,22 +1,21 @@
 // -*- C++ -*-
-// $Id: inline_erase_obj.h,v 1.2 2005-09-24 21:14:28 edwards Exp $
+// $Id: inline_snarf_obj.h,v 1.1 2005-09-24 21:14:28 edwards Exp $
 /*! \file
- * \brief Inline task to write an object from a named buffer
+ * \brief Inline task to copy gauge arg to a named object
  *
  * Named object writing
  */
 
-#ifndef __inline_erase_obj_h__
-#define __inline_erase_obj_h__
+#ifndef __inline_snarf_obj_h__
+#define __inline_snarf_obj_h__
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
-#include "io/qprop_io.h"
 
 namespace Chroma 
 { 
   /*! \ingroup inlineio */
-  namespace InlineEraseNamedObjEnv 
+  namespace InlineSnarfNamedObjEnv 
   {
     extern const std::string name;
     extern const bool registered;
@@ -24,10 +23,10 @@ namespace Chroma
 
   //! Parameter structure
   /*! \ingroup inlineio */
-  struct InlineEraseNamedObjParams 
+  struct InlineSnarfNamedObjParams 
   {
-    InlineEraseNamedObjParams();
-    InlineEraseNamedObjParams(XMLReader& xml_in, const std::string& path);
+    InlineSnarfNamedObjParams();
+    InlineSnarfNamedObjParams(XMLReader& xml_in, const std::string& path);
     void write(XMLWriter& xml_out, const std::string& path);
 
     unsigned long frequency;
@@ -35,18 +34,17 @@ namespace Chroma
     struct NamedObject_t
     {
       std::string   object_id;
-      std::string   object_type;
     } named_obj;
   };
 
-  //! Inline writing of memory objects
+  //! Inline snarfing of memory objects
   /*! \ingroup inlineio */
-  class InlineEraseNamedObj : public AbsInlineMeasurement 
+  class InlineSnarfNamedObj : public AbsInlineMeasurement 
   {
   public:
-    ~InlineEraseNamedObj() {}
-    InlineEraseNamedObj(const InlineEraseNamedObjParams& p) : params(p) {}
-    InlineEraseNamedObj(const InlineEraseNamedObj& p) : params(p.params) {}
+    ~InlineSnarfNamedObj() {}
+    InlineSnarfNamedObj(const InlineSnarfNamedObjParams& p) : params(p) {}
+    InlineSnarfNamedObj(const InlineSnarfNamedObj& p) : params(p.params) {}
 
     unsigned long getFrequency(void) const {return params.frequency;}
 
@@ -57,7 +55,7 @@ namespace Chroma
 		    XMLWriter& xml_out); 
 
   private:
-    InlineEraseNamedObjParams params;
+    InlineSnarfNamedObjParams params;
   };
 
 };

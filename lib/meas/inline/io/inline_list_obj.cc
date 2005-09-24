@@ -1,25 +1,25 @@
-// $Id: inline_erase_obj.cc,v 1.2 2005-09-24 21:14:28 edwards Exp $
+// $Id: inline_list_obj.cc,v 1.1 2005-09-24 21:14:28 edwards Exp $
 /*! \file
- * \brief Inline task to erase an object from a named buffer
+ * \brief Inline task to list an object from a named buffer
  *
  * Named object writing
  */
 
 #include "meas/inline/abs_inline_measurement_factory.h"
-#include "meas/inline/io/inline_erase_obj.h"
+#include "meas/inline/io/inline_list_obj.h"
 #include "meas/inline/io/named_objmap.h"
 
 namespace Chroma 
 { 
-  namespace InlineEraseNamedObjEnv 
+  namespace InlineListNamedObjEnv 
   { 
     AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
 					    const std::string& path) 
     {
-      return new InlineEraseNamedObj(InlineEraseNamedObjParams(xml_in, path));
+      return new InlineListNamedObj(InlineListNamedObjParams(xml_in, path));
     }
 
-    const std::string name = "ERASE_NAMED_OBJECT";
+    const std::string name = "LIST_NAMED_OBJECT";
 
     bool registerAll() 
     {
@@ -36,7 +36,7 @@ namespace Chroma
 
 
   //! Object buffer
-  void write(XMLWriter& xml, const string& path, const InlineEraseNamedObjParams::NamedObject_t& input)
+  void write(XMLWriter& xml, const string& path, const InlineListNamedObjParams::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -48,7 +48,7 @@ namespace Chroma
 
 
   //! Object buffer
-  void read(XMLReader& xml, const string& path, InlineEraseNamedObjParams::NamedObject_t& input)
+  void read(XMLReader& xml, const string& path, InlineListNamedObjParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -58,9 +58,9 @@ namespace Chroma
 
 
   // Param stuff
-  InlineEraseNamedObjParams::InlineEraseNamedObjParams() { frequency = 0; }
+  InlineListNamedObjParams::InlineListNamedObjParams() { frequency = 0; }
 
-  InlineEraseNamedObjParams::InlineEraseNamedObjParams(XMLReader& xml_in, const std::string& path) 
+  InlineListNamedObjParams::InlineListNamedObjParams(XMLReader& xml_in, const std::string& path) 
   {
     try 
     {
@@ -83,7 +83,7 @@ namespace Chroma
 
 
   void
-  InlineEraseNamedObjParams::write(XMLWriter& xml_out, const std::string& path) 
+  InlineListNamedObjParams::write(XMLWriter& xml_out, const std::string& path) 
   {
     push(xml_out, path);
     
@@ -95,44 +95,40 @@ namespace Chroma
 
 
   void 
-  InlineEraseNamedObj::operator()(const multi1d<LatticeColorMatrix>& u,
+  InlineListNamedObj::operator()(const multi1d<LatticeColorMatrix>& u,
 				  XMLBufferWriter& gauge_xml,
 				  unsigned long update_no,
 				  XMLWriter& xml_out) 
   {
     START_CODE();
 
-    push(xml_out, "erase_named_obj");
+    push(xml_out, "list_named_obj");
     write(xml_out, "update_no", update_no);
 
-    QDPIO::cout << InlineEraseNamedObjEnv::name << ": object erase" << endl;
+    QDPIO::cout << InlineListNamedObjEnv::name << ": object list" << endl;
 
-    // Erase the object
-    QDPIO::cout << "Attempt to erase object name = " << params.named_obj.object_id << endl;
-    write(xml_out, "object_id", params.named_obj.object_id);
+    // List the object
+    QDPIO::cout << "Attempt to list all object names" << endl;
     try
     {
-      // Now erase the object
-      TheNamedObjMap::Instance().erase(params.named_obj.object_id);
-
-      QDPIO::cout << "Object erased" << endl;
+      TheNamedObjMap::Instance().dump();
     }
     catch( std::bad_cast ) 
     {
-      QDPIO::cerr << InlineEraseNamedObjEnv::name << ": cast error" 
+      QDPIO::cerr << InlineListNamedObjEnv::name << ": cast error" 
 		  << endl;
       QDP_abort(1);
     }
     catch (const string& e) 
     {
-      QDPIO::cerr << InlineEraseNamedObjEnv::name << ": error message: " << e 
+      QDPIO::cerr << InlineListNamedObjEnv::name << ": error message: " << e 
 		  << endl;
       QDP_abort(1);
     }
     
-    QDPIO::cout << InlineEraseNamedObjEnv::name << ": ran successfully" << endl;
+    QDPIO::cout << InlineListNamedObjEnv::name << ": ran successfully" << endl;
 
-    pop(xml_out);  // erase_named_obj
+    pop(xml_out);  // list_named_obj
 
     END_CODE();
   } 

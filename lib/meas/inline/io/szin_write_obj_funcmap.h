@@ -1,11 +1,11 @@
 // -*- C++ -*-
-// $Id: writeobj_funcmap.h,v 1.1 2005-09-23 03:43:10 edwards Exp $
+// $Id: szin_write_obj_funcmap.h,v 1.1 2005-09-24 21:14:28 edwards Exp $
 /*! \file
  *  \brief Write object function map
  */
 
-#ifndef __writeobj_funcmap_h__
-#define __writeobj_funcmap_h__
+#ifndef __szin_write_obj_funcmap_h__
+#define __szin_write_obj_funcmap_h__
 
 #include "singleton.h"
 #include "funcmap.h"
@@ -19,19 +19,19 @@ namespace Chroma
   typedef SingletonHolder< 
     FunctionMap<void,
 		std::string,
-		TYPELIST_4(const string&,
+		TYPELIST_5(const string&,
 			   const string&, 
-			   QDP_volfmt_t, QDP_serialparallel_t),
+			   int, int, int),
 		void (*)(const string& buffer_id,
 			 const string& filename, 
-			 QDP_volfmt_t volfmt, QDP_serialparallel_t serpar),
+			 int j_decay, int t_start, int t_end),
 		StringFunctionMapError> >
-  TheWriteObjFuncMap;
+  TheSZINWriteObjFuncMap;
 
 
   //! Write object function map
   /*! \ingroup inlineio */
-  namespace WriteObjCallMapEnv
+  namespace SZINWriteObjCallMapEnv
   { 
     extern bool registered;   // forward decl
   };

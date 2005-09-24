@@ -1,4 +1,4 @@
-// $Id: inline_read_obj.cc,v 1.1 2005-09-23 03:43:09 edwards Exp $
+// $Id: inline_qio_read_obj.cc,v 1.1 2005-09-24 21:14:28 edwards Exp $
 /*! \file
  * \brief Inline task to read an object from a named buffer
  *
@@ -6,28 +6,28 @@
  */
 
 #include "meas/inline/abs_inline_measurement_factory.h"
-#include "meas/inline/io/inline_read_obj.h"
+#include "meas/inline/io/inline_qio_read_obj.h"
 #include "meas/inline/io/named_objmap.h"
-#include "meas/inline/io/readobj_funcmap.h"
+#include "meas/inline/io/qio_read_obj_funcmap.h"
 
 namespace Chroma 
 { 
-  namespace InlineReadNamedObjEnv 
+  namespace InlineQIOReadNamedObjEnv 
   { 
     AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
 					    const std::string& path) 
     {
-      return new InlineReadNamedObj(InlineReadNamedObjParams(xml_in, path));
+      return new InlineQIOReadNamedObj(InlineQIOReadNamedObjParams(xml_in, path));
     }
 
-    const std::string name = "READ_NAMED_OBJECT";
+    const std::string name = "QIO_READ_NAMED_OBJECT";
 
     bool registerAll() 
     {
       bool success = true; 
 
       // Datatype readers
-      success &= ReadObjCallMapEnv::registered;
+      success &= QIOReadObjCallMapEnv::registered;
 
       // Inline measurement
       success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
@@ -40,7 +40,7 @@ namespace Chroma
 
 
   //! Object buffer
-  void write(XMLWriter& xml, const string& path, const InlineReadNamedObjParams::NamedObject_t& input)
+  void write(XMLWriter& xml, const string& path, const InlineQIOReadNamedObjParams::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -51,7 +51,7 @@ namespace Chroma
   }
 
   //! File output
-  void write(XMLWriter& xml, const string& path, const InlineReadNamedObjParams::File_t& input)
+  void write(XMLWriter& xml, const string& path, const InlineQIOReadNamedObjParams::File_t& input)
   {
     push(xml, path);
 
@@ -62,7 +62,7 @@ namespace Chroma
 
 
   //! Object buffer
-  void read(XMLReader& xml, const string& path, InlineReadNamedObjParams::NamedObject_t& input)
+  void read(XMLReader& xml, const string& path, InlineQIOReadNamedObjParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -71,7 +71,7 @@ namespace Chroma
   }
 
   //! File output
-  void read(XMLReader& xml, const string& path, InlineReadNamedObjParams::File_t& input)
+  void read(XMLReader& xml, const string& path, InlineQIOReadNamedObjParams::File_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -80,9 +80,9 @@ namespace Chroma
 
 
   // Param stuff
-  InlineReadNamedObjParams::InlineReadNamedObjParams() { frequency = 0; }
+  InlineQIOReadNamedObjParams::InlineQIOReadNamedObjParams() { frequency = 0; }
 
-  InlineReadNamedObjParams::InlineReadNamedObjParams(XMLReader& xml_in, const std::string& path) 
+  InlineQIOReadNamedObjParams::InlineQIOReadNamedObjParams(XMLReader& xml_in, const std::string& path) 
   {
     try 
     {
@@ -108,7 +108,7 @@ namespace Chroma
 
 
   void
-  InlineReadNamedObjParams::write(XMLWriter& xml_out, const std::string& path) 
+  InlineQIOReadNamedObjParams::write(XMLWriter& xml_out, const std::string& path) 
   {
     push(xml_out, path);
     
@@ -123,17 +123,17 @@ namespace Chroma
 
 
   void 
-  InlineReadNamedObj::operator()(const multi1d<LatticeColorMatrix>& u,
+  InlineQIOReadNamedObj::operator()(const multi1d<LatticeColorMatrix>& u,
 				  XMLBufferWriter& gauge_xml,
 				  unsigned long update_no,
 				  XMLWriter& xml_out) 
   {
     START_CODE();
 
-    push(xml_out, "read_named_obj");
+    push(xml_out, "qio_read_named_obj");
     write(xml_out, "update_no", update_no);
 
-    QDPIO::cout << InlineReadNamedObjEnv::name << ": object reader" << endl;
+    QDPIO::cout << InlineQIOReadNamedObjEnv::name << ": object reader" << endl;
     StopWatch swatch;
 
     // Read the object
@@ -147,10 +147,10 @@ namespace Chroma
 
       // Read the object
       swatch.start();
-      TheReadObjFuncMap::Instance().callFunction(params.named_obj.object_type,
-						 params.named_obj.object_id,
-						 params.file.file_name, 
-						 QDPIO_SERIAL);
+      TheQIOReadObjFuncMap::Instance().callFunction(params.named_obj.object_type,
+						    params.named_obj.object_id,
+						    params.file.file_name, 
+						    QDPIO_SERIAL);
       swatch.stop();
 
       QDPIO::cout << "Object successfully read: time= " 
@@ -159,20 +159,20 @@ namespace Chroma
     }
     catch( std::bad_cast ) 
     {
-      QDPIO::cerr << InlineReadNamedObjEnv::name << ": caught dynamic cast error" 
+      QDPIO::cerr << InlineQIOReadNamedObjEnv::name << ": caught dynamic cast error" 
 		  << endl;
       QDP_abort(1);
     }
     catch (const string& e) 
     {
-      QDPIO::cerr << InlineReadNamedObjEnv::name << ": map call failed: " << e 
+      QDPIO::cerr << InlineQIOReadNamedObjEnv::name << ": map call failed: " << e 
 		  << endl;
       QDP_abort(1);
     }
     
-    QDPIO::cout << InlineReadNamedObjEnv::name << ": ran successfully" << endl;
+    QDPIO::cout << InlineQIOReadNamedObjEnv::name << ": ran successfully" << endl;
 
-    pop(xml_out);  // write_named_obj
+    pop(xml_out);  // qio_read_named_obj
 
     END_CODE();
   } 
