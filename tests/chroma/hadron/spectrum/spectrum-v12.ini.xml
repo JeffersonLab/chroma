@@ -1,0 +1,125 @@
+<?xml version="1.0"?>
+<chroma>
+<annotation>
+Spectrum input
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+    <elem>
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>5</version>
+        <wave_state>S_WAVE</wave_state>
+        <source_type>SHELL_SOURCE</source_type>
+        <j_decay>3</j_decay>
+        <direction>2</direction>
+        <t_source>0 0 0 0</t_source>
+
+        <ShellSource>
+          <SourceSmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+          </SourceSmearingParam>
+          <laplace_power>0</laplace_power>
+          <link_smear_fact>2.5</link_smear_fact>
+          <link_smear_num>0</link_smear_num>
+          <disp_length>0</disp_length>
+          <disp_dir>0</disp_dir>
+        </ShellSource>
+
+        <nrow>4 4 4 8</nrow>
+      </Param>
+      <NamedObject>
+        <source_id>sh_source_0</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>8</version>
+        <nonRelProp>false</nonRelProp>
+        <obsvP>false</obsvP>
+        <FermionAction>
+         <FermAct>WILSON</FermAct>
+         <Kappa>0.11</Kappa>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>1.0</xi_0>
+           <nu>1.0</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 0</boundary>
+         </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+        <nrow>4 4 4 8</nrow>
+      </Param>
+      <NamedObject>
+        <source_id>sh_source_0</source_id>
+        <prop_id>sh_prop_0</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>SPECTRUM</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>12</version>
+        <Pt_snk>true</Pt_snk>
+        <Sl_snk>true</Sl_snk>
+        <Wl_snk>false</Wl_snk>
+        <MesonP>true</MesonP>
+        <CurrentP>true</CurrentP>
+        <BaryonP>true</BaryonP>
+        <HybMesP>true</HybMesP>
+        <fact_sm>2.5</fact_sm>
+        <numb_sm>2</numb_sm>
+        <time_rev>false</time_rev>
+        <mom2_max>3</mom2_max>
+        <avg_equiv_mom>true</avg_equiv_mom>
+        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+        <wvf_param>2.0</wvf_param>
+        <wvfIntPar>5</wvfIntPar>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>0</link_smear_num>
+        <nrow>4 4 4 8</nrow>
+       </Param>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+      </NamedObject>
+      <xml_file>spectrum.dat.xml</xml_file>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>4 4 4 8</nrow>
+</Param>
+
+<RNG>
+  <Seed>	
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>0</elem>
+  </Seed>
+</RNG>
+
+<Cfg>
+ <cfg_type>SZIN</cfg_type>
+ <cfg_file>../../../../test_purgaug.cfg1</cfg_file>
+</Cfg>
+</chroma>
+
+

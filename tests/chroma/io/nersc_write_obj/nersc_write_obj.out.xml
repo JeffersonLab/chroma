@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+
+
+<chroma>
+  <Input><chroma>
+<annotation>
+Write a nersc config
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+    <elem>
+      <annotation>
+        Snarf/grab gauge arg and stuff into a named object
+      </annotation>
+      <Name>SNARF_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>snarf_cfg</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>NERSC_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>snarf_cfg</object_id>
+      </NamedObject>
+      <File>
+        <file_name>nersc.cfg</file_name>
+      </File>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>4 4 4 8</nrow>
+</Param>
+<Cfg>
+ <cfg_type>SZIN</cfg_type>
+ <cfg_file>../test_purgaug.cfg1</cfg_file>
+</Cfg>
+</chroma>
+
+  </Input>
+  <ProgramInfo>
+    <code_version>
+      <chroma>1.23</chroma>
+      <qdp>1.16.0</qdp>
+    </code_version>
+    <run_date>24 Sep 05 17:57:24 EDT</run_date>
+    <Setgeom>
+      <latt_size>4 4 4 8</latt_size>
+      <logical_size>1 1 1 1</logical_size>
+      <subgrid_size>4 4 4 8</subgrid_size>
+      <total_volume>512</total_volume>
+      <subgrid_volume>512</subgrid_volume>
+    </Setgeom>
+  </ProgramInfo>
+  <RNG>
+    <Seed>
+      <elem>11</elem>
+      <elem>0</elem>
+      <elem>0</elem>
+      <elem>0</elem>
+    </Seed>
+  </RNG>

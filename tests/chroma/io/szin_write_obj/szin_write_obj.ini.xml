@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<chroma>
+<annotation>
+Write a SZIN config
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+    <elem>
+      <annotation>
+        Snarf/grab gauge arg and stuff into a named object
+      </annotation>
+      <Name>SNARF_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>snarf_cfg</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>SZIN_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>snarf_cfg</object_id>
+        <object_type>Multi1dLatticeColorMatrix</object_type>
+      </NamedObject>
+      <File>
+        <file_name>szin.cfg</file_name>
+        <trunc>false</trunc>
+        <j_decay>3</j_decay>
+        <t_start>0</t_start>
+        <t_end>7</t_end>
+      </File>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>4 4 4 8</nrow>
+</Param>
+<Cfg>
+ <cfg_type>SZIN</cfg_type>
+ <cfg_file>../../../../test_purgaug.cfg1</cfg_file>
+</Cfg>
+</chroma>
+
+

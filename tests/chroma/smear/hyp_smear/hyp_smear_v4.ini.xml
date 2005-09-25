@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<chroma>
+<annotation>
+Hyp smear task
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+    <elem>
+      <Name>HYP_SMEAR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>4</version>
+        <alpha1>0.75</alpha1>
+        <alpha2>0.6</alpha2>
+        <alpha3>0.3</alpha3>
+        <num_smear>1</num_smear>
+        <j_decay>-1</j_decay>
+        <nrow>4 4 4 8</nrow>
+      </Param>
+      <NamedObject>
+        <hyp_id>nowhere</hyp_id>
+      </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>4 4 4 8</nrow>
+</Param>
+<Cfg>
+ <cfg_type>SZIN</cfg_type>
+ <cfg_file>../test_purgaug.cfg1</cfg_file>
+</Cfg>
+</chroma>
+
+
