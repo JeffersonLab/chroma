@@ -1,4 +1,4 @@
-// $Id: t_dwflocality.cc,v 1.8 2005-09-23 16:07:37 edwards Exp $
+// $Id: t_dwflocality.cc,v 1.9 2005-09-25 14:24:38 kostas Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -22,14 +22,13 @@ int main(int argc, char **argv)
   //const int foo[] = {4,4,4,8};
   //const int boo[] = {1,1,1,0};
 
-  
+  XMLReader in(Chroma::getXMLInputFileName());
+
   multi1d<int> nrow(Nd); 
   multi1d<int> boundary(Nd);
-  QDPIO::cout << "Enter lattice size" << endl;
-  QDPIO::cin >> nrow;
-
-  QDPIO::cout << "Enter BC" << endl;
-  QDPIO::cin >> boundary;
+  XMLReader xml_in(in,"/t_dwflocality" );
+  read(xml_in, "nrow", nrow);  
+  read(xml_in, "boundary", boundary);  
 
 
   Layout::setLattSize(nrow);
@@ -51,32 +50,18 @@ int main(int argc, char **argv)
   invParam.MaxCG = 5000 ;
   invParam.invType = CG_INVERTER ;
 
-  QDPIO::cout << "Enter Ls" << endl;
-  QDPIO::cin >> N5;
-  QDPIO::cout << "Enter WilsonMass" << endl;
-  QDPIO::cin >> WilsonMass;
+  read(xml_in, "Ls", N5);
+
+  read(xml_in, "M5", WilsonMass);
+
   push(xml,"ChiralParam");
   write(xml,"N5",N5);
   write(xml,"WilsonMass",WilsonMass);
   pop(xml);
 
   Cfg_t            cfg;
-  QDPIO::cout << "Enter gaugefield type" << endl;
-  QDPIO::cout << " (0) MILC"   <<endl ;
-  QDPIO::cout << " (1) NERSC"  <<endl ;
-  QDPIO::cout << " (2) SCIDAC" <<endl ;
-  QDPIO::cout << " (3) SZIN"   <<endl ;
-  QDPIO::cout << " (4) SZINQIO"<<endl ;
-  QDPIO::cout << " (5) HOT"    <<endl ;
-  QDPIO::cout << " (6) COLD"   <<endl ;
 
-  int tmp ;
-  QDPIO::cin >> tmp ;
-  cfg.cfg_type = CfgType(tmp);
-  QDPIO::cout << "Enter gaugefield file" << endl;
-  QDPIO::cin >> cfg.cfg_file;
-
-
+  read(xml_in, "cfg", cfg);
 
   push(xml,"Configuration");
   write(xml, "cfg", cfg);
