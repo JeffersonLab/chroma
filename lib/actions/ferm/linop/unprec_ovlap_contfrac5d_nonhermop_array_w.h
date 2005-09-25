@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovlap_contfrac5d_nonhermop_array_w.h,v 1.4 2005-01-14 20:13:06 edwards Exp $
+// $Id: unprec_ovlap_contfrac5d_nonhermop_array_w.h,v 2.0 2005-09-25 21:04:30 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
  */

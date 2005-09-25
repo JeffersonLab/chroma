@@ -3,7 +3,7 @@
 
 <make_source><make_source>
 <annotation>
-; $Id: make_source_v4.linux-scalar-intel.xml,v 1.2 2004-02-22 21:30:09 edwards Exp $
+; $Id: make_source_v4.linux-scalar-intel.xml,v 2.0 2005-09-25 21:05:00 edwards Exp $
 ;
 ; MAKE_SOURCE input file.
 ;

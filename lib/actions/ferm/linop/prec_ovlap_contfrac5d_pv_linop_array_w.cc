@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_pv_linop_array_w.cc,v 1.11 2005-06-28 15:28:16 bjoo Exp $
+// $Id: prec_ovlap_contfrac5d_pv_linop_array_w.cc,v 2.0 2005-09-25 21:04:29 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Pauli-Villars Continued Fraction 5D
  */

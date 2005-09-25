@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: minvcg.h,v 1.6 2005-01-28 02:14:05 edwards Exp $
+// $Id: minvcg.h,v 2.0 2005-09-25 21:04:28 edwards Exp $
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator
  */

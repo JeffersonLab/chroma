@@ -1,4 +1,4 @@
-//  $Id: proginfo.cc,v 1.8 2005-02-22 17:11:52 bjoo Exp $
+//  $Id: proginfo.cc,v 2.0 2005-09-25 21:04:45 edwards Exp $
 /*! \file
  *  \brief Print out basic info about this program
  */

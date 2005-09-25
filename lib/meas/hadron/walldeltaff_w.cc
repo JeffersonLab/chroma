@@ -1,4 +1,4 @@
-// $Id: walldeltaff_w.cc,v 1.12 2005-01-14 18:42:36 edwards Exp $
+// $Id: walldeltaff_w.cc,v 2.0 2005-09-25 21:04:36 edwards Exp $
 /*! \file
  *  \brief Wall-sink delta^+ -> gamma+delta^+ form-factors 
  *

@@ -1,4 +1,4 @@
-// $Id: purgaug.cc,v 1.6 2005-07-05 22:18:10 edwards Exp $
+// $Id: purgaug.cc,v 2.0 2005-09-25 21:04:45 edwards Exp $
 /*! \file
  *  \brief Main code for pure gauge field generation
  */

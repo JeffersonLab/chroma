@@ -1,4 +1,4 @@
-// $Id: rg_gaugeact.cc,v 1.2 2005-02-23 19:26:12 edwards Exp $
+// $Id: rg_gaugeact.cc,v 2.0 2005-09-25 21:04:31 edwards Exp $
 /*! \file
  *  \brief Generic RG style plaquette + rectangle gauge action
  */

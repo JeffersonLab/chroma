@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovlap_contfrac5d_linop_base_array_w.h,v 1.2 2005-06-17 15:17:53 bjoo Exp $
+// $Id: prec_ovlap_contfrac5d_linop_base_array_w.h,v 2.0 2005-09-25 21:04:29 edwards Exp $
 /*! \file
  *  \brief Base class for Even-odd prec. 5D continued fraction linop
  */

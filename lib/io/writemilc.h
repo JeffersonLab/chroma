@@ -1,4 +1,4 @@
-// $Id: writemilc.h,v 1.3 2005-01-14 20:13:07 edwards Exp $
+// $Id: writemilc.h,v 2.0 2005-09-25 21:04:32 edwards Exp $
 
 /*! \file
  *  \brief  Write a MILC gauge configuration in the 1997 format

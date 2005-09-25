@@ -1,4 +1,4 @@
-// $Id: t_lwldslash_array.cc,v 1.2 2005-06-08 12:28:09 bjoo Exp $
+// $Id: t_lwldslash_array.cc,v 2.0 2005-09-25 21:04:47 edwards Exp $
 
 #include <iostream>
 #include <cstdio>

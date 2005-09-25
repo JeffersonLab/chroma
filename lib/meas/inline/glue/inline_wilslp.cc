@@ -1,4 +1,4 @@
-// $Id: inline_wilslp.cc,v 1.2 2005-04-06 04:34:53 edwards Exp $
+// $Id: inline_wilslp.cc,v 2.0 2005-09-25 21:04:37 edwards Exp $
 /*! \file
  *  \brief Inline Wilson loops
  */

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: objfactory.h,v 1.7 2005-01-20 03:08:15 edwards Exp $
+// $Id: objfactory.h,v 2.0 2005-09-25 21:04:25 edwards Exp $
 
 /*! @file
  * @brief Factory class for objects from XML input

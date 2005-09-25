@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: overlapbu_linop_w.h,v 1.8 2005-01-14 20:13:05 edwards Exp $
+// $Id: overlapbu_linop_w.h,v 2.0 2005-09-25 21:04:29 edwards Exp $
 /*! \file
  *  \brief A variant of the 4D overlap operator
  */

@@ -1,10 +1,13 @@
-// $Id: t_formfac.cc,v 1.9 2005-03-02 00:44:19 edwards Exp $
+// $Id: t_formfac.cc,v 2.0 2005-09-25 21:04:47 edwards Exp $
 //
 //! \file
 //  \brief Test the form-factor routine
 //
 // $Log: t_formfac.cc,v $
-// Revision 1.9  2005-03-02 00:44:19  edwards
+// Revision 2.0  2005-09-25 21:04:47  edwards
+// Moved to version 2.0
+//
+// Revision 1.9  2005/03/02 00:44:19  edwards
 // Changed to new Chroma initialize/finalize format. Changed
 // all XMLReader("DATA") to use a command-line param arg.
 // Changed all XMLFileWriter(XMLDAT) to use the singleton instance.
@@ -34,7 +37,10 @@
 //
 // Revision 1.2  2003/03/06 00:27:29  flemingg
 // Added $Log: t_formfac.cc,v $
-// Added Revision 1.9  2005-03-02 00:44:19  edwards
+// Added Revision 2.0  2005-09-25 21:04:47  edwards
+// Added Moved to version 2.0
+// Added
+// Added Revision 1.9  2005/03/02 00:44:19  edwards
 // Added Changed to new Chroma initialize/finalize format. Changed
 // Added all XMLReader("DATA") to use a command-line param arg.
 // Added Changed all XMLFileWriter(XMLDAT) to use the singleton instance.

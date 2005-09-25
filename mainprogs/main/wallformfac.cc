@@ -1,4 +1,4 @@
-// $Id: wallformfac.cc,v 1.34 2005-04-11 02:01:30 edwards Exp $
+// $Id: wallformfac.cc,v 2.0 2005-09-25 21:04:46 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions with a wall sink
  *

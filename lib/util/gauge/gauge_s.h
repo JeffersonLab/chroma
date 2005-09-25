@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gauge_s.h,v 1.1 2004-01-07 13:50:09 bjoo Exp $
+// $Id: gauge_s.h,v 2.0 2005-09-25 21:04:44 edwards Exp $
 
 /*! \file
  * \brief Include all gauge utility routines

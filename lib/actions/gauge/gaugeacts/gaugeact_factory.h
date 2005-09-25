@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gaugeact_factory.h,v 1.2 2005-04-10 22:32:38 edwards Exp $
+// $Id: gaugeact_factory.h,v 2.0 2005-09-25 21:04:31 edwards Exp $
 /*! \file
  *  \brief Fermion action factories
  */

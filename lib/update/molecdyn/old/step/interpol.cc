@@ -1,4 +1,4 @@
-// $Id: interpol.cc,v 1.2 2005-01-14 20:13:08 edwards Exp $
+// $Id: interpol.cc,v 2.0 2005-09-25 21:04:43 edwards Exp $
 
 #error "NOT FULLY CONVERTED - NEED TO MOVE IntrplOrd into params of Integ. functor"
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: enum_loops_s.h,v 1.1 2005-08-27 11:34:08 mcneile Exp $
+// $Id: enum_loops_s.h,v 2.0 2005-09-25 21:04:35 edwards Exp $
 /*! \file
  *  \brief Enums for the different types of stochastic source.
  */        

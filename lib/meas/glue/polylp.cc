@@ -1,4 +1,4 @@
-// $Id: polylp.cc,v 1.5 2005-02-28 04:03:56 edwards Exp $
+// $Id: polylp.cc,v 2.0 2005-09-25 21:04:34 edwards Exp $
 /*! \file
  *  \brief Calculate the global normalized sum of the Polyakov loop
  */

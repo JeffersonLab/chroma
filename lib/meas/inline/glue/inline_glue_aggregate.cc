@@ -1,4 +1,4 @@
-// $Id: inline_glue_aggregate.cc,v 1.3 2005-05-13 12:49:50 bjoo Exp $
+// $Id: inline_glue_aggregate.cc,v 2.0 2005-09-25 21:04:37 edwards Exp $
 /*! \file
  *  \brief Inline glue measurement aggregator
  */

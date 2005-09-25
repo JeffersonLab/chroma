@@ -1,4 +1,4 @@
-// $Id: cfgtransf.cc,v 1.24 2005-08-23 19:36:14 edwards Exp $
+// $Id: cfgtransf.cc,v 2.0 2005-09-25 21:04:45 edwards Exp $
 /*! \file
  *  \brief Many-to-many gauge transformation routine
  */

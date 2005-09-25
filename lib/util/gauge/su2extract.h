@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: su2extract.h,v 1.5 2005-01-14 18:42:38 edwards Exp $
+// $Id: su2extract.h,v 2.0 2005-09-25 21:04:44 edwards Exp $
 /*! \file
  *  \brief  Extract an unnormalized SU(2) matrix from a GL(3,C) matrix
  */

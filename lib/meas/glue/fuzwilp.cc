@@ -1,4 +1,4 @@
-// $Id: fuzwilp.cc,v 1.6 2005-05-18 09:35:13 bjoo Exp $ fuzwilp.h,v 1.1 2004/04/26 16:12:49 mcneile Exp $
+// $Id: fuzwilp.cc,v 2.0 2005-09-25 21:04:34 edwards Exp $ fuzwilp.h,v 1.1 2004/04/26 16:12:49 mcneile Exp $
 /*! \file
  *  \brief Calculate ape-fuzzed Wilson loops
  */

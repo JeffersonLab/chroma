@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: szin_write_obj_funcmap.h,v 1.1 2005-09-24 21:14:28 edwards Exp $
+// $Id: szin_write_obj_funcmap.h,v 2.0 2005-09-25 21:04:39 edwards Exp $
 /*! \file
  *  \brief Write object function map
  */

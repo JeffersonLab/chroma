@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_nef_linop_array_w.h,v 1.18 2005-06-28 15:28:16 bjoo Exp $
+// $Id: prec_nef_linop_array_w.h,v 2.0 2005-09-25 21:04:29 edwards Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned NEF domain-wall fermion linear operator
  */

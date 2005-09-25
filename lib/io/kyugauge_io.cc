@@ -1,4 +1,4 @@
-// $Id: kyugauge_io.cc,v 1.8 2005-01-14 20:13:06 edwards Exp $
+// $Id: kyugauge_io.cc,v 2.0 2005-09-25 21:04:32 edwards Exp $
 
 /*! \file
  *  \brief Read/write a Kentucky gauge configuration

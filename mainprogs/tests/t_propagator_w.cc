@@ -1,4 +1,4 @@
-// $Id: t_propagator_w.cc,v 1.13 2005-04-24 13:46:17 mcneile Exp $
+// $Id: t_propagator_w.cc,v 2.0 2005-09-25 21:04:48 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  *   

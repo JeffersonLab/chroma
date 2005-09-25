@@ -1,6 +1,9 @@
-// $Id: nef_quarkprop4_w.cc,v 1.14 2005-01-14 20:13:06 edwards Exp $
+// $Id: nef_quarkprop4_w.cc,v 2.0 2005-09-25 21:04:30 edwards Exp $
 // $Log: nef_quarkprop4_w.cc,v $
-// Revision 1.14  2005-01-14 20:13:06  edwards
+// Revision 2.0  2005-09-25 21:04:30  edwards
+// Moved to version 2.0
+//
+// Revision 1.14  2005/01/14 20:13:06  edwards
 // Removed all using namespace QDP/Chroma from lib files. The library
 // should now be 100% in the Chroma namespace. All mainprogs need a
 // using namespace Chroma.

@@ -1,4 +1,4 @@
-// $Id: mesplq.cc,v 1.12 2005-02-28 03:35:50 edwards Exp $
+// $Id: mesplq.cc,v 2.0 2005-09-25 21:04:34 edwards Exp $
 /*! \file
  *  \brief Plaquette measurement
  */

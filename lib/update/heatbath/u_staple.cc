@@ -1,4 +1,4 @@
-// $Id: u_staple.cc,v 1.3 2005-07-03 16:10:11 edwards Exp $
+// $Id: u_staple.cc,v 2.0 2005-09-25 21:04:40 edwards Exp $
 /*! \file
  *  \brief calculate the sum of all staples for a particular u_mu link
  */

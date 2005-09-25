@@ -1,4 +1,4 @@
-//  $Id: sun_proj.cc,v 1.8 2005-01-14 20:13:08 edwards Exp $
+//  $Id: sun_proj.cc,v 2.0 2005-09-25 21:04:45 edwards Exp $
 /*! \file
  *  \ingroup gauge
  *  \author Subsetting added by A. Hart

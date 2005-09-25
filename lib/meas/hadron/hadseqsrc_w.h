@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hadseqsrc_w.h,v 1.1 2005-03-07 02:55:20 edwards Exp $
+// $Id: hadseqsrc_w.h,v 2.0 2005-09-25 21:04:35 edwards Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */

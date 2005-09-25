@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stoch_var.cc,v 1.3 2005-01-14 18:42:36 edwards Exp $
+// $Id: stoch_var.cc,v 2.0 2005-09-25 21:04:36 edwards Exp $
 /*! \file
  *  \brief Stochastic variable construction
  *

@@ -1,6 +1,6 @@
 #!/bin/sh -xev
 #
-# $Id: run_qqq_spectrum.sh,v 1.3 2005-09-08 20:07:40 adamant Exp $
+# $Id: run_qqq_spectrum.sh,v 2.0 2005-09-25 21:04:22 edwards Exp $
 #
 
 ## ${SCP} commands disabled for solver and xml output
@@ -424,7 +424,7 @@ cat > src_template <<EOF
 
 <make_source>
 <annotation>
-; $Id: run_qqq_spectrum.sh,v 1.3 2005-09-08 20:07:40 adamant Exp $
+; $Id: run_qqq_spectrum.sh,v 2.0 2005-09-25 21:04:22 edwards Exp $
 ;
 ; MAKE_SOURCE input file.
 ;
@@ -480,7 +480,7 @@ cat > prop_template <<EOF
 
 <propagator>
 <annotation>
-; $Id: run_qqq_spectrum.sh,v 1.3 2005-09-08 20:07:40 adamant Exp $
+; $Id: run_qqq_spectrum.sh,v 2.0 2005-09-25 21:04:22 edwards Exp $
 ;
 ; PROPAGATOR input file.
 ;
@@ -750,7 +750,7 @@ ls -l
 
 ##<spectrum_w>
 ##<annotation>
-##; $Id: run_qqq_spectrum.sh,v 1.3 2005-09-08 20:07:40 adamant Exp $
+##; $Id: run_qqq_spectrum.sh,v 2.0 2005-09-25 21:04:22 edwards Exp $
 ##;
 ##; SPECTRUM_W input file.
 ##;

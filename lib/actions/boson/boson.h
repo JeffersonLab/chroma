@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: boson.h,v 1.2 2003-10-10 03:46:46 edwards Exp $
+// $Id: boson.h,v 2.0 2005-09-25 21:04:25 edwards Exp $
 
 /*! \file
  * \brief Boson action support

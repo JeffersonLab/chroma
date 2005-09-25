@@ -1,4 +1,4 @@
-// $Id: t_dwflocality.cc,v 1.9 2005-09-25 14:24:38 kostas Exp $
+// $Id: t_dwflocality.cc,v 2.0 2005-09-25 21:04:46 edwards Exp $
 
 #include <iostream>
 #include <cstdio>

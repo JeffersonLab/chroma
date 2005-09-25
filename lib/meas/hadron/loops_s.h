@@ -1,4 +1,4 @@
-// $Id: loops_s.h,v 1.11 2005-08-27 11:30:24 mcneile Exp $
+// $Id: loops_s.h,v 2.0 2005-09-25 21:04:35 edwards Exp $
 
 #ifndef LOOP_S_H
 #define LOOP_S_H

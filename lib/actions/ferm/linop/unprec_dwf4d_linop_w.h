@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf4d_linop_w.h,v 1.3 2005-01-20 03:07:34 edwards Exp $
+// $Id: unprec_dwf4d_linop_w.h,v 2.0 2005-09-25 21:04:30 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned projected DWF operator to 4D
  */

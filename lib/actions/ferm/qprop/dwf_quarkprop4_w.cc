@@ -1,6 +1,9 @@
-// $Id: dwf_quarkprop4_w.cc,v 1.25 2005-02-21 19:28:59 edwards Exp $
+// $Id: dwf_quarkprop4_w.cc,v 2.0 2005-09-25 21:04:30 edwards Exp $
 // $Log: dwf_quarkprop4_w.cc,v $
-// Revision 1.25  2005-02-21 19:28:59  edwards
+// Revision 2.0  2005-09-25 21:04:30  edwards
+// Moved to version 2.0
+//
+// Revision 1.25  2005/02/21 19:28:59  edwards
 // Changed initHeader's to be instead the appropriate default constructor
 // for the ChiralParam, AnisoParam and QQQ structs. Removed all
 // calls to initHeader. Changed quarkProp routines to instead take

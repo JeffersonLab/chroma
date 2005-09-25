@@ -1,4 +1,4 @@
-// $Id: mesonseqsrc_w.cc,v 1.8 2005-03-18 05:12:37 edwards Exp $
+// $Id: mesonseqsrc_w.cc,v 2.0 2005-09-25 21:04:35 edwards Exp $
 /*! \file
  *  \brief Construct meson sequential sources.
  */

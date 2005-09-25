@@ -1,4 +1,4 @@
-// $Id: prec_wilson_fermact_w.cc,v 1.21 2005-02-23 19:29:20 edwards Exp $
+// $Id: prec_wilson_fermact_w.cc,v 2.0 2005-09-25 21:04:26 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action
  */

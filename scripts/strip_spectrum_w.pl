@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: strip_spectrum_w.pl,v 1.6 2003-07-16 17:34:02 edwards Exp $
+# $Id: strip_spectrum_w.pl,v 2.0 2005-09-25 21:04:54 edwards Exp $
 #
 # SZIN-style stripper for namelist output of spectrum_w.  Namelist output
 # is presented to the stripper on the STDIN.

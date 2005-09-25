@@ -1,4 +1,4 @@
-// $Id: pg_gaugeact.cc,v 1.4 2005-01-14 03:13:32 edwards Exp $
+// $Id: pg_gaugeact.cc,v 2.0 2005-09-25 21:04:31 edwards Exp $
 /*! \file
  *  \brief Parallelogram gauge action
  */

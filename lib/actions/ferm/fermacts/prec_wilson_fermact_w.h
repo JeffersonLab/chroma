@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_wilson_fermact_w.h,v 1.17 2005-07-15 11:06:10 bjoo Exp $
+// $Id: prec_wilson_fermact_w.h,v 2.0 2005-09-25 21:04:26 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action
  */

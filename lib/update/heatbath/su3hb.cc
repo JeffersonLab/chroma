@@ -1,4 +1,4 @@
-// $Id: su3hb.cc,v 1.7 2005-07-03 16:10:11 edwards Exp $
+// $Id: su3hb.cc,v 2.0 2005-09-25 21:04:40 edwards Exp $
 /*! \file
  *  \brief Do one SU(2) subgroup heatbath update of SU(Nc) matrix U with action
  */

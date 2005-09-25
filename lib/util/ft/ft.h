@@ -1,7 +1,10 @@
 // -*- C++ -*-
-// $Id: ft.h,v 1.2 2003-04-01 02:38:26 edwards Exp $
+// $Id: ft.h,v 2.0 2005-09-25 21:04:44 edwards Exp $
 // $Log: ft.h,v $
-// Revision 1.2  2003-04-01 02:38:26  edwards
+// Revision 2.0  2005-09-25 21:04:44  edwards
+// Moved to version 2.0
+//
+// Revision 1.2  2003/04/01 02:38:26  edwards
 // Added doxygen comments.
 //
 // Revision 1.1  2003/03/14 05:06:06  flemingg

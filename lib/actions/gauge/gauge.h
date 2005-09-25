@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gauge.h,v 1.6 2005-01-13 02:27:42 edwards Exp $
+// $Id: gauge.h,v 2.0 2005-09-25 21:04:31 edwards Exp $
 
 /*! \file
  * \brief Gauge action support

@@ -1,4 +1,4 @@
-/*  $Id: asq_dsl_s.cc,v 1.11 2005-01-14 20:13:05 edwards Exp $  */
+/*  $Id: asq_dsl_s.cc,v 2.0 2005-09-25 21:04:28 edwards Exp $  */
 
 #include "chromabase.h"
 #include "actions/ferm/linop/asq_dsl_s.h"

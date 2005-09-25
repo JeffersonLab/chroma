@@ -1,4 +1,4 @@
-// $Id: block.cc,v 1.1 2005-02-17 02:52:11 edwards Exp $
+// $Id: block.cc,v 2.0 2005-09-25 21:04:34 edwards Exp $
 
 #error "NOT FULLY CONVERTED"
 

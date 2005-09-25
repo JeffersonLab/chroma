@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: barcomp_w.h,v 1.9 2005-08-31 05:50:00 edwards Exp $
+// $Id: barcomp_w.h,v 2.0 2005-09-25 21:04:34 edwards Exp $
 /*! \file
  *  \brief Construct all components of a baryon propagator
  */

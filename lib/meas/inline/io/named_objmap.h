@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: named_objmap.h,v 1.1 2005-09-23 03:43:09 edwards Exp $
+// $Id: named_objmap.h,v 2.0 2005-09-25 21:04:38 edwards Exp $
 /*! \file
  *  \brief Named object function map
  */

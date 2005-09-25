@@ -1,4 +1,4 @@
-// $Id: t_remez.cc,v 1.4 2005-05-17 13:15:16 bjoo Exp $
+// $Id: t_remez.cc,v 2.0 2005-09-25 21:04:48 edwards Exp $
 /*! \file
  *  \brief Test the Remez code
  */

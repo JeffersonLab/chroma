@@ -1,4 +1,4 @@
-// $Id: gramschm_array.h,v 1.3 2005-02-10 22:22:42 edwards Exp $
+// $Id: gramschm_array.h,v 2.0 2005-09-25 21:04:33 edwards Exp $
 /*! \file
  *  \brief Gramm-Schmidt orthogonolization
  */

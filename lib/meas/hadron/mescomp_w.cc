@@ -1,4 +1,4 @@
-//  $Id: mescomp_w.cc,v 1.2 2005-08-31 05:50:00 edwards Exp $
+//  $Id: mescomp_w.cc,v 2.0 2005-09-25 21:04:35 edwards Exp $
 /*! \file
  *  \brief Construct all components of a meson propagator
  */

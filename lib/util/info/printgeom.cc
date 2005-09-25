@@ -1,4 +1,4 @@
-//  $Id: printgeom.cc,v 1.5 2005-01-14 18:42:38 edwards Exp $
+//  $Id: printgeom.cc,v 2.0 2005-09-25 21:04:45 edwards Exp $
 /*! \file
  *  \brief Print out machine geometry and problem size info
  */

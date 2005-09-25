@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: xmllog_io.h,v 1.5 2005-03-02 18:32:05 bjoo Exp $
+// $Id: xmllog_io.h,v 2.0 2005-09-25 21:04:32 edwards Exp $
 /*! \file
  * \brief Singleton instances of xml output
  */

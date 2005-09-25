@@ -1,4 +1,4 @@
-// $Id: t_dwf4d.cc,v 1.13 2005-03-02 00:44:19 edwards Exp $
+// $Id: t_dwf4d.cc,v 2.0 2005-09-25 21:04:46 edwards Exp $
 
 #include <iostream>
 #include <cstdio>

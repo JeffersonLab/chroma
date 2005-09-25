@@ -1,5 +1,5 @@
 /* + */
-/* $Id: baryon_s.cc,v 1.6 2005-07-15 16:42:20 mcneile Exp $ ($Date: 2005-07-15 16:42:20 $) */
+/* $Id: baryon_s.cc,v 2.0 2005-09-25 21:04:35 edwards Exp $ ($Date: 2005-09-25 21:04:35 $) */
 
 /* This routine is specific to staggered fermions! */
 

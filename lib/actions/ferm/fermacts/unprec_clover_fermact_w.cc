@@ -1,4 +1,4 @@
-// $Id: unprec_clover_fermact_w.cc,v 1.10 2005-01-02 05:21:09 edwards Exp $
+// $Id: unprec_clover_fermact_w.cc,v 2.0 2005-09-25 21:04:26 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Clover fermion action
  */

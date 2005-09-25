@@ -1,4 +1,4 @@
-// $Id: prec_dwf_qprop_array_sse_w.cc,v 1.7 2005-09-19 02:07:46 edwards Exp $
+// $Id: prec_dwf_qprop_array_sse_w.cc,v 2.0 2005-09-25 21:04:30 edwards Exp $
 /*! \file
  *  \brief SSE 5D DWF specific quark propagator solver
  */

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: simple_fermbc.h,v 1.2 2005-01-14 20:13:04 edwards Exp $
+// $Id: simple_fermbc.h,v 2.0 2005-09-25 21:04:27 edwards Exp $
 /*! \file
  *  \brief Simple fermionic BC
  */

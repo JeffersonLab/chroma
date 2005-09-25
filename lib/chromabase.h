@@ -1,4 +1,4 @@
-// $Id: chromabase.h,v 1.8 2005-09-16 20:47:17 edwards Exp $
+// $Id: chromabase.h,v 2.0 2005-09-25 21:04:24 edwards Exp $
 //
 // Absolute basic stuff to use chroma
 //

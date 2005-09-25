@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: io.h,v 1.24 2005-03-02 00:42:37 edwards Exp $
+// $Id: io.h,v 2.0 2005-09-25 21:04:31 edwards Exp $
 
 #ifndef __io_h__
 #define __io_h__

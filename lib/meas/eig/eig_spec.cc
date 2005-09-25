@@ -1,4 +1,4 @@
-// $Id: eig_spec.cc,v 1.6 2005-02-10 22:22:42 edwards Exp $
+// $Id: eig_spec.cc,v 2.0 2005-09-25 21:04:33 edwards Exp $
 /*! \file
  *  \brief Compute low lying eigenvalues of the hermitian H
  */

@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.294 2005-09-25 20:38:09 edwards Exp $
+# $Id: Makefile.am,v 2.0 2005-09-25 21:04:23 edwards Exp $
 #
 # Path for all files used in building the library
 

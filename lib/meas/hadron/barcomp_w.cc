@@ -1,4 +1,4 @@
-//  $Id: barcomp_w.cc,v 1.13 2005-08-31 05:50:00 edwards Exp $
+//  $Id: barcomp_w.cc,v 2.0 2005-09-25 21:04:34 edwards Exp $
 /*! \file
  *  \brief Construct all components of a baryon propagator
  */

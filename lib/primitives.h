@@ -1,4 +1,4 @@
-// $Id: primitives.h,v 1.1 2004-01-08 03:11:47 edwards Exp $
+// $Id: primitives.h,v 2.0 2005-09-25 21:04:25 edwards Exp $
 
 #error "OBSOLETE - DO NOT USE. ONLY FOR REFERENCE"
 

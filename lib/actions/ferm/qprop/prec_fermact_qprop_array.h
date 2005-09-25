@@ -1,4 +1,4 @@
-// $Id: prec_fermact_qprop_array.h,v 1.3 2005-02-23 19:29:20 edwards Exp $
+// $Id: prec_fermact_qprop_array.h,v 2.0 2005-09-25 21:04:30 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic even-odd preconditioned fermion operator
  *

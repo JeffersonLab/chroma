@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: mciter.h,v 1.4 2005-07-03 16:10:11 edwards Exp $
+// $Id: mciter.h,v 2.0 2005-09-25 21:04:40 edwards Exp $
 /*! \file
  *  \brief One heatbath interation of updating the gauge field configuration
  */

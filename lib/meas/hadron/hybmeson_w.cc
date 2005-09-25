@@ -1,4 +1,4 @@
-// $Id: hybmeson_w.cc,v 1.6 2005-02-17 02:51:01 edwards Exp $
+// $Id: hybmeson_w.cc,v 2.0 2005-09-25 21:04:35 edwards Exp $
 /*! \file
  *  \brief Hybrid meson 2-pt functions
  */

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovext_fermact_array_w.h,v 1.20 2005-07-15 11:06:10 bjoo Exp $
+// $Id: unprec_ovext_fermact_array_w.h,v 2.0 2005-09-25 21:04:26 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */

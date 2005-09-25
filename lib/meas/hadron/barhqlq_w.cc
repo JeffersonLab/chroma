@@ -1,4 +1,4 @@
-// $Id: barhqlq_w.cc,v 1.9 2005-09-23 17:37:25 edwards Exp $
+// $Id: barhqlq_w.cc,v 2.0 2005-09-25 21:04:34 edwards Exp $
 /*! \file
  *  \brief Heavy-light baryon 2-pt functions
  */

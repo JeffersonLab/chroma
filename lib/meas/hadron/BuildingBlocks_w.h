@@ -39,7 +39,7 @@ namespace Chroma {
 //###################################################################################//
 
 static const char* const CVSBuildingBlocks_hh =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.h,v 1.8 2005-07-27 16:23:52 edwards Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.h,v 2.0 2005-09-25 21:04:34 edwards Exp $";
 
 //###################################################################################//
 // Record CVS Info for BuildingBlocks.hh and BuildingBlocks.cc                       //

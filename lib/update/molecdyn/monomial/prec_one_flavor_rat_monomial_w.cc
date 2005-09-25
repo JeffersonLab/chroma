@@ -1,4 +1,4 @@
-// $Id: prec_one_flavor_rat_monomial_w.cc,v 1.6 2005-05-29 02:10:45 edwards Exp $
+// $Id: prec_one_flavor_rat_monomial_w.cc,v 2.0 2005-09-25 21:04:41 edwards Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 4D ferm monomials
  */

@@ -1,4 +1,4 @@
-// $Id: fermacts_aggregate_w.cc,v 1.3 2005-04-22 16:58:33 bjoo Exp $
+// $Id: fermacts_aggregate_w.cc,v 2.0 2005-09-25 21:04:25 edwards Exp $
 /*! \file
  *  \brief All Wilson-type fermion actions
  */

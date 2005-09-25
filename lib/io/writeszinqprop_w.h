@@ -1,4 +1,4 @@
-// $Id: writeszinqprop_w.h,v 1.3 2005-01-14 20:13:07 edwards Exp $
+// $Id: writeszinqprop_w.h,v 2.0 2005-09-25 21:04:32 edwards Exp $
 
 #ifndef __writeszinqprop_h__
 #define __writeszinqprop_h__

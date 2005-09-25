@@ -1,4 +1,4 @@
-// $Id: t_precnef.cc,v 1.1 2005-03-30 15:55:06 bjoo Exp $
+// $Id: t_precnef.cc,v 2.0 2005-09-25 21:04:48 edwards Exp $
 
 #include <iostream>
 #include <cstdio>

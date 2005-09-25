@@ -1,4 +1,4 @@
-/*#  $Id: expsu3.cc,v 1.4 2005-01-14 20:13:08 edwards Exp $ ($Date: 2005-01-14 20:13:08 $) */
+/*#  $Id: expsu3.cc,v 2.0 2005-09-25 21:04:44 edwards Exp $ ($Date: 2005-09-25 21:04:44 $) */
 /*#  EXPSU3: */
 /*#  In place  a = 1 + a + (1/2)*a^2 + ...+ (1/n!)*(a)^n  n = 12 */
 /*#  a must be a lattice_complex32_colour_colour  primitive */

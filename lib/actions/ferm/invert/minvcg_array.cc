@@ -1,4 +1,4 @@
-// $Id: minvcg_array.cc,v 1.4 2005-07-06 09:12:42 bjoo Exp $
+// $Id: minvcg_array.cc,v 2.0 2005-09-25 21:04:28 edwards Exp $
 
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator

@@ -1,4 +1,4 @@
-// $Id: su3_hb_sweep.cc,v 1.3 2005-07-03 16:10:11 edwards Exp $
+// $Id: su3_hb_sweep.cc,v 2.0 2005-09-25 21:04:40 edwards Exp $
 /*! \file
  *  \brief Do one su(3) sweep
  */

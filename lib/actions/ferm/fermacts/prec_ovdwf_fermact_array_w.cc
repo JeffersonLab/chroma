@@ -1,4 +1,4 @@
-// $Id: prec_ovdwf_fermact_array_w.cc,v 1.13 2005-05-28 22:37:42 edwards Exp $
+// $Id: prec_ovdwf_fermact_array_w.cc,v 2.0 2005-09-25 21:04:26 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned Overlap-DWF (Borici) action
  */

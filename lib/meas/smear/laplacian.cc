@@ -1,4 +1,4 @@
-// $Id: laplacian.cc,v 1.5 2005-01-14 18:42:37 edwards Exp $
+// $Id: laplacian.cc,v 2.0 2005-09-25 21:04:40 edwards Exp $
 /*! \file
  *  \brief Laplacian smearing of a source
  */

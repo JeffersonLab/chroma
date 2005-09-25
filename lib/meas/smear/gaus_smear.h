@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gaus_smear.h,v 1.6 2005-01-14 18:42:37 edwards Exp $
+// $Id: gaus_smear.h,v 2.0 2005-09-25 21:04:39 edwards Exp $
 /*! \file
  *  \brief Gaussian smearing of color vector
  */

@@ -1,4 +1,4 @@
-// $Id: t_precdwf.cc,v 1.20 2005-06-27 22:21:04 bjoo Exp $
+// $Id: t_precdwf.cc,v 2.0 2005-09-25 21:04:48 edwards Exp $
 
 #include <iostream>
 #include <cstdio>

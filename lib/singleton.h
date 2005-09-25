@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: singleton.h,v 1.1 2004-08-23 04:04:44 edwards Exp $
+// $Id: singleton.h,v 2.0 2005-09-25 21:04:25 edwards Exp $
 /*! @file
  * @brief Singleton support
  */

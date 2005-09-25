@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eig_s.h,v 1.1 2004-01-07 13:50:08 bjoo Exp $
+// $Id: eig_s.h,v 2.0 2005-09-25 21:04:33 edwards Exp $
 
 /*! \file
  * \brief Eigenvalue measurements

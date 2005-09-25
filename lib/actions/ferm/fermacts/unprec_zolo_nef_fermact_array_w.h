@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_zolo_nef_fermact_array_w.h,v 1.14 2005-05-28 22:37:42 edwards Exp $
+// $Id: unprec_zolo_nef_fermact_array_w.h,v 2.0 2005-09-25 21:04:27 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF domain-wall fermion action
  */

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wallff_w.h,v 1.6 2005-01-14 18:42:36 edwards Exp $
+// $Id: wallff_w.h,v 2.0 2005-09-25 21:04:36 edwards Exp $
 /*! \file
  *  \brief Structures for wall-sink/source form-factors
  *

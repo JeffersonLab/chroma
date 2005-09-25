@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_qpropqio_w.h,v 1.2 2005-04-19 20:05:22 edwards Exp $
+// $Id: inline_qpropqio_w.h,v 2.0 2005-09-25 21:04:37 edwards Exp $
 /*! \file
  * \brief Inline measurement of qpropqio
  *

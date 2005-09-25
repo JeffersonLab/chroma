@@ -1,4 +1,4 @@
-// $Id: ischiral_w.cc,v 1.3 2005-01-14 18:42:35 edwards Exp $
+// $Id: ischiral_w.cc,v 2.0 2005-09-25 21:04:33 edwards Exp $
 #include <chromabase.h>
 #include "meas/eig/eig_w.h"
 

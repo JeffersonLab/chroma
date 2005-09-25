@@ -1,4 +1,4 @@
-// $Id: pion_sing_s.h,v 1.7 2005-09-03 13:38:49 mcneile Exp $
+// $Id: pion_sing_s.h,v 2.0 2005-09-25 21:04:35 edwards Exp $
 #ifndef PION_SING_S_H
 #define PION_SING_S_H
 

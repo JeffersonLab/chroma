@@ -1,4 +1,4 @@
-// $Id: inline_erase_obj.cc,v 1.2 2005-09-24 21:14:28 edwards Exp $
+// $Id: inline_erase_obj.cc,v 2.0 2005-09-25 21:04:38 edwards Exp $
 /*! \file
  * \brief Inline task to erase an object from a named buffer
  *

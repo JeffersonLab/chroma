@@ -1,10 +1,13 @@
-// $Id: t_mesons_w.cc,v 1.8 2005-03-02 00:44:19 edwards Exp $
+// $Id: t_mesons_w.cc,v 2.0 2005-09-25 21:04:47 edwards Exp $
 //
 //! \file
 //  \brief Test the Wilson mesons() routine
 //
 // $Log: t_mesons_w.cc,v $
-// Revision 1.8  2005-03-02 00:44:19  edwards
+// Revision 2.0  2005-09-25 21:04:47  edwards
+// Moved to version 2.0
+//
+// Revision 1.8  2005/03/02 00:44:19  edwards
 // Changed to new Chroma initialize/finalize format. Changed
 // all XMLReader("DATA") to use a command-line param arg.
 // Changed all XMLFileWriter(XMLDAT) to use the singleton instance.

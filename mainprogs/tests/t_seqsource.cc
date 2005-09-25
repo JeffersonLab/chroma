@@ -1,4 +1,4 @@
-// $Id: t_seqsource.cc,v 1.1 2005-03-18 05:09:29 edwards Exp $
+// $Id: t_seqsource.cc,v 2.0 2005-09-25 21:04:49 edwards Exp $
 //! \file
 //  \brief Test the sequential-source and resulting seqprop
 //

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gauge_monomial.cc,v 1.4 2005-04-25 13:39:24 bjoo Exp $
+// $Id: gauge_monomial.cc,v 2.0 2005-09-25 21:04:41 edwards Exp $
 /*! \file
  *  \brief Generic gauge action monomial wrapper
  */

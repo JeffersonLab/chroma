@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: remez_coeff.h,v 1.1 2005-02-02 22:43:55 edwards Exp $
+// $Id: remez_coeff.h,v 2.0 2005-09-25 21:04:26 edwards Exp $
 /*! \file
  *  \brief Remez algorithm coefficients
  */

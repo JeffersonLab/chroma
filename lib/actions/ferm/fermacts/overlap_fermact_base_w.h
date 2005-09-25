@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: overlap_fermact_base_w.h,v 1.22 2005-07-15 11:06:10 bjoo Exp $
+// $Id: overlap_fermact_base_w.h,v 2.0 2005-09-25 21:04:25 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */

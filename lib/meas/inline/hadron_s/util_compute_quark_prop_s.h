@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: util_compute_quark_prop_s.h,v 1.1 2005-08-25 16:38:40 mcneile Exp $
+// $Id: util_compute_quark_prop_s.h,v 2.0 2005-09-25 21:04:38 edwards Exp $
 /*! \file
  * \brief Compute staggered quark propagator
  *

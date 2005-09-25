@@ -1,4 +1,4 @@
-// $Id: invmr.cc,v 1.6 2005-01-14 20:13:05 edwards Exp $
+// $Id: invmr.cc,v 2.0 2005-09-25 21:04:27 edwards Exp $
 
 /*! \file
  *  \brief Minimal-Residual (MR) for a generic fermion Linear Operator

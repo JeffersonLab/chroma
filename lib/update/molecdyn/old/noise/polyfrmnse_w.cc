@@ -1,4 +1,4 @@
-/* $Id: polyfrmnse_w.cc,v 1.1 2005-02-14 21:37:00 edwards Exp $ ($Date: 2005-02-14 21:37:00 $) */
+/* $Id: polyfrmnse_w.cc,v 2.0 2005-09-25 21:04:42 edwards Exp $ ($Date: 2005-09-25 21:04:42 $) */
 
 /* This routine is specific to wilson fermions!                           */
 

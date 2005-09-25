@@ -1,4 +1,4 @@
-// $Id: seqpiontest_w.cc,v 1.3 2005-01-14 18:42:36 edwards Exp $
+// $Id: seqpiontest_w.cc,v 2.0 2005-09-25 21:04:35 edwards Exp $
 /*! \file
  *  \brief Test a pion sequential source
  */

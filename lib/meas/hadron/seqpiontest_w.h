@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: seqpiontest_w.h,v 1.2 2005-01-14 18:42:36 edwards Exp $
+// $Id: seqpiontest_w.h,v 2.0 2005-09-25 21:04:35 edwards Exp $
 /*! \file
  *  \brief Test a pion sequential source
  */

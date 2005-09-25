@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_array_pab_w.h,v 1.3 2005-06-17 15:17:53 bjoo Exp $
+// $Id: lwldslash_array_pab_w.h,v 2.0 2005-09-25 21:04:28 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator over arrays
  */

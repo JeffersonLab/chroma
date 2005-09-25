@@ -1,4 +1,4 @@
-// $Id: multipole_w.cc,v 1.7 2005-04-09 23:15:24 edwards Exp $
+// $Id: multipole_w.cc,v 2.0 2005-09-25 21:04:35 edwards Exp $
 /*! \file
  *  \brief Multipole moments
  *

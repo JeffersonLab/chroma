@@ -1,4 +1,4 @@
-// $Id: writeszin.h,v 1.8 2005-04-07 03:28:12 edwards Exp $
+// $Id: writeszin.h,v 2.0 2005-09-25 21:04:32 edwards Exp $
 
 /*! \file
  *  \brief Write a SZIN configuration written at configuration version 7.

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_clover_fermact_w.h,v 1.9 2005-07-15 11:06:10 bjoo Exp $
+// $Id: prec_clover_fermact_w.h,v 2.0 2005-09-25 21:04:26 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion action
  */

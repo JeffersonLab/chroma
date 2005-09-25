@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fuzwilp.h,v 1.4 2005-02-10 18:11:22 edwards Exp $
+// $Id: fuzwilp.h,v 2.0 2005-09-25 21:04:34 edwards Exp $
 /*! \file
  *  \brief Calculate ape-fuzzed Wilson loops
  */

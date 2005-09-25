@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: invert.h,v 1.8 2005-01-28 02:14:28 edwards Exp $
+// $Id: invert.h,v 2.0 2005-09-25 21:04:27 edwards Exp $
 
 /*! \file
  * \brief Inverters

@@ -1,4 +1,4 @@
-// $Id: genapprox.cc,v 1.4 2005-05-02 09:35:57 bjoo Exp $
+// $Id: genapprox.cc,v 2.0 2005-09-25 21:04:41 edwards Exp $
 /*! @file
  * @brief Wrapper for Remez code
  */

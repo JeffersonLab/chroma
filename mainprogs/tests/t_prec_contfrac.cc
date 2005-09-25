@@ -1,4 +1,4 @@
-// $Id: t_prec_contfrac.cc,v 1.7 2005-05-18 15:41:56 bjoo Exp $
+// $Id: t_prec_contfrac.cc,v 2.0 2005-09-25 21:04:48 edwards Exp $
 
 #include <iostream>
 #include <cstdio>

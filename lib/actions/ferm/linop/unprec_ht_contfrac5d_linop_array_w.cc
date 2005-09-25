@@ -1,4 +1,4 @@
-// $Id: unprec_ht_contfrac5d_linop_array_w.cc,v 1.5 2005-06-28 15:28:16 bjoo Exp $
+// $Id: unprec_ht_contfrac5d_linop_array_w.cc,v 2.0 2005-09-25 21:04:30 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned H_T kernel continued fraction (5D) operator
  */

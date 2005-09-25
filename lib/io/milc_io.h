@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: milc_io.h,v 1.3 2005-08-23 19:35:53 edwards Exp $
+// $Id: milc_io.h,v 2.0 2005-09-25 21:04:32 edwards Exp $
 
 /*! \file
  *  \brief MILC gauge format routines

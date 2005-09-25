@@ -1,4 +1,4 @@
-// $Id: lovlap_double_pass_w.cc,v 1.10 2005-02-10 22:22:05 edwards Exp $
+// $Id: lovlap_double_pass_w.cc,v 2.0 2005-09-25 21:04:28 edwards Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */

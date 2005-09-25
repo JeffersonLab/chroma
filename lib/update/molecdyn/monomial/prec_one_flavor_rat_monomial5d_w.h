@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_one_flavor_rat_monomial5d_w.h,v 1.7 2005-05-29 02:10:45 edwards Exp $
+// $Id: prec_one_flavor_rat_monomial5d_w.h,v 2.0 2005-09-25 21:04:41 edwards Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 5D ferm monomials
  */

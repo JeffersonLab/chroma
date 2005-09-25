@@ -1,4 +1,4 @@
-// $Id: make_xml_file.cc,v 1.2 2005-04-19 20:05:22 edwards Exp $
+// $Id: make_xml_file.cc,v 2.0 2005-09-25 21:04:36 edwards Exp $
 /*! \file
  *  \brief Make xml file writer
  */

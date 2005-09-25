@@ -14,7 +14,7 @@
   <Input><bar3ptfn>
 <annotation>
 
-; $Id: bar3ptfn_nonrel_v7.linux-scalar-intel.xml,v 1.1 2004-04-01 21:44:46 edwards Exp $
+; $Id: bar3ptfn_nonrel_v7.linux-scalar-intel.xml,v 2.0 2005-09-25 21:04:55 edwards Exp $
 ;
 ; BAR3PTFN input file.
 ;

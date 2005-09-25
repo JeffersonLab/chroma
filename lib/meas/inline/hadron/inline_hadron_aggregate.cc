@@ -1,4 +1,4 @@
-// $Id: inline_hadron_aggregate.cc,v 1.8 2005-08-31 05:50:00 edwards Exp $
+// $Id: inline_hadron_aggregate.cc,v 2.0 2005-09-25 21:04:37 edwards Exp $
 /*! \file
  *  \brief Inline hadron measurement aggregator
  */

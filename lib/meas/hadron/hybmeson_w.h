@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hybmeson_w.h,v 1.3 2005-01-14 18:42:36 edwards Exp $
+// $Id: hybmeson_w.h,v 2.0 2005-09-25 21:04:35 edwards Exp $
 /*! \file
  *  \brief Hybrid meson 2-pt functions
  */

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_inline_measurement_factory.h,v 1.2 2005-04-19 20:05:22 edwards Exp $
+// $Id: abs_inline_measurement_factory.h,v 2.0 2005-09-25 21:04:36 edwards Exp $
 /*! \file
  * \brief Inline measurement factory
  */

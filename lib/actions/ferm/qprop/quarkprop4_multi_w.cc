@@ -1,4 +1,4 @@
-// $Id: quarkprop4_multi_w.cc,v 1.8 2004-12-29 22:13:41 edwards Exp $
+// $Id: quarkprop4_multi_w.cc,v 2.0 2005-09-25 21:04:30 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *

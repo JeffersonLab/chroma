@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: schrfun.h,v 1.3 2003-10-10 03:46:47 edwards Exp $
+// $Id: schrfun.h,v 2.0 2005-09-25 21:04:39 edwards Exp $
 
 /*! \file
  * \brief Schroedinger functional

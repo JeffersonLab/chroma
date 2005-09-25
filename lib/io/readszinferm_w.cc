@@ -1,4 +1,4 @@
-// $Id: readszinferm_w.cc,v 1.7 2005-01-14 20:13:07 edwards Exp $: readszinqprop_w.cc,v 1.6 2003/04/30 21:19:33 edwards Exp $
+// $Id: readszinferm_w.cc,v 2.0 2005-09-25 21:04:32 edwards Exp $: readszinqprop_w.cc,v 1.6 2003/04/30 21:19:33 edwards Exp $
 /*!
  * @file
  * @brief  Read an old SZIN-style (checkerboarded) lattice Dirac fermion

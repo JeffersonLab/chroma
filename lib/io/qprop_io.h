@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qprop_io.h,v 1.29 2005-08-31 05:50:00 edwards Exp $
+// $Id: qprop_io.h,v 2.0 2005-09-25 21:04:32 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */

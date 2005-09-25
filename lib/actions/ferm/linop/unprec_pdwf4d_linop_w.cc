@@ -1,4 +1,4 @@
-// $Id: unprec_pdwf4d_linop_w.cc,v 1.4 2005-01-14 20:13:06 edwards Exp $
+// $Id: unprec_pdwf4d_linop_w.cc,v 2.0 2005-09-25 21:04:30 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned projected DWF operator to 4D using prec 5D bits
  */

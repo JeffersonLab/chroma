@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: multipole_w.h,v 1.4 2005-04-04 03:22:40 edwards Exp $
+// $Id: multipole_w.h,v 2.0 2005-09-25 21:04:35 edwards Exp $
 /*! \file
  *  \brief Multipole moments
  *

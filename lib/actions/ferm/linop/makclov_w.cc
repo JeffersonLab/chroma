@@ -1,7 +1,7 @@
 #error "NOT FULLY CONVERTED"
 
 /*
- * $Id: makclov_w.cc,v 1.1 2005-02-17 02:52:36 edwards Exp $
+ * $Id: makclov_w.cc,v 2.0 2005-09-25 21:04:29 edwards Exp $
 
  * MAKCLOV - calculates
 

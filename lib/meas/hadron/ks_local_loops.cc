@@ -1,5 +1,5 @@
 /* + */
-/* $Id: ks_local_loops.cc,v 1.5 2005-09-03 12:32:10 mcneile Exp $ ($Date: 2005-09-03 12:32:10 $) */
+/* $Id: ks_local_loops.cc,v 2.0 2005-09-25 21:04:35 edwards Exp $ ($Date: 2005-09-25 21:04:35 $) */
 
 
 #include "fermact.h"

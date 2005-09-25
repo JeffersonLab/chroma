@@ -1,6 +1,9 @@
-// $Id: multi_propagator_comp.cc,v 1.10 2005-04-11 02:01:30 edwards Exp $
+// $Id: multi_propagator_comp.cc,v 2.0 2005-09-25 21:04:45 edwards Exp $
 // $Log: multi_propagator_comp.cc,v $
-// Revision 1.10  2005-04-11 02:01:30  edwards
+// Revision 2.0  2005-09-25 21:04:45  edwards
+// Moved to version 2.0
+//
+// Revision 1.10  2005/04/11 02:01:30  edwards
 // Fixed up doxygen comments.
 //
 // Revision 1.9  2005/03/02 00:44:18  edwards

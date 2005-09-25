@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: rgauge.h,v 1.4 2005-01-12 19:30:43 edwards Exp $
+// $Id: rgauge.h,v 2.0 2005-09-25 21:04:44 edwards Exp $
 /*! \file
  *  \brief Do a random gauge transformation on the u fields
  */

@@ -1,4 +1,4 @@
-/*  $Id: naik_term_s.cc,v 1.9 2005-08-24 13:41:58 zbigniew Exp $  */
+/*  $Id: naik_term_s.cc,v 2.0 2005-09-25 21:04:29 edwards Exp $  */
 
 /* NAIK_LINKS */
 

@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_pab.cc,v 1.19 2005-09-20 04:42:22 bjoo Exp $
+// $Id: lwldslash_w_pab.cc,v 2.0 2005-09-25 21:04:29 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */

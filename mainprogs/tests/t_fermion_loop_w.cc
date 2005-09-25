@@ -1,4 +1,4 @@
-// $Id: t_fermion_loop_w.cc,v 1.9 2005-04-11 02:44:11 edwards Exp $
+// $Id: t_fermion_loop_w.cc,v 2.0 2005-09-25 21:04:46 edwards Exp $
 /*! \file
  *  \brief Main code for  generation of disconnected 
  *         loops

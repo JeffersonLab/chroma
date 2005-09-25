@@ -1,4 +1,4 @@
-// $Id: qproptransf.cc,v 1.17 2005-05-19 03:31:33 edwards Exp $
+// $Id: qproptransf.cc,v 2.0 2005-09-25 21:04:46 edwards Exp $
 /*! \file
  *  \brief Converts quark propagators in one format into another format.
  */

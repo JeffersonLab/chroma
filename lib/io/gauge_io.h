@@ -1,4 +1,4 @@
-// $Id: gauge_io.h,v 1.2 2005-01-14 20:13:06 edwards Exp $
+// $Id: gauge_io.h,v 2.0 2005-09-25 21:04:31 edwards Exp $
 
 /*! \file
  *  \brief Gauge reader/writers in QIO format

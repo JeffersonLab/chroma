@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hb_params.h,v 1.4 2005-07-03 16:10:11 edwards Exp $
+// $Id: hb_params.h,v 2.0 2005-09-25 21:04:40 edwards Exp $
 
 /*! \file
  * \brief Parameters for heat-bath

@@ -1,4 +1,4 @@
-$Id: faq.txt,v 1.1 2004-01-25 12:58:49 mcneile Exp $
+$Id: faq.txt,v 2.0 2005-09-25 21:04:23 edwards Exp $
 Chroma FAQ
 -------------
 Tue Jan 20 12:02:27 GMT 2004

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: overlap_state.h,v 1.7 2005-01-14 20:13:04 edwards Exp $
+// $Id: overlap_state.h,v 2.0 2005-09-25 21:04:25 edwards Exp $
 /*! @file
  * @brief Connection state holding eigenvectors
  *

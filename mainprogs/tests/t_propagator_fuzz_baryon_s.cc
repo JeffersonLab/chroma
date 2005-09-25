@@ -1,4 +1,4 @@
-// $Id: t_propagator_fuzz_baryon_s.cc,v 1.4 2005-07-15 16:37:09 mcneile Exp $
+// $Id: t_propagator_fuzz_baryon_s.cc,v 2.0 2005-09-25 21:04:48 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  *

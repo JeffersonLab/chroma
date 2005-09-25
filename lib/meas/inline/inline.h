@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline.h,v 1.6 2005-08-23 17:27:26 mcneile Exp $
+// $Id: inline.h,v 2.0 2005-09-25 21:04:36 edwards Exp $
 /*! \file
  * \brief Inline measurements
  *

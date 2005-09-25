@@ -1,4 +1,4 @@
-// $Id: chroma.h,v 1.1 2004-01-08 03:11:47 edwards Exp $
+// $Id: chroma.h,v 2.0 2005-09-25 21:04:24 edwards Exp $
 //
 // Main chroma include file. If you include this, you include
 // all prototypes

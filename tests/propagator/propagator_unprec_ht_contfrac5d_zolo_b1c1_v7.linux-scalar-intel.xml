@@ -18,7 +18,7 @@
   </ProgramInfo>
   <Input><propagator>
 <annotation>
-; $Id: propagator_unprec_ht_contfrac5d_zolo_b1c1_v7.linux-scalar-intel.xml,v 1.1 2005-01-31 15:05:25 bjoo Exp $
+; $Id: propagator_unprec_ht_contfrac5d_zolo_b1c1_v7.linux-scalar-intel.xml,v 2.0 2005-09-25 21:05:03 edwards Exp $
 ;
 ; PROPAGATOR input file.
 ;

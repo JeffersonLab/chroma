@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: rot_colvec.h,v 1.3 2005-01-14 18:42:35 edwards Exp $
+// $Id: rot_colvec.h,v 2.0 2005-09-25 21:04:34 edwards Exp $
 /*! \file
  *  \brief Rotate a color vector
  */

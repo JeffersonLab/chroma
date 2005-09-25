@@ -1,4 +1,4 @@
-// $Id: barseqsrc_w.cc,v 1.12 2005-07-21 16:58:49 edwards Exp $
+// $Id: barseqsrc_w.cc,v 2.0 2005-09-25 21:04:34 edwards Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */

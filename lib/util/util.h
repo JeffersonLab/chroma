@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: util.h,v 1.5 2004-01-29 20:38:46 edwards Exp $
+// $Id: util.h,v 2.0 2005-09-25 21:04:43 edwards Exp $
 
 /*! \file
  * \brief Include all utility routines

@@ -1,4 +1,4 @@
-// $Id: staggered_qprop.cc,v 1.15 2005-02-21 19:28:59 edwards Exp $
+// $Id: staggered_qprop.cc,v 2.0 2005-09-25 21:04:31 edwards Exp $
 /*! \file
  *  \brief Propagator solver for an even-odd non-preconditioned fermion operator
  *

@@ -1,4 +1,4 @@
-// $Id: nef_quarkprop4_w.h,v 1.5 2005-01-02 05:21:10 edwards Exp $
+// $Id: nef_quarkprop4_w.h,v 2.0 2005-09-25 21:04:30 edwards Exp $
 /*! \file
  * \brief Full quark propagator solver for domain wall fermions
  *

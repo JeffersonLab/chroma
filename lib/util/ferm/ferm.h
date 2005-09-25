@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ferm.h,v 1.5 2004-11-20 21:19:09 edwards Exp $
+// $Id: ferm.h,v 2.0 2005-09-25 21:04:43 edwards Exp $
 
 /*! \file
  * \brief Utilities for manipulating fermion fields

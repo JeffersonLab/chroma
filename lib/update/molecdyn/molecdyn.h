@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: molecdyn.h,v 1.19 2005-02-07 04:11:55 edwards Exp $
+// $Id: molecdyn.h,v 2.0 2005-09-25 21:04:40 edwards Exp $
 
 /*! \file
  * \brief Molecular dynamics support

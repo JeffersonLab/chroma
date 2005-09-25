@@ -1,4 +1,4 @@
-// $Id: asqtad_mdagm_s.cc,v 1.10 2005-06-28 15:28:15 bjoo Exp $
+// $Id: asqtad_mdagm_s.cc,v 2.0 2005-09-25 21:04:28 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */

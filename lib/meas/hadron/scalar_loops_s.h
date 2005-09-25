@@ -1,4 +1,4 @@
-// $Id: scalar_loops_s.h,v 1.8 2005-08-27 11:31:54 mcneile Exp $
+// $Id: scalar_loops_s.h,v 2.0 2005-09-25 21:04:35 edwards Exp $
 #ifndef SCALAR_LOOPS_S_H
 #define SCALAR_LOOPS_S_H
 

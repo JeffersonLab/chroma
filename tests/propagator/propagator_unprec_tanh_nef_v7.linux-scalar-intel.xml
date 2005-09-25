@@ -18,7 +18,7 @@
   </ProgramInfo>
   <Input><propagator>
 <annotation>
-; $Id: propagator_unprec_tanh_nef_v7.linux-scalar-intel.xml,v 1.2 2005-02-14 02:02:12 edwards Exp $
+; $Id: propagator_unprec_tanh_nef_v7.linux-scalar-intel.xml,v 2.0 2005-09-25 21:05:04 edwards Exp $
 ;
 ; PROPAGATOR input file.
 ;

@@ -1,4 +1,4 @@
-// $Id: prec_nef_general_linop_array_w.cc,v 1.10 2005-06-28 15:28:16 bjoo Exp $
+// $Id: prec_nef_general_linop_array_w.cc,v 2.0 2005-09-25 21:04:29 edwards Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned NEF domain-wall linear operator
  */

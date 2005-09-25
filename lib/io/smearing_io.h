@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: smearing_io.h,v 1.1 2005-02-23 19:26:41 edwards Exp $
+// $Id: smearing_io.h,v 2.0 2005-09-25 21:04:32 edwards Exp $
 /*! \file
  *  \brief Smearing parameters
  */

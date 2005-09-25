@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: chroma_init.h,v 1.7 2005-09-23 03:44:56 edwards Exp $
+// $Id: chroma_init.h,v 2.0 2005-09-25 21:04:31 edwards Exp $
 /*! \file
  *  \brief Initialization of Chroma
  */

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: invtype.h,v 1.8 2005-01-14 20:13:04 edwards Exp $
+// $Id: invtype.h,v 2.0 2005-09-25 21:04:25 edwards Exp $
 
 /*! @file
  * @brief Types of inverters

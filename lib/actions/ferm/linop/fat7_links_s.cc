@@ -1,4 +1,4 @@
-/*  $Id: fat7_links_s.cc,v 1.5 2005-01-14 20:13:05 edwards Exp $  */
+/*  $Id: fat7_links_s.cc,v 2.0 2005-09-25 21:04:28 edwards Exp $  */
 
 /* FAT7_LINKS */
 

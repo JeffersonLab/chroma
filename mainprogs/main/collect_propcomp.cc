@@ -1,6 +1,9 @@
-// $Id: collect_propcomp.cc,v 1.13 2005-03-02 00:44:18 edwards Exp $
+// $Id: collect_propcomp.cc,v 2.0 2005-09-25 21:04:45 edwards Exp $
 // $Log: collect_propcomp.cc,v $
-// Revision 1.13  2005-03-02 00:44:18  edwards
+// Revision 2.0  2005-09-25 21:04:45  edwards
+// Moved to version 2.0
+//
+// Revision 1.13  2005/03/02 00:44:18  edwards
 // Changed to new Chroma initialize/finalize format. Changed
 // all XMLReader("DATA") to use a command-line param arg.
 // Changed all XMLFileWriter(XMLDAT) to use the singleton instance.

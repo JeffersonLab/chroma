@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: szin_io.h,v 1.7 2005-08-23 19:24:14 edwards Exp $
+// $Id: szin_io.h,v 2.0 2005-09-25 21:04:32 edwards Exp $
 
 /*! \file
  *  \brief  Routines associated with SZIN gauge field IO

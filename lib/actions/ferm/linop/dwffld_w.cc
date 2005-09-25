@@ -1,4 +1,4 @@
-// $Id: dwffld_w.cc,v 1.8 2005-02-28 19:38:07 edwards Exp $
+// $Id: dwffld_w.cc,v 2.0 2005-09-25 21:04:28 edwards Exp $
 /*! \file
  *  \brief DWF parity/rotation operator
  *

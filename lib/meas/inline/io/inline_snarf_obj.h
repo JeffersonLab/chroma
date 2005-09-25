@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_snarf_obj.h,v 1.1 2005-09-24 21:14:28 edwards Exp $
+// $Id: inline_snarf_obj.h,v 2.0 2005-09-25 21:04:38 edwards Exp $
 /*! \file
  * \brief Inline task to copy gauge arg to a named object
  *

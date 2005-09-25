@@ -1,4 +1,4 @@
-// $Id: t_sumr.cc,v 1.7 2005-03-02 00:44:20 edwards Exp $
+// $Id: t_sumr.cc,v 2.0 2005-09-25 21:04:49 edwards Exp $
 
 #include <iostream>
 #include <sstream>

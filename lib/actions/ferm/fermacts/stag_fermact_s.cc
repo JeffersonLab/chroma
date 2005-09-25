@@ -1,4 +1,4 @@
-// $Id: stag_fermact_s.cc,v 1.5 2004-12-12 21:22:15 edwards Exp $
+// $Id: stag_fermact_s.cc,v 2.0 2005-09-25 21:04:26 edwards Exp $
 /*! \file
  *  \brief Staggered fermion action
  */

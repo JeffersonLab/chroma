@@ -1,4 +1,4 @@
-// $Id: inv_rel_cg2.cc,v 1.7 2005-01-14 20:13:05 edwards Exp $
+// $Id: inv_rel_cg2.cc,v 2.0 2005-09-25 21:04:27 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */

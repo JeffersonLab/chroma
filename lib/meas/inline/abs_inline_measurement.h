@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_inline_measurement.h,v 1.5 2005-04-19 20:05:22 edwards Exp $
+// $Id: abs_inline_measurement.h,v 2.0 2005-09-25 21:04:36 edwards Exp $
 /*! \file
  * \brief Abstract inline measurements
  */

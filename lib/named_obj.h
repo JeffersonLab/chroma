@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: named_obj.h,v 1.2 2005-09-25 20:37:38 edwards Exp $
+// $Id: named_obj.h,v 2.0 2005-09-25 21:04:25 edwards Exp $
 
 /*! @file
  * @brief Named object support

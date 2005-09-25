@@ -1,4 +1,4 @@
-// $Id: dwf_qpropt_w.h,v 1.2 2005-01-14 20:13:06 edwards Exp $
+// $Id: dwf_qpropt_w.h,v 2.0 2005-09-25 21:04:30 edwards Exp $
 /*! \file
  * \brief Pick up possibly optimized DWF inverters.
  *

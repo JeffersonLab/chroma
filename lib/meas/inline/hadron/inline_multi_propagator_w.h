@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_multi_propagator_w.h,v 1.2 2005-09-25 20:41:09 edwards Exp $
+// $Id: inline_multi_propagator_w.h,v 2.0 2005-09-25 21:04:37 edwards Exp $
 /*! \file
  *  \brief Inline construction of multi_propagator -- overlap only
  *  

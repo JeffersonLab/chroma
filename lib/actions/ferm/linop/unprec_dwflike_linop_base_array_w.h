@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwflike_linop_base_array_w.h,v 1.1 2005-05-28 22:37:42 edwards Exp $
+// $Id: unprec_dwflike_linop_base_array_w.h,v 2.0 2005-09-25 21:04:30 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned domain-wall-like fermion linear operator
  */

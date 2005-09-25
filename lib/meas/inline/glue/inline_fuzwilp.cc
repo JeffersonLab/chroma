@@ -1,4 +1,4 @@
-// $Id: inline_fuzwilp.cc,v 1.1 2005-05-13 12:49:50 bjoo Exp $
+// $Id: inline_fuzwilp.cc,v 2.0 2005-09-25 21:04:37 edwards Exp $
 /*! \file
  * \brief Inline construction of spectrum
  *

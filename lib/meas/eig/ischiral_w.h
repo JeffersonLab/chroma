@@ -1,4 +1,4 @@
-// $Id: ischiral_w.h,v 1.3 2005-01-14 18:42:35 edwards Exp $
+// $Id: ischiral_w.h,v 2.0 2005-09-25 21:04:33 edwards Exp $
 #ifndef IS_CHIRAL_VECTOR_H
 #define IS_CHIRAL_VECTOR_H
 

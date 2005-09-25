@@ -18,7 +18,7 @@
   </ProgramInfo>
   <Input><propagator>
 <annotation>
-; $Id: propagator_prec_ht_contfrac5d_tanh_b1c1_v7.linux-scalar-intel.xml,v 1.1 2005-01-31 15:17:06 bjoo Exp $
+; $Id: propagator_prec_ht_contfrac5d_tanh_b1c1_v7.linux-scalar-intel.xml,v 2.0 2005-09-25 21:05:03 edwards Exp $
 ;
 ; PROPAGATOR input file.
 ;

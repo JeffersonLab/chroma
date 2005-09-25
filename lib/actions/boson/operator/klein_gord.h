@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: klein_gord.h,v 1.5 2005-04-11 02:48:11 edwards Exp $
+// $Id: klein_gord.h,v 2.0 2005-09-25 21:04:25 edwards Exp $
 
 /*! \file
  * \brief Klein-Gordon operator

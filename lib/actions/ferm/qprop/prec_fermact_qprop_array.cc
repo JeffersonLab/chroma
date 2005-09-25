@@ -1,6 +1,9 @@
-// $Id: prec_fermact_qprop_array.cc,v 1.16 2005-05-18 15:41:56 bjoo Exp $
+// $Id: prec_fermact_qprop_array.cc,v 2.0 2005-09-25 21:04:30 edwards Exp $
 // $Log: prec_fermact_qprop_array.cc,v $
-// Revision 1.16  2005-05-18 15:41:56  bjoo
+// Revision 2.0  2005-09-25 21:04:30  edwards
+// Moved to version 2.0
+//
+// Revision 1.16  2005/05/18 15:41:56  bjoo
 // Speeded up CFZ Op
 //
 // Revision 1.15  2005/03/02 16:27:15  bjoo

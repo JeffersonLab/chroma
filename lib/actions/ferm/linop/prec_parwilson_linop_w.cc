@@ -1,4 +1,4 @@
-// $Id: prec_parwilson_linop_w.cc,v 1.6 2005-06-28 15:28:16 bjoo Exp $
+// $Id: prec_parwilson_linop_w.cc,v 2.0 2005-09-25 21:04:29 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion linear operator with parity breaking term
  */

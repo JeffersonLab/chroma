@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wavetype.h,v 1.3 2005-01-14 20:13:08 edwards Exp $
+// $Id: wavetype.h,v 2.0 2005-09-25 21:04:40 edwards Exp $
 /*! \file
  *  \brief Particle wave type, like S-wave, P-Wave, etc.
  */

@@ -1,4 +1,4 @@
-// $Id: inline_smear_aggregate.cc,v 1.3 2005-09-25 20:41:09 edwards Exp $
+// $Id: inline_smear_aggregate.cc,v 2.0 2005-09-25 21:04:39 edwards Exp $
 /*! \file
  *  \brief Inline smear measurement aggregator
  */

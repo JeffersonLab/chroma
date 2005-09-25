@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: invcg2_timing_hacks_3.h,v 1.1 2004-04-07 21:59:41 edwards Exp $
+// $Id: invcg2_timing_hacks_3.h,v 2.0 2005-09-25 21:04:46 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */

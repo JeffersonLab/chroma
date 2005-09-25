@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: chrono_predictor.h,v 1.4 2005-04-10 21:46:43 edwards Exp $
+// $Id: chrono_predictor.h,v 2.0 2005-09-25 21:04:43 edwards Exp $
 /*! \file
  * \brief Chronological predictor for HMC
  *

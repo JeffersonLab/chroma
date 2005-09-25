@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: tests.h,v 1.2 2005-04-11 03:01:52 edwards Exp $
+// $Id: tests.h,v 2.0 2005-09-25 21:04:49 edwards Exp $
 
 /*! \file
  * \brief Test codes

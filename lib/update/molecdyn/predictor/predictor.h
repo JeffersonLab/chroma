@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: predictor.h,v 1.6 2005-02-23 22:24:15 bjoo Exp $
+// $Id: predictor.h,v 2.0 2005-09-25 21:04:43 edwards Exp $
 
 /*! \file
  * \brief HMC linear system solver initial guess 

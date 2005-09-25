@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: minv_rel_sumr.h,v 1.3 2005-01-14 20:13:05 edwards Exp $
+// $Id: minv_rel_sumr.h,v 2.0 2005-09-25 21:04:28 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */

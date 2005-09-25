@@ -1,4 +1,4 @@
-// $Id: twisted_fermbc_w.cc,v 1.2 2005-09-06 14:26:15 bjoo Exp $
+// $Id: twisted_fermbc_w.cc,v 2.0 2005-09-25 21:04:27 edwards Exp $
 /*! \file
  *  \brief Simple fermionic BC
  */

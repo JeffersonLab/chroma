@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: srcsnktype.h,v 1.4 2005-05-04 17:10:54 osborn Exp $
+// $Id: srcsnktype.h,v 2.0 2005-09-25 21:04:40 edwards Exp $
 /*! \file
  *  \brief Source and sink types
  */

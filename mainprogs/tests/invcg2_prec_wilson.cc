@@ -1,4 +1,4 @@
-// $Id: invcg2_prec_wilson.cc,v 1.1 2004-03-25 14:31:20 bjoo Exp $
+// $Id: invcg2_prec_wilson.cc,v 2.0 2005-09-25 21:04:46 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */

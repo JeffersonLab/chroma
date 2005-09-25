@@ -1,4 +1,4 @@
-// $Id: inline_qqq_w.cc,v 1.4 2005-09-25 20:41:09 edwards Exp $
+// $Id: inline_qqq_w.cc,v 2.0 2005-09-25 21:04:37 edwards Exp $
 /*! \file
  * \brief Inline construction of qqq_w
  *

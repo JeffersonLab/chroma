@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: z2_src.h,v 1.4 2005-01-14 18:42:37 edwards Exp $
+// $Id: z2_src.h,v 2.0 2005-09-25 21:04:36 edwards Exp $
 /*! \file
  *  \brief Volume source of Z2 noise
  */

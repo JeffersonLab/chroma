@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_one_flavor_rat_monomial_w.h,v 1.5 2005-05-29 02:10:45 edwards Exp $
+// $Id: unprec_one_flavor_rat_monomial_w.h,v 2.0 2005-09-25 21:04:42 edwards Exp $
 /*! @file
  * @brief One-flavor collection of unpreconditioned 4D ferm monomials
  */

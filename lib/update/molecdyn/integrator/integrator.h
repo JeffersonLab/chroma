@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: integrator.h,v 1.5 2005-05-19 16:41:56 bjoo Exp $
+// $Id: integrator.h,v 2.0 2005-09-25 21:04:41 edwards Exp $
 
 /*! \file
  * \brief HMD integrators

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: typemanip.h,v 1.1 2004-08-23 04:04:45 edwards Exp $
+// $Id: typemanip.h,v 2.0 2005-09-25 21:04:25 edwards Exp $
 /*! @file
  * @brief Type manipulator support
  */

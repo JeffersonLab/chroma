@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gaugebc_aggregate.h,v 1.3 2005-04-10 22:25:08 edwards Exp $
+// $Id: gaugebc_aggregate.h,v 2.0 2005-09-25 21:04:31 edwards Exp $
 /*! \file
  *  \brief Gauge boundary condition aggregator
  */

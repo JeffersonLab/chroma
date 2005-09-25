@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: field_state.h,v 1.4 2005-04-10 21:46:42 edwards Exp $
+// $Id: field_state.h,v 2.0 2005-09-25 21:04:40 edwards Exp $
 
 /*! \file
  * \brief Field state

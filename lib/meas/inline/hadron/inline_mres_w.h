@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_mres_w.h,v 1.6 2005-09-25 20:41:09 edwards Exp $
+// $Id: inline_mres_w.h,v 2.0 2005-09-25 21:04:37 edwards Exp $
 /*! \file
  * \brief Inline mres calculations
  *

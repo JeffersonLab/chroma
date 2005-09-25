@@ -1,4 +1,4 @@
-// $Id: wilslp.cc,v 1.7 2005-02-10 18:11:22 edwards Exp $
+// $Id: wilslp.cc,v 2.0 2005-09-25 21:04:34 edwards Exp $
 /*! \file
  *  \brief Calculate Wilson loops
  */

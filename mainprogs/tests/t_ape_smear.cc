@@ -1,4 +1,4 @@
-// $Id: t_ape_smear.cc,v 1.5 2005-03-02 00:44:18 edwards Exp $
+// $Id: t_ape_smear.cc,v 2.0 2005-09-25 21:04:46 edwards Exp $
 
 #include <iostream>
 #include <cstdio>

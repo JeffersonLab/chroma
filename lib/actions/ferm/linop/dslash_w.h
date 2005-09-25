@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dslash_w.h,v 1.6 2005-05-27 18:36:37 edwards Exp $
+// $Id: dslash_w.h,v 2.0 2005-09-25 21:04:28 edwards Exp $
 /*! \file
  *  \brief Include possibly optimized Wilson dslash
  */

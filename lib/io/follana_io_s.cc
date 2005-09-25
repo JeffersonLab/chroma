@@ -1,5 +1,5 @@
 /*
- *  $Id: follana_io_s.cc,v 1.3 2005-01-14 20:13:06 edwards Exp $
+ *  $Id: follana_io_s.cc,v 2.0 2005-09-25 21:04:31 edwards Exp $
  *
  *  These are a few simple I/O routines that we can use until QIO makes its appearance
  *  I have tried to include a simple header by means of a structure.

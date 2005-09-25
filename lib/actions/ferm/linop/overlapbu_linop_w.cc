@@ -1,4 +1,4 @@
-// $Id: overlapbu_linop_w.cc,v 1.8 2004-12-12 21:22:16 edwards Exp $
+// $Id: overlapbu_linop_w.cc,v 2.0 2005-09-25 21:04:29 edwards Exp $
 /*! \file
  *  \brief Overlap operator
  */

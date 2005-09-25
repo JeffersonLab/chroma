@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_clover_linop_w.h,v 1.3 2005-02-23 19:29:20 edwards Exp $
+// $Id: prec_clover_linop_w.h,v 2.0 2005-09-25 21:04:29 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion linear operator
  */

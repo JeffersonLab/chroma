@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lcm_pqp_leapfrog.h,v 1.6 2005-05-26 09:38:06 bjoo Exp $
+// $Id: lcm_pqp_leapfrog.h,v 2.0 2005-09-25 21:04:41 edwards Exp $
 
 /*! @file
  * @brief Leapfrog integrator

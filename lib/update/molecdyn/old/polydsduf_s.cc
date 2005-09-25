@@ -1,4 +1,4 @@
-/* $Id: polydsduf_s.cc,v 1.1 2004-12-24 14:10:47 edwards Exp $ ($Date: 2004-12-24 14:10:47 $)								   */
+/* $Id: polydsduf_s.cc,v 2.0 2005-09-25 21:04:42 edwards Exp $ ($Date: 2005-09-25 21:04:42 $)								   */
 /* polydsduf								   */
 
 /* This routine is specific to staggered fermions!                         */

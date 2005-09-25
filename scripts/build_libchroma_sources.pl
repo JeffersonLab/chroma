@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: build_libchroma_sources.pl,v 1.2 2004-11-20 22:01:14 edwards Exp $
+# $Id: build_libchroma_sources.pl,v 2.0 2005-09-25 21:04:54 edwards Exp $
 #
 # Build the  libchroma_a_SOURCES  lines in  chroma/lib/Makefile.am
 #

@@ -1,4 +1,4 @@
-// $Id: sn_jacob_array.cc,v 1.5 2005-02-10 22:22:42 edwards Exp $
+// $Id: sn_jacob_array.cc,v 2.0 2005-09-25 21:04:33 edwards Exp $
 /*! \file
  *  \brief Single-node Jacobi routine
  */

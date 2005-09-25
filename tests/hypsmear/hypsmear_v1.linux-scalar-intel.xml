@@ -4,7 +4,7 @@
 <propagator>
   <Input><hypsmear>
 <annotation>
-; $Id: hypsmear_v1.linux-scalar-intel.xml,v 1.1 2004-02-23 03:00:50 edwards Exp $
+; $Id: hypsmear_v1.linux-scalar-intel.xml,v 2.0 2005-09-25 21:04:59 edwards Exp $
 ;
 ; HYPSMEAR input file.
 ;

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: bigfloat.h,v 1.1 2005-02-01 21:23:10 edwards Exp $
+// $Id: bigfloat.h,v 2.0 2005-09-25 21:04:25 edwards Exp $
 /*! \file
  *  \brief Remez algorithm for finding nth roots
  */

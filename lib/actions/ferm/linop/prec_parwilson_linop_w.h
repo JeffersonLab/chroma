@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_parwilson_linop_w.h,v 1.5 2005-01-14 20:13:06 edwards Exp $
+// $Id: prec_parwilson_linop_w.h,v 2.0 2005-09-25 21:04:29 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion linear operator with parity breaking term
  */

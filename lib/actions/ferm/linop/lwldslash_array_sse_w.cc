@@ -1,4 +1,4 @@
-// $Id: lwldslash_array_sse_w.cc,v 1.2 2005-06-07 19:36:48 edwards Exp $
+// $Id: lwldslash_array_sse_w.cc,v 2.0 2005-09-25 21:04:29 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator array
  */

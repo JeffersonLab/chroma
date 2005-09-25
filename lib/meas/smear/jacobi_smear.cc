@@ -1,4 +1,4 @@
-// $Id: jacobi_smear.cc,v 1.1 2005-02-17 02:52:11 edwards Exp $
+// $Id: jacobi_smear.cc,v 2.0 2005-09-25 21:04:40 edwards Exp $
 
 #error "NOT FULLY CONVERTED - NOT SURE THIS IS REALLY NEEDED"
 

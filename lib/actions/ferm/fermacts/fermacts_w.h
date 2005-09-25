@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermacts_w.h,v 1.26 2005-04-25 13:29:41 bjoo Exp $
+// $Id: fermacts_w.h,v 2.0 2005-09-25 21:04:25 edwards Exp $
 
 /*! \file
  * \brief Fermion actions

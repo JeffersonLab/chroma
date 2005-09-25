@@ -1,4 +1,4 @@
-// $Id: lDeltaLs_w.cc,v 1.4 2005-06-28 15:28:15 bjoo Exp $
+// $Id: lDeltaLs_w.cc,v 2.0 2005-09-25 21:04:28 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */

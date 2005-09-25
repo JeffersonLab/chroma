@@ -1,4 +1,4 @@
-// $Id: spectrum_s.cc,v 1.2 2005-08-27 11:20:49 mcneile Exp $
+// $Id: spectrum_s.cc,v 2.0 2005-09-25 21:04:46 edwards Exp $
 /*! \file
  * \brief Main code for spectrum measurements
  */

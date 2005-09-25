@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lDeltaLs_w.h,v 1.3 2005-01-14 20:13:05 edwards Exp $
+// $Id: lDeltaLs_w.h,v 2.0 2005-09-25 21:04:28 edwards Exp $
 /*! \file
  *   Apply DeltaLs = (1/4)(1-eps^2) to a fermion field.
 

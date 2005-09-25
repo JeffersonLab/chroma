@@ -1,4 +1,4 @@
-// $Id: t_read_eigen.cc,v 1.6 2005-07-15 11:06:11 bjoo Exp $
+// $Id: t_read_eigen.cc,v 2.0 2005-09-25 21:04:48 edwards Exp $
 
 #include <iostream>
 #include <sstream>

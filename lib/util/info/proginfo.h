@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: proginfo.h,v 1.3 2005-01-14 18:42:38 edwards Exp $
+// $Id: proginfo.h,v 2.0 2005-09-25 21:04:45 edwards Exp $
 /*! \file
  *  \brief Print out basic info about this program
  */

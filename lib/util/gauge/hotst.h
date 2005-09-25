@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hotst.h,v 1.5 2005-01-14 15:59:00 bjoo Exp $
+// $Id: hotst.h,v 2.0 2005-09-25 21:04:44 edwards Exp $
 /*! \file
  *  \brief Set a gauge field from a sample of (almost) Haar measure
  */

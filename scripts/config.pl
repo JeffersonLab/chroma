@@ -1,4 +1,4 @@
-# $Id: config.pl,v 1.5 2004-09-12 20:18:39 edwards Exp $
+# $Id: config.pl,v 2.0 2005-09-25 21:04:54 edwards Exp $
 #
 # This is a sample config.pl to use in the various formfac
 # analysis scripts.

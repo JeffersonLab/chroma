@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ks_local_loops.h,v 1.3 2005-09-03 12:32:10 mcneile Exp $
+// $Id: ks_local_loops.h,v 2.0 2005-09-25 21:04:35 edwards Exp $
 /*! \file
  *  \brief Wrapper routines for computing loops with staggeref fermions
  */        

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hadron_s.h,v 1.1 2005-08-23 17:29:55 mcneile Exp $
+// $Id: hadron_s.h,v 2.0 2005-09-25 21:04:38 edwards Exp $
 
 /*! \file
  * \brief Inline measurements for hadron observables

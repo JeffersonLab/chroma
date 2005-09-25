@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: exact_hamiltonian.h,v 1.6 2005-04-10 22:05:03 edwards Exp $
+// $Id: exact_hamiltonian.h,v 2.0 2005-09-25 21:04:40 edwards Exp $
 /*! \file
  * \brief Exact Hamiltonians
  */

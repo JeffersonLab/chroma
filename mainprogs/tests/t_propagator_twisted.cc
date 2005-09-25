@@ -1,4 +1,4 @@
-// $Id: t_propagator_twisted.cc,v 1.7 2005-04-11 02:44:11 edwards Exp $
+// $Id: t_propagator_twisted.cc,v 2.0 2005-09-25 21:04:48 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation of twisted mass QCD
  *   

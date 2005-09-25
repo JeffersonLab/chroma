@@ -1,4 +1,4 @@
-// $Id: mespbp_w.cc,v 1.2 2005-01-14 18:42:37 edwards Exp $
+// $Id: mespbp_w.cc,v 2.0 2005-09-25 21:04:39 edwards Exp $
 /*! \file
  *  \brief  Calculates noise estimator for psi_bar_psi
  */

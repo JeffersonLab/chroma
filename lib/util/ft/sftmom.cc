@@ -1,6 +1,9 @@
-//  $Id: sftmom.cc,v 1.10 2005-07-27 16:23:28 edwards Exp $
+//  $Id: sftmom.cc,v 2.0 2005-09-25 21:04:44 edwards Exp $
 //  $Log: sftmom.cc,v $
-//  Revision 1.10  2005-07-27 16:23:28  edwards
+//  Revision 2.0  2005-09-25 21:04:44  edwards
+//  Moved to version 2.0
+//
+//  Revision 1.10  2005/07/27 16:23:28  edwards
 //  Added getter for momentum offset
 //
 //  Revision 1.9  2005/01/14 18:42:38  edwards

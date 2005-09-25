@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwftransf_linop_w.h,v 1.8 2005-02-25 03:01:55 edwards Exp $
+// $Id: unprec_dwftransf_linop_w.h,v 2.0 2005-09-25 21:04:30 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */

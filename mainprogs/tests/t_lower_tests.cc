@@ -1,4 +1,4 @@
-// $Id: t_lower_tests.cc,v 1.4 2005-04-24 09:38:37 mcneile Exp $
+// $Id: t_lower_tests.cc,v 2.0 2005-09-25 21:04:47 edwards Exp $
 //
 //  This is a collection of simple 
 //  tests to make sure that none of 

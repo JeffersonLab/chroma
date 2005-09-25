@@ -1,4 +1,4 @@
-// $Id: t_ritz5d_KS.cc,v 1.7 2005-03-02 00:44:19 edwards Exp $
+// $Id: t_ritz5d_KS.cc,v 2.0 2005-09-25 21:04:48 edwards Exp $
 
 #include "chroma.h"
 

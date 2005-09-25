@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_qprop_array_sse_w.h,v 1.7 2005-02-23 19:29:20 edwards Exp $
+// $Id: prec_dwf_qprop_array_sse_w.h,v 2.0 2005-09-25 21:04:30 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */

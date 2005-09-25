@@ -13,7 +13,7 @@
   </ProgramInfo>
   <Input><seqpropComponent>
 <annotation>
-; $Id: seqprop_collect_nonrel_v3.linux-scalar-intel.xml,v 1.1 2004-04-23 16:58:23 bjoo Exp $
+; $Id: seqprop_collect_nonrel_v3.linux-scalar-intel.xml,v 2.0 2005-09-25 21:05:06 edwards Exp $
 ;
 ; SEQPROP input file.
 ;

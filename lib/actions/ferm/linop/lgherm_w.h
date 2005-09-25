@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lgherm_w.h,v 1.4 2005-01-14 20:13:05 edwards Exp $
+// $Id: lgherm_w.h,v 2.0 2005-09-25 21:04:28 edwards Exp $
 
 #ifndef __lgherm_h__
 #define __lgherm_h__

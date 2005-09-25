@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: diractodr.h,v 1.3 2005-01-14 18:42:37 edwards Exp $
+// $Id: diractodr.h,v 2.0 2005-09-25 21:04:43 edwards Exp $
 /*! \file
  *  \brief Basis rotation matrix from Dirac to Degrand-Rossi (and reverse)
  */

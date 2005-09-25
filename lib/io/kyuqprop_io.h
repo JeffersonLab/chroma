@@ -1,4 +1,4 @@
-// $Id: kyuqprop_io.h,v 1.5 2005-01-14 20:13:06 edwards Exp $
+// $Id: kyuqprop_io.h,v 2.0 2005-09-25 21:04:32 edwards Exp $
 /*! \file
  *  \brief Read/write a KYU propagator
  */

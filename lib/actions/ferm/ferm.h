@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ferm.h,v 1.5 2004-12-24 04:21:09 edwards Exp $
+// $Id: ferm.h,v 2.0 2005-09-25 21:04:25 edwards Exp $
 
 /*! \file
  * \brief Fermion action support

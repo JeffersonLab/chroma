@@ -1,4 +1,4 @@
-// $Id: qio_read_obj_funcmap.cc,v 1.2 2005-09-25 20:41:09 edwards Exp $
+// $Id: qio_read_obj_funcmap.cc,v 2.0 2005-09-25 21:04:39 edwards Exp $
 /*! \file
  *  \brief Read object function map
  */

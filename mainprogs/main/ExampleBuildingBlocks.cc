@@ -1,4 +1,4 @@
-// $Id: ExampleBuildingBlocks.cc,v 1.23 2005-04-11 02:01:30 edwards Exp $
+// $Id: ExampleBuildingBlocks.cc,v 2.0 2005-09-25 21:04:45 edwards Exp $
 /*! \file
  *  \brief Main code for generating building blocks
  */

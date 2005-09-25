@@ -1,4 +1,4 @@
-// $Id: su3over.cc,v 1.6 2005-07-03 16:10:11 edwards Exp $
+// $Id: su3over.cc,v 2.0 2005-09-25 21:04:40 edwards Exp $
 /*! \file
  *  \brief Do one SU(2) subgroup microcanonical overrelaxation update of SU(Nc)
  */

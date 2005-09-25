@@ -1,4 +1,4 @@
-//  $Id: sftmom.h,v 1.11 2005-07-27 16:23:28 edwards Exp $
+//  $Id: sftmom.h,v 2.0 2005-09-25 21:04:44 edwards Exp $
 /*! \file
  *  \brief Fourier transform phase factor support
  */

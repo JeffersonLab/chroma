@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lu_solve.h,v 1.2 2005-04-10 21:46:43 edwards Exp $
+// $Id: lu_solve.h,v 2.0 2005-09-25 21:04:43 edwards Exp $
 /*! \file
  * \brief LU solver
  *

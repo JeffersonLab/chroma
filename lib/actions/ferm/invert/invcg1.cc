@@ -1,4 +1,4 @@
-// $Id: invcg1.cc,v 1.13 2005-06-28 15:28:15 bjoo Exp $
+// $Id: invcg1.cc,v 2.0 2005-09-25 21:04:27 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */

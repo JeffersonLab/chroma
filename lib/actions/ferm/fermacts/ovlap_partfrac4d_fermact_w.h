@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ovlap_partfrac4d_fermact_w.h,v 1.11 2005-06-21 15:27:27 bjoo Exp $
+// $Id: ovlap_partfrac4d_fermact_w.h,v 2.0 2005-09-25 21:04:25 edwards Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator

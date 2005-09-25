@@ -1,4 +1,4 @@
-// $Id: qpropqio.cc,v 1.2 2005-04-15 11:27:50 edwards Exp $
+// $Id: qpropqio.cc,v 2.0 2005-09-25 21:04:46 edwards Exp $
 /*! \file
  *  \brief Reads a scidac prop and converts only the volume format
  */

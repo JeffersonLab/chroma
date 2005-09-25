@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: typelist.h,v 1.2 2004-10-08 13:20:14 bjoo Exp $
+// $Id: typelist.h,v 2.0 2005-09-25 21:04:25 edwards Exp $
 /*! @file
  * @brief Typelist support
  */

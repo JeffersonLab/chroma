@@ -1,4 +1,4 @@
-// $Id: inline_spectrum_s.cc,v 1.7 2005-09-08 16:57:53 mcneile Exp $
+// $Id: inline_spectrum_s.cc,v 2.0 2005-09-25 21:04:38 edwards Exp $
 /*! \file
  * \brief Inline construction of staggered spectrum
  *

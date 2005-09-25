@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sink_smear2.h,v 1.3 2005-01-14 18:42:37 edwards Exp $
+// $Id: sink_smear2.h,v 2.0 2005-09-25 21:04:40 edwards Exp $
 /*! \file
  *  \brief Control routine for types of propagator smearing
  */

@@ -1,4 +1,4 @@
-// $Id: t_preccfz.cc,v 1.3 2005-06-17 15:17:53 bjoo Exp $
+// $Id: t_preccfz.cc,v 2.0 2005-09-25 21:04:48 edwards Exp $
 
 #include <iostream>
 #include <cstdio>

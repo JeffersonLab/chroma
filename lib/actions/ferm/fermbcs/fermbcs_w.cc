@@ -1,4 +1,4 @@
-// $Id: fermbcs_w.cc,v 1.3 2005-09-06 10:59:36 bjoo Exp $
+// $Id: fermbcs_w.cc,v 2.0 2005-09-25 21:04:27 edwards Exp $
 /*! \file
  *  \brief All fermionic BC
  */

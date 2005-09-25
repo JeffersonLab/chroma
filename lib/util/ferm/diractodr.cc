@@ -1,4 +1,4 @@
-// $Id: diractodr.cc,v 1.7 2005-01-14 20:13:08 edwards Exp $
+// $Id: diractodr.cc,v 2.0 2005-09-25 21:04:43 edwards Exp $
 /*! \file
  *  \brief Basis rotation matrix from Dirac to Degrand-Rossi (and reverse)
  */

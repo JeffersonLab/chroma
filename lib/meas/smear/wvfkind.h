@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wvfkind.h,v 1.3 2005-01-14 20:13:07 edwards Exp $
+// $Id: wvfkind.h,v 2.0 2005-09-25 21:04:40 edwards Exp $
 /*! \file
  *  \brief Wave-function types for smearing
  */

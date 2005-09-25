@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ht_contfrac5d_linop_array_w.h,v 1.2 2005-06-20 11:18:22 bjoo Exp $
+// $Id: prec_ht_contfrac5d_linop_array_w.h,v 2.0 2005-09-25 21:04:29 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
  */

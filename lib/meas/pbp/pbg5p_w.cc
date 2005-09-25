@@ -1,7 +1,7 @@
 namespace Chroma {
 
 
-/* $Id: pbg5p_w.cc,v 1.2 2005-01-14 18:42:37 edwards Exp $ */
+/* $Id: pbg5p_w.cc,v 2.0 2005-09-25 21:04:39 edwards Exp $ */
 
 /* PBG5P - Calculates noise estimator for the trace used in the
 /*         following constructions */

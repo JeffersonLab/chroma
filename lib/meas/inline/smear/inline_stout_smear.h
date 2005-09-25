@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_stout_smear.h,v 1.1 2005-09-25 20:41:09 edwards Exp $
+// $Id: inline_stout_smear.h,v 2.0 2005-09-25 21:04:39 edwards Exp $
 /*! \file
  *  \brief Inline Stout smearing
  */

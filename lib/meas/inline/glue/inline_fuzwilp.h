@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_fuzwilp.h,v 1.1 2005-05-13 12:49:50 bjoo Exp $
+// $Id: inline_fuzwilp.h,v 2.0 2005-09-25 21:04:37 edwards Exp $
 /*! \file
  * \brief Inline spectrum calculations
  *

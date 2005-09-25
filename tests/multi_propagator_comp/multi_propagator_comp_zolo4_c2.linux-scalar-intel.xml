@@ -13,7 +13,7 @@
   </ProgramInfo>
   <Input><multiPropagatorComp>
 <annotation>
-; $Id: multi_propagator_comp_zolo4_c2.linux-scalar-intel.xml,v 1.1 2004-04-20 13:08:12 bjoo Exp $
+; $Id: multi_propagator_comp_zolo4_c2.linux-scalar-intel.xml,v 2.0 2005-09-25 21:05:00 edwards Exp $
 ;
 ; PROPAGATOR input file.
 ;

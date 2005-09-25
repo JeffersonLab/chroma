@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: build_include_headers.pl,v 1.3 2004-11-20 22:01:14 edwards Exp $
+# $Id: build_include_headers.pl,v 2.0 2005-09-25 21:04:54 edwards Exp $
 #
 # Build the  nobase_include_headers  lines in  chroma/lib/Makefile.am
 #
