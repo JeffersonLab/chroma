@@ -42,16 +42,14 @@ HDRS =
 ## Moved these to be bin_PROGRAMS so that they are installed. Easier
 ## than for users to have to always make them by hand
 ##
-bin_PROGRAMS = propagator \
-        collect_propcomp \
-        seqsource purgaug \
-	make_source \
-        ExampleBuildingBlocks hypsmear cfgtransf sink_smearing qpropgfix \
-        qproptrev apesmear stoutsmear hmc hypsmear3d hypsmear4d chroma
+bin_PROGRAMS = collect_propcomp \
+        purgaug \
+        cfgtransf qpropgfix \
+        qproptrev hmc chroma
 
 # Wilson specific programs
-bin_PROGRAMS += spectrum_w qqq_w bar3ptfn qproptransf wallformfac mres \
-        propagator_hack qpropqio
+bin_PROGRAMS += qpropqio qproptransf wallformfac \
+        propagator_hack
 
 # Staggered specific programs
 #check_PROGRAMS += 
@@ -76,36 +74,21 @@ EXTRA_PROGRAMS += spectrum_s
 # The program and its dependencies
 #
 chroma_SOURCES= chroma.cc
-propagator_SOURCES= propagator.cc
 propagator_comp_SOURCES= propagator_comp.cc
 propagator_hack_SOURCES= propagator_hack.cc
-seqsource_SOURCES= seqsource.cc
-multi_propagator_SOURCES= multi_propagator.cc
 multi_propagator_comp_SOURCES = multi_propagator_comp.cc
 collect_propcomp_SOURCES = collect_propcomp.cc
 collect_multi_propcomp_SOURCES = collect_multi_propcomp.cc
-spectrum_w_SOURCES= spectrum_w.cc
 spectrum_s_SOURCES= spectrum_s.cc
 hmc_SOURCES= hmc.cc
 purgaug_SOURCES= purgaug.cc
-mres_SOURCES= mres.cc
-qqq_w_SOURCES= qqq_w.cc
-bar3ptfn_SOURCES= bar3ptfn.cc
 wallformfac_SOURCES= wallformfac.cc
-make_source_SOURCES= make_source.cc
-apesmear_SOURCES= apesmear.cc
-hypsmear_SOURCES= hypsmear.cc
-hypsmear3d_SOURCES= hypsmear3d.cc
-hypsmear4d_SOURCES= hypsmear4d.cc
-stoutsmear_SOURCES= stoutsmear.cc
 qproptransf_SOURCES= qproptransf.cc
 qpropqio_SOURCES= qpropqio.cc
 qpropadd_SOURCES= qpropadd.cc
 qpropgfix_SOURCES= qpropgfix.cc
 qproptrev_SOURCES= qproptrev.cc
-ExampleBuildingBlocks_SOURCES= ExampleBuildingBlocks.cc
 cfgtransf_SOURCES= cfgtransf.cc
-sink_smearing_SOURCES= sink_smearing.cc
 
 #mainparam_io_SOURCES= mainparam_io.cc
 
