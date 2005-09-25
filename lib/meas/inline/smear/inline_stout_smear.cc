@@ -1,34 +1,33 @@
-// $Id: inline_ape_smear.cc,v 1.2 2005-09-25 20:41:09 edwards Exp $
+// $Id: inline_stout_smear.cc,v 1.1 2005-09-25 20:41:09 edwards Exp $
 /*! \file
- *  \brief Inline APE smearing
+ *  \brief Inline Stout smearing
  */
 
-#include "meas/inline/smear/inline_ape_smear.h"
+#include "meas/inline/smear/inline_stout_smear.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/glue/mesplq.h"
-#include "meas/smear/ape_smear.h"
+#include "meas/smear/stout_smear.h"
 #include "util/info/proginfo.h"
 #include "util/gauge/unit_check.h"
 #include "meas/inline/io/named_objmap.h"
 
-
 namespace Chroma 
 { 
-  namespace InlineAPESmearEnv 
+  namespace InlineStoutSmearEnv 
   { 
     AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
 					    const std::string& path) 
     {
-      return new InlineAPESmear(InlineAPESmearParams(xml_in, path));
+      return new InlineStoutSmear(InlineStoutSmearParams(xml_in, path));
     }
 
-    const std::string name = "APE_SMEAR";
+    const std::string name = "STOUT_SMEAR";
     const bool registered = TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
   };
 
 
   //! Parameters for running code
-  void read(XMLReader& xml, const string& path, InlineAPESmearParams::Param_t& param)
+  void read(XMLReader& xml, const string& path, InlineStoutSmearParams::Param_t& param)
   {
     XMLReader paramtop(xml, path);
 
@@ -53,7 +52,7 @@ namespace Chroma
   }
 
   //! Parameters for running code
-  void write(XMLWriter& xml, const string& path, const InlineAPESmearParams::Param_t& param)
+  void write(XMLWriter& xml, const string& path, const InlineStoutSmearParams::Param_t& param)
   {
     push(xml, path);
     
@@ -68,27 +67,27 @@ namespace Chroma
   }
 
   // Reader for out gauge file
-  void read(XMLReader& xml, const string& path, InlineAPESmearParams::NamedObject_t& input)
+  void read(XMLReader& xml, const string& path, InlineStoutSmearParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
-    read(inputtop, "ape_id", input.ape_id);
+    read(inputtop, "stout_id", input.stout_id);
   }
 
   // Reader for out gauge file
-  void write(XMLWriter& xml, const string& path, const InlineAPESmearParams::NamedObject_t& input)
+  void write(XMLWriter& xml, const string& path, const InlineStoutSmearParams::NamedObject_t& input)
   {
     push(xml, path);
 
-    write(xml, "ape_id", input.ape_id);
+    write(xml, "stout_id", input.stout_id);
 
     pop(xml);
   }
 
 
   // Param stuff
-  InlineAPESmearParams::InlineAPESmearParams() { frequency = 0; }
+  InlineStoutSmearParams::InlineStoutSmearParams() { frequency = 0; }
 
-  InlineAPESmearParams::InlineAPESmearParams(XMLReader& xml_in, const std::string& path) 
+  InlineStoutSmearParams::InlineStoutSmearParams(XMLReader& xml_in, const std::string& path) 
   {
     try 
     {
@@ -102,12 +101,12 @@ namespace Chroma
       // Read program parameters
       read(paramtop, "Param", param);
 
-      // Read in the ape outfile
+      // Read in the stout outfile
       read(paramtop, "NamedObject", named_obj);
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << "Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << InlineStoutSmearEnv::name << ": Caught Exception reading XML: " << e << endl;
       QDP_abort(1);
     }
   }
@@ -115,7 +114,7 @@ namespace Chroma
 
   // Write params
   void
-  InlineAPESmearParams::write(XMLWriter& xml, const std::string& path) 
+  InlineStoutSmearParams::write(XMLWriter& xml, const std::string& path) 
   {
     push(xml, path);
       
@@ -127,14 +126,16 @@ namespace Chroma
 
 
   void 
-  InlineAPESmear::operator()(const multi1d<LatticeColorMatrix>& u,
+  InlineStoutSmear::operator()(const multi1d<LatticeColorMatrix>& u,
 			     XMLBufferWriter& gauge_xml,
 			     unsigned long update_no,
 			     XMLWriter& xml_out) 
   {
-    push(xml_out, "apesmear");
+    push(xml_out, "stout_smear");
     write(xml_out, "update_no", update_no);
     
+    QDPIO::cout << InlineStoutSmearEnv::name << ": stout smear gauge field" << endl;
+
     proginfo(xml_out);    // Print out basic program info
 
     // Write out the input
@@ -151,13 +152,13 @@ namespace Chroma
     MesPlq(xml_out, "Observables", u);
 
 
-    // Now ape smear
-    multi1d<LatticeColorMatrix> u_ape(Nd);
-    u_ape = u;
+    // Now stout smear
+    multi1d<LatticeColorMatrix> u_stout(Nd);
+    u_stout = u;
 
     if (params.param.link_smear_num > 0)
     {
-      QDPIO::cout << "APE Smear gauge field" << endl;
+      QDPIO::cout << "Stout Smear gauge field" << endl;
 
       int BlkMax = 100;
       Real BlkAccu = 1.0e-5;
@@ -168,15 +169,15 @@ namespace Chroma
 
 	for(int mu = 0; mu < Nd; ++mu)
 	  if ( mu != params.param.j_decay )
-	    APE_Smear(u_ape, u_tmp[mu], mu, 0,
-		      params.param.link_smear_fact, BlkAccu, BlkMax,
-		      params.param.j_decay);
+	    stout_smear(u_tmp[mu], u_stout, mu,
+			params.param.link_smear_fact,
+			params.param.j_decay);
 	  else
-	    u_tmp[mu] = u_ape[mu];
+	    u_tmp[mu] = u_stout[mu];
 
-	u_ape = u_tmp;
+	u_stout = u_tmp;
       }
-      QDPIO::cout << "Gauge field APE-smeared!" << endl;
+      QDPIO::cout << "Gauge field Stout-smeared!" << endl;
     }
 
     // Write out what is done
@@ -187,10 +188,10 @@ namespace Chroma
     pop(xml_out);
   
     // Check if the smeared gauge field is unitary
-    unitarityCheck(u_ape);
+    unitarityCheck(u_stout);
   
     // Again calculate some gauge invariant observables
-    MesPlq(xml_out, "Observables", u_ape);
+    MesPlq(xml_out, "Observables", u_stout);
 
     // Now store the configuration to a memory object
     {
@@ -201,10 +202,10 @@ namespace Chroma
       record_xml << gauge_xml;
 
       // Store the gauge field
-      TheNamedObjMap::Instance().create< multi1d<LatticeColorMatrix> >(params.named_obj.ape_id);
-      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.ape_id) = u_ape;
-      TheNamedObjMap::Instance().get(params.named_obj.ape_id).setFileXML(file_xml);
-      TheNamedObjMap::Instance().get(params.named_obj.ape_id).setRecordXML(record_xml);
+      TheNamedObjMap::Instance().create< multi1d<LatticeColorMatrix> >(params.named_obj.stout_id);
+      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.stout_id) = u_stout;
+      TheNamedObjMap::Instance().get(params.named_obj.stout_id).setFileXML(file_xml);
+      TheNamedObjMap::Instance().get(params.named_obj.stout_id).setRecordXML(record_xml);
     }
 
     pop(xml_out);

@@ -1,4 +1,4 @@
-// $Id: qio_read_obj_funcmap.cc,v 1.1 2005-09-24 21:14:28 edwards Exp $
+// $Id: qio_read_obj_funcmap.cc,v 1.2 2005-09-25 20:41:09 edwards Exp $
 /*! \file
  *  \brief Read object function map
  */
@@ -132,6 +132,24 @@ namespace Chroma
     }
 #endif
 
+    //! Read a propagator
+    void QIOReadArrayLatColMat(const string& buffer_id,
+			       const string& file, 
+			       QDP_serialparallel_t serpar)
+    {
+      multi1d<LatticeColorMatrix> obj;
+      XMLReader file_xml, record_xml;
+
+      QDPFileReader to(file_xml,file,serpar);
+      read(to,record_xml,obj);
+      close(to);
+
+      TheNamedObjMap::Instance().create< multi1d<LatticeColorMatrix> >(buffer_id);
+      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(buffer_id) = obj;
+      TheNamedObjMap::Instance().get(buffer_id).setFileXML(file_xml);
+      TheNamedObjMap::Instance().get(buffer_id).setRecordXML(record_xml);
+    }
+
   }  // end namespace QIOReadObjCallMap
 
 
@@ -155,6 +173,9 @@ namespace Chroma
 								   QIOReadObjCallMap::QIOReadLatFermF);
 //      success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("LatticeFermionD"), 
 //								   QIOReadObjCallMap::QIOReadLatFermD);
+
+      success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("Multi1dLatticeColorMatrix"), 
+								   QIOReadObjCallMap::QIOReadArrayLatColMat);
 
       return success;
     }

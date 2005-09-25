@@ -1,4 +1,4 @@
-// $Id: inline_sink_smear_w.cc,v 1.1 2005-04-06 04:34:54 edwards Exp $
+// $Id: inline_sink_smear_w.cc,v 1.2 2005-09-25 20:41:09 edwards Exp $
 /*! \file
  * \brief Inline construction of sink_smear
  *
@@ -18,6 +18,8 @@
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
 
+#include "meas/inline/io/named_objmap.h"
+
 namespace Chroma 
 { 
   namespace InlineSinkSmearEnv 
@@ -34,23 +36,21 @@ namespace Chroma
 
 
   //! Propagator input
-  void read(XMLReader& xml, const string& path, InlineSinkSmearParams::Prop_t& input)
+  void read(XMLReader& xml, const string& path, InlineSinkSmearParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
-    read(inputtop, "prop_file", input.prop_file);
-    read(inputtop, "smeared_prop_file", input.smeared_prop_file);
-    read(inputtop, "smeared_prop_volfmt", input.smeared_prop_volfmt);
+    read(inputtop, "prop_id", input.prop_id);
+    read(inputtop, "smeared_prop_id", input.smeared_prop_id);
   }
 
   //! Propagator output
-  void write(XMLWriter& xml, const string& path, const InlineSinkSmearParams::Prop_t& input)
+  void write(XMLWriter& xml, const string& path, const InlineSinkSmearParams::NamedObject_t& input)
   {
     push(xml, path);
 
-    write(xml, "prop_file", input.prop_file);
-    write(xml, "smeared_prop_file", input.smeared_prop_file);
-    write(xml, "smeared_prop_volfmt", input.smeared_prop_volfmt);
+    write(xml, "prop_id", input.prop_id);
+    write(xml, "smeared_prop_id", input.smeared_prop_id);
 
     pop(xml);
   }
@@ -74,11 +74,11 @@ namespace Chroma
       read(paramtop, "Param", param);
 
       // Read in the output propagator/source configuration info
-      read(paramtop, "Prop", prop);
+      read(paramtop, "NamedObject", named_obj);
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << "Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
       QDP_abort(1);
     }
   }
@@ -93,7 +93,7 @@ namespace Chroma
     Chroma::write(xml_out, "Param", param);
 
     // Write out the output propagator/source configuration info
-    Chroma::write(xml_out, "Prop", prop);
+    Chroma::write(xml_out, "NamedObject", named_obj);
 
     pop(xml_out);
   }
@@ -108,7 +108,7 @@ namespace Chroma
     push(xml_out, "sink_smear");
     write(xml_out, "update_no", update_no);
 
-    QDPIO::cout << " SINK_SMEAR: Sink smearing for propagators" << endl;
+    QDPIO::cout << InlineSinkSmearEnv::name << ": Sink smearing for propagators" << endl;
 
     // Write out the input
     params.write(xml_out, "Input");
@@ -122,29 +122,38 @@ namespace Chroma
     //
     // Read the quark propagator and extract headers
     //
-    XMLReader prop_file_xml, prop_record_xml;
     LatticePropagator quark_propagator;
     ChromaProp_t prop_header;
     PropSource_t source_header;
+    QDPIO::cout << "Attempt to read forward propagator" << endl;
+    try
     {
-      QDPIO::cout << "Attempt to read forward propagator" << endl;
-      readQprop(prop_file_xml, 
-		prop_record_xml, quark_propagator,
-		params.prop.prop_file, QDPIO_SERIAL);
-      QDPIO::cout << "Forward propagator successfully read" << endl;
-   
+      // Grab a copy of the propagator. Will modify it later.
+      quark_propagator = 
+	TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.prop_id);
+	
+      // Snarf the prop info. This is will throw if the prop_id is not there
+      XMLReader prop_file_xml, prop_record_xml;
+      TheNamedObjMap::Instance().get(params.named_obj.prop_id).getFileXML(prop_file_xml);
+      TheNamedObjMap::Instance().get(params.named_obj.prop_id).getRecordXML(prop_record_xml);
+
       // Try to invert this record XML into a ChromaProp struct
       // Also pull out the id of this source
-      try
       {
 	read(prop_record_xml, "/Propagator/ForwardProp", prop_header);
 	read(prop_record_xml, "/Propagator/PropSource", source_header);
       }
-      catch (const string& e) 
-      {
-	QDPIO::cerr << "Error extracting forward_prop header: " << e << endl;
-	QDP_abort(1);
-      }
+    }    
+    catch (std::bad_cast)
+    {
+      QDPIO::cerr << InlineSinkSmearEnv::name << ": caught dynamic cast error" 
+		  << endl;
+      QDP_abort(1);
+    }
+    catch (const string& e) 
+    {
+      QDPIO::cerr << InlineSinkSmearEnv::name << ": error extracting prop_header: " << e << endl;
+      QDP_abort(1);
     }
 
     // Derived from input prop
@@ -262,7 +271,7 @@ namespace Chroma
 
 
     // Save the propagator
-    // ONLY SciDAC output format is supported!
+    try
     {
       XMLBufferWriter file_xml;
       push(file_xml, "sink_smear");
@@ -278,10 +287,25 @@ namespace Chroma
       write(record_xml, "Config_info", gauge_xml);
       pop(record_xml);
 
-      // Write the source
-      writeQprop(file_xml, record_xml, quark_propagator,
-		 params.prop.smeared_prop_file, 
-		 params.prop.smeared_prop_volfmt, QDPIO_SERIAL);
+      // Write the smeared prop xml info
+      TheNamedObjMap::Instance().create<LatticePropagator>(params.named_obj.smeared_prop_id);
+      TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.smeared_prop_id) 
+	= quark_propagator;
+      TheNamedObjMap::Instance().get(params.named_obj.smeared_prop_id).setFileXML(file_xml);
+      TheNamedObjMap::Instance().get(params.named_obj.smeared_prop_id).setRecordXML(record_xml);
+
+      QDPIO::cout << "Sink successfully updated" << endl;
+    }
+    catch (std::bad_cast)
+    {
+      QDPIO::cerr << InlineSinkSmearEnv::name << ": dynamic cast error" 
+		  << endl;
+      QDP_abort(1);
+    }
+    catch (const string& e) 
+    {
+      QDPIO::cerr << InlineSinkSmearEnv::name << ": error message: " << e << endl;
+      QDP_abort(1);
     }
 
     pop(xml_out);  // sink_smear

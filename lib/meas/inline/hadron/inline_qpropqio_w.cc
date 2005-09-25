@@ -1,4 +1,4 @@
-// $Id: inline_qpropqio_w.cc,v 1.1 2005-04-15 11:22:03 edwards Exp $
+// $Id: inline_qpropqio_w.cc,v 1.2 2005-09-25 20:41:09 edwards Exp $
 /*! \file
  * \brief Inline measurement of qpropqio
  *
@@ -112,7 +112,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << "Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
       QDP_abort(1);
     }
   }

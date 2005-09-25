@@ -1,4 +1,4 @@
-// $Id: inline_propagator_w.cc,v 1.8 2005-08-24 17:14:09 edwards Exp $
+// $Id: inline_propagator_w.cc,v 1.9 2005-09-25 20:41:09 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -14,6 +14,8 @@
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/fermacts/fermacts_aggregate_w.h"
 #include "meas/inline/make_xml_file.h"
+
+#include "meas/inline/io/named_objmap.h"
 
 namespace Chroma 
 { 
@@ -39,23 +41,21 @@ namespace Chroma
 
 
   //! Propagator input
-  void read(XMLReader& xml, const string& path, InlinePropagatorParams::Prop_t& input)
+  void read(XMLReader& xml, const string& path, InlinePropagatorParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
-    read(inputtop, "source_file", input.source_file);
-    read(inputtop, "prop_file", input.prop_file);
-    read(inputtop, "prop_volfmt", input.prop_volfmt);  // singlefile or multifile
+    read(inputtop, "source_id", input.source_id);
+    read(inputtop, "prop_id", input.prop_id);
   }
 
   //! Propagator output
-  void write(XMLWriter& xml, const string& path, const InlinePropagatorParams::Prop_t& input)
+  void write(XMLWriter& xml, const string& path, const InlinePropagatorParams::NamedObject_t& input)
   {
     push(xml, path);
 
-    write(xml, "source_file", input.source_file);
-    write(xml, "prop_file", input.prop_file);
-    write(xml, "prop_volfmt", input.prop_volfmt);
+    write(xml, "source_id", input.source_id);
+    write(xml, "prop_id", input.prop_id);
 
     pop(xml);
   }
@@ -93,7 +93,7 @@ namespace Chroma
       }
 
       // Read in the output propagator/source configuration info
-      read(paramtop, "Prop", prop);
+      read(paramtop, "NamedObject", named_obj);
 
       // Possible alternate XML file pattern
       if (paramtop.count("xml_file") != 0) 
@@ -103,7 +103,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << "Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
       QDP_abort(1);
     }
   }
@@ -121,7 +121,7 @@ namespace Chroma
       XMLReader xml_header(header_is);
       xml_out << xml_header;
     }
-    Chroma::write(xml_out, "Prop", prop);
+    Chroma::write(xml_out, "NamedObject", named_obj);
 
     pop(xml_out);
   }
@@ -166,73 +166,8 @@ namespace Chroma
     push(xml_out, "propagator");
     write(xml_out, "update_no", update_no);
 
-    QDPIO::cout << "PROPAGATOR: propagator calculation" << endl;
+    QDPIO::cout << InlinePropagatorEnv::name << ": propagator calculation" << endl;
 
-    //
-    // Read in the source along with relevant information.
-    // 
-    StopWatch swatch;
-
-    LatticePropagator quark_prop_source;
-    XMLReader source_file_xml, source_record_xml;
-    int t0;
-    int j_decay;
-    bool make_sourceP = false;
-    bool seqsourceP = false;
-    {
-      swatch.reset();
-
-      // ONLY SciDAC mode is supported for propagators!!
-      QDPIO::cout << "Attempt to read source" << endl;
-      swatch.start();
-      readQprop(source_file_xml, 
-		source_record_xml, quark_prop_source,
-		params.prop.source_file, QDPIO_SERIAL);
-      swatch.stop();
-      QDPIO::cout << "Source successfully read: time= " 
-		  << swatch.getTimeInSeconds() 
-		  << " secs" << endl;
-
-      // Try to invert this record XML into a source struct
-      try
-      {
-	// First identify what kind of source might be here
-	if (source_record_xml.count("/MakeSource") != 0)
-	{
-	  PropSource_t source_header;
-
-	  read(source_record_xml, "/MakeSource/PropSource", source_header);
-	  j_decay = source_header.j_decay;
-	  t0 = source_header.t_source[j_decay];
-	  make_sourceP = true;
-	}
-	else if (source_record_xml.count("/SequentialSource") != 0)
-	{
-	  ChromaProp_t prop_header;
-	  PropSource_t source_header;
-	  SeqSource_t seqsource_header;
-
-	  read(source_record_xml, "/SequentialSource/SeqSource", seqsource_header);
-	  // Any source header will do for j_decay
-	  read(source_record_xml, "/SequentialSource/ForwardProps/elem[1]/ForwardProp", 
-	       prop_header);
-	  read(source_record_xml, "/SequentialSource/ForwardProps/elem[1]/PropSource", 
-	       source_header);
-	  j_decay = source_header.j_decay;
-	  t0 = seqsource_header.t_sink;
-	  seqsourceP = true;
-	}
-	else
-	  throw std::string("No appropriate header found");
-      }
-      catch (const string& e) 
-      {
-	QDPIO::cerr << "Error extracting source_header: " << e << endl;
-	QDP_abort(1);
-      }
-    }    
-    QDPIO::cout << "Source successfully read and parsed" << endl;
- 
     proginfo(xml_out);    // Print out basic program info
 
     // Write out the input
@@ -241,17 +176,86 @@ namespace Chroma
     // Write out the config header
     write(xml_out, "Config_info", gauge_xml);
 
-    // Write out the source header
-    write(xml_out, "Source_file_info", source_file_xml);
-
-    write(xml_out, "Source_record_info", source_record_xml);
-
     push(xml_out, "Output_version");
     write(xml_out, "out_version", 1);
     pop(xml_out);
 
     // Calculate some gauge invariant observables just for info.
     MesPlq(xml_out, "Observables", u);
+
+    //
+    // Read in the source along with relevant information.
+    // 
+    XMLReader source_file_xml, source_record_xml;
+
+    int t0;
+    int j_decay;
+    bool make_sourceP = false;
+    bool seqsourceP = false;
+    QDPIO::cout << "Snarf the source from a named buffer" << endl;
+    try
+    {
+      // Try the cast to see if this is a valid source
+      LatticePropagator& source_tmp = 
+	TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.source_id);
+
+      // Snarf the source info. This is will throw if the source_id is not there
+      TheNamedObjMap::Instance().get(params.named_obj.source_id).getFileXML(source_file_xml);
+      TheNamedObjMap::Instance().get(params.named_obj.source_id).getRecordXML(source_record_xml);
+
+      // Try to invert this record XML into a source struct
+      // First identify what kind of source might be here
+      if (source_record_xml.count("/MakeSource") != 0)
+      {
+	PropSource_t source_header;
+
+	read(source_record_xml, "/MakeSource/PropSource", source_header);
+	j_decay = source_header.j_decay;
+	t0 = source_header.t_source[j_decay];
+	make_sourceP = true;
+      }
+      else if (source_record_xml.count("/SequentialSource") != 0)
+      {
+	ChromaProp_t prop_header;
+	PropSource_t source_header;
+	SeqSource_t seqsource_header;
+
+	read(source_record_xml, "/SequentialSource/SeqSource", seqsource_header);
+	// Any source header will do for j_decay
+	read(source_record_xml, "/SequentialSource/ForwardProps/elem[1]/ForwardProp", 
+	     prop_header);
+	read(source_record_xml, "/SequentialSource/ForwardProps/elem[1]/PropSource", 
+	     source_header);
+	j_decay = source_header.j_decay;
+	t0 = seqsource_header.t_sink;
+	seqsourceP = true;
+      }
+      else
+      {
+	throw std::string("No appropriate header found");
+      }
+
+      // Write out the source header
+      write(xml_out, "Source_file_info", source_file_xml);
+      write(xml_out, "Source_record_info", source_record_xml);
+    }    
+    catch (std::bad_cast)
+    {
+      QDPIO::cerr << InlinePropagatorEnv::name << ": caught dynamic cast error" 
+		  << endl;
+      QDP_abort(1);
+    }
+    catch (const string& e) 
+    {
+      QDPIO::cerr << InlinePropagatorEnv::name << ": error extracting source_header: " << e << endl;
+      QDP_abort(1);
+    }
+
+    // Should be a valid cast now
+    const LatticePropagator& quark_prop_source = 
+      TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.source_id);
+ 
+    QDPIO::cout << "Source successfully read and parsed" << endl;
 
     // Sanity check - write out the norm2 of the source in the Nd-1 direction
     // Use this for any possible verification
@@ -273,7 +277,25 @@ namespace Chroma
     // terminology is that a propagator is a matrix in color
     // and spin space
     //
-    LatticePropagator quark_propagator;
+    try
+    {
+      TheNamedObjMap::Instance().create<LatticePropagator>(params.named_obj.prop_id);
+    }
+    catch (std::bad_cast)
+    {
+      QDPIO::cerr << InlinePropagatorEnv::name << ": caught dynamic cast error" 
+		  << endl;
+      QDP_abort(1);
+    }
+    catch (const string& e) 
+    {
+      QDPIO::cerr << InlinePropagatorEnv::name << ": error creating prop: " << e << endl;
+      QDP_abort(1);
+    }
+
+    // Cast should be valid now
+    LatticePropagator& quark_propagator = 
+      TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.prop_id);
     int ncg_had = 0;
 
     //
@@ -314,6 +336,7 @@ namespace Chroma
     {
       try
       {
+	StopWatch swatch;
 	swatch.reset();
 	QDPIO::cout << "Try the various factories" << endl;
 
@@ -376,11 +399,10 @@ namespace Chroma
     }
 
 
-    // Save the propagator
-    // ONLY SciDAC output format is supported!
+    // Save the propagator info
+    try
     {
-      swatch.reset();
-      QDPIO::cout << "Start writing propagator" << endl;
+      QDPIO::cout << "Start writing propagator info" << endl;
 
       XMLBufferWriter file_xml;
       push(file_xml, "propagator");
@@ -409,15 +431,22 @@ namespace Chroma
 	pop(record_xml);
       }
 
-      // Write the source
-      swatch.start();
-      writeQprop(file_xml, record_xml, quark_propagator,
-		 params.prop.prop_file, params.prop.prop_volfmt, QDPIO_SERIAL);
-      swatch.stop();
+      // Write the propagator xml info
+      TheNamedObjMap::Instance().get(params.named_obj.prop_id).setFileXML(file_xml);
+      TheNamedObjMap::Instance().get(params.named_obj.prop_id).setRecordXML(record_xml);
 
-      QDPIO::cout << "Propagator successfully written: time= " 
-		  << swatch.getTimeInSeconds() 
-		  << " secs" << endl;
+      QDPIO::cout << "Propagator successfully updated" << endl;
+    }
+    catch (std::bad_cast)
+    {
+      QDPIO::cerr << InlinePropagatorEnv::name << ": caught dynamic cast error" 
+		  << endl;
+      QDP_abort(1);
+    }
+    catch (const string& e) 
+    {
+      QDPIO::cerr << InlinePropagatorEnv::name << ": error extracting prop_header: " << e << endl;
+      QDP_abort(1);
     }
 
     pop(xml_out);  // propagator

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_propagator_w.h,v 1.2 2005-04-19 20:05:22 edwards Exp $
+// $Id: inline_propagator_w.h,v 1.3 2005-09-25 20:41:09 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -35,12 +35,11 @@ namespace Chroma
     ChromaProp_t      param;
     std::string       stateInfo;
 
-    struct Prop_t
+    struct NamedObject_t
     {
-      std::string     source_file;
-      std::string     prop_file;
-      QDP_volfmt_t    prop_volfmt;
-    } prop;
+      std::string     source_id;
+      std::string     prop_id;
+    } named_obj;
 
     std::string xml_file;  // Alternate XML file pattern
   };

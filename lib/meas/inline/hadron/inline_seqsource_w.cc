@@ -1,4 +1,4 @@
-// $Id: inline_seqsource_w.cc,v 1.5 2005-08-24 03:53:14 edwards Exp $
+// $Id: inline_seqsource_w.cc,v 1.6 2005-09-25 20:41:09 edwards Exp $
 /*! \file
  * \brief Inline construction of sequential sources
  *
@@ -14,6 +14,7 @@
 #include "meas/hadron/hadseqsrc_w.h"
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
+#include "meas/inline/io/named_objmap.h"
 
 namespace Chroma 
 { 
@@ -39,26 +40,25 @@ namespace Chroma
 
 
   //! Propagator input
-  void read(XMLReader& xml, const string& path, InlineSeqSourceParams::Prop_t& input)
+  void read(XMLReader& xml, const string& path, InlineSeqSourceParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
-    read(inputtop, "prop_file", input.prop_file);
-    read(inputtop, "seqsource_file", input.seqsource_file);
-    read(inputtop, "seqsource_volfmt", input.seqsource_volfmt);
+    read(inputtop, "prop_id", input.prop_id);
+    read(inputtop, "seqsource_id", input.seqsource_id);
   }
 
   //! Propagator output
-  void write(XMLWriter& xml, const string& path, const InlineSeqSourceParams::Prop_t& input)
+  void write(XMLWriter& xml, const string& path, const InlineSeqSourceParams::NamedObject_t& input)
   {
     push(xml, path);
 
-    write(xml, "prop_file", input.prop_file);
-    write(xml, "seqsource_file", input.seqsource_file);
-    write(xml, "seqsource_volfmt", input.seqsource_volfmt);
+    write(xml, "prop_id", input.prop_id);
+    write(xml, "seqsource_id", input.seqsource_id);
 
     pop(xml);
   }
+
 
 
   // Param stuff
@@ -82,11 +82,11 @@ namespace Chroma
       read(paramtop, "PropSink", sink_header);
 
       // Read in the forward_prop/seqsource info
-      read(paramtop, "Prop", prop);
+      read(paramtop, "NamedObject", named_obj);
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << "Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
       QDP_abort(1);
     }
   }
@@ -99,12 +99,13 @@ namespace Chroma
     
     Chroma::write(xml_out, "Param", param);
     Chroma::write(xml_out, "PropSink", sink_header);
-    Chroma::write(xml_out, "Prop", prop);
+    Chroma::write(xml_out, "NamedObject", named_obj);
     
     pop(xml_out);
   }
 
 
+  // Function call
   void 
   InlineSeqSource::operator()(const multi1d<LatticeColorMatrix>& u,
 			      XMLBufferWriter& gauge_xml,
@@ -116,7 +117,8 @@ namespace Chroma
     push(xml_out, "seqsource");
     write(xml_out, "update_no", update_no);
 
-    QDPIO::cout << "SEQSOURCE: propagator sequential source constructor" << endl;
+    QDPIO::cout << InlineSeqSourceEnv::name << ": propagator sequential source constructor" << endl;
+    StopWatch swatch;
 
     proginfo(xml_out);    // Print out basic program info
 
@@ -133,44 +135,47 @@ namespace Chroma
     // Calculate some gauge invariant observables just for info.
     MesPlq(xml_out, "Observables", u);
 
+
     //
     // Read the quark propagator and extract headers
     //
-    StopWatch swatch;
     LatticePropagator quark_propagator;
     ChromaProp_t prop_header;
     PropSource_t source_header;
+    try
     {
+      // Snarf the data into a copy
+      quark_propagator =
+	TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.prop_id);
+	
+      // Snarf the source info. This is will throw if the source_id is not there
       XMLReader prop_file_xml, prop_record_xml;
-      swatch.reset();
-
-      QDPIO::cout << "Attempt to read forward propagator" << endl;
-      swatch.start();
-      readQprop(prop_file_xml, 
-		prop_record_xml, quark_propagator,
-		params.prop.prop_file, QDPIO_SERIAL);
-      swatch.stop();
-
-      QDPIO::cout << "Forward propagator successfully read: time= " 
-		  << swatch.getTimeInSeconds() 
-		  << " secs" << endl;
+      TheNamedObjMap::Instance().get(params.named_obj.prop_id).getFileXML(prop_file_xml);
+      TheNamedObjMap::Instance().get(params.named_obj.prop_id).getRecordXML(prop_record_xml);
    
       // Try to invert this record XML into a ChromaProp struct
       // Also pull out the id of this source
-      try
       {
 	read(prop_record_xml, "/Propagator/ForwardProp", prop_header);
 	read(prop_record_xml, "/Propagator/PropSource", source_header);
-      }
-      catch (const string& e) 
-      {
-	QDPIO::cerr << "Error extracting forward_prop header: " << e << endl;
-	QDP_abort(1);
       }
 
       // Save prop input
       write(xml_out, "Propagator_info", prop_record_xml);
     }
+    catch( std::bad_cast ) 
+    {
+      QDPIO::cerr << InlineSeqSourceEnv::name << ": caught dynamic cast error" 
+		  << endl;
+      QDP_abort(1);
+    }
+    catch (const string& e) 
+    {
+      QDPIO::cerr << InlineSeqSourceEnv::name << ": map call failed: " << e 
+		  << endl;
+      QDP_abort(1);
+    }
+
     QDPIO::cout << "Forward propagator successfully read and parsed" << endl;
 
     // Derived from input prop
@@ -183,7 +188,7 @@ namespace Chroma
     // Sanity check - write out the norm2 of the forward prop in the j_decay direction
     // Use this for any possible verification
     {
-      multi1d<Double> forward_prop_corr = sumMulti(localNorm2(quark_propagator), 
+      multi1d<Double> forward_prop_corr = sumMulti(localNorm2(quark_propagator),
 						   phases.getSet());
 
       push(xml_out, "Forward_prop_correlator");
@@ -312,9 +317,9 @@ namespace Chroma
     /*
      *  Write the sequential source out to disk
      */
+    try
     {
-      swatch.reset();
-      QDPIO::cout << "Attempt to write sequential source" << endl;
+      QDPIO::cout << "Attempt to update sequential source" << endl;
 
       XMLBufferWriter file_xml;
       push(file_xml, "seqsource");
@@ -338,16 +343,24 @@ namespace Chroma
       write(record_xml, "Config_info", gauge_xml);
       pop(record_xml);  // SequentialSource
 
-      // Write the seqsource
-      swatch.start();
-      writeQprop(file_xml, record_xml, quark_prop_src,
-		 params.prop.seqsource_file, 
-		 params.prop.seqsource_volfmt, QDPIO_SERIAL);
-      swatch.stop();
+      // Store the seqsource
+      TheNamedObjMap::Instance().create<LatticePropagator>(params.named_obj.seqsource_id);
+      TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.seqsource_id) = quark_prop_src;
+      TheNamedObjMap::Instance().get(params.named_obj.seqsource_id).setFileXML(file_xml);
+      TheNamedObjMap::Instance().get(params.named_obj.seqsource_id).setRecordXML(record_xml);
 
-      QDPIO::cout << "Sequential source successfully written: time= " 
-		  << swatch.getTimeInSeconds() 
-		  << " secs" << endl;
+      QDPIO::cout << "Sequential source successfully updated"  << endl;
+    }
+    catch (std::bad_cast)
+    {
+      QDPIO::cerr << InlineSeqSourceEnv::name << ": caught dynamic cast error in getData" 
+		  << endl;
+      QDP_abort(1);
+    }
+    catch (const string& e) 
+    {
+      QDPIO::cerr << InlineSeqSourceEnv::name << ": error extracting source_header: " << e << endl;
+      QDP_abort(1);
     }
 
     pop(xml_out);    // seqsource

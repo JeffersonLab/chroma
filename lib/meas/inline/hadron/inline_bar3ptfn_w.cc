@@ -1,4 +1,4 @@
-// $Id: inline_bar3ptfn_w.cc,v 1.3 2005-08-24 03:12:53 edwards Exp $
+// $Id: inline_bar3ptfn_w.cc,v 1.4 2005-09-25 20:41:08 edwards Exp $
 /*! \file
  * \brief Inline measurement of bar3ptfn
  *
@@ -12,6 +12,8 @@
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
 #include "meas/hadron/formfac_w.h"
+
+#include "meas/inline/io/named_objmap.h"
 
 namespace Chroma 
 { 
@@ -29,26 +31,22 @@ namespace Chroma
 
 
   //! Propagator parameters
-  void read(XMLReader& xml, const string& path, InlineBar3ptfnParams::Prop_t& input)
+  void read(XMLReader& xml, const string& path, InlineBar3ptfnParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
-    read(inputtop, "prop_file", input.prop_file);
-    read(inputtop, "seqprop_files", input.seqprop_files);
-
-    if (inputtop.count("bar3ptfn_file") == 1)
-      read(inputtop, "bar3ptfn_file", input.bar3ptfn_file);
-    else
-      input.bar3ptfn_file = "bar3ptfn.dat";
+    read(inputtop, "prop_id", input.prop_id);
+    read(inputtop, "seqprop_ids", input.seqprop_ids);
+    read(inputtop, "bar3ptfn_file", input.bar3ptfn_file);
   }
 
   //! Propagator parameters
-  void write(XMLWriter& xml, const string& path, const InlineBar3ptfnParams::Prop_t& input)
+  void write(XMLWriter& xml, const string& path, const InlineBar3ptfnParams::NamedObject_t& input)
   {
     push(xml, path);
 
-    write(xml, "prop_file", input.prop_file);
-    write(xml, "seqprop_files", input.seqprop_files);
+    write(xml, "prop_id", input.prop_id);
+    write(xml, "seqprop_ids", input.seqprop_ids);
     write(xml, "bar3ptfn_file", input.bar3ptfn_file);
 
     pop(xml);
@@ -114,11 +112,11 @@ namespace Chroma
       read(paramtop, "Param", param);
 
       // Read in the output propagator/source configuration info
-      read(paramtop, "Prop", prop);
+      read(paramtop, "NamedObject", named_obj);
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << "Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
       QDP_abort(1);
     }
   }
@@ -133,7 +131,7 @@ namespace Chroma
     Chroma::write(xml_out, "Param", param);
 
     // Write out the output propagator/source configuration info
-    Chroma::write(xml_out, "Prop", prop);
+    Chroma::write(xml_out, "NamedObject", named_obj);
 
     pop(xml_out);
   }
@@ -225,7 +223,7 @@ namespace Chroma
     push(xml_out, "bar3ptfn");
     write(xml_out, "update_no", update_no);
 
-    QDPIO::cout << " FORMFAC: Baryon form factors for Wilson fermions" << endl;
+    QDPIO::cout << InlineBar3ptfnEnv::name << ": Baryon form factors for Wilson fermions" << endl;
 
     proginfo(xml_out);    // Print out basic program info
 
@@ -246,43 +244,45 @@ namespace Chroma
     //
     // Read the quark propagator and extract headers
     //
-    StopWatch swatch;
     XMLReader prop_file_xml, prop_record_xml;
     LatticePropagator quark_propagator;
     ChromaProp_t prop_header;
     PropSource_t source_header;
+    QDPIO::cout << "Attempt to parse forward propagator" << endl;
+    try
     {
-      swatch.reset();
-
-      QDPIO::cout << "Attempt to read forward propagator" << endl;
-      swatch.start();
-      readQprop(prop_file_xml, 
-		prop_record_xml, quark_propagator,
-		params.prop.prop_file, QDPIO_SERIAL);
-      swatch.stop();
-
-      QDPIO::cout << "Forward propagator successfully read: time= " 
-		  << swatch.getTimeInSeconds() 
-		  << " secs" << endl;
+      // Snarf the forward prop
+      quark_propagator =
+	TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.prop_id);
+	
+      // Snarf the source info. This is will throw if the source_id is not there
+      TheNamedObjMap::Instance().get(params.named_obj.prop_id).getFileXML(prop_file_xml);
+      TheNamedObjMap::Instance().get(params.named_obj.prop_id).getRecordXML(prop_record_xml);
    
       // Try to invert this record XML into a ChromaProp struct
       // Also pull out the id of this source
-      try
       {
 	read(prop_record_xml, "/Propagator/ForwardProp", prop_header);
 	read(prop_record_xml, "/Propagator/PropSource", source_header);
-      }
-      catch (const string& e) 
-      {
-	QDPIO::cerr << "Error extracting forward_prop header: " << e << endl;
-	QDP_abort(1);
       }
 
       // Save propagator input
       write(xml_out, "Propagator_file_info", prop_file_xml);
       write(xml_out, "Propagator_record_info", prop_record_xml);
     }
-    QDPIO::cout << "Forward propagator successfully read and parsed" << endl;
+    catch( std::bad_cast ) 
+    {
+      QDPIO::cerr << InlineBar3ptfnEnv::name << ": caught dynamic cast error" 
+		  << endl;
+      QDP_abort(1);
+    }
+    catch (const string& e) 
+    {
+      QDPIO::cerr << InlineBar3ptfnEnv::name << ": error message: " << e 
+		  << endl;
+      QDP_abort(1);
+    }
+    QDPIO::cout << "Forward propagator successfully parsed" << endl;
 
     // Derived from input prop
     int  j_decay = source_header.j_decay;
@@ -315,12 +315,12 @@ namespace Chroma
     // Big nested structure that is image of all form-factors
 //    FormFac_Wilson_3Pt_fn_measurements_t  formfacs;
     bar3pt.bar.output_version = 3;  // bump this up everytime something changes
-    bar3pt.bar.seqsrc.resize(params.prop.seqprop_files.size());
+    bar3pt.bar.seqsrc.resize(params.named_obj.seqprop_ids.size());
 
-    XMLArrayWriter  xml_seq_src(xml_out, params.prop.seqprop_files.size());
+    XMLArrayWriter  xml_seq_src(xml_out, params.named_obj.seqprop_ids.size());
     push(xml_seq_src, "Sequential_source");
 
-    for (int seq_src_ctr = 0; seq_src_ctr < params.prop.seqprop_files.size(); ++seq_src_ctr) 
+    for (int seq_src_ctr = 0; seq_src_ctr < params.named_obj.seqprop_ids.size(); ++seq_src_ctr) 
     {
       push(xml_seq_src);
       write(xml_seq_src, "seq_src_ctr", seq_src_ctr);
@@ -329,39 +329,42 @@ namespace Chroma
       // Read the quark propagator and extract headers
       LatticePropagator seq_quark_prop;
       SeqSource_t seqsource_header;
+      QDPIO::cout << "Attempt to parse sequential propagator" << endl;
+      try
       {
-	swatch.reset();
-	QDPIO::cout << "Attempt to read sequential propagator" << endl;
-
+	// Snarf the backward prop
+	seq_quark_prop =
+	  TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.seqprop_ids[seq_src_ctr]);
+	
+	// Snarf the source info. This is will throw if the source_id is not there
 	XMLReader seqprop_file_xml, seqprop_record_xml;
-	swatch.start();
-	readQprop(seqprop_file_xml, 
-		  seqprop_record_xml, seq_quark_prop,
-		  params.prop.seqprop_files[seq_src_ctr], QDPIO_SERIAL);
-	swatch.stop();
-
-	QDPIO::cout << "Sequential source successfully read: time= " 
-		    << swatch.getTimeInSeconds() 
-		    << " secs" << endl;
-
+	TheNamedObjMap::Instance().get(params.named_obj.seqprop_ids[seq_src_ctr]).getFileXML(seqprop_file_xml);
+	TheNamedObjMap::Instance().get(params.named_obj.seqprop_ids[seq_src_ctr]).getRecordXML(seqprop_record_xml);
+   
 	// Try to invert this record XML into a ChromaProp struct
 	// Also pull out the id of this source
 	// NEED SECURITY HERE - need a way to cross check props. Use the ID.
-	try
 	{
 	  read(seqprop_record_xml, "/SequentialProp/SeqSource", seqsource_header);
-	}
-	catch (const string& e) 
-	{
-	  QDPIO::cerr << "Error extracting seqprop header: " << e << endl;
-	  QDP_abort(1);
 	}
 
 	// Save seqprop input
 	write(xml_seq_src, "SequentialProp_file_info", seqprop_file_xml);
 	write(xml_seq_src, "SequentialProp_record_info", seqprop_record_xml);
       }
-      QDPIO::cout << "Sequential propagator successfully read" << endl;
+      catch( std::bad_cast ) 
+      {
+	QDPIO::cerr << InlineBar3ptfnEnv::name << ": caught dynamic cast error" 
+		    << endl;
+	QDP_abort(1);
+      }
+      catch (const string& e) 
+      {
+	QDPIO::cerr << InlineBar3ptfnEnv::name << ": map call failed: " << e 
+		    << endl;
+	QDP_abort(1);
+      }
+      QDPIO::cout << "Sequential propagator successfully parsed" << endl;
 
       // Sanity check - write out the norm2 of the forward prop in the j_decay direction
       // Use this for any possible verification
@@ -407,7 +410,7 @@ namespace Chroma
 
     pop(xml_seq_src);  // Sequential_source
 
-//    BinaryWriter  bin_out(params.prop.bar3ptfn_file);
+//    BinaryWriter  bin_out(params.named_obj.bar3ptfn_file);
 //    write(bin_out, bar3ptfn);
 //    bin_out.close();
 
@@ -416,7 +419,7 @@ namespace Chroma
     // Close the namelist output file XMLDAT
     pop(xml_out);     // bar3ptfn
 
-    BinaryWriter  bin_out(params.prop.bar3ptfn_file);
+    BinaryWriter  bin_out(params.named_obj.bar3ptfn_file);
     write(bin_out, bar3pt);
     bin_out.close();
 

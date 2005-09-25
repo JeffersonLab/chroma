@@ -1,4 +1,4 @@
-// $Id: inline_hadspec_w.cc,v 1.1 2005-06-11 01:43:52 edwards Exp $
+// $Id: inline_hadspec_w.cc,v 1.2 2005-09-25 20:41:09 edwards Exp $
 /*! \file
  * \brief Inline construction of hadron spectrum
  *
@@ -20,6 +20,7 @@
 #include "meas/glue/mesfield.h"
 #include "util/gauge/taproj.h"
 #include "meas/inline/make_xml_file.h"
+#include "meas/inline/io/named_objmap.h"
 
 namespace Chroma 
 { 
@@ -111,19 +112,19 @@ namespace Chroma
 
 
   //! Propagator input
-  void read(XMLReader& xml, const string& path, InlineHadSpecParams::Prop_t& input)
+  void read(XMLReader& xml, const string& path, InlineHadSpecParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
-    read(inputtop, "prop_files", input.prop_files);
+    read(inputtop, "prop_ids", input.prop_ids);
   }
 
   //! Propagator output
-  void write(XMLWriter& xml, const string& path, const InlineHadSpecParams::Prop_t& input)
+  void write(XMLWriter& xml, const string& path, const InlineHadSpecParams::NamedObject_t& input)
   {
     push(xml, path);
 
-    write(xml, "prop_files", input.prop_files);
+    write(xml, "prop_ids", input.prop_ids);
 
     pop(xml);
   }
@@ -147,7 +148,7 @@ namespace Chroma
       read(paramtop, "Param", param);
 
       // Read in the output propagator/source configuration info
-      read(paramtop, "Prop", prop);
+      read(paramtop, "NamedObject", named_obj);
 
       // Possible alternate XML file pattern
       if (paramtop.count("xml_file") != 0) 
@@ -157,7 +158,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << "Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
       QDP_abort(1);
     }
   }
@@ -169,7 +170,7 @@ namespace Chroma
     push(xml_out, path);
     
     Chroma::write(xml_out, "Param", param);
-    Chroma::write(xml_out, "Prop", prop);
+    Chroma::write(xml_out, "NamedObject", named_obj);
     QDP::write(xml_out, "xml_file", xml_file);
 
     pop(xml_out);
@@ -239,18 +240,18 @@ namespace Chroma
 
     // First propagator is the light quark second is the strange quark
     const int Nprops = 2;
-    if (params.prop.prop_files.size() != Nprops)
+    if (params.named_obj.prop_ids.size() != Nprops)
     {
       QDPIO::cerr << "HADSPEC needs two propagators. Found " ;
-      QDPIO::cerr <<params.prop.prop_files.size()<< endl;
+      QDPIO::cerr <<params.named_obj.prop_ids.size()<< endl;
       QDP_abort(2);
     }
 
-    multi1d<ForwardProp_t> prop_header(params.prop.prop_files.size());
-    multi1d<LatticePropagator> quark_propagator(params.prop.prop_files.size());
-    multi1d<Real> Mass(params.prop.prop_files.size());
+    multi1d<ForwardProp_t> prop_header(params.named_obj.prop_ids.size());
+    multi1d<LatticePropagator> quark_propagator(params.named_obj.prop_ids.size());
+    multi1d<Real> Mass(params.named_obj.prop_ids.size());
     
-    multi2d<int> bc(params.prop.prop_files.size(), 4); 
+    multi2d<int> bc(params.named_obj.prop_ids.size(), 4); 
     
     // Keep an array of all the xml output buffers
     // This spectrum code does only one measurement using several propagators
@@ -260,36 +261,38 @@ namespace Chroma
     // Now loop over the various fermion masses
     for(int loop=0; loop < Nprops; ++loop)
     {
-      // Optimize the read - if the filename is the same, no need to read
-      if ((loop == 0) || (params.prop.prop_files[loop] != params.prop.prop_files[0]))
+      QDPIO::cout << "Attempt to parse forward propagator = " << params.named_obj.prop_ids[loop] << endl;
+      try
       {
+	// Snarf the data into a copy
+	quark_propagator[loop] =
+	  TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.prop_ids[loop]);
+	
+	// Snarf the prop info. This is will throw if the prop_id is not there
 	XMLReader prop_file_xml, prop_record_xml;
-
-	QDPIO::cout << "Attempt to read forward propagator XX" 
-		    << params.prop.prop_files[loop] << "XX" << endl;
-	readQprop(prop_file_xml, 
-		  prop_record_xml, quark_propagator[loop],
-		  params.prop.prop_files[loop], QDPIO_SERIAL);
-	QDPIO::cout << "Forward propagator successfully read" << endl;
+	TheNamedObjMap::Instance().get(params.named_obj.prop_ids[loop]).getFileXML(prop_file_xml);
+	TheNamedObjMap::Instance().get(params.named_obj.prop_ids[loop]).getRecordXML(prop_record_xml);
    
 	// Try to invert this record XML into a ChromaProp struct
 	// Also pull out the id of this source
-	try
 	{
 	  read(prop_record_xml, "/SinkSmear", prop_header[loop]);
 	}
-	catch (const string& e) 
-	{
-	  QDPIO::cerr << "Error extracting forward_prop header: " << e << endl;
-	  QDP_abort(1);
-	}
       }
-      else
+      catch( std::bad_cast ) 
       {
-	QDPIO::cout << "Same prop: optimize away read of propagator "  << loop << endl;
-	quark_propagator[loop] = quark_propagator[0];
-	prop_header[loop] = prop_header[0];
+	QDPIO::cerr << InlineHadSpecEnv::name << ": caught dynamic cast error" 
+		    << endl;
+	QDP_abort(1);
       }
+      catch (const string& e) 
+      {
+	QDPIO::cerr << InlineHadSpecEnv::name << ": error message: " << e 
+		    << endl;
+	QDP_abort(1);
+      }
+      QDPIO::cout << "Forward propagator successfully parsed" << endl;
+
 
       // Derived from input prop
       // Hunt around to find the mass
@@ -351,7 +354,7 @@ namespace Chroma
     // width of sink smearing is the same since no antisymmetrization
     // is done.
     //
-    for (int loop(1); loop < params.prop.prop_files.size(); ++loop)
+    for (int loop(1); loop < params.named_obj.prop_ids.size(); ++loop)
     {
       if (prop_header[loop].source_header.source_type != 
 	  prop_header[0].source_header.source_type)
@@ -374,7 +377,7 @@ namespace Chroma
     multi1d<int> t_source = prop_header[0].source_header.t_source;
     int t0      = t_source[j_decay];
     int bc_spec = bc[0][j_decay] ;
-    for (int loop(0); loop < params.prop.prop_files.size(); ++loop)
+    for (int loop(0); loop < params.named_obj.prop_ids.size(); ++loop)
     {
       if (prop_header[loop].source_header.j_decay != j_decay)
       {
@@ -414,8 +417,8 @@ namespace Chroma
     // Sanity check - write out the norm2 of the forward prop in the j_decay direction
     // Use this for any possible verification
     {
-      multi1d< multi1d<Double> > forward_prop_corr(params.prop.prop_files.size());
-      for (int loop=0; loop < params.prop.prop_files.size(); ++loop)
+      multi1d< multi1d<Double> > forward_prop_corr(params.named_obj.prop_ids.size());
+      for (int loop=0; loop < params.named_obj.prop_ids.size(); ++loop)
       {
 	forward_prop_corr[loop] = sumMulti(localNorm2(quark_propagator[loop]), 
 					   phases.getSet());

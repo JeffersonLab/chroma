@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_mres_w.h,v 1.5 2005-05-29 18:34:31 edwards Exp $
+// $Id: inline_mres_w.h,v 1.6 2005-09-25 20:41:09 edwards Exp $
 /*! \file
  * \brief Inline mres calculations
  *
@@ -39,10 +39,10 @@ namespace Chroma
 
     std::string       stateInfo;
 
-    struct Prop_t
+    struct NamedObject_t
     {
-      string          prop_file;
-    } prop;
+      string          prop_id;
+    } named_obj;
 
     std::string xml_file;  // Alternate XML file pattern
   };

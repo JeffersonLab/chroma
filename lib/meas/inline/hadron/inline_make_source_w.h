@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_make_source_w.h,v 1.2 2005-04-19 20:05:22 edwards Exp $
+// $Id: inline_make_source_w.h,v 1.3 2005-09-25 20:41:09 edwards Exp $
 /*! \file
  * \brief Inline construction of make_source
  *
@@ -34,11 +34,10 @@ namespace Chroma
 
     PropSource_t  param;
 
-    struct Prop_t
+    struct NamedObject_t
     {
-      std::string     source_file;
-      QDP_volfmt_t    source_volfmt;
-    } prop;
+      std::string     source_id;
+    } named_obj;
   };
 
   //! Inline measurement of Wilson loops

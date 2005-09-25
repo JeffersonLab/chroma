@@ -1,4 +1,4 @@
-// $Id: inline_building_blocks_w.cc,v 1.4 2005-08-24 03:12:53 edwards Exp $
+// $Id: inline_building_blocks_w.cc,v 1.5 2005-09-25 20:41:09 edwards Exp $
 /*! \file
  * \brief Inline construction of BuildingBlocks
  *
@@ -12,6 +12,8 @@
 #include "meas/hadron/BuildingBlocks_w.h"
 #include "util/info/proginfo.h"
 #include "meas/inline/make_xml_file.h"
+
+#include "meas/inline/io/named_objmap.h"
 
 namespace Chroma 
 { 
@@ -75,22 +77,22 @@ namespace Chroma
   }
 
   //! Propagator input
-  void read(XMLReader& xml, const string& path, InlineBuildingBlocksParams::Prop_t& input)
+  void read(XMLReader& xml, const string& path, InlineBuildingBlocksParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
-    read(inputtop, "BkwdPropFileName", input.BkwdPropFileName);
+    read(inputtop, "BkwdPropId", input.BkwdPropId);
     read(inputtop, "BkwdPropG5Format", input.BkwdPropG5Format);
     read(inputtop, "GammaInsertion", input.GammaInsertion);
     read(inputtop, "BBFileNamePattern", input.BBFileNamePattern);
   }
 
   //! Propagator output
-  void write(XMLWriter& xml, const string& path, const InlineBuildingBlocksParams::Prop_t& input)
+  void write(XMLWriter& xml, const string& path, const InlineBuildingBlocksParams::NamedObject_t& input)
   {
     push(xml, path);
 
-    write(xml, "BkwdPropFileName", input.BkwdPropFileName);
+    write(xml, "BkwdPropId", input.BkwdPropId);
     write(xml, "BkwdPropG5Format", input.BkwdPropG5Format);
     write(xml, "GammaInsertion", input.GammaInsertion);
     write(xml, "BBFileNamePattern", input.BBFileNamePattern);
@@ -104,7 +106,7 @@ namespace Chroma
     XMLReader inputtop(xml, path);
 
     read(inputtop, "OutFileName", input.OutFileName);
-    read(inputtop, "FrwdPropFileName", input.FrwdPropFileName);
+    read(inputtop, "FrwdPropId", input.FrwdPropId);
     read(inputtop, "BkwdProps", input.BkwdProps);
   }
 
@@ -114,7 +116,7 @@ namespace Chroma
     push(xml, path);
 
     write(xml, "OutFileName", input.OutFileName);
-    write(xml, "FrwdPropFileName", input.FrwdPropFileName);
+    write(xml, "FrwdPropId", input.FrwdPropId);
     write(xml, "BkwdProps", input.BkwdProps);
 
     pop(xml);
@@ -149,7 +151,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << "Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
       QDP_abort(1);
     }
   }
@@ -222,8 +224,6 @@ namespace Chroma
     push(XmlOut, "ExampleBuildingBlocks");
     write(XmlOut, "update_no", update_no);
 
-    StopWatch swatch;
-
     QDPIO::cout << " ExampleBuildingBlocks" << endl;
     QDPIO::cout << "     volume: " << params.param.nrow[0];
     for (int i=1; i<Nd; ++i) {
@@ -243,12 +243,12 @@ namespace Chroma
     Out << "  NY                                  = " << params.param.nrow[1] << "\n";
     Out << "  NZ                                  = " << params.param.nrow[2] << "\n";
     Out << "  NT                                  = " << params.param.nrow[3] << "\n";
-    Out << "  Forward Propagator                  = " << params.bb.FrwdPropFileName          << "\n";
-    Out <<                                                                                     "\n";
+    Out << "  Forward Propagator                  = " << params.bb.FrwdPropId << "\n";
+    Out <<                                                                       "\n";
     for(int loop=0; loop < params.bb.BkwdProps.size(); ++loop)
     {
-      const InlineBuildingBlocksParams::Prop_t& prop = params.bb.BkwdProps[loop];
-      Out << "  Backward Propagator                 = " << prop.BkwdPropFileName            << "\n";
+      const InlineBuildingBlocksParams::NamedObject_t& prop = params.bb.BkwdProps[loop];
+      Out << "  Backward Propagator                 = " << prop.BkwdPropId                  << "\n";
       Out << "  Backward Propagator Gamma5 Format   = " << prop.BkwdPropG5Format            << "\n";
       Out << "  Gamma Insertion                     = " << prop.GammaInsertion              << "\n";
       Out << "  Building Blocks                     = " << prop.BBFileNamePattern           << "\n";
@@ -313,35 +313,42 @@ namespace Chroma
     //#################################################################################//
 
     XMLReader FrwdPropXML, FrwdPropRecordXML;
-    LatticePropagator F;
     ChromaProp_t prop_header;
     PropSource_t source_header;
-    Out << "reading forward propagator " << params.bb.FrwdPropFileName << " ... " << "\n";  Out.flush();
-    {
-      swatch.reset();
-      QDPIO::cout << "Attempt to read forward propagator" << endl;
-      Out << "assuming chroma format for forward propagator" << "\n";  Out.flush();
-      swatch.start();
-      readQprop( FrwdPropXML, FrwdPropRecordXML, F, params.bb.FrwdPropFileName, QDPIO_SERIAL );
-      swatch.stop();
+    QDPIO::cout << "Attempt to parse forward propagator" << endl;
+    Out << "parsing forward propagator " << params.bb.FrwdPropId << " ... " << "\n";  Out.flush();
 
-      QDPIO::cout << "Forward propagator successfully read: time= " 
-		  << swatch.getTimeInSeconds() 
-		  << " secs" << endl;
-   
+    try
+    {
+      // Check if the object is present
+      LatticePropagator& prop_tmp = 
+        TheNamedObjMap::Instance().getData<LatticePropagator>(params.bb.FrwdPropId);
+	
+      // Snarf the frwd prop info. This is will throw if the frwd prop id is not there
+      TheNamedObjMap::Instance().get(params.bb.FrwdPropId).getFileXML(FrwdPropXML);
+      TheNamedObjMap::Instance().get(params.bb.FrwdPropId).getRecordXML(FrwdPropRecordXML);
+
       // Try to invert this record XML into a ChromaProp struct
-      try
       {
 	read(FrwdPropRecordXML, "/Propagator/ForwardProp", prop_header);
 	read(FrwdPropRecordXML, "/Propagator/PropSource", source_header);
       }
-      catch (const string& e) 
-      {
-	QDPIO::cerr << "Error extracting forward_prop header: " << e << endl;
-	QDP_abort(1);
-      }
     }
-    Out << "finished reading forward propagator " << params.bb.FrwdPropFileName << "\n";  Out.flush();
+    catch( std::bad_cast ) 
+    {
+      QDPIO::cerr << InlineBuildingBlocksEnv::name << ": caught dynamic cast error" 
+		  << endl;
+      QDP_abort(1);
+    }
+    catch (const string& e) 
+    {
+      QDPIO::cerr << InlineBuildingBlocksEnv::name << ": map call failed: " << e 
+		  << endl;
+      QDP_abort(1);
+    }
+
+    QDPIO::cout << "Forward propagator successfully parsed" << endl;
+    Out << "finished parsing forward propagator " << params.bb.FrwdPropId << "\n";  Out.flush();
 
 
     // Derived from input prop
@@ -352,13 +359,15 @@ namespace Chroma
     {
       SftMom phases( 0, true, j_decay );
 
-      multi1d<Double> FrwdPropCheck = sumMulti( localNorm2( F ), phases.getSet() );
+      multi1d<Double> FrwdPropCheck = 
+	sumMulti( localNorm2( TheNamedObjMap::Instance().getData<LatticePropagator>(params.bb.FrwdPropId) ), 
+		  phases.getSet() );
 
       Out << "forward propagator check = " << FrwdPropCheck[0] << "\n";  Out.flush();
 
       // Write out the forward propagator header
       push(XmlOut, "ForwardProp");
-      write(XmlOut, "FrwdPropFileName", params.bb.FrwdPropFileName);
+      write(XmlOut, "FrwdPropId", params.bb.FrwdPropId);
       write(XmlOut, "FrwdPropXML", FrwdPropXML);
       write(XmlOut, "FrwdPropRecordXML", FrwdPropRecordXML);
       write(XmlOut, "FrwdPropCheck", FrwdPropCheck);
@@ -369,6 +378,7 @@ namespace Chroma
     // Read Backward (or Sequential) Propagators                                       //
     //#################################################################################//
 
+    StopWatch swatch;
     const int NF = params.bb.BkwdProps.size();
 
     XMLArrayWriter  XmlSeqSrc(XmlOut, NF);
@@ -385,33 +395,39 @@ namespace Chroma
       XMLReader BkwdPropXML, BkwdPropRecordXML;
       multi1d< LatticePropagator > B( 1 );
       SeqSource_t seqsource_header;
-      Out << "reading backward u propagator " << params.bb.BkwdProps[loop].BkwdPropFileName << " ... " << "\n";  Out.flush();
+      QDPIO::cout << "Attempt to parse backward propagator" << endl;
+      Out << "parsing backward u propagator " << params.bb.BkwdProps[loop].BkwdPropId << " ... " << "\n";  Out.flush();
+      try
       {
-	swatch.reset();
-	QDPIO::cout << "Attempt to read backward propagator" << endl;
-	Out << "assuming chroma format for backward u propagator" << "\n";  Out.flush();
-	swatch.start();
-	readQprop( BkwdPropXML, BkwdPropRecordXML, B[0], params.bb.BkwdProps[loop].BkwdPropFileName, QDPIO_SERIAL );
-	swatch.stop();
-
-	QDPIO::cout << "Backward propagator successfully read: time= " 
-		    << swatch.getTimeInSeconds() 
-		    << " secs" << endl;
+	// Extract the backward prop
+	B[0] = TheNamedObjMap::Instance().getData<LatticePropagator>(params.bb.BkwdProps[loop].BkwdPropId);
+	
+	// Snarf the bkwd prop info. This is will throw if the bkwd prop id is not there
+	TheNamedObjMap::Instance().get(params.bb.BkwdProps[loop].BkwdPropId).getFileXML(BkwdPropXML);
+	TheNamedObjMap::Instance().get(params.bb.BkwdProps[loop].BkwdPropId).getRecordXML(BkwdPropRecordXML);
 
 	// Try to invert this record XML into a ChromaProp struct
 	// Also pull out the id of this source
 	// NEED SECURITY HERE - need a way to cross check props. Use the ID.
-	try
 	{
 	  read(BkwdPropRecordXML, "/SequentialProp/SeqSource", seqsource_header);
 	}
-	catch (const string& e) 
-	{
-	  QDPIO::cerr << "Error extracting seqprop header: " << e << endl;
-	  QDP_abort(1);
-	}
       }
-      Out << "finished reading backward u propagator " << params.bb.BkwdProps[loop].BkwdPropFileName << " ... " << "\n";  Out.flush();
+      catch( std::bad_cast ) 
+      {
+	QDPIO::cerr << InlineBuildingBlocksEnv::name << ": caught dynamic cast error" 
+		    << endl;
+	QDP_abort(1);
+      }
+      catch (const string& e) 
+      {
+	QDPIO::cerr << InlineBuildingBlocksEnv::name << ": map call failed: " << e 
+		    << endl;
+	QDP_abort(1);
+      }
+
+      QDPIO::cout << "Backward propagator successfully parse" << endl;
+      Out << "finished reading backward u propagator " << params.bb.BkwdProps[loop].BkwdPropId << " ... " << "\n";  Out.flush();
       
       // Sanity check - write out the norm2 of the forward prop in the j_decay direction
       // Use this for any possible verification
@@ -424,7 +440,7 @@ namespace Chroma
       
 	// Write out the forward propagator header
 	push(XmlSeqSrc, "BackwardProp");
-	write(XmlSeqSrc, "BkwdPropFileName", params.bb.BkwdProps[loop].BkwdPropFileName);
+	write(XmlSeqSrc, "BkwdPropId", params.bb.BkwdProps[loop].BkwdPropId);
 	write(XmlSeqSrc, "BkwdPropG5Format", params.bb.BkwdProps[loop].BkwdPropG5Format);
 	write(XmlSeqSrc, "SequentialSourceType", seqsource_header.seq_src);
 	write(XmlSeqSrc, "BkwdPropXML", BkwdPropXML);
@@ -546,7 +562,9 @@ namespace Chroma
       const signed short int DecayDir = j_decay;
 
       swatch.start();
-      BuildingBlocks( B, F, U, GammaInsertions, Flavors,
+      BuildingBlocks( B, 
+		      TheNamedObjMap::Instance().getData<LatticePropagator>(params.bb.FrwdPropId), 
+		      U, GammaInsertions, Flavors,
 		      params.param.links_max, AllLinkPatterns, Phases, Files, T1, T2,
 		      seqsource_header.seq_src, seqsource_header.sink_mom, DecayDir);
       swatch.stop();

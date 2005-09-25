@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_ape_smear.h,v 1.2 2005-04-19 20:05:22 edwards Exp $
+// $Id: inline_ape_smear.h,v 1.3 2005-09-25 20:41:09 edwards Exp $
 /*! \file
  *  \brief Inline APE smearing
  */
@@ -9,7 +9,6 @@
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
-#include "io/enum_io/enum_cfgtype_io.h"
 
 namespace Chroma 
 { 
@@ -39,12 +38,10 @@ namespace Chroma
       multi1d<int> nrow;		// Lattice dimension
     } param;
 
-    struct Ape_t
+    struct NamedObject_t
     {
-      QDP_volfmt_t  volfmt;
-      CfgType	ape_type;
-      string 	ape_file;	// storage for ape config
-    } ape;
+      std::string 	ape_id;	        // memory object ape config
+    } named_obj;
 
   };
 

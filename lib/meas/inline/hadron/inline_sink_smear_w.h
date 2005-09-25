@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_sink_smear_w.h,v 1.2 2005-04-19 20:05:22 edwards Exp $
+// $Id: inline_sink_smear_w.h,v 1.3 2005-09-25 20:41:09 edwards Exp $
 /*! \file
  * \brief Inline sink_smear propagators
  *
@@ -34,13 +34,11 @@ namespace Chroma
 
     PropSink_t      param;
 
-    struct Prop_t
+    struct NamedObject_t
     {
-      std::string   prop_file;
-
-      QDP_volfmt_t  smeared_prop_volfmt; // Volume format is  SINGLEFILE or MULTIFILE
-      std::string   smeared_prop_file;
-    } prop;
+      std::string   prop_id;
+      std::string   smeared_prop_id;
+    } named_obj;
   };
 
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_building_blocks_w.h,v 1.4 2005-07-27 16:23:52 edwards Exp $
+// $Id: inline_building_blocks_w.h,v 1.5 2005-09-25 20:41:09 edwards Exp $
 /*! \file
  * \brief Inline construction of BuildingBlocks
  *
@@ -42,9 +42,9 @@ namespace Chroma
     } param;
 
     //! Propagators
-    struct Prop_t
+    struct NamedObject_t
     {
-      std::string   BkwdPropFileName;   // backward propagator
+      std::string   BkwdPropId;         // backward propagator
       std::string   BkwdPropG5Format;   // backward propagators Gamma5 Format
       int           GammaInsertion;     // second gamma insertion
       std::string   BBFileNamePattern;  // BB output file name pattern
@@ -54,8 +54,8 @@ namespace Chroma
     struct BB_out_t
     {
       std::string       OutFileName;
-      std::string       FrwdPropFileName;   // input forward prop
-      multi1d<Prop_t>   BkwdProps;
+      std::string       FrwdPropId;     // input forward prop
+      multi1d<NamedObject_t>   BkwdProps;
     } bb;
 
     std::string xml_file;  // Alternate XML file pattern

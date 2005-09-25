@@ -1,4 +1,4 @@
-// $Id: inline_hyp_smear.cc,v 1.2 2005-04-10 17:05:33 edwards Exp $
+// $Id: inline_hyp_smear.cc,v 1.3 2005-09-25 20:41:09 edwards Exp $
 /*! \file
  *  \brief Inline Hyp smearing
  */
@@ -7,9 +7,10 @@
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/glue/mesplq.h"
 #include "meas/smear/hyp_smear.h"
+#include "meas/smear/hyp_smear3d.h"
 #include "util/info/proginfo.h"
 #include "util/gauge/unit_check.h"
-#include "io/writeszin.h"
+#include "meas/inline/io/named_objmap.h"
 
 #include <sys/time.h>   // for timings
 
@@ -29,20 +30,19 @@ namespace Chroma
 
 
   //! Target file
-  void read(XMLReader& xml, const string& path, InlineHypSmearParams::Hyp_t& input)
+  void read(XMLReader& xml, const string& path, InlineHypSmearParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
-    input.cfg_type = CFG_TYPE_SZIN;
-    read(inputtop, "hyp_file", input.hyp_file);
+    read(inputtop, "hyp_id", input.hyp_id);
   }
 
 
   //! Target file
-  void write(XMLWriter& xml, const string& path, const InlineHypSmearParams::Hyp_t& input)
+  void write(XMLWriter& xml, const string& path, const InlineHypSmearParams::NamedObject_t& input)
   {
     push(xml, path);
-    write(xml, "hyp_file", input.hyp_file);
+    write(xml, "hyp_id", input.hyp_id);
     pop(xml);
   }
 
@@ -54,33 +54,24 @@ namespace Chroma
 
     int version;
     read(paramtop, "version", version);
+    param.num_smear = 1;
+    param.j_decay = -1;
 
     switch (version) 
     {
-    case 3:
-      /**************************************************************************/
-
-      /* this version allows a variable num_smear */
-      read(paramtop, "num_smear", param.num_smear);
-
-      if( param.num_smear < 0 )
-      {
-	QDP_error_exit( "hypsmear.cc: invalid number of hyp smearing iterations, num_smear = %d", param.num_smear );
-      }
-
+    case 2:
       break;
 
-    case 2:
-      /**************************************************************************/
+    case 3:
+      read(paramtop, "num_smear", param.num_smear);
+      break;
 
-      /* this version only allows num_smear = 1 */
-      param.num_smear = 1;
-
+    case 4:
+      read(paramtop, "num_smear", param.num_smear);
+      read(paramtop, "j_decay", param.j_decay);
       break;
 
     default :
-      /**************************************************************************/
-
       QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
       QDP_abort(1);
     }
@@ -90,20 +81,6 @@ namespace Chroma
     read(paramtop, "alpha3", param.alpha3);
 
     read(paramtop, "nrow", param.nrow);
-
-    /*
-     *  Now information about whether to truncate the configuration
-     */
-    read(paramtop, "trunc", param.trunc);
-    switch(param.trunc){
-    case 1:
-      read(paramtop, "t_start", param.t_start);
-      read(paramtop, "t_end", param.t_end);
-      read(paramtop, "j_decay", param.j_decay);
-      break;
-    default:
-      break;
-    }
   }
 
   //! Parameters
@@ -111,36 +88,17 @@ namespace Chroma
   {
     push(xml, path);
 
-    int version = 3;
+    int version = 4;
     write(xml, "version", version);
 
     /* this version allows a variable num_smear */
     write(xml, "num_smear", param.num_smear);
-
-    if( param.num_smear < 0 )
-    {
-      QDP_error_exit("hypsmear: invalid number of hyp smearing iterations, num_smear = %d", param.num_smear );
-    }
-
     write(xml, "alpha1", param.alpha1);
     write(xml, "alpha2", param.alpha2);
     write(xml, "alpha3", param.alpha3);
+    write(xml, "j_decay", param.num_smear);
 
     write(xml, "nrow", param.nrow);
-
-    /*
-     *  Now information about whether to truncate the configuration
-     */
-    write(xml, "trunc", param.trunc);
-    switch(param.trunc){
-    case 1:
-      write(xml, "t_start", param.t_start);
-      write(xml, "t_end", param.t_end);
-      write(xml, "j_decay", param.j_decay);
-      break;
-    default:
-      break;
-    }
   }
 
 
@@ -162,12 +120,12 @@ namespace Chroma
       // Read program parameters
       read(paramtop, "Param", param);
 
-      // Read in the hyp file info
-      read(paramtop, "Hyp", hyp);
+      // Ids
+      read(paramtop, "NamedObject", named_obj);
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << "Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << InlineHypSmearEnv::name << ": Caught Exception reading XML: " << e << endl;
       QDP_abort(1);
     }
   }
@@ -179,7 +137,7 @@ namespace Chroma
     push(xml, path);
 
     Chroma::write(xml, "Param", param);
-    Chroma::write(xml, "Hyp", hyp);
+    Chroma::write(xml, "NamedObject", named_obj);
 
     pop(xml);
   }
@@ -194,7 +152,7 @@ namespace Chroma
     push(xml_out, "hypsmear");
     write(xml_out, "update_no", update_no);
     
-    QDPIO::cout << " HYPSMEAR: HYP smearing of gauge config" << endl;
+    QDPIO::cout << InlineHypSmearEnv::name << ": HYP smearing of gauge config" << endl;
 
     proginfo(xml_out);    // Print out basic program info
 
@@ -230,13 +188,18 @@ namespace Chroma
     int BlkMax = 100;
 
     t1 = clock();
-    if( params.param.num_smear > 0 )
+    if (params.param.num_smear > 0)
     {
-      for( int n = 0; n < params.param.num_smear; n ++ )
+      for (int n = 0; n < params.param.num_smear; n++)
       {
-	Hyp_Smear(u, u_hyp, 
-		  params.param.alpha1, params.param.alpha2, params.param.alpha3, 
-		  BlkAccu, BlkMax);
+	if (params.param.j_decay < 0 || params.param.j_decay >= Nd)
+	  Hyp_Smear(u, u_hyp, 
+		    params.param.alpha1, params.param.alpha2, params.param.alpha3, 
+		    BlkAccu, BlkMax);
+	else
+	  Hyp_Smear3d(u, u_hyp, 
+		      params.param.alpha1, params.param.alpha2, params.param.alpha3, 
+		      BlkAccu, BlkMax, params.param.j_decay);
       }
     }
     else
@@ -250,41 +213,20 @@ namespace Chroma
 
     MesPlq(xml_out, "HYP_observables", u_hyp);
 
-    // Now write the configuration to disk
-
-    QDPIO::cout << "call szin trunc-er" << endl;
-
-    t1 = clock();
-
-    switch (params.hyp.cfg_type) 
+    // Now store the configuration to a memory object
     {
-    case CFG_TYPE_SZIN :
-    {
-      SzinGauge_t szin_out;
+      XMLBufferWriter file_xml, record_xml;
+      push(file_xml, "gauge");
+      write(file_xml, "id", int(0));
+      pop(file_xml);
+      record_xml << gauge_xml;
 
-      switch(params.param.trunc)
-      {
-      case 1:
-	QDPIO::cout << "Call writeSzinTrunc" << endl;
-	writeSzinTrunc(szin_out, u_hyp, params.param.j_decay,
-		       params.param.t_start, params.param.t_end,
-		       params.hyp.hyp_file);
-	break;
-      default:
-	QDPIO::cout << "Call writeSzin" << endl;
-	writeSzin(szin_out, u_hyp,
-		  params.hyp.hyp_file);
-	break;
-      }
-      break;
+      // Store the gauge field
+      TheNamedObjMap::Instance().create< multi1d<LatticeColorMatrix> >(params.named_obj.hyp_id);
+      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.hyp_id) = u_hyp;
+      TheNamedObjMap::Instance().get(params.named_obj.hyp_id).setFileXML(file_xml);
+      TheNamedObjMap::Instance().get(params.named_obj.hyp_id).setRecordXML(record_xml);
     }
-    default :
-      QDP_error_exit("Configuration type is unsupported.");
-    }
-
-    t2 = clock();
-    QDPIO::cout << "Gauge write took " << (double)((int)(t2)-(int)(t1))/(double)(CLOCKS_PER_SEC) << " secs" << endl;
-
     pop(xml_out);
 
     END_CODE();

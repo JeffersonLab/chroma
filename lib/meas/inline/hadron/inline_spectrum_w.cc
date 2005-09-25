@@ -1,4 +1,4 @@
-// $Id: inline_spectrum_w.cc,v 1.5 2005-08-24 03:12:53 edwards Exp $
+// $Id: inline_spectrum_w.cc,v 1.6 2005-09-25 20:41:09 edwards Exp $
 /*! \file
  * \brief Inline construction of spectrum
  *
@@ -22,6 +22,8 @@
 #include "meas/glue/mesfield.h"
 #include "util/gauge/taproj.h"
 #include "meas/inline/make_xml_file.h"
+
+#include "meas/inline/io/named_objmap.h"
 
 namespace Chroma 
 { 
@@ -158,19 +160,19 @@ namespace Chroma
 
 
   //! Propagator input
-  void read(XMLReader& xml, const string& path, InlineSpectrumParams::Prop_t& input)
+  void read(XMLReader& xml, const string& path, InlineSpectrumParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
-    read(inputtop, "prop_files", input.prop_files);
+    read(inputtop, "prop_ids", input.prop_ids);
   }
 
   //! Propagator output
-  void write(XMLWriter& xml, const string& path, const InlineSpectrumParams::Prop_t& input)
+  void write(XMLWriter& xml, const string& path, const InlineSpectrumParams::NamedObject_t& input)
   {
     push(xml, path);
 
-    write(xml, "prop_files", input.prop_files);
+    write(xml, "prop_ids", input.prop_ids);
 
     pop(xml);
   }
@@ -194,7 +196,7 @@ namespace Chroma
       read(paramtop, "Param", param);
 
       // Read in the output propagator/source configuration info
-      read(paramtop, "Prop", prop);
+      read(paramtop, "NamedObject", named_obj);
 
       // Possible alternate XML file pattern
       if (paramtop.count("xml_file") != 0) 
@@ -204,7 +206,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << "Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
       QDP_abort(1);
     }
   }
@@ -216,7 +218,7 @@ namespace Chroma
     push(xml_out, path);
     
     Chroma::write(xml_out, "Param", param);
-    Chroma::write(xml_out, "Prop", prop);
+    Chroma::write(xml_out, "NamedObject", named_obj);
     QDP::write(xml_out, "xml_file", xml_file);
 
     pop(xml_out);
@@ -260,15 +262,15 @@ namespace Chroma
     push(xml_out, "spectrum_w");
     write(xml_out, "update_no", update_no);
 
-    QDPIO::cout << " SPECTRUM: Spectroscopy for Wilson-like fermions" << endl;
+    QDPIO::cout << InlineSpectrumEnv::name << ": Spectroscopy for Wilson-like fermions" << endl;
     StopWatch swatch;
 
     /*
      * Sanity checks
      */
-    if (params.param.wvf_param.size() != params.prop.prop_files.size())
+    if (params.param.wvf_param.size() != params.named_obj.prop_ids.size())
     {
-      QDPIO::cerr << "wvf_param size inconsistent with prop_files size" << endl;
+      QDPIO::cerr << "wvf_param size inconsistent with prop_ids size" << endl;
       QDP_abort(1);
     }
 
@@ -297,45 +299,51 @@ namespace Chroma
     MesPlq(xml_out, "Observables", u);
 
     // Keep an array of all the xml output buffers
-    XMLArrayWriter xml_array(xml_out,params.prop.prop_files.size());
+    XMLArrayWriter xml_array(xml_out,params.named_obj.prop_ids.size());
     push(xml_array, "Wilson_hadron_measurements");
 
 
     // Now loop over the various fermion masses
-    for (int loop=0; loop < params.prop.prop_files.size(); ++loop)
+    for (int loop=0; loop < params.named_obj.prop_ids.size(); ++loop)
     {
       // Read the quark propagator and extract headers
-      LatticePropagator quark_propagator;
       ChromaProp_t prop_header;
       PropSource_t source_header;
+      QDPIO::cout << "Attempt to read propagator info" << endl;
+      try
       {
-	swatch.reset();
-	QDPIO::cout << "Attempt to read propagator" << endl;
-
+	// Try the cast to see if this is a valid source
+	LatticePropagator& prop_tmp = 
+	  TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.prop_ids[loop]);
+	
+	// Snarf the source info. This is will throw if the source_id is not there
 	XMLReader prop_file_xml, prop_record_xml;
-	swatch.start();
-	readQprop(prop_file_xml, 
-		  prop_record_xml, quark_propagator,
-		  params.prop.prop_files[loop], QDPIO_SERIAL);
-	swatch.stop();
+	TheNamedObjMap::Instance().get(params.named_obj.prop_ids[loop]).getFileXML(prop_file_xml);
+	TheNamedObjMap::Instance().get(params.named_obj.prop_ids[loop]).getRecordXML(prop_record_xml);
 
-	QDPIO::cout << "Propagator successfully read: time= " 
-		    << swatch.getTimeInSeconds() 
-		    << " secs" << endl;
-   
 	// Try to invert this record XML into a ChromaProp struct
 	// Also pull out the id of this source
-	try
 	{
 	  read(prop_record_xml, "/Propagator/ForwardProp", prop_header);
 	  read(prop_record_xml, "/Propagator/PropSource", source_header);
 	}
-	catch (const string& e) 
-	{
-	  QDPIO::cerr << "Error extracting forward_prop header: " << e << endl;
-	  throw;
-	}
+      }    
+      catch (std::bad_cast)
+      {
+	QDPIO::cerr << InlineSpectrumEnv::name << ": caught dynamic cast error" 
+		    << endl;
+	QDP_abort(1);
       }
+      catch (const string& e) 
+      {
+	QDPIO::cerr << InlineSpectrumEnv::name << ": error extracting prop_header: " << e << endl;
+	QDP_abort(1);
+      }
+
+      // Should be a valid cast now
+      const LatticePropagator& quark_propagator = 
+	TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.prop_ids[loop]);
+ 
       QDPIO::cout << "Propagator successfully read and parsed" << endl;
 
       // Derived from input prop

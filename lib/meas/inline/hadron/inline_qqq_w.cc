@@ -1,4 +1,4 @@
-// $Id: inline_qqq_w.cc,v 1.3 2005-08-31 05:50:00 edwards Exp $
+// $Id: inline_qqq_w.cc,v 1.4 2005-09-25 20:41:09 edwards Exp $
 /*! \file
  * \brief Inline construction of qqq_w
  *
@@ -12,6 +12,7 @@
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
 #include "util/ferm/diractodr.h"
+#include "meas/inline/io/named_objmap.h"
 
 namespace Chroma 
 { 
@@ -65,20 +66,20 @@ namespace Chroma
   }
 
   //! Propagator input
-  void read(XMLReader& xml, const string& path, InlineQQQParams::Prop_t& input)
+  void read(XMLReader& xml, const string& path, InlineQQQParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
-    read(inputtop, "prop_file", input.prop_file);
+    read(inputtop, "prop_ids", input.prop_ids);
     read(inputtop, "qqq_file", input.qqq_file);
   }
 
   //! Propagator output
-  void write(XMLWriter& xml, const string& path, const InlineQQQParams::Prop_t& input)
+  void write(XMLWriter& xml, const string& path, const InlineQQQParams::NamedObject_t& input)
   {
     push(xml, path);
 
-    write(xml, "prop_file", input.prop_file);
+    write(xml, "prop_ids", input.prop_ids);
     write(xml, "qqq_file", input.qqq_file);
 
     pop(xml);
@@ -103,11 +104,11 @@ namespace Chroma
       read(paramtop, "Param", param);
 
       // Read in the output propagator/source configuration info
-      read(paramtop, "Prop", prop);
+      read(paramtop, "NamedObject", named_obj);
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << "Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
       QDP_abort(1);
     }
   }
@@ -122,12 +123,13 @@ namespace Chroma
     Chroma::write(xml_out, "Param", param);
 
     // Write out the output propagator/source configuration info
-    Chroma::write(xml_out, "Prop", prop);
+    Chroma::write(xml_out, "NamedObject", named_obj);
 
     pop(xml_out);
   }
 
 
+  // Function call
   void 
   InlineQQQ::operator()(const multi1d<LatticeColorMatrix>& u,
 			XMLBufferWriter& gauge_xml,
@@ -139,7 +141,8 @@ namespace Chroma
     push(xml_out,"qqq");
     write(xml_out, "update_no", update_no);
 
-    QDPIO::cout << " QQQ: Generalized propagator generation" << endl;
+    QDPIO::cout << InlineQQQEnv::name << ": Generalized propagator generation" << endl;
+    StopWatch swatch;
 
     // Write out the input
     params.write(xml_out, "Input");
@@ -159,16 +162,16 @@ namespace Chroma
     // Calculate some gauge invariant observables just for info.
     MesPlq(xml_out, "Observables", u);
 
-    // Check to make sure there are 3 files
+    // Check to make sure there are 3 ids
     const int Nprops = 3;
-    if (params.prop.prop_file.size() != Nprops)
+    if (params.named_obj.prop_ids.size() != Nprops)
     {
-      QDPIO::cerr << "Error on input params - expecting 3 filenames" << endl;
+      QDPIO::cerr << "Error on input params - expecting 3 buffers" << endl;
       QDP_abort(1);
     }
 
-    write(xml_out, "propFiles", params.prop.prop_file);
-    write(xml_out, "barcompFile", params.prop.qqq_file);
+    write(xml_out, "propIds", params.named_obj.prop_ids);
+    write(xml_out, "barcompFile", params.named_obj.qqq_file);
 
     /*
      * Read the quark propagators and extract headers
@@ -179,41 +182,41 @@ namespace Chroma
     qqq.forward_props.resize(Nprops);
     for(int i=0; i < Nprops; ++i)
     {
-      // Optimize the read - if the filename is the same, no need to read
-      if ((i == 0) || (params.prop.prop_file[i] != params.prop.prop_file[0]))
+      QDPIO::cout << InlineQQQEnv::name << ": parse id = " << params.named_obj.prop_ids[i] << endl;
+      try
       {
-	XMLReader prop_file_xml, prop_record_xml;
+	// Snarf the data into a copy
+	quark_propagator[i] =
+	  TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.prop_ids[i]);
 
-	QDPIO::cout << "Attempt to read forward propagator XX" 
-		    << params.prop.prop_file[i] << "XX" << endl;
-	readQprop(prop_file_xml, 
-		  prop_record_xml, quark_propagator[i],
-		  params.prop.prop_file[i], QDPIO_SERIAL);
-	QDPIO::cout << "Forward propagator successfully read" << endl;
-   
+	// Snarf the prop info. This is will throw if the prop_ids is not there.
+	XMLReader prop_file_xml, prop_record_xml;
+	TheNamedObjMap::Instance().get(params.named_obj.prop_ids[i]).getFileXML(prop_file_xml);
+	TheNamedObjMap::Instance().get(params.named_obj.prop_ids[i]).getRecordXML(prop_record_xml);
+	
 	// Try to invert this record XML into a ChromaProp struct
 	// Also pull out the id of this source
-	try
 	{
 	  read(prop_record_xml, "/SinkSmear/PropSink", qqq.forward_props[i].sink_header);
 	  read(prop_record_xml, "/SinkSmear/ForwardProp", qqq.forward_props[i].prop_header);
 	  read(prop_record_xml, "/SinkSmear/PropSource", qqq.forward_props[i].source_header);
 	}
-	catch (const string& e) 
-	{
-	  QDPIO::cerr << "Error extracting forward_prop header: " << e << endl;
-	  QDP_abort(1);
-	}
       }
-      else
+      catch( std::bad_cast ) 
       {
-	QDPIO::cout << "Same prop: optimize away read of propagator "  << i << endl;
-	quark_propagator[i] = quark_propagator[0];
-	qqq.forward_props[i].sink_header = qqq.forward_props[0].sink_header;
-	qqq.forward_props[i].prop_header = qqq.forward_props[0].prop_header;
-	qqq.forward_props[i].source_header = qqq.forward_props[0].source_header;
+	QDPIO::cerr << InlineQQQEnv::name << ": caught dynamic cast error" 
+		    << endl;
+	QDP_abort(1);
       }
+      catch (const string& e) 
+      {
+	QDPIO::cerr << InlineQQQEnv::name << ": error message: " << e 
+		    << endl;
+	QDP_abort(1);
+      }
+      QDPIO::cout << InlineQQQEnv::name << ": object successfully parsed" << endl;
     }
+
 
     // Save prop input
     write(xml_out, "Propagator_input", qqq);
@@ -231,7 +234,7 @@ namespace Chroma
     // Sanity check - write out the propagator (pion) correlator in the j_decay direction
     for(int i=0; i < Nprops; ++i)
     {
-      multi1d<Double> prop_corr = sumMulti(localNorm2(quark_propagator[i]), 
+      multi1d<Double> prop_corr = sumMulti(localNorm2(TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.prop_ids[i])), 
 					   phases.getSet());
 
       push(xml_out, "SinkSmearedProp_correlator");
@@ -257,7 +260,7 @@ namespace Chroma
       for(int i=0; i < Nprops; ++i)
       {
 	q_tmp = adj(U) * quark_propagator[i] * U;   // DeGrand-Rossi ---> Dirac
-	quark_propagator[i] = q_tmp;
+	quark_propagator = q_tmp;
       }
     }
 
@@ -288,7 +291,7 @@ namespace Chroma
       pop(record_xml);  // QQQ
 
       // Write the scalar data
-      QDPFileWriter to(file_xml, params.prop.qqq_file, 
+      QDPFileWriter to(file_xml, params.named_obj.qqq_file, 
 		       QDPIO_SINGLEFILE, QDPIO_SERIAL, QDPIO_OPEN);
       write(to,record_xml,barprop_1d);
       close(to);

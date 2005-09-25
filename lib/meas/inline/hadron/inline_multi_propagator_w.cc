@@ -1,4 +1,4 @@
-// $Id: inline_multi_propagator_w.cc,v 1.1 2005-07-15 11:06:11 bjoo Exp $
+// $Id: inline_multi_propagator_w.cc,v 1.2 2005-09-25 20:41:09 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -14,6 +14,7 @@
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/fermacts/fermacts_aggregate_w.h"
 #include "actions/ferm/fermacts/overlap_fermact_base_w.h"
+#include "meas/inline/io/named_objmap.h"
 
 #include "meas/inline/make_xml_file.h"
 #include <iomanip>
@@ -42,23 +43,21 @@ namespace Chroma
 
 
   //! MultiPropagator input
-  void read(XMLReader& xml, const string& path, InlineMultiPropagatorParams::Prop_t& input)
+  void read(XMLReader& xml, const string& path, InlineMultiPropagatorParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
-    read(inputtop, "source_file", input.source_file);
-    read(inputtop, "prop_file", input.prop_file);
-    read(inputtop, "prop_volfmt", input.prop_volfmt);  // singlefile or multifile
+    read(inputtop, "source_id", input.source_id);
+    read(inputtop, "prop_id", input.prop_id);
   }
 
   //! MultiPropagator output
-  void write(XMLWriter& xml, const string& path, const InlineMultiPropagatorParams::Prop_t& input)
+  void write(XMLWriter& xml, const string& path, const InlineMultiPropagatorParams::NamedObject_t& input)
   {
     push(xml, path);
 
-    write(xml, "source_file", input.source_file);
-    write(xml, "prop_file", input.prop_file);
-    write(xml, "prop_volfmt", input.prop_volfmt);
+    write(xml, "source_id", input.source_id);
+    write(xml, "prop_id", input.prop_id);
 
     pop(xml);
   }
@@ -95,8 +94,8 @@ namespace Chroma
 	stateInfo = s_i_xml.printCurrentContext();
       }
 
-      // Read in the output propagator/source configuration info
-      read(paramtop, "Prop", prop);
+      // Ids
+      read(paramtop, "NamedObject", named_obj);
 
       // Possible alternate XML file pattern
       if (paramtop.count("xml_file") != 0) 
@@ -106,7 +105,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << "Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
       QDP_abort(1);
     }
   }
@@ -124,7 +123,7 @@ namespace Chroma
       XMLReader xml_header(header_is);
       xml_out << xml_header;
     }
-    Chroma::write(xml_out, "Prop", prop);
+    Chroma::write(xml_out, "NamedObject", named_obj);
 
     pop(xml_out);
   }
@@ -133,9 +132,9 @@ namespace Chroma
   // Function call
   void 
   InlineMultiPropagator::operator()(const multi1d<LatticeColorMatrix>& u,
-			       XMLBufferWriter& gauge_xml,
-			       unsigned long update_no,
-			       XMLWriter& xml_out) 
+				    XMLBufferWriter& gauge_xml,
+				    unsigned long update_no,
+				    XMLWriter& xml_out) 
   {
     // If xml file not empty, then use alternate
     if (params.xml_file != "")
@@ -171,61 +170,81 @@ namespace Chroma
 
     QDPIO::cout << "MULTI_PROPAGATOR: multimass propagator calculation" << endl;
 
+    // Write out the input
+    params.write(xml_out, "Input");
+
+    // Write out the config header
+    write(xml_out, "Config_info", gauge_xml);
+
+    push(xml_out, "Output_version");
+    write(xml_out, "out_version", 1);
+    pop(xml_out);
+
+    // Calculate some gauge invariant observables just for info.
+    MesPlq(xml_out, "Observables", u);
+
     //
     // Read in the source along with relevant information.
     // 
-    LatticePropagator quark_prop_source;
     XMLReader source_file_xml, source_record_xml;
     int t0;
     int j_decay;
     bool make_sourceP = false;
     bool seqsourceP = false;
+    try
     {
-      // ONLY SciDAC mode is supported for propagators!!
-      QDPIO::cout << "Attempt to read source" << endl;
-      readQprop(source_file_xml, 
-		source_record_xml, quark_prop_source,
-		params.prop.source_file, QDPIO_SERIAL);
-      QDPIO::cout << "Source successfully read" << flush << endl;
+      // Create the space
+      TheNamedObjMap::Instance().create<LatticePropagator>(params.named_obj.source_id);
+	
+      // Snarf the prop info. This is will throw if the source_id is not there
+      TheNamedObjMap::Instance().get(params.named_obj.source_id).getFileXML(source_file_xml);
+      TheNamedObjMap::Instance().get(params.named_obj.source_id).getRecordXML(source_record_xml);
 
       // Try to invert this record XML into a source struct
-      try
+      // First identify what kind of source might be here
+      if (source_record_xml.count("/MakeSource") != 0)
       {
-	// First identify what kind of source might be here
-	if (source_record_xml.count("/MakeSource") != 0)
-	{
-	  PropSource_t source_header;
+	PropSource_t source_header;
 
-	  read(source_record_xml, "/MakeSource/PropSource", source_header);
-	  j_decay = source_header.j_decay;
-	  t0 = source_header.t_source[j_decay];
-	  make_sourceP = true;
-	}
-	else if (source_record_xml.count("/SequentialSource") != 0)
-	{
-	  ChromaProp_t prop_header;
-	  PropSource_t source_header;
-	  SeqSource_t seqsource_header;
-
-	  read(source_record_xml, "/SequentialSource/SeqSource", seqsource_header);
-	  // Any source header will do for j_decay
-	  read(source_record_xml, "/SequentialSource/ForwardProps/elem[1]/ForwardProp", 
-	       prop_header);
-	  read(source_record_xml, "/SequentialSource/ForwardProps/elem[1]/PropSource", 
-	       source_header);
-	  j_decay = source_header.j_decay;
-	  t0 = seqsource_header.t_sink;
-	  seqsourceP = true;
-	}
-	else
-	  throw std::string("No appropriate header found");
+	read(source_record_xml, "/MakeSource/PropSource", source_header);
+	j_decay = source_header.j_decay;
+	t0 = source_header.t_source[j_decay];
+	make_sourceP = true;
       }
-      catch (const string& e) 
+      else if (source_record_xml.count("/SequentialSource") != 0)
       {
-	QDPIO::cerr << "Error extracting source_header: " << e << endl;
-	QDP_abort(1);
+	ChromaProp_t prop_header;
+	PropSource_t source_header;
+	SeqSource_t seqsource_header;
+
+	read(source_record_xml, "/SequentialSource/SeqSource", seqsource_header);
+	// Any source header will do for j_decay
+	read(source_record_xml, "/SequentialSource/ForwardProps/elem[1]/ForwardProp", 
+	     prop_header);
+	read(source_record_xml, "/SequentialSource/ForwardProps/elem[1]/PropSource", 
+	     source_header);
+	j_decay = source_header.j_decay;
+	t0 = seqsource_header.t_sink;
+	seqsourceP = true;
       }
-    }    
+      else
+	throw std::string("No appropriate header found");
+
+      // Write out the source header
+      write(xml_out, "Source_file_info", source_file_xml);
+      write(xml_out, "Source_record_info", source_record_xml);
+    }
+    catch (std::bad_cast)
+    {
+      QDPIO::cerr << InlineMultiPropagatorEnv::name << ": caught dynamic cast error" 
+		  << endl;
+      QDP_abort(1);
+    }
+    catch (const string& e) 
+    {
+      QDPIO::cerr << InlineMultiPropagatorEnv::name << ": error message: " << e << endl;
+      QDP_abort(1);
+    }
 
     // Sanity check
     if (seqsourceP) {
@@ -236,32 +255,15 @@ namespace Chroma
 
     proginfo(xml_out);    // Print out basic program info
 
-    // Write out the input
-    params.write(xml_out, "Input");
-
-    // Write out the config header
-    write(xml_out, "Config_info", gauge_xml);
-
-    // Write out the source header
-    write(xml_out, "Source_file_info", source_file_xml);
-
-    write(xml_out, "Source_record_info", source_record_xml);
-
-    push(xml_out, "Output_version");
-    write(xml_out, "out_version", 1);
-    pop(xml_out);
-
-    // Calculate some gauge invariant observables just for info.
-    MesPlq(xml_out, "Observables", u);
-
     // Sanity check - write out the norm2 of the source in the Nd-1 direction
     // Use this for any possible verification
     {
       // Initialize the slow Fourier transform phases
       SftMom phases(0, true, Nd-1);
 
-      multi1d<Double> source_corr = sumMulti(localNorm2(quark_prop_source), 
-					     phases.getSet());
+      multi1d<Double> source_corr = 
+	sumMulti(localNorm2(TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.source_id)),
+		 phases.getSet());
 
       push(xml_out, "Source_correlator");
       write(xml_out, "source_corr", source_corr);
@@ -325,13 +327,13 @@ namespace Chroma
       QDPIO::cout << "Suitable factory found: compute the quark prop" << endl;
       
       S_ov.multiQuarkProp(quark_propagator, 
-			   xml_out, 
-			   quark_prop_source,
-			   state, 
-			   params.param.MultiMasses, 
-			   params.param.invParam, 
-			   1,
-			   ncg_had);
+			  xml_out, 
+			  TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.source_id),
+			  state, 
+			  params.param.MultiMasses, 
+			  params.param.invParam, 
+			  1,
+			  ncg_had);
     }
     catch (const std::string& e) {
       QDPIO::cout << "4D: " << e << endl;
@@ -363,58 +365,75 @@ namespace Chroma
     
 
     // Save the propagators
-    // ONLY SciDAC output format is supported!
-    for(int m=0; m < num_mass; m++) {
-      XMLBufferWriter file_xml;
-      push(file_xml, "propagator");
-      int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
-      write(file_xml, "id", id);
-      pop(file_xml);
+    for(int m=0; m < num_mass; m++) 
+    {
+      try
+      {
+	XMLBufferWriter file_xml;
+	push(file_xml, "propagator");
+	int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
+	write(file_xml, "id", id);
+	pop(file_xml);
+      
+	XMLBufferWriter record_xml;
+	push(record_xml, "Propagator");
+      
+	// Jiggery pokery. Substitute the ChromaMultiProp_t with a 
+	// ChromaProp. This is a pisser because of the FermActParams
+	// THIS IS NOT TOTALLY KOSHER AS IT CHANGES THE MASS IN INPUT
+	// PARAM as well. However, at this stage we have no further need
+	// for input param.
+	// I Will eventually write Copy Constructors.
+      
+	// ChromaProp_t out_param(input.param, m);
+      
+	ChromaProp_t out_param;
+	out_param.nonRelProp = params.param.nonRelProp;
+	out_param.fermact = params.param.fermact;
+	// I need a way to glom a mass into an XML document
+	//
+	// something like XMLReader::replace(path, value)
+	// for now all masses have the same mass on output
+	// buggerisations...
+	out_param.invParam.invType = params.param.invParam.invType;
+	out_param.invParam.MROver = params.param.invParam.MROver;
+	out_param.invParam.MaxCG = params.param.invParam.MaxCG;
+	out_param.invParam.RsdCG = params.param.invParam.RsdCG[m];
+	out_param.nrow =params.param.nrow ;
       
       
+	write(record_xml, "ForwardProp", out_param);
+	XMLReader xml_tmp(source_record_xml, "/MakeSource");
+	record_xml << xml_tmp;
+	pop(record_xml);
       
-      XMLBufferWriter record_xml;
-      push(record_xml, "Propagator");
-      
-      // Jiggery pokery. Substitute the ChromaMultiProp_t with a 
-      // ChromaProp. This is a pisser because of the FermActParams
-      // THIS IS NOT TOTALLY KOSHER AS IT CHANGES THE MASS IN INPUT
-      // PARAM as well. However, at this stage we have no further need
-      // for input param.
-      // I Will eventually write Copy Constructors.
-      
-      // ChromaProp_t out_param(input.param, m);
-      
-      ChromaProp_t out_param;
-      out_param.nonRelProp = params.param.nonRelProp;
-      out_param.fermact = params.param.fermact;
-      // I need a way to glom a mass into an XML document
-      //
-      // something like XMLReader::replace(path, value)
-      // for now all masses have the same mass on output
-      // buggerisations...
-      out_param.invParam.invType = params.param.invParam.invType;
-      out_param.invParam.MROver = params.param.invParam.MROver;
-      out_param.invParam.MaxCG = params.param.invParam.MaxCG;
-      out_param.invParam.RsdCG = params.param.invParam.RsdCG[m];
-      out_param.nrow =params.param.nrow ;
-      
-      
-      write(record_xml, "ForwardProp", out_param);
-      XMLReader xml_tmp(source_record_xml, "/MakeSource");
-      record_xml << xml_tmp;
-      pop(record_xml);
-      
-      ostringstream outfile;
-      outfile << params.prop.prop_file << "_" << setw(3) << setfill('0') << m;
+	ostringstream outfile;
+	outfile << params.named_obj.prop_id << "_" << setw(3) << setfill('0') << m;
 
-      QDPIO::cout << "Attempting to write " << outfile.str() << endl;
+	QDPIO::cout << "Attempting to save " << outfile.str() << endl;
       
-      // Write the source
-      writeQprop(file_xml, record_xml, quark_propagator[m],
-		 outfile.str(), params.prop.prop_volfmt, QDPIO_SERIAL);
+	// Create the space
+	TheNamedObjMap::Instance().create<LatticePropagator>(outfile.str());
+	TheNamedObjMap::Instance().getData<LatticePropagator>(outfile.str()) 
+	  = quark_propagator[m];
+
+	// Write the propagator xml info
+	TheNamedObjMap::Instance().get(outfile.str()).setFileXML(file_xml);
+	TheNamedObjMap::Instance().get(outfile.str()).setRecordXML(record_xml);
+      }
+      catch (std::bad_cast)
+      {
+	QDPIO::cerr << InlineMultiPropagatorEnv::name << ": caught dynamic cast error" 
+		    << endl;
+	QDP_abort(1);
+      }
+      catch (const string& e) 
+      {
+	QDPIO::cerr << InlineMultiPropagatorEnv::name << ": error extracting prop_header: " << e << endl;
+	QDP_abort(1);
+      }
     }
-    
+   
     
     pop(xml_out);  // propagator
     

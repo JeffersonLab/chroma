@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_qqbar_w.h,v 1.1 2005-08-31 05:50:00 edwards Exp $
+// $Id: inline_qqbar_w.h,v 1.2 2005-09-25 20:41:09 edwards Exp $
 /*! \file
  * \brief Inline construction of qqbar
  *
@@ -38,11 +38,11 @@ namespace Chroma
       multi1d<int>     nrow;		/*!< Lattice dimension */
     } param;
 
-    struct Prop_t
+    struct NamedObject_t
     {
-      multi1d<string>  prop_file;    /*!< The file is expected to be in SciDAC format! */
-      string           qqbar_file;   /*!< The file is expected to be in SciDAC format! */
-    } prop;
+      multi1d<string>  prop_ids;        /*!< The file is expected to be in SciDAC format! */
+      string           qqbar_file;      /*!< The file is expected to be in SciDAC format! */
+    } named_obj;
   };
 
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_multipole_w.h,v 1.3 2005-04-19 17:11:07 edwards Exp $
+// $Id: inline_multipole_w.h,v 1.4 2005-09-25 20:41:09 edwards Exp $
 /*! \file
  *  \brief Inline multipole measurements
  */
@@ -35,17 +35,17 @@ namespace Chroma
     } param;
 
     //! Propagators
-    struct Prop_t
+    struct NamedObject_t
     {
-      std::string       seqprop_file;       // sequential prop
+      std::string       seqprop_id;         // sequential prop
       int               GammaInsertion;     // second gamma insertion
     };
 
     //! Multipole output
     struct Multipole_out_t
     {
-      std::string       prop_file;          // input forward prop
-      multi1d<Prop_t>   seqprops;
+      std::string             prop_id;      // input forward prop
+      multi1d<NamedObject_t>  seqprops;
     } pole;
 
     std::string xml_file;  // Alternate XML file pattern

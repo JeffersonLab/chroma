@@ -1,4 +1,4 @@
-// $Id: inline_multipole_w.cc,v 1.4 2005-04-19 20:05:22 edwards Exp $
+// $Id: inline_multipole_w.cc,v 1.5 2005-09-25 20:41:09 edwards Exp $
 /*! \file
  *  \brief Inline multipole measurement
  */
@@ -11,6 +11,7 @@
 #include "meas/hadron/multipole_w.h"
 #include "io/qprop_io.h"
 #include "meas/inline/make_xml_file.h"
+#include "meas/inline/io/named_objmap.h"
 
 namespace Chroma 
 { 
@@ -66,20 +67,20 @@ namespace Chroma
 
 
   //! Propagator input
-  void read(XMLReader& xml, const string& path, InlineMultipoleParams::Prop_t& input)
+  void read(XMLReader& xml, const string& path, InlineMultipoleParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
-    read(inputtop, "seqprop_file", input.seqprop_file);
+    read(inputtop, "seqprop_id", input.seqprop_id);
     read(inputtop, "GammaInsertion", input.GammaInsertion);
   }
 
   //! Propagator output
-  void write(XMLWriter& xml, const string& path, const InlineMultipoleParams::Prop_t& input)
+  void write(XMLWriter& xml, const string& path, const InlineMultipoleParams::NamedObject_t& input)
   {
     push(xml, path);
 
-    write(xml, "seqprop_file", input.seqprop_file);
+    write(xml, "seqprop_id", input.seqprop_id);
     write(xml, "GammaInsertion", input.GammaInsertion);
 
     pop(xml);
@@ -90,7 +91,7 @@ namespace Chroma
   {
     XMLReader inputtop(xml, path);
 
-    read(inputtop, "prop_file", input.prop_file);
+    read(inputtop, "prop_id", input.prop_id);
     read(inputtop, "seqprops", input.seqprops);
   }
 
@@ -99,7 +100,7 @@ namespace Chroma
   {
     push(xml, path);
 
-    write(xml, "prop_file", input.prop_file);
+    write(xml, "prop_id", input.prop_id);
     write(xml, "seqprops", input.seqprops);
 
     pop(xml);
@@ -132,7 +133,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << "Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
       QDP_abort(1);
     }
   }
@@ -188,7 +189,7 @@ namespace Chroma
     push(xml_out, "multipole");
     write(xml_out, "update_no", update_no);
 
-    QDPIO::cout << " MULTIPOLE: Multipole measurements for Wilson-like fermions" << endl;
+    QDPIO::cout << InlineMultipoleEnv::name << ": multipole measurements for Wilson-like fermions" << endl;
 
     proginfo(xml_out);    // Print out basic program info
 
@@ -209,15 +210,20 @@ namespace Chroma
     //
     // Read the quark propagator and extract headers
     //
-    XMLReader prop_file_xml, prop_record_xml;
     LatticePropagator quark_propagator;
     ChromaProp_t prop_header;
     PropSource_t source_header;
+    try
     {
-      QDPIO::cout << "Attempt to read forward propagator" << endl;
-      readQprop(prop_file_xml, 
-		prop_record_xml, quark_propagator,
-		params.pole.prop_file, QDPIO_SERIAL);
+      // Snarf the data into a copy
+      quark_propagator =
+	TheNamedObjMap::Instance().getData<LatticePropagator>(params.pole.prop_id);
+
+      // Snarf the source info. This is will throw if the source_id is not there
+      XMLReader prop_file_xml, prop_record_xml;
+      TheNamedObjMap::Instance().get(params.pole.prop_id).getFileXML(prop_file_xml);
+      TheNamedObjMap::Instance().get(params.pole.prop_id).getRecordXML(prop_record_xml);
+   
    
       // Try to invert this record XML into a ChromaProp struct
       // Also pull out the id of this source
@@ -236,7 +242,19 @@ namespace Chroma
       write(xml_out, "Propagator_file_info", prop_file_xml);
       write(xml_out, "Propagator_record_info", prop_record_xml);
     }
-    QDPIO::cout << "Forward propagator successfully read" << endl;
+    catch( std::bad_cast ) 
+    {
+      QDPIO::cerr << InlineMultipoleEnv::name << ": caught dynamic cast error" 
+		  << endl;
+      QDP_abort(1);
+    }
+    catch (const string& e) 
+    {
+      QDPIO::cerr << InlineMultipoleEnv::name << ": map call failed: " << e 
+		  << endl;
+      QDP_abort(1);
+    }
+
 
     // Derived from input prop
     int  j_decay = source_header.j_decay;
@@ -274,30 +292,42 @@ namespace Chroma
       // Read the quark propagator and extract headers
       LatticePropagator seq_quark_prop;
       SeqSource_t seqsource_header;
+      try
       {
+	// Snarf the backward prop
+	seq_quark_prop =
+	  TheNamedObjMap::Instance().getData<LatticePropagator>(params.pole.seqprops[seq_src_ctr].seqprop_id);
+	
+	// Snarf the source info. This is will throw if the source_id is not there
 	XMLReader seqprop_file_xml, seqprop_record_xml;
-	readQprop(seqprop_file_xml, 
-		  seqprop_record_xml, seq_quark_prop,
-		  params.pole.seqprops[seq_src_ctr].seqprop_file, QDPIO_SERIAL);
+	TheNamedObjMap::Instance().get(params.pole.seqprops[seq_src_ctr].seqprop_id).getFileXML(seqprop_file_xml);
+	TheNamedObjMap::Instance().get(params.pole.seqprops[seq_src_ctr].seqprop_id).getRecordXML(seqprop_record_xml);
 
 	// Try to invert this record XML into a ChromaProp struct
 	// Also pull out the id of this source
 	// NEED SECURITY HERE - need a way to cross check props. Use the ID.
-	try
 	{
 	  read(seqprop_record_xml, "/SequentialProp/SeqSource", seqsource_header);
-	}
-	catch (const string& e) 
-	{
-	  QDPIO::cerr << "Error extracting seqprop header: " << e << endl;
-	  QDP_abort(1);
 	}
 
 	// Save seqprop input
 	write(xml_seq_src, "SequentialProp_file_info", seqprop_file_xml);
 	write(xml_seq_src, "SequentialProp_record_info", seqprop_record_xml);
       }
-      QDPIO::cout << "Sequential propagator successfully read" << endl;
+      catch( std::bad_cast ) 
+      {
+	QDPIO::cerr << InlineMultipoleEnv::name << ": caught dynamic cast error" 
+		    << endl;
+	QDP_abort(1);
+      }
+      catch (const string& e) 
+      {
+	QDPIO::cerr << InlineMultipoleEnv::name << ": error message: " << e 
+		    << endl;
+	QDP_abort(1);
+      }
+      QDPIO::cout << "Sequential propagator successfully parsed" << endl;
+
 
       // Sanity check - write out the norm2 of the forward prop in the j_decay direction
       // Use this for any possible verification

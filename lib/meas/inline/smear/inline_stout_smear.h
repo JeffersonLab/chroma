@@ -1,11 +1,11 @@
 // -*- C++ -*-
-// $Id: inline_hyp_smear.h,v 1.3 2005-09-25 20:41:09 edwards Exp $
+// $Id: inline_stout_smear.h,v 1.1 2005-09-25 20:41:09 edwards Exp $
 /*! \file
- *  \brief Inline Hyp smearing
+ *  \brief Inline Stout smearing
  */
 
-#ifndef __inline_hyp_smear_h__
-#define __inline_hyp_smear_h__
+#ifndef __inline_stout_smear_h__
+#define __inline_stout_smear_h__
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
@@ -13,7 +13,7 @@
 namespace Chroma 
 { 
   /*! \ingroup inlinesmear */
-  namespace InlineHypSmearEnv 
+  namespace InlineStoutSmearEnv 
   {
     extern const std::string name;
     extern const bool registered;
@@ -21,42 +21,38 @@ namespace Chroma
 
   //! Parameter structure
   /*! \ingroup inlinesmear */
-  struct InlineHypSmearParams 
+  struct InlineStoutSmearParams 
   {
-    InlineHypSmearParams();
-    InlineHypSmearParams(XMLReader& xml_in, const std::string& path);
+    InlineStoutSmearParams();
+    InlineStoutSmearParams(XMLReader& xml_in, const std::string& path);
     void write(XMLWriter& xml_out, const std::string& path);
 
     unsigned long frequency;
 
     struct Param_t
     {
-      Real alpha1;			// Smearing parameters
-      Real alpha2;
-      Real alpha3;
+      int link_smear_num;
+      Real link_smear_fact;		// Smearing parameters
 
-      int num_smear;                    // Number of smearing iterations
-
+      int j_decay;			// Decay direction
       multi1d<int> nrow;		// Lattice dimension
-      int j_decay;			// Direction corresponding to time
     } param;
 
     struct NamedObject_t
     {
-      std::string   hyp_id;             // Memory object for hyp config
+      string 	stout_id;	        // memory object for stout config
     } named_obj;
 
   };
 
-
   //! Inline measurement of Wilson loops
   /*! \ingroup inlinesmear */
-  class InlineHypSmear : public AbsInlineMeasurement 
+  class InlineStoutSmear : public AbsInlineMeasurement 
   {
   public:
-    ~InlineHypSmear() {}
-    InlineHypSmear(const InlineHypSmearParams& p) : params(p) {}
-    InlineHypSmear(const InlineHypSmear& p) : params(p.params) {}
+    ~InlineStoutSmear() {}
+    InlineStoutSmear(const InlineStoutSmearParams& p) : params(p) {}
+    InlineStoutSmear(const InlineStoutSmear& p) : params(p.params) {}
 
     unsigned long getFrequency(void) const {return params.frequency;}
 
@@ -67,7 +63,7 @@ namespace Chroma
 		    XMLWriter& xml_out); 
 
   private:
-    InlineHypSmearParams params;
+    InlineStoutSmearParams params;
   };
 
 };

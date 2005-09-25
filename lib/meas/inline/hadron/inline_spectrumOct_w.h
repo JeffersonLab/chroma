@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_spectrumOct_w.h,v 1.2 2005-05-12 03:11:11 kostas Exp $
+// $Id: inline_spectrumOct_w.h,v 1.3 2005-09-25 20:41:09 edwards Exp $
 /*! \file
  * \brief Inline heavy light spectrum calculations
  *
@@ -58,10 +58,10 @@ namespace Chroma
 
     } param;
 
-    struct Prop_t
+    struct NamedObject_t
     {
-      multi1d<std::string> prop_files;  // The files are expected to be in SciDAC format!
-    } prop;
+      multi1d<std::string> prop_ids; 
+    } named_obj;
 
     std::string xml_file;  // Alternate XML file pattern
   };

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: smear.h,v 1.2 2005-08-19 05:32:12 edwards Exp $
+// $Id: smear.h,v 1.3 2005-09-25 20:41:09 edwards Exp $
 /*! \file
  * \brief Inline smearing measurements
  *
@@ -19,7 +19,7 @@
 #include "inline_smear_aggregate.h"
 
 #include "inline_hyp_smear.h"
-#include "inline_hyp_smear4d.h"
 #include "inline_ape_smear.h"
+#include "inline_stout_smear.h"
 
 #endif

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_seqsource_w.h,v 1.2 2005-04-19 20:05:22 edwards Exp $
+// $Id: inline_seqsource_w.h,v 1.3 2005-09-25 20:41:09 edwards Exp $
 /*! \file
  * \brief Inline construction of sequential sources
  *
@@ -35,12 +35,11 @@ namespace Chroma
     SeqSource_t        param;
     PropSink_t         sink_header;
 
-    struct Prop_t
+    struct NamedObject_t
     {
-      std::string      prop_file;  // The file is expected to be in SciDAC format!
-      std::string      seqsource_file;  // The file is expected to be in SciDAC format!
-      QDP_volfmt_t     seqsource_volfmt;
-    } prop;
+      std::string      prop_id;
+      std::string      seqsource_id;
+    } named_obj;
   };
 
   //! Inline measurement of Wilson loops

@@ -1,4 +1,4 @@
-// $Id: inline_mres_w.cc,v 1.9 2005-05-31 01:44:17 edwards Exp $
+// $Id: inline_mres_w.cc,v 1.10 2005-09-25 20:41:09 edwards Exp $
 /*! \file
  * \brief Inline construction of mres
  *
@@ -17,6 +17,7 @@
 #include "actions/ferm/fermacts/fermacts_aggregate_w.h"
 #include "actions/ferm/fermacts/overlap_fermact_base_w.h"
 #include "meas/inline/make_xml_file.h"
+#include "meas/inline/io/named_objmap.h"
 
 namespace Chroma 
 { 
@@ -77,18 +78,18 @@ namespace Chroma
 
 
   // Reader
-  void read(XMLReader& xml, const string& path, InlineMresParams::Prop_t& input)
+  void read(XMLReader& xml, const string& path, InlineMresParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
-    read(inputtop, "prop_file", input.prop_file);
+    read(inputtop, "prop_id", input.prop_id);
   }
 
 
   // Writer
-  void write(XMLWriter& xml, const string& path, const InlineMresParams::Prop_t& input)
+  void write(XMLWriter& xml, const string& path, const InlineMresParams::NamedObject_t& input)
   {
     push(xml, path);
-    write(xml, "prop_file", input.prop_file);
+    write(xml, "prop_id", input.prop_id);
     pop(xml);
   }
 
@@ -121,7 +122,7 @@ namespace Chroma
       }
 
       // Read in the source/propagator info
-      read(inputtop, "Prop", prop);
+      read(inputtop, "NamedObject", named_obj);
 
       // Possible alternate XML file pattern
       if (inputtop.count("xml_file") != 0) 
@@ -148,7 +149,7 @@ namespace Chroma
       XMLReader xml_header(header_is);
       xml << xml_header;
     }
-    Chroma::write(xml, "Prop", prop);
+    Chroma::write(xml, "NamedObject", named_obj);
     QDP::write(xml, "xml_file", xml_file);
 
     pop(xml);
@@ -203,16 +204,20 @@ namespace Chroma
     string       stateInfo;
     XMLReader prop_file_xml, prop_record_xml;
 
+    try
     {
-      readQprop(prop_file_xml,
-		prop_record_xml,
-		quark_propagator,
-		params.prop.prop_file,
-		QDPIO_SERIAL);
+      // Snarf the data into a copy
+      quark_propagator =
+	TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.prop_id);
 
+      // Snarf the source info. This is will throw if the source_id is not there
+      XMLReader prop_file_xml, prop_record_xml;
+      TheNamedObjMap::Instance().get(params.named_obj.prop_id).getFileXML(prop_file_xml);
+      TheNamedObjMap::Instance().get(params.named_obj.prop_id).getRecordXML(prop_record_xml);
+   
       // Try to invert this record XML into a ChromaProp struct
       // Also pull out the id of this source
-      try {
+      {
 	read(prop_record_xml, "/Propagator/ForwardProp", prop_header);
 	read(prop_record_xml, "/Propagator/PropSource", source_header);
 
@@ -230,12 +235,20 @@ namespace Chroma
 	  stateInfo = params.stateInfo;
 	}
       }
-      catch (const string& e) {
-	QDPIO::cerr << "Error extracting forward_prop header: " << e << endl;
-	throw;
-      }
     }
-
+    catch( std::bad_cast ) 
+    {
+      QDPIO::cerr << InlineMresEnv::name << ": caught dynamic cast error" 
+		  << endl;
+      QDP_abort(1);
+    }
+    catch (const string& e) 
+    {
+      QDPIO::cerr << InlineMresEnv::name << ": map call failed: " << e 
+		  << endl;
+      QDP_abort(1);
+    }
+      
     proginfo(xml_out);    // Print out basic program info
 
     // Write out the input

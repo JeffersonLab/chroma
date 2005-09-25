@@ -1,4 +1,4 @@
-// $Id: inline_spectrumOct_w.cc,v 1.4 2005-05-12 03:11:11 kostas Exp $
+// $Id: inline_spectrumOct_w.cc,v 1.5 2005-09-25 20:41:09 edwards Exp $
 /*! \file
  * \brief Inline construction of Octet spectrum
  *
@@ -22,6 +22,7 @@
 #include "meas/glue/mesfield.h"
 #include "util/gauge/taproj.h"
 #include "meas/inline/make_xml_file.h"
+#include "meas/inline/io/named_objmap.h"
 
 namespace Chroma 
 { 
@@ -118,19 +119,19 @@ namespace Chroma
 
 
   //! Propagator input
-  void read(XMLReader& xml, const string& path, InlineSpectrumOctParams::Prop_t& input)
+  void read(XMLReader& xml, const string& path, InlineSpectrumOctParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
-    read(inputtop, "prop_files", input.prop_files);
+    read(inputtop, "prop_files", input.prop_ids);
   }
 
   //! Propagator output
-  void write(XMLWriter& xml, const string& path, const InlineSpectrumOctParams::Prop_t& input)
+  void write(XMLWriter& xml, const string& path, const InlineSpectrumOctParams::NamedObject_t& input)
   {
     push(xml, path);
 
-    write(xml, "prop_files", input.prop_files);
+    write(xml, "prop_ids", input.prop_ids);
 
     pop(xml);
   }
@@ -154,7 +155,7 @@ namespace Chroma
       read(paramtop, "Param", param);
 
       // Read in the output propagator/source configuration info
-      read(paramtop, "Prop", prop);
+      read(paramtop, "NamedObject", named_obj);
 
       // Possible alternate XML file pattern
       if (paramtop.count("xml_file") != 0) 
@@ -164,7 +165,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << "Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
       QDP_abort(1);
     }
   }
@@ -176,7 +177,7 @@ namespace Chroma
     push(xml_out, path);
     
     Chroma::write(xml_out, "Param", param);
-    Chroma::write(xml_out, "Prop", prop);
+    Chroma::write(xml_out, "NamedObject", named_obj);
     QDP::write(xml_out, "xml_file", xml_file);
 
     pop(xml_out);
@@ -220,13 +221,14 @@ namespace Chroma
     push(xml_out, "spectrumOct_w");
     write(xml_out, "update_no", update_no);
 
-    QDPIO::cout << " SPECTRUM_OCT: Spectroscopy for Wilson-like fermions" << endl;
+    QDPIO::cout << InlineSpectrumOctEnv::name << ": Spectroscopy for Wilson-like fermions" << endl;
+    StopWatch swatch;
 
 
     /*
      * Sanity checks
      */
-    if (params.param.wvf_param.size() != params.prop.prop_files.size())
+    if (params.param.wvf_param.size() != params.named_obj.prop_ids.size())
     {
       QDPIO::cerr << "wvf_param size inconsistent with prop_files size" << endl;
       QDP_abort(1);
@@ -256,50 +258,64 @@ namespace Chroma
     // First calculate some gauge invariant observables just for info.
     MesPlq(xml_out, "Observables", u);
 
+
+    // Fist propagator is the light quark second is the strange quark
+    if (params.named_obj.prop_ids.size()!=2)
+    {
+      QDPIO::cerr << InlineSpectrumOctEnv::name << ": needs two propagators. Found " ;
+      QDPIO::cerr << params.named_obj.prop_ids.size()<< endl;
+      QDP_abort(2);
+    }
+
     // Keep an array of all the xml output buffers
-    // XMLArrayWriter xml_array(xml_out,params.prop.prop_files.size());
+    // XMLArrayWriter xml_array(xml_out,params.named_obj.prop_files.size());
     // This spectrum code does only one measurement using two propagators
     XMLArrayWriter xml_array(xml_out,1); 
     push(xml_array, "Wilson_hadron_measurements");
 
-
-    // Fist propagator is the light quark second is the strange quark
-    if(params.prop.prop_files.size()!=2){
-      QDPIO::cerr << "SPECTRUM_OCT needs two propagators. Found " ;
-      QDPIO::cerr <<params.prop.prop_files.size()<< endl;
-      QDP_abort(2);
-    }
-
-    multi1d<ChromaProp_t> prop_header(params.prop.prop_files.size());
-    multi1d<PropSource_t> source_header(params.prop.prop_files.size());
-    multi1d<LatticePropagator> qprop(params.prop.prop_files.size());
-    multi1d<Real> Mass(params.prop.prop_files.size());
+    multi1d<ChromaProp_t> prop_header(params.named_obj.prop_ids.size());
+    multi1d<PropSource_t> source_header(params.named_obj.prop_ids.size());
+    multi1d<LatticePropagator> qprop(params.named_obj.prop_ids.size());
+    multi1d<Real> Mass(params.named_obj.prop_ids.size());
     
-    multi2d<int> bc(params.prop.prop_files.size(), 4); 
+    multi2d<int> bc(params.named_obj.prop_ids.size(), 4); 
     
     // Now loop over the various fermion masses
-    for (int loop=0; loop < params.prop.prop_files.size(); ++loop)
+    for (int loop=0; loop < params.named_obj.prop_ids.size(); ++loop)
     {
       // Read the quark propagator and extract headers
+      try
       {
+	// Snarf the data into a copy
+	qprop[loop] =
+	  TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.prop_ids[loop]);
+	
+	// Snarf the source info. This is will throw if the source_id is not there
 	XMLReader prop_file_xml, prop_record_xml;
-	readQprop(prop_file_xml, 
-		  prop_record_xml, qprop[loop],
-		  params.prop.prop_files[loop], QDPIO_SERIAL);
+	TheNamedObjMap::Instance().get(params.named_obj.prop_ids[loop]).getFileXML(prop_file_xml);
+	TheNamedObjMap::Instance().get(params.named_obj.prop_ids[loop]).getRecordXML(prop_record_xml);
 
 	// Try to invert this record XML into a ChromaProp struct
 	// Also pull out the id of this source
-	try
 	{
 	  read(prop_record_xml, "/Propagator/ForwardProp", prop_header[loop]);
 	  read(prop_record_xml, "/Propagator/PropSource", source_header[loop]);
 	}
-	catch (const string& e) 
-	{
-	  QDPIO::cerr << "Error extracting forward_prop header: " << e << endl;
-	  throw;
-	}
       }
+      catch( std::bad_cast ) 
+      {
+	QDPIO::cerr << InlineSpectrumOctEnv::name << ": caught dynamic cast error" 
+		    << endl;
+	QDP_abort(1);
+      }
+      catch (const string& e) 
+      {
+	QDPIO::cerr << InlineSpectrumOctEnv::name << ": map call failed: " << e 
+		    << endl;
+	QDP_abort(1);
+      }
+
+      QDPIO::cout << "Propagator successfully read and parsed" << endl;
 
       // Derived from input prop
        // Hunt around to find the mass
@@ -353,7 +369,7 @@ namespace Chroma
     multi1d<int> t_source = source_header[0].t_source;
     int t0      = t_source[j_decay];
     int bc_spec = bc[0][j_decay] ;
-    for (int loop(0); loop < params.prop.prop_files.size(); ++loop){
+    for (int loop(0); loop < params.named_obj.prop_ids.size(); ++loop){
       if(source_header[loop].j_decay!=j_decay){
 	QDPIO::cerr << "Error!! j_decay must be the same for all propagators " << endl;
 	throw;
@@ -381,12 +397,13 @@ namespace Chroma
     push(xml_out,"Propagator_info") ;
     write(xml_array, "Masses", Mass);
     write(xml_array, "t_source", t_source);
-    for (int loop=0; loop < params.prop.prop_files.size(); ++loop){
+    for (int loop=0; loop < params.named_obj.prop_ids.size(); ++loop){
       push(xml_out, "Propagator");
       // Save prop input
       write(xml_array, "ForwardProp", prop_header[loop]);
       write(xml_array, "PropSource", source_header[loop]);
-      multi1d<Double> qp_corr= sumMulti(localNorm2(qprop[loop]),phases.getSet());
+      multi1d<Double> qp_corr= 
+	sumMulti(localNorm2(qprop[loop]),phases.getSet());
       push(xml_out, "Qprop_correlator");
       write(xml_out, "qp_corr", qp_corr);
       pop(xml_out); //Qprop_correlator
@@ -428,15 +445,21 @@ namespace Chroma
 	if (params.param.Pt_snk) 
 	  {
 	    if (Pt_src)
-	      mesons(qprop[0], qprop[1], phases, t0,
+	      mesons(qprop[0],
+		     qprop[1],
+		     phases, t0,
 		     xml_array, "Point_Point_Wilson_Mesons");
 	    
 	    if (Sl_src)
-	      mesons(qprop[0], qprop[1], phases, t0,
+	      mesons(qprop[0],
+		     qprop[1],
+		     phases, t0,
 		     xml_array, "Shell_Point_Wilson_Mesons");
 	    
 	    if (Wl_src)
-	      mesons(qprop[0], qprop[1],phases_nomom, t0,
+	      mesons(qprop[0],
+		     qprop[1],
+		     phases_nomom, t0,
 		     xml_array, "Wall_Point_Wilson_Mesons");
 	  } // end if (Pt_snk)
 
@@ -445,8 +468,9 @@ namespace Chroma
 	// the convolution. 
 	if (params.param.Sl_snk) 
 	{
-	  multi1d<LatticePropagator> quark_prop_smr(params.prop.prop_files.size());
-	  for (int loop(0); loop < params.prop.prop_files.size(); ++loop){
+	  multi1d<LatticePropagator> quark_prop_smr(params.named_obj.prop_ids.size());
+	  for (int loop(0); loop < params.named_obj.prop_ids.size(); ++loop)
+	  {
 	    quark_prop_smr[loop] = qprop[loop];
 	    sink_smear2(u, quark_prop_smr[loop], 
 			params.param.wvf_kind, 
@@ -471,9 +495,11 @@ namespace Chroma
 	// Wall sink
 	if (params.param.Wl_snk) 
 	{
-	  multi1d<LatticePropagator> wall_quark_prop(params.prop.prop_files.size());
-	  for (int loop(0); loop < params.prop.prop_files.size(); ++loop){
-	    wall_qprop(wall_quark_prop[loop], qprop[loop], phases_nomom);
+	  multi1d<LatticePropagator> wall_quark_prop(params.named_obj.prop_ids.size());
+	  for (int loop(0); loop < params.named_obj.prop_ids.size(); ++loop){
+	    wall_qprop(wall_quark_prop[loop], 
+		       qprop[loop],
+		       phases_nomom);
 	  } 
 	  if (Pt_src)
 	    mesons(wall_quark_prop[0], wall_quark_prop[1], phases_nomom, t0,
@@ -496,17 +522,26 @@ namespace Chroma
       {
 	// Construct the rho vector-current and the pion axial current divergence
 	if (Pt_src)
-	  curcor2(u, qprop[0], qprop[1], phases, 
+	  curcor2(u, 
+		  qprop[0],
+		  qprop[1],
+		  phases, 
 		  t0, 3,
 		  xml_array, "Point_Point_Meson_Currents");
         
 	if (Sl_src)
-	  curcor2(u, qprop[0], qprop[1], phases, 
+	  curcor2(u, 
+		  qprop[0],
+		  qprop[1],
+		  phases, 
 		  t0, 3,
 		  xml_array, "Shell_Point_Meson_Currents");
         
 	if (Wl_src)
-	  curcor2(u, qprop[0], qprop[1], phases_nomom, 
+	  curcor2(u, 
+		  qprop[0],
+		  qprop[1],
+		  phases_nomom, 
 		  t0, 3,
 		  xml_array, "Wall_Point_Meson_Currents");
       } // end if (CurrentP)
@@ -519,19 +554,25 @@ namespace Chroma
 	if (params.param.Pt_snk) 
 	{
 	  if (Pt_src)
-	     barhqlq(qprop[1],qprop[0], phases, 
-		   t0, bc_spec, params.param.time_rev, 
-		   xml_array, "Point_Point_Wilson_Baryons");
+	    barhqlq(qprop[0],
+		    qprop[1],
+		    phases, 
+		    t0, bc_spec, params.param.time_rev, 
+		    xml_array, "Point_Point_Wilson_Baryons");
         
 	  if (Sl_src)
-	     barhqlq(qprop[1],qprop[0], phases, 
-		   t0, bc_spec, params.param.time_rev, 
-		   xml_array, "Shell_Point_Wilson_Baryons");
+	     barhqlq(qprop[0],
+		     qprop[1],
+		     phases, 
+		     t0, bc_spec, params.param.time_rev, 
+		     xml_array, "Shell_Point_Wilson_Baryons");
         
 	  if (Wl_src)
-	     barhqlq(qprop[1],qprop[0], phases_nomom, 
-		   t0, bc_spec, params.param.time_rev, 
-		   xml_array, "Wall_Point_Wilson_Baryons");
+	     barhqlq(qprop[0],
+		     qprop[1],
+		     phases_nomom, 
+		     t0, bc_spec, params.param.time_rev, 
+		     xml_array, "Wall_Point_Wilson_Baryons");
 	} // end if (Pt_snk)
 
 	// Convolute the quark propagator with the sink smearing function.
@@ -539,8 +580,8 @@ namespace Chroma
 	// the convolution. 
 	if (params.param.Sl_snk) 
 	{
-	  multi1d<LatticePropagator> quark_prop_smr(params.prop.prop_files.size());
-	  for (int loop(0); loop < params.prop.prop_files.size(); ++loop){
+	  multi1d<LatticePropagator> quark_prop_smr(params.named_obj.prop_ids.size());
+	  for (int loop(0); loop < params.named_obj.prop_ids.size(); ++loop){
 	    quark_prop_smr[loop] = qprop[loop];
 	    sink_smear2(u, quark_prop_smr[loop], 
 			params.param.wvf_kind, 
@@ -568,25 +609,27 @@ namespace Chroma
 	// Wall sink
 	if (params.param.Wl_snk) 
 	{
-	  multi1d<LatticePropagator> wall_quark_prop(params.prop.prop_files.size());
-	  for (int loop(0); loop < params.prop.prop_files.size(); ++loop){
-	    wall_qprop(wall_quark_prop[loop], qprop[loop], phases_nomom);
+	  multi1d<LatticePropagator> wall_quark_prop(params.named_obj.prop_ids.size());
+	  for (int loop(0); loop < params.named_obj.prop_ids.size(); ++loop){
+	    wall_qprop(wall_quark_prop[loop], 
+		       qprop[loop],
+		       phases_nomom);
 	  } 
 
 	  if (Pt_src)
-	     barhqlq(wall_quark_prop[1],wall_quark_prop[0] , phases_nomom, 
-		   t0, bc_spec, params.param.time_rev, 
-		   xml_array, "Point_Wall_Wilson_Baryons");
-        
+	    barhqlq(wall_quark_prop[1],wall_quark_prop[0] , phases_nomom, 
+		    t0, bc_spec, params.param.time_rev, 
+		    xml_array, "Point_Wall_Wilson_Baryons");
+	  
 	  if (Sl_src)
-	     barhqlq(wall_quark_prop[1],wall_quark_prop[0] , phases_nomom, 
-		   t0, bc_spec, params.param.time_rev, 	
-		   xml_array, "Shell_Wall_Wilson_Baryons");
-        
+	    barhqlq(wall_quark_prop[1],wall_quark_prop[0] , phases_nomom, 
+		    t0, bc_spec, params.param.time_rev, 	
+		    xml_array, "Shell_Wall_Wilson_Baryons");
+	  
 	  if (Wl_src)
-	     barhqlq(wall_quark_prop[1],wall_quark_prop[0] , phases_nomom, 
-		   t0, bc_spec, params.param.time_rev, 	
-		   xml_array, "Wall_Wall_Wilson_Baryons");
+	    barhqlq(wall_quark_prop[1],wall_quark_prop[0] , phases_nomom, 
+		    t0, bc_spec, params.param.time_rev, 	
+		    xml_array, "Wall_Wall_Wilson_Baryons");
 	} // end if (Wl_snk)
 
       } // end if (BaryonP)

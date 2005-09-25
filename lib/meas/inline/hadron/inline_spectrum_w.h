@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_spectrum_w.h,v 1.3 2005-06-11 02:13:11 edwards Exp $
+// $Id: inline_spectrum_w.h,v 1.4 2005-09-25 20:41:09 edwards Exp $
 /*! \file
  * \brief Inline spectrum calculations
  *
@@ -61,10 +61,10 @@ namespace Chroma
       multi1d<int> nrow;
     } param;
 
-    struct Prop_t
+    struct NamedObject_t
     {
-      multi1d<std::string> prop_files;  // The files are expected to be in SciDAC format!
-    } prop;
+      multi1d<std::string> prop_ids;
+    } named_obj;
 
     std::string xml_file;  // Alternate XML file pattern
   };

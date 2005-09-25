@@ -1,4 +1,4 @@
-// $Id: inline_make_source_w.cc,v 1.4 2005-08-24 03:12:53 edwards Exp $
+// $Id: inline_make_source_w.cc,v 1.5 2005-09-25 20:41:09 edwards Exp $
 /*! \file
  * \brief Inline construction of make_source
  *
@@ -20,6 +20,8 @@
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
 
+#include "meas/inline/io/named_objmap.h"
+
 namespace Chroma 
 { 
   namespace InlineMakeSourceEnv 
@@ -35,22 +37,20 @@ namespace Chroma
   };
 
 
-  //! Propagator input
-  void read(XMLReader& xml, const string& path, InlineMakeSourceParams::Prop_t& input)
+  //! MakeSource input
+  void read(XMLReader& xml, const string& path, InlineMakeSourceParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
-    read(inputtop, "source_file", input.source_file);
-    read(inputtop, "source_volfmt", input.source_volfmt);
+    read(inputtop, "source_id", input.source_id);
   }
 
-  //! Propagator output
-  void write(XMLWriter& xml, const string& path, const InlineMakeSourceParams::Prop_t& input)
+  //! MakeSource output
+  void write(XMLWriter& xml, const string& path, const InlineMakeSourceParams::NamedObject_t& input)
   {
     push(xml, path);
 
-    write(xml, "source_file", input.source_file);
-    write(xml, "source_volfmt", input.source_volfmt);
+    write(xml, "source_id", input.source_id);
 
     pop(xml);
   }
@@ -74,11 +74,11 @@ namespace Chroma
       read(paramtop, "Param", param);
 
       // Read in the output propagator/source configuration info
-      read(paramtop, "Prop", prop);
+      read(paramtop, "NamedObject", named_obj);
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << "Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
       QDP_abort(1);
     }
   }
@@ -92,8 +92,8 @@ namespace Chroma
     // Parameters for source construction
     Chroma::write(xml_out, "Param", param);
 
-    // Write out the output propagator/source configuration info
-    Chroma::write(xml_out, "Prop", prop);
+    // Write out the buffer ids
+    Chroma::write(xml_out, "NamedObject", named_obj);
 
     pop(xml_out);
   }
@@ -110,8 +110,7 @@ namespace Chroma
     push(xml_out, "make_source");
     write(xml_out, "update_no", update_no);
 
-    QDPIO::cout << "MAKE_SOURCE: propagator source constructor" << endl;
-    StopWatch swatch;
+    QDPIO::cout << InlineMakeSourceEnv::name << ": propagator source constructor" << endl;
 
     switch(params.param.source_type)
     {
@@ -189,6 +188,11 @@ namespace Chroma
 
 
     //
+    // Create a propagator object
+    //
+    LatticePropagator quark_source;
+
+    //
     // Loop over the source color and spin, creating the source
     // and calling the relevant propagator routines. The QDP
     // terminology is that a propagator is a matrix in color
@@ -198,8 +202,6 @@ namespace Chroma
     // source is first constructed and then smeared. If a user
     // only wanted a point source, then remove the smearing stuff
     //
-    LatticePropagator quark_source;
-
     switch (params.param.source_type)
     {
       //
@@ -360,10 +362,9 @@ namespace Chroma
  
 
     // Now write the source
-    // ONLY SciDAC output format is supported!!!
+    try
     {
-      swatch.reset();
-      QDPIO::cout << "Attempt to write source" << endl;
+      QDPIO::cout << "Attempt to update source" << endl;
 
       XMLBufferWriter file_xml;
       push(file_xml, "make_source");
@@ -377,21 +378,24 @@ namespace Chroma
       write(record_xml, "Config_info", gauge_xml);
       pop(record_xml);
     
-//    // Save a copy in the output
-//    push(xml_out, "Source_info");
-//    xml_out << file_xml;
-//    xml_out << record_xml;
-//    pop(xml_out);
+      // Store the source
+      TheNamedObjMap::Instance().create<LatticePropagator>(params.named_obj.source_id);
+      TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.source_id) = quark_source;
+      TheNamedObjMap::Instance().get(params.named_obj.source_id).setFileXML(file_xml);
+      TheNamedObjMap::Instance().get(params.named_obj.source_id).setRecordXML(record_xml);
 
-      // Write the source
-      swatch.start();
-      writeQprop(file_xml, record_xml, quark_source,
-		 params.prop.source_file, params.prop.source_volfmt, QDPIO_SERIAL);
-      swatch.stop();
-
-      QDPIO::cout << "Source successfully written: time= " 
-		  << swatch.getTimeInSeconds() 
-		  << " secs" << endl;
+      QDPIO::cout << "Source successfully update" << endl;
+    }
+    catch (std::bad_cast)
+    {
+      QDPIO::cerr << InlineMakeSourceEnv::name << ": dynamic cast error" 
+		  << endl;
+      QDP_abort(1);
+    }
+    catch (const string& e) 
+    {
+      QDPIO::cerr << InlineMakeSourceEnv::name << ": error message: " << e << endl;
+      QDP_abort(1);
     }
     
     QDPIO::cout << "Make_source ran successfully" << endl;

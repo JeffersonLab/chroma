@@ -1,4 +1,4 @@
-// $Id: inline_smear_aggregate.cc,v 1.2 2005-08-19 05:32:12 edwards Exp $
+// $Id: inline_smear_aggregate.cc,v 1.3 2005-09-25 20:41:09 edwards Exp $
 /*! \file
  *  \brief Inline smear measurement aggregator
  */
@@ -6,7 +6,7 @@
 #include "meas/inline/smear/inline_smear_aggregate.h"
 #include "meas/inline/smear/inline_ape_smear.h"
 #include "meas/inline/smear/inline_hyp_smear.h"
-#include "meas/inline/smear/inline_hyp_smear4d.h"
+#include "meas/inline/smear/inline_stout_smear.h"
 
 namespace Chroma
 {
@@ -19,7 +19,7 @@ namespace Chroma
       bool success = true; 
       success &= InlineAPESmearEnv::registered;
       success &= InlineHypSmearEnv::registered;
-      success &= InlineHypSmear4dEnv::registered;
+      success &= InlineStoutSmearEnv::registered;
       return success;
     }
 

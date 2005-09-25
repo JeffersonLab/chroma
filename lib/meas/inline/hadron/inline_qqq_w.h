@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_qqq_w.h,v 1.2 2005-04-19 20:05:22 edwards Exp $
+// $Id: inline_qqq_w.h,v 1.3 2005-09-25 20:41:09 edwards Exp $
 /*! \file
  * \brief Inline construction of qqq_w
  *
@@ -38,11 +38,11 @@ namespace Chroma
       multi1d<int>     nrow;		// Lattice dimension
     } param;
 
-    struct Prop_t
+    struct NamedObject_t
     {
-      multi1d<string>  prop_file;  // The file is expected to be in SciDAC format!
-      string           qqq_file;   // The file is expected to be in SciDAC format!
-    } prop;
+      multi1d<string>  prop_ids;
+      string           qqq_file;   // The file will be in SciDAC format!
+    } named_obj;
   };
 
 
