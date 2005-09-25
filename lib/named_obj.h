@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: named_obj.h,v 1.1 2005-09-23 03:45:46 edwards Exp $
+// $Id: named_obj.h,v 1.2 2005-09-25 20:37:38 edwards Exp $
 
 /*! @file
  * @brief Named object support
@@ -217,6 +217,16 @@ namespace Chroma
     }
   
   
+    //! Dump out all objects
+    void dump() 
+    {
+      typedef std::map<std::string, NamedObjectBase*>::iterator CI;
+      QDPIO::cout << "Available Keys are : " << endl;
+	for(CI j = the_map.begin(); j != the_map.end(); j++) 
+	  QDPIO::cerr << j->first << endl << flush;
+    }
+  
+  
     //! Look something up and return a NamedObjectBase reference
     NamedObjectBase& get(const std::string& id) 
     {
@@ -263,15 +273,6 @@ namespace Chroma
     const T& getData(const std::string& id) const 
     {
       return dynamic_cast<NamedObject<T>&>(get(id)).getData();
-    }
-
-    //! Dump map contents
-    void dump(void) 
-    { 
-      typedef std::map<std::string, NamedObjectBase*>::const_iterator CI;
-      for(CI iter=the_map.begin(); iter != the_map.end(); iter++) {
-	QDPIO::cout << iter->first << endl;
-      }
     }
 
   private:
