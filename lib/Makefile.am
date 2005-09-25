@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.293 2005-09-23 03:45:46 edwards Exp $
+# $Id: Makefile.am,v 1.294 2005-09-25 20:38:09 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -389,17 +389,23 @@ nobase_include_HEADERS += \
 	meas/inline/io/io.h \
 	meas/inline/io/named_objmap.h \
 	meas/inline/io/inline_io_aggregate.h \
-	meas/inline/io/inline_read_obj.h \
-	meas/inline/io/inline_write_obj.h \
-	meas/inline/io/inline_write_erase_obj.h \
+	meas/inline/io/inline_qio_read_obj.h \
+	meas/inline/io/inline_qio_write_obj.h \
+	meas/inline/io/inline_qio_write_erase_obj.h \
+	meas/inline/io/inline_szin_write_obj.h \
+	meas/inline/io/inline_nersc_write_obj.h \
 	meas/inline/io/inline_erase_obj.h \
-        meas/inline/io/readobj_funcmap.h \
-        meas/inline/io/writeobj_funcmap.h \
+	meas/inline/io/inline_list_obj.h \
+	meas/inline/io/inline_snarf_obj.h \
+	meas/inline/io/inline_gaussian_obj.h \
+        meas/inline/io/qio_read_obj_funcmap.h \
+        meas/inline/io/qio_write_obj_funcmap.h \
+        meas/inline/io/szin_write_obj_funcmap.h \
 	meas/inline/smear/smear.h \
 	meas/inline/smear/inline_smear_aggregate.h \
 	meas/inline/smear/inline_ape_smear.h \
 	meas/inline/smear/inline_hyp_smear.h \
-	meas/inline/smear/inline_hyp_smear4d.h
+	meas/inline/smear/inline_stout_smear.h
 
 #
 # Include Path
@@ -702,16 +708,22 @@ libchroma_a_SOURCES += \
         meas/inline/hadron_s/util_compute_meson_s.cc \
         meas/inline/hadron_s/util_baryon_s.cc \
 	meas/inline/io/inline_io_aggregate.cc \
-	meas/inline/io/inline_read_obj.cc \
-	meas/inline/io/inline_write_obj.cc \
-	meas/inline/io/inline_write_erase_obj.cc \
+	meas/inline/io/inline_qio_read_obj.cc \
+	meas/inline/io/inline_qio_write_obj.cc \
+	meas/inline/io/inline_qio_write_erase_obj.cc \
+	meas/inline/io/inline_szin_write_obj.cc \
+	meas/inline/io/inline_nersc_write_obj.cc \
 	meas/inline/io/inline_erase_obj.cc \
-        meas/inline/io/readobj_funcmap.cc \
-        meas/inline/io/writeobj_funcmap.cc \
+	meas/inline/io/inline_list_obj.cc \
+	meas/inline/io/inline_snarf_obj.cc \
+	meas/inline/io/inline_gaussian_obj.cc \
+        meas/inline/io/qio_read_obj_funcmap.cc \
+        meas/inline/io/qio_write_obj_funcmap.cc \
+        meas/inline/io/szin_write_obj_funcmap.cc \
 	meas/inline/smear/inline_smear_aggregate.cc \
 	meas/inline/smear/inline_ape_smear.cc \
 	meas/inline/smear/inline_hyp_smear.cc \
-	meas/inline/smear/inline_hyp_smear4d.cc
+	meas/inline/smear/inline_stout_smear.cc
 
 
 
