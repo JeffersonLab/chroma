@@ -1,3 +1,8 @@
+09/25/2005 -- Robert Edwards
+	Version 2.0.beta. MAJOR UPGRADE! Many main progs vanish. New emphasis on inline
+        measurements. New regression tests in  chroma/tests/chroma/* that mirror the
+        chroma/lib/meas/inline/*  directories.
+
 09/23/2005 -- Robert Edwards
 	Version 1.24.1. More updates of IO inlines.
 
