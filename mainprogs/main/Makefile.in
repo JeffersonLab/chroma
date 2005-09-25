@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-SOURCES = $(ExampleBuildingBlocks_SOURCES) $(apesmear_SOURCES) $(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) $(chroma_SOURCES) $(collect_multi_propcomp_SOURCES) $(collect_propcomp_SOURCES) $(hmc_SOURCES) $(hypsmear_SOURCES) $(hypsmear3d_SOURCES) $(hypsmear4d_SOURCES) $(make_source_SOURCES) $(mres_SOURCES) $(multi_propagator_SOURCES) $(multi_propagator_comp_SOURCES) $(propagator_SOURCES) $(propagator_comp_SOURCES) $(propagator_hack_SOURCES) $(purgaug_SOURCES) $(qpropadd_SOURCES) $(qpropgfix_SOURCES) $(qpropqio_SOURCES) $(qproptransf_SOURCES) $(qproptrev_SOURCES) $(qqq_w_SOURCES) $(seqsource_SOURCES) $(sink_smearing_SOURCES) $(spectrum_s_SOURCES) $(spectrum_w_SOURCES) $(stoutsmear_SOURCES) $(wallformfac_SOURCES)
+SOURCES = $(cfgtransf_SOURCES) $(chroma_SOURCES) $(collect_multi_propcomp_SOURCES) $(collect_propcomp_SOURCES) $(hmc_SOURCES) multi_propagator.c $(multi_propagator_comp_SOURCES) $(propagator_comp_SOURCES) $(propagator_hack_SOURCES) $(purgaug_SOURCES) $(qpropadd_SOURCES) $(qpropgfix_SOURCES) $(qpropqio_SOURCES) $(qproptransf_SOURCES) $(qproptrev_SOURCES) $(spectrum_s_SOURCES) $(wallformfac_SOURCES)
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -42,15 +42,11 @@ POST_UNINSTALL = :
 @BUILD_SSE_DWF_CG_TRUE@am__append_4 = -I$(TOPDIR)/other_libs/@SSE_DWF_CG_DIR@/include
 @BUILD_SSE_DWF_CG_TRUE@am__append_5 = -L$(BUILDDIR)/other_libs/@SSE_DWF_CG_DIR@/lib
 @BUILD_SSE_DWF_CG_TRUE@am__append_6 = -lsse_dwf_cg 
-bin_PROGRAMS = propagator$(EXEEXT) collect_propcomp$(EXEEXT) \
-	seqsource$(EXEEXT) purgaug$(EXEEXT) make_source$(EXEEXT) \
-	ExampleBuildingBlocks$(EXEEXT) hypsmear$(EXEEXT) \
-	cfgtransf$(EXEEXT) sink_smearing$(EXEEXT) qpropgfix$(EXEEXT) \
-	qproptrev$(EXEEXT) apesmear$(EXEEXT) stoutsmear$(EXEEXT) \
-	hmc$(EXEEXT) hypsmear3d$(EXEEXT) hypsmear4d$(EXEEXT) \
-	chroma$(EXEEXT) spectrum_w$(EXEEXT) qqq_w$(EXEEXT) \
-	bar3ptfn$(EXEEXT) qproptransf$(EXEEXT) wallformfac$(EXEEXT) \
-	mres$(EXEEXT) propagator_hack$(EXEEXT) qpropqio$(EXEEXT)
+bin_PROGRAMS = collect_propcomp$(EXEEXT) purgaug$(EXEEXT) \
+	cfgtransf$(EXEEXT) qpropgfix$(EXEEXT) qproptrev$(EXEEXT) \
+	hmc$(EXEEXT) chroma$(EXEEXT) qpropqio$(EXEEXT) \
+	qproptransf$(EXEEXT) wallformfac$(EXEEXT) \
+	propagator_hack$(EXEEXT)
 EXTRA_PROGRAMS = qpropadd$(EXEEXT) propagator_comp$(EXEEXT) \
 	multi_propagator$(EXEEXT) multi_propagator_comp$(EXEEXT) \
 	collect_multi_propcomp$(EXEEXT) spectrum_s$(EXEEXT)
@@ -67,23 +63,10 @@ CONFIG_CLEAN_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
-am_ExampleBuildingBlocks_OBJECTS = ExampleBuildingBlocks.$(OBJEXT)
-ExampleBuildingBlocks_OBJECTS = $(am_ExampleBuildingBlocks_OBJECTS)
-ExampleBuildingBlocks_LDADD = $(LDADD)
-am__DEPENDENCIES_1 =
-ExampleBuildingBlocks_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
-am_apesmear_OBJECTS = apesmear.$(OBJEXT)
-apesmear_OBJECTS = $(am_apesmear_OBJECTS)
-apesmear_LDADD = $(LDADD)
-apesmear_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
-am_bar3ptfn_OBJECTS = bar3ptfn.$(OBJEXT)
-bar3ptfn_OBJECTS = $(am_bar3ptfn_OBJECTS)
-bar3ptfn_LDADD = $(LDADD)
-bar3ptfn_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_cfgtransf_OBJECTS = cfgtransf.$(OBJEXT)
 cfgtransf_OBJECTS = $(am_cfgtransf_OBJECTS)
 cfgtransf_LDADD = $(LDADD)
+am__DEPENDENCIES_1 =
 cfgtransf_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_chroma_OBJECTS = chroma.$(OBJEXT)
 chroma_OBJECTS = $(am_chroma_OBJECTS)
@@ -103,28 +86,8 @@ am_hmc_OBJECTS = hmc.$(OBJEXT)
 hmc_OBJECTS = $(am_hmc_OBJECTS)
 hmc_LDADD = $(LDADD)
 hmc_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
-am_hypsmear_OBJECTS = hypsmear.$(OBJEXT)
-hypsmear_OBJECTS = $(am_hypsmear_OBJECTS)
-hypsmear_LDADD = $(LDADD)
-hypsmear_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
-am_hypsmear3d_OBJECTS = hypsmear3d.$(OBJEXT)
-hypsmear3d_OBJECTS = $(am_hypsmear3d_OBJECTS)
-hypsmear3d_LDADD = $(LDADD)
-hypsmear3d_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
-am_hypsmear4d_OBJECTS = hypsmear4d.$(OBJEXT)
-hypsmear4d_OBJECTS = $(am_hypsmear4d_OBJECTS)
-hypsmear4d_LDADD = $(LDADD)
-hypsmear4d_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
-am_make_source_OBJECTS = make_source.$(OBJEXT)
-make_source_OBJECTS = $(am_make_source_OBJECTS)
-make_source_LDADD = $(LDADD)
-make_source_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
-am_mres_OBJECTS = mres.$(OBJEXT)
-mres_OBJECTS = $(am_mres_OBJECTS)
-mres_LDADD = $(LDADD)
-mres_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
-am_multi_propagator_OBJECTS = multi_propagator.$(OBJEXT)
-multi_propagator_OBJECTS = $(am_multi_propagator_OBJECTS)
+multi_propagator_SOURCES = multi_propagator.c
+multi_propagator_OBJECTS = multi_propagator.$(OBJEXT)
 multi_propagator_LDADD = $(LDADD)
 multi_propagator_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
@@ -133,10 +96,6 @@ multi_propagator_comp_OBJECTS = $(am_multi_propagator_comp_OBJECTS)
 multi_propagator_comp_LDADD = $(LDADD)
 multi_propagator_comp_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
-am_propagator_OBJECTS = propagator.$(OBJEXT)
-propagator_OBJECTS = $(am_propagator_OBJECTS)
-propagator_LDADD = $(LDADD)
-propagator_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_propagator_comp_OBJECTS = propagator_comp.$(OBJEXT)
 propagator_comp_OBJECTS = $(am_propagator_comp_OBJECTS)
 propagator_comp_LDADD = $(LDADD)
@@ -171,31 +130,10 @@ am_qproptrev_OBJECTS = qproptrev.$(OBJEXT)
 qproptrev_OBJECTS = $(am_qproptrev_OBJECTS)
 qproptrev_LDADD = $(LDADD)
 qproptrev_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
-am_qqq_w_OBJECTS = qqq_w.$(OBJEXT)
-qqq_w_OBJECTS = $(am_qqq_w_OBJECTS)
-qqq_w_LDADD = $(LDADD)
-qqq_w_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
-am_seqsource_OBJECTS = seqsource.$(OBJEXT)
-seqsource_OBJECTS = $(am_seqsource_OBJECTS)
-seqsource_LDADD = $(LDADD)
-seqsource_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
-am_sink_smearing_OBJECTS = sink_smearing.$(OBJEXT)
-sink_smearing_OBJECTS = $(am_sink_smearing_OBJECTS)
-sink_smearing_LDADD = $(LDADD)
-sink_smearing_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
 am_spectrum_s_OBJECTS = spectrum_s.$(OBJEXT)
 spectrum_s_OBJECTS = $(am_spectrum_s_OBJECTS)
 spectrum_s_LDADD = $(LDADD)
 spectrum_s_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
-am_spectrum_w_OBJECTS = spectrum_w.$(OBJEXT)
-spectrum_w_OBJECTS = $(am_spectrum_w_OBJECTS)
-spectrum_w_LDADD = $(LDADD)
-spectrum_w_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
-am_stoutsmear_OBJECTS = stoutsmear.$(OBJEXT)
-stoutsmear_OBJECTS = $(am_stoutsmear_OBJECTS)
-stoutsmear_LDADD = $(LDADD)
-stoutsmear_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_wallformfac_OBJECTS = wallformfac.$(OBJEXT)
 wallformfac_OBJECTS = $(am_wallformfac_OBJECTS)
 wallformfac_LDADD = $(LDADD)
@@ -203,37 +141,31 @@ wallformfac_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)/lib
 depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
 am__depfiles_maybe = depfiles
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
-SOURCES = $(ExampleBuildingBlocks_SOURCES) $(apesmear_SOURCES) \
-	$(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) $(chroma_SOURCES) \
+SOURCES = $(cfgtransf_SOURCES) $(chroma_SOURCES) \
 	$(collect_multi_propcomp_SOURCES) $(collect_propcomp_SOURCES) \
-	$(hmc_SOURCES) $(hypsmear_SOURCES) $(hypsmear3d_SOURCES) \
-	$(hypsmear4d_SOURCES) $(make_source_SOURCES) $(mres_SOURCES) \
-	$(multi_propagator_SOURCES) $(multi_propagator_comp_SOURCES) \
-	$(propagator_SOURCES) $(propagator_comp_SOURCES) \
+	$(hmc_SOURCES) multi_propagator.c \
+	$(multi_propagator_comp_SOURCES) $(propagator_comp_SOURCES) \
 	$(propagator_hack_SOURCES) $(purgaug_SOURCES) \
 	$(qpropadd_SOURCES) $(qpropgfix_SOURCES) $(qpropqio_SOURCES) \
-	$(qproptransf_SOURCES) $(qproptrev_SOURCES) $(qqq_w_SOURCES) \
-	$(seqsource_SOURCES) $(sink_smearing_SOURCES) \
-	$(spectrum_s_SOURCES) $(spectrum_w_SOURCES) \
-	$(stoutsmear_SOURCES) $(wallformfac_SOURCES)
-DIST_SOURCES = $(ExampleBuildingBlocks_SOURCES) $(apesmear_SOURCES) \
-	$(bar3ptfn_SOURCES) $(cfgtransf_SOURCES) $(chroma_SOURCES) \
+	$(qproptransf_SOURCES) $(qproptrev_SOURCES) \
+	$(spectrum_s_SOURCES) $(wallformfac_SOURCES)
+DIST_SOURCES = $(cfgtransf_SOURCES) $(chroma_SOURCES) \
 	$(collect_multi_propcomp_SOURCES) $(collect_propcomp_SOURCES) \
-	$(hmc_SOURCES) $(hypsmear_SOURCES) $(hypsmear3d_SOURCES) \
-	$(hypsmear4d_SOURCES) $(make_source_SOURCES) $(mres_SOURCES) \
-	$(multi_propagator_SOURCES) $(multi_propagator_comp_SOURCES) \
-	$(propagator_SOURCES) $(propagator_comp_SOURCES) \
+	$(hmc_SOURCES) multi_propagator.c \
+	$(multi_propagator_comp_SOURCES) $(propagator_comp_SOURCES) \
 	$(propagator_hack_SOURCES) $(purgaug_SOURCES) \
 	$(qpropadd_SOURCES) $(qpropgfix_SOURCES) $(qpropqio_SOURCES) \
-	$(qproptransf_SOURCES) $(qproptrev_SOURCES) $(qqq_w_SOURCES) \
-	$(seqsource_SOURCES) $(sink_smearing_SOURCES) \
-	$(spectrum_s_SOURCES) $(spectrum_w_SOURCES) \
-	$(stoutsmear_SOURCES) $(wallformfac_SOURCES)
+	$(qproptransf_SOURCES) $(qproptrev_SOURCES) \
+	$(spectrum_s_SOURCES) $(wallformfac_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -384,36 +316,21 @@ HDRS =
 # The program and its dependencies
 #
 chroma_SOURCES = chroma.cc
-propagator_SOURCES = propagator.cc
 propagator_comp_SOURCES = propagator_comp.cc
 propagator_hack_SOURCES = propagator_hack.cc
-seqsource_SOURCES = seqsource.cc
-multi_propagator_SOURCES = multi_propagator.cc
 multi_propagator_comp_SOURCES = multi_propagator_comp.cc
 collect_propcomp_SOURCES = collect_propcomp.cc
 collect_multi_propcomp_SOURCES = collect_multi_propcomp.cc
-spectrum_w_SOURCES = spectrum_w.cc
 spectrum_s_SOURCES = spectrum_s.cc
 hmc_SOURCES = hmc.cc
 purgaug_SOURCES = purgaug.cc
-mres_SOURCES = mres.cc
-qqq_w_SOURCES = qqq_w.cc
-bar3ptfn_SOURCES = bar3ptfn.cc
 wallformfac_SOURCES = wallformfac.cc
-make_source_SOURCES = make_source.cc
-apesmear_SOURCES = apesmear.cc
-hypsmear_SOURCES = hypsmear.cc
-hypsmear3d_SOURCES = hypsmear3d.cc
-hypsmear4d_SOURCES = hypsmear4d.cc
-stoutsmear_SOURCES = stoutsmear.cc
 qproptransf_SOURCES = qproptransf.cc
 qpropqio_SOURCES = qpropqio.cc
 qpropadd_SOURCES = qpropadd.cc
 qpropgfix_SOURCES = qpropgfix.cc
 qproptrev_SOURCES = qproptrev.cc
-ExampleBuildingBlocks_SOURCES = ExampleBuildingBlocks.cc
 cfgtransf_SOURCES = cfgtransf.cc
-sink_smearing_SOURCES = sink_smearing.cc
 
 #mainparam_io_SOURCES= mainparam_io.cc
 
@@ -428,7 +345,7 @@ DEPENDENCIES = build_chroma_libs rebuild_other_libs
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .cc .o .obj
+.SUFFIXES: .c .cc .o .obj
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -481,15 +398,6 @@ uninstall-binPROGRAMS:
 
 clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
-ExampleBuildingBlocks$(EXEEXT): $(ExampleBuildingBlocks_OBJECTS) $(ExampleBuildingBlocks_DEPENDENCIES) 
-	@rm -f ExampleBuildingBlocks$(EXEEXT)
-	$(CXXLINK) $(ExampleBuildingBlocks_LDFLAGS) $(ExampleBuildingBlocks_OBJECTS) $(ExampleBuildingBlocks_LDADD) $(LIBS)
-apesmear$(EXEEXT): $(apesmear_OBJECTS) $(apesmear_DEPENDENCIES) 
-	@rm -f apesmear$(EXEEXT)
-	$(CXXLINK) $(apesmear_LDFLAGS) $(apesmear_OBJECTS) $(apesmear_LDADD) $(LIBS)
-bar3ptfn$(EXEEXT): $(bar3ptfn_OBJECTS) $(bar3ptfn_DEPENDENCIES) 
-	@rm -f bar3ptfn$(EXEEXT)
-	$(CXXLINK) $(bar3ptfn_LDFLAGS) $(bar3ptfn_OBJECTS) $(bar3ptfn_LDADD) $(LIBS)
 cfgtransf$(EXEEXT): $(cfgtransf_OBJECTS) $(cfgtransf_DEPENDENCIES) 
 	@rm -f cfgtransf$(EXEEXT)
 	$(CXXLINK) $(cfgtransf_LDFLAGS) $(cfgtransf_OBJECTS) $(cfgtransf_LDADD) $(LIBS)
@@ -505,30 +413,12 @@ collect_propcomp$(EXEEXT): $(collect_propcomp_OBJECTS) $(collect_propcomp_DEPEND
 hmc$(EXEEXT): $(hmc_OBJECTS) $(hmc_DEPENDENCIES) 
 	@rm -f hmc$(EXEEXT)
 	$(CXXLINK) $(hmc_LDFLAGS) $(hmc_OBJECTS) $(hmc_LDADD) $(LIBS)
-hypsmear$(EXEEXT): $(hypsmear_OBJECTS) $(hypsmear_DEPENDENCIES) 
-	@rm -f hypsmear$(EXEEXT)
-	$(CXXLINK) $(hypsmear_LDFLAGS) $(hypsmear_OBJECTS) $(hypsmear_LDADD) $(LIBS)
-hypsmear3d$(EXEEXT): $(hypsmear3d_OBJECTS) $(hypsmear3d_DEPENDENCIES) 
-	@rm -f hypsmear3d$(EXEEXT)
-	$(CXXLINK) $(hypsmear3d_LDFLAGS) $(hypsmear3d_OBJECTS) $(hypsmear3d_LDADD) $(LIBS)
-hypsmear4d$(EXEEXT): $(hypsmear4d_OBJECTS) $(hypsmear4d_DEPENDENCIES) 
-	@rm -f hypsmear4d$(EXEEXT)
-	$(CXXLINK) $(hypsmear4d_LDFLAGS) $(hypsmear4d_OBJECTS) $(hypsmear4d_LDADD) $(LIBS)
-make_source$(EXEEXT): $(make_source_OBJECTS) $(make_source_DEPENDENCIES) 
-	@rm -f make_source$(EXEEXT)
-	$(CXXLINK) $(make_source_LDFLAGS) $(make_source_OBJECTS) $(make_source_LDADD) $(LIBS)
-mres$(EXEEXT): $(mres_OBJECTS) $(mres_DEPENDENCIES) 
-	@rm -f mres$(EXEEXT)
-	$(CXXLINK) $(mres_LDFLAGS) $(mres_OBJECTS) $(mres_LDADD) $(LIBS)
 multi_propagator$(EXEEXT): $(multi_propagator_OBJECTS) $(multi_propagator_DEPENDENCIES) 
 	@rm -f multi_propagator$(EXEEXT)
-	$(CXXLINK) $(multi_propagator_LDFLAGS) $(multi_propagator_OBJECTS) $(multi_propagator_LDADD) $(LIBS)
+	$(LINK) $(multi_propagator_LDFLAGS) $(multi_propagator_OBJECTS) $(multi_propagator_LDADD) $(LIBS)
 multi_propagator_comp$(EXEEXT): $(multi_propagator_comp_OBJECTS) $(multi_propagator_comp_DEPENDENCIES) 
 	@rm -f multi_propagator_comp$(EXEEXT)
 	$(CXXLINK) $(multi_propagator_comp_LDFLAGS) $(multi_propagator_comp_OBJECTS) $(multi_propagator_comp_LDADD) $(LIBS)
-propagator$(EXEEXT): $(propagator_OBJECTS) $(propagator_DEPENDENCIES) 
-	@rm -f propagator$(EXEEXT)
-	$(CXXLINK) $(propagator_LDFLAGS) $(propagator_OBJECTS) $(propagator_LDADD) $(LIBS)
 propagator_comp$(EXEEXT): $(propagator_comp_OBJECTS) $(propagator_comp_DEPENDENCIES) 
 	@rm -f propagator_comp$(EXEEXT)
 	$(CXXLINK) $(propagator_comp_LDFLAGS) $(propagator_comp_OBJECTS) $(propagator_comp_LDADD) $(LIBS)
@@ -553,24 +443,9 @@ qproptransf$(EXEEXT): $(qproptransf_OBJECTS) $(qproptransf_DEPENDENCIES)
 qproptrev$(EXEEXT): $(qproptrev_OBJECTS) $(qproptrev_DEPENDENCIES) 
 	@rm -f qproptrev$(EXEEXT)
 	$(CXXLINK) $(qproptrev_LDFLAGS) $(qproptrev_OBJECTS) $(qproptrev_LDADD) $(LIBS)
-qqq_w$(EXEEXT): $(qqq_w_OBJECTS) $(qqq_w_DEPENDENCIES) 
-	@rm -f qqq_w$(EXEEXT)
-	$(CXXLINK) $(qqq_w_LDFLAGS) $(qqq_w_OBJECTS) $(qqq_w_LDADD) $(LIBS)
-seqsource$(EXEEXT): $(seqsource_OBJECTS) $(seqsource_DEPENDENCIES) 
-	@rm -f seqsource$(EXEEXT)
-	$(CXXLINK) $(seqsource_LDFLAGS) $(seqsource_OBJECTS) $(seqsource_LDADD) $(LIBS)
-sink_smearing$(EXEEXT): $(sink_smearing_OBJECTS) $(sink_smearing_DEPENDENCIES) 
-	@rm -f sink_smearing$(EXEEXT)
-	$(CXXLINK) $(sink_smearing_LDFLAGS) $(sink_smearing_OBJECTS) $(sink_smearing_LDADD) $(LIBS)
 spectrum_s$(EXEEXT): $(spectrum_s_OBJECTS) $(spectrum_s_DEPENDENCIES) 
 	@rm -f spectrum_s$(EXEEXT)
 	$(CXXLINK) $(spectrum_s_LDFLAGS) $(spectrum_s_OBJECTS) $(spectrum_s_LDADD) $(LIBS)
-spectrum_w$(EXEEXT): $(spectrum_w_OBJECTS) $(spectrum_w_DEPENDENCIES) 
-	@rm -f spectrum_w$(EXEEXT)
-	$(CXXLINK) $(spectrum_w_LDFLAGS) $(spectrum_w_OBJECTS) $(spectrum_w_LDADD) $(LIBS)
-stoutsmear$(EXEEXT): $(stoutsmear_OBJECTS) $(stoutsmear_DEPENDENCIES) 
-	@rm -f stoutsmear$(EXEEXT)
-	$(CXXLINK) $(stoutsmear_LDFLAGS) $(stoutsmear_OBJECTS) $(stoutsmear_LDADD) $(LIBS)
 wallformfac$(EXEEXT): $(wallformfac_OBJECTS) $(wallformfac_DEPENDENCIES) 
 	@rm -f wallformfac$(EXEEXT)
 	$(CXXLINK) $(wallformfac_LDFLAGS) $(wallformfac_OBJECTS) $(wallformfac_LDADD) $(LIBS)
@@ -581,22 +456,13 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ExampleBuildingBlocks.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/apesmear.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bar3ptfn.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cfgtransf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/chroma.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/collect_multi_propcomp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/collect_propcomp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hmc.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hypsmear.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hypsmear3d.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hypsmear4d.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/make_source.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mres.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/multi_propagator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/multi_propagator_comp.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/propagator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/propagator_comp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/propagator_hack.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/purgaug.Po@am__quote@
@@ -605,13 +471,22 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qpropqio.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qproptransf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qproptrev.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qqq_w.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seqsource.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sink_smearing.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/spectrum_s.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/spectrum_w.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stoutsmear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wallformfac.Po@am__quote@
+
+.c.o:
+@am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(COMPILE) -c $<
+
+.c.obj:
+@am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ `$(CYGPATH_W) '$<'`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
 
 .cc.o:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
