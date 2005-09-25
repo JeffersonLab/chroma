@@ -1,4 +1,4 @@
-// $Id: stoutsmear.cc,v 1.5 2005-04-11 02:01:30 edwards Exp $
+// $Id: stoutsmear.cc,v 1.6 2005-09-25 20:42:32 edwards Exp $
 /*! \file
  *  \brief Main code for stout-link smearing
  */
@@ -47,18 +47,13 @@ void read(XMLReader& xml, const string& path, Param_t& param)
   switch (version) 
   {
   case 2:
-
     read(paramtop, "link_smear_num", param.link_smear_num);
-
     if( param.link_smear_num < 0 )
-    {
-     QDP_error_exit( "stoutsmear.cc: invalid number of stout smearing iterations, link_smear_num = %d", param.link_smear_num );
-    }
+      throw std::string("invalid number of stout smearing iterations");
 
     break;
 
   default :
-
     QDPIO::cerr << "Input version " << version << " unsupported." << endl;
     QDP_abort(1);
   }
