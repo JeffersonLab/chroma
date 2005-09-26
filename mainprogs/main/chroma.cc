@@ -1,4 +1,4 @@
-// $Id: chroma.cc,v 2.0 2005-09-25 21:04:45 edwards Exp $
+// $Id: chroma.cc,v 2.1 2005-09-26 03:11:10 edwards Exp $
 /*! \file
  *  \brief Main program to run all measurement codes.
  */
@@ -154,10 +154,11 @@ int main(int argc, char *argv[])
 
   // Get the measurements
   std::istringstream Measurements_is(input.param.inline_measurement_xml);
-  XMLReader MeasXML(Measurements_is);
+  XMLReader MeasXML;
   multi1d < Handle< AbsInlineMeasurement > > the_measurements;
 
   try {
+    MeasXML.open(Measurements_is);
     read(MeasXML, "/InlineMeasurements", the_measurements);
   }
   catch(const std::string& e) {
@@ -185,7 +186,19 @@ int main(int argc, char *argv[])
     {
       // Caller writes elem rule
       push(xml_out, "elem");
-      the_meas(u, config_xml, cur_update, xml_out);
+      try
+      {
+	the_meas(u, config_xml, cur_update, xml_out);
+      }
+      catch(const std::string& e) {
+	QDPIO::cerr << "CHROMA: Caught Exception: " << e << endl;
+	QDP_abort(1);
+      }
+      catch(...)
+      {
+	QDPIO::cerr << "CHROMA: caught generic exception during measurement" << endl;
+	QDP_abort(1);
+      }
       pop(xml_out); 
     }
   }
