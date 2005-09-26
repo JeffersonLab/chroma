@@ -1,3 +1,7 @@
+09/26/2005 -- Robert Edwards
+	Version 2.0.1. Fixed paths in chroma/tests/chroma . Fixed up seqsource
+        conventions.
+
 09/25/2005 -- Robert Edwards
 	Version 2.0.beta. MAJOR UPGRADE! Many main progs vanish. New emphasis on inline
         measurements. New regression tests in  chroma/tests/chroma/* that mirror the
