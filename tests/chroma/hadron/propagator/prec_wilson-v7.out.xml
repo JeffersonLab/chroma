@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: prec_wilson-v7.out.xml,v 2.0 2005-09-25 21:04:57 edwards Exp $
+; $Id: prec_wilson-v7.out.xml,v 2.1 2005-09-26 03:26:33 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -105,17 +105,17 @@
 
 <Cfg>
  <cfg_type>SZIN</cfg_type>
- <cfg_file>../../../../test_purgaug.cfg1</cfg_file>
+ <cfg_file>../../../test_purgaug.cfg1</cfg_file>
 </Cfg>
 </chroma>
 
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>1.23</chroma>
+      <chroma>2.0.beta</chroma>
       <qdp>1.16.0</qdp>
     </code_version>
-    <run_date>25 Sep 05 00:16:48 EDT</run_date>
+    <run_date>25 Sep 05 22:51:28 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -208,10 +208,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>1.23</chroma>
+            <chroma>2.0.beta</chroma>
             <qdp>1.16.0</qdp>
           </code_version>
-          <run_date>25 Sep 05 00:16:48 EDT</run_date>
+          <run_date>25 Sep 05 22:51:28 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -321,10 +321,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>1.23</chroma>
+            <chroma>2.0.beta</chroma>
             <qdp>1.16.0</qdp>
           </code_version>
-          <run_date>25 Sep 05 00:16:48 EDT</run_date>
+          <run_date>25 Sep 05 22:51:28 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>

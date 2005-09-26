@@ -99,17 +99,17 @@ Write some QIO objects
 </Param>
 <Cfg>
  <cfg_type>SZIN</cfg_type>
- <cfg_file>../../../../test_purgaug.cfg1</cfg_file>
+ <cfg_file>../../../test_purgaug.cfg1</cfg_file>
 </Cfg>
 </chroma>
 
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>1.23</chroma>
+      <chroma>2.0.beta</chroma>
       <qdp>1.16.0</qdp>
     </code_version>
-    <run_date>25 Sep 05 00:52:03 EDT</run_date>
+    <run_date>25 Sep 05 23:21:21 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -211,4 +211,25 @@ Write some QIO objects
     <elem>
       <qio_read_named_obj>
         <update_no>0</update_no>
-        <object_id>redo_cfg
+        <object_id>redo_cfg</object_id>
+      </qio_read_named_obj>
+    </elem>
+    <elem>
+      <gaussian_init_named_obj>
+        <update_no>0</update_no>
+      </gaussian_init_named_obj>
+    </elem>
+    <elem>
+      <qio_write_named_obj>
+        <update_no>0</update_no>
+        <object_id>prop_0</object_id>
+      </qio_write_named_obj>
+    </elem>
+    <elem>
+      <qio_read_named_obj>
+        <update_no>0</update_no>
+        <object_id>redo_prop_0</object_id>
+      </qio_read_named_obj>
+    </elem>
+  </InlineObservables>
+</chroma>

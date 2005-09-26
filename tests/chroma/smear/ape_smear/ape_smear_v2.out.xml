@@ -29,17 +29,17 @@ APE smear task
 </Param>
 <Cfg>
  <cfg_type>SZIN</cfg_type>
- <cfg_file>../test_purgaug.cfg1</cfg_file>
+ <cfg_file>../../../test_purgaug.cfg1</cfg_file>
 </Cfg>
 </chroma>
 
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>1.23</chroma>
+      <chroma>2.0.beta</chroma>
       <qdp>1.16.0</qdp>
     </code_version>
-    <run_date>24 Sep 05 17:08:20 EDT</run_date>
+    <run_date>25 Sep 05 22:45:40 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -132,10 +132,10 @@ APE smear task
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>1.23</chroma>
+            <chroma>2.0.beta</chroma>
             <qdp>1.16.0</qdp>
           </code_version>
-          <run_date>24 Sep 05 17:08:21 EDT</run_date>
+          <run_date>25 Sep 05 22:45:40 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>

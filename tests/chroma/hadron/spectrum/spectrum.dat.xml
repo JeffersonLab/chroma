@@ -5,10 +5,10 @@
   <update_no>0</update_no>
   <ProgramInfo>
     <code_version>
-      <chroma>1.23</chroma>
+      <chroma>2.0.beta</chroma>
       <qdp>1.16.0</qdp>
     </code_version>
-    <run_date>24 Sep 05 22:25:27 EDT</run_date>
+    <run_date>25 Sep 05 22:58:19 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>

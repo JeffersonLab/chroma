@@ -29,17 +29,17 @@ Stout smear task
 </Param>
 <Cfg>
  <cfg_type>SZIN</cfg_type>
- <cfg_file>../test_purgaug.cfg1</cfg_file>
+ <cfg_file>../../../test_purgaug.cfg1</cfg_file>
 </Cfg>
 </chroma>
 
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>1.23</chroma>
+      <chroma>2.0.beta</chroma>
       <qdp>1.16.0</qdp>
     </code_version>
-    <run_date>24 Sep 05 16:12:33 EDT</run_date>
+    <run_date>25 Sep 05 22:46:16 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -102,16 +102,40 @@ Stout smear task
 
     </gauge_xml>
   </Config_info>
+  <Observables>
+    <w_plaq>0.902263</w_plaq>
+    <s_plaq>0.862579</s_plaq>
+    <t_plaq>0.941947</t_plaq>
+    <link>0.734641</link>
+    <pollp>
+      <elem>
+        <re>0.790237</re>
+        <im>0.00288483</im>
+      </elem>
+      <elem>
+        <re>0.785869</re>
+        <im>-0.00015866</im>
+      </elem>
+      <elem>
+        <re>0.80393</re>
+        <im>0.00160447</im>
+      </elem>
+      <elem>
+        <re>0.864752</re>
+        <im>0.00215502</im>
+      </elem>
+    </pollp>
+  </Observables>
   <InlineObservables>
     <elem>
       <stout_smear>
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>1.23</chroma>
+            <chroma>2.0.beta</chroma>
             <qdp>1.16.0</qdp>
           </code_version>
-          <run_date>24 Sep 05 16:12:33 EDT</run_date>
+          <run_date>25 Sep 05 22:46:16 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>

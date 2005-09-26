@@ -26,7 +26,7 @@ Stout smear task
 </Param>
 <Cfg>
  <cfg_type>SZIN</cfg_type>
- <cfg_file>../test_purgaug.cfg1</cfg_file>
+ <cfg_file>../../../test_purgaug.cfg1</cfg_file>
 </Cfg>
 </chroma>
 
