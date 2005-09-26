@@ -1,4 +1,8 @@
 09/26/2005 -- Robert Edwards
+	Version 2.0.2. Commented problematic conversion codes in QIO inline reader/writers
+        for now.
+
+09/26/2005 -- Robert Edwards
 	Version 2.0.1. Fixed paths in chroma/tests/chroma . Fixed up seqsource
         conventions.
 
