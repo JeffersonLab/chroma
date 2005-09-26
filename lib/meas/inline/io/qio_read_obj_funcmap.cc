@@ -1,4 +1,4 @@
-// $Id: qio_read_obj_funcmap.cc,v 2.0 2005-09-25 21:04:39 edwards Exp $
+// $Id: qio_read_obj_funcmap.cc,v 2.1 2005-09-26 05:14:13 edwards Exp $
 /*! \file
  *  \brief Read object function map
  */
@@ -91,6 +91,9 @@ namespace Chroma
     }
 
 
+#if 0
+    // RGE: FOR SOME REASON, QDP CANNOT CAST A DOUBLE TO FLOATING HERE. NEED TO FIX.
+
     //! Read a single prec fermion
     void QIOReadLatFermF(const string& buffer_id,
 			 const string& file, 
@@ -109,9 +112,6 @@ namespace Chroma
       TheNamedObjMap::Instance().get(buffer_id).setRecordXML(record_xml);
     }
 
-
-#if 0
-    // RGE: FOR SOME REASON, QDP CANNOT CAST A DOUBLE TO FLOATING HERE. NEED TO FIX.
 
     //! Read a double prec fermion
     void QIOReadLatFermD(const string& buffer_id,
@@ -169,8 +169,8 @@ namespace Chroma
 
       success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("LatticeFermion"), 
 								   QIOReadObjCallMap::QIOReadLatFerm);
-      success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("LatticeFermionF"), 
-								   QIOReadObjCallMap::QIOReadLatFermF);
+//      success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("LatticeFermionF"), 
+//								   QIOReadObjCallMap::QIOReadLatFermF);
 //      success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("LatticeFermionD"), 
 //								   QIOReadObjCallMap::QIOReadLatFermD);
 

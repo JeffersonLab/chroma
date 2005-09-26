@@ -1,4 +1,4 @@
-// $Id: qio_write_obj_funcmap.cc,v 2.0 2005-09-25 21:04:39 edwards Exp $
+// $Id: qio_write_obj_funcmap.cc,v 2.1 2005-09-26 05:14:13 edwards Exp $
 /*! \file
  *  \brief Write object function map
  */
@@ -86,6 +86,9 @@ namespace Chroma
     }
 
 
+#if 0
+    // RGE: FOR SOME REASON, QDP CANNOT CAST A DOUBLE TO FLOATING HERE. NEED TO FIX.
+
     //! Write a single prec fermion
     void QIOWriteLatFermF(const string& buffer_id,
 			  const string& file, 
@@ -103,9 +106,6 @@ namespace Chroma
       close(to);
     }
 
-
-#if 0
-    // RGE: FOR SOME REASON, QDP CANNOT CAST A DOUBLE TO FLOATING HERE. NEED TO FIX.
 
     //! Write a double prec fermion
     void QIOWriteLatFermD(const string& buffer_id,
@@ -205,8 +205,8 @@ namespace Chroma
 
       success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticeFermion"), 
 								    QIOWriteObjCallMap::QIOWriteLatFerm);
-      success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticeFermionF"), 
-								    QIOWriteObjCallMap::QIOWriteLatFermF);
+//      success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticeFermionF"), 
+//								    QIOWriteObjCallMap::QIOWriteLatFermF);
 //      success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticeFermionD"), 
 //								 QIOWriteObjCallMap::QIOWriteLatFermD);
 
