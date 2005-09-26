@@ -1,4 +1,4 @@
-// $Id: inline_seqsource_w.cc,v 2.0 2005-09-25 21:04:37 edwards Exp $
+// $Id: inline_seqsource_w.cc,v 2.1 2005-09-26 04:46:03 edwards Exp $
 /*! \file
  * \brief Inline construction of sequential sources
  *
@@ -44,7 +44,7 @@ namespace Chroma
   {
     XMLReader inputtop(xml, path);
 
-    read(inputtop, "prop_id", input.prop_id);
+    read(inputtop, "prop_ids", input.prop_ids);
     read(inputtop, "seqsource_id", input.seqsource_id);
   }
 
@@ -53,7 +53,7 @@ namespace Chroma
   {
     push(xml, path);
 
-    write(xml, "prop_id", input.prop_id);
+    write(xml, "prop_ids", input.prop_ids);
     write(xml, "seqsource_id", input.seqsource_id);
 
     pop(xml);
@@ -135,66 +135,82 @@ namespace Chroma
     // Calculate some gauge invariant observables just for info.
     MesPlq(xml_out, "Observables", u);
 
+    // Sanity check
+    if (params.named_obj.prop_ids.size() == 0)
+    {
+      QDPIO::cerr << InlineSeqSourceEnv::name << ": sanity error: " << endl;
+      QDP_abort(1);
+    }
 
     //
     // Read the quark propagator and extract headers
     //
-    LatticePropagator quark_propagator;
-    ChromaProp_t prop_header;
-    PropSource_t source_header;
-    try
+    multi1d<LatticePropagator> forward_props(params.named_obj.prop_ids.size());
+    multi1d<ChromaProp_t> prop_header(params.named_obj.prop_ids.size());
+    multi1d<PropSource_t> source_header(params.named_obj.prop_ids.size());
+    push(xml_out, "Forward_prop_infos");
+    for(int loop=0; loop < params.named_obj.prop_ids.size(); ++loop)
     {
-      // Snarf the data into a copy
-      quark_propagator =
-	TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.prop_id);
-	
-      // Snarf the source info. This is will throw if the source_id is not there
-      XMLReader prop_file_xml, prop_record_xml;
-      TheNamedObjMap::Instance().get(params.named_obj.prop_id).getFileXML(prop_file_xml);
-      TheNamedObjMap::Instance().get(params.named_obj.prop_id).getRecordXML(prop_record_xml);
-   
-      // Try to invert this record XML into a ChromaProp struct
-      // Also pull out the id of this source
+      push(xml_out, "elem");
+      try
       {
-	read(prop_record_xml, "/Propagator/ForwardProp", prop_header);
-	read(prop_record_xml, "/Propagator/PropSource", source_header);
-      }
+	// Snarf the data into a copy
+	forward_props[loop] =
+	  TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.prop_ids[loop]);
+	
+	// Snarf the source info. This is will throw if the source_id is not there
+	XMLReader prop_file_xml, prop_record_xml;
+	TheNamedObjMap::Instance().get(params.named_obj.prop_ids[loop]).getFileXML(prop_file_xml);
+	TheNamedObjMap::Instance().get(params.named_obj.prop_ids[loop]).getRecordXML(prop_record_xml);
+   
+	// Try to invert this record XML into a ChromaProp struct
+	// Also pull out the id of this source
+	{
+	  read(prop_record_xml, "/Propagator/ForwardProp", prop_header[loop]);
+	  read(prop_record_xml, "/Propagator/PropSource", source_header[loop]);
+	}
 
-      // Save prop input
-      write(xml_out, "Propagator_info", prop_record_xml);
+	// Save prop input
+	write(xml_out, "Propagator_info", prop_record_xml);
+      }
+      catch( std::bad_cast ) 
+      {
+	QDPIO::cerr << InlineSeqSourceEnv::name << ": caught dynamic cast error" 
+		    << endl;
+	QDP_abort(1);
+      }
+      catch (const string& e) 
+      {
+	QDPIO::cerr << InlineSeqSourceEnv::name << ": map call failed: " << e 
+		    << endl;
+	QDP_abort(1);
+      }
+      pop(xml_out);
     }
-    catch( std::bad_cast ) 
-    {
-      QDPIO::cerr << InlineSeqSourceEnv::name << ": caught dynamic cast error" 
-		  << endl;
-      QDP_abort(1);
-    }
-    catch (const string& e) 
-    {
-      QDPIO::cerr << InlineSeqSourceEnv::name << ": map call failed: " << e 
-		  << endl;
-      QDP_abort(1);
-    }
+    pop(xml_out);
 
     QDPIO::cout << "Forward propagator successfully read and parsed" << endl;
 
     // Derived from input prop
-    int  j_decay = source_header.j_decay;
-    multi1d<int> t_source = source_header.t_source;
+    int  j_decay = source_header[0].j_decay;
+    multi1d<int> t_source = source_header[0].t_source;
 
     // Initialize the slow Fourier transform phases
     SftMom phases(0, true, j_decay);
 
     // Sanity check - write out the norm2 of the forward prop in the j_decay direction
     // Use this for any possible verification
+    push(xml_out, "Forward_prop_correlators");
+    for(int loop=0; loop < params.named_obj.prop_ids.size(); ++loop)
     {
-      multi1d<Double> forward_prop_corr = sumMulti(localNorm2(quark_propagator),
+      multi1d<Double> forward_prop_corr = sumMulti(localNorm2(forward_props[loop]),
 						   phases.getSet());
 
-      push(xml_out, "Forward_prop_correlator");
+      push(xml_out, "elem");
       write(xml_out, "forward_prop_corr", forward_prop_corr);
       pop(xml_out);
     }
+    pop(xml_out);
 
     // A sanity check
     if (params.param.t_sink < 0 || params.param.t_sink >= params.param.nrow[j_decay]) 
@@ -216,38 +232,41 @@ namespace Chroma
     //------------------ Start main body of calculations -----------------------------
 
     // Do the sink smearing BEFORE the interpolating operator
-    switch (params.sink_header.sink_type)
+    for(int loop=0; loop < params.named_obj.prop_ids.size(); ++loop)
     {
-    case SNK_TYPE_SHELL_SINK:
-    {
-      QDPIO::cout << "SeqSource: do shell sink smearing" << endl;
+      switch (params.sink_header.sink_type)
+      {
+      case SNK_TYPE_SHELL_SINK:
+      {
+	QDPIO::cout << "SeqSource: do shell sink smearing" << endl;
 
-      sink_smear2(u, quark_propagator, 
-		  source_header.sourceSmearParam.wvf_kind, 
-		  source_header.sourceSmearParam.wvf_param, 
-		  source_header.sourceSmearParam.wvfIntPar, 
-		  j_decay);
-    }
-    break;
-
-    case SNK_TYPE_WALL_SINK:
-    {
-      QDPIO::cout << "SeqSource: do wall sink smearing" << endl;
-
-      for(int i=0; i < params.param.sink_mom.size(); ++i)
-	if (params.param.sink_mom[i] != 0)
-	{
-	  QDPIO::cerr << "Do not currently support non-zero momenta wall-sink smearing" << endl;
-	  QDP_abort(1);
-	}
-
-      LatticePropagator tmp_prop = quark_propagator;
-      wall_qprop(quark_propagator, tmp_prop, phases);
-    }
-    break;
-
-    default:
+	sink_smear2(u, forward_props[loop], 
+		    params.sink_header.sinkSmearParam.wvf_kind, 
+		    params.sink_header.sinkSmearParam.wvf_param, 
+		    params.sink_header.sinkSmearParam.wvfIntPar, 
+		    j_decay);
+      }
       break;
+
+      case SNK_TYPE_WALL_SINK:
+      {
+	QDPIO::cout << "SeqSource: do wall sink smearing" << endl;
+
+	for(int i=0; i < params.param.sink_mom.size(); ++i)
+	  if (params.param.sink_mom[i] != 0)
+	  {
+	    QDPIO::cerr << "Do not currently support non-zero momenta wall-sink smearing" << endl;
+	    QDP_abort(1);
+	  }
+
+	LatticePropagator tmp_prop = forward_props[loop];
+	wall_qprop(forward_props[loop], tmp_prop, phases);
+      }
+      break;
+
+      default:
+	break;
+      }
     }
     
   
@@ -259,9 +278,7 @@ namespace Chroma
     swatch.reset();
     swatch.start();
     LatticePropagator quark_prop_src = 
-      hadSeqSource(quark_propagator, 
-		   quark_propagator, 
-		   quark_propagator, 
+      hadSeqSource(forward_props, 
 		   params.param.t_sink, 
 		   params.param.sink_mom, 
 		   j_decay, 
@@ -278,9 +295,9 @@ namespace Chroma
     case SNK_TYPE_SHELL_SINK:
     {
       sink_smear2(u, quark_prop_src, 
-		  source_header.sourceSmearParam.wvf_kind, 
-		  source_header.sourceSmearParam.wvf_param, 
-		  source_header.sourceSmearParam.wvfIntPar, 
+		  params.sink_header.sinkSmearParam.wvf_kind, 
+		  params.sink_header.sinkSmearParam.wvf_param, 
+		  params.sink_header.sinkSmearParam.wvfIntPar, 
 		  j_decay);
     }
     break;
@@ -319,7 +336,7 @@ namespace Chroma
      */
     try
     {
-      QDPIO::cout << "Attempt to update sequential source" << endl;
+      QDPIO::cout << "Attempt to store sequential source" << endl;
 
       XMLBufferWriter file_xml;
       push(file_xml, "seqsource");
@@ -328,14 +345,17 @@ namespace Chroma
       pop(file_xml);
 
       // Sequential source header
-      // For now, only have 1 set of forward props to tie
+      // Header composed of all forward prop headers
       SequentialSource_t src;
       src.sink_header = params.sink_header;
       src.seqsource_header = params.param;
-      src.forward_props.resize(1);
-      src.forward_props[0].sink_header = params.sink_header;
-      src.forward_props[0].prop_header = prop_header;
-      src.forward_props[0].source_header = source_header;
+      src.forward_props.resize(params.named_obj.prop_ids.size());
+      for(int loop=0; loop < params.named_obj.prop_ids.size(); ++loop)
+      {
+	src.forward_props[loop].sink_header = params.sink_header;
+	src.forward_props[loop].prop_header = prop_header[loop];
+	src.forward_props[loop].source_header = source_header[loop];
+      }
 
       XMLBufferWriter record_xml;
       push(record_xml, "SequentialSource");
@@ -349,17 +369,17 @@ namespace Chroma
       TheNamedObjMap::Instance().get(params.named_obj.seqsource_id).setFileXML(file_xml);
       TheNamedObjMap::Instance().get(params.named_obj.seqsource_id).setRecordXML(record_xml);
 
-      QDPIO::cout << "Sequential source successfully updated"  << endl;
+      QDPIO::cout << "Sequential source successfully stored"  << endl;
     }
     catch (std::bad_cast)
     {
-      QDPIO::cerr << InlineSeqSourceEnv::name << ": caught dynamic cast error in getData" 
+      QDPIO::cerr << InlineSeqSourceEnv::name << ": dynamic cast error" 
 		  << endl;
       QDP_abort(1);
     }
     catch (const string& e) 
     {
-      QDPIO::cerr << InlineSeqSourceEnv::name << ": error extracting source_header: " << e << endl;
+      QDPIO::cerr << InlineSeqSourceEnv::name << ": error storing seqsource: " << e << endl;
       QDP_abort(1);
     }
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_seqsource_w.h,v 2.0 2005-09-25 21:04:37 edwards Exp $
+// $Id: inline_seqsource_w.h,v 2.1 2005-09-26 04:46:03 edwards Exp $
 /*! \file
  * \brief Inline construction of sequential sources
  *
@@ -37,8 +37,8 @@ namespace Chroma
 
     struct NamedObject_t
     {
-      std::string      prop_id;
-      std::string      seqsource_id;
+      multi1d<std::string>   prop_ids;
+      std::string            seqsource_id;
     } named_obj;
   };
 
