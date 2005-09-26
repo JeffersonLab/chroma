@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: named_obj.h,v 2.0 2005-09-25 21:04:25 edwards Exp $
+// $Id: named_obj.h,v 2.1 2005-09-26 19:49:36 edwards Exp $
 
 /*! @file
  * @brief Named object support
@@ -223,7 +223,7 @@ namespace Chroma
       typedef std::map<std::string, NamedObjectBase*>::iterator CI;
       QDPIO::cout << "Available Keys are : " << endl;
 	for(CI j = the_map.begin(); j != the_map.end(); j++) 
-	  QDPIO::cerr << j->first << endl << flush;
+	  QDPIO::cout << j->first << endl << flush;
     }
   
   
