@@ -46,7 +46,18 @@ Write some QIO objects
     </elem>
 
     <elem>
-      <Name>QIO_WRITE_NAMED_OBJECT</Name>
+      <annotation>
+        List all objects
+      </annotation>
+      <Name>LIST_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+    </elem>
+
+    <elem>
+      <annotation>
+        Write the named object and then erase the memory object
+      </annotation>
+      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
       <NamedObject>
         <object_id>prop_0</object_id>
@@ -56,6 +67,17 @@ Write some QIO objects
         <file_name>./prop_0</file_name>
         <file_volfmt>MULTIFILE</file_volfmt>
       </File>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>snarf_cfg</object_id>
+      </NamedObject>
     </elem>
 
   </InlineMeasurements>

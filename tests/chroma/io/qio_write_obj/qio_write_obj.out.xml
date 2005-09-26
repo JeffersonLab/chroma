@@ -49,7 +49,18 @@ Write some QIO objects
     </elem>
 
     <elem>
-      <Name>QIO_WRITE_NAMED_OBJECT</Name>
+      <annotation>
+        List all objects
+      </annotation>
+      <Name>LIST_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+    </elem>
+
+    <elem>
+      <annotation>
+        Write the named object and then erase the memory object
+      </annotation>
+      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
       <NamedObject>
         <object_id>prop_0</object_id>
@@ -59,6 +70,17 @@ Write some QIO objects
         <file_name>./prop_0</file_name>
         <file_volfmt>MULTIFILE</file_volfmt>
       </File>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>snarf_cfg</object_id>
+      </NamedObject>
     </elem>
 
   </InlineMeasurements>
@@ -76,7 +98,7 @@ Write some QIO objects
       <chroma>2.0.beta</chroma>
       <qdp>1.16.0</qdp>
     </code_version>
-    <run_date>25 Sep 05 23:21:58 EDT</run_date>
+    <run_date>26 Sep 05 15:36:27 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -181,10 +203,21 @@ Write some QIO objects
       </gaussian_init_named_obj>
     </elem>
     <elem>
-      <qio_write_named_obj>
+      <list_named_obj>
+        <update_no>0</update_no>
+      </list_named_obj>
+    </elem>
+    <elem>
+      <qio_write_erase_named_obj>
         <update_no>0</update_no>
         <object_id>prop_0</object_id>
-      </qio_write_named_obj>
+      </qio_write_erase_named_obj>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>snarf_cfg</object_id>
+      </erase_named_obj>
     </elem>
   </InlineObservables>
 </chroma>
