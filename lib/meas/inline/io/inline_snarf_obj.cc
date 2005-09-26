@@ -1,4 +1,4 @@
-// $Id: inline_snarf_obj.cc,v 2.0 2005-09-25 21:04:38 edwards Exp $
+// $Id: inline_snarf_obj.cc,v 2.1 2005-09-26 03:21:37 edwards Exp $
 /*! \file
  * \brief Inline task to copy gauge arg to a named object
  *
@@ -110,8 +110,14 @@ namespace Chroma
     QDPIO::cout << "Attempt to list all object names" << endl;
     try
     {
+      XMLBufferWriter file_xml;
+      push(file_xml, "FileXML");
+      pop(file_xml);
+
       TheNamedObjMap::Instance().create< multi1d<LatticeColorMatrix> >(params.named_obj.object_id);
       TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.object_id) = u;
+      TheNamedObjMap::Instance().get(params.named_obj.object_id).setFileXML(file_xml);
+      TheNamedObjMap::Instance().get(params.named_obj.object_id).setRecordXML(gauge_xml);
     }
     catch (std::bad_cast) 
     {
