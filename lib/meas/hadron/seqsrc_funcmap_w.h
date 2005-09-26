@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: seqsrc_funcmap_w.h,v 2.0 2005-09-25 21:04:36 edwards Exp $
+// $Id: seqsrc_funcmap_w.h,v 2.1 2005-09-26 04:48:35 edwards Exp $
 /*! \file
  *  \brief Sequential source function map
  */
@@ -13,14 +13,13 @@
 namespace Chroma
 {
 
-  //! Sequential Source function map
+  //! Sequential Source function map 
+  /*! \ingroup hadron */
   typedef SingletonHolder< 
     FunctionMap<LatticePropagator, 
 		std::string,
-		TYPELIST_3(const LatticePropagator&, const LatticePropagator&, const LatticePropagator&),
-		LatticePropagator (*)(const LatticePropagator&, 
-				      const LatticePropagator&, 
-				      const LatticePropagator&),
+		TYPELIST_1(const multi1d<LatticePropagator>&),
+		LatticePropagator (*)(const multi1d<LatticePropagator>&),
 		StringFunctionMapError> >
   TheSeqSourceFuncMap;
 

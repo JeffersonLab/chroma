@@ -1,30 +1,62 @@
-// $Id: barseqsrc_w.cc,v 2.0 2005-09-25 21:04:34 edwards Exp $
+// $Id: barseqsrc_w.cc,v 2.1 2005-09-26 04:48:35 edwards Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */
 
 #include "chromabase.h"
 #include "meas/hadron/barseqsrc_w.h"
+#include "meas/hadron/seqsrc_funcmap_w.h"
 
 namespace Chroma 
 {
+
+  // Anonymous namespace
+  /*! \ingroup hadron */
+  namespace
+  {
+    //! Check only 1 prop passed
+    void check1Args(const char* name, const multi1d<LatticePropagator>& quark_propagators)
+    {
+      if (quark_propagators.size() != 1)
+      {
+//      QDPIO::cerr << __func__ << ": expect only 1 prop" << endl;
+//      QDP_abort(1);
+
+	ostringstream s;
+	s << name << ": expecting 1 prop, instead passed = " << quark_propagators.size() << endl;
+	throw s.str();
+      }
+    }
+
+    //! Check only 2 props passed
+    void check2Args(const char* name, const multi1d<LatticePropagator>& quark_propagators)
+    {
+      if (quark_propagators.size() != 2)
+      {
+//      QDPIO::cerr << __func__ << ": expect only 2 prop" << endl;
+//      QDP_abort(1);
+
+	ostringstream s;
+	s << name << ": expecting 2 props, instead passed = " << quark_propagators.size() << endl;
+	throw s.str();
+      }
+    }
+  }
 
   //! Construct baryon sequential sources
   /*!
    * \ingroup hadron
    *
-   * \param quark_propagator_1   first (u) quark propagator ( Read )
-   * \param quark_propagator_2   second (d) quark propagator ( Read )
-   * \param quark_propagator_3   third (s) quark propagator ( Read )
+   * \param quark_propagators    array of quark propagators ( Read )
    *
    * \return the sequential source before projection onto the sink
    */
 
-  LatticePropagator barNuclUUnpol(const LatticePropagator& quark_propagator_1, 
-				  const LatticePropagator& quark_propagator_2,
-				  const LatticePropagator& quark_propagator_3)
+  LatticePropagator barNuclUUnpol(const multi1d<LatticePropagator>& quark_propagators)
   {
     START_CODE();
+
+    check2Args(__func__, quark_propagators);
 
     LatticePropagator src_prop_tmp;
     LatticePropagator q1_tmp;
@@ -36,24 +68,24 @@ namespace Chroma
     /* "\bar u O u" insertion in proton, ie. "(u C gamma_5 d) u" */
     /* T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2 */
     /* C gamma_5 = Gamma(5) = - (C gamma_5)^T */
-    di_quark = quarkContract24(quark_propagator_1 * Gamma(5), 
-			       Gamma(5) * quark_propagator_2);
+    di_quark = quarkContract24(quark_propagators[0] * Gamma(5), 
+			       Gamma(5) * quark_propagators[1]);
     src_prop_tmp = (di_quark + Gamma(8)*di_quark) 
       + traceSpin(di_quark)*(g_one + Gamma(8)*g_one);
 
-    q1_tmp = Gamma(5) * quark_propagator_2 * Gamma(5);
-    q2_tmp = quark_propagator_1 + quark_propagator_1*Gamma(8);
+    q1_tmp = Gamma(5) * quark_propagators[1] * Gamma(5);
+    q2_tmp = quark_propagators[0] + quark_propagators[0]*Gamma(8);
     src_prop_tmp -= quarkContract13(q1_tmp, q2_tmp) + transposeSpin(quarkContract12(q2_tmp, q1_tmp));
     src_prop_tmp *= 0.5;
     return src_prop_tmp;
 
   }
 
-  LatticePropagator barNuclDUnpol(const LatticePropagator& quark_propagator_1, 
-				  const LatticePropagator& quark_propagator_2,
-				  const LatticePropagator& quark_propagator_3)
+  LatticePropagator barNuclDUnpol(const multi1d<LatticePropagator>& quark_propagators) 
   {
     START_CODE();
+
+    check1Args(__func__, quark_propagators);
 
     LatticePropagator src_prop_tmp;
     LatticePropagator q1_tmp;
@@ -64,13 +96,13 @@ namespace Chroma
     /* "\bar d O d" insertion in proton, ie. "(u C gamma_5 d) u" */
     /* T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2 */
     /* C gamma_5 = Gamma(5) = - (C gamma_5)^T */
-    q2_tmp = quark_propagator_1 * Gamma(5);
+    q2_tmp = quark_propagators[0] * Gamma(5);
     q1_tmp = q2_tmp + Gamma(8) * q2_tmp;
-    q2_tmp = Gamma(5) * quark_propagator_1;
+    q2_tmp = Gamma(5) * quark_propagators[0];
     src_prop_tmp = -quarkContract14(q1_tmp, q2_tmp);
 
     q1_tmp = q2_tmp * Gamma(5);
-    q2_tmp = quark_propagator_1 + quark_propagator_1 * Gamma(8);
+    q2_tmp = quark_propagators[0] + quark_propagators[0] * Gamma(8);
     src_prop_tmp -= transposeSpin(quarkContract12(q2_tmp, q1_tmp));
 
     src_prop_tmp *= 0.5;
@@ -78,11 +110,11 @@ namespace Chroma
   }
 
 
-  LatticePropagator barNuclUPol(const LatticePropagator& quark_propagator_1, 
-				const LatticePropagator& quark_propagator_2,
-				const LatticePropagator& quark_propagator_3)
+  LatticePropagator barNuclUPol(const multi1d<LatticePropagator>& quark_propagators) 
   {
     START_CODE();
+
+    check2Args(__func__, quark_propagators);
 
     LatticePropagator src_prop_tmp;
     LatticePropagator q1_tmp;
@@ -95,8 +127,8 @@ namespace Chroma
     /* "\bar u O u" insertion in proton, ie. "(u C gamma_5 d) u" */
     /* T = \Sigma_3 (1 + gamma_4) / 2 = -i (Gamma(3) + Gamma(11)) / 2 */
     /* C gamma_5 = Gamma(5) = - (C gamma_5)^T */
-    q1_tmp = quark_propagator_1 * Gamma(5);
-    q2_tmp = Gamma(5) * quark_propagator_2;
+    q1_tmp = quark_propagators[0] * Gamma(5);
+    q2_tmp = Gamma(5) * quark_propagators[1];
     di_quark = quarkContract24(q1_tmp, q2_tmp);
     src_prop_tmp = (Gamma(3) * di_quark  +  Gamma(11) * di_quark);
 
@@ -104,8 +136,8 @@ namespace Chroma
     src_prop_tmp += col_mat * (Gamma(3) * g_one + Gamma(11) * g_one);
 
     q1_tmp = q2_tmp * Gamma(5);
-    q2_tmp = quark_propagator_1 * Gamma(3);
-    q2_tmp += quark_propagator_1 * Gamma(11);
+    q2_tmp = quark_propagators[0] * Gamma(3);
+    q2_tmp += quark_propagators[0] * Gamma(11);
     src_prop_tmp -= quarkContract13(q1_tmp, q2_tmp) + transposeSpin(quarkContract12(q2_tmp, q1_tmp));
 
     q1_tmp = 0.5 * timesMinusI(src_prop_tmp);
@@ -114,11 +146,11 @@ namespace Chroma
   }
 
 
-  LatticePropagator barNuclDPol(const LatticePropagator& quark_propagator_1, 
-				const LatticePropagator& quark_propagator_2,
-				const LatticePropagator& quark_propagator_3)
+  LatticePropagator barNuclDPol(const multi1d<LatticePropagator>& quark_propagators) 
   {
     START_CODE();
+
+    check1Args(__func__, quark_propagators);
 
     LatticePropagator src_prop_tmp;
     LatticePropagator q1_tmp;
@@ -130,13 +162,13 @@ namespace Chroma
     /* T = \Sigma_3 (1 + gamma_4) / 2 = -i (Gamma(3) + Gamma(11)) / 2 */
 
     /* C gamma_5 = Gamma(5) = - (C gamma_5)^T */
-    q2_tmp = quark_propagator_1 * Gamma(5);
+    q2_tmp = quark_propagators[0] * Gamma(5);
     q1_tmp = Gamma(3) * q2_tmp + Gamma(11) * q2_tmp;
-    q2_tmp = Gamma(5) * quark_propagator_1;
+    q2_tmp = Gamma(5) * quark_propagators[0];
     src_prop_tmp = -quarkContract14(q1_tmp, q2_tmp);
 
     q1_tmp = q2_tmp * Gamma(5);
-    q2_tmp = quark_propagator_1 * Gamma(3) + quark_propagator_1 * Gamma(11);
+    q2_tmp = quark_propagators[0] * Gamma(3) + quark_propagators[0] * Gamma(11);
     src_prop_tmp -= transposeSpin(quarkContract12(q2_tmp, q1_tmp));
 
     q1_tmp = 0.5 * timesMinusI(src_prop_tmp);
@@ -145,11 +177,11 @@ namespace Chroma
   }
 
 
-  LatticePropagator barDeltaUUnpol(const LatticePropagator& quark_propagator_1, 
-				   const LatticePropagator& quark_propagator_2,
-				   const LatticePropagator& quark_propagator_3)
+  LatticePropagator barDeltaUUnpol(const multi1d<LatticePropagator>& quark_propagators) 
   {
     START_CODE();
+
+    check2Args(__func__, quark_propagators);
 
     LatticePropagator src_prop_tmp;
     LatticePropagator q1_tmp;
@@ -167,8 +199,8 @@ namespace Chroma
     /* T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2 */
 
     /* C gamma_- = Cgm = (C gamma_-)^T */
-    q1_tmp = quark_propagator_1 * Cgm;
-    q2_tmp = Cgm * quark_propagator_2;
+    q1_tmp = quark_propagators[0] * Cgm;
+    q2_tmp = Cgm * quark_propagators[1];
     di_quark = quarkContract24(q1_tmp, q2_tmp);
     src_prop_tmp = di_quark + Gamma(8) * di_quark;
 
@@ -178,21 +210,21 @@ namespace Chroma
     src_prop_tmp += col_mat * di_quark;
 
     q1_tmp = q2_tmp * Cgm;
-    q2_tmp = quark_propagator_1 + quark_propagator_1 * Gamma(8);
+    q2_tmp = quark_propagators[0] + quark_propagators[0] * Gamma(8);
     src_prop_tmp += quarkContract13(q1_tmp, q2_tmp) + transposeSpin(quarkContract12(q2_tmp, q1_tmp));
 
-    q1_tmp = Cgm * quark_propagator_1;
+    q1_tmp = Cgm * quark_propagators[0];
     q2_tmp = q1_tmp * Cgm;
-    q1_tmp = quark_propagator_2 + Gamma(8) * quark_propagator_2;
+    q1_tmp = quark_propagators[1] + Gamma(8) * quark_propagators[1];
     src_prop_tmp += transposeSpin(quarkContract12(q1_tmp, q2_tmp)) + quarkContract24(q1_tmp, q2_tmp);
 
     q2_tmp = q1_tmp * Cgm;
-    q1_tmp = Cgm * quark_propagator_1;
+    q1_tmp = Cgm * quark_propagators[0];
     src_prop_tmp += quarkContract14(q2_tmp, q1_tmp);
 
-    q1_tmp = Cgm * quark_propagator_2;
+    q1_tmp = Cgm * quark_propagators[1];
     q2_tmp = q1_tmp + q1_tmp * Gamma(8);
-    q1_tmp = quark_propagator_1 * Cgm;
+    q1_tmp = quark_propagators[0] * Cgm;
     src_prop_tmp += quarkContract14(q1_tmp, q2_tmp) + quarkContract13(q1_tmp, q2_tmp);
     src_prop_tmp *= 2;
 
@@ -200,11 +232,11 @@ namespace Chroma
   }
 
 
-  LatticePropagator barDeltaDUnpol(const LatticePropagator& quark_propagator_1, 
-				   const LatticePropagator& quark_propagator_2,
-				   const LatticePropagator& quark_propagator_3)
+  LatticePropagator barDeltaDUnpol(const multi1d<LatticePropagator>& quark_propagators) 
   {
     START_CODE();
+
+    check1Args(__func__, quark_propagators);
 
     LatticePropagator src_prop_tmp;
     LatticePropagator q1_tmp;
@@ -222,17 +254,17 @@ namespace Chroma
     /* T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2 */
 
     /* C gamma_- = Cgm = (C gamma_-)^T */
-    q2_tmp = quark_propagator_1 * Cgm;
+    q2_tmp = quark_propagators[0] * Cgm;
     q1_tmp = q2_tmp + Gamma(8) * q2_tmp;
-    q2_tmp = Cgm * quark_propagator_1;
+    q2_tmp = Cgm * quark_propagators[0];
     src_prop_tmp = quarkContract14(q1_tmp, q2_tmp);
 
     q1_tmp = q2_tmp * Cgm;
-    q2_tmp = quark_propagator_1 + quark_propagator_1 * Gamma(8);
+    q2_tmp = quark_propagators[0] + quark_propagators[0] * Gamma(8);
     src_prop_tmp += transposeSpin(quarkContract12(q2_tmp, q1_tmp));
 
-    q1_tmp = quark_propagator_1 * Cgm;
-    q2_tmp = Cgm * quark_propagator_1;
+    q1_tmp = quark_propagators[0] * Cgm;
+    q2_tmp = Cgm * quark_propagators[0];
     di_quark = quarkContract24(q1_tmp, q2_tmp);
     src_prop_tmp += di_quark + Gamma(8) * di_quark;
 
@@ -249,11 +281,11 @@ namespace Chroma
   }
 
 
-  LatticePropagator barNuclUUnpolNR(const LatticePropagator& quark_propagator_1, 
-				    const LatticePropagator& quark_propagator_2,
-				    const LatticePropagator& quark_propagator_3)
+  LatticePropagator barNuclUUnpolNR(const multi1d<LatticePropagator>& quark_propagators) 
   {
     START_CODE();
+
+    check2Args(__func__, quark_propagators);
 
     LatticePropagator src_prop_tmp;
     LatticePropagator q1_tmp;
@@ -272,8 +304,8 @@ namespace Chroma
     /* T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2 */
 
     /* Use precomputed Cg5NR = C gamma_5 (1/2) ( 1 + g_4 ) */
-    q1_tmp = quark_propagator_1 * Cg5NR;
-    q2_tmp = Cg5NR * quark_propagator_2;
+    q1_tmp = quark_propagators[0] * Cg5NR;
+    q2_tmp = Cg5NR * quark_propagators[1];
     di_quark = quarkContract24(q1_tmp, q2_tmp);
     src_prop_tmp = di_quark + Gamma(8) * di_quark;
 
@@ -283,7 +315,7 @@ namespace Chroma
     src_prop_tmp += col_mat * di_quark;
 
     q1_tmp = q2_tmp * Cg5NR;
-    q2_tmp = quark_propagator_1 + quark_propagator_1 * Gamma(8);
+    q2_tmp = quark_propagators[0] + quark_propagators[0] * Gamma(8);
     src_prop_tmp -= quarkContract13(q1_tmp, q2_tmp) + transposeSpin(quarkContract12(q2_tmp, q1_tmp));
     src_prop_tmp *= 0.5;
 
@@ -291,11 +323,11 @@ namespace Chroma
   }
 
 
-  LatticePropagator barNuclDUnpolNR(const LatticePropagator& quark_propagator_1, 
-				    const LatticePropagator& quark_propagator_2,
-				    const LatticePropagator& quark_propagator_3)
+  LatticePropagator barNuclDUnpolNR(const multi1d<LatticePropagator>& quark_propagators) 
   {
     START_CODE();
+
+    check1Args(__func__, quark_propagators);
 
     LatticePropagator src_prop_tmp;
     LatticePropagator q1_tmp;
@@ -312,13 +344,13 @@ namespace Chroma
     /* T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2 */
 
     /* C gamma_5 (1/2)( 1 + g_4)  = Cg5NR  */
-    q2_tmp = quark_propagator_1 * Cg5NR;
+    q2_tmp = quark_propagators[0] * Cg5NR;
     q1_tmp = q2_tmp + Gamma(8) * q2_tmp;
-    q2_tmp = Cg5NR * quark_propagator_1;
+    q2_tmp = Cg5NR * quark_propagators[0];
     src_prop_tmp = -quarkContract14(q1_tmp, q2_tmp);
 
     q1_tmp = q2_tmp * Cg5NR;
-    q2_tmp = quark_propagator_1 + quark_propagator_1 * Gamma(8);
+    q2_tmp = quark_propagators[0] + quark_propagators[0] * Gamma(8);
     src_prop_tmp -= transposeSpin(quarkContract12(q2_tmp, q1_tmp));
     src_prop_tmp *= 0.5;
 
@@ -326,11 +358,11 @@ namespace Chroma
   }
 
 
-  LatticePropagator barNuclUPolNR(const LatticePropagator& quark_propagator_1, 
-				  const LatticePropagator& quark_propagator_2,
-				  const LatticePropagator& quark_propagator_3)
+  LatticePropagator barNuclUPolNR(const multi1d<LatticePropagator>& quark_propagators) 
   {
     START_CODE();
+
+    check2Args(__func__, quark_propagators);
 
     LatticePropagator src_prop_tmp;
     LatticePropagator q1_tmp;
@@ -348,8 +380,8 @@ namespace Chroma
     /* T = \Sigma_3 (1 + gamma_4) / 2 = -i (Gamma(3) + Gamma(11)) / 2 */
 
     /* C gamma_5 (1/2) (1 + gamma_4) = Cg5NR */
-    q1_tmp = quark_propagator_1 * Cg5NR;
-    q2_tmp = Cg5NR * quark_propagator_2;
+    q1_tmp = quark_propagators[0] * Cg5NR;
+    q2_tmp = Cg5NR * quark_propagators[1];
     di_quark = quarkContract24(q1_tmp, q2_tmp);
     src_prop_tmp = Gamma(3) * di_quark + Gamma(11) * di_quark;
 
@@ -359,7 +391,7 @@ namespace Chroma
     src_prop_tmp += col_mat * di_quark;
 
     q1_tmp = q2_tmp * Cg5NR;
-    q2_tmp = quark_propagator_1 * Gamma(3)  +  quark_propagator_1 * Gamma(11);
+    q2_tmp = quark_propagators[0] * Gamma(3)  +  quark_propagators[0] * Gamma(11);
     src_prop_tmp -= quarkContract13(q1_tmp, q2_tmp) + transposeSpin(quarkContract12(q2_tmp, q1_tmp));
 
     q1_tmp = 0.5 * timesMinusI(src_prop_tmp);
@@ -369,11 +401,11 @@ namespace Chroma
   }
 
 
-  LatticePropagator barNuclDPolNR(const LatticePropagator& quark_propagator_1, 
-				  const LatticePropagator& quark_propagator_2,
-				  const LatticePropagator& quark_propagator_3)
+  LatticePropagator barNuclDPolNR(const multi1d<LatticePropagator>& quark_propagators) 
   {
     START_CODE();
+
+    check1Args(__func__, quark_propagators);
 
     LatticePropagator src_prop_tmp;
     LatticePropagator q1_tmp;
@@ -389,13 +421,13 @@ namespace Chroma
     /* T = \Sigma_3 (1 + gamma_4) / 2 = -i (Gamma(3) + Gamma(11)) / 2 */
 
     /* C gamma_5 (1/2)(1+gamma_4)= Cg5NR */
-    q2_tmp = quark_propagator_1 * Cg5NR;
+    q2_tmp = quark_propagators[0] * Cg5NR;
     q1_tmp = Gamma(3) * q2_tmp  +  Gamma(11) * q2_tmp;
-    q2_tmp = Cg5NR * quark_propagator_1;
+    q2_tmp = Cg5NR * quark_propagators[0];
     src_prop_tmp = -quarkContract14(q1_tmp, q2_tmp);
 
     q1_tmp = q2_tmp * Cg5NR;
-    q2_tmp = quark_propagator_1 * Gamma(3)  +  quark_propagator_1 * Gamma(11);
+    q2_tmp = quark_propagators[0] * Gamma(3)  +  quark_propagators[0] * Gamma(11);
     src_prop_tmp -= transposeSpin(quarkContract12(q2_tmp, q1_tmp));
 
     q1_tmp = 0.5 * timesMinusI(src_prop_tmp);
@@ -405,11 +437,11 @@ namespace Chroma
   }
 
 
-  LatticePropagator barNuclUMixedNR(const LatticePropagator& quark_propagator_1, 
-				    const LatticePropagator& quark_propagator_2,
-				    const LatticePropagator& quark_propagator_3)
+  LatticePropagator barNuclUMixedNR(const multi1d<LatticePropagator>& quark_propagators) 
   {
     START_CODE();
+
+    check2Args(__func__, quark_propagators);
 
     LatticePropagator src_prop_tmp;
     LatticePropagator q1_tmp;
@@ -435,8 +467,8 @@ namespace Chroma
 
 
     /* Use precomputed Cg5NR = C gamma_5 (1/2) ( 1 + g_4 ) */
-    q1_tmp = quark_propagator_1 * Cg5NR;
-    q2_tmp = Cg5NR * quark_propagator_2;
+    q1_tmp = quark_propagators[0] * Cg5NR;
+    q2_tmp = Cg5NR * quark_propagators[1];
     di_quark = quarkContract24(q1_tmp, q2_tmp);
 
     /*
@@ -487,12 +519,12 @@ namespace Chroma
 
     /*  First the polarized piece */
 
-    di_quark = quark_propagator_1 * Gamma(3)  +  quark_propagator_1 * Gamma(11);
+    di_quark = quark_propagators[0] * Gamma(3)  +  quark_propagators[0] * Gamma(11);
     q2_tmp = timesMinusI(di_quark);	/* Muliply by -i */
 
     /* Add the unpolarized piece */
 
-    q2_tmp += quark_propagator_1  +  quark_propagator_1 * Gamma(8);
+    q2_tmp += quark_propagators[0]  +  quark_propagators[0] * Gamma(8);
 
     src_prop_tmp -= quarkContract13(q1_tmp, q2_tmp) + transposeSpin(quarkContract12(q2_tmp, q1_tmp));
 
@@ -504,11 +536,11 @@ namespace Chroma
   }
 
 
-  LatticePropagator barNuclDMixedNR(const LatticePropagator& quark_propagator_1, 
-				    const LatticePropagator& quark_propagator_2,
-				    const LatticePropagator& quark_propagator_3)
+  LatticePropagator barNuclDMixedNR(const multi1d<LatticePropagator>& quark_propagators) 
   {
     START_CODE();
+
+    check1Args(__func__, quark_propagators);
 
     LatticePropagator src_prop_tmp;
     LatticePropagator q1_tmp;
@@ -525,7 +557,7 @@ namespace Chroma
     /* T = \Sigma_3 (1 + gamma_4) / 2 = -i (Gamma(3) + Gamma(11)) / 2 */
 
     /* C gamma_5 (1/2)(1+gamma_4)= Cg5NR */
-    q2_tmp = quark_propagator_1 * Cg5NR;
+    q2_tmp = quark_propagators[0] * Cg5NR;
 
     /*
      *  First the polarized piece
@@ -541,7 +573,7 @@ namespace Chroma
     q1_tmp += q2_tmp  +  Gamma(8) * q2_tmp;
 
 
-    q2_tmp = Cg5NR * quark_propagator_1;
+    q2_tmp = Cg5NR * quark_propagators[0];
     src_prop_tmp = -quarkContract14(q1_tmp, q2_tmp);
 
     /* Now the second term */
@@ -552,14 +584,14 @@ namespace Chroma
      *  First the polarized piece
      */
 
-    di_quark = quark_propagator_1 * Gamma(3) + quark_propagator_1 * Gamma(11);
+    di_quark = quark_propagators[0] * Gamma(3) + quark_propagators[0] * Gamma(11);
     q2_tmp = timesMinusI(di_quark);
 
     /*
      *  Now add the unpolarized piece
      */
 
-    q2_tmp += quark_propagator_1 + quark_propagator_1 * Gamma(8);
+    q2_tmp += quark_propagators[0] + quark_propagators[0] * Gamma(8);
 
     src_prop_tmp -= transposeSpin(quarkContract12(q2_tmp, q1_tmp));
     src_prop_tmp *= 0.5;
@@ -570,11 +602,11 @@ namespace Chroma
 
 
   // Patch for the quarkContract12 piece in NuclUMixedNR and NuclDMixedNR
-  LatticePropagator barNuclPatchMixedNR(const LatticePropagator& quark_propagator_1, 
-					const LatticePropagator& quark_propagator_2,
-					const LatticePropagator& quark_propagator_3)
+  LatticePropagator barNuclPatchMixedNR(const multi1d<LatticePropagator>& quark_propagators) 
   {
     START_CODE();
+
+    check1Args(__func__, quark_propagators);
 
     LatticePropagator src_prop_tmp;
     LatticePropagator q1_tmp;
@@ -591,13 +623,13 @@ namespace Chroma
 
     /* C gamma_5 (1/2)(1+gamma_4)= Cg5NR */
 
-    q2_tmp = Cg5NR * quark_propagator_1;
+    q2_tmp = Cg5NR * quark_propagators[0];
     q1_tmp = q2_tmp * Cg5NR;
 
-    di_quark = quark_propagator_1 * Gamma(3) + quark_propagator_1 * Gamma(11);
+    di_quark = quark_propagators[0] * Gamma(3) + quark_propagators[0] * Gamma(11);
     q2_tmp = timesMinusI(di_quark);
 
-    q2_tmp += quark_propagator_1 + quark_propagator_1 * Gamma(8);
+    q2_tmp += quark_propagators[0] + quark_propagators[0] * Gamma(8);
 
     di_quark = quarkContract12(q2_tmp, q1_tmp);
     src_prop_tmp = di_quark - transposeSpin(di_quark);   // bad guy - good guy
@@ -605,6 +637,60 @@ namespace Chroma
 
     return src_prop_tmp;
   }
+
+
+
+  //! Baryon sequential sources
+  /*! \ingroup hadron */
+  namespace BaryonSeqSourceCallMapEnv
+  { 
+    bool registerAll(void) 
+    {
+      bool success = true;
+      success &= TheSeqSourceFuncMap::Instance().registerFunction(string("NUCL_U_UNPOL"), 
+								  barNuclUUnpol);
+
+      success &= TheSeqSourceFuncMap::Instance().registerFunction(string("NUCL_D_UNPOL"), 
+								  barNuclDUnpol);
+      
+      success &= TheSeqSourceFuncMap::Instance().registerFunction(string("NUCL_U_POL"),
+								  barNuclUPol);
+
+      success &= TheSeqSourceFuncMap::Instance().registerFunction(string("NUCL_D_POL"),
+								  barNuclDPol);
+      
+      success &= TheSeqSourceFuncMap::Instance().registerFunction(string("DELTA_U_UNPOL"),
+								  barDeltaUUnpol);
+      
+      success &= TheSeqSourceFuncMap::Instance().registerFunction(string("DELTA_D_UNPOL"),
+								  barDeltaDUnpol);
+      
+      success &= TheSeqSourceFuncMap::Instance().registerFunction(string("NUCL_U_UNPOL_NONREL"),
+								  barNuclUUnpolNR);
+      
+      success &= TheSeqSourceFuncMap::Instance().registerFunction(string("NUCL_D_UNPOL_NONREL"),
+								  barNuclDUnpolNR);
+
+      success &= TheSeqSourceFuncMap::Instance().registerFunction(string("NUCL_U_POL_NONREL"),
+								  barNuclUPolNR);
+
+      success &= TheSeqSourceFuncMap::Instance().registerFunction(string("NUCL_D_POL_NONREL"),
+								  barNuclDPolNR);
+      
+      success &= TheSeqSourceFuncMap::Instance().registerFunction(string("NUCL_U_MIXED_NONREL"),
+								  barNuclUMixedNR);
+
+      success &= TheSeqSourceFuncMap::Instance().registerFunction(string("NUCL_D_MIXED_NONREL"),   
+								  barNuclDMixedNR);
+
+      success &= TheSeqSourceFuncMap::Instance().registerFunction(string("NUCL_PATCH_MIXED_NONREL"),   
+								  barNuclPatchMixedNR);
+      
+      return success;
+    }
+
+    bool registered = registerAll();
+  } // namespace BaryonSeqSourceCallMapEnv
 
 
 }  // end namespace Chroma

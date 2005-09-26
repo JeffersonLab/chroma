@@ -1,4 +1,4 @@
-// $Id: hadseqsrc_w.cc,v 2.0 2005-09-25 21:04:35 edwards Exp $
+// $Id: hadseqsrc_w.cc,v 2.1 2005-09-26 04:48:35 edwards Exp $
 /*! \file
  *  \brief Construct hadron sequential sources
  */
@@ -19,9 +19,7 @@ namespace Chroma
    *
    * Construct hadronic sequential sources.
    *
-   * \param quark_propagator_1   first (u) quark propagator ( Read )
-   * \param quark_propagator_2   second (d) quark propagator ( Read )
-   * \param quark_propagator_3   second (s) quark propagator ( Read )
+   * \param quark_propagators    array of quark propagators ( Read )
    * \param seq_src_prop         sequential source as propagator ( Write )
    * \param t_sink               time coordinate of the sink ( Read )
    * \param sink_mom             sink baryon momentum ( Read )
@@ -31,9 +29,7 @@ namespace Chroma
    * \return Sequential source propagator
    */
 
-  LatticePropagator hadSeqSource(const LatticePropagator& quark_propagator_1, 
-				 const LatticePropagator& quark_propagator_2,
-				 const LatticePropagator& quark_propagator_3,
+  LatticePropagator hadSeqSource(const multi1d<LatticePropagator>& quark_propagators, 
 				 int t_sink, const multi1d<int>& sink_mom, 
 				 int j_decay, 
 				 const string& seq_src_name)
@@ -41,7 +37,6 @@ namespace Chroma
     START_CODE();
 
     LatticePropagator seq_src_prop;
-
     LatticePropagator src_prop_tmp;
   
     if ( Ns != 4 || Nc != 3 )		/* Code is specific to Ns=4 and Nc=3. */
@@ -55,9 +50,7 @@ namespace Chroma
     {
       src_prop_tmp = 
 	TheSeqSourceFuncMap::Instance().callFunction(seq_src_name,
-						     quark_propagator_1,
-						     quark_propagator_2,
-						     quark_propagator_3);
+						     quark_propagators);
     }
     catch (const string& e) 
     {
