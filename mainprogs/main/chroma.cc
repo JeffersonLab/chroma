@@ -1,4 +1,4 @@
-// $Id: chroma.cc,v 2.1 2005-09-26 03:11:10 edwards Exp $
+// $Id: chroma.cc,v 2.2 2005-09-26 04:49:06 edwards Exp $
 /*! \file
  *  \brief Main program to run all measurement codes.
  */
@@ -153,56 +153,45 @@ int main(int argc, char *argv[])
   MesPlq(xml_out, "Observables", u);
 
   // Get the measurements
-  std::istringstream Measurements_is(input.param.inline_measurement_xml);
-  XMLReader MeasXML;
-  multi1d < Handle< AbsInlineMeasurement > > the_measurements;
-
-  try {
-    MeasXML.open(Measurements_is);
+  try 
+  {
+    std::istringstream Measurements_is(input.param.inline_measurement_xml);
+    XMLReader MeasXML(Measurements_is);
+    multi1d < Handle< AbsInlineMeasurement > > the_measurements;
     read(MeasXML, "/InlineMeasurements", the_measurements);
+
+    QDPIO::cout << "There are " << the_measurements.size() << " measurements " << endl;
+
+    // Measure inline observables 
+    push(xml_out, "InlineObservables");
+
+    QDPIO::cout << "Doing " << the_measurements.size() 
+		<<" measurements" << endl;
+    unsigned long cur_update = 0;
+    for(int m=0; m < the_measurements.size(); m++) 
+    {
+      AbsInlineMeasurement& the_meas = *(the_measurements[m]);
+      if( cur_update % the_meas.getFrequency() == 0 ) 
+      {
+	// Caller writes elem rule
+	push(xml_out, "elem");
+	the_meas(u, config_xml, cur_update, xml_out);
+	pop(xml_out); 
+      }
+    }
+
+    pop(xml_out); // pop("InlineObservables");
   }
-  catch(const std::string& e) {
+  catch(const std::string& e) 
+  {
     QDPIO::cerr << "CHROMA: Caught Exception: " << e << endl;
     QDP_abort(1);
   }
   catch(...)
   {
-    QDPIO::cerr << "CHROMA: caught generic exception reading measurement XML" << endl;
+    QDPIO::cerr << "CHROMA: caught generic exception during measurement" << endl;
     QDP_abort(1);
   }
-
-  QDPIO::cout << "There are " << the_measurements.size() << " measurements " << endl;
-
-  // Measure inline observables 
-  push(xml_out, "InlineObservables");
-
-  QDPIO::cout << "Doing " << the_measurements.size() 
-	      <<" measurements" << endl;
-  unsigned long cur_update = 0;
-  for(int m=0; m < the_measurements.size(); m++) 
-  {
-    AbsInlineMeasurement& the_meas = *(the_measurements[m]);
-    if( cur_update % the_meas.getFrequency() == 0 ) 
-    {
-      // Caller writes elem rule
-      push(xml_out, "elem");
-      try
-      {
-	the_meas(u, config_xml, cur_update, xml_out);
-      }
-      catch(const std::string& e) {
-	QDPIO::cerr << "CHROMA: Caught Exception: " << e << endl;
-	QDP_abort(1);
-      }
-      catch(...)
-      {
-	QDPIO::cerr << "CHROMA: caught generic exception during measurement" << endl;
-	QDP_abort(1);
-      }
-      pop(xml_out); 
-    }
-  }
-  pop(xml_out); // pop("InlineObservables");
   pop(xml_out);
 
   Chroma::finalize();
