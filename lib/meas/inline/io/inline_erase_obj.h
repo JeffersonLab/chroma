@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_erase_obj.h,v 2.0 2005-09-25 21:04:38 edwards Exp $
+// $Id: inline_erase_obj.h,v 2.1 2005-09-26 19:37:16 edwards Exp $
 /*! \file
  * \brief Inline task to write an object from a named buffer
  *
@@ -35,7 +35,6 @@ namespace Chroma
     struct NamedObject_t
     {
       std::string   object_id;
-      std::string   object_type;
     } named_obj;
   };
 

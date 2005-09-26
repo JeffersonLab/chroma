@@ -1,4 +1,4 @@
-// $Id: inline_gaussian_obj.cc,v 2.0 2005-09-25 21:04:38 edwards Exp $
+// $Id: inline_gaussian_obj.cc,v 2.1 2005-09-26 19:37:16 edwards Exp $
 /*! \file
  * \brief Inline task to gaussian init a named object
  *
@@ -163,7 +163,7 @@ namespace Chroma
     push(xml_out, "gaussian_init_named_obj");
     write(xml_out, "update_no", update_no);
 
-    QDPIO::cout << InlineGaussianInitNamedObjEnv::name << ": object list" << endl;
+    QDPIO::cout << InlineGaussianInitNamedObjEnv::name << ": gaussian init" << endl;
 
     // Gaussian the object
     QDPIO::cout << "Attempt to list all object names" << endl;

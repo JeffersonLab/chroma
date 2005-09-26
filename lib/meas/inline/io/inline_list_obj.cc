@@ -1,4 +1,4 @@
-// $Id: inline_list_obj.cc,v 2.0 2005-09-25 21:04:38 edwards Exp $
+// $Id: inline_list_obj.cc,v 2.1 2005-09-26 19:37:16 edwards Exp $
 /*! \file
  * \brief Inline task to list an object from a named buffer
  *
@@ -35,28 +35,6 @@ namespace Chroma
   };
 
 
-  //! Object buffer
-  void write(XMLWriter& xml, const string& path, const InlineListNamedObjParams::NamedObject_t& input)
-  {
-    push(xml, path);
-
-    write(xml, "object_id", input.object_id);
-    write(xml, "object_type", input.object_type);
-
-    pop(xml);
-  }
-
-
-  //! Object buffer
-  void read(XMLReader& xml, const string& path, InlineListNamedObjParams::NamedObject_t& input)
-  {
-    XMLReader inputtop(xml, path);
-
-    read(inputtop, "object_id", input.object_id);
-    read(inputtop, "object_type", input.object_type);
-  }
-
-
   // Param stuff
   InlineListNamedObjParams::InlineListNamedObjParams() { frequency = 0; }
 
@@ -70,9 +48,6 @@ namespace Chroma
 	read(paramtop, "Frequency", frequency);
       else
 	frequency = 1;
-
-      // Ids
-      read(paramtop, "NamedObject", named_obj);
     }
     catch(const std::string& e) 
     {
@@ -87,9 +62,6 @@ namespace Chroma
   {
     push(xml_out, path);
     
-    // Ids
-    Chroma::write(xml_out, "NamedObject", named_obj);
-
     pop(xml_out);
   }
 

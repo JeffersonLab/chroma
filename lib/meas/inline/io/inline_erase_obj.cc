@@ -1,4 +1,4 @@
-// $Id: inline_erase_obj.cc,v 2.0 2005-09-25 21:04:38 edwards Exp $
+// $Id: inline_erase_obj.cc,v 2.1 2005-09-26 19:37:16 edwards Exp $
 /*! \file
  * \brief Inline task to erase an object from a named buffer
  *
@@ -41,7 +41,6 @@ namespace Chroma
     push(xml, path);
 
     write(xml, "object_id", input.object_id);
-    write(xml, "object_type", input.object_type);
 
     pop(xml);
   }
@@ -53,7 +52,6 @@ namespace Chroma
     XMLReader inputtop(xml, path);
 
     read(inputtop, "object_id", input.object_id);
-    read(inputtop, "object_type", input.object_type);
   }
 
 
