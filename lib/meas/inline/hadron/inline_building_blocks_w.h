@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_building_blocks_w.h,v 2.0 2005-09-25 21:04:37 edwards Exp $
+// $Id: inline_building_blocks_w.h,v 2.1 2005-09-27 01:11:34 edwards Exp $
 /*! \file
  * \brief Inline construction of BuildingBlocks
  *
@@ -47,6 +47,7 @@ namespace Chroma
       std::string   BkwdPropId;         // backward propagator
       std::string   BkwdPropG5Format;   // backward propagators Gamma5 Format
       int           GammaInsertion;     // second gamma insertion
+      std::string   Flavor;             // Flavor id - values like U, D, S, C, B, T
       std::string   BBFileNamePattern;  // BB output file name pattern
     };
 

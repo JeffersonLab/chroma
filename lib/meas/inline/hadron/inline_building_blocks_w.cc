@@ -1,4 +1,4 @@
-// $Id: inline_building_blocks_w.cc,v 2.0 2005-09-25 21:04:37 edwards Exp $
+// $Id: inline_building_blocks_w.cc,v 2.1 2005-09-27 01:11:34 edwards Exp $
 /*! \file
  * \brief Inline construction of BuildingBlocks
  *
@@ -84,6 +84,7 @@ namespace Chroma
     read(inputtop, "BkwdPropId", input.BkwdPropId);
     read(inputtop, "BkwdPropG5Format", input.BkwdPropG5Format);
     read(inputtop, "GammaInsertion", input.GammaInsertion);
+    read(inputtop, "Flavor", input.Flavor);
     read(inputtop, "BBFileNamePattern", input.BBFileNamePattern);
   }
 
@@ -95,6 +96,7 @@ namespace Chroma
     write(xml, "BkwdPropId", input.BkwdPropId);
     write(xml, "BkwdPropG5Format", input.BkwdPropG5Format);
     write(xml, "GammaInsertion", input.GammaInsertion);
+    write(xml, "Flavor", input.Flavor);
     write(xml, "BBFileNamePattern", input.BBFileNamePattern);
 
     pop(xml);
@@ -312,6 +314,7 @@ namespace Chroma
     // Read Forward Propagator                                                         //
     //#################################################################################//
 
+    LatticePropagator F;
     XMLReader FrwdPropXML, FrwdPropRecordXML;
     ChromaProp_t prop_header;
     PropSource_t source_header;
@@ -320,9 +323,8 @@ namespace Chroma
 
     try
     {
-      // Check if the object is present
-      LatticePropagator& prop_tmp = 
-        TheNamedObjMap::Instance().getData<LatticePropagator>(params.bb.FrwdPropId);
+      // Snarf a copy
+      F = TheNamedObjMap::Instance().getData<LatticePropagator>(params.bb.FrwdPropId);
 	
       // Snarf the frwd prop info. This is will throw if the frwd prop id is not there
       TheNamedObjMap::Instance().get(params.bb.FrwdPropId).getFileXML(FrwdPropXML);
@@ -360,8 +362,7 @@ namespace Chroma
       SftMom phases( 0, true, j_decay );
 
       multi1d<Double> FrwdPropCheck = 
-	sumMulti( localNorm2( TheNamedObjMap::Instance().getData<LatticePropagator>(params.bb.FrwdPropId) ), 
-		  phases.getSet() );
+	sumMulti( localNorm2( F ), phases.getSet() );
 
       Out << "forward propagator check = " << FrwdPropCheck[0] << "\n";  Out.flush();
 
@@ -555,7 +556,28 @@ namespace Chroma
       QDPIO::cout << "calculating building blocks" << endl;
 
       multi1d< int > Flavors( 1 );
-      Flavors[0] = loop;                    // Dru puts a Flavor into the BB
+
+      // Dru puts a Flavor into the BB
+      // Telephone book map of flavor name to a number
+      if (params.bb.BkwdProps[loop].Flavor == "U")
+	Flavors[0] = 0;
+      else if (params.bb.BkwdProps[loop].Flavor == "D")
+	Flavors[0] = 1;
+      else if (params.bb.BkwdProps[loop].Flavor == "S")
+	Flavors[0] = 2;
+      else if (params.bb.BkwdProps[loop].Flavor == "C")
+	Flavors[0] = 3;
+      else if (params.bb.BkwdProps[loop].Flavor == "B")
+	Flavors[0] = 4;
+      else if (params.bb.BkwdProps[loop].Flavor == "T")
+	Flavors[0] = 5;
+      else
+      {
+	QDPIO::cerr << InlineBuildingBlocksEnv::name << ": invalid flavor tag = " 
+		    << params.bb.BkwdProps[loop].Flavor
+		    << ", should be one of U,D,S,C,T,B" << endl;
+	QDP_abort(1);
+      }
 
       const signed short int T1 = 0;
       const signed short int T2 = params.param.nrow[j_decay] - 1;
@@ -563,7 +585,7 @@ namespace Chroma
 
       swatch.start();
       BuildingBlocks( B, 
-		      TheNamedObjMap::Instance().getData<LatticePropagator>(params.bb.FrwdPropId), 
+		      F,
 		      U, GammaInsertions, Flavors,
 		      params.param.links_max, AllLinkPatterns, Phases, Files, T1, T2,
 		      seqsource_header.seq_src, seqsource_header.sink_mom, DecayDir);
