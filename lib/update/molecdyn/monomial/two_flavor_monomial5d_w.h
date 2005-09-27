@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial5d_w.h,v 2.0 2005-09-25 21:04:41 edwards Exp $
+// $Id: two_flavor_monomial5d_w.h,v 2.1 2005-09-27 21:16:19 bjoo Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -93,7 +93,13 @@ namespace Chroma
       PV->deriv(F_tmp, X, getPhi(), MINUS);
       F += F_tmp;   // NOTE SIGN
 
+      // F now holds PV contribution with respect to fat links
+      // Now derive it with respect to the thin links
+      // I could do this at the end but this way I can continue
+      // monitoring
+      state->deriv(F);
       Double F_pv_sq = norm2(F);  // monitor force
+
 
       // First interior term
       P FM;
@@ -102,6 +108,10 @@ namespace Chroma
       // fold M^dag into X^dag ->  Y  !!
       M->deriv(F_tmp, Y, X, PLUS);
       FM += F_tmp;   // NOTE SIGN
+
+      // Now get derivative with respect to thin links if action is 
+      // fat linked
+      state->deriv(FM);
       
       Double F_m_sq = norm2(FM);  // monitor force
 

@@ -1,4 +1,4 @@
-//  $Id: stout_smear.cc,v 2.0 2005-09-25 21:04:40 edwards Exp $
+//  $Id: stout_smear.cc,v 2.1 2005-09-27 21:16:19 bjoo Exp $
 /*! \file
  *  \brief Stout-link smearing of the gauge configuration
  */
@@ -60,7 +60,11 @@ void stout_smear(LatticeColorMatrix& u_smear,
 
   // Make it Hermitian, traceless
   // u_tmp = Q in Morningstar/Peardon's paper (hep-lat/0311018)
-  u_tmp = timesMinusI(u_tmp);
+  // u_tmp = timesMinusI(u_tmp);
+  // BJ: Changed convention.
+  // eesu3 now takes iQ and multiplies by -i Internally so I can use it
+  // for HMC too
+
 
   // Exactly exponentiate the Lie Algebra matrix
   // Now u_tmp = exp(iQ)

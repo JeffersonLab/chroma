@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: state.h,v 2.0 2005-09-25 21:04:25 edwards Exp $
+// $Id: state.h,v 2.1 2005-09-27 21:16:19 bjoo Exp $
 
 /*! @file
  * @brief Support class for fermion actions and linear operators
@@ -30,6 +30,27 @@ namespace Chroma
 
     //! Virtual destructor to help with cleanup;
     virtual ~ConnectState() {}
+
+    /*! A virtual function to get the derivative of the state.
+     *  This is useful for things like fat link states, where
+     *  the derivative of the state with respect to the thin 
+     *  links is complicated. 
+     *  The default implementation just multiplies the accumulated
+     *  force by the (thin) links, which works because
+     *  \dot{U} = \pi U
+     * and the pi momenta get factored out 
+     * this function modifies the force term 
+     */
+    virtual void deriv(multi1d<LatticeColorMatrix>& F) const {
+      if( F.size() != Nd ) {
+	throw "F has wrong size";
+      }
+
+      for(int mu=0; mu < Nd; mu++) { 
+	F[mu] = getLinks()[mu]*F[mu];
+      }
+    }
+   
   };
 
 
@@ -57,6 +78,24 @@ namespace Chroma
     const multi1d<LatticeColorMatrix>& getLinks() const 
       {return state->getLinks();}
 
+    /*! A function to get the derivative of the state.
+     *  This is useful for things like fat link states, where
+     *  the derivative of the state with respect to the thin 
+     *  links is complicated. 
+     *  The default implementation just multiplies the accumulated
+     *  force by the (thin) links, which works because
+     *  \dot{U} = \pi U
+     * and the pi momenta get factored out 
+     * this function modifies the force term  -- This is an override
+     * of a function defined in the base class
+     */
+    void deriv(multi1d<LatticeColorMatrix>& F) const
+    {
+      // Be a good little proxy and call the deriv of your encapsulated
+      // state
+      state->deriv(F);
+    }
+    
   protected:
     //! Assignment
     /*! Could easily be supported, but not sure why to do so... */
@@ -86,6 +125,8 @@ namespace Chroma
 
     //! Return the link fields needed in constructing linear operators
     const multi1d<LatticeColorMatrix>& getLinks() const {return u;}
+
+    // Deriv function inherited...
 
   private:
     SimpleConnectState() {}  // hide default constructur

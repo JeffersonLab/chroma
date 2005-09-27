@@ -1,4 +1,4 @@
-// $Id: lwldslash_base_array_w.cc,v 2.0 2005-09-25 21:04:29 edwards Exp $
+// $Id: lwldslash_base_array_w.cc,v 2.1 2005-09-27 21:16:19 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator over arrays
  */
@@ -80,7 +80,7 @@ namespace Chroma
       for(int mu = 0; mu < Nd; ++mu)
       {
 	// Undaggered:
-        ds_u[mu][rb[cb]]    = u[mu]*traceSpin(outerProduct(shift(psi - Gamma(1 << mu)*psi, FORWARD, mu),chi));
+        ds_u[mu][rb[cb]]    = traceSpin(outerProduct(shift(psi - Gamma(1 << mu)*psi, FORWARD, mu),chi));
 	ds_u[mu][rb[1-cb]]  = zero;
 
 	// The piece that comes from the U^daggered term. 
@@ -105,7 +105,7 @@ namespace Chroma
       for(int mu = 0; mu < Nd; ++mu)
       {
 	// Daggered:
-	ds_u[mu][rb[cb]]    = u[mu]*traceSpin(outerProduct(shift(psi + Gamma(1 << mu)*psi, FORWARD, mu),chi));
+	ds_u[mu][rb[cb]]    = traceSpin(outerProduct(shift(psi + Gamma(1 << mu)*psi, FORWARD, mu),chi));
 	
 	ds_u[mu][rb[1-cb]] = zero;
 	

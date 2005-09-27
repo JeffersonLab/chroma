@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial_w.h,v 2.0 2005-09-25 21:04:41 edwards Exp $
+// $Id: two_flavor_monomial_w.h,v 2.1 2005-09-27 21:16:19 bjoo Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -82,6 +82,11 @@ namespace Chroma
  
       for(int mu=0; mu < F.size(); ++mu)
 	F[mu] *= Real(-1);
+
+
+      // F now holds derivative with respect to possibly fat links
+      // now derive it with respect to the thin links if needs be
+      state->deriv(F);
 
       Double F_sq = norm2(F);
 

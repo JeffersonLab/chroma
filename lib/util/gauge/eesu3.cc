@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eesu3.cc,v 2.0 2005-09-25 21:04:44 edwards Exp $
+// $Id: eesu3.cc,v 2.1 2005-09-27 21:16:19 bjoo Exp $
 /*! \file
  *  \brief Exactly exponentiate a SU(3) lie algebra element
  */
@@ -12,15 +12,17 @@ namespace Chroma
 
   //! Exact exponentiation of SU(3) matrix.
   /*!
-   *  Input: 3x3 Hermitian, traceless matrix Q
+   *  Input: 3x3 anti-Hermitian, traceless matrix iQ
    *  Output: exp(iQ)
    *
    *  Formula for exp(iQ) = f0 + f1*Q + f2*Q*Q is found
    *  in section III of hep-lat/0311018.
    */
-  void eesu3(LatticeColorMatrix & Q)
+  void eesu3(LatticeColorMatrix & iQ)
   {
     START_CODE( );
+
+    LatticeColorMatrix Q = timesMinusI(iQ);
 
     LatticeComplex f0, f1, f2;
   
@@ -86,11 +88,11 @@ namespace Chroma
 	       adj(f2),
 	       f2);
   
-    // evaluate f0 + f1 Q + f2 QQ (= exp(iQ))
-    LatticeColorMatrix expiQ = f0 + f1 * Q + f2 * QQ;
+    // evaluate f0 + f1 Q + f2 QQ (= exp(iQ)) back into iQ
+    iQ = f0 + f1 * Q + f2 * QQ;
 
     // Relpace Q by exp(iQ)
-    Q = expiQ;
+    // Q = expiQ;
 
 
     END_CODE( );

@@ -1,4 +1,4 @@
-// $Id: prec_parwilson_linop_w.cc,v 2.0 2005-09-25 21:04:29 edwards Exp $
+// $Id: prec_parwilson_linop_w.cc,v 2.1 2005-09-27 21:16:19 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion linear operator with parity breaking term
  */
@@ -255,6 +255,8 @@ namespace Chroma
       /* ftmp_2 = phi + ftmp_2 = (1 + gamma(mu))*phi( x)  */
       ftmp_2 += phi;
       utmp_1 += shift(ftmp_2, cb, FORWARD, mu) * adj(rho);
+
+      /* THIS NEEDS TO BE CHANGED (removed) */
       ds_u[mu][cb] += u[mu][cb] * utmp_1;
       
       cb = 1;
@@ -270,6 +272,8 @@ namespace Chroma
       /* ftmp_1 = ftmp_1 + ftmp_2 = (1 + gamma(mu))*sigma( x + mu)  */
       ftmp_2 += sigma;
       utmp_1 += shift(ftmp_2, cb, FORWARD, mu) * adj(psi);
+
+      /* THIS NEEDS TO BE CHANGED (removed) */
       ds_u[mu][cb] += u[mu][cb] * utmp_1;
       
     }

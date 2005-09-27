@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial_w.h,v 2.0 2005-09-25 21:04:41 edwards Exp $
+// $Id: one_flavor_rat_monomial_w.h,v 2.1 2005-09-27 21:16:19 bjoo Exp $
 
 /*! @file
  * @brief One flavor monomials using RHMC
@@ -110,9 +110,17 @@ namespace Chroma
 	    F_tmp[mu] -= fpfe.res[i] * F_1[mu];
 	}
 
-	F += F_tmp;
+
+	// Now we derive the action with respect to thin links
+	// THIS IS EXTREMELY WASTEFUL BUT IS NEEDED IF YOU
+	// WANT TO MONITOR POLE BY POLE
+	state->deriv(F_tmp);
+
+	F += F_tmp;	
 	F_sq[n] = norm2(F_tmp);   // monitor force from each nth-root
       }
+
+      
 
       Real F_sq_tot = norm2(F);   // monitor total force
 

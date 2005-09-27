@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial5d_w.h,v 2.0 2005-09-25 21:04:41 edwards Exp $
+// $Id: one_flavor_rat_monomial5d_w.h,v 2.1 2005-09-27 21:16:19 bjoo Exp $
 
 /*! @file
  * @brief One flavor monomials using RHMC
@@ -108,6 +108,12 @@ namespace Chroma
 	      F_tmp[mu] -= fpfe.res[i] * F_1[mu];
 	  }
 
+	  // Take compute the force with respect to thin links
+	  // This is wasteful to do here, 
+	  // and could be done at the very end, but that would 
+	  // screw up the monitoring
+	  state->deriv(F_tmp);
+
 	  F_m_sq[n] = norm2(F_tmp);    // monitor force form each nth-root
 	  F += F_tmp;                  // add on base force terms
 	}
@@ -152,10 +158,19 @@ namespace Chroma
 	      F_tmp[mu] -= fpvpfe.res[i] * F_1[mu];
 	  }
 
+	  // Take compute the force with respect to thin links
+	  // This is wasteful to do here, 
+	  // and could be done at the very end, but that would 
+	  // screw up the monitoring
+	  state->deriv(F_tmp);
+
+
 	  F_pv_sq[n] = norm2(F_tmp);    // monitor force form each nth-root
 	  F += F_tmp;   // add on PV force term
 	}
       }
+
+
 
       Real F_sq = norm2(F);
 

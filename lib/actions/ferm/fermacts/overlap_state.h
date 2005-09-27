@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: overlap_state.h,v 2.0 2005-09-25 21:04:25 edwards Exp $
+// $Id: overlap_state.h,v 2.1 2005-09-27 21:16:19 bjoo Exp $
 /*! @file
  * @brief Connection state holding eigenvectors
  *
@@ -74,6 +74,8 @@ namespace Chroma
     const WordBase_t& getApproxMin() const { return approxMin; }
     const WordBase_t& getApproxMax() const { return approxMax; }
 
+
+    //! for now inherit the deriv operation
   private:
     OverlapConnectState() {}  // hide default constructur
     void operator=(const OverlapConnectState&) {} // hide =
