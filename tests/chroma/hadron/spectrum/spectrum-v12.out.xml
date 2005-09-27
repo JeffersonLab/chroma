@@ -131,7 +131,7 @@ Spectrum input
       <chroma>2.0.beta</chroma>
       <qdp>1.16.0</qdp>
     </code_version>
-    <run_date>25 Sep 05 22:58:18 EDT</run_date>
+    <run_date>26 Sep 05 21:12:25 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -227,7 +227,7 @@ Spectrum input
             <chroma>2.0.beta</chroma>
             <qdp>1.16.0</qdp>
           </code_version>
-          <run_date>25 Sep 05 22:58:18 EDT</run_date>
+          <run_date>26 Sep 05 21:12:25 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -340,7 +340,7 @@ Spectrum input
             <chroma>2.0.beta</chroma>
             <qdp>1.16.0</qdp>
           </code_version>
-          <run_date>25 Sep 05 22:58:19 EDT</run_date>
+          <run_date>26 Sep 05 21:12:25 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
