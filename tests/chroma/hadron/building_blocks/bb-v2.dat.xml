@@ -8,7 +8,7 @@
       <chroma>2.0.beta</chroma>
       <qdp>1.16.0</qdp>
     </code_version>
-    <run_date>26 Sep 05 00:44:41 EDT</run_date>
+    <run_date>26 Sep 05 21:03:09 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -35,18 +35,21 @@
           <BkwdPropId>seqprop_NUCL_U_MIXED_NONREL</BkwdPropId>
           <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
           <GammaInsertion>0</GammaInsertion>
+          <Flavor>U</Flavor>
           <BBFileNamePattern>nucl_u_mixed_nonrel_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
         </elem>
         <elem>
           <BkwdPropId>seqprop_NUCL_D_MIXED_NONREL</BkwdPropId>
           <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
           <GammaInsertion>0</GammaInsertion>
+          <Flavor>D</Flavor>
           <BBFileNamePattern>nucl_d_mixed_nonrel_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
         </elem>
         <elem>
           <BkwdPropId>seqprop_PION</BkwdPropId>
           <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
           <GammaInsertion>0</GammaInsertion>
+          <Flavor>U</Flavor>
           <BBFileNamePattern>pion_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
         </elem>
       </BkwdProps>

@@ -333,12 +333,14 @@ Calculate building blocks - insertions in 3-pt functions
            <BkwdPropId>seqprop_0_NUCL_U_UNPOL</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
+           <Flavor>U</Flavor>
            <BBFileNamePattern>nucl_u_unpol_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
          </elem>
          <elem>
            <BkwdPropId>seqprop_0_NUCL_D_UNPOL</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
+           <Flavor>D</Flavor>
            <BBFileNamePattern>nucl_d_unpol_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
          </elem>
       
@@ -346,12 +348,14 @@ Calculate building blocks - insertions in 3-pt functions
            <BkwdPropId>seqprop_0_NUCL_U_POL</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
+           <Flavor>U</Flavor>
            <BBFileNamePattern>nucl_u_pol_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
          </elem>
          <elem>
            <BkwdPropId>seqprop_0_NUCL_D_POL</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
+           <Flavor>D</Flavor>
            <BBFileNamePattern>nucl_d_pol_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
          </elem>
       
@@ -361,18 +365,21 @@ Calculate building blocks - insertions in 3-pt functions
            <BkwdPropId>seqprop_NUCL_U_MIXED_NONREL</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
+           <Flavor>U</Flavor>
            <BBFileNamePattern>nucl_u_mixed_nonrel_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
          </elem>
          <elem>
            <BkwdPropId>seqprop_NUCL_D_MIXED_NONREL</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
+           <Flavor>D</Flavor>
            <BBFileNamePattern>nucl_d_mixed_nonrel_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
          </elem>
          <elem>
            <BkwdPropId>seqprop_PION</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
+           <Flavor>U</Flavor>
            <BBFileNamePattern>pion_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
          </elem>
        </BkwdProps>

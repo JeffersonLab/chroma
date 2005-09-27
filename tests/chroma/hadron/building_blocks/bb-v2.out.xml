@@ -336,12 +336,14 @@ Calculate building blocks - insertions in 3-pt functions
            <BkwdPropId>seqprop_0_NUCL_U_UNPOL</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
+           <Flavor>U</Flavor>
            <BBFileNamePattern>nucl_u_unpol_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
          </elem>
          <elem>
            <BkwdPropId>seqprop_0_NUCL_D_UNPOL</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
+           <Flavor>D</Flavor>
            <BBFileNamePattern>nucl_d_unpol_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
          </elem>
       
@@ -349,12 +351,14 @@ Calculate building blocks - insertions in 3-pt functions
            <BkwdPropId>seqprop_0_NUCL_U_POL</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
+           <Flavor>U</Flavor>
            <BBFileNamePattern>nucl_u_pol_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
          </elem>
          <elem>
            <BkwdPropId>seqprop_0_NUCL_D_POL</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
+           <Flavor>D</Flavor>
            <BBFileNamePattern>nucl_d_pol_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
          </elem>
       
@@ -364,18 +368,21 @@ Calculate building blocks - insertions in 3-pt functions
            <BkwdPropId>seqprop_NUCL_U_MIXED_NONREL</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
+           <Flavor>U</Flavor>
            <BBFileNamePattern>nucl_u_mixed_nonrel_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
          </elem>
          <elem>
            <BkwdPropId>seqprop_NUCL_D_MIXED_NONREL</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
+           <Flavor>D</Flavor>
            <BBFileNamePattern>nucl_d_mixed_nonrel_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
          </elem>
          <elem>
            <BkwdPropId>seqprop_PION</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
+           <Flavor>U</Flavor>
            <BBFileNamePattern>pion_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
          </elem>
        </BkwdProps>
@@ -408,7 +415,7 @@ Calculate building blocks - insertions in 3-pt functions
       <chroma>2.0.beta</chroma>
       <qdp>1.16.0</qdp>
     </code_version>
-    <run_date>26 Sep 05 00:44:36 EDT</run_date>
+    <run_date>26 Sep 05 21:03:01 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -504,7 +511,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.0.beta</chroma>
             <qdp>1.16.0</qdp>
           </code_version>
-          <run_date>26 Sep 05 00:44:36 EDT</run_date>
+          <run_date>26 Sep 05 21:03:01 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -617,7 +624,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.0.beta</chroma>
             <qdp>1.16.0</qdp>
           </code_version>
-          <run_date>26 Sep 05 00:44:36 EDT</run_date>
+          <run_date>26 Sep 05 21:03:02 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -858,7 +865,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.0.beta</chroma>
             <qdp>1.16.0</qdp>
           </code_version>
-          <run_date>26 Sep 05 00:44:37 EDT</run_date>
+          <run_date>26 Sep 05 21:03:03 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1086,7 +1093,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.0.beta</chroma>
             <qdp>1.16.0</qdp>
           </code_version>
-          <run_date>26 Sep 05 00:44:37 EDT</run_date>
+          <run_date>26 Sep 05 21:03:04 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1415,7 +1422,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.0.beta</chroma>
             <qdp>1.16.0</qdp>
           </code_version>
-          <run_date>26 Sep 05 00:44:38 EDT</run_date>
+          <run_date>26 Sep 05 21:03:04 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1643,7 +1650,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.0.beta</chroma>
             <qdp>1.16.0</qdp>
           </code_version>
-          <run_date>26 Sep 05 00:44:38 EDT</run_date>
+          <run_date>26 Sep 05 21:03:06 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1961,7 +1968,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.0.beta</chroma>
             <qdp>1.16.0</qdp>
           </code_version>
-          <run_date>26 Sep 05 00:44:39 EDT</run_date>
+          <run_date>26 Sep 05 21:03:07 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2348,7 +2355,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.0.beta</chroma>
             <qdp>1.16.0</qdp>
           </code_version>
-          <run_date>26 Sep 05 00:44:40 EDT</run_date>
+          <run_date>26 Sep 05 21:03:08 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
