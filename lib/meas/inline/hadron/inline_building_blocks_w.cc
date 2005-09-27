@@ -1,4 +1,4 @@
-// $Id: inline_building_blocks_w.cc,v 2.1 2005-09-27 01:11:34 edwards Exp $
+// $Id: inline_building_blocks_w.cc,v 2.2 2005-09-27 01:33:53 edwards Exp $
 /*! \file
  * \brief Inline construction of BuildingBlocks
  *
@@ -253,6 +253,7 @@ namespace Chroma
       Out << "  Backward Propagator                 = " << prop.BkwdPropId                  << "\n";
       Out << "  Backward Propagator Gamma5 Format   = " << prop.BkwdPropG5Format            << "\n";
       Out << "  Gamma Insertion                     = " << prop.GammaInsertion              << "\n";
+      Out << "  Flavor                              = " << prop.Flavor                      << "\n";
       Out << "  Building Blocks                     = " << prop.BBFileNamePattern           << "\n";
       Out <<                                                                                   "\n";
     }
@@ -469,9 +470,11 @@ namespace Chroma
     
       QDPIO::cout << "Seqsource name  = " << seqsource_header.seq_src << endl;
       QDPIO::cout << "Gamma insertion = " << params.bb.BkwdProps[loop].GammaInsertion << endl;
+      QDPIO::cout << "Flavor          = " << params.bb.BkwdProps[loop].Flavor << endl;
 
       write(XmlSeqSrc, "seq_src", seqsource_header.seq_src);
       write(XmlSeqSrc, "gamma_insertion", GammaInsertions[0]);
+      write(XmlSeqSrc, "flavor", params.bb.BkwdProps[loop].Flavor);
       write(XmlSeqSrc, "t_source", source_header.t_source);
       write(XmlSeqSrc, "t_sink", seqsource_header.t_sink);
       write(XmlSeqSrc, "sink_mom", seqsource_header.sink_mom);
