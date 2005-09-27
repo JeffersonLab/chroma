@@ -1,4 +1,4 @@
-// $Id: inline_spectrum_w.cc,v 2.0 2005-09-25 21:04:37 edwards Exp $
+// $Id: inline_spectrum_w.cc,v 2.1 2005-09-27 01:11:11 edwards Exp $
 /*! \file
  * \brief Inline construction of spectrum
  *
@@ -487,6 +487,9 @@ namespace Chroma
       //
       if (params.param.MesonP) 
       {
+	swatch.reset();
+	swatch.start();
+
 	// Construct {Point|Shell}-Point mesons, if desired
 	if (params.param.Pt_snk) 
 	{
@@ -548,12 +551,19 @@ namespace Chroma
 		   xml_array, "Wall_Wall_Wilson_Mesons");
 	} // end if (Wl_snk)
 
+	swatch.stop();
+	QDPIO::cout << InlineSpectrumEnv::name << ": mesons computed: time= " 
+		    << swatch.getTimeInSeconds() 
+		    << " secs" << endl;
       } // end if (MesonP)
 
 
       // Next do the hybrid mesons
       if (params.param.HybMesP) 
       {
+	swatch.reset();
+	swatch.start();
+
 	/* Smear the gauge fields to construct smeared E- and B-fields */
 	int BlkMax = 100;
 	Real BlkAccu = fuzz;
@@ -629,6 +639,10 @@ namespace Chroma
 	  QDP_error_exit("Wall-sink not supported in hybrid mesons");
 	} // end if (Wl_snk)
 
+	swatch.stop();
+	QDPIO::cout << InlineSpectrumEnv::name << ": hybrid mesons computed: time= " 
+		    << swatch.getTimeInSeconds() 
+		    << " secs" << endl;
       } // end if (HybMesP)
 
 
@@ -636,6 +650,9 @@ namespace Chroma
       // Do the currents next
       if (params.param.CurrentP) 
       {
+	swatch.reset();
+	swatch.start();
+
 	// Construct the rho vector-current and the pion axial current divergence
 	if (Pt_src)
 	  curcor2(u, quark_propagator, quark_propagator, phases, 
@@ -651,12 +668,20 @@ namespace Chroma
 	  curcor2(u, quark_propagator, quark_propagator, phases_nomom, 
 		  t0, 3,
 		  xml_array, "Wall_Point_Meson_Currents");
+
+	swatch.stop();
+	QDPIO::cout << InlineSpectrumEnv::name << ": currents computed: time= " 
+		    << swatch.getTimeInSeconds() 
+		    << " secs" << endl;
       } // end if (CurrentP)
 
 
       // Do the baryons
       if (params.param.BaryonP) 
       {
+	swatch.reset();
+	swatch.start();
+
 	// Construct {Point|Shell}-Point mesons, if desired
 	if (params.param.Pt_snk) 
 	{
@@ -726,6 +751,10 @@ namespace Chroma
 		   xml_array, "Wall_Wall_Wilson_Baryons");
 	} // end if (Wl_snk)
 
+	swatch.stop();
+	QDPIO::cout << InlineSpectrumEnv::name << ": baryons computed: time= " 
+		    << swatch.getTimeInSeconds() 
+		    << " secs" << endl;
       } // end if (BaryonP)
 
       pop(xml_array);  // array element
