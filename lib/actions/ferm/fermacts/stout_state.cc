@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_state.cc,v 2.1 2005-09-27 21:16:19 bjoo Exp $
+// $Id: stout_state.cc,v 2.2 2005-09-28 03:24:18 bjoo Exp $
 /*! @file 
  *  @brief Connection State for Stout state (.cpp file)
  */
@@ -20,37 +20,45 @@ namespace Chroma {
     START_CODE();
 
     // Construct and add the staples, where smear_this_dirP[mu] is true
-    LatticeColorMatrix u_staple = 0;
+    
     for(int mu = 0; mu < Nd; mu++) { 
 
-      for(int nu = 0; nu < Nd; ++nu) {
-	
-	if( nu != mu && smear_in_this_dirP[nu] == true ) {
+      if( smear_in_this_dirP[mu] == true ) { 
 
-	  // Forward staple
-	  u_staple += rho(mu,nu)* current[nu] * shift(current[mu], FORWARD, nu) * adj(shift(current[nu], FORWARD, mu));
-
-	  // Backward staple
-	  // tmp_1(x) = u_dag(x,nu)*u(x,mu)*u(x+mu,nu)
-	  LatticeColorMatrix tmp_1 = rho(mu, nu)*adj(current[nu]) * current[mu] * shift(current[nu], FORWARD, mu);
+	// Do smear
+	LatticeColorMatrix u_staple = 0;
+	for(int nu = 0; nu < Nd; ++nu) {
 	  
-	  // u_staple(x) += tmp_1_dag(x-nu)
-	  //             += u_dag(x+mu-nu,nu)*u_dag(x-nu,mu)*u(x-nu,nu)
-	  u_staple += shift(tmp_1, BACKWARD, nu);
+	  if( nu != mu && smear_in_this_dirP[nu] == true ) {
+	    
+	    // Forward staple
+	    u_staple += rho(mu,nu)* (current[nu] * shift(current[mu], FORWARD, nu) * adj(shift(current[nu], FORWARD, mu)));
+	    
+	    // Backward staple
+	    // tmp_1(x) = u_dag(x,nu)*u(x,mu)*u(x+mu,nu)
+	    LatticeColorMatrix tmp_1 = ( adj(current[nu]) * current[mu] * shift(current[nu], FORWARD, mu) );
+	    
+	    // u_staple(x) += tmp_1_dag(x-nu)
+	    //             += u_dag(x+mu-nu,nu)*u_dag(x-nu,mu)*u(x-nu,nu)
+	    u_staple += rho(mu,nu)*shift(tmp_1, BACKWARD, nu);
+	  }
 	}
+
+	// The proto smeared link
+	LatticeColorMatrix u_tmp = u_staple * adj(current[mu]);
+	
+	// Take the trace-less anti-hermitian projection of the staple
+	taproj(u_tmp);
+	
+	// Exactly exponentiate the Lie Algebra matrix
+	// Now u_tmp = exp(iQ)
+	expmat(u_tmp,EXP_EXACT);
+	
+	next[mu]=u_tmp*current[mu];
       }
-
-      // The proto smeared link
-      LatticeColorMatrix u_tmp = u_staple * adj(current[mu]);
-      
-      // Take the trace-less anti-hermitian projection of the staple
-      taproj(u_tmp);
-      
-      // Exactly exponentiate the Lie Algebra matrix
-      // Now u_tmp = exp(iQ)
-      expmat(u_tmp,EXP_EXACT);
-
-      next[mu]=u_tmp*current[mu];
+      else { 
+	next[mu]=current[mu]; // No smearing in this dir. Just copyq
+      }
     }
 
     END_CODE();
@@ -71,7 +79,7 @@ namespace Chroma {
 
 
   //! Explicitly specify smearing factor tensor
-  StoutState::StoutConnectState(const multi1d<LatticeColorMatrix>& u_,
+  StoutConnectState::StoutConnectState(const multi1d<LatticeColorMatrix>& u_,
 				const multi2d<Real>& sm_fact_,
 				const int n_smear_) 
   {
@@ -83,7 +91,7 @@ namespace Chroma {
       smear_in_this_dirP_aux[mu] = true;
     }
     
-    create(u_,. sm_fact_, n_smear_, smear_in_this_dirP_aux);
+    create(u_, sm_fact_, n_smear_, smear_in_this_dirP_aux);
     END_CODE();
   }
 
@@ -125,7 +133,7 @@ namespace Chroma {
   //! Construct isotopic smearing in 3 directions 
   StoutConnectState::StoutConnectState(const multi1d<LatticeColorMatrix>& u_,
 				       const Real& sm_fact_, 
-				       const int   n_smear,
+				       const int   n_smear_,
 				       const int   j_decay) 
   {
     START_CODE();
@@ -138,13 +146,9 @@ namespace Chroma {
     for(int mu=0; mu < Nd; mu++) { 
       
       for(int nu=0; nu < Nd; nu++) { 
-	if( mu==nu ) { 
-	  sm_fact_array[mu][nu] = 0;
-	}
-	else { 
 	  sm_fact_array[mu][nu] = sm_fact_;
-	}
       }
+    
       
       // Mask out the j_decay direction
       if( mu != j_decay ) { 
@@ -153,6 +157,7 @@ namespace Chroma {
       else { 
 	smear_in_this_dirP_aux[mu]=false;
       }
+
     }
       
     // call the create
@@ -187,18 +192,22 @@ namespace Chroma {
     
 
     // Copy thin links into smeared_links[0]
-    for(mu=0; mu < Nd; mu++) { 
+    for(int mu=0; mu < Nd; mu++) { 
       smeared_links[0][mu] = u_[mu];
     }
 
     // Iterate up the smearings
     for(int i=1; i <= n_smear; i++) { 
+      QDPIO::cout << "Smearing links" << endl;
       smear_links(smeared_links[i-1], smeared_links[i]);
     }
     END_CODE();
   }
 
 
-
+  //! derivative of a force with respect to thin links. Recursive procedure
+  void StoutConnectState::deriv(multi1d<LatticeColorMatrix>& F) const {
+    // Not yet implemented
+  }
 
 }; // End namespace Chroma

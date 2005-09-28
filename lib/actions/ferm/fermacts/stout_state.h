@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_state.h,v 2.1 2005-09-27 21:16:19 bjoo Exp $
+// $Id: stout_state.h,v 2.2 2005-09-28 03:24:18 bjoo Exp $
 
 /*! @file 
  *  @brief Connection State for stout links
@@ -37,6 +37,12 @@ namespace Chroma
 		      const Real& sm_fact_, 
 		      const int   n_smear_);
 
+    //! Construct isotopic smearing in 3 directions
+    StoutConnectState(const multi1d<LatticeColorMatrix>& u_,
+		      const Real& sm_fact_, 
+		      const int   n_smear_,
+		      const int   j_decay);
+
     //! Destructor is automagic
     ~StoutConnectState() {}
 
@@ -44,7 +50,7 @@ namespace Chroma
     StoutConnectState(const StoutConnectState& s) 
     {
       create(s.getThinLinks(),
-	     s.smearing_factors, 
+	     s.rho,
 	     s.n_smear, 
 	     s.smear_in_this_dirP);
     }
@@ -53,7 +59,7 @@ namespace Chroma
     StoutConnectState& operator=(const StoutConnectState& s)
     {
       create(s.getThinLinks(),
-	     s.smearing_factors, 
+	     s.rho,
 	     s.n_smear, 
 	     s.smear_in_this_dirP);
       
@@ -64,18 +70,18 @@ namespace Chroma
     //! Return FAT Linke
     const multi1d<LatticeColorMatrix>& getLinks() const 
     {
-      return fattened_links[n_smear];
+      return smeared_links[n_smear];
     }
 
     //! Return Links at smearing level n (n=0 is thin, n=n_smear fattest)
     const multi1d<LatticeColorMatrix>& getLinks(int smear_level) const 
     {
-      return fattened_links[n_smear_level];
+      return smeared_links[smear_level];
     }
 
     //! Convenience function 
     const multi1d<LatticeColorMatrix>& getThinLinks() const {       
-      return fattened_links[0];      
+      return smeared_links[0];      
     }
     
 
@@ -99,9 +105,9 @@ namespace Chroma
 
 
     multi1d< multi1d<LatticeColorMatrix> > smeared_links;
-    const multi2d< Real > rho;
-    const multi1d< bool > smear_in_this_dirP; // inelegant?
-    const int n_smear;
+    multi2d< Real > rho;
+    multi1d< bool > smear_in_this_dirP; // inelegant?
+    int n_smear;
   }; // End class
 
 } // end namespace
