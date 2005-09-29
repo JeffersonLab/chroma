@@ -317,11 +317,12 @@ Calculate building blocks - insertions in 3-pt functions
       <Name>BUILDING_BLOCKS</Name>
       <Frequency>1</Frequency>
       <Param>
-       <version>2</version>
+       <version>3</version>
        <nrow>4 4 4 8</nrow>
        <use_sink_offset>true</use_sink_offset>
        <mom2_max>3</mom2_max>
        <links_max>1</links_max>
+       <canonical>false</canonical>
       </Param>
       <BuildingBlocks>
        <OutFileName>./examplebb_v1.out</OutFileName>
@@ -334,14 +335,14 @@ Calculate building blocks - insertions in 3-pt functions
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
            <Flavor>U</Flavor>
-           <BBFileNamePattern>nucl_u_unpol_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
+           <BBFileNamePattern>nucl_u_unpol_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
          </elem>
          <elem>
            <BkwdPropId>seqprop_0_NUCL_D_UNPOL</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
            <Flavor>D</Flavor>
-           <BBFileNamePattern>nucl_d_unpol_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
+           <BBFileNamePattern>nucl_d_unpol_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
          </elem>
       
          <elem>
@@ -349,14 +350,14 @@ Calculate building blocks - insertions in 3-pt functions
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
            <Flavor>U</Flavor>
-           <BBFileNamePattern>nucl_u_pol_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
+           <BBFileNamePattern>nucl_u_pol_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
          </elem>
          <elem>
            <BkwdPropId>seqprop_0_NUCL_D_POL</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
            <Flavor>D</Flavor>
-           <BBFileNamePattern>nucl_d_pol_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
+           <BBFileNamePattern>nucl_d_pol_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
          </elem>
       
 </annotation>
@@ -366,21 +367,21 @@ Calculate building blocks - insertions in 3-pt functions
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
            <Flavor>U</Flavor>
-           <BBFileNamePattern>nucl_u_mixed_nonrel_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
+           <BBFileNamePattern>nucl_u_mixed_nonrel_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
          </elem>
          <elem>
            <BkwdPropId>seqprop_NUCL_D_MIXED_NONREL</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
            <Flavor>D</Flavor>
-           <BBFileNamePattern>nucl_d_mixed_nonrel_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
+           <BBFileNamePattern>nucl_d_mixed_nonrel_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
          </elem>
          <elem>
            <BkwdPropId>seqprop_PION</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
            <Flavor>U</Flavor>
-           <BBFileNamePattern>pion_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
+           <BBFileNamePattern>pion_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
          </elem>
        </BkwdProps>
       </BuildingBlocks>

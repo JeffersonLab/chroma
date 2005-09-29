@@ -8,7 +8,7 @@
       <chroma>2.0.beta</chroma>
       <qdp>1.16.0</qdp>
     </code_version>
-    <run_date>26 Sep 05 21:08:21 EDT</run_date>
+    <run_date>29 Sep 05 11:55:29 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -22,9 +22,10 @@
   </Output_version>
   <Input>
     <Param>
-      <version>1</version>
+      <version>3</version>
       <links_max>1</links_max>
       <mom2_max>3</mom2_max>
+      <canonical>false</canonical>
       <nrow>4 4 4 8</nrow>
     </Param>
     <BuildingBlocks>
@@ -36,21 +37,21 @@
           <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
           <GammaInsertion>0</GammaInsertion>
           <Flavor>U</Flavor>
-          <BBFileNamePattern>nucl_u_mixed_nonrel_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
+          <BBFileNamePattern>nucl_u_mixed_nonrel_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
         </elem>
         <elem>
           <BkwdPropId>seqprop_NUCL_D_MIXED_NONREL</BkwdPropId>
           <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
           <GammaInsertion>0</GammaInsertion>
           <Flavor>D</Flavor>
-          <BBFileNamePattern>nucl_d_mixed_nonrel_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
+          <BBFileNamePattern>nucl_d_mixed_nonrel_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
         </elem>
         <elem>
           <BkwdPropId>seqprop_PION</BkwdPropId>
           <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
           <GammaInsertion>0</GammaInsertion>
           <Flavor>U</Flavor>
-          <BBFileNamePattern>pion_%c%1d_%c%1d_%c%1d.bb</BBFileNamePattern>
+          <BBFileNamePattern>pion_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
         </elem>
       </BkwdProps>
     </BuildingBlocks>
@@ -463,6 +464,7 @@
       </BackwardProp>
       <seq_src>NUCL_U_MIXED_NONREL</seq_src>
       <gamma_insertion>0</gamma_insertion>
+      <flavor>U</flavor>
       <t_source>0 0 0 0</t_source>
       <t_sink>7</t_sink>
       <sink_mom>0 0 0</sink_mom>
@@ -652,6 +654,7 @@
       </BackwardProp>
       <seq_src>NUCL_D_MIXED_NONREL</seq_src>
       <gamma_insertion>0</gamma_insertion>
+      <flavor>D</flavor>
       <t_source>0 0 0 0</t_source>
       <t_sink>7</t_sink>
       <sink_mom>0 0 0</sink_mom>
@@ -841,6 +844,7 @@
       </BackwardProp>
       <seq_src>PION</seq_src>
       <gamma_insertion>0</gamma_insertion>
+      <flavor>U</flavor>
       <t_source>0 0 0 0</t_source>
       <t_sink>7</t_sink>
       <sink_mom>0 0 0</sink_mom>
