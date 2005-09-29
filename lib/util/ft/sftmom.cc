@@ -1,6 +1,9 @@
-//  $Id: sftmom.cc,v 2.0 2005-09-25 21:04:44 edwards Exp $
+//  $Id: sftmom.cc,v 2.1 2005-09-29 15:53:42 edwards Exp $
 //  $Log: sftmom.cc,v $
-//  Revision 2.0  2005-09-25 21:04:44  edwards
+//  Revision 2.1  2005-09-29 15:53:42  edwards
+//  Updates to interface.
+//
+//  Revision 2.0  2005/09/25 21:04:44  edwards
 //  Moved to version 2.0
 //
 //  Revision 1.10  2005/07/27 16:23:28  edwards
@@ -80,7 +83,7 @@ TimeSliceFunc::numSubsets() const
 }
 
 
-SftMom::SftMom(int mom2_max, bool avg_equiv_mom, int j_decay)
+SftMom::SftMom(int mom2_max, bool avg_mom, int j_decay)
 {
   multi1d<int> mom_off;
 
@@ -91,7 +94,7 @@ SftMom::SftMom(int mom2_max, bool avg_equiv_mom, int j_decay)
   }
   mom_off = 0 ;
 
-  init(mom2_max, mom_off, avg_equiv_mom, j_decay) ;
+  init(mom2_max, mom_off, avg_mom, j_decay) ;
 }
 
 int
@@ -113,10 +116,11 @@ SftMom::numSites() const
 
 void
 SftMom::init(int mom2_max, multi1d<int> mom_off,
-             bool avg_equiv_mom, int j_decay)
+             bool avg_mom, int j_decay)
 {
-  decay_dir = j_decay;   // private copy
-  mom_offset = mom_off;  // private copy
+  decay_dir = j_decay;     // private copy
+  mom_offset = mom_off;    // private copy
+  avg_equiv_mom = avg_mom; // private copy
 
   // Averaging over equivalent momenta is only allowed if 
   // mom_offset is zero.
@@ -275,34 +279,11 @@ SftMom::init(int mom2_max, multi1d<int> mom_off,
     if (avg_equiv_mom) {
 
       // determine mom_num for entering table mom_list
-      // first step: make all the compontents positive
-      multi1d<int> mom_tmp = mom ;
-      for (int mu=0; mu < mom_tmp.size(); ++mu)
-        if (mom_tmp[mu] < 0) mom_tmp[mu] = -mom_tmp[mu];
-
-      // second step: sort the components
-      // (using insertion sort, so we hope mom_tmp.size() <~ 10)
-
-      // Initially, the first item is considered sorted.  mu divides mom
-      // into a sorted region (<mu) and an unsorted one (>=mu)
-      for (int mu=1; mu < mom_tmp.size(); ++mu) {
-        // Select the item at the beginning of the unsorted region
-        int v = mom_tmp[mu];
-        // Work backwards, finding where v should go
-        int nu = mu;
-        // If this element is less than v, move it up one
-        while (mom_tmp[nu-1] < v) {
-          mom_tmp[nu] = mom_tmp[nu-1] ;
-          --nu ;
-          if (nu < 1) break ;
-        }
-        // Stopped when mom_tmp[nu-1] >= v, so put v at postion nu
-        mom_tmp[nu] = v ;
-      }
+      // put the momenta into canonical order
+      multi1d<int> mom_tmp = canonicalOrder(mom);
 
       // mom_tmp should now contain a momentum that appears in mom_list.
       // scan through list until we find a match.
-
       mom_num = -1 ;
 
       for(int k=0; k < num_mom; ++k) {
@@ -371,44 +352,67 @@ SftMom::init(int mom2_max, multi1d<int> mom_off,
 }
 
 
-// int
-// SftMom::momToNum(const multi1d<int>& mom_in)
-// {
-//   multi1d<int> mom = mom_in ;
-// 
-//   // make all the compontents positive
-//   for (int mu=0; mu < mom.size(); ++mu)
-//     if (mom[mu] < 0) mom[mu] = -mom[mu];
-// 
-//   // sort the components (Insertion sort: hope mom.size() <~ 10)
-//   // Initially, the first item is considered sorted.  mu divides mom
-//   // into a sorted region (<mu) and an unsorted one (>=mu)
-//   for (int mu=1; mu < mom.size(); ++mu) {
-//     // Select the item at the beginning of the unsorted region
-//     int v = mom[mu];
-//     // Work backwards, finding where v should go
-//     int nu = mu;
-//     // If this element is less than v, move it up one
-//     while (mom[nu-1] < v) {
-//       mom[nu] = mom[nu-1] ;
-//       --nu ;
-//       if (nu < 1) break ;
-//     }
-//     // Stopped when mom[nu-1] >= v, so put v at postion nu
-//     mom[nu] = v ;
-//   }
-// 
-//   for(int mom_num=0; mom_num < num_mom; ++mom_num) {
-//     bool match = true ;
-//     for (int mu=0; mu < mom.size(); ++mu)
-//       if (mom_list[mom_num][mu] != mom[mu]) {
-//         match = false ;
-//         break;
-//       }
-//     if (match) return mom_num ;
-//   }
-//   return -1;
-// }
+// Canonically order an array of momenta
+/* \return abs(mom[0]) >= abs(mom[1]) >= ... >= abs(mom[mu]) >= ... >= 0 */
+multi1d<int> 
+SftMom::canonicalOrder(const multi1d<int>& mom) const
+{
+  // first step: make all the components positive
+  multi1d<int> mom_tmp = mom;
+  for (int mu=0; mu < mom_tmp.size(); ++mu)
+    if (mom_tmp[mu] < 0) mom_tmp[mu] = -mom_tmp[mu];
+
+  // Initially, the first item is considered sorted.  mu divides mom
+  // into a sorted region (<mu) and an unsorted one (>=mu)
+  for (int mu=1; mu < mom_tmp.size(); ++mu) 
+  {
+    // Select the item at the beginning of the unsorted region
+    int v = mom_tmp[mu];
+    // Work backwards, finding where v should go
+    int nu = mu;
+    // If this element is less than v, move it up one
+    while (mom_tmp[nu-1] < v) {
+      mom_tmp[nu] = mom_tmp[nu-1];
+      --nu;
+      if (nu < 1) break;
+    }
+    // Stopped when mom_tmp[nu-1] >= v, so put v at postion nu
+    mom_tmp[nu] = v;
+  }
+
+  return mom_tmp;
+}
+
+
+// Convert array of momenta to momenta id
+/* \return id in [0,numMom()-1] or -1 if not in list */
+int 
+SftMom::momToNum(const multi1d<int>& mom_in) const
+{
+  multi1d<int> mom;
+
+  // If mom avg is turned on, then canonicalize the input mom
+  if (avg_equiv_mom)
+    mom = canonicalOrder(mom_in);
+  else
+    mom = mom_in;
+
+  // Search for the mom
+  for(int mom_num=0; mom_num < num_mom; ++mom_num) 
+  {
+    bool match = true ;
+    for (int mu=0; mu < mom.size(); ++mu)
+    {
+      if (mom_list[mom_num][mu] != mom[mu]) 
+      {
+        match = false ;
+        break;
+      }
+    }
+    if (match) return mom_num ;
+  }
+  return -1;
+}
 
 multi2d<DComplex>
 SftMom::sft(const LatticeComplex& cf) const
