@@ -40,14 +40,14 @@ namespace Chroma {
 // debug flag                                                                        //
 //###################################################################################//
 
-#define _DEBUG_BB_C_ 1
+#define _DEBUG_BB_C_ 0
 
 //###################################################################################//
 // cvs header                                                                        //
 //###################################################################################//
 
 static const char* const CVSBuildingBlocks_cc =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 2.1 2005-09-29 15:53:30 edwards Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 2.2 2005-09-29 15:57:37 edwards Exp $";
 
 //###################################################################################//
 // record the CVS info                                                               //
