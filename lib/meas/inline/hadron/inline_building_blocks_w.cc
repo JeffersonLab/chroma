@@ -1,4 +1,4 @@
-// $Id: inline_building_blocks_w.cc,v 2.2 2005-09-27 01:33:53 edwards Exp $
+// $Id: inline_building_blocks_w.cc,v 2.3 2005-09-29 15:53:30 edwards Exp $
 /*! \file
  * \brief Inline construction of BuildingBlocks
  *
@@ -37,23 +37,26 @@ namespace Chroma
 
     int version;
     read(paramtop, "version", version);
+    input.use_sink_offset = false;
+    input.canonical = false;
 
     switch (version) 
     {
     case 1:
-      /**************************************************************************/
-      input.use_sink_offset = false;
       break;
 
     case 2:
-      /**************************************************************************/
       read(paramtop, "use_sink_offset", input.use_sink_offset);
       break;
 
+    case 3:
+      read(paramtop, "use_sink_offset", input.use_sink_offset);
+      read(paramtop, "canonical", input.canonical);
+      break;
+
     default :
-      /**************************************************************************/
-      
-      QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+      QDPIO::cerr << InlineBuildingBlocksEnv::name << ": input parameter version " 
+		  << version << " unsupported." << endl;
       QDP_abort(1);
     }
     
@@ -62,15 +65,17 @@ namespace Chroma
     read(paramtop, "nrow", input.nrow);
   }
 
+
   //! Param write
   void write(XMLWriter& xml, const string& path, const InlineBuildingBlocksParams::Param_t& input)
   {
     push(xml, path);
 
-    int version = 1;
+    int version = 3;
     write(xml, "version", version);
     write(xml, "links_max", input.links_max);
     write(xml, "mom2_max", input.mom2_max);
+    write(xml, "canonical", input.canonical);
     write(xml, "nrow", input.nrow);
 
     pop(xml);
@@ -260,6 +265,7 @@ namespace Chroma
 
     Out << "  Maximum Number of Links             = " << params.param.links_max              << "\n";
     Out << "  Maximum Spatial Momentum Squared    = " << params.param.mom2_max               << "\n"; 
+    Out << "  Filename Canonicalization           = " << params.param.canonical              << "\n"; 
 
     Out << "  Text Output File Name               = " << params.bb.OutFileName               << "\n";
     Out <<                                                                                     "\n";
@@ -315,8 +321,9 @@ namespace Chroma
     // Read Forward Propagator                                                         //
     //#################################################################################//
 
+    SftMom phases_nomom( 0, true, Nd-1 );  // used to check props. Fix to Nd-1 direction.
+
     LatticePropagator F;
-    XMLReader FrwdPropXML, FrwdPropRecordXML;
     ChromaProp_t prop_header;
     PropSource_t source_header;
     QDPIO::cout << "Attempt to parse forward propagator" << endl;
@@ -328,6 +335,7 @@ namespace Chroma
       F = TheNamedObjMap::Instance().getData<LatticePropagator>(params.bb.FrwdPropId);
 	
       // Snarf the frwd prop info. This is will throw if the frwd prop id is not there
+      XMLReader FrwdPropXML, FrwdPropRecordXML;
       TheNamedObjMap::Instance().get(params.bb.FrwdPropId).getFileXML(FrwdPropXML);
       TheNamedObjMap::Instance().get(params.bb.FrwdPropId).getRecordXML(FrwdPropRecordXML);
 
@@ -335,6 +343,23 @@ namespace Chroma
       {
 	read(FrwdPropRecordXML, "/Propagator/ForwardProp", prop_header);
 	read(FrwdPropRecordXML, "/Propagator/PropSource", source_header);
+      }
+
+      // Sanity check - write out the norm2 of the forward prop in the j_decay direction
+      // Use this for any possible verification
+      {
+	multi1d<Double> FrwdPropCheck = 
+	  sumMulti( localNorm2( F ), phases_nomom.getSet() );
+
+	Out << "forward propagator check = " << FrwdPropCheck[0] << "\n";  Out.flush();
+
+	// Write out the forward propagator header
+	push(XmlOut, "ForwardProp");
+	write(XmlOut, "FrwdPropId", params.bb.FrwdPropId);
+	write(XmlOut, "FrwdPropXML", FrwdPropXML);
+	write(XmlOut, "FrwdPropRecordXML", FrwdPropRecordXML);
+	write(XmlOut, "FrwdPropCheck", FrwdPropCheck);
+	pop(XmlOut);
       }
     }
     catch( std::bad_cast ) 
@@ -345,7 +370,7 @@ namespace Chroma
     }
     catch (const string& e) 
     {
-      QDPIO::cerr << InlineBuildingBlocksEnv::name << ": map call failed: " << e 
+      QDPIO::cerr << InlineBuildingBlocksEnv::name << ": forward prop: error message: " << e 
 		  << endl;
       QDP_abort(1);
     }
@@ -356,25 +381,6 @@ namespace Chroma
 
     // Derived from input prop
     int  j_decay = source_header.j_decay;
-
-    // Sanity check - write out the norm2 of the forward prop in the j_decay direction
-    // Use this for any possible verification
-    {
-      SftMom phases( 0, true, j_decay );
-
-      multi1d<Double> FrwdPropCheck = 
-	sumMulti( localNorm2( F ), phases.getSet() );
-
-      Out << "forward propagator check = " << FrwdPropCheck[0] << "\n";  Out.flush();
-
-      // Write out the forward propagator header
-      push(XmlOut, "ForwardProp");
-      write(XmlOut, "FrwdPropId", params.bb.FrwdPropId);
-      write(XmlOut, "FrwdPropXML", FrwdPropXML);
-      write(XmlOut, "FrwdPropRecordXML", FrwdPropRecordXML);
-      write(XmlOut, "FrwdPropCheck", FrwdPropCheck);
-      pop(XmlOut);
-    }
 
     //#################################################################################//
     // Read Backward (or Sequential) Propagators                                       //
@@ -394,7 +400,6 @@ namespace Chroma
       Out << "Loop = " << loop << "\n";  Out.flush();
       QDPIO::cout << "Loop = " << loop << endl;
 
-      XMLReader BkwdPropXML, BkwdPropRecordXML;
       multi1d< LatticePropagator > B( 1 );
       SeqSource_t seqsource_header;
       QDPIO::cout << "Attempt to parse backward propagator" << endl;
@@ -405,6 +410,7 @@ namespace Chroma
 	B[0] = TheNamedObjMap::Instance().getData<LatticePropagator>(params.bb.BkwdProps[loop].BkwdPropId);
 	
 	// Snarf the bkwd prop info. This is will throw if the bkwd prop id is not there
+	XMLReader BkwdPropXML, BkwdPropRecordXML;
 	TheNamedObjMap::Instance().get(params.bb.BkwdProps[loop].BkwdPropId).getFileXML(BkwdPropXML);
 	TheNamedObjMap::Instance().get(params.bb.BkwdProps[loop].BkwdPropId).getRecordXML(BkwdPropRecordXML);
 
@@ -414,16 +420,34 @@ namespace Chroma
 	{
 	  read(BkwdPropRecordXML, "/SequentialProp/SeqSource", seqsource_header);
 	}
+
+	// Sanity check - write out the norm2 of the forward prop in the j_decay direction
+	// Use this for any possible verification
+	{
+	  multi1d<Double> BkwdPropCheck = sumMulti( localNorm2( B[0] ), phases_nomom.getSet() );
+
+	  Out << "backward u propagator check = " << BkwdPropCheck[0] << "\n";  Out.flush();
+      
+	  // Write out the forward propagator header
+	  push(XmlSeqSrc, "BackwardProp");
+	  write(XmlSeqSrc, "BkwdPropId", params.bb.BkwdProps[loop].BkwdPropId);
+	  write(XmlSeqSrc, "BkwdPropG5Format", params.bb.BkwdProps[loop].BkwdPropG5Format);
+	  write(XmlSeqSrc, "SequentialSourceType", seqsource_header.seq_src);
+	  write(XmlSeqSrc, "BkwdPropXML", BkwdPropXML);
+	  write(XmlSeqSrc, "BkwdPropRecordXML", BkwdPropRecordXML);
+	  write(XmlSeqSrc, "BkwdPropCheck", BkwdPropCheck);
+	  pop(XmlSeqSrc);
+	}
       }
       catch( std::bad_cast ) 
       {
-	QDPIO::cerr << InlineBuildingBlocksEnv::name << ": caught dynamic cast error" 
+	QDPIO::cerr << InlineBuildingBlocksEnv::name << ": forward prop: caught dynamic cast error" 
 		    << endl;
 	QDP_abort(1);
       }
       catch (const string& e) 
       {
-	QDPIO::cerr << InlineBuildingBlocksEnv::name << ": map call failed: " << e 
+	QDPIO::cerr << InlineBuildingBlocksEnv::name << ": forward prop: error message: " << e 
 		    << endl;
 	QDP_abort(1);
       }
@@ -431,26 +455,6 @@ namespace Chroma
       QDPIO::cout << "Backward propagator successfully parse" << endl;
       Out << "finished reading backward u propagator " << params.bb.BkwdProps[loop].BkwdPropId << " ... " << "\n";  Out.flush();
       
-      // Sanity check - write out the norm2 of the forward prop in the j_decay direction
-      // Use this for any possible verification
-      {
-	SftMom phases( 0, true, j_decay );
-
-	multi1d<Double> BkwdPropCheck = sumMulti( localNorm2( B[0] ), phases.getSet() );
-
-	Out << "backward u propagator check = " << BkwdPropCheck[0] << "\n";  Out.flush();
-      
-	// Write out the forward propagator header
-	push(XmlSeqSrc, "BackwardProp");
-	write(XmlSeqSrc, "BkwdPropId", params.bb.BkwdProps[loop].BkwdPropId);
-	write(XmlSeqSrc, "BkwdPropG5Format", params.bb.BkwdProps[loop].BkwdPropG5Format);
-	write(XmlSeqSrc, "SequentialSourceType", seqsource_header.seq_src);
-	write(XmlSeqSrc, "BkwdPropXML", BkwdPropXML);
-	write(XmlSeqSrc, "BkwdPropRecordXML", BkwdPropRecordXML);
-	write(XmlSeqSrc, "BkwdPropCheck", BkwdPropCheck);
-	pop(XmlSeqSrc);
-      }
-
       //#################################################################################//
       // Additional Gamma Matrix Insertions                                              //
       //#################################################################################//
@@ -510,20 +514,21 @@ namespace Chroma
 	SnkMom = 0;
 
       SftMom Phases( params.param.mom2_max, SnkMom, false, j_decay );
+      SftMom PhasesCanonical( params.param.mom2_max, SnkMom, params.param.canonical, j_decay );
 
       //#################################################################################//
       // Construct File Names                                                            //
       //#################################################################################//
 
-      int NQ = Phases.numMom();
+      int NumO = PhasesCanonical.numMom();
 
-      multi2d< string > Files( 1, NQ );
+      multi2d< string > Files( 1, NumO );
 
       const int BBFileNameLength = params.bb.BkwdProps[loop].BBFileNamePattern.length() + 3 * 3 + 1;
 
-      for( int q = 0; q < NQ; q ++ )
+      for( int o = 0; o < NumO; o ++ )
       {
-	multi1d< int > Q = Phases.numToMom( q );
+	multi1d< int > Q = PhasesCanonical.numToMom( o );
 
 	char XSign = '+';
 	char YSign = '+';
@@ -545,23 +550,21 @@ namespace Chroma
 	char* bbf = new char[BBFileNameLength + 1];
 	sprintf( bbf, params.bb.BkwdProps[loop].BBFileNamePattern.c_str(), ZSign, abs(Q[2]), YSign, abs(Q[1]), XSign, abs(Q[0]) );
 
-	Files(0,q) = bbf;
+	Files(0,o) = bbf;
 
 	delete[] bbf;
       }
 
       //#################################################################################//
-      // Construct Building Blocks                                                       //
+      // Flavor-ology                                                                    //
       //#################################################################################//
     
-      swatch.reset();
-      Out << "calculating building blocks" << "\n";  Out.flush();
-      QDPIO::cout << "calculating building blocks" << endl;
-
       multi1d< int > Flavors( 1 );
 
+      //
       // Dru puts a Flavor into the BB
       // Telephone book map of flavor name to a number
+      //
       if (params.bb.BkwdProps[loop].Flavor == "U")
 	Flavors[0] = 0;
       else if (params.bb.BkwdProps[loop].Flavor == "D")
@@ -582,6 +585,14 @@ namespace Chroma
 	QDP_abort(1);
       }
 
+      //#################################################################################//
+      // Construct Building Blocks                                                       //
+      //#################################################################################//
+    
+      swatch.reset();
+      Out << "calculating building blocks" << "\n";  Out.flush();
+      QDPIO::cout << "calculating building blocks" << endl;
+
       const signed short int T1 = 0;
       const signed short int T2 = params.param.nrow[j_decay] - 1;
       const signed short int DecayDir = j_decay;
@@ -590,7 +601,9 @@ namespace Chroma
       BuildingBlocks( B, 
 		      F,
 		      U, GammaInsertions, Flavors,
-		      params.param.links_max, AllLinkPatterns, Phases, Files, T1, T2,
+		      params.param.links_max, AllLinkPatterns, 
+		      Phases, PhasesCanonical,
+		      Files, T1, T2,
 		      seqsource_header.seq_src, seqsource_header.sink_mom, DecayDir);
       swatch.stop();
 
@@ -609,6 +622,7 @@ namespace Chroma
 
     Out << "\n" << "FINISHED" << "\n" << "\n";
     Out.close();
+    QDPIO::cout << InlineBuildingBlocksEnv::name << ": ran successfully" << endl;
 
     END_CODE();
   } 

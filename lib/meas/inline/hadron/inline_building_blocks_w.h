@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_building_blocks_w.h,v 2.1 2005-09-27 01:11:34 edwards Exp $
+// $Id: inline_building_blocks_w.h,v 2.2 2005-09-29 15:53:30 edwards Exp $
 /*! \file
  * \brief Inline construction of BuildingBlocks
  *
@@ -35,10 +35,11 @@ namespace Chroma
     //! Parameters
     struct Param_t
     {
-      bool     use_sink_offset;    // should insertion origin be sink_mom
-      int      mom2_max;           // (mom)^2 <= mom2_max
-      int      links_max;          // maximum number of links
-      multi1d<int> nrow;           // lattice size
+      bool     use_sink_offset;    /*!< should insertion origin be sink_mom */
+      int      mom2_max;           /*!< (mom)^2 <= mom2_max */
+      int      links_max;          /*!< maximum number of links */
+      bool     canonical;          /*!< True if mom in BB filenames is canonicalized */
+      multi1d<int> nrow;           /*!< lattice size */
     } param;
 
     //! Propagators
