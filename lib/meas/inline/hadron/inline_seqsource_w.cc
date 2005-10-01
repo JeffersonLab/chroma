@@ -1,4 +1,4 @@
-// $Id: inline_seqsource_w.cc,v 2.1 2005-09-26 04:46:03 edwards Exp $
+// $Id: inline_seqsource_w.cc,v 2.2 2005-10-01 17:01:39 edwards Exp $
 /*! \file
  * \brief Inline construction of sequential sources
  *
@@ -332,7 +332,7 @@ namespace Chroma
 
 
     /*
-     *  Write the sequential source out to disk
+     *  Write the sequential source out to a named buffer
      */
     try
     {
