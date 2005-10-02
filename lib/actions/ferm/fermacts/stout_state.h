@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_state.h,v 2.2 2005-09-28 03:24:18 bjoo Exp $
+// $Id: stout_state.h,v 2.3 2005-10-02 03:08:49 bjoo Exp $
 
 /*! @file 
  *  @brief Connection State for stout links
@@ -49,20 +49,24 @@ namespace Chroma
     // Copy Constructor
     StoutConnectState(const StoutConnectState& s) 
     {
+      START_CODE();
       create(s.getThinLinks(),
 	     s.rho,
 	     s.n_smear, 
 	     s.smear_in_this_dirP);
+      END_CODE();
     }
 
     // Assignment
     StoutConnectState& operator=(const StoutConnectState& s)
     {
+      START_CODE();
       create(s.getThinLinks(),
 	     s.rho,
 	     s.n_smear, 
 	     s.smear_in_this_dirP);
-      
+
+      END_CODE();
       return *this;
     }
 
@@ -88,14 +92,23 @@ namespace Chroma
     //! derivative of a force with respect to thin links. Recursive procedure
     void deriv(multi1d<LatticeColorMatrix>& F) const; 
 
+
   private:
 
     // Hide default constructor
     StoutConnectState(){}
 
-    // Do the smearing
+    // Do the smearing from level i to level i+1
     void smear_links(const multi1d<LatticeColorMatrix>& current,
 		     multi1d<LatticeColorMatrix>& next);
+
+
+    // Do the force recursion from level i+1, to level i
+    void deriv_recurse(const multi1d<LatticeColorMatrix>&  F_plus,
+		       multi1d<LatticeColorMatrix>& F_minus,
+		       const int level) const;
+		       
+
 
     // create function
     void create(const multi1d<LatticeColorMatrix>& u_,

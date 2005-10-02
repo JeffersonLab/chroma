@@ -1,4 +1,4 @@
-// $Id: fermacts_aggregate_w.cc,v 2.0 2005-09-25 21:04:25 edwards Exp $
+// $Id: fermacts_aggregate_w.cc,v 2.1 2005-10-02 03:08:49 bjoo Exp $
 /*! \file
  *  \brief All Wilson-type fermion actions
  */
@@ -31,6 +31,9 @@
 #include "actions/ferm/fermacts/prec_ovext_fermact_array_w.h"
 
 #include "actions/ferm/fermacts/ovext_tuning_strategy_aggregate.h"
+
+#include "actions/ferm/fermacts/unprec_stout_fermact_w.h"
+
 namespace Chroma
 {
 
@@ -47,7 +50,7 @@ namespace Chroma
       success &= OvlapPartFrac4DFermActEnv::registered;
       success &= EvenOddPrecParWilsonFermActEnv::registered;
       success &= UnprecParWilsonFermActEnv::registered;
-
+      success &= UnprecStoutWilsonTypeFermActEnv::registered;
       return success;
     }
 

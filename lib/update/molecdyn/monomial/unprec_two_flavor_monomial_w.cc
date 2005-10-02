@@ -1,4 +1,4 @@
-// $Id: unprec_two_flavor_monomial_w.cc,v 2.0 2005-09-25 21:04:42 edwards Exp $
+// $Id: unprec_two_flavor_monomial_w.cc,v 2.1 2005-10-02 03:08:49 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 4D ferm monomials
  */
@@ -13,6 +13,7 @@
 
 #include "actions/ferm/fermacts/unprec_wilson_fermact_w.h"
 #include "actions/ferm/fermacts/unprec_parwilson_fermact_w.h"
+#include "actions/ferm/fermacts/unprec_stout_fermact_w.h"
 
 #include "update/molecdyn/predictor/chrono_predictor_factory.h"
 #include "update/molecdyn/predictor/zero_guess_predictor.h"
@@ -39,6 +40,15 @@ namespace Chroma
 	UnprecParWilsonFermActEnv::name,
 	UnprecTwoFlavorWilsonTypeFermMonomialParams(xml, path));
     }
+
+    //! Callback function for the factory
+    Monomial< multi1d<LatticeColorMatrix>,
+	      multi1d<LatticeColorMatrix> >* createMonomialStout(XMLReader& xml, const string& path) 
+    {
+      return new UnprecTwoFlavorWilsonTypeFermMonomial(
+	UnprecStoutWilsonTypeFermActEnv::name,
+	UnprecTwoFlavorWilsonTypeFermMonomialParams(xml, path));
+    }
     
     //! Register all the objects
     bool registerAll()
@@ -55,6 +65,10 @@ namespace Chroma
       foo &= UnprecParWilsonFermActEnv::registered;
       foo &= TheMonomialFactory::Instance().registerObject(prefix+UnprecParWilsonFermActEnv::name+suffix, 
 							   createMonomialParWilson);
+
+      foo &= UnprecStoutWilsonTypeFermActEnv::registered;
+      foo &= TheMonomialFactory::Instance().registerObject(prefix+UnprecStoutWilsonTypeFermActEnv::name+suffix, 
+							   createMonomialStout);
       return foo;
     }
 

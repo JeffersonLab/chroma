@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermacts_w.h,v 2.0 2005-09-25 21:04:25 edwards Exp $
+// $Id: fermacts_w.h,v 2.1 2005-10-02 03:08:49 bjoo Exp $
 
 /*! \file
  * \brief Fermion actions
@@ -25,6 +25,10 @@
 #include "unprec_zolo_nef_fermact_array_w.h"
 #include "unprec_ovdwf_fermact_array_w.h"
 #include "unprec_ovext_fermact_array_w.h"
+
+#include "stout_state.h"
+#include "stout_fermact_params.h"
+#include "unprec_stout_fermact_w.h"
 
 #include "prec_dwf_fermact_base_array_w.h"
 #include "prec_dwf_fermact_array_w.h"
