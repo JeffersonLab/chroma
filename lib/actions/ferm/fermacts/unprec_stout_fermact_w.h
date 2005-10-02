@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_stout_fermact_w.h,v 2.1 2005-10-02 03:08:49 bjoo Exp $
+// $Id: unprec_stout_fermact_w.h,v 2.2 2005-10-02 19:33:12 bjoo Exp $
 
 /*! @file
  *  @brief Proxy fermion action class instance for unpreconditioned stout fermacts 
@@ -47,35 +47,48 @@ namespace Chroma
 
       //! General FermBC
       UnprecStoutWilsonTypeFermAct(Handle< FermBC<LatticeFermion> > fbc_,
-			 StoutFermActParams p_):  p(p_) { 
+			 const StoutFermActParams& p_):  p(p_) { 
 
-	std::istringstream is(p_.internal_fermact);
-	XMLReader fermact_xml(is);
-	fermact_xml.print(cout);
-	XMLReader internal_reader(fermact_xml, "/InternalFermionAction");
-	std::string if_name;
-	read(internal_reader, "./FermAct", if_name);
+	struct UnprecCastFailure {
+	  UnprecCastFailure(std::string e) : auxfermact(e) {};
+	  const string auxfermact;
+	};
 
-	FermionAction<LatticeFermion>* FA_ptr=0x0;
-	try { 
-	  FA_ptr=TheFermionActionFactory::Instance().createObject(if_name, fermact_xml, "/InternalFermionAction"); 
+	try {
+	  // Make an XML Reader from the internal fermact
+	  std::istringstream is(p_.internal_fermact);
+	  XMLReader fermact_xml(is);
+	  
+	  // Get to the top of it
+	  XMLReader internal_reader(fermact_xml, "/InternalFermionAction");
+	  
+	  // Get the name of the internal fermion action
+	  std::string if_name;
+	  read(internal_reader, "FermAct", if_name);
+	  
+	  // Creaate it using the FermionActionFactory
+	  FermionAction<LatticeFermion>* FA_ptr= TheFermionActionFactory::Instance().createObject(if_name, fermact_xml, "/InternalFermionAction"); 
+
+	  // Upcast to UnprecWilsonTypeFermact
+	  UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* S_internal = dynamic_cast< UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* >(FA_ptr);
+
+	  
+	  if( S_internal == 0x0 ) { 
+	    throw UnprecCastFailure(p_.internal_fermact);
+	  }
+	  else {
+	    S_w = S_internal;
+	  }
 	}
 	catch(const std::string& e) {
-	  QDPIO::cout << "Error creating Internal Fermact" << endl;
+	  QDPIO::cout << "Error creating Internal Fermact: " << e << endl;
 	  QDP_abort(1);
 	}
-	
-	try {
-	  UnprecWilsonTypeFermAct<LatticeFermion, 
-                                  multi1d<LatticeColorMatrix> >& S_uw=
-	    dynamic_cast<UnprecWilsonTypeFermAct<LatticeFermion, multi1d<LatticeColorMatrix> >&>((*FA_ptr));
-	}
-	catch(std::bad_cast) { 
-	  QDPIO::cout << "Couldnt convert internal fermact to UnprecWilsonTypeFermAct" << endl;
+	catch(const UnprecCastFailure& e) {
+	  QDPIO::cout << "Internal Fermact cannot be cast to UnprecWilsonTypeFermAct: " << e.auxfermact << endl;
 	  QDP_abort(1);
 	}
 
-	S_w = dynamic_cast<UnprecWilsonTypeFermAct<LatticeFermion, multi1d<LatticeColorMatrix> >*>(FA_ptr); 
       }
 
       //! Copy Constructor 
@@ -128,7 +141,7 @@ namespace Chroma
       StoutFermActParams p;
 
       Handle< UnprecWilsonTypeFermAct<LatticeFermion, 
-	                                    multi1d<LatticeColorMatrix> > > S_w;
+	                              multi1d<LatticeColorMatrix> > > S_w;
 
   };
 };

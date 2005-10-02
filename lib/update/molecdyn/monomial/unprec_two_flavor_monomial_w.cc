@@ -1,4 +1,4 @@
-// $Id: unprec_two_flavor_monomial_w.cc,v 2.1 2005-10-02 03:08:49 bjoo Exp $
+// $Id: unprec_two_flavor_monomial_w.cc,v 2.2 2005-10-02 19:33:12 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 4D ferm monomials
  */
@@ -90,7 +90,7 @@ namespace Chroma
       std::ostringstream os;
       xml_tmp.print(os);
       ferm_act = os.str();
-      
+     
       if( paramtop.count("./ChronologicalPredictor") == 0 ) {
 	predictor_xml="";
       }
@@ -150,11 +150,15 @@ namespace Chroma
 
     QDPIO::cout << "UnprecTwoFlavorWilsonTypeFermMonomial: construct " << fermact_string << endl;
 
-    const FermionAction<LatticeFermion>* tmp_act = TheFermionActionFactory::Instance().createObject(fermact_string, fermact_reader, "./FermionAction");
-  
+    QDPIO::cout << "Before call  fermion action reader is" << endl << flush;
+   
+    const FermionAction<LatticeFermion>* tmp_act = TheFermionActionFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
+
+    QDPIO::cout << "Foo 1" << endl << flush;
 
     const UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* downcast=dynamic_cast<const UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >*>(tmp_act);
 
+    QDPIO::cout << "Foo 2 " << endl << flush;
     // Check success of the downcast 
     if( downcast == 0x0 ) {
       QDPIO::cerr << "Unable to downcast FermAct to UnprecWilsonTypeFermAct in UnprecTwoFlavorWilsonTypeFermMonomial()" << endl;

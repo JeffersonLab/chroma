@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermact_params.cc,v 2.1 2005-10-02 03:08:49 bjoo Exp $
+// $Id: stout_fermact_params.cc,v 2.2 2005-10-02 19:33:12 bjoo Exp $
 
 #include "actions/ferm/fermacts/stout_fermact_params.h"
 #include <sstream>
@@ -9,17 +9,22 @@ namespace Chroma {
 
 
   StoutFermActParams::StoutFermActParams(XMLReader& in, const std::string& path) {
-    XMLReader paramtop(in, path);
+    try { 
+      XMLReader paramtop(in, path);
 
-    XMLReader internal_fermact_reader(paramtop, "./InternalFermionAction");
-    std::ostringstream os; 
-    internal_fermact_reader.print(os);
-    internal_fermact = os.str();
-
-    QDPIO::cout << internal_fermact << endl;
-
-    read(paramtop, "./rho", rho);
-    read(paramtop, "./n_smear", n_smear);
+      XMLReader internal_fermact_reader(paramtop, "InternalFermionAction");
+      std::ostringstream os; 
+      internal_fermact_reader.print(os);
+      internal_fermact = os.str();
+      
+      QDPIO::cout << internal_fermact << endl;
+      
+      read(paramtop, "./rho", rho);
+      read(paramtop, "./n_smear", n_smear);
+    }
+    catch(const std::string& e) { 
+      QDPIO::cout << "Ouch" << e << endl;
+    }
   }
 
   void read(XMLReader& xml, const std::string& path, StoutFermActParams& p)

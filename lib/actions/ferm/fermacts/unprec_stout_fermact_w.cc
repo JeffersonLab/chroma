@@ -5,6 +5,7 @@
 #include "actions/ferm/fermbcs/fermbcs_w.h"
 
 #include "io/param_io.h"
+#include "fermbc.h"
 
 namespace Chroma {
 
@@ -13,8 +14,12 @@ namespace Chroma {
     WilsonTypeFermAct<LatticeFermion,multi1d<LatticeColorMatrix> >* createFermAct4D(XMLReader& xml_in,
 										    const std::string& path)
     {
-      
-      return new UnprecStoutWilsonTypeFermAct(WilsonTypeFermBCEnv::reader(xml_in, path), 
+      // Create a Dummy FBC. This breaks the mold a little but
+      // is OK because this proxy will always use the BC's in the
+      // internal action.
+      Handle< FermBC<LatticeFermion> > fbc(new PeriodicFermBC<LatticeFermion>());
+
+      return new UnprecStoutWilsonTypeFermAct(fbc, 
 					      StoutFermActParams(xml_in, path));
     }
 
