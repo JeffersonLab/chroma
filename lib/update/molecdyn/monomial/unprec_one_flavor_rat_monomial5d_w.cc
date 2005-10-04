@@ -1,4 +1,4 @@
-// $Id: unprec_one_flavor_rat_monomial5d_w.cc,v 2.0 2005-09-25 21:04:41 edwards Exp $
+// $Id: unprec_one_flavor_rat_monomial5d_w.cc,v 2.1 2005-10-04 19:23:19 bjoo Exp $
 /*! @file
  * @brief One-flavor collection of unpreconditioned 5D ferm monomials
  */
@@ -18,6 +18,7 @@
 #include "actions/ferm/fermacts/unprec_ovlap_contfrac5d_fermact_array_w.h"
 #include "actions/ferm/fermacts/unprec_nef_fermact_array_w.h"
 #include "actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.h"
+#include "actions/ferm/fermacts/unprec_stout_fermact_array_w.h"
 
 namespace Chroma 
 { 
@@ -91,6 +92,13 @@ namespace Chroma
       return createMonomial(UnprecOvExtFermActArrayEnv::name, xml, path, 1, 1);
     }
 
+    //! Callback function for the factory
+    Monomial< multi1d<LatticeColorMatrix>,
+	      multi1d<LatticeColorMatrix> >* createMonomialStout1(XMLReader& xml, const string& path) 
+    {
+      return createMonomial(UnprecStoutWilsonTypeFermAct5DEnv::name, xml, path, 1, 1);
+    }
+
 
     //----------------------------------------------------------------------
     // Three flavor
@@ -137,6 +145,13 @@ namespace Chroma
     }
 
 
+    //! Callback function for the factory
+    Monomial< multi1d<LatticeColorMatrix>,
+	      multi1d<LatticeColorMatrix> >* createMonomialStout3(XMLReader& xml, const string& path) 
+    {
+      return createMonomial(UnprecStoutWilsonTypeFermAct5DEnv::name, xml, path, 3, 1);
+    }
+
     //----------------------------------------------------------------------
     // Generic fractional flavor
     //! Callback function for the factory
@@ -181,6 +196,12 @@ namespace Chroma
       return createMonomial(UnprecOvExtFermActArrayEnv::name, xml, path);
     }
 
+    //! Callback function for the factory
+    Monomial< multi1d<LatticeColorMatrix>,
+	      multi1d<LatticeColorMatrix> >* createMonomialStout(XMLReader& xml, const string& path) 
+    {
+      return createMonomial(UnprecStoutWilsonTypeFermAct5DEnv::name, xml, path);
+    }
 
     //------------------------------------------------------
     //! Register one flavor
@@ -206,6 +227,8 @@ namespace Chroma
 
       foo &= TheMonomialFactory::Instance().registerObject(prefix+UnprecOvExtFermActArrayEnv::name+suffix, 
 							   createMonomialOvExt1);
+      foo &= TheMonomialFactory::Instance().registerObject(prefix+UnprecStoutWilsonTypeFermAct5DEnv::name+suffix, 
+							   createMonomialStout1);
 
       return foo;
     }
@@ -235,6 +258,8 @@ namespace Chroma
       foo &= TheMonomialFactory::Instance().registerObject(prefix+UnprecOvExtFermActArrayEnv::name+suffix, 
 							   createMonomialOvExt3);
 
+      foo &= TheMonomialFactory::Instance().registerObject(prefix+UnprecStoutWilsonTypeFermAct5DEnv::name+suffix, 
+							   createMonomialStout3);
       return foo;
     }
 
@@ -268,6 +293,10 @@ namespace Chroma
       foo &= UnprecOvExtFermActArrayEnv::registered;
       foo &= TheMonomialFactory::Instance().registerObject(prefix+UnprecOvExtFermActArrayEnv::name+suffix, 
 							   createMonomialOvExt);
+
+      foo &= UnprecStoutWilsonTypeFermAct5DEnv::registered;
+      foo &= TheMonomialFactory::Instance().registerObject(prefix+UnprecStoutWilsonTypeFermAct5DEnv::name+suffix, 
+							   createMonomialStout);
       return foo;
     }
 
@@ -407,7 +436,7 @@ namespace Chroma
 
     QDPIO::cout << "UnprecOneFlavorWilsonTypeFermRatMonomial5D: construct " << fermact_string << endl;
 
-    const FermionAction<LatticeFermion>* tmp_act = TheFermionActionFactory::Instance().createObject(fermact_string, fermact_reader, "./FermionAction");
+    const FermionAction<LatticeFermion>* tmp_act = TheFermionActionFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
   
 
     const UnprecWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >* downcast=dynamic_cast<const UnprecWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >*>(tmp_act);

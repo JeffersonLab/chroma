@@ -1,4 +1,4 @@
-// $Id: t_stout_state.cc,v 2.2 2005-10-02 03:08:50 bjoo Exp $
+// $Id: t_stout_state.cc,v 2.3 2005-10-04 19:23:19 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -81,8 +81,8 @@ int main(int argc, char *argv[])
   StoutConnectState s_state(u, rho, n_smear);
 
   //SimpleConnectState s_state(u);
-  
-  rgauge(u_rg);
+  LatticeColorMatrix g; // Gauge transform
+  rgauge(u_rg,g);
 
   //SimpleConnectState s_state2(u_rg);
   // Make fat links from random gauge transformed u
@@ -136,9 +136,15 @@ int main(int argc, char *argv[])
 
   F_norm = norm2(fat_force);
   QDPIO::cout << "F_norm for fat_force is " << F_norm << endl;
-  
+
+  multi1d<LatticeColorMatrix> force_tmp(Nd);
+
   // Get force
-  F_norm = norm2(fat_force2);
+  for(int mu=0; mu < Nd; mu++) { 
+    force_tmp[mu] = adj(g)*fat_force2[mu]*g;
+  }
+
+  F_norm = norm2(force_tmp);
   QDPIO::cout << "RG Trans F_norm  for fat_force2 is " << F_norm << endl;
   
 
@@ -151,41 +157,18 @@ int main(int argc, char *argv[])
   QDPIO::cout << "F_norm for fat_force is " << F_norm << endl;
   
 
-  F_norm = norm2(fat_force2);
+  
+  for(int mu=0; mu < Nd; mu++) { 
+    force_tmp[mu] = adj(g)*fat_force2[mu]*g;
+  }
+
+  F_norm = norm2(force_tmp);
   QDPIO::cout << "RG Trans F_norm  for fat_force2 is " << F_norm << endl;
   
 
 
   pop(xml);
 
-
-  
-  XMLReader stout_xml("stout_xml");
-  StoutFermActParams p(stout_xml, "/foo/FermionAction");
-  XMLFileWriter fred("./foo.xml");
-  push(fred, "foo");
-  write(fred, "FermionAction", p);
-  pop(fred);
-  
-
-  std::string fermion_action_name;
-  read(stout_xml, "/foo/FermionAction/FermAct", fermion_action_name);
-  QDPIO::cout <<"FermAct = " << fermion_action_name << endl;
-  try { 
-    volatile bool r =  UnprecStoutWilsonTypeFermActEnv::registered;
-    r &= UnprecWilsonFermActEnv::registered;
-    
-    FermAct4D<LatticeFermion>* F=UnprecStoutWilsonTypeFermActEnv::createFermAct4D(stout_xml, "/foo/FermionAction");
-    
-    Handle< const ConnectState > state(F->createState(u));
-    Handle< const LinearOperator<LatticeFermion> > M(F->linOp(state));
-    
-    (*M)(X,Y, PLUS);
-  }
-  catch( const std::string& e) { 
-    QDPIO::cout << "caught: " << e << endl;
-  }
-  
 
   // Time to bolt
   Chroma::finalize();

@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.2 2005-10-02 03:08:49 bjoo Exp $
+# $Id: Makefile.am,v 2.3 2005-10-04 19:23:18 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -32,6 +32,9 @@ nobase_include_HEADERS = \
 	actions/ferm/fermacts/stout_state.h \
 	actions/ferm/fermacts/stout_fermact_params.h \
 	actions/ferm/fermacts/unprec_stout_fermact_w.h \
+	actions/ferm/fermacts/prec_stout_fermact_w.h \
+	actions/ferm/fermacts/unprec_stout_fermact_array_w.h \
+	actions/ferm/fermacts/prec_stout_fermact_array_w.h \
 	actions/ferm/fermbcs/fermbcs.h \
 	actions/ferm/fermbcs/simple_fermbc.h \
 	actions/ferm/invert/invcg1.h actions/ferm/invert/invcg2.h \
@@ -446,6 +449,9 @@ libchroma_a_SOURCES = \
 	actions/ferm/fermacts/stout_state.cc \
 	actions/ferm/fermacts/stout_fermact_params.cc \
 	actions/ferm/fermacts/unprec_stout_fermact_w.cc \
+	actions/ferm/fermacts/prec_stout_fermact_w.cc \
+	actions/ferm/fermacts/unprec_stout_fermact_array_w.cc \
+	actions/ferm/fermacts/prec_stout_fermact_array_w.cc \
 	actions/ferm/fermacts/zolotarev_coeffs.cc \
 	actions/ferm/fermacts/ovext_tuning_strategy_aggregate.cc \
 	actions/ferm/fermacts/ovext_constant_strategy.cc \

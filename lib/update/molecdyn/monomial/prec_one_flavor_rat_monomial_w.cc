@@ -1,4 +1,4 @@
-// $Id: prec_one_flavor_rat_monomial_w.cc,v 2.0 2005-09-25 21:04:41 edwards Exp $
+// $Id: prec_one_flavor_rat_monomial_w.cc,v 2.1 2005-10-04 19:23:19 bjoo Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -13,6 +13,7 @@
 
 #include "actions/ferm/fermacts/prec_wilson_fermact_w.h"
 #include "actions/ferm/fermacts/prec_parwilson_fermact_w.h"
+#include "actions/ferm/fermacts/prec_stout_fermact_w.h"
 
 namespace Chroma 
 { 
@@ -57,6 +58,13 @@ namespace Chroma
     {
       return createMonomial(EvenOddPrecParWilsonFermActEnv::name, xml, path, 1, 1);
     }
+
+    //! Callback function for the factory
+    Monomial< multi1d<LatticeColorMatrix>,
+	      multi1d<LatticeColorMatrix> >* createMonomialStout1(XMLReader& xml, const string& path) 
+    {
+      return createMonomial(EvenOddPrecStoutWilsonTypeFermActEnv::name, xml, path, 1, 1);
+    }
     
     //----------------------------------------------------------------------
     // Three flavor
@@ -74,6 +82,12 @@ namespace Chroma
       return createMonomial(EvenOddPrecParWilsonFermActEnv::name, xml, path, 3, 1);
     }
 
+    //! Callback function for the factory
+    Monomial< multi1d<LatticeColorMatrix>,
+	      multi1d<LatticeColorMatrix> >* createMonomialStout3(XMLReader& xml, const string& path) 
+    {
+      return createMonomial(EvenOddPrecStoutWilsonTypeFermActEnv::name, xml, path, 3, 1);
+    }
     
     //----------------------------------------------------------------------
     // Generic fractional flavor
@@ -91,6 +105,12 @@ namespace Chroma
       return createMonomial(EvenOddPrecParWilsonFermActEnv::name, xml, path);
     }
     
+    //! Callback function for the factory
+    Monomial< multi1d<LatticeColorMatrix>,
+	      multi1d<LatticeColorMatrix> >* createMonomialStout(XMLReader& xml, const string& path) 
+    {
+      return createMonomial(EvenOddPrecStoutWilsonTypeFermActEnv::name, xml, path);
+    }
 
     //------------------------------------------------------
     //! Register one flavor
@@ -104,6 +124,9 @@ namespace Chroma
 
       foo &= TheMonomialFactory::Instance().registerObject(prefix+EvenOddPrecParWilsonFermActEnv::name+suffix, 
 							   createMonomialParWilson1);
+
+      foo &= TheMonomialFactory::Instance().registerObject(prefix+EvenOddPrecStoutWilsonTypeFermActEnv::name+suffix, 
+							   createMonomialStout1);
       return foo;
     }
 
@@ -119,6 +142,9 @@ namespace Chroma
 
       foo &= TheMonomialFactory::Instance().registerObject(prefix+EvenOddPrecParWilsonFermActEnv::name+suffix, 
 							   createMonomialParWilson3);
+
+      foo &= TheMonomialFactory::Instance().registerObject(prefix+EvenOddPrecStoutWilsonTypeFermActEnv::name+suffix, 
+							   createMonomialStout3);
       return foo;
     }
 
@@ -136,6 +162,10 @@ namespace Chroma
       foo &= EvenOddPrecParWilsonFermActEnv::registered;
       foo &= TheMonomialFactory::Instance().registerObject(prefix+EvenOddPrecParWilsonFermActEnv::name+suffix, 
 							   createMonomialParWilson);
+
+      foo &= EvenOddPrecStoutWilsonTypeFermActEnv::registered;
+      foo &= TheMonomialFactory::Instance().registerObject(prefix+EvenOddPrecStoutWilsonTypeFermActEnv::name+suffix, 
+							   createMonomialStout);
       return foo;
     }
 
@@ -250,25 +280,34 @@ namespace Chroma
     inv_param = param.inv_param;
     nthRoot   = param.nthRoot;
 
+    cout << "Param.ferm_act is : "<< param.ferm_act << endl;
+
     std::istringstream is(param.ferm_act);
     XMLReader fermact_reader(is);
+
+    cout << "Fermact reader holds: " << endl;
+    fermact_reader.print(cout);
+    cout << flush << endl;
 
     // Get the name of the ferm act
     std::string fermact_string;
     try { 
+  
       read(fermact_reader, "/FermionAction/FermAct", fermact_string);
       if ( fermact_string != name_ ) { 
 	QDPIO::cerr << "Fermion action is not " << name_
 		    << " but is: " << fermact_string << endl;
 	QDP_abort(1);
       }
+      QDPIO::cout << "Fermact string is " << fermact_string << endl;
     }
     catch( const std::string& e) { 
       QDPIO::cerr << "Error grepping the fermact name: " << e<<  endl;
       QDP_abort(1);
     }
 
-    const FermionAction<LatticeFermion>* tmp_act = TheFermionActionFactory::Instance().createObject(fermact_string, fermact_reader, "./FermionAction");
+
+    const FermionAction<LatticeFermion>* tmp_act = TheFermionActionFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
   
 
     const EvenOddPrecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* downcast=dynamic_cast<const EvenOddPrecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >*>(tmp_act);
@@ -291,6 +330,8 @@ namespace Chroma
 		   param.remez.forceDegree, param.remez.actionDegree,
 		   param.remez.digitPrecision);
     //*********************************************************************
+
+    QDPIO::cout << "DONECONSTRUCTIN " << endl;
   }
 
 

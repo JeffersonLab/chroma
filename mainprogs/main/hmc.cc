@@ -1,4 +1,4 @@
-// $Id: hmc.cc,v 2.0 2005-09-25 21:04:45 edwards Exp $
+// $Id: hmc.cc,v 2.1 2005-10-04 19:23:19 bjoo Exp $
 /*! \file
  *  \brief Main code for HMC with dynamical fermion generation
  */
@@ -475,7 +475,8 @@ int main(int argc, char *argv[])
   
   Handle< AbsHamiltonian< multi1d<LatticeColorMatrix>, 
     multi1d<LatticeColorMatrix> > > H_MD(new ExactLatColMatHamiltonian(H_MD_xml, "/MD_Hamiltonian"));
-   
+
+
   std::istringstream Integrator_is(trj_params.Integrator_xml);
   XMLReader MD_xml(Integrator_is);
  
@@ -490,7 +491,8 @@ int main(int argc, char *argv[])
     
   // Get the HMC
   LatColMatHMCTrj theHMCTrj( H_MC, MD );
-  
+
+ 
   multi1d < Handle< AbsInlineMeasurement > > the_measurements;
 
   // Get the measurements

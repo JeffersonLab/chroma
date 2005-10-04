@@ -1,4 +1,4 @@
-// $Id: unprec_two_flavor_monomial_w.cc,v 2.2 2005-10-02 19:33:12 bjoo Exp $
+// $Id: unprec_two_flavor_monomial_w.cc,v 2.3 2005-10-04 19:23:19 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 4D ferm monomials
  */
@@ -150,15 +150,12 @@ namespace Chroma
 
     QDPIO::cout << "UnprecTwoFlavorWilsonTypeFermMonomial: construct " << fermact_string << endl;
 
-    QDPIO::cout << "Before call  fermion action reader is" << endl << flush;
    
     const FermionAction<LatticeFermion>* tmp_act = TheFermionActionFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
 
-    QDPIO::cout << "Foo 1" << endl << flush;
-
     const UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* downcast=dynamic_cast<const UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >*>(tmp_act);
 
-    QDPIO::cout << "Foo 2 " << endl << flush;
+
     // Check success of the downcast 
     if( downcast == 0x0 ) {
       QDPIO::cerr << "Unable to downcast FermAct to UnprecWilsonTypeFermAct in UnprecTwoFlavorWilsonTypeFermMonomial()" << endl;

@@ -1,12 +1,12 @@
 // -*- C++ -*-
-// $Id: unprec_stout_fermact_w.h,v 2.3 2005-10-04 19:23:19 bjoo Exp $
+// $Id: unprec_stout_fermact_array_w.h,v 2.1 2005-10-04 19:23:19 bjoo Exp $
 
 /*! @file
  *  @brief Proxy fermion action class instance for unpreconditioned stout fermacts 
  */
 
-#ifndef _unprec_stout_fermact_w_h_
-#define _unprec_stout_fermact_w_h_
+#ifndef _unprec_stout_fermact_array_w_h_
+#define _unprec_stout_fermact_array_w_h_
 
 #include "chromabase.h"
 #include "fermact.h"
@@ -19,7 +19,7 @@ namespace Chroma
 
 
   //! Name and registration
-  namespace UnprecStoutWilsonTypeFermActEnv {
+  namespace UnprecStoutWilsonTypeFermAct5DEnv {
     extern const std::string name;
     extern const bool registered;
   }
@@ -35,17 +35,17 @@ namespace Chroma
    * to an embedded fermion action 
    */
   
-  class UnprecStoutWilsonTypeFermAct 
-    : public UnprecWilsonTypeFermAct<LatticeFermion , 
+  class UnprecStoutWilsonTypeFermAct5D 
+    : public UnprecWilsonTypeFermAct5D<LatticeFermion , 
                                      multi1d<LatticeColorMatrix> > 
     {
 
     public:
       // Destructor is automagic
-      ~UnprecStoutWilsonTypeFermAct() {}
+      ~UnprecStoutWilsonTypeFermAct5D() {}
 
       //! General FermBC
-      UnprecStoutWilsonTypeFermAct(Handle< FermBC<LatticeFermion> > fbc_,
+      UnprecStoutWilsonTypeFermAct5D(Handle< FermBC<multi1d<LatticeFermion> > > fbc_,
 			 const StoutFermActParams& p_):  p(p_) { 
 
 	struct UnprecCastFailure {
@@ -69,7 +69,7 @@ namespace Chroma
 	  FermionAction<LatticeFermion>* FA_ptr= TheFermionActionFactory::Instance().createObject(if_name, fermact_xml, "/InternalFermionAction"); 
 
 	  // Upcast to UnprecWilsonTypeFermact
-	  UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* S_internal = dynamic_cast< UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* >(FA_ptr);
+	  UnprecWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >* S_internal = dynamic_cast< UnprecWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >* >(FA_ptr);
 
 	  
 	  if( S_internal == 0x0 ) { 
@@ -84,42 +84,42 @@ namespace Chroma
 	  QDP_abort(1);
 	}
 	catch(const UnprecCastFailure& e) {
-	  QDPIO::cout << "Internal Fermact cannot be cast to UnprecWilsonTypeFermAct: " << e.auxfermact << endl;
+	  QDPIO::cout << "Internal Fermact cannot be cast to UnprecWilsonTypeFermAct5D: " << e.auxfermact << endl;
 	  QDP_abort(1);
 	}
 
       }
 
       //! Copy Constructor 
-      UnprecStoutWilsonTypeFermAct(const UnprecStoutWilsonTypeFermAct& a) :
+      UnprecStoutWilsonTypeFermAct5D(const UnprecStoutWilsonTypeFermAct5D& a) :
 							p(a.p),
 							S_w(a.S_w) { }
 
       //! Assignment
-      UnprecStoutWilsonTypeFermAct& operator=(const UnprecStoutWilsonTypeFermAct& a) 
+      UnprecStoutWilsonTypeFermAct5D& operator=(const UnprecStoutWilsonTypeFermAct5D& a) 
       {
 	p = a.p;
 	S_w = a.S_w;
 	return *this;
       }
 
-      const FermBC<LatticeFermion>& getFermBC() const { 
+      const FermBC<multi1d<LatticeFermion> >& getFermBC() const { 
 	return S_w->getFermBC();
       }
 
       //! Produce a linear operator for this action
-      const UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* linOp(Handle<const ConnectState> state) const 
+      const UnprecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* linOp(Handle<const ConnectState> state) const 
       {	
 	return S_w->linOp(state);
       }
 
       //! Produce a linear operator M^dag.M for this action
-      const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state) const {
+      const LinearOperator<multi1d<LatticeFermion> >* lMdagM(Handle<const ConnectState> state) const {
 	return S_w->lMdagM(state);
       }
 
       //! Produce the gamma_5 hermitian operator H_w
-      const LinearOperator<LatticeFermion>* hermitianLinOp(Handle< const ConnectState> state) const { 
+      const LinearOperator<multi1d<LatticeFermion> >* hermitianLinOp(Handle< const ConnectState> state) const { 
 	return S_w->hermitianLinOp(state);
       }
 
@@ -136,10 +136,39 @@ namespace Chroma
 	return new StoutConnectState(u_tmp, p.rho, p.n_smear);
       }
 
+      const SystemSolver<LatticeFermion>* qprop(Handle< const ConnectState > state, const InvertParam_t& invParam) const
+      {
+	return S_w->qprop(state, invParam);
+      }
+
+      Real getQuarkMass(void) const { 
+	return S_w->getQuarkMass();
+      }
+
+      const UnprecLinearOperator<multi1d<LatticeFermion>, 
+				 multi1d<LatticeColorMatrix> >* linOpPV(Handle< const ConnectState> state) const 
+      {
+	
+	return S_w->linOpPV(state);
+      }
+      
+ 
+      const LinearOperator<LatticeFermion>* DeltaLs(Handle<const ConnectState> state, const InvertParam_t& invParam) const { 
+	return S_w->DeltaLs(state,invParam);
+      }
+
+      const LinearOperator<LatticeFermion>* linOp4D(Handle<const ConnectState> state, const Real& m_q, const InvertParam_t& invParam) const { 
+	return S_w->linOp4D(state,m_q,invParam);
+      }
+
+      int size(void) const {
+	return S_w->size();
+      }
+
     private:
       StoutFermActParams p;
 
-      Handle< UnprecWilsonTypeFermAct<LatticeFermion, 
+      Handle< UnprecWilsonTypeFermAct5D<LatticeFermion, 
 	                              multi1d<LatticeColorMatrix> > > S_w;
 
   };

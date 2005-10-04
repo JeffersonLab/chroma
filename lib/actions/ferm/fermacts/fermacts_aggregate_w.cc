@@ -1,4 +1,4 @@
-// $Id: fermacts_aggregate_w.cc,v 2.1 2005-10-02 03:08:49 bjoo Exp $
+// $Id: fermacts_aggregate_w.cc,v 2.2 2005-10-04 19:23:19 bjoo Exp $
 /*! \file
  *  \brief All Wilson-type fermion actions
  */
@@ -33,6 +33,9 @@
 #include "actions/ferm/fermacts/ovext_tuning_strategy_aggregate.h"
 
 #include "actions/ferm/fermacts/unprec_stout_fermact_w.h"
+#include "actions/ferm/fermacts/prec_stout_fermact_w.h"
+#include "actions/ferm/fermacts/unprec_stout_fermact_array_w.h"
+#include "actions/ferm/fermacts/prec_stout_fermact_array_w.h"
 
 namespace Chroma
 {
@@ -50,7 +53,10 @@ namespace Chroma
       success &= OvlapPartFrac4DFermActEnv::registered;
       success &= EvenOddPrecParWilsonFermActEnv::registered;
       success &= UnprecParWilsonFermActEnv::registered;
+
+      // Stouting
       success &= UnprecStoutWilsonTypeFermActEnv::registered;
+      success &= EvenOddPrecStoutWilsonTypeFermActEnv::registered;
       return success;
     }
 
@@ -82,9 +88,13 @@ namespace Chroma
       success &= EvenOddPrecZoloNEFFermActArrayEnv::registered;
       success &= EvenOddPrecKNOFermActArrayEnv::registered;
       success &= UnprecDWFTransfFermActEnv::registered;
-
+    
       // Tuning Strategies
       success &= OvExtTuningStrategyAggregateEnv::registered;
+
+      // Stouting
+      success &= UnprecStoutWilsonTypeFermAct5DEnv::registered;
+      success &= EvenOddPrecStoutWilsonTypeFermAct5DEnv::registered;
       return success;
     }
 

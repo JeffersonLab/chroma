@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: exact_hamiltonian.h,v 2.0 2005-09-25 21:04:40 edwards Exp $
+// $Id: exact_hamiltonian.h,v 2.1 2005-10-04 19:23:19 bjoo Exp $
 /*! \file
  * \brief Exact Hamiltonians
  */
@@ -40,6 +40,7 @@ namespace Chroma
       
 	QDPIO::cout << "Read " << monomial_array.size() << " monomials" << endl;
 	monomials = monomial_array;
+	QDPIO::cout << "Leaving function" << endl;
       }
 
     // Constructor

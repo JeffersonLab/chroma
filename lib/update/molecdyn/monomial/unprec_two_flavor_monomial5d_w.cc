@@ -1,4 +1,4 @@
-// $Id: unprec_two_flavor_monomial5d_w.cc,v 2.0 2005-09-25 21:04:42 edwards Exp $
+// $Id: unprec_two_flavor_monomial5d_w.cc,v 2.1 2005-10-04 19:23:19 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 5D ferm monomials
  */
@@ -17,6 +17,7 @@
 #include "actions/ferm/fermacts/unprec_ovlap_contfrac5d_fermact_array_w.h"
 #include "actions/ferm/fermacts/unprec_nef_fermact_array_w.h"
 #include "actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.h"
+#include "actions/ferm/fermacts/unprec_stout_fermact_array_w.h"
 
 #include "update/molecdyn/predictor/chrono_predictor.h"
 #include "update/molecdyn/predictor/chrono_predictor_factory.h"
@@ -80,6 +81,15 @@ namespace Chroma
 	UnprecOvExtFermActArrayEnv::name,
 	UnprecTwoFlavorWilsonTypeFermMonomial5DParams(xml, path));
     }
+
+    //! Callback function for the factory
+    Monomial< multi1d<LatticeColorMatrix>,
+	      multi1d<LatticeColorMatrix> >* createMonomialStout(XMLReader& xml, const string& path) 
+    {
+      return new UnprecTwoFlavorWilsonTypeFermMonomial5D(
+	UnprecStoutWilsonTypeFermAct5DEnv::name,
+	UnprecTwoFlavorWilsonTypeFermMonomial5DParams(xml, path));
+    }
     
     //! Register all the objects
     bool registerAll()
@@ -112,6 +122,10 @@ namespace Chroma
       foo &= UnprecOvExtFermActArrayEnv::registered;
       foo &= TheMonomialFactory::Instance().registerObject(prefix+UnprecOvExtFermActArrayEnv::name+suffix, 
 							   createMonomialOvExt);
+
+      foo &= UnprecStoutWilsonTypeFermAct5DEnv::registered;
+      foo &= TheMonomialFactory::Instance().registerObject(prefix+UnprecStoutWilsonTypeFermAct5DEnv::name+suffix, 
+							   createMonomialStout);
 
       return foo;
     }
@@ -194,7 +208,7 @@ namespace Chroma
 
     QDPIO::cout << "UnprecTwoFlavorWilsonTypeFermMonomial5D: construct " << fermact_string << endl;
 
-    const FermionAction<LatticeFermion>* tmp_act = TheFermionActionFactory::Instance().createObject(fermact_string, fermact_reader, "./FermionAction");
+    const FermionAction<LatticeFermion>* tmp_act = TheFermionActionFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
   
 
     const UnprecWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >* downcast=dynamic_cast<const UnprecWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >*>(tmp_act);

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermact_params.cc,v 2.2 2005-10-02 19:33:12 bjoo Exp $
+// $Id: stout_fermact_params.cc,v 2.3 2005-10-04 19:23:19 bjoo Exp $
 
 #include "actions/ferm/fermacts/stout_fermact_params.h"
 #include <sstream>
@@ -9,6 +9,7 @@ namespace Chroma {
 
 
   StoutFermActParams::StoutFermActParams(XMLReader& in, const std::string& path) {
+
     try { 
       XMLReader paramtop(in, path);
 
@@ -23,7 +24,7 @@ namespace Chroma {
       read(paramtop, "./n_smear", n_smear);
     }
     catch(const std::string& e) { 
-      QDPIO::cout << "Ouch" << e << endl;
+      QDPIO::cout << "Failed to read stout action XML:" << e << endl;
     }
   }
 
