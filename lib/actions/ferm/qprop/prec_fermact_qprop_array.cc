@@ -1,6 +1,9 @@
-// $Id: prec_fermact_qprop_array.cc,v 2.0 2005-09-25 21:04:30 edwards Exp $
+// $Id: prec_fermact_qprop_array.cc,v 2.1 2005-10-06 18:09:23 flemingg Exp $
 // $Log: prec_fermact_qprop_array.cc,v $
-// Revision 2.0  2005-09-25 21:04:30  edwards
+// Revision 2.1  2005-10-06 18:09:23  flemingg
+// Fixed a malfeature exposed by GCC 4.0.
+//
+// Revision 2.0  2005/09/25 21:04:30  edwards
 // Moved to version 2.0
 //
 // Revision 1.16  2005/05/18 15:41:56  bjoo
@@ -103,7 +106,7 @@ namespace Chroma
    * \param chi      source ( Read )
    * \return number of CG iterations
    */
-  int PrecFermAct5DQprop<LatticeFermion, multi1d<LatticeColorMatrix> >::operator() (
+  template <> int PrecFermAct5DQprop<LatticeFermion, multi1d<LatticeColorMatrix> >::operator() (
     multi1d<LatticeFermion>& psi, const multi1d<LatticeFermion>& chi) const
   {
     START_CODE();
