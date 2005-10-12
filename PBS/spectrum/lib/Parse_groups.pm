@@ -26,12 +26,13 @@ sub extract_q{
 
 	$flav_in = $_[$ctr+1];
 
-	if( $flav_in == "u" || $flav_in == "d"){
+	if( $flav_in eq "u" || $flav_in eq "d"){
 	    $flav[$ctr] = "ud";}
 	else{
 	    $flav[$ctr] = $flav_in;
 	}
-    }
+	print "Flav is $flav[$ctr]\n";
+   }
 
 
     $src_len = $_[$src_len_offset+4];
