@@ -1,4 +1,4 @@
-// $Id: gauge_io.cc,v 2.0 2005-09-25 21:04:31 edwards Exp $
+// $Id: gauge_io.cc,v 2.1 2005-10-13 03:09:36 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator gauge IO
  */
@@ -32,7 +32,12 @@ void readGauge(XMLReader& file_xml,
    */
   multi1d<LatticeColorMatrixF> u_f(u.size());
   read(to,record_xml,u_f);      // Always read in single precision!
-
+  if (to.bad())
+  {
+    QDPIO::cerr << __func__ << ": error reading file " << file << endl;
+    QDP_abort(1);
+  }
+  
   for(int mu=0; mu < u.size(); ++mu)
     u[mu] = u_f[mu];
 
@@ -57,6 +62,11 @@ void writeGauge(XMLBufferWriter& file_xml,
 		QDP_serialparallel_t serpar)
 {
   QDPFileWriter to(file_xml,file,volfmt,serpar,QDPIO_OPEN);
+  if (to.bad())
+  {
+    QDPIO::cerr << __func__ << ": error writing file " << file << endl;
+    QDP_abort(1);
+  }
 
   multi1d<LatticeColorMatrixF> u_f(u.size());
   for(int mu=0; mu < u.size(); ++mu)
