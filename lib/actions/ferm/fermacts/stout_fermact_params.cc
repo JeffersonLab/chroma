@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermact_params.cc,v 2.3 2005-10-04 19:23:19 bjoo Exp $
+// $Id: stout_fermact_params.cc,v 2.4 2005-10-13 18:38:23 bjoo Exp $
 
 #include "actions/ferm/fermacts/stout_fermact_params.h"
 #include <sstream>
@@ -22,6 +22,13 @@ namespace Chroma {
       
       read(paramtop, "./rho", rho);
       read(paramtop, "./n_smear", n_smear);
+      if( paramtop.count("./orthog_dir") == 1 ) { 
+	read(paramtop, "./orthog_dir", orthog_dir);
+      }
+      else { 
+	// default value for orthog dir is 3 -- smear in space only
+	QDPIO::cout << "Using Default value: orthog_dir = 3, spatial only smearing" << endl;
+      }
     }
     catch(const std::string& e) { 
       QDPIO::cout << "Failed to read stout action XML:" << e << endl;
@@ -42,6 +49,7 @@ namespace Chroma {
     xml << r;
     write(xml, "rho", p.rho);
     write(xml, "n_smear", p.n_smear);
+    write(xml, "orthog_dir", p.orthog_dir);
     pop(xml);
   }
 

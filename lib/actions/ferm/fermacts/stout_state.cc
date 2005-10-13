@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_state.cc,v 2.3 2005-10-02 03:08:49 bjoo Exp $
+// $Id: stout_state.cc,v 2.4 2005-10-13 18:38:23 bjoo Exp $
 /*! @file 
  *  @brief Connection State for Stout state (.cpp file)
  */
@@ -450,15 +450,11 @@ namespace Chroma {
 
       // Take the current force, and compute force one level down 
       // Level is index into smeared link array
-      QDPIO::cout << "Computing F["<<level<<"] from F["<< level+1 << "]" << endl;
-      deriv_recurse(F,F_minus,level);
-
-      QDPIO::cout << "Copying F for next recursion" << endl;
+      deriv_recurse(F,F_minus,level);   
       F = F_minus;
     }
 
   
-    QDPIO::cout << "Multiplying on U[mu] from lowest level" << endl;
     for(int mu=0; mu < Nd; mu++) { 
       F[mu] =(smeared_links[0])[mu]*F[mu];
     }
@@ -583,11 +579,11 @@ namespace Chroma {
     END_CODE();
   }
 
-  //! Construct isotopic smearing in 3 directions 
+  //! Construct isotopic smearing in directions orthogonal to orthog dir
   StoutConnectState::StoutConnectState(const multi1d<LatticeColorMatrix>& u_,
 				       const Real& sm_fact_, 
 				       const int   n_smear_,
-				       const int   j_decay) 
+				       const int   orthog_dir) 
   {
     START_CODE();
     multi2d<Real> sm_fact_array(Nd, Nd);
@@ -599,18 +595,33 @@ namespace Chroma {
     for(int mu=0; mu < Nd; mu++) { 
       
       for(int nu=0; nu < Nd; nu++) { 
+	if( mu != nu ) {
 	  sm_fact_array[mu][nu] = sm_fact_;
+	}
+	else {
+	  // Set the rho to 0 if mu==nu
+	  sm_fact_array[mu][nu] = 0;
+	}
       }
-    
       
-      // Mask out the j_decay direction
-      if( mu != j_decay ) { 
-	smear_in_this_dirP_aux[mu]=true;
-      }
-      else { 
+      // Mask out the orthog dir
+      if( mu == orthog_dir ) {  // Direction is same as orthog dir
 	smear_in_this_dirP_aux[mu]=false;
       }
+      else {                    // Direction orthogonal to orthog dir
+	smear_in_this_dirP_aux[mu]=true;
+      }
 
+#if 0
+      QDPIO::cout << "Smearing in direction " << mu << " ? ";
+      if ( smear_in_this_dirP_aux[mu] == true ) { 
+	QDPIO::cout << " yes" << endl;
+      }
+      else {
+	QDPIO::cout << " no" << endl;
+      }
+#endif 
+ 
     }
       
     // call the create
@@ -651,7 +662,6 @@ namespace Chroma {
 
     // Iterate up the smearings
     for(int i=1; i <= n_smear; i++) { 
-      QDPIO::cout << "Smearing links" << endl;
       smear_links(smeared_links[i-1], smeared_links[i]);
     }
     END_CODE();

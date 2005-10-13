@@ -1,4 +1,4 @@
-// $Id: t_stout_state.cc,v 2.3 2005-10-04 19:23:19 bjoo Exp $
+// $Id: t_stout_state.cc,v 2.4 2005-10-13 18:38:23 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -19,11 +19,31 @@ int main(int argc, char *argv[])
   const int foo[] = {4,4,4,8};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
+
+
+  // Smearing Parameters 
+  XMLReader xml_in(Chroma::getXMLInputFileName());
+  Real rho=0.1;
+  int  n_smear=3;
+  int orthog_dir=2;
+  try {
+    read(xml_in, "/t_stout_state/rho", rho);
+    read(xml_in, "/t_stout_state/n_smear", n_smear);
+    read(xml_in, "/t_stout_state/orthog_dir", orthog_dir);
+    read(xml_in, "/t_stout_state/nrow", nrow);
+  }
+  catch(const std::string& err) { 
+    QDPIO::cerr << "Caught Error while reading XML: " << err << endl;
+    QDP_abort(1);
+  }
+
+
+
   Layout::setLattSize(nrow);
   Layout::create();
 
-  XMLFileWriter xml("t_mesplq.xml");
-  push(xml, "t_mesplq");
+  XMLFileWriter xml(Chroma::getXMLOutputFileName());
+  push(xml, "t_stout_state");
 
   push(xml,"lattis");
   write(xml,"Nd", Nd);
@@ -62,47 +82,75 @@ int main(int argc, char *argv[])
   pop(xml);
 
 
-  // Test gauge invariance
-  rgauge(u);
-
-  MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-  QDPIO::cout << "After GT w_plaq = " << w_plaq << endl;
-  QDPIO::cout << "After GT link = " << link << endl;
+  // -----------------  CHECK SMEARING ----------------------------------------
+  QDPIO::cout << endl << "Stout Smearing Checks " << endl;
 
 
-  // Call the old stout smear routine 
-  Real rho=0.1;
-  int  n_smear=0;
 
+
+
+  push(xml, "SmearingParams");
+  write(xml, "rho", rho);
+  write(xml, "n_smear", n_smear);
+  write(xml, "orthog_dir", orthog_dir);
+  pop(xml);
+
+  // smeared and unsmeared gauge fields
+  multi1d<LatticeColorMatrix> u_smear(Nd);
+  multi1d<LatticeColorMatrix> u_tmp(Nd);
+
+  // Get the unsmeared fields into u_tmp
+  u_tmp = u;
+  for(int i=0; i < n_smear; i++) {
+    for(int mu=0; mu < Nd; mu++){
+      if( mu != orthog_dir) { 
+	stout_smear(u_smear[mu], u_tmp, mu, rho, orthog_dir);
+      }
+      else {
+	u_smear[mu] = u_tmp[mu];
+      }
+    }
+
+    u_tmp = u_smear;
+  }
+  
+  MesPlq(u_smear, w_plaq, s_plaq, t_plaq, link);
+  QDPIO::cout << "w_plaq ("<< n_smear << " levels of old stout smearing) = " << w_plaq << endl;
+
+  push(xml, "CheckStoutStateSmear");
+  write(xml, "w_plaq_old_smear", w_plaq);
+
+  // ------------------ REGRESSION TEST THE  STOUT SMEARING IN THE 
+  // ------------------ STOUT STATE against the independently cosded routine
+
+
+  // Random Gauge Transformed field
   multi1d<LatticeColorMatrix> u_rg(Nd);
+  LatticeColorMatrix g; // Gauge transformation matrices
+
+  // Do the gauge transformation
   u_rg = u;
-
-  // New way 
-  StoutConnectState s_state(u, rho, n_smear);
-
-  //SimpleConnectState s_state(u);
-  LatticeColorMatrix g; // Gauge transform
   rgauge(u_rg,g);
+  
+  // Create state - both untransformed and transformed 
+  StoutConnectState s_state(u, rho, n_smear, orthog_dir);
+  StoutConnectState s_state2(u_rg, rho, n_smear, orthog_dir);
 
-  //SimpleConnectState s_state2(u_rg);
-  // Make fat links from random gauge transformed u
-  StoutConnectState s_state2(u_rg, rho, n_smear);
 
-
-  // Try out the plaquette routine
+  // Get the plaquette
   MesPlq(s_state.getLinks(), w_plaq, s_plaq, t_plaq, link);
   QDPIO::cout << "w_plaq ("<< n_smear << " levels of new stout smearing) = " << w_plaq << endl;
-  QDPIO::cout << "link (" << n_smear << " levels of new stout smearing) = " << link << endl;
-
-
+  write(xml, "new_smearing_from_state", w_plaq);
+  
   // Try out the plaquette routine
   MesPlq(s_state2.getLinks(), w_plaq, s_plaq, t_plaq, link);
-  QDPIO::cout << "w_plaq (After GT2  new stout smearing) = " << w_plaq << endl;
-  QDPIO::cout << "link (After GT2 new stout smearing) = " << link << endl;
+  QDPIO::cout << "w_plaq (After gauge transf and " << n_smear << " levels new stout smearing) = " << w_plaq << endl << endl;
+  write(xml, "new_smearing_from_state_gtrans", w_plaq);
+  pop(xml);
 
-
-  multi1d<LatticeColorMatrix> fat_force(Nd);
-  multi1d<LatticeColorMatrix> fat_force2(Nd);
+  // Now get the forces
+  multi1d<LatticeColorMatrix> fat_force(Nd);  //  original 
+  multi1d<LatticeColorMatrix> fat_force2(Nd); //  for the RG transform
 
   fat_force=0;
   fat_force2=0;
@@ -111,64 +159,86 @@ int main(int argc, char *argv[])
   LatticeFermion X;
   LatticeFermion Y;
 
+  // Untransformed
   gaussian(phi);
   
   Real Mass = 0.2;
   int n_count;
-  Real RsdCG=Real(1.0e-5);
+  Real RsdCG=Real(1.0e-7);
   int MaxCG=200;
-  // Now create a linop
+
+  
+  // Get Force for untransformed field
   X=zero;  
   UnprecWilsonLinOp M1(s_state.getLinks(), Mass);
   InvCG2(M1, phi, X, RsdCG, MaxCG, n_count);
-  QDPIO::cout << "n_count is " << n_count << endl;
   M1(Y, X, PLUS);
   M1.deriv(fat_force, X, Y, MINUS);
-    
+  
+  
+
+  // Get Force for transformed field 
+  LatticeFermion phi2 = g*phi; // Transform source fermion
   X=zero;
   UnprecWilsonLinOp M2(s_state2.getLinks(), Mass);
-  InvCG2(M2, phi, X, RsdCG, MaxCG, n_count);
-  QDPIO::cout << "n_count is " << n_count << endl;
+  InvCG2(M2, phi2, X, RsdCG, MaxCG, n_count);
   M2(Y, X, PLUS);
   M2.deriv(fat_force2, X,Y, MINUS);
-  
+
+
+  QDPIO::cout << "Force norms before derivative with respect to thin links" << endl;
+  QDPIO::cout << "========================================================" << endl << endl;
+
+  // Get Force norms
   Double F_norm;
 
+  push(xml, "ForcesCheck");
+
   F_norm = norm2(fat_force);
-  QDPIO::cout << "F_norm for fat_force is " << F_norm << endl;
+  QDPIO::cout << "F_norm for fat force is " << F_norm << endl;
+  write(xml, "forceNormPreGaugeDeriv", F_norm);
 
-  multi1d<LatticeColorMatrix> force_tmp(Nd);
+  F_norm = norm2(fat_force2);
+  QDPIO::cout << "F_norm for RG transformed fat_force is " << F_norm << endl;
+  write(xml, "forceNormPreGaugeDerivGt", F_norm);
 
-  // Get force
-  for(int mu=0; mu < Nd; mu++) { 
-    force_tmp[mu] = adj(g)*fat_force2[mu]*g;
-  }
-
-  F_norm = norm2(force_tmp);
-  QDPIO::cout << "RG Trans F_norm  for fat_force2 is " << F_norm << endl;
-  
-
-  // Now derive wrt fat links
+  // Now do the recursive derivative wrt thin links.
   s_state.deriv(fat_force);
   s_state2.deriv(fat_force2);
 
-  
+  QDPIO::cout << endl << endl;
+  QDPIO::cout << "Force norms after derivative with respect to thin links" << endl;
+  QDPIO::cout << "========================================================" << endl << endl;
+
+  // Get Force norms
   F_norm = norm2(fat_force);
-  QDPIO::cout << "F_norm for fat_force is " << F_norm << endl;
-  
+  QDPIO::cout << "F_norm for fat force is " << F_norm << endl;
+  write(xml, "ForceNormPostGaugeDeriv", F_norm);
 
-  
+  F_norm = norm2(fat_force2);
+  QDPIO::cout << "F_norm for RG transformed fat_force is " << F_norm << endl;
+  write(xml, "ForceNormPostGaugeDerivGt", F_norm);
+
+  multi1d<LatticeColorMatrix> force_diff(Nd);
+
   for(int mu=0; mu < Nd; mu++) { 
-    force_tmp[mu] = adj(g)*fat_force2[mu]*g;
+    force_diff[mu]  = fat_force[mu] - adj(g)*fat_force2[mu]*g;
+    F_norm = sqrt(norm2(force_diff[mu]));
+    QDPIO::cout << "|| force - RG force in dir "<< mu <<" ||=  "<< F_norm <<   endl;
+    ostringstream tagname;
+    tagname << "force_diff_norm_" << mu;
+    write(xml, tagname.str(), F_norm);
   }
+  pop(xml);
 
-  F_norm = norm2(force_tmp);
-  QDPIO::cout << "RG Trans F_norm  for fat_force2 is " << F_norm << endl;
-  
+  F_norm = sqrt(norm2(force_diff));
+  QDPIO::cout << "Total difference between original and gauge transformed force: " << F_norm << endl;
+  push(xml, "ForceDiffNorm");
+  write(xml, "totalForceDiffNorm", F_norm);
+  pop(xml);
 
 
   pop(xml);
-
 
   // Time to bolt
   Chroma::finalize();

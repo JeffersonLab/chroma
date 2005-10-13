@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermact_params.h,v 2.1 2005-10-02 03:08:49 bjoo Exp $
+// $Id: stout_fermact_params.h,v 2.2 2005-10-13 18:38:23 bjoo Exp $
 /* \file
  * \brief Shared things between all stout fermion actions 
  */
@@ -18,6 +18,7 @@ namespace Chroma
     StoutFermActParams(XMLReader& in, const std::string& path);
     Real rho;
     int n_smear;
+    int orthog_dir; 
     std::string internal_fermact;
   };
 

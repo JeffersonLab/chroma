@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_stout_fermact_array_w.h,v 2.1 2005-10-04 19:23:19 bjoo Exp $
+// $Id: unprec_stout_fermact_array_w.h,v 2.2 2005-10-13 18:38:23 bjoo Exp $
 
 /*! @file
  *  @brief Proxy fermion action class instance for unpreconditioned stout fermacts 
@@ -133,7 +133,7 @@ namespace Chroma
 	S_w->getFermBC().modifyU(u_tmp);
 
 	// Make a stout state
-	return new StoutConnectState(u_tmp, p.rho, p.n_smear);
+	return new StoutConnectState(u_tmp, p.rho, p.n_smear, p.orthog_dir);
       }
 
       const SystemSolver<LatticeFermion>* qprop(Handle< const ConnectState > state, const InvertParam_t& invParam) const
