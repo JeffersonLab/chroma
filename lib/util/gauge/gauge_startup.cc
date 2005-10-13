@@ -1,4 +1,4 @@
-// $Id: gauge_startup.cc,v 2.0 2005-09-25 21:04:44 edwards Exp $
+// $Id: gauge_startup.cc,v 2.1 2005-10-13 03:10:07 edwards Exp $
 /*! \file
  *  \brief Initialize the gauge fields
  */
@@ -59,21 +59,57 @@ namespace Chroma {
       break;
 
     case CFG_TYPE_KYU:
+    {
       readKYU(u, cfg.cfg_file);
-      break;
+
+      XMLBufferWriter file_xml, record_xml;
+      push(file_xml, "gauge");
+      write(file_xml, "id", int(0));
+      pop(file_xml);
+      push(record_xml, "kentucky");
+      pop(record_xml);
+
+      gauge_file_xml.open(file_xml);
+      gauge_xml.open(record_xml);
+    }
+    break;
 
     case CFG_TYPE_DISORDERED:
+    {
       QDPIO::cout << "Starting up disordered (random/hot) config" << endl;
       HotSt(u);
-      break;
+
+      XMLBufferWriter file_xml, record_xml;
+      push(file_xml, "gauge");
+      write(file_xml, "id", int(0));
+      pop(file_xml);
+      push(record_xml, "disordered");
+      pop(record_xml);
+
+      gauge_file_xml.open(file_xml);
+      gauge_xml.open(record_xml);
+    }
+    break;
 
     case CFG_TYPE_UNIT:
+    {
       QDPIO::cout << "Starting up unit gauge (free) config" << endl;
       u = 1;
-      break; 
+
+      XMLBufferWriter file_xml, record_xml;
+      push(file_xml, "gauge");
+      write(file_xml, "id", int(0));
+      pop(file_xml);
+      push(record_xml, "unit");
+      pop(record_xml);
+
+      gauge_file_xml.open(file_xml);
+      gauge_xml.open(record_xml);
+    }
+    break; 
 
     default:
-      QDPIO::cerr << "gaugeStartup: Configuration type is unsupported." << endl;
+      QDPIO::cerr << __func__ << ": Configuration type is unsupported." << endl;
       QDP_abort(1);
     }
 
