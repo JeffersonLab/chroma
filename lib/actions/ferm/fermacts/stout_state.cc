@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_state.cc,v 2.4 2005-10-13 18:38:23 bjoo Exp $
+// $Id: stout_state.cc,v 2.5 2005-10-13 22:07:06 bjoo Exp $
 /*! @file 
  *  @brief Connection State for Stout state (.cpp file)
  */
@@ -98,11 +98,22 @@ namespace Chroma {
 	// -i. iQ is formed with taproj()
 	if(smear_in_this_dirP[mu]) {
 	
-	  LatticeColorMatrix iQ;
-	  iQ = C[mu]*adj(u_minus[mu]); // Q_mu is Omega mu here (eq 2 part 2)
-	  taproj(iQ);           // This does eq(2 part 1)
-	  Q = timesMinusI(iQ);
+	  LatticeColorMatrix Omega;
+	  Omega = C[mu]*adj(u_minus[mu]); // Q_mu is Omega mu here (eq 2 part 2)
 
+#if 0
+	  taproj(Omega);           // This does eq(2 part 1)
+	  Q = timesI(Omega);
+#else
+	  LatticeColorMatrix tmp = adj(Omega) - Omega;
+	  LatticeColorMatrix tmp2 = traceColor(tmp);
+	  tmp2 *= Real(1)/Real(Nc);
+	  tmp -= tmp2;
+	  tmp *= Real(0.5);
+	  Q = timesI(tmp);
+
+	  // Check Q is traceless hermitian.?
+#endif
 	}
 	else { 
 	  Q = 0;
@@ -201,7 +212,7 @@ namespace Chroma {
 		      (-1.0/3.0) + (1.0/30.0)*ww*(1-(1.0/28.0)*ww*(1-(1.0/54.0)*ww)));    
 	}
 
-	LatticeReal b_denom=2*denom*denom;
+	LatticeReal b_denom=2.0*(9.0*uu -ww)*(9.0*uu-ww);
 	
 	multi1d<LatticeComplex> r_1(3);
 	multi1d<LatticeComplex> r_2(3);
@@ -290,8 +301,15 @@ namespace Chroma {
 	LatticeColorMatrix Gamma=g1*Q + g2*QQ + f[1]*u_minus[mu]*F_plus[mu]
 	  + f[2]*Q*u_minus[mu]*F_plus[mu] + f[2]*u_minus[mu]*F_plus[mu]*Q;
 
+ #if 0
 	Lambda[mu]=Real(0.5)*(Gamma + adj(Gamma)) - (Real(0.5)/Real(Nc))*trace( Gamma + adj(Gamma));
-
+#else
+	Lambda[mu] = Gamma + adj(Gamma);
+	LatticeColorMatrix tmp = traceColor(Lambda[mu]);
+	tmp *= (Real(1)/Real(Nc));
+	Lambda[mu] -= tmp;
+	Lambda[mu] *= Real(0.5);
+#endif
 	F_minus[mu] = F_plus[mu]*(f[0] + f[1]*Q + f[2]*QQ);
 	F_minus[mu] += timesI(adj(C[mu])*Lambda[mu]);
       }
@@ -307,7 +325,7 @@ namespace Chroma {
       if( smear_in_this_dirP[mu] ) { 
 	// All the staple terms go here
 	// There are six staple terms
-	LatticeColorMatrix staple_sum;
+	LatticeColorMatrix staple_sum = 0;
 
 	for(int nu = 0; nu < Nd; nu++) { 
 	  if( smear_in_this_dirP[nu] == true && nu != mu ) {
@@ -322,7 +340,7 @@ namespace Chroma {
 	    //   4 ||   |3        |1                     |
 	    //     ||   |         |                       -> mu
 	    //          V
-	    staple_sum = rho(nu,mu)*shift(u_minus[nu],FORWARD,mu)*adj(shift(u_minus[mu],FORWARD,nu))*adj(u_minus[nu])*Lambda[nu];
+	    staple_sum += rho(nu,mu)*shift(u_minus[nu],FORWARD,mu)*adj(shift(u_minus[mu],FORWARD,nu))*adj(u_minus[nu])*Lambda[nu];
 	    
 	
 
@@ -444,8 +462,6 @@ namespace Chroma {
     START_CODE();
     multi1d<LatticeColorMatrix> F_minus(Nd); // Force at one level lower
 
-
-
     for(int level=n_smear-1; level >= 0; level--) {
 
       // Take the current force, and compute force one level down 
@@ -454,10 +470,13 @@ namespace Chroma {
       F = F_minus;
     }
 
-  
+
+
     for(int mu=0; mu < Nd; mu++) { 
-      F[mu] =(smeared_links[0])[mu]*F[mu];
+      F[mu] = (smeared_links[0])[mu]*F_minus[mu];
     }
+
+
 
     END_CODE();
   }
