@@ -1,3 +1,7 @@
+10/12/2005 -- Robert Edwards
+	Version 2.2.1. Tightened some QDP file checks. Added updating of xml
+        from gauge_startup in cases where no files read.
+
 09/29/2005 -- Robert Edwards
 	Version 2.2.0. Stout support added to HMC.
 
