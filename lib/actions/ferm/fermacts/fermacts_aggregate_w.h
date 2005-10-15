@@ -1,7 +1,7 @@
 // -*- C++ -*-
-// $Id: fermacts_aggregate_w.h,v 2.0 2005-09-25 21:04:25 edwards Exp $
+// $Id: fermacts_aggregate_w.h,v 2.1 2005-10-15 01:35:26 edwards Exp $
 /*! \file
- *  \brief All Wilson-type fermionic boundary actions
+ *  \brief All Wilson-type fermion actions
  */
 
 #ifndef __fermactss_aggregate_w_h__
