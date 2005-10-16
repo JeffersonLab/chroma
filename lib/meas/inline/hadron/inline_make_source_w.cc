@@ -1,4 +1,4 @@
-// $Id: inline_make_source_w.cc,v 2.0 2005-09-25 21:04:37 edwards Exp $
+// $Id: inline_make_source_w.cc,v 2.1 2005-10-16 13:35:12 flemingg Exp $
 /*! \file
  * \brief Inline construction of make_source
  *
@@ -107,6 +107,10 @@ namespace Chroma
   {
     START_CODE();
 
+    // Record the initial state of the RNG (needed for noisy sources)
+    QDP::Seed ran_seed ;
+    QDP::RNG::savern(ran_seed) ;
+
     push(xml_out, "make_source");
     write(xml_out, "update_no", update_no);
 
@@ -135,9 +139,11 @@ namespace Chroma
 		  <<": Displacement direction= " << params.param.disp_dir << endl;
       break;
     case SRC_TYPE_RAND_Z2_WALL_SOURCE:
+      write(xml_out, "RNG", ran_seed) ;
       QDPIO::cout << "Random complex Z(2) wall source" << endl;
       break;
     case SRC_TYPE_RAND_U1_WALL_SOURCE:
+      write(xml_out, "RNG", ran_seed) ;
       QDPIO::cout << "Random U(1) wall source" << endl;
       break;
     default:
@@ -375,6 +381,10 @@ namespace Chroma
       XMLBufferWriter record_xml;
       push(record_xml, "MakeSource");
       write(record_xml, "PropSource", params.param);
+      if( (params.param.source_type == SRC_TYPE_RAND_Z2_WALL_SOURCE) ||
+          (params.param.source_type == SRC_TYPE_RAND_U1_WALL_SOURCE) ) {
+        write(record_xml, "RNG", ran_seed) ;
+      }
       write(record_xml, "Config_info", gauge_xml);
       pop(record_xml);
     
