@@ -9,7 +9,7 @@ use Parse_groups;
 #
 #  First check the command line arguments are correct
 
-die "Usage parse_baryons.pl <qqq prop file> <displacement table> <src_template> <prop_template> <sink_template> <ud_mass> <s_mass>
+die "Usage parse_baryons.pl <qqq prop file> <displacement table> <src_template> <prop_template> <ud_mass> <s_mass> <sink_template>
 <prop_root> <config_number> <qqq_template> <cfg_template>" unless $#ARGV eq 10;
 
 #
@@ -155,7 +155,7 @@ system("sort src_list_tmp | uniq > src_list; rm src_list_tmp");
 #
 # Begin by writing the chroma header
 
-$chroma_ini = "chroma_ini";
+$chroma_ini = "DATA";
 open(OUT,">$chroma_ini");
 print OUT '<?xml version="1.0"?>';
 print OUT "\n";
@@ -324,9 +324,6 @@ for($ctr = 0; $ctr < $number_qqq; $ctr++){
     close(IN);
 }
 
-print OUT "</InlineMeasurements>\n";
-print OUT "<nrow>4 4 4 8</nrow>\n";
-print OUT "</Param>\n";
 
 #
 #  Finally, the config file
