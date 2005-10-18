@@ -1,3 +1,6 @@
+10/18/2005 -- Robert Edwards
+	Version 2.2.2. Minor tweaks.
+
 10/12/2005 -- Robert Edwards
 	Version 2.2.1. Tightened some QDP file checks. Added updating of xml
         from gauge_startup in cases where no files read.
