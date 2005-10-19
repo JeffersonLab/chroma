@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.3 2005-10-04 19:23:18 bjoo Exp $
+# $Id: Makefile.am,v 2.4 2005-10-19 01:16:03 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -290,7 +290,6 @@ nobase_include_HEADERS += \
 	meas/hadron/mesons_w.h meas/hadron/seqpiontest_w.h \
 	meas/hadron/seqsrc_funcmap_w.h \
 	meas/hadron/loops_w.h \
-	meas/hadron/multipole_w.h \
 	meas/hadron/walfil_w.h meas/hadron/wall_qprop_w.h \
 	meas/hadron/wallff_w.h \
 	meas/hadron/walldeltaff_w.h meas/hadron/walldeltapff_w.h \
@@ -387,7 +386,6 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_bar3ptfn_w.h \
 	meas/inline/hadron/inline_building_blocks_w.h \
 	meas/inline/hadron/inline_mres_w.h \
-	meas/inline/hadron/inline_multipole_w.h \
 	meas/inline/hadron/inline_qpropqio_w.h \
 	meas/inline/hadron_s/inline_spectrum_s.h \
 	meas/inline/hadron_s/hadron_s.h \
@@ -412,6 +410,10 @@ nobase_include_HEADERS += \
 	meas/inline/smear/inline_ape_smear.h \
 	meas/inline/smear/inline_hyp_smear.h \
 	meas/inline/smear/inline_stout_smear.h
+
+# Taken out for now
+#	meas/hadron/multipole_w.h
+#	meas/inline/hadron/inline_multipole_w.h
 
 #
 # Include Path
@@ -656,7 +658,6 @@ libchroma_a_SOURCES += \
 	meas/hadron/D_j_w.cc meas/hadron/formfac_w.cc \
 	meas/hadron/hybmeson_w.cc meas/hadron/loops_w.cc \
         meas/hadron/hadseqsrc_w.cc \
-        meas/hadron/multipole_w.cc \
 	meas/hadron/mesonseqsrc_w.cc meas/hadron/mesons_w.cc \
 	meas/hadron/seqpiontest_w.cc meas/hadron/seqsrc_funcmap_w.cc \
         meas/hadron/walfil_w.cc \
@@ -675,6 +676,9 @@ libchroma_a_SOURCES += \
 	update/molecdyn/monomial/unprec_two_flavor_monomial5d_w.cc \
 	update/molecdyn/monomial/prec_two_flavor_monomial5d_w.cc \
 	util/ferm/gammasgn_w.cc
+
+# Taken out for now
+#        meas/hadron/multipole_w.cc
 
 # Stuff not yet incorporated but lying around
 #	actions/ferm/fermacts/unprec_clover_fermact_w.cc
@@ -712,7 +716,6 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_bar3ptfn_w.cc \
 	meas/inline/hadron/inline_building_blocks_w.cc \
 	meas/inline/hadron/inline_mres_w.cc \
-	meas/inline/hadron/inline_multipole_w.cc \
 	meas/inline/hadron/inline_qpropqio_w.cc \
 	meas/inline/hadron_s/inline_spectrum_s.cc \
         meas/inline/hadron_s/util_compute_quark_prop_s.cc \
@@ -737,6 +740,8 @@ libchroma_a_SOURCES += \
 	meas/inline/smear/inline_hyp_smear.cc \
 	meas/inline/smear/inline_stout_smear.cc
 
+# Taken out for now
+#	meas/inline/hadron/inline_multipole_w.cc
 
 
 #
