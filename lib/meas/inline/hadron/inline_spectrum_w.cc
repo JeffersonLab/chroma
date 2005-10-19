@@ -1,4 +1,4 @@
-// $Id: inline_spectrum_w.cc,v 2.1 2005-09-27 01:11:11 edwards Exp $
+// $Id: inline_spectrum_w.cc,v 2.2 2005-10-19 04:58:38 edwards Exp $
 /*! \file
  * \brief Inline construction of spectrum
  *
@@ -259,6 +259,12 @@ namespace Chroma
 		       unsigned long update_no,
 		       XMLWriter& xml_out) 
   {
+    START_CODE();
+
+    StopWatch snoop;
+    snoop.reset();
+    snoop.start();
+
     push(xml_out, "spectrum_w");
     write(xml_out, "update_no", update_no);
 
@@ -764,7 +770,12 @@ namespace Chroma
     pop(xml_array);  // Wilson_spectroscopy
     pop(xml_out);  // spectrum_w
 
-    QDPIO::cout << "Wilson spectroscopy ran successfully" << endl;
+    snoop.stop();
+    QDPIO::cout << InlineSpectrumEnv::name << ": total time = "
+		<< snoop.getTimeInSeconds() 
+		<< " secs" << endl;
+
+    QDPIO::cout << InlineSpectrumEnv::name << ": ran successfully" << endl;
 
     END_CODE();
   } 

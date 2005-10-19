@@ -1,4 +1,4 @@
-// $Id: inline_seqsource_w.cc,v 2.2 2005-10-01 17:01:39 edwards Exp $
+// $Id: inline_seqsource_w.cc,v 2.3 2005-10-19 04:58:37 edwards Exp $
 /*! \file
  * \brief Inline construction of sequential sources
  *
@@ -113,6 +113,10 @@ namespace Chroma
 			      XMLWriter& xml_out) 
   {
     START_CODE();
+
+    StopWatch snoop;
+    snoop.reset();
+    snoop.start();
 
     push(xml_out, "seqsource");
     write(xml_out, "update_no", update_no);
@@ -385,7 +389,12 @@ namespace Chroma
 
     pop(xml_out);    // seqsource
 
-    QDPIO::cout << "Seqsource ran successfully" << endl;
+    snoop.stop();
+    QDPIO::cout << InlineSeqSourceEnv::name << ": total time = "
+		<< snoop.getTimeInSeconds() 
+		<< " secs" << endl;
+
+    QDPIO::cout << InlineSeqSourceEnv::name << ": ran successfully" << endl;
 
     END_CODE();
   } 

@@ -1,4 +1,4 @@
-// $Id: inline_propagator_w.cc,v 2.0 2005-09-25 21:04:37 edwards Exp $
+// $Id: inline_propagator_w.cc,v 2.1 2005-10-19 04:58:37 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -162,6 +162,10 @@ namespace Chroma
 			 XMLWriter& xml_out) 
   {
     START_CODE();
+
+    StopWatch snoop;
+    snoop.reset();
+    snoop.start();
 
     push(xml_out, "propagator");
     write(xml_out, "update_no", update_no);
@@ -451,7 +455,12 @@ namespace Chroma
 
     pop(xml_out);  // propagator
 
-    QDPIO::cout << "Propagator ran successfully" << endl;
+    snoop.stop();
+    QDPIO::cout << InlinePropagatorEnv::name << ": total time = "
+		<< snoop.getTimeInSeconds() 
+		<< " secs" << endl;
+
+    QDPIO::cout << InlinePropagatorEnv::name << ": ran successfully" << endl;
 
     END_CODE();
   } 

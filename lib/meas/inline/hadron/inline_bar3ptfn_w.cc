@@ -1,4 +1,4 @@
-// $Id: inline_bar3ptfn_w.cc,v 2.0 2005-09-25 21:04:37 edwards Exp $
+// $Id: inline_bar3ptfn_w.cc,v 2.1 2005-10-19 04:58:37 edwards Exp $
 /*! \file
  * \brief Inline measurement of bar3ptfn
  *
@@ -220,6 +220,10 @@ namespace Chroma
   {
     START_CODE();
 
+    StopWatch snoop;
+    snoop.reset();
+    snoop.start();
+
     push(xml_out, "bar3ptfn");
     write(xml_out, "update_no", update_no);
 
@@ -423,7 +427,12 @@ namespace Chroma
     write(bin_out, bar3pt);
     bin_out.close();
 
-    QDPIO::cout << "Baryon 3-pt ran successfully" << endl;
+    snoop.stop();
+    QDPIO::cout << InlineBar3ptfnEnv::name << ": total time = "
+		<< snoop.getTimeInSeconds() 
+		<< " secs" << endl;
+
+    QDPIO::cout << InlineBar3ptfnEnv::name << ": ran successfully" << endl;
 
     END_CODE();
   } 

@@ -1,4 +1,4 @@
-// $Id: inline_make_source_w.cc,v 2.1 2005-10-16 13:35:12 flemingg Exp $
+// $Id: inline_make_source_w.cc,v 2.2 2005-10-19 04:58:37 edwards Exp $
 /*! \file
  * \brief Inline construction of make_source
  *
@@ -106,6 +106,10 @@ namespace Chroma
 			       XMLWriter& xml_out) 
   {
     START_CODE();
+
+    StopWatch snoop;
+    snoop.reset();
+    snoop.start();
 
     // Record the initial state of the RNG (needed for noisy sources)
     QDP::Seed ran_seed ;
@@ -408,9 +412,14 @@ namespace Chroma
       QDP_abort(1);
     }
     
-    QDPIO::cout << "Make_source ran successfully" << endl;
-
     pop(xml_out);  // make_source
+
+    snoop.stop();
+    QDPIO::cout << InlineMakeSourceEnv::name << ": total time = "
+		<< snoop.getTimeInSeconds() 
+		<< " secs" << endl;
+
+    QDPIO::cout << InlineMakeSourceEnv::name << ": ran successfully" << endl;
 
     END_CODE();
   } 

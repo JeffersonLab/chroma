@@ -1,4 +1,4 @@
-// $Id: inline_spectrumOct_w.cc,v 2.0 2005-09-25 21:04:37 edwards Exp $
+// $Id: inline_spectrumOct_w.cc,v 2.1 2005-10-19 04:58:37 edwards Exp $
 /*! \file
  * \brief Inline construction of Octet spectrum
  *
@@ -187,9 +187,9 @@ namespace Chroma
   // Function call
   void 
   InlineSpectrumOct::operator()(const multi1d<LatticeColorMatrix>& u,
-			     XMLBufferWriter& gauge_xml,
-			     unsigned long update_no,
-			     XMLWriter& xml_out) 
+				XMLBufferWriter& gauge_xml,
+				unsigned long update_no,
+				XMLWriter& xml_out) 
   {
     // If xml file not empty, then use alternate
     if (params.xml_file != "")
@@ -214,10 +214,16 @@ namespace Chroma
   // Real work done here
   void 
   InlineSpectrumOct::func(const multi1d<LatticeColorMatrix>& u,
-		       XMLBufferWriter& gauge_xml,
-		       unsigned long update_no,
-		       XMLWriter& xml_out) 
+			  XMLBufferWriter& gauge_xml,
+			  unsigned long update_no,
+			  XMLWriter& xml_out) 
   {
+    START_CODE();
+
+    StopWatch snoop;
+    snoop.reset();
+    snoop.start();
+
     push(xml_out, "spectrumOct_w");
     write(xml_out, "update_no", update_no);
 
@@ -318,7 +324,7 @@ namespace Chroma
       QDPIO::cout << "Propagator successfully read and parsed" << endl;
 
       // Derived from input prop
-       // Hunt around to find the mass
+      // Hunt around to find the mass
       // NOTE: this may be problematic in the future if actions are used with no
       // clear def. of a Mass
       std::istringstream  xml_s(prop_header[loop].fermact);
@@ -419,231 +425,236 @@ namespace Chroma
     //light quark determines the source type....
     //this is a problem that has to be fixed!
     switch (source_header[0].source_type)
-      {
-      case SRC_TYPE_POINT_SOURCE:
-	Pt_src = true;
-	break;
+    {
+    case SRC_TYPE_POINT_SOURCE:
+      Pt_src = true;
+      break;
 	
-      case SRC_TYPE_SHELL_SOURCE:
-	Sl_src = true;
-	break;
+    case SRC_TYPE_SHELL_SOURCE:
+      Sl_src = true;
+      break;
 	
-      case SRC_TYPE_WALL_SOURCE:
-	Wl_src = true;
-	break;
+    case SRC_TYPE_WALL_SOURCE:
+      Wl_src = true;
+      break;
 	
-      default:
-	QDPIO::cerr << "Unsupported source type" << endl;
-	QDP_abort(1);
-      }
+    default:
+      QDPIO::cerr << "Unsupported source type" << endl;
+      QDP_abort(1);
+    }
     
     
     // Do the mesons first
     if (params.param.MesonP) 
+    {
+      // Construct {Point|Shell}-Point mesons, if desired
+      if (params.param.Pt_snk) 
       {
-	// Construct {Point|Shell}-Point mesons, if desired
-	if (params.param.Pt_snk) 
-	  {
-	    if (Pt_src)
-	      mesons(qprop[0],
-		     qprop[1],
-		     phases, t0,
-		     xml_array, "Point_Point_Wilson_Mesons");
+	if (Pt_src)
+	  mesons(qprop[0],
+		 qprop[1],
+		 phases, t0,
+		 xml_array, "Point_Point_Wilson_Mesons");
 	    
-	    if (Sl_src)
-	      mesons(qprop[0],
-		     qprop[1],
-		     phases, t0,
-		     xml_array, "Shell_Point_Wilson_Mesons");
+	if (Sl_src)
+	  mesons(qprop[0],
+		 qprop[1],
+		 phases, t0,
+		 xml_array, "Shell_Point_Wilson_Mesons");
 	    
-	    if (Wl_src)
-	      mesons(qprop[0],
-		     qprop[1],
-		     phases_nomom, t0,
-		     xml_array, "Wall_Point_Wilson_Mesons");
-	  } // end if (Pt_snk)
+	if (Wl_src)
+	  mesons(qprop[0],
+		 qprop[1],
+		 phases_nomom, t0,
+		 xml_array, "Wall_Point_Wilson_Mesons");
+      } // end if (Pt_snk)
 
 	// Convolute the quark propagator with the sink smearing function.
 	// Make a copy of the quark propagator and then overwrite it with
 	// the convolution. 
-	if (params.param.Sl_snk) 
+      if (params.param.Sl_snk) 
+      {
+	multi1d<LatticePropagator> quark_prop_smr(params.named_obj.prop_ids.size());
+	for (int loop(0); loop < params.named_obj.prop_ids.size(); ++loop)
 	{
-	  multi1d<LatticePropagator> quark_prop_smr(params.named_obj.prop_ids.size());
-	  for (int loop(0); loop < params.named_obj.prop_ids.size(); ++loop)
-	  {
-	    quark_prop_smr[loop] = qprop[loop];
-	    sink_smear2(u, quark_prop_smr[loop], 
-			params.param.wvf_kind, 
-			params.param.wvf_param[loop],
-			params.param.wvfIntPar[loop], 
-			j_decay);
-	  }
+	  quark_prop_smr[loop] = qprop[loop];
+	  sink_smear2(u, quark_prop_smr[loop], 
+		      params.param.wvf_kind, 
+		      params.param.wvf_param[loop],
+		      params.param.wvfIntPar[loop], 
+		      j_decay);
+	}
 
-	  if (Pt_src)
-	    mesons(quark_prop_smr[0], quark_prop_smr[1], phases, t0,
-		   xml_array, "Point_Shell_Wilson_Mesons");
+	if (Pt_src)
+	  mesons(quark_prop_smr[0], quark_prop_smr[1], phases, t0,
+		 xml_array, "Point_Shell_Wilson_Mesons");
 
-	  if (Sl_src)
-	    mesons(quark_prop_smr[0], quark_prop_smr[1], phases, t0,
-		   xml_array, "Shell_Shell_Wilson_Mesons");
+	if (Sl_src)
+	  mesons(quark_prop_smr[0], quark_prop_smr[1], phases, t0,
+		 xml_array, "Shell_Shell_Wilson_Mesons");
 
-	  if (Wl_src)
-	    mesons(quark_prop_smr[0], quark_prop_smr[1], phases_nomom, t0,
-		   xml_array, "Wall_Shell_Wilson_Mesons");
-	} // end if (Sl_snk)
+	if (Wl_src)
+	  mesons(quark_prop_smr[0], quark_prop_smr[1], phases_nomom, t0,
+		 xml_array, "Wall_Shell_Wilson_Mesons");
+      } // end if (Sl_snk)
 
 	// Wall sink
-	if (params.param.Wl_snk) 
-	{
-	  multi1d<LatticePropagator> wall_quark_prop(params.named_obj.prop_ids.size());
-	  for (int loop(0); loop < params.named_obj.prop_ids.size(); ++loop){
-	    wall_qprop(wall_quark_prop[loop], 
-		       qprop[loop],
-		       phases_nomom);
-	  } 
-	  if (Pt_src)
-	    mesons(wall_quark_prop[0], wall_quark_prop[1], phases_nomom, t0,
-		   xml_array, "Point_Wall_Wilson_Mesons");
+      if (params.param.Wl_snk) 
+      {
+	multi1d<LatticePropagator> wall_quark_prop(params.named_obj.prop_ids.size());
+	for (int loop(0); loop < params.named_obj.prop_ids.size(); ++loop){
+	  wall_qprop(wall_quark_prop[loop], 
+		     qprop[loop],
+		     phases_nomom);
+	} 
+	if (Pt_src)
+	  mesons(wall_quark_prop[0], wall_quark_prop[1], phases_nomom, t0,
+		 xml_array, "Point_Wall_Wilson_Mesons");
 
-	  if (Sl_src)
-	    mesons(wall_quark_prop[0], wall_quark_prop[1], phases_nomom, t0,
-		   xml_array, "Shell_Wall_Wilson_Mesons");
+	if (Sl_src)
+	  mesons(wall_quark_prop[0], wall_quark_prop[1], phases_nomom, t0,
+		 xml_array, "Shell_Wall_Wilson_Mesons");
 
-	  if (Wl_src)
-	    mesons(wall_quark_prop[0], wall_quark_prop[1], phases_nomom, t0,
-		   xml_array, "Wall_Wall_Wilson_Mesons");
-	} // end if (Wl_snk)
+	if (Wl_src)
+	  mesons(wall_quark_prop[0], wall_quark_prop[1], phases_nomom, t0,
+		 xml_array, "Wall_Wall_Wilson_Mesons");
+      } // end if (Wl_snk)
 
-      } // end if (MesonP)
+    } // end if (MesonP)
 
 
       // Do the currents next
-      if (params.param.CurrentP) 
-      {
-	// Construct the rho vector-current and the pion axial current divergence
-	if (Pt_src)
-	  curcor2(u, 
-		  qprop[0],
-		  qprop[1],
-		  phases, 
-		  t0, 3,
-		  xml_array, "Point_Point_Meson_Currents");
+    if (params.param.CurrentP) 
+    {
+      // Construct the rho vector-current and the pion axial current divergence
+      if (Pt_src)
+	curcor2(u, 
+		qprop[0],
+		qprop[1],
+		phases, 
+		t0, 3,
+		xml_array, "Point_Point_Meson_Currents");
         
-	if (Sl_src)
-	  curcor2(u, 
-		  qprop[0],
-		  qprop[1],
-		  phases, 
-		  t0, 3,
-		  xml_array, "Shell_Point_Meson_Currents");
+      if (Sl_src)
+	curcor2(u, 
+		qprop[0],
+		qprop[1],
+		phases, 
+		t0, 3,
+		xml_array, "Shell_Point_Meson_Currents");
         
-	if (Wl_src)
-	  curcor2(u, 
-		  qprop[0],
-		  qprop[1],
-		  phases_nomom, 
-		  t0, 3,
-		  xml_array, "Wall_Point_Meson_Currents");
-      } // end if (CurrentP)
+      if (Wl_src)
+	curcor2(u, 
+		qprop[0],
+		qprop[1],
+		phases_nomom, 
+		t0, 3,
+		xml_array, "Wall_Point_Meson_Currents");
+    } // end if (CurrentP)
 
 
       // Do the baryons
-      if (params.param.BaryonP) 
+    if (params.param.BaryonP) 
+    {
+      // Construct {Point|Shell}-Point mesons, if desired
+      if (params.param.Pt_snk) 
       {
-	// Construct {Point|Shell}-Point mesons, if desired
-	if (params.param.Pt_snk) 
-	{
-	  if (Pt_src)
-	    barhqlq(qprop[0],
-		    qprop[1],
-		    phases, 
-		    t0, bc_spec, params.param.time_rev, 
-		    xml_array, "Point_Point_Wilson_Baryons");
+	if (Pt_src)
+	  barhqlq(qprop[0],
+		  qprop[1],
+		  phases, 
+		  t0, bc_spec, params.param.time_rev, 
+		  xml_array, "Point_Point_Wilson_Baryons");
         
-	  if (Sl_src)
-	     barhqlq(qprop[0],
-		     qprop[1],
-		     phases, 
-		     t0, bc_spec, params.param.time_rev, 
-		     xml_array, "Shell_Point_Wilson_Baryons");
+	if (Sl_src)
+	  barhqlq(qprop[0],
+		  qprop[1],
+		  phases, 
+		  t0, bc_spec, params.param.time_rev, 
+		  xml_array, "Shell_Point_Wilson_Baryons");
         
-	  if (Wl_src)
-	     barhqlq(qprop[0],
-		     qprop[1],
-		     phases_nomom, 
-		     t0, bc_spec, params.param.time_rev, 
-		     xml_array, "Wall_Point_Wilson_Baryons");
-	} // end if (Pt_snk)
+	if (Wl_src)
+	  barhqlq(qprop[0],
+		  qprop[1],
+		  phases_nomom, 
+		  t0, bc_spec, params.param.time_rev, 
+		  xml_array, "Wall_Point_Wilson_Baryons");
+      } // end if (Pt_snk)
 
 	// Convolute the quark propagator with the sink smearing function.
 	// Make a copy of the quark propagator and then overwrite it with
 	// the convolution. 
-	if (params.param.Sl_snk) 
-	{
-	  multi1d<LatticePropagator> quark_prop_smr(params.named_obj.prop_ids.size());
-	  for (int loop(0); loop < params.named_obj.prop_ids.size(); ++loop){
-	    quark_prop_smr[loop] = qprop[loop];
-	    sink_smear2(u, quark_prop_smr[loop], 
-			params.param.wvf_kind, 
-			params.param.wvf_param[loop],
-			params.param.wvfIntPar[loop], 
-			j_decay);
-	  }
+      if (params.param.Sl_snk) 
+      {
+	multi1d<LatticePropagator> quark_prop_smr(params.named_obj.prop_ids.size());
+	for (int loop(0); loop < params.named_obj.prop_ids.size(); ++loop){
+	  quark_prop_smr[loop] = qprop[loop];
+	  sink_smear2(u, quark_prop_smr[loop], 
+		      params.param.wvf_kind, 
+		      params.param.wvf_param[loop],
+		      params.param.wvfIntPar[loop], 
+		      j_decay);
+	}
 
-	  if (Pt_src)
-	     barhqlq(quark_prop_smr[1],quark_prop_smr[0], phases, 
-		   t0, bc_spec, params.param.time_rev, 
-		   xml_array, "Point_Shell_Wilson_Baryons");
+	if (Pt_src)
+	  barhqlq(quark_prop_smr[1],quark_prop_smr[0], phases, 
+		  t0, bc_spec, params.param.time_rev, 
+		  xml_array, "Point_Shell_Wilson_Baryons");
         
-	  if (Sl_src)
-	     barhqlq(quark_prop_smr[1],quark_prop_smr[0], phases, 
-		   t0, bc_spec, params.param.time_rev, 	
-		   xml_array, "Shell_Shell_Wilson_Baryons");
+	if (Sl_src)
+	  barhqlq(quark_prop_smr[1],quark_prop_smr[0], phases, 
+		  t0, bc_spec, params.param.time_rev, 	
+		  xml_array, "Shell_Shell_Wilson_Baryons");
         
-	  if (Wl_src)
-	     barhqlq(quark_prop_smr[1],quark_prop_smr[0], phases_nomom, 
-		   t0, bc_spec, params.param.time_rev, 	
-		   xml_array, "Wall_Shell_Wilson_Baryons");
-	} // end if (Sl_snk)
+	if (Wl_src)
+	  barhqlq(quark_prop_smr[1],quark_prop_smr[0], phases_nomom, 
+		  t0, bc_spec, params.param.time_rev, 	
+		  xml_array, "Wall_Shell_Wilson_Baryons");
+      } // end if (Sl_snk)
 
 	// Wall sink
-	if (params.param.Wl_snk) 
-	{
-	  multi1d<LatticePropagator> wall_quark_prop(params.named_obj.prop_ids.size());
-	  for (int loop(0); loop < params.named_obj.prop_ids.size(); ++loop){
-	    wall_qprop(wall_quark_prop[loop], 
-		       qprop[loop],
-		       phases_nomom);
-	  } 
+      if (params.param.Wl_snk) 
+      {
+	multi1d<LatticePropagator> wall_quark_prop(params.named_obj.prop_ids.size());
+	for (int loop(0); loop < params.named_obj.prop_ids.size(); ++loop){
+	  wall_qprop(wall_quark_prop[loop], 
+		     qprop[loop],
+		     phases_nomom);
+	} 
 
-	  if (Pt_src)
-	    barhqlq(wall_quark_prop[1],wall_quark_prop[0] , phases_nomom, 
-		    t0, bc_spec, params.param.time_rev, 
-		    xml_array, "Point_Wall_Wilson_Baryons");
+	if (Pt_src)
+	  barhqlq(wall_quark_prop[1],wall_quark_prop[0] , phases_nomom, 
+		  t0, bc_spec, params.param.time_rev, 
+		  xml_array, "Point_Wall_Wilson_Baryons");
 	  
-	  if (Sl_src)
-	    barhqlq(wall_quark_prop[1],wall_quark_prop[0] , phases_nomom, 
-		    t0, bc_spec, params.param.time_rev, 	
-		    xml_array, "Shell_Wall_Wilson_Baryons");
+	if (Sl_src)
+	  barhqlq(wall_quark_prop[1],wall_quark_prop[0] , phases_nomom, 
+		  t0, bc_spec, params.param.time_rev, 	
+		  xml_array, "Shell_Wall_Wilson_Baryons");
 	  
-	  if (Wl_src)
-	    barhqlq(wall_quark_prop[1],wall_quark_prop[0] , phases_nomom, 
-		    t0, bc_spec, params.param.time_rev, 	
-		    xml_array, "Wall_Wall_Wilson_Baryons");
-	} // end if (Wl_snk)
+	if (Wl_src)
+	  barhqlq(wall_quark_prop[1],wall_quark_prop[0] , phases_nomom, 
+		  t0, bc_spec, params.param.time_rev, 	
+		  xml_array, "Wall_Wall_Wilson_Baryons");
+      } // end if (Wl_snk)
 
-      } // end if (BaryonP)
+    } // end if (BaryonP)
 
-      pop(xml_array);  // array element
+    pop(xml_array);  // array element
 
       
 
-      pop(xml_array);  // Wilson_spectroscopy
-      pop(xml_out);  // spectrumOct_w
+    pop(xml_array);  // Wilson_spectroscopy
+    pop(xml_out);  // spectrumOct_w
 
-      QDPIO::cout << "Wilson Octet spectroscopy ran successfully" << endl;
+    snoop.stop();
+    QDPIO::cout << InlineSpectrumOctEnv::name << ": total time = "
+		<< snoop.getTimeInSeconds() 
+		<< " secs" << endl;
 
-      END_CODE();
+    QDPIO::cout << InlineSpectrumOctEnv::name << ": ran successfully" << endl;
+
+    END_CODE();
   } 
 
 };
