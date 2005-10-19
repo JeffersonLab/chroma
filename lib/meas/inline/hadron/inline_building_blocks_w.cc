@@ -1,4 +1,4 @@
-// $Id: inline_building_blocks_w.cc,v 2.4 2005-10-18 20:10:03 edwards Exp $
+// $Id: inline_building_blocks_w.cc,v 2.5 2005-10-19 02:26:52 edwards Exp $
 /*! \file
  * \brief Inline construction of BuildingBlocks
  *
@@ -230,6 +230,7 @@ namespace Chroma
 
     StopWatch snoop;
     snoop.reset();
+    snoop.start();
 
     push(XmlOut, "ExampleBuildingBlocks");
     write(XmlOut, "update_no", update_no);
@@ -628,7 +629,7 @@ namespace Chroma
 
     snoop.stop();
     QDPIO::cout << InlineBuildingBlocksEnv::name << ": total time = "
-		<< swatch.getTimeInSeconds() 
+		<< snoop.getTimeInSeconds() 
 		<< " secs" << endl;
 
     QDPIO::cout << InlineBuildingBlocksEnv::name << ": ran successfully" << endl;
