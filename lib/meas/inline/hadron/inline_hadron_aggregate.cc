@@ -1,4 +1,4 @@
-// $Id: inline_hadron_aggregate.cc,v 2.2 2005-10-19 01:15:42 edwards Exp $
+// $Id: inline_hadron_aggregate.cc,v 2.3 2005-10-21 15:55:39 flemingg Exp $
 /*! \file
  *  \brief Inline hadron measurement aggregator
  */
@@ -15,6 +15,7 @@
 #include "meas/inline/hadron/inline_qqq_w.h"
 #include "meas/inline/hadron/inline_qqbar_w.h"
 #include "meas/inline/hadron/inline_building_blocks_w.h"
+#include "meas/inline/hadron/inline_noisy_building_blocks_w.h"
 #include "meas/inline/hadron/inline_bar3ptfn_w.h"
 //#include "meas/inline/hadron/inline_multipole_w.h"
 #include "meas/inline/hadron/inline_mres_w.h"
@@ -48,6 +49,7 @@ namespace Chroma
       success &= InlineQQQEnv::registered;
       success &= InlineQQbarEnv::registered;
       success &= InlineBuildingBlocksEnv::registered;
+      success &= InlineNoisyBuildingBlocksEnv::registered;
       success &= InlineBar3ptfnEnv::registered;
 //      success &= InlineMultipoleEnv::registered;  // not being used
       success &= InlineMresEnv::registered;
