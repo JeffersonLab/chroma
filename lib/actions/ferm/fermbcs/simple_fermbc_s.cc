@@ -1,4 +1,4 @@
-// $Id: simple_fermbc_s.cc,v 2.0 2005-09-25 21:04:27 edwards Exp $
+// $Id: simple_fermbc_s.cc,v 2.1 2005-10-24 05:53:55 edwards Exp $
 /*! \file
  *  \brief Simple fermionic BC
  */
@@ -20,7 +20,7 @@ namespace Chroma
     }
 
     //! Name to be used 
-    const std::string name = SimpleFermBCEnv::name;
+    const std::string name = "SIMPLE_FERMBC";
 
     //! Register the fermbc
     const bool registered = TheStaggeredTypeFermBCFactory::Instance().registerObject(name, createFermBC);

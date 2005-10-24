@@ -1,4 +1,4 @@
-// $Id: simple_fermbc_w.cc,v 2.1 2005-10-21 19:32:16 kostas Exp $
+// $Id: simple_fermbc_w.cc,v 2.2 2005-10-24 05:53:55 edwards Exp $
 /*! \file
  *  \brief Simple fermionic BC
  */
@@ -20,12 +20,7 @@ namespace Chroma
     }
 
     //! Name to be used
-#if defined(__APPLE__)
-    // fix the gcc bug on MAC OS X
-    const std::string name="SIMPLE_FERMBC";
-#else
-    const std::string name = SimpleFermBCEnv::name;
-#endif
+    const std::string name = "SIMPLE_FERMBC";
 
     //! Register the fermbc
     const bool registered = TheWilsonTypeFermBCFactory::Instance().registerObject(name, createFermBC);
@@ -43,12 +38,7 @@ namespace Chroma
     }
 
     //! Name to be used
-#if defined(__APPLE__)
-    // fix the gcc bug on MAC OS X
-    const std::string name="SIMPLE_FERMBC";
-#else
-    const std::string name = SimpleFermBCEnv::name;
-#endif
+    const std::string name = "SIMPLE_FERMBC";
 
     //! Register the fermbc
     const bool registered = TheWilsonTypeFermBCArrayFactory::Instance().registerObject(name, createFermBC);

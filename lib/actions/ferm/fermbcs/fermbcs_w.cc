@@ -1,4 +1,4 @@
-// $Id: fermbcs_w.cc,v 2.0 2005-09-25 21:04:27 edwards Exp $
+// $Id: fermbcs_w.cc,v 2.1 2005-10-24 05:53:55 edwards Exp $
 /*! \file
  *  \brief All fermionic BC
  */
@@ -16,8 +16,8 @@ namespace Chroma
   {
     bool registerAll(void) 
     {
-      bool success; 
-      success = WilsonTypeSimpleFermBCEnv::registered;
+      bool success = true;
+      success &= WilsonTypeSimpleFermBCEnv::registered;
       success &= WilsonTypeTwistedFermBCEnv::registered;
 
       return success;
@@ -70,9 +70,9 @@ namespace Chroma
   {
     bool registerAll(void) 
     {
-      bool success; 
-      success = WilsonTypeSimpleFermBCArrayEnv::registered;
-      success = WilsonTypeTwistedFermBCArrayEnv::registered;
+      bool success = true;
+      success &= WilsonTypeSimpleFermBCArrayEnv::registered;
+      success &= WilsonTypeTwistedFermBCArrayEnv::registered;
 
       return success;
     }
