@@ -11,6 +11,7 @@ namespace Chroma {
       bool success; 
       success = theQDPVolfmtMap::Instance().registerPair(string("SINGLEFILE"), QDPIO_SINGLEFILE );
       success &=theQDPVolfmtMap::Instance().registerPair(string("MULTIFILE"), QDPIO_MULTIFILE);
+      success &=theQDPVolfmtMap::Instance().registerPair(string("PARTFILE"), QDPIO_PARTFILE);
       
       return success;
     }
