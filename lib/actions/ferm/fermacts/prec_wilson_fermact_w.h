@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_wilson_fermact_w.h,v 2.0 2005-09-25 21:04:26 edwards Exp $
+// $Id: prec_wilson_fermact_w.h,v 2.1 2005-10-24 06:25:50 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action
  */
@@ -15,15 +15,16 @@
 namespace Chroma
 {
   //! Name and registration
+  /*! \ingroup fermacts */
   namespace EvenOddPrecWilsonFermActEnv
   {
     extern const std::string name;
-    extern const bool registered;
-    //! Name to be used
+    extern const bool registered;   /*!< Name to be used */
   }
   
 
   //! Params for wilson ferm acts
+  /*! \ingroup fermacts */
   struct EvenOddPrecWilsonFermActParams
   {
     EvenOddPrecWilsonFermActParams() {}
@@ -35,7 +36,9 @@ namespace Chroma
 
 
   // Reader/writers
+  /*! \ingroup fermacts */
   void read(XMLReader& xml, const string& path, EvenOddPrecWilsonFermActParams& param);
+  /*! \ingroup fermacts */
   void write(XMLWriter& xml, const string& path, const EvenOddPrecWilsonFermActParams& param);
 
 
