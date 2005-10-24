@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermbcs_s.h,v 2.0 2005-09-25 21:04:27 edwards Exp $
+// $Id: fermbcs_s.h,v 2.1 2005-10-24 05:51:12 edwards Exp $
 /*! \file
  *  \brief All fermionic boundary conditions
  */
@@ -12,8 +12,10 @@
 namespace Chroma
 {
   //! Registration aggregator
+  /*! \ingroup fermbc */
   namespace StaggeredTypeFermBCEnv
   {
+    /*! \ingroup fermbc */
     extern const bool registered;
   }
 }

@@ -1,12 +1,18 @@
-// Include guard
+// -*- C++ -*-
+// $Id: twisted_fermbc_w.h,v 2.1 2005-10-24 05:50:43 edwards Exp $
+/*! \file
+ *  \brief Twisted fermionic BC
+ */
+
 #ifndef twisted_fermbc_w_h
 #define twisted_fermbc_w_h
 
 #include "fermbcs.h"
 
-namespace Chroma { 
-
+namespace Chroma 
+{
   //! Params struct for twisted params
+  /*! \ingroup fermbc */
   struct TwistedFermBCParams {
     TwistedFermBCParams() {}
     TwistedFermBCParams(XMLReader& in, const std::string& path);
@@ -15,10 +21,6 @@ namespace Chroma {
     multi1d<int>  phases_dir;
   };
   
-  namespace TwistedFermBCEnv {
-    extern const std::string name;
-  }
-  
   // Readers writers
   void read(XMLReader& xml, const std::string& path, TwistedFermBCParams& param);
   void write(XMLWriter& xml, const std::string& path, const TwistedFermBCParams& param);
@@ -26,6 +28,7 @@ namespace Chroma {
 
   // 4d & 5D part
   //! 4d name and registration
+  /*! \ingroup fermbc */
   namespace WilsonTypeTwistedFermBCEnv 
   {
     extern const std::string name;
@@ -33,15 +36,17 @@ namespace Chroma {
   }
 
   //! 5d Name and registration
+  /*! \ingroup fermbc */
   namespace WilsonTypeTwistedFermBCArrayEnv {
     extern const std::string name;
     extern const bool registered;
   }
 
-  //! Concrete class for all gauge actions with twisted boundary conditions
-  /*! @ingroup actions
+  //! Concrete class for all fermionic actions with twisted boundary conditions
+  /*!
+   * \ingroup fermbc
    *
-   *  Twisted BC, 
+   *  Twisted BC
    */
   template<class T>
   class TwistedFermBC : public FermBC<T>
@@ -61,54 +66,54 @@ namespace Chroma {
       phases_by_pi(phases_by_pi_),
       phases_dir(phases_dir_), 
       simple_bc_handle(new SimpleFermBC<T>(boundary_)) 
-    {      
-      check_arrays(phases_by_pi_, phases_dir_);
-    }
+      {      
+	check_arrays(phases_by_pi_, phases_dir_);
+      }
    
     //! Copy constructor
     TwistedFermBC(const TwistedFermBC& a) :
       phases_by_pi(a.phases_by_pi),
       phases_dir(a.phases_dir), 
       simple_bc_handle(a.simple_bc_handle) 
-    {
-      check_arrays(a.phases_by_pi, a.phases_dir);    
-    }
+      {
+	check_arrays(a.phases_by_pi, a.phases_dir);    
+      }
   
     //! Destructor is automatic
     ~TwistedFermBC() {}
 
     //! Assignment
     TwistedFermBC& operator=(const TwistedFermBC& a)
-    { 
-      phases_by_pi = a.phases_by_pi;
-      phases_dir = a.phases_dir;
-      simple_bc_handle = a.simple_bc_handle;
-      check_arrays(a.phases_by_pi, a.phases_dir);    
-      return *this;
-    }
+      { 
+	phases_by_pi = a.phases_by_pi;
+	phases_dir = a.phases_dir;
+	simple_bc_handle = a.simple_bc_handle;
+	check_arrays(a.phases_by_pi, a.phases_dir);    
+	return *this;
+      }
 
 
     //! Modify U fields in place
     void modifyU(multi1d<LatticeColorMatrix>& u) const
-    {
-      // Apply the simple BC's first
-      (*simple_bc_handle).modifyU(u);
-      const Real twopi = Real(6.283185307179586476925286);
-      const Real onepi = twopi/Real(2);
+      {
+	// Apply the simple BC's first
+	(*simple_bc_handle).modifyU(u);
+	const Real twopi = Real(6.283185307179586476925286);
+	const Real onepi = twopi/Real(2);
 
-      const multi1d<int>& nrow = Layout::lattSize();
+	const multi1d<int>& nrow = Layout::lattSize();
 
-      // Loop over the three twist angles
-      for(int i=0; i < Nd-1; i++) {
-	int direction = phases_dir[i]; 
-	Real arg = phases_by_pi[i]*onepi / Real( nrow[ direction ] );
-	Real re = cos(arg);
-	Real im = sin(arg);
-	Complex phase = cmplx( re, im );
-	u[ direction ] *= phase;
+	// Loop over the three twist angles
+	for(int i=0; i < Nd-1; i++) {
+	  int direction = phases_dir[i]; 
+	  Real arg = phases_by_pi[i]*onepi / Real( nrow[ direction ] );
+	  Real re = cos(arg);
+	  Real im = sin(arg);
+	  Complex phase = cmplx( re, im );
+	  u[ direction ] *= phase;
 
+	}
       }
-    }
 
     //! Modify fermion fields in place
     /*! NOP */
@@ -143,11 +148,11 @@ namespace Chroma {
       }
     }    
   private:
-	multi1d<Real> phases_by_pi;
-	multi1d<int>  phases_dir;
-	multi1d<int>  boundary;
+    multi1d<Real> phases_by_pi;
+    multi1d<int>  phases_dir;
+    multi1d<int>  boundary;
 
-	Handle< SimpleFermBC<T> > simple_bc_handle;
+    Handle< SimpleFermBC<T> > simple_bc_handle;
   };
 
 }; // Namespace Chroma 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermbc_factory_w.h,v 2.0 2005-09-25 21:04:27 edwards Exp $
+// $Id: fermbc_factory_w.h,v 2.1 2005-10-24 05:50:13 edwards Exp $
 /*! \file
  *  \brief Fermion Boundary Condition factories
  */
@@ -16,6 +16,7 @@
 namespace Chroma
 {
   //! FermBC factory
+  /*! \ingroup fermbc */
   typedef SingletonHolder< 
     ObjectFactory<FermBC<LatticeFermion>, 
 		  std::string,
@@ -26,6 +27,7 @@ namespace Chroma
 
 
   //! FermBC array factory
+  /*! \ingroup fermbc */
   typedef SingletonHolder< 
     ObjectFactory<FermBC< multi1d<LatticeFermion> >, 
 		  std::string,
