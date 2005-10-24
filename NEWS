@@ -1,7 +1,9 @@
 10/24/2005 -- Robert Edwards
+	Version 2.3.0 New noisy sources in inline_make_source and
+
+10/24/2005 -- Robert Edwards
 	Version 2.2.3. Added PARTFILE to qdp_volfmt string-to-enum map. Added call of
-        fermbc aggregator in fermacts. New noisy sources in inline_make_source and
-        noisy bb codes.
+        fermbc aggregator in fermacts.
 
 10/18/2005 -- Robert Edwards
 	Version 2.2.2. Minor tweaks.
