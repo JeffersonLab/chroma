@@ -1,5 +1,8 @@
 10/24/2005 -- Robert Edwards
-	Version 2.3.0 New noisy sources in inline_make_source and
+	Version 2.3.1. Commented out some unused inline stuff.
+
+10/24/2005 -- Robert Edwards
+	Version 2.3.0. New noisy sources in inline_make_source and
 
 10/24/2005 -- Robert Edwards
 	Version 2.2.3. Added PARTFILE to qdp_volfmt string-to-enum map. Added call of
