@@ -1,4 +1,4 @@
-// $Id: inline_hadron_aggregate.cc,v 2.3 2005-10-21 15:55:39 flemingg Exp $
+// $Id: inline_hadron_aggregate.cc,v 2.4 2005-10-25 01:24:17 edwards Exp $
 /*! \file
  *  \brief Inline hadron measurement aggregator
  */
@@ -6,9 +6,9 @@
 #include "meas/inline/hadron/inline_hadron_aggregate.h"
 #include "meas/inline/hadron/inline_make_source_w.h"
 #include "meas/inline/hadron/inline_propagator_w.h"
-#include "meas/inline/hadron/inline_multi_propagator_w.h"
+//#include "meas/inline/hadron/inline_multi_propagator_w.h"
 #include "meas/inline/hadron/inline_seqsource_w.h"
-#include "meas/inline/hadron/inline_hadspec_w.h"
+//#include "meas/inline/hadron/inline_hadspec_w.h"
 #include "meas/inline/hadron/inline_spectrum_w.h"
 #include "meas/inline/hadron/inline_spectrumOct_w.h"
 #include "meas/inline/hadron/inline_sink_smear_w.h"
@@ -40,9 +40,9 @@ namespace Chroma
       // Hadron stuff
       success &= InlineMakeSourceEnv::registered;
       success &= InlinePropagatorEnv::registered;
-      success &= InlineMultiPropagatorEnv::registered;
+//    success &= InlineMultiPropagatorEnv::registered;  // save space
       success &= InlineSeqSourceEnv::registered;
-      success &= InlineHadSpecEnv::registered;
+//    success &= InlineHadSpecEnv::registered;   // save space
       success &= InlineSpectrumEnv::registered;
       success &= InlineSpectrumOctEnv::registered;
       success &= InlineSinkSmearEnv::registered;
