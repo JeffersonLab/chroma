@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 2.6 2005-10-24 06:27:35 edwards Exp $
+# $Id: Makefile.in,v 2.7 2005-10-27 21:31:31 kostas Exp $
 #
 # Path for all files used in building the library
 
@@ -333,6 +333,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron/inline_noisy_building_blocks_w.cc \
 	meas/inline/hadron/inline_mres_w.cc \
 	meas/inline/hadron/inline_qpropqio_w.cc \
+	meas/inline/hadron/inline_qpropadd_w.cc \
 	meas/inline/hadron_s/inline_spectrum_s.cc \
 	meas/inline/hadron_s/util_compute_quark_prop_s.cc \
 	meas/inline/hadron_s/util_compute_singlet_ps.cc \
@@ -559,7 +560,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	inline_building_blocks_w.$(OBJEXT) \
 	inline_noisy_building_blocks_w.$(OBJEXT) \
 	inline_mres_w.$(OBJEXT) inline_qpropqio_w.$(OBJEXT) \
-	inline_spectrum_s.$(OBJEXT) \
+	inline_qpropadd_w.$(OBJEXT) inline_spectrum_s.$(OBJEXT) \
 	util_compute_quark_prop_s.$(OBJEXT) \
 	util_compute_singlet_ps.$(OBJEXT) \
 	util_compute_meson_s.$(OBJEXT) util_baryon_s.$(OBJEXT) \
@@ -913,6 +914,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/inline/hadron/inline_noisy_building_blocks_w.h \
 	meas/inline/hadron/inline_mres_w.h \
 	meas/inline/hadron/inline_qpropqio_w.h \
+	meas/inline/hadron/inline_qpropadd_w.h \
 	meas/inline/hadron_s/inline_spectrum_s.h \
 	meas/inline/hadron_s/hadron_s.h \
 	meas/inline/hadron_s/util_compute_quark_prop_s.h \
@@ -1396,6 +1398,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/hadron/inline_noisy_building_blocks_w.h \
 	meas/inline/hadron/inline_mres_w.h \
 	meas/inline/hadron/inline_qpropqio_w.h \
+	meas/inline/hadron/inline_qpropadd_w.h \
 	meas/inline/hadron_s/inline_spectrum_s.h \
 	meas/inline/hadron_s/hadron_s.h \
 	meas/inline/hadron_s/util_compute_quark_prop_s.h \
@@ -1700,6 +1703,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron/inline_noisy_building_blocks_w.cc \
 	meas/inline/hadron/inline_mres_w.cc \
 	meas/inline/hadron/inline_qpropqio_w.cc \
+	meas/inline/hadron/inline_qpropadd_w.cc \
 	meas/inline/hadron_s/inline_spectrum_s.cc \
 	meas/inline/hadron_s/util_compute_quark_prop_s.cc \
 	meas/inline/hadron_s/util_compute_singlet_ps.cc \
@@ -1940,6 +1944,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_qio_read_obj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_qio_write_erase_obj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_qio_write_obj.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_qpropadd_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_qpropqio_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_qqbar_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_qqq_w.Po@am__quote@
@@ -6356,6 +6361,20 @@ inline_qpropqio_w.obj: meas/inline/hadron/inline_qpropqio_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_qpropqio_w.cc' object='inline_qpropqio_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_qpropqio_w.obj `if test -f 'meas/inline/hadron/inline_qpropqio_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_qpropqio_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_qpropqio_w.cc'; fi`
+
+inline_qpropadd_w.o: meas/inline/hadron/inline_qpropadd_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_qpropadd_w.o -MD -MP -MF "$(DEPDIR)/inline_qpropadd_w.Tpo" -c -o inline_qpropadd_w.o `test -f 'meas/inline/hadron/inline_qpropadd_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_qpropadd_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_qpropadd_w.Tpo" "$(DEPDIR)/inline_qpropadd_w.Po"; else rm -f "$(DEPDIR)/inline_qpropadd_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_qpropadd_w.cc' object='inline_qpropadd_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_qpropadd_w.o `test -f 'meas/inline/hadron/inline_qpropadd_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_qpropadd_w.cc
+
+inline_qpropadd_w.obj: meas/inline/hadron/inline_qpropadd_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_qpropadd_w.obj -MD -MP -MF "$(DEPDIR)/inline_qpropadd_w.Tpo" -c -o inline_qpropadd_w.obj `if test -f 'meas/inline/hadron/inline_qpropadd_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_qpropadd_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_qpropadd_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_qpropadd_w.Tpo" "$(DEPDIR)/inline_qpropadd_w.Po"; else rm -f "$(DEPDIR)/inline_qpropadd_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_qpropadd_w.cc' object='inline_qpropadd_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_qpropadd_w.obj `if test -f 'meas/inline/hadron/inline_qpropadd_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_qpropadd_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_qpropadd_w.cc'; fi`
 
 inline_spectrum_s.o: meas/inline/hadron_s/inline_spectrum_s.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_spectrum_s.o -MD -MP -MF "$(DEPDIR)/inline_spectrum_s.Tpo" -c -o inline_spectrum_s.o `test -f 'meas/inline/hadron_s/inline_spectrum_s.cc' || echo '$(srcdir)/'`meas/inline/hadron_s/inline_spectrum_s.cc; \

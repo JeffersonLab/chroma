@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.5 2005-10-21 15:55:38 flemingg Exp $
+# $Id: Makefile.am,v 2.6 2005-10-27 21:31:31 kostas Exp $
 #
 # Path for all files used in building the library
 
@@ -388,6 +388,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_noisy_building_blocks_w.h \
 	meas/inline/hadron/inline_mres_w.h \
 	meas/inline/hadron/inline_qpropqio_w.h \
+	meas/inline/hadron/inline_qpropadd_w.h \
 	meas/inline/hadron_s/inline_spectrum_s.h \
 	meas/inline/hadron_s/hadron_s.h \
         meas/inline/hadron_s/util_compute_quark_prop_s.h \
@@ -719,6 +720,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_noisy_building_blocks_w.cc \
 	meas/inline/hadron/inline_mres_w.cc \
 	meas/inline/hadron/inline_qpropqio_w.cc \
+	meas/inline/hadron/inline_qpropadd_w.cc \
 	meas/inline/hadron_s/inline_spectrum_s.cc \
         meas/inline/hadron_s/util_compute_quark_prop_s.cc \
         meas/inline/hadron_s/util_compute_singlet_ps.cc \

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hadron.h,v 2.2 2005-10-23 20:45:39 edwards Exp $
+// $Id: hadron.h,v 2.3 2005-10-27 21:31:32 kostas Exp $
 
 /*! \file
  * \brief Inline measurements for hadron observables
@@ -33,5 +33,6 @@
 //#include "inline_multipole_w.h"
 #include "inline_mres_w.h"
 #include "inline_qpropqio_w.h"
+#include "inline_qpropadd_w.h"
 
 #endif

@@ -1,4 +1,4 @@
-// $Id: inline_hadron_aggregate.cc,v 2.4 2005-10-25 01:24:17 edwards Exp $
+// $Id: inline_hadron_aggregate.cc,v 2.5 2005-10-27 21:31:32 kostas Exp $
 /*! \file
  *  \brief Inline hadron measurement aggregator
  */
@@ -20,6 +20,7 @@
 //#include "meas/inline/hadron/inline_multipole_w.h"
 #include "meas/inline/hadron/inline_mres_w.h"
 #include "meas/inline/hadron/inline_qpropqio_w.h"
+#include "meas/inline/hadron/inline_qpropadd_w.h"
 
 // Grab all fermacts to make sure they are registered
 #include "actions/ferm/fermacts/fermacts_aggregate_w.h"
@@ -54,6 +55,7 @@ namespace Chroma
 //      success &= InlineMultipoleEnv::registered;  // not being used
       success &= InlineMresEnv::registered;
       success &= InlineQpropQIOEnv::registered;
+      success &= InlineQpropAddEnv::registered;
       return success;
     }
 
