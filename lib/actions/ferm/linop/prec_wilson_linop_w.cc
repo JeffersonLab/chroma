@@ -1,4 +1,4 @@
-// $Id: prec_wilson_linop_w.cc,v 2.1 2005-10-30 18:37:41 edwards Exp $
+// $Id: prec_wilson_linop_w.cc,v 2.2 2005-10-30 19:37:23 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson linear operator
  */
@@ -222,7 +222,7 @@ namespace Chroma
   //! Return flops performed by the operator()
   unsigned long EvenOddPrecWilsonLinOp::nFlops() const
   { 
-    unsigned long cbsite_flops = 1320+2*Nc*Ns;
+    unsigned long cbsite_flops = 2*D.nFlops()+6*Nc*Ns;
     return cbsite_flops*(Layout::sitesOnNode()/2);
   }
 
