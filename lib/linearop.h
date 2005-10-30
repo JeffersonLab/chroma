@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linearop.h,v 2.0 2005-09-25 21:04:25 edwards Exp $
+// $Id: linearop.h,v 2.1 2005-10-30 18:37:08 edwards Exp $
 
 /*! @file
  * @brief Linear Operators
@@ -44,7 +44,7 @@ namespace Chroma
     
     //! Return the number of flops performed by operator()
     //! Base linop returns 0 and this can be overridden
-    virtual const unsigned long nFlops() const { return 0; }
+    virtual unsigned long nFlops() const { return 0; }
   };
 
 
@@ -80,7 +80,7 @@ namespace Chroma
 
     //! Return the number of flops performed by operator()
     //! Base linop returns 0 and this can be overridden
-    virtual const unsigned long nFlops() const { return 0; };
+    virtual unsigned long nFlops() const { return 0; };
   };
 
 
@@ -375,22 +375,22 @@ namespace Chroma
     }
 
     //! Return flops performed by the evenEvenLinOp
-    virtual const unsigned long evenEvenNFlops() const { return 0; }
+    virtual unsigned long evenEvenNFlops() const { return 0; }
     
     //! Return flops performed by the evenOddLinOp
-    virtual const unsigned long evenOddNFlops() const { return 0; }
+    virtual unsigned long evenOddNFlops() const { return 0; }
 
     //! Return flops performed by the oddEvenLinOp
-    virtual const unsigned long oddEvenNFlops() const { return 0; }
+    virtual unsigned long oddEvenNFlops() const { return 0; }
 
     //! Return flops performed by the oddOddLinOp
-    virtual const unsigned long oddOddNFlops() const { return 0; }
+    virtual unsigned long oddOddNFlops() const { return 0; }
 
     //! Return flops performed by the evenEvenInvLinOp
-    virtual const unsigned long evenEvenInvNFlops() const { return 0; }
+    virtual unsigned long evenEvenInvNFlops() const { return 0; }
 
     //! Return flops performed by the operator()
-    virtual const unsigned long nFlops() const { 
+    virtual unsigned long nFlops() const { 
       return 0;
     }
 
@@ -650,22 +650,22 @@ namespace Chroma
     }
 
     //! Return flops performed by the evenEvenLinOp
-    virtual const unsigned long evenEvenNFlops() const { return 0; }
+    virtual unsigned long evenEvenNFlops() const { return 0; }
     
     //! Return flops performed by the evenOddLinOp
-    virtual const unsigned long evenOddNFlops() const { return 0; }
+    virtual unsigned long evenOddNFlops() const { return 0; }
 
     //! Return flops performed by the oddEvenLinOp
-    virtual const unsigned long oddEvenNFlops() const { return 0; }
+    virtual unsigned long oddEvenNFlops() const { return 0; }
 
     //! Return flops performed by the oddOddLinOp
-    virtual const unsigned long oddOddNFlops() const { return 0; }
+    virtual unsigned long oddOddNFlops() const { return 0; }
 
     //! Return flops performed by the evenEvenInvLinOp
-    virtual const unsigned long evenEvenInvNFlops() const { return 0; }
+    virtual unsigned long evenEvenInvNFlops() const { return 0; }
 
     //! Return flops performed by the operator()
-    virtual const unsigned long nFlops() const { 
+    virtual unsigned long nFlops() const { 
       return (this->oddOddNFlops()
 	      +this->oddEvenNFlops()
 	      +this->evenEvenInvNFlops()
@@ -806,20 +806,20 @@ namespace Chroma
     }
 
     //! Return flops performed by the evenEvenLinOp
-    virtual const unsigned long evenEvenNFlops() const { return 0; }
+    virtual unsigned long evenEvenNFlops() const { return 0; }
     
     //! Return flops performed by the evenOddLinOp
-    virtual const unsigned long evenOddNFlops() const { return 0; }
+    virtual unsigned long evenOddNFlops() const { return 0; }
 
     //! Return flops performed by the oddEvenLinOp
-    virtual const unsigned long oddEvenNFlops() const { return 0; }
+    virtual unsigned long oddEvenNFlops() const { return 0; }
 
     //! Return flops performed by the oddOddLinOp
-    virtual const unsigned long oddOddNFlops() const { return 0; }
+    virtual unsigned long oddOddNFlops() const { return 0; }
 
 
     //! Return flops performed by the operator()
-    virtual const unsigned long nFlops() const { 
+    virtual unsigned long nFlops() const { 
       return this->oddOddNFlops()
 	+this->oddEvenNFlops()
 	+this->evenEvenNFlops()
