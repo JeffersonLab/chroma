@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_wilson_linop_w.h,v 2.0 2005-09-25 21:04:30 edwards Exp $
+// $Id: prec_wilson_linop_w.h,v 2.1 2005-10-30 18:37:41 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion linear operator
  */
@@ -120,10 +120,14 @@ namespace Chroma
       }
     }
 
-    // Override virtual function for efficiency.
+    //! Override virtual function for efficiency.
     void deriv(multi1d<LatticeColorMatrix>& ds_u, const LatticeFermion& chi, 
 	       const LatticeFermion& psi, 
 	       enum PlusMinus isign) const;
+
+    //! Return flops performed by the operator()
+    unsigned long nFlops() const;
+
   private:
     Real fact;  // tmp holding  Nd+Mass
     Real invfact;  // tmp holding  1/(Nd+Mass)

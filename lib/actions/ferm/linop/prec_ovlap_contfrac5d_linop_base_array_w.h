@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovlap_contfrac5d_linop_base_array_w.h,v 2.0 2005-09-25 21:04:29 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_linop_base_array_w.h,v 2.1 2005-10-30 18:37:41 edwards Exp $
 /*! \file
  *  \brief Base class for Even-odd prec. 5D continued fraction linop
  */
@@ -149,36 +149,36 @@ namespace Chroma
 
 
     //! Return flops performed by the evenEvenLinOp
-    const unsigned long evenEvenNFlops(void) const { 
+    unsigned long evenEvenNFlops(void) const { 
       return diagNFlops();
     }
     
     //! Return flops performed by the oddOddLinOp
-    const unsigned long oddOddNFlops(void) const { 
+    unsigned long oddOddNFlops(void) const { 
       return diagNFlops();
     }
     
     //! Return flops performed by the evenOddLinOp
-    const unsigned long evenOddNFlops(void) const { 
+    unsigned long evenOddNFlops(void) const { 
       return offDiagNFlops();
     }
     
     //! Return flops performed by the oddEvenLinOp
-    const unsigned long oddEvenNFlops(void) const { 
+    unsigned long oddEvenNFlops(void) const { 
       return offDiagNFlops();
     }
     
     //! Return flops performed by the evenEvenInvLinOp
-    const unsigned long evenEvenInvNFlops(void) const { 
+    unsigned long evenEvenInvNFlops(void) const { 
       return diagInvNFlops();
     }
     
     //! Return flops performed by the operator()
-    const unsigned long nFlops() const { 
+    unsigned long nFlops() const { 
       // Flopcount is the oddEven EvenEvenInv evenOdd
       // the oddOdd
       // and the subtraction OddOdd - (  )
-      const unsigned long flops=oddEvenNFlops() 
+      unsigned long flops=oddEvenNFlops() 
 	+ evenEvenInvNFlops() 
 	+ evenOddNFlops() 
 	+ oddOddNFlops() 

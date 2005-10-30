@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lmdagm.h,v 2.0 2005-09-25 21:04:28 edwards Exp $
+// $Id: lmdagm.h,v 2.1 2005-10-30 18:37:41 edwards Exp $
 
 #ifndef __lmdagm_w_h__
 #define __lmdagm_w_h__
@@ -46,7 +46,7 @@ public:
       (*A)(chi, tmp, MINUS);
     }
 
-  const unsigned long nFlops(void) const {
+  unsigned long nFlops(void) const {
     unsigned long nflops=2*A->nFlops();
     return nflops;
   }
@@ -95,7 +95,7 @@ public:
       (*A)(chi, tmp, MINUS);
     }
 
-  const unsigned long nFlops(void) const {
+  unsigned long nFlops(void) const {
     unsigned long nflops=2*A->nFlops();
     return nflops;
   }
