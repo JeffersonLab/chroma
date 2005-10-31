@@ -1,4 +1,4 @@
-// $Id: mesonseqsrc_w.cc,v 2.2 2005-10-31 21:43:36 edwards Exp $
+// $Id: mesonseqsrc_w.cc,v 2.3 2005-10-31 21:47:41 edwards Exp $
 /*! \file
  *  \brief Construct meson sequential sources.
  */
@@ -385,9 +385,6 @@ namespace Chroma
       
       success &= TheSeqSourceFuncMap::Instance().registerFunction(string("PION-A0_2"),
 								  mesPionA02SeqSrc);
-      
-      success &= TheSeqSourceFuncMap::Instance().registerFunction(string("PION-RHO_X_2"),
-								  mesPionRhoX2SeqSrc);
       
       success &= TheSeqSourceFuncMap::Instance().registerFunction(string("PION-RHO_X_2"),
 								  mesPionRhoX2SeqSrc);
