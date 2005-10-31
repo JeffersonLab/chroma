@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_base_w.h,v 2.0 2005-09-25 21:04:29 edwards Exp $
+// $Id: lwldslash_base_w.h,v 2.1 2005-10-31 03:48:17 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -76,6 +76,9 @@ namespace Chroma
     virtual void deriv(multi1d<LatticeColorMatrix>& ds_u, 
 		       const LatticeFermion& chi, const LatticeFermion& psi, 
 		       enum PlusMinus isign, int cb) const;
+
+    //! Return flops performed by the operator()
+    unsigned long nFlops() const;
 
   protected:
     //! Get the u field

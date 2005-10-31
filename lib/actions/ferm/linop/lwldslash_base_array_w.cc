@@ -1,4 +1,4 @@
-// $Id: lwldslash_base_array_w.cc,v 2.1 2005-09-27 21:16:19 bjoo Exp $
+// $Id: lwldslash_base_array_w.cc,v 2.2 2005-10-31 03:48:17 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator over arrays
  */
@@ -133,6 +133,11 @@ namespace Chroma
     
     END_CODE();
   }
+
+
+  //! Return flops performed by the operator()
+  unsigned long 
+  WilsonDslashBaseArray::nFlops() const {return size()*1320;}
 
 }; // End Namespace Chroma
 

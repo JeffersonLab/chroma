@@ -1,4 +1,4 @@
-// $Id: prec_parwilson_linop_w.cc,v 2.1 2005-09-27 21:16:19 bjoo Exp $
+// $Id: prec_parwilson_linop_w.cc,v 2.2 2005-10-31 03:48:17 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion linear operator with parity breaking term
  */
@@ -37,14 +37,23 @@ namespace Chroma
     switch (isign)
     {
     case PLUS:
-      chi[rb[0]] = fact*psi + Gamma(Ns*Ns-1)*(H*timesI(psi));
+      chi[rb[0]] = fact*psi + GammaConst<Ns,Ns*Ns-1>()*(H*timesI(psi));
       break;
 
     case MINUS:
-      chi[rb[0]] = fact*psi - Gamma(Ns*Ns-1)*(H*timesI(psi));
+      chi[rb[0]] = fact*psi - GammaConst<Ns,Ns*Ns-1>()*(H*timesI(psi));
       break;
     }
   }
+
+
+  //! Return flops performed by the operator()
+  unsigned long EvenOddPrecParWilsonLinOp::nFlops() const
+  { 
+    unsigned long cbsite_flops = 2*D.nFlops()+6*Nc*Ns;
+    return cbsite_flops*(Layout::sitesOnNode()/2);
+  }
+
 
   //! Apply the inverse of the even-even block onto a source vector
   void 
@@ -56,11 +65,11 @@ namespace Chroma
     switch (isign)
     {
     case PLUS:
-      chi[rb[0]] = invfact1*psi - Gamma(Ns*Ns-1)*(invfact2*timesI(psi));
+      chi[rb[0]] = invfact1*psi - GammaConst<Ns,Ns*Ns-1>()*(invfact2*timesI(psi));
       break;
 
     case MINUS:
-      chi[rb[0]] = invfact1*psi + Gamma(Ns*Ns-1)*(invfact2*timesI(psi));
+      chi[rb[0]] = invfact1*psi + GammaConst<Ns,Ns*Ns-1>()*(invfact2*timesI(psi));
       break;
     }
   }
@@ -74,11 +83,11 @@ namespace Chroma
     switch (isign)
     {
     case PLUS:
-      chi[rb[1]] = fact*psi + Gamma(Ns*Ns-1)*(H*timesI(psi));
+      chi[rb[1]] = fact*psi + GammaConst<Ns,Ns*Ns-1>()*(H*timesI(psi));
       break;
 
     case MINUS:
-      chi[rb[1]] = fact*psi - Gamma(Ns*Ns-1)*(H*timesI(psi));
+      chi[rb[1]] = fact*psi - GammaConst<Ns,Ns*Ns-1>()*(H*timesI(psi));
       break;
     }
   }

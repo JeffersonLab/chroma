@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_parwilson_linop_w.h,v 2.0 2005-09-25 21:04:29 edwards Exp $
+// $Id: prec_parwilson_linop_w.h,v 2.1 2005-10-31 03:48:17 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion linear operator with parity breaking term
  */
@@ -91,6 +91,9 @@ namespace Chroma
       ds_u.resize(Nd);
       ds_u = zero;
     }
+
+    //! Return flops performed by the operator()
+    unsigned long nFlops() const;
 
   private:
     Real fact;  // tmp holding  Nd+Mass
