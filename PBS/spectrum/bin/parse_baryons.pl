@@ -55,73 +55,63 @@ print "disp_len is @disp_len\n";
 #  We now read the first line of the propagator, and compute the propagators
 #  accordingly
 
+open(PROP_LIST, "> prop_tmp");	# List of propagators
+open(QQQ_LIST, "> qqq_tmp");	# List of qqq files
 open(QQQPROP, "< $qqq_prop");
 
 # Read the first line to give the number of qqq propagators
 
-$_ = <QQQPROP>; chomp;
-($number_qqq, $flav[0], $flav[1], $flav[2]) = split;
+while(<QQQPROP>){
 
-print "number_qqq is $number_qqq";
+    chomp;			# Remove extraneous newlines etc
 
+    $len = split;		# Number of arguments in line
+
+    if($len == 4){
+#
+#  This is the line that gives the flavour, and number of correlators
+
+	($number_qqq, $flav[0], $flav[1], $flav[2]) = split;
+	print "Starting new isospin: ";
+	print "Flavours are $flav[0], $flav[1], $flav[2]\n";
+	print "Number of qqqs is $number_qqq\n\n";
+	$ctr = 0;
+    }
+    else{
 #
 #  We now have to parse the lines of the file, and convert the various
 #  numbers into quark propagator descriptions
 #
+	$qqq_info = $_;
+	$ctr = $ctr + 1;
 
-$ctr = 0;
+	($prop[0], $prop[1], $prop[2]) = 
+	    Parse_groups::extract_q($qqq_info, @flav, @disp_len);
 
-while (<QQQPROP>){
-#
-#  We now need to extract the propagator information from the file
-#
+	print QQQ_LIST "$prop[0]:$prop[1]:$prop[2]\n";	# Write the QQQ list out
 
-#  First truncate the line
-    chomp;
-# We now pull out the source and sink of the propagators
-    $qqq_info[$ctr] = $_;
-    $ctr = $ctr + 1;
-}
-
-#
-#  So the qqq info is now stored in a file, and we have to extract the
-#  Propagators we need
-
-die "$qqq_prop has wrong number of lines" unless $ctr eq $number_qqq;
-
-#
-#  Loop over the various qqq propagators
-
-open(PROP_LIST, "> prop_tmp");	# List of propagators
-
-for($ctr = 0; $ctr < $number_qqq; $ctr++){
-
-    ($prop[0], $prop[1], $prop[2]) = 
-	Parse_groups::extract_q($qqq_info[$ctr], @flav, @disp_len);
 #
 #  We now write out the various propagator specs, and find the unique
 #  list of propagators we need - we assume the root uniquely specifies
 #  the propagator properties, including the corresponding template file
-
-    for($prop_ctr = 0; $prop_ctr < 3; $prop_ctr++){
-	print PROP_LIST 
-	    "$prop[$prop_ctr]\n";
+	
+	for($prop_ctr = 0; $prop_ctr < 3; $prop_ctr++){
+	    print PROP_LIST 
+		"$prop[$prop_ctr]\n";
+	}
     }
-#
-#  Return the number of qqqs computed
-#    return ($number_qqq);
 }
-
 #
-#  We now close the propagator files
+#  We now close the propagator and QQQ files
 close(PROP_LIST);
-
+close(QQQ_LIST);
 #
 #  We now have to pull out the unique lines in the file using "uniq" 
 #  and "sort", nifty little unix commands
 #
 
 system("sort prop_tmp | uniq > prop_list");
+system("sort qqq_tmp | uniq > qqq_list");
 
 #
 # Next we pull out the source information
@@ -273,10 +263,11 @@ while(<PROP_LIST>){
 #  Basically, this repeats the start of the code, but without the uniq construction
 #
 
-for($ctr = 0; $ctr < $number_qqq; $ctr++){
+open(QQQ_LIST, "< qqq_list");
 
-    ($prop[0], $prop[1], $prop[2]) = 
-	Parse_groups::extract_q($qqq_info[$ctr], @flav, @disp_len);
+while(<QQQ_LIST>){
+    chomp;
+    @prop = split(/:+/);
 
 #
 #  We now form the propagator from the various information above
@@ -285,6 +276,7 @@ for($ctr = 0; $ctr < $number_qqq; $ctr++){
     $qqq_name = "qqq_".$prop_root."_SS";
 
     for($prop_ctr = 0; $prop_ctr < 3; $prop_ctr++){
+	print "prop_ctr is $prop_ctr: prop is $prop[$prop_ctr]\n";
 #
 #  Get the source and sink information
 	($flavour,$snk, $src, $snk_len, $src_len) = 
@@ -323,6 +315,7 @@ for($ctr = 0; $ctr < $number_qqq; $ctr++){
     }
     close(IN);
 }
+close(QQQ_LIST);
 
 
 #
