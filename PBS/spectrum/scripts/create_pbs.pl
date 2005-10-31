@@ -32,11 +32,22 @@ $full_name = $pbs_name."_".${first_cfg}."_".$skip."_".$ncfg;
 ###################################################################
 
 #
+#  Job stuff
+#$nodes=2;			# Number of nodes
+#$attributes=":MYRINET";		# Any attributes
+
+$nodes=8;			# Number of nodes
+$attributes=":BIGMEM";		# Any attributes
+
+
+
+#
 #  Lattice sizes and ensembles
 $lsize=12;			# Spatial lattice size
 $tsize=48;			# Temporal lattice size
 $cfglabel="NF0/aniso/6p1_12_48_xi3p0_wl/"; # Ensemble directory
 $gaugeroot="wlq_6p1_12_48_xi3p0.cfg"; # Root name of configs
+$qqq_props="/home/dgr/simulation_inputs/qqq_nucleon"; # input file
 
 #
 #  Kappa values etc
@@ -59,7 +70,8 @@ open(PBS_OUT, "> $full_name.sh");
 #
 #  Now set the parameters in the output file
 while (<TEMPLATE>){
-
+    s/__NODES__/$nodes/;
+    s/__ATTRIBUTE__/$attributes/;
     s/__CONFIG_START__/$first_cfg/;
     s/__NCONFIG__/$ncfg/;
     s/__CONFIG_SKIP__/$skip/;
@@ -75,6 +87,7 @@ while (<TEMPLATE>){
     s/__NU__/$nu/;
     s/__GAUSS_RAD__/$gauss_rad/;
     s/__GAUSS_ITR__/$gauss_itr/;
+    s/__QQQ_PROPS__/$qqq_props/;
     print PBS_OUT $_;
 }
 close(TEMPLATE);
@@ -82,4 +95,4 @@ close(PBS_OUT);
 
 #
 # Submit the job
-system("qsub $full_name.sh");
+#system("qsub $full_name.sh");
