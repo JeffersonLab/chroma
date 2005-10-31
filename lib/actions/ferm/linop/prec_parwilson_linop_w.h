@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_parwilson_linop_w.h,v 2.1 2005-10-31 03:48:17 edwards Exp $
+// $Id: prec_parwilson_linop_w.h,v 2.2 2005-10-31 04:35:13 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion linear operator with parity breaking term
  */
@@ -61,6 +61,10 @@ namespace Chroma
     //! Apply the the odd-odd block onto a source vector
     void oddOddLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
 		     enum PlusMinus isign) const;
+
+    //! Override inherited one with a few more funkies
+    void operator()(LatticeFermion& chi, const LatticeFermion& psi, 
+		    enum PlusMinus isign) const;
 
     //! Apply the even-even block onto a source vector
     inline

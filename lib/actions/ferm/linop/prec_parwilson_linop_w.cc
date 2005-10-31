@@ -1,4 +1,4 @@
-// $Id: prec_parwilson_linop_w.cc,v 2.2 2005-10-31 03:48:17 edwards Exp $
+// $Id: prec_parwilson_linop_w.cc,v 2.3 2005-10-31 04:35:13 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion linear operator with parity breaking term
  */
@@ -137,6 +137,53 @@ namespace Chroma
     chi[rb[1]] *= mhalf;
   
     END_CODE();
+  }
+
+
+  //! Override inherited one with a few more funkies
+  void 
+  EvenOddPrecParWilsonLinOp::operator()(LatticeFermion & chi, 
+					const LatticeFermion& psi, 
+					enum PlusMinus isign) const
+  {
+    LatticeFermion tmp1, tmp2, tmp3;  // if an array is used here, 
+
+    moveToFastMemoryHint(tmp1);
+    moveToFastMemoryHint(tmp2);
+    moveToFastMemoryHint(tmp3);
+
+    Real mquarter = -0.25;
+
+    //  tmp   =  D'   (1-i isign H gamma_5)   D'    Psi
+    //     O      O,E                          E,O     O
+    switch (isign)
+    {
+    case PLUS:
+      // tmp1[0] = D_eo psi[1]
+      D.apply(tmp1, psi, isign, 0);
+
+      tmp2[rb[0]] = invfact1*tmp1 - invfact2*(GammaConst<Ns,Ns*Ns-1>()*timesI(tmp1));
+
+      // tmp2[1] = D_oe tmp2[0]
+      D.apply(tmp3, tmp2, isign, 1);
+
+      chi[rb[1]] = fact*psi + mquarter*tmp3;
+      chi[rb[1]] += H*(GammaConst<Ns,Ns*Ns-1>()*timesI(psi));
+      break;
+
+    case MINUS:
+      // tmp1[0] = D_eo psi[1]
+      D.apply(tmp1, psi, isign, 0);
+
+      tmp2[rb[0]] = invfact1*tmp1 + invfact2*(GammaConst<Ns,Ns*Ns-1>()*timesI(tmp1));
+
+      // tmp2[1] = D_oe tmp2[0]
+      D.apply(tmp3, tmp2, isign, 1);
+
+      chi[rb[1]] = fact*psi + mquarter*tmp3;
+      chi[rb[1]] -= H*(GammaConst<Ns,Ns*Ns-1>()*timesI(psi));
+      break;
+    }
   }
 
 
