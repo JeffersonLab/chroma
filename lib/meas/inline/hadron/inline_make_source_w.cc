@@ -1,4 +1,4 @@
-// $Id: inline_make_source_w.cc,v 2.2 2005-10-19 04:58:37 edwards Exp $
+// $Id: inline_make_source_w.cc,v 2.3 2005-11-01 04:10:01 edwards Exp $
 /*! \file
  * \brief Inline construction of make_source
  *
@@ -12,8 +12,8 @@
 #include "meas/smear/gaus_smear.h"
 #include "meas/smear/displacement.h"
 #include "meas/smear/laplacian.h"
-#include "meas/hadron/srcfil.h"
-#include "meas/hadron/walfil_w.h"
+#include "meas/sources/srcfil.h"
+#include "meas/sources/walfil_w.h"
 #include "meas/sources/p_src_w.h"
 #include "meas/sources/d_src_w.h"
 #include "util/ferm/transf.h"
