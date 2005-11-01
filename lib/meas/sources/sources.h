@@ -9,6 +9,7 @@
 #include "srcsnktype.h"
 #include "wavetype.h"
 
+#include "sources_s.h"
 #include "sources_w.h"
 
 #endif
