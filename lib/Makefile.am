@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.6 2005-10-27 21:31:31 kostas Exp $
+# $Id: Makefile.am,v 2.7 2005-11-01 04:19:21 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -114,9 +114,9 @@ nobase_include_HEADERS = \
 	meas/gfix/gfix.h meas/gfix/grelax.h meas/gfix/polar_dec.h \
 	meas/gfix/rot_colvec.h meas/glue/glue.h meas/glue/mesfield.h \
         meas/glue/mesplq.h \
-	meas/glue/polylp.h meas/hadron/hadron.h meas/hadron/srcfil.h \
+	meas/glue/polylp.h meas/hadron/hadron.h \
 	meas/glue/fuzwilp.h meas/glue/wilslp.h \
-	meas/hadron/stoch_var.h meas/hadron/z2_src.h \
+	meas/hadron/stoch_var.h \
 	meas/meas.h meas/pbp/pbp.h meas/schrfun/schrfun.h \
 	meas/smear/ape_smear.h meas/smear/displacement.h \
 	meas/smear/fuzz_smear.h \
@@ -125,7 +125,8 @@ nobase_include_HEADERS = \
 	meas/smear/laplacian.h meas/smear/smear.h meas/smear/wvfkind.h \
 	meas/smear/sink_smear2.h meas/smear/stout_smear.h \
 	meas/sources/sources.h meas/sources/srcsnktype.h \
-	meas/sources/wavetype.h \
+        meas/sources/srcfil.h \
+	meas/sources/wavetype.h meas/sources/z2_src.h \
 	util/ferm/ferm.h util/ferm/transf.h util/ft/ft.h \
 	util/ft/sftmom.h util/gauge/eesu2.h util/gauge/eeu1.h \
 	util/gauge/expm12.h util/gauge/expmat.h util/gauge/expsu3.h \
@@ -290,13 +291,14 @@ nobase_include_HEADERS += \
 	meas/hadron/mesons_w.h meas/hadron/seqpiontest_w.h \
 	meas/hadron/seqsrc_funcmap_w.h \
 	meas/hadron/loops_w.h \
-	meas/hadron/walfil_w.h meas/hadron/wall_qprop_w.h \
+	meas/hadron/wall_qprop_w.h \
 	meas/hadron/wallff_w.h \
 	meas/hadron/walldeltaff_w.h meas/hadron/walldeltapff_w.h \
 	meas/hadron/wallpionff_w.h meas/hadron/wallnuclff_w.h \
 	meas/hadron/wallrhoff_w.h meas/hadron/wallrhopiff_w.h \
 	meas/sources/d_src_w.h \
 	meas/sources/p_src_w.h meas/sources/sources_w.h \
+        meas/sources/walfil_w.h \
 	update/molecdyn/monomial/monomial_w.h \
 	update/molecdyn/monomial/monomial_aggregate_w.h \
 	update/molecdyn/monomial/one_flavor_rat_monomial_w.h \
@@ -337,7 +339,7 @@ nobase_include_HEADERS += \
 	meas/hadron/hadron_s.h \
 	meas/hadron/hadron_corr_s.h \
 	meas/hadron/mesphas_follana_s.h meas/hadron/mesphas_s.h \
-	meas/hadron/pions_s.h  meas/hadron/walfil_s.h \
+	meas/hadron/pions_s.h  \
         meas/hadron/pion_local_s.h\
 	meas/hadron/loops_s.h \
 	meas/hadron/scalar_loops_s.h \
@@ -346,9 +348,10 @@ nobase_include_HEADERS += \
 	meas/hadron/pion_sing_s.h \
 	meas/hadron/stag_propShift_s.h \
 	meas/hadron/vector_meson_s.h \
+	meas/hadron/enum_loops_s.h \
+        meas/sources/walfil_s.h \
 	util/ferm/ferm_s.h \
 	util/gauge/gauge_s.h util/gauge/stag_phases_s.h\
-	meas/hadron/enum_loops_s.h\
 	meas/inline/hadron_s/inline_hadron_aggregate.h
 
 
@@ -529,13 +532,14 @@ libchroma_a_SOURCES = \
 	meas/gfix/polar_dec.cc meas/gfix/rot_colvec.cc \
 	meas/glue/fuzwilp.cc meas/glue/mesfield.cc \
         meas/glue/mesplq.cc meas/glue/polylp.cc \
-	meas/glue/wilslp.cc meas/hadron/srcfil.cc \
-	meas/hadron/stoch_var.cc meas/hadron/z2_src.cc \
+	meas/glue/wilslp.cc \
+	meas/hadron/stoch_var.cc \
 	meas/smear/ape_smear.cc meas/smear/displacement.cc \
 	meas/smear/fuzz_smear.cc meas/smear/gaus_smear.cc \
 	meas/smear/hyp_smear.cc meas/smear/hyp_smear3d.cc \
 	meas/smear/laplacian.cc \
 	meas/smear/sink_smear2.cc meas/smear/stout_smear.cc \
+        meas/sources/srcfil.cc meas/sources/z2_src.cc \
 	util/ferm/diractodr.cc util/ferm/paulitodr.cc \
 	util/ferm/tdiractodr.cc util/ferm/transf.cc util/ft/sftmom.cc \
 	util/gauge/eesu3.cc util/gauge/eeu1.cc \
@@ -662,12 +666,12 @@ libchroma_a_SOURCES += \
         meas/hadron/hadseqsrc_w.cc \
 	meas/hadron/mesonseqsrc_w.cc meas/hadron/mesons_w.cc \
 	meas/hadron/seqpiontest_w.cc meas/hadron/seqsrc_funcmap_w.cc \
-        meas/hadron/walfil_w.cc \
 	meas/hadron/walldeltaff_w.cc meas/hadron/walldeltapff_w.cc \
 	meas/hadron/wallff_w.cc meas/hadron/wallnuclff_w.cc \
 	meas/hadron/wallpionff_w.cc meas/hadron/wallrhoff_w.cc \
 	meas/hadron/wallrhopiff_w.cc meas/hadron/wall_qprop_w.cc \
 	meas/sources/d_src_w.cc meas/sources/p_src_w.cc \
+        meas/sources/walfil_w.cc \
 	update/molecdyn/monomial/monomial_aggregate_w.cc \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.cc \
 	update/molecdyn/monomial/prec_one_flavor_rat_monomial_w.cc \
@@ -798,13 +802,13 @@ libchroma_a_SOURCES += \
         meas/hadron/ks_local_loops.cc \
 	meas/hadron/mesphas_s.cc meas/hadron/pions_s.cc \
         meas/hadron/pion_local_s.cc \
-	meas/hadron/srcfil_s.cc \
 	meas/hadron/stag_propShift_s.cc meas/hadron/stag_scalars_s.cc \
-	meas/hadron/vector_meson_s.cc meas/hadron/walfil_s.cc \
+	meas/hadron/vector_meson_s.cc \
 	util/gauge/stag_phases_s.cc\
 	meas/hadron/pion_sing_s.cc \
         meas/hadron/scalar_loops_s.cc\
-        meas/hadron/pseudoscalar_loops_s.cc
+        meas/hadron/pseudoscalar_loops_s.cc \
+        meas/sources/walfil_s.cc
 
 #	actions/ferm/fermacts/stag_fermact_s.cc
 #	meas/pbp/mespbp_s.cc meas/pbp/stagpbp_s.cc
