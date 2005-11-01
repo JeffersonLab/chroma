@@ -9,7 +9,7 @@
 #include "actions/ferm/fermacts/fermacts_s.h"
 #include "meas/hadron/hadron_s.h"
 #include "meas/smear/fuzz_smear.h"
-#include "meas/hadron/srcfil.h"
+#include "meas/sources/srcfil.h"
 #include "util/ferm/transf.h"
 #include "meas/hadron/pion_sing_s.h"
 
