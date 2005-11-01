@@ -1,4 +1,4 @@
-// $Id: invcg2.cc,v 2.0 2005-09-25 21:04:27 edwards Exp $
+// $Id: invcg2.cc,v 2.1 2005-11-01 03:22:25 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -85,8 +85,16 @@ void InvCG2_a(const LinearOperator<T>& M,
 
   chi_internal[s] = chi;
 
+  QDPIO::cout << "InvCG2: starting" << endl;
+  FlopCounter flopcount;
+  flopcount.reset();
+  StopWatch swatch;
+  swatch.reset();
+  swatch.start();
+
 //  Real rsd_sq = (RsdCG * RsdCG) * Real(norm2(chi,s));
   Real chi_sq =  Real(norm2(chi_internal,s));
+  flopcount.addSiteFlops(4*Nc*Ns,s);
 
 #if 0
   QDPIO::cout << "chi_norm = " << sqrt(chi_sq) << endl;
@@ -101,13 +109,17 @@ void InvCG2_a(const LinearOperator<T>& M,
   //  r  :=  [ Chi  -  M(u)  . M(u) . psi ]
   M(mp, psi, PLUS);
   M(mmp, mp, MINUS);
+  flopcount.addFlops(2*M.nFlops());
+
   r[s] = chi_internal - mmp;
+  flopcount.addSiteFlops(2*Nc*Ns,s);
 
   //  p[1]  :=  r[0]
   p[s] = r;
   
   //  Cp = |r[0]|^2
   Double cp = norm2(r, s);   	       	   /* 2 Nc Ns  flops */
+  flopcount.addSiteFlops(4*Nc*Ns, s);
 
 #if 0
   QDPIO::cout << "InvCG: k = 0  cp = " << cp << "  rsd_sq = " << rsd_sq << endl;
@@ -117,6 +129,8 @@ void InvCG2_a(const LinearOperator<T>& M,
   if ( toBool(cp  <=  rsd_sq) )
   {
     n_count = 0;
+    swatch.stop();
+    flopcount.report("invcg2", swatch.getTimeInSeconds());
     revertFromFastMemoryHint(psi,true);
     END_CODE();
     return;
@@ -137,34 +151,38 @@ void InvCG2_a(const LinearOperator<T>& M,
     //      	       	       	       	       	  +
     //  First compute  d  =  < p, A.p >  =  < p, M . M . p >  =  < M.p, M.p >
     //  Mp = M(u) * p
-    M(mp, p, PLUS);
+    M(mp, p, PLUS);  flopcount.addFlops(M.nFlops());
 
     //  d = | mp | ** 2
-    d = norm2(mp, s);	/* 2 Nc Ns  flops */
+    d = norm2(mp, s);  flopcount.addSiteFlops(4*Nc*Ns,s);
 
     a = Real(c)/Real(d);
 
     //  Psi[k] += a[k] p[k]
-    psi[s] += a * p;	/* 2 Nc Ns  flops */
+    psi[s] += a * p;    flopcount.addSiteFlops(4*Nc*Ns,s);
 
     //  r[k] -= a[k] A . p[k] ;
     //      	       +            +
     //  r  =  r  -  M(u)  . Mp  =  M  . M . p  =  A . p
     M(mmp, mp, MINUS);
+    flopcount.addFlops(M.nFlops());
+
     r[s] -= a * mmp;
+    flopcount.addSiteFlops(4*Nc*Ns, s);
 
     //  IF |r[k]| <= RsdCG |Chi| THEN RETURN;
 
     //  cp  =  | r[k] |**2
-    cp = norm2(r, s);	                /* 2 Nc Ns  flops */
+    cp = norm2(r, s);    flopcount.addSiteFlops(4*Nc*Ns,s);
 
-#if 0
-    QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << endl;
-#endif
+//    QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << endl;
 
     if ( toBool(cp  <=  rsd_sq) )
     {
       n_count = k;
+      swatch.stop();
+      QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << endl;
+      flopcount.report("invcg2", swatch.getTimeInSeconds());
       revertFromFastMemoryHint(psi,true);
       END_CODE();
       return;
@@ -174,9 +192,12 @@ void InvCG2_a(const LinearOperator<T>& M,
     b = Real(cp) / Real(c);
 
     //  p[k+1] := r[k] + b[k+1] p[k]
-    p[s] = r + b*p;	/* Nc Ns  flops */
+    p[s] = r + b*p;    flopcount.addSiteFlops(4*Nc*Ns,s);
   }
   n_count = MaxCG;
+  swatch.stop();
+  QDPIO::cerr << "Nonconvergence Warning" << endl;
+  flopcount.report("invcg2", swatch.getTimeInSeconds());
   revertFromFastMemoryHint(psi,true);
   QDPIO::cerr << "too many CG iterations: count =" << n_count <<" rsd^2= " << cp << endl <<flush;
   END_CODE();
