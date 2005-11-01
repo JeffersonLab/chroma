@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 2.7 2005-10-27 21:31:31 kostas Exp $
+# $Id: Makefile.in,v 2.8 2005-11-01 04:19:49 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -179,18 +179,19 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/gfix/coulgauge.cc meas/gfix/grelax.cc \
 	meas/gfix/polar_dec.cc meas/gfix/rot_colvec.cc \
 	meas/glue/fuzwilp.cc meas/glue/mesfield.cc meas/glue/mesplq.cc \
-	meas/glue/polylp.cc meas/glue/wilslp.cc meas/hadron/srcfil.cc \
-	meas/hadron/stoch_var.cc meas/hadron/z2_src.cc \
-	meas/smear/ape_smear.cc meas/smear/displacement.cc \
-	meas/smear/fuzz_smear.cc meas/smear/gaus_smear.cc \
-	meas/smear/hyp_smear.cc meas/smear/hyp_smear3d.cc \
-	meas/smear/laplacian.cc meas/smear/sink_smear2.cc \
-	meas/smear/stout_smear.cc util/ferm/diractodr.cc \
-	util/ferm/paulitodr.cc util/ferm/tdiractodr.cc \
-	util/ferm/transf.cc util/ft/sftmom.cc util/gauge/eesu3.cc \
-	util/gauge/eeu1.cc util/gauge/expm12.cc util/gauge/expmat.cc \
-	util/gauge/expsu3.cc util/gauge/gauge_startup.cc \
-	util/gauge/hotst.cc util/gauge/reunit.cc util/gauge/rgauge.cc \
+	meas/glue/polylp.cc meas/glue/wilslp.cc \
+	meas/hadron/stoch_var.cc meas/smear/ape_smear.cc \
+	meas/smear/displacement.cc meas/smear/fuzz_smear.cc \
+	meas/smear/gaus_smear.cc meas/smear/hyp_smear.cc \
+	meas/smear/hyp_smear3d.cc meas/smear/laplacian.cc \
+	meas/smear/sink_smear2.cc meas/smear/stout_smear.cc \
+	meas/sources/srcfil.cc meas/sources/z2_src.cc \
+	util/ferm/diractodr.cc util/ferm/paulitodr.cc \
+	util/ferm/tdiractodr.cc util/ferm/transf.cc util/ft/sftmom.cc \
+	util/gauge/eesu3.cc util/gauge/eeu1.cc util/gauge/expm12.cc \
+	util/gauge/expmat.cc util/gauge/expsu3.cc \
+	util/gauge/gauge_startup.cc util/gauge/hotst.cc \
+	util/gauge/reunit.cc util/gauge/rgauge.cc \
 	util/gauge/su2extract.cc util/gauge/su3proj.cc \
 	util/gauge/sunfill.cc util/gauge/sun_proj.cc \
 	util/gauge/taproj.cc util/gauge/unit_check.cc \
@@ -293,12 +294,12 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/hadron/loops_w.cc meas/hadron/hadseqsrc_w.cc \
 	meas/hadron/mesonseqsrc_w.cc meas/hadron/mesons_w.cc \
 	meas/hadron/seqpiontest_w.cc meas/hadron/seqsrc_funcmap_w.cc \
-	meas/hadron/walfil_w.cc meas/hadron/walldeltaff_w.cc \
-	meas/hadron/walldeltapff_w.cc meas/hadron/wallff_w.cc \
-	meas/hadron/wallnuclff_w.cc meas/hadron/wallpionff_w.cc \
-	meas/hadron/wallrhoff_w.cc meas/hadron/wallrhopiff_w.cc \
-	meas/hadron/wall_qprop_w.cc meas/sources/d_src_w.cc \
-	meas/sources/p_src_w.cc \
+	meas/hadron/walldeltaff_w.cc meas/hadron/walldeltapff_w.cc \
+	meas/hadron/wallff_w.cc meas/hadron/wallnuclff_w.cc \
+	meas/hadron/wallpionff_w.cc meas/hadron/wallrhoff_w.cc \
+	meas/hadron/wallrhopiff_w.cc meas/hadron/wall_qprop_w.cc \
+	meas/sources/d_src_w.cc meas/sources/p_src_w.cc \
+	meas/sources/walfil_w.cc \
 	update/molecdyn/monomial/monomial_aggregate_w.cc \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.cc \
 	update/molecdyn/monomial/prec_one_flavor_rat_monomial_w.cc \
@@ -374,11 +375,10 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/hadron/baryon_s.cc meas/hadron/mesphas_follana_s.cc \
 	meas/hadron/ks_local_loops.cc meas/hadron/mesphas_s.cc \
 	meas/hadron/pions_s.cc meas/hadron/pion_local_s.cc \
-	meas/hadron/srcfil_s.cc meas/hadron/stag_propShift_s.cc \
-	meas/hadron/stag_scalars_s.cc meas/hadron/vector_meson_s.cc \
-	meas/hadron/walfil_s.cc util/gauge/stag_phases_s.cc \
+	meas/hadron/stag_propShift_s.cc meas/hadron/stag_scalars_s.cc \
+	meas/hadron/vector_meson_s.cc util/gauge/stag_phases_s.cc \
 	meas/hadron/pion_sing_s.cc meas/hadron/scalar_loops_s.cc \
-	meas/hadron/pseudoscalar_loops_s.cc \
+	meas/hadron/pseudoscalar_loops_s.cc meas/sources/walfil_s.cc \
 	actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc \
 	init/chroma_init.cc
 @BUILD_GMP_REMEZ_TRUE@am__objects_1 = remez_gmp.$(OBJEXT)
@@ -444,21 +444,21 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	coulgauge.$(OBJEXT) grelax.$(OBJEXT) polar_dec.$(OBJEXT) \
 	rot_colvec.$(OBJEXT) fuzwilp.$(OBJEXT) mesfield.$(OBJEXT) \
 	mesplq.$(OBJEXT) polylp.$(OBJEXT) wilslp.$(OBJEXT) \
-	srcfil.$(OBJEXT) stoch_var.$(OBJEXT) z2_src.$(OBJEXT) \
-	ape_smear.$(OBJEXT) displacement.$(OBJEXT) \
+	stoch_var.$(OBJEXT) ape_smear.$(OBJEXT) displacement.$(OBJEXT) \
 	fuzz_smear.$(OBJEXT) gaus_smear.$(OBJEXT) hyp_smear.$(OBJEXT) \
 	hyp_smear3d.$(OBJEXT) laplacian.$(OBJEXT) \
-	sink_smear2.$(OBJEXT) stout_smear.$(OBJEXT) \
-	diractodr.$(OBJEXT) paulitodr.$(OBJEXT) tdiractodr.$(OBJEXT) \
-	transf.$(OBJEXT) sftmom.$(OBJEXT) eesu3.$(OBJEXT) \
-	eeu1.$(OBJEXT) expm12.$(OBJEXT) expmat.$(OBJEXT) \
-	expsu3.$(OBJEXT) gauge_startup.$(OBJEXT) hotst.$(OBJEXT) \
-	reunit.$(OBJEXT) rgauge.$(OBJEXT) su2extract.$(OBJEXT) \
-	su3proj.$(OBJEXT) sunfill.$(OBJEXT) sun_proj.$(OBJEXT) \
-	taproj.$(OBJEXT) unit_check.$(OBJEXT) printgeom.$(OBJEXT) \
-	proginfo.$(OBJEXT) su3over.$(OBJEXT) u_staple.$(OBJEXT) \
-	su2_hb_update.$(OBJEXT) su3_hb_sweep.$(OBJEXT) \
-	mciter.$(OBJEXT) gauge_monomial.$(OBJEXT) genapprox.$(OBJEXT) \
+	sink_smear2.$(OBJEXT) stout_smear.$(OBJEXT) srcfil.$(OBJEXT) \
+	z2_src.$(OBJEXT) diractodr.$(OBJEXT) paulitodr.$(OBJEXT) \
+	tdiractodr.$(OBJEXT) transf.$(OBJEXT) sftmom.$(OBJEXT) \
+	eesu3.$(OBJEXT) eeu1.$(OBJEXT) expm12.$(OBJEXT) \
+	expmat.$(OBJEXT) expsu3.$(OBJEXT) gauge_startup.$(OBJEXT) \
+	hotst.$(OBJEXT) reunit.$(OBJEXT) rgauge.$(OBJEXT) \
+	su2extract.$(OBJEXT) su3proj.$(OBJEXT) sunfill.$(OBJEXT) \
+	sun_proj.$(OBJEXT) taproj.$(OBJEXT) unit_check.$(OBJEXT) \
+	printgeom.$(OBJEXT) proginfo.$(OBJEXT) su3over.$(OBJEXT) \
+	u_staple.$(OBJEXT) su2_hb_update.$(OBJEXT) \
+	su3_hb_sweep.$(OBJEXT) mciter.$(OBJEXT) \
+	gauge_monomial.$(OBJEXT) genapprox.$(OBJEXT) \
 	integrator_aggregate.$(OBJEXT) lcm_integrator_leaps.$(OBJEXT) \
 	lcm_pqp_leapfrog.$(OBJEXT) lcm_sexton_weingarten.$(OBJEXT) \
 	lcm_minimum_norm2_integrator.$(OBJEXT) \
@@ -531,11 +531,11 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	hybmeson_w.$(OBJEXT) loops_w.$(OBJEXT) hadseqsrc_w.$(OBJEXT) \
 	mesonseqsrc_w.$(OBJEXT) mesons_w.$(OBJEXT) \
 	seqpiontest_w.$(OBJEXT) seqsrc_funcmap_w.$(OBJEXT) \
-	walfil_w.$(OBJEXT) walldeltaff_w.$(OBJEXT) \
-	walldeltapff_w.$(OBJEXT) wallff_w.$(OBJEXT) \
-	wallnuclff_w.$(OBJEXT) wallpionff_w.$(OBJEXT) \
-	wallrhoff_w.$(OBJEXT) wallrhopiff_w.$(OBJEXT) \
-	wall_qprop_w.$(OBJEXT) d_src_w.$(OBJEXT) p_src_w.$(OBJEXT) \
+	walldeltaff_w.$(OBJEXT) walldeltapff_w.$(OBJEXT) \
+	wallff_w.$(OBJEXT) wallnuclff_w.$(OBJEXT) \
+	wallpionff_w.$(OBJEXT) wallrhoff_w.$(OBJEXT) \
+	wallrhopiff_w.$(OBJEXT) wall_qprop_w.$(OBJEXT) \
+	d_src_w.$(OBJEXT) p_src_w.$(OBJEXT) walfil_w.$(OBJEXT) \
 	monomial_aggregate_w.$(OBJEXT) \
 	unprec_one_flavor_rat_monomial_w.$(OBJEXT) \
 	prec_one_flavor_rat_monomial_w.$(OBJEXT) \
@@ -584,12 +584,11 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	follana_io_s.$(OBJEXT) baryon_s.$(OBJEXT) \
 	mesphas_follana_s.$(OBJEXT) ks_local_loops.$(OBJEXT) \
 	mesphas_s.$(OBJEXT) pions_s.$(OBJEXT) pion_local_s.$(OBJEXT) \
-	srcfil_s.$(OBJEXT) stag_propShift_s.$(OBJEXT) \
-	stag_scalars_s.$(OBJEXT) vector_meson_s.$(OBJEXT) \
-	walfil_s.$(OBJEXT) stag_phases_s.$(OBJEXT) \
+	stag_propShift_s.$(OBJEXT) stag_scalars_s.$(OBJEXT) \
+	vector_meson_s.$(OBJEXT) stag_phases_s.$(OBJEXT) \
 	pion_sing_s.$(OBJEXT) scalar_loops_s.$(OBJEXT) \
-	pseudoscalar_loops_s.$(OBJEXT) $(am__objects_6) \
-	chroma_init.$(OBJEXT)
+	pseudoscalar_loops_s.$(OBJEXT) walfil_s.$(OBJEXT) \
+	$(am__objects_6) chroma_init.$(OBJEXT)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I.
 depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
@@ -686,9 +685,8 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/gfix/coulgauge.h meas/gfix/gfix.h meas/gfix/grelax.h \
 	meas/gfix/polar_dec.h meas/gfix/rot_colvec.h meas/glue/glue.h \
 	meas/glue/mesfield.h meas/glue/mesplq.h meas/glue/polylp.h \
-	meas/hadron/hadron.h meas/hadron/srcfil.h meas/glue/fuzwilp.h \
-	meas/glue/wilslp.h meas/hadron/stoch_var.h \
-	meas/hadron/z2_src.h meas/meas.h meas/pbp/pbp.h \
+	meas/hadron/hadron.h meas/glue/fuzwilp.h meas/glue/wilslp.h \
+	meas/hadron/stoch_var.h meas/meas.h meas/pbp/pbp.h \
 	meas/schrfun/schrfun.h meas/smear/ape_smear.h \
 	meas/smear/displacement.h meas/smear/fuzz_smear.h \
 	meas/smear/gaus_smear.h meas/smear/hyp_smear.h \
@@ -696,7 +694,8 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/smear/smear.h meas/smear/wvfkind.h \
 	meas/smear/sink_smear2.h meas/smear/stout_smear.h \
 	meas/sources/sources.h meas/sources/srcsnktype.h \
-	meas/sources/wavetype.h util/ferm/ferm.h util/ferm/transf.h \
+	meas/sources/srcfil.h meas/sources/wavetype.h \
+	meas/sources/z2_src.h util/ferm/ferm.h util/ferm/transf.h \
 	util/ft/ft.h util/ft/sftmom.h util/gauge/eesu2.h \
 	util/gauge/eeu1.h util/gauge/expm12.h util/gauge/expmat.h \
 	util/gauge/expsu3.h util/gauge/eesu3.h util/gauge/gauge.h \
@@ -839,13 +838,13 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/hadron/hybmeson_w.h meas/hadron/hadseqsrc_w.h \
 	meas/hadron/mesonseqsrc_w.h meas/hadron/mesons_w.h \
 	meas/hadron/seqpiontest_w.h meas/hadron/seqsrc_funcmap_w.h \
-	meas/hadron/loops_w.h meas/hadron/walfil_w.h \
-	meas/hadron/wall_qprop_w.h meas/hadron/wallff_w.h \
-	meas/hadron/walldeltaff_w.h meas/hadron/walldeltapff_w.h \
-	meas/hadron/wallpionff_w.h meas/hadron/wallnuclff_w.h \
-	meas/hadron/wallrhoff_w.h meas/hadron/wallrhopiff_w.h \
-	meas/sources/d_src_w.h meas/sources/p_src_w.h \
-	meas/sources/sources_w.h update/molecdyn/monomial/monomial_w.h \
+	meas/hadron/loops_w.h meas/hadron/wall_qprop_w.h \
+	meas/hadron/wallff_w.h meas/hadron/walldeltaff_w.h \
+	meas/hadron/walldeltapff_w.h meas/hadron/wallpionff_w.h \
+	meas/hadron/wallnuclff_w.h meas/hadron/wallrhoff_w.h \
+	meas/hadron/wallrhopiff_w.h meas/sources/d_src_w.h \
+	meas/sources/p_src_w.h meas/sources/sources_w.h \
+	meas/sources/walfil_w.h update/molecdyn/monomial/monomial_w.h \
 	update/molecdyn/monomial/monomial_aggregate_w.h \
 	update/molecdyn/monomial/one_flavor_rat_monomial_w.h \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.h \
@@ -879,14 +878,14 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/hadron/ks_local_loops.h meas/hadron/hadron_s.h \
 	meas/hadron/hadron_corr_s.h meas/hadron/mesphas_follana_s.h \
 	meas/hadron/mesphas_s.h meas/hadron/pions_s.h \
-	meas/hadron/walfil_s.h meas/hadron/pion_local_s.h \
-	meas/hadron/loops_s.h meas/hadron/scalar_loops_s.h \
+	meas/hadron/pion_local_s.h meas/hadron/loops_s.h \
+	meas/hadron/scalar_loops_s.h \
 	meas/hadron/pseudoscalar_loops_s.h \
 	meas/hadron/stag_scalars_s.h meas/sources/sources_s.h \
 	meas/hadron/pion_sing_s.h meas/hadron/stag_propShift_s.h \
-	meas/hadron/vector_meson_s.h util/ferm/ferm_s.h \
+	meas/hadron/vector_meson_s.h meas/hadron/enum_loops_s.h \
+	meas/sources/walfil_s.h util/ferm/ferm_s.h \
 	util/gauge/gauge_s.h util/gauge/stag_phases_s.h \
-	meas/hadron/enum_loops_s.h \
 	meas/inline/hadron_s/inline_hadron_aggregate.h io/inline_io.h \
 	meas/inline/inline.h meas/inline/abs_inline_measurement.h \
 	meas/inline/abs_inline_measurement_factory.h \
@@ -1170,9 +1169,8 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/gfix/coulgauge.h meas/gfix/gfix.h meas/gfix/grelax.h \
 	meas/gfix/polar_dec.h meas/gfix/rot_colvec.h meas/glue/glue.h \
 	meas/glue/mesfield.h meas/glue/mesplq.h meas/glue/polylp.h \
-	meas/hadron/hadron.h meas/hadron/srcfil.h meas/glue/fuzwilp.h \
-	meas/glue/wilslp.h meas/hadron/stoch_var.h \
-	meas/hadron/z2_src.h meas/meas.h meas/pbp/pbp.h \
+	meas/hadron/hadron.h meas/glue/fuzwilp.h meas/glue/wilslp.h \
+	meas/hadron/stoch_var.h meas/meas.h meas/pbp/pbp.h \
 	meas/schrfun/schrfun.h meas/smear/ape_smear.h \
 	meas/smear/displacement.h meas/smear/fuzz_smear.h \
 	meas/smear/gaus_smear.h meas/smear/hyp_smear.h \
@@ -1180,7 +1178,8 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/smear/smear.h meas/smear/wvfkind.h \
 	meas/smear/sink_smear2.h meas/smear/stout_smear.h \
 	meas/sources/sources.h meas/sources/srcsnktype.h \
-	meas/sources/wavetype.h util/ferm/ferm.h util/ferm/transf.h \
+	meas/sources/srcfil.h meas/sources/wavetype.h \
+	meas/sources/z2_src.h util/ferm/ferm.h util/ferm/transf.h \
 	util/ft/ft.h util/ft/sftmom.h util/gauge/eesu2.h \
 	util/gauge/eeu1.h util/gauge/expm12.h util/gauge/expmat.h \
 	util/gauge/expsu3.h util/gauge/eesu3.h util/gauge/gauge.h \
@@ -1323,13 +1322,13 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/hadron/hybmeson_w.h meas/hadron/hadseqsrc_w.h \
 	meas/hadron/mesonseqsrc_w.h meas/hadron/mesons_w.h \
 	meas/hadron/seqpiontest_w.h meas/hadron/seqsrc_funcmap_w.h \
-	meas/hadron/loops_w.h meas/hadron/walfil_w.h \
-	meas/hadron/wall_qprop_w.h meas/hadron/wallff_w.h \
-	meas/hadron/walldeltaff_w.h meas/hadron/walldeltapff_w.h \
-	meas/hadron/wallpionff_w.h meas/hadron/wallnuclff_w.h \
-	meas/hadron/wallrhoff_w.h meas/hadron/wallrhopiff_w.h \
-	meas/sources/d_src_w.h meas/sources/p_src_w.h \
-	meas/sources/sources_w.h update/molecdyn/monomial/monomial_w.h \
+	meas/hadron/loops_w.h meas/hadron/wall_qprop_w.h \
+	meas/hadron/wallff_w.h meas/hadron/walldeltaff_w.h \
+	meas/hadron/walldeltapff_w.h meas/hadron/wallpionff_w.h \
+	meas/hadron/wallnuclff_w.h meas/hadron/wallrhoff_w.h \
+	meas/hadron/wallrhopiff_w.h meas/sources/d_src_w.h \
+	meas/sources/p_src_w.h meas/sources/sources_w.h \
+	meas/sources/walfil_w.h update/molecdyn/monomial/monomial_w.h \
 	update/molecdyn/monomial/monomial_aggregate_w.h \
 	update/molecdyn/monomial/one_flavor_rat_monomial_w.h \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.h \
@@ -1363,14 +1362,14 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/hadron/ks_local_loops.h meas/hadron/hadron_s.h \
 	meas/hadron/hadron_corr_s.h meas/hadron/mesphas_follana_s.h \
 	meas/hadron/mesphas_s.h meas/hadron/pions_s.h \
-	meas/hadron/walfil_s.h meas/hadron/pion_local_s.h \
-	meas/hadron/loops_s.h meas/hadron/scalar_loops_s.h \
+	meas/hadron/pion_local_s.h meas/hadron/loops_s.h \
+	meas/hadron/scalar_loops_s.h \
 	meas/hadron/pseudoscalar_loops_s.h \
 	meas/hadron/stag_scalars_s.h meas/sources/sources_s.h \
 	meas/hadron/pion_sing_s.h meas/hadron/stag_propShift_s.h \
-	meas/hadron/vector_meson_s.h util/ferm/ferm_s.h \
+	meas/hadron/vector_meson_s.h meas/hadron/enum_loops_s.h \
+	meas/sources/walfil_s.h util/ferm/ferm_s.h \
 	util/gauge/gauge_s.h util/gauge/stag_phases_s.h \
-	meas/hadron/enum_loops_s.h \
 	meas/inline/hadron_s/inline_hadron_aggregate.h io/inline_io.h \
 	meas/inline/inline.h meas/inline/abs_inline_measurement.h \
 	meas/inline/abs_inline_measurement_factory.h \
@@ -1550,18 +1549,19 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/gfix/coulgauge.cc meas/gfix/grelax.cc \
 	meas/gfix/polar_dec.cc meas/gfix/rot_colvec.cc \
 	meas/glue/fuzwilp.cc meas/glue/mesfield.cc meas/glue/mesplq.cc \
-	meas/glue/polylp.cc meas/glue/wilslp.cc meas/hadron/srcfil.cc \
-	meas/hadron/stoch_var.cc meas/hadron/z2_src.cc \
-	meas/smear/ape_smear.cc meas/smear/displacement.cc \
-	meas/smear/fuzz_smear.cc meas/smear/gaus_smear.cc \
-	meas/smear/hyp_smear.cc meas/smear/hyp_smear3d.cc \
-	meas/smear/laplacian.cc meas/smear/sink_smear2.cc \
-	meas/smear/stout_smear.cc util/ferm/diractodr.cc \
-	util/ferm/paulitodr.cc util/ferm/tdiractodr.cc \
-	util/ferm/transf.cc util/ft/sftmom.cc util/gauge/eesu3.cc \
-	util/gauge/eeu1.cc util/gauge/expm12.cc util/gauge/expmat.cc \
-	util/gauge/expsu3.cc util/gauge/gauge_startup.cc \
-	util/gauge/hotst.cc util/gauge/reunit.cc util/gauge/rgauge.cc \
+	meas/glue/polylp.cc meas/glue/wilslp.cc \
+	meas/hadron/stoch_var.cc meas/smear/ape_smear.cc \
+	meas/smear/displacement.cc meas/smear/fuzz_smear.cc \
+	meas/smear/gaus_smear.cc meas/smear/hyp_smear.cc \
+	meas/smear/hyp_smear3d.cc meas/smear/laplacian.cc \
+	meas/smear/sink_smear2.cc meas/smear/stout_smear.cc \
+	meas/sources/srcfil.cc meas/sources/z2_src.cc \
+	util/ferm/diractodr.cc util/ferm/paulitodr.cc \
+	util/ferm/tdiractodr.cc util/ferm/transf.cc util/ft/sftmom.cc \
+	util/gauge/eesu3.cc util/gauge/eeu1.cc util/gauge/expm12.cc \
+	util/gauge/expmat.cc util/gauge/expsu3.cc \
+	util/gauge/gauge_startup.cc util/gauge/hotst.cc \
+	util/gauge/reunit.cc util/gauge/rgauge.cc \
 	util/gauge/su2extract.cc util/gauge/su3proj.cc \
 	util/gauge/sunfill.cc util/gauge/sun_proj.cc \
 	util/gauge/taproj.cc util/gauge/unit_check.cc \
@@ -1663,12 +1663,12 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/hadron/loops_w.cc meas/hadron/hadseqsrc_w.cc \
 	meas/hadron/mesonseqsrc_w.cc meas/hadron/mesons_w.cc \
 	meas/hadron/seqpiontest_w.cc meas/hadron/seqsrc_funcmap_w.cc \
-	meas/hadron/walfil_w.cc meas/hadron/walldeltaff_w.cc \
-	meas/hadron/walldeltapff_w.cc meas/hadron/wallff_w.cc \
-	meas/hadron/wallnuclff_w.cc meas/hadron/wallpionff_w.cc \
-	meas/hadron/wallrhoff_w.cc meas/hadron/wallrhopiff_w.cc \
-	meas/hadron/wall_qprop_w.cc meas/sources/d_src_w.cc \
-	meas/sources/p_src_w.cc \
+	meas/hadron/walldeltaff_w.cc meas/hadron/walldeltapff_w.cc \
+	meas/hadron/wallff_w.cc meas/hadron/wallnuclff_w.cc \
+	meas/hadron/wallpionff_w.cc meas/hadron/wallrhoff_w.cc \
+	meas/hadron/wallrhopiff_w.cc meas/hadron/wall_qprop_w.cc \
+	meas/sources/d_src_w.cc meas/sources/p_src_w.cc \
+	meas/sources/walfil_w.cc \
 	update/molecdyn/monomial/monomial_aggregate_w.cc \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.cc \
 	update/molecdyn/monomial/prec_one_flavor_rat_monomial_w.cc \
@@ -1739,12 +1739,11 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/hadron/baryon_s.cc meas/hadron/mesphas_follana_s.cc \
 	meas/hadron/ks_local_loops.cc meas/hadron/mesphas_s.cc \
 	meas/hadron/pions_s.cc meas/hadron/pion_local_s.cc \
-	meas/hadron/srcfil_s.cc meas/hadron/stag_propShift_s.cc \
-	meas/hadron/stag_scalars_s.cc meas/hadron/vector_meson_s.cc \
-	meas/hadron/walfil_s.cc util/gauge/stag_phases_s.cc \
+	meas/hadron/stag_propShift_s.cc meas/hadron/stag_scalars_s.cc \
+	meas/hadron/vector_meson_s.cc util/gauge/stag_phases_s.cc \
 	meas/hadron/pion_sing_s.cc meas/hadron/scalar_loops_s.cc \
-	meas/hadron/pseudoscalar_loops_s.cc $(am__append_15) \
-	init/chroma_init.cc
+	meas/hadron/pseudoscalar_loops_s.cc meas/sources/walfil_s.cc \
+	$(am__append_15) init/chroma_init.cc
 all: chroma_config_internal.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -2112,7 +2111,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sn_jacob.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sn_jacob_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/srcfil.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/srcfil_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stag_phases_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stag_propShift_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stag_scalars_s.Po@am__quote@
@@ -3674,20 +3672,6 @@ wilslp.obj: meas/glue/wilslp.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o wilslp.obj `if test -f 'meas/glue/wilslp.cc'; then $(CYGPATH_W) 'meas/glue/wilslp.cc'; else $(CYGPATH_W) '$(srcdir)/meas/glue/wilslp.cc'; fi`
 
-srcfil.o: meas/hadron/srcfil.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT srcfil.o -MD -MP -MF "$(DEPDIR)/srcfil.Tpo" -c -o srcfil.o `test -f 'meas/hadron/srcfil.cc' || echo '$(srcdir)/'`meas/hadron/srcfil.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/srcfil.Tpo" "$(DEPDIR)/srcfil.Po"; else rm -f "$(DEPDIR)/srcfil.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/srcfil.cc' object='srcfil.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o srcfil.o `test -f 'meas/hadron/srcfil.cc' || echo '$(srcdir)/'`meas/hadron/srcfil.cc
-
-srcfil.obj: meas/hadron/srcfil.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT srcfil.obj -MD -MP -MF "$(DEPDIR)/srcfil.Tpo" -c -o srcfil.obj `if test -f 'meas/hadron/srcfil.cc'; then $(CYGPATH_W) 'meas/hadron/srcfil.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/srcfil.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/srcfil.Tpo" "$(DEPDIR)/srcfil.Po"; else rm -f "$(DEPDIR)/srcfil.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/srcfil.cc' object='srcfil.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o srcfil.obj `if test -f 'meas/hadron/srcfil.cc'; then $(CYGPATH_W) 'meas/hadron/srcfil.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/srcfil.cc'; fi`
-
 stoch_var.o: meas/hadron/stoch_var.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT stoch_var.o -MD -MP -MF "$(DEPDIR)/stoch_var.Tpo" -c -o stoch_var.o `test -f 'meas/hadron/stoch_var.cc' || echo '$(srcdir)/'`meas/hadron/stoch_var.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/stoch_var.Tpo" "$(DEPDIR)/stoch_var.Po"; else rm -f "$(DEPDIR)/stoch_var.Tpo"; exit 1; fi
@@ -3701,20 +3685,6 @@ stoch_var.obj: meas/hadron/stoch_var.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/stoch_var.cc' object='stoch_var.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o stoch_var.obj `if test -f 'meas/hadron/stoch_var.cc'; then $(CYGPATH_W) 'meas/hadron/stoch_var.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/stoch_var.cc'; fi`
-
-z2_src.o: meas/hadron/z2_src.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT z2_src.o -MD -MP -MF "$(DEPDIR)/z2_src.Tpo" -c -o z2_src.o `test -f 'meas/hadron/z2_src.cc' || echo '$(srcdir)/'`meas/hadron/z2_src.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/z2_src.Tpo" "$(DEPDIR)/z2_src.Po"; else rm -f "$(DEPDIR)/z2_src.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/z2_src.cc' object='z2_src.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o z2_src.o `test -f 'meas/hadron/z2_src.cc' || echo '$(srcdir)/'`meas/hadron/z2_src.cc
-
-z2_src.obj: meas/hadron/z2_src.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT z2_src.obj -MD -MP -MF "$(DEPDIR)/z2_src.Tpo" -c -o z2_src.obj `if test -f 'meas/hadron/z2_src.cc'; then $(CYGPATH_W) 'meas/hadron/z2_src.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/z2_src.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/z2_src.Tpo" "$(DEPDIR)/z2_src.Po"; else rm -f "$(DEPDIR)/z2_src.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/z2_src.cc' object='z2_src.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o z2_src.obj `if test -f 'meas/hadron/z2_src.cc'; then $(CYGPATH_W) 'meas/hadron/z2_src.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/z2_src.cc'; fi`
 
 ape_smear.o: meas/smear/ape_smear.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ape_smear.o -MD -MP -MF "$(DEPDIR)/ape_smear.Tpo" -c -o ape_smear.o `test -f 'meas/smear/ape_smear.cc' || echo '$(srcdir)/'`meas/smear/ape_smear.cc; \
@@ -3841,6 +3811,34 @@ stout_smear.obj: meas/smear/stout_smear.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/stout_smear.cc' object='stout_smear.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o stout_smear.obj `if test -f 'meas/smear/stout_smear.cc'; then $(CYGPATH_W) 'meas/smear/stout_smear.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/stout_smear.cc'; fi`
+
+srcfil.o: meas/sources/srcfil.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT srcfil.o -MD -MP -MF "$(DEPDIR)/srcfil.Tpo" -c -o srcfil.o `test -f 'meas/sources/srcfil.cc' || echo '$(srcdir)/'`meas/sources/srcfil.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/srcfil.Tpo" "$(DEPDIR)/srcfil.Po"; else rm -f "$(DEPDIR)/srcfil.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/srcfil.cc' object='srcfil.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o srcfil.o `test -f 'meas/sources/srcfil.cc' || echo '$(srcdir)/'`meas/sources/srcfil.cc
+
+srcfil.obj: meas/sources/srcfil.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT srcfil.obj -MD -MP -MF "$(DEPDIR)/srcfil.Tpo" -c -o srcfil.obj `if test -f 'meas/sources/srcfil.cc'; then $(CYGPATH_W) 'meas/sources/srcfil.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/srcfil.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/srcfil.Tpo" "$(DEPDIR)/srcfil.Po"; else rm -f "$(DEPDIR)/srcfil.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/srcfil.cc' object='srcfil.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o srcfil.obj `if test -f 'meas/sources/srcfil.cc'; then $(CYGPATH_W) 'meas/sources/srcfil.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/srcfil.cc'; fi`
+
+z2_src.o: meas/sources/z2_src.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT z2_src.o -MD -MP -MF "$(DEPDIR)/z2_src.Tpo" -c -o z2_src.o `test -f 'meas/sources/z2_src.cc' || echo '$(srcdir)/'`meas/sources/z2_src.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/z2_src.Tpo" "$(DEPDIR)/z2_src.Po"; else rm -f "$(DEPDIR)/z2_src.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/z2_src.cc' object='z2_src.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o z2_src.o `test -f 'meas/sources/z2_src.cc' || echo '$(srcdir)/'`meas/sources/z2_src.cc
+
+z2_src.obj: meas/sources/z2_src.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT z2_src.obj -MD -MP -MF "$(DEPDIR)/z2_src.Tpo" -c -o z2_src.obj `if test -f 'meas/sources/z2_src.cc'; then $(CYGPATH_W) 'meas/sources/z2_src.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/z2_src.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/z2_src.Tpo" "$(DEPDIR)/z2_src.Po"; else rm -f "$(DEPDIR)/z2_src.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/z2_src.cc' object='z2_src.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o z2_src.obj `if test -f 'meas/sources/z2_src.cc'; then $(CYGPATH_W) 'meas/sources/z2_src.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/z2_src.cc'; fi`
 
 diractodr.o: util/ferm/diractodr.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT diractodr.o -MD -MP -MF "$(DEPDIR)/diractodr.Tpo" -c -o diractodr.o `test -f 'util/ferm/diractodr.cc' || echo '$(srcdir)/'`util/ferm/diractodr.cc; \
@@ -5704,20 +5702,6 @@ seqsrc_funcmap_w.obj: meas/hadron/seqsrc_funcmap_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o seqsrc_funcmap_w.obj `if test -f 'meas/hadron/seqsrc_funcmap_w.cc'; then $(CYGPATH_W) 'meas/hadron/seqsrc_funcmap_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/seqsrc_funcmap_w.cc'; fi`
 
-walfil_w.o: meas/hadron/walfil_w.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT walfil_w.o -MD -MP -MF "$(DEPDIR)/walfil_w.Tpo" -c -o walfil_w.o `test -f 'meas/hadron/walfil_w.cc' || echo '$(srcdir)/'`meas/hadron/walfil_w.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/walfil_w.Tpo" "$(DEPDIR)/walfil_w.Po"; else rm -f "$(DEPDIR)/walfil_w.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/walfil_w.cc' object='walfil_w.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o walfil_w.o `test -f 'meas/hadron/walfil_w.cc' || echo '$(srcdir)/'`meas/hadron/walfil_w.cc
-
-walfil_w.obj: meas/hadron/walfil_w.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT walfil_w.obj -MD -MP -MF "$(DEPDIR)/walfil_w.Tpo" -c -o walfil_w.obj `if test -f 'meas/hadron/walfil_w.cc'; then $(CYGPATH_W) 'meas/hadron/walfil_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/walfil_w.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/walfil_w.Tpo" "$(DEPDIR)/walfil_w.Po"; else rm -f "$(DEPDIR)/walfil_w.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/walfil_w.cc' object='walfil_w.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o walfil_w.obj `if test -f 'meas/hadron/walfil_w.cc'; then $(CYGPATH_W) 'meas/hadron/walfil_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/walfil_w.cc'; fi`
-
 walldeltaff_w.o: meas/hadron/walldeltaff_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT walldeltaff_w.o -MD -MP -MF "$(DEPDIR)/walldeltaff_w.Tpo" -c -o walldeltaff_w.o `test -f 'meas/hadron/walldeltaff_w.cc' || echo '$(srcdir)/'`meas/hadron/walldeltaff_w.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/walldeltaff_w.Tpo" "$(DEPDIR)/walldeltaff_w.Po"; else rm -f "$(DEPDIR)/walldeltaff_w.Tpo"; exit 1; fi
@@ -5857,6 +5841,20 @@ p_src_w.obj: meas/sources/p_src_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/p_src_w.cc' object='p_src_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o p_src_w.obj `if test -f 'meas/sources/p_src_w.cc'; then $(CYGPATH_W) 'meas/sources/p_src_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/p_src_w.cc'; fi`
+
+walfil_w.o: meas/sources/walfil_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT walfil_w.o -MD -MP -MF "$(DEPDIR)/walfil_w.Tpo" -c -o walfil_w.o `test -f 'meas/sources/walfil_w.cc' || echo '$(srcdir)/'`meas/sources/walfil_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/walfil_w.Tpo" "$(DEPDIR)/walfil_w.Po"; else rm -f "$(DEPDIR)/walfil_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/walfil_w.cc' object='walfil_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o walfil_w.o `test -f 'meas/sources/walfil_w.cc' || echo '$(srcdir)/'`meas/sources/walfil_w.cc
+
+walfil_w.obj: meas/sources/walfil_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT walfil_w.obj -MD -MP -MF "$(DEPDIR)/walfil_w.Tpo" -c -o walfil_w.obj `if test -f 'meas/sources/walfil_w.cc'; then $(CYGPATH_W) 'meas/sources/walfil_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/walfil_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/walfil_w.Tpo" "$(DEPDIR)/walfil_w.Po"; else rm -f "$(DEPDIR)/walfil_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/walfil_w.cc' object='walfil_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o walfil_w.obj `if test -f 'meas/sources/walfil_w.cc'; then $(CYGPATH_W) 'meas/sources/walfil_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/walfil_w.cc'; fi`
 
 monomial_aggregate_w.o: update/molecdyn/monomial/monomial_aggregate_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT monomial_aggregate_w.o -MD -MP -MF "$(DEPDIR)/monomial_aggregate_w.Tpo" -c -o monomial_aggregate_w.o `test -f 'update/molecdyn/monomial/monomial_aggregate_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/monomial_aggregate_w.cc; \
@@ -6992,20 +6990,6 @@ pion_local_s.obj: meas/hadron/pion_local_s.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o pion_local_s.obj `if test -f 'meas/hadron/pion_local_s.cc'; then $(CYGPATH_W) 'meas/hadron/pion_local_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/pion_local_s.cc'; fi`
 
-srcfil_s.o: meas/hadron/srcfil_s.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT srcfil_s.o -MD -MP -MF "$(DEPDIR)/srcfil_s.Tpo" -c -o srcfil_s.o `test -f 'meas/hadron/srcfil_s.cc' || echo '$(srcdir)/'`meas/hadron/srcfil_s.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/srcfil_s.Tpo" "$(DEPDIR)/srcfil_s.Po"; else rm -f "$(DEPDIR)/srcfil_s.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/srcfil_s.cc' object='srcfil_s.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o srcfil_s.o `test -f 'meas/hadron/srcfil_s.cc' || echo '$(srcdir)/'`meas/hadron/srcfil_s.cc
-
-srcfil_s.obj: meas/hadron/srcfil_s.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT srcfil_s.obj -MD -MP -MF "$(DEPDIR)/srcfil_s.Tpo" -c -o srcfil_s.obj `if test -f 'meas/hadron/srcfil_s.cc'; then $(CYGPATH_W) 'meas/hadron/srcfil_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/srcfil_s.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/srcfil_s.Tpo" "$(DEPDIR)/srcfil_s.Po"; else rm -f "$(DEPDIR)/srcfil_s.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/srcfil_s.cc' object='srcfil_s.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o srcfil_s.obj `if test -f 'meas/hadron/srcfil_s.cc'; then $(CYGPATH_W) 'meas/hadron/srcfil_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/srcfil_s.cc'; fi`
-
 stag_propShift_s.o: meas/hadron/stag_propShift_s.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT stag_propShift_s.o -MD -MP -MF "$(DEPDIR)/stag_propShift_s.Tpo" -c -o stag_propShift_s.o `test -f 'meas/hadron/stag_propShift_s.cc' || echo '$(srcdir)/'`meas/hadron/stag_propShift_s.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/stag_propShift_s.Tpo" "$(DEPDIR)/stag_propShift_s.Po"; else rm -f "$(DEPDIR)/stag_propShift_s.Tpo"; exit 1; fi
@@ -7047,20 +7031,6 @@ vector_meson_s.obj: meas/hadron/vector_meson_s.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/vector_meson_s.cc' object='vector_meson_s.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o vector_meson_s.obj `if test -f 'meas/hadron/vector_meson_s.cc'; then $(CYGPATH_W) 'meas/hadron/vector_meson_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/vector_meson_s.cc'; fi`
-
-walfil_s.o: meas/hadron/walfil_s.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT walfil_s.o -MD -MP -MF "$(DEPDIR)/walfil_s.Tpo" -c -o walfil_s.o `test -f 'meas/hadron/walfil_s.cc' || echo '$(srcdir)/'`meas/hadron/walfil_s.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/walfil_s.Tpo" "$(DEPDIR)/walfil_s.Po"; else rm -f "$(DEPDIR)/walfil_s.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/walfil_s.cc' object='walfil_s.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o walfil_s.o `test -f 'meas/hadron/walfil_s.cc' || echo '$(srcdir)/'`meas/hadron/walfil_s.cc
-
-walfil_s.obj: meas/hadron/walfil_s.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT walfil_s.obj -MD -MP -MF "$(DEPDIR)/walfil_s.Tpo" -c -o walfil_s.obj `if test -f 'meas/hadron/walfil_s.cc'; then $(CYGPATH_W) 'meas/hadron/walfil_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/walfil_s.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/walfil_s.Tpo" "$(DEPDIR)/walfil_s.Po"; else rm -f "$(DEPDIR)/walfil_s.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/walfil_s.cc' object='walfil_s.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o walfil_s.obj `if test -f 'meas/hadron/walfil_s.cc'; then $(CYGPATH_W) 'meas/hadron/walfil_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/walfil_s.cc'; fi`
 
 stag_phases_s.o: util/gauge/stag_phases_s.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT stag_phases_s.o -MD -MP -MF "$(DEPDIR)/stag_phases_s.Tpo" -c -o stag_phases_s.o `test -f 'util/gauge/stag_phases_s.cc' || echo '$(srcdir)/'`util/gauge/stag_phases_s.cc; \
@@ -7117,6 +7087,20 @@ pseudoscalar_loops_s.obj: meas/hadron/pseudoscalar_loops_s.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/pseudoscalar_loops_s.cc' object='pseudoscalar_loops_s.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o pseudoscalar_loops_s.obj `if test -f 'meas/hadron/pseudoscalar_loops_s.cc'; then $(CYGPATH_W) 'meas/hadron/pseudoscalar_loops_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/pseudoscalar_loops_s.cc'; fi`
+
+walfil_s.o: meas/sources/walfil_s.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT walfil_s.o -MD -MP -MF "$(DEPDIR)/walfil_s.Tpo" -c -o walfil_s.o `test -f 'meas/sources/walfil_s.cc' || echo '$(srcdir)/'`meas/sources/walfil_s.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/walfil_s.Tpo" "$(DEPDIR)/walfil_s.Po"; else rm -f "$(DEPDIR)/walfil_s.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/walfil_s.cc' object='walfil_s.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o walfil_s.o `test -f 'meas/sources/walfil_s.cc' || echo '$(srcdir)/'`meas/sources/walfil_s.cc
+
+walfil_s.obj: meas/sources/walfil_s.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT walfil_s.obj -MD -MP -MF "$(DEPDIR)/walfil_s.Tpo" -c -o walfil_s.obj `if test -f 'meas/sources/walfil_s.cc'; then $(CYGPATH_W) 'meas/sources/walfil_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/walfil_s.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/walfil_s.Tpo" "$(DEPDIR)/walfil_s.Po"; else rm -f "$(DEPDIR)/walfil_s.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/walfil_s.cc' object='walfil_s.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o walfil_s.obj `if test -f 'meas/sources/walfil_s.cc'; then $(CYGPATH_W) 'meas/sources/walfil_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/walfil_s.cc'; fi`
 
 asqtad_cps_wrapper_qprop.o: actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT asqtad_cps_wrapper_qprop.o -MD -MP -MF "$(DEPDIR)/asqtad_cps_wrapper_qprop.Tpo" -c -o asqtad_cps_wrapper_qprop.o `test -f 'actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc' || echo '$(srcdir)/'`actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc; \
