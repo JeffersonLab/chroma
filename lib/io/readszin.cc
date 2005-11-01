@@ -1,4 +1,4 @@
-// $Id: readszin.cc,v 2.0 2005-09-25 21:04:32 edwards Exp $
+// $Id: readszin.cc,v 2.1 2005-11-01 21:57:14 edwards Exp $
 
 /*! \file
  *  \brief Read in a configuration written by SZIN up to configuration version 7.
@@ -256,6 +256,7 @@ void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
    *  Szin stores data "checkerboarded".  We must therefore "undo" the checkerboarding
    *  We use as a model the propagator routines
    */
+  u.resize(Nd);
 
   multi1d<int> lattsize_cb = Layout::lattSize();
   lattsize_cb[0] /= 2;		// Evaluate the coords on the checkerboard lattice
