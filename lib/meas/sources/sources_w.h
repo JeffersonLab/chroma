@@ -8,5 +8,6 @@
 
 #include "p_src_w.h"
 #include "d_src_w.h"
+#include "walfil_w.h"
 
 #endif
