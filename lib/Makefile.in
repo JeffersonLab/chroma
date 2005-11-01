@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 2.8 2005-11-01 04:19:49 edwards Exp $
+# $Id: Makefile.in,v 2.9 2005-11-01 21:59:42 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -344,6 +344,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/io/inline_qio_read_obj.cc \
 	meas/inline/io/inline_qio_write_obj.cc \
 	meas/inline/io/inline_qio_write_erase_obj.cc \
+	meas/inline/io/inline_szin_read_obj.cc \
 	meas/inline/io/inline_szin_write_obj.cc \
 	meas/inline/io/inline_nersc_write_obj.cc \
 	meas/inline/io/inline_erase_obj.cc \
@@ -352,6 +353,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/io/inline_gaussian_obj.cc \
 	meas/inline/io/qio_read_obj_funcmap.cc \
 	meas/inline/io/qio_write_obj_funcmap.cc \
+	meas/inline/io/szin_read_obj_funcmap.cc \
 	meas/inline/io/szin_write_obj_funcmap.cc \
 	meas/inline/smear/inline_smear_aggregate.cc \
 	meas/inline/smear/inline_ape_smear.cc \
@@ -567,11 +569,12 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	inline_io_aggregate.$(OBJEXT) inline_qio_read_obj.$(OBJEXT) \
 	inline_qio_write_obj.$(OBJEXT) \
 	inline_qio_write_erase_obj.$(OBJEXT) \
-	inline_szin_write_obj.$(OBJEXT) \
+	inline_szin_read_obj.$(OBJEXT) inline_szin_write_obj.$(OBJEXT) \
 	inline_nersc_write_obj.$(OBJEXT) inline_erase_obj.$(OBJEXT) \
 	inline_list_obj.$(OBJEXT) inline_snarf_obj.$(OBJEXT) \
 	inline_gaussian_obj.$(OBJEXT) qio_read_obj_funcmap.$(OBJEXT) \
 	qio_write_obj_funcmap.$(OBJEXT) \
+	szin_read_obj_funcmap.$(OBJEXT) \
 	szin_write_obj_funcmap.$(OBJEXT) \
 	inline_smear_aggregate.$(OBJEXT) inline_ape_smear.$(OBJEXT) \
 	inline_hyp_smear.$(OBJEXT) inline_stout_smear.$(OBJEXT) \
@@ -922,6 +925,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/inline/io/inline_qio_read_obj.h \
 	meas/inline/io/inline_qio_write_obj.h \
 	meas/inline/io/inline_qio_write_erase_obj.h \
+	meas/inline/io/inline_szin_read_obj.h \
 	meas/inline/io/inline_szin_write_obj.h \
 	meas/inline/io/inline_nersc_write_obj.h \
 	meas/inline/io/inline_erase_obj.h \
@@ -930,6 +934,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/inline/io/inline_gaussian_obj.h \
 	meas/inline/io/qio_read_obj_funcmap.h \
 	meas/inline/io/qio_write_obj_funcmap.h \
+	meas/inline/io/szin_read_obj_funcmap.h \
 	meas/inline/io/szin_write_obj_funcmap.h \
 	meas/inline/smear/smear.h \
 	meas/inline/smear/inline_smear_aggregate.h \
@@ -1406,6 +1411,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/io/inline_qio_read_obj.h \
 	meas/inline/io/inline_qio_write_obj.h \
 	meas/inline/io/inline_qio_write_erase_obj.h \
+	meas/inline/io/inline_szin_read_obj.h \
 	meas/inline/io/inline_szin_write_obj.h \
 	meas/inline/io/inline_nersc_write_obj.h \
 	meas/inline/io/inline_erase_obj.h \
@@ -1414,6 +1420,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/io/inline_gaussian_obj.h \
 	meas/inline/io/qio_read_obj_funcmap.h \
 	meas/inline/io/qio_write_obj_funcmap.h \
+	meas/inline/io/szin_read_obj_funcmap.h \
 	meas/inline/io/szin_write_obj_funcmap.h \
 	meas/inline/smear/smear.h \
 	meas/inline/smear/inline_smear_aggregate.h \
@@ -1713,6 +1720,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/io/inline_qio_read_obj.cc \
 	meas/inline/io/inline_qio_write_obj.cc \
 	meas/inline/io/inline_qio_write_erase_obj.cc \
+	meas/inline/io/inline_szin_read_obj.cc \
 	meas/inline/io/inline_szin_write_obj.cc \
 	meas/inline/io/inline_nersc_write_obj.cc \
 	meas/inline/io/inline_erase_obj.cc \
@@ -1721,6 +1729,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/io/inline_gaussian_obj.cc \
 	meas/inline/io/qio_read_obj_funcmap.cc \
 	meas/inline/io/qio_write_obj_funcmap.cc \
+	meas/inline/io/szin_read_obj_funcmap.cc \
 	meas/inline/io/szin_write_obj_funcmap.cc \
 	meas/inline/smear/inline_smear_aggregate.cc \
 	meas/inline/smear/inline_ape_smear.cc \
@@ -1955,6 +1964,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_spectrum_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_spectrum_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_stout_smear.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_szin_read_obj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_szin_write_obj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_wilslp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/integrator_aggregate.Po@am__quote@
@@ -2127,6 +2137,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sun_proj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sunfill.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/szin_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/szin_read_obj_funcmap.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/szin_write_obj_funcmap.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/taproj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tdiractodr.Po@am__quote@
@@ -6500,6 +6511,20 @@ inline_qio_write_erase_obj.obj: meas/inline/io/inline_qio_write_erase_obj.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_qio_write_erase_obj.obj `if test -f 'meas/inline/io/inline_qio_write_erase_obj.cc'; then $(CYGPATH_W) 'meas/inline/io/inline_qio_write_erase_obj.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/io/inline_qio_write_erase_obj.cc'; fi`
 
+inline_szin_read_obj.o: meas/inline/io/inline_szin_read_obj.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_szin_read_obj.o -MD -MP -MF "$(DEPDIR)/inline_szin_read_obj.Tpo" -c -o inline_szin_read_obj.o `test -f 'meas/inline/io/inline_szin_read_obj.cc' || echo '$(srcdir)/'`meas/inline/io/inline_szin_read_obj.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_szin_read_obj.Tpo" "$(DEPDIR)/inline_szin_read_obj.Po"; else rm -f "$(DEPDIR)/inline_szin_read_obj.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/io/inline_szin_read_obj.cc' object='inline_szin_read_obj.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_szin_read_obj.o `test -f 'meas/inline/io/inline_szin_read_obj.cc' || echo '$(srcdir)/'`meas/inline/io/inline_szin_read_obj.cc
+
+inline_szin_read_obj.obj: meas/inline/io/inline_szin_read_obj.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_szin_read_obj.obj -MD -MP -MF "$(DEPDIR)/inline_szin_read_obj.Tpo" -c -o inline_szin_read_obj.obj `if test -f 'meas/inline/io/inline_szin_read_obj.cc'; then $(CYGPATH_W) 'meas/inline/io/inline_szin_read_obj.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/io/inline_szin_read_obj.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_szin_read_obj.Tpo" "$(DEPDIR)/inline_szin_read_obj.Po"; else rm -f "$(DEPDIR)/inline_szin_read_obj.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/io/inline_szin_read_obj.cc' object='inline_szin_read_obj.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_szin_read_obj.obj `if test -f 'meas/inline/io/inline_szin_read_obj.cc'; then $(CYGPATH_W) 'meas/inline/io/inline_szin_read_obj.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/io/inline_szin_read_obj.cc'; fi`
+
 inline_szin_write_obj.o: meas/inline/io/inline_szin_write_obj.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_szin_write_obj.o -MD -MP -MF "$(DEPDIR)/inline_szin_write_obj.Tpo" -c -o inline_szin_write_obj.o `test -f 'meas/inline/io/inline_szin_write_obj.cc' || echo '$(srcdir)/'`meas/inline/io/inline_szin_write_obj.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_szin_write_obj.Tpo" "$(DEPDIR)/inline_szin_write_obj.Po"; else rm -f "$(DEPDIR)/inline_szin_write_obj.Tpo"; exit 1; fi
@@ -6611,6 +6636,20 @@ qio_write_obj_funcmap.obj: meas/inline/io/qio_write_obj_funcmap.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/io/qio_write_obj_funcmap.cc' object='qio_write_obj_funcmap.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o qio_write_obj_funcmap.obj `if test -f 'meas/inline/io/qio_write_obj_funcmap.cc'; then $(CYGPATH_W) 'meas/inline/io/qio_write_obj_funcmap.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/io/qio_write_obj_funcmap.cc'; fi`
+
+szin_read_obj_funcmap.o: meas/inline/io/szin_read_obj_funcmap.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT szin_read_obj_funcmap.o -MD -MP -MF "$(DEPDIR)/szin_read_obj_funcmap.Tpo" -c -o szin_read_obj_funcmap.o `test -f 'meas/inline/io/szin_read_obj_funcmap.cc' || echo '$(srcdir)/'`meas/inline/io/szin_read_obj_funcmap.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/szin_read_obj_funcmap.Tpo" "$(DEPDIR)/szin_read_obj_funcmap.Po"; else rm -f "$(DEPDIR)/szin_read_obj_funcmap.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/io/szin_read_obj_funcmap.cc' object='szin_read_obj_funcmap.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o szin_read_obj_funcmap.o `test -f 'meas/inline/io/szin_read_obj_funcmap.cc' || echo '$(srcdir)/'`meas/inline/io/szin_read_obj_funcmap.cc
+
+szin_read_obj_funcmap.obj: meas/inline/io/szin_read_obj_funcmap.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT szin_read_obj_funcmap.obj -MD -MP -MF "$(DEPDIR)/szin_read_obj_funcmap.Tpo" -c -o szin_read_obj_funcmap.obj `if test -f 'meas/inline/io/szin_read_obj_funcmap.cc'; then $(CYGPATH_W) 'meas/inline/io/szin_read_obj_funcmap.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/io/szin_read_obj_funcmap.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/szin_read_obj_funcmap.Tpo" "$(DEPDIR)/szin_read_obj_funcmap.Po"; else rm -f "$(DEPDIR)/szin_read_obj_funcmap.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/io/szin_read_obj_funcmap.cc' object='szin_read_obj_funcmap.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o szin_read_obj_funcmap.obj `if test -f 'meas/inline/io/szin_read_obj_funcmap.cc'; then $(CYGPATH_W) 'meas/inline/io/szin_read_obj_funcmap.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/io/szin_read_obj_funcmap.cc'; fi`
 
 szin_write_obj_funcmap.o: meas/inline/io/szin_write_obj_funcmap.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT szin_write_obj_funcmap.o -MD -MP -MF "$(DEPDIR)/szin_write_obj_funcmap.Tpo" -c -o szin_write_obj_funcmap.o `test -f 'meas/inline/io/szin_write_obj_funcmap.cc' || echo '$(srcdir)/'`meas/inline/io/szin_write_obj_funcmap.cc; \
