@@ -1,4 +1,4 @@
-// $Id: srcfil.cc,v 1.1 2005-10-28 21:06:41 edwards Exp $
+// $Id: srcfil.cc,v 1.2 2005-11-01 14:22:10 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */
@@ -79,7 +79,7 @@ namespace Chroma
    * \param color_index  Color index
    */
 
-  void srcfil(LatticeStaggeredFermion& a, multi1d<int>& coord, int color_index)
+  void srcfil(LatticeStaggeredFermion& a, const multi1d<int>& coord, int color_index)
   {
     if (color_index >= Nc || color_index < 0)
       QDP_error_exit("invalid color index", color_index);
