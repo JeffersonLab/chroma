@@ -6,6 +6,8 @@
 #ifndef __sources_h__
 #define __sources_h__
 
+#include "srcfil.h"
+#include "z2_src.h"
 #include "srcsnktype.h"
 #include "wavetype.h"
 
