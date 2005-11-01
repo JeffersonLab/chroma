@@ -47,7 +47,7 @@ namespace Chroma {
 //###################################################################################//
 
 static const char* const CVSBuildingBlocks_cc =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 2.3 2005-10-19 19:34:44 edwards Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 2.4 2005-11-01 04:17:29 edwards Exp $";
 
 //###################################################################################//
 // record the CVS info                                                               //
@@ -76,11 +76,21 @@ void BkwdFrwdTr( const LatticePropagator &             B,
                  const signed short int T1, 
                  const signed short int T2 )
 {
-  StopWatch snoop, swatch;
-  snoop.reset();
-  snoop.start();
+  StopWatch TotalTime;
+  TotalTime.reset();
+  TotalTime.start();
 
-  double timeIO = 0.0;
+  StopWatch Timer;
+
+  int TRCalls = 0;
+  int FTCalls = 0;
+  int GFGCalls = 0;
+  int IPCalls = 0;
+  double TRTime = 0.0;
+  double FTTime = 0.0;
+  double GFGTime = 0.0;
+  double IPTime = 0.0;
+  double IOTime = 0.0;
 
   const unsigned short int NLinks = LinkDirs.size();
   unsigned short int Link;
@@ -91,8 +101,8 @@ void BkwdFrwdTr( const LatticePropagator &             B,
   // add a tag to identify the link pattern                                          //
   //#################################################################################//
 
-  swatch.reset();
-  swatch.start();
+  Timer.reset();
+  Timer.start();
 
   for( int o = 0; o < NumO; o ++ )
   {
@@ -123,19 +133,40 @@ void BkwdFrwdTr( const LatticePropagator &             B,
     GBB_NLinkPatterns[f] ++;
   }
 
-  swatch.stop();
-  timeIO += swatch.getTimeInSeconds();
-
+  Timer.stop();
+  IOTime += Timer.getTimeInSeconds();
 
   for( int i = 0; i < Ns * Ns; i ++ )
   {
+    Timer.reset();
+    Timer.start();
+
     // assumes any Gamma5 matrices have already been absorbed
-    LatticeComplex Trace = trace( adj( B ) * Gamma( i ) * F * Gamma( GammaInsertion ) );
+    //LatticeComplex Trace = trace( adj( B ) * Gamma( i ) * F * Gamma( GammaInsertion ) );
+    LatticePropagator GFG = Gamma(i) * F * Gamma( GammaInsertion );
+
+    Timer.stop();
+    GFGCalls += 1;
+    GFGTime += Timer.getTimeInSeconds();
+    Timer.reset();
+    Timer.start();
+
+    LatticeComplex Trace = localInnerProduct( B, GFG );
+
+    Timer.stop();
+    IPCalls += 1;
+    IPTime += Timer.getTimeInSeconds();
+    Timer.reset();
+    Timer.start();
 
     multi2d< DComplex > Projections = Phases.sft( Trace );
 
-    swatch.reset();
-    swatch.start();
+    Timer.stop();
+    FTTime += Timer.getTimeInSeconds();
+    FTCalls += 1;
+
+    Timer.reset();
+    Timer.start();
 
     for( int q = 0; q < NumQ; q ++ )
     {
@@ -182,18 +213,16 @@ void BkwdFrwdTr( const LatticePropagator &             B,
       }
     }
 
-    swatch.stop();
-    timeIO += swatch.getTimeInSeconds();
+    Timer.stop();
+    IOTime += Timer.getTimeInSeconds();
   }
 
-  snoop.stop();
-  QDPIO::cout << __func__ << ": time= "
-	      << snoop.getTimeInSeconds() 
-	      << " secs," 
-	      << "   IO time= " 
-	      << timeIO
-	      << " secs" 
-	      << endl;
+  QDPIO::cout << __func__ << ":  io time = " << IOTime << " seconds" << endl;
+  QDPIO::cout << __func__ << ": gfg time = " << GFGTime / (double) GFGCalls << " seconds" << endl;
+  QDPIO::cout << __func__ << ":  ip time = " << IPTime / (double) IPCalls << " seconds" << endl;
+  QDPIO::cout << __func__ << ":  ft time = " << FTTime / (double) FTCalls << " seconds" << endl;
+  TotalTime.stop();
+  QDPIO::cout << __func__ << ": total time = " << TotalTime.getTimeInSeconds() << " seconds" << endl;
 
   return;
 }
@@ -219,9 +248,9 @@ void AddLinks( const multi1d< LatticePropagator > &  B,
                const signed short int T1, 
                const signed short int T2 )
 {
-  StopWatch swatch;
-  swatch.reset();
-  swatch.start();
+  StopWatch Timer;
+  int ShiftCalls = 0;
+  double ShiftTime = 0.0;
 
   const unsigned short int NLinks = LinkDirs.size();
 
@@ -255,8 +284,15 @@ void AddLinks( const multi1d< LatticePropagator > &  B,
 
       if( DoFurtherPatterns == true )
       {
+        Timer.reset();
+        Timer.start();
+
         // accumulate product of link fields
         F_mu = shift( adj( U[ mu ] ) * F, BACKWARD, mu );
+
+        Timer.stop();
+        ShiftTime += Timer.getTimeInSeconds();
+        ShiftCalls += 1;
       }
 
       if( DoThisPattern == true )
@@ -297,8 +333,15 @@ void AddLinks( const multi1d< LatticePropagator > &  B,
 
       if( DoFurtherPatterns == true )
       {
+        Timer.reset();
+        Timer.start();
+
         // accumulate product of link fields
         F_mu = U[ mu ] * shift( F, FORWARD, mu );
+
+        Timer.stop();
+        ShiftTime += Timer.getTimeInSeconds();
+        ShiftCalls += 1;
       }
 
       if( DoThisPattern == true )
@@ -323,11 +366,11 @@ void AddLinks( const multi1d< LatticePropagator > &  B,
     }
   }
 
-
-  swatch.stop();
-  QDPIO::cout << __func__ << ": time= "
-	      << swatch.getTimeInSeconds() 
-	      << " secs" << endl;
+  QDPIO::cout << __func__ << ": shift time = "
+	      << ShiftTime
+	      << " seconds with shift calls = "
+              << ShiftCalls 
+	      << endl;
 
   return;
 }
@@ -352,17 +395,18 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
 		     const multi1d< int >&                 SnkMom, 
 		     const signed short int                DecayDir)
 {
-  StopWatch snoop;
-  snoop.reset();
-  snoop.start();
+  StopWatch TotalTime;
+  TotalTime.reset();
+  TotalTime.start();
 
-  StopWatch swatch;
-  swatch.reset();
-  swatch.start();
+  StopWatch Timer;
 
   //#################################################################################//
   // open building blocks data files                                                 //
   //#################################################################################//
+
+  Timer.reset();
+  Timer.start();
 
   if ( BinaryDataFileNames.size1() != PhasesCanonical.numMom() )
   {
@@ -387,17 +431,17 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
     }
   }
 
-  swatch.stop();
-  QDPIO::cout << __func__ << ": time to open files= "
-	      << swatch.getTimeInSeconds() 
-	      << " secs" << endl;
+  Timer.stop();
+  QDPIO::cout << __func__ << ": time to open files = "
+	      << Timer.getTimeInSeconds() 
+	      << " seconds" << endl;
 
   //#################################################################################//
   // calculate building blocks                                                       //
   //#################################################################################//
 
-  swatch.reset();
-  swatch.start();
+  Timer.reset();
+  Timer.start();
 
   QDPIO::cout << __func__ << ": start BkwdFrwdTr" << endl;
 
@@ -410,14 +454,13 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
 		BinaryWriters, GBB_NLinkPatterns, GBB_NMomPerms, f, LinkDirs, T1, T2 );
   }
 
+  Timer.stop();
+  QDPIO::cout << __func__ << ": total time for 0 links (single BkwdFrwdTr call) = "
+	      << Timer.getTimeInSeconds() 
+	      << " seconds" << endl;
 
-  swatch.stop();
-  QDPIO::cout << __func__ << ": time of BkwdFrwdTr= "
-	      << swatch.getTimeInSeconds() 
-	      << " secs" << endl;
-
-  swatch.reset();
-  swatch.start();
+  Timer.reset();
+  Timer.start();
 
   QDPIO::cout << __func__ << ": start AddLinks" << endl;
 
@@ -427,17 +470,17 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
 	    BinaryWriters, GBB_NLinkPatterns, GBB_NMomPerms,
 	    T1, T2 );
 
-  swatch.stop();
-  QDPIO::cout << __func__ << ": time of AddLinks= "
-	      << swatch.getTimeInSeconds() 
-	      << " secs" << endl;
+  Timer.stop();
+  QDPIO::cout << __func__ << ": total time for remaining links (outermost AddLinks call) = "
+	      << Timer.getTimeInSeconds() 
+	      << " seconds" << endl;
 
   //#################################################################################//
   // add footer and close files                                                      //
   //#################################################################################//
 
-  swatch.reset();
-  swatch.start();
+  Timer.reset();
+  Timer.start();
 
   const unsigned short int Id = 0;  // indicates building blocks
   const unsigned short int Version = 3;  // building blocks version
@@ -526,15 +569,15 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
     }
   }
 
-  swatch.stop();
-  QDPIO::cout << __func__ << ": time to write BB= "
-	      << swatch.getTimeInSeconds() 
-	      << " secs" << endl;
+  Timer.stop();
+  QDPIO::cout << __func__ << ": time to write footer = "
+	      << Timer.getTimeInSeconds() 
+	      << " seconds" << endl;
 
-  snoop.stop();
-  QDPIO::cout << __func__ << ": total time= "
-	      << snoop.getTimeInSeconds() 
-	      << " secs" << endl;
+  TotalTime.stop();
+  QDPIO::cout << __func__ << ": total time = "
+	      << TotalTime.getTimeInSeconds() 
+	      << " seconds" << endl;
 
   return;
 }
