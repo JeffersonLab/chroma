@@ -1,11 +1,11 @@
 /* + */
-/* $Id: ks_local_loops.cc,v 2.0 2005-09-25 21:04:35 edwards Exp $ ($Date: 2005-09-25 21:04:35 $) */
+/* $Id: ks_local_loops.cc,v 2.1 2005-11-01 04:15:16 edwards Exp $ ($Date: 2005-11-01 04:15:16 $) */
 
 
 #include "fermact.h"
 #include "meas/hadron/ks_local_loops.h"
 #include "meas/hadron/hadron_s.h"
-#include "meas/hadron/z2_src.h"
+#include "meas/sources/z2_src.h"
 
 #include "meas/smear/fuzz_smear.h"
 
