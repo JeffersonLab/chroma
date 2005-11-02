@@ -48,8 +48,7 @@ bin_PROGRAMS = collect_propcomp \
         qproptrev hmc chroma
 
 # Wilson specific programs
-bin_PROGRAMS += qpropqio qproptransf wallformfac \
-        propagator_hack
+bin_PROGRAMS += qpropqio qproptransf wallformfac
 
 # Staggered specific programs
 #check_PROGRAMS += 
@@ -61,10 +60,11 @@ bin_PROGRAMS += qpropqio qproptransf wallformfac \
 ## make check
 EXTRA_PROGRAMS = qpropadd 
 
+
 # Wilson specific programs
 # Temporarily moved here while fixing codes.
 EXTRA_PROGRAMS += propagator_comp multi_propagator multi_propagator_comp \
-       collect_multi_propcomp
+       collect_multi_propcomp 
 
 # Staggered specific programs
 EXTRA_PROGRAMS += spectrum_s
