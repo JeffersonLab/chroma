@@ -1,4 +1,4 @@
-// $Id: prec_parwilson_linop_w.cc,v 2.3 2005-10-31 04:35:13 edwards Exp $
+// $Id: prec_parwilson_linop_w.cc,v 2.4 2005-11-02 20:42:47 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion linear operator with parity breaking term
  */
@@ -50,7 +50,7 @@ namespace Chroma
   //! Return flops performed by the operator()
   unsigned long EvenOddPrecParWilsonLinOp::nFlops() const
   { 
-    unsigned long cbsite_flops = 2*D.nFlops()+6*Nc*Ns;
+    unsigned long cbsite_flops = 2*D.nFlops()+16*Nc*Ns;
     return cbsite_flops*(Layout::sitesOnNode()/2);
   }
 
