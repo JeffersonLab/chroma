@@ -1,4 +1,7 @@
 10/25/2005 -- Robert Edwards
+	Version 2.3.4. Tiny changes.
+
+10/25/2005 -- Robert Edwards
 	Version 2.3.3. Some housecleaning. Moved some files from hadron to sources.
         Added flop counts for 4D CGNE. Removed some spurious "const" from linearop.h .
 
