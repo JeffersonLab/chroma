@@ -75,7 +75,6 @@ EXTRA_PROGRAMS += spectrum_s
 #
 chroma_SOURCES= chroma.cc
 propagator_comp_SOURCES= propagator_comp.cc
-propagator_hack_SOURCES= propagator_hack.cc
 multi_propagator_comp_SOURCES = multi_propagator_comp.cc
 collect_propcomp_SOURCES = collect_propcomp.cc
 collect_multi_propcomp_SOURCES = collect_multi_propcomp.cc
