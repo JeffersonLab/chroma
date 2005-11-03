@@ -1,4 +1,4 @@
-// $Id: hmc.cc,v 2.1 2005-10-04 19:23:19 bjoo Exp $
+// $Id: hmc.cc,v 2.2 2005-11-03 03:52:51 edwards Exp $
 /*! \file
  *  \brief Main code for HMC with dynamical fermion generation
  */
@@ -438,7 +438,7 @@ int main(int argc, char *argv[])
     write(xml_out, "Input", xml_in);
   }
   catch(const std::string& e) {
-    QDPIO::cerr << "Caught Exception while reading file: " << e << endl;
+    QDPIO::cerr << "hmc: Caught Exception while reading file: " << e << endl;
     QDP_abort(1);
   }
 
@@ -510,7 +510,7 @@ int main(int argc, char *argv[])
 
   }
   catch(const std::string& e) { 
-    QDPIO::cerr << "Caugth exception while reading measurements: " << e << endl
+    QDPIO::cerr << "hmc: Caught exception while reading measurements: " << e << endl
 		<< flush;
 
     QDP_abort(1);
@@ -524,15 +524,15 @@ int main(int argc, char *argv[])
     doHMC<HMCTrjParams>(u, theHMCTrj, mc_control, trj_params, the_measurements);
   } 
   catch( const std::string& e ) { 
-    QDPIO::cerr << "Caught string exception in hmc: " << e << endl;
+    QDPIO::cerr << "hmc: Caught string exception: " << e << endl;
     QDP_abort(1);
   }
   catch( std::exception& e ) {
-    QDPIO::cerr << "Caught standard library exception in hmc: " << e.what() << endl;
+    QDPIO::cerr << "hmc: Caught standard library exception: " << e.what() << endl;
     QDP_abort(1);
   }
   catch(...) {
-    QDPIO::cerr << "Caught generic/unknown exception in hmc" << endl;
+    QDPIO::cerr << "hmc: Caught generic/unknown exception" << endl;
     QDP_abort(1);
   }
 
