@@ -1,4 +1,8 @@
-10/25/2005 -- Robert Edwards
+11/04/2005 -- Robert Edwards
+	Version 2.3.5. Version using new blas routines suitable for twisted-mass ferms
+        from qdp. Some new IO minutae.
+
+11/02/2005 -- Robert Edwards
 	Version 2.3.4. Tiny changes.
 
 10/25/2005 -- Robert Edwards
