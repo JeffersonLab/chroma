@@ -1,4 +1,4 @@
-// $Id: ape_link_smearing.cc,v 1.1 2005-10-28 21:31:04 edwards Exp $
+// $Id: ape_link_smearing.cc,v 1.2 2005-11-07 06:40:55 edwards Exp $
 /*! \file
  *  \brief APE link smearing
  */
@@ -11,7 +11,7 @@
 
 namespace Chroma
 {
-  //! Hooks to register the class with the fermact factory
+  //! Hooks to register the class
   namespace APELinkSmearingEnv
   {
     //! Callback function
@@ -40,27 +40,7 @@ namespace Chroma
   {
     XMLReader paramtop(xml, path);
 
-    int version;
-    read(paramtop, "version", version);
-
-    switch (version) 
-    {
-    case 1:
-      break;
-
-    default :
-      QDPIO::cerr << "APELinkSmearingParams input version " << version << " unsupported." << endl;
-      QDP_abort(1);
-    }
-
     read(paramtop, "link_smear_num", param.link_smear_num);
-    if( param.link_smear_num < 0 )
-    {
-      QDPIO::cerr << "apesmear: invalid number of ape smearing iterations, link_smear_num = " 
-		  << param.link_smear_num << endl;
-      QDP_abort(1);
-    }
-
     read(paramtop, "link_smear_fact", param.link_smear_fact);
     read(paramtop, "no_smear_dir", param.no_smear_dir);
   }
@@ -77,9 +57,6 @@ namespace Chroma
   {
     push(xml, path);
     
-    int version = 1;
-    write(xml, "version", version);
-
     write(xml, "link_smear_num", param.link_smear_num);
     write(xml, "link_smear_fact", param.link_smear_fact);
     write(xml, "no_smear_dir", param.no_smear_dir);
@@ -89,12 +66,11 @@ namespace Chroma
 
 
   //! Smear the links
-  multi1d<LatticeColorMatrix>
-  APELinkSmearing::operator()(const multi1d<LatticeColorMatrix>& u) const
+  void
+  APELinkSmearing::operator()(multi1d<LatticeColorMatrix>& u) const
   {
     // Now ape smear
-    multi1d<LatticeColorMatrix> u_ape(Nd);
-    u_ape = u;
+    multi1d<LatticeColorMatrix> u_ape =  u;
 
     if (params.param.link_smear_num > 0)
     {
@@ -120,7 +96,7 @@ namespace Chroma
       QDPIO::cout << "Gauge field APE-smeared!" << endl;
     }
 
-    return u_ape;
+    u = u_ape;
   }
 
 }

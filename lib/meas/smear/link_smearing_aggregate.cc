@@ -1,6 +1,6 @@
-// $Id: link_smearing_aggregate.cc,v 1.1 2005-10-28 21:31:04 edwards Exp $
+// $Id: link_smearing_aggregate.cc,v 1.2 2005-11-07 06:40:55 edwards Exp $
 /*! \file
- *  \brief All link smearing constructors
+ *  \brief All link smearing applicators
  */
 
 #include "meas/smear/link_smearing_aggregate.h"
@@ -10,14 +10,14 @@
 namespace Chroma
 {
 
-  //! Registration aggregator
+  // Registration aggregator
   namespace LinkSmearingEnv
   {
     bool registerAll() 
     {
       bool success = true;
 
-      // Sources
+      // link smearing
       success &= APELinkSmearingEnv::registered;
 
       return success;

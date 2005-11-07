@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ape_link_smearing.h,v 1.1 2005-10-28 21:31:04 edwards Exp $
+// $Id: ape_link_smearing.h,v 1.2 2005-11-07 06:40:55 edwards Exp $
 /*! \file
  *  \brief APE link smearing
  */
@@ -20,7 +20,7 @@ namespace Chroma
     //! Name to be used
   }
   
-  //! Params for wilson ferm acts
+  //! Params for APE link smearing
   /*! @ingroup smear */
   struct APELinkSmearingParams
   {
@@ -57,7 +57,7 @@ namespace Chroma
     APELinkSmearing(const APELinkSmearingParams& p) : params(p) {}
 
     //! Smear the links
-    multi1d<LatticeColorMatrix> operator()(const multi1d<LatticeColorMatrix>& u) const;
+    void operator()(multi1d<LatticeColorMatrix>& u) const;
 
   private:
     //! Hide partial constructor

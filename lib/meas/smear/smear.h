@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: smear.h,v 2.0 2005-09-25 21:04:40 edwards Exp $
+// $Id: smear.h,v 2.1 2005-11-07 06:40:55 edwards Exp $
 
 /*! \file
  * \brief Smearing routines
@@ -26,6 +26,10 @@
 #include "hyp_smear3d.h"
 #include "ape_smear.h"
 #include "displacement.h"
+
+#include "quark_smearing.h"
+#include "quark_source_sink.h"
+#include "quark_smearing_factory.h"
 
 #endif
 

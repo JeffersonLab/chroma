@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: link_smearing_aggregate.h,v 1.1 2005-10-28 21:31:04 edwards Exp $
+// $Id: link_smearing_aggregate.h,v 1.2 2005-11-07 06:40:55 edwards Exp $
 /*! \file
  *  \brief All link smearing constructors
  */
@@ -12,7 +12,7 @@
 namespace Chroma
 {
   //! Registration aggregator
-  /*! Sources */
+  /*! \ingroup smear */
   namespace LinkSmearingEnv
   {
     extern const bool registered;
