@@ -1,4 +1,4 @@
-// $Id: inline_hyp_smear.cc,v 2.0 2005-09-25 21:04:39 edwards Exp $
+// $Id: inline_hyp_smear.cc,v 2.1 2005-11-07 17:30:57 edwards Exp $
 /*! \file
  *  \brief Inline Hyp smearing
  */
@@ -99,6 +99,8 @@ namespace Chroma
     write(xml, "j_decay", param.num_smear);
 
     write(xml, "nrow", param.nrow);
+
+    pop(xml);
   }
 
 
