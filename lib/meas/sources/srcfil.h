@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: srcfil.h,v 1.1 2005-10-28 21:06:41 edwards Exp $
+// $Id: srcfil.h,v 1.2 2005-11-07 06:27:11 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */
@@ -26,6 +26,8 @@ namespace Chroma
 
   //! Fill a specific color index with 1.0
   /*!
+   * \ingroup sources
+   *
    * This routine is specific to Wilson fermions! 
    *
    * \param a      Source lattice Color Vector
@@ -37,6 +39,8 @@ namespace Chroma
 
   //! Fill a specific color index with 1.0
   /*!
+   * \ingroup sources
+   *
    * This routine is specific to Staggered fermions! 
    *
    * \param a      Source lattice Color Vector
