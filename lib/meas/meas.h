@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: meas.h,v 2.0 2005-09-25 21:04:33 edwards Exp $
+// $Id: meas.h,v 2.1 2005-11-07 21:20:22 edwards Exp $
 
 /*! \file
  * \brief Include all measurement routines
@@ -27,6 +27,7 @@
 #include "schrfun/schrfun.h"
 #include "smear/smear.h"
 #include "sources/sources.h"
+#include "sinks/sinks.h"
 
 #include "inline/inline.h"
 
