@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: source_construction.h,v 1.1 2005-10-28 21:06:41 edwards Exp $
+// $Id: source_construction.h,v 1.2 2005-11-07 06:28:35 edwards Exp $
 
 /*! @file
  * @brief Source construction
@@ -12,17 +12,17 @@
 
 namespace Chroma
 {
-  //! Base class for source construction
+  //! Base class for quark source construction
   /*! @ingroup sources
    *
-   * Supports creation and application of sources
+   * Supports creation of quark sources
    */
   template<typename T>
-  class SourceConstruction
+  class QuarkSourceConstruction
   {
   public:
     //! Virtual destructor to help with cleanup;
-    virtual ~SourceConstruction() {}
+    virtual ~QuarkSourceConstruction() {}
 
     //! Construct the source
     virtual T operator()(const multi1d<LatticeColorMatrix>& u) const = 0;
