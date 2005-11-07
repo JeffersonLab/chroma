@@ -1,4 +1,4 @@
-// $Id: gaus_quark_smearing.cc,v 2.1 2005-11-07 06:40:55 edwards Exp $
+// $Id: gaus_quark_smearing.cc,v 2.2 2005-11-07 21:23:31 edwards Exp $
 /*! \file
  *  \brief Gaussian smearing of color vector
  */
@@ -119,7 +119,7 @@ namespace Chroma
   GausQuarkSmearing<LatticePropagator>::operator()(LatticePropagator& quark,
 						   const multi1d<LatticeColorMatrix>& u) const
   {
-    gaus_smear(quark, u, params.param.wvf_param, params.param.wvfIntPar, params.param.no_smear_dir);
+    gausSmear(u, quark, params.param.wvf_param, params.param.wvfIntPar, params.param.no_smear_dir);
   }
 
   //! Smear the quark
@@ -127,7 +127,7 @@ namespace Chroma
   GausQuarkSmearing<LatticeFermion>::operator()(LatticeFermion& quark,
 						const multi1d<LatticeColorMatrix>& u) const
   {
-    gaus_smear(quark, u, params.param.wvf_param, params.param.wvfIntPar, params.param.no_smear_dir);
+    gausSmear(u, quark, params.param.wvf_param, params.param.wvfIntPar, params.param.no_smear_dir);
   }
 
   //! Smear the color-vector
@@ -135,7 +135,7 @@ namespace Chroma
   GausQuarkSmearing<LatticeColorVector>::operator()(LatticeColorVector& quark,
 						    const multi1d<LatticeColorMatrix>& u) const
   {
-    gaus_smear(quark, u, params.param.wvf_param, params.param.wvfIntPar, params.param.no_smear_dir);
+    gausSmear(u, quark, params.param.wvf_param, params.param.wvfIntPar, params.param.no_smear_dir);
   }
 
 
