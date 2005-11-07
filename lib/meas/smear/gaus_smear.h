@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gaus_smear.h,v 2.0 2005-09-25 21:04:39 edwards Exp $
+// $Id: gaus_smear.h,v 2.1 2005-11-07 21:23:16 edwards Exp $
 /*! \file
  *  \brief Gaussian smearing of color vector
  */
@@ -24,6 +24,24 @@ namespace Chroma {
  */
 void gausSmear(const multi1d<LatticeColorMatrix>& u, 
 	       LatticeColorVector& chi, 
+	       const Real& width, int ItrGaus, int j_decay);
+
+
+//! Do a covariant Gaussian smearing of a lattice fermion field
+/*! This is a wrapper over the template definition
+ *
+ * \ingroup smear
+ *
+ * Arguments:
+ *
+ *  \param u        gauge field ( Read )
+ *  \param chi      fermion field ( Modify )
+ *  \param width    width of "shell" wave function ( Read )
+ *  \param ItrGaus  number of iterations to approximate Gaussian ( Read )
+ *  \param j_decay  direction of decay ( Read )
+ */
+void gausSmear(const multi1d<LatticeColorMatrix>& u, 
+	       LatticeFermion& chi, 
 	       const Real& width, int ItrGaus, int j_decay);
 
 
