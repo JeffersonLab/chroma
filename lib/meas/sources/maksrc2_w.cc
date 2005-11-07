@@ -1,4 +1,6 @@
-/*   $Id: maksrc2_w.cc,v 1.1 2005-10-28 21:06:41 edwards Exp $ ($Date: 2005-10-28 21:06:41 $) */
+/*   $Id: maksrc2_w.cc,v 1.2 2005-11-07 06:28:15 edwards Exp $ ($Date: 2005-11-07 06:28:15 $) */
+
+#error "DO NOT USE. ONLY FOR REFERENCE."
 
 namespace Chroma {
 
