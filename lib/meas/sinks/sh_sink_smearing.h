@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sh_sink_smearing.h,v 1.1 2005-11-07 06:24:09 edwards Exp $
+// $Id: sh_sink_smearing.h,v 1.2 2005-11-07 22:46:21 edwards Exp $
 /*! \file
  *  \brief Shell sink smearing
  */
@@ -44,16 +44,7 @@ namespace Chroma
 
   //! Name and registration
   /*! @ingroup sinks */
-  namespace ShellPropSinkSmearingEnv
-  {
-    extern const std::string name;
-    extern const bool registered;
-  }
-  
-
-  //! Name and registration
-  /*! @ingroup sinks */
-  namespace ShellFermSinkSmearingEnv
+  namespace ShellQuarkSinkSmearingEnv
   {
     extern const std::string name;
     extern const bool registered;

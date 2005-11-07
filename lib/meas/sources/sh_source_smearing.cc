@@ -1,4 +1,4 @@
-// $Id: sh_source_smearing.cc,v 2.1 2005-11-07 06:30:06 edwards Exp $
+// $Id: sh_source_smearing.cc,v 2.2 2005-11-07 22:46:34 edwards Exp $
 /*! \file
  *  \brief Shell source construction
  */
@@ -76,40 +76,20 @@ namespace Chroma
 
 
   //! Hooks to register the class
-  namespace ShellPropSourceSmearingEnv
+  namespace ShellQuarkSourceSmearingEnv
   {
     //! Callback function
-    QuarkSourceSink<LatticePropagator>* createSource(XMLReader& xml_in,
-						     const std::string& path,
-						     const multi1d<LatticeColorMatrix>& u)
+    QuarkSourceSink<LatticePropagator>* createProp(XMLReader& xml_in,
+						   const std::string& path,
+						   const multi1d<LatticeColorMatrix>& u)
     {
       return new ShellQuarkSourceSmearing<LatticePropagator>(ShellQuarkSourceSmearingParams(xml_in, path), u);
     }
 
-    //! Name to be used
-    const std::string name("SHELL_SOURCE");
-
-    //! Register all the factories
-    bool registerAll()
-    {
-      bool foo = true;
-      foo &= LinkSmearingEnv::registered;
-      foo &= PropSmearingEnv::registered;
-      foo &= Chroma::ThePropSourceSmearingFactory::Instance().registerObject(name, createSource);
-      return foo;
-    }
-
-    //! Register the source construction
-    const bool registered = registerAll();
-  }
-
-  //! Hooks to register the class
-  namespace ShellFermSourceSmearingEnv
-  {
     //! Callback function
-    QuarkSourceSink<LatticeFermion>* createSource(XMLReader& xml_in,
-						  const std::string& path,
-						  const multi1d<LatticeColorMatrix>& u)
+    QuarkSourceSink<LatticeFermion>* createFerm(XMLReader& xml_in,
+						const std::string& path,
+						const multi1d<LatticeColorMatrix>& u)
     {
       return new ShellQuarkSourceSmearing<LatticeFermion>(ShellQuarkSourceSmearingParams(xml_in, path), u);
     }
@@ -122,8 +102,9 @@ namespace Chroma
     {
       bool foo = true;
       foo &= LinkSmearingEnv::registered;
-      foo &= FermSmearingEnv::registered;
-      foo &= Chroma::TheFermSourceSmearingFactory::Instance().registerObject(name, createSource);
+      foo &= QuarkSmearingEnv::registered;
+      foo &= Chroma::ThePropSourceSmearingFactory::Instance().registerObject(name, createProp);
+      foo &= Chroma::TheFermSourceSmearingFactory::Instance().registerObject(name, createFerm);
       return foo;
     }
 
@@ -171,7 +152,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << ShellPropSourceSmearingEnv::name << ": Caught Exception smearing: " << e << endl;
+      QDPIO::cerr << ShellQuarkSourceSmearingEnv::name << ": Caught Exception smearing: " << e << endl;
       QDP_abort(1);
     }
   }
@@ -215,7 +196,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << ShellFermSourceSmearingEnv::name << ": Caught Exception smearing: " << e << endl;
+      QDPIO::cerr << ShellQuarkSourceSmearingEnv::name << ": Caught Exception smearing: " << e << endl;
       QDP_abort(1);
     }
   }

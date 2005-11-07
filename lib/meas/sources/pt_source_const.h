@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: pt_source_const.h,v 2.1 2005-11-07 06:30:06 edwards Exp $
+// $Id: pt_source_const.h,v 2.2 2005-11-07 22:46:34 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */
@@ -41,15 +41,7 @@ namespace Chroma
 
   //! Name and registration
   /*! @ingroup sources */
-  namespace PointPropSourceConstEnv
-  {
-    extern const std::string name;
-    extern const bool registered;
-  }
-
-  //! Name and registration
-  /*! @ingroup sources */
-  namespace PointFermSourceConstEnv
+  namespace PointQuarkSourceConstEnv
   {
     extern const std::string name;
     extern const bool registered;

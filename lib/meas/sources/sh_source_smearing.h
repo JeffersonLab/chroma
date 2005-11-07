@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sh_source_smearing.h,v 2.1 2005-11-07 06:30:06 edwards Exp $
+// $Id: sh_source_smearing.h,v 2.2 2005-11-07 22:46:34 edwards Exp $
 /*! \file
  *  \brief Shell source smearing
  */
@@ -44,15 +44,7 @@ namespace Chroma
 
   //! Name and registration
   /*! @ingroup sources */
-  namespace ShellPropSourceSmearingEnv
-  {
-    extern const std::string name;
-    extern const bool registered;
-  }
-  
-  //! Name and registration
-  /*! @ingroup sources */
-  namespace ShellFermSourceSmearingEnv
+  namespace ShellQuarkSourceSmearingEnv
   {
     extern const std::string name;
     extern const bool registered;

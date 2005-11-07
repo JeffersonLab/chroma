@@ -1,4 +1,4 @@
-// $Id: pt_sink_smearing.cc,v 1.1 2005-11-07 06:24:09 edwards Exp $
+// $Id: pt_sink_smearing.cc,v 1.2 2005-11-07 22:46:21 edwards Exp $
 /*! \file
  *  \brief Point sink construction
  */
@@ -50,7 +50,7 @@ namespace Chroma
 
 
   //! Hooks to register the class
-  namespace PointPropSinkSmearingEnv
+  namespace PointQuarkSinkSmearingEnv
   {
     //! Callback function
     QuarkSourceSink<LatticePropagator>* createProp(XMLReader& xml_in,
@@ -60,28 +60,8 @@ namespace Chroma
       return new PointQuarkSinkSmearing<LatticePropagator>(PointQuarkSinkSmearingParams(xml_in, path), u);
     }
 
-    //! Name to be used
-    const std::string name("POINT_SINK");
-
-    //! Register all the factories
-    bool registerAll()
-    {
-      bool foo = true;
-      foo &= LinkSmearingEnv::registered;
-      foo &= Chroma::ThePropSinkSmearingFactory::Instance().registerObject(name, createProp);
-      return true;
-    }
-
-    //! Register the sink smearing
-    const bool registered = registerAll();
-  }
-
-
-  //! Hooks to register the class
-  namespace PointFermSinkSmearingEnv
-  {
     //! Callback function
-    QuarkSourceSink<LatticeFermion>* createProp(XMLReader& xml_in,
+    QuarkSourceSink<LatticeFermion>* createFerm(XMLReader& xml_in,
 						const std::string& path,
 						const multi1d<LatticeColorMatrix>& u)
     {
@@ -96,7 +76,8 @@ namespace Chroma
     {
       bool foo = true;
       foo &= LinkSmearingEnv::registered;
-      foo &= Chroma::TheFermSinkSmearingFactory::Instance().registerObject(name, createProp);
+      foo &= Chroma::ThePropSinkSmearingFactory::Instance().registerObject(name, createProp);
+      foo &= Chroma::TheFermSinkSmearingFactory::Instance().registerObject(name, createFerm);
       return true;
     }
 

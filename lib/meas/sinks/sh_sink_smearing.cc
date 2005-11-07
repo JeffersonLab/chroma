@@ -1,4 +1,4 @@
-// $Id: sh_sink_smearing.cc,v 1.1 2005-11-07 06:24:09 edwards Exp $
+// $Id: sh_sink_smearing.cc,v 1.2 2005-11-07 22:46:21 edwards Exp $
 /*! \file
  *  \brief Shell sink smearing
  */
@@ -77,39 +77,18 @@ namespace Chroma
 
 
   //! Hooks to register the class
-  namespace ShellPropSinkSmearingEnv
+  namespace ShellQuarkSinkSmearingEnv
   {
     //! Callback function
-    QuarkSourceSink<LatticePropagator>* createSink(XMLReader& xml_in,
+    QuarkSourceSink<LatticePropagator>* createProp(XMLReader& xml_in,
 						   const std::string& path,
 						   const multi1d<LatticeColorMatrix>& u)
     {
       return new ShellQuarkSinkSmearing<LatticePropagator>(ShellQuarkSinkSmearingParams(xml_in, path), u);
     }
 
-    //! Name to be used
-    const std::string name("SHELL_SINK");
-
-    //! Register all the factories
-    bool registerAll()
-    {
-      bool foo = true;
-      foo &= LinkSmearingEnv::registered;
-      foo &= PropSmearingEnv::registered;
-      foo &= Chroma::ThePropSinkSmearingFactory::Instance().registerObject(name, createSink);
-      return foo;
-    }
-
-    //! Register the sink smearing
-    const bool registered = registerAll();
-  }
-
-
-  //! Hooks to register the class
-  namespace ShellFermSinkSmearingEnv
-  {
     //! Callback function
-    QuarkSourceSink<LatticeFermion>* createSink(XMLReader& xml_in,
+    QuarkSourceSink<LatticeFermion>* createFerm(XMLReader& xml_in,
 						const std::string& path,
 						const multi1d<LatticeColorMatrix>& u)
     {
@@ -124,8 +103,9 @@ namespace Chroma
     {
       bool foo = true;
       foo &= LinkSmearingEnv::registered;
-      foo &= FermSmearingEnv::registered;
-      foo &= Chroma::TheFermSinkSmearingFactory::Instance().registerObject(name, createSink);
+      foo &= QuarkSmearingEnv::registered;
+      foo &= Chroma::ThePropSinkSmearingFactory::Instance().registerObject(name, createProp);
+      foo &= Chroma::TheFermSinkSmearingFactory::Instance().registerObject(name, createFerm);
       return foo;
     }
 
@@ -174,7 +154,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << ShellPropSinkSmearingEnv::name << ": Caught Exception smearing: " << e << endl;
+      QDPIO::cerr << ShellQuarkSinkSmearingEnv::name << ": Caught Exception smearing: " << e << endl;
       QDP_abort(1);
     }
   }
@@ -220,7 +200,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << ShellPropSinkSmearingEnv::name << ": Caught Exception smearing: " << e << endl;
+      QDPIO::cerr << ShellQuarkSinkSmearingEnv::name << ": Caught Exception smearing: " << e << endl;
       QDP_abort(1);
     }
   }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sink_smearing_aggregate.h,v 1.1 2005-11-07 06:24:09 edwards Exp $
+// $Id: sink_smearing_aggregate.h,v 1.2 2005-11-07 22:46:21 edwards Exp $
 /*! \file
  *  \brief All make sink constructors
  */
@@ -13,17 +13,11 @@ namespace Chroma
 {
   //! Registration aggregator
   /*! @ingroup sinks */
-  namespace PropSinkSmearingEnv
+  namespace QuarkSinkSmearingEnv
   {
     extern const bool registered;
   }
 
-  //! Registration aggregator
-  /*! @ingroup sinks */
-  namespace FermSinkSmearingEnv
-  {
-    extern const bool registered;
-  }
 }
 
 #endif

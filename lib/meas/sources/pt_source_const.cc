@@ -1,4 +1,4 @@
-// $Id: pt_source_const.cc,v 2.1 2005-11-07 06:30:06 edwards Exp $
+// $Id: pt_source_const.cc,v 2.2 2005-11-07 22:46:34 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */
@@ -58,38 +58,18 @@ namespace Chroma
 
 
   //! Hooks to register the class
-  namespace PointPropSourceConstEnv
+  namespace PointQuarkSourceConstEnv
   {
     //! Callback function
-    QuarkSourceConstruction<LatticePropagator>* createSource(XMLReader& xml_in,
-							     const std::string& path)
+    QuarkSourceConstruction<LatticePropagator>* createProp(XMLReader& xml_in,
+							   const std::string& path)
     {
       return new PointQuarkSourceConst<LatticePropagator>(PointQuarkSourceConstParams(xml_in, path));
     }
 
-    //! Name to be used
-    const std::string name("POINT_SOURCE");
-
-    //! Register all the factories
-    bool registerAll()
-    {
-      bool foo = true;
-      foo &= LinkSmearingEnv::registered;
-      foo &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(name, createSource);
-      return foo;
-    }
-
-    //! Register the source construction
-    const bool registered = registerAll();
-  }
-
-
-  //! Hooks to register the class
-  namespace PointFermSourceConstEnv
-  {
     //! Callback function
-    QuarkSourceConstruction<LatticeFermion>* createSource(XMLReader& xml_in,
-							  const std::string& path)
+    QuarkSourceConstruction<LatticeFermion>* createFerm(XMLReader& xml_in,
+							const std::string& path)
     {
       return new PointQuarkSourceConst<LatticeFermion>(PointQuarkSourceConstParams(xml_in, path));
     }
@@ -102,14 +82,14 @@ namespace Chroma
     {
       bool foo = true;
       foo &= LinkSmearingEnv::registered;
-      foo &= Chroma::TheFermSourceConstructionFactory::Instance().registerObject(name, createSource);
+      foo &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(name, createProp);
+      foo &= Chroma::TheFermSourceConstructionFactory::Instance().registerObject(name, createFerm);
       return foo;
     }
 
     //! Register the source construction
     const bool registered = registerAll();
   }
-
 
 
   //! Construct the source

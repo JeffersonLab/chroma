@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: source_const_aggregate.h,v 2.1 2005-11-07 06:30:06 edwards Exp $
+// $Id: source_const_aggregate.h,v 2.2 2005-11-07 22:46:34 edwards Exp $
 /*! \file
  *  \brief All make source constructors
  */
@@ -13,14 +13,7 @@ namespace Chroma
 {
   //! Registration aggregator
   /*! @ingroup sources */
-  namespace PropSourceConstructionEnv
-  {
-    extern const bool registered;
-  }
-
-  //! Registration aggregator
-  /*! @ingroup sources */
-  namespace FermSourceConstructionEnv
+  namespace QuarkSourceConstructionEnv
   {
     extern const bool registered;
   }

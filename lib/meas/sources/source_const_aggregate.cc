@@ -1,4 +1,4 @@
-// $Id: source_const_aggregate.cc,v 2.1 2005-11-07 06:30:06 edwards Exp $
+// $Id: source_const_aggregate.cc,v 2.2 2005-11-07 22:46:34 edwards Exp $
 /*! \file
  *  \brief All make source constructors
  */
@@ -12,33 +12,15 @@ namespace Chroma
 {
 
   //! Registration aggregator
-  namespace PropSourceConstructionEnv
+  namespace QuarkSourceConstructionEnv
   {
     bool registerAll() 
     {
       bool success = true;
 
       // Sources
-      success &= PointPropSourceConstEnv::registered;
-      success &= ShellPropSourceConstEnv::registered;
-
-      return success;
-    }
-
-    const bool registered = registerAll();
-  }
-
-
-  //! Registration aggregator
-  namespace FermSourceConstructionEnv
-  {
-    bool registerAll() 
-    {
-      bool success = true;
-
-      // Sources
-      success &= PointFermSourceConstEnv::registered;
-      success &= ShellFermSourceConstEnv::registered;
+      success &= PointQuarkSourceConstEnv::registered;
+      success &= ShellQuarkSourceConstEnv::registered;
 
       return success;
     }

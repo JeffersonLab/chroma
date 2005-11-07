@@ -1,4 +1,4 @@
-// $Id: source_smearing_aggregate.cc,v 2.1 2005-11-07 06:30:06 edwards Exp $
+// $Id: source_smearing_aggregate.cc,v 2.2 2005-11-07 22:46:34 edwards Exp $
 /*! \file
  *  \brief All source smearing
  */
@@ -12,33 +12,15 @@ namespace Chroma
 {
 
   //! Registration aggregator
-  namespace PropSourceSmearingEnv
+  namespace QuarkSourceSmearingEnv
   {
     bool registerAll() 
     {
       bool success = true;
 
       // Sources
-      success &= PointPropSourceSmearingEnv::registered;
-      success &= ShellPropSourceSmearingEnv::registered;
-
-      return success;
-    }
-
-    const bool registered = registerAll();
-  }
-
-
-  //! Registration aggregator
-  namespace FermSourceSmearingEnv
-  {
-    bool registerAll() 
-    {
-      bool success = true;
-
-      // Sources
-      success &= PointFermSourceSmearingEnv::registered;
-      success &= ShellFermSourceSmearingEnv::registered;
+      success &= PointQuarkSourceSmearingEnv::registered;
+      success &= ShellQuarkSourceSmearingEnv::registered;
 
       return success;
     }

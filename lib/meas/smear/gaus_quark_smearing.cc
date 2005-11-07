@@ -1,4 +1,4 @@
-// $Id: gaus_quark_smearing.cc,v 2.2 2005-11-07 21:23:31 edwards Exp $
+// $Id: gaus_quark_smearing.cc,v 2.3 2005-11-07 22:46:46 edwards Exp $
 /*! \file
  *  \brief Gaussian smearing of color vector
  */
@@ -13,70 +13,40 @@ namespace Chroma
 {
 
   //! Hooks to register the class
-  namespace GausPropSmearingEnv
+  namespace GausQuarkSmearingEnv
   {
     //! Callback function
-    QuarkSmearing<LatticePropagator>* createSource(XMLReader& xml_in,
-						   const std::string& path)
+    QuarkSmearing<LatticePropagator>* createProp(XMLReader& xml_in,
+						 const std::string& path)
     {
       return new GausQuarkSmearing<LatticePropagator>(GausQuarkSmearingParams(xml_in, path));
     }
 
-    //! Name to be used
-    const std::string name = "GAUGE_INV_GAUSSIAN";
-
-    //! Register all the factories
-    bool registerAll()
-    {
-      return Chroma::ThePropSmearingFactory::Instance().registerObject(name, createSource);
-    }
-
-    //! Register the source construction
-    const bool registered = registerAll();
-  }
-
-
-  //! Hooks to register the class
-  namespace GausFermSmearingEnv
-  {
     //! Callback function
-    QuarkSmearing<LatticeFermion>* createSource(XMLReader& xml_in,
-						   const std::string& path)
+    QuarkSmearing<LatticeFermion>* createFerm(XMLReader& xml_in,
+					      const std::string& path)
     {
       return new GausQuarkSmearing<LatticeFermion>(GausQuarkSmearingParams(xml_in, path));
     }
-
-    //! Name to be used
-    const std::string name = "GAUGE_INV_GAUSSIAN";
-
-    //! Register all the factories
-    bool registerAll()
-    {
-      return Chroma::TheFermSmearingFactory::Instance().registerObject(name, createSource);
-    }
-
-    //! Register the source construction
-    const bool registered = registerAll();
-  }
-
-
-  //! Hooks to register the class
-  namespace GausColorVecSmearingEnv
-  {
+    
     //! Callback function
-    QuarkSmearing<LatticeColorVector>* createSource(XMLReader& xml_in,
-						    const std::string& path)
+    QuarkSmearing<LatticeColorVector>* createColorVec(XMLReader& xml_in,
+						      const std::string& path)
     {
       return new GausQuarkSmearing<LatticeColorVector>(GausQuarkSmearingParams(xml_in, path));
     }
-
+    
     //! Name to be used
     const std::string name = "GAUGE_INV_GAUSSIAN";
 
     //! Register all the factories
     bool registerAll()
     {
-      return Chroma::TheColorVecSmearingFactory::Instance().registerObject(name, createSource);
+      bool foo = true;
+      foo &= Chroma::ThePropSmearingFactory::Instance().registerObject(name, createProp);
+      foo &= Chroma::TheFermSmearingFactory::Instance().registerObject(name, createFerm);
+      foo &= Chroma::TheColorVecSmearingFactory::Instance().registerObject(name, createColorVec);
+      return foo;
     }
 
     //! Register the source construction

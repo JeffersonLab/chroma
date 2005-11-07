@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gaus_quark_smearing.h,v 2.1 2005-11-07 06:40:55 edwards Exp $
+// $Id: gaus_quark_smearing.h,v 2.2 2005-11-07 22:46:46 edwards Exp $
 /*! \file
  *  \brief Gaussian smearing of color vector and propagator
  */
@@ -13,23 +13,7 @@ namespace Chroma
 {
   //! Name and registration
   /*! @ingroup smear */
-  namespace GausPropSmearingEnv
-  {
-    extern const std::string name;
-    extern const bool registered;
-  }
-  
-  //! Name and registration
-  /*! @ingroup smear */
-  namespace GausFermSmearingEnv
-  {
-    extern const std::string name;
-    extern const bool registered;
-  }
-  
-  //! Name and registration
-  /*! @ingroup smear */
-  namespace GausColorVecSmearingEnv
+  namespace GausQuarkSmearingEnv
   {
     extern const std::string name;
     extern const bool registered;

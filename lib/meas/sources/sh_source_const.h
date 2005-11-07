@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sh_source_const.h,v 2.1 2005-11-07 06:30:06 edwards Exp $
+// $Id: sh_source_const.h,v 2.2 2005-11-07 22:46:34 edwards Exp $
 /*! \file
  *  \brief Shell source construction
  */
@@ -46,20 +46,12 @@ namespace Chroma
 
   //! Name and registration
   /*! @ingroup sources */
-  namespace ShellPropSourceConstEnv
+  namespace ShellQuarkSourceConstEnv
   {
     extern const std::string name;
     extern const bool registered;
   }
-  
-  //! Name and registration
-  /*! @ingroup sources */
-  namespace ShellFermSourceConstEnv
-  {
-    extern const std::string name;
-    extern const bool registered;
-  }
-  
+
 
   //! Shell source construction
   /*! @ingroup sources

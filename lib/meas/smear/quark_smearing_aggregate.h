@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: quark_smearing_aggregate.h,v 2.1 2005-11-07 06:40:55 edwards Exp $
+// $Id: quark_smearing_aggregate.h,v 2.2 2005-11-07 22:46:46 edwards Exp $
 /*! \file
  *  \brief All quark smearing constructors
  */
@@ -13,21 +13,7 @@ namespace Chroma
 {
   //! Registration aggregator
   /*! \ingroup smear */
-  namespace PropSmearingEnv
-  {
-    extern const bool registered;
-  }
-
-  //! Registration aggregator
-  /*! \ingroup smear */
-  namespace FermSmearingEnv
-  {
-    extern const bool registered;
-  }
-
-  //! Registration aggregator
-  /*! \ingroup smear */
-  namespace ColorVecSmearingEnv
+  namespace QuarkSmearingEnv
   {
     extern const bool registered;
   }

@@ -1,4 +1,4 @@
-// $Id: quark_smearing_aggregate.cc,v 2.1 2005-11-07 06:40:55 edwards Exp $
+// $Id: quark_smearing_aggregate.cc,v 2.2 2005-11-07 22:46:46 edwards Exp $
 /*! \file
  *  \brief All quark smearing
  */
@@ -11,46 +11,13 @@ namespace Chroma
 {
 
   // Registration aggregator
-  namespace PropSmearingEnv
+  namespace QuarkSmearingEnv
   {
     bool registerAll() 
     {
       bool success = true;
 
-      // Propagator smearing
-      success &= GausPropSmearingEnv::registered;
-
-      return success;
-    }
-
-    const bool registered = registerAll();
-  }
-
-  // Registration aggregator
-  namespace FermSmearingEnv
-  {
-    bool registerAll() 
-    {
-      bool success = true;
-
-      // Wilson-like Fermion smearing
-      success &= GausFermSmearingEnv::registered;
-
-      return success;
-    }
-
-    const bool registered = registerAll();
-  }
-
-  // Registration aggregator
-  namespace ColorVecSmearingEnv
-  {
-    bool registerAll() 
-    {
-      bool success = true;
-
-      // Color-vector
-      success &= GausColorVecSmearingEnv::registered;
+      success &= GausQuarkSmearingEnv::registered;
 
       return success;
     }
