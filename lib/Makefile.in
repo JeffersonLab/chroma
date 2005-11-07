@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 2.9 2005-11-01 21:59:42 edwards Exp $
+# $Id: Makefile.in,v 2.10 2005-11-07 21:18:09 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -51,6 +51,7 @@ POST_UNINSTALL = :
 
 # Taken out for now
 #	meas/inline/hadron/inline_multipole_w.cc
+#	meas/inline/hadron/inline_noisy_building_blocks_w.cc
 
 #
 # Hooks for optimized code
@@ -180,11 +181,26 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/gfix/polar_dec.cc meas/gfix/rot_colvec.cc \
 	meas/glue/fuzwilp.cc meas/glue/mesfield.cc meas/glue/mesplq.cc \
 	meas/glue/polylp.cc meas/glue/wilslp.cc \
-	meas/hadron/stoch_var.cc meas/smear/ape_smear.cc \
+	meas/hadron/stoch_var.cc meas/sinks/pt_sink_smearing.cc \
+	meas/sinks/sh_sink_smearing.cc \
+	meas/sinks/sink_smearing_aggregate.cc meas/smear/ape_smear.cc \
 	meas/smear/displacement.cc meas/smear/fuzz_smear.cc \
 	meas/smear/gaus_smear.cc meas/smear/hyp_smear.cc \
 	meas/smear/hyp_smear3d.cc meas/smear/laplacian.cc \
 	meas/smear/sink_smear2.cc meas/smear/stout_smear.cc \
+	meas/smear/link_smearing_aggregate.cc \
+	meas/smear/link_smearing_factory.cc \
+	meas/smear/ape_link_smearing.cc \
+	meas/smear/hyp_link_smearing.cc \
+	meas/smear/stout_link_smearing.cc \
+	meas/smear/quark_smearing_aggregate.cc \
+	meas/smear/gaus_quark_smearing.cc \
+	meas/sources/pt_source_const.cc \
+	meas/sources/pt_source_smearing.cc \
+	meas/sources/sh_source_const.cc \
+	meas/sources/sh_source_smearing.cc \
+	meas/sources/source_const_aggregate.cc \
+	meas/sources/source_smearing_aggregate.cc \
 	meas/sources/srcfil.cc meas/sources/z2_src.cc \
 	util/ferm/diractodr.cc util/ferm/paulitodr.cc \
 	util/ferm/tdiractodr.cc util/ferm/transf.cc util/ft/sftmom.cc \
@@ -331,7 +347,6 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron/inline_qqbar_w.cc \
 	meas/inline/hadron/inline_bar3ptfn_w.cc \
 	meas/inline/hadron/inline_building_blocks_w.cc \
-	meas/inline/hadron/inline_noisy_building_blocks_w.cc \
 	meas/inline/hadron/inline_mres_w.cc \
 	meas/inline/hadron/inline_qpropqio_w.cc \
 	meas/inline/hadron/inline_qpropadd_w.cc \
@@ -378,9 +393,10 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/hadron/ks_local_loops.cc meas/hadron/mesphas_s.cc \
 	meas/hadron/pions_s.cc meas/hadron/pion_local_s.cc \
 	meas/hadron/stag_propShift_s.cc meas/hadron/stag_scalars_s.cc \
-	meas/hadron/vector_meson_s.cc util/gauge/stag_phases_s.cc \
-	meas/hadron/pion_sing_s.cc meas/hadron/scalar_loops_s.cc \
+	meas/hadron/vector_meson_s.cc meas/hadron/pion_sing_s.cc \
+	meas/hadron/scalar_loops_s.cc \
 	meas/hadron/pseudoscalar_loops_s.cc meas/sources/walfil_s.cc \
+	util/gauge/stag_phases_s.cc \
 	actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc \
 	init/chroma_init.cc
 @BUILD_GMP_REMEZ_TRUE@am__objects_1 = remez_gmp.$(OBJEXT)
@@ -446,10 +462,20 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	coulgauge.$(OBJEXT) grelax.$(OBJEXT) polar_dec.$(OBJEXT) \
 	rot_colvec.$(OBJEXT) fuzwilp.$(OBJEXT) mesfield.$(OBJEXT) \
 	mesplq.$(OBJEXT) polylp.$(OBJEXT) wilslp.$(OBJEXT) \
-	stoch_var.$(OBJEXT) ape_smear.$(OBJEXT) displacement.$(OBJEXT) \
+	stoch_var.$(OBJEXT) pt_sink_smearing.$(OBJEXT) \
+	sh_sink_smearing.$(OBJEXT) sink_smearing_aggregate.$(OBJEXT) \
+	ape_smear.$(OBJEXT) displacement.$(OBJEXT) \
 	fuzz_smear.$(OBJEXT) gaus_smear.$(OBJEXT) hyp_smear.$(OBJEXT) \
 	hyp_smear3d.$(OBJEXT) laplacian.$(OBJEXT) \
-	sink_smear2.$(OBJEXT) stout_smear.$(OBJEXT) srcfil.$(OBJEXT) \
+	sink_smear2.$(OBJEXT) stout_smear.$(OBJEXT) \
+	link_smearing_aggregate.$(OBJEXT) \
+	link_smearing_factory.$(OBJEXT) ape_link_smearing.$(OBJEXT) \
+	hyp_link_smearing.$(OBJEXT) stout_link_smearing.$(OBJEXT) \
+	quark_smearing_aggregate.$(OBJEXT) \
+	gaus_quark_smearing.$(OBJEXT) pt_source_const.$(OBJEXT) \
+	pt_source_smearing.$(OBJEXT) sh_source_const.$(OBJEXT) \
+	sh_source_smearing.$(OBJEXT) source_const_aggregate.$(OBJEXT) \
+	source_smearing_aggregate.$(OBJEXT) srcfil.$(OBJEXT) \
 	z2_src.$(OBJEXT) diractodr.$(OBJEXT) paulitodr.$(OBJEXT) \
 	tdiractodr.$(OBJEXT) transf.$(OBJEXT) sftmom.$(OBJEXT) \
 	eesu3.$(OBJEXT) eeu1.$(OBJEXT) expm12.$(OBJEXT) \
@@ -559,10 +585,9 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	inline_spectrum_w.$(OBJEXT) inline_spectrumOct_w.$(OBJEXT) \
 	inline_sink_smear_w.$(OBJEXT) inline_qqq_w.$(OBJEXT) \
 	inline_qqbar_w.$(OBJEXT) inline_bar3ptfn_w.$(OBJEXT) \
-	inline_building_blocks_w.$(OBJEXT) \
-	inline_noisy_building_blocks_w.$(OBJEXT) \
-	inline_mres_w.$(OBJEXT) inline_qpropqio_w.$(OBJEXT) \
-	inline_qpropadd_w.$(OBJEXT) inline_spectrum_s.$(OBJEXT) \
+	inline_building_blocks_w.$(OBJEXT) inline_mres_w.$(OBJEXT) \
+	inline_qpropqio_w.$(OBJEXT) inline_qpropadd_w.$(OBJEXT) \
+	inline_spectrum_s.$(OBJEXT) \
 	util_compute_quark_prop_s.$(OBJEXT) \
 	util_compute_singlet_ps.$(OBJEXT) \
 	util_compute_meson_s.$(OBJEXT) util_baryon_s.$(OBJEXT) \
@@ -588,10 +613,10 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	mesphas_follana_s.$(OBJEXT) ks_local_loops.$(OBJEXT) \
 	mesphas_s.$(OBJEXT) pions_s.$(OBJEXT) pion_local_s.$(OBJEXT) \
 	stag_propShift_s.$(OBJEXT) stag_scalars_s.$(OBJEXT) \
-	vector_meson_s.$(OBJEXT) stag_phases_s.$(OBJEXT) \
-	pion_sing_s.$(OBJEXT) scalar_loops_s.$(OBJEXT) \
-	pseudoscalar_loops_s.$(OBJEXT) walfil_s.$(OBJEXT) \
-	$(am__objects_6) chroma_init.$(OBJEXT)
+	vector_meson_s.$(OBJEXT) pion_sing_s.$(OBJEXT) \
+	scalar_loops_s.$(OBJEXT) pseudoscalar_loops_s.$(OBJEXT) \
+	walfil_s.$(OBJEXT) stag_phases_s.$(OBJEXT) $(am__objects_6) \
+	chroma_init.$(OBJEXT)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I.
 depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
@@ -690,20 +715,38 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/glue/mesfield.h meas/glue/mesplq.h meas/glue/polylp.h \
 	meas/hadron/hadron.h meas/glue/fuzwilp.h meas/glue/wilslp.h \
 	meas/hadron/stoch_var.h meas/meas.h meas/pbp/pbp.h \
-	meas/schrfun/schrfun.h meas/smear/ape_smear.h \
+	meas/schrfun/schrfun.h meas/sinks/sinks.h \
+	meas/sinks/pt_sink_smearing.h meas/sinks/sh_sink_smearing.h \
+	meas/sinks/sink_smearing_aggregate.h \
+	meas/sinks/sink_smearing_factory.h meas/smear/ape_smear.h \
 	meas/smear/displacement.h meas/smear/fuzz_smear.h \
 	meas/smear/gaus_smear.h meas/smear/hyp_smear.h \
 	meas/smear/hyp_smear3d.h meas/smear/laplacian.h \
 	meas/smear/smear.h meas/smear/wvfkind.h \
 	meas/smear/sink_smear2.h meas/smear/stout_smear.h \
-	meas/sources/sources.h meas/sources/srcsnktype.h \
+	meas/smear/link_smearing.h \
+	meas/smear/link_smearing_aggregate.h \
+	meas/smear/link_smearing_factory.h \
+	meas/smear/ape_link_smearing.h meas/smear/hyp_link_smearing.h \
+	meas/smear/stout_link_smearing.h meas/smear/quark_smearing.h \
+	meas/smear/quark_smearing_factory.h \
+	meas/smear/quark_smearing_aggregate.h \
+	meas/smear/quark_source_sink.h meas/sources/sources.h \
+	meas/sources/srcsnktype.h meas/sources/source_construction.h \
 	meas/sources/srcfil.h meas/sources/wavetype.h \
-	meas/sources/z2_src.h util/ferm/ferm.h util/ferm/transf.h \
-	util/ft/ft.h util/ft/sftmom.h util/gauge/eesu2.h \
-	util/gauge/eeu1.h util/gauge/expm12.h util/gauge/expmat.h \
-	util/gauge/expsu3.h util/gauge/eesu3.h util/gauge/gauge.h \
-	util/gauge/gauge_startup.h util/gauge/hotst.h \
-	util/gauge/reunit.h util/gauge/rgauge.h \
+	meas/sources/z2_src.h meas/sources/pt_source_const.h \
+	meas/sources/pt_source_smearing.h \
+	meas/sources/sh_source_const.h \
+	meas/sources/sh_source_smearing.h \
+	meas/sources/source_const_aggregate.h \
+	meas/sources/source_const_factory.h \
+	meas/sources/source_smearing_factory.h \
+	meas/sources/source_smearing_aggregate.h util/ferm/ferm.h \
+	util/ferm/transf.h util/ft/ft.h util/ft/sftmom.h \
+	util/gauge/eesu2.h util/gauge/eeu1.h util/gauge/expm12.h \
+	util/gauge/expmat.h util/gauge/expsu3.h util/gauge/eesu3.h \
+	util/gauge/gauge.h util/gauge/gauge_startup.h \
+	util/gauge/hotst.h util/gauge/reunit.h util/gauge/rgauge.h \
 	util/gauge/su2extract.h util/gauge/su3proj.h \
 	util/gauge/sunfill.h util/gauge/sun_proj.h util/gauge/taproj.h \
 	util/gauge/unit_check.h util/info/info.h util/info/proginfo.h \
@@ -845,8 +888,8 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/hadron/wallff_w.h meas/hadron/walldeltaff_w.h \
 	meas/hadron/walldeltapff_w.h meas/hadron/wallpionff_w.h \
 	meas/hadron/wallnuclff_w.h meas/hadron/wallrhoff_w.h \
-	meas/hadron/wallrhopiff_w.h meas/sources/d_src_w.h \
-	meas/sources/p_src_w.h meas/sources/sources_w.h \
+	meas/hadron/wallrhopiff_w.h meas/sources/sources_w.h \
+	meas/sources/d_src_w.h meas/sources/p_src_w.h \
 	meas/sources/walfil_w.h update/molecdyn/monomial/monomial_w.h \
 	update/molecdyn/monomial/monomial_aggregate_w.h \
 	update/molecdyn/monomial/one_flavor_rat_monomial_w.h \
@@ -913,7 +956,6 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/inline/hadron/inline_qqbar_w.h \
 	meas/inline/hadron/inline_bar3ptfn_w.h \
 	meas/inline/hadron/inline_building_blocks_w.h \
-	meas/inline/hadron/inline_noisy_building_blocks_w.h \
 	meas/inline/hadron/inline_mres_w.h \
 	meas/inline/hadron/inline_qpropqio_w.h \
 	meas/inline/hadron/inline_qpropadd_w.h \
@@ -1176,20 +1218,38 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/glue/mesfield.h meas/glue/mesplq.h meas/glue/polylp.h \
 	meas/hadron/hadron.h meas/glue/fuzwilp.h meas/glue/wilslp.h \
 	meas/hadron/stoch_var.h meas/meas.h meas/pbp/pbp.h \
-	meas/schrfun/schrfun.h meas/smear/ape_smear.h \
+	meas/schrfun/schrfun.h meas/sinks/sinks.h \
+	meas/sinks/pt_sink_smearing.h meas/sinks/sh_sink_smearing.h \
+	meas/sinks/sink_smearing_aggregate.h \
+	meas/sinks/sink_smearing_factory.h meas/smear/ape_smear.h \
 	meas/smear/displacement.h meas/smear/fuzz_smear.h \
 	meas/smear/gaus_smear.h meas/smear/hyp_smear.h \
 	meas/smear/hyp_smear3d.h meas/smear/laplacian.h \
 	meas/smear/smear.h meas/smear/wvfkind.h \
 	meas/smear/sink_smear2.h meas/smear/stout_smear.h \
-	meas/sources/sources.h meas/sources/srcsnktype.h \
+	meas/smear/link_smearing.h \
+	meas/smear/link_smearing_aggregate.h \
+	meas/smear/link_smearing_factory.h \
+	meas/smear/ape_link_smearing.h meas/smear/hyp_link_smearing.h \
+	meas/smear/stout_link_smearing.h meas/smear/quark_smearing.h \
+	meas/smear/quark_smearing_factory.h \
+	meas/smear/quark_smearing_aggregate.h \
+	meas/smear/quark_source_sink.h meas/sources/sources.h \
+	meas/sources/srcsnktype.h meas/sources/source_construction.h \
 	meas/sources/srcfil.h meas/sources/wavetype.h \
-	meas/sources/z2_src.h util/ferm/ferm.h util/ferm/transf.h \
-	util/ft/ft.h util/ft/sftmom.h util/gauge/eesu2.h \
-	util/gauge/eeu1.h util/gauge/expm12.h util/gauge/expmat.h \
-	util/gauge/expsu3.h util/gauge/eesu3.h util/gauge/gauge.h \
-	util/gauge/gauge_startup.h util/gauge/hotst.h \
-	util/gauge/reunit.h util/gauge/rgauge.h \
+	meas/sources/z2_src.h meas/sources/pt_source_const.h \
+	meas/sources/pt_source_smearing.h \
+	meas/sources/sh_source_const.h \
+	meas/sources/sh_source_smearing.h \
+	meas/sources/source_const_aggregate.h \
+	meas/sources/source_const_factory.h \
+	meas/sources/source_smearing_factory.h \
+	meas/sources/source_smearing_aggregate.h util/ferm/ferm.h \
+	util/ferm/transf.h util/ft/ft.h util/ft/sftmom.h \
+	util/gauge/eesu2.h util/gauge/eeu1.h util/gauge/expm12.h \
+	util/gauge/expmat.h util/gauge/expsu3.h util/gauge/eesu3.h \
+	util/gauge/gauge.h util/gauge/gauge_startup.h \
+	util/gauge/hotst.h util/gauge/reunit.h util/gauge/rgauge.h \
 	util/gauge/su2extract.h util/gauge/su3proj.h \
 	util/gauge/sunfill.h util/gauge/sun_proj.h util/gauge/taproj.h \
 	util/gauge/unit_check.h util/info/info.h util/info/proginfo.h \
@@ -1331,8 +1391,8 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/hadron/wallff_w.h meas/hadron/walldeltaff_w.h \
 	meas/hadron/walldeltapff_w.h meas/hadron/wallpionff_w.h \
 	meas/hadron/wallnuclff_w.h meas/hadron/wallrhoff_w.h \
-	meas/hadron/wallrhopiff_w.h meas/sources/d_src_w.h \
-	meas/sources/p_src_w.h meas/sources/sources_w.h \
+	meas/hadron/wallrhopiff_w.h meas/sources/sources_w.h \
+	meas/sources/d_src_w.h meas/sources/p_src_w.h \
 	meas/sources/walfil_w.h update/molecdyn/monomial/monomial_w.h \
 	update/molecdyn/monomial/monomial_aggregate_w.h \
 	update/molecdyn/monomial/one_flavor_rat_monomial_w.h \
@@ -1399,7 +1459,6 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/hadron/inline_qqbar_w.h \
 	meas/inline/hadron/inline_bar3ptfn_w.h \
 	meas/inline/hadron/inline_building_blocks_w.h \
-	meas/inline/hadron/inline_noisy_building_blocks_w.h \
 	meas/inline/hadron/inline_mres_w.h \
 	meas/inline/hadron/inline_qpropqio_w.h \
 	meas/inline/hadron/inline_qpropadd_w.h \
@@ -1434,6 +1493,7 @@ nodist_include_HEADERS = chroma_config_internal.h
 # Taken out for now
 #	meas/hadron/multipole_w.h
 #	meas/inline/hadron/inline_multipole_w.h
+#	meas/inline/hadron/inline_noisy_building_blocks_w.h
 
 #
 # Include Path
@@ -1557,11 +1617,26 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/gfix/polar_dec.cc meas/gfix/rot_colvec.cc \
 	meas/glue/fuzwilp.cc meas/glue/mesfield.cc meas/glue/mesplq.cc \
 	meas/glue/polylp.cc meas/glue/wilslp.cc \
-	meas/hadron/stoch_var.cc meas/smear/ape_smear.cc \
+	meas/hadron/stoch_var.cc meas/sinks/pt_sink_smearing.cc \
+	meas/sinks/sh_sink_smearing.cc \
+	meas/sinks/sink_smearing_aggregate.cc meas/smear/ape_smear.cc \
 	meas/smear/displacement.cc meas/smear/fuzz_smear.cc \
 	meas/smear/gaus_smear.cc meas/smear/hyp_smear.cc \
 	meas/smear/hyp_smear3d.cc meas/smear/laplacian.cc \
 	meas/smear/sink_smear2.cc meas/smear/stout_smear.cc \
+	meas/smear/link_smearing_aggregate.cc \
+	meas/smear/link_smearing_factory.cc \
+	meas/smear/ape_link_smearing.cc \
+	meas/smear/hyp_link_smearing.cc \
+	meas/smear/stout_link_smearing.cc \
+	meas/smear/quark_smearing_aggregate.cc \
+	meas/smear/gaus_quark_smearing.cc \
+	meas/sources/pt_source_const.cc \
+	meas/sources/pt_source_smearing.cc \
+	meas/sources/sh_source_const.cc \
+	meas/sources/sh_source_smearing.cc \
+	meas/sources/source_const_aggregate.cc \
+	meas/sources/source_smearing_aggregate.cc \
 	meas/sources/srcfil.cc meas/sources/z2_src.cc \
 	util/ferm/diractodr.cc util/ferm/paulitodr.cc \
 	util/ferm/tdiractodr.cc util/ferm/transf.cc util/ft/sftmom.cc \
@@ -1707,7 +1782,6 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron/inline_qqbar_w.cc \
 	meas/inline/hadron/inline_bar3ptfn_w.cc \
 	meas/inline/hadron/inline_building_blocks_w.cc \
-	meas/inline/hadron/inline_noisy_building_blocks_w.cc \
 	meas/inline/hadron/inline_mres_w.cc \
 	meas/inline/hadron/inline_qpropqio_w.cc \
 	meas/inline/hadron/inline_qpropadd_w.cc \
@@ -1749,10 +1823,11 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/hadron/ks_local_loops.cc meas/hadron/mesphas_s.cc \
 	meas/hadron/pions_s.cc meas/hadron/pion_local_s.cc \
 	meas/hadron/stag_propShift_s.cc meas/hadron/stag_scalars_s.cc \
-	meas/hadron/vector_meson_s.cc util/gauge/stag_phases_s.cc \
-	meas/hadron/pion_sing_s.cc meas/hadron/scalar_loops_s.cc \
+	meas/hadron/vector_meson_s.cc meas/hadron/pion_sing_s.cc \
+	meas/hadron/scalar_loops_s.cc \
 	meas/hadron/pseudoscalar_loops_s.cc meas/sources/walfil_s.cc \
-	$(am__append_15) init/chroma_init.cc
+	util/gauge/stag_phases_s.cc $(am__append_15) \
+	init/chroma_init.cc
 all: chroma_config_internal.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -1848,6 +1923,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/D_j_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DjDk_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aniso_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ape_link_smearing.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ape_smear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/asq_dsl_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/asqtad_cps_wrapper_qprop.Po@am__quote@
@@ -1913,6 +1989,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gaugebc_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gaugebc_periodic.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gaugebc_simple.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gaus_quark_smearing.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gaus_smear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/genapprox.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/global_metropolis_accrej.Po@am__quote@
@@ -1923,6 +2000,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hamiltonian_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hotst.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hybmeson_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyp_link_smearing.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyp_smear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyp_smear3d.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_aggregate.Po@am__quote@
@@ -1945,7 +2023,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_mres_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_multi_propagator_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_nersc_write_obj.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_noisy_building_blocks_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_plaquette.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_polylp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_propagator_w.Po@am__quote@
@@ -2000,6 +2077,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lg5eps_double_pass_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lg5eps_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/linear_extrap_predictor.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/link_smearing_aggregate.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/link_smearing_factory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/loops_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lovddag_double_pass_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lovddag_w.Po@am__quote@
@@ -2089,9 +2168,13 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/printgeom.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/proginfo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pseudoscalar_loops_s.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pt_sink_smearing.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pt_source_const.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pt_source_smearing.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qio_read_obj_funcmap.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qio_write_obj_funcmap.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qprop_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quark_smearing_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quarkprop4_multi_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quarkprop4_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quarkprop4_w.Po@am__quote@
@@ -2113,13 +2196,19 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seqpiontest_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seqsrc_funcmap_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sftmom.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sh_sink_smearing.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sh_source_const.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sh_source_smearing.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simple_fermbc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simple_fermbc_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simple_fermbc_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sink_smear2.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sink_smearing_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/smearing_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sn_jacob.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sn_jacob_array.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/source_const_aggregate.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/source_smearing_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/srcfil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stag_phases_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stag_propShift_s.Po@am__quote@
@@ -2127,6 +2216,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/staggered_qprop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stoch_var.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stout_fermact_params.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stout_link_smearing.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stout_smear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stout_state.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/su2_hb_update.Po@am__quote@
@@ -3697,6 +3787,48 @@ stoch_var.obj: meas/hadron/stoch_var.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o stoch_var.obj `if test -f 'meas/hadron/stoch_var.cc'; then $(CYGPATH_W) 'meas/hadron/stoch_var.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/stoch_var.cc'; fi`
 
+pt_sink_smearing.o: meas/sinks/pt_sink_smearing.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT pt_sink_smearing.o -MD -MP -MF "$(DEPDIR)/pt_sink_smearing.Tpo" -c -o pt_sink_smearing.o `test -f 'meas/sinks/pt_sink_smearing.cc' || echo '$(srcdir)/'`meas/sinks/pt_sink_smearing.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/pt_sink_smearing.Tpo" "$(DEPDIR)/pt_sink_smearing.Po"; else rm -f "$(DEPDIR)/pt_sink_smearing.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sinks/pt_sink_smearing.cc' object='pt_sink_smearing.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o pt_sink_smearing.o `test -f 'meas/sinks/pt_sink_smearing.cc' || echo '$(srcdir)/'`meas/sinks/pt_sink_smearing.cc
+
+pt_sink_smearing.obj: meas/sinks/pt_sink_smearing.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT pt_sink_smearing.obj -MD -MP -MF "$(DEPDIR)/pt_sink_smearing.Tpo" -c -o pt_sink_smearing.obj `if test -f 'meas/sinks/pt_sink_smearing.cc'; then $(CYGPATH_W) 'meas/sinks/pt_sink_smearing.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sinks/pt_sink_smearing.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/pt_sink_smearing.Tpo" "$(DEPDIR)/pt_sink_smearing.Po"; else rm -f "$(DEPDIR)/pt_sink_smearing.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sinks/pt_sink_smearing.cc' object='pt_sink_smearing.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o pt_sink_smearing.obj `if test -f 'meas/sinks/pt_sink_smearing.cc'; then $(CYGPATH_W) 'meas/sinks/pt_sink_smearing.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sinks/pt_sink_smearing.cc'; fi`
+
+sh_sink_smearing.o: meas/sinks/sh_sink_smearing.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sh_sink_smearing.o -MD -MP -MF "$(DEPDIR)/sh_sink_smearing.Tpo" -c -o sh_sink_smearing.o `test -f 'meas/sinks/sh_sink_smearing.cc' || echo '$(srcdir)/'`meas/sinks/sh_sink_smearing.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/sh_sink_smearing.Tpo" "$(DEPDIR)/sh_sink_smearing.Po"; else rm -f "$(DEPDIR)/sh_sink_smearing.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sinks/sh_sink_smearing.cc' object='sh_sink_smearing.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sh_sink_smearing.o `test -f 'meas/sinks/sh_sink_smearing.cc' || echo '$(srcdir)/'`meas/sinks/sh_sink_smearing.cc
+
+sh_sink_smearing.obj: meas/sinks/sh_sink_smearing.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sh_sink_smearing.obj -MD -MP -MF "$(DEPDIR)/sh_sink_smearing.Tpo" -c -o sh_sink_smearing.obj `if test -f 'meas/sinks/sh_sink_smearing.cc'; then $(CYGPATH_W) 'meas/sinks/sh_sink_smearing.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sinks/sh_sink_smearing.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/sh_sink_smearing.Tpo" "$(DEPDIR)/sh_sink_smearing.Po"; else rm -f "$(DEPDIR)/sh_sink_smearing.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sinks/sh_sink_smearing.cc' object='sh_sink_smearing.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sh_sink_smearing.obj `if test -f 'meas/sinks/sh_sink_smearing.cc'; then $(CYGPATH_W) 'meas/sinks/sh_sink_smearing.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sinks/sh_sink_smearing.cc'; fi`
+
+sink_smearing_aggregate.o: meas/sinks/sink_smearing_aggregate.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sink_smearing_aggregate.o -MD -MP -MF "$(DEPDIR)/sink_smearing_aggregate.Tpo" -c -o sink_smearing_aggregate.o `test -f 'meas/sinks/sink_smearing_aggregate.cc' || echo '$(srcdir)/'`meas/sinks/sink_smearing_aggregate.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/sink_smearing_aggregate.Tpo" "$(DEPDIR)/sink_smearing_aggregate.Po"; else rm -f "$(DEPDIR)/sink_smearing_aggregate.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sinks/sink_smearing_aggregate.cc' object='sink_smearing_aggregate.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sink_smearing_aggregate.o `test -f 'meas/sinks/sink_smearing_aggregate.cc' || echo '$(srcdir)/'`meas/sinks/sink_smearing_aggregate.cc
+
+sink_smearing_aggregate.obj: meas/sinks/sink_smearing_aggregate.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sink_smearing_aggregate.obj -MD -MP -MF "$(DEPDIR)/sink_smearing_aggregate.Tpo" -c -o sink_smearing_aggregate.obj `if test -f 'meas/sinks/sink_smearing_aggregate.cc'; then $(CYGPATH_W) 'meas/sinks/sink_smearing_aggregate.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sinks/sink_smearing_aggregate.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/sink_smearing_aggregate.Tpo" "$(DEPDIR)/sink_smearing_aggregate.Po"; else rm -f "$(DEPDIR)/sink_smearing_aggregate.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sinks/sink_smearing_aggregate.cc' object='sink_smearing_aggregate.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sink_smearing_aggregate.obj `if test -f 'meas/sinks/sink_smearing_aggregate.cc'; then $(CYGPATH_W) 'meas/sinks/sink_smearing_aggregate.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sinks/sink_smearing_aggregate.cc'; fi`
+
 ape_smear.o: meas/smear/ape_smear.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ape_smear.o -MD -MP -MF "$(DEPDIR)/ape_smear.Tpo" -c -o ape_smear.o `test -f 'meas/smear/ape_smear.cc' || echo '$(srcdir)/'`meas/smear/ape_smear.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ape_smear.Tpo" "$(DEPDIR)/ape_smear.Po"; else rm -f "$(DEPDIR)/ape_smear.Tpo"; exit 1; fi
@@ -3822,6 +3954,188 @@ stout_smear.obj: meas/smear/stout_smear.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/stout_smear.cc' object='stout_smear.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o stout_smear.obj `if test -f 'meas/smear/stout_smear.cc'; then $(CYGPATH_W) 'meas/smear/stout_smear.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/stout_smear.cc'; fi`
+
+link_smearing_aggregate.o: meas/smear/link_smearing_aggregate.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT link_smearing_aggregate.o -MD -MP -MF "$(DEPDIR)/link_smearing_aggregate.Tpo" -c -o link_smearing_aggregate.o `test -f 'meas/smear/link_smearing_aggregate.cc' || echo '$(srcdir)/'`meas/smear/link_smearing_aggregate.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/link_smearing_aggregate.Tpo" "$(DEPDIR)/link_smearing_aggregate.Po"; else rm -f "$(DEPDIR)/link_smearing_aggregate.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/link_smearing_aggregate.cc' object='link_smearing_aggregate.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o link_smearing_aggregate.o `test -f 'meas/smear/link_smearing_aggregate.cc' || echo '$(srcdir)/'`meas/smear/link_smearing_aggregate.cc
+
+link_smearing_aggregate.obj: meas/smear/link_smearing_aggregate.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT link_smearing_aggregate.obj -MD -MP -MF "$(DEPDIR)/link_smearing_aggregate.Tpo" -c -o link_smearing_aggregate.obj `if test -f 'meas/smear/link_smearing_aggregate.cc'; then $(CYGPATH_W) 'meas/smear/link_smearing_aggregate.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/link_smearing_aggregate.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/link_smearing_aggregate.Tpo" "$(DEPDIR)/link_smearing_aggregate.Po"; else rm -f "$(DEPDIR)/link_smearing_aggregate.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/link_smearing_aggregate.cc' object='link_smearing_aggregate.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o link_smearing_aggregate.obj `if test -f 'meas/smear/link_smearing_aggregate.cc'; then $(CYGPATH_W) 'meas/smear/link_smearing_aggregate.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/link_smearing_aggregate.cc'; fi`
+
+link_smearing_factory.o: meas/smear/link_smearing_factory.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT link_smearing_factory.o -MD -MP -MF "$(DEPDIR)/link_smearing_factory.Tpo" -c -o link_smearing_factory.o `test -f 'meas/smear/link_smearing_factory.cc' || echo '$(srcdir)/'`meas/smear/link_smearing_factory.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/link_smearing_factory.Tpo" "$(DEPDIR)/link_smearing_factory.Po"; else rm -f "$(DEPDIR)/link_smearing_factory.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/link_smearing_factory.cc' object='link_smearing_factory.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o link_smearing_factory.o `test -f 'meas/smear/link_smearing_factory.cc' || echo '$(srcdir)/'`meas/smear/link_smearing_factory.cc
+
+link_smearing_factory.obj: meas/smear/link_smearing_factory.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT link_smearing_factory.obj -MD -MP -MF "$(DEPDIR)/link_smearing_factory.Tpo" -c -o link_smearing_factory.obj `if test -f 'meas/smear/link_smearing_factory.cc'; then $(CYGPATH_W) 'meas/smear/link_smearing_factory.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/link_smearing_factory.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/link_smearing_factory.Tpo" "$(DEPDIR)/link_smearing_factory.Po"; else rm -f "$(DEPDIR)/link_smearing_factory.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/link_smearing_factory.cc' object='link_smearing_factory.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o link_smearing_factory.obj `if test -f 'meas/smear/link_smearing_factory.cc'; then $(CYGPATH_W) 'meas/smear/link_smearing_factory.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/link_smearing_factory.cc'; fi`
+
+ape_link_smearing.o: meas/smear/ape_link_smearing.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ape_link_smearing.o -MD -MP -MF "$(DEPDIR)/ape_link_smearing.Tpo" -c -o ape_link_smearing.o `test -f 'meas/smear/ape_link_smearing.cc' || echo '$(srcdir)/'`meas/smear/ape_link_smearing.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ape_link_smearing.Tpo" "$(DEPDIR)/ape_link_smearing.Po"; else rm -f "$(DEPDIR)/ape_link_smearing.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/ape_link_smearing.cc' object='ape_link_smearing.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ape_link_smearing.o `test -f 'meas/smear/ape_link_smearing.cc' || echo '$(srcdir)/'`meas/smear/ape_link_smearing.cc
+
+ape_link_smearing.obj: meas/smear/ape_link_smearing.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ape_link_smearing.obj -MD -MP -MF "$(DEPDIR)/ape_link_smearing.Tpo" -c -o ape_link_smearing.obj `if test -f 'meas/smear/ape_link_smearing.cc'; then $(CYGPATH_W) 'meas/smear/ape_link_smearing.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/ape_link_smearing.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ape_link_smearing.Tpo" "$(DEPDIR)/ape_link_smearing.Po"; else rm -f "$(DEPDIR)/ape_link_smearing.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/ape_link_smearing.cc' object='ape_link_smearing.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ape_link_smearing.obj `if test -f 'meas/smear/ape_link_smearing.cc'; then $(CYGPATH_W) 'meas/smear/ape_link_smearing.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/ape_link_smearing.cc'; fi`
+
+hyp_link_smearing.o: meas/smear/hyp_link_smearing.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT hyp_link_smearing.o -MD -MP -MF "$(DEPDIR)/hyp_link_smearing.Tpo" -c -o hyp_link_smearing.o `test -f 'meas/smear/hyp_link_smearing.cc' || echo '$(srcdir)/'`meas/smear/hyp_link_smearing.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/hyp_link_smearing.Tpo" "$(DEPDIR)/hyp_link_smearing.Po"; else rm -f "$(DEPDIR)/hyp_link_smearing.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/hyp_link_smearing.cc' object='hyp_link_smearing.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o hyp_link_smearing.o `test -f 'meas/smear/hyp_link_smearing.cc' || echo '$(srcdir)/'`meas/smear/hyp_link_smearing.cc
+
+hyp_link_smearing.obj: meas/smear/hyp_link_smearing.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT hyp_link_smearing.obj -MD -MP -MF "$(DEPDIR)/hyp_link_smearing.Tpo" -c -o hyp_link_smearing.obj `if test -f 'meas/smear/hyp_link_smearing.cc'; then $(CYGPATH_W) 'meas/smear/hyp_link_smearing.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/hyp_link_smearing.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/hyp_link_smearing.Tpo" "$(DEPDIR)/hyp_link_smearing.Po"; else rm -f "$(DEPDIR)/hyp_link_smearing.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/hyp_link_smearing.cc' object='hyp_link_smearing.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o hyp_link_smearing.obj `if test -f 'meas/smear/hyp_link_smearing.cc'; then $(CYGPATH_W) 'meas/smear/hyp_link_smearing.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/hyp_link_smearing.cc'; fi`
+
+stout_link_smearing.o: meas/smear/stout_link_smearing.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT stout_link_smearing.o -MD -MP -MF "$(DEPDIR)/stout_link_smearing.Tpo" -c -o stout_link_smearing.o `test -f 'meas/smear/stout_link_smearing.cc' || echo '$(srcdir)/'`meas/smear/stout_link_smearing.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/stout_link_smearing.Tpo" "$(DEPDIR)/stout_link_smearing.Po"; else rm -f "$(DEPDIR)/stout_link_smearing.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/stout_link_smearing.cc' object='stout_link_smearing.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o stout_link_smearing.o `test -f 'meas/smear/stout_link_smearing.cc' || echo '$(srcdir)/'`meas/smear/stout_link_smearing.cc
+
+stout_link_smearing.obj: meas/smear/stout_link_smearing.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT stout_link_smearing.obj -MD -MP -MF "$(DEPDIR)/stout_link_smearing.Tpo" -c -o stout_link_smearing.obj `if test -f 'meas/smear/stout_link_smearing.cc'; then $(CYGPATH_W) 'meas/smear/stout_link_smearing.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/stout_link_smearing.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/stout_link_smearing.Tpo" "$(DEPDIR)/stout_link_smearing.Po"; else rm -f "$(DEPDIR)/stout_link_smearing.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/stout_link_smearing.cc' object='stout_link_smearing.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o stout_link_smearing.obj `if test -f 'meas/smear/stout_link_smearing.cc'; then $(CYGPATH_W) 'meas/smear/stout_link_smearing.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/stout_link_smearing.cc'; fi`
+
+quark_smearing_aggregate.o: meas/smear/quark_smearing_aggregate.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT quark_smearing_aggregate.o -MD -MP -MF "$(DEPDIR)/quark_smearing_aggregate.Tpo" -c -o quark_smearing_aggregate.o `test -f 'meas/smear/quark_smearing_aggregate.cc' || echo '$(srcdir)/'`meas/smear/quark_smearing_aggregate.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/quark_smearing_aggregate.Tpo" "$(DEPDIR)/quark_smearing_aggregate.Po"; else rm -f "$(DEPDIR)/quark_smearing_aggregate.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/quark_smearing_aggregate.cc' object='quark_smearing_aggregate.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o quark_smearing_aggregate.o `test -f 'meas/smear/quark_smearing_aggregate.cc' || echo '$(srcdir)/'`meas/smear/quark_smearing_aggregate.cc
+
+quark_smearing_aggregate.obj: meas/smear/quark_smearing_aggregate.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT quark_smearing_aggregate.obj -MD -MP -MF "$(DEPDIR)/quark_smearing_aggregate.Tpo" -c -o quark_smearing_aggregate.obj `if test -f 'meas/smear/quark_smearing_aggregate.cc'; then $(CYGPATH_W) 'meas/smear/quark_smearing_aggregate.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/quark_smearing_aggregate.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/quark_smearing_aggregate.Tpo" "$(DEPDIR)/quark_smearing_aggregate.Po"; else rm -f "$(DEPDIR)/quark_smearing_aggregate.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/quark_smearing_aggregate.cc' object='quark_smearing_aggregate.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o quark_smearing_aggregate.obj `if test -f 'meas/smear/quark_smearing_aggregate.cc'; then $(CYGPATH_W) 'meas/smear/quark_smearing_aggregate.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/quark_smearing_aggregate.cc'; fi`
+
+gaus_quark_smearing.o: meas/smear/gaus_quark_smearing.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gaus_quark_smearing.o -MD -MP -MF "$(DEPDIR)/gaus_quark_smearing.Tpo" -c -o gaus_quark_smearing.o `test -f 'meas/smear/gaus_quark_smearing.cc' || echo '$(srcdir)/'`meas/smear/gaus_quark_smearing.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/gaus_quark_smearing.Tpo" "$(DEPDIR)/gaus_quark_smearing.Po"; else rm -f "$(DEPDIR)/gaus_quark_smearing.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/gaus_quark_smearing.cc' object='gaus_quark_smearing.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o gaus_quark_smearing.o `test -f 'meas/smear/gaus_quark_smearing.cc' || echo '$(srcdir)/'`meas/smear/gaus_quark_smearing.cc
+
+gaus_quark_smearing.obj: meas/smear/gaus_quark_smearing.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gaus_quark_smearing.obj -MD -MP -MF "$(DEPDIR)/gaus_quark_smearing.Tpo" -c -o gaus_quark_smearing.obj `if test -f 'meas/smear/gaus_quark_smearing.cc'; then $(CYGPATH_W) 'meas/smear/gaus_quark_smearing.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/gaus_quark_smearing.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/gaus_quark_smearing.Tpo" "$(DEPDIR)/gaus_quark_smearing.Po"; else rm -f "$(DEPDIR)/gaus_quark_smearing.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/gaus_quark_smearing.cc' object='gaus_quark_smearing.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o gaus_quark_smearing.obj `if test -f 'meas/smear/gaus_quark_smearing.cc'; then $(CYGPATH_W) 'meas/smear/gaus_quark_smearing.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/gaus_quark_smearing.cc'; fi`
+
+pt_source_const.o: meas/sources/pt_source_const.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT pt_source_const.o -MD -MP -MF "$(DEPDIR)/pt_source_const.Tpo" -c -o pt_source_const.o `test -f 'meas/sources/pt_source_const.cc' || echo '$(srcdir)/'`meas/sources/pt_source_const.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/pt_source_const.Tpo" "$(DEPDIR)/pt_source_const.Po"; else rm -f "$(DEPDIR)/pt_source_const.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/pt_source_const.cc' object='pt_source_const.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o pt_source_const.o `test -f 'meas/sources/pt_source_const.cc' || echo '$(srcdir)/'`meas/sources/pt_source_const.cc
+
+pt_source_const.obj: meas/sources/pt_source_const.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT pt_source_const.obj -MD -MP -MF "$(DEPDIR)/pt_source_const.Tpo" -c -o pt_source_const.obj `if test -f 'meas/sources/pt_source_const.cc'; then $(CYGPATH_W) 'meas/sources/pt_source_const.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/pt_source_const.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/pt_source_const.Tpo" "$(DEPDIR)/pt_source_const.Po"; else rm -f "$(DEPDIR)/pt_source_const.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/pt_source_const.cc' object='pt_source_const.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o pt_source_const.obj `if test -f 'meas/sources/pt_source_const.cc'; then $(CYGPATH_W) 'meas/sources/pt_source_const.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/pt_source_const.cc'; fi`
+
+pt_source_smearing.o: meas/sources/pt_source_smearing.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT pt_source_smearing.o -MD -MP -MF "$(DEPDIR)/pt_source_smearing.Tpo" -c -o pt_source_smearing.o `test -f 'meas/sources/pt_source_smearing.cc' || echo '$(srcdir)/'`meas/sources/pt_source_smearing.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/pt_source_smearing.Tpo" "$(DEPDIR)/pt_source_smearing.Po"; else rm -f "$(DEPDIR)/pt_source_smearing.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/pt_source_smearing.cc' object='pt_source_smearing.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o pt_source_smearing.o `test -f 'meas/sources/pt_source_smearing.cc' || echo '$(srcdir)/'`meas/sources/pt_source_smearing.cc
+
+pt_source_smearing.obj: meas/sources/pt_source_smearing.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT pt_source_smearing.obj -MD -MP -MF "$(DEPDIR)/pt_source_smearing.Tpo" -c -o pt_source_smearing.obj `if test -f 'meas/sources/pt_source_smearing.cc'; then $(CYGPATH_W) 'meas/sources/pt_source_smearing.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/pt_source_smearing.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/pt_source_smearing.Tpo" "$(DEPDIR)/pt_source_smearing.Po"; else rm -f "$(DEPDIR)/pt_source_smearing.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/pt_source_smearing.cc' object='pt_source_smearing.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o pt_source_smearing.obj `if test -f 'meas/sources/pt_source_smearing.cc'; then $(CYGPATH_W) 'meas/sources/pt_source_smearing.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/pt_source_smearing.cc'; fi`
+
+sh_source_const.o: meas/sources/sh_source_const.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sh_source_const.o -MD -MP -MF "$(DEPDIR)/sh_source_const.Tpo" -c -o sh_source_const.o `test -f 'meas/sources/sh_source_const.cc' || echo '$(srcdir)/'`meas/sources/sh_source_const.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/sh_source_const.Tpo" "$(DEPDIR)/sh_source_const.Po"; else rm -f "$(DEPDIR)/sh_source_const.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/sh_source_const.cc' object='sh_source_const.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sh_source_const.o `test -f 'meas/sources/sh_source_const.cc' || echo '$(srcdir)/'`meas/sources/sh_source_const.cc
+
+sh_source_const.obj: meas/sources/sh_source_const.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sh_source_const.obj -MD -MP -MF "$(DEPDIR)/sh_source_const.Tpo" -c -o sh_source_const.obj `if test -f 'meas/sources/sh_source_const.cc'; then $(CYGPATH_W) 'meas/sources/sh_source_const.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/sh_source_const.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/sh_source_const.Tpo" "$(DEPDIR)/sh_source_const.Po"; else rm -f "$(DEPDIR)/sh_source_const.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/sh_source_const.cc' object='sh_source_const.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sh_source_const.obj `if test -f 'meas/sources/sh_source_const.cc'; then $(CYGPATH_W) 'meas/sources/sh_source_const.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/sh_source_const.cc'; fi`
+
+sh_source_smearing.o: meas/sources/sh_source_smearing.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sh_source_smearing.o -MD -MP -MF "$(DEPDIR)/sh_source_smearing.Tpo" -c -o sh_source_smearing.o `test -f 'meas/sources/sh_source_smearing.cc' || echo '$(srcdir)/'`meas/sources/sh_source_smearing.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/sh_source_smearing.Tpo" "$(DEPDIR)/sh_source_smearing.Po"; else rm -f "$(DEPDIR)/sh_source_smearing.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/sh_source_smearing.cc' object='sh_source_smearing.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sh_source_smearing.o `test -f 'meas/sources/sh_source_smearing.cc' || echo '$(srcdir)/'`meas/sources/sh_source_smearing.cc
+
+sh_source_smearing.obj: meas/sources/sh_source_smearing.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sh_source_smearing.obj -MD -MP -MF "$(DEPDIR)/sh_source_smearing.Tpo" -c -o sh_source_smearing.obj `if test -f 'meas/sources/sh_source_smearing.cc'; then $(CYGPATH_W) 'meas/sources/sh_source_smearing.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/sh_source_smearing.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/sh_source_smearing.Tpo" "$(DEPDIR)/sh_source_smearing.Po"; else rm -f "$(DEPDIR)/sh_source_smearing.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/sh_source_smearing.cc' object='sh_source_smearing.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sh_source_smearing.obj `if test -f 'meas/sources/sh_source_smearing.cc'; then $(CYGPATH_W) 'meas/sources/sh_source_smearing.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/sh_source_smearing.cc'; fi`
+
+source_const_aggregate.o: meas/sources/source_const_aggregate.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT source_const_aggregate.o -MD -MP -MF "$(DEPDIR)/source_const_aggregate.Tpo" -c -o source_const_aggregate.o `test -f 'meas/sources/source_const_aggregate.cc' || echo '$(srcdir)/'`meas/sources/source_const_aggregate.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/source_const_aggregate.Tpo" "$(DEPDIR)/source_const_aggregate.Po"; else rm -f "$(DEPDIR)/source_const_aggregate.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/source_const_aggregate.cc' object='source_const_aggregate.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o source_const_aggregate.o `test -f 'meas/sources/source_const_aggregate.cc' || echo '$(srcdir)/'`meas/sources/source_const_aggregate.cc
+
+source_const_aggregate.obj: meas/sources/source_const_aggregate.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT source_const_aggregate.obj -MD -MP -MF "$(DEPDIR)/source_const_aggregate.Tpo" -c -o source_const_aggregate.obj `if test -f 'meas/sources/source_const_aggregate.cc'; then $(CYGPATH_W) 'meas/sources/source_const_aggregate.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/source_const_aggregate.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/source_const_aggregate.Tpo" "$(DEPDIR)/source_const_aggregate.Po"; else rm -f "$(DEPDIR)/source_const_aggregate.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/source_const_aggregate.cc' object='source_const_aggregate.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o source_const_aggregate.obj `if test -f 'meas/sources/source_const_aggregate.cc'; then $(CYGPATH_W) 'meas/sources/source_const_aggregate.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/source_const_aggregate.cc'; fi`
+
+source_smearing_aggregate.o: meas/sources/source_smearing_aggregate.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT source_smearing_aggregate.o -MD -MP -MF "$(DEPDIR)/source_smearing_aggregate.Tpo" -c -o source_smearing_aggregate.o `test -f 'meas/sources/source_smearing_aggregate.cc' || echo '$(srcdir)/'`meas/sources/source_smearing_aggregate.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/source_smearing_aggregate.Tpo" "$(DEPDIR)/source_smearing_aggregate.Po"; else rm -f "$(DEPDIR)/source_smearing_aggregate.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/source_smearing_aggregate.cc' object='source_smearing_aggregate.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o source_smearing_aggregate.o `test -f 'meas/sources/source_smearing_aggregate.cc' || echo '$(srcdir)/'`meas/sources/source_smearing_aggregate.cc
+
+source_smearing_aggregate.obj: meas/sources/source_smearing_aggregate.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT source_smearing_aggregate.obj -MD -MP -MF "$(DEPDIR)/source_smearing_aggregate.Tpo" -c -o source_smearing_aggregate.obj `if test -f 'meas/sources/source_smearing_aggregate.cc'; then $(CYGPATH_W) 'meas/sources/source_smearing_aggregate.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/source_smearing_aggregate.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/source_smearing_aggregate.Tpo" "$(DEPDIR)/source_smearing_aggregate.Po"; else rm -f "$(DEPDIR)/source_smearing_aggregate.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/source_smearing_aggregate.cc' object='source_smearing_aggregate.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o source_smearing_aggregate.obj `if test -f 'meas/sources/source_smearing_aggregate.cc'; then $(CYGPATH_W) 'meas/sources/source_smearing_aggregate.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/source_smearing_aggregate.cc'; fi`
 
 srcfil.o: meas/sources/srcfil.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT srcfil.o -MD -MP -MF "$(DEPDIR)/srcfil.Tpo" -c -o srcfil.o `test -f 'meas/sources/srcfil.cc' || echo '$(srcdir)/'`meas/sources/srcfil.cc; \
@@ -6329,20 +6643,6 @@ inline_building_blocks_w.obj: meas/inline/hadron/inline_building_blocks_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_building_blocks_w.obj `if test -f 'meas/inline/hadron/inline_building_blocks_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_building_blocks_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_building_blocks_w.cc'; fi`
 
-inline_noisy_building_blocks_w.o: meas/inline/hadron/inline_noisy_building_blocks_w.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_noisy_building_blocks_w.o -MD -MP -MF "$(DEPDIR)/inline_noisy_building_blocks_w.Tpo" -c -o inline_noisy_building_blocks_w.o `test -f 'meas/inline/hadron/inline_noisy_building_blocks_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_noisy_building_blocks_w.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_noisy_building_blocks_w.Tpo" "$(DEPDIR)/inline_noisy_building_blocks_w.Po"; else rm -f "$(DEPDIR)/inline_noisy_building_blocks_w.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_noisy_building_blocks_w.cc' object='inline_noisy_building_blocks_w.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_noisy_building_blocks_w.o `test -f 'meas/inline/hadron/inline_noisy_building_blocks_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_noisy_building_blocks_w.cc
-
-inline_noisy_building_blocks_w.obj: meas/inline/hadron/inline_noisy_building_blocks_w.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_noisy_building_blocks_w.obj -MD -MP -MF "$(DEPDIR)/inline_noisy_building_blocks_w.Tpo" -c -o inline_noisy_building_blocks_w.obj `if test -f 'meas/inline/hadron/inline_noisy_building_blocks_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_noisy_building_blocks_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_noisy_building_blocks_w.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_noisy_building_blocks_w.Tpo" "$(DEPDIR)/inline_noisy_building_blocks_w.Po"; else rm -f "$(DEPDIR)/inline_noisy_building_blocks_w.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_noisy_building_blocks_w.cc' object='inline_noisy_building_blocks_w.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_noisy_building_blocks_w.obj `if test -f 'meas/inline/hadron/inline_noisy_building_blocks_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_noisy_building_blocks_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_noisy_building_blocks_w.cc'; fi`
-
 inline_mres_w.o: meas/inline/hadron/inline_mres_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_mres_w.o -MD -MP -MF "$(DEPDIR)/inline_mres_w.Tpo" -c -o inline_mres_w.o `test -f 'meas/inline/hadron/inline_mres_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_mres_w.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_mres_w.Tpo" "$(DEPDIR)/inline_mres_w.Po"; else rm -f "$(DEPDIR)/inline_mres_w.Tpo"; exit 1; fi
@@ -7071,20 +7371,6 @@ vector_meson_s.obj: meas/hadron/vector_meson_s.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o vector_meson_s.obj `if test -f 'meas/hadron/vector_meson_s.cc'; then $(CYGPATH_W) 'meas/hadron/vector_meson_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/vector_meson_s.cc'; fi`
 
-stag_phases_s.o: util/gauge/stag_phases_s.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT stag_phases_s.o -MD -MP -MF "$(DEPDIR)/stag_phases_s.Tpo" -c -o stag_phases_s.o `test -f 'util/gauge/stag_phases_s.cc' || echo '$(srcdir)/'`util/gauge/stag_phases_s.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/stag_phases_s.Tpo" "$(DEPDIR)/stag_phases_s.Po"; else rm -f "$(DEPDIR)/stag_phases_s.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/gauge/stag_phases_s.cc' object='stag_phases_s.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o stag_phases_s.o `test -f 'util/gauge/stag_phases_s.cc' || echo '$(srcdir)/'`util/gauge/stag_phases_s.cc
-
-stag_phases_s.obj: util/gauge/stag_phases_s.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT stag_phases_s.obj -MD -MP -MF "$(DEPDIR)/stag_phases_s.Tpo" -c -o stag_phases_s.obj `if test -f 'util/gauge/stag_phases_s.cc'; then $(CYGPATH_W) 'util/gauge/stag_phases_s.cc'; else $(CYGPATH_W) '$(srcdir)/util/gauge/stag_phases_s.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/stag_phases_s.Tpo" "$(DEPDIR)/stag_phases_s.Po"; else rm -f "$(DEPDIR)/stag_phases_s.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/gauge/stag_phases_s.cc' object='stag_phases_s.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o stag_phases_s.obj `if test -f 'util/gauge/stag_phases_s.cc'; then $(CYGPATH_W) 'util/gauge/stag_phases_s.cc'; else $(CYGPATH_W) '$(srcdir)/util/gauge/stag_phases_s.cc'; fi`
-
 pion_sing_s.o: meas/hadron/pion_sing_s.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT pion_sing_s.o -MD -MP -MF "$(DEPDIR)/pion_sing_s.Tpo" -c -o pion_sing_s.o `test -f 'meas/hadron/pion_sing_s.cc' || echo '$(srcdir)/'`meas/hadron/pion_sing_s.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/pion_sing_s.Tpo" "$(DEPDIR)/pion_sing_s.Po"; else rm -f "$(DEPDIR)/pion_sing_s.Tpo"; exit 1; fi
@@ -7140,6 +7426,20 @@ walfil_s.obj: meas/sources/walfil_s.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/walfil_s.cc' object='walfil_s.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o walfil_s.obj `if test -f 'meas/sources/walfil_s.cc'; then $(CYGPATH_W) 'meas/sources/walfil_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/walfil_s.cc'; fi`
+
+stag_phases_s.o: util/gauge/stag_phases_s.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT stag_phases_s.o -MD -MP -MF "$(DEPDIR)/stag_phases_s.Tpo" -c -o stag_phases_s.o `test -f 'util/gauge/stag_phases_s.cc' || echo '$(srcdir)/'`util/gauge/stag_phases_s.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/stag_phases_s.Tpo" "$(DEPDIR)/stag_phases_s.Po"; else rm -f "$(DEPDIR)/stag_phases_s.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/gauge/stag_phases_s.cc' object='stag_phases_s.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o stag_phases_s.o `test -f 'util/gauge/stag_phases_s.cc' || echo '$(srcdir)/'`util/gauge/stag_phases_s.cc
+
+stag_phases_s.obj: util/gauge/stag_phases_s.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT stag_phases_s.obj -MD -MP -MF "$(DEPDIR)/stag_phases_s.Tpo" -c -o stag_phases_s.obj `if test -f 'util/gauge/stag_phases_s.cc'; then $(CYGPATH_W) 'util/gauge/stag_phases_s.cc'; else $(CYGPATH_W) '$(srcdir)/util/gauge/stag_phases_s.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/stag_phases_s.Tpo" "$(DEPDIR)/stag_phases_s.Po"; else rm -f "$(DEPDIR)/stag_phases_s.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/gauge/stag_phases_s.cc' object='stag_phases_s.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o stag_phases_s.obj `if test -f 'util/gauge/stag_phases_s.cc'; then $(CYGPATH_W) 'util/gauge/stag_phases_s.cc'; else $(CYGPATH_W) '$(srcdir)/util/gauge/stag_phases_s.cc'; fi`
 
 asqtad_cps_wrapper_qprop.o: actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT asqtad_cps_wrapper_qprop.o -MD -MP -MF "$(DEPDIR)/asqtad_cps_wrapper_qprop.Tpo" -c -o asqtad_cps_wrapper_qprop.o `test -f 'actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc' || echo '$(srcdir)/'`actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc; \
@@ -7255,7 +7555,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/actions $(distdir)/actions/boson $(distdir)/actions/boson/operator $(distdir)/actions/ferm $(distdir)/actions/ferm/fermacts $(distdir)/actions/ferm/fermbcs $(distdir)/actions/ferm/invert $(distdir)/actions/ferm/linop $(distdir)/actions/ferm/qprop $(distdir)/actions/gauge $(distdir)/actions/gauge/gaugeacts $(distdir)/actions/gauge/gaugebcs $(distdir)/init $(distdir)/io $(distdir)/io/enum_io $(distdir)/meas $(distdir)/meas/eig $(distdir)/meas/gfix $(distdir)/meas/glue $(distdir)/meas/hadron $(distdir)/meas/inline $(distdir)/meas/inline/eig $(distdir)/meas/inline/glue $(distdir)/meas/inline/hadron $(distdir)/meas/inline/hadron_s $(distdir)/meas/inline/io $(distdir)/meas/inline/smear $(distdir)/meas/pbp $(distdir)/meas/schrfun $(distdir)/meas/smear $(distdir)/meas/sources $(distdir)/update $(distdir)/update/heatbath $(distdir)/update/molecdyn $(distdir)/update/molecdyn/hamiltonian $(distdir)/update/molecdyn/hmc $(distdir)/update/molecdyn/integrator $(distdir)/update/molecdyn/monomial $(distdir)/update/molecdyn/predictor $(distdir)/util $(distdir)/util/ferm $(distdir)/util/ft $(distdir)/util/gauge $(distdir)/util/info
+	$(mkdir_p) $(distdir)/actions $(distdir)/actions/boson $(distdir)/actions/boson/operator $(distdir)/actions/ferm $(distdir)/actions/ferm/fermacts $(distdir)/actions/ferm/fermbcs $(distdir)/actions/ferm/invert $(distdir)/actions/ferm/linop $(distdir)/actions/ferm/qprop $(distdir)/actions/gauge $(distdir)/actions/gauge/gaugeacts $(distdir)/actions/gauge/gaugebcs $(distdir)/init $(distdir)/io $(distdir)/io/enum_io $(distdir)/meas $(distdir)/meas/eig $(distdir)/meas/gfix $(distdir)/meas/glue $(distdir)/meas/hadron $(distdir)/meas/inline $(distdir)/meas/inline/eig $(distdir)/meas/inline/glue $(distdir)/meas/inline/hadron $(distdir)/meas/inline/hadron_s $(distdir)/meas/inline/io $(distdir)/meas/inline/smear $(distdir)/meas/pbp $(distdir)/meas/schrfun $(distdir)/meas/sinks $(distdir)/meas/smear $(distdir)/meas/sources $(distdir)/update $(distdir)/update/heatbath $(distdir)/update/molecdyn $(distdir)/update/molecdyn/hamiltonian $(distdir)/update/molecdyn/hmc $(distdir)/update/molecdyn/integrator $(distdir)/update/molecdyn/monomial $(distdir)/update/molecdyn/predictor $(distdir)/util $(distdir)/util/ferm $(distdir)/util/ft $(distdir)/util/gauge $(distdir)/util/info
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
