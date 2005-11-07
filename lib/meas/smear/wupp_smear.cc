@@ -1,4 +1,4 @@
-// $Id: wupp_smear.cc,v 2.0 2005-09-25 21:04:40 edwards Exp $
+// $Id: wupp_smear.cc,v 2.1 2005-11-07 18:05:18 edwards Exp $
 
 #error "NOT FULLY CONVERTED"
 
@@ -16,7 +16,7 @@
 
 include(types.mh)
 
-SUBROUTINE(wupp_smear, u, chi, mass_sq, ItrMax, j_decay, RsdCG)
+SUBROUTINE(wupp_smear, chi, u, mass_sq, ItrMax, j_decay, RsdCG)
 
 multi1d<LatticeColorMatrix> u(Nd);
 LatticeColorVector chi;
