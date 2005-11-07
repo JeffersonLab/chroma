@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.9 2005-11-07 21:17:44 edwards Exp $
+# $Id: Makefile.am,v 2.10 2005-11-07 21:30:45 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -414,6 +414,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_qqbar_w.h \
 	meas/inline/hadron/inline_bar3ptfn_w.h \
 	meas/inline/hadron/inline_building_blocks_w.h \
+	meas/inline/hadron/inline_noisy_building_blocks_w.h \
 	meas/inline/hadron/inline_mres_w.h \
 	meas/inline/hadron/inline_qpropqio_w.h \
 	meas/inline/hadron/inline_qpropadd_w.h \
@@ -446,7 +447,6 @@ nobase_include_HEADERS += \
 # Taken out for now
 #	meas/hadron/multipole_w.h
 #	meas/inline/hadron/inline_multipole_w.h
-#	meas/inline/hadron/inline_noisy_building_blocks_w.h
 
 #
 # Include Path
@@ -766,6 +766,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_qqbar_w.cc \
 	meas/inline/hadron/inline_bar3ptfn_w.cc \
 	meas/inline/hadron/inline_building_blocks_w.cc \
+	meas/inline/hadron/inline_noisy_building_blocks_w.cc \
 	meas/inline/hadron/inline_mres_w.cc \
 	meas/inline/hadron/inline_qpropqio_w.cc \
 	meas/inline/hadron/inline_qpropadd_w.cc \
@@ -796,7 +797,6 @@ libchroma_a_SOURCES += \
 
 # Taken out for now
 #	meas/inline/hadron/inline_multipole_w.cc
-#	meas/inline/hadron/inline_noisy_building_blocks_w.cc
 
 
 #
