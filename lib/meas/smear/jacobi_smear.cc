@@ -1,4 +1,4 @@
-// $Id: jacobi_smear.cc,v 2.0 2005-09-25 21:04:40 edwards Exp $
+// $Id: jacobi_smear.cc,v 2.1 2005-11-07 21:18:59 edwards Exp $
 
 #error "NOT FULLY CONVERTED - NOT SURE THIS IS REALLY NEEDED"
 
@@ -23,7 +23,7 @@
 
 include(types.mh)
 
-SUBROUTINE(jacobi_smear, u, chi, kappa_sm, n_jacobi, j_decay)
+SUBROUTINE(jacobi_smear, chi, u, kappa_sm, n_jacobi, j_decay)
 
 multi1d<LatticeColorMatrix> u(Nd);
 LatticeColorVector chi;
