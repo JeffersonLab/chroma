@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.10 2005-11-07 21:30:45 edwards Exp $
+# $Id: Makefile.am,v 2.11 2005-11-08 05:27:45 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -148,6 +148,8 @@ nobase_include_HEADERS = \
 	meas/sources/pt_source_smearing.h \
 	meas/sources/sh_source_const.h \
 	meas/sources/sh_source_smearing.h \
+	meas/sources/rndz2wall_source_const.h \
+	meas/sources/wall_source_const.h \
 	meas/sources/source_const_aggregate.h \
 	meas/sources/source_const_factory.h \
 	meas/sources/source_smearing_factory.h \
@@ -581,6 +583,8 @@ libchroma_a_SOURCES = \
         meas/sources/pt_source_smearing.cc \
         meas/sources/sh_source_const.cc \
 	meas/sources/sh_source_smearing.cc \
+        meas/sources/rndz2wall_source_const.cc \
+        meas/sources/wall_source_const.cc \
 	meas/sources/source_const_aggregate.cc \
 	meas/sources/source_smearing_aggregate.cc \
         meas/sources/srcfil.cc \
