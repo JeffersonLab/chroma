@@ -1,4 +1,8 @@
 11/08/2005 -- Robert Edwards
+	Version 2.4.1. Small changes to source and sink smearing to get it to compile
+        on different platforms.
+
+11/08/2005 -- Robert Edwards
 	Version 2.4.0. Overhauled source mechanisms. Now have classes and factories
         for quark source construction, quark source smearing, quark sink smearing,
         quark smearing generically, and link smearing. MAKE_SOURCE and SINK_SMEAR
