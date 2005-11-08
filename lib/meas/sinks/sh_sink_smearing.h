@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sh_sink_smearing.h,v 1.2 2005-11-07 22:46:21 edwards Exp $
+// $Id: sh_sink_smearing.h,v 1.3 2005-11-08 05:29:37 edwards Exp $
 /*! \file
  *  \brief Shell sink smearing
  */
@@ -16,7 +16,7 @@ namespace Chroma
   /*! @ingroup sinks */
   struct ShellQuarkSinkSmearingParams
   {
-    ShellQuarkSinkSmearingParams() {}
+    ShellQuarkSinkSmearingParams();
     ShellQuarkSinkSmearingParams(XMLReader& in, const std::string& path);
     
     std::string      sink_type;            /*!< sink smearing type */

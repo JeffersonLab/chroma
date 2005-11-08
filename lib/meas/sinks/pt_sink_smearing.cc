@@ -1,4 +1,4 @@
-// $Id: pt_sink_smearing.cc,v 1.2 2005-11-07 22:46:21 edwards Exp $
+// $Id: pt_sink_smearing.cc,v 1.3 2005-11-08 05:29:37 edwards Exp $
 /*! \file
  *  \brief Point sink construction
  */
@@ -13,13 +13,41 @@
 
 namespace Chroma
 {
+  //! Initialize
+  PointQuarkSinkSmearingParams::PointQuarkSinkSmearingParams()
+  {
+    disp_length = disp_dir = 0;
+  }
+
+
   //! Read parameters
   PointQuarkSinkSmearingParams::PointQuarkSinkSmearingParams(XMLReader& xml, const string& path)
   {
     XMLReader paramtop(xml, path);
 
-    read(paramtop, "disp_length", disp_length);
-    read(paramtop, "disp_dir", disp_dir);
+    int version;
+    read(paramtop, "version", version);
+
+    switch (version) 
+    {
+    case 1:
+      break;
+
+    default:
+      QDPIO::cerr << __func__ << ": parameter version " << version 
+		  << " unsupported." << endl;
+      QDP_abort(1);
+    }
+
+    if (paramtop.count("disp_length") != 0)
+      read(paramtop, "disp_length", disp_length);
+    else
+      disp_length = 0;
+
+    if (paramtop.count("disp_dir") != 0)
+      read(paramtop, "disp_dir", disp_dir);
+    else
+      disp_dir = 0;
 
     if (paramtop.count("LinkSmearing") != 0)
     {
@@ -42,6 +70,9 @@ namespace Chroma
   void write(XMLWriter& xml, const string& path, const PointQuarkSinkSmearingParams& param)
   {
     push(xml, path);
+    int version = 1;
+    write(xml, "version", version);
+
     write(xml, "disp_length", param.disp_length);
     write(xml, "disp_dir", param.disp_dir);
     xml << param.link_smearing;

@@ -1,4 +1,4 @@
-// $Id: sh_sink_smearing.cc,v 1.2 2005-11-07 22:46:21 edwards Exp $
+// $Id: sh_sink_smearing.cc,v 1.3 2005-11-08 05:29:37 edwards Exp $
 /*! \file
  *  \brief Shell sink smearing
  */
@@ -20,10 +20,31 @@
 
 namespace Chroma
 {
+  //! Initialize
+  ShellQuarkSinkSmearingParams::ShellQuarkSinkSmearingParams()
+  {
+    disp_length = disp_dir = 0;
+  }
+
+
   //! Read parameters
   ShellQuarkSinkSmearingParams::ShellQuarkSinkSmearingParams(XMLReader& xml, const string& path)
   {
     XMLReader paramtop(xml, path);
+
+    int version;
+    read(paramtop, "version", version);
+
+    switch (version) 
+    {
+    case 1:
+      break;
+
+    default:
+      QDPIO::cerr << __func__ << ": parameter version " << version 
+		  << " unsupported." << endl;
+      QDP_abort(1);
+    }
 
     read(paramtop, "SinkType",  sink_type);
 
@@ -35,8 +56,15 @@ namespace Chroma
       quark_smearing = os.str();
     }
 
-    read(paramtop, "disp_length", disp_length);
-    read(paramtop, "disp_dir", disp_dir);
+    if (paramtop.count("disp_length") != 0)
+      read(paramtop, "disp_length", disp_length);
+    else
+      disp_length = 0;
+
+    if (paramtop.count("disp_dir") != 0)
+      read(paramtop, "disp_dir", disp_dir);
+    else
+      disp_dir = 0;
 
     if (paramtop.count("LinkSmearing") != 0)
     {
@@ -61,8 +89,8 @@ namespace Chroma
   {
     push(xml, path);
 
-//    int version = 4;
-//    write(xml, "version", version);
+    int version = 1;
+    write(xml, "version", version);
 
     write(xml, "SinkType", param.sink_type);
     xml << param.quark_smearing;

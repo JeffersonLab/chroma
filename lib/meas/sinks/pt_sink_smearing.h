@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: pt_sink_smearing.h,v 1.2 2005-11-07 22:46:21 edwards Exp $
+// $Id: pt_sink_smearing.h,v 1.3 2005-11-08 05:29:37 edwards Exp $
 /*! \file
  *  \brief Point sink smearing
  */
@@ -16,7 +16,7 @@ namespace Chroma
   /*! @ingroup sinks */
   struct PointQuarkSinkSmearingParams
   {
-    PointQuarkSinkSmearingParams() {}
+    PointQuarkSinkSmearingParams();
     PointQuarkSinkSmearingParams(XMLReader& in, const std::string& path);
 
     std::string      link_smearing;        /*!< link smearing xml */
