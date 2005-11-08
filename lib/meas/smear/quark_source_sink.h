@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: quark_source_sink.h,v 2.1 2005-11-07 06:40:55 edwards Exp $
+// $Id: quark_source_sink.h,v 2.2 2005-11-08 18:32:29 edwards Exp $
 
 /*! @file
  * @brief Quark source or sink smearing
@@ -9,6 +9,7 @@
 #define __quark_source_sink_h__
 
 #include "chromabase.h"
+#include "meas/smear/link_smearing_factory.h"
 
 namespace Chroma
 {
@@ -31,6 +32,23 @@ namespace Chroma
      * \param obj      Object to source or sink smear ( Modify )
      */
     virtual void operator()(T& obj) const = 0;
+
+
+  protected:
+    //! Potentially smear the gauge field
+    /*!
+     * \param u                   Gauge field to smear ( Modify )
+     * \param link_smearing       XML of link smearing ( Read )
+     * \param link_smearing_type  link smearing type ( Read )
+     */
+    virtual void create(multi1d<LatticeColorMatrix>& u,
+			std::string link_smearing,
+			std::string link_smearing_type)
+    {
+      linkSmear(u, link_smearing, link_smearing_type);
+    }
+
+
   };
 
 }

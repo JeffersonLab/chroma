@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: pt_sink_smearing.h,v 1.3 2005-11-08 05:29:37 edwards Exp $
+// $Id: pt_sink_smearing.h,v 1.4 2005-11-08 18:32:29 edwards Exp $
 /*! \file
  *  \brief Point sink smearing
  */
@@ -57,7 +57,7 @@ namespace Chroma
   public:
     //! Full constructor
     PointQuarkSinkSmearing(const PointQuarkSinkSmearingParams& p, const multi1d<LatticeColorMatrix>& u) :
-      params(p), u_smr(u) {create();}
+      params(p), u_smr(u) {create(u_smr, params.link_smearing, params.link_smearing_type);}
 
     //! Smear the sink
     void operator()(T& obj) const;
@@ -66,13 +66,13 @@ namespace Chroma
     //! Hide partial constructor
     PointQuarkSinkSmearing() {}
 
-    //! Creator
-    void create();
-
   private:
     PointQuarkSinkSmearingParams  params;   /*!< sink params */
     multi1d<LatticeColorMatrix>   u_smr;    /*!< hold a smeared copy for efficiency */
   };
+
+//  class PointQuarkSinkSmearing<LatticePropagator>;
+//  class PointQuarkSinkSmearing<LatticeFermion>;
 
 }  // end namespace Chroma
 

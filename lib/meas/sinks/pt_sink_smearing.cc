@@ -1,4 +1,4 @@
-// $Id: pt_sink_smearing.cc,v 1.3 2005-11-08 05:29:37 edwards Exp $
+// $Id: pt_sink_smearing.cc,v 1.4 2005-11-08 18:32:29 edwards Exp $
 /*! \file
  *  \brief Point sink construction
  */
@@ -118,14 +118,7 @@ namespace Chroma
 
 
   //! Construct the sink smearing
-  void
-  PointQuarkSinkSmearing<LatticePropagator>::create()
-  {
-    linkSmear(u_smr, params.link_smearing, params.link_smearing_type);
-  }
-
-
-  //! Construct the sink smearing
+  template<>
   void
   PointQuarkSinkSmearing<LatticePropagator>::operator()(LatticePropagator& quark_sink) const
   {
@@ -138,14 +131,7 @@ namespace Chroma
 
 
   //! Construct the sink smearing
-  void
-  PointQuarkSinkSmearing<LatticeFermion>::create()
-  {
-    linkSmear(u_smr, params.link_smearing, params.link_smearing_type);
-  }
-
-
-  //! Construct the sink smearing
+  template<>
   void
   PointQuarkSinkSmearing<LatticeFermion>::operator()(LatticeFermion& quark_sink) const
   {
