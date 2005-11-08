@@ -1,4 +1,4 @@
-// $Id: sh_sink_smearing.cc,v 1.4 2005-11-08 18:41:53 edwards Exp $
+// $Id: sh_sink_smearing.cc,v 1.5 2005-11-08 18:51:44 edwards Exp $
 /*! \file
  *  \brief Shell sink smearing
  */
@@ -143,6 +143,7 @@ namespace Chroma
 
 
   //! Smear the sink
+  template<>
   void
   ShellQuarkSinkSmearing<LatticePropagator>::operator()(LatticePropagator& quark_sink) const
   {
@@ -181,6 +182,7 @@ namespace Chroma
 
 
   //! Smear the sink
+  template<>
   void
   ShellQuarkSinkSmearing<LatticeFermion>::operator()(LatticeFermion& quark_sink) const
   {

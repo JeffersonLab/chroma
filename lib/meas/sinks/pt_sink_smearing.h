@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: pt_sink_smearing.h,v 1.5 2005-11-08 18:41:53 edwards Exp $
+// $Id: pt_sink_smearing.h,v 1.6 2005-11-08 18:51:44 edwards Exp $
 /*! \file
  *  \brief Point sink smearing
  */
@@ -60,16 +60,14 @@ namespace Chroma
 			   const multi1d<LatticeColorMatrix>& u) :
       params(p), u_smr(u) 
       {
-	create(u_smr, params.link_smearing, params.link_smearing_type);
+	this->create(u_smr, params.link_smearing, params.link_smearing_type);
       }
 
     //! Smear the sink
     void operator()(T& obj) const;
 
-  private:
-    //! Hide partial constructor
-    PointQuarkSinkSmearing() {}
-
+  protected:
+#if 0
     //! Potentially smear the gauge field
     /*!
      * \param u                   Gauge field to smear ( Modify )
@@ -79,6 +77,11 @@ namespace Chroma
     void create(multi1d<LatticeColorMatrix>& u,
 		std::string link_smearing,
 		std::string link_smearing_type);
+#endif
+
+  private:
+    //! Hide partial constructor
+    PointQuarkSinkSmearing() {}
 
   private:
     PointQuarkSinkSmearingParams  params;   /*!< sink params */

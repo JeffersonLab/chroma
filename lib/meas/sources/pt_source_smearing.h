@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: pt_source_smearing.h,v 2.4 2005-11-08 18:41:53 edwards Exp $
+// $Id: pt_source_smearing.h,v 2.5 2005-11-08 18:51:44 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */
@@ -61,7 +61,7 @@ namespace Chroma
 			     const multi1d<LatticeColorMatrix>& u) :
       params(p), u_smr(u) 
       {
-	create(u_smr, params.link_smearing, params.link_smearing_type);
+	this->create(u_smr, params.link_smearing, params.link_smearing_type);
       }
 
     //! Construct the source
@@ -70,16 +70,6 @@ namespace Chroma
   private:
     //! Hide partial constructor
     PointQuarkSourceSmearing() {}
-
-    //! Potentially smear the gauge field
-    /*!
-     * \param u                   Gauge field to smear ( Modify )
-     * \param link_smearing       XML of link smearing ( Read )
-     * \param link_smearing_type  link smearing type ( Read )
-     */
-    void create(multi1d<LatticeColorMatrix>& u,
-		std::string link_smearing,
-		std::string link_smearing_type);
 
   private:
     PointQuarkSourceSmearingParams  params;   /*!< source params */

@@ -1,4 +1,4 @@
-// $Id: pt_source_smearing.cc,v 2.4 2005-11-08 18:41:53 edwards Exp $
+// $Id: pt_source_smearing.cc,v 2.5 2005-11-08 18:51:44 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */
@@ -117,6 +117,7 @@ namespace Chroma
 
 
   //! Construct the source smearing
+  template<>
   void
   PointQuarkSourceSmearing<LatticePropagator>::operator()(LatticePropagator& quark_source) const
   {
@@ -131,6 +132,7 @@ namespace Chroma
 
 
   //! Construct the source smearing
+  template<>
   void
   PointQuarkSourceSmearing<LatticeFermion>::operator()(LatticeFermion& quark_source) const
   {

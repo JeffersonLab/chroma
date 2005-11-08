@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sh_sink_smearing.h,v 1.4 2005-11-08 18:41:53 edwards Exp $
+// $Id: sh_sink_smearing.h,v 1.5 2005-11-08 18:51:44 edwards Exp $
 /*! \file
  *  \brief Shell sink smearing
  */
@@ -65,7 +65,7 @@ namespace Chroma
 			   const multi1d<LatticeColorMatrix>& u) :
       params(p), u_smr(u) 
       {
-	create(u_smr, params.link_smearing, params.link_smearing_type);
+	this->create(u_smr, params.link_smearing, params.link_smearing_type);
       }
 
     //! Smear the sink
@@ -74,16 +74,6 @@ namespace Chroma
   private:
     //! Hide partial constructor
     ShellQuarkSinkSmearing() {}
-
-    //! Potentially smear the gauge field
-    /*!
-     * \param u                   Gauge field to smear ( Modify )
-     * \param link_smearing       XML of link smearing ( Read )
-     * \param link_smearing_type  link smearing type ( Read )
-     */
-    void create(multi1d<LatticeColorMatrix>& u,
-		std::string link_smearing,
-		std::string link_smearing_type);
 
   private:
     ShellQuarkSinkSmearingParams  params;   /*!< sink params */
