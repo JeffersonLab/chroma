@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 2.11 2005-11-07 21:31:43 edwards Exp $
+# $Id: Makefile.in,v 2.12 2005-11-08 05:28:11 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -198,6 +198,8 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/sources/pt_source_smearing.cc \
 	meas/sources/sh_source_const.cc \
 	meas/sources/sh_source_smearing.cc \
+	meas/sources/rndz2wall_source_const.cc \
+	meas/sources/wall_source_const.cc \
 	meas/sources/source_const_aggregate.cc \
 	meas/sources/source_smearing_aggregate.cc \
 	meas/sources/srcfil.cc meas/sources/z2_src.cc \
@@ -474,7 +476,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	quark_smearing_aggregate.$(OBJEXT) \
 	gaus_quark_smearing.$(OBJEXT) pt_source_const.$(OBJEXT) \
 	pt_source_smearing.$(OBJEXT) sh_source_const.$(OBJEXT) \
-	sh_source_smearing.$(OBJEXT) source_const_aggregate.$(OBJEXT) \
+	sh_source_smearing.$(OBJEXT) rndz2wall_source_const.$(OBJEXT) \
+	wall_source_const.$(OBJEXT) source_const_aggregate.$(OBJEXT) \
 	source_smearing_aggregate.$(OBJEXT) srcfil.$(OBJEXT) \
 	z2_src.$(OBJEXT) diractodr.$(OBJEXT) paulitodr.$(OBJEXT) \
 	tdiractodr.$(OBJEXT) transf.$(OBJEXT) sftmom.$(OBJEXT) \
@@ -739,6 +742,8 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/sources/pt_source_smearing.h \
 	meas/sources/sh_source_const.h \
 	meas/sources/sh_source_smearing.h \
+	meas/sources/rndz2wall_source_const.h \
+	meas/sources/wall_source_const.h \
 	meas/sources/source_const_aggregate.h \
 	meas/sources/source_const_factory.h \
 	meas/sources/source_smearing_factory.h \
@@ -1243,6 +1248,8 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/sources/pt_source_smearing.h \
 	meas/sources/sh_source_const.h \
 	meas/sources/sh_source_smearing.h \
+	meas/sources/rndz2wall_source_const.h \
+	meas/sources/wall_source_const.h \
 	meas/sources/source_const_aggregate.h \
 	meas/sources/source_const_factory.h \
 	meas/sources/source_smearing_factory.h \
@@ -1637,6 +1644,8 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/sources/pt_source_smearing.cc \
 	meas/sources/sh_source_const.cc \
 	meas/sources/sh_source_smearing.cc \
+	meas/sources/rndz2wall_source_const.cc \
+	meas/sources/wall_source_const.cc \
 	meas/sources/source_const_aggregate.cc \
 	meas/sources/source_smearing_aggregate.cc \
 	meas/sources/srcfil.cc meas/sources/z2_src.cc \
@@ -2195,6 +2204,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rgauge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ritz.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ritz_array.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rndz2wall_source_const.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rot_colvec.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scalar_loops_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seqpiontest_w.Po@am__quote@
@@ -2277,6 +2287,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/walfil_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/walfil_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wall_qprop_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wall_source_const.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/walldeltaff_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/walldeltapff_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wallff_w.Po@am__quote@
@@ -4112,6 +4123,34 @@ sh_source_smearing.obj: meas/sources/sh_source_smearing.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/sh_source_smearing.cc' object='sh_source_smearing.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sh_source_smearing.obj `if test -f 'meas/sources/sh_source_smearing.cc'; then $(CYGPATH_W) 'meas/sources/sh_source_smearing.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/sh_source_smearing.cc'; fi`
+
+rndz2wall_source_const.o: meas/sources/rndz2wall_source_const.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT rndz2wall_source_const.o -MD -MP -MF "$(DEPDIR)/rndz2wall_source_const.Tpo" -c -o rndz2wall_source_const.o `test -f 'meas/sources/rndz2wall_source_const.cc' || echo '$(srcdir)/'`meas/sources/rndz2wall_source_const.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/rndz2wall_source_const.Tpo" "$(DEPDIR)/rndz2wall_source_const.Po"; else rm -f "$(DEPDIR)/rndz2wall_source_const.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/rndz2wall_source_const.cc' object='rndz2wall_source_const.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o rndz2wall_source_const.o `test -f 'meas/sources/rndz2wall_source_const.cc' || echo '$(srcdir)/'`meas/sources/rndz2wall_source_const.cc
+
+rndz2wall_source_const.obj: meas/sources/rndz2wall_source_const.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT rndz2wall_source_const.obj -MD -MP -MF "$(DEPDIR)/rndz2wall_source_const.Tpo" -c -o rndz2wall_source_const.obj `if test -f 'meas/sources/rndz2wall_source_const.cc'; then $(CYGPATH_W) 'meas/sources/rndz2wall_source_const.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/rndz2wall_source_const.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/rndz2wall_source_const.Tpo" "$(DEPDIR)/rndz2wall_source_const.Po"; else rm -f "$(DEPDIR)/rndz2wall_source_const.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/rndz2wall_source_const.cc' object='rndz2wall_source_const.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o rndz2wall_source_const.obj `if test -f 'meas/sources/rndz2wall_source_const.cc'; then $(CYGPATH_W) 'meas/sources/rndz2wall_source_const.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/rndz2wall_source_const.cc'; fi`
+
+wall_source_const.o: meas/sources/wall_source_const.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT wall_source_const.o -MD -MP -MF "$(DEPDIR)/wall_source_const.Tpo" -c -o wall_source_const.o `test -f 'meas/sources/wall_source_const.cc' || echo '$(srcdir)/'`meas/sources/wall_source_const.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/wall_source_const.Tpo" "$(DEPDIR)/wall_source_const.Po"; else rm -f "$(DEPDIR)/wall_source_const.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/wall_source_const.cc' object='wall_source_const.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o wall_source_const.o `test -f 'meas/sources/wall_source_const.cc' || echo '$(srcdir)/'`meas/sources/wall_source_const.cc
+
+wall_source_const.obj: meas/sources/wall_source_const.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT wall_source_const.obj -MD -MP -MF "$(DEPDIR)/wall_source_const.Tpo" -c -o wall_source_const.obj `if test -f 'meas/sources/wall_source_const.cc'; then $(CYGPATH_W) 'meas/sources/wall_source_const.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/wall_source_const.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/wall_source_const.Tpo" "$(DEPDIR)/wall_source_const.Po"; else rm -f "$(DEPDIR)/wall_source_const.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/wall_source_const.cc' object='wall_source_const.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o wall_source_const.obj `if test -f 'meas/sources/wall_source_const.cc'; then $(CYGPATH_W) 'meas/sources/wall_source_const.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/wall_source_const.cc'; fi`
 
 source_const_aggregate.o: meas/sources/source_const_aggregate.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT source_const_aggregate.o -MD -MP -MF "$(DEPDIR)/source_const_aggregate.Tpo" -c -o source_const_aggregate.o `test -f 'meas/sources/source_const_aggregate.cc' || echo '$(srcdir)/'`meas/sources/source_const_aggregate.cc; \
