@@ -1,6 +1,9 @@
-// $Id: collect_propcomp.cc,v 2.1 2005-11-08 05:40:49 edwards Exp $
+// $Id: collect_propcomp.cc,v 2.2 2005-11-08 06:30:59 edwards Exp $
 // $Log: collect_propcomp.cc,v $
-// Revision 2.1  2005-11-08 05:40:49  edwards
+// Revision 2.2  2005-11-08 06:30:59  edwards
+// Moved nrow to outer structure.
+//
+// Revision 2.1  2005/11/08 05:40:49  edwards
 // Update to use new source mechanism.
 //
 // Revision 2.0  2005/09/25 21:04:45  edwards
@@ -129,6 +132,7 @@ struct PropagatorComponent_input_t
   Cfg_t            cfg;
   Prop_t           prop;
   multi1d<Component_t> components;
+  multi1d<int>     nrow;
 };
 
 
@@ -229,7 +233,7 @@ int main(int argc, char **argv)
   }
 
   // Specify lattice size, shape, etc.
-  Layout::setLattSize(input.param.nrow);
+  Layout::setLattSize(input.nrow);
   Layout::create();
 
   QDPIO::cout << "propagatorComp" << endl;
