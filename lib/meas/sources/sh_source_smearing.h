@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sh_source_smearing.h,v 2.2 2005-11-07 22:46:34 edwards Exp $
+// $Id: sh_source_smearing.h,v 2.3 2005-11-08 05:29:02 edwards Exp $
 /*! \file
  *  \brief Shell source smearing
  */
@@ -16,7 +16,7 @@ namespace Chroma
   /*! @ingroup sources */
   struct ShellQuarkSourceSmearingParams
   {
-    ShellQuarkSourceSmearingParams() {}
+    ShellQuarkSourceSmearingParams();
     ShellQuarkSourceSmearingParams(XMLReader& in, const std::string& path);
     
     std::string      source_type;          /*!< source smearing type */

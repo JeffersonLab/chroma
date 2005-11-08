@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: pt_source_const.h,v 2.2 2005-11-07 22:46:34 edwards Exp $
+// $Id: pt_source_const.h,v 2.3 2005-11-08 05:29:02 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */
@@ -16,7 +16,7 @@ namespace Chroma
   /*! @ingroup sources */
   struct PointQuarkSourceConstParams
   {
-    PointQuarkSourceConstParams() {}
+    PointQuarkSourceConstParams();
     PointQuarkSourceConstParams(XMLReader& in, const std::string& path);
     
     std::string      link_smearing;        /*!< link smearing xml */

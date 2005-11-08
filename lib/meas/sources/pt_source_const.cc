@@ -1,4 +1,4 @@
-// $Id: pt_source_const.cc,v 2.2 2005-11-07 22:46:34 edwards Exp $
+// $Id: pt_source_const.cc,v 2.3 2005-11-08 05:29:02 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */
@@ -15,16 +15,47 @@
 
 namespace Chroma
 {
+  //! Initialize
+  PointQuarkSourceConstParams::PointQuarkSourceConstParams()
+  {
+    j_decay = -1;
+    disp_length = disp_dir = 0;
+    t_srce.resize(Nd);
+    t_srce = 0;
+  }
+
+
   //! Read parameters
   PointQuarkSourceConstParams::PointQuarkSourceConstParams(XMLReader& xml, const string& path)
   {
     XMLReader paramtop(xml, path);
 
+    int version;
+    read(paramtop, "version", version);
+
+    switch (version) 
+    {
+    case 1:
+      break;
+
+    default:
+      QDPIO::cerr << __func__ << ": parameter version " << version 
+		  << " unsupported." << endl;
+      QDP_abort(1);
+    }
+
     read(paramtop, "j_decay", j_decay);
     read(paramtop, "t_srce", t_srce);
 
-    read(paramtop, "disp_length", disp_length);
-    read(paramtop, "disp_dir", disp_dir);
+    if (paramtop.count("disp_length") != 0)
+      read(paramtop, "disp_length", disp_length);
+    else
+      disp_length = 0;
+
+    if (paramtop.count("disp_dir") != 0)
+      read(paramtop, "disp_dir", disp_dir);
+    else
+      disp_dir = 0;
 
     if (paramtop.count("LinkSmearing") != 0)
     {
@@ -47,6 +78,10 @@ namespace Chroma
   void write(XMLWriter& xml, const string& path, const PointQuarkSourceConstParams& param)
   {
     push(xml, path);
+
+    int version = 1;
+    write(xml, "version", version);
+
     write(xml, "j_decay", param.j_decay);
     write(xml, "t_srce", param.t_srce);
     write(xml, "disp_length", param.disp_length);
