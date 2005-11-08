@@ -1,4 +1,4 @@
-// $Id: gaus_quark_smearing.cc,v 2.3 2005-11-07 22:46:46 edwards Exp $
+// $Id: gaus_quark_smearing.cc,v 2.4 2005-11-08 05:30:26 edwards Exp $
 /*! \file
  *  \brief Gaussian smearing of color vector
  */
@@ -76,6 +76,7 @@ namespace Chroma
   {
     push(xml, path);
     
+    write(xml, "wvf_kind", GausQuarkSmearingEnv::name);
     write(xml, "wvf_param", param.wvf_param);
     write(xml, "wvfIntPar", param.wvfIntPar);
     write(xml, "no_smear_dir", param.no_smear_dir);

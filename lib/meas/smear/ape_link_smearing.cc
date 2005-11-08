@@ -1,4 +1,4 @@
-// $Id: ape_link_smearing.cc,v 1.2 2005-11-07 06:40:55 edwards Exp $
+// $Id: ape_link_smearing.cc,v 1.3 2005-11-08 05:30:26 edwards Exp $
 /*! \file
  *  \brief APE link smearing
  */
@@ -57,6 +57,7 @@ namespace Chroma
   {
     push(xml, path);
     
+    write(xml, "LinkSmearingType", APELinkSmearingEnv::name);
     write(xml, "link_smear_num", param.link_smear_num);
     write(xml, "link_smear_fact", param.link_smear_fact);
     write(xml, "no_smear_dir", param.no_smear_dir);
