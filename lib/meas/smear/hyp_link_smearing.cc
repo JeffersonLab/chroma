@@ -1,4 +1,4 @@
-// $Id: hyp_link_smearing.cc,v 1.1 2005-11-07 18:05:42 edwards Exp $
+// $Id: hyp_link_smearing.cc,v 1.2 2005-11-08 05:33:19 edwards Exp $
 /*! \file
  *  \brief Hyp link smearing
  */
@@ -84,6 +84,7 @@ namespace Chroma
 
     int version = 4;
     write(xml, "version", version);
+    write(xml, "LinkSmearingType", HypLinkSmearingEnv::name);
 
     /* this version allows a variable num_smear */
     write(xml, "num_smear", param.num_smear);

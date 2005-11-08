@@ -1,4 +1,4 @@
-// $Id: stout_link_smearing.cc,v 1.1 2005-11-07 18:05:42 edwards Exp $
+// $Id: stout_link_smearing.cc,v 1.2 2005-11-08 05:33:19 edwards Exp $
 /*! \file
  *  \brief Stout link smearing
  */
@@ -73,6 +73,7 @@ namespace Chroma
     
     int version = 2;
     write(xml, "version", version);
+    write(xml, "LinkSmearingType", StoutLinkSmearingEnv::name);
     write(xml, "link_smear_num", param.link_smear_num);
     write(xml, "link_smear_fact", param.link_smear_fact);
     write(xml, "no_smear_dir", param.no_smear_dir);
