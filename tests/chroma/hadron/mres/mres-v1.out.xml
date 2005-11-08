@@ -13,15 +13,19 @@ Mres calculation
       <Name>MAKE_SOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>5</version>
-        <wave_state>S_WAVE</wave_state>
-        <source_type>POINT_SOURCE</source_type>
-        <j_decay>3</j_decay>
-        <t_source>0 0 0 0</t_source>
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+          <disp_length>0</disp_length>
+          <disp_dir>0</disp_dir>
+        </Source>
         <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
-        <source_id>sh_source_0</source_id>
+        <source_id>pt_source_0</source_id>
       </NamedObject>
     </elem>
 
@@ -54,8 +58,8 @@ Mres calculation
         <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
-        <source_id>sh_source_0</source_id>
-        <prop_id>sh_prop_0</prop_id>
+        <source_id>pt_source_0</source_id>
+        <prop_id>pt_prop_0</prop_id>
       </NamedObject>
     </elem>
 
@@ -86,8 +90,8 @@ Mres calculation
         <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
-        <source_id>sh_source_0</source_id>
-        <prop_id>sh_prop_0</prop_id>
+        <source_id>pt_source_0</source_id>
+        <prop_id>pt_prop_0</prop_id>
       </NamedObject>
     </elem>
 
@@ -103,10 +107,10 @@ Mres calculation
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.0.beta</chroma>
-      <qdp>1.16.0</qdp>
+      <chroma>2.3</chroma>
+      <qdp>1.17.1</qdp>
     </code_version>
-    <run_date>25 Sep 05 22:51:01 EDT</run_date>
+    <run_date>08 Nov 05 00:18:56 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -199,10 +203,10 @@ Mres calculation
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.0.beta</chroma>
-            <qdp>1.16.0</qdp>
+            <chroma>2.3</chroma>
+            <qdp>1.17.1</qdp>
           </code_version>
-          <run_date>25 Sep 05 22:51:01 EDT</run_date>
+          <run_date>08 Nov 05 00:18:56 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -211,17 +215,30 @@ Mres calculation
             <subgrid_volume>512</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>11</elem>
+            <elem>0</elem>
+            <elem>0</elem>
+            <elem>0</elem>
+          </Seed>
+        </RNG>
         <Input>
           <Param>
-            <version>5</version>
-            <wave_state>S_WAVE</wave_state>
-            <source_type>POINT_SOURCE</source_type>
+            <version>6</version><Source>
+      <version>1</version>
+      <SourceType>POINT_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <disp_length>0</disp_length>
+      <disp_dir>0</disp_dir>
+    </Source>
+
             <j_decay>3</j_decay>
-            <t_source>0 0 0 0</t_source>
-            <nrow>4 4 4 8</nrow>
+            <t_source>0</t_source>
           </Param>
           <NamedObject>
-            <source_id>sh_source_0</source_id>
+            <source_id>pt_source_0</source_id>
           </NamedObject>
         </Input>
         <Config_info><szin>
@@ -300,10 +317,10 @@ Mres calculation
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.0.beta</chroma>
-            <qdp>1.16.0</qdp>
+            <chroma>2.3</chroma>
+            <qdp>1.17.1</qdp>
           </code_version>
-          <run_date>25 Sep 05 22:51:01 EDT</run_date>
+          <run_date>08 Nov 05 00:18:56 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -339,13 +356,12 @@ Mres calculation
               <RsdCGPrec>1e-12</RsdCGPrec>
               <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
-            <nrow>4 4 4 8</nrow>
           </Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
-            <source_id>sh_source_0</source_id>
-            <prop_id>sh_prop_0</prop_id>
+            <source_id>pt_source_0</source_id>
+            <prop_id>pt_prop_0</prop_id>
           </NamedObject>
         </Input>
         <Config_info><szin>
@@ -424,13 +440,26 @@ Mres calculation
         </Source_file_info>
         <Source_record_info><MakeSource>
       <PropSource>
-        <version>5</version>
-        <wave_state>S_WAVE</wave_state>
-        <source_type>POINT_SOURCE</source_type>
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+          <disp_length>0</disp_length>
+          <disp_dir>0</disp_dir>
+        </Source>
         <j_decay>3</j_decay>
-        <t_source>0 0 0 0</t_source>
-        <nrow>4 4 4 8</nrow>
+        <t_source>0</t_source>
       </PropSource>
+      <RNG>
+        <Seed>
+          <elem>11</elem>
+          <elem>0</elem>
+          <elem>0</elem>
+          <elem>0</elem>
+        </Seed>
+      </RNG>
       <Config_info>
         <szin>
           <cfg_version>7</cfg_version>
@@ -529,10 +558,10 @@ Mres calculation
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.0.beta</chroma>
-            <qdp>1.16.0</qdp>
+            <chroma>2.3</chroma>
+            <qdp>1.17.1</qdp>
           </code_version>
-          <run_date>25 Sep 05 22:51:02 EDT</run_date>
+          <run_date>08 Nov 05 00:18:57 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -558,7 +587,7 @@ Mres calculation
 </StateInfo>
 
           <NamedObject>
-            <prop_id>sh_prop_0</prop_id>
+            <prop_id>pt_prop_0</prop_id>
           </NamedObject>
           <xml_file></xml_file>
         </Input>

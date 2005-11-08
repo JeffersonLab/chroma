@@ -5,10 +5,10 @@
   <update_no>0</update_no>
   <ProgramInfo>
     <code_version>
-      <chroma>2.0.beta</chroma>
-      <qdp>1.16.0</qdp>
+      <chroma>2.3</chroma>
+      <qdp>1.17.1</qdp>
     </code_version>
-    <run_date>26 Sep 05 21:12:26 EDT</run_date>
+    <run_date>08 Nov 05 00:25:54 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -119,7 +119,7 @@
     <elem>
       <loop>0</loop>
       <Mass_mes>0.545455</Mass_mes>
-      <t_source>0 0 0 0</t_source>
+      <t0>0</t0>
       <ForwardProp>
         <version>8</version>
         <nonRelProp>false</nonRelProp>
@@ -146,27 +146,31 @@
           <RsdCGPrec>1e-12</RsdCGPrec>
           <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
-        <nrow>4 4 4 8</nrow>
       </ForwardProp>
       <PropSource>
-        <version>5</version>
-        <wave_state>S_WAVE</wave_state>
-        <source_type>SHELL_SOURCE</source_type>
-        <ShellSource>
-          <SourceSmearingParam>
-            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-            <wvf_param>2</wvf_param>
-            <wvfIntPar>5</wvfIntPar>
-          </SourceSmearingParam>
-          <laplace_power>0</laplace_power>
-          <link_smear_fact>2.5</link_smear_fact>
-          <link_smear_num>0</link_smear_num>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
-        </ShellSource>
+        <version>6</version><Source>
+      <version>1</version>
+      <SourceType>SHELL_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <SmearingParam>
+        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+        <wvf_param>2.0</wvf_param>
+        <wvfIntPar>5</wvfIntPar>
+        <no_smear_dir>3</no_smear_dir>
+      </SmearingParam>
+      <disp_length>0</disp_length>
+      <disp_dir>0</disp_dir>
+      <LinkSmearing>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>0</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </LinkSmearing>
+    </Source>
+
         <j_decay>3</j_decay>
-        <t_source>0 0 0 0</t_source>
-        <nrow>4 4 4 8</nrow>
+        <t_source>0</t_source>
       </PropSource>
       <Forward_prop_correlator>
         <forward_prop_corr>0.149143 0.00946902 0.00293369 0.00100547 0.00035161 0.000123757 4.29985e-05 1.49081e-05</forward_prop_corr>

@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: eigbnds-v1.out.xml,v 1.1 2005-09-26 04:59:30 edwards Exp $
+; $Id: eigbnds-v1.out.xml,v 1.2 2005-11-08 05:40:25 edwards Exp $
 ;
 ; Test input file for chroma program
 ;
@@ -164,10 +164,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.0.beta</chroma>
-      <qdp>1.16.0</qdp>
+      <chroma>2.3</chroma>
+      <qdp>1.17.1</qdp>
     </code_version>
-    <run_date>26 Sep 05 00:58:19 EDT</run_date>
+    <run_date>08 Nov 05 00:27:01 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>

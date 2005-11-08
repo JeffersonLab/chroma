@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: prec_wilson-twisted-v7.ini.xml,v 1.1 2005-09-26 05:03:37 edwards Exp $
+; $Id: prec_wilson-twisted-v7.ini.xml,v 1.2 2005-11-08 05:40:25 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -17,13 +17,15 @@
       <Name>MAKE_SOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>5</version>
-        <wave_state>S_WAVE</wave_state>
-        <source_type>POINT_SOURCE</source_type>
-        <j_decay>3</j_decay>
-        <direction>2</direction>
-        <t_source>0 0 0 0</t_source>
-
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+          <disp_length>0</disp_length>
+          <disp_dir>0</disp_dir>
+        </Source>
         <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>

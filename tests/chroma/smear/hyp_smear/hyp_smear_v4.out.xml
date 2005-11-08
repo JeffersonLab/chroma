@@ -38,10 +38,10 @@ Hyp smear task
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.0.beta</chroma>
-      <qdp>1.16.0</qdp>
+      <chroma>2.3</chroma>
+      <qdp>1.17.1</qdp>
     </code_version>
-    <run_date>25 Sep 05 22:46:01 EDT</run_date>
+    <run_date>08 Nov 05 00:26:30 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -134,10 +134,10 @@ Hyp smear task
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.0.beta</chroma>
-            <qdp>1.16.0</qdp>
+            <chroma>2.3</chroma>
+            <qdp>1.17.1</qdp>
           </code_version>
-          <run_date>25 Sep 05 22:46:01 EDT</run_date>
+          <run_date>08 Nov 05 00:26:30 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -155,11 +155,12 @@ Hyp smear task
             <alpha3>0.3</alpha3>
             <j_decay>1</j_decay>
             <nrow>4 4 4 8</nrow>
-            <NamedObject>
-              <hyp_id>nowhere</hyp_id>
-            </NamedObject>
           </Param>
-          <Config_info><szin>
+          <NamedObject>
+            <hyp_id>nowhere</hyp_id>
+          </NamedObject>
+        </Input>
+        <Config_info><szin>
       <cfg_version>7</cfg_version>
       <date>Sat Jun 16 00:35:57 2001</date>
       <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
@@ -200,59 +201,59 @@ Hyp smear task
     </szin>
 
 
-          </Config_info>
-          <Output_version>
-            <out_version>1</out_version>
-          </Output_version>
-          <Observables>
-            <w_plaq>0.902263</w_plaq>
-            <s_plaq>0.862579</s_plaq>
-            <t_plaq>0.941947</t_plaq>
-            <link>0.734641</link>
-            <pollp>
-              <elem>
-                <re>0.790237</re>
-                <im>0.00288483</im>
-              </elem>
-              <elem>
-                <re>0.785869</re>
-                <im>-0.00015866</im>
-              </elem>
-              <elem>
-                <re>0.80393</re>
-                <im>0.00160447</im>
-              </elem>
-              <elem>
-                <re>0.864752</re>
-                <im>0.00215502</im>
-              </elem>
-            </pollp>
-          </Observables>
-          <HYP_observables>
-            <w_plaq>0.993377</w_plaq>
-            <s_plaq>0.990254</s_plaq>
-            <t_plaq>0.9965</t_plaq>
-            <link>0.750675</link>
-            <pollp>
-              <elem>
-                <re>0.928107</re>
-                <im>0.00235939</im>
-              </elem>
-              <elem>
-                <re>0.935172</re>
-                <im>-0.000715005</im>
-              </elem>
-              <elem>
-                <re>0.959438</re>
-                <im>8.26843e-05</im>
-              </elem>
-              <elem>
-                <re>0.97149</re>
-                <im>0.000708483</im>
-              </elem>
-            </pollp>
-          </HYP_observables>
-        </Input>
+        </Config_info>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Observables>
+          <w_plaq>0.902263</w_plaq>
+          <s_plaq>0.862579</s_plaq>
+          <t_plaq>0.941947</t_plaq>
+          <link>0.734641</link>
+          <pollp>
+            <elem>
+              <re>0.790237</re>
+              <im>0.00288483</im>
+            </elem>
+            <elem>
+              <re>0.785869</re>
+              <im>-0.00015866</im>
+            </elem>
+            <elem>
+              <re>0.80393</re>
+              <im>0.00160447</im>
+            </elem>
+            <elem>
+              <re>0.864752</re>
+              <im>0.00215502</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <HYP_observables>
+          <w_plaq>0.993377</w_plaq>
+          <s_plaq>0.990254</s_plaq>
+          <t_plaq>0.9965</t_plaq>
+          <link>0.750675</link>
+          <pollp>
+            <elem>
+              <re>0.928107</re>
+              <im>0.00235939</im>
+            </elem>
+            <elem>
+              <re>0.935172</re>
+              <im>-0.000715005</im>
+            </elem>
+            <elem>
+              <re>0.959438</re>
+              <im>8.26843e-05</im>
+            </elem>
+            <elem>
+              <re>0.97149</re>
+              <im>0.000708483</im>
+            </elem>
+          </pollp>
+        </HYP_observables>
       </hypsmear>
     </elem>
   </InlineObservables>
+</chroma>

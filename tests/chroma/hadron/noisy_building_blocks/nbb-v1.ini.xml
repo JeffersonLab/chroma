@@ -10,13 +10,13 @@ Calculate noisy building blocks - insertions in traces
         <Name>MAKE_SOURCE</Name>
         <Frequency>1</Frequency>
         <Param>
-          <version>5</version>
-          <wave_state>S_WAVE</wave_state>
-          <source_type>RAND_Z2_WALL_SOURCE</source_type>
-          <j_decay>3</j_decay>
-          <direction>2</direction>
-          <t_source>0 0 0 0</t_source>
-          <nrow>4 4 4 8</nrow>
+          <version>6</version>
+          <Source>
+            <version>1</version>
+            <SourceType>RAND_Z2_WALL_SOURCE</SourceType>
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Source>
         </Param>
         <NamedObject>
           <source_id>nsrc_0</source_id>
@@ -104,13 +104,13 @@ Calculate noisy building blocks - insertions in traces
         <Name>MAKE_SOURCE</Name>
         <Frequency>1</Frequency>
         <Param>
-          <version>5</version>
-          <wave_state>S_WAVE</wave_state>
-          <source_type>RAND_Z2_WALL_SOURCE</source_type>
-          <j_decay>3</j_decay>
-          <direction>2</direction>
-          <t_source>0 0 0 0</t_source>
-          <nrow>4 4 4 8</nrow>
+          <version>6</version>
+          <Source>
+            <version>1</version>
+            <SourceType>RAND_Z2_WALL_SOURCE</SourceType>
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Source>
         </Param>
         <NamedObject>
           <source_id>nsrc_1</source_id>

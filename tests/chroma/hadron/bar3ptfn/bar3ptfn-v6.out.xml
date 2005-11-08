@@ -13,25 +13,30 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <Name>MAKE_SOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>5</version>
-        <wave_state>S_WAVE</wave_state>
-        <source_type>SHELL_SOURCE</source_type>
-        <j_decay>3</j_decay>
-        <direction>2</direction>
-        <t_source>0 0 0 0</t_source>
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>SHELL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
 
-        <ShellSource>
-          <SourceSmearingParam>
+          <SmearingParam>
             <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
             <wvf_param>2.0</wvf_param>
             <wvfIntPar>5</wvfIntPar>
-          </SourceSmearingParam>
-          <laplace_power>0</laplace_power>
-          <link_smear_fact>2.5</link_smear_fact>
-          <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+
           <disp_length>0</disp_length>
           <disp_dir>0</disp_dir>
-        </ShellSource>
+
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Source>
 
         <nrow>4 4 4 8</nrow>
       </Param>
@@ -89,23 +94,29 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <nrow>4 4 4 8</nrow>
       </Param>
       <PropSink>
-       <version>4</version>
-       <wave_state>S_WAVE</wave_state>
-       <sink_type>SHELL_SINK</sink_type>
-      
-       <ShellSink>
-         <SinkSmearingParam>
-           <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-           <wvf_param>2.0</wvf_param>
-           <wvfIntPar>5</wvfIntPar>
-         </SinkSmearingParam>
-         <laplace_power>0</laplace_power>
-         <link_smear_fact>2.5</link_smear_fact>
-         <link_smear_num>0</link_smear_num>
-         <disp_length>0</disp_length>
-         <disp_dir>0</disp_dir>
-       </ShellSink>
-       <nrow>4 4 4 8</nrow>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>SHELL_SINK</SinkType>
+          <j_decay>3</j_decay>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+
+          <disp_length>0</disp_length>
+          <disp_dir>0</disp_dir>
+
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Sink>
       </PropSink>
       <NamedObject>
         <prop_ids>
@@ -130,23 +141,29 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <nrow>4 4 4 8</nrow>
       </Param>
       <PropSink>
-       <version>4</version>
-       <wave_state>S_WAVE</wave_state>
-       <sink_type>SHELL_SINK</sink_type>
-      
-       <ShellSink>
-         <SinkSmearingParam>
-           <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-           <wvf_param>2.0</wvf_param>
-           <wvfIntPar>5</wvfIntPar>
-         </SinkSmearingParam>
-         <laplace_power>0</laplace_power>
-         <link_smear_fact>2.5</link_smear_fact>
-         <link_smear_num>0</link_smear_num>
-         <disp_length>0</disp_length>
-         <disp_dir>0</disp_dir>
-       </ShellSink>
-       <nrow>4 4 4 8</nrow>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>SHELL_SINK</SinkType>
+          <j_decay>3</j_decay>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+
+          <disp_length>0</disp_length>
+          <disp_dir>0</disp_dir>
+
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Sink>
       </PropSink>
       <NamedObject>
         <prop_ids>
@@ -172,23 +189,29 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <nrow>4 4 4 8</nrow>
       </Param>
       <PropSink>
-       <version>4</version>
-       <wave_state>S_WAVE</wave_state>
-       <sink_type>SHELL_SINK</sink_type>
-      
-       <ShellSink>
-         <SinkSmearingParam>
-           <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-           <wvf_param>2.0</wvf_param>
-           <wvfIntPar>5</wvfIntPar>
-         </SinkSmearingParam>
-         <laplace_power>0</laplace_power>
-         <link_smear_fact>2.5</link_smear_fact>
-         <link_smear_num>0</link_smear_num>
-         <disp_length>0</disp_length>
-         <disp_dir>0</disp_dir>
-       </ShellSink>
-       <nrow>4 4 4 8</nrow>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>SHELL_SINK</SinkType>
+          <j_decay>3</j_decay>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+
+          <disp_length>0</disp_length>
+          <disp_dir>0</disp_dir>
+
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Sink>
       </PropSink>
       <NamedObject>
         <prop_ids>
@@ -365,10 +388,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.0.beta</chroma>
-      <qdp>1.16.0</qdp>
+      <chroma>2.3</chroma>
+      <qdp>1.17.1</qdp>
     </code_version>
-    <run_date>26 Sep 05 00:54:38 EDT</run_date>
+    <run_date>08 Nov 05 00:12:26 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -461,10 +484,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.0.beta</chroma>
-            <qdp>1.16.0</qdp>
+            <chroma>2.3</chroma>
+            <qdp>1.17.1</qdp>
           </code_version>
-          <run_date>26 Sep 05 00:54:38 EDT</run_date>
+          <run_date>08 Nov 05 00:12:27 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -473,26 +496,39 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <subgrid_volume>512</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>11</elem>
+            <elem>11</elem>
+            <elem>11</elem>
+            <elem>0</elem>
+          </Seed>
+        </RNG>
         <Input>
           <Param>
-            <version>5</version>
-            <wave_state>S_WAVE</wave_state>
-            <source_type>SHELL_SOURCE</source_type>
-            <ShellSource>
-              <SourceSmearingParam>
-                <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-                <wvf_param>2</wvf_param>
-                <wvfIntPar>5</wvfIntPar>
-              </SourceSmearingParam>
-              <laplace_power>0</laplace_power>
-              <link_smear_fact>2.5</link_smear_fact>
-              <link_smear_num>0</link_smear_num>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
-            </ShellSource>
+            <version>6</version><Source>
+      <version>1</version>
+      <SourceType>SHELL_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <SmearingParam>
+        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+        <wvf_param>2.0</wvf_param>
+        <wvfIntPar>5</wvfIntPar>
+        <no_smear_dir>3</no_smear_dir>
+      </SmearingParam>
+      <disp_length>0</disp_length>
+      <disp_dir>0</disp_dir>
+      <LinkSmearing>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>0</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </LinkSmearing>
+    </Source>
+
             <j_decay>3</j_decay>
-            <t_source>0 0 0 0</t_source>
-            <nrow>4 4 4 8</nrow>
+            <t_source>0</t_source>
           </Param>
           <NamedObject>
             <source_id>sh_source_0</source_id>
@@ -574,10 +610,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.0.beta</chroma>
-            <qdp>1.16.0</qdp>
+            <chroma>2.3</chroma>
+            <qdp>1.17.1</qdp>
           </code_version>
-          <run_date>26 Sep 05 00:54:38 EDT</run_date>
+          <run_date>08 Nov 05 00:12:27 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -613,7 +649,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
               <RsdCGPrec>1e-12</RsdCGPrec>
               <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
-            <nrow>4 4 4 8</nrow>
           </Param><StateInfo>
 </StateInfo>
 
@@ -698,25 +733,38 @@ Calculate bar3ptfn - insertions in 3-pt functions
         </Source_file_info>
         <Source_record_info><MakeSource>
       <PropSource>
-        <version>5</version>
-        <wave_state>S_WAVE</wave_state>
-        <source_type>SHELL_SOURCE</source_type>
-        <ShellSource>
-          <SourceSmearingParam>
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>SHELL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+          <SmearingParam>
             <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-            <wvf_param>2</wvf_param>
+            <wvf_param>2.0</wvf_param>
             <wvfIntPar>5</wvfIntPar>
-          </SourceSmearingParam>
-          <laplace_power>0</laplace_power>
-          <link_smear_fact>2.5</link_smear_fact>
-          <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
           <disp_length>0</disp_length>
           <disp_dir>0</disp_dir>
-        </ShellSource>
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Source>
         <j_decay>3</j_decay>
-        <t_source>0 0 0 0</t_source>
-        <nrow>4 4 4 8</nrow>
+        <t_source>0</t_source>
       </PropSource>
+      <RNG>
+        <Seed>
+          <elem>11</elem>
+          <elem>11</elem>
+          <elem>11</elem>
+          <elem>0</elem>
+        </Seed>
+      </RNG>
       <Config_info>
         <szin>
           <cfg_version>7</cfg_version>
@@ -815,10 +863,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.0.beta</chroma>
-            <qdp>1.16.0</qdp>
+            <chroma>2.3</chroma>
+            <qdp>1.17.1</qdp>
           </code_version>
-          <run_date>26 Sep 05 00:54:39 EDT</run_date>
+          <run_date>08 Nov 05 00:12:28 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -833,25 +881,30 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <seq_src>PION</seq_src>
             <t_sink>7</t_sink>
             <sink_mom>0 0 0</sink_mom>
-            <nrow>4 4 4 8</nrow>
           </Param>
           <PropSink>
-            <version>4</version>
-            <wave_state>S_WAVE</wave_state>
-            <sink_type>SHELL_SINK</sink_type>
-            <ShellSink>
-              <SinkSmearingParam>
-                <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-                <wvf_param>2</wvf_param>
-                <wvfIntPar>5</wvfIntPar>
-              </SinkSmearingParam>
-              <laplace_power>0</laplace_power>
-              <link_smear_fact>2.5</link_smear_fact>
-              <link_smear_num>0</link_smear_num>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
-            </ShellSink>
-            <nrow>4 4 4 8</nrow>
+            <version>5</version>
+            <SinkType>SHELL_SINK</SinkType><Sink>
+      <version>1</version>
+      <SinkType>SHELL_SINK</SinkType>
+      <j_decay>3</j_decay>
+      <SmearingParam>
+        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+        <wvf_param>2.0</wvf_param>
+        <wvfIntPar>5</wvfIntPar>
+        <no_smear_dir>3</no_smear_dir>
+      </SmearingParam>
+      <disp_length>0</disp_length>
+      <disp_dir>0</disp_dir>
+      <LinkSmearing>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>0</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </LinkSmearing>
+    </Sink>
+
+            <j_decay>3</j_decay>
           </PropSink>
           <NamedObject>
             <prop_ids>
@@ -958,30 +1011,42 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <RsdCGPrec>1e-12</RsdCGPrec>
           <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
-        <nrow>4 4 4 8</nrow>
       </ForwardProp>
       <StateInfo>
 </StateInfo>
       <PropSource>
-        <version>5</version>
-        <wave_state>S_WAVE</wave_state>
-        <source_type>SHELL_SOURCE</source_type>
-        <ShellSource>
-          <SourceSmearingParam>
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>SHELL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+          <SmearingParam>
             <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-            <wvf_param>2</wvf_param>
+            <wvf_param>2.0</wvf_param>
             <wvfIntPar>5</wvfIntPar>
-          </SourceSmearingParam>
-          <laplace_power>0</laplace_power>
-          <link_smear_fact>2.5</link_smear_fact>
-          <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
           <disp_length>0</disp_length>
           <disp_dir>0</disp_dir>
-        </ShellSource>
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Source>
         <j_decay>3</j_decay>
-        <t_source>0 0 0 0</t_source>
-        <nrow>4 4 4 8</nrow>
+        <t_source>0</t_source>
       </PropSource>
+      <RNG>
+        <Seed>
+          <elem>11</elem>
+          <elem>11</elem>
+          <elem>11</elem>
+          <elem>0</elem>
+        </Seed>
+      </RNG>
       <Config_info>
         <szin>
           <cfg_version>7</cfg_version>
@@ -1043,10 +1108,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.0.beta</chroma>
-            <qdp>1.16.0</qdp>
+            <chroma>2.3</chroma>
+            <qdp>1.17.1</qdp>
           </code_version>
-          <run_date>26 Sep 05 00:54:40 EDT</run_date>
+          <run_date>08 Nov 05 00:12:28 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1061,25 +1126,30 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <seq_src>NUCL_U_MIXED_NONREL</seq_src>
             <t_sink>7</t_sink>
             <sink_mom>0 0 0</sink_mom>
-            <nrow>4 4 4 8</nrow>
           </Param>
           <PropSink>
-            <version>4</version>
-            <wave_state>S_WAVE</wave_state>
-            <sink_type>SHELL_SINK</sink_type>
-            <ShellSink>
-              <SinkSmearingParam>
-                <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-                <wvf_param>2</wvf_param>
-                <wvfIntPar>5</wvfIntPar>
-              </SinkSmearingParam>
-              <laplace_power>0</laplace_power>
-              <link_smear_fact>2.5</link_smear_fact>
-              <link_smear_num>0</link_smear_num>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
-            </ShellSink>
-            <nrow>4 4 4 8</nrow>
+            <version>5</version>
+            <SinkType>SHELL_SINK</SinkType><Sink>
+      <version>1</version>
+      <SinkType>SHELL_SINK</SinkType>
+      <j_decay>3</j_decay>
+      <SmearingParam>
+        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+        <wvf_param>2.0</wvf_param>
+        <wvfIntPar>5</wvfIntPar>
+        <no_smear_dir>3</no_smear_dir>
+      </SmearingParam>
+      <disp_length>0</disp_length>
+      <disp_dir>0</disp_dir>
+      <LinkSmearing>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>0</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </LinkSmearing>
+    </Sink>
+
+            <j_decay>3</j_decay>
           </PropSink>
           <NamedObject>
             <prop_ids>
@@ -1187,30 +1257,42 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <RsdCGPrec>1e-12</RsdCGPrec>
           <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
-        <nrow>4 4 4 8</nrow>
       </ForwardProp>
       <StateInfo>
 </StateInfo>
       <PropSource>
-        <version>5</version>
-        <wave_state>S_WAVE</wave_state>
-        <source_type>SHELL_SOURCE</source_type>
-        <ShellSource>
-          <SourceSmearingParam>
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>SHELL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+          <SmearingParam>
             <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-            <wvf_param>2</wvf_param>
+            <wvf_param>2.0</wvf_param>
             <wvfIntPar>5</wvfIntPar>
-          </SourceSmearingParam>
-          <laplace_power>0</laplace_power>
-          <link_smear_fact>2.5</link_smear_fact>
-          <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
           <disp_length>0</disp_length>
           <disp_dir>0</disp_dir>
-        </ShellSource>
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Source>
         <j_decay>3</j_decay>
-        <t_source>0 0 0 0</t_source>
-        <nrow>4 4 4 8</nrow>
+        <t_source>0</t_source>
       </PropSource>
+      <RNG>
+        <Seed>
+          <elem>11</elem>
+          <elem>11</elem>
+          <elem>11</elem>
+          <elem>0</elem>
+        </Seed>
+      </RNG>
       <Config_info>
         <szin>
           <cfg_version>7</cfg_version>
@@ -1284,30 +1366,42 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <RsdCGPrec>1e-12</RsdCGPrec>
           <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
-        <nrow>4 4 4 8</nrow>
       </ForwardProp>
       <StateInfo>
 </StateInfo>
       <PropSource>
-        <version>5</version>
-        <wave_state>S_WAVE</wave_state>
-        <source_type>SHELL_SOURCE</source_type>
-        <ShellSource>
-          <SourceSmearingParam>
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>SHELL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+          <SmearingParam>
             <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-            <wvf_param>2</wvf_param>
+            <wvf_param>2.0</wvf_param>
             <wvfIntPar>5</wvfIntPar>
-          </SourceSmearingParam>
-          <laplace_power>0</laplace_power>
-          <link_smear_fact>2.5</link_smear_fact>
-          <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
           <disp_length>0</disp_length>
           <disp_dir>0</disp_dir>
-        </ShellSource>
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Source>
         <j_decay>3</j_decay>
-        <t_source>0 0 0 0</t_source>
-        <nrow>4 4 4 8</nrow>
+        <t_source>0</t_source>
       </PropSource>
+      <RNG>
+        <Seed>
+          <elem>11</elem>
+          <elem>11</elem>
+          <elem>11</elem>
+          <elem>0</elem>
+        </Seed>
+      </RNG>
       <Config_info>
         <szin>
           <cfg_version>7</cfg_version>
@@ -1372,10 +1466,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.0.beta</chroma>
-            <qdp>1.16.0</qdp>
+            <chroma>2.3</chroma>
+            <qdp>1.17.1</qdp>
           </code_version>
-          <run_date>26 Sep 05 00:54:41 EDT</run_date>
+          <run_date>08 Nov 05 00:12:29 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1390,25 +1484,30 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <seq_src>NUCL_D_MIXED_NONREL</seq_src>
             <t_sink>7</t_sink>
             <sink_mom>0 0 0</sink_mom>
-            <nrow>4 4 4 8</nrow>
           </Param>
           <PropSink>
-            <version>4</version>
-            <wave_state>S_WAVE</wave_state>
-            <sink_type>SHELL_SINK</sink_type>
-            <ShellSink>
-              <SinkSmearingParam>
-                <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-                <wvf_param>2</wvf_param>
-                <wvfIntPar>5</wvfIntPar>
-              </SinkSmearingParam>
-              <laplace_power>0</laplace_power>
-              <link_smear_fact>2.5</link_smear_fact>
-              <link_smear_num>0</link_smear_num>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
-            </ShellSink>
-            <nrow>4 4 4 8</nrow>
+            <version>5</version>
+            <SinkType>SHELL_SINK</SinkType><Sink>
+      <version>1</version>
+      <SinkType>SHELL_SINK</SinkType>
+      <j_decay>3</j_decay>
+      <SmearingParam>
+        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+        <wvf_param>2.0</wvf_param>
+        <wvfIntPar>5</wvfIntPar>
+        <no_smear_dir>3</no_smear_dir>
+      </SmearingParam>
+      <disp_length>0</disp_length>
+      <disp_dir>0</disp_dir>
+      <LinkSmearing>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>0</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </LinkSmearing>
+    </Sink>
+
+            <j_decay>3</j_decay>
           </PropSink>
           <NamedObject>
             <prop_ids>
@@ -1515,30 +1614,42 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <RsdCGPrec>1e-12</RsdCGPrec>
           <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
-        <nrow>4 4 4 8</nrow>
       </ForwardProp>
       <StateInfo>
 </StateInfo>
       <PropSource>
-        <version>5</version>
-        <wave_state>S_WAVE</wave_state>
-        <source_type>SHELL_SOURCE</source_type>
-        <ShellSource>
-          <SourceSmearingParam>
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>SHELL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+          <SmearingParam>
             <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-            <wvf_param>2</wvf_param>
+            <wvf_param>2.0</wvf_param>
             <wvfIntPar>5</wvfIntPar>
-          </SourceSmearingParam>
-          <laplace_power>0</laplace_power>
-          <link_smear_fact>2.5</link_smear_fact>
-          <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
           <disp_length>0</disp_length>
           <disp_dir>0</disp_dir>
-        </ShellSource>
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Source>
         <j_decay>3</j_decay>
-        <t_source>0 0 0 0</t_source>
-        <nrow>4 4 4 8</nrow>
+        <t_source>0</t_source>
       </PropSource>
+      <RNG>
+        <Seed>
+          <elem>11</elem>
+          <elem>11</elem>
+          <elem>11</elem>
+          <elem>0</elem>
+        </Seed>
+      </RNG>
       <Config_info>
         <szin>
           <cfg_version>7</cfg_version>
@@ -1600,10 +1711,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.0.beta</chroma>
-            <qdp>1.16.0</qdp>
+            <chroma>2.3</chroma>
+            <qdp>1.17.1</qdp>
           </code_version>
-          <run_date>26 Sep 05 00:54:41 EDT</run_date>
+          <run_date>08 Nov 05 00:12:30 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1639,7 +1750,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
               <RsdCGPrec>1e-12</RsdCGPrec>
               <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
-            <nrow>4 4 4 8</nrow>
           </Param><StateInfo>
 </StateInfo>
 
@@ -1725,50 +1835,61 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <Source_record_info><SequentialSource>
       <version>1</version>
       <SeqSourceSinkSmear>
-        <version>4</version>
-        <wave_state>S_WAVE</wave_state>
-        <sink_type>SHELL_SINK</sink_type>
-        <ShellSink>
-          <SinkSmearingParam>
+        <version>5</version>
+        <SinkType>SHELL_SINK</SinkType>
+        <Sink>
+          <version>1</version>
+          <SinkType>SHELL_SINK</SinkType>
+          <j_decay>3</j_decay>
+          <SmearingParam>
             <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-            <wvf_param>2</wvf_param>
+            <wvf_param>2.0</wvf_param>
             <wvfIntPar>5</wvfIntPar>
-          </SinkSmearingParam>
-          <laplace_power>0</laplace_power>
-          <link_smear_fact>2.5</link_smear_fact>
-          <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
           <disp_length>0</disp_length>
           <disp_dir>0</disp_dir>
-        </ShellSink>
-        <nrow>4 4 4 8</nrow>
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Sink>
+        <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
         <version>1</version>
         <seq_src>PION</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
-        <nrow>4 4 4 8</nrow>
       </SeqSource>
       <ForwardProps>
         <elem>
           <version>1</version>
           <PropSink>
-            <version>4</version>
-            <wave_state>S_WAVE</wave_state>
-            <sink_type>SHELL_SINK</sink_type>
-            <ShellSink>
-              <SinkSmearingParam>
+            <version>5</version>
+            <SinkType>SHELL_SINK</SinkType>
+            <Sink>
+              <version>1</version>
+              <SinkType>SHELL_SINK</SinkType>
+              <j_decay>3</j_decay>
+              <SmearingParam>
                 <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-                <wvf_param>2</wvf_param>
+                <wvf_param>2.0</wvf_param>
                 <wvfIntPar>5</wvfIntPar>
-              </SinkSmearingParam>
-              <laplace_power>0</laplace_power>
-              <link_smear_fact>2.5</link_smear_fact>
-              <link_smear_num>0</link_smear_num>
+                <no_smear_dir>3</no_smear_dir>
+              </SmearingParam>
               <disp_length>0</disp_length>
               <disp_dir>0</disp_dir>
-            </ShellSink>
-            <nrow>4 4 4 8</nrow>
+              <LinkSmearing>
+                <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+                <link_smear_fact>2.5</link_smear_fact>
+                <link_smear_num>0</link_smear_num>
+                <no_smear_dir>3</no_smear_dir>
+              </LinkSmearing>
+            </Sink>
+            <j_decay>3</j_decay>
           </PropSink>
           <ForwardProp>
             <version>8</version>
@@ -1796,27 +1917,31 @@ Calculate bar3ptfn - insertions in 3-pt functions
               <RsdCGPrec>1e-12</RsdCGPrec>
               <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
-            <nrow>4 4 4 8</nrow>
           </ForwardProp>
           <PropSource>
-            <version>5</version>
-            <wave_state>S_WAVE</wave_state>
-            <source_type>SHELL_SOURCE</source_type>
-            <ShellSource>
-              <SourceSmearingParam>
+            <version>6</version>
+            <Source>
+              <version>1</version>
+              <SourceType>SHELL_SOURCE</SourceType>
+              <j_decay>3</j_decay>
+              <t_srce>0 0 0 0</t_srce>
+              <SmearingParam>
                 <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-                <wvf_param>2</wvf_param>
+                <wvf_param>2.0</wvf_param>
                 <wvfIntPar>5</wvfIntPar>
-              </SourceSmearingParam>
-              <laplace_power>0</laplace_power>
-              <link_smear_fact>2.5</link_smear_fact>
-              <link_smear_num>0</link_smear_num>
+                <no_smear_dir>3</no_smear_dir>
+              </SmearingParam>
               <disp_length>0</disp_length>
               <disp_dir>0</disp_dir>
-            </ShellSource>
+              <LinkSmearing>
+                <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+                <link_smear_fact>2.5</link_smear_fact>
+                <link_smear_num>0</link_smear_num>
+                <no_smear_dir>3</no_smear_dir>
+              </LinkSmearing>
+            </Source>
             <j_decay>3</j_decay>
-            <t_source>0 0 0 0</t_source>
-            <nrow>4 4 4 8</nrow>
+            <t_source>0</t_source>
           </PropSource>
         </elem>
       </ForwardProps>
@@ -1918,10 +2043,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.0.beta</chroma>
-            <qdp>1.16.0</qdp>
+            <chroma>2.3</chroma>
+            <qdp>1.17.1</qdp>
           </code_version>
-          <run_date>26 Sep 05 00:54:42 EDT</run_date>
+          <run_date>08 Nov 05 00:12:31 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1957,7 +2082,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
               <RsdCGPrec>1e-12</RsdCGPrec>
               <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
-            <nrow>4 4 4 8</nrow>
           </Param><StateInfo>
 </StateInfo>
 
@@ -2043,50 +2167,61 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <Source_record_info><SequentialSource>
       <version>1</version>
       <SeqSourceSinkSmear>
-        <version>4</version>
-        <wave_state>S_WAVE</wave_state>
-        <sink_type>SHELL_SINK</sink_type>
-        <ShellSink>
-          <SinkSmearingParam>
+        <version>5</version>
+        <SinkType>SHELL_SINK</SinkType>
+        <Sink>
+          <version>1</version>
+          <SinkType>SHELL_SINK</SinkType>
+          <j_decay>3</j_decay>
+          <SmearingParam>
             <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-            <wvf_param>2</wvf_param>
+            <wvf_param>2.0</wvf_param>
             <wvfIntPar>5</wvfIntPar>
-          </SinkSmearingParam>
-          <laplace_power>0</laplace_power>
-          <link_smear_fact>2.5</link_smear_fact>
-          <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
           <disp_length>0</disp_length>
           <disp_dir>0</disp_dir>
-        </ShellSink>
-        <nrow>4 4 4 8</nrow>
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Sink>
+        <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
         <version>1</version>
         <seq_src>NUCL_U_MIXED_NONREL</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
-        <nrow>4 4 4 8</nrow>
       </SeqSource>
       <ForwardProps>
         <elem>
           <version>1</version>
           <PropSink>
-            <version>4</version>
-            <wave_state>S_WAVE</wave_state>
-            <sink_type>SHELL_SINK</sink_type>
-            <ShellSink>
-              <SinkSmearingParam>
+            <version>5</version>
+            <SinkType>SHELL_SINK</SinkType>
+            <Sink>
+              <version>1</version>
+              <SinkType>SHELL_SINK</SinkType>
+              <j_decay>3</j_decay>
+              <SmearingParam>
                 <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-                <wvf_param>2</wvf_param>
+                <wvf_param>2.0</wvf_param>
                 <wvfIntPar>5</wvfIntPar>
-              </SinkSmearingParam>
-              <laplace_power>0</laplace_power>
-              <link_smear_fact>2.5</link_smear_fact>
-              <link_smear_num>0</link_smear_num>
+                <no_smear_dir>3</no_smear_dir>
+              </SmearingParam>
               <disp_length>0</disp_length>
               <disp_dir>0</disp_dir>
-            </ShellSink>
-            <nrow>4 4 4 8</nrow>
+              <LinkSmearing>
+                <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+                <link_smear_fact>2.5</link_smear_fact>
+                <link_smear_num>0</link_smear_num>
+                <no_smear_dir>3</no_smear_dir>
+              </LinkSmearing>
+            </Sink>
+            <j_decay>3</j_decay>
           </PropSink>
           <ForwardProp>
             <version>8</version>
@@ -2114,48 +2249,58 @@ Calculate bar3ptfn - insertions in 3-pt functions
               <RsdCGPrec>1e-12</RsdCGPrec>
               <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
-            <nrow>4 4 4 8</nrow>
           </ForwardProp>
           <PropSource>
-            <version>5</version>
-            <wave_state>S_WAVE</wave_state>
-            <source_type>SHELL_SOURCE</source_type>
-            <ShellSource>
-              <SourceSmearingParam>
+            <version>6</version>
+            <Source>
+              <version>1</version>
+              <SourceType>SHELL_SOURCE</SourceType>
+              <j_decay>3</j_decay>
+              <t_srce>0 0 0 0</t_srce>
+              <SmearingParam>
                 <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-                <wvf_param>2</wvf_param>
+                <wvf_param>2.0</wvf_param>
                 <wvfIntPar>5</wvfIntPar>
-              </SourceSmearingParam>
-              <laplace_power>0</laplace_power>
-              <link_smear_fact>2.5</link_smear_fact>
-              <link_smear_num>0</link_smear_num>
+                <no_smear_dir>3</no_smear_dir>
+              </SmearingParam>
               <disp_length>0</disp_length>
               <disp_dir>0</disp_dir>
-            </ShellSource>
+              <LinkSmearing>
+                <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+                <link_smear_fact>2.5</link_smear_fact>
+                <link_smear_num>0</link_smear_num>
+                <no_smear_dir>3</no_smear_dir>
+              </LinkSmearing>
+            </Source>
             <j_decay>3</j_decay>
-            <t_source>0 0 0 0</t_source>
-            <nrow>4 4 4 8</nrow>
+            <t_source>0</t_source>
           </PropSource>
         </elem>
         <elem>
           <version>1</version>
           <PropSink>
-            <version>4</version>
-            <wave_state>S_WAVE</wave_state>
-            <sink_type>SHELL_SINK</sink_type>
-            <ShellSink>
-              <SinkSmearingParam>
+            <version>5</version>
+            <SinkType>SHELL_SINK</SinkType>
+            <Sink>
+              <version>1</version>
+              <SinkType>SHELL_SINK</SinkType>
+              <j_decay>3</j_decay>
+              <SmearingParam>
                 <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-                <wvf_param>2</wvf_param>
+                <wvf_param>2.0</wvf_param>
                 <wvfIntPar>5</wvfIntPar>
-              </SinkSmearingParam>
-              <laplace_power>0</laplace_power>
-              <link_smear_fact>2.5</link_smear_fact>
-              <link_smear_num>0</link_smear_num>
+                <no_smear_dir>3</no_smear_dir>
+              </SmearingParam>
               <disp_length>0</disp_length>
               <disp_dir>0</disp_dir>
-            </ShellSink>
-            <nrow>4 4 4 8</nrow>
+              <LinkSmearing>
+                <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+                <link_smear_fact>2.5</link_smear_fact>
+                <link_smear_num>0</link_smear_num>
+                <no_smear_dir>3</no_smear_dir>
+              </LinkSmearing>
+            </Sink>
+            <j_decay>3</j_decay>
           </PropSink>
           <ForwardProp>
             <version>8</version>
@@ -2183,27 +2328,31 @@ Calculate bar3ptfn - insertions in 3-pt functions
               <RsdCGPrec>1e-12</RsdCGPrec>
               <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
-            <nrow>4 4 4 8</nrow>
           </ForwardProp>
           <PropSource>
-            <version>5</version>
-            <wave_state>S_WAVE</wave_state>
-            <source_type>SHELL_SOURCE</source_type>
-            <ShellSource>
-              <SourceSmearingParam>
+            <version>6</version>
+            <Source>
+              <version>1</version>
+              <SourceType>SHELL_SOURCE</SourceType>
+              <j_decay>3</j_decay>
+              <t_srce>0 0 0 0</t_srce>
+              <SmearingParam>
                 <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-                <wvf_param>2</wvf_param>
+                <wvf_param>2.0</wvf_param>
                 <wvfIntPar>5</wvfIntPar>
-              </SourceSmearingParam>
-              <laplace_power>0</laplace_power>
-              <link_smear_fact>2.5</link_smear_fact>
-              <link_smear_num>0</link_smear_num>
+                <no_smear_dir>3</no_smear_dir>
+              </SmearingParam>
               <disp_length>0</disp_length>
               <disp_dir>0</disp_dir>
-            </ShellSource>
+              <LinkSmearing>
+                <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+                <link_smear_fact>2.5</link_smear_fact>
+                <link_smear_num>0</link_smear_num>
+                <no_smear_dir>3</no_smear_dir>
+              </LinkSmearing>
+            </Source>
             <j_decay>3</j_decay>
-            <t_source>0 0 0 0</t_source>
-            <nrow>4 4 4 8</nrow>
+            <t_source>0</t_source>
           </PropSource>
         </elem>
       </ForwardProps>
@@ -2305,10 +2454,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.0.beta</chroma>
-            <qdp>1.16.0</qdp>
+            <chroma>2.3</chroma>
+            <qdp>1.17.1</qdp>
           </code_version>
-          <run_date>26 Sep 05 00:54:43 EDT</run_date>
+          <run_date>08 Nov 05 00:12:32 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2344,7 +2493,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
               <RsdCGPrec>1e-12</RsdCGPrec>
               <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
-            <nrow>4 4 4 8</nrow>
           </Param><StateInfo>
 </StateInfo>
 
@@ -2430,50 +2578,61 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <Source_record_info><SequentialSource>
       <version>1</version>
       <SeqSourceSinkSmear>
-        <version>4</version>
-        <wave_state>S_WAVE</wave_state>
-        <sink_type>SHELL_SINK</sink_type>
-        <ShellSink>
-          <SinkSmearingParam>
+        <version>5</version>
+        <SinkType>SHELL_SINK</SinkType>
+        <Sink>
+          <version>1</version>
+          <SinkType>SHELL_SINK</SinkType>
+          <j_decay>3</j_decay>
+          <SmearingParam>
             <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-            <wvf_param>2</wvf_param>
+            <wvf_param>2.0</wvf_param>
             <wvfIntPar>5</wvfIntPar>
-          </SinkSmearingParam>
-          <laplace_power>0</laplace_power>
-          <link_smear_fact>2.5</link_smear_fact>
-          <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
           <disp_length>0</disp_length>
           <disp_dir>0</disp_dir>
-        </ShellSink>
-        <nrow>4 4 4 8</nrow>
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Sink>
+        <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
         <version>1</version>
         <seq_src>NUCL_D_MIXED_NONREL</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
-        <nrow>4 4 4 8</nrow>
       </SeqSource>
       <ForwardProps>
         <elem>
           <version>1</version>
           <PropSink>
-            <version>4</version>
-            <wave_state>S_WAVE</wave_state>
-            <sink_type>SHELL_SINK</sink_type>
-            <ShellSink>
-              <SinkSmearingParam>
+            <version>5</version>
+            <SinkType>SHELL_SINK</SinkType>
+            <Sink>
+              <version>1</version>
+              <SinkType>SHELL_SINK</SinkType>
+              <j_decay>3</j_decay>
+              <SmearingParam>
                 <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-                <wvf_param>2</wvf_param>
+                <wvf_param>2.0</wvf_param>
                 <wvfIntPar>5</wvfIntPar>
-              </SinkSmearingParam>
-              <laplace_power>0</laplace_power>
-              <link_smear_fact>2.5</link_smear_fact>
-              <link_smear_num>0</link_smear_num>
+                <no_smear_dir>3</no_smear_dir>
+              </SmearingParam>
               <disp_length>0</disp_length>
               <disp_dir>0</disp_dir>
-            </ShellSink>
-            <nrow>4 4 4 8</nrow>
+              <LinkSmearing>
+                <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+                <link_smear_fact>2.5</link_smear_fact>
+                <link_smear_num>0</link_smear_num>
+                <no_smear_dir>3</no_smear_dir>
+              </LinkSmearing>
+            </Sink>
+            <j_decay>3</j_decay>
           </PropSink>
           <ForwardProp>
             <version>8</version>
@@ -2501,27 +2660,31 @@ Calculate bar3ptfn - insertions in 3-pt functions
               <RsdCGPrec>1e-12</RsdCGPrec>
               <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
-            <nrow>4 4 4 8</nrow>
           </ForwardProp>
           <PropSource>
-            <version>5</version>
-            <wave_state>S_WAVE</wave_state>
-            <source_type>SHELL_SOURCE</source_type>
-            <ShellSource>
-              <SourceSmearingParam>
+            <version>6</version>
+            <Source>
+              <version>1</version>
+              <SourceType>SHELL_SOURCE</SourceType>
+              <j_decay>3</j_decay>
+              <t_srce>0 0 0 0</t_srce>
+              <SmearingParam>
                 <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-                <wvf_param>2</wvf_param>
+                <wvf_param>2.0</wvf_param>
                 <wvfIntPar>5</wvfIntPar>
-              </SourceSmearingParam>
-              <laplace_power>0</laplace_power>
-              <link_smear_fact>2.5</link_smear_fact>
-              <link_smear_num>0</link_smear_num>
+                <no_smear_dir>3</no_smear_dir>
+              </SmearingParam>
               <disp_length>0</disp_length>
               <disp_dir>0</disp_dir>
-            </ShellSource>
+              <LinkSmearing>
+                <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+                <link_smear_fact>2.5</link_smear_fact>
+                <link_smear_num>0</link_smear_num>
+                <no_smear_dir>3</no_smear_dir>
+              </LinkSmearing>
+            </Source>
             <j_decay>3</j_decay>
-            <t_source>0 0 0 0</t_source>
-            <nrow>4 4 4 8</nrow>
+            <t_source>0</t_source>
           </PropSource>
         </elem>
       </ForwardProps>
@@ -2623,10 +2786,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.0.beta</chroma>
-            <qdp>1.16.0</qdp>
+            <chroma>2.3</chroma>
+            <qdp>1.17.1</qdp>
           </code_version>
-          <run_date>26 Sep 05 00:54:44 EDT</run_date>
+          <run_date>08 Nov 05 00:12:33 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2752,30 +2915,42 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <RsdCGPrec>1e-12</RsdCGPrec>
           <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
-        <nrow>4 4 4 8</nrow>
       </ForwardProp>
       <StateInfo>
 </StateInfo>
       <PropSource>
-        <version>5</version>
-        <wave_state>S_WAVE</wave_state>
-        <source_type>SHELL_SOURCE</source_type>
-        <ShellSource>
-          <SourceSmearingParam>
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>SHELL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+          <SmearingParam>
             <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-            <wvf_param>2</wvf_param>
+            <wvf_param>2.0</wvf_param>
             <wvfIntPar>5</wvfIntPar>
-          </SourceSmearingParam>
-          <laplace_power>0</laplace_power>
-          <link_smear_fact>2.5</link_smear_fact>
-          <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
           <disp_length>0</disp_length>
           <disp_dir>0</disp_dir>
-        </ShellSource>
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Source>
         <j_decay>3</j_decay>
-        <t_source>0 0 0 0</t_source>
-        <nrow>4 4 4 8</nrow>
+        <t_source>0</t_source>
       </PropSource>
+      <RNG>
+        <Seed>
+          <elem>11</elem>
+          <elem>11</elem>
+          <elem>11</elem>
+          <elem>0</elem>
+        </Seed>
+      </RNG>
       <Config_info>
         <szin>
           <cfg_version>7</cfg_version>
@@ -2859,54 +3034,64 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <RsdCGPrec>1e-12</RsdCGPrec>
           <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
-        <nrow>4 4 4 8</nrow>
       </SeqProp>
       <version>1</version>
       <SeqSourceSinkSmear>
-        <version>4</version>
-        <wave_state>S_WAVE</wave_state>
-        <sink_type>SHELL_SINK</sink_type>
-        <ShellSink>
-          <SinkSmearingParam>
+        <version>5</version>
+        <SinkType>SHELL_SINK</SinkType>
+        <Sink>
+          <version>1</version>
+          <SinkType>SHELL_SINK</SinkType>
+          <j_decay>3</j_decay>
+          <SmearingParam>
             <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-            <wvf_param>2</wvf_param>
+            <wvf_param>2.0</wvf_param>
             <wvfIntPar>5</wvfIntPar>
-          </SinkSmearingParam>
-          <laplace_power>0</laplace_power>
-          <link_smear_fact>2.5</link_smear_fact>
-          <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
           <disp_length>0</disp_length>
           <disp_dir>0</disp_dir>
-        </ShellSink>
-        <nrow>4 4 4 8</nrow>
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Sink>
+        <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
         <version>1</version>
         <seq_src>PION</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
-        <nrow>4 4 4 8</nrow>
       </SeqSource>
       <ForwardProps>
         <elem>
           <version>1</version>
           <PropSink>
-            <version>4</version>
-            <wave_state>S_WAVE</wave_state>
-            <sink_type>SHELL_SINK</sink_type>
-            <ShellSink>
-              <SinkSmearingParam>
+            <version>5</version>
+            <SinkType>SHELL_SINK</SinkType>
+            <Sink>
+              <version>1</version>
+              <SinkType>SHELL_SINK</SinkType>
+              <j_decay>3</j_decay>
+              <SmearingParam>
                 <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-                <wvf_param>2</wvf_param>
+                <wvf_param>2.0</wvf_param>
                 <wvfIntPar>5</wvfIntPar>
-              </SinkSmearingParam>
-              <laplace_power>0</laplace_power>
-              <link_smear_fact>2.5</link_smear_fact>
-              <link_smear_num>0</link_smear_num>
+                <no_smear_dir>3</no_smear_dir>
+              </SmearingParam>
               <disp_length>0</disp_length>
               <disp_dir>0</disp_dir>
-            </ShellSink>
-            <nrow>4 4 4 8</nrow>
+              <LinkSmearing>
+                <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+                <link_smear_fact>2.5</link_smear_fact>
+                <link_smear_num>0</link_smear_num>
+                <no_smear_dir>3</no_smear_dir>
+              </LinkSmearing>
+            </Sink>
+            <j_decay>3</j_decay>
           </PropSink>
           <ForwardProp>
             <version>8</version>
@@ -2934,27 +3119,31 @@ Calculate bar3ptfn - insertions in 3-pt functions
               <RsdCGPrec>1e-12</RsdCGPrec>
               <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
-            <nrow>4 4 4 8</nrow>
           </ForwardProp>
           <PropSource>
-            <version>5</version>
-            <wave_state>S_WAVE</wave_state>
-            <source_type>SHELL_SOURCE</source_type>
-            <ShellSource>
-              <SourceSmearingParam>
+            <version>6</version>
+            <Source>
+              <version>1</version>
+              <SourceType>SHELL_SOURCE</SourceType>
+              <j_decay>3</j_decay>
+              <t_srce>0 0 0 0</t_srce>
+              <SmearingParam>
                 <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-                <wvf_param>2</wvf_param>
+                <wvf_param>2.0</wvf_param>
                 <wvfIntPar>5</wvfIntPar>
-              </SourceSmearingParam>
-              <laplace_power>0</laplace_power>
-              <link_smear_fact>2.5</link_smear_fact>
-              <link_smear_num>0</link_smear_num>
+                <no_smear_dir>3</no_smear_dir>
+              </SmearingParam>
               <disp_length>0</disp_length>
               <disp_dir>0</disp_dir>
-            </ShellSource>
+              <LinkSmearing>
+                <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+                <link_smear_fact>2.5</link_smear_fact>
+                <link_smear_num>0</link_smear_num>
+                <no_smear_dir>3</no_smear_dir>
+              </LinkSmearing>
+            </Source>
             <j_decay>3</j_decay>
-            <t_source>0 0 0 0</t_source>
-            <nrow>4 4 4 8</nrow>
+            <t_source>0</t_source>
           </PropSource>
         </elem>
       </ForwardProps>
@@ -3045,54 +3234,64 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <RsdCGPrec>1e-12</RsdCGPrec>
           <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
-        <nrow>4 4 4 8</nrow>
       </SeqProp>
       <version>1</version>
       <SeqSourceSinkSmear>
-        <version>4</version>
-        <wave_state>S_WAVE</wave_state>
-        <sink_type>SHELL_SINK</sink_type>
-        <ShellSink>
-          <SinkSmearingParam>
+        <version>5</version>
+        <SinkType>SHELL_SINK</SinkType>
+        <Sink>
+          <version>1</version>
+          <SinkType>SHELL_SINK</SinkType>
+          <j_decay>3</j_decay>
+          <SmearingParam>
             <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-            <wvf_param>2</wvf_param>
+            <wvf_param>2.0</wvf_param>
             <wvfIntPar>5</wvfIntPar>
-          </SinkSmearingParam>
-          <laplace_power>0</laplace_power>
-          <link_smear_fact>2.5</link_smear_fact>
-          <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
           <disp_length>0</disp_length>
           <disp_dir>0</disp_dir>
-        </ShellSink>
-        <nrow>4 4 4 8</nrow>
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Sink>
+        <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
         <version>1</version>
         <seq_src>NUCL_U_MIXED_NONREL</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
-        <nrow>4 4 4 8</nrow>
       </SeqSource>
       <ForwardProps>
         <elem>
           <version>1</version>
           <PropSink>
-            <version>4</version>
-            <wave_state>S_WAVE</wave_state>
-            <sink_type>SHELL_SINK</sink_type>
-            <ShellSink>
-              <SinkSmearingParam>
+            <version>5</version>
+            <SinkType>SHELL_SINK</SinkType>
+            <Sink>
+              <version>1</version>
+              <SinkType>SHELL_SINK</SinkType>
+              <j_decay>3</j_decay>
+              <SmearingParam>
                 <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-                <wvf_param>2</wvf_param>
+                <wvf_param>2.0</wvf_param>
                 <wvfIntPar>5</wvfIntPar>
-              </SinkSmearingParam>
-              <laplace_power>0</laplace_power>
-              <link_smear_fact>2.5</link_smear_fact>
-              <link_smear_num>0</link_smear_num>
+                <no_smear_dir>3</no_smear_dir>
+              </SmearingParam>
               <disp_length>0</disp_length>
               <disp_dir>0</disp_dir>
-            </ShellSink>
-            <nrow>4 4 4 8</nrow>
+              <LinkSmearing>
+                <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+                <link_smear_fact>2.5</link_smear_fact>
+                <link_smear_num>0</link_smear_num>
+                <no_smear_dir>3</no_smear_dir>
+              </LinkSmearing>
+            </Sink>
+            <j_decay>3</j_decay>
           </PropSink>
           <ForwardProp>
             <version>8</version>
@@ -3120,48 +3319,58 @@ Calculate bar3ptfn - insertions in 3-pt functions
               <RsdCGPrec>1e-12</RsdCGPrec>
               <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
-            <nrow>4 4 4 8</nrow>
           </ForwardProp>
           <PropSource>
-            <version>5</version>
-            <wave_state>S_WAVE</wave_state>
-            <source_type>SHELL_SOURCE</source_type>
-            <ShellSource>
-              <SourceSmearingParam>
+            <version>6</version>
+            <Source>
+              <version>1</version>
+              <SourceType>SHELL_SOURCE</SourceType>
+              <j_decay>3</j_decay>
+              <t_srce>0 0 0 0</t_srce>
+              <SmearingParam>
                 <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-                <wvf_param>2</wvf_param>
+                <wvf_param>2.0</wvf_param>
                 <wvfIntPar>5</wvfIntPar>
-              </SourceSmearingParam>
-              <laplace_power>0</laplace_power>
-              <link_smear_fact>2.5</link_smear_fact>
-              <link_smear_num>0</link_smear_num>
+                <no_smear_dir>3</no_smear_dir>
+              </SmearingParam>
               <disp_length>0</disp_length>
               <disp_dir>0</disp_dir>
-            </ShellSource>
+              <LinkSmearing>
+                <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+                <link_smear_fact>2.5</link_smear_fact>
+                <link_smear_num>0</link_smear_num>
+                <no_smear_dir>3</no_smear_dir>
+              </LinkSmearing>
+            </Source>
             <j_decay>3</j_decay>
-            <t_source>0 0 0 0</t_source>
-            <nrow>4 4 4 8</nrow>
+            <t_source>0</t_source>
           </PropSource>
         </elem>
         <elem>
           <version>1</version>
           <PropSink>
-            <version>4</version>
-            <wave_state>S_WAVE</wave_state>
-            <sink_type>SHELL_SINK</sink_type>
-            <ShellSink>
-              <SinkSmearingParam>
+            <version>5</version>
+            <SinkType>SHELL_SINK</SinkType>
+            <Sink>
+              <version>1</version>
+              <SinkType>SHELL_SINK</SinkType>
+              <j_decay>3</j_decay>
+              <SmearingParam>
                 <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-                <wvf_param>2</wvf_param>
+                <wvf_param>2.0</wvf_param>
                 <wvfIntPar>5</wvfIntPar>
-              </SinkSmearingParam>
-              <laplace_power>0</laplace_power>
-              <link_smear_fact>2.5</link_smear_fact>
-              <link_smear_num>0</link_smear_num>
+                <no_smear_dir>3</no_smear_dir>
+              </SmearingParam>
               <disp_length>0</disp_length>
               <disp_dir>0</disp_dir>
-            </ShellSink>
-            <nrow>4 4 4 8</nrow>
+              <LinkSmearing>
+                <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+                <link_smear_fact>2.5</link_smear_fact>
+                <link_smear_num>0</link_smear_num>
+                <no_smear_dir>3</no_smear_dir>
+              </LinkSmearing>
+            </Sink>
+            <j_decay>3</j_decay>
           </PropSink>
           <ForwardProp>
             <version>8</version>
@@ -3189,27 +3398,31 @@ Calculate bar3ptfn - insertions in 3-pt functions
               <RsdCGPrec>1e-12</RsdCGPrec>
               <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
-            <nrow>4 4 4 8</nrow>
           </ForwardProp>
           <PropSource>
-            <version>5</version>
-            <wave_state>S_WAVE</wave_state>
-            <source_type>SHELL_SOURCE</source_type>
-            <ShellSource>
-              <SourceSmearingParam>
+            <version>6</version>
+            <Source>
+              <version>1</version>
+              <SourceType>SHELL_SOURCE</SourceType>
+              <j_decay>3</j_decay>
+              <t_srce>0 0 0 0</t_srce>
+              <SmearingParam>
                 <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-                <wvf_param>2</wvf_param>
+                <wvf_param>2.0</wvf_param>
                 <wvfIntPar>5</wvfIntPar>
-              </SourceSmearingParam>
-              <laplace_power>0</laplace_power>
-              <link_smear_fact>2.5</link_smear_fact>
-              <link_smear_num>0</link_smear_num>
+                <no_smear_dir>3</no_smear_dir>
+              </SmearingParam>
               <disp_length>0</disp_length>
               <disp_dir>0</disp_dir>
-            </ShellSource>
+              <LinkSmearing>
+                <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+                <link_smear_fact>2.5</link_smear_fact>
+                <link_smear_num>0</link_smear_num>
+                <no_smear_dir>3</no_smear_dir>
+              </LinkSmearing>
+            </Source>
             <j_decay>3</j_decay>
-            <t_source>0 0 0 0</t_source>
-            <nrow>4 4 4 8</nrow>
+            <t_source>0</t_source>
           </PropSource>
         </elem>
       </ForwardProps>
@@ -3300,54 +3513,64 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <RsdCGPrec>1e-12</RsdCGPrec>
           <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
-        <nrow>4 4 4 8</nrow>
       </SeqProp>
       <version>1</version>
       <SeqSourceSinkSmear>
-        <version>4</version>
-        <wave_state>S_WAVE</wave_state>
-        <sink_type>SHELL_SINK</sink_type>
-        <ShellSink>
-          <SinkSmearingParam>
+        <version>5</version>
+        <SinkType>SHELL_SINK</SinkType>
+        <Sink>
+          <version>1</version>
+          <SinkType>SHELL_SINK</SinkType>
+          <j_decay>3</j_decay>
+          <SmearingParam>
             <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-            <wvf_param>2</wvf_param>
+            <wvf_param>2.0</wvf_param>
             <wvfIntPar>5</wvfIntPar>
-          </SinkSmearingParam>
-          <laplace_power>0</laplace_power>
-          <link_smear_fact>2.5</link_smear_fact>
-          <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
           <disp_length>0</disp_length>
           <disp_dir>0</disp_dir>
-        </ShellSink>
-        <nrow>4 4 4 8</nrow>
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Sink>
+        <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
         <version>1</version>
         <seq_src>NUCL_D_MIXED_NONREL</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
-        <nrow>4 4 4 8</nrow>
       </SeqSource>
       <ForwardProps>
         <elem>
           <version>1</version>
           <PropSink>
-            <version>4</version>
-            <wave_state>S_WAVE</wave_state>
-            <sink_type>SHELL_SINK</sink_type>
-            <ShellSink>
-              <SinkSmearingParam>
+            <version>5</version>
+            <SinkType>SHELL_SINK</SinkType>
+            <Sink>
+              <version>1</version>
+              <SinkType>SHELL_SINK</SinkType>
+              <j_decay>3</j_decay>
+              <SmearingParam>
                 <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-                <wvf_param>2</wvf_param>
+                <wvf_param>2.0</wvf_param>
                 <wvfIntPar>5</wvfIntPar>
-              </SinkSmearingParam>
-              <laplace_power>0</laplace_power>
-              <link_smear_fact>2.5</link_smear_fact>
-              <link_smear_num>0</link_smear_num>
+                <no_smear_dir>3</no_smear_dir>
+              </SmearingParam>
               <disp_length>0</disp_length>
               <disp_dir>0</disp_dir>
-            </ShellSink>
-            <nrow>4 4 4 8</nrow>
+              <LinkSmearing>
+                <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+                <link_smear_fact>2.5</link_smear_fact>
+                <link_smear_num>0</link_smear_num>
+                <no_smear_dir>3</no_smear_dir>
+              </LinkSmearing>
+            </Sink>
+            <j_decay>3</j_decay>
           </PropSink>
           <ForwardProp>
             <version>8</version>
@@ -3375,27 +3598,31 @@ Calculate bar3ptfn - insertions in 3-pt functions
               <RsdCGPrec>1e-12</RsdCGPrec>
               <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
-            <nrow>4 4 4 8</nrow>
           </ForwardProp>
           <PropSource>
-            <version>5</version>
-            <wave_state>S_WAVE</wave_state>
-            <source_type>SHELL_SOURCE</source_type>
-            <ShellSource>
-              <SourceSmearingParam>
+            <version>6</version>
+            <Source>
+              <version>1</version>
+              <SourceType>SHELL_SOURCE</SourceType>
+              <j_decay>3</j_decay>
+              <t_srce>0 0 0 0</t_srce>
+              <SmearingParam>
                 <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-                <wvf_param>2</wvf_param>
+                <wvf_param>2.0</wvf_param>
                 <wvfIntPar>5</wvfIntPar>
-              </SourceSmearingParam>
-              <laplace_power>0</laplace_power>
-              <link_smear_fact>2.5</link_smear_fact>
-              <link_smear_num>0</link_smear_num>
+                <no_smear_dir>3</no_smear_dir>
+              </SmearingParam>
               <disp_length>0</disp_length>
               <disp_dir>0</disp_dir>
-            </ShellSource>
+              <LinkSmearing>
+                <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+                <link_smear_fact>2.5</link_smear_fact>
+                <link_smear_num>0</link_smear_num>
+                <no_smear_dir>3</no_smear_dir>
+              </LinkSmearing>
+            </Source>
             <j_decay>3</j_decay>
-            <t_source>0 0 0 0</t_source>
-            <nrow>4 4 4 8</nrow>
+            <t_source>0</t_source>
           </PropSource>
         </elem>
       </ForwardProps>

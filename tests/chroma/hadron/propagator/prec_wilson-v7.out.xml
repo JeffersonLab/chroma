@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: prec_wilson-v7.out.xml,v 2.1 2005-09-26 03:26:33 edwards Exp $
+; $Id: prec_wilson-v7.out.xml,v 2.2 2005-11-08 05:40:25 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -16,25 +16,30 @@
       <Name>MAKE_SOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>5</version>
-        <wave_state>S_WAVE</wave_state>
-        <source_type>SHELL_SOURCE</source_type>
-        <j_decay>3</j_decay>
-        <direction>2</direction>
-        <t_source>0 0 0 0</t_source>
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>SHELL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
 
-        <ShellSource>
-          <SourceSmearingParam>
+          <SmearingParam>
             <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
             <wvf_param>2.0</wvf_param>
             <wvfIntPar>5</wvfIntPar>
-          </SourceSmearingParam>
-          <laplace_power>0</laplace_power>
-          <link_smear_fact>2.5</link_smear_fact>
-          <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+
           <disp_length>0</disp_length>
           <disp_dir>0</disp_dir>
-        </ShellSource>
+
+          <noLinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>1</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </noLinkSmearing>
+        </Source>
 
         <nrow>4 4 4 8</nrow>
       </Param>
@@ -112,10 +117,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.0.beta</chroma>
-      <qdp>1.16.0</qdp>
+      <chroma>2.3</chroma>
+      <qdp>1.17.1</qdp>
     </code_version>
-    <run_date>25 Sep 05 22:51:28 EDT</run_date>
+    <run_date>08 Nov 05 00:20:09 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -208,10 +213,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.0.beta</chroma>
-            <qdp>1.16.0</qdp>
+            <chroma>2.3</chroma>
+            <qdp>1.17.1</qdp>
           </code_version>
-          <run_date>25 Sep 05 22:51:28 EDT</run_date>
+          <run_date>08 Nov 05 00:20:10 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -220,26 +225,39 @@
             <subgrid_volume>512</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>11</elem>
+            <elem>11</elem>
+            <elem>11</elem>
+            <elem>0</elem>
+          </Seed>
+        </RNG>
         <Input>
           <Param>
-            <version>5</version>
-            <wave_state>S_WAVE</wave_state>
-            <source_type>SHELL_SOURCE</source_type>
-            <ShellSource>
-              <SourceSmearingParam>
-                <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-                <wvf_param>2</wvf_param>
-                <wvfIntPar>5</wvfIntPar>
-              </SourceSmearingParam>
-              <laplace_power>0</laplace_power>
-              <link_smear_fact>2.5</link_smear_fact>
-              <link_smear_num>0</link_smear_num>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
-            </ShellSource>
+            <version>6</version><Source>
+      <version>1</version>
+      <SourceType>SHELL_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <SmearingParam>
+        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+        <wvf_param>2.0</wvf_param>
+        <wvfIntPar>5</wvfIntPar>
+        <no_smear_dir>3</no_smear_dir>
+      </SmearingParam>
+      <disp_length>0</disp_length>
+      <disp_dir>0</disp_dir>
+      <noLinkSmearing>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>1</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </noLinkSmearing>
+    </Source>
+
             <j_decay>3</j_decay>
-            <t_source>0 0 0 0</t_source>
-            <nrow>4 4 4 8</nrow>
+            <t_source>0</t_source>
           </Param>
           <NamedObject>
             <source_id>sh_source_0</source_id>
@@ -321,10 +339,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.0.beta</chroma>
-            <qdp>1.16.0</qdp>
+            <chroma>2.3</chroma>
+            <qdp>1.17.1</qdp>
           </code_version>
-          <run_date>25 Sep 05 22:51:28 EDT</run_date>
+          <run_date>08 Nov 05 00:20:10 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -360,7 +378,6 @@
               <RsdCGPrec>1e-12</RsdCGPrec>
               <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
-            <nrow>4 4 4 8</nrow>
           </Param><StateInfo>
 </StateInfo>
 
@@ -445,25 +462,38 @@
         </Source_file_info>
         <Source_record_info><MakeSource>
       <PropSource>
-        <version>5</version>
-        <wave_state>S_WAVE</wave_state>
-        <source_type>SHELL_SOURCE</source_type>
-        <ShellSource>
-          <SourceSmearingParam>
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>SHELL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+          <SmearingParam>
             <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-            <wvf_param>2</wvf_param>
+            <wvf_param>2.0</wvf_param>
             <wvfIntPar>5</wvfIntPar>
-          </SourceSmearingParam>
-          <laplace_power>0</laplace_power>
-          <link_smear_fact>2.5</link_smear_fact>
-          <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
           <disp_length>0</disp_length>
           <disp_dir>0</disp_dir>
-        </ShellSource>
+          <noLinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>1</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </noLinkSmearing>
+        </Source>
         <j_decay>3</j_decay>
-        <t_source>0 0 0 0</t_source>
-        <nrow>4 4 4 8</nrow>
+        <t_source>0</t_source>
       </PropSource>
+      <RNG>
+        <Seed>
+          <elem>11</elem>
+          <elem>11</elem>
+          <elem>11</elem>
+          <elem>0</elem>
+        </Seed>
+      </RNG>
       <Config_info>
         <szin>
           <cfg_version>7</cfg_version>

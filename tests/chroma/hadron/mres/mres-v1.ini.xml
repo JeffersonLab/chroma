@@ -10,15 +10,19 @@ Mres calculation
       <Name>MAKE_SOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>5</version>
-        <wave_state>S_WAVE</wave_state>
-        <source_type>POINT_SOURCE</source_type>
-        <j_decay>3</j_decay>
-        <t_source>0 0 0 0</t_source>
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+          <disp_length>0</disp_length>
+          <disp_dir>0</disp_dir>
+        </Source>
         <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
-        <source_id>sh_source_0</source_id>
+        <source_id>pt_source_0</source_id>
       </NamedObject>
     </elem>
 
@@ -51,8 +55,8 @@ Mres calculation
         <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
-        <source_id>sh_source_0</source_id>
-        <prop_id>sh_prop_0</prop_id>
+        <source_id>pt_source_0</source_id>
+        <prop_id>pt_prop_0</prop_id>
       </NamedObject>
     </elem>
 
@@ -83,8 +87,8 @@ Mres calculation
         <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
-        <source_id>sh_source_0</source_id>
-        <prop_id>sh_prop_0</prop_id>
+        <source_id>pt_source_0</source_id>
+        <prop_id>pt_prop_0</prop_id>
       </NamedObject>
     </elem>
 

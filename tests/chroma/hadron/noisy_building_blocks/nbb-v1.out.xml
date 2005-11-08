@@ -13,13 +13,13 @@ Calculate noisy building blocks - insertions in traces
         <Name>MAKE_SOURCE</Name>
         <Frequency>1</Frequency>
         <Param>
-          <version>5</version>
-          <wave_state>S_WAVE</wave_state>
-          <source_type>RAND_Z2_WALL_SOURCE</source_type>
-          <j_decay>3</j_decay>
-          <direction>2</direction>
-          <t_source>0 0 0 0</t_source>
-          <nrow>4 4 4 8</nrow>
+          <version>6</version>
+          <Source>
+            <version>1</version>
+            <SourceType>RAND_Z2_WALL_SOURCE</SourceType>
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Source>
         </Param>
         <NamedObject>
           <source_id>nsrc_0</source_id>
@@ -107,13 +107,13 @@ Calculate noisy building blocks - insertions in traces
         <Name>MAKE_SOURCE</Name>
         <Frequency>1</Frequency>
         <Param>
-          <version>5</version>
-          <wave_state>S_WAVE</wave_state>
-          <source_type>RAND_Z2_WALL_SOURCE</source_type>
-          <j_decay>3</j_decay>
-          <direction>2</direction>
-          <t_source>0 0 0 0</t_source>
-          <nrow>4 4 4 8</nrow>
+          <version>6</version>
+          <Source>
+            <version>1</version>
+            <SourceType>RAND_Z2_WALL_SOURCE</SourceType>
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Source>
         </Param>
         <NamedObject>
           <source_id>nsrc_1</source_id>
@@ -219,10 +219,10 @@ Calculate noisy building blocks - insertions in traces
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.2</chroma>
-      <qdp>1.16.0</qdp>
+      <chroma>2.3</chroma>
+      <qdp>1.17.1</qdp>
     </code_version>
-    <run_date>21 Oct 05 11:25:49 EDT</run_date>
+    <run_date>08 Nov 05 00:19:21 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -313,20 +313,12 @@ Calculate noisy building blocks - insertions in traces
     <elem>
       <make_source>
         <update_no>0</update_no>
-        <RNG>
-          <Seed>
-            <elem>11</elem>
-            <elem>13</elem>
-            <elem>17</elem>
-            <elem>19</elem>
-          </Seed>
-        </RNG>
         <ProgramInfo>
           <code_version>
-            <chroma>2.2</chroma>
-            <qdp>1.16.0</qdp>
+            <chroma>2.3</chroma>
+            <qdp>1.17.1</qdp>
           </code_version>
-          <run_date>21 Oct 05 11:25:49 EDT</run_date>
+          <run_date>08 Nov 05 00:19:22 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -335,14 +327,25 @@ Calculate noisy building blocks - insertions in traces
             <subgrid_volume>512</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>11</elem>
+            <elem>13</elem>
+            <elem>17</elem>
+            <elem>19</elem>
+          </Seed>
+        </RNG>
         <Input>
           <Param>
-            <version>5</version>
-            <wave_state>S_WAVE</wave_state>
-            <source_type>RAND_Z2_WALL_SOURCE</source_type>
+            <version>6</version><Source>
+      <version>1</version>
+      <SourceType>RAND_Z2_WALL_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_source>0</t_source>
+    </Source>
+
             <j_decay>3</j_decay>
-            <t_source>0 0 0 0</t_source>
-            <nrow>4 4 4 8</nrow>
+            <t_source>0</t_source>
           </Param>
           <NamedObject>
             <source_id>nsrc_0</source_id>
@@ -424,10 +427,10 @@ Calculate noisy building blocks - insertions in traces
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.2</chroma>
-            <qdp>1.16.0</qdp>
+            <chroma>2.3</chroma>
+            <qdp>1.17.1</qdp>
           </code_version>
-          <run_date>21 Oct 05 11:25:49 EDT</run_date>
+          <run_date>08 Nov 05 00:19:22 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -463,7 +466,6 @@ Calculate noisy building blocks - insertions in traces
               <RsdCGPrec>1e-12</RsdCGPrec>
               <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
-            <nrow>4 4 4 8</nrow>
           </Param><StateInfo>
 </StateInfo>
 
@@ -548,12 +550,15 @@ Calculate noisy building blocks - insertions in traces
         </Source_file_info>
         <Source_record_info><MakeSource>
       <PropSource>
-        <version>5</version>
-        <wave_state>S_WAVE</wave_state>
-        <source_type>RAND_Z2_WALL_SOURCE</source_type>
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>RAND_Z2_WALL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_source>0</t_source>
+        </Source>
         <j_decay>3</j_decay>
-        <t_source>0 0 0 0</t_source>
-        <nrow>4 4 4 8</nrow>
+        <t_source>0</t_source>
       </PropSource>
       <RNG>
         <Seed>
@@ -677,20 +682,12 @@ Calculate noisy building blocks - insertions in traces
     <elem>
       <make_source>
         <update_no>0</update_no>
-        <RNG>
-          <Seed>
-            <elem>1467</elem>
-            <elem>1052</elem>
-            <elem>221</elem>
-            <elem>206</elem>
-          </Seed>
-        </RNG>
         <ProgramInfo>
           <code_version>
-            <chroma>2.2</chroma>
-            <qdp>1.16.0</qdp>
+            <chroma>2.3</chroma>
+            <qdp>1.17.1</qdp>
           </code_version>
-          <run_date>21 Oct 05 11:25:50 EDT</run_date>
+          <run_date>08 Nov 05 00:19:24 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -699,14 +696,25 @@ Calculate noisy building blocks - insertions in traces
             <subgrid_volume>512</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>1467</elem>
+            <elem>1052</elem>
+            <elem>221</elem>
+            <elem>206</elem>
+          </Seed>
+        </RNG>
         <Input>
           <Param>
-            <version>5</version>
-            <wave_state>S_WAVE</wave_state>
-            <source_type>RAND_Z2_WALL_SOURCE</source_type>
+            <version>6</version><Source>
+      <version>1</version>
+      <SourceType>RAND_Z2_WALL_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_source>0</t_source>
+    </Source>
+
             <j_decay>3</j_decay>
-            <t_source>0 0 0 0</t_source>
-            <nrow>4 4 4 8</nrow>
+            <t_source>0</t_source>
           </Param>
           <NamedObject>
             <source_id>nsrc_1</source_id>
@@ -788,10 +796,10 @@ Calculate noisy building blocks - insertions in traces
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.2</chroma>
-            <qdp>1.16.0</qdp>
+            <chroma>2.3</chroma>
+            <qdp>1.17.1</qdp>
           </code_version>
-          <run_date>21 Oct 05 11:25:50 EDT</run_date>
+          <run_date>08 Nov 05 00:19:24 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -827,7 +835,6 @@ Calculate noisy building blocks - insertions in traces
               <RsdCGPrec>1e-12</RsdCGPrec>
               <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
-            <nrow>4 4 4 8</nrow>
           </Param><StateInfo>
 </StateInfo>
 
@@ -912,12 +919,15 @@ Calculate noisy building blocks - insertions in traces
         </Source_file_info>
         <Source_record_info><MakeSource>
       <PropSource>
-        <version>5</version>
-        <wave_state>S_WAVE</wave_state>
-        <source_type>RAND_Z2_WALL_SOURCE</source_type>
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>RAND_Z2_WALL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_source>0</t_source>
+        </Source>
         <j_decay>3</j_decay>
-        <t_source>0 0 0 0</t_source>
-        <nrow>4 4 4 8</nrow>
+        <t_source>0</t_source>
       </PropSource>
       <RNG>
         <Seed>
