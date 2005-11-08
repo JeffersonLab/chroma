@@ -1,4 +1,4 @@
-// $Id: qpropqio.cc,v 2.0 2005-09-25 21:04:46 edwards Exp $
+// $Id: qpropqio.cc,v 2.1 2005-11-08 06:42:59 edwards Exp $
 /*! \file
  *  \brief Reads a scidac prop and converts only the volume format
  */
@@ -6,6 +6,36 @@
 #include "chroma.h"
 
 using namespace Chroma;
+
+
+struct QpropQIO_t
+{
+  InlinePropagatorParams param;
+  multi1d<int>     nrow;
+};
+
+// Reader for input parameters
+void read(XMLReader& xml, const string& path, QpropQIO_t& input)
+{
+  XMLReader inputtop(xml, path);
+
+  // Read the input
+  try
+  {
+    // Propagator parameters
+    InlinePropagatorParams foo(inputtop, "Param");
+    input.param = foo;
+
+    // Read the lattice size
+    read(inputtop, "nrow", input.nrow);
+  }
+  catch (const string& e) 
+  {
+    QDPIO::cerr << "Error reading data: " << e << endl;
+    throw;
+  }
+}
+
 
 
 //! SciDAC prop conversion program
@@ -26,11 +56,12 @@ int main(int argc, char *argv[])
   XMLReader xml_in(Chroma::getXMLInputFileName());
 
   // Read data
-  InlinePropagatorParams input(xml_in, "/qpropqio");
-  InlinePropagator  meas(input);
+  QpropQIO_t input;
+  read(xml_in, "/qpropqio", input);
+  InlinePropagator  meas(input.param);
 
   // Specify lattice size, shape, etc.
-  Layout::setLattSize(input.param.nrow);
+  Layout::setLattSize(input.nrow);
   Layout::create();
 
   // Gauge field not needed, fake one
