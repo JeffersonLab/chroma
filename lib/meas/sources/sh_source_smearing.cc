@@ -1,4 +1,4 @@
-// $Id: sh_source_smearing.cc,v 2.3 2005-11-08 05:29:02 edwards Exp $
+// $Id: sh_source_smearing.cc,v 2.4 2005-11-08 18:41:53 edwards Exp $
 /*! \file
  *  \brief Shell source construction
  */
@@ -141,13 +141,6 @@ namespace Chroma
 
 
 
-  //! Construct the source smearing
-  void
-  ShellQuarkSourceSmearing<LatticePropagator>::create()
-  {
-    linkSmear(u_smr, params.link_smearing, params.link_smearing_type);
-  }
-
   //! Smear the source
   void
   ShellQuarkSourceSmearing<LatticePropagator>::operator()(LatticePropagator& quark_source) const
@@ -184,13 +177,6 @@ namespace Chroma
     }
   }
 
-
-  //! Construct the source smearing
-  void
-  ShellQuarkSourceSmearing<LatticeFermion>::create()
-  {
-    linkSmear(u_smr, params.link_smearing, params.link_smearing_type);
-  }
 
   //! Construct the source smearing
   void

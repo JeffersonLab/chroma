@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sh_source_smearing.h,v 2.3 2005-11-08 05:29:02 edwards Exp $
+// $Id: sh_source_smearing.h,v 2.4 2005-11-08 18:41:53 edwards Exp $
 /*! \file
  *  \brief Shell source smearing
  */
@@ -61,8 +61,12 @@ namespace Chroma
   {
   public:
     //! Full constructor
-    ShellQuarkSourceSmearing(const ShellQuarkSourceSmearingParams& p, const multi1d<LatticeColorMatrix>& u) :
-      params(p), u_smr(u) {create();}
+    ShellQuarkSourceSmearing(const ShellQuarkSourceSmearingParams& p, 
+			     const multi1d<LatticeColorMatrix>& u) :
+      params(p), u_smr(u) 
+      {
+	create(u_smr, params.link_smearing, params.link_smearing_type);
+      }
 
     //! Construct the source
     void operator()(T& obj) const;
@@ -71,8 +75,15 @@ namespace Chroma
     //! Hide partial constructor
     ShellQuarkSourceSmearing() {}
 
-    //! Creator
-    void create();
+    //! Potentially smear the gauge field
+    /*!
+     * \param u                   Gauge field to smear ( Modify )
+     * \param link_smearing       XML of link smearing ( Read )
+     * \param link_smearing_type  link smearing type ( Read )
+     */
+    void create(multi1d<LatticeColorMatrix>& u,
+		std::string link_smearing,
+		std::string link_smearing_type);
 
   private:
     ShellQuarkSourceSmearingParams  params;   /*!< source params */

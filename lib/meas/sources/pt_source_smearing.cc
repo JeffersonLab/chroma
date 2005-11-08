@@ -1,4 +1,4 @@
-// $Id: pt_source_smearing.cc,v 2.3 2005-11-08 05:29:02 edwards Exp $
+// $Id: pt_source_smearing.cc,v 2.4 2005-11-08 18:41:53 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */
@@ -118,14 +118,6 @@ namespace Chroma
 
   //! Construct the source smearing
   void
-  PointQuarkSourceSmearing<LatticePropagator>::create()
-  {
-    linkSmear(u_smr, params.link_smearing, params.link_smearing_type);
-  }
-
-
-  //! Construct the source smearing
-  void
   PointQuarkSourceSmearing<LatticePropagator>::operator()(LatticePropagator& quark_source) const
   {
     QDPIO::cout << "Point source" << endl;
@@ -136,14 +128,6 @@ namespace Chroma
 		 (-1)*params.disp_length, params.disp_dir);
   }
 
-
-
-  //! Construct the source smearing
-  void
-  PointQuarkSourceSmearing<LatticeFermion>::create()
-  {
-    linkSmear(u_smr, params.link_smearing, params.link_smearing_type);
-  }
 
 
   //! Construct the source smearing

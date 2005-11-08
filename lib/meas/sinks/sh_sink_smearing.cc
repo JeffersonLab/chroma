@@ -1,4 +1,4 @@
-// $Id: sh_sink_smearing.cc,v 1.3 2005-11-08 05:29:37 edwards Exp $
+// $Id: sh_sink_smearing.cc,v 1.4 2005-11-08 18:41:53 edwards Exp $
 /*! \file
  *  \brief Shell sink smearing
  */
@@ -142,15 +142,6 @@ namespace Chroma
   }
 
 
-
-  //! Construct the sink smearing
-  void
-  ShellQuarkSinkSmearing<LatticePropagator>::create()
-  {
-    linkSmear(u_smr, params.link_smearing, params.link_smearing_type);
-  }
-
-
   //! Smear the sink
   void
   ShellQuarkSinkSmearing<LatticePropagator>::operator()(LatticePropagator& quark_sink) const
@@ -187,14 +178,6 @@ namespace Chroma
     }
   }
 
-
-
-  //! Construct the sink smearing
-  void
-  ShellQuarkSinkSmearing<LatticeFermion>::create()
-  {
-    linkSmear(u_smr, params.link_smearing, params.link_smearing_type);
-  }
 
 
   //! Smear the sink
